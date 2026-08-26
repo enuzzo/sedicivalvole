@@ -62,13 +62,18 @@ export function recordGpsSample(telemetry, { capturedAtMs, speedKmh, accuracyM }
   };
 }
 
-function median(values) {
+function percentile(values, quantile) {
   if (!values.length) return null;
   const sorted = [...values].sort((a, b) => a - b);
-  const middle = Math.floor(sorted.length / 2);
-  return sorted.length % 2
-    ? sorted[middle]
-    : (sorted[middle - 1] + sorted[middle]) / 2;
+  const position = (sorted.length - 1) * quantile;
+  const lower = Math.floor(position);
+  const upper = Math.ceil(position);
+  if (lower === upper) return sorted[lower];
+  return sorted[lower] + (sorted[upper] - sorted[lower]) * (position - lower);
+}
+
+function median(values) {
+  return percentile(values, 0.5);
 }
 
 export function summarizeGpsTelemetry(telemetry) {
@@ -84,4 +89,92 @@ export function summarizeGpsTelemetry(telemetry) {
     medianAccuracyM: median(telemetry.accuraciesM),
     latestAccuracyM: telemetry.accuraciesM.at(-1) ?? null,
   };
+}
+
+export function createFrameTelemetry(startedAtMs = 0) {
+  return {
+    startedAtMs,
+    firstCapturedAtMs: null,
+    lastCapturedAtMs: null,
+    sampledFrames: 0,
+    intervalCount: 0,
+    totalIntervalMs: 0,
+    maximumFrameMs: null,
+    slowFramesOver34Ms: 0,
+    verySlowFramesOver50Ms: 0,
+    estimatedMissedTargetFrames: 0,
+    targetFrameMs: null,
+    renderer: null,
+    canvasWidth: null,
+    canvasHeight: null,
+    intervalsMs: [],
+  };
+}
+
+export function recordFrameSample(telemetry, {
+  capturedAtMs,
+  targetFrameMs,
+  renderer,
+  canvasWidth,
+  canvasHeight,
+}) {
+  if (!Number.isFinite(capturedAtMs)) return telemetry;
+  const interval = Number.isFinite(telemetry.lastCapturedAtMs)
+    ? Math.max(0, capturedAtMs - telemetry.lastCapturedAtMs)
+    : null;
+  const validTarget = Number.isFinite(targetFrameMs) && targetFrameMs > 0 ? targetFrameMs : null;
+
+  telemetry.firstCapturedAtMs ??= capturedAtMs;
+  telemetry.lastCapturedAtMs = capturedAtMs;
+  telemetry.sampledFrames += 1;
+  telemetry.targetFrameMs = validTarget ?? telemetry.targetFrameMs;
+  telemetry.renderer = renderer ?? telemetry.renderer;
+  telemetry.canvasWidth = Number.isFinite(canvasWidth) ? canvasWidth : telemetry.canvasWidth;
+  telemetry.canvasHeight = Number.isFinite(canvasHeight) ? canvasHeight : telemetry.canvasHeight;
+
+  if (interval != null) {
+    telemetry.intervalCount += 1;
+    telemetry.totalIntervalMs += interval;
+    telemetry.maximumFrameMs = Math.max(telemetry.maximumFrameMs ?? interval, interval);
+    telemetry.slowFramesOver34Ms += interval > 34 ? 1 : 0;
+    telemetry.verySlowFramesOver50Ms += interval > 50 ? 1 : 0;
+    telemetry.estimatedMissedTargetFrames += validTarget
+      ? Math.max(0, Math.round(interval / validTarget) - 1)
+      : 0;
+    telemetry.intervalsMs = [...telemetry.intervalsMs, interval].slice(-300);
+  }
+
+  return telemetry;
+}
+
+export function summarizeFrameTelemetry(telemetry) {
+  const round = (value) => Number.isFinite(value) ? Math.round(value * 100) / 100 : null;
+  return {
+    renderer: telemetry.renderer,
+    canvasWidth: telemetry.canvasWidth,
+    canvasHeight: telemetry.canvasHeight,
+    sampledFrames: telemetry.sampledFrames,
+    sampledDurationMs: Number.isFinite(telemetry.firstCapturedAtMs) && Number.isFinite(telemetry.lastCapturedAtMs)
+      ? round(telemetry.lastCapturedAtMs - telemetry.firstCapturedAtMs)
+      : 0,
+    targetFps: telemetry.targetFrameMs ? round(1000 / telemetry.targetFrameMs) : null,
+    averageFps: telemetry.totalIntervalMs > 0
+      ? round((telemetry.intervalCount * 1000) / telemetry.totalIntervalMs)
+      : null,
+    medianFrameMs: round(median(telemetry.intervalsMs)),
+    p95FrameMs: round(percentile(telemetry.intervalsMs, 0.95)),
+    maximumFrameMs: round(telemetry.maximumFrameMs),
+    slowFramesOver34Ms: telemetry.slowFramesOver34Ms,
+    verySlowFramesOver50Ms: telemetry.verySlowFramesOver50Ms,
+    estimatedMissedTargetFrames: telemetry.estimatedMissedTargetFrames,
+    retainedIntervalSamples: telemetry.intervalsMs.length,
+  };
+}
+
+export function appendConnectionHistory(history, snapshot, limit = 60) {
+  const previous = history.at(-1);
+  const comparableKeys = ["online", "type", "effectiveType", "downlinkMbps", "roundTripTimeMs", "saveData"];
+  const unchanged = previous && comparableKeys.every((key) => previous[key] === snapshot[key]);
+  if (unchanged) return history;
+  return [...history, snapshot].slice(-limit);
 }

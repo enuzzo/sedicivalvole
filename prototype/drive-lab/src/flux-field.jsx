@@ -176,7 +176,7 @@ function drawCanvasFallback(context, canvas, energy, palette, flow) {
   }
 }
 
-function startCanvasFallback(canvas, valuesRef, reducedMotion, onRenderer) {
+function startCanvasFallback(canvas, valuesRef, reducedMotion, onRenderer, onFrame) {
   const context = canvas.getContext("2d", { alpha: false });
   if (!context) return undefined;
   let animationFrame = 0;
@@ -199,6 +199,7 @@ function startCanvasFallback(canvas, valuesRef, reducedMotion, onRenderer) {
     visualEnergy += (nextEnergy - visualEnergy) * (nextEnergy >= visualEnergy ? 0.12 : 0.045);
     if (!reducedMotion) flow += deltaSeconds * (0.08 + visualEnergy * 1.45);
     drawCanvasFallback(context, canvas, visualEnergy, valuesRef.current.theme.palette, flow);
+    onFrame(now, 1000 / 30, "Canvas2D", canvas.width, canvas.height);
   };
   animationFrame = requestAnimationFrame(render);
   return () => {
@@ -207,7 +208,7 @@ function startCanvasFallback(canvas, valuesRef, reducedMotion, onRenderer) {
   };
 }
 
-export function FluxField({ energy, theme, reducedMotion, pulse, brake, onRenderer }) {
+export function FluxField({ energy, theme, reducedMotion, pulse, brake, onRenderer, onFrame }) {
   const canvasRef = useRef(null);
   const valuesRef = useRef({ energy, theme, pulse, brake });
   valuesRef.current = { energy, theme, pulse, brake };
@@ -223,7 +224,7 @@ export function FluxField({ energy, theme, reducedMotion, pulse, brake, onRender
       depth: false,
       powerPreference: "high-performance",
     }) : null;
-    if (!gl) return startCanvasFallback(canvas, valuesRef, reducedMotion, onRenderer);
+    if (!gl) return startCanvasFallback(canvas, valuesRef, reducedMotion, onRenderer, onFrame);
 
     let program;
     let vertexShader;
@@ -309,6 +310,7 @@ export function FluxField({ energy, theme, reducedMotion, pulse, brake, onRender
       gl.uniform3fv(uniforms.light, palette.light);
       gl.uniform3fv(uniforms.accent, palette.accent);
       gl.drawArrays(gl.TRIANGLES, 0, 6);
+      onFrame(now, 1000 / 45, "WebGL2", width, height);
     };
 
     const onContextLost = (event) => {
@@ -330,7 +332,7 @@ export function FluxField({ energy, theme, reducedMotion, pulse, brake, onRender
       gl.deleteShader(vertexShader);
       gl.deleteShader(fragmentShader);
     };
-  }, [onRenderer, reducedMotion]);
+  }, [onFrame, onRenderer, reducedMotion]);
 
   return <canvas className="field-canvas" ref={canvasRef} aria-hidden="true" />;
 }

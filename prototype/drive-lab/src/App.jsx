@@ -1,10 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createAudioEngine } from "./audio-engine.js";
 import {
+  appendConnectionHistory,
   appendViewportHistory,
+  createFrameTelemetry,
   createGpsTelemetry,
   inferViewportMode,
+  recordFrameSample,
   recordGpsSample,
+  summarizeFrameTelemetry,
   summarizeGpsTelemetry,
 } from "./diagnostics-model.js";
 import { FluxField } from "./flux-field.jsx";
@@ -107,6 +111,122 @@ function readGraphicsCapabilities() {
   };
 }
 
+function roundMetric(value) {
+  return Number.isFinite(value) ? Math.round(value * 100) / 100 : null;
+}
+
+function readConnectionSnapshot(reason) {
+  const connection = navigator.connection ?? navigator.mozConnection ?? navigator.webkitConnection;
+  return {
+    capturedAt: new Date().toISOString(),
+    reason,
+    online: navigator.onLine,
+    type: connection?.type ?? null,
+    effectiveType: connection?.effectiveType ?? null,
+    downlinkMbps: connection?.downlink ?? null,
+    roundTripTimeMs: connection?.rtt ?? null,
+    saveData: connection?.saveData ?? null,
+  };
+}
+
+function readPerformanceSnapshot(frameTelemetry, longTaskTelemetry, harnessStartedAtMs) {
+  const navigation = performance.getEntriesByType?.("navigation")?.[0];
+  const paints = Object.fromEntries(
+    (performance.getEntriesByType?.("paint") ?? []).map((entry) => [entry.name, roundMetric(entry.startTime)]),
+  );
+  const resources = performance.getEntriesByType?.("resource") ?? [];
+  const byInitiatorType = {};
+  for (const resource of resources) {
+    const key = resource.initiatorType || "other";
+    const aggregate = byInitiatorType[key] ?? {
+      count: 0,
+      durationMs: 0,
+      transferBytes: 0,
+      encodedBodyBytes: 0,
+      decodedBodyBytes: 0,
+    };
+    aggregate.count += 1;
+    aggregate.durationMs += Number.isFinite(resource.duration) ? resource.duration : 0;
+    aggregate.transferBytes += Number.isFinite(resource.transferSize) ? resource.transferSize : 0;
+    aggregate.encodedBodyBytes += Number.isFinite(resource.encodedBodySize) ? resource.encodedBodySize : 0;
+    aggregate.decodedBodyBytes += Number.isFinite(resource.decodedBodySize) ? resource.decodedBodySize : 0;
+    byInitiatorType[key] = aggregate;
+  }
+  for (const aggregate of Object.values(byInitiatorType)) {
+    aggregate.durationMs = roundMetric(aggregate.durationMs);
+  }
+  const memory = performance.memory;
+
+  return {
+    timeOrigin: new Date(performance.timeOrigin).toISOString(),
+    pageElapsedMs: roundMetric(performance.now()),
+    harnessElapsedMs: roundMetric(performance.now() - harnessStartedAtMs),
+    navigation: navigation ? {
+      type: navigation.type,
+      durationMs: roundMetric(navigation.duration),
+      redirectCount: navigation.redirectCount,
+      responseStartMs: roundMetric(navigation.responseStart),
+      responseEndMs: roundMetric(navigation.responseEnd),
+      domInteractiveMs: roundMetric(navigation.domInteractive),
+      domContentLoadedMs: roundMetric(navigation.domContentLoadedEventEnd),
+      loadEventMs: roundMetric(navigation.loadEventEnd),
+      transferBytes: navigation.transferSize ?? null,
+      encodedBodyBytes: navigation.encodedBodySize ?? null,
+      decodedBodyBytes: navigation.decodedBodySize ?? null,
+    } : null,
+    paints,
+    resources: {
+      count: resources.length,
+      byInitiatorType,
+    },
+    memory: memory ? {
+      jsHeapSizeLimitBytes: memory.jsHeapSizeLimit,
+      totalJsHeapSizeBytes: memory.totalJSHeapSize,
+      usedJsHeapSizeBytes: memory.usedJSHeapSize,
+    } : null,
+    frame: summarizeFrameTelemetry(frameTelemetry),
+    longTasks: {
+      supported: longTaskTelemetry.supported,
+      count: longTaskTelemetry.count,
+      totalDurationMs: roundMetric(longTaskTelemetry.totalDurationMs),
+      maximumDurationMs: roundMetric(longTaskTelemetry.maximumDurationMs),
+      recentDurationsMs: longTaskTelemetry.recentDurationsMs.map(roundMetric),
+    },
+  };
+}
+
+async function readExtendedCapabilities() {
+  const [storageResult, batteryResult, userAgentResult] = await Promise.allSettled([
+    navigator.storage?.estimate?.() ?? Promise.resolve(null),
+    navigator.getBattery?.() ?? Promise.resolve(null),
+    navigator.userAgentData?.getHighEntropyValues?.([
+      "architecture",
+      "bitness",
+      "model",
+      "platformVersion",
+      "uaFullVersion",
+      "wow64",
+    ]) ?? Promise.resolve(null),
+  ]);
+  const storage = storageResult.status === "fulfilled" ? storageResult.value : null;
+  const battery = batteryResult.status === "fulfilled" ? batteryResult.value : null;
+  const userAgentData = userAgentResult.status === "fulfilled" ? userAgentResult.value : null;
+  return {
+    storageEstimate: storage ? {
+      usageBytes: storage.usage ?? null,
+      quotaBytes: storage.quota ?? null,
+      usageDetails: storage.usageDetails ?? null,
+    } : null,
+    battery: battery ? {
+      charging: battery.charging,
+      level: battery.level,
+      chargingTimeSeconds: Number.isFinite(battery.chargingTime) ? battery.chargingTime : null,
+      dischargingTimeSeconds: Number.isFinite(battery.dischargingTime) ? battery.dischargingTime : null,
+    } : null,
+    userAgentData,
+  };
+}
+
 function canUseKeyboardTarget(target) {
   if (!(target instanceof HTMLElement)) return true;
   return !target.closest("input, textarea, select, button, [contenteditable='true'], [role='slider']");
@@ -203,6 +323,16 @@ export function App() {
   const audioMeterTimerRef = useRef(null);
   const viewportCaptureTimerRef = useRef(null);
   const gpsTelemetryRef = useRef(createGpsTelemetry(performance.now()));
+  const frameTelemetryRef = useRef(createFrameTelemetry(performance.now()));
+  const connectionHistoryRef = useRef([]);
+  const diagnosticsActiveRef = useRef(false);
+  const longTaskTelemetryRef = useRef({
+    supported: false,
+    count: 0,
+    totalDurationMs: 0,
+    maximumDurationMs: null,
+    recentDurationsMs: [],
+  });
   const diagnosticEventsRef = useRef([]);
   const sessionStartedAtRef = useRef(performance.now());
 
@@ -216,7 +346,18 @@ export function App() {
       elapsedMs: Math.round((performance.now() - sessionStartedAtRef.current) * 10) / 10,
       type,
       detail,
-    }].slice(-120);
+    }].slice(-240);
+  }, []);
+
+  const recordRenderedFrame = useCallback((capturedAtMs, targetFrameMs, frameRenderer, canvasWidth, canvasHeight) => {
+    if (!diagnosticsActiveRef.current) return;
+    frameTelemetryRef.current = recordFrameSample(frameTelemetryRef.current, {
+      capturedAtMs,
+      targetFrameMs,
+      renderer: frameRenderer,
+      canvasWidth,
+      canvasHeight,
+    });
   }, []);
 
   const wakeControls = useCallback(() => {
@@ -313,7 +454,17 @@ export function App() {
 
   const runHarness = useCallback(async () => {
     sessionStartedAtRef.current = performance.now();
+    diagnosticsActiveRef.current = true;
     diagnosticEventsRef.current = [];
+    frameTelemetryRef.current = createFrameTelemetry(performance.now());
+    connectionHistoryRef.current = [readConnectionSnapshot("harness-start")];
+    longTaskTelemetryRef.current = {
+      ...longTaskTelemetryRef.current,
+      count: 0,
+      totalDurationMs: 0,
+      maximumDurationMs: null,
+      recentDurationsMs: [],
+    };
     logDiagnosticEvent("harness.started");
     setPhase("testing");
     wakeControls();
@@ -382,11 +533,67 @@ export function App() {
         userAgent: navigator.userAgent,
       },
     });
+    readExtendedCapabilities().then((extendedCapabilities) => {
+      setDiagnostics((current) => current ? {
+        ...current,
+        capabilities: { ...current.capabilities, ...extendedCapabilities },
+      } : current);
+    });
     window.setTimeout(() => {
       setPhase("running");
       wakeControls();
     }, reducedMotion ? 180 : 620);
   }, [fullEnergyKmh, logDiagnosticEvent, reducedMotion, startGps, triggerPulse, wakeControls]);
+
+  useEffect(() => {
+    const supported = typeof PerformanceObserver !== "undefined"
+      && PerformanceObserver.supportedEntryTypes?.includes("longtask");
+    longTaskTelemetryRef.current.supported = Boolean(supported);
+    if (!supported) return undefined;
+    const observer = new PerformanceObserver((list) => {
+      if (!diagnosticsActiveRef.current) return;
+      for (const entry of list.getEntries()) {
+        const duration = Number.isFinite(entry.duration) ? entry.duration : 0;
+        const telemetry = longTaskTelemetryRef.current;
+        telemetry.count += 1;
+        telemetry.totalDurationMs += duration;
+        telemetry.maximumDurationMs = Math.max(telemetry.maximumDurationMs ?? duration, duration);
+        telemetry.recentDurationsMs = [...telemetry.recentDurationsMs, duration].slice(-60);
+      }
+    });
+    observer.observe({ entryTypes: ["longtask"] });
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const connection = navigator.connection ?? navigator.mozConnection ?? navigator.webkitConnection;
+    const capture = (reason) => {
+      if (!diagnosticsActiveRef.current) return;
+      const snapshot = readConnectionSnapshot(reason);
+      connectionHistoryRef.current = appendConnectionHistory(connectionHistoryRef.current, snapshot);
+      logDiagnosticEvent("network.changed", {
+        reason,
+        online: snapshot.online,
+        effectiveType: snapshot.effectiveType,
+        downlinkMbps: snapshot.downlinkMbps,
+        roundTripTimeMs: snapshot.roundTripTimeMs,
+      });
+    };
+    const onConnectionChange = () => capture("connection-change");
+    const onOnline = () => capture("online");
+    const onOffline = () => capture("offline");
+    const onVisibility = () => logDiagnosticEvent("document.visibility", { state: document.visibilityState });
+    connection?.addEventListener?.("change", onConnectionChange);
+    window.addEventListener("online", onOnline);
+    window.addEventListener("offline", onOffline);
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      connection?.removeEventListener?.("change", onConnectionChange);
+      window.removeEventListener("online", onOnline);
+      window.removeEventListener("offline", onOffline);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, [logDiagnosticEvent]);
 
   useEffect(() => { audioRef.current?.setSpeed(speed); }, [speed]);
   useEffect(() => { audioRef.current?.setPerformance({ fullEnergyKmh }); }, [fullEnergyKmh]);
@@ -473,6 +680,7 @@ export function App() {
   }, [phase, source, stopDemo, triggerBrake, wakeControls]);
 
   useEffect(() => () => {
+    diagnosticsActiveRef.current = false;
     window.clearTimeout(wakeTimerRef.current);
     window.clearTimeout(keyboardHintTimerRef.current);
     window.clearTimeout(keyboardLeaseTimerRef.current);
@@ -484,7 +692,7 @@ export function App() {
   }, [stopDemo]);
 
   const diagnosticReport = useMemo(() => diagnostics ? {
-    schema: "sedicivalvole.tesla-diagnostic.v2",
+    schema: "sedicivalvole.tesla-diagnostic.v3",
     generatedAt: new Date().toISOString(),
     app: {
       version: APP_VERSION,
@@ -515,12 +723,27 @@ export function App() {
       telemetry: summarizeGpsTelemetry(gpsTelemetryRef.current),
     },
     capabilities: diagnostics.capabilities,
-    environment: diagnostics.environment,
+    environment: {
+      ...diagnostics.environment,
+      currentVisibility: document.visibilityState,
+    },
+    network: {
+      current: readConnectionSnapshot("report-generated"),
+      history: connectionHistoryRef.current,
+      rawCellularSignalStrengthAvailable: false,
+    },
+    performance: readPerformanceSnapshot(
+      frameTelemetryRef.current,
+      longTaskTelemetryRef.current,
+      sessionStartedAtRef.current,
+    ),
     events: diagnosticEventsRef.current,
     privacy: {
       coordinatesCollected: false,
       coordinatesStored: false,
       coordinatesTransmitted: false,
+      automaticRemoteTelemetry: false,
+      transmissionRequiresExplicitGesture: true,
     },
   } : null, [accuracy, audioLevel, bpm, diagnostics, energy, fullEnergyKmh, gpsState, muted, renderer, source, speed, themeId]);
   const diagnosticText = diagnosticReport ? JSON.stringify(diagnosticReport, null, 2) : "Test not run yet";
@@ -561,6 +784,7 @@ export function App() {
         pulse={pulseFlash}
         brake={brakeFlash}
         onRenderer={setRenderer}
+        onFrame={recordRenderedFrame}
       />
       {keyboardHint ? <div className="keyboard-hint" role="status">{keyboardHint}</div> : null}
 
@@ -626,8 +850,10 @@ export function App() {
               <article><small>RENDERER</small><strong>{renderer}</strong><span>{reducedMotion ? "reduced motion" : "motion active"}</span></article>
               <article><small>WEB AUDIO</small><strong>{diagnostics?.audio.state || "—"}</strong><span>{muted ? "muted" : `signal ${Math.round(audioLevel * 100)}%`}</span></article>
               <article><small>GPS SPEED</small><strong>{gpsState}</strong><span>{accuracy == null ? "accuracy unavailable" : `accuracy ±${accuracy} m`}</span></article>
+              <article><small>FRAME PACING</small><strong>{diagnosticReport?.performance.frame.averageFps ?? "—"} FPS</strong><span>{diagnosticReport?.performance.frame.p95FrameMs ?? "—"} ms p95</span></article>
+              <article><small>NETWORK</small><strong>{diagnosticReport?.network.current.effectiveType || (diagnosticReport?.network.current.online ? "online" : "offline") || "—"}</strong><span>{diagnosticReport?.network.current.roundTripTimeMs ?? "—"} ms RTT</span></article>
             </div>
-            <p className="privacy-note">No coordinates are displayed, stored, or transmitted. The report contains only technical capabilities and speed-field status.</p>
+            <p className="privacy-note">No coordinates are displayed, stored, or transmitted. Extended technical telemetry is aggregated locally and sent only after pressing SEND DIAGNOSTIC.</p>
             <pre>{diagnosticText}</pre>
             <div className="drawer-actions">
               <button className="send-diagnostic-button" type="button" onClick={sendDiagnostic} disabled={sendState === "sending"}>

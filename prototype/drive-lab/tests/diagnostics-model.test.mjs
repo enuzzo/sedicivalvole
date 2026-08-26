@@ -1,10 +1,14 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
+  appendConnectionHistory,
   appendViewportHistory,
+  createFrameTelemetry,
   createGpsTelemetry,
   inferViewportMode,
+  recordFrameSample,
   recordGpsSample,
+  summarizeFrameTelemetry,
   summarizeGpsTelemetry,
 } from "../src/diagnostics-model.js";
 
@@ -35,4 +39,38 @@ test("GPS telemetry counts numeric and null speed without coordinates", () => {
   assert.equal(summary.medianIntervalMs, 1000);
   assert.equal("latitude" in summary, false);
   assert.equal("longitude" in summary, false);
+});
+
+test("frame telemetry aggregates pacing without retaining every frame", () => {
+  const telemetry = createFrameTelemetry(0);
+  const frameTimes = [100, 123, 146, 180, 234, 257];
+  for (const capturedAtMs of frameTimes) {
+    recordFrameSample(telemetry, {
+      capturedAtMs,
+      targetFrameMs: 1000 / 45,
+      renderer: "WebGL2",
+      canvasWidth: 966,
+      canvasHeight: 751,
+    });
+  }
+  const summary = summarizeFrameTelemetry(telemetry);
+
+  assert.equal(summary.sampledFrames, 6);
+  assert.equal(summary.renderer, "WebGL2");
+  assert.equal(summary.canvasWidth, 966);
+  assert.equal(summary.slowFramesOver34Ms, 1);
+  assert.equal(summary.verySlowFramesOver50Ms, 1);
+  assert.equal(summary.maximumFrameMs, 54);
+  assert.equal(summary.retainedIntervalSamples, 5);
+  assert.ok(summary.averageFps > 31 && summary.averageFps < 32);
+  assert.ok(summary.p95FrameMs > 49);
+});
+
+test("connection history deduplicates stable readings and keeps changes", () => {
+  const first = { capturedAt: "one", online: true, effectiveType: "4g", downlinkMbps: 10, roundTripTimeMs: 50 };
+  const unchanged = { ...first, capturedAt: "two" };
+  const offline = { ...first, capturedAt: "three", online: false };
+
+  assert.equal(appendConnectionHistory([first], unchanged).length, 1);
+  assert.deepEqual(appendConnectionHistory([first], offline), [first, offline]);
 });

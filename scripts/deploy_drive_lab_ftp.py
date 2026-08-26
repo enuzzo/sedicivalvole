@@ -40,6 +40,7 @@ LEGACY_BUILD_HASHES = {
 DIAGNOSTIC_ENDPOINT = "send-diagnostic.php"
 DIAGNOSTIC_RECIPIENT_CONFIG = "recipient.local.php"
 DIAGNOSTIC_ENDPOINT_MARKER_SETS = (
+    (b"sedicivalvole.tesla-diagnostic.v3", b"EXPECTED_ORIGIN", b"recipient.local.php"),
     (b"sedicivalvole.tesla-diagnostic.v2", b"EXPECTED_ORIGIN", b"recipient.local.php"),
     (b"sedicivalvole.tesla-diagnostic.v2", b"EXPECTED_ORIGIN", b"DIAGNOSTIC_RECIPIENT"),
 )

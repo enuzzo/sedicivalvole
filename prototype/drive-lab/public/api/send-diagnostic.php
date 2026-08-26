@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 const EXPECTED_ORIGIN = 'https://sedicivalvole.app';
-const MAX_BODY_BYTES = 98304;
+const MAX_BODY_BYTES = 196608;
 const RATE_LIMIT_SECONDS = 20;
 
 header('Content-Type: application/json; charset=utf-8');
@@ -29,7 +29,7 @@ function containsForbiddenCoordinateKey($value): bool
     foreach ($value as $key => $child) {
         if (is_string($key)) {
             $normalized = strtolower($key);
-            if (in_array($normalized, ['latitude', 'longitude'], true)) {
+            if (in_array($normalized, ['latitude', 'longitude', 'lat', 'lon', 'lng', 'coordinates', 'coords'], true)) {
                 return true;
             }
         }
@@ -75,7 +75,7 @@ if (!is_array($payload) || json_last_error() !== JSON_ERROR_NONE) {
     respond(400, 'invalid_json');
 }
 
-if (($payload['schema'] ?? '') !== 'sedicivalvole.tesla-diagnostic.v2' || !is_array($payload['report'] ?? null)) {
+if (($payload['schema'] ?? '') !== 'sedicivalvole.tesla-diagnostic.v3' || !is_array($payload['report'] ?? null)) {
     respond(422, 'schema_rejected');
 }
 
@@ -100,7 +100,7 @@ if (!is_string($diagnosticRecipient) || filter_var($diagnosticRecipient, FILTER_
     respond(503, 'recipient_unavailable');
 }
 
-$clientKey = hash('sha256', ($_SERVER['REMOTE_ADDR'] ?? 'unknown') . '|sedicivalvole-diagnostic-v2');
+$clientKey = hash('sha256', ($_SERVER['REMOTE_ADDR'] ?? 'unknown') . '|sedicivalvole-diagnostic-v3');
 $ratePath = rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'sv-diag-' . $clientKey;
 $rateHandle = @fopen($ratePath, 'c+');
 if ($rateHandle === false || !flock($rateHandle, LOCK_EX)) {
@@ -129,8 +129,8 @@ $subject = '[sedicivalvole] Tesla diagnostic ' . gmdate('Y-m-d H:i:s') . ' UTC';
 $message = implode("\r\n", [
     'sedicivalvole Tesla diagnostic',
     'Server accepted at: ' . $receivedAt,
-    'Schema: sedicivalvole.tesla-diagnostic.v2',
-    'Privacy: the endpoint rejects latitude and longitude fields.',
+    'Schema: sedicivalvole.tesla-diagnostic.v3',
+    'Privacy: the endpoint rejects coordinate fields and stores no report.',
     '',
     $reportJson,
 ]);
@@ -140,7 +140,7 @@ $headers = implode("\r\n", [
     'MIME-Version: 1.0',
     'Content-Type: text/plain; charset=UTF-8',
     'Content-Transfer-Encoding: 8bit',
-    'X-Mailer: sedicivalvole-diagnostic-v2',
+    'X-Mailer: sedicivalvole-diagnostic-v3',
 ]);
 
 if (!mail($diagnosticRecipient, $subject, $message, $headers)) {
