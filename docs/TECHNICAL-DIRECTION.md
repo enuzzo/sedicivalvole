@@ -98,7 +98,7 @@ Never drive the entire experience from one “intensity” variable.
 
 - `tempo`: monotonic, knee-shaped, and saturating;
 - `energy`: continuous arrangement/dynamics control;
-- `visualFlow`: separately filtered movement/depth response;
+- `visualFlow`: separately filtered movement/depth response that continues to scale with speed after arrangement energy saturates;
 - `confidence`: reduces risky reactions to low-quality input;
 - structural state: bar-quantized layer/harmony/section decisions;
 - transients: bounded acceleration, deceleration, and Brake envelopes.
@@ -148,6 +148,8 @@ The approved Flux renderer is **Modular Aperture**, selected from exactly three 
 
 - central-axis depth and flow;
 - outward vanishing-point travel at speed, with a non-linear flow ceiling and a near-planar zero-energy state;
+- independent flat/tunnel grids that crossfade without leaking four-wall discontinuities into the resting plane;
+- speed-driven radial panel elongation and reduced depth frequency in the 150 km/h velocity band;
 - five curated body-color palettes;
 - energy-driven pressure, luminance, distortion, and rectangular panel density;
 - aggregate pulses rather than one flash per audio event;

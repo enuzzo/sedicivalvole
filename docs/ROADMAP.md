@@ -63,6 +63,7 @@ Implemented:
 - flat Braun/Swiss interface, compact diagnostics, and body-color selection at `773 × 601`.
 - dark tunnel terminus plus off-canvas resting chrome with a persistent speed readout and wake-first interaction.
 - outward high-speed flight, non-linear flow response, true-zero Demo dwell, and an opaque high-contrast speed frame.
+- intact flat-grid modules plus an energy-independent, speed-driven Plaid band with radial stripe deformation and a 160 km/h Demo ceiling.
 
 Gate: stable frame budget on the slowest target vehicle, graceful degradation, and no audio degradation while the renderer runs.
 

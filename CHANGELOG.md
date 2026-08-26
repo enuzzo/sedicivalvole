@@ -51,6 +51,7 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - Reversed Modular Aperture travel so high speed flies outward from the vanishing point, made flow strongly non-linear near full energy, and let Demo reach and hold a true standstill before restarting.
 - Made acceleration and deceleration explicit audio envelopes: acceleration now raises rhythm, low end, motion, and brightness, while deceleration reduces rhythmic pressure and opens a controlled spatial release without repeated transition effects.
 - Framed the persistent speed readout in a compact opaque high-contrast rectangle with fixed padding and no glass treatment.
+- Separated visual velocity from saturated energy so speed above the full-energy threshold continues to accelerate and radially stretch the tunnel into a high-speed stripe field; Demo now reaches 160 km/h for deterministic validation.
 
 ### Fixed
 
@@ -61,6 +62,7 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - Corrected GLSL portability issues found by rendered browser QA and made the fallback redraw continuously with energy and theme changes.
 - Removed repeated motion-transition cues during sustained speed changes and added automatic envelope decay when speed settles.
 - Restored canonical bare-root convergence after the SiteGround cache flush; `/` now returns the current no-store PHP entry and content-addressed assets.
+- Removed diagonal wall-boundary cuts from the flat state by rendering independent flat and tunnel grids before their controlled crossfade; resting modules are now intact, regular rectangles.
 - Added a non-destructive `--preserve-existing` FTP publication mode for deployments that are authorized without legacy-file deletion.
 - Updated the read-only deployment identity gate to recognize the current Flux root markers instead of relying on obsolete `Drive Lab` copy.
 
