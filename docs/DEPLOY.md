@@ -88,6 +88,14 @@
 - canonical bare `/`: **FAIL / provider cache still stale**, returning the prior 587-byte body, SHA-256 `0407fb0914ab6d11655184a54e6ace05523b0ec4d081d8543fc3727de9b57150`, with `x-proxy-cache: HIT` and the old asset pair;
 - publication is verified through `/?qa=bead2d7-forward-motion` and direct `/index.php`, but canonical deployment completion remains pending the SiteGround cache flush.
 
+## Canonical cache convergence — 2026-08-26
+
+- user action: disabled SiteGround NGINX delivery caching and completed the provider cache flush;
+- canonical bare `/`: **PASS**, HTTP 200 with `x-proxy-cache: MISS` and `Cache-Control: no-store, no-cache, must-revalidate, max-age=0`;
+- canonical HTML: 655 bytes, SHA-256 `c88ab460a6c1e4841dc893a01e2e34ffcb150fda5b22250032c2f04f7abf9d40`, byte-identical local/live;
+- canonical asset references: `index-D_ERyfCr.js` and `index-CjkHLkpC.css`, matching the verified Forward Flux build;
+- the canonical deployment is now complete; the earlier stale-root entries above remain as historical evidence of the provider-cache incident.
+
 `.env` is local, user-filled, and ignored. Scripts must parse it as data, keep credentials in memory, and print only sanitized stage results. Never source or evaluate `.env`.
 
 ## Security limit
@@ -118,9 +126,7 @@ Content-addressed JavaScript and CSS from the immediately previous entry point a
 
 The canonical SiteGround deployment uses a generated `index.php` entry with explicit no-store/no-cache response headers. The Vite `index.html` remains the reproducible build input and stays available to the separate Sites-compatible package, but it is removed from the FTP root only after the dynamic entry is uploaded and verified byte-for-byte over FTP. Use `--stage-php-entry` to upload and verify the dynamic entry without switching the root during a first provider check.
 
-The first dynamic-entry activation passed FTP identity and byte verification. Direct `/index.php` returns the current 658-byte HTML with `Cache-Control: no-store, no-cache, must-revalidate, max-age=0` and a byte-identical local/live SHA-256. However, the bare `/` cache key still returns a previously cached 587-byte static entry with `x-proxy-cache: HIT`. This response is upstream of the replaced origin file and cannot be safely purged with FTP credentials.
-
-Required provider action: use Site Tools → Speed → Caching → Dynamic Cache → **Flush Cache** for `sedicivalvole.app`, following [SiteGround's cache-flush procedure](https://www.siteground.com/kb/clear-site-cache/). If SiteGround CDN is enabled, also use its **Cache Purge** or temporary **Development Mode**, as documented in [SiteGround's CDN controls](https://www.siteground.com/kb/manage-cdn). After the purge, verify that bare `/` returns the current 658-byte entry, references the current content-addressed assets, and no longer reports the stale `HIT` body.
+The first dynamic-entry activation passed FTP identity and byte verification, but the bare `/` cache key initially continued serving a previously cached 587-byte static entry with `x-proxy-cache: HIT`. This upstream object could not be safely purged with FTP credentials. The user later disabled SiteGround NGINX delivery caching and completed the provider cache flush; the canonical root now returns the current 655-byte no-store PHP entry with `x-proxy-cache: MISS` and byte-identical assets.
 
 For the energy-wave deployment, the canonical unqualified URL continued returning the previous 587-byte HTML body, while a cache-busted query returned the new 658-byte HTML with a byte-identical local/live SHA-256. Both previous and current JavaScript bundles return HTTP 200, so cached clients remain functional. An unauthenticated HTTP `PURGE` request was rejected with 403; do not retry or bypass provider cache controls without an authorized SiteGround mechanism.
 

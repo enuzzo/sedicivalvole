@@ -60,6 +60,7 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - Added smoothing, deadband, saturating energy/tempo, and a discrete brake cooldown to avoid jitter and frantic high-speed tempo.
 - Corrected GLSL portability issues found by rendered browser QA and made the fallback redraw continuously with energy and theme changes.
 - Removed repeated motion-transition cues during sustained speed changes and added automatic envelope decay when speed settles.
+- Restored canonical bare-root convergence after the SiteGround cache flush; `/` now returns the current no-store PHP entry and content-addressed assets.
 - Added a non-destructive `--preserve-existing` FTP publication mode for deployments that are authorized without legacy-file deletion.
 - Updated the read-only deployment identity gate to recognize the current Flux root markers instead of relying on obsolete `Drive Lab` copy.
 
