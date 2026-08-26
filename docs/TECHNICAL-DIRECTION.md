@@ -167,7 +167,7 @@ Flux may incorporate procedural road-like flow only as abstract WebGL geometry o
 
 ## Control-state model
 
-Controls have explicit states: `awake`, `resting`, `parked_configuration`, and `reduced`. The first interaction while resting reveals the layer without mutating a value. Stop/Mute remains visible and usable. Sliders use large physical targets, clear active/focus states, and accessible names.
+Controls have explicit states: `awake`, `resting`, `parked_configuration`, and `reduced`. In `resting`, the header and footer translate fully outside the viewport, the secondary energy readout disappears, and only speed plus its unit remain visible. The first interaction reveals the layer without mutating a value. Stop/Mute remains immediate once the layer is awake. Sliders use large physical targets, clear active/focus states, and accessible names.
 
 ## Splash as bootstrap
 

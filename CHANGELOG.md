@@ -47,6 +47,7 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - Rebuilt the Flux audio spike as a four-section authored arrangement with a tempo knee, bar-quantized entries, hysteresis, two-bar dwell, crossfades, controlled deceleration, kick, low end, percussion, harmony, motif, delay, and conservative dynamics.
 - Removed the permanent on-screen Brake control; keyboard Space remains a deterministic bounded test event.
 - Configured the user-confirmed diagnostic recipient in ignored local/server configuration and kept transmission behind the explicit `SEND DIAGNOSTIC` gesture.
+- Replaced the bright tunnel terminus with a dark central void and made the header/footer retire fully off-canvas at rest, leaving only the speed readout visible until the next interaction.
 
 ### Fixed
 

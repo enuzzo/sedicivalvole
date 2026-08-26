@@ -9,6 +9,7 @@ When implementing from a selected generated mock, treat that image as the source
 ## Durable product direction
 
 - The approved Flux direction is **Modular Aperture**: a sparse rectangular field that is flat and calm at rest, forms a centered tunnel with normalized energy, and releases coherently during deceleration.
+- The tunnel terminus is a dark void, never a bright portal. At rest, header and footer must retreat completely off-canvas, secondary readouts disappear, and only speed plus its unit remain visible; the first wake interaction must not change a value.
 - The Flux interface is Braun-influenced, Swiss, minimal, and slightly brutalist: flat black/off-white surfaces, strict monospace typography, square buttons, and sliders inside restrained rounded housings. Do not add circular buttons, knob controls, glassmorphism, or decorative chrome.
 - `BODY COLOR` is a purposeful visual control with curated Pearl, Graphite, Red, Blue, and Silver themes. It changes the generative field and control accent without exposing low-level shader parameters.
 - Preserve the approved Modular Aperture and Laminar Product Design images only in the ignored local reference library. Laminar is visibly close to the Infinite Lights mechanics study and must be independently reinterpreted before any implementation.

@@ -60,6 +60,7 @@ Implemented:
 - bounded speed energy, palette, aggregate pulse, Brake, and asymmetric deceleration response;
 - reduced-motion behavior and continuously redrawn Canvas2D fallback;
 - flat Braun/Swiss interface, compact diagnostics, and body-color selection at `773 × 601`.
+- dark tunnel terminus plus off-canvas resting chrome with a persistent speed readout and wake-first interaction.
 
 Gate: stable frame budget on the slowest target vehicle, graceful degradation, and no audio degradation while the renderer runs.
 

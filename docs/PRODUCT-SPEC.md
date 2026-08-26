@@ -14,12 +14,11 @@ Status: **decision baseline, not an implementation contract**. “Confirmed” i
 ## 2. Touch, safety, and control behavior
 
 - Touch-first interaction with large, finger-comfortable controls.
-- Controls may be dimmed or partially hidden at rest, then become fully opaque after interaction.
+- Header and footer controls retire fully off-canvas at rest instead of remaining as translucent overlays; only the speed and unit remain visible above the field.
+- A first tap anywhere on the resting surface restores the complete control layer without changing a value; diagnostics remain reachable after that wake gesture.
 - Sliders and buttons must independently activate and adjust functions, sound layers, and visual layers.
 - Stop/Mute and current audio state must remain immediately recognizable.
-- A first tap on a sleeping control layer reveals controls without changing values.
 - Full configuration is intended while parked; driving state emphasizes atmosphere, not manipulation.
-- Dimmed opacity must not make controls undiscoverable or fail contrast.
 - Focus, active, disabled, and current-value states must remain distinct.
 - `prefers-reduced-motion` must meaningfully calm the experience.
 
@@ -59,7 +58,7 @@ See [`MODES.md`](MODES.md) for the boundary model, recommendations, and open dec
 
 Exactly three revised Product Design directions were shown after the luminous-axis rejection. The user selected **Modular Aperture**: a sparse rectangular field with a low black control plane, flat monochrome geometry, and a restrained body-color accent. The interface is Braun-influenced, Swiss, minimal, and slightly brutalist, with square actions, strict monospace typography, no circular buttons, and no glassmorphism.
 
-Modular Aperture is calm and comparatively flat at rest, progressively forms a centered funnel/tunnel as energy rises, and returns coherently toward flatness during deceleration. Curated Pearl, Graphite, Red, Blue, and Silver body-color themes change the visual character without exposing low-level shader controls. See [`RECOVERED-REQUIREMENTS-2026-08-26.md`](RECOVERED-REQUIREMENTS-2026-08-26.md).
+Modular Aperture is calm and comparatively flat at rest, progressively forms a centered funnel/tunnel with a dark terminal void as energy rises, and returns coherently toward flatness during deceleration. Curated Pearl, Graphite, Red, Blue, and Silver body-color themes change the visual character without exposing low-level shader controls. See [`RECOVERED-REQUIREMENTS-2026-08-26.md`](RECOVERED-REQUIREMENTS-2026-08-26.md).
 
 ## 5. Splash and audio unlock
 
