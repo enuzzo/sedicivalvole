@@ -53,7 +53,7 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - Made acceleration and deceleration explicit audio envelopes: acceleration now raises rhythm, low end, motion, and brightness, while deceleration reduces rhythmic pressure and opens a controlled spatial release without repeated transition effects.
 - Framed the persistent speed readout in a compact opaque high-contrast rectangle with fixed padding and no glass treatment.
 - Separated visual velocity from saturated energy so speed above the full-energy threshold continues to accelerate and radially stretch the tunnel into a high-speed stripe field; Demo now reaches 160 km/h for deterministic validation.
-- Replaced the sparse square-like zero-speed grid with an ordered Swiss score field of staggered horizontal bars, rare body-color accents, a restrained central datum, and a slow chromatic breath.
+- Rebuilt Modular Aperture as one continuous shape field: large complete four-color squares at rest shrink, bend, and recede into the centered tunnel as speed rises, then reverse the same geometric transformation during deceleration without a crossfade.
 - Rejected the current approximately 115 km/h soft-club Flux result and queued a data-driven AudioWorklet synth/sequencer with a high-energy Jungle identity and deceleration memory.
 
 ### Fixed
@@ -65,10 +65,10 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - Corrected GLSL portability issues found by rendered browser QA and made the fallback redraw continuously with energy and theme changes.
 - Removed repeated motion-transition cues during sustained speed changes and added automatic envelope decay when speed settles.
 - Restored canonical bare-root convergence after the SiteGround cache flush; `/` now returns the current no-store PHP entry and content-addressed assets.
-- Removed diagonal wall-boundary cuts from the flat state by rendering independent flat and tunnel grids before their controlled crossfade; resting modules are now intact, regular rectangles.
+- Removed diagonal wall-boundary cuts and transition flashes by deriving the flat plane and tunnel from one interpolated coordinate field; resting modules are now intact squares and the dark aperture opens only as tunnel depth forms.
 - Added a non-destructive `--preserve-existing` FTP publication mode for deployments that are authorized without legacy-file deletion.
 - Updated the read-only deployment identity gate to recognize the current Flux root markers instead of relying on obsolete `Drive Lab` copy.
-- Removed the visible resting grid seams and random sparse occupancy that made the flat state feel empty and uneven.
+- Removed visible resting seams, black gaps, and random sparse occupancy; all zero-speed cells are present and distributed evenly across the active four-color palette.
 
 ### Security
 
