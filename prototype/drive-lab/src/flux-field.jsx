@@ -53,18 +53,25 @@ const FRAGMENT_SHADER = `#version 300 es
     );
     float depth = 1.0 / majorAxis;
 
-    vec2 flatGrid = v_uv * vec2(13.0, 7.0);
+    float flatRow = floor(v_uv.y * 8.0);
+    vec2 flatGrid = vec2(v_uv.x * 14.0 + mod(flatRow, 2.0) * 0.5, v_uv.y * 8.0);
     vec2 flatCell = floor(flatGrid);
     vec2 flatLocal = fract(flatGrid);
     float flatIdentity = hash21(flatCell + vec2(0.0, 3.0));
     float flatTone = hash21(flatCell + vec2(8.0, 29.0));
-    float flatTile = rectangleMask(flatLocal, vec2(0.27, 0.32)) * step(0.78, flatIdentity);
-    float flatSeam = 1.0 - rectangleMask(flatLocal, vec2(0.035));
-    vec3 flatPanel = u_mid * (0.38 + flatTone * 0.48);
+    float flatCadence = mod(flatCell.x + flatCell.y * 2.0, 5.0);
+    float flatEnabled = step(1.5, flatCadence);
+    vec2 flatInset = vec2(mix(0.1, 0.27, flatTone), mix(0.39, 0.425, flatIdentity));
+    float flatTile = rectangleMask(flatLocal, flatInset) * flatEnabled;
+    float flatBreath = 0.92 + 0.08 * sin(u_flow * 8.0 + flatTone * 6.2831853);
+    vec3 flatPanel = u_mid * (0.4 + flatTone * 0.46) * flatBreath;
     flatPanel = mix(flatPanel, u_light, step(0.86, flatTone));
-    flatPanel = mix(flatPanel, u_accent, step(0.965, flatIdentity));
-    vec3 flatColor = mix(u_base, u_mid * 0.16, flatSeam * 0.3);
+    flatPanel = mix(flatPanel, u_accent, step(0.93, flatIdentity) * step(3.5, flatCadence));
+    vec3 flatColor = u_base;
     flatColor = mix(flatColor, flatPanel, flatTile);
+    float datum = (1.0 - smoothstep(0.0, 0.0035, abs(v_uv.y - 0.5)))
+      * step(0.075, v_uv.x) * step(v_uv.x, 0.925);
+    flatColor = mix(flatColor, u_mid * 0.48, datum * 0.72);
 
     float depthFrequency = mix(4.5, 2.15, velocity);
     vec2 tunnelGrid = vec2(lateral * 15.0, depth * depthFrequency + u_flow);
@@ -135,11 +142,17 @@ function drawCanvasFallback(context, canvas, energy, speed, palette, flow) {
   const easedEnergy = energy * energy * (3 - 2 * energy);
   const velocity = speedToVisualVelocity(speed);
 
+  context.globalAlpha = 0.72 * (1 - easedEnergy);
+  context.fillStyle = cssColor(palette.mid, 0.48);
+  context.fillRect(width * 0.075, centerY, width * 0.85, Math.max(1, height * 0.002));
+  context.globalAlpha = 1;
+
   for (let index = 0; index < 96; index += 1) {
     const column = index % 12;
     const row = Math.floor(index / 12);
-    const flatX = (column + 0.2 + ((index * 13) % 7) * 0.09) * width / 12;
-    const flatY = (row + 0.24 + ((index * 17) % 5) * 0.1) * height / 8;
+    const flatX = (column + 0.5 + (row % 2) * 0.5) * width / 12;
+    const flatY = (row + 0.5) * height / 8;
+    const flatEnabled = (column + row * 2) % 5 >= 2;
 
     const ring = Math.floor(index / 8);
     const slot = index % 8;
@@ -168,14 +181,15 @@ function drawCanvasFallback(context, canvas, energy, speed, palette, flow) {
     const seed = (index * 37) % 19;
     const panelScale = 0.45 + scale * 0.88;
     const horizontal = side === 0 || side === 2;
-    const flatWidth = width * 0.046;
-    const flatHeight = Math.max(2, height * 0.016);
+    const flatWidth = width * (0.044 + ((index * 7) % 5) * 0.0055);
+    const flatHeight = Math.max(2, height * (0.012 + ((index * 11) % 3) * 0.0015));
     const radialStretch = 1 + velocity * 4.5;
     const tunnelWidth = width * (horizontal ? 0.07 : 0.018 * radialStretch) * panelScale;
     const tunnelHeight = height * (horizontal ? 0.018 * radialStretch : 0.075) * panelScale;
     const panelWidth = flatWidth + (tunnelWidth - flatWidth) * easedEnergy;
     const panelHeight = flatHeight + (tunnelHeight - flatHeight) * easedEnergy;
 
+    context.globalAlpha = flatEnabled ? 1 : easedEnergy;
     context.fillStyle = seed === 0
       ? cssColor(palette.accent, 0.96)
       : seed > 13
@@ -183,6 +197,7 @@ function drawCanvasFallback(context, canvas, energy, speed, palette, flow) {
         : cssColor(palette.mid, 0.54 + travel * 0.4);
     context.fillRect(x - panelWidth / 2, y - panelHeight / 2, panelWidth, panelHeight);
   }
+  context.globalAlpha = 1;
 
   if (easedEnergy > 0.08) {
     const apertureWidth = width * (0.016 + (1 - easedEnergy) * 0.05);
