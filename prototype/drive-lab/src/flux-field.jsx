@@ -75,8 +75,9 @@ const FRAGMENT_SHADER = `#version 300 es
     float apertureRadius = max(abs(screen.x) * 0.78, abs(screen.y));
     float aperture = 1.0 - smoothstep(0.055, 0.105, apertureRadius);
     float apertureFrame = smoothstep(0.09, 0.12, apertureRadius) * (1.0 - smoothstep(0.12, 0.155, apertureRadius));
-    color = mix(color, u_light, aperture * energy);
-    color = mix(color, u_mid, apertureFrame * energy * 0.42);
+    vec3 apertureVoid = u_base * 0.08;
+    color = mix(color, apertureVoid, aperture * energy);
+    color = mix(color, u_mid * 0.34, apertureFrame * energy * 0.5);
 
     float calmRule = 1.0 - smoothstep(0.0, 0.012, abs(fract(v_uv.y * 7.0) - 0.5));
     color += u_mid * calmRule * (1.0 - energy) * 0.09;
@@ -171,7 +172,14 @@ function drawCanvasFallback(context, canvas, energy, palette, flow) {
   if (easedEnergy > 0.08) {
     const apertureWidth = width * (0.016 + (1 - easedEnergy) * 0.05);
     const apertureHeight = height * (0.02 + (1 - easedEnergy) * 0.065);
-    context.fillStyle = cssColor(palette.light, 0.72 * easedEnergy);
+    context.fillStyle = cssColor(palette.mid, 0.46 * easedEnergy);
+    context.fillRect(
+      centerX - apertureWidth / 2 - 1,
+      centerY - apertureHeight / 2 - 1,
+      apertureWidth + 2,
+      apertureHeight + 2,
+    );
+    context.fillStyle = cssColor(palette.base);
     context.fillRect(centerX - apertureWidth / 2, centerY - apertureHeight / 2, apertureWidth, apertureHeight);
   }
 }

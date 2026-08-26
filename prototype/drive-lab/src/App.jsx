@@ -314,6 +314,7 @@ export function App() {
   const audioRef = useRef(null);
   const watchRef = useRef(null);
   const wakeTimerRef = useRef(null);
+  const controlsHiddenAtPointerDownRef = useRef(false);
   const smoothedSpeedRef = useRef(0);
   const demoTimerRef = useRef(null);
   const brakeCooldownRef = useRef(0);
@@ -365,6 +366,11 @@ export function App() {
     window.clearTimeout(wakeTimerRef.current);
     wakeTimerRef.current = window.setTimeout(() => setControlsAwake(false), 4200);
   }, []);
+
+  const handleSurfacePointerDown = useCallback(() => {
+    controlsHiddenAtPointerDownRef.current = !(controlsAwake || drawerOpen);
+    wakeControls();
+  }, [controlsAwake, drawerOpen, wakeControls]);
 
   const triggerPulse = useCallback(() => {
     setPulseFlash(1);
@@ -428,6 +434,11 @@ export function App() {
   }, []);
 
   const toggleSource = useCallback(() => {
+    if (controlsHiddenAtPointerDownRef.current) {
+      controlsHiddenAtPointerDownRef.current = false;
+      logDiagnosticEvent("controls.woken", { source: "speed-readout" });
+      return;
+    }
     wakeControls();
     if (source === "GPS") {
       logDiagnosticEvent("speed-source.changed", { source: "DEMO" });
@@ -774,7 +785,7 @@ export function App() {
     <main
       className={`app phase-${phase} ${controlsAwake || drawerOpen ? "controls-awake" : "controls-resting"}`}
       data-theme={themeId}
-      onPointerDown={wakeControls}
+      onPointerDown={handleSurfacePointerDown}
       onPointerMove={wakeControls}
     >
       <FluxField
@@ -805,12 +816,14 @@ export function App() {
             sedicivalvole
           </button>
           <ModeSelector />
-          <button className="source-readout" type="button" onClick={toggleSource} aria-label={`Speed source ${source}. Tap to switch`}>
-            <strong>{Math.round(speed)}</strong><span>km/h</span><small>{source}</small>
-          </button>
+          <span className="speed-spacer" aria-hidden="true" />
           <span className={`gps-state ${gpsState === "live" || source === "DEMO" ? "is-live" : ""}`}>GPS</span>
           <button className="diag-button" type="button" onClick={() => setDrawerOpen(true)}>DIAG</button>
         </header>
+
+        <button className="source-readout" type="button" onClick={toggleSource} aria-label={`Speed source ${source}. Tap to switch`}>
+          <strong>{Math.round(speed)}</strong><span>km/h</span><small>{source}</small>
+        </button>
 
         <div className="energy-readout" aria-hidden="true">
           {Math.round(bpm)} BPM / ENERGY {Math.round(energy * 100)}
