@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { energyToFlowRate } from "./signal-model.js";
 
 const VERTEX_SHADER = `#version 300 es
   in vec2 a_position;
@@ -51,7 +52,7 @@ const FRAGMENT_SHADER = `#version 300 es
     float depth = 1.0 / majorAxis;
 
     vec2 flatGrid = v_uv * vec2(13.0, 7.0);
-    vec2 tunnelGrid = vec2(lateral * 15.0, depth * 4.5 - u_flow);
+    vec2 tunnelGrid = vec2(lateral * 15.0, depth * 4.5 + u_flow);
     vec2 grid = mix(flatGrid, tunnelGrid, energy);
     vec2 cell = floor(grid);
     vec2 local = fract(grid);
@@ -204,8 +205,8 @@ function startCanvasFallback(canvas, valuesRef, reducedMotion, onRenderer, onFra
     lastFrameAt = now;
     lastDrawAt = now;
     const nextEnergy = reducedMotion ? Math.min(valuesRef.current.energy, 0.28) : valuesRef.current.energy;
-    visualEnergy += (nextEnergy - visualEnergy) * (nextEnergy >= visualEnergy ? 0.12 : 0.045);
-    if (!reducedMotion) flow += deltaSeconds * (0.08 + visualEnergy * 1.45);
+    visualEnergy += (nextEnergy - visualEnergy) * (nextEnergy >= visualEnergy ? 0.12 : 0.065);
+    if (!reducedMotion) flow += deltaSeconds * energyToFlowRate(visualEnergy);
     drawCanvasFallback(context, canvas, visualEnergy, valuesRef.current.theme.palette, flow);
     onFrame(now, 1000 / 30, "Canvas2D", canvas.width, canvas.height);
   };
@@ -293,9 +294,9 @@ export function FluxField({ energy, theme, reducedMotion, pulse, brake, onRender
       lastDrawAt = now;
 
       const nextEnergy = reducedMotion ? Math.min(valuesRef.current.energy, 0.28) : valuesRef.current.energy;
-      const smoothing = nextEnergy >= visualEnergy ? 0.12 : 0.045;
+      const smoothing = nextEnergy >= visualEnergy ? 0.12 : 0.065;
       visualEnergy += (nextEnergy - visualEnergy) * smoothing;
-      if (!reducedMotion) flow += deltaSeconds * (0.08 + visualEnergy * 1.45);
+      if (!reducedMotion) flow += deltaSeconds * energyToFlowRate(visualEnergy);
 
       const ratio = Math.min(window.devicePixelRatio || 1, 1.25);
       const width = Math.max(1, Math.floor(canvas.clientWidth * ratio));

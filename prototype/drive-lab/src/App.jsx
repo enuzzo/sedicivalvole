@@ -14,6 +14,7 @@ import {
 import { FluxField } from "./flux-field.jsx";
 import { FLUX_THEMES, getFluxTheme } from "./flux-themes.js";
 import {
+  advanceDemoMotion,
   applyKeyboardDelta,
   clamp,
   normalizeGpsSpeed,
@@ -445,13 +446,11 @@ export function App() {
       sourceRef.current = "DEMO";
       setSource("DEMO");
       stopDemo();
-      let direction = 1;
+      let demoMotion = { speed, direction: speed >= 132 ? -1 : 1, holdTicks: 0 };
       demoTimerRef.current = window.setInterval(() => {
         setSpeed((previous) => {
-          let next = previous + direction * 2.6;
-          if (next >= 132) direction = -1;
-          if (next <= 8) direction = 1;
-          return clamp(next, 0, 135);
+          demoMotion = advanceDemoMotion({ ...demoMotion, speed: previous });
+          return demoMotion.speed;
         });
       }, 180);
     } else {
@@ -461,7 +460,7 @@ export function App() {
       setSource("GPS");
       setSpeed(smoothedSpeedRef.current);
     }
-  }, [logDiagnosticEvent, source, stopDemo, wakeControls]);
+  }, [logDiagnosticEvent, source, speed, stopDemo, wakeControls]);
 
   const runHarness = useCallback(async () => {
     sessionStartedAtRef.current = performance.now();

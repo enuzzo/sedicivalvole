@@ -1,4 +1,4 @@
-import { clamp, energyToSection, speedToBpm, speedToEnergy } from "./signal-model.js";
+import { clamp, energyToSection, speedToBpm, speedToEnergy, speedToMotion } from "./signal-model.js";
 
 const SCALE = [0, 3, 5, 7, 10];
 const BASS_DEGREES = [0, 0, 3, 0, 2, 0, 4, 3];
@@ -81,6 +81,13 @@ export function createAudioEngine(onPulse) {
   let muted = false;
   let lastSpeedAt = context.currentTime;
   let lastTransitionAt = -10;
+  let motionRateKmhPerSecond = 0;
+  let accelerationDrive = 0;
+  let decelerationRelease = 0;
+  let motionPhase = "steady";
+  let pendingMotionPhase = "steady";
+  let pendingMotionSince = context.currentTime;
+  let lastMotionDecayAt = context.currentTime;
 
   const createNoise = (duration) => {
     const length = Math.floor(context.sampleRate * duration);
@@ -214,10 +221,35 @@ export function createAudioEngine(onPulse) {
   const applySectionMix = (nextSection, time) => {
     const mix = sectionMix[nextSection];
     const transitionTime = Math.max(0.16, 60 / speedToBpm(speed) * 0.7);
-    drumsBus.gain.setTargetAtTime(mix.drums, time, transitionTime);
-    lowBus.gain.setTargetAtTime(mix.low, time, transitionTime);
-    harmonyBus.gain.setTargetAtTime(mix.harmony, time, transitionTime);
-    motionBus.gain.setTargetAtTime(mix.motion, time, transitionTime);
+    const rhythmShape = clamp(0.72 + energy * 0.28 + accelerationDrive * 0.12 - decelerationRelease * 0.5, 0.24, 1.08);
+    const lowShape = clamp(0.62 + energy * 0.38 + accelerationDrive * 0.18 - decelerationRelease * 0.46, 0.22, 1.12);
+    const harmonyShape = clamp(0.78 + energy * 0.22 - decelerationRelease * 0.12, 0.56, 1);
+    const motionShape = clamp(0.72 + energy * 0.2 + accelerationDrive * 0.28 - decelerationRelease * 0.2, 0.4, 1.2);
+    drumsBus.gain.setTargetAtTime(mix.drums * rhythmShape, time, transitionTime);
+    lowBus.gain.setTargetAtTime(mix.low * lowShape, time, transitionTime);
+    harmonyBus.gain.setTargetAtTime(mix.harmony * harmonyShape, time, transitionTime);
+    motionBus.gain.setTargetAtTime(mix.motion * motionShape, time, transitionTime);
+  };
+
+  const updateMotionPhase = (time) => {
+    const candidate = accelerationDrive >= 0.18
+      ? "accelerating"
+      : decelerationRelease >= 0.18
+        ? "decelerating"
+        : "steady";
+    if (candidate !== pendingMotionPhase) {
+      pendingMotionPhase = candidate;
+      pendingMotionSince = time;
+      return;
+    }
+    if (candidate === motionPhase || time - pendingMotionSince < 0.32) return;
+    motionPhase = candidate;
+    if (candidate === "steady" || time - lastTransitionAt < 1.2) return;
+    transition(
+      candidate === "accelerating" ? "up" : "down",
+      candidate === "accelerating" ? accelerationDrive : decelerationRelease,
+    );
+    lastTransitionAt = time;
   };
 
   const reviewSectionAtBar = (time) => {
@@ -264,6 +296,19 @@ export function createAudioEngine(onPulse) {
   applySectionMix(0, context.currentTime);
   const scheduler = window.setInterval(() => {
     if (!running || context.state !== "running") return;
+    const schedulerTime = context.currentTime;
+    if (schedulerTime - lastSpeedAt > 0.28 && schedulerTime - lastMotionDecayAt >= 0.1) {
+      const decay = 0.72;
+      motionRateKmhPerSecond *= decay;
+      accelerationDrive *= decay;
+      decelerationRelease *= decay;
+      if (Math.abs(motionRateKmhPerSecond) < 0.2) motionRateKmhPerSecond = 0;
+      if (accelerationDrive < 0.015) accelerationDrive = 0;
+      if (decelerationRelease < 0.015) decelerationRelease = 0;
+      lastMotionDecayAt = schedulerTime;
+      applySectionMix(section, schedulerTime);
+      updateMotionPhase(schedulerTime);
+    }
     while (nextStep < context.currentTime + 0.12) {
       playStep(step, Math.max(nextStep, context.currentTime + 0.008));
       nextStep += 60 / speedToBpm(speed) / 4;
@@ -289,18 +334,25 @@ export function createAudioEngine(onPulse) {
     setSpeed(nextSpeed) {
       const time = context.currentTime;
       const normalized = clamp(nextSpeed, 0, 260);
-      const elapsed = Math.max(0.12, time - lastSpeedAt);
-      const acceleration = (normalized - speed) / elapsed;
+      const elapsed = clamp(time - lastSpeedAt, 0.08, 2);
+      const motion = speedToMotion(speed, normalized, elapsed);
+      const motionAlpha = clamp(elapsed / 0.42, 0.18, 0.62);
+      motionRateKmhPerSecond += (motion.rateKmhPerSecond - motionRateKmhPerSecond) * motionAlpha;
+      accelerationDrive += (motion.acceleration - accelerationDrive) * motionAlpha;
+      decelerationRelease += (motion.deceleration - decelerationRelease) * motionAlpha;
       speed = normalized;
       energy = speedToEnergy(speed, fullEnergyKmh);
       lastSpeedAt = time;
-      toneFilter.frequency.setTargetAtTime(520 + energy * 2900, time, acceleration >= 0 ? 0.16 : 0.44);
-      delayReturn.gain.setTargetAtTime(0.08 + energy * 0.13, time, 0.38);
-      delayFeedback.gain.setTargetAtTime(0.2 + energy * 0.16, time, 0.42);
-      if (time - lastTransitionAt > 1.8 && Math.abs(acceleration) > 7 && normalized > 4) {
-        transition(acceleration > 0 ? "up" : "down", clamp(Math.abs(acceleration) / 32, 0.25, 1));
-        lastTransitionAt = time;
-      }
+      lastMotionDecayAt = time;
+      toneFilter.frequency.setTargetAtTime(
+        520 + energy * 2550 + accelerationDrive * 1050 - decelerationRelease * 420,
+        time,
+        decelerationRelease > accelerationDrive ? 0.34 : 0.13,
+      );
+      delayReturn.gain.setTargetAtTime(0.065 + energy * 0.1 + decelerationRelease * 0.095, time, 0.32);
+      delayFeedback.gain.setTargetAtTime(0.19 + energy * 0.12 + decelerationRelease * 0.085, time, 0.38);
+      applySectionMix(section, time);
+      updateMotionPhase(time);
     },
     startCue() {
       const time = context.currentTime;
@@ -330,7 +382,16 @@ export function createAudioEngine(onPulse) {
       return clamp(Math.sqrt(sum / samples.length) * 6, 0, 1);
     },
     getState() {
-      return { environment: "aperture", energy, section, fullEnergyKmh };
+      return {
+        environment: "aperture",
+        energy,
+        section,
+        fullEnergyKmh,
+        motionPhase,
+        motionRateKmhPerSecond: Math.round(motionRateKmhPerSecond * 10) / 10,
+        accelerationDrive: Math.round(accelerationDrive * 1000) / 1000,
+        decelerationRelease: Math.round(decelerationRelease * 1000) / 1000,
+      };
     },
     destroy() {
       if (!running) return;

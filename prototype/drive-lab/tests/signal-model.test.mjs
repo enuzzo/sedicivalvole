@@ -1,12 +1,15 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
+  advanceDemoMotion,
   applyKeyboardDelta,
+  energyToFlowRate,
   energyToSection,
   normalizeGpsSpeed,
   smoothSpeed,
   speedToBpm,
   speedToEnergy,
+  speedToMotion,
   speedToWave,
 } from "../src/signal-model.js";
 
@@ -60,4 +63,40 @@ test("the continuous energy wave rises smoothly but stays bounded", () => {
   assert.ok(extreme.frequencyHz <= 114);
   assert.equal(extreme.gain, motorway.gain);
   assert.ok(extreme.gain <= 0.08);
+});
+
+test("visual travel stays calm at rest and becomes emphatic only near full energy", () => {
+  assert.equal(energyToFlowRate(0), 0.025);
+  assert.ok(energyToFlowRate(0.25) < 0.2);
+  assert.ok(energyToFlowRate(0.75) > 1.5);
+  assert.equal(energyToFlowRate(1), 3.425);
+});
+
+test("motion separates acceleration from deceleration with bounded rates", () => {
+  const accelerating = speedToMotion(40, 52, 0.5);
+  const decelerating = speedToMotion(52, 40, 0.5);
+  const steady = speedToMotion(40, 40.2, 0.5);
+
+  assert.deepEqual(accelerating, { rateKmhPerSecond: 24, acceleration: 1, deceleration: 0 });
+  assert.equal(decelerating.rateKmhPerSecond, -24);
+  assert.equal(decelerating.acceleration, 0);
+  assert.equal(decelerating.deceleration, 1);
+  assert.equal(steady.acceleration > 0 && steady.acceleration < 0.02, true);
+  assert.equal(steady.deceleration, 0);
+  assert.equal(speedToMotion(0, 260, 0.08).rateKmhPerSecond, 60);
+});
+
+test("the demo holds at full speed and reaches a true standstill before restarting", () => {
+  assert.deepEqual(
+    advanceDemoMotion({ speed: 131, direction: 1, holdTicks: 0 }),
+    { speed: 132, direction: -1, holdTicks: 6 },
+  );
+  assert.deepEqual(
+    advanceDemoMotion({ speed: 1, direction: -1, holdTicks: 0 }),
+    { speed: 0, direction: 1, holdTicks: 8 },
+  );
+  assert.deepEqual(
+    advanceDemoMotion({ speed: 0, direction: 1, holdTicks: 8 }),
+    { speed: 0, direction: 1, holdTicks: 7 },
+  );
 });

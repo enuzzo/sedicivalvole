@@ -19,6 +19,21 @@ export function speedToWave(speedKmh, fullEnergyKmh = 120) {
   };
 }
 
+export function energyToFlowRate(energy) {
+  const safeEnergy = clamp(energy, 0, 1);
+  return 0.025 + safeEnergy ** 2.4 * 3.4;
+}
+
+export function speedToMotion(previousSpeedKmh, nextSpeedKmh, elapsedSeconds) {
+  const elapsed = clamp(elapsedSeconds, 0.08, 2);
+  const rateKmhPerSecond = clamp((nextSpeedKmh - previousSpeedKmh) / elapsed, -60, 60);
+  return {
+    rateKmhPerSecond,
+    acceleration: clamp(rateKmhPerSecond / 24, 0, 1),
+    deceleration: clamp(-rateKmhPerSecond / 18, 0, 1),
+  };
+}
+
 const SECTION_ENTER = [0.16, 0.4, 0.68];
 const SECTION_EXIT = [0.1, 0.31, 0.56];
 
@@ -42,4 +57,16 @@ export function smoothSpeed(previousKmh, nextKmh, deadbandKmh = 1.1, alpha = 0.2
 
 export function applyKeyboardDelta(speedKmh, direction) {
   return clamp(speedKmh + (direction === "up" ? 5 : -5), 0, 260);
+}
+
+export function advanceDemoMotion(state, stepKmh = 2.6) {
+  const speed = clamp(state?.speed ?? 0, 0, 132);
+  const direction = state?.direction === -1 ? -1 : 1;
+  const holdTicks = Math.max(0, Math.round(state?.holdTicks ?? 0));
+  if (holdTicks > 0) return { speed, direction, holdTicks: holdTicks - 1 };
+
+  const nextSpeed = speed + direction * stepKmh;
+  if (nextSpeed >= 132) return { speed: 132, direction: -1, holdTicks: 6 };
+  if (nextSpeed <= 0) return { speed: 0, direction: 1, holdTicks: 8 };
+  return { speed: nextSpeed, direction, holdTicks: 0 };
 }
