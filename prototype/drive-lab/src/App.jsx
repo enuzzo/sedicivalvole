@@ -1,12 +1,4 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  applyKeyboardDelta,
-  clamp,
-  normalizeGpsSpeed,
-  smoothSpeed,
-  speedToBpm,
-  speedToEnergy,
-} from "./signal-model.js";
 import { createAudioEngine } from "./audio-engine.js";
 import {
   appendViewportHistory,
@@ -15,8 +7,31 @@ import {
   recordGpsSample,
   summarizeGpsTelemetry,
 } from "./diagnostics-model.js";
+import { FluxField } from "./flux-field.jsx";
+import { FLUX_THEMES, getFluxTheme } from "./flux-themes.js";
+import {
+  applyKeyboardDelta,
+  clamp,
+  normalizeGpsSpeed,
+  smoothSpeed,
+  speedToBpm,
+  speedToEnergy,
+} from "./signal-model.js";
 
 const APP_VERSION = __APP_VERSION__;
+const PREFERENCES_KEY = "sedicivalvole.preferences.v1";
+
+function readPreferences() {
+  try {
+    const value = JSON.parse(localStorage.getItem(PREFERENCES_KEY) || "null");
+    return {
+      fullEnergyKmh: clamp(Number(value?.fullEnergyKmh) || 120, 60, 180),
+      themeId: FLUX_THEMES.some((theme) => theme.id === value?.themeId) ? value.themeId : "red",
+    };
+  } catch {
+    return { fullEnergyKmh: 120, themeId: "red" };
+  }
+}
 
 function readSafeAreaInsets() {
   const probe = document.createElement("div");
@@ -53,9 +68,9 @@ function readDisplaySnapshot(reason) {
     documentHeight: document.documentElement.clientHeight,
     visualWidth: visual ? Math.round(visual.width * 100) / 100 : null,
     visualHeight: visual ? Math.round(visual.height * 100) / 100 : null,
-    visualScale: visual ? visual.scale : null,
-    visualOffsetLeft: visual ? visual.offsetLeft : null,
-    visualOffsetTop: visual ? visual.offsetTop : null,
+    visualScale: visual?.scale ?? null,
+    visualOffsetLeft: visual?.offsetLeft ?? null,
+    visualOffsetTop: visual?.offsetTop ?? null,
     screenWidth: displayScreen?.width ?? null,
     screenHeight: displayScreen?.height ?? null,
     availableWidth: displayScreen?.availWidth ?? null,
@@ -69,10 +84,7 @@ function readDisplaySnapshot(reason) {
     fullscreen: Boolean(document.fullscreenElement),
     displayModeStandalone: window.matchMedia?.("(display-mode: standalone)").matches ?? false,
   };
-  return {
-    ...snapshot,
-    mode: inferViewportMode(snapshot),
-  };
+  return { ...snapshot, mode: inferViewportMode(snapshot) };
 }
 
 function readGraphicsCapabilities() {
@@ -100,163 +112,63 @@ function canUseKeyboardTarget(target) {
   return !target.closest("input, textarea, select, button, [contenteditable='true'], [role='slider']");
 }
 
-function FieldCanvas({ speed, hue, reducedMotion, brakeFlash, onRenderer }) {
-  const canvasRef = useRef(null);
-  const valuesRef = useRef({ speed, hue, brakeFlash });
-  valuesRef.current = { speed, hue, brakeFlash };
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    const gl = canvas?.getContext("webgl2", { alpha: false, antialias: false, powerPreference: "high-performance" });
-    if (!gl) {
-      onRenderer("CSS fallback");
-      return undefined;
-    }
-
-    const vertexSource = `#version 300 es
-      in vec2 a_position;
-      out vec2 v_uv;
-      void main() { v_uv = a_position * 0.5 + 0.5; gl_Position = vec4(a_position, 0.0, 1.0); }
-    `;
-    const fragmentSource = `#version 300 es
-      precision highp float;
-      uniform sampler2D u_texture;
-      uniform float u_time;
-      uniform float u_energy;
-      uniform float u_hue;
-      uniform float u_flash;
-      in vec2 v_uv;
-      out vec4 outColor;
-      vec3 hueShift(vec3 color, float angle) {
-        const mat3 toYiq = mat3(0.299,0.587,0.114, 0.596,-0.275,-0.321, 0.212,-0.523,0.311);
-        const mat3 toRgb = mat3(1.0,0.956,0.621, 1.0,-0.272,-0.647, 1.0,-1.106,1.703);
-        vec3 yiq = toYiq * color;
-        float originalHue = atan(yiq.z, yiq.y);
-        float chroma = length(yiq.yz);
-        float shifted = originalHue + angle;
-        return clamp(toRgb * vec3(yiq.x, chroma*cos(shifted), chroma*sin(shifted)), 0.0, 1.0);
-      }
-      void main() {
-        vec2 uv = v_uv;
-        vec2 center = vec2(0.665, 0.515);
-        vec2 ray = uv - center;
-        float radius = length(ray);
-        float motion = u_time * (0.035 + u_energy * 0.22);
-        float ripple = sin(radius * 31.0 - motion * 6.0) * (0.0015 + u_energy * 0.004);
-        uv = center + ray * (1.0 + ripple + sin(motion * 0.8) * 0.002);
-        uv.x += sin(uv.y * 18.0 + motion * 1.3) * 0.0018 * u_energy;
-        float split = 0.0014 + u_energy * 0.0022;
-        vec3 color;
-        color.r = texture(u_texture, uv + normalize(ray + 0.0001) * split).r;
-        color.g = texture(u_texture, uv).g;
-        color.b = texture(u_texture, uv - normalize(ray + 0.0001) * split).b;
-        color = hueShift(color, (u_hue - 0.5) * 1.45);
-        float axis = exp(-abs(uv.y - 0.515) * 26.0) * (0.04 + u_energy * 0.11);
-        float vignette = smoothstep(0.95, 0.22, length((v_uv - 0.5) * vec2(0.84, 1.0)));
-        color = color * (0.72 + vignette * 0.38) + axis + u_flash * vec3(0.08,0.035,0.11);
-        outColor = vec4(color, 1.0);
-      }
-    `;
-
-    const compile = (type, source) => {
-      const shader = gl.createShader(type);
-      gl.shaderSource(shader, source);
-      gl.compileShader(shader);
-      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(shader));
-      return shader;
-    };
-
-    let program;
-    try {
-      program = gl.createProgram();
-      gl.attachShader(program, compile(gl.VERTEX_SHADER, vertexSource));
-      gl.attachShader(program, compile(gl.FRAGMENT_SHADER, fragmentSource));
-      gl.linkProgram(program);
-      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(program));
-    } catch {
-      onRenderer("CSS fallback");
-      return undefined;
-    }
-
-    const buffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, -1,1, 1,-1, 1,1]), gl.STATIC_DRAW);
-    const position = gl.getAttribLocation(program, "a_position");
-    gl.enableVertexAttribArray(position);
-    gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
-
-    const texture = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, texture);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    const image = new Image();
-    image.src = `${import.meta.env.BASE_URL}assets/luminous-axis.png`;
-    let ready = false;
-    image.onload = () => {
-      gl.bindTexture(gl.TEXTURE_2D, texture);
-      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-      ready = true;
-      onRenderer("WebGL2");
-    };
-    image.onerror = () => onRenderer("CSS fallback");
-
-    const uniforms = {
-      time: gl.getUniformLocation(program, "u_time"),
-      energy: gl.getUniformLocation(program, "u_energy"),
-      hue: gl.getUniformLocation(program, "u_hue"),
-      flash: gl.getUniformLocation(program, "u_flash"),
-    };
-    let frame = 0;
-    let stopped = false;
-    const startedAt = performance.now();
-    const render = (now) => {
-      if (stopped) return;
-      const ratio = Math.min(window.devicePixelRatio || 1, 1.5);
-      const width = Math.max(1, Math.floor(canvas.clientWidth * ratio));
-      const height = Math.max(1, Math.floor(canvas.clientHeight * ratio));
-      if (canvas.width !== width || canvas.height !== height) {
-        canvas.width = width;
-        canvas.height = height;
-        gl.viewport(0, 0, width, height);
-      }
-      if (ready) {
-        gl.useProgram(program);
-        gl.uniform1f(uniforms.time, reducedMotion ? 0 : (now - startedAt) / 1000);
-        gl.uniform1f(uniforms.energy, reducedMotion ? 0.08 : speedToEnergy(valuesRef.current.speed));
-        gl.uniform1f(uniforms.hue, valuesRef.current.hue);
-        gl.uniform1f(uniforms.flash, valuesRef.current.brakeFlash);
-        gl.drawArrays(gl.TRIANGLES, 0, 6);
-      }
-      frame = requestAnimationFrame(render);
-    };
-    frame = requestAnimationFrame(render);
-    return () => {
-      stopped = true;
-      cancelAnimationFrame(frame);
-      gl.deleteTexture(texture);
-      gl.deleteBuffer(buffer);
-      gl.deleteProgram(program);
-    };
-  }, [reducedMotion, onRenderer]);
-
-  return <canvas className="field-canvas" ref={canvasRef} aria-hidden="true" />;
+function ModeSelector() {
+  return (
+    <nav className="mode-selector" aria-label="Experience mode">
+      <button type="button" disabled title="Engine design is pending">ENGINE</button>
+      <button className="is-active" type="button" aria-current="page">FLUX</button>
+    </nav>
+  );
 }
 
-function RangeControl({ label, value, onChange, accent }) {
+function EnergyThresholdControl({ value, onChange }) {
+  const progress = ((value - 60) / 120) * 100;
   return (
-    <label className="range-control">
-      <span>{label}</span>
-      <input aria-label={label} type="range" min="0" max="100" value={Math.round(value * 100)}
-        onChange={(event) => onChange(Number(event.target.value) / 100)}
-        style={{ "--value": `${value * 100}%`, "--accent": accent }} />
+    <label className="energy-control">
+      <span className="control-label">FULL ENERGY</span>
+      <strong>{value}<small>km/h</small></strong>
+      <span className="slider-housing">
+        <input
+          aria-label="Speed for full energy"
+          type="range"
+          min="60"
+          max="180"
+          step="10"
+          value={value}
+          onChange={(event) => onChange(Number(event.target.value))}
+          style={{ "--value": `${progress}%` }}
+        />
+      </span>
     </label>
   );
 }
 
+function BodyColorControl({ themeId, onChange }) {
+  const selected = getFluxTheme(themeId);
+  return (
+    <fieldset className="body-color-control">
+      <legend>BODY COLOR</legend>
+      <strong>{selected.label}</strong>
+      <div className="swatch-housing">
+        {FLUX_THEMES.map((theme) => (
+          <button
+            key={theme.id}
+            className={theme.id === themeId ? "is-selected" : ""}
+            type="button"
+            aria-label={`Use ${theme.label.toLowerCase()} color theme`}
+            aria-pressed={theme.id === themeId}
+            onClick={() => onChange(theme.id)}
+          >
+            <span style={{ background: theme.swatch }} />
+          </button>
+        ))}
+      </div>
+    </fieldset>
+  );
+}
+
 export function App() {
+  const initialPreferences = useMemo(readPreferences, []);
   const [phase, setPhase] = useState("idle");
   const [speed, setSpeed] = useState(0);
   const [source, setSource] = useState("GPS");
@@ -269,11 +181,16 @@ export function App() {
   const [brakeFlash, setBrakeFlash] = useState(0);
   const [diagnostics, setDiagnostics] = useState(null);
   const [sendState, setSendState] = useState("idle");
-  const [mix, setMix] = useState({ atmosphere: 0.66, harmonics: 0.48, pulse: 0.52, hue: 0.58 });
   const [pulseFlash, setPulseFlash] = useState(0);
   const [keyboardHint, setKeyboardHint] = useState(null);
   const [audioLevel, setAudioLevel] = useState(0);
-  const reducedMotion = useMemo(() => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false, []);
+  const [fullEnergyKmh, setFullEnergyKmh] = useState(initialPreferences.fullEnergyKmh);
+  const [themeId, setThemeId] = useState(initialPreferences.themeId);
+  const reducedMotion = useMemo(
+    () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false,
+    [],
+  );
+
   const audioRef = useRef(null);
   const watchRef = useRef(null);
   const wakeTimerRef = useRef(null);
@@ -289,6 +206,10 @@ export function App() {
   const diagnosticEventsRef = useRef([]);
   const sessionStartedAtRef = useRef(performance.now());
 
+  const theme = getFluxTheme(themeId);
+  const energy = speedToEnergy(speed, fullEnergyKmh);
+  const bpm = speedToBpm(speed);
+
   const logDiagnosticEvent = useCallback((type, detail = {}) => {
     diagnosticEventsRef.current = [...diagnosticEventsRef.current, {
       at: new Date().toISOString(),
@@ -301,12 +222,12 @@ export function App() {
   const wakeControls = useCallback(() => {
     setControlsAwake(true);
     window.clearTimeout(wakeTimerRef.current);
-    wakeTimerRef.current = window.setTimeout(() => setControlsAwake(false), 3600);
+    wakeTimerRef.current = window.setTimeout(() => setControlsAwake(false), 4200);
   }, []);
 
   const triggerPulse = useCallback(() => {
     setPulseFlash(1);
-    window.setTimeout(() => setPulseFlash(0), 150);
+    window.setTimeout(() => setPulseFlash(0), 110);
   }, []);
 
   const triggerBrake = useCallback(() => {
@@ -316,7 +237,7 @@ export function App() {
     logDiagnosticEvent("brake.triggered", { source: sourceRef.current });
     audioRef.current?.brake();
     setBrakeFlash(1);
-    window.setTimeout(() => setBrakeFlash(0), 520);
+    window.setTimeout(() => setBrakeFlash(0), 460);
   }, [logDiagnosticEvent]);
 
   const startGps = useCallback(() => {
@@ -346,8 +267,7 @@ export function App() {
           setGpsState("GPS active · speed is null");
           return;
         }
-        const previous = smoothedSpeedRef.current;
-        const next = smoothSpeed(previous, kmh);
+        const next = smoothSpeed(smoothedSpeedRef.current, kmh);
         smoothedSpeedRef.current = next;
         if (sourceRef.current === "GPS") setSpeed(next);
         setGpsState("live");
@@ -376,10 +296,10 @@ export function App() {
       let direction = 1;
       demoTimerRef.current = window.setInterval(() => {
         setSpeed((previous) => {
-          let next = previous + direction * 2.4;
-          if (next >= 128) direction = -1;
-          if (next <= 18) direction = 1;
-          return clamp(next, 0, 130);
+          let next = previous + direction * 2.6;
+          if (next >= 132) direction = -1;
+          if (next <= 8) direction = 1;
+          return clamp(next, 0, 135);
         });
       }, 180);
     } else {
@@ -400,17 +320,18 @@ export function App() {
     const graphics = readGraphicsCapabilities();
     let storage = false;
     try {
-      const key = "__sv_probe__";
-      localStorage.setItem(key, "1");
-      localStorage.removeItem(key);
+      localStorage.setItem("__sv_probe__", "1");
+      localStorage.removeItem("__sv_probe__");
       storage = true;
-    } catch { storage = false; }
+    } catch {
+      storage = false;
+    }
 
     audioRef.current = createAudioEngine(triggerPulse);
     if (audioRef.current) {
       await audioRef.current.resume();
+      audioRef.current.setPerformance({ fullEnergyKmh });
       audioRef.current.setMuted(false);
-      audioRef.current.setMix(mix);
       audioRef.current.startCue();
       window.clearInterval(audioMeterTimerRef.current);
       audioMeterTimerRef.current = window.setInterval(() => {
@@ -464,12 +385,19 @@ export function App() {
     window.setTimeout(() => {
       setPhase("running");
       wakeControls();
-    }, reducedMotion ? 260 : 900);
-  }, [logDiagnosticEvent, mix, reducedMotion, startGps, triggerPulse, wakeControls]);
+    }, reducedMotion ? 180 : 620);
+  }, [fullEnergyKmh, logDiagnosticEvent, reducedMotion, startGps, triggerPulse, wakeControls]);
 
   useEffect(() => { audioRef.current?.setSpeed(speed); }, [speed]);
-  useEffect(() => { audioRef.current?.setMix(mix); }, [mix]);
+  useEffect(() => { audioRef.current?.setPerformance({ fullEnergyKmh }); }, [fullEnergyKmh]);
   useEffect(() => { audioRef.current?.setMuted(muted); }, [muted]);
+  useEffect(() => {
+    try {
+      localStorage.setItem(PREFERENCES_KEY, JSON.stringify({ fullEnergyKmh, themeId }));
+    } catch {
+      // Preference persistence is optional.
+    }
+  }, [fullEnergyKmh, themeId]);
 
   const captureViewport = useCallback((reason) => {
     const snapshot = readDisplaySnapshot(reason);
@@ -555,28 +483,26 @@ export function App() {
     audioRef.current?.destroy();
   }, [stopDemo]);
 
-  const energy = speedToEnergy(speed);
-  const bpm = speedToBpm(speed);
   const diagnosticReport = useMemo(() => diagnostics ? {
     schema: "sedicivalvole.tesla-diagnostic.v2",
     generatedAt: new Date().toISOString(),
     app: {
       version: APP_VERSION,
       mode: "flux",
+      environment: "aperture",
       pageUrl: window.location.href,
       source,
       displayedSpeedKmh: Math.round(speed * 10) / 10,
       bpm: Math.round(bpm * 10) / 10,
       energy: Math.round(energy * 1000) / 1000,
+      fullEnergyKmh,
+      bodyColorTheme: themeId,
       muted,
-      mix,
+      arrangement: audioRef.current?.getState() ?? null,
     },
     display: diagnostics.display,
     viewportHistory: diagnostics.viewportHistory,
-    graphics: {
-      ...diagnostics.graphics,
-      activeRenderer: renderer,
-    },
+    graphics: { ...diagnostics.graphics, activeRenderer: renderer },
     audio: {
       ...diagnostics.audio,
       state: audioRef.current?.context.state ?? diagnostics.audio.state,
@@ -596,10 +522,8 @@ export function App() {
       coordinatesStored: false,
       coordinatesTransmitted: false,
     },
-  } : null, [accuracy, audioLevel, bpm, diagnostics, energy, gpsState, mix, muted, renderer, source, speed]);
-  const diagnosticText = diagnosticReport
-    ? JSON.stringify(diagnosticReport, null, 2)
-    : "Test not run yet";
+  } : null, [accuracy, audioLevel, bpm, diagnostics, energy, fullEnergyKmh, gpsState, muted, renderer, source, speed, themeId]);
+  const diagnosticText = diagnosticReport ? JSON.stringify(diagnosticReport, null, 2) : "Test not run yet";
 
   const sendDiagnostic = useCallback(async () => {
     if (!diagnosticReport || sendState === "sending") return;
@@ -624,74 +548,78 @@ export function App() {
   }, [diagnosticReport, logDiagnosticEvent, sendState]);
 
   return (
-    <main className={`app phase-${phase} ${controlsAwake || drawerOpen ? "controls-awake" : "controls-resting"}`}
-      onPointerDown={wakeControls} onPointerMove={wakeControls}>
-      <div className="fallback-field" style={{ backgroundImage: `url(${import.meta.env.BASE_URL}assets/luminous-axis.png)` }} aria-hidden="true" />
-      <FieldCanvas speed={speed} hue={mix.hue} reducedMotion={reducedMotion} brakeFlash={brakeFlash} onRenderer={setRenderer} />
-      <div className="field-shade" aria-hidden="true" />
-      <div className="pulse-flare" style={{ opacity: pulseFlash * (0.08 + energy * 0.15) }} aria-hidden="true" />
-      {keyboardHint && <div className="keyboard-hint" role="status">{keyboardHint}</div>}
+    <main
+      className={`app phase-${phase} ${controlsAwake || drawerOpen ? "controls-awake" : "controls-resting"}`}
+      data-theme={themeId}
+      onPointerDown={wakeControls}
+      onPointerMove={wakeControls}
+    >
+      <FluxField
+        energy={energy}
+        theme={theme}
+        reducedMotion={reducedMotion}
+        pulse={pulseFlash}
+        brake={brakeFlash}
+        onRenderer={setRenderer}
+      />
+      {keyboardHint ? <div className="keyboard-hint" role="status">{keyboardHint}</div> : null}
 
       <section className="splash" aria-hidden={phase === "running"}>
-        <div className="splash-mark"><span>sedicivalvole</span><small>flux · {APP_VERSION}</small></div>
+        <div className="splash-mark"><span>sedicivalvole</span><small>FLUX · APERTURE · {APP_VERSION}</small></div>
         <div className="splash-action">
-          <p>One gesture. Then listen to the road.</p>
+          <p>PLAY THE ROAD.</p>
           <button className="launch-button" type="button" onClick={runHarness} disabled={phase === "testing"}>
-            <span className="launch-icon">{phase === "testing" ? "···" : "→"}</span>
-            <span>{phase === "testing" ? "TESTING" : "TEST & START"}</span>
+            {phase === "testing" ? "TESTING" : "TEST & START"}
           </button>
           <small>Audio, display, motion, and GPS are checked locally.</small>
         </div>
       </section>
 
       <section className="experience" aria-hidden={phase !== "running"}>
-        <header className="topbar">
+        <header className="topbar control-layer">
           <button className="wordmark" type="button" onClick={() => setDrawerOpen(true)} aria-label="Open diagnostic report">
-            <span>sedicivalvole</span><small>FLUX</small>
+            sedicivalvole
           </button>
-          <div className="topbar-actions">
-            <button className="diag-button" type="button" onClick={() => setDrawerOpen(true)} aria-label="Open device diagnostics">
-              <span>i</span><small>DIAG</small>
-            </button>
-            <button className="source-pill" type="button" onClick={toggleSource} aria-label={`Speed source ${source}. Tap to switch`}>
-              <span className={`status-dot ${gpsState === "live" || source === "DEMO" ? "is-live" : ""}`} />
-              <span><strong>{source}</strong><small>{source === "DEMO" ? "AUTO · TAP FOR GPS" : gpsState}</small></span>
-              <b>{Math.round(speed)}<em>km/h</em></b>
-            </button>
-          </div>
+          <ModeSelector />
+          <button className="source-readout" type="button" onClick={toggleSource} aria-label={`Speed source ${source}. Tap to switch`}>
+            <strong>{Math.round(speed)}</strong><span>km/h</span><small>{source}</small>
+          </button>
+          <span className={`gps-state ${gpsState === "live" || source === "DEMO" ? "is-live" : ""}`}>GPS</span>
+          <button className="diag-button" type="button" onClick={() => setDrawerOpen(true)}>DIAG</button>
         </header>
 
-        <div className="axis-readout" aria-hidden="true">
-          <span style={{ transform: `scaleX(${0.45 + energy * 0.55})` }} />
-          <small>{Math.round(bpm)} BPM · ENERGY {Math.round(energy * 100)}</small>
+        <div className="energy-readout" aria-hidden="true">
+          {Math.round(bpm)} BPM / ENERGY {Math.round(energy * 100)}
         </div>
 
-        <footer className="control-dock control-layer" aria-label="Audio and visual controls">
-          <button className={`stop-button ${muted ? "is-muted" : ""}`} type="button"
+        <footer className="control-slab control-layer" aria-label="Flux performance controls">
+          <button
+            className={`stop-button ${muted ? "is-muted" : ""}`}
+            type="button"
             onClick={async () => {
               if (muted) await audioRef.current?.resume();
               setMuted((value) => !value);
-            }} aria-pressed={muted}>
-            <span>{muted ? "▶" : "■"}</span><small>{muted ? "RESUME" : "STOP"}</small>
+            }}
+            aria-pressed={muted}
+          >
+            <span>STOP / MUTE</span><strong>{muted ? "MUTED" : "RUNNING"}</strong>
           </button>
-          <div className="mix-controls">
-            <RangeControl label="ATMOS" value={mix.atmosphere} accent="#8d70ff" onChange={(value) => setMix((current) => ({ ...current, atmosphere: value }))} />
-            <RangeControl label="HARMONICS" value={mix.harmonics} accent="#dc66ff" onChange={(value) => setMix((current) => ({ ...current, harmonics: value }))} />
-            <RangeControl label="PULSE" value={mix.pulse} accent="#ff8fc9" onChange={(value) => setMix((current) => ({ ...current, pulse: value }))} />
-            <RangeControl label="HUE" value={mix.hue} accent="#67b8ff" onChange={(value) => setMix((current) => ({ ...current, hue: value }))} />
+          <div className="environment-control">
+            <span className="control-label">ENVIRONMENT</span>
+            <strong>APERTURE</strong><small>01</small>
           </div>
-          <button className="brake-button" type="button" onClick={triggerBrake}><span>↙</span><small>BRAKE</small></button>
-          <button className="info-button" type="button" onClick={() => setDrawerOpen(true)} aria-label="Show test report">i</button>
+          <EnergyThresholdControl value={fullEnergyKmh} onChange={setFullEnergyKmh} />
+          <BodyColorControl themeId={themeId} onChange={setThemeId} />
         </footer>
       </section>
 
-      {drawerOpen && (
+      {drawerOpen ? (
         <section className="diagnostic-drawer" role="dialog" aria-modal="true" aria-labelledby="diagnostic-title">
           <button className="drawer-backdrop" type="button" onClick={() => setDrawerOpen(false)} aria-label="Close" />
           <div className="drawer-panel">
             <div className="drawer-heading">
               <div><small>TESLA CAPABILITY HARNESS</small><h2 id="diagnostic-title">Device report</h2></div>
-              <button type="button" onClick={() => setDrawerOpen(false)} aria-label="Close report">×</button>
+              <button type="button" onClick={() => setDrawerOpen(false)} aria-label="Close report">CLOSE</button>
             </div>
             <div className="diagnostic-grid">
               <article><small>VIEWPORT</small><strong>{diagnostics ? `${diagnostics.display.innerWidth} × ${diagnostics.display.innerHeight}` : "—"}</strong><span>{diagnostics ? `${diagnostics.display.mode} · DPR ${diagnostics.display.dpr}` : "—"}</span></article>
@@ -703,18 +631,18 @@ export function App() {
             <pre>{diagnosticText}</pre>
             <div className="drawer-actions">
               <button className="send-diagnostic-button" type="button" onClick={sendDiagnostic} disabled={sendState === "sending"}>
-                {sendState === "sending" ? "SENDING…" : sendState === "sent" ? "SENT ✓" : "SEND DIAGNOSTIC"}
+                {sendState === "sending" ? "SENDING…" : sendState === "sent" ? "SENT" : "SEND DIAGNOSTIC"}
               </button>
               <button type="button" onClick={() => navigator.clipboard?.writeText(diagnosticText)}>COPY REPORT</button>
               <button type="button" onClick={toggleSource}>{source === "GPS" ? "TRY DEMO MODE" : "RETURN TO GPS"}</button>
             </div>
             <p className={`send-state send-state-${sendState}`} role="status" aria-live="polite">
-              {sendState === "sent" && "Accepted by the server mail transport. Inbox delivery still needs confirmation."}
-              {sendState === "error" && "The report could not be sent. No diagnostic data was stored by the app."}
+              {sendState === "sent" ? "Accepted by the server mail transport. Inbox delivery still needs confirmation." : null}
+              {sendState === "error" ? "The report could not be sent. No diagnostic data was stored by the app." : null}
             </p>
           </div>
         </section>
-      )}
+      ) : null}
     </main>
   );
 }

@@ -1,7 +1,9 @@
 export const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 
-export function speedToEnergy(speedKmh) {
-  return 1 - Math.exp(-Math.max(0, speedKmh) / 58);
+export function speedToEnergy(speedKmh, fullEnergyKmh = 120) {
+  const threshold = clamp(fullEnergyKmh, 60, 180);
+  const normalized = clamp(Math.max(0, speedKmh) / threshold, 0, 1);
+  return 1 - (1 - normalized) ** 2.2;
 }
 
 export function speedToBpm(speedKmh) {
@@ -9,12 +11,23 @@ export function speedToBpm(speedKmh) {
   return 58 + 58 * (normalized / (1 + normalized));
 }
 
-export function speedToWave(speedKmh) {
-  const energy = speedToEnergy(speedKmh);
+export function speedToWave(speedKmh, fullEnergyKmh = 120) {
+  const energy = speedToEnergy(speedKmh, fullEnergyKmh);
   return {
-    frequencyHz: 42 + energy * 86,
-    gain: 0.024 + energy * 0.108,
+    frequencyHz: 38 + energy * 76,
+    gain: 0.012 + energy * 0.068,
   };
+}
+
+const SECTION_ENTER = [0.16, 0.4, 0.68];
+const SECTION_EXIT = [0.1, 0.31, 0.56];
+
+export function energyToSection(energy, currentSection = 0) {
+  const safeEnergy = clamp(energy, 0, 1);
+  const safeSection = Math.round(clamp(currentSection, 0, 3));
+  if (safeSection < 3 && safeEnergy >= SECTION_ENTER[safeSection]) return safeSection + 1;
+  if (safeSection > 0 && safeEnergy < SECTION_EXIT[safeSection - 1]) return safeSection - 1;
+  return safeSection;
 }
 
 export function normalizeGpsSpeed(speedMps) {
