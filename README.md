@@ -21,7 +21,7 @@ The canonical development build is available at [sedicivalvole.app](https://sedi
 - ✅ production build and deterministic signal, diagnostic-model, and packaging tests passing;
 - ✅ photographed Tesla split-view evidence at `773 × 601`, screen `1254 × 784`, DPR `1.53`;
 - ✅ compact-view v3 diagnostics with aggregated frame pacing, network history, runtime/resource evidence, direct same-origin email handoff, and no coordinates;
-- ✅ canonical live deployment verified against local HTML and asset hashes;
+- ⏳ the cache-busted build, direct PHP entry, and assets are live and byte-identical; SiteGround still serves stale HTML for bare `/`, so canonical deployment completion is pending a provider cache flush;
 - ⏳ speed-to-audio behavior across real motion, audio quality, frame pacing, and physical touch reach still require validation in the target Tesla;
 - ⛔ no committed release, PWA/offline cache, final audio pack, or final brand/license package yet.
 

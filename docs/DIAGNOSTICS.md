@@ -68,7 +68,7 @@ A `202 accepted_by_mail_transport` response proves only that PHP `mail()` handed
 ## Live verification — 2026-08-26
 
 - Compact layout tested at `773 × 601`: **PASS**.
-- Always-visible `DIAG` entry and scrollable report: **PASS**.
-- Wrong method, foreign origin, and coordinate-field rejection: **PASS** (`405`, `403`, `422`).
-- One explicitly authorized report submission: **PASS** at the PHP mail-transport handoff boundary.
+- Always-visible `DIAG`, scrollable v3 JSON, frame-pacing card, and network card: **PASS**.
+- Wrong method, foreign origin, abbreviated coordinate-field, and legacy-v2 rejection: **PASS** (`405`, `403`, `422`, `422`).
+- One explicitly authorized v3 report submission: **PASS** at the PHP mail-transport handoff boundary.
 - Final delivery to the Gmail inbox: **pending user confirmation**.

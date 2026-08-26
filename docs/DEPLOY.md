@@ -48,6 +48,22 @@
 - one authorized live diagnostic: **202 / accepted by the server mail transport**;
 - Gmail inbox delivery remains user-confirmed evidence and is not implied by PHP mail handoff.
 
+## Extended diagnostics v3 publication evidence — 2026-08-26
+
+- deployed commits: `d261b57` and `8c5da9d`;
+- build/test gate: **PASS**, 11 unit tests, 4 packaging tests, production build, PHP syntax, and diff check;
+- read-only FTP identity gate: **PASS**, including the previous v2 endpoint and private recipient structure;
+- non-destructive upload: **PASS**, 5 files, 255,482 bytes; no legacy cleanup;
+- cache-busted HTML and direct `/index.php`: 655 bytes, SHA-256 `2ca6f6e9b4f3019304d1b22c2c423105de8ff053f14a9681ab12908d9cb91316`, byte-identical to local;
+- JavaScript: `index-Qo4012ws.js`, 237,965 bytes, SHA-256 `65c2dee70d131ee22eafb02a8c773e2eaf45b08156ef375094345c40a5af0739`, byte-identical local/live;
+- CSS: `index-DlWvHqKL.css`, 11,743 bytes, SHA-256 `492e30abcb5e19e06209b81f3b9ae3f45d47db731a2c89b2bc0a7c7961532ef3`, byte-identical local/live;
+- live v3 endpoint checks: wrong method `405`, foreign origin `403`, abbreviated coordinate key `422`, and legacy v2 schema `422`;
+- live selected-browser QA at `773 × 601`: **PASS** for WebGL2, Web Audio, v3 JSON, frame/RTT cards, scrollable report, and Demo response;
+- one user-authorized live v3 report: **202 / accepted by the server mail transport**; Gmail inbox delivery remains pending user confirmation;
+- built-in version reported by the live v3 report: `0.0.0`, matching `VERSION`;
+- canonical bare `/`: **FAIL / provider cache still stale**, 587 bytes, SHA-256 `0407fb0914ab6d11655184a54e6ace05523b0ec4d081d8543fc3727de9b57150`, still referencing `index-CKjMDFcj.js` and `index-BbWXMXk1.css`;
+- this upload is therefore not recorded as a successful canonical deployment until the provider cache is flushed and bare `/` converges.
+
 `.env` is local, user-filled, and ignored. Scripts must parse it as data, keep credentials in memory, and print only sanitized stage results. Never source or evaluate `.env`.
 
 ## Security limit
