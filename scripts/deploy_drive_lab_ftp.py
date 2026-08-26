@@ -105,6 +105,14 @@ def dynamic_root_payload() -> bytes:
     return PHP_ENTRY_PREFIX + (BUILD / STATIC_ROOT_ENTRY).read_bytes()
 
 
+def is_recognized_app_entry(payload: bytes) -> bool:
+    return (
+        b"sedicivalvole" in payload
+        and b'<div id="root"></div>' in payload
+        and b"assets/index-" in payload
+    )
+
+
 def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
     """Abort unless every overwrite/delete target can be identified read-only."""
     root_names = safe_names(ftp)
@@ -129,14 +137,14 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
         current_entries.append(remote_bytes(ftp, STATIC_ROOT_ENTRY))
     if DYNAMIC_ROOT_ENTRY in root_names:
         current_php = remote_bytes(ftp, DYNAMIC_ROOT_ENTRY)
-        if not current_php.startswith(PHP_ENTRY_PREFIX) or b"sedicivalvole" not in current_php or b"Drive Lab" not in current_php:
+        if not current_php.startswith(PHP_ENTRY_PREFIX) or not is_recognized_app_entry(current_php):
             raise ValueError("unrecognized dynamic root application")
         current_entries.append(current_php)
 
     obsolete_root_assets: set[str] = set()
     if current_entries:
         for current_entry in current_entries:
-            if b"sedicivalvole" not in current_entry or b"Drive Lab" not in current_entry:
+            if not is_recognized_app_entry(current_entry):
                 raise ValueError("unrecognized existing root application")
         current_asset_names = {
             path.name for path in (BUILD / "assets").iterdir() if path.is_file()
@@ -305,9 +313,17 @@ def main() -> int:
         stage = "read_only_identity"
         obsolete_root_assets = verify_remote_root(ftp)
         print("read_only_identity=PASS root_and_legacy_targets_verified")
+        if "--verify-only" in sys.argv[1:]:
+            remote_count = len(safe_names(ftp))
+            ftp.quit()
+            ftp = None
+            print(f"remote_listing=PASS entries={remote_count}")
+            print("remote_writes=NONE")
+            return 0
 
         stage = "upload"
         stage_php_entry = "--stage-php-entry" in sys.argv[1:]
+        preserve_existing = "--preserve-existing" in sys.argv[1:]
         files = sorted(
             (
                 path
@@ -334,22 +350,41 @@ def main() -> int:
             raise ValueError("dynamic root upload mismatch")
 
         switched_entry = False
-        if not stage_php_entry and STATIC_ROOT_ENTRY in safe_names(ftp):
+        if not stage_php_entry and not preserve_existing and STATIC_ROOT_ENTRY in safe_names(ftp):
             ftp.delete(STATIC_ROOT_ENTRY)
             switched_entry = True
 
         stage = "legacy_cleanup"
-        deleted_files, removed_directories = remove_legacy_publish(ftp)
+        if preserve_existing:
+            deleted_files, removed_directories = 0, 0
+        else:
+            deleted_files, removed_directories = remove_legacy_publish(ftp)
         remote_count = len(safe_names(ftp))
         ftp.quit()
         ftp = None
         print(f"upload=PASS files={len(files) + 1} bytes={uploaded_bytes}")
         print(f"dynamic_root=PASS staged={str(stage_php_entry).lower()} static_entry_removed={str(switched_entry).lower()}")
-        print(f"legacy_cleanup=PASS files={deleted_files} directories={removed_directories}")
+        if preserve_existing:
+            print("legacy_cleanup=SKIPPED preserve_existing=true")
+        else:
+            print(f"legacy_cleanup=PASS files={deleted_files} directories={removed_directories}")
         print(f"previous_assets_retained=PASS files={len(obsolete_root_assets)} cache_overlap=true")
         print(f"remote_listing=PASS entries={remote_count}")
-        print("remote_writes=ROOT_UPLOAD_AND_EXACT_LEGACY_CLEANUP")
+        print(
+            "remote_writes=ROOT_UPLOAD_ONLY"
+            if preserve_existing
+            else "remote_writes=ROOT_UPLOAD_AND_EXACT_LEGACY_CLEANUP"
+        )
         return 0
+    except (ValueError, FileNotFoundError) as error:
+        if ftp is not None:
+            try:
+                ftp.close()
+            except Exception:
+                pass
+        reason = re.sub(r"[^a-z0-9_-]+", "_", str(error).lower()).strip("_") or "validation_failed"
+        print(f"{stage}=FAIL reason={reason}", file=sys.stderr)
+        return 1
     except Exception:
         if ftp is not None:
             try:

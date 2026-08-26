@@ -53,6 +53,8 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - Prevented keyboard simulation from intercepting controls that own arrow or Space input.
 - Added smoothing, deadband, saturating energy/tempo, and a discrete brake cooldown to avoid jitter and frantic high-speed tempo.
 - Corrected GLSL portability issues found by rendered browser QA and made the fallback redraw continuously with energy and theme changes.
+- Added a non-destructive `--preserve-existing` FTP publication mode for deployments that are authorized without legacy-file deletion.
+- Updated the read-only deployment identity gate to recognize the current Flux root markers instead of relying on obsolete `Drive Lab` copy.
 
 ### Security
 

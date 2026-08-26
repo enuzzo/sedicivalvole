@@ -22,6 +22,19 @@
 - selected-browser smoke test: splash, `TEST & START`, GPS permission state, audio/visual controls, and integrated report all rendered in English;
 - observed HTTP edge header: `server: nginx`; this identifies the responding edge but does not prove the provider's full origin topology.
 
+## Modular Aperture publication evidence — 2026-08-26
+
+- target commit: `487f9ee` plus the deployment-safety follow-up documented below;
+- read-only FTP identity gate: **PASS**, 3 recognized canonical-root entries;
+- non-destructive upload: **PASS**, 5 files, 247,235 bytes;
+- cleanup: **SKIPPED** with `--preserve-existing`; previous assets retained for cache overlap;
+- cache-busted HTML and new JavaScript/CSS: **HTTP 200** and byte-identical local/live SHA-256 hashes;
+- new JavaScript: `index-B5aZa7cA.js`, 229,774 bytes, SHA-256 `04505443b6b2cb9d17034b30ec09ad082c74e8dd6a91b5e5e5cf4680e4c30e15`;
+- new CSS: `index-DlWvHqKL.css`, 11,743 bytes, SHA-256 `492e30abcb5e19e06209b81f3b9ae3f45d47db731a2c89b2bc0a7c7961532ef3`;
+- cache-busted HTML: 655 bytes, SHA-256 `a3b80cf30a6d4ccae696953ac5ee2c6e014fb984af4f7d1054b4c22d5268eec0`;
+- canonical bare `/`: **FAIL / stale** after two checks, still 587 bytes and still referencing `index-CKjMDFcj.js` plus `index-BbWXMXk1.css`;
+- cache-busted `/` and direct `/index.php`: current build; bare-root convergence or an authorized provider cache flush is still required before this publication can be called a successful canonical deployment.
+
 ## Split-view diagnostics deployment evidence — 2026-08-26
 
 - commit deployed: `fb2e8d1`;
@@ -54,6 +67,10 @@ Plain FTP sends credentials and content without encryption. Prefer certificate-v
    - current version marker;
    - cache headers after a controlled reload;
    - visible behavior in the selected browser.
+
+Use `--preserve-existing` when publication is authorized but deletion of legacy remote files is not. This mode uploads content-addressed assets and the dynamic root entry, preserves any static entry and legacy tree, and reports cleanup as skipped. Canonical verification is still mandatory because a preserved `index.html` or edge cache may continue to win over the new `index.php`.
+
+Use `--verify-only` to run the configuration, connection, exact-directory, and remote-identity gates without uploading, overwriting, or deleting any remote file.
 
 An upload alone is not a successful deployment. The user reports that hosting caches are disabled or cleared, but that statement is context rather than evidence. Do not infer Apache, Nginx, or other server topology from it.
 
