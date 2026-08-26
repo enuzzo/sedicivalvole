@@ -20,7 +20,7 @@ The canonical development build is available at [sedicivalvole.app](https://sedi
 - ✅ a four-section authored audio spike with a tempo knee, quantized transitions, hysteresis, dwell, crossfades, and speed-driven arrangement depth;
 - ✅ production build and deterministic signal, diagnostic-model, and packaging tests passing;
 - ✅ photographed Tesla split-view evidence at `773 × 601`, screen `1254 × 784`, DPR `1.53`;
-- ✅ compact-view diagnostics with direct same-origin email handoff and no coordinates;
+- ✅ compact-view v3 diagnostics with aggregated frame pacing, network history, runtime/resource evidence, direct same-origin email handoff, and no coordinates;
 - ✅ canonical live deployment verified against local HTML and asset hashes;
 - ⏳ speed-to-audio behavior across real motion, audio quality, frame pacing, and physical touch reach still require validation in the target Tesla;
 - ⛔ no committed release, PWA/offline cache, final audio pack, or final brand/license package yet.
@@ -69,7 +69,7 @@ See [`docs/TECHNICAL-DIRECTION.md`](docs/TECHNICAL-DIRECTION.md).
 
 - Use and configure the experience only while parked; do not adjust the touchscreen while driving.
 - Raw coordinates are discarded immediately and never transmitted.
-- No analytics or automatic remote telemetry is enabled. A diagnostic report is transmitted only after the user explicitly taps **SEND DIAGNOSTIC**.
+- No analytics or automatic remote telemetry is enabled. Extensive local diagnostics are aggregated with bounded overhead and transmitted only after the user explicitly taps **SEND DIAGNOSTIC**.
 - FTP deployment is functional but unencrypted; credentials and content travel in clear text.
 - An upload is not considered successful until the canonical URL, HTML, assets, and cache behavior are verified.
 

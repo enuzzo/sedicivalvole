@@ -25,6 +25,7 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - The approved Modular Aperture Flux direction: a procedural rectangular field that moves from a calm plane to a centered tunnel and releases coherently during deceleration.
 - Curated Pearl, Graphite, Red, Blue, and Silver `BODY COLOR` themes that tune both the field palette and interface accent.
 - A Canvas2D Modular Aperture fallback for devices without WebGL2.
+- A v3 extended diagnostic report with aggregate canvas frame pacing, long-task timing, connection history, navigation/resource metrics, heap/storage/battery hints, and a larger bounded event history.
 
 ### Changed
 
@@ -45,6 +46,7 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - Replaced primary `Atmos`, `Harmonics`, and `Pulse` controls with the `APERTURE 01` environment, a full-energy speed threshold, and body-color selection.
 - Rebuilt the Flux audio spike as a four-section authored arrangement with a tempo knee, bar-quantized entries, hysteresis, two-bar dwell, crossfades, controlled deceleration, kick, low end, percussion, harmony, motif, delay, and conservative dynamics.
 - Removed the permanent on-screen Brake control; keyboard Space remains a deterministic bounded test event.
+- Configured the user-confirmed diagnostic recipient in ignored local/server configuration and kept transmission behind the explicit `SEND DIAGNOSTIC` gesture.
 
 ### Fixed
 
@@ -61,6 +63,7 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - `.env`, local variants, and `_references/` are ignored by Git.
 - FTP credentials remain in memory and are never printed or placed in process arguments.
 - GPS coordinates are discarded and never included in the report.
+- Common full and abbreviated coordinate keys are rejected recursively by the v3 endpoint; technical metrics remain bounded and no automatic remote telemetry is enabled.
 - Plain FTP on port 21 remains a known risk because credentials and content are unencrypted.
 - The diagnostic recipient is stored in an ignored local PHP configuration rather than public source code.
 

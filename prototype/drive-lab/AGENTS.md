@@ -20,6 +20,7 @@ When implementing from a selected generated mock, treat that image as the source
 - The initial flow is one deliberate `TEST & START` gesture, then a continuous fade into Drive Lab.
 - Controls are touch-first, large, flat, and fully legible; the GL field provides the visual contrast.
 - GPS and demo feed the same normalized speed signal; never display, persist or transmit coordinates.
+- Extended diagnostics may aggregate frame pacing, connection changes, GPS accuracy/cadence, audio/runtime state, memory, storage, navigation/resource timing, and bounded events. Keep the fixed recipient in ignored local configuration, transmit only after the explicit SEND DIAGNOSTIC gesture, and never collect coordinates or enable automatic remote telemetry.
 - Speed raises energy through a smoothed saturating curve. Past the tempo knee, deepen arrangement instead of creating a frantic march.
 - The visual must move as a rich field with WebGL2, plus reduced-motion and lightweight fallbacks.
 - All interface copy, source code, comments, documentation, and logs must be in English. Italian is used only in direct conversation with the user.
