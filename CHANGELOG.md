@@ -45,9 +45,9 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - Replaced the community viewport assumption with photographed Tesla evidence: `773 × 601` split-view viewport, `1254 × 784` logical screen, and DPR `1.53`.
 - Replaced the provisional licensing recommendation with an operative mixed code-and-asset policy while leaving exact legal ownership and final brand rules open for legal review.
 - Reopened the Flux visual gate after rejecting the lens-flare-heavy direction-1 implementation; the next gate requires exactly three revised minimal, Swiss-influenced directions.
-- Marked the current Flux audio spike as musically rejected and redirected the next iteration toward curated environments, authored adaptive arrangement, and an energy-threshold control.
+- Marked the current Flux audio spike as musically rejected and redirected the next iteration toward curated environments, authored adaptive arrangement, and one fixed road-energy domain.
 - Replaced the rejected luminous-axis/starburst rendering with an independent WebGL2 Modular Aperture shader and a flat Braun-influenced, Swiss, slightly brutalist control system.
-- Replaced primary `Atmos`, `Harmonics`, and `Pulse` controls with the `APERTURE 01` environment, a full-energy speed threshold, and body-color selection.
+- Replaced primary `Atmos`, `Harmonics`, and `Pulse` controls with purposeful visual, score-roadmap, and body-color surfaces.
 - Rebuilt the Flux audio spike as a four-section authored arrangement with a tempo knee, bar-quantized entries, hysteresis, two-bar dwell, crossfades, controlled deceleration, kick, low end, percussion, harmony, motif, delay, and conservative dynamics.
 - Removed the permanent on-screen Brake control; keyboard Space remains a deterministic bounded test event.
 - Configured the user-confirmed diagnostic recipient in ignored local/server configuration and kept transmission behind the explicit `SEND DIAGNOSTIC` gesture.
@@ -55,7 +55,7 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - Reversed Modular Aperture travel so high speed flies outward from the vanishing point, made flow strongly non-linear near full energy, and let Demo reach and hold a true standstill before restarting.
 - Made acceleration and deceleration explicit audio envelopes: acceleration now raises rhythm, low end, motion, and brightness, while deceleration reduces rhythmic pressure and opens a controlled spatial release without repeated transition effects.
 - Framed the persistent speed readout in a compact opaque high-contrast rectangle with fixed padding and no glass treatment.
-- Separated visual velocity from saturated energy so speed above the full-energy threshold continues to accelerate and radially stretch the tunnel into a high-speed stripe field; Demo now reaches 160 km/h for deterministic validation.
+- Separated visual velocity from saturated energy so tunnel recognition can begin at urban speed while perspective, travel, and radial stretch continue toward the fixed `130 km/h` ceiling.
 - Rebuilt Modular Aperture as one continuous shape field: large complete four-color squares at rest shrink, bend, and recede into the centered tunnel as speed rises, then reverse the same geometric transformation during deceleration without a crossfade.
 - Integrated the speed readout into the header grid with matching boundaries and stroke, then retained it as a fixed detached module when the surrounding chrome retires.
 - Introduced a restrained shared 6 px corner radius across framed controls and diagnostic surfaces while preserving the structural Braun/Swiss grid.
@@ -63,6 +63,9 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - Rejected the current approximately 115 km/h soft-club Flux result and queued a data-driven AudioWorklet synth/sequencer with a high-energy Jungle identity and deceleration memory.
 - Added a direct `ENVIRONMENT` switch between Aperture and Vertigo while preserving the shared speed, energy, palette, Brake, reduced-motion, and diagnostic contracts.
 - Translated the Interstate 7 deep-distortion mechanics into configurable Vertigo geometry: a power-curve floor-to-wall fold, paired lateral waves, longitudinal travel, speed-responsive perspective, and the same surface unfolding during deceleration without an opacity transition.
+- Removed the user-adjustable full-energy slider, fixed the shared road-energy ceiling at `130 km/h`, and remapped Aperture so tunnel depth is already visible near `40 km/h` before progressing continuously to the full Plaid field.
+- Replaced the threshold surface with distinct `VISUAL` selection and a truthful `SCORE / PROTOTYPE / TEXTSTEP · NEXT` roadmap slot; no unimplemented genre is presented as active.
+- Increased Vertigo line weight, layered glow, and stationary breathing while preserving its original-inspired floor-to-wall fold, lateral wave, and independent renderer provenance.
 
 ### Fixed
 

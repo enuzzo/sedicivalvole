@@ -1,46 +1,56 @@
-# Drive Lab Design QA — Vertigo 02
+# Drive Lab Design QA — fixed road ceiling and refined Vertigo
 
 ## Visual truth and implementation
 
-- selected Product Design source: ignored `_references/design-directions/2026-08-26/flux-environment-02-vertical-fold.png` (`1422 × 1106`), normalized to `773 × 601` for comparison;
-- executable mechanics source: ignored `_references/repos/tympanus-infinite-lights/` at commit `e58d58520bc0dfde21f9e14e6a1b8c7f0a2a2a9e`, specifically Interstate 7 and `deepDistortion`;
-- current implementation: `src/vertigo-field.jsx`, `src/flux-environments.js`, and the environment integration in `src/App.jsx`;
-- target viewport: `773 × 601` CSS pixels; browser QA DPR `2`, target Tesla evidence approximately `1.53`;
-- implementation capture: ignored `_references/qa/2026-08-26/vertigo-implementation-final.jpg` (`773 × 601`);
-- selected-direction comparison: ignored `_references/qa/2026-08-26/vertigo-source-vs-final.png` (`1546 × 601`);
-- actual-reference comparison: ignored `_references/qa/2026-08-26/interstate-7-actual-vs-final.png` (`1546 × 601`).
+- Aperture source truth: ignored `_references/visual/qa/modular-aperture-2026-08-26/source-normalized-773x601.png` (`773 × 601`);
+- Interstate 7 source truth: ignored `_references/qa/2026-08-26/interstate-7-actual-normalized.png` (`773 × 601`), captured from the ignored reference at commit `e58d58520bc0dfde21f9e14e6a1b8c7f0a2a2a9e`;
+- Aperture urban implementation: ignored `_references/qa/2026-08-26/aperture-fixed-ceiling-40kmh-773x601.jpg` (`773 × 601`);
+- Aperture ceiling implementation: ignored `_references/qa/2026-08-26/aperture-fixed-ceiling-130kmh-773x601.jpg` (`773 × 601`);
+- Vertigo idle implementation: ignored `_references/qa/2026-08-26/vertigo-refined-idle-773x601.jpg` (`773 × 601`);
+- Vertigo ceiling implementation: ignored `_references/qa/2026-08-26/vertigo-refined-original-max-773x601.jpg` (`773 × 601`);
+- full-view Interstate comparison: ignored `_references/qa/2026-08-26/interstate-7-actual-vs-refined.png` (`1546 × 601`);
+- CSS viewport: `773 × 601`; source and implementation comparisons normalized to equal pixels at density `1`;
+- implementation paths: `src/signal-model.js`, `src/flux-field.jsx`, `src/vertigo-field.jsx`, `src/App.jsx`, `src/audio-engine.js`, and `src/styles.css`.
 
-## Required fidelity surfaces
+## State and required fidelity surfaces
 
-- one continuous band field from flat rest through the floor-to-wall fold;
-- subtle time-varying lateral drift and multiple coherent waves;
-- strong forward travel and perspective response at full energy;
-- continuous geometric release during deceleration, without a scene fade;
-- dark ground, central breathing space, restrained bloom, and tunable body-color palette;
-- persistent integrated speed module and off-canvas resting chrome;
-- reachable diagnostics in the compact Tesla viewport.
+- Aperture at `39 km/h`: clear centered tunnel depth while modules remain visibly distinct;
+- Aperture at `130 km/h`: complete Plaid-like radial line field and maximum travel/deformation;
+- Vertigo at `0 km/h`: unrolled quiet road field, no vertical fold, restrained breathing glow;
+- Vertigo at `130 km/h`: original-inspired floor-to-wall fold, central channel, asymmetric red/white/blue lanes, lateral wave, and maximum travel;
+- control slab: `VISUAL` remains interactive, the energy slider is absent, and `SCORE / PROTOTYPE / TEXTSTEP · NEXT` is truthful rather than a fake genre selector;
+- diagnostics: `energyCeilingKmh: 130`, arrangement `score: prototype`, active environment, renderer, and `SEND DIAGNOSTIC` remain reachable.
+
+## Required fidelity review
+
+- Fonts and typography: existing monospace family, optical hierarchy, weights, and small-label tracking remain unchanged and legible at the target viewport.
+- Spacing and layout rhythm: the four-column Braun/Swiss control grid remains aligned; removing the slider reduces density without leaving an empty cell.
+- Colors and tokens: all five body-color themes remain parameter inputs; the Red QA state preserves the accepted black/red/off-white hierarchy.
+- Image quality and asset fidelity: both environments remain procedural WebGL2/Canvas2D fields; no raster placeholder, copied reference asset, or imported source scene is used.
+- Copy and content: `VISUAL`, `SCORE`, `PROTOTYPE`, and `TEXTSTEP · NEXT` accurately distinguish implemented behavior from roadmap work.
+- Focused-region comparison was not required because the control labels and geometry are readable at full target resolution; the critical source/implementation difference is the full-field motion composition.
 
 ## Comparison history
 
-- Initial P2: the resting state retained too much upright wall and did not read as an unrolled field. Lowering the resting horizon and masking the upright portion resolved it.
-- Initial P2: full-energy trails were too thin, uniform, and underexposed. Per-lane widths, intensity variation, glow, and near-field perspective thickening resolved the hierarchy.
-- User correction: the selected generated image is straighter than the intended source mechanics. The implementation intentionally follows the original Interstate 7 lateral wave and rolling distortion instead of flattening it into a rigid vertical extrusion.
-- Accepted difference: the product excludes the source title/navigation, literal road furniture, old scene structure, and heavy bloom. These are not required fidelity surfaces.
+- Earlier P1: at approximately `50 km/h`, Aperture still appeared primarily planar and ordinary urban driving could miss the tunnel. Fixed by remapping visual velocity to the fixed road domain and moving the continuous warp onset earlier. Post-fix evidence at `39 km/h` shows unmistakable centered tunnel depth.
+- Earlier P1: the adjustable full-energy slider did not create a sufficiently perceptible response and implied arbitrary calibration. Fixed by removing the control and using one tested `130 km/h` legal-road ceiling for energy, visual velocity, flow, audio arrangement, Demo, and diagnostics.
+- Earlier P2: Vertigo was materially thinner and dimmer than the executable Interstate 7 reference. Fixed with layered halo/glow/core contributions, stronger lane luminance, and stationary breathing. The post-fix side-by-side comparison preserves the reference's fold, channel, color split, wave, and perspective hierarchy.
+- Accepted difference: the public AGPL product does not import the custom-licensed source, Three.js scene, original shader, title/navigation, road furniture, or post-processing stack. Its mechanics remain independently implemented and visibly credited.
+- P3 follow-up: target-Tesla profiling may permit a restrained blur/bloom pass closer to the source; it is not required before this checkpoint because the current layered glow is legible and bounded.
 
 ## Functional verification
 
-- Aperture → Vertigo → Aperture → Vertigo cycling is deterministic and leaves one canvas mounted;
-- Vertigo and the selected Red body-color theme persist after reload;
-- the splash identifies `FLUX · VERTIGO` from environment data;
-- `DIAG` opens after the wake-first interaction at `773 × 601` and reports `WebGL2 · Vertigo` with `SEND DIAGNOSTIC` reachable;
-- no application warnings or errors were observed in the selected browser; Vite development messages only;
-- automated tests and the production build must pass again immediately before publication.
+- 18 unit tests and 4 packaging tests pass; the production build passes;
+- fresh-runtime diagnostics report `energyCeilingKmh: 130`, `score: prototype`, and `WebGL2 · Vertigo`;
+- visual switching, Demo progression, the `39 km/h` urban state, the `130 km/h` ceiling state, idle Vertigo, and diagnostics were exercised at `773 × 601`;
+- page identity and meaningful DOM content pass; no framework overlay is present;
+- no application warnings or errors were observed in the selected in-app browser.
 
 ## Remaining target-vehicle evidence
 
 - real DPR/frame pacing, thermal stability, and context-loss behavior;
-- perceptual travel speed and line weight on the Tesla display;
-- touch reach while parked and deceleration behavior from live GPS;
-- final audio/visual coherence after the rejected score is replaced.
+- perceptual glow and travel speed on the Tesla display;
+- live-GPS transitions through `40 km/h` and the ceiling;
+- final audio/visual coherence after the textStep-informed sequencer replaces the rejected score.
 
-passed
+final result: passed

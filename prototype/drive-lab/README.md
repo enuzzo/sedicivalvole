@@ -17,7 +17,8 @@ The initial **TEST & START** gesture unlocks Web Audio, runs capability checks, 
 - continuously redrawn Canvas2D fallbacks and reduced-motion behavior;
 - saturating speed-to-energy and speed-to-BPM mappings;
 - GPS `coords.speed` input with null handling and Demo fallback;
-- touch-first Stop/Mute, environment, full-energy threshold, and curated body-color controls;
+- touch-first Stop/Mute, visual environment, score-roadmap, and curated body-color surfaces;
+- fixed `130 km/h` energy/velocity ceiling with visible Aperture tunnel formation by approximately `40 km/h`;
 - integrated device report with no coordinates;
 - desktop simulator: `ArrowUp`, `ArrowDown`, and `Space` for the deterministic Brake event;
 - `VERSION` injected at build time;

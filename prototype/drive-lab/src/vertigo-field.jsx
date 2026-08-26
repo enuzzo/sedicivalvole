@@ -87,6 +87,7 @@ const FRAGMENT_SHADER = `#version 300 es
     lineWidth = min(lineWidth, 0.28);
     float line = band(stripeCoordinate, lineWidth);
     float glow = band(stripeCoordinate, min(0.34, lineWidth + mix(0.13, 0.085, fold)));
+    float halo = band(stripeCoordinate, min(0.46, lineWidth + mix(0.21, 0.13, fold)));
 
     float longitudinal = mix(1.0 - floorDepth, 1.0 + wallDepth, wallBlend);
     float travel = longitudinal * mix(3.2, 8.8, velocity)
@@ -101,7 +102,8 @@ const FRAGMENT_SHADER = `#version 300 es
     vec3 leftColor = mix(u_mid, u_accent, 0.92);
     vec3 rightColor = mix(u_secondary, u_light, step(0.72, laneNoise) * 0.58);
     vec3 trailColor = laneCoordinate < 0.0 ? leftColor : rightColor;
-    trailColor *= 0.48 + laneNoise * 0.92;
+    float idleBreath = 0.9 + 0.1 * sin(time * 0.52 + laneNoise * 6.2831853);
+    trailColor *= (0.66 + laneNoise * 1.08) * idleBreath;
 
     float surfaceGrid = band((roadCoordinate - 0.1) * 17.0, 0.025) * roadMask;
     float depthGrid = band(longitudinal * 14.0 - u_flow * 0.075, 0.018) * roadMask;
@@ -109,8 +111,9 @@ const FRAGMENT_SHADER = `#version 300 es
     float unfoldedMask = 1.0 - smoothstep(horizon - 0.025, horizon + 0.035, point.y);
     float fieldMask = mix(unfoldedMask, 1.0, smoothstep(0.05, 0.32, fold));
     vec3 color = mix(u_base, surface, fieldMask);
-    color += trailColor * glow * roadMask * trail * 0.18 * fieldMask;
-    color = mix(color, trailColor, line * roadMask * trail * 0.98 * fieldMask);
+    color += trailColor * halo * roadMask * trail * mix(0.13, 0.38, velocity) * fieldMask;
+    color += trailColor * glow * roadMask * trail * mix(0.26, 0.62, velocity) * fieldMask;
+    color += trailColor * line * roadMask * trail * mix(0.72, 1.28, velocity) * fieldMask;
 
     float centerVoid = 1.0 - smoothstep(0.075, 0.135, roadCoordinate);
     color = mix(color, u_base * 0.16, centerVoid * (0.62 + fold * 0.38));

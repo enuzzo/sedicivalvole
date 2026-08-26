@@ -40,7 +40,7 @@ These rules apply to every change in the `sedicivalvole` project.
 - The current starburst/lens-flare Flux visual is rejected. Retain only central convergence, depth, speed response, and the low control plane; present exactly three revised minimal, Swiss-influenced directions before replacing it.
 - Treat Codrops/Tympanus Infinite Lights as an ignored study reference for motion mechanics, not a source to copy or a visual skin to reproduce.
 - Flux must feel like an authored adaptive score. Do not substitute exposed oscillator pings, a noise bed, or linear BPM escalation for arrangement, low end, rhythm, harmony, timbre, and spatial progression.
-- Prefer curated audiovisual environments and a meaningful energy-threshold control over low-level `Atmos`, `Harmonics`, and `Pulse` controls in the primary driving surface.
+- Prefer curated audiovisual environments and purposeful visual/score selectors over low-level `Atmos`, `Harmonics`, and `Pulse` controls in the primary driving surface. The user-adjustable energy-threshold slider is retired: normalize visual and score energy against the fixed `130 km/h` legal-road ceiling, while ensuring the tunnel is already visible by approximately `40 km/h`.
 - Do not assume Apache, Nginx, or any other server technology without evidence.
 
 ## Licensing

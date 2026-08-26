@@ -18,8 +18,8 @@ import { VertigoField } from "./vertigo-field.jsx";
 import {
   advanceDemoMotion,
   applyKeyboardDelta,
-  clamp,
   normalizeGpsSpeed,
+  ROAD_SPEED_CEILING_KMH,
   smoothSpeed,
   speedToBpm,
   speedToEnergy,
@@ -32,14 +32,13 @@ function readPreferences() {
   try {
     const value = JSON.parse(localStorage.getItem(PREFERENCES_KEY) || "null");
     return {
-      fullEnergyKmh: clamp(Number(value?.fullEnergyKmh) || 120, 60, 180),
       themeId: FLUX_THEMES.some((theme) => theme.id === value?.themeId) ? value.themeId : "red",
       environmentId: FLUX_ENVIRONMENTS.some((environment) => environment.id === value?.environmentId)
         ? value.environmentId
         : "aperture",
     };
   } catch {
-    return { fullEnergyKmh: 120, themeId: "red", environmentId: "aperture" };
+    return { themeId: "red", environmentId: "aperture" };
   }
 }
 
@@ -247,25 +246,13 @@ function ModeSelector() {
   );
 }
 
-function EnergyThresholdControl({ value, onChange }) {
-  const progress = ((value - 60) / 120) * 100;
+function ScoreRoadmapControl() {
   return (
-    <label className="energy-control">
-      <span className="control-label">FULL ENERGY</span>
-      <strong>{value}<small>km/h</small></strong>
-      <span className="slider-housing">
-        <input
-          aria-label="Speed for full energy"
-          type="range"
-          min="60"
-          max="180"
-          step="10"
-          value={value}
-          onChange={(event) => onChange(Number(event.target.value))}
-          style={{ "--value": `${progress}%` }}
-        />
-      </span>
-    </label>
+    <div className="score-control" aria-label="Current score prototype. textStep sequencer is next">
+      <span className="control-label">SCORE</span>
+      <strong>PROTOTYPE</strong>
+      <small>TEXTSTEP · NEXT</small>
+    </div>
   );
 }
 
@@ -310,7 +297,6 @@ export function App() {
   const [pulseFlash, setPulseFlash] = useState(0);
   const [keyboardHint, setKeyboardHint] = useState(null);
   const [audioLevel, setAudioLevel] = useState(0);
-  const [fullEnergyKmh, setFullEnergyKmh] = useState(initialPreferences.fullEnergyKmh);
   const [themeId, setThemeId] = useState(initialPreferences.themeId);
   const [environmentId, setEnvironmentId] = useState(initialPreferences.environmentId);
   const reducedMotion = useMemo(
@@ -346,7 +332,7 @@ export function App() {
 
   const theme = getFluxTheme(themeId);
   const environment = getFluxEnvironment(environmentId);
-  const energy = speedToEnergy(speed, fullEnergyKmh);
+  const energy = speedToEnergy(speed);
   const bpm = speedToBpm(speed);
 
   const logDiagnosticEvent = useCallback((type, detail = {}) => {
@@ -453,7 +439,11 @@ export function App() {
       sourceRef.current = "DEMO";
       setSource("DEMO");
       stopDemo();
-      let demoMotion = { speed, direction: speed >= 160 ? -1 : 1, holdTicks: 0 };
+      let demoMotion = {
+        speed,
+        direction: speed >= ROAD_SPEED_CEILING_KMH ? -1 : 1,
+        holdTicks: 0,
+      };
       demoTimerRef.current = window.setInterval(() => {
         setSpeed((previous) => {
           demoMotion = advanceDemoMotion({ ...demoMotion, speed: previous });
@@ -498,7 +488,6 @@ export function App() {
     audioRef.current = createAudioEngine(triggerPulse);
     if (audioRef.current) {
       await audioRef.current.resume();
-      audioRef.current.setPerformance({ fullEnergyKmh });
       audioRef.current.setMuted(false);
       audioRef.current.startCue();
       window.clearInterval(audioMeterTimerRef.current);
@@ -560,7 +549,7 @@ export function App() {
       setPhase("running");
       wakeControls();
     }, reducedMotion ? 180 : 620);
-  }, [fullEnergyKmh, logDiagnosticEvent, reducedMotion, startGps, triggerPulse, wakeControls]);
+  }, [logDiagnosticEvent, reducedMotion, startGps, triggerPulse, wakeControls]);
 
   useEffect(() => {
     const supported = typeof PerformanceObserver !== "undefined"
@@ -613,15 +602,14 @@ export function App() {
   }, [logDiagnosticEvent]);
 
   useEffect(() => { audioRef.current?.setSpeed(speed); }, [speed]);
-  useEffect(() => { audioRef.current?.setPerformance({ fullEnergyKmh }); }, [fullEnergyKmh]);
   useEffect(() => { audioRef.current?.setMuted(muted); }, [muted]);
   useEffect(() => {
     try {
-      localStorage.setItem(PREFERENCES_KEY, JSON.stringify({ fullEnergyKmh, themeId, environmentId }));
+      localStorage.setItem(PREFERENCES_KEY, JSON.stringify({ themeId, environmentId }));
     } catch {
       // Preference persistence is optional.
     }
-  }, [environmentId, fullEnergyKmh, themeId]);
+  }, [environmentId, themeId]);
 
   const captureViewport = useCallback((reason) => {
     const snapshot = readDisplaySnapshot(reason);
@@ -720,7 +708,7 @@ export function App() {
       displayedSpeedKmh: Math.round(speed * 10) / 10,
       bpm: Math.round(bpm * 10) / 10,
       energy: Math.round(energy * 1000) / 1000,
-      fullEnergyKmh,
+      energyCeilingKmh: ROAD_SPEED_CEILING_KMH,
       bodyColorTheme: themeId,
       muted,
       arrangement: audioRef.current?.getState() ?? null,
@@ -762,7 +750,7 @@ export function App() {
       automaticRemoteTelemetry: false,
       transmissionRequiresExplicitGesture: true,
     },
-  } : null, [accuracy, audioLevel, bpm, diagnostics, energy, environmentId, fullEnergyKmh, gpsState, muted, renderer, source, speed, themeId]);
+  } : null, [accuracy, audioLevel, bpm, diagnostics, energy, environmentId, gpsState, muted, renderer, source, speed, themeId]);
   const diagnosticText = diagnosticReport ? JSON.stringify(diagnosticReport, null, 2) : "Test not run yet";
 
   const sendDiagnostic = useCallback(async () => {
@@ -865,17 +853,17 @@ export function App() {
           <button
             className="environment-control"
             type="button"
-            aria-label={`Environment ${environment.label}. Tap to change`}
+            aria-label={`Visual ${environment.label}. Tap to change`}
             onClick={() => {
               const nextEnvironmentId = nextFluxEnvironmentId(environmentId);
               setEnvironmentId(nextEnvironmentId);
               logDiagnosticEvent("environment.changed", { environment: nextEnvironmentId });
             }}
           >
-            <span className="control-label">ENVIRONMENT</span>
+            <span className="control-label">VISUAL</span>
             <strong>{environment.label}</strong><small>{environment.number}</small>
           </button>
-          <EnergyThresholdControl value={fullEnergyKmh} onChange={setFullEnergyKmh} />
+          <ScoreRoadmapControl />
           <BodyColorControl themeId={themeId} onChange={setThemeId} />
         </footer>
       </section>

@@ -6,6 +6,7 @@ import {
   energyToFlowRate,
   energyToSection,
   normalizeGpsSpeed,
+  ROAD_SPEED_CEILING_KMH,
   smoothSpeed,
   speedToBpm,
   speedToEnergy,
@@ -35,11 +36,11 @@ test("tempo has a knee and approaches a musical ceiling", () => {
   assert.ok(speedToBpm(260) > speedToBpm(130));
 });
 
-test("energy reaches the selected full-energy speed and keyboard simulation stays bounded", () => {
+test("energy uses the fixed legal-road ceiling and keyboard simulation stays bounded", () => {
   assert.equal(speedToEnergy(0), 0);
-  assert.ok(speedToEnergy(60, 120) > 0.5);
-  assert.equal(speedToEnergy(120, 120), 1);
-  assert.ok(speedToEnergy(90, 180) < speedToEnergy(90, 120));
+  assert.ok(speedToEnergy(40) > 0.5);
+  assert.equal(speedToEnergy(ROAD_SPEED_CEILING_KMH), 1);
+  assert.equal(speedToEnergy(260), 1);
   assert.equal(applyKeyboardDelta(258, "up"), 260);
   assert.equal(applyKeyboardDelta(2, "down"), 0);
 });
@@ -71,24 +72,26 @@ test("visual travel stays calm at rest and becomes emphatic only near full energ
   assert.equal(energyToFlowRate(0, 0), 0.02);
   assert.ok(energyToFlowRate(0.25, 20) < 0.3);
   assert.ok(energyToFlowRate(0.75, 80) > 2);
-  assert.ok(energyToFlowRate(1, 150) > 14);
-  assert.ok(energyToFlowRate(1, 150) > energyToFlowRate(1, 100) * 2);
+  assert.ok(energyToFlowRate(1, ROAD_SPEED_CEILING_KMH) > 14);
+  assert.ok(energyToFlowRate(1, ROAD_SPEED_CEILING_KMH) > energyToFlowRate(1, 100));
+  assert.equal(energyToFlowRate(1, 150), energyToFlowRate(1, ROAD_SPEED_CEILING_KMH));
   assert.equal(speedToVisualVelocity(0), 0);
+  assert.equal(speedToVisualVelocity(ROAD_SPEED_CEILING_KMH), 1);
   assert.equal(speedToVisualVelocity(160), 1);
 });
 
-test("visual morph stays planar at city speed and becomes a tunnel near the velocity ceiling", () => {
+test("visual morph reveals the tunnel at urban speed and reaches full deformation at the road ceiling", () => {
   const idle = visualVelocityToMorphWarp(speedToVisualVelocity(0));
-  const lowSpeed = visualVelocityToMorphWarp(speedToVisualVelocity(40));
-  const city = visualVelocityToMorphWarp(speedToVisualVelocity(55));
+  const lowSpeed = visualVelocityToMorphWarp(speedToVisualVelocity(20));
+  const city = visualVelocityToMorphWarp(speedToVisualVelocity(40));
   const transition = visualVelocityToMorphWarp(speedToVisualVelocity(80));
-  const tunnel = visualVelocityToMorphWarp(speedToVisualVelocity(115));
+  const tunnel = visualVelocityToMorphWarp(speedToVisualVelocity(ROAD_SPEED_CEILING_KMH));
 
   assert.equal(idle, 0);
-  assert.equal(lowSpeed, 0);
-  assert.equal(city, 0);
-  assert.ok(transition > city && transition < 0.15);
-  assert.ok(tunnel > 0.75);
+  assert.ok(lowSpeed > 0 && lowSpeed < 0.08);
+  assert.ok(city > 0.15 && city < 0.3);
+  assert.ok(transition > 0.6 && transition < 0.8);
+  assert.equal(tunnel, 1);
 });
 
 test("visual morph advances monotonically without a low-speed geometry jump", () => {
@@ -120,8 +123,8 @@ test("motion separates acceleration from deceleration with bounded rates", () =>
 
 test("the demo holds at full speed and reaches a true standstill before restarting", () => {
   assert.deepEqual(
-    advanceDemoMotion({ speed: 159, direction: 1, holdTicks: 0 }),
-    { speed: 160, direction: -1, holdTicks: 6 },
+    advanceDemoMotion({ speed: 129, direction: 1, holdTicks: 0 }),
+    { speed: ROAD_SPEED_CEILING_KMH, direction: -1, holdTicks: 6 },
   );
   assert.deepEqual(
     advanceDemoMotion({ speed: 1, direction: -1, holdTicks: 0 }),

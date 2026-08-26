@@ -57,7 +57,7 @@ const FRAGMENT_SHADER = `#version 300 es
     float energy = smoothstep(0.02, 0.96, u_energy);
     float velocity = smoothstep(0.08, 0.96, u_velocity);
     float shrink = smoothstep(0.0, 0.42, energy);
-    float warp = pow(smoothstep(0.18, 0.7, u_velocity), 1.5);
+    float warp = pow(smoothstep(0.02, 0.92, u_velocity), 1.05);
     float majorAxis = max(max(abs(screen.x), abs(screen.y)), 0.035);
     float perimeter = squarePerimeter(screen);
     float depth = 1.0 / max(majorAxis, 0.12);
@@ -93,7 +93,7 @@ const FRAGMENT_SHADER = `#version 300 es
     vec3 color = mix(u_base, panel, tile);
 
     float apertureRadius = max(abs(screen.x) * 0.78, abs(screen.y));
-    float apertureGrowth = smoothstep(0.06, 0.92, warp);
+    float apertureGrowth = smoothstep(0.02, 0.72, warp);
     float apertureSize = mix(-0.01, 0.105, apertureGrowth);
     float apertureActive = step(0.0, apertureSize);
     float aperture = apertureActive * (1.0 - smoothstep(apertureSize, apertureSize + 0.012, apertureRadius));
@@ -201,7 +201,7 @@ function drawCanvasFallback(context, canvas, energy, visualVelocity, palette, fl
     context.fillRect(x - panelWidth / 2, y - panelHeight / 2, panelWidth, panelHeight);
   }
 
-  const apertureGrowth = smoothstep(0.06, 0.92, warp);
+  const apertureGrowth = smoothstep(0.02, 0.72, warp);
   const apertureScale = -0.01 + apertureGrowth * 0.115;
   if (apertureScale > 0) {
     const apertureWidth = width * apertureScale;

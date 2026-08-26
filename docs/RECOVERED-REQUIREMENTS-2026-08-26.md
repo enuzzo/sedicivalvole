@@ -88,5 +88,6 @@ Recommended product model:
 | Revised minimal visual directions | complete: three presented; Modular Aperture selected |
 | Current audio treatment marked musically rejected | complete |
 | Adaptive music architecture revision | implemented spike; Tesla listening acceptance pending |
-| Environment and energy-threshold control model | implemented in current Drive Lab build |
+| Environment model | implemented in current Drive Lab build |
+| User-adjustable energy threshold | superseded on 2026-08-26 by the fixed `130 km/h` legal-road ceiling and early tunnel visibility near `40 km/h` |
 | Compact diagnostics opening and report delivery | partially implemented; vehicle re-test pending |

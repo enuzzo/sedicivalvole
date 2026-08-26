@@ -128,7 +128,8 @@ The received HTML is a useful starting point but not the target ambition. The cu
 - Both beat-driven and beatless digital environments are allowed, but each must have an authored musical identity.
 - A Flux environment is an authored audiovisual bundle: generative visual system, musical genre/score, palette family, geometry parameters, and speed-response mapping. Users may select an environment and tune its supported palette without exposing low-level renderer or mixer controls while driving.
 - The environment system must make variety structural rather than decorative: changing environment may change visual mechanics and musical genre, while every environment consumes the same normalized speed, energy, acceleration, deceleration, Brake, safety, and diagnostic contracts.
-- The primary user-facing performance control should be an energy threshold defining the speed at which an environment reaches full intended energy. Low-level `Atmos`, `Harmonics`, and `Pulse` controls are not accepted as the final driving interface.
+- The user-adjustable energy threshold is retired. Visual and score energy normalize against a fixed `130 km/h` legal-road ceiling; Aperture must reveal unmistakable tunnel depth by approximately `40 km/h` and continue deforming progressively into its full Plaid field. Low-level `Atmos`, `Harmonics`, and `Pulse` controls remain excluded from the final driving interface.
+- The former threshold area is reserved for purposeful `VISUAL` and `SCORE` selection. Until the textStep-informed sequencer actually ships selectable genres, the score surface must identify the current prototype and future textStep work without pretending Jungle is active.
 
 ## 8. Feature decision matrix
 

@@ -1,4 +1,11 @@
-import { clamp, energyToSection, speedToBpm, speedToEnergy, speedToMotion } from "./signal-model.js";
+import {
+  clamp,
+  energyToSection,
+  ROAD_SPEED_CEILING_KMH,
+  speedToBpm,
+  speedToEnergy,
+  speedToMotion,
+} from "./signal-model.js";
 
 const SCALE = [0, 3, 5, 7, 10];
 const BASS_DEGREES = [0, 0, 3, 0, 2, 0, 4, 3];
@@ -70,7 +77,6 @@ export function createAudioEngine(onPulse) {
   motionBus.connect(delay);
 
   let speed = 0;
-  let fullEnergyKmh = 120;
   let energy = 0;
   let section = 0;
   let pendingSection = 0;
@@ -327,10 +333,6 @@ export function createAudioEngine(onPulse) {
       master.gain.cancelScheduledValues(context.currentTime);
       master.gain.setTargetAtTime(muted ? 0.0001 : 0.42, context.currentTime, 0.045);
     },
-    setPerformance(nextPerformance) {
-      fullEnergyKmh = clamp(nextPerformance?.fullEnergyKmh ?? fullEnergyKmh, 60, 180);
-      energy = speedToEnergy(speed, fullEnergyKmh);
-    },
     setSpeed(nextSpeed) {
       const time = context.currentTime;
       const normalized = clamp(nextSpeed, 0, 260);
@@ -341,7 +343,7 @@ export function createAudioEngine(onPulse) {
       accelerationDrive += (motion.acceleration - accelerationDrive) * motionAlpha;
       decelerationRelease += (motion.deceleration - decelerationRelease) * motionAlpha;
       speed = normalized;
-      energy = speedToEnergy(speed, fullEnergyKmh);
+      energy = speedToEnergy(speed);
       lastSpeedAt = time;
       lastMotionDecayAt = time;
       toneFilter.frequency.setTargetAtTime(
@@ -383,10 +385,10 @@ export function createAudioEngine(onPulse) {
     },
     getState() {
       return {
-        environment: "aperture",
+        score: "prototype",
         energy,
         section,
-        fullEnergyKmh,
+        energyCeilingKmh: ROAD_SPEED_CEILING_KMH,
         motionPhase,
         motionRateKmhPerSecond: Math.round(motionRateKmhPerSecond * 10) / 10,
         accelerationDrive: Math.round(accelerationDrive * 1000) / 1000,

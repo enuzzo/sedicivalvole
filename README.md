@@ -25,7 +25,7 @@ The canonical development build is available at [sedicivalvole.app](https://sedi
 - ✅ a single ignored local reference library under `_references/`;
 - ✅ source audit, product requirements, adversarial review, technical direction, and roadmap;
 - ✅ Modular Aperture selected after exactly three revised Product Design directions;
-- ✅ touch-first Flux prototype with selectable procedural WebGL2/Canvas2D Aperture and Vertigo fields, GPS/demo speed source, Stop/Mute, full-energy threshold, five body-color themes, and an integrated capability report;
+- ✅ touch-first Flux prototype with selectable procedural WebGL2/Canvas2D Aperture and Vertigo fields, GPS/demo speed source, Stop/Mute, a fixed `130 km/h` energy ceiling, five body-color themes, and an integrated capability report;
 - ✅ local-only speed processing: raw coordinates are never displayed, persisted, or transmitted;
 - ✅ a four-section authored audio spike with a tempo knee, quantized transitions, hysteresis, dwell, crossfades, and speed-driven arrangement depth;
 - ✅ production build and deterministic signal, diagnostic-model, and packaging tests passing;
@@ -95,7 +95,7 @@ No screenshot is published here yet. The repository will include only real, curr
 
 ## Roadmap
 
-The next gate is a real Tesla session at the verified split viewport: compare Aperture and Vertigo across acceleration/deceleration, measure frame pacing, test the full-energy threshold, environment switch, and body-color control, and check touch reach while parked. The compact `DIAG` report remains available for technical evidence. The current shared audio score is still rejected; the selectable Jungle-capable sequencer remains the next major product milestone.
+The next gate is a real Tesla session at the verified split viewport: compare Aperture and Vertigo across acceleration/deceleration, measure frame pacing, confirm visible tunnel formation around `40 km/h`, test the visual and body-color controls, and check touch reach while parked. The compact `DIAG` report remains available for technical evidence. The current shared audio score is still rejected; Lobo's textStep-informed, selectable Jungle-capable sequencer remains the next major product milestone.
 
 See [`docs/ROADMAP.md`](docs/ROADMAP.md).
 

@@ -43,7 +43,7 @@ Implemented:
 - tempo knee with asymptotic ceiling;
 - continuous energy separated from discrete layer/Brake events;
 - four-section lookahead arrangement, bar-quantized transitions, two-bar dwell, crossfades, and limiter;
-- full-energy speed threshold and curated `APERTURE 01` environment;
+- fixed `130 km/h` road-energy ceiling, early tunnel visibility near `40 km/h`, and curated `APERTURE 01` environment;
 - filtered acceleration/deceleration envelopes with single direction-change cues and steady-state decay;
 - deterministic desktop signal tests.
 
@@ -73,12 +73,13 @@ Implemented:
 - flat Braun/Swiss interface, compact diagnostics, and body-color selection at `773 × 601`.
 - dark tunnel terminus plus off-canvas resting chrome with a persistent speed readout and wake-first interaction.
 - outward high-speed flight, non-linear flow response, true-zero Demo dwell, and an opaque high-contrast speed frame.
-- one seam-free geometric field that continuously morphs from large, complete four-color squares through smaller warped modules into a speed-driven Plaid tunnel with radial stripe deformation and a 160 km/h Demo ceiling.
+- one seam-free geometric field that continuously morphs from large, complete four-color squares through an unmistakable urban-speed tunnel into a full Plaid field at the fixed `130 km/h` Demo ceiling;
 - selectable `VERTIGO 02` WebGL2/Canvas2D field with a continuous power-curve fold, paired lateral waves, longitudinal travel, curated palette parameters, reversible deceleration, and persisted environment choice.
 
 Queued next:
 
 - bind the visual environment selector to authored musical genres once the new sequencer boundary exists;
+- replace the truthful `SCORE / PROTOTYPE / TEXTSTEP · NEXT` placeholder with a real genre selector only after the data-driven textStep-informed transport can switch authored scores without fake states;
 - retain the two unselected Interstate-inspired directions in the ignored backlog for a later three-direction gate rather than presenting them as implemented;
 - profile and refine travel rate, projection response, curvature, band density, palette, and geometry on the target Tesla while preserving continuous reversible deceleration;
 - verify each environment at rest, intermediate speed, full energy, and sustained deceleration at `773 × 601` before canonical deployment.

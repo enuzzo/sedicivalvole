@@ -1,8 +1,8 @@
 export const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+export const ROAD_SPEED_CEILING_KMH = 130;
 
-export function speedToEnergy(speedKmh, fullEnergyKmh = 120) {
-  const threshold = clamp(fullEnergyKmh, 60, 180);
-  const normalized = clamp(Math.max(0, speedKmh) / threshold, 0, 1);
+export function speedToEnergy(speedKmh) {
+  const normalized = clamp(Math.max(0, speedKmh) / ROAD_SPEED_CEILING_KMH, 0, 1);
   return 1 - (1 - normalized) ** 2.2;
 }
 
@@ -11,8 +11,8 @@ export function speedToBpm(speedKmh) {
   return 58 + 58 * (normalized / (1 + normalized));
 }
 
-export function speedToWave(speedKmh, fullEnergyKmh = 120) {
-  const energy = speedToEnergy(speedKmh, fullEnergyKmh);
+export function speedToWave(speedKmh) {
+  const energy = speedToEnergy(speedKmh);
   return {
     frequencyHz: 38 + energy * 76,
     gain: 0.012 + energy * 0.068,
@@ -20,8 +20,8 @@ export function speedToWave(speedKmh, fullEnergyKmh = 120) {
 }
 
 export function speedToVisualVelocity(speedKmh) {
-  const normalized = clamp(Math.max(0, speedKmh) / 160, 0, 1);
-  return normalized ** 1.65;
+  const normalized = clamp(Math.max(0, speedKmh) / ROAD_SPEED_CEILING_KMH, 0, 1);
+  return normalized ** 1.1;
 }
 
 function smoothCurve(minimum, maximum, value) {
@@ -30,7 +30,7 @@ function smoothCurve(minimum, maximum, value) {
 }
 
 export function visualVelocityToMorphWarp(visualVelocity) {
-  return smoothCurve(0.18, 0.7, clamp(visualVelocity, 0, 1)) ** 1.5;
+  return smoothCurve(0.02, 0.92, clamp(visualVelocity, 0, 1)) ** 1.05;
 }
 
 export function energyToFlowRate(energy, speedKmh = 0) {
@@ -75,13 +75,15 @@ export function applyKeyboardDelta(speedKmh, direction) {
 }
 
 export function advanceDemoMotion(state, stepKmh = 2.6) {
-  const speed = clamp(state?.speed ?? 0, 0, 160);
+  const speed = clamp(state?.speed ?? 0, 0, ROAD_SPEED_CEILING_KMH);
   const direction = state?.direction === -1 ? -1 : 1;
   const holdTicks = Math.max(0, Math.round(state?.holdTicks ?? 0));
   if (holdTicks > 0) return { speed, direction, holdTicks: holdTicks - 1 };
 
   const nextSpeed = speed + direction * stepKmh;
-  if (nextSpeed >= 160) return { speed: 160, direction: -1, holdTicks: 6 };
+  if (nextSpeed >= ROAD_SPEED_CEILING_KMH) {
+    return { speed: ROAD_SPEED_CEILING_KMH, direction: -1, holdTicks: 6 };
+  }
   if (nextSpeed <= 0) return { speed: 0, direction: 1, holdTicks: 8 };
   return { speed: nextSpeed, direction, holdTicks: 0 };
 }
