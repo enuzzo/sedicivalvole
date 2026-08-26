@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Tesla Capability Check · sedicivalvole</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="page-header">
+      <div>
+        <p class="context">Diagnostic tool — not the final interface</p>
+        <h1>Tesla Capability Check</h1>
+        <p class="lede">
+          Measure the real in-car browser without storing coordinates, location, or
+          other personal data.
+        </p>
+      </div>
+      <div class="header-meta" aria-label="Diagnostic status">
+        <span id="version">version —</span>
+        <span id="session-state" class="status neutral">ready</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="intro-panel" aria-labelledby="start-title">
+        <div>
+          <h2 id="start-title">Start while parked</h2>
+          <p>
+            Automatic tests request no permissions. GPS and audio start only when
+            you tap their respective buttons.
+          </p>
+        </div>
+        <button id="run-all" class="primary" type="button">Run automatic tests</button>
+      </section>
+
+      <section aria-labelledby="summary-title">
+        <div class="section-heading">
+          <div>
+            <h2 id="summary-title">Summary</h2>
+            <p>The evidence needed to choose viewport, renderer, and fallbacks.</p>
+          </div>
+          <span id="last-run" class="section-note">not run yet</span>
+        </div>
+        <div id="summary" class="summary-grid" aria-live="polite"></div>
+      </section>
+
+      <section aria-labelledby="viewport-title">
+        <div class="section-heading">
+          <div>
+            <h2 id="viewport-title">Display and viewport</h2>
+            <p>Values update when the browser changes size or orientation.</p>
+          </div>
+        </div>
+        <dl id="viewport-results" class="metric-grid"></dl>
+      </section>
+
+      <section aria-labelledby="gps-title">
+        <div class="section-heading">
+          <div>
+            <h2 id="gps-title">GPS and speed</h2>
+            <p>
+              A 20-second session. It keeps only counts, timing, accuracy, and
+              speed; coordinates are discarded immediately.
+            </p>
+          </div>
+          <span id="gps-status" class="status neutral">not tested</span>
+        </div>
+        <div class="actions">
+          <button id="gps-start" type="button">Start GPS test · 20 s</button>
+          <button id="gps-stop" class="secondary" type="button" disabled>Stop</button>
+        </div>
+        <dl id="gps-results" class="metric-grid compact"></dl>
+      </section>
+
+      <section aria-labelledby="audio-title">
+        <div class="section-heading">
+          <div>
+            <h2 id="audio-title">Web Audio</h2>
+            <p>
+              Unlocks AudioContext with a gesture and plays a very short, quiet
+              tone. Set the car volume first.
+            </p>
+          </div>
+          <span id="audio-status" class="status neutral">not tested</span>
+        </div>
+        <div class="actions">
+          <button id="audio-test" type="button">Test audio and AudioWorklet</button>
+        </div>
+        <dl id="audio-results" class="metric-grid compact"></dl>
+      </section>
+
+      <section aria-labelledby="runtime-title">
+        <div class="section-heading">
+          <div>
+            <h2 id="runtime-title">Graphics and runtime</h2>
+            <p>Reported capabilities and a lightweight frame-pacing sample.</p>
+          </div>
+        </div>
+        <dl id="runtime-results" class="metric-grid"></dl>
+      </section>
+
+      <section aria-labelledby="report-title">
+        <div class="section-heading">
+          <div>
+            <h2 id="report-title">Technical report</h2>
+            <p>
+              Contains no coordinates. Includes a chronological event log and can
+              be copied or photographed.
+            </p>
+          </div>
+          <div class="report-meta">
+            <span id="event-count" class="section-note">0 events</span>
+            <span id="copy-state" class="section-note" aria-live="polite"></span>
+          </div>
+        </div>
+        <div class="actions">
+          <button id="copy-report" type="button">Copy report</button>
+          <button id="reset-session" class="secondary" type="button">Reset session</button>
+        </div>
+        <pre id="report" tabindex="0">Press “Run automatic tests”.</pre>
+      </section>
+    </main>
+
+    <footer>
+      <p>
+        Use this tool only while the vehicle is parked. No data is transmitted: the
+        report exists only on this page until you copy it.
+      </p>
+    </footer>
+
+    <canvas id="webgl-probe" width="16" height="16" aria-hidden="true"></canvas>
+    <script src="./app.js" defer></script>
+  </body>
+</html>

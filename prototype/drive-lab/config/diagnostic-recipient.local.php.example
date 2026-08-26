@@ -1,0 +1,6 @@
+<?php
+declare(strict_types=1);
+
+// Copy this file to public/api/recipient.local.php and use the intended private recipient.
+// sedicivalvole local diagnostic recipient.
+return 'diagnostics@example.invalid';

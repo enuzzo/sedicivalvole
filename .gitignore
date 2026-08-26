@@ -1,0 +1,17 @@
+# Single local library for external sources, bootstrap specifications, and unversioned material.
+/_references/
+
+# Local macOS metadata.
+.DS_Store
+
+# Local credentials and configuration. The example remains versionable.
+.env
+.env.*
+!.env.example
+
+# Local prototype dependencies and generated output.
+/prototype/drive-lab/node_modules/
+/prototype/drive-lab/dist/
+
+# Local diagnostic delivery configuration. The example remains versionable.
+/prototype/drive-lab/public/api/recipient.local.php
