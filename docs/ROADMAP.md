@@ -29,9 +29,9 @@ Gate: a repeatable vehicle report with no invented values. If GPS speed is absen
 
 ## Phase 2 — Flux visual direction
 
-Status: **COMPLETE on 2026-08-26**.
+Status: **REOPENED after in-vehicle rejection**.
 
-Exactly three directions were presented. The user selected direction 1: a luminous central axis with abstract depth/tunnel motion and a translucent lower control dock. The selection fixes the current composition and visual grammar, not the final logo, typeface, palette, or future per-layer motifs.
+Exactly three initial directions were presented and direction 1 was selected. The subsequent implementation exposed that its lens-flare-heavy visual language was not acceptable. The next gate is exactly three revised minimal, Swiss-influenced interpretations that retain central depth and speed response without reusing the rejected wallpaper treatment. Infinite Lights is a mechanics reference, not a visual skin.
 
 ## Phase 3 — Flux signal and music spike
 
@@ -45,7 +45,7 @@ Implemented:
 - 16-step lookahead sequencer, layered arrangement, transitions, and limiter;
 - deterministic desktop signal tests.
 
-The first desktop listen exposed excessive Atmos noise and weak motion mapping. The audio was rebuilt around rhythmic/harmonic layer growth, but the new mix still requires an in-car verdict.
+The first desktop listen exposed excessive Atmos noise and weak motion mapping. The rebuild became audible but remained musically weak and was explicitly rejected. The next spike must use curated environments, a meaningful energy-threshold control, and authored adaptive arrangements rather than exposed implementation layers.
 
 Gate: no audible jitter on deterministic replay, no frantic high-speed march, all automated tests green, and no masking of vehicle alerts.
 

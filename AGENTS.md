@@ -17,6 +17,7 @@ These rules apply to every change in the `sedicivalvole` project.
 - Create small, verified commits frequently during active development. Push each verified checkpoint when a configured remote exists; never invent or configure a remote without the user's destination.
 - After each user-approved product change, deploy the verified build to the canonical live root and validate the product-visible result.
 - If the active context becomes unreliable or overloaded, first inventory every pending requirement and local change, write a concrete task list, and hand the work to a fresh session at an appropriate reasoning effort without leaving the Dropbox project directory.
+- When work continues across desktop and mobile clients, do not assume locally queued desktop messages reached the synchronized thread. Before declaring requirements missing, inspect available local queue/history evidence, record recoverable requirements, and clearly mark any truncated content instead of reconstructing it.
 
 ## Secrets and local material
 
@@ -36,6 +37,10 @@ These rules apply to every change in the `sedicivalvole` project.
 - Keep the technical diagnostics accessible from within the main product experience.
 - Treat `Engine` and `Flux` as equal primary product modes. The active mode must remain clearly identifiable and the mode switch must remain reachable from either experience.
 - `Flux` is the current adaptive music and generative-field work. `Engine` is a separate engine-sound experience with its own audio model and instrument-inspired visual language.
+- The current starburst/lens-flare Flux visual is rejected. Retain only central convergence, depth, speed response, and the low control plane; present exactly three revised minimal, Swiss-influenced directions before replacing it.
+- Treat Codrops/Tympanus Infinite Lights as an ignored study reference for motion mechanics, not a source to copy or a visual skin to reproduce.
+- Flux must feel like an authored adaptive score. Do not substitute exposed oscillator pings, a noise bed, or linear BPM escalation for arrangement, low end, rhythm, harmony, timbre, and spatial progression.
+- Prefer curated audiovisual environments and a meaningful energy-threshold control over low-level `Atmos`, `Harmonics`, and `Pulse` controls in the primary driving surface.
 - Do not assume Apache, Nginx, or any other server technology without evidence.
 
 ## Licensing

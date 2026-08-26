@@ -57,7 +57,9 @@ See [`MODES.md`](MODES.md) for the boundary model, recommendations, and open dec
 - progressive degradation when GPU, shaders, or frame budget are unreliable;
 - reduced motion that preserves atmosphere and information without aggressive tunnel movement.
 
-Exactly three Product Design directions were shown for Flux. The user selected direction 1: a luminous central axis, tunnel depth, indigo–magenta–cyan mood, and translucent lower controls. This selection guides Flux but does not define Engine, freeze the final logo, typeface, palette, or every future motif.
+Exactly three initial Product Design directions were shown for Flux, and the user initially selected direction 1. Subsequent in-vehicle feedback rejected its lens-flare-heavy, wallpaper-like rendering. Only the structural concepts of central convergence, depth, speed response, and a low control plane remain useful. Exactly three revised minimal directions must be presented before the next visual implementation; no palette or final motif is currently selected.
+
+The revised direction must be calm and comparatively flat at rest, then progressively form a centered funnel/tunnel as energy rises, returning coherently toward flatness during deceleration. It should be minimal, precise, and Swiss-influenced rather than illustrative or cinematic. See [`RECOVERED-REQUIREMENTS-2026-08-26.md`](RECOVERED-REQUIREMENTS-2026-08-26.md).
 
 ## 5. Splash and audio unlock
 
@@ -102,7 +104,7 @@ Brake is a discrete event with envelope and cooldown, not only a negative contin
 
 ## 7. Flux music and speed mapping
 
-The received HTML is a useful starting point but not the target ambition.
+The received HTML is a useful starting point but not the target ambition. The current Drive Lab audio spike is audible but musically rejected; isolated pings, exposed oscillator tones, and a noise bed do not satisfy the product.
 
 - BPM must not increase nearly linearly into a frantic march.
 - The speed-to-tempo curve needs a knee and must asymptotically approach a musical ceiling.
@@ -113,6 +115,9 @@ The received HTML is a useful starting point but not the target ambition.
 - Acceleration/deceleration may prepare a transition rather than changing everything immediately.
 - A continuous restrained energy wave remains underneath the mix; its frequency and gain rise smoothly with acceleration.
 - Beat rate and rhythmic density must also increase perceptibly with speed while retaining the tempo knee and musical ceiling.
+- Flux must behave like a curated adaptive arrangement: kick, low end, percussion, rhythmic detail, harmony, timbre, effects, and spatial depth enter and evolve coherently.
+- Both beat-driven and beatless digital environments are allowed, but each must have an authored musical identity.
+- The primary user-facing performance control should be an energy threshold defining the speed at which an environment reaches full intended energy. Low-level `Atmos`, `Harmonics`, and `Pulse` controls are not accepted as the final driving interface.
 
 ## 8. Feature decision matrix
 
@@ -172,6 +177,6 @@ Tesla's official Model 3 page reports a 15.4-inch center display, but not a CSS 
 - README contains only implemented facts and real verified screenshots.
 - `CHANGELOG.md` keeps an `Unreleased` section.
 - During private development, user-approved builds go to the canonical root and are verified live.
-- The provisional license recommendation is AGPL-3.0-or-later for code, shaders, CSS, and build configuration, with original brand/audio/media outside that grant.
+- The operative repository license is AGPL-3.0-or-later for code and documentation, with original brand/audio/standalone media outside that grant as defined in `LICENSE-SCOPE.md`.
 - AGPL allows commercial use, forks, rebranding, and sale; it does not prevent cloning.
-- Do not create `LICENSE` until the exact legal owner and mixed-license policy are confirmed.
+- Exact legal ownership, trademark policy, contributor terms, and the final mixed-license asset policy remain open for legal review; do not invent an owner.

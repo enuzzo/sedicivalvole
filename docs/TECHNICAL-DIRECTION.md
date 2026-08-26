@@ -127,7 +127,9 @@ Sample loops require phase-consistent crossfades, bounded decoded-memory use, cl
 
 ### Current Flux spike
 
-The current Drive Lab intentionally uses a main-thread lookahead scheduler for rapid validation. It contains a 16-step pattern, kick/bass/hat/snare/arp/pad layers, a continuous speed-rising energy wave, speed-gated rhythmic subdivisions, a separate atmosphere drone, delay, motion cues, Brake accent, and limiter. This is a prototype, not the production real-time architecture.
+The current Drive Lab intentionally uses a main-thread lookahead scheduler for rapid validation. It contains a 16-step pattern, kick/bass/hat/snare/arp/pad layers, a continuous speed-rising energy wave, speed-gated rhythmic subdivisions, a separate atmosphere drone, delay, motion cues, Brake accent, and limiter. This is a prototype, not the production real-time architecture, and the current musical result has been rejected in listening tests.
+
+The next spike must start from an authored environment and arrangement graph, not from exposed oscillator layers. Speed maps to a bounded energy trajectory; acceleration and deceleration shape transient envelopes; structural entries are quantized; and the threshold control scales the speed domain without changing the environment's intended musical ceiling.
 
 ### Shared production direction
 
@@ -144,7 +146,7 @@ Profile before adding WASM. It is justified only if measured DSP cost, not fashi
 
 ## Flux visual architecture
 
-Direction 1 becomes a parameterized family, not a static background:
+The initial direction 1 implementation is rejected. A revised visual gate must present exactly three minimal alternatives. The retained architecture is a parameterized family, not a static background:
 
 - central-axis depth and flow;
 - hue and chroma fields;
@@ -154,6 +156,8 @@ Direction 1 becomes a parameterized family, not a static background:
 - context-loss recovery;
 - reduced-motion mode with slow luminance/chroma breathing and no tunnel acceleration;
 - Canvas2D/static image fallback.
+
+The Codrops/Tympanus Infinite Lights reference is useful for its coordinated instancing, depth cues, distortion, FOV response, and eased speed offset. Its source remains in the ignored reference library and its literal road/bloom treatment is not the target. Any implementation must be independent, modernized, profiled, and provenance-safe. See [`REFERENCE-STUDY-INFINITE-LIGHTS.md`](REFERENCE-STUDY-INFINITE-LIGHTS.md).
 
 The renderer consumes a small snapshot and never blocks the audio event queue.
 

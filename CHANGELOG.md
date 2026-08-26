@@ -20,6 +20,8 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - A clean public GitHub repository at `github.com/enuzzo/sedicivalvole`, initialized from a reviewed snapshot without private bootstrap history.
 - A confirmed two-mode product architecture: `Engine` for selectable engine emulation and `Flux` for speed-reactive music and generative WebGL fields.
 - An active `AGPL-3.0-or-later` license for code and documentation, with a clear scope file, contributor notice, and explicit exclusions for brand and standalone media assets.
+- A tracked recovery record for requirements that remained queued in the desktop client while the conversation continued from mobile.
+- A provenance, mechanics, performance, and license study of the Codrops/Tympanus Infinite Lights reference, preserved locally in the ignored reference library.
 
 ### Changed
 
@@ -34,6 +36,8 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - Documented SiteGround's stale canonical HTML behavior, retained both valid bundles, and stopped after the provider rejected an unauthenticated cache purge.
 - Replaced the community viewport assumption with photographed Tesla evidence: `773 × 601` split-view viewport, `1254 × 784` logical screen, and DPR `1.53`.
 - Replaced the provisional licensing recommendation with an operative mixed code-and-asset policy while leaving exact legal ownership and final brand rules open for legal review.
+- Reopened the Flux visual gate after rejecting the lens-flare-heavy direction-1 implementation; the next gate requires exactly three revised minimal, Swiss-influenced directions.
+- Marked the current Flux audio spike as musically rejected and redirected the next iteration toward curated environments, authored adaptive arrangement, and an energy-threshold control.
 
 ### Fixed
 
