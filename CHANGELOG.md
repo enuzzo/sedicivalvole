@@ -26,6 +26,7 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - Curated Pearl, Graphite, Red, Blue, and Silver `BODY COLOR` themes that tune both the field palette and interface accent.
 - A Canvas2D Modular Aperture fallback for devices without WebGL2.
 - A v3 extended diagnostic report with aggregate canvas frame pacing, long-task timing, connection history, navigation/resource metrics, heap/storage/battery hints, and a larger bounded event history.
+- A pinned study of `illobo/textStep` covering its synthesized drum/synth engine, 32-step patterns, Jungle/D&B presets, scene queue, browser portability, and licensing gate.
 
 ### Changed
 
@@ -53,6 +54,7 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - Framed the persistent speed readout in a compact opaque high-contrast rectangle with fixed padding and no glass treatment.
 - Separated visual velocity from saturated energy so speed above the full-energy threshold continues to accelerate and radially stretch the tunnel into a high-speed stripe field; Demo now reaches 160 km/h for deterministic validation.
 - Replaced the sparse square-like zero-speed grid with an ordered Swiss score field of staggered horizontal bars, rare body-color accents, a restrained central datum, and a slow chromatic breath.
+- Rejected the current approximately 115 km/h soft-club Flux result and queued a data-driven AudioWorklet synth/sequencer with a high-energy Jungle identity and deceleration memory.
 
 ### Fixed
 

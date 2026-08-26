@@ -55,6 +55,10 @@ trademark. Each contribution must be made by someone entitled to license it.
 6. decide whether any original media will receive a separate license; and
 7. add SPDX headers to source files as the codebase matures.
 
+## textStep permission and compatibility gate
+
+The ignored `illobo/textStep` study copy is publicly licensed under GNU GPL version 2.0. The user reports an additional direct authorization from the author for unrestricted reuse, but no written license text or sublicensing terms have been added to this repository. GPL-2.0-only source must not be copied into the `AGPL-3.0-or-later` product on assumption alone. Before direct reuse, preserve written evidence that clearly covers modification, redistribution, attribution, and licensing of the combined work. Until then, textStep is a mechanics reference and Flux uses an independent implementation. See [`REFERENCE-STUDY-TEXTSTEP.md`](REFERENCE-STUDY-TEXTSTEP.md).
+
 Primary references: [GNU licenses](https://www.gnu.org/licenses/),
 [AGPL-3.0 text](https://www.gnu.org/licenses/agpl-3.0.html), and
 [Creative Commons software guidance](https://creativecommons.org/faq/#can-i-apply-a-creative-commons-license-to-software).

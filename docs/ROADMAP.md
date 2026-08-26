@@ -47,9 +47,18 @@ Implemented:
 - filtered acceleration/deceleration envelopes with single direction-change cues and steady-state decay;
 - deterministic desktop signal tests.
 
-The earlier synthesized spike was explicitly rejected. The current build implements the first authored adaptive arrangement and purposeful control model; its musical quality is still pending a real Tesla listening test.
+The earlier synthesized spike was explicitly rejected. The current build implements a first authored arrangement and purposeful control model, but the listening result at approximately 115 km/h is also rejected as a slow soft-club groove without the required Jungle/D&B rhythm, riffs, break density, or bass movement.
 
-Gate: no audible jitter on deterministic replay, no frantic high-speed march, all automated tests green, and no masking of vehicle alerts.
+Queued next:
+
+- replace the main-thread arrangement with a data-driven AudioWorklet synth/sequencer;
+- author independent 32-step drum, break-detail, bass, riff, harmony, and atmosphere lanes;
+- create a high-energy Jungle environment with a genre-appropriate tempo ceiling;
+- implement catch/recovery/sustained-release deceleration memory so short braking does not dismantle the groove;
+- evaluate original or separately licensed samples only after the synthesis-first transport works;
+- use the ignored `illobo/textStep` repository as an architecture study under the provenance and licensing gates in [`REFERENCE-STUDY-TEXTSTEP.md`](REFERENCE-STUDY-TEXTSTEP.md).
+
+Gate: deterministic 0 → 115 → 60 → 115 → 0 replay, credible Jungle identity at high energy, no audible jitter or stop/start phrasing, all automated tests green, and no masking of vehicle alerts.
 
 ## Phase 4 — Flux generative renderer spike
 

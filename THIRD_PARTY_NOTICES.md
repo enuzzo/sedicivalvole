@@ -18,3 +18,5 @@ Transitive dependencies and integrity hashes are locked in `prototype/drive-lab/
 Material kept only under `_references/` remains external local source material. It is not automatically approved, redistributable, or part of the product.
 
 The Codrops/Tympanus `InfiniteLights` repository is currently a study-only source under its custom usage notice. No file or substantial implementation from it has entered this repository or product. See `docs/REFERENCE-STUDY-INFINITE-LIGHTS.md` for provenance and constraints.
+
+The `illobo/textStep` repository is currently a study-only source under GNU GPL version 2.0, with an additional direct permission reported by the user but not yet documented in reproducible written form. No source, preset data, or audio asset from it has entered this repository or product. See `docs/REFERENCE-STUDY-TEXTSTEP.md` for provenance, architectural findings, and the adoption gate.

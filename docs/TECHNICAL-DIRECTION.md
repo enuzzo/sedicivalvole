@@ -129,6 +129,21 @@ Sample loops require phase-consistent crossfades, bounded decoded-memory use, cl
 
 The current Drive Lab uses a main-thread lookahead scheduler for rapid validation and implements the authored `APERTURE 01` environment. Four structural sections coordinate kick, bass, hats, clap, harmony, motif, delay, and dynamics. Continuous speed maps to bounded energy and timbre; filtered acceleration and deceleration envelopes separately shape rhythmic pressure, low end, brightness, motion, and delay. A motion-direction change produces one bounded transition gesture rather than a periodically repeated effect, and the envelopes decay to steady state when speed stops changing. Section changes use hysteresis, a two-bar dwell, bar quantization, and crossfades. The user-selected full-energy threshold scales the speed domain without changing the environment's intended ceiling. This remains a prototype, not the production real-time architecture, and musical acceptance requires a Tesla listening test.
 
+The listening result at approximately 115 km/h is rejected: the arrangement reads as slow soft-club/disco and does not deliver the intended Jungle rhythm, riff, break, or bass identity. The main-thread spike must not be incrementally patched into production. Replace it with a data-driven synth/sequencer boundary.
+
+### Flux sequencer direction
+
+- immutable 32-step pattern data grouped into phrases;
+- independent drum, break-detail, bass, riff, harmony, atmosphere, and transition lanes;
+- stable AudioWorklet transport with sample-accurate step timing;
+- queued pattern/scene changes at musical boundaries;
+- separately authored kit/synth parameters and pattern/note data;
+- deterministic seeded variations and bounded fills;
+- optional sampler voices only for original or explicitly licensed assets;
+- a tempo knee that can reach a credible Jungle/D&B ceiling while high-speed power continues through arrangement, timbre, low end, and dynamics.
+
+Deceleration uses a three-stage state machine: `catch`, `recovery`, and `sustained_release`. The catch window preserves tempo and principal groove through brief braking. Recovery cancels queued exits when speed returns. Sustained release removes detail lanes one phrase at a time and only then eases tempo downward. State changes use asymmetric dwell, retained peak-energy memory, hysteresis, minimum scene tenure, cancellable queues, and crossfades. See [`REFERENCE-STUDY-TEXTSTEP.md`](REFERENCE-STUDY-TEXTSTEP.md).
+
 ### Shared production direction
 
 - one AudioContext created by an explicit user gesture;

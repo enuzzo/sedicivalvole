@@ -116,6 +116,9 @@ The received HTML is a useful starting point but not the target ambition. The cu
 - A continuous restrained energy wave remains underneath the mix; its frequency and gain rise smoothly with acceleration.
 - Beat rate and rhythmic density must also increase perceptibly with speed while retaining the tempo knee and musical ceiling.
 - Flux must behave like a curated adaptive arrangement: kick, low end, percussion, rhythmic detail, harmony, timbre, effects, and spatial depth enter and evolve coherently.
+- The first priority environment must reach a recognizable Jungle/D&B identity at high energy through break structure, syncopation, sub/reese movement, riffs, fills, and a genre-appropriate tempo ceiling; a slow soft-club groove at approximately 115 km/h is explicitly rejected.
+- The score must retain short-term kinetic memory during deceleration. Brief speed drops preserve transport and the principal groove while changing pressure and space; only sustained lower speed gradually removes layers and then lowers tempo at musical boundaries. Re-acceleration cancels queued removals instead of restarting the score.
+- Flux needs an authored synth/sequencer system with independent lanes, patterns, kits, scenes, deterministic variation, and quantized transitions. Samples are optional and must be original or separately licensed.
 - Both beat-driven and beatless digital environments are allowed, but each must have an authored musical identity.
 - The primary user-facing performance control should be an energy threshold defining the speed at which an environment reaches full intended energy. Low-level `Atmos`, `Harmonics`, and `Pulse` controls are not accepted as the final driving interface.
 
@@ -124,7 +127,7 @@ The received HTML is a useful starting point but not the target ambition. The cu
 | Feature | Status | Note |
 |---|---|---|
 | Engine mode with synthesized/sampled models | confirmed primary mode | mapping, catalog, quality, and latency require dedicated spike |
-| Tempo + arrangement system | prototype available | musical acceptance pending |
+| Adaptive synth + sequencer | architecture queued | textStep study recorded; browser worklet spike and musical acceptance pending |
 | Modular Aperture generative visual | implemented prototype | WebGL2 plus Canvas2D fallback; Tesla performance pending |
 | Open packs | strategic goal | schema and licensing not frozen |
 | Offline core | planned after capability test | browser persistence unknown |
