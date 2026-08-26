@@ -19,7 +19,7 @@
 - canonical URL: **HTTP 200**;
 - obsolete `/diagnostics/drive-lab/`: **HTTP 404**;
 - HTML, JavaScript, CSS, and image: local/live byte counts and SHA-256 hashes all identical;
-- selected-browser smoke test: splash, `TEST & START`, GPS permission state, audio/visual controls, and integrated report all rendered in English;
+- selected-browser smoke test: Signal Gate splash, `PLAY THE ROAD`, GPS permission state, audio/visual controls, and integrated report all rendered in English;
 - observed HTTP edge header: `server: nginx`; this identifies the responding edge but does not prove the provider's full origin topology.
 
 ## Modular Aperture publication evidence — 2026-08-26

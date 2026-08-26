@@ -199,12 +199,12 @@ Controls have explicit states: `awake`, `resting`, `parked_configuration`, and `
 
 ## Splash as bootstrap
 
-The splash represents real work:
+The approved Signal Gate splash is a dedicated lightweight WebGL2 shader with a Canvas2D fallback. It renders paired red and ice-blue lanes that curve into a narrow central gate, then freezes while the splash fades so no hidden animation loop survives in the running experience. It represents real work:
 
 1. a user gesture unlocks audio;
 2. minimum assets are verified/decoded;
 3. capability state is measured;
-4. the tunnel field transitions continuously into the live scene.
+4. the Signal Gate fades into the selected live Flux scene.
 
 Do not add artificial delay. Return visits may compress the visual sequence, but cannot bypass a newly required audio gesture. Inject version from `VERSION`; never copy it manually.
 

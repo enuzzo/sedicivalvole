@@ -30,6 +30,7 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - Prominent project-level credit to Lobo (`illobo`) as the creator of textStep and its sequencer, synth, DSP, scene, and performance architecture, with linked provenance and an explicit future-derived-code attribution policy.
 - A confirmed multi-environment Flux model binding generative effect, musical genre, palette, geometry, and speed response, plus three new selection-gated directions informed by the Interstate 4 and Interstate 7 mechanics study.
 - The user-selected `VERTIGO 02` visual environment with an independent WebGL2 shader, continuously redrawn Canvas2D fallback, persistent environment selection, and deterministic environment-cycle tests.
+- The approved Signal Gate splash: paired vermilion and ice-blue generative lanes bend into a central vertical gate, with a Canvas2D fallback and reduced-motion support.
 
 ### Changed
 
@@ -66,6 +67,7 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - Removed the user-adjustable full-energy slider, fixed the shared road-energy ceiling at `130 km/h`, and remapped Aperture so tunnel depth is already visible near `40 km/h` before progressing continuously to the full Plaid field.
 - Replaced the threshold surface with distinct `VISUAL` selection and a truthful `SCORE / PROTOTYPE / TEXTSTEP · NEXT` roadmap slot; no unimplemented genre is presented as active.
 - Increased Vertigo line weight, layered glow, and stationary breathing while preserving its original-inspired floor-to-wall fold, lateral wave, and independent renderer provenance.
+- Replaced the square-grid startup view with the selected Signal Gate direction, moved `PLAY THE ROAD` into a larger centered launch control, and added the centered `A project by Netmilk Studio` credit.
 
 ### Fixed
 

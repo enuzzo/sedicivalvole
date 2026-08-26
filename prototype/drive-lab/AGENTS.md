@@ -21,7 +21,8 @@ When implementing from a selected generated mock, treat that image as the source
 - `Engine` is a separate engine-emulation mode with selectable engine sound models and an instrument-inspired generative visual system. Do not implement its final visual direction before presenting exactly three Engine-specific directions.
 - Mode switching shares the normalized speed source, diagnostics, audio-unlock lifecycle, master Stop/Mute, safety limits, and accessibility behavior. Never imply access to real RPM, throttle, gear, or CAN data without evidence.
 - Keep the scene abstract, minimal and atmospheric; no scenery, characters or illustrative decoration.
-- The initial flow is one deliberate `TEST & START` gesture, then a continuous fade into Drive Lab.
+- The initial flow is one deliberate `PLAY THE ROAD` gesture, then a continuous fade into Drive Lab.
+- The approved splash is the **Signal Gate** direction: paired vermilion and ice-blue light lanes bend from the lower edges into a narrow central vertical gate on black. Implement it as a restrained generative WebGL2 field with a Canvas2D fallback, not a static raster. The single large CTA reads `PLAY THE ROAD`; `A project by Netmilk Studio` is centered directly below it, followed by the quiet local-capability note.
 - Controls are touch-first, large, flat, and fully legible; the GL field provides the visual contrast.
 - GPS and demo feed the same normalized speed signal; never display, persist or transmit coordinates.
 - Extended diagnostics may aggregate frame pacing, connection changes, GPS accuracy/cadence, audio/runtime state, memory, storage, navigation/resource timing, and bounded events. Keep the fixed recipient in ignored local configuration, transmit only after the explicit SEND DIAGNOSTIC gesture, and never collect coordinates or enable automatic remote telemetry.

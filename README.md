@@ -37,7 +37,7 @@ The canonical development build is available at [sedicivalvole.app](https://sedi
 
 ## Experience
 
-The product is configured while parked. One deliberate **TEST & START** gesture unlocks Web Audio, checks capabilities, requests GPS permission, and enters the selected Flux environment. The interface is flat, monospace, Braun-influenced, Swiss, and slightly brutalist; the generative field supplies the visual contrast.
+The product is configured while parked. One deliberate **PLAY THE ROAD** gesture on the animated Signal Gate splash unlocks Web Audio, checks capabilities, requests GPS permission, and enters the selected Flux environment. The interface is flat, monospace, Braun-influenced, Swiss, and slightly brutalist; the generative field supplies the visual contrast.
 
 The speed source is an explicit abstraction. GPS and the desktop simulator produce the same normalized stream. `ArrowUp` and `ArrowDown` adjust simulated speed; `Space` triggers a discrete braking accent. Keyboard handling never steals input from focused controls.
 

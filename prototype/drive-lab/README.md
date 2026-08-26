@@ -9,11 +9,12 @@ npm install
 npm run dev
 ```
 
-The initial **TEST & START** gesture unlocks Web Audio, runs capability checks, requests GPS permission, and fades into the scene.
+The initial **PLAY THE ROAD** gesture sits over the animated Signal Gate, unlocks Web Audio, runs capability checks, requests GPS permission, and fades into the scene.
 
 ## Implemented
 
 - selectable `APERTURE 01` and `VERTIGO 02` procedural WebGL2 environments;
+- a dedicated WebGL2 Signal Gate splash with Canvas2D and reduced-motion fallbacks;
 - continuously redrawn Canvas2D fallbacks and reduced-motion behavior;
 - saturating speed-to-energy and speed-to-BPM mappings;
 - GPS `coords.speed` input with null handling and Demo fallback;

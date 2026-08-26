@@ -15,8 +15,8 @@ Open `http://localhost:8080/diagnostics/tesla-capabilities/` on desktop. In-car 
 ## Vehicle procedure
 
 1. Park safely and set audio volume low.
-2. Open the canonical HTTPS product URL and tap **TEST & START**.
-3. Open the integrated report with the `i` button.
+2. Open the canonical HTTPS product URL and tap **PLAY THE ROAD**.
+3. Open the integrated report with the `DIAG` button.
 4. Allow GPS when prompted and observe whether speed becomes numeric.
 5. Copy or photograph the report while parked.
 6. Return the report to the project so measured values become targets and fallbacks.

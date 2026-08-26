@@ -14,6 +14,7 @@ import {
 import { FluxField } from "./flux-field.jsx";
 import { FLUX_ENVIRONMENTS, getFluxEnvironment, nextFluxEnvironmentId } from "./flux-environments.js";
 import { FLUX_THEMES, getFluxTheme } from "./flux-themes.js";
+import { SplashSignalGate } from "./splash-signal-gate.jsx";
 import { VertigoField } from "./vertigo-field.jsx";
 import {
   advanceDemoMotion,
@@ -809,13 +810,15 @@ export function App() {
       {keyboardHint ? <div className="keyboard-hint" role="status">{keyboardHint}</div> : null}
 
       <section className="splash" aria-hidden={phase === "running"}>
-        <div className="splash-mark"><span>sedicivalvole</span><small>FLUX · {environment.label} · {APP_VERSION}</small></div>
+        <SplashSignalGate active={phase !== "running"} reducedMotion={reducedMotion} />
+        <div className="splash-mark"><span>sedicivalvole</span></div>
+        <small className="splash-status">FLUX · {environment.label} · {APP_VERSION}</small>
         <div className="splash-action">
-          <p>PLAY THE ROAD.</p>
           <button className="launch-button" type="button" onClick={runHarness} disabled={phase === "testing"}>
-            {phase === "testing" ? "TESTING" : "TEST & START"}
+            {phase === "testing" ? "STARTING" : "PLAY THE ROAD"}
           </button>
-          <small>Audio, display, motion, and GPS are checked locally.</small>
+          <small className="splash-credit">A project by Netmilk Studio</small>
+          <small className="splash-privacy">Audio, display, motion, and GPS are checked locally.</small>
         </div>
       </section>
 

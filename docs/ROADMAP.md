@@ -111,7 +111,7 @@ Planned only after vehicle evidence:
 - park-first setup, Stop/Mute, and large touch controls;
 - local preferences without position persistence;
 - warm offline core and visible cache state if supported;
-- final splash/audio-unlock flow and version access.
+- approved Signal Gate splash and audio-unlock flow, with final brand/version access still subject to release sign-off.
 
 Gate: complete main flow, accessibility baseline, long-session stability, and safe passenger/parked validation.
 

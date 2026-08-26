@@ -68,11 +68,10 @@ The module identity must remain visually continuous across the entire speed rang
 
 ## 5. Splash and audio unlock
 
-- The future splash uses tunnel vision and flows continuously into the main scene.
-- It is not an artificial wait.
-- The first deliberate gesture may unlock Web Audio and complete minimum preload.
-- Reserve a structural logo area without inventing a final mark.
-- Display the version discreetly on the splash and/or when controls are visible.
+- The approved Signal Gate splash uses paired vermilion and ice-blue light lanes that bend from the lower edges into a narrow central vertical gate on black.
+- The field is generated in WebGL2, retains a Canvas2D fallback, and stops animating after launch; it is not a static raster or an artificial wait.
+- One large `PLAY THE ROAD` gesture unlocks Web Audio and completes minimum capability checks before the splash fades into the selected live environment.
+- Keep the `sedicivalvole` wordmark compact, show the active Flux environment and injected version discreetly, and center `A project by Netmilk Studio` below the CTA.
 - Support fast return visits and a reduced-motion variant while respecting any required new audio gesture.
 
 ## 6. Speed, GPS, and simulation
