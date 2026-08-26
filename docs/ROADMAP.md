@@ -63,7 +63,7 @@ Gate: deterministic 0 → 115 → 60 → 115 → 0 replay, credible Jungle ident
 
 ## Phase 4 — Flux generative renderer spike
 
-Status: **MODULAR APERTURE IMPLEMENTED; TESLA PERFORMANCE PENDING**.
+Status: **APERTURE AND VERTIGO IMPLEMENTED; TESLA PERFORMANCE PENDING**.
 
 Implemented:
 
@@ -74,13 +74,13 @@ Implemented:
 - dark tunnel terminus plus off-canvas resting chrome with a persistent speed readout and wake-first interaction.
 - outward high-speed flight, non-linear flow response, true-zero Demo dwell, and an opaque high-contrast speed frame.
 - one seam-free geometric field that continuously morphs from large, complete four-color squares through smaller warped modules into a speed-driven Plaid tunnel with radial stripe deformation and a 160 km/h Demo ceiling.
+- selectable `VERTIGO 02` WebGL2/Canvas2D field with a continuous power-curve fold, paired lateral waves, longitudinal travel, curated palette parameters, reversible deceleration, and persisted environment choice.
 
 Queued next:
 
-- add selectable audiovisual environments whose visual, genre, palette, geometry, and speed mapping are authored as one coherent identity;
-- evaluate the three user-facing directions generated from the Interstate 4 and Interstate 7 mechanics study, then implement only the selected direction or explicitly approved pair;
-- recreate the selected motion independently: do not copy the ignored Infinite Lights source or reproduce its literal road skin;
-- parameterize travel rate, projection/FOV response, curvature, band density, palette, and geometry while preserving continuous reversible deceleration;
+- bind the visual environment selector to authored musical genres once the new sequencer boundary exists;
+- retain the two unselected Interstate-inspired directions in the ignored backlog for a later three-direction gate rather than presenting them as implemented;
+- profile and refine travel rate, projection response, curvature, band density, palette, and geometry on the target Tesla while preserving continuous reversible deceleration;
 - verify each environment at rest, intermediate speed, full energy, and sustained deceleration at `773 × 601` before canonical deployment.
 
 Gate: stable frame budget on the slowest target vehicle, graceful degradation, and no audio degradation while the renderer runs.

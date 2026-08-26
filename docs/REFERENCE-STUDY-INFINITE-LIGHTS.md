@@ -53,4 +53,8 @@ This keeps the reference's strongest motion grammar while satisfying the minimal
 
 ## Product Design outcome
 
-The selected **Modular Aperture** direction is independently implemented from rectangular field mathematics and does not reproduce the reference's road, light trails, bloom, or scene structure. The unselected **Laminar** direction remains preserved only in the ignored visual-study library. Its visible resemblance to Infinite Lights is explicitly recorded: it must not be implemented as shown and would require a stronger independent reinterpretation before reconsideration.
+The selected **Modular Aperture** direction is independently implemented from rectangular field mathematics and does not reproduce the reference's road, light trails, bloom, or scene structure.
+
+The user subsequently selected **Vertigo / Interstate 7** as the second Flux environment and explicitly asked that the real implementation be read before translation. The reviewed `deepDistortion` mechanics combine a sinusoidal X displacement with a power-curve-plus-sine Y displacement, while the camera target samples a related distortion delta. This explains the characteristic small lateral drift and rolling wave: it is not a straight road that merely turns upward.
+
+`VERTIGO 02` now translates that motion grammar with independent full-screen WebGL2 mathematics and a Canvas2D fallback. It retains the continuous floor-to-wall fold, multiple time-varying waves, longitudinal travel, depth response, reversible deceleration, and configurable palette/geometry boundary. It does not import the original shader, Three.js scene, post-processing, road mesh, light-trail geometry, assets, navigation, or title skin. The other two generated follow-up directions remain preserved only in the ignored local backlog.

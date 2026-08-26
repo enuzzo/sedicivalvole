@@ -10,7 +10,7 @@
 > scheduler; no textStep source is shipped yet. When derived code is integrated,
 > the exact files, changes, license, and attribution will be recorded explicitly.
 
-> Current state: **Flux Modular Aperture is the current Drive Lab prototype and is under vehicle validation**. This is a development build, not a release.
+> Current state: **Flux Drive Lab now includes the selectable Aperture and Vertigo visual environments and is under vehicle validation**. This is a development build, not a release.
 
 Public development repository: [github.com/enuzzo/sedicivalvole](https://github.com/enuzzo/sedicivalvole).
 
@@ -25,7 +25,7 @@ The canonical development build is available at [sedicivalvole.app](https://sedi
 - ✅ a single ignored local reference library under `_references/`;
 - ✅ source audit, product requirements, adversarial review, technical direction, and roadmap;
 - ✅ Modular Aperture selected after exactly three revised Product Design directions;
-- ✅ touch-first Flux prototype with a procedural WebGL2/Canvas2D aperture field, GPS/demo speed source, Stop/Mute, full-energy threshold, five body-color themes, and an integrated capability report;
+- ✅ touch-first Flux prototype with selectable procedural WebGL2/Canvas2D Aperture and Vertigo fields, GPS/demo speed source, Stop/Mute, full-energy threshold, five body-color themes, and an integrated capability report;
 - ✅ local-only speed processing: raw coordinates are never displayed, persisted, or transmitted;
 - ✅ a four-section authored audio spike with a tempo knee, quantized transitions, hysteresis, dwell, crossfades, and speed-driven arrangement depth;
 - ✅ production build and deterministic signal, diagnostic-model, and packaging tests passing;
@@ -37,7 +37,7 @@ The canonical development build is available at [sedicivalvole.app](https://sedi
 
 ## Experience
 
-The product is configured while parked. One deliberate **TEST & START** gesture unlocks Web Audio, checks capabilities, requests GPS permission, and fades continuously into Modular Aperture. The interface is flat, monospace, Braun-influenced, Swiss, and slightly brutalist; the generative field supplies the visual contrast.
+The product is configured while parked. One deliberate **TEST & START** gesture unlocks Web Audio, checks capabilities, requests GPS permission, and enters the selected Flux environment. The interface is flat, monospace, Braun-influenced, Swiss, and slightly brutalist; the generative field supplies the visual contrast.
 
 The speed source is an explicit abstraction. GPS and the desktop simulator produce the same normalized stream. `ArrowUp` and `ArrowDown` adjust simulated speed; `Space` triggers a discrete braking accent. Keyboard handling never steals input from focused controls.
 
@@ -46,7 +46,7 @@ The speed source is an explicit abstraction. GPS and the desktop simulator produ
 Confirmed product modes:
 
 - **Engine** — selectable engine-sound emulation with a dedicated instrument-inspired visual language. Audio modeling, catalog, and final visual direction are not implemented yet.
-- **Flux** — adaptive music driven by speed and motion, paired with the procedural Modular Aperture field. It is calm at rest, forms a centered tunnel as energy rises, and releases on deceleration. This is the mode currently implemented as Drive Lab.
+- **Flux** — adaptive music driven by speed and motion, paired with selectable procedural environments. Aperture morphs a flat square field into a centered tunnel; Vertigo folds continuous light bands from a plane into a laterally undulating vertical flow. Both reverse coherently during deceleration. This is the mode currently implemented as Drive Lab.
 
 Shared foundations include the GPS/Demo speed source, integrated diagnostics, master Stop/Mute, reduced motion, renderer fallback, and touch-first safety behavior. The mode switch will remain clearly identifiable and reachable from both experiences.
 
@@ -95,7 +95,7 @@ No screenshot is published here yet. The repository will include only real, curr
 
 ## Roadmap
 
-The next gate is a real Tesla session at the verified split viewport: evaluate the Modular Aperture field and adaptive score across acceleration/deceleration, measure frame pacing, test the full-energy threshold and body-color control, and check touch reach while parked. The compact `DIAG` report remains available for technical evidence.
+The next gate is a real Tesla session at the verified split viewport: compare Aperture and Vertigo across acceleration/deceleration, measure frame pacing, test the full-energy threshold, environment switch, and body-color control, and check touch reach while parked. The compact `DIAG` report remains available for technical evidence. The current shared audio score is still rejected; the selectable Jungle-capable sequencer remains the next major product milestone.
 
 See [`docs/ROADMAP.md`](docs/ROADMAP.md).
 

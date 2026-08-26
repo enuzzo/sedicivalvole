@@ -127,7 +127,7 @@ Sample loops require phase-consistent crossfades, bounded decoded-memory use, cl
 
 ### Current Flux spike
 
-The current Drive Lab uses a main-thread lookahead scheduler for rapid validation and implements the authored `APERTURE 01` environment. Four structural sections coordinate kick, bass, hats, clap, harmony, motif, delay, and dynamics. Continuous speed maps to bounded energy and timbre; filtered acceleration and deceleration envelopes separately shape rhythmic pressure, low end, brightness, motion, and delay. A motion-direction change produces one bounded transition gesture rather than a periodically repeated effect, and the envelopes decay to steady state when speed stops changing. Section changes use hysteresis, a two-bar dwell, bar quantization, and crossfades. The user-selected full-energy threshold scales the speed domain without changing the environment's intended ceiling. This remains a prototype, not the production real-time architecture, and musical acceptance requires a Tesla listening test.
+The current Drive Lab uses a main-thread lookahead scheduler for rapid validation and exposes the authored `APERTURE 01` and `VERTIGO 02` visual environments over one shared audio spike. Four structural sections coordinate kick, bass, hats, clap, harmony, motif, delay, and dynamics. Continuous speed maps to bounded energy and timbre; filtered acceleration and deceleration envelopes separately shape rhythmic pressure, low end, brightness, motion, and delay. A motion-direction change produces one bounded transition gesture rather than a periodically repeated effect, and the envelopes decay to steady state when speed stops changing. Section changes use hysteresis, a two-bar dwell, bar quantization, and crossfades. The user-selected full-energy threshold scales the speed domain without changing the environment's intended ceiling. This remains a prototype, not the production real-time architecture, and the rejected musical result must be replaced before acceptance.
 
 The listening result at approximately 115 km/h is rejected: the arrangement reads as slow soft-club/disco and does not deliver the intended Jungle rhythm, riff, break, or bass identity. The main-thread spike must not be incrementally patched into production. Replace it with a data-driven synth/sequencer boundary.
 
@@ -159,7 +159,7 @@ Profile before adding WASM. It is justified only if measured DSP cost, not fashi
 
 ## Flux visual architecture
 
-The approved Flux renderer is **Modular Aperture**, selected from exactly three revised minimal alternatives. It is an independently implemented parameterized field, not a static background:
+The Flux renderer currently exposes two independently implemented parameterized fields, not static backgrounds. **Modular Aperture** was selected from exactly three revised minimal alternatives:
 
 - central-axis depth and flow;
 - outward vanishing-point travel at speed, with a non-linear flow ceiling and a near-planar zero-energy state;
@@ -177,9 +177,11 @@ The approved Flux renderer is **Modular Aperture**, selected from exactly three 
 - reduced-motion mode with slow luminance/chroma breathing and no tunnel acceleration;
 - a continuously redrawn Canvas2D fallback.
 
+**Vertigo** was selected as the second environment after direct study of Interstate 7's `deepDistortion` behavior. Its independent shader uses a power-curve floor-to-wall fold, two bounded sine-wave lateral offsets, a secondary cross-band bend, speed-responsive perspective and longitudinal travel, asymmetric energy smoothing, curated palette inputs, and a continuously redrawn Canvas2D fallback. These parameters preserve the characteristic small lateral movement and rolling wave instead of reducing the motion to a straight vertical extrusion. Deceleration reverses the same geometry continuously.
+
 The Flux chrome uses a shared 6 px UI radius for framed controls and diagnostic surfaces. Structural rails remain aligned to the underlying grid. The absolute speed readout uses the same column dimensions and `--line` stroke as the top bar, so hiding the surrounding control layer does not move or restyle it as a separate overlay.
 
-The Codrops/Tympanus Infinite Lights reference is useful for its coordinated instancing, depth cues, distortion, FOV response, and eased speed offset. Its source remains in the ignored reference library and its literal road/bloom treatment is not the target. Any implementation must be independent, modernized, profiled, and provenance-safe. See [`REFERENCE-STUDY-INFINITE-LIGHTS.md`](REFERENCE-STUDY-INFINITE-LIGHTS.md).
+The Codrops/Tympanus Infinite Lights reference is useful for its coordinated instancing, depth cues, distortion, FOV response, eased speed offset, and matched distortion/look-at relationship. Its source remains in the ignored reference library and its literal road/bloom treatment is not the target. Vertigo reads the original mechanics as an executable specification but does not import its source, Three.js scene, bundles, shaders, assets, or visual skin. See [`REFERENCE-STUDY-INFINITE-LIGHTS.md`](REFERENCE-STUDY-INFINITE-LIGHTS.md).
 
 The renderer consumes a small snapshot and never blocks the audio event queue.
 

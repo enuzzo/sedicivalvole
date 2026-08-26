@@ -29,6 +29,7 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - A pinned study of `illobo/textStep` covering its synthesized drum/synth engine, 32-step patterns, Jungle/D&B presets, scene queue, browser portability, and licensing gate.
 - Prominent project-level credit to Lobo (`illobo`) as the creator of textStep and its sequencer, synth, DSP, scene, and performance architecture, with linked provenance and an explicit future-derived-code attribution policy.
 - A confirmed multi-environment Flux model binding generative effect, musical genre, palette, geometry, and speed response, plus three new selection-gated directions informed by the Interstate 4 and Interstate 7 mechanics study.
+- The user-selected `VERTIGO 02` visual environment with an independent WebGL2 shader, continuously redrawn Canvas2D fallback, persistent environment selection, and deterministic environment-cycle tests.
 
 ### Changed
 
@@ -60,6 +61,8 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - Introduced a restrained shared 6 px corner radius across framed controls and diagnostic surfaces while preserving the structural Braun/Swiss grid.
 - Refined the single-field Flux transformation so low-speed squares preserve their proportions, adjoining tunnel walls bend continuously, and perspective deformation grows progressively into the existing high-speed bars without opacity fades.
 - Rejected the current approximately 115 km/h soft-club Flux result and queued a data-driven AudioWorklet synth/sequencer with a high-energy Jungle identity and deceleration memory.
+- Added a direct `ENVIRONMENT` switch between Aperture and Vertigo while preserving the shared speed, energy, palette, Brake, reduced-motion, and diagnostic contracts.
+- Translated the Interstate 7 deep-distortion mechanics into configurable Vertigo geometry: a power-curve floor-to-wall fold, paired lateral waves, longitudinal travel, speed-responsive perspective, and the same surface unfolding during deceleration without an opacity transition.
 
 ### Fixed
 

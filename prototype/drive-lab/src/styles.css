@@ -282,9 +282,17 @@ button { -webkit-tap-highlight-color: transparent; }
   align-content: center;
   gap: 12px;
   padding: 16px 22px;
+  border: 0;
+  border-right: 1px solid var(--line);
+  border-radius: 0;
+  color: var(--paper);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
 }
 .environment-control strong { font-size: 17px; font-weight: 560; letter-spacing: .07em; }
 .environment-control small { position: absolute; right: 16px; bottom: 34px; color: var(--accent); font-size: 12px; }
+.environment-control:active { background: rgba(238, 234, 224, .07); }
 .energy-control {
   display: grid;
   grid-template-columns: 1fr auto;

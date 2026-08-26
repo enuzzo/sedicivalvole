@@ -62,6 +62,8 @@ Framed controls use a restrained 6 px corner radius rather than completely sharp
 
 Modular Aperture is calm and comparatively flat at rest. Zero speed uses a complete Swiss mosaic of large square modules, distributed evenly across four tones from the active body-color palette, with no missing cells, black gaps, or central void. As energy rises the same modules become smaller; speed then bends and recedes that shared coordinate field into a centered funnel/tunnel instead of fading between separate scenes. The dark terminal aperture opens geometrically only as depth forms. Deceleration reverses the same continuous transformation so the tunnel flattens back into squares without a flash or a disabled-warp step. At high velocity, modules travel outward from the central vanishing point and stretch into radial stripes, compressing perceived depth into a Plaid-like velocity field. Curated Pearl, Graphite, Red, Blue, and Silver body-color themes change the visual character without exposing low-level shader controls. See [`RECOVERED-REQUIREMENTS-2026-08-26.md`](RECOVERED-REQUIREMENTS-2026-08-26.md).
 
+`VERTIGO 02` is the approved second visual environment. It begins as one unrolled field of longitudinal bands, bends that same field through a power-curve floor-to-wall fold, and adds restrained time-varying lateral drift from multiple coherent waves. Speed raises projection, travel, density, and depth; deceleration unfolds the same geometry instead of fading to another scene. Its mechanics were specified by studying the ignored Interstate 7 / deep-distortion reference, but its production shader and Canvas2D fallback are independent project code. Literal motorway furniture, title treatment, source navigation, and bloom-heavy styling are excluded. The existing five body-color themes parameterize its primary, secondary, neutral, and background tones.
+
 The module identity must remain visually continuous across the entire speed range: size, aspect ratio, perspective, curvature, and depth may deform, but modules must not be replaced through an opacity fade. The zero-speed endpoint is genuinely two-dimensional and square; the maximum-speed endpoint is the most elongated and deeply projected version of that same field.
 
 ## 5. Splash and audio unlock
@@ -135,7 +137,8 @@ The received HTML is a useful starting point but not the target ambition. The cu
 | Engine mode with synthesized/sampled models | confirmed primary mode | mapping, catalog, quality, and latency require dedicated spike |
 | Adaptive synth + sequencer | architecture queued | textStep study recorded; browser worklet spike and musical acceptance pending |
 | Modular Aperture generative visual | implemented prototype | WebGL2 plus Canvas2D fallback; Tesla performance pending |
-| Selectable audiovisual environments | confirmed product model | visual, genre, palette, and geometry variation; Interstate 4/7-inspired studies pending selection and independent implementation |
+| Selectable visual environments | implemented prototype | Aperture and Vertigo share normalized motion, palette, safety, persistence, and diagnostic contracts |
+| Selectable musical environments | confirmed product model | data-driven Jungle-capable sequencer and authored genre identities remain pending |
 | Open packs | strategic goal | schema and licensing not frozen |
 | Offline core | planned after capability test | browser persistence unknown |
 | Reactive map / OSM limits | not confirmed for v1 | scope, network, distraction, and policy risk |

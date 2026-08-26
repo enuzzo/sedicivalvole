@@ -8,6 +8,7 @@ export const FLUX_THEMES = [
       mid: [0.27, 0.28, 0.27],
       light: [0.93, 0.91, 0.86],
       accent: [0.78, 0.76, 0.70],
+      secondary: [0.42, 0.55, 0.67],
     },
   },
   {
@@ -19,6 +20,7 @@ export const FLUX_THEMES = [
       mid: [0.23, 0.24, 0.24],
       light: [0.82, 0.82, 0.78],
       accent: [0.48, 0.50, 0.49],
+      secondary: [0.19, 0.32, 0.45],
     },
   },
   {
@@ -30,6 +32,7 @@ export const FLUX_THEMES = [
       mid: [0.25, 0.26, 0.25],
       light: [0.94, 0.92, 0.86],
       accent: [0.93, 0.07, 0.035],
+      secondary: [0.04, 0.20, 0.72],
     },
   },
   {
@@ -41,6 +44,7 @@ export const FLUX_THEMES = [
       mid: [0.14, 0.22, 0.34],
       light: [0.86, 0.89, 0.90],
       accent: [0.055, 0.23, 0.56],
+      secondary: [0.76, 0.82, 0.90],
     },
   },
   {
@@ -52,6 +56,7 @@ export const FLUX_THEMES = [
       mid: [0.31, 0.32, 0.31],
       light: [0.90, 0.90, 0.86],
       accent: [0.66, 0.67, 0.65],
+      secondary: [0.28, 0.42, 0.56],
     },
   },
 ];

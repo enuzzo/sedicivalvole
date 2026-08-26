@@ -1,6 +1,6 @@
 # Drive Lab
 
-The first integrated `sedicivalvole` prototype, derived from visual direction 1 selected on 2026-08-26.
+The current integrated `sedicivalvole` Flux prototype for the verified Tesla split viewport.
 
 ## Local run
 
@@ -13,13 +13,13 @@ The initial **TEST & START** gesture unlocks Web Audio, runs capability checks, 
 
 ## Implemented
 
-- selected luminous-axis source asset animated through WebGL2;
-- CSS/static fallback and reduced-motion behavior;
+- selectable `APERTURE 01` and `VERTIGO 02` procedural WebGL2 environments;
+- continuously redrawn Canvas2D fallbacks and reduced-motion behavior;
 - saturating speed-to-energy and speed-to-BPM mappings;
 - GPS `coords.speed` input with null handling and Demo fallback;
-- touch-first Stop, Brake, Atmos, Harmonics, Pulse, and Hue controls;
+- touch-first Stop/Mute, environment, full-energy threshold, and curated body-color controls;
 - integrated device report with no coordinates;
-- desktop simulator: `ArrowUp`, `ArrowDown`, and `Space` for Brake;
+- desktop simulator: `ArrowUp`, `ArrowDown`, and `Space` for the deterministic Brake event;
 - `VERSION` injected at build time;
 - deterministic signal and packaging tests.
 
@@ -30,4 +30,4 @@ npm run build
 npm test
 ```
 
-The build is live at [https://sedicivalvole.app/](https://sedicivalvole.app/). GPS behavior, audio quality, frame pacing, and touch reach remain pending validation in the target Tesla.
+The verified build is published to [https://sedicivalvole.app/](https://sedicivalvole.app/) after each approved checkpoint. GPS behavior, the rejected audio score, renderer frame pacing, and touch reach remain pending validation in the target Tesla.

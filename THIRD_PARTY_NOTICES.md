@@ -17,7 +17,7 @@ Transitive dependencies and integrity hashes are locked in `prototype/drive-lab/
 
 Material kept only under `_references/` remains external local source material. It is not automatically approved, redistributable, or part of the product.
 
-The Codrops/Tympanus `InfiniteLights` repository is currently a study-only source under its custom usage notice. No file or substantial implementation from it has entered this repository or product. See `docs/REFERENCE-STUDY-INFINITE-LIGHTS.md` for provenance and constraints.
+The Codrops/Tympanus `InfiniteLights` repository is a study-only source under its custom usage notice. `VERTIGO 02` was independently authored after studying Interstate 7's distortion, depth, projection, and motion relationships; no source file, shader, bundle, scene, geometry, asset, or visual skin from the reference has entered this repository or product. Credit belongs to Daniel Velasquez / Anemolo and Codrops/Tympanus for the original High-speed Light Trails experiment. See `docs/REFERENCE-STUDY-INFINITE-LIGHTS.md` for provenance and constraints.
 
 ### textStep and Lobo
 

@@ -12,7 +12,9 @@ import {
   summarizeGpsTelemetry,
 } from "./diagnostics-model.js";
 import { FluxField } from "./flux-field.jsx";
+import { FLUX_ENVIRONMENTS, getFluxEnvironment, nextFluxEnvironmentId } from "./flux-environments.js";
 import { FLUX_THEMES, getFluxTheme } from "./flux-themes.js";
+import { VertigoField } from "./vertigo-field.jsx";
 import {
   advanceDemoMotion,
   applyKeyboardDelta,
@@ -32,9 +34,12 @@ function readPreferences() {
     return {
       fullEnergyKmh: clamp(Number(value?.fullEnergyKmh) || 120, 60, 180),
       themeId: FLUX_THEMES.some((theme) => theme.id === value?.themeId) ? value.themeId : "red",
+      environmentId: FLUX_ENVIRONMENTS.some((environment) => environment.id === value?.environmentId)
+        ? value.environmentId
+        : "aperture",
     };
   } catch {
-    return { fullEnergyKmh: 120, themeId: "red" };
+    return { fullEnergyKmh: 120, themeId: "red", environmentId: "aperture" };
   }
 }
 
@@ -307,6 +312,7 @@ export function App() {
   const [audioLevel, setAudioLevel] = useState(0);
   const [fullEnergyKmh, setFullEnergyKmh] = useState(initialPreferences.fullEnergyKmh);
   const [themeId, setThemeId] = useState(initialPreferences.themeId);
+  const [environmentId, setEnvironmentId] = useState(initialPreferences.environmentId);
   const reducedMotion = useMemo(
     () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false,
     [],
@@ -339,6 +345,7 @@ export function App() {
   const sessionStartedAtRef = useRef(performance.now());
 
   const theme = getFluxTheme(themeId);
+  const environment = getFluxEnvironment(environmentId);
   const energy = speedToEnergy(speed, fullEnergyKmh);
   const bpm = speedToBpm(speed);
 
@@ -610,11 +617,11 @@ export function App() {
   useEffect(() => { audioRef.current?.setMuted(muted); }, [muted]);
   useEffect(() => {
     try {
-      localStorage.setItem(PREFERENCES_KEY, JSON.stringify({ fullEnergyKmh, themeId }));
+      localStorage.setItem(PREFERENCES_KEY, JSON.stringify({ fullEnergyKmh, themeId, environmentId }));
     } catch {
       // Preference persistence is optional.
     }
-  }, [fullEnergyKmh, themeId]);
+  }, [environmentId, fullEnergyKmh, themeId]);
 
   const captureViewport = useCallback((reason) => {
     const snapshot = readDisplaySnapshot(reason);
@@ -707,7 +714,7 @@ export function App() {
     app: {
       version: APP_VERSION,
       mode: "flux",
-      environment: "aperture",
+      environment: environmentId,
       pageUrl: window.location.href,
       source,
       displayedSpeedKmh: Math.round(speed * 10) / 10,
@@ -755,7 +762,7 @@ export function App() {
       automaticRemoteTelemetry: false,
       transmissionRequiresExplicitGesture: true,
     },
-  } : null, [accuracy, audioLevel, bpm, diagnostics, energy, fullEnergyKmh, gpsState, muted, renderer, source, speed, themeId]);
+  } : null, [accuracy, audioLevel, bpm, diagnostics, energy, environmentId, fullEnergyKmh, gpsState, muted, renderer, source, speed, themeId]);
   const diagnosticText = diagnosticReport ? JSON.stringify(diagnosticReport, null, 2) : "Test not run yet";
 
   const sendDiagnostic = useCallback(async () => {
@@ -784,23 +791,37 @@ export function App() {
     <main
       className={`app phase-${phase} ${controlsAwake || drawerOpen ? "controls-awake" : "controls-resting"}`}
       data-theme={themeId}
+      data-environment={environmentId}
       onPointerDown={handleSurfacePointerDown}
       onPointerMove={wakeControls}
     >
-      <FluxField
-        energy={energy}
-        speed={speed}
-        theme={theme}
-        reducedMotion={reducedMotion}
-        pulse={pulseFlash}
-        brake={brakeFlash}
-        onRenderer={setRenderer}
-        onFrame={recordRenderedFrame}
-      />
+      {environmentId === "vertigo" ? (
+        <VertigoField
+          energy={energy}
+          speed={speed}
+          theme={theme}
+          reducedMotion={reducedMotion}
+          pulse={pulseFlash}
+          brake={brakeFlash}
+          onRenderer={setRenderer}
+          onFrame={recordRenderedFrame}
+        />
+      ) : (
+        <FluxField
+          energy={energy}
+          speed={speed}
+          theme={theme}
+          reducedMotion={reducedMotion}
+          pulse={pulseFlash}
+          brake={brakeFlash}
+          onRenderer={setRenderer}
+          onFrame={recordRenderedFrame}
+        />
+      )}
       {keyboardHint ? <div className="keyboard-hint" role="status">{keyboardHint}</div> : null}
 
       <section className="splash" aria-hidden={phase === "running"}>
-        <div className="splash-mark"><span>sedicivalvole</span><small>FLUX · APERTURE · {APP_VERSION}</small></div>
+        <div className="splash-mark"><span>sedicivalvole</span><small>FLUX · {environment.label} · {APP_VERSION}</small></div>
         <div className="splash-action">
           <p>PLAY THE ROAD.</p>
           <button className="launch-button" type="button" onClick={runHarness} disabled={phase === "testing"}>
@@ -841,10 +862,19 @@ export function App() {
           >
             <span>STOP / MUTE</span><strong>{muted ? "MUTED" : "RUNNING"}</strong>
           </button>
-          <div className="environment-control">
+          <button
+            className="environment-control"
+            type="button"
+            aria-label={`Environment ${environment.label}. Tap to change`}
+            onClick={() => {
+              const nextEnvironmentId = nextFluxEnvironmentId(environmentId);
+              setEnvironmentId(nextEnvironmentId);
+              logDiagnosticEvent("environment.changed", { environment: nextEnvironmentId });
+            }}
+          >
             <span className="control-label">ENVIRONMENT</span>
-            <strong>APERTURE</strong><small>01</small>
-          </div>
+            <strong>{environment.label}</strong><small>{environment.number}</small>
+          </button>
           <EnergyThresholdControl value={fullEnergyKmh} onChange={setFullEnergyKmh} />
           <BodyColorControl themeId={themeId} onChange={setThemeId} />
         </footer>
