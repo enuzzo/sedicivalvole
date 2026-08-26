@@ -176,6 +176,8 @@ The approved Flux renderer is **Modular Aperture**, selected from exactly three 
 - reduced-motion mode with slow luminance/chroma breathing and no tunnel acceleration;
 - a continuously redrawn Canvas2D fallback.
 
+The Flux chrome uses a shared 6 px UI radius for framed controls and diagnostic surfaces. Structural rails remain aligned to the underlying grid. The absolute speed readout uses the same column dimensions and `--line` stroke as the top bar, so hiding the surrounding control layer does not move or restyle it as a separate overlay.
+
 The Codrops/Tympanus Infinite Lights reference is useful for its coordinated instancing, depth cues, distortion, FOV response, and eased speed offset. Its source remains in the ignored reference library and its literal road/bloom treatment is not the target. Any implementation must be independent, modernized, profiled, and provenance-safe. See [`REFERENCE-STUDY-INFINITE-LIGHTS.md`](REFERENCE-STUDY-INFINITE-LIGHTS.md).
 
 The renderer consumes a small snapshot and never blocks the audio event queue.

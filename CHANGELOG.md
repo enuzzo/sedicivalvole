@@ -54,6 +54,8 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - Framed the persistent speed readout in a compact opaque high-contrast rectangle with fixed padding and no glass treatment.
 - Separated visual velocity from saturated energy so speed above the full-energy threshold continues to accelerate and radially stretch the tunnel into a high-speed stripe field; Demo now reaches 160 km/h for deterministic validation.
 - Rebuilt Modular Aperture as one continuous shape field: large complete four-color squares at rest shrink, bend, and recede into the centered tunnel as speed rises, then reverse the same geometric transformation during deceleration without a crossfade.
+- Integrated the speed readout into the header grid with matching boundaries and stroke, then retained it as a fixed detached module when the surrounding chrome retires.
+- Introduced a restrained shared 6 px corner radius across framed controls and diagnostic surfaces while preserving the structural Braun/Swiss grid.
 - Rejected the current approximately 115 km/h soft-club Flux result and queued a data-driven AudioWorklet synth/sequencer with a high-energy Jungle identity and deceleration memory.
 
 ### Fixed
