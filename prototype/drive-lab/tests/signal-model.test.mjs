@@ -79,14 +79,29 @@ test("visual travel stays calm at rest and becomes emphatic only near full energ
 
 test("visual morph stays planar at city speed and becomes a tunnel near the velocity ceiling", () => {
   const idle = visualVelocityToMorphWarp(speedToVisualVelocity(0));
+  const lowSpeed = visualVelocityToMorphWarp(speedToVisualVelocity(40));
   const city = visualVelocityToMorphWarp(speedToVisualVelocity(55));
   const transition = visualVelocityToMorphWarp(speedToVisualVelocity(80));
   const tunnel = visualVelocityToMorphWarp(speedToVisualVelocity(115));
 
   assert.equal(idle, 0);
-  assert.ok(city < 0.01);
-  assert.ok(transition > city && transition < 0.4);
-  assert.ok(tunnel > 0.95);
+  assert.equal(lowSpeed, 0);
+  assert.equal(city, 0);
+  assert.ok(transition > city && transition < 0.15);
+  assert.ok(tunnel > 0.75);
+});
+
+test("visual morph advances monotonically without a low-speed geometry jump", () => {
+  const samples = Array.from({ length: 33 }, (_, index) => (
+    visualVelocityToMorphWarp(speedToVisualVelocity(index * 5))
+  ));
+
+  assert.equal(samples[0], 0);
+  assert.equal(samples.at(-1), 1);
+  samples.slice(1).forEach((sample, index) => {
+    assert.ok(sample >= samples[index]);
+    assert.ok(sample - samples[index] < 0.16);
+  });
 });
 
 test("motion separates acceleration from deceleration with bounded rates", () => {

@@ -30,8 +30,7 @@ function smoothCurve(minimum, maximum, value) {
 }
 
 export function visualVelocityToMorphWarp(visualVelocity) {
-  const stagedVelocity = smoothCurve(0.08, 0.96, clamp(visualVelocity, 0, 1));
-  return smoothCurve(0.04, 0.62, stagedVelocity);
+  return smoothCurve(0.18, 0.7, clamp(visualVelocity, 0, 1)) ** 1.5;
 }
 
 export function energyToFlowRate(energy, speedKmh = 0) {

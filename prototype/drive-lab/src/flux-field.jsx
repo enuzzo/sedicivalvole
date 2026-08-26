@@ -40,6 +40,16 @@ const FRAGMENT_SHADER = `#version 300 es
     return inside.x * inside.y;
   }
 
+  float squarePerimeter(vec2 point) {
+    vec2 absolutePoint = abs(point);
+    if (absolutePoint.y >= absolutePoint.x) {
+      if (point.y >= 0.0) return 1.0 + point.x / max(point.y, 0.0001);
+      return 5.0 - point.x / max(-point.y, 0.0001);
+    }
+    if (point.x >= 0.0) return 3.0 - point.y / max(point.x, 0.0001);
+    return 7.0 + point.y / max(-point.x, 0.0001);
+  }
+
   void main() {
     vec2 screen = v_uv * 2.0 - 1.0;
     screen.x *= u_aspect * 0.77;
@@ -47,27 +57,26 @@ const FRAGMENT_SHADER = `#version 300 es
     float energy = smoothstep(0.02, 0.96, u_energy);
     float velocity = smoothstep(0.08, 0.96, u_velocity);
     float shrink = smoothstep(0.0, 0.42, energy);
-    float warp = smoothstep(0.04, 0.62, velocity);
+    float warp = pow(smoothstep(0.18, 0.7, u_velocity), 1.5);
     float majorAxis = max(max(abs(screen.x), abs(screen.y)), 0.035);
-    float sideSurface = step(abs(screen.y), abs(screen.x));
-    float lateral = mix(
-      screen.x / (abs(screen.y) + 0.055),
-      screen.y / (abs(screen.x) + 0.055),
-      sideSurface
-    );
-    float depth = 1.0 / majorAxis;
+    float perimeter = squarePerimeter(screen);
+    float depth = 1.0 / max(majorAxis, 0.12);
 
     float depthFrequency = mix(4.5, 2.15, velocity);
+    float perimeterDensity = mix(1.25, 10.0, smoothstep(0.42, 1.0, warp));
     vec2 flatGrid = v_uv * vec2(10.0, 7.0);
-    vec2 tunnelGrid = vec2(lateral * 15.0, depth * depthFrequency + u_flow);
+    vec2 tunnelGrid = vec2(perimeter * perimeterDensity, depth * depthFrequency + u_flow);
     vec2 fieldGrid = mix(flatGrid, tunnelGrid, warp);
     vec2 fieldCell = floor(fieldGrid);
     vec2 fieldLocal = fract(fieldGrid);
-    float identity = hash21(fieldCell + vec2(sideSurface * 17.0, 3.0));
+    float identity = hash21(fieldCell + vec2(17.0, 3.0));
     float tone = hash21(fieldCell + vec2(8.0, 29.0));
 
-    vec2 flatInset = vec2(0.12, 0.14);
-    vec2 compactInset = mix(flatInset, vec2(0.27, 0.27), shrink);
+    float flatInsetX = 0.12;
+    float compactInsetX = mix(flatInsetX, 0.27, shrink);
+    float flatInsetY = clamp(0.5 - (0.5 - flatInsetX) * u_aspect * 0.7, 0.03, 0.42);
+    float compactInsetY = clamp(0.5 - (0.5 - compactInsetX) * u_aspect * 0.7, 0.03, 0.42);
+    vec2 compactInset = vec2(compactInsetX, mix(flatInsetY, compactInsetY, shrink));
     float trailInset = mix(0.15 + 0.1 * hash21(fieldCell + vec2(9.0)), 0.012, velocity);
     vec2 tunnelInset = vec2(0.1 + 0.07 * hash21(fieldCell + vec2(4.0)), trailInset);
     vec2 fieldInset = mix(compactInset, tunnelInset, warp);
@@ -84,8 +93,8 @@ const FRAGMENT_SHADER = `#version 300 es
     vec3 color = mix(u_base, panel, tile);
 
     float apertureRadius = max(abs(screen.x) * 0.78, abs(screen.y));
-    float apertureGrowth = smoothstep(0.35, 0.98, warp);
-    float apertureSize = mix(-0.025, 0.105, apertureGrowth);
+    float apertureGrowth = smoothstep(0.06, 0.92, warp);
+    float apertureSize = mix(-0.01, 0.105, apertureGrowth);
     float apertureActive = step(0.0, apertureSize);
     float aperture = apertureActive * (1.0 - smoothstep(apertureSize, apertureSize + 0.012, apertureRadius));
     float apertureFrame = apertureActive
@@ -192,8 +201,8 @@ function drawCanvasFallback(context, canvas, energy, visualVelocity, palette, fl
     context.fillRect(x - panelWidth / 2, y - panelHeight / 2, panelWidth, panelHeight);
   }
 
-  const apertureGrowth = smoothstep(0.35, 0.98, warp);
-  const apertureScale = -0.025 + apertureGrowth * 0.13;
+  const apertureGrowth = smoothstep(0.06, 0.92, warp);
+  const apertureScale = -0.01 + apertureGrowth * 0.115;
   if (apertureScale > 0) {
     const apertureWidth = width * apertureScale;
     const apertureHeight = height * apertureScale;
@@ -243,7 +252,7 @@ function startCanvasFallback(canvas, valuesRef, reducedMotion, onRenderer, onFra
     const nextVelocity = speedToVisualVelocity(
       reducedMotion ? Math.min(valuesRef.current.speed, 20) : valuesRef.current.speed,
     );
-    visualVelocity += (nextVelocity - visualVelocity) * (nextVelocity >= visualVelocity ? 0.14 : 0.075);
+    visualVelocity += (nextVelocity - visualVelocity) * (nextVelocity >= visualVelocity ? 0.14 : 0.12);
     if (!reducedMotion) flow += deltaSeconds * energyToFlowRate(visualEnergy, valuesRef.current.speed);
     drawCanvasFallback(
       context,
@@ -346,7 +355,7 @@ export function FluxField({ energy, speed, theme, reducedMotion, pulse, brake, o
       const nextVelocity = speedToVisualVelocity(
         reducedMotion ? Math.min(valuesRef.current.speed, 20) : valuesRef.current.speed,
       );
-      const velocitySmoothing = nextVelocity >= visualVelocity ? 0.14 : 0.075;
+      const velocitySmoothing = nextVelocity >= visualVelocity ? 0.14 : 0.12;
       visualVelocity += (nextVelocity - visualVelocity) * velocitySmoothing;
       if (!reducedMotion) flow += deltaSeconds * energyToFlowRate(visualEnergy, valuesRef.current.speed);
 
