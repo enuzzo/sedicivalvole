@@ -48,6 +48,9 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - Removed the permanent on-screen Brake control; keyboard Space remains a deterministic bounded test event.
 - Configured the user-confirmed diagnostic recipient in ignored local/server configuration and kept transmission behind the explicit `SEND DIAGNOSTIC` gesture.
 - Replaced the bright tunnel terminus with a dark central void and made the header/footer retire fully off-canvas at rest, leaving only the speed readout visible until the next interaction.
+- Reversed Modular Aperture travel so high speed flies outward from the vanishing point, made flow strongly non-linear near full energy, and let Demo reach and hold a true standstill before restarting.
+- Made acceleration and deceleration explicit audio envelopes: acceleration now raises rhythm, low end, motion, and brightness, while deceleration reduces rhythmic pressure and opens a controlled spatial release without repeated transition effects.
+- Framed the persistent speed readout in a compact opaque high-contrast rectangle with fixed padding and no glass treatment.
 
 ### Fixed
 
@@ -56,6 +59,7 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - Prevented keyboard simulation from intercepting controls that own arrow or Space input.
 - Added smoothing, deadband, saturating energy/tempo, and a discrete brake cooldown to avoid jitter and frantic high-speed tempo.
 - Corrected GLSL portability issues found by rendered browser QA and made the fallback redraw continuously with energy and theme changes.
+- Removed repeated motion-transition cues during sustained speed changes and added automatic envelope decay when speed settles.
 - Added a non-destructive `--preserve-existing` FTP publication mode for deployments that are authorized without legacy-file deletion.
 - Updated the read-only deployment identity gate to recognize the current Flux root markers instead of relying on obsolete `Drive Lab` copy.
 

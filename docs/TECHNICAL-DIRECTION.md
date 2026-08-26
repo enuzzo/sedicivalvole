@@ -127,7 +127,7 @@ Sample loops require phase-consistent crossfades, bounded decoded-memory use, cl
 
 ### Current Flux spike
 
-The current Drive Lab uses a main-thread lookahead scheduler for rapid validation and implements the authored `APERTURE 01` environment. Four structural sections coordinate kick, bass, hats, clap, harmony, motif, delay, and dynamics. Continuous speed maps to bounded energy and timbre; section changes use hysteresis, a two-bar dwell, bar quantization, and crossfades. The user-selected full-energy threshold scales the speed domain without changing the environment's intended ceiling. This remains a prototype, not the production real-time architecture, and musical acceptance requires a Tesla listening test.
+The current Drive Lab uses a main-thread lookahead scheduler for rapid validation and implements the authored `APERTURE 01` environment. Four structural sections coordinate kick, bass, hats, clap, harmony, motif, delay, and dynamics. Continuous speed maps to bounded energy and timbre; filtered acceleration and deceleration envelopes separately shape rhythmic pressure, low end, brightness, motion, and delay. A motion-direction change produces one bounded transition gesture rather than a periodically repeated effect, and the envelopes decay to steady state when speed stops changing. Section changes use hysteresis, a two-bar dwell, bar quantization, and crossfades. The user-selected full-energy threshold scales the speed domain without changing the environment's intended ceiling. This remains a prototype, not the production real-time architecture, and musical acceptance requires a Tesla listening test.
 
 ### Shared production direction
 
@@ -147,6 +147,7 @@ Profile before adding WASM. It is justified only if measured DSP cost, not fashi
 The approved Flux renderer is **Modular Aperture**, selected from exactly three revised minimal alternatives. It is an independently implemented parameterized field, not a static background:
 
 - central-axis depth and flow;
+- outward vanishing-point travel at speed, with a non-linear flow ceiling and a near-planar zero-energy state;
 - five curated body-color palettes;
 - energy-driven pressure, luminance, distortion, and rectangular panel density;
 - aggregate pulses rather than one flash per audio event;
@@ -167,7 +168,7 @@ Flux may incorporate procedural road-like flow only as abstract WebGL geometry o
 
 ## Control-state model
 
-Controls have explicit states: `awake`, `resting`, `parked_configuration`, and `reduced`. In `resting`, the header and footer translate fully outside the viewport, the secondary energy readout disappears, and only speed plus its unit remain visible. The first interaction reveals the layer without mutating a value. Stop/Mute remains immediate once the layer is awake. Sliders use large physical targets, clear active/focus states, and accessible names.
+Controls have explicit states: `awake`, `resting`, `parked_configuration`, and `reduced`. In `resting`, the header and footer translate fully outside the viewport, the secondary energy readout disappears, and only speed plus its unit remain visible in an opaque, padded, high-contrast rectangular readout. The first interaction reveals the layer without mutating a value. Stop/Mute remains immediate once the layer is awake. Sliders use large physical targets, clear active/focus states, and accessible names.
 
 ## Splash as bootstrap
 

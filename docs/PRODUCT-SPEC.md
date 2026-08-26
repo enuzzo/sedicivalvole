@@ -58,7 +58,7 @@ See [`MODES.md`](MODES.md) for the boundary model, recommendations, and open dec
 
 Exactly three revised Product Design directions were shown after the luminous-axis rejection. The user selected **Modular Aperture**: a sparse rectangular field with a low black control plane, flat monochrome geometry, and a restrained body-color accent. The interface is Braun-influenced, Swiss, minimal, and slightly brutalist, with square actions, strict monospace typography, no circular buttons, and no glassmorphism.
 
-Modular Aperture is calm and comparatively flat at rest, progressively forms a centered funnel/tunnel with a dark terminal void as energy rises, and returns coherently toward flatness during deceleration. Curated Pearl, Graphite, Red, Blue, and Silver body-color themes change the visual character without exposing low-level shader controls. See [`RECOVERED-REQUIREMENTS-2026-08-26.md`](RECOVERED-REQUIREMENTS-2026-08-26.md).
+Modular Aperture is calm and comparatively flat at rest, progressively forms a centered funnel/tunnel with a dark terminal void as energy rises, and returns coherently toward flatness during deceleration. At high energy, modules travel outward from the central vanishing point to communicate continuous forward flight; motion remains deliberately slow at low energy and rises non-linearly near the selected full-energy threshold. Curated Pearl, Graphite, Red, Blue, and Silver body-color themes change the visual character without exposing low-level shader controls. See [`RECOVERED-REQUIREMENTS-2026-08-26.md`](RECOVERED-REQUIREMENTS-2026-08-26.md).
 
 ## 5. Splash and audio unlock
 
@@ -112,6 +112,7 @@ The received HTML is a useful starting point but not the target ambition. The cu
 - Discrete structural events include layer entry, harmonic change, new section, and Brake.
 - Use hysteresis/dwell, bar or beat quantization, and crossfades to avoid nervous switching.
 - Acceleration/deceleration may prepare a transition rather than changing everything immediately.
+- Sustained acceleration and deceleration must not retrigger transition effects on a timer. A direction change produces one bounded musical gesture, while continuous motion envelopes shape rhythm, low end, timbre, dynamics, and space.
 - A continuous restrained energy wave remains underneath the mix; its frequency and gain rise smoothly with acceleration.
 - Beat rate and rhythmic density must also increase perceptibly with speed while retaining the tempo knee and musical ceiling.
 - Flux must behave like a curated adaptive arrangement: kick, low end, percussion, rhythmic detail, harmony, timbre, effects, and spatial depth enter and evolve coherently.

@@ -44,6 +44,7 @@ Implemented:
 - continuous energy separated from discrete layer/Brake events;
 - four-section lookahead arrangement, bar-quantized transitions, two-bar dwell, crossfades, and limiter;
 - full-energy speed threshold and curated `APERTURE 01` environment;
+- filtered acceleration/deceleration envelopes with single direction-change cues and steady-state decay;
 - deterministic desktop signal tests.
 
 The earlier synthesized spike was explicitly rejected. The current build implements the first authored adaptive arrangement and purposeful control model; its musical quality is still pending a real Tesla listening test.
@@ -61,6 +62,7 @@ Implemented:
 - reduced-motion behavior and continuously redrawn Canvas2D fallback;
 - flat Braun/Swiss interface, compact diagnostics, and body-color selection at `773 × 601`.
 - dark tunnel terminus plus off-canvas resting chrome with a persistent speed readout and wake-first interaction.
+- outward high-speed flight, non-linear flow response, true-zero Demo dwell, and an opaque high-contrast speed frame.
 
 Gate: stable frame budget on the slowest target vehicle, graceful degradation, and no audio degradation while the renderer runs.
 
