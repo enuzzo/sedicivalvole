@@ -62,6 +62,8 @@ Framed controls use a restrained 6 px corner radius rather than completely sharp
 
 Modular Aperture is calm and comparatively flat at rest. Zero speed uses a complete Swiss mosaic of large square modules, distributed evenly across four tones from the active body-color palette, with no missing cells, black gaps, or central void. As energy rises the same modules become smaller; speed then bends and recedes that shared coordinate field into a centered funnel/tunnel instead of fading between separate scenes. The dark terminal aperture opens geometrically only as depth forms. Deceleration reverses the same continuous transformation so the tunnel flattens back into squares without a flash or a disabled-warp step. At high velocity, modules travel outward from the central vanishing point and stretch into radial stripes, compressing perceived depth into a Plaid-like velocity field. Curated Pearl, Graphite, Red, Blue, and Silver body-color themes change the visual character without exposing low-level shader controls. See [`RECOVERED-REQUIREMENTS-2026-08-26.md`](RECOVERED-REQUIREMENTS-2026-08-26.md).
 
+The module identity must remain visually continuous across the entire speed range: size, aspect ratio, perspective, curvature, and depth may deform, but modules must not be replaced through an opacity fade. The zero-speed endpoint is genuinely two-dimensional and square; the maximum-speed endpoint is the most elongated and deeply projected version of that same field.
+
 ## 5. Splash and audio unlock
 
 - The future splash uses tunnel vision and flows continuously into the main scene.

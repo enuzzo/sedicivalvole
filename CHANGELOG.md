@@ -56,6 +56,7 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - Rebuilt Modular Aperture as one continuous shape field: large complete four-color squares at rest shrink, bend, and recede into the centered tunnel as speed rises, then reverse the same geometric transformation during deceleration without a crossfade.
 - Integrated the speed readout into the header grid with matching boundaries and stroke, then retained it as a fixed detached module when the surrounding chrome retires.
 - Introduced a restrained shared 6 px corner radius across framed controls and diagnostic surfaces while preserving the structural Braun/Swiss grid.
+- Refined the single-field Flux transformation so low-speed squares preserve their proportions, adjoining tunnel walls bend continuously, and perspective deformation grows progressively into the existing high-speed bars without opacity fades.
 - Rejected the current approximately 115 km/h soft-club Flux result and queued a data-driven AudioWorklet synth/sequencer with a high-energy Jungle identity and deceleration memory.
 
 ### Fixed
@@ -71,6 +72,7 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - Added a non-destructive `--preserve-existing` FTP publication mode for deployments that are authorized without legacy-file deletion.
 - Updated the read-only deployment identity gate to recognize the current Flux root markers instead of relying on obsolete `Drive Lab` copy.
 - Removed visible resting seams, black gaps, and random sparse occupancy; all zero-speed cells are present and distributed evenly across the active four-color palette.
+- Removed low-speed triangular tears caused by an abrupt tunnel-wall selector and an over-amplified central perspective singularity.
 
 ### Security
 
