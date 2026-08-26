@@ -14,4 +14,9 @@ respective rights holders. No trademark rights are granted.
 Third-party material remains subject to its original license and is documented
 in THIRD_PARTY_NOTICES.md.
 
+Acknowledgment: the planned Flux sequencer direction is informed by textStep,
+conceived and created by Lobo (illobo): https://github.com/illobo/textStep.
+No textStep source is included in the current product; any future derived code
+will retain explicit authorship, provenance, modification, and license notices.
+
 Source: https://github.com/enuzzo/sedicivalvole

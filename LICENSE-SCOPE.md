@@ -47,6 +47,13 @@ relicensed by this project. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)
 Local material under `_references/` is not part of the repository or any
 project license grant.
 
+The planned Flux sequencer direction is informed by Lobo's
+[textStep](https://github.com/illobo/textStep) project. No textStep source is
+included in the current AGPL-licensed product. Any later copied, translated, or
+modified textStep code remains third-party-derived material and must be marked
+with its exact provenance, modifications, and applicable licensing terms before
+it enters a published build.
+
 ## Open legal work
 
 Before accepting external contributions, publishing original asset packs, or

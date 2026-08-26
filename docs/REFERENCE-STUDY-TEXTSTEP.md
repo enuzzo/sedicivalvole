@@ -1,5 +1,21 @@
 # Reference Study: textStep
 
+## Credit
+
+[textStep](https://github.com/illobo/textStep) was conceived and created by
+[Lobo (`illobo`)](https://github.com/illobo). The sequencer, synthesizer, DSP,
+scene, and live-performance architecture described in this study are his work.
+They are the foundation we intend to adapt for Flux so speed and driving energy
+can arrange musical layers continuously and the same engine can support
+different authored genres.
+
+This is an explicit creative and technical credit, not a claim that the current
+browser engine already contains textStep source. It does not: the tracked Flux
+prototype still uses an independently authored earlier scheduler. If textStep
+code is later copied, translated, or modified, the imported files and our
+changes must be identified precisely in this document and in
+`THIRD_PARTY_NOTICES.md`.
+
 ## Provenance
 
 - project: `illobo/textStep`;

@@ -19,4 +19,18 @@ Material kept only under `_references/` remains external local source material. 
 
 The Codrops/Tympanus `InfiniteLights` repository is currently a study-only source under its custom usage notice. No file or substantial implementation from it has entered this repository or product. See `docs/REFERENCE-STUDY-INFINITE-LIGHTS.md` for provenance and constraints.
 
-The `illobo/textStep` repository is currently a study-only source under GNU GPL version 2.0, with an additional direct permission reported by the user but not yet documented in reproducible written form. No source, preset data, or audio asset from it has entered this repository or product. See `docs/REFERENCE-STUDY-TEXTSTEP.md` for provenance, architectural findings, and the adoption gate.
+### textStep and Lobo
+
+[textStep](https://github.com/illobo/textStep) was conceived and created by
+[Lobo (`illobo`)](https://github.com/illobo). Its original sequencer,
+synthesizer, DSP, scene, and live-performance architecture informs the planned
+multi-genre Flux sequencer. That authorship deserves explicit credit wherever
+the future integration is described.
+
+The repository is currently a study-only source under GNU GPL version 2.0,
+with an additional direct permission reported by the user but not yet documented
+in reproducible written form. No source, preset data, or audio asset from it has
+entered this repository or product. If derived code is integrated, this notice
+must identify the exact source commit, imported files, modifications, and
+applicable license before publication. See `docs/REFERENCE-STUDY-TEXTSTEP.md`
+for provenance, architectural findings, and the adoption gate.

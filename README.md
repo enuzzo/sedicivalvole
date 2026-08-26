@@ -1,5 +1,15 @@
 # sedicivalvole
 
+> **Sequencer direction — credit to Lobo.** The next-generation Flux music
+> system is being shaped around [textStep](https://github.com/illobo/textStep),
+> the step sequencer, synthesizer, and original DSP project created by
+> [illobo](https://github.com/illobo). Its sequencer and performance architecture
+> are Lobo's work. `sedicivalvole` plans to adapt that foundation so vehicle
+> speed can arrange musical layers, manage energy, and move between authored
+> genres. The current browser prototype still uses its earlier independent
+> scheduler; no textStep source is shipped yet. When derived code is integrated,
+> the exact files, changes, license, and attribution will be recorded explicitly.
+
 > Current state: **Flux Modular Aperture is the current Drive Lab prototype and is under vehicle validation**. This is a development build, not a release.
 
 Public development repository: [github.com/enuzzo/sedicivalvole](https://github.com/enuzzo/sedicivalvole).
@@ -99,6 +109,7 @@ See [`docs/ROADMAP.md`](docs/ROADMAP.md).
 - [`docs/DEPLOY.md`](docs/DEPLOY.md) — sanitized deployment procedure and verified state;
 - [`docs/DIAGNOSTICS.md`](docs/DIAGNOSTICS.md) — verified Tesla measurements and report-delivery architecture;
 - [`docs/MODES.md`](docs/MODES.md) — confirmed Engine/Flux product architecture and open decisions;
+- [`docs/REFERENCE-STUDY-TEXTSTEP.md`](docs/REFERENCE-STUDY-TEXTSTEP.md) — Lobo's textStep credit, provenance, mechanics, and adoption gate;
 - [`docs/GITHUB.md`](docs/GITHUB.md) — public-repository and GitHub CLI operating notes;
 - [`docs/LICENSING.md`](docs/LICENSING.md) — active mixed-license decision and open legal work.
 

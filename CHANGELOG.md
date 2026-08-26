@@ -27,6 +27,7 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - A Canvas2D Modular Aperture fallback for devices without WebGL2.
 - A v3 extended diagnostic report with aggregate canvas frame pacing, long-task timing, connection history, navigation/resource metrics, heap/storage/battery hints, and a larger bounded event history.
 - A pinned study of `illobo/textStep` covering its synthesized drum/synth engine, 32-step patterns, Jungle/D&B presets, scene queue, browser portability, and licensing gate.
+- Prominent project-level credit to Lobo (`illobo`) as the creator of textStep and its sequencer, synth, DSP, scene, and performance architecture, with linked provenance and an explicit future-derived-code attribution policy.
 
 ### Changed
 
