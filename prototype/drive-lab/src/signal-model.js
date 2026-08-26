@@ -24,6 +24,16 @@ export function speedToVisualVelocity(speedKmh) {
   return normalized ** 1.65;
 }
 
+function smoothCurve(minimum, maximum, value) {
+  const normalized = clamp((value - minimum) / (maximum - minimum), 0, 1);
+  return normalized * normalized * (3 - 2 * normalized);
+}
+
+export function visualVelocityToMorphWarp(visualVelocity) {
+  const stagedVelocity = smoothCurve(0.08, 0.96, clamp(visualVelocity, 0, 1));
+  return smoothCurve(0.04, 0.62, stagedVelocity);
+}
+
 export function energyToFlowRate(energy, speedKmh = 0) {
   const safeEnergy = clamp(energy, 0, 1);
   const velocity = speedToVisualVelocity(speedKmh);

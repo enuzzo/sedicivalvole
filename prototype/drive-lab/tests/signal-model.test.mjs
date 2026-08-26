@@ -12,6 +12,7 @@ import {
   speedToMotion,
   speedToVisualVelocity,
   speedToWave,
+  visualVelocityToMorphWarp,
 } from "../src/signal-model.js";
 
 test("normalizes GPS speed without accepting null, negative or non-finite data", () => {
@@ -74,6 +75,18 @@ test("visual travel stays calm at rest and becomes emphatic only near full energ
   assert.ok(energyToFlowRate(1, 150) > energyToFlowRate(1, 100) * 2);
   assert.equal(speedToVisualVelocity(0), 0);
   assert.equal(speedToVisualVelocity(160), 1);
+});
+
+test("visual morph stays planar at city speed and becomes a tunnel near the velocity ceiling", () => {
+  const idle = visualVelocityToMorphWarp(speedToVisualVelocity(0));
+  const city = visualVelocityToMorphWarp(speedToVisualVelocity(55));
+  const transition = visualVelocityToMorphWarp(speedToVisualVelocity(80));
+  const tunnel = visualVelocityToMorphWarp(speedToVisualVelocity(115));
+
+  assert.equal(idle, 0);
+  assert.ok(city < 0.01);
+  assert.ok(transition > city && transition < 0.4);
+  assert.ok(tunnel > 0.95);
 });
 
 test("motion separates acceleration from deceleration with bounded rates", () => {

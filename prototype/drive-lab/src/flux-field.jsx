@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { energyToFlowRate, speedToVisualVelocity } from "./signal-model.js";
+import { energyToFlowRate, speedToVisualVelocity, visualVelocityToMorphWarp } from "./signal-model.js";
 
 const VERTEX_SHADER = `#version 300 es
   in vec2 a_position;
@@ -34,7 +34,9 @@ const FRAGMENT_SHADER = `#version 300 es
   }
 
   float rectangleMask(vec2 point, vec2 inset) {
-    vec2 inside = step(inset, point) * step(inset, 1.0 - point);
+    vec2 edge = min(point, 1.0 - point) - inset;
+    vec2 antialias = max(fwidth(point) * 1.25, vec2(0.001));
+    vec2 inside = smoothstep(vec2(0.0), antialias, edge);
     return inside.x * inside.y;
   }
 
@@ -44,6 +46,8 @@ const FRAGMENT_SHADER = `#version 300 es
 
     float energy = smoothstep(0.02, 0.96, u_energy);
     float velocity = smoothstep(0.08, 0.96, u_velocity);
+    float shrink = smoothstep(0.0, 0.42, energy);
+    float warp = smoothstep(0.04, 0.62, velocity);
     float majorAxis = max(max(abs(screen.x), abs(screen.y)), 0.035);
     float sideSurface = step(abs(screen.y), abs(screen.x));
     float lateral = mix(
@@ -53,57 +57,46 @@ const FRAGMENT_SHADER = `#version 300 es
     );
     float depth = 1.0 / majorAxis;
 
-    float flatRow = floor(v_uv.y * 8.0);
-    vec2 flatGrid = vec2(v_uv.x * 14.0 + mod(flatRow, 2.0) * 0.5, v_uv.y * 8.0);
-    vec2 flatCell = floor(flatGrid);
-    vec2 flatLocal = fract(flatGrid);
-    float flatIdentity = hash21(flatCell + vec2(0.0, 3.0));
-    float flatTone = hash21(flatCell + vec2(8.0, 29.0));
-    float flatCadence = mod(flatCell.x + flatCell.y * 2.0, 5.0);
-    float flatEnabled = step(1.5, flatCadence);
-    vec2 flatInset = vec2(mix(0.1, 0.27, flatTone), mix(0.39, 0.425, flatIdentity));
-    float flatTile = rectangleMask(flatLocal, flatInset) * flatEnabled;
-    float flatBreath = 0.92 + 0.08 * sin(u_flow * 8.0 + flatTone * 6.2831853);
-    vec3 flatPanel = u_mid * (0.4 + flatTone * 0.46) * flatBreath;
-    flatPanel = mix(flatPanel, u_light, step(0.86, flatTone));
-    flatPanel = mix(flatPanel, u_accent, step(0.93, flatIdentity) * step(3.5, flatCadence));
-    vec3 flatColor = u_base;
-    flatColor = mix(flatColor, flatPanel, flatTile);
-    float datum = (1.0 - smoothstep(0.0, 0.0035, abs(v_uv.y - 0.5)))
-      * step(0.075, v_uv.x) * step(v_uv.x, 0.925);
-    flatColor = mix(flatColor, u_mid * 0.48, datum * 0.72);
-
     float depthFrequency = mix(4.5, 2.15, velocity);
+    vec2 flatGrid = v_uv * vec2(10.0, 7.0);
     vec2 tunnelGrid = vec2(lateral * 15.0, depth * depthFrequency + u_flow);
-    vec2 tunnelCell = floor(tunnelGrid);
-    vec2 tunnelLocal = fract(tunnelGrid);
-    float identity = hash21(tunnelCell + vec2(sideSurface * 17.0, 3.0));
-    float tone = hash21(tunnelCell + vec2(8.0, 29.0));
-    float enabled = step(mix(0.78, 0.14, energy), identity);
-    float trailInset = mix(0.12 + 0.12 * hash21(tunnelCell + vec2(9.0)), 0.012, velocity);
-    vec2 tunnelInset = vec2(0.09 + 0.08 * hash21(tunnelCell + vec2(4.0)), trailInset);
-    float tile = rectangleMask(tunnelLocal, tunnelInset) * enabled;
-    float seam = 1.0 - rectangleMask(tunnelLocal, vec2(0.035, mix(0.035, 0.012, velocity)));
-    vec3 panel = u_mid * (0.35 + tone * 0.5);
-    panel = mix(panel, u_light, step(0.84 - energy * 0.12, tone));
-    panel = mix(panel, u_accent, step(0.94 - energy * 0.03, identity) * smoothstep(0.12, 0.5, energy));
-    vec3 tunnelColor = mix(u_base, u_mid * 0.18, seam * (0.3 + energy * 0.3));
-    tunnelColor = mix(tunnelColor, panel, tile);
+    vec2 fieldGrid = mix(flatGrid, tunnelGrid, warp);
+    vec2 fieldCell = floor(fieldGrid);
+    vec2 fieldLocal = fract(fieldGrid);
+    float identity = hash21(fieldCell + vec2(sideSurface * 17.0, 3.0));
+    float tone = hash21(fieldCell + vec2(8.0, 29.0));
 
-    vec3 color = mix(flatColor, tunnelColor, energy);
+    vec2 flatInset = vec2(0.12, 0.14);
+    vec2 compactInset = mix(flatInset, vec2(0.27, 0.27), shrink);
+    float trailInset = mix(0.15 + 0.1 * hash21(fieldCell + vec2(9.0)), 0.012, velocity);
+    vec2 tunnelInset = vec2(0.1 + 0.07 * hash21(fieldCell + vec2(4.0)), trailInset);
+    vec2 fieldInset = mix(compactInset, tunnelInset, warp);
+    float tile = rectangleMask(fieldLocal, fieldInset);
+
+    float colorIndex = mod(fieldCell.x + fieldCell.y * 3.0, 4.0);
+    vec3 darkPanel = mix(u_base, u_mid, 0.66);
+    vec3 panel = darkPanel;
+    panel = mix(panel, u_mid, step(0.5, colorIndex));
+    panel = mix(panel, u_light, step(1.5, colorIndex));
+    panel = mix(panel, u_accent, step(2.5, colorIndex));
+    float breath = 0.94 + 0.06 * sin(u_flow * 7.0 + tone * 6.2831853);
+    panel *= mix(breath, 0.88 + tone * 0.22, warp);
+    vec3 color = mix(u_base, panel, tile);
 
     float apertureRadius = max(abs(screen.x) * 0.78, abs(screen.y));
-    float aperture = 1.0 - smoothstep(0.055, 0.105, apertureRadius);
-    float apertureFrame = smoothstep(0.09, 0.12, apertureRadius) * (1.0 - smoothstep(0.12, 0.155, apertureRadius));
+    float apertureGrowth = smoothstep(0.35, 0.98, warp);
+    float apertureSize = mix(-0.025, 0.105, apertureGrowth);
+    float apertureActive = step(0.0, apertureSize);
+    float aperture = apertureActive * (1.0 - smoothstep(apertureSize, apertureSize + 0.012, apertureRadius));
+    float apertureFrame = apertureActive
+      * smoothstep(apertureSize - 0.012, apertureSize, apertureRadius)
+      * (1.0 - smoothstep(apertureSize + 0.012, apertureSize + 0.025, apertureRadius));
     vec3 apertureVoid = u_base * 0.08;
-    color = mix(color, apertureVoid, aperture * energy);
-    color = mix(color, u_mid * 0.34, apertureFrame * energy * 0.5);
-
-    float calmRule = 1.0 - smoothstep(0.0, 0.012, abs(fract(v_uv.y * 7.0) - 0.5));
-    color += u_mid * calmRule * (1.0 - energy) * 0.09;
+    color = mix(color, apertureVoid, aperture);
+    color = mix(color, u_mid * 0.34, apertureFrame * 0.5);
 
     float edge = smoothstep(1.18, 0.38, max(abs(screen.x) * 0.72, abs(screen.y)));
-    color *= 0.66 + edge * 0.42;
+    color *= mix(1.0, 0.66 + edge * 0.42, warp);
     color = mix(color, u_accent, u_pulse * tile * step(0.84, identity) * 0.16);
     color = mix(color, u_light, u_brake * (0.035 + apertureFrame * 0.08));
 
@@ -127,7 +120,16 @@ function cssColor(rgb, alpha = 1) {
   return `rgb(${rgb.map((value) => Math.round(value * 255)).join(" ")} / ${alpha})`;
 }
 
-function drawCanvasFallback(context, canvas, energy, speed, palette, flow) {
+function smoothstep(minimum, maximum, value) {
+  const normalized = Math.min(1, Math.max(0, (value - minimum) / (maximum - minimum)));
+  return normalized * normalized * (3 - 2 * normalized);
+}
+
+function mixColor(from, to, amount) {
+  return from.map((value, index) => value + (to[index] - value) * amount);
+}
+
+function drawCanvasFallback(context, canvas, energy, visualVelocity, palette, flow) {
   const ratio = Math.min(window.devicePixelRatio || 1, 1.25);
   const width = Math.max(1, Math.floor(canvas.clientWidth * ratio));
   const height = Math.max(1, Math.floor(canvas.clientHeight * ratio));
@@ -140,19 +142,16 @@ function drawCanvasFallback(context, canvas, energy, speed, palette, flow) {
   const centerX = width / 2;
   const centerY = height * 0.5;
   const easedEnergy = energy * energy * (3 - 2 * energy);
-  const velocity = speedToVisualVelocity(speed);
-
-  context.globalAlpha = 0.72 * (1 - easedEnergy);
-  context.fillStyle = cssColor(palette.mid, 0.48);
-  context.fillRect(width * 0.075, centerY, width * 0.85, Math.max(1, height * 0.002));
-  context.globalAlpha = 1;
+  const shrink = smoothstep(0, 0.42, easedEnergy);
+  const warp = visualVelocityToMorphWarp(visualVelocity);
+  const flatDark = mixColor(palette.base, palette.mid, 0.66);
+  const flatColors = [flatDark, palette.mid, palette.light, palette.accent];
 
   for (let index = 0; index < 96; index += 1) {
     const column = index % 12;
     const row = Math.floor(index / 12);
-    const flatX = (column + 0.5 + (row % 2) * 0.5) * width / 12;
+    const flatX = (column + 0.5) * width / 12;
     const flatY = (row + 0.5) * height / 8;
-    const flatEnabled = (column + row * 2) % 5 >= 2;
 
     const ring = Math.floor(index / 8);
     const slot = index % 8;
@@ -176,33 +175,29 @@ function drawCanvasFallback(context, canvas, energy, speed, palette, flow) {
       tunnelY += along * height * scale;
     }
 
-    const x = flatX + (tunnelX - flatX) * easedEnergy;
-    const y = flatY + (tunnelY - flatY) * easedEnergy;
-    const seed = (index * 37) % 19;
+    const x = flatX + (tunnelX - flatX) * warp;
+    const y = flatY + (tunnelY - flatY) * warp;
     const panelScale = 0.45 + scale * 0.88;
     const horizontal = side === 0 || side === 2;
-    const flatWidth = width * (0.044 + ((index * 7) % 5) * 0.0055);
-    const flatHeight = Math.max(2, height * (0.012 + ((index * 11) % 3) * 0.0015));
+    const flatSize = Math.min(width / 12, height / 8) * 0.74;
+    const compactSize = flatSize * (1 - shrink * 0.43);
     const radialStretch = 1 + velocity * 4.5;
     const tunnelWidth = width * (horizontal ? 0.07 : 0.018 * radialStretch) * panelScale;
     const tunnelHeight = height * (horizontal ? 0.018 * radialStretch : 0.075) * panelScale;
-    const panelWidth = flatWidth + (tunnelWidth - flatWidth) * easedEnergy;
-    const panelHeight = flatHeight + (tunnelHeight - flatHeight) * easedEnergy;
+    const panelWidth = compactSize + (tunnelWidth - compactSize) * warp;
+    const panelHeight = compactSize + (tunnelHeight - compactSize) * warp;
 
-    context.globalAlpha = flatEnabled ? 1 : easedEnergy;
-    context.fillStyle = seed === 0
-      ? cssColor(palette.accent, 0.96)
-      : seed > 13
-        ? cssColor(palette.light, 0.78)
-        : cssColor(palette.mid, 0.54 + travel * 0.4);
+    const colorIndex = (column + row * 3) % flatColors.length;
+    context.fillStyle = cssColor(flatColors[colorIndex], 0.92 + travel * 0.08);
     context.fillRect(x - panelWidth / 2, y - panelHeight / 2, panelWidth, panelHeight);
   }
-  context.globalAlpha = 1;
 
-  if (easedEnergy > 0.08) {
-    const apertureWidth = width * (0.016 + (1 - easedEnergy) * 0.05);
-    const apertureHeight = height * (0.02 + (1 - easedEnergy) * 0.065);
-    context.fillStyle = cssColor(palette.mid, 0.46 * easedEnergy);
+  const apertureGrowth = smoothstep(0.35, 0.98, warp);
+  const apertureScale = -0.025 + apertureGrowth * 0.13;
+  if (apertureScale > 0) {
+    const apertureWidth = width * apertureScale;
+    const apertureHeight = height * apertureScale;
+    context.fillStyle = cssColor(palette.mid, 0.46);
     context.fillRect(
       centerX - apertureWidth / 2 - 1,
       centerY - apertureHeight / 2 - 1,
@@ -221,6 +216,9 @@ function startCanvasFallback(canvas, valuesRef, reducedMotion, onRenderer, onFra
   let stopped = false;
   let flow = 0;
   let visualEnergy = reducedMotion ? Math.min(valuesRef.current.energy, 0.28) : valuesRef.current.energy;
+  let visualVelocity = speedToVisualVelocity(
+    reducedMotion ? Math.min(valuesRef.current.speed, 20) : valuesRef.current.speed,
+  );
   let lastFrameAt = performance.now();
   let lastDrawAt = 0;
   onRenderer("Canvas2D · Aperture");
@@ -228,7 +226,7 @@ function startCanvasFallback(canvas, valuesRef, reducedMotion, onRenderer, onFra
     context,
     canvas,
     visualEnergy,
-    reducedMotion ? Math.min(valuesRef.current.speed, 20) : valuesRef.current.speed,
+    visualVelocity,
     valuesRef.current.theme.palette,
     flow,
   );
@@ -242,12 +240,16 @@ function startCanvasFallback(canvas, valuesRef, reducedMotion, onRenderer, onFra
     lastDrawAt = now;
     const nextEnergy = reducedMotion ? Math.min(valuesRef.current.energy, 0.28) : valuesRef.current.energy;
     visualEnergy += (nextEnergy - visualEnergy) * (nextEnergy >= visualEnergy ? 0.12 : 0.065);
+    const nextVelocity = speedToVisualVelocity(
+      reducedMotion ? Math.min(valuesRef.current.speed, 20) : valuesRef.current.speed,
+    );
+    visualVelocity += (nextVelocity - visualVelocity) * (nextVelocity >= visualVelocity ? 0.14 : 0.075);
     if (!reducedMotion) flow += deltaSeconds * energyToFlowRate(visualEnergy, valuesRef.current.speed);
     drawCanvasFallback(
       context,
       canvas,
       visualEnergy,
-      reducedMotion ? Math.min(valuesRef.current.speed, 20) : valuesRef.current.speed,
+      visualVelocity,
       valuesRef.current.theme.palette,
       flow,
     );
@@ -325,6 +327,7 @@ export function FluxField({ energy, speed, theme, reducedMotion, pulse, brake, o
     let stopped = false;
     let flow = 0;
     let visualEnergy = reducedMotion ? Math.min(energy, 0.28) : energy;
+    let visualVelocity = speedToVisualVelocity(reducedMotion ? Math.min(speed, 20) : speed);
     let lastFrameAt = performance.now();
     let lastDrawAt = 0;
     onRenderer("WebGL2 · Aperture");
@@ -340,6 +343,11 @@ export function FluxField({ energy, speed, theme, reducedMotion, pulse, brake, o
       const nextEnergy = reducedMotion ? Math.min(valuesRef.current.energy, 0.28) : valuesRef.current.energy;
       const smoothing = nextEnergy >= visualEnergy ? 0.12 : 0.065;
       visualEnergy += (nextEnergy - visualEnergy) * smoothing;
+      const nextVelocity = speedToVisualVelocity(
+        reducedMotion ? Math.min(valuesRef.current.speed, 20) : valuesRef.current.speed,
+      );
+      const velocitySmoothing = nextVelocity >= visualVelocity ? 0.14 : 0.075;
+      visualVelocity += (nextVelocity - visualVelocity) * velocitySmoothing;
       if (!reducedMotion) flow += deltaSeconds * energyToFlowRate(visualEnergy, valuesRef.current.speed);
 
       const ratio = Math.min(window.devicePixelRatio || 1, 1.25);
@@ -355,10 +363,7 @@ export function FluxField({ energy, speed, theme, reducedMotion, pulse, brake, o
       gl.useProgram(program);
       gl.uniform1f(uniforms.aspect, width / height);
       gl.uniform1f(uniforms.energy, visualEnergy);
-      gl.uniform1f(
-        uniforms.velocity,
-        speedToVisualVelocity(reducedMotion ? Math.min(valuesRef.current.speed, 20) : valuesRef.current.speed),
-      );
+      gl.uniform1f(uniforms.velocity, visualVelocity);
       gl.uniform1f(uniforms.flow, flow);
       gl.uniform1f(uniforms.pulse, valuesRef.current.pulse);
       gl.uniform1f(uniforms.brake, valuesRef.current.brake);
