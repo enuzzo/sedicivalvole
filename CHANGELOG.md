@@ -19,6 +19,7 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - A same-origin PHP `Send Diagnostic` endpoint with a fixed recipient, schema/body validation, coordinate-key rejection, rate limiting, and sanitized responses.
 - A clean public GitHub repository at `github.com/enuzzo/sedicivalvole`, initialized from a reviewed snapshot without private bootstrap history.
 - A confirmed two-mode product architecture: `Engine` for selectable engine emulation and `Flux` for speed-reactive music and generative WebGL fields.
+- An active `AGPL-3.0-or-later` license for code and documentation, with a clear scope file, contributor notice, and explicit exclusions for brand and standalone media assets.
 
 ### Changed
 
@@ -32,6 +33,7 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - Added a no-store PHP root entry so the canonical URL can bypass stale static HTML while preserving content-addressed assets and the Sites-compatible HTML build.
 - Documented SiteGround's stale canonical HTML behavior, retained both valid bundles, and stopped after the provider rejected an unauthenticated cache purge.
 - Replaced the community viewport assumption with photographed Tesla evidence: `773 × 601` split-view viewport, `1254 × 784` logical screen, and DPR `1.53`.
+- Replaced the provisional licensing recommendation with an operative mixed code-and-asset policy while leaving exact legal ownership and final brand rules open for legal review.
 
 ### Fixed
 

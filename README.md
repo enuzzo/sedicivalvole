@@ -100,8 +100,8 @@ See [`docs/ROADMAP.md`](docs/ROADMAP.md).
 - [`docs/DIAGNOSTICS.md`](docs/DIAGNOSTICS.md) — verified Tesla measurements and report-delivery architecture;
 - [`docs/MODES.md`](docs/MODES.md) — confirmed Engine/Flux product architecture and open decisions;
 - [`docs/GITHUB.md`](docs/GITHUB.md) — public-repository and GitHub CLI operating notes;
-- [`docs/LICENSING.md`](docs/LICENSING.md) — provisional mixed-license decision.
+- [`docs/LICENSING.md`](docs/LICENSING.md) — active mixed-license decision and open legal work.
 
 ## License
 
-The decision is prepared but not finalized. The provisional recommendation is AGPL-3.0-or-later for source code, shaders, CSS, and build configuration, with original name, brand, screenshots, and audio outside that grant. No `LICENSE` exists because the exact legal owner and mixed-asset policy are still unresolved. See [`docs/LICENSING.md`](docs/LICENSING.md).
+Source code, shader source, CSS, build and deployment configuration, and project documentation are licensed under [GNU AGPL v3.0 or later](LICENSE). The `sedicivalvole` name, future logo and marks, brand assets, screenshots, original audio, and standalone visual/media assets are excluded from that grant. See [LICENSE-SCOPE.md](LICENSE-SCOPE.md), [NOTICE](NOTICE), and [`docs/LICENSING.md`](docs/LICENSING.md) for the exact scope and remaining legal decisions.

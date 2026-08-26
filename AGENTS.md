@@ -40,6 +40,8 @@ These rules apply to every change in the `sedicivalvole` project.
 
 ## Licensing
 
-- Do not create `LICENSE` until the exact legal owner and the final strategy for code, assets, audio, visuals, attribution, and trademarks are known.
+- Keep `LICENSE`, `LICENSE-SCOPE.md`, `NOTICE`, README licensing copy, package metadata, and the licensing decision log synchronized.
+- The repository's code and documentation default to `AGPL-3.0-or-later`; original brand, screenshots, audio, and standalone visual/media assets remain excluded unless specifically licensed.
+- Do not invent or publish a legal owner. The current collective notice is `sedicivalvole contributors` until ownership is formally resolved.
 - Record every third-party dependency or asset in `THIRD_PARTY_NOTICES.md` before it enters the product or repository.
 - Do not use Creative Commons licenses for software.

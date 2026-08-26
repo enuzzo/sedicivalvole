@@ -1,6 +1,6 @@
-# Brand and Asset Policy — Draft Structure
+# Brand and Asset Policy — Interim Structure
 
-Status: **future structure, not operative**. The legal owner has not been identified. This document grants no rights and does not substitute for legal review.
+Status: **interim scope rule, pending final policy**. The legal owner has not been identified. The operative exclusions are defined in [`../LICENSE-SCOPE.md`](../LICENSE-SCOPE.md); this document grants no additional rights and does not substitute for legal review.
 
 The final policy must distinguish:
 
@@ -14,8 +14,8 @@ The final policy must distinguish:
 
 ## Established principles
 
-- A future AGPL grant for code does not automatically grant trademark rights.
-- Original brand, screenshots, and audio are outside the provisional AGPL scope.
+- The active AGPL grant for code does not grant trademark rights.
+- Original brand, screenshots, audio, and standalone visual/media assets are outside the AGPL scope unless specifically licensed.
 - Third-party assets keep their original licenses and require notice before entry.
 - Any asset shared under a separate media license must be marked per file or directory.
 - Creative Commons licenses are not used for software.

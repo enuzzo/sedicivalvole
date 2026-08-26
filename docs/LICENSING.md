@@ -1,35 +1,60 @@
 # Licensing Decision Log
 
-Status: **provisional recommendation, ready but not finalized**. This is not legal advice. Do not create `LICENSE` until the exact copyright and trademark owner is known; never publish a placeholder owner.
+Status: **active interim policy**. The repository now carries an
+`AGPL-3.0-or-later` code and documentation license with explicit asset and
+trademark exclusions. The exact legal owner and final brand policy remain open
+and require legal review. This document is not legal advice.
 
-## Provisional split
+The operative files are the root [`LICENSE`](../LICENSE),
+[`LICENSE-SCOPE.md`](../LICENSE-SCOPE.md), and [`NOTICE`](../NOTICE).
 
-| Scope | Proposed treatment |
+## Active split
+
+| Scope | Current treatment |
 |---|---|
-| Source code, shaders, CSS, build configuration | GNU Affero General Public License v3.0 or later (`AGPL-3.0-or-later`) |
-| Name `sedicivalvole`, future logo, brand assets, screenshots, original audio | excluded from the AGPL grant; All Rights Reserved; no trademark license |
+| Source code, tests, shader source, CSS, build/deployment configuration, project documentation | GNU Affero General Public License v3.0 or later (`AGPL-3.0-or-later`) |
+| Name `sedicivalvole`, future logo and marks, brand assets, screenshots, original audio, standalone visual/media assets | excluded from the AGPL grant; All Rights Reserved by the respective rights holders; no trademark license |
 | Third-party material and samples | original licenses preserved and recorded in `THIRD_PARTY_NOTICES.md` before use |
-| Selected shareable creative assets | optional separate media license, decided per file |
+| Selected shareable creative assets | optional separate media license, decided and marked per file |
 
-Creative Commons may be considered for media, not software. See [`BRAND-ASSET-POLICY.md`](BRAND-ASSET-POLICY.md).
+Creative Commons may be considered for media, not software. See
+[`BRAND-ASSET-POLICY.md`](BRAND-ASSET-POLICY.md).
 
 ## What AGPL does and does not do
 
-- It allows copying, forks, modification, rebranding, sale, and commercial use; it does not prevent cloning.
-- It requires preservation of notices, identification of modifications, and corresponding source under the license.
-- A modified version used to provide network service must offer corresponding source to remote users.
-- Code-based shaders and generative visuals remain commercially reusable under AGPL terms.
-- Preventing commercial reuse would require a different source-available/commercial strategy, not this open-source proposal.
+- It allows copying, forks, modification, rebranding, sale, and commercial use;
+  it does not prevent cloning.
+- It requires compliance with its notice, license, modification, and
+  corresponding-source obligations.
+- A modified version used to provide a network service must offer corresponding
+  source to remote users as required by section 13.
+- Code-based shaders and generative visuals remain commercially reusable under
+  AGPL terms.
+- Attribution means preserving required copyright and license notices. It is not
+  a requirement to advertise or endorse the original project.
+- Preventing commercial reuse would require a different source-available or
+  commercial strategy, not this open-source license.
 
-MIT and Apache are too permissive for the user's stated copyleft goal. GPL does not address network-only modified services in the same way as AGPL. None of these licenses alone protects the project name, brand, or recognizable assets.
+MIT and Apache are too permissive for the stated copyleft goal. GPL does not
+address network-only modified services in the same way as AGPL. None of these
+licenses alone protects the project name, brand, or recognizable media assets.
 
-## Open legal gates
+## Ownership notice
+
+The current notice uses `sedicivalvole contributors` collectively. This avoids
+inventing a legal entity and does not decide who owns the copyright or a future
+trademark. Each contribution must be made by someone entitled to license it.
+
+## Open legal work
 
 1. identify the exact legal copyright and trademark owner;
 2. obtain legal review of the mixed code/asset policy;
 3. decide contributor policy and whether a CLA is needed;
-4. establish trademark and brand-usage rules;
+4. establish final trademark and brand-usage rules;
 5. verify provenance and licenses for every audio sample and external asset;
-6. ensure README and distribution copy do not claim restrictions AGPL does not grant.
+6. decide whether any original media will receive a separate license; and
+7. add SPDX headers to source files as the codebase matures.
 
-Primary references: [GNU licenses](https://www.gnu.org/licenses/), [AGPL-3.0 text](https://www.gnu.org/licenses/agpl-3.0.html), and [Creative Commons software guidance](https://creativecommons.org/faq/#can-i-apply-a-creative-commons-license-to-software).
+Primary references: [GNU licenses](https://www.gnu.org/licenses/),
+[AGPL-3.0 text](https://www.gnu.org/licenses/agpl-3.0.html), and
+[Creative Commons software guidance](https://creativecommons.org/faq/#can-i-apply-a-creative-commons-license-to-software).

@@ -2,6 +2,8 @@
 
 The current Drive Lab uses open-source software dependencies. It includes no third-party audio samples and no material copied from the local `_references/` library.
 
+Third-party components retain their original licenses and are not relicensed under the project's AGPL grant.
+
 | Component | Version | Copyright / authors | License | Changes | Location |
 |---|---:|---|---|---|---|
 | React | 19.2.0 | Meta Platforms, Inc. and contributors | MIT | none | `prototype/drive-lab/` |
