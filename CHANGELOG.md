@@ -17,6 +17,7 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - A continuous low energy wave whose frequency and gain rise smoothly with speed, plus extra speed-gated kick and hi-hat subdivisions.
 - A compact-view `DIAG` entry point, a scrollable diagnostics panel, split/expanded viewport history, richer GPS/audio/runtime evidence, and a bounded chronological event log.
 - A same-origin PHP `Send Diagnostic` endpoint with a fixed recipient, schema/body validation, coordinate-key rejection, rate limiting, and sanitized responses.
+- A clean public GitHub repository at `github.com/enuzzo/sedicivalvole`, initialized from a reviewed snapshot without private bootstrap history.
 
 ### Changed
 

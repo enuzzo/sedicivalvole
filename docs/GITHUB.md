@@ -1,5 +1,7 @@
 # GitHub Publication
 
+Public repository: [github.com/enuzzo/sedicivalvole](https://github.com/enuzzo/sedicivalvole).
+
 ## Public repository policy
 
 - Publish only tracked project files from the real Dropbox workspace.

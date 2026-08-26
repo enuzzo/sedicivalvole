@@ -2,6 +2,8 @@
 
 > Current state: **Drive Lab is live and under vehicle validation**. Visual direction 1, the luminous axis, is selected. This is a private development build, not a release.
 
+Public development repository: [github.com/enuzzo/sedicivalvole](https://github.com/enuzzo/sedicivalvole).
+
 ## Vision
 
 `sedicivalvole` turns speed, sound, and light into an atmospheric, useful, and memorable in-car experience. It is neither a generic dashboard nor an engine-noise toy: audio, generative visuals, and interaction are designed as one musical system.

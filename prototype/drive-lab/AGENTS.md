@@ -16,7 +16,7 @@ When implementing from a selected generated mock, treat that image as the source
 - Speed raises energy through a smoothed saturating curve. Past the tempo knee, deepen arrangement instead of creating a frantic march.
 - The visual must move as a rich field with WebGL2, plus reduced-motion and lightweight fallbacks.
 - All interface copy, source code, comments, documentation, and logs must be in English. Italian is used only in direct conversation with the user.
-- During this private development phase, verified builds are deployed to the canonical root at `https://sedicivalvole.app/` after user approval; diagnostics remain part of the main experience.
+- During this experimental development phase, verified builds are deployed to the canonical root at `https://sedicivalvole.app/` after user approval; diagnostics remain part of the main experience.
 - Keep a continuous, restrained energy wave beneath the mix. Its frequency and gain rise smoothly with speed, while tempo and rhythmic density also grow toward bounded musical ceilings.
 - Make frequent verified commits and push when a repository remote exists. Never leave the real Dropbox project directory for implementation work.
 

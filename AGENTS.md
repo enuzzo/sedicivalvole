@@ -31,7 +31,7 @@ These rules apply to every change in the `sedicivalvole` project.
 - Never present archived mocks or prototypes as the current product.
 - Before a visual build, show exactly three directions and wait for a selection.
 - Verify the experience at agreed Tesla viewports and on the target vehicle.
-- During active development, deploy each user-approved product change to the canonical root at `https://sedicivalvole.app/`; the site is currently private and experimental.
+- During active development, deploy each user-approved product change to the canonical root at `https://sedicivalvole.app/`; the product remains experimental even though the source repository is public.
 - An upload is not a successful deployment: verify the canonical URL, HTML, assets, version, and cache behavior after every publication.
 - Keep the technical diagnostics accessible from within the main product experience.
 - Do not assume Apache, Nginx, or any other server technology without evidence.
