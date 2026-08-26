@@ -29,6 +29,15 @@ Confirmed requirements:
 
 The Infinite Lights reference is a study source for depth construction, instancing, road-relative motion, curvature, FOV response, and speed interpolation. It is not a target skin and must not be copied wholesale.
 
+Later direction confirms a multi-environment Flux model: users should be able
+to select a coordinated generative effect, musical genre, and palette, with
+curated geometry variation where the renderer supports it. Interstate 4 and
+Interstate 7 are requested mechanics studies for two contrasting environment
+families. Their apparent demo speed represents full energy; the product version
+must add continuous speed control, reversible deceleration, palette selection,
+and bounded geometry parameters. Three revised directions were generated from
+those references on 2026-08-26; selection remains pending before implementation.
+
 ## Flux audio correction
 
 The current synthesized spike is technically audible but musically rejected. A continuous oscillator or a collection of isolated electronic pings is not an acceptable interpretation of speed-reactive music.

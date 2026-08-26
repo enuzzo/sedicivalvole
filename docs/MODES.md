@@ -9,13 +9,19 @@ Status: **confirmed product architecture; Engine design and implementation pendi
 | Mode | Audio purpose | Visual purpose | Current status |
 |---|---|---|---|
 | **Engine** | Reproduce selectable engine characters through synthesis, licensed samples, or a measured hybrid | Instrument-inspired generative system: abstract tachometer, throttle/load field, acceleration trace, mechanical light, or a selected alternative | Confirmed; not yet designed or implemented |
-| **Flux** | Compose and reshape music from speed, acceleration, deceleration, and discrete motion events | Modular Aperture: sparse rectangular geometry that forms a centered depth tunnel, with five curated body-color themes | Current Drive Lab implementation; vehicle validation pending |
+| **Flux** | Compose and reshape selectable musical genres from speed, acceleration, deceleration, and discrete motion events | Selectable generative environments; Modular Aperture is the current implementation, with further tunable palette and geometry families planned | Current Drive Lab implementation; multi-environment system pending |
 
 ## Naming decision
 
 The adaptive music mode is named **Flux** and the primary selector labels are **ENGINE / FLUX**.
 
 `Flux` communicates continuous transformation, energy, motion, and generative visual flow without tying the mode to one music genre or literal road setting. `Feel the Beat` may be explored later as campaign or onboarding copy, but it is too long and slogan-like for persistent navigation. `Street` is intentionally rejected because it is generic and narrows the mode to an urban/road identity.
+
+`Feel the Beat` now has a concrete product meaning: the driver selects an
+authored environment that binds a generative effect, musical genre, palette,
+geometry family, and speed-response character. This gives Flux meaningful
+variety without turning the driving surface into a low-level mixer or renderer
+editor.
 
 The two modes share:
 
@@ -68,6 +74,8 @@ The UI must not label a derived value as real Tesla RPM, throttle, gear, CAN, mo
 ### Flux
 
 - the approved Modular Aperture rectangular field, centered tunnel motion, and curated body-color themes;
+- a future environment selector may replace the visual mechanics and musical genre together while preserving the shared signal and safety contracts;
+- palette and supported geometry may be tuned per environment, with curated bounds rather than arbitrary live shader controls;
 - procedural road-like flow is allowed when it remains abstract and non-scenic;
 - no illustrated landscapes, environmental scenes, characters, narrative objects, or old Flash-like decoration;
 - visuals remain subordinate to safe driving and the musical experience.

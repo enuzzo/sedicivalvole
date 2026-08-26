@@ -124,6 +124,8 @@ The received HTML is a useful starting point but not the target ambition. The cu
 - The score must retain short-term kinetic memory during deceleration. Brief speed drops preserve transport and the principal groove while changing pressure and space; only sustained lower speed gradually removes layers and then lowers tempo at musical boundaries. Re-acceleration cancels queued removals instead of restarting the score.
 - Flux needs an authored synth/sequencer system with independent lanes, patterns, kits, scenes, deterministic variation, and quantized transitions. Samples are optional and must be original or separately licensed.
 - Both beat-driven and beatless digital environments are allowed, but each must have an authored musical identity.
+- A Flux environment is an authored audiovisual bundle: generative visual system, musical genre/score, palette family, geometry parameters, and speed-response mapping. Users may select an environment and tune its supported palette without exposing low-level renderer or mixer controls while driving.
+- The environment system must make variety structural rather than decorative: changing environment may change visual mechanics and musical genre, while every environment consumes the same normalized speed, energy, acceleration, deceleration, Brake, safety, and diagnostic contracts.
 - The primary user-facing performance control should be an energy threshold defining the speed at which an environment reaches full intended energy. Low-level `Atmos`, `Harmonics`, and `Pulse` controls are not accepted as the final driving interface.
 
 ## 8. Feature decision matrix
@@ -133,6 +135,7 @@ The received HTML is a useful starting point but not the target ambition. The cu
 | Engine mode with synthesized/sampled models | confirmed primary mode | mapping, catalog, quality, and latency require dedicated spike |
 | Adaptive synth + sequencer | architecture queued | textStep study recorded; browser worklet spike and musical acceptance pending |
 | Modular Aperture generative visual | implemented prototype | WebGL2 plus Canvas2D fallback; Tesla performance pending |
+| Selectable audiovisual environments | confirmed product model | visual, genre, palette, and geometry variation; Interstate 4/7-inspired studies pending selection and independent implementation |
 | Open packs | strategic goal | schema and licensing not frozen |
 | Offline core | planned after capability test | browser persistence unknown |
 | Reactive map / OSM limits | not confirmed for v1 | scope, network, distraction, and policy risk |

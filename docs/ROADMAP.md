@@ -57,6 +57,7 @@ Queued next:
 - implement catch/recovery/sustained-release deceleration memory so short braking does not dismantle the groove;
 - evaluate original or separately licensed samples only after the synthesis-first transport works;
 - use the ignored `illobo/textStep` repository as an architecture study under the provenance and licensing gates in [`REFERENCE-STUDY-TEXTSTEP.md`](REFERENCE-STUDY-TEXTSTEP.md).
+- define environment data so one transport can load different authored genres, kits, patterns, arrangement rules, and matching visual identities without changing the driving-signal contract.
 
 Gate: deterministic 0 → 115 → 60 → 115 → 0 replay, credible Jungle identity at high energy, no audible jitter or stop/start phrasing, all automated tests green, and no masking of vehicle alerts.
 
@@ -73,6 +74,14 @@ Implemented:
 - dark tunnel terminus plus off-canvas resting chrome with a persistent speed readout and wake-first interaction.
 - outward high-speed flight, non-linear flow response, true-zero Demo dwell, and an opaque high-contrast speed frame.
 - one seam-free geometric field that continuously morphs from large, complete four-color squares through smaller warped modules into a speed-driven Plaid tunnel with radial stripe deformation and a 160 km/h Demo ceiling.
+
+Queued next:
+
+- add selectable audiovisual environments whose visual, genre, palette, geometry, and speed mapping are authored as one coherent identity;
+- evaluate the three user-facing directions generated from the Interstate 4 and Interstate 7 mechanics study, then implement only the selected direction or explicitly approved pair;
+- recreate the selected motion independently: do not copy the ignored Infinite Lights source or reproduce its literal road skin;
+- parameterize travel rate, projection/FOV response, curvature, band density, palette, and geometry while preserving continuous reversible deceleration;
+- verify each environment at rest, intermediate speed, full energy, and sustained deceleration at `773 × 601` before canonical deployment.
 
 Gate: stable frame budget on the slowest target vehicle, graceful degradation, and no audio degradation while the renderer runs.
 
