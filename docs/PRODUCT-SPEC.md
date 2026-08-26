@@ -53,13 +53,13 @@ See [`MODES.md`](MODES.md) for the boundary model, recommendations, and open dec
 - a parametric generative relationship to audio state and speed;
 - an optional mode that accelerates and converges into a tunnel/depth sensation;
 - an interesting visualization for each sound or layer, sharing a coherent family while supporting different colors, moods, and parameters;
-- at least hue control for each visual effect;
+- curated body-color themes that provide a clear visual choice without exposing low-level shader parameters;
 - progressive degradation when GPU, shaders, or frame budget are unreliable;
 - reduced motion that preserves atmosphere and information without aggressive tunnel movement.
 
-Exactly three initial Product Design directions were shown for Flux, and the user initially selected direction 1. Subsequent in-vehicle feedback rejected its lens-flare-heavy, wallpaper-like rendering. Only the structural concepts of central convergence, depth, speed response, and a low control plane remain useful. Exactly three revised minimal directions must be presented before the next visual implementation; no palette or final motif is currently selected.
+Exactly three revised Product Design directions were shown after the luminous-axis rejection. The user selected **Modular Aperture**: a sparse rectangular field with a low black control plane, flat monochrome geometry, and a restrained body-color accent. The interface is Braun-influenced, Swiss, minimal, and slightly brutalist, with square actions, strict monospace typography, no circular buttons, and no glassmorphism.
 
-The revised direction must be calm and comparatively flat at rest, then progressively form a centered funnel/tunnel as energy rises, returning coherently toward flatness during deceleration. It should be minimal, precise, and Swiss-influenced rather than illustrative or cinematic. See [`RECOVERED-REQUIREMENTS-2026-08-26.md`](RECOVERED-REQUIREMENTS-2026-08-26.md).
+Modular Aperture is calm and comparatively flat at rest, progressively forms a centered funnel/tunnel as energy rises, and returns coherently toward flatness during deceleration. Curated Pearl, Graphite, Red, Blue, and Silver body-color themes change the visual character without exposing low-level shader controls. See [`RECOVERED-REQUIREMENTS-2026-08-26.md`](RECOVERED-REQUIREMENTS-2026-08-26.md).
 
 ## 5. Splash and audio unlock
 
@@ -125,7 +125,7 @@ The received HTML is a useful starting point but not the target ambition. The cu
 |---|---|---|
 | Engine mode with synthesized/sampled models | confirmed primary mode | mapping, catalog, quality, and latency require dedicated spike |
 | Tempo + arrangement system | prototype available | musical acceptance pending |
-| Per-layer generative visuals | prototype available | direction 1 selected; deeper per-layer mapping pending |
+| Modular Aperture generative visual | implemented prototype | WebGL2 plus Canvas2D fallback; Tesla performance pending |
 | Open packs | strategic goal | schema and licensing not frozen |
 | Offline core | planned after capability test | browser persistence unknown |
 | Reactive map / OSM limits | not confirmed for v1 | scope, network, distraction, and policy risk |

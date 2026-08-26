@@ -1,6 +1,6 @@
 # sedicivalvole
 
-> Current state: **Flux is live as the current Drive Lab prototype and is under vehicle validation**. Visual direction 1, the luminous axis, is selected. This is a development build, not a release.
+> Current state: **Flux Modular Aperture is the current Drive Lab prototype and is under vehicle validation**. This is a development build, not a release.
 
 Public development repository: [github.com/enuzzo/sedicivalvole](https://github.com/enuzzo/sedicivalvole).
 
@@ -14,10 +14,10 @@ The canonical development build is available at [sedicivalvole.app](https://sedi
 
 - ✅ a single ignored local reference library under `_references/`;
 - ✅ source audit, product requirements, adversarial review, technical direction, and roadmap;
-- ✅ visual direction 1 selected after exactly three Product Design directions;
-- ✅ touch-first Flux prototype with a WebGL2 luminous field, static/reduced-motion fallback, GPS/demo speed source, Stop, Brake, layer controls, hue control, and an integrated capability report;
+- ✅ Modular Aperture selected after exactly three revised Product Design directions;
+- ✅ touch-first Flux prototype with a procedural WebGL2/Canvas2D aperture field, GPS/demo speed source, Stop/Mute, full-energy threshold, five body-color themes, and an integrated capability report;
 - ✅ local-only speed processing: raw coordinates are never displayed, persisted, or transmitted;
-- ✅ a synthesized 16-step audio spike with saturating tempo and speed-driven arrangement depth;
+- ✅ a four-section authored audio spike with a tempo knee, quantized transitions, hysteresis, dwell, crossfades, and speed-driven arrangement depth;
 - ✅ production build and deterministic signal, diagnostic-model, and packaging tests passing;
 - ✅ photographed Tesla split-view evidence at `773 × 601`, screen `1254 × 784`, DPR `1.53`;
 - ✅ compact-view diagnostics with direct same-origin email handoff and no coordinates;
@@ -27,7 +27,7 @@ The canonical development build is available at [sedicivalvole.app](https://sedi
 
 ## Experience
 
-The product is configured while parked. One deliberate **TEST & START** gesture unlocks Web Audio, checks capabilities, requests GPS permission, and fades continuously into the luminous scene. Controls are large and touch-first, remain discoverable at rest, and become fully legible on interaction.
+The product is configured while parked. One deliberate **TEST & START** gesture unlocks Web Audio, checks capabilities, requests GPS permission, and fades continuously into Modular Aperture. The interface is flat, monospace, Braun-influenced, Swiss, and slightly brutalist; the generative field supplies the visual contrast.
 
 The speed source is an explicit abstraction. GPS and the desktop simulator produce the same normalized stream. `ArrowUp` and `ArrowDown` adjust simulated speed; `Space` triggers a discrete braking accent. Keyboard handling never steals input from focused controls.
 
@@ -36,11 +36,11 @@ The speed source is an explicit abstraction. GPS and the desktop simulator produ
 Confirmed product modes:
 
 - **Engine** — selectable engine-sound emulation with a dedicated instrument-inspired visual language. Audio modeling, catalog, and final visual direction are not implemented yet.
-- **Flux** — adaptive music driven by speed and motion, paired with abstract WebGL fields, rich gradients, tunnel depth, and possible procedural road-like motion. This is the mode currently implemented as Drive Lab.
+- **Flux** — adaptive music driven by speed and motion, paired with the procedural Modular Aperture field. It is calm at rest, forms a centered tunnel as energy rises, and releases on deceleration. This is the mode currently implemented as Drive Lab.
 
 Shared foundations include the GPS/Demo speed source, integrated diagnostics, master Stop/Mute, reduced motion, renderer fallback, and touch-first safety behavior. The mode switch will remain clearly identifiable and reachable from both experiences.
 
-The current audio is a research spike. Its musical quality and relationship to real acceleration remain pending a Tesla listening test.
+The current audio is an authored research spike rather than an exposed oscillator/noise layer mixer. Its musical quality and relationship to real acceleration remain pending a Tesla listening test.
 
 ## Quick start
 
@@ -85,7 +85,7 @@ No screenshot is published here yet. The repository will include only real, curr
 
 ## Roadmap
 
-The next gate is a second real Tesla session using the new compact `DIAG` control: send the report directly from split view, confirm inbox delivery, capture speed samples across real motion, evaluate audio/visual response, measure frame pacing, and check touch reach while parked. Results will drive the next audio and renderer iteration.
+The next gate is a real Tesla session at the verified split viewport: evaluate the Modular Aperture field and adaptive score across acceleration/deceleration, measure frame pacing, test the full-energy threshold and body-color control, and check touch reach while parked. The compact `DIAG` report remains available for technical evidence.
 
 See [`docs/ROADMAP.md`](docs/ROADMAP.md).
 

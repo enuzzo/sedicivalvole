@@ -9,7 +9,7 @@ Status: **confirmed product architecture; Engine design and implementation pendi
 | Mode | Audio purpose | Visual purpose | Current status |
 |---|---|---|---|
 | **Engine** | Reproduce selectable engine characters through synthesis, licensed samples, or a measured hybrid | Instrument-inspired generative system: abstract tachometer, throttle/load field, acceleration trace, mechanical light, or a selected alternative | Confirmed; not yet designed or implemented |
-| **Flux** | Compose and reshape music from speed, acceleration, deceleration, and discrete motion events | Rich animated gradients, chromatic fields, depth/tunnel motion, and optional abstract procedural road-like WebGL flow | Current Drive Lab implementation |
+| **Flux** | Compose and reshape music from speed, acceleration, deceleration, and discrete motion events | Modular Aperture: sparse rectangular geometry that forms a centered depth tunnel, with five curated body-color themes | Current Drive Lab implementation; vehicle validation pending |
 
 ## Naming decision
 
@@ -41,7 +41,7 @@ On switch:
 5. retain master mute, diagnostics, hue/accessibility preferences where semantically shared;
 6. announce the new active mode accessibly without a blocking confirmation dialog.
 
-This is a recommendation, not yet a selected component design. The selector's exact placement and visual anatomy must be validated at `773 × 601` and in the vehicle.
+The current Flux build places the flat ENGINE / FLUX selector in the top rail at `773 × 601`. Flux is active; Engine remains visibly present but disabled until its own direction and audio model are implemented. Final dual-mode switching still requires vehicle validation.
 
 ## Engine signal truthfulness
 
@@ -67,14 +67,14 @@ The UI must not label a derived value as real Tesla RPM, throttle, gear, CAN, mo
 
 ### Flux
 
-- abstract WebGL gradients, fields, geometry, light, depth, and tunnel motion;
+- the approved Modular Aperture rectangular field, centered tunnel motion, and curated body-color themes;
 - procedural road-like flow is allowed when it remains abstract and non-scenic;
 - no illustrated landscapes, environmental scenes, characters, narrative objects, or old Flash-like decoration;
 - visuals remain subordinate to safe driving and the musical experience.
 
 ## Open decisions
 
-- exact selector placement and resting-state treatment;
+- final enabled selector behavior after Engine is implemented;
 - whether the last selected mode persists locally and which mode opens on first use;
 - crossfade duration and behavior while muted or during Brake;
 - Engine synthesis, sample-loop, or hybrid strategy;

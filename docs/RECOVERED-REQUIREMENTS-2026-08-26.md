@@ -76,8 +76,8 @@ Recommended product model:
 | Infinite Lights source preserved in ignored local reference library | complete |
 | Infinite Lights mechanics and license constraints reviewed | complete |
 | Current visual treatment marked rejected | complete |
-| Revised minimal visual directions | pending: exactly three required |
+| Revised minimal visual directions | complete: three presented; Modular Aperture selected |
 | Current audio treatment marked musically rejected | complete |
-| Adaptive music architecture revision | pending |
-| Environment and energy-threshold control model | pending |
+| Adaptive music architecture revision | implemented spike; Tesla listening acceptance pending |
+| Environment and energy-threshold control model | implemented in current Drive Lab build |
 | Compact diagnostics opening and report delivery | partially implemented; vehicle re-test pending |

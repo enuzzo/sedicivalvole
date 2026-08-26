@@ -29,9 +29,9 @@ Gate: a repeatable vehicle report with no invented values. If GPS speed is absen
 
 ## Phase 2 — Flux visual direction
 
-Status: **REOPENED after in-vehicle rejection**.
+Status: **DIRECTION SELECTED; CURRENT BUILD IMPLEMENTED**.
 
-Exactly three initial directions were presented and direction 1 was selected. The subsequent implementation exposed that its lens-flare-heavy visual language was not acceptable. The next gate is exactly three revised minimal, Swiss-influenced interpretations that retain central depth and speed response without reusing the rejected wallpaper treatment. Infinite Lights is a mechanics reference, not a visual skin.
+Exactly three revised minimal directions were presented after the luminous-axis rejection. The selected **Modular Aperture** direction uses a flat Braun/Swiss control plane and a sparse rectangular field that converges into a centered tunnel. Five body-color themes are approved. The Laminar alternative is preserved only as an ignored study because its visible resemblance to Infinite Lights requires a stronger independent reinterpretation before use.
 
 ## Phase 3 — Flux signal and music spike
 
@@ -42,23 +42,24 @@ Implemented:
 - nullable GPS normalization, deadband, smoothing, and bounded Demo input;
 - tempo knee with asymptotic ceiling;
 - continuous energy separated from discrete layer/Brake events;
-- 16-step lookahead sequencer, layered arrangement, transitions, and limiter;
+- four-section lookahead arrangement, bar-quantized transitions, two-bar dwell, crossfades, and limiter;
+- full-energy speed threshold and curated `APERTURE 01` environment;
 - deterministic desktop signal tests.
 
-The first desktop listen exposed excessive Atmos noise and weak motion mapping. The rebuild became audible but remained musically weak and was explicitly rejected. The next spike must use curated environments, a meaningful energy-threshold control, and authored adaptive arrangements rather than exposed implementation layers.
+The earlier synthesized spike was explicitly rejected. The current build implements the first authored adaptive arrangement and purposeful control model; its musical quality is still pending a real Tesla listening test.
 
 Gate: no audible jitter on deterministic replay, no frantic high-speed march, all automated tests green, and no masking of vehicle alerts.
 
 ## Phase 4 — Flux generative renderer spike
 
-Status: **FIRST TESLA VISUAL PASS, PERFORMANCE PENDING**.
+Status: **MODULAR APERTURE IMPLEMENTED; TESLA PERFORMANCE PENDING**.
 
 Implemented:
 
-- selected direction 1 as a real texture asset;
-- WebGL2 displacement, chromatic depth, speed energy, hue, pulse, and Brake response;
-- static CSS and reduced-motion fallback;
-- local comparison against the selected source at 1254×784.
+- procedural WebGL2 Modular Aperture field with no texture asset;
+- bounded speed energy, palette, aggregate pulse, Brake, and asymmetric deceleration response;
+- reduced-motion behavior and continuously redrawn Canvas2D fallback;
+- flat Braun/Swiss interface, compact diagnostics, and body-color selection at `773 × 601`.
 
 Gate: stable frame budget on the slowest target vehicle, graceful degradation, and no audio degradation while the renderer runs.
 

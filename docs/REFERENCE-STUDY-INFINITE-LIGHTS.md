@@ -50,3 +50,7 @@ Therefore:
 ⭐️ Recommended translation: replace the literal dual carriageway with a sparse abstract depth field. At rest it reads as a flat, quiet chromatic plane. As normalized energy rises, a bounded projection shift, longitudinal repetition, and field distortion form a centered tunnel. Acceleration affects transient stretch and pressure; sustained speed affects travel rate and depth density; deceleration releases them on a musically coordinated envelope.
 
 This keeps the reference's strongest motion grammar while satisfying the minimal visual direction and avoiding a themed racing-road imitation.
+
+## Product Design outcome
+
+The selected **Modular Aperture** direction is independently implemented from rectangular field mathematics and does not reproduce the reference's road, light trails, bloom, or scene structure. The unselected **Laminar** direction remains preserved only in the ignored visual-study library. Its visible resemblance to Infinite Lights is explicitly recorded: it must not be implemented as shown and would require a stronger independent reinterpretation before reconsideration.

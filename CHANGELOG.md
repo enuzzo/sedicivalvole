@@ -22,6 +22,9 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - An active `AGPL-3.0-or-later` license for code and documentation, with a clear scope file, contributor notice, and explicit exclusions for brand and standalone media assets.
 - A tracked recovery record for requirements that remained queued in the desktop client while the conversation continued from mobile.
 - A provenance, mechanics, performance, and license study of the Codrops/Tympanus Infinite Lights reference, preserved locally in the ignored reference library.
+- The approved Modular Aperture Flux direction: a procedural rectangular field that moves from a calm plane to a centered tunnel and releases coherently during deceleration.
+- Curated Pearl, Graphite, Red, Blue, and Silver `BODY COLOR` themes that tune both the field palette and interface accent.
+- A Canvas2D Modular Aperture fallback for devices without WebGL2.
 
 ### Changed
 
@@ -38,6 +41,10 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - Replaced the provisional licensing recommendation with an operative mixed code-and-asset policy while leaving exact legal ownership and final brand rules open for legal review.
 - Reopened the Flux visual gate after rejecting the lens-flare-heavy direction-1 implementation; the next gate requires exactly three revised minimal, Swiss-influenced directions.
 - Marked the current Flux audio spike as musically rejected and redirected the next iteration toward curated environments, authored adaptive arrangement, and an energy-threshold control.
+- Replaced the rejected luminous-axis/starburst rendering with an independent WebGL2 Modular Aperture shader and a flat Braun-influenced, Swiss, slightly brutalist control system.
+- Replaced primary `Atmos`, `Harmonics`, and `Pulse` controls with the `APERTURE 01` environment, a full-energy speed threshold, and body-color selection.
+- Rebuilt the Flux audio spike as a four-section authored arrangement with a tempo knee, bar-quantized entries, hysteresis, two-bar dwell, crossfades, controlled deceleration, kick, low end, percussion, harmony, motif, delay, and conservative dynamics.
+- Removed the permanent on-screen Brake control; keyboard Space remains a deterministic bounded test event.
 
 ### Fixed
 
@@ -45,6 +52,7 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - Removed the previously uploaded wrong FTP-home diagnostics tree after exact-name validation and explicit authorization.
 - Prevented keyboard simulation from intercepting controls that own arrow or Space input.
 - Added smoothing, deadband, saturating energy/tempo, and a discrete brake cooldown to avoid jitter and frantic high-speed tempo.
+- Corrected GLSL portability issues found by rendered browser QA and made the fallback redraw continuously with energy and theme changes.
 
 ### Security
 
