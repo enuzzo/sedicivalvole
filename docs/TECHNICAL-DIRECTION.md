@@ -22,13 +22,32 @@ The current Product Design prototype uses React because it came from the verifie
 
 ```text
 GPS adapter ─┐
-             ├─> normalized speed stream ─> signal model ─> audio engine
+             ├─> normalized speed stream ─> signal model ─> mode coordinator
 Simulator ───┘                                  │             │
-                                               │             └─> analysis snapshot
-                                               └────────────────> visual renderer
+                                               │             ├─> Engine audio + visual
+                                               │             ├─> Flux audio + visual
+                                               │             └─> shared analysis snapshot
+                                               └────────────────> diagnostics
 ```
 
 The audio clock is authoritative for musical events. Visuals consume derived snapshots and may drop frames without changing sound. UI state never schedules musical timing directly.
+
+## Primary-mode boundary
+
+```ts
+type ExperienceMode = "engine" | "flux";
+```
+
+The mode coordinator owns selection and lifecycle, not signal acquisition. Both modes consume the same normalized speed samples, motion events, confidence state, and master safety envelope. They share AudioContext unlock, diagnostics, master Stop/Mute, output limiter, reduced-motion preference, and fallback policy.
+
+They remain separate audio and rendering modules:
+
+- **Engine** maps speed and derived acceleration into an explicitly synthetic RPM/load/gear-state model, then renders selectable engine timbres and an instrument-inspired visual system.
+- **Flux** maps speed and motion into tempo, energy, arrangement, harmony, timbre, space, and generative field parameters.
+
+Switching should use a bounded equal-power crossfade or an equivalent click-free transition. The incoming mode may prewarm minimal assets, but inactive full DSP/rendering must not consume an unbounded CPU or memory budget. A switch must not recreate Geolocation, request permission again, or start a second independent AudioContext.
+
+The mode selector must remain reachable and clearly show the active mode at the verified `773 × 601` split viewport. Its exact component anatomy and Engine visual language require Product Design exploration before implementation.
 
 ## Speed-source contract
 
@@ -94,11 +113,23 @@ Use hysteresis and dwell around structural thresholds. Quantize layer changes to
 
 ## Audio architecture
 
-### Current spike
+### Engine direction
+
+The browser currently provides speed evidence, not powertrain telemetry. Engine therefore needs a deterministic synthesis model with explicitly named derived signals:
+
+- `rpmProxy`: speed plus simulated ratio/gear state, never labeled as vehicle RPM;
+- `loadProxy`: filtered positive acceleration and sustained-speed demand;
+- `liftEnvelope`: deceleration/lift-off transient;
+- `shiftEvent`: hysteretic synthetic structural event, not a detected vehicle gear change;
+- `engineModel`: user-selected timbral/sampling definition with provenance and license metadata.
+
+Sample loops require phase-consistent crossfades, bounded decoded-memory use, click-free pitch transitions, and conservative limiting. Procedural synthesis may reduce asset weight but must win an actual listening test. Neither approach is preferred without a dedicated spike.
+
+### Current Flux spike
 
 The current Drive Lab intentionally uses a main-thread lookahead scheduler for rapid validation. It contains a 16-step pattern, kick/bass/hat/snare/arp/pad layers, a continuous speed-rising energy wave, speed-gated rhythmic subdivisions, a separate atmosphere drone, delay, motion cues, Brake accent, and limiter. This is a prototype, not the production real-time architecture.
 
-### Production direction
+### Shared production direction
 
 - one AudioContext created by an explicit user gesture;
 - AudioWorklet for timing-critical synthesis/sequencing;
@@ -111,7 +142,7 @@ The current Drive Lab intentionally uses a main-thread lookahead scheduler for r
 
 Profile before adding WASM. It is justified only if measured DSP cost, not fashion, requires it.
 
-## Visual architecture
+## Flux visual architecture
 
 Direction 1 becomes a parameterized family, not a static background:
 
@@ -125,6 +156,12 @@ Direction 1 becomes a parameterized family, not a static background:
 - Canvas2D/static image fallback.
 
 The renderer consumes a small snapshot and never blocks the audio event queue.
+
+## Engine visual architecture
+
+Engine may use an abstract tachometer, throttle/load arc, acceleration trace, mechanical light field, or related instrument-like motif. It must not collapse into a generic dashboard, imply unavailable telemetry, or copy a protected vehicle cluster. The next Product Design gate is exactly three Engine-specific directions; no final palette, instrument anatomy, or motion grammar is selected yet.
+
+Flux may incorporate procedural road-like flow only as abstract WebGL geometry or light/depth structure. It must not reintroduce scenic landscapes, illustrative environments, or visually distracting narrative decoration.
 
 ## Control-state model
 

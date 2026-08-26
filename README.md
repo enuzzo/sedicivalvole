@@ -1,12 +1,12 @@
 # sedicivalvole
 
-> Current state: **Drive Lab is live and under vehicle validation**. Visual direction 1, the luminous axis, is selected. This is a private development build, not a release.
+> Current state: **Flux is live as the current Drive Lab prototype and is under vehicle validation**. Visual direction 1, the luminous axis, is selected. This is a development build, not a release.
 
 Public development repository: [github.com/enuzzo/sedicivalvole](https://github.com/enuzzo/sedicivalvole).
 
 ## Vision
 
-`sedicivalvole` turns speed, sound, and light into an atmospheric, useful, and memorable in-car experience. It is neither a generic dashboard nor an engine-noise toy: audio, generative visuals, and interaction are designed as one musical system.
+`sedicivalvole` turns speed, sound, and light into an atmospheric, useful, and memorable in-car experience. It is not a generic dashboard. Two equal primary modes share one motion signal and safety model while offering deliberately different audio and visual identities.
 
 The canonical development build is available at [sedicivalvole.app](https://sedicivalvole.app/).
 
@@ -15,7 +15,7 @@ The canonical development build is available at [sedicivalvole.app](https://sedi
 - ✅ a single ignored local reference library under `_references/`;
 - ✅ source audit, product requirements, adversarial review, technical direction, and roadmap;
 - ✅ visual direction 1 selected after exactly three Product Design directions;
-- ✅ touch-first Drive Lab with a WebGL2 luminous field, static/reduced-motion fallback, GPS/demo speed source, Stop, Brake, layer controls, hue control, and an integrated capability report;
+- ✅ touch-first Flux prototype with a WebGL2 luminous field, static/reduced-motion fallback, GPS/demo speed source, Stop, Brake, layer controls, hue control, and an integrated capability report;
 - ✅ local-only speed processing: raw coordinates are never displayed, persisted, or transmitted;
 - ✅ a synthesized 16-step audio spike with saturating tempo and speed-driven arrangement depth;
 - ✅ production build and deterministic signal, diagnostic-model, and packaging tests passing;
@@ -33,10 +33,12 @@ The speed source is an explicit abstraction. GPS and the desktop simulator produ
 
 ## Current modes
 
-- animated abstract WebGL2 field with hue and saturating speed-to-energy mapping;
-- local synthesized soundscape with a continuous speed-rising energy wave, Atmos, Harmonics, Pulse, denser speed-gated beats, and Brake layers;
-- GPS request using only `coords.speed`, with a visible Demo fallback;
-- integrated Tesla capability report, audio status, Stop/Mute, reduced motion, and renderer fallback.
+Confirmed product modes:
+
+- **Engine** — selectable engine-sound emulation with a dedicated instrument-inspired visual language. Audio modeling, catalog, and final visual direction are not implemented yet.
+- **Flux** — adaptive music driven by speed and motion, paired with abstract WebGL fields, rich gradients, tunnel depth, and possible procedural road-like motion. This is the mode currently implemented as Drive Lab.
+
+Shared foundations include the GPS/Demo speed source, integrated diagnostics, master Stop/Mute, reduced motion, renderer fallback, and touch-first safety behavior. The mode switch will remain clearly identifiable and reachable from both experiences.
 
 The current audio is a research spike. Its musical quality and relationship to real acceleration remain pending a Tesla listening test.
 
@@ -96,6 +98,7 @@ See [`docs/ROADMAP.md`](docs/ROADMAP.md).
 - [`docs/REFERENCE-LIBRARY.md`](docs/REFERENCE-LIBRARY.md) — local external-material convention;
 - [`docs/DEPLOY.md`](docs/DEPLOY.md) — sanitized deployment procedure and verified state;
 - [`docs/DIAGNOSTICS.md`](docs/DIAGNOSTICS.md) — verified Tesla measurements and report-delivery architecture;
+- [`docs/MODES.md`](docs/MODES.md) — confirmed Engine/Flux product architecture and open decisions;
 - [`docs/GITHUB.md`](docs/GITHUB.md) — public-repository and GitHub CLI operating notes;
 - [`docs/LICENSING.md`](docs/LICENSING.md) — provisional mixed-license decision.
 

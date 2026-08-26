@@ -9,6 +9,10 @@ When implementing from a selected generated mock, treat that image as the source
 ## Durable product direction
 
 - Direction 1 (luminous-axis tunnel) is the selected visual source of truth.
+- The product has two equal, always-selectable primary modes: `Engine` and `Flux`.
+- The current Drive Lab implementation is the `Flux` mode: adaptive music with abstract WebGL fields, gradients, depth, and optional abstract road/tunnel motion.
+- `Engine` is a separate engine-emulation mode with selectable engine sound models and an instrument-inspired generative visual system. Do not implement its final visual direction before presenting exactly three Engine-specific directions.
+- Mode switching shares the normalized speed source, diagnostics, audio-unlock lifecycle, master Stop/Mute, safety limits, and accessibility behavior. Never imply access to real RPM, throttle, gear, or CAN data without evidence.
 - Keep the scene abstract, minimal and atmospheric; no scenery, characters or illustrative decoration.
 - The initial flow is one deliberate `TEST & START` gesture, then a continuous fade into Drive Lab.
 - Controls are touch-first, large, translucent at rest and fully visible on interaction.

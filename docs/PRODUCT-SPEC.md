@@ -25,7 +25,22 @@ Status: **decision baseline, not an implementation contract**. “Confirmed” i
 
 Tesla instructs drivers not to adjust the touchscreen while driving. This is a primary design constraint. WCAG's 24×24 CSS-pixel minimum is only a web floor, not an adequate physical in-car target.
 
-## 3. Confirmed visual direction
+## 3. Confirmed primary modes
+
+The product has two equal primary modes that remain selectable from either experience:
+
+- **Engine**: selectable engine-sound emulation. Each engine model has its own audio behavior and may use a dedicated instrument-inspired visualization such as an abstract tachometer, throttle/load field, acceleration trace, or similarly focused motif.
+- **Flux**: the current adaptive music system. Speed, acceleration, deceleration, and discrete motion events shape tempo, arrangement, energy, timbre, and space. Its visual family uses animated gradients, chromatic fields, depth/tunnel motion, and optionally abstract procedural road-like geometry in WebGL.
+
+The modes share speed acquisition, simulation, diagnostics, privacy rules, AudioContext unlock, master Stop/Mute, output protection, reduced motion, and accessibility. They do not share a single undifferentiated audio arrangement or visual identity.
+
+The active mode must be unmistakable and the switch must not be buried in settings or available only on the splash. Switching must avoid abrupt gain jumps, overlapping full mixes, or a second GPS/audio permission flow.
+
+Engine is an emulation driven by the signals the browser actually exposes. It must never claim access to real vehicle RPM, throttle position, gear, motor load, or CAN data without direct evidence.
+
+See [`MODES.md`](MODES.md) for the boundary model, recommendations, and open decisions.
+
+## 4. Confirmed Flux visual direction
 
 ### Excluded
 
@@ -42,9 +57,9 @@ Tesla instructs drivers not to adjust the touchscreen while driving. This is a p
 - progressive degradation when GPU, shaders, or frame budget are unreliable;
 - reduced motion that preserves atmosphere and information without aggressive tunnel movement.
 
-Exactly three Product Design directions were shown. The user selected direction 1: a luminous central axis, tunnel depth, indigo–magenta–cyan mood, and translucent lower controls. This selection guides the first Drive Lab but does not freeze the final logo, typeface, palette, or every future motif.
+Exactly three Product Design directions were shown for Flux. The user selected direction 1: a luminous central axis, tunnel depth, indigo–magenta–cyan mood, and translucent lower controls. This selection guides Flux but does not define Engine, freeze the final logo, typeface, palette, or every future motif.
 
-## 4. Splash and audio unlock
+## 5. Splash and audio unlock
 
 - The future splash uses tunnel vision and flows continuously into the main scene.
 - It is not an artificial wait.
@@ -53,7 +68,7 @@ Exactly three Product Design directions were shown. The user selected direction 
 - Display the version discreetly on the splash and/or when controls are visible.
 - Support fast return visits and a reduced-motion variant while respecting any required new audio gesture.
 
-## 5. Speed, GPS, and simulation
+## 6. Speed, GPS, and simulation
 
 ### Source abstraction
 
@@ -85,7 +100,7 @@ The Geolocation API requires a secure context and explicit permission. `coords.s
 
 Brake is a discrete event with envelope and cooldown, not only a negative continuous delta. It may drive controlled audio and visual accents without harsh flashes or dangerous peaks.
 
-## 6. Music and speed mapping
+## 7. Flux music and speed mapping
 
 The received HTML is a useful starting point but not the target ambition.
 
@@ -99,11 +114,11 @@ The received HTML is a useful starting point but not the target ambition.
 - A continuous restrained energy wave remains underneath the mix; its frequency and gain rise smoothly with acceleration.
 - Beat rate and rhythmic density must also increase perceptibly with speed while retaining the tempo knee and musical ceiling.
 
-## 7. Feature decision matrix
+## 8. Feature decision matrix
 
 | Feature | Status | Note |
 |---|---|---|
-| Synthesized/sampled engine | core candidate | quality and latency require vehicle test |
+| Engine mode with synthesized/sampled models | confirmed primary mode | mapping, catalog, quality, and latency require dedicated spike |
 | Tempo + arrangement system | prototype available | musical acceptance pending |
 | Per-layer generative visuals | prototype available | direction 1 selected; deeper per-layer mapping pending |
 | Open packs | strategic goal | schema and licensing not frozen |
@@ -112,7 +127,7 @@ The received HTML is a useful starting point but not the target ambition.
 | WAV-to-parameter editor | future research | source lab not validated on real audio |
 | Trip postcard | not confirmed | privacy conflict requires review |
 
-## 8. Assumptions that must not become facts
+## 9. Assumptions that must not become facts
 
 - The target Tesla provides numeric `coords.speed` at useful cadence and quality.
 - Browser permission, cache, and storage persist between sessions.
@@ -122,7 +137,7 @@ The received HTML is a useful starting point but not the target ambition.
 - A single community viewport applies to every Tesla model/software combination.
 - OSM `maxspeed` is numeric, complete, directionally correct, or policy-free.
 
-## 9. Vehicle information still required
+## 10. Vehicle information still required
 
 ### Verified on 2026-08-26
 
@@ -150,7 +165,7 @@ Capture from the integrated harness:
 
 Tesla's official Model 3 page reports a 15.4-inch center display, but not a CSS viewport: [Tesla Model 3](https://www.tesla.com/model3). Community evidence suggests software updates can change the browser viewport, including a reported shift from 1920×1200 at DPR 1 to roughly 1254×784 at DPR 1.53. This is responsive-test evidence, not a universal specification. The real harness report is authoritative.
 
-## 10. Version, documentation, deployment, and license
+## 11. Version, documentation, deployment, and license
 
 - `VERSION` is the only SemVer source of truth; `0.0.0` means no release.
 - The app exposes the version discreetly.

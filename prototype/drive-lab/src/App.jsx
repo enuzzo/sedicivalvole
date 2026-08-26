@@ -562,6 +562,7 @@ export function App() {
     generatedAt: new Date().toISOString(),
     app: {
       version: APP_VERSION,
+      mode: "flux",
       pageUrl: window.location.href,
       source,
       displayedSpeedKmh: Math.round(speed * 10) / 10,
@@ -632,7 +633,7 @@ export function App() {
       {keyboardHint && <div className="keyboard-hint" role="status">{keyboardHint}</div>}
 
       <section className="splash" aria-hidden={phase === "running"}>
-        <div className="splash-mark"><span>sedicivalvole</span><small>drive lab · {APP_VERSION}</small></div>
+        <div className="splash-mark"><span>sedicivalvole</span><small>flux · {APP_VERSION}</small></div>
         <div className="splash-action">
           <p>One gesture. Then listen to the road.</p>
           <button className="launch-button" type="button" onClick={runHarness} disabled={phase === "testing"}>
@@ -646,7 +647,7 @@ export function App() {
       <section className="experience" aria-hidden={phase !== "running"}>
         <header className="topbar">
           <button className="wordmark" type="button" onClick={() => setDrawerOpen(true)} aria-label="Open diagnostic report">
-            <span>sedicivalvole</span><small>DRIVE LAB</small>
+            <span>sedicivalvole</span><small>FLUX</small>
           </button>
           <div className="topbar-actions">
             <button className="diag-button" type="button" onClick={() => setDrawerOpen(true)} aria-label="Open device diagnostics">

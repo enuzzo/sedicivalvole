@@ -27,13 +27,13 @@ Measure:
 
 Gate: a repeatable vehicle report with no invented values. If GPS speed is absent or unreliable, Demo/manual mode becomes first-class rather than hidden failure recovery.
 
-## Phase 2 — Visual direction
+## Phase 2 — Flux visual direction
 
 Status: **COMPLETE on 2026-08-26**.
 
 Exactly three directions were presented. The user selected direction 1: a luminous central axis with abstract depth/tunnel motion and a translucent lower control dock. The selection fixes the current composition and visual grammar, not the final logo, typeface, palette, or future per-layer motifs.
 
-## Phase 3 — Signal and music spike
+## Phase 3 — Flux signal and music spike
 
 Status: **IN PROGRESS**.
 
@@ -49,7 +49,7 @@ The first desktop listen exposed excessive Atmos noise and weak motion mapping. 
 
 Gate: no audible jitter on deterministic replay, no frantic high-speed march, all automated tests green, and no masking of vehicle alerts.
 
-## Phase 4 — Generative renderer spike
+## Phase 4 — Flux generative renderer spike
 
 Status: **FIRST TESLA VISUAL PASS, PERFORMANCE PENDING**.
 
@@ -62,11 +62,26 @@ Implemented:
 
 Gate: stable frame budget on the slowest target vehicle, graceful degradation, and no audio degradation while the renderer runs.
 
-## Phase 5 — Focused MVP
+## Phase 5 — Engine mode discovery
+
+Status: **CONFIRMED MODE, DESIGN AND AUDIO SPIKE PENDING**.
+
+- define the synthetic speed/acceleration → RPM/load/shift model without claiming vehicle telemetry;
+- evaluate procedural synthesis versus licensed loop/sample packs;
+- present exactly three Engine-specific Product Design directions;
+- explore instrument-inspired visuals such as an abstract tachometer, throttle/load field, acceleration trace, or mechanical light system;
+- define click-free mode switching, preload budget, persistence, and shared master controls;
+- validate Engine audibility and safety against vehicle alerts.
+
+Gate: one selected Engine visual direction, one musically credible engine model, deterministic mapping tests, explicit asset provenance, and a safe dual-mode transition.
+
+## Phase 6 — Focused dual-mode MVP
 
 Planned only after vehicle evidence:
 
 - selected visual family with per-layer parameters;
+- an always-reachable, unmistakable Engine / Flux selector;
+- separate Engine and Flux audio/rendering modules over one normalized speed pipeline;
 - proven signal source and Demo fallback;
 - musically accepted core arrangement;
 - park-first setup, Stop/Mute, and large touch controls;
@@ -76,13 +91,13 @@ Planned only after vehicle evidence:
 
 Gate: complete main flow, accessibility baseline, long-session stability, and safe passenger/parked validation.
 
-## Phase 6 — Vehicle QA matrix
+## Phase 7 — Vehicle QA matrix
 
 Record model, year, MCU/browser/software context, viewport, GPS behavior, audio output, touch reach, thermal/frame behavior, denied permission, null/stale GPS, network loss, and cache reset.
 
 Gate: visible and audible PASS/FAIL evidence, not automated tests alone.
 
-## Phase 7 — Release and deployment
+## Phase 8 — Release and deployment
 
 - update `VERSION`, changelog, README, real screenshots, dependency notices, and final license/brand policy;
 - deploy to the canonical root;

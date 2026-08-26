@@ -18,10 +18,12 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - A compact-view `DIAG` entry point, a scrollable diagnostics panel, split/expanded viewport history, richer GPS/audio/runtime evidence, and a bounded chronological event log.
 - A same-origin PHP `Send Diagnostic` endpoint with a fixed recipient, schema/body validation, coordinate-key rejection, rate limiting, and sanitized responses.
 - A clean public GitHub repository at `github.com/enuzzo/sedicivalvole`, initialized from a reviewed snapshot without private bootstrap history.
+- A confirmed two-mode product architecture: `Engine` for selectable engine emulation and `Flux` for speed-reactive music and generative WebGL fields.
 
 ### Changed
 
 - Reworked the audio after user listening feedback: reduced the dominant noise bed and replaced the weak continuous tone with speed-dependent rhythmic and harmonic layers.
+- Named the current adaptive music mode `Flux` and exposed that identity in the splash, live header, page metadata, and diagnostic report.
 - Changed the development publication target from an isolated diagnostics path to the canonical site root.
 - Changed all code, comments, documentation, operational text, and interface copy to English; Italian is reserved for direct user/assistant conversation.
 - Defined canonical-root deployment as the default workflow during the private development phase, with post-upload live verification still mandatory.

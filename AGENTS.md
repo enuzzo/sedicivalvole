@@ -34,6 +34,8 @@ These rules apply to every change in the `sedicivalvole` project.
 - During active development, deploy each user-approved product change to the canonical root at `https://sedicivalvole.app/`; the product remains experimental even though the source repository is public.
 - An upload is not a successful deployment: verify the canonical URL, HTML, assets, version, and cache behavior after every publication.
 - Keep the technical diagnostics accessible from within the main product experience.
+- Treat `Engine` and `Flux` as equal primary product modes. The active mode must remain clearly identifiable and the mode switch must remain reachable from either experience.
+- `Flux` is the current adaptive music and generative-field work. `Engine` is a separate engine-sound experience with its own audio model and instrument-inspired visual language.
 - Do not assume Apache, Nginx, or any other server technology without evidence.
 
 ## Licensing
