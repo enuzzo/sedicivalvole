@@ -10,6 +10,7 @@ import {
   speedToBpm,
   speedToEnergy,
   speedToMotion,
+  speedToVisualVelocity,
   speedToWave,
 } from "../src/signal-model.js";
 
@@ -66,10 +67,13 @@ test("the continuous energy wave rises smoothly but stays bounded", () => {
 });
 
 test("visual travel stays calm at rest and becomes emphatic only near full energy", () => {
-  assert.equal(energyToFlowRate(0), 0.025);
-  assert.ok(energyToFlowRate(0.25) < 0.2);
-  assert.ok(energyToFlowRate(0.75) > 1.5);
-  assert.equal(energyToFlowRate(1), 3.425);
+  assert.equal(energyToFlowRate(0, 0), 0.02);
+  assert.ok(energyToFlowRate(0.25, 20) < 0.3);
+  assert.ok(energyToFlowRate(0.75, 80) > 2);
+  assert.ok(energyToFlowRate(1, 150) > 14);
+  assert.ok(energyToFlowRate(1, 150) > energyToFlowRate(1, 100) * 2);
+  assert.equal(speedToVisualVelocity(0), 0);
+  assert.equal(speedToVisualVelocity(160), 1);
 });
 
 test("motion separates acceleration from deceleration with bounded rates", () => {
@@ -88,8 +92,8 @@ test("motion separates acceleration from deceleration with bounded rates", () =>
 
 test("the demo holds at full speed and reaches a true standstill before restarting", () => {
   assert.deepEqual(
-    advanceDemoMotion({ speed: 131, direction: 1, holdTicks: 0 }),
-    { speed: 132, direction: -1, holdTicks: 6 },
+    advanceDemoMotion({ speed: 159, direction: 1, holdTicks: 0 }),
+    { speed: 160, direction: -1, holdTicks: 6 },
   );
   assert.deepEqual(
     advanceDemoMotion({ speed: 1, direction: -1, holdTicks: 0 }),

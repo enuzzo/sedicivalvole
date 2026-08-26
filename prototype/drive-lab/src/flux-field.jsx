@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { energyToFlowRate } from "./signal-model.js";
+import { energyToFlowRate, speedToVisualVelocity } from "./signal-model.js";
 
 const VERTEX_SHADER = `#version 300 es
   in vec2 a_position;
@@ -15,6 +15,7 @@ const FRAGMENT_SHADER = `#version 300 es
 
   uniform float u_aspect;
   uniform float u_energy;
+  uniform float u_velocity;
   uniform float u_flow;
   uniform float u_pulse;
   uniform float u_brake;
@@ -42,6 +43,7 @@ const FRAGMENT_SHADER = `#version 300 es
     screen.x *= u_aspect * 0.77;
 
     float energy = smoothstep(0.02, 0.96, u_energy);
+    float velocity = smoothstep(0.08, 0.96, u_velocity);
     float majorAxis = max(max(abs(screen.x), abs(screen.y)), 0.035);
     float sideSurface = step(abs(screen.y), abs(screen.x));
     float lateral = mix(
@@ -52,26 +54,36 @@ const FRAGMENT_SHADER = `#version 300 es
     float depth = 1.0 / majorAxis;
 
     vec2 flatGrid = v_uv * vec2(13.0, 7.0);
-    vec2 tunnelGrid = vec2(lateral * 15.0, depth * 4.5 + u_flow);
-    vec2 grid = mix(flatGrid, tunnelGrid, energy);
-    vec2 cell = floor(grid);
-    vec2 local = fract(grid);
+    vec2 flatCell = floor(flatGrid);
+    vec2 flatLocal = fract(flatGrid);
+    float flatIdentity = hash21(flatCell + vec2(0.0, 3.0));
+    float flatTone = hash21(flatCell + vec2(8.0, 29.0));
+    float flatTile = rectangleMask(flatLocal, vec2(0.27, 0.32)) * step(0.78, flatIdentity);
+    float flatSeam = 1.0 - rectangleMask(flatLocal, vec2(0.035));
+    vec3 flatPanel = u_mid * (0.38 + flatTone * 0.48);
+    flatPanel = mix(flatPanel, u_light, step(0.86, flatTone));
+    flatPanel = mix(flatPanel, u_accent, step(0.965, flatIdentity));
+    vec3 flatColor = mix(u_base, u_mid * 0.16, flatSeam * 0.3);
+    flatColor = mix(flatColor, flatPanel, flatTile);
 
-    float identity = hash21(cell + vec2(sideSurface * 17.0, 3.0));
-    float tone = hash21(cell + vec2(8.0, 29.0));
-    float enabled = step(mix(0.84, 0.18, energy), identity);
-    vec2 tunnelInset = vec2(0.09 + 0.08 * hash21(cell + vec2(4.0)), 0.12 + 0.12 * hash21(cell + vec2(9.0)));
-    vec2 inset = mix(vec2(0.28, 0.34), tunnelInset, energy);
-    float tile = rectangleMask(local, inset) * enabled;
-    float seam = 1.0 - rectangleMask(local, vec2(0.035));
-
+    float depthFrequency = mix(4.5, 2.15, velocity);
+    vec2 tunnelGrid = vec2(lateral * 15.0, depth * depthFrequency + u_flow);
+    vec2 tunnelCell = floor(tunnelGrid);
+    vec2 tunnelLocal = fract(tunnelGrid);
+    float identity = hash21(tunnelCell + vec2(sideSurface * 17.0, 3.0));
+    float tone = hash21(tunnelCell + vec2(8.0, 29.0));
+    float enabled = step(mix(0.78, 0.14, energy), identity);
+    float trailInset = mix(0.12 + 0.12 * hash21(tunnelCell + vec2(9.0)), 0.012, velocity);
+    vec2 tunnelInset = vec2(0.09 + 0.08 * hash21(tunnelCell + vec2(4.0)), trailInset);
+    float tile = rectangleMask(tunnelLocal, tunnelInset) * enabled;
+    float seam = 1.0 - rectangleMask(tunnelLocal, vec2(0.035, mix(0.035, 0.012, velocity)));
     vec3 panel = u_mid * (0.35 + tone * 0.5);
     panel = mix(panel, u_light, step(0.84 - energy * 0.12, tone));
     panel = mix(panel, u_accent, step(0.94 - energy * 0.03, identity) * smoothstep(0.12, 0.5, energy));
+    vec3 tunnelColor = mix(u_base, u_mid * 0.18, seam * (0.3 + energy * 0.3));
+    tunnelColor = mix(tunnelColor, panel, tile);
 
-    vec3 color = u_base;
-    color = mix(color, u_mid * 0.18, seam * (0.3 + energy * 0.3));
-    color = mix(color, panel, tile);
+    vec3 color = mix(flatColor, tunnelColor, energy);
 
     float apertureRadius = max(abs(screen.x) * 0.78, abs(screen.y));
     float aperture = 1.0 - smoothstep(0.055, 0.105, apertureRadius);
@@ -108,7 +120,7 @@ function cssColor(rgb, alpha = 1) {
   return `rgb(${rgb.map((value) => Math.round(value * 255)).join(" ")} / ${alpha})`;
 }
 
-function drawCanvasFallback(context, canvas, energy, palette, flow) {
+function drawCanvasFallback(context, canvas, energy, speed, palette, flow) {
   const ratio = Math.min(window.devicePixelRatio || 1, 1.25);
   const width = Math.max(1, Math.floor(canvas.clientWidth * ratio));
   const height = Math.max(1, Math.floor(canvas.clientHeight * ratio));
@@ -121,6 +133,7 @@ function drawCanvasFallback(context, canvas, energy, palette, flow) {
   const centerX = width / 2;
   const centerY = height * 0.5;
   const easedEnergy = energy * energy * (3 - 2 * energy);
+  const velocity = speedToVisualVelocity(speed);
 
   for (let index = 0; index < 96; index += 1) {
     const column = index % 12;
@@ -155,10 +168,11 @@ function drawCanvasFallback(context, canvas, energy, palette, flow) {
     const seed = (index * 37) % 19;
     const panelScale = 0.45 + scale * 0.88;
     const horizontal = side === 0 || side === 2;
-    const flatWidth = width * (0.028 + (seed % 4) * 0.012);
-    const flatHeight = Math.max(2, height * 0.012);
-    const tunnelWidth = width * (horizontal ? 0.095 : 0.024) * panelScale;
-    const tunnelHeight = height * (horizontal ? 0.025 : 0.1) * panelScale;
+    const flatWidth = width * 0.046;
+    const flatHeight = Math.max(2, height * 0.016);
+    const radialStretch = 1 + velocity * 4.5;
+    const tunnelWidth = width * (horizontal ? 0.07 : 0.018 * radialStretch) * panelScale;
+    const tunnelHeight = height * (horizontal ? 0.018 * radialStretch : 0.075) * panelScale;
     const panelWidth = flatWidth + (tunnelWidth - flatWidth) * easedEnergy;
     const panelHeight = flatHeight + (tunnelHeight - flatHeight) * easedEnergy;
 
@@ -195,7 +209,14 @@ function startCanvasFallback(canvas, valuesRef, reducedMotion, onRenderer, onFra
   let lastFrameAt = performance.now();
   let lastDrawAt = 0;
   onRenderer("Canvas2D · Aperture");
-  drawCanvasFallback(context, canvas, visualEnergy, valuesRef.current.theme.palette, flow);
+  drawCanvasFallback(
+    context,
+    canvas,
+    visualEnergy,
+    reducedMotion ? Math.min(valuesRef.current.speed, 20) : valuesRef.current.speed,
+    valuesRef.current.theme.palette,
+    flow,
+  );
 
   const render = (now) => {
     if (stopped) return;
@@ -206,8 +227,15 @@ function startCanvasFallback(canvas, valuesRef, reducedMotion, onRenderer, onFra
     lastDrawAt = now;
     const nextEnergy = reducedMotion ? Math.min(valuesRef.current.energy, 0.28) : valuesRef.current.energy;
     visualEnergy += (nextEnergy - visualEnergy) * (nextEnergy >= visualEnergy ? 0.12 : 0.065);
-    if (!reducedMotion) flow += deltaSeconds * energyToFlowRate(visualEnergy);
-    drawCanvasFallback(context, canvas, visualEnergy, valuesRef.current.theme.palette, flow);
+    if (!reducedMotion) flow += deltaSeconds * energyToFlowRate(visualEnergy, valuesRef.current.speed);
+    drawCanvasFallback(
+      context,
+      canvas,
+      visualEnergy,
+      reducedMotion ? Math.min(valuesRef.current.speed, 20) : valuesRef.current.speed,
+      valuesRef.current.theme.palette,
+      flow,
+    );
     onFrame(now, 1000 / 30, "Canvas2D", canvas.width, canvas.height);
   };
   animationFrame = requestAnimationFrame(render);
@@ -217,10 +245,10 @@ function startCanvasFallback(canvas, valuesRef, reducedMotion, onRenderer, onFra
   };
 }
 
-export function FluxField({ energy, theme, reducedMotion, pulse, brake, onRenderer, onFrame }) {
+export function FluxField({ energy, speed, theme, reducedMotion, pulse, brake, onRenderer, onFrame }) {
   const canvasRef = useRef(null);
-  const valuesRef = useRef({ energy, theme, pulse, brake });
-  valuesRef.current = { energy, theme, pulse, brake };
+  const valuesRef = useRef({ energy, speed, theme, pulse, brake });
+  valuesRef.current = { energy, speed, theme, pulse, brake };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -268,6 +296,7 @@ export function FluxField({ energy, theme, reducedMotion, pulse, brake, onRender
     const uniforms = {
       aspect: gl.getUniformLocation(program, "u_aspect"),
       energy: gl.getUniformLocation(program, "u_energy"),
+      velocity: gl.getUniformLocation(program, "u_velocity"),
       flow: gl.getUniformLocation(program, "u_flow"),
       pulse: gl.getUniformLocation(program, "u_pulse"),
       brake: gl.getUniformLocation(program, "u_brake"),
@@ -296,7 +325,7 @@ export function FluxField({ energy, theme, reducedMotion, pulse, brake, onRender
       const nextEnergy = reducedMotion ? Math.min(valuesRef.current.energy, 0.28) : valuesRef.current.energy;
       const smoothing = nextEnergy >= visualEnergy ? 0.12 : 0.065;
       visualEnergy += (nextEnergy - visualEnergy) * smoothing;
-      if (!reducedMotion) flow += deltaSeconds * energyToFlowRate(visualEnergy);
+      if (!reducedMotion) flow += deltaSeconds * energyToFlowRate(visualEnergy, valuesRef.current.speed);
 
       const ratio = Math.min(window.devicePixelRatio || 1, 1.25);
       const width = Math.max(1, Math.floor(canvas.clientWidth * ratio));
@@ -311,6 +340,10 @@ export function FluxField({ energy, theme, reducedMotion, pulse, brake, onRender
       gl.useProgram(program);
       gl.uniform1f(uniforms.aspect, width / height);
       gl.uniform1f(uniforms.energy, visualEnergy);
+      gl.uniform1f(
+        uniforms.velocity,
+        speedToVisualVelocity(reducedMotion ? Math.min(valuesRef.current.speed, 20) : valuesRef.current.speed),
+      );
       gl.uniform1f(uniforms.flow, flow);
       gl.uniform1f(uniforms.pulse, valuesRef.current.pulse);
       gl.uniform1f(uniforms.brake, valuesRef.current.brake);

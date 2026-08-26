@@ -19,9 +19,15 @@ export function speedToWave(speedKmh, fullEnergyKmh = 120) {
   };
 }
 
-export function energyToFlowRate(energy) {
+export function speedToVisualVelocity(speedKmh) {
+  const normalized = clamp(Math.max(0, speedKmh) / 160, 0, 1);
+  return normalized ** 1.65;
+}
+
+export function energyToFlowRate(energy, speedKmh = 0) {
   const safeEnergy = clamp(energy, 0, 1);
-  return 0.025 + safeEnergy ** 2.4 * 3.4;
+  const velocity = speedToVisualVelocity(speedKmh);
+  return 0.02 + safeEnergy ** 2.4 * 2.4 + velocity ** 2.2 * 16;
 }
 
 export function speedToMotion(previousSpeedKmh, nextSpeedKmh, elapsedSeconds) {
@@ -60,13 +66,13 @@ export function applyKeyboardDelta(speedKmh, direction) {
 }
 
 export function advanceDemoMotion(state, stepKmh = 2.6) {
-  const speed = clamp(state?.speed ?? 0, 0, 132);
+  const speed = clamp(state?.speed ?? 0, 0, 160);
   const direction = state?.direction === -1 ? -1 : 1;
   const holdTicks = Math.max(0, Math.round(state?.holdTicks ?? 0));
   if (holdTicks > 0) return { speed, direction, holdTicks: holdTicks - 1 };
 
   const nextSpeed = speed + direction * stepKmh;
-  if (nextSpeed >= 132) return { speed: 132, direction: -1, holdTicks: 6 };
+  if (nextSpeed >= 160) return { speed: 160, direction: -1, holdTicks: 6 };
   if (nextSpeed <= 0) return { speed: 0, direction: 1, holdTicks: 8 };
   return { speed: nextSpeed, direction, holdTicks: 0 };
 }

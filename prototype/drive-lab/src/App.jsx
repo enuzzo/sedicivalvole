@@ -446,7 +446,7 @@ export function App() {
       sourceRef.current = "DEMO";
       setSource("DEMO");
       stopDemo();
-      let demoMotion = { speed, direction: speed >= 132 ? -1 : 1, holdTicks: 0 };
+      let demoMotion = { speed, direction: speed >= 160 ? -1 : 1, holdTicks: 0 };
       demoTimerRef.current = window.setInterval(() => {
         setSpeed((previous) => {
           demoMotion = advanceDemoMotion({ ...demoMotion, speed: previous });
@@ -789,6 +789,7 @@ export function App() {
     >
       <FluxField
         energy={energy}
+        speed={speed}
         theme={theme}
         reducedMotion={reducedMotion}
         pulse={pulseFlash}
