@@ -149,6 +149,7 @@ The approved Flux renderer is **Modular Aperture**, selected from exactly three 
 - central-axis depth and flow;
 - outward vanishing-point travel at speed, with a non-linear flow ceiling and a near-planar zero-energy state;
 - independent flat/tunnel grids that crossfade without leaking four-wall discontinuities into the resting plane;
+- a seam-free zero-speed score field with staggered rows, deterministic cadence, horizontal bar proportions, a central datum, and slow per-module tonal breathing;
 - speed-driven radial panel elongation and reduced depth frequency in the 150 km/h velocity band;
 - five curated body-color palettes;
 - energy-driven pressure, luminance, distortion, and rectangular panel density;
