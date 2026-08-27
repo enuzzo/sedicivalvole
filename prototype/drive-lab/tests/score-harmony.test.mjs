@@ -9,6 +9,7 @@ import {
   REESE_NOTES,
   SECTIONS,
   sectionAt,
+  SYNTHS,
 } from "../src/score/jungle-score.js";
 
 const NAMES = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"];
@@ -50,8 +51,11 @@ function clashesWith(midi, chord) {
   });
 }
 
-test("the form is six complementary sections, not one cycle repeating", () => {
-  assert.ok(SECTIONS.length >= 5, "the user asked for at least five");
+test("the form is ten complementary sections, not one cycle repeating", () => {
+  // Ten melodies rather than six: at a phrase each, a driver hears forty bars
+  // before anything comes round again, which is the difference between a form
+  // and a refrain.
+  assert.ok(SECTIONS.length >= 10, "the form needs about ten melodies");
   const ids = SECTIONS.map((section) => section.id);
   assert.equal(new Set(ids).size, ids.length, "section identifiers must be unique");
 
@@ -64,6 +68,22 @@ test("the form is six complementary sections, not one cycle repeating", () => {
 
   const themes = SECTIONS.map((section) => section.theme.map((note) => note.midi).join(","));
   assert.equal(new Set(themes).size, themes.length, "two sections share a theme");
+});
+
+test("the theme changes instrument as well as melody across the form", () => {
+  // Ten melodies on one timbre is still one long tune.
+  const voices = SECTIONS.map((section) => section.riffVoice);
+  for (const voice of voices) {
+    assert.ok(voice, "every section must name the voice its theme is played on");
+    assert.ok(
+      Object.hasOwn(SYNTHS, voice),
+      `${voice} is named by a section but is not a declared patch`,
+    );
+  }
+  assert.ok(
+    new Set(voices).size >= 3,
+    `the form uses only ${new Set(voices).size} timbres for ten melodies`,
+  );
 });
 
 test("every section is four bars and declares a theme and a response", () => {

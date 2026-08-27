@@ -70,6 +70,7 @@ const HALF_DIM = [0, 3, 10, 15];
 export const SECTIONS = Object.freeze([
   {
     id: "home",
+    riffVoice: "riff",
     name: "HOME",
     // i - i - VI - III. The statement.
     // Voiced as a seventh, not a ninth: the theme's Ab sits a semitone above
@@ -97,6 +98,7 @@ export const SECTIONS = Object.freeze([
   },
   {
     id: "lift",
+    riffVoice: "riffBell",
     name: "LIFT",
     // III - VII - VI - i. The same material, opened upward.
     harmony: [
@@ -121,6 +123,7 @@ export const SECTIONS = Object.freeze([
   },
   {
     id: "turn",
+    riffVoice: "riff",
     name: "TURN",
     // iv - VII - III - VI. Falling fourths: the most liquid motion in the form.
     harmony: [
@@ -145,6 +148,7 @@ export const SECTIONS = Object.freeze([
   },
   {
     id: "dark",
+    riffVoice: "riffReed",
     name: "DARK",
     // i - VI - ii(half-diminished) - v. The half-diminished is the shadow.
     harmony: [
@@ -169,6 +173,7 @@ export const SECTIONS = Object.freeze([
   },
   {
     id: "open",
+    riffVoice: "riffBell",
     name: "OPEN",
     // VI - VII - i - i, with the tonic suspended. The widest air in the piece.
     harmony: [
@@ -190,6 +195,7 @@ export const SECTIONS = Object.freeze([
   },
   {
     id: "return",
+    riffVoice: "riff",
     name: "RETURN",
     // v - VI - VII - i. The cadence that hands the form back to HOME.
     harmony: [
@@ -212,6 +218,104 @@ export const SECTIONS = Object.freeze([
       { at: 4, midi: 75, steps: 2 },
       { at: 14, midi: 72, steps: 3 },
       { at: 26, midi: 77, steps: 4 },
+    ],
+  },
+  {
+    id: "ember",
+    riffVoice: "riffPluck",
+    name: "EMBER",
+    // VI - v - iv - i. A long fall through the key.
+    harmony: [
+      { name: "Dbmaj7", bassMidi: 25, colour: MAJOR_7 },
+      { name: "Cm7", bassMidi: 24, colour: MINOR_7 },
+      { name: "Bbm11", bassMidi: 34, colour: MINOR_11 },
+      { name: "Fm11", bassMidi: 29, colour: MINOR_11 },
+    ],
+    theme: [
+      { at: 0, midi: 72, steps: 3 },   // C5
+      { at: 6, midi: 70, steps: 3 },   // Bb4
+      { at: 12, midi: 68, steps: 4 },  // Ab4
+      { at: 18, midi: 65, steps: 3 },  // F4
+      { at: 24, midi: 63, steps: 3 },  // Eb4
+      { at: 28, midi: 60, steps: 4 },  // C4 — the floor of the fall
+    ],
+    response: [
+      { at: 4, midi: 77, steps: 2 },
+      { at: 16, midi: 75, steps: 3 },
+      { at: 26, midi: 72, steps: 4 },
+    ],
+  },
+  {
+    id: "glass",
+    riffVoice: "riffPluck",
+    name: "GLASS",
+    // i - VII - VI - v. The same descent, one chord per bar, stepwise.
+    harmony: [
+      { name: "Fm11", bassMidi: 29, colour: MINOR_11 },
+      { name: "Eb9sus4", bassMidi: 27, colour: SUS_9 },
+      { name: "Dbmaj9", bassMidi: 25, colour: MAJOR_9 },
+      { name: "Cm7", bassMidi: 24, colour: MINOR_7 },
+    ],
+    theme: [
+      { at: 0, midi: 63, steps: 2 },   // Eb4
+      { at: 4, midi: 65, steps: 2 },   // F4
+      { at: 8, midi: 68, steps: 3 },   // Ab4
+      { at: 14, midi: 70, steps: 2 },  // Bb4
+      // G rather than Ab on the way down: Ab lands a minor ninth above the
+      // fifth of the chord this bar also carries on the theme's second pass.
+      { at: 18, midi: 67, steps: 3 },  // G4
+      { at: 24, midi: 65, steps: 2 },  // F4
+      { at: 28, midi: 63, steps: 4 },  // Eb4
+    ],
+    response: [
+      { at: 10, midi: 75, steps: 2 },
+      { at: 20, midi: 77, steps: 3 },
+      { at: 30, midi: 72, steps: 2 },
+    ],
+  },
+  {
+    id: "spine",
+    riffVoice: "riffReed",
+    name: "SPINE",
+    // iv - i - III - VII. The widest intervals in the form.
+    harmony: [
+      { name: "Bbm11", bassMidi: 34, colour: MINOR_11 },
+      { name: "Fm7", bassMidi: 29, colour: MINOR_7 },
+      { name: "Ab6", bassMidi: 32, colour: MAJOR_6 },
+      { name: "Eb9sus4", bassMidi: 27, colour: SUS_9 },
+    ],
+    theme: [
+      { at: 0, midi: 58, steps: 4 },   // Bb3 — low
+      { at: 8, midi: 70, steps: 3 },   // Bb4 — the octave leap
+      { at: 14, midi: 65, steps: 2 },  // F4
+      { at: 18, midi: 72, steps: 4 },  // C5
+      { at: 26, midi: 63, steps: 5 },  // Eb4
+    ],
+    response: [
+      { at: 6, midi: 79, steps: 2 },
+      { at: 22, midi: 75, steps: 4 },
+    ],
+  },
+  {
+    id: "drift",
+    riffVoice: "riffBell",
+    name: "DRIFT",
+    // III - VI - iv - v. Almost still: the form catching its breath.
+    harmony: [
+      { name: "Ab6", bassMidi: 32, colour: MAJOR_6 },
+      { name: "Dbmaj9", bassMidi: 25, colour: MAJOR_9 },
+      { name: "Bbm11", bassMidi: 34, colour: MINOR_11 },
+      { name: "Cm7", bassMidi: 24, colour: MINOR_7 },
+    ],
+    theme: [
+      { at: 0, midi: 68, steps: 7 },   // Ab4 — held
+      { at: 12, midi: 70, steps: 4 },  // Bb4
+      { at: 18, midi: 72, steps: 6 },  // C5
+      { at: 28, midi: 70, steps: 4 },  // Bb4
+    ],
+    response: [
+      { at: 8, midi: 75, steps: 3 },
+      { at: 24, midi: 79, steps: 5 },
     ],
   },
 ]);
@@ -367,6 +471,48 @@ export const SYNTHS = Object.freeze({
     filterEnvAttack: 0.0, filterEnvDecay: 0.28, filterEnvSustain: 0.2,
     filterCutoff: 0.5, filterResonance: 0.24, filterEnvAmount: 0.3,
     filterKeyFollow: 0.25, volume: 0.54,
+  }),
+  /**
+   * Alternate voices for the principal theme.
+   *
+   * Ten melodies on one timbre is still one long tune. Each section names the
+   * voice it is played on, so the instrument turns over with the writing and a
+   * long drive hears the theme stated four different ways rather than four
+   * times.
+   *
+   * All four share the theme's register and level so a section change is heard
+   * as a change of instrument, not as a jump in the mix.
+   */
+  riffBell: synthParams({
+    // Struck and ringing: two sines a twelfth apart, no filter movement, and a
+    // decay long enough to overlap the next note.
+    osc1Waveform: WAVEFORM.sine, osc1Level: 0.75, osc1Tune: 0.5,
+    osc2Waveform: WAVEFORM.sine, osc2Level: 0.3, osc2Tune: 0.6458, osc2Detune: 0.52,
+    ampAttack: 0.002, ampDecay: 0.9, ampSustain: 0.12, ampRelease: 0.55,
+    filterEnvAttack: 0.0, filterEnvDecay: 0.5, filterEnvSustain: 0.3,
+    filterCutoff: 0.72, filterResonance: 0.08, filterEnvAmount: 0.12,
+    filterKeyFollow: 0.3, volume: 0.5,
+  }),
+  riffPluck: synthParams({
+    // Short and bright, with the filter snapping shut: the theme articulated
+    // rather than sung.
+    osc1Waveform: WAVEFORM.saw, osc1Level: 0.62, osc1Pwm: 0.4,
+    osc2Waveform: WAVEFORM.square, osc2Level: 0.28, osc2Detune: 0.58,
+    ampAttack: 0.0, ampDecay: 0.2, ampSustain: 0.18, ampRelease: 0.2,
+    filterEnvAttack: 0.0, filterEnvDecay: 0.16, filterEnvSustain: 0.08,
+    filterCutoff: 0.36, filterResonance: 0.42, filterEnvAmount: 0.46,
+    filterKeyFollow: 0.3, volume: 0.52,
+  }),
+  riffReed: synthParams({
+    // Breathed in rather than struck: a slow attack and a narrow pulse, which
+    // is the one voice of the four that arrives after its own downbeat.
+    osc1Waveform: WAVEFORM.square, osc1Level: 0.55, osc1Pwm: 0.72,
+    osc2Waveform: WAVEFORM.saw, osc2Level: 0.3, osc2Detune: 0.545,
+    subWaveform: 2, subLevel: 0.2,
+    ampAttack: 0.09, ampDecay: 0.5, ampSustain: 0.62, ampRelease: 0.4,
+    filterEnvAttack: 0.12, filterEnvDecay: 0.4, filterEnvSustain: 0.4,
+    filterCutoff: 0.44, filterResonance: 0.2, filterEnvAmount: 0.26,
+    filterKeyFollow: 0.2, volume: 0.46,
   }),
   response: synthParams({
     osc1Waveform: WAVEFORM.saw, osc1Level: 0.55, osc1Pwm: 0.5,

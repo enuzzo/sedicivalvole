@@ -19,7 +19,16 @@ test("exposes the score library in a stable order with unique identity", () => {
   assert.equal(new Set(ids).size, ids.length, "identifiers must be unique");
   assert.equal(new Set(numbers).size, numbers.length, "numbers must be unique");
   assert.equal(new Set(labels).size, labels.length, "labels must be unique");
-  assert.equal(SCORE_GENRES[0].id, DEFAULT_GENRE_ID, "the default must come first");
+  // The default is not required to be first: the library is ordered by where
+  // the project is heading, and the default has to be a score that plays.
+  assert.ok(
+    SCORE_GENRES.some((genre) => genre.id === DEFAULT_GENRE_ID),
+    "the default must be in the library",
+  );
+  assert.equal(
+    getScoreGenre(DEFAULT_GENRE_ID).status, SCORE_STATUS.ready,
+    "the default must be a score that actually plays",
+  );
 });
 
 test("every entry declares a status the interface can act on", () => {
@@ -48,6 +57,7 @@ test("a ready entry names a real score and a preparing entry names none", () => 
 test("the one ready score is the authored composition that actually plays", () => {
   const ready = readyScoreGenres();
   assert.equal(ready.length, 1, "only FRACTURE is authored so far");
+  assert.equal(ready[0].id, "fracture");
   assert.equal(ready[0].score, SCORE_ID);
   assert.ok(isScoreReady(ready[0].id));
 });

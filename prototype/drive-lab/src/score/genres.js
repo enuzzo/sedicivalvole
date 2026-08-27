@@ -21,19 +21,28 @@ export const SCORE_STATUS = Object.freeze({
 
 export const SCORE_GENRES = [
   {
+    id: "junction",
+    label: "JUNCTION",
+    number: "01",
+    family: "Jungle / Rave",
+    status: SCORE_STATUS.preparing,
+    score: null,
+    note: "Sampled breaks. Tempo is a recording, never a stretch.",
+  },
+  {
     id: "fracture",
     label: "FRACTURE",
-    number: "01",
+    number: "02",
     family: "Jungle / Drum & Bass",
     status: SCORE_STATUS.ready,
     /** Resolved by the worklet to an authored score module. */
     score: "fracture",
-    note: "Half-time at rest, full break at speed.",
+    note: "Ten melodies, four voices. Half-time at rest.",
   },
   {
     id: "meridian-pulse",
     label: "PULSE",
-    number: "02",
+    number: "03",
     family: "Techno",
     status: SCORE_STATUS.preparing,
     score: null,
@@ -42,7 +51,7 @@ export const SCORE_GENRES = [
   {
     id: "cutwater",
     label: "CUTWATER",
-    number: "03",
+    number: "04",
     family: "Breakbeat / Electro",
     status: SCORE_STATUS.preparing,
     score: null,
@@ -51,7 +60,7 @@ export const SCORE_GENRES = [
   {
     id: "lowtide",
     label: "LOWTIDE",
-    number: "04",
+    number: "05",
     family: "Dub Techno",
     status: SCORE_STATUS.preparing,
     score: null,
@@ -60,7 +69,7 @@ export const SCORE_GENRES = [
   {
     id: "nightcast",
     label: "NIGHTCAST",
-    number: "05",
+    number: "06",
     family: "Downtempo",
     status: SCORE_STATUS.preparing,
     score: null,
@@ -69,7 +78,7 @@ export const SCORE_GENRES = [
   {
     id: "stillwater",
     label: "STILLWATER",
-    number: "06",
+    number: "07",
     family: "Ambient",
     status: SCORE_STATUS.preparing,
     score: null,
@@ -77,6 +86,13 @@ export const SCORE_GENRES = [
   },
 ];
 
+/**
+ * The score that plays when nothing is chosen.
+ *
+ * This is deliberately not the first entry. JUNCTION leads the library because
+ * it is the direction the project is heading, but the default has to be a score
+ * that actually plays, and `readyScoreGenres` is the list the interface offers.
+ */
 export const DEFAULT_GENRE_ID = "fracture";
 
 export function getScoreGenre(genreId) {

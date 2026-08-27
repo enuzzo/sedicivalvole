@@ -60,6 +60,13 @@ const DRIVES = {
     [115, 20],
     [0, 10],
   ],
+  // Two full turns of the form at a steady speed, so all ten melodies and all
+  // four theme voices are heard without the arrangement moving underneath them.
+  form: [
+    [0, 3],
+    [110, 8],
+    [110, 115],
+  ],
   // The low band on its own: a standstill and then a slow crawl. This is where
   // the arrangement is easiest to get wrong, because there is almost nothing in
   // it and every choice is audible.

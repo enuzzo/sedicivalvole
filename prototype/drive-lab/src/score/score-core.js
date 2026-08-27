@@ -66,6 +66,9 @@ const RESTING_TRIM = 0.6;
 
 const SYNTH_LANES = ["sub", "reese", "riff", "response", "atmosphere"];
 
+/** Theme voices a section may name. The first is the default. */
+const RIFF_VOICES = ["riff", "riffBell", "riffPluck", "riffReed"];
+
 /**
  * Voices the pad runs.
  *
@@ -143,6 +146,10 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
     synthSettings[lane] = { ...score.synths[lane] };
     synthRelease[lane] = null;
   }
+
+  // Which patch the theme lane is currently playing. The section names it, and
+  // it only ever changes at a section boundary, which is a phrase boundary.
+  let riffVoice = "riff";
 
   // The pad's remaining voices. `synths.atmosphere` is the first of them, so the
   // lane still has the one-voice surface every other lane has.
@@ -231,9 +238,12 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
     synthSettings.reese.osc2Detune = 0.56 + 0.1 * brightness;
     synthSettings.reese.volume = score.synths.reese.volume * (0.7 + 0.3 * dynamics);
 
-    synthSettings.riff.filterCutoff = 0.38 + 0.38 * brightness;
-    synthSettings.riff.filterEnvAmount = 0.2 + 0.24 * brightness;
-    synthSettings.riff.volume = score.synths.riff.volume * (0.75 + 0.25 * dynamics);
+    // The theme's live controls are applied to whichever patch the section
+    // named, on top of that patch's own values rather than the default's.
+    const riffBase = score.synths[riffVoice] ?? score.synths.riff;
+    synthSettings.riff.filterCutoff = riffBase.filterCutoff + 0.3 * brightness;
+    synthSettings.riff.filterEnvAmount = riffBase.filterEnvAmount + 0.2 * brightness;
+    synthSettings.riff.volume = riffBase.volume * (0.75 + 0.25 * dynamics);
 
     synthSettings.response.filterCutoff = 0.5 + 0.32 * brightness;
     synthSettings.atmosphere.filterCutoff = 0.26 + 0.24 * filterPressure;
@@ -305,6 +315,15 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
     }
     const section = sectionAt(sectionIndex);
     const chord = harmonyForBar(sectionIndex, barInPhrase);
+
+    // Adopt the section's theme voice. Everything the patch declares is copied
+    // in; `refreshVoiceSettings` then writes the live controls over it.
+    const namedVoice = RIFF_VOICES.includes(section.riffVoice) ? section.riffVoice : "riff";
+    if (namedVoice !== riffVoice) {
+      riffVoice = namedVoice;
+      Object.assign(synthSettings.riff, score.synths[riffVoice]);
+      refreshVoiceSettings();
+    }
 
     // 2. Half-time reading: the transport keeps its tempo, the score takes only
     //    the strong placements and doubles its note lengths. This is how a
@@ -582,6 +601,7 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
         scoreId: score.id,
         scoreLabel: score.label,
         section: sectionAt(sectionIndex).name,
+        riffVoice,
         chord: harmonyForBar(sectionIndex, lastEvent?.barInPhrase ?? 0).name,
         restingVoiced,
         step: lastEvent?.globalStep ?? 0,
