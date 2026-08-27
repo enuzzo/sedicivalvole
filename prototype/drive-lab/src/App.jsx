@@ -34,6 +34,7 @@ import {
 } from "./signal-model.js";
 
 const APP_VERSION = __APP_VERSION__;
+const APP_BUILD = __APP_BUILD__;
 const PREFERENCES_KEY = "sedicivalvole.preferences.v1";
 const DIAGNOSTIC_SEND_ERROR_COPY = {
   payload_size_rejected: "The browser report exceeded the transport limit. Keep this page open and retry after an update.",
@@ -1061,6 +1062,7 @@ export function App() {
     generatedAt: new Date().toISOString(),
     app: {
       version: APP_VERSION,
+      build: APP_BUILD,
       mode: "flux",
       environment: environmentId,
       pageUrl: window.location.href,
@@ -1228,10 +1230,12 @@ export function App() {
       <section className="splash" aria-hidden={phase === "running"}>
         <SplashSignalGate active={phase !== "running"} reducedMotion={reducedMotion} />
         <div className="splash-mark"><span>sedicivalvole</span></div>
-        {/* The build, and nothing else. APP_VERSION is injected from the root
-            VERSION file, which stays the only SemVer source of truth. The active
-            environment is still named in the live header and the diagnostics. */}
-        <small className="splash-status">BUILD {APP_VERSION}</small>
+        {/* The build stamp, and nothing else. It is generated at build time as
+            YYYYMMDD-HHMM and is the identifier quoted whenever a build is
+            published. VERSION stays the only SemVer source of truth and is
+            reported separately in the diagnostics. The active environment is
+            still named in the live header. */}
+        <small className="splash-status">BUILD {APP_BUILD}</small>
         <div className="splash-action">
           <button className="launch-button" type="button" onClick={runHarness} disabled={phase === "testing"}>
             {phase === "testing" ? "STARTING" : "PLAY THE ROAD"}

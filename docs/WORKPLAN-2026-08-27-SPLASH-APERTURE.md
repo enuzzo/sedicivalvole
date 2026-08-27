@@ -15,8 +15,8 @@ and recorded in [`SESSION-HANDOFF.md`](SESSION-HANDOFF.md).
 | CP1 | Splash shows the build version top-right instead of `FLUX · APERTURE` | `see below` | **done** |
 | CP2 | Splash lanes: faster, glow, scrolling, broken laminarity | `see below` | **done** |
 | CP3 | `PLAY THE ROAD` given a strong, deliberate treatment | `see below` | **done** |
-| CP4 | Aperture: one continuous coordinate system, no tearing | — | not started |
-| CP5 | Aperture: stable per-tile colour, rest-only recolour | — | not started |
+| CP4 | Aperture: one continuous coordinate system, no tearing | `see below` | **done** |
+| CP5 | Aperture: stable per-tile colour, rest-only recolour | `see below` | **done** |
 | CP6 | Full suite, build, rendered QA at 773x601, deploy and verify | — | not started |
 
 ## CP1 — Version readout on the splash
@@ -96,13 +96,38 @@ Use **one** coordinate system at every speed:
 
 Speed then deforms one field instead of crossfading two.
 
-### Consequence to state plainly
+### What was actually built
 
-The resting state changes character: a concentric square mosaic rather than a
-Cartesian one. That is the price of a genuinely continuous transformation, and it
-is a real change to the protected Aperture baseline — made because the user asked
-for the 2D state to be more credible and the 2D-to-tunnel passage to be fluid
-using the same objects. It must be shown to the user before it is deployed.
+The first attempt kept ring coordinates at all speeds and blended only the
+radial term. It removed the tearing and produced an excellent tunnel, but ring
+topology converges toward the centre by construction, so the resting state became
+a static tunnel and there was no flat end of the range left at all. That was
+worse than the defect being fixed, so it was replaced.
+
+The shipped fix keeps a **Cartesian grid at every speed** and produces the tunnel
+by displacing that grid radially:
+
+```glsl
+float radius      = max(majorAxis, R_FLOOR);
+float tunnelMapped = log(radius / R_FLOOR) * TUNNEL_SCALE;
+float mapped      = mix(radius, tunnelMapped, warp) + u_flow * 0.05 * warp;
+vec2  displaced   = screen * (mapped / radius);
+vec2  fieldGrid   = displaced * GRID_SCALE;
+```
+
+The remap is monotonic in `majorAxis`, so it is continuous and invertible and
+`floor()` can never cut a tile. Cell size in screen space goes as
+`dr / d(mapped)`, so the logarithmic branch shrinks tiles toward the centre and
+builds the vanishing point, while at rest the remap is the identity and the field
+is a plain flat mosaic. The grid scale is anisotropic so resting tiles read square
+on a wide viewport.
+
+Both ends are therefore correct — a genuine flat Cartesian mosaic at a standstill
+and a deep tunnel with a dark terminus at speed — and the whole range is one
+continuous deformation of the same objects.
+
+`squarePerimeter` is no longer used for the field, so the corner-alignment
+quantisation from `1e9f741` is obsolete and has been removed with it.
 
 The corner-alignment quantisation from commit `1e9f741` stays: corners must
 continue to land exactly on a tile edge.

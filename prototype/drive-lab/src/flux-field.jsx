@@ -1,6 +1,11 @@
 import { useEffect, useRef } from "react";
 import { energyToFlowRate, speedToVisualVelocity, visualVelocityToMorphWarp } from "./signal-model.js";
 
+/** Below this the vehicle counts as standing still for recolouring. */
+const REST_RECOLOUR_SPEED_KMH = 1;
+/** Seconds between resting re-deals. */
+const REST_RECOLOUR_INTERVAL_SECONDS = 4.5;
+
 const VERTEX_SHADER = `#version 300 es
   in vec2 a_position;
   out vec2 v_uv;
@@ -19,6 +24,7 @@ const FRAGMENT_SHADER = `#version 300 es
   uniform float u_flow;
   uniform float u_pulse;
   uniform float u_brake;
+  uniform float u_restRecolour;
   uniform vec3 u_base;
   uniform vec3 u_mid;
   uniform vec3 u_light;
@@ -62,16 +68,43 @@ const FRAGMENT_SHADER = `#version 300 es
     float perimeter = squarePerimeter(screen);
     float depth = 1.0 / max(majorAxis, 0.12);
 
-    float depthFrequency = mix(4.5, 2.15, velocity);
-    // The square perimeter runs 0..8 with corners on the even integers, so a cell
-    // boundary coincides with a corner only when 2 * density is a whole number.
-    // Quantising to halves keeps every corner exactly on a tile edge instead of
-    // letting a tile fold across the wall-to-roof junction.
-    float rawPerimeterDensity = mix(1.25, 10.0, smoothstep(0.42, 1.0, warp));
-    float perimeterDensity = max(0.5, floor(rawPerimeterDensity * 2.0 + 0.5) * 0.5);
-    vec2 flatGrid = v_uv * vec2(10.0, 7.0);
-    vec2 tunnelGrid = vec2(perimeter * perimeterDensity, depth * depthFrequency + u_flow);
-    vec2 fieldGrid = mix(flatGrid, tunnelGrid, warp);
+    // -- One coordinate system at every speed ------------------------------
+    //
+    // This field used to blend a Cartesian flat grid with a ring-topology tunnel
+    // grid. Those are different topologies: squarePerimeter switches branch on
+    // the diagonals, so every intermediate blend carried a fraction of that
+    // discontinuity across them and floor() cut tiles along the diagonals.
+    // No continuous map exists between the two, so the tearing could not be
+    // tuned away -- the flat state had to become a degenerate case of the tunnel
+    // rather than a separate scene.
+    //
+    // Now the angular coordinate is used unchanged at all speeds, so its
+    // discontinuity is never blended, and only the radial coordinate
+    // interpolates -- between a linear reading of majorAxis and the perspective
+    // reading. Both are monotonic toward the centre, so their blend is monotonic
+    // and cannot fold. Speed deforms one field instead of crossfading two.
+
+    // A Cartesian grid is kept at every speed and the tunnel is produced by
+    // displacing it radially, rather than by switching to ring coordinates.
+    // The remap is monotonic in majorAxis and therefore continuous and
+    // invertible, so floor() can never cut a tile: the same objects deform.
+    //
+    // Cell size in screen space goes as dr / d(mapped), so a logarithmic remap
+    // shrinks tiles toward the centre and builds the vanishing point, while at
+    // rest the remap is the identity and the field is a plain flat mosaic.
+    const float R_FLOOR = 0.055;
+    // Anisotropic so the resting tiles read square on a wide viewport: screen.x
+    // already carries the aspect term, so x needs the larger count.
+    const vec2 GRID_SCALE = vec2(5.2, 4.0);
+    const float TUNNEL_SCALE = 0.46;
+
+    float radius = max(majorAxis, R_FLOOR);
+    float flatMapped = radius;
+    float tunnelMapped = log(radius / R_FLOOR) * TUNNEL_SCALE;
+    float mapped = mix(flatMapped, tunnelMapped, warp) + u_flow * 0.05 * warp;
+    vec2 displaced = screen * (mapped / radius);
+
+    vec2 fieldGrid = displaced * GRID_SCALE;
     vec2 fieldCell = floor(fieldGrid);
     vec2 fieldLocal = fract(fieldGrid);
     float identity = hash21(fieldCell + vec2(17.0, 3.0));
@@ -87,17 +120,23 @@ const FRAGMENT_SHADER = `#version 300 es
     vec2 fieldInset = mix(compactInset, tunnelInset, warp);
     float tile = rectangleMask(fieldLocal, fieldInset);
 
-    // Keyed to the world cell, not to a linear combination of its coordinates:
-    // the linear form marched one step every row and read as a spiral. The hash
-    // is still deterministic, so a tile keeps its colour as it travels.
-    float colorIndex = floor(hash21(fieldCell + vec2(41.0, 13.0)) * 4.0);
+    // Keyed to the world cell, so a tile carries the same colour for as long as
+    // it is in the scene: the field moves, the tile's index moves with it, and
+    // its colour never changes underneath it.
+    //
+    // u_restRecolour is the single deliberate exception. It advances in discrete
+    // steps only while the vehicle is standing still, so a stationary mosaic
+    // re-deals its colours every few seconds. The moment the vehicle moves it is
+    // frozen, and every tile's colour is fixed from then on.
+    float colorIndex = floor(hash21(fieldCell + vec2(41.0, 13.0) + u_restRecolour) * 4.0);
     vec3 darkPanel = mix(u_base, u_mid, 0.66);
     vec3 panel = darkPanel;
     panel = mix(panel, u_mid, step(0.5, colorIndex));
     panel = mix(panel, u_light, step(1.5, colorIndex));
     panel = mix(panel, u_accent, step(2.5, colorIndex));
-    float breath = 0.94 + 0.06 * sin(u_flow * 7.0 + tone * 6.2831853);
-    panel *= mix(breath, 0.88 + tone * 0.22, warp);
+    // Per-tile shading only. The previous form modulated every panel from the
+    // shared flow clock, which read as an unmotivated shimmer at a standstill.
+    panel *= mix(0.97 + tone * 0.06, 0.88 + tone * 0.22, warp);
     vec3 color = mix(u_base, panel, tile);
 
     float apertureRadius = max(abs(screen.x) * 0.78, abs(screen.y));
@@ -342,6 +381,7 @@ export function FluxField({ energy, speed, theme, reducedMotion, pulse, brake, o
       flow: gl.getUniformLocation(program, "u_flow"),
       pulse: gl.getUniformLocation(program, "u_pulse"),
       brake: gl.getUniformLocation(program, "u_brake"),
+      restRecolour: gl.getUniformLocation(program, "u_restRecolour"),
       base: gl.getUniformLocation(program, "u_base"),
       mid: gl.getUniformLocation(program, "u_mid"),
       light: gl.getUniformLocation(program, "u_light"),
@@ -351,6 +391,11 @@ export function FluxField({ energy, speed, theme, reducedMotion, pulse, brake, o
     let animationFrame = 0;
     let stopped = false;
     let flow = 0;
+    // The resting mosaic re-deals its colours on a slow discrete step. It only
+    // advances while the vehicle is effectively stopped, so as soon as it moves
+    // every tile's colour is fixed for as long as it stays in the scene.
+    let restSeconds = 0;
+    let restRecolour = 0;
     let visualEnergy = reducedMotion ? Math.min(energy, 0.28) : energy;
     let visualVelocity = speedToVisualVelocity(reducedMotion ? Math.min(speed, 20) : speed);
     let lastFrameAt = performance.now();
@@ -375,6 +420,16 @@ export function FluxField({ energy, speed, theme, reducedMotion, pulse, brake, o
       visualVelocity += (nextVelocity - visualVelocity) * velocitySmoothing;
       if (!reducedMotion) flow += deltaSeconds * energyToFlowRate(visualEnergy, valuesRef.current.speed);
 
+      if (valuesRef.current.speed < REST_RECOLOUR_SPEED_KMH) {
+        restSeconds += deltaSeconds;
+        if (restSeconds >= REST_RECOLOUR_INTERVAL_SECONDS) {
+          restSeconds = 0;
+          restRecolour += 1;
+        }
+      } else {
+        restSeconds = 0;
+      }
+
       const ratio = Math.min(window.devicePixelRatio || 1, 1.25);
       const width = Math.max(1, Math.floor(canvas.clientWidth * ratio));
       const height = Math.max(1, Math.floor(canvas.clientHeight * ratio));
@@ -392,6 +447,7 @@ export function FluxField({ energy, speed, theme, reducedMotion, pulse, brake, o
       gl.uniform1f(uniforms.flow, flow);
       gl.uniform1f(uniforms.pulse, valuesRef.current.pulse);
       gl.uniform1f(uniforms.brake, valuesRef.current.brake);
+      gl.uniform1f(uniforms.restRecolour, restRecolour);
       gl.uniform3fv(uniforms.base, palette.base);
       gl.uniform3fv(uniforms.mid, palette.mid);
       gl.uniform3fv(uniforms.light, palette.light);
