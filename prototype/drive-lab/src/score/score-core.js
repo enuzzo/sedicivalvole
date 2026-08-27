@@ -51,7 +51,18 @@ import { bassInterval, harmonyForBar, SCORE, sectionAt } from "./jungle-score.js
 const LANE_CROSSFADE_SECONDS = 0.35;
 
 /** Master trim. The limiter protects the ceiling; this sets the working level. */
-const MASTER_GAIN = 0.86;
+const MASTER_GAIN = 0.92;
+
+/**
+ * How much quieter the resting arrangement is than the full one.
+ *
+ * Without this the piece hit the limiter at a standstill exactly as hard as it
+ * did at the ceiling, so an arrangement that gains six lanes across a drive
+ * gained no weight at all — the limiter simply gave back whatever was added.
+ * Four and a half decibels is enough for the build to be felt and little enough
+ * that the resting scene is still clearly playing.
+ */
+const RESTING_TRIM = 0.6;
 
 const SYNTH_LANES = ["sub", "reese", "riff", "response", "atmosphere"];
 
@@ -64,6 +75,15 @@ const SYNTH_LANES = ["sub", "reese", "riff", "response", "atmosphere"];
  * which is most of what "the harmony is monotonous" was describing.
  */
 const PAD_VOICES = 4;
+
+/**
+ * Below this the vehicle is stopped rather than moving slowly.
+ *
+ * `speedToEnergy` puts roughly four km/h here, which is walking pace: below it
+ * the piece may leave silence between phrases, and above it there is a driver
+ * to play to.
+ */
+const STANDSTILL_ENERGY = 0.07;
 
 /**
  * Static placement of each element across the stereo field, -1 left to 1 right.
@@ -157,20 +177,39 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
   melodicHighPassRight.setFrequency(150, sampleRate);
   delay.setTime("eighthDotted", arranger.committedTempo, 0);
 
-  // An auditioned lane is heard even when the arrangement has it silent, so the
+  // An auditioned voice is heard even when the arrangement has it silent, so the
   // preview demonstrates the real voice rather than a separate demonstration
   // synth. The floor decays on its own; nothing latches.
-  const auditionSamples = Object.fromEntries(LANES.map((lane) => [lane.id, 0]));
+  //
+  // Keyed by *voice*, not by lane. Keying it by lane left the ghost snare and
+  // the clap silent in the preview, because neither has a lane of its own: both
+  // are voiced through the snare's level, which is zero at a standstill.
+  const AUDITIONABLE = [...LANES.map((lane) => lane.id), "ghost", "clap"];
+  const auditionSamples = Object.fromEntries(AUDITIONABLE.map((id) => [id, 0]));
 
-  /** Lane level, lifted to full while that lane is being auditioned. */
+  /** How long an audition holds a voice open, by voice. */
+  function auditionSeconds(voiceId) {
+    if (voiceId === "atmosphere") return 3.2;
+    if (voiceId === "sub" || voiceId === "reese") return 2;
+    if (drums[voiceId]) return 1;
+    return 1.6;
+  }
+
+  /** Consumes one sample of an audition and reports whether it is running. */
+  function auditioning(voiceId) {
+    if (!(auditionSamples[voiceId] > 0)) return false;
+    auditionSamples[voiceId] -= 1;
+    return true;
+  }
+
+  /** Lane level, lifted to full while that lane's voice is being auditioned. */
   function levelOf(laneId) {
     const scheduled = laneGain[laneId].next();
-    if (auditionSamples[laneId] <= 0) return scheduled;
-    auditionSamples[laneId] -= 1;
-    return Math.max(scheduled, 1);
+    return auditioning(laneId) ? Math.max(scheduled, 1) : scheduled;
   }
 
   let controls = continuousControls(arranger);
+  let masterGain = MASTER_GAIN * RESTING_TRIM;
   let fillBar = false;
   let lastEvent = null;
   let stepsElapsed = 0;
@@ -198,6 +237,10 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
 
     synthSettings.response.filterCutoff = 0.5 + 0.32 * brightness;
     synthSettings.atmosphere.filterCutoff = 0.26 + 0.24 * filterPressure;
+
+    // The working level follows energy, so the arrangement gets louder as it
+    // fills instead of handing the difference to the limiter.
+    masterGain = MASTER_GAIN * (RESTING_TRIM + (1 - RESTING_TRIM) * controls.energy ** 0.5);
 
     drumSaturator.setDrive(drive);
     delay.setFeedback(controls.delayFeedback * 0.7);
@@ -252,10 +295,11 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
     // every other structural change.
     if (event.isPhraseStart && stepsElapsed > 1) {
       sectionIndex += 1;
-      // At a standstill the piece plays a phrase and then leaves one. Holding a
-      // resting arrangement continuously is the version that drives you mad at a
-      // red light: the point of the resting scene is that the road is quiet.
-      restingVoiced = SCENES[arranger.scene].halfTime
+      // At a *standstill* the piece plays a phrase and then leaves one: holding a
+      // resting arrangement continuously is the version that is unbearable at a
+      // red light. Moving slowly is not a standstill, and gating the whole
+      // half-time band this way emptied out everything below thirty.
+      restingVoiced = controls.energy < STANDSTILL_ENERGY
         ? sectionIndex % 2 === 0
         : true;
     }
@@ -388,16 +432,21 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
      * is silent at a standstill can still be heard here.
      */
     audition(voiceId) {
-      const chord = harmonyForBar(Math.floor((lastEvent?.globalStep ?? 0) / STEPS_PER_BAR) % 4);
+      // The form is addressed by section and bar; asking for a bar alone returns
+      // nothing, and every synth voice then threw on an undefined chord.
+      const bar = Math.floor((lastEvent?.globalStep ?? 0) / STEPS_PER_BAR);
+      const chord = harmonyForBar(sectionIndex, bar);
+      const section = sectionAt(sectionIndex);
       if (drums[voiceId]) {
         drums[voiceId].trigger(score.kit[voiceId] ?? score.kit.snare);
+        auditionSamples[voiceId] = Math.round(sampleRate * auditionSeconds(voiceId));
         return true;
       }
       if (voiceId === "atmosphere") {
         for (let index = 0; index < padVoices.length; index += 1) {
           padVoices[index].trigger(synthSettings.atmosphere, chord.bassMidi + 24 + chord.colour[index]);
         }
-        auditionSamples.atmosphere = Math.round(sampleRate * 3.2);
+        auditionSamples.atmosphere = Math.round(sampleRate * auditionSeconds("atmosphere"));
         return true;
       }
       if (!synths[voiceId]) return false;
@@ -405,13 +454,9 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
         ? chord.bassMidi
         : voiceId === "reese"
           ? chord.bassMidi + 12
-          : voiceId === "atmosphere"
-            ? chord.bassMidi + 24 + chord.colour[2]
-            : (voiceId === "response" ? score.response[0].midi : score.theme[0].midi);
+          : (voiceId === "response" ? section.response[0].midi : section.theme[0].midi);
       synths[voiceId].trigger(synthSettings[voiceId], midi);
-      auditionSamples[voiceId] = Math.round(
-        sampleRate * (voiceId === "atmosphere" ? 3.2 : 1.6),
-      );
+      auditionSamples[voiceId] = Math.round(sampleRate * auditionSeconds(voiceId));
       return true;
     },
 
@@ -435,10 +480,14 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
         const snareLevel = levelOf("snare");
         const snareSample = drums.snare.tick() * snareLevel;
         const breakLevel = levelOf("breakDetail");
-        const ghostSample = drums.ghost.tick() * snareLevel * (0.72 + 0.5 * breakLevel);
+        // The ghost and the clap ride the snare's level, so each needs its own
+        // audition lift or the preview cannot demonstrate them at a standstill.
+        const ghostLevel = auditioning("ghost") ? 1 : snareLevel;
+        const clapLevel = auditioning("clap") ? 1 : snareLevel;
+        const ghostSample = drums.ghost.tick() * ghostLevel * (0.72 + 0.5 * breakLevel);
         const hatSample = drums.closedHat.tick() * levelOf("closedHat");
         const openSample = drums.openHat.tick() * levelOf("openHat");
-        const clapSample = drums.clap.tick() * 0.7 * snareLevel;
+        const clapSample = drums.clap.tick() * 0.7 * clapLevel;
 
         // The saturator runs on the centred backbeat only. Driving the placed
         // material through it would fold the field back to the middle.
@@ -518,7 +567,7 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
         );
 
         const [outLeft, outRight] = limiter.tickStereo(
-          wideLeft * MASTER_GAIN, wideRight * MASTER_GAIN,
+          wideLeft * masterGain, wideRight * masterGain,
         );
 
         left[frame] = outLeft;

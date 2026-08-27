@@ -333,18 +333,25 @@ export function continuousControls(state) {
     // Filter pressure leans on retained energy, which is what keeps a brief
     // brake sounding like the same performance under load.
     filterPressure: 0.2 + 0.75 * retained ** 0.9,
-    drive: 0.05 + 0.35 * energy ** 1.2,
+    drive: 0.06 + 0.5 * energy ** 1.05,
     // Space opens as the arrangement releases: the classic lift-off wash.
     spatialDepth: 0.18 + 0.3 * energy + (inCatch ? 0.22 : 0) + (releasing ? 0.3 : 0),
     delayFeedback: 0.22 + 0.24 * energy + (releasing ? 0.16 : 0),
     // Dynamics compress toward the top so the loud state has weight, not level.
     dynamics: 0.55 + 0.35 * energy ** 0.7,
-    duckDepth: 0.35 + 0.35 * energy,
+    // Ducking deep enough to breathe, not so deep that the full arrangement
+    // measures quieter than the half-time one it grew out of.
+    duckDepth: 0.34 + 0.2 * energy,
     subDrive: 0.3 + 0.55 * retained,
     // Ghost weight and hat subdivision are continuous articulation, not
     // structure, so they may move between boundaries.
-    ghostWeight: clamp((energy - 0.18) / 0.6, 0, 1),
-    hatSubdivision: energy < 0.42 ? 1 : energy < 0.72 ? 2 : 3,
+    //
+    // Both start earlier than they did. Below thirty km/h the arrangement had
+    // quarter-note hats and no ghost field at all, which is not a light texture
+    // — it is an empty one. Eighths and a trace of ghost give the low band
+    // something to be without making it busy.
+    ghostWeight: clamp((energy - 0.1) / 0.5, 0, 1),
+    hatSubdivision: energy < 0.2 ? 1 : energy < 0.6 ? 2 : 3,
   };
 }
 

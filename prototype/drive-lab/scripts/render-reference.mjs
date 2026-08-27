@@ -60,6 +60,17 @@ const DRIVES = {
     [115, 20],
     [0, 10],
   ],
+  // The low band on its own: a standstill and then a slow crawl. This is where
+  // the arrangement is easiest to get wrong, because there is almost nothing in
+  // it and every choice is audible.
+  crawl: [
+    [0, 14],
+    [8, 14],
+    [16, 16],
+    [24, 16],
+    [30, 16],
+    [0, 12],
+  ],
   // Urban driving only: the range a driver actually spends most time in.
   urban: [
     [0, 5],
