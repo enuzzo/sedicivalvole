@@ -443,7 +443,24 @@ button { -webkit-tap-highlight-color: transparent; }
   cursor: pointer;
 }
 .score-entry-number { color: var(--accent); font-size: 15px; font-weight: 640; letter-spacing: .06em; }
-.score-entry-body strong { display: block; font-size: 19px; font-weight: 580; letter-spacing: .05em; }
+.score-entry-body strong { display: flex; align-items: baseline; gap: 10px; font-size: 19px; font-weight: 580; letter-spacing: .05em; }
+/* How the score makes its sound, stated on the entry rather than left to be
+   worked out. A mark as well as a word, so the two kinds separate at a glance. */
+.score-source {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  padding: 2px 7px;
+  border-radius: var(--ui-radius);
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: .12em;
+}
+.score-source.is-sampled { color: var(--ink); background: var(--accent); }
+.score-source.is-generative { color: rgba(238, 234, 224, .74); background: rgba(238, 234, 224, .13); }
+.score-entry.is-active .score-source.is-generative { color: rgba(7, 9, 9, .7); background: rgba(7, 9, 9, .1); }
+.score-entry.is-preparing .score-source.is-sampled { background: rgba(238, 234, 224, .13); color: rgba(238, 234, 224, .6); }
 .score-entry-body span { display: block; margin-top: 5px; color: rgba(238, 234, 224, .58); font-size: 13px; line-height: 1.4; }
 .score-entry-state { font-size: 11px; font-weight: 700; letter-spacing: .12em; white-space: nowrap; }
 .score-entry.is-active { color: var(--ink); background: var(--paper); }

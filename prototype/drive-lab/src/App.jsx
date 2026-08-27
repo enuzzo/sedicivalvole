@@ -24,6 +24,7 @@ import {
   getScoreGenre,
   SCORE_GENRES,
   SCORE_STATUS,
+  scoreSource,
 } from "./score/genres.js";
 import { SplashSignalGate } from "./splash-signal-gate.jsx";
 import { Interstate7Field } from "./interstate-7-field.jsx";
@@ -315,7 +316,10 @@ function ScoreControl({ genreId, onOpen }) {
       onClick={onOpen}
     >
       <span className="control-label">SCORE</span>
-      <strong>{selected.label}</strong><small>{selected.number}</small>
+      <strong>{selected.label}</strong>
+      <small title={scoreSource(genreId).note}>
+        {scoreSource(genreId).mark} {selected.number}
+      </small>
     </button>
   );
 }
@@ -361,7 +365,13 @@ function ScorePicker({ genreId, onChange, onClose }) {
                 >
                   <span className="score-entry-number">{genre.number}</span>
                   <span className="score-entry-body">
-                    <strong>{genre.label}</strong>
+                    <strong>
+                      {genre.label}
+                      <em className={`score-source is-${genre.source}`}>
+                        <span aria-hidden="true">{scoreSource(genre.id).mark}</span>
+                        {scoreSource(genre.id).label}
+                      </em>
+                    </strong>
                     <span>{genre.family} · {genre.note}</span>
                   </span>
                   <span className="score-entry-state">

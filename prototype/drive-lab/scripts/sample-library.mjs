@@ -164,27 +164,49 @@ export async function loadInstrument(name, sampleRate = 48000) {
 /**
  * The sampled note to play a wanted pitch from, and the rate to play it at.
  *
- * A pitch outside the instrument's range is folded by whole octaves until it is
- * inside. Folding rather than clamping matters: clamping to the top note would
- * flatten a melody's shape into a repeated note, and stretching a sample five
- * semitones to reach a pitch it does not have is exactly the artefact this
- * whole design exists to avoid. Every instrument keeps its own natural
- * register, which is a source of variety rather than a limitation.
+ * This does not transpose. A pitch the instrument does not have is a caller
+ * error, and `fitOctave` exists to prevent it; folding here, per note, was a
+ * real defect: a line rising from B4 to D5 came out of RavePiano as B3 falling
+ * to D3, because the two notes happened to need different numbers of octaves.
+ * The melody's intervals inverted and it sounded out of tune, which is exactly
+ * what it was.
  */
-export function nearestNote(instrument, midi) {
-  const lowest = instrument.keys[0];
-  const highest = instrument.keys.at(-1);
-  let wanted = midi;
-  while (wanted > highest && wanted - 12 >= lowest) wanted -= 12;
-  while (wanted < lowest && wanted + 12 <= highest) wanted += 12;
-
-  let best = lowest;
+export function sampleFor(instrument, midi) {
+  let best = instrument.keys[0];
   for (const key of instrument.keys) {
-    if (Math.abs(key - wanted) < Math.abs(best - wanted)) best = key;
+    if (Math.abs(key - midi) < Math.abs(best - midi)) best = key;
   }
-  return { key: best, rate: 2 ** ((wanted - best) / 12), playedMidi: wanted };
+  return { key: best, rate: 2 ** ((midi - best) / 12), playedMidi: midi };
 }
 
+/**
+ * One transposition, in whole octaves, that puts a whole line inside an
+ * instrument's range.
+ *
+ * The offset is chosen once for the line and applied to every note in it, so
+ * every interval survives exactly. Where no octave fits the line completely —
+ * a melody wider than the instrument — the one leaving fewest notes outside
+ * wins, and the highest such octave is preferred so the part keeps its voice.
+ */
+export function fitOctave(instrument, midiNotes) {
+  if (midiNotes.length === 0) return 0;
+  const lowest = instrument.keys[0];
+  const highest = instrument.keys.at(-1);
+  let bestOffset = 0;
+  let bestOutside = Number.POSITIVE_INFINITY;
+  for (let offset = -48; offset <= 48; offset += 12) {
+    let outside = 0;
+    for (const midi of midiNotes) {
+      const moved = midi + offset;
+      if (moved < lowest || moved > highest) outside += 1;
+    }
+    if (outside < bestOutside || (outside === bestOutside && offset > bestOffset)) {
+      bestOutside = outside;
+      bestOffset = offset;
+    }
+  }
+  return bestOffset;
+}
 /** Chord one-shots from the jungle pack, keyed by the chord in the filename. */
 export async function loadChordHits(sampleRate = 48000) {
   const directory = join(JUNGLE_ROOT, "Synth One Shots");

@@ -5,17 +5,23 @@
 // not redistributable. Nothing here is copied into the repository; what would
 // ship is the rendered arrangement. See THIRD_PARTY_NOTICES.md.
 //
-// The material is used two ways, and the difference is the point:
+// **Nothing here is played by us.** Every riff, chord and phrase already exists
+// in the pack, performed. This score arranges that material; it does not
+// perform on it. An earlier version drove the rave multisamples with melodies
+// of our own, which was the wrong idea twice over: it threw away the playing
+// that is the reason to use a sample library at all, and it exposed a defect —
+// notes were folded into range one at a time, so a line rising from B4 to D5
+// came out of the piano as B3 falling to D3 and sounded out of tune, which it
+// was.
 //
-//   - the breaks and the bass are *loops*, played at their own native rate from
-//     the tempo folder they belong to, never stretched and never pitched;
-//   - the melodic instruments are *multisamples*, one file per chromatic note,
-//     so the melodies are ours. Every note is played from its own sample at a
-//     rate of exactly 1.0.
+// So the vocabulary is what Cyclick supplied and what its own readme describes:
+// breakbeats, basslines, and synth one-shots grouped as chords "that can be
+// used to make classic progressions".
 //
-// Growth is orchestration: which breaks are layered, which instrument states
-// the theme, whether the counter-line and the stabs are in. Nothing anywhere is
-// time-stretched.
+// Everything plays at its own native rate. The tempo folder is chosen, never a
+// stretch factor, so a tempo change is a change of recording. The one thing
+// that is ours is the arrangement: which break is layered under which, which
+// chord lands where, and the processing they all sit in.
 //
 // Usage:
 //   node scripts/render-junction-sketch.mjs [--tempo 168] [--bars 64]
@@ -29,10 +35,8 @@ import {
   decode,
   libraryAvailable,
   loadChordHits,
-  loadInstrument,
   loopsAtTempo,
   LOOP_BARS,
-  nearestNote,
 } from "./sample-library.mjs";
 import {
   LookaheadLimiter,
@@ -41,6 +45,7 @@ import {
   TubeSaturator,
 } from "../src/score/dsp/effects.js";
 import { OnePoleHighPass } from "../src/score/dsp/primitives.js";
+import { InstrumentChannel, noteVariation } from "../src/score/dsp/instrument-channel.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = resolve(HERE, "..");
@@ -48,61 +53,43 @@ const SAMPLE_RATE = 48000;
 const STEPS_PER_BAR = 16;
 
 /**
- * The piece is in E minor, because E is the one key the jungle pack provides at
- * every tempo. A tempo change can then never become a key change.
+ * The progression, in E minor — the one key the jungle pack provides at every
+ * tempo, so a tempo change can never become a key change.
  *
- * Themes are written as absolute pitches in that key, for the same reason
- * FRACTURE's are: a line that sits over the whole harmony reads as writing, and
- * a line dragged around by a chord root reads as arithmetic.
+ * Each entry names a chord the pack actually contains, already voiced and
+ * already performed. `bar` is which bar of the eight-bar cycle it lands on.
+ * Everything here is diatonic to E minor, so the basslines sit under any of it.
  */
-const THEMES = {
-  call: [
-    { at: 0, midi: 71, steps: 4 },   // B4
-    { at: 6, midi: 69, steps: 3 },   // A4
-    { at: 10, midi: 67, steps: 4 },  // G4
-    { at: 16, midi: 64, steps: 5 },  // E4
-    { at: 24, midi: 67, steps: 3 },  // G4
-    { at: 28, midi: 66, steps: 4 },  // F#4
-  ],
-  answer: [
-    { at: 0, midi: 64, steps: 3 },   // E4
-    { at: 5, midi: 67, steps: 3 },   // G4
-    { at: 10, midi: 71, steps: 5 },  // B4
-    { at: 18, midi: 69, steps: 3 },  // A4
-    { at: 22, midi: 67, steps: 3 },  // G4
-    { at: 26, midi: 64, steps: 6 },  // E4
-  ],
-  held: [
-    { at: 0, midi: 71, steps: 8 },   // B4
-    { at: 12, midi: 69, steps: 6 },  // A4
-    { at: 20, midi: 67, steps: 8 },  // G4
-  ],
-  stabs: [
-    { at: 2, midi: 76, steps: 2 },   // E5
-    { at: 8, midi: 74, steps: 2 },   // D5
-    { at: 14, midi: 71, steps: 2 },  // B4
-    { at: 20, midi: 67, steps: 2 },  // G4
-    { at: 26, midi: 69, steps: 2 },  // A4
-  ],
-};
-
-/**
- * Eight sections of eight bars. Density climbs and then releases, and the
- * instrument stating the theme turns over as it goes, so a long listen hears
- * the same material through different voices rather than the same voice twice.
- */
-const SECTIONS = [
-  { id: "open", breaks: [], bass: true, pad: 1, lines: [], drive: 0.04, space: 0.6, level: 0.52 },
-  { id: "enter", breaks: ["A"], bass: true, pad: 1, lines: [["RavePiano", "answer", 0.5]], drive: 0.1, space: 0.5, level: 0.7 },
-  { id: "build", breaks: ["A"], bass: true, pad: 0.8, lines: [["Rave_Lead", "call", 0.42], ["RavePiano", "answer", 0.34]], drive: 0.18, space: 0.4, level: 0.82 },
-  { id: "break", breaks: ["A", "C"], bass: true, pad: 0.6, lines: [["Rave_Lead", "call", 0.46], ["Short_String", "held", 0.34]], drive: 0.26, space: 0.32, level: 0.9 },
-  { id: "full", breaks: ["A", "C", "B"], bass: true, pad: 0.5, lines: [["Rave_Lead", "call", 0.46], ["Stab_FX", "stabs", 0.3], ["Short_String", "held", 0.3]], drive: 0.34, space: 0.28, level: 1 },
-  { id: "turn", breaks: ["A", "D"], bass: true, pad: 0.6, lines: [["Rave_Saw", "call", 0.42], ["Stab_FX", "stabs", 0.28]], drive: 0.3, space: 0.34, level: 0.94 },
-  { id: "ease", breaks: ["A"], bass: true, pad: 0.9, lines: [["Short_String", "held", 0.4]], drive: 0.14, space: 0.5, level: 0.76 },
-  { id: "rest", breaks: [], bass: true, pad: 1, lines: [], drive: 0.05, space: 0.62, level: 0.56 },
+const PROGRESSION = [
+  { bar: 0, chord: "Emin9" },
+  { bar: 2, chord: "Cmaj7" },
+  { bar: 4, chord: "Amin7" },
+  { bar: 6, chord: "Bmin9" },
 ];
 
-const INSTRUMENTS_USED = ["Rave_Lead", "RavePiano", "Short_String", "Rave_Saw", "Stab_FX"];
+/**
+ * Which pad instrument states the progression, per section.
+ *
+ * The pack ships the same chords voiced by several different synths, so the
+ * harmony can change instrument without a note changing. That is the variety
+ * this material offers, and it costs nothing to use.
+ */
+const PAD_VOICES = ["WaveStrings", "EmmPad", "JayPad", "V-String", "ModStrings", "FifthHit"];
+
+/**
+ * Eight sections of eight bars. Density climbs and releases; which break sets
+ * are layered and which synth carries the chords turn over as it goes.
+ */
+const SECTIONS = [
+  { id: "open", breaks: [], bass: true, pad: 1, padVoice: 0, stab: false, drive: 0.04, space: 0.55, level: 0.54 },
+  { id: "enter", breaks: ["A"], bass: true, pad: 0.95, padVoice: 1, stab: false, drive: 0.1, space: 0.46, level: 0.72 },
+  { id: "build", breaks: ["A"], bass: true, pad: 0.85, padVoice: 2, stab: true, drive: 0.18, space: 0.38, level: 0.84 },
+  { id: "break", breaks: ["A", "C"], bass: true, pad: 0.7, padVoice: 3, stab: true, drive: 0.26, space: 0.32, level: 0.92 },
+  { id: "full", breaks: ["A", "C", "B"], bass: true, pad: 0.62, padVoice: 4, stab: true, drive: 0.34, space: 0.28, level: 1 },
+  { id: "turn", breaks: ["A", "D"], bass: true, pad: 0.7, padVoice: 5, stab: true, drive: 0.3, space: 0.32, level: 0.94 },
+  { id: "ease", breaks: ["A"], bass: true, pad: 0.9, padVoice: 2, stab: false, drive: 0.14, space: 0.46, level: 0.78 },
+  { id: "rest", breaks: [], bass: true, pad: 1, padVoice: 0, stab: false, drive: 0.05, space: 0.58, level: 0.58 },
+];
 
 function parseArguments(argv) {
   const options = { tempo: 168, bars: 64 };
@@ -199,15 +186,20 @@ async function main() {
   if (!bassEntry) throw new Error(`no bass loop in E at ${options.tempo} BPM`);
   const bass = await decode(bassEntry.path, SAMPLE_RATE);
 
-  const instruments = new Map();
-  for (const name of INSTRUMENTS_USED) {
-    instruments.set(name, await loadInstrument(name, SAMPLE_RATE));
-  }
-
+  // Every chord the progression asks for, in every voicing the pack ships, so
+  // the harmony can change instrument without a note changing.
   const hits = await loadChordHits(SAMPLE_RATE);
-  const pad = hits.find((hit) => hit.chord === "Emin9" && hit.instrument === "WaveStrings")
-    ?? hits.find((hit) => hit.chord.startsWith("Emin"));
-  if (!pad) throw new Error("no E minor chord one-shot found");
+  const chords = new Map();
+  for (const step of PROGRESSION) {
+    const anyVoicing = hits.find((entry) => entry.chord === step.chord);
+    if (!anyVoicing) throw new Error(`the pack has no ${step.chord}`);
+    for (const voice of PAD_VOICES) {
+      // A voicing this synth does not have falls back to one that does, rather
+      // than dropping the chord out of the progression.
+      const hit = hits.find((entry) => entry.chord === step.chord && entry.instrument === voice);
+      chords.set(`${voice}:${step.chord}`, (hit ?? anyVoicing).buffer);
+    }
+  }
 
   const loopFrames = Math.round((60 / options.tempo) * 4 * LOOP_BARS * SAMPLE_RATE);
   const barFrames = Math.round(loopFrames / LOOP_BARS);
@@ -219,6 +211,7 @@ async function main() {
   const right = new Float32Array(totalFrames);
 
   const saturator = new TubeSaturator(SAMPLE_RATE);
+  const channel = new InstrumentChannel(SAMPLE_RATE);
   const reverb = new StereoReverb(SAMPLE_RATE);
   const width = new StereoWidth(SAMPLE_RATE);
   const limiter = new LookaheadLimiter(SAMPLE_RATE);
@@ -239,22 +232,38 @@ async function main() {
     const section = SECTIONS[Math.min(Math.floor(bar / barsPerSection), SECTIONS.length - 1)];
     const inLoop = frame % loopFrames;
 
-    // Structural triggers land exactly on a step; everything continuous glides.
+    // Structural triggers land exactly on a step. The only thing decided here is
+    // *which* recording plays and *when* — never what it plays.
     if (frame % stepFrames === 0) {
       const step = Math.floor(inLoop / stepFrames) % (STEPS_PER_BAR * LOOP_BARS);
+      const barInCycle = bar % 8;
+      const voice = PAD_VOICES[section.padVoice % PAD_VOICES.length];
 
-      if (step === 0 && bar % 4 === 0 && section.pad > 0) {
-        voices.push(new SamplerVoice(pad.buffer, 1, section.pad * 0.42, barFrames * 3));
-      }
-      for (const [name, themeId, gain] of section.lines) {
-        const instrument = instruments.get(name);
-        if (!instrument) continue;
-        for (const note of THEMES[themeId]) {
-          if (note.at !== step) continue;
-          const { key, rate } = nearestNote(instrument, note.midi);
-          used.add(name);
+      if (step === 0 && section.pad > 0) {
+        const entry = PROGRESSION.find((chord) => chord.bar === barInCycle);
+        if (entry) {
+          const variation = noteVariation(bar * 7 + section.padVoice);
           voices.push(new SamplerVoice(
-            instrument.notes.get(key), rate, gain, note.steps * stepFrames,
+            chords.get(`${voice}:${entry.chord}`),
+            variation.rate,
+            section.pad * 0.46 * variation.gain,
+            barFrames * 2,
+          ));
+          used.add(`${voice} ${entry.chord}`);
+        }
+      }
+
+      // An off-beat restatement of the chord already sounding. Classic jungle
+      // punctuation, and it costs one extra trigger.
+      if (section.stab && step === 22 && barInCycle % 2 === 1) {
+        const held = [...PROGRESSION].reverse().find((chord) => chord.bar <= barInCycle);
+        if (held) {
+          const variation = noteVariation(bar * 13 + 5);
+          voices.push(new SamplerVoice(
+            chords.get(`${voice}:${held.chord}`),
+            variation.rate,
+            section.pad * 0.22 * variation.gain,
+            Math.round(barFrames * 0.4),
           ));
         }
       }
@@ -286,15 +295,31 @@ async function main() {
     }
     if (frame % 4096 === 0) voices = voices.filter((voice) => !voice.done());
 
+    // The chords go through a channel strip: saturation, tone, drifting width,
+    // and a pre-delayed filtered send into the shared room. Played flat they sat
+    // dead centre and bone dry, which is what a cheap keyboard sounds like.
+    channel.set({
+      space: 0.36 + smoothedSpace * 0.45,
+      drive: 0.18 + smoothedDrive * 0.5,
+      width: 1.4,
+      tone: 0.5,
+      body: 0.6,
+    });
+    channel.refresh();
+    const chordOut = channel.tick(melodicLeft, melodicRight, reverb);
+    melodicLeft = chordOut[0];
+    melodicRight = chordOut[1];
+
     saturator.setDrive(smoothedDrive);
     const driven = saturator.tick((breakLeft + breakRight) * 0.5);
     const bodyLeft = breakHighPassLeft.tick(breakLeft) + driven * 0.22;
     const bodyRight = breakHighPassRight.tick(breakRight) + driven * 0.22;
 
+    // The breaks share the same room as the chords, at a much shorter send. One
+    // space for the whole arrangement is what makes it one performance.
     reverb.set(smoothedSpace, 0.42);
     const [wetLeft, wetRight] = reverb.tickStereo(
-      (bodyLeft * 0.3 + melodicLeft) * smoothedSpace * 0.6,
-      (bodyRight * 0.3 + melodicRight) * smoothedSpace * 0.6,
+      bodyLeft * smoothedSpace * 0.14, bodyRight * smoothedSpace * 0.14,
     );
 
     const bassLeft = section.bass ? bass.left[inLoop % bass.frames] : 0;
@@ -324,9 +349,8 @@ async function main() {
     + `${options.bars} bars at ${options.tempo} BPM in E minor`
     + ` · ${(totalFrames / SAMPLE_RATE).toFixed(1)}s`
     + ` · peak ${(20 * Math.log10(peak)).toFixed(1)} dB\n`
-    + `breaks ${[...breaks.keys()].join(", ")} · bass ${bassEntry.name}`
-    + ` · pad ${pad.instrument} ${pad.chord}\n`
-    + `instruments played: ${[...used].join(", ")}\n\n`,
+    + `breaks ${[...breaks.keys()].join(", ")} · bass ${bassEntry.name}\n`
+    + `chords, all as supplied: ${[...used].join(", ")}\n\n`,
   );
 }
 

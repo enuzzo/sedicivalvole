@@ -19,12 +19,36 @@ export const SCORE_STATUS = Object.freeze({
   preparing: "preparing",
 });
 
+/**
+ * How a score makes its sound.
+ *
+ * `generative` is synthesised from nothing at runtime: every note is computed,
+ * so the arrangement can be reshaped without limit. `sampled` is built from
+ * recorded material, which brings a realism synthesis cannot reach and a
+ * fixed vocabulary in exchange.
+ *
+ * The two are genuinely different products to listen to, and a listener
+ * choosing between them should be told which is which rather than having to
+ * work it out.
+ */
+export const SCORE_SOURCE = Object.freeze({
+  generative: "generative",
+  sampled: "sampled",
+});
+
+/** Short labels and marks for the two kinds, for the interface to render. */
+export const SCORE_SOURCE_LABEL = Object.freeze({
+  generative: { label: "GENERATIVE", mark: "◇", note: "Synthesised live" },
+  sampled: { label: "SAMPLED", mark: "◆", note: "Built from recordings" },
+});
+
 export const SCORE_GENRES = [
   {
     id: "junction",
     label: "JUNCTION",
     number: "01",
     family: "Jungle / Rave",
+    source: SCORE_SOURCE.sampled,
     status: SCORE_STATUS.preparing,
     score: null,
     note: "Sampled breaks. Tempo is a recording, never a stretch.",
@@ -34,6 +58,7 @@ export const SCORE_GENRES = [
     label: "FRACTURE",
     number: "02",
     family: "Jungle / Drum & Bass",
+    source: SCORE_SOURCE.generative,
     status: SCORE_STATUS.ready,
     /** Resolved by the worklet to an authored score module. */
     score: "fracture",
@@ -44,6 +69,7 @@ export const SCORE_GENRES = [
     label: "PULSE",
     number: "03",
     family: "Techno",
+    source: SCORE_SOURCE.generative,
     status: SCORE_STATUS.preparing,
     score: null,
     note: "Four to the floor, dub chords, long filter arcs.",
@@ -53,6 +79,7 @@ export const SCORE_GENRES = [
     label: "CUTWATER",
     number: "04",
     family: "Breakbeat / Electro",
+    source: SCORE_SOURCE.generative,
     status: SCORE_STATUS.preparing,
     score: null,
     note: "Broken kick, wide claps, machine funk.",
@@ -62,6 +89,7 @@ export const SCORE_GENRES = [
     label: "LOWTIDE",
     number: "05",
     family: "Dub Techno",
+    source: SCORE_SOURCE.generative,
     status: SCORE_STATUS.preparing,
     score: null,
     note: "Sparse, deep, everything through the delay.",
@@ -71,6 +99,7 @@ export const SCORE_GENRES = [
     label: "NIGHTCAST",
     number: "06",
     family: "Downtempo",
+    source: SCORE_SOURCE.generative,
     status: SCORE_STATUS.preparing,
     score: null,
     note: "Slow shuffle for traffic and night roads.",
@@ -80,6 +109,7 @@ export const SCORE_GENRES = [
     label: "STILLWATER",
     number: "07",
     family: "Ambient",
+    source: SCORE_SOURCE.generative,
     status: SCORE_STATUS.preparing,
     score: null,
     note: "No percussion. Harmony and space only.",
@@ -98,6 +128,11 @@ export const DEFAULT_GENRE_ID = "fracture";
 export function getScoreGenre(genreId) {
   return SCORE_GENRES.find((genre) => genre.id === genreId)
     ?? SCORE_GENRES.find((genre) => genre.id === DEFAULT_GENRE_ID);
+}
+
+/** The label, mark and one-line note for how a score makes its sound. */
+export function scoreSource(genreId) {
+  return SCORE_SOURCE_LABEL[getScoreGenre(genreId).source] ?? SCORE_SOURCE_LABEL.generative;
 }
 
 export function isScoreReady(genreId) {
