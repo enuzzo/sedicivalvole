@@ -31,9 +31,10 @@ dated study documents.
   timbres, a narrow `162–176 BPM` transport range, half-time interpretation at
   rest, arrangement density, deceleration memory, and the measured UNDERWATER
   brake effect.
-- **JUNCTION 01** is selectable sampled Jungle / Rave music. Its eight rendered
-  sections live in one 1.9 MB Opus bank; the browser uses one decoder and moves
-  between density/release sections only at authored boundaries.
+- **JUNCTION 01** is selectable sampled Jungle / Rave music. Its eight energy
+  states each have three complete authored takes: 24 rendered sections in one
+  5.1 MB Opus bank. The browser uses one decoder, chooses a non-repeating take
+  at each eight-bar boundary, and never shuffles source sounds mid-phrase.
 - **PULSE 03**, **CUTWATER 04**, **LOWTIDE 05**, **NIGHTCAST 06**, and
   **STILLWATER 07** are declared honestly as `IN PREPARATION` and are disabled.
 - `docs/MUSIC-CRAFT.md` records the musical defects and techniques already
@@ -42,7 +43,7 @@ dated study documents.
 ## Verified boundaries
 
 - Local gate: `npm test` and `npm run build` from `prototype/drive-lab/`.
-- Current suite: 127 unit checks plus 4 Sites packaging checks.
+- Current suite: 128 unit checks plus 4 Sites packaging checks.
 - Canonical development URL: <https://sedicivalvole.app/>. The most recent
   canonical publication evidence and build stamp are always the first entry in
   [`DEPLOY.md`](DEPLOY.md).

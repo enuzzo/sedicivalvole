@@ -59,6 +59,7 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 
 ### Changed
 
+- 2026-08-27 22:54 `[ef0c0d0]`: JUNCTION now carries three complete authored takes for every energy state: 24 eight-bar sections and 192 bars in one 5.1 MB bank. At each musical boundary the runtime chooses a different take without immediate repetition; break phrases, voicings, density, drive and space vary inside the score instead of shuffling exposed samples mid-phrase.
 - 2026-08-27 22:46 `[fba4002]` `build 20260827-2245`: Published the grounded Vertigo entry framing and quadratic urban-speed response to the canonical root.
 - 2026-08-27 22:34 `[f9bb395]` `build 20260827-2232`: Published the complete Flux performance checkpoint to the canonical root: 60 FPS Aperture scheduling, editorial-free themed Vertigo, the 64 px Tesla footer, and the selectable JUNCTION production bank.
 - 2026-08-27 22:31 `[87362c5]`: Aperture now renders at the display cadence instead of accidentally halving a 60 Hz display to 30 FPS. Time-based easing preserves the approved motion exactly, while invariant shader controls move out of the fragment shader; desktop Tesla-viewport QA improved from 30 FPS / 34.51 ms p95 to 60 FPS / 17.7 ms p95.

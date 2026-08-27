@@ -55,7 +55,7 @@ requires a real Tesla listening session.
 
 Completed in the current working line:
 
-- JUNCTION's eight-section browser runtime uses one compact Opus music bank and one decoder;
+- JUNCTION's 24-section browser runtime uses one compact Opus music bank and one decoder; its eight energy states each own three complete takes selected only at eight-bar boundaries without immediate repetition;
 - the bank contains a mixed, processed production rather than loose source samples; browser-delivered bytes remain downloadable and are not described as secret;
 
 Queued next:

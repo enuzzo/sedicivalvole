@@ -284,17 +284,26 @@ recordings remain extractable and it is still a redistributed sample bank.
 MusicRadar permits using the material in music and asks that the samples not be
 redistributed, so the product boundary must be musical as well as technical.
 
-The shipped bank therefore contains one mixed, processed 64-bar production,
-not playable source files. Eight complete sections use different break
-variants, harmonic voicings, density, drive and space. The browser keeps one
-compressed decoder alive and changes section only at an authored eight-bar
-boundary. This solves three faults at once: a two-bar loop no longer exposes its
-repetition immediately, the source recordings are not offered as a library,
-and the Tesla does not decode a hundred-megabyte PCM bank into memory.
+The shipped bank therefore contains one mixed, processed 192-bar production,
+not playable source files. Each of the eight energy states has three complete
+eight-bar takes, for 24 rendered sections with different two-bar break phrases,
+harmonic voicings, density, drive and space. The browser keeps one compressed
+decoder alive and chooses a different take only at an authored eight-bar
+boundary, explicitly excluding the take that just played. This solves three
+faults at once: a two-bar loop no longer exposes its repetition immediately,
+the source recordings are not offered as a library, and the Tesla does not
+decode a hundred-megabyte PCM bank into memory.
 
 The reason a listener notices this distinction is form: variety must arrive as
 an intentional change of musical pressure, harmony and orchestration, not as a
 random sample roulette or a short loop restarting under a new effect.
+
+Randomness therefore needs grammar. Choosing an entire prepared take at the
+same eight-bar boundary already used by the adaptive arrangement makes the
+result less predictable without breaking a fill, changing harmony under a
+sustained sound, or placing a sample merely because it was available. Memory of
+the previous take prevents the easiest audible failure: an allegedly varied
+system selecting the same performance twice in succession.
 
 ---
 

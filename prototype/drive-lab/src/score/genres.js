@@ -51,7 +51,7 @@ export const SCORE_GENRES = [
     source: SCORE_SOURCE.sampled,
     status: SCORE_STATUS.ready,
     score: "junction",
-    note: "Eight rendered sections. One compact adaptive music bank.",
+    note: "Three authored takes per energy state. One compact adaptive bank.",
   },
   {
     id: "fracture",

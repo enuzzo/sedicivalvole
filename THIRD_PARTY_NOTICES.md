@@ -53,10 +53,11 @@ does not hold.
    or multisample from either pack is committed to this repository.
 2. They are used the way the terms allow: as source material for composing
    sedicivalvole's own music.
-3. What the product ships is that music. JUNCTION renders 64 bars of
+3. What the product ships is that music. JUNCTION renders 192 bars of
    sedicivalvole arrangement — layering, voicing, processing chain and bus —
-   into eight complete sections, then packages the encoded production as one
-   runtime bank. It is not a disguised collection of source samples.
+   into 24 complete sections: three takes for each of eight energy states. It
+   then packages the encoded production as one runtime bank. It is not a
+   disguised collection of source samples.
 
 The distinction is the whole point, and it is not about Git. Serving the
 individual loops as separate assets would put the pack itself on the network for
