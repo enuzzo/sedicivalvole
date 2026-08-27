@@ -142,7 +142,7 @@ def is_recognized_app_entry(payload: bytes) -> bool:
 
 def is_recognized_junction_bank(payload: bytes) -> bool:
     """Recognize an existing owned bank without requiring the next bank's hash."""
-    if len(payload) < 13 or payload[:8] not in {b"SVJCTN01", b"SVJCTN02"}:
+    if len(payload) < 13 or payload[:8] not in {b"SVJCTN01", b"SVJCTN02", b"SVJCTN03"}:
         return False
     manifest_length = int.from_bytes(payload[8:12], "little")
     audio_offset = 12 + manifest_length
@@ -160,7 +160,11 @@ def is_recognized_junction_bank(payload: bytes) -> bool:
     )
     if manifest.get("format") == "sedicivalvole.music-bank.v1":
         return common_valid and payload[:8] == b"SVJCTN01"
-    if manifest.get("format") != "sedicivalvole.music-bank.v2" or payload[:8] != b"SVJCTN02":
+    segmented_signatures = {
+        "sedicivalvole.music-bank.v2": b"SVJCTN02",
+        "sedicivalvole.music-bank.v3": b"SVJCTN03",
+    }
+    if segmented_signatures.get(manifest.get("format")) != payload[:8]:
         return False
     assets = manifest.get("assets")
     if not isinstance(assets, list) or not assets:

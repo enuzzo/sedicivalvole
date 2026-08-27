@@ -27,7 +27,7 @@
 //   node scripts/render-junction-sketch.mjs
 
 import { createWriteStream } from "node:fs";
-import { mkdir } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -36,6 +36,7 @@ import {
   libraryAvailable,
   loadBonusBeatsAtTempo,
   loadChordHits,
+  loadExactInstrumentNotes,
   loopsAtTempo,
   LOOP_BARS,
 } from "./sample-library.mjs";
@@ -67,10 +68,15 @@ const STEPS_PER_BAR = 16;
  * Everything here is diatonic to E minor, so the basslines sit under any of it.
  */
 const PROGRESSION = [
-  { bar: 0, chord: "Emin9", bassKeys: ["E", "Emin"] },
-  { bar: 2, chord: "Cmaj7", bassKeys: ["C", "G", "E"] },
-  { bar: 4, chord: "Amin7", bassKeys: ["Amin", "E", "C"] },
-  { bar: 6, chord: "Bmin9", bassKeys: ["B", "Bmin", "E"] },
+  { bar: 0, chord: "Emin9", bassKeys: ["E", "Emin"], accentMidis: [52, 55, 59, 62, 66] },
+  { bar: 2, chord: "Cmaj7", bassKeys: ["C", "G", "E"], accentMidis: [48, 52, 55, 59] },
+  { bar: 4, chord: "Amin7", bassKeys: ["Amin", "E", "C"], accentMidis: [45, 48, 52, 55] },
+  { bar: 6, chord: "Bmin9", bassKeys: ["B", "Bmin", "E"], accentMidis: [47, 50, 54, 57, 61] },
+];
+
+const ACCENT_INSTRUMENTS = [
+  "Rave_Lead", "RavePiano", "Short_String", "Rave_Saw", "Buzz",
+  "Crunchy_Sub", "Stab_FX", "Pitched_Piano_Stab", "Pitched_String_Hit",
 ];
 
 function writeWav(path, left, right, sampleRate) {
@@ -192,6 +198,17 @@ async function main() {
     if (voicings.length === 0) throw new Error(`the pack has no ${step.chord}`);
     chords.set(step.chord, voicings);
   }
+  const accents = [];
+  for (const name of ACCENT_INSTRUMENTS) {
+    const instrument = await loadExactInstrumentNotes(
+      name,
+      [...new Set(PROGRESSION.flatMap((entry) => entry.accentMidis))],
+      SAMPLE_RATE,
+    );
+    for (const [midi, buffer] of instrument.notes) {
+      accents.push({ instrument: name, midi, buffer });
+    }
+  }
 
   let nextStartFrame = 0;
   const timeline = JUNCTION_ARRANGEMENT.map((section, index) => {
@@ -269,6 +286,26 @@ async function main() {
             ));
           }
         }
+
+        // A second, quieter supplied performance colours the end of selected
+        // high-energy phrases. It is always an exact recorded chord tone: no
+        // resampling, generated melody, or arbitrary pitched loop enters here.
+        if (section.stab && step === 29 && barInCycle % 2 === 1) {
+          const held = [...PROGRESSION].reverse().find((chord) => chord.bar <= barInCycle);
+          const choices = held
+            ? accents.filter((accent) => held.accentMidis.includes(accent.midi))
+            : [];
+          if (choices.length > 0) {
+            const selected = choices[(sectionIndex * 7 + barInCycle * 3) % choices.length];
+            voices.push(new SamplerVoice(
+              selected.buffer,
+              1,
+              0.08 + smoothedDrive * 0.08,
+              Math.round(barFrames * 0.18),
+            ));
+            used.add(`${selected.instrument} ${selected.midi}`);
+          }
+        }
       }
 
       smoothedLevel += (section.level - smoothedLevel) * 0.00005;
@@ -293,6 +330,7 @@ async function main() {
           : `${section.bpm}:jungle:${id}`;
         const layer = beatBuffers.get(key);
         if (!layer) throw new Error(`missing authored beat ${key}`);
+        used.add(`beat ${key}`);
         // Extra layers provide width and detail, never another full-level break.
         const layerGain = layerIndex === 0 ? 1 : 0.28;
         const pan = layerIndex === 0 ? 0 : (layerIndex % 2 === 1 ? -0.4 : 0.4);
@@ -341,6 +379,7 @@ async function main() {
       const progression = PROGRESSION[Math.floor(barInCycle / LOOP_BARS)];
       const bassKey = progression.bassKeys.find((key) => bassBuffers.has(`${section.bpm}:${key}`));
       const bass = section.bass ? bassBuffers.get(`${section.bpm}:${bassKey}`) : null;
+      if (bass) used.add(`bass ${section.bpm}:${bassKey}`);
       const bassLeft = bass ? bass.left[inLoop % bass.frames] * 0.68 : 0;
       const bassRight = bass ? bass.right[inLoop % bass.frames] * 0.68 : 0;
 
@@ -359,6 +398,10 @@ async function main() {
   const out = resolve(PROJECT_ROOT, "renders/junction-sketch-adaptive.wav");
   await mkdir(dirname(out), { recursive: true });
   await writeWav(out, left, right, SAMPLE_RATE);
+  await writeFile(
+    resolve(PROJECT_ROOT, "renders/junction-sketch-adaptive.json"),
+    JSON.stringify({ sourceRecordingsUsed: used.size }),
+  );
 
   let peak = 0;
   for (let frame = 0; frame < totalFrames; frame += 1) {
@@ -370,7 +413,7 @@ async function main() {
     + ` · ${(totalFrames / SAMPLE_RATE).toFixed(1)}s`
     + ` · peak ${(20 * Math.log10(peak)).toFixed(1)} dB\n`
     + `${beatBuffers.size} native beat recordings · ${bassBuffers.size} matched bass recordings\n`
-    + `${used.size} supplied chord performances used\n\n`,
+    + `${used.size} distinct source recordings used\n\n`,
   );
 }
 

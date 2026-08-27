@@ -51,7 +51,7 @@ export const SCORE_GENRES = [
     source: SCORE_SOURCE.sampled,
     status: SCORE_STATUS.ready,
     score: "junction",
-    note: "Two authored takes mixed live at every eight-bar boundary.",
+    note: "104 processed clips from 126 recordings, mixed live in pairs.",
   },
   {
     id: "fracture",

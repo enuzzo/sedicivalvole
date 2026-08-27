@@ -1,4 +1,4 @@
-const MAGIC = "SVJCTN02";
+const MAGIC = "SVJCTN03";
 const HEADER_BYTES = 12;
 
 export function parseJunctionBank(arrayBuffer) {
@@ -12,7 +12,7 @@ export function parseJunctionBank(arrayBuffer) {
   const manifest = JSON.parse(
     new TextDecoder().decode(bytes.subarray(HEADER_BYTES, audioOffset)),
   );
-  if (manifest.format !== "sedicivalvole.music-bank.v2" || manifest.score !== "junction") {
+  if (manifest.format !== "sedicivalvole.music-bank.v3" || manifest.score !== "junction") {
     throw new Error("JUNCTION bank manifest is incompatible");
   }
   if (!Array.isArray(manifest.sections) || manifest.sections.length < 8) {

@@ -1,4 +1,4 @@
-export const JUNCTION_TAKES = 3;
+export const JUNCTION_TAKES = 13;
 export const JUNCTION_BARS_PER_SECTION = 8;
 
 /**
@@ -9,7 +9,7 @@ export const JUNCTION_BARS_PER_SECTION = 8;
  * Jungle recordings. Beat levels are deliberately below the harmonic bus and
  * describe a two-bar phrase envelope, so OPEN introduces rhythm gradually.
  */
-export const JUNCTION_SECTIONS = [
+const JUNCTION_SECTION_BLUEPRINTS = [
   { id: "open", bpm: 127, beatSource: "bonus", bass: false, pad: 1, drive: 0.03, space: 0.62, level: 0.64, beatLevels: [0.08, 0.2, 0.3, 0.38], takes: [
     { beatPhrases: [["01"], ["16"], ["17"], ["18"]], voicing: 0, stab: false },
     { beatPhrases: [["19"], ["20"], ["21"], ["22"]], voicing: 3, stab: false },
@@ -51,6 +51,26 @@ export const JUNCTION_SECTIONS = [
     { beatPhrases: [[], [], [], []], voicing: 13, stab: false },
   ] },
 ];
+
+function expandTakes(baseTakes) {
+  const phrasePool = baseTakes.flatMap((take) => take.beatPhrases);
+  return Array.from({ length: JUNCTION_TAKES }, (_, takeIndex) => {
+    if (takeIndex < baseTakes.length) return baseTakes[takeIndex];
+    const base = baseTakes[takeIndex % baseTakes.length];
+    return {
+      beatPhrases: Array.from({ length: 4 }, (_, phraseIndex) => (
+        phrasePool[(takeIndex * 5 + phraseIndex * 7) % phrasePool.length]
+      )),
+      voicing: base.voicing + takeIndex * 5,
+      stab: base.stab,
+    };
+  });
+}
+
+export const JUNCTION_SECTIONS = JUNCTION_SECTION_BLUEPRINTS.map((section) => ({
+  ...section,
+  takes: expandTakes(section.takes),
+}));
 
 export const JUNCTION_SECTION_IDS = JUNCTION_SECTIONS.map((section) => section.id);
 

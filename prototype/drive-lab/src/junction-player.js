@@ -18,6 +18,8 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
   let loading = null;
   let currentPerformance = null;
   let pendingPerformance = null;
+  let preparedMix = null;
+  let preparingId = null;
   let scheduling = false;
   let bankBytes = 0;
   let mixCutoff = 18000;
@@ -97,7 +99,9 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
       } : null,
       bankLoaded: Boolean(bank),
       bankBytes,
-      decodedStates: decoded.size,
+      bankClips: bank?.manifest.sections.length ?? 0,
+      sourceRecordingsUsed: bank?.manifest.sourceRecordingsUsed ?? 0,
+      decodedClips: decoded.size,
       decodedPcmBytes: decodedPcmBytes(),
       playing: active && activeSources.size > 0,
     };
@@ -105,10 +109,14 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
 
   function trimDecodedCache(extraKeep = []) {
     if (!bank) return;
-    const limit = Math.max(1, bank.manifest.maxDecodedStates ?? 2);
+    const limit = Math.max(2, bank.manifest.maxDecodedClips ?? 6);
     const keep = new Set([
-      currentPerformance?.id,
-      pendingPerformance?.id,
+      currentPerformance?.mix.primary.assetId,
+      currentPerformance?.mix.secondary.assetId,
+      pendingPerformance?.mix.primary.assetId,
+      pendingPerformance?.mix.secondary.assetId,
+      preparedMix?.mix.primary.assetId,
+      preparedMix?.mix.secondary.assetId,
       ...extraKeep,
     ].filter(Boolean));
     const removable = [...decoded.entries()]
@@ -159,16 +167,42 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
   function prewarmTarget() {
     if (!active || !bank) return;
     const id = junctionSectionForEnergy(energy, brake > 0.2);
-    ensureDecoded(id).catch((error) => {
-      console.warn("[junction] could not pre-decode the next mix block", error);
+    if (preparedMix?.id === id || preparingId === id) return;
+    const mix = chooseJunctionMix(
+      bank.manifest.sections,
+      id,
+      currentPerformance?.mix.primary.take ?? null,
+    );
+    if (!mix) return;
+    preparingId = id;
+    Promise.all([
+      ensureDecoded(mix.primary.assetId),
+      ensureDecoded(mix.secondary.assetId),
+    ]).then(() => {
+      if (active && junctionSectionForEnergy(energy, brake > 0.2) === id) {
+        preparedMix = { id, mix };
+      }
+    }).catch((error) => {
+      console.warn("[junction] could not pre-decode the next mix pair", error);
+    }).finally(() => {
+      if (preparingId === id) preparingId = null;
     });
   }
 
   async function schedulePerformance(id, requestedTime, previousPrimaryTake = null) {
-    const buffer = await ensureDecoded(id);
-    if (!active) return null;
-    const mix = chooseJunctionMix(bank.manifest.sections, id, previousPrimaryTake);
+    const prepared = preparedMix?.id === id
+      && preparedMix.mix.primary.take !== previousPrimaryTake
+      ? preparedMix.mix
+      : null;
+    preparedMix = null;
+    const mix = prepared
+      ?? chooseJunctionMix(bank.manifest.sections, id, previousPrimaryTake);
     if (!mix) throw new Error(`JUNCTION needs at least two takes for live mixing: ${id}`);
+    const [primaryBuffer, secondaryBuffer] = await Promise.all([
+      ensureDecoded(mix.primary.assetId),
+      ensureDecoded(mix.secondary.assetId),
+    ]);
+    if (!active) return null;
     const startAt = Math.max(requestedTime, context.currentTime + 0.035);
     const duration = Math.min(mix.primary.durationSeconds, mix.secondary.durationSeconds);
     const endAt = startAt + duration;
@@ -181,15 +215,15 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
 
     const performanceRecord = { id, mix, effects, startAt, endAt, sources: new Set() };
     const deckSpecs = [
-      { section: mix.primary, from: 1 - mix.mixStart, to: 1 - mix.mixEnd, pan: -0.06 },
-      { section: mix.secondary, from: mix.mixStart, to: mix.mixEnd, pan: 0.06 },
+      { section: mix.primary, buffer: primaryBuffer, from: 1 - mix.mixStart, to: 1 - mix.mixEnd, pan: -0.06 },
+      { section: mix.secondary, buffer: secondaryBuffer, from: mix.mixStart, to: mix.mixEnd, pan: 0.06 },
     ];
     for (const deck of deckSpecs) {
       const source = context.createBufferSource();
       const tone = context.createBiquadFilter();
       const panner = context.createStereoPanner();
       const deckGain = context.createGain();
-      source.buffer = buffer;
+      source.buffer = deck.buffer;
       tone.type = "lowpass";
       tone.Q.value = 0.55;
       tone.frequency.setValueAtTime(
@@ -239,6 +273,7 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
       currentPerformance = pendingPerformance;
       pendingPerformance = null;
       trimDecodedCache();
+      prewarmTarget();
     }
     if (currentPerformance && context.currentTime >= currentPerformance.endAt - SCHEDULE_AHEAD_SECONDS) {
       scheduleNext();
@@ -256,6 +291,7 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
         activeSources.clear();
         currentPerformance = null;
         pendingPerformance = null;
+        preparedMix = null;
         return;
       }
       await load();

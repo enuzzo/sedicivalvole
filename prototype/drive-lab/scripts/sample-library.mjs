@@ -181,6 +181,21 @@ export async function loadInstrument(name, sampleRate = 48000) {
   return { name, notes, keys: [...notes.keys()].sort((a, b) => a - b) };
 }
 
+/** Decode only the exact supplied notes an arrangement will actually trigger. */
+export async function loadExactInstrumentNotes(name, midiNotes, sampleRate = 48000) {
+  const wanted = new Set(midiNotes);
+  const directory = join(RAVE_ROOT, "Multis", name);
+  const files = (await readdir(directory)).filter((file) => file.endsWith(".wav"));
+  const notes = new Map();
+  for (const file of files) {
+    const stem = basename(file, ".wav").replace(/\.+$/, "");
+    const midi = noteToMidi(stem.split("_").pop());
+    if (midi === null || !wanted.has(midi) || notes.has(midi)) continue;
+    notes.set(midi, await decode(join(directory, file), sampleRate));
+  }
+  return { name, notes };
+}
+
 /**
  * The sampled note to play a wanted pitch from, and the rate to play it at.
  *

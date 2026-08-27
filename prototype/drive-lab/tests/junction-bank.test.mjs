@@ -37,6 +37,10 @@ test("JUNCTION leaves rest beatless and builds tempo and break level without rac
   );
   assert.ok(Math.max(...JUNCTION_SECTIONS.flatMap((section) => section.beatLevels)) <= 0.55);
   assert.equal(new Set(byId.open.takes.flatMap((take) => take.beatPhrases.flat())).size, 12);
+  assert.ok(JUNCTION_SECTIONS.every((section) => section.takes.length === 13));
+  assert.ok(JUNCTION_SECTIONS.every((section) => (
+    new Set(section.takes.map((take) => JSON.stringify(take))).size === 13
+  )));
 });
 
 test("JUNCTION changes take only at a section boundary and avoids an immediate repeat", () => {
@@ -79,27 +83,26 @@ test("the published JUNCTION blob contains lazy processed mix blocks, not loose 
   const bank = await readFile(new URL("../public/audio/junction.svb", import.meta.url));
   const parsed = parseJunctionBank(bank.buffer.slice(bank.byteOffset, bank.byteOffset + bank.byteLength));
   assert.equal(parsed.manifest.source, "rendered-production");
-  assert.equal(parsed.manifest.format, "sedicivalvole.music-bank.v2");
+  assert.equal(parsed.manifest.format, "sedicivalvole.music-bank.v3");
   assert.equal(parsed.manifest.mixing, "live-two-deck");
-  assert.equal(parsed.manifest.sections.length, 24);
-  assert.equal(parsed.manifest.takes, 3);
+  assert.equal(parsed.manifest.sections.length, 104);
+  assert.equal(parsed.manifest.takes, 13);
+  assert.ok(parsed.manifest.sourceRecordingsUsed >= 100);
   assert.equal(parsed.manifest.barsPerSection, 8);
   assert.equal(parsed.manifest.tempoMode, "authored-sections");
   assert.deepEqual(parsed.manifest.bpmRange, [127, 168]);
-  assert.equal(new Set(parsed.manifest.sections.map((section) => section.take)).size, 3);
-  assert.equal(parsed.assets.size, 8);
-  assert.equal(parsed.manifest.maxDecodedStates, 2);
+  assert.equal(new Set(parsed.manifest.sections.map((section) => section.take)).size, 13);
+  assert.equal(parsed.assets.size, 104);
+  assert.equal(parsed.manifest.maxDecodedClips, 6);
   for (const id of ["rest", "open", "enter", "build", "break", "full", "turn", "ease"]) {
     const variations = parsed.manifest.sections.filter((section) => section.id === id);
-    assert.deepEqual(variations.map((section) => section.take).sort(), [1, 2, 3]);
+    assert.deepEqual(
+      variations.map((section) => section.take).sort((a, b) => a - b),
+      Array.from({ length: 13 }, (_, index) => index + 1),
+    );
     assert.ok(variations.every((section) => section.durationSeconds > 11));
-    assert.deepEqual(variations.map((section) => section.assetId), [id, id, id]);
-    for (let index = 1; index < variations.length; index += 1) {
-      assert.ok(Math.abs(
-        variations[index].startSeconds
-          - (variations[index - 1].startSeconds + variations[index - 1].durationSeconds),
-      ) < 1e-9, "takes in one lazy block must remain gapless");
-    }
+    assert.ok(variations.every((section) => section.startSeconds === 0));
+    assert.equal(new Set(variations.map((section) => section.assetId)).size, 13);
   }
   assert.ok(parsed.manifest.sections.filter((section) => section.id === "rest").every(
     (section) => section.bpm === 127 && !section.activeLanes.includes("breaks"),
@@ -111,14 +114,14 @@ test("the published JUNCTION blob contains lazy processed mix blocks, not loose 
     [...parsed.assets.values()].reduce((total, asset) => total + asset.audio.size, 0),
     parsed.audioBytes,
   );
-  assert.ok([...parsed.assets.values()].every((asset) => asset.decodedPcmBytes < 20_000_000));
-  const twoLargestStates = [...parsed.assets.values()]
+  assert.ok([...parsed.assets.values()].every((asset) => asset.decodedPcmBytes < 7_000_000));
+  const twoLargestClips = [...parsed.assets.values()]
     .map((asset) => asset.decodedPcmBytes)
     .sort((a, b) => b - a)
     .slice(0, 2);
-  assert.ok(twoLargestStates.reduce((total, bytes) => total + bytes, 0) < 40_000_000);
+  assert.ok(twoLargestClips.reduce((total, bytes) => total + bytes, 0) < 13_000_000);
   assert.equal(bank.includes(Buffer.from("Jungle_Beat")), false);
   assert.equal(bank.includes(Buffer.from("BonusBeat_")), false);
-  assert.ok(parsed.audioBytes > 1_000_000);
-  assert.ok(parsed.audioBytes < 7_000_000, "the Tesla payload must stay compact");
+  assert.ok(parsed.audioBytes > 15_000_000);
+  assert.ok(parsed.audioBytes < 30_000_000, "the cached Tesla payload must stay bounded");
 });
