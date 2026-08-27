@@ -150,6 +150,7 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 
 ### Fixed
 
+- 2026-08-27 22:42 `[359e6c6]`: Vertigo now enters on an existing Interstate 7 phase where the road already fills the Tesla viewport instead of appearing as a small shape at the bottom. Its external speed/FOV bridge uses a quadratic road-speed response — approximately `0.095×` at 40 km/h and `0.213×` at 60 km/h — while preserving the original geometry, distortion, camera system and `1×` ceiling behavior.
 - 2026-08-27 22:06 `[e7adfb0]` `build 20260827-2204`: Prevented the persistent speed source readout from overlapping the `ENGINE` / `FLUX` mode selector at the photographed Tesla split viewport. Browser QA at `773 x 601` measures zero horizontal overlap.
 - 2026-08-27 22:06 `[31f8dc4]`: Recorded an append-only traceability correction for four superseded short hashes retained in earlier entries: `7733ec4` maps to reachable commit `45d73a8`, `4ecc6a3` to `34b54af`, `e85d1cd` to `6970eb1`, and `cbeada7` to `140b6fc`. The historical lines remain untouched.
 - 2026-08-27 20:20 `[cbeada7]`: The publication script ignored every argument, so `--help` ran a real deployment. It had already done so once and the previous evidence entry said it must not happen again. `parse_arguments` now prints usage and publishes nothing for `--help` or any unrecognised argument.
