@@ -48,73 +48,71 @@ const FRAGMENT_SHADER = `#version 300 es
     return fract(point.x * point.y);
   }
 
-  float rectangleMask(vec2 point, vec2 inset) {
-    vec2 edge = min(point, 1.0 - point) - inset;
-    vec2 antialias = max(fwidth(point) * 1.25, vec2(0.001));
-    vec2 inside = smoothstep(vec2(0.0), antialias, edge);
-    return inside.x * inside.y;
-  }
-
   void main() {
     vec2 uv_norm = v_uv * 2.0 - 1.0;
     
-    // 1. Morph Factor (0 to 36 km/h) & Hyperspeed Factor (>120 km/h)
-    // Gentle S-curve progression: 0 km/h is 100% flat resting mosaic,
-    // 0-15 km/h gently folds the walls, 15-30 km/h deepens into 3D perspective,
-    // and by 36 km/h the tunnel is fully formed with the dark central void.
-    float normSpeed = clamp(u_speedKmh / 36.0, 0.0, 1.0);
-    float warp = normSpeed * normSpeed * (3.0 - 2.0 * normSpeed);
+    // 1. Speed factors
+    float speedFactor = clamp(u_speedKmh / 35.0, 0.0, 1.0);
+    float wallPush = speedFactor * speedFactor * (3.0 - 2.0 * speedFactor);
     float terminalVelocity = smoothstep(118.0, 130.0, u_speedKmh);
 
     vec3 darkPanel = mix(u_base, u_mid, 0.66);
 
-    // 2. Chebychev radius and 4 wall sectors
-    float absX = abs(uv_norm.x);
-    float absY = abs(uv_norm.y);
-    float majorAxis = max(max(absX, absY), 0.0001);
+    // 2. 3D Raycasting
+    float Z_START = 3.5;
+    float Z_MAX = 10.5; // 7 levels of depth (3.5 + 7.0)
+    float Z_wall = mix(Z_START, Z_MAX, wallPush);
+    
+    float t_tunnel = 1.0 / max(max(abs(uv_norm.x), abs(uv_norm.y)), 0.0001);
+    float Z_tunnel = Z_START * t_tunnel;
+    
+    float Z_hit = min(Z_tunnel, Z_wall);
+    bool isBackWall = Z_wall <= Z_tunnel;
+    
+    vec3 hitPos = vec3(uv_norm.x * u_aspect * Z_hit, uv_norm.y * Z_hit, Z_hit);
 
-    bool isSide = absX >= absY;
-    float side = isSide 
-      ? (uv_norm.x > 0.0 ? 1.0 : 3.0)  // 1 = Right, 3 = Left
-      : (uv_norm.y > 0.0 ? 0.0 : 2.0); // 0 = Top, 2 = Bottom
-
-    float transCoord = isSide 
-      ? (uv_norm.y / max(absX, 0.0001)) 
-      : (uv_norm.x / max(absY, 0.0001));
-
-    // 3. UNIFIED DEFORMED COORDINATE FIELD
-    // Gentle depth continuity: at rest, concentric bands span [1.0, 7.0];
-    // as speed rises, depth continuously deepens to 1.0 / majorAxis.
-    float zFlat = 1.0 + majorAxis * 6.0;
-    float zTunnel = 1.0 / max(majorAxis, 0.125);
-    float zDepth = mix(zFlat, zTunnel, warp);
-    float flowOffset = u_flow * warp;
-    float zGrid = zDepth - flowOffset;
-
-    // 7 tiles across each wall
-    const float WALL_TILES = 7.0;
-    float transGrid = (transCoord * 0.5 + 0.5) * WALL_TILES;
+    // 3. Coordinate mapping
+    float transGrid, longGrid;
+    bool isSide = abs(uv_norm.x) >= abs(uv_norm.y);
+    
+    if (isBackWall) {
+        transGrid = hitPos.x;
+        longGrid = hitPos.y;
+    } else {
+        if (isSide) {
+            transGrid = hitPos.y;
+            longGrid = hitPos.z - u_flow;
+        } else {
+            transGrid = hitPos.x;
+            longGrid = hitPos.z - u_flow;
+        }
+    }
 
     float transCell = floor(transGrid);
     float transFract = fract(transGrid);
-
-    float zCell = floor(zGrid);
-    float zFract = fract(zGrid);
+    float longCell = floor(longGrid);
+    float longFract = fract(longGrid);
 
     // 4. Tile Insets and Masking
-    // Normal speed: longitudinal cuts elongate with velocity
-    // Terminal velocity (>120 km/h): longitudinal cuts dissolve, transverse insets narrow to razor lines (12% width)
     float baseTransInset = 0.085;
     float baseLongInset = mix(0.085, 0.02, u_velocity);
     float transInset = mix(baseTransInset, 0.44, terminalVelocity);
     float longInset = mix(baseLongInset, 0.0, terminalVelocity);
 
     float transMask = smoothstep(0.0, 0.02, min(transFract, 1.0 - transFract) - transInset);
-    float longMask = smoothstep(0.0, 0.02, min(zFract, 1.0 - zFract) - longInset);
+    float longMask = smoothstep(0.0, 0.02, min(longFract, 1.0 - longFract) - longInset);
     float tileMask = transMask * longMask;
 
     // 5. Unified Tile Palette & Shuffling
-    vec2 tileId = vec2(side * 7.0 + transCell, zCell);
+    float wallId;
+    if (isBackWall) {
+        wallId = 4.0;
+    } else {
+        wallId = isSide 
+          ? (uv_norm.x > 0.0 ? 1.0 : 3.0)  // 1 = Right, 3 = Left
+          : (uv_norm.y > 0.0 ? 0.0 : 2.0); // 0 = Top, 2 = Bottom
+    }
+    vec2 tileId = vec2(wallId * 100.0 + transCell, longCell);
     float colorIndex = floor(hash21(tileId + vec2(41.0, 13.0) + u_restRecolour) * 4.0);
     float tone = hash21(tileId + vec2(8.0, 29.0));
 
@@ -125,7 +123,7 @@ const FRAGMENT_SHADER = `#version 300 es
     panel *= mix(0.95 + tone * 0.10, 0.90 + tone * 0.20, u_velocity);
 
     // Terminal velocity laser streak coloring (white & red/accent)
-    float streakHash = hash21(vec2(side * 7.0 + transCell, 19.8));
+    float streakHash = hash21(vec2(wallId * 100.0 + transCell, 19.8));
     vec3 streakColor = mix(u_light, u_accent, step(0.45, streakHash));
     streakColor = mix(streakColor, u_mid, step(0.85, streakHash));
     panel = mix(panel, streakColor, terminalVelocity);
@@ -138,15 +136,14 @@ const FRAGMENT_SHADER = `#version 300 es
     color = mix(color, u_light, u_brake * tileMask * 0.08);
 
     // 7. Outer edge vignette
-    float edge = smoothstep(1.25, 0.40, max(absX * 0.75, absY));
+    float edge = smoothstep(1.25, 0.40, max(abs(uv_norm.x) * 0.75, abs(uv_norm.y)));
     color *= mix(1.0, 0.75 + edge * 0.35, u_velocity);
 
     // 8. FINAL TERMINUS VOID GATE:
-    // Central void is locked to 100% pure black when tunnel forms (speed >= 18 km/h)
-    // Multiplied as the final step after all lighting/pulses, guaranteeing zero red flashes in the void
-    float terminusVoid = smoothstep(0.12, 0.17, majorAxis);
-    float voidActive = smoothstep(15.0, 35.0, u_speedKmh);
-    color *= mix(1.0, terminusVoid, voidActive);
+    // Pure black void at the end of the tunnel.
+    // As hitPos.z approaches Z_MAX, it fades to 0.0.
+    float zFade = smoothstep(Z_MAX, Z_MAX - 3.0, hitPos.z);
+    color *= zFade;
 
     outColor = vec4(color, 1.0);
   }
