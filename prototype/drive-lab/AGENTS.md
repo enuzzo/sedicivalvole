@@ -26,6 +26,7 @@ When implementing from a selected generated mock, treat that image as the source
 - Controls are touch-first, large, flat, and fully legible; the GL field provides the visual contrast.
 - GPS and demo feed the same normalized speed signal; never display, persist or transmit coordinates.
 - In the desktop simulator, holding `Space` continuously brakes from the exact displayed speed and releasing it resumes the Demo after a short settle. Use the documented time-based Model 3 AWD reference curve for Demo acceleration/braking and only as a soft plausibility envelope for real GPS; never synthesize GPS motion.
+- Treat `ArrowUp` as a held accelerator. Its release and `ArrowDown` enter the documented nominal regenerative lift-off curve from the exact current speed; never return to GPS on an arbitrary timer or introduce a speed discontinuity. Automatic Demo deceleration uses the same lift-off model, while `Space` remains the stronger service-brake input.
 - Extended diagnostics may aggregate frame pacing, connection changes, GPS accuracy/cadence, audio/runtime state, memory, storage, navigation/resource timing, and bounded events. Keep the fixed recipient in ignored local configuration, transmit only after the explicit SEND DIAGNOSTIC gesture, and never collect coordinates or enable automatic remote telemetry.
 - Speed raises energy through a smoothed saturating curve. Past the tempo knee, deepen arrangement instead of creating a frantic march.
 - The visual must move as a rich field with WebGL2, plus reduced-motion and lightweight fallbacks.

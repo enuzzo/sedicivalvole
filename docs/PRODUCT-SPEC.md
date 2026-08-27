@@ -94,21 +94,23 @@ The Geolocation API requires a secure context and explicit permission. `coords.s
 
 ### Keyboard simulator
 
-- `ArrowUp` increases simulated speed;
-- `ArrowDown` decreases it;
+- holding `ArrowUp` applies the estimated Model 3 AWD acceleration curve;
+- releasing `ArrowUp`, or pressing `ArrowDown`, applies the nominal regenerative lift-off curve continuously from the exact current speed;
 - holding `Space` continuously brakes the simulator from the exact current speed; releasing it preserves a short settle before acceleration resumes;
 - no persistent HUD or on-screen simulator toggle;
 - after keyboard use, a small bottom-right speed/source hint appears briefly and fades;
 - keyboard handlers do not intercept focused inputs, buttons, sliders, or other controls;
 - prevent scrolling only when the simulator actually handles the event;
-- simulation temporarily overrides GPS, then returns through a defined lease;
+- simulation temporarily overrides GPS and returns only after its speed converges with the observed GPS stream; time-based handoff must not create a discontinuity;
 - desktop tests must advance time and input deterministically.
 
 The held simulator brake is a continuous motion input plus one bounded Brake-onset event. The continuous state drives speed; the onset event may drive controlled audio and visual accents without repeated triggers, harsh flashes, or dangerous peaks.
 
-Demo motion is integrated against elapsed time rather than timer ticks. Its acceleration curve is calibrated to Tesla's official `4.4 s` zero-to-100 km/h figure for the current Model 3 Premium Long Range AWD, using the published `1,824 kg` curb mass as the reference vehicle. Braking is an explicit moderate-force product estimate with a progressive pedal ramp, not a claim about Tesla's proprietary calibration. Tesla documents that real regenerative deceleration varies with battery state and temperature and may be supplemented by friction brakes.
+Demo motion is integrated against elapsed time rather than timer ticks. Its acceleration curve is calibrated to Tesla's official `4.4 s` zero-to-100 km/h figure for the current Model 3 Premium Long Range AWD, using the published `1,824 kg` curb mass as the reference vehicle. Braking is an explicit moderate-force product estimate with a progressive pedal ramp, not a claim about Tesla's proprietary calibration.
 
-The same dynamics define a soft plausibility envelope for GPS filtering. They may bound an abrupt sensor outlier, but must never fabricate motion, replace the first valid numeric sample, or turn unavailable speed into zero.
+Lift-off is a separate nominal model: `1.7 m/s²` estimated peak regenerative deceleration, `0.10 m/s²` rolling-resistance allowance, a `0.45 s` release ramp, progressive low-speed taper, and Vehicle Hold capture below `0.8 km/h`. Tesla publishes the behavior but not one invariant deceleration curve: accelerator release slows the vehicle and recovers energy, real regenerative strength varies with battery temperature and state of charge, and regular brakes may compensate when regeneration is limited. UN Regulation No. 13-H requires a stop-lamp signal above `1.3 m/s²` of regenerative deceleration; that regulatory threshold informs the nominal magnitude but is not a Tesla performance measurement.
+
+The same dynamics define three soft GPS plausibility regions: acceleration, ordinary regenerative lift-off, and wider service braking. They may bound an abrupt sensor outlier, but must never fabricate motion, replace the first valid numeric sample, or turn unavailable speed into zero.
 
 ## 7. Flux music and speed mapping
 

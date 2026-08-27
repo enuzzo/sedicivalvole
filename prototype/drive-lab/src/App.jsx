@@ -18,7 +18,6 @@ import { SplashSignalGate } from "./splash-signal-gate.jsx";
 import { Interstate7Field } from "./interstate-7-field.jsx";
 import {
   advanceDemoMotion,
-  applyKeyboardDelta,
   MODEL_3_AWD_REFERENCE,
   normalizeGpsSpeed,
   ROAD_SPEED_CEILING_KMH,
@@ -307,17 +306,22 @@ export function App() {
   );
 
   const audioRef = useRef(null);
+  const appRef = useRef(null);
   const watchRef = useRef(null);
   const wakeTimerRef = useRef(null);
   const controlsHiddenAtPointerDownRef = useRef(false);
   const smoothedSpeedRef = useRef(0);
   const demoTimerRef = useRef(null);
   const demoMotionRef = useRef(null);
+  const demoDriveInputRef = useRef("auto");
   const brakeCooldownRef = useRef(0);
   const brakeFlashTimerRef = useRef(null);
   const brakeHeldRef = useRef(false);
   const brakeStartedAtRef = useRef(0);
   const brakeReturnToGpsRef = useRef(false);
+  const acceleratorHeldRef = useRef(false);
+  const acceleratorStartedAtRef = useRef(0);
+  const keyboardReturnToGpsRef = useRef(false);
   const keyboardHintTimerRef = useRef(null);
   const keyboardLeaseTimerRef = useRef(null);
   const sourceRef = useRef("GPS");
@@ -372,8 +376,12 @@ export function App() {
     wakeTimerRef.current = window.setTimeout(() => setControlsAwake(false), 4200);
   }, []);
 
-  const handleSurfacePointerDown = useCallback(() => {
+  const handleSurfacePointerDown = useCallback((event) => {
     controlsHiddenAtPointerDownRef.current = !(controlsAwake || drawerOpen);
+    if (!(event.target instanceof Element)
+      || !event.target.closest("button, input, textarea, select, [contenteditable='true'], [role='slider']")) {
+      appRef.current?.focus({ preventScroll: true });
+    }
     wakeControls();
   }, [controlsAwake, drawerOpen, wakeControls]);
 
@@ -466,6 +474,7 @@ export function App() {
       direction: initialMotion.direction === -1 ? -1 : 1,
       holdSeconds: Math.max(0, Number(initialMotion.holdSeconds) || 0),
       brakeHeldSeconds: 0,
+      liftOffSeconds: 0,
     };
     let lastStepAt = performance.now();
     demoTimerRef.current = window.setInterval(() => {
@@ -476,12 +485,29 @@ export function App() {
         { ...demoMotionRef.current, speed: speedRef.current },
         elapsedSeconds,
         brakeHeldRef.current,
+        demoDriveInputRef.current,
       );
       demoMotionRef.current = nextMotion;
       speedRef.current = nextMotion.speed;
       setSpeed(nextMotion.speed);
+      if (demoDriveInputRef.current === "regen"
+        && keyboardReturnToGpsRef.current
+        && Math.abs(nextMotion.speed - smoothedSpeedRef.current) <= 1.5) {
+        window.clearInterval(demoTimerRef.current);
+        demoTimerRef.current = null;
+        demoDriveInputRef.current = "auto";
+        keyboardReturnToGpsRef.current = false;
+        sourceRef.current = "GPS";
+        setSource("GPS");
+        speedRef.current = smoothedSpeedRef.current;
+        setSpeed(smoothedSpeedRef.current);
+        logDiagnosticEvent("speed-source.changed", {
+          source: "GPS",
+          reason: "simulated-motion-converged",
+        });
+      }
     }, 50);
-  }, [stopDemo]);
+  }, [logDiagnosticEvent, stopDemo]);
 
   const toggleSource = useCallback(() => {
     if (controlsHiddenAtPointerDownRef.current) {
@@ -492,6 +518,9 @@ export function App() {
     wakeControls();
     window.clearTimeout(keyboardLeaseTimerRef.current);
     brakeReturnToGpsRef.current = false;
+    acceleratorHeldRef.current = false;
+    keyboardReturnToGpsRef.current = false;
+    demoDriveInputRef.current = "auto";
     if (sourceRef.current === "GPS") {
       logDiagnosticEvent("speed-source.changed", { source: "DEMO" });
       sourceRef.current = "DEMO";
@@ -542,11 +571,14 @@ export function App() {
     brakeHeldRef.current = false;
     window.clearTimeout(brakeFlashTimerRef.current);
     setBrakeFlash(0);
+    const acceleratorHeld = acceleratorHeldRef.current;
+    demoDriveInputRef.current = acceleratorHeld ? "accelerator" : "auto";
     demoMotionRef.current = {
       speed: speedRef.current,
       direction: 1,
-      holdSeconds: 0.55,
+      holdSeconds: acceleratorHeld ? 0 : 0.55,
       brakeHeldSeconds: 0,
+      liftOffSeconds: 0,
     };
     setKeyboardHint(`${Math.round(speedRef.current)} km/h · SIM`);
     window.clearTimeout(keyboardHintTimerRef.current);
@@ -566,6 +598,63 @@ export function App() {
       }, 4200);
     }
   }, [logDiagnosticEvent, stopDemo]);
+
+  const startKeyboardAcceleration = useCallback(() => {
+    if (acceleratorHeldRef.current) return;
+    window.clearTimeout(keyboardLeaseTimerRef.current);
+    window.clearTimeout(keyboardHintTimerRef.current);
+    keyboardReturnToGpsRef.current = keyboardReturnToGpsRef.current
+      || sourceRef.current === "GPS";
+    acceleratorHeldRef.current = true;
+    acceleratorStartedAtRef.current = performance.now();
+    demoDriveInputRef.current = "accelerator";
+    if (sourceRef.current !== "DEMO") {
+      sourceRef.current = "DEMO";
+      setSource("DEMO");
+      logDiagnosticEvent("speed-source.changed", {
+        source: "DEMO",
+        reason: "keyboard-accelerator",
+      });
+    }
+    startDemo({ speed: speedRef.current, direction: 1 });
+    setKeyboardHint("ACCELERATE HOLD · SIM");
+    logDiagnosticEvent("accelerator.hold.started", {
+      speedKmh: Math.round(speedRef.current * 10) / 10,
+      referenceVehicle: MODEL_3_AWD_REFERENCE.label,
+    });
+    wakeControls();
+  }, [logDiagnosticEvent, startDemo, wakeControls]);
+
+  const startKeyboardRegeneration = useCallback((reason = "accelerator-release") => {
+    acceleratorHeldRef.current = false;
+    demoDriveInputRef.current = "regen";
+    demoMotionRef.current = {
+      speed: speedRef.current,
+      direction: -1,
+      holdSeconds: 0,
+      brakeHeldSeconds: 0,
+      liftOffSeconds: 0,
+    };
+    if (demoTimerRef.current == null) {
+      startDemo({ speed: speedRef.current, direction: -1 });
+    }
+    setKeyboardHint("REGEN RELEASE · SIM");
+    window.clearTimeout(keyboardHintTimerRef.current);
+    keyboardHintTimerRef.current = window.setTimeout(() => setKeyboardHint(null), 1400);
+    logDiagnosticEvent("accelerator.released", {
+      speedKmh: Math.round(speedRef.current * 10) / 10,
+      heldMs: Math.round(performance.now() - acceleratorStartedAtRef.current),
+      reason,
+      estimatedPeakRegenerativeDecelerationMps2:
+        MODEL_3_AWD_REFERENCE.estimatedPeakRegenerativeDecelerationMps2,
+    });
+    wakeControls();
+  }, [logDiagnosticEvent, startDemo, wakeControls]);
+
+  const releaseKeyboardAcceleration = useCallback(() => {
+    if (!acceleratorHeldRef.current) return;
+    startKeyboardRegeneration("accelerator-release");
+  }, [startKeyboardRegeneration]);
 
   const runHarness = useCallback(async () => {
     sessionStartedAtRef.current = performance.now();
@@ -656,6 +745,7 @@ export function App() {
     window.setTimeout(() => {
       setPhase("running");
       wakeControls();
+      window.requestAnimationFrame(() => appRef.current?.focus({ preventScroll: true }));
     }, reducedMotion ? 180 : 620);
   }, [logDiagnosticEvent, reducedMotion, startGps, triggerPulse, wakeControls]);
 
@@ -760,49 +850,58 @@ export function App() {
     if (phase !== "running") return undefined;
     const handleKeyDown = (event) => {
       if (!canUseKeyboardTarget(event.target)) return;
-      if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+      if (event.key === "ArrowUp") {
         event.preventDefault();
-        brakeHeldRef.current = false;
-        brakeReturnToGpsRef.current = false;
-        window.clearTimeout(brakeFlashTimerRef.current);
-        setBrakeFlash(0);
-        sourceRef.current = "DEMO";
-        setSource("DEMO");
-        stopDemo();
-        setSpeed((previous) => {
-          const next = applyKeyboardDelta(previous, event.key === "ArrowUp" ? "up" : "down");
-          speedRef.current = next;
-          setKeyboardHint(`${Math.round(next)} km/h · SIM`);
-          return next;
-        });
-        window.clearTimeout(keyboardLeaseTimerRef.current);
-        keyboardLeaseTimerRef.current = window.setTimeout(() => {
-          sourceRef.current = "GPS";
-          setSource("GPS");
-          setSpeed(smoothedSpeedRef.current);
-        }, 4200);
-        window.clearTimeout(keyboardHintTimerRef.current);
-        keyboardHintTimerRef.current = window.setTimeout(() => setKeyboardHint(null), 1600);
-        wakeControls();
+        startKeyboardAcceleration();
+      } else if (event.key === "ArrowDown") {
+        event.preventDefault();
+        if (demoDriveInputRef.current === "regen") return;
+        keyboardReturnToGpsRef.current = keyboardReturnToGpsRef.current
+          || sourceRef.current === "GPS";
+        if (sourceRef.current !== "DEMO") {
+          sourceRef.current = "DEMO";
+          setSource("DEMO");
+          logDiagnosticEvent("speed-source.changed", {
+            source: "DEMO",
+            reason: "keyboard-regeneration",
+          });
+        }
+        startKeyboardRegeneration("arrow-down");
       } else if (event.code === "Space") {
         event.preventDefault();
         startKeyboardBrake();
       }
     };
     const handleKeyUp = (event) => {
-      if (event.code !== "Space") return;
-      if (canUseKeyboardTarget(event.target)) event.preventDefault();
+      if (event.key === "ArrowUp") {
+        if (canUseKeyboardTarget(event.target)) event.preventDefault();
+        releaseKeyboardAcceleration();
+      } else if (event.code === "Space") {
+        if (canUseKeyboardTarget(event.target)) event.preventDefault();
+        releaseKeyboardBrake();
+      }
+    };
+    const handleBlur = () => {
       releaseKeyboardBrake();
+      releaseKeyboardAcceleration();
     };
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
-    window.addEventListener("blur", releaseKeyboardBrake);
+    window.addEventListener("blur", handleBlur);
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
-      window.removeEventListener("blur", releaseKeyboardBrake);
+      window.removeEventListener("blur", handleBlur);
     };
-  }, [phase, releaseKeyboardBrake, startKeyboardBrake, stopDemo, wakeControls]);
+  }, [
+    phase,
+    logDiagnosticEvent,
+    releaseKeyboardAcceleration,
+    releaseKeyboardBrake,
+    startKeyboardAcceleration,
+    startKeyboardBrake,
+    startKeyboardRegeneration,
+  ]);
 
   useEffect(() => () => {
     diagnosticsActiveRef.current = false;
@@ -813,6 +912,9 @@ export function App() {
     window.clearInterval(audioMeterTimerRef.current);
     window.clearTimeout(viewportCaptureTimerRef.current);
     brakeHeldRef.current = false;
+    acceleratorHeldRef.current = false;
+    keyboardReturnToGpsRef.current = false;
+    demoDriveInputRef.current = "auto";
     stopDemo();
     if (watchRef.current != null) navigator.geolocation?.clearWatch(watchRef.current);
     audioRef.current?.destroy();
@@ -840,7 +942,15 @@ export function App() {
       curbMassKg: MODEL_3_AWD_REFERENCE.curbMassKg,
       officialZeroToHundredSeconds: MODEL_3_AWD_REFERENCE.zeroToHundredSeconds,
       estimatedBrakeForceN: MODEL_3_AWD_REFERENCE.estimatedBrakeForceN,
+      estimatedPeakRegenerativeDecelerationMps2:
+        MODEL_3_AWD_REFERENCE.estimatedPeakRegenerativeDecelerationMps2,
+      liftOffRampSeconds: MODEL_3_AWD_REFERENCE.liftOffRampSeconds,
+      vehicleHoldCaptureKmh: MODEL_3_AWD_REFERENCE.vehicleHoldCaptureKmh,
+      regenerativeModelStatus: "nominal-estimate",
+      batteryRegenerationAvailabilityObserved: false,
       brakeHeld: brakeHeldRef.current,
+      acceleratorHeld: acceleratorHeldRef.current,
+      activeDriveInput: demoDriveInputRef.current,
       physicsAppliesTo: "demo-and-gps-tolerance",
       gpsMotionFabricated: false,
     },
@@ -908,6 +1018,8 @@ export function App() {
 
   return (
     <main
+      ref={appRef}
+      tabIndex={-1}
       className={`app phase-${phase} ${controlsAwake || drawerOpen ? "controls-awake" : "controls-resting"}`}
       data-theme={themeId}
       data-environment={environmentId}

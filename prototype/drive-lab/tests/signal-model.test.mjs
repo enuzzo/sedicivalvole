@@ -2,13 +2,13 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   advanceDemoMotion,
-  applyKeyboardDelta,
   energyToFlowRate,
   energyToSection,
   gpsSpeedTolerance,
   MODEL_3_AWD_REFERENCE,
   model3AwdAccelerationMps2,
   model3AwdBrakeDecelerationMps2,
+  model3AwdLiftOffDecelerationMps2,
   normalizeGpsSpeed,
   ROAD_SPEED_CEILING_KMH,
   smoothGpsSpeed,
@@ -95,9 +95,68 @@ test("braking starts from the exact simulated speed and release settles before a
   assert.ok(resumed.speed > released.speed);
 });
 
+test("accelerator release ramps regenerative deceleration without dropping speed", () => {
+  assert.equal(model3AwdLiftOffDecelerationMps2(100, 0), 0.1);
+  assert.ok(model3AwdLiftOffDecelerationMps2(100, 0.2) > 0.7);
+  assert.ok(model3AwdLiftOffDecelerationMps2(100, 1) > 1.7);
+  assert.ok(
+    model3AwdLiftOffDecelerationMps2(100, 1)
+      < model3AwdBrakeDecelerationMps2(100, 1),
+  );
+
+  const releasedFromKmh = 73.4;
+  const firstReleaseStep = advanceDemoMotion({
+    speed: releasedFromKmh,
+    direction: 1,
+    holdSeconds: 0,
+    brakeHeldSeconds: 0,
+    liftOffSeconds: 0,
+  }, 0.05, false, "regen");
+  assert.ok(firstReleaseStep.speed < releasedFromKmh);
+  assert.ok(firstReleaseStep.speed > releasedFromKmh - 0.2);
+
+  let motion = {
+    speed: 100,
+    direction: -1,
+    holdSeconds: 0,
+    brakeHeldSeconds: 0,
+    liftOffSeconds: 0,
+  };
+  let elapsedSeconds = 0;
+  while (motion.speed > 0 && elapsedSeconds < 30) {
+    motion = advanceDemoMotion(motion, 0.02, false, "regen");
+    elapsedSeconds += 0.02;
+  }
+
+  assert.equal(motion.speed, 0);
+  assert.equal(motion.direction, -1);
+  assert.ok(elapsedSeconds > 15 && elapsedSeconds < 22);
+});
+
+test("held accelerator and lift-off remain continuous at the input boundary", () => {
+  let motion = {
+    speed: 0,
+    direction: 1,
+    holdSeconds: 0,
+    brakeHeldSeconds: 0,
+    liftOffSeconds: 0,
+  };
+  for (let index = 0; index < 40; index += 1) {
+    motion = advanceDemoMotion(motion, 0.05, false, "accelerator");
+  }
+  const releasedFromKmh = motion.speed;
+  assert.ok(releasedFromKmh > 45);
+
+  motion = advanceDemoMotion(motion, 0.05, false, "regen");
+  assert.ok(motion.speed < releasedFromKmh);
+  assert.ok(motion.speed > releasedFromKmh - 0.2);
+});
+
 test("uses vehicle dynamics as a soft GPS tolerance without inventing motion", () => {
   const tolerance = gpsSpeedTolerance(100, 1);
   assert.ok(tolerance.riseKmh > 15 && tolerance.riseKmh < 22);
+  assert.ok(tolerance.liftOffFallKmh > tolerance.sensorAllowanceKmh);
+  assert.ok(tolerance.fallKmh > tolerance.liftOffFallKmh);
   assert.ok(tolerance.fallKmh > tolerance.riseKmh);
   assert.equal(smoothGpsSpeed(100, 101, 1), 100);
   assert.ok(smoothGpsSpeed(100, 80, 1) < 100);
@@ -111,13 +170,11 @@ test("tempo has a knee and approaches a musical ceiling", () => {
   assert.ok(speedToBpm(260) > speedToBpm(130));
 });
 
-test("energy uses the fixed legal-road ceiling and keyboard simulation stays bounded", () => {
+test("energy uses the fixed legal-road ceiling", () => {
   assert.equal(speedToEnergy(0), 0);
   assert.ok(speedToEnergy(40) > 0.5);
   assert.equal(speedToEnergy(ROAD_SPEED_CEILING_KMH), 1);
   assert.equal(speedToEnergy(260), 1);
-  assert.equal(applyKeyboardDelta(258, "up"), 260);
-  assert.equal(applyKeyboardDelta(2, "down"), 0);
 });
 
 test("structural sections use hysteresis instead of following jitter", () => {

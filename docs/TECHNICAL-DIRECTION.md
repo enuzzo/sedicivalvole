@@ -75,18 +75,22 @@ Rules:
 - discard latitude/longitude immediately;
 - gate optional position-derived fallback by accuracy and elapsed time, and never treat it as equivalent quality;
 - use a monotonic local clock for filters and timeouts;
-- simulator input gets a bounded temporary lease, then hands control back to GPS;
+- simulator input gets an explicit source lease and hands control back to GPS only through a continuity gate;
 - do not intercept keyboard events owned by focused controls.
 
 ## Reference motion model
 
 The desktop Demo uses a transparent Model 3 Long Range AWD Highland reference rather than fixed speed increments. Tesla Italy publishes `4.4 s` from zero to `100 km/h` and a `1,824 kg` curb mass for the current Premium Long Range AWD: [Tesla Model 3](https://www.tesla.com/it_it/model3). Tesla's owner documentation lists approximately `1,823 kg` for the AWD configuration and notes that weights vary by options: [Model 3 dimensions and weights](https://www.tesla.com/ownersmanual/model3/en_cn/GUID-56562137-FC31-4110-A13C-9A9FC6657BF0.html).
 
-The implementation integrates elapsed time at each Demo step. Its decreasing acceleration curve is calibrated to the official zero-to-100 time. The held-brake curve is a moderate blended estimate: `5,600 N` reference force against `1,824 kg`, with a `0.32 s` progressive pedal ramp and a low-speed taper. This is deliberately not presented as Tesla brake-system data. Tesla states that regenerative braking on accelerator release varies with battery temperature and state of charge and that friction brakes may supplement it: [Model 3 braking and stopping](https://www.tesla.com/ownersmanual/model3/en_us/GUID-3DFFB071-C0F6-474D-8A45-17BE1A006365.html).
+The implementation integrates elapsed time at each Demo step. Its decreasing acceleration curve is calibrated to the official zero-to-100 time. The held-brake curve is a moderate blended estimate: `5,600 N` reference force against `1,824 kg`, with a `0.32 s` progressive pedal ramp and a low-speed taper. This is deliberately not presented as Tesla brake-system data.
+
+Accelerator lift-off has its own nominal curve rather than reusing either service braking or a timer. It combines an estimated `1.7 m/s²` peak regenerative component with `0.10 m/s²` rolling resistance, reaches demand through a `0.45 s` jerk-limiting ramp, tapers progressively below `28 km/h`, and enters simulated Vehicle Hold below `0.8 km/h`. Tesla states that accelerator release slows the vehicle and returns surplus power to the battery, but that regenerative strength varies with battery temperature and state of charge; the vehicle may blend regular brakes when regeneration is limited: [Model 3 braking and stopping](https://www.tesla.com/ownersmanual/model3/en_us/GUID-3DFFB071-C0F6-474D-8A45-17BE1A006365.html). UN Regulation No. 13-H requires the braking signal above `1.3 m/s²` of regenerative deceleration and permits hysteresis to prevent flicker: [UN Regulation No. 13-H](https://unece.org/fileadmin/DAM/trans/main/wp29/wp29regs/R13hr2e.pdf). This threshold is a regulatory behavior boundary, not a measured Tesla curve; the `1.7 m/s²` value remains a transparent product estimate for a nominal warm-battery, high-regeneration state.
 
 Holding `Space` takes a simulator lease from the exact displayed speed, emits one bounded Brake-onset event, and continuously integrates deceleration until release or standstill. Release holds the achieved speed for `0.55 s` before Demo acceleration resumes. If the hold began from GPS, the simulator returns to the live GPS stream after its bounded lease.
 
-GPS remains an observed source, never a physics simulation. The reference acceleration and a wider braking envelope only define time-aware outlier bounds before asymmetric smoothing. The first valid numeric sample passes through directly, and null speed remains unknown rather than being inferred.
+Holding `ArrowUp` applies the acceleration curve continuously. Releasing it, or pressing `ArrowDown`, changes the active drive input to regenerative lift-off without replacing the speed sample. If keyboard acceleration began from GPS, handoff waits until simulated deceleration converges within `1.5 km/h` of the latest filtered GPS speed; there is no fixed timeout and therefore no forced zero-speed jump. Automatic Demo deceleration uses the same lift-off curve.
+
+GPS remains an observed source, never a physics simulation. Reference acceleration, ordinary lift-off, and wider service-braking envelopes define time-aware outlier bands before asymmetric smoothing. Expected acceleration/lift-off samples receive normal smoothing, plausible harder braking receives a faster response, and samples beyond the service-brake envelope remain bounded. The first valid numeric sample passes through directly, and null speed remains unknown rather than being inferred.
 
 ## Filtering and confidence
 

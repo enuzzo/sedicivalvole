@@ -22,7 +22,7 @@ The initial **PLAY THE ROAD** gesture sits over the animated Signal Gate, unlock
 - fixed `130 km/h` energy/velocity ceiling with visible Aperture tunnel formation by approximately `40 km/h`;
 - integrated device report with no coordinates;
 - time-based Model 3 AWD Demo acceleration calibrated to the official zero-to-100 km/h figure;
-- desktop simulator: `ArrowUp`, `ArrowDown`, and held `Space` for progressive braking from the exact current speed;
+- desktop simulator: hold `ArrowUp` to accelerate, release it or press `ArrowDown` for progressive regenerative slowdown, and hold `Space` for stronger braking from the exact current speed;
 - `VERSION` injected at build time;
 - deterministic signal and packaging tests.
 

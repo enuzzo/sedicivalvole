@@ -6,6 +6,10 @@ export const MODEL_3_AWD_REFERENCE = Object.freeze({
   zeroToHundredSeconds: 4.4,
   estimatedBrakeForceN: 5600,
   pedalRampSeconds: 0.32,
+  estimatedPeakRegenerativeDecelerationMps2: 1.7,
+  rollingResistanceDecelerationMps2: 0.1,
+  liftOffRampSeconds: 0.45,
+  vehicleHoldCaptureKmh: 0.8,
 });
 
 export function speedToEnergy(speedKmh) {
@@ -77,10 +81,6 @@ export function smoothSpeed(previousKmh, nextKmh, deadbandKmh = 1.1, alpha = 0.2
   return previousKmh * (1 - alpha) + nextKmh * alpha;
 }
 
-export function applyKeyboardDelta(speedKmh, direction) {
-  return clamp(speedKmh + (direction === "up" ? 5 : -5), 0, 260);
-}
-
 export function model3AwdAccelerationMps2(
   speedKmh,
   massKg = MODEL_3_AWD_REFERENCE.curbMassKg,
@@ -105,6 +105,27 @@ export function model3AwdBrakeDecelerationMps2(
   return MODEL_3_AWD_REFERENCE.estimatedBrakeForceN * speedForce * pedal / safeMass;
 }
 
+export function model3AwdLiftOffDecelerationMps2(
+  speedKmh,
+  releasedSeconds = MODEL_3_AWD_REFERENCE.liftOffRampSeconds,
+  massKg = MODEL_3_AWD_REFERENCE.curbMassKg,
+) {
+  const safeMass = clamp(massKg, 1200, 2600);
+  const speedFactor = 0.48 + 0.52 * smoothCurve(3, 28, Math.max(0, speedKmh));
+  const release = smoothCurve(
+    0,
+    MODEL_3_AWD_REFERENCE.liftOffRampSeconds,
+    Math.max(0, releasedSeconds),
+  );
+  const regenerativeDeceleration = MODEL_3_AWD_REFERENCE.estimatedPeakRegenerativeDecelerationMps2
+    * speedFactor
+    * release
+    * MODEL_3_AWD_REFERENCE.curbMassKg
+    / safeMass;
+  return MODEL_3_AWD_REFERENCE.rollingResistanceDecelerationMps2
+    + regenerativeDeceleration;
+}
+
 export function gpsSpeedTolerance(speedKmh, elapsedSeconds = 1) {
   const safeSpeed = clamp(Math.max(0, speedKmh), 0, 260);
   const elapsed = clamp(elapsedSeconds, 0.08, 2);
@@ -112,6 +133,8 @@ export function gpsSpeedTolerance(speedKmh, elapsedSeconds = 1) {
   return {
     sensorAllowanceKmh,
     riseKmh: model3AwdAccelerationMps2(safeSpeed) * elapsed * 3.6 + sensorAllowanceKmh,
+    liftOffFallKmh: model3AwdLiftOffDecelerationMps2(safeSpeed, 1) * elapsed * 3.6
+      + sensorAllowanceKmh,
     fallKmh: model3AwdBrakeDecelerationMps2(safeSpeed, 1) * elapsed * 3.6 * 1.75
       + sensorAllowanceKmh,
   };
@@ -126,47 +149,106 @@ export function smoothGpsSpeed(previousKmh, nextKmh, elapsedSeconds = 1) {
 
   const boundedDifference = clamp(difference, -tolerance.fallKmh, tolerance.riseKmh);
   const plausible = difference === boundedDifference;
-  const alpha = plausible ? 0.48 : 0.18;
+  const ordinaryMotion = difference >= 0
+    ? difference <= tolerance.riseKmh
+    : -difference <= tolerance.liftOffFallKmh;
+  const alpha = !plausible ? 0.18 : ordinaryMotion ? 0.55 : 0.68;
   return clamp(previous + boundedDifference * alpha, 0, 260);
 }
 
-export function advanceDemoMotion(state, elapsedSeconds = 0.18, brakeHeld = false) {
+export function advanceDemoMotion(
+  state,
+  elapsedSeconds = 0.18,
+  brakeHeld = false,
+  driveInput = "auto",
+) {
   const speed = clamp(state?.speed ?? 0, 0, ROAD_SPEED_CEILING_KMH);
   const elapsed = clamp(elapsedSeconds, 1 / 240, 0.25);
-  const direction = brakeHeld || state?.direction === -1 ? -1 : 1;
+  const input = brakeHeld
+    ? "brake"
+    : driveInput === "accelerator" || driveInput === "regen"
+      ? driveInput
+      : "auto";
+  const direction = input === "accelerator"
+    ? 1
+    : input === "brake" || input === "regen" || state?.direction === -1
+      ? -1
+      : 1;
   const holdSeconds = Math.max(0, Number(state?.holdSeconds) || 0);
-  const brakeHeldSeconds = direction < 0
+  const brakeHeldSeconds = input === "brake"
     ? Math.max(0, Number(state?.brakeHeldSeconds) || 0) + elapsed
     : 0;
+  const liftOffSeconds = input === "regen" || (input === "auto" && direction < 0)
+    ? Math.max(0, Number(state?.liftOffSeconds) || 0) + elapsed
+    : 0;
 
-  if (brakeHeld && speed <= 0.01) {
-    return { speed: 0, direction: -1, holdSeconds: 0, brakeHeldSeconds };
+  if (direction < 0 && speed <= MODEL_3_AWD_REFERENCE.vehicleHoldCaptureKmh) {
+    return input === "brake" || input === "regen"
+      ? {
+        speed: 0,
+        direction: -1,
+        holdSeconds: 0,
+        brakeHeldSeconds,
+        liftOffSeconds,
+      }
+      : {
+        speed: 0,
+        direction: 1,
+        holdSeconds: 1.44,
+        brakeHeldSeconds: 0,
+        liftOffSeconds: 0,
+      };
   }
-  if (holdSeconds > 0 && !brakeHeld) {
+  if (holdSeconds > 0 && input === "auto") {
     return {
       speed,
       direction,
       holdSeconds: Math.max(0, holdSeconds - elapsed),
       brakeHeldSeconds: 0,
+      liftOffSeconds: 0,
     };
   }
 
-  const rateMps2 = direction > 0
-    ? model3AwdAccelerationMps2(speed)
-    : -model3AwdBrakeDecelerationMps2(speed, brakeHeldSeconds);
+  const rateMps2 = input === "brake"
+    ? -model3AwdBrakeDecelerationMps2(speed, brakeHeldSeconds)
+    : direction > 0
+      ? model3AwdAccelerationMps2(speed)
+      : -model3AwdLiftOffDecelerationMps2(speed, liftOffSeconds);
   const nextSpeed = speed + rateMps2 * elapsed * 3.6;
   if (nextSpeed >= ROAD_SPEED_CEILING_KMH) {
+    if (input === "accelerator") {
+      return {
+        speed: ROAD_SPEED_CEILING_KMH,
+        direction: 1,
+        holdSeconds: 0,
+        brakeHeldSeconds: 0,
+        liftOffSeconds: 0,
+      };
+    }
     return {
       speed: ROAD_SPEED_CEILING_KMH,
       direction: -1,
       holdSeconds: 1.08,
       brakeHeldSeconds: 0,
+      liftOffSeconds: 0,
     };
   }
   if (nextSpeed <= 0) {
-    return brakeHeld
-      ? { speed: 0, direction: -1, holdSeconds: 0, brakeHeldSeconds }
-      : { speed: 0, direction: 1, holdSeconds: 1.44, brakeHeldSeconds: 0 };
+    return input === "brake" || input === "regen"
+      ? { speed: 0, direction: -1, holdSeconds: 0, brakeHeldSeconds, liftOffSeconds }
+      : {
+        speed: 0,
+        direction: 1,
+        holdSeconds: 1.44,
+        brakeHeldSeconds: 0,
+        liftOffSeconds: 0,
+      };
   }
-  return { speed: nextSpeed, direction, holdSeconds: 0, brakeHeldSeconds };
+  return {
+    speed: nextSpeed,
+    direction,
+    holdSeconds: 0,
+    brakeHeldSeconds,
+    liftOffSeconds,
+  };
 }

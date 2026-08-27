@@ -75,9 +75,13 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - Replaced the one-shot Space accent with a continuous held-brake simulation: press to decelerate from the exact displayed speed, keep holding to stop, and release to resume the Demo after a short settle.
 - Replaced fixed-step Demo motion with elapsed-time integration calibrated to the official `4.4 s` zero-to-100 km/h figure; the estimated moderate braking curve uses a `1,824 kg` reference mass and a progressive pedal ramp.
 - Applied the same reference dynamics as a soft GPS plausibility envelope while preserving real numeric GPS samples as the source of truth and never synthesizing vehicle movement.
+- Replaced the fixed-step Arrow simulator lease with pedal-like input: hold `ArrowUp` to accelerate, release it to enter progressive regenerative deceleration, and return to GPS only after simulated and observed speed converge instead of dropping to the GPS value after a timer.
+- Added a distinct nominal lift-off model with a `0.45 s` ramp, estimated `1.7 m/s²` peak regenerative deceleration, low-speed taper, rolling resistance, and Vehicle Hold capture below `0.8 km/h`; automatic Demo deceleration now uses the same release model.
+- Split GPS deceleration tolerance into expected lift-off and wider plausible service-brake bands so ordinary regenerative slowdown remains responsive while impossible sensor jumps stay bounded.
 
 ### Fixed
 
+- Moved keyboard focus to the live experience after launch so held simulator input reaches the parent app reliably beside the non-interactive Vertigo iframe.
 - Corrected the SiteGround remote path after confirming the FTP account home sits above `sedicivalvole.app/public_html`.
 - Removed the previously uploaded wrong FTP-home diagnostics tree after exact-name validation and explicit authorization.
 - Prevented keyboard simulation from intercepting controls that own arrow or Space input.
