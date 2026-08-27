@@ -126,17 +126,13 @@ const FRAGMENT_SHADER = `#version 300 es
 
     vec3 corridorColor = mix(u_base, corridorPanel, corridorMask);
 
-    // Terminus fade: central void stays pure black when tunnel is open
-    float terminusFade = smoothstep(0.12, 0.17, majorAxis);
-    corridorColor *= terminusFade;
-
-    // Corridor reactive pulse
+    // Corridor reactive pulse (applied strictly to corridor tile body)
     float corridorPulse = u_pulse * corridorMask * step(0.75, corridorTone) * 0.22;
     corridorColor = mix(corridorColor, u_accent, corridorPulse);
     corridorColor = mix(corridorColor, u_light, u_brake * corridorMask * 0.08);
 
     // 3. End Wall (Muro di Fondo) — Full Screen Flat 2D Square Mosaic at 0 km/h
-    // Wall apparent half-size on screen: 1.0 at 0 km/h -> 0.125 at 20 km/h
+    // Wall apparent half-size on screen: 1.0 at 0 km/h -> 0.125 at 55 km/h
     float wallHalfSize = mix(1.0, 0.125, warp);
     float onWall = smoothstep(wallHalfSize + 0.003, wallHalfSize - 0.003, majorAxis);
 
@@ -173,6 +169,12 @@ const FRAGMENT_SHADER = `#version 300 es
     // 5. Outer edge vignette
     float edge = smoothstep(1.25, 0.40, max(absX * 0.75, absY));
     color *= mix(1.0, 0.75 + edge * 0.35, u_velocity);
+
+    // 6. Final Terminus Void Gate: Central void is locked to 100% pure black when tunnel is open
+    // Multiplied as the final step after all lighting/pulses, guaranteeing zero red flashes in the void
+    float terminusVoid = smoothstep(0.12, 0.17, majorAxis);
+    float voidActive = smoothstep(30.0, 55.0, u_speedKmh);
+    color *= mix(1.0, terminusVoid, voidActive);
 
     outColor = vec4(color, 1.0);
   }
