@@ -8,6 +8,39 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## JUNCTION authored-variation publication evidence — 2026-08-27
+
+- build stamp: **`20260827-2304`**, confirmed on the canonical splash and in the
+  live diagnostic report; deployed commit: `42149f8`; arrangement
+  implementation: `ef0c0d0`;
+- gate before upload: **PASS**, 129 unit tests, 4 packaging tests and a
+  production build;
+- JUNCTION now contains 192 rendered bars: three complete takes for each of
+  eight energy states, giving 24 eight-bar sections in one bank. The runtime
+  chooses only at a section boundary and excludes the take that just played;
+- deployment identity correction: **PASS**. The read-only gate recognizes only
+  the owned `SVJCTN01` signature and constrained JUNCTION manifest before an
+  update; after upload it verifies the complete new audio tree byte-identically;
+- the first `20260827-2302` publication exposed a provider-cache discrepancy:
+  FTP contained the new bank while the bare HTTP audio URL returned the previous
+  1.9 MB object. No false live claim was made. Build `20260827-2304` versions the
+  bank request with its generated build stamp;
+- canonical `/`: **HTTP 200**, `no-store`, and byte-identical to local
+  `index.html` at SHA-256
+  `a813138de3df839ae6d2a7870fbd51f5766418b7efd9238bdfc147e7f8056701`;
+- `assets/index-Cp9K7P56.js`: **HTTP 200**, byte-identical at SHA-256
+  `6f249e31f3eeddc884a8dc558abc35dd2df113e58d886a655f7fa25862713ee7`;
+- `audio/junction.svb?build=20260827-2304`: **HTTP 200**, 5,113,449 bytes and
+  byte-identical at SHA-256
+  `f925a973508794bc5d8e8d11c4112b1565fc48fa6746f79ab6594d74bd0bca21`;
+- live Browser QA at `773 x 601`: **PASS**. JUNCTION reports `bankLoaded: true`,
+  `playing: true`, 5,111,017 encoded audio bytes and one sampled-production
+  runtime. The observed take changed from **3 to 1** across the next eight-bar
+  boundary, proving the anti-repeat selection in the published runtime;
+- simultaneous Vertigo and JUNCTION playback sustained **60 FPS / 17.6 ms
+  p95**, with no frame over 34 ms, no long task and zero runtime issues. No
+  diagnostic was sent.
+
 ## Vertigo road-scale publication evidence — 2026-08-27
 
 - build stamp: **`20260827-2245`**, confirmed on the canonical splash and in the
