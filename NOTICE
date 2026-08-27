@@ -14,10 +14,26 @@ respective rights holders. No trademark rights are granted.
 Third-party material remains subject to its original license and is documented
 in THIRD_PARTY_NOTICES.md.
 
-Acknowledgment: the planned Flux sequencer direction is informed by textStep,
-conceived and created by Lobo (illobo): https://github.com/illobo/textStep.
-No textStep source is included in the current product; any future derived code
-will retain explicit authorship, provenance, modification, and license notices.
+The Flux score engine includes code translated from textStep, conceived and
+created by Lobo (illobo): https://github.com/illobo/textStep. The sequencer
+clock, the step encoding and the drum, synth and bus DSP under
+prototype/drive-lab/src/score/ are translated from upstream commit
+cb107d198b730db60cff4a87c7fd5b8d1fae3fb2, published under GNU GPL version 2.0,
+and are used with Lobo's additional direct, unrestricted authorization. That
+authorization, not licence compatibility, is what permits the combination. The
+translated code is not relicensed under the sedicivalvole AGPL grant. The
+arranger, score generator, authored composition, score library, brake filter and
+worklet shell in the same directory are original sedicivalvole work. See
+THIRD_PARTY_NOTICES.md for exact per-file provenance and modifications.
+
+Audio samples: the sample libraries used to author sedicivalvole's music are
+free SampleRadar packs published by MusicRadar and remain the property of
+MusicRadar and their credited creators:
+  https://www.musicradar.com/news/sampleradar-free-90s-jungle-samples
+  https://www.musicradar.com/news/sampleradar-free-90s-synth-samples
+They are royalty-free to use in music and explicitly may not be redistributed.
+No sample from them is contained in this repository or served as an individual
+file by the product; only sedicivalvole's own rendered arrangements ship.
 
 VERTIGO 02 integrates High-speed Light Trails / Interstate 7 by Daniel
 Velasquez (Anemolo) and Codrops/Tympanus from commit

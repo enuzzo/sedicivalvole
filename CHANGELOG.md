@@ -49,6 +49,8 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 
 ### Changed
 
+- 2026-08-27 19:52 `[e85d1cd]`: Corrected `NOTICE`, `LICENSE-SCOPE.md` and `THIRD_PARTY_NOTICES.md`, which still stated that no textStep source had entered the product. That was true until the score engine shipped earlier today. The notices now carry the exact per-file provenance the previous notice required before publication, and record that the combination rests on Lobo's direct authorization rather than on GPL v2.0 compatibility.
+- 2026-08-27 19:52 `[e85d1cd]`: Recorded the two MusicRadar SampleRadar sample libraries, their links and their credited creators, and the decision that follows from their terms: they stay git-ignored, they are used to compose the project's own music, and only sedicivalvole's own rendered arrangements ship. Individual loops are never served.
 - 2026-08-27 18:45 `[1f012a8]`: Scene changes resolve the hysteresis thresholds to a fixed point instead of stepping one scene per phrase. Climbs are capped at two scenes so the arrangement still builds; thinning is not capped, because a vehicle that has stopped should not keep playing a full break.
 - 2026-08-27 18:45 `[1f012a8]`: Lane exits are queued from the top of the arrangement down. In lane order the kick left while the break detail was still chattering over it, which reads as the music breaking rather than thinning.
 - 2026-08-27 18:53 `[ae29fa5]`: The reese plays a six-note syncopated riff instead of two held notes, and the sub is rearticulated around the kick with a quiet square for presence on a dashboard speaker. The bass line was reported as almost absent.

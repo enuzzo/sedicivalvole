@@ -54,12 +54,25 @@ of Codrops/Tympanus Infinite Lights commit
 usage notice and the licenses of its bundled Three.js and post-processing
 libraries. The separately authored sedicivalvole bridge remains AGPL-licensed.
 
-The planned Flux sequencer direction is informed by Lobo's
-[textStep](https://github.com/illobo/textStep) project. No textStep source is
-included in the current AGPL-licensed product. Any later copied, translated, or
-modified textStep code remains third-party-derived material and must be marked
-with its exact provenance, modifications, and applicable licensing terms before
-it enters a published build.
+The Flux score engine includes code translated from Lobo's
+[textStep](https://github.com/illobo/textStep) at commit
+`cb107d198b730db60cff4a87c7fd5b8d1fae3fb2`: the sequencer clock, the step
+encoding, and the drum, synth and bus DSP, all under
+`prototype/drive-lab/src/score/`. Upstream is published under GNU GPL version
+2.0, and the combination with this project's AGPL material rests on Lobo's
+additional direct, unrestricted authorization rather than on licence
+compatibility. That translated code remains third-party-derived material and is
+not relicensed by this project. The arranger, the score generator, the authored
+composition, the score library, the brake filter and the worklet shell in the
+same directory are original sedicivalvole work. `THIRD_PARTY_NOTICES.md` records
+the exact per-file provenance and modifications.
+
+The sample libraries under `_references/audio/samples/` are published by
+MusicRadar and belong to MusicRadar and their credited creators. They are
+royalty-free to use in music but explicitly may not be redistributed, so they
+are never committed here and are never served as individual files. Only
+sedicivalvole's own rendered arrangements ship. That restriction is the rights
+holder's and is not affected by the exclusions in this document.
 
 ## Open legal work
 
