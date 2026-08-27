@@ -1259,11 +1259,10 @@ export function App() {
 
         <button className="source-readout" type="button" onClick={toggleSource} aria-label={`Speed source ${source}. Tap to switch`}>
           <strong>{Math.round(speed)}</strong><span>km/h</span><small>{source}</small>
+          <div className="telemetry-sub">{Math.round(bpm)} BPM · {Math.round(energy * 100)}%</div>
         </button>
 
-        <div className="energy-readout" aria-hidden="true">
-          {Math.round(bpm)} BPM / ENERGY {Math.round(energy * 100)}
-        </div>
+
 
         <footer className="control-slab control-layer" aria-label="Flux performance controls">
           <button
