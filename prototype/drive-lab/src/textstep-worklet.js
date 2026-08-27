@@ -204,11 +204,13 @@ class TextStepWorklet extends AudioWorkletProcessor {
         
         if (playArp && ARP_PAT[this.step]) {
           this.arpEnv = 1.0;
+          this.arpPhase = 0.0;
           this.arpNote = currentChord.arp[this.step % 8];
         }
         
         if (playLead && LEAD_PAT[this.step]) {
           this.leadEnv = 1.0;
+          this.leadPhase = 0.0;
           // Pick note from lead melody based on step
           this.leadNote = currentLead[Math.floor((this.step % 16) / 4)];
         }
@@ -256,20 +258,22 @@ class TextStepWorklet extends AudioWorkletProcessor {
       padOut = (padOut * 0.15) * this.padEnv * padVolume * ducking;
 
       // ARP (Pluck)
-      this.arpEnv *= 0.997; // Short pluck
+      this.arpEnv *= 0.9996; // Nice pluck
       this.arpPhase += (mtof(this.arpNote) / sampleRate) * Math.PI * 2.0;
       // Triangle wave
       let arpOut = Math.asin(Math.sin(this.arpPhase)) * (2.0/Math.PI) * this.arpEnv * 0.12;
       arpOut *= ducking;
 
       // LEAD (Soaring melody)
-      this.leadEnv *= 0.9998;
+      this.leadEnv *= 0.99995; // Very long, soaring sustain
       this.leadPhase += (mtof(this.leadNote) / sampleRate) * Math.PI * 2.0;
-      // Square wave with glide/filter emulation
-      let leadOut = (Math.sin(this.leadPhase) > 0 ? 1.0 : -1.0) * this.leadEnv * 0.08;
-      // Soften the square
-      leadOut = Math.sin(this.leadPhase) * 0.5 + leadOut * 0.5;
-      leadOut *= ducking;
+      
+      // Beautiful double-sine (unison) with slight detune for a soaring pad lead
+      let leadOut = Math.sin(this.leadPhase) * 0.6 + Math.sin(this.leadPhase * 1.01) * 0.4;
+      
+      // Smooth the attack by using a lowpass on the envelope itself
+      // (Actually, just use a pure sine to avoid any harsh "button" clicks)
+      leadOut *= this.leadEnv * 0.15 * ducking;
 
       // DELAY (Snare, Hat, Arp, Lead)
       const delayInput = snareOut * 0.3 + hatOut * 0.2 + arpOut * 0.5 + leadOut * 0.6;
