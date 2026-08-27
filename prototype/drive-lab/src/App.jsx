@@ -1215,6 +1215,7 @@ export function App() {
     app: {
       version: APP_VERSION,
       build: APP_BUILD,
+      commit: APP_COMMIT,
       mode: "flux",
       environment: environmentId,
       pageUrl: window.location.href,
