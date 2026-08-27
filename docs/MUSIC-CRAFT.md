@@ -284,12 +284,13 @@ recordings remain extractable and it is still a redistributed sample bank.
 MusicRadar permits using the material in music and asks that the samples not be
 redistributed, so the product boundary must be musical as well as technical.
 
-The shipped bank therefore contains a mixed, processed 192-bar production,
-not playable source files. Each of the eight energy states has three complete
-eight-bar takes, for 24 rendered sections with different two-bar break phrases,
+The shipped bank therefore contains a mixed, processed 832-bar production,
+not playable source files. Each of the eight energy states has 13 complete
+eight-bar takes, for 104 rendered clips built from 126 distinct source
+recordings, with different two-bar break phrases,
 harmonic voicings, density, drive and space. The single downloadable bank is
-segmented into eight independently decodable state blocks. The browser keeps at
-most two blocks decoded, starts two distinct complete takes on the same
+segmented into independently decodable performance clips. The browser keeps at
+most six clips decoded, starts two distinct complete takes on the same
 sample-accurate boundary, and moves an equal-power balance between them while
 varying bounded tone, stereo position and tempo-related delay. This solves four
 faults at once: a two-bar loop no longer exposes its repetition immediately,

@@ -53,9 +53,10 @@ does not hold.
    or multisample from either pack is committed to this repository.
 2. They are used the way the terms allow: as source material for composing
    sedicivalvole's own music.
-3. What the product ships is that music. JUNCTION renders 192 bars of
+3. What the product ships is that music. JUNCTION renders 832 bars of
    sedicivalvole arrangement — layering, voicing, processing chain and bus —
-   into 24 complete sections: three takes for each of eight energy states. It
+   into 104 complete clips: 13 takes for each of eight energy states, composed
+   from 126 distinct source recordings. It
    uses the packs' native 127–168 BPM recordings without browser-side stretching,
    then packages the encoded production as one segmented runtime bank. The
    browser mixes two compatible complete arrangements live; it never receives

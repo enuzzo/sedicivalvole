@@ -32,11 +32,12 @@ dated study documents.
   rest, arrangement density, deceleration memory, and the measured UNDERWATER
   brake effect.
 - **JUNCTION 01** is selectable sampled Jungle / Rave music. Its eight energy
-  states each have three complete authored takes: 24 rendered sections in one
-  5.7 MB segmented Opus bank. Rest is harmony and atmosphere without a break or bassline;
+  states each have 13 complete authored clips: 104 rendered sections built from
+  126 distinct recordings in one 24.8 MB segmented Opus bank. Rest is harmony
+  and atmosphere without a break or bassline;
   rhythm fades in near `13 km/h`, moves through native `127`, `135`, `158` and
   `164 BPM` recordings, and reaches `168 BPM` only at high energy. The browser
-  lazily decodes at most two energy states, starts two distinct takes on the
+  lazily retains at most six individual clips, starts two distinct takes on the
   same sample-accurate boundary, and mixes their level, tone, stereo and space
   live. The primary take does not immediately repeat, and source sounds are
   never exposed or shuffled mid-phrase.
