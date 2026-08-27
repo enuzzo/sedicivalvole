@@ -1,6 +1,6 @@
 # Third-Party Notices
 
-The current Drive Lab uses third-party software dependencies and includes code translated from textStep under its author's direct authorization, recorded below. It includes no third-party audio samples: no sample, loop, or recording from the local `_references/` library has entered the repository or any build.
+The current Drive Lab uses third-party software dependencies, includes code translated from textStep under its author's direct authorization, and ships JUNCTION as original mixed music produced with the royalty-free MusicRadar material documented below. No loose sample, loop, one-shot, multisample, or source-pack file has entered the repository or any build.
 
 Third-party components retain their original licenses and are not relicensed under the project's AGPL grant.
 
@@ -53,10 +53,10 @@ does not hold.
    or multisample from either pack is committed to this repository.
 2. They are used the way the terms allow: as source material for composing
    sedicivalvole's own music.
-3. What the product ships is that music. Where a score needs pre-rendered audio,
-   the build renders sedicivalvole's own arrangement — its own layering,
-   voicing, processing chain and bus — into sedicivalvole stems, and those stems
-   are what a browser downloads.
+3. What the product ships is that music. JUNCTION renders 64 bars of
+   sedicivalvole arrangement — layering, voicing, processing chain and bus —
+   into eight complete sections, then packages the encoded production as one
+   runtime bank. It is not a disguised collection of source samples.
 
 The distinction is the whole point, and it is not about Git. Serving the
 individual loops as separate assets would put the pack itself on the network for

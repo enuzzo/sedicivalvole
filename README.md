@@ -9,7 +9,7 @@
 > layers. The exact derived files, modifications, license, and direct reuse
 > authorization are recorded in `THIRD_PARTY_NOTICES.md`.
 
-> Current state: **Flux Drive Lab runs the authored FRACTURE score with four
+> Current state: **Flux Drive Lab runs the authored FRACTURE and JUNCTION music with four
 > selectable visual environments and is under vehicle validation**. This is a
 > development build, not a release.
 
@@ -30,7 +30,7 @@ The canonical development build is available at [sedicivalvole.app](https://sedi
 - ✅ GPS/Demo speed source, Stop/Mute, a fixed `130 km/h` energy ceiling, 10 curated themes, and an integrated capability report;
 - ✅ local-only speed processing: raw coordinates are never displayed, persisted, or transmitted;
 - ✅ FRACTURE, a production AudioWorklet score with ten four-bar sections, a narrow tempo knee, quantized transitions, hysteresis, dwell, crossfades, speed-driven arrangement depth, and tested harmony/braking/voice output;
-- 🧪 JUNCTION, an eight-section sampled score that renders offline but has no browser runtime yet;
+- ✅ JUNCTION, an eight-section sampled production served as one 1.9 MB adaptive Opus music bank with no loose source samples;
 - ✅ production build and deterministic signal, diagnostic-model, and packaging tests passing;
 - ✅ photographed Tesla split-view evidence at `773 × 601`, screen `1254 × 784`, DPR `1.53`;
 - ✅ compact-view v3 diagnostics with aggregated frame pacing, network history, runtime/resource evidence, direct same-origin email handoff, and no coordinates;
@@ -49,14 +49,14 @@ The speed source is an explicit abstraction. GPS and the desktop simulator produ
 Confirmed product modes:
 
 - **Engine** — selectable engine-sound emulation with a dedicated instrument-inspired visual language. Audio modeling, catalog, and final visual direction are not implemented yet.
-- **Flux** — adaptive music driven by speed and motion, paired with four selectable visual environments. Aperture morphs a flat square field into a centered tunnel. Vertigo embeds the original Codrops/Tympanus Interstate 7 runtime unchanged behind an external speed/FOV bridge. Meridian is an original ruled light corridor; Latitudes is an original temporal field that carries recent motion upward through stacked strata. This is the mode currently implemented as Drive Lab.
+- **Flux** — adaptive music driven by speed and motion, paired with four selectable visual environments. Aperture morphs a flat square field into a centered tunnel. Vertigo embeds the original Codrops/Tympanus Interstate 7 runtime unchanged behind an external speed/FOV and palette bridge. Meridian is an original ruled light corridor; Latitudes is an original temporal field that carries recent motion upward through stacked strata. This is the mode currently implemented as Drive Lab.
 
 Shared foundations include the GPS/Demo speed source, integrated diagnostics, master Stop/Mute, reduced motion, renderer fallback, and touch-first safety behavior. The mode switch will remain clearly identifiable and reachable from both experiences.
 
-The current audio is the authored generative score **FRACTURE**. It is the only
-selectable score; the library exposes future directions as `IN PREPARATION`
-instead of pretending they play. Its musical quality and relationship to real
-acceleration remain pending a Tesla listening test.
+The current music library has two selectable authored works: generative
+AudioWorklet score **FRACTURE** and sampled adaptive production **JUNCTION**.
+Five later directions remain `IN PREPARATION`. Their musical quality and
+relationship to real acceleration remain pending a Tesla listening test.
 
 ## Quick start
 
@@ -106,10 +106,9 @@ No screenshot is published here yet. The repository will include only real, curr
 ## Roadmap
 
 The next gate is a real Tesla session at the verified split viewport: compare all
-four visuals across acceleration and deceleration, profile AudioWorklet plus
-WebGL frame pacing, listen critically to FRACTURE, test the score/visual/theme
-controls, and check touch reach while parked. The next music implementation is
-JUNCTION's sampled browser runtime, not another replacement for FRACTURE.
+four visuals across acceleration and deceleration, verify Aperture's 60 FPS
+desktop gain on the vehicle, listen critically to FRACTURE and JUNCTION, test
+the Music/Visual/theme controls, and check touch reach while parked.
 
 See [`docs/ROADMAP.md`](docs/ROADMAP.md).
 

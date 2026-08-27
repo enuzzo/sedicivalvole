@@ -53,16 +53,19 @@ them with the authored Jungle / Drum & Bass score that now runs in the browser.
 Automated checks and a live desktop smoke test pass; musical acceptance still
 requires a real Tesla listening session.
 
+Completed in the current working line:
+
+- JUNCTION's eight-section browser runtime uses one compact Opus music bank and one decoder;
+- the bank contains a mixed, processed production rather than loose source samples; browser-delivered bytes remain downloadable and are not described as secret;
+
 Queued next:
 
-- build JUNCTION's sampler/runtime around its completed offline eight-section arrangement;
-- package JUNCTION's playable audio as one runtime score resource rather than publishing the source sample library as individual named files; browser-delivered bytes remain downloadable and must not be described as secret;
 - keep every later score disabled and marked `IN PREPARATION` until it has an authored runtime;
 - profile simultaneous AudioWorklet and WebGL rendering on the target Tesla;
 - preserve the shared speed, energy, brake, safety, and diagnostic contracts when the runtime can switch more than one authored score.
 
-Gate: FRACTURE accepted during a real drive, JUNCTION selectable without
-redistributing its source library, no audible jitter or stop/start phrasing, all
+Gate: FRACTURE and JUNCTION accepted during a real drive, no audible jitter or
+stop/start phrasing at JUNCTION section changes, all
 automated tests green, and no masking of vehicle alerts.
 
 ## Phase 4 — Flux generative renderer spike

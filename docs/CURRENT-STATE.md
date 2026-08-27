@@ -15,25 +15,25 @@ dated study documents.
   Engine-specific visual directions are selected.
 - The live Flux catalog contains four visual environments: **APERTURE 01**,
   **VERTIGO 02**, **MERIDIAN 03**, and **LATITUDES 04**.
-- Aperture, Meridian, and Latitudes use the shared catalog of **10 themes**.
-  Vertigo deliberately preserves the byte-identical upstream Interstate 7
-  rendering and is not recoloured by body themes.
+- All four environments use the shared catalog of **10 themes**. Vertigo keeps
+  the upstream Interstate 7 files byte-identical while an external runtime
+  bridge maps the selected theme onto its existing colour channels.
 - Speed, BPM, and energy remain visible together. The fixed road-energy ceiling
   is `130 km/h`, with Aperture visibly forming a tunnel near `40 km/h`.
-- The main experience retains Stop/Mute, GPS/Demo source selection, the score
-  library, environment selection, body themes, and coordinate-free diagnostics.
+- The main experience retains Stop/Mute, GPS/Demo source selection, compact
+  Music and Visual libraries, body themes, and coordinate-free diagnostics.
 
 ## Music
 
-- **FRACTURE 02** is the one selectable score. It is a generative Jungle / Drum
+- **FRACTURE 02** is a selectable score. It is a generative Jungle / Drum
   & Bass composition rendered by the production AudioWorklet.
 - FRACTURE has **10 four-bar sections**, ten themes played across four melodic
   timbres, a narrow `162–176 BPM` transport range, half-time interpretation at
   rest, arrangement density, deceleration memory, and the measured UNDERWATER
   brake effect.
-- **JUNCTION 01** is a sampled Jungle / Rave direction. Its eight-section
-  arrangement renders offline from the ignored local sample library, but it has
-  no browser runtime and cannot be selected yet.
+- **JUNCTION 01** is selectable sampled Jungle / Rave music. Its eight rendered
+  sections live in one 1.9 MB Opus bank; the browser uses one decoder and moves
+  between density/release sections only at authored boundaries.
 - **PULSE 03**, **CUTWATER 04**, **LOWTIDE 05**, **NIGHTCAST 06**, and
   **STILLWATER 07** are declared honestly as `IN PREPARATION` and are disabled.
 - `docs/MUSIC-CRAFT.md` records the musical defects and techniques already
@@ -42,29 +42,29 @@ dated study documents.
 ## Verified boundaries
 
 - Local gate: `npm test` and `npm run build` from `prototype/drive-lab/`.
-- Current suite: 121 unit checks plus 4 Sites packaging checks.
+- Current suite: 126 unit checks plus 4 Sites packaging checks.
 - Canonical development URL: <https://sedicivalvole.app/>. The most recent
   canonical publication evidence and build stamp are always the first entry in
   [`DEPLOY.md`](DEPLOY.md).
 - The target Tesla split viewport is `773 × 601` CSS pixels on a
   `1254 × 784` logical screen at DPR `1.53`.
-- No sample pack file is committed or published. The development QA harness is
-  excluded from production builds.
+- No sample pack file is committed or published. JUNCTION ships only the mixed,
+  processed production permitted by the source terms. The development QA
+  harness is excluded from production builds.
 - Diagnostic telemetry contains no coordinates and is sent only after the
   explicit `SEND DIAGNOSTIC` action.
 
 ## Open work
 
-1. Build JUNCTION's browser sampler/runtime and package its playable material
-   without exposing the source sample library as individually collectible files.
-2. Complete a real Tesla listening and performance session for FRACTURE and all
+1. Complete a real Tesla listening and performance session for FRACTURE,
+   JUNCTION and all
    four visual environments, including touch reach, frame pacing, GPS cadence,
    braking behavior, and long-session stability.
-3. Send a fresh real-drive v3 diagnostic from the still-open drawer, observe
+2. Send a fresh real-drive v3 diagnostic from the still-open drawer, observe
    `SENT`, confirm Gmail delivery, and inspect the received report.
-4. Design Engine only after exactly three Engine-specific directions are shown
+3. Design Engine only after exactly three Engine-specific directions are shown
    and one is selected.
-5. Keep `VERSION` at `0.0.0` until an explicit release is approved.
+4. Keep `VERSION` at `0.0.0` until an explicit release is approved.
 
 ## Documentation map
 

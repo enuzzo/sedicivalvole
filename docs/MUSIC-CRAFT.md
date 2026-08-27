@@ -276,6 +276,26 @@ Delay](https://www.soundonsound.com/techniques/using-reverb-delay); Music Guy
 Mixing, [How to Use Reverb on Piano for Depth and
 Fullness](https://www.musicguymixing.com/reverb-on-piano/).
 
+### 5.5 A container does not turn samples into music
+
+JUNCTION was proposed as hundreds of source recordings concatenated into one
+opaque blob. That changes the filename, not what the browser receives: the
+recordings remain extractable and it is still a redistributed sample bank.
+MusicRadar permits using the material in music and asks that the samples not be
+redistributed, so the product boundary must be musical as well as technical.
+
+The shipped bank therefore contains one mixed, processed 64-bar production,
+not playable source files. Eight complete sections use different break
+variants, harmonic voicings, density, drive and space. The browser keeps one
+compressed decoder alive and changes section only at an authored eight-bar
+boundary. This solves three faults at once: a two-bar loop no longer exposes its
+repetition immediately, the source recordings are not offered as a library,
+and the Tesla does not decode a hundred-megabyte PCM bank into memory.
+
+The reason a listener notices this distinction is form: variety must arrive as
+an intentional change of musical pressure, harmony and orchestration, not as a
+random sample roulette or a short loop restarting under a new effect.
+
 ---
 
 ## 6. Testing music

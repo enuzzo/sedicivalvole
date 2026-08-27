@@ -34,12 +34,12 @@ The registry is `prototype/drive-lab/src/flux-environments.js`.
 | Environment | Renderer | Boundary |
 |---|---|---|
 | APERTURE 01 | original WebGL2 plus Canvas2D fallback | selected Modular Aperture field; dark terminus, continuous flat-grid-to-tunnel deformation |
-| VERTIGO 02 | vendored Interstate 7 | upstream tree stays byte-identical; only the external speed/FOV bridge may drive it |
+| VERTIGO 02 | vendored Interstate 7 | upstream tree stays byte-identical; the external bridge drives speed/FOV and existing colour channels |
 | MERIDIAN 03 | original WebGL2 plus Canvas2D fallback | one displacement field controls geometry and camera aim |
 | LATITUDES 04 | original WebGL2 plus Canvas2D fallback | temporal strata preserve and release recent motion history |
 
-Aperture, Meridian, and Latitudes use ten curated themes. Vertigo is deliberately
-not recoloured. The fixed visual/score energy ceiling is `130 km/h`; Aperture
+All four visuals use ten curated themes. Vertigo is recoloured without editing
+its vendor tree. The fixed visual/music energy ceiling is `130 km/h`; Aperture
 must already read as a tunnel near `40 km/h`.
 
 ## Flux music
@@ -61,11 +61,11 @@ would copy it without its dependencies and fail after deployment.
   form variety, voice audibility, and brake level/character;
 - identical DSP core available to the browser and offline Node renderer.
 
-### Score library
+### Music library
 
-- FRACTURE 02 — generative, `ready`, and the only selectable score;
-- JUNCTION 01 — sampled, `preparing`; eight-section offline render exists, no
-  worklet/runtime or deployable score resource yet;
+- FRACTURE 02 — generative and `ready` in the AudioWorklet;
+- JUNCTION 01 — sampled and `ready`; one 1.9 MB rendered Opus bank, eight
+  adaptive sections and one browser decoder;
 - PULSE 03, CUTWATER 04, LOWTIDE 05, NIGHTCAST 06, STILLWATER 07 — declared
   `preparing`, disabled, and must not be presented as playing.
 
@@ -85,13 +85,10 @@ asserted.
 
 ## Immediate work
 
-1. Implement JUNCTION's sampler/runtime and one packaged score resource without
-   serving the source sample pack as named individual files. Browser-delivered
-   bytes remain downloadable and must not be treated as access control.
-2. Run real Tesla listening and performance QA across FRACTURE and all four
+1. Run real Tesla listening and performance QA across FRACTURE, JUNCTION and all four
    visual environments.
-3. Confirm the corrected diagnostic delivery path with a fresh real-drive report.
-4. Begin Engine discovery only through the required three-direction gate.
+2. Confirm the corrected diagnostic delivery path with a fresh real-drive report.
+3. Begin Engine discovery only through the required three-direction gate.
 
 ## Verification
 

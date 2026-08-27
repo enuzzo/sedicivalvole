@@ -17,9 +17,9 @@ The initial **PLAY THE ROAD** gesture sits over the animated Signal Gate, unlock
 - a dedicated WebGL2 Signal Gate splash with Canvas2D and reduced-motion fallbacks;
 - continuously redrawn Canvas2D fallback and reduced-motion behavior for Aperture; Vertigo retains the original Three.js/post-processing renderer and caps its speed input in reduced-motion mode;
 - FRACTURE, a generative AudioWorklet score with ten four-bar sections, a narrow `162–176 BPM` range, tested harmony, staged deceleration memory, and an offline render path;
-- an honest score library: FRACTURE is selectable, while sampled JUNCTION and five later directions remain disabled and marked `IN PREPARATION`;
+- an honest Music library: generative FRACTURE and the compact adaptive JUNCTION music bank are selectable; five later directions remain disabled and marked `IN PREPARATION`;
 - GPS `coords.speed` input with null handling, physics-informed soft outlier tolerance, and Demo fallback;
-- touch-first Stop/Mute, visual environment, score library, and ten curated body-theme surfaces;
+- a 64 px Tesla footer with touch-first Stop/Mute, Visual and Music libraries, disclosure carets, and ten curated body themes;
 - fixed `130 km/h` energy/velocity ceiling with visible Aperture tunnel formation by approximately `40 km/h`;
 - integrated coordinate-free device report with a bounded in-memory driving flight recorder, runtime issue capture, and explicit email send;
 - time-based Model 3 AWD Demo acceleration calibrated to the official zero-to-100 km/h figure;
@@ -34,4 +34,4 @@ npm run build
 npm test
 ```
 
-The verified build is published to [https://sedicivalvole.app/](https://sedicivalvole.app/) after each approved checkpoint. GPS cadence, FRACTURE listening acceptance, simultaneous AudioWorklet/WebGL frame pacing, and touch reach remain pending validation in the target Tesla.
+The verified build is published to [https://sedicivalvole.app/](https://sedicivalvole.app/) after each approved checkpoint. GPS cadence, FRACTURE/JUNCTION listening acceptance, simultaneous audio/WebGL frame pacing, and touch reach remain pending validation in the target Tesla.

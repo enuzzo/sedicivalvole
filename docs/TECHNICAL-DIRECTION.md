@@ -155,10 +155,12 @@ musical boundaries behind hysteresis, dwell, deceleration memory, and
 crossfades. Tempo stays within `162–176 BPM`; high-speed power comes primarily
 from interpretation and arrangement rather than playback-rate escalation.
 
-The score registry separates `ready` from `preparing`. FRACTURE is the only
-ready score. JUNCTION leads the library as the sampled direction but currently
-exists only as an offline eight-section render; the remaining five directions
-are truthful disabled roadmap entries.
+The music registry separates `ready` from `preparing`. FRACTURE and JUNCTION are
+ready; the remaining five directions are truthful disabled roadmap entries.
+JUNCTION is a 64-bar rendered production split into eight adaptive sections and
+packed as one 1.9 MB Opus resource. One HTML media decoder feeds the shared
+AudioContext; energy and braking select the next authored section at its
+boundary, while the original sample-pack files never enter the build.
 
 ### Flux sequencer direction
 
@@ -170,8 +172,8 @@ that preserves the same contracts:
 - stable AudioWorklet transport with sample-accurate step timing;
 - separately authored sound, pattern, harmony, and arrangement data;
 - bounded decoded-memory use, click-free playback, shared effects, and limiting;
-- sample material packaged as a playable score resource without exposing the
-  source library as individually collectible files;
+- only mixed, processed music packaged as a playable resource; a proprietary
+  container is not treated as protection for redistributable source samples;
 - no time-stretching of break loops: select material recorded at the active
   native tempo instead.
 
@@ -203,7 +205,7 @@ The Flux renderer exposes four selectable environments, not static backgrounds.
 - aspect-correct square insets at rest, an eased low-speed warp, a bounded central perspective singularity, and a continuous blend between adjoining tunnel walls so intermediate geometry cannot tear into diagonal fragments;
 - a central aperture whose radius opens geometrically with tunnel formation instead of appearing through opacity;
 - speed-driven radial panel elongation and reduced depth frequency in the 150 km/h velocity band;
-- ten curated body themes for the three original renderers; Vertigo preserves its upstream colours;
+- ten curated body themes for all four renderers; Vertigo's external bridge updates only existing runtime colour channels;
 - energy-driven pressure, luminance, distortion, and rectangular panel density;
 - aggregate pulses rather than one flash per audio event;
 - renderer quality levels controlling resolution scale, shader complexity, passes, and frame rate;
@@ -211,7 +213,7 @@ The Flux renderer exposes four selectable environments, not static backgrounds.
 - reduced-motion mode with slow luminance/chroma breathing and no tunnel acceleration;
 - a continuously redrawn Canvas2D fallback.
 
-**Vertigo** was selected as the second environment and now runs the complete upstream Interstate 7 scene from commit `e58d58520bc0dfde21f9e14e6a1b8c7f0a2a2a9e`. The vendored runtime retains the original road, instanced side light sticks, opposing instanced car-light tubes, fog, bloom/SMAA post-processing, deep-distortion shader injection, camera look-at distortion, colors, and geometry. SHA-256 tests guard the vendor files against accidental edits. The earlier independent shader and Canvas2D interpretation were rejected and removed from the active source.
+**Vertigo** was selected as the second environment and now runs the complete upstream Interstate 7 scene from commit `e58d58520bc0dfde21f9e14e6a1b8c7f0a2a2a9e`. The vendored runtime retains the original road, instanced side light sticks, opposing instanced car-light tubes, fog, bloom/SMAA post-processing, deep-distortion shader injection, camera look-at distortion, and geometry. SHA-256 tests guard the vendor files against accidental edits. The external integration hides the editorial shell before revealing the iframe and maps themes onto existing colour buffers/uniforms. The earlier independent shader and Canvas2D interpretation were rejected and removed from the active source.
 
 **Meridian** is an original ruled corridor. One depth-parameterized displacement
 field controls geometry and camera aim; separate monotonic clocks move the grid,
@@ -223,7 +225,7 @@ the faster past upward rather than reversing or crossfading the renderer.
 
 The fixed road-speed mapping separates early recognition from maximum deformation. Aperture begins opening into recognizable tunnel space by approximately `40 km/h`; velocity, perspective, elongation, and travel then continue increasing until the shared `130 km/h` ceiling. Vertigo uses a narrow external bridge rather than new scene mathematics. The bridge writes a continuous target into the original `speedUpTarget` path: `-1` cancels the base clock at zero and `0` restores the original non-boosted `1×` time rate at `130 km/h`. In parallel, the original FOV target moves from `90°` to `150°`. The upstream click boost is not dispatched.
 
-The Flux chrome uses a shared 6 px UI radius for framed controls and diagnostic surfaces. Structural rails remain aligned to the underlying grid. The absolute speed readout uses the same column dimensions and `--line` stroke as the top bar, so hiding the surrounding control layer does not move or restyle it as a separate overlay.
+The Flux chrome uses a shared 6 px UI radius for framed controls and diagnostic surfaces. At `773 x 601` the retracting footer is 64 px high, keeps Audio on one row, and exposes explicit Visual and Music libraries with disclosure carets. Structural rails remain aligned to the underlying grid. The absolute speed readout uses the same column dimensions and `--line` stroke as the top bar, so hiding the surrounding control layer does not move or restyle it as a separate overlay.
 
 The Codrops/Tympanus Infinite Lights reference is useful for coordinated instancing, depth cues, distortion, FOV response, eased speed offset, and the matched distortion/look-at relationship. Vertigo intentionally vendors the byte-identical Interstate 7 runtime as separately licensed third-party material. Meridian studies its mechanical grammar without copying that runtime's source or visual skin. See [`REFERENCE-STUDY-INFINITE-LIGHTS.md`](REFERENCE-STUDY-INFINITE-LIGHTS.md).
 
