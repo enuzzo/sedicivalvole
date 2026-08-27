@@ -3,6 +3,7 @@ import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 import {
+  INTERSTATE7_ENTRY_PHASE_SECONDS,
   speedToInterstate7Targets,
   themeToInterstate7Palette,
 } from "../src/interstate-7-bridge.js";
@@ -21,20 +22,33 @@ const UPSTREAM_FILES = new Map([
 test("maps road speed to the original Interstate 7 time and FOV controls", () => {
   assert.deepEqual(speedToInterstate7Targets(0), {
     normalizedSpeed: 0,
+    playbackRate: 0,
     speedUpTarget: -1,
     fovTarget: 90,
   });
   assert.deepEqual(speedToInterstate7Targets(65), {
     normalizedSpeed: 0.5,
-    speedUpTarget: -0.5,
-    fovTarget: 120,
+    playbackRate: 0.25,
+    speedUpTarget: -0.75,
+    fovTarget: 105,
   });
   assert.deepEqual(speedToInterstate7Targets(130), {
     normalizedSpeed: 1,
+    playbackRate: 1,
     speedUpTarget: 0,
     fovTarget: 150,
   });
   assert.deepEqual(speedToInterstate7Targets(260), speedToInterstate7Targets(130));
+});
+
+test("keeps urban motion grounded and enters on the composed road phase", () => {
+  const forty = speedToInterstate7Targets(40);
+  const sixty = speedToInterstate7Targets(60);
+  assert.ok(forty.playbackRate < 0.1);
+  assert.ok(sixty.playbackRate > 0.2 && sixty.playbackRate < 0.22);
+  assert.ok(forty.fovTarget < 96);
+  assert.ok(sixty.fovTarget < 103);
+  assert.equal(INTERSTATE7_ENTRY_PHASE_SECONDS, 2.1);
 });
 
 test("keeps the original Interstate 7 runtime byte-identical to upstream", async () => {

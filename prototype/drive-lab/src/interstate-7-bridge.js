@@ -2,6 +2,7 @@ import { ROAD_SPEED_CEILING_KMH } from "./signal-model.js";
 
 const ORIGINAL_FOV = 90;
 const ORIGINAL_SPEED_UP_FOV = 150;
+export const INTERSTATE7_ENTRY_PHASE_SECONDS = 2.1;
 
 function clamp(value, minimum, maximum) {
   return Math.min(maximum, Math.max(minimum, value));
@@ -9,10 +10,15 @@ function clamp(value, minimum, maximum) {
 
 export function speedToInterstate7Targets(speedKmh) {
   const normalizedSpeed = clamp(speedKmh / ROAD_SPEED_CEILING_KMH, 0, 1);
+  // Interstate 7's light trails are intentionally much faster than road-scale
+  // motion. A quadratic response keeps urban speeds grounded while still
+  // reaching the complete original non-boosted motion at the road ceiling.
+  const playbackRate = normalizedSpeed * normalizedSpeed;
   return {
     normalizedSpeed,
-    speedUpTarget: normalizedSpeed - 1,
-    fovTarget: ORIGINAL_FOV + (ORIGINAL_SPEED_UP_FOV - ORIGINAL_FOV) * normalizedSpeed,
+    playbackRate,
+    speedUpTarget: playbackRate - 1,
+    fovTarget: ORIGINAL_FOV + (ORIGINAL_SPEED_UP_FOV - ORIGINAL_FOV) * playbackRate,
   };
 }
 

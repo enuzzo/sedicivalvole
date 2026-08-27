@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef } from "react";
 import {
+  INTERSTATE7_ENTRY_PHASE_SECONDS,
   speedToInterstate7Targets,
   themeToInterstate7Palette,
 } from "./interstate-7-bridge.js";
@@ -89,6 +90,17 @@ export function Interstate7Field({ speed, theme, reducedMotion, onRenderer, onFr
           const { speedUpTarget, fovTarget } = speedToInterstate7Targets(
             frameWindow.__SEDICIVALVOLE_SPEED_KMH__ ?? 0,
           );
+          if (!this.__sedicivalvoleEntryFramed) {
+            // Enter at an attractive existing phase of the untouched upstream
+            // distortion, where the road already fills the Tesla viewport.
+            // Seeding the current controls also prevents the original fast
+            // startup from flashing before the vehicle-speed bridge settles.
+            this.timeOffset += INTERSTATE7_ENTRY_PHASE_SECONDS;
+            this.speedUp = speedUpTarget;
+            this.camera.fov = fovTarget;
+            this.camera.updateProjectionMatrix();
+            this.__sedicivalvoleEntryFramed = true;
+          }
           this.speedUpTarget = speedUpTarget;
           this.fovTarget = fovTarget;
           applyTheme(this, frameWindow.__SEDICIVALVOLE_THEME__);
