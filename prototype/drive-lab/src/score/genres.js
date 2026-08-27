@@ -51,7 +51,7 @@ export const SCORE_GENRES = [
     source: SCORE_SOURCE.sampled,
     status: SCORE_STATUS.ready,
     score: "junction",
-    note: "Three authored takes per energy state. One compact adaptive bank.",
+    note: "Two authored takes mixed live at every eight-bar boundary.",
   },
   {
     id: "fracture",

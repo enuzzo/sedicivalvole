@@ -3,7 +3,9 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 import {
+  chooseJunctionMix,
   chooseJunctionVariation,
+  junctionLiveMixParameters,
   junctionSectionForEnergy,
   parseJunctionBank,
 } from "../src/junction-bank.js";
@@ -49,20 +51,55 @@ test("JUNCTION changes take only at a section boundary and avoids an immediate r
   assert.deepEqual(chooseJunctionVariation(sections, "rest", 1, () => 0.5), sections[3]);
 });
 
-test("the published JUNCTION blob contains one rendered production, not loose samples", async () => {
+test("JUNCTION creates a distinct two-deck mix without repeating the primary take", () => {
+  const sections = [
+    { id: "build", take: 1 },
+    { id: "build", take: 2 },
+    { id: "build", take: 3 },
+  ];
+  const mix = chooseJunctionMix(sections, "build", 1, () => 0);
+  assert.equal(mix.primary.take, 2);
+  assert.equal(mix.secondary.take, 1);
+  assert.notEqual(mix.primary.take, mix.secondary.take);
+  assert.ok(mix.mixStart >= 0.18 && mix.mixStart <= 0.48);
+  assert.ok(mix.mixEnd >= 0.52 && mix.mixEnd <= 0.82);
+});
+
+test("JUNCTION live effects remain bounded and grow with road energy", () => {
+  const calm = junctionLiveMixParameters(0, 127, () => 0);
+  const fast = junctionLiveMixParameters(1, 168, () => 0);
+  assert.ok(calm.delaySeconds >= 0.12 && calm.delaySeconds <= 0.5);
+  assert.ok(fast.delaySeconds >= 0.12 && fast.delaySeconds <= 0.5);
+  assert.ok(fast.feedback > calm.feedback);
+  assert.ok(fast.wet > calm.wet);
+  assert.ok(fast.cutoff > calm.cutoff);
+});
+
+test("the published JUNCTION blob contains lazy processed mix blocks, not loose samples", async () => {
   const bank = await readFile(new URL("../public/audio/junction.svb", import.meta.url));
   const parsed = parseJunctionBank(bank.buffer.slice(bank.byteOffset, bank.byteOffset + bank.byteLength));
   assert.equal(parsed.manifest.source, "rendered-production");
+  assert.equal(parsed.manifest.format, "sedicivalvole.music-bank.v2");
+  assert.equal(parsed.manifest.mixing, "live-two-deck");
   assert.equal(parsed.manifest.sections.length, 24);
   assert.equal(parsed.manifest.takes, 3);
   assert.equal(parsed.manifest.barsPerSection, 8);
   assert.equal(parsed.manifest.tempoMode, "authored-sections");
   assert.deepEqual(parsed.manifest.bpmRange, [127, 168]);
   assert.equal(new Set(parsed.manifest.sections.map((section) => section.take)).size, 3);
+  assert.equal(parsed.assets.size, 8);
+  assert.equal(parsed.manifest.maxDecodedStates, 2);
   for (const id of ["rest", "open", "enter", "build", "break", "full", "turn", "ease"]) {
     const variations = parsed.manifest.sections.filter((section) => section.id === id);
     assert.deepEqual(variations.map((section) => section.take).sort(), [1, 2, 3]);
     assert.ok(variations.every((section) => section.durationSeconds > 11));
+    assert.deepEqual(variations.map((section) => section.assetId), [id, id, id]);
+    for (let index = 1; index < variations.length; index += 1) {
+      assert.ok(Math.abs(
+        variations[index].startSeconds
+          - (variations[index - 1].startSeconds + variations[index - 1].durationSeconds),
+      ) < 1e-9, "takes in one lazy block must remain gapless");
+    }
   }
   assert.ok(parsed.manifest.sections.filter((section) => section.id === "rest").every(
     (section) => section.bpm === 127 && !section.activeLanes.includes("breaks"),
@@ -70,13 +107,18 @@ test("the published JUNCTION blob contains one rendered production, not loose sa
   assert.ok(parsed.manifest.sections.filter((section) => section.id === "full").every(
     (section) => section.bpm === 168 && section.activeLanes.includes("breaks"),
   ));
-  for (let index = 1; index < parsed.manifest.sections.length; index += 1) {
-    const previous = parsed.manifest.sections[index - 1];
-    const current = parsed.manifest.sections[index];
-    assert.ok(Math.abs(
-      current.startSeconds - (previous.startSeconds + previous.durationSeconds),
-    ) < 1e-9, "variable-tempo sections must remain gapless");
-  }
+  assert.equal(
+    [...parsed.assets.values()].reduce((total, asset) => total + asset.audio.size, 0),
+    parsed.audioBytes,
+  );
+  assert.ok([...parsed.assets.values()].every((asset) => asset.decodedPcmBytes < 20_000_000));
+  const twoLargestStates = [...parsed.assets.values()]
+    .map((asset) => asset.decodedPcmBytes)
+    .sort((a, b) => b - a)
+    .slice(0, 2);
+  assert.ok(twoLargestStates.reduce((total, bytes) => total + bytes, 0) < 40_000_000);
+  assert.equal(bank.includes(Buffer.from("Jungle_Beat")), false);
+  assert.equal(bank.includes(Buffer.from("BonusBeat_")), false);
   assert.ok(parsed.audioBytes > 1_000_000);
   assert.ok(parsed.audioBytes < 7_000_000, "the Tesla payload must stay compact");
 });

@@ -142,7 +142,7 @@ def is_recognized_app_entry(payload: bytes) -> bool:
 
 def is_recognized_junction_bank(payload: bytes) -> bool:
     """Recognize an existing owned bank without requiring the next bank's hash."""
-    if len(payload) < 13 or payload[:8] != b"SVJCTN01":
+    if len(payload) < 13 or payload[:8] not in {b"SVJCTN01", b"SVJCTN02"}:
         return False
     manifest_length = int.from_bytes(payload[8:12], "little")
     audio_offset = 12 + manifest_length
@@ -152,12 +152,27 @@ def is_recognized_junction_bank(payload: bytes) -> bool:
         manifest = json.loads(payload[12:audio_offset].decode("utf-8"))
     except (UnicodeDecodeError, json.JSONDecodeError):
         return False
-    return (
-        manifest.get("format") == "sedicivalvole.music-bank.v1"
-        and manifest.get("score") == "junction"
+    common_valid = (
+        manifest.get("score") == "junction"
         and manifest.get("source") == "rendered-production"
         and isinstance(manifest.get("sections"), list)
         and len(manifest["sections"]) >= 8
+    )
+    if manifest.get("format") == "sedicivalvole.music-bank.v1":
+        return common_valid and payload[:8] == b"SVJCTN01"
+    if manifest.get("format") != "sedicivalvole.music-bank.v2" or payload[:8] != b"SVJCTN02":
+        return False
+    assets = manifest.get("assets")
+    if not isinstance(assets, list) or not assets:
+        return False
+    asset_ids = [asset.get("id") for asset in assets if isinstance(asset, dict)]
+    asset_lengths = [asset.get("audioBytes") for asset in assets if isinstance(asset, dict)]
+    return (
+        common_valid
+        and len(asset_ids) == len(assets)
+        and len(set(asset_ids)) == len(asset_ids)
+        and all(isinstance(length, int) and length > 0 for length in asset_lengths)
+        and sum(asset_lengths) == len(payload) - audio_offset
     )
 
 
