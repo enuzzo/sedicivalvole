@@ -6,6 +6,19 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 
 ### Added
 
+- 2026-08-27 18:42 `[4174d6a]`: The authored `FRACTURE` score now plays in the product. The engine in `src/score/` — arranger, transport, ported textStep DSP and the composition itself — was complete but had never been connected; a separate hardcoded worklet played instead.
+- 2026-08-27 18:42 `[4174d6a]`: `src/score/worklet/score-processor.js`, a thin AudioWorklet shell owning only the render quantum, the message port, the mute ramp and the brake filter.
+- 2026-08-27 18:42 `[4174d6a]`: `scripts/vite-audio-worklet.mjs`, which bundles the worklet entry into one self-contained file with esbuild. A `?url` import copies the entry without following its imports, so a multi-module worklet loads in development and breaks once deployed.
+- 2026-08-27 18:42 `[4174d6a]`: `scripts/render-reference.mjs`, an offline Node render of a speed programme to a WAV with an arrangement timeline, and `scripts/analyse-render.mjs`, which reports band balance, stereo width and crest. Listening review needs no browser and no vehicle.
+- 2026-08-27 18:42 `[4174d6a]`: A stereo plate reverb, a pad chorus and a mid/side width trim that stays mono below 140 Hz. The mix measured 3.6% wide, which is mono.
+- 2026-08-27 19:13 `[81fecf1]`: A six-section form — `HOME`, `LIFT`, `TURN`, `DARK`, `OPEN`, `RETURN` — advancing one section per phrase, so twenty-four bars pass before anything repeats. One four-bar cycle repeating forever was previously the whole piece.
+- 2026-08-27 19:13 `[81fecf1]`: A four-voice pad. The pad was monophonic and played a single note of each chord, so the harmony the score is written around was never actually sounding.
+- 2026-08-27 19:13 `[81fecf1]`: `tests/score-harmony.test.mjs`, which checks the writing rather than trusting it: nothing leaves the key, no theme note forms a minor second or minor ninth against either chord it is heard over, and the bass resolves its degrees per chord. It found five real faults while the form was being written.
+- 2026-08-27 19:13 `[81fecf1]`: `tests/score-brake.test.mjs`, which drives six seconds of real score through the underwater filter and asserts what level actually survives it.
+- 2026-08-27 19:13 `[81fecf1]`: A truthful `SCORE` control and score library panel. Every direction is shown, including the five with nothing authored behind them, which read `IN PREPARATION` and cannot be selected.
+- 2026-08-27 19:13 `[81fecf1]`: Five body colours beyond the vehicle's own — `NEON`, `MINT`, `SODIUM`, `SIGNAL`, `SULPHUR` — with a two-colour swatch where the theme genuinely uses two.
+- 2026-08-27 19:20 `[a1cf5db]`: `tests/score-audition.test.mjs`, which auditions all eleven voices on a stopped vehicle and asserts each one makes a sound and releases on its own.
+
 - 2026-08-26 17:14 `[0369bda]` `build 20260826-1714`: A structured, Git-ignored `_references/` library preserving the original bootstrap ZIP and extracted contents.
 - 2026-08-26 17:14 `[0369bda]` `build 20260826-1714`: Versioned product specification, source audit, adversarial review, technical direction, deployment notes, licensing decision log, and roadmap.
 - 2026-08-26 17:14 `[0369bda]` `build 20260826-1714`: Root and prototype `AGENTS.md` rules, including the English-only repository/interface convention.
@@ -35,6 +48,16 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - 2026-08-27 10:44 `[d415db8]` `build 20260827-1044`: A coordinate-free in-memory driving flight recorder with two-second speed/GPS/input/audio/frame/network samples, full-session motion aggregates, bounded runtime issues, payload sizing, and deterministic retention tests.
 
 ### Changed
+
+- 2026-08-27 18:45 `[1f012a8]`: Scene changes resolve the hysteresis thresholds to a fixed point instead of stepping one scene per phrase. Climbs are capped at two scenes so the arrangement still builds; thinning is not capped, because a vehicle that has stopped should not keep playing a full break.
+- 2026-08-27 18:45 `[1f012a8]`: Lane exits are queued from the top of the arrangement down. In lane order the kick left while the break detail was still chattering over it, which reads as the music breaking rather than thinning.
+- 2026-08-27 18:53 `[ae29fa5]`: The reese plays a six-note syncopated riff instead of two held notes, and the sub is rearticulated around the kick with a quiet square for presence on a dashboard speaker. The bass line was reported as almost absent.
+- 2026-08-27 19:01 `[5bdebef]`: The score library moved into a panel rather than growing the command bar. Six entries with their state written on them cannot be legible at arm's length inside a 190px cell.
+- 2026-08-27 19:13 `[81fecf1]`: The command bar is 81px, down from 136. The mute control is an icon and a state instead of a label stacked over a large blank square, which was what set the bar's height.
+- 2026-08-27 19:13 `[81fecf1]`: The colour pills lost their housing and their individual outlines, are taller, and have more space between them. An outline on a coloured pill only competes with the colour it is there to show.
+- 2026-08-27 19:13 `[81fecf1]`: At a standstill the piece plays a phrase and then leaves one. Holding the resting arrangement continuously is unbearable at a red light.
+- 2026-08-27 19:20 `[a1cf5db]`: The working level follows energy across four and a half decibels. The piece hit the limiter at a standstill exactly as hard as it did at the ceiling, so an arrangement that gains six lanes across a drive gained no weight.
+- 2026-08-27 19:20 `[a1cf5db]`: Demo mode holds the speed it is left at. With no driver input it previously drove itself, which made the score's response to the driver impossible to judge.
 
 - 2026-08-27 11:31 `[9544629]`: Accepted the maintainer's direct attestation of Lobo's unrestricted textStep reuse authorization, removed the invented written-evidence gate, and retained explicit authorship, GPL-2.0 provenance, source-file, commit, and modification tracking requirements.
 - 2026-08-26 17:14 `[0369bda]` `build 20260826-1714`: Reworked the audio after user listening feedback: reduced the dominant noise bed and replaced the weak continuous tone with speed-dependent rhythmic and harmonic layers.
@@ -110,6 +133,13 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 
 ### Fixed
 
+- 2026-08-27 18:53 `[ae29fa5]`: The principal theme was transposed twice and played a semitone off twice per harmonic cycle. The chord root was already carried by `bassMidi`, and a second `rootOffset` moved the theme again on top of it: over `Dbmaj7` it played A-C-E-G against Db-F-Ab-C. The theme and its response are now absolute pitches in F natural minor and are not transposed at all.
+- 2026-08-27 18:42 `[4174d6a]`: The brake latched on indefinitely. `keyup` handled `Space` but never `ArrowDown`, and the brake amount was only ever updated from a speed *change*, so a stopped or cruising vehicle froze it wherever it stood. It now runs on its own 40 ms clock with hysteresis both ways and never engages below 3 km/h.
+- 2026-08-27 18:42 `[4174d6a]`: The `BPM` readout reported a tempo the music never played. It now reports the transport's own tempo.
+- 2026-08-27 19:01 `[5bdebef]`: Restored the retracting two-bar control layout. A stylesheet edit had cut the file from the first match of `.control-slab {`, which fell inside `.controls-resting .control-slab {`, leaving half a selector dangling and swallowing everything after it.
+- 2026-08-27 19:13 `[81fecf1]`: The underwater brake effect no longer empties the level. Sweeping to 200 Hz removed so much energy that it read as the volume being cut; the corner now stops at 430 Hz, the signal is driven into a soft shaper and trimmed after, and the surviving level is measured rather than guessed.
+- 2026-08-27 19:20 `[a1cf5db]`: The voice preview threw on every synth voice, because `audition` still called `harmonyForBar` with the pre-form signature, and the ghost and clap were inaudible because the audition lift was keyed by lane and neither has one.
+- 2026-08-27 19:20 `[a1cf5db]`: Below thirty km/h there was practically nothing to hear. The standstill rule gated the whole half-time band rather than a genuine stop, and the low band had quarter-note hats and no ghost field at all.
 - 2026-08-27 11:17 `[3d7c64b]` `build 20260827-1117`: Prevented PHP from expanding short telemetry decimals into 53-digit binary representations, which caused long Tesla flight-recorder reports to exceed the server mail limit after browser-side fitting; diagnostic send failures now expose a sanitized actionable reason.
 - 2026-08-27 09:45 `[ca21e40]`: Moved keyboard focus to the live experience after launch so held simulator input reaches the parent app reliably beside the non-interactive Vertigo iframe.
 - 2026-08-26 17:14 `[0369bda]`: Corrected the SiteGround remote path after confirming the FTP account home sits above `sedicivalvole.app/public_html`.
