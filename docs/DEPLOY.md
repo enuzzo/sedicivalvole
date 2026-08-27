@@ -8,6 +8,35 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Documentation-cleanup publication evidence — 2026-08-27
+
+- build stamp: **`20260827-2204`**, confirmed on the live splash and in the
+  served bundle;
+- deployed commit: `12e2eaa`; documentation alignment: `31f8dc4`; Tesla
+  top-bar correction: `e7adfb0`;
+- gate before upload: **PASS**, 121 unit tests, 4 packaging tests and a
+  production build;
+- publication argument gate: **PASS**, `--help` printed usage and performed no
+  deployment before the intentional invocation;
+- read-only FTP identity gate: **PASS**, `target=canonical_root`;
+- upload: **PASS**, 20 files, 1,287,011 bytes; 2 previous assets retained for
+  cache overlap; legacy cleanup removed 0 files and 0 directories;
+- canonical bare `/`: **HTTP 200**, `no-store`, and byte-identical to the local
+  `index.html` at SHA-256 `d29b484b09392e31fdd3ab50002ddbfa17892c1b5fe5daa464cfd9702bfed2d9`;
+- `assets/index-9g75xhqi.js`: **HTTP 200**, 300,952 bytes, byte-identical at
+  SHA-256 `2fee45b57cafc63313178ffbb948c1f5ff61ff953ac8f9e2f0c6cb1e188d5c1b`;
+- `assets/index--Wp7rQBn.css`: **HTTP 200**, 17,814 bytes, byte-identical at
+  SHA-256 `85d0da1c2613edc3c2e69ec5c00d78bdb5208b75ff7d61c9df73947bccc8d652`;
+- `assets/score-processor-B3O5Fcwp.js`: **HTTP 200**, 92,481 bytes,
+  byte-identical at SHA-256
+  `9e2d612a94bce99733445047d10138d5573e9d425ef56e19ccc7061762f18ab3`;
+- live Chrome QA at the photographed `773 x 601` split viewport: **PASS** for
+  Signal Gate launch, WebGL2 Aperture rendering, `FRACTURE`, Web Audio,
+  diagnostics access and zero runtime issues; the source readout and mode
+  selector have **0 px** horizontal overlap;
+- the live raw diagnostic contains both build `20260827-2204` and commit
+  `12e2eaa`. No diagnostic was sent.
+
 ## Score engine publication evidence — 2026-08-27
 
 This is the first publication in which the authored score actually plays. The

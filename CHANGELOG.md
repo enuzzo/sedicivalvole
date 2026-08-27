@@ -6,6 +6,8 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 
 ### Added
 
+- 2026-08-27 22:06 `[31f8dc4]`: Added `docs/CURRENT-STATE.md` as the concise authoritative inventory of the implemented product, active constraints, verified boundaries, open work and documentation map. Added a documentation-consistency test that checks the implemented catalogs, rejects superseded claims in active overview documents and validates relative Markdown links.
+- 2026-08-27 22:06 `[12e2eaa]` `build 20260827-2204`: Added the Git commit identity to the diagnostic report alongside the SemVer and build stamp, with a test covering the complete build-identity pipeline.
 - 2026-08-27 20:06 `[cbeada7]` `build 20260827-2006`: **First publication in which the authored score actually plays.** `FRACTURE` runs live at `https://sedicivalvole.app/`, with the bundled AudioWorklet verified byte-identical on the canonical root.
 - 2026-08-27 20:20 `[cbeada7]`: `docs/MUSIC-CRAFT.md`, a living record of the project's musical knowledge — consonance rules that matter and the ones a naive checker gets wrong, tempo and arrangement doctrine, mixing technique with sources, and every musical defect this codebase has made and fixed. `AGENTS.md` now requires it to be updated in the same session a fault is diagnosed or a technique is found, and requires a musical rule to be asserted in a test wherever it can be.
 - 2026-08-27 20:20 `[cbeada7]`: `JUNCTION`, a sampled score built from the pack's own breaks, basslines and chord one-shots, with an eight-section arrangement and a progression of Emin9 - Cmaj7 - Amin7 - Bmin9 stated by a different synth each section. Development-only so far: it renders offline and has no runtime yet.
@@ -141,6 +143,8 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 
 ### Fixed
 
+- 2026-08-27 22:06 `[e7adfb0]` `build 20260827-2204`: Prevented the persistent speed source readout from overlapping the `ENGINE` / `FLUX` mode selector at the photographed Tesla split viewport. Browser QA at `773 x 601` measures zero horizontal overlap.
+- 2026-08-27 22:06 `[31f8dc4]`: Recorded an append-only traceability correction for four superseded short hashes retained in earlier entries: `7733ec4` maps to reachable commit `45d73a8`, `4ecc6a3` to `34b54af`, `e85d1cd` to `6970eb1`, and `cbeada7` to `140b6fc`. The historical lines remain untouched.
 - 2026-08-27 20:20 `[cbeada7]`: The publication script ignored every argument, so `--help` ran a real deployment. It had already done so once and the previous evidence entry said it must not happen again. `parse_arguments` now prints usage and publishes nothing for `--help` or any unrecognised argument.
 - 2026-08-27 20:20 `[cbeada7]`: A sampled melody was folded into an instrument's range one note at a time, so notes needing different numbers of octaves inverted the interval between them: a line rising from B4 to D5 played as B3 falling to D3. One whole-octave offset is now chosen for a whole line.
 - 2026-08-27 18:53 `[ae29fa5]`: The principal theme was transposed twice and played a semitone off twice per harmonic cycle. The chord root was already carried by `bassMidi`, and a second `rootOffset` moved the theme again on top of it: over `Dbmaj7` it played A-C-E-G against Db-F-Ab-C. The theme and its response are now absolute pitches in F natural minor and are not transposed at all.
