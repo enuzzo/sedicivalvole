@@ -1259,8 +1259,21 @@ export function App() {
         </header>
 
         <button className="source-readout" type="button" onClick={toggleSource} aria-label={`Speed source ${source}. Tap to switch`}>
-          <strong>{Math.round(speed)}</strong><span>km/h</span><small>{source}</small>
-          <div className="telemetry-sub">{Math.round(bpm)} BPM · {Math.round(energy * 100)}%{activeEffect && <span className="effect-badge">{activeEffect}</span>}</div>
+          <div className="readout-group">
+            <strong>{Math.round(speed)}</strong>
+            <div className="readout-labels"><span>km/h</span><small>{source}</small></div>
+          </div>
+          <div className="readout-divider" />
+          <div className="readout-group">
+            <strong>{Math.round(bpm)}</strong>
+            <div className="readout-labels"><span>bpm</span><small>tempo</small></div>
+          </div>
+          <div className="readout-divider" />
+          <div className="readout-group">
+            <strong>{Math.round(energy * 100)}</strong>
+            <div className="readout-labels"><span>%</span><small>energy</small></div>
+          </div>
+          {activeEffect && <div className="effect-badge">{activeEffect}</div>}
         </button>
 
 
