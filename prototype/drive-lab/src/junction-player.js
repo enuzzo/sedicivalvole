@@ -1,4 +1,8 @@
-import { junctionSectionForEnergy, parseJunctionBank } from "./junction-bank.js";
+import {
+  chooseJunctionVariation,
+  junctionSectionForEnergy,
+  parseJunctionBank,
+} from "./junction-bank.js";
 
 const BANK_URL = "/audio/junction.svb";
 const REVIEW_INTERVAL_MS = 100;
@@ -19,12 +23,16 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
 
   function snapshot() {
     const sectionId = currentSection?.id ?? junctionSectionForEnergy(energy, brake > 0.2);
+    const sceneIndex = currentSection && manifest
+      ? manifest.sections.indexOf(currentSection)
+      : -1;
     return {
       scoreId: "junction",
       scoreLabel: "JUNCTION",
-      scene: manifest?.sections.findIndex((section) => section.id === sectionId) ?? 0,
+      scene: Math.max(0, sceneIndex),
       sceneId: sectionId,
       section: sectionId.toUpperCase(),
+      sectionTake: currentSection?.take ?? null,
       halfTime: false,
       tempo: manifest?.bpm ?? 168,
       energy,
@@ -58,9 +66,10 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
       gain = context.createGain();
       gain.gain.value = 0.92;
       source.connect(filter).connect(gain).connect(destination);
-      const target = manifest.sections.find(
-        (section) => section.id === junctionSectionForEnergy(energy, brake > 0.2),
-      ) ?? manifest.sections[0];
+      const target = chooseJunctionVariation(
+        manifest.sections,
+        junctionSectionForEnergy(energy, brake > 0.2),
+      );
       currentSection = target;
       media.currentTime = target.startSeconds;
       if (active) await media.play();
@@ -77,7 +86,11 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
     const end = currentSection.startSeconds + currentSection.durationSeconds;
     if (media.currentTime < end - 0.08 && !media.ended) return;
     const id = junctionSectionForEnergy(energy, brake > 0.2);
-    currentSection = manifest.sections.find((section) => section.id === id) ?? manifest.sections[0];
+    currentSection = chooseJunctionVariation(
+      manifest.sections,
+      id,
+      currentSection.take,
+    );
     media.currentTime = currentSection.startSeconds + 0.015;
     media.play().catch(() => {});
   }

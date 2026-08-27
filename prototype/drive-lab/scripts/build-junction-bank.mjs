@@ -10,9 +10,10 @@ const run = promisify(execFile);
 const HERE = dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = resolve(HERE, "..");
 const TEMPO = 168;
-const BARS = 64;
+const TAKES = 3;
 const SECTION_IDS = ["open", "enter", "build", "break", "full", "turn", "ease", "rest"];
-const barsPerSection = BARS / SECTION_IDS.length;
+const BARS_PER_SECTION = 8;
+const BARS = SECTION_IDS.length * TAKES * BARS_PER_SECTION;
 const secondsPerBar = (60 / TEMPO) * 4;
 
 const wavPath = resolve(PROJECT_ROOT, `renders/junction-sketch-${TEMPO}.wav`);
@@ -30,14 +31,14 @@ await run("ffmpeg", [
   "-y",
   "-i", wavPath,
   "-c:a", "libopus",
-  "-b:a", "160k",
+  "-b:a", "144k",
   "-vbr", "on",
   "-application", "audio",
   encodedPath,
 ], { maxBuffer: 1 << 20 });
 
 const audio = await readFile(encodedPath);
-const sectionSeconds = barsPerSection * secondsPerBar;
+const sectionSeconds = BARS_PER_SECTION * secondsPerBar;
 const manifest = {
   format: "sedicivalvole.music-bank.v1",
   score: "junction",
@@ -45,13 +46,20 @@ const manifest = {
   mime: "audio/ogg; codecs=opus",
   bpm: TEMPO,
   bars: BARS,
-  barsPerSection,
+  barsPerSection: BARS_PER_SECTION,
+  takes: TAKES,
   durationSeconds: BARS * secondsPerBar,
-  sections: SECTION_IDS.map((id, index) => ({
-    id,
-    startSeconds: index * sectionSeconds,
-    durationSeconds: sectionSeconds,
-  })),
+  sections: Array.from({ length: TAKES }, (_, take) => (
+    SECTION_IDS.map((id, sectionIndex) => {
+      const index = take * SECTION_IDS.length + sectionIndex;
+      return {
+        id,
+        take: take + 1,
+        startSeconds: index * sectionSeconds,
+        durationSeconds: sectionSeconds,
+      };
+    })
+  )).flat(),
 };
 const manifestBytes = Buffer.from(JSON.stringify(manifest));
 const header = Buffer.alloc(12);

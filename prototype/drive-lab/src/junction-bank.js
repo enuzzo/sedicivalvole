@@ -15,14 +15,23 @@ export function parseJunctionBank(arrayBuffer) {
   if (manifest.format !== "sedicivalvole.music-bank.v1" || manifest.score !== "junction") {
     throw new Error("JUNCTION bank manifest is incompatible");
   }
-  if (!Array.isArray(manifest.sections) || manifest.sections.length !== 8) {
-    throw new Error("JUNCTION bank must contain eight authored sections");
+  if (!Array.isArray(manifest.sections) || manifest.sections.length < 8) {
+    throw new Error("JUNCTION bank must contain at least eight authored sections");
   }
   return {
     manifest,
     audio: new Blob([bytes.subarray(audioOffset)], { type: manifest.mime }),
     audioBytes: bytes.byteLength - audioOffset,
   };
+}
+
+export function chooseJunctionVariation(sections, sectionId, previousTake = null, random = Math.random) {
+  const candidates = sections.filter((section) => section.id === sectionId);
+  if (candidates.length === 0) return sections[0] ?? null;
+  const fresh = candidates.filter((section) => section.take !== previousTake);
+  const pool = fresh.length > 0 ? fresh : candidates;
+  const value = Math.min(0.999999, Math.max(0, Number(random()) || 0));
+  return pool[Math.floor(value * pool.length)];
 }
 
 export function junctionSectionForEnergy(energy, braking = false) {

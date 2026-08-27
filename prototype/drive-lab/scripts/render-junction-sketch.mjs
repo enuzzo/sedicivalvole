@@ -24,7 +24,7 @@
 // chord lands where, and the processing they all sit in.
 //
 // Usage:
-//   node scripts/render-junction-sketch.mjs [--tempo 168] [--bars 64]
+//   node scripts/render-junction-sketch.mjs [--tempo 168] [--bars 192]
 
 import { createWriteStream } from "node:fs";
 import { mkdir } from "node:fs/promises";
@@ -75,22 +75,61 @@ const PROGRESSION = [
  * this material offers, and it costs nothing to use.
  */
 /**
- * Eight sections of eight bars. Density climbs and releases; which break sets
- * are layered and which synth carries the chords turn over as it goes.
+ * Eight energy sections, each with three authored takes. A take changes its
+ * break orchestration every two-bar phrase and rotates the supplied chord
+ * voicings, but keeps the section's harmonic and dynamic purpose intact.
  */
 const SECTIONS = [
-  { id: "open", breaks: [], bass: true, pad: 1, voicing: 0, stab: false, drive: 0.04, space: 0.55, level: 0.54 },
-  { id: "enter", breaks: ["A:01"], bass: true, pad: 0.95, voicing: 1, stab: false, drive: 0.1, space: 0.46, level: 0.72 },
-  { id: "build", breaks: ["A:02", "B:01"], bass: true, pad: 0.85, voicing: 2, stab: true, drive: 0.18, space: 0.38, level: 0.84 },
-  { id: "break", breaks: ["B:02", "C:01"], bass: true, pad: 0.7, voicing: 3, stab: true, drive: 0.26, space: 0.32, level: 0.92 },
-  { id: "full", breaks: ["A:01", "C:02", "D:01"], bass: true, pad: 0.62, voicing: 4, stab: true, drive: 0.34, space: 0.28, level: 1 },
-  { id: "turn", breaks: ["B:01", "D:02"], bass: true, pad: 0.7, voicing: 5, stab: true, drive: 0.3, space: 0.32, level: 0.94 },
-  { id: "ease", breaks: ["C:01", "A:02"], bass: true, pad: 0.9, voicing: 6, stab: false, drive: 0.14, space: 0.46, level: 0.78 },
-  { id: "rest", breaks: [], bass: true, pad: 1, voicing: 7, stab: false, drive: 0.05, space: 0.58, level: 0.58 },
+  { id: "open", bass: true, pad: 1, drive: 0.04, space: 0.55, level: 0.54, takes: [
+    { breakPhrases: [[], [], [], []], voicing: 0, stab: false },
+    { breakPhrases: [[], [], ["D:01"], []], voicing: 3, stab: false },
+    { breakPhrases: [[], ["A:02"], [], []], voicing: 6, stab: false },
+  ] },
+  { id: "enter", bass: true, pad: 0.95, drive: 0.1, space: 0.46, level: 0.72, takes: [
+    { breakPhrases: [["A:01"], ["A:01"], ["A:02"], ["A:01"]], voicing: 1, stab: false },
+    { breakPhrases: [["B:01"], ["B:02"], ["B:01"], ["A:02"]], voicing: 4, stab: false },
+    { breakPhrases: [["D:01"], ["D:01"], ["C:01"], ["D:02"]], voicing: 7, stab: false },
+  ] },
+  { id: "build", bass: true, pad: 0.85, drive: 0.18, space: 0.38, level: 0.84, takes: [
+    { breakPhrases: [["A:02"], ["A:02", "B:01"], ["B:01"], ["A:01", "B:02"]], voicing: 2, stab: true },
+    { breakPhrases: [["C:01"], ["C:02", "A:01"], ["C:01", "B:02"], ["A:02", "C:02"]], voicing: 5, stab: true },
+    { breakPhrases: [["D:02"], ["D:01", "B:01"], ["B:02", "D:02"], ["C:01", "D:01"]], voicing: 8, stab: true },
+  ] },
+  { id: "break", bass: true, pad: 0.7, drive: 0.26, space: 0.32, level: 0.92, takes: [
+    { breakPhrases: [["B:02", "C:01"], ["B:01", "C:02"], ["C:01", "D:02"], ["B:02", "D:01"]], voicing: 3, stab: true },
+    { breakPhrases: [["A:02", "D:01"], ["C:02", "D:02"], ["A:01", "B:02"], ["B:01", "C:01"]], voicing: 6, stab: true },
+    { breakPhrases: [["D:02", "A:01"], ["B:02", "C:02"], ["D:01", "C:01"], ["A:02", "B:01"]], voicing: 9, stab: true },
+  ] },
+  { id: "full", bass: true, pad: 0.62, drive: 0.34, space: 0.28, level: 1, takes: [
+    { breakPhrases: [["A:01", "C:02", "D:01"], ["A:02", "B:01", "D:02"], ["B:02", "C:01", "D:01"], ["A:01", "C:02", "D:02"]], voicing: 4, stab: true },
+    { breakPhrases: [["B:01", "C:01", "D:02"], ["A:02", "C:02", "D:01"], ["A:01", "B:02", "C:01"], ["B:01", "C:02", "D:02"]], voicing: 7, stab: true },
+    { breakPhrases: [["A:02", "B:02", "D:01"], ["A:01", "C:01", "D:02"], ["B:01", "C:02", "D:01"], ["A:02", "B:02", "C:01"]], voicing: 10, stab: true },
+  ] },
+  { id: "turn", bass: true, pad: 0.7, drive: 0.3, space: 0.32, level: 0.94, takes: [
+    { breakPhrases: [["B:01", "D:02"], ["D:01"], ["B:02", "D:02"], ["C:01"]], voicing: 5, stab: true },
+    { breakPhrases: [["C:02", "A:01"], ["A:02"], ["C:01", "D:01"], ["B:02"]], voicing: 8, stab: true },
+    { breakPhrases: [["D:02", "C:01"], ["B:01"], ["A:02", "D:01"], ["C:02"]], voicing: 11, stab: true },
+  ] },
+  { id: "ease", bass: true, pad: 0.9, drive: 0.14, space: 0.46, level: 0.78, takes: [
+    { breakPhrases: [["C:01", "A:02"], ["C:01"], ["A:01"], []], voicing: 6, stab: false },
+    { breakPhrases: [["D:01", "B:02"], ["D:02"], ["B:01"], []], voicing: 9, stab: false },
+    { breakPhrases: [["A:02", "C:02"], ["C:01"], ["D:01"], []], voicing: 12, stab: false },
+  ] },
+  { id: "rest", bass: true, pad: 1, drive: 0.05, space: 0.58, level: 0.58, takes: [
+    { breakPhrases: [[], [], [], []], voicing: 7, stab: false },
+    { breakPhrases: [[], [], [], ["D:02"]], voicing: 10, stab: false },
+    { breakPhrases: [[], ["C:02"], [], []], voicing: 13, stab: false },
+  ] },
 ];
 
+const ARRANGEMENT = [0, 1, 2].flatMap((take) => SECTIONS.map((section) => ({
+  ...section,
+  ...section.takes[take],
+  take,
+})));
+
 function parseArguments(argv) {
-  const options = { tempo: 168, bars: 64 };
+  const options = { tempo: 168, bars: ARRANGEMENT.length * 8 };
   for (let index = 0; index < argv.length; index += 1) {
     if (argv[index] === "--tempo") options.tempo = Number.parseInt(argv[index + 1], 10);
     else if (argv[index] === "--bars") options.bars = Number.parseInt(argv[index + 1], 10);
@@ -200,8 +239,6 @@ async function main() {
   const barFrames = Math.round(loopFrames / LOOP_BARS);
   const stepFrames = Math.round(barFrames / STEPS_PER_BAR);
   const totalFrames = barFrames * options.bars;
-  const barsPerSection = Math.max(1, Math.floor(options.bars / SECTIONS.length));
-
   const left = new Float32Array(totalFrames);
   const right = new Float32Array(totalFrames);
 
@@ -217,14 +254,14 @@ async function main() {
 
   /** Notes currently sounding. Melodic lines and pad hits both live here. */
   let voices = [];
-  let smoothedLevel = SECTIONS[0].level;
-  let smoothedDrive = SECTIONS[0].drive;
-  let smoothedSpace = SECTIONS[0].space;
+  let smoothedLevel = ARRANGEMENT[0].level;
+  let smoothedDrive = ARRANGEMENT[0].drive;
+  let smoothedSpace = ARRANGEMENT[0].space;
   const used = new Set();
 
   for (let frame = 0; frame < totalFrames; frame += 1) {
     const bar = Math.floor(frame / barFrames);
-    const section = SECTIONS[Math.min(Math.floor(bar / barsPerSection), SECTIONS.length - 1)];
+    const section = ARRANGEMENT[Math.min(Math.floor(bar / 8), ARRANGEMENT.length - 1)];
     const inLoop = frame % loopFrames;
 
     // Structural triggers land exactly on a step. The only thing decided here is
@@ -272,8 +309,9 @@ async function main() {
 
     let breakLeft = 0;
     let breakRight = 0;
-    for (let index = 0; index < section.breaks.length; index += 1) {
-      const layer = breaks.get(section.breaks[index]);
+    const phraseBreaks = section.breakPhrases[Math.floor((bar % 8) / LOOP_BARS)];
+    for (let index = 0; index < phraseBreaks.length; index += 1) {
+      const layer = breaks.get(phraseBreaks[index]);
       if (!layer) continue;
       // Layers after the first sit back and to the sides: a thicker break, not
       // a louder one.
