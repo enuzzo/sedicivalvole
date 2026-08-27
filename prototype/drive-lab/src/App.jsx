@@ -17,7 +17,7 @@ import {
   summarizeGpsTelemetry,
 } from "./diagnostics-model.js";
 import { FluxField } from "./flux-field.jsx";
-import { FLUX_ENVIRONMENTS, getFluxEnvironment, nextFluxEnvironmentId } from "./flux-environments.js";
+import { FLUX_ENVIRONMENTS, getFluxEnvironment } from "./flux-environments.js";
 import { FLUX_THEMES, getFluxTheme } from "./flux-themes.js";
 import {
   DEFAULT_GENRE_ID,
@@ -305,22 +305,87 @@ function ModeSelector() {
  * bar taller to fit them would cost the thing that makes this interface work —
  * that it retreats off-canvas entirely and leaves the road.
  */
-function ScoreControl({ genreId, onOpen }) {
+function DisclosureCaret() {
+  return (
+    <svg className="disclosure-caret" viewBox="0 0 12 8" aria-hidden="true">
+      <path d="m1 1 5 5 5-5" />
+    </svg>
+  );
+}
+
+function VisualControl({ environment, onOpen }) {
+  return (
+    <button
+      className="environment-control"
+      type="button"
+      aria-haspopup="dialog"
+      aria-label={`Visual ${environment.label}. Tap to change`}
+      onClick={onOpen}
+    >
+      <span className="control-label">VISUAL</span>
+      <strong>{environment.label}</strong>
+      <span className="control-disclosure"><small>{environment.number}</small><DisclosureCaret /></span>
+    </button>
+  );
+}
+
+function MusicControl({ genreId, onOpen }) {
   const selected = getScoreGenre(genreId);
   return (
     <button
       className="score-control"
       type="button"
       aria-haspopup="dialog"
-      aria-label={`Score ${selected.label}, ${selected.family}. Tap to change`}
+      aria-label={`Music ${selected.label}, ${selected.family}. Tap to change`}
       onClick={onOpen}
     >
-      <span className="control-label">SCORE</span>
+      <span className="control-label">MUSIC</span>
       <strong>{selected.label}</strong>
-      <small title={scoreSource(genreId).note}>
-        {scoreSource(genreId).mark} {selected.number}
-      </small>
+      <span className="control-disclosure" title={scoreSource(genreId).note}>
+        <small>{scoreSource(genreId).mark} {selected.number}</small><DisclosureCaret />
+      </span>
     </button>
+  );
+}
+
+function VisualPicker({ environmentId, onChange, onClose }) {
+  return (
+    <section
+      className="diagnostic-drawer score-drawer environment-drawer"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="visual-picker-title"
+    >
+      <button className="drawer-backdrop" type="button" onClick={onClose} aria-label="Close" />
+      <div className="drawer-panel">
+        <div className="drawer-heading">
+          <div><small>FLUX VISUAL LIBRARY</small><h2 id="visual-picker-title">Visual</h2></div>
+          <button type="button" onClick={onClose} aria-label="Close visual library">CLOSE</button>
+        </div>
+        <ul className="score-list">
+          {FLUX_ENVIRONMENTS.map((entry) => {
+            const active = entry.id === environmentId;
+            return (
+              <li key={entry.id}>
+                <button
+                  type="button"
+                  className={`score-entry${active ? " is-active" : ""}`}
+                  aria-pressed={active}
+                  onClick={() => {
+                    onChange(entry.id);
+                    onClose();
+                  }}
+                >
+                  <span className="score-entry-number">{entry.number}</span>
+                  <span className="score-entry-body"><strong>{entry.label}</strong><span>{entry.rendererLabel}</span></span>
+                  <span className="score-entry-state">{active ? "ACTIVE" : "SELECT"}</span>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </section>
   );
 }
 
@@ -332,7 +397,7 @@ function ScoreControl({ genreId, onOpen }) {
  * library is the roadmap; and they are not selectable, because the project rule
  * is explicit that an unimplemented genre may never be labelled as playing.
  */
-function ScorePicker({ genreId, onChange, onClose }) {
+function MusicPicker({ genreId, onChange, onClose }) {
   return (
     <section
       className="diagnostic-drawer score-drawer"
@@ -343,8 +408,8 @@ function ScorePicker({ genreId, onChange, onClose }) {
       <button className="drawer-backdrop" type="button" onClick={onClose} aria-label="Close" />
       <div className="drawer-panel">
         <div className="drawer-heading">
-          <div><small>FLUX SCORE LIBRARY</small><h2 id="score-picker-title">Score</h2></div>
-          <button type="button" onClick={onClose} aria-label="Close score library">CLOSE</button>
+          <div><small>FLUX MUSIC LIBRARY</small><h2 id="score-picker-title">Music</h2></div>
+          <button type="button" onClick={onClose} aria-label="Close music library">CLOSE</button>
         </div>
         <ul className="score-list">
           {SCORE_GENRES.map((genre) => {
@@ -383,7 +448,7 @@ function ScorePicker({ genreId, onChange, onClose }) {
           })}
         </ul>
         <p className="privacy-note">
-          Only a score with authored material behind it can be selected. The rest
+          Only finished music can be selected. The rest
           name a direction and the rhythmic family it will be built from.
         </p>
       </div>
@@ -455,6 +520,7 @@ export function App() {
   const [themeId, setThemeId] = useState(initialPreferences.themeId);
   const [environmentId, setEnvironmentId] = useState(initialPreferences.environmentId);
   const [genreId, setGenreId] = useState(initialPreferences.genreId);
+  const [environmentPickerOpen, setEnvironmentPickerOpen] = useState(false);
   const [scorePickerOpen, setScorePickerOpen] = useState(false);
   const [rawReportOpen, setRawReportOpen] = useState(false);
   const reducedMotion = useMemo(
@@ -1139,9 +1205,10 @@ export function App() {
       // Escape closes whatever is open. Clicking the field outside a panel
       // already dismisses it; this is the same gesture from the keyboard.
       if (event.key === "Escape") {
-        if (!(drawerOpen || previewOpen || scorePickerOpen)) return;
+        if (!(drawerOpen || previewOpen || environmentPickerOpen || scorePickerOpen)) return;
         event.preventDefault();
         setPreviewOpen(false);
+        setEnvironmentPickerOpen(false);
         setScorePickerOpen(false);
         setDrawerOpen(false);
         return;
@@ -1181,6 +1248,7 @@ export function App() {
   }, [
     phase,
     drawerOpen,
+    environmentPickerOpen,
     previewOpen,
     scorePickerOpen,
     logDiagnosticEvent,
@@ -1337,7 +1405,7 @@ export function App() {
     <main
       ref={appRef}
       tabIndex={-1}
-      className={`app phase-${phase} ${controlsAwake || drawerOpen ? "controls-awake" : "controls-resting"}`}
+      className={`app phase-${phase} ${controlsAwake || drawerOpen || environmentPickerOpen || scorePickerOpen ? "controls-awake" : "controls-resting"}`}
       data-theme={themeId}
       data-environment={environmentId}
       onPointerDown={handleSurfacePointerDown}
@@ -1455,20 +1523,8 @@ export function App() {
             </span>
             <span>AUDIO</span><strong>{muted ? "MUTED" : "RUNNING"}</strong>
           </button>
-          <button
-            className="environment-control"
-            type="button"
-            aria-label={`Visual ${environment.label}. Tap to change`}
-            onClick={() => {
-              const nextEnvironmentId = nextFluxEnvironmentId(environmentId);
-              setEnvironmentId(nextEnvironmentId);
-              logDiagnosticEvent("environment.changed", { environment: nextEnvironmentId });
-            }}
-          >
-            <span className="control-label">VISUAL</span>
-            <strong>{environment.label}</strong><small>{environment.number}</small>
-          </button>
-          <ScoreControl genreId={genreId} onOpen={() => setScorePickerOpen(true)} />
+          <VisualControl environment={environment} onOpen={() => setEnvironmentPickerOpen(true)} />
+          <MusicControl genreId={genreId} onOpen={() => setScorePickerOpen(true)} />
           <BodyColorControl themeId={themeId} onChange={setThemeId} />
         </footer>
       </section>
@@ -1488,7 +1544,7 @@ export function App() {
               which made the two questions it answers — is the vehicle coping,
               and what is the score doing — impossible to tell apart at a glance.
             */}
-            <h3 className="diagnostic-group">Score</h3>
+            <h3 className="diagnostic-group">Music</h3>
             <div className="diagnostic-grid">
               <article>
                 <small>PLAYING</small>
@@ -1588,8 +1644,19 @@ export function App() {
         </section>
       ) : null}
 
+      {environmentPickerOpen ? (
+        <VisualPicker
+          environmentId={environmentId}
+          onChange={(nextEnvironmentId) => {
+            setEnvironmentId(nextEnvironmentId);
+            logDiagnosticEvent("environment.changed", { environment: nextEnvironmentId });
+          }}
+          onClose={() => setEnvironmentPickerOpen(false)}
+        />
+      ) : null}
+
       {scorePickerOpen ? (
-        <ScorePicker
+        <MusicPicker
           genreId={genreId}
           onChange={(nextGenreId) => {
             setGenreId(nextGenreId);
