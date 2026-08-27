@@ -8,6 +8,35 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## JUNCTION road-energy pacing publication evidence — 2026-08-27
+
+- build stamp: **`20260827-2323`**, confirmed on the canonical splash and in the
+  live diagnostic report; deployed commit: `36efdd2`; implementation:
+  `019368f`;
+- gate before upload: **PASS**, 130 unit tests, 4 packaging tests, focused
+  rendered-audio analysis and a production build;
+- the bank contains 24 gapless authored sections across native 127, 135, 158,
+  160, 164 and 168 BPM recordings. Rest has no break or bassline; the primary
+  beat is gain-bounded and enters near 13 km/h through a rising phrase envelope;
+- read-only deployment preflight: **PASS**, `remote_writes=NONE`; intentional
+  upload: **PASS**, 21 files and 7,026,467 bytes;
+- canonical `/`: **HTTP 200**, `no-store`, and byte-identical to local
+  `index.html` at SHA-256
+  `70ddc9eab773c4dfaf1b58ebdbe6bd5ddd53a68a1577386ae4937fb592cc8fb3`;
+- `assets/index-C-Mh8nsL.js`: **HTTP 200**, byte-identical at SHA-256
+  `bcb91f6819b1eb6ca54fccdf7d2a9fd7d2d7af6a63fd61f8eae017ffb64b59e4`;
+- `audio/junction.svb?build=20260827-2323`: **HTTP 200**, 5,730,210 bytes and
+  byte-identical at SHA-256
+  `57493dfe0009ef07c518bd9a9e45049bbc9c78735a6e5109fc137d51dde6c4ad`;
+- live Browser QA at `773 x 601`: **PASS**. JUNCTION reported build
+  `20260827-2323`, commit `36efdd2`, `bankLoaded: true`, `playing: true`, 127 BPM,
+  `ambient`, and only `harmony` plus `atmosphere` lanes at rest. The take changed
+  from **3 to 2** at the next eight-bar boundary without introducing rhythm;
+- simultaneous Vertigo and JUNCTION playback sustained **60 FPS / 17.5 ms
+  p95**, with no frame over 34 ms and zero runtime issues. The 30, 40 and 60
+  km/h tempo-state mappings are deterministic-test evidence; listening
+  acceptance at those speeds remains a real-Tesla gate. No diagnostic was sent.
+
 ## JUNCTION authored-variation publication evidence — 2026-08-27
 
 - build stamp: **`20260827-2304`**, confirmed on the canonical splash and in the
