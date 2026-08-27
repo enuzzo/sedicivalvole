@@ -48,6 +48,7 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - 2026-08-27 14:53 `[1b0b846]`: Expanded tunnel formation across smooth 0–55 km/h curve, eliminated low-speed motion dead zones with responsive progressive flow-rate curve, and added launch throttle ramp.
 - 2026-08-27 14:54 `[39029e6]`: Eliminated ghost red flashes in tunnel terminus void by gating terminus darkening as final pipeline step after all pulse and brake lighting effects.
 - 2026-08-27 15:02 `[c85b70c]`: Replaced central floating wall cap with direct continuous geometric morphing between flat square 2D grid at 0 km/h and 4 perspective tunnel walls at 35 km/h, enabling grid to seamlessly fold into walls/ceiling/floor and unroll back on deceleration.
+- 2026-08-27 15:06 `[b569310]`: Re-indexed entire unreleased changelog history with strict chronological timestamps and short commit hashes for all historical entries.
 
 ### Security
 
