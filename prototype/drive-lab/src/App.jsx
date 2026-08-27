@@ -275,42 +275,86 @@ function ModeSelector() {
 }
 
 /**
- * The score library.
+ * The score control in the command bar.
  *
- * Every direction in the library is shown, and the ones with no authored score
- * behind them say so on their own face rather than being hidden or, worse,
- * offered and then playing nothing. A cell is the whole target: the label, the
- * family and the state are one button, sized to be hit without looking.
+ * The bar keeps the geometry it had: one cell, one label, one value. The
+ * library itself opens in a panel, because six entries with their state written
+ * on them cannot be legible at arm's length inside a 190px cell, and making the
+ * bar taller to fit them would cost the thing that makes this interface work —
+ * that it retreats off-canvas entirely and leaves the road.
  */
-function ScoreControl({ genreId, onChange }) {
+function ScoreControl({ genreId, onOpen }) {
   const selected = getScoreGenre(genreId);
   return (
-    <section className="score-control" aria-labelledby="score-control-label">
-      <div className="score-control-heading">
-        <span className="control-label" id="score-control-label">SCORE</span>
-        <span className="score-control-note">{selected.note}</span>
-      </div>
-      <div className="score-rail" role="group" aria-label="Score">
-        {SCORE_GENRES.map((genre) => {
-          const ready = genre.status === SCORE_STATUS.ready;
-          const active = ready && genre.id === genreId;
-          return (
-            <button
-              key={genre.id}
-              type="button"
-              className={`score-cell${active ? " is-active" : ""}${ready ? "" : " is-preparing"}`}
-              disabled={!ready}
-              aria-pressed={active}
-              aria-label={ready
-                ? `Play the ${genre.label} score, ${genre.family}`
-                : `${genre.label}, ${genre.family}, not available yet`}
-              onClick={() => ready && onChange(genre.id)}
-            >
-              <strong>{genre.label}</strong>
-              <small>{ready ? genre.family : "IN PREPARATION"}</small>
-            </button>
-          );
-        })}
+    <button
+      className="score-control"
+      type="button"
+      aria-haspopup="dialog"
+      aria-label={`Score ${selected.label}, ${selected.family}. Tap to change`}
+      onClick={onOpen}
+    >
+      <span className="control-label">SCORE</span>
+      <strong>{selected.label}</strong><small>{selected.number}</small>
+    </button>
+  );
+}
+
+/**
+ * The score library panel.
+ *
+ * Every direction is shown, including the ones with nothing authored behind
+ * them, and those say so on their own face. They are not hidden, because the
+ * library is the roadmap; and they are not selectable, because the project rule
+ * is explicit that an unimplemented genre may never be labelled as playing.
+ */
+function ScorePicker({ genreId, onChange, onClose }) {
+  return (
+    <section
+      className="diagnostic-drawer score-drawer"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="score-picker-title"
+    >
+      <button className="drawer-backdrop" type="button" onClick={onClose} aria-label="Close" />
+      <div className="drawer-panel">
+        <div className="drawer-heading">
+          <div><small>FLUX SCORE LIBRARY</small><h2 id="score-picker-title">Score</h2></div>
+          <button type="button" onClick={onClose} aria-label="Close score library">CLOSE</button>
+        </div>
+        <ul className="score-list">
+          {SCORE_GENRES.map((genre) => {
+            const ready = genre.status === SCORE_STATUS.ready;
+            const active = ready && genre.id === genreId;
+            return (
+              <li key={genre.id}>
+                <button
+                  type="button"
+                  className={`score-entry${active ? " is-active" : ""}${ready ? "" : " is-preparing"}`}
+                  disabled={!ready}
+                  aria-pressed={active}
+                  onClick={() => {
+                    if (!ready) return;
+                    onChange(genre.id);
+                    onClose();
+                  }}
+                >
+                  <span className="score-entry-number">{genre.number}</span>
+                  <span className="score-entry-body">
+                    <strong>{genre.label}</strong>
+                    <span>{genre.family} · {genre.note}</span>
+                  </span>
+                  <span className="score-entry-state">
+                    {active ? "PLAYING" : ready ? "SELECT" : "IN PREPARATION"}
+                  </span>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+        <p className="privacy-note">
+          Only a score with authored material behind it can be selected. The rest
+          name a direction and the rhythmic family it will be built from.
+        </p>
       </div>
     </section>
   );
@@ -319,35 +363,37 @@ function ScoreControl({ genreId, onChange }) {
 /**
  * Body colour.
  *
- * Ten finishes in two rows of five: the vehicle's own colours on the first row,
- * the five that no car is painted in on the second. A theme that genuinely uses
- * two colours shows both halves of the swatch, because showing one and hiding
- * the other would misrepresent what selecting it does.
+ * Ten finishes in the cell that held five: the vehicle's own colours on the top
+ * row, the five no car is painted in below. The housing keeps its single
+ * border; the swatches inside no longer carry one of their own, which was two
+ * lines doing one line's work and dulled every colour it framed. A theme that
+ * genuinely uses two colours shows both, because showing one and hiding the
+ * other misrepresents what selecting it does.
  */
 function BodyColorControl({ themeId, onChange }) {
   const selected = getFluxTheme(themeId);
   return (
-    <section className="body-color-control" aria-labelledby="body-color-label">
-      <div className="body-color-heading">
-        <span className="control-label" id="body-color-label">BODY COLOR</span>
-        <strong>{selected.label}</strong>
-      </div>
-      <div className="swatch-rail" role="group" aria-label="Body colour">
+    <fieldset className="body-color-control">
+      <legend>BODY COLOR</legend>
+      <strong>{selected.label}</strong>
+      <div className="swatch-housing">
         {FLUX_THEMES.map((theme) => (
           <button
             key={theme.id}
-            className={`swatch${theme.id === themeId ? " is-selected" : ""}`}
+            className={theme.id === themeId ? "is-selected" : ""}
             type="button"
             aria-label={`Use the ${theme.label.toLowerCase()} finish`}
             aria-pressed={theme.id === themeId}
             onClick={() => onChange(theme.id)}
-            style={theme.swatchSecondary
+          >
+            <span style={theme.swatchSecondary
               ? { background: `linear-gradient(105deg, ${theme.swatch} 0 52%, ${theme.swatchSecondary} 52% 100%)` }
               : { background: theme.swatch }}
-          />
+            />
+          </button>
         ))}
       </div>
-    </section>
+    </fieldset>
   );
 }
 
@@ -378,6 +424,7 @@ export function App() {
   const [themeId, setThemeId] = useState(initialPreferences.themeId);
   const [environmentId, setEnvironmentId] = useState(initialPreferences.environmentId);
   const [genreId, setGenreId] = useState(initialPreferences.genreId);
+  const [scorePickerOpen, setScorePickerOpen] = useState(false);
   const reducedMotion = useMemo(
     () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false,
     [],
@@ -1361,14 +1408,8 @@ export function App() {
             <span className="control-label">VISUAL</span>
             <strong>{environment.label}</strong><small>{environment.number}</small>
           </button>
+          <ScoreControl genreId={genreId} onOpen={() => setScorePickerOpen(true)} />
           <BodyColorControl themeId={themeId} onChange={setThemeId} />
-          <ScoreControl
-            genreId={genreId}
-            onChange={(nextGenreId) => {
-              setGenreId(nextGenreId);
-              logDiagnosticEvent("score.changed", { score: nextGenreId });
-            }}
-          />
         </footer>
       </section>
 
@@ -1406,6 +1447,17 @@ export function App() {
             </p>
           </div>
         </section>
+      ) : null}
+
+      {scorePickerOpen ? (
+        <ScorePicker
+          genreId={genreId}
+          onChange={(nextGenreId) => {
+            setGenreId(nextGenreId);
+            logDiagnosticEvent("score.changed", { score: nextGenreId });
+          }}
+          onClose={() => setScorePickerOpen(false)}
+        />
       ) : null}
 
       {previewOpen && (
