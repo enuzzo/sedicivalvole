@@ -8,6 +8,32 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Braun launch and phase-diagnostics publication evidence — 2026-08-28
+
+- build stamp: **`20260828-0100`**; deployed commit: `81824b8`;
+  implementation: `5ed9981`;
+- gate before upload: **PASS**, 133 unit tests, 4 packaging tests, production
+  build, pixel-normalized Product Design comparison at `773 × 601`, read-only
+  remote identity verification and no preflight writes;
+- publication: **PASS**, 24 files / 26,071,715 bytes uploaded to the canonical
+  root; dynamic root and cache-overlap retention passed;
+- canonical cache-busted HTML: **HTTP 200**, `no-store`, byte-identical to the
+  local build, and references `assets/index-BzWV8UEY.js` plus
+  `assets/index-DArx3tJD.css`;
+- the live JavaScript, CSS, technical vent, red safety insert and latch are each
+  byte-identical to the local build. The bundle reports build `20260828-0100`
+  and commit `81824b8`;
+- live Browser QA at `773 × 601`: **PASS** for the selected `390 × 170 px`
+  Braun instrument plate, integrated wordmark, launch interaction, shadowed
+  borderless DIAG drawer and zero console warnings/errors;
+- live Demo evidence crossed Signal Gate, Aperture + JUNCTION, Vertigo +
+  JUNCTION and the Vertigo/JUNCTION DIAG state. The report recorded five phase
+  summaries, **60.38 FPS / 18.4 ms p95**, 12 MB browser-exposed JavaScript heap,
+  33.2 MB decoded PCM, zero runtime issues and no coordinate keys;
+- one explicitly authorized live diagnostic submission at approximately
+  `2026-08-28 01:04` local time: **PASS** with UI state `SENT` and server status
+  `accepted_by_mail_transport`. Inbox delivery remains a separate user check.
+
 ## JUNCTION 104-clip publication evidence — 2026-08-28
 
 - build stamp: **`20260827-2359`**, generated immediately before midnight and

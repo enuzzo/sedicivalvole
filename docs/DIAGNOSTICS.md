@@ -97,3 +97,11 @@ Sanitized endpoint failures are shown in the drawer. The page keeps the recorder
 - A representative 248-sample report measured `215,327` bytes with the provider-equivalent precision and `120,095` bytes after shortest-round-trip serialization.
 - The corrected endpoint passed the complete local request path with `202 accepted_by_mail_transport` while real mail delivery was redirected to a harmless local sink.
 - The corrected endpoint is live. Retrying the still-open Tesla page requires no reload and preserves the original driving trace; successful transport and Gmail receipt remain pending user confirmation.
+
+## Phase-telemetry mail verification — 2026-08-28
+
+- Live build `20260828-0100`, commit `81824b8`, at `773 × 601`: **PASS**.
+- The explicit Demo path covered Signal Gate, Aperture + JUNCTION, Vertigo + JUNCTION, and DIAG-open state; the report retained five distinct performance phases.
+- Current Vertigo/JUNCTION DIAG phase: **60.38 FPS**, **18.4 ms p95**, **12 MB** browser-exposed JavaScript heap, and **33.2 MB** decoded PCM.
+- Runtime issues and coordinate keys: **zero**; browser console warnings/errors: **zero**.
+- Explicit `SEND DIAGNOSTIC`: **PASS** with `SENT` and `accepted_by_mail_transport`. This proves server mail-transport acceptance, not inbox delivery.
