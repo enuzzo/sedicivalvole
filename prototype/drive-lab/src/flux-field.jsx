@@ -63,7 +63,12 @@ const FRAGMENT_SHADER = `#version 300 es
     float depth = 1.0 / max(majorAxis, 0.12);
 
     float depthFrequency = mix(4.5, 2.15, velocity);
-    float perimeterDensity = mix(1.25, 10.0, smoothstep(0.42, 1.0, warp));
+    // The square perimeter runs 0..8 with corners on the even integers, so a cell
+    // boundary coincides with a corner only when 2 * density is a whole number.
+    // Quantising to halves keeps every corner exactly on a tile edge instead of
+    // letting a tile fold across the wall-to-roof junction.
+    float rawPerimeterDensity = mix(1.25, 10.0, smoothstep(0.42, 1.0, warp));
+    float perimeterDensity = max(0.5, floor(rawPerimeterDensity * 2.0 + 0.5) * 0.5);
     vec2 flatGrid = v_uv * vec2(10.0, 7.0);
     vec2 tunnelGrid = vec2(perimeter * perimeterDensity, depth * depthFrequency + u_flow);
     vec2 fieldGrid = mix(flatGrid, tunnelGrid, warp);
@@ -82,7 +87,10 @@ const FRAGMENT_SHADER = `#version 300 es
     vec2 fieldInset = mix(compactInset, tunnelInset, warp);
     float tile = rectangleMask(fieldLocal, fieldInset);
 
-    float colorIndex = mod(fieldCell.x + fieldCell.y * 3.0, 4.0);
+    // Keyed to the world cell, not to a linear combination of its coordinates:
+    // the linear form marched one step every row and read as a spiral. The hash
+    // is still deterministic, so a tile keeps its colour as it travels.
+    float colorIndex = floor(hash21(fieldCell + vec2(41.0, 13.0)) * 4.0);
     vec3 darkPanel = mix(u_base, u_mid, 0.66);
     vec3 panel = darkPanel;
     panel = mix(panel, u_mid, step(0.5, colorIndex));
@@ -123,6 +131,12 @@ function compileShader(gl, type, source) {
     throw new Error(message);
   }
   return shader;
+}
+
+function hashCell(column, row) {
+  let value = (Math.trunc(column) * 73856093) ^ (Math.trunc(row) * 19349663);
+  value = Math.imul(value ^ (value >>> 13), 1274126177);
+  return (value ^ (value >>> 16)) >>> 0;
 }
 
 function cssColor(rgb, alpha = 1) {
@@ -196,7 +210,9 @@ function drawCanvasFallback(context, canvas, energy, visualVelocity, palette, fl
     const panelWidth = compactSize + (tunnelWidth - compactSize) * warp;
     const panelHeight = compactSize + (tunnelHeight - compactSize) * warp;
 
-    const colorIndex = (column + row * 3) % flatColors.length;
+    // Matches the WebGL2 path: a linear combination of the cell coordinates
+    // marches one step per row and reads as a spiral, so the tone is hashed.
+    const colorIndex = hashCell(column, row) % flatColors.length;
     context.fillStyle = cssColor(flatColors[colorIndex], 0.92 + travel * 0.08);
     context.fillRect(x - panelWidth / 2, y - panelHeight / 2, panelWidth, panelHeight);
   }
