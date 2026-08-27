@@ -51,49 +51,50 @@ const FRAGMENT_SHADER = `#version 300 es
   void main() {
     vec2 uv_norm = v_uv * 2.0 - 1.0;
     
-    // 1. Speed factors
-    float speedFactor = clamp(u_speedKmh / 35.0, 0.0, 1.0);
-    float wallPush = speedFactor * speedFactor * (3.0 - 2.0 * speedFactor);
+    float normSpeed = clamp(u_speedKmh / 35.0, 0.0, 1.0);
+    float warp = normSpeed * normSpeed * (3.0 - 2.0 * normSpeed);
     float terminalVelocity = smoothstep(118.0, 130.0, u_speedKmh);
 
     vec3 darkPanel = mix(u_base, u_mid, 0.66);
 
-    // 2. 3D Raycasting
-    float Z_START = 3.5;
-    float Z_MAX = 10.5; // 7 levels of depth (3.5 + 7.0)
-    float Z_wall = mix(Z_START, Z_MAX, wallPush);
+    float absX = abs(uv_norm.x);
+    float absY = abs(uv_norm.y);
+    float majorAxis = max(max(absX, absY), 0.0001);
     
-    float t_tunnel = 1.0 / max(max(abs(uv_norm.x), abs(uv_norm.y)), 0.0001);
-    float Z_tunnel = Z_START * t_tunnel;
+    // Depth maps from 0 (at edges) to infinity (at center).
+    // At majorAxis = 0.125, Depth = 7.0 tiles.
+    float depth = (1.0 / majorAxis) - 1.0;
+    float flowOffset = u_flow * warp;
     
-    float Z_hit = min(Z_tunnel, Z_wall);
-    bool isBackWall = Z_wall <= Z_tunnel;
+    bool isSide = absX >= absY;
     
-    vec3 hitPos = vec3(uv_norm.x * u_aspect * Z_hit, uv_norm.y * Z_hit, Z_hit);
-
-    // 3. Coordinate mapping
-    float transGrid, longGrid;
-    bool isSide = abs(uv_norm.x) >= abs(uv_norm.y);
-    
-    if (isBackWall) {
-        transGrid = hitPos.x;
-        longGrid = hitPos.y;
+    vec2 gridPos;
+    if (isSide) {
+        float signX = sign(uv_norm.x);
+        float longi = 3.5 * u_aspect + depth - flowOffset;
+        float trans = uv_norm.y * 3.5 / absX;
+        gridPos.x = mix(uv_norm.x * u_aspect * 3.5, signX * longi, warp);
+        gridPos.y = mix(uv_norm.y * 3.5, trans, warp);
     } else {
-        if (isSide) {
-            transGrid = hitPos.y;
-            longGrid = hitPos.z - u_flow;
-        } else {
-            transGrid = hitPos.x;
-            longGrid = hitPos.z - u_flow;
-        }
+        float signY = sign(uv_norm.y);
+        float longi = 3.5 + depth - flowOffset;
+        float trans = uv_norm.x * u_aspect * 3.5 / absY;
+        gridPos.x = mix(uv_norm.x * u_aspect * 3.5, trans, warp);
+        gridPos.y = mix(uv_norm.y * 3.5, signY * longi, warp);
     }
+    
+    // Determine fractional parts based on which axis acts as longitudinal/transverse
+    float transFract = isSide ? fract(gridPos.y) : fract(gridPos.x);
+    float longFract  = isSide ? fract(gridPos.x) : fract(gridPos.y);
+    
+    float transCell = isSide ? floor(gridPos.y) : floor(gridPos.x);
+    
+    // Base Tile ID purely on the 2D grid position, guaranteeing 100% seamless continuity at warp=0
+    vec2 tileId = vec2(floor(gridPos.x), floor(gridPos.y));
+    float colorIndex = floor(hash21(tileId + vec2(41.0, 13.0) + u_restRecolour) * 4.0);
+    float tone = hash21(tileId + vec2(8.0, 29.0));
 
-    float transCell = floor(transGrid);
-    float transFract = fract(transGrid);
-    float longCell = floor(longGrid);
-    float longFract = fract(longGrid);
-
-    // 4. Tile Insets and Masking
+    // Tile Insets and Masking
     float baseTransInset = 0.085;
     float baseLongInset = mix(0.085, 0.02, u_velocity);
     float transInset = mix(baseTransInset, 0.44, terminalVelocity);
@@ -103,19 +104,6 @@ const FRAGMENT_SHADER = `#version 300 es
     float longMask = smoothstep(0.0, 0.02, min(longFract, 1.0 - longFract) - longInset);
     float tileMask = transMask * longMask;
 
-    // 5. Unified Tile Palette & Shuffling
-    float wallId;
-    if (isBackWall) {
-        wallId = 4.0;
-    } else {
-        wallId = isSide 
-          ? (uv_norm.x > 0.0 ? 1.0 : 3.0)  // 1 = Right, 3 = Left
-          : (uv_norm.y > 0.0 ? 0.0 : 2.0); // 0 = Top, 2 = Bottom
-    }
-    vec2 tileId = vec2(wallId * 100.0 + transCell, longCell);
-    float colorIndex = floor(hash21(tileId + vec2(41.0, 13.0) + u_restRecolour) * 4.0);
-    float tone = hash21(tileId + vec2(8.0, 29.0));
-
     vec3 panel = darkPanel;
     panel = mix(panel, u_mid, step(0.5, colorIndex));
     panel = mix(panel, u_light, step(1.5, colorIndex));
@@ -123,27 +111,27 @@ const FRAGMENT_SHADER = `#version 300 es
     panel *= mix(0.95 + tone * 0.10, 0.90 + tone * 0.20, u_velocity);
 
     // Terminal velocity laser streak coloring (white & red/accent)
-    float streakHash = hash21(vec2(wallId * 100.0 + transCell, 19.8));
+    float streakHash = hash21(vec2(isSide ? 1.0 : 0.0, transCell) + 19.8);
     vec3 streakColor = mix(u_light, u_accent, step(0.45, streakHash));
     streakColor = mix(streakColor, u_mid, step(0.85, streakHash));
     panel = mix(panel, streakColor, terminalVelocity);
 
     vec3 color = mix(u_base, panel, tileMask);
 
-    // 6. Reactive Audio Pulse & Brake Highlights
+    // Reactive Audio Pulse & Brake Highlights
     float pulse = u_pulse * tileMask * step(0.75, tone) * 0.22;
     color = mix(color, u_accent, pulse);
     color = mix(color, u_light, u_brake * tileMask * 0.08);
 
-    // 7. Outer edge vignette
-    float edge = smoothstep(1.25, 0.40, max(abs(uv_norm.x) * 0.75, abs(uv_norm.y)));
+    // Outer edge vignette
+    float edge = smoothstep(1.25, 0.40, max(absX * 0.75, absY));
     color *= mix(1.0, 0.75 + edge * 0.35, u_velocity);
 
-    // 8. FINAL TERMINUS VOID GATE:
-    // Pure black void at the end of the tunnel.
-    // As hitPos.z approaches Z_MAX, it fades to 0.0.
-    float zFade = smoothstep(Z_MAX, Z_MAX - 3.0, hitPos.z);
-    color *= zFade;
+    // FINAL TERMINUS VOID GATE:
+    // Void covers the central 12% of the screen, hiding the infinite depth singularity
+    float terminusVoid = smoothstep(0.12, 0.17, majorAxis);
+    float voidActive = smoothstep(15.0, 35.0, u_speedKmh);
+    color *= mix(1.0, terminusVoid, voidActive);
 
     outColor = vec4(color, 1.0);
   }
