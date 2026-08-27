@@ -139,7 +139,9 @@ const FRAGMENT_SHADER = `#version 300 es
     vec3 color = mix(u_base, panel, tileMask);
 
     // Reactive Audio Pulse & Brake Highlights
-    float pulse = u_pulse * tileMask * step(0.75, tone) * 0.22;
+    // Suppress the audio beat pulse at low speeds to prevent the resting grid from blinking
+    float speedPulseMask = smoothstep(1.0, 15.0, u_speedKmh);
+    float pulse = u_pulse * tileMask * step(0.75, tone) * 0.22 * speedPulseMask;
     color = mix(color, u_accent, pulse);
     color = mix(color, u_light, u_brake * tileMask * 0.08);
 
