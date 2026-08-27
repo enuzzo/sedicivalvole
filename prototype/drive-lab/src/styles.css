@@ -546,7 +546,10 @@ button:focus-visible,
 input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
 
 @media (max-width: 820px) {
-  .topbar { min-height: 68px; grid-template-columns: minmax(160px, 1fr) auto 100px 48px 54px; }
+  /* Reserve the telemetry module's real width in the grid. The previous 100px
+     track contained a 280px spacer, so Grid let that child overflow backwards
+     underneath ENGINE / FLUX at the verified 773px Tesla viewport. */
+  .topbar { min-height: 68px; grid-template-columns: minmax(160px, 1fr) auto 280px 48px 54px; }
   .wordmark { padding: 0 18px; font-size: 17px; }
   .mode-selector button { min-width: 63px; padding: 0 8px; font-size: 9px; }
   .source-readout { right: 102px; width: 280px; min-height: 68px; gap: 10px; }
