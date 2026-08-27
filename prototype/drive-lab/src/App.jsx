@@ -38,6 +38,27 @@ import {
   speedToEnergy,
 } from "./signal-model.js";
 
+/**
+ * The lanes the voice preview can audition.
+ *
+ * Identifiers are the score's own lane names, so a block here plays exactly what
+ * the arrangement plays. The previous list named voices the engine does not
+ * have and described a synth it no longer runs.
+ */
+const SCORE_VOICES = [
+  { id: "kick", label: "KICK", note: "909-style body, click and subharmonic" },
+  { id: "snare", label: "SNARE", note: "Tuned shell, comb resonance, impact" },
+  { id: "ghost", label: "GHOST", note: "The same shell, quiet and short" },
+  { id: "closedHat", label: "CLOSED HAT", note: "Six-ratio metallic cluster" },
+  { id: "openHat", label: "OPEN HAT", note: "The same cluster, left to ring" },
+  { id: "clap", label: "CLAP", note: "Stacked noise bursts" },
+  { id: "sub", label: "SUB", note: "Sine root with a square for presence" },
+  { id: "reese", label: "REESE", note: "Two detuned saws, an octave up" },
+  { id: "riff", label: "THEME", note: "The principal melody" },
+  { id: "response", label: "RESPONSE", note: "The countermelody above it" },
+  { id: "atmosphere", label: "PAD", note: "The chord, four voices" },
+];
+
 const APP_VERSION = __APP_VERSION__;
 const APP_BUILD = __APP_BUILD__;
 const APP_COMMIT = __APP_COMMIT__;
@@ -1393,7 +1414,20 @@ export function App() {
             }}
             aria-pressed={muted}
           >
-            <span>STOP / MUTE</span><strong>{muted ? "MUTED" : "RUNNING"}</strong>
+            <span className="mute-icon" aria-hidden="true">
+              {muted ? (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor" stroke="none" />
+                  <path d="m16 9 5 6M21 9l-5 6" />
+                </svg>
+              ) : (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor" stroke="none" />
+                  <path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13" />
+                </svg>
+              )}
+            </span>
+            <span>AUDIO</span><strong>{muted ? "MUTED" : "RUNNING"}</strong>
           </button>
           <button
             className="environment-control"
@@ -1460,57 +1494,40 @@ export function App() {
         />
       ) : null}
 
-      {previewOpen && (
+      {previewOpen ? (
         <section className="diagnostic-drawer preview-drawer" role="dialog" aria-modal="true" aria-labelledby="preview-title">
           <button className="drawer-backdrop" type="button" onClick={() => setPreviewOpen(false)} aria-label="Close" />
           <div className="drawer-panel">
             <div className="drawer-heading">
-              <div><small>FLUX AUDIO ENGINE</small><h2 id="preview-title">Sound Palette Preview</h2></div>
-              <button type="button" onClick={() => setPreviewOpen(false)} aria-label="Close preview">CLOSE</button>
+              <div><small>FLUX SCORE ENGINE</small><h2 id="preview-title">Voices</h2></div>
+              <button type="button" onClick={() => setPreviewOpen(false)} aria-label="Close voice preview">CLOSE</button>
             </div>
-            
+
             <div className="preview-content">
-              <h3>Jungle / Drum & Bass</h3>
-              <p>The active generative audio style. Tap any block to play its DSP voice.</p>
-              
+              <h3>{getScoreGenre(genreId).label} · {getScoreGenre(genreId).family}</h3>
+              <p>
+                Each block plays one lane of the running score with its own voicing,
+                at the current point in the harmonic cycle. A lane the arrangement
+                has silent can still be heard here.
+              </p>
+
               <div className="preview-grid">
-                <button type="button" className="preview-btn" onClick={() => audioRef.current?.audition("KICK")}>
-                  <strong>KICK</strong>
-                  <span>Deep 808-style sine drop</span>
-                </button>
-                <button type="button" className="preview-btn" onClick={() => audioRef.current?.audition("SNARE")}>
-                  <strong>SNARE</strong>
-                  <span>White noise burst</span>
-                </button>
-                <button type="button" className="preview-btn" onClick={() => audioRef.current?.audition("GHOST")}>
-                  <strong>GHOST</strong>
-                  <span>Soft syncopated snare</span>
-                </button>
-                <button type="button" className="preview-btn" onClick={() => audioRef.current?.audition("HAT")}>
-                  <strong>HI-HAT</strong>
-                  <span>Short high-frequency noise</span>
-                </button>
-                <button type="button" className="preview-btn" onClick={() => audioRef.current?.audition("BASS")}>
-                  <strong>BASS</strong>
-                  <span>Rolling Reese sawtooth (Em)</span>
-                </button>
-                <button type="button" className="preview-btn" onClick={() => audioRef.current?.audition("PAD")}>
-                  <strong>PADS</strong>
-                  <span>4-voice sine chord (Em9)</span>
-                </button>
-                <button type="button" className="preview-btn" onClick={() => audioRef.current?.audition("ARP")}>
-                  <strong>ARP</strong>
-                  <span>Triangle pluck</span>
-                </button>
-                <button type="button" className="preview-btn" onClick={() => audioRef.current?.audition("LEAD")}>
-                  <strong>LEAD</strong>
-                  <span>Soaring unison melody</span>
-                </button>
+                {SCORE_VOICES.map((voice) => (
+                  <button
+                    key={voice.id}
+                    type="button"
+                    className="preview-btn"
+                    onClick={() => audioRef.current?.audition(voice.id)}
+                  >
+                    <strong>{voice.label}</strong>
+                    <span>{voice.note}</span>
+                  </button>
+                ))}
               </div>
             </div>
           </div>
         </section>
-      )}
+      ) : null}
 
     </main>
   );

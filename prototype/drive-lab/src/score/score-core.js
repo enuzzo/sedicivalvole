@@ -45,7 +45,7 @@ import {
 } from "./dsp/effects.js";
 import { OnePoleHighPass } from "./dsp/primitives.js";
 import { SynthVoice } from "./dsp/synth-voice.js";
-import { harmonyForBar, SCORE } from "./jungle-score.js";
+import { bassInterval, harmonyForBar, SCORE, sectionAt } from "./jungle-score.js";
 
 /** Bars a lane takes to fade in or out. Entries and exits are crossfades. */
 const LANE_CROSSFADE_SECONDS = 0.35;
@@ -54,6 +54,16 @@ const LANE_CROSSFADE_SECONDS = 0.35;
 const MASTER_GAIN = 0.86;
 
 const SYNTH_LANES = ["sub", "reese", "riff", "response", "atmosphere"];
+
+/**
+ * Voices the pad runs.
+ *
+ * The pad was monophonic and played one note of each chord, so the harmony the
+ * score is written around was never actually sounding: a bass root, a single
+ * colour tone, and a melody. Four voices means the chord is heard as a chord,
+ * which is most of what "the harmony is monotonous" was describing.
+ */
+const PAD_VOICES = 4;
 
 /**
  * Static placement of each element across the stereo field, -1 left to 1 right.
@@ -114,6 +124,13 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
     synthRelease[lane] = null;
   }
 
+  // The pad's remaining voices. `synths.atmosphere` is the first of them, so the
+  // lane still has the one-voice surface every other lane has.
+  const padVoices = [synths.atmosphere];
+  for (let index = 1; index < PAD_VOICES; index += 1) {
+    padVoices.push(new SynthVoice(sampleRate));
+  }
+
   // Every lane's level is a ramp, so an entry or exit is always a crossfade and
   // never a discontinuity.
   const crossfadeSamples = Math.max(1, Math.round(LANE_CROSSFADE_SECONDS * sampleRate));
@@ -158,6 +175,8 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
   let lastEvent = null;
   let stepsElapsed = 0;
   let structuralEvents = 0;
+  let sectionIndex = 0;
+  let restingVoiced = true;
 
   /** Applies the block-rate controls to the voices that read parameters live. */
   function refreshVoiceSettings() {
@@ -227,7 +246,21 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
     const scene = SCENES[arranger.scene];
     const patternStep = event.patternStep;
     const barInPhrase = event.barInPhrase;
-    const chord = harmonyForBar(barInPhrase);
+
+    // The form advances one section per phrase, so twenty-four bars pass before
+    // anything repeats. Sections only ever turn over on a phrase boundary, like
+    // every other structural change.
+    if (event.isPhraseStart && stepsElapsed > 1) {
+      sectionIndex += 1;
+      // At a standstill the piece plays a phrase and then leaves one. Holding a
+      // resting arrangement continuously is the version that drives you mad at a
+      // red light: the point of the resting scene is that the road is quiet.
+      restingVoiced = SCENES[arranger.scene].halfTime
+        ? sectionIndex % 2 === 0
+        : true;
+    }
+    const section = sectionAt(sectionIndex);
+    const chord = harmonyForBar(sectionIndex, barInPhrase);
 
     // 2. Half-time reading: the transport keeps its tempo, the score takes only
     //    the strong placements and doubles its note lengths. This is how a
@@ -283,13 +316,16 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
     // 4. Melodic lanes, all transposed by the current chord so the theme moves
     //    with the harmony instead of fighting it.
     for (const lane of SYNTH_LANES) {
-      if (synthRelease[lane] !== null && stepsElapsed >= synthRelease[lane]) {
+      if (synthRelease[lane] === null || stepsElapsed < synthRelease[lane]) continue;
+      if (lane === "atmosphere") {
+        for (const voice of padVoices) voice.release();
+      } else {
         synths[lane].release();
-        synthRelease[lane] = null;
       }
+      synthRelease[lane] = null;
     }
 
-    if (arranger.laneGoals.sub > 0) {
+    if (arranger.laneGoals.sub > 0 && restingVoiced) {
       for (const note of score.subNotes) {
         if (note.at !== patternStep) continue;
         if (halfTime && note.at % 2 !== 0) continue;
@@ -300,7 +336,8 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
     if (arranger.laneGoals.reese > 0) {
       for (const note of score.reeseNotes) {
         if (note.at !== patternStep) continue;
-        triggerSynth("reese", chord.bassMidi + 12 + note.offset, note.steps * lengthScale, stepsElapsed);
+        const interval = bassInterval(chord, note.degree);
+        triggerSynth("reese", chord.bassMidi + 12 + interval, note.steps * lengthScale, stepsElapsed);
       }
     }
 
@@ -308,8 +345,8 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
     // from the chord. Transposing them with the harmony is what made them clash:
     // the chord root already moves under a line that is written to sit over all
     // four chords, and moving the line too put it a semitone off twice a cycle.
-    if (arranger.laneGoals.riff > 0) {
-      for (const note of score.theme) {
+    if (arranger.laneGoals.riff > 0 && restingVoiced) {
+      for (const note of section.theme) {
         if (note.at !== patternStep) continue;
         if (halfTime && note.at % 2 !== 0) continue;
         // Register rises with energy: the same theme, played higher and harder.
@@ -319,19 +356,25 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
     }
 
     if (arranger.laneGoals.response > 0) {
-      for (const note of score.response) {
+      for (const note of section.response) {
         if (note.at !== patternStep) continue;
         triggerSynth("response", note.midi, note.steps * lengthScale, stepsElapsed);
       }
     }
 
-    // The pad re-voices once per bar and holds, adding tension colour as energy
-    // rises rather than changing chord.
-    if (arranger.laneGoals.atmosphere > 0 && patternStep % STEPS_PER_BAR === 0) {
-      // The pad takes a chord tone, so it colours the harmony rather than
-      // competing with the theme sitting above it.
-      const tension = controls.energy > 0.55 ? chord.colour[3] : chord.colour[2];
-      triggerSynth("atmosphere", chord.bassMidi + 24 + tension, STEPS_PER_BAR * 2, stepsElapsed);
+    // The pad re-voices once per bar and holds the whole chord. Which voices
+    // sound is continuous articulation: at low energy it states the chord
+    // plainly, and the upper extension arrives with the arrangement.
+    if (arranger.laneGoals.atmosphere > 0 && restingVoiced && patternStep % STEPS_PER_BAR === 0) {
+      const voiced = controls.energy > 0.5 ? PAD_VOICES : PAD_VOICES - 1;
+      for (let index = 0; index < padVoices.length; index += 1) {
+        if (index >= voiced) {
+          padVoices[index].release();
+          continue;
+        }
+        padVoices[index].trigger(synthSettings.atmosphere, chord.bassMidi + 24 + chord.colour[index]);
+      }
+      synthRelease.atmosphere = stepsElapsed + STEPS_PER_BAR * 2;
     }
   }
 
@@ -348,6 +391,13 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
       const chord = harmonyForBar(Math.floor((lastEvent?.globalStep ?? 0) / STEPS_PER_BAR) % 4);
       if (drums[voiceId]) {
         drums[voiceId].trigger(score.kit[voiceId] ?? score.kit.snare);
+        return true;
+      }
+      if (voiceId === "atmosphere") {
+        for (let index = 0; index < padVoices.length; index += 1) {
+          padVoices[index].trigger(synthSettings.atmosphere, chord.bassMidi + 24 + chord.colour[index]);
+        }
+        auditionSamples.atmosphere = Math.round(sampleRate * 3.2);
         return true;
       }
       if (!synths[voiceId]) return false;
@@ -425,8 +475,13 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
         const riffSample = synths.riff.tick(synthSettings.riff) * levelOf("riff");
         const responseSample = synths.response.tick(synthSettings.response)
           * levelOf("response");
-        const padSample = synths.atmosphere.tick(synthSettings.atmosphere)
-          * levelOf("atmosphere");
+        let padStack = 0;
+        for (let index = 0; index < padVoices.length; index += 1) {
+          padStack += padVoices[index].tick(synthSettings.atmosphere);
+        }
+        // Four voices at one voice's level would be four times as loud, so the
+        // stack is trimmed back to roughly the weight a single note carried.
+        const padSample = padStack * 0.42 * levelOf("atmosphere");
         const [padLeft, padRight] = padChorus.tickStereo(padSample);
 
         let melodicLeft = riffSample * PAN.riff[0] + responseSample * PAN.response[0]
@@ -477,6 +532,9 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
         ...arrangementSnapshot(arranger),
         scoreId: score.id,
         scoreLabel: score.label,
+        section: sectionAt(sectionIndex).name,
+        chord: harmonyForBar(sectionIndex, lastEvent?.barInPhrase ?? 0).name,
+        restingVoiced,
         step: lastEvent?.globalStep ?? 0,
         patternStep: lastEvent?.patternStep ?? 0,
         stepsElapsed,

@@ -24,63 +24,214 @@ export const SCORE_LABEL = "FRACTURE";
 export const SCORE_GENRE = "Jungle / Drum & Bass";
 
 /**
- * Harmonic cycle: i7 - i9 - VImaj7 - IIImaj7 over four bars, in F minor.
+ * The form: six four-bar sections, played in order and then repeated.
  *
- * Every chord is drawn from F natural minor and nothing leaves the key. That is
- * not conservatism: it is the property that lets one fixed theme sit consonantly
- * over the whole cycle without being transposed. The third chord was originally
- * voiced as Ab7, whose Gb is the one note in the cycle outside the key, and it
- * fought the theme every time it came round.
+ * One four-bar cycle repeating forever was the whole piece, and it wore out
+ * inside a minute. These six are complementary rather than contrasting — every
+ * chord is drawn from F natural minor, so nothing modulates and the piece keeps
+ * one identity — but each section has its own harmonic motion and its own
+ * theme, and twenty-four bars pass before anything repeats.
  *
- * Bass roots stay inside one octave so the low end never leaps.
+ * `colour` is the chord above the bass, in semitones above `bassMidi`. Bass
+ * roots stay inside one octave so the low end never leaps between sections.
+ *
+ * Each section carries its own theme because a single fixed line cannot be
+ * interesting over six different harmonic motions. What each theme *can* do is
+ * stay written in the key and sit consonantly over its own four chords, which
+ * is checked by `tests/score-harmony.test.mjs` rather than by ear.
  */
-export const HARMONY = Object.freeze([
-  { bar: 0, name: "Fm7", bassMidi: 29, colour: [0, 3, 7, 10] },
-  { bar: 1, name: "Fm9", bassMidi: 29, colour: [0, 3, 7, 14] },
-  { bar: 2, name: "Dbmaj7", bassMidi: 25, colour: [0, 4, 7, 11] },
-  { bar: 3, name: "Abmaj7", bassMidi: 32, colour: [0, 4, 7, 11] },
+const F_MINOR = Object.freeze([0, 2, 3, 5, 7, 8, 10]);
+
+/** Chord shapes, as semitones above the chord's own root. */
+const MINOR_7 = [0, 3, 7, 10];
+const MINOR_9 = [0, 3, 7, 14];
+const MINOR_11 = [0, 3, 10, 17];
+const MAJOR_7 = [0, 4, 7, 11];
+const MAJOR_9 = [0, 4, 11, 14];
+// The seventh degree of a natural minor key takes a dominant seventh, not a
+// major one: Eb with a natural seventh sounds D, the one note outside F minor.
+const DOMINANT_7 = [0, 4, 7, 10];
+// A sixth rather than a major seventh on the third degree: the theme states Ab
+// in the octave directly above where the major seventh lands, and a root a
+// semitone over its own leading tone is harsh in that register. The sixth is
+// the softer colour and the clash disappears.
+const MAJOR_6 = [0, 4, 7, 9];
+const DOMINANT_9 = [0, 4, 10, 14];
+// Suspended: the fourth replaces the third. The theme states Ab over this
+// chord, and Ab is the classic avoid note a minor ninth above a dominant's
+// third. Suspending it turns the problem note into the chord's own colour.
+const SUS_9 = [0, 5, 10, 14];
+// A shell: root, third and seventh, with the fifth left out entirely. Voiced in
+// the middle the flattened fifth sat a semitone under the theme's C, and voiced
+// an octave up it sat a minor ninth above it. The chord's function comes from
+// the bass and the third; the fifth was only ever beating against the tune.
+const HALF_DIM = [0, 3, 10, 15];
+
+export const SECTIONS = Object.freeze([
+  {
+    id: "home",
+    name: "HOME",
+    // i - i - VI - III. The statement.
+    // Voiced as a seventh, not a ninth: the theme's Ab sits a semitone above
+    // where the ninth would land, and the theme supplies that colour itself.
+    harmony: [
+      { name: "Fm7", bassMidi: 29, colour: MINOR_7 },
+      { name: "Fm7", bassMidi: 29, colour: MINOR_7 },
+      { name: "Dbmaj7", bassMidi: 25, colour: MAJOR_7 },
+      { name: "Ab6", bassMidi: 32, colour: MAJOR_6 },
+    ],
+    theme: [
+      { at: 0, midi: 65, steps: 3 },   // F4  — stated
+      { at: 6, midi: 63, steps: 2 },   // Eb4
+      { at: 10, midi: 60, steps: 4 },  // C4  — settles
+      { at: 16, midi: 68, steps: 3 },  // Ab4 — the leap, and the hook
+      { at: 22, midi: 67, steps: 2 },  // G4
+      { at: 26, midi: 63, steps: 4 },  // Eb4 — hangs into the repeat
+    ],
+    response: [
+      { at: 4, midi: 72, steps: 2 },
+      { at: 14, midi: 68, steps: 2 },
+      { at: 20, midi: 75, steps: 2 },
+      { at: 28, midi: 72, steps: 3 },
+    ],
+  },
+  {
+    id: "lift",
+    name: "LIFT",
+    // III - VII - VI - i. The same material, opened upward.
+    harmony: [
+      { name: "Ab6", bassMidi: 32, colour: MAJOR_6 },
+      { name: "Eb9sus4", bassMidi: 27, colour: SUS_9 },
+      { name: "Dbmaj7", bassMidi: 25, colour: MAJOR_7 },
+      { name: "Fm11", bassMidi: 29, colour: MINOR_11 },
+    ],
+    theme: [
+      { at: 0, midi: 68, steps: 4 },   // Ab4
+      { at: 8, midi: 70, steps: 2 },   // Bb4
+      { at: 12, midi: 72, steps: 4 },  // C5  — climbs where HOME fell
+      { at: 18, midi: 70, steps: 2 },  // Bb4
+      { at: 22, midi: 68, steps: 3 },  // Ab4
+      { at: 28, midi: 65, steps: 4 },  // F4
+    ],
+    response: [
+      { at: 4, midi: 75, steps: 2 },
+      { at: 16, midi: 77, steps: 3 },
+      { at: 26, midi: 72, steps: 3 },
+    ],
+  },
+  {
+    id: "turn",
+    name: "TURN",
+    // iv - VII - III - VI. Falling fourths: the most liquid motion in the form.
+    harmony: [
+      { name: "Bbm11", bassMidi: 34, colour: MINOR_11 },
+      { name: "Eb9sus4", bassMidi: 27, colour: SUS_9 },
+      { name: "Ab6", bassMidi: 32, colour: MAJOR_6 },
+      { name: "Dbmaj7", bassMidi: 25, colour: MAJOR_7 },
+    ],
+    theme: [
+      { at: 0, midi: 70, steps: 3 },   // Bb4
+      { at: 6, midi: 72, steps: 3 },   // C5
+      { at: 12, midi: 75, steps: 4 },  // Eb5 — the high point of the form
+      { at: 18, midi: 72, steps: 2 },  // C5
+      { at: 22, midi: 68, steps: 3 },  // Ab4
+      { at: 28, midi: 70, steps: 4 },  // Bb4
+    ],
+    response: [
+      { at: 4, midi: 79, steps: 2 },
+      { at: 14, midi: 77, steps: 2 },
+      { at: 24, midi: 75, steps: 4 },
+    ],
+  },
+  {
+    id: "dark",
+    name: "DARK",
+    // i - VI - ii(half-diminished) - v. The half-diminished is the shadow.
+    harmony: [
+      { name: "Fm11", bassMidi: 29, colour: MINOR_11 },
+      { name: "Dbmaj7", bassMidi: 25, colour: MAJOR_7 },
+      { name: "Gm7", bassMidi: 31, colour: HALF_DIM },
+      { name: "Cm7", bassMidi: 24, colour: MINOR_7 },
+    ],
+    theme: [
+      { at: 0, midi: 63, steps: 4 },   // Eb4
+      { at: 8, midi: 60, steps: 3 },   // C4
+      { at: 12, midi: 58, steps: 4 },  // Bb3 — the form's lowest statement
+      { at: 18, midi: 65, steps: 2 },  // F4  — one lift before the fall
+      { at: 22, midi: 60, steps: 3 },  // C4
+      { at: 28, midi: 53, steps: 4 },  // F3  — the form's floor
+    ],
+    response: [
+      { at: 6, midi: 70, steps: 2 },
+      { at: 16, midi: 67, steps: 3 },
+      { at: 26, midi: 63, steps: 4 },
+    ],
+  },
+  {
+    id: "open",
+    name: "OPEN",
+    // VI - VII - i - i, with the tonic suspended. The widest air in the piece.
+    harmony: [
+      { name: "Dbmaj9", bassMidi: 25, colour: MAJOR_9 },
+      { name: "Eb9sus4", bassMidi: 27, colour: SUS_9 },
+      { name: "Fm11", bassMidi: 29, colour: MINOR_11 },
+      { name: "Fm11", bassMidi: 29, colour: MINOR_11 },
+    ],
+    theme: [
+      { at: 0, midi: 72, steps: 6 },   // C5 — held, almost still
+      { at: 10, midi: 70, steps: 4 },  // Bb4
+      { at: 16, midi: 68, steps: 6 },  // Ab4
+      { at: 26, midi: 70, steps: 5 },  // Bb4
+    ],
+    response: [
+      { at: 8, midi: 77, steps: 3 },
+      { at: 22, midi: 75, steps: 5 },
+    ],
+  },
+  {
+    id: "return",
+    name: "RETURN",
+    // v - VI - VII - i. The cadence that hands the form back to HOME.
+    harmony: [
+      { name: "Cm7", bassMidi: 24, colour: MINOR_7 },
+      { name: "Dbmaj7", bassMidi: 25, colour: MAJOR_7 },
+      { name: "Eb9sus4", bassMidi: 27, colour: SUS_9 },
+      { name: "Fm11", bassMidi: 29, colour: MINOR_11 },
+    ],
+    // The line climbs F-G-Bb-C. It does not pass through Ab, which would land a
+    // minor ninth above the fifth of the chord it opens on.
+    theme: [
+      { at: 0, midi: 65, steps: 3 },   // F4
+      { at: 6, midi: 67, steps: 3 },   // G4
+      { at: 12, midi: 70, steps: 3 },  // Bb4
+      { at: 18, midi: 72, steps: 4 },  // C5
+      { at: 24, midi: 68, steps: 2 },  // Ab4
+      { at: 28, midi: 65, steps: 4 },  // F4 — home
+    ],
+    response: [
+      { at: 4, midi: 75, steps: 2 },
+      { at: 14, midi: 72, steps: 3 },
+      { at: 26, midi: 77, steps: 4 },
+    ],
+  },
 ]);
 
-export function harmonyForBar(barInPhrase) {
-  return HARMONY[((barInPhrase % HARMONY.length) + HARMONY.length) % HARMONY.length];
+export const BARS_PER_SECTION = 4;
+
+/** Scale degrees of the key, exported so the harmony test can check the form. */
+export const KEY_ROOT_PITCH_CLASS = 5;
+export const KEY_SCALE = F_MINOR;
+
+export function sectionAt(sectionIndex) {
+  const count = SECTIONS.length;
+  return SECTIONS[((sectionIndex % count) + count) % count];
 }
 
-/**
- * The principal theme, written as absolute MIDI in F natural minor.
- *
- * It is deliberately *not* transposed by the chord. F, Ab, C, Eb and G are chord
- * tones or consonant extensions of all four chords in the cycle — the fifth and
- * ninth of Dbmaj7, the sixth and thirteenth of Abmaj7 — so one fixed line reads
- * as written material over the whole progression rather than as a shape being
- * dragged around underneath it.
- *
- * This replaces a transposition that was applied twice. The chord root was
- * already carried by `bassMidi`, and a second `rootOffset` moved the theme again
- * on top of it. Over Dbmaj7 the theme played A-C-E-G against Db-F-Ab-C, a
- * semitone clash on two voices at once; over the next chord it played B-D-F#-A
- * against Ab-C-Eb-G. It did not sound like a choice. It was arithmetic.
- *
- * `at` is the step, `midi` the note, `steps` the length in steps.
- */
-export const THEME = Object.freeze([
-  { at: 0, midi: 65, steps: 3 },   // F4  — stated
-  { at: 6, midi: 63, steps: 2 },   // Eb4
-  { at: 10, midi: 60, steps: 4 },  // C4  — settles
-  { at: 16, midi: 68, steps: 3 },  // Ab4 — the leap, and the hook
-  { at: 22, midi: 67, steps: 2 },  // G4
-  { at: 26, midi: 63, steps: 4 },  // Eb4 — hangs into the repeat
-]);
-
-/**
- * The countermelody that answers the theme in the fullest scene. It lands in the
- * theme's gaps, an octave above, on the same safe degrees.
- */
-export const RESPONSE = Object.freeze([
-  { at: 4, midi: 72, steps: 2 },   // C5
-  { at: 14, midi: 68, steps: 2 },  // Ab4
-  { at: 20, midi: 75, steps: 2 },  // Eb5
-  { at: 28, midi: 72, steps: 3 },  // C5
-]);
+export function harmonyForBar(sectionIndex, barInSection) {
+  const section = sectionAt(sectionIndex);
+  const bars = section.harmony.length;
+  return section.harmony[((barInSection % bars) + bars) % bars];
+}
 
 /**
  * Sub-bass placement: the root, landing with the kick and rearticulated.
@@ -110,13 +261,31 @@ export const SUB_NOTES = Object.freeze([
  * bass line at all. This is a bass line.
  */
 export const REESE_NOTES = Object.freeze([
-  { at: 0, offset: 0, steps: 6 },
-  { at: 8, offset: 0, steps: 3 },
-  { at: 12, offset: 7, steps: 3 },
-  { at: 16, offset: 0, steps: 6 },
-  { at: 24, offset: 12, steps: 3 },
-  { at: 28, offset: 7, steps: 3 },
+  { at: 0, degree: "root", steps: 6 },
+  { at: 8, degree: "root", steps: 3 },
+  { at: 12, degree: "fifth", steps: 3 },
+  { at: 16, degree: "root", steps: 6 },
+  { at: 24, degree: "octave", steps: 3 },
+  { at: 28, degree: "fifth", steps: 3 },
 ]);
+
+/**
+ * Resolves a bass degree against a chord.
+ *
+ * The fifth is read from the chord rather than assumed to be seven semitones,
+ * because the half-diminished chord in DARK has a flattened one and a natural
+ * fifth over it is a semitone clash. Naming the degree instead of the interval
+ * is what makes that impossible to get wrong in a new section.
+ */
+export function bassInterval(chord, degree) {
+  if (degree === "octave") return 12;
+  if (degree !== "fifth") return 0;
+  const fifth = chord.colour.find((interval) => {
+    const semitone = ((interval % 12) + 12) % 12;
+    return semitone === 6 || semitone === 7;
+  });
+  return fifth === undefined ? 0 : ((fifth % 12) + 12) % 12;
+}
 
 /**
  * Percussion patterns, in the upstream 32-step hex encoding.
@@ -232,9 +401,8 @@ export const SCORE = Object.freeze({
   id: SCORE_ID,
   label: SCORE_LABEL,
   genre: SCORE_GENRE,
-  harmony: HARMONY,
-  theme: THEME,
-  response: RESPONSE,
+  sections: SECTIONS,
+  barsPerSection: BARS_PER_SECTION,
   subNotes: SUB_NOTES,
   reeseNotes: REESE_NOTES,
   patterns: PATTERNS,
