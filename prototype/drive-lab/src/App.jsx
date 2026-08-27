@@ -315,6 +315,7 @@ export function App() {
   const [sendState, setSendState] = useState("idle");
   const [sendErrorCode, setSendErrorCode] = useState(null);
   const [pulseFlash, setPulseFlash] = useState(0);
+  const [activeEffect, setActiveEffect] = useState(null);
   const [keyboardHint, setKeyboardHint] = useState(null);
   const [audioLevel, setAudioLevel] = useState(0);
   const [flightRecorderRevision, setFlightRecorderRevision] = useState(0);
@@ -721,7 +722,7 @@ export function App() {
       storage = false;
     }
 
-    audioRef.current = createAudioEngine(triggerPulse);
+    audioRef.current = createAudioEngine(triggerPulse, setActiveEffect);
     if (audioRef.current) {
       await audioRef.current.resume();
       audioRef.current.setMuted(false);
@@ -1259,7 +1260,7 @@ export function App() {
 
         <button className="source-readout" type="button" onClick={toggleSource} aria-label={`Speed source ${source}. Tap to switch`}>
           <strong>{Math.round(speed)}</strong><span>km/h</span><small>{source}</small>
-          <div className="telemetry-sub">{Math.round(bpm)} BPM · {Math.round(energy * 100)}%</div>
+          <div className="telemetry-sub">{Math.round(bpm)} BPM · {Math.round(energy * 100)}%{activeEffect && <span className="effect-badge">{activeEffect}</span>}</div>
         </button>
 
 

@@ -1,7 +1,7 @@
 import { ROAD_SPEED_CEILING_KMH, speedToEnergy, model3AwdLiftOffDecelerationMps2 } from "./signal-model.js";
 import workletUrl from "./textstep-worklet.js?url";
 
-export function createAudioEngine(onPulse) {
+export function createAudioEngine(onPulse, onEffectChange) {
   const AudioContext = window.AudioContext || window.webkitAudioContext;
   if (!AudioContext) return null;
 
@@ -58,6 +58,12 @@ export function createAudioEngine(onPulse) {
            // If we are decelerating harder than natural lift-off (with some margin)
            const isHardBraking = (smoothedRateMps2 < regenMps2 * 1.05) && (smoothedRateMps2 < -0.3);
            
+           if (isHardBraking || manualBrakeActive) {
+               if (brakeValue < 0.2 && onEffectChange) onEffectChange("UNDERWATER");
+           } else {
+               if (brakeValue > 0.1 && brakeValue - 0.05 <= 0.1 && onEffectChange) onEffectChange(null);
+           }
+           
            if (isHardBraking) {
                brakeValue = Math.min(1.0, brakeValue + 0.15);
            } else {
@@ -80,6 +86,7 @@ export function createAudioEngine(onPulse) {
     },
     brake() {
       manualBrakeActive = true;
+      if (onEffectChange) onEffectChange("UNDERWATER");
       if (node) node.port.postMessage({ type: "BRAKE", payload: { brake: 1.0 } });
       
       clearTimeout(manualBrakeTimeout);

@@ -497,3 +497,18 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
   opacity: 0.8;
   margin-top: 2px;
 }
+
+.effect-badge {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 4px;
+  background: var(--accent);
+  color: #000;
+  border-radius: 2px;
+  font-size: 8px;
+  animation: effect-pulse 0.8s infinite alternate;
+}
+@keyframes effect-pulse {
+  0% { opacity: 0.7; }
+  100% { opacity: 1; box-shadow: 0 0 6px var(--accent); }
+}
