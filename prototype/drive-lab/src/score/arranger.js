@@ -45,6 +45,17 @@ export const MINIMUM_SCENE_BARS = 4;
 /** Seconds the energy must support a higher scene before the piece climbs. */
 export const RISING_DWELL_SECONDS = 0.8;
 
+/**
+ * Scenes a single boundary may climb.
+ *
+ * One was too slow: pulling away to urban speed left the piece resting for ten
+ * seconds. Unbounded was worse in the other direction — the arrangement arrived
+ * all at once instead of building, and the announcing fill had nothing to
+ * announce. Two keeps the climb a gesture with a shape while still reaching a
+ * full break within a couple of phrases.
+ */
+export const MAXIMUM_SCENE_CLIMB = 2;
+
 /** Seconds below the retained peak before the arrangement starts to thin. */
 export const FALLING_DWELL_SECONDS = 6;
 
@@ -98,6 +109,26 @@ export function energyToScene(energy, currentScene) {
   const scene = Math.round(clamp(currentScene, 0, SCENES.length - 1));
   if (scene < SCENES.length - 1 && safeEnergy >= SCENE_ENTER[scene]) return scene + 1;
   if (scene > 0 && safeEnergy < SCENE_EXIT[scene - 1]) return scene - 1;
+  return scene;
+}
+
+/**
+ * The scene an energy fully supports, resolving `energyToScene` to a fixed
+ * point rather than a single step.
+ *
+ * Stepping one scene per phrase was audibly wrong in both directions. Pulling
+ * away at urban speed left the piece resting for ten seconds while the driver
+ * was already moving, and coming to a stop left the full break running long
+ * after the vehicle had. Hysteresis is preserved exactly — this only asks the
+ * same thresholds where they finally settle, instead of stopping after one.
+ */
+export function energyToSupportedScene(energy, currentScene) {
+  let scene = Math.round(clamp(currentScene, 0, SCENES.length - 1));
+  for (let guard = 0; guard < SCENES.length; guard += 1) {
+    const next = energyToScene(energy, scene);
+    if (next === scene) break;
+    scene = next;
+  }
   return scene;
 }
 
@@ -215,7 +246,7 @@ function advanceDecelerationState(state, rising, delta) {
 /** True when the arrangement matches what the current energy asks for. */
 function arrangementSettled(state) {
   if (state.queuedExits.length > 0) return false;
-  if (energyToScene(state.energy, state.scene) !== state.scene) return false;
+  if (energyToSupportedScene(state.energy, state.scene) !== state.scene) return false;
   return LANES.every(
     (lane) => state.laneGoals[lane.id] === (state.scene >= lane.minScene ? 1 : 0),
   );
@@ -229,7 +260,12 @@ function cancelQueuedExits(state) {
 
 /** Queues a scene change once dwell, hysteresis and tenure all agree. */
 function reviewScene(state, delta) {
-  const proposed = energyToScene(state.energy, state.scene);
+  const supported = energyToSupportedScene(state.energy, state.scene);
+  // Climbing is capped so the arrangement builds; thinning is not, because a
+  // vehicle that has genuinely stopped should not keep playing a full break.
+  const proposed = supported > state.scene
+    ? Math.min(supported, state.scene + MAXIMUM_SCENE_CLIMB)
+    : supported;
 
   if (proposed > state.scene) {
     // The dwell measures how long the energy has *supported* the higher scene,
@@ -266,9 +302,14 @@ function reviewScene(state, delta) {
  */
 function reviewLanes(state) {
   if (state.decelerationState !== "sustained_release") return;
-  for (const lane of LANES) {
-    if (state.laneGoals[lane.id] === 0) continue;
-    if (state.scene >= lane.keepFromScene) continue;
+  // Queued from the top of the arrangement down, so what leaves first is the
+  // material the fullest scene added. Queuing in lane order removed the kick
+  // while the break detail was still chattering over it, which reads as the
+  // music breaking rather than thinning.
+  const leaving = LANES.filter((lane) => (
+    state.laneGoals[lane.id] !== 0 && state.scene < lane.keepFromScene
+  )).sort((first, second) => second.keepFromScene - first.keepFromScene);
+  for (const lane of leaving) {
     if (!state.queuedExits.includes(lane.id)) state.queuedExits.push(lane.id);
   }
 }
@@ -363,7 +404,9 @@ export function commitAtBoundary(state, boundary) {
     }
 
     // Removals only ever come off the queue, one lane per boundary, so the
-    // arrangement thins gradually rather than collapsing.
+    // arrangement thins gradually rather than collapsing. What makes a stop
+    // drain promptly is the scene resolving all the way down, which queues
+    // every departing lane at once, and the order they were queued in.
     if (!state.queuedExits.includes(lane.id)) continue;
     if (applied.exited.length > 0) continue;
     state.laneGoals[lane.id] = 0;
