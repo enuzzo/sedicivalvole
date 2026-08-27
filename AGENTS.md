@@ -11,7 +11,7 @@ These rules apply to every change in the `sedicivalvole` project.
 
 - `VERSION` is the only SemVer source of truth. Do not duplicate the number manually; builds must read or receive it through a verified pipeline.
 - Every build carries a build stamp in the form `20260826-1543` (`YYYYMMDD-HHMM`), generated at build time. Always write the build stamp when publishing or deploying, and record it in the deployment evidence. The stamp identifies the build; it does not replace `VERSION`.
-- Update `CHANGELOG.md` for every user-visible change or relevant technical change. The changelog must be strictly progressive and append-only: never rewrite, alter, or remove past entries. Every changelog entry must explicitly record the date, local time (e.g. `2026-08-27 14:34`), and the corresponding short commit hash (e.g. `[eacabf0]`).
+- Update `CHANGELOG.md` for every user-visible change or relevant technical change. The changelog must be strictly progressive and append-only: never rewrite, alter, or remove past entries under any circumstances. Every changelog entry must explicitly record the date, local time (e.g. `2026-08-27 15:10`), the corresponding short commit hash (e.g. `[c85b70c]`), and the build stamp when deploying (e.g. `build 20260827-1510`).
 - Keep unreleased changes under `Unreleased` in chronological progressive order; create a versioned ISO-dated section only when releasing, and synchronize `VERSION`.
 - Update the README, feature status, and architecture when facts change.
 - Use only real, verified screenshots from the current build at agreed Tesla viewports. Remove obsolete captures.
