@@ -6,6 +6,7 @@ from __future__ import annotations
 import ftplib
 import hashlib
 import io
+import json
 import re
 import sys
 from pathlib import Path
@@ -139,6 +140,27 @@ def is_recognized_app_entry(payload: bytes) -> bool:
     )
 
 
+def is_recognized_junction_bank(payload: bytes) -> bool:
+    """Recognize an existing owned bank without requiring the next bank's hash."""
+    if len(payload) < 13 or payload[:8] != b"SVJCTN01":
+        return False
+    manifest_length = int.from_bytes(payload[8:12], "little")
+    audio_offset = 12 + manifest_length
+    if manifest_length <= 0 or audio_offset >= len(payload):
+        return False
+    try:
+        manifest = json.loads(payload[12:audio_offset].decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        return False
+    return (
+        manifest.get("format") == "sedicivalvole.music-bank.v1"
+        and manifest.get("score") == "junction"
+        and manifest.get("source") == "rendered-production"
+        and isinstance(manifest.get("sections"), list)
+        and len(manifest["sections"]) >= 8
+    )
+
+
 def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
     """Abort unless every overwrite/delete target can be identified read-only."""
     root_names = safe_names(ftp)
@@ -230,11 +252,13 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
     if "audio" in root_names:
         ftp.cwd("audio")
         try:
-            verify_remote_static_tree(
-                ftp,
-                BUILD / "audio",
-                tree_name="audio",
-            )
+            audio_names = safe_names(ftp)
+            if not audio_names.issubset({"junction.svb"}):
+                raise ValueError("unexpected audio entry")
+            if "junction.svb" in audio_names and not is_recognized_junction_bank(
+                remote_bytes(ftp, "junction.svb")
+            ):
+                raise ValueError("audio identity mismatch")
         finally:
             ftp.cwd("..")
 
@@ -431,6 +455,12 @@ def main() -> int:
         uploaded_bytes += len(php_entry)
         if sha256_bytes(remote_bytes(ftp, DYNAMIC_ROOT_ENTRY)) != sha256_bytes(php_entry):
             raise ValueError("dynamic root upload mismatch")
+
+        ftp.cwd("audio")
+        try:
+            verify_remote_static_tree(ftp, BUILD / "audio", tree_name="audio")
+        finally:
+            ftp.cwd("..")
 
         switched_entry = False
         if not stage_php_entry and not preserve_existing and STATIC_ROOT_ENTRY in safe_names(ftp):
