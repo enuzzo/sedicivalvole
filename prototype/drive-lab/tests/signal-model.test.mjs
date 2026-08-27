@@ -202,7 +202,7 @@ test("the continuous energy wave rises smoothly but stays bounded", () => {
 
 test("visual travel stays calm at rest and becomes emphatic only near full energy", () => {
   assert.equal(energyToFlowRate(0, 0), 0.02);
-  assert.ok(energyToFlowRate(0.25, 20) < 0.3);
+  assert.ok(energyToFlowRate(0.25, 20) < 0.9);
   assert.ok(energyToFlowRate(0.75, 80) > 2);
   assert.ok(energyToFlowRate(1, ROAD_SPEED_CEILING_KMH) > 14);
   assert.ok(energyToFlowRate(1, ROAD_SPEED_CEILING_KMH) > energyToFlowRate(1, 100));

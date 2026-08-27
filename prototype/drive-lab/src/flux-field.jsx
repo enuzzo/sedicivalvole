@@ -59,8 +59,10 @@ const FRAGMENT_SHADER = `#version 300 es
     vec2 uv_norm = v_uv * 2.0 - 1.0;
     
     // 1. Warp & Terminal Velocity
-    // warp: 0.0 at 0 km/h (flat 2D mosaic) -> 1.0 at 20 km/h (full 3D perspective corridor)
-    float warp = smoothstep(0.0, 20.0, u_speedKmh);
+    // warp: 0.0 at 0 km/h (flat 2D mosaic) -> 1.0 at 55 km/h (full 3D perspective corridor)
+    // The tunnel starts opening gently at low speed, is clearly visible around 35-40 km/h,
+    // and smoothly reaches full depth at 55 km/h.
+    float warp = smoothstep(0.0, 55.0, u_speedKmh);
     // Terminal velocity: above 118 km/h transitioning to full hyperspeed at 130 km/h
     float terminalVelocity = smoothstep(118.0, 130.0, u_speedKmh);
 
@@ -166,7 +168,7 @@ const FRAGMENT_SHADER = `#version 300 es
     wallColor = mix(wallColor, u_light, u_brake * wallMask * 0.08);
 
     // 4. Composite End Wall over Corridor
-    vec3 color = mix(corridorColor, wallColor, onWall * (1.0 - smoothstep(18.0, 20.0, u_speedKmh)));
+    vec3 color = mix(corridorColor, wallColor, onWall * (1.0 - smoothstep(50.0, 55.0, u_speedKmh)));
 
     // 5. Outer edge vignette
     float edge = smoothstep(1.25, 0.40, max(absX * 0.75, absY));

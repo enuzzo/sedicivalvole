@@ -46,8 +46,10 @@ export function visualVelocityToMorphWarp(visualVelocity) {
 
 export function energyToFlowRate(energy, speedKmh = 0) {
   const safeEnergy = clamp(energy, 0, 1);
-  const velocity = speedToVisualVelocity(speedKmh);
-  return 0.02 + safeEnergy ** 2.4 * 2.4 + velocity ** 2.2 * 16;
+  const safeSpeed = clamp(Math.max(0, speedKmh) / ROAD_SPEED_CEILING_KMH, 0, 1);
+  const baseFlow = (safeSpeed ** 1.6) * 14.5;
+  const energyFlow = (safeEnergy ** 2.2) * 1.8;
+  return 0.02 + baseFlow + energyFlow;
 }
 
 export function speedToMotion(previousSpeedKmh, nextSpeedKmh, elapsedSeconds) {
@@ -181,6 +183,9 @@ export function advanceDemoMotion(
   const liftOffSeconds = input === "regen" || (input === "auto" && direction < 0)
     ? Math.max(0, Number(state?.liftOffSeconds) || 0) + elapsed
     : 0;
+  const launchSeconds = direction > 0
+    ? Math.max(0, Number(state?.launchSeconds) || 0) + elapsed
+    : 0;
 
   if (direction < 0 && speed <= MODEL_3_AWD_REFERENCE.vehicleHoldCaptureKmh) {
     return input === "brake" || input === "regen"
@@ -190,6 +195,7 @@ export function advanceDemoMotion(
         holdSeconds: 0,
         brakeHeldSeconds,
         liftOffSeconds,
+        launchSeconds: 0,
       }
       : {
         speed: 0,
@@ -197,6 +203,7 @@ export function advanceDemoMotion(
         holdSeconds: 1.44,
         brakeHeldSeconds: 0,
         liftOffSeconds: 0,
+        launchSeconds: 0,
       };
   }
   if (holdSeconds > 0 && input === "auto") {
@@ -206,13 +213,17 @@ export function advanceDemoMotion(
       holdSeconds: Math.max(0, holdSeconds - elapsed),
       brakeHeldSeconds: 0,
       liftOffSeconds: 0,
+      launchSeconds: 0,
     };
   }
 
+  const launchFactor = input === "auto" && speed < 30
+    ? 0.52 + 0.48 * smoothCurve(0, 1.2, launchSeconds)
+    : 1.0;
   const rateMps2 = input === "brake"
     ? -model3AwdBrakeDecelerationMps2(speed, brakeHeldSeconds)
     : direction > 0
-      ? model3AwdAccelerationMps2(speed)
+      ? model3AwdAccelerationMps2(speed) * launchFactor
       : -model3AwdLiftOffDecelerationMps2(speed, liftOffSeconds);
   const nextSpeed = speed + rateMps2 * elapsed * 3.6;
   if (nextSpeed >= ROAD_SPEED_CEILING_KMH) {
@@ -223,6 +234,7 @@ export function advanceDemoMotion(
         holdSeconds: 0,
         brakeHeldSeconds: 0,
         liftOffSeconds: 0,
+        launchSeconds,
       };
     }
     return {
@@ -231,17 +243,19 @@ export function advanceDemoMotion(
       holdSeconds: 1.08,
       brakeHeldSeconds: 0,
       liftOffSeconds: 0,
+      launchSeconds: 0,
     };
   }
   if (nextSpeed <= 0) {
     return input === "brake" || input === "regen"
-      ? { speed: 0, direction: -1, holdSeconds: 0, brakeHeldSeconds, liftOffSeconds }
+      ? { speed: 0, direction: -1, holdSeconds: 0, brakeHeldSeconds, liftOffSeconds, launchSeconds: 0 }
       : {
         speed: 0,
         direction: 1,
         holdSeconds: 1.44,
         brakeHeldSeconds: 0,
         liftOffSeconds: 0,
+        launchSeconds: 0,
       };
   }
   return {
@@ -250,5 +264,6 @@ export function advanceDemoMotion(
     holdSeconds: 0,
     brakeHeldSeconds,
     liftOffSeconds,
+    launchSeconds,
   };
 }

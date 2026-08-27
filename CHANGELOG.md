@@ -87,6 +87,7 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - 2026-08-27 14:36 `[4991269]`: Updated project instructions (`AGENTS.md` and prototype `AGENTS.md`) establishing the strict rule that the changelog must be progressive/append-only without altering past entries, and every entry must record the date, local time, and short commit hash.
 - 2026-08-27 14:42 `[1fbbf73]`: Replaced the separate end-wall cap with a continuous progressive field deformation from the 2D square mosaic at 0 km/h into the 3D perspective corridor at 20 km/h, tightened Terminal Velocity speed streaks above 120 km/h to razor-thin laser lines, and eliminated phantom audio-pulse radial flash artifacts by strictly gating pulses to active visible tile bodies.
 - 2026-08-27 14:51 `[3caa6a0]`: Eliminated diagonal sector seams and broken triangular tiles at standstill by preserving the pure 2D Cartesian grid across the full-screen end wall at 0 km/h, with smooth physical recession and tunnel emergence as speed rises to 20 km/h.
+- 2026-08-27 14:54: Expanded tunnel formation across a smooth 0–55 km/h curve (visible by 35–40 km/h and reaching full depth at 55 km/h), eliminated low-speed motion dead zones with a lively progressive flow-rate curve, and added a progressive launch throttle ramp for natural, cinematic acceleration from standstill.
 
 ### Fixed
 

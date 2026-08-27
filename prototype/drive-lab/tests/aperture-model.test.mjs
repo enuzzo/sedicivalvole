@@ -10,16 +10,16 @@ test("Aperture wall at standstill (0 km/h) covers the full screen plane", () => 
   assert.equal(wall.luminance, 1.0);
 });
 
-test("Aperture wall at 20 km/h reaches the far terminus matching benchmark geometry", () => {
-  const wall = apertureWall(20);
+test("Aperture wall at 55 km/h reaches the far terminus matching benchmark geometry", () => {
+  const wall = apertureWall(55);
   assert.equal(wall.proximity, 0);
   assert.equal(wall.z, 8.0);
   assert.equal(wall.size, 0.125);
 });
 
-test("Aperture wall recedes monotonically between 0 and 20 km/h", () => {
+test("Aperture wall recedes monotonically between 0 and 55 km/h", () => {
   let prevZ = 0;
-  for (let speed = 0; speed <= 20; speed += 1) {
+  for (let speed = 0; speed <= 55; speed += 1) {
     const wall = apertureWall(speed);
     assert.ok(wall.z >= prevZ, `Wall Z should be non-decreasing at speed ${speed}`);
     assert.ok(wall.z >= 1.0 && wall.z <= 8.0);
@@ -28,11 +28,11 @@ test("Aperture wall recedes monotonically between 0 and 20 km/h", () => {
 });
 
 test("Aperture readout reports 7 depth levels and 7 tiles per wall", () => {
-  const readout20 = apertureReadout(20);
-  assert.equal(readout20.depthLevels, 7);
-  assert.equal(readout20.tilesPerWall, 7);
-  assert.equal(readout20.wallProximity, 0);
-  assert.equal(readout20.terminalVelocity, 0);
+  const readout55 = apertureReadout(55);
+  assert.equal(readout55.depthLevels, 7);
+  assert.equal(readout55.tilesPerWall, 7);
+  assert.equal(readout55.wallProximity, 0);
+  assert.equal(readout55.terminalVelocity, 0);
 });
 
 test("Aperture enters terminal velocity above 120 km/h", () => {
