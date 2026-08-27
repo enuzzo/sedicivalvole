@@ -68,10 +68,11 @@ The module identity must remain visually continuous across the entire speed rang
 
 ## 5. Splash and audio unlock
 
-- The approved Signal Gate splash uses paired vermilion and ice-blue light lanes that bend from the lower edges into a narrow central vertical gate on black. Its single launch action is a `390 × 170 px` warm-ivory Braun instrument plate at `773 × 601`, with the lowercase wordmark, technical vent, red safety insert and black `PLAY THE ROAD` field integrated into one semantic button.
+- The approved Signal Gate splash uses paired vermilion and ice-blue light lanes that bend from the lower edges into a narrow central vertical gate on black. Each lane carries its own short, independently phased travelling interruption so the two flows remain legible, while a restrained perspective-air layer adds depth without becoming a starburst.
+- Its single launch action is a `390 × 170 px` warm-ivory typographic surface at `773 × 601`: an enlarged lowercase wordmark above a full-width black `PLAY THE ROAD` field. The command carries a continuous horizontal white-to-red colour wave. The whole surface remains one semantic button and must not simulate knobs, switches, vents, latches or other nonfunctional hardware.
 - The field is generated in WebGL2, retains a Canvas2D fallback, and stops animating after launch; it is not a static raster or an artificial wait.
 - One large `PLAY THE ROAD` gesture unlocks Web Audio and completes minimum capability checks before the splash fades into the selected live environment.
-- Keep the `sedicivalvole` wordmark compact, show the active Flux environment and injected version discreetly, and center `A project by Netmilk Studio` below the CTA.
+- Keep the `sedicivalvole` wordmark large and integrated into the launch surface, show the injected build identity discreetly, and center `A project by Netmilk Studio` below the CTA.
 - Support fast return visits and a reduced-motion variant while respecting any required new audio gesture.
 
 ## 6. Speed, GPS, and simulation

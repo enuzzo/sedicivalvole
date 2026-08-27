@@ -250,7 +250,7 @@ Controls have explicit states: `awake`, `resting`, `parked_configuration`, and `
 
 ## Splash as bootstrap
 
-The approved Signal Gate splash is a dedicated lightweight WebGL2 shader with a Canvas2D fallback. It renders paired red and ice-blue lanes that curve into a narrow central gate, then freezes while the splash fades so no hidden animation loop survives in the running experience. It represents real work:
+The approved Signal Gate splash is a dedicated lightweight WebGL2 shader with a Canvas2D fallback. It renders paired red and ice-blue lanes that curve into a narrow central gate. A stable per-lane phase varies the position, cadence and length of short travelling gaps across both sides, preventing adjacent interruptions from forming a false crossbar. Eight low-opacity asymmetrical perspective rays add restrained airflow toward the display. The field freezes while the splash fades so no hidden animation loop survives in the running experience. The flat launch surface contains only an enlarged wordmark and the white-to-red travelling `PLAY THE ROAD` command; simulated appliance controls are explicitly excluded. It represents real work:
 
 1. a user gesture unlocks audio;
 2. minimum assets are verified/decoded;

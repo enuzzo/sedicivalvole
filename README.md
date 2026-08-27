@@ -40,7 +40,7 @@ The canonical development build is available at [sedicivalvole.app](https://sedi
 
 ## Experience
 
-The product is configured while parked. One deliberate **PLAY THE ROAD** gesture on the animated Signal Gate splash unlocks Web Audio, checks capabilities, requests GPS permission, and enters the selected Flux environment. The gesture is a Braun/Dieter Rams instrument plate with the `sedicivalvole` wordmark integrated into the control. The interface is flat, monospace, Braun-influenced, Swiss, and slightly brutalist; the generative field supplies the visual contrast.
+The product is configured while parked. One deliberate **PLAY THE ROAD** gesture on the animated Signal Gate splash unlocks Web Audio, checks capabilities, requests GPS permission, and enters the selected Flux environment. The gesture is a single flat typographic surface: an enlarged `sedicivalvole` wordmark above the white-to-red travelling command, with no simulated appliance controls. The interface is monospace, Braun-influenced, Swiss, and slightly brutalist; the generative field supplies the visual contrast.
 
 The speed source is an explicit abstraction. GPS and the desktop simulator produce the same normalized stream. Hold `ArrowUp` as an accelerator; releasing it enters a progressive nominal Model 3 AWD regenerative slowdown instead of dropping to zero. `ArrowDown` explicitly requests that lift-off state. Holding `Space` applies the stronger estimated service-brake curve from the exact current speed. Reference acceleration, lift-off, and braking dynamics define soft GPS plausibility bands without creating or replacing real motion samples. Keyboard handling never steals input from focused controls.
 

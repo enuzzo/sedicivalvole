@@ -9,12 +9,12 @@ npm install
 npm run dev
 ```
 
-The initial **PLAY THE ROAD** gesture is one Braun instrument plate with the integrated `sedicivalvole` wordmark. It sits over the animated Signal Gate, unlocks Web Audio, runs capability checks, requests GPS permission, and fades into the scene.
+The initial **PLAY THE ROAD** gesture is one flat typographic launch surface with an enlarged `sedicivalvole` wordmark and no simulated hardware. It sits over the animated Signal Gate, unlocks Web Audio, runs capability checks, requests GPS permission, and fades into the scene.
 
 ## Implemented
 
 - four selectable environments: `APERTURE 01`, byte-identical upstream Interstate 7 `VERTIGO 02`, original `MERIDIAN 03`, and original `LATITUDES 04`;
-- a dedicated WebGL2 Signal Gate splash with Canvas2D and reduced-motion fallbacks;
+- a dedicated WebGL2 Signal Gate splash with independently phased travelling lane gaps, restrained perspective airflow, and Canvas2D/reduced-motion fallbacks;
 - continuously redrawn Canvas2D fallback and reduced-motion behavior for Aperture; Vertigo retains the original Three.js/post-processing renderer and caps its speed input in reduced-motion mode;
 - FRACTURE, a generative AudioWorklet score with ten four-bar sections, a narrow `162–176 BPM` range, tested harmony, staged deceleration memory, and an offline render path;
 - an honest Music library: generative FRACTURE and the compact adaptive JUNCTION music bank are selectable; five later directions remain disabled and marked `IN PREPARATION`;

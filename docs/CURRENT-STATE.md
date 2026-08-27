@@ -22,9 +22,12 @@ dated study documents.
   is `130 km/h`, with Aperture visibly forming a tunnel near `40 km/h`.
 - The main experience retains Stop/Mute, GPS/Demo source selection, compact
   Music and Visual libraries, body themes, and coordinate-free diagnostics.
-- Signal Gate launches through the approved `390 × 170 px` Braun instrument
-  plate at the Tesla split viewport, with the wordmark integrated into the
-  single `PLAY THE ROAD` gesture.
+- Signal Gate launches through the approved `390 × 170 px` flat typographic
+  surface at the Tesla split viewport. Its enlarged wordmark and full-width
+  `PLAY THE ROAD` field form one semantic gesture with no simulated controls.
+- The command carries a continuous white-to-red horizontal wave. Every Signal
+  Gate lane owns a short independently phased travelling gap, with restrained
+  perspective airflow behind the road field.
 - Diagnostics separate FPS/frame time, browser-exposed heap and decoded-audio
   memory by splash, active Visual/Music pairing and DIAG-open state.
 
