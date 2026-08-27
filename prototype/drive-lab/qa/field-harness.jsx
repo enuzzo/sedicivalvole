@@ -128,6 +128,8 @@ function Harness() {
     ? { energy: speedToEnergy(speed), pulse: 0, brake: 0 }
     : {};
 
+  const APP_COMMIT = typeof __APP_COMMIT__ !== "undefined" ? __APP_COMMIT__ : "dev";
+
   return (
     <>
       <Suspense fallback={null}>
@@ -135,7 +137,7 @@ function Harness() {
       </Suspense>
       <div className="qa-readout" hidden={!SHOW_READOUT}>
         {[
-          `${ENVIRONMENT.toUpperCase()}  ${speed.toFixed(1)} km/h`,
+          `${ENVIRONMENT.toUpperCase()}  ${speed.toFixed(1)} km/h  [${APP_COMMIT}]`,
           renderer,
           summary
             ? `${summary.fps.toFixed(1)} fps  mean ${summary.meanMs.toFixed(2)}ms  `

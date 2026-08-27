@@ -1,5 +1,13 @@
 import { useEffect, useRef } from "react";
-import { energyToFlowRate, speedToVisualVelocity, visualVelocityToMorphWarp } from "./signal-model.js";
+import { energyToFlowRate, speedToVisualVelocity } from "./signal-model.js";
+import {
+  APERTURE_TUNING,
+  WALL_APPROACH_SPEED_KMH,
+  apertureReadout,
+  apertureWall,
+} from "./aperture-model.js";
+
+export { APERTURE_TUNING, WALL_APPROACH_SPEED_KMH, apertureReadout, apertureWall };
 
 /** Below this the vehicle counts as standing still for recolouring. */
 const REST_RECOLOUR_SPEED_KMH = 1;
@@ -21,10 +29,13 @@ const FRAGMENT_SHADER = `#version 300 es
   uniform float u_aspect;
   uniform float u_energy;
   uniform float u_velocity;
+  uniform float u_speedKmh;
   uniform float u_flow;
   uniform float u_pulse;
   uniform float u_brake;
   uniform float u_restRecolour;
+  uniform float u_wallZ;
+  uniform float u_wallProximity;
   uniform vec3 u_base;
   uniform vec3 u_mid;
   uniform vec3 u_light;
@@ -46,128 +57,124 @@ const FRAGMENT_SHADER = `#version 300 es
     return inside.x * inside.y;
   }
 
-  float squarePerimeter(vec2 point) {
-    vec2 absolutePoint = abs(point);
-    if (absolutePoint.y >= absolutePoint.x) {
-      if (point.y >= 0.0) return 1.0 + point.x / max(point.y, 0.0001);
-      return 5.0 - point.x / max(-point.y, 0.0001);
-    }
-    if (point.x >= 0.0) return 3.0 - point.y / max(point.x, 0.0001);
-    return 7.0 + point.y / max(-point.x, 0.0001);
-  }
-
   void main() {
-    vec2 screen = v_uv * 2.0 - 1.0;
-    screen.x *= u_aspect * 0.77;
+    vec2 uv_norm = v_uv * 2.0 - 1.0;
+    
+    // Terminal velocity factor: above 118 km/h transitioning to full hyperspeed at 130 km/h
+    float terminalVelocity = smoothstep(118.0, 130.0, u_speedKmh);
+    
+    // 3D Ray-Tunnel Box Intersection
+    // Screen bounds: [-1, 1] in Y, [-u_aspect, u_aspect] in X
+    // Camera is at (0,0,0) looking down +Z into the tunnel.
+    // Tunnel has half-width W = u_aspect and half-height H = 1.0
+    float majorAxis = max(max(abs(uv_norm.x), abs(uv_norm.y)), 0.0001);
+    float zCorridor = 1.0 / majorAxis;
+    
+    // Wall intersection logic (0 = Top, 1 = Right, 2 = Bottom, 3 = Left)
+    bool isSideWall = abs(uv_norm.x) >= abs(uv_norm.y);
+    float side = isSideWall 
+      ? (uv_norm.x > 0.0 ? 1.0 : 3.0)
+      : (uv_norm.y > 0.0 ? 0.0 : 2.0);
+      
+    float transCoord = isSideWall
+      ? (uv_norm.y / max(abs(uv_norm.x), 0.0001))
+      : (uv_norm.x / max(abs(uv_norm.y), 0.0001));
+    // transCoord is in [-1.0, 1.0]
 
-    float energy = smoothstep(0.02, 0.96, u_energy);
-    float velocity = smoothstep(0.08, 0.96, u_velocity);
-    float shrink = smoothstep(0.0, 0.42, energy);
-    // The corridor has to be forming by roughly 20 km/h and unmistakable by 40,
-    // so the warp curve opens early and then saturates rather than waiting for
-    // motorway speed to do anything at all.
-    float warp = pow(smoothstep(0.0, 0.42, u_velocity), 0.62);
-    float majorAxis = max(max(abs(screen.x), abs(screen.y)), 0.035);
-    float perimeter = squarePerimeter(screen);
-    float depth = 1.0 / max(majorAxis, 0.12);
+    // 7 tiles across each wall (transverse)
+    const float WALL_TILES = 7.0;
+    float transGrid = (transCoord * 0.5 + 0.5) * WALL_TILES;
+    float transCell = floor(transGrid);
+    float transFract = fract(transGrid);
+    
+    // Depth rings (longitudinal Z): 7 depth rings between screen edge (z=1) and center box (z=8)
+    float zGrid = zCorridor - u_flow;
+    float zCell = floor(zGrid);
+    float zFract = fract(zGrid);
 
-    // -- One coordinate system at every speed ------------------------------
-    //
-    // This field used to blend a Cartesian flat grid with a ring-topology tunnel
-    // grid. Those are different topologies: squarePerimeter switches branch on
-    // the diagonals, so every intermediate blend carried a fraction of that
-    // discontinuity across them and floor() cut tiles along the diagonals.
-    // No continuous map exists between the two, so the tearing could not be
-    // tuned away -- the flat state had to become a degenerate case of the tunnel
-    // rather than a separate scene.
-    //
-    // Now the angular coordinate is used unchanged at all speeds, so its
-    // discontinuity is never blended, and only the radial coordinate
-    // interpolates -- between a linear reading of majorAxis and the perspective
-    // reading. Both are monotonic toward the centre, so their blend is monotonic
-    // and cannot fold. Speed deforms one field instead of crossfading two.
-
-    // -- One ring field at every speed -------------------------------------
-    //
-    // The angular coordinate is the square-perimeter walk, used unchanged at all
-    // speeds. Because it never varies, its branch discontinuity on the diagonals
-    // is never blended into a cell and floor() can never cut a tile. It is also
-    // what makes the walls read as aligned concentric rings with crisp corners:
-    // a Cartesian grid displaced radially cannot produce that alignment, which
-    // is why an earlier attempt looked staggered.
-    //
-    // Only the radial coordinate interpolates, between a shallow linear reading
-    // and the perspective reading. Both are monotonic toward the centre, so the
-    // blend is monotonic and cannot fold.
-    //
-    // 3.5 gives 28 tiles around, seven per wall, with corners exactly on a tile
-    // edge because the perimeter runs 0..8 with corners on the even integers.
-    // Held constant so a tile is never re-indexed and never changes colour just
-    // because speed changed.
-    const float RING_DENSITY = 3.5;
-    // Shallow at rest: a few large bands rather than a deep corridor, so a
-    // standstill is calm. Depth arrives with warp, not with ring count.
-    const float FLAT_RING_SCALE = 3.2;
-    // Tuned so 20 km/h lands on the reference proportion: about seven bands of
-    // depth, not a fine gradient of them.
-    const float DEPTH_FREQUENCY = 1.6;
-
-    float angular = perimeter * RING_DENSITY;
-    float flatRadial = (1.0 - min(majorAxis, 1.0)) * FLAT_RING_SCALE;
-    float tunnelRadial = depth * DEPTH_FREQUENCY;
-    float radial = mix(flatRadial, tunnelRadial, warp) + u_flow;
-
-    vec2 fieldGrid = vec2(angular, radial);
-    vec2 fieldCell = floor(fieldGrid);
-    vec2 fieldLocal = fract(fieldGrid);
-    float identity = hash21(fieldCell + vec2(17.0, 3.0));
-    float tone = hash21(fieldCell + vec2(8.0, 29.0));
-
-    float flatInsetX = 0.12;
-    float compactInsetX = mix(flatInsetX, 0.27, shrink);
-    float flatInsetY = clamp(0.5 - (0.5 - flatInsetX) * u_aspect * 0.7, 0.03, 0.42);
-    float compactInsetY = clamp(0.5 - (0.5 - compactInsetX) * u_aspect * 0.7, 0.03, 0.42);
-    vec2 compactInset = vec2(compactInsetX, mix(flatInsetY, compactInsetY, shrink));
-    float trailInset = mix(0.15 + 0.1 * hash21(fieldCell + vec2(9.0)), 0.055, velocity);
-    vec2 tunnelInset = vec2(0.1 + 0.07 * hash21(fieldCell + vec2(4.0)), trailInset);
-    vec2 fieldInset = mix(compactInset, tunnelInset, warp);
-    float tile = rectangleMask(fieldLocal, fieldInset);
-
-    // Keyed to the world cell, so a tile carries the same colour for as long as
-    // it is in the scene: the field moves, the tile's index moves with it, and
-    // its colour never changes underneath it.
-    //
-    // u_restRecolour is the single deliberate exception. It advances in discrete
-    // steps only while the vehicle is standing still, so a stationary mosaic
-    // re-deals its colours every few seconds. The moment the vehicle moves it is
-    // frozen, and every tile's colour is fixed from then on.
-    float colorIndex = floor(hash21(fieldCell + vec2(41.0, 13.0) + u_restRecolour) * 4.0);
+    // Palette indices
     vec3 darkPanel = mix(u_base, u_mid, 0.66);
+
+    // Corridor tile insets:
+    // As velocity increases (20 -> 118 km/h), longitudinal insets shrink so tiles elongate along Z
+    float baseTransInset = 0.085;
+    float baseLongInset = mix(0.12, 0.02, u_velocity);
+    
+    // In Terminal Velocity mode (>120 km/h), longitudinal gaps disappear completely (continuous streaks)
+    // and transverse streaks become fine, sharp lines.
+    float transInset = mix(baseTransInset, 0.28, terminalVelocity);
+    float longInset = mix(baseLongInset, 0.0, terminalVelocity);
+    
+    float transMask = smoothstep(0.0, 0.02, min(transFract, 1.0 - transFract) - transInset);
+    float longMask = smoothstep(0.0, 0.02, min(zFract, 1.0 - zFract) - longInset);
+    float corridorTileMask = transMask * longMask;
+
+    // Corridor tile coloring
+    vec2 tileId = vec2(side * 7.0 + transCell, zCell);
+    float colorIndex = floor(hash21(tileId + vec2(41.0, 13.0) + u_restRecolour) * 4.0);
+    float tileTone = hash21(tileId + vec2(8.0, 29.0));
+    
     vec3 panel = darkPanel;
     panel = mix(panel, u_mid, step(0.5, colorIndex));
     panel = mix(panel, u_light, step(1.5, colorIndex));
     panel = mix(panel, u_accent, step(2.5, colorIndex));
-    // Per-tile shading only. The previous form modulated every panel from the
-    // shared flow clock, which read as an unmotivated shimmer at a standstill.
-    panel *= mix(0.97 + tone * 0.06, 0.88 + tone * 0.22, warp);
-    vec3 color = mix(u_base, panel, tile);
+    panel *= mix(0.95 + tileTone * 0.10, 0.90 + tileTone * 0.20, u_velocity);
+    
+    // Terminal velocity streak coloring: high-contrast white & red streaks streaming forward
+    float streakHash = hash21(vec2(side * 7.0 + transCell, 19.8));
+    vec3 streakColor = mix(u_light, u_accent, step(0.45, streakHash));
+    streakColor = mix(streakColor, u_mid, step(0.85, streakHash));
+    panel = mix(panel, streakColor, terminalVelocity);
 
-    float apertureRadius = max(abs(screen.x) * 0.78, abs(screen.y));
-    float apertureGrowth = smoothstep(0.02, 0.72, warp);
-    float apertureSize = mix(-0.01, 0.105, apertureGrowth);
-    float apertureActive = step(0.0, apertureSize);
-    float aperture = apertureActive * (1.0 - smoothstep(apertureSize, apertureSize + 0.012, apertureRadius));
-    float apertureFrame = apertureActive
-      * smoothstep(apertureSize - 0.012, apertureSize, apertureRadius)
-      * (1.0 - smoothstep(apertureSize + 0.012, apertureSize + 0.025, apertureRadius));
-    vec3 apertureVoid = u_base * 0.08;
-    color = mix(color, apertureVoid, aperture);
-    color = mix(color, u_mid * 0.34, apertureFrame * 0.5);
+    vec3 corridorColor = mix(u_base, panel, corridorTileMask);
 
-    float edge = smoothstep(1.18, 0.38, max(abs(screen.x) * 0.72, abs(screen.y)));
-    color *= mix(1.0, 0.66 + edge * 0.42, warp);
-    color = mix(color, u_accent, u_pulse * tile * step(0.84, identity) * 0.16);
-    color = mix(color, u_light, u_brake * (0.035 + apertureFrame * 0.08));
+    // Far terminus fade: the center void stays completely dark at speed (>20 km/h)
+    // Vanishing point beyond z=7.5 (majorAxis < 0.133) fades to pure black
+    float terminusFade = smoothstep(0.12, 0.17, majorAxis);
+    corridorColor *= terminusFade;
+
+    // --- End Wall (Muro di Fondo) ---
+    // The end wall sits at depth u_wallZ.
+    // When u_wallZ <= zCorridor (i.e. majorAxis <= 1.0 / u_wallZ), the ray hits the end wall.
+    // At speed 0: u_wallZ = 1.0, covers 100% of the screen.
+    // At speed 20: u_wallZ = 8.0, fits inside the center aperture (majorAxis <= 0.125).
+    // Above 20 km/h: u_wallZ >= 8.0, fades out with terminusFade.
+    
+    float wallHalfSize = 1.0 / max(u_wallZ, 0.0001);
+    float onWall = smoothstep(wallHalfSize + 0.002, wallHalfSize - 0.002, majorAxis);
+
+    // On the end wall, coordinates in world space at Z = u_wallZ:
+    vec2 wallPos = vec2(uv_norm.x * u_aspect, uv_norm.y) * u_wallZ;
+    // Wall grid has 7 square tiles vertically across [-1, 1]
+    vec2 wallGrid = (wallPos * 0.5 + vec2(0.5 * u_aspect, 0.5)) * 7.0;
+    vec2 wallCell = floor(wallGrid);
+    vec2 wallFract = fract(wallGrid);
+
+    float wallColorIndex = floor(hash21(wallCell + vec2(41.0, 13.0) + u_restRecolour) * 4.0);
+    float wallTone = hash21(wallCell + vec2(8.0, 29.0));
+    vec3 wallPanel = darkPanel;
+    wallPanel = mix(wallPanel, u_mid, step(0.5, wallColorIndex));
+    wallPanel = mix(wallPanel, u_light, step(1.5, wallColorIndex));
+    wallPanel = mix(wallPanel, u_accent, step(2.5, wallColorIndex));
+    wallPanel *= 0.95 + wallTone * 0.10;
+
+    float wallTileMask = rectangleMask(wallFract, vec2(0.085));
+    vec3 wallColor = mix(u_base, wallPanel, wallTileMask);
+
+    // End wall luminance: full at standstill, fades smoothly at far distance
+    float wallLuminance = smoothstep(0.10, 0.40, wallHalfSize);
+    wallColor *= wallLuminance;
+
+    // Composite End Wall over Corridor
+    vec3 color = mix(corridorColor, wallColor, onWall * step(0.001, u_wallProximity));
+
+    // Outer edge vignette / atmospheric shade
+    float edge = smoothstep(1.25, 0.40, max(abs(uv_norm.x) * 0.75, abs(uv_norm.y)));
+    color *= mix(1.0, 0.75 + edge * 0.35, u_velocity);
+
+    // Reactive audio pulse and brake flash
+    color = mix(color, u_accent, u_pulse * step(0.75, tileTone) * 0.18);
+    color = mix(color, u_light, u_brake * 0.04);
 
     outColor = vec4(color, 1.0);
   }
@@ -204,7 +211,7 @@ function mixColor(from, to, amount) {
   return from.map((value, index) => value + (to[index] - value) * amount);
 }
 
-function drawCanvasFallback(context, canvas, energy, visualVelocity, palette, flow) {
+function drawCanvasFallback(context, canvas, energy, visualVelocity, speedKmh, palette, flow) {
   const ratio = Math.min(window.devicePixelRatio || 1, 1.25);
   const width = Math.max(1, Math.floor(canvas.clientWidth * ratio));
   const height = Math.max(1, Math.floor(canvas.clientHeight * ratio));
@@ -214,75 +221,53 @@ function drawCanvasFallback(context, canvas, energy, visualVelocity, palette, fl
   }
   context.fillStyle = cssColor(palette.base);
   context.fillRect(0, 0, width, height);
-  const centerX = width / 2;
-  const centerY = height * 0.5;
-  const easedEnergy = energy * energy * (3 - 2 * energy);
-  const shrink = smoothstep(0, 0.42, easedEnergy);
-  const warp = visualVelocityToMorphWarp(visualVelocity);
+
   const flatDark = mixColor(palette.base, palette.mid, 0.66);
   const flatColors = [flatDark, palette.mid, palette.light, palette.accent];
+  const wall = apertureWall(speedKmh);
 
-  for (let index = 0; index < 96; index += 1) {
-    const column = index % 12;
-    const row = Math.floor(index / 12);
-    const flatX = (column + 0.5) * width / 12;
-    const flatY = (row + 0.5) * height / 8;
+  // If at standstill or low speed, draw the end wall
+  if (wall.proximity > 0.01) {
+    const tileSize = (height / 7) * wall.size;
+    const cols = Math.ceil(width / tileSize) + 2;
+    const rows = 9;
+    const centerX = width / 2;
+    const centerY = height / 2;
 
-    const ring = Math.floor(index / 8);
-    const slot = index % 8;
-    const side = Math.floor(slot / 2);
-    const along = slot % 2 === 0 ? -0.42 : 0.42;
-    const travel = (ring / 12 + flow * 0.075) % 1;
-    const scale = 0.055 + travel * travel * 1.16;
-    let tunnelX = centerX;
-    let tunnelY = centerY;
-    if (side === 0) {
-      tunnelX += along * width * scale;
-      tunnelY -= height * 0.43 * scale;
-    } else if (side === 1) {
-      tunnelX += width * 0.43 * scale;
-      tunnelY += along * height * scale;
-    } else if (side === 2) {
-      tunnelX += along * width * scale;
-      tunnelY += height * 0.43 * scale;
-    } else {
-      tunnelX -= width * 0.43 * scale;
-      tunnelY += along * height * scale;
+    for (let c = -Math.floor(cols / 2); c <= Math.ceil(cols / 2); c += 1) {
+      for (let r = -Math.floor(rows / 2); r <= Math.ceil(rows / 2); r += 1) {
+        const px = centerX + (c - 0.5) * tileSize;
+        const py = centerY + (r - 0.5) * tileSize;
+        if (Math.abs(px - centerX) > (width / 2) * wall.size + tileSize) continue;
+        if (Math.abs(py - centerY) > (height / 2) * wall.size + tileSize) continue;
+
+        const colorIndex = hashCell(c + 50, r + 50) % flatColors.length;
+        context.fillStyle = cssColor(flatColors[colorIndex], wall.luminance);
+        context.fillRect(px + 2, py + 2, tileSize - 4, tileSize - 4);
+      }
     }
-
-    const x = flatX + (tunnelX - flatX) * warp;
-    const y = flatY + (tunnelY - flatY) * warp;
-    const panelScale = 0.45 + scale * 0.88;
-    const horizontal = side === 0 || side === 2;
-    const flatSize = Math.min(width / 12, height / 8) * 0.74;
-    const compactSize = flatSize * (1 - shrink * 0.43);
-    const radialStretch = 1 + velocity * 4.5;
-    const tunnelWidth = width * (horizontal ? 0.07 : 0.018 * radialStretch) * panelScale;
-    const tunnelHeight = height * (horizontal ? 0.018 * radialStretch : 0.075) * panelScale;
-    const panelWidth = compactSize + (tunnelWidth - compactSize) * warp;
-    const panelHeight = compactSize + (tunnelHeight - compactSize) * warp;
-
-    // Matches the WebGL2 path: a linear combination of the cell coordinates
-    // marches one step per row and reads as a spiral, so the tone is hashed.
-    const colorIndex = hashCell(column, row) % flatColors.length;
-    context.fillStyle = cssColor(flatColors[colorIndex], 0.92 + travel * 0.08);
-    context.fillRect(x - panelWidth / 2, y - panelHeight / 2, panelWidth, panelHeight);
   }
 
-  const apertureGrowth = smoothstep(0.02, 0.72, warp);
-  const apertureScale = -0.01 + apertureGrowth * 0.115;
-  if (apertureScale > 0) {
-    const apertureWidth = width * apertureScale;
-    const apertureHeight = height * apertureScale;
-    context.fillStyle = cssColor(palette.mid, 0.46);
-    context.fillRect(
-      centerX - apertureWidth / 2 - 1,
-      centerY - apertureHeight / 2 - 1,
-      apertureWidth + 2,
-      apertureHeight + 2,
-    );
-    context.fillStyle = cssColor(palette.base);
-    context.fillRect(centerX - apertureWidth / 2, centerY - apertureHeight / 2, apertureWidth, apertureHeight);
+  // Draw perspective bands if wall is receding
+  if (wall.proximity < 0.99) {
+    const centerX = width / 2;
+    const centerY = height / 2;
+    const terminalVelocity = smoothstep(118, 130, speedKmh);
+
+    for (let ring = 0; ring < 7; ring += 1) {
+      const z = ring + 1 - (flow % 1);
+      if (z < 1.0 || z > 8.0) continue;
+      const s = 1.0 / z;
+      const ringW = width * s;
+      const ringH = height * s;
+      const ringColor = terminalVelocity > 0.5
+        ? (ring % 2 === 0 ? palette.light : palette.accent)
+        : flatColors[ring % flatColors.length];
+
+      context.strokeStyle = cssColor(ringColor, 0.7);
+      context.lineWidth = terminalVelocity > 0.5 ? 2 : 4;
+      context.strokeRect(centerX - ringW / 2, centerY - ringH / 2, ringW, ringH);
+    }
   }
 }
 
@@ -304,6 +289,7 @@ function startCanvasFallback(canvas, valuesRef, reducedMotion, onRenderer, onFra
     canvas,
     visualEnergy,
     visualVelocity,
+    valuesRef.current.speed,
     valuesRef.current.theme.palette,
     flow,
   );
@@ -327,6 +313,7 @@ function startCanvasFallback(canvas, valuesRef, reducedMotion, onRenderer, onFra
       canvas,
       visualEnergy,
       visualVelocity,
+      valuesRef.current.speed,
       valuesRef.current.theme.palette,
       flow,
     );
@@ -391,10 +378,13 @@ export function FluxField({ energy, speed, theme, reducedMotion, pulse, brake, o
       aspect: gl.getUniformLocation(program, "u_aspect"),
       energy: gl.getUniformLocation(program, "u_energy"),
       velocity: gl.getUniformLocation(program, "u_velocity"),
+      speedKmh: gl.getUniformLocation(program, "u_speedKmh"),
       flow: gl.getUniformLocation(program, "u_flow"),
       pulse: gl.getUniformLocation(program, "u_pulse"),
       brake: gl.getUniformLocation(program, "u_brake"),
       restRecolour: gl.getUniformLocation(program, "u_restRecolour"),
+      wallZ: gl.getUniformLocation(program, "u_wallZ"),
+      wallProximity: gl.getUniformLocation(program, "u_wallProximity"),
       base: gl.getUniformLocation(program, "u_base"),
       mid: gl.getUniformLocation(program, "u_mid"),
       light: gl.getUniformLocation(program, "u_light"),
@@ -423,17 +413,18 @@ export function FluxField({ energy, speed, theme, reducedMotion, pulse, brake, o
       lastFrameAt = now;
       lastDrawAt = now;
 
+      const currentSpeed = valuesRef.current.speed;
       const nextEnergy = reducedMotion ? Math.min(valuesRef.current.energy, 0.28) : valuesRef.current.energy;
       const smoothing = nextEnergy >= visualEnergy ? 0.12 : 0.065;
       visualEnergy += (nextEnergy - visualEnergy) * smoothing;
       const nextVelocity = speedToVisualVelocity(
-        reducedMotion ? Math.min(valuesRef.current.speed, 20) : valuesRef.current.speed,
+        reducedMotion ? Math.min(currentSpeed, 20) : currentSpeed,
       );
       const velocitySmoothing = nextVelocity >= visualVelocity ? 0.14 : 0.12;
       visualVelocity += (nextVelocity - visualVelocity) * velocitySmoothing;
-      if (!reducedMotion) flow += deltaSeconds * energyToFlowRate(visualEnergy, valuesRef.current.speed);
+      if (!reducedMotion) flow += deltaSeconds * energyToFlowRate(visualEnergy, currentSpeed);
 
-      if (valuesRef.current.speed < REST_RECOLOUR_SPEED_KMH) {
+      if (currentSpeed < REST_RECOLOUR_SPEED_KMH) {
         restSeconds += deltaSeconds;
         if (restSeconds >= REST_RECOLOUR_INTERVAL_SECONDS) {
           restSeconds = 0;
@@ -453,14 +444,19 @@ export function FluxField({ energy, speed, theme, reducedMotion, pulse, brake, o
       }
 
       const { palette } = valuesRef.current.theme;
+      const wall = apertureWall(reducedMotion ? Math.min(currentSpeed, 20) : currentSpeed);
+
       gl.useProgram(program);
       gl.uniform1f(uniforms.aspect, width / height);
       gl.uniform1f(uniforms.energy, visualEnergy);
       gl.uniform1f(uniforms.velocity, visualVelocity);
+      gl.uniform1f(uniforms.speedKmh, reducedMotion ? Math.min(currentSpeed, 20) : currentSpeed);
       gl.uniform1f(uniforms.flow, flow);
       gl.uniform1f(uniforms.pulse, valuesRef.current.pulse);
       gl.uniform1f(uniforms.brake, valuesRef.current.brake);
       gl.uniform1f(uniforms.restRecolour, restRecolour);
+      gl.uniform1f(uniforms.wallZ, wall.z);
+      gl.uniform1f(uniforms.wallProximity, wall.proximity);
       gl.uniform3fv(uniforms.base, palette.base);
       gl.uniform3fv(uniforms.mid, palette.mid);
       gl.uniform3fv(uniforms.light, palette.light);

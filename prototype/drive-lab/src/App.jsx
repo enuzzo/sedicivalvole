@@ -35,6 +35,7 @@ import {
 
 const APP_VERSION = __APP_VERSION__;
 const APP_BUILD = __APP_BUILD__;
+const APP_COMMIT = __APP_COMMIT__;
 const PREFERENCES_KEY = "sedicivalvole.preferences.v1";
 const DIAGNOSTIC_SEND_ERROR_COPY = {
   payload_size_rejected: "The browser report exceeded the transport limit. Keep this page open and retry after an update.",

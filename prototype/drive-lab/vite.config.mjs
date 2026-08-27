@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { readFileSync } from "node:fs";
+import { execSync } from "node:child_process";
 
 const productVersion = readFileSync(new URL("../../VERSION", import.meta.url), "utf8").trim();
 
@@ -21,6 +22,19 @@ function buildStamp(at = new Date()) {
 
 const productBuild = buildStamp();
 
+// Short commit of the tree the build came from, so a rendered frame can be tied
+// back to an exact revision. Falls back to "unknown" rather than failing the
+// build when git is unavailable.
+function commitRef() {
+  try {
+    return execSync("git rev-parse --short HEAD", { encoding: "utf8" }).trim();
+  } catch {
+    return "unknown";
+  }
+}
+
+const productCommit = commitRef();
+
 export default defineConfig({
   base: "./",
   build: {
@@ -29,6 +43,7 @@ export default defineConfig({
   define: {
     __APP_VERSION__: JSON.stringify(productVersion),
     __APP_BUILD__: JSON.stringify(productBuild),
+    __APP_COMMIT__: JSON.stringify(productCommit),
   },
   optimizeDeps: {
     include: ["react", "react-dom/client"],
