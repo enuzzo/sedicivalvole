@@ -4,6 +4,8 @@ import {
   APERTURE_TUNING,
   WALL_APPROACH_SPEED_KMH,
   apertureReadout,
+  apertureShaderControls,
+  apertureSmoothing,
   apertureWall,
 } from "./aperture-model.js";
 
@@ -27,9 +29,11 @@ const FRAGMENT_SHADER = `#version 300 es
   precision highp float;
 
   uniform float u_aspect;
-  uniform float u_energy;
   uniform float u_velocity;
-  uniform float u_speedKmh;
+  uniform float u_warp;
+  uniform float u_terminalVelocity;
+  uniform float u_speedPulseMask;
+  uniform float u_voidActive;
   uniform float u_flow;
   uniform float u_pulse;
   uniform float u_brake;
@@ -51,10 +55,6 @@ const FRAGMENT_SHADER = `#version 300 es
   void main() {
     vec2 uv_norm = v_uv * 2.0 - 1.0;
     
-    float normSpeed = clamp(u_speedKmh / 35.0, 0.0, 1.0);
-    float warp = normSpeed * normSpeed * (3.0 - 2.0 * normSpeed);
-    float terminalVelocity = smoothstep(118.0, 130.0, u_speedKmh);
-
     vec3 darkPanel = mix(u_base, u_mid, 0.66);
 
     float absX = abs(uv_norm.x);
@@ -64,7 +64,7 @@ const FRAGMENT_SHADER = `#version 300 es
     // Depth maps from 0 (at edges) to infinity (at center).
     // At majorAxis = 0.125, Depth = 7.0 tiles.
     float depth = (1.0 / majorAxis) - 1.0;
-    float flowOffset = u_flow * warp;
+    float flowOffset = u_flow * u_warp;
     
     bool isSide = absX >= absY;
     
@@ -73,14 +73,14 @@ const FRAGMENT_SHADER = `#version 300 es
         float signX = sign(uv_norm.x);
         float longi = 3.5 * u_aspect + depth - flowOffset;
         float trans = uv_norm.y * 3.5 / absX;
-        gridPos.x = mix(uv_norm.x * u_aspect * 3.5, signX * longi, warp);
-        gridPos.y = mix(uv_norm.y * 3.5, trans, warp);
+        gridPos.x = mix(uv_norm.x * u_aspect * 3.5, signX * longi, u_warp);
+        gridPos.y = mix(uv_norm.y * 3.5, trans, u_warp);
     } else {
         float signY = sign(uv_norm.y);
         float longi = 3.5 + depth - flowOffset;
         float trans = uv_norm.x * u_aspect * 3.5 / absY;
-        gridPos.x = mix(uv_norm.x * u_aspect * 3.5, trans, warp);
-        gridPos.y = mix(uv_norm.y * 3.5, signY * longi, warp);
+        gridPos.x = mix(uv_norm.x * u_aspect * 3.5, trans, u_warp);
+        gridPos.y = mix(uv_norm.y * 3.5, signY * longi, u_warp);
     }
     
     // Determine fractional parts based on which axis acts as longitudinal/transverse
@@ -110,8 +110,8 @@ const FRAGMENT_SHADER = `#version 300 es
     // Tile Insets and Masking
     float baseTransInset = 0.085;
     float baseLongInset = mix(0.085, 0.02, u_velocity);
-    float transInset = mix(baseTransInset, 0.44, terminalVelocity);
-    float longInset = mix(baseLongInset, 0.0, terminalVelocity);
+    float transInset = mix(baseTransInset, 0.44, u_terminalVelocity);
+    float longInset = mix(baseLongInset, 0.0, u_terminalVelocity);
 
     float transMask = smoothstep(0.0, 0.02, min(transFract, 1.0 - transFract) - transInset);
     float longMask = smoothstep(0.0, 0.02, min(longFract, 1.0 - longFract) - longInset);
@@ -134,14 +134,13 @@ const FRAGMENT_SHADER = `#version 300 es
     float streakHash = hash21(vec2(isSide ? 1.0 : 0.0, transCell) + 19.8);
     vec3 streakColor = mix(u_light, u_accent, step(0.45, streakHash));
     streakColor = mix(streakColor, u_mid, step(0.85, streakHash));
-    panel = mix(panel, streakColor, terminalVelocity);
+    panel = mix(panel, streakColor, u_terminalVelocity);
 
     vec3 color = mix(u_base, panel, tileMask);
 
     // Reactive Audio Pulse & Brake Highlights
     // Suppress the audio beat pulse at low speeds to prevent the resting grid from blinking
-    float speedPulseMask = smoothstep(1.0, 15.0, u_speedKmh);
-    float pulse = u_pulse * tileMask * step(0.75, tone) * 0.22 * speedPulseMask;
+    float pulse = u_pulse * tileMask * step(0.75, tone) * 0.22 * u_speedPulseMask;
     color = mix(color, u_accent, pulse);
     color = mix(color, u_light, u_brake * tileMask * 0.08);
 
@@ -152,8 +151,7 @@ const FRAGMENT_SHADER = `#version 300 es
     // FINAL TERMINUS VOID GATE:
     // Void covers the central 12% of the screen, hiding the infinite depth singularity
     float terminusVoid = smoothstep(0.12, 0.17, majorAxis);
-    float voidActive = smoothstep(15.0, 35.0, u_speedKmh);
-    color *= mix(1.0, terminusVoid, voidActive);
+    color *= mix(1.0, terminusVoid, u_voidActive);
 
     outColor = vec4(color, 1.0);
   }
@@ -355,9 +353,11 @@ export function FluxField({ energy, speed, theme, reducedMotion, pulse, brake, o
 
     const uniforms = {
       aspect: gl.getUniformLocation(program, "u_aspect"),
-      energy: gl.getUniformLocation(program, "u_energy"),
       velocity: gl.getUniformLocation(program, "u_velocity"),
-      speedKmh: gl.getUniformLocation(program, "u_speedKmh"),
+      warp: gl.getUniformLocation(program, "u_warp"),
+      terminalVelocity: gl.getUniformLocation(program, "u_terminalVelocity"),
+      speedPulseMask: gl.getUniformLocation(program, "u_speedPulseMask"),
+      voidActive: gl.getUniformLocation(program, "u_voidActive"),
       flow: gl.getUniformLocation(program, "u_flow"),
       pulse: gl.getUniformLocation(program, "u_pulse"),
       brake: gl.getUniformLocation(program, "u_brake"),
@@ -379,25 +379,25 @@ export function FluxField({ energy, speed, theme, reducedMotion, pulse, brake, o
     let visualEnergy = reducedMotion ? Math.min(energy, 0.28) : energy;
     let visualVelocity = speedToVisualVelocity(reducedMotion ? Math.min(speed, 20) : speed);
     let lastFrameAt = performance.now();
-    let lastDrawAt = 0;
     onRenderer("WebGL2 · Aperture");
 
     const render = (now) => {
       if (stopped) return;
       animationFrame = requestAnimationFrame(render);
-      if (now - lastDrawAt < 1000 / 45) return;
       const deltaSeconds = Math.min(0.05, Math.max(0, (now - lastFrameAt) / 1000));
       lastFrameAt = now;
-      lastDrawAt = now;
 
       const currentSpeed = valuesRef.current.speed;
       const nextEnergy = reducedMotion ? Math.min(valuesRef.current.energy, 0.28) : valuesRef.current.energy;
-      const smoothing = nextEnergy >= visualEnergy ? 0.12 : 0.065;
+      const smoothing = apertureSmoothing(nextEnergy >= visualEnergy ? 0.12 : 0.065, deltaSeconds);
       visualEnergy += (nextEnergy - visualEnergy) * smoothing;
       const nextVelocity = speedToVisualVelocity(
         reducedMotion ? Math.min(currentSpeed, 20) : currentSpeed,
       );
-      const velocitySmoothing = nextVelocity >= visualVelocity ? 0.14 : 0.12;
+      const velocitySmoothing = apertureSmoothing(
+        nextVelocity >= visualVelocity ? 0.14 : 0.12,
+        deltaSeconds,
+      );
       visualVelocity += (nextVelocity - visualVelocity) * velocitySmoothing;
       if (!reducedMotion) flow += deltaSeconds * energyToFlowRate(visualEnergy, currentSpeed);
 
@@ -415,12 +415,17 @@ export function FluxField({ energy, speed, theme, reducedMotion, pulse, brake, o
       }
 
       const { palette } = valuesRef.current.theme;
+      const shaderControls = apertureShaderControls(
+        reducedMotion ? Math.min(currentSpeed, 20) : currentSpeed,
+      );
 
       gl.useProgram(program);
       gl.uniform1f(uniforms.aspect, width / height);
-      gl.uniform1f(uniforms.energy, visualEnergy);
       gl.uniform1f(uniforms.velocity, visualVelocity);
-      gl.uniform1f(uniforms.speedKmh, reducedMotion ? Math.min(currentSpeed, 20) : currentSpeed);
+      gl.uniform1f(uniforms.warp, shaderControls.warp);
+      gl.uniform1f(uniforms.terminalVelocity, shaderControls.terminalVelocity);
+      gl.uniform1f(uniforms.speedPulseMask, shaderControls.speedPulseMask);
+      gl.uniform1f(uniforms.voidActive, shaderControls.voidActive);
       gl.uniform1f(uniforms.flow, flow);
       gl.uniform1f(uniforms.pulse, valuesRef.current.pulse);
       gl.uniform1f(uniforms.brake, valuesRef.current.brake);
@@ -430,7 +435,7 @@ export function FluxField({ energy, speed, theme, reducedMotion, pulse, brake, o
       gl.uniform3fv(uniforms.light, palette.light);
       gl.uniform3fv(uniforms.accent, palette.accent);
       gl.drawArrays(gl.TRIANGLES, 0, 6);
-      onFrame(now, 1000 / 45, "WebGL2", width, height);
+      onFrame(now, 1000 / 60, "WebGL2", width, height);
     };
 
     const onContextLost = (event) => {

@@ -26,6 +26,32 @@ export const APERTURE_TUNING = Object.freeze({
 export const WALL_APPROACH_SPEED_KMH = 35;
 
 /**
+ * Converts the old per-drawn-frame easing coefficient into a time-based one.
+ *
+ * Aperture historically attempted to draw at 45 FPS, but a 60 Hz browser
+ * skipped alternate animation frames and actually rendered at 30 FPS. Using
+ * that observed cadence as the reference preserves the approved motion while
+ * allowing every available display frame to be drawn.
+ */
+export function apertureSmoothing(coefficientAtThirtyFps, deltaSeconds) {
+  const coefficient = Math.min(1, Math.max(0, coefficientAtThirtyFps));
+  const elapsed = Math.max(0, deltaSeconds);
+  return 1 - ((1 - coefficient) ** (elapsed * 30));
+}
+
+/** Uniform speed terms computed once per frame rather than once per pixel. */
+export function apertureShaderControls(speedKmh) {
+  const speed = Math.max(0, speedKmh);
+  const normalized = Math.min(1, speed / WALL_APPROACH_SPEED_KMH);
+  return {
+    warp: normalized * normalized * (3 - 2 * normalized),
+    terminalVelocity: smoothstep(118, 130, speed),
+    speedPulseMask: smoothstep(1, 15, speed),
+    voidActive: smoothstep(15, 35, speed),
+  };
+}
+
+/**
  * The end wall's depth along the Z axis, screen size, and luminance.
  *
  * At 0 km/h the grid sits flat at z = 1.0 (covers 100% of the screen).
