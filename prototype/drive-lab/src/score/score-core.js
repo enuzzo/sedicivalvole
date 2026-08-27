@@ -304,36 +304,32 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
       }
     }
 
+    // The theme and its response are absolute pitches in the key, not offsets
+    // from the chord. Transposing them with the harmony is what made them clash:
+    // the chord root already moves under a line that is written to sit over all
+    // four chords, and moving the line too put it a semitone off twice a cycle.
     if (arranger.laneGoals.riff > 0) {
       for (const note of score.theme) {
         if (note.at !== patternStep) continue;
         if (halfTime && note.at % 2 !== 0) continue;
         // Register rises with energy: the same theme, played higher and harder.
         const octave = controls.energy > 0.62 ? 12 : 0;
-        triggerSynth(
-          "riff",
-          chord.bassMidi + 24 + chord.rootOffset + note.offset + octave,
-          note.steps * lengthScale,
-          stepsElapsed,
-        );
+        triggerSynth("riff", note.midi + octave, note.steps * lengthScale, stepsElapsed);
       }
     }
 
     if (arranger.laneGoals.response > 0) {
       for (const note of score.response) {
         if (note.at !== patternStep) continue;
-        triggerSynth(
-          "response",
-          chord.bassMidi + 24 + chord.rootOffset + note.offset,
-          note.steps * lengthScale,
-          stepsElapsed,
-        );
+        triggerSynth("response", note.midi, note.steps * lengthScale, stepsElapsed);
       }
     }
 
     // The pad re-voices once per bar and holds, adding tension colour as energy
     // rises rather than changing chord.
     if (arranger.laneGoals.atmosphere > 0 && patternStep % STEPS_PER_BAR === 0) {
+      // The pad takes a chord tone, so it colours the harmony rather than
+      // competing with the theme sitting above it.
       const tension = controls.energy > 0.55 ? chord.colour[3] : chord.colour[2];
       triggerSynth("atmosphere", chord.bassMidi + 24 + tension, STEPS_PER_BAR * 2, stepsElapsed);
     }
@@ -359,7 +355,9 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
         ? chord.bassMidi
         : voiceId === "reese"
           ? chord.bassMidi + 12
-          : chord.bassMidi + 24 + chord.rootOffset + (voiceId === "atmosphere" ? chord.colour[2] : 0);
+          : voiceId === "atmosphere"
+            ? chord.bassMidi + 24 + chord.colour[2]
+            : (voiceId === "response" ? score.response[0].midi : score.theme[0].midi);
       synths[voiceId].trigger(synthSettings[voiceId], midi);
       auditionSamples[voiceId] = Math.round(
         sampleRate * (voiceId === "atmosphere" ? 3.2 : 1.6),

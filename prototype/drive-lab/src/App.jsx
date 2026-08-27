@@ -19,6 +19,12 @@ import {
 import { FluxField } from "./flux-field.jsx";
 import { FLUX_ENVIRONMENTS, getFluxEnvironment, nextFluxEnvironmentId } from "./flux-environments.js";
 import { FLUX_THEMES, getFluxTheme } from "./flux-themes.js";
+import {
+  DEFAULT_GENRE_ID,
+  getScoreGenre,
+  SCORE_GENRES,
+  SCORE_STATUS,
+} from "./score/genres.js";
 import { SplashSignalGate } from "./splash-signal-gate.jsx";
 import { Interstate7Field } from "./interstate-7-field.jsx";
 import { MeridianField } from "./environments/meridian/meridian-field.jsx";
@@ -54,9 +60,13 @@ function readPreferences() {
       environmentId: FLUX_ENVIRONMENTS.some((environment) => environment.id === value?.environmentId)
         ? value.environmentId
         : "aperture",
+      // A stored genre is only honoured if it still has an authored score.
+      genreId: SCORE_GENRES.some((genre) => (
+        genre.id === value?.genreId && genre.status === SCORE_STATUS.ready
+      )) ? value.genreId : DEFAULT_GENRE_ID,
     };
   } catch {
-    return { themeId: "red", environmentId: "aperture" };
+    return { themeId: "red", environmentId: "aperture", genreId: DEFAULT_GENRE_ID };
   }
 }
 
@@ -264,37 +274,80 @@ function ModeSelector() {
   );
 }
 
-function ScoreRoadmapControl() {
+/**
+ * The score library.
+ *
+ * Every direction in the library is shown, and the ones with no authored score
+ * behind them say so on their own face rather than being hidden or, worse,
+ * offered and then playing nothing. A cell is the whole target: the label, the
+ * family and the state are one button, sized to be hit without looking.
+ */
+function ScoreControl({ genreId, onChange }) {
+  const selected = getScoreGenre(genreId);
   return (
-    <div className="score-control" aria-label="Current score prototype. textStep sequencer is next">
-      <span className="control-label">SCORE</span>
-      <strong>PROTOTYPE</strong>
-      <small>TEXTSTEP · NEXT</small>
-    </div>
+    <section className="score-control" aria-labelledby="score-control-label">
+      <div className="score-control-heading">
+        <span className="control-label" id="score-control-label">SCORE</span>
+        <span className="score-control-note">{selected.note}</span>
+      </div>
+      <div className="score-rail" role="group" aria-label="Score">
+        {SCORE_GENRES.map((genre) => {
+          const ready = genre.status === SCORE_STATUS.ready;
+          const active = ready && genre.id === genreId;
+          return (
+            <button
+              key={genre.id}
+              type="button"
+              className={`score-cell${active ? " is-active" : ""}${ready ? "" : " is-preparing"}`}
+              disabled={!ready}
+              aria-pressed={active}
+              aria-label={ready
+                ? `Play the ${genre.label} score, ${genre.family}`
+                : `${genre.label}, ${genre.family}, not available yet`}
+              onClick={() => ready && onChange(genre.id)}
+            >
+              <strong>{genre.label}</strong>
+              <small>{ready ? genre.family : "IN PREPARATION"}</small>
+            </button>
+          );
+        })}
+      </div>
+    </section>
   );
 }
 
+/**
+ * Body colour.
+ *
+ * Ten finishes in two rows of five: the vehicle's own colours on the first row,
+ * the five that no car is painted in on the second. A theme that genuinely uses
+ * two colours shows both halves of the swatch, because showing one and hiding
+ * the other would misrepresent what selecting it does.
+ */
 function BodyColorControl({ themeId, onChange }) {
   const selected = getFluxTheme(themeId);
   return (
-    <fieldset className="body-color-control">
-      <legend>BODY COLOR</legend>
-      <strong>{selected.label}</strong>
-      <div className="swatch-housing">
+    <section className="body-color-control" aria-labelledby="body-color-label">
+      <div className="body-color-heading">
+        <span className="control-label" id="body-color-label">BODY COLOR</span>
+        <strong>{selected.label}</strong>
+      </div>
+      <div className="swatch-rail" role="group" aria-label="Body colour">
         {FLUX_THEMES.map((theme) => (
           <button
             key={theme.id}
-            className={theme.id === themeId ? "is-selected" : ""}
+            className={`swatch${theme.id === themeId ? " is-selected" : ""}`}
             type="button"
-            aria-label={`Use ${theme.label.toLowerCase()} color theme`}
+            aria-label={`Use the ${theme.label.toLowerCase()} finish`}
             aria-pressed={theme.id === themeId}
             onClick={() => onChange(theme.id)}
-          >
-            <span style={{ background: theme.swatch }} />
-          </button>
+            style={theme.swatchSecondary
+              ? { background: `linear-gradient(105deg, ${theme.swatch} 0 52%, ${theme.swatchSecondary} 52% 100%)` }
+              : { background: theme.swatch }}
+          />
         ))}
       </div>
-    </fieldset>
+    </section>
   );
 }
 
@@ -324,6 +377,7 @@ export function App() {
   const [flightRecorderRevision, setFlightRecorderRevision] = useState(0);
   const [themeId, setThemeId] = useState(initialPreferences.themeId);
   const [environmentId, setEnvironmentId] = useState(initialPreferences.environmentId);
+  const [genreId, setGenreId] = useState(initialPreferences.genreId);
   const reducedMotion = useMemo(
     () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false,
     [],
@@ -956,11 +1010,11 @@ export function App() {
   useEffect(() => { audioRef.current?.setMuted(muted); }, [muted]);
   useEffect(() => {
     try {
-      localStorage.setItem(PREFERENCES_KEY, JSON.stringify({ themeId, environmentId }));
+      localStorage.setItem(PREFERENCES_KEY, JSON.stringify({ themeId, environmentId, genreId }));
     } catch {
       // Preference persistence is optional.
     }
-  }, [environmentId, themeId]);
+  }, [environmentId, genreId, themeId]);
 
   const captureViewport = useCallback((reason) => {
     const snapshot = readDisplaySnapshot(reason);
@@ -1307,8 +1361,14 @@ export function App() {
             <span className="control-label">VISUAL</span>
             <strong>{environment.label}</strong><small>{environment.number}</small>
           </button>
-          <ScoreRoadmapControl />
           <BodyColorControl themeId={themeId} onChange={setThemeId} />
+          <ScoreControl
+            genreId={genreId}
+            onChange={(nextGenreId) => {
+              setGenreId(nextGenreId);
+              logDiagnosticEvent("score.changed", { score: nextGenreId });
+            }}
+          />
         </footer>
       </section>
 

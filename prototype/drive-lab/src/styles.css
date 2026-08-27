@@ -180,224 +180,153 @@ button { -webkit-tap-highlight-color: transparent; }
   transform: translateY(calc(-100% - 2px));
   pointer-events: none;
 }
-.controls-resting .control-slab {
-  opacity: 0;
-  transform: translateY(calc(100% + 2px));
-  pointer-events: none;
-}
-
-.topbar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  min-height: 72px;
-  display: grid;
-  grid-template-columns: minmax(178px, 1fr) auto minmax(320px, auto) 54px 58px;
-  align-items: stretch;
-  border-bottom: 1px solid var(--line);
-  border-radius: 0 0 var(--ui-radius) var(--ui-radius);
-  background: #060808;
-}
-.wordmark,
-.mode-selector button,
-.source-readout,
-.diag-button {
-  border: 0;
-  border-radius: 0;
-  color: var(--paper);
-  background: transparent;
-  cursor: pointer;
-}
-.wordmark {
-  min-width: 0;
-  padding: 0 24px;
-  text-align: left;
-  font-size: clamp(16px, 2.25vw, 23px);
-  font-weight: 600;
-  letter-spacing: .08em;
-}
-.mode-selector { display: flex; align-items: stretch; border-left: 1px solid var(--line); border-right: 1px solid var(--line); }
-.mode-selector button {
-  position: relative;
-  min-width: 72px;
-  padding: 0 12px;
-  font-size: 11px;
-  font-weight: 680;
-  letter-spacing: .13em;
-}
-.mode-selector button:disabled { opacity: .4; cursor: not-allowed; }
-.mode-selector button.is-active::after {
-  content: "";
-  position: absolute;
-  left: 18px;
-  right: 18px;
-  bottom: 14px;
-  height: 3px;
-  background: var(--accent);
-}
-.speed-spacer { min-width: 320px; }
-.source-readout {
-  position: absolute;
-  z-index: 7;
-  top: 0;
-  right: 112px;
-  width: 320px;
-  min-height: 72px;
-  padding: 8px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  border: 0;
-  border-right: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-  border-left: 1px solid var(--line);
-  border-radius: 0;
-  box-sizing: border-box;
-  background: #060808;
-  transition: transform 460ms cubic-bezier(.72, 0, .24, 1), border-radius 320ms ease;
-}
-.readout-group { display: flex; align-items: center; gap: 6px; }
-.readout-labels { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; line-height: 1.1; }
-.readout-divider { width: 1px; height: 32px; background: var(--line); opacity: 0.5; }
-.source-readout strong { font-size: 31px; font-weight: 520; line-height: 1; letter-spacing: -.06em; }
-.source-readout span { color: rgba(238, 234, 224, .72); font-size: 9px; text-transform: uppercase; letter-spacing: 0.05em; }
-.source-readout small { color: rgba(238, 234, 224, .58); font-size: 8px; letter-spacing: .1em; transition: opacity 320ms ease; }
-.controls-resting .source-readout {
-  transform: translateY(0);
-  border-radius: 0 0 var(--ui-radius) var(--ui-radius);
-}
-.controls-resting .source-readout small { opacity: 0; }
-.controls-resting .source-readout:focus-visible { outline: 0; }
-.gps-state {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  border-left: 1px solid var(--line);
-  color: rgba(238, 234, 224, .62);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: .11em;
-}
-.gps-state::before { content: ""; width: 7px; height: 7px; background: #656968; }
-.gps-state.is-live::before { background: var(--accent); }
-.diag-button { border-left: 1px solid var(--line); font-size: 10px; font-weight: 720; letter-spacing: .1em; }
-.energy-readout {
-  position: absolute;
-  left: 50%;
-  bottom: 150px;
-  transform: translateX(-50%);
-  color: rgba(238, 234, 224, .54);
-  font-size: 8px;
-  font-weight: 680;
-  letter-spacing: .14em;
-  white-space: nowrap;
-  transition: opacity 360ms ease, transform 420ms ease;
-}
-.controls-resting .energy-readout { opacity: 0; transform: translate(-50%, 18px); }
-
+.controls-resting /*
+ * The control plane.
+ *
+ * Two rows. The first carries the three controls that change one value each;
+ * the second is the score library, which needs the width because every entry is
+ * shown, including the ones that are not ready.
+ *
+ * Sizing is set by reading distance, not by taste: this is read from the
+ * driver's seat of a 17-inch screen, so nothing that has to be read is below
+ * 11px and every value is 20px or more. Separation is one hairline between
+ * cells and nothing else — a cell border plus a housing border around the
+ * controls inside it is two lines doing one line's work.
+ */
 .control-slab {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
-  min-height: 136px;
   display: grid;
-  grid-template-columns: 126px 158px minmax(190px, 1.2fr) minmax(218px, 1.35fr);
+  grid-template-columns: 168px minmax(190px, 1fr) minmax(300px, 1.15fr);
+  grid-template-rows: auto auto;
   align-items: stretch;
   border-top: 1px solid var(--line);
   border-radius: var(--ui-radius) var(--ui-radius) 0 0;
   background: #070909;
 }
 .control-slab > * { min-width: 0; border-right: 1px solid var(--line); }
-.control-slab > *:last-child { border-right: 0; }
-.control-label,
-.body-color-control legend,
-.environment-control > span,
-.stop-button > span {
-  color: rgba(238, 234, 224, .72);
-  font-size: 8px;
+.control-slab > *:nth-child(3) { border-right: 0; }
+
+.control-label {
+  color: rgba(238, 234, 224, .62);
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: .12em;
+  letter-spacing: .14em;
 }
-.stop-button {
+
+/* One shared anatomy: label above, value below, both left-aligned. */
+.stop-button,
+.environment-control {
   display: grid;
   align-content: center;
-  gap: 12px;
-  padding: 16px 18px;
+  justify-items: start;
+  gap: 14px;
+  min-height: 132px;
+  padding: 18px 20px;
   border: 0;
-  border-right: 1px solid var(--line);
   border-radius: 0;
   color: var(--paper);
   background: transparent;
   text-align: left;
   cursor: pointer;
 }
+.stop-button strong,
+.environment-control strong {
+  font-size: 23px;
+  font-weight: 560;
+  letter-spacing: .04em;
+}
+.environment-control small {
+  color: var(--accent);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: .06em;
+}
+.environment-control { grid-template-columns: auto auto; }
+.environment-control .control-label { grid-column: 1 / -1; }
+.environment-control:active { background: rgba(238, 234, 224, .07); }
+
 .stop-button::after {
   content: "";
-  width: 54px;
-  height: 54px;
+  width: 46px;
+  height: 46px;
   border-radius: var(--ui-radius);
-  background: linear-gradient(var(--ink), var(--ink)) center / 18px 3px no-repeat, var(--accent);
+  background: linear-gradient(var(--ink), var(--ink)) center / 20px 3px no-repeat, var(--accent);
 }
-.stop-button strong { font-size: 10px; letter-spacing: .08em; }
 .stop-button.is-muted { color: var(--ink); background: var(--paper); }
-.stop-button.is-muted > span { color: rgba(7, 9, 9, .68); }
+.stop-button.is-muted .control-label { color: rgba(7, 9, 9, .7); }
 .stop-button.is-muted::after { background: var(--ink); }
-.environment-control {
-  position: relative;
+
+/* Body colour: ten finishes, two rows of five, the swatch itself the target. */
+.body-color-control {
   display: grid;
   align-content: center;
   gap: 12px;
-  padding: 16px 22px;
+  min-height: 132px;
+  padding: 18px 20px;
+}
+.body-color-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; }
+.body-color-heading strong { color: var(--accent); font-size: 15px; font-weight: 620; letter-spacing: .06em; }
+.swatch-rail {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+}
+.swatch {
+  position: relative;
+  min-height: 34px;
+  padding: 0;
   border: 0;
-  border-right: 1px solid var(--line);
-  border-radius: 0;
+  border-radius: var(--ui-radius);
+  cursor: pointer;
+}
+/* Selection is a solid bar under the swatch, not a ring around it: a ring on a
+   coloured square reads as a second border and hides the colour it describes. */
+.swatch.is-selected { box-shadow: 0 0 0 3px #070909, 0 0 0 6px var(--paper); }
+
+/* The score library. */
+.score-control {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 12px;
+  padding: 16px 20px 18px;
+  border-top: 1px solid var(--line);
+  border-right: 0;
+}
+.score-control-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+.score-control-note { color: rgba(238, 234, 224, .58); font-size: 13px; letter-spacing: .01em; }
+.score-rail {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 6px;
+}
+.score-cell {
+  display: grid;
+  align-content: center;
+  gap: 5px;
+  min-height: 62px;
+  padding: 8px 14px;
+  border: 0;
+  border-radius: var(--ui-radius);
   color: var(--paper);
-  background: transparent;
+  background: rgba(238, 234, 224, .07);
   text-align: left;
   cursor: pointer;
 }
-.environment-control strong { font-size: 17px; font-weight: 560; letter-spacing: .07em; }
-.environment-control small { position: absolute; right: 16px; bottom: 34px; color: var(--accent); font-size: 12px; }
-.environment-control:active { background: rgba(238, 234, 224, .07); }
-.score-control {
-  position: relative;
-  display: grid;
-  align-content: center;
-  gap: 12px;
-  padding: 16px 22px;
+.score-cell strong { font-size: 17px; font-weight: 580; letter-spacing: .05em; }
+.score-cell small { color: rgba(238, 234, 224, .58); font-size: 12px; letter-spacing: .04em; }
+.score-cell.is-active { color: var(--ink); background: var(--paper); }
+.score-cell.is-active small { color: rgba(7, 9, 9, .66); }
+.score-cell.is-preparing {
+  color: rgba(238, 234, 224, .42);
+  background: rgba(238, 234, 224, .03);
+  cursor: not-allowed;
 }
-.score-control strong { font-size: 17px; font-weight: 560; letter-spacing: .07em; }
-.score-control small { color: rgba(238, 234, 224, .5); font-size: 9px; letter-spacing: .08em; }
-.body-color-control {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-content: center;
-  gap: 8px 12px;
-  margin: 0;
-  padding: 14px 20px;
-  border: 0;
-}
-.body-color-control legend { position: absolute; opacity: 0; pointer-events: none; }
-.body-color-control::before { content: "BODY COLOR"; color: rgba(238, 234, 224, .72); font-size: 8px; font-weight: 700; letter-spacing: .12em; }
-.body-color-control > strong { color: var(--accent); font-size: 9px; letter-spacing: .1em; }
-.swatch-housing {
-  grid-column: 1 / -1;
-  min-height: 50px;
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  align-items: stretch;
-  gap: 5px;
-  padding: 5px;
-  border: 1px solid rgba(238, 234, 224, .48);
-  border-radius: var(--ui-radius);
-}
-.swatch-housing button { position: relative; min-width: 34px; min-height: 38px; padding: 0; border: 0; border-radius: var(--ui-radius); background: transparent; cursor: pointer; }
-.swatch-housing button span { position: absolute; inset: 0 0 5px; border: 1px solid rgba(238, 234, 224, .16); border-radius: var(--ui-radius); }
-.swatch-housing button.is-selected::after { content: ""; position: absolute; left: 30%; right: 30%; bottom: 0; height: 3px; background: var(--accent); }
+.score-cell.is-preparing small { color: var(--accent); opacity: .72; }
+.score-cell:not(:disabled):active { background: rgba(238, 234, 224, .16); }
 
 .diagnostic-drawer { position: fixed; inset: 0; z-index: 30; display: grid; justify-items: end; }
 .drawer-backdrop { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: rgba(0, 0, 0, .7); }
