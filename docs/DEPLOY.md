@@ -1,5 +1,37 @@
 # Deployment
 
+## Four-environment publication evidence — 2026-08-27
+
+- deployed commit: `2d28671`;
+- build/test gate before upload: **PASS**, 90 unit tests, 4 packaging tests, production build;
+- read-only FTP identity gate: **PASS**, canonical root and legacy targets recognized;
+- upload: **PASS**, 19 files, 1,184,241 bytes;
+- legacy cleanup: 0 files, 0 directories; one previous asset retained for cache overlap;
+- canonical bare `/`: **HTTP 200**, 655 bytes, SHA-256
+  `3a003cfc6eb477f4e0301351119f254e17ca91e7d34a9f818603a8cace76c0b7`, byte-identical to the local build;
+- response headers on `/`: `cache-control: no-store, no-cache, must-revalidate, max-age=0`,
+  `x-proxy-cache: MISS`; the observed edge header is `server: nginx`, which identifies the
+  responding edge only and says nothing about the provider's origin topology;
+- `assets/index-D3N4U_ZA.js` and `assets/index-BDcTDdtP.css`: **HTTP 200**, byte-identical local/live;
+- vendored Interstate 7 tree verified live: `js/InfiniteLights.js` and `index7.html` are
+  **HTTP 200** and their live hashes match the SHA-256 values pinned in
+  `tests/interstate-7-bridge.test.mjs`, so the byte-identical upstream runtime is what is served;
+- development-only QA harness correctly absent: `/qa-field.html` and `/qa/field-harness.jsx`
+  both **HTTP 404**;
+- live smoke test at `773 × 601`: Signal Gate splash, wordmark, `FLUX · APERTURE · 0.0.0`
+  status, `PLAY THE ROAD` control and Netmilk Studio credit all render.
+
+This publication carries `MERIDIAN 03` and `LATITUDES 04` alongside the existing
+`APERTURE 01` and `VERTIGO 02`. No audio change ships in it: the ported textStep
+engine is present in source but is not yet wired to the running experience.
+
+Process note: this deployment was triggered by invoking the publication script
+with an unsupported `--help` argument, which the script does not implement and
+therefore ignored, running a real publication. The user had just requested a live
+deploy and the working tree was committed with the full suite green, so the
+published result is the intended one, but the script should grow an explicit
+argument gate before it is run again.
+
 ## Current verified state
 
 - provider reported by the user: **SiteGround**;
