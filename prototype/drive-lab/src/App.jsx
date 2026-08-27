@@ -21,6 +21,7 @@ import { FLUX_ENVIRONMENTS, getFluxEnvironment, nextFluxEnvironmentId } from "./
 import { FLUX_THEMES, getFluxTheme } from "./flux-themes.js";
 import { SplashSignalGate } from "./splash-signal-gate.jsx";
 import { Interstate7Field } from "./interstate-7-field.jsx";
+import { MeridianField } from "./environments/meridian/meridian-field.jsx";
 import {
   advanceDemoMotion,
   MODEL_3_AWD_REFERENCE,
@@ -1186,9 +1187,17 @@ export function App() {
       onPointerDown={handleSurfacePointerDown}
       onPointerMove={wakeControls}
     >
-      {environmentId === "vertigo" ? (
+      {environment.renderer === "vertigo" ? (
         <Interstate7Field
           speed={speed}
+          reducedMotion={reducedMotion}
+          onRenderer={setRenderer}
+          onFrame={recordRenderedFrame}
+        />
+      ) : environment.renderer === "meridian" ? (
+        <MeridianField
+          speed={speed}
+          theme={theme}
           reducedMotion={reducedMotion}
           onRenderer={setRenderer}
           onFrame={recordRenderedFrame}

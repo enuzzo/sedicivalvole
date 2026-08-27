@@ -1,15 +1,40 @@
+// Authored Flux environments.
+//
+// This registry is data only. Each entry names a renderer that App resolves to
+// a field component, so adding an environment never changes the speed, energy,
+// palette, safety, persistence, or diagnostic contracts that every environment
+// shares.
+//
+// `aperture` must stay first: it is the default selection and the fallback for
+// an unknown identifier.
+
 export const FLUX_ENVIRONMENTS = [
   {
     id: "aperture",
     label: "APERTURE",
     number: "01",
     rendererLabel: "Aperture",
+    renderer: "aperture",
+    /** Body-colour themes drive this environment's palette. */
+    themed: true,
   },
   {
     id: "vertigo",
     label: "VERTIGO",
     number: "02",
     rendererLabel: "Vertigo",
+    renderer: "vertigo",
+    // Vertigo renders the unmodified upstream Interstate 7 scene. Recolouring it
+    // would alter the original rendering the product deliberately preserves.
+    themed: false,
+  },
+  {
+    id: "meridian",
+    label: "MERIDIAN",
+    number: "03",
+    rendererLabel: "Meridian",
+    renderer: "meridian",
+    themed: true,
   },
 ];
 

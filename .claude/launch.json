@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "drive-lab",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "prototype/drive-lab", "--", "--port", "5183", "--strictPort"],
+      "port": 5183
+    }
+  ]
+}
