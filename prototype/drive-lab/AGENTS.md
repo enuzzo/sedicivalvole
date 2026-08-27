@@ -35,5 +35,6 @@ When implementing from a selected generated mock, treat that image as the source
 - During this experimental development phase, verified builds are deployed to the canonical root at `https://sedicivalvole.app/` after user approval; diagnostics remain part of the main experience.
 - Keep continuous speed/energy parameters separate from bar-quantized structural events. Use smoothing, hysteresis, dwell, crossfades, a tempo knee, and musically controlled deceleration.
 - Make frequent verified commits and push when a repository remote exists. Never leave the real Dropbox project directory for implementation work.
+- Keep `CHANGELOG.md` strictly progressive and append-only: never rewrite past entries. Every changelog entry must state the date, local time (`YYYY-MM-DD HH:MM`), and commit hash (`[commit]`).
 
 Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts/prepare-sites-build.mjs`, and `tests/sites-worker.test.mjs` intact so the same local prototype can be handed to Sites. Before a Sites handoff, run `npm run build` and `npm run test:sites`; the build must leave `dist/client/index.html`, `dist/server/index.js`, and `dist/.openai/hosting.json`.
