@@ -446,6 +446,7 @@ export function App() {
   const [environmentId, setEnvironmentId] = useState(initialPreferences.environmentId);
   const [genreId, setGenreId] = useState(initialPreferences.genreId);
   const [scorePickerOpen, setScorePickerOpen] = useState(false);
+  const [rawReportOpen, setRawReportOpen] = useState(false);
   const reducedMotion = useMemo(
     () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false,
     [],
@@ -1125,6 +1126,16 @@ export function App() {
     if (phase !== "running") return undefined;
     const handleKeyDown = (event) => {
       if (!canUseKeyboardTarget(event.target)) return;
+      // Escape closes whatever is open. Clicking the field outside a panel
+      // already dismisses it; this is the same gesture from the keyboard.
+      if (event.key === "Escape") {
+        if (!(drawerOpen || previewOpen || scorePickerOpen)) return;
+        event.preventDefault();
+        setPreviewOpen(false);
+        setScorePickerOpen(false);
+        setDrawerOpen(false);
+        return;
+      }
       if (event.repeat) return;
       if (event.key === "ArrowUp") {
         event.preventDefault();
@@ -1159,6 +1170,9 @@ export function App() {
     };
   }, [
     phase,
+    drawerOpen,
+    previewOpen,
+    scorePickerOpen,
     logDiagnosticEvent,
     releaseKeyboardAcceleration,
     releaseKeyboardBrake,
@@ -1453,32 +1467,111 @@ export function App() {
           <div className="drawer-panel">
             <div className="drawer-heading">
               <div><small>TESLA CAPABILITY HARNESS</small><h2 id="diagnostic-title">Device report</h2></div>
-              <button type="button" onClick={() => setPreviewOpen(true)} style={{marginRight: '12px'}}>AUDIO PREVIEW</button>
               <button type="button" onClick={() => setDrawerOpen(false)} aria-label="Close report">CLOSE</button>
             </div>
+
+            {/*
+              Grouped by what a reader is actually asking. The panel was one
+              undifferentiated grid of eight tiles followed by a raw JSON dump,
+              which made the two questions it answers — is the vehicle coping,
+              and what is the score doing — impossible to tell apart at a glance.
+            */}
+            <h3 className="diagnostic-group">Score</h3>
             <div className="diagnostic-grid">
-              <article><small>VIEWPORT</small><strong>{diagnostics ? `${diagnostics.display.innerWidth} × ${diagnostics.display.innerHeight}` : "—"}</strong><span>{diagnostics ? `${diagnostics.display.mode} · DPR ${diagnostics.display.dpr}` : "—"}</span></article>
-              <article><small>RENDERER</small><strong>{renderer}</strong><span>{reducedMotion ? "reduced motion" : "motion active"}</span></article>
-              <article><small>WEB AUDIO</small><strong>{diagnostics?.audio.state || "—"}</strong><span>{muted ? "muted" : `signal ${Math.round(audioLevel * 100)}%`}</span></article>
-              <article><small>GPS SPEED</small><strong>{gpsState}</strong><span>{accuracy == null ? "accuracy unavailable" : `accuracy ±${accuracy} m`}</span></article>
-              <article><small>FRAME PACING</small><strong>{diagnosticReport?.performance.frame.averageFps ?? "—"} FPS</strong><span>{diagnosticReport?.performance.frame.p95FrameMs ?? "—"} ms p95</span></article>
-              <article><small>NETWORK</small><strong>{diagnosticReport?.network.current.effectiveType || (diagnosticReport?.network.current.online ? "online" : "offline") || "—"}</strong><span>{diagnosticReport?.network.current.roundTripTimeMs ?? "—"} ms RTT</span></article>
-              <article><small>FLIGHT RECORDER</small><strong>{diagnosticReport?.flightRecorder.summary.retainedSamples ?? "—"} SAMPLES</strong><span>{Math.round((diagnosticReport?.flightRecorder.summary.sessionDurationMs ?? 0) / 1000)} s · {Math.round(diagnosticPayloadBytes / 1024)} KB report</span></article>
-              <article><small>RUNTIME ISSUES</small><strong>{diagnosticReport?.runtimeIssues.length ?? "—"}</strong><span>errors · rejections · WebGL loss</span></article>
+              <article>
+                <small>PLAYING</small>
+                <strong>{getScoreGenre(genreId).label}</strong>
+                <span>{getScoreGenre(genreId).family}</span>
+              </article>
+              <article>
+                <small>ARRANGEMENT</small>
+                <strong>{scoreScene}</strong>
+                <span>{scoreStateRef.current?.halfTime ? "half-time" : "full break"} · {scoreStateRef.current?.section ?? "—"}</span>
+              </article>
+              <article>
+                <small>TRANSPORT</small>
+                <strong>{Math.round(bpm)} BPM</strong>
+                <span>{scoreStateRef.current?.chord ?? "—"} · {scoreStateRef.current?.activeLanes?.length ?? 0} lanes</span>
+              </article>
+              <article>
+                <small>WEB AUDIO</small>
+                <strong>{diagnostics?.audio.state || "—"}</strong>
+                <span>{muted ? "muted" : `energy ${Math.round(energy * 100)}%`}</span>
+              </article>
             </div>
-            <p className="privacy-note">No coordinates are displayed, stored, or transmitted. The bounded flight recorder stays in session memory and is sent only after pressing SEND DIAGNOSTIC. Keep this page open until the report is sent.</p>
-            <pre>{diagnosticText}</pre>
+            <div className="drawer-inline-actions">
+              <button type="button" onClick={() => setPreviewOpen(true)}>AUDITION VOICES</button>
+            </div>
+
+            <h3 className="diagnostic-group">Device</h3>
+            <div className="diagnostic-grid">
+              <article>
+                <small>VIEWPORT</small>
+                <strong>{diagnostics ? `${diagnostics.display.innerWidth} × ${diagnostics.display.innerHeight}` : "—"}</strong>
+                <span>{diagnostics ? `${diagnostics.display.mode} · DPR ${diagnostics.display.dpr}` : "—"}</span>
+              </article>
+              <article>
+                <small>RENDERER</small>
+                <strong>{renderer}</strong>
+                <span>{reducedMotion ? "reduced motion" : "motion active"}</span>
+              </article>
+              <article>
+                <small>FRAME PACING</small>
+                <strong>{diagnosticReport?.performance.frame.averageFps ?? "—"} FPS</strong>
+                <span>{diagnosticReport?.performance.frame.p95FrameMs ?? "—"} ms p95</span>
+              </article>
+              <article>
+                <small>GPS SPEED</small>
+                <strong>{gpsState}</strong>
+                <span>{accuracy == null ? "accuracy unavailable" : `accuracy ±${accuracy} m`}</span>
+              </article>
+              <article>
+                <small>NETWORK</small>
+                <strong>{diagnosticReport?.network.current.effectiveType || (diagnosticReport?.network.current.online ? "online" : "offline") || "—"}</strong>
+                <span>{diagnosticReport?.network.current.roundTripTimeMs ?? "—"} ms RTT</span>
+              </article>
+              <article>
+                <small>RUNTIME ISSUES</small>
+                <strong>{diagnosticReport?.runtimeIssues.length ?? "—"}</strong>
+                <span>errors · rejections · WebGL loss</span>
+              </article>
+            </div>
+
+            <h3 className="diagnostic-group">Report</h3>
+            <div className="diagnostic-grid">
+              <article>
+                <small>FLIGHT RECORDER</small>
+                <strong>{diagnosticReport?.flightRecorder.summary.retainedSamples ?? "—"} SAMPLES</strong>
+                <span>{Math.round((diagnosticReport?.flightRecorder.summary.sessionDurationMs ?? 0) / 1000)} s recorded</span>
+              </article>
+              <article>
+                <small>PAYLOAD</small>
+                <strong>{Math.round(diagnosticPayloadBytes / 1024)} KB</strong>
+                <span>sent only on request</span>
+              </article>
+            </div>
+            <p className="privacy-note">
+              No coordinates are displayed, stored, or transmitted. The bounded flight
+              recorder stays in session memory and is sent only after pressing SEND
+              DIAGNOSTIC. Keep this page open until the report is sent.
+            </p>
+
             <div className="drawer-actions">
               <button className="send-diagnostic-button" type="button" onClick={sendDiagnostic} disabled={sendState === "sending"}>
                 {sendState === "sending" ? "SENDING…" : sendState === "sent" ? "SENT" : "SEND DIAGNOSTIC"}
               </button>
               <button type="button" onClick={() => navigator.clipboard?.writeText(diagnosticText)}>COPY REPORT</button>
               <button type="button" onClick={toggleSource}>{source === "GPS" ? "TRY DEMO MODE" : "RETURN TO GPS"}</button>
+              <button type="button" onClick={() => setRawReportOpen((open) => !open)} aria-expanded={rawReportOpen}>
+                {rawReportOpen ? "HIDE RAW" : "SHOW RAW"}
+              </button>
             </div>
             <p className={`send-state send-state-${sendState}`} role="status" aria-live="polite">
               {sendState === "sent" ? "Accepted by the server mail transport. Inbox delivery still needs confirmation." : null}
               {sendState === "error" ? `${DIAGNOSTIC_SEND_ERROR_COPY[sendErrorCode] ?? "The report could not be sent."} No diagnostic data was stored by the app.` : null}
             </p>
+            {/* The raw report is evidence, not a readout: it is available, not in the way. */}
+            {rawReportOpen ? <pre>{diagnosticText}</pre> : null}
           </div>
         </section>
       ) : null}

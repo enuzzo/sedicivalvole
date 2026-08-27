@@ -466,30 +466,44 @@ button { -webkit-tap-highlight-color: transparent; }
   background: #090b0b;
 }
 .drawer-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; border-bottom: 1px solid var(--line); padding-bottom: 18px; }
-.drawer-heading small { color: var(--accent); font-size: 8px; font-weight: 700; letter-spacing: .14em; }
+.drawer-heading small { color: var(--accent); font-size: 11px; font-weight: 700; letter-spacing: .14em; }
 .drawer-heading h2 { margin: 8px 0 0; font-size: 27px; font-weight: 520; letter-spacing: -.04em; }
 .drawer-heading button,
+.drawer-inline-actions button,
 .drawer-actions button {
   min-height: 48px;
-  padding: 0 15px;
+  padding: 0 18px;
   border: 1px solid var(--line);
   border-radius: var(--ui-radius);
   color: var(--paper);
   background: transparent;
-  font-size: 9px;
-  font-weight: 720;
+  font-size: 12px;
+  font-weight: 700;
   letter-spacing: .09em;
   cursor: pointer;
 }
-.diagnostic-grid { display: grid; grid-template-columns: 1fr 1fr; margin-top: 22px; overflow: hidden; border-top: 1px solid var(--line); border-left: 1px solid var(--line); border-radius: var(--ui-radius); }
-.diagnostic-grid article { min-height: 105px; padding: 16px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+/* Grouped and legible. The panel is read at arm's length like everything else,
+   so the labels are 11px rather than 8 and the values are 21px rather than 16.
+   Tiles are separated by their own gap: a grid border plus a border on every
+   cell was two lines drawing one edge. */
+.diagnostic-group {
+  margin: 26px 0 0;
+  color: rgba(238, 234, 224, .5);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+.diagnostic-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 10px; }
+.diagnostic-grid article { min-height: 84px; padding: 14px 16px; border-radius: var(--ui-radius); background: rgba(238, 234, 224, .06); }
 .diagnostic-grid small,
 .diagnostic-grid strong,
 .diagnostic-grid span { display: block; }
-.diagnostic-grid small { color: rgba(238, 234, 224, .48); font-size: 8px; font-weight: 700; letter-spacing: .11em; }
-.diagnostic-grid strong { margin-top: 15px; font-size: 16px; font-weight: 530; }
-.diagnostic-grid span { margin-top: 6px; color: rgba(238, 234, 224, .5); font-size: 10px; }
-.privacy-note { margin: 22px 0; color: rgba(238, 234, 224, .7); font-size: 12px; line-height: 1.55; }
+.diagnostic-grid small { color: rgba(238, 234, 224, .55); font-size: 11px; font-weight: 700; letter-spacing: .12em; }
+.diagnostic-grid strong { margin-top: 10px; font-size: 21px; font-weight: 540; letter-spacing: .02em; }
+.diagnostic-grid span { margin-top: 6px; color: rgba(238, 234, 224, .52); font-size: 13px; line-height: 1.35; }
+.drawer-inline-actions { display: flex; gap: 8px; margin-top: 10px; }
+.privacy-note { margin: 20px 0 0; color: rgba(238, 234, 224, .66); font-size: 13px; line-height: 1.55; }
 .drawer-panel pre { overflow: auto; max-height: 250px; padding: 16px; border: 1px solid var(--line); border-radius: var(--ui-radius); color: rgba(238, 234, 224, .78); background: #050606; font-size: 9px; line-height: 1.55; white-space: pre-wrap; word-break: break-word; }
 .drawer-actions { position: sticky; bottom: -28px; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; padding: 12px 0 28px; background: #090b0b; }
 .drawer-actions .send-diagnostic-button { color: var(--ink); background: var(--paper); }
