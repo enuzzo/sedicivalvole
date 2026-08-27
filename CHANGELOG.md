@@ -84,7 +84,8 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - 2026-08-27 14:34 `[eacabf0]`: Rebuilt the Aperture Flux environment with an analytical 3D ray-tunnel projection, ensuring straight perspective lines, clean 45-degree diagonal miters, exactly 7 depth levels at 20 km/h matching benchmark reference geometry, a solid dark central terminus void at cruising speeds, a smooth physical end-wall transition to a full-screen flat square mosaic at 0 km/h, and a high-speed Terminal Velocity mode above 120 km/h with continuous fine white/red light streaks.
 - 2026-08-27 14:34 `[eacabf0]`: Extended the QA field harness and diagnostic overlay with the active commit hash for exact build traceability.
 - 2026-08-27 14:34 `[eacabf0]`: Extracted pure Aperture model calculations into `aperture-model.js` with comprehensive deterministic unit tests.
-- 2026-08-27 14:36: Updated project instructions (`AGENTS.md` and prototype `AGENTS.md`) establishing the strict rule that the changelog must be progressive/append-only without altering past entries, and every entry must record the date, local time, and short commit hash.
+- 2026-08-27 14:36 `[4991269]`: Updated project instructions (`AGENTS.md` and prototype `AGENTS.md`) establishing the strict rule that the changelog must be progressive/append-only without altering past entries, and every entry must record the date, local time, and short commit hash.
+- 2026-08-27 14:42: Replaced the separate end-wall cap with a continuous progressive field deformation from the 2D square mosaic at 0 km/h into the 3D perspective corridor at 20 km/h, tightened Terminal Velocity speed streaks above 120 km/h to razor-thin laser lines, and eliminated phantom audio-pulse radial flash artifacts by strictly gating pulses to active visible tile bodies.
 
 ### Fixed
 
