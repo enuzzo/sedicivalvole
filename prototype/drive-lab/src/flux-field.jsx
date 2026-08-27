@@ -87,27 +87,37 @@ const FRAGMENT_SHADER = `#version 300 es
     // reading. Both are monotonic toward the centre, so their blend is monotonic
     // and cannot fold. Speed deforms one field instead of crossfading two.
 
-    // A Cartesian grid is kept at every speed and the tunnel is produced by
-    // displacing it radially, rather than by switching to ring coordinates.
-    // The remap is monotonic in majorAxis and therefore continuous and
-    // invertible, so floor() can never cut a tile: the same objects deform.
+    // -- One ring field at every speed -------------------------------------
     //
-    // Cell size in screen space goes as dr / d(mapped), so a logarithmic remap
-    // shrinks tiles toward the centre and builds the vanishing point, while at
-    // rest the remap is the identity and the field is a plain flat mosaic.
-    const float R_FLOOR = 0.085;
-    // Anisotropic so the resting tiles read square on a wide viewport: screen.x
-    // already carries the aspect term, so x needs the larger count.
-    const vec2 GRID_SCALE = vec2(3.9, 3.0);
-    const float TUNNEL_SCALE = 0.62;
+    // The angular coordinate is the square-perimeter walk, used unchanged at all
+    // speeds. Because it never varies, its branch discontinuity on the diagonals
+    // is never blended into a cell and floor() can never cut a tile. It is also
+    // what makes the walls read as aligned concentric rings with crisp corners:
+    // a Cartesian grid displaced radially cannot produce that alignment, which
+    // is why an earlier attempt looked staggered.
+    //
+    // Only the radial coordinate interpolates, between a shallow linear reading
+    // and the perspective reading. Both are monotonic toward the centre, so the
+    // blend is monotonic and cannot fold.
+    //
+    // 3.5 gives 28 tiles around, seven per wall, with corners exactly on a tile
+    // edge because the perimeter runs 0..8 with corners on the even integers.
+    // Held constant so a tile is never re-indexed and never changes colour just
+    // because speed changed.
+    const float RING_DENSITY = 3.5;
+    // Shallow at rest: a few large bands rather than a deep corridor, so a
+    // standstill is calm. Depth arrives with warp, not with ring count.
+    const float FLAT_RING_SCALE = 3.2;
+    // Tuned so 20 km/h lands on the reference proportion: about seven bands of
+    // depth, not a fine gradient of them.
+    const float DEPTH_FREQUENCY = 1.6;
 
-    float radius = max(majorAxis, R_FLOOR);
-    float flatMapped = radius;
-    float tunnelMapped = log(radius / R_FLOOR) * TUNNEL_SCALE;
-    float mapped = mix(flatMapped, tunnelMapped, warp) + u_flow * 0.05 * warp;
-    vec2 displaced = screen * (mapped / radius);
+    float angular = perimeter * RING_DENSITY;
+    float flatRadial = (1.0 - min(majorAxis, 1.0)) * FLAT_RING_SCALE;
+    float tunnelRadial = depth * DEPTH_FREQUENCY;
+    float radial = mix(flatRadial, tunnelRadial, warp) + u_flow;
 
-    vec2 fieldGrid = displaced * GRID_SCALE;
+    vec2 fieldGrid = vec2(angular, radial);
     vec2 fieldCell = floor(fieldGrid);
     vec2 fieldLocal = fract(fieldGrid);
     float identity = hash21(fieldCell + vec2(17.0, 3.0));
