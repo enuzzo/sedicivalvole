@@ -74,21 +74,19 @@ const PROGRESSION = [
  * harmony can change instrument without a note changing. That is the variety
  * this material offers, and it costs nothing to use.
  */
-const PAD_VOICES = ["WaveStrings", "EmmPad", "JayPad", "V-String", "ModStrings", "FifthHit"];
-
 /**
  * Eight sections of eight bars. Density climbs and releases; which break sets
  * are layered and which synth carries the chords turn over as it goes.
  */
 const SECTIONS = [
-  { id: "open", breaks: [], bass: true, pad: 1, padVoice: 0, stab: false, drive: 0.04, space: 0.55, level: 0.54 },
-  { id: "enter", breaks: ["A"], bass: true, pad: 0.95, padVoice: 1, stab: false, drive: 0.1, space: 0.46, level: 0.72 },
-  { id: "build", breaks: ["A"], bass: true, pad: 0.85, padVoice: 2, stab: true, drive: 0.18, space: 0.38, level: 0.84 },
-  { id: "break", breaks: ["A", "C"], bass: true, pad: 0.7, padVoice: 3, stab: true, drive: 0.26, space: 0.32, level: 0.92 },
-  { id: "full", breaks: ["A", "C", "B"], bass: true, pad: 0.62, padVoice: 4, stab: true, drive: 0.34, space: 0.28, level: 1 },
-  { id: "turn", breaks: ["A", "D"], bass: true, pad: 0.7, padVoice: 5, stab: true, drive: 0.3, space: 0.32, level: 0.94 },
-  { id: "ease", breaks: ["A"], bass: true, pad: 0.9, padVoice: 2, stab: false, drive: 0.14, space: 0.46, level: 0.78 },
-  { id: "rest", breaks: [], bass: true, pad: 1, padVoice: 0, stab: false, drive: 0.05, space: 0.58, level: 0.58 },
+  { id: "open", breaks: [], bass: true, pad: 1, voicing: 0, stab: false, drive: 0.04, space: 0.55, level: 0.54 },
+  { id: "enter", breaks: ["A:01"], bass: true, pad: 0.95, voicing: 1, stab: false, drive: 0.1, space: 0.46, level: 0.72 },
+  { id: "build", breaks: ["A:02", "B:01"], bass: true, pad: 0.85, voicing: 2, stab: true, drive: 0.18, space: 0.38, level: 0.84 },
+  { id: "break", breaks: ["B:02", "C:01"], bass: true, pad: 0.7, voicing: 3, stab: true, drive: 0.26, space: 0.32, level: 0.92 },
+  { id: "full", breaks: ["A:01", "C:02", "D:01"], bass: true, pad: 0.62, voicing: 4, stab: true, drive: 0.34, space: 0.28, level: 1 },
+  { id: "turn", breaks: ["B:01", "D:02"], bass: true, pad: 0.7, voicing: 5, stab: true, drive: 0.3, space: 0.32, level: 0.94 },
+  { id: "ease", breaks: ["C:01", "A:02"], bass: true, pad: 0.9, voicing: 6, stab: false, drive: 0.14, space: 0.46, level: 0.78 },
+  { id: "rest", breaks: [], bass: true, pad: 1, voicing: 7, stab: false, drive: 0.05, space: 0.58, level: 0.58 },
 ];
 
 function parseArguments(argv) {
@@ -177,10 +175,12 @@ async function main() {
   const loops = await loopsAtTempo(options.tempo);
   const breaks = new Map();
   for (const set of ["A", "B", "C", "D"]) {
-    const entry = loops.find((loop) => (
-      loop.kind === "beat" && loop.set === set && loop.variant === "01"
-    ));
-    if (entry) breaks.set(set, await decode(entry.path, SAMPLE_RATE));
+    for (const variant of ["01", "02"]) {
+      const entry = loops.find((loop) => (
+        loop.kind === "beat" && loop.set === set && loop.variant === variant
+      ));
+      if (entry) breaks.set(`${set}:${variant}`, await decode(entry.path, SAMPLE_RATE));
+    }
   }
   const bassEntry = loops.find((loop) => loop.kind === "bass" && loop.key === "E");
   if (!bassEntry) throw new Error(`no bass loop in E at ${options.tempo} BPM`);
@@ -191,14 +191,9 @@ async function main() {
   const hits = await loadChordHits(SAMPLE_RATE);
   const chords = new Map();
   for (const step of PROGRESSION) {
-    const anyVoicing = hits.find((entry) => entry.chord === step.chord);
-    if (!anyVoicing) throw new Error(`the pack has no ${step.chord}`);
-    for (const voice of PAD_VOICES) {
-      // A voicing this synth does not have falls back to one that does, rather
-      // than dropping the chord out of the progression.
-      const hit = hits.find((entry) => entry.chord === step.chord && entry.instrument === voice);
-      chords.set(`${voice}:${step.chord}`, (hit ?? anyVoicing).buffer);
-    }
+    const voicings = hits.filter((entry) => entry.chord === step.chord);
+    if (voicings.length === 0) throw new Error(`the pack has no ${step.chord}`);
+    chords.set(step.chord, voicings);
   }
 
   const loopFrames = Math.round((60 / options.tempo) * 4 * LOOP_BARS * SAMPLE_RATE);
@@ -237,19 +232,19 @@ async function main() {
     if (frame % stepFrames === 0) {
       const step = Math.floor(inLoop / stepFrames) % (STEPS_PER_BAR * LOOP_BARS);
       const barInCycle = bar % 8;
-      const voice = PAD_VOICES[section.padVoice % PAD_VOICES.length];
-
       if (step === 0 && section.pad > 0) {
         const entry = PROGRESSION.find((chord) => chord.bar === barInCycle);
         if (entry) {
-          const variation = noteVariation(bar * 7 + section.padVoice);
+          const choices = chords.get(entry.chord);
+          const selected = choices[(section.voicing + Math.floor(bar / 8)) % choices.length];
+          const variation = noteVariation(bar * 7 + section.voicing);
           voices.push(new SamplerVoice(
-            chords.get(`${voice}:${entry.chord}`),
+            selected.buffer,
             variation.rate,
             section.pad * 0.46 * variation.gain,
             barFrames * 2,
           ));
-          used.add(`${voice} ${entry.chord}`);
+          used.add(`${selected.instrument} ${entry.chord}`);
         }
       }
 
@@ -258,9 +253,11 @@ async function main() {
       if (section.stab && step === 22 && barInCycle % 2 === 1) {
         const held = [...PROGRESSION].reverse().find((chord) => chord.bar <= barInCycle);
         if (held) {
+          const choices = chords.get(held.chord);
+          const selected = choices[(section.voicing + bar + 1) % choices.length];
           const variation = noteVariation(bar * 13 + 5);
           voices.push(new SamplerVoice(
-            chords.get(`${voice}:${held.chord}`),
+            selected.buffer,
             variation.rate,
             section.pad * 0.22 * variation.gain,
             Math.round(barFrames * 0.4),

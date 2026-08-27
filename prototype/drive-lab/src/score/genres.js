@@ -49,9 +49,9 @@ export const SCORE_GENRES = [
     number: "01",
     family: "Jungle / Rave",
     source: SCORE_SOURCE.sampled,
-    status: SCORE_STATUS.preparing,
-    score: null,
-    note: "Sampled breaks. Tempo is a recording, never a stretch.",
+    status: SCORE_STATUS.ready,
+    score: "junction",
+    note: "Eight rendered sections. One compact adaptive music bank.",
   },
   {
     id: "fracture",

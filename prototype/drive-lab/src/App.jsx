@@ -940,6 +940,7 @@ export function App() {
     if (audioRef.current) {
       await audioRef.current.resume();
       audioRef.current.setMuted(false);
+      audioRef.current.setScore(genreId);
       audioRef.current.startCue();
       window.clearInterval(audioMeterTimerRef.current);
       audioMeterTimerRef.current = window.setInterval(() => {
@@ -1001,7 +1002,7 @@ export function App() {
       wakeControls();
       window.requestAnimationFrame(() => appRef.current?.focus({ preventScroll: true }));
     }, reducedMotion ? 180 : 620);
-  }, [logDiagnosticEvent, reducedMotion, startGps, triggerPulse, wakeControls]);
+  }, [genreId, logDiagnosticEvent, reducedMotion, startGps, triggerPulse, wakeControls]);
 
   useEffect(() => {
     const supported = typeof PerformanceObserver !== "undefined"
@@ -1153,6 +1154,7 @@ export function App() {
 
   useEffect(() => { audioRef.current?.setSpeed(speed); }, [speed]);
   useEffect(() => { audioRef.current?.setMuted(muted); }, [muted]);
+  useEffect(() => { audioRef.current?.setScore(genreId); }, [genreId]);
   useEffect(() => {
     try {
       localStorage.setItem(PREFERENCES_KEY, JSON.stringify({ themeId, environmentId, genreId }));

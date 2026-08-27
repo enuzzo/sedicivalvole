@@ -10,6 +10,7 @@ import {
   ROAD_SPEED_CEILING_KMH,
   speedToEnergy,
 } from "./signal-model.js";
+import { createJunctionPlayer } from "./junction-player.js";
 import processorUrl from "./score/worklet/score-processor.js?audio-worklet";
 
 /**
@@ -51,12 +52,18 @@ export function createAudioEngine(onPulse, onEffectChange) {
   if (!AudioContext) return null;
 
   const context = new AudioContext({ latencyHint: "interactive" });
+  const masterGain = context.createGain();
+  const fractureGain = context.createGain();
+  masterGain.connect(context.destination);
+  fractureGain.connect(masterGain);
 
   let node = null;
   let running = true;
   let muted = false;
   let speed = 0;
   let energy = 0;
+  let scoreId = "fracture";
+  let scoreSwitchRevision = 0;
 
   let brakeAmount = 0;
   let brakeReported = false;
@@ -76,16 +83,21 @@ export function createAudioEngine(onPulse, onEffectChange) {
     decelerationState: "cruise",
     activeLanes: [],
   };
+  const junction = createJunctionPlayer(context, masterGain, (snapshot) => {
+    if (scoreId !== "junction") return;
+    arrangement = snapshot;
+    onPulse?.(arrangement);
+  });
 
   context.audioWorklet.addModule(processorUrl).then(() => {
     if (!running) return;
     node = new AudioWorkletNode(context, "score-processor", { outputChannelCount: [2] });
     node.port.onmessage = (event) => {
-      if (event.data?.type !== "SNAPSHOT") return;
+      if (event.data?.type !== "SNAPSHOT" || scoreId !== "fracture") return;
       arrangement = event.data.payload;
       onPulse?.(arrangement);
     };
-    node.connect(context.destination);
+    node.connect(fractureGain);
     post("MUTE", { muted });
     post("SPEED", { speed, energy });
     post("BRAKE", { brake: brakeAmount });
@@ -132,6 +144,7 @@ export function createAudioEngine(onPulse, onEffectChange) {
     if (brakeAmount < 0.001) brakeAmount = 0;
     reviewBrakeBadge();
     post("BRAKE", { brake: brakeAmount });
+    junction.setBrake(brakeAmount);
   }
 
   brakeTimer = window.setInterval(tickBrake, BRAKE_TICK_MS);
@@ -145,7 +158,30 @@ export function createAudioEngine(onPulse, onEffectChange) {
 
     setMuted(nextMuted) {
       muted = nextMuted;
+      masterGain.gain.setTargetAtTime(muted ? 0 : 1, context.currentTime, 0.015);
       post("MUTE", { muted });
+    },
+
+    setScore(nextScoreId) {
+      scoreId = nextScoreId === "junction" ? "junction" : "fracture";
+      const revision = ++scoreSwitchRevision;
+      if (scoreId === "fracture") {
+        fractureGain.gain.setTargetAtTime(1, context.currentTime, 0.035);
+        junction.setActive(false).catch(() => {});
+        return;
+      }
+
+      // Keep FRACTURE audible while the compact bank crosses a slow vehicle
+      // connection. The hand-off begins only after JUNCTION can really play,
+      // so selecting a score never creates a loading-shaped hole in the music.
+      junction.setActive(true).then(() => {
+        if (scoreId !== "junction" || revision !== scoreSwitchRevision) return;
+        fractureGain.gain.setTargetAtTime(0, context.currentTime, 0.035);
+      }).catch(() => {
+        if (scoreId !== "junction" || revision !== scoreSwitchRevision) return;
+        scoreId = "fracture";
+        fractureGain.gain.setTargetAtTime(1, context.currentTime, 0.035);
+      });
     },
 
     setSpeed(nextSpeed) {
@@ -159,6 +195,7 @@ export function createAudioEngine(onPulse, onEffectChange) {
       speed = nextSpeed;
       energy = speedToEnergy(speed);
       post("SPEED", { speed, energy });
+      junction.setEnergy(energy);
     },
 
     /**
@@ -187,6 +224,14 @@ export function createAudioEngine(onPulse, onEffectChange) {
     },
 
     getState() {
+      if (scoreId === "junction") {
+        return {
+          ...junction.getState(),
+          energy,
+          energyCeilingKmh: ROAD_SPEED_CEILING_KMH,
+          brake: Math.round(brakeAmount * 100) / 100,
+        };
+      }
       return {
         score: arrangement.scoreId ?? "fracture",
         scoreLabel: arrangement.scoreLabel ?? "FRACTURE",
@@ -209,6 +254,9 @@ export function createAudioEngine(onPulse, onEffectChange) {
         node.port.onmessage = null;
         node.disconnect();
       }
+      junction.destroy();
+      fractureGain.disconnect();
+      masterGain.disconnect();
       if (context.state !== "closed") context.close().catch(() => {});
     },
   };

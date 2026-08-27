@@ -54,12 +54,12 @@ test("a ready entry names a real score and a preparing entry names none", () => 
   }
 });
 
-test("the one ready score is the authored composition that actually plays", () => {
+test("the ready scores name both live music runtimes", () => {
   const ready = readyScoreGenres();
-  assert.equal(ready.length, 1, "only FRACTURE is authored so far");
-  assert.equal(ready[0].id, "fracture");
-  assert.equal(ready[0].score, SCORE_ID);
-  assert.ok(isScoreReady(ready[0].id));
+  assert.deepEqual(ready.map((genre) => genre.id), ["junction", "fracture"]);
+  assert.equal(getScoreGenre("junction").score, "junction");
+  assert.equal(getScoreGenre("fracture").score, SCORE_ID);
+  assert.ok(ready.every((genre) => isScoreReady(genre.id)));
 });
 
 test("the rest of the library is declared as preparing, not as playing", () => {
