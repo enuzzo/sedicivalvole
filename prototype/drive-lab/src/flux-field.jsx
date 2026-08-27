@@ -58,12 +58,12 @@ const FRAGMENT_SHADER = `#version 300 es
   void main() {
     vec2 uv_norm = v_uv * 2.0 - 1.0;
     
-    // 1. Morph Factor (0 to 35 km/h) & Hyperspeed Factor (>120 km/h)
-    // warp = 0.0 at 0 km/h: 100% flat resting mosaic of square tiles
-    // warp = 1.0 at 35 km/h: 100% 3D perspective tunnel
-    // The exact same tiles physically deform from flat concentric square rings
-    // into the 4 perspective walls and unroll back on braking without any crossfade.
-    float warp = smoothstep(0.0, 35.0, u_speedKmh);
+    // 1. Morph Factor (0 to 36 km/h) & Hyperspeed Factor (>120 km/h)
+    // Gentle S-curve progression: 0 km/h is 100% flat resting mosaic,
+    // 0-15 km/h gently folds the walls, 15-30 km/h deepens into 3D perspective,
+    // and by 36 km/h the tunnel is fully formed with the dark central void.
+    float normSpeed = clamp(u_speedKmh / 36.0, 0.0, 1.0);
+    float warp = normSpeed * normSpeed * (3.0 - 2.0 * normSpeed);
     float terminalVelocity = smoothstep(118.0, 130.0, u_speedKmh);
 
     vec3 darkPanel = mix(u_base, u_mid, 0.66);
@@ -83,10 +83,11 @@ const FRAGMENT_SHADER = `#version 300 es
       : (uv_norm.x / max(absY, 0.0001));
 
     // 3. UNIFIED DEFORMED COORDINATE FIELD
-    // At warp = 0 (0 km/h): depth is linear flat concentric rings (majorAxis * 7.0), no motion flow.
-    // At warp = 1 (35 km/h): depth is 3D perspective tunnel (1.0 / majorAxis), with full speed motion flow.
-    // In between: the flat mosaic tiles physically stretch, curve, and sink into the depth of the tunnel.
-    float zDepth = mix(majorAxis * 7.0, 1.0 / max(majorAxis, 0.125), warp);
+    // Gentle depth continuity: at rest, concentric bands span [1.0, 7.0];
+    // as speed rises, depth continuously deepens to 1.0 / majorAxis.
+    float zFlat = 1.0 + majorAxis * 6.0;
+    float zTunnel = 1.0 / max(majorAxis, 0.125);
+    float zDepth = mix(zFlat, zTunnel, warp);
     float flowOffset = u_flow * warp;
     float zGrid = zDepth - flowOffset;
 

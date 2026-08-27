@@ -91,6 +91,7 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - 2026-08-27 15:02 `[c85b70c]` `build 20260827-1502`: Replaced the central floating wall cap with direct continuous geometric morphing between the 100% flat square 2D grid at 0 km/h and the 4 perspective tunnel walls at 35 km/h, enabling the grid to seamlessly fold into walls/ceiling/floor and unroll back on deceleration.
 - 2026-08-27 15:10 `[9b9fb06]` `build 20260827-1510`: Permanently codified in `AGENTS.md` and prototype instructions that `CHANGELOG.md` is strictly append-only/progressive (never rewrite or delete past entries under any circumstances) and must always record the date, local time, commit hash, and build stamp when deploying.
 - 2026-08-27 15:11 `[ee09e9a]` `build 20260827-1511`: Unified the entire Aperture visual field into a single seamless continuous coordinate deformation, where the exact same concentric square tiles physically stretch, curve, and fold into the 3D perspective tunnel walls without layer crossfades or floating end-wall caps.
+- 2026-08-27 15:16 `build 20260827-1516`: Calibrated gentle low-speed depth and warp progression with an S-curve across 0–36 km/h, preventing sudden camera pull and ensuring braking smoothly flattens back to standstill without feeling rushed.
 
 ### Fixed
 
