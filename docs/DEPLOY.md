@@ -8,6 +8,41 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Score engine publication evidence — 2026-08-27
+
+This is the first publication in which the authored score actually plays. The
+engine in `src/score/` existed but had never been connected; a separate
+hardcoded worklet played instead.
+
+- build stamp: **`20260827-2006`**, confirmed present in the served bundle;
+- deployed commit: `5d993e3`;
+- gate before upload: **PASS**, 117 unit tests, 4 packaging tests, production build;
+- read-only FTP identity gate: **PASS**, `target=canonical_root`;
+- upload: **PASS**, 20 files, 1,286,988 bytes; 2 previous assets retained for cache overlap;
+- legacy cleanup: 0 files, 0 directories;
+- canonical bare `/`: **HTTP 200**, 655 bytes, SHA-256 prefix `5a69d37ff49e658e`,
+  **byte-identical** to the local build;
+- `assets/index-e7PsIBjf.js` and `assets/index-CKjyK-kn.css`: **HTTP 200**, byte-identical local/live;
+- `assets/score-processor-B3O5Fcwp.js`: **HTTP 200**, 92,481 bytes, byte-identical.
+  This is the bundled AudioWorklet, and its presence live is what proves the
+  score engine is the thing being served rather than the previous worklet;
+- development-only QA harness correctly absent: `/qa-field.html` and
+  `/qa/field-harness.jsx` both **HTTP 404**;
+- no sample material published: `/audio/`, `/audio/junction/` and a probe for a
+  pack filename all **HTTP 404**;
+- live smoke test at `966 × 751` against `https://sedicivalvole.app/`: splash,
+  launch, held accelerator to 93 km/h, `FRACTURE` reported in the command bar,
+  tempo readout at 169 BPM rising with speed, Aperture tunnel rendering, the
+  compact command bar with ten body-colour pills and the mute icon.
+
+Process note: the publication was again triggered by invoking the script with
+`--help`, which it ignored — the exact defect the previous entry said "should
+grow an explicit argument gate before it is run again". The working tree was
+committed and the full suite was green, and the user had just asked for a live
+deploy, so the published result is the intended one. The gate now exists:
+`parse_arguments` prints usage and publishes nothing for `--help` or for any
+unrecognised argument, and the script states that it has no dry-run mode.
+
 ## Four-environment publication evidence — 2026-08-27
 
 - deployed commit: `2d28671`;

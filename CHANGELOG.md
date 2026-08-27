@@ -6,6 +6,12 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 
 ### Added
 
+- 2026-08-27 20:06 `[cbeada7]` `build 20260827-2006`: **First publication in which the authored score actually plays.** `FRACTURE` runs live at `https://sedicivalvole.app/`, with the bundled AudioWorklet verified byte-identical on the canonical root.
+- 2026-08-27 20:20 `[cbeada7]`: `docs/MUSIC-CRAFT.md`, a living record of the project's musical knowledge — consonance rules that matter and the ones a naive checker gets wrong, tempo and arrangement doctrine, mixing technique with sources, and every musical defect this codebase has made and fixed. `AGENTS.md` now requires it to be updated in the same session a fault is diagnosed or a technique is found, and requires a musical rule to be asserted in a test wherever it can be.
+- 2026-08-27 20:20 `[cbeada7]`: `JUNCTION`, a sampled score built from the pack's own breaks, basslines and chord one-shots, with an eight-section arrangement and a progression of Emin9 - Cmaj7 - Amin7 - Bmin9 stated by a different synth each section. Development-only so far: it renders offline and has no runtime yet.
+- 2026-08-27 20:20 `[cbeada7]`: `src/score/dsp/instrument-channel.js`, the channel strip that stops a sampled instrument sounding like a cheap keyboard: per-note variation of gain, start offset and detune, saturation, drifting mid/side width, and a pre-delayed filtered send into the shared room.
+- 2026-08-27 20:20 `[cbeada7]`: The score library now states how each entry makes its sound, `GENERATIVE` or `SAMPLED`, with a mark as well as a word.
+
 - 2026-08-27 18:42 `[4174d6a]`: The authored `FRACTURE` score now plays in the product. The engine in `src/score/` — arranger, transport, ported textStep DSP and the composition itself — was complete but had never been connected; a separate hardcoded worklet played instead.
 - 2026-08-27 18:42 `[4174d6a]`: `src/score/worklet/score-processor.js`, a thin AudioWorklet shell owning only the render quantum, the message port, the mute ramp and the brake filter.
 - 2026-08-27 18:42 `[4174d6a]`: `scripts/vite-audio-worklet.mjs`, which bundles the worklet entry into one self-contained file with esbuild. A `?url` import copies the entry without following its imports, so a multi-module worklet loads in development and breaks once deployed.
@@ -135,6 +141,8 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 
 ### Fixed
 
+- 2026-08-27 20:20 `[cbeada7]`: The publication script ignored every argument, so `--help` ran a real deployment. It had already done so once and the previous evidence entry said it must not happen again. `parse_arguments` now prints usage and publishes nothing for `--help` or any unrecognised argument.
+- 2026-08-27 20:20 `[cbeada7]`: A sampled melody was folded into an instrument's range one note at a time, so notes needing different numbers of octaves inverted the interval between them: a line rising from B4 to D5 played as B3 falling to D3. One whole-octave offset is now chosen for a whole line.
 - 2026-08-27 18:53 `[ae29fa5]`: The principal theme was transposed twice and played a semitone off twice per harmonic cycle. The chord root was already carried by `bassMidi`, and a second `rootOffset` moved the theme again on top of it: over `Dbmaj7` it played A-C-E-G against Db-F-Ab-C. The theme and its response are now absolute pitches in F natural minor and are not transposed at all.
 - 2026-08-27 18:42 `[4174d6a]`: The brake latched on indefinitely. `keyup` handled `Space` but never `ArrowDown`, and the brake amount was only ever updated from a speed *change*, so a stopped or cruising vehicle froze it wherever it stood. It now runs on its own 40 ms clock with hysteresis both ways and never engages below 3 km/h.
 - 2026-08-27 18:42 `[4174d6a]`: The `BPM` readout reported a tempo the music never played. It now reports the transport's own tempo.

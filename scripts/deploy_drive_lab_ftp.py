@@ -308,7 +308,36 @@ def remove_legacy_publish(ftp: ftplib.FTP) -> tuple[int, int]:
     return deleted_files, removed_directories
 
 
+USAGE = """sedicivalvole publication
+
+Uploads the built client to the canonical root. This performs a real
+publication; there is no dry-run mode.
+
+  python3 scripts/deploy_drive_lab_ftp.py           publish
+  python3 scripts/deploy_drive_lab_ftp.py --help    show this and do nothing
+"""
+
+
+def parse_arguments(argv: list[str]) -> bool:
+    """Returns True when the caller asked to publish.
+
+    The script previously ignored every argument, so `--help` ran a real
+    deployment. That has now happened twice. An unrecognised argument must stop
+    the run rather than be treated as consent to publish.
+    """
+    if not argv:
+        return True
+    if argv == ["--help"] or argv == ["-h"]:
+        print(USAGE, end="")
+        return False
+    print(USAGE, end="")
+    print(f"\nunrecognised argument: {' '.join(argv)}\nnothing was published.")
+    return False
+
+
 def main() -> int:
+    if not parse_arguments(sys.argv[1:]):
+        return 0
     stage = "configuration"
     ftp: ftplib.FTP | None = None
     try:
