@@ -8,6 +8,28 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## JUNCTION 104-clip publication evidence — 2026-08-28
+
+- build stamp: **`20260827-2359`**, generated immediately before midnight and
+  published at `2026-08-28 00:00` local time; live commit: `1238cbd`;
+  implementation: `532b30e`;
+- gate before upload: **PASS**, 132 unit tests, 4 packaging tests, production
+  build, read-only remote identity verification, and no preflight writes;
+- publication: **PASS**, 21 files / 26,054,733 bytes uploaded to the canonical
+  root; dynamic root and exact remote tree checks passed;
+- canonical cache-busted HTML references `assets/index-DEvqM5Eh.js`; the live
+  bundle reports build `20260827-2359` and commit `1238cbd`;
+- `audio/junction.svb?build=20260827-2359`: **HTTP 200**, 24,753,770 bytes and
+  byte-identical to the local bank at SHA-256
+  `83fe3058d6a5466ecdc8439a61de2a4023d6ce977722407b2fb134798977f314`;
+- live Browser QA at `773 x 601`: **PASS**. The report confirms 104 clips built
+  from 126 distinct recordings, live pair `8 + 2`, six decoded clips / 34.8 MB
+  PCM, one bank fetch, and active playback. Vertigo and JUNCTION sustained
+  **60 FPS / 17.4 ms p95** for 35.7 seconds, with no frame above 34 ms, no long
+  task, no runtime issue, and 10.4 MB used JS heap;
+- GPS permission was denied in desktop QA; real-vehicle GPS and listening
+  acceptance remain separate gates.
+
 ## JUNCTION live-mixing publication evidence — 2026-08-27
 
 - build stamp: **`20260827-2342`**, confirmed in the cache-busted canonical
