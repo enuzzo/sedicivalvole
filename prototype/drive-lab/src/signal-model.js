@@ -199,8 +199,8 @@ export function advanceDemoMotion(
       }
       : {
         speed: 0,
-        direction: 1,
-        holdSeconds: 1.44,
+        direction: 0, // Stay stopped
+        holdSeconds: 0,
         brakeHeldSeconds: 0,
         liftOffSeconds: 0,
         launchSeconds: 0,
@@ -239,8 +239,8 @@ export function advanceDemoMotion(
     }
     return {
       speed: ROAD_SPEED_CEILING_KMH,
-      direction: -1,
-      holdSeconds: 1.08,
+      direction: 1, // Stay at ceiling
+      holdSeconds: 0,
       brakeHeldSeconds: 0,
       liftOffSeconds: 0,
       launchSeconds: 0,

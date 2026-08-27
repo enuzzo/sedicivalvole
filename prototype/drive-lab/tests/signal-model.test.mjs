@@ -253,15 +253,15 @@ test("motion separates acceleration from deceleration with bounded rates", () =>
   assert.equal(speedToMotion(0, 260, 0.08).rateKmhPerSecond, 60);
 });
 
-test("the demo holds at full speed and reaches a true standstill before restarting", () => {
+test("the demo manual mode stays at ceiling and stays at standstill without auto looping", () => {
   const ceiling = advanceDemoMotion({ speed: 129, direction: 1 }, 0.18);
   assert.equal(ceiling.speed, ROAD_SPEED_CEILING_KMH);
-  assert.equal(ceiling.direction, -1);
-  assert.equal(ceiling.holdSeconds, 1.08);
+  assert.equal(ceiling.direction, 1);
+  assert.equal(ceiling.holdSeconds, 0);
 
   const holding = advanceDemoMotion(ceiling, 0.18);
   assert.equal(holding.speed, ROAD_SPEED_CEILING_KMH);
-  assert.ok(Math.abs(holding.holdSeconds - 0.9) < 0.0001);
+  assert.equal(holding.holdSeconds, 0);
 
   const standstill = advanceDemoMotion({
     speed: 0.1,
@@ -270,6 +270,6 @@ test("the demo holds at full speed and reaches a true standstill before restarti
     brakeHeldSeconds: 1,
   }, 0.18);
   assert.equal(standstill.speed, 0);
-  assert.equal(standstill.direction, 1);
-  assert.equal(standstill.holdSeconds, 1.44);
+  assert.equal(standstill.direction, 0);
+  assert.equal(standstill.holdSeconds, 0);
 });

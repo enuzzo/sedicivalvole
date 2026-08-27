@@ -994,18 +994,10 @@ export function App() {
         startKeyboardAcceleration();
       } else if (event.key === "ArrowDown") {
         event.preventDefault();
-        if (demoDriveInputRef.current === "regen") return;
-        keyboardReturnToGpsRef.current = keyboardReturnToGpsRef.current
-          || sourceRef.current === "GPS";
-        if (sourceRef.current !== "DEMO") {
-          sourceRef.current = "DEMO";
-          setSource("DEMO");
-          logDiagnosticEvent("speed-source.changed", {
-            source: "DEMO",
-            reason: "keyboard-regeneration",
-          });
-        }
-        startKeyboardRegeneration("arrow-down");
+        startKeyboardBrake();
+      } else if (event.key === "ArrowDown") {
+        if (canUseKeyboardTarget(event.target)) event.preventDefault();
+        releaseKeyboardBrake();
       } else if (event.code === "Space") {
         event.preventDefault();
         startKeyboardBrake();

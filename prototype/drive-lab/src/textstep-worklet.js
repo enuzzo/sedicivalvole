@@ -305,8 +305,11 @@ class TextStepWorklet extends AudioWorkletProcessor {
       let mix = (kickOut * 0.8) + snareOut + hatOut + (bassOut * 0.8) + padOut + arpOut + leadOut + delayOut;
 
       // BRAKE SVF
-      const cutoff = 0.45 - this.brake * 0.43;
-      mix = this.svf.process(mix, cutoff, 0.2); 
+      // Extreme underwater: cutoff down to 0.01 (~240Hz), resonance up, volume down
+      const cutoff = Math.max(0.005, 0.45 - this.brake * 0.44);
+      const res = 0.2 + this.brake * 0.3;
+      mix = this.svf.process(mix, cutoff, res);
+      mix *= 1.0 - (this.brake * 0.25); // Duck the volume slightly when deep underwater 
       
       // Master limit
       mix = Math.tanh(mix * 1.2);
