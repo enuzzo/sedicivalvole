@@ -34,10 +34,14 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
       section: sectionId.toUpperCase(),
       sectionTake: currentSection?.take ?? null,
       halfTime: false,
-      tempo: manifest?.bpm ?? 168,
+      rhythmLabel: sectionId === "rest"
+        ? "ambient"
+        : (currentSection?.bpm ?? 127) < 158 ? "slow break" : "full break",
+      tempo: currentSection?.bpm ?? manifest?.bpmRange?.[0] ?? 127,
       energy,
       decelerationState: brake > 0.2 ? "release" : "cruise",
-      activeLanes: sectionId === "rest" ? ["bass", "harmony"] : ["breaks", "bass", "harmony"],
+      activeLanes: currentSection?.activeLanes
+        ?? (sectionId === "rest" ? ["harmony", "atmosphere"] : ["breaks", "harmony"]),
       source: "sampled-production",
       bankLoaded: Boolean(manifest),
       bankBytes,

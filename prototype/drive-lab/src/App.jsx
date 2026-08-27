@@ -1556,7 +1556,7 @@ export function App() {
               <article>
                 <small>ARRANGEMENT</small>
                 <strong>{scoreScene}</strong>
-                <span>{scoreStateRef.current?.halfTime ? "half-time" : "full break"} · {scoreStateRef.current?.section ?? "—"}</span>
+                <span>{scoreStateRef.current?.rhythmLabel ?? (scoreStateRef.current?.halfTime ? "half-time" : "full break")} · {scoreStateRef.current?.section ?? "—"}</span>
               </article>
               <article>
                 <small>TRANSPORT</small>

@@ -5,25 +5,24 @@ import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 
 import { JUNCTION_BANK_MAGIC } from "../src/junction-bank.js";
+import {
+  JUNCTION_ARRANGEMENT,
+  JUNCTION_BARS_PER_SECTION,
+  JUNCTION_TAKES,
+  junctionSectionFrames,
+} from "./junction-form.mjs";
 
 const run = promisify(execFile);
 const HERE = dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = resolve(HERE, "..");
-const TEMPO = 168;
-const TAKES = 3;
-const SECTION_IDS = ["open", "enter", "build", "break", "full", "turn", "ease", "rest"];
-const BARS_PER_SECTION = 8;
-const BARS = SECTION_IDS.length * TAKES * BARS_PER_SECTION;
-const secondsPerBar = (60 / TEMPO) * 4;
+const SAMPLE_RATE = 48000;
 
-const wavPath = resolve(PROJECT_ROOT, `renders/junction-sketch-${TEMPO}.wav`);
+const wavPath = resolve(PROJECT_ROOT, "renders/junction-sketch-adaptive.wav");
 const encodedPath = resolve("/tmp", `sedicivalvole-junction-${process.pid}.ogg`);
 const bankPath = resolve(PROJECT_ROOT, "public/audio/junction.svb");
 
 await run(process.execPath, [
   resolve(HERE, "render-junction-sketch.mjs"),
-  "--tempo", String(TEMPO),
-  "--bars", String(BARS),
 ], { cwd: PROJECT_ROOT, maxBuffer: 1 << 20 });
 
 await run("ffmpeg", [
@@ -38,28 +37,36 @@ await run("ffmpeg", [
 ], { maxBuffer: 1 << 20 });
 
 const audio = await readFile(encodedPath);
-const sectionSeconds = BARS_PER_SECTION * secondsPerBar;
+let cursorFrames = 0;
+const sections = JUNCTION_ARRANGEMENT.map((section) => {
+  const sectionFrames = junctionSectionFrames(section, SAMPLE_RATE);
+  const entry = {
+    id: section.id,
+    take: section.take + 1,
+    bpm: section.bpm,
+    startSeconds: cursorFrames / SAMPLE_RATE,
+    durationSeconds: sectionFrames / SAMPLE_RATE,
+    activeLanes: section.beatSource === null
+      ? ["harmony", "atmosphere"]
+      : section.bass
+        ? ["breaks", "bass", "harmony"]
+        : ["breaks", "harmony", "atmosphere"],
+  };
+  cursorFrames += sectionFrames;
+  return entry;
+});
 const manifest = {
   format: "sedicivalvole.music-bank.v1",
   score: "junction",
   source: "rendered-production",
   mime: "audio/ogg; codecs=opus",
-  bpm: TEMPO,
-  bars: BARS,
-  barsPerSection: BARS_PER_SECTION,
-  takes: TAKES,
-  durationSeconds: BARS * secondsPerBar,
-  sections: Array.from({ length: TAKES }, (_, take) => (
-    SECTION_IDS.map((id, sectionIndex) => {
-      const index = take * SECTION_IDS.length + sectionIndex;
-      return {
-        id,
-        take: take + 1,
-        startSeconds: index * sectionSeconds,
-        durationSeconds: sectionSeconds,
-      };
-    })
-  )).flat(),
+  tempoMode: "authored-sections",
+  bpmRange: [127, 168],
+  bars: JUNCTION_ARRANGEMENT.length * JUNCTION_BARS_PER_SECTION,
+  barsPerSection: JUNCTION_BARS_PER_SECTION,
+  takes: JUNCTION_TAKES,
+  durationSeconds: cursorFrames / SAMPLE_RATE,
+  sections,
 };
 const manifestBytes = Buffer.from(JSON.stringify(manifest));
 const header = Buffer.alloc(12);

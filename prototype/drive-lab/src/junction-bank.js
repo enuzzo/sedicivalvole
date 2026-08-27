@@ -36,12 +36,12 @@ export function chooseJunctionVariation(sections, sectionId, previousTake = null
 
 export function junctionSectionForEnergy(energy, braking = false) {
   const value = Math.min(1, Math.max(0, Number(energy) || 0));
-  if (braking) return value > 0.55 ? "turn" : value > 0.18 ? "ease" : "rest";
-  if (value < 0.03) return "rest";
-  if (value < 0.18) return "open";
-  if (value < 0.35) return "enter";
-  if (value < 0.55) return "build";
-  if (value < 0.78) return "break";
+  if (braking) return value > 0.6 ? "turn" : value > 0.1 ? "ease" : "rest";
+  if (value < 0.1) return "rest";
+  if (value < 0.24) return "open";
+  if (value < 0.4) return "enter";
+  if (value < 0.6) return "build";
+  if (value < 0.82) return "break";
   return "full";
 }
 

@@ -24,7 +24,7 @@
 // chord lands where, and the processing they all sit in.
 //
 // Usage:
-//   node scripts/render-junction-sketch.mjs [--tempo 168] [--bars 192]
+//   node scripts/render-junction-sketch.mjs
 
 import { createWriteStream } from "node:fs";
 import { mkdir } from "node:fs/promises";
@@ -34,10 +34,16 @@ import { fileURLToPath } from "node:url";
 import {
   decode,
   libraryAvailable,
+  loadBonusBeatsAtTempo,
   loadChordHits,
   loopsAtTempo,
   LOOP_BARS,
 } from "./sample-library.mjs";
+import {
+  JUNCTION_ARRANGEMENT,
+  JUNCTION_BARS_PER_SECTION,
+  junctionSectionFrames,
+} from "./junction-form.mjs";
 import {
   LookaheadLimiter,
   StereoReverb,
@@ -61,81 +67,11 @@ const STEPS_PER_BAR = 16;
  * Everything here is diatonic to E minor, so the basslines sit under any of it.
  */
 const PROGRESSION = [
-  { bar: 0, chord: "Emin9" },
-  { bar: 2, chord: "Cmaj7" },
-  { bar: 4, chord: "Amin7" },
-  { bar: 6, chord: "Bmin9" },
+  { bar: 0, chord: "Emin9", bassKeys: ["E", "Emin"] },
+  { bar: 2, chord: "Cmaj7", bassKeys: ["C", "G", "E"] },
+  { bar: 4, chord: "Amin7", bassKeys: ["Amin", "E", "C"] },
+  { bar: 6, chord: "Bmin9", bassKeys: ["B", "Bmin", "E"] },
 ];
-
-/**
- * Which pad instrument states the progression, per section.
- *
- * The pack ships the same chords voiced by several different synths, so the
- * harmony can change instrument without a note changing. That is the variety
- * this material offers, and it costs nothing to use.
- */
-/**
- * Eight energy sections, each with three authored takes. A take changes its
- * break orchestration every two-bar phrase and rotates the supplied chord
- * voicings, but keeps the section's harmonic and dynamic purpose intact.
- */
-const SECTIONS = [
-  { id: "open", bass: true, pad: 1, drive: 0.04, space: 0.55, level: 0.54, takes: [
-    { breakPhrases: [[], [], [], []], voicing: 0, stab: false },
-    { breakPhrases: [[], [], ["D:01"], []], voicing: 3, stab: false },
-    { breakPhrases: [[], ["A:02"], [], []], voicing: 6, stab: false },
-  ] },
-  { id: "enter", bass: true, pad: 0.95, drive: 0.1, space: 0.46, level: 0.72, takes: [
-    { breakPhrases: [["A:01"], ["A:01"], ["A:02"], ["A:01"]], voicing: 1, stab: false },
-    { breakPhrases: [["B:01"], ["B:02"], ["B:01"], ["A:02"]], voicing: 4, stab: false },
-    { breakPhrases: [["D:01"], ["D:01"], ["C:01"], ["D:02"]], voicing: 7, stab: false },
-  ] },
-  { id: "build", bass: true, pad: 0.85, drive: 0.18, space: 0.38, level: 0.84, takes: [
-    { breakPhrases: [["A:02"], ["A:02", "B:01"], ["B:01"], ["A:01", "B:02"]], voicing: 2, stab: true },
-    { breakPhrases: [["C:01"], ["C:02", "A:01"], ["C:01", "B:02"], ["A:02", "C:02"]], voicing: 5, stab: true },
-    { breakPhrases: [["D:02"], ["D:01", "B:01"], ["B:02", "D:02"], ["C:01", "D:01"]], voicing: 8, stab: true },
-  ] },
-  { id: "break", bass: true, pad: 0.7, drive: 0.26, space: 0.32, level: 0.92, takes: [
-    { breakPhrases: [["B:02", "C:01"], ["B:01", "C:02"], ["C:01", "D:02"], ["B:02", "D:01"]], voicing: 3, stab: true },
-    { breakPhrases: [["A:02", "D:01"], ["C:02", "D:02"], ["A:01", "B:02"], ["B:01", "C:01"]], voicing: 6, stab: true },
-    { breakPhrases: [["D:02", "A:01"], ["B:02", "C:02"], ["D:01", "C:01"], ["A:02", "B:01"]], voicing: 9, stab: true },
-  ] },
-  { id: "full", bass: true, pad: 0.62, drive: 0.34, space: 0.28, level: 1, takes: [
-    { breakPhrases: [["A:01", "C:02", "D:01"], ["A:02", "B:01", "D:02"], ["B:02", "C:01", "D:01"], ["A:01", "C:02", "D:02"]], voicing: 4, stab: true },
-    { breakPhrases: [["B:01", "C:01", "D:02"], ["A:02", "C:02", "D:01"], ["A:01", "B:02", "C:01"], ["B:01", "C:02", "D:02"]], voicing: 7, stab: true },
-    { breakPhrases: [["A:02", "B:02", "D:01"], ["A:01", "C:01", "D:02"], ["B:01", "C:02", "D:01"], ["A:02", "B:02", "C:01"]], voicing: 10, stab: true },
-  ] },
-  { id: "turn", bass: true, pad: 0.7, drive: 0.3, space: 0.32, level: 0.94, takes: [
-    { breakPhrases: [["B:01", "D:02"], ["D:01"], ["B:02", "D:02"], ["C:01"]], voicing: 5, stab: true },
-    { breakPhrases: [["C:02", "A:01"], ["A:02"], ["C:01", "D:01"], ["B:02"]], voicing: 8, stab: true },
-    { breakPhrases: [["D:02", "C:01"], ["B:01"], ["A:02", "D:01"], ["C:02"]], voicing: 11, stab: true },
-  ] },
-  { id: "ease", bass: true, pad: 0.9, drive: 0.14, space: 0.46, level: 0.78, takes: [
-    { breakPhrases: [["C:01", "A:02"], ["C:01"], ["A:01"], []], voicing: 6, stab: false },
-    { breakPhrases: [["D:01", "B:02"], ["D:02"], ["B:01"], []], voicing: 9, stab: false },
-    { breakPhrases: [["A:02", "C:02"], ["C:01"], ["D:01"], []], voicing: 12, stab: false },
-  ] },
-  { id: "rest", bass: true, pad: 1, drive: 0.05, space: 0.58, level: 0.58, takes: [
-    { breakPhrases: [[], [], [], []], voicing: 7, stab: false },
-    { breakPhrases: [[], [], [], ["D:02"]], voicing: 10, stab: false },
-    { breakPhrases: [[], ["C:02"], [], []], voicing: 13, stab: false },
-  ] },
-];
-
-const ARRANGEMENT = [0, 1, 2].flatMap((take) => SECTIONS.map((section) => ({
-  ...section,
-  ...section.takes[take],
-  take,
-})));
-
-function parseArguments(argv) {
-  const options = { tempo: 168, bars: ARRANGEMENT.length * 8 };
-  for (let index = 0; index < argv.length; index += 1) {
-    if (argv[index] === "--tempo") options.tempo = Number.parseInt(argv[index + 1], 10);
-    else if (argv[index] === "--bars") options.bars = Number.parseInt(argv[index + 1], 10);
-  }
-  return options;
-}
 
 function writeWav(path, left, right, sampleRate) {
   const frames = left.length;
@@ -206,24 +142,46 @@ class SamplerVoice {
 }
 
 async function main() {
-  const options = parseArguments(process.argv.slice(2));
   if (!await libraryAvailable()) {
     throw new Error("the local sample library is not present; this sketch needs _references/");
   }
 
-  const loops = await loopsAtTempo(options.tempo);
-  const breaks = new Map();
-  for (const set of ["A", "B", "C", "D"]) {
-    for (const variant of ["01", "02"]) {
-      const entry = loops.find((loop) => (
-        loop.kind === "beat" && loop.set === set && loop.variant === variant
-      ));
-      if (entry) breaks.set(`${set}:${variant}`, await decode(entry.path, SAMPLE_RATE));
+  const beatBuffers = new Map();
+  const bassBuffers = new Map();
+  const jungleTempos = new Set(
+    JUNCTION_ARRANGEMENT
+      .filter((section) => section.beatSource === "jungle" || section.bass)
+      .map((section) => section.bpm),
+  );
+  for (const tempo of jungleTempos) {
+    const loops = await loopsAtTempo(tempo);
+    for (const entry of loops) {
+      if (entry.kind === "beat") {
+        beatBuffers.set(
+          `${tempo}:jungle:${entry.set}:${entry.variant}`,
+          await decode(entry.path, SAMPLE_RATE),
+        );
+      } else if (entry.kind === "bass") {
+        bassBuffers.set(`${tempo}:${entry.key}`, await decode(entry.path, SAMPLE_RATE));
+      }
+    }
+    for (const progression of PROGRESSION) {
+      if (!progression.bassKeys.some((key) => bassBuffers.has(`${tempo}:${key}`))) {
+        throw new Error(`no consonant bass for ${progression.chord} at ${tempo} BPM`);
+      }
     }
   }
-  const bassEntry = loops.find((loop) => loop.kind === "bass" && loop.key === "E");
-  if (!bassEntry) throw new Error(`no bass loop in E at ${options.tempo} BPM`);
-  const bass = await decode(bassEntry.path, SAMPLE_RATE);
+
+  const bonusTempos = new Set(
+    JUNCTION_ARRANGEMENT
+      .filter((section) => section.beatSource === "bonus")
+      .map((section) => section.bpm),
+  );
+  for (const tempo of bonusTempos) {
+    for (const entry of await loadBonusBeatsAtTempo(tempo, SAMPLE_RATE)) {
+      beatBuffers.set(`${tempo}:bonus:${entry.id}`, entry.buffer);
+    }
+  }
 
   // Every chord the progression asks for, in every voicing the pack ships, so
   // the harmony can change instrument without a note changing.
@@ -235,10 +193,15 @@ async function main() {
     chords.set(step.chord, voicings);
   }
 
-  const loopFrames = Math.round((60 / options.tempo) * 4 * LOOP_BARS * SAMPLE_RATE);
-  const barFrames = Math.round(loopFrames / LOOP_BARS);
-  const stepFrames = Math.round(barFrames / STEPS_PER_BAR);
-  const totalFrames = barFrames * options.bars;
+  let nextStartFrame = 0;
+  const timeline = JUNCTION_ARRANGEMENT.map((section, index) => {
+    const barFrames = Math.round((60 / section.bpm) * 4 * SAMPLE_RATE);
+    const sectionFrames = junctionSectionFrames(section, SAMPLE_RATE);
+    const entry = { section, index, startFrame: nextStartFrame, barFrames, sectionFrames };
+    nextStartFrame += sectionFrames;
+    return entry;
+  });
+  const totalFrames = nextStartFrame;
   const left = new Float32Array(totalFrames);
   const right = new Float32Array(totalFrames);
 
@@ -254,124 +217,146 @@ async function main() {
 
   /** Notes currently sounding. Melodic lines and pad hits both live here. */
   let voices = [];
-  let smoothedLevel = ARRANGEMENT[0].level;
-  let smoothedDrive = ARRANGEMENT[0].drive;
-  let smoothedSpace = ARRANGEMENT[0].space;
+  let smoothedLevel = JUNCTION_ARRANGEMENT[0].level;
+  let smoothedDrive = JUNCTION_ARRANGEMENT[0].drive;
+  let smoothedSpace = JUNCTION_ARRANGEMENT[0].space;
   const used = new Set();
 
-  for (let frame = 0; frame < totalFrames; frame += 1) {
-    const bar = Math.floor(frame / barFrames);
-    const section = ARRANGEMENT[Math.min(Math.floor(bar / 8), ARRANGEMENT.length - 1)];
-    const inLoop = frame % loopFrames;
+  for (const timelineEntry of timeline) {
+    const { section, index: sectionIndex, startFrame, barFrames, sectionFrames } = timelineEntry;
+    const loopFrames = barFrames * LOOP_BARS;
+    const stepFrames = Math.round(barFrames / STEPS_PER_BAR);
+    const phraseFrames = barFrames * LOOP_BARS;
+    for (let localFrame = 0; localFrame < sectionFrames; localFrame += 1) {
+      const frame = startFrame + localFrame;
+      const barInCycle = Math.floor(localFrame / barFrames);
+      const inLoop = localFrame % loopFrames;
 
-    // Structural triggers land exactly on a step. The only thing decided here is
-    // *which* recording plays and *when* — never what it plays.
-    if (frame % stepFrames === 0) {
-      const step = Math.floor(inLoop / stepFrames) % (STEPS_PER_BAR * LOOP_BARS);
-      const barInCycle = bar % 8;
-      if (step === 0 && section.pad > 0) {
-        const entry = PROGRESSION.find((chord) => chord.bar === barInCycle);
-        if (entry) {
-          const choices = chords.get(entry.chord);
-          const selected = choices[(section.voicing + Math.floor(bar / 8)) % choices.length];
-          const variation = noteVariation(bar * 7 + section.voicing);
-          voices.push(new SamplerVoice(
-            selected.buffer,
-            variation.rate,
-            section.pad * 0.46 * variation.gain,
-            barFrames * 2,
-          ));
-          used.add(`${selected.instrument} ${entry.chord}`);
+      // Structural triggers land exactly on a step. The only thing decided here
+      // is which supplied recording plays and when — never what it plays.
+      if (localFrame % stepFrames === 0) {
+        const step = Math.floor(inLoop / stepFrames) % (STEPS_PER_BAR * LOOP_BARS);
+        if (step === 0 && section.pad > 0) {
+          const entry = PROGRESSION.find((chord) => chord.bar === barInCycle);
+          const chordAllowed = !section.chordBars || section.chordBars.includes(barInCycle);
+          if (entry && chordAllowed) {
+            const choices = chords.get(entry.chord);
+            const selected = choices[(section.voicing + sectionIndex) % choices.length];
+            const variation = noteVariation(sectionIndex * 101 + barInCycle * 7 + section.voicing);
+            voices.push(new SamplerVoice(
+              selected.buffer,
+              variation.rate,
+              section.pad * 0.46 * variation.gain,
+              barFrames * 2,
+            ));
+            used.add(`${selected.instrument} ${entry.chord}`);
+          }
+        }
+
+        // An off-beat restatement of the chord already sounding. Classic jungle
+        // punctuation, and it costs one extra trigger.
+        if (section.stab && step === 22 && barInCycle % 2 === 1) {
+          const held = [...PROGRESSION].reverse().find((chord) => chord.bar <= barInCycle);
+          if (held) {
+            const choices = chords.get(held.chord);
+            const selected = choices[(section.voicing + sectionIndex + barInCycle + 1) % choices.length];
+            const variation = noteVariation(sectionIndex * 131 + barInCycle * 13 + 5);
+            voices.push(new SamplerVoice(
+              selected.buffer,
+              variation.rate,
+              section.pad * 0.22 * variation.gain,
+              Math.round(barFrames * 0.4),
+            ));
+          }
         }
       }
 
-      // An off-beat restatement of the chord already sounding. Classic jungle
-      // punctuation, and it costs one extra trigger.
-      if (section.stab && step === 22 && barInCycle % 2 === 1) {
-        const held = [...PROGRESSION].reverse().find((chord) => chord.bar <= barInCycle);
-        if (held) {
-          const choices = chords.get(held.chord);
-          const selected = choices[(section.voicing + bar + 1) % choices.length];
-          const variation = noteVariation(bar * 13 + 5);
-          voices.push(new SamplerVoice(
-            selected.buffer,
-            variation.rate,
-            section.pad * 0.22 * variation.gain,
-            Math.round(barFrames * 0.4),
-          ));
-        }
+      smoothedLevel += (section.level - smoothedLevel) * 0.00005;
+      smoothedDrive += (section.drive - smoothedDrive) * 0.00005;
+      smoothedSpace += (section.space - smoothedSpace) * 0.00005;
+
+      const phraseIndex = Math.min(
+        section.beatPhrases.length - 1,
+        Math.floor(barInCycle / LOOP_BARS),
+      );
+      const phraseProgress = (localFrame % phraseFrames) / phraseFrames;
+      const currentBeatLevel = section.beatLevels[phraseIndex];
+      const nextBeatLevel = section.beatLevels[Math.min(phraseIndex + 1, section.beatLevels.length - 1)];
+      const beatLevel = currentBeatLevel + (nextBeatLevel - currentBeatLevel) * phraseProgress;
+      let breakLeft = 0;
+      let breakRight = 0;
+      const phraseBreaks = section.beatPhrases[phraseIndex];
+      for (let layerIndex = 0; layerIndex < phraseBreaks.length; layerIndex += 1) {
+        const id = phraseBreaks[layerIndex];
+        const key = section.beatSource === "bonus"
+          ? `${section.bpm}:bonus:${id}`
+          : `${section.bpm}:jungle:${id}`;
+        const layer = beatBuffers.get(key);
+        if (!layer) throw new Error(`missing authored beat ${key}`);
+        // Extra layers provide width and detail, never another full-level break.
+        const layerGain = layerIndex === 0 ? 1 : 0.28;
+        const pan = layerIndex === 0 ? 0 : (layerIndex % 2 === 1 ? -0.4 : 0.4);
+        breakLeft += layer.left[inLoop % layer.frames] * layerGain * (1 - Math.max(0, pan));
+        breakRight += layer.right[inLoop % layer.frames] * layerGain * (1 + Math.min(0, pan));
       }
-    }
+      breakLeft *= beatLevel;
+      breakRight *= beatLevel;
 
-    smoothedLevel += (section.level - smoothedLevel) * 0.00005;
-    smoothedDrive += (section.drive - smoothedDrive) * 0.00005;
-    smoothedSpace += (section.space - smoothedSpace) * 0.00005;
-
-    let breakLeft = 0;
-    let breakRight = 0;
-    const phraseBreaks = section.breakPhrases[Math.floor((bar % 8) / LOOP_BARS)];
-    for (let index = 0; index < phraseBreaks.length; index += 1) {
-      const layer = breaks.get(phraseBreaks[index]);
-      if (!layer) continue;
-      // Layers after the first sit back and to the sides: a thicker break, not
-      // a louder one.
-      const gain = index === 0 ? 1 : 0.4;
-      const pan = index === 0 ? 0 : (index % 2 === 1 ? -0.4 : 0.4);
-      breakLeft += layer.left[inLoop % layer.frames] * gain * (1 - Math.max(0, pan));
-      breakRight += layer.right[inLoop % layer.frames] * gain * (1 + Math.min(0, pan));
-    }
-
-    let melodicLeft = 0;
-    let melodicRight = 0;
-    for (let index = 0; index < voices.length; index += 1) {
-      const [voiceLeft, voiceRight] = voices[index].tick();
-      melodicLeft += voiceLeft;
-      melodicRight += voiceRight;
-    }
-    if (frame % 4096 === 0) voices = voices.filter((voice) => !voice.done());
+      let melodicLeft = 0;
+      let melodicRight = 0;
+      for (let voiceIndex = 0; voiceIndex < voices.length; voiceIndex += 1) {
+        const [voiceLeft, voiceRight] = voices[voiceIndex].tick();
+        melodicLeft += voiceLeft;
+        melodicRight += voiceRight;
+      }
+      if (frame % 4096 === 0) voices = voices.filter((voice) => !voice.done());
 
     // The chords go through a channel strip: saturation, tone, drifting width,
     // and a pre-delayed filtered send into the shared room. Played flat they sat
     // dead centre and bone dry, which is what a cheap keyboard sounds like.
-    channel.set({
-      space: 0.36 + smoothedSpace * 0.45,
-      drive: 0.18 + smoothedDrive * 0.5,
-      width: 1.4,
-      tone: 0.5,
-      body: 0.6,
-    });
-    channel.refresh();
-    const chordOut = channel.tick(melodicLeft, melodicRight, reverb);
-    melodicLeft = chordOut[0];
-    melodicRight = chordOut[1];
+      channel.set({
+        space: 0.36 + smoothedSpace * 0.45,
+        drive: 0.18 + smoothedDrive * 0.5,
+        width: 1.4,
+        tone: 0.5,
+        body: 0.6,
+      });
+      channel.refresh();
+      const chordOut = channel.tick(melodicLeft, melodicRight, reverb);
+      melodicLeft = chordOut[0];
+      melodicRight = chordOut[1];
 
-    saturator.setDrive(smoothedDrive);
-    const driven = saturator.tick((breakLeft + breakRight) * 0.5);
-    const bodyLeft = breakHighPassLeft.tick(breakLeft) + driven * 0.22;
-    const bodyRight = breakHighPassRight.tick(breakRight) + driven * 0.22;
+      saturator.setDrive(smoothedDrive);
+      const driven = saturator.tick((breakLeft + breakRight) * 0.5);
+      const bodyLeft = breakHighPassLeft.tick(breakLeft) + driven * 0.22;
+      const bodyRight = breakHighPassRight.tick(breakRight) + driven * 0.22;
 
     // The breaks share the same room as the chords, at a much shorter send. One
     // space for the whole arrangement is what makes it one performance.
-    reverb.set(smoothedSpace, 0.42);
-    const [wetLeft, wetRight] = reverb.tickStereo(
-      bodyLeft * smoothedSpace * 0.14, bodyRight * smoothedSpace * 0.14,
-    );
+      reverb.set(smoothedSpace, 0.42);
+      const [wetLeft, wetRight] = reverb.tickStereo(
+        bodyLeft * smoothedSpace * 0.14, bodyRight * smoothedSpace * 0.14,
+      );
 
-    const bassLeft = section.bass ? bass.left[inLoop % bass.frames] : 0;
-    const bassRight = section.bass ? bass.right[inLoop % bass.frames] : 0;
+      const progression = PROGRESSION[Math.floor(barInCycle / LOOP_BARS)];
+      const bassKey = progression.bassKeys.find((key) => bassBuffers.has(`${section.bpm}:${key}`));
+      const bass = section.bass ? bassBuffers.get(`${section.bpm}:${bassKey}`) : null;
+      const bassLeft = bass ? bass.left[inLoop % bass.frames] * 0.68 : 0;
+      const bassRight = bass ? bass.right[inLoop % bass.frames] * 0.68 : 0;
 
-    const [wideLeft, wideRight] = width.tickStereo(
-      (bodyLeft + bassLeft + melodicLeft + wetLeft) * smoothedLevel,
-      (bodyRight + bassRight + melodicRight + wetRight) * smoothedLevel,
-      1.3,
-    );
+      const [wideLeft, wideRight] = width.tickStereo(
+        (bodyLeft + bassLeft + melodicLeft + wetLeft) * smoothedLevel,
+        (bodyRight + bassRight + melodicRight + wetRight) * smoothedLevel,
+        1.3,
+      );
 
-    const [outLeft, outRight] = limiter.tickStereo(wideLeft * 0.95, wideRight * 0.95);
-    left[frame] = outLeft;
-    right[frame] = outRight;
+      const [outLeft, outRight] = limiter.tickStereo(wideLeft * 0.95, wideRight * 0.95);
+      left[frame] = outLeft;
+      right[frame] = outRight;
+    }
   }
 
-  const out = resolve(PROJECT_ROOT, `renders/junction-sketch-${options.tempo}.wav`);
+  const out = resolve(PROJECT_ROOT, "renders/junction-sketch-adaptive.wav");
   await mkdir(dirname(out), { recursive: true });
   await writeWav(out, left, right, SAMPLE_RATE);
 
@@ -381,11 +366,11 @@ async function main() {
   }
   process.stdout.write(
     `\nJUNCTION — ${out}\n`
-    + `${options.bars} bars at ${options.tempo} BPM in E minor`
+    + `${JUNCTION_ARRANGEMENT.length * JUNCTION_BARS_PER_SECTION} bars at native 127–168 BPM in E minor`
     + ` · ${(totalFrames / SAMPLE_RATE).toFixed(1)}s`
     + ` · peak ${(20 * Math.log10(peak)).toFixed(1)} dB\n`
-    + `breaks ${[...breaks.keys()].join(", ")} · bass ${bassEntry.name}\n`
-    + `chords, all as supplied: ${[...used].join(", ")}\n\n`,
+    + `${beatBuffers.size} native beat recordings · ${bassBuffers.size} matched bass recordings\n`
+    + `${used.size} supplied chord performances used\n\n`,
   );
 }
 

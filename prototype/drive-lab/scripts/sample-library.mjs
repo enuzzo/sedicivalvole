@@ -33,6 +33,7 @@ export const RAVE_ROOT = join(LIBRARY_ROOT, "Rave Synths");
 
 /** The tempo folders the jungle pack ships, in order. */
 export const TEMPOS = [158, 160, 164, 166, 168, 170, 172];
+export const BONUS_BEAT_TEMPOS = [127, 135];
 
 /** Every beat loop is two bars. The arrangement relies on this being exact. */
 export const LOOP_BARS = 2;
@@ -107,6 +108,25 @@ export async function loopsAtTempo(tempo) {
     .map((file) => ({ ...describe(file), path: join(directory, file) }))
     .filter((entry) => entry.kind !== null)
     .sort((first, second) => first.name.localeCompare(second.name));
+}
+
+/** Native two-bar beats used by JUNCTION before the Jungle tempo range. */
+export async function loadBonusBeatsAtTempo(tempo, sampleRate = 48000) {
+  if (!BONUS_BEAT_TEMPOS.includes(tempo)) return [];
+  const directory = join(RAVE_ROOT, "Bonus_Beats");
+  const files = (await readdir(directory)).filter((file) => file.endsWith(".wav"));
+  const entries = [];
+  for (const file of files) {
+    const match = basename(file, ".wav").match(/^BonusBeat_(\d+)\((\d+)BPM\)$/i);
+    if (!match || Number.parseInt(match[2], 10) !== tempo) continue;
+    entries.push({
+      id: match[1],
+      tempo,
+      path: join(directory, file),
+      buffer: await decode(join(directory, file), sampleRate),
+    });
+  }
+  return entries.sort((first, second) => first.id.localeCompare(second.id));
 }
 
 /** Seconds one loop occupies at its own tempo. */
