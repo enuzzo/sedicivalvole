@@ -26,7 +26,7 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - Curated Pearl, Graphite, Red, Blue, and Silver `BODY COLOR` themes that tune both the field palette and interface accent.
 - A Canvas2D Modular Aperture fallback for devices without WebGL2.
 - A v3 extended diagnostic report with aggregate canvas frame pacing, long-task timing, connection history, navigation/resource metrics, heap/storage/battery hints, and a larger bounded event history.
-- A pinned study of `illobo/textStep` covering its synthesized drum/synth engine, 32-step patterns, Jungle/D&B presets, scene queue, browser portability, and licensing gate.
+- A pinned study of `illobo/textStep` covering its synthesized drum/synth engine, 32-step patterns, Jungle/D&B presets, scene queue, browser portability, and authorized adoption plan.
 - Prominent project-level credit to Lobo (`illobo`) as the creator of textStep and its sequencer, synth, DSP, scene, and performance architecture, with linked provenance and an explicit future-derived-code attribution policy.
 - A confirmed multi-environment Flux model binding generative effect, musical genre, palette, geometry, and speed response, plus three new selection-gated directions informed by the Interstate 4 and Interstate 7 mechanics study.
 - The user-selected `VERTIGO 02` visual environment, now using the byte-identical upstream Interstate 7 runtime with deterministic source-integrity and speed-bridge tests.
@@ -35,6 +35,8 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - A coordinate-free in-memory driving flight recorder with two-second speed/GPS/input/audio/frame/network samples, full-session motion aggregates, bounded runtime issues, payload sizing, and deterministic retention tests.
 
 ### Changed
+
+- Accepted the maintainer's direct attestation of Lobo's unrestricted textStep reuse authorization, removed the invented written-evidence gate, and retained explicit authorship, GPL-2.0 provenance, source-file, commit, and modification tracking requirements.
 
 - Reworked the audio after user listening feedback: reduced the dominant noise bed and replaced the weak continuous tone with speed-dependent rhythmic and harmonic layers.
 - Named the current adaptive music mode `Flux` and exposed that identity in the splash, live header, page metadata, and diagnostic report.

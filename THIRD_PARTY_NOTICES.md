@@ -30,10 +30,12 @@ synthesizer, DSP, scene, and live-performance architecture informs the planned
 multi-genre Flux sequencer. That authorship deserves explicit credit wherever
 the future integration is described.
 
-The repository is currently a study-only source under GNU GPL version 2.0,
-with an additional direct permission reported by the user but not yet documented
-in reproducible written form. No source, preset data, or audio asset from it has
-entered this repository or product. If derived code is integrated, this notice
-must identify the exact source commit, imported files, modifications, and
-applicable license before publication. See `docs/REFERENCE-STUDY-TEXTSTEP.md`
-for provenance, architectural findings, and the adoption gate.
+The repository is currently a study-only source under GNU GPL version 2.0. The
+project maintainer confirms and accepts responsibility for Lobo's additional
+direct, unrestricted authorization to reuse its content. No separate
+written-evidence gate applies. No source, preset data, or audio asset from it
+has entered this repository or product yet. When derived code is integrated,
+this notice must identify the exact source commit, imported files,
+modifications, public license, and Lobo attribution before publication. See
+`docs/REFERENCE-STUDY-TEXTSTEP.md` for provenance, architectural findings, and
+the adoption plan.

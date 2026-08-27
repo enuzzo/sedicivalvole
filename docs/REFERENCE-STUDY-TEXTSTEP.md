@@ -26,7 +26,12 @@ changes must be identified precisely in this document and in
 - public upstream license: GNU GPL version 2.0;
 - upstream description: a Rust terminal step sequencer, drum machine, and synthesizer.
 
-The user states that the author, `illobo`, directly authorized unrestricted reuse of this repository's content. That statement is recorded as user-supplied provenance, but the exact grant, scope, attribution requirements, sublicensing terms, and compatibility with this project's `AGPL-3.0-or-later` policy have not been independently verified in writing. No textStep code or preset data may enter the tracked product until that additional permission is documented clearly or the integration is proven compatible with the public license.
+The project maintainer confirms that the author, `illobo`, directly authorized
+unrestricted reuse of this repository's content. The project accepts that direct
+attestation as sufficient authorization to copy, adapt, integrate, and publish
+derived textStep code in sedicivalvole. No separate written-evidence gate
+applies. Lobo's authorship, the public GNU GPL version 2.0 license, the exact
+source commit, imported files, and our modifications must remain explicit.
 
 ## What the project actually contains
 
@@ -59,7 +64,11 @@ These mechanics align with Flux's existing distinction between continuous drivin
 
 The upstream engine targets Rust with `cpal` and CoreAudio/ALSA. It cannot be imported directly into the Tesla browser build. The preferred first production spike is an independently authored `AudioWorklet` engine using plain browser DSP and immutable pattern data. Rust/WASM is a later option only if profiling proves that JavaScript DSP cannot meet the vehicle's audio and rendering budget.
 
-Direct source translation would also create a derivative-work licensing question. A clean implementation based on documented musical and DSP concepts is the lowest-risk path while the additional permission remains unverified.
+Because the upstream Rust/CoreAudio architecture cannot run directly in the
+Tesla browser, the first implementation should adapt the relevant transport,
+sequencer, synthesis, and DSP systems into an `AudioWorklet`. Directly reused or
+translated portions are permitted, but must remain traceable to their upstream
+files and clearly identify our browser-specific modifications.
 
 ## Proposed Flux music system
 
@@ -102,7 +111,7 @@ This requires separate rise/fall dwell times, hysteresis, a retained peak-energy
 
 Before product integration:
 
-- document the author's additional written permission or keep the implementation independent;
+- select and record the exact upstream files and commit used by the browser adaptation;
 - decide whether the first spike is synthesis-only or includes newly licensed/original samples;
 - record every imported dependency or asset in `THIRD_PARTY_NOTICES.md`;
 - implement deterministic transport, phrase queue, and deceleration-memory tests;

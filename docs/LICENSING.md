@@ -55,14 +55,22 @@ trademark. Each contribution must be made by someone entitled to license it.
 6. decide whether any original media will receive a separate license; and
 7. add SPDX headers to source files as the codebase matures.
 
-## textStep permission and compatibility gate
+## textStep authorization and attribution
 
 [textStep](https://github.com/illobo/textStep) was conceived and created by
 [Lobo (`illobo`)](https://github.com/illobo). Its sequencer, synthesizer, DSP,
 scene, and performance architecture is his original work and informs the
 planned Flux sequencer direction.
 
-The ignored study copy is publicly licensed under GNU GPL version 2.0. The user reports an additional direct authorization from the author for unrestricted reuse, but no written license text or sublicensing terms have been added to this repository. GPL-2.0-only source must not be copied into the `AGPL-3.0-or-later` product on assumption alone. Before direct reuse, preserve written evidence that clearly covers modification, redistribution, attribution, and licensing of the combined work. Until then, textStep is a mechanics reference and Flux uses an independent implementation. If direct reuse begins, record the exact upstream commit, files, modifications, and attribution before publication. See [`REFERENCE-STUDY-TEXTSTEP.md`](REFERENCE-STUDY-TEXTSTEP.md).
+The ignored study copy is publicly licensed under GNU GPL version 2.0. The
+project maintainer confirms that Lobo also granted direct, unrestricted
+authorization to reuse the repository's content and accepts responsibility for
+that provenance statement. The project treats this authorization as sufficient
+for copying, adapting, integrating, and publishing derived textStep code in
+sedicivalvole; no additional written-evidence gate applies. Direct reuse must
+still record the exact upstream commit, imported files, modifications, public
+license, and Lobo attribution before publication. See
+[`REFERENCE-STUDY-TEXTSTEP.md`](REFERENCE-STUDY-TEXTSTEP.md).
 
 Primary references: [GNU licenses](https://www.gnu.org/licenses/),
 [AGPL-3.0 text](https://www.gnu.org/licenses/agpl-3.0.html), and

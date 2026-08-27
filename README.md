@@ -109,7 +109,7 @@ See [`docs/ROADMAP.md`](docs/ROADMAP.md).
 - [`docs/DEPLOY.md`](docs/DEPLOY.md) — sanitized deployment procedure and verified state;
 - [`docs/DIAGNOSTICS.md`](docs/DIAGNOSTICS.md) — verified Tesla measurements and report-delivery architecture;
 - [`docs/MODES.md`](docs/MODES.md) — confirmed Engine/Flux product architecture and open decisions;
-- [`docs/REFERENCE-STUDY-TEXTSTEP.md`](docs/REFERENCE-STUDY-TEXTSTEP.md) — Lobo's textStep credit, provenance, mechanics, and adoption gate;
+- [`docs/REFERENCE-STUDY-TEXTSTEP.md`](docs/REFERENCE-STUDY-TEXTSTEP.md) — Lobo's textStep credit, provenance, mechanics, and authorized adoption plan;
 - [`docs/GITHUB.md`](docs/GITHUB.md) — public-repository and GitHub CLI operating notes;
 - [`docs/LICENSING.md`](docs/LICENSING.md) — active mixed-license decision and open legal work.
 

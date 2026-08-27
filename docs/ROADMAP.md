@@ -56,7 +56,7 @@ Queued next:
 - create a high-energy Jungle environment with a genre-appropriate tempo ceiling;
 - implement catch/recovery/sustained-release deceleration memory so short braking does not dismantle the groove;
 - evaluate original or separately licensed samples only after the synthesis-first transport works;
-- use the ignored `illobo/textStep` repository as an architecture study under the provenance and licensing gates in [`REFERENCE-STUDY-TEXTSTEP.md`](REFERENCE-STUDY-TEXTSTEP.md).
+- use the ignored `illobo/textStep` repository as the authorized architecture and implementation source under the provenance and attribution requirements in [`REFERENCE-STUDY-TEXTSTEP.md`](REFERENCE-STUDY-TEXTSTEP.md).
 - define environment data so one transport can load different authored genres, kits, patterns, arrangement rules, and matching visual identities without changing the driving-signal contract.
 
 Gate: deterministic 0 → 115 → 60 → 115 → 0 replay, credible Jungle identity at high energy, no audible jitter or stop/start phrasing, all automated tests green, and no masking of vehicle alerts.

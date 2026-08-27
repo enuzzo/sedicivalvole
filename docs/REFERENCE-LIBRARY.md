@@ -34,4 +34,4 @@ The original top-level file was moved reversibly into the reference library. It 
 ## Repository studies
 
 - `tympanus-infinite-lights`: mechanics-only visual study; see [`REFERENCE-STUDY-INFINITE-LIGHTS.md`](REFERENCE-STUDY-INFINITE-LIGHTS.md).
-- `textStep`: Rust synth/sequencer architecture study at commit `cb107d198b730db60cff4a87c7fd5b8d1fae3fb2`; see [`REFERENCE-STUDY-TEXTSTEP.md`](REFERENCE-STUDY-TEXTSTEP.md). It remains ignored and no source or preset data has entered the product.
+- `textStep`: authorized Rust synth/sequencer architecture and implementation source at commit `cb107d198b730db60cff4a87c7fd5b8d1fae3fb2`; see [`REFERENCE-STUDY-TEXTSTEP.md`](REFERENCE-STUDY-TEXTSTEP.md). It remains ignored and no source or preset data has entered the product yet.
