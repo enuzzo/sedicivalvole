@@ -171,6 +171,91 @@ export function summarizeFrameTelemetry(telemetry) {
   };
 }
 
+function normalizePerformancePhase(value) {
+  return typeof value === "string" && value.trim() ? value.trim().slice(0, 80) : "unknown";
+}
+
+function createMemoryTelemetry() {
+  return {
+    samples: 0,
+    jsHeapSupported: false,
+    latestUsedJsHeapBytes: null,
+    minimumUsedJsHeapBytes: null,
+    maximumUsedJsHeapBytes: null,
+    latestTotalJsHeapBytes: null,
+    jsHeapLimitBytes: null,
+    latestAudioDecodedPcmBytes: null,
+    maximumAudioDecodedPcmBytes: null,
+    latestAudioBankBytes: null,
+  };
+}
+
+function ensurePerformancePhase(telemetry, phase, capturedAtMs) {
+  const phaseId = normalizePerformancePhase(phase);
+  telemetry.phases[phaseId] ??= {
+    firstCapturedAtMs: capturedAtMs,
+    lastCapturedAtMs: capturedAtMs,
+    frame: createFrameTelemetry(capturedAtMs),
+    memory: createMemoryTelemetry(),
+  };
+  return telemetry.phases[phaseId];
+}
+
+export function createPhasePerformanceTelemetry(startedAtMs = 0) {
+  return { startedAtMs, phases: {} };
+}
+
+export function recordPhaseFrame(telemetry, sample) {
+  if (!Number.isFinite(sample?.capturedAtMs)) return telemetry;
+  const phase = ensurePerformancePhase(telemetry, sample.phase, sample.capturedAtMs);
+  phase.firstCapturedAtMs = Math.min(phase.firstCapturedAtMs, sample.capturedAtMs);
+  phase.lastCapturedAtMs = Math.max(phase.lastCapturedAtMs, sample.capturedAtMs);
+  recordFrameSample(phase.frame, sample);
+  return telemetry;
+}
+
+export function recordPhaseMemorySample(telemetry, {
+  phase: phaseId,
+  capturedAtMs,
+  usedJsHeapBytes,
+  totalJsHeapBytes,
+  jsHeapLimitBytes,
+  audioDecodedPcmBytes,
+  audioBankBytes,
+}) {
+  if (!Number.isFinite(capturedAtMs)) return telemetry;
+  const phase = ensurePerformancePhase(telemetry, phaseId, capturedAtMs);
+  const memory = phase.memory;
+  phase.firstCapturedAtMs = Math.min(phase.firstCapturedAtMs, capturedAtMs);
+  phase.lastCapturedAtMs = Math.max(phase.lastCapturedAtMs, capturedAtMs);
+  memory.samples += 1;
+  if (Number.isFinite(usedJsHeapBytes)) {
+    memory.jsHeapSupported = true;
+    memory.latestUsedJsHeapBytes = usedJsHeapBytes;
+    memory.minimumUsedJsHeapBytes = Math.min(memory.minimumUsedJsHeapBytes ?? usedJsHeapBytes, usedJsHeapBytes);
+    memory.maximumUsedJsHeapBytes = Math.max(memory.maximumUsedJsHeapBytes ?? usedJsHeapBytes, usedJsHeapBytes);
+  }
+  if (Number.isFinite(totalJsHeapBytes)) memory.latestTotalJsHeapBytes = totalJsHeapBytes;
+  if (Number.isFinite(jsHeapLimitBytes)) memory.jsHeapLimitBytes = jsHeapLimitBytes;
+  if (Number.isFinite(audioDecodedPcmBytes)) {
+    memory.latestAudioDecodedPcmBytes = audioDecodedPcmBytes;
+    memory.maximumAudioDecodedPcmBytes = Math.max(
+      memory.maximumAudioDecodedPcmBytes ?? audioDecodedPcmBytes,
+      audioDecodedPcmBytes,
+    );
+  }
+  if (Number.isFinite(audioBankBytes)) memory.latestAudioBankBytes = audioBankBytes;
+  return telemetry;
+}
+
+export function summarizePhasePerformanceTelemetry(telemetry) {
+  return Object.fromEntries(Object.entries(telemetry.phases).map(([phaseId, phase]) => [phaseId, {
+    sampledDurationMs: Math.max(0, Math.round(phase.lastCapturedAtMs - phase.firstCapturedAtMs)),
+    frame: summarizeFrameTelemetry(phase.frame),
+    memory: { ...phase.memory },
+  }]));
+}
+
 export function appendConnectionHistory(history, snapshot, limit = 60) {
   const previous = history.at(-1);
   const comparableKeys = ["online", "type", "effectiveType", "downlinkMbps", "roundTripTimeMs", "saveData"];

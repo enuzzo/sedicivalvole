@@ -135,7 +135,7 @@ function drawFallback(context, canvas, time) {
   context.shadowBlur = 0;
 }
 
-function startCanvasFallback(canvas, activeRef, reducedMotion) {
+function startCanvasFallback(canvas, activeRef, reducedMotion, onFrame) {
   const context = canvas.getContext("2d", { alpha: false });
   if (!context) return undefined;
   let animationFrame = 0;
@@ -145,6 +145,7 @@ function startCanvasFallback(canvas, activeRef, reducedMotion) {
   const render = (now) => {
     if (stopped) return;
     drawFallback(context, canvas, reducedMotion ? 0 : (now - startedAt) / 1000);
+    onFrame?.(now, 1000 / 60, "Splash Canvas2D", canvas.width, canvas.height);
     if (activeRef.current && !reducedMotion) animationFrame = requestAnimationFrame(render);
   };
   animationFrame = requestAnimationFrame(render);
@@ -154,7 +155,7 @@ function startCanvasFallback(canvas, activeRef, reducedMotion) {
   };
 }
 
-export function SplashSignalGate({ active, reducedMotion }) {
+export function SplashSignalGate({ active, reducedMotion, onFrame }) {
   const canvasRef = useRef(null);
   const activeRef = useRef(active);
   activeRef.current = active;
@@ -168,7 +169,7 @@ export function SplashSignalGate({ active, reducedMotion }) {
       depth: false,
       powerPreference: "high-performance",
     });
-    if (!gl) return startCanvasFallback(canvas, activeRef, reducedMotion);
+    if (!gl) return startCanvasFallback(canvas, activeRef, reducedMotion, onFrame);
 
     let program;
     let vertexShader;
@@ -185,7 +186,7 @@ export function SplashSignalGate({ active, reducedMotion }) {
       }
     } catch (error) {
       console.warn("[SplashSignalGate] WebGL2 shader setup failed", error);
-      return startCanvasFallback(canvas, activeRef, reducedMotion);
+      return startCanvasFallback(canvas, activeRef, reducedMotion, onFrame);
     }
 
     const buffer = gl.createBuffer();
@@ -219,6 +220,7 @@ export function SplashSignalGate({ active, reducedMotion }) {
       gl.uniform1f(aspectUniform, width / height);
       gl.uniform1f(timeUniform, reducedMotion ? 0 : (now - startedAt) / 1000);
       gl.drawArrays(gl.TRIANGLES, 0, 6);
+      onFrame?.(now, 1000 / 60, "Splash WebGL2", width, height);
       if (activeRef.current && !reducedMotion) animationFrame = requestAnimationFrame(render);
     };
 
@@ -231,7 +233,7 @@ export function SplashSignalGate({ active, reducedMotion }) {
       gl.deleteShader(vertexShader);
       gl.deleteShader(fragmentShader);
     };
-  }, [reducedMotion]);
+  }, [onFrame, reducedMotion]);
 
   return <canvas className="splash-signal-field" ref={canvasRef} aria-hidden="true" />;
 }

@@ -7,14 +7,18 @@ import {
   createDriveTelemetryReport,
   createFrameTelemetry,
   createGpsTelemetry,
+  createPhasePerformanceTelemetry,
   DRIVE_TRACE_INTERVAL_MS,
   fitDiagnosticReportForTransport,
   inferViewportMode,
   recordDriveTelemetrySample,
   recordFrameSample,
+  recordPhaseFrame,
+  recordPhaseMemorySample,
   recordGpsSample,
   summarizeFrameTelemetry,
   summarizeGpsTelemetry,
+  summarizePhasePerformanceTelemetry,
 } from "./diagnostics-model.js";
 import { FluxField } from "./flux-field.jsx";
 import { FLUX_ENVIRONMENTS, getFluxEnvironment } from "./flux-environments.js";
@@ -184,7 +188,7 @@ function readConnectionSnapshot(reason) {
   };
 }
 
-function readPerformanceSnapshot(frameTelemetry, longTaskTelemetry, harnessStartedAtMs) {
+function readPerformanceSnapshot(frameTelemetry, phaseTelemetry, longTaskTelemetry, harnessStartedAtMs) {
   const navigation = performance.getEntriesByType?.("navigation")?.[0];
   const paints = Object.fromEntries(
     (performance.getEntriesByType?.("paint") ?? []).map((entry) => [entry.name, roundMetric(entry.startTime)]),
@@ -240,6 +244,7 @@ function readPerformanceSnapshot(frameTelemetry, longTaskTelemetry, harnessStart
       usedJsHeapSizeBytes: memory.usedJSHeapSize,
     } : null,
     frame: summarizeFrameTelemetry(frameTelemetry),
+    phases: summarizePhasePerformanceTelemetry(phaseTelemetry),
     longTasks: {
       supported: longTaskTelemetry.supported,
       count: longTaskTelemetry.count,
@@ -553,10 +558,13 @@ export function App() {
   const gpsSpeedLockedRef = useRef(false);
   const audioMeterTimerRef = useRef(null);
   const flightRecorderTimerRef = useRef(null);
+  const performanceSamplerTimerRef = useRef(null);
   const viewportCaptureTimerRef = useRef(null);
   const gpsTelemetryRef = useRef(createGpsTelemetry(performance.now()));
   const driveTelemetryRef = useRef(createDriveTelemetry(performance.now()));
   const frameTelemetryRef = useRef(createFrameTelemetry(performance.now()));
+  const phasePerformanceTelemetryRef = useRef(createPhasePerformanceTelemetry(performance.now()));
+  const performancePhaseRef = useRef("splash:idle");
   const connectionHistoryRef = useRef([]);
   const diagnosticsActiveRef = useRef(false);
   const longTaskTelemetryRef = useRef({
@@ -588,6 +596,9 @@ export function App() {
   audioLevelRef.current = audioLevel;
   rendererRef.current = renderer;
   drawerOpenRef.current = drawerOpen;
+  performancePhaseRef.current = phase === "running"
+    ? `drive:${environmentId}:${genreId}:${drawerOpen ? "diagnostics" : "visual"}`
+    : `splash:${phase}`;
 
   const logDiagnosticEvent = useCallback((type, detail = {}) => {
     diagnosticEventsRef.current = [...diagnosticEventsRef.current, {
@@ -599,14 +610,17 @@ export function App() {
   }, []);
 
   const recordRenderedFrame = useCallback((capturedAtMs, targetFrameMs, frameRenderer, canvasWidth, canvasHeight) => {
-    if (!diagnosticsActiveRef.current) return;
-    frameTelemetryRef.current = recordFrameSample(frameTelemetryRef.current, {
+    const sample = {
+      phase: performancePhaseRef.current,
       capturedAtMs,
       targetFrameMs,
       renderer: frameRenderer,
       canvasWidth,
       canvasHeight,
-    });
+    };
+    recordPhaseFrame(phasePerformanceTelemetryRef.current, sample);
+    if (!diagnosticsActiveRef.current) return;
+    frameTelemetryRef.current = recordFrameSample(frameTelemetryRef.current, sample);
   }, []);
 
   const wakeControls = useCallback(() => {
@@ -1025,6 +1039,28 @@ export function App() {
   }, []);
 
   useEffect(() => {
+    const captureMemory = () => {
+      const memory = performance.memory;
+      const audioState = audioRef.current?.getState() ?? null;
+      recordPhaseMemorySample(phasePerformanceTelemetryRef.current, {
+        phase: performancePhaseRef.current,
+        capturedAtMs: performance.now(),
+        usedJsHeapBytes: memory?.usedJSHeapSize,
+        totalJsHeapBytes: memory?.totalJSHeapSize,
+        jsHeapLimitBytes: memory?.jsHeapSizeLimit,
+        audioDecodedPcmBytes: audioState?.decodedPcmBytes,
+        audioBankBytes: audioState?.bankBytes,
+      });
+    };
+    captureMemory();
+    performanceSamplerTimerRef.current = window.setInterval(captureMemory, DRIVE_TRACE_INTERVAL_MS);
+    return () => {
+      window.clearInterval(performanceSamplerTimerRef.current);
+      performanceSamplerTimerRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
     const connection = navigator.connection ?? navigator.mozConnection ?? navigator.webkitConnection;
     const capture = (reason) => {
       if (!diagnosticsActiveRef.current) return;
@@ -1269,6 +1305,7 @@ export function App() {
     window.clearTimeout(brakeFlashTimerRef.current);
     window.clearInterval(audioMeterTimerRef.current);
     window.clearInterval(flightRecorderTimerRef.current);
+    window.clearInterval(performanceSamplerTimerRef.current);
     window.clearTimeout(viewportCaptureTimerRef.current);
     brakeHeldRef.current = false;
     acceleratorHeldRef.current = false;
@@ -1341,6 +1378,7 @@ export function App() {
     },
     performance: readPerformanceSnapshot(
       frameTelemetryRef.current,
+      phasePerformanceTelemetryRef.current,
       longTaskTelemetryRef.current,
       sessionStartedAtRef.current,
     ),
@@ -1356,6 +1394,13 @@ export function App() {
       recorderStorage: "bounded-session-memory-only",
     },
   } : null, [diagnostics, drawerOpen, flightRecorderRevision]);
+  const currentPerformancePhase = diagnosticReport?.performance.phases?.[performancePhaseRef.current] ?? null;
+  const currentUsedHeapMb = Number.isFinite(currentPerformancePhase?.memory.latestUsedJsHeapBytes)
+    ? Math.round(currentPerformancePhase.memory.latestUsedJsHeapBytes / 104857.6) / 10
+    : null;
+  const currentDecodedAudioMb = Number.isFinite(currentPerformancePhase?.memory.latestAudioDecodedPcmBytes)
+    ? Math.round(currentPerformancePhase.memory.latestAudioDecodedPcmBytes / 104857.6) / 10
+    : null;
   const diagnosticText = useMemo(
     () => diagnosticReport ? JSON.stringify(diagnosticReport, null, 2) : "Test not run yet",
     [diagnosticReport],
@@ -1452,8 +1497,11 @@ export function App() {
       {keyboardHint ? <div className="keyboard-hint" role="status">{keyboardHint}</div> : null}
 
       <section className="splash" aria-hidden={phase === "running"}>
-        <SplashSignalGate active={phase !== "running"} reducedMotion={reducedMotion} />
-        <div className="splash-mark"><span>sedicivalvole</span></div>
+        <SplashSignalGate
+          active={phase !== "running"}
+          reducedMotion={reducedMotion}
+          onFrame={recordRenderedFrame}
+        />
         {/* The build stamp, and nothing else. It is generated at build time as
             YYYYMMDD-HHMM and is the identifier quoted whenever a build is
             published. VERSION stays the only SemVer source of truth and is
@@ -1462,7 +1510,16 @@ export function App() {
         <small className="splash-status">BUILD {APP_BUILD}</small>
         <div className="splash-action">
           <button className="launch-button" type="button" onClick={runHarness} disabled={phase === "testing"}>
-            {phase === "testing" ? "STARTING" : "PLAY THE ROAD"}
+            <span className="launch-index" aria-hidden="true" />
+            <span className="launch-brand">
+              <span>sedicivalvole</span>
+              <span className="launch-vent" aria-hidden="true" />
+            </span>
+            <span className="launch-command">
+              <span className="launch-safety" aria-hidden="true" />
+              <span className="launch-latch" aria-hidden="true" />
+              <span>{phase === "testing" ? "STARTING" : "PLAY THE ROAD"}</span>
+            </span>
           </button>
           <small className="splash-credit">A project by Netmilk Studio</small>
           <small className="splash-privacy">Audio, display, motion, and GPS are checked locally.</small>
@@ -1589,6 +1646,16 @@ export function App() {
                 <small>FRAME PACING</small>
                 <strong>{diagnosticReport?.performance.frame.averageFps ?? "—"} FPS</strong>
                 <span>{diagnosticReport?.performance.frame.p95FrameMs ?? "—"} ms p95</span>
+              </article>
+              <article>
+                <small>MEMORY</small>
+                <strong>{currentUsedHeapMb == null ? "UNAVAILABLE" : `${currentUsedHeapMb} MB`}</strong>
+                <span>{currentDecodedAudioMb == null ? "audio PCM unavailable" : `${currentDecodedAudioMb} MB decoded audio`}</span>
+              </article>
+              <article>
+                <small>PERFORMANCE PHASES</small>
+                <strong>{Object.keys(diagnosticReport?.performance.phases ?? {}).length}</strong>
+                <span>{performancePhaseRef.current}</span>
               </article>
               <article>
                 <small>GPS SPEED</small>

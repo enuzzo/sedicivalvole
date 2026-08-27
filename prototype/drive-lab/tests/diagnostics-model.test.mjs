@@ -8,12 +8,16 @@ import {
   DRIVE_TRACE_FIELDS,
   fitDiagnosticReportForTransport,
   createFrameTelemetry,
+  createPhasePerformanceTelemetry,
   createGpsTelemetry,
   inferViewportMode,
   recordDriveTelemetrySample,
   recordFrameSample,
+  recordPhaseFrame,
+  recordPhaseMemorySample,
   recordGpsSample,
   summarizeFrameTelemetry,
+  summarizePhasePerformanceTelemetry,
   summarizeGpsTelemetry,
 } from "../src/diagnostics-model.js";
 
@@ -69,6 +73,47 @@ test("frame telemetry aggregates pacing without retaining every frame", () => {
   assert.equal(summary.retainedIntervalSamples, 5);
   assert.ok(summary.averageFps > 31 && summary.averageFps < 32);
   assert.ok(summary.p95FrameMs > 49);
+});
+
+test("performance telemetry separates visual and diagnostic phases with bounded memory summaries", () => {
+  const telemetry = createPhasePerformanceTelemetry(0);
+  for (const capturedAtMs of [0, 17, 34]) {
+    recordPhaseFrame(telemetry, {
+      phase: "drive:aperture:junction:visual",
+      capturedAtMs,
+      targetFrameMs: 1000 / 60,
+      renderer: "WebGL2",
+      canvasWidth: 773,
+      canvasHeight: 601,
+    });
+  }
+  recordPhaseMemorySample(telemetry, {
+    phase: "drive:aperture:junction:visual",
+    capturedAtMs: 2000,
+    usedJsHeapBytes: 12_000_000,
+    totalJsHeapBytes: 18_000_000,
+    jsHeapLimitBytes: 2_000_000_000,
+    audioDecodedPcmBytes: 24_000_000,
+    audioBankBytes: 25_000_000,
+  });
+  recordPhaseFrame(telemetry, {
+    phase: "drive:aperture:junction:diagnostics",
+    capturedAtMs: 2050,
+    targetFrameMs: 1000 / 60,
+    renderer: "WebGL2",
+    canvasWidth: 773,
+    canvasHeight: 601,
+  });
+  const summary = summarizePhasePerformanceTelemetry(telemetry);
+
+  assert.deepEqual(Object.keys(summary), [
+    "drive:aperture:junction:visual",
+    "drive:aperture:junction:diagnostics",
+  ]);
+  assert.equal(summary["drive:aperture:junction:visual"].frame.sampledFrames, 3);
+  assert.equal(summary["drive:aperture:junction:visual"].memory.maximumUsedJsHeapBytes, 12_000_000);
+  assert.equal(summary["drive:aperture:junction:visual"].memory.maximumAudioDecodedPcmBytes, 24_000_000);
+  assert.equal(summary["drive:aperture:junction:diagnostics"].memory.jsHeapSupported, false);
 });
 
 test("connection history deduplicates stable readings and keeps changes", () => {
