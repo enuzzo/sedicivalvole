@@ -28,6 +28,23 @@ const FRAGMENT_SHADER = `#version 300 es
     float lowerReach = pow(bend, 1.48);
     float bendFocus = smoothstep(0.10, 0.46, v_uv.y) * (1.0 - smoothstep(0.56, 0.82, v_uv.y));
 
+    // Faint perspective airflow. These deliberately avoid the center and use
+    // unequal spacing/strength so they read as air pressure, not a starburst.
+    for (int rayIndex = 0; rayIndex < 8; rayIndex += 1) {
+      float ray = float(rayIndex);
+      float side = ray < 4.0 ? -1.0 : 1.0;
+      float localRay = mod(ray, 4.0);
+      float slope = side * (0.20 + localRay * 0.18 + sin(ray * 2.31) * 0.035);
+      float reach = max(0.0, 0.54 - v_uv.y);
+      float rayX = slope * reach;
+      float rayDistance = abs(point.x - rayX);
+      float rayLine = exp(-rayDistance * mix(430.0, 720.0, fract(ray * 0.618)));
+      float rayFade = (1.0 - smoothstep(0.08, 0.53, v_uv.y))
+        * smoothstep(0.015, 0.19, abs(point.x));
+      float rayStrength = mix(0.009, 0.021, fract(ray * 0.414));
+      color += vec3(0.68, 0.75, 0.78) * rayLine * rayFade * rayStrength;
+    }
+
     for (int sideIndex = 0; sideIndex < 2; sideIndex += 1) {
       float side = sideIndex == 0 ? -1.0 : 1.0;
       vec3 laneColor = side < 0.0 ? vec3(0.95, 0.035, 0.012) : vec3(0.72, 0.84, 0.96);
@@ -50,25 +67,32 @@ const FRAGMENT_SHADER = `#version 300 es
         // down the screen.
         float travel = v_uv.y * 1.35 + lowerReach * 0.55;
 
-        // A perfectly even line has no feature to track, so however fast it
-        // scrolls it reads as static. Breaking each lane into travelling
-        // segments, at a length that differs per lane, is what makes the
-        // direction of movement legible.
-        float marchPhase = fract(travel * 7.4 - u_time * 0.62 + lane * 0.37);
-        float segment = smoothstep(0.02, 0.16, marchPhase)
-          * (1.0 - smoothstep(0.58, 0.86, marchPhase));
+        // A single short travelling interruption makes direction legible. A
+        // stable per-lane hash varies phase, cadence and width across both
+        // sides, preventing neighboring gaps from ever forming a crossbar.
+        float laneKey = float(laneIndex) + float(sideIndex) * 19.0;
+        float laneHash = fract(sin(laneKey * 12.9898 + 4.1414) * 43758.5453);
+        float gapPhase = fract(
+          travel * mix(0.78, 1.08, laneHash)
+          - u_time * mix(0.27, 0.38, fract(laneHash * 7.13))
+          + laneHash
+        );
+        float gapCenter = 0.12 + fract(laneHash * 5.71) * 0.72;
+        float gapWidth = 0.026 + fract(laneHash * 11.37) * 0.024;
+        float gapDistance = abs(fract(gapPhase - gapCenter + 0.5) - 0.5);
+        float gap = 1.0 - smoothstep(gapWidth, gapWidth + 0.012, gapDistance);
 
         // A second, much longer pulse rides over the segments so the lanes also
         // read as one field in motion rather than twelve independent tracks.
         float sweep = fract(travel * 0.85 - u_time * 0.3 + side * 0.25);
         float pulse = smoothstep(0.0, 0.24, sweep) * (1.0 - smoothstep(0.3, 0.72, sweep));
 
-        float signal = 0.4 + 0.6 * segment + 0.5 * pulse;
+        float signal = (1.0 - gap) * (0.82 + 0.36 * pulse);
         float laneFade = mix(0.62, 1.0, smoothstep(0.0, 0.2, lane));
 
         color += laneColor * core * signal * laneFade;
-        color += laneColor * glow * (0.11 + 0.16 * pulse) * laneFade;
-        color += laneColor * halo * (0.028 + 0.05 * pulse) * laneFade;
+        color += laneColor * glow * signal * (0.09 + 0.12 * pulse) * laneFade;
+        color += laneColor * halo * signal * (0.024 + 0.038 * pulse) * laneFade;
       }
     }
 
@@ -106,6 +130,18 @@ function drawFallback(context, canvas, time) {
   context.fillRect(0, 0, width, height);
   context.lineCap = "round";
 
+  context.lineWidth = Math.max(0.5, ratio * 0.55);
+  for (let rayIndex = 0; rayIndex < 8; rayIndex += 1) {
+    const side = rayIndex < 4 ? -1 : 1;
+    const localRay = rayIndex % 4;
+    const endX = width / 2 + side * width * (0.18 + localRay * 0.105 + Math.sin(rayIndex * 2.31) * 0.018);
+    context.beginPath();
+    context.moveTo(width / 2, height * 0.47);
+    context.lineTo(endX, height);
+    context.strokeStyle = `rgba(174, 193, 199, ${0.012 + (rayIndex % 3) * 0.006})`;
+    context.stroke();
+  }
+
   for (const side of [-1, 1]) {
     for (let laneIndex = 0; laneIndex < 12; laneIndex += 1) {
       const lane = (laneIndex + 0.5) / 12;
@@ -127,11 +163,21 @@ function drawFallback(context, canvas, time) {
         ? `rgba(242, 24, 8, ${0.66 + lane * 0.3})`
         : `rgba(188, 216, 246, ${0.62 + lane * 0.3})`;
       context.lineWidth = Math.max(1, ratio * (0.78 + lane * 0.42));
+      const laneSeed = laneIndex + (side > 0 ? 19 : 0);
+      const laneHash = Math.abs(Math.sin(laneSeed * 12.9898 + 4.1414) * 43758.5453) % 1;
+      const dashLength = height * (0.29 + laneHash * 0.08);
+      const gapLength = height * (0.018 + (laneHash * 7.13 % 1) * 0.016);
+      context.setLineDash([dashLength, gapLength]);
+      context.lineDashOffset = -height * (
+        laneHash
+        + time * (0.17 + (laneHash * 5.71 % 1) * 0.08)
+      );
       context.shadowColor = side < 0 ? "rgba(242, 24, 8, .42)" : "rgba(188, 216, 246, .4)";
       context.shadowBlur = ratio * 5;
       context.stroke();
     }
   }
+  context.setLineDash([]);
   context.shadowBlur = 0;
 }
 

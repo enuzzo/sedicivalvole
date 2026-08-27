@@ -9,7 +9,7 @@
     "build:junction": "node scripts/build-junction-bank.mjs",
     "preview": "vite preview",
     "test": "npm run test:unit && npm run test:sites",
-    "test:unit": "node --test tests/signal-model.test.mjs tests/diagnostics-model.test.mjs tests/build-identity.test.mjs tests/deploy-audio-identity.test.mjs tests/documentation-consistency.test.mjs tests/flux-environments.test.mjs tests/interstate-7-bridge.test.mjs tests/meridian-model.test.mjs tests/latitudes-model.test.mjs tests/junction-bank.test.mjs tests/score-dsp.test.mjs tests/score-arranger.test.mjs tests/score-genres.test.mjs tests/score-harmony.test.mjs tests/score-brake.test.mjs tests/score-audition.test.mjs tests/aperture-model.test.mjs",
+    "test:unit": "node --test tests/signal-model.test.mjs tests/diagnostics-model.test.mjs tests/build-identity.test.mjs tests/deploy-audio-identity.test.mjs tests/documentation-consistency.test.mjs tests/flux-environments.test.mjs tests/interstate-7-bridge.test.mjs tests/meridian-model.test.mjs tests/latitudes-model.test.mjs tests/junction-bank.test.mjs tests/score-dsp.test.mjs tests/score-arranger.test.mjs tests/score-genres.test.mjs tests/score-harmony.test.mjs tests/score-brake.test.mjs tests/score-audition.test.mjs tests/aperture-model.test.mjs tests/splash-presentation.test.mjs",
     "test:sites": "node --test tests/sites-worker.test.mjs"
   },
   "dependencies": {

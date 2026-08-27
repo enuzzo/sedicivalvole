@@ -1510,14 +1510,8 @@ export function App() {
         <small className="splash-status">BUILD {APP_BUILD}</small>
         <div className="splash-action">
           <button className="launch-button" type="button" onClick={runHarness} disabled={phase === "testing"}>
-            <span className="launch-index" aria-hidden="true" />
-            <span className="launch-brand">
-              <span>sedicivalvole</span>
-              <span className="launch-vent" aria-hidden="true" />
-            </span>
+            <span className="launch-brand">sedicivalvole</span>
             <span className="launch-command">
-              <span className="launch-safety" aria-hidden="true" />
-              <span className="launch-latch" aria-hidden="true" />
               <span>{phase === "testing" ? "STARTING" : "PLAY THE ROAD"}</span>
             </span>
           </button>
