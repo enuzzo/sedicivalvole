@@ -57,8 +57,9 @@ does not hold.
    sedicivalvole arrangement — layering, voicing, processing chain and bus —
    into 24 complete sections: three takes for each of eight energy states. It
    uses the packs' native 127–168 BPM recordings without browser-side stretching,
-   then packages the encoded production as one runtime bank. It is not a
-   disguised collection of source samples.
+   then packages the encoded production as one segmented runtime bank. The
+   browser mixes two compatible complete arrangements live; it never receives
+   an isolated loop or stem. It is not a disguised collection of source samples.
 
 The distinction is the whole point, and it is not about Git. Serving the
 individual loops as separate assets would put the pack itself on the network for

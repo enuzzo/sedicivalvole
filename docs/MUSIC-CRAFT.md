@@ -284,26 +284,31 @@ recordings remain extractable and it is still a redistributed sample bank.
 MusicRadar permits using the material in music and asks that the samples not be
 redistributed, so the product boundary must be musical as well as technical.
 
-The shipped bank therefore contains one mixed, processed 192-bar production,
+The shipped bank therefore contains a mixed, processed 192-bar production,
 not playable source files. Each of the eight energy states has three complete
 eight-bar takes, for 24 rendered sections with different two-bar break phrases,
-harmonic voicings, density, drive and space. The browser keeps one compressed
-decoder alive and chooses a different take only at an authored eight-bar
-boundary, explicitly excluding the take that just played. This solves three
+harmonic voicings, density, drive and space. The single downloadable bank is
+segmented into eight independently decodable state blocks. The browser keeps at
+most two blocks decoded, starts two distinct complete takes on the same
+sample-accurate boundary, and moves an equal-power balance between them while
+varying bounded tone, stereo position and tempo-related delay. This solves four
 faults at once: a two-bar loop no longer exposes its repetition immediately,
-the source recordings are not offered as a library, and the Tesla does not
-decode a hundred-megabyte PCM bank into memory.
+the source recordings are not offered as a library, the browser creates a
+continuum rather than selecting one of only 24 fixed outcomes, and the Tesla
+does not decode a hundred-megabyte PCM bank into memory.
 
 The reason a listener notices this distinction is form: variety must arrive as
 an intentional change of musical pressure, harmony and orchestration, not as a
 random sample roulette or a short loop restarting under a new effect.
 
-Randomness therefore needs grammar. Choosing an entire prepared take at the
+Randomness therefore needs grammar. Choosing two entire prepared takes at the
 same eight-bar boundary already used by the adaptive arrangement makes the
 result less predictable without breaking a fill, changing harmony under a
-sustained sound, or placing a sample merely because it was available. Memory of
-the previous take prevents the easiest audible failure: an allegedly varied
-system selecting the same performance twice in succession.
+sustained sound, or placing a sample merely because it was available. Their
+shared tempo, duration and harmony make live mixing safe; unrelated stems would
+not. Memory of the previous primary take prevents the easiest audible failure:
+an allegedly varied system selecting the same lead performance twice in
+succession.
 
 ### 5.6 Energy is not a permanently loud break
 

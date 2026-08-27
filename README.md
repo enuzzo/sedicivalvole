@@ -30,7 +30,7 @@ The canonical development build is available at [sedicivalvole.app](https://sedi
 - ✅ GPS/Demo speed source, Stop/Mute, a fixed `130 km/h` energy ceiling, 10 curated themes, and an integrated capability report;
 - ✅ local-only speed processing: raw coordinates are never displayed, persisted, or transmitted;
 - ✅ FRACTURE, a production AudioWorklet score with ten four-bar sections, a narrow tempo knee, quantized transitions, hysteresis, dwell, crossfades, speed-driven arrangement depth, and tested harmony/braking/voice output;
-- ✅ JUNCTION, a 24-section sampled production with three authored takes per energy state, native 127–168 BPM pacing, a beatless ambient rest state, and one 5.7 MB adaptive Opus music bank with no loose source samples;
+- ✅ JUNCTION, a sampled production that mixes two of three authored takes live at each eight-bar boundary, with native 127–168 BPM pacing, beatless ambient rest, one 5.7 MB segmented Opus bank, and no loose source samples;
 - ✅ production build and deterministic signal, diagnostic-model, and packaging tests passing;
 - ✅ photographed Tesla split-view evidence at `773 × 601`, screen `1254 × 784`, DPR `1.53`;
 - ✅ compact-view v3 diagnostics with aggregated frame pacing, network history, runtime/resource evidence, direct same-origin email handoff, and no coordinates;

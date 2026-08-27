@@ -33,11 +33,13 @@ dated study documents.
   brake effect.
 - **JUNCTION 01** is selectable sampled Jungle / Rave music. Its eight energy
   states each have three complete authored takes: 24 rendered sections in one
-  5.7 MB Opus bank. Rest is harmony and atmosphere without a break or bassline;
+  5.7 MB segmented Opus bank. Rest is harmony and atmosphere without a break or bassline;
   rhythm fades in near `13 km/h`, moves through native `127`, `135`, `158` and
   `164 BPM` recordings, and reaches `168 BPM` only at high energy. The browser
-  uses one decoder, chooses a non-repeating take at each eight-bar boundary,
-  and never shuffles source sounds mid-phrase.
+  lazily decodes at most two energy states, starts two distinct takes on the
+  same sample-accurate boundary, and mixes their level, tone, stereo and space
+  live. The primary take does not immediately repeat, and source sounds are
+  never exposed or shuffled mid-phrase.
 - **PULSE 03**, **CUTWATER 04**, **LOWTIDE 05**, **NIGHTCAST 06**, and
   **STILLWATER 07** are declared honestly as `IN PREPARATION` and are disabled.
 - `docs/MUSIC-CRAFT.md` records the musical defects and techniques already
@@ -46,7 +48,7 @@ dated study documents.
 ## Verified boundaries
 
 - Local gate: `npm test` and `npm run build` from `prototype/drive-lab/`.
-- Current suite: 130 unit checks plus 4 Sites packaging checks.
+- Current suite: 132 unit checks plus 4 Sites packaging checks.
 - Canonical development URL: <https://sedicivalvole.app/>. The most recent
   canonical publication evidence and build stamp are always the first entry in
   [`DEPLOY.md`](DEPLOY.md).
