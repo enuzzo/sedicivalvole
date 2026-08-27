@@ -145,6 +145,9 @@ in Node for offline rendering.
 
 ## 8. Queued user requests not yet done
 
+- **Splash polish and Aperture continuity.** Active now; plan and checkpoints in
+  [`WORKPLAN-2026-08-27-SPLASH-APERTURE.md`](WORKPLAN-2026-08-27-SPLASH-APERTURE.md).
+  Everything else is parked until it lands.
 - **MERIDIAN quality pass.** The user asked for more of a "wow" demo: glow closer
   to the original Interstate 7, a credible wind/rush effect, particles — while
   holding a fluid 60 fps. Not started.
