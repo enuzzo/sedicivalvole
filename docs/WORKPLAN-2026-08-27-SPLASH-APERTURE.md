@@ -1,6 +1,6 @@
 # Work Plan: Splash polish and Aperture continuity — 2026-08-27
 
-Status: **in progress**. Written before any code was touched, so this work can be
+Status: **complete**, build `20260827-1401` deployed and verified. Written before any code was touched, so this work can be
 handed to another session or another tool mid-flight. Update the checkpoint table
 as each one lands; each checkpoint is its own commit.
 
@@ -17,7 +17,7 @@ and recorded in [`SESSION-HANDOFF.md`](SESSION-HANDOFF.md).
 | CP3 | `PLAY THE ROAD` given a strong, deliberate treatment | `see below` | **done** |
 | CP4 | Aperture: one continuous coordinate system, no tearing | `see below` | **done** |
 | CP5 | Aperture: stable per-tile colour, rest-only recolour | `see below` | **done** |
-| CP6 | Full suite, build, rendered QA at 773x601, deploy and verify | — | not started |
+| CP6 | Full suite, build, rendered QA at 773x601, deploy and verify | `see DEPLOY.md` | **done** |
 
 ## CP1 — Version readout on the splash
 

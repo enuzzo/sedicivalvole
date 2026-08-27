@@ -40,6 +40,21 @@ deploy and the working tree was committed with the full suite green, so the
 published result is the intended one, but the script should grow an explicit
 argument gate before it is run again.
 
+## Splash and Aperture publication evidence — 2026-08-27
+
+- build stamp: **`20260827-1401`**, confirmed live in the served bundle;
+- deployed commit: the splash and Aperture continuity pass;
+- gate before upload: **PASS**, 90 unit tests, 4 packaging tests, production build;
+- read-only FTP identity gate: **PASS**;
+- upload: **PASS**, 19 files, 1,188,702 bytes; one previous asset retained for cache overlap;
+- canonical bare `/`: **HTTP 200**;
+- `assets/index-B3N2PG9G.js` and `assets/index-BRki9k3i.css`: **byte-identical** local/live;
+- rendered QA through the development harness at 0, 20, 45 and 115 km/h: no tile
+  tearing at any intermediate speed, which is where it previously appeared.
+
+Ships: the build stamp on the splash, the reworked launch control, the animated
+splash lanes, and the rebuilt Aperture field. No audio change.
+
 ## Current verified state
 
 - provider reported by the user: **SiteGround**;
