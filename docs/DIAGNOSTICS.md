@@ -76,3 +76,11 @@ A `202 accepted_by_mail_transport` response proves only that PHP `mail()` handed
 - Wrong method, foreign origin, abbreviated coordinate-field, and legacy-v2 rejection: **PASS** (`405`, `403`, `422`, `422`).
 - One explicitly authorized v3 report submission: **PASS** at the PHP mail-transport handoff boundary.
 - Final delivery to the Gmail inbox: **pending user confirmation**.
+
+## Flight-recorder mail verification — 2026-08-27
+
+- Live build and asset identity: **PASS** for deployed commit `d415db8` and JavaScript `index-I8IcCozA.js`.
+- Split-view diagnostics at `773 × 601`: **PASS** with four dynamic samples, a 7-second session summary, a 12 KiB pretty-printed report, and zero captured runtime issues.
+- Motion evidence: **PASS** for `0 → 36.8 → 81.4 → 116.2 km/h`, including displayed-speed rate, source, input, energy, BPM, score section, audio level, frame pacing, network, and visibility.
+- One explicit live `SEND DIAGNOSTIC` gesture at approximately `2026-08-27 08:46 UTC`: **PASS** with UI state `SENT` and `accepted_by_mail_transport` semantics.
+- Final delivery to the configured Gmail inbox: **pending user confirmation**.
