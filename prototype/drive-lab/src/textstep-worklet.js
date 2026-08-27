@@ -114,7 +114,7 @@ class TextStepWorklet extends AudioWorkletProcessor {
         } else if (payload.voice === "BASS") {
           this.bassEnv = 1.0; this.bassNote = 40; // Em9 root
         } else if (payload.voice === "PAD") {
-          this.padEnv = 1.0; this.padNotes = [55, 59, 62, 66];
+          this.padEnv = 1.0; this.padPreviewEnv = 1.0; this.padNotes = [55, 59, 62, 66];
         } else if (payload.voice === "ARP") {
           this.arpEnv = 1.0; this.arpPhase = 0.0; this.arpNote = 55;
         } else if (payload.voice === "LEAD") {
@@ -139,6 +139,7 @@ class TextStepWorklet extends AudioWorkletProcessor {
     this.bassNote = 0;
     
     this.padEnv = 0;
+    this.padPreviewEnv = 0;
     this.padPhases = [0, 0, 0, 0];
     this.padNotes = [0, 0, 0, 0];
 
@@ -257,15 +258,13 @@ class TextStepWorklet extends AudioWorkletProcessor {
       this.hatEnv *= 0.996;
       let hatOut = randomNoise() * this.hatEnv * 0.18;
 
-      // BASS (Reese style rolling bass)
+      // BASS (Deep Sub Bass)
       this.bassEnv *= 0.9996;
       const bassFreq = mtof(this.bassNote);
       this.bassPhase += (bassFreq / sampleRate) * Math.PI * 2.0; 
-      // Sawtooth-ish
-      let bassOut = ((this.bassPhase / Math.PI) % 2.0 - 1.0) * this.bassEnv * 0.4;
-      bassOut = Math.tanh(bassOut * 3.0) * ducking; 
-      // Lowpass on bass
-      bassOut *= (0.2 + this.bassEnv * 0.8);
+      // Deep sine wave with a hint of triangle for presence, no harsh distortion
+      let bassOut = (Math.sin(this.bassPhase) * 0.8 + Math.asin(Math.sin(this.bassPhase)) * (2.0/Math.PI) * 0.2);
+      bassOut *= this.bassEnv * 0.7 * ducking;
 
       // PAD (Warm 4-voice chords)
       this.padEnv *= 0.99995; // Long sustain
@@ -274,7 +273,8 @@ class TextStepWorklet extends AudioWorkletProcessor {
          this.padPhases[p] += (mtof(this.padNotes[p]) / sampleRate) * Math.PI * 2.0;
          padOut += Math.sin(this.padPhases[p]);
       }
-      padOut = (padOut * 0.15) * this.padEnv * padVolume * ducking;
+      this.padPreviewEnv *= 0.99995;
+      padOut = (padOut * 0.15) * this.padEnv * Math.max(padVolume, this.padPreviewEnv) * ducking;
 
       // ARP (Pluck)
       this.arpEnv *= 0.9996; // Nice pluck
