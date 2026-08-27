@@ -31,6 +31,7 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - A confirmed multi-environment Flux model binding generative effect, musical genre, palette, geometry, and speed response, plus three new selection-gated directions informed by the Interstate 4 and Interstate 7 mechanics study.
 - The user-selected `VERTIGO 02` visual environment, now using the byte-identical upstream Interstate 7 runtime with deterministic source-integrity and speed-bridge tests.
 - The approved Signal Gate splash: paired vermilion and ice-blue generative lanes bend into a central vertical gate, with a Canvas2D fallback and reduced-motion support.
+- A documented Model 3 Long Range AWD Highland reference-motion model for time-based Demo acceleration, held braking, and soft GPS outlier tolerance.
 
 ### Changed
 
@@ -71,6 +72,9 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - Replaced the rejected independent Vertigo translation with the complete original Interstate 7 road, repeated side light sticks, opposing car trails, bloom, fog, camera, distortion, and vendor dependencies.
 - Mapped the original Interstate 7 clock and FOV controls continuously to the fixed `0–130 km/h` road domain outside the byte-identical vendor runtime; the maximum uses the original non-boosted `1×` rate instead of the click-driven `3×` boost.
 - Extended the canonical deployment identity gate to verify the complete third-party tree recursively before any subsequent vendor overwrite.
+- Replaced the one-shot Space accent with a continuous held-brake simulation: press to decelerate from the exact displayed speed, keep holding to stop, and release to resume the Demo after a short settle.
+- Replaced fixed-step Demo motion with elapsed-time integration calibrated to the official `4.4 s` zero-to-100 km/h figure; the estimated moderate braking curve uses a `1,824 kg` reference mass and a progressive pedal ramp.
+- Applied the same reference dynamics as a soft GPS plausibility envelope while preserving real numeric GPS samples as the source of truth and never synthesizing vehicle movement.
 
 ### Fixed
 

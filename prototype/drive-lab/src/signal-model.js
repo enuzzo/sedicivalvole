@@ -1,5 +1,12 @@
 export const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 export const ROAD_SPEED_CEILING_KMH = 130;
+export const MODEL_3_AWD_REFERENCE = Object.freeze({
+  label: "Model 3 Long Range AWD Highland reference",
+  curbMassKg: 1824,
+  zeroToHundredSeconds: 4.4,
+  estimatedBrakeForceN: 5600,
+  pedalRampSeconds: 0.32,
+});
 
 export function speedToEnergy(speedKmh) {
   const normalized = clamp(Math.max(0, speedKmh) / ROAD_SPEED_CEILING_KMH, 0, 1);
@@ -74,16 +81,92 @@ export function applyKeyboardDelta(speedKmh, direction) {
   return clamp(speedKmh + (direction === "up" ? 5 : -5), 0, 260);
 }
 
-export function advanceDemoMotion(state, stepKmh = 2.6) {
-  const speed = clamp(state?.speed ?? 0, 0, ROAD_SPEED_CEILING_KMH);
-  const direction = state?.direction === -1 ? -1 : 1;
-  const holdTicks = Math.max(0, Math.round(state?.holdTicks ?? 0));
-  if (holdTicks > 0) return { speed, direction, holdTicks: holdTicks - 1 };
+export function model3AwdAccelerationMps2(
+  speedKmh,
+  massKg = MODEL_3_AWD_REFERENCE.curbMassKg,
+) {
+  const safeMass = clamp(massKg, 1200, 2600);
+  const normalizedToHundred = clamp(Math.max(0, speedKmh) / 100, 0, 1.3);
+  const referenceAcceleration = Math.max(
+    0.75,
+    7.6 - 2.8 * normalizedToHundred ** 1.35,
+  );
+  return referenceAcceleration * MODEL_3_AWD_REFERENCE.curbMassKg / safeMass;
+}
 
-  const nextSpeed = speed + direction * stepKmh;
-  if (nextSpeed >= ROAD_SPEED_CEILING_KMH) {
-    return { speed: ROAD_SPEED_CEILING_KMH, direction: -1, holdTicks: 6 };
+export function model3AwdBrakeDecelerationMps2(
+  speedKmh,
+  heldSeconds = MODEL_3_AWD_REFERENCE.pedalRampSeconds,
+  massKg = MODEL_3_AWD_REFERENCE.curbMassKg,
+) {
+  const safeMass = clamp(massKg, 1200, 2600);
+  const speedForce = 0.58 + 0.42 * smoothCurve(0, 12, Math.max(0, speedKmh));
+  const pedal = smoothCurve(0, MODEL_3_AWD_REFERENCE.pedalRampSeconds, Math.max(0, heldSeconds));
+  return MODEL_3_AWD_REFERENCE.estimatedBrakeForceN * speedForce * pedal / safeMass;
+}
+
+export function gpsSpeedTolerance(speedKmh, elapsedSeconds = 1) {
+  const safeSpeed = clamp(Math.max(0, speedKmh), 0, 260);
+  const elapsed = clamp(elapsedSeconds, 0.08, 2);
+  const sensorAllowanceKmh = 1.1 + safeSpeed * 0.008;
+  return {
+    sensorAllowanceKmh,
+    riseKmh: model3AwdAccelerationMps2(safeSpeed) * elapsed * 3.6 + sensorAllowanceKmh,
+    fallKmh: model3AwdBrakeDecelerationMps2(safeSpeed, 1) * elapsed * 3.6 * 1.75
+      + sensorAllowanceKmh,
+  };
+}
+
+export function smoothGpsSpeed(previousKmh, nextKmh, elapsedSeconds = 1) {
+  const previous = clamp(Math.max(0, previousKmh), 0, 260);
+  const next = clamp(Math.max(0, nextKmh), 0, 260);
+  const tolerance = gpsSpeedTolerance(previous, elapsedSeconds);
+  const difference = next - previous;
+  if (Math.abs(difference) <= tolerance.sensorAllowanceKmh) return previous;
+
+  const boundedDifference = clamp(difference, -tolerance.fallKmh, tolerance.riseKmh);
+  const plausible = difference === boundedDifference;
+  const alpha = plausible ? 0.48 : 0.18;
+  return clamp(previous + boundedDifference * alpha, 0, 260);
+}
+
+export function advanceDemoMotion(state, elapsedSeconds = 0.18, brakeHeld = false) {
+  const speed = clamp(state?.speed ?? 0, 0, ROAD_SPEED_CEILING_KMH);
+  const elapsed = clamp(elapsedSeconds, 1 / 240, 0.25);
+  const direction = brakeHeld || state?.direction === -1 ? -1 : 1;
+  const holdSeconds = Math.max(0, Number(state?.holdSeconds) || 0);
+  const brakeHeldSeconds = direction < 0
+    ? Math.max(0, Number(state?.brakeHeldSeconds) || 0) + elapsed
+    : 0;
+
+  if (brakeHeld && speed <= 0.01) {
+    return { speed: 0, direction: -1, holdSeconds: 0, brakeHeldSeconds };
   }
-  if (nextSpeed <= 0) return { speed: 0, direction: 1, holdTicks: 8 };
-  return { speed: nextSpeed, direction, holdTicks: 0 };
+  if (holdSeconds > 0 && !brakeHeld) {
+    return {
+      speed,
+      direction,
+      holdSeconds: Math.max(0, holdSeconds - elapsed),
+      brakeHeldSeconds: 0,
+    };
+  }
+
+  const rateMps2 = direction > 0
+    ? model3AwdAccelerationMps2(speed)
+    : -model3AwdBrakeDecelerationMps2(speed, brakeHeldSeconds);
+  const nextSpeed = speed + rateMps2 * elapsed * 3.6;
+  if (nextSpeed >= ROAD_SPEED_CEILING_KMH) {
+    return {
+      speed: ROAD_SPEED_CEILING_KMH,
+      direction: -1,
+      holdSeconds: 1.08,
+      brakeHeldSeconds: 0,
+    };
+  }
+  if (nextSpeed <= 0) {
+    return brakeHeld
+      ? { speed: 0, direction: -1, holdSeconds: 0, brakeHeldSeconds }
+      : { speed: 0, direction: 1, holdSeconds: 1.44, brakeHeldSeconds: 0 };
+  }
+  return { speed: nextSpeed, direction, holdSeconds: 0, brakeHeldSeconds };
 }

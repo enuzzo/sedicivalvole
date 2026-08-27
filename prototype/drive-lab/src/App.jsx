@@ -19,9 +19,10 @@ import { Interstate7Field } from "./interstate-7-field.jsx";
 import {
   advanceDemoMotion,
   applyKeyboardDelta,
+  MODEL_3_AWD_REFERENCE,
   normalizeGpsSpeed,
   ROAD_SPEED_CEILING_KMH,
-  smoothSpeed,
+  smoothGpsSpeed,
   speedToBpm,
   speedToEnergy,
 } from "./signal-model.js";
@@ -311,10 +312,18 @@ export function App() {
   const controlsHiddenAtPointerDownRef = useRef(false);
   const smoothedSpeedRef = useRef(0);
   const demoTimerRef = useRef(null);
+  const demoMotionRef = useRef(null);
   const brakeCooldownRef = useRef(0);
+  const brakeFlashTimerRef = useRef(null);
+  const brakeHeldRef = useRef(false);
+  const brakeStartedAtRef = useRef(0);
+  const brakeReturnToGpsRef = useRef(false);
   const keyboardHintTimerRef = useRef(null);
   const keyboardLeaseTimerRef = useRef(null);
   const sourceRef = useRef("GPS");
+  const speedRef = useRef(0);
+  const lastGpsSampleAtRef = useRef(null);
+  const gpsSpeedLockedRef = useRef(false);
   const audioMeterTimerRef = useRef(null);
   const viewportCaptureTimerRef = useRef(null);
   const gpsTelemetryRef = useRef(createGpsTelemetry(performance.now()));
@@ -335,6 +344,7 @@ export function App() {
   const environment = getFluxEnvironment(environmentId);
   const energy = speedToEnergy(speed);
   const bpm = speedToBpm(speed);
+  speedRef.current = speed;
 
   const logDiagnosticEvent = useCallback((type, detail = {}) => {
     diagnosticEventsRef.current = [...diagnosticEventsRef.current, {
@@ -378,12 +388,15 @@ export function App() {
     brakeCooldownRef.current = now;
     logDiagnosticEvent("brake.triggered", { source: sourceRef.current });
     audioRef.current?.brake();
+    window.clearTimeout(brakeFlashTimerRef.current);
     setBrakeFlash(1);
-    window.setTimeout(() => setBrakeFlash(0), 460);
+    brakeFlashTimerRef.current = window.setTimeout(() => setBrakeFlash(0), 460);
   }, [logDiagnosticEvent]);
 
   const startGps = useCallback(() => {
     gpsTelemetryRef.current = createGpsTelemetry(performance.now());
+    lastGpsSampleAtRef.current = null;
+    gpsSpeedLockedRef.current = false;
     if (!navigator.geolocation) {
       setGpsState("unavailable");
       logDiagnosticEvent("gps.unavailable");
@@ -401,16 +414,34 @@ export function App() {
           speedKmh: kmh,
           accuracyM: Number.isFinite(position.coords.accuracy) ? position.coords.accuracy : null,
         });
-        logDiagnosticEvent("gps.sample", {
-          speedKmh: kmh == null ? null : Math.round(kmh * 10) / 10,
-          accuracyM: Number.isFinite(position.coords.accuracy) ? Math.round(position.coords.accuracy * 10) / 10 : null,
-        });
         if (kmh == null) {
+          logDiagnosticEvent("gps.sample", {
+            speedKmh: null,
+            filteredSpeedKmh: null,
+            accuracyM: Number.isFinite(position.coords.accuracy)
+              ? Math.round(position.coords.accuracy * 10) / 10
+              : null,
+          });
           setGpsState("GPS active · speed is null");
           return;
         }
-        const next = smoothSpeed(smoothedSpeedRef.current, kmh);
+        const elapsedSeconds = lastGpsSampleAtRef.current == null
+          ? 1
+          : (capturedAtMs - lastGpsSampleAtRef.current) / 1000;
+        lastGpsSampleAtRef.current = capturedAtMs;
+        const next = gpsSpeedLockedRef.current
+          ? smoothGpsSpeed(smoothedSpeedRef.current, kmh, elapsedSeconds)
+          : kmh;
+        gpsSpeedLockedRef.current = true;
         smoothedSpeedRef.current = next;
+        logDiagnosticEvent("gps.sample", {
+          speedKmh: Math.round(kmh * 10) / 10,
+          filteredSpeedKmh: Math.round(next * 10) / 10,
+          elapsedMs: Math.round(elapsedSeconds * 1000),
+          accuracyM: Number.isFinite(position.coords.accuracy)
+            ? Math.round(position.coords.accuracy * 10) / 10
+            : null,
+        });
         if (sourceRef.current === "GPS") setSpeed(next);
         setGpsState("live");
       },
@@ -428,6 +459,30 @@ export function App() {
     demoTimerRef.current = null;
   }, []);
 
+  const startDemo = useCallback((initialMotion = {}) => {
+    stopDemo();
+    demoMotionRef.current = {
+      speed: Math.max(0, Number(initialMotion.speed) || 0),
+      direction: initialMotion.direction === -1 ? -1 : 1,
+      holdSeconds: Math.max(0, Number(initialMotion.holdSeconds) || 0),
+      brakeHeldSeconds: 0,
+    };
+    let lastStepAt = performance.now();
+    demoTimerRef.current = window.setInterval(() => {
+      const now = performance.now();
+      const elapsedSeconds = (now - lastStepAt) / 1000;
+      lastStepAt = now;
+      const nextMotion = advanceDemoMotion(
+        { ...demoMotionRef.current, speed: speedRef.current },
+        elapsedSeconds,
+        brakeHeldRef.current,
+      );
+      demoMotionRef.current = nextMotion;
+      speedRef.current = nextMotion.speed;
+      setSpeed(nextMotion.speed);
+    }, 50);
+  }, [stopDemo]);
+
   const toggleSource = useCallback(() => {
     if (controlsHiddenAtPointerDownRef.current) {
       controlsHiddenAtPointerDownRef.current = false;
@@ -435,30 +490,82 @@ export function App() {
       return;
     }
     wakeControls();
-    if (source === "GPS") {
+    window.clearTimeout(keyboardLeaseTimerRef.current);
+    brakeReturnToGpsRef.current = false;
+    if (sourceRef.current === "GPS") {
       logDiagnosticEvent("speed-source.changed", { source: "DEMO" });
       sourceRef.current = "DEMO";
       setSource("DEMO");
-      stopDemo();
-      let demoMotion = {
-        speed,
-        direction: speed >= ROAD_SPEED_CEILING_KMH ? -1 : 1,
-        holdTicks: 0,
-      };
-      demoTimerRef.current = window.setInterval(() => {
-        setSpeed((previous) => {
-          demoMotion = advanceDemoMotion({ ...demoMotion, speed: previous });
-          return demoMotion.speed;
-        });
-      }, 180);
+      startDemo({
+        speed: speedRef.current,
+        direction: speedRef.current >= ROAD_SPEED_CEILING_KMH ? -1 : 1,
+      });
     } else {
       logDiagnosticEvent("speed-source.changed", { source: "GPS" });
       stopDemo();
+      brakeHeldRef.current = false;
+      window.clearTimeout(brakeFlashTimerRef.current);
+      setBrakeFlash(0);
       sourceRef.current = "GPS";
       setSource("GPS");
       setSpeed(smoothedSpeedRef.current);
     }
-  }, [logDiagnosticEvent, source, speed, stopDemo, wakeControls]);
+  }, [logDiagnosticEvent, startDemo, stopDemo, wakeControls]);
+
+  const startKeyboardBrake = useCallback(() => {
+    if (brakeHeldRef.current) return;
+    window.clearTimeout(keyboardLeaseTimerRef.current);
+    window.clearTimeout(keyboardHintTimerRef.current);
+    brakeHeldRef.current = true;
+    brakeStartedAtRef.current = performance.now();
+    brakeReturnToGpsRef.current = sourceRef.current === "GPS";
+    if (sourceRef.current !== "DEMO") {
+      sourceRef.current = "DEMO";
+      setSource("DEMO");
+      logDiagnosticEvent("speed-source.changed", { source: "DEMO", reason: "keyboard-brake" });
+    }
+    startDemo({ speed: speedRef.current, direction: -1 });
+    triggerBrake();
+    window.clearTimeout(brakeFlashTimerRef.current);
+    setBrakeFlash(1);
+    setKeyboardHint("BRAKE HOLD · SIM");
+    logDiagnosticEvent("brake.hold.started", {
+      speedKmh: Math.round(speedRef.current * 10) / 10,
+      referenceVehicle: MODEL_3_AWD_REFERENCE.label,
+      curbMassKg: MODEL_3_AWD_REFERENCE.curbMassKg,
+    });
+    wakeControls();
+  }, [logDiagnosticEvent, startDemo, triggerBrake, wakeControls]);
+
+  const releaseKeyboardBrake = useCallback(() => {
+    if (!brakeHeldRef.current) return;
+    brakeHeldRef.current = false;
+    window.clearTimeout(brakeFlashTimerRef.current);
+    setBrakeFlash(0);
+    demoMotionRef.current = {
+      speed: speedRef.current,
+      direction: 1,
+      holdSeconds: 0.55,
+      brakeHeldSeconds: 0,
+    };
+    setKeyboardHint(`${Math.round(speedRef.current)} km/h · SIM`);
+    window.clearTimeout(keyboardHintTimerRef.current);
+    keyboardHintTimerRef.current = window.setTimeout(() => setKeyboardHint(null), 1200);
+    logDiagnosticEvent("brake.hold.ended", {
+      speedKmh: Math.round(speedRef.current * 10) / 10,
+      heldMs: Math.round(performance.now() - brakeStartedAtRef.current),
+    });
+    if (brakeReturnToGpsRef.current) {
+      keyboardLeaseTimerRef.current = window.setTimeout(() => {
+        stopDemo();
+        sourceRef.current = "GPS";
+        setSource("GPS");
+        setSpeed(smoothedSpeedRef.current);
+        brakeReturnToGpsRef.current = false;
+        logDiagnosticEvent("speed-source.changed", { source: "GPS", reason: "keyboard-lease-ended" });
+      }, 4200);
+    }
+  }, [logDiagnosticEvent, stopDemo]);
 
   const runHarness = useCallback(async () => {
     sessionStartedAtRef.current = performance.now();
@@ -651,15 +758,20 @@ export function App() {
 
   useEffect(() => {
     if (phase !== "running") return undefined;
-    const handler = (event) => {
+    const handleKeyDown = (event) => {
       if (!canUseKeyboardTarget(event.target)) return;
       if (event.key === "ArrowUp" || event.key === "ArrowDown") {
         event.preventDefault();
+        brakeHeldRef.current = false;
+        brakeReturnToGpsRef.current = false;
+        window.clearTimeout(brakeFlashTimerRef.current);
+        setBrakeFlash(0);
         sourceRef.current = "DEMO";
-        if (source !== "DEMO") setSource("DEMO");
+        setSource("DEMO");
         stopDemo();
         setSpeed((previous) => {
           const next = applyKeyboardDelta(previous, event.key === "ArrowUp" ? "up" : "down");
+          speedRef.current = next;
           setKeyboardHint(`${Math.round(next)} km/h · SIM`);
           return next;
         });
@@ -674,24 +786,33 @@ export function App() {
         wakeControls();
       } else if (event.code === "Space") {
         event.preventDefault();
-        triggerBrake();
-        setKeyboardHint("BRAKE · SIM");
-        window.clearTimeout(keyboardHintTimerRef.current);
-        keyboardHintTimerRef.current = window.setTimeout(() => setKeyboardHint(null), 1200);
-        wakeControls();
+        startKeyboardBrake();
       }
     };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, [phase, source, stopDemo, triggerBrake, wakeControls]);
+    const handleKeyUp = (event) => {
+      if (event.code !== "Space") return;
+      if (canUseKeyboardTarget(event.target)) event.preventDefault();
+      releaseKeyboardBrake();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+    window.addEventListener("blur", releaseKeyboardBrake);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+      window.removeEventListener("blur", releaseKeyboardBrake);
+    };
+  }, [phase, releaseKeyboardBrake, startKeyboardBrake, stopDemo, wakeControls]);
 
   useEffect(() => () => {
     diagnosticsActiveRef.current = false;
     window.clearTimeout(wakeTimerRef.current);
     window.clearTimeout(keyboardHintTimerRef.current);
     window.clearTimeout(keyboardLeaseTimerRef.current);
+    window.clearTimeout(brakeFlashTimerRef.current);
     window.clearInterval(audioMeterTimerRef.current);
     window.clearTimeout(viewportCaptureTimerRef.current);
+    brakeHeldRef.current = false;
     stopDemo();
     if (watchRef.current != null) navigator.geolocation?.clearWatch(watchRef.current);
     audioRef.current?.destroy();
@@ -713,6 +834,15 @@ export function App() {
       bodyColorTheme: themeId,
       muted,
       arrangement: audioRef.current?.getState() ?? null,
+    },
+    simulation: {
+      referenceVehicle: MODEL_3_AWD_REFERENCE.label,
+      curbMassKg: MODEL_3_AWD_REFERENCE.curbMassKg,
+      officialZeroToHundredSeconds: MODEL_3_AWD_REFERENCE.zeroToHundredSeconds,
+      estimatedBrakeForceN: MODEL_3_AWD_REFERENCE.estimatedBrakeForceN,
+      brakeHeld: brakeHeldRef.current,
+      physicsAppliesTo: "demo-and-gps-tolerance",
+      gpsMotionFabricated: false,
     },
     display: diagnostics.display,
     viewportHistory: diagnostics.viewportHistory,

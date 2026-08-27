@@ -39,7 +39,7 @@ The canonical development build is available at [sedicivalvole.app](https://sedi
 
 The product is configured while parked. One deliberate **PLAY THE ROAD** gesture on the animated Signal Gate splash unlocks Web Audio, checks capabilities, requests GPS permission, and enters the selected Flux environment. The interface is flat, monospace, Braun-influenced, Swiss, and slightly brutalist; the generative field supplies the visual contrast.
 
-The speed source is an explicit abstraction. GPS and the desktop simulator produce the same normalized stream. `ArrowUp` and `ArrowDown` adjust simulated speed; `Space` triggers a discrete braking accent. Keyboard handling never steals input from focused controls.
+The speed source is an explicit abstraction. GPS and the desktop simulator produce the same normalized stream. `ArrowUp` and `ArrowDown` adjust simulated speed. Holding `Space` applies a progressive estimated Model 3 AWD brake from the exact current speed; releasing it settles briefly and resumes the Demo. The reference dynamics also define a soft GPS outlier envelope without creating or replacing real motion samples. Keyboard handling never steals input from focused controls.
 
 ## Current modes
 

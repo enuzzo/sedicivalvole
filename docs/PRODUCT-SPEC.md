@@ -96,7 +96,7 @@ The Geolocation API requires a secure context and explicit permission. `coords.s
 
 - `ArrowUp` increases simulated speed;
 - `ArrowDown` decreases it;
-- `Space` emits a hard-brake transient;
+- holding `Space` continuously brakes the simulator from the exact current speed; releasing it preserves a short settle before acceleration resumes;
 - no persistent HUD or on-screen simulator toggle;
 - after keyboard use, a small bottom-right speed/source hint appears briefly and fades;
 - keyboard handlers do not intercept focused inputs, buttons, sliders, or other controls;
@@ -104,7 +104,11 @@ The Geolocation API requires a secure context and explicit permission. `coords.s
 - simulation temporarily overrides GPS, then returns through a defined lease;
 - desktop tests must advance time and input deterministically.
 
-Brake is a discrete event with envelope and cooldown, not only a negative continuous delta. It may drive controlled audio and visual accents without harsh flashes or dangerous peaks.
+The held simulator brake is a continuous motion input plus one bounded Brake-onset event. The continuous state drives speed; the onset event may drive controlled audio and visual accents without repeated triggers, harsh flashes, or dangerous peaks.
+
+Demo motion is integrated against elapsed time rather than timer ticks. Its acceleration curve is calibrated to Tesla's official `4.4 s` zero-to-100 km/h figure for the current Model 3 Premium Long Range AWD, using the published `1,824 kg` curb mass as the reference vehicle. Braking is an explicit moderate-force product estimate with a progressive pedal ramp, not a claim about Tesla's proprietary calibration. Tesla documents that real regenerative deceleration varies with battery state and temperature and may be supplemented by friction brakes.
+
+The same dynamics define a soft plausibility envelope for GPS filtering. They may bound an abrupt sensor outlier, but must never fabricate motion, replace the first valid numeric sample, or turn unavailable speed into zero.
 
 ## 7. Flux music and speed mapping
 

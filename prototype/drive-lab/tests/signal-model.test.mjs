@@ -5,8 +5,13 @@ import {
   applyKeyboardDelta,
   energyToFlowRate,
   energyToSection,
+  gpsSpeedTolerance,
+  MODEL_3_AWD_REFERENCE,
+  model3AwdAccelerationMps2,
+  model3AwdBrakeDecelerationMps2,
   normalizeGpsSpeed,
   ROAD_SPEED_CEILING_KMH,
+  smoothGpsSpeed,
   smoothSpeed,
   speedToBpm,
   speedToEnergy,
@@ -27,6 +32,76 @@ test("normalizes GPS speed without accepting null, negative or non-finite data",
 test("deadband removes jitter and smoothing limits abrupt changes", () => {
   assert.equal(smoothSpeed(50, 50.8), 50);
   assert.equal(smoothSpeed(0, 100), 24);
+});
+
+test("calibrates the Highland AWD acceleration curve to the official zero-to-hundred time", () => {
+  let speedKmh = 0;
+  let elapsedSeconds = 0;
+  const stepSeconds = 0.001;
+  while (speedKmh < 100 && elapsedSeconds < 10) {
+    speedKmh += model3AwdAccelerationMps2(speedKmh) * stepSeconds * 3.6;
+    elapsedSeconds += stepSeconds;
+  }
+
+  assert.equal(MODEL_3_AWD_REFERENCE.curbMassKg, 1824);
+  assert.equal(MODEL_3_AWD_REFERENCE.zeroToHundredSeconds, 4.4);
+  assert.ok(Math.abs(elapsedSeconds - MODEL_3_AWD_REFERENCE.zeroToHundredSeconds) < 0.03);
+  assert.ok(model3AwdAccelerationMps2(0) > model3AwdAccelerationMps2(100));
+});
+
+test("ramps a held moderate brake and settles the reference car without reversing", () => {
+  assert.equal(model3AwdBrakeDecelerationMps2(100, 0), 0);
+  assert.ok(model3AwdBrakeDecelerationMps2(100, 0.16) > 0);
+  assert.ok(model3AwdBrakeDecelerationMps2(100, 1) > 3);
+
+  let motion = {
+    speed: 100,
+    direction: -1,
+    holdSeconds: 0,
+    brakeHeldSeconds: 0,
+  };
+  let elapsedSeconds = 0;
+  while (motion.speed > 0 && elapsedSeconds < 20) {
+    motion = advanceDemoMotion(motion, 0.02, true);
+    elapsedSeconds += 0.02;
+  }
+
+  assert.equal(motion.speed, 0);
+  assert.equal(motion.direction, -1);
+  assert.ok(elapsedSeconds > 8 && elapsedSeconds < 11);
+});
+
+test("braking starts from the exact simulated speed and release settles before acceleration", () => {
+  const initialSpeed = 73.4;
+  const braking = advanceDemoMotion({
+    speed: initialSpeed,
+    direction: -1,
+    holdSeconds: 0,
+    brakeHeldSeconds: 0,
+  }, 0.1, true);
+  assert.ok(braking.speed < initialSpeed);
+  assert.ok(braking.speed > 70);
+
+  const released = advanceDemoMotion({
+    ...braking,
+    direction: 1,
+    holdSeconds: 0.55,
+    brakeHeldSeconds: 0,
+  }, 0.1, false);
+  assert.equal(released.speed, braking.speed);
+  assert.ok(Math.abs(released.holdSeconds - 0.45) < 0.0001);
+
+  const resumed = advanceDemoMotion({ ...released, holdSeconds: 0 }, 0.1, false);
+  assert.ok(resumed.speed > released.speed);
+});
+
+test("uses vehicle dynamics as a soft GPS tolerance without inventing motion", () => {
+  const tolerance = gpsSpeedTolerance(100, 1);
+  assert.ok(tolerance.riseKmh > 15 && tolerance.riseKmh < 22);
+  assert.ok(tolerance.fallKmh > tolerance.riseKmh);
+  assert.equal(smoothGpsSpeed(100, 101, 1), 100);
+  assert.ok(smoothGpsSpeed(100, 80, 1) < 100);
+  assert.ok(smoothGpsSpeed(100, 200, 0.2) < 105);
 });
 
 test("tempo has a knee and approaches a musical ceiling", () => {
@@ -122,16 +197,22 @@ test("motion separates acceleration from deceleration with bounded rates", () =>
 });
 
 test("the demo holds at full speed and reaches a true standstill before restarting", () => {
-  assert.deepEqual(
-    advanceDemoMotion({ speed: 129, direction: 1, holdTicks: 0 }),
-    { speed: ROAD_SPEED_CEILING_KMH, direction: -1, holdTicks: 6 },
-  );
-  assert.deepEqual(
-    advanceDemoMotion({ speed: 1, direction: -1, holdTicks: 0 }),
-    { speed: 0, direction: 1, holdTicks: 8 },
-  );
-  assert.deepEqual(
-    advanceDemoMotion({ speed: 0, direction: 1, holdTicks: 8 }),
-    { speed: 0, direction: 1, holdTicks: 7 },
-  );
+  const ceiling = advanceDemoMotion({ speed: 129, direction: 1 }, 0.18);
+  assert.equal(ceiling.speed, ROAD_SPEED_CEILING_KMH);
+  assert.equal(ceiling.direction, -1);
+  assert.equal(ceiling.holdSeconds, 1.08);
+
+  const holding = advanceDemoMotion(ceiling, 0.18);
+  assert.equal(holding.speed, ROAD_SPEED_CEILING_KMH);
+  assert.ok(Math.abs(holding.holdSeconds - 0.9) < 0.0001);
+
+  const standstill = advanceDemoMotion({
+    speed: 0.1,
+    direction: -1,
+    holdSeconds: 0,
+    brakeHeldSeconds: 1,
+  }, 0.18);
+  assert.equal(standstill.speed, 0);
+  assert.equal(standstill.direction, 1);
+  assert.equal(standstill.holdSeconds, 1.44);
 });
