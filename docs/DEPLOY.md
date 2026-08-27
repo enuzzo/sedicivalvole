@@ -8,6 +8,34 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Flat Signal Gate publication evidence — 2026-08-28
+
+- build stamp: **`20260828-0127`**; deployed commit: `9d045ff`;
+  implementation: `c3c2bdb`; deployment-gate correction: `f84905c`;
+- gate before upload: **PASS**, 136 unit tests, 4 packaging tests, production
+  build, pixel-normalized Product Design comparison at `773 × 601`, explicit
+  argument gate, read-only remote identity verification and no preflight writes;
+- publication: **PASS**, 21 files / 26,059,857 bytes uploaded to the canonical
+  root. Three retired launch textures and their now-empty `ui/` directory were
+  removed only after their names and SHA-256 identities matched the allowlist;
+- canonical bare and cache-busted HTML: **HTTP 200**, `no-store`, proxy-cache
+  `MISS`, and byte-identical to local at SHA-256
+  `ec534393979581420d7cdb11d9c420b03de59a6c5b98d09dc33c54a75c587ed8`.
+  Both reference `assets/index-_FdJTv-9.js` and
+  `assets/index-5KrYVd1i.css`;
+- live JavaScript and CSS are byte-identical to local at SHA-256
+  `8d2ff4da0d9057abea9fbeec36ec1ead39797b4828df8ba91a0874de24845268`
+  and `79558d905d65c57f8fe1a715c43b83f89c456539db1255af8eaf2ba970d8a549`.
+  The JavaScript reports build `20260828-0127` and commit `9d045ff`;
+- live Browser QA at `773 × 601`: **PASS**. The launch surface is exactly
+  `390 × 170 px`, contains only the enlarged `sedicivalvole` wordmark and
+  `PLAY THE ROAD`, transitions into the experience, and emits zero console
+  warnings or errors;
+- unqualified URLs for the three retired textures can temporarily return stale,
+  unreferenced provider-cache copies. A cache-busted request is **HTTP 404** at
+  the origin, confirming the exact cleanup without treating edge expiry as a
+  publication prerequisite.
+
 ## Braun launch and phase-diagnostics publication evidence — 2026-08-28
 
 - build stamp: **`20260828-0100`**; deployed commit: `81824b8`;
