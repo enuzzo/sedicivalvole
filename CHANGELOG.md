@@ -59,6 +59,7 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 
 ### Changed
 
+- 2026-08-27 23:02 `[a292518]`: The deployment identity gate now recognizes an existing JUNCTION resource by its owned bank signature and constrained manifest, allowing a legitimate bank update without accepting an arbitrary audio tree. Publication still performs a byte-identical comparison against the newly built bank immediately after upload; a deterministic test covers valid and rejected identities.
 - 2026-08-27 22:54 `[ef0c0d0]`: JUNCTION now carries three complete authored takes for every energy state: 24 eight-bar sections and 192 bars in one 5.1 MB bank. At each musical boundary the runtime chooses a different take without immediate repetition; break phrases, voicings, density, drive and space vary inside the score instead of shuffling exposed samples mid-phrase.
 - 2026-08-27 22:46 `[fba4002]` `build 20260827-2245`: Published the grounded Vertigo entry framing and quadratic urban-speed response to the canonical root.
 - 2026-08-27 22:34 `[f9bb395]` `build 20260827-2232`: Published the complete Flux performance checkpoint to the canonical root: 60 FPS Aperture scheduling, editorial-free themed Vertigo, the 64 px Tesla footer, and the selectable JUNCTION production bank.
