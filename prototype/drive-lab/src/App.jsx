@@ -1228,7 +1228,10 @@ export function App() {
       <section className="splash" aria-hidden={phase === "running"}>
         <SplashSignalGate active={phase !== "running"} reducedMotion={reducedMotion} />
         <div className="splash-mark"><span>sedicivalvole</span></div>
-        <small className="splash-status">FLUX · {environment.label} · {APP_VERSION}</small>
+        {/* The build, and nothing else. APP_VERSION is injected from the root
+            VERSION file, which stays the only SemVer source of truth. The active
+            environment is still named in the live header and the diagnostics. */}
+        <small className="splash-status">BUILD {APP_VERSION}</small>
         <div className="splash-action">
           <button className="launch-button" type="button" onClick={runHarness} disabled={phase === "testing"}>
             {phase === "testing" ? "STARTING" : "PLAY THE ROAD"}

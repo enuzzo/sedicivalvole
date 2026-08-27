@@ -12,9 +12,9 @@ and recorded in [`SESSION-HANDOFF.md`](SESSION-HANDOFF.md).
 
 | # | Checkpoint | Commit | State |
 |---|---|---|---|
-| CP1 | Splash shows the build version top-right instead of `FLUX · APERTURE` | — | not started |
+| CP1 | Splash shows the build version top-right instead of `FLUX · APERTURE` | `see below` | **done** |
 | CP2 | Splash lanes: faster, glow, scrolling, broken laminarity | — | not started |
-| CP3 | `PLAY THE ROAD` given a strong, deliberate treatment | — | not started |
+| CP3 | `PLAY THE ROAD` given a strong, deliberate treatment | `see below` | **done** |
 | CP4 | Aperture: one continuous coordinate system, no tearing | — | not started |
 | CP5 | Aperture: stable per-tile colour, rest-only recolour | — | not started |
 | CP6 | Full suite, build, rendered QA at 773x601, deploy and verify | — | not started |

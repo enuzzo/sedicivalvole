@@ -110,22 +110,67 @@ button { -webkit-tap-highlight-color: transparent; }
 .splash-action > small { display: block; color: rgba(238, 234, 224, .62); line-height: 1.4; }
 .splash-action > .splash-credit { margin-top: 12px; color: rgba(238, 234, 224, .74); font-size: 10px; letter-spacing: .07em; }
 .splash-privacy { margin-top: 6px; font-size: 8px; letter-spacing: .025em; }
+/* The launch control carries the whole splash, so it is built from weight and
+   proportion rather than ornament: a hard rule above the label, a wide tracked
+   monospace setting, and a rule that completes on hover. Square, flat, no
+   gradient and no glass — the GL field supplies the contrast. */
 .launch-button {
+  position: relative;
   width: 100%;
-  min-height: 76px;
-  padding: 0 28px;
+  min-height: 84px;
+  padding: 22px 30px 20px;
   border: 1px solid var(--paper);
   border-radius: var(--ui-radius);
   color: var(--ink);
   background: var(--paper);
-  font-size: 14px;
-  font-weight: 760;
-  letter-spacing: .17em;
+  font-size: 15px;
+  font-weight: 780;
+  letter-spacing: .26em;
+  text-indent: .26em;
   text-align: center;
   cursor: pointer;
+  overflow: hidden;
+  transition: transform 140ms cubic-bezier(.72, 0, .24, 1),
+              box-shadow 220ms ease,
+              letter-spacing 260ms cubic-bezier(.72, 0, .24, 1);
+  box-shadow: 0 0 0 0 rgba(238, 234, 224, 0), 0 18px 46px -24px rgba(0, 0, 0, .9);
 }
-.launch-button:active { transform: translate(2px, 2px); }
+/* A measured rule across the top edge: the control reads as an instrument. */
+.launch-button::before {
+  content: "";
+  position: absolute;
+  top: 9px;
+  left: 30px;
+  right: 30px;
+  height: 2px;
+  background: var(--ink);
+  opacity: .16;
+  transform: scaleX(.22);
+  transform-origin: left center;
+  transition: transform 420ms cubic-bezier(.72, 0, .24, 1), opacity 260ms ease;
+}
+.launch-button:hover::before,
+.launch-button:focus-visible::before { transform: scaleX(1); opacity: .34; }
+.launch-button:hover,
+.launch-button:focus-visible {
+  letter-spacing: .3em;
+  text-indent: .3em;
+  box-shadow: 0 0 0 6px rgba(238, 234, 224, .1), 0 22px 52px -22px rgba(0, 0, 0, .95);
+}
+.launch-button:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.launch-button:active {
+  transform: translateY(2px);
+  box-shadow: 0 0 0 2px rgba(238, 234, 224, .16), 0 8px 20px -16px rgba(0, 0, 0, .9);
+}
 .launch-button:disabled { cursor: wait; opacity: .7; }
+.launch-button:disabled::before { transform: scaleX(1); opacity: .2; }
+
+@media (prefers-reduced-motion: reduce) {
+  .launch-button,
+  .launch-button::before { transition: none; }
+  .launch-button:hover,
+  .launch-button:focus-visible { letter-spacing: .26em; text-indent: .26em; }
+}
 
 .experience { opacity: 0; visibility: hidden; transition: opacity 460ms ease, visibility 460ms; }
 .phase-running .experience { opacity: 1; visibility: visible; }
