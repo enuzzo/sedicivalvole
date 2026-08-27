@@ -74,9 +74,9 @@ The Codrops/Tympanus `InfiniteLights` repository permits free use when the resou
 
 [textStep](https://github.com/illobo/textStep) was conceived and created by
 [Lobo (`illobo`)](https://github.com/illobo). Its original sequencer,
-synthesizer, DSP, scene, and live-performance architecture informs the planned
-multi-genre Flux sequencer. That authorship deserves explicit credit wherever
-the future integration is described.
+synthesizer, DSP, scene, and live-performance architecture informs the current
+Flux sequencer and its planned multi-score extensions. That authorship deserves
+explicit credit wherever the integration is described.
 
 The upstream repository is published under GNU GPL version 2.0. The project
 maintainer confirms and accepts responsibility for Lobo's additional direct,

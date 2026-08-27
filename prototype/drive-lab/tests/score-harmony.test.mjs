@@ -99,7 +99,7 @@ test("every section is four bars and declares a theme and a response", () => {
 });
 
 test("nothing in the form leaves the key", () => {
-  // One key is what makes six sections one piece rather than six fragments.
+  // One key is what makes ten sections one piece rather than ten fragments.
   for (const section of SECTIONS) {
     for (const chord of section.harmony) {
       for (const pc of chordPitchClasses(chord)) {

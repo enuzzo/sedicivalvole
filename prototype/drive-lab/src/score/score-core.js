@@ -300,7 +300,7 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
     const patternStep = event.patternStep;
     const barInPhrase = event.barInPhrase;
 
-    // The form advances one section per phrase, so twenty-four bars pass before
+    // The form advances one section per phrase, so forty bars pass before
     // anything repeats. Sections only ever turn over on a phrase boundary, like
     // every other structural change.
     if (event.isPhraseStart && stepsElapsed > 1) {

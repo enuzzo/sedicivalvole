@@ -115,7 +115,11 @@ The same dynamics define three soft GPS plausibility regions: acceleration, ordi
 
 ## 7. Flux music and speed mapping
 
-The received HTML is a useful starting point but not the target ambition. The current Drive Lab audio spike is audible but musically rejected; isolated pings, exposed oscillator tones, and a noise bed do not satisfy the product.
+The received HTML and the two early synthesized spikes are historical baselines,
+not the current product. The current Drive Lab runs the authored FRACTURE score
+inside an AudioWorklet. It must still pass a real Tesla listening review; passing
+automated tests or sounding acceptable on a desktop does not establish musical
+acceptance in the vehicle.
 
 - BPM must not increase nearly linearly into a frantic march.
 - The speed-to-tempo curve needs a knee and must asymptotically approach a musical ceiling.
@@ -135,19 +139,20 @@ The received HTML is a useful starting point but not the target ambition. The cu
 - A Flux environment is an authored audiovisual bundle: generative visual system, musical genre/score, palette family, geometry parameters, and speed-response mapping. Users may select an environment and tune its supported palette without exposing low-level renderer or mixer controls while driving.
 - The environment system must make variety structural rather than decorative: changing environment may change visual mechanics and musical genre, while every environment consumes the same normalized speed, energy, acceleration, deceleration, Brake, safety, and diagnostic contracts.
 - The user-adjustable energy threshold is retired. Visual and score energy normalize against a fixed `130 km/h` legal-road ceiling; Aperture must reveal unmistakable tunnel depth by approximately `40 km/h` and continue deforming progressively into its full Plaid field. Low-level `Atmos`, `Harmonics`, and `Pulse` controls remain excluded from the final driving interface.
-- The former threshold area is reserved for purposeful `VISUAL` and `SCORE` selection. Until the textStep-informed sequencer actually ships selectable genres, the score surface must identify the current prototype and future textStep work without pretending Jungle is active.
+- The former threshold area is used for purposeful `VISUAL` and `SCORE` selection. The score library may show planned directions, but only authored runnable scores may be selected. FRACTURE is currently ready; JUNCTION and the five later directions are disabled and labelled `IN PREPARATION`.
 
 ## 8. Feature decision matrix
 
 | Feature | Status | Note |
 |---|---|---|
 | Engine mode with synthesized/sampled models | confirmed primary mode | mapping, catalog, quality, and latency require dedicated spike |
-| Adaptive synth + sequencer | architecture queued | textStep study recorded; browser worklet spike and musical acceptance pending |
+| Adaptive synth + sequencer | implemented prototype | FRACTURE runs in the AudioWorklet; real Tesla musical acceptance pending |
 | Modular Aperture generative visual | implemented prototype | WebGL2 plus Canvas2D fallback; Tesla performance pending |
-| Selectable visual environments | implemented prototype | Aperture and Vertigo share normalized motion, palette, safety, persistence, and diagnostic contracts |
-| Selectable musical environments | confirmed product model | data-driven Jungle-capable sequencer and authored genre identities remain pending |
+| Selectable visual environments | implemented prototype | Aperture, Vertigo, Meridian, and Latitudes share normalized motion, safety, persistence, and diagnostic contracts |
+| Selectable musical environments | partial prototype | truthful library shipped; FRACTURE ready, JUNCTION runtime and later scores pending |
 | Open packs | strategic goal | schema and licensing not frozen |
-| Offline core | planned after capability test | browser persistence unknown |
+| Offline audio core | implemented prototype | identical score DSP renders and analyses WAV references in Node |
+| Offline application cache | planned after capability test | browser persistence unknown |
 | Reactive map / OSM limits | not confirmed for v1 | scope, network, distraction, and policy risk |
 | WAV-to-parameter editor | future research | source lab not validated on real audio |
 | Trip postcard | not confirmed | privacy conflict requires review |

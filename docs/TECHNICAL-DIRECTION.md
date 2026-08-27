@@ -139,24 +139,43 @@ The browser currently provides speed evidence, not powertrain telemetry. Engine 
 
 Sample loops require phase-consistent crossfades, bounded decoded-memory use, click-free pitch transitions, and conservative limiting. Procedural synthesis may reduce asset weight but must win an actual listening test. Neither approach is preferred without a dedicated spike.
 
-### Current Flux spike
+### Current Flux score engine
 
-The current Drive Lab uses a main-thread lookahead scheduler for rapid validation and exposes the authored `APERTURE 01` and `VERTIGO 02` visual environments over one shared audio spike. Four structural sections coordinate kick, bass, hats, clap, harmony, motif, delay, and dynamics. Continuous speed maps to bounded energy and timbre; filtered acceleration and deceleration envelopes separately shape rhythmic pressure, low end, brightness, motion, and delay. A motion-direction change produces one bounded transition gesture rather than a periodically repeated effect, and the envelopes decay to steady state when speed stops changing. Section changes use hysteresis, a two-bar dwell, bar quantization, and crossfades. Energy and visual velocity now use one fixed `130 km/h` legal-road ceiling. This remains a prototype, not the production real-time architecture, and the rejected musical result must be replaced by the textStep-informed sequencer before acceptance.
+The current Drive Lab runs FRACTURE in a bundled AudioWorklet. A thin processor
+owns the 128-frame render quantum, message port, mute ramp, and brake filter;
+`src/score/score-core.js` owns the transport, arrangement, voices, bus effects,
+and snapshots. The identical DSP core runs in Node for offline listening renders.
 
-The listening result at approximately 115 km/h is rejected: the arrangement reads as slow soft-club/disco and does not deliver the intended Jungle rhythm, riff, break, or bass identity. The main-thread spike must not be incrementally patched into production. Replace it with a data-driven synth/sequencer boundary.
+FRACTURE is one composition in F minor with ten four-bar sections, independent
+drum, break-detail, bass, theme, response, harmony, atmosphere, and transition
+lanes. Its four theme timbres, harmony, voiced consonance, bass degrees, voice
+output, and brake level are checked rather than inferred. Continuous speed maps
+to bounded energy, dynamics, timbre, and space; structural changes remain on
+musical boundaries behind hysteresis, dwell, deceleration memory, and
+crossfades. Tempo stays within `162–176 BPM`; high-speed power comes primarily
+from interpretation and arrangement rather than playback-rate escalation.
+
+The score registry separates `ready` from `preparing`. FRACTURE is the only
+ready score. JUNCTION leads the library as the sampled direction but currently
+exists only as an offline eight-section render; the remaining five directions
+are truthful disabled roadmap entries.
 
 ### Flux sequencer direction
 
-- immutable 32-step pattern data grouped into phrases;
-- independent drum, break-detail, bass, riff, harmony, atmosphere, and transition lanes;
-- stable AudioWorklet transport with sample-accurate step timing;
-- queued pattern/scene changes at musical boundaries;
-- separately authored kit/synth parameters and pattern/note data;
-- deterministic seeded variations and bounded fills;
-- optional sampler voices only for original or explicitly licensed assets;
-- a tempo knee that can reach a credible Jungle/D&B ceiling while high-speed power continues through arrangement, timbre, low end, and dynamics.
+The synthesis-first boundary is implemented. The next extension is a sampler
+that preserves the same contracts:
 
-Deceleration uses a three-stage state machine: `catch`, `recovery`, and `sustained_release`. The catch window preserves tempo and principal groove through brief braking. Recovery cancels queued exits when speed returns. Sustained release removes detail lanes one phrase at a time and only then eases tempo downward. State changes use asymmetric dwell, retained peak-energy memory, hysteresis, minimum scene tenure, cancellable queues, and crossfades. See [`REFERENCE-STUDY-TEXTSTEP.md`](REFERENCE-STUDY-TEXTSTEP.md).
+- immutable score data grouped into phrases and sections;
+- independent musical lanes and queued changes at musical boundaries;
+- stable AudioWorklet transport with sample-accurate step timing;
+- separately authored sound, pattern, harmony, and arrangement data;
+- bounded decoded-memory use, click-free playback, shared effects, and limiting;
+- sample material packaged as a playable score resource without exposing the
+  source library as individually collectible files;
+- no time-stretching of break loops: select material recorded at the active
+  native tempo instead.
+
+Deceleration uses a three-stage state machine: `catch`, `recovery`, and `sustained_release`. The catch window preserves tempo and principal groove through brief braking. Recovery cancels queued exits when speed returns. Sustained release removes detail lanes on musical boundaries and only then eases tempo downward. State changes use asymmetric dwell, retained peak-energy memory, hysteresis, minimum scene tenure, cancellable queues, and crossfades. See [`REFERENCE-STUDY-TEXTSTEP.md`](REFERENCE-STUDY-TEXTSTEP.md).
 
 ### Shared production direction
 
@@ -173,7 +192,8 @@ Profile before adding WASM. It is justified only if measured DSP cost, not fashi
 
 ## Flux visual architecture
 
-The Flux renderer currently exposes two independently implemented parameterized fields, not static backgrounds. **Modular Aperture** was selected from exactly three revised minimal alternatives:
+The Flux renderer exposes four selectable environments, not static backgrounds.
+**Modular Aperture** was selected from exactly three revised minimal alternatives:
 
 - central-axis depth and flow;
 - outward vanishing-point travel at speed, with a non-linear flow ceiling and a near-planar zero-energy state;
@@ -183,7 +203,7 @@ The Flux renderer currently exposes two independently implemented parameterized 
 - aspect-correct square insets at rest, an eased low-speed warp, a bounded central perspective singularity, and a continuous blend between adjoining tunnel walls so intermediate geometry cannot tear into diagonal fragments;
 - a central aperture whose radius opens geometrically with tunnel formation instead of appearing through opacity;
 - speed-driven radial panel elongation and reduced depth frequency in the 150 km/h velocity band;
-- five curated body-color palettes;
+- ten curated body themes for the three original renderers; Vertigo preserves its upstream colours;
 - energy-driven pressure, luminance, distortion, and rectangular panel density;
 - aggregate pulses rather than one flash per audio event;
 - renderer quality levels controlling resolution scale, shader complexity, passes, and frame rate;
@@ -193,11 +213,19 @@ The Flux renderer currently exposes two independently implemented parameterized 
 
 **Vertigo** was selected as the second environment and now runs the complete upstream Interstate 7 scene from commit `e58d58520bc0dfde21f9e14e6a1b8c7f0a2a2a9e`. The vendored runtime retains the original road, instanced side light sticks, opposing instanced car-light tubes, fog, bloom/SMAA post-processing, deep-distortion shader injection, camera look-at distortion, colors, and geometry. SHA-256 tests guard the vendor files against accidental edits. The earlier independent shader and Canvas2D interpretation were rejected and removed from the active source.
 
+**Meridian** is an original ruled corridor. One depth-parameterized displacement
+field controls geometry and camera aim; separate monotonic clocks move the grid,
+posts, and travelling markers without coupling motion to frame rate.
+
+**Latitudes** is an original temporal field. Its stacked strata sample recent
+distance/speed history so acceleration bends the rake and deceleration releases
+the faster past upward rather than reversing or crossfading the renderer.
+
 The fixed road-speed mapping separates early recognition from maximum deformation. Aperture begins opening into recognizable tunnel space by approximately `40 km/h`; velocity, perspective, elongation, and travel then continue increasing until the shared `130 km/h` ceiling. Vertigo uses a narrow external bridge rather than new scene mathematics. The bridge writes a continuous target into the original `speedUpTarget` path: `-1` cancels the base clock at zero and `0` restores the original non-boosted `1×` time rate at `130 km/h`. In parallel, the original FOV target moves from `90°` to `150°`. The upstream click boost is not dispatched.
 
 The Flux chrome uses a shared 6 px UI radius for framed controls and diagnostic surfaces. Structural rails remain aligned to the underlying grid. The absolute speed readout uses the same column dimensions and `--line` stroke as the top bar, so hiding the surrounding control layer does not move or restyle it as a separate overlay.
 
-The Codrops/Tympanus Infinite Lights reference is useful for its coordinated instancing, depth cues, distortion, FOV response, eased speed offset, and matched distortion/look-at relationship. Its source remains in the ignored reference library and its literal road/bloom treatment is not the target. Vertigo reads the original mechanics as an executable specification but does not import its source, Three.js scene, bundles, shaders, assets, or visual skin. See [`REFERENCE-STUDY-INFINITE-LIGHTS.md`](REFERENCE-STUDY-INFINITE-LIGHTS.md).
+The Codrops/Tympanus Infinite Lights reference is useful for coordinated instancing, depth cues, distortion, FOV response, eased speed offset, and the matched distortion/look-at relationship. Vertigo intentionally vendors the byte-identical Interstate 7 runtime as separately licensed third-party material. Meridian studies its mechanical grammar without copying that runtime's source or visual skin. See [`REFERENCE-STUDY-INFINITE-LIGHTS.md`](REFERENCE-STUDY-INFINITE-LIGHTS.md).
 
 The renderer consumes a small snapshot and never blocks the audio event queue.
 

@@ -5,16 +5,15 @@
 [textStep](https://github.com/illobo/textStep) was conceived and created by
 [Lobo (`illobo`)](https://github.com/illobo). The sequencer, synthesizer, DSP,
 scene, and live-performance architecture described in this study are his work.
-They are the foundation we intend to adapt for Flux so speed and driving energy
-can arrange musical layers continuously and the same engine can support
-different authored genres.
+They are the foundation adapted for Flux so speed and driving energy can arrange
+musical layers continuously and the same engine can support different authored
+scores.
 
-This is an explicit creative and technical credit, not a claim that the current
-browser engine already contains textStep source. It does not: the tracked Flux
-prototype still uses an independently authored earlier scheduler. If textStep
-code is later copied, translated, or modified, the imported files and our
-changes must be identified precisely in this document and in
-`THIRD_PARTY_NOTICES.md`.
+This is an explicit creative and technical credit. The current browser engine
+does contain translated textStep transport, synthesis, and DSP source alongside
+original sedicivalvole arrangement and composition code. The exact imported
+files and modifications are recorded in `THIRD_PARTY_NOTICES.md` and in each
+derived source header.
 
 ## Provenance
 
@@ -60,17 +59,20 @@ The useful reference is the system boundary, not the terminal UI:
 
 These mechanics align with Flux's existing distinction between continuous driving signals and quantized musical structure.
 
-## Browser portability
+## Browser implementation
 
-The upstream engine targets Rust with `cpal` and CoreAudio/ALSA. It cannot be imported directly into the Tesla browser build. The preferred first production spike is an independently authored `AudioWorklet` engine using plain browser DSP and immutable pattern data. Rust/WASM is a later option only if profiling proves that JavaScript DSP cannot meet the vehicle's audio and rendering budget.
+The upstream engine targets Rust with `cpal` and CoreAudio/ALSA, so it cannot run
+directly in the Tesla browser build. The implemented production spike translates
+the relevant systems into plain JavaScript DSP inside an `AudioWorklet`, with
+immutable pattern data and no AudioContext dependency in the core. Rust/WASM
+remains a later option only if vehicle profiling proves the JavaScript DSP cannot
+meet the simultaneous audio and rendering budget.
 
-Because the upstream Rust/CoreAudio architecture cannot run directly in the
-Tesla browser, the first implementation should adapt the relevant transport,
-sequencer, synthesis, and DSP systems into an `AudioWorklet`. Directly reused or
-translated portions are permitted, but must remain traceable to their upstream
-files and clearly identify our browser-specific modifications.
+The translated portions remain traceable to their upstream files and identify
+the browser-specific modifications. FRACTURE's arranger, composition, worklet
+shell, stereo effects, and brake processor are original project work.
 
-## Proposed Flux music system
+## Implemented Flux music baseline
 
 ### Transport and authored data
 
@@ -107,14 +109,19 @@ Acceleration may prepare and queue added layers quickly, but entry remains beat/
 
 This requires separate rise/fall dwell times, hysteresis, a retained peak-energy memory, cancellable queued exits, minimum scene tenure, and crossfades. Brake remains an immediate bounded gesture, not an instruction to tear down the arrangement.
 
-## Adoption gate
+## Validation and extension gate
 
-Before product integration:
+Completed:
 
-- select and record the exact upstream files and commit used by the browser adaptation;
-- decide whether the first spike is synthesis-only or includes newly licensed/original samples;
-- record every imported dependency or asset in `THIRD_PARTY_NOTICES.md`;
-- implement deterministic transport, phrase queue, and deceleration-memory tests;
-- render an offline reference mix for 0 → 115 → 60 → 115 → 0 km/h;
-- pass listening review before deployment;
-- profile simultaneous AudioWorklet and WebGL operation at `773 × 601` on the target Tesla.
+- exact upstream files, commit, modifications, authorization, and attribution recorded;
+- synthesis-first AudioWorklet integrated and deployed as FRACTURE;
+- deterministic transport, phrase queue, harmony, audition, brake, and deceleration-memory tests;
+- offline reference rendering and mix analysis;
+- no third-party sample included in the repository or deployed build.
+
+Still required:
+
+- pass FRACTURE listening review in the target Tesla;
+- profile simultaneous AudioWorklet and all four WebGL environments at `773 × 601`;
+- implement JUNCTION's sampler/runtime without exposing the source sample library;
+- record any future runtime asset or dependency before it enters the product.

@@ -1,16 +1,17 @@
 # sedicivalvole
 
-> **Sequencer direction — credit to Lobo.** The next-generation Flux music
-> system is being shaped around [textStep](https://github.com/illobo/textStep),
+> **Sequencer foundation — credit to Lobo.** The current Flux music system is
+> built in part from [textStep](https://github.com/illobo/textStep),
 > the step sequencer, synthesizer, and original DSP project created by
 > [illobo](https://github.com/illobo). Its sequencer and performance architecture
-> are Lobo's work. `sedicivalvole` plans to adapt that foundation so vehicle
-> speed can arrange musical layers, manage energy, and move between authored
-> genres. The current browser prototype still uses its earlier independent
-> scheduler; no textStep source is shipped yet. When derived code is integrated,
-> the exact files, changes, license, and attribution will be recorded explicitly.
+> are Lobo's work. `sedicivalvole` translates the relevant transport, synthesis,
+> and DSP into a browser AudioWorklet so vehicle speed can arrange musical
+> layers. The exact derived files, modifications, license, and direct reuse
+> authorization are recorded in `THIRD_PARTY_NOTICES.md`.
 
-> Current state: **Flux Drive Lab now includes the selectable Aperture and Vertigo visual environments and is under vehicle validation**. This is a development build, not a release.
+> Current state: **Flux Drive Lab runs the authored FRACTURE score with four
+> selectable visual environments and is under vehicle validation**. This is a
+> development build, not a release.
 
 Public development repository: [github.com/enuzzo/sedicivalvole](https://github.com/enuzzo/sedicivalvole).
 
@@ -25,9 +26,11 @@ The canonical development build is available at [sedicivalvole.app](https://sedi
 - ✅ a single ignored local reference library under `_references/`;
 - ✅ source audit, product requirements, adversarial review, technical direction, and roadmap;
 - ✅ Modular Aperture selected after exactly three revised Product Design directions;
-- ✅ touch-first Flux prototype with procedural WebGL2/Canvas2D Aperture plus the original Three.js/post-processing Interstate 7 Vertigo environment, GPS/demo speed source, Stop/Mute, a fixed `130 km/h` energy ceiling, five interface/body themes, and an integrated capability report;
+- ✅ four selectable Flux visuals: procedural Aperture, byte-identical upstream Interstate 7 Vertigo, and the original Meridian and Latitudes environments;
+- ✅ GPS/Demo speed source, Stop/Mute, a fixed `130 km/h` energy ceiling, 10 curated themes, and an integrated capability report;
 - ✅ local-only speed processing: raw coordinates are never displayed, persisted, or transmitted;
-- ✅ a four-section authored audio spike with a tempo knee, quantized transitions, hysteresis, dwell, crossfades, and speed-driven arrangement depth;
+- ✅ FRACTURE, a production AudioWorklet score with ten four-bar sections, a narrow tempo knee, quantized transitions, hysteresis, dwell, crossfades, speed-driven arrangement depth, and tested harmony/braking/voice output;
+- 🧪 JUNCTION, an eight-section sampled score that renders offline but has no browser runtime yet;
 - ✅ production build and deterministic signal, diagnostic-model, and packaging tests passing;
 - ✅ photographed Tesla split-view evidence at `773 × 601`, screen `1254 × 784`, DPR `1.53`;
 - ✅ compact-view v3 diagnostics with aggregated frame pacing, network history, runtime/resource evidence, direct same-origin email handoff, and no coordinates;
@@ -46,11 +49,14 @@ The speed source is an explicit abstraction. GPS and the desktop simulator produ
 Confirmed product modes:
 
 - **Engine** — selectable engine-sound emulation with a dedicated instrument-inspired visual language. Audio modeling, catalog, and final visual direction are not implemented yet.
-- **Flux** — adaptive music driven by speed and motion, paired with selectable visual environments. Aperture morphs a flat square field into a centered tunnel. Vertigo embeds the original Codrops/Tympanus Interstate 7 road, repeated side signals, car-light trails, bloom, camera, and deep distortion without modifying the upstream runtime; an external bridge slows its original clock/FOV controls and maps them continuously to `0–130 km/h`. This is the mode currently implemented as Drive Lab.
+- **Flux** — adaptive music driven by speed and motion, paired with four selectable visual environments. Aperture morphs a flat square field into a centered tunnel. Vertigo embeds the original Codrops/Tympanus Interstate 7 runtime unchanged behind an external speed/FOV bridge. Meridian is an original ruled light corridor; Latitudes is an original temporal field that carries recent motion upward through stacked strata. This is the mode currently implemented as Drive Lab.
 
 Shared foundations include the GPS/Demo speed source, integrated diagnostics, master Stop/Mute, reduced motion, renderer fallback, and touch-first safety behavior. The mode switch will remain clearly identifiable and reachable from both experiences.
 
-The current audio is an authored research spike rather than an exposed oscillator/noise layer mixer. Its musical quality and relationship to real acceleration remain pending a Tesla listening test.
+The current audio is the authored generative score **FRACTURE**. It is the only
+selectable score; the library exposes future directions as `IN PREPARATION`
+instead of pretending they play. Its musical quality and relationship to real
+acceleration remain pending a Tesla listening test.
 
 ## Quick start
 
@@ -71,7 +77,9 @@ The standalone technical harness remains in `diagnostics/tesla-capabilities/`; e
 
 ## Architecture
 
-The current prototype uses React and Vite because it came from the verified Product Design build workflow. This does not freeze the production stack. The recommended production direction remains TypeScript, a small component shell, AudioWorklet for stable real-time scheduling, WebGL2 with progressive fallback, and an offline core after Tesla validation.
+The current prototype uses React, Vite, a sample-accurate AudioWorklet score
+engine, WebGL2 renderers with progressive fallbacks, and the same DSP core in
+Node for offline listening renders. This does not freeze a future release stack.
 
 See [`docs/TECHNICAL-DIRECTION.md`](docs/TECHNICAL-DIRECTION.md).
 
@@ -85,7 +93,9 @@ See [`docs/TECHNICAL-DIRECTION.md`](docs/TECHNICAL-DIRECTION.md).
 
 ## Versioning and changelog
 
-[`VERSION`](VERSION) is the only SemVer source of truth. `0.0.0` means there is no release yet. The build injects that value and displays it discreetly on the splash.
+[`VERSION`](VERSION) is the only SemVer source of truth. `0.0.0` means there is
+no release yet. The build injects the version into diagnostics; the splash shows
+the separate `YYYYMMDD-HHMM` build stamp used for publication evidence.
 
 All relevant changes are recorded in [`CHANGELOG.md`](CHANGELOG.md), with work in `Unreleased` until an explicit release is approved.
 
@@ -95,12 +105,17 @@ No screenshot is published here yet. The repository will include only real, curr
 
 ## Roadmap
 
-The next gate is a real Tesla session at the verified split viewport: compare Aperture and Vertigo across acceleration/deceleration, measure frame pacing, confirm visible tunnel formation around `40 km/h`, test the visual and body-color controls, and check touch reach while parked. The compact `DIAG` report remains available for technical evidence. The current shared audio score is still rejected; Lobo's textStep-informed, selectable Jungle-capable sequencer remains the next major product milestone.
+The next gate is a real Tesla session at the verified split viewport: compare all
+four visuals across acceleration and deceleration, profile AudioWorklet plus
+WebGL frame pacing, listen critically to FRACTURE, test the score/visual/theme
+controls, and check touch reach while parked. The next music implementation is
+JUNCTION's sampled browser runtime, not another replacement for FRACTURE.
 
 See [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
 ## Documentation
 
+- [`docs/CURRENT-STATE.md`](docs/CURRENT-STATE.md) — authoritative working overview and documentation map;
 - [`docs/PRODUCT-SPEC.md`](docs/PRODUCT-SPEC.md) — confirmed requirements, assumptions, and open questions;
 - [`docs/ADVERSARIAL-REVIEW.md`](docs/ADVERSARIAL-REVIEW.md) — independent critique of the bootstrap proposals;
 - [`docs/TECHNICAL-DIRECTION.md`](docs/TECHNICAL-DIRECTION.md) — recommended architecture and signal model;
@@ -110,6 +125,8 @@ See [`docs/ROADMAP.md`](docs/ROADMAP.md).
 - [`docs/DIAGNOSTICS.md`](docs/DIAGNOSTICS.md) — verified Tesla measurements and report-delivery architecture;
 - [`docs/MODES.md`](docs/MODES.md) — confirmed Engine/Flux product architecture and open decisions;
 - [`docs/REFERENCE-STUDY-TEXTSTEP.md`](docs/REFERENCE-STUDY-TEXTSTEP.md) — Lobo's textStep credit, provenance, mechanics, and authorized adoption plan;
+- [`docs/MUSIC-CRAFT.md`](docs/MUSIC-CRAFT.md) — accumulated musical knowledge, failures, tests, and production technique;
+- [`docs/SESSION-HANDOFF.md`](docs/SESSION-HANDOFF.md) — current implementation handoff and remaining work;
 - [`docs/GITHUB.md`](docs/GITHUB.md) — public-repository and GitHub CLI operating notes;
 - [`docs/LICENSING.md`](docs/LICENSING.md) — active mixed-license decision and open legal work.
 

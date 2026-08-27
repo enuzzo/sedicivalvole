@@ -31,39 +31,43 @@ Gate: a repeatable vehicle report with no invented values. If GPS speed is absen
 
 Status: **DIRECTION SELECTED; CURRENT BUILD IMPLEMENTED**.
 
-Exactly three revised minimal directions were presented after the luminous-axis rejection. The selected **Modular Aperture** direction uses a flat Braun/Swiss control plane and one continuous square-module field that shrinks and bends from a complete four-color mosaic into a centered tunnel. Five body-color themes are approved. The Laminar alternative is preserved only as an ignored study because its visible resemblance to Infinite Lights requires a stronger independent reinterpretation before use.
+Exactly three revised minimal directions were presented after the luminous-axis rejection. The selected **Modular Aperture** direction uses a flat Braun/Swiss control plane and one continuous square-module field that shrinks and bends from a complete multi-colour mosaic into a centered tunnel. Ten body themes now serve the original renderers. The Laminar alternative is preserved only as an ignored study because its visible resemblance to Infinite Lights requires a stronger independent reinterpretation before use.
 
 ## Phase 3 — Flux signal and music spike
 
-Status: **IN PROGRESS**.
+Status: **FIRST AUTHORED SCORE IMPLEMENTED; VEHICLE LISTENING PENDING**.
 
 Implemented:
 
 - nullable GPS normalization, deadband, smoothing, and bounded Demo input;
 - tempo knee with asymptotic ceiling;
 - continuous energy separated from discrete layer/Brake events;
-- four-section lookahead arrangement, bar-quantized transitions, two-bar dwell, crossfades, and limiter;
+- sample-accurate AudioWorklet transport, bar/phrase-quantized arrangement, hysteresis, asymmetric dwell, crossfades, and limiter;
+- FRACTURE: ten four-bar sections, four theme timbres, harmony and bass checks, offline rendering, voice audition, and measured brake processing;
 - fixed `130 km/h` road-energy ceiling, early tunnel visibility near `40 km/h`, and curated `APERTURE 01` environment;
 - filtered acceleration/deceleration envelopes with single direction-change cues and steady-state decay;
 - deterministic desktop signal tests.
 
-The earlier synthesized spike was explicitly rejected. The current build implements a first authored arrangement and purposeful control model, but the listening result at approximately 115 km/h is also rejected as a slow soft-club groove without the required Jungle/D&B rhythm, riffs, break density, or bass movement.
+The two earlier synthesized spikes were explicitly rejected. FRACTURE replaces
+them with the authored Jungle / Drum & Bass score that now runs in the browser.
+Automated checks and a live desktop smoke test pass; musical acceptance still
+requires a real Tesla listening session.
 
 Queued next:
 
-- replace the main-thread arrangement with a data-driven AudioWorklet synth/sequencer;
-- author independent 32-step drum, break-detail, bass, riff, harmony, and atmosphere lanes;
-- create a high-energy Jungle environment with a genre-appropriate tempo ceiling;
-- implement catch/recovery/sustained-release deceleration memory so short braking does not dismantle the groove;
-- evaluate original or separately licensed samples only after the synthesis-first transport works;
-- use the ignored `illobo/textStep` repository as the authorized architecture and implementation source under the provenance and attribution requirements in [`REFERENCE-STUDY-TEXTSTEP.md`](REFERENCE-STUDY-TEXTSTEP.md).
-- define environment data so one transport can load different authored genres, kits, patterns, arrangement rules, and matching visual identities without changing the driving-signal contract.
+- build JUNCTION's sampler/runtime around its completed offline eight-section arrangement;
+- package JUNCTION's playable audio as one runtime score resource rather than publishing the source sample library as individual named files; browser-delivered bytes remain downloadable and must not be described as secret;
+- keep every later score disabled and marked `IN PREPARATION` until it has an authored runtime;
+- profile simultaneous AudioWorklet and WebGL rendering on the target Tesla;
+- preserve the shared speed, energy, brake, safety, and diagnostic contracts when the runtime can switch more than one authored score.
 
-Gate: deterministic 0 → 115 → 60 → 115 → 0 replay, credible Jungle identity at high energy, no audible jitter or stop/start phrasing, all automated tests green, and no masking of vehicle alerts.
+Gate: FRACTURE accepted during a real drive, JUNCTION selectable without
+redistributing its source library, no audible jitter or stop/start phrasing, all
+automated tests green, and no masking of vehicle alerts.
 
 ## Phase 4 — Flux generative renderer spike
 
-Status: **APERTURE AND ORIGINAL INTERSTATE 7 VERTIGO IMPLEMENTED; TESLA PERFORMANCE PENDING**.
+Status: **FOUR ENVIRONMENTS IMPLEMENTED; TESLA PERFORMANCE PENDING**.
 
 Implemented:
 
@@ -76,14 +80,15 @@ Implemented:
 - one seam-free geometric field that continuously morphs from large, complete four-color squares through an unmistakable urban-speed tunnel into a full Plaid field at the fixed `130 km/h` Demo ceiling;
 - selectable `VERTIGO 02` using the byte-identical upstream Interstate 7 scene with its road, repeated side lights, opposing car trails, bloom, fog, camera, deep distortion, and original dependencies;
 - an external `0–130 km/h` bridge that slows the original clock from stopped to its non-boosted `1×` rate and maps FOV from `90°` to `150°`, without editing the vendor runtime.
+- original `MERIDIAN 03`, whose widening corridor, displacement field, camera aim, and travel clocks share one monotonic speed model;
+- original `LATITUDES 04`, whose stacked field preserves and releases recent motion history over time;
 
 Queued next:
 
-- bind the visual environment selector to authored musical genres once the new sequencer boundary exists;
-- replace the truthful `SCORE / PROTOTYPE / TEXTSTEP · NEXT` placeholder with a real genre selector only after the data-driven textStep-informed transport can switch authored scores without fake states;
+- decide which visual and score combinations become authored audiovisual environments once more than FRACTURE is selectable;
 - retain the two unselected Interstate-inspired directions in the ignored backlog for a later three-direction gate rather than presenting them as implemented;
 - profile the unmodified Interstate 7 renderer on the target Tesla; any later travel, projection, curvature, density, palette, or geometry changes require a new explicit product decision and must not be folded into the upstream-integrity checkpoint;
-- verify each environment at rest, intermediate speed, full energy, and sustained deceleration at `773 × 601` before canonical deployment.
+- verify each environment at rest, intermediate speed, full energy, and sustained deceleration at `773 × 601` on the target vehicle.
 
 Gate: stable frame budget on the slowest target vehicle, graceful degradation, and no audio degradation while the renderer runs.
 

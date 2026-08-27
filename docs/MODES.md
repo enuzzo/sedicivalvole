@@ -9,7 +9,7 @@ Status: **confirmed product architecture; Engine design and implementation pendi
 | Mode | Audio purpose | Visual purpose | Current status |
 |---|---|---|---|
 | **Engine** | Reproduce selectable engine characters through synthesis, licensed samples, or a measured hybrid | Instrument-inspired generative system: abstract tachometer, throttle/load field, acceleration trace, mechanical light, or a selected alternative | Confirmed; not yet designed or implemented |
-| **Flux** | Compose and reshape selectable musical genres from speed, acceleration, deceleration, and discrete motion events | Selectable generative environments; Aperture and Vertigo are the current visual implementations with five curated palette families | Current Drive Lab implementation; multi-genre audio system pending |
+| **Flux** | Compose and reshape selectable musical scores from speed, acceleration, deceleration, and discrete motion events | Four selectable environments: Aperture, Vertigo, Meridian, and Latitudes; ten curated themes apply to the original renderers | Current Drive Lab implementation; FRACTURE ready, JUNCTION and five later scores preparing |
 
 ## Naming decision
 
@@ -73,7 +73,8 @@ The UI must not label a derived value as real Tesla RPM, throttle, gear, CAN, mo
 
 ### Flux
 
-- the approved Modular Aperture rectangular field and `VERTIGO 02` folded light-band field, each with continuous reversible speed response and curated body-color themes;
+- the approved Modular Aperture field, byte-identical upstream `VERTIGO 02`, and the original `MERIDIAN 03` and `LATITUDES 04` environments;
+- ten curated body themes for Aperture, Meridian, and Latitudes; Vertigo remains outside recolouring so its upstream rendering stays intact;
 - the current environment selector changes visual mechanics while preserving the shared signal, safety, persistence, and diagnostic contracts; it will later select matching authored musical identities as well;
 - palette and supported geometry may be tuned per environment, with curated bounds rather than arbitrary live shader controls;
 - procedural road-like flow is allowed when it remains abstract and non-scenic;

@@ -24,19 +24,19 @@ export const SCORE_LABEL = "FRACTURE";
 export const SCORE_GENRE = "Jungle / Drum & Bass";
 
 /**
- * The form: six four-bar sections, played in order and then repeated.
+ * The form: ten four-bar sections, played in order and then repeated.
  *
  * One four-bar cycle repeating forever was the whole piece, and it wore out
- * inside a minute. These six are complementary rather than contrasting — every
+ * inside a minute. These ten are complementary rather than contrasting — every
  * chord is drawn from F natural minor, so nothing modulates and the piece keeps
  * one identity — but each section has its own harmonic motion and its own
- * theme, and twenty-four bars pass before anything repeats.
+ * theme, and forty bars pass before anything repeats.
  *
  * `colour` is the chord above the bass, in semitones above `bassMidi`. Bass
  * roots stay inside one octave so the low end never leaps between sections.
  *
  * Each section carries its own theme because a single fixed line cannot be
- * interesting over six different harmonic motions. What each theme *can* do is
+ * interesting over ten different harmonic motions. What each theme *can* do is
  * stay written in the key and sit consonantly over its own four chords, which
  * is checked by `tests/score-harmony.test.mjs` rather than by ear.
  */
