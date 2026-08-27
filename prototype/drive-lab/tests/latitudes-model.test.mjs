@@ -196,22 +196,43 @@ test("produces the same stack for the same drive regardless of frame rate", () =
   }
 });
 
-test("grows the stack from the newest row instead of reporting a false lag", () => {
-  const history = createLatitudesHistory();
-  // Two seconds of a full window: most rows have no recorded moment yet.
-  drive(history, 120, 2);
-
-  const oldest = historyLagMetres(history, 1);
-  const plausibleCeiling = speedToTravelMps(120) * 2.05;
+test("opens on a plausible resting stack rather than a frozen band", () => {
+  const fresh = createLatitudesHistory();
+  // A brand new history already describes a stationary vehicle: a small,
+  // even rake rather than one uniform lag across the whole frame.
+  assert.equal(historyLagMetres(fresh, 0), 0);
+  const primedOldest = historyLagMetres(fresh, 1);
+  assert.ok(primedOldest > 0, "the opening stack must not be perfectly flat");
   assert.ok(
-    oldest <= plausibleCeiling,
-    `an unfilled window must not report more lag than has been driven, got ${oldest}`,
+    Math.abs(primedOldest - LATITUDES_IDLE_CRAWL_MPS * LATITUDES_WINDOW_SECONDS) < 0.2,
+    `the opening stack must match a standstill, got ${primedOldest}`,
+  );
+  // Evenly graded, not one flat region: check the midpoint sits between.
+  const midpoint = historyLagMetres(fresh, 0.5);
+  assert.ok(midpoint > 0 && midpoint < primedOldest);
+
+  // Pulling away from that standstill reads as an acceleration: the recent rows
+  // carry the new speed while the older primed rows still carry the standstill,
+  // which is exactly what happened.
+  const history = createLatitudesHistory();
+  drive(history, 120, 2);
+  assert.ok(
+    historyLagMetres(history, 1) > historyLagMetres(history, 0.5),
+    "the stack must stay ordered while the window refills",
+  );
+  assert.ok(
+    Math.abs(historyCurvature(history)) > 5,
+    "pulling away from rest must curve the rake",
   );
 
-  // Once the window has filled, the oldest row spans the whole window.
+  // Once the window has filled with steady travel, the oldest row spans it.
   drive(history, 120, LATITUDES_WINDOW_SECONDS + 1);
   assert.ok(
     historyLagMetres(history, 1) > speedToTravelMps(120) * LATITUDES_WINDOW_SECONDS * 0.9,
     "a filled window must span the full history",
+  );
+  assert.ok(
+    Math.abs(historyCurvature(history)) < 5,
+    "steady travel must straighten the rake again",
   );
 });

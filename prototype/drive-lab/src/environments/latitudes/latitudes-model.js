@@ -60,14 +60,24 @@ export function speedToTravelMps(speedKmh) {
   return safeSpeed / 3.6 + LATITUDES_IDLE_CRAWL_MPS;
 }
 
-/** A fresh history, flat at zero. */
+/**
+ * A fresh history.
+ *
+ * The buffer is primed with the history a stationary vehicle would have had:
+ * one sample interval of idle crawl per row, going backwards. Without this the
+ * first eight seconds have no recorded past, and every unwritten row reports the
+ * same lag — a large uniform band across the top of the frame that reads as a
+ * frozen or glitched image rather than as a calm stack. Priming makes the
+ * opening state correct instead of merely defensible: it is exactly the stack a
+ * vehicle that had been standing still would produce.
+ */
 export function createLatitudesHistory() {
+  const distances = new Float32Array(LATITUDES_HISTORY_SAMPLES);
+  for (let index = 0; index < distances.length; index += 1) {
+    distances[index] = -index * LATITUDES_SAMPLE_INTERVAL_SECONDS * LATITUDES_IDLE_CRAWL_MPS;
+  }
   return {
-    distances: new Float32Array(LATITUDES_HISTORY_SAMPLES),
-    // Rows that have not been recorded yet are not "infinitely old". Until the
-    // window fills, reads clamp to the oldest real sample so the stack grows
-    // upward from the newest row instead of showing a false uniform lag.
-    filled: 1,
+    distances,
     travelledMetres: 0,
     sampleAccumulator: 0,
   };
@@ -101,7 +111,6 @@ export function advanceLatitudesHistory(history, speedKmh, deltaSeconds) {
   while (pending > 0) {
     distances.copyWithin(1, 0, distances.length - 1);
     distances[0] = history.travelledMetres;
-    history.filled = Math.min(history.filled + 1, distances.length);
     pending -= 1;
   }
   return history;
@@ -113,10 +122,9 @@ export function advanceLatitudesHistory(history, speedKmh, deltaSeconds) {
  */
 export function readLatitudesHistory(history, ageFraction) {
   const { distances } = history;
-  const oldest = Math.max(0, (history.filled ?? distances.length) - 1);
-  const position = Math.min(clamp(ageFraction, 0, 1) * (distances.length - 1), oldest);
+  const position = clamp(ageFraction, 0, 1) * (distances.length - 1);
   const lower = Math.floor(position);
-  const upper = Math.min(lower + 1, oldest);
+  const upper = Math.min(lower + 1, distances.length - 1);
   const blend = position - lower;
   return distances[lower] * (1 - blend) + distances[upper] * blend;
 }
