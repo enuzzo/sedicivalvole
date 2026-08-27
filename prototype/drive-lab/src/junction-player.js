@@ -4,7 +4,7 @@ import {
   parseJunctionBank,
 } from "./junction-bank.js";
 
-const BANK_URL = "/audio/junction.svb";
+const BANK_URL = `/audio/junction.svb?build=${encodeURIComponent(__APP_BUILD__)}`;
 const REVIEW_INTERVAL_MS = 100;
 
 export function createJunctionPlayer(context, destination, onSnapshot) {
