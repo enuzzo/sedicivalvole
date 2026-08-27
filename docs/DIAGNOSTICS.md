@@ -87,3 +87,11 @@ Sanitized endpoint failures are shown in the drawer. The page keeps the recorder
 - Motion evidence: **PASS** for `0 → 36.8 → 81.4 → 116.2 km/h`, including displayed-speed rate, source, input, energy, BPM, score section, audio level, frame pacing, network, and visibility.
 - One explicit live `SEND DIAGNOSTIC` gesture at approximately `2026-08-27 08:46 UTC`: **PASS** with UI state `SENT` and `accepted_by_mail_transport` semantics.
 - Final delivery to the configured Gmail inbox: **pending user confirmation**.
+
+## Long real-vehicle report recovery — 2026-08-27
+
+- A real Tesla session retained `248` samples across `515 s`; the drawer estimated a `141 KiB` report with zero runtime issues and preserved it after the failed send.
+- The endpoint rejection was traced to provider PHP float expansion after browser-side fitting, not to GPS telemetry, the browser connection, or loss of recorder data.
+- A representative 248-sample report measured `215,327` bytes with the provider-equivalent precision and `120,095` bytes after shortest-round-trip serialization.
+- The corrected endpoint passed the complete local request path with `202 accepted_by_mail_transport` while real mail delivery was redirected to a harmless local sink.
+- The corrected endpoint is live. Retrying the still-open Tesla page requires no reload and preserves the original driving trace; successful transport and Gmail receipt remain pending user confirmation.
