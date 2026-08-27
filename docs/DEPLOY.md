@@ -8,6 +8,29 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## JUNCTION live-mixing publication evidence — 2026-08-27
+
+- build stamp: **`20260827-2342`**, confirmed in the cache-busted canonical
+  bundle and live diagnostic report; deployed commit: `c17700c`;
+  implementation: `da845b3`;
+- gate before upload: **PASS**, 132 unit tests, 4 packaging tests, production
+  build, read-only remote identity verification, and no preflight writes;
+- publication: **PASS**, 21 files / 7,039,010 bytes uploaded to the canonical
+  root; the dynamic root and exact remote tree checks passed;
+- canonical cache-busted HTML references `assets/index-DUQ4yXsb.js`, whose live
+  bundle reports build `20260827-2342` and commit `c17700c`;
+- `audio/junction.svb?build=20260827-2342`: **HTTP 200**, 5,738,856 bytes and
+  byte-identical to the local bank at SHA-256
+  `f2d56e8a8c3e69be4f2b98e6db845b1024ed96487cb9a99ca92fe0e5498d16d6`;
+- live Browser QA at `773 x 601`: **PASS**. JUNCTION reported
+  `mixing: live-two-deck`, take pair `2 + 3`, sample playback active at a
+  beatless 127 BPM rest state, one 17,416,128-byte decoded block, and one bank
+  fetch. Vertigo and JUNCTION sustained **60 FPS / 18.5 ms p95** for 36 seconds,
+  with no frame above 34 ms, no long task, no runtime issue, and 11.4 MB used JS
+  heap;
+- GPS permission was denied in the desktop Browser QA; this does not verify the
+  target vehicle's GPS path, which remains a separate real-Tesla gate.
+
 ## JUNCTION road-energy pacing publication evidence — 2026-08-27
 
 - build stamp: **`20260827-2323`**, confirmed on the canonical splash and in the
