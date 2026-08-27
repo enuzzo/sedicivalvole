@@ -1,5 +1,13 @@
 # Deployment
 
+## Build identification
+
+Every build carries a stamp in the form `20260826-1543` (`YYYYMMDD-HHMM`),
+generated at build time and shown on the splash. **Always write the build stamp
+when publishing or deploying**, and record it with the evidence for that
+publication. It identifies the build; `VERSION` remains the only SemVer source
+of truth and is reported separately in the diagnostics.
+
 ## Four-environment publication evidence — 2026-08-27
 
 - deployed commit: `2d28671`;

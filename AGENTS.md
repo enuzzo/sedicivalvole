@@ -10,6 +10,7 @@ These rules apply to every change in the `sedicivalvole` project.
 ## Versioning and traceability
 
 - `VERSION` is the only SemVer source of truth. Do not duplicate the number manually; builds must read or receive it through a verified pipeline.
+- Every build carries a build stamp in the form `20260826-1543` (`YYYYMMDD-HHMM`), generated at build time. Always write the build stamp when publishing or deploying, and record it in the deployment evidence. The stamp identifies the build; it does not replace `VERSION`.
 - Update `CHANGELOG.md` for every user-visible change or relevant technical change.
 - Keep unreleased changes under `Unreleased`; create a versioned ISO-dated section only when releasing, and synchronize `VERSION`.
 - Update the README, feature status, and architecture when facts change.
