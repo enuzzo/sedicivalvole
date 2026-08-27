@@ -24,9 +24,9 @@ export const FLUX_ENVIRONMENTS = [
     number: "02",
     rendererLabel: "Vertigo",
     renderer: "vertigo",
-    // Vertigo renders the unmodified upstream Interstate 7 scene. Recolouring it
-    // would alter the original rendering the product deliberately preserves.
-    themed: false,
+    // The source tree stays byte-identical; the external integration bridge
+    // maps themes onto the original runtime's existing colour channels.
+    themed: true,
   },
   {
     id: "meridian",

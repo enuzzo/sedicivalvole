@@ -1346,6 +1346,7 @@ export function App() {
       {environment.renderer === "vertigo" ? (
         <Interstate7Field
           speed={speed}
+          theme={theme}
           reducedMotion={reducedMotion}
           onRenderer={setRenderer}
           onFrame={recordRenderedFrame}

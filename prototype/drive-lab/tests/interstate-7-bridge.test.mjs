@@ -2,7 +2,11 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
-import { speedToInterstate7Targets } from "../src/interstate-7-bridge.js";
+import {
+  speedToInterstate7Targets,
+  themeToInterstate7Palette,
+} from "../src/interstate-7-bridge.js";
+import { getFluxTheme } from "../src/flux-themes.js";
 
 const UPSTREAM_FILES = new Map([
   ["index7.html", "6f6737865d80580ace61c7dea61c9b93c217724e7547ce1cf3c6dcd5adf6fb7b"],
@@ -40,5 +44,21 @@ test("keeps the original Interstate 7 runtime byte-identical to upstream", async
     );
     const actualHash = createHash("sha256").update(source).digest("hex");
     assert.equal(actualHash, expectedHash, relativePath);
+  }
+});
+
+test("maps every body-colour theme onto all original scene colour groups", () => {
+  const palette = themeToInterstate7Palette(getFluxTheme("acid"));
+  assert.equal(palette.leftCars.length, 3);
+  assert.equal(palette.rightCars.length, 3);
+  assert.equal(palette.sticks.length, 2);
+  assert.deepEqual(palette.leftCars[0], [1, 0.055, 0.58]);
+  assert.deepEqual(palette.rightCars[1], [0.33, 1, 0.16]);
+  for (const colors of Object.values(palette)) {
+    const entries = Array.isArray(colors[0]) ? colors : [colors];
+    for (const color of entries) {
+      assert.equal(color.length, 3);
+      assert.ok(color.every((channel) => channel >= 0 && channel <= 1));
+    }
   }
 });

@@ -40,8 +40,8 @@ test("gives every environment a unique identifier, number, and renderer", () => 
   assert.equal(renderers.size, FLUX_ENVIRONMENTS.length);
 });
 
-test("keeps the upstream Interstate 7 scene outside body-colour theming", () => {
-  assert.equal(getFluxEnvironment("vertigo").themed, false);
+test("connects every implemented environment to body-colour theming", () => {
+  assert.equal(getFluxEnvironment("vertigo").themed, true);
   assert.equal(getFluxEnvironment("aperture").themed, true);
   assert.equal(getFluxEnvironment("meridian").themed, true);
   assert.equal(getFluxEnvironment("latitudes").themed, true);

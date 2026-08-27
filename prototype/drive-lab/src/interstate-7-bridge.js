@@ -15,3 +15,25 @@ export function speedToInterstate7Targets(speedKmh) {
     fovTarget: ORIGINAL_FOV + (ORIGINAL_SPEED_UP_FOV - ORIGINAL_FOV) * normalizedSpeed,
   };
 }
+
+function mixRgb(from, to, amount) {
+  return from.map((value, index) => value + (to[index] - value) * amount);
+}
+
+/**
+ * Maps a sedicivalvole body-colour theme onto the original scene's existing
+ * colour channels. Geometry, bloom, distortion, camera and motion stay owned
+ * by the byte-identical upstream runtime.
+ */
+export function themeToInterstate7Palette(theme) {
+  const { base, mid, light, accent, secondary } = theme.palette;
+  return {
+    background: base,
+    road: mixRgb(base, mid, 0.08),
+    island: mixRgb(base, mid, 0.14),
+    markings: mixRgb(base, mid, 0.58),
+    leftCars: [accent, mixRgb(accent, mid, 0.28), accent],
+    rightCars: [light, secondary, mixRgb(light, secondary, 0.42)],
+    sticks: [secondary, light],
+  };
+}

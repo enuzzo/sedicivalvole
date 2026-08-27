@@ -41,6 +41,11 @@ button { -webkit-tap-highlight-color: transparent; }
 .app[data-theme="red"] { --accent: #ed2d24; }
 .app[data-theme="blue"] { --accent: #2858ad; }
 .app[data-theme="silver"] { --accent: #a6a7a3; }
+.app[data-theme="neon"] { --accent: #ff2d95; }
+.app[data-theme="mint"] { --accent: #a8e6cf; }
+.app[data-theme="acid"] { --accent: #ff2ca8; }
+.app[data-theme="signal"] { --accent: #e4362a; }
+.app[data-theme="sulphur"] { --accent: #e6d02a; }
 .field-canvas { position: absolute; inset: 0; z-index: 0; display: block; width: 100%; height: 100%; }
 .interstate-seven-frame {
   position: absolute;
@@ -52,7 +57,10 @@ button { -webkit-tap-highlight-color: transparent; }
   border: 0;
   background: #000;
   pointer-events: none;
+  opacity: 0;
+  transition: opacity 160ms linear;
 }
+.interstate-seven-frame.is-ready { opacity: 1; }
 .keyboard-hint {
   position: absolute;
   z-index: 12;

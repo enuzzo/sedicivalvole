@@ -1,12 +1,54 @@
 import { useEffect, useMemo, useRef } from "react";
-import { speedToInterstate7Targets } from "./interstate-7-bridge.js";
+import {
+  speedToInterstate7Targets,
+  themeToInterstate7Palette,
+} from "./interstate-7-bridge.js";
 
 const ORIGINAL_INTERSTATE_7_PATH = "third-party/infinite-lights/index7.html";
 
-export function Interstate7Field({ speed, reducedMotion, onRenderer, onFrame }) {
+function setThreeColor(target, rgb) {
+  target?.setRGB?.(rgb[0], rgb[1], rgb[2]);
+}
+
+function recolourInstances(mesh, colors, paired = false) {
+  const attribute = mesh?.geometry?.attributes?.aColor;
+  if (!attribute?.array) return;
+  for (let index = 0; index < attribute.count; index += 1) {
+    const colorIndex = paired ? Math.floor(index / 2) : index;
+    const color = colors[colorIndex % colors.length];
+    const offset = index * 3;
+    attribute.array[offset] = color[0];
+    attribute.array[offset + 1] = color[1];
+    attribute.array[offset + 2] = color[2];
+  }
+  attribute.needsUpdate = true;
+}
+
+function recolourRoad(mesh, surface, markings) {
+  const uniforms = mesh?.material?.uniforms;
+  setThreeColor(uniforms?.uColor?.value, surface);
+  setThreeColor(uniforms?.uBrokenLinesColor?.value, markings);
+  setThreeColor(uniforms?.uShoulderLinesColor?.value, markings);
+}
+
+function applyTheme(app, theme) {
+  if (!theme?.palette || app.__sedicivalvoleThemeId === theme.id) return;
+  const palette = themeToInterstate7Palette(theme);
+  setThreeColor(app.scene?.fog?.color, palette.background);
+  setThreeColor(app.fogUniforms?.fogColor?.value, palette.background);
+  recolourInstances(app.leftCarLights?.mesh, palette.leftCars, true);
+  recolourInstances(app.rightCarLights?.mesh, palette.rightCars, true);
+  recolourInstances(app.leftSticks?.mesh, palette.sticks);
+  recolourRoad(app.road?.leftRoadWay, palette.road, palette.markings);
+  recolourRoad(app.road?.rightRoadWay, palette.road, palette.markings);
+  recolourRoad(app.road?.island, palette.island, palette.markings);
+  app.__sedicivalvoleThemeId = theme.id;
+}
+
+export function Interstate7Field({ speed, theme, reducedMotion, onRenderer, onFrame }) {
   const frameRef = useRef(null);
-  const valuesRef = useRef({ speed, reducedMotion });
-  valuesRef.current = { speed, reducedMotion };
+  const valuesRef = useRef({ speed, theme, reducedMotion });
+  valuesRef.current = { speed, theme, reducedMotion };
   const source = useMemo(
     () => new URL(`/${ORIGINAL_INTERSTATE_7_PATH}`, window.location.origin).href,
     [],
@@ -49,9 +91,11 @@ export function Interstate7Field({ speed, reducedMotion, onRenderer, onFrame }) 
           );
           this.speedUpTarget = speedUpTarget;
           this.fovTarget = fovTarget;
+          applyTheme(this, frameWindow.__SEDICIVALVOLE_THEME__);
           return originalUpdate.call(this, delta);
         };
         bridgeInstalled = true;
+        frame.classList.add("is-ready");
         onRenderer("WebGL · Original Interstate 7");
       } catch (error) {
         console.warn("[Interstate7Field] Original runtime bridge unavailable", error);
@@ -69,6 +113,7 @@ export function Interstate7Field({ speed, reducedMotion, onRenderer, onFrame }) 
         ? Math.min(valuesRef.current.speed, 20)
         : valuesRef.current.speed;
       frameWindow.__SEDICIVALVOLE_SPEED_KMH__ = inputSpeed;
+      frameWindow.__SEDICIVALVOLE_THEME__ = valuesRef.current.theme;
       if (frameLoaded && !bridgeInstalled) installBridge();
 
       const elapsed = Math.max(1, now - lastFrameAt);

@@ -101,16 +101,17 @@ export const FLUX_THEMES = [
     },
   },
   {
-    id: "sodium",
-    label: "SODIUM 08",
-    swatch: "#ff9d2e",
+    id: "acid",
+    label: "ACID 08",
+    swatch: "#ff2ca8",
+    swatchSecondary: "#72ff45",
     palette: {
-      // The colour of motorway lighting: amber over a warm, almost brown black.
-      base: [0.022, 0.014, 0.008],
-      mid: [0.32, 0.20, 0.09],
-      light: [0.98, 0.88, 0.72],
-      accent: [1.0, 0.58, 0.14],
-      secondary: [0.35, 0.24, 0.42],
+      // Unlike Neon, every field channel carries the magenta/green pairing.
+      base: [0.018, 0.006, 0.022],
+      mid: [0.62, 0.035, 0.34],
+      light: [0.55, 1.0, 0.28],
+      accent: [1.0, 0.055, 0.58],
+      secondary: [0.33, 1.0, 0.16],
     },
   },
   {
