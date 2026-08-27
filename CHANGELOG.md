@@ -89,7 +89,7 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - 2026-08-27 14:51 `[3caa6a0]`: Eliminated diagonal sector seams and broken triangular tiles at standstill by preserving the pure 2D Cartesian grid across the full-screen end wall at 0 km/h, with smooth physical recession and tunnel emergence as speed rises to 20 km/h.
 - 2026-08-27 14:54 `[1b0b846]`: Expanded tunnel formation across a smooth 0–55 km/h curve (visible by 35–40 km/h and reaching full depth at 55 km/h), eliminated low-speed motion dead zones with a lively progressive flow-rate curve, and added a progressive launch throttle ramp for natural, cinematic acceleration from standstill.
 - 2026-08-27 14:55 `[39029e6]`: Completely eliminated ghost red flashes in the tunnel terminus void by gating terminus darkening as the final pipeline step after all pulse and brake lighting effects.
-- 2026-08-27 15:02: Replaced the central floating wall cap with direct continuous geometric morphing between the 100% flat square 2D grid at 0 km/h and the 4 perspective tunnel walls at 35 km/h, enabling the grid to seamlessly fold into walls/ceiling/floor and unroll back on deceleration.
+- 2026-08-27 15:02 `[c85b70c]`: Replaced the central floating wall cap with direct continuous geometric morphing between the 100% flat square 2D grid at 0 km/h and the 4 perspective tunnel walls at 35 km/h, enabling the grid to seamlessly fold into walls/ceiling/floor and unroll back on deceleration.
 
 ### Fixed
 
