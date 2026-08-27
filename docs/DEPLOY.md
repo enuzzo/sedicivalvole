@@ -8,6 +8,34 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Flux performance publication evidence — 2026-08-27
+
+- build stamp: **`20260827-2232`**, confirmed on the canonical splash and in the
+  live diagnostic report;
+- deployed commit: `f9bb395`; implementation checkpoints: Aperture `87362c5`,
+  Vertigo `e57400d`, compact footer `afc3001`, JUNCTION `023717c`;
+- gate before upload: **PASS**, 126 unit tests, 4 packaging tests and a
+  production build;
+- publication argument gate: **PASS**, `--help` printed usage and performed no
+  deployment before the intentional invocation;
+- canonical bare `/` and cache-busted `/?build=20260827-2232`: **HTTP 200**,
+  `no-store`, and byte-identical to local `index.html` at SHA-256
+  `988fdfff96addf5e4f1e4ba3bbd6e470f50614d5f59bfd1b4a2750d220d74780`;
+- application JavaScript, CSS and AudioWorklet are live and byte-identical to
+  the production build at SHA-256 `65d32784418ac1a9acb1e7ed74d9a290b9b43dbb63ebe4c4d5361186a625539a`,
+  `1a3359557b741048d4afcf0f109c0492d3f7a28494832877637fee5e60bb3ccc`
+  and `9e2d612a94bce99733445047d10138d5573e9d425ef56e19ccc7061762f18ab3`;
+- `audio/junction.svb`: **HTTP 200**, 1,906,749 bytes and byte-identical at
+  SHA-256 `82d93e136fd53e6e98143e5b108bcb9904d0508f1f0d9908cfd681be55bf66f8`;
+- live raw diagnostics at `773 x 601`: build `20260827-2232`, commit `f9bb395`,
+  JUNCTION `bankLoaded: true`, `playing: true`, Web Audio `running`, Aperture
+  **59.99 FPS / 17.5 ms p95**, and zero runtime issues;
+- live Vertigo QA: **PASS** for editorial-shell removal and the ACID magenta/green
+  runtime palette; the inspected console contained no warnings or errors;
+- upstream Vertigo `index7.html` and `js/InfiniteLights.js` remain live and
+  byte-identical to the pinned local files; development-only QA routes remain
+  **HTTP 404**. No diagnostic was sent.
+
 ## Documentation-cleanup publication evidence — 2026-08-27
 
 - build stamp: **`20260827-2204`**, confirmed on the live splash and in the
