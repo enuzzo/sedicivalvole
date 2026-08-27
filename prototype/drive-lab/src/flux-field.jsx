@@ -63,7 +63,10 @@ const FRAGMENT_SHADER = `#version 300 es
     float energy = smoothstep(0.02, 0.96, u_energy);
     float velocity = smoothstep(0.08, 0.96, u_velocity);
     float shrink = smoothstep(0.0, 0.42, energy);
-    float warp = pow(smoothstep(0.02, 0.92, u_velocity), 1.05);
+    // The corridor has to be forming by roughly 20 km/h and unmistakable by 40,
+    // so the warp curve opens early and then saturates rather than waiting for
+    // motorway speed to do anything at all.
+    float warp = pow(smoothstep(0.0, 0.42, u_velocity), 0.62);
     float majorAxis = max(max(abs(screen.x), abs(screen.y)), 0.035);
     float perimeter = squarePerimeter(screen);
     float depth = 1.0 / max(majorAxis, 0.12);
@@ -92,11 +95,11 @@ const FRAGMENT_SHADER = `#version 300 es
     // Cell size in screen space goes as dr / d(mapped), so a logarithmic remap
     // shrinks tiles toward the centre and builds the vanishing point, while at
     // rest the remap is the identity and the field is a plain flat mosaic.
-    const float R_FLOOR = 0.055;
+    const float R_FLOOR = 0.085;
     // Anisotropic so the resting tiles read square on a wide viewport: screen.x
     // already carries the aspect term, so x needs the larger count.
-    const vec2 GRID_SCALE = vec2(5.2, 4.0);
-    const float TUNNEL_SCALE = 0.46;
+    const vec2 GRID_SCALE = vec2(3.9, 3.0);
+    const float TUNNEL_SCALE = 0.62;
 
     float radius = max(majorAxis, R_FLOOR);
     float flatMapped = radius;
@@ -115,7 +118,7 @@ const FRAGMENT_SHADER = `#version 300 es
     float flatInsetY = clamp(0.5 - (0.5 - flatInsetX) * u_aspect * 0.7, 0.03, 0.42);
     float compactInsetY = clamp(0.5 - (0.5 - compactInsetX) * u_aspect * 0.7, 0.03, 0.42);
     vec2 compactInset = vec2(compactInsetX, mix(flatInsetY, compactInsetY, shrink));
-    float trailInset = mix(0.15 + 0.1 * hash21(fieldCell + vec2(9.0)), 0.012, velocity);
+    float trailInset = mix(0.15 + 0.1 * hash21(fieldCell + vec2(9.0)), 0.055, velocity);
     vec2 tunnelInset = vec2(0.1 + 0.07 * hash21(fieldCell + vec2(4.0)), trailInset);
     vec2 fieldInset = mix(compactInset, tunnelInset, warp);
     float tile = rectangleMask(fieldLocal, fieldInset);
