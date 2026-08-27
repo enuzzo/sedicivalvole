@@ -98,24 +98,29 @@ def remote_bytes(ftp: ftplib.FTP, name: str) -> bytes:
     return buffer.getvalue()
 
 
-def verify_remote_static_tree(ftp: ftplib.FTP, local_root: Path) -> None:
-    """Verify that every existing remote vendor entry matches the local tree."""
+def verify_remote_static_tree(
+    ftp: ftplib.FTP,
+    local_root: Path,
+    *,
+    tree_name: str,
+) -> None:
+    """Verify that every existing remote static entry matches the local tree."""
     remote_names = safe_names(ftp)
     expected_names = {path.name for path in local_root.iterdir()}
     if not remote_names.issubset(expected_names):
-        raise ValueError("unexpected third-party entry")
+        raise ValueError(f"unexpected {tree_name} entry")
 
     for name in remote_names:
         local_path = local_root / name
         if local_path.is_dir():
             ftp.cwd(name)
             try:
-                verify_remote_static_tree(ftp, local_path)
+                verify_remote_static_tree(ftp, local_path, tree_name=tree_name)
             finally:
                 ftp.cwd("..")
             continue
         if sha256_bytes(remote_bytes(ftp, name)) != hashlib.sha256(local_path.read_bytes()).hexdigest():
-            raise ValueError("third-party content mismatch")
+            raise ValueError(f"{tree_name} content mismatch")
 
 
 def sha256_bytes(payload: bytes) -> str:
@@ -143,6 +148,7 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
         STATIC_ROOT_ENTRY,
         DYNAMIC_ROOT_ENTRY,
         "assets",
+        "audio",
         "api",
         "third-party",
     }
@@ -213,7 +219,22 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
     if "third-party" in root_names:
         ftp.cwd("third-party")
         try:
-            verify_remote_static_tree(ftp, BUILD / "third-party")
+            verify_remote_static_tree(
+                ftp,
+                BUILD / "third-party",
+                tree_name="third-party",
+            )
+        finally:
+            ftp.cwd("..")
+
+    if "audio" in root_names:
+        ftp.cwd("audio")
+        try:
+            verify_remote_static_tree(
+                ftp,
+                BUILD / "audio",
+                tree_name="audio",
+            )
         finally:
             ftp.cwd("..")
 
@@ -314,6 +335,8 @@ Uploads the built client to the canonical root. This performs a real
 publication; there is no dry-run mode.
 
   python3 scripts/deploy_drive_lab_ftp.py           publish
+  python3 scripts/deploy_drive_lab_ftp.py --verify-only
+                                                  verify identity; write nothing
   python3 scripts/deploy_drive_lab_ftp.py --help    show this and do nothing
 """
 
@@ -326,6 +349,8 @@ def parse_arguments(argv: list[str]) -> bool:
     the run rather than be treated as consent to publish.
     """
     if not argv:
+        return True
+    if argv == ["--verify-only"]:
         return True
     if argv == ["--help"] or argv == ["-h"]:
         print(USAGE, end="")
