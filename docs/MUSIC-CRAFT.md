@@ -305,6 +305,35 @@ sustained sound, or placing a sample merely because it was available. Memory of
 the previous take prevents the easiest audible failure: an allegedly varied
 system selecting the same performance twice in succession.
 
+### 5.6 Energy is not a permanently loud break
+
+JUNCTION's first adaptive bank played at 168 BPM in every state. Even after it
+gained three takes, the first break layer entered at full gain and the bassline
+ran at rest. A listener therefore heard almost only the beat, and 30 km/h felt
+like maximum attack. More samples did not solve the musical fault because the
+score had no meaningful absence from which rhythm could arrive.
+
+Rest now contains only sparse supplied chord performances and their spatial
+tails. The break and bassline are genuinely absent. Near 13 km/h a native 127
+BPM break enters below the harmony and rises over four two-bar phrases; later
+states use native 135, 158, 164 and 168 BPM recordings. Nothing is stretched in
+the browser, and 168 BPM is a high-energy ceiling rather than the permanent
+floor. The maximum primary-break gain is bounded at 0.55, additional layers sit
+at 0.28, and energy still grows through orchestration, drive, punctuation and
+space rather than tempo alone.
+
+Bass variation must also remain harmonic. The available tempo folders do not
+all contain the same roots, so each two-bar chord chooses the first available
+consonant bass: root first, then a safe inversion or fifth. Choosing a filename
+randomly would reintroduce the exact pitch fault that authored variation is
+supposed to prevent.
+
+The listener notices this as scale: stopping creates air, urban speed has room
+to groove, and a full Jungle break means something because it was not already
+there. The assertable parts — beatless rest, rising low-speed beat envelope,
+native tempo ladder, bounded break level, gapless sections and take
+anti-repetition — live in `tests/junction-bank.test.mjs`.
+
 ---
 
 ## 6. Testing music

@@ -158,10 +158,13 @@ from interpretation and arrangement rather than playback-rate escalation.
 The music registry separates `ready` from `preparing`. FRACTURE and JUNCTION are
 ready; the remaining five directions are truthful disabled roadmap entries.
 JUNCTION is a 192-bar rendered production: eight adaptive energy states each
-have three complete takes, giving 24 sections in one 5.1 MB Opus resource. One
-HTML media decoder feeds the shared AudioContext; energy and braking select the
-next state at an eight-bar boundary, while a bounded random choice avoids the
-take that just played. The original sample-pack files never enter the build.
+have three complete takes, giving 24 sections in one 5.7 MB Opus resource. Each
+section carries its own native tempo and duration: ambient rest at 127 BPM has
+no rhythm or bassline; a quiet 127 BPM break enters near 13 km/h, followed by
+135, 158, 164 and finally 168 BPM recordings as road energy rises. One HTML
+media decoder feeds the shared AudioContext; energy and braking select the next
+state at an eight-bar boundary, while a bounded random choice avoids the take
+that just played. The original sample-pack files never enter the build.
 
 ### Flux sequencer direction
 

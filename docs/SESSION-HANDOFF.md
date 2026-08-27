@@ -64,8 +64,9 @@ would copy it without its dependencies and fail after deployment.
 ### Music library
 
 - FRACTURE 02 — generative and `ready` in the AudioWorklet;
-- JUNCTION 01 — sampled and `ready`; one 5.1 MB rendered Opus bank, three
-  authored takes for each of eight adaptive states, and one browser decoder;
+- JUNCTION 01 — sampled and `ready`; one 5.7 MB rendered Opus bank, three
+  authored takes for each of eight adaptive states, native 127–168 BPM pacing,
+  beatless ambient rest, and one browser decoder;
 - PULSE 03, CUTWATER 04, LOWTIDE 05, NIGHTCAST 06, STILLWATER 07 — declared
   `preparing`, disabled, and must not be presented as playing.
 
