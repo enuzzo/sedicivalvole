@@ -18,20 +18,19 @@ function smoothstep(minimum, maximum, value) {
 export const APERTURE_TUNING = Object.freeze({
   wallTiles: 7,
   depthBandsAtCruise: 7,
-  wallApproachSpeedKmh: 55,
+  wallApproachSpeedKmh: 35,
   terminalSpeedKmh: 120,
 });
 
-/** Speed at which the end wall reaches the far terminus (55 km/h). */
-export const WALL_APPROACH_SPEED_KMH = 55;
+/** Speed at which the grid fully folds into the 3D perspective tunnel (35 km/h). */
+export const WALL_APPROACH_SPEED_KMH = 35;
 
 /**
  * The end wall's depth along the Z axis, screen size, and luminance.
  *
- * At 0 km/h the wall sits at the camera plane (z = 1.0) and covers 100% of the screen.
- * From 0 to 55 km/h the wall smoothly recedes from z = 1.0 to z = 8.0,
- * with the tunnel clearly visible around 35-40 km/h.
- * At 55+ km/h the wall has reached the far terminus (z >= 8.0) and fades to black.
+ * At 0 km/h the grid sits flat at z = 1.0 (covers 100% of the screen).
+ * Between 0 and 35 km/h the grid folds directly into the 4 walls of the perspective tunnel.
+ * Above 35 km/h the tunnel is fully formed with the dark central terminus void.
  */
 export function apertureWall(speedKmh) {
   const proximity = 1 - smoothstep(0, WALL_APPROACH_SPEED_KMH, Math.max(0, speedKmh));
