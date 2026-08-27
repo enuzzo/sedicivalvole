@@ -178,3 +178,216 @@ export function appendConnectionHistory(history, snapshot, limit = 60) {
   if (unchanged) return history;
   return [...history, snapshot].slice(-limit);
 }
+
+export const DRIVE_TRACE_INTERVAL_MS = 2000;
+export const DRIVE_TRACE_SAMPLE_LIMIT = 300;
+export const DRIVE_TRACE_FIELDS = [
+  "t", "speed", "gps", "gpsAge", "gpsState", "accuracy", "rate", "source", "input", "energy",
+  "bpm", "fps", "p95Frame", "audio", "section", "motion", "online", "net", "rtt", "visibility",
+];
+
+const rounded = (value, precision = 2) => {
+  if (!Number.isFinite(value)) return null;
+  const factor = 10 ** precision;
+  return Math.round(value * factor) / factor;
+};
+
+function addDuration(totals, key, durationMs) {
+  const safeKey = typeof key === "string" && key ? key : "unknown";
+  totals[safeKey] = (totals[safeKey] ?? 0) + durationMs;
+}
+
+export function createDriveTelemetry(startedAtMs = 0) {
+  return {
+    startedAtMs,
+    lastCapturedAtMs: null,
+    lastSpeedKmh: null,
+    totalSamples: 0,
+    sampleLimit: DRIVE_TRACE_SAMPLE_LIMIT,
+    discardedSamples: 0,
+    totalDistanceKm: 0,
+    movingDurationMs: 0,
+    stationaryDurationMs: 0,
+    sourceDurationsMs: {},
+    inputDurationsMs: {},
+    maximumSpeedKmh: null,
+    peakAccelerationKmhPerSecond: null,
+    peakDecelerationKmhPerSecond: null,
+    minimumGpsAccuracyM: null,
+    samples: [],
+  };
+}
+
+export function recordDriveTelemetrySample(telemetry, sample, limit = DRIVE_TRACE_SAMPLE_LIMIT) {
+  if (!Number.isFinite(sample?.capturedAtMs)) return telemetry;
+  const speedKmh = Math.max(0, Number(sample.speedKmh) || 0);
+  const intervalMs = Number.isFinite(telemetry.lastCapturedAtMs)
+    ? Math.max(0, sample.capturedAtMs - telemetry.lastCapturedAtMs)
+    : 0;
+  const rateKmhPerSecond = intervalMs > 0 && Number.isFinite(telemetry.lastSpeedKmh)
+    ? (speedKmh - telemetry.lastSpeedKmh) / (intervalMs / 1000)
+    : 0;
+  const averageSpeedKmh = Number.isFinite(telemetry.lastSpeedKmh)
+    ? (telemetry.lastSpeedKmh + speedKmh) / 2
+    : speedKmh;
+
+  telemetry.totalSamples += 1;
+  telemetry.sampleLimit = limit;
+  telemetry.totalDistanceKm += averageSpeedKmh * intervalMs / 3600000;
+  telemetry.movingDurationMs += averageSpeedKmh >= 1 ? intervalMs : 0;
+  telemetry.stationaryDurationMs += averageSpeedKmh < 1 ? intervalMs : 0;
+  addDuration(telemetry.sourceDurationsMs, sample.source, intervalMs);
+  addDuration(telemetry.inputDurationsMs, sample.driveInput, intervalMs);
+  telemetry.maximumSpeedKmh = Math.max(telemetry.maximumSpeedKmh ?? speedKmh, speedKmh);
+  telemetry.peakAccelerationKmhPerSecond = Math.max(
+    telemetry.peakAccelerationKmhPerSecond ?? rateKmhPerSecond,
+    rateKmhPerSecond,
+  );
+  telemetry.peakDecelerationKmhPerSecond = Math.min(
+    telemetry.peakDecelerationKmhPerSecond ?? rateKmhPerSecond,
+    rateKmhPerSecond,
+  );
+  if (Number.isFinite(sample.accuracyM)) {
+    telemetry.minimumGpsAccuracyM = Math.min(
+      telemetry.minimumGpsAccuracyM ?? sample.accuracyM,
+      sample.accuracyM,
+    );
+  }
+
+  const retainedSample = {
+    t: rounded((sample.capturedAtMs - telemetry.startedAtMs) / 1000, 1),
+    speed: rounded(speedKmh, 1),
+    gps: rounded(sample.rawGpsSpeedKmh, 1),
+    gpsAge: rounded(sample.gpsAgeMs, 0),
+    gpsState: sample.gpsState ?? null,
+    accuracy: rounded(sample.accuracyM, 1),
+    rate: rounded(rateKmhPerSecond, 2),
+    source: sample.source ?? "unknown",
+    input: sample.driveInput ?? "unknown",
+    energy: rounded(sample.energy, 3),
+    bpm: rounded(sample.bpm, 1),
+    fps: rounded(sample.averageFps, 1),
+    p95Frame: rounded(sample.p95FrameMs, 1),
+    audio: rounded(sample.audioLevel, 3),
+    section: Number.isFinite(sample.audioSection) ? sample.audioSection : null,
+    motion: sample.motionPhase ?? null,
+    online: typeof sample.online === "boolean" ? sample.online : null,
+    net: sample.effectiveType ?? null,
+    rtt: rounded(sample.roundTripTimeMs, 0),
+    visibility: sample.visibility ?? null,
+  };
+  telemetry.samples.push(retainedSample);
+  if (telemetry.samples.length > limit) {
+    const overflow = telemetry.samples.length - limit;
+    telemetry.samples.splice(0, overflow);
+    telemetry.discardedSamples += overflow;
+  }
+  telemetry.lastCapturedAtMs = sample.capturedAtMs;
+  telemetry.lastSpeedKmh = speedKmh;
+  return telemetry;
+}
+
+function roundDurationTotals(totals) {
+  return Object.fromEntries(
+    Object.entries(totals).map(([key, durationMs]) => [key, Math.round(durationMs)]),
+  );
+}
+
+export function summarizeDriveTelemetry(telemetry, generatedAtMs = telemetry.lastCapturedAtMs) {
+  const durationMs = Number.isFinite(generatedAtMs)
+    ? Math.max(0, generatedAtMs - telemetry.startedAtMs)
+    : 0;
+  const retainedDurationSeconds = telemetry.samples.length > 1
+    ? Math.max(0, telemetry.samples.at(-1).t - telemetry.samples[0].t)
+    : 0;
+  return {
+    samplingIntervalMs: DRIVE_TRACE_INTERVAL_MS,
+    sampleLimit: telemetry.sampleLimit,
+    totalSamples: telemetry.totalSamples,
+    retainedSamples: telemetry.samples.length,
+    discardedSamples: telemetry.discardedSamples,
+    sessionDurationMs: Math.round(durationMs),
+    retainedDurationMs: Math.round(retainedDurationSeconds * 1000),
+    estimatedDistanceKm: rounded(telemetry.totalDistanceKm, 3),
+    movingDurationMs: Math.round(telemetry.movingDurationMs),
+    stationaryDurationMs: Math.round(telemetry.stationaryDurationMs),
+    maximumSpeedKmh: rounded(telemetry.maximumSpeedKmh, 1),
+    peakAccelerationKmhPerSecond: rounded(telemetry.peakAccelerationKmhPerSecond, 2),
+    peakDecelerationKmhPerSecond: rounded(telemetry.peakDecelerationKmhPerSecond, 2),
+    minimumGpsAccuracyM: rounded(telemetry.minimumGpsAccuracyM, 1),
+    sourceDurationsMs: roundDurationTotals(telemetry.sourceDurationsMs),
+    inputDurationsMs: roundDurationTotals(telemetry.inputDurationsMs),
+  };
+}
+
+export function createDriveTelemetryReport(telemetry, generatedAtMs = telemetry.lastCapturedAtMs) {
+  return {
+    summary: summarizeDriveTelemetry(telemetry, generatedAtMs),
+    sampleFields: DRIVE_TRACE_FIELDS,
+    fieldLegend: {
+      t: "seconds since recorder start",
+      speed: "displayed speed in km/h",
+      gps: "latest raw GPS speed in km/h",
+      gpsAge: "milliseconds since the latest GPS sample",
+      accuracy: "GPS accuracy radius in metres",
+      rate: "displayed-speed change in km/h per second",
+      fps: "aggregate average frames per second",
+      p95Frame: "aggregate p95 frame time in milliseconds",
+      audio: "normalized output level",
+      rtt: "network round-trip estimate in milliseconds",
+    },
+    samples: telemetry.samples.map((sample) => DRIVE_TRACE_FIELDS.map((field) => sample[field])),
+  };
+}
+
+function serializedUtf8Bytes(value) {
+  return new TextEncoder().encode(JSON.stringify(value, null, 2)).byteLength;
+}
+
+export function fitDiagnosticReportForTransport(report, maximumBytes = 188000) {
+  const trimmingTargetBytes = Math.max(0, maximumBytes - 512);
+  const originalSamples = report.flightRecorder?.samples?.length ?? 0;
+  const originalEvents = report.events?.length ?? 0;
+  const originalRuntimeIssues = report.runtimeIssues?.length ?? 0;
+  const fitted = {
+    ...report,
+    flightRecorder: report.flightRecorder ? {
+      ...report.flightRecorder,
+      summary: { ...report.flightRecorder.summary },
+      samples: [...report.flightRecorder.samples],
+    } : null,
+    events: [...(report.events ?? [])],
+    runtimeIssues: [...(report.runtimeIssues ?? [])],
+    transport: {
+      maximumPrettyPrintedReportBytes: maximumBytes,
+      originalSamples,
+      originalEvents,
+      originalRuntimeIssues,
+    },
+  };
+
+  while (serializedUtf8Bytes(fitted) > trimmingTargetBytes && fitted.events.length > 40) {
+    fitted.events.splice(0, Math.min(20, fitted.events.length - 40));
+  }
+  while (serializedUtf8Bytes(fitted) > trimmingTargetBytes && fitted.runtimeIssues.length > 4) {
+    fitted.runtimeIssues.splice(0, Math.min(4, fitted.runtimeIssues.length - 4));
+  }
+  while (serializedUtf8Bytes(fitted) > trimmingTargetBytes && fitted.flightRecorder?.samples.length > 60) {
+    fitted.flightRecorder.samples.splice(0, Math.min(20, fitted.flightRecorder.samples.length - 60));
+  }
+  while (serializedUtf8Bytes(fitted) > trimmingTargetBytes && fitted.events.length > 0) {
+    fitted.events.splice(0, Math.min(10, fitted.events.length));
+  }
+  while (serializedUtf8Bytes(fitted) > trimmingTargetBytes && fitted.runtimeIssues.length > 0) {
+    fitted.runtimeIssues.splice(0, Math.min(2, fitted.runtimeIssues.length));
+  }
+  while (serializedUtf8Bytes(fitted) > trimmingTargetBytes && fitted.flightRecorder?.samples.length > 1) {
+    fitted.flightRecorder.samples.splice(0, Math.min(10, fitted.flightRecorder.samples.length - 1));
+  }
+
+  fitted.transport.transmittedSamples = fitted.flightRecorder?.samples.length ?? 0;
+  fitted.transport.transmittedEvents = fitted.events.length;
+  fitted.transport.transmittedRuntimeIssues = fitted.runtimeIssues.length;
+  fitted.transport.prettyPrintedReportBytes = serializedUtf8Bytes(fitted);
+  return fitted;
+}

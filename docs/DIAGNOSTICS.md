@@ -40,9 +40,12 @@ The main product exposes diagnostics through an always-visible top-bar `DIAG` co
 - WebAssembly, service worker, Cache Storage, IndexedDB, localStorage, OffscreenCanvas, WebCodecs, touch points, hardware hints, storage quota/usage, battery state, connection hints, language, and user-agent details when exposed;
 - navigation, paint, resource-count/byte aggregates, and JavaScript heap metrics when exposed;
 - bounded connection history plus online/offline, document-visibility, GPS, viewport, source, and control events;
+- a two-second coordinate-free driving trace containing displayed/raw GPS speed, GPS age and accuracy, input mode, energy/BPM/score section, frame pacing, audio level, network state, and visibility;
+- full-session duration, estimated distance, moving/stationary time, source/input durations, speed/rate extrema, and GPS-accuracy aggregates even after old trace samples rotate;
+- bounded runtime errors, unhandled promise rejections, and WebGL context loss/restoration evidence;
 - explicit privacy flags proving that coordinates are not collected, stored, or transmitted.
 
-High-frequency frame observations are accumulated outside React state and only summarized in the report. The report does not retain every frame, resource URL, stack trace, route, or coordinate. Cellular RSSI is not available to ordinary Web applications; connection quality is represented only by browser-exposed effective type, downlink, RTT, online state, and changes over time.
+High-frequency frame observations and the flight recorder accumulate outside React state. The recorder samples every two seconds and retains at most 300 compact tabular samples, or approximately ten minutes, while its small aggregate counters cover the complete open session. The trace exists only in memory and is cleared by a reload or closed page. It does not retain every frame, resource URL, route, or coordinate. Runtime issue messages and stacks are truncated and bounded. Cellular RSSI is not available to ordinary Web applications; connection quality is represented only by browser-exposed effective type, downlink, RTT, online state, and changes over time.
 
 ## Send Diagnostic architecture
 
@@ -55,6 +58,7 @@ Server protections:
 - `Sec-Fetch-Site` validation when supplied;
 - fixed server-side recipient and subject; no user-controlled mail headers;
 - 192 KiB body limit and strict schema validation;
+- client-side recent-first fitting below the pretty-printed mail limit, with original/transmitted counts recorded when pathological event volume requires trimming;
 - recursive rejection of common coordinate keys, including latitude/longitude and abbreviated variants;
 - per-client hashed temporary rate limit with no raw IP in the email;
 - no report persistence or server-side report logging;
@@ -63,7 +67,7 @@ Server protections:
 
 The user-confirmed mail recipient is configured in the ignored local file `prototype/drive-lab/public/api/recipient.local.php` and is not present in public source code. The file is created from `prototype/drive-lab/config/diagnostic-recipient.local.php.example`, returns the recipient address without emitting it over HTTP, and is copied to the same private server location during deployment. The deployment identity gate recognizes the file by fixed structural markers and never prints its contents.
 
-A `202 accepted_by_mail_transport` response proves only that PHP `mail()` handed the message to the hosting mail transport. It does not prove Gmail inbox delivery. Delivery requires confirmation in the recipient inbox and, if needed, inspection of message headers/SPF/DKIM behavior.
+A `202 accepted_by_mail_transport` response proves only that PHP `mail()` handed the complete JSON report, including the flight-recorder trace, to the hosting mail transport. It does not prove Gmail inbox delivery. Delivery requires confirmation in the recipient inbox and, if needed, inspection of message headers/SPF/DKIM behavior.
 
 ## Live verification — 2026-08-26
 

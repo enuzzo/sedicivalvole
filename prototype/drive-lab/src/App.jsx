@@ -3,9 +3,14 @@ import { createAudioEngine } from "./audio-engine.js";
 import {
   appendConnectionHistory,
   appendViewportHistory,
+  createDriveTelemetry,
+  createDriveTelemetryReport,
   createFrameTelemetry,
   createGpsTelemetry,
+  DRIVE_TRACE_INTERVAL_MS,
+  fitDiagnosticReportForTransport,
   inferViewportMode,
+  recordDriveTelemetrySample,
   recordFrameSample,
   recordGpsSample,
   summarizeFrameTelemetry,
@@ -298,6 +303,7 @@ export function App() {
   const [pulseFlash, setPulseFlash] = useState(0);
   const [keyboardHint, setKeyboardHint] = useState(null);
   const [audioLevel, setAudioLevel] = useState(0);
+  const [flightRecorderRevision, setFlightRecorderRevision] = useState(0);
   const [themeId, setThemeId] = useState(initialPreferences.themeId);
   const [environmentId, setEnvironmentId] = useState(initialPreferences.environmentId);
   const reducedMotion = useMemo(
@@ -329,8 +335,10 @@ export function App() {
   const lastGpsSampleAtRef = useRef(null);
   const gpsSpeedLockedRef = useRef(false);
   const audioMeterTimerRef = useRef(null);
+  const flightRecorderTimerRef = useRef(null);
   const viewportCaptureTimerRef = useRef(null);
   const gpsTelemetryRef = useRef(createGpsTelemetry(performance.now()));
+  const driveTelemetryRef = useRef(createDriveTelemetry(performance.now()));
   const frameTelemetryRef = useRef(createFrameTelemetry(performance.now()));
   const connectionHistoryRef = useRef([]);
   const diagnosticsActiveRef = useRef(false);
@@ -342,13 +350,25 @@ export function App() {
     recentDurationsMs: [],
   });
   const diagnosticEventsRef = useRef([]);
+  const runtimeIssuesRef = useRef([]);
+  const latestGpsObservationRef = useRef({ capturedAtMs: null, speedKmh: null });
   const sessionStartedAtRef = useRef(performance.now());
+  const gpsStateRef = useRef(gpsState);
+  const accuracyRef = useRef(accuracy);
+  const audioLevelRef = useRef(audioLevel);
+  const rendererRef = useRef(renderer);
+  const drawerOpenRef = useRef(drawerOpen);
 
   const theme = getFluxTheme(themeId);
   const environment = getFluxEnvironment(environmentId);
   const energy = speedToEnergy(speed);
   const bpm = speedToBpm(speed);
   speedRef.current = speed;
+  gpsStateRef.current = gpsState;
+  accuracyRef.current = accuracy;
+  audioLevelRef.current = audioLevel;
+  rendererRef.current = renderer;
+  drawerOpenRef.current = drawerOpen;
 
   const logDiagnosticEvent = useCallback((type, detail = {}) => {
     diagnosticEventsRef.current = [...diagnosticEventsRef.current, {
@@ -417,6 +437,7 @@ export function App() {
         const capturedAtMs = performance.now();
         setAccuracy(Number.isFinite(position.coords.accuracy) ? Math.round(position.coords.accuracy) : null);
         const kmh = normalizeGpsSpeed(position.coords.speed);
+        latestGpsObservationRef.current = { capturedAtMs, speedKmh: kmh };
         gpsTelemetryRef.current = recordGpsSample(gpsTelemetryRef.current, {
           capturedAtMs,
           speedKmh: kmh,
@@ -660,7 +681,11 @@ export function App() {
     sessionStartedAtRef.current = performance.now();
     diagnosticsActiveRef.current = true;
     diagnosticEventsRef.current = [];
+    runtimeIssuesRef.current = [];
     frameTelemetryRef.current = createFrameTelemetry(performance.now());
+    driveTelemetryRef.current = createDriveTelemetry(performance.now());
+    latestGpsObservationRef.current = { capturedAtMs: null, speedKmh: null };
+    setFlightRecorderRevision((revision) => revision + 1);
     connectionHistoryRef.current = [readConnectionSnapshot("harness-start")];
     longTaskTelemetryRef.current = {
       ...longTaskTelemetryRef.current,
@@ -799,6 +824,104 @@ export function App() {
     };
   }, [logDiagnosticEvent]);
 
+  useEffect(() => {
+    const retainIssue = (type, detail) => {
+      if (!diagnosticsActiveRef.current) return;
+      const issue = {
+        at: new Date().toISOString(),
+        elapsedMs: roundMetric(performance.now() - sessionStartedAtRef.current),
+        type,
+        detail,
+      };
+      runtimeIssuesRef.current = [...runtimeIssuesRef.current, issue].slice(-24);
+      logDiagnosticEvent(type, {
+        message: detail.message ?? null,
+        renderer: detail.renderer ?? null,
+        status: detail.status ?? null,
+      });
+    };
+    const onError = (event) => retainIssue("runtime.error", {
+      message: String(event.message || "Unknown runtime error").slice(0, 500),
+      file: String(event.filename || "").slice(0, 500),
+      line: Number.isFinite(event.lineno) ? event.lineno : null,
+      column: Number.isFinite(event.colno) ? event.colno : null,
+      stack: String(event.error?.stack || "").slice(0, 2000),
+    });
+    const onUnhandledRejection = (event) => retainIssue("runtime.unhandled-rejection", {
+      message: String(event.reason?.message || event.reason || "Unknown rejection").slice(0, 1000),
+      stack: String(event.reason?.stack || "").slice(0, 2000),
+    });
+    const onContextLost = (event) => retainIssue("graphics.context-lost", {
+      renderer: rendererRef.current,
+      status: String(event.statusMessage || "").slice(0, 500),
+    });
+    const onContextRestored = () => retainIssue("graphics.context-restored", {
+      renderer: rendererRef.current,
+    });
+    const onPageHide = (event) => logDiagnosticEvent("document.pagehide", {
+      persisted: Boolean(event.persisted),
+    });
+    const onFreeze = () => logDiagnosticEvent("document.freeze");
+    const onResume = () => logDiagnosticEvent("document.resume");
+    window.addEventListener("error", onError);
+    window.addEventListener("unhandledrejection", onUnhandledRejection);
+    document.addEventListener("webglcontextlost", onContextLost, true);
+    document.addEventListener("webglcontextrestored", onContextRestored, true);
+    window.addEventListener("pagehide", onPageHide);
+    document.addEventListener("freeze", onFreeze);
+    document.addEventListener("resume", onResume);
+    return () => {
+      window.removeEventListener("error", onError);
+      window.removeEventListener("unhandledrejection", onUnhandledRejection);
+      document.removeEventListener("webglcontextlost", onContextLost, true);
+      document.removeEventListener("webglcontextrestored", onContextRestored, true);
+      window.removeEventListener("pagehide", onPageHide);
+      document.removeEventListener("freeze", onFreeze);
+      document.removeEventListener("resume", onResume);
+    };
+  }, [logDiagnosticEvent]);
+
+  useEffect(() => {
+    if (phase !== "running") return undefined;
+    const captureDriveSample = () => {
+      const capturedAtMs = performance.now();
+      const latestGps = latestGpsObservationRef.current;
+      const frame = summarizeFrameTelemetry(frameTelemetryRef.current);
+      const connection = readConnectionSnapshot("flight-recorder");
+      const audioState = audioRef.current?.getState() ?? null;
+      recordDriveTelemetrySample(driveTelemetryRef.current, {
+        capturedAtMs,
+        speedKmh: speedRef.current,
+        rawGpsSpeedKmh: latestGps.speedKmh,
+        gpsAgeMs: Number.isFinite(latestGps.capturedAtMs)
+          ? Math.max(0, capturedAtMs - latestGps.capturedAtMs)
+          : null,
+        gpsState: gpsStateRef.current,
+        accuracyM: accuracyRef.current,
+        source: sourceRef.current,
+        driveInput: brakeHeldRef.current ? "service-brake" : demoDriveInputRef.current,
+        energy: speedToEnergy(speedRef.current),
+        bpm: speedToBpm(speedRef.current),
+        averageFps: frame.averageFps,
+        p95FrameMs: frame.p95FrameMs,
+        audioLevel: audioLevelRef.current,
+        audioSection: audioState?.section,
+        motionPhase: audioState?.motionPhase,
+        online: connection.online,
+        effectiveType: connection.effectiveType,
+        roundTripTimeMs: connection.roundTripTimeMs,
+        visibility: document.visibilityState,
+      });
+      if (drawerOpenRef.current) setFlightRecorderRevision((revision) => revision + 1);
+    };
+    captureDriveSample();
+    flightRecorderTimerRef.current = window.setInterval(captureDriveSample, DRIVE_TRACE_INTERVAL_MS);
+    return () => {
+      window.clearInterval(flightRecorderTimerRef.current);
+      flightRecorderTimerRef.current = null;
+    };
+  }, [phase]);
+
   useEffect(() => { audioRef.current?.setSpeed(speed); }, [speed]);
   useEffect(() => { audioRef.current?.setMuted(muted); }, [muted]);
   useEffect(() => {
@@ -910,6 +1033,7 @@ export function App() {
     window.clearTimeout(keyboardLeaseTimerRef.current);
     window.clearTimeout(brakeFlashTimerRef.current);
     window.clearInterval(audioMeterTimerRef.current);
+    window.clearInterval(flightRecorderTimerRef.current);
     window.clearTimeout(viewportCaptureTimerRef.current);
     brakeHeldRef.current = false;
     acceleratorHeldRef.current = false;
@@ -983,6 +1107,8 @@ export function App() {
       longTaskTelemetryRef.current,
       sessionStartedAtRef.current,
     ),
+    flightRecorder: createDriveTelemetryReport(driveTelemetryRef.current, performance.now()),
+    runtimeIssues: runtimeIssuesRef.current,
     events: diagnosticEventsRef.current,
     privacy: {
       coordinatesCollected: false,
@@ -990,21 +1116,38 @@ export function App() {
       coordinatesTransmitted: false,
       automaticRemoteTelemetry: false,
       transmissionRequiresExplicitGesture: true,
+      recorderStorage: "bounded-session-memory-only",
     },
-  } : null, [accuracy, audioLevel, bpm, diagnostics, energy, environmentId, gpsState, muted, renderer, source, speed, themeId]);
-  const diagnosticText = diagnosticReport ? JSON.stringify(diagnosticReport, null, 2) : "Test not run yet";
+  } : null, [diagnostics, drawerOpen, flightRecorderRevision]);
+  const diagnosticText = useMemo(
+    () => diagnosticReport ? JSON.stringify(diagnosticReport, null, 2) : "Test not run yet",
+    [diagnosticReport],
+  );
+  const diagnosticPayloadBytes = useMemo(
+    () => diagnosticReport
+      ? new Blob([JSON.stringify(diagnosticReport, null, 2)]).size
+      : 0,
+    [diagnosticReport],
+  );
 
   const sendDiagnostic = useCallback(async () => {
     if (!diagnosticReport || sendState === "sending") return;
     setSendState("sending");
     logDiagnosticEvent("diagnostic-send.requested");
     try {
+      const reportToSend = fitDiagnosticReportForTransport({
+        ...diagnosticReport,
+        generatedAt: new Date().toISOString(),
+        flightRecorder: createDriveTelemetryReport(driveTelemetryRef.current, performance.now()),
+        runtimeIssues: runtimeIssuesRef.current,
+        events: diagnosticEventsRef.current,
+      });
       const response = await fetch(`${import.meta.env.BASE_URL}api/send-diagnostic.php`, {
         method: "POST",
         credentials: "same-origin",
         cache: "no-store",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ schema: diagnosticReport.schema, report: diagnosticReport }),
+        body: JSON.stringify({ schema: reportToSend.schema, report: reportToSend }),
       });
       const result = await response.json().catch(() => null);
       if (!response.ok || result?.ok !== true) throw new Error("diagnostic_send_failed");
@@ -1124,8 +1267,10 @@ export function App() {
               <article><small>GPS SPEED</small><strong>{gpsState}</strong><span>{accuracy == null ? "accuracy unavailable" : `accuracy ±${accuracy} m`}</span></article>
               <article><small>FRAME PACING</small><strong>{diagnosticReport?.performance.frame.averageFps ?? "—"} FPS</strong><span>{diagnosticReport?.performance.frame.p95FrameMs ?? "—"} ms p95</span></article>
               <article><small>NETWORK</small><strong>{diagnosticReport?.network.current.effectiveType || (diagnosticReport?.network.current.online ? "online" : "offline") || "—"}</strong><span>{diagnosticReport?.network.current.roundTripTimeMs ?? "—"} ms RTT</span></article>
+              <article><small>FLIGHT RECORDER</small><strong>{diagnosticReport?.flightRecorder.summary.retainedSamples ?? "—"} SAMPLES</strong><span>{Math.round((diagnosticReport?.flightRecorder.summary.sessionDurationMs ?? 0) / 1000)} s · {Math.round(diagnosticPayloadBytes / 1024)} KB report</span></article>
+              <article><small>RUNTIME ISSUES</small><strong>{diagnosticReport?.runtimeIssues.length ?? "—"}</strong><span>errors · rejections · WebGL loss</span></article>
             </div>
-            <p className="privacy-note">No coordinates are displayed, stored, or transmitted. Extended technical telemetry is aggregated locally and sent only after pressing SEND DIAGNOSTIC.</p>
+            <p className="privacy-note">No coordinates are displayed, stored, or transmitted. The bounded flight recorder stays in session memory and is sent only after pressing SEND DIAGNOSTIC. Keep this page open until the report is sent.</p>
             <pre>{diagnosticText}</pre>
             <div className="drawer-actions">
               <button className="send-diagnostic-button" type="button" onClick={sendDiagnostic} disabled={sendState === "sending"}>

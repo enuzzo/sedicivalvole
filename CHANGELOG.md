@@ -32,6 +32,7 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - The user-selected `VERTIGO 02` visual environment, now using the byte-identical upstream Interstate 7 runtime with deterministic source-integrity and speed-bridge tests.
 - The approved Signal Gate splash: paired vermilion and ice-blue generative lanes bend into a central vertical gate, with a Canvas2D fallback and reduced-motion support.
 - A documented Model 3 Long Range AWD Highland reference-motion model for time-based Demo acceleration, held braking, and soft GPS outlier tolerance.
+- A coordinate-free in-memory driving flight recorder with two-second speed/GPS/input/audio/frame/network samples, full-session motion aggregates, bounded runtime issues, payload sizing, and deterministic retention tests.
 
 ### Changed
 
@@ -78,6 +79,7 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - Replaced the fixed-step Arrow simulator lease with pedal-like input: hold `ArrowUp` to accelerate, release it to enter progressive regenerative deceleration, and return to GPS only after simulated and observed speed converge instead of dropping to the GPS value after a timer.
 - Added a distinct nominal lift-off model with a `0.45 s` ramp, estimated `1.7 m/s²` peak regenerative deceleration, low-speed taper, rolling resistance, and Vehicle Hold capture below `0.8 km/h`; automatic Demo deceleration now uses the same release model.
 - Split GPS deceleration tolerance into expected lift-off and wider plausible service-brake bands so ordinary regenerative slowdown remains responsive while impossible sensor jumps stay bounded.
+- Extended the manual v3 diagnostic email with the bounded flight-recorder trace and runtime-error evidence, plus deterministic recent-first transport fitting for pathological reports, while keeping the existing 192 KiB server limit, recipient isolation, and explicit-send privacy boundary.
 
 ### Fixed
 

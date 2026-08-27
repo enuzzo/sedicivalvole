@@ -20,7 +20,7 @@ The initial **PLAY THE ROAD** gesture sits over the animated Signal Gate, unlock
 - GPS `coords.speed` input with null handling, physics-informed soft outlier tolerance, and Demo fallback;
 - touch-first Stop/Mute, visual environment, score-roadmap, and curated body-color surfaces;
 - fixed `130 km/h` energy/velocity ceiling with visible Aperture tunnel formation by approximately `40 km/h`;
-- integrated device report with no coordinates;
+- integrated coordinate-free device report with a bounded in-memory driving flight recorder, runtime issue capture, and explicit email send;
 - time-based Model 3 AWD Demo acceleration calibrated to the official zero-to-100 km/h figure;
 - desktop simulator: hold `ArrowUp` to accelerate, release it or press `ArrowDown` for progressive regenerative slowdown, and hold `Space` for stronger braking from the exact current speed;
 - `VERSION` injected at build time;

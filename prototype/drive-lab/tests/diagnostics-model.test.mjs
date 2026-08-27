@@ -3,9 +3,14 @@ import test from "node:test";
 import {
   appendConnectionHistory,
   appendViewportHistory,
+  createDriveTelemetry,
+  createDriveTelemetryReport,
+  DRIVE_TRACE_FIELDS,
+  fitDiagnosticReportForTransport,
   createFrameTelemetry,
   createGpsTelemetry,
   inferViewportMode,
+  recordDriveTelemetrySample,
   recordFrameSample,
   recordGpsSample,
   summarizeFrameTelemetry,
@@ -73,4 +78,67 @@ test("connection history deduplicates stable readings and keeps changes", () => 
 
   assert.equal(appendConnectionHistory([first], unchanged).length, 1);
   assert.deepEqual(appendConnectionHistory([first], offline), [first, offline]);
+});
+
+test("drive telemetry retains a bounded trace while preserving full-session aggregates", () => {
+  const telemetry = createDriveTelemetry(1000);
+  const baseSample = {
+    rawGpsSpeedKmh: null,
+    gpsAgeMs: null,
+    gpsState: "not tested",
+    accuracyM: null,
+    source: "DEMO",
+    driveInput: "auto",
+    energy: 0,
+    bpm: 72,
+    averageFps: 45,
+    p95FrameMs: 22,
+    audioLevel: 0.1,
+    audioSection: 0,
+    motionPhase: "steady",
+    online: true,
+    effectiveType: "4g",
+    roundTripTimeMs: 50,
+    visibility: "visible",
+  };
+  recordDriveTelemetrySample(telemetry, { ...baseSample, capturedAtMs: 1000, speedKmh: 0 }, 2);
+  recordDriveTelemetrySample(telemetry, { ...baseSample, capturedAtMs: 3000, speedKmh: 36 }, 2);
+  recordDriveTelemetrySample(telemetry, { ...baseSample, capturedAtMs: 5000, speedKmh: 36 }, 2);
+  const report = createDriveTelemetryReport(telemetry, 5000);
+
+  assert.equal(report.summary.totalSamples, 3);
+  assert.equal(report.summary.retainedSamples, 2);
+  assert.equal(report.summary.discardedSamples, 1);
+  assert.equal(report.summary.sampleLimit, 2);
+  assert.equal(report.summary.sessionDurationMs, 4000);
+  assert.equal(report.summary.retainedDurationMs, 2000);
+  assert.equal(report.summary.estimatedDistanceKm, 0.03);
+  assert.equal(report.summary.movingDurationMs, 4000);
+  assert.equal(report.summary.peakAccelerationKmhPerSecond, 18);
+  assert.equal(report.samples[0][DRIVE_TRACE_FIELDS.indexOf("rate")], 18);
+  assert.equal(report.samples[1][DRIVE_TRACE_FIELDS.indexOf("speed")], 36);
+  assert.equal(JSON.stringify(report).includes("latitude"), false);
+  assert.equal(JSON.stringify(report).includes("longitude"), false);
+});
+
+test("diagnostic transport fitting preserves recent evidence within the mail limit", () => {
+  const noisyValue = "x".repeat(1200);
+  const report = {
+    schema: "sedicivalvole.tesla-diagnostic.v3",
+    flightRecorder: {
+      summary: { totalSamples: 300 },
+      samples: Array.from({ length: 300 }, (_, index) => [index, noisyValue]),
+    },
+    events: Array.from({ length: 240 }, (_, index) => ({ index, detail: noisyValue })),
+    runtimeIssues: Array.from({ length: 24 }, (_, index) => ({ index, stack: noisyValue })),
+  };
+  const fitted = fitDiagnosticReportForTransport(report, 160000);
+  const bytes = new TextEncoder().encode(JSON.stringify(fitted, null, 2)).byteLength;
+
+  assert.ok(bytes <= 160000);
+  assert.equal(fitted.events.at(-1).index, 239);
+  assert.equal(fitted.runtimeIssues.at(-1).index, 23);
+  assert.equal(fitted.flightRecorder.samples.at(-1)[0], 299);
+  assert.ok(fitted.transport.transmittedEvents < fitted.transport.originalEvents);
+  assert.ok(fitted.transport.transmittedSamples <= fitted.transport.originalSamples);
 });

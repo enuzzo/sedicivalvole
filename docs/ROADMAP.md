@@ -15,7 +15,7 @@ Status: **COMPLETE**.
 
 ## Phase 1 — Real Tesla capability profile
 
-Status: **PARTIAL VEHICLE PASS**. Split-view display, WebGL2, Web Audio, AudioWorklet, WASM, storage APIs, touch points, and numeric GPS speed are now photographed on the target vehicle. The compact v3 report, fixed private recipient, explicit mail handoff, and canonical bare-root publication are implemented; inbox delivery, GPS cadence/quality, long-session performance, physical reach, and audio acceptance remain pending.
+Status: **PARTIAL VEHICLE PASS**. Split-view display, WebGL2, Web Audio, AudioWorklet, WASM, storage APIs, touch points, and numeric GPS speed are now photographed on the target vehicle. The extended v3 report, bounded coordinate-free driving flight recorder, fixed private recipient, explicit mail handoff, and canonical bare-root publication are implemented; inbox delivery, real-drive trace analysis, GPS cadence/quality, long-session performance, physical reach, and audio acceptance remain pending.
 
 Measure:
 

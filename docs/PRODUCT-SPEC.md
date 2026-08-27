@@ -90,6 +90,7 @@ The Geolocation API requires a secure context and explicit permission. `coords.s
 - smoothing, deadband/hysteresis, upper bound, stale-state handling, and manual fallback;
 - explicit handling for denied permission, absent API, inaccurate fixes, slow cadence, and null speed;
 - no persistence or telemetry of raw position;
+- a bounded session-memory flight recorder may retain speed, GPS age/accuracy, input state, audiovisual state, performance, network, and lifecycle evidence, but never position; transmission remains manual and explicit;
 - understandable degraded GPS state without intrusive alarms.
 
 ### Keyboard simulator
