@@ -40,10 +40,16 @@ export const LATITUDES_WINDOW_SECONDS =
  */
 export const LATITUDES_IDLE_CRAWL_MPS = 0.42;
 
-/** Lateral field displacement per metre of travel. Held constant, so the
- *  shear on screen is a true reading of distance travelled rather than a
- *  styled effect layered on top of it. */
-export const LATITUDES_SHEAR_PER_METRE = 0.021;
+/**
+ * Lateral field displacement per metre of travel. Held constant, so the shear on
+ * screen is a true reading of distance travelled rather than a styled effect
+ * layered on top of it.
+ *
+ * Scaled so a mark travels roughly two screen widths from the newest stratum
+ * to the oldest at the road ceiling. Much more and each streak wraps so often
+ * it reads as vertical banding; much less and the rake never leaves vertical.
+ */
+export const LATITUDES_SHEAR_PER_METRE = 0.0095;
 
 const normalizedSpeed = (speedKmh) =>
   clamp(Math.max(0, speedKmh) / ROAD_SPEED_CEILING_KMH, 0, 1);
@@ -58,6 +64,10 @@ export function speedToTravelMps(speedKmh) {
 export function createLatitudesHistory() {
   return {
     distances: new Float32Array(LATITUDES_HISTORY_SAMPLES),
+    // Rows that have not been recorded yet are not "infinitely old". Until the
+    // window fills, reads clamp to the oldest real sample so the stack grows
+    // upward from the newest row instead of showing a false uniform lag.
+    filled: 1,
     travelledMetres: 0,
     sampleAccumulator: 0,
   };
@@ -91,6 +101,7 @@ export function advanceLatitudesHistory(history, speedKmh, deltaSeconds) {
   while (pending > 0) {
     distances.copyWithin(1, 0, distances.length - 1);
     distances[0] = history.travelledMetres;
+    history.filled = Math.min(history.filled + 1, distances.length);
     pending -= 1;
   }
   return history;
@@ -102,9 +113,10 @@ export function advanceLatitudesHistory(history, speedKmh, deltaSeconds) {
  */
 export function readLatitudesHistory(history, ageFraction) {
   const { distances } = history;
-  const position = clamp(ageFraction, 0, 1) * (distances.length - 1);
+  const oldest = Math.max(0, (history.filled ?? distances.length) - 1);
+  const position = Math.min(clamp(ageFraction, 0, 1) * (distances.length - 1), oldest);
   const lower = Math.floor(position);
-  const upper = Math.min(lower + 1, distances.length - 1);
+  const upper = Math.min(lower + 1, oldest);
   const blend = position - lower;
   return distances[lower] * (1 - blend) + distances[upper] * blend;
 }

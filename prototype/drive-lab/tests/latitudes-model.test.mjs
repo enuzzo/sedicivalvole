@@ -195,3 +195,23 @@ test("produces the same stack for the same drive regardless of frame rate", () =
     );
   }
 });
+
+test("grows the stack from the newest row instead of reporting a false lag", () => {
+  const history = createLatitudesHistory();
+  // Two seconds of a full window: most rows have no recorded moment yet.
+  drive(history, 120, 2);
+
+  const oldest = historyLagMetres(history, 1);
+  const plausibleCeiling = speedToTravelMps(120) * 2.05;
+  assert.ok(
+    oldest <= plausibleCeiling,
+    `an unfilled window must not report more lag than has been driven, got ${oldest}`,
+  );
+
+  // Once the window has filled, the oldest row spans the whole window.
+  drive(history, 120, LATITUDES_WINDOW_SECONDS + 1);
+  assert.ok(
+    historyLagMetres(history, 1) > speedToTravelMps(120) * LATITUDES_WINDOW_SECONDS * 0.9,
+    "a filled window must span the full history",
+  );
+});

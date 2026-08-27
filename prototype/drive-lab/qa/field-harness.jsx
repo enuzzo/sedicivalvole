@@ -27,6 +27,8 @@ const FIELDS = {
     .then((module) => ({ default: module.FluxField }))),
   meridian: lazy(() => import("../src/environments/meridian/meridian-field.jsx")
     .then((module) => ({ default: module.MeridianField }))),
+  latitudes: lazy(() => import("../src/environments/latitudes/latitudes-field.jsx")
+    .then((module) => ({ default: module.LatitudesField }))),
 };
 
 const parameters = new URLSearchParams(window.location.search);
