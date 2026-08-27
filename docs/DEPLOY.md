@@ -8,6 +8,33 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Vertigo road-scale publication evidence — 2026-08-27
+
+- build stamp: **`20260827-2245`**, confirmed on the canonical splash and in the
+  live diagnostic report; deployed commit: `fba4002`; visual implementation:
+  `359e6c6`;
+- gate before upload: **PASS**, 127 unit tests, 4 packaging tests and a
+  production build;
+- the first intentional publication attempt stopped at the read-only identity
+  gate with `unexpected_canonical-root_entry` and performed no remote write.
+  Cause: the previous JUNCTION publication had created the legitimate `/audio/`
+  tree, but the next-run allowlist did not yet recognize it;
+- deployment gate correction: **PASS**. `/audio/` is accepted only when every
+  remote entry exists in the local production tree and is byte-identical. The
+  explicit `--verify-only` run reported `remote_writes=NONE` before the final
+  intentional publication;
+- canonical `/`: **HTTP 200**, `no-store`, and byte-identical to local
+  `index.html` at SHA-256
+  `e1fe84e661330c25656eea7c92d64888717cea6ad3395f4d599a357722afc879`;
+- `assets/index-CKJo1GEj.js`: **HTTP 200**, byte-identical at SHA-256
+  `6259d609902cb7c8219e33826c04cbae735d3120e6dba5939fd95d61a6c1f5bd`;
+- upstream `js/InfiniteLights.js` remains byte-identical at SHA-256
+  `683fc98dac19460d478307bebe92751858456a5414c4834ac8d9caf9741e015e`;
+- live Browser QA at `773 x 601`: **PASS**. Vertigo enters with the road filling
+  the viewport, reports `WebGL · Original Interstate 7`, sustains **60 FPS / 17.3
+  ms p95**, and records zero runtime issues. The console contained no warnings
+  or errors. No diagnostic was sent.
+
 ## Flux performance publication evidence — 2026-08-27
 
 - build stamp: **`20260827-2232`**, confirmed on the canonical splash and in the

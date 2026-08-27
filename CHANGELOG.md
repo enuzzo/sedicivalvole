@@ -59,6 +59,7 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 
 ### Changed
 
+- 2026-08-27 22:46 `[fba4002]` `build 20260827-2245`: Published the grounded Vertigo entry framing and quadratic urban-speed response to the canonical root.
 - 2026-08-27 22:34 `[f9bb395]` `build 20260827-2232`: Published the complete Flux performance checkpoint to the canonical root: 60 FPS Aperture scheduling, editorial-free themed Vertigo, the 64 px Tesla footer, and the selectable JUNCTION production bank.
 - 2026-08-27 22:31 `[87362c5]`: Aperture now renders at the display cadence instead of accidentally halving a 60 Hz display to 30 FPS. Time-based easing preserves the approved motion exactly, while invariant shader controls move out of the fragment shader; desktop Tesla-viewport QA improved from 30 FPS / 34.51 ms p95 to 60 FPS / 17.7 ms p95.
 - 2026-08-27 22:31 `[e57400d]`: Vertigo stays hidden until its external bridge removes the upstream title and editorial shell, then maps every sedicivalvole theme onto the original runtime colour channels without changing any vendored Interstate 7 file. `ACID 08` replaces the orange theme with true magenta and green; the existing magenta/dark `NEON 06` remains available.
@@ -150,6 +151,7 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 
 ### Fixed
 
+- 2026-08-27 22:46 `[fba4002]`: The deployment identity gate now recognizes the published `/audio/` tree only when every remote entry is expected and byte-identical to the local build. Its existing but unreachable `--verify-only` path is now an explicit no-write command. The first publication attempt stopped safely after seeing Junction's legitimate audio directory; no remote write occurred before the corrected gate passed.
 - 2026-08-27 22:42 `[359e6c6]`: Vertigo now enters on an existing Interstate 7 phase where the road already fills the Tesla viewport instead of appearing as a small shape at the bottom. Its external speed/FOV bridge uses a quadratic road-speed response — approximately `0.095×` at 40 km/h and `0.213×` at 60 km/h — while preserving the original geometry, distortion, camera system and `1×` ceiling behavior.
 - 2026-08-27 22:06 `[e7adfb0]` `build 20260827-2204`: Prevented the persistent speed source readout from overlapping the `ENGINE` / `FLUX` mode selector at the photographed Tesla split viewport. Browser QA at `773 x 601` measures zero horizontal overlap.
 - 2026-08-27 22:06 `[31f8dc4]`: Recorded an append-only traceability correction for four superseded short hashes retained in earlier entries: `7733ec4` maps to reachable commit `45d73a8`, `4ecc6a3` to `34b54af`, `e85d1cd` to `6970eb1`, and `cbeada7` to `140b6fc`. The historical lines remain untouched.
