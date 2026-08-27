@@ -36,17 +36,39 @@ const FRAGMENT_SHADER = `#version 300 es
         float lane = (float(laneIndex) + 0.5) / 12.0;
         float upperX = side * (0.028 + lane * 0.205);
         float lowerX = side * mix(u_aspect * 0.56, u_aspect * 1.58, lane);
-        float wave = sin(u_time * 0.42 + lane * 8.2 + side * 0.9) * 0.008 * bendFocus;
+        float wave = sin(u_time * 1.15 + lane * 8.2 + side * 0.9) * 0.013 * bendFocus;
         float laneX = mix(upperX, lowerX, lowerReach) + wave;
         float distanceToLane = abs(point.x - laneX);
         float coreWidth = mix(0.0014, 0.0025, bend);
         float antialias = max(fwidth(distanceToLane) * 1.25, 0.0012);
         float core = 1.0 - smoothstep(coreWidth, coreWidth + antialias, distanceToLane);
         float glow = exp(-distanceToLane * mix(58.0, 32.0, bend));
-        float signal = 0.88 + 0.12 * sin(u_time * 0.9 - v_uv.y * 21.0 + lane * 11.0);
+        float halo = exp(-distanceToLane * mix(17.0, 9.0, bend));
+
+        // Travel along the lane, measured in the lane's own bent coordinate so
+        // the marks follow the curve into the gate rather than sliding straight
+        // down the screen.
+        float travel = v_uv.y * 1.35 + lowerReach * 0.55;
+
+        // A perfectly even line has no feature to track, so however fast it
+        // scrolls it reads as static. Breaking each lane into travelling
+        // segments, at a length that differs per lane, is what makes the
+        // direction of movement legible.
+        float marchPhase = fract(travel * 7.4 - u_time * 0.62 + lane * 0.37);
+        float segment = smoothstep(0.02, 0.16, marchPhase)
+          * (1.0 - smoothstep(0.58, 0.86, marchPhase));
+
+        // A second, much longer pulse rides over the segments so the lanes also
+        // read as one field in motion rather than twelve independent tracks.
+        float sweep = fract(travel * 0.85 - u_time * 0.3 + side * 0.25);
+        float pulse = smoothstep(0.0, 0.24, sweep) * (1.0 - smoothstep(0.3, 0.72, sweep));
+
+        float signal = 0.4 + 0.6 * segment + 0.5 * pulse;
         float laneFade = mix(0.62, 1.0, smoothstep(0.0, 0.2, lane));
+
         color += laneColor * core * signal * laneFade;
-        color += laneColor * glow * 0.07 * laneFade;
+        color += laneColor * glow * (0.11 + 0.16 * pulse) * laneFade;
+        color += laneColor * halo * (0.028 + 0.05 * pulse) * laneFade;
       }
     }
 
