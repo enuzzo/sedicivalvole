@@ -1,6 +1,6 @@
 # Current Project State
 
-Status: **authoritative working overview**. Updated on 2026-08-27.
+Status: **authoritative working overview**. Updated on 2026-08-28.
 
 This page is the shortest reliable answer to “what exists now?”. Product
 requirements remain in [`PRODUCT-SPEC.md`](PRODUCT-SPEC.md), architecture in
@@ -22,6 +22,11 @@ dated study documents.
   is `130 km/h`, with Aperture visibly forming a tunnel near `40 km/h`.
 - The main experience retains Stop/Mute, GPS/Demo source selection, compact
   Music and Visual libraries, body themes, and coordinate-free diagnostics.
+- Signal Gate launches through the approved `390 × 170 px` Braun instrument
+  plate at the Tesla split viewport, with the wordmark integrated into the
+  single `PLAY THE ROAD` gesture.
+- Diagnostics separate FPS/frame time, browser-exposed heap and decoded-audio
+  memory by splash, active Visual/Music pairing and DIAG-open state.
 
 ## Music
 
@@ -49,7 +54,7 @@ dated study documents.
 ## Verified boundaries
 
 - Local gate: `npm test` and `npm run build` from `prototype/drive-lab/`.
-- Current suite: 132 unit checks plus 4 Sites packaging checks.
+- Current suite: 133 unit checks plus 4 Sites packaging checks.
 - Canonical development URL: <https://sedicivalvole.app/>. The most recent
   canonical publication evidence and build stamp are always the first entry in
   [`DEPLOY.md`](DEPLOY.md).

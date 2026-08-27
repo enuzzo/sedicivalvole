@@ -34,18 +34,20 @@ The main product exposes diagnostics through an always-visible top-bar `DIAG` co
 - a bounded history of meaningful viewport changes;
 - WebGL2 vendor, renderer, maximum texture/renderbuffer size, and active renderer;
 - aggregate canvas frame pacing: average FPS, median/p95/maximum frame time, slow-frame counts, estimated missed target frames, render size, renderer, and configured target cadence;
+- phase-specific frame pacing for the Signal Gate, every active Visual/Music combination, and the same combination with DIAG open;
 - aggregate main-thread long-task counts and durations when the browser exposes them;
 - AudioContext state, sample rate, reported base/output latency, AudioWorklet, and live level;
 - GPS state, numeric/null sample counts, interval and accuracy statistics, and min/max/latest speed;
 - WebAssembly, service worker, Cache Storage, IndexedDB, localStorage, OffscreenCanvas, WebCodecs, touch points, hardware hints, storage quota/usage, battery state, connection hints, language, and user-agent details when exposed;
 - navigation, paint, resource-count/byte aggregates, and JavaScript heap metrics when exposed;
+- per-phase JavaScript heap minimum/latest/maximum plus JUNCTION bank and decoded-PCM memory, with unsupported browser fields reported as unavailable rather than estimated;
 - bounded connection history plus online/offline, document-visibility, GPS, viewport, source, and control events;
 - a two-second coordinate-free driving trace containing displayed/raw GPS speed, GPS age and accuracy, input mode, energy/BPM/score section, frame pacing, audio level, network state, and visibility;
 - full-session duration, estimated distance, moving/stationary time, source/input durations, speed/rate extrema, and GPS-accuracy aggregates even after old trace samples rotate;
 - bounded runtime errors, unhandled promise rejections, and WebGL context loss/restoration evidence;
 - explicit privacy flags proving that coordinates are not collected, stored, or transmitted.
 
-High-frequency frame observations and the flight recorder accumulate outside React state. The recorder samples every two seconds and retains at most 300 compact tabular samples, or approximately ten minutes, while its small aggregate counters cover the complete open session. The trace exists only in memory and is cleared by a reload or closed page. It does not retain every frame, resource URL, route, or coordinate. Runtime issue messages and stacks are truncated and bounded. Cellular RSSI is not available to ordinary Web applications; connection quality is represented only by browser-exposed effective type, downlink, RTT, online state, and changes over time.
+High-frequency frame observations and the flight recorder accumulate outside React state. Phase records retain aggregate counters and at most 300 recent frame intervals per phase; memory is sampled every two seconds, never per frame. The recorder samples every two seconds and retains at most 300 compact tabular samples, or approximately ten minutes, while its small aggregate counters cover the complete open session. The trace exists only in memory and is cleared by a reload or closed page. It does not retain every frame, resource URL, route, or coordinate. Runtime issue messages and stacks are truncated and bounded. Cellular RSSI is not available to ordinary Web applications; connection quality is represented only by browser-exposed effective type, downlink, RTT, online state, and changes over time.
 
 ## Send Diagnostic architecture
 

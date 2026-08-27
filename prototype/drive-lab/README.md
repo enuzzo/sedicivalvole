@@ -9,7 +9,7 @@ npm install
 npm run dev
 ```
 
-The initial **PLAY THE ROAD** gesture sits over the animated Signal Gate, unlocks Web Audio, runs capability checks, requests GPS permission, and fades into the scene.
+The initial **PLAY THE ROAD** gesture is one Braun instrument plate with the integrated `sedicivalvole` wordmark. It sits over the animated Signal Gate, unlocks Web Audio, runs capability checks, requests GPS permission, and fades into the scene.
 
 ## Implemented
 
@@ -21,7 +21,7 @@ The initial **PLAY THE ROAD** gesture sits over the animated Signal Gate, unlock
 - GPS `coords.speed` input with null handling, physics-informed soft outlier tolerance, and Demo fallback;
 - a 64 px Tesla footer with touch-first Stop/Mute, Visual and Music libraries, disclosure carets, and ten curated body themes;
 - fixed `130 km/h` energy/velocity ceiling with visible Aperture tunnel formation by approximately `40 km/h`;
-- integrated coordinate-free device report with a bounded in-memory driving flight recorder, runtime issue capture, and explicit email send;
+- integrated coordinate-free device report with bounded per-phase FPS/frame-time and heap/decoded-audio memory, an in-memory driving flight recorder, runtime issue capture, and explicit email send;
 - time-based Model 3 AWD Demo acceleration calibrated to the official zero-to-100 km/h figure;
 - desktop simulator: hold `ArrowUp` to accelerate, release it or press `ArrowDown` for progressive regenerative slowdown, and hold `Space` for stronger braking from the exact current speed;
 - `VERSION` injected at build time;

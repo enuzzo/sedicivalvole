@@ -33,14 +33,14 @@ The canonical development build is available at [sedicivalvole.app](https://sedi
 - ✅ JUNCTION, a sampled production that mixes two of 13 authored clips per energy state live at each eight-bar boundary: 104 clips built from 126 distinct recordings, native 127–168 BPM pacing, beatless ambient rest, one 24.8 MB segmented Opus bank, and no loose source samples;
 - ✅ production build and deterministic signal, diagnostic-model, and packaging tests passing;
 - ✅ photographed Tesla split-view evidence at `773 × 601`, screen `1254 × 784`, DPR `1.53`;
-- ✅ compact-view v3 diagnostics with aggregated frame pacing, network history, runtime/resource evidence, direct same-origin email handoff, and no coordinates;
+- ✅ compact-view v3 diagnostics with aggregate and per-phase frame pacing, browser-exposed heap and decoded-audio memory, network history, runtime/resource evidence, direct same-origin email handoff, and no coordinates;
 - ✅ the canonical bare root, direct PHP entry, and content-addressed assets are live and byte-identical after the SiteGround cache flush;
 - ⏳ speed-to-audio behavior across real motion, audio quality, frame pacing, and physical touch reach still require validation in the target Tesla;
 - ⛔ no committed release, PWA/offline cache, final audio pack, or final brand/license package yet.
 
 ## Experience
 
-The product is configured while parked. One deliberate **PLAY THE ROAD** gesture on the animated Signal Gate splash unlocks Web Audio, checks capabilities, requests GPS permission, and enters the selected Flux environment. The interface is flat, monospace, Braun-influenced, Swiss, and slightly brutalist; the generative field supplies the visual contrast.
+The product is configured while parked. One deliberate **PLAY THE ROAD** gesture on the animated Signal Gate splash unlocks Web Audio, checks capabilities, requests GPS permission, and enters the selected Flux environment. The gesture is a Braun/Dieter Rams instrument plate with the `sedicivalvole` wordmark integrated into the control. The interface is flat, monospace, Braun-influenced, Swiss, and slightly brutalist; the generative field supplies the visual contrast.
 
 The speed source is an explicit abstraction. GPS and the desktop simulator produce the same normalized stream. Hold `ArrowUp` as an accelerator; releasing it enters a progressive nominal Model 3 AWD regenerative slowdown instead of dropping to zero. `ArrowDown` explicitly requests that lift-off state. Holding `Space` applies the stronger estimated service-brake curve from the exact current speed. Reference acceleration, lift-off, and braking dynamics define soft GPS plausibility bands without creating or replacing real motion samples. Keyboard handling never steals input from focused controls.
 

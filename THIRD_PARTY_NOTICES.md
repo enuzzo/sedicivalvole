@@ -19,6 +19,8 @@ Transitive dependencies and integrity hashes are locked in `prototype/drive-lab/
 
 `luminous-axis.png` is derived from the selected visual direction created during the Product Design workflow. It is original project material pending the final brand/visual policy and is not declared as a third-party asset.
 
+The three Braun launch-detail images under `prototype/drive-lab/public/ui/` are cropped from the user-selected Product Design direction generated for this project. They are original project material under the same interim brand/visual exclusion and are not declared as third-party assets.
+
 Material kept only under `_references/` remains external local source material. It is not automatically approved, redistributable, or part of the product.
 
 ### MusicRadar SampleRadar sample libraries
