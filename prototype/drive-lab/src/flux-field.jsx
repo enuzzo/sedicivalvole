@@ -91,8 +91,21 @@ const FRAGMENT_SHADER = `#version 300 es
     
     // Base Tile ID purely on the 2D grid position, guaranteeing 100% seamless continuity at warp=0
     vec2 tileId = vec2(floor(gridPos.x), floor(gridPos.y));
-    float colorIndex = floor(hash21(tileId + vec2(41.0, 13.0) + u_restRecolour) * 4.0);
     float tone = hash21(tileId + vec2(8.0, 29.0));
+    
+    float tilePhase = hash21(tileId + vec2(1.23, 4.56));
+    // u_restRecolour is now continuous seconds. Interval is 4.5s.
+    float localTime = (u_restRecolour / 4.5) + tilePhase;
+    float currentStep = floor(localTime);
+    float nextStep = currentStep + 1.0;
+    
+    // Fade over the last 1.5s of the 4.5s interval (1.5/4.5 = 1/3)
+    float fade = smoothstep(0.666, 1.0, fract(localTime));
+    
+    float hashA = hash21(tileId + vec2(41.0, 13.0) + currentStep);
+    float hashB = hash21(tileId + vec2(41.0, 13.0) + nextStep);
+    float colorIndexA = floor(hashA * 4.0);
+    float colorIndexB = floor(hashB * 4.0);
 
     // Tile Insets and Masking
     float baseTransInset = 0.085;
@@ -104,10 +117,17 @@ const FRAGMENT_SHADER = `#version 300 es
     float longMask = smoothstep(0.0, 0.02, min(longFract, 1.0 - longFract) - longInset);
     float tileMask = transMask * longMask;
 
-    vec3 panel = darkPanel;
-    panel = mix(panel, u_mid, step(0.5, colorIndex));
-    panel = mix(panel, u_light, step(1.5, colorIndex));
-    panel = mix(panel, u_accent, step(2.5, colorIndex));
+    vec3 panelA = darkPanel;
+    panelA = mix(panelA, u_mid, step(0.5, colorIndexA));
+    panelA = mix(panelA, u_light, step(1.5, colorIndexA));
+    panelA = mix(panelA, u_accent, step(2.5, colorIndexA));
+    
+    vec3 panelB = darkPanel;
+    panelB = mix(panelB, u_mid, step(0.5, colorIndexB));
+    panelB = mix(panelB, u_light, step(1.5, colorIndexB));
+    panelB = mix(panelB, u_accent, step(2.5, colorIndexB));
+
+    vec3 panel = mix(panelA, panelB, fade);
     panel *= mix(0.95 + tone * 0.10, 0.90 + tone * 0.20, u_velocity);
 
     // Terminal velocity laser streak coloring (white & red/accent)
@@ -381,12 +401,6 @@ export function FluxField({ energy, speed, theme, reducedMotion, pulse, brake, o
 
       if (currentSpeed < REST_RECOLOUR_SPEED_KMH) {
         restSeconds += deltaSeconds;
-        if (restSeconds >= REST_RECOLOUR_INTERVAL_SECONDS) {
-          restSeconds = 0;
-          restRecolour += 1;
-        }
-      } else {
-        restSeconds = 0;
       }
 
       const ratio = Math.min(window.devicePixelRatio || 1, 1.25);
@@ -408,7 +422,7 @@ export function FluxField({ energy, speed, theme, reducedMotion, pulse, brake, o
       gl.uniform1f(uniforms.flow, flow);
       gl.uniform1f(uniforms.pulse, valuesRef.current.pulse);
       gl.uniform1f(uniforms.brake, valuesRef.current.brake);
-      gl.uniform1f(uniforms.restRecolour, restRecolour);
+      gl.uniform1f(uniforms.restRecolour, restSeconds);
       gl.uniform3fv(uniforms.base, palette.base);
       gl.uniform3fv(uniforms.mid, palette.mid);
       gl.uniform3fv(uniforms.light, palette.light);
