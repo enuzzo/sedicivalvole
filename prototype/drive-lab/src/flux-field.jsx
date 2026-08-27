@@ -59,47 +59,19 @@ const FRAGMENT_SHADER = `#version 300 es
     vec2 uv_norm = v_uv * 2.0 - 1.0;
     
     // 1. Morph Factor (0 to 35 km/h) & Hyperspeed Factor (>120 km/h)
-    // warp = 0.0 at 0 km/h (100% flat 2D square grid)
-    // warp = 1.0 at 35 km/h (100% 3D perspective tunnel)
-    // The tiles themselves fold from flat walls into ceiling, floor, and side walls,
-    // and unfold smoothly back to the flat grid when decelerating (35 -> 0 km/h).
+    // warp = 0.0 at 0 km/h: 100% flat resting mosaic of square tiles
+    // warp = 1.0 at 35 km/h: 100% 3D perspective tunnel
+    // The exact same tiles physically deform from flat concentric square rings
+    // into the 4 perspective walls and unroll back on braking without any crossfade.
     float warp = smoothstep(0.0, 35.0, u_speedKmh);
     float terminalVelocity = smoothstep(118.0, 130.0, u_speedKmh);
 
     vec3 darkPanel = mix(u_base, u_mid, 0.66);
 
-    // -------------------------------------------------------------
-    // 2. FLAT 2D CARTESIAN GRID (Perfect squares at rest / 0 km/h)
-    // -------------------------------------------------------------
-    vec2 flatPos = vec2(uv_norm.x * u_aspect, uv_norm.y);
-    // 7 square tiles across vertical height [-1, 1]
-    vec2 flatGrid = (flatPos * 0.5 + vec2(0.5 * u_aspect, 0.5)) * 7.0;
-    vec2 flatCell = floor(flatGrid);
-    vec2 flatFract = fract(flatGrid);
-
-    float flatMask = rectangleMask(flatFract, vec2(0.085));
-    float flatColorIdx = floor(hash21(flatCell + vec2(41.0, 13.0) + u_restRecolour) * 4.0);
-    float flatTone = hash21(flatCell + vec2(8.0, 29.0));
-
-    vec3 flatPanel = darkPanel;
-    flatPanel = mix(flatPanel, u_mid, step(0.5, flatColorIdx));
-    flatPanel = mix(flatPanel, u_light, step(1.5, flatColorIdx));
-    flatPanel = mix(flatPanel, u_accent, step(2.5, flatColorIdx));
-    flatPanel *= 0.95 + flatTone * 0.10;
-
-    vec3 flatColor = mix(u_base, flatPanel, flatMask);
-    // Audio pulse on flat tiles
-    float flatPulse = u_pulse * flatMask * step(0.75, flatTone) * 0.22;
-    flatColor = mix(flatColor, u_accent, flatPulse);
-    flatColor = mix(flatColor, u_light, u_brake * flatMask * 0.08);
-
-    // -------------------------------------------------------------
-    // 3. PERSPECTIVE 3D TUNNEL (4 walls meeting at 45-degree miters)
-    // -------------------------------------------------------------
+    // 2. Chebychev radius and 4 wall sectors
     float absX = abs(uv_norm.x);
     float absY = abs(uv_norm.y);
     float majorAxis = max(max(absX, absY), 0.0001);
-    float zCorridor = 1.0 / max(majorAxis, 0.125);
 
     bool isSide = absX >= absY;
     float side = isSide 
@@ -110,17 +82,27 @@ const FRAGMENT_SHADER = `#version 300 es
       ? (uv_norm.y / max(absX, 0.0001)) 
       : (uv_norm.x / max(absY, 0.0001));
 
+    // 3. UNIFIED DEFORMED COORDINATE FIELD
+    // At warp = 0 (0 km/h): depth is linear flat concentric rings (majorAxis * 7.0), no motion flow.
+    // At warp = 1 (35 km/h): depth is 3D perspective tunnel (1.0 / majorAxis), with full speed motion flow.
+    // In between: the flat mosaic tiles physically stretch, curve, and sink into the depth of the tunnel.
+    float zDepth = mix(majorAxis * 7.0, 1.0 / max(majorAxis, 0.125), warp);
+    float flowOffset = u_flow * warp;
+    float zGrid = zDepth - flowOffset;
+
     // 7 tiles across each wall
-    float transGrid = (transCoord * 0.5 + 0.5) * 7.0;
+    const float WALL_TILES = 7.0;
+    float transGrid = (transCoord * 0.5 + 0.5) * WALL_TILES;
+
     float transCell = floor(transGrid);
     float transFract = fract(transGrid);
 
-    // Depth rings with motion flow
-    float zGrid = zCorridor - u_flow;
     float zCell = floor(zGrid);
     float zFract = fract(zGrid);
 
-    // Tile insets: normal speed stretches along Z; >120 km/h becomes razor-thin laser streaks (12% width)
+    // 4. Tile Insets and Masking
+    // Normal speed: longitudinal cuts elongate with velocity
+    // Terminal velocity (>120 km/h): longitudinal cuts dissolve, transverse insets narrow to razor lines (12% width)
     float baseTransInset = 0.085;
     float baseLongInset = mix(0.085, 0.02, u_velocity);
     float transInset = mix(baseTransInset, 0.44, terminalVelocity);
@@ -128,41 +110,38 @@ const FRAGMENT_SHADER = `#version 300 es
 
     float transMask = smoothstep(0.0, 0.02, min(transFract, 1.0 - transFract) - transInset);
     float longMask = smoothstep(0.0, 0.02, min(zFract, 1.0 - zFract) - longInset);
-    float tunnelMask = transMask * longMask;
+    float tileMask = transMask * longMask;
 
-    vec2 tunnelCell = vec2(side * 7.0 + transCell, zCell);
-    float tunnelColorIdx = floor(hash21(tunnelCell + vec2(41.0, 13.0) + u_restRecolour) * 4.0);
-    float tunnelTone = hash21(tunnelCell + vec2(8.0, 29.0));
+    // 5. Unified Tile Palette & Shuffling
+    vec2 tileId = vec2(side * 7.0 + transCell, zCell);
+    float colorIndex = floor(hash21(tileId + vec2(41.0, 13.0) + u_restRecolour) * 4.0);
+    float tone = hash21(tileId + vec2(8.0, 29.0));
 
-    vec3 tunnelPanel = darkPanel;
-    tunnelPanel = mix(tunnelPanel, u_mid, step(0.5, tunnelColorIdx));
-    tunnelPanel = mix(tunnelPanel, u_light, step(1.5, tunnelColorIdx));
-    tunnelPanel = mix(tunnelPanel, u_accent, step(2.5, tunnelColorIdx));
-    tunnelPanel *= mix(0.95 + tunnelTone * 0.10, 0.90 + tunnelTone * 0.20, u_velocity);
+    vec3 panel = darkPanel;
+    panel = mix(panel, u_mid, step(0.5, colorIndex));
+    panel = mix(panel, u_light, step(1.5, colorIndex));
+    panel = mix(panel, u_accent, step(2.5, colorIndex));
+    panel *= mix(0.95 + tone * 0.10, 0.90 + tone * 0.20, u_velocity);
 
     // Terminal velocity laser streak coloring (white & red/accent)
     float streakHash = hash21(vec2(side * 7.0 + transCell, 19.8));
     vec3 streakColor = mix(u_light, u_accent, step(0.45, streakHash));
     streakColor = mix(streakColor, u_mid, step(0.85, streakHash));
-    tunnelPanel = mix(tunnelPanel, streakColor, terminalVelocity);
+    panel = mix(panel, streakColor, terminalVelocity);
 
-    vec3 tunnelColor = mix(u_base, tunnelPanel, tunnelMask);
-    // Audio pulse on tunnel tiles
-    float tunnelPulse = u_pulse * tunnelMask * step(0.75, tunnelTone) * 0.22;
-    tunnelColor = mix(tunnelColor, u_accent, tunnelPulse);
-    tunnelColor = mix(tunnelColor, u_light, u_brake * tunnelMask * 0.08);
+    vec3 color = mix(u_base, panel, tileMask);
 
-    // -------------------------------------------------------------
-    // 4. DIRECT GEOMETRIC MORPH (0 to 35 km/h)
-    // -------------------------------------------------------------
-    // Smoothly folds the flat 2D grid into the 4 perspective walls and unrolls it back on braking.
-    vec3 color = mix(flatColor, tunnelColor, warp);
+    // 6. Reactive Audio Pulse & Brake Highlights
+    float pulse = u_pulse * tileMask * step(0.75, tone) * 0.22;
+    color = mix(color, u_accent, pulse);
+    color = mix(color, u_light, u_brake * tileMask * 0.08);
 
-    // 5. Outer edge vignette
+    // 7. Outer edge vignette
     float edge = smoothstep(1.25, 0.40, max(absX * 0.75, absY));
     color *= mix(1.0, 0.75 + edge * 0.35, u_velocity);
 
-    // 6. Final Terminus Void Gate: Central void is locked to 100% pure black when tunnel is open
+    // 8. FINAL TERMINUS VOID GATE:
+    // Central void is locked to 100% pure black when tunnel forms (speed >= 18 km/h)
     // Multiplied as the final step after all lighting/pulses, guaranteeing zero red flashes in the void
     float terminusVoid = smoothstep(0.12, 0.17, majorAxis);
     float voidActive = smoothstep(15.0, 35.0, u_speedKmh);
