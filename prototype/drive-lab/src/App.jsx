@@ -309,6 +309,7 @@ export function App() {
   const [renderer, setRenderer] = useState("checking…");
   const [muted, setMuted] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
   const [controlsAwake, setControlsAwake] = useState(true);
   const [brakeFlash, setBrakeFlash] = useState(0);
   const [diagnostics, setDiagnostics] = useState(null);
@@ -1314,6 +1315,7 @@ export function App() {
           <div className="drawer-panel">
             <div className="drawer-heading">
               <div><small>TESLA CAPABILITY HARNESS</small><h2 id="diagnostic-title">Device report</h2></div>
+              <button type="button" onClick={() => setPreviewOpen(true)} style={{marginRight: '12px'}}>AUDIO PREVIEW</button>
               <button type="button" onClick={() => setDrawerOpen(false)} aria-label="Close report">CLOSE</button>
             </div>
             <div className="diagnostic-grid">
@@ -1342,6 +1344,59 @@ export function App() {
           </div>
         </section>
       ) : null}
+
+      {previewOpen && (
+        <section className="diagnostic-drawer preview-drawer" role="dialog" aria-modal="true" aria-labelledby="preview-title">
+          <button className="drawer-backdrop" type="button" onClick={() => setPreviewOpen(false)} aria-label="Close" />
+          <div className="drawer-panel">
+            <div className="drawer-heading">
+              <div><small>FLUX AUDIO ENGINE</small><h2 id="preview-title">Sound Palette Preview</h2></div>
+              <button type="button" onClick={() => setPreviewOpen(false)} aria-label="Close preview">CLOSE</button>
+            </div>
+            
+            <div className="preview-content">
+              <h3>Jungle / Drum & Bass</h3>
+              <p>The active generative audio style. Tap any block to play its DSP voice.</p>
+              
+              <div className="preview-grid">
+                <button type="button" className="preview-btn" onClick={() => audioRef.current?.trigger("KICK")}>
+                  <strong>KICK</strong>
+                  <span>Deep 808-style sine drop</span>
+                </button>
+                <button type="button" className="preview-btn" onClick={() => audioRef.current?.trigger("SNARE")}>
+                  <strong>SNARE</strong>
+                  <span>White noise burst</span>
+                </button>
+                <button type="button" className="preview-btn" onClick={() => audioRef.current?.trigger("GHOST")}>
+                  <strong>GHOST</strong>
+                  <span>Soft syncopated snare</span>
+                </button>
+                <button type="button" className="preview-btn" onClick={() => audioRef.current?.trigger("HAT")}>
+                  <strong>HI-HAT</strong>
+                  <span>Short high-frequency noise</span>
+                </button>
+                <button type="button" className="preview-btn" onClick={() => audioRef.current?.trigger("BASS")}>
+                  <strong>BASS</strong>
+                  <span>Rolling Reese sawtooth (Em)</span>
+                </button>
+                <button type="button" className="preview-btn" onClick={() => audioRef.current?.trigger("PAD")}>
+                  <strong>PADS</strong>
+                  <span>4-voice sine chord (Em9)</span>
+                </button>
+                <button type="button" className="preview-btn" onClick={() => audioRef.current?.trigger("ARP")}>
+                  <strong>ARP</strong>
+                  <span>Triangle pluck</span>
+                </button>
+                <button type="button" className="preview-btn" onClick={() => audioRef.current?.trigger("LEAD")}>
+                  <strong>LEAD</strong>
+                  <span>Soaring unison melody</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
     </main>
   );
 }

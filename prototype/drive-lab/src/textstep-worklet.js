@@ -101,6 +101,25 @@ class TextStepWorklet extends AudioWorkletProcessor {
         this.brake = payload.brake;
       } else if (type === "MUTE") {
         this.muted = payload.muted;
+      } else if (type === "TRIGGER") {
+        // Manual triggers for diagnostics/preview
+        if (payload.voice === "KICK") {
+          this.kickEnv = 1.0; this.kickPhase = 0.0;
+        } else if (payload.voice === "SNARE") {
+          this.snareEnv = 1.0;
+        } else if (payload.voice === "GHOST") {
+          this.ghostEnv = 1.0;
+        } else if (payload.voice === "HAT") {
+          this.hatEnv = 1.0;
+        } else if (payload.voice === "BASS") {
+          this.bassEnv = 1.0; this.bassNote = 40; // Em9 root
+        } else if (payload.voice === "PAD") {
+          this.padEnv = 1.0; this.padNotes = [55, 59, 62, 66];
+        } else if (payload.voice === "ARP") {
+          this.arpEnv = 1.0; this.arpPhase = 0.0; this.arpNote = 55;
+        } else if (payload.voice === "LEAD") {
+          this.leadEnv = 1.0; this.leadPhase = 0.0; this.leadNote = 74;
+        }
       }
     };
 

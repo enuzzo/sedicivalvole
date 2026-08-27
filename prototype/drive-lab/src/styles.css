@@ -516,3 +516,63 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
   .source-readout strong { font-size: 20px; }
   .readout-divider { height: 24px; }
 }
+
+.preview-drawer .drawer-panel {
+  max-width: 720px;
+}
+.preview-content {
+  padding: 24px;
+}
+.preview-content h3 {
+  font-size: 16px;
+  letter-spacing: 0.1em;
+  margin: 0 0 8px 0;
+  color: var(--accent);
+}
+.preview-content p {
+  font-size: 11px;
+  color: rgba(238, 234, 224, 0.7);
+  margin: 0 0 24px 0;
+  letter-spacing: 0.05em;
+}
+.preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 16px;
+}
+.preview-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--line);
+  border-radius: var(--ui-radius);
+  color: var(--paper);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+.preview-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--accent);
+}
+.preview-btn:active {
+  background: var(--accent);
+  color: #000;
+  transform: scale(0.98);
+}
+.preview-btn:active span {
+  color: #000;
+}
+.preview-btn strong {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+}
+.preview-btn span {
+  font-size: 9px;
+  color: rgba(238, 234, 224, 0.6);
+  line-height: 1.3;
+}

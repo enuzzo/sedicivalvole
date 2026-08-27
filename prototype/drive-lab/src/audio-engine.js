@@ -84,6 +84,9 @@ export function createAudioEngine(onPulse, onEffectChange) {
     startCue() {
       // Stub for backward compatibility
     },
+    trigger(voice) {
+      if (node) node.port.postMessage({ type: "TRIGGER", payload: { voice } });
+    },
     brake() {
       manualBrakeActive = true;
       if (onEffectChange) onEffectChange("UNDERWATER");
