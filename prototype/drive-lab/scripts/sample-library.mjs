@@ -113,3 +113,92 @@ export async function loopsAtTempo(tempo) {
 export function loopSeconds(tempo, bars = LOOP_BARS) {
   return (60 / tempo) * 4 * bars;
 }
+
+// ---------------------------------------------------------------------------
+// Multisampled instruments
+//
+// The rave pack ships true multisamples: one file per chromatic note across
+// three or four octaves. That is what makes it possible to play *our own*
+// melodies on these instruments rather than replay someone else's phrase, and
+// it is why the second score can have real variety without stretching anything.
+//
+// Because coverage is chromatic, the nearest sample is never more than a
+// semitone away, and in practice a note is either exact or a fraction of one.
+// ---------------------------------------------------------------------------
+
+const NOTE_OFFSETS = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+
+/** `A#3` -> MIDI number. Returns null for anything that is not a note name. */
+export function noteToMidi(name) {
+  const match = String(name).match(/^([A-G])(#?)(-?\d)$/);
+  if (!match) return null;
+  const [, letter, sharp, octave] = match;
+  return NOTE_OFFSETS[letter] + (sharp ? 1 : 0) + (Number.parseInt(octave, 10) + 1) * 12;
+}
+
+export const RAVE_INSTRUMENTS = [
+  "Rave_Lead", "RavePiano", "Short_String", "Rave_Saw", "Buzz",
+  "Crunchy_Sub", "Stab_FX", "Pitched_Piano_Stab", "Pitched_String_Hit",
+];
+
+/**
+ * Loads one multisampled instrument as a MIDI-keyed map of decoded buffers.
+ *
+ * Filenames are tolerated rather than trusted: at least one file in the pack is
+ * named `RavePiano_A#2..wav`, and a strict parser would silently drop it.
+ */
+export async function loadInstrument(name, sampleRate = 48000) {
+  const directory = join(RAVE_ROOT, "Multis", name);
+  const files = (await readdir(directory)).filter((file) => file.endsWith(".wav"));
+  const notes = new Map();
+  for (const file of files) {
+    const stem = basename(file, ".wav").replace(/\.+$/, "");
+    const midi = noteToMidi(stem.split("_").pop());
+    if (midi === null) continue;
+    notes.set(midi, await decode(join(directory, file), sampleRate));
+  }
+  if (notes.size === 0) throw new Error(`no playable notes found in ${name}`);
+  return { name, notes, keys: [...notes.keys()].sort((a, b) => a - b) };
+}
+
+/**
+ * The sampled note to play a wanted pitch from, and the rate to play it at.
+ *
+ * A pitch outside the instrument's range is folded by whole octaves until it is
+ * inside. Folding rather than clamping matters: clamping to the top note would
+ * flatten a melody's shape into a repeated note, and stretching a sample five
+ * semitones to reach a pitch it does not have is exactly the artefact this
+ * whole design exists to avoid. Every instrument keeps its own natural
+ * register, which is a source of variety rather than a limitation.
+ */
+export function nearestNote(instrument, midi) {
+  const lowest = instrument.keys[0];
+  const highest = instrument.keys.at(-1);
+  let wanted = midi;
+  while (wanted > highest && wanted - 12 >= lowest) wanted -= 12;
+  while (wanted < lowest && wanted + 12 <= highest) wanted += 12;
+
+  let best = lowest;
+  for (const key of instrument.keys) {
+    if (Math.abs(key - wanted) < Math.abs(best - wanted)) best = key;
+  }
+  return { key: best, rate: 2 ** ((wanted - best) / 12), playedMidi: wanted };
+}
+
+/** Chord one-shots from the jungle pack, keyed by the chord in the filename. */
+export async function loadChordHits(sampleRate = 48000) {
+  const directory = join(JUNGLE_ROOT, "Synth One Shots");
+  const files = (await readdir(directory)).filter((file) => file.endsWith(".wav"));
+  const hits = [];
+  for (const file of files) {
+    const match = basename(file, ".wav").match(/^Jungle_([A-Za-z-]+)_(.+)$/);
+    if (!match) continue;
+    hits.push({
+      instrument: match[1],
+      chord: match[2],
+      path: join(directory, file),
+      buffer: await decode(join(directory, file), sampleRate),
+    });
+  }
+  return hits;
+}
