@@ -17,6 +17,11 @@ bank = pathlib.Path(sys.argv[2]).read_bytes()
 assert module.is_recognized_junction_bank(bank)
 assert not module.is_recognized_junction_bank(b"not-a-junction-bank")
 assert not module.is_recognized_junction_bank(b"BADMAGIC" + bank[8:])
+assert module.LEGACY_UI_HASHES == {
+    "launch-latch.png": "2a692ce1a7d3933495f1047be4449a7c168dbb1692a3724ec62a9c60b6b51c49",
+    "launch-safety.png": "19533d8ce389d7342806f6090ca52b17c582adfac841bb3172ef175e29359d8c",
+    "launch-vent.png": "e78d35a833b66dc5dd2cada78521db77b8e146ff820fd7366b98bc828bda0f1c",
+}
 `;
   execFileSync("python3", [
     "-c",

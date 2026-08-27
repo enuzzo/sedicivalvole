@@ -38,6 +38,11 @@ LEGACY_BUILD_HASHES = {
     "index-BbWXMXk1.css": "1641693f87b78f8173d0913416c2267ccf9298e690ab1960a4ab552720785455",
     "luminous-axis.png": "36f61bf26f7c5a658bc4a4811938e64b40a3587e23cdabd19a74291cdfeadc0a",
 }
+LEGACY_UI_HASHES = {
+    "launch-latch.png": "2a692ce1a7d3933495f1047be4449a7c168dbb1692a3724ec62a9c60b6b51c49",
+    "launch-safety.png": "19533d8ce389d7342806f6090ca52b17c582adfac841bb3172ef175e29359d8c",
+    "launch-vent.png": "e78d35a833b66dc5dd2cada78521db77b8e146ff820fd7366b98bc828bda0f1c",
+}
 DIAGNOSTIC_ENDPOINT = "send-diagnostic.php"
 DIAGNOSTIC_RECIPIENT_CONFIG = "recipient.local.php"
 DIAGNOSTIC_ENDPOINT_MARKER_SETS = (
@@ -192,9 +197,12 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
         "audio",
         "api",
         "third-party",
+        "ui",
     }
-    if not root_names.issubset(allowed_root_names):
-        raise ValueError("unexpected canonical-root entry")
+    unexpected_root_names = root_names - allowed_root_names
+    if unexpected_root_names:
+        unexpected = ",".join(sorted(unexpected_root_names))
+        raise ValueError(f"unexpected canonical-root entry: {unexpected}")
 
     if LEGACY_ROOT_FILE in root_names:
         default_page = remote_bytes(ftp, LEGACY_ROOT_FILE)
@@ -281,6 +289,18 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
         finally:
             ftp.cwd("..")
 
+    if "ui" in root_names:
+        ftp.cwd("ui")
+        try:
+            ui_names = safe_names(ftp)
+            if not ui_names.issubset(LEGACY_UI_HASHES):
+                raise ValueError("unexpected legacy UI entry")
+            for name in ui_names:
+                if sha256_bytes(remote_bytes(ftp, name)) != LEGACY_UI_HASHES[name]:
+                    raise ValueError("legacy UI asset identity mismatch")
+        finally:
+            ftp.cwd("..")
+
     if "diagnostics" in root_names:
         ftp.cwd("diagnostics")
         try:
@@ -323,6 +343,25 @@ def remove_legacy_publish(ftp: ftplib.FTP) -> tuple[int, int]:
     if LEGACY_ROOT_FILE in root_names:
         ftp.delete(LEGACY_ROOT_FILE)
         deleted_files += 1
+
+    if "ui" in root_names:
+        ftp.cwd("ui")
+        try:
+            ui_names = safe_names(ftp)
+            if ui_names.issubset(LEGACY_UI_HASHES):
+                for name in ui_names:
+                    ftp.delete(name)
+                    deleted_files += 1
+        finally:
+            ftp.cwd("..")
+        ftp.cwd("ui")
+        try:
+            ui_empty = not safe_names(ftp)
+        finally:
+            ftp.cwd("..")
+        if ui_empty:
+            ftp.rmd("ui")
+            removed_directories += 1
 
     if "diagnostics" not in root_names:
         return deleted_files, removed_directories
