@@ -40,6 +40,10 @@ function containsForbiddenCoordinateKey($value): bool
     return false;
 }
 
+if (ini_set('serialize_precision', '-1') === false) {
+    respond(503, 'serialization_precision_unavailable');
+}
+
 if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
     header('Allow: POST');
     respond(405, 'method_not_allowed');

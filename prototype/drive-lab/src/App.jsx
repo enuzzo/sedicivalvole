@@ -33,6 +33,15 @@ import {
 
 const APP_VERSION = __APP_VERSION__;
 const PREFERENCES_KEY = "sedicivalvole.preferences.v1";
+const DIAGNOSTIC_SEND_ERROR_COPY = {
+  payload_size_rejected: "The browser report exceeded the transport limit. Keep this page open and retry after an update.",
+  report_rejected: "The server report exceeded the mail limit. Keep this page open and retry after an update.",
+  rate_limited: "Please wait 20 seconds before sending the report again.",
+  recipient_unavailable: "The private diagnostic recipient is unavailable on the server.",
+  mail_transport_rejected: "The server mail transport rejected the report.",
+  serialization_precision_unavailable: "The server could not apply safe diagnostic number formatting.",
+  network_error: "The diagnostic request did not reach the server. Check the connection and retry.",
+};
 
 function readPreferences() {
   try {
@@ -300,6 +309,7 @@ export function App() {
   const [brakeFlash, setBrakeFlash] = useState(0);
   const [diagnostics, setDiagnostics] = useState(null);
   const [sendState, setSendState] = useState("idle");
+  const [sendErrorCode, setSendErrorCode] = useState(null);
   const [pulseFlash, setPulseFlash] = useState(0);
   const [keyboardHint, setKeyboardHint] = useState(null);
   const [audioLevel, setAudioLevel] = useState(0);
@@ -1133,6 +1143,7 @@ export function App() {
   const sendDiagnostic = useCallback(async () => {
     if (!diagnosticReport || sendState === "sending") return;
     setSendState("sending");
+    setSendErrorCode(null);
     logDiagnosticEvent("diagnostic-send.requested");
     try {
       const reportToSend = fitDiagnosticReportForTransport({
@@ -1150,12 +1161,18 @@ export function App() {
         body: JSON.stringify({ schema: reportToSend.schema, report: reportToSend }),
       });
       const result = await response.json().catch(() => null);
-      if (!response.ok || result?.ok !== true) throw new Error("diagnostic_send_failed");
+      if (!response.ok || result?.ok !== true) {
+        const error = new Error("diagnostic_send_failed");
+        error.code = typeof result?.status === "string" ? result.status : "network_error";
+        throw error;
+      }
       setSendState("sent");
       logDiagnosticEvent("diagnostic-send.accepted", { status: result.status });
-    } catch {
+    } catch (error) {
+      const errorCode = typeof error?.code === "string" ? error.code : "network_error";
       setSendState("error");
-      logDiagnosticEvent("diagnostic-send.failed");
+      setSendErrorCode(errorCode);
+      logDiagnosticEvent("diagnostic-send.failed", { code: errorCode });
     }
   }, [diagnosticReport, logDiagnosticEvent, sendState]);
 
@@ -1281,7 +1298,7 @@ export function App() {
             </div>
             <p className={`send-state send-state-${sendState}`} role="status" aria-live="polite">
               {sendState === "sent" ? "Accepted by the server mail transport. Inbox delivery still needs confirmation." : null}
-              {sendState === "error" ? "The report could not be sent. No diagnostic data was stored by the app." : null}
+              {sendState === "error" ? `${DIAGNOSTIC_SEND_ERROR_COPY[sendErrorCode] ?? "The report could not be sent."} No diagnostic data was stored by the app.` : null}
             </p>
           </div>
         </section>

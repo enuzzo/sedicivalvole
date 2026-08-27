@@ -83,6 +83,7 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 
 ### Fixed
 
+- Prevented PHP from expanding short telemetry decimals into 53-digit binary representations, which caused long Tesla flight-recorder reports to exceed the server mail limit after browser-side fitting; diagnostic send failures now expose a sanitized actionable reason.
 - Moved keyboard focus to the live experience after launch so held simulator input reaches the parent app reliably beside the non-interactive Vertigo iframe.
 - Corrected the SiteGround remote path after confirming the FTP account home sits above `sedicivalvole.app/public_html`.
 - Removed the previously uploaded wrong FTP-home diagnostics tree after exact-name validation and explicit authorization.
