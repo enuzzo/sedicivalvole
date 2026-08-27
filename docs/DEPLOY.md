@@ -40,6 +40,14 @@ deploy and the working tree was committed with the full suite green, so the
 published result is the intended one, but the script should grow an explicit
 argument gate before it is run again.
 
+## Aperture ring-geometry publication evidence — 2026-08-27
+
+- build stamp: **`20260827-1412`**, confirmed live in the served bundle;
+- upload: **PASS**, 19 files, 1,189,274 bytes; canonical root **HTTP 200**;
+- `assets/index-DdzZhJgC.js` and `assets/index-BRki9k3i.css`: **byte-identical** local/live;
+- restores the ring field so tile edges align across a wall and corners stay
+  crisp, tuned so 20 km/h matches the user's reference proportion.
+
 ## Splash and Aperture publication evidence — 2026-08-27
 
 - build stamp: **`20260827-1401`**, confirmed live in the served bundle;

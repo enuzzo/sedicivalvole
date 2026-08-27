@@ -1,6 +1,13 @@
 # Work Plan: Splash polish and Aperture continuity — 2026-08-27
 
-Status: **complete**, build `20260827-1401` deployed and verified. Written before any code was touched, so this work can be
+Status: **complete**, build `20260827-1412` deployed and verified.
+
+**Open question for the user.** Ring topology converges toward the centre by
+construction: the aligned concentric bands the reference asks for are the same
+property that makes it converge. So a standstill is now a shallow version of the
+same ring field, not a flat Cartesian mosaic. A flat mosaic at rest and the
+reference geometry at 20 km/h cannot both come from one continuous field, and
+the user has to choose which matters more. Written before any code was touched, so this work can be
 handed to another session or another tool mid-flight. Update the checkpoint table
 as each one lands; each checkpoint is its own commit.
 
