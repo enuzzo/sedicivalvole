@@ -37,9 +37,13 @@ import {
   LookaheadLimiter,
   RampedParam,
   SidechainEnvelope,
+  StereoChorus,
+  StereoReverb,
+  StereoWidth,
   TempoDelay,
   TubeSaturator,
 } from "./dsp/effects.js";
+import { OnePoleHighPass } from "./dsp/primitives.js";
 import { SynthVoice } from "./dsp/synth-voice.js";
 import { harmonyForBar, SCORE } from "./jungle-score.js";
 
@@ -47,9 +51,42 @@ import { harmonyForBar, SCORE } from "./jungle-score.js";
 const LANE_CROSSFADE_SECONDS = 0.35;
 
 /** Master trim. The limiter protects the ceiling; this sets the working level. */
-const MASTER_GAIN = 0.62;
+const MASTER_GAIN = 0.86;
 
 const SYNTH_LANES = ["sub", "reese", "riff", "response", "atmosphere"];
+
+/**
+ * Static placement of each element across the stereo field, -1 left to 1 right.
+ *
+ * The low end and the principal backbeat stay centred, because a car's two
+ * speakers must reinforce them rather than smear them. Everything that carries
+ * detail rather than weight is placed off-centre, which is what turns the mix
+ * from a line into a field. Constant-power law, so nothing changes level as it
+ * moves.
+ */
+const PLACEMENT = Object.freeze({
+  kick: 0,
+  snare: 0,
+  ghost: -0.42,
+  breakDetail: 0.5,
+  closedHat: 0.34,
+  openHat: -0.3,
+  clap: 0.18,
+  sub: 0,
+  reese: 0,
+  riff: -0.22,
+  response: 0.36,
+});
+
+/** Constant-power pan gains for a position in -1..1. */
+function panGains(position) {
+  const angle = (Math.min(1, Math.max(-1, position)) + 1) * 0.25 * Math.PI;
+  return [Math.cos(angle), Math.sin(angle)];
+}
+
+const PAN = Object.fromEntries(
+  Object.entries(PLACEMENT).map(([lane, position]) => [lane, panGains(position)]),
+);
 
 export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}) {
   if (!Number.isFinite(sampleRate) || sampleRate <= 0) {
@@ -88,8 +125,33 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
   const drumSaturator = new TubeSaturator(sampleRate);
   const sidechain = new SidechainEnvelope(sampleRate);
   const delay = new TempoDelay(sampleRate);
+  const reverb = new StereoReverb(sampleRate);
+  const padChorus = new StereoChorus(sampleRate);
+  const width = new StereoWidth(sampleRate);
   const limiter = new LookaheadLimiter(sampleRate);
+  // Everything except the kick and the sub is high-passed before it reaches the
+  // bus. Without this the pad, the reese and the break all pile into the same
+  // two octaves the low end needs, and the mix reads as mud at speed.
+  const reeseHighPass = new OnePoleHighPass();
+  const melodicHighPassLeft = new OnePoleHighPass();
+  const melodicHighPassRight = new OnePoleHighPass();
+  reeseHighPass.setFrequency(72, sampleRate);
+  melodicHighPassLeft.setFrequency(150, sampleRate);
+  melodicHighPassRight.setFrequency(150, sampleRate);
   delay.setTime("eighthDotted", arranger.committedTempo, 0);
+
+  // An auditioned lane is heard even when the arrangement has it silent, so the
+  // preview demonstrates the real voice rather than a separate demonstration
+  // synth. The floor decays on its own; nothing latches.
+  const auditionSamples = Object.fromEntries(LANES.map((lane) => [lane.id, 0]));
+
+  /** Lane level, lifted to full while that lane is being auditioned. */
+  function levelOf(laneId) {
+    const scheduled = laneGain[laneId].next();
+    if (auditionSamples[laneId] <= 0) return scheduled;
+    auditionSamples[laneId] -= 1;
+    return Math.max(scheduled, 1);
+  }
 
   let controls = continuousControls(arranger);
   let fillBar = false;
@@ -120,6 +182,9 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
 
     drumSaturator.setDrive(drive);
     delay.setFeedback(controls.delayFeedback * 0.7);
+    // The room grows and darkens as the arrangement releases, which is the
+    // lift-off wash the brief asks for, and tightens again under load.
+    reverb.set(controls.spatialDepth, 0.62 - 0.3 * brightness);
   }
 
   /** Triggers one melodic note on a lane. */
@@ -275,6 +340,33 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
   }
 
   return {
+    /**
+     * Plays one voice on its own, with the score's own kit and voicings, at the
+     * current point in the harmonic cycle. This is what the audio preview
+     * auditions, so what it demonstrates is genuinely what the piece uses.
+     *
+     * Auditioning is deliberately independent of the arrangement: a lane that
+     * is silent at a standstill can still be heard here.
+     */
+    audition(voiceId) {
+      const chord = harmonyForBar(Math.floor((lastEvent?.globalStep ?? 0) / STEPS_PER_BAR) % 4);
+      if (drums[voiceId]) {
+        drums[voiceId].trigger(score.kit[voiceId] ?? score.kit.snare);
+        return true;
+      }
+      if (!synths[voiceId]) return false;
+      const midi = voiceId === "sub"
+        ? chord.bassMidi
+        : voiceId === "reese"
+          ? chord.bassMidi + 12
+          : chord.bassMidi + 24 + chord.rootOffset + (voiceId === "atmosphere" ? chord.colour[2] : 0);
+      synths[voiceId].trigger(synthSettings[voiceId], midi);
+      auditionSamples[voiceId] = Math.round(
+        sampleRate * (voiceId === "atmosphere" ? 3.2 : 1.6),
+      );
+      return true;
+    },
+
     /** Feeds the arrangement one block's worth of vehicle speed. */
     observe(speedKmh, deltaSeconds) {
       observeSpeed(arranger, speedKmh, deltaSeconds);
@@ -288,48 +380,92 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
         const event = clock.advance(arranger.committedTempo, sampleRate, swing);
         if (event) handleStep(event);
 
-        // Drums.
-        const kickSample = drums.kick.tick() * laneGain.kick.next();
-        const snareSample = (drums.snare.tick() + drums.ghost.tick() * 0.8)
-          * laneGain.snare.next();
-        const breakSample = laneGain.breakDetail.next();
-        const hatSample = drums.closedHat.tick() * laneGain.closedHat.next();
-        const openSample = drums.openHat.tick() * laneGain.openHat.next();
-        const clapSample = drums.clap.tick() * 0.7;
+        // 1. Percussion. The kick and the backbeat hold the centre; the ghost
+        //    field, the break detail and the hats are placed across the field,
+        //    which is what makes the break read as a room rather than a line.
+        const kickSample = drums.kick.tick() * levelOf("kick");
+        const snareLevel = levelOf("snare");
+        const snareSample = drums.snare.tick() * snareLevel;
+        const breakLevel = levelOf("breakDetail");
+        const ghostSample = drums.ghost.tick() * snareLevel * (0.72 + 0.5 * breakLevel);
+        const hatSample = drums.closedHat.tick() * levelOf("closedHat");
+        const openSample = drums.openHat.tick() * levelOf("openHat");
+        const clapSample = drums.clap.tick() * 0.7 * snareLevel;
 
-        const drumBus = drumSaturator.tick(
-          kickSample + snareSample * (0.7 + 0.3 * breakSample) + hatSample + openSample + clapSample,
-        );
+        // The saturator runs on the centred backbeat only. Driving the placed
+        // material through it would fold the field back to the middle.
+        const drumCentre = drumSaturator.tick(kickSample + snareSample);
+        let percussionLeft = drumCentre;
+        let percussionRight = drumCentre;
+        const placed = [
+          [ghostSample, PAN.ghost],
+          [ghostSample * breakLevel * 0.55, PAN.breakDetail],
+          [hatSample, PAN.closedHat],
+          [openSample, PAN.openHat],
+          [clapSample, PAN.clap],
+        ];
+        for (let index = 0; index < placed.length; index += 1) {
+          const [sample, pan] = placed[index];
+          percussionLeft += sample * pan[0];
+          percussionRight += sample * pan[1];
+        }
 
-        // Bass, ducked by the kick. The duck is what makes the low end breathe
-        // with the beat instead of masking it.
+        // 2. Bass, ducked by the kick. The duck is what makes the low end
+        //    breathe with the beat instead of masking it.
         sidechain.tick(kickSample);
         const duck = sidechain.duckGain(controls.duckDepth);
-        const bassBus = (
-          synths.sub.tick(synthSettings.sub) * laneGain.sub.next()
-          + synths.reese.tick(synthSettings.reese) * laneGain.reese.next()
-        ) * duck;
+        const subSample = synths.sub.tick(synthSettings.sub) * levelOf("sub");
+        // The reese is high-passed above the sub's own octave: the two share a
+        // root, and without this separation they cancel as often as they add.
+        const reeseSample = reeseHighPass.tick(
+          synths.reese.tick(synthSettings.reese) * levelOf("reese"),
+        );
+        const bassBus = (subSample + reeseSample) * duck;
 
-        // Melodic material, which is what feeds the delay.
-        const riffSample = synths.riff.tick(synthSettings.riff) * laneGain.riff.next();
+        // 3. Melodic material. The pad goes through the chorus, so the harmony
+        //    is the widest thing in the mix and the rhythm stays tight.
+        const riffSample = synths.riff.tick(synthSettings.riff) * levelOf("riff");
         const responseSample = synths.response.tick(synthSettings.response)
-          * laneGain.response.next();
+          * levelOf("response");
         const padSample = synths.atmosphere.tick(synthSettings.atmosphere)
-          * laneGain.atmosphere.next();
-        const melodic = riffSample + responseSample + padSample;
+          * levelOf("atmosphere");
+        const [padLeft, padRight] = padChorus.tickStereo(padSample);
 
-        // Static width plus a ping-pong delay: depth without a reverb pass.
-        const sendLevel = controls.spatialDepth * 0.5;
+        let melodicLeft = riffSample * PAN.riff[0] + responseSample * PAN.response[0]
+          + padLeft * 0.9;
+        let melodicRight = riffSample * PAN.riff[1] + responseSample * PAN.response[1]
+          + padRight * 0.9;
+
+        // 4. Sends. The delay carries the melodic lanes and the ghost field; the
+        //    reverb carries everything with detail but nothing with weight.
+        const sendLevel = controls.spatialDepth * 0.62;
         const [delayLeft, delayRight] = delay.tickStereo(
-          riffSample * sendLevel, responseSample * sendLevel + padSample * sendLevel * 0.5,
+          (riffSample + ghostSample * 0.3) * sendLevel,
+          (responseSample + padSample * 0.5 + openSample * 0.25) * sendLevel,
         );
 
-        const dryLeft = drumBus + bassBus + melodic - responseSample * 0.35;
-        const dryRight = drumBus + bassBus + melodic - riffSample * 0.35;
+        const reverbSend = 0.24 + controls.spatialDepth * 0.5;
+        const [reverbLeft, reverbRight] = reverb.tickStereo(
+          (percussionLeft - drumCentre + snareSample * 0.5 + melodicLeft * 0.7) * reverbSend,
+          (percussionRight - drumCentre + snareSample * 0.5 + melodicRight * 0.7) * reverbSend,
+        );
+
+        // 5. Sum. Only the kick and the sub reach the bus with their low end
+        //    intact, so the two octaves that carry weight stay uncontested.
+        const busLeft = drumCentre
+          + melodicHighPassLeft.tick(percussionLeft - drumCentre + melodicLeft)
+          + bassBus + delayLeft + reverbLeft;
+        const busRight = drumCentre
+          + melodicHighPassRight.tick(percussionRight - drumCentre + melodicRight)
+          + bassBus + delayRight + reverbRight;
+
+        // 6. Width opens with energy, and never below the crossover.
+        const [wideLeft, wideRight] = width.tickStereo(
+          busLeft, busRight, 1 + controls.spatialDepth * 0.5,
+        );
 
         const [outLeft, outRight] = limiter.tickStereo(
-          (dryLeft + delayLeft) * MASTER_GAIN,
-          (dryRight + delayRight) * MASTER_GAIN,
+          wideLeft * MASTER_GAIN, wideRight * MASTER_GAIN,
         );
 
         left[frame] = outLeft;

@@ -206,10 +206,15 @@ export function advanceDemoMotion(
         launchSeconds: 0,
       };
   }
-  if (holdSeconds > 0 && input === "auto") {
+  // `auto` means no driver input, and the simulator then holds the speed it was
+  // left at. It never stages a drive of its own: acceleration comes only from a
+  // held accelerator, deceleration only from the lift-off curve or the brake.
+  // Without this the demo drove itself, which made the score's response to the
+  // driver impossible to judge.
+  if (input === "auto") {
     return {
       speed,
-      direction,
+      direction: 0,
       holdSeconds: Math.max(0, holdSeconds - elapsed),
       brakeHeldSeconds: 0,
       liftOffSeconds: 0,
@@ -217,13 +222,10 @@ export function advanceDemoMotion(
     };
   }
 
-  const launchFactor = input === "auto" && speed < 30
-    ? 0.52 + 0.48 * smoothCurve(0, 1.2, launchSeconds)
-    : 1.0;
   const rateMps2 = input === "brake"
     ? -model3AwdBrakeDecelerationMps2(speed, brakeHeldSeconds)
     : direction > 0
-      ? model3AwdAccelerationMps2(speed) * launchFactor
+      ? model3AwdAccelerationMps2(speed)
       : -model3AwdLiftOffDecelerationMps2(speed, liftOffSeconds);
   const nextSpeed = speed + rateMps2 * elapsed * 3.6;
   if (nextSpeed >= ROAD_SPEED_CEILING_KMH) {

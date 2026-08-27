@@ -71,7 +71,7 @@ test("ramps a held moderate brake and settles the reference car without reversin
   assert.ok(elapsedSeconds > 8 && elapsedSeconds < 11);
 });
 
-test("braking starts from the exact simulated speed and release settles before acceleration", () => {
+test("braking starts from the exact simulated speed and release holds it", () => {
   const initialSpeed = 73.4;
   const braking = advanceDemoMotion({
     speed: initialSpeed,
@@ -91,8 +91,13 @@ test("braking starts from the exact simulated speed and release settles before a
   assert.equal(released.speed, braking.speed);
   assert.ok(Math.abs(released.holdSeconds - 0.45) < 0.0001);
 
-  const resumed = advanceDemoMotion({ ...released, holdSeconds: 0 }, 0.1, false);
-  assert.ok(resumed.speed > released.speed);
+  // Releasing the brake never resumes motion on its own: with no driver input
+  // the simulator holds the speed it was left at, however long it is left.
+  let resumed = { ...released, holdSeconds: 0 };
+  for (let step = 0; step < 50; step += 1) {
+    resumed = advanceDemoMotion(resumed, 0.1, false);
+  }
+  assert.equal(resumed.speed, released.speed);
 });
 
 test("accelerator release ramps regenerative deceleration without dropping speed", () => {
@@ -254,10 +259,18 @@ test("motion separates acceleration from deceleration with bounded rates", () =>
 });
 
 test("the demo manual mode stays at ceiling and stays at standstill without auto looping", () => {
-  const ceiling = advanceDemoMotion({ speed: 129, direction: 1 }, 0.18);
+  // No driver input means no motion. The demo holds whatever speed it is given,
+  // both mid-range and at the ceiling, instead of driving itself.
+  const cruising = advanceDemoMotion({ speed: 129, direction: 1 }, 0.18);
+  assert.equal(cruising.speed, 129);
+  assert.equal(cruising.direction, 0);
+  assert.equal(cruising.holdSeconds, 0);
+
+  const ceiling = advanceDemoMotion(
+    { speed: 129, direction: 1 }, 0.18, false, "accelerator",
+  );
   assert.equal(ceiling.speed, ROAD_SPEED_CEILING_KMH);
   assert.equal(ceiling.direction, 1);
-  assert.equal(ceiling.holdSeconds, 0);
 
   const holding = advanceDemoMotion(ceiling, 0.18);
   assert.equal(holding.speed, ROAD_SPEED_CEILING_KMH);

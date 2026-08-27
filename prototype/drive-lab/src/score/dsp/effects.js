@@ -9,8 +9,9 @@
 //                   project maintainer. See docs/LICENSING.md.
 //
 // Ported: RampedParam, TubeSaturator (with its 2x oversampler), SidechainEnvelope,
-// LookaheadLimiter, and the musical delay subdivisions. The FDN reverb and glue
-// compressor are not ported yet.
+// LookaheadLimiter, and the musical delay subdivisions. Upstream's FDN reverb
+// and glue compressor are not ported; StereoReverb, StereoChorus, StereoWidth
+// and TempoDelay at the end of this file are original sedicivalvole code.
 //
 // Modifications for sedicivalvole:
 //   - translated from Rust to JavaScript classes;
@@ -265,5 +266,169 @@ export class TempoDelay {
     this.writePosition = (this.writePosition + 1) % this.size;
 
     return [delayedLeft, delayedRight];
+  }
+}
+
+/**
+ * Stereo plate reverb.
+ *
+ * Original sedicivalvole code, in the Schroeder/Freeverb arrangement: four
+ * damped comb filters in parallel into two allpass diffusers per channel, with
+ * the right channel's delays offset so the two sides decorrelate. Upstream's
+ * FDN reverb was never ported; this is the space the score needs and nothing
+ * more, because it has to run inside a render quantum on vehicle hardware.
+ *
+ * Delay lengths are the classic Freeverb primes, scaled from their 44.1 kHz
+ * origin to the running sample rate so the character survives at 48 kHz.
+ */
+const REVERB_COMBS = [1116, 1188, 1277, 1356];
+const REVERB_ALLPASSES = [556, 441];
+const REVERB_STEREO_SPREAD = 23;
+
+class DampedComb {
+  constructor(length) {
+    this.buffer = new Float32Array(Math.max(1, length));
+    this.position = 0;
+    this.store = 0;
+  }
+
+  tick(input, feedback, damping) {
+    const output = this.buffer[this.position];
+    this.store = output * (1 - damping) + this.store * damping;
+    this.buffer[this.position] = input + this.store * feedback;
+    this.position = (this.position + 1) % this.buffer.length;
+    return output;
+  }
+}
+
+class Allpass {
+  constructor(length) {
+    this.buffer = new Float32Array(Math.max(1, length));
+    this.position = 0;
+  }
+
+  tick(input) {
+    const buffered = this.buffer[this.position];
+    this.buffer[this.position] = input + buffered * 0.5;
+    this.position = (this.position + 1) % this.buffer.length;
+    return buffered - input;
+  }
+}
+
+export class StereoReverb {
+  constructor(sampleRate) {
+    const scale = sampleRate / 44100;
+    const at = (length, offset) => Math.max(1, Math.round((length + offset) * scale));
+    this.combsLeft = REVERB_COMBS.map((length) => new DampedComb(at(length, 0)));
+    this.combsRight = REVERB_COMBS.map(
+      (length) => new DampedComb(at(length, REVERB_STEREO_SPREAD)),
+    );
+    this.allpassesLeft = REVERB_ALLPASSES.map((length) => new Allpass(at(length, 0)));
+    this.allpassesRight = REVERB_ALLPASSES.map(
+      (length) => new Allpass(at(length, REVERB_STEREO_SPREAD)),
+    );
+    // A high pass on the input keeps the low end out of the tail, which is the
+    // difference between a space and a wash.
+    this.inputHighPassLeft = 0;
+    this.inputHighPassRight = 0;
+    this.highPassCoefficient = Math.exp(-TAU * 220 / sampleRate);
+    this.feedback = 0.84;
+    this.damping = 0.32;
+  }
+
+  /** `size` 0..1 sets the tail length, `damping` 0..1 how dark it is. */
+  set(size, damping) {
+    this.feedback = 0.7 + Math.min(1, Math.max(0, size)) * 0.22;
+    this.damping = 0.16 + Math.min(1, Math.max(0, damping)) * 0.5;
+  }
+
+  tickStereo(inputLeft, inputRight) {
+    this.inputHighPassLeft = this.highPassCoefficient * this.inputHighPassLeft
+      + (1 - this.highPassCoefficient) * inputLeft;
+    this.inputHighPassRight = this.highPassCoefficient * this.inputHighPassRight
+      + (1 - this.highPassCoefficient) * inputRight;
+    const driveLeft = (inputLeft - this.inputHighPassLeft) * 0.24;
+    const driveRight = (inputRight - this.inputHighPassRight) * 0.24;
+
+    let left = 0;
+    let right = 0;
+    for (let index = 0; index < this.combsLeft.length; index += 1) {
+      left += this.combsLeft[index].tick(driveLeft, this.feedback, this.damping);
+      right += this.combsRight[index].tick(driveRight, this.feedback, this.damping);
+    }
+    for (let index = 0; index < this.allpassesLeft.length; index += 1) {
+      left = this.allpassesLeft[index].tick(left);
+      right = this.allpassesRight[index].tick(right);
+    }
+    return [left, right];
+  }
+}
+
+/**
+ * Stereo chorus for the sustained lanes.
+ *
+ * Original sedicivalvole code. Two modulated delay taps read the same mono
+ * source at different rates and land on opposite sides, so a pad occupies real
+ * width instead of a phase trick that collapses on a mono speaker.
+ */
+export class StereoChorus {
+  constructor(sampleRate) {
+    this.sampleRate = sampleRate;
+    this.size = Math.max(4, Math.trunc(sampleRate * 0.05));
+    this.buffer = new Float32Array(this.size);
+    this.writePosition = 0;
+    this.phaseLeft = 0;
+    this.phaseRight = 0.37;
+    this.rateLeft = 0.21 / sampleRate;
+    this.rateRight = 0.29 / sampleRate;
+    this.baseSamples = sampleRate * 0.014;
+    this.depthSamples = sampleRate * 0.0042;
+  }
+
+  read(offset) {
+    const readPosition = this.writePosition - offset;
+    const wrapped = readPosition < 0 ? readPosition + this.size : readPosition;
+    const lower = Math.floor(wrapped) % this.size;
+    const upper = (lower + 1) % this.size;
+    const blend = wrapped - Math.floor(wrapped);
+    return this.buffer[lower] * (1 - blend) + this.buffer[upper] * blend;
+  }
+
+  tickStereo(input) {
+    this.phaseLeft += this.rateLeft;
+    if (this.phaseLeft >= 1) this.phaseLeft -= 1;
+    this.phaseRight += this.rateRight;
+    if (this.phaseRight >= 1) this.phaseRight -= 1;
+
+    const left = this.read(this.baseSamples + Math.sin(this.phaseLeft * TAU) * this.depthSamples);
+    const right = this.read(
+      this.baseSamples * 1.31 + Math.sin(this.phaseRight * TAU) * this.depthSamples,
+    );
+
+    this.buffer[this.writePosition] = input;
+    this.writePosition = (this.writePosition + 1) % this.size;
+    return [left, right];
+  }
+}
+
+/**
+ * Mid/side width trim with a mono-below crossover.
+ *
+ * Width is only ever applied above the crossover: the low end stays summed, so
+ * the car's two speakers reinforce the sub instead of cancelling it.
+ */
+export class StereoWidth {
+  constructor(sampleRate, monoBelowHz = 140) {
+    this.coefficient = Math.exp(-TAU * monoBelowHz / sampleRate);
+    this.sideLowState = 0;
+  }
+
+  tickStereo(inputLeft, inputRight, width) {
+    const mid = (inputLeft + inputRight) * 0.5;
+    const side = (inputLeft - inputRight) * 0.5;
+    this.sideLowState = this.coefficient * this.sideLowState + (1 - this.coefficient) * side;
+    const sideHigh = side - this.sideLowState;
+    const widened = sideHigh * width;
+    return [mid + widened, mid - widened];
   }
 }

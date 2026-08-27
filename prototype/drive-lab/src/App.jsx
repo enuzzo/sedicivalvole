@@ -29,7 +29,6 @@ import {
   normalizeGpsSpeed,
   ROAD_SPEED_CEILING_KMH,
   smoothGpsSpeed,
-  speedToBpm,
   speedToEnergy,
 } from "./signal-model.js";
 
@@ -317,6 +316,9 @@ export function App() {
   const [sendErrorCode, setSendErrorCode] = useState(null);
   const [pulseFlash, setPulseFlash] = useState(0);
   const [activeEffect, setActiveEffect] = useState(null);
+  const [scoreTempo, setScoreTempo] = useState(162);
+  const [scoreScene, setScoreScene] = useState("REST");
+  const scoreStateRef = useRef(null);
   const [keyboardHint, setKeyboardHint] = useState(null);
   const [audioLevel, setAudioLevel] = useState(0);
   const [flightRecorderRevision, setFlightRecorderRevision] = useState(0);
@@ -378,7 +380,9 @@ export function App() {
   const theme = getFluxTheme(themeId);
   const environment = getFluxEnvironment(environmentId);
   const energy = speedToEnergy(speed);
-  const bpm = speedToBpm(speed);
+  // The tempo shown is the transport's own, reported by the score. Deriving it
+  // from speed again would print a number the music never plays.
+  const bpm = scoreTempo;
   speedRef.current = speed;
   gpsStateRef.current = gpsState;
   accuracyRef.current = accuracy;
@@ -421,20 +425,29 @@ export function App() {
     wakeControls();
   }, [controlsAwake, drawerOpen, wakeControls]);
 
-  const triggerPulse = useCallback(() => {
-    setPulseFlash(1);
-    window.setTimeout(() => setPulseFlash(0), 110);
+  // The score reports its own arrangement about ten times a second. The full
+  // snapshot lives in a ref so the flight recorder can read it without forcing a
+  // render; only the two values the interface shows become state, and only when
+  // they actually change.
+  const triggerPulse = useCallback((snapshot) => {
+    if (!snapshot) return;
+    scoreStateRef.current = snapshot;
+    const tempo = Math.round(snapshot.tempo ?? 0);
+    setScoreTempo((current) => (current === tempo ? current : tempo));
+    const scene = String(snapshot.sceneId ?? "rest").toUpperCase();
+    setScoreScene((current) => (current === scene ? current : scene));
   }, []);
 
   const triggerBrake = useCallback(() => {
     const now = performance.now();
-    if (now - brakeCooldownRef.current < 900) return;
-    brakeCooldownRef.current = now;
-    logDiagnosticEvent("brake.triggered", { source: sourceRef.current });
     audioRef.current?.brake();
     window.clearTimeout(brakeFlashTimerRef.current);
     setBrakeFlash(1);
-    brakeFlashTimerRef.current = window.setTimeout(() => setBrakeFlash(0), 460);
+    // The engine is told every time the input goes down, but the log and the
+    // flash stay rate-limited so a held brake does not flood either.
+    if (now - brakeCooldownRef.current < 900) return;
+    brakeCooldownRef.current = now;
+    logDiagnosticEvent("brake.triggered", { source: sourceRef.current });
   }, [logDiagnosticEvent]);
 
   const startGps = useCallback(() => {
@@ -606,6 +619,7 @@ export function App() {
   const releaseKeyboardBrake = useCallback(() => {
     if (!brakeHeldRef.current) return;
     brakeHeldRef.current = false;
+    audioRef.current?.releaseBrake();
     window.clearTimeout(brakeFlashTimerRef.current);
     setBrakeFlash(0);
     const acceleratorHeld = acceleratorHeldRef.current;
@@ -917,7 +931,7 @@ export function App() {
         source: sourceRef.current,
         driveInput: brakeHeldRef.current ? "service-brake" : demoDriveInputRef.current,
         energy: speedToEnergy(speedRef.current),
-        bpm: speedToBpm(speedRef.current),
+        bpm: scoreStateRef.current?.tempo ?? null,
         averageFps: frame.averageFps,
         p95FrameMs: frame.p95FrameMs,
         audioLevel: audioLevelRef.current,
@@ -989,16 +1003,13 @@ export function App() {
     if (phase !== "running") return undefined;
     const handleKeyDown = (event) => {
       if (!canUseKeyboardTarget(event.target)) return;
+      if (event.repeat) return;
       if (event.key === "ArrowUp") {
         event.preventDefault();
         startKeyboardAcceleration();
-      } else if (event.key === "ArrowDown") {
-        event.preventDefault();
-        startKeyboardBrake();
-      } else if (event.key === "ArrowDown") {
-        if (canUseKeyboardTarget(event.target)) event.preventDefault();
-        releaseKeyboardBrake();
-      } else if (event.code === "Space") {
+      } else if (event.key === "ArrowDown" || event.code === "Space") {
+        // Both are held service-brake inputs. Every key that presses the brake
+        // must have a matching release below, or the brake latches on.
         event.preventDefault();
         startKeyboardBrake();
       }
@@ -1007,7 +1018,7 @@ export function App() {
       if (event.key === "ArrowUp") {
         if (canUseKeyboardTarget(event.target)) event.preventDefault();
         releaseKeyboardAcceleration();
-      } else if (event.code === "Space") {
+      } else if (event.key === "ArrowDown" || event.code === "Space") {
         if (canUseKeyboardTarget(event.target)) event.preventDefault();
         releaseKeyboardBrake();
       }
@@ -1351,35 +1362,35 @@ export function App() {
               <p>The active generative audio style. Tap any block to play its DSP voice.</p>
               
               <div className="preview-grid">
-                <button type="button" className="preview-btn" onClick={() => audioRef.current?.trigger("KICK")}>
+                <button type="button" className="preview-btn" onClick={() => audioRef.current?.audition("KICK")}>
                   <strong>KICK</strong>
                   <span>Deep 808-style sine drop</span>
                 </button>
-                <button type="button" className="preview-btn" onClick={() => audioRef.current?.trigger("SNARE")}>
+                <button type="button" className="preview-btn" onClick={() => audioRef.current?.audition("SNARE")}>
                   <strong>SNARE</strong>
                   <span>White noise burst</span>
                 </button>
-                <button type="button" className="preview-btn" onClick={() => audioRef.current?.trigger("GHOST")}>
+                <button type="button" className="preview-btn" onClick={() => audioRef.current?.audition("GHOST")}>
                   <strong>GHOST</strong>
                   <span>Soft syncopated snare</span>
                 </button>
-                <button type="button" className="preview-btn" onClick={() => audioRef.current?.trigger("HAT")}>
+                <button type="button" className="preview-btn" onClick={() => audioRef.current?.audition("HAT")}>
                   <strong>HI-HAT</strong>
                   <span>Short high-frequency noise</span>
                 </button>
-                <button type="button" className="preview-btn" onClick={() => audioRef.current?.trigger("BASS")}>
+                <button type="button" className="preview-btn" onClick={() => audioRef.current?.audition("BASS")}>
                   <strong>BASS</strong>
                   <span>Rolling Reese sawtooth (Em)</span>
                 </button>
-                <button type="button" className="preview-btn" onClick={() => audioRef.current?.trigger("PAD")}>
+                <button type="button" className="preview-btn" onClick={() => audioRef.current?.audition("PAD")}>
                   <strong>PADS</strong>
                   <span>4-voice sine chord (Em9)</span>
                 </button>
-                <button type="button" className="preview-btn" onClick={() => audioRef.current?.trigger("ARP")}>
+                <button type="button" className="preview-btn" onClick={() => audioRef.current?.audition("ARP")}>
                   <strong>ARP</strong>
                   <span>Triangle pluck</span>
                 </button>
-                <button type="button" className="preview-btn" onClick={() => audioRef.current?.trigger("LEAD")}>
+                <button type="button" className="preview-btn" onClick={() => audioRef.current?.audition("LEAD")}>
                   <strong>LEAD</strong>
                   <span>Soaring unison melody</span>
                 </button>
