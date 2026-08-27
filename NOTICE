@@ -19,4 +19,10 @@ conceived and created by Lobo (illobo): https://github.com/illobo/textStep.
 No textStep source is included in the current product; any future derived code
 will retain explicit authorship, provenance, modification, and license notices.
 
+VERTIGO 02 integrates High-speed Light Trails / Interstate 7 by Daniel
+Velasquez (Anemolo) and Codrops/Tympanus from commit
+e58d58520bc0dfde21f9e14e6a1b8c7f0a2a2a9e. The vendor snapshot retains its
+original usage notice and bundled-library licenses; it is not relicensed under
+the sedicivalvole AGPL grant. See THIRD_PARTY_NOTICES.md.
+
 Source: https://github.com/enuzzo/sedicivalvole

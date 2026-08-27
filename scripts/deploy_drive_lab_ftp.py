@@ -98,6 +98,26 @@ def remote_bytes(ftp: ftplib.FTP, name: str) -> bytes:
     return buffer.getvalue()
 
 
+def verify_remote_static_tree(ftp: ftplib.FTP, local_root: Path) -> None:
+    """Verify that every existing remote vendor entry matches the local tree."""
+    remote_names = safe_names(ftp)
+    expected_names = {path.name for path in local_root.iterdir()}
+    if not remote_names.issubset(expected_names):
+        raise ValueError("unexpected third-party entry")
+
+    for name in remote_names:
+        local_path = local_root / name
+        if local_path.is_dir():
+            ftp.cwd(name)
+            try:
+                verify_remote_static_tree(ftp, local_path)
+            finally:
+                ftp.cwd("..")
+            continue
+        if sha256_bytes(remote_bytes(ftp, name)) != hashlib.sha256(local_path.read_bytes()).hexdigest():
+            raise ValueError("third-party content mismatch")
+
+
 def sha256_bytes(payload: bytes) -> str:
     return hashlib.sha256(payload).hexdigest()
 
@@ -124,6 +144,7 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
         DYNAMIC_ROOT_ENTRY,
         "assets",
         "api",
+        "third-party",
     }
     if not root_names.issubset(allowed_root_names):
         raise ValueError("unexpected canonical-root entry")
@@ -186,6 +207,13 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
                 recipient_config = remote_bytes(ftp, DIAGNOSTIC_RECIPIENT_CONFIG)
                 if not all(marker in recipient_config for marker in DIAGNOSTIC_RECIPIENT_CONFIG_MARKERS):
                     raise ValueError("diagnostic recipient identity mismatch")
+        finally:
+            ftp.cwd("..")
+
+    if "third-party" in root_names:
+        ftp.cwd("third-party")
+        try:
+            verify_remote_static_tree(ftp, BUILD / "third-party")
         finally:
             ftp.cwd("..")
 

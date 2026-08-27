@@ -47,6 +47,13 @@ relicensed by this project. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)
 Local material under `_references/` is not part of the repository or any
 project license grant.
 
+The files under `prototype/drive-lab/public/third-party/infinite-lights/` are
+excluded from the project's AGPL grant. They are an unmodified vendor snapshot
+of Codrops/Tympanus Infinite Lights commit
+`e58d58520bc0dfde21f9e14e6a1b8c7f0a2a2a9e` and remain subject to the upstream
+usage notice and the licenses of its bundled Three.js and post-processing
+libraries. The separately authored sedicivalvole bridge remains AGPL-licensed.
+
 The planned Flux sequencer direction is informed by Lobo's
 [textStep](https://github.com/illobo/textStep) project. No textStep source is
 included in the current AGPL-licensed product. Any later copied, translated, or

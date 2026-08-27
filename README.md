@@ -25,7 +25,7 @@ The canonical development build is available at [sedicivalvole.app](https://sedi
 - ✅ a single ignored local reference library under `_references/`;
 - ✅ source audit, product requirements, adversarial review, technical direction, and roadmap;
 - ✅ Modular Aperture selected after exactly three revised Product Design directions;
-- ✅ touch-first Flux prototype with selectable procedural WebGL2/Canvas2D Aperture and Vertigo fields, GPS/demo speed source, Stop/Mute, a fixed `130 km/h` energy ceiling, five body-color themes, and an integrated capability report;
+- ✅ touch-first Flux prototype with procedural WebGL2/Canvas2D Aperture plus the original Three.js/post-processing Interstate 7 Vertigo environment, GPS/demo speed source, Stop/Mute, a fixed `130 km/h` energy ceiling, five interface/body themes, and an integrated capability report;
 - ✅ local-only speed processing: raw coordinates are never displayed, persisted, or transmitted;
 - ✅ a four-section authored audio spike with a tempo knee, quantized transitions, hysteresis, dwell, crossfades, and speed-driven arrangement depth;
 - ✅ production build and deterministic signal, diagnostic-model, and packaging tests passing;
@@ -46,7 +46,7 @@ The speed source is an explicit abstraction. GPS and the desktop simulator produ
 Confirmed product modes:
 
 - **Engine** — selectable engine-sound emulation with a dedicated instrument-inspired visual language. Audio modeling, catalog, and final visual direction are not implemented yet.
-- **Flux** — adaptive music driven by speed and motion, paired with selectable procedural environments. Aperture morphs a flat square field into a centered tunnel; Vertigo folds continuous light bands from a plane into a laterally undulating vertical flow. Both reverse coherently during deceleration. This is the mode currently implemented as Drive Lab.
+- **Flux** — adaptive music driven by speed and motion, paired with selectable visual environments. Aperture morphs a flat square field into a centered tunnel. Vertigo embeds the original Codrops/Tympanus Interstate 7 road, repeated side signals, car-light trails, bloom, camera, and deep distortion without modifying the upstream runtime; an external bridge slows its original clock/FOV controls and maps them continuously to `0–130 km/h`. This is the mode currently implemented as Drive Lab.
 
 Shared foundations include the GPS/Demo speed source, integrated diagnostics, master Stop/Mute, reduced motion, renderer fallback, and touch-first safety behavior. The mode switch will remain clearly identifiable and reachable from both experiences.
 

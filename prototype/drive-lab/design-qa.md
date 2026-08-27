@@ -17,7 +17,7 @@
 - Aperture at `39 km/h`: clear centered tunnel depth while modules remain visibly distinct;
 - Aperture at `130 km/h`: complete Plaid-like radial line field and maximum travel/deformation;
 - Vertigo at `0 km/h`: unrolled quiet road field, no vertical fold, restrained breathing glow;
-- Vertigo at `130 km/h`: original-inspired floor-to-wall fold, central channel, asymmetric red/white/blue lanes, lateral wave, and maximum travel;
+- Vertigo at `130 km/h`: byte-identical upstream Interstate 7 road, repeated luminous side sticks, asymmetric opposing car-light trails, bloom, deep distortion, and original non-boosted travel rate;
 - control slab: `VISUAL` remains interactive, the energy slider is absent, and `SCORE / PROTOTYPE / TEXTSTEP · NEXT` is truthful rather than a fake genre selector;
 - diagnostics: `energyCeilingKmh: 130`, arrangement `score: prototype`, active environment, renderer, and `SEND DIAGNOSTIC` remain reachable.
 
@@ -41,7 +41,7 @@
 ## Functional verification
 
 - 18 unit tests and 4 packaging tests pass; the production build passes;
-- fresh-runtime diagnostics report `energyCeilingKmh: 130`, `score: prototype`, and `WebGL2 · Vertigo`;
+- fresh-runtime diagnostics report `energyCeilingKmh: 130`, `score: prototype`, and `WebGL · Original Interstate 7`;
 - visual switching, Demo progression, the `39 km/h` urban state, the `130 km/h` ceiling state, idle Vertigo, and diagnostics were exercised at `773 × 601`;
 - page identity and meaningful DOM content pass; no framework overlay is present;
 - no application warnings or errors were observed in the selected in-app browser.

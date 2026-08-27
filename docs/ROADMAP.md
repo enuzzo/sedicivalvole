@@ -63,7 +63,7 @@ Gate: deterministic 0 → 115 → 60 → 115 → 0 replay, credible Jungle ident
 
 ## Phase 4 — Flux generative renderer spike
 
-Status: **APERTURE AND VERTIGO IMPLEMENTED; TESLA PERFORMANCE PENDING**.
+Status: **APERTURE AND ORIGINAL INTERSTATE 7 VERTIGO IMPLEMENTED; TESLA PERFORMANCE PENDING**.
 
 Implemented:
 
@@ -74,14 +74,15 @@ Implemented:
 - dark tunnel terminus plus off-canvas resting chrome with a persistent speed readout and wake-first interaction.
 - outward high-speed flight, non-linear flow response, true-zero Demo dwell, and an opaque high-contrast speed frame.
 - one seam-free geometric field that continuously morphs from large, complete four-color squares through an unmistakable urban-speed tunnel into a full Plaid field at the fixed `130 km/h` Demo ceiling;
-- selectable `VERTIGO 02` WebGL2/Canvas2D field with a continuous power-curve fold, paired lateral waves, longitudinal travel, curated palette parameters, reversible deceleration, and persisted environment choice.
+- selectable `VERTIGO 02` using the byte-identical upstream Interstate 7 scene with its road, repeated side lights, opposing car trails, bloom, fog, camera, deep distortion, and original dependencies;
+- an external `0–130 km/h` bridge that slows the original clock from stopped to its non-boosted `1×` rate and maps FOV from `90°` to `150°`, without editing the vendor runtime.
 
 Queued next:
 
 - bind the visual environment selector to authored musical genres once the new sequencer boundary exists;
 - replace the truthful `SCORE / PROTOTYPE / TEXTSTEP · NEXT` placeholder with a real genre selector only after the data-driven textStep-informed transport can switch authored scores without fake states;
 - retain the two unselected Interstate-inspired directions in the ignored backlog for a later three-direction gate rather than presenting them as implemented;
-- profile and refine travel rate, projection response, curvature, band density, palette, and geometry on the target Tesla while preserving continuous reversible deceleration;
+- profile the unmodified Interstate 7 renderer on the target Tesla; any later travel, projection, curvature, density, palette, or geometry changes require a new explicit product decision and must not be folded into the upstream-integrity checkpoint;
 - verify each environment at rest, intermediate speed, full energy, and sustained deceleration at `773 × 601` before canonical deployment.
 
 Gate: stable frame budget on the slowest target vehicle, graceful degradation, and no audio degradation while the renderer runs.

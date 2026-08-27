@@ -29,7 +29,7 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - A pinned study of `illobo/textStep` covering its synthesized drum/synth engine, 32-step patterns, Jungle/D&B presets, scene queue, browser portability, and licensing gate.
 - Prominent project-level credit to Lobo (`illobo`) as the creator of textStep and its sequencer, synth, DSP, scene, and performance architecture, with linked provenance and an explicit future-derived-code attribution policy.
 - A confirmed multi-environment Flux model binding generative effect, musical genre, palette, geometry, and speed response, plus three new selection-gated directions informed by the Interstate 4 and Interstate 7 mechanics study.
-- The user-selected `VERTIGO 02` visual environment with an independent WebGL2 shader, continuously redrawn Canvas2D fallback, persistent environment selection, and deterministic environment-cycle tests.
+- The user-selected `VERTIGO 02` visual environment, now using the byte-identical upstream Interstate 7 runtime with deterministic source-integrity and speed-bridge tests.
 - The approved Signal Gate splash: paired vermilion and ice-blue generative lanes bend into a central vertical gate, with a Canvas2D fallback and reduced-motion support.
 
 ### Changed
@@ -68,6 +68,9 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 - Replaced the threshold surface with distinct `VISUAL` selection and a truthful `SCORE / PROTOTYPE / TEXTSTEP · NEXT` roadmap slot; no unimplemented genre is presented as active.
 - Increased Vertigo line weight, layered glow, and stationary breathing while preserving its original-inspired floor-to-wall fold, lateral wave, and independent renderer provenance.
 - Replaced the square-grid startup view with the selected Signal Gate direction, moved `PLAY THE ROAD` into a larger centered launch control, and added the centered `A project by Netmilk Studio` credit.
+- Replaced the rejected independent Vertigo translation with the complete original Interstate 7 road, repeated side light sticks, opposing car trails, bloom, fog, camera, distortion, and vendor dependencies.
+- Mapped the original Interstate 7 clock and FOV controls continuously to the fixed `0–130 km/h` road domain outside the byte-identical vendor runtime; the maximum uses the original non-boosted `1×` rate instead of the click-driven `3×` boost.
+- Extended the canonical deployment identity gate to verify the complete third-party tree recursively before any subsequent vendor overwrite.
 
 ### Fixed
 

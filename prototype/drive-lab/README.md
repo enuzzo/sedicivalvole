@@ -13,9 +13,9 @@ The initial **PLAY THE ROAD** gesture sits over the animated Signal Gate, unlock
 
 ## Implemented
 
-- selectable `APERTURE 01` and `VERTIGO 02` procedural WebGL2 environments;
+- selectable `APERTURE 01` and `VERTIGO 02` environments; Vertigo is the byte-identical upstream Interstate 7 WebGL runtime with an external speed/FOV bridge;
 - a dedicated WebGL2 Signal Gate splash with Canvas2D and reduced-motion fallbacks;
-- continuously redrawn Canvas2D fallbacks and reduced-motion behavior;
+- continuously redrawn Canvas2D fallback and reduced-motion behavior for Aperture; Vertigo retains the original Three.js/post-processing renderer and caps its speed input in reduced-motion mode;
 - saturating speed-to-energy and speed-to-BPM mappings;
 - GPS `coords.speed` input with null handling and Demo fallback;
 - touch-first Stop/Mute, visual environment, score-roadmap, and curated body-color surfaces;

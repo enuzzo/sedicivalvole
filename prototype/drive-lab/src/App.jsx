@@ -15,7 +15,7 @@ import { FluxField } from "./flux-field.jsx";
 import { FLUX_ENVIRONMENTS, getFluxEnvironment, nextFluxEnvironmentId } from "./flux-environments.js";
 import { FLUX_THEMES, getFluxTheme } from "./flux-themes.js";
 import { SplashSignalGate } from "./splash-signal-gate.jsx";
-import { VertigoField } from "./vertigo-field.jsx";
+import { Interstate7Field } from "./interstate-7-field.jsx";
 import {
   advanceDemoMotion,
   applyKeyboardDelta,
@@ -785,13 +785,9 @@ export function App() {
       onPointerMove={wakeControls}
     >
       {environmentId === "vertigo" ? (
-        <VertigoField
-          energy={energy}
+        <Interstate7Field
           speed={speed}
-          theme={theme}
           reducedMotion={reducedMotion}
-          pulse={pulseFlash}
-          brake={brakeFlash}
           onRenderer={setRenderer}
           onFrame={recordRenderedFrame}
         />
