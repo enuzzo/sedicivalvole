@@ -155,3 +155,36 @@ Date: 2026-08-28
 - 142 unit tests, 4 packaging tests and the production build pass.
 
 final result: passed
+
+---
+
+# Design QA — selected Meridian oblique-blade rebuild
+
+## Reference
+
+- Selected fidelity contract: `/Users/enuzzo/.codex/generated_images/01a044c0-53f2-7381-98ee-6c32f9049387/exec-9b5af995-6134-463c-af4c-d4a7392badf3.png`
+- Previous current build: `/tmp/sedicivalvole-meridian-current-90kmh-773x601.png`
+- Rebuilt real WebGL2 render: `/tmp/sedicivalvole-meridian-90kmh-773x601.jpg`
+- Combined same-state comparison: `/tmp/meridian-reference-vs-final.png`
+- Exact speed matrix: `/tmp/meridian-speed-matrix-773x601.jpg` (`0`, `40`, `90`, `130 km/h`; every panel is `773 × 601`)
+
+## Checklist
+
+- [x] **Layout:** Passed. Existing header, footer, selectors, palette and telemetry remain unchanged at `773 × 601`; the corridor stays low and leaves the control plane legible.
+- [x] **Spacing:** Passed. No new overlay or control collision; the selected environment remains fully visible between the existing chrome bands.
+- [x] **Typography:** Passed. Existing local Orbitron hierarchy and product copy are preserved.
+- [x] **Color:** Passed. Large blade faces, translucent shoulders, edge light and longitudinal bands use the active palette; RED 03 was compared directly with the selected reference.
+- [x] **Interaction:** Passed. Launch, Visual library, Meridian selection, Music library, JUNCTION selection and diagnostic drawer were exercised in the in-app browser.
+- [x] **Responsiveness:** Passed for the agreed Tesla viewport. Exact captures at rest, urban and motorway states are `773 × 601`; model tests cover monotonic FOV/depth/peripheral response.
+- [x] **Content:** Passed. The tower/city/balcony grammar is removed. The field uses sparse oblique Euclidean blades and authored longitudinal shoulder planes, with no scene-wide particles or sky wireframe.
+- [x] **Polish:** Passed. The final comparison removes the previous repetitive buildings and the intermediate horizontal scan-line artifact. Runtime diagnostics report WebGL2, `60.15 FPS`, `18.1 ms p95` and zero runtime issues during the sustained local Meridian pass.
+
+## Discrepancies resolved
+
+- **P0:** none found.
+- **P1:** fixed the visually impoverished tower corridor by replacing it with large solid/translucent palette blades; fixed the weak speed reading with monotonic FOV, depth compression, peripheral stretch/parallax and longer structural flow planes; fixed excessive vertical rollercoaster excursion.
+- **P2:** removed repeated posts/cloud slabs, removed sky scan lines, introduced asymmetrical station timing and face materials, and strengthened red/white/secondary blade mass without changing product chrome.
+
+## Browser QA Result
+
+Passed locally at the required `773 × 601` viewport. Launch and core selectors work; Meridian renders through WebGL2 across `0`, `40`, `90` and `130 km/h`; the fresh browser session reports no current console warnings/errors. The result is an implementation match within the practical limits of the real-time no-bloom renderer, not a generated-image substitution. Real-Tesla visual acceptance remains open.

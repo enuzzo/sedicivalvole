@@ -22,6 +22,7 @@ import {
   meridianDistortionGlsl,
   speedToDistortionField,
   speedToLayerDensity,
+  speedToPeripheralDeformation,
   speedToProjection,
   speedToTimeRate,
 } from "./meridian-model.js";
@@ -34,17 +35,14 @@ const RAIL_SEGMENTS = 140;
 // The corridor floor is a ruled surface rather than a filled plane: enough
 // longitudinal lines that depth reads as a bending grid, drawn as one instanced
 // draw call. The centre meridian is weighted so the travel axis stays legible.
-const RAIL_HALF_WIDTH = 19;
-const RAIL_LANE_COUNT = 21;
-const RAIL_LANES = Array.from(
-  { length: RAIL_LANE_COUNT },
-  (_, index) => -RAIL_HALF_WIDTH + (index / (RAIL_LANE_COUNT - 1)) * RAIL_HALF_WIDTH * 2,
-);
+const RAIL_HALF_WIDTH = 15;
+const RAIL_LANES = [-14.2, -10.2, -6.1, 0, 6.1, 10.2, 14.2];
+const RAIL_LANE_COUNT = RAIL_LANES.length;
 const RAIL_CENTRE_INDEX = (RAIL_LANE_COUNT - 1) / 2;
-const STATION_COUNT = 72;
-const STATION_EDGE_X = 17;
-const MARKER_COUNT = 38;
-const MARKER_LANES = [-13.4, -7.2, 7.2, 13.4];
+const STATION_COUNT = 0;
+const STATION_EDGE_X = 16;
+const MARKER_COUNT = 32;
+const MARKER_LANES = [-16.5, -12.5, 12.5, 16.5];
 
 const RAIL_SCROLL_RATE = 0.085;
 const STATION_SCROLL_RATE = 26;
@@ -54,8 +52,8 @@ const MARKER_SCROLL_MAX = 63;
 const KIND_POST = 0;
 const KIND_RULE = 1;
 const KIND_MARKER = 2;
-const ARCHITECTURE_PAIR_COUNT = 24;
-const CLOUD_PANEL_COUNT = 16;
+const ARCHITECTURE_PAIR_COUNT = 10;
+const CLOUD_PANEL_COUNT = 0;
 const ARCHITECTURE_SCROLL_RATE = 26;
 
 /** Deterministic generator so every session, capture, and QA pass matches. */
@@ -131,7 +129,19 @@ const SHARED_HEADER = `#version 300 es
   uniform mat4 u_viewProjection;
   uniform float u_travelLength;
   uniform float u_overshoot;
+  uniform float u_depthCompression;
+  uniform float u_peripheralStretch;
+  uniform float u_peripheralParallax;
 ${meridianDistortionGlsl()}
+
+  vec3 applySpeedLens(vec3 world, float progress) {
+    float edge = smoothstep(5.0, 17.0, abs(world.x));
+    float nearWeight = 1.0 - smoothstep(0.1, 0.92, progress);
+    world.x *= mix(1.0, u_peripheralStretch, edge * nearWeight);
+    world.x += sign(world.x) * u_peripheralParallax * edge * nearWeight * 2.4;
+    world.z *= u_depthCompression;
+    return world;
+  }
 `;
 
 const RAIL_VERTEX = `${SHARED_HEADER}
@@ -154,6 +164,7 @@ const RAIL_VERTEX = `${SHARED_HEADER}
     float widen = 1.0 + 6.0 * progress;
     vec3 world = vec3(a_position.x * a_laneWeight * widen + a_laneX, a_position.y, a_position.z);
     world.xy += getDistortion(progress);
+    world = applySpeedLens(world, progress);
     gl_Position = u_viewProjection * vec4(world, 1.0);
     v_railUv = a_railUv;
     v_progress = progress;
@@ -166,6 +177,8 @@ const RAIL_FRAGMENT = `#version 300 es
 
   uniform vec3 u_mid;
   uniform vec3 u_light;
+  uniform vec3 u_accent;
+  uniform vec3 u_secondary;
   uniform float u_railScroll;
   uniform float u_railGlow;
   uniform float u_fogDensity;
@@ -189,10 +202,12 @@ const RAIL_FRAGMENT = `#version 300 es
     float pulse = smoothstep(0.86, 1.0, tick) * 0.85;
 
     float fog = exp(-v_progress * u_fogDensity) * (1.0 - smoothstep(0.38, 0.82, v_progress));
-    vec3 tint = mix(u_mid, u_light, v_tone);
+    vec3 tint = v_tone > 2.5
+      ? u_secondary
+      : (v_tone > 1.5 ? u_accent : mix(u_mid, u_light, v_tone));
     // Additive blending contributes colour * alpha, so the colour stays
     // unscaled and the alpha alone carries intensity.
-    float intensity = (body * 0.9 + body * pulse * 1.5) * u_railGlow * fog;
+    float intensity = (body * 1.2 + body * pulse * 1.75) * u_railGlow * fog;
     outColor = vec4(tint, clamp(intensity, 0.0, 1.0));
   }
 `;
@@ -246,6 +261,7 @@ const MARK_VERTEX = `${SHARED_HEADER}
 
     float progress = clamp(-world.z / u_travelLength, 0.0, 1.0);
     world.xy += getDistortion(progress);
+    world = applySpeedLens(world, progress);
 
     gl_Position = u_viewProjection * vec4(world, 1.0);
     v_corner = a_corner;
@@ -328,6 +344,7 @@ const ARCHITECTURE_VERTEX = `${SHARED_HEADER}
     vec3 world = local + vec3(a_offset.x, a_offset.y, -u_travelLength + travelled);
     float progress = clamp(-world.z / u_travelLength, 0.0, 1.0);
     world.xy += getDistortion(progress);
+    world = applySpeedLens(world, progress);
 
     gl_Position = u_viewProjection * vec4(world, 1.0);
     vec3 normal = normalize(a_normal / max(a_scale, vec3(0.001)));
@@ -371,16 +388,19 @@ const ARCHITECTURE_FRAGMENT = `#version 300 es
     float edgeDistance = min(min(v_uv.x, 1.0 - v_uv.x), min(v_uv.y, 1.0 - v_uv.y));
     float edge = 1.0 - smoothstep(0.0, 0.075, edgeDistance);
 
-    vec3 solid = mix(u_mid * 0.48, mix(u_mid, u_light, 0.42), diffuse);
-    vec3 glass = mix(u_base, u_secondary, 0.42 + diffuse * 0.22);
-    vec3 cloudTone = mix(u_mid, u_light, 0.18 + diffuse * 0.16);
-    vec3 material = v_material < 0.5 ? solid : (v_material < 1.5 ? glass : cloudTone);
+    vec3 solid = mix(u_mid * 0.24, mix(u_mid, u_light, 0.5), diffuse);
+    vec3 glass = mix(u_base, u_secondary, 0.32 + diffuse * 0.26);
+    vec3 accentSolid = mix(u_accent * 0.38, u_accent, 0.34 + diffuse * 0.42);
+    vec3 secondarySolid = mix(u_secondary * 0.32, u_secondary, 0.32 + diffuse * 0.38);
+    vec3 material = v_material < 0.5
+      ? solid
+      : (v_material < 1.5 ? glass : (v_material < 2.5 ? accentSolid : secondarySolid));
     vec3 edgeTone = mix(u_light, u_accent, v_emissive);
-    material += edgeTone * edge * (0.28 + 1.15 * v_emissive) * u_volumeGlow;
+    material += edgeTone * edge * (0.34 + 1.6 * v_emissive) * u_volumeGlow;
 
     float fog = exp(-v_progress * u_fogDensity) * (1.0 - smoothstep(0.62, 1.0, v_progress));
     vec3 colour = mix(u_base, material, fog);
-    float glassAlpha = v_material < 0.5 ? 1.0 : (v_material < 1.5 ? 0.58 : 0.34);
+    float glassAlpha = v_material > 0.5 && v_material < 1.5 ? 0.62 : 0.94;
     outColor = vec4(colour, v_alpha * glassAlpha * smoothstep(0.0, 0.04, v_progress));
   }
 `;
@@ -401,17 +421,23 @@ const BACKGROUND_FRAGMENT = `#version 300 es
   uniform vec3 u_mid;
   uniform vec3 u_accent;
   uniform float u_atmosphere;
+  uniform float u_flow;
   in vec2 v_uv;
   out vec4 outColor;
   void main() {
-    vec2 centered = v_uv - vec2(0.5, 0.44);
+    vec2 centered = v_uv - vec2(0.5, 0.39);
     float horizon = exp(-pow(centered.y * 7.5, 2.0));
     float convergence = exp(-length(centered * vec2(1.25, 2.2)) * 4.2);
     float upperFalloff = smoothstep(1.05, 0.12, v_uv.y);
     vec3 colour = u_base;
-    colour += u_mid * horizon * (0.12 + u_atmosphere * 0.24);
-    colour += u_accent * convergence * horizon * u_atmosphere * 0.075;
-    colour += u_mid * upperFalloff * 0.025;
+    colour += u_mid * horizon * (0.06 + u_atmosphere * 0.12);
+    colour += u_accent * convergence * horizon * u_atmosphere * 0.045;
+    colour += u_mid * upperFalloff * 0.012;
+
+    // Speed remains structural: projection, peripheral geometry and travelling
+    // shoulder planes carry optical flow. The sky stays empty so it cannot turn
+    // into a cheap particle field or a stack of horizontal scan lines.
+    colour += u_mid * u_flow * convergence * 0.008;
     outColor = vec4(colour, 1.0);
   }
 `;
@@ -524,10 +550,10 @@ function buildMarkInstances(palette) {
     push(
       [
         lane + between(random, -0.6, 0.6),
-        between(random, 3.4, 10.8),
+        between(random, 0.35, 4.8),
         random() * (MERIDIAN_TRAVEL_LENGTH + CORRIDOR_OVERSHOOT),
       ],
-      [0, between(random, 0.08, 0.2), between(random, 10, 27)],
+      [0, between(random, 0.06, 0.15), between(random, 16, 42)],
       [
         KIND_MARKER,
         between(random, MARKER_SCROLL_MIN, MARKER_SCROLL_MAX),
@@ -563,7 +589,10 @@ function buildCubeGeometry() {
   const faceUvs = [[0, 0], [1, 0], [1, 1], [0, 1]];
   for (const face of faces) {
     for (const index of order) {
-      positions.push(...face.c[index]);
+      const [x, y, z] = face.c[index];
+      // A skewed prism rather than a box: every instance has a directional
+      // silhouette even before its station rotation is applied.
+      positions.push(x + y * 0.34, y, z + y * 0.08);
       normals.push(...face.n);
       uvs.push(...faceUvs[index]);
     }
@@ -601,35 +630,66 @@ function buildArchitectureInstances() {
   const span = MERIDIAN_TRAVEL_LENGTH + CORRIDOR_OVERSHOOT;
   for (let index = 0; index < ARCHITECTURE_PAIR_COUNT; index += 1) {
     const z = (index / ARCHITECTURE_PAIR_COUNT) * span;
-    // Reveal a deterministic cross-section of every depth band first. Tying
-    // visibility to index alone made the resting city exist only at the horizon.
-    const visibility = 0.025 + (index % 10) * 0.078;
+    const visibility = 0.03 + (index % 7) * 0.105;
     for (const side of [-1, 1]) {
-      const family = index % 4;
-      const x = side * between(random, 11.5, 17.5);
-      const material = family === 2 ? 1 : 0;
-      const emissive = family === 0 ? 0.82 : 0.2 + random() * 0.32;
+      const family = index % 3;
+      const x = side * between(random, 11.6, 16.8);
+      const height = between(random, 14, 28);
+      const lean = side * between(random, 0.16, 0.39);
+      const yaw = side * between(random, 0.12, 0.44);
+      const bladeMaterial = (index + (side > 0 ? 1 : 0)) % 4 === 0
+        ? 2
+        : family === 1 ? 0 : 3;
+
+      // One large oblique blade owns each side of a station. Very thin depth and
+      // broad spacing keep these as Euclidean planes, never towers or balconies.
+      push(
+        [x, height * 0.46, z + (side > 0 ? (index % 3) * 5.5 : 0)],
+        [between(random, 0.58, 1.28), height, between(random, 3.4, 6.8)],
+        [ARCHITECTURE_SCROLL_RATE, visibility, bladeMaterial, family === 0 ? 0.92 : 0.58],
+        [yaw, lean],
+      );
+
+      // Broad shoulder screen joining the blade to the peripheral flow. This is
+      // the large dark coloured mass in the visual contract; without it the
+      // station collapses into a row of isolated letter-like posts.
+      push(
+        [side * between(random, 15.5, 20.5), between(random, 1.2, 2.5), z + 0.9],
+        [between(random, 8.5, 15.5), between(random, 2.2, 4.6), between(random, 8, 16)],
+        [ARCHITECTURE_SCROLL_RATE, visibility + 0.025, 1, 0.46],
+        [side * between(random, 0.03, 0.11), side * between(random, -0.025, 0.045)],
+      );
+
+      // Three solid longitudinal bands make motorway optical flow visible. They
+      // are long authored planes in the road shoulder, not particles or a
+      // scene-wide wireframe, and each uses one palette-owned material.
+      for (let band = 0; band < 3; band += 1) {
+        push(
+          [side * (10.7 + band * 3.0), 0.55 + band * 1.05, z - 1.0 - band * 1.4],
+          [between(random, 1.2, 2.8), 0.11 + band * 0.045, between(random, 22, 38)],
+          [ARCHITECTURE_SCROLL_RATE, visibility + 0.012 + band * 0.012, band === 0 ? 0 : band + 1, 0.98],
+          [side * (0.04 + band * 0.026), 0],
+        );
+      }
+
       if (family === 0) {
-        // Portal: two asymmetric piers and a floating lintel.
-        const height = between(random, 8.5, 16.5);
-        push([x - side * 2.4, height * 0.5, z], [1.2, height, 2.3], [ARCHITECTURE_SCROLL_RATE, visibility, 0, emissive], [0.06 * side, 0]);
-        push([x + side * 2.0, height * 0.42, z + 0.7], [0.8, height * 0.84, 3.1], [ARCHITECTURE_SCROLL_RATE, visibility + 0.025, 1, emissive * 0.62], [-0.08 * side, 0.04 * side]);
-        push([x, height, z], [6.2, 0.72, 2.0], [ARCHITECTURE_SCROLL_RATE, visibility + 0.04, 0, 0.72], [0.1 * side, 0.05 * side]);
+        // A second inward blade creates the incomplete portal rhythm visible in
+        // the selected reference without closing it into a conventional gate.
+        push(
+          [x - side * between(random, 2.4, 4.2), height * 0.34, z + 1.6],
+          [between(random, 0.42, 0.82), height * 0.7, between(random, 2.8, 5.2)],
+          [ARCHITECTURE_SCROLL_RATE, visibility + 0.035, side > 0 ? 0 : 2, 0.82],
+          [-yaw * 0.35, lean * 0.52],
+        );
       } else if (family === 1) {
-        // Cantilevered cross: deliberately architectural without reading as a building.
-        const height = between(random, 7, 14);
-        push([x, height * 0.5, z], [1.5, height, between(random, 2, 4)], [ARCHITECTURE_SCROLL_RATE, visibility, 0, emissive], [0.14 * side, 0.08 * side]);
-        push([x - side * 1.8, height * 0.72, z - 0.8], [6.8, 0.75, 2.1], [ARCHITECTURE_SCROLL_RATE, visibility + 0.035, 1, 0.56], [-0.16 * side, -0.04 * side]);
-      } else if (family === 2) {
-        // Faceted blade assembled from offset, rotated prisms.
-        const height = between(random, 10, 20);
-        push([x, height * 0.5, z], [between(random, 1.3, 2.5), height, 3.5], [ARCHITECTURE_SCROLL_RATE, visibility, material, emissive], [between(random, -0.32, 0.32), 0.13 * side]);
-        push([x + side * 1.5, height * 0.34, z + 1.1], [0.8, height * 0.56, 5.2], [ARCHITECTURE_SCROLL_RATE, visibility + 0.05, 0, 0.44], [-0.25 * side, -0.09 * side]);
-      } else {
-        // Stepped monolith with suspended cap.
-        const height = between(random, 6, 12);
-        push([x, height * 0.5, z], [4.2, height, 3.3], [ARCHITECTURE_SCROLL_RATE, visibility, 0, emissive], [0.08 * side, 0]);
-        push([x - side * 1.2, height + 2.2, z - 0.6], [2.4, 4.2, 2.1], [ARCHITECTURE_SCROLL_RATE, visibility + 0.035, 1, 0.68], [-0.12 * side, 0.06 * side]);
+        // Low lateral plane: the reference carries colour in the road shoulder,
+        // not in stacked floors above the driver's sight line.
+        push(
+          [x - side * 1.1, between(random, 1.0, 2.1), z - 1.8],
+          [between(random, 5.5, 9.5), between(random, 1.8, 3.8), between(random, 7, 13)],
+          [ARCHITECTURE_SCROLL_RATE, visibility + 0.045, 1, 0.55],
+          [side * 0.12, side * between(random, -0.05, 0.08)],
+        );
       }
     }
   }
@@ -725,9 +785,10 @@ export function createMeridianRenderer(canvas, initialPalette) {
   const distortionUniforms = [
     "u_viewProjection", "u_travelLength", "u_overshoot", "u_time", "u_swayAmplitude",
     "u_swayFrequency", "u_liftAmplitude", "u_rollAmplitude", "u_rollFrequency",
+    "u_depthCompression", "u_peripheralStretch", "u_peripheralParallax",
   ];
   const railUniforms = uniformsOf(gl, railProgram, [
-    ...distortionUniforms, "u_mid", "u_light",
+    ...distortionUniforms, "u_mid", "u_light", "u_accent", "u_secondary",
     "u_railScroll", "u_railGlow", "u_fogDensity",
   ]);
   const markUniforms = uniformsOf(gl, markProgram, [
@@ -739,7 +800,7 @@ export function createMeridianRenderer(canvas, initialPalette) {
     "u_accent", "u_secondary", "u_fogDensity", "u_volumeGlow",
   ]);
   const backgroundUniforms = uniformsOf(gl, backgroundProgram, [
-    "u_base", "u_mid", "u_accent", "u_atmosphere",
+    "u_base", "u_mid", "u_accent", "u_atmosphere", "u_flow",
   ]);
   const backgroundVao = gl.createVertexArray();
 
@@ -753,15 +814,17 @@ export function createMeridianRenderer(canvas, initialPalette) {
     attachInstanced(
       gl, railProgram, "a_laneTone",
       new Float32Array(RAIL_LANES.map((_, index) => {
-        const offset = Math.abs(index - RAIL_CENTRE_INDEX) / RAIL_CENTRE_INDEX;
-        return index === RAIL_CENTRE_INDEX ? 1 : 0.5 - offset * 0.35;
+        if (index === RAIL_CENTRE_INDEX) return 1;
+        if (index === 0 || index === RAIL_LANES.length - 1) return 2;
+        if (index === 1 || index === RAIL_LANES.length - 2) return 3;
+        return 0.92;
       })),
       1,
     ),
     attachInstanced(
       gl, railProgram, "a_laneWeight",
       new Float32Array(RAIL_LANES.map(
-        (_, index) => (index === RAIL_CENTRE_INDEX ? 0.105 : 0.065),
+        (_, index) => (index === RAIL_CENTRE_INDEX ? 0.09 : 0.17),
       )),
       1,
     ),
@@ -803,7 +866,7 @@ export function createMeridianRenderer(canvas, initialPalette) {
   let height = 1;
   let disposed = false;
 
-  const setDistortionUniforms = (uniforms, field, viewProjection) => {
+  const setDistortionUniforms = (uniforms, field, lens, viewProjection) => {
     gl.uniformMatrix4fv(uniforms.u_viewProjection, false, viewProjection);
     gl.uniform1f(uniforms.u_travelLength, MERIDIAN_TRAVEL_LENGTH);
     gl.uniform1f(uniforms.u_overshoot, CORRIDOR_OVERSHOOT);
@@ -813,6 +876,9 @@ export function createMeridianRenderer(canvas, initialPalette) {
     gl.uniform1f(uniforms.u_liftAmplitude, field.liftAmplitude);
     gl.uniform1f(uniforms.u_rollAmplitude, field.rollAmplitude);
     gl.uniform1f(uniforms.u_rollFrequency, field.rollFrequency);
+    gl.uniform1f(uniforms.u_depthCompression, lens.depthCompression);
+    gl.uniform1f(uniforms.u_peripheralStretch, lens.peripheralStretch);
+    gl.uniform1f(uniforms.u_peripheralParallax, lens.peripheralParallax);
   };
 
   return {
@@ -846,6 +912,12 @@ export function createMeridianRenderer(canvas, initialPalette) {
       const field = speedToDistortionField(speed);
       const density = speedToLayerDensity(speed);
       const projection = speedToProjection(speed);
+      const peripheral = speedToPeripheralDeformation(speed);
+      const lens = {
+        depthCompression: projection.depthCompression,
+        peripheralStretch: peripheral.stretch,
+        peripheralParallax: peripheral.parallax,
+      };
       const aim = lookAtFromDistortion(timeOffset, field);
 
       const eye = [0, projection.cameraLift, 0];
@@ -856,7 +928,15 @@ export function createMeridianRenderer(canvas, initialPalette) {
           0.1,
           MERIDIAN_TRAVEL_LENGTH * 1.6,
         ),
-        lookAt(eye, [eye[0] + aim.x, eye[1] + aim.y, eye[2] + aim.z], [0, 1, 0]),
+        lookAt(
+          eye,
+          [
+            eye[0] + aim.x * 0.42,
+            eye[1] + projection.horizonBias + aim.y * 0.35,
+            eye[2] + aim.z,
+          ],
+          [0, 1, 0],
+        ),
       );
 
       gl.viewport(0, 0, width, height);
@@ -871,6 +951,7 @@ export function createMeridianRenderer(canvas, initialPalette) {
       gl.uniform3fv(backgroundUniforms.u_mid, palette.mid);
       gl.uniform3fv(backgroundUniforms.u_accent, palette.accent);
       gl.uniform1f(backgroundUniforms.u_atmosphere, density.atmosphereFraction);
+      gl.uniform1f(backgroundUniforms.u_flow, peripheral.parallax);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
       gl.enable(gl.DEPTH_TEST);
       gl.enable(gl.BLEND);
@@ -879,7 +960,7 @@ export function createMeridianRenderer(canvas, initialPalette) {
       gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
       gl.useProgram(architectureProgram);
       gl.bindVertexArray(architectureVao);
-      setDistortionUniforms(architectureUniforms, field, viewProjection);
+      setDistortionUniforms(architectureUniforms, field, lens, viewProjection);
       gl.uniform1f(architectureUniforms.u_architectureFraction, density.architectureFraction);
       gl.uniform3fv(architectureUniforms.u_base, palette.base);
       gl.uniform3fv(architectureUniforms.u_mid, palette.mid);
@@ -894,9 +975,11 @@ export function createMeridianRenderer(canvas, initialPalette) {
       gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
       gl.useProgram(railProgram);
       gl.bindVertexArray(railVao);
-      setDistortionUniforms(railUniforms, field, viewProjection);
+      setDistortionUniforms(railUniforms, field, lens, viewProjection);
       gl.uniform3fv(railUniforms.u_mid, palette.mid);
       gl.uniform3fv(railUniforms.u_light, palette.light);
+      gl.uniform3fv(railUniforms.u_accent, palette.accent);
+      gl.uniform3fv(railUniforms.u_secondary, palette.secondary);
       gl.uniform1f(railUniforms.u_railScroll, railScroll);
       gl.uniform1f(railUniforms.u_railGlow, density.railGlow);
       gl.uniform1f(railUniforms.u_fogDensity, 2.5);
@@ -904,7 +987,7 @@ export function createMeridianRenderer(canvas, initialPalette) {
 
       gl.useProgram(markProgram);
       gl.bindVertexArray(markVao);
-      setDistortionUniforms(markUniforms, field, viewProjection);
+      setDistortionUniforms(markUniforms, field, lens, viewProjection);
       gl.uniform1f(markUniforms.u_stationFraction, density.gateFraction);
       gl.uniform1f(markUniforms.u_markerFraction, density.streakFraction);
       gl.uniform1f(markUniforms.u_markerStretch, density.streakStretch);

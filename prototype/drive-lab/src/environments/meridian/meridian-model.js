@@ -42,21 +42,21 @@ export const MERIDIAN_PIN_PROGRESS = 0.015;
 /** Derivative step used to sample the field slope for camera aim. */
 export const MERIDIAN_SLOPE_STEP = 0.012;
 
-export const MERIDIAN_FOV_REST_DEGREES = 52;
-export const MERIDIAN_FOV_CEILING_DEGREES = 86;
+export const MERIDIAN_FOV_REST_DEGREES = 54;
+export const MERIDIAN_FOV_CEILING_DEGREES = 104;
 
 const FIELD = Object.freeze({
-  swayAmplitudeRest: 2.4,
-  swayAmplitudeCeiling: 8.6,
-  swayFrequency: 2.6,
-  swayNearDamping: 0.35,
-  liftAmplitudeRest: 17,
-  liftAmplitudeCeiling: 42,
-  liftExponent: 2.6,
-  rollAmplitudeRest: 1.6,
-  rollAmplitudeCeiling: 6.2,
-  rollFrequency: 5.2,
-  rollPhaseRate: 0.6,
+  swayAmplitudeRest: 0.45,
+  swayAmplitudeCeiling: 1.9,
+  swayFrequency: 1.15,
+  swayNearDamping: 0.22,
+  liftAmplitudeRest: 0.55,
+  liftAmplitudeCeiling: 1.7,
+  liftExponent: 1.9,
+  rollAmplitudeRest: 0.18,
+  rollAmplitudeCeiling: 0.58,
+  rollFrequency: 1.7,
+  rollPhaseRate: 0.22,
 });
 
 export const MERIDIAN_FIELD_CONSTANTS = FIELD;
@@ -92,12 +92,32 @@ export function advanceTimeOffset(previousOffset, timeRate, deltaSeconds) {
  *  acceleration rather than as faster scenery. */
 export function speedToProjection(speedKmh) {
   const normalized = normalizedSpeed(speedKmh);
-  const eased = normalized ** 1.15;
+  const eased = normalized ** 0.92;
   return {
     fovDegrees:
       MERIDIAN_FOV_REST_DEGREES
       + (MERIDIAN_FOV_CEILING_DEGREES - MERIDIAN_FOV_REST_DEGREES) * eased,
-    cameraLift: 6.4 - 2.3 * eased,
+    cameraLift: 5.1 - 1.1 * eased,
+    depthCompression: 1 - 0.3 * eased,
+    horizonBias: 0.62 + 0.06 * eased,
+  };
+}
+
+/**
+ * Speed lens for the edges of the frame.
+ *
+ * The centre axis stays geometrically calm while the shoulders carry the
+ * acceleration: large lateral planes pull outward, their parallax grows, and
+ * the optical-flow marks lengthen. These values are renderer-independent so a
+ * future fallback cannot quietly lose the principal speed cue.
+ */
+export function speedToPeripheralDeformation(speedKmh) {
+  const normalized = normalizedSpeed(speedKmh);
+  const eased = normalized ** 1.08;
+  return {
+    stretch: 1 + 0.72 * eased,
+    parallax: 0.08 + 0.92 * normalized ** 0.74,
+    flowLength: 1 + 3.8 * normalized ** 1.18,
   };
 }
 
@@ -129,7 +149,7 @@ export function speedToLayerDensity(speedKmh) {
     atmosphereFraction: clamp((normalized - 0.12) / 0.66, 0, 1) ** 0.9,
     railGlow: 0.62 + 0.38 * normalized ** 1.3,
     volumeGlow: 0.38 + 0.62 * normalized ** 1.15,
-    streakStretch: 1 + 1.55 * normalized ** 1.45,
+    streakStretch: speedToPeripheralDeformation(speedKmh).flowLength,
   };
 }
 
@@ -139,8 +159,7 @@ const unpinned = (progress, time, field) => {
     field.swayAmplitude
     * Math.sin(p * Math.PI * field.swayFrequency + time)
     * (field.swayNearDamping + (1 - field.swayNearDamping) * p);
-  const lift =
-    field.liftAmplitude * p ** field.liftExponent
+  const lift = field.liftAmplitude * p ** field.liftExponent
     - field.rollAmplitude
       * Math.sin(p * Math.PI * field.rollFrequency + time * FIELD.rollPhaseRate);
   return { x: sway, y: lift };

@@ -12,6 +12,7 @@ import {
   meridianDistortionGlsl,
   speedToDistortionField,
   speedToLayerDensity,
+  speedToPeripheralDeformation,
   speedToProjection,
   speedToTimeRate,
 } from "../src/environments/meridian/meridian-model.js";
@@ -70,13 +71,17 @@ test("widens the projection with speed so acceleration is not only faster geomet
 
   let previousFov = -Infinity;
   let previousLift = Infinity;
+  let previousDepthCompression = Infinity;
   for (let speed = 0; speed <= ROAD_SPEED_CEILING_KMH; speed += 5) {
-    const { fovDegrees, cameraLift } = speedToProjection(speed);
+    const { fovDegrees, cameraLift, depthCompression } = speedToProjection(speed);
     assert.ok(fovDegrees > previousFov, "projection must open monotonically");
     assert.ok(cameraLift <= previousLift, "the viewpoint must settle monotonically");
+    assert.ok(depthCompression <= previousDepthCompression, "depth compression must grow monotonically");
+    assert.ok(depthCompression >= 0.68 && depthCompression <= 1);
     assert.ok(cameraLift > 0, "the viewpoint never drops through the corridor floor");
     previousFov = fovDegrees;
     previousLift = cameraLift;
+    previousDepthCompression = depthCompression;
   }
 });
 
@@ -104,19 +109,35 @@ test("pins the near field so the corridor is anchored at the camera", () => {
   assert.ok(Math.abs(pinned.y) < 1e-9);
 });
 
-test("raises the far field well above the near field at every phase", () => {
+test("keeps vertical excursion bounded to a stable low corridor at every phase", () => {
   const field = speedToDistortionField(ROAD_SPEED_CEILING_KMH);
-  // Checked across the sway phase so the assertion describes the field itself
-  // rather than one lucky moment in its cycle.
+  let minimum = Infinity;
+  let maximum = -Infinity;
   for (let phase = 0; phase < 12; phase += 1) {
     const time = (phase / 12) * Math.PI * 2;
-    const near = distortionAt(0.1, time, field);
-    const far = distortionAt(1, time, field);
-    assert.ok(
-      far.y - near.y > field.liftAmplitude * 0.5,
-      `depth must build a rising far field at phase ${phase}`,
-    );
+    for (let step = 0; step <= 40; step += 1) {
+      const point = distortionAt(step / 40, time, field);
+      minimum = Math.min(minimum, point.y);
+      maximum = Math.max(maximum, point.y);
+    }
   }
+  assert.ok(maximum - minimum < 3.2, `vertical excursion was ${maximum - minimum}`);
+  assert.ok(maximum < 2.5 && minimum > -1, "the road cannot become a rollercoaster");
+});
+
+test("grows peripheral stretch, parallax and optical flow monotonically with speed", () => {
+  let previous = speedToPeripheralDeformation(0);
+  assert.equal(previous.stretch, 1);
+  assert.equal(previous.flowLength, 1);
+  for (let speed = 2; speed <= ROAD_SPEED_CEILING_KMH; speed += 2) {
+    const next = speedToPeripheralDeformation(speed);
+    assert.ok(next.stretch > previous.stretch);
+    assert.ok(next.parallax > previous.parallax);
+    assert.ok(next.flowLength > previous.flowLength);
+    previous = next;
+  }
+  assert.ok(previous.stretch >= 1.7);
+  assert.ok(previous.flowLength >= 4.7);
 });
 
 test("aims the camera along the local slope of the same displacement field", () => {
