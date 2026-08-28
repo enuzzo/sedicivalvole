@@ -35,6 +35,29 @@ test("splash credits the collaborator and links the public source", () => {
   assert.match(app, /target="_blank"[\s\S]*?rel="noreferrer"/);
 });
 
+test("splash metadata is legible and the complete group sits higher", () => {
+  const styles = read("styles.css");
+
+  assert.match(styles, /\.splash-action \{[\s\S]*?bottom: 24px/);
+  assert.match(styles, /\.splash-action > small \{[\s\S]*?text-shadow: 0 1px 2px #000, 0 0 8px #000/);
+  assert.match(styles, /\.splash-credit \{[\s\S]*?font-size: 12\.5px/);
+  assert.match(styles, /\.splash-repository \{[\s\S]*?font-size: 11\.5px/);
+  assert.match(styles, /\.splash-privacy \{[\s\S]*?font-size: 10\.5px/);
+});
+
+test("Buy Me a Coffee support is ready but remains hidden without a verified URL", () => {
+  const app = read("App.jsx");
+  const envExample = readFileSync(resolve(PROJECT_ROOT, ".env.example"), "utf8");
+
+  assert.match(app, /const SUPPORT_URL = parseSupportUrl\(import\.meta\.env\.VITE_SUPPORT_URL\)/);
+  assert.match(app, /url\.protocol === "https:"/);
+  assert.match(app, /buymeacoffee\\\.com/);
+  assert.match(app, /\{SUPPORT_URL \? \(/);
+  assert.match(app, /href=\{SUPPORT_URL\}/);
+  assert.match(app, /BUY ME A COFFEE/);
+  assert.match(envExample, /VITE_SUPPORT_URL=https:\/\/buymeacoffee\.com\/your-handle/);
+});
+
 test("launch surface stays above every preloaded experience overlay", () => {
   const styles = read("styles.css");
   const splash = styles.slice(styles.indexOf(".splash {"), styles.indexOf(".splash-signal-field"));

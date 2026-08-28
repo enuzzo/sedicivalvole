@@ -71,6 +71,17 @@ const APP_VERSION = __APP_VERSION__;
 const APP_BUILD = __APP_BUILD__;
 const APP_COMMIT = __APP_COMMIT__;
 const PREFERENCES_KEY = "sedicivalvole.preferences.v1";
+function parseSupportUrl(value) {
+  try {
+    const url = new URL(String(value || "").trim());
+    return url.protocol === "https:" && /(^|\.)buymeacoffee\.com$/i.test(url.hostname)
+      ? url.href
+      : "";
+  } catch {
+    return "";
+  }
+}
+const SUPPORT_URL = parseSupportUrl(import.meta.env.VITE_SUPPORT_URL);
 const QA_SPEED = import.meta.env.DEV
   ? Math.min(130, Math.max(0, Number(new URLSearchParams(window.location.search).get("qaSpeed")) || 0))
   : 0;
@@ -1612,6 +1623,17 @@ export function App() {
               with Illobo
             </a>
           </small>
+          {SUPPORT_URL ? (
+            <a
+              className="splash-support"
+              href={SUPPORT_URL}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Support sedicivalvole on Buy Me a Coffee"
+            >
+              BUY ME A COFFEE
+            </a>
+          ) : null}
           <small className="splash-repository">
             Source <span aria-hidden="true">·</span>{" "}
             <a
