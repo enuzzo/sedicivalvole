@@ -8,6 +8,30 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Compact diagnostic feedback publication evidence — 2026-08-28
+
+- build stamp: **`20260828-1249`**; deployed commit: `b2357a6`;
+  implementation: `81ca742`;
+- gate before upload: **PASS**, 153 unit tests, 4 packaging tests, production
+  build, exact `773 × 601` rendered verification, read-only remote identity
+  verification and no preflight writes;
+- local Tesla-viewport failure simulation: **PASS**. The complete connection
+  warning occupied two lines / 31.7 px inside a 102.7 px bottom-sticky tray;
+  all four controls remained on one 48 px row and the message stayed within the
+  601 px viewport;
+- publication: **PASS**, 25 files / 27,415,058 bytes uploaded to the canonical
+  root; dynamic root, retained cache overlap, exact legacy cleanup and remote
+  listing passed;
+- canonical cache-busted HTML, main JavaScript `assets/index-B6MkWWXh.js` and
+  CSS `assets/index-BKBj-r0Z.css` are byte-identical to local at SHA-256
+  `3c93e55f0dfb5aaa0749f067ce4004d78b16f69a788e1730eed04ea49ac28433`,
+  `89afba1e14cf517263e79183aa026c41bcd97807a9b29edb6070cfbb2ef70ef5`
+  and `b4368207c5f4734ef1e380b794bbcb34e2253277de0a6d4160594d83d240eb23`;
+- live Browser QA at `773 × 601`: **PASS** for build identity, launch, DIAG
+  opening, compact actions and zero console warnings/errors. No live SEND was
+  performed, avoiding an artificial recipient email; the next user gesture is
+  the real mail-status acceptance check.
+
 ## Long-drive diagnostic transport publication evidence — 2026-08-28
 
 - build stamp: **`20260828-1238`**; deployed commit: `1099581`;
