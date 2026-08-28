@@ -1709,7 +1709,7 @@ export function App() {
             </div>
 
             <h3 className="diagnostic-group">Device</h3>
-            <div className="diagnostic-grid">
+            <div className="diagnostic-grid diagnostic-grid-device">
               <article>
                 <small>VIEWPORT</small>
                 <strong>{diagnostics ? `${diagnostics.display.innerWidth} × ${diagnostics.display.innerHeight}` : "—"}</strong>

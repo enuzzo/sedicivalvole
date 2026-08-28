@@ -37,3 +37,13 @@ test("Tesla diagnostic actions use one compact four-control row", () => {
   assert.match(actionStyles, /\.send-state \{ grid-column: 1 \/ -1/);
   assert.match(actionStyles, /\.send-state:empty \{ display: none; \}/);
 });
+
+test("secondary device evidence uses a denser four-column hierarchy", () => {
+  const app = read("App.jsx");
+  const styles = read("styles.css");
+
+  assert.match(app, /diagnostic-grid diagnostic-grid-device/);
+  assert.match(styles, /\.diagnostic-grid-device \{ grid-template-columns: repeat\(4, minmax\(0, 1fr\)\)/);
+  assert.match(styles, /\.diagnostic-grid-device strong \{ margin-top: 4px; font-size: 14px/);
+  assert.match(styles, /@media \(max-width: 480px\)[\s\S]*?\.diagnostic-grid-device \{ grid-template-columns: 1fr 1fr; \}/);
+});

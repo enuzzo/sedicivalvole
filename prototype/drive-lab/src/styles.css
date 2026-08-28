@@ -540,6 +540,11 @@ button { -webkit-tap-highlight-color: transparent; }
 .diagnostic-grid small { color: rgba(238, 234, 224, .55); font-size: 11px; font-weight: 700; letter-spacing: .12em; }
 .diagnostic-grid strong { margin-top: 6px; font-size: 18px; font-weight: 540; letter-spacing: .02em; }
 .diagnostic-grid span { margin-top: 3px; color: rgba(238, 234, 224, .52); font-size: 11px; line-height: 1.25; }
+.diagnostic-grid-device { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; }
+.diagnostic-grid-device article { min-height: 58px; padding: 8px 9px; overflow-wrap: anywhere; }
+.diagnostic-grid-device small { font-size: 9px; letter-spacing: .09em; }
+.diagnostic-grid-device strong { margin-top: 4px; font-size: 14px; line-height: 1.1; }
+.diagnostic-grid-device span { margin-top: 3px; font-size: 9px; line-height: 1.15; }
 .drawer-inline-actions { display: flex; gap: 6px; margin-top: 7px; }
 .privacy-note { margin: 12px 0 0; color: rgba(238, 234, 224, .66); font-size: 11px; line-height: 1.4; }
 .drawer-panel pre { overflow: auto; max-height: 250px; padding: 16px; border: 1px solid var(--line); border-radius: var(--ui-radius); color: rgba(238, 234, 224, .78); background: #050606; font-size: 9px; line-height: 1.55; white-space: pre-wrap; word-break: break-word; }
@@ -611,6 +616,10 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
   .score-control { grid-column: 3; }
   .palette-control { grid-column: 2 / 4; border-top: 1px solid var(--line); }
   .energy-readout { bottom: 234px; }
+}
+
+@media (max-width: 480px) {
+  .diagnostic-grid-device { grid-template-columns: 1fr 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) {
