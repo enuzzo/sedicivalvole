@@ -9,7 +9,7 @@ npm install
 npm run dev
 ```
 
-The initial **PLAY THE ROAD** gesture is one flat typographic launch surface with an enlarged `sedicivalvole` wordmark and no simulated hardware. It sits over the animated Signal Gate, unlocks Web Audio, runs capability checks, requests GPS permission, and fades into the scene.
+The initial **PLAY THE ROAD** gesture is one flat typographic launch surface with an enlarged `sedicivalvole` wordmark and no simulated hardware. It sits over the animated Signal Gate, unlocks Web Audio, runs capability checks, requests GPS permission, and fades into the scene. Its compact footer credits Netmilk Studio and [Illobo](https://github.com/illobo), and links the public [source repository](https://github.com/enuzzo/sedicivalvole).
 
 ## Implemented
 

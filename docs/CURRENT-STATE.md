@@ -44,6 +44,8 @@ dated study documents.
 - Signal Gate launches through the approved `390 × 170 px` flat typographic
   surface at the Tesla split viewport. Its enlarged wordmark and full-width
   `PLAY THE ROAD` field form one semantic gesture with no simulated controls.
+  The compact credit beneath it names Netmilk Studio and links Illobo, followed
+  by a direct link to the public `enuzzo/sedicivalvole` GitHub repository.
 - All product chrome uses the locally packaged Orbitron variable font. Reading
   text, telemetry, controls, operational labels and the launch command occupy a
   deliberate `450–750` weight hierarchy rather than falling back to device fonts.

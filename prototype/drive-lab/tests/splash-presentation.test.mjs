@@ -24,6 +24,17 @@ test("launch surface contains only product and action copy", () => {
   assert.doesNotMatch(launchMarkup, /launch-(?:index|vent|safety|latch)/);
 });
 
+test("splash credits the collaborator and links the public source", () => {
+  const app = read("App.jsx");
+
+  assert.match(app, /A project by Netmilk Studio/);
+  assert.match(app, /href="https:\/\/github\.com\/illobo"/);
+  assert.match(app, /with Illobo/);
+  assert.match(app, /href="https:\/\/github\.com\/enuzzo\/sedicivalvole"/);
+  assert.match(app, /github\.com\/enuzzo\/sedicivalvole/);
+  assert.match(app, /target="_blank"[\s\S]*?rel="noreferrer"/);
+});
+
 test("launch surface stays above every preloaded experience overlay", () => {
   const styles = read("styles.css");
   const splash = styles.slice(styles.indexOf(".splash {"), styles.indexOf(".splash-signal-field"));

@@ -125,7 +125,16 @@ button { -webkit-tap-highlight-color: transparent; }
 }
 .splash-action > small { display: block; color: rgba(238, 234, 224, .62); line-height: 1.4; }
 .splash-action > .splash-credit { margin-top: 9px; color: rgba(238, 234, 224, .74); font-size: 9px; letter-spacing: .07em; }
-.splash-privacy { margin-top: 6px; font-size: 8px; letter-spacing: .025em; }
+.splash-action a {
+  color: inherit;
+  text-decoration-color: rgba(238, 234, 224, .38);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+.splash-action a:hover { color: var(--ink); text-decoration-color: var(--accent); }
+.splash-action a:focus-visible { border-radius: 2px; outline: 1px solid var(--accent); outline-offset: 3px; }
+.splash-repository { margin-top: 3px; font-size: 8px; letter-spacing: .025em; }
+.splash-privacy { margin-top: 4px; font-size: 8px; letter-spacing: .025em; }
 /* One semantic launch action, expressed as typography and flat structure.
    The visual language borrows Braun's discipline, never simulated hardware. */
 .launch-button {

@@ -1601,7 +1601,28 @@ export function App() {
               <span>{phase === "testing" ? "STARTING" : "PLAY THE ROAD"}</span>
             </span>
           </button>
-          <small className="splash-credit">A project by Netmilk Studio</small>
+          <small className="splash-credit">
+            A project by Netmilk Studio <span aria-hidden="true">·</span>{" "}
+            <a
+              href="https://github.com/illobo"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Illobo on GitHub (@illobo)"
+            >
+              with Illobo
+            </a>
+          </small>
+          <small className="splash-repository">
+            Source <span aria-hidden="true">·</span>{" "}
+            <a
+              href="https://github.com/enuzzo/sedicivalvole"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="sedicivalvole source repository on GitHub"
+            >
+              github.com/enuzzo/sedicivalvole
+            </a>
+          </small>
           <small className="splash-privacy">Audio, display, motion, and GPS are checked locally.</small>
         </div>
       </section>
