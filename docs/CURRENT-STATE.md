@@ -30,6 +30,9 @@ dated study documents.
   perspective airflow behind the road field.
 - Diagnostics separate FPS/frame time, browser-exposed heap and decoded-audio
   memory by splash, active Visual/Music pairing and DIAG-open state.
+- An explicit diagnostic send keeps the email body concise and attaches the
+  complete accepted report as gzip-compressed JSON, named by build and server
+  timestamp with uncompressed and compressed SHA-256 evidence.
 
 ## Music
 

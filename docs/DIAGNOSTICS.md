@@ -62,6 +62,8 @@ Server protections:
 - 192 KiB body limit and strict schema validation;
 - client-side recent-first fitting below the pretty-printed mail limit, with original/transmitted counts recorded when pathological event volume requires trimming;
 - explicit shortest-round-trip PHP float serialization so server-side pretty printing preserves compact browser numbers instead of expanding their binary representation;
+- a compact multipart email body plus one complete `.json.gz` attachment named with the accepted timestamp and build; the body records the JSON/GZIP byte counts and both SHA-256 digests;
+- deterministic PHP round-trip coverage that extracts the MIME attachment, decodes Base64, decompresses GZIP, validates both digests, and compares the complete report rather than a shortened preview;
 - recursive rejection of common coordinate keys, including latitude/longitude and abbreviated variants;
 - per-client hashed temporary rate limit with no raw IP in the email;
 - no report persistence or server-side report logging;
@@ -70,7 +72,7 @@ Server protections:
 
 The user-confirmed mail recipient is configured in the ignored local file `prototype/drive-lab/public/api/recipient.local.php` and is not present in public source code. The file is created from `prototype/drive-lab/config/diagnostic-recipient.local.php.example`, returns the recipient address without emitting it over HTTP, and is copied to the same private server location during deployment. The deployment identity gate recognizes the file by fixed structural markers and never prints its contents.
 
-A `202 accepted_by_mail_transport` response proves only that PHP `mail()` handed the complete JSON report, including the flight-recorder trace, to the hosting mail transport. It does not prove Gmail inbox delivery. Delivery requires confirmation in the recipient inbox and, if needed, inspection of message headers/SPF/DKIM behavior.
+A `202 accepted_by_mail_transport` response proves only that PHP `mail()` handed the multipart message and complete gzip-compressed JSON report, including the flight-recorder trace, to the hosting mail transport. It does not prove Gmail inbox delivery. Delivery requires confirmation in the recipient inbox and, if needed, inspection of message headers/SPF/DKIM behavior. Gmail may shorten the displayed text of a long message; the attachment is the authoritative complete report and is independent of that presentation limit.
 
 Sanitized endpoint failures are shown in the drawer. The page keeps the recorder in memory after a failed send, so the same report can be retried after a transient connection, rate-limit, recipient, transport, or server-formatting correction as long as the page is not closed or reloaded.
 
@@ -105,3 +107,16 @@ Sanitized endpoint failures are shown in the drawer. The page keeps the recorder
 - Current Vertigo/JUNCTION DIAG phase: **60.38 FPS**, **18.4 ms p95**, **12 MB** browser-exposed JavaScript heap, and **33.2 MB** decoded PCM.
 - Runtime issues and coordinate keys: **zero**; browser console warnings/errors: **zero**.
 - Explicit `SEND DIAGNOSTIC`: **PASS** with `SENT` and `accepted_by_mail_transport`. This proves server mail-transport acceptance, not inbox delivery.
+
+## Complete attachment packaging — 2026-08-28
+
+- The first real-Tesla report reached the configured Gmail inbox, proving the
+  full user-gesture → endpoint → mail-transport → inbox path for build
+  `20260828-0127`. Copying the displayed message exposed Gmail's clipping
+  boundary, not evidence that the server lost the accepted report.
+- The endpoint now keeps only an integrity summary in the visible body and
+  attaches the complete accepted schema/report envelope as `.json.gz`.
+- Deterministic packaging verification: **PASS**. A 157-sample fixture crossed
+  PHP JSON encoding, GZIP, Base64 and multipart MIME, then decompressed to a
+  report structurally identical to the input with matching JSON and GZIP
+  SHA-256 digests.
