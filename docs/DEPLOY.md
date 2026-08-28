@@ -8,6 +8,32 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Seamless Orbitron launch publication — 2026-08-28
+
+- build stamp: **`20260828-1553`**; deployed commit: `3c85c7b`;
+  typography and wave: `0193cac`; token alignment: `c816b75`; overlay isolation:
+  `6109f32`;
+- gate before upload: **PASS**, 160 unit tests, 4 packaging tests, production
+  build, exact `773 × 601` and compact `390 × 844` rendered verification,
+  read-only remote identity verification and no preflight writes;
+- typography QA: **PASS**. Lowercase `sedicivalvole` computes to Orbitron `750`,
+  centered with no added tracking; uppercase `PLAY THE ROAD` computes to `600`
+  with no added tracking. Neither line overflows at either verified viewport;
+- continuity QA: **PASS**. The white-to-red field repeats every `360 px` and the
+  `4.2 s` linear animation advances by exactly `-360 px`. A 12.85-second Browser
+  observation captured 222 samples and three wraps; the period-normalized
+  maximum visual step was 5.79 px, with no discontinuity at any wrap;
+- an intermediate `20260828-1550` upload exposed the persisted ATLAS no-GPS
+  overlay above the launch surface. The final build assigns the splash layer
+  `20` above ATLAS waiting layer `5`; live QA now shows only the intended launch
+  copy before the gesture, then reveals ATLAS normally after launch;
+- final publication: **PASS**, 27 files / 27,436,189 bytes uploaded to the
+  canonical root; dynamic root, exact legacy cleanup and remote listing passed.
+  The repeated post-publication identity gate passed with no writes;
+- cache-busted live Browser QA at `773 × 601` confirms build `20260828-1553`,
+  local Orbitron, the exact weights and period, no overflow, correct layer order
+  and a successful `PLAY THE ROAD` transition into the running experience.
+
 ## Orbitron typography publication — 2026-08-28
 
 - build stamp: **`20260828-1538`**; deployed commit: `76f1b63`;
