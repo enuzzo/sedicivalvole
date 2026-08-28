@@ -1,4 +1,6 @@
+import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 
 const deployScript = new URL("../../../scripts/deploy_drive_lab_ftp.py", import.meta.url);
@@ -31,4 +33,12 @@ assert module.LEGACY_UI_HASHES == {
   ], {
     env: { ...process.env, PYTHONDONTWRITEBYTECODE: "1" },
   });
+});
+
+test("the deploy gate verifies the packaged font tree explicitly", () => {
+  const source = readFileSync(deployScript, "utf8");
+
+  assert.match(source, /"fonts",\n\s+"third-party"/);
+  assert.match(source, /if "fonts" in root_names:/);
+  assert.match(source, /BUILD \/ "fonts",\n\s+tree_name="fonts"/);
 });
