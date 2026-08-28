@@ -40,6 +40,83 @@ function containsForbiddenCoordinateKey($value): bool
     return false;
 }
 
+function buildDiagnosticMail(array $report, string $receivedAt, string $recipient, ?string $fixedBoundary = null): array
+{
+    if (!function_exists('gzencode') || !defined('FORCE_GZIP')) {
+        throw new RuntimeException('compression_unavailable');
+    }
+    $attachmentJson = json_encode([
+        'schema' => 'sedicivalvole.tesla-diagnostic.v3',
+        'serverAcceptedAt' => $receivedAt,
+        'report' => $report,
+    ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE);
+    if (!is_string($attachmentJson)) {
+        throw new RuntimeException('attachment_encoding_unavailable');
+    }
+    $attachmentGzip = gzencode($attachmentJson, 9, FORCE_GZIP);
+    if (!is_string($attachmentGzip)) {
+        throw new RuntimeException('compression_unavailable');
+    }
+
+    $build = preg_replace('/[^A-Za-z0-9._-]/', '-', (string) ($report['app']['build'] ?? 'unknown'));
+    if (!is_string($build) || $build === '') {
+        $build = 'unknown';
+    }
+    $acceptedTimestamp = strtotime($receivedAt);
+    $filenameTimestamp = $acceptedTimestamp === false ? gmdate('Ymd\THis\Z') : gmdate('Ymd\THis\Z', $acceptedTimestamp);
+    $attachmentName = 'sedicivalvole-diagnostic-' . $filenameTimestamp . '-build-' . $build . '.json.gz';
+    $attachmentSha256 = hash('sha256', $attachmentJson);
+    $compressedSha256 = hash('sha256', $attachmentGzip);
+    $boundary = $fixedBoundary ?? ('=_sedicivalvole_' . bin2hex(random_bytes(12)));
+    $summary = implode("\r\n", [
+        'sedicivalvole Tesla diagnostic',
+        'Server accepted at: ' . $receivedAt,
+        'Schema: sedicivalvole.tesla-diagnostic.v3',
+        'Privacy: the endpoint rejects coordinate fields and stores no report.',
+        'Complete report: attached as gzip-compressed JSON.',
+        'Attachment: ' . $attachmentName,
+        'JSON bytes: ' . strlen($attachmentJson),
+        'GZIP bytes: ' . strlen($attachmentGzip),
+        'JSON SHA-256: ' . $attachmentSha256,
+        'GZIP SHA-256: ' . $compressedSha256,
+    ]);
+    $encodedAttachment = rtrim(chunk_split(base64_encode($attachmentGzip), 76, "\r\n"));
+    $message = implode("\r\n", [
+        '--' . $boundary,
+        'Content-Type: text/plain; charset=UTF-8',
+        'Content-Transfer-Encoding: 8bit',
+        '',
+        $summary,
+        '--' . $boundary,
+        'Content-Type: application/gzip; name="' . $attachmentName . '"',
+        'Content-Transfer-Encoding: base64',
+        'Content-Disposition: attachment; filename="' . $attachmentName . '"',
+        '',
+        $encodedAttachment,
+        '--' . $boundary . '--',
+        '',
+    ]);
+    $headers = implode("\r\n", [
+        'From: sedicivalvole diagnostics <diagnostics@sedicivalvole.app>',
+        'Reply-To: ' . $recipient,
+        'MIME-Version: 1.0',
+        'Content-Type: multipart/mixed; boundary="' . $boundary . '"',
+        'X-Mailer: sedicivalvole-diagnostic-v3',
+    ]);
+
+    return [
+        'message' => $message,
+        'headers' => $headers,
+        'attachmentName' => $attachmentName,
+        'attachmentJson' => $attachmentJson,
+        'attachmentGzip' => $attachmentGzip,
+    ];
+}
+
+if (defined('SEDICIVALVOLE_DIAGNOSTIC_LIBRARY_ONLY')) {
+    return;
+}
+
 if (ini_set('serialize_precision', '-1') === false) {
     respond(503, 'serialization_precision_unavailable');
 }
@@ -130,24 +207,15 @@ fclose($rateHandle);
 
 $receivedAt = gmdate('c');
 $subject = '[sedicivalvole] Tesla diagnostic ' . gmdate('Y-m-d H:i:s') . ' UTC';
-$message = implode("\r\n", [
-    'sedicivalvole Tesla diagnostic',
-    'Server accepted at: ' . $receivedAt,
-    'Schema: sedicivalvole.tesla-diagnostic.v3',
-    'Privacy: the endpoint rejects coordinate fields and stores no report.',
-    '',
-    $reportJson,
-]);
-$headers = implode("\r\n", [
-    'From: sedicivalvole diagnostics <diagnostics@sedicivalvole.app>',
-    'Reply-To: ' . $diagnosticRecipient,
-    'MIME-Version: 1.0',
-    'Content-Type: text/plain; charset=UTF-8',
-    'Content-Transfer-Encoding: 8bit',
-    'X-Mailer: sedicivalvole-diagnostic-v3',
-]);
+try {
+    $mailContent = buildDiagnosticMail($payload['report'], $receivedAt, $diagnosticRecipient);
+} catch (RuntimeException $error) {
+    respond(503, $error->getMessage());
+} catch (Throwable $error) {
+    respond(503, 'mail_packaging_unavailable');
+}
 
-if (!mail($diagnosticRecipient, $subject, $message, $headers)) {
+if (!mail($diagnosticRecipient, $subject, $mailContent['message'], $mailContent['headers'])) {
     respond(502, 'mail_transport_rejected');
 }
 

@@ -75,6 +75,9 @@ const DIAGNOSTIC_SEND_ERROR_COPY = {
   recipient_unavailable: "The private diagnostic recipient is unavailable on the server.",
   mail_transport_rejected: "The server mail transport rejected the report.",
   serialization_precision_unavailable: "The server could not apply safe diagnostic number formatting.",
+  attachment_encoding_unavailable: "The server could not package the complete diagnostic attachment.",
+  compression_unavailable: "The server cannot compress the complete diagnostic attachment.",
+  mail_packaging_unavailable: "The server could not prepare the diagnostic email attachment.",
   network_error: "The diagnostic request did not reach the server. Check the connection and retry.",
 };
 
