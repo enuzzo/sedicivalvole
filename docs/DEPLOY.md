@@ -8,6 +8,36 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Direction-following ATLAS publication — 2026-08-28
+
+- build stamp: **`20260828-1606`**; deployed commit: `e58ff12`;
+  implementation: `2c8f0f6`;
+- gate before upload: **PASS**, 162 unit tests, 4 packaging tests, production
+  build, exact `773 × 601` rendered verification at `40` and `130 km/h`, and a
+  read-only remote identity verification with no writes;
+- passenger presentation: **PASS**. The `246 px × 465 px` panel contains its
+  `21 px` title, three-line `12 px` context, four `12 px` choices and `86 px`
+  QR without horizontal or panel overflow. The QR source is generated at
+  `192 px`; local and live Browser checks loaded nearby Italian Wikipedia data;
+- camera and travel: **PASS** locally. The `130 km/h` endpoint retains zoom
+  `14.65`, pitch `55.5°` and visibly extruded buildings. The Milan test advances
+  its center in the active heading and a steering gesture changes the rendered
+  view. Deterministic coverage proves real GPS uses reported heading, derives
+  east/north bearing from successive fixes when heading is null, and preserves
+  the last direction inside the three-metre jitter gate;
+- an intermediate `20260828-1604` package contained the correct product code but
+  had been built before the final commits, so its embedded commit identity was
+  stale. It was immediately superseded and is not accepted as the release;
+- final publication: **PASS**, 27 files / 27,436,704 bytes uploaded to the
+  canonical root. Dynamic-root, legacy-cleanup, retained-cache-overlap and
+  remote-listing checks passed; the repeated post-publication identity gate
+  passed with `remote_writes=NONE`;
+- cache-busted live Browser QA at `773 × 601` confirms build
+  `20260828-1606`, the ATLAS Milan launch, OpenFreeMap field, passenger content,
+  exact final typography/QR dimensions and zero console warnings or errors.
+  Real Tesla GPS-following and passenger scan distance remain the vehicle
+  acceptance boundary.
+
 ## Seamless Orbitron launch publication — 2026-08-28
 
 - build stamp: **`20260828-1553`**; deployed commit: `3c85c7b`;
