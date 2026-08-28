@@ -1,4 +1,4 @@
-const MAGIC = "SVJCTN03";
+const MAGIC = "SVJCTN04";
 const HEADER_BYTES = 12;
 
 export function parseJunctionBank(arrayBuffer) {
@@ -12,7 +12,7 @@ export function parseJunctionBank(arrayBuffer) {
   const manifest = JSON.parse(
     new TextDecoder().decode(bytes.subarray(HEADER_BYTES, audioOffset)),
   );
-  if (manifest.format !== "sedicivalvole.music-bank.v3" || manifest.score !== "junction") {
+  if (manifest.format !== "sedicivalvole.music-bank.v4" || manifest.score !== "junction") {
     throw new Error("JUNCTION bank manifest is incompatible");
   }
   if (!Array.isArray(manifest.sections) || manifest.sections.length < 8) {
@@ -43,77 +43,36 @@ export function parseJunctionBank(arrayBuffer) {
   };
 }
 
-export function chooseJunctionVariation(sections, sectionId, previousTake = null, random = Math.random) {
+export function chooseJunctionPerformance(
+  sections,
+  sectionId,
+  previousPerformance = null,
+  random = Math.random,
+  recentPerformances = [],
+) {
   const candidates = sections.filter((section) => section.id === sectionId);
   if (candidates.length === 0) return sections[0] ?? null;
+  const previousTake = typeof previousPerformance === "object"
+    ? previousPerformance?.take
+    : previousPerformance;
+  const recentKeys = new Set(recentPerformances.map((section) => `${section.id}:${section.take}`));
+  const unseen = candidates.filter((section) => (
+    section.take !== previousTake && !recentKeys.has(`${section.id}:${section.take}`)
+  ));
   const fresh = candidates.filter((section) => section.take !== previousTake);
-  const pool = fresh.length > 0 ? fresh : candidates;
+  const pool = unseen.length > 0 ? unseen : fresh.length > 0 ? fresh : candidates;
   const value = Math.min(0.999999, Math.max(0, Number(random()) || 0));
   return pool[Math.floor(value * pool.length)];
 }
 
-function randomUnit(random) {
-  return Math.min(0.999999, Math.max(0, Number(random()) || 0));
-}
-
-export function chooseJunctionMix(
-  sections,
-  sectionId,
-  previousPrimary = null,
-  random = Math.random,
-  recentPrimaries = [],
-) {
-  const candidates = sections.filter((section) => section.id === sectionId);
-  if (candidates.length < 2) return null;
-  const previousPrimaryTake = typeof previousPrimary === "object" ? previousPrimary?.take : previousPrimary;
-  const previousFamily = typeof previousPrimary === "object" ? previousPrimary?.family : null;
-  const recentKeys = new Set(recentPrimaries.map((section) => (
-    `${section.id}:${section.take}`
-  )));
-  const recentFamilies = new Set(recentPrimaries.map((section) => section.family).filter(Boolean));
-  const recentRhythms = new Set(recentPrimaries.map((section) => section.rhythmId).filter(Boolean));
-  const byRhythm = new Map();
-  for (const candidate of candidates) {
-    const family = candidate.family ?? "legacy";
-    const rhythm = candidate.rhythmId ?? `legacy-${family}`;
-    const key = `${family}:${rhythm}`;
-    const group = byRhythm.get(key) ?? [];
-    group.push(candidate);
-    byRhythm.set(key, group);
-  }
-  const compatibleGroups = [...byRhythm.values()].filter((group) => group.length >= 2);
-  const unseenGroups = compatibleGroups.filter((group) => (
-    group[0].family !== previousFamily
-    && !recentFamilies.has(group[0].family)
-    && !recentRhythms.has(group[0].rhythmId)
-  ));
-  const freshFamilyGroups = compatibleGroups.filter((group) => group[0].family !== previousFamily);
-  const groupPool = unseenGroups.length > 0
-    ? unseenGroups
-    : freshFamilyGroups.length > 0 ? freshFamilyGroups : compatibleGroups;
-  if (groupPool.length === 0) return null;
-  const compatibleCandidates = groupPool[Math.floor(randomUnit(random) * groupPool.length)];
-  const primaryPool = compatibleCandidates.filter((section) => (
-    section.take !== previousPrimaryTake && !recentKeys.has(`${section.id}:${section.take}`)
-  ));
-  const eligible = primaryPool.length > 0 ? primaryPool : compatibleCandidates;
-  const primary = eligible[Math.floor(randomUnit(random) * eligible.length)];
-  const secondaryPool = compatibleCandidates.filter((section) => section.take !== primary.take);
-  const secondary = secondaryPool[Math.floor(randomUnit(random) * secondaryPool.length)];
-  const mixStart = 0.12 + randomUnit(random) * 0.16;
-  const mixEnd = 0.3 + randomUnit(random) * 0.18;
-  return { primary, secondary, mixStart, mixEnd };
-}
-
-export function junctionLiveMixParameters(energy, bpm, random = Math.random) {
+export function junctionPerformanceParameters(energy, bpm) {
   const value = Math.min(1, Math.max(0, Number(energy) || 0));
   const tempo = Math.max(1, Number(bpm) || 127);
-  const subdivision = randomUnit(random) < 0.5 ? 0.5 : 0.75;
   return {
-    delaySeconds: Math.min(0.5, Math.max(0.12, (60 / tempo) * subdivision)),
-    feedback: 0.07 + value * 0.14 + randomUnit(random) * 0.035,
-    wet: 0.018 + value * 0.085 + randomUnit(random) * 0.022,
-    cutoff: Math.min(20000, 9000 + value * 9000 + randomUnit(random) * 1000),
+    delaySeconds: Math.min(0.5, Math.max(0.12, (60 / tempo) * 0.5)),
+    feedback: 0.07 + value * 0.14,
+    wet: 0.018 + value * 0.085,
+    cutoff: Math.min(20000, 9500 + value * 9500),
   };
 }
 

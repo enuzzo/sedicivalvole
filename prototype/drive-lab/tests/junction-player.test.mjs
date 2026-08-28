@@ -120,7 +120,7 @@ test("JUNCTION fades rhythm in from rest and releases it softly when returning t
   }
 });
 
-test("JUNCTION finishes one complete phrase before the next rhythm-locked pair", async () => {
+test("JUNCTION finishes one complete phrase before the next single coherent performance", async () => {
   const originalWindow = globalThis.window;
   const originalFetch = globalThis.fetch;
   const originalBuild = globalThis.__APP_BUILD__;
@@ -149,27 +149,27 @@ test("JUNCTION finishes one complete phrase before the next rhythm-locked pair",
     assert.equal(first.section, "FULL");
     assert.equal(first.tempo, 168);
     assert.ok(first.rhythmId);
-    assert.equal(new Set(first.sectionRhythms).size, 1);
-    assert.equal(sources.length, 2);
-    assert.equal(sources[0].startAt, sources[1].startAt);
-    assert.equal(sources[0].duration, sources[1].duration);
+    assert.equal(first.mixing, "single-synchronous-performance");
+    assert.equal(first.tonalDecks, 1);
+    assert.equal(first.automaticLead, false);
+    assert.equal(first.sectionTakes.length, 1);
+    assert.equal(sources.length, 1);
 
     const firstBoundary = sources[0].startAt + sources[0].duration;
     context.currentTime = firstBoundary - 0.5;
     timers[0]();
     await new Promise((resolve) => setImmediate(resolve));
     await new Promise((resolve) => setImmediate(resolve));
-    assert.equal(sources.length, 4);
-    assert.equal(sources[2].startAt, firstBoundary);
-    assert.equal(sources[3].startAt, firstBoundary);
+    assert.equal(sources.length, 2);
+    assert.equal(sources[1].startAt, firstBoundary);
 
     context.currentTime = firstBoundary;
     timers[0]();
     const second = player.getState();
     assert.equal(second.section, "FULL");
-    assert.equal(new Set(second.sectionRhythms).size, 1);
-    assert.notEqual(second.musicalFamily, first.musicalFamily);
-    assert.notDeepEqual(second.sectionTakes, first.sectionTakes);
+    assert.equal(second.musicalFamily, first.musicalFamily);
+    assert.notEqual(second.sectionTake, first.sectionTake);
+    assert.equal(second.sectionTakes.length, 1);
     player.destroy();
   } finally {
     globalThis.window = originalWindow;

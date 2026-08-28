@@ -147,7 +147,7 @@ def is_recognized_app_entry(payload: bytes) -> bool:
 
 def is_recognized_junction_bank(payload: bytes) -> bool:
     """Recognize an existing owned bank without requiring the next bank's hash."""
-    if len(payload) < 13 or payload[:8] not in {b"SVJCTN01", b"SVJCTN02", b"SVJCTN03"}:
+    if len(payload) < 13 or payload[:8] not in {b"SVJCTN01", b"SVJCTN02", b"SVJCTN03", b"SVJCTN04"}:
         return False
     manifest_length = int.from_bytes(payload[8:12], "little")
     audio_offset = 12 + manifest_length
@@ -168,6 +168,7 @@ def is_recognized_junction_bank(payload: bytes) -> bool:
     segmented_signatures = {
         "sedicivalvole.music-bank.v2": b"SVJCTN02",
         "sedicivalvole.music-bank.v3": b"SVJCTN03",
+        "sedicivalvole.music-bank.v4": b"SVJCTN04",
     }
     if segmented_signatures.get(manifest.get("format")) != payload[:8]:
         return False

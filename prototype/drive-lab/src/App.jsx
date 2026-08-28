@@ -1012,6 +1012,10 @@ export function App() {
     if (audioRef.current) {
       await audioRef.current.resume();
       audioRef.current.setMuted(false);
+      // The speed effect may have run before the audio engine existed (notably
+      // for an exact qaSpeed launch). Seed the engine from the current signal
+      // before choosing a score so its first complete section is the right one.
+      audioRef.current.setSpeed(speedRef.current);
       audioRef.current.setScore(genreId);
       audioRef.current.startCue();
       window.clearInterval(audioMeterTimerRef.current);

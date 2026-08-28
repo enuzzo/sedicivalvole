@@ -60,6 +60,9 @@ test("the ready scores name both live music runtimes", () => {
   assert.equal(getScoreGenre("junction").score, "junction");
   assert.equal(getScoreGenre("fracture").score, SCORE_ID);
   assert.ok(ready.every((genre) => isScoreReady(genre.id)));
+  assert.match(getScoreGenre("junction").note, /one coherent harmonic identity/i);
+  assert.doesNotMatch(getScoreGenre("junction").note, /160|five.*famil/i);
+  assert.match(getScoreGenre("fracture").note, /no automatic lead/i);
 });
 
 test("the rest of the library is declared as preparing, not as playing", () => {

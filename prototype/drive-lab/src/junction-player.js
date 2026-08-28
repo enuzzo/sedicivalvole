@@ -1,6 +1,6 @@
 import {
-  chooseJunctionMix,
-  junctionLiveMixParameters,
+  chooseJunctionPerformance,
+  junctionPerformanceParameters,
   junctionMovementGain,
   junctionSectionForEnergy,
   parseJunctionBank,
@@ -9,7 +9,7 @@ import {
 const BANK_URL = `/audio/junction.svb?build=${encodeURIComponent(__APP_BUILD__)}`;
 const REVIEW_INTERVAL_MS = 50;
 const SCHEDULE_AHEAD_SECONDS = 0.8;
-const LIVE_MIX_LEVEL = 0.61;
+const PERFORMANCE_LEVEL = 0.72;
 const OUTPUT_LEVEL = 0.9;
 const CLIP_EDGE_FADE_SECONDS = 0.012;
 export const JUNCTION_RHYTHM_FADE_SECONDS = 4;
@@ -25,7 +25,7 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
   let loading = null;
   let currentPerformance = null;
   let pendingPerformance = null;
-  let preparedMix = null;
+  let preparedPerformance = null;
   let preparingId = null;
   let scheduling = false;
   let bankBytes = 0;
@@ -33,7 +33,7 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
   const decoded = new Map();
   const decoding = new Map();
   const activeSources = new Set();
-  const recentPrimaries = [];
+  const recentPerformances = [];
 
   const mixBus = context.createGain();
   const masterFilter = context.createBiquadFilter();
@@ -84,23 +84,19 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
   function snapshot() {
     const activePerformance = currentPerformance ?? pendingPerformance;
     const sectionId = activePerformance?.id ?? junctionSectionForEnergy(energy, brake > 0.2);
-    const primary = activePerformance?.mix.primary ?? null;
-    const sceneIndex = primary && bank ? bank.manifest.sections.indexOf(primary) : -1;
+    const selected = activePerformance?.section ?? null;
+    const sceneIndex = selected && bank ? bank.manifest.sections.indexOf(selected) : -1;
     return {
       scoreId: "junction",
       scoreLabel: "JUNCTION",
       scene: Math.max(0, sceneIndex),
       sceneId: sectionId,
       section: sectionId.toUpperCase(),
-      sectionTake: primary?.take ?? null,
-      sectionTakes: activePerformance
-        ? [activePerformance.mix.primary.take, activePerformance.mix.secondary.take]
-        : [],
-      sectionRhythms: activePerformance
-        ? [activePerformance.mix.primary.rhythmId, activePerformance.mix.secondary.rhythmId]
-        : [],
-      musicalFamily: primary?.family ?? null,
-      rhythmId: primary?.rhythmId ?? null,
+      sectionTake: selected?.take ?? null,
+      sectionTakes: selected ? [selected.take] : [],
+      sectionRhythms: selected ? [selected.performanceId] : [],
+      musicalFamily: selected?.harmonicIdentity ?? bank?.manifest.harmonicIdentity ?? null,
+      rhythmId: selected?.performanceId ?? null,
       rhythmTransition: activePerformance
         ? rhythmTransitionAt(activePerformance, context.currentTime)
         : "idle",
@@ -108,19 +104,19 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
       halfTime: false,
       rhythmLabel: sectionId === "rest"
         ? "ambient"
-        : (primary?.bpm ?? 127) < 158 ? "slow break" : "full break",
-      tempo: primary?.bpm ?? bank?.manifest.bpmRange?.[0] ?? 127,
+        : (selected?.bpm ?? 127) < 158 ? "slow break" : "full break",
+      tempo: selected?.bpm ?? bank?.manifest.bpmRange?.[0] ?? 127,
       energy,
       movementGain: junctionMovementGain(energy),
       decelerationState: brake > 0.2 ? "release" : "cruise",
-      activeLanes: primary?.activeLanes
+      activeLanes: selected?.activeLanes
         ?? (sectionId === "rest" ? ["harmony", "atmosphere"] : ["breaks", "harmony"]),
       source: "sampled-production",
-      mixing: "live-rhythm-locked-two-deck",
+      mixing: "single-synchronous-performance",
       transitionMode: "complete-eight-bar-boundary",
+      tonalDecks: selected?.tonalDecks ?? bank?.manifest.tonalDecks ?? 1,
+      automaticLead: selected?.automaticLead ?? bank?.manifest.automaticLead ?? false,
       liveMix: activePerformance ? {
-        from: Number(activePerformance.mix.mixStart.toFixed(3)),
-        to: Number(activePerformance.mix.mixEnd.toFixed(3)),
         wet: Number(activePerformance.effects.wet.toFixed(3)),
         feedback: Number(activePerformance.effects.feedback.toFixed(3)),
       } : null,
@@ -188,12 +184,9 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
     if (!bank) return;
     const limit = Math.max(2, bank.manifest.maxDecodedClips ?? 6);
     const keep = new Set([
-      currentPerformance?.mix.primary.assetId,
-      currentPerformance?.mix.secondary.assetId,
-      pendingPerformance?.mix.primary.assetId,
-      pendingPerformance?.mix.secondary.assetId,
-      preparedMix?.mix.primary.assetId,
-      preparedMix?.mix.secondary.assetId,
+      currentPerformance?.section.assetId,
+      pendingPerformance?.section.assetId,
+      preparedPerformance?.section.assetId,
       ...extraKeep,
     ].filter(Boolean));
     const removable = [...decoded.entries()]
@@ -212,7 +205,7 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
     }
     if (decoding.has(id)) return decoding.get(id);
     const asset = bank?.assets.get(id);
-    if (!asset) throw new Error(`JUNCTION mix block is missing: ${id}`);
+    if (!asset) throw new Error(`JUNCTION performance is missing: ${id}`);
     const promise = (async () => {
       const audioBytes = await asset.audio.arrayBuffer();
       const buffer = await context.decodeAudioData(audioBytes);
@@ -244,55 +237,48 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
   function prewarmTarget() {
     if (!active || !bank) return;
     const id = junctionSectionForEnergy(energy, brake > 0.2);
-    if (preparedMix?.id === id || preparingId === id) return;
-    const mix = chooseJunctionMix(
+    if (preparedPerformance?.id === id || preparingId === id) return;
+    const section = chooseJunctionPerformance(
       bank.manifest.sections,
       id,
-      currentPerformance?.mix.primary ?? null,
+      currentPerformance?.section ?? null,
       Math.random,
-      recentPrimaries,
+      recentPerformances,
     );
-    if (!mix) return;
+    if (!section) return;
     preparingId = id;
-    Promise.all([
-      ensureDecoded(mix.primary.assetId),
-      ensureDecoded(mix.secondary.assetId),
-    ]).then(() => {
+    ensureDecoded(section.assetId).then(() => {
       if (active && junctionSectionForEnergy(energy, brake > 0.2) === id) {
-        preparedMix = { id, mix };
+        preparedPerformance = { id, section };
       }
     }).catch((error) => {
-      console.warn("[junction] could not pre-decode the next mix pair", error);
+      console.warn("[junction] could not pre-decode the next performance", error);
     }).finally(() => {
       if (preparingId === id) preparingId = null;
     });
   }
 
-  async function schedulePerformance(id, requestedTime, previousPrimary = null, previousId = null) {
-    const prepared = preparedMix?.id === id
-      && preparedMix.mix.primary.take !== previousPrimary?.take
-      && preparedMix.mix.primary.family !== previousPrimary?.family
-      ? preparedMix.mix
+  async function schedulePerformance(id, requestedTime, previousSection = null, previousId = null) {
+    const prepared = preparedPerformance?.id === id
+      && preparedPerformance.section.take !== previousSection?.take
+      ? preparedPerformance.section
       : null;
-    preparedMix = null;
-    const mix = prepared
-      ?? chooseJunctionMix(
+    preparedPerformance = null;
+    const section = prepared
+      ?? chooseJunctionPerformance(
         bank.manifest.sections,
         id,
-        previousPrimary,
+        previousSection,
         Math.random,
-        recentPrimaries,
+        recentPerformances,
       );
-    if (!mix) throw new Error(`JUNCTION needs at least two takes for live mixing: ${id}`);
-    const [primaryBuffer, secondaryBuffer] = await Promise.all([
-      ensureDecoded(mix.primary.assetId),
-      ensureDecoded(mix.secondary.assetId),
-    ]);
+    if (!section) throw new Error(`JUNCTION has no complete performance for: ${id}`);
+    const buffer = await ensureDecoded(section.assetId);
     if (!active) return null;
     const startAt = Math.max(requestedTime, context.currentTime + 0.035);
-    const duration = Math.min(mix.primary.durationSeconds, mix.secondary.durationSeconds);
+    const duration = section.durationSeconds;
     const endAt = startAt + duration;
-    const effects = junctionLiveMixParameters(energy, mix.primary.bpm);
+    const effects = junctionPerformanceParameters(energy, section.bpm);
     mixCutoff = effects.cutoff;
     delay.delayTime.setTargetAtTime(effects.delaySeconds, startAt, 0.04);
     feedback.gain.setTargetAtTime(effects.feedback, startAt, 0.06);
@@ -313,7 +299,7 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
     }
     const performanceRecord = {
       id,
-      mix,
+      section,
       effects,
       startAt,
       endAt,
@@ -327,52 +313,38 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
         label: entranceDuration > 0 ? "fade-in" : "steady",
       },
     };
-    const deckSpecs = [
-      { section: mix.primary, buffer: primaryBuffer, from: 1 - mix.mixStart, to: 1 - mix.mixEnd, pan: -0.06 },
-      { section: mix.secondary, buffer: secondaryBuffer, from: mix.mixStart, to: mix.mixEnd, pan: 0.06 },
-    ];
-    for (const deck of deckSpecs) {
-      const source = context.createBufferSource();
-      const tone = context.createBiquadFilter();
-      const panner = context.createStereoPanner();
-      const deckGain = context.createGain();
-      source.buffer = deck.buffer;
-      tone.type = "lowpass";
-      tone.Q.value = 0.55;
-      tone.frequency.setValueAtTime(
-        Math.min(20000, effects.cutoff + (Math.random() - 0.5) * 900),
-        startAt,
-      );
-      panner.pan.setValueAtTime(deck.pan + (Math.random() - 0.5) * 0.035, startAt);
-      const startLevel = Math.sqrt(deck.from) * LIVE_MIX_LEVEL;
-      const endLevel = Math.sqrt(deck.to) * LIVE_MIX_LEVEL;
-      deckGain.gain.setValueAtTime(0, startAt);
-      deckGain.gain.linearRampToValueAtTime(
-        startLevel,
-        Math.min(endAt, startAt + CLIP_EDGE_FADE_SECONDS),
-      );
-      deckGain.gain.linearRampToValueAtTime(
-        endLevel,
-        Math.max(startAt, endAt - CLIP_EDGE_FADE_SECONDS),
-      );
-      deckGain.gain.linearRampToValueAtTime(0, endAt);
-      source.connect(tone).connect(panner).connect(deckGain).connect(rhythmGain);
-      source.start(startAt, deck.section.startSeconds, duration);
-      source.stop(endAt + 0.01);
-      performanceRecord.sources.add(source);
-      activeSources.add(source);
-      source.onended = () => {
-        activeSources.delete(source);
-        performanceRecord.sources.delete(source);
-        source.disconnect();
-        tone.disconnect();
-        panner.disconnect();
-        deckGain.disconnect();
-        if (performanceRecord.sources.size === 0) rhythmGain.disconnect();
-      };
-    }
-    recentPrimaries.push(mix.primary);
-    while (recentPrimaries.length > 4) recentPrimaries.shift();
+    const source = context.createBufferSource();
+    const tone = context.createBiquadFilter();
+    const performanceGain = context.createGain();
+    source.buffer = buffer;
+    tone.type = "lowpass";
+    tone.Q.value = 0.55;
+    tone.frequency.setValueAtTime(effects.cutoff, startAt);
+    performanceGain.gain.setValueAtTime(0, startAt);
+    performanceGain.gain.linearRampToValueAtTime(
+      PERFORMANCE_LEVEL,
+      Math.min(endAt, startAt + CLIP_EDGE_FADE_SECONDS),
+    );
+    performanceGain.gain.setValueAtTime(
+      PERFORMANCE_LEVEL,
+      Math.max(startAt, endAt - CLIP_EDGE_FADE_SECONDS),
+    );
+    performanceGain.gain.linearRampToValueAtTime(0, endAt);
+    source.connect(tone).connect(performanceGain).connect(rhythmGain);
+    source.start(startAt, section.startSeconds, duration);
+    source.stop(endAt + 0.01);
+    performanceRecord.sources.add(source);
+    activeSources.add(source);
+    source.onended = () => {
+      activeSources.delete(source);
+      performanceRecord.sources.delete(source);
+      source.disconnect();
+      tone.disconnect();
+      performanceGain.disconnect();
+      rhythmGain.disconnect();
+    };
+    recentPerformances.push(section);
+    while (recentPerformances.length > 4) recentPerformances.shift();
     return performanceRecord;
   }
 
@@ -384,11 +356,11 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
       pendingPerformance = await schedulePerformance(
         id,
         currentPerformance.endAt,
-        currentPerformance.mix.primary,
+        currentPerformance.section,
         currentPerformance.id,
       );
     } catch (error) {
-      console.error("[junction] the next live mix could not be scheduled", error);
+      console.error("[junction] the next complete performance could not be scheduled", error);
     } finally {
       scheduling = false;
     }
@@ -420,8 +392,8 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
         activeSources.clear();
         currentPerformance = null;
         pendingPerformance = null;
-        preparedMix = null;
-        recentPrimaries.length = 0;
+        preparedPerformance = null;
+        recentPerformances.length = 0;
         return;
       }
       await load();
@@ -457,7 +429,7 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
       feedback.disconnect();
       wet.disconnect();
       decoded.clear();
-      recentPrimaries.length = 0;
+      recentPerformances.length = 0;
     },
   };
 }

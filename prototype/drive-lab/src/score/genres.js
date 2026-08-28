@@ -47,11 +47,11 @@ export const SCORE_GENRES = [
     id: "junction",
     label: "JUNCTION",
     number: "01",
-    family: "Jungle / Rave",
+    family: "Jungle / Breakbeat",
     source: SCORE_SOURCE.sampled,
     status: SCORE_STATUS.ready,
     score: "junction",
-    note: "160 processed clips · five rhythm-locked musical families.",
+    note: "24 complete performances · one coherent harmonic identity.",
   },
   {
     id: "fracture",
@@ -62,7 +62,7 @@ export const SCORE_GENRES = [
     status: SCORE_STATUS.ready,
     /** Resolved by the worklet to an authored score module. */
     score: "fracture",
-    note: "Ten melodies, four voices. Half-time at rest.",
+    note: "Atmosphere, harmony, low end and rhythm. No automatic lead.",
   },
   {
     id: "meridian-pulse",

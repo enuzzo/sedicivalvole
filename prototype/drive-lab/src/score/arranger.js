@@ -80,23 +80,24 @@ const SPEED_DEADBAND_KMH = 0.9;
  *
  * `minScene` is where a lane belongs; `keepFromScene` is how far the arrangement
  * may thin before the lane leaves, which is what preserves the identity of the
- * piece. Only atmosphere belongs to the resting scene: FRACTURE must open as a
- * place, not announce itself as a keyboard motif. The low end joins the first
- * moving scene and the principal riff waits until BREAK, where the vehicle has
- * acquired enough motion for a melody to feel earned.
+ * piece. Only atmosphere belongs to the resting scene. The automatic theme and
+ * response were retired after their repeated keyboard contour dominated long
+ * drives; they remain available to the isolated audition harness only and are
+ * intentionally absent from this production lane map.
  */
 export const LANES = Object.freeze([
   { id: "atmosphere", minScene: 0, keepFromScene: 0, entryBoundary: "phrase" },
   { id: "sub", minScene: 1, keepFromScene: 1, entryBoundary: "bar" },
-  { id: "riff", minScene: 2, keepFromScene: 2, entryBoundary: "phrase" },
   { id: "kick", minScene: 1, keepFromScene: 1, entryBoundary: "bar" },
   { id: "closedHat", minScene: 1, keepFromScene: 1, entryBoundary: "bar" },
   { id: "snare", minScene: 2, keepFromScene: 2, entryBoundary: "bar" },
   { id: "reese", minScene: 2, keepFromScene: 2, entryBoundary: "phrase" },
   { id: "breakDetail", minScene: 3, keepFromScene: 3, entryBoundary: "bar" },
   { id: "openHat", minScene: 3, keepFromScene: 3, entryBoundary: "bar" },
-  { id: "response", minScene: 4, keepFromScene: 4, entryBoundary: "phrase" },
 ]);
+
+/** Voices preserved for development audition but forbidden in live playback. */
+export const RETIRED_LIVE_LANES = Object.freeze(["riff", "response"]);
 
 /** Tempo with a knee: nearly all of the small range is spent by urban speed. */
 export function energyToTempo(energy) {
@@ -146,7 +147,10 @@ export function createArrangerState() {
     belowPeakSeconds: 0,
     decelerationState: "cruise",
     barsInScene: MINIMUM_SCENE_BARS,
-    laneGoals: Object.fromEntries(LANES.map((lane) => [lane.id, lane.minScene === 0 ? 1 : 0])),
+    laneGoals: {
+      ...Object.fromEntries(LANES.map((lane) => [lane.id, lane.minScene === 0 ? 1 : 0])),
+      ...Object.fromEntries(RETIRED_LIVE_LANES.map((lane) => [lane, 0])),
+    },
     queuedExits: [],
     cancelledExits: 0,
     committedTempo: TEMPO_REST_BPM,

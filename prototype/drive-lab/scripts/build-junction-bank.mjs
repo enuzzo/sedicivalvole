@@ -8,6 +8,7 @@ import { JUNCTION_BANK_MAGIC } from "../src/junction-bank.js";
 import {
   JUNCTION_ARRANGEMENT,
   JUNCTION_BARS_PER_SECTION,
+  JUNCTION_HARMONIC_IDENTITY,
   JUNCTION_TAKES,
   junctionSectionFrames,
 } from "./junction-form.mjs";
@@ -73,7 +74,7 @@ await run("ffmpeg", [
 for (let index = 0; index < renderedSections.length; index += 1) {
   const entry = renderedSections[index];
   const source = entry.section;
-  const assetId = `${source.id}-${source.take + 1}`;
+  const assetId = `${source.id}-${source.take}`;
   const audio = await readFile(encodedPaths[index]);
   await unlink(encodedPaths[index]);
   assets.push({
@@ -87,9 +88,11 @@ for (let index = 0; index < renderedSections.length; index += 1) {
   sections.push({
     id: source.id,
     assetId,
-    take: source.take + 1,
-    family: source.family,
-    rhythmId: source.rhythmId,
+    take: source.take,
+    performanceId: source.performanceId,
+    harmonicIdentity: source.harmonicIdentity,
+    automaticLead: false,
+    tonalDecks: 1,
     bpm: source.bpm,
     startSeconds: 0,
     durationSeconds: entry.durationSeconds,
@@ -102,20 +105,25 @@ for (let index = 0; index < renderedSections.length; index += 1) {
 }
 
 const manifest = {
-  format: "sedicivalvole.music-bank.v3",
+  format: "sedicivalvole.music-bank.v4",
   score: "junction",
   source: "rendered-production",
-  mixing: "live-rhythm-locked-two-deck",
+  mixing: "single-synchronous-performance",
   transitionMode: "complete-eight-bar-boundary",
   selfContainedSections: renderReport.selfContainedSections,
-  rhythmLockedMixes: renderReport.rhythmLockedMixes,
+  harmonicIdentity: JUNCTION_HARMONIC_IDENTITY,
+  harmonicGrammar: ["Emin9", "Cmaj7", "Amin7", "Bmin9"],
+  tonalDecks: 1,
+  automaticLead: false,
+  raveMultisamples: false,
+  verticalLayers: ["atmosphere", "harmony", "bass", "breaks"],
   sectionEdgeFadeMilliseconds: renderReport.sectionEdgeFadeMilliseconds,
   tempoMode: "authored-sections",
   bpmRange: [127, 168],
   bars: JUNCTION_ARRANGEMENT.length * JUNCTION_BARS_PER_SECTION,
   barsPerSection: JUNCTION_BARS_PER_SECTION,
   takes: JUNCTION_TAKES,
-  musicalFamilies: 5,
+  musicalIdentities: 1,
   durationSeconds: cursorFrames / SAMPLE_RATE,
   sourceRecordingsUsed: renderReport.sourceRecordingsUsed,
   maxDecodedClips: 6,
@@ -132,6 +140,6 @@ await writeFile(bankPath, Buffer.concat([header, manifestBytes, ...encodedAssets
 const totalAudioBytes = encodedAssets.reduce((total, audio) => total + audio.byteLength, 0);
 process.stdout.write(
   `JUNCTION bank: ${bankPath}\n`
-  + `${manifest.sections.length} authored clips · ${assets.length} lazy mix blocks`
+  + `${manifest.sections.length} authored clips · ${assets.length} lazy performances`
   + ` · ${totalAudioBytes} encoded audio bytes\n`,
 );

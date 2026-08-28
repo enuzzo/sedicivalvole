@@ -17,6 +17,7 @@ import {
   createArrangerState,
   LANES,
   observeSpeed,
+  RETIRED_LIVE_LANES,
   SCENES,
 } from "./arranger.js";
 import {
@@ -162,8 +163,8 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
   // never a discontinuity.
   const crossfadeSamples = Math.max(1, Math.round(LANE_CROSSFADE_SECONDS * sampleRate));
   const laneGain = {};
-  for (const lane of LANES) {
-    laneGain[lane.id] = new RampedParam(arranger.laneGoals[lane.id]);
+  for (const laneId of [...LANES.map((lane) => lane.id), ...RETIRED_LIVE_LANES]) {
+    laneGain[laneId] = new RampedParam(arranger.laneGoals[laneId]);
   }
 
   const drumSaturator = new TubeSaturator(sampleRate);
@@ -191,7 +192,12 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
   // Keyed by *voice*, not by lane. Keying it by lane left the ghost snare and
   // the clap silent in the preview, because neither has a lane of its own: both
   // are voiced through the snare's level, which is zero at a standstill.
-  const AUDITIONABLE = [...LANES.map((lane) => lane.id), "ghost", "clap"];
+  const AUDITIONABLE = [
+    ...LANES.map((lane) => lane.id),
+    ...RETIRED_LIVE_LANES,
+    "ghost",
+    "clap",
+  ];
   const auditionSamples = Object.fromEntries(AUDITIONABLE.map((id) => [id, 0]));
 
   /** How long an audition holds a voice open, by voice. */

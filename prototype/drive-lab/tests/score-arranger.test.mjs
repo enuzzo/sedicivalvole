@@ -12,6 +12,7 @@ import {
   LANES,
   MINIMUM_SCENE_BARS,
   observeSpeed,
+  RETIRED_LIVE_LANES,
   SCENES,
   TEMPO_CEILING_BPM,
   TEMPO_REST_BPM,
@@ -422,27 +423,23 @@ test("every scene is a density of one piece and every lane belongs to one", () =
 
   assert.equal(LANES.find((lane) => lane.id === "atmosphere").minScene, 0);
   assert.equal(LANES.find((lane) => lane.id === "sub").minScene, 1);
-  assert.equal(LANES.find((lane) => lane.id === "riff").minScene, 2);
+  assert.ok(!LANES.some((lane) => RETIRED_LIVE_LANES.includes(lane.id)));
 });
 
-test("FRACTURE launches as ambience and earns its melody through motion", () => {
+test("FRACTURE never activates the retired riff or response in live playback", () => {
   const state = createArrangerState();
   assert.deepEqual(arrangementSnapshot(state).activeLanes, ["atmosphere"]);
 
-  // ROLL may introduce pulse and low end, but never the principal theme.
-  state.pendingScene = 1;
-  state.barsInScene = MINIMUM_SCENE_BARS;
-  commitAtBoundary(state, "phrase");
-  assert.equal(state.scene, 1);
-  assert.ok(state.laneGoals.sub > 0);
-  assert.equal(state.laneGoals.riff, 0);
-
-  // BREAK earns the melody, and its phrase-boundary entry is explicit.
-  state.pendingScene = 2;
-  state.barsInScene = MINIMUM_SCENE_BARS;
-  commitAtBoundary(state, "phrase");
-  assert.equal(state.scene, 2);
-  assert.ok(state.laneGoals.riff > 0);
+  for (let scene = 1; scene < SCENES.length; scene += 1) {
+    state.pendingScene = scene;
+    state.barsInScene = MINIMUM_SCENE_BARS;
+    commitAtBoundary(state, "phrase");
+    assert.ok(state.laneGoals.sub > 0, "low end still grows with the road scene");
+    assert.equal(state.laneGoals.riff, 0);
+    assert.equal(state.laneGoals.response, 0);
+    assert.ok(!arrangementSnapshot(state).activeLanes.includes("riff"));
+    assert.ok(!arrangementSnapshot(state).activeLanes.includes("response"));
+  }
 });
 
 test("the tempo target follows energy and is only ever committed on a boundary", () => {
