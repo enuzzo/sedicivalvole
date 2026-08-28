@@ -14,8 +14,8 @@ dated study documents.
   mode, visible but disabled until its own audio model and one of exactly three
   Engine-specific visual directions are selected.
 - The Flux catalog contains five visual environments: **APERTURE 01**,
-  **VERTIGO 02**, **MERIDIAN 03**, **LATITUDES 04**, and **ATLAS 05**. ATLAS is
-  implemented locally and remains pending canonical publication.
+  **VERTIGO 02**, **MERIDIAN 03**, **LATITUDES 04**, and **ATLAS 05**. All five
+  are published on the canonical experience.
 - All five environments use the shared catalog of **10 themes**. Vertigo keeps
   the upstream Interstate 7 files byte-identical while an external runtime
   bridge maps the selected theme onto its existing colour channels.
@@ -28,7 +28,10 @@ dated study documents.
   short nearby Italian Wikipedia reading, four passenger choices and a local QR.
   Without reliable GPS, an explicit Milan-only test button enables keyboard
   steering and the same speed-driven bird's-eye camera without entering demo
-  coordinates into diagnostics.
+  coordinates into diagnostics. The camera remains oblique and building-rich at
+  `130 km/h`; it centers on trusted fixes and follows reported heading or a
+  bearing inferred from successive positions. The `246 px` passenger panel uses
+  `12 px` reading text and an `86 px` QR at the Tesla split viewport.
 - Speed, BPM, and energy remain visible together. The fixed road-energy ceiling
   is `130 km/h`, with Aperture visibly forming a tunnel near `40 km/h`.
 - The main experience retains an icon-only Mute control, GPS/Demo source

@@ -242,7 +242,12 @@ separate scene or returns to quantized zebra bands.
 **Atlas** is a lazy-loaded OpenFreeMap/MapLibre city field. It owns a minimal
 vector style rather than inheriting a generic street-map skin, extrudes building
 height from the OpenFreeMap planet source, and maps speed to pitch, zoom and
-camera response. A reliable Geolocation point is held only in session memory.
+camera response. Its upper-speed camera curve is compressed rather than allowed
+to approach a flat plan: at `130 km/h`, zoom remains `14.65` and pitch `55.5°`.
+Every trusted fix recenters the map. Device heading owns the bearing when
+available; otherwise a displacement of at least three metres between fixes
+derives it, while smaller jitter preserves the last reliable direction. A
+reliable Geolocation point is held only in session memory.
 The selected map necessarily requests the surrounding tile area from
 OpenFreeMap; a `0.05°`-quantized cell is sent to the Italian Wikipedia Geosearch
 API only when the cell changes. Up to four nearby pages and one selected QR are

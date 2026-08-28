@@ -76,7 +76,13 @@ palette-driven 3D OpenFreeMap field, a concise nearby Wikipedia introduction,
 four local reading choices and a QR for the selected page. The map runtime is
 loaded only when ATLAS is selected. Position is ephemeral, never enters the
 diagnostic report or persistence, and third-party map/nearby requests are
-disclosed in the interface and privacy documentation.
+disclosed in the interface and privacy documentation. The field centers on each
+trusted fix and follows its reported heading; when heading is absent, movement
+between successive fixes supplies the bearing while near-standstill jitter keeps
+the last reliable direction. Camera pull-back is bounded so the `130 km/h` view
+retains an oblique pitch and materially extruded buildings. At `773 × 601`, the
+passenger panel reserves `246 px`, uses `12 px` reading text and presents an
+`86 px` QR generated from a `192 px` source.
 
 `VERTIGO 02` is the approved second visual environment and must render the original Interstate 7 scene, not an independent visual translation. The vendored files from upstream commit `e58d58520bc0dfde21f9e14e6a1b8c7f0a2a2a9e` remain byte-identical and retain the complete road, repeated side light sticks, opposing car-light trails, bloom, camera, deep distortion, fog, geometry, and bundled Three.js/post-processing pipeline. The sedicivalvole integration keeps the iframe black until the upstream editorial shell is hidden, so only the canvas appears. An external bridge maps `0–130 km/h` to the original `speedUpTarget` and FOV controls and maps the selected theme onto the runtime's existing colour attributes and uniforms without editing the vendor tree.
 
