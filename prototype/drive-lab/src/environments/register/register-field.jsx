@@ -75,6 +75,7 @@ export function RegisterField({ event, tempo, theme, reducedMotion, brakeAmount 
       ref={fieldRef}
       aria-hidden="true"
       data-family={family}
+      data-revision={event.revision}
       data-registration={offset < 0.05 ? "aligned" : "offset"}
       style={{
         "--register-base": toCss(palette.base),
@@ -85,14 +86,14 @@ export function RegisterField({ event, tempo, theme, reducedMotion, brakeAmount 
         "--register-beat-duration": `${60 / Math.max(1, Number(tempo) || 120)}s`,
       }}
     >
-      <div className="register-page" key={event.revision}>
+      <div className="register-page">
         <div className="register-grid" aria-hidden="true">
           {GRID_RULES.map((rule) => <i key={rule} style={{ "--register-rule": rule }} />)}
         </div>
         {layout.map(([classes, x, y, width, height], index) => (
           <i
             className={`register-element ${classes}`}
-            key={`${event.revision}-${index}`}
+            key={index}
             style={{
               "--register-x": `${x}%`,
               "--register-y": `${y}%`,

@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { readFile } from "node:fs/promises";
 import {
   accelerationToMisregistration,
   physicalMisregistrationCssPx,
@@ -33,4 +34,13 @@ test("hard acceleration misregisters the plates while braking aligns them", () =
   assert.equal(accelerationToMisregistration(3), 2);
   assert.equal(accelerationToMisregistration(6), 3);
   assert.equal(accelerationToMisregistration(6, "release"), 0);
+});
+
+test("Register updates one persistent page instead of flashing through a remount", async () => {
+  const source = await readFile(
+    new URL("../src/environments/register/register-field.jsx", import.meta.url),
+    "utf8",
+  );
+  assert.match(source, /<div className="register-page">/);
+  assert.doesNotMatch(source, /className="register-page" key=/);
 });
