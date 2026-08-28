@@ -8,6 +8,34 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## REGISTER boundary-continuity publication — 2026-08-29
+
+- build stamp: **`20260829-0107`**; deployed commit: `f6b6423`;
+  continuity checkpoint: `d018907`;
+- correction: **PASS**. REGISTER now preserves one page node across musical
+  revisions instead of remounting the field. The local eight-bar test observed
+  revision `1 → 2` with all eight composed elements present in the first
+  captured frame; the new regression check makes a keyed page remount fail;
+- gate before upload: **PASS**, 12 focused REGISTER/OPEN/documentation tests,
+  all 4 Sites packaging tests, the production build and exact local
+  `773 × 601` boundary capture passed. The active suite now contains 178 unit
+  checks; its unchanged PHP mail fixture remains unavailable on this host;
+- publication: **PASS**, 28 files / 8,314,215 bytes uploaded to the canonical
+  root. Dynamic-root and exact legacy-cleanup gates passed, one previous
+  content-addressed asset was retained for cache overlap, and the repeated
+  post-publication identity gate passed with `remote_writes=NONE`;
+- canonical identity: **PASS**. Cache-busted HTML returns `200` with explicit
+  `no-store` / `no-cache` behavior and a cache `MISS`. HTML,
+  `index-_PAkGTEF.js` and `index-V_3SjLSC.css` are byte-identical to the verified
+  local build at SHA-256
+  `9a879d169f6e0a79505eb35b1575ce223556e5683432c81f98407578ce90ebb0`,
+  `32e336d2e3d18294367231521b978708c3c945ee5ee1d95200740b2186d4d7bf`
+  and `569c3b3caec8e40b5ff5398c9ce81c0762db2a085e49080ebddd1a3b2670ce31`;
+- live product QA: **PASS at exact `773 × 601`**. The canonical page crossed
+  revision `1 → 2` with all eight elements present, retained REGISTER 05 and
+  then reported the real OPEN state under held acceleration. The Browser console
+  reports zero warnings and the same unrelated missing `/favicon.ico` request.
+
 ## REGISTER and OPEN publication — 2026-08-29
 
 - build stamp: **`20260829-0059`**; deployed commit: `09a6c10`;
