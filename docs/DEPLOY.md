@@ -8,6 +8,32 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Signal Gate readability publication — 2026-08-28
+
+- build stamp: **`20260828-2219`**; deployed commit: `e042344`;
+  implementation checkpoint: `e5f6164`;
+- gate before upload: **PASS**, all 10 focused splash tests, 158 of 159 active
+  unit tests, all 4 packaging tests, a production build from the deployed
+  commit, local Browser comparison at exact `773 × 601` and the repeated
+  read-only remote identity gate with `remote_writes=NONE`. The one unavailable
+  test requires a local PHP executable that is not installed on this host and
+  is unrelated to the static splash;
+- support-link QA: **PASS**. A valid synthetic `buymeacoffee.com` build setting
+  renders the prepared `184 × 30 px` support link; the normal build without a
+  real profile renders no inert control. Invalid protocols and other hosts are
+  rejected by the client build;
+- publication: **PASS**, 27 files / 8,202,133 bytes uploaded to the canonical
+  root. Dynamic-root, exact legacy cleanup, retained cache overlap and remote
+  listing checks passed; the post-publication identity gate passed with
+  `remote_writes=NONE`;
+- live product QA: **PASS at exact `773 × 601`**. The cache-busted canonical URL
+  identifies build `20260828-2219`; the loaded Orbitron face measures the credit
+  at `12.5 px` / weight `620`, source at `11.5 px` and privacy copy at `10.5 px`.
+  The launch surface begins at `338.43 px`, approximately 27 px higher than the
+  prior live layout. The document has zero horizontal or vertical overflow,
+  the Browser console has zero warnings/errors, and `PLAY THE ROAD` transitions
+  into the active experience successfully.
+
 ## Signal Gate credits publication — 2026-08-28
 
 - build stamp: **`20260828-2208`**; deployed commit: `946c035`;
