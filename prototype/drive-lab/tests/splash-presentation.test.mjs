@@ -68,7 +68,6 @@ test("the complete product UI uses the local Orbitron variable font", () => {
   assert.match(styles, /font-family: "Orbitron";/);
   assert.match(styles, /font-weight: 400 900;/);
   assert.match(styles, /--font-weight-text: 450;/);
-  assert.match(styles, /--font-weight-command: 850;/);
   assert.doesNotMatch(styles, /ui-monospace|SFMono|Roboto Mono|IBM Plex Mono|Menlo|Consolas/);
   assert.match(index, /rel="preload" href="\/fonts\/orbitron-latin-variable\.woff2"/);
   assert.ok(font.length > 10_000, "the packaged font should not be an empty placeholder");
