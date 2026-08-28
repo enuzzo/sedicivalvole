@@ -8,6 +8,45 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Meridian and music correction publication — 2026-08-28
+
+- build stamp: **`20260828-1950`**; deployed commit: `e314704`;
+  implementation checkpoints: `b33663b` and `91fd4b8`;
+- gate before upload: **PASS**, 156 active unit tests, 4 packaging tests, a
+  production build from the deployed commit, exact local `773 × 601` Browser
+  comparisons at `0`, `40`, `90` and `130 km/h`, and the read-only remote
+  identity verification with `remote_writes=NONE`;
+- rendered and runtime QA: **PASS locally**. Meridian's sustained WebGL2 pass
+  measured 60.15 FPS / 18.1 ms p95 with zero runtime issues. The production
+  JUNCTION engine entered `FULL` / `168 BPM` at the exact `130 km/h` QA state,
+  exposed one tonal performance and three controlled layers, and logged no
+  Browser warning or error;
+- audio QA: **PASS for deterministic behavior and objective measurement**.
+  FRACTURE's normal arrangement cannot activate its retired riff/response lanes.
+  JUNCTION uses the 5,812,755-byte `SVJCTN04` bank with one harmonic identity,
+  one tonal performance at a time, complete boundaries, immediate-repeat
+  avoidance, native `127–168 BPM` pacing, four-second rhythm envelopes and a
+  six-clip decoded limit. Offline renders measured FRACTURE at -16.0 LUFS / -0.8
+  dBFS true peak and JUNCTION at -19.5 LUFS / -2.7 dBFS true peak;
+- publication: **PASS**, 27 files / 8,200,466 bytes uploaded to the canonical
+  root. Dynamic-root, exact legacy cleanup, retained cache overlap and remote
+  listing checks passed; the repeated post-publication identity gate passed
+  with `remote_writes=NONE`;
+- canonical identity: **PASS**. Bare and cache-busted HTML return `200` with
+  `no-store` / `no-cache` behavior and are byte-identical to local at SHA-256
+  `c4651bce339c2dea1bd1e959f241aff9ea392d6d6c9f473bc8354a4905e962c3`.
+  The live document selects `index-rBa6H7HW.js` and `index-ArFavGwq.css`; their
+  byte-identical SHA-256 values are
+  `db641731ac0e8bc24b9513fd2e4c5b585f90a3f40f3d0a967d2a4b7c7f2d432b` and
+  `6a25a3ebec2eb9fad0d603f63dd79012409fd85488835e3f174b3e9cfe825f0d`.
+  The live JUNCTION bank is byte-identical at SHA-256
+  `5a4730932b234092f8571b93b82d4c1a974e771c9cf376ce28904cf6fc9e814f`;
+- live product QA: **PASS at exact `773 × 601`**. The canonical launch identifies
+  build `20260828-1950`, opens into Flux, selects `MERIDIAN 03`, retains
+  `JUNCTION` and the palette system, renders the stable rest corridor and emits
+  zero Browser warnings or errors. Real-Tesla visual and listening acceptance
+  remains the final product boundary.
+
 ## LATITUDES retirement publication — 2026-08-28
 
 - build stamp: **`20260828-1745`**; deployed commit: `aa6fdb3`;
