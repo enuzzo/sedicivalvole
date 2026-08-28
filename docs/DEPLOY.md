@@ -8,6 +8,27 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Dense Device evidence publication — 2026-08-28
+
+- build stamp: **`20260828-1255`**; deployed commit: `33529bb`;
+  implementation: `11d8def`;
+- gate before upload: **PASS**, 154 unit tests, 4 packaging tests, production
+  build, exact `773 × 601` rendered verification, read-only remote identity
+  verification and no preflight writes;
+- local Tesla-viewport layout: **PASS**. Eight Device cards render as four
+  exact 139.25 px columns and two rows; the section occupies 153.3 px instead
+  of approximately 287 px while every value remains present;
+- publication: **PASS**, 25 files / 27,415,542 bytes uploaded to the canonical
+  root; dynamic root, retained cache overlap, exact legacy cleanup and remote
+  listing passed;
+- canonical cache-busted HTML, main JavaScript `assets/index-BvfgC6D3.js` and
+  CSS `assets/index-Derl6uhs.css` are byte-identical to local at SHA-256
+  `0550e28b4230a87ef035a309eea4a6b39b67e13011cb3f5ee9e5b8765fb2fcb1`,
+  `0a597571c8d348159a9c19257dd07491e3d7bd5020d472bc94832beb717a2a62`
+  and `b4c59207776664227ce4a4f2bdf766ab277066a8b7955a0bc0e9b086d33066b9`;
+- live Browser QA at `773 × 601`: **PASS** for DIAG opening, one Device grid,
+  all eight Device cards and zero console warnings/errors.
+
 ## Compact diagnostic feedback publication evidence — 2026-08-28
 
 - build stamp: **`20260828-1249`**; deployed commit: `b2357a6`;
