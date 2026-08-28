@@ -156,6 +156,9 @@ export function speedToFieldStructure(speedKmh) {
     lateralWeight: 0.06 + 0.82 * normalized ** 0.7,
     fineWeight: clamp((normalized - 0.12) / 0.7, 0, 1) ** 1.2,
     toneSpread: 0.82 + 0.18 * normalized,
+    relief: 0.34 + 0.66 * normalized ** 0.76,
+    contourGlow: 0.38 + 0.62 * normalized ** 1.08,
+    particleWeight: clamp((normalized - 0.18) / 0.7, 0, 1) ** 1.25,
   };
 }
 

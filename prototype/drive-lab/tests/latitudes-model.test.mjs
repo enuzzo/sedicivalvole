@@ -180,6 +180,17 @@ test("opens the field structure continuously from rest to the road ceiling", () 
   assert.ok(Math.abs(speedToFieldStructure(ROAD_SPEED_CEILING_KMH).fineWeight - 1) < 1e-12);
 });
 
+test("grows temporal relief, contour light and particles without replacing the field", () => {
+  const rest = speedToFieldStructure(0);
+  const urban = speedToFieldStructure(55);
+  const ceiling = speedToFieldStructure(ROAD_SPEED_CEILING_KMH);
+  assert.ok(rest.relief > 0, "the resting topology remains sculptural");
+  assert.ok(rest.relief < urban.relief && urban.relief < ceiling.relief);
+  assert.ok(rest.contourGlow < urban.contourGlow && urban.contourGlow < ceiling.contourGlow);
+  assert.equal(rest.particleWeight, 0);
+  assert.ok(urban.particleWeight > 0 && ceiling.particleWeight > urban.particleWeight);
+});
+
 test("produces the same stack for the same drive regardless of frame rate", () => {
   const sixty = createLatitudesHistory();
   for (let step = 0; step < 60 * 6; step += 1) advanceLatitudesHistory(sixty, 90, 1 / 60);

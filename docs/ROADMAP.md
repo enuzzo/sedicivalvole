@@ -70,7 +70,7 @@ automated tests green, and no masking of vehicle alerts.
 
 ## Phase 4 — Flux generative renderer spike
 
-Status: **FOUR ENVIRONMENTS IMPLEMENTED; TESLA PERFORMANCE PENDING**.
+Status: **FIVE ENVIRONMENTS IMPLEMENTED; TESLA PERFORMANCE PENDING**.
 
 Implemented:
 
@@ -83,8 +83,9 @@ Implemented:
 - one seam-free geometric field that continuously morphs from large, complete four-color squares through an unmistakable urban-speed tunnel into a full Plaid field at the fixed `130 km/h` Demo ceiling;
 - selectable `VERTIGO 02` using the byte-identical upstream Interstate 7 scene with its road, repeated side lights, opposing car trails, bloom, fog, camera, deep distortion, and original dependencies;
 - an external `0–130 km/h` bridge that slows the original clock from stopped to its non-boosted `1×` rate and maps FOV from `90°` to `150°`, without editing the vendor runtime.
-- original `MERIDIAN 03`, whose widening corridor, displacement field, camera aim, and travel clocks share one monotonic speed model;
-- original `LATITUDES 04`, whose stacked field preserves and releases recent motion history over time;
+- original `MERIDIAN 03`, now a speed-revealed architectural canyon whose widening corridor, displacement field, camera aim, building mass and travel clocks share one monotonic speed model;
+- original `LATITUDES 04`, whose sculptural temporal relief preserves and releases recent motion history over time;
+- lazy-loaded `ATLAS 05`, with a minimal palette-owned OpenFreeMap vector style, 3D buildings, nearby Italian Wikipedia context, four passenger links and a local QR;
 
 Queued next:
 

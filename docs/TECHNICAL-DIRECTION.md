@@ -205,7 +205,7 @@ Profile before adding WASM. It is justified only if measured DSP cost, not fashi
 
 ## Flux visual architecture
 
-The Flux renderer exposes four selectable environments, not static backgrounds.
+The Flux renderer exposes five selectable environments, not static backgrounds.
 **Modular Aperture** was selected from exactly three revised minimal alternatives:
 
 - central-axis depth and flow;
@@ -216,7 +216,7 @@ The Flux renderer exposes four selectable environments, not static backgrounds.
 - aspect-correct square insets at rest, an eased low-speed warp, a bounded central perspective singularity, and a continuous blend between adjoining tunnel walls so intermediate geometry cannot tear into diagonal fragments;
 - a central aperture whose radius opens geometrically with tunnel formation instead of appearing through opacity;
 - speed-driven radial panel elongation and reduced depth frequency in the 150 km/h velocity band;
-- ten curated body themes for all four renderers; Vertigo's external bridge updates only existing runtime colour channels;
+- ten curated palettes for all five renderers; Vertigo's external bridge updates only existing runtime colour channels;
 - energy-driven pressure, luminance, distortion, and rectangular panel density;
 - aggregate pulses rather than one flash per audio event;
 - renderer quality levels controlling resolution scale, shader complexity, passes, and frame rate;
@@ -226,13 +226,28 @@ The Flux renderer exposes four selectable environments, not static backgrounds.
 
 **Vertigo** was selected as the second environment and now runs the complete upstream Interstate 7 scene from commit `e58d58520bc0dfde21f9e14e6a1b8c7f0a2a2a9e`. The vendored runtime retains the original road, instanced side light sticks, opposing instanced car-light tubes, fog, bloom/SMAA post-processing, deep-distortion shader injection, camera look-at distortion, and geometry. SHA-256 tests guard the vendor files against accidental edits. The external integration hides the editorial shell before revealing the iframe and maps themes onto existing colour buffers/uniforms. The earlier independent shader and Canvas2D interpretation were rejected and removed from the active source.
 
-**Meridian** is an original ruled corridor. One depth-parameterized displacement
-field controls geometry and camera aim; separate monotonic clocks move the grid,
-posts, and travelling markers without coupling motion to frame rate.
+**Meridian** is an original architectural corridor. One depth-parameterized
+displacement field controls geometry and camera aim; separate monotonic clocks
+move the restrained floor, geometric towers, glass volumes, cantilevers, posts,
+and travelling markers without coupling motion to frame rate. Deterministic
+visibility keys reveal a cross-section of every depth band at rest, then add
+mass, atmosphere, edge light and facade detail progressively with speed.
 
-**Latitudes** is an original temporal field. Its stacked strata sample recent
-distance/speed history so acceleration bends the rake and deceleration releases
-the faster past upward rather than reversing or crossfading the renderer.
+**Latitudes** is an original temporal topography. Its broad sculptural ribbons
+sample the same recent distance/speed history, so acceleration bends and raises
+the relief while deceleration releases the faster past upward. Contour light and
+sparse particles grow continuously with speed; the renderer never swaps to a
+separate scene or returns to quantized zebra bands.
+
+**Atlas** is a lazy-loaded OpenFreeMap/MapLibre city field. It owns a minimal
+vector style rather than inheriting a generic street-map skin, extrudes building
+height from the OpenFreeMap planet source, and maps speed to pitch, zoom and
+camera response. A reliable Geolocation point is held only in session memory.
+The selected map necessarily requests the surrounding tile area from
+OpenFreeMap; a `0.05°`-quantized cell is sent to the Italian Wikipedia Geosearch
+API only when the cell changes. Up to four nearby pages and one selected QR are
+rendered for the passenger. No coordinate enters local storage, diagnostics or
+the explicit diagnostic email.
 
 The fixed road-speed mapping separates early recognition from maximum deformation. Aperture begins opening into recognizable tunnel space by approximately `40 km/h`; velocity, perspective, elongation, and travel then continue increasing until the shared `130 km/h` ceiling. Vertigo uses a narrow external bridge rather than new scene mathematics. It enters the untouched distortion at a composed `2.1 s` phase where the road already fills the Tesla viewport, and seeds the current motion/FOV controls before the iframe is revealed. Road speed follows a quadratic response through the original `speedUpTarget` path: zero cancels the base clock, `40 km/h` uses approximately `0.095×`, `60 km/h` approximately `0.213×`, and `130 km/h` restores the original non-boosted `1×` rate. The original FOV range still moves from `90°` to `150°` through that same curve. The upstream click boost is not dispatched.
 

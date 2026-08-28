@@ -39,11 +39,15 @@ const FRAGMENT_SHADER = `#version 300 es
   uniform float u_lateralWeight;
   uniform float u_fineWeight;
   uniform float u_toneSpread;
+  uniform float u_relief;
+  uniform float u_contourGlow;
+  uniform float u_particleWeight;
   uniform float u_restPhase;
   uniform vec3 u_tone0;
   uniform vec3 u_tone1;
   uniform vec3 u_tone2;
   uniform vec3 u_tone3;
+  uniform vec3 u_tone4;
 
   in vec2 v_uv;
   out vec4 outColor;
@@ -61,57 +65,60 @@ const FRAGMENT_SHADER = `#version 300 es
     return mix(a, b, blend);
   }
 
-  vec3 toneAt(float index) {
-    vec3 tone = u_tone0;
-    tone = mix(tone, u_tone1, step(0.5, index));
-    tone = mix(tone, u_tone2, step(1.5, index));
-    tone = mix(tone, u_tone3, step(2.5, index));
-    return tone;
+  float hash21(vec2 value) {
+    vec3 p3 = fract(vec3(value.xyx) * 0.1031);
+    p3 += dot(p3, p3.yzx + 33.33);
+    return fract((p3.x + p3.y) * p3.z);
   }
 
   void main() {
-    float age = v_uv.y;
+    vec2 p = v_uv * 2.0 - 1.0;
+    p.x *= u_aspect;
+    float horizon = 0.34;
+    float horizonGlow = exp(-pow(abs(p.y - horizon) * 3.2, 1.35));
+    vec3 color = mix(u_tone0, u_tone1 * 0.34, 0.18 + horizonGlow * 0.20);
+    color += mix(u_tone4, u_tone2, 0.72) * horizonGlow * 0.065;
 
-    // The only place travel enters the image. Older strata carry more lag, so
-    // the lateral field is displaced further the higher up the frame it sits.
-    float lag = lagAt(age);
-    float u = v_uv.x * u_aspect + lag * u_shearPerMetre + u_restPhase;
-    float v = v_uv.y * u_bandFrequency;
+    // Fourteen broad temporal ribbons replace the old one-pixel strata. Every
+    // ribbon still samples the same eight-second movement history, so a steady
+    // speed rakes the surfaces evenly and acceleration bends them as before.
+    for (int layer = 0; layer < 14; layer += 1) {
+      float age = float(layer) / 13.0;
+      float lag = lagAt(age);
+      float depth = pow(age, 0.82);
+      float phase = lag * u_shearPerMetre * TAU * 1.75 + u_restPhase * TAU;
+      float lateral = p.x + phase;
+      float broad = sin(lateral * (1.15 + age * 0.72) + float(layer) * 1.41);
+      float detail = sin(lateral * 2.73 - float(layer) * 0.83) * u_fineWeight;
+      float curve = (broad * 0.72 + detail * 0.28)
+        * (0.055 + (1.0 - depth) * 0.115) * u_relief * u_lateralWeight;
+      float baseY = -0.88 + depth * 1.24;
+      float ribbonWidth = mix(0.155, 0.018, depth) * (0.82 + u_toneSpread * 0.18);
+      float distanceToRibbon = abs(p.y - (baseY + curve));
+      float body = 1.0 - smoothstep(ribbonWidth * 0.22, ribbonWidth, distanceToRibbon);
+      float core = 1.0 - smoothstep(0.0, max(fwidth(distanceToRibbon) * 2.1, 0.0035), distanceToRibbon);
+      float shadow = 1.0 - smoothstep(ribbonWidth, ribbonWidth * 2.2, distanceToRibbon);
 
-    // Irrational-ish frequency ratios keep the strata unevenly spaced, so the
-    // stack reads as an editorial register rather than as even wallpaper.
-    float band = sin(v * TAU)
-      + 0.55 * sin(v * TAU * 0.37 + 1.7)
-      + 0.30 * sin(v * TAU * 2.19 + 4.1)
-      + u_fineWeight * 0.45 * sin(v * TAU * 3.7 + 2.3);
-    band /= 2.3;
+      vec3 layerTone = layer % 4 == 0 ? u_tone3
+        : (layer % 3 == 0 ? u_tone4 : (layer % 2 == 0 ? u_tone2 : u_tone1));
+      float light = 0.18 + (1.0 - depth) * 0.34 + broad * 0.10;
+      vec3 surface = mix(u_tone1 * 0.36, layerTone, 0.38 + light);
+      color *= 1.0 - shadow * body * 0.20;
+      color = mix(color, surface, body * (0.38 + (1.0 - depth) * 0.36));
+      color += mix(u_tone2, u_tone3, float(layer % 5 == 0))
+        * core * u_contourGlow * (0.38 + (1.0 - depth) * 0.55);
+    }
 
-    // Shear only reads as speed if the lateral field has distinct features. A
-    // smooth sinusoid displaced by lag just relocates itself and lumps against
-    // the strata; narrow marks at incommensurate spacings each trace a single
-    // continuous streak whose slope is the speed and whose curve is the
-    // acceleration, because every row draws the same marks at its own lag.
-    float marks =
-        smoothstep(0.93, 1.0, sin(u * TAU * 2.60))
-      + smoothstep(0.95, 1.0, sin(u * TAU * 4.19 + 2.1))
-      + u_fineWeight * smoothstep(0.96, 1.0, sin(u * TAU * 7.09 + 0.7));
+    vec2 particleCell = floor((v_uv * vec2(u_aspect, 1.0)) * vec2(210.0, 130.0));
+    float particleSeed = hash21(particleCell);
+    float particle = step(0.9925, particleSeed)
+      * smoothstep(0.46, 0.0, length(fract(v_uv * vec2(210.0, 130.0)) - 0.5));
+    color += mix(u_tone3, u_tone2, step(0.997, particleSeed))
+      * particle * u_particleWeight * (0.32 + horizonGlow * 0.7);
 
-    float value = band * 0.72 + marks * u_lateralWeight * 0.58;
-
-    float quantised = clamp(value * 0.5 * u_toneSpread + 0.5, 0.0, 1.0) * 4.0 - 0.5;
-    float lower = floor(quantised);
-    float fraction = quantised - lower;
-    // Just enough analytic width to stop the tone edges aliasing, without
-    // softening the hard-edged register into a gradient.
-    float antialias = clamp(fwidth(quantised) * 0.7, 0.0015, 0.5);
-    float blend = smoothstep(0.5 - antialias, 0.5 + antialias, fraction);
-
-    vec3 color = mix(
-      toneAt(clamp(lower, 0.0, 3.0)),
-      toneAt(clamp(lower + 1.0, 0.0, 3.0)),
-      blend
-    );
-    outColor = vec4(color, 1.0);
+    float vignette = 1.0 - smoothstep(0.42, 1.25, length(p * vec2(0.52, 0.72)));
+    color *= 0.68 + vignette * 0.38;
+    outColor = vec4(max(color, vec3(0.0)), 1.0);
   }
 `;
 
@@ -171,7 +178,8 @@ export function createLatitudesRenderer(canvas, initialPalette) {
   for (const name of [
     "u_lag", "u_samples", "u_aspect", "u_shearPerMetre", "u_bandFrequency",
     "u_lateralWeight", "u_fineWeight", "u_toneSpread", "u_restPhase",
-    "u_tone0", "u_tone1", "u_tone2", "u_tone3",
+    "u_relief", "u_contourGlow", "u_particleWeight",
+    "u_tone0", "u_tone1", "u_tone2", "u_tone3", "u_tone4",
   ]) uniforms[name] = gl.getUniformLocation(program, name);
 
   const vao = gl.createVertexArray();
@@ -250,12 +258,16 @@ export function createLatitudesRenderer(canvas, initialPalette) {
       gl.uniform1f(uniforms.u_lateralWeight, structure.lateralWeight);
       gl.uniform1f(uniforms.u_fineWeight, structure.fineWeight);
       gl.uniform1f(uniforms.u_toneSpread, structure.toneSpread);
+      gl.uniform1f(uniforms.u_relief, structure.relief);
+      gl.uniform1f(uniforms.u_contourGlow, structure.contourGlow);
+      gl.uniform1f(uniforms.u_particleWeight, structure.particleWeight);
       gl.uniform1f(uniforms.u_restPhase, restPhase);
 
       gl.uniform3fv(uniforms.u_tone0, palette.base);
       gl.uniform3fv(uniforms.u_tone1, palette.mid);
       gl.uniform3fv(uniforms.u_tone2, palette.light);
       gl.uniform3fv(uniforms.u_tone3, palette.accent);
+      gl.uniform3fv(uniforms.u_tone4, palette.secondary);
 
       gl.drawArrays(gl.TRIANGLES, 0, 3);
       gl.bindVertexArray(null);

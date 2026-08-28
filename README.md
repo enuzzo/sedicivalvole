@@ -9,7 +9,7 @@
 > layers. The exact derived files, modifications, license, and direct reuse
 > authorization are recorded in `THIRD_PARTY_NOTICES.md`.
 
-> Current state: **Flux Drive Lab runs the authored FRACTURE and JUNCTION music with four
+> Current state: **Flux Drive Lab runs the authored FRACTURE and JUNCTION music with five
 > selectable visual environments and is under vehicle validation**. This is a
 > development build, not a release.
 
@@ -26,9 +26,9 @@ The canonical development build is available at [sedicivalvole.app](https://sedi
 - ✅ a single ignored local reference library under `_references/`;
 - ✅ source audit, product requirements, adversarial review, technical direction, and roadmap;
 - ✅ Modular Aperture selected after exactly three revised Product Design directions;
-- ✅ four selectable Flux visuals: procedural Aperture, byte-identical upstream Interstate 7 Vertigo, and the original Meridian and Latitudes environments;
+- ✅ five selectable Flux visuals: procedural Aperture, byte-identical upstream Interstate 7 Vertigo, the original architectural Meridian and temporal-topography Latitudes environments, and the lazy-loaded OpenFreeMap ATLAS city field;
 - ✅ GPS/Demo speed source, icon-only Mute, a fixed `130 km/h` energy ceiling, 10 curated palettes, and an integrated capability report;
-- ✅ local-only speed processing: raw coordinates are never displayed, persisted, or transmitted;
+- ✅ local-only speed processing and coordinate-free diagnostics; ATLAS alone keeps a reliable current position in session memory while selected and discloses its OpenFreeMap tile and Wikimedia nearby-reading requests;
 - ✅ FRACTURE, a production AudioWorklet score with ten four-bar sections, a narrow tempo knee, quantized transitions, hysteresis, dwell, crossfades, speed-driven arrangement depth, and tested harmony/braking/voice output;
 - ✅ JUNCTION, a sampled production that mixes two harmony-compatible takes live at each eight-bar boundary: 104 clips built from 142 distinct recordings across five rotating musical families, native 127–168 BPM pacing, beatless ambient rest, one 25.0 MB segmented Opus bank, and no loose source samples;
 - ✅ production build and deterministic signal, diagnostic-model, and packaging tests passing;
@@ -50,7 +50,7 @@ The speed source is an explicit abstraction. GPS and the desktop simulator produ
 Confirmed product modes:
 
 - **Engine** — selectable engine-sound emulation with a dedicated instrument-inspired visual language. Audio modeling, catalog, and final visual direction are not implemented yet.
-- **Flux** — adaptive music driven by speed and motion, paired with four selectable visual environments. Aperture morphs a flat square field into a centered tunnel. Vertigo embeds the original Codrops/Tympanus Interstate 7 runtime unchanged behind an external speed/FOV and palette bridge. Meridian is an original ruled light corridor; Latitudes is an original temporal field that carries recent motion upward through stacked strata. This is the mode currently implemented as Drive Lab.
+- **Flux** — adaptive music driven by speed and motion, paired with five selectable visual environments. Aperture morphs a flat square field into a centered tunnel. Vertigo embeds the original Codrops/Tympanus Interstate 7 runtime unchanged behind an external speed/FOV and palette bridge. Meridian is a palette-lit architectural canyon; Latitudes carries recent motion through sculptural temporal strata. ATLAS flies above an OpenFreeMap city, adds nearby Italian Wikipedia context, and gives the passenger four selectable reading links with a local QR. This is the mode currently implemented as Drive Lab.
 
 Shared foundations include the GPS/Demo speed source, integrated diagnostics, master Stop/Mute, reduced motion, renderer fallback, and touch-first safety behavior. The mode switch will remain clearly identifiable and reachable from both experiences.
 
@@ -87,7 +87,7 @@ See [`docs/TECHNICAL-DIRECTION.md`](docs/TECHNICAL-DIRECTION.md).
 ## Safety and privacy
 
 - Use and configure the experience only while parked; do not adjust the touchscreen while driving.
-- Raw coordinates are discarded immediately and never transmitted.
+- Speed and diagnostic processing never persist or transmit coordinates. ATLAS keeps the latest reliable point only in session memory; while ATLAS is selected, OpenFreeMap receives the tile area needed to draw the city and Wikimedia receives a coarse `0.05°` nearby-search cell. Neither the diagnostic report nor local storage contains the position.
 - No analytics or automatic remote telemetry is enabled. Extensive local diagnostics are aggregated with bounded overhead and transmitted only after the user explicitly taps **SEND DIAGNOSTIC**.
 - FTP deployment is functional but unencrypted; credentials and content travel in clear text.
 - An upload is not considered successful until the canonical URL, HTML, assets, and cache behavior are verified.
@@ -107,7 +107,7 @@ No screenshot is published here yet. The repository will include only real, curr
 ## Roadmap
 
 The next gate is a real Tesla session at the verified split viewport: compare all
-four visuals across acceleration and deceleration, verify Aperture's 60 FPS
+five visuals across acceleration and deceleration, verify Aperture's 60 FPS
 desktop gain on the vehicle, listen critically to FRACTURE and JUNCTION, test
 the Music/Visual/theme controls, and check touch reach while parked.
 

@@ -9,13 +9,15 @@ import {
 test("exposes the authored environments in a stable order", () => {
   assert.deepEqual(
     FLUX_ENVIRONMENTS.map(({ id }) => id),
-    ["aperture", "vertigo", "meridian", "latitudes"],
+    ["aperture", "vertigo", "meridian", "latitudes", "atlas"],
   );
   assert.equal(getFluxEnvironment("vertigo").label, "VERTIGO");
   assert.equal(getFluxEnvironment("meridian").label, "MERIDIAN");
   assert.equal(getFluxEnvironment("meridian").number, "03");
   assert.equal(getFluxEnvironment("latitudes").label, "LATITUDES");
   assert.equal(getFluxEnvironment("latitudes").number, "04");
+  assert.equal(getFluxEnvironment("atlas").label, "ATLAS");
+  assert.equal(getFluxEnvironment("atlas").number, "05");
 });
 
 test("keeps Aperture as the default and the unknown-identifier fallback", () => {
@@ -45,6 +47,7 @@ test("connects every implemented environment to body-colour theming", () => {
   assert.equal(getFluxEnvironment("aperture").themed, true);
   assert.equal(getFluxEnvironment("meridian").themed, true);
   assert.equal(getFluxEnvironment("latitudes").themed, true);
+  assert.equal(getFluxEnvironment("atlas").themed, true);
 });
 
 test("cycles every environment deterministically and returns to the start", () => {

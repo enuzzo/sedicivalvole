@@ -125,7 +125,10 @@ export function speedToLayerDensity(speedKmh) {
   return {
     gateFraction: 0.34 + 0.66 * normalized ** 0.62,
     streakFraction: clamp((normalized - 0.06) / 0.52, 0, 1) ** 0.85,
+    architectureFraction: 0.28 + 0.72 * normalized ** 0.72,
+    atmosphereFraction: clamp((normalized - 0.12) / 0.66, 0, 1) ** 0.9,
     railGlow: 0.62 + 0.38 * normalized ** 1.3,
+    volumeGlow: 0.38 + 0.62 * normalized ** 1.15,
     streakStretch: 1 + 1.55 * normalized ** 1.45,
   };
 }

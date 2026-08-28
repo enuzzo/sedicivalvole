@@ -47,6 +47,70 @@ final result: passed
 
 ---
 
+# Design QA — Kinetic Meridian, Topographic Latitudes, and ATLAS
+
+Date: 2026-08-28
+
+## Selected directions and current render evidence
+
+- Meridian source direction: `/Users/enuzzo/.codex/generated_images/01a044c0-53f2-7381-98ee-6c32f9049387/exec-2b816b1b-69e3-4a7d-b484-ab891ce135ca.png`.
+- Meridian implementation: `/tmp/sedicivalvole-meridian-kinetic-final-773x601.png`.
+- Meridian side-by-side comparison: `/tmp/sedicivalvole-meridian-comparison.png`.
+- Latitudes retained source direction: `/Users/enuzzo/.codex/generated_images/01a044c0-53f2-7381-98ee-6c32f9049387/exec-33f73680-c78b-4564-b8d0-8e9c3bc66990.png`.
+- Latitudes implementation: `/tmp/sedicivalvole-latitudes-topography-773x601.png`.
+- Latitudes side-by-side comparison: `/tmp/sedicivalvole-latitudes-comparison.png`.
+- ATLAS implementation: `/tmp/sedicivalvole-atlas-773x601.png`.
+- Browser viewport: `773 × 601`, DPR `1`, fixed QA speed `80 km/h`.
+
+The reference and implementation images were normalized to the same viewport
+and opened side by side. The references establish hierarchy, material and depth;
+they are not shipped assets or substitutes for the live renderers.
+
+## Visible comparison
+
+| Area | Finding | Resolution |
+|---|---|---|
+| Meridian depth | The first implementation revealed only distant forms at rest and retained too much of the old wire grid. | Visibility keys now reveal a deterministic cross-section at every depth. Solid and glass towers, floor plates and cantilevers share the same wrapped displacement field. |
+| Meridian material | Flat pale blocks lacked the selected direction's facade detail and atmosphere. | Added palette-driven window grids, emissive edges, translucent secondary volumes, directional lighting and one inexpensive full-screen horizon-haze pass. |
+| Meridian continuity | New architecture could not change the approved travel geometry or frame-rate-independent motion. | Buildings reuse the established travel length, time offset, distortion function and camera aim. Speed changes density, glow and mass progressively rather than replacing the scene. |
+| Latitudes form | The old quantized field read as thick horizontal zebra bands with no spatial intent. | Fourteen broad temporal ribbons now sample the same eight-second history as continuous relief. Contour light and sparse particles grow with speed without changing renderer identity. |
+| ATLAS hierarchy | The first OpenFreeMap Liberty pass carried unrelated iconography and a generic multicolour street-map skin. | Replaced it with a minimal original vector style: near-black land, palette roads/water, height-driven 3D buildings, restrained place labels, mandatory attribution and no sprite dependency. |
+| Passenger panel | Place context had to remain useful without competing with the road experience. | A fixed right panel contains one concise nearby introduction, four selectable Wikipedia pages and one locally generated QR. It follows the active palette and remains clear of the 64 px footer. |
+
+## Interaction, privacy, and runtime checks
+
+- Visual library selection for Meridian, Latitudes and ATLAS: **PASS**.
+- Palette propagation through WebGL shaders, MapLibre style, panel accent and
+  NEON/ACID thumbnails: **PASS**.
+- ATLAS demo-location map tiles, 3D buildings, Italian Wikipedia response, four
+  passenger entries, selected-page QR and required attribution: **PASS**.
+- Browser warnings, errors, WebGL context loss and unhandled rejection: **zero**.
+- The MapLibre and QR modules are separate dynamic chunks; neither is loaded on
+  the initial Aperture/Meridian/Latitudes path.
+- The diagnostic JSON remains coordinate-free. ATLAS location use is separately
+  disclosed and never enters local storage or the diagnostic send payload.
+- 149 unit tests, 4 packaging tests and the production build pass.
+
+## Simulated performance evidence
+
+At the exact `773 × 601` viewport and fixed `80 km/h` QA speed:
+
+| Environment | Frames | Average | p95 | Slow frames >34 ms | Latest JS heap |
+|---|---:|---:|---:|---:|---:|
+| Meridian | 20,076 | 59.99 FPS | 18.0 ms | 0 | 24.7 MB |
+| Latitudes | 96 | 59.99 FPS | 17.5 ms | 0 | unavailable in the short phase |
+| ATLAS | 5,441 | 60.00 FPS | 18.3 ms | 0 | 55.7 MB |
+
+ATLAS peaked at `84.9 MB` browser-exposed JS heap after map initialization. Its
+approximately `941 KB` minified MapLibre chunk is lazy and therefore does not
+affect launch or the other visual environments. These are desktop simulations,
+not vehicle acceptance; the next Tesla diagnostic must confirm ATLAS GPU/memory
+behavior and sustained thermal frame pacing.
+
+final result: passed locally; vehicle acceptance open
+
+---
+
 # Design QA — compact PALETTE footer
 
 Date: 2026-08-28

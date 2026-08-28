@@ -158,6 +158,19 @@ test("keeps every layer bounded and monotonic while detail arrives with speed", 
   }
 });
 
+test("grows architectural mass and atmosphere progressively with road speed", () => {
+  const rest = speedToLayerDensity(0);
+  const urban = speedToLayerDensity(50);
+  const ceiling = speedToLayerDensity(ROAD_SPEED_CEILING_KMH);
+  assert.ok(rest.architectureFraction > 0, "the resting scene keeps a sparse architectural frame");
+  assert.ok(rest.architectureFraction < urban.architectureFraction);
+  assert.ok(urban.architectureFraction < ceiling.architectureFraction);
+  assert.equal(rest.atmosphereFraction, 0);
+  assert.ok(urban.atmosphereFraction > 0);
+  assert.equal(ceiling.atmosphereFraction, 1);
+  assert.ok(rest.volumeGlow < urban.volumeGlow && urban.volumeGlow < ceiling.volumeGlow);
+});
+
 test("generates displacement GLSL from the same constants as the JavaScript field", () => {
   const glsl = meridianDistortionGlsl();
   assert.match(glsl, /vec2 getDistortion\(float progress\)/);

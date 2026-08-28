@@ -44,6 +44,14 @@ export const FLUX_ENVIRONMENTS = [
     renderer: "latitudes",
     themed: true,
   },
+  {
+    id: "atlas",
+    label: "ATLAS",
+    number: "05",
+    rendererLabel: "Atlas",
+    renderer: "atlas",
+    themed: true,
+  },
 ];
 
 export function getFluxEnvironment(environmentId) {

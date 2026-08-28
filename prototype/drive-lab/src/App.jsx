@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createAudioEngine } from "./audio-engine.js";
 import {
   appendConnectionHistory,
@@ -44,6 +44,8 @@ import {
   speedToEnergy,
 } from "./signal-model.js";
 
+const AtlasField = lazy(() => import("./environments/atlas/atlas-field.jsx"));
+
 /**
  * The lanes the voice preview can audition.
  *
@@ -69,6 +71,9 @@ const APP_VERSION = __APP_VERSION__;
 const APP_BUILD = __APP_BUILD__;
 const APP_COMMIT = __APP_COMMIT__;
 const PREFERENCES_KEY = "sedicivalvole.preferences.v1";
+const QA_SPEED = import.meta.env.DEV
+  ? Math.min(130, Math.max(0, Number(new URLSearchParams(window.location.search).get("qaSpeed")) || 0))
+  : 0;
 const DIAGNOSTIC_SEND_ERROR_COPY = {
   payload_size_rejected: "The browser report exceeded the transport limit. Keep this page open and retry after an update.",
   report_rejected: "The server report exceeded the mail limit. Keep this page open and retry after an update.",
@@ -505,8 +510,8 @@ function PaletteControl({ themeId, onChange }) {
 export function App() {
   const initialPreferences = useMemo(readPreferences, []);
   const [phase, setPhase] = useState("idle");
-  const [speed, setSpeed] = useState(0);
-  const [source, setSource] = useState("GPS");
+  const [speed, setSpeed] = useState(QA_SPEED);
+  const [source, setSource] = useState(QA_SPEED > 0 ? "QA" : "GPS");
   const [gpsState, setGpsState] = useState("not tested");
   const [accuracy, setAccuracy] = useState(null);
   const [renderer, setRenderer] = useState("checking…");
@@ -532,6 +537,7 @@ export function App() {
   const [environmentPickerOpen, setEnvironmentPickerOpen] = useState(false);
   const [scorePickerOpen, setScorePickerOpen] = useState(false);
   const [rawReportOpen, setRawReportOpen] = useState(false);
+  const [mapPosition, setMapPosition] = useState(null);
   const reducedMotion = useMemo(
     () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false,
     [],
@@ -556,8 +562,8 @@ export function App() {
   const keyboardReturnToGpsRef = useRef(false);
   const keyboardHintTimerRef = useRef(null);
   const keyboardLeaseTimerRef = useRef(null);
-  const sourceRef = useRef("GPS");
-  const speedRef = useRef(0);
+  const sourceRef = useRef(QA_SPEED > 0 ? "QA" : "GPS");
+  const speedRef = useRef(QA_SPEED);
   const lastGpsSampleAtRef = useRef(null);
   const lastGpsEventAtRef = useRef(null);
   const gpsSpeedLockedRef = useRef(false);
@@ -582,6 +588,7 @@ export function App() {
   const diagnosticEventsRef = useRef([]);
   const runtimeIssuesRef = useRef([]);
   const latestGpsObservationRef = useRef({ capturedAtMs: null, speedKmh: null });
+  const mapPositionUpdatedAtRef = useRef(0);
   const sessionStartedAtRef = useRef(performance.now());
   const gpsStateRef = useRef(gpsState);
   const accuracyRef = useRef(accuracy);
@@ -725,6 +732,17 @@ export function App() {
         // between normal 2–3 m readings; it should be evidence, not a musical
         // or visual structural command.
         const unreliable = Number.isFinite(accuracyM) && accuracyM > 250;
+        if (!unreliable
+          && Number.isFinite(position.coords.latitude)
+          && Number.isFinite(position.coords.longitude)
+          && capturedAtMs - mapPositionUpdatedAtRef.current >= 2500) {
+          mapPositionUpdatedAtRef.current = capturedAtMs;
+          setMapPosition({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            heading: Number.isFinite(position.coords.heading) ? position.coords.heading : null,
+          });
+        }
         if (unreliable && gpsSpeedLockedRef.current) {
           if (shouldLogSample) {
             lastGpsEventAtRef.current = capturedAtMs;
@@ -1436,14 +1454,19 @@ export function App() {
     runtimeIssues: runtimeIssuesRef.current,
     events: diagnosticEventsRef.current,
     privacy: {
+      // These three legacy fields describe the diagnostic payload itself. ATLAS
+      // location use is disclosed separately without ever serializing a point.
       coordinatesCollected: false,
       coordinatesStored: false,
       coordinatesTransmitted: false,
+      atlasLocationFeatureActive: environmentId === "atlas",
+      atlasLocationHeldInMemory: Boolean(mapPosition),
+      atlasThirdPartyRequestsActive: environmentId === "atlas" && Boolean(mapPosition),
       automaticRemoteTelemetry: false,
       transmissionRequiresExplicitGesture: true,
       recorderStorage: "bounded-session-memory-only",
     },
-  } : null, [diagnostics, drawerOpen, flightRecorderRevision]);
+  } : null, [diagnostics, drawerOpen, environmentId, flightRecorderRevision, mapPosition]);
   const currentPerformancePhase = diagnosticReport?.performance.phases?.[performancePhaseRef.current] ?? null;
   const currentUsedHeapMb = Number.isFinite(currentPerformancePhase?.memory.latestUsedJsHeapBytes)
     ? Math.round(currentPerformancePhase.memory.latestUsedJsHeapBytes / 104857.6) / 10
@@ -1532,6 +1555,17 @@ export function App() {
           onRenderer={setRenderer}
           onFrame={recordRenderedFrame}
         />
+      ) : environment.renderer === "atlas" ? (
+        <Suspense fallback={<div className="atlas-waiting"><strong>ATLAS</strong><span>Loading city field</span></div>}>
+          <AtlasField
+            speed={speed}
+            theme={theme}
+            position={mapPosition}
+            reducedMotion={reducedMotion}
+            onRenderer={setRenderer}
+            onFrame={recordRenderedFrame}
+          />
+        </Suspense>
       ) : (
         <FluxField
           energy={energy}
@@ -1732,9 +1766,10 @@ export function App() {
               </article>
             </div>
             <p className="privacy-note">
-              No coordinates are displayed, stored, or transmitted. The bounded flight
-              recorder stays in session memory and is sent only after pressing SEND
-              DIAGNOSTIC. Keep this page open until the report is sent.
+              This diagnostic contains no coordinates. ATLAS keeps the current position
+              only in session memory and, while selected, requests map tiles from
+              OpenFreeMap and nearby reading from Wikimedia. SEND DIAGNOSTIC never
+              includes the position. Keep this page open until the report is sent.
             </p>
 
             <div className="drawer-actions">

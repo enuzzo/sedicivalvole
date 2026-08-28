@@ -46,7 +46,9 @@ The main product exposes diagnostics through an always-visible top-bar `DIAG` co
 - session exposure counts for unique visuals, scores, JUNCTION sections, musical families, and take pairs;
 - full-session duration, estimated distance, moving/stationary time, source/input durations, speed/rate extrema, and GPS-accuracy aggregates even after old trace samples rotate;
 - bounded runtime errors, unhandled promise rejections, and WebGL context loss/restoration evidence;
-- explicit privacy flags proving that coordinates are not collected, stored, or transmitted.
+- explicit privacy flags proving that the diagnostic payload contains, stores,
+  and transmits no coordinates, plus separate booleans disclosing whether the
+  ephemeral ATLAS location feature and its third-party requests are active.
 
 High-frequency frame observations and the flight recorder accumulate outside React state. Phase records retain aggregate counters and at most 300 recent frame intervals per phase; memory is sampled every two seconds, never per frame. A phase that disappears and later returns starts a new continuity segment, so the intervening time is not misreported as a dropped frame or low FPS. Ordinary GPS sample events are retained at two-second cadence while null and low-confidence anomalies are kept immediately; the ten-hertz GPS aggregates remain complete. The recorder samples every two seconds and retains at most 300 compact tabular samples, or approximately ten minutes, while its small aggregate and exposure counters cover the complete open session. The trace exists only in memory and is cleared by a reload or closed page. It does not retain every frame, resource URL, route, or coordinate. Runtime issue messages and stacks are truncated and bounded. Cellular RSSI is not available to ordinary Web applications; connection quality is represented only by browser-exposed effective type, downlink, RTT, online state, and changes over time.
 

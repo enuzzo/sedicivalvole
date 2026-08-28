@@ -78,7 +78,8 @@ export const FLUX_THEMES = [
     id: "neon",
     label: "NEON 06",
     swatch: "#ff2d95",
-    swatchSecondary: "#3dff6e",
+    // The field reads as magenta/lilac; ACID 08 owns the true magenta/green pair.
+    swatchSecondary: "#7a3d88",
     palette: {
       base: [0.008, 0.008, 0.012],
       mid: [0.20, 0.10, 0.22],

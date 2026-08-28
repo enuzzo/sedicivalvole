@@ -62,6 +62,22 @@ Framed controls use a restrained 6 px corner radius rather than completely sharp
 
 Modular Aperture is calm and comparatively flat at rest. Zero speed uses a complete Swiss mosaic of large square modules, distributed evenly across four tones from the active palette, with no missing cells, black gaps, or central void. As energy rises the same modules become smaller; speed then bends and recedes that shared coordinate field into a centered funnel/tunnel instead of fading between separate scenes. The dark terminal aperture opens geometrically only as depth forms. Deceleration reverses the same continuous transformation so the tunnel flattens back into squares without a flash or a disabled-warp step. At high velocity, modules travel outward from the central vanishing point and stretch into radial stripes, compressing perceived depth into a Plaid-like velocity field. Ten curated palettes change both the visual character and interface accent without exposing low-level shader controls. See [`RECOVERED-REQUIREMENTS-2026-08-26.md`](RECOVERED-REQUIREMENTS-2026-08-26.md).
 
+`MERIDIAN 03` uses the selected Kinetic Architecture direction: solid and
+translucent geometric buildings, cantilevers and floor plates move through one
+continuous displaced corridor. New mass, facade light and atmosphere arrive
+with speed without changing the underlying geometry or road response.
+
+`LATITUDES 04` uses the retained Luminous Topography direction. Broad luminous
+strata are sculpted by the renderer's existing recent-motion history; they must
+read as continuous relief, not quantized bands or an unrelated texture blob.
+
+`ATLAS 05` is the passenger-oriented bird's-eye city environment. It presents a
+palette-driven 3D OpenFreeMap field, a concise nearby Wikipedia introduction,
+four local reading choices and a QR for the selected page. The map runtime is
+loaded only when ATLAS is selected. Position is ephemeral, never enters the
+diagnostic report or persistence, and third-party map/nearby requests are
+disclosed in the interface and privacy documentation.
+
 `VERTIGO 02` is the approved second visual environment and must render the original Interstate 7 scene, not an independent visual translation. The vendored files from upstream commit `e58d58520bc0dfde21f9e14e6a1b8c7f0a2a2a9e` remain byte-identical and retain the complete road, repeated side light sticks, opposing car-light trails, bloom, camera, deep distortion, fog, geometry, and bundled Three.js/post-processing pipeline. The sedicivalvole integration keeps the iframe black until the upstream editorial shell is hidden, so only the canvas appears. An external bridge maps `0–130 km/h` to the original `speedUpTarget` and FOV controls and maps the selected theme onto the runtime's existing colour attributes and uniforms without editing the vendor tree.
 
 The module identity must remain visually continuous across the entire speed range: size, aspect ratio, perspective, curvature, and depth may deform, but modules must not be replaced through an opacity fade. The zero-speed endpoint is genuinely two-dimensional and square; the maximum-speed endpoint is the most elongated and deeply projected version of that same field.
@@ -91,6 +107,9 @@ The Geolocation API requires a secure context and explicit permission. `coords.s
 - smoothing, deadband/hysteresis, upper bound, stale-state handling, and manual fallback;
 - explicit handling for denied permission, absent API, inaccurate fixes, slow cadence, and null speed;
 - no persistence or telemetry of raw position;
+- ATLAS may retain the latest reliable point only in session memory and use it
+  for disclosed OpenFreeMap tile and coarse Wikimedia Geosearch requests while
+  that environment is selected;
 - a bounded session-memory flight recorder may retain speed, GPS age/accuracy, input state, audiovisual state, performance, network, and lifecycle evidence, but never position; transmission remains manual and explicit;
 - understandable degraded GPS state without intrusive alarms.
 

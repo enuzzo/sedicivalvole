@@ -13,11 +13,19 @@ dated study documents.
 - `Flux` is the implemented primary mode. `Engine` remains an equal confirmed
   mode, visible but disabled until its own audio model and one of exactly three
   Engine-specific visual directions are selected.
-- The live Flux catalog contains four visual environments: **APERTURE 01**,
-  **VERTIGO 02**, **MERIDIAN 03**, and **LATITUDES 04**.
-- All four environments use the shared catalog of **10 themes**. Vertigo keeps
+- The Flux catalog contains five visual environments: **APERTURE 01**,
+  **VERTIGO 02**, **MERIDIAN 03**, **LATITUDES 04**, and **ATLAS 05**. ATLAS is
+  implemented locally and remains pending canonical publication.
+- All five environments use the shared catalog of **10 themes**. Vertigo keeps
   the upstream Interstate 7 files byte-identical while an external runtime
   bridge maps the selected theme onto its existing colour channels.
+- Meridian now grows a deterministic cross-section of solid, glass and
+  cantilevered architectural forms at every depth; Latitudes turns its existing
+  eight-second motion history into continuous luminous relief rather than
+  quantized horizontal bands.
+- ATLAS dynamically loads MapLibre only when selected, draws a minimal
+  palette-owned OpenFreeMap vector style with 3D buildings, and pairs it with a
+  short nearby Italian Wikipedia reading, four passenger choices and a local QR.
 - Speed, BPM, and energy remain visible together. The fixed road-energy ceiling
   is `130 km/h`, with Aperture visibly forming a tunnel near `40 km/h`.
 - The main experience retains an icon-only Mute control, GPS/Demo source
@@ -65,7 +73,7 @@ dated study documents.
 ## Verified boundaries
 
 - Local gate: `npm test` and `npm run build` from `prototype/drive-lab/`.
-- Current suite: 142 unit checks plus 4 Sites packaging checks.
+- Current suite: 149 unit checks plus 4 Sites packaging checks.
 - Canonical development URL: <https://sedicivalvole.app/>. The most recent
   canonical publication evidence and build stamp are always the first entry in
   [`DEPLOY.md`](DEPLOY.md).
@@ -75,12 +83,15 @@ dated study documents.
   processed production permitted by the source terms. The development QA
   harness is excluded from production builds.
 - Diagnostic telemetry contains no coordinates and is sent only after the
-  explicit `SEND DIAGNOSTIC` action.
+  explicit `SEND DIAGNOSTIC` action. ATLAS location is a separate ephemeral
+  feature: the latest reliable point stays in session memory; OpenFreeMap tile
+  requests and a coarse Wikimedia nearby-search cell occur only while selected.
 
 ## Open work
 
 1. Validate the new Aperture 18–40 km/h native-resolution band, compact footer,
-   slower JUNCTION urban tempo and five-family score rotation in the Tesla.
+   slower JUNCTION urban tempo, five-family score rotation, architectural
+   Meridian, sculptural Latitudes and ATLAS map cost in the Tesla.
 2. Send the new real-drive gzip attachment and compare the dedicated morph
    phase plus family/take exposure counters against the first complete report.
 3. Design Engine only after exactly three Engine-specific directions are shown

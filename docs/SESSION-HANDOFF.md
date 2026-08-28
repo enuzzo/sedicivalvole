@@ -35,10 +35,11 @@ The registry is `prototype/drive-lab/src/flux-environments.js`.
 |---|---|---|
 | APERTURE 01 | original WebGL2 plus Canvas2D fallback | selected Modular Aperture field; dark terminus, continuous flat-grid-to-tunnel deformation |
 | VERTIGO 02 | vendored Interstate 7 | upstream tree stays byte-identical; the external bridge drives speed/FOV and existing colour channels |
-| MERIDIAN 03 | original WebGL2 plus Canvas2D fallback | one displacement field controls geometry and camera aim |
-| LATITUDES 04 | original WebGL2 plus Canvas2D fallback | temporal strata preserve and release recent motion history |
+| MERIDIAN 03 | original WebGL2 plus Canvas2D fallback | speed-revealed architecture, floor and markers share one displacement field and camera aim |
+| LATITUDES 04 | original WebGL2 plus Canvas2D fallback | sculptural temporal relief preserves and releases recent motion history |
+| ATLAS 05 | lazy MapLibre/OpenFreeMap WebGL | ephemeral location drives 3D city tiles, nearby Wikipedia reading and passenger QR |
 
-All four visuals use ten curated themes. Vertigo is recoloured without editing
+All five visuals use ten curated palettes. Vertigo is recoloured without editing
 its vendor tree. The fixed visual/music energy ceiling is `130 km/h`; Aperture
 must already read as a tunnel near `40 km/h`.
 
@@ -89,7 +90,7 @@ asserted.
 
 ## Immediate work
 
-1. Run real Tesla listening and performance QA across FRACTURE, JUNCTION and all four
+1. Run real Tesla listening and performance QA across FRACTURE, JUNCTION and all five
    visual environments.
 2. Confirm the corrected diagnostic delivery path with a fresh real-drive report.
 3. Begin Engine discovery only through the required three-direction gate.

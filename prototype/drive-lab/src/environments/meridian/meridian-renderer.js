@@ -54,6 +54,9 @@ const MARKER_SCROLL_MAX = 63;
 const KIND_POST = 0;
 const KIND_RULE = 1;
 const KIND_MARKER = 2;
+const ARCHITECTURE_PAIR_COUNT = 30;
+const FLOOR_PANEL_COUNT = 34;
+const ARCHITECTURE_SCROLL_RATE = 26;
 
 /** Deterministic generator so every session, capture, and QA pass matches. */
 function createSeededRandom(seed) {
@@ -287,6 +290,122 @@ const MARK_FRAGMENT = `#version 300 es
   }
 `;
 
+const ARCHITECTURE_VERTEX = `${SHARED_HEADER}
+  in vec3 a_position;
+  in vec3 a_normal;
+  in vec2 a_uv;
+  in vec3 a_offset;
+  in vec3 a_scale;
+  in vec4 a_meta; // scroll speed, visibility key, material, emissive amount
+
+  uniform float u_architectureFraction;
+
+  out vec3 v_normal;
+  out vec2 v_uv;
+  out float v_progress;
+  out float v_alpha;
+  out float v_material;
+  out float v_emissive;
+
+  void main() {
+    float travelled = mod(a_offset.z + u_time * a_meta.x, u_travelLength + u_overshoot);
+    vec3 world = a_position * a_scale + vec3(a_offset.x, a_offset.y, -u_travelLength + travelled);
+    float progress = clamp(-world.z / u_travelLength, 0.0, 1.0);
+    world.xy += getDistortion(progress);
+
+    gl_Position = u_viewProjection * vec4(world, 1.0);
+    v_normal = normalize(a_normal / max(a_scale, vec3(0.001)));
+    v_uv = a_uv;
+    v_progress = progress;
+    v_alpha = smoothstep(a_meta.y, a_meta.y + 0.18, u_architectureFraction);
+    v_material = a_meta.z;
+    v_emissive = a_meta.w;
+  }
+`;
+
+const ARCHITECTURE_FRAGMENT = `#version 300 es
+  precision highp float;
+
+  uniform vec3 u_base;
+  uniform vec3 u_mid;
+  uniform vec3 u_light;
+  uniform vec3 u_accent;
+  uniform vec3 u_secondary;
+  uniform float u_fogDensity;
+  uniform float u_volumeGlow;
+
+  in vec3 v_normal;
+  in vec2 v_uv;
+  in float v_progress;
+  in float v_alpha;
+  in float v_material;
+  in float v_emissive;
+  out vec4 outColor;
+
+  void main() {
+    if (v_alpha < 0.002) discard;
+    vec3 normal = normalize(v_normal);
+    vec3 key = normalize(vec3(-0.45, 0.72, 0.48));
+    vec3 fill = normalize(vec3(0.62, 0.18, 0.76));
+    float diffuse = 0.18 + max(0.0, dot(normal, key)) * 0.70
+      + max(0.0, dot(normal, fill)) * 0.16;
+    float edgeDistance = min(min(v_uv.x, 1.0 - v_uv.x), min(v_uv.y, 1.0 - v_uv.y));
+    float edge = 1.0 - smoothstep(0.0, 0.075, edgeDistance);
+
+    vec2 facadeCell = fract(v_uv * vec2(5.0, 11.0));
+    float facadeWindow = smoothstep(0.12, 0.18, facadeCell.x)
+      * (1.0 - smoothstep(0.78, 0.86, facadeCell.x))
+      * smoothstep(0.10, 0.16, facadeCell.y)
+      * (1.0 - smoothstep(0.70, 0.78, facadeCell.y));
+    float verticalFace = 1.0 - smoothstep(0.12, 0.82, abs(normal.y));
+    float windowMask = facadeWindow * (1.0 - edge) * verticalFace;
+    vec3 solid = mix(u_mid * 0.48, mix(u_mid, u_light, 0.42), diffuse);
+    solid = mix(solid, mix(u_accent, u_secondary, 0.44), windowMask * (0.16 + v_emissive * 0.28));
+    vec3 glass = mix(u_base, u_secondary, 0.42 + diffuse * 0.22);
+    glass += u_accent * windowMask * 0.18;
+    vec3 floorTone = mix(u_base, u_mid, 0.42 + diffuse * 0.12);
+    vec3 material = v_material < 0.5 ? solid : (v_material < 1.5 ? glass : floorTone);
+    vec3 edgeTone = mix(u_light, u_accent, v_emissive);
+    material += edgeTone * edge * (0.28 + 1.15 * v_emissive) * u_volumeGlow;
+
+    float fog = exp(-v_progress * u_fogDensity) * (1.0 - smoothstep(0.62, 1.0, v_progress));
+    vec3 colour = mix(u_base, material, fog);
+    float glassAlpha = v_material < 0.5 ? 1.0 : (v_material < 1.5 ? 0.52 : 0.92);
+    outColor = vec4(colour, v_alpha * glassAlpha * smoothstep(0.0, 0.04, v_progress));
+  }
+`;
+
+const BACKGROUND_VERTEX = `#version 300 es
+  precision highp float;
+  out vec2 v_uv;
+  void main() {
+    vec2 position = vec2((gl_VertexID << 1) & 2, gl_VertexID & 2);
+    v_uv = position * 0.5;
+    gl_Position = vec4(position * 2.0 - 1.0, 0.999, 1.0);
+  }
+`;
+
+const BACKGROUND_FRAGMENT = `#version 300 es
+  precision highp float;
+  uniform vec3 u_base;
+  uniform vec3 u_mid;
+  uniform vec3 u_accent;
+  uniform float u_atmosphere;
+  in vec2 v_uv;
+  out vec4 outColor;
+  void main() {
+    vec2 centered = v_uv - vec2(0.5, 0.44);
+    float horizon = exp(-pow(centered.y * 7.5, 2.0));
+    float convergence = exp(-length(centered * vec2(1.25, 2.2)) * 4.2);
+    float upperFalloff = smoothstep(1.05, 0.12, v_uv.y);
+    vec3 colour = u_base;
+    colour += u_mid * horizon * (0.12 + u_atmosphere * 0.24);
+    colour += u_accent * convergence * horizon * u_atmosphere * 0.075;
+    colour += u_mid * upperFalloff * 0.025;
+    outColor = vec4(colour, 1.0);
+  }
+`;
+
 function compile(gl, type, source) {
   const shader = gl.createShader(type);
   gl.shaderSource(shader, source);
@@ -418,6 +537,87 @@ function buildMarkInstances(palette) {
   };
 }
 
+function buildCubeGeometry() {
+  const positions = [];
+  const normals = [];
+  const uvs = [];
+  const faces = [
+    { n: [1, 0, 0], c: [[0.5, -0.5, -0.5], [0.5, -0.5, 0.5], [0.5, 0.5, 0.5], [0.5, 0.5, -0.5]] },
+    { n: [-1, 0, 0], c: [[-0.5, -0.5, 0.5], [-0.5, -0.5, -0.5], [-0.5, 0.5, -0.5], [-0.5, 0.5, 0.5]] },
+    { n: [0, 1, 0], c: [[-0.5, 0.5, -0.5], [0.5, 0.5, -0.5], [0.5, 0.5, 0.5], [-0.5, 0.5, 0.5]] },
+    { n: [0, -1, 0], c: [[-0.5, -0.5, 0.5], [0.5, -0.5, 0.5], [0.5, -0.5, -0.5], [-0.5, -0.5, -0.5]] },
+    { n: [0, 0, 1], c: [[-0.5, -0.5, 0.5], [-0.5, 0.5, 0.5], [0.5, 0.5, 0.5], [0.5, -0.5, 0.5]] },
+    { n: [0, 0, -1], c: [[0.5, -0.5, -0.5], [0.5, 0.5, -0.5], [-0.5, 0.5, -0.5], [-0.5, -0.5, -0.5]] },
+  ];
+  const order = [0, 1, 2, 0, 2, 3];
+  const faceUvs = [[0, 0], [1, 0], [1, 1], [0, 1]];
+  for (const face of faces) {
+    for (const index of order) {
+      positions.push(...face.c[index]);
+      normals.push(...face.n);
+      uvs.push(...faceUvs[index]);
+    }
+  }
+  return {
+    positions: new Float32Array(positions),
+    normals: new Float32Array(normals),
+    uvs: new Float32Array(uvs),
+    vertexCount: positions.length / 3,
+  };
+}
+
+function buildArchitectureInstances() {
+  const random = createSeededRandom(0xa11ce7);
+  const offsets = [];
+  const scales = [];
+  const metas = [];
+  const push = (offset, scale, meta) => {
+    offsets.push(...offset);
+    scales.push(...scale);
+    metas.push(...meta);
+  };
+  const span = MERIDIAN_TRAVEL_LENGTH + CORRIDOR_OVERSHOOT;
+  for (let index = 0; index < ARCHITECTURE_PAIR_COUNT; index += 1) {
+    const z = (index / ARCHITECTURE_PAIR_COUNT) * span;
+    // Reveal a deterministic cross-section of every depth band first. Tying
+    // visibility to index alone made the resting city exist only at the horizon.
+    const visibility = 0.025 + (index % 10) * 0.078;
+    for (const side of [-1, 1]) {
+      const width = between(random, 1.8, 5.4);
+      const height = between(random, 5.5, 18.5) * (index % 6 === 0 ? 1.32 : 1);
+      const depth = between(random, 2.2, 7.5);
+      const inset = index % 5 === 0 ? 2.2 : 0;
+      const material = index % 4 === 1 ? 1 : 0;
+      push(
+        [side * (13.0 + between(random, 0, 5.4) - inset), height * 0.5 - 0.15, z],
+        [width, height, depth],
+        [ARCHITECTURE_SCROLL_RATE, visibility, material, index % 5 === 0 ? 1 : 0.22],
+      );
+      if (index % 5 === 0) {
+        push(
+          [side * 10.7, between(random, 5.5, 10.0), z + depth * 0.15],
+          [between(random, 3.8, 7.2), between(random, 0.28, 0.62), between(random, 2.8, 6.5)],
+          [ARCHITECTURE_SCROLL_RATE, visibility + 0.04, 1, 0.5],
+        );
+      }
+    }
+  }
+  for (let index = 0; index < FLOOR_PANEL_COUNT; index += 1) {
+    const z = (index / FLOOR_PANEL_COUNT) * span;
+    push(
+      [0, -0.26, z],
+      [between(random, 17.5, 21), 0.18, span / FLOOR_PANEL_COUNT * 0.84],
+      [ARCHITECTURE_SCROLL_RATE, 0, 2, index % 6 === 0 ? 0.48 : 0.08],
+    );
+  }
+  return {
+    offsets: new Float32Array(offsets),
+    scales: new Float32Array(scales),
+    metas: new Float32Array(metas),
+    count: metas.length / 4,
+  };
+}
+
 function attachInstanced(gl, program, name, data, components) {
   const location = gl.getAttribLocation(program, name);
   const buffer = gl.createBuffer();
@@ -468,7 +668,7 @@ export function createMeridianRenderer(canvas, initialPalette) {
   const gl = canvas.getContext("webgl2", {
     alpha: false,
     antialias: false,
-    depth: false,
+    depth: true,
     powerPreference: "high-performance",
     preserveDrawingBuffer: false,
   });
@@ -477,9 +677,13 @@ export function createMeridianRenderer(canvas, initialPalette) {
   let palette = initialPalette;
   let railProgram;
   let markProgram;
+  let architectureProgram;
+  let backgroundProgram;
   try {
     railProgram = link(gl, RAIL_VERTEX, RAIL_FRAGMENT);
     markProgram = link(gl, MARK_VERTEX, MARK_FRAGMENT);
+    architectureProgram = link(gl, ARCHITECTURE_VERTEX, ARCHITECTURE_FRAGMENT);
+    backgroundProgram = link(gl, BACKGROUND_VERTEX, BACKGROUND_FRAGMENT);
   } catch (error) {
     console.warn(String(error));
     return null;
@@ -497,6 +701,14 @@ export function createMeridianRenderer(canvas, initialPalette) {
     ...distortionUniforms, "u_stationFraction", "u_markerFraction",
     "u_markerStretch", "u_fogDensity",
   ]);
+  const architectureUniforms = uniformsOf(gl, architectureProgram, [
+    ...distortionUniforms, "u_architectureFraction", "u_base", "u_mid", "u_light",
+    "u_accent", "u_secondary", "u_fogDensity", "u_volumeGlow",
+  ]);
+  const backgroundUniforms = uniformsOf(gl, backgroundProgram, [
+    "u_base", "u_mid", "u_accent", "u_atmosphere",
+  ]);
+  const backgroundVao = gl.createVertexArray();
 
   const rail = buildRailGeometry();
   const railVao = gl.createVertexArray();
@@ -533,9 +745,23 @@ export function createMeridianRenderer(canvas, initialPalette) {
   const markColorBuffer = attachInstanced(gl, markProgram, "a_color", marks.colors, 3);
   gl.bindVertexArray(null);
 
-  gl.disable(gl.DEPTH_TEST);
+  const cube = buildCubeGeometry();
+  const architecture = buildArchitectureInstances();
+  const architectureVao = gl.createVertexArray();
+  gl.bindVertexArray(architectureVao);
+  const architectureBuffers = [
+    attachVertex(gl, architectureProgram, "a_position", cube.positions, 3),
+    attachVertex(gl, architectureProgram, "a_normal", cube.normals, 3),
+    attachVertex(gl, architectureProgram, "a_uv", cube.uvs, 2),
+    attachInstanced(gl, architectureProgram, "a_offset", architecture.offsets, 3),
+    attachInstanced(gl, architectureProgram, "a_scale", architecture.scales, 3),
+    attachInstanced(gl, architectureProgram, "a_meta", architecture.metas, 4),
+  ];
+  gl.bindVertexArray(null);
+
+  gl.enable(gl.DEPTH_TEST);
+  gl.depthFunc(gl.LEQUAL);
   gl.enable(gl.BLEND);
-  gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
 
   let timeOffset = 0;
   let railScroll = 0;
@@ -601,8 +827,37 @@ export function createMeridianRenderer(canvas, initialPalette) {
 
       gl.viewport(0, 0, width, height);
       gl.clearColor(palette.base[0], palette.base[1], palette.base[2], 1);
-      gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
+      gl.disable(gl.DEPTH_TEST);
+      gl.disable(gl.BLEND);
+      gl.useProgram(backgroundProgram);
+      gl.bindVertexArray(backgroundVao);
+      gl.uniform3fv(backgroundUniforms.u_base, palette.base);
+      gl.uniform3fv(backgroundUniforms.u_mid, palette.mid);
+      gl.uniform3fv(backgroundUniforms.u_accent, palette.accent);
+      gl.uniform1f(backgroundUniforms.u_atmosphere, density.atmosphereFraction);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+      gl.enable(gl.DEPTH_TEST);
+      gl.enable(gl.BLEND);
+
+      gl.depthMask(true);
+      gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+      gl.useProgram(architectureProgram);
+      gl.bindVertexArray(architectureVao);
+      setDistortionUniforms(architectureUniforms, field, viewProjection);
+      gl.uniform1f(architectureUniforms.u_architectureFraction, density.architectureFraction);
+      gl.uniform3fv(architectureUniforms.u_base, palette.base);
+      gl.uniform3fv(architectureUniforms.u_mid, palette.mid);
+      gl.uniform3fv(architectureUniforms.u_light, palette.light);
+      gl.uniform3fv(architectureUniforms.u_accent, palette.accent);
+      gl.uniform3fv(architectureUniforms.u_secondary, palette.secondary);
+      gl.uniform1f(architectureUniforms.u_fogDensity, 1.85);
+      gl.uniform1f(architectureUniforms.u_volumeGlow, density.volumeGlow);
+      gl.drawArraysInstanced(gl.TRIANGLES, 0, cube.vertexCount, architecture.count);
+
+      gl.depthMask(false);
+      gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
       gl.useProgram(railProgram);
       gl.bindVertexArray(railVao);
       setDistortionUniforms(railUniforms, field, viewProjection);
@@ -623,6 +878,7 @@ export function createMeridianRenderer(canvas, initialPalette) {
       gl.drawArraysInstanced(gl.TRIANGLES, 0, 6, marks.count);
 
       gl.bindVertexArray(null);
+      gl.depthMask(true);
     },
 
     dispose() {
@@ -634,8 +890,13 @@ export function createMeridianRenderer(canvas, initialPalette) {
       ]) gl.deleteBuffer(buffer);
       gl.deleteVertexArray(railVao);
       gl.deleteVertexArray(markVao);
+      for (const buffer of architectureBuffers) gl.deleteBuffer(buffer);
+      gl.deleteVertexArray(architectureVao);
+      gl.deleteVertexArray(backgroundVao);
       gl.deleteProgram(railProgram);
       gl.deleteProgram(markProgram);
+      gl.deleteProgram(architectureProgram);
+      gl.deleteProgram(backgroundProgram);
     },
   };
 }
