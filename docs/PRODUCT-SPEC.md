@@ -56,7 +56,7 @@ See [`MODES.md`](MODES.md) for the boundary model, recommendations, and open dec
 - progressive degradation when GPU, shaders, or frame budget are unreliable;
 - reduced motion that preserves atmosphere and information without aggressive tunnel movement.
 
-Exactly three revised Product Design directions were shown after the luminous-axis rejection. The user selected **Modular Aperture**: an ordered rectangular field with a low black control plane, flat monochrome geometry, and a restrained palette accent. The interface is Braun-influenced, Swiss, minimal, and slightly brutalist, with square actions, strict monospace typography, no circular buttons, and no glassmorphism.
+Exactly three revised Product Design directions were shown after the luminous-axis rejection. The user selected **Modular Aperture**: an ordered rectangular field with a low black control plane, flat monochrome geometry, and a restrained palette accent. The interface is Braun-influenced, Swiss, minimal, and slightly brutalist, with square actions, a locally hosted Orbitron variable type system, no circular buttons, and no glassmorphism. Orbitron uses `450` for reading text, `520` for primary values, `620` for controls, `700` for operational labels and `850` only for the launch command.
 
 Framed controls use a restrained 6 px corner radius rather than completely sharp corners. The speed readout occupies an exact header-grid cell with the same divider stroke while the chrome is awake; when the header retires, the readout remains fixed in place and gains only the exposed lower corner treatment so it reads as a detached module rather than an unrelated overlay.
 

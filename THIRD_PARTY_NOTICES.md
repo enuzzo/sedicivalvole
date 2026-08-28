@@ -12,6 +12,7 @@ Third-party components retain their original licenses and are not relicensed und
 | @vitejs/plugin-react | 5.0.4 | Vite contributors | MIT | none | `prototype/drive-lab/` |
 | MapLibre GL JS | 5.7.1 | MapLibre contributors | BSD-3-Clause | lazy ATLAS renderer integration | `prototype/drive-lab/` |
 | qrcode | 1.5.4 | Kazuhiko Arase and contributors | MIT | local passenger-link QR generation | `prototype/drive-lab/` |
+| Orbitron variable font | Google Fonts v35 | Matt McInerney and the Orbitron Project Authors | SIL Open Font License 1.1 | locally hosted Latin WOFF2; interface weight hierarchy and tracking only | `prototype/drive-lab/public/fonts/` |
 | OpenFreeMap public instance | continuously updated | OpenFreeMap contributors; OpenMapTiles and OpenStreetMap data contributors | service and data terms; attribution retained in-map | minimal palette-owned vector style and 3D building layer | `prototype/drive-lab/src/environments/atlas/` |
 | Infinite Lights / Interstate 7 | commit `e58d58520bc0dfde21f9e14e6a1b8c7f0a2a2a9e` | Daniel Velasquez / Anemolo and Codrops/Tympanus | Custom Codrops usage notice in the vendored README | vendored files are byte-identical; external sedicivalvole runtime bridge only | `prototype/drive-lab/public/third-party/infinite-lights/` |
 | Three.js | r109, upstream-bundled build | Three.js authors | MIT | none | `prototype/drive-lab/public/third-party/infinite-lights/js/three.min.js` |
