@@ -281,6 +281,7 @@ export function appendConnectionHistory(history, snapshot, limit = 60) {
 
 export const DRIVE_TRACE_INTERVAL_MS = 2000;
 export const DRIVE_TRACE_SAMPLE_LIMIT = 300;
+export const DIAGNOSTIC_MAX_REQUEST_BODY_BYTES = 1966080;
 export const DRIVE_TRACE_FIELDS = [
   "t", "speed", "gps", "gpsAge", "gpsState", "accuracy", "rate", "source", "input", "energy",
   "bpm", "fps", "p95Frame", "audio", "audioPeak", "visual", "music", "section", "family", "takes",
@@ -483,12 +484,12 @@ export function classifyGpsConfidence({ gpsState, gpsAgeMs, accuracyM }) {
   return "usable";
 }
 
-function serializedUtf8Bytes(value) {
-  return new TextEncoder().encode(JSON.stringify(value, null, 2)).byteLength;
+function serializedRequestUtf8Bytes(report) {
+  return new TextEncoder().encode(JSON.stringify({ schema: report.schema, report })).byteLength;
 }
 
-export function fitDiagnosticReportForTransport(report, maximumBytes = 188000) {
-  const trimmingTargetBytes = Math.max(0, maximumBytes - 512);
+export function fitDiagnosticReportForTransport(report, maximumBytes = DIAGNOSTIC_MAX_REQUEST_BODY_BYTES) {
+  const trimmingTargetBytes = Math.max(0, maximumBytes - 8192);
   const originalSamples = report.flightRecorder?.samples?.length ?? 0;
   const originalEvents = report.events?.length ?? 0;
   const originalRuntimeIssues = report.runtimeIssues?.length ?? 0;
@@ -502,35 +503,41 @@ export function fitDiagnosticReportForTransport(report, maximumBytes = 188000) {
     events: [...(report.events ?? [])],
     runtimeIssues: [...(report.runtimeIssues ?? [])],
     transport: {
-      maximumPrettyPrintedReportBytes: maximumBytes,
+      maximumRequestBodyBytes: maximumBytes,
+      trimmingTargetBytes,
       originalSamples,
       originalEvents,
       originalRuntimeIssues,
+      requestBodyBytes: 0,
     },
   };
 
-  while (serializedUtf8Bytes(fitted) > trimmingTargetBytes && fitted.events.length > 40) {
+  while (serializedRequestUtf8Bytes(fitted) > trimmingTargetBytes && fitted.events.length > 40) {
     fitted.events.splice(0, Math.min(20, fitted.events.length - 40));
   }
-  while (serializedUtf8Bytes(fitted) > trimmingTargetBytes && fitted.runtimeIssues.length > 4) {
+  while (serializedRequestUtf8Bytes(fitted) > trimmingTargetBytes && fitted.runtimeIssues.length > 4) {
     fitted.runtimeIssues.splice(0, Math.min(4, fitted.runtimeIssues.length - 4));
   }
-  while (serializedUtf8Bytes(fitted) > trimmingTargetBytes && fitted.flightRecorder?.samples.length > 60) {
+  while (serializedRequestUtf8Bytes(fitted) > trimmingTargetBytes && fitted.flightRecorder?.samples.length > 60) {
     fitted.flightRecorder.samples.splice(0, Math.min(20, fitted.flightRecorder.samples.length - 60));
   }
-  while (serializedUtf8Bytes(fitted) > trimmingTargetBytes && fitted.events.length > 0) {
+  while (serializedRequestUtf8Bytes(fitted) > trimmingTargetBytes && fitted.events.length > 0) {
     fitted.events.splice(0, Math.min(10, fitted.events.length));
   }
-  while (serializedUtf8Bytes(fitted) > trimmingTargetBytes && fitted.runtimeIssues.length > 0) {
+  while (serializedRequestUtf8Bytes(fitted) > trimmingTargetBytes && fitted.runtimeIssues.length > 0) {
     fitted.runtimeIssues.splice(0, Math.min(2, fitted.runtimeIssues.length));
   }
-  while (serializedUtf8Bytes(fitted) > trimmingTargetBytes && fitted.flightRecorder?.samples.length > 1) {
+  while (serializedRequestUtf8Bytes(fitted) > trimmingTargetBytes && fitted.flightRecorder?.samples.length > 1) {
     fitted.flightRecorder.samples.splice(0, Math.min(10, fitted.flightRecorder.samples.length - 1));
   }
 
   fitted.transport.transmittedSamples = fitted.flightRecorder?.samples.length ?? 0;
   fitted.transport.transmittedEvents = fitted.events.length;
   fitted.transport.transmittedRuntimeIssues = fitted.runtimeIssues.length;
-  fitted.transport.prettyPrintedReportBytes = serializedUtf8Bytes(fitted);
+  for (let pass = 0; pass < 3; pass += 1) {
+    const measuredBytes = serializedRequestUtf8Bytes(fitted);
+    if (measuredBytes === fitted.transport.requestBodyBytes) break;
+    fitted.transport.requestBodyBytes = measuredBytes;
+  }
   return fitted;
 }

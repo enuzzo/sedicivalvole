@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 const EXPECTED_ORIGIN = 'https://sedicivalvole.app';
-const MAX_BODY_BYTES = 196608;
+const MAX_BODY_BYTES = 1966080;
 const RATE_LIMIT_SECONDS = 20;
 
 header('Content-Type: application/json; charset=utf-8');
@@ -166,7 +166,7 @@ if (containsForbiddenCoordinateKey($payload['report'])) {
 
 $reportJson = json_encode(
     $payload['report'],
-    JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE
+    JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE
 );
 if (!is_string($reportJson) || strlen($reportJson) > MAX_BODY_BYTES) {
     respond(422, 'report_rejected');

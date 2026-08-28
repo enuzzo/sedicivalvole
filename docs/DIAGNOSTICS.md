@@ -62,8 +62,8 @@ Server protections:
 - exact `Origin: https://sedicivalvole.app` requirement;
 - `Sec-Fetch-Site` validation when supplied;
 - fixed server-side recipient and subject; no user-controlled mail headers;
-- 192 KiB body limit and strict schema validation;
-- client-side recent-first fitting below the pretty-printed mail limit, with original/transmitted counts recorded when pathological event volume requires trimming;
+- 1.875 MiB request-body limit (ten times the original budget) and strict schema validation;
+- client-side recent-first fitting against the exact compact request envelope, with an 8 KiB safety margin and original/transmitted counts recorded when pathological event volume requires trimming; this avoids comparing the browser's two-space JSON with PHP's larger four-space diagnostic attachment;
 - explicit shortest-round-trip PHP float serialization so server-side pretty printing preserves compact browser numbers instead of expanding their binary representation;
 - a compact multipart email body plus one complete `.json.gz` attachment named with the accepted timestamp and build; the body records the JSON/GZIP byte counts and both SHA-256 digests;
 - deterministic PHP round-trip coverage that extracts the MIME attachment, decodes Base64, decompresses GZIP, validates both digests, and compares the complete report rather than a shortened preview;
@@ -76,6 +76,8 @@ Server protections:
 The user-confirmed mail recipient is configured in the ignored local file `prototype/drive-lab/public/api/recipient.local.php` and is not present in public source code. The file is created from `prototype/drive-lab/config/diagnostic-recipient.local.php.example`, returns the recipient address without emitting it over HTTP, and is copied to the same private server location during deployment. The deployment identity gate recognizes the file by fixed structural markers and never prints its contents.
 
 A `202 accepted_by_mail_transport` response proves only that PHP `mail()` handed the multipart message and complete gzip-compressed JSON report, including the flight-recorder trace, to the hosting mail transport. It does not prove Gmail inbox delivery. Delivery requires confirmation in the recipient inbox and, if needed, inspection of message headers/SPF/DKIM behavior. Gmail may shorten the displayed text of a long message; the attachment is the authoritative complete report and is independent of that presentation limit.
+
+The accepted report is always encoded as a level-9 GZIP attachment, regardless of whether it is small or close to the request ceiling. In-memory retention is independently bounded to the latest 300 two-second drive samples, 240 diagnostic events and 24 runtime issues. Older detailed evidence rotates out first while full-session aggregates, extrema, exposure counts and discard counters remain available. If an unusually verbose report still approaches the transport ceiling, the client removes the oldest events, issues and samples in stages and records the before/after counts in `transport`.
 
 Sanitized endpoint failures are shown in the drawer. The page keeps the recorder in memory after a failed send, so the same report can be retried after a transient connection, rate-limit, recipient, transport, or server-formatting correction as long as the page is not closed or reloaded.
 

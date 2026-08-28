@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { createHash } from "node:crypto";
+import { readFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
@@ -8,6 +9,12 @@ import { gunzipSync } from "node:zlib";
 
 const TEST_DIR = dirname(fileURLToPath(import.meta.url));
 const ENDPOINT = resolve(TEST_DIR, "../public/api/send-diagnostic.php");
+
+test("diagnostic endpoint accepts ten times the original request budget", async () => {
+  const endpointSource = await readFile(ENDPOINT, "utf8");
+  assert.match(endpointSource, /const MAX_BODY_BYTES = 1966080;/);
+  assert.doesNotMatch(endpointSource, /\$reportJson = json_encode\([\s\S]*?JSON_PRETTY_PRINT/);
+});
 
 function buildMailWithPhp(report) {
   const endpointLiteral = JSON.stringify(ENDPOINT);

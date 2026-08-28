@@ -6,6 +6,7 @@ import {
   classifyGpsConfidence,
   createDriveTelemetry,
   createDriveTelemetryReport,
+  DIAGNOSTIC_MAX_REQUEST_BODY_BYTES,
   DRIVE_TRACE_FIELDS,
   fitDiagnosticReportForTransport,
   createFrameTelemetry,
@@ -201,7 +202,7 @@ test("drive telemetry retains a bounded trace while preserving full-session aggr
   assert.equal(JSON.stringify(report).includes("longitude"), false);
 });
 
-test("diagnostic transport fitting preserves recent evidence within the mail limit", () => {
+test("diagnostic transport fitting preserves recent evidence within the request limit", () => {
   const noisyValue = "x".repeat(1200);
   const report = {
     schema: "sedicivalvole.tesla-diagnostic.v3",
@@ -213,7 +214,7 @@ test("diagnostic transport fitting preserves recent evidence within the mail lim
     runtimeIssues: Array.from({ length: 24 }, (_, index) => ({ index, stack: noisyValue })),
   };
   const fitted = fitDiagnosticReportForTransport(report, 160000);
-  const bytes = new TextEncoder().encode(JSON.stringify(fitted, null, 2)).byteLength;
+  const bytes = new TextEncoder().encode(JSON.stringify({ schema: fitted.schema, report: fitted })).byteLength;
 
   assert.ok(bytes <= 160000);
   assert.equal(fitted.events.at(-1).index, 239);
@@ -221,4 +222,34 @@ test("diagnostic transport fitting preserves recent evidence within the mail lim
   assert.equal(fitted.flightRecorder.samples.at(-1)[0], 299);
   assert.ok(fitted.transport.transmittedEvents < fitted.transport.originalEvents);
   assert.ok(fitted.transport.transmittedSamples <= fitted.transport.originalSamples);
+  assert.equal(fitted.transport.requestBodyBytes, bytes);
+  assert.equal(DIAGNOSTIC_MAX_REQUEST_BODY_BYTES, 1966080);
+});
+
+test("diagnostic transport fitting rotates oldest evidence from an oversized drive", () => {
+  const noisyValue = "telemetry".repeat(1000);
+  const report = {
+    schema: "sedicivalvole.tesla-diagnostic.v3",
+    flightRecorder: {
+      summary: { totalSamples: 300, discardedSamples: 900 },
+      samples: Array.from({ length: 300 }, (_, index) => [index, noisyValue]),
+    },
+    events: Array.from({ length: 240 }, (_, index) => ({ index, detail: noisyValue })),
+    runtimeIssues: Array.from({ length: 24 }, (_, index) => ({ index, stack: noisyValue })),
+  };
+
+  const fitted = fitDiagnosticReportForTransport(report);
+  const requestBytes = new TextEncoder()
+    .encode(JSON.stringify({ schema: fitted.schema, report: fitted }))
+    .byteLength;
+
+  assert.ok(requestBytes <= DIAGNOSTIC_MAX_REQUEST_BODY_BYTES);
+  assert.equal(fitted.transport.requestBodyBytes, requestBytes);
+  assert.equal(fitted.events.at(-1).index, 239);
+  assert.equal(fitted.runtimeIssues.at(-1)?.index, 23);
+  assert.equal(fitted.flightRecorder.samples.at(-1)[0], 299);
+  assert.ok(fitted.transport.transmittedEvents < fitted.transport.originalEvents);
+  assert.ok(fitted.transport.transmittedSamples < fitted.transport.originalSamples);
+  assert.equal(fitted.flightRecorder.summary.totalSamples, 300);
+  assert.equal(fitted.flightRecorder.summary.discardedSamples, 900);
 });
