@@ -13,10 +13,10 @@ dated study documents.
 - `Flux` is the implemented primary mode. `Engine` remains an equal confirmed
   mode, visible but disabled until its own audio model and one of exactly three
   Engine-specific visual directions are selected.
-- The Flux catalog contains five visual environments: **APERTURE 01**,
-  **VERTIGO 02**, **MERIDIAN 03**, **ATLAS 04**, and **REGISTER 05**.
-  All five are published on the canonical experience.
-- All five environments use the shared catalog of **10 themes**. Vertigo keeps
+- The Flux catalog contains four visual environments: **APERTURE 01**,
+  **VERTIGO 02**, **MERIDIAN 03**, and **ATLAS 04**.
+  All four are published on the canonical experience.
+- All four environments use the shared catalog of **10 themes**. Vertigo keeps
   the upstream Interstate 7 files byte-identical while an external runtime
   bridge maps the selected theme onto its existing colour channels.
 - Meridian keeps one deterministic low corridor beneath sparse, large oblique
@@ -36,12 +36,10 @@ dated study documents.
   compact image-and-reading context and an `86 px` QR at the Tesla split viewport, collapses
   behind a persistent midpoint handle to return the complete field to the map,
   and keeps mandatory attribution in a tiny translucent strip above the footer.
-- REGISTER is a deterministic Swiss print field selected from the three approved
-  visual directions. Road energy chooses one of three layout families; a new
-  composition is sampled only at a complete eight-bar score boundary. Hard
-  acceleration offsets the two ink plates by `2–6` physical pixels, braking
-  aligns them continuously over approximately `400 ms`, and reduced motion keeps
-  the composition static.
+- REGISTER was rejected after live review because its static print composition
+  was inexplicable in motion and outside the product mood. Its source remains
+  only in the rejected-visual archive; the runtime, QA harness and active tests
+  do not import it. A stale stored `register` preference falls back to Aperture.
 - Speed, BPM, and energy remain visible together. The fixed road-energy ceiling
   is `130 km/h`, with Aperture visibly forming a tunnel near `40 km/h`.
 - The main experience retains an icon-only Mute control, GPS/Demo source
@@ -133,7 +131,7 @@ dated study documents.
 ## Verified boundaries
 
 - Local gate: `npm test` and `npm run build` from `prototype/drive-lab/`.
-- Current suite: 178 unit checks plus 4 Sites packaging checks.
+- Current suite: 173 unit checks plus 4 Sites packaging checks.
 - Canonical development URL: <https://sedicivalvole.app/>. The most recent
   canonical publication evidence and build stamp are always the first entry in
   [`DEPLOY.md`](DEPLOY.md).
@@ -149,14 +147,15 @@ dated study documents.
 
 ## Open work
 
-1. Validate Aperture's `0–40 km/h` rigid wall retreat, REGISTER's physical-pixel
-   plate offset/alignment, OPEN's level compensation, the no-lead FRACTURE and
+1. Validate Aperture's `0–40 km/h` rigid wall retreat, OPEN's level
+   compensation, the no-lead FRACTURE and
    single-performance JUNCTION arrangements, the selected-concept Meridian
    rebuild and the ATLAS flight camera in the Tesla.
 2. Send the new real-drive gzip attachment and compare the dedicated wall-retreat
    phase plus JUNCTION section/take exposure counters against the first complete report.
-3. Design Engine only after exactly three Engine-specific directions are shown
-   and one is selected.
+3. Show exactly three new Flux visual directions before selecting a REGISTER
+   replacement, and design Engine only after exactly three Engine-specific
+   directions are shown and one is selected.
 4. Replace the failed magnitude-residual decision with a three-way evidence
    stack. Validate shared ADSR/filter envelopes, phase seeds, detune, chorus,
    spectral slope and saturation; add stereo and phase-coherence evidence with

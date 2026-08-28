@@ -13,7 +13,7 @@ The initial **PLAY THE ROAD** gesture is one flat typographic launch surface wit
 
 ## Implemented
 
-- five selectable environments: `APERTURE 01`, byte-identical upstream Interstate 7 `VERTIGO 02`, original `MERIDIAN 03`, lazy OpenFreeMap `ATLAS 04`, and deterministic Swiss-print `REGISTER 05`;
+- four selectable environments: `APERTURE 01`, byte-identical upstream Interstate 7 `VERTIGO 02`, original `MERIDIAN 03`, and lazy OpenFreeMap `ATLAS 04`;
 - a dedicated WebGL2 Signal Gate splash with independently phased travelling lane gaps, restrained perspective airflow, and Canvas2D/reduced-motion fallbacks;
 - continuously redrawn Canvas2D fallback and reduced-motion behavior for Aperture; Vertigo retains the original Three.js/post-processing renderer and caps its speed input in reduced-motion mode;
 - FRACTURE, a generative AudioWorklet score with ten four-bar sections, a narrow `162–176 BPM` range, tested harmony, staged deceleration memory, and an offline render path;

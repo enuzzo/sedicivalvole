@@ -14,15 +14,14 @@ const packageSource = readFileSync(new URL("../package.json", import.meta.url), 
 test("exposes the authored environments in a stable order", () => {
   assert.deepEqual(
     FLUX_ENVIRONMENTS.map(({ id }) => id),
-    ["aperture", "vertigo", "meridian", "atlas", "register"],
+    ["aperture", "vertigo", "meridian", "atlas"],
   );
   assert.equal(getFluxEnvironment("vertigo").label, "VERTIGO");
   assert.equal(getFluxEnvironment("meridian").label, "MERIDIAN");
   assert.equal(getFluxEnvironment("meridian").number, "03");
   assert.equal(getFluxEnvironment("atlas").label, "ATLAS");
   assert.equal(getFluxEnvironment("atlas").number, "04");
-  assert.equal(getFluxEnvironment("register").label, "REGISTER");
-  assert.equal(getFluxEnvironment("register").number, "05");
+  assert.equal(getFluxEnvironment("register").id, "aperture");
   assert.equal(getFluxEnvironment("latitudes").id, "aperture");
 });
 
@@ -32,10 +31,10 @@ test("keeps Aperture as the default and the unknown-identifier fallback", () => 
   assert.equal(getFluxEnvironment(undefined).id, "aperture");
 });
 
-test("keeps the rejected Latitudes renderer outside the active runtime and QA", () => {
-  assert.doesNotMatch(appSource, /LatitudesField|renderer === "latitudes"/);
-  assert.doesNotMatch(qaSource, /environments\/latitudes|latitudes:/);
-  assert.doesNotMatch(packageSource, /tests\/latitudes-model\.test\.mjs/);
+test("keeps rejected visual renderers outside the active runtime and QA", () => {
+  assert.doesNotMatch(appSource, /LatitudesField|RegisterField|renderer === "latitudes"|renderer === "register"/);
+  assert.doesNotMatch(qaSource, /environments\/(?:latitudes|register)|latitudes:|register:/);
+  assert.doesNotMatch(packageSource, /tests\/(?:latitudes|register)-model\.test\.mjs/);
 });
 
 test("gives every environment a unique identifier, number, and renderer", () => {
@@ -59,7 +58,6 @@ test("connects every implemented environment to body-colour theming", () => {
   assert.equal(getFluxEnvironment("aperture").themed, true);
   assert.equal(getFluxEnvironment("meridian").themed, true);
   assert.equal(getFluxEnvironment("atlas").themed, true);
-  assert.equal(getFluxEnvironment("register").themed, true);
 });
 
 test("cycles every environment deterministically and returns to the start", () => {

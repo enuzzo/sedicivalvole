@@ -1,3 +1,4 @@
+// Archived with the rejected Register visual. This component is not active code.
 import { useEffect, useMemo, useRef } from "react";
 import {
   accelerationToMisregistration,

@@ -237,7 +237,7 @@ Profile before adding WASM. It is justified only if measured DSP cost, not fashi
 
 ## Flux visual architecture
 
-The Flux renderer exposes five selectable environments, not static backgrounds.
+The Flux renderer exposes four selectable environments, not static backgrounds.
 **Modular Aperture** was selected from exactly three revised minimal alternatives:
 
 - central-axis depth and flow;
@@ -248,7 +248,7 @@ The Flux renderer exposes five selectable environments, not static backgrounds.
 - aspect-correct square insets at rest, an eased low-speed warp, a bounded central perspective singularity, and a continuous blend between adjoining tunnel walls so intermediate geometry cannot tear into diagonal fragments;
 - a central aperture whose radius opens geometrically with tunnel formation instead of appearing through opacity;
 - speed-driven radial panel elongation and reduced depth frequency in the 150 km/h velocity band;
-- ten curated palettes for all five renderers; Vertigo's external bridge updates only existing runtime colour channels;
+- ten curated palettes for all four renderers; Vertigo's external bridge updates only existing runtime colour channels;
 - energy-driven pressure, luminance, distortion, and rectangular panel density;
 - aggregate pulses rather than one flash per audio event;
 - renderer quality levels controlling resolution scale, shader complexity, passes, and frame rate;
@@ -282,14 +282,11 @@ content request is needed when the passenger changes selection. Up to four nearb
 pages and one selected QR are rendered for the passenger. No coordinate enters
 local storage, diagnostics or the explicit diagnostic email.
 
-**Register** is the selected fifth direction. It is a deterministic DOM/CSS
-Swiss-print field with three energy families and two offset ink plates. Its page
-revision is sampled only from the audio snapshot at a complete eight-bar
-boundary; it has no wall-clock fallback. Acceleration sampled at that boundary
-selects `0`, `2`, `4`, or `6` physical pixels of misregistration after DPR
-conversion. Braking continuously returns the current plates to alignment over
-approximately `400 ms` without recomposing the page. Reduced motion keeps the
-same static composition without the beat-line pulse or plate motion.
+**Register** is rejected and archived outside the active runtime. Live review
+found its deterministic Swiss-print page static, inexplicable and outside the
+driving mood even after boundary and acceleration responses were added. The
+archived source is evidence, not a roadmap commitment. A replacement may be
+chosen only after exactly three new visual directions are presented.
 
 The fixed road-speed mapping separates early recognition from maximum deformation. Aperture begins opening into recognizable tunnel space by approximately `40 km/h`; velocity, perspective, elongation, and travel then continue increasing until the shared `130 km/h` ceiling. Vertigo uses a narrow external bridge rather than new scene mathematics. It enters the untouched distortion at a composed `2.1 s` phase where the road already fills the Tesla viewport, and seeds the current motion/FOV controls before the iframe is revealed. Road speed follows a quadratic response through the original `speedUpTarget` path: zero cancels the base clock, `40 km/h` uses approximately `0.095×`, `60 km/h` approximately `0.213×`, and `130 km/h` restores the original non-boosted `1×` rate. The original FOV range still moves from `90°` to `150°` through that same curve. The upstream click boost is not dispatched.
 

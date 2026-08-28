@@ -1,4 +1,5 @@
-import { ROAD_SPEED_CEILING_KMH } from "../../signal-model.js";
+// Archived with the rejected Register visual. This module is not active code.
+import { ROAD_SPEED_CEILING_KMH } from "../../../../prototype/drive-lab/src/signal-model.js";
 
 export const REGISTER_STEPS_PER_BOUNDARY = 16 * 8;
 

@@ -6,7 +6,7 @@ import {
   physicalMisregistrationCssPx,
   registerBoundaryKey,
   speedToRegisterFamily,
-} from "../src/environments/register/register-model.js";
+} from "../src/register-model.js";
 
 test("Register recomposes only on complete eight-bar musical boundaries", () => {
   assert.equal(registerBoundaryKey({ scoreId: "fracture", step: 0 }), "fracture:0");
@@ -38,7 +38,7 @@ test("hard acceleration misregisters the plates while braking aligns them", () =
 
 test("Register updates one persistent page instead of flashing through a remount", async () => {
   const source = await readFile(
-    new URL("../src/environments/register/register-field.jsx", import.meta.url),
+    new URL("../src/register-field.jsx", import.meta.url),
     "utf8",
   );
   assert.match(source, /<div className="register-page">/);
