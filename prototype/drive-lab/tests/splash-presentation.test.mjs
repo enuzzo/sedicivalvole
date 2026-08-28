@@ -52,12 +52,15 @@ test("launch typography follows the approved Orbitron hierarchy", () => {
   const command = styles.slice(styles.indexOf(".launch-command > span:last-child {"), styles.indexOf("@keyframes launch-text-wave"));
 
   assert.match(brand, /justify-content: center/);
+  assert.match(brand, /font-size: clamp\(32px, 5vw, 40px\)/);
   assert.match(brand, /font-weight: 750/);
   assert.match(brand, /letter-spacing: 0/);
   assert.match(brand, /text-align: center/);
   assert.match(command, /font-weight: 600/);
   assert.match(command, /letter-spacing: 0/);
   assert.doesNotMatch(command, /text-indent/);
+  assert.match(styles, /grid-template-rows: 68px 1fr/);
+  assert.match(styles, /min-height: 78px/);
 });
 
 test("Signal Gate phases every travelling gap independently", () => {

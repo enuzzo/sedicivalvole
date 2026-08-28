@@ -130,7 +130,7 @@ button { -webkit-tap-highlight-color: transparent; }
    The visual language borrows Braun's discipline, never simulated hardware. */
 .launch-button {
   display: grid;
-  grid-template-rows: 58px 1fr;
+  grid-template-rows: 68px 1fr;
   gap: 0;
   width: 100%;
   height: 170px;
@@ -149,7 +149,7 @@ button { -webkit-tap-highlight-color: transparent; }
   padding: 0 18px;
   border: 1px solid rgba(7, 9, 9, .62);
   background: #e9e4d9;
-  font-size: clamp(24px, 3.8vw, 30px);
+  font-size: clamp(32px, 5vw, 40px);
   font-weight: 750;
   letter-spacing: 0;
   text-align: center;
@@ -158,7 +158,7 @@ button { -webkit-tap-highlight-color: transparent; }
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 86px;
+  min-height: 78px;
   border: 1px solid rgba(7, 9, 9, .72);
   border-top: 0;
   background: #070909;
