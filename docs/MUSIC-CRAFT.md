@@ -529,14 +529,17 @@ overlapping partial. Basic Pitch and a CQT chromagram can therefore agree on a
 false C-sharp, especially on saturated or detuned synth material. Agreement
 between correlated detectors is not independent evidence.
 
-The analysis contract now has three separate layers:
+The analysis contract now has four separate layers:
 
 - `declared` preserves the pack filename without using it as a detection prior;
 - `observed.proposals` contains high-recall transcription candidates, while the
   authoritative pitch set remains `null`;
-- the deterministic harmonic-residual arbiter explains candidate energy from
-  lower fundamentals, validates itself on synthetic known chords, and still
-  returns review-only evidence while the real signal remains ambiguous.
+- the temporal harmonic-residual feature explains candidate energy from lower
+  fundamentals proposed by the transcription model, but cannot decide a pitch;
+- an independent lower-source search enumerates `candidate frequency / k` for
+  harmonics 2 through 16 and inspects those fundamentals directly in the sustain
+  spectrum. It is review evidence only: finding a plausible source does not prove
+  that the candidate is its partial.
 
 The first real inventory corrected another assumption: the source directory has
 33 chord hits, but the current four-chord JUNCTION grammar can reach only eight
@@ -553,12 +556,15 @@ wrong: harmonics, saturation, and transcription errors are still live
 explanations. `unknown` is the correct machine verdict until those alternatives
 are falsified.
 
-The first synthetic arbiter grid deliberately places B1, A2 and F-sharp3 below
-C-sharp5, so their partials occupy the disputed band. An independently enveloped
-C-sharp remains detectable down to `-20 dB` at three saturation drives: the
-fixture reports `1.0` recall, `0.0` false-positive rate and only `0.012246`
-separation in normalized temporal residual. The narrow margin matters more than
-the perfect headline scores; it says the test boundary is fragile.
+The first synthetic arbiter grid deliberately placed B1, A2 and F-sharp3 below
+C-sharp5, so their partials occupied the disputed band. An independently
+enveloped C-sharp appeared detectable down to `-20 dB` at three saturation
+drives: the fixture reported `1.0` recall, `0.0` false-positive rate and only
+`0.012246` separation in normalized temporal residual. The narrow margin was the
+important result. Adding the omitted F-sharp2 source, without changing the
+threshold, produced `0.666667` false-positive rate and a negative `-0.006729`
+margin. The earlier success was a fixture artefact, so the residual is no longer
+a decision authority.
 
 The corrected real-audio pass made that fragility audible in the evidence.
 Every Basic Pitch proposal crossed the synthetic `0.22` residual threshold;
@@ -569,6 +575,25 @@ for independent voices. The engineering response is not to loosen or tighten a
 number until the labels look plausible. Keep the chord `unknown`, then expand
 the known-truth grid across shared ADSR, detune, chorus, spectral slope and
 saturation before allowing the arbiter to vote.
+
+The two files declared `Bmin9` expose the distinction between pitch class and
+voicing. Basic Pitch proposes different registers, but both fold to exactly
+`C-sharp, D, F-sharp, A, B`, the declared B-minor-nine pitch classes. The
+independent source scan finds no qualifying lower source for the proposed C-sharp5
+in `V-String`; this is absence of supporting evidence, not proof of a separately
+played ninth. In `WaveStrings` it finds a plausible F-sharp3 hypothesis at the
+third harmonic: `30.559 dB` local SNR, `-3.314 dB` relative to the disputed
+C-sharp5, two supporting lower partials and `-1.955 cents` from the tuned note.
+That makes the ninth ambiguous in `WaveStrings`, while the two files still agree
+harmonically at pitch-class level. A later phase-coherence test should ask whether
+the C-sharp phase follows three times the F-sharp phase; deep chorus, wide unison
+or shared modulation must invalidate that test rather than force a verdict.
+
+Never let `no source candidate` mean `voiced`. It means the conditioned feature
+has no basis and must abstain. Search possible lower sources independently, then
+record `valid` and a reason for every piece of evidence. Likewise, a high note
+outside the decision-relevant chord register can be `not_evaluated`; uncertainty
+should be reserved for notes that could actually change admission.
 
 One implementation fault also justified a regression check: an iterable of
 lower notes was consumed while finding harmonic sources, leaving the relative

@@ -29,8 +29,10 @@ The initial **PLAY THE ROAD** gesture is one flat typographic launch surface wit
 - deterministic signal, score, documentation-consistency, and packaging tests.
 - a Git-ignored Python harmony-analysis environment that inventories the eight
   JUNCTION-reachable chord hits and keeps Basic Pitch output as proposals until
-  a deterministic, ground-truth-tested harmonic arbiter can accept or reject
-  the observed pitch set.
+  independent evidence can accept or reject the observed pitch set. The current
+  residual arbiter is a proposal-conditioned feature, not a decision authority;
+  a separate spectrum pass searches lower source hypotheses without trusting
+  the proposer and remains explicitly review-only.
 
 ## Verify
 

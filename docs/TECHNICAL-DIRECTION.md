@@ -186,9 +186,15 @@ pilot scans only the eight chord hits reachable by that four-chord grammar,
 hashes and segments the original files in place, estimates tuning, and records
 Basic Pitch output as high-recall proposals. A filename remains declared
 metadata, chroma is visual evidence only, and both the authoritative pitch set
-and chord label stay unknown until a deterministic harmonic-residual arbiter has
-passed synthetic known-chord tests. Reports and the Python environment live
-under ignored development paths and cannot enter the production resource.
+and chord label stay unknown. The temporal residual is retained only as a
+proposal-conditioned feature: adding F-sharp2 to the known-truth collision
+fixture falsified its earlier threshold. A separate spectral pass enumerates
+possible source fundamentals directly from each disputed upper component,
+without depending on the proposer, but remains review-only because magnitude
+cannot distinguish an aligned partial from an independent voice. The next
+decision layer requires explicit abstention plus independent stereo and phase
+evidence. Reports and the Python environment live under ignored development
+paths and cannot enter the production resource.
 
 ### Flux sequencer direction
 

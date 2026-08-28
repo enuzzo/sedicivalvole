@@ -108,11 +108,15 @@ dated study documents.
 - A development-only sample-harmony pilot now inventories the eight chord hits
   reachable by JUNCTION, records byte identity, envelope shape, tuning and
   high-recall Basic Pitch proposals plus review-only harmonic-residual evidence.
-  Its first synthetic C-sharp collision grid passes at `1.0` recall and `0.0`
-  false-positive rate but with a narrow `0.012246` separation margin; the
-  corrected real-audio pass admits no authoritative pitch set and keeps every
-  chord label unknown. Its ignored Python environment and reports never enter
-  the product build or redistribute source audio.
+  Its first three-note synthetic C-sharp collision grid passed at `1.0` recall
+  and `0.0` false-positive rate but with a narrow `0.012246` separation margin.
+  Adding the missing F-sharp2 source falsified that result: false-positive rate
+  rose to `0.666667` and the margin became `-0.006729`. The residual is therefore
+  a proposal-conditioned feature, not a decision authority. A separate
+  review-only spectrum pass searches possible lower fundamentals independently;
+  no authoritative pitch set or chord label is admitted. The ignored Python
+  environment and reports never enter the product build or redistribute source
+  audio.
 
 ## Verified boundaries
 
@@ -140,10 +144,11 @@ dated study documents.
    phase plus JUNCTION section/take exposure counters against the first complete report.
 3. Design Engine only after exactly three Engine-specific directions are shown
    and one is selected.
-4. Expand the sample-harmony arbiter beyond its first synthetic
-   F-sharp/A/B-to-C-sharp collision: shared ADSR, detune, chorus, spectral slope
-   and saturation must preserve the required separation before any detected
-   pitch set can gate JUNCTION material.
+4. Replace the failed magnitude-residual decision with a three-way evidence
+   stack. Validate shared ADSR/filter envelopes, phase seeds, detune, chorus,
+   spectral slope and saturation; add stereo and phase-coherence evidence with
+   explicit invalidity reasons before any detected pitch set can gate JUNCTION
+   material.
 5. Keep `VERSION` at `0.0.0` until an explicit release is approved.
 
 ## Documentation map

@@ -19,7 +19,7 @@ from analysis.harmonic_arbiter import analyse_candidate, midi_to_frequency
 
 SAMPLE_RATE = 48_000
 DURATION_SECONDS = 1.4
-BASE_NOTES = (35, 45, 54)  # B1, A2, F#3: all can place partials near C#5.
+BASE_NOTES = (35, 42, 45, 54)  # B1, F#2, A2, F#3: partials crowd the C#5 band.
 TARGET_MIDI = 73  # C#5.
 TARGET_LEVELS_DB = (-6.0, -12.0, -20.0, -30.0)
 SATURATION_DRIVES = (0.0, 1.5, 3.0)
@@ -52,7 +52,7 @@ def render_case(target_level_db: float | None, saturation_drive: float) -> np.nd
     time = np.arange(round(SAMPLE_RATE * DURATION_SECONDS), dtype=np.float64) / SAMPLE_RATE
     base_envelope = envelope(time, onset=0.02, attack=0.035, release_start=0.90, release=0.42)
     signal = np.zeros_like(time)
-    for midi, level in zip(BASE_NOTES, (0.72, 0.88, 1.0), strict=True):
+    for midi, level in zip(BASE_NOTES, (0.72, 0.80, 0.88, 1.0), strict=True):
         signal += synth_note(midi, level, time, base_envelope)
     if target_level_db is not None:
         target_envelope = envelope(time, onset=0.105, attack=0.025, release_start=0.72, release=0.30)
@@ -97,9 +97,16 @@ def validate() -> dict:
     present_residuals = [case["evidence"]["temporal_residual"] for case in required if case["target_level_db"] == -20.0]
     separation_margin = min(present_residuals) - max(absent_residuals)
     accepted = recall >= 0.90 and false_positive_rate <= 0.05 and separation_margin >= 0.01
+    unconditioned = analyse_candidate(render_case(-12.0, 0.0), SAMPLE_RATE, TARGET_MIDI, ())
+    abstention_passed = (
+        unconditioned.verdict == "unknown"
+        and not unconditioned.valid
+        and unconditioned.reason == "no_proposed_source_candidate"
+    )
+    accepted = accepted and abstention_passed
     return {
         "schema_version": "0.1.0",
-        "target": "C#5 voiced versus B1/A2/F#3 partials",
+        "target": "C#5 voiced versus B1/F#2/A2/F#3 partials",
         "acceptance": {
             "minimum_recall": 0.90,
             "maximum_false_positive_rate": 0.05,
@@ -110,7 +117,9 @@ def validate() -> dict:
             "false_positive_rate": round(false_positive_rate, 6),
             "residual_margin": round(separation_margin, 6),
             "accepted": accepted,
+            "unconditioned_abstention": abstention_passed,
         },
+        "unconditioned_case": unconditioned.to_dict(),
         "cases": cases,
     }
 

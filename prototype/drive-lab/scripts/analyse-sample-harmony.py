@@ -194,7 +194,7 @@ def analyse_file(path: Path, repo_root: Path, model: Model) -> dict[str, Any]:
     arbiter_evidence = []
     for proposal in proposals:
         evidence = analyse_candidate(
-            y,
+            tuning_audio,
             TARGET_SAMPLE_RATE,
             proposal["midi"],
             (midi for midi in proposal_midis if midi < proposal["midi"]),
@@ -202,6 +202,8 @@ def analyse_file(path: Path, repo_root: Path, model: Model) -> dict[str, Any]:
         )
         arbiter_evidence.append(evidence.to_dict())
     flags = ["harmonic_arbiter_real_audio_requires_review"]
+    if any(not evidence["valid"] for evidence in arbiter_evidence):
+        flags.append("harmonic_arbiter_abstained")
     if segmentation["sustain_duration_s"] < 0.30:
         flags.append("extension_unknown_short_sustain")
     if segmentation["envelope_shape"] not in {"impulsive", "sustained"}:
@@ -246,11 +248,13 @@ def analyse_file(path: Path, repo_root: Path, model: Model) -> dict[str, Any]:
                 "model": str(ICASSP_2022_MODEL_PATH),
             },
             "harmonic_arbiter": {
-                "status": "synthetic_ground_truth_passed_real_audio_review_required",
+                "status": "proposal_conditioned_feature_not_decision_authority",
                 "minimum_temporal_residual": MIN_TEMPORAL_RESIDUAL,
-                "synthetic_recall": 1.0,
-                "synthetic_false_positive_rate": 0.0,
-                "synthetic_residual_margin": 0.012246,
+                "independent_source_search": {
+                    "status": "review_evidence_only",
+                    "candidate_harmonics": [2, 16],
+                    "tolerance_cents": 8.0,
+                },
             },
             "chroma": {"role": "human_visualisation_only", "votes": False},
         },
