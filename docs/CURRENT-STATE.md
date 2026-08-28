@@ -105,6 +105,11 @@ dated study documents.
   **STILLWATER 07** are declared honestly as `IN PREPARATION` and are disabled.
 - `docs/MUSIC-CRAFT.md` records the musical defects and techniques already
   learned. Assertable musical rules belong in tests.
+- A development-only sample-harmony pilot now inventories the eight chord hits
+  reachable by JUNCTION, records byte identity, envelope shape, tuning and
+  high-recall Basic Pitch proposals, and deliberately leaves the authoritative
+  pitch set and chord label unknown. Its ignored Python environment and reports
+  never enter the product build or redistribute source audio.
 
 ## Verified boundaries
 
@@ -132,7 +137,10 @@ dated study documents.
    phase plus JUNCTION section/take exposure counters against the first complete report.
 3. Design Engine only after exactly three Engine-specific directions are shown
    and one is selected.
-4. Keep `VERSION` at `0.0.0` until an explicit release is approved.
+4. Validate the sample-harmony arbiter on synthetic known chords, including the
+   F-sharp/A/B-to-C-sharp harmonic collision, before allowing any detected pitch
+   set to gate JUNCTION material.
+5. Keep `VERSION` at `0.0.0` until an explicit release is approved.
 
 ## Documentation map
 

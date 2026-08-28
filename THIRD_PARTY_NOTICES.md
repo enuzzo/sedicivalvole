@@ -125,3 +125,24 @@ No upstream preset data, pattern preset, kit name, or audio asset is included.
 Upstream preset families named after specific commercial records are
 deliberately not carried across. See `docs/REFERENCE-STUDY-TEXTSTEP.md` for
 provenance, architectural findings, and the adoption plan.
+
+### Automatic music transcription development stack
+
+The sample-harmony pilot uses a machine-local, Git-ignored Python environment.
+None of these packages, their models, or their generated reports enter the
+browser bundle or the published product.
+
+| Package | Pinned version/range | Licence | Purpose and source |
+|---|---:|---|---|
+| [Spotify Basic Pitch](https://github.com/spotify/basic-pitch) | `0.4.0` | Apache-2.0 | High-recall polyphonic note proposals; never the final harmonic verdict |
+| [NumPy](https://github.com/numpy/numpy) | `<2.1` | BSD-3-Clause | Numerical arrays used by the analysis stack |
+| [Numba](https://github.com/numba/numba) | `0.60.0` | BSD-2-Clause | Intel-macOS-compatible acceleration dependency |
+| [llvmlite](https://github.com/numba/llvmlite) | `0.43.0` | BSD-2-Clause | Precompiled Intel-macOS backend required by Numba |
+| [scikit-learn](https://github.com/scikit-learn/scikit-learn) | `<=1.5.1` | BSD-3-Clause | Version bounded to Core ML Tools' verified conversion range |
+| [setuptools](https://github.com/pypa/setuptools) | `<81` | MIT | Compatibility provider for the legacy `pkg_resources` import in Resampy |
+
+Basic Pitch's transitive runtime on macOS includes Core ML Tools, librosa,
+SciPy, Resampy, Pretty MIDI, mir_eval, SoundFile, and their declared Python
+dependencies. Their installed licence files remain in the ignored virtual
+environment. They are development tools only and do not alter the licensing of
+the project's source or the external sample packs.

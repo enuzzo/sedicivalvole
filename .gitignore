@@ -3,6 +3,7 @@
 
 # Local macOS metadata.
 .DS_Store
+__pycache__/
 
 # Local credentials and configuration. The example remains versionable.
 .env
@@ -12,6 +13,7 @@
 # Local prototype dependencies and generated output.
 /prototype/drive-lab/node_modules/
 /prototype/drive-lab/dist/
+/prototype/drive-lab/.sample-analysis-venv/
 
 # Local diagnostic delivery configuration. The example remains versionable.
 /prototype/drive-lab/public/api/recipient.local.php

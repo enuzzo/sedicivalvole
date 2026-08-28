@@ -181,6 +181,15 @@ then recovers the ambient section gently. Re-acceleration cancels the release
 and restores the current section without restarting its phrase.
 The original sample-pack files never enter the build.
 
+Source-harmony qualification is a separate offline boundary. The current
+pilot scans only the eight chord hits reachable by that four-chord grammar,
+hashes and segments the original files in place, estimates tuning, and records
+Basic Pitch output as high-recall proposals. A filename remains declared
+metadata, chroma is visual evidence only, and both the authoritative pitch set
+and chord label stay unknown until a deterministic harmonic-residual arbiter has
+passed synthetic known-chord tests. Reports and the Python environment live
+under ignored development paths and cannot enter the production resource.
+
 ### Flux sequencer direction
 
 The synthesis-first boundary is implemented. The next extension is a sampler

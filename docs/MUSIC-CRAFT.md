@@ -514,6 +514,45 @@ browser and no vehicle; `analyse-render.mjs` reports band balance, stereo width
 and crest, which is how "it sounds thin" became "the mix is 3.6% wide and the
 mids are 15 dB down".
 
+### 6.1 A filename declares harmony; it does not prove it
+
+JUNCTION's chord loader keys one-shots from their filenames. That was enough to
+find a file called `Bmin9`, but not enough to know whether its ninth is a
+separately voiced C-sharp, a harmonic of F-sharp, A, or B, or absent entirely.
+This matters because the listening fault was heard as rough, incoherent chord
+changes: a test built from the same unverified label would merely certify its
+own assumption.
+
+Pitch-class chroma cannot arbitrate this case. Folding every octave into twelve
+classes discards the register that distinguishes a played note from an
+overlapping partial. Basic Pitch and a CQT chromagram can therefore agree on a
+false C-sharp, especially on saturated or detuned synth material. Agreement
+between correlated detectors is not independent evidence.
+
+The analysis contract now has three separate layers:
+
+- `declared` preserves the pack filename without using it as a detection prior;
+- `observed.proposals` contains high-recall transcription candidates, while the
+  authoritative pitch set remains `null`;
+- a future deterministic harmonic-residual arbiter must explain candidate
+  energy from lower fundamentals, validate itself on synthetic known chords,
+  and return `unknown` when the signal is too short or ambiguous.
+
+The first real inventory corrected another assumption: the source directory has
+33 chord hits, but the current four-chord JUNCTION grammar can reach only eight
+of them — two each for `Emin9`, `Cmaj7`, `Amin7`, and `Bmin9`. Analyse those
+eight and every reachable adjacent pair before scaling to the remaining tonal
+library. A sample may be blocked automatically, but admission remains a recorded
+human decision; the tool never renames or rewrites the pack.
+
+The first proposer-only run proves why this boundary is necessary. The clean
+`JayPad_Cmaj7` proposal contains C, E, G, and B, while the file declared
+`FifthHit_Amin7` also proposes C-sharp, G-sharp, B, and F-sharp. That is evidence
+that the files deserve arbitration, not evidence that the latter label is
+wrong: harmonics, saturation, and transcription errors are still live
+explanations. `unknown` is the correct machine verdict until those alternatives
+are falsified.
+
 ---
 
 ## 7. Sources and material

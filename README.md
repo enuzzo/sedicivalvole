@@ -32,6 +32,10 @@ The canonical development build is available at [sedicivalvole.app](https://sedi
 - ✅ FRACTURE, a production AudioWorklet score with an ambience-only launch, ten four-bar harmonic sections, a narrow tempo knee, quantized transitions, hysteresis, dwell, crossfades, speed-driven atmosphere/low-end/rhythm depth, and no automatic riff or response lane in normal playback;
 - ✅ JUNCTION, a sampled production built as one synchronous performance at a time: 24 complete eight-bar clips from 76 distinct recordings, one stable E-minor harmonic grammar, native 127–168 BPM pacing, beatless ambient rest, four-second rhythm entrances/releases, one 5.8 MB segmented Opus bank, recent-take avoidance, and no rave lead, tonal second deck, or loose source samples;
 - ✅ production build and deterministic signal, diagnostic-model, and packaging tests passing;
+- 🧪 a development-only harmony inventory now analyses the eight chord hits
+  reachable by JUNCTION with byte identity, envelope/tuning measurements and
+  high-recall note proposals; authoritative pitch sets remain deliberately
+  unknown until the harmonic-residual arbiter passes synthetic ground truth;
 - ✅ photographed Tesla split-view evidence at `773 × 601`, screen `1254 × 784`, DPR `1.53`;
 - ✅ compact-view v3 diagnostics with aggregate and per-phase frame pacing, browser-exposed heap and decoded-audio memory, network history, runtime/resource evidence, and no coordinates; the explicit same-origin email handoff attaches the complete report as verified gzip-compressed JSON;
 - ✅ the canonical bare root, direct PHP entry, and content-addressed assets are live and byte-identical after the SiteGround cache flush;

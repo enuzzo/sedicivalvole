@@ -27,6 +27,10 @@ The initial **PLAY THE ROAD** gesture is one flat typographic launch surface wit
 - desktop simulator: hold `ArrowUp` to accelerate, release it or press `ArrowDown` for progressive regenerative slowdown, and hold `Space` for stronger braking from the exact current speed;
 - `VERSION` injected at build time;
 - deterministic signal, score, documentation-consistency, and packaging tests.
+- a Git-ignored Python harmony-analysis environment that inventories the eight
+  JUNCTION-reachable chord hits and keeps Basic Pitch output as proposals until
+  a deterministic, ground-truth-tested harmonic arbiter can accept or reject
+  the observed pitch set.
 
 ## Verify
 
