@@ -14,12 +14,28 @@ export function validAtlasPosition(position) {
 export function speedToAtlasCamera(speedKmh) {
   const speed = Math.min(130, Math.max(0, Number(speedKmh) || 0));
   const energy = speed / 130;
+  // Keep the early pull-back legible, then compress the upper end so motorway
+  // speed reveals more city without ever flattening the extruded city field.
+  const flight = 0.35 * energy + 0.65 * Math.sqrt(energy);
   return {
-    zoom: 16.2 - energy * 2.4,
-    pitch: 62 - energy * 14,
+    zoom: 16.2 - flight * 1.55,
+    pitch: 62 - flight * 6.5,
     durationMs: Math.round(2200 - energy * 1050),
     buildingScale: 0.82 + energy * 0.38,
   };
+}
+
+/** Uses device heading when present, otherwise derives travel bearing from two trusted fixes. */
+export function resolveAtlasHeading(previous, next, reportedHeading, minimumTravelMetres = 3) {
+  if (Number.isFinite(reportedHeading)) return ((reportedHeading % 360) + 360) % 360;
+  const previousHeading = Number.isFinite(previous?.heading) ? previous.heading : null;
+  if (!validAtlasPosition(previous) || !validAtlasPosition(next)) return previousHeading;
+
+  const meanLatitude = ((previous.latitude + next.latitude) * Math.PI) / 360;
+  const northMetres = (next.latitude - previous.latitude) * 111320;
+  const eastMetres = (next.longitude - previous.longitude) * 111320 * Math.cos(meanLatitude);
+  if (Math.hypot(northMetres, eastMetres) < Math.max(0, minimumTravelMetres)) return previousHeading;
+  return ((Math.atan2(eastMetres, northMetres) * 180) / Math.PI + 360) % 360;
 }
 
 /** Advances the fixed Milan demo without exposing or inventing user location. */

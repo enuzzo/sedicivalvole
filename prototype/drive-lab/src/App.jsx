@@ -35,6 +35,7 @@ import { SplashSignalGate } from "./splash-signal-gate.jsx";
 import { Interstate7Field } from "./interstate-7-field.jsx";
 import { MeridianField } from "./environments/meridian/meridian-field.jsx";
 import { LatitudesField } from "./environments/latitudes/latitudes-field.jsx";
+import { resolveAtlasHeading } from "./environments/atlas/atlas-model.js";
 import {
   advanceDemoMotion,
   MODEL_3_AWD_REFERENCE,
@@ -737,11 +738,14 @@ export function App() {
           && Number.isFinite(position.coords.longitude)
           && capturedAtMs - mapPositionUpdatedAtRef.current >= 2500) {
           mapPositionUpdatedAtRef.current = capturedAtMs;
-          setMapPosition({
+          const nextMapPosition = {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
-            heading: Number.isFinite(position.coords.heading) ? position.coords.heading : null,
-          });
+          };
+          setMapPosition((current) => ({
+            ...nextMapPosition,
+            heading: resolveAtlasHeading(current, nextMapPosition, position.coords.heading),
+          }));
         }
         if (unreliable && gpsSpeedLockedRef.current) {
           if (shouldLogSample) {

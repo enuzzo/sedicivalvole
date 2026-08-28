@@ -145,7 +145,7 @@ export default function AtlasField({ speed, theme, position, reducedMotion, onRe
         }
         map.easeTo({
           center: [point.longitude, point.latitude],
-          bearing: Number.isFinite(point.heading) ? point.heading : map.getBearing() + Math.min(1.2, current.speed / 100),
+          bearing: Number.isFinite(point.heading) ? point.heading : map.getBearing(),
           pitch: nextCamera.pitch,
           zoom: nextCamera.zoom,
           duration: nextCamera.durationMs,
@@ -229,7 +229,7 @@ export default function AtlasField({ speed, theme, position, reducedMotion, onRe
     }
     let active = true;
     import("qrcode").then(({ default: QRCode }) => QRCode.toDataURL(selected.url, {
-      width: 116,
+      width: 192,
       margin: 1,
       color: { dark: "#09090b", light: "#f1eee5" },
     })).then((dataUrl) => {
