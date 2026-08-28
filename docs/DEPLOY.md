@@ -8,6 +8,32 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Signal Gate credit-link polish publication — 2026-08-28
+
+- build stamp: **`20260828-2249`**; deployed commit: `85aea3b`;
+  implementation checkpoint: `3f770cd`;
+- gate before upload: **PASS**, all 11 focused splash tests, 159 of 160 active
+  unit tests, all 4 packaging tests, a production build from the deployed
+  commit, exact local Browser QA at `773 × 601` and `390 × 844`, and the
+  read-only remote identity gate with `remote_writes=NONE`. The one unavailable
+  test requires a local PHP executable that is not installed on this host and
+  is unrelated to the static splash;
+- publication: **PASS**, 27 files / 8,203,020 bytes uploaded to the canonical
+  root. Dynamic-root, exact legacy cleanup, retained cache overlap and remote
+  listing checks passed; the repeated post-publication identity gate passed
+  with `remote_writes=NONE`;
+- canonical identity: **PASS**. Cache-busted HTML returns `200` with explicit
+  `no-store` / `no-cache` behavior and a cache `MISS`. HTML, the selected
+  `index-CYLBRSq7.js` and `index-CIK-ac_h.css` are byte-identical to the local
+  build at SHA-256 `357def12cff300ba84a5a9d151acd92f7f7765e0ac654f3e2f006ebb0ec7092c`,
+  `0ad3c6433e859bace58ddf5f24e01c8e5e16a203542c851da1db0469a7c73ffb`
+  and `7b1aec5535068d1b7488bbcd8d4ce29e032eaf130b9703e60822419cdc4ae85d`;
+- live product QA: **PASS at exact `773 × 601`**. The canonical launch identifies
+  build `20260828-2249`; Netmilk Studio resolves to `https://netmilk.ch/`, the
+  source row renders an `11 × 11 px` monochrome GitHub mark, both text and mark
+  retain the light paper colour on hover, the document has zero overflow, and
+  the Browser console has zero warnings or errors.
+
 ## Signal Gate readability publication — 2026-08-28
 
 - build stamp: **`20260828-2219`**; deployed commit: `e042344`;
