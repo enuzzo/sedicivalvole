@@ -534,9 +534,9 @@ The analysis contract now has three separate layers:
 - `declared` preserves the pack filename without using it as a detection prior;
 - `observed.proposals` contains high-recall transcription candidates, while the
   authoritative pitch set remains `null`;
-- a future deterministic harmonic-residual arbiter must explain candidate
-  energy from lower fundamentals, validate itself on synthetic known chords,
-  and return `unknown` when the signal is too short or ambiguous.
+- the deterministic harmonic-residual arbiter explains candidate energy from
+  lower fundamentals, validates itself on synthetic known chords, and still
+  returns review-only evidence while the real signal remains ambiguous.
 
 The first real inventory corrected another assumption: the source directory has
 33 chord hits, but the current four-chord JUNCTION grammar can reach only eight
@@ -552,6 +552,29 @@ that the files deserve arbitration, not evidence that the latter label is
 wrong: harmonics, saturation, and transcription errors are still live
 explanations. `unknown` is the correct machine verdict until those alternatives
 are falsified.
+
+The first synthetic arbiter grid deliberately places B1, A2 and F-sharp3 below
+C-sharp5, so their partials occupy the disputed band. An independently enveloped
+C-sharp remains detectable down to `-20 dB` at three saturation drives: the
+fixture reports `1.0` recall, `0.0` false-positive rate and only `0.012246`
+separation in normalized temporal residual. The narrow margin matters more than
+the perfect headline scores; it says the test boundary is fragile.
+
+The corrected real-audio pass made that fragility audible in the evidence.
+Every Basic Pitch proposal crossed the synthetic `0.22` residual threshold;
+B5 in the Emin9 pad crossed it by only `0.006971`. Notes inside one synth patch
+often share attack, modulation and release, so an envelope-based discriminator
+trained on an independently articulated target can mistake correlated partials
+for independent voices. The engineering response is not to loosen or tighten a
+number until the labels look plausible. Keep the chord `unknown`, then expand
+the known-truth grid across shared ADSR, detune, chorus, spectral slope and
+saturation before allowing the arbiter to vote.
+
+One implementation fault also justified a regression check: an iterable of
+lower notes was consumed while finding harmonic sources, leaving the relative
+level reference empty and producing `0 dB` for every candidate. Materialize
+one-shot iterables before reusing them; otherwise a scientifically plausible
+report can carry internally false evidence without raising an exception.
 
 ---
 

@@ -4,6 +4,7 @@ import test from "node:test";
 
 const analyzerUrl = new URL("../scripts/analyse-sample-harmony.py", import.meta.url);
 const requirementsUrl = new URL("../analysis/requirements.txt", import.meta.url);
+const arbiterUrl = new URL("../analysis/harmonic_arbiter.py", import.meta.url);
 const ignoreUrl = new URL("../../../.gitignore", import.meta.url);
 
 test("the harmony pilot covers the four reachable JUNCTION labels", async () => {
@@ -13,12 +14,17 @@ test("the harmony pilot covers the four reachable JUNCTION labels", async () => 
 });
 
 test("automatic transcription remains a proposal until the arbiter is validated", async () => {
-  const source = await readFile(analyzerUrl, "utf8");
+  const [source, arbiter] = await Promise.all([
+    readFile(analyzerUrl, "utf8"),
+    readFile(arbiterUrl, "utf8"),
+  ]);
   assert.match(source, /"status": "proposal_only"/);
   assert.match(source, /"pitch_set_midi": None/);
   assert.match(source, /"value": "unknown"/);
-  assert.match(source, /"harmonic_arbiter_not_implemented"/);
+  assert.match(source, /"harmonic_arbiter_real_audio_requires_review"/);
+  assert.match(source, /"synthetic_ground_truth_passed_real_audio_review_required"/);
   assert.match(source, /"role": "human_visualisation_only", "votes": False/);
+  assert.match(arbiter, /lower_midis = tuple\(lower_midis\)/);
 });
 
 test("the development environment is pinned and cannot enter Git", async () => {

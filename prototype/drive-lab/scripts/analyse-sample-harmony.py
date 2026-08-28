@@ -11,6 +11,7 @@ import json
 import logging
 import math
 import subprocess
+import sys
 import warnings
 from datetime import datetime, timezone
 from pathlib import Path
@@ -24,6 +25,11 @@ warnings.filterwarnings("ignore", message="pkg_resources is deprecated as an API
 
 from basic_pitch import ICASSP_2022_MODEL_PATH
 from basic_pitch.inference import Model, predict
+
+DRIVE_LAB = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(DRIVE_LAB))
+
+from analysis.harmonic_arbiter import MIN_TEMPORAL_RESIDUAL, analyse_candidate
 
 
 SCHEMA_VERSION = "0.1.0"
@@ -183,7 +189,19 @@ def analyse_file(path: Path, repo_root: Path, model: Model) -> dict[str, Any]:
     tuning_bins = float(librosa.estimate_tuning(y=tuning_audio, sr=TARGET_SAMPLE_RATE))
     tuning_confidence = 0.0 if tuning_audio.size < round(0.30 * TARGET_SAMPLE_RATE) else 0.5
     declared = declared_from_filename(path)
-    flags = ["harmonic_arbiter_not_implemented"]
+    proposals = propose_notes(path, model)
+    proposal_midis = tuple(proposal["midi"] for proposal in proposals)
+    arbiter_evidence = []
+    for proposal in proposals:
+        evidence = analyse_candidate(
+            y,
+            TARGET_SAMPLE_RATE,
+            proposal["midi"],
+            (midi for midi in proposal_midis if midi < proposal["midi"]),
+            tuning_cents=tuning_bins * 100.0,
+        )
+        arbiter_evidence.append(evidence.to_dict())
+    flags = ["harmonic_arbiter_real_audio_requires_review"]
     if segmentation["sustain_duration_s"] < 0.30:
         flags.append("extension_unknown_short_sustain")
     if segmentation["envelope_shape"] not in {"impulsive", "sustained"}:
@@ -206,7 +224,8 @@ def analyse_file(path: Path, repo_root: Path, model: Model) -> dict[str, Any]:
         },
         "segmentation": segmentation,
         "observed": {
-            "proposals": propose_notes(path, model),
+            "proposals": proposals,
+            "arbiter_evidence": arbiter_evidence,
             "pitch_set_midi": None,
             "pitch_classes": None,
         },
@@ -226,7 +245,13 @@ def analyse_file(path: Path, repo_root: Path, model: Model) -> dict[str, Any]:
                 "minimum_note_length_ms": 40.0,
                 "model": str(ICASSP_2022_MODEL_PATH),
             },
-            "harmonic_arbiter": {"status": "pending_ground_truth_validation"},
+            "harmonic_arbiter": {
+                "status": "synthetic_ground_truth_passed_real_audio_review_required",
+                "minimum_temporal_residual": MIN_TEMPORAL_RESIDUAL,
+                "synthetic_recall": 1.0,
+                "synthetic_false_positive_rate": 0.0,
+                "synthetic_residual_margin": 0.012246,
+            },
             "chroma": {"role": "human_visualisation_only", "votes": False},
         },
     }

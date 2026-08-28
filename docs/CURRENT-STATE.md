@@ -107,9 +107,12 @@ dated study documents.
   learned. Assertable musical rules belong in tests.
 - A development-only sample-harmony pilot now inventories the eight chord hits
   reachable by JUNCTION, records byte identity, envelope shape, tuning and
-  high-recall Basic Pitch proposals, and deliberately leaves the authoritative
-  pitch set and chord label unknown. Its ignored Python environment and reports
-  never enter the product build or redistribute source audio.
+  high-recall Basic Pitch proposals plus review-only harmonic-residual evidence.
+  Its first synthetic C-sharp collision grid passes at `1.0` recall and `0.0`
+  false-positive rate but with a narrow `0.012246` separation margin; the
+  corrected real-audio pass admits no authoritative pitch set and keeps every
+  chord label unknown. Its ignored Python environment and reports never enter
+  the product build or redistribute source audio.
 
 ## Verified boundaries
 
@@ -137,9 +140,10 @@ dated study documents.
    phase plus JUNCTION section/take exposure counters against the first complete report.
 3. Design Engine only after exactly three Engine-specific directions are shown
    and one is selected.
-4. Validate the sample-harmony arbiter on synthetic known chords, including the
-   F-sharp/A/B-to-C-sharp harmonic collision, before allowing any detected pitch
-   set to gate JUNCTION material.
+4. Expand the sample-harmony arbiter beyond its first synthetic
+   F-sharp/A/B-to-C-sharp collision: shared ADSR, detune, chorus, spectral slope
+   and saturation must preserve the required separation before any detected
+   pitch set can gate JUNCTION material.
 5. Keep `VERSION` at `0.0.0` until an explicit release is approved.
 
 ## Documentation map
