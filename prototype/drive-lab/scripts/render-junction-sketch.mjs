@@ -5,23 +5,15 @@
 // not redistributable. Nothing here is copied into the repository; what would
 // ship is the rendered arrangement. See THIRD_PARTY_NOTICES.md.
 //
-// **Nothing here is played by us.** Every riff, chord and phrase already exists
-// in the pack, performed. This score arranges that material; it does not
-// perform on it. An earlier version drove the rave multisamples with melodies
-// of our own, which was the wrong idea twice over: it threw away the playing
-// that is the reason to use a sample library at all, and it exposed a defect —
-// notes were folded into range one at a time, so a line rising from B4 to D5
-// came out of the piano as B3 falling to D3 and sounded out of tune, which it
-// was.
-//
-// So the vocabulary is what Cyclick supplied and what its own readme describes:
-// breakbeats, basslines, and synth one-shots grouped as chords "that can be
-// used to make classic progressions".
+// The two packs contain two different kinds of material and JUNCTION respects
+// that distinction. Performed break, bass and chord loops are arranged at their
+// native rate; the chromatic multisamples are instruments, so five short motifs
+// are played from exact recorded notes. No per-note octave folding, nearest-note
+// substitution or browser-side pitch/tempo change enters the result.
 //
 // Everything plays at its own native rate. The tempo folder is chosen, never a
-// stretch factor, so a tempo change is a change of recording. The one thing
-// that is ours is the arrangement: which break is layered under which, which
-// chord lands where, and the processing they all sit in.
+// stretch factor, so a tempo change is a change of recording. The arrangement,
+// five chord-derived motifs, break pairing, dynamics and processing are ours.
 //
 // Usage:
 //   node scripts/render-junction-sketch.mjs
@@ -44,6 +36,7 @@ import {
   JUNCTION_ARRANGEMENT,
   JUNCTION_BARS_PER_SECTION,
   JUNCTION_FAMILIES,
+  junctionFamilyMelodyNotes,
   junctionSectionFrames,
 } from "./junction-form.mjs";
 import {
@@ -59,6 +52,7 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = resolve(HERE, "..");
 const SAMPLE_RATE = 48000;
 const STEPS_PER_BAR = 16;
+const SECTION_EDGE_FADE_FRAMES = Math.round(SAMPLE_RATE * 0.008);
 
 /**
  * The progression, in E minor — the one key the jungle pack provides at every
@@ -195,13 +189,31 @@ async function main() {
     if (voicings.length === 0) throw new Error(`the pack has no ${step.chord}`);
     chords.set(step.chord, voicings);
   }
-  const accents = [];
+  const wantedNotes = new Map(ACCENT_INSTRUMENTS.map((name) => [name, new Set(
+    ALL_PROGRESSION_STEPS.flatMap((entry) => entry.accentMidis),
+  )]));
+  for (const family of JUNCTION_FAMILIES) {
+    const notes = wantedNotes.get(family.leadInstrument);
+    for (const midi of junctionFamilyMelodyNotes(family)) notes.add(midi);
+  }
+  const instruments = new Map();
   for (const name of ACCENT_INSTRUMENTS) {
     const instrument = await loadExactInstrumentNotes(
       name,
-      [...new Set(ALL_PROGRESSION_STEPS.flatMap((entry) => entry.accentMidis))],
+      [...wantedNotes.get(name)],
       SAMPLE_RATE,
     );
+    instruments.set(name, instrument);
+  }
+  for (const family of JUNCTION_FAMILIES) {
+    const instrument = instruments.get(family.leadInstrument);
+    const missing = junctionFamilyMelodyNotes(family).filter((midi) => !instrument.notes.has(midi));
+    if (missing.length > 0) {
+      throw new Error(`${family.leadInstrument} lacks exact JUNCTION notes: ${missing.join(", ")}`);
+    }
+  }
+  const accents = [];
+  for (const [name, instrument] of instruments) {
     for (const [midi, buffer] of instrument.notes) {
       accents.push({ instrument: name, midi, buffer });
     }
@@ -219,15 +231,13 @@ async function main() {
   const left = new Float32Array(totalFrames);
   const right = new Float32Array(totalFrames);
 
-  const saturator = new TubeSaturator(SAMPLE_RATE);
-  const channel = new InstrumentChannel(SAMPLE_RATE);
-  const reverb = new StereoReverb(SAMPLE_RATE);
-  const width = new StereoWidth(SAMPLE_RATE);
-  const limiter = new LookaheadLimiter(SAMPLE_RATE);
-  const breakHighPassLeft = new OnePoleHighPass();
-  const breakHighPassRight = new OnePoleHighPass();
-  breakHighPassLeft.setFrequency(110, SAMPLE_RATE);
-  breakHighPassRight.setFrequency(110, SAMPLE_RATE);
+  let saturator;
+  let channel;
+  let reverb;
+  let width;
+  let limiter;
+  let breakHighPassLeft;
+  let breakHighPassRight;
 
   /** Notes currently sounding. Melodic lines and pad hits both live here. */
   let voices = [];
@@ -240,6 +250,22 @@ async function main() {
     const { section, index: sectionIndex, startFrame, barFrames, sectionFrames } = timelineEntry;
     const family = JUNCTION_FAMILIES.find((entry) => entry.id === section.family) ?? JUNCTION_FAMILIES[0];
     const progression = family.progression;
+    // Runtime can choose any clip after any other clip. Reset every stateful DSP
+    // component and every held voice here so a rendered block cannot begin with
+    // the reverb tail or chord release of its development-time neighbour.
+    saturator = new TubeSaturator(SAMPLE_RATE);
+    channel = new InstrumentChannel(SAMPLE_RATE);
+    reverb = new StereoReverb(SAMPLE_RATE);
+    width = new StereoWidth(SAMPLE_RATE);
+    limiter = new LookaheadLimiter(SAMPLE_RATE);
+    breakHighPassLeft = new OnePoleHighPass();
+    breakHighPassRight = new OnePoleHighPass();
+    breakHighPassLeft.setFrequency(110, SAMPLE_RATE);
+    breakHighPassRight.setFrequency(110, SAMPLE_RATE);
+    voices = [];
+    smoothedLevel = section.level;
+    smoothedDrive = section.drive;
+    smoothedSpace = section.space;
     const loopFrames = barFrames * LOOP_BARS;
     const stepFrames = Math.round(barFrames / STEPS_PER_BAR);
     const phraseFrames = barFrames * LOOP_BARS;
@@ -269,10 +295,34 @@ async function main() {
           }
         }
 
+        const held = [...progression].reverse().find((chord) => chord.bar <= barInCycle);
+        const melodyAllowed = !section.chordBars || section.chordBars.includes(barInCycle);
+        if (held && melodyAllowed && section.melody > 0) {
+          const instrument = instruments.get(family.leadInstrument);
+          for (let eventIndex = 0; eventIndex < family.motif.length; eventIndex += 1) {
+            const event = family.motif[eventIndex];
+            if (event.at !== step) continue;
+            // Paired takes share the exact rhythmic spine. The alternate take
+            // leaves selected lead notes open, so a browser mix adds colour
+            // without creating a second competing drum performance.
+            if (section.melodyVariant % 2 === 1 && (eventIndex + barInCycle) % 3 === 1) continue;
+            const midi = held.accentMidis[event.degree % held.accentMidis.length];
+            const buffer = instrument.notes.get(midi);
+            if (!buffer) throw new Error(`missing exact ${family.leadInstrument} note ${midi}`);
+            const variation = noteVariation(sectionIndex * 173 + barInCycle * 19 + eventIndex);
+            voices.push(new SamplerVoice(
+              buffer,
+              1,
+              family.leadGain * section.melody * variation.gain,
+              event.steps * stepFrames,
+            ));
+            used.add(`${family.leadInstrument} ${midi}`);
+          }
+        }
+
         // An off-beat restatement of the chord already sounding. Classic jungle
         // punctuation, and it costs one extra trigger.
         if (section.stab && step === 22 && barInCycle % 2 === 1) {
-          const held = [...progression].reverse().find((chord) => chord.bar <= barInCycle);
           if (held) {
             const choices = chords.get(held.chord);
             const selected = choices[(section.voicing + sectionIndex + barInCycle + 1) % choices.length];
@@ -290,7 +340,6 @@ async function main() {
         // high-energy phrases. It is always an exact recorded chord tone: no
         // resampling, generated melody, or arbitrary pitched loop enters here.
         if (section.color && family.colorSteps.includes(step)) {
-          const held = [...progression].reverse().find((chord) => chord.bar <= barInCycle);
           const choices = held
             ? accents.filter((accent) => held.accentMidis.includes(accent.midi))
             : [];
@@ -331,7 +380,7 @@ async function main() {
         if (!layer) throw new Error(`missing authored beat ${key}`);
         used.add(`beat ${key}`);
         // Extra layers provide width and detail, never another full-level break.
-        const layerGain = layerIndex === 0 ? 1 : 0.28;
+        const layerGain = layerIndex === 0 ? 1 : 0.2;
         const pan = layerIndex === 0 ? 0 : (layerIndex % 2 === 1 ? -0.4 : 0.4);
         breakLeft += layer.left[inLoop % layer.frames] * layerGain * (1 - Math.max(0, pan));
         breakRight += layer.right[inLoop % layer.frames] * layerGain * (1 + Math.min(0, pan));
@@ -389,8 +438,13 @@ async function main() {
       );
 
       const [outLeft, outRight] = limiter.tickStereo(wideLeft * 0.95, wideRight * 0.95);
-      left[frame] = outLeft;
-      right[frame] = outRight;
+      const edgeGain = Math.min(
+        1,
+        (localFrame + 1) / SECTION_EDGE_FADE_FRAMES,
+        (sectionFrames - localFrame) / SECTION_EDGE_FADE_FRAMES,
+      );
+      left[frame] = outLeft * edgeGain;
+      right[frame] = outRight * edgeGain;
     }
   }
 
@@ -399,7 +453,12 @@ async function main() {
   await writeWav(out, left, right, SAMPLE_RATE);
   await writeFile(
     resolve(PROJECT_ROOT, "renders/junction-sketch-adaptive.json"),
-    JSON.stringify({ sourceRecordingsUsed: used.size }),
+    JSON.stringify({
+      sourceRecordingsUsed: used.size,
+      selfContainedSections: true,
+      rhythmLockedMixes: true,
+      sectionEdgeFadeMilliseconds: SECTION_EDGE_FADE_FRAMES / SAMPLE_RATE * 1000,
+    }),
   );
 
   let peak = 0;

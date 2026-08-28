@@ -284,7 +284,7 @@ export const DRIVE_TRACE_SAMPLE_LIMIT = 300;
 export const DIAGNOSTIC_MAX_REQUEST_BODY_BYTES = 1966080;
 export const DRIVE_TRACE_FIELDS = [
   "t", "speed", "gps", "gpsAge", "gpsState", "accuracy", "rate", "source", "input", "energy",
-  "bpm", "fps", "p95Frame", "audio", "audioPeak", "visual", "music", "section", "family", "takes",
+  "bpm", "fps", "p95Frame", "audio", "audioPeak", "visual", "music", "section", "family", "rhythm", "takes", "rhythms",
   "bank", "gpsConfidence", "motion", "online", "net", "rtt", "visibility",
 ];
 
@@ -322,6 +322,7 @@ export function createDriveTelemetry(startedAtMs = 0) {
       sections: new Set(),
       families: new Set(),
       takePairs: new Set(),
+      rhythmPairs: new Set(),
     },
     samples: [],
   };
@@ -366,6 +367,7 @@ export function recordDriveTelemetrySample(telemetry, sample, limit = DRIVE_TRAC
   if (typeof sample.musicId === "string" && sample.musicId) telemetry.exposure.music.add(sample.musicId);
   if (typeof sample.audioSection === "string" && sample.audioSection) telemetry.exposure.sections.add(sample.audioSection);
   if (typeof sample.audioFamily === "string" && sample.audioFamily) telemetry.exposure.families.add(sample.audioFamily);
+  if (typeof sample.audioRhythm === "string" && sample.audioRhythm) telemetry.exposure.rhythmPairs.add(sample.audioRhythm);
   if (Array.isArray(sample.audioTakes) && sample.audioTakes.length) {
     telemetry.exposure.takePairs.add(sample.audioTakes.map(String).join("+"));
   }
@@ -392,7 +394,11 @@ export function recordDriveTelemetrySample(telemetry, sample, limit = DRIVE_TRAC
       ? sample.audioSection.slice(0, 32)
       : Number.isFinite(sample.audioSection) ? sample.audioSection : null,
     family: typeof sample.audioFamily === "string" ? sample.audioFamily.slice(0, 32) : null,
+    rhythm: typeof sample.audioRhythm === "string" ? sample.audioRhythm.slice(0, 48) : null,
     takes: Array.isArray(sample.audioTakes) ? sample.audioTakes.slice(0, 2) : [],
+    rhythms: Array.isArray(sample.audioRhythms)
+      ? sample.audioRhythms.map((value) => String(value).slice(0, 48)).slice(0, 2)
+      : [],
     bank: typeof sample.audioBankLoaded === "boolean" ? sample.audioBankLoaded : null,
     gpsConfidence: typeof sample.gpsConfidence === "string" ? sample.gpsConfidence : null,
     motion: sample.motionPhase ?? null,
@@ -467,7 +473,9 @@ export function createDriveTelemetryReport(telemetry, generatedAtMs = telemetry.
       visual: "active visual environment",
       music: "active score",
       family: "active JUNCTION musical family",
+      rhythm: "active JUNCTION rhythmic identity",
       takes: "active JUNCTION take pair",
+      rhythms: "active JUNCTION rhythm pair",
       bank: "whether the sampled bank was ready",
       gpsConfidence: "coordinate-free GPS confidence class",
       rtt: "network round-trip estimate in milliseconds",

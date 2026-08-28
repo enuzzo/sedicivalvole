@@ -51,7 +51,7 @@ export const SCORE_GENRES = [
     source: SCORE_SOURCE.sampled,
     status: SCORE_STATUS.ready,
     score: "junction",
-    note: "104 processed clips from 126 recordings, mixed live in pairs.",
+    note: "160 processed clips · five rhythm-locked musical families.",
   },
   {
     id: "fracture",

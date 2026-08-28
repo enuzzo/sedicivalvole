@@ -55,7 +55,7 @@ requires a real Tesla listening session.
 
 Completed in the current working line:
 
-- JUNCTION's 104-clip browser runtime uses one 25.0 MB segmented Opus music bank built from 142 distinct recordings; its eight energy states each own 13 complete takes across five audible harmonic/colour families. Two family-compatible takes are mixed live only at eight-bar boundaries, neither the primary take nor musical family repeats immediately, 40 km/h remains at 127 BPM, 60 km/h remains at 135 BPM, and rest has no break or bassline;
+- JUNCTION's 160-clip browser runtime uses one 38.7 MB segmented Opus music bank built from 134 distinct recordings; its eight energy states each own 20 complete takes across five audible harmonic/melodic/timbral families. Two rhythm-locked takes are mixed live only at complete eight-bar boundaries, a four-entry recent window prefers unheard families and takes, 40 km/h remains at 127 BPM, 60 km/h remains at 135 BPM, and rest has no break or bassline;
 - the bank contains a mixed, processed production rather than loose source samples; browser-delivered bytes remain downloadable and are not described as secret;
 
 Queued next:

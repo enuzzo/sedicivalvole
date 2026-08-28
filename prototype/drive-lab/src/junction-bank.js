@@ -56,30 +56,52 @@ function randomUnit(random) {
   return Math.min(0.999999, Math.max(0, Number(random()) || 0));
 }
 
-export function chooseJunctionMix(sections, sectionId, previousPrimary = null, random = Math.random) {
+export function chooseJunctionMix(
+  sections,
+  sectionId,
+  previousPrimary = null,
+  random = Math.random,
+  recentPrimaries = [],
+) {
   const candidates = sections.filter((section) => section.id === sectionId);
   if (candidates.length < 2) return null;
   const previousPrimaryTake = typeof previousPrimary === "object" ? previousPrimary?.take : previousPrimary;
   const previousFamily = typeof previousPrimary === "object" ? previousPrimary?.family : null;
-  const byFamily = new Map();
+  const recentKeys = new Set(recentPrimaries.map((section) => (
+    `${section.id}:${section.take}`
+  )));
+  const recentFamilies = new Set(recentPrimaries.map((section) => section.family).filter(Boolean));
+  const recentRhythms = new Set(recentPrimaries.map((section) => section.rhythmId).filter(Boolean));
+  const byRhythm = new Map();
   for (const candidate of candidates) {
     const family = candidate.family ?? "legacy";
-    const group = byFamily.get(family) ?? [];
+    const rhythm = candidate.rhythmId ?? `legacy-${family}`;
+    const key = `${family}:${rhythm}`;
+    const group = byRhythm.get(key) ?? [];
     group.push(candidate);
-    byFamily.set(family, group);
+    byRhythm.set(key, group);
   }
-  const compatibleFamilies = [...byFamily.entries()].filter(([, group]) => group.length >= 2);
-  const freshFamilies = compatibleFamilies.filter(([family]) => family !== previousFamily);
-  const familyPool = freshFamilies.length > 0 ? freshFamilies : compatibleFamilies;
-  if (familyPool.length === 0) return null;
-  const [, compatibleCandidates] = familyPool[Math.floor(randomUnit(random) * familyPool.length)];
-  const primaryPool = compatibleCandidates.filter((section) => section.take !== previousPrimaryTake);
+  const compatibleGroups = [...byRhythm.values()].filter((group) => group.length >= 2);
+  const unseenGroups = compatibleGroups.filter((group) => (
+    group[0].family !== previousFamily
+    && !recentFamilies.has(group[0].family)
+    && !recentRhythms.has(group[0].rhythmId)
+  ));
+  const freshFamilyGroups = compatibleGroups.filter((group) => group[0].family !== previousFamily);
+  const groupPool = unseenGroups.length > 0
+    ? unseenGroups
+    : freshFamilyGroups.length > 0 ? freshFamilyGroups : compatibleGroups;
+  if (groupPool.length === 0) return null;
+  const compatibleCandidates = groupPool[Math.floor(randomUnit(random) * groupPool.length)];
+  const primaryPool = compatibleCandidates.filter((section) => (
+    section.take !== previousPrimaryTake && !recentKeys.has(`${section.id}:${section.take}`)
+  ));
   const eligible = primaryPool.length > 0 ? primaryPool : compatibleCandidates;
   const primary = eligible[Math.floor(randomUnit(random) * eligible.length)];
   const secondaryPool = compatibleCandidates.filter((section) => section.take !== primary.take);
   const secondary = secondaryPool[Math.floor(randomUnit(random) * secondaryPool.length)];
-  const mixStart = 0.18 + randomUnit(random) * 0.3;
-  const mixEnd = 0.52 + randomUnit(random) * 0.3;
+  const mixStart = 0.12 + randomUnit(random) * 0.16;
+  const mixEnd = 0.3 + randomUnit(random) * 0.18;
   return { primary, secondary, mixStart, mixEnd };
 }
 

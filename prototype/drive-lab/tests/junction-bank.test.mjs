@@ -10,7 +10,17 @@ import {
   junctionSectionForEnergy,
   parseJunctionBank,
 } from "../src/junction-bank.js";
-import { JUNCTION_FAMILIES, JUNCTION_SECTIONS } from "../scripts/junction-form.mjs";
+import {
+  JUNCTION_FAMILIES,
+  JUNCTION_SECTIONS,
+  JUNCTION_TAKES,
+  junctionFamilyMelodyNotes,
+} from "../scripts/junction-form.mjs";
+import { JUNGLE_ROOT, RAVE_ROOT } from "../scripts/sample-library.mjs";
+
+test("the rave library resolves inside the supplied Jungle Samples folder", () => {
+  assert.equal(RAVE_ROOT, `${JUNGLE_ROOT}/Rave Synths`);
+});
 
 test("JUNCTION chooses authored density and release sections from road energy", () => {
   assert.equal(junctionSectionForEnergy(0), "rest");
@@ -48,10 +58,11 @@ test("JUNCTION leaves rest beatless and builds tempo and break level without rac
     [127, 135, 158, 164, 168],
   );
   assert.ok(Math.max(...JUNCTION_SECTIONS.flatMap((section) => section.beatLevels)) <= 0.55);
-  assert.equal(new Set(byId.open.takes.flatMap((take) => take.beatPhrases.flat())).size, 12);
-  assert.ok(JUNCTION_SECTIONS.every((section) => section.takes.length === 13));
+  assert.ok(new Set(byId.open.takes.flatMap((take) => take.beatPhrases.flat())).size >= 8);
+  assert.equal(JUNCTION_TAKES, 20);
+  assert.ok(JUNCTION_SECTIONS.every((section) => section.takes.length === 20));
   assert.ok(JUNCTION_SECTIONS.every((section) => (
-    new Set(section.takes.map((take) => JSON.stringify(take))).size === 13
+    new Set(section.takes.map((take) => JSON.stringify(take))).size === 20
   )));
 });
 
@@ -61,13 +72,34 @@ test("JUNCTION provides five genuinely distinct harmonic and colour families", (
   assert.equal(new Set(JUNCTION_FAMILIES.map((family) => (
     family.progression.map((step) => step.chord).join("-")
   ))).size, 5);
+  assert.equal(new Set(JUNCTION_FAMILIES.map((family) => family.leadInstrument)).size, 5);
   assert.ok(JUNCTION_FAMILIES.every((family) => family.colorSteps.length >= 1));
+  assert.ok(JUNCTION_FAMILIES.every((family) => family.motif.length >= 3));
+  assert.ok(JUNCTION_FAMILIES.every((family) => junctionFamilyMelodyNotes(family).length >= 12));
+  for (const family of JUNCTION_FAMILIES) {
+    for (const step of family.progression) {
+      for (const event of family.motif) {
+        const midi = step.accentMidis[event.degree % step.accentMidis.length];
+        assert.ok(step.accentMidis.includes(midi));
+      }
+    }
+  }
   for (const section of JUNCTION_SECTIONS) {
     const familyCounts = section.takes.reduce((counts, take) => {
       counts[take.family] = (counts[take.family] ?? 0) + 1;
       return counts;
     }, {});
-    assert.deepEqual(Object.values(familyCounts).sort((a, b) => a - b), [2, 2, 3, 3, 3]);
+    assert.deepEqual(Object.values(familyCounts).sort((a, b) => a - b), [4, 4, 4, 4, 4]);
+    for (const family of JUNCTION_FAMILIES) {
+      const rhythms = Object.groupBy(
+        section.takes.filter((take) => take.family === family.id),
+        (take) => take.rhythmId,
+      );
+      assert.deepEqual(Object.values(rhythms).map((takes) => takes.length).sort(), [2, 2]);
+      for (const takes of Object.values(rhythms)) {
+        assert.equal(new Set(takes.map((take) => JSON.stringify(take.beatPhrases))).size, 1);
+      }
+    }
   }
 });
 
@@ -93,8 +125,8 @@ test("JUNCTION creates a distinct two-deck mix without repeating the primary tak
   assert.equal(mix.primary.take, 2);
   assert.equal(mix.secondary.take, 1);
   assert.notEqual(mix.primary.take, mix.secondary.take);
-  assert.ok(mix.mixStart >= 0.18 && mix.mixStart <= 0.48);
-  assert.ok(mix.mixEnd >= 0.52 && mix.mixEnd <= 0.82);
+  assert.ok(mix.mixStart >= 0.12 && mix.mixStart <= 0.28);
+  assert.ok(mix.mixEnd >= 0.3 && mix.mixEnd <= 0.48);
 });
 
 test("JUNCTION rotates musical families and mixes only harmony-compatible takes", () => {
@@ -112,6 +144,31 @@ test("JUNCTION rotates musical families and mixes only harmony-compatible takes"
   assert.notEqual(mix.primary.take, mix.secondary.take);
 });
 
+test("JUNCTION mixes only takes with the same rhythmic spine", () => {
+  const sections = [
+    { id: "build", take: 1, family: "afterdark", rhythmId: "afterdark-a" },
+    { id: "build", take: 6, family: "afterdark", rhythmId: "afterdark-a" },
+    { id: "build", take: 11, family: "afterdark", rhythmId: "afterdark-b" },
+    { id: "build", take: 16, family: "afterdark", rhythmId: "afterdark-b" },
+    { id: "build", take: 2, family: "lift", rhythmId: "lift-a" },
+    { id: "build", take: 7, family: "lift", rhythmId: "lift-a" },
+  ];
+  const mix = chooseJunctionMix(sections, "build", sections[0], () => 0);
+  assert.equal(mix.primary.family, "lift");
+  assert.equal(mix.primary.rhythmId, mix.secondary.rhythmId);
+});
+
+test("JUNCTION prefers families and takes outside the recent listening window", () => {
+  const sections = ["afterdark", "lift", "signal", "orbit", "return"].flatMap((family, index) => [
+    { id: "build", take: index + 1, family, rhythmId: `${family}-a` },
+    { id: "build", take: index + 6, family, rhythmId: `${family}-a` },
+  ]);
+  const recent = [sections[2], sections[4], sections[6]];
+  const mix = chooseJunctionMix(sections, "build", sections[0], () => 0, recent);
+  assert.equal(mix.primary.family, "return");
+  assert.ok(!recent.some((entry) => entry.take === mix.primary.take));
+});
+
 test("JUNCTION live effects remain bounded and grow with road energy", () => {
   const calm = junctionLiveMixParameters(0, 127, () => 0);
   const fast = junctionLiveMixParameters(1, 168, () => 0);
@@ -127,31 +184,38 @@ test("the published JUNCTION blob contains lazy processed mix blocks, not loose 
   const parsed = parseJunctionBank(bank.buffer.slice(bank.byteOffset, bank.byteOffset + bank.byteLength));
   assert.equal(parsed.manifest.source, "rendered-production");
   assert.equal(parsed.manifest.format, "sedicivalvole.music-bank.v3");
-  assert.equal(parsed.manifest.mixing, "live-two-deck");
-  assert.equal(parsed.manifest.sections.length, 104);
-  assert.equal(parsed.manifest.takes, 13);
+  assert.equal(parsed.manifest.mixing, "live-rhythm-locked-two-deck");
+  assert.equal(parsed.manifest.transitionMode, "complete-eight-bar-boundary");
+  assert.equal(parsed.manifest.selfContainedSections, true);
+  assert.equal(parsed.manifest.rhythmLockedMixes, true);
+  assert.ok(parsed.manifest.sectionEdgeFadeMilliseconds >= 6);
+  assert.equal(parsed.manifest.sections.length, 160);
+  assert.equal(parsed.manifest.takes, 20);
   assert.equal(parsed.manifest.musicalFamilies, 5);
   assert.ok(parsed.manifest.sourceRecordingsUsed >= 100);
   assert.equal(parsed.manifest.barsPerSection, 8);
   assert.equal(parsed.manifest.tempoMode, "authored-sections");
   assert.deepEqual(parsed.manifest.bpmRange, [127, 168]);
-  assert.equal(new Set(parsed.manifest.sections.map((section) => section.take)).size, 13);
+  assert.equal(new Set(parsed.manifest.sections.map((section) => section.take)).size, 20);
   assert.equal(new Set(parsed.manifest.sections.map((section) => section.family)).size, 5);
-  assert.equal(parsed.assets.size, 104);
+  assert.equal(parsed.assets.size, 160);
   assert.equal(parsed.manifest.maxDecodedClips, 6);
   for (const id of ["rest", "open", "enter", "build", "break", "full", "turn", "ease"]) {
     const variations = parsed.manifest.sections.filter((section) => section.id === id);
     assert.deepEqual(
       variations.map((section) => section.take).sort((a, b) => a - b),
-      Array.from({ length: 13 }, (_, index) => index + 1),
+      Array.from({ length: 20 }, (_, index) => index + 1),
     );
     assert.ok(variations.every((section) => section.durationSeconds > 11));
     assert.ok(variations.every((section) => section.startSeconds === 0));
-    assert.equal(new Set(variations.map((section) => section.assetId)).size, 13);
+    assert.equal(new Set(variations.map((section) => section.assetId)).size, 20);
     const familyCounts = Object.values(Object.groupBy(variations, (section) => section.family))
       .map((group) => group.length)
       .sort((a, b) => a - b);
-    assert.deepEqual(familyCounts, [2, 2, 3, 3, 3]);
+    assert.deepEqual(familyCounts, [4, 4, 4, 4, 4]);
+    for (const group of Object.values(Object.groupBy(variations, (section) => section.rhythmId))) {
+      assert.equal(group.length, 2);
+    }
   }
   assert.ok(parsed.manifest.sections.filter((section) => section.id === "rest").every(
     (section) => section.bpm === 127 && !section.activeLanes.includes("breaks"),
@@ -171,6 +235,6 @@ test("the published JUNCTION blob contains lazy processed mix blocks, not loose 
   assert.ok(twoLargestClips.reduce((total, bytes) => total + bytes, 0) < 13_000_000);
   assert.equal(bank.includes(Buffer.from("Jungle_Beat")), false);
   assert.equal(bank.includes(Buffer.from("BonusBeat_")), false);
-  assert.ok(parsed.audioBytes > 15_000_000);
-  assert.ok(parsed.audioBytes < 30_000_000, "the cached Tesla payload must stay bounded");
+  assert.ok(parsed.audioBytes > 28_000_000);
+  assert.ok(parsed.audioBytes < 50_000_000, "the cached Tesla payload must stay bounded");
 });

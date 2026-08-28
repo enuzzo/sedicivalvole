@@ -1237,7 +1237,9 @@ export function App() {
         musicId: genreIdRef.current,
         audioSection: audioState?.section,
         audioFamily: audioState?.musicalFamily,
+        audioRhythm: audioState?.rhythmId,
         audioTakes: audioState?.sectionTakes,
+        audioRhythms: audioState?.sectionRhythms,
         audioBankLoaded: audioState?.bankLoaded,
         gpsConfidence: classifyGpsConfidence({
           gpsState: gpsStateRef.current,

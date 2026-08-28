@@ -66,10 +66,10 @@ would copy it without its dependencies and fail after deployment.
 ### Music library
 
 - FRACTURE 02 — generative and `ready` in the AudioWorklet;
-- JUNCTION 01 — sampled and `ready`; one 25.0 MB segmented Opus bank, 104
-  authored clips from 142 distinct recordings, 13 takes for each of eight
-  adaptive states across five rotating musical families, family-compatible
-  two-deck live mixing at eight-bar boundaries, native 127–168 BPM pacing with
+- JUNCTION 01 — sampled and `ready`; one 38.7 MB segmented Opus bank, 160
+  authored clips from 134 distinct recordings, 20 takes for each of eight
+  adaptive states across five rotating multisampled musical families,
+  rhythm-locked two-deck live mixing at complete eight-bar boundaries, native 127–168 BPM pacing with
   127 BPM at 40 km/h and 135 BPM at 60 km/h, beatless ambient rest, and at most
   six decoded clips;
 - PULSE 03, CUTWATER 04, LOWTIDE 05, NIGHTCAST 06, STILLWATER 07 — declared

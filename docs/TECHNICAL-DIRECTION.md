@@ -157,20 +157,22 @@ from interpretation and arrangement rather than playback-rate escalation.
 
 The music registry separates `ready` from `preparing`. FRACTURE and JUNCTION are
 ready; the remaining five directions are truthful disabled roadmap entries.
-JUNCTION is an 832-bar rendered production: eight adaptive energy states each
-have 13 complete takes, giving 104 clips from 142 distinct recordings in one
-25.0 MB segmented Opus resource. Five musical families give those takes
-different compatible progressions and colour punctuation. Each
+JUNCTION is a 1,280-bar rendered production: eight adaptive energy states each
+have 20 complete takes, giving 160 clips from 134 distinct recordings in one
+38.7 MB segmented Opus resource. Five musical families give those takes
+different compatible progressions, exact-note multisampled motifs and colour
+punctuation. Each
 section carries its own native tempo and duration: ambient rest at 127 BPM has
 no rhythm or bassline; a quiet 127 BPM break enters near 13 km/h, followed by
 135, 158, 164 and finally 168 BPM recordings as road energy rises. The urban
 mapping deliberately holds 127 BPM at 40 km/h, 135 BPM at 60 km/h, and does not
 enter 158 BPM until above approximately 65 km/h. The browser
-lazily retains no more than six individual clips and schedules two distinct takes
-from the selected block at the same AudioContext time. Equal-power gain ramps,
-small stereo and tone differences, and a bounded tempo-related delay create a
-new live mix at each eight-bar boundary; the previous primary take and its
-musical family are excluded whenever another compatible family is available.
+lazily retains no more than six individual clips and schedules two distinct,
+self-contained takes from the selected rhythm group at the same AudioContext
+time. Gain ramps, small stereo and tone differences, and a bounded
+tempo-related delay create a new live mix at each complete eight-bar boundary;
+both decks carry the same rhythmic spine, and a four-entry recent window prefers
+unheard families, rhythm groups and primary takes whenever alternatives exist.
 The original sample-pack files never enter the build.
 
 ### Flux sequencer direction
@@ -327,7 +329,7 @@ A future pack needs:
 
 ## Diagnostic harness and data handling
 
-The first vehicle evidence confirms a `773 × 601` split-view CSS viewport on a `1254 × 784` logical screen at DPR `1.53`. The integrated v3 report records viewport history, runtime/GPU/audio details, bounded GPS statistics, aggregate canvas frame pacing, long tasks, page/resource timing, memory/storage hints, connection changes, and a chronological event log. Phase telemetry separates the Signal Gate, active Visual/Music combinations, the Aperture `0–40 km/h` wall-retreat band and the DIAG-open state; a returning phase begins a new continuity segment so time spent elsewhere is never counted as one slow frame. Each phase owns bounded frame distributions and two-second memory samples for browser-exposed JavaScript heap, JUNCTION's compressed bank and decoded PCM. A coordinate-free flight recorder adds a two-second trace of displayed and raw GPS speed, GPS confidence, input, energy/BPM, active Visual/Music, JUNCTION section/family/take pair/bank readiness, real output RMS/peak, frame pacing, network state, and document visibility. It also summarizes the unique musical and visual exposure across the session. The event stream samples ordinary GPS evidence at two-second cadence while retaining null or low-confidence anomalies immediately, which prevents ten-hertz GPS traffic from evicting meaningful transitions. An isolated accuracy collapse above 250 m is recorded but does not command the smoothed experience. The recorder keeps 300 trace samples (approximately ten minutes) in session memory while full-session time, distance, motion, source, and input aggregates continue beyond rotation. Runtime errors, unhandled rejections, and WebGL context loss/restoration are separately bounded. High-frequency metrics accumulate outside React state so diagnostics do not add a per-frame render cost. The report contains no coordinates and disappears when the page closes or reloads.
+The first vehicle evidence confirms a `773 × 601` split-view CSS viewport on a `1254 × 784` logical screen at DPR `1.53`. The integrated v3 report records viewport history, runtime/GPU/audio details, bounded GPS statistics, aggregate canvas frame pacing, long tasks, page/resource timing, memory/storage hints, connection changes, and a chronological event log. Phase telemetry separates the Signal Gate, active Visual/Music combinations, the Aperture `0–40 km/h` wall-retreat band and the DIAG-open state; a returning phase begins a new continuity segment so time spent elsewhere is never counted as one slow frame. Each phase owns bounded frame distributions and two-second memory samples for browser-exposed JavaScript heap, JUNCTION's compressed bank and decoded PCM. A coordinate-free flight recorder adds a two-second trace of displayed and raw GPS speed, GPS confidence, input, energy/BPM, active Visual/Music, JUNCTION section/family/take pair/rhythm pair/bank readiness, real output RMS/peak, frame pacing, network state, and document visibility. It also summarizes the unique musical and visual exposure across the session. The event stream samples ordinary GPS evidence at two-second cadence while retaining null or low-confidence anomalies immediately, which prevents ten-hertz GPS traffic from evicting meaningful transitions. An isolated accuracy collapse above 250 m is recorded but does not command the smoothed experience. The recorder keeps 300 trace samples (approximately ten minutes) in session memory while full-session time, distance, motion, source, and input aggregates continue beyond rotation. Runtime errors, unhandled rejections, and WebGL context loss/restoration are separately bounded. High-frequency metrics accumulate outside React state so diagnostics do not add a per-frame render cost. The report contains no coordinates and disappears when the page closes or reloads.
 
 Aperture keeps its existing square palette, perspective tunnel, flow and terminal
 behavior. The former full-frame morph evaluated flat and perspective coordinates

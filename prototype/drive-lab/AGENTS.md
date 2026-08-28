@@ -38,6 +38,7 @@ When implementing from a selected generated mock, treat that image as the source
 - All interface copy, source code, comments, documentation, and logs must be in English. Italian is used only in direct conversation with the user.
 - During this experimental development phase, verified builds are deployed to the canonical root at `https://sedicivalvole.app/` after user approval; diagnostics remain part of the main experience.
 - Keep continuous speed/energy parameters separate from bar-quantized structural events. Use smoothing, hysteresis, dwell, crossfades, a tempo knee, and musically controlled deceleration.
+- JUNCTION live pairs must share an identical authored rhythmic spine and complete the current eight-bar phrase before the next pair starts. Render every selectable clip with reset DSP/voice state and short click-safe edges; prefer unexposed families and takes from a bounded recent-history window, and keep the six-decoded-clip memory ceiling.
 - Make frequent verified commits and push when a repository remote exists. Never leave the real Dropbox project directory for implementation work.
 - Keep `CHANGELOG.md` strictly progressive and append-only: never rewrite, alter, or remove past entries under any circumstances. Every changelog entry must state the date, local time (`YYYY-MM-DD HH:MM`), commit hash (`[commit]`), and build stamp when deploying (`build YYYYMMDD-HHMM`).
 

@@ -11,6 +11,7 @@ const REVIEW_INTERVAL_MS = 50;
 const SCHEDULE_AHEAD_SECONDS = 0.8;
 const LIVE_MIX_LEVEL = 0.61;
 const OUTPUT_LEVEL = 0.9;
+const CLIP_EDGE_FADE_SECONDS = 0.012;
 
 export function createJunctionPlayer(context, destination, onSnapshot) {
   let active = false;
@@ -28,6 +29,7 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
   const decoded = new Map();
   const decoding = new Map();
   const activeSources = new Set();
+  const recentPrimaries = [];
 
   const mixBus = context.createGain();
   const masterFilter = context.createBiquadFilter();
@@ -90,7 +92,11 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
       sectionTakes: activePerformance
         ? [activePerformance.mix.primary.take, activePerformance.mix.secondary.take]
         : [],
+      sectionRhythms: activePerformance
+        ? [activePerformance.mix.primary.rhythmId, activePerformance.mix.secondary.rhythmId]
+        : [],
       musicalFamily: primary?.family ?? null,
+      rhythmId: primary?.rhythmId ?? null,
       halfTime: false,
       rhythmLabel: sectionId === "rest"
         ? "ambient"
@@ -102,7 +108,8 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
       activeLanes: primary?.activeLanes
         ?? (sectionId === "rest" ? ["harmony", "atmosphere"] : ["breaks", "harmony"]),
       source: "sampled-production",
-      mixing: "live-two-deck",
+      mixing: "live-rhythm-locked-two-deck",
+      transitionMode: "complete-eight-bar-boundary",
       liveMix: activePerformance ? {
         from: Number(activePerformance.mix.mixStart.toFixed(3)),
         to: Number(activePerformance.mix.mixEnd.toFixed(3)),
@@ -184,6 +191,8 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
       bank.manifest.sections,
       id,
       currentPerformance?.mix.primary ?? null,
+      Math.random,
+      recentPrimaries,
     );
     if (!mix) return;
     preparingId = id;
@@ -209,7 +218,13 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
       : null;
     preparedMix = null;
     const mix = prepared
-      ?? chooseJunctionMix(bank.manifest.sections, id, previousPrimary);
+      ?? chooseJunctionMix(
+        bank.manifest.sections,
+        id,
+        previousPrimary,
+        Math.random,
+        recentPrimaries,
+      );
     if (!mix) throw new Error(`JUNCTION needs at least two takes for live mixing: ${id}`);
     const [primaryBuffer, secondaryBuffer] = await Promise.all([
       ensureDecoded(mix.primary.assetId),
@@ -244,8 +259,18 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
         startAt,
       );
       panner.pan.setValueAtTime(deck.pan + (Math.random() - 0.5) * 0.035, startAt);
-      deckGain.gain.setValueAtTime(Math.sqrt(deck.from) * LIVE_MIX_LEVEL, startAt);
-      deckGain.gain.linearRampToValueAtTime(Math.sqrt(deck.to) * LIVE_MIX_LEVEL, endAt);
+      const startLevel = Math.sqrt(deck.from) * LIVE_MIX_LEVEL;
+      const endLevel = Math.sqrt(deck.to) * LIVE_MIX_LEVEL;
+      deckGain.gain.setValueAtTime(0, startAt);
+      deckGain.gain.linearRampToValueAtTime(
+        startLevel,
+        Math.min(endAt, startAt + CLIP_EDGE_FADE_SECONDS),
+      );
+      deckGain.gain.linearRampToValueAtTime(
+        endLevel,
+        Math.max(startAt, endAt - CLIP_EDGE_FADE_SECONDS),
+      );
+      deckGain.gain.linearRampToValueAtTime(0, endAt);
       source.connect(tone).connect(panner).connect(deckGain).connect(mixBus);
       source.start(startAt, deck.section.startSeconds, duration);
       source.stop(endAt + 0.01);
@@ -260,6 +285,8 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
         deckGain.disconnect();
       };
     }
+    recentPrimaries.push(mix.primary);
+    while (recentPrimaries.length > 4) recentPrimaries.shift();
     return performanceRecord;
   }
 
@@ -306,6 +333,7 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
         currentPerformance = null;
         pendingPerformance = null;
         preparedMix = null;
+        recentPrimaries.length = 0;
         return;
       }
       await load();
@@ -339,6 +367,7 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
       feedback.disconnect();
       wet.disconnect();
       decoded.clear();
+      recentPrimaries.length = 0;
     },
   };
 }

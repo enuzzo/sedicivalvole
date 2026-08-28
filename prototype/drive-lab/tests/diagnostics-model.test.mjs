@@ -168,7 +168,9 @@ test("drive telemetry retains a bounded trace while preserving full-session aggr
     audioLevel: 0.1,
     audioSection: "OPEN",
     audioFamily: "signal",
+    audioRhythm: "open-2-1",
     audioTakes: [3, 8],
+    audioRhythms: ["open-2-1", "open-2-1"],
     audioBankLoaded: true,
     visualId: "aperture",
     musicId: "junction",
@@ -198,6 +200,11 @@ test("drive telemetry retains a bounded trace while preserving full-session aggr
   assert.equal(report.samples[1][DRIVE_TRACE_FIELDS.indexOf("section")], "OPEN");
   assert.equal(report.summary.exposure.families.count, 1);
   assert.deepEqual(report.summary.exposure.takePairs.values, ["3+8"]);
+  assert.deepEqual(report.summary.exposure.rhythmPairs.values, ["open-2-1"]);
+  assert.deepEqual(
+    report.samples[1][DRIVE_TRACE_FIELDS.indexOf("rhythms")],
+    ["open-2-1", "open-2-1"],
+  );
   assert.equal(JSON.stringify(report).includes("latitude"), false);
   assert.equal(JSON.stringify(report).includes("longitude"), false);
 });

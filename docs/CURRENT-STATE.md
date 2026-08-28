@@ -71,18 +71,21 @@ dated study documents.
   arrangement density, deceleration memory, and the measured UNDERWATER brake
   effect.
 - **JUNCTION 01** is selectable sampled Jungle / Rave music. Its eight energy
-  states each have 13 complete authored clips: 104 rendered sections built from
-  142 distinct recordings in one 25.0 MB segmented Opus bank. Five harmonic and
-  colour families rotate without immediate family repetition. Rest is harmony
+  states each have 20 complete authored clips: 160 rendered sections built from
+  134 distinct recordings in one 38.7 MB segmented Opus bank. Five harmonic,
+  melodic and timbral families each own a different exact-note multisampled
+  motif. Ten rhythm groups per state pair only takes with the same drum spine;
+  a four-entry listening history prefers unheard families and takes. Rest is harmony
   and atmosphere without a break or bassline;
   rhythm fades in near `13 km/h`, moves through native `127`, `135`, `158` and
   `164 BPM` recordings, and reaches `168 BPM` only at high energy. The `127 BPM`
   state now covers 40 km/h and `135 BPM` covers 60 km/h; `158 BPM` begins above
   approximately 65 km/h. The browser
-  lazily retains at most six individual clips, starts two distinct takes on the
-  same sample-accurate boundary, and mixes their level, tone, stereo and space
-  live. The primary take does not immediately repeat, and source sounds are
-  never exposed or shuffled mid-phrase.
+  lazily retains at most six individual clips, finishes the current eight-bar
+  phrase, then starts two distinct self-contained takes on the same
+  sample-accurate boundary and mixes their level, tone, stereo and space live.
+  The primary take does not immediately repeat, and source sounds are never
+  exposed or shuffled mid-phrase.
 - JUNCTION is preloaded but inaudible after `PLAY THE ROAD` while stationary. Its
   score-local movement gate fades from silence at `4 km/h` to full level at
   `10 km/h`, before the existing quiet break threshold near `13 km/h`.

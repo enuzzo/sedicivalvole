@@ -84,14 +84,17 @@ is holding the ceiling. Leave headroom for the arrangement to grow into: the
 resting state should sit several decibels below the full one *before* the
 limiter is asked for an opinion.
 
-### 1.7 Playing over a sample library instead of using it
+### 1.7 Treating every sample as the same kind of material
 
-JUNCTION originally drove multisampled instruments with melodies written here.
-That throws away the performances that are the reason to use a sample library,
-and it introduced §1.2.
+JUNCTION originally treated performed loops and chromatic multisamples as if
+both were generic notes. The result ignored finished performances and then
+folded independently played notes into the wrong octave (§1.2).
 
-**The lesson.** Ask what the material already is. A pack of chord one-shots is a
-progression waiting to be sequenced, not a synthesiser waiting for a part.
+**The lesson.** Ask what the material already is. A chord one-shot is a supplied
+performance waiting to be arranged; a chromatic multisample really is an
+instrument waiting to be played. Keep the loop native and complete. For the
+multisample, request an exact recorded note, derive it from the chord currently
+voiced, and reject the build if that note is absent.
 
 ---
 
@@ -293,11 +296,11 @@ recordings remain extractable and it is still a redistributed sample bank.
 MusicRadar permits using the material in music and asks that the samples not be
 redistributed, so the product boundary must be musical as well as technical.
 
-The shipped bank therefore contains a mixed, processed 832-bar production,
-not playable source files. Each of the eight energy states has 13 complete
-eight-bar takes, for 104 rendered clips built from 126 distinct source
-recordings, with different two-bar break phrases,
-harmonic voicings, density, drive and space. The single downloadable bank is
+The shipped bank therefore contains a mixed, processed 1,280-bar production,
+not playable source files. Each of the eight energy states has 20 complete
+eight-bar takes, for 160 rendered clips built from 134 distinct source
+recordings, with different two-bar break phrases, exact-note multisampled
+motifs, harmonic voicings, density, drive and space. The single downloadable bank is
 segmented into independently decodable performance clips. The browser keeps at
 most six clips decoded, starts two distinct complete takes on the same
 sample-accurate boundary, and moves an equal-power balance between them while
@@ -315,10 +318,10 @@ Randomness therefore needs grammar. Choosing two entire prepared takes at the
 same eight-bar boundary already used by the adaptive arrangement makes the
 result less predictable without breaking a fill, changing harmony under a
 sustained sound, or placing a sample merely because it was available. Their
-shared tempo, duration and harmony make live mixing safe; unrelated stems would
-not. Memory of the previous primary take prevents the easiest audible failure:
-an allegedly varied system selecting the same lead performance twice in
-succession.
+shared tempo, duration, harmony **and exact rhythmic spine** make live mixing
+safe; unrelated stems would not. Four entries of recent-listening memory prefer
+families, rhythm groups and takes that have not just played, rather than merely
+rejecting one immediate duplicate.
 
 ### 5.6 Energy is not a permanently loud break
 
@@ -334,7 +337,7 @@ BPM break enters below the harmony and rises over four two-bar phrases; later
 states use native 135, 158, 164 and 168 BPM recordings. Nothing is stretched in
 the browser, and 168 BPM is a high-energy ceiling rather than the permanent
 floor. The maximum primary-break gain is bounded at 0.55, additional layers sit
-at 0.28, and energy still grows through orchestration, drive, punctuation and
+at 0.20, and energy still grows through orchestration, drive, punctuation and
 space rather than tempo alone.
 
 Bass variation must also remain harmonic. The available tempo folders do not
@@ -358,13 +361,15 @@ every take followed the same four-chord progression and the same broad lead
 identity. Random file choice was working; musical identity was not changing.
 
 JUNCTION now has five authored families. Each family owns a different compatible
-four-chord route and a distinct punctuation pattern; every energy state contains
-at least two takes from every family. At an eight-bar boundary the browser first
-chooses a family other than the current one, then mixes two takes only inside
-that family. This keeps harmony safe while making the change large enough to be
+four-chord route, rhythmic punctuation, played motif and dedicated multisampled
+voice — Rave Lead, Rave Piano, Rave Saw, Short String or Stab FX. Every energy
+state contains four takes from every family, divided into two rhythm-locked
+pairs. At an eight-bar boundary the browser first prefers a family outside the
+four-entry recent window, then mixes two takes only inside one rhythm group.
+This keeps harmony and drums safe while making the change large enough to be
 heard. High-energy states also trigger more exact chord-tone colour performances.
-The rebuilt bank uses 142 distinct recordings without increasing the 104-clip or
-six-decoded-clip bounds materially.
+The rebuilt bank has 160 complete clips while retaining the six-decoded-clip
+bound; the raw source-file count is intentionally no longer treated as the goal.
 
 The listener also found 40–60 km/h too urgent. Native tempo selection now keeps
 40 km/h in the 127 BPM state and 60 km/h in the 135 BPM state; 158 BPM begins
@@ -395,6 +400,29 @@ The listener notices intention rather than latency: silence follows the launch,
 motion introduces atmosphere, and rhythm still has its later threshold. The
 movement gate is a pure tested mapping in `tests/junction-bank.test.mjs`; this
 prevents a future preload optimization from accidentally restoring launch music.
+
+### 5.9 Two correct breaks can still make one wrong groove
+
+The listener heard occasional drum and rhythmic lines that did not fuse. Both
+takes were individually complete, equal in length, tempo-compatible and
+harmony-compatible, but the browser was cross-mixing different break patterns.
+Mathematical alignment at the bar line does not make two drummers play the same
+groove: their kicks, ghosts and fills can still flam or mask one another.
+
+The live mixer now treats rhythm as a compatibility dimension. Every family has
+two rhythmic identities per energy state, each represented by two differently
+voiced takes. A pair may be mixed only when its `rhythmId` matches, so both decks
+carry the same break performance and the second deck adds harmonic/timbral
+colour instead of another beat. Its level remains subordinate throughout the
+phrase. The current eight-bar performance finishes completely before the next
+one begins.
+
+There was a second hidden boundary fault: clips were cut from one continuous
+development render, so a randomly selected block could begin with the held note
+or reverb state of whatever block happened to precede it offline. Every block
+now resets voices and stateful DSP, then receives an eight-millisecond click-safe
+edge. The bank records and tests self-contained sections, rhythm-locked groups,
+complete-boundary transitions and recent-history avoidance.
 
 ---
 
@@ -435,3 +463,8 @@ mids are 15 dB down".
   beat loop is exactly two bars, folders are per tempo, the key is in the
   filename, and **E exists at every tempo** — which is why a sampled score in E
   can change tempo without changing key.
+- The nested `Jungle Samples/Rave Synths/` library contributes native 127/135
+  BPM bonus beats and chromatic multisamples named by exact note. Its other
+  melodic loops declare tempo but not key; they remain excluded from automatic
+  selection until they are catalogued by listening, because a large library is
+  not permission to guess harmony.

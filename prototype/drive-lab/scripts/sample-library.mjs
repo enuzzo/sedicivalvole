@@ -7,14 +7,16 @@
 // what ships is the rendered sedicivalvole arrangement. See
 // THIRD_PARTY_NOTICES.md.
 //
-// The library is unusually regular and the arrangement depends on it:
+// The jungle library is unusually regular and the arrangement depends on it:
 //
 //   - every beat loop is exactly two bars;
 //   - loops are sorted into folders by tempo, 158 to 172 BPM;
 //   - the key is in the filename, and E exists at every tempo;
 //   - everything is 24-bit 44.1 kHz stereo.
 //
-// Because the tempo is a folder rather than a stretch factor, a tempo change is
+// The nested Rave Synths library contributes native 127/135 BPM bonus beats and
+// chromatic multisamples. Because tempo is a folder rather than a stretch
+// factor, a tempo change is
 // a change of *recording* at its own native rate. No loop is ever time-stretched
 // or pitched, which is the whole reason the arrangement is built this way.
 
@@ -29,7 +31,7 @@ export const LIBRARY_ROOT = "/Users/enuzzo/Library/CloudStorage/Dropbox/Mitnick"
   + "/sedicivalvole/_references/audio/samples";
 
 export const JUNGLE_ROOT = join(LIBRARY_ROOT, "Jungle Samples");
-export const RAVE_ROOT = join(LIBRARY_ROOT, "Rave Synths");
+export const RAVE_ROOT = join(JUNGLE_ROOT, "Rave Synths");
 
 /** The tempo folders the jungle pack ships, in order. */
 export const TEMPOS = [158, 160, 164, 166, 168, 170, 172];
