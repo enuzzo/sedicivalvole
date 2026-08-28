@@ -29,8 +29,26 @@ test("launch copy has a continuous white-to-red travelling wave", () => {
 
   assert.match(styles, /@keyframes launch-text-wave/);
   assert.match(styles, /animation: launch-text-wave 4\.2s linear infinite/);
+  assert.match(styles, /background-image: repeating-linear-gradient\(/);
+  assert.match(styles, /background-size: 360px 100%/);
+  assert.match(styles, /from \{ background-position: 0 50%; \}/);
+  assert.match(styles, /to \{ background-position: -360px 50%; \}/);
   assert.match(styles, /#f2eee5/);
   assert.match(styles, /#bd111d/);
+});
+
+test("launch typography follows the approved Orbitron hierarchy", () => {
+  const styles = read("styles.css");
+  const brand = styles.slice(styles.indexOf(".launch-brand {"), styles.indexOf(".launch-command {"));
+  const command = styles.slice(styles.indexOf(".launch-command > span:last-child {"), styles.indexOf("@keyframes launch-text-wave"));
+
+  assert.match(brand, /justify-content: center/);
+  assert.match(brand, /font-weight: 750/);
+  assert.match(brand, /letter-spacing: 0/);
+  assert.match(brand, /text-align: center/);
+  assert.match(command, /font-weight: 600/);
+  assert.match(command, /letter-spacing: 0/);
+  assert.doesNotMatch(command, /text-indent/);
 });
 
 test("Signal Gate phases every travelling gap independently", () => {
