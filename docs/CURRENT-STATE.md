@@ -85,6 +85,9 @@ dated study documents.
   lazily retains at most six individual clips, finishes the current eight-bar
   phrase, then starts two distinct self-contained takes on the same
   sample-accurate boundary and mixes their level, tone, stereo and space live.
+  A rhythm entrance from rest rises for four seconds; a decision to return to
+  rest releases the active performance toward a near-silent floor over four
+  seconds, with cancellable recovery if road energy returns.
   The primary take does not immediately repeat, and source sounds are never
   exposed or shuffled mid-phrase.
 - JUNCTION is preloaded but inaudible after `PLAY THE ROAD` while stationary. Its

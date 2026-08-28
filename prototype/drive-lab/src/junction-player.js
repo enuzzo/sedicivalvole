@@ -12,6 +12,10 @@ const SCHEDULE_AHEAD_SECONDS = 0.8;
 const LIVE_MIX_LEVEL = 0.61;
 const OUTPUT_LEVEL = 0.9;
 const CLIP_EDGE_FADE_SECONDS = 0.012;
+export const JUNCTION_RHYTHM_FADE_SECONDS = 4;
+const JUNCTION_RHYTHM_QUIET_LEVEL = 0.08;
+const JUNCTION_AMBIENT_RECOVERY_SECONDS = 1.5;
+const JUNCTION_RHYTHM_RECOVERY_SECONDS = 1.2;
 
 export function createJunctionPlayer(context, destination, onSnapshot) {
   let active = false;
@@ -97,6 +101,10 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
         : [],
       musicalFamily: primary?.family ?? null,
       rhythmId: primary?.rhythmId ?? null,
+      rhythmTransition: activePerformance
+        ? rhythmTransitionAt(activePerformance, context.currentTime)
+        : "idle",
+      rhythmFadeSeconds: JUNCTION_RHYTHM_FADE_SECONDS,
       halfTime: false,
       rhythmLabel: sectionId === "rest"
         ? "ambient"
@@ -124,6 +132,56 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
       decodedPcmBytes: decodedPcmBytes(),
       playing: active && activeSources.size > 0,
     };
+  }
+
+  function rhythmTransitionAt(performance, time) {
+    const envelope = performance?.rhythmEnvelope;
+    if (!envelope) return "steady";
+    if (time < envelope.endAt) return envelope.label;
+    return envelope.to <= JUNCTION_RHYTHM_QUIET_LEVEL ? "quiet" : "steady";
+  }
+
+  function rhythmEnvelopeValue(performance, time) {
+    const envelope = performance?.rhythmEnvelope;
+    if (!envelope || time >= envelope.endAt) return envelope?.to ?? 1;
+    if (time <= envelope.startAt || envelope.endAt <= envelope.startAt) return envelope.from;
+    const progress = (time - envelope.startAt) / (envelope.endAt - envelope.startAt);
+    return envelope.from + (envelope.to - envelope.from) * progress;
+  }
+
+  function setRhythmEnvelope(performance, target, requestedTime, duration, label) {
+    if (!performance?.rhythmGain) return;
+    const startAt = Math.max(performance.startAt, requestedTime);
+    const endAt = Math.min(performance.endAt, startAt + duration);
+    const from = rhythmEnvelopeValue(performance, startAt);
+    const parameter = performance.rhythmGain.gain;
+    parameter.cancelScheduledValues?.(startAt);
+    parameter.setValueAtTime(from, startAt);
+    parameter.linearRampToValueAtTime(target, endAt);
+    performance.rhythmEnvelope = { from, to: target, startAt, endAt, label };
+  }
+
+  function applyRhythmDirection(time = context.currentTime) {
+    if (!currentPerformance) return;
+    const desiredId = junctionSectionForEnergy(energy, brake > 0.2);
+    const transition = rhythmTransitionAt(currentPerformance, time);
+    if (desiredId === "rest" && currentPerformance.id !== "rest" && transition !== "fade-out" && transition !== "quiet") {
+      setRhythmEnvelope(
+        currentPerformance,
+        JUNCTION_RHYTHM_QUIET_LEVEL,
+        time,
+        JUNCTION_RHYTHM_FADE_SECONDS,
+        "fade-out",
+      );
+    } else if (desiredId !== "rest" && currentPerformance.id !== "rest" && (transition === "fade-out" || transition === "quiet")) {
+      setRhythmEnvelope(
+        currentPerformance,
+        1,
+        time,
+        JUNCTION_RHYTHM_RECOVERY_SECONDS,
+        "fade-in",
+      );
+    }
   }
 
   function trimDecodedCache(extraKeep = []) {
@@ -210,7 +268,7 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
     });
   }
 
-  async function schedulePerformance(id, requestedTime, previousPrimary = null) {
+  async function schedulePerformance(id, requestedTime, previousPrimary = null, previousId = null) {
     const prepared = preparedMix?.id === id
       && preparedMix.mix.primary.take !== previousPrimary?.take
       && preparedMix.mix.primary.family !== previousPrimary?.family
@@ -241,7 +299,34 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
     wet.gain.setTargetAtTime(effects.wet, startAt, 0.08);
     applyMasterTone(startAt);
 
-    const performanceRecord = { id, mix, effects, startAt, endAt, sources: new Set() };
+    const rhythmGain = context.createGain();
+    rhythmGain.connect(mixBus);
+    const enteringFromZeroBeat = id !== "rest" && (previousId === null || previousId === "rest");
+    const enteringAmbient = id === "rest" && previousId !== null && previousId !== "rest";
+    const entranceLevel = enteringFromZeroBeat ? 0 : enteringAmbient ? JUNCTION_RHYTHM_QUIET_LEVEL : 1;
+    const entranceDuration = enteringFromZeroBeat
+      ? JUNCTION_RHYTHM_FADE_SECONDS
+      : enteringAmbient ? JUNCTION_AMBIENT_RECOVERY_SECONDS : 0;
+    rhythmGain.gain.setValueAtTime(entranceLevel, startAt);
+    if (entranceDuration > 0) {
+      rhythmGain.gain.linearRampToValueAtTime(1, Math.min(endAt, startAt + entranceDuration));
+    }
+    const performanceRecord = {
+      id,
+      mix,
+      effects,
+      startAt,
+      endAt,
+      sources: new Set(),
+      rhythmGain,
+      rhythmEnvelope: {
+        from: entranceLevel,
+        to: 1,
+        startAt,
+        endAt: Math.min(endAt, startAt + entranceDuration),
+        label: entranceDuration > 0 ? "fade-in" : "steady",
+      },
+    };
     const deckSpecs = [
       { section: mix.primary, buffer: primaryBuffer, from: 1 - mix.mixStart, to: 1 - mix.mixEnd, pan: -0.06 },
       { section: mix.secondary, buffer: secondaryBuffer, from: mix.mixStart, to: mix.mixEnd, pan: 0.06 },
@@ -271,7 +356,7 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
         Math.max(startAt, endAt - CLIP_EDGE_FADE_SECONDS),
       );
       deckGain.gain.linearRampToValueAtTime(0, endAt);
-      source.connect(tone).connect(panner).connect(deckGain).connect(mixBus);
+      source.connect(tone).connect(panner).connect(deckGain).connect(rhythmGain);
       source.start(startAt, deck.section.startSeconds, duration);
       source.stop(endAt + 0.01);
       performanceRecord.sources.add(source);
@@ -283,6 +368,7 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
         tone.disconnect();
         panner.disconnect();
         deckGain.disconnect();
+        if (performanceRecord.sources.size === 0) rhythmGain.disconnect();
       };
     }
     recentPrimaries.push(mix.primary);
@@ -299,6 +385,7 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
         id,
         currentPerformance.endAt,
         currentPerformance.mix.primary,
+        currentPerformance.id,
       );
     } catch (error) {
       console.error("[junction] the next live mix could not be scheduled", error);
@@ -312,6 +399,7 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
     if (pendingPerformance && context.currentTime >= pendingPerformance.startAt - 0.015) {
       currentPerformance = pendingPerformance;
       pendingPerformance = null;
+      applyRhythmDirection();
       trimDecodedCache();
       prewarmTarget();
     }
@@ -345,11 +433,13 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
     setEnergy(nextEnergy) {
       energy = Math.min(1, Math.max(0, Number(nextEnergy) || 0));
       applyMovementGate();
+      applyRhythmDirection();
       prewarmTarget();
     },
     setBrake(nextBrake) {
       brake = Math.min(1, Math.max(0, Number(nextBrake) || 0));
       applyMasterTone();
+      applyRhythmDirection();
       prewarmTarget();
     },
     getState: snapshot,

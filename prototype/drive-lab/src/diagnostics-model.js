@@ -284,7 +284,7 @@ export const DRIVE_TRACE_SAMPLE_LIMIT = 300;
 export const DIAGNOSTIC_MAX_REQUEST_BODY_BYTES = 1966080;
 export const DRIVE_TRACE_FIELDS = [
   "t", "speed", "gps", "gpsAge", "gpsState", "accuracy", "rate", "source", "input", "energy",
-  "bpm", "fps", "p95Frame", "audio", "audioPeak", "visual", "music", "section", "family", "rhythm", "takes", "rhythms",
+  "bpm", "fps", "p95Frame", "audio", "audioPeak", "visual", "music", "section", "family", "rhythm", "rhythmTransition", "takes", "rhythms",
   "bank", "gpsConfidence", "motion", "online", "net", "rtt", "visibility",
 ];
 
@@ -395,6 +395,9 @@ export function recordDriveTelemetrySample(telemetry, sample, limit = DRIVE_TRAC
       : Number.isFinite(sample.audioSection) ? sample.audioSection : null,
     family: typeof sample.audioFamily === "string" ? sample.audioFamily.slice(0, 32) : null,
     rhythm: typeof sample.audioRhythm === "string" ? sample.audioRhythm.slice(0, 48) : null,
+    rhythmTransition: typeof sample.audioRhythmTransition === "string"
+      ? sample.audioRhythmTransition.slice(0, 24)
+      : null,
     takes: Array.isArray(sample.audioTakes) ? sample.audioTakes.slice(0, 2) : [],
     rhythms: Array.isArray(sample.audioRhythms)
       ? sample.audioRhythms.map((value) => String(value).slice(0, 48)).slice(0, 2)

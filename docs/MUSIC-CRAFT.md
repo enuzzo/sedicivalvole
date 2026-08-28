@@ -424,6 +424,29 @@ now resets voices and stateful DSP, then receives an eight-millisecond click-saf
 edge. The bank records and tests self-contained sections, rhythm-locked groups,
 complete-boundary transitions and recent-history avoidance.
 
+### 5.10 A quantized entrance still needs dynamics
+
+After rhythm locking, a break could still arrive too literally when the road
+crossed from beatless rest into the first rhythmic state. The sample-accurate
+eight-bar boundary was correct, but a correct start time is not an expressive
+entrance: the first kick appeared at its complete authored level. The inverse
+fault happened on deceleration, when a complete break reached its boundary and
+then vanished into the ambient state with only the click-safe edge ramp.
+
+Keep the musical boundary and add a performance-level gesture around it. A
+rhythmic section following rest rises over four seconds. When the road requests
+rest, the active mixed performance releases toward a near-silent floor over four
+seconds; the following ambient section recovers gently. If the driver accelerates
+again before the release completes, cancel the scheduled descent, hold its
+current value and restore it smoothly rather than restarting the clip. This
+envelope sits after both rhythm-locked decks, so their balance and shared drum
+spine cannot drift during the transition.
+
+The listener should hear the road invite and dismiss rhythm instead of switching
+it. The test asserts entrance duration, release duration, quiet floor and
+cancellable recovery, while telemetry records `fade-in`, `fade-out`, `quiet` or
+`steady` for comparison with the next drive.
+
 ---
 
 ## 6. Testing music

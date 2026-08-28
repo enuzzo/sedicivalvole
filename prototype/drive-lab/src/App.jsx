@@ -1238,6 +1238,7 @@ export function App() {
         audioSection: audioState?.section,
         audioFamily: audioState?.musicalFamily,
         audioRhythm: audioState?.rhythmId,
+        audioRhythmTransition: audioState?.rhythmTransition,
         audioTakes: audioState?.sectionTakes,
         audioRhythms: audioState?.sectionRhythms,
         audioBankLoaded: audioState?.bankLoaded,
