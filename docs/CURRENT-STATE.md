@@ -44,7 +44,9 @@ dated study documents.
   text, telemetry, controls, operational labels and the launch command occupy a
   deliberate `450–750` weight hierarchy rather than falling back to device fonts.
 - The centered lowercase launch wordmark uses weight `750`; `PLAY THE ROAD` uses
-  weight `600`, and neither adds tracking. The command carries a seamless
+  weight `600`, and neither adds tracking. The wordmark scales from `32–40 px`
+  (`38.65 px` at `773 × 601`) inside a `68 px` product band, while the complete
+  action remains `390 × 170 px`. The command carries a seamless
   repeating white-to-red horizontal wave whose terminal frame is its first frame.
   The launch surface stays above every preloaded environment overlay, including
   ATLAS's no-GPS waiting state, until the gesture completes. Every Signal Gate
