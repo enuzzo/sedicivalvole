@@ -39,8 +39,11 @@ dated study documents.
   `PLAY THE ROAD` field form one semantic gesture with no simulated controls.
 - All product chrome uses the locally packaged Orbitron variable font. Reading
   text, telemetry, controls, operational labels and the launch command occupy a
-  deliberate `450–850` weight hierarchy rather than falling back to device fonts.
-- The command carries a continuous white-to-red horizontal wave. Every Signal
+  deliberate `450–750` weight hierarchy rather than falling back to device fonts.
+- The centered lowercase launch wordmark uses weight `750`; `PLAY THE ROAD` uses
+  weight `600`, and neither adds tracking. The command carries a seamless
+  repeating white-to-red horizontal wave whose terminal frame is its first frame.
+  Every Signal
   Gate lane owns a short independently phased travelling gap, with restrained
   perspective airflow behind the road field.
 - Diagnostics separate FPS/frame time, browser-exposed heap and decoded-audio
