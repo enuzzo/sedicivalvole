@@ -44,8 +44,9 @@ dated study documents.
 - Signal Gate launches through the approved `390 × 170 px` flat typographic
   surface at the Tesla split viewport. Its enlarged wordmark and full-width
   `PLAY THE ROAD` field form one semantic gesture with no simulated controls.
-  The readable credit beneath it names Netmilk Studio and links Illobo, followed
-  by a direct link to the public `enuzzo/sedicivalvole` GitHub repository. A
+  The readable credit beneath it links Netmilk Studio to `netmilk.ch` and links
+  Illobo, followed by a monochrome GitHub-marked link to the public
+  `enuzzo/sedicivalvole` repository. Splash links retain light text on hover. A
   fail-closed `BUY ME A COFFEE` link is prepared and appears only when a valid
   HTTPS `buymeacoffee.com` profile is supplied at build time.
 - All product chrome uses the locally packaged Orbitron variable font. Reading

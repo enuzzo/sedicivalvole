@@ -27,12 +27,22 @@ test("launch surface contains only product and action copy", () => {
 test("splash credits the collaborator and links the public source", () => {
   const app = read("App.jsx");
 
-  assert.match(app, /A project by Netmilk Studio/);
+  assert.match(app, /href="https:\/\/netmilk\.ch"/);
+  assert.match(app, /aria-label="Netmilk Studio website"/);
   assert.match(app, /href="https:\/\/github\.com\/illobo"/);
   assert.match(app, /with Illobo/);
   assert.match(app, /href="https:\/\/github\.com\/enuzzo\/sedicivalvole"/);
   assert.match(app, /github\.com\/enuzzo\/sedicivalvole/);
+  assert.match(app, /className="splash-github-mark"/);
   assert.match(app, /target="_blank"[\s\S]*?rel="noreferrer"/);
+});
+
+test("splash links keep light hover contrast and the GitHub mark follows text colour", () => {
+  const styles = read("styles.css");
+
+  assert.match(styles, /\.splash-action a:hover \{ color: var\(--paper\)/);
+  assert.doesNotMatch(styles, /\.splash-action a:hover \{ color: var\(--ink\)/);
+  assert.match(styles, /\.splash-github-mark \{[\s\S]*?fill: currentColor/);
 });
 
 test("splash metadata is legible and the complete group sits higher", () => {
