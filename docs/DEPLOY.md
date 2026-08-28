@@ -8,6 +8,26 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Signal Gate credits publication — 2026-08-28
+
+- build stamp: **`20260828-2208`**; deployed commit: `946c035`;
+  implementation checkpoint: `3bbe6be`;
+- gate before upload: **PASS**, all 8 focused splash tests, 156 of 157 tests in
+  the complete local suite, a production build from the deployed commit, exact
+  local `773 × 601` Browser QA and the read-only remote identity gate with
+  `remote_writes=NONE`. The one unavailable test requires a local PHP executable
+  that is not installed on this host; it is unrelated to the static splash;
+- publication: **PASS**, 27 files / 8,201,351 bytes uploaded to the canonical
+  root. Dynamic-root, exact legacy cleanup, retained cache overlap and remote
+  listing checks passed; the repeated post-publication identity gate passed
+  with `remote_writes=NONE`;
+- live product QA: **PASS at exact `773 × 601`**. The cache-busted canonical URL
+  identifies build `20260828-2208`, renders the compact `A project by Netmilk
+  Studio · with Illobo` and source lines with zero horizontal or vertical
+  document overflow, and emits zero Browser warnings or errors. Both links are
+  visible and enabled; the Illobo target resolves to `github.com/illobo` with
+  the page title `illobo · GitHub`.
+
 ## Meridian and music correction publication — 2026-08-28
 
 - build stamp: **`20260828-1950`**; deployed commit: `e314704`;
