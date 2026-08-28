@@ -8,6 +8,30 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Long-drive diagnostic transport publication evidence — 2026-08-28
+
+- build stamp: **`20260828-1238`**; deployed commit: `1099581`;
+  implementation: `3057796`;
+- gate before upload: **PASS**, 151 unit tests, 4 packaging tests, production
+  build, read-only remote identity verification and no preflight writes;
+- publication: **PASS**, 25 files / 27,414,920 bytes uploaded to the canonical
+  root; dynamic root, retained cache overlap, exact legacy cleanup and remote
+  listing passed;
+- canonical cache-busted HTML, main JavaScript `assets/index-CIqE7xCi.js` and
+  CSS `assets/index-CYzepEor.css` are byte-identical to local at SHA-256
+  `5d99e85899f6b6d431a41431f976bfaa077c268767c5f3141ba19179f2bdfc44`,
+  `e2cefbfa77e4ae03f9234f913e78b5dd6e15b8344733f09103c15c51a5f8e7c1`
+  and `b76dd0ae8dfbcdb0f51eab10aa1d53ff725ccf1fba18116f4e3b97257f23cf1c`;
+- the live endpoint retains its no-store headers and returns the expected
+  `405 method_not_allowed` boundary for a read request;
+- a **262,144-byte** intentional invalid-schema POST, larger than the retired
+  192 KiB ceiling, reached live schema validation and returned
+  **`422 schema_rejected`** instead of `413 payload_size_rejected`. The probe
+  could not invoke mail transport and proves that the raised request gate is
+  active without sending a diagnostic email;
+- a fresh real-Tesla drive remains the acceptance test for long-session fitting,
+  mail-transport handoff and recipient-inbox delivery.
+
 ## Kinetic visual and ATLAS publication evidence — 2026-08-28
 
 - build stamp: **`20260828-1131`**; deployed commit: `33ae761`;
