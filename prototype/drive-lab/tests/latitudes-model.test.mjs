@@ -11,6 +11,7 @@ import {
   LATITUDES_WINDOW_SECONDS,
   readLatitudesHistory,
   speedToFieldStructure,
+  speedToOscilloscopeRate,
   speedToRestPhaseRate,
   speedToTravelMps,
 } from "../src/environments/latitudes/latitudes-model.js";
@@ -189,6 +190,12 @@ test("grows temporal relief, contour light and particles without replacing the f
   assert.ok(rest.contourGlow < urban.contourGlow && urban.contourGlow < ceiling.contourGlow);
   assert.equal(rest.particleWeight, 0);
   assert.ok(urban.particleWeight > 0 && ceiling.particleWeight > urban.particleWeight);
+  assert.ok(rest.waveAmplitude < urban.waveAmplitude && urban.waveAmplitude < ceiling.waveAmplitude);
+  assert.ok(rest.phaseCompression < ceiling.phaseCompression);
+  assert.equal(rest.pulseWeight, 0);
+  assert.ok(urban.pulseWeight > 0);
+  assert.ok(speedToOscilloscopeRate(0) > 0);
+  assert.ok(speedToOscilloscopeRate(130) > speedToOscilloscopeRate(40));
 });
 
 test("produces the same stack for the same drive regardless of frame rate", () => {

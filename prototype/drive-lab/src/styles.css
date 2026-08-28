@@ -736,21 +736,47 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
   height: auto;
 }
 .atlas-waiting {
+  z-index: 5;
   display: grid;
   place-content: center;
   gap: 8px;
   color: var(--paper);
   background: radial-gradient(circle at 50% 48%, color-mix(in srgb, var(--accent) 22%, transparent), #050507 58%);
   text-align: center;
+  pointer-events: none;
 }
 .atlas-waiting strong { font-size: 28px; letter-spacing: .22em; }
 .atlas-waiting span { opacity: .58; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
+.atlas-waiting button {
+  justify-self: center;
+  margin-top: 12px;
+  min-width: 176px;
+  padding: 11px 16px;
+  color: var(--paper);
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 58%, transparent);
+  font: 720 10px/1 var(--font-ui);
+  letter-spacing: .14em;
+  pointer-events: auto;
+}
+.atlas-demo-hint {
+  position: absolute;
+  bottom: 72px;
+  left: 16px;
+  z-index: 4;
+  padding: 6px 8px;
+  color: color-mix(in srgb, var(--atlas-accent) 78%, white);
+  background: rgba(7, 7, 10, .74);
+  font-size: 8px;
+  font-weight: 720;
+  letter-spacing: .12em;
+}
 .atlas-panel {
   position: absolute;
   top: 72px;
   right: 0;
   bottom: 64px;
-  z-index: 3;
+  z-index: 6;
   display: flex;
   width: 218px;
   box-sizing: border-box;

@@ -159,7 +159,16 @@ export function speedToFieldStructure(speedKmh) {
     relief: 0.34 + 0.66 * normalized ** 0.76,
     contourGlow: 0.38 + 0.62 * normalized ** 1.08,
     particleWeight: clamp((normalized - 0.18) / 0.7, 0, 1) ** 1.25,
+    waveAmplitude: 0.18 + 0.82 * normalized ** 0.72,
+    phaseCompression: 0.22 + 1.78 * normalized ** 1.05,
+    pulseWeight: clamp((normalized - 0.08) / 0.72, 0, 1) ** 0.9,
   };
+}
+
+/** Continuous phase rate for the oscilloscope contours; never sample-stepped. */
+export function speedToOscilloscopeRate(speedKmh) {
+  const normalized = normalizedSpeed(speedKmh);
+  return 0.035 + 0.62 * normalized ** 0.78;
 }
 
 /**

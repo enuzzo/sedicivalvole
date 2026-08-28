@@ -10,8 +10,8 @@
 // field's local slope, several mutually incoherent scroll rates layered for
 // parallax, and a widening projection carrying acceleration.
 //
-// The corridor contents are original: longitudinal meridian rails, transverse
-// edge posts, phrase rules every fourth station, and travelling markers. Glow is
+// The corridor contents are original: longitudinal meridian rails, abstract
+// Euclidean portals and solids, high cloud slabs, and curved travelling wind. Glow is
 // produced analytically inside each primitive rather than by a bloom pass, which
 // keeps the frame cost predictable on the target vehicle.
 
@@ -43,8 +43,8 @@ const RAIL_LANES = Array.from(
 const RAIL_CENTRE_INDEX = (RAIL_LANE_COUNT - 1) / 2;
 const STATION_COUNT = 72;
 const STATION_EDGE_X = 17;
-const MARKER_COUNT = 64;
-const MARKER_LANES = [-11.4, -5.6, 5.6, 11.4];
+const MARKER_COUNT = 38;
+const MARKER_LANES = [-13.4, -7.2, 7.2, 13.4];
 
 const RAIL_SCROLL_RATE = 0.085;
 const STATION_SCROLL_RATE = 26;
@@ -54,8 +54,8 @@ const MARKER_SCROLL_MAX = 63;
 const KIND_POST = 0;
 const KIND_RULE = 1;
 const KIND_MARKER = 2;
-const ARCHITECTURE_PAIR_COUNT = 30;
-const FLOOR_PANEL_COUNT = 34;
+const ARCHITECTURE_PAIR_COUNT = 24;
+const CLOUD_PANEL_COUNT = 16;
 const ARCHITECTURE_SCROLL_RATE = 26;
 
 /** Deterministic generator so every session, capture, and QA pass matches. */
@@ -208,6 +208,7 @@ const MARK_VERTEX = `${SHARED_HEADER}
   uniform float u_stationFraction;
   uniform float u_markerFraction;
   uniform float u_markerStretch;
+  uniform float u_windCurve;
 
   out vec2 v_corner;
   out float v_progress;
@@ -235,6 +236,13 @@ const MARK_VERTEX = `${SHARED_HEADER}
     float travelled = mod(a_offset.z + u_time * speed, u_travelLength + u_overshoot);
     vec3 world = vec3(a_offset.x, a_offset.y, 0.0) + local;
     world.z += -u_travelLength + travelled;
+
+    if (kind > 1.5) {
+      float windT = a_corner.x;
+      float bendPhase = visibilityKey * 19.0;
+      world.x += sin(windT * 3.14159265 + bendPhase) * u_windCurve * 3.8;
+      world.y += (1.0 - cos(windT * 3.14159265)) * u_windCurve * 1.35;
+    }
 
     float progress = clamp(-world.z / u_travelLength, 0.0, 1.0);
     world.xy += getDistortion(progress);
@@ -297,6 +305,7 @@ const ARCHITECTURE_VERTEX = `${SHARED_HEADER}
   in vec3 a_offset;
   in vec3 a_scale;
   in vec4 a_meta; // scroll speed, visibility key, material, emissive amount
+  in vec2 a_rotation; // yaw, roll
 
   uniform float u_architectureFraction;
 
@@ -309,12 +318,22 @@ const ARCHITECTURE_VERTEX = `${SHARED_HEADER}
 
   void main() {
     float travelled = mod(a_offset.z + u_time * a_meta.x, u_travelLength + u_overshoot);
-    vec3 world = a_position * a_scale + vec3(a_offset.x, a_offset.y, -u_travelLength + travelled);
+    vec3 local = a_position * a_scale;
+    float cy = cos(a_rotation.x);
+    float sy = sin(a_rotation.x);
+    local.xz = mat2(cy, -sy, sy, cy) * local.xz;
+    float cr = cos(a_rotation.y);
+    float sr = sin(a_rotation.y);
+    local.xy = mat2(cr, -sr, sr, cr) * local.xy;
+    vec3 world = local + vec3(a_offset.x, a_offset.y, -u_travelLength + travelled);
     float progress = clamp(-world.z / u_travelLength, 0.0, 1.0);
     world.xy += getDistortion(progress);
 
     gl_Position = u_viewProjection * vec4(world, 1.0);
-    v_normal = normalize(a_normal / max(a_scale, vec3(0.001)));
+    vec3 normal = normalize(a_normal / max(a_scale, vec3(0.001)));
+    normal.xz = mat2(cy, -sy, sy, cy) * normal.xz;
+    normal.xy = mat2(cr, -sr, sr, cr) * normal.xy;
+    v_normal = normal;
     v_uv = a_uv;
     v_progress = progress;
     v_alpha = smoothstep(a_meta.y, a_meta.y + 0.18, u_architectureFraction);
@@ -352,25 +371,16 @@ const ARCHITECTURE_FRAGMENT = `#version 300 es
     float edgeDistance = min(min(v_uv.x, 1.0 - v_uv.x), min(v_uv.y, 1.0 - v_uv.y));
     float edge = 1.0 - smoothstep(0.0, 0.075, edgeDistance);
 
-    vec2 facadeCell = fract(v_uv * vec2(5.0, 11.0));
-    float facadeWindow = smoothstep(0.12, 0.18, facadeCell.x)
-      * (1.0 - smoothstep(0.78, 0.86, facadeCell.x))
-      * smoothstep(0.10, 0.16, facadeCell.y)
-      * (1.0 - smoothstep(0.70, 0.78, facadeCell.y));
-    float verticalFace = 1.0 - smoothstep(0.12, 0.82, abs(normal.y));
-    float windowMask = facadeWindow * (1.0 - edge) * verticalFace;
     vec3 solid = mix(u_mid * 0.48, mix(u_mid, u_light, 0.42), diffuse);
-    solid = mix(solid, mix(u_accent, u_secondary, 0.44), windowMask * (0.16 + v_emissive * 0.28));
     vec3 glass = mix(u_base, u_secondary, 0.42 + diffuse * 0.22);
-    glass += u_accent * windowMask * 0.18;
-    vec3 floorTone = mix(u_base, u_mid, 0.42 + diffuse * 0.12);
-    vec3 material = v_material < 0.5 ? solid : (v_material < 1.5 ? glass : floorTone);
+    vec3 cloudTone = mix(u_mid, u_light, 0.18 + diffuse * 0.16);
+    vec3 material = v_material < 0.5 ? solid : (v_material < 1.5 ? glass : cloudTone);
     vec3 edgeTone = mix(u_light, u_accent, v_emissive);
     material += edgeTone * edge * (0.28 + 1.15 * v_emissive) * u_volumeGlow;
 
     float fog = exp(-v_progress * u_fogDensity) * (1.0 - smoothstep(0.62, 1.0, v_progress));
     vec3 colour = mix(u_base, material, fog);
-    float glassAlpha = v_material < 0.5 ? 1.0 : (v_material < 1.5 ? 0.52 : 0.92);
+    float glassAlpha = v_material < 0.5 ? 1.0 : (v_material < 1.5 ? 0.58 : 0.34);
     outColor = vec4(colour, v_alpha * glassAlpha * smoothstep(0.0, 0.04, v_progress));
   }
 `;
@@ -514,10 +524,10 @@ function buildMarkInstances(palette) {
     push(
       [
         lane + between(random, -0.6, 0.6),
-        between(random, 1.4, 5.2),
+        between(random, 3.4, 10.8),
         random() * (MERIDIAN_TRAVEL_LENGTH + CORRIDOR_OVERSHOOT),
       ],
-      [0, between(random, 0.1, 0.26), between(random, 5, 15)],
+      [0, between(random, 0.08, 0.2), between(random, 10, 27)],
       [
         KIND_MARKER,
         between(random, MARKER_SCROLL_MIN, MARKER_SCROLL_MAX),
@@ -566,15 +576,27 @@ function buildCubeGeometry() {
   };
 }
 
+function buildMarkStrip(segments = 12) {
+  const corners = [];
+  for (let segment = 0; segment < segments; segment += 1) {
+    const x0 = segment / segments;
+    const x1 = (segment + 1) / segments;
+    corners.push(x0, 0, x1, 0, x1, 1, x0, 0, x1, 1, x0, 1);
+  }
+  return new Float32Array(corners);
+}
+
 function buildArchitectureInstances() {
   const random = createSeededRandom(0xa11ce7);
   const offsets = [];
   const scales = [];
   const metas = [];
-  const push = (offset, scale, meta) => {
+  const rotations = [];
+  const push = (offset, scale, meta, rotation = [0, 0]) => {
     offsets.push(...offset);
     scales.push(...scale);
     metas.push(...meta);
+    rotations.push(...rotation);
   };
   const span = MERIDIAN_TRAVEL_LENGTH + CORRIDOR_OVERSHOOT;
   for (let index = 0; index < ARCHITECTURE_PAIR_COUNT; index += 1) {
@@ -583,37 +605,48 @@ function buildArchitectureInstances() {
     // visibility to index alone made the resting city exist only at the horizon.
     const visibility = 0.025 + (index % 10) * 0.078;
     for (const side of [-1, 1]) {
-      const width = between(random, 1.8, 5.4);
-      const height = between(random, 5.5, 18.5) * (index % 6 === 0 ? 1.32 : 1);
-      const depth = between(random, 2.2, 7.5);
-      const inset = index % 5 === 0 ? 2.2 : 0;
-      const material = index % 4 === 1 ? 1 : 0;
-      push(
-        [side * (13.0 + between(random, 0, 5.4) - inset), height * 0.5 - 0.15, z],
-        [width, height, depth],
-        [ARCHITECTURE_SCROLL_RATE, visibility, material, index % 5 === 0 ? 1 : 0.22],
-      );
-      if (index % 5 === 0) {
-        push(
-          [side * 10.7, between(random, 5.5, 10.0), z + depth * 0.15],
-          [between(random, 3.8, 7.2), between(random, 0.28, 0.62), between(random, 2.8, 6.5)],
-          [ARCHITECTURE_SCROLL_RATE, visibility + 0.04, 1, 0.5],
-        );
+      const family = index % 4;
+      const x = side * between(random, 11.5, 17.5);
+      const material = family === 2 ? 1 : 0;
+      const emissive = family === 0 ? 0.82 : 0.2 + random() * 0.32;
+      if (family === 0) {
+        // Portal: two asymmetric piers and a floating lintel.
+        const height = between(random, 8.5, 16.5);
+        push([x - side * 2.4, height * 0.5, z], [1.2, height, 2.3], [ARCHITECTURE_SCROLL_RATE, visibility, 0, emissive], [0.06 * side, 0]);
+        push([x + side * 2.0, height * 0.42, z + 0.7], [0.8, height * 0.84, 3.1], [ARCHITECTURE_SCROLL_RATE, visibility + 0.025, 1, emissive * 0.62], [-0.08 * side, 0.04 * side]);
+        push([x, height, z], [6.2, 0.72, 2.0], [ARCHITECTURE_SCROLL_RATE, visibility + 0.04, 0, 0.72], [0.1 * side, 0.05 * side]);
+      } else if (family === 1) {
+        // Cantilevered cross: deliberately architectural without reading as a building.
+        const height = between(random, 7, 14);
+        push([x, height * 0.5, z], [1.5, height, between(random, 2, 4)], [ARCHITECTURE_SCROLL_RATE, visibility, 0, emissive], [0.14 * side, 0.08 * side]);
+        push([x - side * 1.8, height * 0.72, z - 0.8], [6.8, 0.75, 2.1], [ARCHITECTURE_SCROLL_RATE, visibility + 0.035, 1, 0.56], [-0.16 * side, -0.04 * side]);
+      } else if (family === 2) {
+        // Faceted blade assembled from offset, rotated prisms.
+        const height = between(random, 10, 20);
+        push([x, height * 0.5, z], [between(random, 1.3, 2.5), height, 3.5], [ARCHITECTURE_SCROLL_RATE, visibility, material, emissive], [between(random, -0.32, 0.32), 0.13 * side]);
+        push([x + side * 1.5, height * 0.34, z + 1.1], [0.8, height * 0.56, 5.2], [ARCHITECTURE_SCROLL_RATE, visibility + 0.05, 0, 0.44], [-0.25 * side, -0.09 * side]);
+      } else {
+        // Stepped monolith with suspended cap.
+        const height = between(random, 6, 12);
+        push([x, height * 0.5, z], [4.2, height, 3.3], [ARCHITECTURE_SCROLL_RATE, visibility, 0, emissive], [0.08 * side, 0]);
+        push([x - side * 1.2, height + 2.2, z - 0.6], [2.4, 4.2, 2.1], [ARCHITECTURE_SCROLL_RATE, visibility + 0.035, 1, 0.68], [-0.12 * side, 0.06 * side]);
       }
     }
   }
-  for (let index = 0; index < FLOOR_PANEL_COUNT; index += 1) {
-    const z = (index / FLOOR_PANEL_COUNT) * span;
+  for (let index = 0; index < CLOUD_PANEL_COUNT; index += 1) {
+    const z = (index / CLOUD_PANEL_COUNT) * span;
     push(
-      [0, -0.26, z],
-      [between(random, 17.5, 21), 0.18, span / FLOOR_PANEL_COUNT * 0.84],
-      [ARCHITECTURE_SCROLL_RATE, 0, 2, index % 6 === 0 ? 0.48 : 0.08],
+      [between(random, -8, 8), between(random, 19, 34), z],
+      [between(random, 10, 25), between(random, 0.2, 0.58), between(random, 5, 14)],
+      [ARCHITECTURE_SCROLL_RATE * 0.72, 0.18 + (index % 8) * 0.075, 2, index % 4 === 0 ? 0.46 : 0.12],
+      [between(random, -0.28, 0.28), between(random, -0.05, 0.05)],
     );
   }
   return {
     offsets: new Float32Array(offsets),
     scales: new Float32Array(scales),
     metas: new Float32Array(metas),
+    rotations: new Float32Array(rotations),
     count: metas.length / 4,
   };
 }
@@ -699,7 +732,7 @@ export function createMeridianRenderer(canvas, initialPalette) {
   ]);
   const markUniforms = uniformsOf(gl, markProgram, [
     ...distortionUniforms, "u_stationFraction", "u_markerFraction",
-    "u_markerStretch", "u_fogDensity",
+    "u_markerStretch", "u_windCurve", "u_fogDensity",
   ]);
   const architectureUniforms = uniformsOf(gl, architectureProgram, [
     ...distortionUniforms, "u_architectureFraction", "u_base", "u_mid", "u_light",
@@ -737,7 +770,7 @@ export function createMeridianRenderer(canvas, initialPalette) {
   let marks = buildMarkInstances(palette);
   const markVao = gl.createVertexArray();
   gl.bindVertexArray(markVao);
-  const corner = new Float32Array([0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1]);
+  const corner = buildMarkStrip();
   const markCornerBuffer = attachVertex(gl, markProgram, "a_corner", corner, 2);
   const markOffsetBuffer = attachInstanced(gl, markProgram, "a_offset", marks.offsets, 3);
   const markSizeBuffer = attachInstanced(gl, markProgram, "a_size", marks.sizes, 3);
@@ -756,6 +789,7 @@ export function createMeridianRenderer(canvas, initialPalette) {
     attachInstanced(gl, architectureProgram, "a_offset", architecture.offsets, 3),
     attachInstanced(gl, architectureProgram, "a_scale", architecture.scales, 3),
     attachInstanced(gl, architectureProgram, "a_meta", architecture.metas, 4),
+    attachInstanced(gl, architectureProgram, "a_rotation", architecture.rotations, 2),
   ];
   gl.bindVertexArray(null);
 
@@ -874,8 +908,9 @@ export function createMeridianRenderer(canvas, initialPalette) {
       gl.uniform1f(markUniforms.u_stationFraction, density.gateFraction);
       gl.uniform1f(markUniforms.u_markerFraction, density.streakFraction);
       gl.uniform1f(markUniforms.u_markerStretch, density.streakStretch);
+      gl.uniform1f(markUniforms.u_windCurve, density.atmosphereFraction);
       gl.uniform1f(markUniforms.u_fogDensity, 2.4);
-      gl.drawArraysInstanced(gl.TRIANGLES, 0, 6, marks.count);
+      gl.drawArraysInstanced(gl.TRIANGLES, 0, corner.length / 2, marks.count);
 
       gl.bindVertexArray(null);
       gl.depthMask(true);

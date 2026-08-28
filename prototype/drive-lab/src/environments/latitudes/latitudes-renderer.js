@@ -15,6 +15,7 @@ import {
   LATITUDES_HISTORY_SAMPLES,
   LATITUDES_SHEAR_PER_METRE,
   speedToFieldStructure,
+  speedToOscilloscopeRate,
   speedToRestPhaseRate,
 } from "./latitudes-model.js";
 
@@ -43,6 +44,10 @@ const FRAGMENT_SHADER = `#version 300 es
   uniform float u_contourGlow;
   uniform float u_particleWeight;
   uniform float u_restPhase;
+  uniform float u_motionPhase;
+  uniform float u_waveAmplitude;
+  uniform float u_phaseCompression;
+  uniform float u_pulseWeight;
   uniform vec3 u_tone0;
   uniform vec3 u_tone1;
   uniform vec3 u_tone2;
@@ -79,34 +84,36 @@ const FRAGMENT_SHADER = `#version 300 es
     vec3 color = mix(u_tone0, u_tone1 * 0.34, 0.18 + horizonGlow * 0.20);
     color += mix(u_tone4, u_tone2, 0.72) * horizonGlow * 0.065;
 
-    // Fourteen broad temporal ribbons replace the old one-pixel strata. Every
-    // ribbon still samples the same eight-second movement history, so a steady
-    // speed rakes the surfaces evenly and acceleration bends them as before.
-    for (int layer = 0; layer < 14; layer += 1) {
-      float age = float(layer) / 13.0;
+    // Eighteen sparse oscilloscope contours. Their rake still comes from the
+    // eight-second road history, while the waveform phase advances every frame
+    // so no 30 Hz history sample can appear as a visual hitch.
+    for (int layer = 0; layer < 18; layer += 1) {
+      float age = float(layer) / 17.0;
       float lag = lagAt(age);
-      float depth = pow(age, 0.82);
+      float depth = pow(age, 0.92);
       float phase = lag * u_shearPerMetre * TAU * 1.75 + u_restPhase * TAU;
-      float lateral = p.x + phase;
-      float broad = sin(lateral * (1.15 + age * 0.72) + float(layer) * 1.41);
-      float detail = sin(lateral * 2.73 - float(layer) * 0.83) * u_fineWeight;
-      float curve = (broad * 0.72 + detail * 0.28)
-        * (0.055 + (1.0 - depth) * 0.115) * u_relief * u_lateralWeight;
-      float baseY = -0.88 + depth * 1.24;
-      float ribbonWidth = mix(0.155, 0.018, depth) * (0.82 + u_toneSpread * 0.18);
+      float lateral = p.x + phase + u_motionPhase * (0.16 + age * 0.08);
+      float carrier = sin(lateral * (1.45 + u_phaseCompression * 0.54) + float(layer) * 1.17);
+      float harmonic = sin(lateral * (3.1 + age * 1.4) - float(layer) * 0.71 + u_motionPhase * 0.52);
+      float pulseCenter = sin(u_motionPhase * (0.74 + age * 0.33) + float(layer) * 2.13) * 0.78;
+      float pulseEnvelope = exp(-pow((p.x - pulseCenter) * (2.2 + u_phaseCompression), 2.0));
+      float pulse = sin(lateral * 7.2 - u_motionPhase * 1.7) * pulseEnvelope * u_pulseWeight;
+      float curve = (carrier * 0.68 + harmonic * 0.20 * u_fineWeight + pulse * 0.32)
+        * (0.035 + (1.0 - depth) * 0.105) * u_relief * u_lateralWeight * u_waveAmplitude;
+      float baseY = -0.86 + depth * 1.52;
+      float ribbonWidth = mix(0.018, 0.006, depth) * (0.9 + u_toneSpread * 0.1);
       float distanceToRibbon = abs(p.y - (baseY + curve));
-      float body = 1.0 - smoothstep(ribbonWidth * 0.22, ribbonWidth, distanceToRibbon);
-      float core = 1.0 - smoothstep(0.0, max(fwidth(distanceToRibbon) * 2.1, 0.0035), distanceToRibbon);
-      float shadow = 1.0 - smoothstep(ribbonWidth, ribbonWidth * 2.2, distanceToRibbon);
+      float body = 1.0 - smoothstep(ribbonWidth * 0.15, ribbonWidth, distanceToRibbon);
+      float core = 1.0 - smoothstep(0.0, max(fwidth(distanceToRibbon) * 1.55, 0.0022), distanceToRibbon);
+      float halo = 1.0 - smoothstep(ribbonWidth, ribbonWidth * 4.0, distanceToRibbon);
 
       vec3 layerTone = layer % 4 == 0 ? u_tone3
         : (layer % 3 == 0 ? u_tone4 : (layer % 2 == 0 ? u_tone2 : u_tone1));
-      float light = 0.18 + (1.0 - depth) * 0.34 + broad * 0.10;
-      vec3 surface = mix(u_tone1 * 0.36, layerTone, 0.38 + light);
-      color *= 1.0 - shadow * body * 0.20;
-      color = mix(color, surface, body * (0.38 + (1.0 - depth) * 0.36));
+      vec3 surface = mix(u_tone1, layerTone, 0.48 + pulseEnvelope * 0.26);
+      color += surface * halo * 0.035 * u_contourGlow;
+      color = mix(color, surface, body * (0.42 + (1.0 - depth) * 0.34));
       color += mix(u_tone2, u_tone3, float(layer % 5 == 0))
-        * core * u_contourGlow * (0.38 + (1.0 - depth) * 0.55);
+        * core * u_contourGlow * (0.46 + pulseEnvelope * 0.45);
     }
 
     vec2 particleCell = floor((v_uv * vec2(u_aspect, 1.0)) * vec2(210.0, 130.0));
@@ -177,7 +184,8 @@ export function createLatitudesRenderer(canvas, initialPalette) {
   const uniforms = {};
   for (const name of [
     "u_lag", "u_samples", "u_aspect", "u_shearPerMetre", "u_bandFrequency",
-    "u_lateralWeight", "u_fineWeight", "u_toneSpread", "u_restPhase",
+    "u_lateralWeight", "u_fineWeight", "u_toneSpread", "u_restPhase", "u_motionPhase",
+    "u_waveAmplitude", "u_phaseCompression", "u_pulseWeight",
     "u_relief", "u_contourGlow", "u_particleWeight",
     "u_tone0", "u_tone1", "u_tone2", "u_tone3", "u_tone4",
   ]) uniforms[name] = gl.getUniformLocation(program, name);
@@ -208,6 +216,7 @@ export function createLatitudesRenderer(canvas, initialPalette) {
   const history = createLatitudesHistory();
   let palette = initialPalette;
   let restPhase = 0;
+  let motionPhase = 0;
   let width = 1;
   let height = 1;
   let disposed = false;
@@ -233,6 +242,7 @@ export function createLatitudesRenderer(canvas, initialPalette) {
       const speed = reducedMotion ? Math.min(speedKmh, 20) : speedKmh;
       advanceLatitudesHistory(history, speed, deltaSeconds);
       restPhase += speedToRestPhaseRate(speed) * Math.max(0, Math.min(deltaSeconds, 0.25));
+      motionPhase += speedToOscilloscopeRate(speed) * Math.max(0, Math.min(deltaSeconds, 0.25));
 
       for (let index = 0; index < LATITUDES_HISTORY_SAMPLES; index += 1) {
         lagBuffer[index] = historyLagMetres(history, index / (LATITUDES_HISTORY_SAMPLES - 1));
@@ -262,6 +272,10 @@ export function createLatitudesRenderer(canvas, initialPalette) {
       gl.uniform1f(uniforms.u_contourGlow, structure.contourGlow);
       gl.uniform1f(uniforms.u_particleWeight, structure.particleWeight);
       gl.uniform1f(uniforms.u_restPhase, restPhase);
+      gl.uniform1f(uniforms.u_motionPhase, motionPhase);
+      gl.uniform1f(uniforms.u_waveAmplitude, structure.waveAmplitude);
+      gl.uniform1f(uniforms.u_phaseCompression, structure.phaseCompression);
+      gl.uniform1f(uniforms.u_pulseWeight, structure.pulseWeight);
 
       gl.uniform3fv(uniforms.u_tone0, palette.base);
       gl.uniform3fv(uniforms.u_tone1, palette.mid);

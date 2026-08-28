@@ -614,7 +614,7 @@ export function App() {
   drawerOpenRef.current = drawerOpen;
   performancePhaseRef.current = phase === "running"
     ? `drive:${environmentId}:${genreId}:${drawerOpen ? "diagnostics" : "visual"}`
-      + (environmentId === "aperture" && speed >= 18 && speed <= 40 ? ":morph" : "")
+      + (environmentId === "aperture" && speed <= 40 ? ":wall-retreat" : "")
     : `splash:${phase}`;
 
   const logDiagnosticEvent = useCallback((type, detail = {}) => {

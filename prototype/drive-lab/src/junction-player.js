@@ -1,6 +1,7 @@
 import {
   chooseJunctionMix,
   junctionLiveMixParameters,
+  junctionMovementGain,
   junctionSectionForEnergy,
   parseJunctionBank,
 } from "./junction-bank.js";
@@ -9,6 +10,7 @@ const BANK_URL = `/audio/junction.svb?build=${encodeURIComponent(__APP_BUILD__)}
 const REVIEW_INTERVAL_MS = 50;
 const SCHEDULE_AHEAD_SECONDS = 0.8;
 const LIVE_MIX_LEVEL = 0.61;
+const OUTPUT_LEVEL = 0.9;
 
 export function createJunctionPlayer(context, destination, onSnapshot) {
   let active = false;
@@ -37,7 +39,7 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
   masterFilter.type = "lowpass";
   masterFilter.frequency.value = mixCutoff;
   masterFilter.Q.value = 0.65;
-  output.gain.value = 0.9;
+  output.gain.value = 0;
   delaySend.gain.value = 1;
   delay.delayTime.value = 0.25;
   feedback.gain.value = 0.1;
@@ -48,6 +50,14 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
   delay.connect(wet).connect(masterFilter);
   delay.connect(feedback).connect(delay);
   masterFilter.connect(output).connect(destination);
+
+  function applyMovementGate(time = context.currentTime) {
+    output.gain.setTargetAtTime(
+      active ? junctionMovementGain(energy) * OUTPUT_LEVEL : 0,
+      time,
+      active ? 0.16 : 0.035,
+    );
+  }
 
   function applyMasterTone(time = context.currentTime) {
     const frequency = mixCutoff + (430 - mixCutoff) * brake;
@@ -87,6 +97,7 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
         : (primary?.bpm ?? 127) < 158 ? "slow break" : "full break",
       tempo: primary?.bpm ?? bank?.manifest.bpmRange?.[0] ?? 127,
       energy,
+      movementGain: junctionMovementGain(energy),
       decelerationState: brake > 0.2 ? "release" : "cruise",
       activeLanes: primary?.activeLanes
         ?? (sectionId === "rest" ? ["harmony", "atmosphere"] : ["breaks", "harmony"]),
@@ -286,6 +297,7 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
   return {
     async setActive(nextActive) {
       active = nextActive;
+      applyMovementGate();
       if (!active) {
         for (const source of activeSources) {
           try { source.stop(); } catch {}
@@ -304,6 +316,7 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
     },
     setEnergy(nextEnergy) {
       energy = Math.min(1, Math.max(0, Number(nextEnergy) || 0));
+      applyMovementGate();
       prewarmTarget();
     },
     setBrake(nextBrake) {

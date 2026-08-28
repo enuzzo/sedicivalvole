@@ -15,11 +15,25 @@ export function speedToAtlasCamera(speedKmh) {
   const speed = Math.min(130, Math.max(0, Number(speedKmh) || 0));
   const energy = speed / 130;
   return {
-    zoom: 16.35 - energy * 1.2,
-    pitch: 57 + energy * 14,
+    zoom: 16.2 - energy * 2.4,
+    pitch: 62 - energy * 14,
     durationMs: Math.round(2200 - energy * 1050),
     buildingScale: 0.82 + energy * 0.38,
   };
+}
+
+/** Advances the fixed Milan demo without exposing or inventing user location. */
+export function advanceAtlasDemoPosition(position, speedKmh, headingDegrees, deltaSeconds) {
+  if (!validAtlasPosition(position)) return null;
+  const speedMps = Math.min(130, Math.max(0, Number(speedKmh) || 0)) / 3.6;
+  const delta = Math.min(1, Math.max(0, Number(deltaSeconds) || 0));
+  const heading = ((Number(headingDegrees) || 0) * Math.PI) / 180;
+  const metres = speedMps * delta;
+  const latitudeRadians = (position.latitude * Math.PI) / 180;
+  const latitude = position.latitude + (Math.cos(heading) * metres) / 111320;
+  const longitude = position.longitude
+    + (Math.sin(heading) * metres) / Math.max(1, 111320 * Math.cos(latitudeRadians));
+  return { latitude, longitude, heading: ((Number(headingDegrees) || 0) + 360) % 360 };
 }
 
 export function wikipediaNearbyUrl(position, language = "it") {

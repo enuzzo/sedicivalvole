@@ -95,6 +95,18 @@ export function junctionLiveMixParameters(energy, bpm, random = Math.random) {
   };
 }
 
+/**
+ * Keeps the prepared ambient rest section silent on launch, then introduces
+ * JUNCTION only after the vehicle is genuinely moving. Energy is normalized
+ * against 130 km/h, so the fade spans 4–10 km/h and completes before the first
+ * quiet break enters near 13 km/h.
+ */
+export function junctionMovementGain(energy) {
+  const speedKmh = Math.min(130, Math.max(0, Number(energy) || 0) * 130);
+  const normalized = Math.min(1, Math.max(0, (speedKmh - 4) / 6));
+  return normalized * normalized * (3 - 2 * normalized);
+}
+
 export function junctionSectionForEnergy(energy, braking = false) {
   const value = Math.min(1, Math.max(0, Number(energy) || 0));
   if (braking) return value > 0.6 ? "turn" : value > 0.1 ? "ease" : "rest";

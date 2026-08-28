@@ -31,7 +31,8 @@ const FRAGMENT_SHADER = `#version 300 es
 
   uniform float u_aspect;
   uniform float u_velocity;
-  uniform float u_warp;
+  uniform float u_wallSize;
+  uniform float u_wallOpacity;
   uniform float u_terminalVelocity;
   uniform float u_speedPulseMask;
   uniform float u_voidActive;
@@ -53,107 +54,70 @@ const FRAGMENT_SHADER = `#version 300 es
     return fract(point.x * point.y);
   }
 
-  void main() {
-    vec2 uv_norm = v_uv * 2.0 - 1.0;
-    
-    vec3 darkPanel = mix(u_base, u_mid, 0.66);
-
-    float absX = abs(uv_norm.x);
-    float absY = abs(uv_norm.y);
-    float majorAxis = max(max(absX, absY), 0.0001);
-    
-    // Depth maps from 0 (at edges) to infinity (at center).
-    // At majorAxis = 0.125, Depth = 7.0 tiles.
-    float depth = (1.0 / majorAxis) - 1.0;
-    float flowOffset = u_flow * u_warp;
-    
-    bool isSide = absX >= absY;
-    
-    vec2 gridPos;
-    if (isSide) {
-        float signX = sign(uv_norm.x);
-        float longi = 3.5 * u_aspect + depth - flowOffset;
-        float trans = uv_norm.y * 3.5 / absX;
-        gridPos.x = mix(uv_norm.x * u_aspect * 3.5, signX * longi, u_warp);
-        gridPos.y = mix(uv_norm.y * 3.5, trans, u_warp);
-    } else {
-        float signY = sign(uv_norm.y);
-        float longi = 3.5 + depth - flowOffset;
-        float trans = uv_norm.x * u_aspect * 3.5 / absY;
-        gridPos.x = mix(uv_norm.x * u_aspect * 3.5, trans, u_warp);
-        gridPos.y = mix(uv_norm.y * 3.5, signY * longi, u_warp);
-    }
-    
-    // Determine fractional parts based on which axis acts as longitudinal/transverse
+  vec3 shadeGrid(vec2 gridPos, bool isSide) {
     float transFract = isSide ? fract(gridPos.y) : fract(gridPos.x);
-    float longFract  = isSide ? fract(gridPos.x) : fract(gridPos.y);
-    
+    float longFract = isSide ? fract(gridPos.x) : fract(gridPos.y);
     float transCell = isSide ? floor(gridPos.y) : floor(gridPos.x);
-    
-    // Base Tile ID purely on the 2D grid position, guaranteeing 100% seamless continuity at warp=0
-    vec2 tileId = vec2(floor(gridPos.x), floor(gridPos.y));
+    vec2 tileId = floor(gridPos);
     float tone = hash21(tileId + vec2(8.0, 29.0));
-    
     float tilePhase = hash21(tileId + vec2(1.23, 4.56));
-    // u_restRecolour is now continuous seconds. Interval is 4.5s.
     float localTime = (u_restRecolour / 4.5) + tilePhase;
     float currentStep = floor(localTime);
-    float nextStep = currentStep + 1.0;
-    
-    // Fade over the last 1.5s of the 4.5s interval (1.5/4.5 = 1/3)
     float fade = smoothstep(0.666, 1.0, fract(localTime));
-    
-    float hashA = hash21(tileId + vec2(41.0, 13.0) + currentStep);
-    float hashB = hash21(tileId + vec2(41.0, 13.0) + nextStep);
-    float colorIndexA = floor(hashA * 4.0);
-    float colorIndexB = floor(hashB * 4.0);
-
-    // Tile Insets and Masking
-    float baseTransInset = 0.085;
-    float baseLongInset = mix(0.085, 0.02, u_velocity);
-    float transInset = mix(baseTransInset, 0.44, u_terminalVelocity);
-    float longInset = mix(baseLongInset, 0.0, u_terminalVelocity);
-
+    float colorIndexA = floor(hash21(tileId + vec2(41.0, 13.0) + currentStep) * 4.0);
+    float colorIndexB = floor(hash21(tileId + vec2(41.0, 13.0) + currentStep + 1.0) * 4.0);
+    float transInset = mix(0.085, 0.44, u_terminalVelocity);
+    float longInset = mix(mix(0.085, 0.02, u_velocity), 0.0, u_terminalVelocity);
     float transMask = smoothstep(0.0, 0.02, min(transFract, 1.0 - transFract) - transInset);
     float longMask = smoothstep(0.0, 0.02, min(longFract, 1.0 - longFract) - longInset);
     float tileMask = transMask * longMask;
-
-    vec3 panelA = darkPanel;
-    panelA = mix(panelA, u_mid, step(0.5, colorIndexA));
-    panelA = mix(panelA, u_light, step(1.5, colorIndexA));
-    panelA = mix(panelA, u_accent, step(2.5, colorIndexA));
-    
-    vec3 panelB = darkPanel;
-    panelB = mix(panelB, u_mid, step(0.5, colorIndexB));
-    panelB = mix(panelB, u_light, step(1.5, colorIndexB));
-    panelB = mix(panelB, u_accent, step(2.5, colorIndexB));
-
+    vec3 darkPanel = mix(u_base, u_mid, 0.66);
+    vec3 panelA = mix(mix(mix(darkPanel, u_mid, step(0.5, colorIndexA)), u_light, step(1.5, colorIndexA)), u_accent, step(2.5, colorIndexA));
+    vec3 panelB = mix(mix(mix(darkPanel, u_mid, step(0.5, colorIndexB)), u_light, step(1.5, colorIndexB)), u_accent, step(2.5, colorIndexB));
     vec3 panel = mix(panelA, panelB, fade);
     panel *= mix(0.95 + tone * 0.10, 0.90 + tone * 0.20, u_velocity);
-
-    // Terminal velocity laser streak coloring (white & red/accent)
     float streakHash = hash21(vec2(isSide ? 1.0 : 0.0, transCell) + 19.8);
     vec3 streakColor = mix(u_light, u_accent, step(0.45, streakHash));
     streakColor = mix(streakColor, u_mid, step(0.85, streakHash));
     panel = mix(panel, streakColor, u_terminalVelocity);
-
     vec3 color = mix(u_base, panel, tileMask);
+    color = mix(color, u_accent, u_pulse * tileMask * step(0.75, tone) * 0.22 * u_speedPulseMask);
+    return mix(color, u_light, u_brake * tileMask * 0.08);
+  }
 
-    // Reactive Audio Pulse & Brake Highlights
-    // Suppress the audio beat pulse at low speeds to prevent the resting grid from blinking
-    float pulse = u_pulse * tileMask * step(0.75, tone) * 0.22 * u_speedPulseMask;
-    color = mix(color, u_accent, pulse);
-    color = mix(color, u_light, u_brake * tileMask * 0.08);
-
-    // Outer edge vignette
+  vec3 shadeTunnel(vec2 uvNorm) {
+    float absX = abs(uvNorm.x);
+    float absY = abs(uvNorm.y);
+    float majorAxis = max(max(absX, absY), 0.0001);
+    float depth = (1.0 / majorAxis) - 1.0;
+    bool isSide = absX >= absY;
+    vec2 gridPos;
+    if (isSide) {
+      gridPos = vec2(sign(uvNorm.x) * (3.5 * u_aspect + depth - u_flow), uvNorm.y * 3.5 / absX);
+    } else {
+      gridPos = vec2(uvNorm.x * u_aspect * 3.5 / absY, sign(uvNorm.y) * (3.5 + depth - u_flow));
+    }
+    vec3 color = shadeGrid(gridPos, isSide);
     float edge = smoothstep(1.25, 0.40, max(absX * 0.75, absY));
     color *= mix(1.0, 0.75 + edge * 0.35, u_velocity);
-
-    // FINAL TERMINUS VOID GATE:
-    // Void covers the central 12% of the screen, hiding the infinite depth singularity
     float terminusVoid = smoothstep(0.12, 0.17, majorAxis);
-    color *= mix(1.0, terminusVoid, u_voidActive);
+    return color * mix(1.0, terminusVoid, u_voidActive);
+  }
 
+  void main() {
+    vec2 uv_norm = v_uv * 2.0 - 1.0;
+
+    bool insideWall = max(abs(uv_norm.x), abs(uv_norm.y)) <= u_wallSize;
+    if (insideWall && u_wallOpacity > 0.995) {
+      vec2 wallGrid = vec2(uv_norm.x * u_aspect, uv_norm.y) * (3.5 / u_wallSize);
+      outColor = vec4(shadeGrid(wallGrid, false), 1.0);
+      return;
+    }
+    vec3 color = shadeTunnel(uv_norm);
+    if (insideWall && u_wallOpacity > 0.001) {
+      vec2 wallGrid = vec2(uv_norm.x * u_aspect, uv_norm.y) * (3.5 / u_wallSize);
+      color = mix(color, shadeGrid(wallGrid, false), u_wallOpacity);
+    }
     outColor = vec4(color, 1.0);
   }
 `;
@@ -355,7 +319,8 @@ export function FluxField({ energy, speed, theme, reducedMotion, pulse, brake, o
     const uniforms = {
       aspect: gl.getUniformLocation(program, "u_aspect"),
       velocity: gl.getUniformLocation(program, "u_velocity"),
-      warp: gl.getUniformLocation(program, "u_warp"),
+      wallSize: gl.getUniformLocation(program, "u_wallSize"),
+      wallOpacity: gl.getUniformLocation(program, "u_wallOpacity"),
       terminalVelocity: gl.getUniformLocation(program, "u_terminalVelocity"),
       speedPulseMask: gl.getUniformLocation(program, "u_speedPulseMask"),
       voidActive: gl.getUniformLocation(program, "u_voidActive"),
@@ -423,7 +388,8 @@ export function FluxField({ energy, speed, theme, reducedMotion, pulse, brake, o
       gl.useProgram(program);
       gl.uniform1f(uniforms.aspect, width / height);
       gl.uniform1f(uniforms.velocity, visualVelocity);
-      gl.uniform1f(uniforms.warp, shaderControls.warp);
+      gl.uniform1f(uniforms.wallSize, shaderControls.wallSize);
+      gl.uniform1f(uniforms.wallOpacity, shaderControls.wallOpacity);
       gl.uniform1f(uniforms.terminalVelocity, shaderControls.terminalVelocity);
       gl.uniform1f(uniforms.speedPulseMask, shaderControls.speedPulseMask);
       gl.uniform1f(uniforms.voidActive, shaderControls.voidActive);

@@ -6,6 +6,7 @@ import {
   chooseJunctionMix,
   chooseJunctionVariation,
   junctionLiveMixParameters,
+  junctionMovementGain,
   junctionSectionForEnergy,
   parseJunctionBank,
 } from "../src/junction-bank.js";
@@ -25,6 +26,15 @@ test("JUNCTION chooses authored density and release sections from road energy", 
   assert.equal(junctionSectionForEnergy(0.8, true), "turn");
   assert.equal(junctionSectionForEnergy(0.4, true), "ease");
   assert.equal(junctionSectionForEnergy(0.08, true), "rest");
+});
+
+test("JUNCTION launch stays silent and fades in before the first break", () => {
+  assert.equal(junctionMovementGain(0), 0);
+  assert.equal(junctionMovementGain(4 / 130), 0);
+  assert.ok(junctionMovementGain(7 / 130) > 0.45);
+  assert.ok(junctionMovementGain(7 / 130) < 0.55);
+  assert.equal(junctionMovementGain(10 / 130), 1);
+  assert.equal(junctionMovementGain(1), 1);
 });
 
 test("JUNCTION leaves rest beatless and builds tempo and break level without racing", () => {

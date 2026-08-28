@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import "maplibre-gl/dist/maplibre-gl.css";
 import {
+  advanceAtlasDemoPosition,
   normalizeNearbyPages,
   createAtlasStyle,
   paletteToAtlasCss,
@@ -74,12 +75,13 @@ export default function AtlasField({ speed, theme, position, reducedMotion, onRe
   const [selectedId, setSelectedId] = useState(null);
   const [qrUrl, setQrUrl] = useState("");
   const [loading, setLoading] = useState(false);
-  valuesRef.current = { speed, theme, position, reducedMotion };
+  const [demoPosition, setDemoPosition] = useState(null);
+  valuesRef.current = { speed, theme, position, reducedMotion, demoPosition };
 
   const effectivePosition = useMemo(() => {
     if (validAtlasPosition(position)) return position;
-    return import.meta.env.DEV ? FALLBACK_POSITION : null;
-  }, [position]);
+    return demoPosition;
+  }, [position, demoPosition]);
   const canStart = Boolean(effectivePosition);
   const nearbyPosition = useMemo(() => effectivePosition ? {
     latitude: Math.round(effectivePosition.latitude * 20) / 20,
@@ -132,7 +134,8 @@ export default function AtlasField({ speed, theme, position, reducedMotion, onRe
         if (now - lastMoveAt < 1100) return;
         lastMoveAt = now;
         const current = valuesRef.current;
-        const point = validAtlasPosition(current.position) ? current.position : effectivePosition;
+        const point = validAtlasPosition(current.position) ? current.position : current.demoPosition;
+        if (!point) return;
         const nextCamera = speedToAtlasCamera(current.reducedMotion ? Math.min(current.speed, 20) : current.speed);
         if (Math.abs(nextCamera.buildingScale - lastBuildingScale) >= 0.035) {
           lastBuildingScale = nextCamera.buildingScale;
@@ -159,6 +162,38 @@ export default function AtlasField({ speed, theme, position, reducedMotion, onRe
       mapRef.current = null;
     };
   }, [canStart, onFrame, onRenderer]);
+
+  useEffect(() => {
+    if (!demo || !demoPosition) return undefined;
+    const handleKeyDown = (event) => {
+      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+      event.preventDefault();
+      const turn = event.key === "ArrowLeft" ? -7 : 7;
+      setDemoPosition((current) => current ? {
+        ...current,
+        heading: ((current.heading ?? 22) + turn + 360) % 360,
+      } : current);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [demo, Boolean(demoPosition)]);
+
+  useEffect(() => {
+    if (!demo || !demoPosition) return undefined;
+    let previous = performance.now();
+    const timer = window.setInterval(() => {
+      const now = performance.now();
+      const deltaSeconds = Math.min(0.3, Math.max(0, (now - previous) / 1000));
+      previous = now;
+      setDemoPosition((current) => advanceAtlasDemoPosition(
+        current,
+        valuesRef.current.reducedMotion ? Math.min(valuesRef.current.speed, 20) : valuesRef.current.speed,
+        current?.heading ?? 22,
+        deltaSeconds,
+      ));
+    }, 200);
+    return () => window.clearInterval(timer);
+  }, [demo, Boolean(demoPosition)]);
 
   useEffect(() => {
     if (mapRef.current?.loaded()) recolourStyle(mapRef.current, theme.palette);
@@ -204,12 +239,22 @@ export default function AtlasField({ speed, theme, position, reducedMotion, onRe
   }, [pages, selectedId]);
 
   if (!effectivePosition) {
-    return <div className="atlas-waiting"><strong>ATLAS</strong><span>Waiting for a reliable GPS position</span></div>;
+    return (
+      <div className="atlas-waiting">
+        <strong>ATLAS</strong>
+        <span>Waiting for a reliable GPS position</span>
+        <button
+          type="button"
+          onClick={() => setDemoPosition({ ...FALLBACK_POSITION })}
+        >TEST FROM MILAN</button>
+      </div>
+    );
   }
 
   return (
     <section className="atlas-field" style={{ "--atlas-accent": paletteToAtlasCss(theme.palette).accent }}>
       <div className="atlas-map" ref={hostRef} aria-hidden="true" />
+      {demo ? <div className="atlas-demo-hint">↑ DRIVE · ↓ BRAKE · ← → STEER</div> : null}
       <NearbyPanel pages={pages} selectedId={selectedId} onSelect={setSelectedId} qrUrl={qrUrl} loading={loading} demo={demo} />
     </section>
   );

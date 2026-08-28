@@ -18,12 +18,12 @@ function smoothstep(minimum, maximum, value) {
 export const APERTURE_TUNING = Object.freeze({
   wallTiles: 7,
   depthBandsAtCruise: 7,
-  wallApproachSpeedKmh: 35,
+  wallApproachSpeedKmh: 40,
   terminalSpeedKmh: 120,
 });
 
-/** Speed at which the grid fully folds into the 3D perspective tunnel (35 km/h). */
-export const WALL_APPROACH_SPEED_KMH = 35;
+/** Speed at which the rigid grid wall reaches the terminus and disappears. */
+export const WALL_APPROACH_SPEED_KMH = 40;
 
 /**
  * Converts the old per-drawn-frame easing coefficient into a time-based one.
@@ -42,9 +42,10 @@ export function apertureSmoothing(coefficientAtThirtyFps, deltaSeconds) {
 /** Uniform speed terms computed once per frame rather than once per pixel. */
 export function apertureShaderControls(speedKmh) {
   const speed = Math.max(0, speedKmh);
-  const normalized = Math.min(1, speed / WALL_APPROACH_SPEED_KMH);
+  const wall = apertureWall(speed);
   return {
-    warp: normalized * normalized * (3 - 2 * normalized),
+    wallSize: wall.size,
+    wallOpacity: smoothstep(0, 0.08, wall.proximity),
     terminalVelocity: smoothstep(118, 130, speed),
     speedPulseMask: smoothstep(1, 15, speed),
     voidActive: smoothstep(15, 35, speed),
@@ -55,8 +56,8 @@ export function apertureShaderControls(speedKmh) {
  * The end wall's depth along the Z axis, screen size, and luminance.
  *
  * At 0 km/h the grid sits flat at z = 1.0 (covers 100% of the screen).
- * Between 0 and 35 km/h the grid folds directly into the 4 walls of the perspective tunnel.
- * Above 35 km/h the tunnel is fully formed with the dark central terminus void.
+ * Between 0 and 40 km/h the intact grid recedes as a rigid end wall.
+ * At 40 km/h it vanishes at the terminus, revealing the existing tunnel.
  */
 export function apertureWall(speedKmh) {
   const proximity = 1 - smoothstep(0, WALL_APPROACH_SPEED_KMH, Math.max(0, speedKmh));
@@ -66,15 +67,14 @@ export function apertureWall(speedKmh) {
 }
 
 /**
- * Aperture's morph is the only phase that evaluates both flat and perspective
- * coordinates across the full fragment field. Rendering it at one physical
- * pixel per CSS pixel avoids unnecessary supersampling on the Tesla while
- * keeping the exact shader, geometry, timing and visible viewport resolution.
+ * The wall-retreat phase renders at one physical pixel per CSS pixel. This
+ * avoids supersampling on the Tesla during the only low-speed transition while
+ * preserving the exact CSS-pixel geometry and full-resolution cruise tunnel.
  */
 export function aperturePixelRatio(devicePixelRatio, speedKmh) {
   const dpr = Math.max(1, Number(devicePixelRatio) || 1);
   const speed = Math.max(0, Number(speedKmh) || 0);
-  return Math.min(dpr, speed >= 18 && speed <= 40 ? 1 : 1.25);
+  return Math.min(dpr, speed <= WALL_APPROACH_SPEED_KMH ? 1 : 1.25);
 }
 
 /** What the shader draws at a given speed, for diagnostic overlays and QA. */

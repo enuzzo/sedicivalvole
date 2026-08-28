@@ -17,9 +17,9 @@ test("Aperture wall at standstill (0 km/h) covers the full screen plane", () => 
   assert.equal(wall.luminance, 1.0);
 });
 
-test("Aperture removes only supersampling during the morph pressure band", () => {
-  assert.equal(aperturePixelRatio(1.53, 0), 1.25);
-  assert.equal(aperturePixelRatio(1.53, 17.9), 1.25);
+test("Aperture removes supersampling throughout the wall-retreat pressure band", () => {
+  assert.equal(aperturePixelRatio(1.53, 0), 1);
+  assert.equal(aperturePixelRatio(1.53, 17.9), 1);
   assert.equal(aperturePixelRatio(1.53, 18), 1);
   assert.equal(aperturePixelRatio(1.53, 30), 1);
   assert.equal(aperturePixelRatio(1.53, 40), 1);
@@ -28,16 +28,16 @@ test("Aperture removes only supersampling during the morph pressure band", () =>
   assert.ok((1 ** 2) / (1.25 ** 2) <= 0.64, "morph fragment work should fall by at least 36%");
 });
 
-test("Aperture wall at 35 km/h reaches the far terminus matching benchmark geometry", () => {
-  const wall = apertureWall(35);
+test("Aperture wall at 40 km/h reaches the far terminus and disappears", () => {
+  const wall = apertureWall(40);
   assert.equal(wall.proximity, 0);
   assert.equal(wall.z, 8.0);
   assert.equal(wall.size, 0.125);
 });
 
-test("Aperture wall recedes monotonically between 0 and 35 km/h", () => {
+test("Aperture wall recedes monotonically between 0 and 40 km/h", () => {
   let prevZ = 0;
-  for (let speed = 0; speed <= 35; speed += 1) {
+  for (let speed = 0; speed <= 40; speed += 1) {
     const wall = apertureWall(speed);
     assert.ok(wall.z >= prevZ, `Wall Z should be non-decreasing at speed ${speed}`);
     assert.ok(wall.z >= 1.0 && wall.z <= 8.0);
@@ -46,11 +46,11 @@ test("Aperture wall recedes monotonically between 0 and 35 km/h", () => {
 });
 
 test("Aperture readout reports 7 depth levels and 7 tiles per wall", () => {
-  const readout35 = apertureReadout(35);
-  assert.equal(readout35.depthLevels, 7);
-  assert.equal(readout35.tilesPerWall, 7);
-  assert.equal(readout35.wallProximity, 0);
-  assert.equal(readout35.terminalVelocity, 0);
+  const readout40 = apertureReadout(40);
+  assert.equal(readout40.depthLevels, 7);
+  assert.equal(readout40.tilesPerWall, 7);
+  assert.equal(readout40.wallProximity, 0);
+  assert.equal(readout40.terminalVelocity, 0);
 });
 
 test("Aperture enters terminal velocity above 120 km/h", () => {
@@ -75,12 +75,14 @@ test("time-based easing preserves the approved 30 FPS motion at 60 FPS", () => {
 
 test("shader controls preserve every existing speed threshold", () => {
   assert.deepEqual(apertureShaderControls(0), {
-    warp: 0,
+    wallSize: 1,
+    wallOpacity: 1,
     terminalVelocity: 0,
     speedPulseMask: 0,
     voidActive: 0,
   });
-  assert.equal(apertureShaderControls(35).warp, 1);
+  assert.equal(apertureShaderControls(40).wallSize, 0.125);
+  assert.equal(apertureShaderControls(40).wallOpacity, 0);
   assert.equal(apertureShaderControls(130).terminalVelocity, 1);
   assert.equal(apertureShaderControls(15).speedPulseMask, 1);
   assert.equal(apertureShaderControls(35).voidActive, 1);
