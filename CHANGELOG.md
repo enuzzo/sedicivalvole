@@ -6,6 +6,7 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 
 ### Added
 
+- 2026-08-28 22:06 `[3bbe6be]`: Added compact Signal Gate links for collaborator Illobo (`github.com/illobo`) and the public `enuzzo/sedicivalvole` source repository. The existing Netmilk Studio credit and quiet local-processing disclosure remain directly below the launch action, with keyboard-visible focus and regression coverage.
 - 2026-08-28 11:30 `[3cf0eaa]`: Added `ATLAS 05`, a lazy-loaded MapLibre/OpenFreeMap bird's-eye city environment with a minimal palette-owned vector style, height-driven 3D buildings, nearby Italian Wikipedia context, four passenger reading choices and a locally generated QR. Current position remains ephemeral; the diagnostic report and persistence stay coordinate-free, while the required third-party map and nearby-search requests are disclosed explicitly.
 - 2026-08-28 11:30 `[3cf0eaa]`: Added deterministic ATLAS location, camera, content-normalization and style tests; MapLibre GL JS and the QR generator are isolated in dynamic chunks and recorded in the third-party notices.
 - 2026-08-27 22:31 `[023717c]`: JUNCTION is now selectable and plays as an adaptive eight-section Jungle / Rave production. One 1.9 MB Opus bank and one browser decoder replace the development-only render; energy and sustained braking choose complete authored sections at their musical boundaries.
