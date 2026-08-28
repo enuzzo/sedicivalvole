@@ -120,3 +120,7 @@ Sanitized endpoint failures are shown in the drawer. The page keeps the recorder
   PHP JSON encoding, GZIP, Base64 and multipart MIME, then decompressed to a
   report structurally identical to the input with matching JSON and GZIP
   SHA-256 digests.
+- Live build `20260828-0927`: one explicitly authorized coordinate-free
+  157-sample validation report returned **`202 accepted_by_mail_transport`**.
+  Confirmation that Gmail displays the `.json.gz` attachment remains a
+  separate recipient-inbox check.

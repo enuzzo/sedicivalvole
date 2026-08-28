@@ -8,6 +8,31 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Complete diagnostic attachment publication evidence — 2026-08-28
+
+- build stamp: **`20260828-0927`**; deployed commit: `2b15fdf`;
+  implementation: `76d90d8`;
+- gate before upload: **PASS**, PHP syntax, 137 unit tests, 4 packaging tests,
+  production build, deterministic MIME/GZIP round trip, read-only remote
+  identity verification and no preflight writes;
+- publication: **PASS**, 21 files / 26,063,049 bytes uploaded to the canonical
+  root; dynamic root, retained cache overlap and exact remote listing passed;
+- canonical bare and cache-busted HTML: **HTTP 200**, `no-store`, proxy-cache
+  `MISS`, and byte-identical to local at SHA-256
+  `aa4bd1a0411ad8d846b59aad7a30f640fc0903adb7251aae2e989bc2de84c19b`;
+- live JavaScript `assets/index-bFA5wPdk.js` is byte-identical at SHA-256
+  `e2aa21fd5ac9fc5f81f66b3744466bac9bf818aa8928f5433e79f9b893257de1`;
+  live CSS `assets/index-5KrYVd1i.css` remains byte-identical at SHA-256
+  `79558d905d65c57f8fe1a715c43b83f89c456539db1255af8eaf2ba970d8a549`.
+  The JavaScript reports build `20260828-0927` and commit `2b15fdf`;
+- endpoint method gate: **PASS**, a live `GET` remains `405
+  method_not_allowed`;
+- one explicitly authorized coordinate-free synthetic report with 157 flight
+  samples: **PASS**, live response `202 accepted_by_mail_transport`. This proves
+  that the deployed endpoint handed the multipart message to the configured
+  mail transport; recipient-inbox arrival and attachment display remain a
+  separate user-visible confirmation.
+
 ## Flat Signal Gate publication evidence — 2026-08-28
 
 - build stamp: **`20260828-0127`**; deployed commit: `9d045ff`;
