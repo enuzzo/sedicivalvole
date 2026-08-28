@@ -8,6 +8,27 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## ATLAS selected-place context publication — 2026-08-28
+
+- build stamp: **`20260828-1725`**; deployed commit: `0c106e2`;
+  implementation: `b90b255`;
+- gate before upload: **PASS**, 170 unit tests, 4 packaging tests, production
+  build from the deployed commit, exact `773 × 601` Browser verification and
+  read-only remote identity verification with `remote_writes=NONE`;
+- content QA: **PASS**. The live Italian Wikipedia response supplies the selected
+  page's free-license `320 px` PageImages thumbnail and two-sentence introduction
+  in one request. Selection changes update title, image, abstract and QR together;
+  the panel fits `465/465 px`, and collapse/reopen retains the full-width map;
+- publication: **PASS**, 27 files / 41,109,790 bytes uploaded to the canonical
+  root. Dynamic-root, exact legacy cleanup, retained cache overlap and remote
+  listing checks passed; the repeated post-publication identity gate passed
+  with no writes;
+- cache-busted live Browser QA confirms build `20260828-1725`, a visible Wikimedia
+  thumbnail, coordinated selection of `Torre di Porta Romana`, zero console
+  warnings/errors, and a working link/QR target. The canonical HTML points to
+  the expected assets; the main JavaScript, CSS and ATLAS chunk are byte-identical
+  to the verified local build.
+
 ## Enlarged Signal Gate wordmark publication — 2026-08-28
 
 - build stamp: **`20260828-1613`**; deployed commit: `cac89a5`;
