@@ -24,6 +24,15 @@ test("launch surface contains only product and action copy", () => {
   assert.doesNotMatch(launchMarkup, /launch-(?:index|vent|safety|latch)/);
 });
 
+test("launch surface stays above every preloaded experience overlay", () => {
+  const styles = read("styles.css");
+  const splash = styles.slice(styles.indexOf(".splash {"), styles.indexOf(".splash-signal-field"));
+
+  assert.match(splash, /z-index: 20/);
+  assert.match(styles, /\.atlas-waiting \{[\s\S]*?z-index: 5/);
+  assert.match(styles, /\.atlas-panel \{[\s\S]*?z-index: 6/);
+});
+
 test("launch copy has a continuous white-to-red travelling wave", () => {
   const styles = read("styles.css");
 

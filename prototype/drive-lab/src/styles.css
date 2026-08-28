@@ -94,6 +94,7 @@ button { -webkit-tap-highlight-color: transparent; }
 
 .splash, .experience { position: absolute; inset: 0; z-index: 4; }
 .splash {
+  z-index: 20;
   overflow: hidden;
   background: #020303;
   opacity: 1;
