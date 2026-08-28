@@ -212,7 +212,7 @@ Profile before adding WASM. It is justified only if measured DSP cost, not fashi
 
 ## Flux visual architecture
 
-The Flux renderer exposes five selectable environments, not static backgrounds.
+The Flux renderer exposes four selectable environments, not static backgrounds.
 **Modular Aperture** was selected from exactly three revised minimal alternatives:
 
 - central-axis depth and flow;
@@ -223,7 +223,7 @@ The Flux renderer exposes five selectable environments, not static backgrounds.
 - aspect-correct square insets at rest, an eased low-speed warp, a bounded central perspective singularity, and a continuous blend between adjoining tunnel walls so intermediate geometry cannot tear into diagonal fragments;
 - a central aperture whose radius opens geometrically with tunnel formation instead of appearing through opacity;
 - speed-driven radial panel elongation and reduced depth frequency in the 150 km/h velocity band;
-- ten curated palettes for all five renderers; Vertigo's external bridge updates only existing runtime colour channels;
+- ten curated palettes for all four renderers; Vertigo's external bridge updates only existing runtime colour channels;
 - energy-driven pressure, luminance, distortion, and rectangular panel density;
 - aggregate pulses rather than one flash per audio event;
 - renderer quality levels controlling resolution scale, shader complexity, passes, and frame rate;
@@ -239,12 +239,6 @@ move the restrained floor, geometric towers, glass volumes, cantilevers, posts,
 and travelling markers without coupling motion to frame rate. Deterministic
 visibility keys reveal a cross-section of every depth band at rest, then add
 mass, atmosphere, edge light and facade detail progressively with speed.
-
-**Latitudes** is an original temporal topography. Its broad sculptural ribbons
-sample the same recent distance/speed history, so acceleration bends and raises
-the relief while deceleration releases the faster past upward. Contour light and
-sparse particles grow continuously with speed; the renderer never swaps to a
-separate scene or returns to quantized zebra bands.
 
 **Atlas** is a lazy-loaded OpenFreeMap/MapLibre city field. It owns a minimal
 vector style rather than inheriting a generic street-map skin, extrudes building

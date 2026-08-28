@@ -22,7 +22,10 @@
 // This module owns the history buffer and every mapping. It holds no WebGL
 // state, so the whole behaviour is deterministically testable in Node.
 
-import { clamp, ROAD_SPEED_CEILING_KMH } from "../../signal-model.js";
+import {
+  clamp,
+  ROAD_SPEED_CEILING_KMH,
+} from "../../../../prototype/drive-lab/src/signal-model.js";
 
 /** Rows of history. One texel per stratum. */
 export const LATITUDES_HISTORY_SAMPLES = 240;

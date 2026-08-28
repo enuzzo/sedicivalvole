@@ -14,8 +14,8 @@ import {
   speedToOscilloscopeRate,
   speedToRestPhaseRate,
   speedToTravelMps,
-} from "../src/environments/latitudes/latitudes-model.js";
-import { ROAD_SPEED_CEILING_KMH } from "../src/signal-model.js";
+} from "../src/latitudes-model.js";
+import { ROAD_SPEED_CEILING_KMH } from "../../../../prototype/drive-lab/src/signal-model.js";
 
 const FRAME = 1 / 60;
 

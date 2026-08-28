@@ -67,11 +67,7 @@ translucent geometric buildings, cantilevers and floor plates move through one
 continuous displaced corridor. New mass, facade light and atmosphere arrive
 with speed without changing the underlying geometry or road response.
 
-`LATITUDES 04` uses the retained Luminous Topography direction. Broad luminous
-strata are sculpted by the renderer's existing recent-motion history; they must
-read as continuous relief, not quantized bands or an unrelated texture blob.
-
-`ATLAS 05` is the passenger-oriented bird's-eye city environment. It presents a
+`ATLAS 04` is the passenger-oriented bird's-eye city environment. It presents a
 palette-driven 3D OpenFreeMap field, a concise selected-page Wikipedia abstract
 with a free thumbnail when available, four local reading choices and a QR for
 the selected page. The map runtime is
@@ -175,7 +171,7 @@ acceptance in the vehicle.
 | Engine mode with synthesized/sampled models | confirmed primary mode | mapping, catalog, quality, and latency require dedicated spike |
 | Adaptive synth + sequencer | implemented prototype | FRACTURE runs in the AudioWorklet; real Tesla musical acceptance pending |
 | Modular Aperture generative visual | implemented prototype | WebGL2 plus Canvas2D fallback; Tesla performance pending |
-| Selectable visual environments | implemented prototype | Aperture, Vertigo, Meridian, and Latitudes share normalized motion, safety, persistence, and diagnostic contracts |
+| Selectable visual environments | implemented prototype | Aperture, Vertigo, Meridian, and Atlas share normalized motion, safety, persistence, and diagnostic contracts |
 | Selectable musical environments | implemented prototype | FRACTURE and JUNCTION ready; five later directions remain pending |
 | Open packs | strategic goal | schema and licensing not frozen |
 | Offline audio core | implemented prototype | identical score DSP renders and analyses WAV references in Node |

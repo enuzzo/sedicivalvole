@@ -34,7 +34,6 @@ import {
 import { SplashSignalGate } from "./splash-signal-gate.jsx";
 import { Interstate7Field } from "./interstate-7-field.jsx";
 import { MeridianField } from "./environments/meridian/meridian-field.jsx";
-import { LatitudesField } from "./environments/latitudes/latitudes-field.jsx";
 import { resolveAtlasHeading } from "./environments/atlas/atlas-model.js";
 import {
   advanceDemoMotion,
@@ -1548,14 +1547,6 @@ export function App() {
         />
       ) : environment.renderer === "meridian" ? (
         <MeridianField
-          speed={speed}
-          theme={theme}
-          reducedMotion={reducedMotion}
-          onRenderer={setRenderer}
-          onFrame={recordRenderedFrame}
-        />
-      ) : environment.renderer === "latitudes" ? (
-        <LatitudesField
           speed={speed}
           theme={theme}
           reducedMotion={reducedMotion}

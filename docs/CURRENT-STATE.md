@@ -13,16 +13,15 @@ dated study documents.
 - `Flux` is the implemented primary mode. `Engine` remains an equal confirmed
   mode, visible but disabled until its own audio model and one of exactly three
   Engine-specific visual directions are selected.
-- The Flux catalog contains five visual environments: **APERTURE 01**,
-  **VERTIGO 02**, **MERIDIAN 03**, **LATITUDES 04**, and **ATLAS 05**. All five
+- The Flux catalog contains four visual environments: **APERTURE 01**,
+  **VERTIGO 02**, **MERIDIAN 03**, and **ATLAS 04**. All four
   are published on the canonical experience.
-- All five environments use the shared catalog of **10 themes**. Vertigo keeps
+- All four environments use the shared catalog of **10 themes**. Vertigo keeps
   the upstream Interstate 7 files byte-identical while an external runtime
   bridge maps the selected theme onto its existing colour channels.
-- Meridian now grows deterministic Euclidean portals, blades, cantilevers and
+- Meridian grows deterministic Euclidean portals, blades, cantilevers and
   stepped monoliths beneath high geometric cloud slabs, with segmented curved
-  wind; Latitudes turns its existing eight-second motion history into eighteen
-  continuously phased oscilloscope contours whose distortion grows with speed.
+  wind.
 - ATLAS dynamically loads MapLibre only when selected, draws a minimal
   palette-owned OpenFreeMap vector style with 3D buildings, and pairs it with a
   selected-page Italian Wikipedia abstract and free thumbnail, four passenger
@@ -118,7 +117,7 @@ dated study documents.
 ## Open work
 
 1. Validate Aperture's `0–40 km/h` rigid wall retreat, silent JUNCTION launch,
-   oscilloscope Latitudes, Euclidean Meridian and the ATLAS flight camera in the Tesla.
+   Euclidean Meridian and the ATLAS flight camera in the Tesla.
 2. Send the new real-drive gzip attachment and compare the dedicated wall-retreat
    phase plus family/take exposure counters against the first complete report.
 3. Design Engine only after exactly three Engine-specific directions are shown

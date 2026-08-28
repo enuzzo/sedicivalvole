@@ -47,7 +47,11 @@ final result: passed
 
 ---
 
-# Design QA — Kinetic Meridian, Topographic Latitudes, and ATLAS
+# Historical design QA — Kinetic Meridian, rejected Latitudes, and ATLAS
+
+> Latitudes was rejected and removed from the active product on 2026-08-28.
+> Its references and measurements below remain historical evidence only; the
+> archived source under `archive/visuals/latitudes/` is not built or selectable.
 
 Date: 2026-08-28
 

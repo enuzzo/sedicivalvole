@@ -70,7 +70,7 @@ automated tests green, and no masking of vehicle alerts.
 
 ## Phase 4 — Flux generative renderer spike
 
-Status: **FIVE ENVIRONMENTS IMPLEMENTED; TESLA PERFORMANCE PENDING**.
+Status: **FOUR ENVIRONMENTS IMPLEMENTED; TESLA PERFORMANCE PENDING**.
 
 Implemented:
 
@@ -84,12 +84,12 @@ Implemented:
 - selectable `VERTIGO 02` using the byte-identical upstream Interstate 7 scene with its road, repeated side lights, opposing car trails, bloom, fog, camera, deep distortion, and original dependencies;
 - an external `0–130 km/h` bridge that slows the original clock from stopped to its non-boosted `1×` rate and maps FOV from `90°` to `150°`, without editing the vendor runtime.
 - original `MERIDIAN 03`, now a speed-revealed Euclidean corridor of portals, blades, cantilevers, monoliths, curved wind and high cloud slabs sharing one displacement field and camera aim;
-- original `LATITUDES 04`, whose thin continuously phased oscilloscope contours preserve and release recent motion history over time;
-- lazy-loaded `ATLAS 05`, with a minimal palette-owned OpenFreeMap vector style, 3D buildings, nearby Italian Wikipedia context, four passenger links, a local QR and an explicit no-GPS Milan flight mode;
+- lazy-loaded `ATLAS 04`, with a minimal palette-owned OpenFreeMap vector style, 3D buildings, nearby Italian Wikipedia context, four passenger links, a local QR and an explicit no-GPS Milan flight mode;
 
 Queued next:
 
 - decide which visual and score combinations become authored audiovisual environments once more than FRACTURE is selectable;
+- replace the rejected Latitudes slot only after presenting exactly three new visual directions and receiving a new product selection;
 - retain the two unselected Interstate-inspired directions in the ignored backlog for a later three-direction gate rather than presenting them as implemented;
 - profile the unmodified Interstate 7 renderer on the target Tesla; any later travel, projection, curvature, density, palette, or geometry changes require a new explicit product decision and must not be folded into the upstream-integrity checkpoint;
 - verify each environment at rest, intermediate speed, full energy, and sustained deceleration at `773 × 601` on the target vehicle.

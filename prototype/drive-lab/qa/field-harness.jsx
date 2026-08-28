@@ -6,7 +6,7 @@
 // index.html as an entry, so this page never reaches a build or a deployment.
 //
 // Query parameters:
-//   env    aperture | meridian | latitudes      (default: meridian)
+//   env    aperture | meridian                  (default: meridian)
 //   speed  held km/h                            (default: 0)
 //   theme  pearl | graphite | red | blue | silver
 //   sweep  seconds for one 0 -> ceiling -> 0 pass; overrides `speed`
@@ -27,8 +27,6 @@ const FIELDS = {
     .then((module) => ({ default: module.FluxField }))),
   meridian: lazy(() => import("../src/environments/meridian/meridian-field.jsx")
     .then((module) => ({ default: module.MeridianField }))),
-  latitudes: lazy(() => import("../src/environments/latitudes/latitudes-field.jsx")
-    .then((module) => ({ default: module.LatitudesField }))),
 };
 
 const parameters = new URLSearchParams(window.location.search);

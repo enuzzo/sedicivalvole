@@ -37,17 +37,9 @@ export const FLUX_ENVIRONMENTS = [
     themed: true,
   },
   {
-    id: "latitudes",
-    label: "LATITUDES",
-    number: "04",
-    rendererLabel: "Latitudes",
-    renderer: "latitudes",
-    themed: true,
-  },
-  {
     id: "atlas",
     label: "ATLAS",
-    number: "05",
+    number: "04",
     rendererLabel: "Atlas",
     renderer: "atlas",
     themed: true,

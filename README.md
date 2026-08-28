@@ -9,7 +9,7 @@
 > layers. The exact derived files, modifications, license, and direct reuse
 > authorization are recorded in `THIRD_PARTY_NOTICES.md`.
 
-> Current state: **Flux Drive Lab runs the authored FRACTURE and JUNCTION music with five
+> Current state: **Flux Drive Lab runs the authored FRACTURE and JUNCTION music with four
 > selectable visual environments and is under vehicle validation**. This is a
 > development build, not a release.
 
@@ -26,7 +26,7 @@ The canonical development build is available at [sedicivalvole.app](https://sedi
 - ✅ a single ignored local reference library under `_references/`;
 - ✅ source audit, product requirements, adversarial review, technical direction, and roadmap;
 - ✅ Modular Aperture selected after exactly three revised Product Design directions;
-- ✅ five selectable Flux visuals: procedural Aperture, byte-identical upstream Interstate 7 Vertigo, the original architectural Meridian and temporal-topography Latitudes environments, and the lazy-loaded OpenFreeMap ATLAS city field with a readable passenger panel and an oblique 3D motorway camera;
+- ✅ four selectable Flux visuals: procedural Aperture, byte-identical upstream Interstate 7 Vertigo, the original architectural Meridian environment, and the lazy-loaded OpenFreeMap ATLAS city field with a readable passenger panel and an oblique 3D motorway camera;
 - ✅ GPS/Demo speed source, icon-only Mute, a fixed `130 km/h` energy ceiling, 10 curated palettes, and an integrated capability report;
 - ✅ local-only speed processing and coordinate-free diagnostics; ATLAS alone keeps a reliable current position in session memory while selected and discloses its OpenFreeMap tile and Wikimedia nearby-reading requests;
 - ✅ FRACTURE, a production AudioWorklet score with an ambience-only launch, ten four-bar sections, five melodic timbres, a narrow tempo knee, quantized transitions, hysteresis, dwell, crossfades, speed-driven arrangement depth, and tested harmony/braking/voice output;
@@ -36,7 +36,7 @@ The canonical development build is available at [sedicivalvole.app](https://sedi
 - ✅ compact-view v3 diagnostics with aggregate and per-phase frame pacing, browser-exposed heap and decoded-audio memory, network history, runtime/resource evidence, and no coordinates; the explicit same-origin email handoff attaches the complete report as verified gzip-compressed JSON;
 - ✅ the canonical bare root, direct PHP entry, and content-addressed assets are live and byte-identical after the SiteGround cache flush;
 - ✅ the first complete Tesla report confirms 60.04 FPS overall, 16.8 ms p95, four slow frames, 33.2 MB peak decoded PCM, and no runtime issue during a 314-second drive;
-- ⏳ Aperture's new `0–40 km/h` wall-retreat budget, silent JUNCTION launch, oscilloscope Latitudes, Euclidean Meridian and the ATLAS flight camera still require acceptance in the target Tesla;
+- ⏳ Aperture's new `0–40 km/h` wall-retreat budget, silent JUNCTION launch, Euclidean Meridian and the ATLAS flight camera still require acceptance in the target Tesla;
 - ⛔ no committed release, PWA/offline cache, final audio pack, or final brand/license package yet.
 
 ## Experience
@@ -50,7 +50,7 @@ The speed source is an explicit abstraction. GPS and the desktop simulator produ
 Confirmed product modes:
 
 - **Engine** — selectable engine-sound emulation with a dedicated instrument-inspired visual language. Audio modeling, catalog, and final visual direction are not implemented yet.
-- **Flux** — adaptive music driven by speed and motion, paired with five selectable visual environments. Aperture begins as a rigid square wall that recedes and disappears at the existing tunnel terminus by `40 km/h`. Vertigo embeds the original Codrops/Tympanus Interstate 7 runtime unchanged behind an external speed/FOV and palette bridge. Meridian composes palette-lit Euclidean structures, curved wind and high cloud slabs; Latitudes carries recent motion through thin oscilloscope contours. ATLAS follows the trusted position and travel bearing above an OpenFreeMap city, retains an oblique 3D view at `130 km/h`, adds a selected-page Italian Wikipedia abstract and free thumbnail, gives the passenger four readable links with a local QR, and offers an explicit Milan test flight only when GPS is unavailable. This is the mode currently implemented as Drive Lab.
+- **Flux** — adaptive music driven by speed and motion, paired with four selectable visual environments. Aperture begins as a rigid square wall that recedes and disappears at the existing tunnel terminus by `40 km/h`. Vertigo embeds the original Codrops/Tympanus Interstate 7 runtime unchanged behind an external speed/FOV and palette bridge. Meridian composes palette-lit Euclidean structures, curved wind and high cloud slabs. ATLAS follows the trusted position and travel bearing above an OpenFreeMap city, retains an oblique 3D view at `130 km/h`, adds a selected-page Italian Wikipedia abstract and free thumbnail, gives the passenger four readable links with a local QR, and offers an explicit Milan test flight only when GPS is unavailable. This is the mode currently implemented as Drive Lab.
 
 Shared foundations include the GPS/Demo speed source, integrated diagnostics, master Stop/Mute, reduced motion, renderer fallback, and touch-first safety behavior. The mode switch will remain clearly identifiable and reachable from both experiences.
 
@@ -107,7 +107,7 @@ No screenshot is published here yet. The repository will include only real, curr
 ## Roadmap
 
 The next gate is a real Tesla session at the verified split viewport: compare all
-five visuals across acceleration and deceleration, verify Aperture's 60 FPS
+four visuals across acceleration and deceleration, verify Aperture's 60 FPS
 desktop gain on the vehicle, listen critically to FRACTURE and JUNCTION, test
 the Music/Visual/theme controls, and check touch reach while parked.
 

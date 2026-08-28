@@ -53,6 +53,8 @@ test("active overview documents do not restore superseded audio claims", () => {
   for (const claim of supersededClaims) {
     assert.ok(!activeOverview.toLowerCase().includes(claim), `superseded claim returned: ${claim}`);
   }
+  assert.ok(!activeOverview.includes("LATITUDES 04"), "rejected Latitudes returned to an active overview");
+  assert.ok(!activeOverview.includes("ATLAS 05"), "Atlas retained its superseded catalog number");
 });
 
 test("relative Markdown document links resolve", () => {
