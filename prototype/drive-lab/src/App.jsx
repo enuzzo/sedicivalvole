@@ -44,7 +44,12 @@ import {
   smoothGpsSpeed,
   speedToEnergy,
 } from "./signal-model.js";
-import { decodeSuggestionAddress, supportMomentumCount } from "./support-model.js";
+import {
+  decodeSuggestionAddress,
+  SUPPORT_COUNT_DURATION_MS,
+  supportMomentumCount,
+  supportMomentumFrame,
+} from "./support-model.js";
 
 const AtlasField = lazy(() => import("./environments/atlas/atlas-field.jsx"));
 
@@ -531,9 +536,45 @@ function SupportCupMark() {
   );
 }
 
-function SupportPanel({ onClose }) {
+function SupportMomentumCounter({ reducedMotion }) {
+  const [momentumTarget] = useState(() => supportMomentumCount());
+  const [momentumValue, setMomentumValue] = useState(0);
+  const momentum = String(momentumValue).padStart(3, "0");
+  const momentumLabel = String(momentumTarget).padStart(3, "0");
+
+  useEffect(() => {
+    if (reducedMotion) {
+      setMomentumValue(momentumTarget);
+      return undefined;
+    }
+
+    let frameId = 0;
+    const startedAt = performance.now();
+    const tick = (timestamp) => {
+      const nextValue = supportMomentumFrame(momentumTarget, timestamp - startedAt);
+      setMomentumValue((currentValue) => currentValue === nextValue ? currentValue : nextValue);
+      if (nextValue < momentumTarget) {
+        frameId = requestAnimationFrame(tick);
+      }
+    };
+    frameId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frameId);
+  }, [momentumTarget, reducedMotion]);
+
+  return (
+    <div
+      className="support-momentum"
+      aria-label={`Project sparks ${momentumLabel}, counted over ${SUPPORT_COUNT_DURATION_MS / 1000} seconds`}
+    >
+      <small>PROJECT SPARKS</small>
+      <strong aria-hidden="true">{momentum}</strong>
+      <span>PLAYFUL SIGNAL · NOT PURCHASES</span>
+    </div>
+  );
+}
+
+function SupportPanel({ onClose, reducedMotion }) {
   const suggestionAddress = decodeSuggestionAddress();
-  const momentum = String(supportMomentumCount()).padStart(3, "0");
   const mailSubject = encodeURIComponent("sedicivalvole suggestion");
 
   return (
@@ -564,11 +605,7 @@ function SupportPanel({ onClose }) {
             >
               BUY ME A COFFEE <span aria-hidden="true">↗</span>
             </a>
-            <div className="support-momentum" aria-label={`Project sparks ${momentum}`}>
-              <small>PROJECT SPARKS</small>
-              <strong>{momentum}</strong>
-              <span>PLAYFUL SIGNAL · NOT PURCHASES</span>
-            </div>
+            <SupportMomentumCounter reducedMotion={reducedMotion} />
           </div>
           <p className="support-suggestions">
             Suggestions are super welcome — coffee or not. Write to{" "}
@@ -1691,7 +1728,12 @@ export function App() {
           <span className="support-logo"><SupportCupMark /></span>
           <span>BUY ME A COFFEE</span>
         </button>
-        {supportOpen ? <SupportPanel onClose={() => setSupportOpen(false)} /> : null}
+        {supportOpen ? (
+          <SupportPanel
+            reducedMotion={reducedMotion}
+            onClose={() => setSupportOpen(false)}
+          />
+        ) : null}
         <div className="splash-action">
           <button className="launch-button" type="button" onClick={runHarness} disabled={phase === "testing"}>
             <span className="launch-brand">sedicivalvole</span>
