@@ -447,6 +447,45 @@ it. The test asserts entrance duration, release duration, quiet floor and
 cancellable recovery, while telemetry records `fade-in`, `fade-out`, `quiet` or
 `steady` for comparison with the next drive.
 
+### 5.11 Perceived variety is not musical correctness
+
+The next listening pass invalidated the five-family solution. The larger bank
+did rotate files, families, exact-note multisamples and effects, yet the result
+was heard as an incoherent pile of out-of-key notes and tiny melodies. Metadata
+compatibility prevented some literal errors, but it could not make simultaneous
+independent musical identities sound like one authored performance. Perceived
+variety is not correctness, and more randomized compatible-by-metadata clips are
+not a substitute for composition.
+
+JUNCTION therefore returns to one stable synchronous bed. Every energy state
+uses the same `Emin9 – Cmaj7 – Amin7 – Bmin9` grammar and one complete primary
+performance; energy changes the printed atmosphere, harmony, bass and break
+layers vertically. The browser may choose another interchangeable performance
+only at an eight-bar boundary and only to avoid an immediate repeat. It never
+adds a tonal second deck, automatic rave lead or multisample melody. This is the
+adaptive-music distinction that matters here: horizontal resequencing chooses
+between compatible complete segments, while vertical variation changes layers
+inside one identity. Shuffle is useful only after those identities are truly
+interchangeable.
+
+FRACTURE exposed the related melodic fault. Its repeating keyboard-like
+`riff`/`response` figure was unwanted as a theme, so changing its patch, delaying
+its entrance or hiding it behind more effects would preserve the actual defect.
+The production arranger now gives both lanes a permanent zero goal. Atmosphere,
+harmony, sub/reese, drums, dynamics and space carry the work; the retired voices
+remain only in the explicit parked audition harness. An unwanted theme should
+be removed, not cosmetically revoiced.
+
+The assertable contract now rejects multiple JUNCTION tonal identities, rave
+multisample/lead use, incompatible harmonic layering and immediate primary
+repetition while preserving native tempo, complete boundaries, the six-clip
+decoded limit and the four-second transition envelope. FRACTURE tests reject
+any live activation of the retired lanes while proving low end and rhythm still
+grow with road energy. Offline references remain part of the decision: the
+no-lead FRACTURE drive renders at `-16.0 LUFS` integrated with `3.8 LU` range,
+`-0.8 dBFS` true peak and zero clipped PCM frames; the simplified JUNCTION
+render measures `-19.5 LUFS`, `14.2 LU` range and `-2.7 dBFS` true peak.
+
 ---
 
 ## 6. Testing music

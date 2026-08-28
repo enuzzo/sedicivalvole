@@ -44,8 +44,8 @@ At the Tesla split viewport, Music and Report use compact 68 px evidence cards w
 - navigation, paint, resource-count/byte aggregates, and JavaScript heap metrics when exposed;
 - per-phase JavaScript heap minimum/latest/maximum plus JUNCTION bank and decoded-PCM memory, with unsupported browser fields reported as unavailable rather than estimated;
 - bounded connection history plus online/offline, document-visibility, throttled GPS, viewport, source, and control events;
-- a two-second coordinate-free driving trace containing displayed/raw GPS speed, GPS age/accuracy/confidence, input mode, energy/BPM, active Visual/Music, JUNCTION section/family/take pair/bank state, frame pacing, real output RMS/peak, network state, and visibility;
-- session exposure counts for unique visuals, scores, JUNCTION sections, musical families, and take pairs;
+- a two-second coordinate-free driving trace containing displayed/raw GPS speed, GPS age/accuracy/confidence, input mode, energy/BPM, active Visual/Music, JUNCTION section/harmonic identity/single take/bank state, frame pacing, real output RMS/peak, network state, and visibility;
+- session exposure counts for unique visuals, scores, JUNCTION sections, harmonic identities, and performances;
 - full-session duration, estimated distance, moving/stationary time, source/input durations, speed/rate extrema, and GPS-accuracy aggregates even after old trace samples rotate;
 - bounded runtime errors, unhandled promise rejections, and WebGL context loss/restoration evidence;
 - explicit privacy flags proving that the diagnostic payload contains, stores,
@@ -157,5 +157,5 @@ Sanitized endpoint failures are shown in the drawer. The page keeps the recorder
   eight-bar quantization window. The score boundary behaved as authored.
 - The report exposed two semantic gaps now fixed: JUNCTION's string section was
   discarded by a numeric-only check, and `audio` duplicated road energy rather
-  than measuring the output. Section/family/take identity and a real analyser
+  than measuring the output. Section/harmonic-identity/take state and a real analyser
   RMS/peak meter are now recorded.

@@ -35,7 +35,7 @@ The registry is `prototype/drive-lab/src/flux-environments.js`.
 |---|---|---|
 | APERTURE 01 | original WebGL2 plus Canvas2D fallback | rigid square wall recedes intact and disappears at the existing tunnel terminus by `40 km/h` |
 | VERTIGO 02 | vendored Interstate 7 | upstream tree stays byte-identical; the external bridge drives speed/FOV and existing colour channels |
-| MERIDIAN 03 | original WebGL2 plus Canvas2D fallback | Euclidean portals, solids, curved wind and high cloud slabs share one displacement field and camera aim |
+| MERIDIAN 03 | original WebGL2 plus Canvas2D fallback | selected-reference corridor of sparse oblique blades and longitudinal planes; bounded vertical field plus monotonic FOV/depth/peripheral speed lens |
 | ATLAS 04 | lazy MapLibre/OpenFreeMap WebGL | ephemeral GPS or explicit Milan demo drives 3D city tiles, nearby Wikipedia reading and passenger QR |
 
 All four visuals use ten curated palettes. Vertigo is recoloured without editing
@@ -53,8 +53,8 @@ would copy it without its dependencies and fail after deployment.
 
 - one original F-minor Jungle / Drum & Bass composition;
 - ten four-bar sections and forty bars before the form repeats;
-- five theme timbres plus response, pad, sub, reese, drums, break detail, and effects;
-- atmosphere-only launch, with low end entering in ROLL and the principal theme waiting for BREAK;
+- production atmosphere, harmony, pad, sub, reese, drums, break detail, and effects; retired `riff` and `response` are audition-only;
+- atmosphere-only launch, with low end and rhythm entering through road energy and no automatic lead melody;
 - `162–176 BPM`, with half-time interpretation and density carrying low-to-high speed;
 - structural changes only on musical boundaries, behind hysteresis, dwell,
   crossfades, and catch/recovery/sustained-release deceleration memory;
@@ -65,10 +65,10 @@ would copy it without its dependencies and fail after deployment.
 ### Music library
 
 - FRACTURE 02 — generative and `ready` in the AudioWorklet;
-- JUNCTION 01 — sampled and `ready`; one 38.7 MB segmented Opus bank, 160
-  authored clips from 134 distinct recordings, 20 takes for each of eight
-  adaptive states across five rotating multisampled musical families,
-  rhythm-locked two-deck live mixing at complete eight-bar boundaries, native 127–168 BPM pacing with
+- JUNCTION 01 — sampled and `ready`; one 5.8 MB segmented Opus bank, 24
+  authored clips from 76 distinct recordings, three takes for each of eight
+  adaptive states under one E-minor harmonic grammar, one synchronous tonal
+  performance at a time with changes at complete eight-bar boundaries, native 127–168 BPM pacing with
   127 BPM at 40 km/h and 135 BPM at 60 km/h, beatless ambient rest, and at most
   six decoded clips;
 - PULSE 03, CUTWATER 04, LOWTIDE 05, NIGHTCAST 06, STILLWATER 07 — declared
@@ -90,8 +90,8 @@ asserted.
 
 ## Immediate work
 
-1. Run real Tesla listening and performance QA across FRACTURE, JUNCTION and all five
-   visual environments.
+1. Run real Tesla listening and performance QA across the simplified FRACTURE,
+   single-performance JUNCTION and all four visual environments.
 2. Confirm the corrected diagnostic delivery path with a fresh real-drive report.
 3. Begin Engine discovery only through the required three-direction gate.
 

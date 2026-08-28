@@ -29,14 +29,14 @@ The canonical development build is available at [sedicivalvole.app](https://sedi
 - ✅ four selectable Flux visuals: procedural Aperture, byte-identical upstream Interstate 7 Vertigo, the original architectural Meridian environment, and the lazy-loaded OpenFreeMap ATLAS city field with a readable passenger panel and an oblique 3D motorway camera;
 - ✅ GPS/Demo speed source, icon-only Mute, a fixed `130 km/h` energy ceiling, 10 curated palettes, and an integrated capability report;
 - ✅ local-only speed processing and coordinate-free diagnostics; ATLAS alone keeps a reliable current position in session memory while selected and discloses its OpenFreeMap tile and Wikimedia nearby-reading requests;
-- ✅ FRACTURE, a production AudioWorklet score with an ambience-only launch, ten four-bar sections, five melodic timbres, a narrow tempo knee, quantized transitions, hysteresis, dwell, crossfades, speed-driven arrangement depth, and tested harmony/braking/voice output;
-- ✅ JUNCTION, a sampled production that mixes two rhythm- and harmony-compatible takes live at each complete eight-bar boundary: 160 clips built from 134 distinct recordings across five rotating multisampled musical families, native 127–168 BPM pacing, beatless ambient rest, four-second rhythm entrances/releases, one 38.7 MB segmented Opus bank, four-entry recent-listening memory, and no loose source samples;
+- ✅ FRACTURE, a production AudioWorklet score with an ambience-only launch, ten four-bar harmonic sections, a narrow tempo knee, quantized transitions, hysteresis, dwell, crossfades, speed-driven atmosphere/low-end/rhythm depth, and no automatic riff or response lane in normal playback;
+- ✅ JUNCTION, a sampled production built as one synchronous performance at a time: 24 complete eight-bar clips from 76 distinct recordings, one stable E-minor harmonic grammar, native 127–168 BPM pacing, beatless ambient rest, four-second rhythm entrances/releases, one 5.8 MB segmented Opus bank, recent-take avoidance, and no rave lead, tonal second deck, or loose source samples;
 - ✅ production build and deterministic signal, diagnostic-model, and packaging tests passing;
 - ✅ photographed Tesla split-view evidence at `773 × 601`, screen `1254 × 784`, DPR `1.53`;
 - ✅ compact-view v3 diagnostics with aggregate and per-phase frame pacing, browser-exposed heap and decoded-audio memory, network history, runtime/resource evidence, and no coordinates; the explicit same-origin email handoff attaches the complete report as verified gzip-compressed JSON;
 - ✅ the canonical bare root, direct PHP entry, and content-addressed assets are live and byte-identical after the SiteGround cache flush;
 - ✅ the first complete Tesla report confirms 60.04 FPS overall, 16.8 ms p95, four slow frames, 33.2 MB peak decoded PCM, and no runtime issue during a 314-second drive;
-- ⏳ Aperture's new `0–40 km/h` wall-retreat budget, silent JUNCTION launch, Euclidean Meridian and the ATLAS flight camera still require acceptance in the target Tesla;
+- ⏳ Aperture's `0–40 km/h` wall-retreat budget, the simplified FRACTURE/JUNCTION arrangements, the rebuilt Meridian speed corridor, and the ATLAS flight camera still require acceptance in the target Tesla;
 - ⛔ no committed release, PWA/offline cache, final audio pack, or final brand/license package yet.
 
 ## Experience
@@ -50,7 +50,7 @@ The speed source is an explicit abstraction. GPS and the desktop simulator produ
 Confirmed product modes:
 
 - **Engine** — selectable engine-sound emulation with a dedicated instrument-inspired visual language. Audio modeling, catalog, and final visual direction are not implemented yet.
-- **Flux** — adaptive music driven by speed and motion, paired with four selectable visual environments. Aperture begins as a rigid square wall that recedes and disappears at the existing tunnel terminus by `40 km/h`. Vertigo embeds the original Codrops/Tympanus Interstate 7 runtime unchanged behind an external speed/FOV and palette bridge. Meridian composes palette-lit Euclidean structures, curved wind and high cloud slabs. ATLAS follows the trusted position and travel bearing above an OpenFreeMap city, retains an oblique 3D view at `130 km/h`, adds a selected-page Italian Wikipedia abstract and free thumbnail, gives the passenger four readable links with a local QR, and offers an explicit Milan test flight only when GPS is unavailable. This is the mode currently implemented as Drive Lab.
+- **Flux** — adaptive music driven by speed and motion, paired with four selectable visual environments. Aperture begins as a rigid square wall that recedes and disappears at the existing tunnel terminus by `40 km/h`. Vertigo embeds the original Codrops/Tympanus Interstate 7 runtime unchanged behind an external speed/FOV and palette bridge. Meridian is a low, stable corridor of sparse oblique palette-lit blades and longitudinal shoulder planes; speed widens FOV, compresses depth and stretches peripheral geometry without restoring towers, buildings or a particle field. ATLAS follows the trusted position and travel bearing above an OpenFreeMap city, retains an oblique 3D view at `130 km/h`, adds a selected-page Italian Wikipedia abstract and free thumbnail, gives the passenger four readable links with a local QR, and offers an explicit Milan test flight only when GPS is unavailable. This is the mode currently implemented as Drive Lab.
 
 Shared foundations include the GPS/Demo speed source, integrated diagnostics, master Stop/Mute, reduced motion, renderer fallback, and touch-first safety behavior. The mode switch will remain clearly identifiable and reachable from both experiences.
 
@@ -126,6 +126,7 @@ See [`docs/ROADMAP.md`](docs/ROADMAP.md).
 - [`docs/MODES.md`](docs/MODES.md) — confirmed Engine/Flux product architecture and open decisions;
 - [`docs/REFERENCE-STUDY-TEXTSTEP.md`](docs/REFERENCE-STUDY-TEXTSTEP.md) — Lobo's textStep credit, provenance, mechanics, and authorized adoption plan;
 - [`docs/MUSIC-CRAFT.md`](docs/MUSIC-CRAFT.md) — accumulated musical knowledge, failures, tests, and production technique;
+- [`docs/AUDIO-QA-2026-08-28.md`](docs/AUDIO-QA-2026-08-28.md) — current FRACTURE/JUNCTION reference renders, objective mix measurements, and listening boundary;
 - [`docs/SESSION-HANDOFF.md`](docs/SESSION-HANDOFF.md) — current implementation handoff and remaining work;
 - [`docs/GITHUB.md`](docs/GITHUB.md) — public-repository and GitHub CLI operating notes;
 - [`docs/LICENSING.md`](docs/LICENSING.md) — active mixed-license decision and open legal work.

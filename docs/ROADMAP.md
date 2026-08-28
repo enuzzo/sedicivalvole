@@ -43,7 +43,7 @@ Implemented:
 - tempo knee with asymptotic ceiling;
 - continuous energy separated from discrete layer/Brake events;
 - sample-accurate AudioWorklet transport, bar/phrase-quantized arrangement, hysteresis, asymmetric dwell, crossfades, and limiter;
-- FRACTURE: ambience-only launch, ten four-bar sections, five theme timbres, harmony and bass checks, offline rendering, voice audition, and measured brake processing;
+- FRACTURE: ambience-only launch, ten four-bar sections, production atmosphere/harmony/low-end/rhythm lanes with the recurring riff and response retired, offline rendering, development-only voice audition, and measured brake processing;
 - fixed `130 km/h` road-energy ceiling, early tunnel visibility near `40 km/h`, and curated `APERTURE 01` environment;
 - filtered acceleration/deceleration envelopes with single direction-change cues and steady-state decay;
 - deterministic desktop signal tests.
@@ -55,7 +55,7 @@ requires a real Tesla listening session.
 
 Completed in the current working line:
 
-- JUNCTION's 160-clip browser runtime uses one 38.7 MB segmented Opus music bank built from 134 distinct recordings; its eight energy states each own 20 complete takes across five audible harmonic/melodic/timbral families. Two rhythm-locked takes are mixed live only at complete eight-bar boundaries, a four-entry recent window prefers unheard families and takes, 40 km/h remains at 127 BPM, 60 km/h remains at 135 BPM, and rest has no break or bassline;
+- JUNCTION's 24-clip browser runtime uses one 5.8 MB segmented Opus music bank built from 76 distinct recordings. Its eight energy states each own three interchangeable complete performances under one fixed E-minor harmonic grammar. Only one tonal performance plays at a time, changes stay on complete eight-bar boundaries, recent memory prevents an immediate repeat, 40 km/h remains at 127 BPM, 60 km/h remains at 135 BPM, and rest has no break or bassline;
 - the bank contains a mixed, processed production rather than loose source samples; browser-delivered bytes remain downloadable and are not described as secret;
 
 Queued next:
@@ -83,7 +83,7 @@ Implemented:
 - a complete four-color square wall that recedes intact from `0–40 km/h`, disappears at the dark terminus, and reveals the existing tunnel and high-speed Plaid field without full-frame coordinate interpolation;
 - selectable `VERTIGO 02` using the byte-identical upstream Interstate 7 scene with its road, repeated side lights, opposing car trails, bloom, fog, camera, deep distortion, and original dependencies;
 - an external `0–130 km/h` bridge that slows the original clock from stopped to its non-boosted `1×` rate and maps FOV from `90°` to `150°`, without editing the vendor runtime.
-- original `MERIDIAN 03`, now a speed-revealed Euclidean corridor of portals, blades, cantilevers, monoliths, curved wind and high cloud slabs sharing one displacement field and camera aim;
+- original `MERIDIAN 03`, rebuilt against the selected reference as a low stable corridor of sparse oblique blades and longitudinal shoulder planes. Bounded field motion, FOV, depth compression, peripheral stretch and parallax carry speed without conventional buildings, cloud slabs or a particle field;
 - lazy-loaded `ATLAS 04`, with a minimal palette-owned OpenFreeMap vector style, 3D buildings, nearby Italian Wikipedia context, four passenger links, a local QR and an explicit no-GPS Milan flight mode;
 
 Queued next:

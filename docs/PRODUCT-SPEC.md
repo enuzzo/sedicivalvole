@@ -62,10 +62,12 @@ Framed controls use a restrained 6 px corner radius rather than completely sharp
 
 Modular Aperture is calm and flat at rest. Zero speed uses a complete Swiss mosaic of large square modules, distributed evenly across four tones from the active palette, with no missing cells, black gaps, or central void. That intact mosaic is a rigid end wall: it recedes without deforming from `0–40 km/h`, progressively revealing the existing centered perspective tunnel behind it, then disappears at its terminus. Deceleration reverses the same wall travel so the complete grid returns without a flash. Above `40 km/h`, the approved tunnel, palette, perspective, flow and high-velocity radial compression continue unchanged. Ten curated palettes change both the visual character and interface accent without exposing low-level shader controls. See [`RECOVERED-REQUIREMENTS-2026-08-26.md`](RECOVERED-REQUIREMENTS-2026-08-26.md).
 
-`MERIDIAN 03` uses the selected Kinetic Architecture direction: solid and
-translucent geometric buildings, cantilevers and floor plates move through one
-continuous displaced corridor. New mass, facade light and atmosphere arrive
-with speed without changing the underlying geometry or road response.
+`MERIDIAN 03` follows the selected oblique-blade reference contract: sparse
+large red, white and secondary-colour Euclidean planes flank a low, readable
+corridor. The continuous field keeps vertical excursion gentle and bounded;
+speed raises FOV, depth compression, peripheral stretch, parallax and
+longitudinal flow monotonically. Conventional buildings, stacked towers,
+balconies, cheap wireframe grids and excessive particles are excluded.
 
 `ATLAS 04` is the passenger-oriented bird's-eye city environment. It presents a
 palette-driven 3D OpenFreeMap field, a concise selected-page Wikipedia abstract

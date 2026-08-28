@@ -19,9 +19,11 @@ dated study documents.
 - All four environments use the shared catalog of **10 themes**. Vertigo keeps
   the upstream Interstate 7 files byte-identical while an external runtime
   bridge maps the selected theme onto its existing colour channels.
-- Meridian grows deterministic Euclidean portals, blades, cantilevers and
-  stepped monoliths beneath high geometric cloud slabs, with segmented curved
-  wind.
+- Meridian keeps one deterministic low corridor beneath sparse, large oblique
+  blades and longitudinal shoulder planes. Its shared travel field has tightly
+  bounded vertical motion; FOV, depth compression, peripheral stretch,
+  parallax and flow rise monotonically with speed. Conventional buildings,
+  stacked towers, high cloud slabs and scene-wide particles are absent.
 - ATLAS dynamically loads MapLibre only when selected, draws a minimal
   palette-owned OpenFreeMap vector style with 3D buildings, and pairs it with a
   selected-page Italian Wikipedia abstract and free thumbnail, four passenger
@@ -65,30 +67,30 @@ dated study documents.
 
 - **FRACTURE 02** is a selectable score. It is a generative Jungle / Drum
   & Bass composition rendered by the production AudioWorklet.
-- FRACTURE has **10 four-bar sections**, ten themes played across five melodic
-  timbres, a narrow `162–176 BPM` transport range, half-time interpretation at
-  rest, an atmosphere-only launch before low end and melody enter with motion,
-  arrangement density, deceleration memory, and the measured UNDERWATER brake
-  effect.
-- **JUNCTION 01** is selectable sampled Jungle / Rave music. Its eight energy
-  states each have 20 complete authored clips: 160 rendered sections built from
-  134 distinct recordings in one 38.7 MB segmented Opus bank. Five harmonic,
-  melodic and timbral families each own a different exact-note multisampled
-  motif. Ten rhythm groups per state pair only takes with the same drum spine;
-  a four-entry listening history prefers unheard families and takes. Rest is harmony
-  and atmosphere without a break or bassline;
+- FRACTURE has **10 four-bar sections**, a narrow `162–176 BPM` transport range,
+  half-time interpretation at rest, an atmosphere-only launch, arrangement
+  density, deceleration memory, and the measured UNDERWATER brake effect. Its
+  live arranger now builds only atmosphere, harmony, sub/reese and rhythm: the
+  recurring `riff` and `response` lanes are retired from normal playback and
+  remain reachable only through the parked development audition path.
+- **JUNCTION 01** is selectable sampled Jungle music. Its eight energy states
+  each have three complete authored clips: 24 rendered sections built from 76
+  distinct recordings in one 5.8 MB segmented Opus bank. Every section shares
+  the exact `Emin9 – Cmaj7 – Amin7 – Bmin9` grammar and contains its own vertical
+  atmosphere, harmony, bass and break layers. There is no automatic lead, rave
+  multisample, tonal second deck, or simultaneous independent identity. Rest is
+  harmony and atmosphere without a break or bassline;
   rhythm fades in near `13 km/h`, moves through native `127`, `135`, `158` and
   `164 BPM` recordings, and reaches `168 BPM` only at high energy. The `127 BPM`
   state now covers 40 km/h and `135 BPM` covers 60 km/h; `158 BPM` begins above
   approximately 65 km/h. The browser
   lazily retains at most six individual clips, finishes the current eight-bar
-  phrase, then starts two distinct self-contained takes on the same
-  sample-accurate boundary and mixes their level, tone, stereo and space live.
+  phrase, then starts one different self-contained performance on the
+  sample-accurate boundary. The primary take does not immediately repeat.
   A rhythm entrance from rest rises for four seconds; a decision to return to
   rest releases the active performance toward a near-silent floor over four
   seconds, with cancellable recovery if road energy returns.
-  The primary take does not immediately repeat, and source sounds are never
-  exposed or shuffled mid-phrase.
+  Source sounds are never exposed or shuffled mid-phrase.
 - JUNCTION is preloaded but inaudible after `PLAY THE ROAD` while stationary. Its
   score-local movement gate fades from silence at `4 km/h` to full level at
   `10 km/h`, before the existing quiet break threshold near `13 km/h`.
@@ -116,10 +118,11 @@ dated study documents.
 
 ## Open work
 
-1. Validate Aperture's `0–40 km/h` rigid wall retreat, silent JUNCTION launch,
-   Euclidean Meridian and the ATLAS flight camera in the Tesla.
+1. Validate Aperture's `0–40 km/h` rigid wall retreat, the no-lead FRACTURE and
+   single-performance JUNCTION arrangements, the selected-concept Meridian
+   rebuild and the ATLAS flight camera in the Tesla.
 2. Send the new real-drive gzip attachment and compare the dedicated wall-retreat
-   phase plus family/take exposure counters against the first complete report.
+   phase plus JUNCTION section/take exposure counters against the first complete report.
 3. Design Engine only after exactly three Engine-specific directions are shown
    and one is selected.
 4. Keep `VERSION` at `0.0.0` until an explicit release is approved.
@@ -129,7 +132,7 @@ dated study documents.
 | Kind | Documents | How to use them |
 |---|---|---|
 | Current | this page, `README.md`, `PRODUCT-SPEC.md`, `TECHNICAL-DIRECTION.md`, `ROADMAP.md`, `MODES.md`, `SESSION-HANDOFF.md` | Must describe the current repository and verified product state |
-| Evidence | `DEPLOY.md`, `DIAGNOSTICS.md`, `CHANGELOG.md` | Append-only chronology; older failures remain true historical evidence |
+| Evidence | `DEPLOY.md`, `DIAGNOSTICS.md`, `AUDIO-QA-2026-08-28.md`, `CHANGELOG.md` | Append-only chronology; older failures remain true historical evidence |
 | Knowledge | `MUSIC-CRAFT.md`, licensing and reference studies | Durable technique, provenance, and decision records |
 | Historical | `RECOVERED-REQUIREMENTS-2026-08-26.md`, `ADVERSARIAL-REVIEW.md`, `SOURCE-AUDIT.md`, dated work plans | Preserve the reasoning and rejected baselines; do not treat their “current” wording as current product state |
 
