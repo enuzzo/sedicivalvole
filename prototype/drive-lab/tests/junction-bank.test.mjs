@@ -9,15 +9,17 @@ import {
   junctionSectionForEnergy,
   parseJunctionBank,
 } from "../src/junction-bank.js";
-import { JUNCTION_SECTIONS } from "../scripts/junction-form.mjs";
+import { JUNCTION_FAMILIES, JUNCTION_SECTIONS } from "../scripts/junction-form.mjs";
 
 test("JUNCTION chooses authored density and release sections from road energy", () => {
   assert.equal(junctionSectionForEnergy(0), "rest");
   assert.equal(junctionSectionForEnergy(0.08), "rest");
   assert.equal(junctionSectionForEnergy(0.1), "open");
   assert.equal(junctionSectionForEnergy(30 / 130), "open");
-  assert.equal(junctionSectionForEnergy(40 / 130), "enter");
-  assert.equal(junctionSectionForEnergy(60 / 130), "build");
+  assert.equal(junctionSectionForEnergy(40 / 130), "open");
+  assert.equal(junctionSectionForEnergy(45 / 130), "enter");
+  assert.equal(junctionSectionForEnergy(60 / 130), "enter");
+  assert.equal(junctionSectionForEnergy(66 / 130), "build");
   assert.equal(junctionSectionForEnergy(0.7), "break");
   assert.equal(junctionSectionForEnergy(1), "full");
   assert.equal(junctionSectionForEnergy(0.8, true), "turn");
@@ -41,6 +43,22 @@ test("JUNCTION leaves rest beatless and builds tempo and break level without rac
   assert.ok(JUNCTION_SECTIONS.every((section) => (
     new Set(section.takes.map((take) => JSON.stringify(take))).size === 13
   )));
+});
+
+test("JUNCTION provides five genuinely distinct harmonic and colour families", () => {
+  assert.equal(JUNCTION_FAMILIES.length, 5);
+  assert.equal(new Set(JUNCTION_FAMILIES.map((family) => family.id)).size, 5);
+  assert.equal(new Set(JUNCTION_FAMILIES.map((family) => (
+    family.progression.map((step) => step.chord).join("-")
+  ))).size, 5);
+  assert.ok(JUNCTION_FAMILIES.every((family) => family.colorSteps.length >= 1));
+  for (const section of JUNCTION_SECTIONS) {
+    const familyCounts = section.takes.reduce((counts, take) => {
+      counts[take.family] = (counts[take.family] ?? 0) + 1;
+      return counts;
+    }, {});
+    assert.deepEqual(Object.values(familyCounts).sort((a, b) => a - b), [2, 2, 3, 3, 3]);
+  }
 });
 
 test("JUNCTION changes take only at a section boundary and avoids an immediate repeat", () => {
@@ -69,6 +87,21 @@ test("JUNCTION creates a distinct two-deck mix without repeating the primary tak
   assert.ok(mix.mixEnd >= 0.52 && mix.mixEnd <= 0.82);
 });
 
+test("JUNCTION rotates musical families and mixes only harmony-compatible takes", () => {
+  const sections = [
+    { id: "build", take: 1, family: "afterdark" },
+    { id: "build", take: 6, family: "afterdark" },
+    { id: "build", take: 2, family: "lift" },
+    { id: "build", take: 7, family: "lift" },
+    { id: "build", take: 3, family: "signal" },
+    { id: "build", take: 8, family: "signal" },
+  ];
+  const mix = chooseJunctionMix(sections, "build", sections[0], () => 0);
+  assert.equal(mix.primary.family, "lift");
+  assert.equal(mix.secondary.family, "lift");
+  assert.notEqual(mix.primary.take, mix.secondary.take);
+});
+
 test("JUNCTION live effects remain bounded and grow with road energy", () => {
   const calm = junctionLiveMixParameters(0, 127, () => 0);
   const fast = junctionLiveMixParameters(1, 168, () => 0);
@@ -87,11 +120,13 @@ test("the published JUNCTION blob contains lazy processed mix blocks, not loose 
   assert.equal(parsed.manifest.mixing, "live-two-deck");
   assert.equal(parsed.manifest.sections.length, 104);
   assert.equal(parsed.manifest.takes, 13);
+  assert.equal(parsed.manifest.musicalFamilies, 5);
   assert.ok(parsed.manifest.sourceRecordingsUsed >= 100);
   assert.equal(parsed.manifest.barsPerSection, 8);
   assert.equal(parsed.manifest.tempoMode, "authored-sections");
   assert.deepEqual(parsed.manifest.bpmRange, [127, 168]);
   assert.equal(new Set(parsed.manifest.sections.map((section) => section.take)).size, 13);
+  assert.equal(new Set(parsed.manifest.sections.map((section) => section.family)).size, 5);
   assert.equal(parsed.assets.size, 104);
   assert.equal(parsed.manifest.maxDecodedClips, 6);
   for (const id of ["rest", "open", "enter", "build", "break", "full", "turn", "ease"]) {
@@ -103,6 +138,10 @@ test("the published JUNCTION blob contains lazy processed mix blocks, not loose 
     assert.ok(variations.every((section) => section.durationSeconds > 11));
     assert.ok(variations.every((section) => section.startSeconds === 0));
     assert.equal(new Set(variations.map((section) => section.assetId)).size, 13);
+    const familyCounts = Object.values(Object.groupBy(variations, (section) => section.family))
+      .map((group) => group.length)
+      .sort((a, b) => a - b);
+    assert.deepEqual(familyCounts, [2, 2, 3, 3, 3]);
   }
   assert.ok(parsed.manifest.sections.filter((section) => section.id === "rest").every(
     (section) => section.bpm === 127 && !section.activeLanes.includes("breaks"),

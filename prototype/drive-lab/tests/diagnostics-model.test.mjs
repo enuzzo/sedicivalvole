@@ -3,6 +3,7 @@ import test from "node:test";
 import {
   appendConnectionHistory,
   appendViewportHistory,
+  classifyGpsConfidence,
   createDriveTelemetry,
   createDriveTelemetryReport,
   DRIVE_TRACE_FIELDS,
@@ -116,6 +117,31 @@ test("performance telemetry separates visual and diagnostic phases with bounded 
   assert.equal(summary["drive:aperture:junction:diagnostics"].memory.jsHeapSupported, false);
 });
 
+test("phase telemetry treats re-entry as a new segment instead of a slow frame", () => {
+  const telemetry = createPhasePerformanceTelemetry(0);
+  for (const capturedAtMs of [0, 17, 34, 5000, 5017]) {
+    recordPhaseFrame(telemetry, {
+      phase: "drive:aperture:junction:visual:morph",
+      capturedAtMs,
+      targetFrameMs: 1000 / 60,
+      renderer: "WebGL2",
+    });
+  }
+  const phase = summarizePhasePerformanceTelemetry(telemetry)["drive:aperture:junction:visual:morph"];
+  assert.equal(phase.continuitySegments, 2);
+  assert.equal(phase.sampledDurationMs, 51);
+  assert.equal(phase.frame.maximumFrameMs, 17);
+  assert.equal(phase.frame.slowFramesOver34Ms, 0);
+});
+
+test("GPS confidence isolates stale and implausibly inaccurate samples", () => {
+  assert.equal(classifyGpsConfidence({ gpsState: "not tested", gpsAgeMs: null, accuracyM: null }), "unavailable");
+  assert.equal(classifyGpsConfidence({ gpsState: "live", gpsAgeMs: 4000, accuracyM: 2 }), "stale");
+  assert.equal(classifyGpsConfidence({ gpsState: "live", gpsAgeMs: 100, accuracyM: 10000 }), "unreliable");
+  assert.equal(classifyGpsConfidence({ gpsState: "live", gpsAgeMs: 100, accuracyM: 2 }), "precise");
+  assert.equal(classifyGpsConfidence({ gpsState: "live", gpsAgeMs: 100, accuracyM: 25 }), "usable");
+});
+
 test("connection history deduplicates stable readings and keeps changes", () => {
   const first = { capturedAt: "one", online: true, effectiveType: "4g", downlinkMbps: 10, roundTripTimeMs: 50 };
   const unchanged = { ...first, capturedAt: "two" };
@@ -139,7 +165,13 @@ test("drive telemetry retains a bounded trace while preserving full-session aggr
     averageFps: 45,
     p95FrameMs: 22,
     audioLevel: 0.1,
-    audioSection: 0,
+    audioSection: "OPEN",
+    audioFamily: "signal",
+    audioTakes: [3, 8],
+    audioBankLoaded: true,
+    visualId: "aperture",
+    musicId: "junction",
+    gpsConfidence: "precise",
     motionPhase: "steady",
     online: true,
     effectiveType: "4g",
@@ -162,6 +194,9 @@ test("drive telemetry retains a bounded trace while preserving full-session aggr
   assert.equal(report.summary.peakAccelerationKmhPerSecond, 18);
   assert.equal(report.samples[0][DRIVE_TRACE_FIELDS.indexOf("rate")], 18);
   assert.equal(report.samples[1][DRIVE_TRACE_FIELDS.indexOf("speed")], 36);
+  assert.equal(report.samples[1][DRIVE_TRACE_FIELDS.indexOf("section")], "OPEN");
+  assert.equal(report.summary.exposure.families.count, 1);
+  assert.deepEqual(report.summary.exposure.takePairs.values, ["3+8"]);
   assert.equal(JSON.stringify(report).includes("latitude"), false);
   assert.equal(JSON.stringify(report).includes("longitude"), false);
 });

@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   APERTURE_TUNING,
   apertureReadout,
+  aperturePixelRatio,
   apertureShaderControls,
   apertureSmoothing,
   apertureWall,
@@ -14,6 +15,17 @@ test("Aperture wall at standstill (0 km/h) covers the full screen plane", () => 
   assert.equal(wall.z, 1.0);
   assert.equal(wall.size, 1.0);
   assert.equal(wall.luminance, 1.0);
+});
+
+test("Aperture removes only supersampling during the morph pressure band", () => {
+  assert.equal(aperturePixelRatio(1.53, 0), 1.25);
+  assert.equal(aperturePixelRatio(1.53, 17.9), 1.25);
+  assert.equal(aperturePixelRatio(1.53, 18), 1);
+  assert.equal(aperturePixelRatio(1.53, 30), 1);
+  assert.equal(aperturePixelRatio(1.53, 40), 1);
+  assert.equal(aperturePixelRatio(1.53, 40.1), 1.25);
+  assert.equal(aperturePixelRatio(1, 30), 1);
+  assert.ok((1 ** 2) / (1.25 ** 2) <= 0.64, "morph fragment work should fall by at least 36%");
 });
 
 test("Aperture wall at 35 km/h reaches the far terminus matching benchmark geometry", () => {

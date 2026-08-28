@@ -65,6 +65,18 @@ export function apertureWall(speedKmh) {
   return { proximity, z, size, luminance: smoothstep(0.10, 0.45, size) };
 }
 
+/**
+ * Aperture's morph is the only phase that evaluates both flat and perspective
+ * coordinates across the full fragment field. Rendering it at one physical
+ * pixel per CSS pixel avoids unnecessary supersampling on the Tesla while
+ * keeping the exact shader, geometry, timing and visible viewport resolution.
+ */
+export function aperturePixelRatio(devicePixelRatio, speedKmh) {
+  const dpr = Math.max(1, Number(devicePixelRatio) || 1);
+  const speed = Math.max(0, Number(speedKmh) || 0);
+  return Math.min(dpr, speed >= 18 && speed <= 40 ? 1 : 1.25);
+}
+
 /** What the shader draws at a given speed, for diagnostic overlays and QA. */
 export function apertureReadout(speedKmh) {
   const safeSpeed = Math.max(0, speedKmh);

@@ -54,7 +54,12 @@ export function createAudioEngine(onPulse, onEffectChange) {
   const context = new AudioContext({ latencyHint: "interactive" });
   const masterGain = context.createGain();
   const fractureGain = context.createGain();
-  masterGain.connect(context.destination);
+  const meter = context.createAnalyser();
+  meter.fftSize = 256;
+  meter.smoothingTimeConstant = 0.55;
+  const meterBuffer = new Float32Array(meter.fftSize);
+  let meterState = { level: 0, rms: 0, peak: 0 };
+  masterGain.connect(meter).connect(context.destination);
   fractureGain.connect(masterGain);
 
   let node = null;
@@ -149,6 +154,24 @@ export function createAudioEngine(onPulse, onEffectChange) {
 
   brakeTimer = window.setInterval(tickBrake, BRAKE_TICK_MS);
 
+  function measureOutput() {
+    meter.getFloatTimeDomainData(meterBuffer);
+    let sumSquares = 0;
+    let peak = 0;
+    for (let index = 0; index < meterBuffer.length; index += 1) {
+      const absolute = Math.abs(meterBuffer[index]);
+      sumSquares += meterBuffer[index] * meterBuffer[index];
+      peak = Math.max(peak, absolute);
+    }
+    const rms = Math.sqrt(sumSquares / meterBuffer.length);
+    meterState = {
+      rms,
+      peak,
+      level: Math.min(1, rms * 3.5),
+    };
+    return meterState;
+  }
+
   return {
     context,
 
@@ -220,7 +243,11 @@ export function createAudioEngine(onPulse, onEffectChange) {
     startCue() {},
 
     getLevel() {
-      return energy;
+      return measureOutput().level;
+    },
+
+    getMeterState() {
+      return { ...meterState };
     },
 
     getState() {
@@ -257,6 +284,7 @@ export function createAudioEngine(onPulse, onEffectChange) {
       junction.destroy();
       fractureGain.disconnect();
       masterGain.disconnect();
+      meter.disconnect();
       if (context.state !== "closed") context.close().catch(() => {});
     },
   };

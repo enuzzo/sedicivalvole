@@ -3,6 +3,7 @@ import { createAudioEngine } from "./audio-engine.js";
 import {
   appendConnectionHistory,
   appendViewportHistory,
+  classifyGpsConfidence,
   createDriveTelemetry,
   createDriveTelemetryReport,
   createFrameTelemetry,
@@ -465,7 +466,7 @@ function MusicPicker({ genreId, onChange, onClose }) {
 }
 
 /**
- * Body colour.
+ * Palette.
  *
  * Ten finishes in the cell that held five: the vehicle's own colours on the top
  * row, the five no car is painted in below. The housing keeps its single
@@ -474,11 +475,11 @@ function MusicPicker({ genreId, onChange, onClose }) {
  * genuinely uses two colours shows both, because showing one and hiding the
  * other misrepresents what selecting it does.
  */
-function BodyColorControl({ themeId, onChange }) {
+function PaletteControl({ themeId, onChange }) {
   const selected = getFluxTheme(themeId);
   return (
-    <fieldset className="body-color-control">
-      <legend>BODY COLOR</legend>
+    <fieldset className="palette-control">
+      <legend>PALETTE</legend>
       <strong>{selected.label}</strong>
       <div className="swatch-housing">
         {FLUX_THEMES.map((theme) => (
@@ -486,7 +487,7 @@ function BodyColorControl({ themeId, onChange }) {
             key={theme.id}
             className={theme.id === themeId ? "is-selected" : ""}
             type="button"
-            aria-label={`Use the ${theme.label.toLowerCase()} finish`}
+            aria-label={`Use the ${theme.label.toLowerCase()} palette`}
             aria-pressed={theme.id === themeId}
             onClick={() => onChange(theme.id)}
           >
@@ -558,6 +559,7 @@ export function App() {
   const sourceRef = useRef("GPS");
   const speedRef = useRef(0);
   const lastGpsSampleAtRef = useRef(null);
+  const lastGpsEventAtRef = useRef(null);
   const gpsSpeedLockedRef = useRef(false);
   const audioMeterTimerRef = useRef(null);
   const flightRecorderTimerRef = useRef(null);
@@ -584,6 +586,8 @@ export function App() {
   const gpsStateRef = useRef(gpsState);
   const accuracyRef = useRef(accuracy);
   const audioLevelRef = useRef(audioLevel);
+  const environmentIdRef = useRef(environmentId);
+  const genreIdRef = useRef(genreId);
   const rendererRef = useRef(renderer);
   const drawerOpenRef = useRef(drawerOpen);
 
@@ -597,10 +601,13 @@ export function App() {
   gpsStateRef.current = gpsState;
   accuracyRef.current = accuracy;
   audioLevelRef.current = audioLevel;
+  environmentIdRef.current = environmentId;
+  genreIdRef.current = genreId;
   rendererRef.current = renderer;
   drawerOpenRef.current = drawerOpen;
   performancePhaseRef.current = phase === "running"
     ? `drive:${environmentId}:${genreId}:${drawerOpen ? "diagnostics" : "visual"}`
+      + (environmentId === "aperture" && speed >= 18 && speed <= 40 ? ":morph" : "")
     : `splash:${phase}`;
 
   const logDiagnosticEvent = useCallback((type, detail = {}) => {
@@ -669,6 +676,7 @@ export function App() {
   const startGps = useCallback(() => {
     gpsTelemetryRef.current = createGpsTelemetry(performance.now());
     lastGpsSampleAtRef.current = null;
+    lastGpsEventAtRef.current = null;
     gpsSpeedLockedRef.current = false;
     if (!navigator.geolocation) {
       setGpsState("unavailable");
@@ -680,22 +688,28 @@ export function App() {
     watchRef.current = navigator.geolocation.watchPosition(
       (position) => {
         const capturedAtMs = performance.now();
-        setAccuracy(Number.isFinite(position.coords.accuracy) ? Math.round(position.coords.accuracy) : null);
+        const accuracyM = Number.isFinite(position.coords.accuracy) ? position.coords.accuracy : null;
+        setAccuracy(Number.isFinite(accuracyM) ? Math.round(accuracyM) : null);
         const kmh = normalizeGpsSpeed(position.coords.speed);
         latestGpsObservationRef.current = { capturedAtMs, speedKmh: kmh };
         gpsTelemetryRef.current = recordGpsSample(gpsTelemetryRef.current, {
           capturedAtMs,
           speedKmh: kmh,
-          accuracyM: Number.isFinite(position.coords.accuracy) ? position.coords.accuracy : null,
+          accuracyM,
         });
+        const shouldLogSample = lastGpsEventAtRef.current == null
+          || capturedAtMs - lastGpsEventAtRef.current >= 2000
+          || kmh == null
+          || (Number.isFinite(accuracyM) && accuracyM > 250);
         if (kmh == null) {
-          logDiagnosticEvent("gps.sample", {
-            speedKmh: null,
-            filteredSpeedKmh: null,
-            accuracyM: Number.isFinite(position.coords.accuracy)
-              ? Math.round(position.coords.accuracy * 10) / 10
-              : null,
-          });
+          if (shouldLogSample) {
+            lastGpsEventAtRef.current = capturedAtMs;
+            logDiagnosticEvent("gps.sample", {
+              speedKmh: null,
+              filteredSpeedKmh: null,
+              accuracyM: Number.isFinite(accuracyM) ? Math.round(accuracyM * 10) / 10 : null,
+            });
+          }
           setGpsState("GPS active · speed is null");
           return;
         }
@@ -706,16 +720,36 @@ export function App() {
         const next = gpsSpeedLockedRef.current
           ? smoothGpsSpeed(smoothedSpeedRef.current, kmh, elapsedSeconds)
           : kmh;
+        // Preserve the last trusted motion value through isolated GPS accuracy
+        // collapses. The real Tesla report contained one 10 km-radius sample
+        // between normal 2–3 m readings; it should be evidence, not a musical
+        // or visual structural command.
+        const unreliable = Number.isFinite(accuracyM) && accuracyM > 250;
+        if (unreliable && gpsSpeedLockedRef.current) {
+          if (shouldLogSample) {
+            lastGpsEventAtRef.current = capturedAtMs;
+            logDiagnosticEvent("gps.sample", {
+              speedKmh: Math.round(kmh * 10) / 10,
+              filteredSpeedKmh: Math.round(smoothedSpeedRef.current * 10) / 10,
+              elapsedMs: Math.round(elapsedSeconds * 1000),
+              accuracyM: Math.round(accuracyM * 10) / 10,
+              heldForConfidence: true,
+            });
+          }
+          setGpsState("live");
+          return;
+        }
         gpsSpeedLockedRef.current = true;
         smoothedSpeedRef.current = next;
-        logDiagnosticEvent("gps.sample", {
-          speedKmh: Math.round(kmh * 10) / 10,
-          filteredSpeedKmh: Math.round(next * 10) / 10,
-          elapsedMs: Math.round(elapsedSeconds * 1000),
-          accuracyM: Number.isFinite(position.coords.accuracy)
-            ? Math.round(position.coords.accuracy * 10) / 10
-            : null,
-        });
+        if (shouldLogSample) {
+          lastGpsEventAtRef.current = capturedAtMs;
+          logDiagnosticEvent("gps.sample", {
+            speedKmh: Math.round(kmh * 10) / 10,
+            filteredSpeedKmh: Math.round(next * 10) / 10,
+            elapsedMs: Math.round(elapsedSeconds * 1000),
+            accuracyM: Number.isFinite(accuracyM) ? Math.round(accuracyM * 10) / 10 : null,
+          });
+        }
         if (sourceRef.current === "GPS") setSpeed(next);
         setGpsState("live");
       },
@@ -1158,13 +1192,15 @@ export function App() {
       const frame = summarizeFrameTelemetry(frameTelemetryRef.current);
       const connection = readConnectionSnapshot("flight-recorder");
       const audioState = audioRef.current?.getState() ?? null;
+      const meterState = audioRef.current?.getMeterState?.() ?? null;
+      const gpsAgeMs = Number.isFinite(latestGps.capturedAtMs)
+        ? Math.max(0, capturedAtMs - latestGps.capturedAtMs)
+        : null;
       recordDriveTelemetrySample(driveTelemetryRef.current, {
         capturedAtMs,
         speedKmh: speedRef.current,
         rawGpsSpeedKmh: latestGps.speedKmh,
-        gpsAgeMs: Number.isFinite(latestGps.capturedAtMs)
-          ? Math.max(0, capturedAtMs - latestGps.capturedAtMs)
-          : null,
+        gpsAgeMs,
         gpsState: gpsStateRef.current,
         accuracyM: accuracyRef.current,
         source: sourceRef.current,
@@ -1174,7 +1210,18 @@ export function App() {
         averageFps: frame.averageFps,
         p95FrameMs: frame.p95FrameMs,
         audioLevel: audioLevelRef.current,
+        audioPeak: meterState?.peak,
+        visualId: environmentIdRef.current,
+        musicId: genreIdRef.current,
         audioSection: audioState?.section,
+        audioFamily: audioState?.musicalFamily,
+        audioTakes: audioState?.sectionTakes,
+        audioBankLoaded: audioState?.bankLoaded,
+        gpsConfidence: classifyGpsConfidence({
+          gpsState: gpsStateRef.current,
+          gpsAgeMs,
+          accuracyM: accuracyRef.current,
+        }),
         motionPhase: audioState?.motionPhase,
         online: connection.online,
         effectiveType: connection.effectiveType,
@@ -1334,7 +1381,7 @@ export function App() {
       bpm: Math.round(bpm * 10) / 10,
       energy: Math.round(energy * 1000) / 1000,
       energyCeilingKmh: ROAD_SPEED_CEILING_KMH,
-      bodyColorTheme: themeId,
+      paletteTheme: themeId,
       muted,
       arrangement: audioRef.current?.getState() ?? null,
     },
@@ -1563,6 +1610,7 @@ export function App() {
               setMuted((value) => !value);
             }}
             aria-pressed={muted}
+            aria-label={muted ? "Unmute audio" : "Mute audio"}
           >
             <span className="mute-icon" aria-hidden="true">
               {muted ? (
@@ -1577,11 +1625,10 @@ export function App() {
                 </svg>
               )}
             </span>
-            <span>AUDIO</span><strong>{muted ? "MUTED" : "RUNNING"}</strong>
           </button>
           <VisualControl environment={environment} onOpen={() => setEnvironmentPickerOpen(true)} />
           <MusicControl genreId={genreId} onOpen={() => setScorePickerOpen(true)} />
-          <BodyColorControl themeId={themeId} onChange={setThemeId} />
+          <PaletteControl themeId={themeId} onChange={setThemeId} />
         </footer>
       </section>
 

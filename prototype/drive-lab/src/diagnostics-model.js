@@ -154,9 +154,7 @@ export function summarizeFrameTelemetry(telemetry) {
     canvasWidth: telemetry.canvasWidth,
     canvasHeight: telemetry.canvasHeight,
     sampledFrames: telemetry.sampledFrames,
-    sampledDurationMs: Number.isFinite(telemetry.firstCapturedAtMs) && Number.isFinite(telemetry.lastCapturedAtMs)
-      ? round(telemetry.lastCapturedAtMs - telemetry.firstCapturedAtMs)
-      : 0,
+    sampledDurationMs: round(telemetry.totalIntervalMs) ?? 0,
     targetFps: telemetry.targetFrameMs ? round(1000 / telemetry.targetFrameMs) : null,
     averageFps: telemetry.totalIntervalMs > 0
       ? round((telemetry.intervalCount * 1000) / telemetry.totalIntervalMs)
@@ -195,6 +193,9 @@ function ensurePerformancePhase(telemetry, phase, capturedAtMs) {
   telemetry.phases[phaseId] ??= {
     firstCapturedAtMs: capturedAtMs,
     lastCapturedAtMs: capturedAtMs,
+    activeDurationMs: 0,
+    continuitySegments: 0,
+    lastObservedAtMs: null,
     frame: createFrameTelemetry(capturedAtMs),
     memory: createMemoryTelemetry(),
   };
@@ -210,6 +211,19 @@ export function recordPhaseFrame(telemetry, sample) {
   const phase = ensurePerformancePhase(telemetry, sample.phase, sample.capturedAtMs);
   phase.firstCapturedAtMs = Math.min(phase.firstCapturedAtMs, sample.capturedAtMs);
   phase.lastCapturedAtMs = Math.max(phase.lastCapturedAtMs, sample.capturedAtMs);
+  const intervalMs = Number.isFinite(phase.lastObservedAtMs)
+    ? Math.max(0, sample.capturedAtMs - phase.lastObservedAtMs)
+    : null;
+  // A phase can disappear and later re-enter. The time spent in another phase
+  // is not a slow frame in this one, so begin a fresh continuity segment.
+  const discontinuityMs = Math.max(250, (Number(sample.targetFrameMs) || 1000 / 60) * 8);
+  if (intervalMs == null || intervalMs > discontinuityMs) {
+    phase.frame.lastCapturedAtMs = null;
+    phase.continuitySegments += 1;
+  } else {
+    phase.activeDurationMs += intervalMs;
+  }
+  phase.lastObservedAtMs = sample.capturedAtMs;
   recordFrameSample(phase.frame, sample);
   return telemetry;
 }
@@ -250,7 +264,8 @@ export function recordPhaseMemorySample(telemetry, {
 
 export function summarizePhasePerformanceTelemetry(telemetry) {
   return Object.fromEntries(Object.entries(telemetry.phases).map(([phaseId, phase]) => [phaseId, {
-    sampledDurationMs: Math.max(0, Math.round(phase.lastCapturedAtMs - phase.firstCapturedAtMs)),
+    sampledDurationMs: Math.max(0, Math.round(phase.activeDurationMs)),
+    continuitySegments: phase.continuitySegments,
     frame: summarizeFrameTelemetry(phase.frame),
     memory: { ...phase.memory },
   }]));
@@ -268,7 +283,8 @@ export const DRIVE_TRACE_INTERVAL_MS = 2000;
 export const DRIVE_TRACE_SAMPLE_LIMIT = 300;
 export const DRIVE_TRACE_FIELDS = [
   "t", "speed", "gps", "gpsAge", "gpsState", "accuracy", "rate", "source", "input", "energy",
-  "bpm", "fps", "p95Frame", "audio", "section", "motion", "online", "net", "rtt", "visibility",
+  "bpm", "fps", "p95Frame", "audio", "audioPeak", "visual", "music", "section", "family", "takes",
+  "bank", "gpsConfidence", "motion", "online", "net", "rtt", "visibility",
 ];
 
 const rounded = (value, precision = 2) => {
@@ -299,6 +315,13 @@ export function createDriveTelemetry(startedAtMs = 0) {
     peakAccelerationKmhPerSecond: null,
     peakDecelerationKmhPerSecond: null,
     minimumGpsAccuracyM: null,
+    exposure: {
+      visuals: new Set(),
+      music: new Set(),
+      sections: new Set(),
+      families: new Set(),
+      takePairs: new Set(),
+    },
     samples: [],
   };
 }
@@ -338,6 +361,13 @@ export function recordDriveTelemetrySample(telemetry, sample, limit = DRIVE_TRAC
       sample.accuracyM,
     );
   }
+  if (typeof sample.visualId === "string" && sample.visualId) telemetry.exposure.visuals.add(sample.visualId);
+  if (typeof sample.musicId === "string" && sample.musicId) telemetry.exposure.music.add(sample.musicId);
+  if (typeof sample.audioSection === "string" && sample.audioSection) telemetry.exposure.sections.add(sample.audioSection);
+  if (typeof sample.audioFamily === "string" && sample.audioFamily) telemetry.exposure.families.add(sample.audioFamily);
+  if (Array.isArray(sample.audioTakes) && sample.audioTakes.length) {
+    telemetry.exposure.takePairs.add(sample.audioTakes.map(String).join("+"));
+  }
 
   const retainedSample = {
     t: rounded((sample.capturedAtMs - telemetry.startedAtMs) / 1000, 1),
@@ -354,7 +384,16 @@ export function recordDriveTelemetrySample(telemetry, sample, limit = DRIVE_TRAC
     fps: rounded(sample.averageFps, 1),
     p95Frame: rounded(sample.p95FrameMs, 1),
     audio: rounded(sample.audioLevel, 3),
-    section: Number.isFinite(sample.audioSection) ? sample.audioSection : null,
+    audioPeak: rounded(sample.audioPeak, 3),
+    visual: typeof sample.visualId === "string" ? sample.visualId.slice(0, 32) : null,
+    music: typeof sample.musicId === "string" ? sample.musicId.slice(0, 32) : null,
+    section: typeof sample.audioSection === "string"
+      ? sample.audioSection.slice(0, 32)
+      : Number.isFinite(sample.audioSection) ? sample.audioSection : null,
+    family: typeof sample.audioFamily === "string" ? sample.audioFamily.slice(0, 32) : null,
+    takes: Array.isArray(sample.audioTakes) ? sample.audioTakes.slice(0, 2) : [],
+    bank: typeof sample.audioBankLoaded === "boolean" ? sample.audioBankLoaded : null,
+    gpsConfidence: typeof sample.gpsConfidence === "string" ? sample.gpsConfidence : null,
     motion: sample.motionPhase ?? null,
     online: typeof sample.online === "boolean" ? sample.online : null,
     net: sample.effectiveType ?? null,
@@ -402,6 +441,10 @@ export function summarizeDriveTelemetry(telemetry, generatedAtMs = telemetry.las
     minimumGpsAccuracyM: rounded(telemetry.minimumGpsAccuracyM, 1),
     sourceDurationsMs: roundDurationTotals(telemetry.sourceDurationsMs),
     inputDurationsMs: roundDurationTotals(telemetry.inputDurationsMs),
+    exposure: Object.fromEntries(Object.entries(telemetry.exposure).map(([key, values]) => [key, {
+      count: values.size,
+      values: [...values],
+    }])),
   };
 }
 
@@ -419,10 +462,25 @@ export function createDriveTelemetryReport(telemetry, generatedAtMs = telemetry.
       fps: "aggregate average frames per second",
       p95Frame: "aggregate p95 frame time in milliseconds",
       audio: "normalized output level",
+      audioPeak: "normalized output peak",
+      visual: "active visual environment",
+      music: "active score",
+      family: "active JUNCTION musical family",
+      takes: "active JUNCTION take pair",
+      bank: "whether the sampled bank was ready",
+      gpsConfidence: "coordinate-free GPS confidence class",
       rtt: "network round-trip estimate in milliseconds",
     },
     samples: telemetry.samples.map((sample) => DRIVE_TRACE_FIELDS.map((field) => sample[field])),
   };
+}
+
+export function classifyGpsConfidence({ gpsState, gpsAgeMs, accuracyM }) {
+  if (gpsState !== "live") return "unavailable";
+  if (Number.isFinite(gpsAgeMs) && gpsAgeMs > 3000) return "stale";
+  if (Number.isFinite(accuracyM) && accuracyM > 250) return "unreliable";
+  if (Number.isFinite(accuracyM) && accuracyM <= 10) return "precise";
+  return "usable";
 }
 
 function serializedUtf8Bytes(value) {

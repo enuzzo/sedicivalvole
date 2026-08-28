@@ -80,6 +80,7 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
       sectionTakes: activePerformance
         ? [activePerformance.mix.primary.take, activePerformance.mix.secondary.take]
         : [],
+      musicalFamily: primary?.family ?? null,
       halfTime: false,
       rhythmLabel: sectionId === "rest"
         ? "ambient"
@@ -171,7 +172,7 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
     const mix = chooseJunctionMix(
       bank.manifest.sections,
       id,
-      currentPerformance?.mix.primary.take ?? null,
+      currentPerformance?.mix.primary ?? null,
     );
     if (!mix) return;
     preparingId = id;
@@ -189,14 +190,15 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
     });
   }
 
-  async function schedulePerformance(id, requestedTime, previousPrimaryTake = null) {
+  async function schedulePerformance(id, requestedTime, previousPrimary = null) {
     const prepared = preparedMix?.id === id
-      && preparedMix.mix.primary.take !== previousPrimaryTake
+      && preparedMix.mix.primary.take !== previousPrimary?.take
+      && preparedMix.mix.primary.family !== previousPrimary?.family
       ? preparedMix.mix
       : null;
     preparedMix = null;
     const mix = prepared
-      ?? chooseJunctionMix(bank.manifest.sections, id, previousPrimaryTake);
+      ?? chooseJunctionMix(bank.manifest.sections, id, previousPrimary);
     if (!mix) throw new Error(`JUNCTION needs at least two takes for live mixing: ${id}`);
     const [primaryBuffer, secondaryBuffer] = await Promise.all([
       ensureDecoded(mix.primary.assetId),
@@ -258,7 +260,7 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
       pendingPerformance = await schedulePerformance(
         id,
         currentPerformance.endAt,
-        currentPerformance.mix.primary.take,
+        currentPerformance.mix.primary,
       );
     } catch (error) {
       console.error("[junction] the next live mix could not be scheduled", error);

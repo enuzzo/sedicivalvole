@@ -56,13 +56,27 @@ function randomUnit(random) {
   return Math.min(0.999999, Math.max(0, Number(random()) || 0));
 }
 
-export function chooseJunctionMix(sections, sectionId, previousPrimaryTake = null, random = Math.random) {
+export function chooseJunctionMix(sections, sectionId, previousPrimary = null, random = Math.random) {
   const candidates = sections.filter((section) => section.id === sectionId);
   if (candidates.length < 2) return null;
-  const primaryPool = candidates.filter((section) => section.take !== previousPrimaryTake);
-  const eligible = primaryPool.length > 0 ? primaryPool : candidates;
+  const previousPrimaryTake = typeof previousPrimary === "object" ? previousPrimary?.take : previousPrimary;
+  const previousFamily = typeof previousPrimary === "object" ? previousPrimary?.family : null;
+  const byFamily = new Map();
+  for (const candidate of candidates) {
+    const family = candidate.family ?? "legacy";
+    const group = byFamily.get(family) ?? [];
+    group.push(candidate);
+    byFamily.set(family, group);
+  }
+  const compatibleFamilies = [...byFamily.entries()].filter(([, group]) => group.length >= 2);
+  const freshFamilies = compatibleFamilies.filter(([family]) => family !== previousFamily);
+  const familyPool = freshFamilies.length > 0 ? freshFamilies : compatibleFamilies;
+  if (familyPool.length === 0) return null;
+  const [, compatibleCandidates] = familyPool[Math.floor(randomUnit(random) * familyPool.length)];
+  const primaryPool = compatibleCandidates.filter((section) => section.take !== previousPrimaryTake);
+  const eligible = primaryPool.length > 0 ? primaryPool : compatibleCandidates;
   const primary = eligible[Math.floor(randomUnit(random) * eligible.length)];
-  const secondaryPool = candidates.filter((section) => section.take !== primary.take);
+  const secondaryPool = compatibleCandidates.filter((section) => section.take !== primary.take);
   const secondary = secondaryPool[Math.floor(randomUnit(random) * secondaryPool.length)];
   const mixStart = 0.18 + randomUnit(random) * 0.3;
   const mixEnd = 0.52 + randomUnit(random) * 0.3;
@@ -85,9 +99,9 @@ export function junctionSectionForEnergy(energy, braking = false) {
   const value = Math.min(1, Math.max(0, Number(energy) || 0));
   if (braking) return value > 0.6 ? "turn" : value > 0.1 ? "ease" : "rest";
   if (value < 0.1) return "rest";
-  if (value < 0.24) return "open";
-  if (value < 0.4) return "enter";
-  if (value < 0.6) return "build";
+  if (value < 0.34) return "open";
+  if (value < 0.5) return "enter";
+  if (value < 0.64) return "build";
   if (value < 0.82) return "break";
   return "full";
 }

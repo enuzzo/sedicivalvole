@@ -43,6 +43,7 @@ import {
 import {
   JUNCTION_ARRANGEMENT,
   JUNCTION_BARS_PER_SECTION,
+  JUNCTION_FAMILIES,
   junctionSectionFrames,
 } from "./junction-form.mjs";
 import {
@@ -67,12 +68,7 @@ const STEPS_PER_BAR = 16;
  * already performed. `bar` is which bar of the eight-bar cycle it lands on.
  * Everything here is diatonic to E minor, so the basslines sit under any of it.
  */
-const PROGRESSION = [
-  { bar: 0, chord: "Emin9", bassKeys: ["E", "Emin"], accentMidis: [52, 55, 59, 62, 66] },
-  { bar: 2, chord: "Cmaj7", bassKeys: ["C", "G", "E"], accentMidis: [48, 52, 55, 59] },
-  { bar: 4, chord: "Amin7", bassKeys: ["Amin", "E", "C"], accentMidis: [45, 48, 52, 55] },
-  { bar: 6, chord: "Bmin9", bassKeys: ["B", "Bmin", "E"], accentMidis: [47, 50, 54, 57, 61] },
-];
+const ALL_PROGRESSION_STEPS = JUNCTION_FAMILIES.flatMap((family) => family.progression);
 
 const ACCENT_INSTRUMENTS = [
   "Rave_Lead", "RavePiano", "Short_String", "Rave_Saw", "Buzz",
@@ -171,7 +167,7 @@ async function main() {
         bassBuffers.set(`${tempo}:${entry.key}`, await decode(entry.path, SAMPLE_RATE));
       }
     }
-    for (const progression of PROGRESSION) {
+    for (const progression of ALL_PROGRESSION_STEPS) {
       if (!progression.bassKeys.some((key) => bassBuffers.has(`${tempo}:${key}`))) {
         throw new Error(`no consonant bass for ${progression.chord} at ${tempo} BPM`);
       }
@@ -193,7 +189,8 @@ async function main() {
   // the harmony can change instrument without a note changing.
   const hits = await loadChordHits(SAMPLE_RATE);
   const chords = new Map();
-  for (const step of PROGRESSION) {
+  for (const step of ALL_PROGRESSION_STEPS) {
+    if (chords.has(step.chord)) continue;
     const voicings = hits.filter((entry) => entry.chord === step.chord);
     if (voicings.length === 0) throw new Error(`the pack has no ${step.chord}`);
     chords.set(step.chord, voicings);
@@ -202,7 +199,7 @@ async function main() {
   for (const name of ACCENT_INSTRUMENTS) {
     const instrument = await loadExactInstrumentNotes(
       name,
-      [...new Set(PROGRESSION.flatMap((entry) => entry.accentMidis))],
+      [...new Set(ALL_PROGRESSION_STEPS.flatMap((entry) => entry.accentMidis))],
       SAMPLE_RATE,
     );
     for (const [midi, buffer] of instrument.notes) {
@@ -241,6 +238,8 @@ async function main() {
 
   for (const timelineEntry of timeline) {
     const { section, index: sectionIndex, startFrame, barFrames, sectionFrames } = timelineEntry;
+    const family = JUNCTION_FAMILIES.find((entry) => entry.id === section.family) ?? JUNCTION_FAMILIES[0];
+    const progression = family.progression;
     const loopFrames = barFrames * LOOP_BARS;
     const stepFrames = Math.round(barFrames / STEPS_PER_BAR);
     const phraseFrames = barFrames * LOOP_BARS;
@@ -254,7 +253,7 @@ async function main() {
       if (localFrame % stepFrames === 0) {
         const step = Math.floor(inLoop / stepFrames) % (STEPS_PER_BAR * LOOP_BARS);
         if (step === 0 && section.pad > 0) {
-          const entry = PROGRESSION.find((chord) => chord.bar === barInCycle);
+          const entry = progression.find((chord) => chord.bar === barInCycle);
           const chordAllowed = !section.chordBars || section.chordBars.includes(barInCycle);
           if (entry && chordAllowed) {
             const choices = chords.get(entry.chord);
@@ -273,7 +272,7 @@ async function main() {
         // An off-beat restatement of the chord already sounding. Classic jungle
         // punctuation, and it costs one extra trigger.
         if (section.stab && step === 22 && barInCycle % 2 === 1) {
-          const held = [...PROGRESSION].reverse().find((chord) => chord.bar <= barInCycle);
+          const held = [...progression].reverse().find((chord) => chord.bar <= barInCycle);
           if (held) {
             const choices = chords.get(held.chord);
             const selected = choices[(section.voicing + sectionIndex + barInCycle + 1) % choices.length];
@@ -290,13 +289,13 @@ async function main() {
         // A second, quieter supplied performance colours the end of selected
         // high-energy phrases. It is always an exact recorded chord tone: no
         // resampling, generated melody, or arbitrary pitched loop enters here.
-        if (section.stab && step === 29 && barInCycle % 2 === 1) {
-          const held = [...PROGRESSION].reverse().find((chord) => chord.bar <= barInCycle);
+        if (section.color && family.colorSteps.includes(step)) {
+          const held = [...progression].reverse().find((chord) => chord.bar <= barInCycle);
           const choices = held
             ? accents.filter((accent) => held.accentMidis.includes(accent.midi))
             : [];
           if (choices.length > 0) {
-            const selected = choices[(sectionIndex * 7 + barInCycle * 3) % choices.length];
+            const selected = choices[(sectionIndex * 7 + barInCycle * 3 + family.accentOffset) % choices.length];
             voices.push(new SamplerVoice(
               selected.buffer,
               1,
@@ -376,8 +375,8 @@ async function main() {
         bodyLeft * smoothedSpace * 0.14, bodyRight * smoothedSpace * 0.14,
       );
 
-      const progression = PROGRESSION[Math.floor(barInCycle / LOOP_BARS)];
-      const bassKey = progression.bassKeys.find((key) => bassBuffers.has(`${section.bpm}:${key}`));
+      const bassStep = progression[Math.floor(barInCycle / LOOP_BARS)];
+      const bassKey = bassStep.bassKeys.find((key) => bassBuffers.has(`${section.bpm}:${key}`));
       const bass = section.bass ? bassBuffers.get(`${section.bpm}:${bassKey}`) : null;
       if (bass) used.add(`bass ${section.bpm}:${bassKey}`);
       const bassLeft = bass ? bass.left[inLoop % bass.frames] * 0.68 : 0;

@@ -4,6 +4,7 @@ import {
   APERTURE_TUNING,
   WALL_APPROACH_SPEED_KMH,
   apertureReadout,
+  aperturePixelRatio,
   apertureShaderControls,
   apertureSmoothing,
   apertureWall,
@@ -189,7 +190,7 @@ function mixColor(from, to, amount) {
 }
 
 function drawCanvasFallback(context, canvas, energy, visualVelocity, speedKmh, palette, flow) {
-  const ratio = Math.min(window.devicePixelRatio || 1, 1.25);
+  const ratio = aperturePixelRatio(window.devicePixelRatio, speedKmh);
   const width = Math.max(1, Math.floor(canvas.clientWidth * ratio));
   const height = Math.max(1, Math.floor(canvas.clientHeight * ratio));
   if (canvas.width !== width || canvas.height !== height) {
@@ -405,7 +406,7 @@ export function FluxField({ energy, speed, theme, reducedMotion, pulse, brake, o
         restSeconds += deltaSeconds;
       }
 
-      const ratio = Math.min(window.devicePixelRatio || 1, 1.25);
+      const ratio = aperturePixelRatio(window.devicePixelRatio, currentSpeed);
       const width = Math.max(1, Math.floor(canvas.clientWidth * ratio));
       const height = Math.max(1, Math.floor(canvas.clientHeight * ratio));
       if (canvas.width !== width || canvas.height !== height) {

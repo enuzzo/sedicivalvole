@@ -323,7 +323,7 @@ button { -webkit-tap-highlight-color: transparent; }
   bottom: 0;
   min-height: 64px;
   display: grid;
-  grid-template-columns: 132px 158px minmax(190px, 1.2fr) minmax(236px, 1.35fr);
+  grid-template-columns: 72px 190px 210px minmax(236px, 1fr);
   align-items: stretch;
   border-top: 1px solid var(--line);
   border-radius: var(--ui-radius) var(--ui-radius) 0 0;
@@ -332,7 +332,7 @@ button { -webkit-tap-highlight-color: transparent; }
 .control-slab > * { min-width: 0; border-right: 1px solid var(--line); }
 .control-slab > *:last-child { border-right: 0; }
 .control-label,
-.body-color-control legend,
+.palette-control legend,
 .stop-button > span {
   white-space: nowrap;
   color: rgba(238, 234, 224, .72);
@@ -340,30 +340,22 @@ button { -webkit-tap-highlight-color: transparent; }
   font-weight: 700;
   letter-spacing: .12em;
 }
-/* The mute control is an icon and a state, side by side. It was a stacked label
-   over a large blank square, which set the height of the whole bar to say one
-   word. */
+/* The speaker state is self-explanatory. Keep its full 64px touch cell while
+   giving the horizontal space to the two libraries that need readable names. */
 .stop-button {
   display: grid;
-  grid-template-columns: 34px 1fr;
-  grid-template-rows: auto auto;
-  align-content: center;
-  align-items: center;
-  gap: 3px 10px;
-  padding: 8px 14px;
+  place-items: center;
+  padding: 0;
   border: 0;
   border-right: 1px solid var(--line);
   border-radius: 0;
   color: var(--paper);
   background: transparent;
-  text-align: left;
   cursor: pointer;
 }
-.stop-button > span { grid-column: 2; }
 .stop-button .mute-icon {
-  grid-row: 1 / 3;
-  width: 34px;
-  height: 34px;
+  width: 40px;
+  height: 40px;
   display: grid;
   place-items: center;
   border-radius: var(--ui-radius);
@@ -371,18 +363,17 @@ button { -webkit-tap-highlight-color: transparent; }
   background: var(--accent);
 }
 .stop-button .mute-icon svg { width: 19px; height: 19px; display: block; }
-.stop-button strong { grid-column: 2; font-size: 12px; letter-spacing: .07em; }
-.stop-button.is-muted { color: var(--ink); background: var(--paper); }
-.stop-button.is-muted > span { color: rgba(7, 9, 9, .68); }
-.stop-button.is-muted .mute-icon { color: var(--paper); background: var(--ink); }
+.stop-button.is-muted { color: var(--paper); background: transparent; }
+.stop-button.is-muted .mute-icon { color: var(--ink); background: var(--accent); opacity: .56; }
 .environment-control {
   position: relative;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
   align-items: center;
   align-content: center;
-  gap: 10px;
-  padding: 10px 18px;
+  gap: 3px 10px;
+  padding: 7px 14px;
   border: 0;
   border-right: 1px solid var(--line);
   border-radius: 0;
@@ -391,16 +382,20 @@ button { -webkit-tap-highlight-color: transparent; }
   text-align: left;
   cursor: pointer;
 }
+.environment-control .control-label { grid-column: 1; grid-row: 1; }
+.environment-control strong { grid-column: 1; grid-row: 2; }
+.environment-control .control-disclosure { grid-column: 2; grid-row: 1 / 3; }
 .environment-control strong { min-width: 0; overflow: hidden; font-size: 17px; font-weight: 560; letter-spacing: .07em; text-overflow: ellipsis; white-space: nowrap; }
 .environment-control:active { background: rgba(238, 234, 224, .07); }
 .score-control {
   position: relative;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
   align-items: center;
   align-content: center;
-  gap: 10px;
-  padding: 10px 18px;
+  gap: 3px 10px;
+  padding: 7px 14px;
   border: 0;
   border-right: 1px solid var(--line);
   border-radius: 0;
@@ -409,12 +404,15 @@ button { -webkit-tap-highlight-color: transparent; }
   text-align: left;
   cursor: pointer;
 }
+.score-control .control-label { grid-column: 1; grid-row: 1; }
+.score-control strong { grid-column: 1; grid-row: 2; }
+.score-control .control-disclosure { grid-column: 2; grid-row: 1 / 3; }
 .score-control strong { min-width: 0; overflow: hidden; font-size: 17px; font-weight: 560; letter-spacing: .07em; text-overflow: ellipsis; white-space: nowrap; }
 .score-control:active { background: rgba(238, 234, 224, .07); }
 .control-disclosure { display: inline-flex; align-items: center; gap: 8px; color: var(--accent); }
 .control-disclosure small { color: inherit; font-size: 11px; white-space: nowrap; }
 .disclosure-caret { width: 12px; height: 8px; fill: none; stroke: currentColor; stroke-width: 1.5; }
-.body-color-control {
+.palette-control {
   display: grid;
   grid-template-columns: 1fr auto;
   align-content: center;
@@ -423,9 +421,9 @@ button { -webkit-tap-highlight-color: transparent; }
   padding: 7px 16px 7px 20px;
   border: 0;
 }
-.body-color-control legend { position: absolute; opacity: 0; pointer-events: none; }
-.body-color-control::before { content: "BODY COLOR"; color: rgba(238, 234, 224, .72); font-size: 8px; font-weight: 700; letter-spacing: .12em; }
-.body-color-control > strong { color: var(--accent); font-size: 9px; letter-spacing: .1em; }
+.palette-control legend { position: absolute; opacity: 0; pointer-events: none; }
+.palette-control::before { content: "PALETTE"; color: rgba(238, 234, 224, .72); font-size: 8px; font-weight: 700; letter-spacing: .12em; }
+.palette-control > strong { color: var(--accent); font-size: 9px; letter-spacing: .1em; }
 /* Ten finishes, two rows of five: the vehicle's own colours above, the rest
    below. No housing around them and no border on each one — an outline on a
    coloured pill only competes with the colour it is there to show. Separation
@@ -578,19 +576,17 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
   .source-readout { right: 102px; width: 280px; min-height: 68px; gap: 10px; }
   .speed-spacer { min-width: 280px; }
   .source-readout strong { font-size: 27px; }
-  .control-slab { min-height: 64px; grid-template-columns: 96px 166px 188px minmax(0, 1fr); }
+  .control-slab { min-height: 64px; grid-template-columns: 64px 196px 212px minmax(0, 1fr); }
   .control-slab > * { padding-left: 10px; padding-right: 10px; }
-  .stop-button { grid-template-columns: 30px 1fr; grid-template-rows: 1fr; gap: 7px; padding: 6px 9px; }
-  .stop-button > span:not(.mute-icon) { display: none; }
-  .stop-button .mute-icon { grid-row: 1; width: 30px; height: 30px; }
-  .stop-button strong { grid-column: 2; font-size: 10px; }
+  .stop-button { padding: 0; }
+  .stop-button .mute-icon { width: 38px; height: 38px; }
   .environment-control,
   .score-control { gap: 7px; padding-top: 8px; padding-bottom: 8px; }
   .environment-control strong,
   .score-control strong { font-size: 14px; }
   .control-disclosure { gap: 5px; }
   .control-disclosure small { font-size: 9px; }
-  .body-color-control { gap: 3px 8px; padding-top: 5px; padding-bottom: 5px; }
+  .palette-control { gap: 3px 8px; padding-top: 5px; padding-bottom: 5px; }
   .energy-readout { bottom: 68px; }
   .swatch-housing { gap: 4px; }
   .swatch-housing button { min-width: 28px; min-height: 18px; }
@@ -611,7 +607,7 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
   .stop-button { grid-row: 1 / 3; }
   .environment-control { grid-column: 2; }
   .score-control { grid-column: 3; }
-  .body-color-control { grid-column: 2 / 4; border-top: 1px solid var(--line); }
+  .palette-control { grid-column: 2 / 4; border-top: 1px solid var(--line); }
   .energy-readout { bottom: 234px; }
 }
 
