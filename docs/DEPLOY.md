@@ -8,6 +8,40 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## REGISTER and OPEN publication — 2026-08-29
+
+- build stamp: **`20260829-0059`**; deployed commit: `09a6c10`;
+  implementation checkpoint: `0b9a870`;
+- gate before upload: **PASS**, the corrected synthetic harmony fixture enforces
+  abstention while preserving the failed residual's `0.666667` false-positive
+  rate and `-0.006729` margin, all 15 focused REGISTER/OPEN/harmony/documentation
+  checks, 176 of 177 active unit tests, all 4 Sites packaging tests, the
+  production build and exact local `773 × 601` Browser QA passed. The one
+  unavailable unit check requires a local PHP executable that is not installed
+  on this host and is unrelated to the visual, acceleration or harmony changes;
+- local product QA: **PASS at exact `773 × 601`**. REGISTER rendered against the
+  approved concept with the existing 64 px product footer; separate harness
+  captures verified `2–6` physical-pixel plate offsets and braking alignment.
+  A clean FRACTURE launch from `20 km/h` reached `43 km/h`, showed the real OPEN
+  badge and retained the current REGISTER page until its next musical boundary;
+- publication: **PASS**, 28 files / 8,314,218 bytes uploaded to the canonical
+  root. Dynamic-root and exact legacy-cleanup gates passed, two previous
+  content-addressed assets were retained for cache overlap, and the repeated
+  post-publication identity gate passed with `remote_writes=NONE`;
+- canonical identity: **PASS**. Bare and cache-busted HTML return `200` with
+  explicit `no-store` / `no-cache` behavior and a cache `MISS`. HTML,
+  `index-CyLFz9Q8.js`, `index-V_3SjLSC.css` and `bmc_qr-Ceyh0yuM.png` are
+  byte-identical to the verified local build at SHA-256
+  `b3b680d002c6394410a0035012ff7a3c9436e339b2250c5bec77a3020a761826`,
+  `43c5bd5d14daa4845ad0e9f2798ac6f77c56da9760336ca47cf63e5183f11a77`,
+  `569c3b3caec8e40b5ff5398c9ce81c0762db2a085e49080ebddd1a3b2670ce31`
+  and `2ea4f11b865e760efd41fb4654730f31bf6cc0d348db39c245f96dcf3aac80e6`;
+- live product QA: **PASS at exact `773 × 601`**. The canonical launch identifies
+  build `20260829-0059`; REGISTER 05 is selected and rendered; held acceleration
+  reached `39 km/h` with the real OPEN state, FRACTURE and RED 03 visible. The
+  Browser console reports zero warnings and one unrelated pre-existing missing
+  `/favicon.ico` request.
+
 ## PROJECT SPARKS fixed-duration count publication — 2026-08-29
 
 - build stamp: **`20260828-2359`**, generated immediately before midnight;

@@ -15,8 +15,7 @@ dated study documents.
   Engine-specific visual directions are selected.
 - The Flux catalog contains five visual environments: **APERTURE 01**,
   **VERTIGO 02**, **MERIDIAN 03**, **ATLAS 04**, and **REGISTER 05**.
-  REGISTER is locally implemented and awaiting canonical publication; the first
-  four remain published on the canonical experience.
+  All five are published on the canonical experience.
 - All five environments use the shared catalog of **10 themes**. Vertigo keeps
   the upstream Interstate 7 files byte-identical while an external runtime
   bridge maps the selected theme onto its existing colour channels.
