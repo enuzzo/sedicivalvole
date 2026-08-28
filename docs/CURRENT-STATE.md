@@ -43,8 +43,9 @@ dated study documents.
 - The centered lowercase launch wordmark uses weight `750`; `PLAY THE ROAD` uses
   weight `600`, and neither adds tracking. The command carries a seamless
   repeating white-to-red horizontal wave whose terminal frame is its first frame.
-  Every Signal
-  Gate lane owns a short independently phased travelling gap, with restrained
+  The launch surface stays above every preloaded environment overlay, including
+  ATLAS's no-GPS waiting state, until the gesture completes. Every Signal Gate
+  lane owns a short independently phased travelling gap, with restrained
   perspective airflow behind the road field.
 - Diagnostics separate FPS/frame time, browser-exposed heap and decoded-audio
   memory by splash, active Visual/Music pairing, the Aperture wall-retreat pressure
