@@ -8,6 +8,27 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Enlarged Signal Gate wordmark publication — 2026-08-28
+
+- build stamp: **`20260828-1613`**; deployed commit: `cac89a5`;
+  implementation: `c3f9a91`;
+- gate before upload: **PASS**, 162 unit tests, 4 packaging tests, production
+  build from the deployed commit, local Browser verification at exact
+  `773 × 601` and `390 × 844`, and read-only remote identity verification with
+  `remote_writes=NONE`;
+- typography QA: **PASS**. The wordmark computes to `38.65 px` at the Tesla
+  viewport and `32 px` on compact mobile, retaining Orbitron `750`, zero added
+  tracking, centered one-line fit and no horizontal overflow. The product band
+  is `68 px`; `PLAY THE ROAD` retains its `78 px` field and seamless wave while
+  the whole action remains exactly `390 × 170 px` on Tesla;
+- publication: **PASS**, 27 files / 27,436,702 bytes uploaded to the canonical
+  root. Dynamic-root, exact legacy cleanup, retained cache overlap and remote
+  listing checks passed; the repeated post-publication identity gate passed
+  with no writes;
+- cache-busted live Browser QA confirms build `20260828-1613`, exact wordmark
+  dimensions and weight, complete visible launch copy, zero console warnings or
+  errors, and a successful `PLAY THE ROAD` transition into `phase-running`.
+
 ## Direction-following ATLAS publication — 2026-08-28
 
 - build stamp: **`20260828-1606`**; deployed commit: `e58ff12`;
