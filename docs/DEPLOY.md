@@ -8,6 +8,33 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## LATITUDES retirement publication — 2026-08-28
+
+- build stamp: **`20260828-1745`**; deployed commit: `aa6fdb3`;
+  implementation: `b135650`;
+- gate before upload: **PASS**, 159 active unit tests, 4 packaging tests, the 13
+  historical Latitudes model tests run separately, production build from the
+  deployed documentation commit, exact `773 × 601` Browser verification and
+  read-only remote identity verification with `remote_writes=NONE`;
+- product QA: **PASS**. The active Visual library contains only `APERTURE 01`,
+  `VERTIGO 02`, `MERIDIAN 03` and `ATLAS 04`; selecting Aperture from Atlas
+  changes the active renderer, Latitudes has no live entry, and the Browser
+  console reports zero warnings/errors. A stale stored `latitudes` preference
+  resolves to Aperture;
+- bundle QA: **PASS**. The rejected renderer is absent from the active import
+  graph and production bundle. The main JavaScript shrank by 12.26 kB minified
+  and 3.30 kB gzip while the complete source and 13-test model remain available
+  only under the explicit historical archive;
+- publication: **PASS**, 27 files / 41,099,210 bytes uploaded to the canonical
+  root. Dynamic-root, exact legacy cleanup, retained cache overlap and remote
+  listing checks passed; the repeated post-publication identity gate passed
+  with no writes;
+- cache-busted canonical HTML points to `index-D7QH9Ixy.js` and
+  `index-ArFavGwq.css`. HTML, main JavaScript and CSS are byte-identical to the
+  verified local build; live `773 × 601` Browser QA confirms build
+  `20260828-1745`, all four choices, `ATLAS 04`, the working selection change,
+  no Latitudes entry and zero console warnings/errors.
+
 ## JUNCTION rhythm-envelope publication — 2026-08-28
 
 - build stamp: **`20260828-1736`**; deployed commit: `d048fdd`;
