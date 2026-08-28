@@ -8,6 +8,39 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## PROJECT SPARKS fixed-duration count publication — 2026-08-29
+
+- build stamp: **`20260828-2359`**, generated immediately before midnight;
+  deployed commit: `0bd3af3`; implementation checkpoint: `9d34d1e`;
+- gate before upload: **PASS**, all 16 focused splash/support tests, 167 of 168
+  active unit tests, all 4 packaging tests, a production build from the deployed
+  commit, local Browser interaction QA at `773 × 601` and `390 × 844`, and the
+  read-only remote identity gate with `remote_writes=NONE`. The one unavailable
+  test requires a local PHP executable that is not installed on this host and
+  is unrelated to the static support counter;
+- interaction QA: **PASS**. Every panel opening starts visibly at `000`; the
+  current `015` target progresses through intermediate integers and reaches its
+  exact final value on the model's fixed `4,000 ms` boundary. Deterministic
+  coverage proves the same duration for targets `15` and `1,500`; reduced-motion
+  users receive the final value without animation, and assistive technology is
+  exposed to one stable final-value label rather than every visual step;
+- publication: **PASS**, 28 files / 8,306,263 bytes uploaded to the canonical
+  root. Dynamic-root, exact legacy cleanup, retained cache overlap and remote
+  listing checks passed; the repeated post-publication identity gate passed
+  with `remote_writes=NONE`;
+- canonical identity: **PASS**. Bare and cache-busted HTML return `200` with
+  explicit `no-store` / `no-cache` behavior and a cache `MISS`. HTML,
+  `index-I3BCA-L_.js`, `index-f0E-xbVv.css` and `bmc_qr-Ceyh0yuM.png` are
+  byte-identical to the local build at SHA-256
+  `e4f03541a51021e630fd2f92159d2874a2451521633ab8b66ee444421cb52650`,
+  `558f047141e73d911ed5ec66a3f03040d0e0d2505141049c1612255ffa2bb134`,
+  `647be96d4e05e6691e2658e1e5d6f526487bae00470b76d3f4b1bed96a60942a`
+  and `2ea4f11b865e760efd41fb4654730f31bf6cc0d348db39c245f96dcf3aac80e6`;
+- live product QA: **PASS at exact `773 × 601`**. The canonical launch identifies
+  build `20260828-2359`; the live counter was observed at `000`, `004`, `008`
+  and `015`, the accessible dialog reports the stable final-value/four-second
+  contract, and the Browser console has zero warnings or errors.
+
 ## Signal Gate support-panel publication — 2026-08-28
 
 - build stamp: **`20260828-2303`**; deployed commit: `557251c`;
