@@ -8,6 +8,40 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Signal Gate support-panel publication — 2026-08-28
+
+- build stamp: **`20260828-2303`**; deployed commit: `557251c`;
+  implementation checkpoint: `a18efd7`;
+- gate before upload: **PASS**, all 15 focused splash/support tests, 163 of 164
+  active unit tests, all 4 packaging tests, a production build from the deployed
+  commit, exact local Browser QA at `773 × 601` and `390 × 844`, and the
+  read-only remote identity gate with `remote_writes=NONE`. The one unavailable
+  test requires a local PHP executable that is not installed on this host and
+  is unrelated to the static support panel;
+- interaction QA: **PASS**. The accessible panel opens from the top-left control,
+  closes through `Escape`, its explicit `CLOSE` button and a backdrop tap, and
+  presents the verified support destination, the supplied byte-identical QR,
+  the honestly labelled `PROJECT SPARKS` signal and a runtime-reconstructed
+  suggestion address. The full address is absent from static source and the
+  production JavaScript bundle;
+- publication: **PASS**, 28 files / 8,305,641 bytes uploaded to the canonical
+  root. Dynamic-root, exact legacy cleanup, retained cache overlap and remote
+  listing checks passed; the repeated post-publication identity gate passed
+  with `remote_writes=NONE`;
+- canonical identity: **PASS**. Cache-busted HTML returns `200` with explicit
+  `no-store` / `no-cache` behavior and a cache `MISS`. HTML, the selected
+  `index-CdRTsvIu.js`, `index-f0E-xbVv.css` and `bmc_qr-Ceyh0yuM.png` are
+  byte-identical to the local build at SHA-256
+  `bcc531cae5746561b504686436f7ead49dfeabb18bc1642ef8eabb65bc1d54e0`,
+  `2436dbeb12c59d26b7753d75335a970e8f97a0a3ea5e4fabb472dfa46bb7d7a9`,
+  `647be96d4e05e6691e2658e1e5d6f526487bae00470b76d3f4b1bed96a60942a`
+  and `2ea4f11b865e760efd41fb4654730f31bf6cc0d348db39c245f96dcf3aac80e6`;
+- live product QA: **PASS at exact `773 × 601`**. The canonical launch identifies
+  build `20260828-2303`; the dialog is visible at `390 × 295 px`, the QR loads
+  from its content-addressed asset at a crisp `136 px`, the real profile resolves
+  to `https://buymeacoffee.com/enuzzo`, the signal reads `015`, the document has
+  zero overflow, and the Browser console has zero warnings or errors.
+
 ## Signal Gate credit-link polish publication — 2026-08-28
 
 - build stamp: **`20260828-2249`**; deployed commit: `85aea3b`;
