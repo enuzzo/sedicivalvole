@@ -8,6 +8,36 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Tesla-informed Flux refinement publication evidence — 2026-08-28
+
+- build stamp: **`20260828-1001`**; deployed commit: `f788544`;
+  implementation: `436e9f9`;
+- gate before upload: **PASS**, 142 unit tests, 4 packaging tests, production
+  build, deterministic 157-sample MIME/GZIP round trip, read-only remote
+  identity verification and no preflight writes;
+- publication: **PASS**, 21 files / 26,357,008 bytes uploaded to the canonical
+  root; dynamic root, retained cache overlap and exact remote listing passed;
+- canonical cache-busted HTML: **HTTP 200**, `no-store`, and byte-identical to
+  local at SHA-256
+  `ccb04ae1e1f36b21e7c0567d38748ca724e793164a0edb8cb1ece64b359bb95a`;
+- live JavaScript `assets/index-kTBVQ78H.js`, CSS
+  `assets/index-Bd_TPTR6.css` and AudioWorklet
+  `assets/score-processor-B3O5Fcwp.js` are byte-identical to local at SHA-256
+  `8963dd8a3f9516f96c776ebcea86e4190db66b9d00b752ed8d8a6da5c6c1c2ed`,
+  `670b7c383c78118ebfcb42a8c1dee51b4c5ffa3721fc1ff0e995f7f05be05128`
+  and `9e2d612a94bce99733445047d10138d5573e9d425ef56e19ccc7061762f18ab3`;
+- live `audio/junction.svb`: **HTTP 200**, 25,044,179 bytes and byte-identical
+  to local at SHA-256
+  `49c87e66903a34b69d035bac903759fe5c9f4a685053af6dc29e31abdadadf38`;
+- live Browser QA at `773 x 601`: **PASS**. The launch transition succeeds;
+  the compact 64 px footer exposes icon-only audio, vertically ordered Visual
+  and Music selectors, disclosure carets and the `PALETTE` control; the Visual
+  library opens and closes correctly. The loaded surface reports build
+  `20260828-1001`;
+- real-Tesla acceptance remains open for Aperture morph frame pacing, GPS
+  confidence handling and the perceived musical variety of the five-family
+  JUNCTION bank.
+
 ## Complete diagnostic attachment publication evidence — 2026-08-28
 
 - build stamp: **`20260828-0927`**; deployed commit: `2b15fdf`;
