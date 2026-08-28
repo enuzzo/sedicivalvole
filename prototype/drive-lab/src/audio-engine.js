@@ -10,6 +10,16 @@ import {
   ROAD_SPEED_CEILING_KMH,
   speedToEnergy,
 } from "./signal-model.js";
+import {
+  ACCELERATION_MACRO_MAX_HOLD_MS,
+  ACCELERATION_MACRO_MIN_SPEED_KMH,
+  ACCELERATION_MACRO_REFRACTORY_MS,
+  ACCELERATION_MACRO_RELEASE_MPS2,
+  advanceAccelerationArmSamples,
+  advanceAccelerationMacroAmount,
+  accelerationMacroAmount,
+  accelerationMacroParameters,
+} from "./acceleration-macro.js";
 import { createJunctionPlayer } from "./junction-player.js";
 import processorUrl from "./score/worklet/score-processor.js?audio-worklet";
 
@@ -43,6 +53,9 @@ const BRAKE_RELEASE_SECONDS = 0.55;
  * traffic, is what makes a brake let go.
  */
 const BRAKE_TICK_MS = 40;
+const ACCELERATION_TICK_MS = 40;
+const ACCELERATION_BADGE_AT = 0.22;
+const ACCELERATION_PARAM_SMOOTH_SECONDS = 0.015;
 
 /** Deceleration is only meaningful for a moment; a stale reading must expire. */
 const RATE_STALE_MS = 700;
@@ -53,14 +66,43 @@ export function createAudioEngine(onPulse, onEffectChange) {
 
   const context = new AudioContext({ latencyHint: "interactive" });
   const masterGain = context.createGain();
+  const performanceBus = context.createGain();
+  const accelerationScoop = context.createBiquadFilter();
+  const accelerationAir = context.createBiquadFilter();
+  const accelerationSplitter = context.createChannelSplitter(2);
+  const accelerationMerger = context.createChannelMerger(2);
+  const leftToLeft = context.createGain();
+  const rightToLeft = context.createGain();
+  const leftToRight = context.createGain();
+  const rightToRight = context.createGain();
+  const accelerationTrim = context.createGain();
   const fractureGain = context.createGain();
   const meter = context.createAnalyser();
   meter.fftSize = 256;
   meter.smoothingTimeConstant = 0.55;
   const meterBuffer = new Float32Array(meter.fftSize);
   let meterState = { level: 0, rms: 0, peak: 0 };
+  accelerationScoop.type = "peaking";
+  accelerationScoop.frequency.value = 320;
+  accelerationScoop.Q.value = 0.8;
+  accelerationAir.type = "highshelf";
+  accelerationAir.frequency.value = 9000;
+  leftToLeft.gain.value = 1;
+  rightToLeft.gain.value = 0;
+  leftToRight.gain.value = 0;
+  rightToRight.gain.value = 1;
+  performanceBus.connect(accelerationScoop).connect(accelerationAir).connect(accelerationSplitter);
+  accelerationSplitter.connect(leftToLeft, 0);
+  accelerationSplitter.connect(leftToRight, 0);
+  accelerationSplitter.connect(rightToLeft, 1);
+  accelerationSplitter.connect(rightToRight, 1);
+  leftToLeft.connect(accelerationMerger, 0, 0);
+  rightToLeft.connect(accelerationMerger, 0, 0);
+  leftToRight.connect(accelerationMerger, 0, 1);
+  rightToRight.connect(accelerationMerger, 0, 1);
+  accelerationMerger.connect(accelerationTrim).connect(masterGain);
   masterGain.connect(meter).connect(context.destination);
-  fractureGain.connect(masterGain);
+  fractureGain.connect(performanceBus);
 
   let node = null;
   let running = true;
@@ -76,6 +118,14 @@ export function createAudioEngine(onPulse, onEffectChange) {
   let smoothedRateMps2 = 0;
   let lastSpeedAt = 0;
   let brakeTimer = null;
+  let accelerationTimer = null;
+  let accelerationAmount = 0;
+  let accelerationActive = false;
+  let accelerationReported = false;
+  let accelerationArmSamples = 0;
+  let accelerationStartedAt = 0;
+  let accelerationRefractoryUntil = 0;
+  let reportedEffect = null;
 
   // Last arrangement snapshot posted by the worklet. Read, never written, by
   // the interface and the diagnostics.
@@ -88,10 +138,17 @@ export function createAudioEngine(onPulse, onEffectChange) {
     decelerationState: "cruise",
     activeLanes: [],
   };
-  const junction = createJunctionPlayer(context, masterGain, (snapshot) => {
+  function publishArrangement(snapshot) {
+    onPulse?.({
+      ...snapshot,
+      accelerationMps2: Math.round(smoothedRateMps2 * 1000) / 1000,
+      brake: Math.round(brakeAmount * 1000) / 1000,
+    });
+  }
+  const junction = createJunctionPlayer(context, performanceBus, (snapshot) => {
     if (scoreId !== "junction") return;
     arrangement = snapshot;
-    onPulse?.(arrangement);
+    publishArrangement(arrangement);
   });
 
   context.audioWorklet.addModule(processorUrl).then(() => {
@@ -100,7 +157,7 @@ export function createAudioEngine(onPulse, onEffectChange) {
     node.port.onmessage = (event) => {
       if (event.data?.type !== "SNAPSHOT" || scoreId !== "fracture") return;
       arrangement = event.data.payload;
-      onPulse?.(arrangement);
+      publishArrangement(arrangement);
     };
     node.connect(fractureGain);
     post("MUTE", { muted });
@@ -114,17 +171,20 @@ export function createAudioEngine(onPulse, onEffectChange) {
     node?.port.postMessage({ type, payload });
   }
 
-  /** Reports the effect only on a real crossing, with hysteresis both ways. */
-  function reviewBrakeBadge() {
-    if (!brakeReported && brakeAmount >= BRAKE_ENGAGE_AT) {
-      brakeReported = true;
-      onEffectChange?.("UNDERWATER");
-      return;
-    }
-    if (brakeReported && brakeAmount <= BRAKE_RELEASE_AT) {
-      brakeReported = false;
-      onEffectChange?.(null);
-    }
+  function reportActiveEffect() {
+    const nextEffect = brakeReported ? "UNDERWATER" : accelerationReported ? "OPEN" : null;
+    if (nextEffect === reportedEffect) return;
+    reportedEffect = nextEffect;
+    onEffectChange?.(nextEffect);
+  }
+
+  /** Reports effects only on real crossings, with braking taking priority. */
+  function reviewEffectBadges() {
+    if (!brakeReported && brakeAmount >= BRAKE_ENGAGE_AT) brakeReported = true;
+    else if (brakeReported && brakeAmount <= BRAKE_RELEASE_AT) brakeReported = false;
+    if (!accelerationReported && accelerationAmount >= ACCELERATION_BADGE_AT) accelerationReported = true;
+    else if (accelerationReported && accelerationAmount <= 0.08) accelerationReported = false;
+    reportActiveEffect();
   }
 
   /** True only while the vehicle is decelerating harder than an ordinary lift-off. */
@@ -147,12 +207,52 @@ export function createAudioEngine(onPulse, onEffectChange) {
     const constant = target > brakeAmount ? BRAKE_ATTACK_SECONDS : BRAKE_RELEASE_SECONDS;
     brakeAmount += (target - brakeAmount) * Math.min(1, seconds / constant);
     if (brakeAmount < 0.001) brakeAmount = 0;
-    reviewBrakeBadge();
+    reviewEffectBadges();
     post("BRAKE", { brake: brakeAmount });
     junction.setBrake(brakeAmount);
   }
 
   brakeTimer = window.setInterval(tickBrake, BRAKE_TICK_MS);
+
+  function applyAccelerationMacro(time = context.currentTime) {
+    const parameters = accelerationMacroParameters(accelerationAmount);
+    accelerationScoop.gain.setTargetAtTime(parameters.midScoopDb, time, ACCELERATION_PARAM_SMOOTH_SECONDS);
+    accelerationAir.gain.setTargetAtTime(parameters.airShelfDb, time, ACCELERATION_PARAM_SMOOTH_SECONDS);
+    accelerationTrim.gain.setTargetAtTime(parameters.trimGain, time, ACCELERATION_PARAM_SMOOTH_SECONDS);
+    const direct = (1 + parameters.width) * 0.5;
+    const cross = (1 - parameters.width) * 0.5;
+    leftToLeft.gain.setTargetAtTime(direct, time, ACCELERATION_PARAM_SMOOTH_SECONDS);
+    rightToRight.gain.setTargetAtTime(direct, time, ACCELERATION_PARAM_SMOOTH_SECONDS);
+    leftToRight.gain.setTargetAtTime(cross, time, ACCELERATION_PARAM_SMOOTH_SECONDS);
+    rightToLeft.gain.setTargetAtTime(cross, time, ACCELERATION_PARAM_SMOOTH_SECONDS);
+  }
+
+  function tickAcceleration() {
+    const now = performance.now();
+    const stale = now - lastSpeedAt > RATE_STALE_MS;
+    const timedOut = accelerationActive && now - accelerationStartedAt >= ACCELERATION_MACRO_MAX_HOLD_MS;
+    const mustRelease = stale
+      || speed < ACCELERATION_MACRO_MIN_SPEED_KMH
+      || smoothedRateMps2 < ACCELERATION_MACRO_RELEASE_MPS2
+      || isBraking()
+      || timedOut;
+    if (accelerationActive && mustRelease) {
+      accelerationActive = false;
+      accelerationRefractoryUntil = now + ACCELERATION_MACRO_REFRACTORY_MS;
+      accelerationArmSamples = 0;
+    }
+    const target = accelerationActive ? accelerationMacroAmount(smoothedRateMps2) : 0;
+    accelerationAmount = advanceAccelerationMacroAmount(
+      accelerationAmount,
+      target,
+      ACCELERATION_TICK_MS / 1000,
+    );
+    if (accelerationAmount < 0.001) accelerationAmount = 0;
+    applyAccelerationMacro();
+    reviewEffectBadges();
+  }
+
+  accelerationTimer = window.setInterval(tickAcceleration, ACCELERATION_TICK_MS);
 
   function measureOutput() {
     meter.getFloatTimeDomainData(meterBuffer);
@@ -219,6 +319,17 @@ export function createAudioEngine(onPulse, onEffectChange) {
       energy = speedToEnergy(speed);
       post("SPEED", { speed, energy });
       junction.setEnergy(energy);
+      if (!accelerationActive) {
+        accelerationArmSamples = advanceAccelerationArmSamples(
+          accelerationArmSamples,
+          smoothedRateMps2,
+          now >= accelerationRefractoryUntil && speed >= ACCELERATION_MACRO_MIN_SPEED_KMH,
+        );
+        if (accelerationArmSamples >= 2) {
+          accelerationActive = true;
+          accelerationStartedAt = now;
+        }
+      }
     },
 
     /**
@@ -257,6 +368,8 @@ export function createAudioEngine(onPulse, onEffectChange) {
           energy,
           energyCeilingKmh: ROAD_SPEED_CEILING_KMH,
           brake: Math.round(brakeAmount * 100) / 100,
+          accelerationMps2: Math.round(smoothedRateMps2 * 1000) / 1000,
+          accelerationMacro: Math.round(accelerationAmount * 1000) / 1000,
         };
       }
       return {
@@ -271,18 +384,31 @@ export function createAudioEngine(onPulse, onEffectChange) {
         energyCeilingKmh: ROAD_SPEED_CEILING_KMH,
         motionPhase: arrangement.decelerationState,
         brake: Math.round(brakeAmount * 100) / 100,
+        accelerationMps2: Math.round(smoothedRateMps2 * 1000) / 1000,
+        accelerationMacro: Math.round(accelerationAmount * 1000) / 1000,
       };
     },
 
     destroy() {
       running = false;
       window.clearInterval(brakeTimer);
+      window.clearInterval(accelerationTimer);
       if (node) {
         node.port.onmessage = null;
         node.disconnect();
       }
       junction.destroy();
       fractureGain.disconnect();
+      performanceBus.disconnect();
+      accelerationScoop.disconnect();
+      accelerationAir.disconnect();
+      accelerationSplitter.disconnect();
+      leftToLeft.disconnect();
+      rightToLeft.disconnect();
+      leftToRight.disconnect();
+      rightToRight.disconnect();
+      accelerationMerger.disconnect();
+      accelerationTrim.disconnect();
       masterGain.disconnect();
       meter.disconnect();
       if (context.state !== "closed") context.close().catch(() => {});

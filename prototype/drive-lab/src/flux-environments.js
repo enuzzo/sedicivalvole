@@ -44,6 +44,14 @@ export const FLUX_ENVIRONMENTS = [
     renderer: "atlas",
     themed: true,
   },
+  {
+    id: "register",
+    label: "REGISTER",
+    number: "05",
+    rendererLabel: "Print registration",
+    renderer: "register",
+    themed: true,
+  },
 ];
 
 export function getFluxEnvironment(environmentId) {

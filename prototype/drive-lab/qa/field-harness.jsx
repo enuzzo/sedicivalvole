@@ -6,7 +6,7 @@
 // index.html as an entry, so this page never reaches a build or a deployment.
 //
 // Query parameters:
-//   env    aperture | meridian                  (default: meridian)
+//   env    aperture | meridian | register       (default: meridian)
 //   speed  held km/h                            (default: 0)
 //   theme  pearl | graphite | red | blue | silver
 //   sweep  seconds for one 0 -> ceiling -> 0 pass; overrides `speed`
@@ -17,6 +17,7 @@
 
 import { lazy, StrictMode, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
+import "../src/styles.css";
 import { getFluxTheme } from "../src/flux-themes.js";
 import { ROAD_SPEED_CEILING_KMH, speedToEnergy } from "../src/signal-model.js";
 
@@ -27,6 +28,8 @@ const FIELDS = {
     .then((module) => ({ default: module.FluxField }))),
   meridian: lazy(() => import("../src/environments/meridian/meridian-field.jsx")
     .then((module) => ({ default: module.MeridianField }))),
+  register: lazy(() => import("../src/environments/register/register-field.jsx")
+    .then((module) => ({ default: module.RegisterField }))),
 };
 
 const parameters = new URLSearchParams(window.location.search);
@@ -41,6 +44,9 @@ const SWEEP_SECONDS = readNumber("sweep", 0);
 const THEME = getFluxTheme(parameters.get("theme") ?? "red");
 const REDUCED_MOTION = parameters.get("reduced") === "1";
 const SHOW_READOUT = parameters.get("readout") !== "0";
+const REGISTER_REVISION = Math.max(0, Math.floor(readNumber("boundary", 1)));
+const REGISTER_ACCELERATION = readNumber("accel", HELD_SPEED >= 90 ? 5.4 : 0);
+const REGISTER_MOTION = parameters.get("motion") === "release" ? "release" : "cruise";
 
 function useHeldSpeed() {
   const [speed, setSpeed] = useState(HELD_SPEED);
@@ -124,7 +130,18 @@ function Harness() {
   const Field = FIELDS[ENVIRONMENT] ?? FIELDS.meridian;
   const extra = ENVIRONMENT === "aperture"
     ? { energy: speedToEnergy(speed), pulse: 0, brake: 0 }
-    : {};
+    : ENVIRONMENT === "register"
+      ? {
+        event: {
+          key: "qa:1",
+          revision: REGISTER_REVISION,
+          speedKmh: speed,
+          accelerationMps2: REGISTER_ACCELERATION,
+          motionPhase: REGISTER_MOTION,
+        },
+        tempo: 158,
+      }
+      : {};
 
   const APP_COMMIT = typeof __APP_COMMIT__ !== "undefined" ? __APP_COMMIT__ : "dev";
 

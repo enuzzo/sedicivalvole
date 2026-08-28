@@ -186,15 +186,24 @@ pilot scans only the eight chord hits reachable by that four-chord grammar,
 hashes and segments the original files in place, estimates tuning, and records
 Basic Pitch output as high-recall proposals. A filename remains declared
 metadata, chroma is visual evidence only, and both the authoritative pitch set
-and chord label stay unknown. The temporal residual is retained only as a
-proposal-conditioned feature: adding F-sharp2 to the known-truth collision
-fixture falsified its earlier threshold. A separate spectral pass enumerates
+and chord label stay unknown. The temporal residual is retained only as
+descriptive review data and is absent from classifier input: adding F-sharp2 to
+the known-truth collision fixture falsified its earlier threshold. A separate spectral pass enumerates
 possible source fundamentals directly from each disputed upper component,
 without depending on the proposer, but remains review-only because magnitude
-cannot distinguish an aligned partial from an independent voice. The next
+cannot distinguish an aligned partial from an independent voice. It records the
+calculated source hypothesis separately from the measured peak frequency. The next
 decision layer requires explicit abstention plus independent stereo and phase
 evidence. Reports and the Python environment live under ignored development
 paths and cannot enter the production resource.
+
+Both ready scores feed one post-score performance bus. UNDERWATER remains the
+braking gesture. OPEN is its acceleration counterpart: two consecutive readings
+above `3 m/s²` and `15 km/h` arm a bounded `320 Hz` scoop, `9 kHz` shelf, stereo
+side expansion and feed-forward trim. It attacks over `350 ms`, holds for at
+most four seconds, releases over one second, and observes a six-second
+refractory interval. Braking owns effect priority. GPS jerk does not modulate a
+continuous parameter.
 
 ### Flux sequencer direction
 
@@ -228,7 +237,7 @@ Profile before adding WASM. It is justified only if measured DSP cost, not fashi
 
 ## Flux visual architecture
 
-The Flux renderer exposes four selectable environments, not static backgrounds.
+The Flux renderer exposes five selectable environments, not static backgrounds.
 **Modular Aperture** was selected from exactly three revised minimal alternatives:
 
 - central-axis depth and flow;
@@ -239,7 +248,7 @@ The Flux renderer exposes four selectable environments, not static backgrounds.
 - aspect-correct square insets at rest, an eased low-speed warp, a bounded central perspective singularity, and a continuous blend between adjoining tunnel walls so intermediate geometry cannot tear into diagonal fragments;
 - a central aperture whose radius opens geometrically with tunnel formation instead of appearing through opacity;
 - speed-driven radial panel elongation and reduced depth frequency in the 150 km/h velocity band;
-- ten curated palettes for all four renderers; Vertigo's external bridge updates only existing runtime colour channels;
+- ten curated palettes for all five renderers; Vertigo's external bridge updates only existing runtime colour channels;
 - energy-driven pressure, luminance, distortion, and rectangular panel density;
 - aggregate pulses rather than one flash per audio event;
 - renderer quality levels controlling resolution scale, shader complexity, passes, and frame rate;
@@ -272,6 +281,15 @@ introduction and, when available, a free-license PageImages thumbnail; no second
 content request is needed when the passenger changes selection. Up to four nearby
 pages and one selected QR are rendered for the passenger. No coordinate enters
 local storage, diagnostics or the explicit diagnostic email.
+
+**Register** is the selected fifth direction. It is a deterministic DOM/CSS
+Swiss-print field with three energy families and two offset ink plates. Its page
+revision is sampled only from the audio snapshot at a complete eight-bar
+boundary; it has no wall-clock fallback. Acceleration sampled at that boundary
+selects `0`, `2`, `4`, or `6` physical pixels of misregistration after DPR
+conversion. Braking continuously returns the current plates to alignment over
+approximately `400 ms` without recomposing the page. Reduced motion keeps the
+same static composition without the beat-line pulse or plate motion.
 
 The fixed road-speed mapping separates early recognition from maximum deformation. Aperture begins opening into recognizable tunnel space by approximately `40 km/h`; velocity, perspective, elongation, and travel then continue increasing until the shared `130 km/h` ceiling. Vertigo uses a narrow external bridge rather than new scene mathematics. It enters the untouched distortion at a composed `2.1 s` phase where the road already fills the Tesla viewport, and seeds the current motion/FOV controls before the iframe is revealed. Road speed follows a quadratic response through the original `speedUpTarget` path: zero cancels the base clock, `40 km/h` uses approximately `0.095×`, `60 km/h` approximately `0.213×`, and `130 km/h` restores the original non-boosted `1×` rate. The original FOV range still moves from `90°` to `150°` through that same curve. The upstream click boost is not dispatched.
 

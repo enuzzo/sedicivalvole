@@ -14,6 +14,8 @@ __pycache__/
 /prototype/drive-lab/node_modules/
 /prototype/drive-lab/dist/
 /prototype/drive-lab/.sample-analysis-venv/
+/prototype/drive-lab/.playwright-cli/
+/prototype/drive-lab/output/
 
 # Local diagnostic delivery configuration. The example remains versionable.
 /prototype/drive-lab/public/api/recipient.local.php

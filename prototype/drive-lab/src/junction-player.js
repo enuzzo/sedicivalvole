@@ -30,6 +30,7 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
   let scheduling = false;
   let bankBytes = 0;
   let mixCutoff = 18000;
+  let boundaryRevision = 0;
   const decoded = new Map();
   const decoding = new Map();
   const activeSources = new Set();
@@ -114,6 +115,7 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
       source: "sampled-production",
       mixing: "single-synchronous-performance",
       transitionMode: "complete-eight-bar-boundary",
+      boundaryRevision,
       tonalDecks: selected?.tonalDecks ?? bank?.manifest.tonalDecks ?? 1,
       automaticLead: selected?.automaticLead ?? bank?.manifest.automaticLead ?? false,
       liveMix: activePerformance ? {
@@ -371,6 +373,7 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
     if (pendingPerformance && context.currentTime >= pendingPerformance.startAt - 0.015) {
       currentPerformance = pendingPerformance;
       pendingPerformance = null;
+      boundaryRevision += 1;
       applyRhythmDirection();
       trimDecodedCache();
       prewarmTarget();
@@ -399,6 +402,7 @@ export function createJunctionPlayer(context, destination, onSnapshot) {
       await load();
       const id = junctionSectionForEnergy(energy, brake > 0.2);
       currentPerformance = await schedulePerformance(id, context.currentTime + 0.04);
+      boundaryRevision += 1;
       onSnapshot?.(snapshot());
       prewarmTarget();
     },

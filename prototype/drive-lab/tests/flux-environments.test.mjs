@@ -14,13 +14,15 @@ const packageSource = readFileSync(new URL("../package.json", import.meta.url), 
 test("exposes the authored environments in a stable order", () => {
   assert.deepEqual(
     FLUX_ENVIRONMENTS.map(({ id }) => id),
-    ["aperture", "vertigo", "meridian", "atlas"],
+    ["aperture", "vertigo", "meridian", "atlas", "register"],
   );
   assert.equal(getFluxEnvironment("vertigo").label, "VERTIGO");
   assert.equal(getFluxEnvironment("meridian").label, "MERIDIAN");
   assert.equal(getFluxEnvironment("meridian").number, "03");
   assert.equal(getFluxEnvironment("atlas").label, "ATLAS");
   assert.equal(getFluxEnvironment("atlas").number, "04");
+  assert.equal(getFluxEnvironment("register").label, "REGISTER");
+  assert.equal(getFluxEnvironment("register").number, "05");
   assert.equal(getFluxEnvironment("latitudes").id, "aperture");
 });
 
@@ -57,6 +59,7 @@ test("connects every implemented environment to body-colour theming", () => {
   assert.equal(getFluxEnvironment("aperture").themed, true);
   assert.equal(getFluxEnvironment("meridian").themed, true);
   assert.equal(getFluxEnvironment("atlas").themed, true);
+  assert.equal(getFluxEnvironment("register").themed, true);
 });
 
 test("cycles every environment deterministically and returns to the start", () => {

@@ -30,7 +30,9 @@ class HarmonicSource:
 
 @dataclass(frozen=True)
 class IndependentSourceEvidence:
-    frequency_hz: float
+    hypothesis_frequency_hz: float
+    observed_peak_frequency_hz: float
+    cents_from_hypothesis: float
     nearest_midi: int
     nearest_note_cents: float
     candidate_harmonic: int
@@ -134,16 +136,19 @@ def _peak_and_noise(
     magnitude: np.ndarray,
     expected_hz: float,
     tolerance_cents: float = DIRECT_SEARCH_TOLERANCE_CENTS,
-) -> tuple[float, float]:
+) -> tuple[float, float, float]:
     tolerance_hz = max(0.8, expected_hz * (math.pow(2.0, tolerance_cents / 1200.0) - 1.0))
     peak_mask = np.abs(frequencies - expected_hz) <= tolerance_hz
     if not np.any(peak_mask):
-        return 0.0, 0.0
-    peak = float(np.max(magnitude[peak_mask]))
+        return expected_hz, 0.0, 0.0
+    peak_indices = np.flatnonzero(peak_mask)
+    strongest_index = int(peak_indices[np.argmax(magnitude[peak_indices])])
+    observed_peak_hz = float(frequencies[strongest_index])
+    peak = float(magnitude[strongest_index])
     distance = np.abs(frequencies - expected_hz)
     noise_mask = (distance >= max(8.0, tolerance_hz * 3.0)) & (distance <= 36.0)
     noise = float(np.median(magnitude[noise_mask])) if np.any(noise_mask) else 0.0
-    return peak, max(noise, 1e-12)
+    return observed_peak_hz, peak, max(noise, 1e-12)
 
 
 def independent_harmonic_sources(
@@ -161,39 +166,46 @@ def independent_harmonic_sources(
 
     candidate_hz = midi_to_frequency(candidate_midi, tuning_cents)
     frequencies, magnitude = _windowed_spectrum(y, sample_rate)
-    candidate_peak, _ = _peak_and_noise(frequencies, magnitude, candidate_hz)
+    _, candidate_peak, _ = _peak_and_noise(frequencies, magnitude, candidate_hz)
     evidence = []
     for candidate_harmonic in range(2, MAX_EXPLANATORY_HARMONIC + 1):
         source_hz = candidate_hz / candidate_harmonic
         if source_hz < MIN_DIRECT_SOURCE_HZ:
             break
-        fundamental_peak, fundamental_noise = _peak_and_noise(frequencies, magnitude, source_hz)
+        observed_source_hz, fundamental_peak, fundamental_noise = _peak_and_noise(
+            frequencies,
+            magnitude,
+            source_hz,
+        )
         fundamental_snr_db = 20.0 * math.log10(max(fundamental_peak, 1e-12) / fundamental_noise)
         supporting_partials = 0
         for source_harmonic in range(1, min(candidate_harmonic, 5)):
             partial_hz = source_hz * source_harmonic
-            partial_peak, partial_noise = _peak_and_noise(frequencies, magnitude, partial_hz)
+            _, partial_peak, partial_noise = _peak_and_noise(frequencies, magnitude, partial_hz)
             partial_snr_db = 20.0 * math.log10(max(partial_peak, 1e-12) / partial_noise)
             if partial_snr_db >= 10.0:
                 supporting_partials += 1
         source_db_relative = 20.0 * math.log10(
             max(fundamental_peak, 1e-12) / max(candidate_peak, 1e-12)
         )
-        midi_float = frequency_to_midi(source_hz, tuning_cents)
+        midi_float = frequency_to_midi(observed_source_hz, tuning_cents)
         nearest_midi = round(midi_float)
         nearest_frequency = midi_to_frequency(nearest_midi, tuning_cents)
+        cents_from_hypothesis = cents_between(observed_source_hz, source_hz)
         plausible = (
             fundamental_snr_db >= 12.0
             and source_db_relative >= MIN_CANDIDATE_DB
             and supporting_partials >= 2
-            and abs(cents_between(source_hz, nearest_frequency)) <= DIRECT_SEARCH_TOLERANCE_CENTS
+            and abs(cents_from_hypothesis) <= DIRECT_SEARCH_TOLERANCE_CENTS
         )
         if plausible:
             evidence.append(
                 IndependentSourceEvidence(
-                    frequency_hz=round(source_hz, 3),
+                    hypothesis_frequency_hz=round(source_hz, 3),
+                    observed_peak_frequency_hz=round(observed_source_hz, 3),
+                    cents_from_hypothesis=round(cents_from_hypothesis, 3),
                     nearest_midi=nearest_midi,
-                    nearest_note_cents=round(cents_between(source_hz, nearest_frequency), 3),
+                    nearest_note_cents=round(cents_between(observed_source_hz, nearest_frequency), 3),
                     candidate_harmonic=candidate_harmonic,
                     fundamental_snr_db=round(fundamental_snr_db, 3),
                     db_relative_to_candidate=round(source_db_relative, 3),
@@ -249,21 +261,9 @@ def analyse_candidate(
         valid = True
         reason = "below_candidate_floor"
         verdict = "inaudible"
-    elif not source_notes:
-        valid = False
-        reason = "no_proposed_source_candidate"
-        verdict = "unknown"
-    elif source_notes and temporal_residual < MIN_TEMPORAL_RESIDUAL:
-        valid = True
-        reason = "proposal_conditioned_temporal_fit"
-        verdict = "harmonic_of"
-    elif temporal_residual >= MIN_TEMPORAL_RESIDUAL:
-        valid = True
-        reason = "proposal_conditioned_temporal_residual"
-        verdict = "voiced"
     else:
         valid = False
-        reason = "insufficient_evidence"
+        reason = "proposal_conditioned_feature_not_decision_authority"
         verdict = "unknown"
 
     return CandidateEvidence(

@@ -35,8 +35,12 @@ test("automatic transcription remains a proposal until the arbiter is validated"
   assert.match(source, /"review_evidence_only"/);
   assert.match(source, /"role": "human_visualisation_only", "votes": False/);
   assert.match(arbiter, /lower_midis = tuple\(lower_midis\)/);
-  assert.match(arbiter, /reason = "no_proposed_source_candidate"/);
+  assert.match(arbiter, /reason = "proposal_conditioned_feature_not_decision_authority"/);
   assert.match(arbiter, /def independent_harmonic_sources\(/);
+  assert.match(arbiter, /observed_peak_frequency_hz/);
+  assert.match(arbiter, /hypothesis_frequency_hz/);
+  assert.doesNotMatch(arbiter, /verdict = "voiced"/);
+  assert.doesNotMatch(arbiter, /verdict = "harmonic_of"/);
 });
 
 test("the development environment is pinned and cannot enter Git", async () => {

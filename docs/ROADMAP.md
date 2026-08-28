@@ -44,6 +44,7 @@ Implemented:
 - continuous energy separated from discrete layer/Brake events;
 - sample-accurate AudioWorklet transport, bar/phrase-quantized arrangement, hysteresis, asymmetric dwell, crossfades, and limiter;
 - FRACTURE: ambience-only launch, ten four-bar sections, production atmosphere/harmony/low-end/rhythm lanes with the recurring riff and response retired, offline rendering, development-only voice audition, and measured brake processing;
+- the shared OPEN hard-acceleration gesture, with bounded low-mid scoop, air, stereo width, feed-forward trim, four-second hold and braking priority;
 - fixed `130 km/h` road-energy ceiling, early tunnel visibility near `40 km/h`, and curated `APERTURE 01` environment;
 - filtered acceleration/deceleration envelopes with single direction-change cues and steady-state decay;
 - deterministic desktop signal tests.
@@ -70,7 +71,7 @@ automated tests green, and no masking of vehicle alerts.
 
 ## Phase 4 — Flux generative renderer spike
 
-Status: **FOUR ENVIRONMENTS IMPLEMENTED; TESLA PERFORMANCE PENDING**.
+Status: **FIVE ENVIRONMENTS IMPLEMENTED; TESLA PERFORMANCE PENDING**.
 
 Implemented:
 
@@ -85,11 +86,12 @@ Implemented:
 - an external `0–130 km/h` bridge that slows the original clock from stopped to its non-boosted `1×` rate and maps FOV from `90°` to `150°`, without editing the vendor runtime.
 - original `MERIDIAN 03`, rebuilt against the selected reference as a low stable corridor of sparse oblique blades and longitudinal shoulder planes. Bounded field motion, FOV, depth compression, peripheral stretch and parallax carry speed without conventional buildings, cloud slabs or a particle field;
 - lazy-loaded `ATLAS 04`, with a minimal palette-owned OpenFreeMap vector style, 3D buildings, nearby Italian Wikipedia context, four passenger links, a local QR and an explicit no-GPS Milan flight mode;
+- selected `REGISTER 05`, a deterministic Swiss-print composition that changes only on complete eight-bar score boundaries, misregisters its ink plates on hard acceleration, and aligns them continuously under braking;
 
 Queued next:
 
 - decide which visual and score combinations become authored audiovisual environments once more than FRACTURE is selectable;
-- replace the rejected Latitudes slot only after presenting exactly three new visual directions and receiving a new product selection;
+- retain REGISTER as the replacement selected from exactly three revised visual directions;
 - retain the two unselected Interstate-inspired directions in the ignored backlog for a later three-direction gate rather than presenting them as implemented;
 - profile the unmodified Interstate 7 renderer on the target Tesla; any later travel, projection, curvature, density, palette, or geometry changes require a new explicit product decision and must not be folded into the upstream-integrity checkpoint;
 - verify each environment at rest, intermediate speed, full energy, and sustained deceleration at `773 × 601` on the target vehicle.

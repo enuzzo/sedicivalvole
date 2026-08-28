@@ -27,7 +27,9 @@ The default report is written below the ignored `_references/audio/analysis/`
 tree. Pass `--output PATH` to choose another destination.
 
 This stage records file identity, envelope segmentation, tuning, Basic Pitch
-note proposals and review-only harmonic-residual evidence. It deliberately
+note proposals and review-only harmonic-residual evidence. The residual is
+excluded from classifier input after the F-sharp2 fixture falsified its threshold.
+It deliberately
 writes `pitch_set_midi: null` and `chord_label.value: unknown`: passing one
 controlled synthetic grid is not enough to make the arbiter authoritative on
 detuned, saturated or chorused source material. The tool does not rename, move,
@@ -43,12 +45,14 @@ Validate the deterministic synthetic fixture separately:
 The first grid tests a separately enveloped C-sharp at `-6`, `-12`, `-20` and
 `-30 dB` against overlapping B, A and F-sharp partials at three saturation
 drives. It currently reaches `1.0` recall, `0.0` false-positive rate and a narrow
-`0.012246` residual margin. That is evidence that the method can work in its
-calibration case, not evidence that it generalises.
+`0.012246` residual margin before F-sharp2 was added. The corrected grid produces
+a negative `-0.006729` margin. The validation now passes only when this feature
+cannot emit a voiced-versus-harmonic verdict and every audible case abstains.
 
 ## Acceptance boundary
 
-Before automatic pitch sets can become authoritative, the arbiter must retain:
+Before automatic pitch sets can become authoritative, a replacement evidence
+stack must demonstrate:
 
 - at least `0.90` recall for a deliberately voiced C-sharp at `-20 dB`;
 - at most `0.05` false positives when C-sharp is absent;

@@ -14,7 +14,7 @@ import numpy as np
 DRIVE_LAB = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(DRIVE_LAB))
 
-from analysis.harmonic_arbiter import analyse_candidate, midi_to_frequency
+from analysis.harmonic_arbiter import MIN_TEMPORAL_RESIDUAL, analyse_candidate, midi_to_frequency
 
 
 SAMPLE_RATE = 48_000
@@ -70,40 +70,52 @@ def validate() -> dict:
         cases.append({
             "target_level_db": None,
             "saturation_drive": saturation,
-            "expected": "harmonic_of",
+            "expected": "unknown",
             "evidence": absent.to_dict(),
-            "passed": absent.verdict == "harmonic_of",
+            "passed": absent.verdict == "unknown" and not absent.valid,
+            "legacy_residual_passed": absent.temporal_residual < MIN_TEMPORAL_RESIDUAL,
         })
         for level_db in TARGET_LEVELS_DB:
             evidence = analyse_candidate(render_case(level_db, saturation), SAMPLE_RATE, TARGET_MIDI, BASE_NOTES)
-            expected = "voiced" if level_db >= -20.0 else "unknown_or_inaudible"
-            passed = evidence.verdict == "voiced" if level_db >= -20.0 else evidence.verdict != "harmonic_of"
+            expected = "unknown_or_inaudible"
+            passed = evidence.verdict in {"unknown", "inaudible"} and evidence.verdict != "harmonic_of"
             cases.append({
                 "target_level_db": level_db,
                 "saturation_drive": saturation,
                 "expected": expected,
                 "evidence": evidence.to_dict(),
                 "passed": passed,
+                "legacy_residual_passed": (
+                    evidence.temporal_residual >= MIN_TEMPORAL_RESIDUAL
+                    if level_db >= -20.0
+                    else evidence.temporal_residual < MIN_TEMPORAL_RESIDUAL
+                ),
             })
 
     required = [case for case in cases if case["target_level_db"] is None or case["target_level_db"] >= -20.0]
-    true_positive = [case for case in required if case["target_level_db"] is not None and case["passed"]]
+    true_positive = [
+        case for case in required
+        if case["target_level_db"] is not None and case["legacy_residual_passed"]
+    ]
     positive_count = sum(1 for case in required if case["target_level_db"] is not None)
-    false_positive = [case for case in required if case["target_level_db"] is None and not case["passed"]]
+    false_positive = [
+        case for case in required
+        if case["target_level_db"] is None and not case["legacy_residual_passed"]
+    ]
     absent_count = sum(1 for case in required if case["target_level_db"] is None)
     recall = len(true_positive) / max(1, positive_count)
     false_positive_rate = len(false_positive) / max(1, absent_count)
     absent_residuals = [case["evidence"]["temporal_residual"] for case in required if case["target_level_db"] is None]
     present_residuals = [case["evidence"]["temporal_residual"] for case in required if case["target_level_db"] == -20.0]
     separation_margin = min(present_residuals) - max(absent_residuals)
-    accepted = recall >= 0.90 and false_positive_rate <= 0.05 and separation_margin >= 0.01
+    residual_threshold_accepted = recall >= 0.90 and false_positive_rate <= 0.05 and separation_margin >= 0.01
     unconditioned = analyse_candidate(render_case(-12.0, 0.0), SAMPLE_RATE, TARGET_MIDI, ())
     abstention_passed = (
         unconditioned.verdict == "unknown"
         and not unconditioned.valid
-        and unconditioned.reason == "no_proposed_source_candidate"
+        and unconditioned.reason == "proposal_conditioned_feature_not_decision_authority"
     )
-    accepted = accepted and abstention_passed
+    abstention_enforced = all(case["passed"] for case in cases) and abstention_passed
     return {
         "schema_version": "0.1.0",
         "target": "C#5 voiced versus B1/F#2/A2/F#3 partials",
@@ -116,8 +128,10 @@ def validate() -> dict:
             "recall": round(recall, 6),
             "false_positive_rate": round(false_positive_rate, 6),
             "residual_margin": round(separation_margin, 6),
-            "accepted": accepted,
+            "residual_threshold_accepted": residual_threshold_accepted,
             "unconditioned_abstention": abstention_passed,
+            "abstention_enforced": abstention_enforced,
+            "passed": abstention_enforced and not residual_threshold_accepted,
         },
         "unconditioned_case": unconditioned.to_dict(),
         "cases": cases,
@@ -137,7 +151,7 @@ def main() -> None:
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(report["result"], sort_keys=True))
-    if not report["result"]["accepted"]:
+    if not report["result"]["passed"]:
         raise SystemExit(1)
 
 

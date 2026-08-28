@@ -13,10 +13,11 @@ The initial **PLAY THE ROAD** gesture is one flat typographic launch surface wit
 
 ## Implemented
 
-- four selectable environments: `APERTURE 01`, byte-identical upstream Interstate 7 `VERTIGO 02`, original `MERIDIAN 03`, and lazy OpenFreeMap `ATLAS 04`;
+- five selectable environments: `APERTURE 01`, byte-identical upstream Interstate 7 `VERTIGO 02`, original `MERIDIAN 03`, lazy OpenFreeMap `ATLAS 04`, and deterministic Swiss-print `REGISTER 05`;
 - a dedicated WebGL2 Signal Gate splash with independently phased travelling lane gaps, restrained perspective airflow, and Canvas2D/reduced-motion fallbacks;
 - continuously redrawn Canvas2D fallback and reduced-motion behavior for Aperture; Vertigo retains the original Three.js/post-processing renderer and caps its speed input in reduced-motion mode;
 - FRACTURE, a generative AudioWorklet score with ten four-bar sections, a narrow `162–176 BPM` range, tested harmony, staged deceleration memory, and an offline render path;
+- the shared OPEN acceleration macro, which briefly widens and brightens either ready score without turning hard acceleration into a volume or tempo jump;
 - an honest Music library: generative FRACTURE and the compact adaptive JUNCTION music bank are selectable; five later directions remain disabled and marked `IN PREPARATION`;
 - GPS `coords.speed` input with null handling, physics-informed soft outlier tolerance, and Demo fallback;
 - a 64 px Tesla footer with touch-first Stop/Mute, Visual and Music libraries, disclosure carets, and ten curated body themes;
@@ -30,9 +31,9 @@ The initial **PLAY THE ROAD** gesture is one flat typographic launch surface wit
 - a Git-ignored Python harmony-analysis environment that inventories the eight
   JUNCTION-reachable chord hits and keeps Basic Pitch output as proposals until
   independent evidence can accept or reject the observed pitch set. The current
-  residual arbiter is a proposal-conditioned feature, not a decision authority;
-  a separate spectrum pass searches lower source hypotheses without trusting
-  the proposer and remains explicitly review-only.
+  residual feature is excluded from classifier input; a separate spectrum pass
+  searches lower source hypotheses without trusting the proposer, distinguishes
+  hypotheses from measured peaks, and remains explicitly review-only.
 
 ## Verify
 

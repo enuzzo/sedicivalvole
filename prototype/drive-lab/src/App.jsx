@@ -36,6 +36,8 @@ import { SplashSignalGate } from "./splash-signal-gate.jsx";
 import { Interstate7Field } from "./interstate-7-field.jsx";
 import { MeridianField } from "./environments/meridian/meridian-field.jsx";
 import { resolveAtlasHeading } from "./environments/atlas/atlas-model.js";
+import { RegisterField } from "./environments/register/register-field.jsx";
+import { registerBoundaryKey } from "./environments/register/register-model.js";
 import {
   advanceDemoMotion,
   MODEL_3_AWD_REFERENCE,
@@ -637,7 +639,16 @@ export function App() {
   const [activeEffect, setActiveEffect] = useState(null);
   const [scoreTempo, setScoreTempo] = useState(162);
   const [scoreScene, setScoreScene] = useState("REST");
+  const [registerEvent, setRegisterEvent] = useState({
+    key: "silent:0",
+    revision: 0,
+    speedKmh: QA_SPEED,
+    accelerationMps2: 0,
+    motionPhase: "cruise",
+  });
+  const [registerBrakeAmount, setRegisterBrakeAmount] = useState(0);
   const scoreStateRef = useRef(null);
+  const registerBoundaryKeyRef = useRef("silent:0");
   const [keyboardHint, setKeyboardHint] = useState(null);
   const [audioLevel, setAudioLevel] = useState(0);
   const [flightRecorderRevision, setFlightRecorderRevision] = useState(0);
@@ -777,6 +788,23 @@ export function App() {
     setScoreTempo((current) => (current === tempo ? current : tempo));
     const scene = String(snapshot.sceneId ?? "rest").toUpperCase();
     setScoreScene((current) => (current === scene ? current : scene));
+    const nextBrakeAmount = Math.min(1, Math.max(0, Number(snapshot.brake) || 0));
+    setRegisterBrakeAmount((current) => (
+      Math.abs(current - nextBrakeAmount) >= 0.04 || nextBrakeAmount === 0 || nextBrakeAmount === 1
+        ? nextBrakeAmount
+        : current
+    ));
+    const boundaryKey = registerBoundaryKey(snapshot);
+    if (boundaryKey !== registerBoundaryKeyRef.current) {
+      registerBoundaryKeyRef.current = boundaryKey;
+      setRegisterEvent((current) => ({
+        key: boundaryKey,
+        revision: current.revision + 1,
+        speedKmh: speedRef.current,
+        accelerationMps2: Number(snapshot.accelerationMps2) || 0,
+        motionPhase: snapshot.decelerationState ?? snapshot.motionPhase ?? "cruise",
+      }));
+    }
   }, []);
 
   const triggerBrake = useCallback(() => {
@@ -1691,6 +1719,16 @@ export function App() {
             onFrame={recordRenderedFrame}
           />
         </Suspense>
+      ) : environment.renderer === "register" ? (
+        <RegisterField
+          event={registerEvent}
+          tempo={bpm}
+          theme={theme}
+          reducedMotion={reducedMotion}
+          brakeAmount={registerBrakeAmount}
+          onRenderer={setRenderer}
+          onFrame={recordRenderedFrame}
+        />
       ) : (
         <FluxField
           energy={energy}

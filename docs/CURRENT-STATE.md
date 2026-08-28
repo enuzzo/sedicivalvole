@@ -1,6 +1,6 @@
 # Current Project State
 
-Status: **authoritative working overview**. Updated on 2026-08-28.
+Status: **authoritative working overview**. Updated on 2026-08-29.
 
 This page is the shortest reliable answer to “what exists now?”. Product
 requirements remain in [`PRODUCT-SPEC.md`](PRODUCT-SPEC.md), architecture in
@@ -13,10 +13,11 @@ dated study documents.
 - `Flux` is the implemented primary mode. `Engine` remains an equal confirmed
   mode, visible but disabled until its own audio model and one of exactly three
   Engine-specific visual directions are selected.
-- The Flux catalog contains four visual environments: **APERTURE 01**,
-  **VERTIGO 02**, **MERIDIAN 03**, and **ATLAS 04**. All four
-  are published on the canonical experience.
-- All four environments use the shared catalog of **10 themes**. Vertigo keeps
+- The Flux catalog contains five visual environments: **APERTURE 01**,
+  **VERTIGO 02**, **MERIDIAN 03**, **ATLAS 04**, and **REGISTER 05**.
+  REGISTER is locally implemented and awaiting canonical publication; the first
+  four remain published on the canonical experience.
+- All five environments use the shared catalog of **10 themes**. Vertigo keeps
   the upstream Interstate 7 files byte-identical while an external runtime
   bridge maps the selected theme onto its existing colour channels.
 - Meridian keeps one deterministic low corridor beneath sparse, large oblique
@@ -36,6 +37,12 @@ dated study documents.
   compact image-and-reading context and an `86 px` QR at the Tesla split viewport, collapses
   behind a persistent midpoint handle to return the complete field to the map,
   and keeps mandatory attribution in a tiny translucent strip above the footer.
+- REGISTER is a deterministic Swiss print field selected from the three approved
+  visual directions. Road energy chooses one of three layout families; a new
+  composition is sampled only at a complete eight-bar score boundary. Hard
+  acceleration offsets the two ink plates by `2–6` physical pixels, braking
+  aligns them continuously over approximately `400 ms`, and reduced motion keeps
+  the composition static.
 - Speed, BPM, and energy remain visible together. The fixed road-energy ceiling
   is `130 km/h`, with Aperture visibly forming a tunnel near `40 km/h`.
 - The main experience retains an icon-only Mute control, GPS/Demo source
@@ -101,6 +108,11 @@ dated study documents.
 - JUNCTION is preloaded but inaudible after `PLAY THE ROAD` while stationary. Its
   score-local movement gate fades from silence at `4 km/h` to full level at
   `10 km/h`, before the existing quiet break threshold near `13 km/h`.
+- The shared post-score **OPEN** macro responds to sustained hard acceleration:
+  it opens stereo width and air while removing low-mid density and applying a
+  small level trim. Two qualifying readings arm it above `15 km/h`; it holds no
+  longer than four seconds, releases over one second, and yields to UNDERWATER
+  whenever braking is detected.
 - **PULSE 03**, **CUTWATER 04**, **LOWTIDE 05**, **NIGHTCAST 06**, and
   **STILLWATER 07** are declared honestly as `IN PREPARATION` and are disabled.
 - `docs/MUSIC-CRAFT.md` records the musical defects and techniques already
@@ -112,16 +124,17 @@ dated study documents.
   and `0.0` false-positive rate but with a narrow `0.012246` separation margin.
   Adding the missing F-sharp2 source falsified that result: false-positive rate
   rose to `0.666667` and the margin became `-0.006729`. The residual is therefore
-  a proposal-conditioned feature, not a decision authority. A separate
+  removed from classifier input and remains descriptive review data only. A separate
   review-only spectrum pass searches possible lower fundamentals independently;
-  no authoritative pitch set or chord label is admitted. The ignored Python
+  it now records calculated hypotheses separately from measured spectral peaks.
+  No authoritative pitch set or chord label is admitted. The ignored Python
   environment and reports never enter the product build or redistribute source
   audio.
 
 ## Verified boundaries
 
 - Local gate: `npm test` and `npm run build` from `prototype/drive-lab/`.
-- Current suite: 156 unit checks plus 4 Sites packaging checks.
+- Current suite: 177 unit checks plus 4 Sites packaging checks.
 - Canonical development URL: <https://sedicivalvole.app/>. The most recent
   canonical publication evidence and build stamp are always the first entry in
   [`DEPLOY.md`](DEPLOY.md).
@@ -137,7 +150,8 @@ dated study documents.
 
 ## Open work
 
-1. Validate Aperture's `0–40 km/h` rigid wall retreat, the no-lead FRACTURE and
+1. Validate Aperture's `0–40 km/h` rigid wall retreat, REGISTER's physical-pixel
+   plate offset/alignment, OPEN's level compensation, the no-lead FRACTURE and
    single-performance JUNCTION arrangements, the selected-concept Meridian
    rebuild and the ATLAS flight camera in the Tesla.
 2. Send the new real-drive gzip attachment and compare the dedicated wall-retreat

@@ -486,6 +486,30 @@ no-lead FRACTURE drive renders at `-16.0 LUFS` integrated with `3.8 LU` range,
 `-0.8 dBFS` true peak and zero clipped PCM frames; the simplified JUNCTION
 render measures `-19.5 LUFS`, `14.2 LU` range and `-2.7 dBFS` true peak.
 
+### 5.12 Vehicle gestures should perform the mix, not replace the composition
+
+The braking treatment established a useful musical language: motion can make a
+short, expressive change to the whole score without starting a new section.
+Hard acceleration needs the complementary gesture. It must not become a raw
+volume boost, a permanently rising tempo, or a noisy mapping of GPS jerk.
+
+The first acceleration macro is **OPEN**. Two consecutive acceleration readings
+above `3 m/s²`, while travelling at least `15 km/h`, open the stereo field by up
+to `4 dB` at the sides, remove up to `3.5 dB` around `320 Hz`, add up to `2 dB`
+above `9 kHz`, and apply a small feed-forward trim. It attacks over `350 ms`,
+holds for at most four seconds, releases over one second, and then observes a
+six-second refractory period. Braking always takes priority. The result should
+feel like the mix opening under force while UNDERWATER closes and darkens it.
+
+Use acceleration as the continuous control and jerk only as a later discrete
+qualifier. GPS-derived jerk is too noisy to drive a filter or delay directly.
+The next candidate, **BLOOM**, may sweep a short filtered comb from `8 ms` toward
+`0.8 ms` with bounded feedback and wet level; **THROW** should wait until every
+score shares an exact transport because a tempo-synchronous echo cannot be
+truthful without one. Before either enters production, assert short-term level,
+true peak, stereo width, spectral change, maximum duty cycle and the opposite
+direction of the braking response.
+
 ---
 
 ## 6. Testing music
@@ -539,7 +563,9 @@ The analysis contract now has four separate layers:
 - an independent lower-source search enumerates `candidate frequency / k` for
   harmonics 2 through 16 and inspects those fundamentals directly in the sustain
   spectrum. It is review evidence only: finding a plausible source does not prove
-  that the candidate is its partial.
+  that the candidate is its partial. Reports distinguish that calculated
+  hypothesis from the strongest observed spectral peak; cents are measured from
+  the observation, never from a value the search itself derived.
 
 The first real inventory corrected another assumption: the source directory has
 33 chord hits, but the current four-chord JUNCTION grammar can reach only eight
@@ -568,13 +594,12 @@ a decision authority.
 
 The corrected real-audio pass made that fragility audible in the evidence.
 Every Basic Pitch proposal crossed the synthetic `0.22` residual threshold;
-B5 in the Emin9 pad crossed it by only `0.006971`. Notes inside one synth patch
-often share attack, modulation and release, so an envelope-based discriminator
-trained on an independently articulated target can mistake correlated partials
-for independent voices. The engineering response is not to loosen or tighten a
-number until the labels look plausible. Keep the chord `unknown`, then expand
-the known-truth grid across shared ADSR, detune, chorus, spectral slope and
-saturation before allowing the arbiter to vote.
+B5 in the Emin9 pad crossed it by only `0.006971`. Adding F-sharp2 then showed
+why: its third harmonic, the sixth harmonic of its octave and the fifth harmonic
+of A2 congest the same region. The NNLS residual decreases when a voicing is
+richer, so it is anti-correlated with the classification we wanted. It is no
+longer an input to any voiced-versus-harmonic verdict; audible candidates remain
+`unknown`. Keep the number only as descriptive review data.
 
 The two files declared `Bmin9` expose the distinction between pitch class and
 voicing. Basic Pitch proposes different registers, but both fold to exactly
@@ -582,12 +607,23 @@ voicing. Basic Pitch proposes different registers, but both fold to exactly
 independent source scan finds no qualifying lower source for the proposed C-sharp5
 in `V-String`; this is absence of supporting evidence, not proof of a separately
 played ninth. In `WaveStrings` it finds a plausible F-sharp3 hypothesis at the
-third harmonic: `30.559 dB` local SNR, `-3.314 dB` relative to the disputed
-C-sharp5, two supporting lower partials and `-1.955 cents` from the tuned note.
-That makes the ninth ambiguous in `WaveStrings`, while the two files still agree
-harmonically at pitch-class level. A later phase-coherence test should ask whether
-the C-sharp phase follows three times the F-sharp phase; deep chorus, wide unison
-or shared modulation must invalidate that test rather than force a verdict.
+third harmonic. The earlier `-1.955 cents` value was computed from the hypothesis,
+not a measured peak, and is withdrawn until the corrected report is regenerated.
+That leaves the ninth ambiguous in `WaveStrings`, while the two files still agree
+harmonically at pitch-class level. Before interpreting `V-String`, verify its
+lowest actual F-sharp octave and record the search floor: a null search without
+that bound is not evidence. A later phase-coherence test should heterodyne source
+and candidate bands, unwrap phase and compare the measured frequency ratio. A
+ratio near `3.0000` supports a harmonic; a stable tempered ratio near `2.9966`
+supports two voices. A sustain shorter than `300 ms`, band SNR below `20 dB`,
+independent modulation, unison detune, or multiple unresolved components must
+invalidate that test rather than force a verdict.
+
+Even a correct pitch-class inventory is not enough to mix two takes. Compare
+their actual registers: flag notes separated by one or thirteen semitones,
+measure roughness over the transition, keep lowest-note distance within five
+semitones, register centroid within four semitones, and loudness within one LU.
+Spectral flux and listening review complete the admission record.
 
 Never let `no source candidate` mean `voiced`. It means the conditioned feature
 has no basis and must abstain. Search possible lower sources independently, then
