@@ -154,6 +154,10 @@ acceptance in the vehicle.
 - Use hysteresis/dwell, bar or beat quantization, and crossfades to avoid nervous switching.
 - Acceleration/deceleration may prepare a transition rather than changing everything immediately.
 - Sustained acceleration and deceleration must not retrigger transition effects on a timer. A direction change produces one bounded musical gesture, while continuous motion envelopes shape rhythm, low end, timbre, dynamics, and space.
+- OPEN is the shared acceleration macro; BLOOM is a rarer event inside it. BLOOM
+  may arm only on a rapid hard launch, affects only the `300 Hz–8 kHz` band,
+  preserves the sub, observes a long refractory period, and must release before
+  the higher-priority UNDERWATER braking gesture proceeds.
 - A continuous restrained energy wave remains underneath the mix; its frequency and gain rise smoothly with acceleration.
 - Beat rate and rhythmic density must also increase perceptibly with speed while retaining the tempo knee and musical ceiling.
 - Flux must behave like a curated adaptive arrangement: kick, low end, percussion, rhythmic detail, harmony, timbre, effects, and spatial depth enter and evolve coherently.

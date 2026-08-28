@@ -20,7 +20,14 @@ import {
   accelerationMacroAmount,
   accelerationMacroParameters,
 } from "./acceleration-macro.js";
+import {
+  BLOOM_GESTURE_MS,
+  BLOOM_REFRACTORY_MS,
+  advanceBloomLaunchHistory,
+  isBloomHardLaunch,
+} from "./bloom-macro.js";
 import { createJunctionPlayer } from "./junction-player.js";
+import bloomProcessorUrl from "./score/worklet/bloom-processor.js?audio-worklet";
 import processorUrl from "./score/worklet/score-processor.js?audio-worklet";
 
 /**
@@ -105,6 +112,7 @@ export function createAudioEngine(onPulse, onEffectChange) {
   fractureGain.connect(performanceBus);
 
   let node = null;
+  let bloomNode = null;
   let running = true;
   let muted = false;
   let speed = 0;
@@ -126,6 +134,11 @@ export function createAudioEngine(onPulse, onEffectChange) {
   let accelerationStartedAt = 0;
   let accelerationRefractoryUntil = 0;
   let reportedEffect = null;
+  let gpsAccuracyM = null;
+  let bloomLaunchHistory = [];
+  let bloomActiveUntil = 0;
+  let bloomRefractoryUntil = 0;
+  let bloomSuppressedByBrake = false;
 
   // Last arrangement snapshot posted by the worklet. Read, never written, by
   // the interface and the diagnostics.
@@ -167,12 +180,25 @@ export function createAudioEngine(onPulse, onEffectChange) {
     console.error("[flux] the score worklet did not load", error);
   });
 
+  context.audioWorklet.addModule(bloomProcessorUrl).then(() => {
+    if (!running) return;
+    bloomNode = new AudioWorkletNode(context, "bloom-processor", { outputChannelCount: [2] });
+    bloomNode.connect(accelerationScoop);
+    performanceBus.disconnect(accelerationScoop);
+    performanceBus.connect(bloomNode);
+  }).catch((error) => {
+    console.error("[flux] the BLOOM worklet did not load", error);
+  });
+
   function post(type, payload) {
     node?.port.postMessage({ type, payload });
   }
 
   function reportActiveEffect() {
-    const nextEffect = brakeReported ? "UNDERWATER" : accelerationReported ? "OPEN" : null;
+    const bloomReported = performance.now() < bloomActiveUntil;
+    const nextEffect = brakeReported
+      ? "UNDERWATER"
+      : bloomReported ? "BLOOM" : accelerationReported ? "OPEN" : null;
     if (nextEffect === reportedEffect) return;
     reportedEffect = nextEffect;
     onEffectChange?.(nextEffect);
@@ -204,10 +230,19 @@ export function createAudioEngine(onPulse, onEffectChange) {
   function tickBrake() {
     const seconds = BRAKE_TICK_MS / 1000;
     const target = isBraking() ? 1 : 0;
+    if (target > 0 && performance.now() < bloomActiveUntil) {
+      bloomNode?.port.postMessage({ type: "RELEASE" });
+      bloomActiveUntil = performance.now() + 250;
+      bloomSuppressedByBrake = true;
+    }
     const constant = target > brakeAmount ? BRAKE_ATTACK_SECONDS : BRAKE_RELEASE_SECONDS;
     brakeAmount += (target - brakeAmount) * Math.min(1, seconds / constant);
     if (brakeAmount < 0.001) brakeAmount = 0;
     reviewEffectBadges();
+    if (target === 0 && bloomSuppressedByBrake && brakeAmount <= BRAKE_RELEASE_AT) {
+      bloomSuppressedByBrake = false;
+      bloomRefractoryUntil = performance.now() + BLOOM_REFRACTORY_MS;
+    }
     post("BRAKE", { brake: brakeAmount });
     junction.setBrake(brakeAmount);
   }
@@ -317,6 +352,11 @@ export function createAudioEngine(onPulse, onEffectChange) {
       lastSpeedAt = now;
       speed = nextSpeed;
       energy = speedToEnergy(speed);
+      bloomLaunchHistory = advanceBloomLaunchHistory(
+        bloomLaunchHistory,
+        smoothedRateMps2,
+        now,
+      );
       post("SPEED", { speed, energy });
       junction.setEnergy(energy);
       if (!accelerationActive) {
@@ -330,6 +370,22 @@ export function createAudioEngine(onPulse, onEffectChange) {
           accelerationStartedAt = now;
         }
       }
+      if (bloomNode && isBloomHardLaunch(bloomLaunchHistory, {
+        openActive: accelerationActive,
+        braking: isBraking(),
+        accuracyM: gpsAccuracyM,
+        nowMs: now,
+        refractoryUntilMs: bloomRefractoryUntil,
+      })) {
+        bloomNode.port.postMessage({ type: "TRIGGER" });
+        bloomActiveUntil = now + BLOOM_GESTURE_MS;
+        bloomRefractoryUntil = now + BLOOM_REFRACTORY_MS;
+        reviewEffectBadges();
+      }
+    },
+
+    setGpsAccuracy(accuracyM) {
+      gpsAccuracyM = Number.isFinite(accuracyM) ? accuracyM : null;
     },
 
     /**
@@ -397,6 +453,7 @@ export function createAudioEngine(onPulse, onEffectChange) {
         node.port.onmessage = null;
         node.disconnect();
       }
+      bloomNode?.disconnect();
       junction.destroy();
       fractureGain.disconnect();
       performanceBus.disconnect();

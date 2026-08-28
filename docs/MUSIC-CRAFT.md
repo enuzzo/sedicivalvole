@@ -619,11 +619,82 @@ supports two voices. A sustain shorter than `300 ms`, band SNR below `20 dB`,
 independent modulation, unison detune, or multiple unresolved components must
 invalidate that test rather than force a verdict.
 
+The bounded review pass now records what the earlier null concealed. For the
+proposed C-sharp5 in `V-String`, the F-sharp3 hypothesis measures only `2.151 dB`
+local SNR and `-52.184 dB` relative to the candidate, below a declared
+`-32 dB` detection floor. The report therefore states a minimum `32 dB`
+candidate-to-undetected-source ratio instead of treating an empty source list as
+proof. Basic Pitch's lowest F-sharp proposal in that file is F-sharp4, whose
+third harmonic is C-sharp6 rather than C-sharp5. These are strong reasons to
+prioritize the file for review, but they remain proposal and bounded-search
+evidence, not an authoritative C-sharp verdict. `WaveStrings` remains genuinely
+ambiguous: its F-sharp3 hypothesis is detected at `30.559 dB` local SNR and
+`-3.314 dB` relative to the candidate.
+
+The same proposal inventory shows why the two `Bmin9` recordings must not be
+treated as anonymous substitutes. `V-String` proposes C-sharp5 beside D5;
+`WaveStrings` proposes C-sharp4 beside D4. Each pair is a one-semitone review
+flag. Across the two records, the lowest proposed note moves by `17` semitones
+and the amplitude-weighted register centroid by `9.543` semitones, both well
+beyond the five- and four-semitone interchangeability probes. The current
+report intentionally leaves loudness, rendered roughness and boundary flux
+`null`: proposal pitch sets can prioritize a rendered transition review, but
+cannot admit or reject a production take on their own.
+
+Selection observability then exposed a separate implementation fact. The
+renderer uses `(section.voicing + sectionIndex) % choices.length`; the voicing
+seed and arrangement index always have matching parity, so all 24 JUNCTION
+performances select index zero for every main chord and every stab. The audible
+deck is therefore `EmmPad_Emin9`, `JayPad_Cmaj7`, `FifthHit_Amin7`, and
+`V-String_Bmin9`; the other four reachable files are not present in the current
+master. This falsifies the assumed two-voicing variety, but does **not** authorize
+turning the second files on: their proposed register centroids do not form an
+interchangeable deck. First prove compatibility, then change selection.
+
+The first audio-only pass measured 63 ordinary internal chord boundaries in the
+rendered master, excluding REST's sparse grammar. With deliberately uncalibrated
+probes, 22 boundaries were flagged for listening: `Cmaj7 → Amin7` accounted for
+10, `Amin7 → Bmin9` for 8, and `Emin9 → Cmaj7` for 4. EASE accounted for 8 of
+its 9 measured boundaries, while BREAK produced none. These counts are not a
+verdict — the live browser delay and cross-clip edges are still excluded — but
+they turn the listener's report of rough, incoherent changes into a bounded
+review queue instead of a pitch-label argument.
+
+Transition windows must follow the signal tail, not the nominal edit. A chord
+voice currently decays by `0.99985` per sample after its two-bar hold, reaching
+approximately `-60 dB` only after `0.96 s` at 48 kHz; the browser delay adds its
+own tempo-dependent tail. A 12 ms edge fade or 340 ms inspection window cannot
+by itself rule out an outgoing chord colliding with the next one.
+
 Even a correct pitch-class inventory is not enough to mix two takes. Compare
 their actual registers: flag notes separated by one or thirteen semitones,
 measure roughness over the transition, keep lowest-note distance within five
 semitones, register centroid within four semitones, and loudness within one LU.
 Spectral flux and listening review complete the admission record.
+
+### 6.2 BLOOM: replace the band, not the sub
+
+BLOOM is a short acceleration-only Doppler bend shared by both scores. The safe
+version is a feed-forward variable delay: `8 ms → 0.8 ms` over `400 ms`, updated
+per sample and read with four-point Hermite interpolation. Feedback is rejected
+on the full mix because its program-dependent resonance cannot fit JUNCTION's
+headroom.
+
+A global `(1-m)·dry + m·filteredDelay` crossfade is also rejected. High-passing
+the delayed send does not protect the bass if the global dry path is still
+multiplied by `1-m`; at `m = 0.42` the sub would fall by roughly 4.7 dB, making
+the stated `0.3 dB` preservation test impossible. The implemented topology is
+band replacement:
+
+`out = dry + m · (delayedBand − undelayedBand)`
+
+Only the 300 Hz–8 kHz band bends, while the signal outside it remains. The
+offline fixture measures the delayed 1 kHz path at about `1018 Hz`, keeps a
+60 Hz fundamental within `0.3 dB`, limits in-band peak growth to less than
+`0.5 dB`, and requires the effect to null after release. BLOOM may trigger only
+when OPEN is already active and acceleration crosses from at most `1.5 m/s²` to
+at least `4 m/s²` within three readings / 300 ms. It has a 25-second refractory
+period; UNDERWATER interrupts it with a 250 ms release and restarts that period.
 
 Never let `no source candidate` mean `voiced`. It means the conditioned feature
 has no basis and must abstain. Search possible lower sources independently, then

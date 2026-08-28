@@ -19,6 +19,8 @@ test("independent source inspection never promotes its spectrum to a verdict", a
   assert.match(source, /"role": "independent_lower_source_search"/);
   assert.match(source, /"status": "review_evidence_only"/);
   assert.match(source, /proposal_pitch_set_midi/);
+  assert.match(source, /lowest_proposed_f_sharp/);
+  assert.match(source, /"hypotheses"/);
   assert.doesNotMatch(source, /"verdict"/);
 });
 
@@ -39,6 +41,10 @@ test("automatic transcription remains a proposal until the arbiter is validated"
   assert.match(arbiter, /def independent_harmonic_sources\(/);
   assert.match(arbiter, /observed_peak_frequency_hz/);
   assert.match(arbiter, /hypothesis_frequency_hz/);
+  assert.match(arbiter, /def independent_harmonic_source_hypotheses\(/);
+  assert.match(arbiter, /fundamental_detected/);
+  assert.match(arbiter, /detection_floor_db_relative_to_candidate/);
+  assert.match(arbiter, /implied_min_candidate_to_undetected_source_db/);
   assert.doesNotMatch(arbiter, /verdict = "voiced"/);
   assert.doesNotMatch(arbiter, /verdict = "harmonic_of"/);
 });

@@ -110,6 +110,12 @@ dated study documents.
   small level trim. Two qualifying readings arm it above `15 km/h`; it holds no
   longer than four seconds, releases over one second, and yields to UNDERWATER
   whenever braking is detected.
+- **BLOOM** is the rarer acceleration event nested inside OPEN. A rapid
+  `1.5 → 4.0 m/s²` crossing sweeps a Hermite-interpolated feed-forward delay
+  from `8` to `0.8 ms` over `400 ms` in the `300 Hz–8 kHz` band. It replaces
+  only that band, preserving the sub; it observes a 25-second refractory period
+  and yields immediately to UNDERWATER. The common 6.6 kB AudioWorklet sits
+  after either score and before OPEN's shared tone/width stage.
 - **PULSE 03**, **CUTWATER 04**, **LOWTIDE 05**, **NIGHTCAST 06**, and
   **STILLWATER 07** are declared honestly as `IN PREPARATION` and are disabled.
 - `docs/MUSIC-CRAFT.md` records the musical defects and techniques already
@@ -124,6 +130,11 @@ dated study documents.
   removed from classifier input and remains descriptive review data only. A separate
   review-only spectrum pass searches possible lower fundamentals independently;
   it now records calculated hypotheses separately from measured spectral peaks.
+  A selection audit proves the current renderer reaches only index zero for all
+  chord labels, and an audio-only report measures 63 printed chord transitions
+  without using pitch proposals. Its first uncalibrated pass flags 22 boundaries
+  for listening, led by EASE and `Cmaj7 → Amin7`; it cannot block production
+  until live-delay and cross-clip transitions are included and calibrated.
   No authoritative pitch set or chord label is admitted. The ignored Python
   environment and reports never enter the product build or redistribute source
   audio.
@@ -131,7 +142,9 @@ dated study documents.
 ## Verified boundaries
 
 - Local gate: `npm test` and `npm run build` from `prototype/drive-lab/`.
-- Current suite: 173 unit checks plus 4 Sites packaging checks.
+- Current suite: 184 unit checks plus 4 Sites packaging checks. The latest local
+  run passes 183 unit checks and all four packaging checks; the remaining mail
+  fixture is unavailable only because this Mac has no `php` executable.
 - Canonical development URL: <https://sedicivalvole.app/>. The most recent
   canonical publication evidence and build stamp are always the first entry in
   [`DEPLOY.md`](DEPLOY.md).
@@ -153,8 +166,9 @@ dated study documents.
    rebuild and the ATLAS flight camera in the Tesla.
 2. Send the new real-drive gzip attachment and compare the dedicated wall-retreat
    phase plus JUNCTION section/take exposure counters against the first complete report.
-3. Show exactly three new Flux visual directions before selecting a REGISTER
-   replacement, and design Engine only after exactly three Engine-specific
+3. Present the three proposal-only REGISTER replacements in
+   `FLUX-VISUAL-DIRECTIONS-2026-08-29.md` and wait for explicit selection before
+   building one. Design Engine only after exactly three Engine-specific
    directions are shown and one is selected.
 4. Replace the failed magnitude-residual decision with a three-way evidence
    stack. Validate shared ADSR/filter envelopes, phase seeds, detune, chorus,
@@ -170,6 +184,7 @@ dated study documents.
 | Current | this page, `README.md`, `PRODUCT-SPEC.md`, `TECHNICAL-DIRECTION.md`, `ROADMAP.md`, `MODES.md`, `SESSION-HANDOFF.md` | Must describe the current repository and verified product state |
 | Evidence | `DEPLOY.md`, `DIAGNOSTICS.md`, `AUDIO-QA-2026-08-28.md`, `CHANGELOG.md` | Append-only chronology; older failures remain true historical evidence |
 | Knowledge | `MUSIC-CRAFT.md`, licensing and reference studies | Durable technique, provenance, and decision records |
+| Selection proposals | `FLUX-VISUAL-DIRECTIONS-2026-08-29.md` | Exactly three unimplemented REGISTER replacements awaiting product-owner selection |
 | Historical | `RECOVERED-REQUIREMENTS-2026-08-26.md`, `ADVERSARIAL-REVIEW.md`, `SOURCE-AUDIT.md`, dated work plans | Preserve the reasoning and rejected baselines; do not treat their “current” wording as current product state |
 
 `SESSION_HANDOFF.md` is a retained legacy filename and points to the canonical

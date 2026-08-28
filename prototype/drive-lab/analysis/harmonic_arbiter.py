@@ -38,6 +38,9 @@ class IndependentSourceEvidence:
     candidate_harmonic: int
     fundamental_snr_db: float
     db_relative_to_candidate: float
+    detection_floor_db_relative_to_candidate: float
+    implied_min_candidate_to_undetected_source_db: float | None
+    fundamental_detected: bool
     supporting_partials: int
     plausible: bool
     status: str = "review_evidence_only"
@@ -164,6 +167,33 @@ def independent_harmonic_sources(
     disputed upper component is its partial or an independently voiced note.
     """
 
+    return tuple(
+        hypothesis
+        for hypothesis in independent_harmonic_source_hypotheses(
+            y,
+            sample_rate,
+            candidate_midi,
+            tuning_cents,
+        )
+        if hypothesis.plausible
+    )
+
+
+def independent_harmonic_source_hypotheses(
+    y: np.ndarray,
+    sample_rate: int,
+    candidate_midi: int,
+    tuning_cents: float = 0.0,
+) -> tuple[IndependentSourceEvidence, ...]:
+    """Return every inspected lower-source hypothesis with a measured floor.
+
+    Unlike ``independent_harmonic_sources``, this review surface keeps rejected
+    hypotheses. A missing source is useful evidence only when the report says
+    how far below the candidate that source could still be hidden. The result
+    remains proposal-only: a level bound can prioritize review but does not
+    authorize a pitch or chord verdict.
+    """
+
     candidate_hz = midi_to_frequency(candidate_midi, tuning_cents)
     frequencies, magnitude = _windowed_spectrum(y, sample_rate)
     _, candidate_peak, _ = _peak_and_noise(frequencies, magnitude, candidate_hz)
@@ -178,6 +208,12 @@ def independent_harmonic_sources(
             source_hz,
         )
         fundamental_snr_db = 20.0 * math.log10(max(fundamental_peak, 1e-12) / fundamental_noise)
+        minimum_source_from_snr = fundamental_noise * math.pow(10.0, 12.0 / 20.0)
+        minimum_source_from_relative_floor = candidate_peak * math.pow(10.0, MIN_CANDIDATE_DB / 20.0)
+        detection_floor_amplitude = max(minimum_source_from_snr, minimum_source_from_relative_floor)
+        detection_floor_db_relative = 20.0 * math.log10(
+            max(detection_floor_amplitude, 1e-12) / max(candidate_peak, 1e-12)
+        )
         supporting_partials = 0
         for source_harmonic in range(1, min(candidate_harmonic, 5)):
             partial_hz = source_hz * source_harmonic
@@ -192,27 +228,30 @@ def independent_harmonic_sources(
         nearest_midi = round(midi_float)
         nearest_frequency = midi_to_frequency(nearest_midi, tuning_cents)
         cents_from_hypothesis = cents_between(observed_source_hz, source_hz)
-        plausible = (
-            fundamental_snr_db >= 12.0
-            and source_db_relative >= MIN_CANDIDATE_DB
-            and supporting_partials >= 2
+        fundamental_detected = (
+            fundamental_peak >= detection_floor_amplitude
             and abs(cents_from_hypothesis) <= DIRECT_SEARCH_TOLERANCE_CENTS
         )
-        if plausible:
-            evidence.append(
-                IndependentSourceEvidence(
-                    hypothesis_frequency_hz=round(source_hz, 3),
-                    observed_peak_frequency_hz=round(observed_source_hz, 3),
-                    cents_from_hypothesis=round(cents_from_hypothesis, 3),
-                    nearest_midi=nearest_midi,
-                    nearest_note_cents=round(cents_between(observed_source_hz, nearest_frequency), 3),
-                    candidate_harmonic=candidate_harmonic,
-                    fundamental_snr_db=round(fundamental_snr_db, 3),
-                    db_relative_to_candidate=round(source_db_relative, 3),
-                    supporting_partials=supporting_partials,
-                    plausible=True,
-                )
+        plausible = fundamental_detected and supporting_partials >= 2
+        evidence.append(
+            IndependentSourceEvidence(
+                hypothesis_frequency_hz=round(source_hz, 3),
+                observed_peak_frequency_hz=round(observed_source_hz, 3),
+                cents_from_hypothesis=round(cents_from_hypothesis, 3),
+                nearest_midi=nearest_midi,
+                nearest_note_cents=round(cents_between(observed_source_hz, nearest_frequency), 3),
+                candidate_harmonic=candidate_harmonic,
+                fundamental_snr_db=round(fundamental_snr_db, 3),
+                db_relative_to_candidate=round(source_db_relative, 3),
+                detection_floor_db_relative_to_candidate=round(detection_floor_db_relative, 3),
+                implied_min_candidate_to_undetected_source_db=(
+                    None if fundamental_detected else round(-detection_floor_db_relative, 3)
+                ),
+                fundamental_detected=fundamental_detected,
+                supporting_partials=supporting_partials,
+                plausible=plausible,
             )
+        )
     return tuple(evidence)
 
 

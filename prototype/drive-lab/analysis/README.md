@@ -70,3 +70,66 @@ partial slope and saturation before any real verdict can gate sample selection.
 Chroma plots may support human inspection, but pitch-class chroma never votes:
 folding octaves together cannot distinguish a separately voiced note from an
 overlapping harmonic.
+
+## Review-only source and voicing reports
+
+The independent-source report now retains every inspected harmonic hypothesis,
+including rejected ones. Each hypothesis records its measured detection floor,
+whether a fundamental crossed that floor, and the minimum candidate-to-source
+ratio implied by a bounded null:
+
+```sh
+.sample-analysis-venv/bin/python scripts/inspect-independent-harmonic-sources.py \
+  ../../_references/audio/analysis/junction-harmony-proposals.json \
+  --label Bmin9 \
+  --output ../../_references/audio/analysis/bmin9-source-review.json
+```
+
+The companion voicing report uses only the standard library and compares note
+proposals as actual MIDI registers rather than folded pitch classes. It flags
+one- and thirteen-semitone collisions within each take and across every ordered
+same-label pair, while leaving rendered loudness, roughness and boundary flux
+explicitly unmeasured:
+
+```sh
+python3 scripts/inspect-sample-voicings.py \
+  ../../_references/audio/analysis/junction-harmony-proposals.json \
+  --label Bmin9 \
+  --output ../../_references/audio/analysis/bmin9-voicing-review.json
+```
+
+Both reports are `review_evidence_only`. They may move a file to the front of a
+listening queue; they never produce an admission, rejection, pitch set or chord
+verdict.
+
+Audit the renderer's real chord-hit selection before comparing hypothetical
+voicings:
+
+```sh
+node scripts/inspect-junction-voicing-selection.mjs \
+  --output ../../_references/audio/analysis/junction-voicing-selection.json
+```
+
+The report mirrors the renderer's filesystem order and exact index expression.
+It currently proves that all 24 performances select index zero for every chord
+and stab: `section.voicing` and `sectionIndex` advance with matching parity and
+cancel modulo two. This is measured selection reachability, not an instruction
+to enable the unused recordings. Those recordings still need a compatible-deck
+review before they may enter a render.
+
+Measure the internal chord boundaries already printed into the production WAV
+without consuming any pitch proposal:
+
+```sh
+.sample-analysis-venv/bin/python scripts/inspect-junction-audio-transitions.py \
+  --wav renders/junction-sketch-adaptive.wav \
+  --bank public/audio/junction.svb \
+  --output ../../_references/audio/analysis/junction-rendered-transitions.json
+```
+
+This first pass measures Sethares roughness, normalized boundary flux, RMS level
+and spectral centroid over each ordinary internal transition. Its thresholds are
+explicitly `uncalibrated_flag_only`; it excludes REST's deliberately sparse
+grammar, live browser-delay tails and cross-clip runtime boundaries. Those
+omissions prevent the report from becoming a production block until the live
+transition renderer is added and the probes are calibrated by listening.

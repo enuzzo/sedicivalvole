@@ -1390,6 +1390,9 @@ export function App() {
   }, [phase]);
 
   useEffect(() => { audioRef.current?.setSpeed(speed); }, [speed]);
+  useEffect(() => {
+    audioRef.current?.setGpsAccuracy(source === "GPS" ? accuracy : null);
+  }, [accuracy, source]);
   useEffect(() => { audioRef.current?.setMuted(muted); }, [muted]);
   useEffect(() => { audioRef.current?.setScore(genreId); }, [genreId]);
   useEffect(() => {

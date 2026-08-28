@@ -192,7 +192,12 @@ the known-truth collision fixture falsified its earlier threshold. A separate sp
 possible source fundamentals directly from each disputed upper component,
 without depending on the proposer, but remains review-only because magnitude
 cannot distinguish an aligned partial from an independent voice. It records the
-calculated source hypothesis separately from the measured peak frequency. The next
+calculated source hypothesis separately from the measured peak frequency. A
+separate selection audit mirrors the renderer's exact index arithmetic and now
+proves that its 24 performances all reach only index zero for every chord label;
+the unused files remain excluded until they form a compatible registral deck.
+An audio-only pass measures 63 printed chord boundaries without consulting pitch
+proposals and keeps its first thresholds uncalibrated and flag-only. The next
 decision layer requires explicit abstention plus independent stereo and phase
 evidence. Reports and the Python environment live under ignored development
 paths and cannot enter the production resource.
@@ -204,6 +209,15 @@ side expansion and feed-forward trim. It attacks over `350 ms`, holds for at
 most four seconds, releases over one second, and observes a six-second
 refractory interval. Braking owns effect priority. GPS jerk does not modulate a
 continuous parameter.
+
+BLOOM is nested inside OPEN as a rare hard-launch event. A `1.5 → 4.0 m/s²`
+crossing within at most three readings / 300 ms triggers a separate common
+AudioWorklet before the OPEN tone/width stage. It replaces only the
+`300 Hz–8 kHz` band with a four-point-Hermite delayed copy swept from `8` to
+`0.8 ms` over 400 ms. The band-replacement topology preserves sub energy and
+keeps measured in-band peak growth under 0.5 dB without feedback, makeup gain,
+clipper, or lookahead. BLOOM observes a 25-second refractory period;
+UNDERWATER interrupts it over 250 ms and restarts that period.
 
 ### Flux sequencer direction
 

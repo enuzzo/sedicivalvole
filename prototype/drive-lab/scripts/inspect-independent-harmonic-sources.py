@@ -14,7 +14,7 @@ import librosa
 DRIVE_LAB = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(DRIVE_LAB))
 
-from analysis.harmonic_arbiter import independent_harmonic_sources
+from analysis.harmonic_arbiter import independent_harmonic_source_hypotheses
 
 
 TARGET_SAMPLE_RATE = 48_000
@@ -32,7 +32,7 @@ def inspect_record(record: dict, repo_root: Path) -> dict:
     tuning_cents = float(record["tuning"]["offset_cents"])
     candidates = []
     for proposal in record["observed"]["proposals"]:
-        sources = independent_harmonic_sources(
+        hypotheses = independent_harmonic_source_hypotheses(
             sustain,
             TARGET_SAMPLE_RATE,
             int(proposal["midi"]),
@@ -42,13 +42,30 @@ def inspect_record(record: dict, repo_root: Path) -> dict:
             {
                 "midi": int(proposal["midi"]),
                 "name": proposal["name"],
-                "independent_sources": [source.__dict__ for source in sources],
+                "source_search": {
+                    "status": "review_evidence_only",
+                    "hypotheses": [hypothesis.__dict__ for hypothesis in hypotheses],
+                    "plausible_sources": [
+                        hypothesis.__dict__ for hypothesis in hypotheses if hypothesis.plausible
+                    ],
+                },
             }
         )
+    f_sharp_proposals = [
+        proposal
+        for proposal in record["observed"]["proposals"]
+        if int(proposal["midi"]) % 12 == 6
+    ]
+    lowest_f_sharp = min(f_sharp_proposals, key=lambda proposal: int(proposal["midi"]), default=None)
     return {
         "file": record["file"],
         "declared": record["declared"],
         "proposal_pitch_set_midi": [int(proposal["midi"]) for proposal in record["observed"]["proposals"]],
+        "lowest_proposed_f_sharp": None if lowest_f_sharp is None else {
+            "midi": int(lowest_f_sharp["midi"]),
+            "name": lowest_f_sharp["name"],
+            "status": "proposal_only",
+        },
         "candidates": candidates,
         "decision_status": "review_evidence_only",
     }
