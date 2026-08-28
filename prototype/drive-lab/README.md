@@ -9,7 +9,7 @@ npm install
 npm run dev
 ```
 
-The initial **PLAY THE ROAD** gesture is one flat typographic launch surface with an enlarged `sedicivalvole` wordmark and no simulated hardware. It sits over the animated Signal Gate, unlocks Web Audio, runs capability checks, requests GPS permission, and fades into the scene. Its readable footer links [Netmilk Studio](https://netmilk.ch), credits [Illobo](https://github.com/illobo), and identifies the public [source repository](https://github.com/enuzzo/sedicivalvole) with a small monochrome GitHub mark. Setting a valid `VITE_SUPPORT_URL` for a `buymeacoffee.com` profile enables the prepared `BUY ME A COFFEE` link; without one, no inert control is rendered.
+The initial **PLAY THE ROAD** gesture is one flat typographic launch surface with an enlarged `sedicivalvole` wordmark and no simulated hardware. It sits over the animated Signal Gate, unlocks Web Audio, runs capability checks, requests GPS permission, and fades into the scene. Its readable footer links [Netmilk Studio](https://netmilk.ch), credits [Illobo](https://github.com/illobo), and identifies the public [source repository](https://github.com/enuzzo/sedicivalvole) with a small monochrome GitHub mark. A top-left Buy Me a Coffee control opens the verified `enuzzo` profile, its supplied QR, an explicitly playful project-sparks signal that is not presented as a purchase count, and a runtime-reconstructed suggestion address. Suggestions are invited independently of financial support.
 
 ## Implemented
 

@@ -46,9 +46,11 @@ dated study documents.
   `PLAY THE ROAD` field form one semantic gesture with no simulated controls.
   The readable credit beneath it links Netmilk Studio to `netmilk.ch` and links
   Illobo, followed by a monochrome GitHub-marked link to the public
-  `enuzzo/sedicivalvole` repository. Splash links retain light text on hover. A
-  fail-closed `BUY ME A COFFEE` link is prepared and appears only when a valid
-  HTTPS `buymeacoffee.com` profile is supplied at build time.
+  `enuzzo/sedicivalvole` repository. Splash links retain light text on hover.
+  A compact top-left support control opens the verified `buymeacoffee.com/enuzzo`
+  destination, the supplied QR, an honestly labelled playful project-sparks
+  signal and a runtime-reconstructed suggestion address; suggestions are
+  explicitly welcome without a purchase.
 - All product chrome uses the locally packaged Orbitron variable font. Reading
   text, telemetry, controls, operational labels and the launch command occupy a
   deliberate `450–750` weight hierarchy rather than falling back to device fonts.

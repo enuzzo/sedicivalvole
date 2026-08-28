@@ -1,4 +1,5 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import buyMeCoffeeQr from "./assets/bmc_qr.png";
 import { createAudioEngine } from "./audio-engine.js";
 import {
   appendConnectionHistory,
@@ -43,6 +44,7 @@ import {
   smoothGpsSpeed,
   speedToEnergy,
 } from "./signal-model.js";
+import { decodeSuggestionAddress, supportMomentumCount } from "./support-model.js";
 
 const AtlasField = lazy(() => import("./environments/atlas/atlas-field.jsx"));
 
@@ -81,7 +83,8 @@ function parseSupportUrl(value) {
     return "";
   }
 }
-const SUPPORT_URL = parseSupportUrl(import.meta.env.VITE_SUPPORT_URL);
+const DEFAULT_SUPPORT_URL = "https://buymeacoffee.com/enuzzo";
+const SUPPORT_URL = parseSupportUrl(import.meta.env.VITE_SUPPORT_URL) || DEFAULT_SUPPORT_URL;
 const QA_SPEED = import.meta.env.DEV
   ? Math.min(130, Math.max(0, Number(new URLSearchParams(window.location.search).get("qaSpeed")) || 0))
   : 0;
@@ -518,6 +521,65 @@ function PaletteControl({ themeId, onChange }) {
   );
 }
 
+function SupportCupMark() {
+  return (
+    <svg className="support-cup-mark" viewBox="0 0 32 32" aria-hidden="true">
+      <path d="M8 8.5h15l-1.6 14.2c-.2 2-1.9 3.5-3.9 3.5h-4c-2 0-3.7-1.5-3.9-3.5L8 8.5Z" />
+      <path d="M22.7 11h2.1a3.7 3.7 0 0 1 0 7.4h-2.9" />
+      <path d="M10.3 5.3c3.7-1.4 7.6-1.4 11.4 0" />
+    </svg>
+  );
+}
+
+function SupportPanel({ onClose }) {
+  const suggestionAddress = decodeSuggestionAddress();
+  const momentum = String(supportMomentumCount()).padStart(3, "0");
+  const mailSubject = encodeURIComponent("sedicivalvole suggestion");
+
+  return (
+    <section className="support-overlay" role="dialog" aria-modal="true" aria-labelledby="support-title">
+      <button className="support-backdrop" type="button" onClick={onClose} aria-label="Close support panel" />
+      <div className="support-panel">
+        <header className="support-heading">
+          <div><small>OPEN CHANNEL</small><h2 id="support-title">Fuel the experiment</h2></div>
+          <button type="button" onClick={onClose} autoFocus>CLOSE</button>
+        </header>
+        <div className="support-body">
+          <img
+            className="support-qr"
+            src={buyMeCoffeeQr}
+            width="700"
+            height="700"
+            loading="lazy"
+            decoding="async"
+            alt="QR code for the sedicivalvole Buy Me a Coffee page"
+          />
+          <div className="support-copy">
+            <p>If this strange little road instrument made your drive better, you can leave a coffee.</p>
+            <a
+              className="support-primary-link"
+              href={SUPPORT_URL}
+              target="_blank"
+              rel="noreferrer"
+            >
+              BUY ME A COFFEE <span aria-hidden="true">↗</span>
+            </a>
+            <div className="support-momentum" aria-label={`Project sparks ${momentum}`}>
+              <small>PROJECT SPARKS</small>
+              <strong>{momentum}</strong>
+              <span>PLAYFUL SIGNAL · NOT PURCHASES</span>
+            </div>
+          </div>
+          <p className="support-suggestions">
+            Suggestions are super welcome — coffee or not. Write to{" "}
+            <a href={`mailto:${suggestionAddress}?subject=${mailSubject}`}>{suggestionAddress}</a>
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function App() {
   const initialPreferences = useMemo(readPreferences, []);
   const [phase, setPhase] = useState("idle");
@@ -547,6 +609,7 @@ export function App() {
   const [genreId, setGenreId] = useState(initialPreferences.genreId);
   const [environmentPickerOpen, setEnvironmentPickerOpen] = useState(false);
   const [scorePickerOpen, setScorePickerOpen] = useState(false);
+  const [supportOpen, setSupportOpen] = useState(false);
   const [rawReportOpen, setRawReportOpen] = useState(false);
   const [mapPosition, setMapPosition] = useState(null);
   const reducedMotion = useMemo(
@@ -990,6 +1053,7 @@ export function App() {
   }, [startKeyboardRegeneration]);
 
   const runHarness = useCallback(async () => {
+    setSupportOpen(false);
     sessionStartedAtRef.current = performance.now();
     diagnosticsActiveRef.current = true;
     diagnosticEventsRef.current = [];
@@ -1090,6 +1154,17 @@ export function App() {
       window.requestAnimationFrame(() => appRef.current?.focus({ preventScroll: true }));
     }, reducedMotion ? 180 : 620);
   }, [genreId, logDiagnosticEvent, reducedMotion, startGps, triggerPulse, wakeControls]);
+
+  useEffect(() => {
+    if (!supportOpen) return undefined;
+    const closeOnEscape = (event) => {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      setSupportOpen(false);
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [supportOpen]);
 
   useEffect(() => {
     const supported = typeof PerformanceObserver !== "undefined"
@@ -1605,6 +1680,18 @@ export function App() {
             reported separately in the diagnostics. The active environment is
             still named in the live header. */}
         <small className="splash-status">BUILD {APP_BUILD}</small>
+        <button
+          className="splash-support-trigger"
+          type="button"
+          aria-label="Open Buy Me a Coffee support panel"
+          aria-haspopup="dialog"
+          aria-expanded={supportOpen}
+          onClick={() => setSupportOpen(true)}
+        >
+          <span className="support-logo"><SupportCupMark /></span>
+          <span>BUY ME A COFFEE</span>
+        </button>
+        {supportOpen ? <SupportPanel onClose={() => setSupportOpen(false)} /> : null}
         <div className="splash-action">
           <button className="launch-button" type="button" onClick={runHarness} disabled={phase === "testing"}>
             <span className="launch-brand">sedicivalvole</span>
@@ -1632,17 +1719,6 @@ export function App() {
               with Illobo
             </a>
           </small>
-          {SUPPORT_URL ? (
-            <a
-              className="splash-support"
-              href={SUPPORT_URL}
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Support sedicivalvole on Buy Me a Coffee"
-            >
-              BUY ME A COFFEE
-            </a>
-          ) : null}
           <small className="splash-repository">
             Source <span aria-hidden="true">·</span>{" "}
             <a

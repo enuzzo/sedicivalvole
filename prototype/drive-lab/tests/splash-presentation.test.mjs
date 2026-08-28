@@ -55,17 +55,32 @@ test("splash metadata is legible and the complete group sits higher", () => {
   assert.match(styles, /\.splash-privacy \{[\s\S]*?font-size: 10\.5px/);
 });
 
-test("Buy Me a Coffee support is ready but remains hidden without a verified URL", () => {
+test("Buy Me a Coffee opens a real, accessible support panel", () => {
   const app = read("App.jsx");
   const envExample = readFileSync(resolve(PROJECT_ROOT, ".env.example"), "utf8");
 
-  assert.match(app, /const SUPPORT_URL = parseSupportUrl\(import\.meta\.env\.VITE_SUPPORT_URL\)/);
+  assert.match(app, /const DEFAULT_SUPPORT_URL = "https:\/\/buymeacoffee\.com\/enuzzo"/);
+  assert.match(app, /parseSupportUrl\(import\.meta\.env\.VITE_SUPPORT_URL\) \|\| DEFAULT_SUPPORT_URL/);
   assert.match(app, /url\.protocol === "https:"/);
   assert.match(app, /buymeacoffee\\\.com/);
-  assert.match(app, /\{SUPPORT_URL \? \(/);
+  assert.match(app, /className="splash-support-trigger"/);
+  assert.match(app, /aria-label="Open Buy Me a Coffee support panel"/);
+  assert.match(app, /role="dialog" aria-modal="true" aria-labelledby="support-title"/);
+  assert.match(app, /src=\{buyMeCoffeeQr\}/);
   assert.match(app, /href=\{SUPPORT_URL\}/);
-  assert.match(app, /BUY ME A COFFEE/);
+  assert.match(app, /PROJECT SPARKS/);
+  assert.match(app, /PLAYFUL SIGNAL · NOT PURCHASES/);
+  assert.match(app, /decodeSuggestionAddress\(\)/);
+  assert.doesNotMatch(app, /enuzzo@gmail\.com/);
   assert.match(envExample, /VITE_SUPPORT_URL=https:\/\/buymeacoffee\.com\/your-handle/);
+});
+
+test("the support control is top-left and its panel stays compact", () => {
+  const styles = read("styles.css");
+
+  assert.match(styles, /\.splash-support-trigger \{[\s\S]*?position: absolute;[\s\S]*?left: clamp\(22px, 4vw, 42px\)/);
+  assert.match(styles, /\.support-panel \{[\s\S]*?width: min\(390px, calc\(100vw - 44px\)\)/);
+  assert.match(styles, /\.support-overlay \{[\s\S]*?z-index: 8/);
 });
 
 test("launch surface stays above every preloaded experience overlay", () => {
