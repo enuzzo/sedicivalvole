@@ -61,7 +61,7 @@ const DRIVES = {
     [0, 10],
   ],
   // Two full turns of the form at a steady speed, so all ten melodies and all
-  // four theme voices are heard without the arrangement moving underneath them.
+  // five theme voices are heard without the arrangement moving underneath them.
   form: [
     [0, 3],
     [110, 8],

@@ -213,11 +213,20 @@ arrangement held continuously is unbearable at a red light. But *moving slowly
 is not a standstill* — gating the whole half-time band this way emptied out
 everything below thirty km/h, which was its own defect.
 
-### 4.4 What must never leave
+The entrance is part of the orchestration too. FRACTURE once opened with its
+principal theme and sub already active; listeners experienced the repeated,
+hard-edged synth attack as a "keyboard" before the journey had begun. The fixed
+entry is atmosphere alone. Low end and pulse join with movement, while the
+melody waits for the BREAK scene and a phrase boundary. A score can establish
+its world before it states its tune.
 
-Some lanes belong to the resting scene and never exit: the pad, the sub and the
-principal theme. That is what preserves the identity of the piece at every
-speed. A reduced arrangement is not silence.
+### 4.4 What preserves identity
+
+Identity does not require every identifying part to play continuously. The
+atmosphere belongs to the resting scene and never exits; the sub and principal
+theme may leave after a sustained stop and return only when movement supports
+them. This makes the score recognizable without turning its motif into an
+alarm. A reduced arrangement is not silence, and ambience is not an empty state.
 
 ---
 

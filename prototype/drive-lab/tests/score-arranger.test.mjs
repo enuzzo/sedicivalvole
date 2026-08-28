@@ -235,12 +235,13 @@ test("0 -> 40 -> 80 -> 115 -> 60 -> 115 -> 0 km/h behaves as one performance", (
   //    piece ever reaches is far too small to read as a pitch or rate change.
   assert.ok(TEMPO_CEILING_BPM / TEMPO_REST_BPM < 1.1);
 
-  // 4. Leitmotif and harmonic identity survive: the theme, the low end and the
-  //    kick are never removed once established.
-  const everLostIdentity = rig.log.some(
-    (entry) => entry.exited.some((lane) => ["riff", "sub"].includes(lane)),
+  // 4. Atmosphere is the identity at rest. The theme and low end are allowed
+  //    to leave after a sustained stop so the next launch does not begin with
+  //    the same keyboard-like announcement.
+  const everLostAtmosphere = rig.log.some(
+    (entry) => entry.exited.includes("atmosphere"),
   );
-  assert.equal(everLostIdentity, false, "the principal theme and sub must never leave");
+  assert.equal(everLostAtmosphere, false, "the atmosphere must never leave");
 
   // 5. Every orchestration change happened on a boundary.
   const structuralEvents = rig.log.filter(
@@ -283,12 +284,11 @@ test("0 -> 40 -> 80 -> 115 -> 60 -> 115 -> 0 km/h behaves as one performance", (
     marks.stopped.activeLanes.length < marks.cruise.activeLanes.length,
     "a sustained stop must reduce the arrangement",
   );
-  for (const lane of ["atmosphere", "sub", "riff"]) {
-    assert.ok(
-      marks.stopped.activeLanes.includes(lane),
-      `the resting state must keep ${lane}: it is a reduced arrangement, not silence`,
-    );
-  }
+  assert.deepEqual(
+    marks.stopped.activeLanes,
+    ["atmosphere"],
+    "the resting state must return to ambience without bass or melody",
+  );
   assert.ok(marks.stopped.halfTime, "the resting state plays the material half-time");
 
   // 9. Lanes left one at a time, never in a collapse.
@@ -420,10 +420,29 @@ test("every scene is a density of one piece and every lane belongs to one", () =
     assert.ok(["bar", "phrase"].includes(lane.entryBoundary), lane.id);
   }
 
-  // The identity lanes belong to the resting state, so they are always present.
-  for (const id of ["atmosphere", "sub", "riff"]) {
-    assert.equal(LANES.find((lane) => lane.id === id).minScene, 0, id);
-  }
+  assert.equal(LANES.find((lane) => lane.id === "atmosphere").minScene, 0);
+  assert.equal(LANES.find((lane) => lane.id === "sub").minScene, 1);
+  assert.equal(LANES.find((lane) => lane.id === "riff").minScene, 2);
+});
+
+test("FRACTURE launches as ambience and earns its melody through motion", () => {
+  const state = createArrangerState();
+  assert.deepEqual(arrangementSnapshot(state).activeLanes, ["atmosphere"]);
+
+  // ROLL may introduce pulse and low end, but never the principal theme.
+  state.pendingScene = 1;
+  state.barsInScene = MINIMUM_SCENE_BARS;
+  commitAtBoundary(state, "phrase");
+  assert.equal(state.scene, 1);
+  assert.ok(state.laneGoals.sub > 0);
+  assert.equal(state.laneGoals.riff, 0);
+
+  // BREAK earns the melody, and its phrase-boundary entry is explicit.
+  state.pendingScene = 2;
+  state.barsInScene = MINIMUM_SCENE_BARS;
+  commitAtBoundary(state, "phrase");
+  assert.equal(state.scene, 2);
+  assert.ok(state.laneGoals.riff > 0);
 });
 
 test("the tempo target follows energy and is only ever committed on a boundary", () => {

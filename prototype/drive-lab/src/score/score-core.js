@@ -67,7 +67,7 @@ const RESTING_TRIM = 0.6;
 const SYNTH_LANES = ["sub", "reese", "riff", "response", "atmosphere"];
 
 /** Theme voices a section may name. The first is the default. */
-const RIFF_VOICES = ["riff", "riffBell", "riffPluck", "riffReed"];
+const RIFF_VOICES = ["riff", "riffAir", "riffBell", "riffPluck", "riffReed"];
 
 /**
  * Voices the pad runs.

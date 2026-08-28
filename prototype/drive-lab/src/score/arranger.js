@@ -80,13 +80,15 @@ const SPEED_DEADBAND_KMH = 0.9;
  *
  * `minScene` is where a lane belongs; `keepFromScene` is how far the arrangement
  * may thin before the lane leaves, which is what preserves the identity of the
- * piece. Atmosphere, sub and the principal riff belong to the resting scene, so
- * the theme, the low end and the harmonic identity survive at every speed.
+ * piece. Only atmosphere belongs to the resting scene: FRACTURE must open as a
+ * place, not announce itself as a keyboard motif. The low end joins the first
+ * moving scene and the principal riff waits until BREAK, where the vehicle has
+ * acquired enough motion for a melody to feel earned.
  */
 export const LANES = Object.freeze([
   { id: "atmosphere", minScene: 0, keepFromScene: 0, entryBoundary: "phrase" },
-  { id: "sub", minScene: 0, keepFromScene: 0, entryBoundary: "bar" },
-  { id: "riff", minScene: 0, keepFromScene: 0, entryBoundary: "phrase" },
+  { id: "sub", minScene: 1, keepFromScene: 1, entryBoundary: "bar" },
+  { id: "riff", minScene: 2, keepFromScene: 2, entryBoundary: "phrase" },
   { id: "kick", minScene: 1, keepFromScene: 1, entryBoundary: "bar" },
   { id: "closedHat", minScene: 1, keepFromScene: 1, entryBoundary: "bar" },
   { id: "snare", minScene: 2, keepFromScene: 2, entryBoundary: "bar" },

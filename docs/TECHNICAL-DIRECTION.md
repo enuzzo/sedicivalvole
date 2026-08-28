@@ -148,8 +148,8 @@ and snapshots. The identical DSP core runs in Node for offline listening renders
 
 FRACTURE is one composition in F minor with ten four-bar sections, independent
 drum, break-detail, bass, theme, response, harmony, atmosphere, and transition
-lanes. Its four theme timbres, harmony, voiced consonance, bass degrees, voice
-output, and brake level are checked rather than inferred. Continuous speed maps
+lanes. Its five theme timbres, ambience-only launch, harmony, voiced consonance,
+bass degrees, voice output, and brake level are checked rather than inferred. Continuous speed maps
 to bounded energy, dynamics, timbre, and space; structural changes remain on
 musical boundaries behind hysteresis, dwell, deceleration memory, and
 crossfades. Tempo stays within `162–176 BPM`; high-speed power comes primarily

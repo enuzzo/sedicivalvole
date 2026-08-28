@@ -1,8 +1,8 @@
 // FRACTURE — the first authored Flux score.
 //
 // Original sedicivalvole composition. It is one piece in F minor with a fixed
-// harmonic cycle and a fixed principal theme; the arranger changes how that
-// piece is performed, never which piece is playing.
+// harmonic language and an authored ten-section form; the arranger changes how
+// that piece is performed, never which piece is playing.
 //
 // The rhythmic vocabulary follows the Drum & Bass and Jungle pattern families in
 // illobo/textStep at commit cb107d198b730db60cff4a87c7fd5b8d1fae3fb2 — two-step
@@ -70,7 +70,7 @@ const HALF_DIM = [0, 3, 10, 15];
 export const SECTIONS = Object.freeze([
   {
     id: "home",
-    riffVoice: "riff",
+    riffVoice: "riffAir",
     name: "HOME",
     // i - i - VI - III. The statement.
     // Voiced as a seventh, not a ninth: the theme's Ab sits a semitone above
@@ -81,24 +81,23 @@ export const SECTIONS = Object.freeze([
       { name: "Dbmaj7", bassMidi: 25, colour: MAJOR_7 },
       { name: "Ab6", bassMidi: 32, colour: MAJOR_6 },
     ],
+    // The old six-note hook entered at launch on a hard-edged patch and read as
+    // a keyboard preset. HOME now leaves air around four longer tones; the riff
+    // lane itself does not enter until the vehicle reaches BREAK.
     theme: [
-      { at: 0, midi: 65, steps: 3 },   // F4  — stated
-      { at: 6, midi: 63, steps: 2 },   // Eb4
-      { at: 10, midi: 60, steps: 4 },  // C4  — settles
-      { at: 16, midi: 68, steps: 3 },  // Ab4 — the leap, and the hook
-      { at: 22, midi: 67, steps: 2 },  // G4
-      { at: 26, midi: 63, steps: 4 },  // Eb4 — hangs into the repeat
+      { at: 4, midi: 60, steps: 6 },   // C4  — appears out of the harmony
+      { at: 14, midi: 65, steps: 3 },  // F4  — hinge into the second half
+      { at: 20, midi: 63, steps: 6 },  // Eb4 — suspended, not stated
+      { at: 29, midi: 65, steps: 3 },  // F4  — an open return
     ],
     response: [
-      { at: 4, midi: 72, steps: 2 },
-      { at: 14, midi: 68, steps: 2 },
-      { at: 20, midi: 75, steps: 2 },
-      { at: 28, midi: 72, steps: 3 },
+      { at: 10, midi: 68, steps: 2 },
+      { at: 26, midi: 72, steps: 3 },
     ],
   },
   {
     id: "lift",
-    riffVoice: "riffBell",
+    riffVoice: "riffAir",
     name: "LIFT",
     // III - VII - VI - i. The same material, opened upward.
     harmony: [
@@ -472,15 +471,27 @@ export const SYNTHS = Object.freeze({
     filterCutoff: 0.5, filterResonance: 0.24, filterEnvAmount: 0.3,
     filterKeyFollow: 0.25, volume: 0.54,
   }),
+  riffAir: synthParams({
+    // A soft, breath-like layer for the opening material: pure partials, slow
+    // onset and a long release remove the keyed attack that made FRACTURE read
+    // as a keyboard preset. It remains a melody, but behaves like moving air.
+    osc1Waveform: WAVEFORM.sine, osc1Level: 0.72, osc1Tune: 0.5,
+    osc2Waveform: WAVEFORM.sine, osc2Level: 0.22, osc2Tune: 0.6458, osc2Detune: 0.505,
+    subLevel: 0,
+    ampAttack: 0.22, ampDecay: 0.8, ampSustain: 0.58, ampRelease: 0.9,
+    filterEnvAttack: 0.28, filterEnvDecay: 0.9, filterEnvSustain: 0.5,
+    filterCutoff: 0.42, filterResonance: 0.06, filterEnvAmount: 0.08,
+    filterKeyFollow: 0.16, volume: 0.43,
+  }),
   /**
    * Alternate voices for the principal theme.
    *
    * Ten melodies on one timbre is still one long tune. Each section names the
    * voice it is played on, so the instrument turns over with the writing and a
-   * long drive hears the theme stated four different ways rather than four
+   * long drive hears the theme stated five different ways rather than four
    * times.
    *
-   * All four share the theme's register and level so a section change is heard
+   * All five share the theme's register and level so a section change is heard
    * as a change of instrument, not as a jump in the mix.
    */
   riffBell: synthParams({
@@ -533,11 +544,12 @@ export const SYNTHS = Object.freeze({
 /**
  * Half-time reading of the same material.
  *
- * In the resting scenes the transport still runs at its usual tempo; the score
- * simply plays the theme at doubled note lengths and takes only the strong
- * placements of each pattern. That is what makes a standstill sound slow without
- * the clock being slow, and it is why a return to speed is a change of
- * interpretation rather than a change of piece.
+ * In the low scenes the transport still runs at its usual tempo; active lanes
+ * take only the strong placements and double their note lengths. REST itself is
+ * atmosphere-only, ROLL adds pulse and low end, and BREAK is the first scene
+ * allowed to state a theme. That is what makes low speed sound slow without the
+ * clock being slow, and it is why a return to speed is a change of interpretation
+ * rather than a change of piece.
  */
 export function halfTimeStep(step) {
   return step % 2 === 0;

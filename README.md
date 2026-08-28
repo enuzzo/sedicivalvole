@@ -29,7 +29,7 @@ The canonical development build is available at [sedicivalvole.app](https://sedi
 - ✅ five selectable Flux visuals: procedural Aperture, byte-identical upstream Interstate 7 Vertigo, the original architectural Meridian and temporal-topography Latitudes environments, and the lazy-loaded OpenFreeMap ATLAS city field with a readable passenger panel and an oblique 3D motorway camera;
 - ✅ GPS/Demo speed source, icon-only Mute, a fixed `130 km/h` energy ceiling, 10 curated palettes, and an integrated capability report;
 - ✅ local-only speed processing and coordinate-free diagnostics; ATLAS alone keeps a reliable current position in session memory while selected and discloses its OpenFreeMap tile and Wikimedia nearby-reading requests;
-- ✅ FRACTURE, a production AudioWorklet score with ten four-bar sections, a narrow tempo knee, quantized transitions, hysteresis, dwell, crossfades, speed-driven arrangement depth, and tested harmony/braking/voice output;
+- ✅ FRACTURE, a production AudioWorklet score with an ambience-only launch, ten four-bar sections, five melodic timbres, a narrow tempo knee, quantized transitions, hysteresis, dwell, crossfades, speed-driven arrangement depth, and tested harmony/braking/voice output;
 - ✅ JUNCTION, a sampled production that mixes two harmony-compatible takes live at each eight-bar boundary: 104 clips built from 142 distinct recordings across five rotating musical families, native 127–168 BPM pacing, beatless ambient rest, one 25.0 MB segmented Opus bank, and no loose source samples;
 - ✅ production build and deterministic signal, diagnostic-model, and packaging tests passing;
 - ✅ photographed Tesla split-view evidence at `773 × 601`, screen `1254 × 784`, DPR `1.53`;

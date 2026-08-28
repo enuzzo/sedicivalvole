@@ -54,7 +54,8 @@ would copy it without its dependencies and fail after deployment.
 
 - one original F-minor Jungle / Drum & Bass composition;
 - ten four-bar sections and forty bars before the form repeats;
-- four theme timbres plus response, pad, sub, reese, drums, break detail, and effects;
+- five theme timbres plus response, pad, sub, reese, drums, break detail, and effects;
+- atmosphere-only launch, with low end entering in ROLL and the principal theme waiting for BREAK;
 - `162–176 BPM`, with half-time interpretation and density carrying low-to-high speed;
 - structural changes only on musical boundaries, behind hysteresis, dwell,
   crossfades, and catch/recovery/sustained-release deceleration memory;

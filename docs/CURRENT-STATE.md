@@ -63,10 +63,11 @@ dated study documents.
 
 - **FRACTURE 02** is a selectable score. It is a generative Jungle / Drum
   & Bass composition rendered by the production AudioWorklet.
-- FRACTURE has **10 four-bar sections**, ten themes played across four melodic
+- FRACTURE has **10 four-bar sections**, ten themes played across five melodic
   timbres, a narrow `162–176 BPM` transport range, half-time interpretation at
-  rest, arrangement density, deceleration memory, and the measured UNDERWATER
-  brake effect.
+  rest, an atmosphere-only launch before low end and melody enter with motion,
+  arrangement density, deceleration memory, and the measured UNDERWATER brake
+  effect.
 - **JUNCTION 01** is selectable sampled Jungle / Rave music. Its eight energy
   states each have 13 complete authored clips: 104 rendered sections built from
   142 distinct recordings in one 25.0 MB segmented Opus bank. Five harmonic and

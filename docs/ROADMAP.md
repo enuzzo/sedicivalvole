@@ -43,7 +43,7 @@ Implemented:
 - tempo knee with asymptotic ceiling;
 - continuous energy separated from discrete layer/Brake events;
 - sample-accurate AudioWorklet transport, bar/phrase-quantized arrangement, hysteresis, asymmetric dwell, crossfades, and limiter;
-- FRACTURE: ten four-bar sections, four theme timbres, harmony and bass checks, offline rendering, voice audition, and measured brake processing;
+- FRACTURE: ambience-only launch, ten four-bar sections, five theme timbres, harmony and bass checks, offline rendering, voice audition, and measured brake processing;
 - fixed `130 km/h` road-energy ceiling, early tunnel visibility near `40 km/h`, and curated `APERTURE 01` environment;
 - filtered acceleration/deceleration envelopes with single direction-change cues and steady-state decay;
 - deterministic desktop signal tests.
