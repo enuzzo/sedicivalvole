@@ -9,7 +9,7 @@ Status: **confirmed product architecture; Engine design and implementation pendi
 | Mode | Audio purpose | Visual purpose | Current status |
 |---|---|---|---|
 | **Engine** | Reproduce selectable engine characters through synthesis, licensed samples, or a measured hybrid | Instrument-inspired generative system: abstract tachometer, throttle/load field, acceleration trace, mechanical light, or a selected alternative | Confirmed; not yet designed or implemented |
-| **Flux** | Compose and reshape selectable music from speed, acceleration, deceleration, and discrete motion events | Four selectable environments: Aperture, Vertigo, Meridian, and Latitudes; ten curated themes apply to every renderer | Current Drive Lab implementation; FRACTURE and JUNCTION ready, five later directions preparing |
+| **Flux** | Compose and reshape selectable music from speed, acceleration, deceleration, and discrete motion events | Five selectable environments: Aperture, Vertigo, Meridian, Latitudes, and Atlas; ten curated themes apply to every renderer | Current Drive Lab implementation; FRACTURE and JUNCTION ready, five later directions preparing |
 
 ## Naming decision
 

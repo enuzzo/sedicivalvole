@@ -19,13 +19,16 @@ dated study documents.
 - All five environments use the shared catalog of **10 themes**. Vertigo keeps
   the upstream Interstate 7 files byte-identical while an external runtime
   bridge maps the selected theme onto its existing colour channels.
-- Meridian now grows a deterministic cross-section of solid, glass and
-  cantilevered architectural forms at every depth; Latitudes turns its existing
-  eight-second motion history into continuous luminous relief rather than
-  quantized horizontal bands.
+- Meridian now grows deterministic Euclidean portals, blades, cantilevers and
+  stepped monoliths beneath high geometric cloud slabs, with segmented curved
+  wind; Latitudes turns its existing eight-second motion history into eighteen
+  continuously phased oscilloscope contours whose distortion grows with speed.
 - ATLAS dynamically loads MapLibre only when selected, draws a minimal
   palette-owned OpenFreeMap vector style with 3D buildings, and pairs it with a
   short nearby Italian Wikipedia reading, four passenger choices and a local QR.
+  Without reliable GPS, an explicit Milan-only test button enables keyboard
+  steering and the same speed-driven bird's-eye camera without entering demo
+  coordinates into diagnostics.
 - Speed, BPM, and energy remain visible together. The fixed road-energy ceiling
   is `130 km/h`, with Aperture visibly forming a tunnel near `40 km/h`.
 - The main experience retains an icon-only Mute control, GPS/Demo source
@@ -38,7 +41,7 @@ dated study documents.
   Gate lane owns a short independently phased travelling gap, with restrained
   perspective airflow behind the road field.
 - Diagnostics separate FPS/frame time, browser-exposed heap and decoded-audio
-  memory by splash, active Visual/Music pairing, the Aperture morph pressure
+  memory by splash, active Visual/Music pairing, the Aperture wall-retreat pressure
   band and DIAG-open state. Re-entry gaps are not counted as slow frames.
 - An explicit diagnostic send keeps the email body concise and attaches the
   complete accepted report as gzip-compressed JSON, named by build and server
@@ -65,6 +68,9 @@ dated study documents.
   same sample-accurate boundary, and mixes their level, tone, stereo and space
   live. The primary take does not immediately repeat, and source sounds are
   never exposed or shuffled mid-phrase.
+- JUNCTION is preloaded but inaudible after `PLAY THE ROAD` while stationary. Its
+  score-local movement gate fades from silence at `4 km/h` to full level at
+  `10 km/h`, before the existing quiet break threshold near `13 km/h`.
 - **PULSE 03**, **CUTWATER 04**, **LOWTIDE 05**, **NIGHTCAST 06**, and
   **STILLWATER 07** are declared honestly as `IN PREPARATION` and are disabled.
 - `docs/MUSIC-CRAFT.md` records the musical defects and techniques already
@@ -73,7 +79,7 @@ dated study documents.
 ## Verified boundaries
 
 - Local gate: `npm test` and `npm run build` from `prototype/drive-lab/`.
-- Current suite: 149 unit checks plus 4 Sites packaging checks.
+- Current suite: 156 unit checks plus 4 Sites packaging checks.
 - Canonical development URL: <https://sedicivalvole.app/>. The most recent
   canonical publication evidence and build stamp are always the first entry in
   [`DEPLOY.md`](DEPLOY.md).
@@ -89,10 +95,9 @@ dated study documents.
 
 ## Open work
 
-1. Validate the new Aperture 18–40 km/h native-resolution band, compact footer,
-   slower JUNCTION urban tempo, five-family score rotation, architectural
-   Meridian, sculptural Latitudes and ATLAS map cost in the Tesla.
-2. Send the new real-drive gzip attachment and compare the dedicated morph
+1. Validate Aperture's `0–40 km/h` rigid wall retreat, silent JUNCTION launch,
+   oscilloscope Latitudes, Euclidean Meridian and the ATLAS flight camera in the Tesla.
+2. Send the new real-drive gzip attachment and compare the dedicated wall-retreat
    phase plus family/take exposure counters against the first complete report.
 3. Design Engine only after exactly three Engine-specific directions are shown
    and one is selected.

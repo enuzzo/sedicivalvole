@@ -367,6 +367,26 @@ take pairs**, not only assets. The diagnostic flight recorder now reports those
 exposure counts so a future drive can distinguish “the randomizer did not
 rotate” from “it rotated technically but the writing still sounded the same.”
 
+### 5.8 Loading is not an entrance
+
+The first JUNCTION production correctly kept its rest state free of beat and
+bass, yet the listener still heard a small piece of music immediately after
+`PLAY THE ROAD`. The ambient harmony was musically valid but functionally acted
+as an unwanted audio splash: the driver had not moved, so the road had not given
+the score a reason to enter.
+
+Preparation and audibility are separate responsibilities. JUNCTION may load,
+decode and schedule its beatless rest take behind the launch gesture so it is
+ready on a slow connection, while its own final output gain remains zero through
+`4 km/h`. A smooth score-local gate reaches full level at `10 km/h`, before the
+quiet native-tempo break enters near `13 km/h`. The global master is not used for
+this rule because stopped-vehicle FRACTURE voice auditions must remain audible.
+
+The listener notices intention rather than latency: silence follows the launch,
+motion introduces atmosphere, and rhythm still has its later threshold. The
+movement gate is a pure tested mapping in `tests/junction-bank.test.mjs`; this
+prevents a future preload optimization from accidentally restoring launch music.
+
 ---
 
 ## 6. Testing music

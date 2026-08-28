@@ -33,11 +33,11 @@ The registry is `prototype/drive-lab/src/flux-environments.js`.
 
 | Environment | Renderer | Boundary |
 |---|---|---|
-| APERTURE 01 | original WebGL2 plus Canvas2D fallback | selected Modular Aperture field; dark terminus, continuous flat-grid-to-tunnel deformation |
+| APERTURE 01 | original WebGL2 plus Canvas2D fallback | rigid square wall recedes intact and disappears at the existing tunnel terminus by `40 km/h` |
 | VERTIGO 02 | vendored Interstate 7 | upstream tree stays byte-identical; the external bridge drives speed/FOV and existing colour channels |
-| MERIDIAN 03 | original WebGL2 plus Canvas2D fallback | speed-revealed architecture, floor and markers share one displacement field and camera aim |
-| LATITUDES 04 | original WebGL2 plus Canvas2D fallback | sculptural temporal relief preserves and releases recent motion history |
-| ATLAS 05 | lazy MapLibre/OpenFreeMap WebGL | ephemeral location drives 3D city tiles, nearby Wikipedia reading and passenger QR |
+| MERIDIAN 03 | original WebGL2 plus Canvas2D fallback | Euclidean portals, solids, curved wind and high cloud slabs share one displacement field and camera aim |
+| LATITUDES 04 | original WebGL2 plus Canvas2D fallback | continuously phased oscilloscope contours preserve and release recent motion history |
+| ATLAS 05 | lazy MapLibre/OpenFreeMap WebGL | ephemeral GPS or explicit Milan demo drives 3D city tiles, nearby Wikipedia reading and passenger QR |
 
 All five visuals use ten curated palettes. Vertigo is recoloured without editing
 its vendor tree. The fixed visual/music energy ceiling is `130 km/h`; Aperture

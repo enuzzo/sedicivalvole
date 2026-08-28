@@ -60,7 +60,7 @@ Exactly three revised Product Design directions were shown after the luminous-ax
 
 Framed controls use a restrained 6 px corner radius rather than completely sharp corners. The speed readout occupies an exact header-grid cell with the same divider stroke while the chrome is awake; when the header retires, the readout remains fixed in place and gains only the exposed lower corner treatment so it reads as a detached module rather than an unrelated overlay.
 
-Modular Aperture is calm and comparatively flat at rest. Zero speed uses a complete Swiss mosaic of large square modules, distributed evenly across four tones from the active palette, with no missing cells, black gaps, or central void. As energy rises the same modules become smaller; speed then bends and recedes that shared coordinate field into a centered funnel/tunnel instead of fading between separate scenes. The dark terminal aperture opens geometrically only as depth forms. Deceleration reverses the same continuous transformation so the tunnel flattens back into squares without a flash or a disabled-warp step. At high velocity, modules travel outward from the central vanishing point and stretch into radial stripes, compressing perceived depth into a Plaid-like velocity field. Ten curated palettes change both the visual character and interface accent without exposing low-level shader controls. See [`RECOVERED-REQUIREMENTS-2026-08-26.md`](RECOVERED-REQUIREMENTS-2026-08-26.md).
+Modular Aperture is calm and flat at rest. Zero speed uses a complete Swiss mosaic of large square modules, distributed evenly across four tones from the active palette, with no missing cells, black gaps, or central void. That intact mosaic is a rigid end wall: it recedes without deforming from `0–40 km/h`, progressively revealing the existing centered perspective tunnel behind it, then disappears at its terminus. Deceleration reverses the same wall travel so the complete grid returns without a flash. Above `40 km/h`, the approved tunnel, palette, perspective, flow and high-velocity radial compression continue unchanged. Ten curated palettes change both the visual character and interface accent without exposing low-level shader controls. See [`RECOVERED-REQUIREMENTS-2026-08-26.md`](RECOVERED-REQUIREMENTS-2026-08-26.md).
 
 `MERIDIAN 03` uses the selected Kinetic Architecture direction: solid and
 translucent geometric buildings, cantilevers and floor plates move through one
@@ -173,7 +173,7 @@ acceptance in the vehicle.
 | Open packs | strategic goal | schema and licensing not frozen |
 | Offline audio core | implemented prototype | identical score DSP renders and analyses WAV references in Node |
 | Offline application cache | planned after capability test | browser persistence unknown |
-| Reactive map / OSM limits | not confirmed for v1 | scope, network, distraction, and policy risk |
+| ATLAS OpenFreeMap flight | implemented prototype | ephemeral GPS or explicit Milan demo; nearby Wikipedia and QR; Tesla network/memory acceptance pending |
 | WAV-to-parameter editor | future research | source lab not validated on real audio |
 | Trip postcard | not confirmed | privacy conflict requires review |
 

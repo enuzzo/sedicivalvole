@@ -80,12 +80,12 @@ Implemented:
 - flat Braun/Swiss interface, compact diagnostics, icon-only audio state, vertically ordered Visual/Music controls, and shared `PALETTE` selection at `773 × 601`.
 - dark tunnel terminus plus off-canvas resting chrome with a persistent speed readout and wake-first interaction.
 - outward high-speed flight, non-linear flow response, true-zero Demo dwell, and an opaque high-contrast speed frame.
-- one seam-free geometric field that continuously morphs from large, complete four-color squares through an unmistakable urban-speed tunnel into a full Plaid field at the fixed `130 km/h` Demo ceiling;
+- a complete four-color square wall that recedes intact from `0–40 km/h`, disappears at the dark terminus, and reveals the existing tunnel and high-speed Plaid field without full-frame coordinate interpolation;
 - selectable `VERTIGO 02` using the byte-identical upstream Interstate 7 scene with its road, repeated side lights, opposing car trails, bloom, fog, camera, deep distortion, and original dependencies;
 - an external `0–130 km/h` bridge that slows the original clock from stopped to its non-boosted `1×` rate and maps FOV from `90°` to `150°`, without editing the vendor runtime.
-- original `MERIDIAN 03`, now a speed-revealed architectural canyon whose widening corridor, displacement field, camera aim, building mass and travel clocks share one monotonic speed model;
-- original `LATITUDES 04`, whose sculptural temporal relief preserves and releases recent motion history over time;
-- lazy-loaded `ATLAS 05`, with a minimal palette-owned OpenFreeMap vector style, 3D buildings, nearby Italian Wikipedia context, four passenger links and a local QR;
+- original `MERIDIAN 03`, now a speed-revealed Euclidean corridor of portals, blades, cantilevers, monoliths, curved wind and high cloud slabs sharing one displacement field and camera aim;
+- original `LATITUDES 04`, whose thin continuously phased oscilloscope contours preserve and release recent motion history over time;
+- lazy-loaded `ATLAS 05`, with a minimal palette-owned OpenFreeMap vector style, 3D buildings, nearby Italian Wikipedia context, four passenger links, a local QR and an explicit no-GPS Milan flight mode;
 
 Queued next:
 

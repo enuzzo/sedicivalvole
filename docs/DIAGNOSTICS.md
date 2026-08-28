@@ -36,7 +36,7 @@ At the Tesla split viewport, Music and Report use compact 68 px evidence cards w
 - a bounded history of meaningful viewport changes;
 - WebGL2 vendor, renderer, maximum texture/renderbuffer size, and active renderer;
 - aggregate canvas frame pacing: average FPS, median/p95/maximum frame time, slow-frame counts, estimated missed target frames, render size, renderer, and configured target cadence;
-- phase-specific frame pacing for the Signal Gate, every active Visual/Music combination, the Aperture 18–40 km/h morph band, and the same combination with DIAG open;
+- phase-specific frame pacing for the Signal Gate, every active Visual/Music combination, the Aperture `0–40 km/h` wall-retreat band, and the same combination with DIAG open;
 - aggregate main-thread long-task counts and durations when the browser exposes them;
 - AudioContext state, sample rate, reported base/output latency, AudioWorklet, and live level;
 - GPS state, numeric/null sample counts, interval and accuracy statistics, and min/max/latest speed;
