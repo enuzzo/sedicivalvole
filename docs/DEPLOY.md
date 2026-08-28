@@ -8,6 +8,27 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## JUNCTION rhythm-envelope publication — 2026-08-28
+
+- build stamp: **`20260828-1736`**; deployed commit: `d048fdd`;
+  implementation: `ff3c2b3`;
+- gate before upload: **PASS**, 171 unit tests, 4 packaging tests, production
+  build from the deployed commit, simulated AudioParam timing and read-only
+  remote identity verification with `remote_writes=NONE`;
+- transition QA: **PASS**. Rest-to-rhythm rises linearly over four seconds;
+  rhythm-to-rest releases toward `0.08` over four seconds, and a reversed road
+  decision cancels the descent and recovers smoothly in `1.2 s`. Complete
+  eight-bar boundaries, deck balance, BPM mapping and the existing bank remain
+  unchanged; telemetry records the transition state;
+- publication: **PASS**, 27 files / 41,111,466 bytes uploaded to the canonical
+  root. Dynamic-root, exact legacy cleanup, retained cache overlap and remote
+  listing checks passed; the repeated post-publication identity gate passed
+  with no writes;
+- cache-busted canonical HTML points to the expected JavaScript and CSS. Both
+  live assets are byte-identical to the verified local build and contain build
+  `20260828-1736` / commit `d048fdd`. Real-Tesla listening remains the acceptance
+  boundary for the perceived four-second gesture.
+
 ## ATLAS selected-place context publication — 2026-08-28
 
 - build stamp: **`20260828-1725`**; deployed commit: `0c106e2`;
