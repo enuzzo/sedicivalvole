@@ -84,3 +84,17 @@ test("the complete product UI uses the local Orbitron variable font", () => {
   assert.match(index, /rel="preload" href="\/fonts\/orbitron-latin-variable\.woff2"/);
   assert.ok(font.length > 10_000, "the packaged font should not be an empty placeholder");
 });
+
+test("Orbitron telemetry units sit below and align to the value edge", () => {
+  const styles = read("styles.css");
+  const groups = styles.slice(
+    styles.indexOf(".readout-group {"),
+    styles.indexOf(".readout-divider {"),
+  );
+
+  assert.match(groups, /\.readout-group \{[\s\S]*?flex-direction: column/);
+  assert.match(groups, /\.readout-group \{[\s\S]*?align-items: flex-end/);
+  assert.match(groups, /\.readout-labels \{[\s\S]*?flex-direction: row-reverse/);
+  assert.match(groups, /\.readout-labels \{[\s\S]*?justify-content: flex-start/);
+  assert.match(groups, /white-space: nowrap/);
+});
