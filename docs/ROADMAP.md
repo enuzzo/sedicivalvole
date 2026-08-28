@@ -55,7 +55,7 @@ requires a real Tesla listening session.
 
 Completed in the current working line:
 
-- JUNCTION's 104-clip browser runtime uses one 24.8 MB segmented Opus music bank built from 126 distinct recordings; its eight energy states each own 13 complete takes, two of which are mixed live only at eight-bar boundaries without immediately repeating the primary, with native 127–168 BPM pacing and no break or bassline at rest;
+- JUNCTION's 104-clip browser runtime uses one 25.0 MB segmented Opus music bank built from 142 distinct recordings; its eight energy states each own 13 complete takes across five audible harmonic/colour families. Two family-compatible takes are mixed live only at eight-bar boundaries, neither the primary take nor musical family repeats immediately, 40 km/h remains at 127 BPM, 60 km/h remains at 135 BPM, and rest has no break or bassline;
 - the bank contains a mixed, processed production rather than loose source samples; browser-delivered bytes remain downloadable and are not described as secret;
 
 Queued next:
@@ -77,7 +77,7 @@ Implemented:
 - procedural WebGL2 Modular Aperture field with no texture asset;
 - bounded speed energy, palette, aggregate pulse, Brake, and asymmetric deceleration response;
 - reduced-motion behavior and continuously redrawn Canvas2D fallback;
-- flat Braun/Swiss interface, compact diagnostics, and body-color selection at `773 × 601`.
+- flat Braun/Swiss interface, compact diagnostics, icon-only audio state, vertically ordered Visual/Music controls, and shared `PALETTE` selection at `773 × 601`.
 - dark tunnel terminus plus off-canvas resting chrome with a persistent speed readout and wake-first interaction.
 - outward high-speed flight, non-linear flow response, true-zero Demo dwell, and an opaque high-contrast speed frame.
 - one seam-free geometric field that continuously morphs from large, complete four-color squares through an unmistakable urban-speed tunnel into a full Plaid field at the fixed `130 km/h` Demo ceiling;

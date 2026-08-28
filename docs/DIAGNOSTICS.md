@@ -34,20 +34,21 @@ The main product exposes diagnostics through an always-visible top-bar `DIAG` co
 - a bounded history of meaningful viewport changes;
 - WebGL2 vendor, renderer, maximum texture/renderbuffer size, and active renderer;
 - aggregate canvas frame pacing: average FPS, median/p95/maximum frame time, slow-frame counts, estimated missed target frames, render size, renderer, and configured target cadence;
-- phase-specific frame pacing for the Signal Gate, every active Visual/Music combination, and the same combination with DIAG open;
+- phase-specific frame pacing for the Signal Gate, every active Visual/Music combination, the Aperture 18–40 km/h morph band, and the same combination with DIAG open;
 - aggregate main-thread long-task counts and durations when the browser exposes them;
 - AudioContext state, sample rate, reported base/output latency, AudioWorklet, and live level;
 - GPS state, numeric/null sample counts, interval and accuracy statistics, and min/max/latest speed;
 - WebAssembly, service worker, Cache Storage, IndexedDB, localStorage, OffscreenCanvas, WebCodecs, touch points, hardware hints, storage quota/usage, battery state, connection hints, language, and user-agent details when exposed;
 - navigation, paint, resource-count/byte aggregates, and JavaScript heap metrics when exposed;
 - per-phase JavaScript heap minimum/latest/maximum plus JUNCTION bank and decoded-PCM memory, with unsupported browser fields reported as unavailable rather than estimated;
-- bounded connection history plus online/offline, document-visibility, GPS, viewport, source, and control events;
-- a two-second coordinate-free driving trace containing displayed/raw GPS speed, GPS age and accuracy, input mode, energy/BPM/score section, frame pacing, audio level, network state, and visibility;
+- bounded connection history plus online/offline, document-visibility, throttled GPS, viewport, source, and control events;
+- a two-second coordinate-free driving trace containing displayed/raw GPS speed, GPS age/accuracy/confidence, input mode, energy/BPM, active Visual/Music, JUNCTION section/family/take pair/bank state, frame pacing, real output RMS/peak, network state, and visibility;
+- session exposure counts for unique visuals, scores, JUNCTION sections, musical families, and take pairs;
 - full-session duration, estimated distance, moving/stationary time, source/input durations, speed/rate extrema, and GPS-accuracy aggregates even after old trace samples rotate;
 - bounded runtime errors, unhandled promise rejections, and WebGL context loss/restoration evidence;
 - explicit privacy flags proving that coordinates are not collected, stored, or transmitted.
 
-High-frequency frame observations and the flight recorder accumulate outside React state. Phase records retain aggregate counters and at most 300 recent frame intervals per phase; memory is sampled every two seconds, never per frame. The recorder samples every two seconds and retains at most 300 compact tabular samples, or approximately ten minutes, while its small aggregate counters cover the complete open session. The trace exists only in memory and is cleared by a reload or closed page. It does not retain every frame, resource URL, route, or coordinate. Runtime issue messages and stacks are truncated and bounded. Cellular RSSI is not available to ordinary Web applications; connection quality is represented only by browser-exposed effective type, downlink, RTT, online state, and changes over time.
+High-frequency frame observations and the flight recorder accumulate outside React state. Phase records retain aggregate counters and at most 300 recent frame intervals per phase; memory is sampled every two seconds, never per frame. A phase that disappears and later returns starts a new continuity segment, so the intervening time is not misreported as a dropped frame or low FPS. Ordinary GPS sample events are retained at two-second cadence while null and low-confidence anomalies are kept immediately; the ten-hertz GPS aggregates remain complete. The recorder samples every two seconds and retains at most 300 compact tabular samples, or approximately ten minutes, while its small aggregate and exposure counters cover the complete open session. The trace exists only in memory and is cleared by a reload or closed page. It does not retain every frame, resource URL, route, or coordinate. Runtime issue messages and stacks are truncated and bounded. Cellular RSSI is not available to ordinary Web applications; connection quality is represented only by browser-exposed effective type, downlink, RTT, online state, and changes over time.
 
 ## Send Diagnostic architecture
 
@@ -124,3 +125,31 @@ Sanitized endpoint failures are shown in the drawer. The page keeps the recorder
   157-sample validation report returned **`202 accepted_by_mail_transport`**.
   Confirmation that Gmail displays the `.json.gz` attachment remains a
   separate recipient-inbox check.
+
+## First complete Tesla report — 2026-08-28
+
+- The Gmail `Show entire message` export contained all **157 / 157** flight
+  samples and **240 / 240** bounded events: no transport fitting or server-side
+  report loss occurred. The copied visible message was Gmail presentation
+  clipping; the `.json.gz` attachment is now the authoritative artifact.
+- The 314.4-second drive covered an estimated 3.629 km, with 292 seconds moving,
+  20 seconds stationary, 90.2 km/h maximum displayed speed and 92 km/h maximum
+  raw GPS speed.
+- Overall rendering was healthy on AMD Vega / Chromium: **60.04 FPS**, **16.7 ms
+  median**, **16.8 ms p95**, and only **4** frames above 34 ms. The earlier
+  7.62 / 33.37 FPS phase readings were telemetry defects caused by counting a
+  phase re-entry gap as one frame, not proof of sustained GPU failure.
+- GPS delivered 2,965 samples at approximately 10 Hz with 2 m median accuracy.
+  One isolated 10,000 m accuracy collapse sat between 2 m and 3 m samples; the
+  runtime now records such evidence but holds the previous trusted speed rather
+  than allowing it to command score or geometry.
+- The 240-event ring was almost entirely filled by ten-hertz `gps.sample`
+  events, retaining only the final 25.7 seconds. Ordinary GPS events are now
+  sampled at two-second cadence while anomalies remain immediate.
+- JUNCTION was not stuck at 135 BPM near the final stop: the vehicle had
+  reaccelerated to 23.2 km/h only about ten seconds earlier, shorter than the
+  eight-bar quantization window. The score boundary behaved as authored.
+- The report exposed two semantic gaps now fixed: JUNCTION's string section was
+  discarded by a numeric-only check, and `audio` duplicated road energy rather
+  than measuring the output. Section/family/take identity and a real analyser
+  RMS/peak meter are now recorded.

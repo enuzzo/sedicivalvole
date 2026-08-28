@@ -340,6 +340,33 @@ there. The assertable parts — beatless rest, rising low-speed beat envelope,
 native tempo ladder, bounded break level, gapless sections and take
 anti-repetition — live in `tests/junction-bank.test.mjs`.
 
+### 5.7 File count is not perceived variety
+
+The first real drive exposed a useful contradiction: JUNCTION contained 104
+clips assembled from 126 recordings, yet the listener heard approximately ten
+ideas. The runtime was selecting different breaks and voicings correctly, but
+every take followed the same four-chord progression and the same broad lead
+identity. Random file choice was working; musical identity was not changing.
+
+JUNCTION now has five authored families. Each family owns a different compatible
+four-chord route and a distinct punctuation pattern; every energy state contains
+at least two takes from every family. At an eight-bar boundary the browser first
+chooses a family other than the current one, then mixes two takes only inside
+that family. This keeps harmony safe while making the change large enough to be
+heard. High-energy states also trigger more exact chord-tone colour performances.
+The rebuilt bank uses 142 distinct recordings without increasing the 104-clip or
+six-decoded-clip bounds materially.
+
+The listener also found 40–60 km/h too urgent. Native tempo selection now keeps
+40 km/h in the 127 BPM state and 60 km/h in the 135 BPM state; 158 BPM begins
+only above approximately 65 km/h. The rule is tested at the road speeds the
+listener named, rather than only at abstract energy fractions.
+
+The general lesson: count **families, progressions, colour events and exposed
+take pairs**, not only assets. The diagnostic flight recorder now reports those
+exposure counts so a future drive can distinguish “the randomizer did not
+rotate” from “it rotated technically but the writing still sounded the same.”
+
 ---
 
 ## 6. Testing music

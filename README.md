@@ -27,15 +27,16 @@ The canonical development build is available at [sedicivalvole.app](https://sedi
 - ✅ source audit, product requirements, adversarial review, technical direction, and roadmap;
 - ✅ Modular Aperture selected after exactly three revised Product Design directions;
 - ✅ four selectable Flux visuals: procedural Aperture, byte-identical upstream Interstate 7 Vertigo, and the original Meridian and Latitudes environments;
-- ✅ GPS/Demo speed source, Stop/Mute, a fixed `130 km/h` energy ceiling, 10 curated themes, and an integrated capability report;
+- ✅ GPS/Demo speed source, icon-only Mute, a fixed `130 km/h` energy ceiling, 10 curated palettes, and an integrated capability report;
 - ✅ local-only speed processing: raw coordinates are never displayed, persisted, or transmitted;
 - ✅ FRACTURE, a production AudioWorklet score with ten four-bar sections, a narrow tempo knee, quantized transitions, hysteresis, dwell, crossfades, speed-driven arrangement depth, and tested harmony/braking/voice output;
-- ✅ JUNCTION, a sampled production that mixes two of 13 authored clips per energy state live at each eight-bar boundary: 104 clips built from 126 distinct recordings, native 127–168 BPM pacing, beatless ambient rest, one 24.8 MB segmented Opus bank, and no loose source samples;
+- ✅ JUNCTION, a sampled production that mixes two harmony-compatible takes live at each eight-bar boundary: 104 clips built from 142 distinct recordings across five rotating musical families, native 127–168 BPM pacing, beatless ambient rest, one 25.0 MB segmented Opus bank, and no loose source samples;
 - ✅ production build and deterministic signal, diagnostic-model, and packaging tests passing;
 - ✅ photographed Tesla split-view evidence at `773 × 601`, screen `1254 × 784`, DPR `1.53`;
 - ✅ compact-view v3 diagnostics with aggregate and per-phase frame pacing, browser-exposed heap and decoded-audio memory, network history, runtime/resource evidence, and no coordinates; the explicit same-origin email handoff attaches the complete report as verified gzip-compressed JSON;
 - ✅ the canonical bare root, direct PHP entry, and content-addressed assets are live and byte-identical after the SiteGround cache flush;
-- ⏳ speed-to-audio behavior across real motion, audio quality, frame pacing, and physical touch reach still require validation in the target Tesla;
+- ✅ the first complete Tesla report confirms 60.04 FPS overall, 16.8 ms p95, four slow frames, 33.2 MB peak decoded PCM, and no runtime issue during a 314-second drive;
+- ⏳ the new Aperture morph render budget, slower JUNCTION 40–60 km/h pacing, five-family musical rotation, and compact footer still require acceptance in the target Tesla;
 - ⛔ no committed release, PWA/offline cache, final audio pack, or final brand/license package yet.
 
 ## Experience

@@ -20,8 +20,9 @@ dated study documents.
   bridge maps the selected theme onto its existing colour channels.
 - Speed, BPM, and energy remain visible together. The fixed road-energy ceiling
   is `130 km/h`, with Aperture visibly forming a tunnel near `40 km/h`.
-- The main experience retains Stop/Mute, GPS/Demo source selection, compact
-  Music and Visual libraries, body themes, and coordinate-free diagnostics.
+- The main experience retains an icon-only Mute control, GPS/Demo source
+  selection, vertically ordered Music and Visual libraries, a shared `PALETTE`
+  control, and coordinate-free diagnostics in a measured 64 px footer.
 - Signal Gate launches through the approved `390 × 170 px` flat typographic
   surface at the Tesla split viewport. Its enlarged wordmark and full-width
   `PLAY THE ROAD` field form one semantic gesture with no simulated controls.
@@ -29,7 +30,8 @@ dated study documents.
   Gate lane owns a short independently phased travelling gap, with restrained
   perspective airflow behind the road field.
 - Diagnostics separate FPS/frame time, browser-exposed heap and decoded-audio
-  memory by splash, active Visual/Music pairing and DIAG-open state.
+  memory by splash, active Visual/Music pairing, the Aperture morph pressure
+  band and DIAG-open state. Re-entry gaps are not counted as slow frames.
 - An explicit diagnostic send keeps the email body concise and attaches the
   complete accepted report as gzip-compressed JSON, named by build and server
   timestamp with uncompressed and compressed SHA-256 evidence.
@@ -44,10 +46,13 @@ dated study documents.
   brake effect.
 - **JUNCTION 01** is selectable sampled Jungle / Rave music. Its eight energy
   states each have 13 complete authored clips: 104 rendered sections built from
-  126 distinct recordings in one 24.8 MB segmented Opus bank. Rest is harmony
+  142 distinct recordings in one 25.0 MB segmented Opus bank. Five harmonic and
+  colour families rotate without immediate family repetition. Rest is harmony
   and atmosphere without a break or bassline;
   rhythm fades in near `13 km/h`, moves through native `127`, `135`, `158` and
-  `164 BPM` recordings, and reaches `168 BPM` only at high energy. The browser
+  `164 BPM` recordings, and reaches `168 BPM` only at high energy. The `127 BPM`
+  state now covers 40 km/h and `135 BPM` covers 60 km/h; `158 BPM` begins above
+  approximately 65 km/h. The browser
   lazily retains at most six individual clips, starts two distinct takes on the
   same sample-accurate boundary, and mixes their level, tone, stereo and space
   live. The primary take does not immediately repeat, and source sounds are
@@ -60,7 +65,7 @@ dated study documents.
 ## Verified boundaries
 
 - Local gate: `npm test` and `npm run build` from `prototype/drive-lab/`.
-- Current suite: 133 unit checks plus 4 Sites packaging checks.
+- Current suite: 142 unit checks plus 4 Sites packaging checks.
 - Canonical development URL: <https://sedicivalvole.app/>. The most recent
   canonical publication evidence and build stamp are always the first entry in
   [`DEPLOY.md`](DEPLOY.md).
@@ -74,12 +79,10 @@ dated study documents.
 
 ## Open work
 
-1. Complete a real Tesla listening and performance session for FRACTURE,
-   JUNCTION and all
-   four visual environments, including touch reach, frame pacing, GPS cadence,
-   braking behavior, and long-session stability.
-2. Send a fresh real-drive v3 diagnostic from the still-open drawer, observe
-   `SENT`, confirm Gmail delivery, and inspect the received report.
+1. Validate the new Aperture 18–40 km/h native-resolution band, compact footer,
+   slower JUNCTION urban tempo and five-family score rotation in the Tesla.
+2. Send the new real-drive gzip attachment and compare the dedicated morph
+   phase plus family/take exposure counters against the first complete report.
 3. Design Engine only after exactly three Engine-specific directions are shown
    and one is selected.
 4. Keep `VERSION` at `0.0.0` until an explicit release is approved.

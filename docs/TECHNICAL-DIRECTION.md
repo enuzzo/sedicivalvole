@@ -158,15 +158,19 @@ from interpretation and arrangement rather than playback-rate escalation.
 The music registry separates `ready` from `preparing`. FRACTURE and JUNCTION are
 ready; the remaining five directions are truthful disabled roadmap entries.
 JUNCTION is an 832-bar rendered production: eight adaptive energy states each
-have 13 complete takes, giving 104 clips from 126 distinct recordings in one
-24.8 MB segmented Opus resource. Each
+have 13 complete takes, giving 104 clips from 142 distinct recordings in one
+25.0 MB segmented Opus resource. Five musical families give those takes
+different compatible progressions and colour punctuation. Each
 section carries its own native tempo and duration: ambient rest at 127 BPM has
 no rhythm or bassline; a quiet 127 BPM break enters near 13 km/h, followed by
-135, 158, 164 and finally 168 BPM recordings as road energy rises. The browser
+135, 158, 164 and finally 168 BPM recordings as road energy rises. The urban
+mapping deliberately holds 127 BPM at 40 km/h, 135 BPM at 60 km/h, and does not
+enter 158 BPM until above approximately 65 km/h. The browser
 lazily retains no more than six individual clips and schedules two distinct takes
 from the selected block at the same AudioContext time. Equal-power gain ramps,
 small stereo and tone differences, and a bounded tempo-related delay create a
-new live mix at each eight-bar boundary; the previous primary take is excluded.
+new live mix at each eight-bar boundary; the previous primary take and its
+musical family are excluded whenever another compatible family is available.
 The original sample-pack files never enter the build.
 
 ### Flux sequencer direction
@@ -303,7 +307,13 @@ A future pack needs:
 
 ## Diagnostic harness and data handling
 
-The first vehicle evidence confirms a `773 × 601` split-view CSS viewport on a `1254 × 784` logical screen at DPR `1.53`. The integrated v3 report records viewport history, runtime/GPU/audio details, bounded GPS statistics, aggregate canvas frame pacing, long tasks, page/resource timing, memory/storage hints, connection changes, and a chronological event log. Phase telemetry separates the Signal Gate, active Visual/Music combinations and the DIAG-open state; each phase owns bounded frame distributions and two-second memory samples for browser-exposed JavaScript heap, JUNCTION's compressed bank and decoded PCM. A coordinate-free flight recorder adds a two-second trace of displayed and raw GPS speed, GPS age/accuracy, input, energy/BPM/score section, frame pacing, audio level, network state, and document visibility. It keeps 300 trace samples (approximately ten minutes) in session memory while full-session time, distance, motion, source, and input aggregates continue beyond rotation. Runtime errors, unhandled rejections, and WebGL context loss/restoration are separately bounded. High-frequency metrics accumulate outside React state so diagnostics do not add a per-frame render cost. The report contains no coordinates and disappears when the page closes or reloads.
+The first vehicle evidence confirms a `773 × 601` split-view CSS viewport on a `1254 × 784` logical screen at DPR `1.53`. The integrated v3 report records viewport history, runtime/GPU/audio details, bounded GPS statistics, aggregate canvas frame pacing, long tasks, page/resource timing, memory/storage hints, connection changes, and a chronological event log. Phase telemetry separates the Signal Gate, active Visual/Music combinations, the Aperture 18–40 km/h morph band and the DIAG-open state; a returning phase begins a new continuity segment so time spent elsewhere is never counted as one slow frame. Each phase owns bounded frame distributions and two-second memory samples for browser-exposed JavaScript heap, JUNCTION's compressed bank and decoded PCM. A coordinate-free flight recorder adds a two-second trace of displayed and raw GPS speed, GPS confidence, input, energy/BPM, active Visual/Music, JUNCTION section/family/take pair/bank readiness, real output RMS/peak, frame pacing, network state, and document visibility. It also summarizes the unique musical and visual exposure across the session. The event stream samples ordinary GPS evidence at two-second cadence while retaining null or low-confidence anomalies immediately, which prevents ten-hertz GPS traffic from evicting meaningful transitions. An isolated accuracy collapse above 250 m is recorded but does not command the smoothed experience. The recorder keeps 300 trace samples (approximately ten minutes) in session memory while full-session time, distance, motion, source, and input aggregates continue beyond rotation. Runtime errors, unhandled rejections, and WebGL context loss/restoration are separately bounded. High-frequency metrics accumulate outside React state so diagnostics do not add a per-frame render cost. The report contains no coordinates and disappears when the page closes or reloads.
+
+Aperture keeps its exact shader and geometry. During the 18–40 km/h morph,
+the renderer uses one physical pixel per CSS pixel rather than Tesla DPR `1.53`
+supersampling capped at `1.25`. At `773 × 601` this reduces fragment work from
+approximately 725,000 to 465,000 pixels per frame (36%) while retaining native
+viewport resolution. Outside the pressure band the existing 1.25 cap remains.
 
 The user explicitly approved a same-origin PHP send endpoint with a fixed private recipient and extensive technical reports after an explicit send gesture. It rejects cross-origin requests, oversized or malformed payloads, and common coordinate keys; applies a hashed temporary per-client rate limit; persists no report; and exposes no FTP credentials. Before submission, a deterministic recent-first fitter records original/transmitted counts and trims only if the pretty-printed report would exceed the mail budget. The endpoint forces shortest-round-trip float serialization because provider-level PHP precision settings must not expand compact telemetry decimals after fitting. The accepted schema/report envelope is then encoded as one gzip-compressed JSON attachment; the compact multipart body records its name, byte counts and SHA-256 digests, avoiding email-client preview clipping while preserving a verifiable complete artifact. Failed sends preserve the in-memory recorder for retry and expose only sanitized reason codes. PHP `mail()` acceptance is local transport handoff, not inbox-delivery proof.
 
