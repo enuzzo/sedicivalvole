@@ -8,6 +8,42 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Kinetic visual and ATLAS publication evidence — 2026-08-28
+
+- build stamp: **`20260828-1131`**; deployed commit: `33ae761`;
+  implementation: `3cf0eaa`;
+- gate before upload: **PASS**, 149 unit tests, 4 packaging tests, production
+  build, Product Design comparisons at `773 × 601`, read-only remote identity
+  verification and no preflight writes;
+- publication: **PASS**, 25 files / 27,414,788 bytes uploaded to the canonical
+  root; dynamic root, retained cache overlap, exact legacy cleanup and remote
+  listing passed;
+- canonical bare and cache-busted HTML: **HTTP 200**, `no-store`, and
+  byte-identical to local at SHA-256
+  `d42d3c73dceb7e6f7c090b483a2cc3f7b3f874ff41f8f05a2395b1e0c19ee0cf`;
+- live main JavaScript `assets/index-lIaethjV.js` and CSS
+  `assets/index-CYzepEor.css` are byte-identical at SHA-256
+  `6a9746cba7540fdeb3ecb41345213103b05880037fbd8af112caed4e38f39195`
+  and `b76dd0ae8dfbcdb0f51eab10aa1d53ff725ccf1fba18116f4e3b97257f23cf1c`;
+- live ATLAS component `assets/atlas-field-CycZfcvK.js`, MapLibre
+  `assets/maplibre-gl-COOsKdIG.js`, and QR runtime
+  `assets/browser-oYWuKH21.js` are byte-identical at SHA-256
+  `59f19f81687007890fafa00e85b5611a5a7a905ae51738d1cd27cd4373f52154`,
+  `77b6c3c041182f4cc21be2219d4c860bcf8b6428085e8559e39c111dde50500e`
+  and `9a05435db031fb6d8cde1af87bed3a198b6b95abcf1f1fb75cb5866240d07ac6`;
+- exact local `773 × 601`, `80 km/h` simulation: Meridian **59.99 FPS / 18.0
+  ms p95**, Latitudes **59.99 FPS / 17.5 ms p95**, ATLAS **60.00 FPS / 18.3
+  ms p95**, and zero frames over 34 ms. ATLAS latest browser-exposed heap was
+  55.7 MB, with an 84.9 MB initialization peak;
+- live Browser QA at `773 × 601`: **PASS** for build identity, launch, the
+  five-entry Visual library, ATLAS selection, privacy-safe reliable-position
+  waiting state and zero console warnings/errors. Full live OpenFreeMap,
+  Wikipedia and QR behavior passed locally with the explicit development demo
+  location; a real GPS fix was deliberately not transmitted during desktop QA;
+- real-Tesla acceptance remains open for sustained ATLAS memory/GPU behavior,
+  real-position place relevance, passenger QR scanning and the perceived motion
+  of Meridian and Latitudes during acceleration and deceleration.
+
 ## Tesla-informed Flux refinement publication evidence — 2026-08-28
 
 - build stamp: **`20260828-1001`**; deployed commit: `f788544`;
