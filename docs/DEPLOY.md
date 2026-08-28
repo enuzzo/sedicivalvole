@@ -8,6 +8,30 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Orbitron typography publication — 2026-08-28
+
+- build stamp: **`20260828-1538`**; deployed commit: `76f1b63`;
+  implementation: `6a6c55e`; deployment-gate follow-up: `fbbb794`;
+- gate before upload: **PASS**, 157 unit tests, 4 packaging tests, production
+  build, exact `773 × 601` and compact `390 × 844` rendered verification,
+  read-only remote identity verification and no preflight writes;
+- typography QA: **PASS**. Browser font loading resolves to local `Orbitron`,
+  command weight `850`, labels `700`, controls `620`, values `520` and reading
+  text `450`. Splash, top bar, footer, Visual, Music and DIAG were inspected;
+  primary Tesla chrome has no measured overflow, and the compact wordmark plus
+  APERTURE and JUNCTION labels remain complete;
+- publication: **PASS**, 27 files / 27,436,204 bytes uploaded to the canonical
+  root; dynamic root, retained cache overlap, exact legacy cleanup and remote
+  listing passed;
+- the first post-publication identity run failed closed on the newly introduced
+  `fonts/` root directory. Commit `fbbb794` adds an explicit static-tree check,
+  not a generic exception: unknown font entries and content mismatches still
+  abort publication. The repeated read-only gate then passed with no writes;
+- canonical cache-busted Browser QA confirms build `20260828-1538`, loaded
+  Orbitron and the expected computed hierarchy. The live 11,800-byte WOFF2 is
+  byte-identical to local at SHA-256
+  `c25a9f9da5d9f3db1bf2a01474722dc9b377675b7bbab6d0dfda6902794fd1ed`.
+
 ## Adaptive visual refinement publication — 2026-08-28
 
 - build stamp: **`20260828-1520`**; deployed commit: `0d5153b`;
