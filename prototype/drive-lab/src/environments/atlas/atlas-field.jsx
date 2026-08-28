@@ -45,7 +45,20 @@ function NearbyPanel({ pages, selectedId, onSelect, qrUrl, loading, demo, collap
       <header>
         <small>{demo ? "DEMO LOCATION" : "NEARBY"}</small>
         <strong>{selected?.title ?? (loading ? "Reading the city…" : "Location unavailable")}</strong>
-        {selected?.summary ? <p>{selected.summary}</p> : null}
+        {selected?.summary || selected?.thumbnail ? (
+          <div className={`atlas-selected-context${selected.thumbnail ? "" : " is-text-only"}`}>
+            {selected.thumbnail ? (
+              <img
+                src={selected.thumbnail}
+                width={selected.thumbnailWidth ?? undefined}
+                height={selected.thumbnailHeight ?? undefined}
+                alt=""
+                decoding="async"
+              />
+            ) : null}
+            {selected.summary ? <p>{selected.summary}</p> : null}
+          </div>
+        ) : null}
       </header>
       {pages.length ? (
         <div className="atlas-places">

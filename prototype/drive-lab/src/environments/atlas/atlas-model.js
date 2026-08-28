@@ -63,11 +63,14 @@ export function wikipediaNearbyUrl(position, language = "it") {
     ggscoord: `${position.latitude}|${position.longitude}`,
     ggsradius: String(WIKIPEDIA_SEARCH_RADIUS_METRES),
     ggslimit: "6",
-    prop: "extracts|info",
+    prop: "extracts|info|pageimages",
     exintro: "1",
     explaintext: "1",
     exsentences: "2",
     inprop: "url",
+    piprop: "thumbnail",
+    pithumbsize: "320",
+    pilicense: "free",
   });
   return `https://${language}.wikipedia.org/w/api.php?${params}`;
 }
@@ -75,12 +78,21 @@ export function wikipediaNearbyUrl(position, language = "it") {
 export function normalizeNearbyPages(payload) {
   return (payload?.query?.pages ?? [])
     .filter((page) => page?.title && page?.fullurl)
-    .map((page) => ({
-      id: String(page.pageid),
-      title: String(page.title),
-      summary: String(page.extract ?? "").replace(/\s+/g, " ").trim(),
-      url: String(page.fullurl),
-    }))
+    .map((page) => {
+      const thumbnailSource = String(page.thumbnail?.source ?? "");
+      const thumbnail = thumbnailSource.startsWith("//")
+        ? `https:${thumbnailSource}`
+        : /^https:\/\//i.test(thumbnailSource) ? thumbnailSource : "";
+      return {
+        id: String(page.pageid),
+        title: String(page.title),
+        summary: String(page.extract ?? "").replace(/\s+/g, " ").trim(),
+        url: String(page.fullurl),
+        thumbnail,
+        thumbnailWidth: Number.isFinite(page.thumbnail?.width) ? page.thumbnail.width : null,
+        thumbnailHeight: Number.isFinite(page.thumbnail?.height) ? page.thumbnail.height : null,
+      };
+    })
     .slice(0, 5);
 }
 

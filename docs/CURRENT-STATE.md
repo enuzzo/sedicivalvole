@@ -25,13 +25,14 @@ dated study documents.
   continuously phased oscilloscope contours whose distortion grows with speed.
 - ATLAS dynamically loads MapLibre only when selected, draws a minimal
   palette-owned OpenFreeMap vector style with 3D buildings, and pairs it with a
-  short nearby Italian Wikipedia reading, four passenger choices and a local QR.
+  selected-page Italian Wikipedia abstract and free thumbnail, four passenger
+  choices and a local QR.
   Without reliable GPS, an explicit Milan-only test button enables keyboard
   steering and the same speed-driven bird's-eye camera without entering demo
   coordinates into diagnostics. The camera remains oblique and building-rich at
   `130 km/h`; it centers on trusted fixes and follows reported heading or a
   bearing inferred from successive positions. The `246 px` passenger panel uses
-  `12 px` reading text and an `86 px` QR at the Tesla split viewport, collapses
+  compact image-and-reading context and an `86 px` QR at the Tesla split viewport, collapses
   behind a persistent midpoint handle to return the complete field to the map,
   and keeps mandatory attribution in a tiny translucent strip above the footer.
 - Speed, BPM, and energy remain visible together. The fixed road-energy ceiling

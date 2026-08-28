@@ -47,7 +47,9 @@ test("Atlas follows reported heading or infers it from successive trusted positi
 test("Atlas passenger reading and QR remain legible at the Tesla viewport", () => {
   assert.match(styles, /\.atlas-field \{[\s\S]*?--atlas-panel-width: 246px;/);
   assert.match(styles, /\.atlas-panel \{[\s\S]*?width: var\(--atlas-panel-width\);[\s\S]*?padding: 16px 16px 12px;/);
-  assert.match(styles, /\.atlas-panel header p \{[\s\S]*?font-size: 12px;[\s\S]*?-webkit-line-clamp: 3;/);
+  assert.match(styles, /\.atlas-selected-context \{[\s\S]*?grid-template-columns: 76px minmax\(0, 1fr\);/);
+  assert.match(styles, /\.atlas-selected-context img \{[\s\S]*?width: 76px;[\s\S]*?height: 62px;/);
+  assert.match(styles, /\.atlas-selected-context p \{[\s\S]*?font-size: 11px;[\s\S]*?-webkit-line-clamp: 4;/);
   assert.match(styles, /\.atlas-places button strong \{[^}]*font-size: 12px;/);
   assert.match(styles, /\.atlas-qr img \{ width: 86px; height: 86px;/);
   assert.match(atlasSource, /width: 192,/);
@@ -80,18 +82,39 @@ test("Atlas nearby query is explicit and normalizes passenger content", () => {
   const url = wikipediaNearbyUrl({ latitude: 45.46, longitude: 9.19 });
   assert.match(url, /^https:\/\/it\.wikipedia\.org\/w\/api\.php\?/);
   assert.match(url, /generator=geosearch/);
+  assert.match(url, /prop=extracts%7Cinfo%7Cpageimages/);
+  assert.match(url, /pithumbsize=320/);
+  assert.match(url, /pilicense=free/);
   assert.equal(wikipediaNearbyUrl(null), null);
   assert.deepEqual(normalizeNearbyPages({ query: { pages: [{
     pageid: 7,
     title: "Duomo",
     extract: "A  short\nsummary.",
     fullurl: "https://it.wikipedia.org/wiki/Duomo_di_Milano",
+    thumbnail: { source: "//upload.wikimedia.org/duomo.jpg", width: 320, height: 214 },
   }] } }), [{
     id: "7",
     title: "Duomo",
     summary: "A short summary.",
     url: "https://it.wikipedia.org/wiki/Duomo_di_Milano",
+    thumbnail: "https://upload.wikimedia.org/duomo.jpg",
+    thumbnailWidth: 320,
+    thumbnailHeight: 214,
   }]);
+});
+
+test("Atlas rejects unsafe or absent thumbnail URLs without losing the abstract", () => {
+  const [page] = normalizeNearbyPages({ query: { pages: [{
+    pageid: 8,
+    title: "Milano",
+    extract: "City abstract.",
+    fullurl: "https://it.wikipedia.org/wiki/Milano",
+    thumbnail: { source: "javascript:alert(1)", width: 320, height: 200 },
+  }] } });
+  assert.equal(page.thumbnail, "");
+  assert.equal(page.summary, "City abstract.");
+  assert.match(atlasSource, /className=\{`atlas-selected-context/);
+  assert.match(atlasSource, /decoding="async"/);
 });
 
 test("Atlas owns a minimal palette-driven OpenFreeMap style with mandatory attribution", () => {

@@ -252,9 +252,11 @@ derives it, while smaller jitter preserves the last reliable direction. A
 reliable Geolocation point is held only in session memory.
 The selected map necessarily requests the surrounding tile area from
 OpenFreeMap; a `0.05°`-quantized cell is sent to the Italian Wikipedia Geosearch
-API only when the cell changes. Up to four nearby pages and one selected QR are
-rendered for the passenger. No coordinate enters local storage, diagnostics or
-the explicit diagnostic email.
+API only when the cell changes. The same response supplies each page's concise
+introduction and, when available, a free-license PageImages thumbnail; no second
+content request is needed when the passenger changes selection. Up to four nearby
+pages and one selected QR are rendered for the passenger. No coordinate enters
+local storage, diagnostics or the explicit diagnostic email.
 
 The fixed road-speed mapping separates early recognition from maximum deformation. Aperture begins opening into recognizable tunnel space by approximately `40 km/h`; velocity, perspective, elongation, and travel then continue increasing until the shared `130 km/h` ceiling. Vertigo uses a narrow external bridge rather than new scene mathematics. It enters the untouched distortion at a composed `2.1 s` phase where the road already fills the Tesla viewport, and seeds the current motion/FOV controls before the iframe is revealed. Road speed follows a quadratic response through the original `speedUpTarget` path: zero cancels the base clock, `40 km/h` uses approximately `0.095×`, `60 km/h` approximately `0.213×`, and `130 km/h` restores the original non-boosted `1×` rate. The original FOV range still moves from `90°` to `150°` through that same curve. The upstream click boost is not dispatched.
 

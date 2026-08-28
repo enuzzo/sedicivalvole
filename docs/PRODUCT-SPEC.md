@@ -72,8 +72,9 @@ strata are sculpted by the renderer's existing recent-motion history; they must
 read as continuous relief, not quantized bands or an unrelated texture blob.
 
 `ATLAS 05` is the passenger-oriented bird's-eye city environment. It presents a
-palette-driven 3D OpenFreeMap field, a concise nearby Wikipedia introduction,
-four local reading choices and a QR for the selected page. The map runtime is
+palette-driven 3D OpenFreeMap field, a concise selected-page Wikipedia abstract
+with a free thumbnail when available, four local reading choices and a QR for
+the selected page. The map runtime is
 loaded only when ATLAS is selected. Position is ephemeral, never enters the
 diagnostic report or persistence, and third-party map/nearby requests are
 disclosed in the interface and privacy documentation. The field centers on each
