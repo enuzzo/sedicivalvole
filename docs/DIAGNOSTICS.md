@@ -29,6 +29,8 @@ The compact viewport is the relevant driving layout because Tesla retains vehicl
 
 The main product exposes diagnostics through an always-visible top-bar `DIAG` control, including at `773 × 601`. The report is scrollable and records:
 
+At the Tesla split viewport, the panel uses compact 68 px evidence cards and a sticky four-control action row. Send success or failure text lives inside that same tray, directly above the controls, so pressing **SEND DIAGNOSTIC** cannot leave the resulting state below the scroll boundary. The primary control retains a 48 px touch target; an empty status consumes no height.
+
 - current inner/document/VisualViewport/screen/available/outer dimensions;
 - DPR, orientation, safe-area insets, fullscreen state, and inferred split/expanded mode;
 - a bounded history of meaningful viewport changes;

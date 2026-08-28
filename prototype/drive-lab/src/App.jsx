@@ -1773,6 +1773,10 @@ export function App() {
             </p>
 
             <div className="drawer-actions">
+              <p className={`send-state send-state-${sendState}`} role="status" aria-live="polite">
+                {sendState === "sent" ? "Accepted by the server mail transport. Inbox delivery still needs confirmation." : null}
+                {sendState === "error" ? `${DIAGNOSTIC_SEND_ERROR_COPY[sendErrorCode] ?? "The report could not be sent."} No diagnostic data was stored by the app.` : null}
+              </p>
               <button className="send-diagnostic-button" type="button" onClick={sendDiagnostic} disabled={sendState === "sending"}>
                 {sendState === "sending" ? "SENDING…" : sendState === "sent" ? "SENT" : "SEND DIAGNOSTIC"}
               </button>
@@ -1782,10 +1786,6 @@ export function App() {
                 {rawReportOpen ? "HIDE RAW" : "SHOW RAW"}
               </button>
             </div>
-            <p className={`send-state send-state-${sendState}`} role="status" aria-live="polite">
-              {sendState === "sent" ? "Accepted by the server mail transport. Inbox delivery still needs confirmation." : null}
-              {sendState === "error" ? `${DIAGNOSTIC_SEND_ERROR_COPY[sendErrorCode] ?? "The report could not be sent."} No diagnostic data was stored by the app.` : null}
-            </p>
             {/* The raw report is evidence, not a readout: it is available, not in the way. */}
             {rawReportOpen ? <pre>{diagnosticText}</pre> : null}
           </div>
