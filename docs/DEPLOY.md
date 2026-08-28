@@ -8,6 +8,34 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## REGISTER removal publication — 2026-08-29
+
+- build stamp: **`20260829-0121`**; deployed commit: `a47142c`;
+  implementation checkpoint: `b8dd697`;
+- change: **PASS**. The rejected REGISTER study is absent from the active
+  catalog, renderer, development harness and unit suite. Its source remains only
+  in `archive/visuals/register/`; a stale stored `register` selection falls back
+  to APERTURE, while the independent OPEN acceleration macro is unchanged;
+- gate before upload: **PASS**, 172 of 173 active unit checks, all 4 Sites
+  packaging checks, the archived five-check technical record and the production
+  build passed. The sole unavailable active check is the unchanged PHP mail
+  fixture on this host without a `php` executable;
+- publication: **PASS**, 28 files / 8,308,622 bytes uploaded to the canonical
+  root. The final read-only FTP identity gate passed with `remote_writes=NONE`.
+  An intermediate upload carried the current removal but a stale prior commit
+  stamp; it was not accepted and was immediately superseded by the rebuilt,
+  correctly identified bundle;
+- canonical identity: **PASS**. Bare and cache-busted HTML return `200` with
+  `no-store` / `no-cache` and cache `MISS`; both are byte-identical to the local
+  production entry. The referenced JavaScript and CSS are byte-identical to the
+  local build, and the live JavaScript contains `20260829-0121` and `a47142c`;
+- live interaction: **PASS**. The visible in-app browser launched the canonical
+  experience, converted the prior REGISTER selection to APERTURE and exposed
+  exactly APERTURE 01, VERTIGO 02, MERIDIAN 03 and ATLAS 04 in the Visual
+  library with zero warnings or application errors. Exact `773 × 601` QA
+  confirmed the same four-row selector without visible overflow. The only
+  console request failure is the pre-existing missing `/favicon.ico`.
+
 ## REGISTER boundary-continuity publication — 2026-08-29
 
 - build stamp: **`20260829-0107`**; deployed commit: `f6b6423`;
