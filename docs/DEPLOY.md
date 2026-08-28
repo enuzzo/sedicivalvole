@@ -8,6 +8,31 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Adaptive visual refinement publication — 2026-08-28
+
+- build stamp: **`20260828-1520`**; deployed commit: `0d5153b`;
+  implementation: `7ab86b2`;
+- gate before upload: **PASS**, 156 unit tests, 4 packaging tests, production
+  build, exact `773 × 601` rendered verification, read-only remote identity
+  verification and no preflight writes;
+- local Tesla-viewport visual QA: **PASS**. APERTURE keeps the rigid grid wall
+  through its retreat and removes it completely at `40 km/h`; LATITUDES is calm
+  at rest and gains continuous oscilloscope deformation with speed; MERIDIAN
+  renders Euclidean structures, curved segmented wind and overhead cloud slabs;
+- local ATLAS no-GPS QA: **PASS**. `TEST FROM MILAN` receives the tap, the shared
+  drive/brake arrows move the demo, steering changes its bearing, and the map,
+  nearby Italian Wikipedia choices and locally generated QR render together;
+- publication: **PASS**, 25 files / 27,418,687 bytes uploaded to the canonical
+  root; dynamic root, retained cache overlap, exact legacy cleanup and remote
+  listing passed;
+- post-publication read-only identity verification: **PASS**, with no remote
+  writes. Live Browser QA at `773 × 601` confirmed build `20260828-1520`, launch,
+  the coordinate-free Milan path, 3D map, nearby passenger content, QR and zero
+  console warnings/errors;
+- deterministic audio coverage confirms that JUNCTION can preload and schedule
+  while its score-local movement gain stays silent at launch. A real-Tesla drive
+  remains the acceptance boundary for APERTURE frame pacing and audible entry.
+
 ## Dense Device evidence publication — 2026-08-28
 
 - build stamp: **`20260828-1255`**; deployed commit: `33529bb`;
