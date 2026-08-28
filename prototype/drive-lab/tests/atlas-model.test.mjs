@@ -45,11 +45,24 @@ test("Atlas follows reported heading or infers it from successive trusted positi
 });
 
 test("Atlas passenger reading and QR remain legible at the Tesla viewport", () => {
-  assert.match(styles, /\.atlas-panel \{[\s\S]*?width: 246px;[\s\S]*?padding: 16px 16px 12px;/);
+  assert.match(styles, /\.atlas-field \{[\s\S]*?--atlas-panel-width: 246px;/);
+  assert.match(styles, /\.atlas-panel \{[\s\S]*?width: var\(--atlas-panel-width\);[\s\S]*?padding: 16px 16px 12px;/);
   assert.match(styles, /\.atlas-panel header p \{[\s\S]*?font-size: 12px;[\s\S]*?-webkit-line-clamp: 3;/);
   assert.match(styles, /\.atlas-places button strong \{[^}]*font-size: 12px;/);
   assert.match(styles, /\.atlas-qr img \{ width: 86px; height: 86px;/);
   assert.match(atlasSource, /width: 192,/);
+});
+
+test("Atlas passenger reading collapses behind a persistent midpoint handle", () => {
+  assert.match(atlasSource, /const \[panelCollapsed, setPanelCollapsed\] = useState\(false\)/);
+  assert.match(atlasSource, /aria-controls="atlas-passenger-panel"/);
+  assert.match(atlasSource, /aria-expanded=\{!panelCollapsed\}/);
+  assert.match(atlasSource, /aria-hidden=\{collapsed\}/);
+  assert.match(atlasSource, /inert=\{collapsed \? true : undefined\}/);
+  assert.match(atlasSource, /setPanelCollapsed\(\(current\) => !current\)/);
+  assert.match(styles, /\.atlas-panel-toggle \{[\s\S]*?top: 50%;[\s\S]*?right: var\(--atlas-panel-width\);/);
+  assert.match(styles, /\.atlas-field\.is-panel-collapsed \.atlas-panel-toggle \{ right: 0; \}/);
+  assert.match(styles, /\.atlas-field\.is-panel-collapsed \.atlas-map \{ right: 0; \}/);
 });
 
 test("Atlas Milan demo travels by speed and heading without accepting malformed coordinates", () => {
@@ -88,4 +101,6 @@ test("Atlas owns a minimal palette-driven OpenFreeMap style with mandatory attri
   assert.match(style.sources.openfreemap.attribution, /OpenStreetMap/);
   assert.ok(style.layers.some((layer) => layer.type === "fill-extrusion"));
   assert.equal(style.layers.some((layer) => layer.type === "raster"), false);
+  assert.match(atlasSource, /AttributionControl\(\{ compact: false \}\)/);
+  assert.match(styles, /\.atlas-field \.maplibregl-ctrl-attrib \{[\s\S]*?font-size: 7px;[\s\S]*?opacity: \.46;/);
 });

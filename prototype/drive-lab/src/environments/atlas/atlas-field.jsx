@@ -32,10 +32,16 @@ function recolourStyle(map, palette) {
   }
 }
 
-function NearbyPanel({ pages, selectedId, onSelect, qrUrl, loading, demo }) {
+function NearbyPanel({ pages, selectedId, onSelect, qrUrl, loading, demo, collapsed }) {
   const selected = pages.find((page) => page.id === selectedId) ?? pages[0];
   return (
-    <aside className="atlas-panel" aria-live="polite">
+    <aside
+      id="atlas-passenger-panel"
+      className="atlas-panel"
+      aria-live="polite"
+      aria-hidden={collapsed}
+      inert={collapsed ? true : undefined}
+    >
       <header>
         <small>{demo ? "DEMO LOCATION" : "NEARBY"}</small>
         <strong>{selected?.title ?? (loading ? "Reading the city…" : "Location unavailable")}</strong>
@@ -76,6 +82,7 @@ export default function AtlasField({ speed, theme, position, reducedMotion, onRe
   const [qrUrl, setQrUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [demoPosition, setDemoPosition] = useState(null);
+  const [panelCollapsed, setPanelCollapsed] = useState(false);
   valuesRef.current = { speed, theme, position, reducedMotion, demoPosition };
 
   const effectivePosition = useMemo(() => {
@@ -113,7 +120,7 @@ export default function AtlasField({ speed, theme, position, reducedMotion, onRe
         fadeDuration: 0,
       });
       mapRef.current = map;
-      map.addControl(new maplibregl.AttributionControl({ compact: true }), "bottom-left");
+      map.addControl(new maplibregl.AttributionControl({ compact: false }), "bottom-left");
       map.on("load", () => {
         map.setPaintProperty("sedicivalvole-buildings", "fill-extrusion-height", [
           "*", ["coalesce", ["get", "render_height"], 5], camera.buildingScale,
@@ -200,6 +207,16 @@ export default function AtlasField({ speed, theme, position, reducedMotion, onRe
   }, [theme]);
 
   useEffect(() => {
+    const resize = () => mapRef.current?.resize();
+    const frame = requestAnimationFrame(resize);
+    const settled = window.setTimeout(resize, 360);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.clearTimeout(settled);
+    };
+  }, [panelCollapsed]);
+
+  useEffect(() => {
     const url = wikipediaNearbyUrl(nearbyPosition);
     if (!url) {
       setPages([]);
@@ -252,10 +269,31 @@ export default function AtlasField({ speed, theme, position, reducedMotion, onRe
   }
 
   return (
-    <section className="atlas-field" style={{ "--atlas-accent": paletteToAtlasCss(theme.palette).accent }}>
+    <section
+      className={`atlas-field${panelCollapsed ? " is-panel-collapsed" : ""}`}
+      style={{ "--atlas-accent": paletteToAtlasCss(theme.palette).accent }}
+    >
       <div className="atlas-map" ref={hostRef} aria-hidden="true" />
       {demo ? <div className="atlas-demo-hint">↑ DRIVE · ↓ BRAKE · ← → STEER</div> : null}
-      <NearbyPanel pages={pages} selectedId={selectedId} onSelect={setSelectedId} qrUrl={qrUrl} loading={loading} demo={demo} />
+      <button
+        className="atlas-panel-toggle"
+        type="button"
+        aria-controls="atlas-passenger-panel"
+        aria-expanded={!panelCollapsed}
+        aria-label={panelCollapsed ? "Open Atlas passenger panel" : "Collapse Atlas passenger panel"}
+        onClick={() => setPanelCollapsed((current) => !current)}
+      >
+        <span aria-hidden="true">{panelCollapsed ? "‹" : "›"}</span>
+      </button>
+      <NearbyPanel
+        pages={pages}
+        selectedId={selectedId}
+        onSelect={setSelectedId}
+        qrUrl={qrUrl}
+        loading={loading}
+        demo={demo}
+        collapsed={panelCollapsed}
+      />
     </section>
   );
 }
