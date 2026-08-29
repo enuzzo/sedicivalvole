@@ -19,6 +19,8 @@ export function wakeMotionProfile(speedKmh, effect = null, reducedMotion = false
   return {
     energy,
     timeRate: reducedMotion ? 0 : (0.045 + 0.62 * energy ** 1.25) * effectRate,
+    streamRate: reducedMotion ? 0 : (0.012 + 0.50 * energy ** 1.7) * effectRate,
+    streamRelief: reducedMotion ? 0 : 0.01 + 0.055 * energy ** 1.25,
     breathing: reducedMotion ? 0 : 0.006 + 0.018 * energy,
     sway: reducedMotion ? 0 : (0.012 + 0.055 * energy ** 1.4) * effectSway,
     tangle: reducedMotion ? 0 : clamp((energy - 0.42) / 0.58, 0, 1) ** 1.35 * effectTangle,
@@ -30,14 +32,22 @@ export function wakeMotionProfile(speedKmh, effect = null, reducedMotion = false
   };
 }
 
-export function wakeRibbonMotion(ribbon, progress, time, profile) {
+export function wakeStreamPosition(ribbon, travel) {
+  const phaseOffset = ribbon.phase / (Math.PI * 2);
+  return ((travel + phaseOffset) % 1 + 1) % 1;
+}
+
+export function wakeRibbonMotion(ribbon, progress, time, profile, travel = time * profile.streamRate) {
   const safeProgress = clamp(Number(progress) || 0, 0, 1);
   const envelope = Math.sin(Math.PI * safeProgress) ** 2;
   const travelling = Math.sin(safeProgress * Math.PI * 2.3 - time * 4.0 + ribbon.phase);
   const secondary = Math.sin(safeProgress * Math.PI * 5.2 - time * 6.8 + ribbon.phase * 1.7);
   const knotEnvelope = Math.exp(-Math.pow((safeProgress - 0.56) / 0.22, 2));
   const knotPhase = time * 3.2 + ribbon.phase * 1.35;
-  const flowWave = Math.sin(safeProgress * Math.PI * 2.7 - time * 5.2 + ribbon.phase);
+  const streamPosition = wakeStreamPosition(ribbon, travel);
+  const roadPhase = (safeProgress - streamPosition) * Math.PI * 4;
+  const flowWave = Math.sin(roadPhase);
+  const roadShoulder = Math.cos(roadPhase + 0.48);
   const drape = -Math.sin(Math.PI * safeProgress) * profile.drape
     * (0.78 + 0.22 * Math.sin(time * 0.58 + ribbon.phase));
   return {
@@ -45,11 +55,14 @@ export function wakeRibbonMotion(ribbon, progress, time, profile) {
       + knotEnvelope * Math.sin(knotPhase) * profile.tangle * 0.18,
     y: drape + envelope * (travelling + secondary * 0.24) * profile.sway
       + knotEnvelope * Math.cos(knotPhase * 0.91) * profile.tangle * 0.15,
-    z: knotEnvelope * Math.sin(knotPhase * 1.21 + safeProgress * 6.0) * profile.tangle * 0.16,
+    z: knotEnvelope * Math.sin(knotPhase * 1.21 + safeProgress * 6.0) * profile.tangle * 0.16
+      + envelope * roadShoulder * profile.streamRelief,
     twist: envelope * secondary * profile.sway * 4.2
-      + knotEnvelope * Math.sin(knotPhase + safeProgress * 10.0) * profile.tangle * 1.05,
-    along: envelope * flowWave * (0.008 + 0.035 * profile.energy),
-    widthScale: 1 + flowWave * (0.035 + 0.10 * profile.energy),
+      + knotEnvelope * Math.sin(knotPhase + safeProgress * 10.0) * profile.tangle * 1.05
+      + envelope * roadShoulder * profile.streamRelief * 4.8,
+    along: envelope * flowWave * (0.012 + 0.060 * profile.energy),
+    widthScale: 1 + flowWave * (0.055 + 0.16 * profile.energy),
+    streamPosition,
   };
 }
 

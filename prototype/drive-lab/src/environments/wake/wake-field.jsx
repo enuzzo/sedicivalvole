@@ -1,5 +1,11 @@
 import { useEffect, useRef } from "react";
-import { WAKE_RIBBONS, wakeMotionProfile, wakeToneColor } from "./wake-model.js";
+import {
+  catmullRomPoint,
+  WAKE_RIBBONS,
+  wakeMotionProfile,
+  wakeRibbonMotion,
+  wakeToneColor,
+} from "./wake-model.js";
 import { createWakeRenderer, wakeWebglAvailable } from "./wake-renderer.js";
 
 const MAX_PIXEL_RATIO = 1.35;
@@ -25,6 +31,9 @@ function startCanvasFallback(canvas, valuesRef, onRenderer, onFrame, onRuntimeEr
   }
   let animationFrame = 0;
   let stopped = false;
+  let lastFrameAt = performance.now();
+  let time = 0;
+  let travel = 0;
   onRenderer("Canvas2D · Wake ribbons");
   const render = (now) => {
     if (stopped) return;
@@ -41,25 +50,26 @@ function startCanvasFallback(canvas, valuesRef, onRenderer, onFrame, onRuntimeEr
         valuesRef.current.effect,
         valuesRef.current.reducedMotion,
       );
+      const elapsed = Math.max(0, Math.min((now - lastFrameAt) / 1000, 0.1));
+      lastFrameAt = now;
+      time += profile.timeRate * elapsed;
+      travel = (travel + profile.streamRate * elapsed) % 1;
       for (const ribbon of WAKE_RIBBONS) {
-        const points = ribbon.points;
         context.beginPath();
-        context.moveTo((points[0][0] * 0.5 + 0.5) * width, (0.5 - points[0][1] * 0.5) * height);
-        for (let index = 1; index < points.length - 1; index += 1) {
-          const here = points[index];
-          const next = points[index + 1];
-          context.quadraticCurveTo(
-            (here[0] * 0.5 + 0.5) * width,
-            (0.5 - here[1] * 0.5) * height,
-            ((here[0] + next[0]) * 0.25 + 0.5) * width,
-            (0.5 - (here[1] + next[1]) * 0.25) * height,
-          );
+        for (let segment = 0; segment <= 48; segment += 1) {
+          const progress = segment / 48;
+          const motion = wakeRibbonMotion(ribbon, progress, time, profile, travel);
+          const point = catmullRomPoint(ribbon.points, Math.min(1, Math.max(0, progress + motion.along)));
+          const x = (point[0] + motion.x) * 0.5 + 0.5;
+          const y = 0.5 - (point[1] + motion.y) * 0.5;
+          if (segment === 0) context.moveTo(x * width, y * height);
+          else context.lineTo(x * width, y * height);
         }
-        const last = points.at(-1);
-        context.lineTo((last[0] * 0.5 + 0.5) * width, (0.5 - last[1] * 0.5) * height);
         context.lineCap = "round";
         context.lineJoin = "round";
-        context.lineWidth = (ribbon.widthStart + ribbon.widthEnd) * 0.5 * profile.widthScale * height;
+        const middleMotion = wakeRibbonMotion(ribbon, 0.5, time, profile, travel);
+        context.lineWidth = (ribbon.widthStart + ribbon.widthEnd) * 0.5
+          * profile.widthScale * middleMotion.widthScale * height;
         context.strokeStyle = cssColor(wakeToneColor(valuesRef.current.theme.palette, ribbon.tone));
         context.shadowColor = context.strokeStyle;
         context.shadowBlur = valuesRef.current.effect === "BLOOM" ? 18 : 5;
