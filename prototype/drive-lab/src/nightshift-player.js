@@ -31,6 +31,7 @@ export function createNightshiftPlayer(context, destination, onSnapshot, onBankS
   let targetStateId = null;
   let bankBytes = 0;
   let boundaryFallbacks = 0;
+  let nativeMode = false;
   const decoded = new Map();
   const decoding = new Map();
   const recent = [];
@@ -102,6 +103,24 @@ export function createNightshiftPlayer(context, destination, onSnapshot, onBankS
       .sort((a, b) => a[1].lastUsed - b[1].lastUsed);
     while (retainedIds(extra).size > nightshiftDecodedLimit(bank?.manifest.maxDecodedClips)
       && removable.length > 0) decoded.delete(removable.shift()[0]);
+  }
+
+  function decodedPcmBytes() {
+    return [...decoded.keys()].reduce(
+      (total, id) => total + (bank?.assets.get(id)?.decodedPcmBytes ?? 0),
+      0,
+    );
+  }
+
+  function stopNative() {
+    nativeMode = false;
+    current = null;
+    pending = null;
+    prepared = null;
+    preparing = null;
+    for (const source of sources) {
+      try { source.stop(context.currentTime + 0.42); } catch {}
+    }
   }
 
   async function ensureDecoded(id) {
@@ -179,6 +198,7 @@ export function createNightshiftPlayer(context, destination, onSnapshot, onBankS
     const state = nightshiftStateForSpeed(speed, targetStateId);
     targetStateId = state?.id ?? null;
     if (!active || !state) return null;
+    nativeMode = true;
     await load();
     const section = select(state.id, null);
     const buffer = await ensureDecoded(section.assetId);
@@ -200,9 +220,14 @@ export function createNightshiftPlayer(context, destination, onSnapshot, onBankS
     if (!desired) {
       parkBed.setActive(true);
       nativeGain.gain.setTargetAtTime(0, context.currentTime, 0.38);
+      if (nativeMode) stopNative();
       return;
     }
     parkBed.setActive(false);
+    if (!nativeMode) {
+      nativeMode = true;
+      nativeGain.gain.setTargetAtTime(1, context.currentTime, 0.22);
+    }
     if (!current && !pending) {
       startNative().catch((error) => report("error", error));
       return;
@@ -240,6 +265,7 @@ export function createNightshiftPlayer(context, destination, onSnapshot, onBankS
       sectionTake: section?.take ?? null,
       rhythmId: section?.performanceId ?? null,
       rhythmTransition: pending ? "boundary-ready" : "steady",
+      rhythmLabel: section ? "synth-pop groove" : "ambient",
       boundaryFallback: Boolean(current?.boundaryFallback),
       boundaryFallbacks,
       tempo: section?.bpm ?? null,
@@ -262,6 +288,7 @@ export function createNightshiftPlayer(context, destination, onSnapshot, onBankS
       decodedClips: decoded.size,
       decodingClips: decoding.size,
       decodedSlots: retainedIds().size,
+      decodedPcmBytes: decodedPcmBytes(),
       liveSourceNodes: sources.size,
       playing: active && (park.active || sources.size > 0),
       parkVoicing: park.voicing,
@@ -281,7 +308,10 @@ export function createNightshiftPlayer(context, destination, onSnapshot, onBankS
       targetStateId = state?.id ?? null;
       parkBed.setActive(active && !state);
       if (active && state && !current) await startNative();
-      if (!active) nativeGain.gain.setTargetAtTime(0, context.currentTime, 0.08);
+      if (!active) {
+        nativeGain.gain.setTargetAtTime(0, context.currentTime, 0.08);
+        stopNative();
+      }
       return snapshot();
     },
     setSpeed(nextSpeed, nextEnergy) {

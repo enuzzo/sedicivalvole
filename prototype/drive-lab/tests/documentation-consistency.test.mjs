@@ -28,7 +28,7 @@ test("current-state documentation names every implemented catalog entry", () => 
   assert.match(currentState, new RegExp(`\\b${FLUX_THEMES.length} themes\\b`));
   assert.match(currentState, new RegExp(`\\b${SECTIONS.length} four-bar sections\\b`));
   const readyScores = SCORE_GENRES.filter((score) => score.status === SCORE_STATUS.ready);
-  assert.deepEqual(readyScores.map((score) => score.id), ["junction", "fracture"]);
+  assert.deepEqual(readyScores.map((score) => score.id), ["junction", "fracture", "nightshift"]);
 });
 
 test("active overview documents do not restore superseded audio claims", () => {

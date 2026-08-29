@@ -1170,6 +1170,41 @@ or LU while also matching the bank SHA-256 and runtime parameters; the current
 maximum numerical drift is `0.000002`. This closes the measurement-provenance
 gap, but it still does not turn encoded metrics into a Tesla listening verdict.
 
+### 6.6 A tempo ladder still needs one harmonic author
+
+The 1980s source audit found useful native drum recordings at `85`, `95`,
+`110`, `120`, `125`, `130` and `140 BPM`, but the tonal construction kits are
+not alternate-tempo renders of one composition. Their filename root tags do not
+prove a shared progression, voicing, phrase start or downbeat, and the chroma
+proposal margins are often too small to bridge that evidence gap. Treating
+these packs as interchangeable decks would pass metadata checks while sounding
+like a collage.
+
+NIGHTSHIFT therefore takes one stricter route: a single native two-bar drum
+recording is the rhythmic spine at any instant, while project-authored pads,
+bass, arpeggio and sparse high-speed punctuation perform one A-minor grammar.
+Each production asset is a complete eight-bar mix; the runtime never exposes or
+layers a source loop. Three complete takes per state, recent-take memory and
+unequal PARK holds prevent immediate or short-cycle repetition without changing
+musical identity.
+
+The perceived acceleration is orchestration as well as tempo. PARK has six
+slowly crossfaded consonant voicings and breathing dynamics with no clock, beat
+or bass. The first moving family is `85 BPM`; bass and arpeggio enter by degree,
+and `120 BPM` drumming cannot arrive before `82 km/h`. Separate descent
+thresholds stop a boundary reversal from chattering. State changes wait for the
+end of the current eight-bar performance. If the next decode misses that
+boundary, the player repeats one already decoded complete performance and
+reports the fallback instead of making silence or cutting a phrase.
+
+The enforceable contract checks the six native states, entrance/exit
+hysteresis, eight-bar harmony, one drum cell at a time, three takes, recent-take
+avoidance, six-clip decoded bound, absence of playback-rate automation, mixed
+bank identity and raw-source exclusion. The full offline trajectory measures
+`-21.4 LUFS` integrated, `6.6 LU` LRA and `-3.8 dBFS` true peak. These figures
+protect bounds and headroom; they do not claim listening acceptance in the
+Tesla cabin.
+
 ---
 
 ## 7. Sources and material

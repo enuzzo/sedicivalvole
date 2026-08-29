@@ -21,7 +21,6 @@ export const NIGHTSHIFT_STATES = Object.freeze([
 
 export function nightshiftStateForSpeed(speedKmh, previousId = null) {
   const speed = Math.max(0, Number(speedKmh) || 0);
-  if (speed < NIGHTSHIFT_STATES[0].enterKmh) return null;
   const previousIndex = NIGHTSHIFT_STATES.findIndex(({ id }) => id === previousId);
   if (previousIndex >= 0 && speed >= NIGHTSHIFT_STATES[previousIndex].exitKmh) {
     let nextIndex = previousIndex;
@@ -29,6 +28,7 @@ export function nightshiftStateForSpeed(speedKmh, previousId = null) {
       && speed >= NIGHTSHIFT_STATES[nextIndex + 1].enterKmh) nextIndex += 1;
     return NIGHTSHIFT_STATES[nextIndex];
   }
+  if (speed < NIGHTSHIFT_STATES[0].enterKmh) return null;
   let selected = NIGHTSHIFT_STATES[0];
   for (const state of NIGHTSHIFT_STATES) {
     if (speed >= state.enterKmh) selected = state;

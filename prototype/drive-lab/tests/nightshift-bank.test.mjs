@@ -40,6 +40,22 @@ test("NIGHTSHIFT grows through native 1980s tempo families without an early fast
   assert.equal(nightshiftStateForSpeed(73.9, "drive")?.id, "motion");
 });
 
+test("NIGHTSHIFT ascent, descent and boundary reversals follow the authored hysteresis", () => {
+  const speeds = [0, 3, 21, 22, 47, 48, 81, 82, 104, 105, 122, 123, 130,
+    122.5, 114, 113.9, 105, 96, 95.9, 82, 74, 73.9, 48, 42, 41.9, 22, 18, 17.9, 3, 1.5, 1.4, 0];
+  const expected = [null, "glide", "glide", "cruise", "cruise", "motion", "motion", "drive",
+    "drive", "chase", "chase", "limit", "limit", "limit", "limit", "chase", "chase",
+    "chase", "drive", "drive", "drive", "motion", "motion", "motion", "cruise", "cruise",
+    "cruise", "glide", "glide", "glide", null, null];
+  let previous = null;
+  const observed = speeds.map((speed) => {
+    const state = nightshiftStateForSpeed(speed, previous);
+    previous = state?.id ?? null;
+    return previous;
+  });
+  assert.deepEqual(observed, expected);
+});
+
 test("NIGHTSHIFT keeps one consonant grammar and exactly three complete takes per state", () => {
   assert.equal(NIGHTSHIFT_BARS_PER_PERFORMANCE, 8);
   assert.equal(NIGHTSHIFT_TAKES, 3);

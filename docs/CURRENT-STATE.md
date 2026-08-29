@@ -148,7 +148,17 @@ dated study documents.
   beat, bassline, transport clock or production-bank decode. The conservative
   reference measures `-54.290 dBFS` RMS and `-44.313 dBFS` sample peak; musical
   quality still requires low-volume and real-Tesla listening.
-- Both scores now share one authored low-speed grammar. Below `0.8 km/h`, PARK
+- **NIGHTSHIFT 03** is a selectable sampled Synth-pop / 1980s score. Its 18
+  self-contained eight-bar performances use one native two-bar drum recording
+  at a time beneath a project-authored `Amin9 – Cmaj7 – Emin7 – G6 – Amin9`
+  grammar. Three takes at each native `85 / 95 / 110 / 120 / 130 / 140 BPM`
+  state avoid immediate repetition. The `120 BPM` and faster families cannot
+  enter before `82 km/h`; speed descent uses separate exit thresholds. PARK is
+  a six-voicing, clockless, breathing A-minor ambience with no beat or bass.
+  The 5.5 MB Opus bank exposes only complete mixes and retains at most six
+  decoded clips. Offline measurement is `-21.4 LUFS` integrated, `6.6 LU` LRA
+  and `-3.8 dBFS` true peak; listening acceptance remains open.
+- The scores retain authored low-speed grammar. Below `0.8 km/h`, PARK
   sustains a very quiet, clockless mood harmony with no beat or bass. A genuine
   forward crossing at `1.2 km/h` plays exactly two soft consonant DEPART events;
   it cannot retrigger until the vehicle has remained at or below `0.5 km/h` for
@@ -169,7 +179,7 @@ dated study documents.
   companion is the exact-boundary fallback, immediate repetition is forbidden,
   decode failures back off for ten audio-clock seconds, and the six-slot bound
   still holds.
-- FRACTURE and JUNCTION hand off through one four-second equal-power score
+- FRACTURE, JUNCTION and NIGHTSHIFT hand off through one four-second equal-power score
   crossfade. Rapid reversals continue from the audible point, cancel overlapping
   Web Audio automation safely and retain revision-guarded cleanup. A score-local
   rhythm fade is not stacked onto the same native entrance.
@@ -185,7 +195,7 @@ dated study documents.
   only that band, preserving the sub; it observes a 25-second refractory period
   and yields immediately to UNDERWATER. The common 6.6 kB AudioWorklet sits
   after either score and before OPEN's shared tone/width stage.
-- **PULSE 03**, **CUTWATER 04**, **LOWTIDE 05**, **NIGHTCAST 06**, and
+- **CUTWATER 04**, **LOWTIDE 05**, **NIGHTCAST 06**, and
   **STILLWATER 07** are declared honestly as `IN PREPARATION` and are disabled.
 - `docs/MUSIC-CRAFT.md` records the musical defects and techniques already
   learned. Assertable musical rules belong in tests.
@@ -220,7 +230,7 @@ dated study documents.
   [`DEPLOY.md`](DEPLOY.md).
 - The target Tesla split viewport is `773 × 601` CSS pixels on a
   `1254 × 784` logical screen at DPR `1.53`.
-- No sample pack file is committed or published. JUNCTION ships only the mixed,
+- No sample pack file is committed or published. JUNCTION and NIGHTSHIFT ship only mixed,
   processed production permitted by the source terms. The development QA
   harness is excluded from production builds.
 - The product owner subsequently authorized direct inspection and offline
@@ -228,7 +238,8 @@ dated study documents.
   inventories all 684 relevant files without committing raw audio. Provenance,
   rights, level/transient evidence and compatibility findings are recorded in
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
-  The third score is now in authorship, not source-blocked.
+  NIGHTSHIFT is now implemented locally from that evidence; raw sources remain
+  ignored, uncommitted and unpublished.
 - Diagnostic telemetry contains no coordinates and is sent only after the
   explicit `SEND DIAGNOSTIC` action. ATLAS location is a separate ephemeral
   feature: the latest reliable point stays in session memory; OpenFreeMap tile
@@ -242,11 +253,12 @@ dated study documents.
    contrast on the target screen.
 2. Perform low-volume listening and a real-Tesla drive across FRACTURE's full
    ascent/descent and boundary reversals, JUNCTION's long PARK holds and later
-   transition, and the OPEN/BLOOM gain changes. Automated visual, structural and
+   transition, NIGHTSHIFT's PARK form and complete `85–140 BPM` ascent/descent,
+   and the OPEN/BLOOM gain changes. Automated visual, structural and
    loudness evidence is not perceptual acceptance.
-3. Complete, encode, test and audition the third 1980s adaptive score from the
-   now-authorized ignored source library. Raw samples remain unpublishable;
-   only self-contained project-authored mixed performances may ship.
+3. Audition NIGHTSHIFT at low volume, verify perceived phrasing and loudness
+   against both existing scores, then validate acceleration/reversal behavior in
+   the target Tesla. Automated measurements are not perceptual acceptance.
 4. Deploy the verified local checkpoints when a publication path is available
    that does not violate the prohibition on reading `.env`. The canonical live
    product is still commit `5685de3`, version `0.0.0`, build `20260829-1536`.

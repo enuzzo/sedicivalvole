@@ -9,7 +9,7 @@
 > layers. The exact derived files, modifications, license, and direct reuse
 > authorization are recorded in `THIRD_PARTY_NOTICES.md`.
 
-> Current state: **Flux Drive Lab runs the authored FRACTURE and JUNCTION music with five
+> Current state: **Flux Drive Lab runs the authored FRACTURE, JUNCTION and NIGHTSHIFT music with five
 > selectable visual environments and is under vehicle validation**. This is a
 > development build, not a release.
 
@@ -34,10 +34,11 @@ The canonical development build is available at [sedicivalvole.app](https://sedi
 - ✅ ATLAS touch exploration with one-pointer bearing/pitch, two-pointer extended pinch zoom and a fresh six-second eased return; a compass, top-navigation GPS status/accuracy and non-blocking permission-recovery popup replace the old waiting splash, while full-width Wikipedia imagery and five nearby choices improve passenger reading;
 - ✅ FRACTURE, a production AudioWorklet score with an ambience-only launch, ten four-bar harmonic sections, a narrow tempo knee, quantized transitions, hysteresis, dwell, crossfades, and three authored half-time rhythm families that grow from sparse velvet pulse to weave before the full break is permitted at `88 km/h`; no automatic riff or response lane plays in normal playback;
 - ✅ JUNCTION, a sampled production built as one synchronous performance at a time: 24 complete eight-bar clips from 76 distinct recordings, one stable E-minor harmonic grammar, native 127–168 BPM pacing, six slowly evolving clockless PARK voicings without beat or bass, four-second rhythm entrances/releases, one 5.8 MB segmented Opus bank, recent-take avoidance, and no rave lead, tonal second deck, or loose source samples;
-- 🧪 the requested third 1980s score is in authorship after the product owner
-  authorized inspection of the ignored source library: all 684 relevant WAVs
-  now have reproducible provenance, tempo, role, duration, level, transient and
-  cautious harmonic evidence; raw samples remain uncommitted and unpublished;
+- ✅ NIGHTSHIFT, the third adaptive score: 18 complete eight-bar synth-pop
+  performances, one project-authored A-minor grammar and native 85–140 BPM
+  MusicRadar drum families. Its clockless PARK form has six quiet voicings with
+  no beat or bass; fast drumming cannot enter before `82 km/h`. The browser
+  retains at most six decoded mixed performances and publishes no source loop;
 - ✅ shared acceleration performance effects: OPEN widens and brightens either
   score, while the rarer BLOOM event bends only the `300 Hz–8 kHz` band through
   a bounded `8 → 0.8 ms` feed-forward delay and always yields to UNDERWATER;
@@ -69,9 +70,9 @@ Confirmed product modes:
 
 Shared foundations include the GPS/Demo speed source, integrated diagnostics, master Stop/Mute, reduced motion, renderer fallback, and touch-first safety behavior. The mode switch will remain clearly identifiable and reachable from both experiences.
 
-The current music library has two selectable authored works: generative
-AudioWorklet score **FRACTURE** and sampled adaptive production **JUNCTION**.
-Five later directions remain `IN PREPARATION`. Their musical quality and
+The current music library has three selectable authored works: generative
+AudioWorklet score **FRACTURE** and sampled adaptive productions **JUNCTION**
+and **NIGHTSHIFT**. Four later directions remain `IN PREPARATION`. Their musical quality and
 relationship to real acceleration remain pending a Tesla listening test.
 
 ## Quick start
@@ -125,7 +126,7 @@ No screenshot is published here yet. The repository will include only real, curr
 The next gate is a real Tesla session at the verified split viewport: compare all
 four implemented visuals across acceleration and deceleration, verify
 Aperture's 60 FPS desktop gain on the vehicle,
-listen critically to FRACTURE and JUNCTION, test
+listen critically to FRACTURE, JUNCTION and NIGHTSHIFT, test
 the Music/Visual/theme controls, and check touch reach while parked.
 
 See [`docs/ROADMAP.md`](docs/ROADMAP.md).
