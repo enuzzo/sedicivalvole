@@ -152,6 +152,47 @@ test("the deploy gate verifies the packaged font tree explicitly", () => {
   assert.match(source, /BUILD \/ "fonts",\n\s+tree_name="fonts"/);
 });
 
+test("third-party upgrades are limited to recognized project-owned Drivey bridge files", () => {
+  const source = readFileSync(deployScript, "utf8");
+  assert.match(source, /tree_name == "third-party"/);
+  assert.match(source, /relative_path,\n\s+remote_payload/);
+  assert.match(source, /relative_path,\n\s+local_payload/);
+
+  const program = String.raw`
+import importlib.util
+import pathlib
+import sys
+
+spec = importlib.util.spec_from_file_location("sedicivalvole_deploy", sys.argv[1])
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+
+shell = b'''import Drivey from "./js/Drivey.js";
+window.__SEDICIVALVOLE_DRIVEY__ = Object.freeze({
+  upstreamCommit: "5104cdade2a3158786b05b9b0680a50e942830cf",
+});'''
+boundary = b'''# Drivey.js integration boundary
+- Project integration shell: sedicivalvole.html
+- Imported commit: 5104cdade2a3158786b05b9b0680a50e942830cf'''
+
+assert module.is_recognized_project_owned_third_party_entry(
+    "drivey/sedicivalvole.html", shell
+)
+assert module.is_recognized_project_owned_third_party_entry(
+    pathlib.Path("drivey/SEDICIVALVOLE-INTEGRATION.md"), boundary
+)
+assert not module.is_recognized_project_owned_third_party_entry(
+    "drivey/js/Drivey.js", shell
+)
+assert not module.is_recognized_project_owned_third_party_entry(
+    "drivey/sedicivalvole.html", b"arbitrary remote content"
+)
+`;
+  execFileSync("python3", ["-c", program, deployScript.pathname], {
+    env: { ...process.env, PYTHONDONTWRITEBYTECODE: "1" },
+  });
+});
+
 test("FTP publication sources the local recipient outside every Vite-served tree", () => {
   const program = String.raw`
 import importlib.util

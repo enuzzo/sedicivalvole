@@ -97,6 +97,19 @@ REQUIRED = (
     "DEPLOY_PASSWORD",
     "DEPLOY_REMOTE_PATH",
 )
+PROJECT_OWNED_THIRD_PARTY_MARKERS = {
+    "drivey/sedicivalvole.html": (
+        b'import Drivey from "./js/Drivey.js"',
+        b"window.__SEDICIVALVOLE_DRIVEY__",
+        b"5104cdade2a3158786b05b9b0680a50e942830cf",
+    ),
+    "drivey/SEDICIVALVOLE-INTEGRATION.md": (
+        b"# Drivey.js integration boundary",
+        b"Project integration shell:",
+        b"sedicivalvole.html",
+        b"5104cdade2a3158786b05b9b0680a50e942830cf",
+    ),
+}
 
 
 def parse_env(path: Path) -> dict[str, str]:
@@ -139,12 +152,22 @@ def remote_bytes(ftp: ftplib.FTP, name: str) -> bytes:
     return buffer.getvalue()
 
 
+def is_recognized_project_owned_third_party_entry(
+    relative_path: Path | str,
+    payload: bytes,
+) -> bool:
+    """Recognize only the two mutable Sedici files inside the vendor tree."""
+    markers = PROJECT_OWNED_THIRD_PARTY_MARKERS.get(Path(relative_path).as_posix())
+    return markers is not None and all(marker in payload for marker in markers)
+
+
 def verify_remote_static_tree(
     ftp: ftplib.FTP,
     local_root: Path,
     *,
     tree_name: str,
     require_complete: bool = False,
+    relative_root: Path = Path(),
 ) -> None:
     """Verify that every existing remote static entry matches the local tree."""
     remote_names = safe_names(ftp)
@@ -157,6 +180,7 @@ def verify_remote_static_tree(
     names_to_verify = expected_names if require_complete else remote_names
     for name in names_to_verify:
         local_path = local_root / name
+        relative_path = relative_root / name
         if local_path.is_dir():
             ftp.cwd(name)
             try:
@@ -165,13 +189,27 @@ def verify_remote_static_tree(
                     local_path,
                     tree_name=tree_name,
                     require_complete=require_complete,
+                    relative_root=relative_path,
                 )
             finally:
                 ftp.cwd("..")
             continue
-        if sha256_bytes(remote_bytes(ftp, name)) != hashlib.sha256(
-            static_build_bytes(local_path)
-        ).hexdigest():
+        remote_payload = remote_bytes(ftp, name)
+        local_payload = static_build_bytes(local_path)
+        if sha256_bytes(remote_payload) != hashlib.sha256(local_payload).hexdigest():
+            project_owned_update = (
+                tree_name == "third-party"
+                and is_recognized_project_owned_third_party_entry(
+                    relative_path,
+                    remote_payload,
+                )
+                and is_recognized_project_owned_third_party_entry(
+                    relative_path,
+                    local_payload,
+                )
+            )
+            if project_owned_update:
+                continue
             raise ValueError(f"{tree_name} content mismatch")
 
 
