@@ -1,5 +1,81 @@
 export const OPENFREEMAP_VECTOR_URL = "https://tiles.openfreemap.org/planet";
 export const WIKIPEDIA_SEARCH_RADIUS_METRES = 10000;
+export const ATLAS_MANUAL_IDLE_MS = 6000;
+export const ATLAS_MANUAL_CAMERA_LIMITS = Object.freeze({
+  minimumZoom: 3,
+  maximumZoom: 20.5,
+  minimumPitch: 18,
+  maximumPitch: 78,
+});
+
+const clamp = (value, minimum, maximum) => Math.min(maximum, Math.max(minimum, value));
+
+export function manualAtlasCamera(camera, deltaX, deltaY) {
+  return {
+    bearing: ((Number(camera?.bearing) + Number(deltaX) * 0.34) % 360 + 360) % 360,
+    pitch: clamp(
+      Number(camera?.pitch) - Number(deltaY) * 0.24,
+      ATLAS_MANUAL_CAMERA_LIMITS.minimumPitch,
+      ATLAS_MANUAL_CAMERA_LIMITS.maximumPitch,
+    ),
+    zoom: clamp(
+      Number(camera?.zoom),
+      ATLAS_MANUAL_CAMERA_LIMITS.minimumZoom,
+      ATLAS_MANUAL_CAMERA_LIMITS.maximumZoom,
+    ),
+  };
+}
+
+export function pinchAtlasZoom(zoom, previousDistance, nextDistance) {
+  const ratio = Number(nextDistance) / Math.max(1, Number(previousDistance));
+  return clamp(
+    Number(zoom) + Math.log2(Math.max(0.2, ratio)) * 1.35,
+    ATLAS_MANUAL_CAMERA_LIMITS.minimumZoom,
+    ATLAS_MANUAL_CAMERA_LIMITS.maximumZoom,
+  );
+}
+
+export function atlasManualCameraShouldReturn(lastInteractionAt, now) {
+  return Number.isFinite(lastInteractionAt)
+    && Number(now) - lastInteractionAt >= ATLAS_MANUAL_IDLE_MS;
+}
+
+function atlasPointDistanceMetres(first, second) {
+  if (!validAtlasPosition(first) || !validAtlasPosition(second)) return Number.POSITIVE_INFINITY;
+  const latitude = ((first.latitude + second.latitude) * Math.PI) / 360;
+  const north = (second.latitude - first.latitude) * 111320;
+  const east = (second.longitude - first.longitude) * 111320 * Math.cos(latitude);
+  return Math.hypot(north, east);
+}
+
+/**
+ * Keeps only an ephemeral, chronological travel line. The caller owns this
+ * array in memory and clears it with the map; diagnostics never receive it.
+ */
+export function appendAtlasTravelPoint(points, position, maximumPoints = 8) {
+  if (!validAtlasPosition(position)) return Array.isArray(points) ? points : [];
+  const previous = Array.isArray(points) ? points : [];
+  const last = previous.at(-1);
+  if (last && atlasPointDistanceMetres(last, position) < 1.2) return previous;
+  return [...previous, {
+    latitude: position.latitude,
+    longitude: position.longitude,
+  }].slice(-Math.max(2, maximumPoints));
+}
+
+export function atlasTravelFeature(points) {
+  const coordinates = (Array.isArray(points) ? points : [])
+    .filter(validAtlasPosition)
+    .map((point) => [point.longitude, point.latitude]);
+  return {
+    type: "FeatureCollection",
+    features: coordinates.length >= 2 ? [{
+      type: "Feature",
+      properties: {},
+      geometry: { type: "LineString", coordinates },
+    }] : [],
+  };
+}
 
 const ATLAS_KEYBOARD_INTERACTIVE_SELECTOR = [
   "a[href]",
@@ -29,6 +105,29 @@ export function validAtlasPosition(position) {
     && position.latitude <= 90
     && position.longitude >= -180
     && position.longitude <= 180;
+}
+
+export function atlasGpsPresentation(gpsState, accuracyM, source = "GPS") {
+  const state = String(gpsState || "not tested");
+  const live = source === "DEMO" || state === "live";
+  const requiresHelp = [
+    "permission denied",
+    "signal unavailable",
+    "timeout",
+    "unavailable",
+    "sanitized error",
+  ].includes(state);
+  const status = source === "DEMO"
+    ? "DEMO"
+    : live
+      ? "LIVE"
+      : state.replace("permission ", "").toUpperCase();
+  return {
+    live,
+    requiresHelp,
+    status,
+    accuracy: Number.isFinite(accuracyM) ? `±${Math.round(accuracyM)} m` : "±— m",
+  };
 }
 
 export function speedToAtlasCamera(speedKmh) {
@@ -149,7 +248,7 @@ export function normalizeNearbyPages(payload) {
         thumbnailHeight: Number.isFinite(page.thumbnail?.height) ? page.thumbnail.height : null,
       };
     })
-    .slice(0, 5);
+    .slice(0, 6);
 }
 
 /**
@@ -188,8 +287,57 @@ export function paletteToAtlasCss(palette) {
   };
 }
 
+const mixChannels = (first, second, amount) => first.map((value, index) => (
+  value + (second[index] - value) * amount
+));
+
+const channelLuminance = (channels) => {
+  const linear = channels.map((value) => {
+    const bounded = clamp(value, 0, 1);
+    return bounded <= 0.04045 ? bounded / 12.92 : ((bounded + 0.055) / 1.055) ** 2.4;
+  });
+  return linear[0] * 0.2126 + linear[1] * 0.7152 + linear[2] * 0.0722;
+};
+
+export function atlasContrastRatio(first, second) {
+  const bright = Math.max(channelLuminance(first), channelLuminance(second));
+  const dark = Math.min(channelLuminance(first), channelLuminance(second));
+  return (bright + 0.05) / (dark + 0.05);
+}
+
+function ensureAtlasContrast(channels, background, minimum) {
+  let result = [...channels];
+  for (let step = 0; step < 12 && atlasContrastRatio(result, background) < minimum; step += 1) {
+    result = mixChannels(result, [1, 1, 1], 0.12);
+  }
+  return result;
+}
+
+/** Preserves every shared theme while giving the map its own legibility mix. */
+export function paletteToAtlasMapChannels(palette) {
+  const background = [...palette.base];
+  const terrain = mixChannels(palette.base, palette.mid, 0.58);
+  const foreground = ensureAtlasContrast(palette.light, background, 7);
+  const secondary = ensureAtlasContrast(mixChannels(palette.secondary, palette.light, 0.44), background, 3.2);
+  const accent = ensureAtlasContrast(mixChannels(palette.accent, palette.light, 0.3), background, 2.8);
+  return {
+    background,
+    terrain,
+    foreground,
+    accent,
+    secondary,
+    buildingLow: mixChannels(terrain, foreground, 0.18),
+  };
+}
+
+export function paletteToAtlasMapCss(palette) {
+  const css = (channels) => `rgb(${channels.map((channel) => Math.round(channel * 255)).join(" ")})`;
+  return Object.fromEntries(Object.entries(paletteToAtlasMapChannels(palette))
+    .map(([key, channels]) => [key, css(channels)]));
+}
+
 export function createAtlasStyle(palette) {
-  const colors = paletteToAtlasCss(palette);
+  const colors = paletteToAtlasMapCss(palette);
   return {
     version: 8,
     glyphs: "https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf",
@@ -198,6 +346,11 @@ export function createAtlasStyle(palette) {
         type: "vector",
         url: OPENFREEMAP_VECTOR_URL,
         attribution: "© OpenFreeMap © OpenMapTiles Data from OpenStreetMap",
+      },
+      atlasTravel: {
+        type: "geojson",
+        lineMetrics: true,
+        data: atlasTravelFeature([]),
       },
     },
     layers: [
@@ -223,11 +376,29 @@ export function createAtlasStyle(palette) {
         paint: { "line-color": colors.secondary, "line-width": ["interpolate", ["linear"], ["zoom"], 10, 0.25, 17, 2.0], "line-opacity": 0.58 },
       },
       {
+        id: "atlas-travel-underlay", type: "line", source: "atlasTravel",
+        layout: { "line-cap": "round", "line-join": "round" },
+        paint: {
+          "line-color": colors.background,
+          "line-width": ["interpolate", ["linear"], ["zoom"], 10, 2.2, 17, 8],
+          "line-opacity": 0.72,
+        },
+      },
+      {
+        id: "atlas-travel-pulse", type: "line", source: "atlasTravel",
+        layout: { "line-cap": "round", "line-join": "round" },
+        paint: {
+          "line-width": ["interpolate", ["linear"], ["zoom"], 10, 0.9, 17, 3.2],
+          "line-opacity": 0.9,
+          "line-gradient": ["interpolate", ["linear"], ["line-progress"], 0, colors.secondary, 1, colors.accent],
+        },
+      },
+      {
         id: "sedicivalvole-buildings", type: "fill-extrusion", source: "openfreemap", "source-layer": "building", minzoom: 13.5,
         paint: {
           "fill-extrusion-color": [
             "interpolate", ["linear"], ["coalesce", ["get", "render_height"], 5],
-            0, colors.terrain, 80, colors.accent, 240, colors.foreground,
+            0, colors.buildingLow, 80, colors.accent, 240, colors.foreground,
           ],
           "fill-extrusion-height": ["coalesce", ["get", "render_height"], 5],
           "fill-extrusion-base": ["coalesce", ["get", "render_min_height"], 0],

@@ -41,7 +41,7 @@ import { SplashSignalGate } from "./splash-signal-gate.jsx";
 import { Interstate7Field } from "./interstate-7-field.jsx";
 import { MeridianField } from "./environments/meridian/meridian-field.jsx";
 import { WakeField } from "./environments/wake/wake-field.jsx";
-import { resolveAtlasHeading } from "./environments/atlas/atlas-model.js";
+import { atlasGpsPresentation, resolveAtlasHeading } from "./environments/atlas/atlas-model.js";
 import {
   advanceDemoMotion,
   MODEL_3_AWD_REFERENCE,
@@ -836,6 +836,37 @@ function SupportPanel({ onClose, reducedMotion }) {
   );
 }
 
+function GpsHelpPopover({ open, status, accuracy, onClose, onRetry, onDemo }) {
+  if (!open) return null;
+  return (
+    <aside
+      id="gps-help-popover"
+      className="gps-help-popover"
+      role="dialog"
+      aria-modal="false"
+      aria-labelledby="gps-help-title"
+    >
+      <div className="gps-help-heading">
+        <div><small>ATLAS LOCATION</small><strong id="gps-help-title">GPS needs attention</strong></div>
+        <button type="button" onClick={onClose} aria-label="Close GPS help">CLOSE</button>
+      </div>
+      <dl>
+        <div><dt>STATUS</dt><dd>{status}</dd></div>
+        <div><dt>ACCURACY</dt><dd>{accuracy == null ? "unavailable" : `±${accuracy} m`}</dd></div>
+      </dl>
+      <p>
+        Open this site's permissions in the Tesla browser, allow Location, then
+        return here and retry. Menu wording can vary with vehicle software.
+      </p>
+      <div className="gps-help-actions">
+        <button type="button" onClick={onRetry}>RETRY LOCATION</button>
+        <button type="button" onClick={onDemo}>EXPLORE MILAN DEMO</button>
+      </div>
+      <small className="gps-help-privacy">Position stays in this ATLAS session and never enters DIAG.</small>
+    </aside>
+  );
+}
+
 export function App() {
   const initialPreferences = useMemo(readPreferences, []);
   const [phase, setPhase] = useState("idle");
@@ -876,6 +907,8 @@ export function App() {
   const [rawReportOpen, setRawReportOpen] = useState(false);
   const [diagnosticReadmeOpen, setDiagnosticReadmeOpen] = useState(false);
   const [mapPosition, setMapPosition] = useState(null);
+  const [gpsHelpOpen, setGpsHelpOpen] = useState(false);
+  const [atlasDemoRequest, setAtlasDemoRequest] = useState(0);
   const reducedMotion = useMemo(
     () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false,
     [],
@@ -944,6 +977,7 @@ export function App() {
   const theme = getFluxTheme(themeId);
   const environment = getFluxEnvironment(environmentId);
   const energy = speedToEnergy(speed);
+  const gpsPresentation = atlasGpsPresentation(gpsState, accuracy, source);
   const modalOpen = drawerOpen
     || previewOpen
     || environmentPickerOpen
@@ -1082,6 +1116,7 @@ export function App() {
       logDiagnosticEvent("gps.unavailable");
       return;
     }
+    if (watchRef.current != null) navigator.geolocation.clearWatch(watchRef.current);
     setGpsState("permission requested");
     logDiagnosticEvent("gps.requested", { highAccuracy: true });
     watchRef.current = navigator.geolocation.watchPosition(
@@ -1177,6 +1212,29 @@ export function App() {
       },
       { enableHighAccuracy: true, maximumAge: 1000, timeout: 12000 },
     );
+  }, [logDiagnosticEvent]);
+
+  useEffect(() => {
+    if (phase === "running" && environmentId === "atlas" && !mapPosition
+      && atlasGpsPresentation(gpsState, accuracy, source).requiresHelp) {
+      setGpsHelpOpen(true);
+    }
+    if (mapPosition) setGpsHelpOpen(false);
+  }, [accuracy, environmentId, gpsState, mapPosition, phase, source]);
+
+  useEffect(() => {
+    if (!gpsHelpOpen) return undefined;
+    const closeOnEscape = (event) => {
+      if (event.key === "Escape") setGpsHelpOpen(false);
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [gpsHelpOpen]);
+
+  const runAtlasDemo = useCallback(() => {
+    setAtlasDemoRequest((current) => current + 1);
+    setGpsHelpOpen(false);
+    logDiagnosticEvent("atlas.demo-started", { location: "fixed-milan-fixture" });
   }, [logDiagnosticEvent]);
 
   const stopDemo = useCallback(() => {
@@ -2064,6 +2122,7 @@ export function App() {
                 reducedMotion={reducedMotion}
                 effect={activeEffect}
                 keyboardShortcutsEnabled={!modalOpen}
+                demoRequestToken={atlasDemoRequest}
                 onRenderer={setRenderer}
                 onFrame={recordRenderedFrame}
                 onRuntimeError={handleEnvironmentError}
@@ -2182,9 +2241,28 @@ export function App() {
           </button>
           <ModeSelector />
           <span className="speed-spacer" aria-hidden="true" />
-          <span className={`gps-state ${gpsState === "live" || source === "DEMO" ? "is-live" : ""}`}>GPS</span>
+          <button
+            className={`gps-state ${gpsPresentation.live ? "is-live" : ""}`}
+            type="button"
+            aria-controls="gps-help-popover"
+            aria-expanded={gpsHelpOpen}
+            onClick={() => setGpsHelpOpen((current) => !current)}
+          >
+            <span>GPS</span>
+            <strong>{gpsPresentation.status}</strong>
+            <small>{gpsPresentation.accuracy}</small>
+          </button>
           <button className="diag-button" type="button" onClick={() => setDrawerOpen(true)}>DIAG</button>
         </header>
+
+        <GpsHelpPopover
+          open={gpsHelpOpen}
+          status={gpsState}
+          accuracy={accuracy}
+          onClose={() => setGpsHelpOpen(false)}
+          onRetry={startGps}
+          onDemo={runAtlasDemo}
+        />
 
         <button className="source-readout" type="button" onClick={toggleSource} aria-label={`Speed source ${source}. Tap to switch`}>
           <span className="active-mode-marker" aria-hidden="true">FLUX</span>

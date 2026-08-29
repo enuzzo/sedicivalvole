@@ -3,17 +3,27 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import {
   advanceAtlasDemoPosition,
+  appendAtlasTravelPoint,
+  ATLAS_MANUAL_IDLE_MS,
   atlasEffectProfile,
+  atlasGpsPresentation,
   atlasKeyboardShortcutAvailable,
+  atlasManualCameraShouldReturn,
+  atlasContrastRatio,
+  atlasTravelFeature,
   createLatestAtlasRequestGate,
   createAtlasStyle,
+  manualAtlasCamera,
   normalizeNearbyPages,
+  paletteToAtlasMapChannels,
+  pinchAtlasZoom,
   resolveAtlasHeading,
   speedToAtlasCamera,
   speedToAtlasEffectCamera,
   validAtlasPosition,
   wikipediaNearbyUrl,
 } from "../src/environments/atlas/atlas-model.js";
+import { FLUX_THEMES } from "../src/flux-themes.js";
 import {
   canvasFramebufferSize,
   frameTelemetryIsDue,
@@ -28,6 +38,18 @@ test("Atlas accepts only bounded finite coordinates kept outside diagnostics", (
   assert.equal(validAtlasPosition({ latitude: 45.46, longitude: 9.19 }), true);
   assert.equal(validAtlasPosition({ latitude: 95, longitude: 9.19 }), false);
   assert.equal(validAtlasPosition({ latitude: 45.46, longitude: Number.NaN }), false);
+});
+
+test("Atlas GPS presentation covers denial, timeout, inaccurate fixes and recovery", () => {
+  assert.deepEqual(atlasGpsPresentation("permission denied", null), {
+    live: false, requiresHelp: true, status: "DENIED", accuracy: "±— m",
+  });
+  assert.equal(atlasGpsPresentation("timeout", null).requiresHelp, true);
+  assert.equal(atlasGpsPresentation("signal unavailable", null).requiresHelp, true);
+  assert.equal(atlasGpsPresentation("live", 247.7).accuracy, "±248 m");
+  assert.deepEqual(atlasGpsPresentation("live", 3.2), {
+    live: true, requiresHelp: false, status: "LIVE", accuracy: "±3 m",
+  });
 });
 
 test("Atlas camera widens with speed while retaining a strongly dimensional city", () => {
@@ -114,12 +136,68 @@ test("Atlas follows reported heading or infers it from successive trusted positi
 test("Atlas passenger reading and QR remain legible at the Tesla viewport", () => {
   assert.match(styles, /\.atlas-field \{[\s\S]*?--atlas-panel-width: 246px;/);
   assert.match(styles, /\.atlas-panel \{[\s\S]*?width: var\(--atlas-panel-width\);[\s\S]*?padding: 16px 16px 12px;/);
-  assert.match(styles, /\.atlas-selected-context \{[\s\S]*?grid-template-columns: 76px minmax\(0, 1fr\);/);
-  assert.match(styles, /\.atlas-selected-context img \{[\s\S]*?width: 76px;[\s\S]*?height: 62px;/);
-  assert.match(styles, /\.atlas-selected-context p \{[\s\S]*?font-size: 11px;[\s\S]*?-webkit-line-clamp: 4;/);
+  assert.match(styles, /\.atlas-selected-context \{[\s\S]*?flex-direction: column;/);
+  assert.match(styles, /\.atlas-selected-context img \{[\s\S]*?width: 100%;[\s\S]*?height: 96px;/);
+  assert.match(styles, /\.atlas-selected-context p \{[\s\S]*?font-size: 11\.5px;[\s\S]*?-webkit-line-clamp: 3;/);
   assert.match(styles, /\.atlas-places button strong \{[^}]*font-size: 12px;/);
-  assert.match(styles, /\.atlas-qr img \{ width: 86px; height: 86px;/);
+  assert.match(styles, /\.atlas-qr img \{ width: 58px; height: 58px;/);
   assert.match(atlasSource, /width: 192,/);
+  assert.match(atlasSource, /window\.innerHeight >= 560 \? 5 : 4/);
+  assert.match(atlasSource, /pages\.slice\(0, visiblePlaceCount\)/);
+});
+
+test("Atlas grants touch exploration for six seconds, then returns to fresh automatic camera", () => {
+  assert.equal(atlasManualCameraShouldReturn(1000, 1000 + ATLAS_MANUAL_IDLE_MS - 1), false);
+  assert.equal(atlasManualCameraShouldReturn(1000, 1000 + ATLAS_MANUAL_IDLE_MS), true);
+  const moved = manualAtlasCamera({ bearing: 350, pitch: 60, zoom: 16 }, 50, 40);
+  assert.ok(moved.bearing < 20);
+  assert.ok(moved.pitch < 60);
+  assert.ok(pinchAtlasZoom(16, 100, 160) > 16);
+  assert.ok(pinchAtlasZoom(16, 100, 40) < 16);
+  assert.ok(pinchAtlasZoom(20, 100, 1000) <= 20.5);
+  assert.match(atlasSource, /canvas\.style\.touchAction = "none"/);
+  assert.match(atlasSource, /manual\.pointers\.size === 1/);
+  assert.match(atlasSource, /pinchAtlasZoom\(map\.getZoom\(\)/);
+  assert.match(atlasSource, /atlasManualCameraShouldReturn\(manual\.lastInteractionAt, now\)/);
+  assert.match(atlasSource, /center: \[point\.longitude, point\.latitude\][\s\S]*?pitch: nextCamera\.pitch[\s\S]*?zoom: nextCamera\.zoom/);
+});
+
+test("Atlas travel pulse is directional, ephemeral and absent from diagnostics", () => {
+  const first = { latitude: 45.4642, longitude: 9.19 };
+  const second = { latitude: 45.4643, longitude: 9.1901 };
+  let points = appendAtlasTravelPoint([], first);
+  points = appendAtlasTravelPoint(points, second);
+  assert.deepEqual(atlasTravelFeature(points).features[0].geometry.coordinates, [
+    [first.longitude, first.latitude],
+    [second.longitude, second.latitude],
+  ]);
+  assert.equal(appendAtlasTravelPoint(points, second), points, "sub-metre noise should not extend the line");
+  assert.match(atlasSource, /travelPointsRef = useRef\(\[\]\)/);
+  assert.match(atlasSource, /travelPointsRef\.current = \[\];/);
+  assert.match(atlasSource, /\["line-progress"\]/);
+  assert.doesNotMatch(appSource, /travelPointsRef|atlasTravelFeature/);
+});
+
+test("Atlas shows a compass and coordinate-free GPS recovery without a blocking waiting splash", () => {
+  assert.match(atlasSource, /NavigationControl\(\{[\s\S]*?showCompass: true/);
+  assert.match(atlasSource, /className="atlas-heading"/);
+  assert.match(appSource, /id="gps-help-popover"/);
+  assert.match(appSource, /RETRY LOCATION/);
+  assert.match(appSource, /EXPLORE MILAN DEMO/);
+  assert.match(appSource, /Position stays in this ATLAS session and never enters DIAG/);
+  assert.doesNotMatch(atlasSource, /Waiting for a reliable GPS position/);
+  assert.match(atlasSource, /className="atlas-field is-unlocated"/);
+});
+
+test("every shared palette gets map-specific road and label contrast", () => {
+  for (const theme of FLUX_THEMES) {
+    const colors = paletteToAtlasMapChannels(theme.palette);
+    assert.ok(atlasContrastRatio(colors.foreground, colors.background) >= 7, `${theme.id} labels`);
+    assert.ok(atlasContrastRatio(colors.secondary, colors.background) >= 3.2, `${theme.id} roads`);
+    assert.ok(atlasContrastRatio(colors.accent, colors.background) >= 2.8, `${theme.id} pulse`);
+  }
+  assert.doesNotMatch(atlasSource, /mapRef\.current\?\.loaded\(\).*recolourStyle/);
+  assert.match(atlasSource, /recolourStyle\(mapRef\.current, theme\.palette, effect\)/);
 });
 
 test("Atlas passenger reading collapses behind a persistent midpoint handle", () => {
@@ -168,6 +246,16 @@ test("Atlas nearby query is explicit and normalizes passenger content", () => {
     thumbnailWidth: 320,
     thumbnailHeight: 214,
   }]);
+});
+
+test("Atlas exposes up to six normalized nearby pages", () => {
+  const pages = Array.from({ length: 8 }, (_, index) => ({
+    pageid: index + 1,
+    title: `Place ${index + 1}`,
+    extract: "Readable context.",
+    fullurl: `https://it.wikipedia.org/wiki/Place_${index + 1}`,
+  }));
+  assert.equal(normalizeNearbyPages({ query: { pages } }).length, 6);
 });
 
 test("an aborted Atlas nearby request cannot clear the current loading state", async () => {
@@ -231,6 +319,8 @@ test("Atlas owns a minimal palette-driven OpenFreeMap style with mandatory attri
   assert.match(style.sources.openfreemap.url, /^https:\/\/tiles\.openfreemap\.org\/planet$/);
   assert.match(style.sources.openfreemap.attribution, /OpenStreetMap/);
   assert.ok(style.layers.some((layer) => layer.type === "fill-extrusion"));
+  assert.equal(style.sources.atlasTravel.lineMetrics, true);
+  assert.ok(style.layers.some((layer) => layer.id === "atlas-travel-pulse"));
   assert.equal(style.layers.some((layer) => layer.type === "raster"), false);
   assert.match(atlasSource, /AttributionControl\(\{ compact: false \}\)/);
   assert.match(styles, /\.atlas-field \.maplibregl-ctrl-attrib \{[\s\S]*?font-size: 7px;[\s\S]*?opacity: \.46;/);

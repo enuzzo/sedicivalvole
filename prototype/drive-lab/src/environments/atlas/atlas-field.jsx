@@ -2,12 +2,18 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import "maplibre-gl/dist/maplibre-gl.css";
 import {
   advanceAtlasDemoPosition,
+  appendAtlasTravelPoint,
   atlasEffectProfile,
   atlasKeyboardShortcutAvailable,
+  atlasManualCameraShouldReturn,
+  atlasTravelFeature,
   createLatestAtlasRequestGate,
   normalizeNearbyPages,
   createAtlasStyle,
+  manualAtlasCamera,
   paletteToAtlasCss,
+  paletteToAtlasMapCss,
+  pinchAtlasZoom,
   speedToAtlasEffectCamera,
   validAtlasPosition,
   wikipediaNearbyUrl,
@@ -21,7 +27,7 @@ import {
 const FALLBACK_POSITION = { latitude: 45.4642, longitude: 9.19, heading: 22 };
 
 function recolourStyle(map, palette, effect = null) {
-  const colors = paletteToAtlasCss(palette);
+  const colors = paletteToAtlasMapCss(palette);
   const profile = atlasEffectProfile(effect);
   map.setPaintProperty("atlas-background", "background-color", colors.background);
   map.setPaintProperty("atlas-landcover", "fill-color", colors.terrain);
@@ -36,20 +42,21 @@ function recolourStyle(map, palette, effect = null) {
     10, 0.25 * profile.roadWidthScale,
     17, 2 * profile.roadWidthScale,
   ]);
+  map.setPaintProperty("atlas-travel-underlay", "line-color", colors.background);
   map.setPaintProperty("atlas-place-labels", "text-color", colors.foreground);
   map.setPaintProperty("atlas-place-labels", "text-halo-color", colors.background);
   if (map.getLayer("sedicivalvole-buildings")) {
     map.setPaintProperty("sedicivalvole-buildings", "fill-extrusion-opacity", profile.buildingOpacity);
     map.setPaintProperty("sedicivalvole-buildings", "fill-extrusion-color", [
       "interpolate", ["linear"], ["get", "render_height"],
-      0, colors.terrain,
+      0, colors.buildingLow,
       80, colors.accent,
       240, colors.foreground,
     ]);
   }
 }
 
-function NearbyPanel({ pages, selectedId, onSelect, qrUrl, loading, demo, collapsed }) {
+function NearbyPanel({ pages, selectedId, onSelect, qrUrl, loading, demo, collapsed, visiblePlaceCount }) {
   const selected = pages.find((page) => page.id === selectedId) ?? pages[0];
   return (
     <aside
@@ -80,7 +87,7 @@ function NearbyPanel({ pages, selectedId, onSelect, qrUrl, loading, demo, collap
       {pages.length ? (
         <div className="atlas-places">
           <small>FOR THE PASSENGER</small>
-          {pages.slice(0, 4).map((page, index) => (
+          {pages.slice(0, visiblePlaceCount).map((page, index) => (
             <button
               key={page.id}
               type="button"
@@ -113,6 +120,7 @@ export default function AtlasField({
   onFrame,
   onRuntimeError,
   keyboardShortcutsEnabled = true,
+  demoRequestToken = 0,
 }) {
   const hostRef = useRef(null);
   const mapRef = useRef(null);
@@ -123,8 +131,11 @@ export default function AtlasField({
   const [loading, setLoading] = useState(false);
   const [demoPosition, setDemoPosition] = useState(null);
   const [panelCollapsed, setPanelCollapsed] = useState(false);
+  const [displayCamera, setDisplayCamera] = useState(null);
+  const [visiblePlaceCount, setVisiblePlaceCount] = useState(() => (window.innerHeight >= 560 ? 5 : 4));
   const nearbyRequestGateRef = useRef(null);
   const qrRequestGateRef = useRef(null);
+  const travelPointsRef = useRef([]);
   if (!nearbyRequestGateRef.current) nearbyRequestGateRef.current = createLatestAtlasRequestGate();
   if (!qrRequestGateRef.current) qrRequestGateRef.current = createLatestAtlasRequestGate();
   valuesRef.current = { speed, theme, position, reducedMotion, effect, demoPosition };
@@ -141,9 +152,15 @@ export default function AtlasField({
   const demo = !validAtlasPosition(position) && Boolean(effectivePosition);
 
   useEffect(() => {
+    if (!demoRequestToken || validAtlasPosition(position)) return;
+    setDemoPosition({ ...FALLBACK_POSITION });
+  }, [demoRequestToken, position]);
+
+  useEffect(() => {
     let disposed = false;
     let failed = false;
     let frame = 0;
+    let interactionCleanup = () => {};
     if (!hostRef.current || !effectivePosition) {
       onRenderer("Atlas · waiting for GPS");
       return undefined;
@@ -165,6 +182,12 @@ export default function AtlasField({
         fadeDuration: 0,
       });
       mapRef.current = map;
+      const manual = {
+        pointers: new Map(),
+        previousPinchDistance: null,
+        lastInteractionAt: null,
+        returningUntil: 0,
+      };
       const fail = (error) => {
         if (disposed || failed) return;
         failed = true;
@@ -174,6 +197,11 @@ export default function AtlasField({
       };
       let mapReady = false;
       map.addControl(new maplibregl.AttributionControl({ compact: false }), "bottom-left");
+      map.addControl(new maplibregl.NavigationControl({
+        showCompass: true,
+        showZoom: false,
+        visualizePitch: true,
+      }), "top-left");
       map.on("load", () => {
         try {
           map.setPaintProperty("sedicivalvole-buildings", "fill-extrusion-height", [
@@ -181,11 +209,75 @@ export default function AtlasField({
           ]);
           recolourStyle(map, valuesRef.current.theme.palette, valuesRef.current.effect);
           mapReady = true;
+          map.dragPan.disable();
+          map.dragRotate.disable();
+          map.touchZoomRotate.disable();
+          map.doubleClickZoom.disable();
           onRenderer("WebGL2 · OpenFreeMap");
         } catch (error) {
           fail(error);
         }
       });
+      map.on("move", () => setDisplayCamera({
+        heading: Math.round(((map.getBearing() % 360) + 360) % 360),
+        pitch: Math.round(map.getPitch()),
+        zoom: Math.round(map.getZoom() * 10) / 10,
+      }));
+
+      const canvas = map.getCanvas();
+      canvas.style.touchAction = "none";
+      const pointerDistance = () => {
+        const [first, second] = [...manual.pointers.values()];
+        return first && second ? Math.hypot(second.x - first.x, second.y - first.y) : null;
+      };
+      const beginManual = (event) => {
+        event.preventDefault();
+        try {
+          canvas.setPointerCapture?.(event.pointerId);
+        } catch {
+          // Synthetic QA events and older embedded browsers may not expose an
+          // active pointer capture even though their pointer stream is usable.
+        }
+        manual.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+        manual.previousPinchDistance = manual.pointers.size >= 2 ? pointerDistance() : null;
+        manual.lastInteractionAt = performance.now();
+        manual.returningUntil = 0;
+        map.stop();
+      };
+      const moveManual = (event) => {
+        const previous = manual.pointers.get(event.pointerId);
+        if (!previous) return;
+        event.preventDefault();
+        manual.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+        if (manual.pointers.size === 1) {
+          const camera = manualAtlasCamera({
+            bearing: map.getBearing(), pitch: map.getPitch(), zoom: map.getZoom(),
+          }, event.clientX - previous.x, event.clientY - previous.y);
+          map.jumpTo(camera);
+        } else {
+          const nextDistance = pointerDistance();
+          if (manual.previousPinchDistance && nextDistance) {
+            map.jumpTo({ zoom: pinchAtlasZoom(map.getZoom(), manual.previousPinchDistance, nextDistance) });
+          }
+          manual.previousPinchDistance = nextDistance;
+        }
+        manual.lastInteractionAt = performance.now();
+      };
+      const endManual = (event) => {
+        manual.pointers.delete(event.pointerId);
+        manual.previousPinchDistance = manual.pointers.size >= 2 ? pointerDistance() : null;
+        manual.lastInteractionAt = performance.now();
+      };
+      canvas.addEventListener("pointerdown", beginManual, { passive: false });
+      canvas.addEventListener("pointermove", moveManual, { passive: false });
+      canvas.addEventListener("pointerup", endManual);
+      canvas.addEventListener("pointercancel", endManual);
+      interactionCleanup = () => {
+        canvas.removeEventListener("pointerdown", beginManual);
+        canvas.removeEventListener("pointermove", moveManual);
+        canvas.removeEventListener("pointerup", endManual);
+        canvas.removeEventListener("pointercancel", endManual);
+      };
       map.on("error", (event) => {
         const error = event?.error instanceof Error ? event.error : new Error("Atlas map runtime error");
         if (!mapReady || /webgl|context\s*lost|initiali[sz]/i.test(error.message)) fail(error);
@@ -216,11 +308,28 @@ export default function AtlasField({
       });
 
       let lastMoveAt = 0;
+      let lastPulseAt = 0;
       let lastBuildingScale = camera.buildingScale;
       const animate = (now) => {
         if (disposed || failed) return;
         frame = requestAnimationFrame(animate);
         try {
+          if (mapReady && now - lastPulseAt >= 90) {
+            lastPulseAt = now;
+            const phase = ((now / 1000) * (0.18 + Math.min(130, valuesRef.current.speed) / 54)) % 1;
+            const colors = paletteToAtlasMapCss(valuesRef.current.theme.palette);
+            const head = Math.max(0.001, Math.min(0.999, phase));
+            const before = Math.max(0, head - 0.12);
+            const after = Math.min(1, head + 0.12);
+            map.setPaintProperty("atlas-travel-pulse", "line-gradient", [
+              "interpolate", ["linear"], ["line-progress"],
+              0, colors.secondary,
+              before, colors.secondary,
+              head, colors.accent,
+              after, colors.secondary,
+              1, colors.secondary,
+            ]);
+          }
           if (now - lastMoveAt < 1100) return;
           lastMoveAt = now;
           const current = valuesRef.current;
@@ -236,12 +345,24 @@ export default function AtlasField({
               "*", ["coalesce", ["get", "render_height"], 5], nextCamera.buildingScale,
             ]);
           }
+          travelPointsRef.current = appendAtlasTravelPoint(travelPointsRef.current, point);
+          map.getSource("atlasTravel")?.setData(atlasTravelFeature(travelPointsRef.current));
+          if (manual.lastInteractionAt != null && !atlasManualCameraShouldReturn(manual.lastInteractionAt, now)) {
+            return;
+          }
+          if (manual.returningUntil > now) return;
+          const returningFromManual = manual.lastInteractionAt != null;
+          const duration = returningFromManual ? Math.max(1600, nextCamera.durationMs) : nextCamera.durationMs;
+          if (returningFromManual) {
+            manual.lastInteractionAt = null;
+            manual.returningUntil = now + duration;
+          }
           map.easeTo({
             center: [point.longitude, point.latitude],
             bearing: Number.isFinite(point.heading) ? point.heading : map.getBearing(),
             pitch: nextCamera.pitch,
             zoom: nextCamera.zoom,
-            duration: nextCamera.durationMs,
+            duration,
             essential: false,
           });
         } catch (error) {
@@ -258,8 +379,10 @@ export default function AtlasField({
     return () => {
       disposed = true;
       cancelAnimationFrame(frame);
+      interactionCleanup();
       mapRef.current?.remove();
       mapRef.current = null;
+      travelPointsRef.current = [];
     };
   }, [canStart, onFrame, onRenderer, onRuntimeError]);
 
@@ -297,7 +420,14 @@ export default function AtlasField({
   }, [demo, Boolean(demoPosition)]);
 
   useEffect(() => {
-    if (mapRef.current?.loaded()) recolourStyle(mapRef.current, theme.palette, effect);
+    if (!mapRef.current) return;
+    try {
+      recolourStyle(mapRef.current, theme.palette, effect);
+    } catch {
+      // The map's load handler applies the latest ref values if the style is
+      // still constructing. Continuous travel-pulse repaints must not make a
+      // legitimate later palette change wait for MapLibre's `loaded()` flag.
+    }
   }, [effect, theme]);
 
   useEffect(() => {
@@ -309,6 +439,13 @@ export default function AtlasField({
       window.clearTimeout(settled);
     };
   }, [panelCollapsed]);
+
+  useEffect(() => {
+    const resize = () => setVisiblePlaceCount(window.innerHeight >= 700 ? 6 : window.innerHeight >= 560 ? 5 : 4);
+    resize();
+    window.addEventListener("resize", resize);
+    return () => window.removeEventListener("resize", resize);
+  }, []);
 
   useEffect(() => {
     const request = nearbyRequestGateRef.current.begin();
@@ -364,14 +501,9 @@ export default function AtlasField({
 
   if (!effectivePosition) {
     return (
-      <div className="atlas-waiting">
-        <strong>ATLAS</strong>
-        <span>Waiting for a reliable GPS position</span>
-        <button
-          type="button"
-          onClick={() => setDemoPosition({ ...FALLBACK_POSITION })}
-        >TEST FROM MILAN</button>
-      </div>
+      <section className="atlas-field is-unlocated" aria-label="Atlas is waiting for location permission">
+        <div className="atlas-unlocated-field" aria-hidden="true" />
+      </section>
     );
   }
 
@@ -381,7 +513,15 @@ export default function AtlasField({
       style={{ "--atlas-accent": paletteToAtlasCss(theme.palette).accent }}
     >
       <div className="atlas-map" ref={hostRef} aria-hidden="true" />
-      {demo ? <div className="atlas-demo-hint">↑ DRIVE · ↓ BRAKE · ← → STEER</div> : null}
+      <div
+        className="atlas-heading"
+        aria-label={`Map heading ${displayCamera?.heading ?? Math.round(effectivePosition.heading ?? 0)} degrees`}
+        data-pitch={displayCamera?.pitch ?? ""}
+        data-zoom={displayCamera?.zoom ?? ""}
+      >
+        {String(displayCamera?.heading ?? Math.round(effectivePosition.heading ?? 0)).padStart(3, "0")}°
+      </div>
+      {demo ? <div className="atlas-demo-hint">DRIVE · BRAKE · STEER · DRAG · PINCH</div> : null}
       <button
         className="atlas-panel-toggle"
         type="button"
@@ -400,6 +540,7 @@ export default function AtlasField({
         loading={loading}
         demo={demo}
         collapsed={panelCollapsed}
+        visiblePlaceCount={visiblePlaceCount}
       />
     </section>
   );
