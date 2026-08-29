@@ -91,3 +91,15 @@ export function junctionSectionFrames(section, sampleRate = 48000) {
   const barFrames = Math.round((60 / section.bpm) * 4 * sampleRate);
   return barFrames * JUNCTION_BARS_PER_SECTION;
 }
+
+/**
+ * One exact subdivision inside an integer-length rendered bar. Rounding the
+ * absolute position makes the grid close on every bar; adding one rounded step
+ * repeatedly does not.
+ */
+export function junctionStepFrame(barFrames, barIndex, stepInBar = 0) {
+  return Math.round(
+    Math.max(0, Number(barIndex) || 0) * barFrames
+      + (Math.max(0, Number(stepInBar) || 0) * barFrames) / 16,
+  );
+}

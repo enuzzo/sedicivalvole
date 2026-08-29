@@ -11,11 +11,15 @@ that are reachable today: two source voicings for each of `Emin9`, `Cmaj7`,
 ## Setup
 
 ```sh
-python3.11 -m venv .sample-analysis-venv
+/opt/homebrew/bin/python3.11 -m venv .sample-analysis-venv
 .sample-analysis-venv/bin/pip install -r analysis/requirements.txt
+.sample-analysis-venv/bin/python -m pip check
 ```
 
-The virtual environment is machine-local and ignored by Git.
+The virtual environment is machine-local and ignored by Git. Recreate it from
+the requirements file after moving between Macs or CPU architectures; never
+trust or reuse a Dropbox-copied environment. Intel Homebrew installations may
+use `/usr/local/bin/python3.11` instead.
 
 ## Run
 
@@ -133,3 +137,20 @@ explicitly `uncalibrated_flag_only`; it excludes REST's deliberately sparse
 grammar, live browser-delay tails and cross-clip runtime boundaries. Those
 omissions prevent the report from becoming a production block until the live
 transition renderer is added and the probes are calibrated by listening.
+
+## Reproduce the encoded JUNCTION brake calibration
+
+The full-depth brake report is independent of `_references/` and can be rebuilt
+from the tracked production bank alone:
+
+```sh
+npm run analyze:junction-brake
+```
+
+The command decodes all 24 self-contained Ogg performances with local FFmpeg,
+applies the runtime 550 Hz low-pass, `0.84/0.16` filtered/residual blend,
+`tanh(2x)` WaveShaper and `-4.32 dB` makeup, then recomputes BS.1770 loudness,
+energy above 2 kHz after the first 500 ms and processed sample peak. It fails if
+the bank hash, DSP parameters, clip identities or any recorded metric drifts by
+more than `0.025 dB` or LU. This is a reproducibility gate, not listening
+authority.

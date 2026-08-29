@@ -36,6 +36,7 @@ import {
   JUNCTION_HARMONIC_IDENTITY,
   JUNCTION_HARMONY,
   junctionSectionFrames,
+  junctionStepFrame,
 } from "./junction-form.mjs";
 import {
   LookaheadLimiter,
@@ -229,7 +230,6 @@ async function main() {
     smoothedDrive = section.drive;
     smoothedSpace = section.space;
     const loopFrames = barFrames * LOOP_BARS;
-    const stepFrames = Math.round(barFrames / STEPS_PER_BAR);
     const phraseFrames = barFrames * LOOP_BARS;
     for (let localFrame = 0; localFrame < sectionFrames; localFrame += 1) {
       const frame = startFrame + localFrame;
@@ -238,8 +238,15 @@ async function main() {
 
       // Structural triggers land exactly on a step. The only thing decided here
       // is which supplied recording plays and when — never what it plays.
-      if (localFrame % stepFrames === 0) {
-        const step = Math.floor(inLoop / stepFrames) % (STEPS_PER_BAR * LOOP_BARS);
+      const frameInBar = localFrame % barFrames;
+      const stepInBar = Math.round((frameInBar * STEPS_PER_BAR) / barFrames);
+      const onStep = localFrame === junctionStepFrame(
+        barFrames,
+        barInCycle,
+        stepInBar,
+      );
+      if (onStep) {
+        const step = (barInCycle % LOOP_BARS) * STEPS_PER_BAR + stepInBar;
         if (step === 0 && section.pad > 0) {
           const entry = progression.find((chord) => chord.bar === barInCycle);
           const chordAllowed = !section.chordBars || section.chordBars.includes(barInCycle);

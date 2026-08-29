@@ -1,0 +1,56 @@
+{
+  "format": "sedicivalvole.junction-brake-calibration.v1",
+  "bank": {
+    "path": "public/audio/junction.svb",
+    "sha256": "0662ec081d7999c7dd365162d72abc63022d773037f175aac9199a7775fe69b5",
+    "clipCount": 24
+  },
+  "method": {
+    "decode": "FFmpeg to stereo Float32 PCM at 48000 Hz",
+    "level": "ITU-R BS.1770 K-weighted integrated loudness with absolute and relative gating",
+    "darkening": "RMS energy above a one-pole 2000 Hz high-pass after the first 500 ms",
+    "peak": "processed sample peak",
+    "listeningAuthority": false
+  },
+  "parameters": {
+    "cutoffHz": 550,
+    "idleQ": 0.65,
+    "fullQ": 0.85,
+    "drive": 2,
+    "filteredMix": 0.84,
+    "residualMix": 0.16,
+    "makeupDb": -4.32
+  },
+  "summary": {
+    "minDeltaLu": -2.992410,
+    "maxDeltaLu": 0.706469,
+    "leastDarkHighDb": -5.346500,
+    "highestPeakDbfs": -5.248638
+  },
+  "clips": [
+    { "id": "open", "take": 1, "deltaLu": -1.076352, "highDb": -7.534965, "peakDbfs": -12.715734 },
+    { "id": "open", "take": 2, "deltaLu": -0.730276, "highDb": -7.709785, "peakDbfs": -13.649570 },
+    { "id": "open", "take": 3, "deltaLu": -0.338966, "highDb": -6.110209, "peakDbfs": -14.641655 },
+    { "id": "enter", "take": 1, "deltaLu": -0.616811, "highDb": -7.036455, "peakDbfs": -11.126798 },
+    { "id": "enter", "take": 2, "deltaLu": -0.443039, "highDb": -6.492153, "peakDbfs": -10.896078 },
+    { "id": "enter", "take": 3, "deltaLu": -1.123024, "highDb": -8.180257, "peakDbfs": -12.882965 },
+    { "id": "build", "take": 1, "deltaLu": 0.698022, "highDb": -5.837302, "peakDbfs": -6.047767 },
+    { "id": "build", "take": 2, "deltaLu": 0.577093, "highDb": -6.625960, "peakDbfs": -6.151985 },
+    { "id": "build", "take": 3, "deltaLu": 0.679825, "highDb": -6.253717, "peakDbfs": -6.602479 },
+    { "id": "break", "take": 1, "deltaLu": 0.438248, "highDb": -7.264466, "peakDbfs": -5.686660 },
+    { "id": "break", "take": 2, "deltaLu": 0.513525, "highDb": -6.547256, "peakDbfs": -5.418799 },
+    { "id": "break", "take": 3, "deltaLu": 0.638980, "highDb": -6.057320, "peakDbfs": -5.977202 },
+    { "id": "full", "take": 1, "deltaLu": 0.257705, "highDb": -7.121324, "peakDbfs": -5.248638 },
+    { "id": "full", "take": 2, "deltaLu": 0.108902, "highDb": -7.170775, "peakDbfs": -5.279459 },
+    { "id": "full", "take": 3, "deltaLu": 0.225188, "highDb": -7.173796, "peakDbfs": -5.366953 },
+    { "id": "turn", "take": 1, "deltaLu": 0.706469, "highDb": -6.202780, "peakDbfs": -6.445933 },
+    { "id": "turn", "take": 2, "deltaLu": 0.644668, "highDb": -6.271757, "peakDbfs": -5.911370 },
+    { "id": "turn", "take": 3, "deltaLu": 0.670914, "highDb": -6.018487, "peakDbfs": -6.132094 },
+    { "id": "ease", "take": 1, "deltaLu": -0.572940, "highDb": -5.346500, "peakDbfs": -13.618153 },
+    { "id": "ease", "take": 2, "deltaLu": -0.678027, "highDb": -5.708437, "peakDbfs": -12.601849 },
+    { "id": "ease", "take": 3, "deltaLu": -0.675461, "highDb": -5.555014, "peakDbfs": -14.069460 },
+    { "id": "rest", "take": 1, "deltaLu": -2.768022, "highDb": -6.435729, "peakDbfs": -18.882842 },
+    { "id": "rest", "take": 2, "deltaLu": -2.992410, "highDb": -6.435820, "peakDbfs": -20.719162 },
+    { "id": "rest", "take": 3, "deltaLu": -2.909799, "highDb": -6.456123, "peakDbfs": -20.684738 }
+  ]
+}
