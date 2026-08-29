@@ -2,6 +2,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import "maplibre-gl/dist/maplibre-gl.css";
 import {
   advanceAtlasDemoPosition,
+  atlasKeyboardShortcutAvailable,
+  createLatestAtlasRequestGate,
   normalizeNearbyPages,
   createAtlasStyle,
   paletteToAtlasCss,
@@ -9,6 +11,11 @@ import {
   validAtlasPosition,
   wikipediaNearbyUrl,
 } from "./atlas-model.js";
+import {
+  canvasFramebufferSize,
+  frameTelemetryIsDue,
+  THIRTY_FPS_FRAME_INTERVAL_MS,
+} from "../../render-telemetry.js";
 
 const FALLBACK_POSITION = { latitude: 45.4642, longitude: 9.19, heading: 22 };
 
@@ -86,7 +93,16 @@ function NearbyPanel({ pages, selectedId, onSelect, qrUrl, loading, demo, collap
   );
 }
 
-export default function AtlasField({ speed, theme, position, reducedMotion, onRenderer, onFrame }) {
+export default function AtlasField({
+  speed,
+  theme,
+  position,
+  reducedMotion,
+  onRenderer,
+  onFrame,
+  onRuntimeError,
+  keyboardShortcutsEnabled = true,
+}) {
   const hostRef = useRef(null);
   const mapRef = useRef(null);
   const valuesRef = useRef({ speed, theme, position, reducedMotion });
@@ -96,6 +112,10 @@ export default function AtlasField({ speed, theme, position, reducedMotion, onRe
   const [loading, setLoading] = useState(false);
   const [demoPosition, setDemoPosition] = useState(null);
   const [panelCollapsed, setPanelCollapsed] = useState(false);
+  const nearbyRequestGateRef = useRef(null);
+  const qrRequestGateRef = useRef(null);
+  if (!nearbyRequestGateRef.current) nearbyRequestGateRef.current = createLatestAtlasRequestGate();
+  if (!qrRequestGateRef.current) qrRequestGateRef.current = createLatestAtlasRequestGate();
   valuesRef.current = { speed, theme, position, reducedMotion, demoPosition };
 
   const effectivePosition = useMemo(() => {
@@ -111,6 +131,7 @@ export default function AtlasField({ speed, theme, position, reducedMotion, onRe
 
   useEffect(() => {
     let disposed = false;
+    let failed = false;
     let frame = 0;
     if (!hostRef.current || !effectivePosition) {
       onRenderer("Atlas · waiting for GPS");
@@ -133,47 +154,92 @@ export default function AtlasField({ speed, theme, position, reducedMotion, onRe
         fadeDuration: 0,
       });
       mapRef.current = map;
+      const fail = (error) => {
+        if (disposed || failed) return;
+        failed = true;
+        cancelAnimationFrame(frame);
+        onRenderer("Atlas unavailable");
+        onRuntimeError?.(error instanceof Error ? error : new Error(String(error)));
+      };
+      let mapReady = false;
       map.addControl(new maplibregl.AttributionControl({ compact: false }), "bottom-left");
       map.on("load", () => {
-        map.setPaintProperty("sedicivalvole-buildings", "fill-extrusion-height", [
-          "*", ["coalesce", ["get", "render_height"], 5], camera.buildingScale,
-        ]);
-        recolourStyle(map, valuesRef.current.theme.palette);
-        onRenderer("WebGL2 · OpenFreeMap");
+        try {
+          map.setPaintProperty("sedicivalvole-buildings", "fill-extrusion-height", [
+            "*", ["coalesce", ["get", "render_height"], 5], camera.buildingScale,
+          ]);
+          recolourStyle(map, valuesRef.current.theme.palette);
+          mapReady = true;
+          onRenderer("WebGL2 · OpenFreeMap");
+        } catch (error) {
+          fail(error);
+        }
       });
+      map.on("error", (event) => {
+        const error = event?.error instanceof Error ? event.error : new Error("Atlas map runtime error");
+        if (!mapReady || /webgl|context\s*lost|initiali[sz]/i.test(error.message)) fail(error);
+      });
+      let lastTelemetryFrameAt = null;
       map.on("render", () => {
-        const canvas = map.getCanvas();
-        onFrame(performance.now(), 1000 / 30, "WebGL2 · MapLibre", canvas.width, canvas.height);
+        if (failed) return;
+        try {
+          const canvas = map.getCanvas();
+          const framebuffer = canvasFramebufferSize(canvas);
+          const capturedAt = performance.now();
+          if (!framebuffer || !frameTelemetryIsDue(
+            lastTelemetryFrameAt,
+            capturedAt,
+            THIRTY_FPS_FRAME_INTERVAL_MS,
+          )) return;
+          lastTelemetryFrameAt = capturedAt;
+          onFrame(
+            capturedAt,
+            THIRTY_FPS_FRAME_INTERVAL_MS,
+            "WebGL2 · MapLibre",
+            framebuffer.width,
+            framebuffer.height,
+          );
+        } catch (error) {
+          fail(error);
+        }
       });
 
       let lastMoveAt = 0;
       let lastBuildingScale = camera.buildingScale;
       const animate = (now) => {
-        if (disposed) return;
+        if (disposed || failed) return;
         frame = requestAnimationFrame(animate);
-        if (now - lastMoveAt < 1100) return;
-        lastMoveAt = now;
-        const current = valuesRef.current;
-        const point = validAtlasPosition(current.position) ? current.position : current.demoPosition;
-        if (!point) return;
-        const nextCamera = speedToAtlasCamera(current.reducedMotion ? Math.min(current.speed, 20) : current.speed);
-        if (Math.abs(nextCamera.buildingScale - lastBuildingScale) >= 0.035) {
-          lastBuildingScale = nextCamera.buildingScale;
-          map.setPaintProperty("sedicivalvole-buildings", "fill-extrusion-height", [
-            "*", ["coalesce", ["get", "render_height"], 5], nextCamera.buildingScale,
-          ]);
+        try {
+          if (now - lastMoveAt < 1100) return;
+          lastMoveAt = now;
+          const current = valuesRef.current;
+          const point = validAtlasPosition(current.position) ? current.position : current.demoPosition;
+          if (!point) return;
+          const nextCamera = speedToAtlasCamera(current.reducedMotion ? Math.min(current.speed, 20) : current.speed);
+          if (Math.abs(nextCamera.buildingScale - lastBuildingScale) >= 0.035) {
+            lastBuildingScale = nextCamera.buildingScale;
+            map.setPaintProperty("sedicivalvole-buildings", "fill-extrusion-height", [
+              "*", ["coalesce", ["get", "render_height"], 5], nextCamera.buildingScale,
+            ]);
+          }
+          map.easeTo({
+            center: [point.longitude, point.latitude],
+            bearing: Number.isFinite(point.heading) ? point.heading : map.getBearing(),
+            pitch: nextCamera.pitch,
+            zoom: nextCamera.zoom,
+            duration: nextCamera.durationMs,
+            essential: false,
+          });
+        } catch (error) {
+          fail(error);
         }
-        map.easeTo({
-          center: [point.longitude, point.latitude],
-          bearing: Number.isFinite(point.heading) ? point.heading : map.getBearing(),
-          pitch: nextCamera.pitch,
-          zoom: nextCamera.zoom,
-          duration: nextCamera.durationMs,
-          essential: false,
-        });
       };
       frame = requestAnimationFrame(animate);
-    })().catch(() => onRenderer("Atlas unavailable"));
+    })().catch((error) => {
+      if (disposed) return;
+      onRenderer("Atlas unavailable");
+      onRuntimeError?.(error);
+    });
 
     return () => {
       disposed = true;
@@ -181,12 +247,13 @@ export default function AtlasField({ speed, theme, position, reducedMotion, onRe
       mapRef.current?.remove();
       mapRef.current = null;
     };
-  }, [canStart, onFrame, onRenderer]);
+  }, [canStart, onFrame, onRenderer, onRuntimeError]);
 
   useEffect(() => {
-    if (!demo || !demoPosition) return undefined;
+    if (!demo || !demoPosition || !keyboardShortcutsEnabled) return undefined;
     const handleKeyDown = (event) => {
       if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+      if (!atlasKeyboardShortcutAvailable(event, keyboardShortcutsEnabled)) return;
       event.preventDefault();
       const turn = event.key === "ArrowLeft" ? -7 : 7;
       setDemoPosition((current) => current ? {
@@ -196,7 +263,7 @@ export default function AtlasField({ speed, theme, position, reducedMotion, onRe
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [demo, Boolean(demoPosition)]);
+  }, [demo, Boolean(demoPosition), keyboardShortcutsEnabled]);
 
   useEffect(() => {
     if (!demo || !demoPosition) return undefined;
@@ -230,42 +297,55 @@ export default function AtlasField({ speed, theme, position, reducedMotion, onRe
   }, [panelCollapsed]);
 
   useEffect(() => {
+    const request = nearbyRequestGateRef.current.begin();
     const url = wikipediaNearbyUrl(nearbyPosition);
     if (!url) {
-      setPages([]);
-      return undefined;
+      request.commit(() => {
+        setPages([]);
+        setLoading(false);
+      });
+      return () => request.cancel();
     }
     const controller = new AbortController();
-    setLoading(true);
+    request.commit(() => setLoading(true));
     fetch(url, { signal: controller.signal })
       .then((response) => response.ok ? response.json() : Promise.reject(new Error("nearby unavailable")))
       .then((payload) => {
-        const nextPages = normalizeNearbyPages(payload);
-        setPages(nextPages);
-        setSelectedId(nextPages[0]?.id ?? null);
+        request.commit(() => {
+          const nextPages = normalizeNearbyPages(payload);
+          setPages(nextPages);
+          setSelectedId(nextPages[0]?.id ?? null);
+        });
       })
       .catch((error) => {
-        if (error.name !== "AbortError") setPages([]);
+        request.commit(() => {
+          if (error.name !== "AbortError") setPages([]);
+        });
       })
-      .finally(() => setLoading(false));
-    return () => controller.abort();
+      .finally(() => request.commit(() => setLoading(false)));
+    return () => {
+      request.cancel();
+      controller.abort();
+    };
   }, [nearbyPosition?.latitude, nearbyPosition?.longitude]);
 
   useEffect(() => {
+    const request = qrRequestGateRef.current.begin();
+    request.commit(() => setQrUrl(""));
     const selected = pages.find((page) => page.id === selectedId) ?? pages[0];
     if (!selected) {
-      setQrUrl("");
-      return undefined;
+      return () => request.cancel();
     }
-    let active = true;
     import("qrcode").then(({ default: QRCode }) => QRCode.toDataURL(selected.url, {
       width: 192,
       margin: 1,
       color: { dark: "#09090b", light: "#f1eee5" },
     })).then((dataUrl) => {
-      if (active) setQrUrl(dataUrl);
+      request.commit(() => setQrUrl(dataUrl));
+    }).catch(() => {
+      request.commit(() => setQrUrl(""));
     });
-    return () => { active = false; };
+    return () => request.cancel();
   }, [pages, selectedId]);
 
   if (!effectivePosition) {

@@ -108,6 +108,7 @@ export function createFrameTelemetry(startedAtMs = 0) {
     canvasWidth: null,
     canvasHeight: null,
     intervalsMs: [],
+    intervalWriteIndex: 0,
   };
 }
 
@@ -141,7 +142,12 @@ export function recordFrameSample(telemetry, {
     telemetry.estimatedMissedTargetFrames += validTarget
       ? Math.max(0, Math.round(interval / validTarget) - 1)
       : 0;
-    telemetry.intervalsMs = [...telemetry.intervalsMs, interval].slice(-300);
+    if (telemetry.intervalsMs.length < 300) {
+      telemetry.intervalsMs.push(interval);
+    } else {
+      telemetry.intervalsMs[telemetry.intervalWriteIndex] = interval;
+      telemetry.intervalWriteIndex = (telemetry.intervalWriteIndex + 1) % 300;
+    }
   }
 
   return telemetry;

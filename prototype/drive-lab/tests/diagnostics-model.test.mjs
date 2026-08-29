@@ -77,6 +77,28 @@ test("frame telemetry aggregates pacing without retaining every frame", () => {
   assert.ok(summary.p95FrameMs > 49);
 });
 
+test("frame telemetry reuses one fixed interval ring after 300 samples", () => {
+  const telemetry = createFrameTelemetry(0);
+  for (let frame = 0; frame <= 300; frame += 1) {
+    recordFrameSample(telemetry, {
+      capturedAtMs: frame * 16,
+      targetFrameMs: 1000 / 60,
+      renderer: "Canvas2D",
+    });
+  }
+  const ring = telemetry.intervalsMs;
+  recordFrameSample(telemetry, {
+    capturedAtMs: 301 * 16,
+    targetFrameMs: 1000 / 60,
+    renderer: "Canvas2D",
+  });
+
+  assert.equal(telemetry.intervalsMs, ring);
+  assert.equal(telemetry.intervalsMs.length, 300);
+  assert.equal(telemetry.intervalWriteIndex, 1);
+  assert.equal(summarizeFrameTelemetry(telemetry).p95FrameMs, 16);
+});
+
 test("performance telemetry separates visual and diagnostic phases with bounded memory summaries", () => {
   const telemetry = createPhasePerformanceTelemetry(0);
   for (const capturedAtMs of [0, 17, 34]) {

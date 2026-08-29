@@ -213,9 +213,20 @@ function drawCanvasFallback(context, canvas, energy, visualVelocity, speedKmh, p
   }
 }
 
-function startCanvasFallback(canvas, valuesRef, reducedMotion, onRenderer, onFrame) {
+function startCanvasFallback(
+  canvas,
+  valuesRef,
+  reducedMotion,
+  onRenderer,
+  onFrame,
+  onRuntimeError,
+) {
   const context = canvas.getContext("2d", { alpha: false });
-  if (!context) return undefined;
+  if (!context) {
+    onRenderer("Aperture unavailable");
+    onRuntimeError?.(new Error("APERTURE Canvas2D context is unavailable"));
+    return undefined;
+  }
   let animationFrame = 0;
   let stopped = false;
   let flow = 0;
@@ -226,40 +237,44 @@ function startCanvasFallback(canvas, valuesRef, reducedMotion, onRenderer, onFra
   let lastFrameAt = performance.now();
   let lastDrawAt = 0;
   onRenderer("Canvas2D · Aperture");
-  drawCanvasFallback(
-    context,
-    canvas,
-    visualEnergy,
-    visualVelocity,
-    valuesRef.current.speed,
-    valuesRef.current.theme.palette,
-    flow,
-  );
+
+  const fail = (error) => {
+    if (stopped) return;
+    stopped = true;
+    cancelAnimationFrame(animationFrame);
+    onRenderer("Aperture unavailable");
+    onRuntimeError?.(error instanceof Error ? error : new Error(String(error)));
+  };
 
   const render = (now) => {
     if (stopped) return;
-    animationFrame = requestAnimationFrame(render);
-    if (now - lastDrawAt < 1000 / 30) return;
-    const deltaSeconds = Math.min(0.05, Math.max(0, (now - lastFrameAt) / 1000));
-    lastFrameAt = now;
-    lastDrawAt = now;
-    const nextEnergy = reducedMotion ? Math.min(valuesRef.current.energy, 0.28) : valuesRef.current.energy;
-    visualEnergy += (nextEnergy - visualEnergy) * (nextEnergy >= visualEnergy ? 0.12 : 0.065);
-    const nextVelocity = speedToVisualVelocity(
-      reducedMotion ? Math.min(valuesRef.current.speed, 20) : valuesRef.current.speed,
-    );
-    visualVelocity += (nextVelocity - visualVelocity) * (nextVelocity >= visualVelocity ? 0.14 : 0.12);
-    if (!reducedMotion) flow += deltaSeconds * energyToFlowRate(visualEnergy, valuesRef.current.speed);
-    drawCanvasFallback(
-      context,
-      canvas,
-      visualEnergy,
-      visualVelocity,
-      valuesRef.current.speed,
-      valuesRef.current.theme.palette,
-      flow,
-    );
-    onFrame(now, 1000 / 30, "Canvas2D", canvas.width, canvas.height);
+    try {
+      if (now - lastDrawAt >= 1000 / 30) {
+        const deltaSeconds = Math.min(0.05, Math.max(0, (now - lastFrameAt) / 1000));
+        lastFrameAt = now;
+        lastDrawAt = now;
+        const nextEnergy = reducedMotion ? Math.min(valuesRef.current.energy, 0.28) : valuesRef.current.energy;
+        visualEnergy += (nextEnergy - visualEnergy) * (nextEnergy >= visualEnergy ? 0.12 : 0.065);
+        const nextVelocity = speedToVisualVelocity(
+          reducedMotion ? Math.min(valuesRef.current.speed, 20) : valuesRef.current.speed,
+        );
+        visualVelocity += (nextVelocity - visualVelocity) * (nextVelocity >= visualVelocity ? 0.14 : 0.12);
+        if (!reducedMotion) flow += deltaSeconds * energyToFlowRate(visualEnergy, valuesRef.current.speed);
+        drawCanvasFallback(
+          context,
+          canvas,
+          visualEnergy,
+          visualVelocity,
+          valuesRef.current.speed,
+          valuesRef.current.theme.palette,
+          flow,
+        );
+        onFrame(now, 1000 / 30, "Canvas2D", canvas.width, canvas.height);
+      }
+      animationFrame = requestAnimationFrame(render);
+    } catch (error) {
+      fail(error);
+    }
   };
   animationFrame = requestAnimationFrame(render);
   return () => {
@@ -268,7 +283,17 @@ function startCanvasFallback(canvas, valuesRef, reducedMotion, onRenderer, onFra
   };
 }
 
-export function FluxField({ energy, speed, theme, reducedMotion, pulse, brake, onRenderer, onFrame }) {
+export function FluxField({
+  energy,
+  speed,
+  theme,
+  reducedMotion,
+  pulse,
+  brake,
+  onRenderer,
+  onFrame,
+  onRuntimeError,
+}) {
   const canvasRef = useRef(null);
   const valuesRef = useRef({ energy, speed, theme, pulse, brake });
   valuesRef.current = { energy, speed, theme, pulse, brake };
@@ -284,7 +309,16 @@ export function FluxField({ energy, speed, theme, reducedMotion, pulse, brake, o
       depth: false,
       powerPreference: "high-performance",
     }) : null;
-    if (!gl) return startCanvasFallback(canvas, valuesRef, reducedMotion, onRenderer, onFrame);
+    if (!gl) {
+      return startCanvasFallback(
+        canvas,
+        valuesRef,
+        reducedMotion,
+        onRenderer,
+        onFrame,
+        onRuntimeError,
+      );
+    }
 
     let program;
     let vertexShader;
@@ -301,7 +335,8 @@ export function FluxField({ energy, speed, theme, reducedMotion, pulse, brake, o
       }
     } catch (error) {
       console.warn("[FluxField] WebGL2 shader setup failed", error);
-      onRenderer("WebGL2 shader error");
+      onRenderer("Aperture unavailable");
+      onRuntimeError?.(error instanceof Error ? error : new Error(String(error)));
       return undefined;
     }
 
@@ -347,84 +382,91 @@ export function FluxField({ energy, speed, theme, reducedMotion, pulse, brake, o
     let lastFrameAt = performance.now();
     onRenderer("WebGL2 · Aperture");
 
+    const fail = (error) => {
+      if (stopped) return;
+      stopped = true;
+      cancelAnimationFrame(animationFrame);
+      onRenderer("Aperture unavailable");
+      onRuntimeError?.(error instanceof Error ? error : new Error(String(error)));
+    };
+
     const render = (now) => {
       if (stopped) return;
-      animationFrame = requestAnimationFrame(render);
-      const deltaSeconds = Math.min(0.05, Math.max(0, (now - lastFrameAt) / 1000));
-      lastFrameAt = now;
+      try {
+        const deltaSeconds = Math.min(0.05, Math.max(0, (now - lastFrameAt) / 1000));
+        lastFrameAt = now;
 
-      const currentSpeed = valuesRef.current.speed;
-      const nextEnergy = reducedMotion ? Math.min(valuesRef.current.energy, 0.28) : valuesRef.current.energy;
-      const smoothing = apertureSmoothing(nextEnergy >= visualEnergy ? 0.12 : 0.065, deltaSeconds);
-      visualEnergy += (nextEnergy - visualEnergy) * smoothing;
-      const nextVelocity = speedToVisualVelocity(
-        reducedMotion ? Math.min(currentSpeed, 20) : currentSpeed,
-      );
-      const velocitySmoothing = apertureSmoothing(
-        nextVelocity >= visualVelocity ? 0.14 : 0.12,
-        deltaSeconds,
-      );
-      visualVelocity += (nextVelocity - visualVelocity) * velocitySmoothing;
-      if (!reducedMotion) flow += deltaSeconds * energyToFlowRate(visualEnergy, currentSpeed);
+        const currentSpeed = valuesRef.current.speed;
+        const nextEnergy = reducedMotion ? Math.min(valuesRef.current.energy, 0.28) : valuesRef.current.energy;
+        const smoothing = apertureSmoothing(nextEnergy >= visualEnergy ? 0.12 : 0.065, deltaSeconds);
+        visualEnergy += (nextEnergy - visualEnergy) * smoothing;
+        const nextVelocity = speedToVisualVelocity(
+          reducedMotion ? Math.min(currentSpeed, 20) : currentSpeed,
+        );
+        const velocitySmoothing = apertureSmoothing(
+          nextVelocity >= visualVelocity ? 0.14 : 0.12,
+          deltaSeconds,
+        );
+        visualVelocity += (nextVelocity - visualVelocity) * velocitySmoothing;
+        if (!reducedMotion) flow += deltaSeconds * energyToFlowRate(visualEnergy, currentSpeed);
 
-      if (currentSpeed < REST_RECOLOUR_SPEED_KMH) {
-        restSeconds += deltaSeconds;
+        if (currentSpeed < REST_RECOLOUR_SPEED_KMH) restSeconds += deltaSeconds;
+
+        const ratio = aperturePixelRatio(window.devicePixelRatio, currentSpeed);
+        const width = Math.max(1, Math.floor(canvas.clientWidth * ratio));
+        const height = Math.max(1, Math.floor(canvas.clientHeight * ratio));
+        if (canvas.width !== width || canvas.height !== height) {
+          canvas.width = width;
+          canvas.height = height;
+          gl.viewport(0, 0, width, height);
+        }
+
+        const { palette } = valuesRef.current.theme;
+        const shaderControls = apertureShaderControls(
+          reducedMotion ? Math.min(currentSpeed, 20) : currentSpeed,
+        );
+
+        gl.useProgram(program);
+        gl.uniform1f(uniforms.aspect, width / height);
+        gl.uniform1f(uniforms.velocity, visualVelocity);
+        gl.uniform1f(uniforms.wallSize, shaderControls.wallSize);
+        gl.uniform1f(uniforms.wallOpacity, shaderControls.wallOpacity);
+        gl.uniform1f(uniforms.terminalVelocity, shaderControls.terminalVelocity);
+        gl.uniform1f(uniforms.speedPulseMask, shaderControls.speedPulseMask);
+        gl.uniform1f(uniforms.voidActive, shaderControls.voidActive);
+        gl.uniform1f(uniforms.flow, flow);
+        gl.uniform1f(uniforms.pulse, valuesRef.current.pulse);
+        gl.uniform1f(uniforms.brake, valuesRef.current.brake);
+        gl.uniform1f(uniforms.restRecolour, restSeconds);
+        gl.uniform3fv(uniforms.base, palette.base);
+        gl.uniform3fv(uniforms.mid, palette.mid);
+        gl.uniform3fv(uniforms.light, palette.light);
+        gl.uniform3fv(uniforms.accent, palette.accent);
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+        onFrame(now, 1000 / 60, "WebGL2", width, height);
+        animationFrame = requestAnimationFrame(render);
+      } catch (error) {
+        fail(error);
       }
-
-      const ratio = aperturePixelRatio(window.devicePixelRatio, currentSpeed);
-      const width = Math.max(1, Math.floor(canvas.clientWidth * ratio));
-      const height = Math.max(1, Math.floor(canvas.clientHeight * ratio));
-      if (canvas.width !== width || canvas.height !== height) {
-        canvas.width = width;
-        canvas.height = height;
-        gl.viewport(0, 0, width, height);
-      }
-
-      const { palette } = valuesRef.current.theme;
-      const shaderControls = apertureShaderControls(
-        reducedMotion ? Math.min(currentSpeed, 20) : currentSpeed,
-      );
-
-      gl.useProgram(program);
-      gl.uniform1f(uniforms.aspect, width / height);
-      gl.uniform1f(uniforms.velocity, visualVelocity);
-      gl.uniform1f(uniforms.wallSize, shaderControls.wallSize);
-      gl.uniform1f(uniforms.wallOpacity, shaderControls.wallOpacity);
-      gl.uniform1f(uniforms.terminalVelocity, shaderControls.terminalVelocity);
-      gl.uniform1f(uniforms.speedPulseMask, shaderControls.speedPulseMask);
-      gl.uniform1f(uniforms.voidActive, shaderControls.voidActive);
-      gl.uniform1f(uniforms.flow, flow);
-      gl.uniform1f(uniforms.pulse, valuesRef.current.pulse);
-      gl.uniform1f(uniforms.brake, valuesRef.current.brake);
-      gl.uniform1f(uniforms.restRecolour, restSeconds);
-      gl.uniform3fv(uniforms.base, palette.base);
-      gl.uniform3fv(uniforms.mid, palette.mid);
-      gl.uniform3fv(uniforms.light, palette.light);
-      gl.uniform3fv(uniforms.accent, palette.accent);
-      gl.drawArrays(gl.TRIANGLES, 0, 6);
-      onFrame(now, 1000 / 60, "WebGL2", width, height);
     };
 
     const onContextLost = (event) => {
       event.preventDefault();
-      onRenderer("WebGL2 context lost");
+      fail(new Error("APERTURE WebGL2 context lost"));
     };
-    const onContextRestored = () => onRenderer("WebGL2 · reload required");
     canvas.addEventListener("webglcontextlost", onContextLost);
-    canvas.addEventListener("webglcontextrestored", onContextRestored);
     animationFrame = requestAnimationFrame(render);
 
     return () => {
       stopped = true;
       cancelAnimationFrame(animationFrame);
       canvas.removeEventListener("webglcontextlost", onContextLost);
-      canvas.removeEventListener("webglcontextrestored", onContextRestored);
       gl.deleteBuffer(buffer);
       gl.deleteProgram(program);
       gl.deleteShader(vertexShader);
       gl.deleteShader(fragmentShader);
     };
-  }, [onFrame, onRenderer, reducedMotion]);
+  }, [onFrame, onRenderer, onRuntimeError, reducedMotion]);
 
   return <canvas className="field-canvas" ref={canvasRef} aria-hidden="true" />;
 }

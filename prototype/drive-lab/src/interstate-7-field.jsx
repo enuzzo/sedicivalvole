@@ -1,9 +1,14 @@
 import { useEffect, useMemo, useRef } from "react";
 import {
+  createInterstateLoadDeadline,
   INTERSTATE7_ENTRY_PHASE_SECONDS,
   speedToInterstate7Targets,
   themeToInterstate7Palette,
 } from "./interstate-7-bridge.js";
+import {
+  canvasFramebufferSize,
+  SIXTY_FPS_FRAME_INTERVAL_MS,
+} from "./render-telemetry.js";
 
 const ORIGINAL_INTERSTATE_7_PATH = "third-party/infinite-lights/index7.html";
 
@@ -46,10 +51,17 @@ function applyTheme(app, theme) {
   app.__sedicivalvoleThemeId = theme.id;
 }
 
-export function Interstate7Field({ speed, theme, reducedMotion, onRenderer, onFrame }) {
+export function Interstate7Field({
+  speed,
+  theme,
+  reducedMotion,
+  onRenderer,
+  onFrame,
+  onRuntimeError,
+}) {
   const frameRef = useRef(null);
-  const valuesRef = useRef({ speed, theme, reducedMotion });
-  valuesRef.current = { speed, theme, reducedMotion };
+  const valuesRef = useRef({ speed, theme, reducedMotion, onRenderer, onFrame, onRuntimeError });
+  valuesRef.current = { speed, theme, reducedMotion, onRenderer, onFrame, onRuntimeError };
   const source = useMemo(
     () => new URL(`/${ORIGINAL_INTERSTATE_7_PATH}`, window.location.origin).href,
     [],
@@ -61,97 +73,148 @@ export function Interstate7Field({ speed, theme, reducedMotion, onRenderer, onFr
 
     let animationFrame = 0;
     let stopped = false;
-    let frameLoaded = false;
-    let bridgeInstalled = false;
-    let lastFrameAt = performance.now();
+    let bridgeState = "waiting";
+
+    const fail = (error) => {
+      if (stopped || bridgeState === "failed") return;
+      bridgeState = "failed";
+      loadDeadline.clear();
+      cancelAnimationFrame(animationFrame);
+      frame.classList.remove("is-ready");
+      valuesRef.current.onRenderer("Interstate 7 unavailable");
+      valuesRef.current.onRuntimeError?.(error instanceof Error ? error : new Error(String(error)));
+    };
 
     const installBridge = () => {
       const frameWindow = frame.contentWindow;
-      if (!frameWindow || bridgeInstalled) return;
+      if (!frameWindow || bridgeState !== "waiting") return;
+      bridgeState = "installing";
 
       try {
-        const integrationStyle = frameWindow.document.createElement("style");
-        integrationStyle.dataset.sedicivalvoleIntegration = "true";
-        integrationStyle.textContent = `
-          html, body, main, .content, #app {
-            width: 100% !important;
-            height: 100% !important;
-            margin: 0 !important;
-            overflow: hidden !important;
-          }
-          .frame, .content__title-wrap { display: none !important; }
-          .content { position: relative !important; }
-        `;
-        frameWindow.document.head.append(integrationStyle);
+        const styleSelector = "style[data-sedicivalvole-integration='true']";
+        if (!frameWindow.document.querySelector(styleSelector)) {
+          const integrationStyle = frameWindow.document.createElement("style");
+          integrationStyle.dataset.sedicivalvoleIntegration = "true";
+          integrationStyle.textContent = `
+            html, body, main, .content, #app {
+              width: 100% !important;
+              height: 100% !important;
+              margin: 0 !important;
+              overflow: hidden !important;
+            }
+            .frame, .content__title-wrap { display: none !important; }
+            .content { position: relative !important; }
+          `;
+          frameWindow.document.head.append(integrationStyle);
+        }
 
         const Interstate7App = frameWindow.eval("App");
-        const originalUpdate = Interstate7App.prototype.update;
-        Interstate7App.prototype.update = function updateFromRoadSpeed(delta) {
-          const { speedUpTarget, fovTarget } = speedToInterstate7Targets(
-            frameWindow.__SEDICIVALVOLE_SPEED_KMH__ ?? 0,
-          );
-          if (!this.__sedicivalvoleEntryFramed) {
-            // Enter at an attractive existing phase of the untouched upstream
-            // distortion, where the road already fills the Tesla viewport.
-            // Seeding the current controls also prevents the original fast
-            // startup from flashing before the vehicle-speed bridge settles.
-            this.timeOffset += INTERSTATE7_ENTRY_PHASE_SECONDS;
-            this.speedUp = speedUpTarget;
-            this.camera.fov = fovTarget;
-            this.camera.updateProjectionMatrix();
-            this.__sedicivalvoleEntryFramed = true;
-          }
-          this.speedUpTarget = speedUpTarget;
-          this.fovTarget = fovTarget;
-          applyTheme(this, frameWindow.__SEDICIVALVOLE_THEME__);
-          return originalUpdate.call(this, delta);
-        };
-        bridgeInstalled = true;
+        const originalUpdate = Interstate7App?.prototype?.update;
+        if (typeof originalUpdate !== "function") throw new Error("Interstate 7 update hook is unavailable");
+        if (!originalUpdate.__sedicivalvoleBridge) {
+          const updateFromRoadSpeed = function updateFromRoadSpeed(delta) {
+            try {
+              const { speedUpTarget, fovTarget } = speedToInterstate7Targets(
+                frameWindow.__SEDICIVALVOLE_SPEED_KMH__ ?? 0,
+              );
+              if (!this.__sedicivalvoleEntryFramed) {
+              // Enter at an attractive existing phase of the untouched upstream
+              // distortion, where the road already fills the Tesla viewport.
+              // Seeding the current controls also prevents the original fast
+              // startup from flashing before the vehicle-speed bridge settles.
+              this.timeOffset += INTERSTATE7_ENTRY_PHASE_SECONDS;
+              this.speedUp = speedUpTarget;
+              this.camera.fov = fovTarget;
+              this.camera.updateProjectionMatrix();
+                this.__sedicivalvoleEntryFramed = true;
+              }
+              this.speedUpTarget = speedUpTarget;
+              this.fovTarget = fovTarget;
+              applyTheme(this, frameWindow.__SEDICIVALVOLE_THEME__);
+              const result = originalUpdate.call(this, delta);
+            // Count the upstream renderer's own update, not the parent frame's
+            // requestAnimationFrame loop. If the vendor renderer stalls,
+            // diagnostics must stall too instead of reporting an invented 60 FPS.
+              const framebuffer = canvasFramebufferSize(
+                frameWindow.document.querySelector("#app canvas"),
+              );
+              if (framebuffer) {
+                valuesRef.current.onFrame(
+                  performance.now(),
+                  SIXTY_FPS_FRAME_INTERVAL_MS,
+                  "WebGL · Original Interstate 7",
+                  framebuffer.width,
+                  framebuffer.height,
+                );
+              }
+              return result;
+            } catch (error) {
+              fail(error);
+              return undefined;
+            }
+          };
+          Object.defineProperty(updateFromRoadSpeed, "__sedicivalvoleBridge", { value: true });
+          Interstate7App.prototype.update = updateFromRoadSpeed;
+        }
+        bridgeState = "ready";
         frame.classList.add("is-ready");
-        onRenderer("WebGL · Original Interstate 7");
+        valuesRef.current.onRenderer("WebGL · Original Interstate 7");
       } catch (error) {
-        console.warn("[Interstate7Field] Original runtime bridge unavailable", error);
-        onRenderer("Interstate 7 bridge error");
+        if (frame.dataset.sedicivalvoleBridgeWarningReported !== "true") {
+          frame.dataset.sedicivalvoleBridgeWarningReported = "true";
+          console.warn("[Interstate7Field] Original runtime bridge unavailable", error);
+        }
+        fail(error);
       }
     };
 
     const render = (now) => {
       if (stopped) return;
       animationFrame = requestAnimationFrame(render);
-      const frameWindow = frame.contentWindow;
-      if (!frameWindow) return;
+      try {
+        const frameWindow = frame.contentWindow;
+        if (!frameWindow) return;
 
-      const inputSpeed = valuesRef.current.reducedMotion
-        ? Math.min(valuesRef.current.speed, 20)
-        : valuesRef.current.speed;
-      frameWindow.__SEDICIVALVOLE_SPEED_KMH__ = inputSpeed;
-      frameWindow.__SEDICIVALVOLE_THEME__ = valuesRef.current.theme;
-      if (frameLoaded && !bridgeInstalled) installBridge();
-
-      const elapsed = Math.max(1, now - lastFrameAt);
-      lastFrameAt = now;
-      onFrame(
-        now,
-        elapsed,
-        "WebGL · Original Interstate 7",
-        frame.clientWidth,
-        frame.clientHeight,
-      );
+        const inputSpeed = valuesRef.current.reducedMotion
+          ? Math.min(valuesRef.current.speed, 20)
+          : valuesRef.current.speed;
+        frameWindow.__SEDICIVALVOLE_SPEED_KMH__ = inputSpeed;
+        frameWindow.__SEDICIVALVOLE_THEME__ = valuesRef.current.theme;
+      } catch (error) {
+        fail(error);
+      }
     };
 
+    const loadDeadline = createInterstateLoadDeadline({
+      schedule: (callback, delay) => window.setTimeout(callback, delay),
+      cancel: (timer) => window.clearTimeout(timer),
+      onTimeout: () => fail(new Error("Interstate 7 load timed out")),
+    });
+
     const onLoad = () => {
-      frameLoaded = true;
+      if (!loadDeadline.clear()) return;
+      bridgeState = "waiting";
+      frame.classList.remove("is-ready");
       installBridge();
     };
     frame.addEventListener("load", onLoad);
+    try {
+      if (frame.contentDocument?.readyState === "complete" && frame.contentWindow?.location.href === source) {
+        onLoad();
+      }
+    } catch {
+      // The configured runtime is same-origin; a transient navigation simply
+      // falls through to the bounded load handler above.
+    }
     animationFrame = requestAnimationFrame(render);
 
     return () => {
       stopped = true;
+      loadDeadline.clear();
       cancelAnimationFrame(animationFrame);
       frame.removeEventListener("load", onLoad);
     };
-  }, [onFrame, onRenderer]);
+  }, [source]);
 
   return (
     <iframe

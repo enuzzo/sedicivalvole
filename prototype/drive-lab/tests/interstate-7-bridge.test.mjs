@@ -3,11 +3,19 @@ import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 import {
+  createInterstateLoadDeadline,
   INTERSTATE7_ENTRY_PHASE_SECONDS,
+  INTERSTATE7_LOAD_TIMEOUT_MS,
   speedToInterstate7Targets,
   themeToInterstate7Palette,
 } from "../src/interstate-7-bridge.js";
 import { getFluxTheme } from "../src/flux-themes.js";
+import {
+  canvasFramebufferSize,
+  SIXTY_FPS_FRAME_INTERVAL_MS,
+} from "../src/render-telemetry.js";
+
+const fieldSource = await readFile(new URL("../src/interstate-7-field.jsx", import.meta.url), "utf8");
 
 const UPSTREAM_FILES = new Map([
   ["index7.html", "6f6737865d80580ace61c7dea61c9b93c217724e7547ce1cf3c6dcd5adf6fb7b"],
@@ -59,6 +67,90 @@ test("keeps the original Interstate 7 runtime byte-identical to upstream", async
     const actualHash = createHash("sha256").update(source).digest("hex");
     assert.equal(actualHash, expectedHash, relativePath);
   }
+});
+
+test("reports ready Interstate 7 frames against a 60 FPS target using its framebuffer", () => {
+  assert.equal(SIXTY_FPS_FRAME_INTERVAL_MS, 1000 / 60);
+  assert.deepEqual(canvasFramebufferSize({
+    width: 1546,
+    height: 1202,
+    clientWidth: 773,
+    clientHeight: 601,
+  }), { width: 1546, height: 1202 });
+  assert.equal(canvasFramebufferSize({ width: 0, height: 1202 }), null);
+  assert.match(
+    fieldSource,
+    /canvasFramebufferSize\(\s*frameWindow\.document\.querySelector\("#app canvas"\),?\s*\)/,
+  );
+  assert.match(fieldSource, /SIXTY_FPS_FRAME_INTERVAL_MS,/);
+  assert.match(fieldSource, /const result = originalUpdate\.call\(this, delta\);/);
+  assert.doesNotMatch(fieldSource, /frame\.clientWidth|frame\.clientHeight/);
+});
+
+test("bounds bridge installation and warning without retrying from requestAnimationFrame", () => {
+  const renderBody = fieldSource.slice(
+    fieldSource.indexOf("const render = (now) =>"),
+    fieldSource.indexOf("const onLoad = () =>"),
+  );
+  assert.doesNotMatch(renderBody, /installBridge\(\)/);
+  assert.doesNotMatch(renderBody, /valuesRef\.current\.onFrame/);
+  assert.match(fieldSource, /bridgeState !== "waiting"/);
+  assert.match(fieldSource, /style\[data-sedicivalvole-integration='true'\]/);
+  assert.match(fieldSource, /sedicivalvoleBridgeWarningReported/);
+  assert.match(fieldSource, /originalUpdate\.__sedicivalvoleBridge/);
+});
+
+test("Interstate 7 load deadline fails once and clears on load or cleanup", () => {
+  const scheduled = [];
+  const cancelled = [];
+  let failures = 0;
+  const createDeadline = () => createInterstateLoadDeadline({
+    schedule(callback, delay) {
+      const timer = { callback, delay };
+      scheduled.push(timer);
+      return timer;
+    },
+    cancel(timer) {
+      cancelled.push(timer);
+    },
+    onTimeout() {
+      failures += 1;
+    },
+  });
+
+  const timedOut = createDeadline();
+  assert.equal(scheduled[0].delay, INTERSTATE7_LOAD_TIMEOUT_MS);
+  scheduled[0].callback();
+  scheduled[0].callback();
+  assert.equal(failures, 1, "the stalled iframe reported more than one fallback");
+  assert.equal(timedOut.clear(), false, "a late load reopened the timed-out iframe");
+
+  const loaded = createDeadline();
+  const loadTimer = scheduled.at(-1);
+  assert.equal(loaded.clear(), true);
+  assert.equal(cancelled.at(-1), loadTimer);
+  loadTimer.callback();
+  assert.equal(failures, 1, "a cleared load timer still failed the ready iframe");
+
+  const unmounted = createDeadline();
+  const cleanupTimer = scheduled.at(-1);
+  assert.equal(unmounted.clear(), true);
+  assert.equal(cancelled.at(-1), cleanupTimer);
+  cleanupTimer.callback();
+  assert.equal(failures, 1, "a cleared cleanup timer failed an unmounted iframe");
+
+  assert.match(fieldSource, /const loadDeadline = createInterstateLoadDeadline/);
+  assert.match(fieldSource, /onTimeout: \(\) => fail\(new Error\("Interstate 7 load timed out"\)\)/);
+  assert.match(fieldSource, /const onLoad = \(\) => \{\s*if \(!loadDeadline\.clear\(\)\) return;/);
+  assert.match(fieldSource, /return \(\) => \{\s*stopped = true;\s*loadDeadline\.clear\(\);/);
+});
+
+test("Interstate runtime and bridge updates fail once into the shared fallback", () => {
+  assert.match(fieldSource, /const fail = \(error\) => \{/);
+  assert.match(fieldSource, /const result = originalUpdate\.call\(this, delta\);[\s\S]*?catch \(error\) \{\s*fail\(error\);/);
+  assert.match(fieldSource, /frameWindow\.__SEDICIVALVOLE_THEME__ = valuesRef\.current\.theme;[\s\S]*?catch \(error\) \{\s*fail\(error\);/);
+  assert.match(fieldSource, /frame\.classList\.remove\("is-ready"\)/);
+  assert.match(fieldSource, /onRuntimeError\?\.\(error instanceof Error/);
 });
 
 test("maps every body-colour theme onto all original scene colour groups", () => {

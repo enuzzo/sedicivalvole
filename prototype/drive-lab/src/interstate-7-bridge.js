@@ -3,6 +3,32 @@ import { ROAD_SPEED_CEILING_KMH } from "./signal-model.js";
 const ORIGINAL_FOV = 90;
 const ORIGINAL_SPEED_UP_FOV = 150;
 export const INTERSTATE7_ENTRY_PHASE_SECONDS = 2.1;
+export const INTERSTATE7_LOAD_TIMEOUT_MS = 10000;
+
+export function createInterstateLoadDeadline({
+  schedule,
+  cancel,
+  onTimeout,
+  timeoutMs = INTERSTATE7_LOAD_TIMEOUT_MS,
+}) {
+  let active = true;
+  let timer = schedule(() => {
+    if (!active) return;
+    active = false;
+    timer = null;
+    onTimeout();
+  }, timeoutMs);
+
+  const clear = () => {
+    if (!active) return false;
+    active = false;
+    if (timer !== null) cancel(timer);
+    timer = null;
+    return true;
+  };
+
+  return { clear };
+}
 
 function clamp(value, minimum, maximum) {
   return Math.min(maximum, Math.max(minimum, value));

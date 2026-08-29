@@ -1,6 +1,26 @@
 export const OPENFREEMAP_VECTOR_URL = "https://tiles.openfreemap.org/planet";
 export const WIKIPEDIA_SEARCH_RADIUS_METRES = 10000;
 
+const ATLAS_KEYBOARD_INTERACTIVE_SELECTOR = [
+  "a[href]",
+  "button",
+  "input",
+  "select",
+  "textarea",
+  "[contenteditable]:not([contenteditable='false'])",
+  "[role='dialog']",
+  "[aria-modal='true']",
+].join(", ");
+
+export function atlasKeyboardShortcutAvailable(event, keyboardShortcutsEnabled = true) {
+  if (!keyboardShortcutsEnabled || event?.defaultPrevented || event?.altKey || event?.ctrlKey || event?.metaKey) {
+    return false;
+  }
+  const target = event?.target;
+  return typeof target?.closest !== "function"
+    || !target.closest(ATLAS_KEYBOARD_INTERACTIVE_SELECTOR);
+}
+
 export function validAtlasPosition(position) {
   return Boolean(position)
     && Number.isFinite(position.latitude)
@@ -94,6 +114,31 @@ export function normalizeNearbyPages(payload) {
       };
     })
     .slice(0, 5);
+}
+
+/**
+ * Creates cancellable revision tickets for UI work whose older promises may
+ * finish after a newer request has already taken ownership of the surface.
+ */
+export function createLatestAtlasRequestGate() {
+  let revision = 0;
+  return {
+    begin() {
+      const requestRevision = ++revision;
+      let active = true;
+      return {
+        commit(action) {
+          if (!active || requestRevision !== revision) return false;
+          action();
+          return true;
+        },
+        cancel() {
+          active = false;
+          if (requestRevision === revision) revision += 1;
+        },
+      };
+    },
+  };
 }
 
 export function paletteToAtlasCss(palette) {

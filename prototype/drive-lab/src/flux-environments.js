@@ -5,8 +5,10 @@
 // palette, safety, persistence, or diagnostic contracts that every environment
 // shares.
 //
-// `aperture` must stay first: it is the default selection and the fallback for
-// an unknown identifier.
+// `aperture` stays the stable default and fallback until the user selects a
+// replacement direction that has passed visual acceptance.
+
+export const DEFAULT_FLUX_ENVIRONMENT_ID = "aperture";
 
 export const FLUX_ENVIRONMENTS = [
   {
@@ -48,10 +50,22 @@ export const FLUX_ENVIRONMENTS = [
 
 export function getFluxEnvironment(environmentId) {
   return FLUX_ENVIRONMENTS.find((environment) => environment.id === environmentId)
-    ?? FLUX_ENVIRONMENTS[0];
+    ?? FLUX_ENVIRONMENTS.find((environment) => environment.id === DEFAULT_FLUX_ENVIRONMENT_ID);
+}
+
+/**
+ * Preserve every implemented preference. Rejected or retired identifiers,
+ * including a locally previewed visual that never shipped, resolve to the
+ * accepted Aperture fallback.
+ */
+export function migrateLegacyEnvironmentPreference(environmentId) {
+  return FLUX_ENVIRONMENTS.some((environment) => environment.id === environmentId)
+    ? environmentId
+    : DEFAULT_FLUX_ENVIRONMENT_ID;
 }
 
 export function nextFluxEnvironmentId(environmentId) {
   const index = FLUX_ENVIRONMENTS.findIndex((environment) => environment.id === environmentId);
+  if (index < 0) return DEFAULT_FLUX_ENVIRONMENT_ID;
   return FLUX_ENVIRONMENTS[(index + 1 + FLUX_ENVIRONMENTS.length) % FLUX_ENVIRONMENTS.length].id;
 }
