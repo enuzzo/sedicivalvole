@@ -238,8 +238,12 @@ dated study documents.
   inventories all 684 relevant files without committing raw audio. Provenance,
   rights, level/transient evidence and compatibility findings are recorded in
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
-  NIGHTSHIFT is now implemented locally from that evidence; raw sources remain
-  ignored, uncommitted and unpublished.
+  NIGHTSHIFT is now implemented and published from that evidence; raw sources
+  remain ignored, uncommitted and unpublished.
+- The canonical live product is version `0.0.0`, source commit `2720a0a`, build
+  `20260829-1810`. The 2026-08-29 18:15 publication passed the read-only
+  preflight and post-publication identity gates, byte-for-byte HTML and asset
+  checks, cache-behavior checks and muted live DIAG QA at `773 × 601`.
 - Diagnostic telemetry contains no coordinates and is sent only after the
   explicit `SEND DIAGNOSTIC` action. ATLAS location is a separate ephemeral
   feature: the latest reliable point stays in session memory; OpenFreeMap tile
@@ -259,14 +263,14 @@ dated study documents.
 3. Audition NIGHTSHIFT at low volume, verify perceived phrasing and loudness
    against both existing scores, then validate acceleration/reversal behavior in
    the target Tesla. Automated measurements are not perceptual acceptance.
-4. Deploy the verified local checkpoints when a publication path is available
-   that does not violate the prohibition on reading `.env`. The canonical live
-   product is still commit `5685de3`, version `0.0.0`, build `20260829-1536`.
-5. Replace the failed magnitude-residual decision with a three-way evidence
+4. Replace the failed magnitude-residual decision with a three-way evidence
    stack. Validate shared ADSR/filter envelopes, phase seeds, detune, chorus,
    spectral slope and saturation; add stereo and phase-coherence evidence with
    explicit invalidity reasons before any detected pitch set can gate JUNCTION
    material.
+5. Implement the licensed visual-environment plan for DRIVEY, PRTCL, INFINITE
+   and PRIMORDIAL without importing excluded upstream assets or code, then run
+   its source-comparison, accessibility, performance and target-viewport gates.
 6. Design Engine only after exactly three Engine-specific directions are shown
    and one is selected. Keep `VERSION` at `0.0.0` until an explicit release is
    approved.

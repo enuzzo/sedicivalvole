@@ -8,6 +8,46 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## NIGHTSHIFT and integrated Flux checkpoint publication — 2026-08-29 18:15
+
+- build stamp: **`20260829-1810`**; deployed source commit: `2720a0a`;
+  implementation checkpoints: `45ab8d9`, `0e563f2`, `f119184`, `fdb63dc` and
+  `2ac9ef1`;
+- gate before upload: **PASS**. The exact clean commit matched `origin/main`, all
+  302 unit checks, six WAKE checks, nine Sites packaging checks and the
+  126-module production build passed. The bundle identifies version `0.0.0`,
+  commit `2720a0a` and build `20260829-1810`;
+- read-only publication boundary: **PASS**. The authorized deployment script's
+  preflight verified network, login, canonical directory, root/legacy identity
+  and remote listing with `remote_writes=NONE`. No configuration value was
+  printed, diffed, copied or placed in a command argument;
+- publication: **PASS**, 34 files / 14,219,756 bytes uploaded to the canonical
+  root. Dynamic-root and exact legacy-cleanup gates passed, two prior
+  content-addressed assets were retained for cache overlap, and the immediate
+  post-publication identity gate passed again with `remote_writes=NONE`;
+- canonical identity and cache behavior: **PASS**. Bare and cache-busted HTML
+  return `200`, `no-store, no-cache, must-revalidate, max-age=0`, `pragma:
+  no-cache` and cache `MISS`. Both 788-byte responses are byte-identical to the
+  local entry at SHA-256
+  `0e58159a1c548f299b96ee433756641fad448fa09c3e5247dcaf0b07f7c41af5`
+  and expose the title `sedicivalvole — Adaptive Music for the Road`;
+- asset identity: **PASS**. The canonical JavaScript, CSS, score worklet, BLOOM
+  worklet, NIGHTSHIFT bank and JUNCTION bank are byte-identical to the verified
+  local build at SHA-256
+  `ec51466d0d692fdd760b9c67c0b0cef97eb7aad93a1b1d29ba5dcee5be0b571e`,
+  `930e63df0091e2ea32acadfb18d19dda4f5274f24d7a219aa4b094f0af983d16`,
+  `16887bddb25913752562789b286612c7e2ed659e4eddf2d3539153cdf06015c8`,
+  `0b0aabb6312de3934bdf952e33b610be08a8f38cc12cb23e1676edd02fc2610a`,
+  `429004d664110d33e9af334f4679811a317dc4a1300c760378b7ec877c617190`
+  and `0662ec081d7999c7dd365162d72abc63022d773037f175aac9199a7775fe69b5`;
+- muted live product QA: **PASS within the technical contract**. At exact
+  `773 × 601`, the canonical product selected `NIGHTSHIFT 03`, reported PARK as
+  clockless with no road energy, held audio in `running / output muted`,
+  measured 59.99 FPS / 17.8 ms p95 and reported zero runtime issues. DIAG
+  exposed `v0.0.0 · 2720a0a` and build `20260829-1810`; the live origin emitted
+  no Browser warning or error. Low-volume listening, longitudinal motion in a
+  real Tesla and real-vehicle GPS/acceleration acceptance remain open.
+
 ## Pending local checkpoint and unchanged live identity — 2026-08-29 17:38
 
 - The WAKE road-flow, acceleration/effect, FRACTURE, JUNCTION PARK, DIAG and
