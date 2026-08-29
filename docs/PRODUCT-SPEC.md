@@ -127,6 +127,22 @@ OPEN, UNDERWATER, BLOOM, and reduced motion are implemented in this native
 particle grammar. Human visual approval and canonical publication are complete;
 target-Tesla acceptance remains an explicit gate.
 
+`PRIMORDIAL 08` is one clean-room fluid-field environment, not a copy or embed
+of the referenced [GLSL: Primordial Soup](https://codepen.io/shubniggurath/pen/NXGbBo)
+Pen. Its local candidate uses a project-authored full-screen WebGL2 shader with
+an independently authored coupled-sine warp system and a bounded Canvas2D
+failure path. No Pen HTML, CSS, JavaScript, shader, Three.js runtime, or
+separately attributed noise fragment enters the product. Speed controls field
+convergence; musical level and tempo control flow, colour motion, and local
+agitation. All five channels of the selected Sedici Valvole palette remain
+simultaneously available, and OPEN, UNDERWATER, BLOOM, reduced motion, and
+pointer deformation act through the fluid grammar. One compact `TUNE / FIELD`
+text trigger opens a `232 px` contextual panel with only three persisted bounded
+ranges: Scale, Flow, and Warp. It opens no select or dropdown, closes with
+Escape, and keeps the normal header/footer controls awake while open. The local
+implementation and exact-viewport gates pass; human visual approval, push,
+canonical deployment, and real-Tesla acceptance remain explicit later gates.
+
 `VERTIGO 02` is the approved second visual environment and must render the original Interstate 7 scene, not an independent visual translation. The vendored files from upstream commit `e58d58520bc0dfde21f9e14e6a1b8c7f0a2a2a9e` remain byte-identical and retain the complete road, repeated side light sticks, opposing car-light trails, bloom, camera, deep distortion, fog, geometry, and bundled Three.js/post-processing pipeline. The sedicivalvole integration keeps the iframe black until the upstream editorial shell is hidden, so only the canvas appears. An external bridge maps `0–130 km/h` to the original `speedUpTarget` and FOV controls and maps the selected theme onto the runtime's existing colour attributes and uniforms without editing the vendor tree.
 
 The module identity must remain visually continuous across the entire speed range: size, aspect ratio, perspective, curvature, and depth may deform, but modules must not be replaced through an opacity fade. The zero-speed endpoint is genuinely two-dimensional and square; the maximum-speed endpoint is the most elongated and deeply projected version of that same field.

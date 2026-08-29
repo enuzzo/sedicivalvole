@@ -36,7 +36,7 @@ for direct controls:
 - PRTCL uses one button with the same `94 × 34 px` geometry; `TYPE` cycles
   Fractal Frequency, Murmuration, and Axiom and always prints the current family.
 
-The not-yet-implemented INFINITE and PRIMORDIAL contextual tuner retains the
+The implemented PRIMORDIAL tuner and the future INFINITE tuner share the
 previously measured outer placement:
 
 - collapsed trigger: `16 px` from the left, `82 px` from the top, minimum
@@ -53,9 +53,9 @@ previously measured outer placement:
 - opening it keeps the retracting header and footer awake; closing it restores
   the normal retreat timing.
 
-The future trigger is named `TUNE`, not `Settings`, because it edits the current
-visual performance rather than application preferences. Every future select
-group and range has an explicit accessible name and value. DRIVEY and PRTCL
+The trigger is named `TUNE`, not `Settings`, because it edits the current
+visual performance rather than application preferences. Every range has an
+explicit accessible name and visible value. DRIVEY and PRTCL
 deliberately use the smaller always-visible cycling controls selected in product
 review.
 

@@ -1,6 +1,6 @@
 # Current Project State
 
-Status: **authoritative working overview**. Updated on 2026-08-29.
+Status: **authoritative working overview**. Updated on 2026-08-30.
 
 This page is the shortest reliable answer to “what exists now?”. Product
 requirements remain in [`PRODUCT-SPEC.md`](PRODUCT-SPEC.md), architecture in
@@ -13,14 +13,16 @@ dated study documents.
 - `Flux` is the implemented primary mode. `Engine` remains an equal confirmed
   mode, visible but disabled until its own audio model and one of exactly three
   Engine-specific visual directions are selected.
-- The source checkout's Flux catalog contains six visual environments: **APERTURE 01**,
-  **VERTIGO 02**, **MERIDIAN 03**, **ATLAS 04**, and **DRIVEY 05**, plus the
-  human-approved and canonically published **PRTCL 06**. Aperture
-  remains the accepted fresh-session and invalid-preference fallback.
-- All six environments use the shared catalog of **10 themes**. Vertigo keeps
+- The source checkout's Flux catalog contains seven visual environments:
+  **APERTURE 01**, **VERTIGO 02**, **MERIDIAN 03**, **ATLAS 04**, **DRIVEY 05**,
+  the human-approved and canonically published **PRTCL 06**, and the locally
+  verified but unpublished **PRIMORDIAL 08** candidate. Slot `07` remains
+  reserved for the future INFINITE study. Aperture remains the accepted
+  fresh-session and invalid-preference fallback.
+- All seven source environments use the shared catalog of **10 themes**. Vertigo keeps
   the upstream Interstate 7 files byte-identical while an external runtime
   bridge maps the selected theme onto its existing colour channels.
-- OPEN, UNDERWATER and BLOOM are visible in all six checkout environments without
+- OPEN, UNDERWATER and BLOOM are visible in all seven checkout environments without
   a shared overlay. Aperture performs its tiled projection and centre light;
   Vertigo changes only the original runtime's externally bridged time, FOV and
   colour controls; Meridian changes corridor projection, flow, fog and rail
@@ -28,7 +30,8 @@ dated study documents.
   receives bounded speed, camera, traffic and two-channel material updates through its
   external bridge without editing the vendor files; PRTCL changes point scale,
   depth/travel, palette pulse, spread, attenuation, and glow within its own
-  particle grammar.
+  particle grammar; Primordial changes convergence, pressure, flow, agitation,
+  contours, and field light within its own fluid grammar.
 - Meridian keeps one deterministic low corridor beneath sparse, large oblique
   blades and longitudinal shoulder planes. Its shared travel field has tightly
   bounded vertical motion; FOV, depth compression, peripheral stretch,
@@ -86,6 +89,20 @@ dated study documents.
   128-module build pass. Human visual approval was recorded on 2026-08-29;
   source commit `b88070c`, build `20260829-2337`, is verified on the canonical
   root, while real-Tesla acceptance remains open.
+- PRIMORDIAL 08 is a local clean-room implementation checkpoint at `9b733f6`.
+  Its project-authored full-screen WebGL2 shader uses coupled sine domains and
+  independently authored warping; a bounded Canvas2D failure path remains
+  available. No CodePen HTML, CSS, JavaScript, shader, Three.js runtime, or
+  separately attributed noise fragment is copied. Speed owns convergence;
+  music owns flow, colour movement, and agitation. All ten palettes feed five
+  native colour channels, OPEN / UNDERWATER / BLOOM remain fluid-field
+  gestures, and reduced motion freezes periodic motion while preserving touch
+  deformation. A compact `94 × 44 px` text trigger opens only the three bounded
+  Scale, Flow, and Warp ranges in a `232 px` panel; it contains no select or
+  dropdown, closes with Escape, persists its values, and pins the real product
+  controls awake. Exact `773 × 601`, `390 × 844`, and `601 × 390` muted Browser
+  QA passes locally. Human visual approval, push, deployment, and target-Tesla
+  acceptance remain open.
 - REGISTER was rejected after live review because its static print composition
   was inexplicable in motion and outside the product mood. Its source remains
   only in the rejected-visual archive; the runtime, QA harness and active tests
@@ -273,6 +290,12 @@ dated study documents.
   captured identities; two reduced-motion frames taken 800 ms apart are
   byte-identical. The direct TYPE cycle returns to Fractal, measures
   `94 × 34 px` at both agreed viewports, and the DOM contains no `select`.
+- The local PRIMORDIAL checkpoint `9b733f6`, build `20260830-0008`, passes all
+  347 deterministic tests and the 132-module production build. Exact
+  `773 × 601` QA reports 59.62 FPS / 18.3 ms p95 with zero runtime issue or
+  Browser warning/error; RED and MINT palettes, all three performance effects,
+  mouse/touch deformation, deterministic reduced motion, and the bounded tuner
+  were captured. This evidence is local only and changes no canonical identity.
 - The canonical live product is version `0.0.0`, source commit `b88070c`, build
   `20260829-2337`. The final 2026-08-29 23:37 publication passed clean-source
   synchronization, a read-only preflight, the 89-file / 15,756,155-byte upload, the
@@ -307,11 +330,10 @@ dated study documents.
    spectral slope and saturation; add stereo and phase-coherence evidence with
    explicit invalidity reasons before any detected pitch set can gate JUNCTION
    material.
-5. Validate the published PRTCL checkpoint on the target Tesla. PRIMORDIAL is
-   explicitly authorized as the next local implementation under its recorded
-   clean-room boundary; INFINITE remains queued, and both retain separate source,
-   accessibility, performance, target-viewport, human-review, and publication
-   gates.
+5. Give the local PRIMORDIAL checkpoint a fresh human visual verdict before any
+   push or deployment, then validate accepted PRTCL and PRIMORDIAL motion,
+   performance, touch, and thermal behavior on the target Tesla. INFINITE
+   remains queued behind its own source comparison and human gate.
 6. Design Engine only after exactly three Engine-specific directions are shown
    and one is selected. Keep `VERSION` at `0.0.0` until an explicit release is
    approved.

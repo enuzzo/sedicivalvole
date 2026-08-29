@@ -510,3 +510,88 @@ channels in Normal and Wire.
 
 final result: local candidate ready for product-owner and real-Tesla validation;
 push and deployment remain intentionally open behind PRTCL approval
+
+---
+
+# Design QA — PRIMORDIAL 08 clean-room fluid field
+
+Date: 2026-08-30
+
+## Source and implementation boundary
+
+- Visual reference: Liam Egan's public
+  [GLSL: Primordial Soup](https://codepen.io/shubniggurath/pen/NXGbBo) Pen,
+  rechecked on 2026-08-29. CodePen's
+  [public-Pen licensing policy](https://blog.codepen.io/documentation/licensing/)
+  applies MIT by default, but the Pen also attributes a value-noise fragment to
+  Inigo Quilez without separately established reuse terms.
+- The stricter admission boundary therefore remains in force: the local field
+  copies no Pen HTML, CSS, JavaScript, shader, Three.js runtime, or attributed
+  noise function. Its coupled-sine domains, six-layer warp loop, contours,
+  colour mixing, pointer response, WebGL lifecycle, and Canvas2D failure path
+  are project-authored.
+- Reference and candidate evidence is retained outside the repository at:
+  `/Users/enuzzo/.codex/visualizations/2026/08/29/01a04e7e-d9e8-7693-b050-beaedf042936/primordial-reference-codepen-NXGbBo.jpg`,
+  `/Users/enuzzo/.codex/visualizations/2026/08/29/01a04e7e-d9e8-7693-b050-beaedf042936/primordial-red-bf9dec2-773x601.jpg`,
+  `/Users/enuzzo/.codex/visualizations/2026/08/29/01a04e7e-d9e8-7693-b050-beaedf042936/primordial-mint-bf9dec2-773x601.jpg`, and
+  `/Users/enuzzo/.codex/visualizations/2026/08/29/01a04e7e-d9e8-7693-b050-beaedf042936/primordial-tuner-mint-bf9dec2-773x601.jpg`.
+  The filenames retain the starting documentation identity; the rendered local
+  implementation is checkpointed at `9b733f6`.
+
+## Visual comparison
+
+- The reference's dark organic marbling, layered colour islands, internal
+  boundaries, slow fluid drift, and touch-deformed field are the high-level
+  fidelity contract. The Sedici Valvole result deliberately replaces the
+  source palette and all source math with five channels from each native theme.
+- The first clean-room pass read as flat binary bands. The reviewed candidate
+  broadens the islands, adds separate outer, inner, crease, and fine-crease
+  structures, and mixes accent/secondary colour without becoming the rejected
+  starburst language.
+- Road speed alone owns radial convergence. Music level and tempo own field
+  flow, colour movement, local agitation, and pulse. OPEN increases pressure
+  and convergence, UNDERWATER slows and darkens the field, and BLOOM raises
+  native crease light; no shared visual overlay is used.
+
+## Controls and responsive evidence
+
+- At exact `773 × 601`, the closed `TUNE / FIELD` text trigger measures
+  `94 × 44 px` at `x=16`, `y=82`. Its open panel measures `232 × 227.5 px` at
+  `x=16`, `y=130`, ending at `357.5 px`, above the footer at `528 px`.
+- The panel exposes only Scale `0.60–1.60`, Flow `0.40–1.80`, and Warp
+  `0.30–1.40`; Warp uses a `0.01` step so the authored `0.78` default is exactly
+  representable. Values persist in the existing preferences, Escape closes the
+  panel, opening pins the header/footer awake, and the DOM contains no `select`
+  or dropdown.
+- At `390 × 844`, the trigger starts at `12,76`, the `232 × 227.5 px` panel
+  ends at `351.5 px`, and the footer starts at `642.67 px`. At short-landscape
+  `601 × 390`, the `232 × 180 px` visible panel ends at `304 px`, retains a
+  `226 px` internally scrollable content height, and remains above the footer at
+  `317 px`. Both viewports have zero horizontal or vertical page overflow.
+
+## Interaction and runtime evidence
+
+- Pointer capture and direct canvas hit testing preserve touch and desktop
+  deformation while the real product controls remain interactive. Under
+  reduced motion, a mouse move changed the field capture from SHA-256
+  `c702b69e...` to `8f40433b...`, proving interaction remains live without
+  periodic animation.
+- Two reduced-motion frames separated by `650 ms` are byte-identical at
+  `c702b69ea1618143bc12283737bf1e0573a30eec0a75b06ae286c075c926ca75`.
+  Base, OPEN, UNDERWATER, and BLOOM captures are all distinct at `c702b69e`,
+  `b09d6788`, `564ff469`, and `1e913224` respectively.
+- Exact muted `773 × 601` diagnostics report WebGL2 Primordial fluid field at
+  `59.62 FPS` / `18.3 ms` p95 with zero runtime issue. Browser warning and error
+  logs are empty. The catalog contains seven local entries, preserves slot 07
+  for INFINITE, contains no WAKE, and leaves audio output muted.
+- Eight focused PRIMORDIAL checks, ten DRIVEY checks, eight PRTCL checks, nine
+  NIGHTSHIFT checks, 303 unit checks, and nine packaging checks pass: **347 / 347**.
+  The exact 132-module production build `20260830-0008` carries implementation
+  checkpoint `9b733f6`.
+
+Local self-review severity: P0 none, P1 none after the layered-island correction,
+P2 none after making the Warp default exactly representable.
+
+final result: local PRIMORDIAL candidate is implemented, tested, and visually
+documented; product-owner visual approval, push, canonical deployment, and
+real-Tesla motion, touch, frame-pacing, and thermal acceptance remain open

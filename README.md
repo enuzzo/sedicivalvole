@@ -10,9 +10,10 @@
 > authorization are recorded in `THIRD_PARTY_NOTICES.md`.
 
 > Current state: **Flux Drive Lab runs the authored FRACTURE, JUNCTION and
-> NIGHTSHIFT music with six selectable visual environments in the source
+> NIGHTSHIFT music with seven selectable visual environments in the source
 > checkout and is under vehicle validation**. PRTCL 06 has human visual
-> approval and is published on the canonical root. This is a
+> approval and is published on the canonical root; PRIMORDIAL 08 is a locally
+> verified review candidate that has not been pushed or deployed. This is a
 > development build, not a release.
 
 Public development repository: [github.com/enuzzo/sedicivalvole](https://github.com/enuzzo/sedicivalvole).
@@ -28,7 +29,7 @@ The canonical development build is available at [sedicivalvole.app](https://sedi
 - ✅ a single ignored local reference library under `_references/`;
 - ✅ source audit, product requirements, adversarial review, technical direction, and roadmap;
 - ✅ Modular Aperture selected after exactly three revised Product Design directions;
-- ✅ six selectable Flux visuals in the source checkout: procedural Aperture, byte-identical upstream Interstate 7 Vertigo, the original architectural Meridian environment, the lazy-loaded OpenFreeMap ATLAS city field, the source-faithful Rezmason Drivey runtime with automatic road following, three focused cameras and normal/wire rendering, and PRTCL with Fractal Frequency, Murmuration, and Axiom particle families;
+- ✅ seven selectable Flux visuals in the source checkout: procedural Aperture, byte-identical upstream Interstate 7 Vertigo, the original architectural Meridian environment, the lazy-loaded OpenFreeMap ATLAS city field, the source-faithful Rezmason Drivey runtime with automatic road following, three focused cameras and normal/wire rendering, PRTCL with Fractal Frequency, Murmuration, and Axiom particle families, and the local clean-room PRIMORDIAL fluid-field candidate;
 - 🛑 WAKE was rejected after repeated visual review and has been removed from the catalog, runtime, tests, and current QA assets. PLUMB remains retired, SLIP remains proposal-only, and Aperture remains the accepted fresh-session fallback;
 - ✅ GPS/Demo speed source, icon-only Mute, a fixed `130 km/h` energy ceiling, 10 curated palettes, and an integrated capability report;
 - ✅ local-only speed processing and coordinate-free diagnostics; ATLAS alone keeps a reliable current position plus a short directional travel pulse in session memory while selected, never copies either into DIAG, and discloses its OpenFreeMap tile and Wikimedia nearby-reading requests;
@@ -67,7 +68,7 @@ The speed source is an explicit abstraction. GPS and the desktop simulator produ
 Confirmed product modes:
 
 - **Engine** — selectable engine-sound emulation with a dedicated instrument-inspired visual language. Audio modeling, catalog, and final visual direction are not implemented yet.
-- **Flux** — adaptive music driven by speed and motion, paired with six selectable visual environments in the source checkout. Aperture is the accepted default and begins as a rigid square wall that recedes and disappears at the existing tunnel terminus by `40 km/h`. Vertigo embeds the original Codrops/Tympanus Interstate 7 runtime unchanged behind an external speed/FOV and palette bridge. Meridian is a low, stable corridor of sparse oblique palette-lit blades and longitudinal shoulder planes. ATLAS follows the trusted position and travel bearing above an OpenFreeMap city. DRIVEY embeds the original Rezmason road, levels, traffic, cameras and rendering pipeline behind a narrow bridge that retains upstream automatic curve following and renders every theme's native accent/secondary pair; compact text-only controls cycle Hood, Rear and Aerial views and Normal/Wire rendering without a menu. PRTCL adapts the authorized Fractal Frequency, Murmuration, and Axiom formulas into one bounded WebGL2 field; a single compact text-only `TYPE` button cycles those families while the existing `PALETTE` control remains separate. This is the mode currently implemented as Drive Lab.
+- **Flux** — adaptive music driven by speed and motion, paired with seven selectable visual environments in the source checkout. Aperture is the accepted default and begins as a rigid square wall that recedes and disappears at the existing tunnel terminus by `40 km/h`. Vertigo embeds the original Codrops/Tympanus Interstate 7 runtime unchanged behind an external speed/FOV and palette bridge. Meridian is a low, stable corridor of sparse oblique palette-lit blades and longitudinal shoulder planes. ATLAS follows the trusted position and travel bearing above an OpenFreeMap city. DRIVEY embeds the original Rezmason road, levels, traffic, cameras and rendering pipeline behind a narrow bridge that retains upstream automatic curve following and renders every theme's native accent/secondary pair; compact text-only controls cycle Hood, Rear and Aerial views and Normal/Wire rendering without a menu. PRTCL adapts the authorized Fractal Frequency, Murmuration, and Axiom formulas into one bounded WebGL2 field; a single compact text-only `TYPE` button cycles those families while the existing `PALETTE` control remains separate. PRIMORDIAL is a project-authored WebGL2 fluid field with a Canvas2D failure path, palette-native colour islands, speed convergence, musical flow, touch deformation and a compact Scale/Flow/Warp tuner; it remains local pending human review. This is the mode currently implemented as Drive Lab.
 
 Shared foundations include the GPS/Demo speed source, integrated diagnostics, master Stop/Mute, reduced motion, renderer fallback, and touch-first safety behavior. The mode switch will remain clearly identifiable and reachable from both experiences.
 
@@ -124,9 +125,9 @@ No screenshot is published here yet. The repository will include only real, curr
 
 ## Roadmap
 
-The next gate is a local PRIMORDIAL source comparison, followed by a fresh
-human visual decision and a real Tesla session at the
-verified split viewport: compare all six implemented visuals across
+The next gate is the fresh human visual decision on the locally verified
+PRIMORDIAL candidate, followed by a real Tesla session at the
+verified split viewport: compare all seven source-checkout visuals across
 acceleration and deceleration, verify
 Aperture's 60 FPS desktop gain on the vehicle,
 listen critically to FRACTURE, JUNCTION and NIGHTSHIFT, test
