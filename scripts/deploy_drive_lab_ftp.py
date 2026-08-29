@@ -474,6 +474,53 @@ def is_recognized_junction_bank(payload: bytes) -> bool:
     )
 
 
+def is_recognized_nightshift_bank(payload: bytes) -> bool:
+    """Recognize the mixed NIGHTSHIFT bank without admitting source loops."""
+    if len(payload) < 13 or payload[:8] != b"SVNGHT01":
+        return False
+    manifest_length = int.from_bytes(payload[8:12], "little")
+    audio_offset = 12 + manifest_length
+    if manifest_length <= 0 or audio_offset >= len(payload):
+        return False
+    try:
+        manifest = json.loads(
+            payload[12:audio_offset].decode("utf-8"),
+            parse_constant=lambda value: (_ for _ in ()).throw(ValueError(value)),
+        )
+    except (UnicodeDecodeError, ValueError):
+        return False
+    if not isinstance(manifest, dict):
+        return False
+    sections = manifest.get("sections")
+    assets = manifest.get("assets")
+    if not isinstance(sections, list) or not isinstance(assets, list):
+        return False
+    asset_ids = [asset.get("id") for asset in assets if isinstance(asset, dict)]
+    asset_lengths = [asset.get("audioBytes") for asset in assets if isinstance(asset, dict)]
+    asset_id_set = {asset_id for asset_id in asset_ids if isinstance(asset_id, str)}
+    section_assets = [section.get("assetId") for section in sections if isinstance(section, dict)]
+    return (
+        manifest.get("format") == "sedicivalvole.music-bank.v1"
+        and manifest.get("score") == "nightshift"
+        and manifest.get("source") == "rendered-production"
+        and manifest.get("rawSourceAssetsPublished") is False
+        and manifest.get("mixing") == "single-synchronous-performance"
+        and manifest.get("transitionMode") == "complete-eight-bar-boundary"
+        and manifest.get("barsPerPerformance") == 8
+        and manifest.get("primaryGrooves") == 1
+        and manifest.get("maxDecodedClips") == 6
+        and len(sections) == 18
+        and len(assets) == 18
+        and len(asset_ids) == len(assets)
+        and len(asset_id_set) == len(assets)
+        and all(isinstance(asset_id, str) and asset_id for asset_id in asset_ids)
+        and all(type(length) is int and length > 0 for length in asset_lengths)
+        and len(section_assets) == len(sections)
+        and all(asset_id in asset_id_set for asset_id in section_assets)
+        and sum(asset_lengths) == len(payload) - audio_offset
+    )
+
+
 def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
     """Abort unless every overwrite/delete target can be identified read-only."""
     static_build_files()
@@ -595,12 +642,16 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
         ftp.cwd("audio")
         try:
             audio_names = safe_names(ftp)
-            if not audio_names.issubset({"junction.svb"}):
+            if not audio_names.issubset({"junction.svb", "nightshift.svb"}):
                 raise ValueError("unexpected audio entry")
             if "junction.svb" in audio_names and not is_recognized_junction_bank(
                 remote_bytes(ftp, "junction.svb")
             ):
                 raise ValueError("audio identity mismatch")
+            if "nightshift.svb" in audio_names and not is_recognized_nightshift_bank(
+                remote_bytes(ftp, "nightshift.svb")
+            ):
+                raise ValueError("NIGHTSHIFT audio identity mismatch")
         finally:
             ftp.cwd("..")
 

@@ -26,6 +26,7 @@ import {
   observeAccelerationDetector,
 } from "./acceleration-detector.js";
 import { createJunctionPlayer } from "./junction-player.js";
+import { createNightshiftPlayer } from "./nightshift-player.js";
 import {
   createScoreCrossfadeState,
   scheduleScoreCrossfade,
@@ -95,6 +96,7 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
   const accelerationTrim = context.createGain();
   const fractureGain = context.createGain();
   const junctionGain = context.createGain();
+  const nightshiftGain = context.createGain();
   const meter = context.createAnalyser();
   meter.fftSize = 256;
   meter.smoothingTimeConstant = 0.55;
@@ -122,8 +124,10 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
   masterGain.connect(meter).connect(context.destination);
   fractureGain.gain.value = 1;
   junctionGain.gain.value = 0;
+  nightshiftGain.gain.value = 0;
   fractureGain.connect(performanceBus);
   junctionGain.connect(performanceBus);
+  nightshiftGain.connect(performanceBus);
 
   let node = null;
   let bloomNode = null;
@@ -180,6 +184,7 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
     });
   }
   let junction = null;
+  let nightshift = null;
 
   function ensureJunction() {
     if (!running) throw new Error("Audio engine is closed");
@@ -198,11 +203,29 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
     return junction;
   }
 
+  function ensureNightshift() {
+    if (!running) throw new Error("Audio engine is closed");
+    if (nightshift) return nightshift;
+    nightshift = createNightshiftPlayer(context, nightshiftGain, (snapshot) => {
+      if (scoreId !== "nightshift") return;
+      arrangement = snapshot;
+      publishArrangement(arrangement);
+    }, (status, error) => {
+      if (scoreId !== "nightshift" && requestedScoreId !== "nightshift") return;
+      scoreStatus = status;
+      scoreError = error;
+    });
+    nightshift.setSpeed(speed, energy, 0);
+    nightshift.setBrake(brakeAmount);
+    return nightshift;
+  }
+
   function beginScoreCrossfade(targetScoreId) {
     if (!running) throw new Error("Audio engine is closed");
     scoreMixState = scheduleScoreCrossfade({
       fractureParam: fractureGain.gain,
       junctionParam: junctionGain.gain,
+      nightshiftParam: nightshiftGain.gain,
       state: scoreMixState,
       targetScoreId,
       startAt: context.currentTime,
@@ -215,10 +238,13 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
     const at = context.currentTime;
     const fractureValue = targetScoreId === "fracture" ? 1 : 0;
     const junctionValue = targetScoreId === "junction" ? 1 : 0;
+    const nightshiftValue = targetScoreId === "nightshift" ? 1 : 0;
     fractureGain.gain.cancelScheduledValues?.(at);
     junctionGain.gain.cancelScheduledValues?.(at);
+    nightshiftGain.gain.cancelScheduledValues?.(at);
     fractureGain.gain.setValueAtTime(fractureValue, at);
     junctionGain.gain.setValueAtTime(junctionValue, at);
+    nightshiftGain.gain.setValueAtTime(nightshiftValue, at);
     scoreMixState = createScoreCrossfadeState(targetScoreId, at);
   }
 
@@ -236,7 +262,11 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
   }
 
   function finishScoreCrossfade(targetScoreId, revision, transition, options = {}) {
-    const { deactivateJunction = false, preserveError = false } = options;
+    const {
+      deactivateJunction = false,
+      deactivateNightshift = false,
+      preserveError = false,
+    } = options;
     return scheduleScoreCrossfadeCompletion({
       transition,
       // Wall timers keep firing while an AudioContext is suspended. Cleanup
@@ -256,6 +286,7 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
           currentRevision: scoreSwitchRevision,
         })) {
           if (deactivateJunction) await junction?.setActive(false).catch(() => {});
+          if (deactivateNightshift) await nightshift?.setActive(false).catch(() => {});
           if (!preserveError) {
             scoreStatus = "ready";
             scoreError = null;
@@ -427,6 +458,7 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
     }
     post("BRAKE", { brake: brakeAmount });
     junction?.setBrake(brakeAmount);
+    nightshift?.setBrake(brakeAmount);
   }
 
   brakeTimer = window.setInterval(tickBrake, BRAKE_TICK_MS);
@@ -530,7 +562,9 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
 
     setScore(nextScoreId) {
       if (!running) return Promise.reject(new Error("Audio engine is closed"));
-      requestedScoreId = nextScoreId === "junction" ? "junction" : "fracture";
+      requestedScoreId = nextScoreId === "junction"
+        ? "junction"
+        : nextScoreId === "nightshift" ? "nightshift" : "fracture";
       const revision = ++scoreSwitchRevision;
       scoreError = null;
       if (requestedScoreId === "fracture") {
@@ -556,16 +590,48 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
 
           scoreId = "fracture";
           const transition = beginScoreCrossfade("fracture");
-          if (!junction || transition.endAt <= context.currentTime + 0.01) {
+          if ((!junction && !nightshift) || transition.endAt <= context.currentTime + 0.01) {
             scoreStatus = "ready";
-            return junction?.setActive(false).then(
-              () => "fracture",
-              () => "fracture",
-            ) ?? "fracture";
+            return Promise.allSettled([
+              junction?.setActive(false),
+              nightshift?.setActive(false),
+            ]).then(() => "fracture");
           }
           scoreStatus = "transitioning";
           return finishScoreCrossfade("fracture", revision, transition, {
             deactivateJunction: true,
+            deactivateNightshift: true,
+          });
+        });
+      }
+
+      if (requestedScoreId === "nightshift") {
+        scoreStatus = "loading";
+        return ensureNightshift().setActive(true).then(() => {
+          if (!running || requestedScoreId !== "nightshift" || revision !== scoreSwitchRevision) return scoreId;
+          scoreId = "nightshift";
+          arrangement = ensureNightshift().getState();
+          publishArrangement(arrangement);
+          scoreStatus = "transitioning";
+          const transition = beginScoreCrossfade("nightshift");
+          return finishScoreCrossfade("nightshift", revision, transition, {
+            deactivateJunction: true,
+          });
+        }).catch(async (error) => {
+          if (!running || requestedScoreId !== "nightshift" || revision !== scoreSwitchRevision) return scoreId;
+          if (fractureReadyState !== "ready") {
+            return commitJunctionSafetyBed(
+              `NIGHTSHIFT unavailable: ${error?.message || error}; FRACTURE is unavailable`,
+            );
+          }
+          requestedScoreId = "fracture";
+          scoreId = "fracture";
+          scoreStatus = "error";
+          scoreError = error instanceof Error ? error.message : "NIGHTSHIFT did not load";
+          const fallbackTransition = beginScoreCrossfade("fracture");
+          return finishScoreCrossfade("fracture", revision, fallbackTransition, {
+            deactivateNightshift: true,
+            preserveError: true,
           });
         });
       }
@@ -579,7 +645,9 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
         scoreId = "junction";
         scoreStatus = "transitioning";
         const transition = beginScoreCrossfade("junction");
-        return finishScoreCrossfade("junction", revision, transition);
+        return finishScoreCrossfade("junction", revision, transition, {
+          deactivateNightshift: true,
+        });
       }).catch(async (error) => {
         if (!running || requestedScoreId !== "junction" || revision !== scoreSwitchRevision) return scoreId;
         // A loading FRACTURE worklet is not an audible fallback. Waiting for
@@ -620,6 +688,7 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
       energy = speedToEnergy(speed);
       post("SPEED", { speed, energy });
       junction?.setSpeed(speed, energy, elapsedMs / 1000);
+      nightshift?.setSpeed(speed, energy, elapsedMs / 1000);
       // Demo and QA speed feeds have no GPS accuracy and are observed here.
       // Real GPS feeds provide their unsmoothed trusted sample through
       // setAccelerationSample so UI smoothing cannot hide the launch.
@@ -667,9 +736,12 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
     },
 
     getState() {
-      if (scoreId === "junction") {
+      if (scoreId === "junction" || scoreId === "nightshift") {
+        const sampledState = scoreId === "nightshift"
+          ? nightshift?.getState()
+          : junction?.getState();
         return {
-          ...junction.getState(),
+          ...sampledState,
           requestedScoreId,
           scoreStatus,
           scoreError,
@@ -731,7 +803,9 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
       bloomSerialLink?.destroy();
       bloomNode?.disconnect();
       junction?.destroy();
+      nightshift?.destroy();
       junctionGain.disconnect();
+      nightshiftGain.disconnect();
       fractureGain.disconnect();
       performanceBus.disconnect();
       accelerationScoop.disconnect();

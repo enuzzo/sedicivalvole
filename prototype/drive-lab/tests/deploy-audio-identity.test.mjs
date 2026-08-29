@@ -5,6 +5,7 @@ import test from "node:test";
 
 const deployScript = new URL("../../../scripts/deploy_drive_lab_ftp.py", import.meta.url);
 const junctionBank = new URL("../public/audio/junction.svb", import.meta.url);
+const nightshiftBank = new URL("../public/audio/nightshift.svb", import.meta.url);
 
 test("the deploy gate recognizes an owned JUNCTION bank without accepting arbitrary audio", () => {
   const program = String.raw`
@@ -105,6 +106,39 @@ assert module.LEGACY_UI_HASHES == {
     program,
     deployScript.pathname,
     junctionBank.pathname,
+  ], {
+    env: { ...process.env, PYTHONDONTWRITEBYTECODE: "1" },
+  });
+});
+
+test("the deploy gate recognizes only the mixed NIGHTSHIFT production bank", () => {
+  const program = String.raw`
+import importlib.util
+import pathlib
+import sys
+
+spec = importlib.util.spec_from_file_location("sedicivalvole_deploy", sys.argv[1])
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+bank = pathlib.Path(sys.argv[2]).read_bytes()
+assert module.is_recognized_nightshift_bank(bank)
+assert not module.is_recognized_nightshift_bank(b"not-nightshift")
+wrong_magic = b"BADMAGIC" + bank[8:]
+assert not module.is_recognized_nightshift_bank(wrong_magic)
+manifest_length = int.from_bytes(bank[8:12], "little")
+manifest = bytearray(bank[12:12 + manifest_length])
+marker = b'"rawSourceAssetsPublished":false'
+at = manifest.find(marker)
+assert at >= 0
+manifest[at + len(marker) - 5:at + len(marker)] = b"true "
+mutated = bank[:12] + bytes(manifest) + bank[12 + manifest_length:]
+assert not module.is_recognized_nightshift_bank(mutated)
+`;
+  execFileSync("python3", [
+    "-c",
+    program,
+    deployScript.pathname,
+    nightshiftBank.pathname,
   ], {
     env: { ...process.env, PYTHONDONTWRITEBYTECODE: "1" },
   });

@@ -54,15 +54,17 @@ test("a ready entry names a real score and a preparing entry names none", () => 
   }
 });
 
-test("the ready scores name both live music runtimes", () => {
+test("the ready scores name all three live music runtimes", () => {
   const ready = readyScoreGenres();
-  assert.deepEqual(ready.map((genre) => genre.id), ["junction", "fracture"]);
+  assert.deepEqual(ready.map((genre) => genre.id), ["junction", "fracture", "nightshift"]);
   assert.equal(getScoreGenre("junction").score, "junction");
   assert.equal(getScoreGenre("fracture").score, SCORE_ID);
+  assert.equal(getScoreGenre("nightshift").score, "nightshift");
   assert.ok(ready.every((genre) => isScoreReady(genre.id)));
   assert.match(getScoreGenre("junction").note, /one coherent harmonic identity/i);
   assert.doesNotMatch(getScoreGenre("junction").note, /160|five.*famil/i);
   assert.match(getScoreGenre("fracture").note, /no automatic lead/i);
+  assert.match(getScoreGenre("nightshift").note, /85.140 BPM/i);
 });
 
 test("the rest of the library is declared as preparing, not as playing", () => {

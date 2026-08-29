@@ -1,7 +1,7 @@
 export const SCORE_SWITCH_CROSSFADE_SECONDS = 4;
 const CURVE_SAMPLES = 65;
-const FRACTURE_ANGLE = 0;
-const JUNCTION_ANGLE = Math.PI * 0.5;
+const SCORE_IDS = Object.freeze(["fracture", "junction", "nightshift"]);
+const MAX_SCORE_ANGLE = Math.PI * 0.5;
 
 export function equalPowerCrossfade(progress) {
   const position = Math.min(1, Math.max(0, Number(progress) || 0));
@@ -41,8 +41,19 @@ export function scheduleEqualPowerGain(param, direction, startAt, durationSecond
 }
 
 export function createScoreCrossfadeState(activeScoreId = "fracture", at = 0) {
-  const angle = activeScoreId === "junction" ? JUNCTION_ANGLE : FRACTURE_ANGLE;
-  return { fromAngle: angle, toAngle: angle, startAt: at, endAt: at };
+  const gains = Object.fromEntries(SCORE_IDS.map((id) => [id, id === activeScoreId ? 1 : 0]));
+  if (!SCORE_IDS.includes(activeScoreId)) gains.fracture = 1;
+  return { fromGains: gains, toGains: gains, startAt: at, endAt: at };
+}
+
+function sphericalGains(from, to, progress) {
+  const dot = SCORE_IDS.reduce((sum, id) => sum + from[id] * to[id], 0);
+  const angle = Math.acos(Math.min(1, Math.max(-1, dot)));
+  if (angle < 1e-9) return { ...to };
+  const denominator = Math.sin(angle);
+  const outgoing = Math.sin((1 - progress) * angle) / denominator;
+  const incoming = Math.sin(progress * angle) / denominator;
+  return Object.fromEntries(SCORE_IDS.map((id) => [id, from[id] * outgoing + to[id] * incoming]));
 }
 
 export function scoreCrossfadeAtTime(state, at) {
@@ -50,21 +61,16 @@ export function scoreCrossfadeAtTime(state, at) {
   const progress = duration > 0
     ? Math.min(1, Math.max(0, (at - state.startAt) / duration))
     : 1;
-  const angle = state.fromAngle + (state.toAngle - state.fromAngle) * progress;
-  return {
-    angle,
-    fracture: Math.cos(angle),
-    junction: Math.sin(angle),
-  };
+  const gains = sphericalGains(state.fromGains, state.toGains, progress);
+  return { ...gains, angle: Math.atan2(gains.junction, gains.fracture) };
 }
 
-function scoreGainCurve(fromAngle, toAngle, channel, samples = CURVE_SAMPLES) {
+function scoreGainCurve(fromGains, toGains, channel, samples = CURVE_SAMPLES) {
   const length = Math.max(2, Math.floor(Number(samples) || CURVE_SAMPLES));
   const curve = new Float32Array(length);
   for (let index = 0; index < length; index += 1) {
     const progress = index / (length - 1);
-    const angle = fromAngle + (toAngle - fromAngle) * progress;
-    curve[index] = channel === "fracture" ? Math.cos(angle) : Math.sin(angle);
+    curve[index] = sphericalGains(fromGains, toGains, progress)[channel];
   }
   return curve;
 }
@@ -86,22 +92,30 @@ function replaceGainAutomation(param, value, curve, startAt, duration) {
 export function scheduleScoreCrossfade({
   fractureParam,
   junctionParam,
+  nightshiftParam = null,
   state,
   targetScoreId,
   startAt,
   durationSeconds = SCORE_SWITCH_CROSSFADE_SECONDS,
 }) {
   const current = scoreCrossfadeAtTime(state, startAt);
-  const targetAngle = targetScoreId === "junction" ? JUNCTION_ANGLE : FRACTURE_ANGLE;
-  const angularDistance = Math.abs(targetAngle - current.angle);
-  const duration = durationSeconds * angularDistance / JUNCTION_ANGLE;
-  const fractureCurve = scoreGainCurve(current.angle, targetAngle, "fracture");
-  const junctionCurve = scoreGainCurve(current.angle, targetAngle, "junction");
+  const fromGains = Object.fromEntries(SCORE_IDS.map((id) => [id, current[id]]));
+  const resolvedTarget = SCORE_IDS.includes(targetScoreId) ? targetScoreId : "fracture";
+  const toGains = Object.fromEntries(SCORE_IDS.map((id) => [id, id === resolvedTarget ? 1 : 0]));
+  const dot = SCORE_IDS.reduce((sum, id) => sum + fromGains[id] * toGains[id], 0);
+  const angularDistance = Math.acos(Math.min(1, Math.max(-1, dot)));
+  const duration = durationSeconds * angularDistance / MAX_SCORE_ANGLE;
+  const fractureCurve = scoreGainCurve(fromGains, toGains, "fracture");
+  const junctionCurve = scoreGainCurve(fromGains, toGains, "junction");
+  const nightshiftCurve = scoreGainCurve(fromGains, toGains, "nightshift");
   replaceGainAutomation(fractureParam, current.fracture, fractureCurve, startAt, duration);
   replaceGainAutomation(junctionParam, current.junction, junctionCurve, startAt, duration);
+  if (nightshiftParam) {
+    replaceGainAutomation(nightshiftParam, current.nightshift, nightshiftCurve, startAt, duration);
+  }
   return {
-    fromAngle: current.angle,
-    toAngle: targetAngle,
+    fromGains,
+    toGains,
     startAt,
     endAt: startAt + duration,
   };

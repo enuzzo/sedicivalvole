@@ -9,6 +9,16 @@ import {
   parseNightshiftBank,
 } from "../src/nightshift-bank.js";
 import {
+  NIGHTSHIFT_PARK_HOLD_SECONDS,
+  NIGHTSHIFT_PARK_LEVEL,
+  NIGHTSHIFT_PARK_VOICINGS,
+} from "../src/nightshift-low-speed-bed.js";
+import {
+  createScoreCrossfadeState,
+  scheduleScoreCrossfade,
+  scoreCrossfadeAtTime,
+} from "../src/score-crossfade.js";
+import {
   NIGHTSHIFT_ARRANGEMENT,
   NIGHTSHIFT_BARS_PER_PERFORMANCE,
   NIGHTSHIFT_HARMONIC_IDENTITY,
@@ -82,4 +92,54 @@ test("the production NIGHTSHIFT bank is mixed, bounded and does not publish sour
   assert.equal(nightshiftDecodedLimit(99), 6);
   assert.ok(parsed.audioBytes < 6_000_000);
   assert.ok(parsed.manifest.sections.every(({ durationSeconds }) => durationSeconds > 13));
+});
+
+test("NIGHTSHIFT PARK is a polite clockless consonant form, not a perpetual note", () => {
+  assert.equal(NIGHTSHIFT_PARK_VOICINGS.length, 6);
+  assert.equal(new Set(NIGHTSHIFT_PARK_VOICINGS.map(({ id }) => id)).size, 6);
+  assert.ok(NIGHTSHIFT_PARK_HOLD_SECONDS.every((seconds) => seconds >= 10));
+  assert.equal(new Set(NIGHTSHIFT_PARK_HOLD_SECONDS).size, 6);
+  assert.ok(NIGHTSHIFT_PARK_HOLD_SECONDS.reduce((sum, seconds) => sum + seconds, 0) > 75);
+  assert.ok(NIGHTSHIFT_PARK_LEVEL <= 0.025);
+  assert.ok(NIGHTSHIFT_PARK_VOICINGS.every(({ frequencies }) => frequencies.length === 4));
+});
+
+test("the three-score crossfade keeps unit power through NIGHTSHIFT and a reversal", () => {
+  class Param {
+    cancelScheduledValues() {}
+    setValueCurveAtTime() {}
+    setValueAtTime() {}
+    linearRampToValueAtTime() {}
+  }
+  let state = createScoreCrossfadeState("fracture", 0);
+  state = scheduleScoreCrossfade({
+    fractureParam: new Param(),
+    junctionParam: new Param(),
+    nightshiftParam: new Param(),
+    state,
+    targetScoreId: "nightshift",
+    startAt: 0,
+  });
+  const middle = scoreCrossfadeAtTime(state, 2);
+  assert.ok(Math.abs(middle.fracture ** 2 + middle.junction ** 2 + middle.nightshift ** 2 - 1) < 1e-12);
+  state = scheduleScoreCrossfade({
+    fractureParam: new Param(),
+    junctionParam: new Param(),
+    nightshiftParam: new Param(),
+    state,
+    targetScoreId: "junction",
+    startAt: 2,
+  });
+  const end = scoreCrossfadeAtTime(state, state.endAt);
+  assert.ok(Math.abs(end.junction - 1) < 1e-12);
+  assert.ok(Math.abs(end.fracture) < 1e-12);
+  assert.ok(Math.abs(end.nightshift) < 1e-12);
+});
+
+test("the NIGHTSHIFT player preserves native playback rate and complete-phrase boundaries", async () => {
+  const source = await readFile(new URL("../src/nightshift-player.js", import.meta.url), "utf8");
+  assert.doesNotMatch(source, /playbackRate\s*\./);
+  assert.match(source, /startPrepared\(prepared, current\.endAt\)/);
+  assert.match(source, /boundaryFallbacks/);
+  assert.match(source, /decoded-slot limit/);
 });
