@@ -487,7 +487,8 @@ Date: 2026-08-29
   `/Users/enuzzo/.codex/visualizations/2026/08/29/01a04e7e-d9e8-7693-b050-beaedf042936/drivey-wire-dual-acid-773x601.jpg`, and
   `/Users/enuzzo/.codex/visualizations/2026/08/29/01a04e7e-d9e8-7693-b050-beaedf042936/visual-catalog-no-wake-773x601.jpg`.
 - Ten focused DRIVEY checks, the complete 338-test suite, the exact 128-module
-  production build `20260829-2321`, and the 51-file upstream SHA-256 integrity
+  production build `20260829-2322` carrying commit `633d526`, and the 51-file
+  upstream SHA-256 integrity
   gate pass locally.
 
 Local self-review severity: P0 none. P1 none after restoring the upstream Input
