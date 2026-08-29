@@ -45,9 +45,12 @@ dated study documents.
   accuracy; a non-modal accessible panel offers an honest retry path and a
   fixed Milan demo without entering coordinates into diagnostics. The camera
   remains oblique and building-rich at `130 km/h`, centers on trusted fixes and
-  follows reported or inferred heading. One pointer rotates and pitches; two
-  pointers pinch beyond the automatic zoom range. After six idle seconds it
-  eases to the current automatic point, bearing, pitch and zoom. A MapLibre
+  follows reported or inferred heading. One pointer or a primary-button mouse
+  drag rotates and pitches; wheel/trackpad scroll and two pointers zoom beyond
+  the automatic range. ATLAS passes map hits through the otherwise transparent
+  product chrome while keeping its real controls and GPS popup interactive.
+  After six idle seconds it eases to the current automatic point, bearing,
+  pitch and zoom. A MapLibre
   compass shows heading, and an ephemeral `line-progress` pulse travels along
   the latest in-memory path in driving order. The `246 px` passenger panel
   collapses behind a persistent midpoint handle, has one touch-scroll context,

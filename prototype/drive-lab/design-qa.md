@@ -54,3 +54,41 @@
 - final audio/visual coherence after the textStep-informed sequencer replaces the rejected score.
 
 final result: passed
+
+## ATLAS desktop camera controls — 2026-08-29
+
+### Root cause and interaction contract
+
+- Before the change, the transparent `.experience` chrome was the top hit-test
+  target over the MapLibre canvas. A primary-button drag and a wheel gesture at
+  the same map point both left `022°`, pitch `60` and zoom `16.2` unchanged.
+- ATLAS now makes only the background chrome pointer-transparent. The top and
+  low control planes, speed readout and GPS recovery popup remain interactive,
+  while the popup stacking context sits above the passenger panel.
+- Primary-button horizontal drag changes bearing, vertical drag changes pitch,
+  wheel or trackpad scroll changes bounded zoom, and touch retains one-pointer
+  rotate/tilt plus two-pointer pinch. Every path shares the six-second manual
+  lease and current automatic-camera return.
+
+### Browser evidence
+
+- Default desktop `1280 × 720`: the top hit target changed from `experience` to
+  `maplibregl-canvas`; drag changed `022° / 60°` to `080° / 38°`, and wheel
+  changed zoom `16.2 → 17.4`.
+- Exact Tesla `773 × 601`: the map owns `527 × 601` with the `246 px` passenger
+  panel open; drag changed `022° / 60°` to `082° / 35°`, reverse wheel changed
+  zoom `16.2 → 15.0`, and document width/height exactly match the viewport.
+- A controlled wheel run retained zoom `17.4` after `4.5 s` and returned to the
+  automatic `16.2` after the lease and ease. The GPS popup CLOSE target is the
+  actual button rather than the panel beneath it.
+- The final automatic state is `022°`, pitch `60`, zoom `16.2`; no warning or
+  error was recorded in the selected in-app browser.
+
+### Automated evidence and remaining boundary
+
+- 22 focused ATLAS tests, the complete 343-test suite and the 131-module
+  production build `20260829-2257` from `fe2a9a5` pass.
+- Real-Tesla multitouch, physical mouse/trackpad behavior, live GPS recovery,
+  sustained frame pacing and cabin-distance readability remain open.
+
+final result: passed
