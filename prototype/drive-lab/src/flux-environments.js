@@ -64,6 +64,15 @@ export const FLUX_ENVIRONMENTS = [
     themed: true,
     tunable: true,
   },
+  {
+    id: "primordial",
+    label: "PRIMORDIAL",
+    number: "08",
+    rendererLabel: "Fluid scalar field",
+    renderer: "primordial",
+    themed: true,
+    tunable: true,
+  },
 ];
 
 export function getFluxEnvironment(environmentId) {

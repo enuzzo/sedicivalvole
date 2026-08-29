@@ -168,7 +168,10 @@ test("Atlas grants touch and desktop exploration for six seconds, then returns t
   assert.match(atlasSource, /map\.scrollZoom\.disable\(\)/);
   assert.match(atlasSource, /canvas\.addEventListener\("wheel", wheelManual, \{ passive: false \}\)/);
   assert.match(atlasSource, /wheelAtlasZoom\(map\.getZoom\(\), event\.deltaY, event\.deltaMode\)/);
-  assert.match(styles, /\.app\[data-environment="atlas"\] \.experience \{ z-index: 8; pointer-events: none; \}/);
+  assert.match(
+    styles,
+    /\.app\[data-environment="atlas"\] \.experience(?:,\s*\.app\[data-environment="[^"]+"\] \.experience)* \{ z-index: 8; pointer-events: none; \}/,
+  );
   assert.match(styles, /\.app\[data-environment="atlas"\]\.controls-awake \.experience \.control-layer,[\s\S]*?pointer-events: auto;/);
   assert.match(atlasSource, /atlasManualCameraShouldReturn\(manual\.lastInteractionAt, now\)/);
   assert.match(atlasSource, /center: \[point\.longitude, point\.latitude\][\s\S]*?pitch: nextCamera\.pitch[\s\S]*?zoom: nextCamera\.zoom/);

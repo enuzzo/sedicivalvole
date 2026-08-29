@@ -56,6 +56,11 @@ import {
   nextPrtclTypeId,
   normalizePrtclSettings,
 } from "./environments/prtcl/prtcl-model.js";
+import {
+  DEFAULT_PRIMORDIAL_SETTINGS,
+  PRIMORDIAL_CONTROLS,
+  normalizePrimordialSettings,
+} from "./environments/primordial/primordial-model.js";
 import { atlasGpsPresentation, resolveAtlasHeading } from "./environments/atlas/atlas-model.js";
 import {
   advanceDemoMotion,
@@ -75,6 +80,8 @@ import {
 } from "./support-model.js";
 
 const AtlasField = lazy(() => import("./environments/atlas/atlas-field.jsx"));
+const PrimordialField = lazy(() => import("./environments/primordial/primordial-field.jsx")
+  .then((module) => ({ default: module.PrimordialField })));
 
 /**
  * The lanes the voice preview can audition.
@@ -159,6 +166,7 @@ function readPreferences() {
       )) ? value.genreId : DEFAULT_GENRE_ID,
       driveySettings: normalizeDriveySettings(value?.driveySettings),
       prtclSettings: normalizePrtclSettings(value?.prtclSettings),
+      primordialSettings: normalizePrimordialSettings(value?.primordialSettings),
     };
   } catch {
     return {
@@ -167,6 +175,7 @@ function readPreferences() {
       genreId: DEFAULT_GENRE_ID,
       driveySettings: DEFAULT_DRIVEY_SETTINGS,
       prtclSettings: DEFAULT_PRTCL_SETTINGS,
+      primordialSettings: DEFAULT_PRIMORDIAL_SETTINGS,
     };
   }
 }
@@ -722,6 +731,69 @@ function PrtclCycleControl({ settings, onChange }) {
   );
 }
 
+function PrimordialTuner({ settings, open, onOpenChange, onChange }) {
+  const values = normalizePrimordialSettings(settings);
+  return (
+    <section
+      className={`primordial-tuner${open ? " is-open" : ""}`}
+      onPointerDown={(event) => event.stopPropagation()}
+      onKeyDown={(event) => {
+        if (event.key !== "Escape" || !open) return;
+        event.preventDefault();
+        event.stopPropagation();
+        onOpenChange(false);
+      }}
+    >
+      <button
+        className="primordial-tuner-trigger"
+        type="button"
+        aria-expanded={open}
+        aria-controls="primordial-tuner-panel"
+        aria-label={open ? "Close PRIMORDIAL tuning" : "Open PRIMORDIAL tuning"}
+        onClick={() => onOpenChange(!open)}
+      >
+        <span>TUNE</span>
+        <small>{open ? "CLOSE" : "FIELD"}</small>
+      </button>
+      {open ? (
+        <div
+          className="primordial-tuner-panel"
+          id="primordial-tuner-panel"
+          role="group"
+          aria-labelledby="primordial-tuner-title"
+        >
+          <header id="primordial-tuner-title">
+            <small>PRIMORDIAL 08</small>
+            <strong>FLUID FIELD</strong>
+          </header>
+          <div className="primordial-tuner-controls">
+            {PRIMORDIAL_CONTROLS.map((control) => (
+              <label className="primordial-tuner-range" key={control.id}>
+                <span>
+                  <strong>{control.label}</strong>
+                  <output>{values[control.id].toFixed(2)}</output>
+                </span>
+                <input
+                  type="range"
+                  aria-label={`PRIMORDIAL ${control.label}`}
+                  min={control.min}
+                  max={control.max}
+                  step={control.step}
+                  value={values[control.id]}
+                  onChange={(event) => onChange(normalizePrimordialSettings({
+                    ...values,
+                    [control.id]: Number(event.currentTarget.value),
+                  }))}
+                />
+              </label>
+            ))}
+          </div>
+        </div>
+      ) : null}
+    </section>
+  );
+}
+
 /**
  * The score library panel.
  *
@@ -981,6 +1053,8 @@ export function App() {
   const [environmentId, setEnvironmentId] = useState(initialPreferences.environmentId);
   const [driveySettings, setDriveySettings] = useState(initialPreferences.driveySettings);
   const [prtclSettings, setPrtclSettings] = useState(initialPreferences.prtclSettings);
+  const [primordialSettings, setPrimordialSettings] = useState(initialPreferences.primordialSettings);
+  const [primordialTunerOpen, setPrimordialTunerOpen] = useState(false);
   const [environmentRuntimeError, setEnvironmentRuntimeError] = useState(null);
   const [genreId, setGenreId] = useState(initialPreferences.genreId);
   const [environmentPickerOpen, setEnvironmentPickerOpen] = useState(false);
@@ -1049,6 +1123,7 @@ export function App() {
   const audioLevelRef = useRef(audioLevel);
   const environmentIdRef = useRef(environmentId);
   const prtclSettingsRef = useRef(prtclSettings);
+  const primordialSettingsRef = useRef(primordialSettings);
   const genreIdRef = useRef(genreId);
   const rendererRef = useRef(renderer);
   const drawerOpenRef = useRef(drawerOpen);
@@ -1067,6 +1142,7 @@ export function App() {
     || environmentPickerOpen
     || scorePickerOpen
     || supportOpen;
+  const controlsPinned = modalOpen || primordialTunerOpen;
   const closeVoicePreview = useCallback(() => {
     setPreviewOpen(false);
     setDrawerOpen(true);
@@ -1081,6 +1157,7 @@ export function App() {
   audioLevelRef.current = audioLevel;
   environmentIdRef.current = environmentId;
   prtclSettingsRef.current = prtclSettings;
+  primordialSettingsRef.current = primordialSettings;
   genreIdRef.current = genreId;
   rendererRef.current = renderer;
   drawerOpenRef.current = drawerOpen;
@@ -1882,11 +1959,12 @@ export function App() {
         genreId,
         driveySettings: normalizeDriveySettings(driveySettings),
         prtclSettings: normalizePrtclSettings(prtclSettings),
+        primordialSettings: normalizePrimordialSettings(primordialSettings),
       }));
     } catch {
       // Preference persistence is optional.
     }
-  }, [driveySettings, environmentId, genreId, prtclSettings, themeId]);
+  }, [driveySettings, environmentId, genreId, primordialSettings, prtclSettings, themeId]);
 
   const captureViewport = useCallback((reason) => {
     const snapshot = readDisplaySnapshot(reason);
@@ -2023,6 +2101,9 @@ export function App() {
       paletteTheme: themeIdRef.current,
       particleType: environmentIdRef.current === "prtcl"
         ? normalizePrtclSettings(prtclSettingsRef.current).type
+        : null,
+      primordialSettings: environmentIdRef.current === "primordial"
+        ? normalizePrimordialSettings(primordialSettingsRef.current)
         : null,
       muted: mutedRef.current,
       arrangement: audioRef.current?.getState() ?? null,
@@ -2170,13 +2251,14 @@ export function App() {
 
   useEffect(() => {
     setEnvironmentRuntimeError(null);
+    setPrimordialTunerOpen(false);
   }, [environmentId]);
 
   return (
     <main
       ref={appRef}
       tabIndex={-1}
-      className={`app phase-${phase} ${controlsAwake || modalOpen ? "controls-awake" : "controls-resting"}`}
+      className={`app phase-${phase} ${controlsAwake || controlsPinned ? "controls-awake" : "controls-resting"}`}
       data-theme={themeId}
       data-environment={environmentId}
       onPointerDown={handleSurfacePointerDown}
@@ -2250,6 +2332,21 @@ export function App() {
               onFrame={recordRenderedFrame}
               onRuntimeError={handleEnvironmentError}
             />
+          ) : environment.renderer === "primordial" ? (
+            <Suspense fallback={<div className="field-failure"><strong>PRIMORDIAL</strong><span>Loading fluid field</span></div>}>
+              <PrimordialField
+                speed={speed}
+                musicLevel={audioLevel}
+                bpm={transportBpm}
+                theme={theme}
+                settings={primordialSettings}
+                reducedMotion={reducedMotion}
+                effect={activeEffect}
+                onRenderer={setRenderer}
+                onFrame={recordRenderedFrame}
+                onRuntimeError={handleEnvironmentError}
+              />
+            </Suspense>
           ) : (
             <FluxField
               energy={energy}
@@ -2276,6 +2373,17 @@ export function App() {
         <PrtclCycleControl
           settings={prtclSettings}
           onChange={(value) => setPrtclSettings(normalizePrtclSettings(value))}
+        />
+      ) : null}
+      {phase === "running" && environment.renderer === "primordial" ? (
+        <PrimordialTuner
+          settings={primordialSettings}
+          open={primordialTunerOpen}
+          onOpenChange={(open) => {
+            setPrimordialTunerOpen(open);
+            wakeControls();
+          }}
+          onChange={setPrimordialSettings}
         />
       ) : null}
       {keyboardHint ? <div className="keyboard-hint" role="status">{keyboardHint}</div> : null}

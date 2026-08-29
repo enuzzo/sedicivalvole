@@ -6,7 +6,8 @@
 // index.html as an entry, so this page never reaches a build or a deployment.
 //
 // Query parameters:
-//   env    aperture | meridian | drivey | prtcl (default: meridian)
+//   env    aperture | meridian | drivey | prtcl | primordial
+//                                               (default: meridian)
 //   speed  held km/h                            (default: 0)
 //   theme  pearl | graphite | red | blue | silver
 //   sweep  seconds for one 0 -> ceiling -> 0 pass; overrides `speed`
@@ -16,8 +17,12 @@
 //   traffic   0..24                             (DRIVEY only)
 //   render    normal | wireframe                (DRIVEY only)
 //   type      frequency | murmuration | axiom    (PRTCL only)
-//   audio     held 0..1 score level              (DRIVEY / PRTCL)
-//   effect    OPEN | UNDERWATER | BLOOM          (DRIVEY / PRTCL)
+//   audio     held 0..1 score level              (DRIVEY / PRTCL / PRIMORDIAL)
+//   bpm       held score tempo                    (PRIMORDIAL only)
+//   scale     0.6..1.6                            (PRIMORDIAL only)
+//   flow      0.4..1.8                            (PRIMORDIAL only)
+//   warp      0.3..1.4                            (PRIMORDIAL only)
+//   effect    OPEN | UNDERWATER | BLOOM          (DRIVEY / PRTCL / PRIMORDIAL)
 //
 // Example: /qa-field.html?env=meridian&speed=115&theme=red
 
@@ -38,6 +43,8 @@ const FIELDS = {
     .then((module) => ({ default: module.DriveyField }))),
   prtcl: lazy(() => import("../src/environments/prtcl/prtcl-field.jsx")
     .then((module) => ({ default: module.PrtclField }))),
+  primordial: lazy(() => import("../src/environments/primordial/primordial-field.jsx")
+    .then((module) => ({ default: module.PrimordialField }))),
 };
 
 const parameters = new URLSearchParams(window.location.search);
@@ -60,6 +67,13 @@ const DRIVEY_SETTINGS = {
   renderMode: parameters.get("render") ?? "normal",
 };
 const PRTCL_SETTINGS = { type: parameters.get("type") ?? "frequency" };
+const PRIMORDIAL_SETTINGS = {
+  scale: readNumber("scale", 1),
+  flow: readNumber("flow", 1),
+  warp: readNumber("warp", 0.78),
+};
+const MUSIC_LEVEL = Math.min(1, Math.max(0, readNumber("audio", 0)));
+const SCORE_BPM = Math.min(220, Math.max(0, readNumber("bpm", 96)));
 
 function useHeldSpeed() {
   const [speed, setSpeed] = useState(HELD_SPEED);
@@ -148,6 +162,13 @@ function Harness() {
       ? { audioLevel: readNumber("audio", 0), effect: parameters.get("effect"), settings: DRIVEY_SETTINGS }
       : ENVIRONMENT === "prtcl"
         ? { audioLevel: readNumber("audio", 0), effect: parameters.get("effect"), settings: PRTCL_SETTINGS }
+        : ENVIRONMENT === "primordial"
+          ? {
+            audioLevel: MUSIC_LEVEL,
+            bpm: SCORE_BPM,
+            effect: parameters.get("effect"),
+            settings: PRIMORDIAL_SETTINGS,
+          }
       : {};
 
   const APP_COMMIT = typeof __APP_COMMIT__ !== "undefined" ? __APP_COMMIT__ : "dev";

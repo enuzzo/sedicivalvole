@@ -97,7 +97,7 @@ test("renderer failure, context loss, frame accounting, and cleanup share the Fl
 
 test("PRTCL uses one small text-only TYPE cycle separate from the shared palette", () => {
   const start = appSource.indexOf("function PrtclCycleControl");
-  const end = appSource.indexOf("/**", start);
+  const end = appSource.indexOf("function PrimordialTuner", start);
   const controlSource = appSource.slice(start, end);
   assert.ok(start >= 0 && end > start);
   assert.match(controlSource, /<span>TYPE<\/span>/);
