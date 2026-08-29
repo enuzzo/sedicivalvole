@@ -592,9 +592,9 @@ Date: 2026-08-30
 Local self-review severity: P0 none, P1 none after the layered-island correction,
 P2 none after making the Warp default exactly representable.
 
-final result: local PRIMORDIAL candidate is implemented, tested, and visually
-documented; product-owner visual approval, push, canonical deployment, and
-real-Tesla motion, touch, frame-pacing, and thermal acceptance remain open
+final result: PRIMORDIAL is implemented, tested, accepted and canonically
+published in exact source `44a3a42`, build `20260830-0038`; real-Tesla motion,
+touch, frame-pacing, and thermal acceptance remain open
 
 ---
 
@@ -617,5 +617,6 @@ Date: 2026-08-30
   **351 / 351**, the 132-module build is `20260830-0031` at `ca5ffe9`, and muted
   local Browser QA shows OPEN at `35 km/h` with no warning or error.
 
-final result: technically verified local candidate; human headphone/cabin A/B,
-push, canonical deployment, and real-Tesla listening acceptance remain open
+final result: technically verified and canonically published in exact source
+`44a3a42`, build `20260830-0038`; human headphone/cabin A/B and real-Tesla
+listening acceptance remain open

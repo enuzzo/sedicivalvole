@@ -8,6 +8,37 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## PRIMORDIAL and OPEN publication — 2026-08-30 00:43
+
+- build stamp: **`20260830-0038`**; deployed source commit: `44a3a42`;
+  PRIMORDIAL implementation `9b733f6`; OPEN correction `ca5ffe9`;
+- gate before upload: **PASS**. The clean pushed source matched `origin/main`,
+  all 351 tests passed, and the 132-module build embedded version `0.0.0`,
+  commit `44a3a42` and build `20260830-0038`;
+- publication boundary: **PASS**. Both read-only preflight and immediate
+  postflight reported network, login, canonical directory, remote listing and
+  identity PASS with `remote_writes=NONE`. Publication uploaded 90 files /
+  15,775,006 bytes, passed dynamic-root and exact legacy-cleanup gates, and
+  retained two previous content-addressed assets for cache overlap;
+- canonical identity and headers: **PASS**. Bare and
+  `?build=20260830-0038` HTML return `200`, 788 bytes,
+  `no-store, no-cache, must-revalidate, max-age=0`, `pragma: no-cache`,
+  `X-Content-Type-Options: nosniff` and proxy cache `MISS`. Both are
+  byte-identical to the local entry at SHA-256
+  `0a95a3623264faae4c70bed624a617c1ab7ed5e0e15932353ecbd4087ccd1d8e`;
+- asset identity: **PASS**. The local/live main JavaScript, PRIMORDIAL chunk and
+  CSS are byte-identical at SHA-256
+  `002dfcb451051290e856cb0ec6a023d9bfc4e2d4c031e8e80cadc708a37217f8`,
+  `eef0159bf2293eaf8e279ddf7a01e2276972c725798e9e13128cc2025222288b`,
+  and `02a4ab3b626e9d0ce40b425650872f7163a01ee5d978ab1486d2ed0f3a265cf7`;
+- muted live product QA: **PASS within the technical contract**. At exact
+  `773 × 601`, PRIMORDIAL 08 selected successfully, its Scale/Flow/Warp tuner
+  opened with the authored defaults, Palette changed to MINT 07, and Browser
+  logs contained zero warning/error. DIAG reported `WebGL2 · Primordial fluid
+  field`, 59.63 FPS / 18.2 ms p95, zero runtime issues, output muted, and
+  identity `v0.0.0 · 44a3a42 · build 20260830-0038`. Real-Tesla motion, touch,
+  thermal and listening acceptance remain open.
+
 ## PRTCL approval and integrated recovery publication — 2026-08-29 23:37
 
 - build stamp: **`20260829-2337`**; deployed source commit: `b88070c`;

@@ -15,8 +15,8 @@ dated study documents.
   Engine-specific visual directions are selected.
 - The source checkout's Flux catalog contains seven visual environments:
   **APERTURE 01**, **VERTIGO 02**, **MERIDIAN 03**, **ATLAS 04**, **DRIVEY 05**,
-  the human-approved and canonically published **PRTCL 06**, and the locally
-  accepted but not-yet-published **PRIMORDIAL 08** candidate. Slot `07` remains
+  the human-approved and canonically published **PRTCL 06**, and the accepted,
+  canonically published **PRIMORDIAL 08** field. Slot `07` remains
   reserved for the future INFINITE study. Aperture remains the accepted
   fresh-session and invalid-preference fallback.
 - All seven source environments use the shared catalog of **10 themes**. Vertigo keeps
@@ -89,7 +89,8 @@ dated study documents.
   128-module build pass. Human visual approval was recorded on 2026-08-29;
   source commit `b88070c`, build `20260829-2337`, is verified on the canonical
   root, while real-Tesla acceptance remains open.
-- PRIMORDIAL 08 is a local clean-room implementation checkpoint at `9b733f6`.
+- PRIMORDIAL 08 is a clean-room implementation checkpoint at `9b733f6`, now
+  published through exact source `44a3a42`, build `20260830-0038`.
   Its project-authored full-screen WebGL2 shader uses coupled sine domains and
   independently authored warping; a bounded Canvas2D failure path remains
   available. No CodePen HTML, CSS, JavaScript, shader, Three.js runtime, or
@@ -102,8 +103,8 @@ dated study documents.
   dropdown, closes with Escape, persists its values, and pins the real product
   controls awake. Exact `773 × 601`, `390 × 844`, and `601 × 390` muted Browser
   QA passes locally. The user delegated remaining product decisions on
-  2026-08-30, so the recorded evidence admits this candidate for publication;
-  push, deployment, and target-Tesla acceptance remain separate open gates.
+  2026-08-30; exact-source push, publication, HTTPS identity and muted live
+  `773 × 601` Browser QA pass. Target-Tesla acceptance remains open.
 - REGISTER was rejected after live review because its static print composition
   was inexplicable in motion and outside the product mood. Its source remains
   only in the rejected-visual archive; the runtime, QA harness and active tests
@@ -336,10 +337,10 @@ dated study documents.
    spectral slope and saturation; add stereo and phase-coherence evidence with
    explicit invalidity reasons before any detected pitch set can gate JUNCTION
    material.
-5. Give the local PRIMORDIAL checkpoint a fresh human visual verdict before any
-   push or deployment, then validate accepted PRTCL and PRIMORDIAL motion,
-   performance, touch, and thermal behavior on the target Tesla. INFINITE
-   remains queued behind its own source comparison and human gate.
+5. Validate the published PRTCL and PRIMORDIAL motion, performance, touch, and
+   thermal behavior on the target Tesla. Validate the revised OPEN intake at
+   real playback level. INFINITE remains queued behind its own source
+   comparison and human gate.
 6. Design Engine only after exactly three Engine-specific directions are shown
    and one is selected. Keep `VERSION` at `0.0.0` until an explicit release is
    approved.

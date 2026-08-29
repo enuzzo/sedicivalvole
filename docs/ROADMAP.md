@@ -40,9 +40,9 @@ before publication. WAKE was selected and implemented, then rejected after
 repeated live review and removed from the product; SLIP remains proposal-only.
 DRIVEY 05 later entered through a source-faithful integration of
 the separately licensed Rezmason runtime. The source checkout now contains
-seven implemented environments, including the locally accepted PRIMORDIAL 08
-publication candidate. All use the same ten curated themes; Aperture remains
-the safe default.
+seven implemented environments, including the canonically published
+PRIMORDIAL 08 field. All use the same ten curated themes; Aperture remains the
+safe default.
 
 ## Phase 3 — Flux signal and music spike
 
@@ -107,14 +107,14 @@ Implemented:
   `24,000` / `16,000` / `37,000` fixed draw counts; a direct `94 × 34 px`
   text-only TYPE cycle separate from Palette; and native speed, music,
   OPEN/UNDERWATER/BLOOM, reduced-motion, failure, and cleanup behavior;
-- locally accepted `PRIMORDIAL 08`, with a clean-room project-authored WebGL2
+- accepted and canonically published `PRIMORDIAL 08`, with a clean-room project-authored WebGL2
   fluid field and bounded Canvas2D failure path; five-channel Sedici Valvole
   palette mapping; speed-owned convergence; music-owned flow, colour, and
   agitation; touch deformation; native OPEN/UNDERWATER/BLOOM responses; and a
   compact persisted Scale/Flow/Warp tuner. Its exact-viewport, responsive,
   reduced-motion, console, performance, test, and build gates pass locally,
-  and the delegated publication-decision gate pass, while push, deployment and
-  target-Tesla acceptance remain deliberately separate;
+  and the delegated publication-decision, exact-source push, deployment and
+  live Browser gates pass, while target-Tesla acceptance remains separate;
 - safe environment preferences: every implemented choice remains intact, while
   PLUMB, WAKE and other missing, retired or invalid identifiers resolve to Aperture;
 
@@ -122,10 +122,8 @@ Queued next:
 
 - decide which visual and score combinations become authored audiovisual environments once more than FRACTURE is selectable;
 - retain PLUMB and WAKE as rejected decision records and SLIP as proposal-only;
-- obtain a fresh human visual verdict for the local PRIMORDIAL candidate before
-  push or deployment, then validate the published PRTCL and any accepted
-  PRIMORDIAL checkpoint on the target Tesla; keep INFINITE queued behind its own
-  source comparison and human gate;
+- validate published PRTCL and PRIMORDIAL on the target Tesla; keep INFINITE
+  queued behind its own source comparison and human gate;
 - profile the unmodified Interstate 7 renderer on the target Tesla; any later travel, projection, curvature, density, palette, or geometry changes require a new explicit product decision and must not be folded into the upstream-integrity checkpoint;
 - verify each environment at rest, intermediate speed, full energy, and sustained deceleration at `773 × 601` on the target vehicle.
 

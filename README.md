@@ -11,10 +11,9 @@
 
 > Current state: **Flux Drive Lab runs the authored FRACTURE, JUNCTION and
 > NIGHTSHIFT music with seven selectable visual environments in the source
-> checkout and is under vehicle validation**. PRTCL 06 is published on the
-> canonical root; PRIMORDIAL 08 and the revised OPEN intake have passed their
-> local publication decision and await the exact committed deployment. This is
-> a development build, not a release.
+> checkout and is under vehicle validation**. PRTCL 06, PRIMORDIAL 08 and the
+> revised OPEN intake are published on the canonical root from exact source
+> `44a3a42`, build `20260830-0038`. This is a development build, not a release.
 
 Public development repository: [github.com/enuzzo/sedicivalvole](https://github.com/enuzzo/sedicivalvole).
 

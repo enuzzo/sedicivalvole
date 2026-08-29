@@ -238,7 +238,7 @@ acceptance in the vehicle.
 | Adaptive synth + sequencer | implemented prototype | FRACTURE runs in the AudioWorklet; real Tesla musical acceptance pending |
 | Modular Aperture generative visual | implemented prototype | WebGL2 plus Canvas2D fallback; Tesla performance pending |
 | PLUMB inertial-suspension visual | rejected and retired before publication | Exact-viewport review triggered its strings/bars retirement criterion; no active renderer |
-| Selectable visual environments | implemented prototype | Aperture, Vertigo, Meridian, Atlas, Drivey, the canonically published PRTCL checkpoint, and the locally accepted PRIMORDIAL publication candidate share normalized motion, safety, persistence, palette, failure, and diagnostic contracts; WAKE is retired and real-Tesla validation remains open |
+| Selectable visual environments | implemented prototype | Aperture, Vertigo, Meridian, Atlas, Drivey, PRTCL, and PRIMORDIAL are canonically published with normalized motion, safety, persistence, palette, failure, and diagnostic contracts; WAKE is retired and real-Tesla validation remains open |
 | Selectable musical environments | implemented prototype | FRACTURE, JUNCTION, and NIGHTSHIFT ready; four later directions remain pending |
 | Open packs | strategic goal | schema and licensing not frozen |
 | Offline audio core | implemented prototype | identical score DSP renders and analyses WAV references in Node |
