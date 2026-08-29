@@ -1,0 +1,31 @@
+STAR GUITAR
+  Leverage loops
+  Make it work before you make it look good
+
+Minified Drivey: browserify / webpack / rollup
+
+Portable Drivey
+  Like A-Frame, drivey.js (and minified) would find a root tag in the DOM and render it
+  No CSS, no UI, no built in levels, no interaction, no wireframe, no app logic, no drag-and-drop
+  show-dashboard="true" npc-cars="0" driving-side="right"
+
+Driving in reverse stinks
+  Change car auto-steering logic when the car is moving backwards
+
+Test on multiple devices
+  Chances are, the effect composer messes things up in browsers that don't support floating point textures
+
+Activate level modeling in a worker
+  Waiting on browser support
+
+Improve performance of Approximation::getNearest
+
+Cavern level
+  Stalagmites and stalagtites, subtle color variation?
+
+Much, much later
+  Spotify playlist embed?
+  About box?
+  Localization
+  Collision
+    "theWalls" in jj

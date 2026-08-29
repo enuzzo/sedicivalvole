@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Original Drivey.js — Sedici Valvole bridge</title>
+    <link rel="stylesheet" type="text/css" title="main" href="./css/drivey.css" />
+    <style>
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #000;
+      }
+
+      #buttonsContainer {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="./lib/theme.js"></script>
+    <script type="module">
+      import Drivey from "./js/Drivey.js";
+      import {
+        silhouetteMaterial,
+        transparentMaterial,
+      } from "./js/materials.js";
+      import { Color } from "./lib/three/three.module.js";
+
+      const installPaletteWireframe = (screen) => {
+        const background = new Color(0, 0, 0);
+        const line = new Color(1, 1, 1);
+        const highlight = new Color(1, 1, 1);
+        const pass = screen.blueprintPass;
+        Object.assign(pass.uniforms, {
+          backgroundTint: { value: background },
+          lineTint: { value: line },
+          highlightTint: { value: highlight },
+        });
+        pass.material.fragmentShader = `
+          precision mediump float;
+
+          uniform sampler2D tDiffuse;
+          uniform vec3 backgroundTint;
+          uniform vec3 lineTint;
+          uniform vec3 highlightTint;
+          varying vec2 vUV;
+
+          void main() {
+            float edge = clamp(texture2D(tDiffuse, vUV).r * 20.0, 0.0, 1.0);
+            float lineStrength = smoothstep(0.10, 0.62, edge);
+            float highlightStrength = smoothstep(0.62, 1.0, edge) * 0.42;
+            vec3 colour = mix(backgroundTint, lineTint, lineStrength);
+            colour = mix(colour, highlightTint, highlightStrength);
+            gl_FragColor = vec4(colour, 1.0);
+          }
+        `;
+        pass.material.needsUpdate = true;
+        return Object.freeze({ background, line, highlight });
+      };
+
+      const removeEmbeddedPlaylist = () => {
+        document.querySelector("#embedded-playlist")?.remove();
+      };
+      const observer = new MutationObserver(removeEmbeddedPlaylist);
+      observer.observe(document.body, { childList: true, subtree: true });
+
+      document.addEventListener("touchmove", (event) => event.preventDefault(), {
+        passive: false,
+      });
+
+      const drivey = new Drivey();
+      const paletteWireframe = installPaletteWireframe(drivey.screen);
+      removeEmbeddedPlaylist();
+      window.drivey = drivey;
+      window.__SEDICIVALVOLE_DRIVEY__ = Object.freeze({
+        Color,
+        drivey,
+        paletteWireframe,
+        silhouetteMaterial,
+        transparentMaterial,
+        upstreamCommit: "5104cdade2a3158786b05b9b0680a50e942830cf",
+      });
+    </script>
+  </body>
+</html>

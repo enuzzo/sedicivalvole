@@ -58,7 +58,7 @@ export const FLUX_ENVIRONMENTS = [
     id: "drivey",
     label: "DRIVEY",
     number: "06",
-    rendererLabel: "Drivey",
+    rendererLabel: "Original Drivey.js",
     renderer: "drivey",
     themed: true,
     tunable: true,

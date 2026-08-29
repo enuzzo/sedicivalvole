@@ -12,8 +12,9 @@
 //   sweep  seconds for one 0 -> ceiling -> 0 pass; overrides `speed`
 //   reduced   "1" to force reduced motion
 //   readout   "0" to hide the measurement overlay for clean captures
-//   camera    driver | hood | rear              (DRIVEY only)
-//   structure 20..100                           (DRIVEY only)
+//   camera    hood | rear | aerial              (DRIVEY only)
+//   traffic   0..24                             (DRIVEY only)
+//   render    normal | wireframe                (DRIVEY only)
 //
 // Example: /qa-field.html?env=meridian&speed=115&theme=red
 
@@ -36,7 +37,9 @@ const FIELDS = {
 
 const parameters = new URLSearchParams(window.location.search);
 const readNumber = (name, fallback) => {
-  const value = Number(parameters.get(name));
+  const raw = parameters.get(name);
+  if (raw == null) return fallback;
+  const value = Number(raw);
   return Number.isFinite(value) ? value : fallback;
 };
 
@@ -47,8 +50,9 @@ const THEME = getFluxTheme(parameters.get("theme") ?? "red");
 const REDUCED_MOTION = parameters.get("reduced") === "1";
 const SHOW_READOUT = parameters.get("readout") !== "0";
 const DRIVEY_SETTINGS = {
-  camera: parameters.get("camera") ?? "driver",
-  structure: readNumber("structure", 62),
+  camera: parameters.get("camera") ?? "hood",
+  traffic: readNumber("traffic", 16),
+  renderMode: parameters.get("render") ?? "normal",
 };
 
 function useHeldSpeed() {
@@ -128,6 +132,7 @@ function Harness() {
     reducedMotion: REDUCED_MOTION,
     onRenderer: setRenderer,
     onFrame,
+    onRuntimeError: (error) => setRenderer(`Unavailable · ${error.message}`),
   };
 
   const Field = FIELDS[ENVIRONMENT] ?? FIELDS.meridian;

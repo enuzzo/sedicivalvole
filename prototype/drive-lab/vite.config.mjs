@@ -83,6 +83,10 @@ export default defineConfig({
     __APP_COMMIT__: JSON.stringify(productCommit),
   },
   optimizeDeps: {
+    // Keep copied third-party HTML documents as static runtime assets. Vite's
+    // default recursive HTML scan would otherwise parse historical upstream
+    // modules as first-party dependency entries during local development.
+    entries: ["index.html", "qa-field.html"],
     include: ["react", "react-dom/client"],
   },
   server: {

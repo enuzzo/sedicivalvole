@@ -45,6 +45,9 @@ import { DriveyField } from "./environments/drivey/drivey-field.jsx";
 import {
   DEFAULT_DRIVEY_SETTINGS,
   DRIVEY_CAMERAS,
+  DRIVEY_RENDER_MODES,
+  nextDriveyCameraId,
+  nextDriveyRenderModeId,
   normalizeDriveySettings,
 } from "./environments/drivey/drivey-model.js";
 import { atlasGpsPresentation, resolveAtlasHeading } from "./environments/atlas/atlas-model.js";
@@ -650,61 +653,40 @@ function VisualPicker({ environmentId, onChange, onClose }) {
   );
 }
 
-function DriveyTuneControl({ open, settings, onChange, onToggle, onClose }) {
-  const camera = DRIVEY_CAMERAS[settings.camera] ?? DRIVEY_CAMERAS.driver;
+function DriveyCycleControl({ settings, onChange }) {
+  const camera = DRIVEY_CAMERAS[settings.camera] ?? DRIVEY_CAMERAS.hood;
+  const wireframe = settings.renderMode === DRIVEY_RENDER_MODES.wireframe.id;
+  const renderMode = wireframe
+    ? DRIVEY_RENDER_MODES.wireframe
+    : DRIVEY_RENDER_MODES.normal;
+  const nextCamera = DRIVEY_CAMERAS[nextDriveyCameraId(camera.id)];
+  const nextRenderMode = DRIVEY_RENDER_MODES[nextDriveyRenderModeId(renderMode.id)];
   return (
     <div
-      className={`visual-tune ${open ? "is-open" : ""}`}
+      className="drivey-cycle-control"
       onPointerDown={(event) => event.stopPropagation()}
     >
-      <button
-        className="visual-tune-trigger"
-        type="button"
-        aria-controls="drivey-tune-panel"
-        aria-expanded={open}
-        onClick={onToggle}
-      >
-        <span>TUNE</span>
-        <small>{camera.label}</small>
-      </button>
-      {open ? (
-        <section id="drivey-tune-panel" className="visual-tune-panel" aria-label="DRIVEY visual tuning">
-          <header>
-            <div><small>DRIVEY 06</small><strong>Road field</strong></div>
-            <button type="button" onClick={onClose}>CLOSE</button>
-          </header>
-          <fieldset>
-            <legend>CAMERA</legend>
-            <div className="visual-tune-options">
-              {Object.values(DRIVEY_CAMERAS).map((entry) => (
-                <button
-                  key={entry.id}
-                  type="button"
-                  aria-pressed={entry.id === settings.camera}
-                  onClick={() => onChange({ ...settings, camera: entry.id })}
-                >
-                  {entry.label}
-                </button>
-              ))}
-            </div>
-          </fieldset>
-          <label className="visual-tune-range">
-            <span>STRUCTURE <output>{settings.structure}</output></span>
-            <input
-              type="range"
-              min="20"
-              max="100"
-              step="1"
-              value={settings.structure}
-              aria-label="DRIVEY wireframe structure"
-              onChange={(event) => onChange(normalizeDriveySettings({
-                ...settings,
-                structure: event.currentTarget.value,
-              }))}
-            />
-          </label>
-        </section>
-      ) : null}
+      <div className="drivey-cycle-rail">
+        <button
+          className="visual-cycle-button visual-view-cycle"
+          type="button"
+          aria-label={`DRIVEY view ${camera.label}. Next ${nextCamera.label}`}
+          onClick={() => onChange({ ...settings, camera: nextCamera.id })}
+        >
+          <span>VIEW</span>
+          <small>{camera.label}</small>
+        </button>
+        <button
+          className="visual-cycle-button visual-render-toggle"
+          type="button"
+          aria-label={`DRIVEY render ${renderMode.label}. Next ${nextRenderMode.label}`}
+          aria-pressed={wireframe}
+          onClick={() => onChange({ ...settings, renderMode: nextRenderMode.id })}
+        >
+          <span>RENDER</span>
+          <small>{renderMode.label}</small>
+        </button>
+      </div>
     </div>
   );
 }
@@ -971,7 +953,6 @@ export function App() {
   const [genreId, setGenreId] = useState(initialPreferences.genreId);
   const [environmentPickerOpen, setEnvironmentPickerOpen] = useState(false);
   const [scorePickerOpen, setScorePickerOpen] = useState(false);
-  const [tuneOpen, setTuneOpen] = useState(false);
   const [supportOpen, setSupportOpen] = useState(false);
   const [rawReportOpen, setRawReportOpen] = useState(false);
   const [diagnosticReadmeOpen, setDiagnosticReadmeOpen] = useState(false);
@@ -1052,7 +1033,6 @@ export function App() {
     || previewOpen
     || environmentPickerOpen
     || scorePickerOpen
-    || tuneOpen
     || supportOpen;
   const closeVoicePreview = useCallback(() => {
     setPreviewOpen(false);
@@ -2152,7 +2132,6 @@ export function App() {
 
   useEffect(() => {
     setEnvironmentRuntimeError(null);
-    if (environmentId !== "drivey") setTuneOpen(false);
   }, [environmentId]);
 
   return (
@@ -2248,12 +2227,9 @@ export function App() {
         </EnvironmentErrorBoundary>
       ) : null}
       {phase === "running" && environment.renderer === "drivey" ? (
-        <DriveyTuneControl
-          open={tuneOpen}
+        <DriveyCycleControl
           settings={driveySettings}
           onChange={(value) => setDriveySettings(normalizeDriveySettings(value))}
-          onToggle={() => setTuneOpen((value) => !value)}
-          onClose={() => setTuneOpen(false)}
         />
       ) : null}
       {keyboardHint ? <div className="keyboard-hint" role="status">{keyboardHint}</div> : null}
@@ -2413,7 +2389,6 @@ export function App() {
             </span>
           </button>
           <VisualControl environment={environment} onOpen={() => {
-            setTuneOpen(false);
             setEnvironmentPickerOpen(true);
           }} />
           <MusicControl

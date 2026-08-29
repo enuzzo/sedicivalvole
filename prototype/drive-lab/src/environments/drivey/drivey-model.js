@@ -1,35 +1,103 @@
-// DRIVEY 06 — bounded, project-authored perspective-road model.
+// DRIVEY 06 — narrow controls for the original Rezmason Drivey runtime.
 //
-// The renderer studies the idea of a continuously driven wireframe landscape
-// without importing upstream code, geometry, assets, or level data. All values
-// are normalized and deterministic so visual pacing can be asserted offline.
+// Geometry, levels, cameras, car simulation, materials, post-processing and
+// rendering remain owned by the byte-identical upstream files under
+// public/third-party/drivey. This module only clamps Sedici Valvole inputs and
+// maps them onto controls the original runtime already exposes.
 
 import { ROAD_SPEED_CEILING_KMH } from "../../signal-model.js";
 
+export const DRIVEY_UPSTREAM_COMMIT = "5104cdade2a3158786b05b9b0680a50e942830cf";
+export const DRIVEY_UPSTREAM_ENTRY = "third-party/drivey/sedicivalvole.html";
+export const DRIVEY_LOAD_TIMEOUT_MS = 15000;
+
 export const DRIVEY_CAMERAS = Object.freeze({
-  driver: Object.freeze({ id: "driver", label: "DRIVER", horizon: 0.355, roadScale: 1, look: 1, bankScale: 1 }),
-  hood: Object.freeze({ id: "hood", label: "HOOD", horizon: 0.29, roadScale: 1.14, look: 1, bankScale: 0.72 }),
-  rear: Object.freeze({ id: "rear", label: "REAR", horizon: 0.405, roadScale: 0.9, look: -1, bankScale: -0.82 }),
+  hood: Object.freeze({ id: "hood", label: "HOOD" }),
+  rear: Object.freeze({ id: "rear", label: "REAR" }),
+  aerial: Object.freeze({ id: "aerial", label: "AERIAL" }),
+});
+
+export const DRIVEY_RENDER_MODES = Object.freeze({
+  normal: Object.freeze({ id: "normal", label: "NORMAL" }),
+  wireframe: Object.freeze({ id: "wireframe", label: "WIRE" }),
 });
 
 export const DEFAULT_DRIVEY_SETTINGS = Object.freeze({
-  camera: "driver",
-  structure: 62,
+  camera: "hood",
+  traffic: 16,
+  renderMode: "normal",
 });
 
+const DRIVEY_CAMERA_SEQUENCE = Object.freeze(Object.keys(DRIVEY_CAMERAS));
+const DRIVEY_RENDER_MODE_SEQUENCE = Object.freeze(Object.keys(DRIVEY_RENDER_MODES));
+
 const clamp = (value, minimum, maximum) => Math.min(maximum, Math.max(minimum, value));
+
+function legacyStructureToTraffic(value) {
+  const structure = Number(value);
+  if (!Number.isFinite(structure)) return DEFAULT_DRIVEY_SETTINGS.traffic;
+  return Math.round(((clamp(structure, 20, 100) - 20) / 80) * 24);
+}
 
 export function normalizeDriveySettings(value) {
   const camera = Object.hasOwn(DRIVEY_CAMERAS, value?.camera)
     ? value.camera
     : DEFAULT_DRIVEY_SETTINGS.camera;
-  const structureValue = Number(value?.structure);
-  return {
+  const renderMode = Object.hasOwn(DRIVEY_RENDER_MODES, value?.renderMode)
+    ? value.renderMode
+    : DEFAULT_DRIVEY_SETTINGS.renderMode;
+  const trafficValue = Number(value?.traffic);
+  const traffic = Number.isFinite(trafficValue)
+    ? Math.round(clamp(trafficValue, 0, 24))
+    : legacyStructureToTraffic(value?.structure);
+  return { camera, traffic, renderMode };
+}
+
+function nextSequenceValue(sequence, current, fallback) {
+  const index = sequence.indexOf(current);
+  if (index < 0) return fallback;
+  return sequence[(index + 1) % sequence.length];
+}
+
+export function nextDriveyCameraId(camera) {
+  return nextSequenceValue(
+    DRIVEY_CAMERA_SEQUENCE,
     camera,
-    structure: Number.isFinite(structureValue)
-      ? Math.round(clamp(structureValue, 20, 100))
-      : DEFAULT_DRIVEY_SETTINGS.structure,
+    DEFAULT_DRIVEY_SETTINGS.camera,
+  );
+}
+
+export function nextDriveyRenderModeId(renderMode) {
+  return nextSequenceValue(
+    DRIVEY_RENDER_MODE_SEQUENCE,
+    renderMode,
+    DEFAULT_DRIVEY_SETTINGS.renderMode,
+  );
+}
+
+export function createDriveyLoadDeadline({
+  schedule,
+  cancel,
+  onTimeout,
+  timeoutMs = DRIVEY_LOAD_TIMEOUT_MS,
+}) {
+  let active = true;
+  let timer = schedule(() => {
+    if (!active) return;
+    active = false;
+    timer = null;
+    onTimeout();
+  }, timeoutMs);
+
+  const clear = () => {
+    if (!active) return false;
+    active = false;
+    if (timer !== null) cancel(timer);
+    timer = null;
+    return true;
   };
+
+  return { clear };
 }
 
 export function driveyMotionProfile({
@@ -39,74 +107,54 @@ export function driveyMotionProfile({
   reducedMotion = false,
 } = {}) {
   const speed = clamp(Number(speedKmh) || 0, 0, ROAD_SPEED_CEILING_KMH);
-  const velocity = speed / ROAD_SPEED_CEILING_KMH;
-  const eased = velocity * velocity * (3 - 2 * velocity);
-  const level = clamp(Number(audioLevel) || 0, 0, 1);
-  const open = effect === "OPEN" || effect === "BLOOM";
+  const normalizedSpeed = speed / ROAD_SPEED_CEILING_KMH;
+  const roadResponse = normalizedSpeed ** 1.18;
+  const musicLevel = clamp(Number(audioLevel) || 0, 0, 1);
+  const open = effect === "OPEN";
   const underwater = effect === "UNDERWATER";
   const bloom = effect === "BLOOM";
+  const effectSpeedScale = underwater ? 0.72 : 1;
+
   return Object.freeze({
-    velocity,
-    travelRate: reducedMotion ? 0 : 0.015 + eased * 1.58,
-    perspective: 0.94 + eased * 0.24 + (open ? 0.08 : 0),
-    curveAmplitude: 0.44 + eased * 0.68,
-    terrainRelief: (0.52 + eased * 0.34) * (underwater ? 0.72 : 1),
-    bank: (0.018 + eased * 0.072) * (underwater ? 0.36 : 1),
-    colourPulse: reducedMotion ? 0 : level * (bloom ? 1 : 0.72),
-    lineEnergy: 0.62 + eased * 0.28 + level * 0.22 + (bloom ? 0.24 : 0),
-    depthCompression: underwater ? 0.16 : 0,
+    normalizedSpeed,
+    cruiseSpeed: reducedMotion ? 0 : roadResponse * 4 * effectSpeedScale,
+    npcSpeedScale: reducedMotion ? 0 : roadResponse * effectSpeedScale,
+    fov: clamp(90 + normalizedSpeed * 8 + (open ? 8 : underwater ? -6 : bloom ? 4 : 0), 78, 112),
+    colourEnergy: reducedMotion ? 0 : musicLevel * (bloom ? 1 : 0.68),
+    lightGain: bloom ? 1.24 : open ? 1.1 : underwater ? 0.78 : 1,
+    effect,
+    reducedMotion,
   });
 }
 
-export function driveyRoadSample(progress, time, profile, settings = DEFAULT_DRIVEY_SETTINGS) {
-  const safeProgress = clamp(Number(progress) || 0, 0, 1);
-  const safeTime = Number(time) || 0;
-  const normalized = normalizeDriveySettings(settings);
-  const camera = DRIVEY_CAMERAS[normalized.camera];
-  const structure = normalized.structure / 100;
-  const look = camera.look;
-  const farPhase = safeTime * 0.21 * look;
-  const nearDamping = 0.24 + safeProgress * 0.76;
-  const bend = (
-    Math.sin(safeProgress * 7.8 + farPhase)
-    + Math.sin(safeProgress * 17.4 - farPhase * 0.63) * 0.34
-  ) * profile.curveAmplitude * nearDamping * look;
-  const relief = (
-    Math.sin(safeProgress * 11.1 - safeTime * 0.12)
-    + Math.sin(safeProgress * 25.2 + safeTime * 0.08) * 0.28
-  ) * profile.terrainRelief * (0.025 + safeProgress * 0.065) * structure;
-  return Object.freeze({
-    center: bend * 0.12,
-    relief,
-    halfWidth: (0.025 + Math.pow(safeProgress, 1.35) * 0.455)
-      * camera.roadScale
-      * profile.perspective,
-    bank: Math.sin(safeProgress * 8.6 + farPhase) * profile.bank * camera.bankScale,
-  });
+function mixRgb(from, to, amount) {
+  return from.map((value, index) => value + (to[index] - value) * amount);
 }
 
-export function projectDriveyPoint({
-  lateral = 0,
-  progress = 0,
-  time = 0,
-  profile,
-  settings = DEFAULT_DRIVEY_SETTINGS,
-} = {}) {
-  const normalized = normalizeDriveySettings(settings);
-  const camera = DRIVEY_CAMERAS[normalized.camera];
-  const safeProgress = clamp(Number(progress) || 0, 0, 1);
-  const sample = driveyRoadSample(safeProgress, time, profile, normalized);
-  const depth = Math.pow(safeProgress, 1.5 - profile.depthCompression);
-  const y = camera.horizon + depth * (1.02 - camera.horizon) - sample.relief * (1 - depth);
-  const x = 0.5 + sample.center + lateral * sample.halfWidth + sample.bank * depth;
-  return Object.freeze({ x, y, depth, sample });
+function gainRgb(color, gain) {
+  return color.map((value) => clamp(value * gain, 0, 1));
 }
 
-export function driveyGridDensity(settings = DEFAULT_DRIVEY_SETTINGS) {
-  const structure = normalizeDriveySettings(settings).structure;
+export function themeToDriveyPalette(theme, profile) {
+  const { base, mid, light, accent, secondary } = theme.palette;
+  const colourMix = clamp(profile.colourEnergy * 0.52, 0, 0.52);
+  let dark = mixRgb(base, mid, 0.06);
+  let full = mixRgb(accent, secondary, colourMix);
+  let bright = mixRgb(light, accent, profile.effect === "BLOOM" ? 0.22 : 0.06);
+
+  if (profile.effect === "UNDERWATER") {
+    dark = mixRgb(base, secondary, 0.12);
+    full = mixRgb(full, mid, 0.34);
+    bright = mixRgb(bright, secondary, 0.22);
+  } else if (profile.effect === "OPEN") {
+    full = mixRgb(full, light, 0.12);
+  }
+
+  bright = gainRgb(bright, profile.lightGain);
   return Object.freeze({
-    longitudinal: Math.round(10 + structure * 0.16),
-    crossSections: Math.round(12 + structure * 0.2),
-    terrainLines: Math.round(8 + structure * 0.12),
+    background: gainRgb(dark, profile.effect === "UNDERWATER" ? 0.74 : 0.9),
+    dark,
+    full,
+    light: bright,
   });
 }

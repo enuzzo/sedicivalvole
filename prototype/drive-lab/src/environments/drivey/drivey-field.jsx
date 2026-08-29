@@ -1,151 +1,171 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import {
+  createDriveyLoadDeadline,
   DEFAULT_DRIVEY_SETTINGS,
-  driveyGridDensity,
+  DRIVEY_UPSTREAM_ENTRY,
   driveyMotionProfile,
   normalizeDriveySettings,
-  projectDriveyPoint,
+  themeToDriveyPalette,
 } from "./drivey-model.js";
+import {
+  canvasFramebufferSize,
+  SIXTY_FPS_FRAME_INTERVAL_MS,
+} from "../../render-telemetry.js";
 
-const MAX_PIXEL_RATIO = 1.35;
+const MAX_DRIVEY_PIXEL_RATIO = 1.25;
 
-function surfaceSize(canvas) {
-  const ratio = Math.min(window.devicePixelRatio || 1, MAX_PIXEL_RATIO);
-  return {
-    width: Math.max(1, Math.floor(canvas.clientWidth * ratio)),
-    height: Math.max(1, Math.floor(canvas.clientHeight * ratio)),
+function setThreeColor(target, rgb) {
+  target?.setRGB?.(rgb[0], rgb[1], rgb[2]);
+}
+
+function makeThreeColor(bridge, rgb) {
+  return new bridge.Color().setRGB(rgb[0], rgb[1], rgb[2]);
+}
+
+function installNeutralRoadInput(drivey) {
+  if (drivey.__sedicivalvoleInputInstalled) return;
+  drivey.controlScheme = {
+    slow: false,
+    fast: false,
+    gasPedal: 0,
+    brakePedal: 0,
+    handbrake: 0,
+    steer: 0,
+    minCruiseSpeed: 0,
+    manualSteerSensitivity: 0,
+    autoSteerSensitivity: 1,
+    cruiseSpeedMultiplier: 1,
+    laneShift: 0,
+    update() {},
   };
+  drivey.__sedicivalvoleInputInstalled = true;
 }
 
-function rgb(color, alpha = 1, gain = 1) {
-  const channels = color.map((value) => Math.round(Math.min(1, Math.max(0, value * gain)) * 255));
-  return `rgb(${channels.join(" ")} / ${Math.min(1, Math.max(0, alpha))})`;
-}
-
-function strokeProjectedLine(context, points, width, height) {
-  context.beginPath();
-  points.forEach((point, index) => {
-    const x = point.x * width;
-    const y = point.y * height;
-    if (index === 0) context.moveTo(x, y);
-    else context.lineTo(x, y);
-  });
-  context.stroke();
-}
-
-function roadPoint(lateral, progress, state, profile) {
-  return projectDriveyPoint({
-    lateral,
-    progress,
-    time: state.time,
-    profile,
-    settings: state.settings,
-  });
-}
-
-function drawRoad(context, width, height, state, profile, palette) {
-  const density = driveyGridDensity(state.settings);
-  const roadLongitudinal = [];
-  for (let index = 0; index <= density.longitudinal; index += 1) {
-    roadLongitudinal.push(-1 + (index / density.longitudinal) * 2);
+function applyPalette(bridge, palette) {
+  const {
+    drivey,
+    paletteWireframe,
+    silhouetteMaterial,
+    transparentMaterial,
+  } = bridge;
+  for (const material of [silhouetteMaterial, transparentMaterial]) {
+    setThreeColor(material?.uniforms?.darkTint?.value, palette.dark);
+    setThreeColor(material?.uniforms?.fullTint?.value, palette.full);
+    setThreeColor(material?.uniforms?.lightTint?.value, palette.light);
   }
+  setThreeColor(paletteWireframe?.background, palette.background);
+  setThreeColor(paletteWireframe?.line, palette.full);
+  setThreeColor(paletteWireframe?.highlight, palette.light);
+  drivey.themeColors = {
+    dark: makeThreeColor(bridge, palette.dark),
+    full: makeThreeColor(bridge, palette.full),
+    light: makeThreeColor(bridge, palette.light),
+  };
+  drivey.level?.tint?.copy?.(drivey.themeColors.full);
+  drivey.screen.backgroundColor = makeThreeColor(bridge, palette.background);
+}
 
-  context.save();
-  context.lineCap = "round";
-  context.lineJoin = "round";
+function driveyRendererLabel(renderMode) {
+  return `WebGL · Original Drivey · ${renderMode === "wireframe" ? "Wireframe" : "Normal"}`;
+}
 
-  // Terrain longitudinal contours share the road projection but remain outside
-  // its edges, making one continuous world rather than a separate sky effect.
-  context.strokeStyle = rgb(palette.mid, 0.24 + profile.lineEnergy * 0.14);
-  context.lineWidth = 0.55;
-  for (let side = -1; side <= 1; side += 2) {
-    for (let index = 0; index < density.terrainLines; index += 1) {
-      const lateral = side * (1.14 + index * 0.2);
-      const points = [];
-      for (let step = 0; step <= 44; step += 1) {
-        const progress = step / 44;
-        const point = roadPoint(lateral, progress, state, profile);
-        const terrainWave = Math.sin(progress * (13 + index * 0.7) + index * 1.9 + state.time * 0.12)
-          * (0.018 + index * 0.002)
-          * (1 - point.depth * 0.46);
-        points.push({ x: point.x, y: point.y - terrainWave });
+function applyRenderMode(bridge, renderMode) {
+  const { drivey, silhouetteMaterial, transparentMaterial } = bridge;
+  const wireframe = renderMode === "wireframe";
+  drivey.currentEffect = wireframe ? "wireframe" : "ombré";
+  drivey.isWireframe = wireframe;
+  drivey.screen.setWireframe(wireframe);
+  drivey.screen.setCycleColors(false);
+  silhouetteMaterial.uniforms.isWireframe.value = wireframe;
+  transparentMaterial.uniforms.isWireframe.value = wireframe;
+  drivey.updateCamera();
+}
+
+function installFrameTelemetry(bridge, valuesRef, appliedState, fail) {
+  const { screen } = bridge.drivey;
+  if (screen.render.__sedicivalvoleBridge) return;
+  const originalRender = screen.render.bind(screen);
+  const renderWithTelemetry = function renderWithTelemetry() {
+    const active = screen.active;
+    try {
+      const result = originalRender();
+      if (active) {
+        const framebuffer = canvasFramebufferSize(screen.renderer?.domElement);
+        if (framebuffer) {
+          valuesRef.current.onFrame(
+            performance.now(),
+            SIXTY_FPS_FRAME_INTERVAL_MS,
+            appliedState.rendererLabel ?? driveyRendererLabel("normal"),
+            framebuffer.width,
+            framebuffer.height,
+          );
+        }
       }
-      strokeProjectedLine(context, points, width, height);
+      return result;
+    } catch (error) {
+      fail(error);
+      return undefined;
     }
-  }
+  };
+  Object.defineProperty(renderWithTelemetry, "__sedicivalvoleBridge", { value: true });
+  screen.render = renderWithTelemetry;
+}
 
-  // Cross-contours move towards the camera. Their wrap is smooth and bounded.
-  context.strokeStyle = rgb(palette.mid, 0.19 + profile.lineEnergy * 0.12);
-  for (let row = 0; row < density.crossSections; row += 1) {
-    const travel = state.reducedMotion ? 0 : (state.travel * 0.18) % 1;
-    const progress = ((row / density.crossSections) + travel) % 1;
-    const left = roadPoint(-2.75, progress, state, profile);
-    const right = roadPoint(2.75, progress, state, profile);
-    strokeProjectedLine(context, [left, right], width, height);
-  }
-
-  // A dark road bed preserves line hierarchy without importing a texture.
-  const leftEdge = [];
-  const rightEdge = [];
-  for (let step = 0; step <= 54; step += 1) {
-    const progress = step / 54;
-    leftEdge.push(roadPoint(-1, progress, state, profile));
-    rightEdge.push(roadPoint(1, progress, state, profile));
-  }
-  context.beginPath();
-  leftEdge.forEach((point, index) => {
-    if (index === 0) context.moveTo(point.x * width, point.y * height);
-    else context.lineTo(point.x * width, point.y * height);
+function applyBridgeState(bridge, values, state) {
+  const { drivey } = bridge;
+  const settings = normalizeDriveySettings(values.settings);
+  const profile = driveyMotionProfile({
+    speedKmh: values.speed,
+    audioLevel: values.audioLevel,
+    effect: values.effect,
+    reducedMotion: values.reducedMotion,
   });
-  [...rightEdge].reverse().forEach((point) => context.lineTo(point.x * width, point.y * height));
-  context.closePath();
-  context.fillStyle = rgb(palette.base, 0.82, 0.55);
-  context.fill();
 
-  for (const lateral of roadLongitudinal) {
-    const edge = Math.abs(lateral) > 0.99;
-    const centre = Math.abs(lateral) < 0.04;
-    context.strokeStyle = edge
-      ? rgb(palette.light, 0.68 + profile.lineEnergy * 0.24)
-      : centre
-        ? rgb(palette.accent, 0.58 + profile.colourPulse * 0.34)
-        : rgb(palette.mid, 0.26 + profile.lineEnergy * 0.18);
-    context.lineWidth = edge ? 1.5 : centre ? 1.2 : 0.65;
-    const points = [];
-    for (let step = 0; step <= 54; step += 1) {
-      points.push(roadPoint(lateral, step / 54, state, profile));
-    }
-    strokeProjectedLine(context, points, width, height);
+  installNeutralRoadInput(drivey);
+  drivey.screen.setCycleColors(false);
+  drivey.cruiseSpeed = profile.cruiseSpeed;
+  drivey.npcControlScheme.cruiseSpeedMultiplier = profile.npcSpeedScale;
+  drivey.npcControlScheme.steer = 0;
+  drivey.npcControlScheme.laneShift = 0;
+
+  if (state.camera !== settings.camera) {
+    drivey.setCameraMount(settings.camera);
+    state.camera = settings.camera;
+  }
+  if (state.traffic !== settings.traffic) {
+    drivey.setNumOtherCars(settings.traffic);
+    state.traffic = settings.traffic;
+  }
+  if (state.renderMode !== settings.renderMode) {
+    applyRenderMode(bridge, settings.renderMode);
+    state.renderMode = settings.renderMode;
+    state.rendererLabel = driveyRendererLabel(settings.renderMode);
+    values.onRenderer(state.rendererLabel);
+  }
+  if (Math.abs(drivey.screen.camera.fov - profile.fov) > 0.01) {
+    drivey.screen.camera.fov = profile.fov;
+    drivey.screen.camera.updateProjectionMatrix();
   }
 
-  // Moving road sections make forward travel unambiguous at every camera.
-  for (let row = 0; row < density.crossSections + 4; row += 1) {
-    const travel = state.reducedMotion ? 0 : state.travel % 1;
-    const progress = ((row / (density.crossSections + 4)) + travel) % 1;
-    const left = roadPoint(-1, progress, state, profile);
-    const right = roadPoint(1, progress, state, profile);
-    context.strokeStyle = row % 4 === 0
-      ? rgb(palette.accent, 0.28 + profile.colourPulse * 0.36)
-      : rgb(palette.light, 0.12 + profile.lineEnergy * 0.09);
-    context.lineWidth = row % 4 === 0 ? 1.15 : 0.55;
-    strokeProjectedLine(context, [left, right], width, height);
+  const paletteSignature = [
+    values.theme.id,
+    settings.renderMode,
+    values.effect ?? "none",
+    Math.round(profile.colourEnergy * 100),
+  ].join(":");
+  if (state.palette !== paletteSignature) {
+    applyPalette(bridge, themeToDriveyPalette(values.theme, profile));
+    state.palette = paletteSignature;
   }
 
-  // Sparse centre dashes are geometry, not a scrolling image or texture.
-  context.strokeStyle = rgb(palette.light, 0.72 + profile.lineEnergy * 0.22);
-  context.lineWidth = 2.1;
-  for (let dash = 0; dash < 11; dash += 1) {
-    const start = ((dash / 11) + (state.reducedMotion ? 0 : state.travel * 0.56)) % 1;
-    const end = Math.min(1, start + 0.026 + start * 0.02);
-    if (end <= start) continue;
-    strokeProjectedLine(
-      context,
-      [roadPoint(0, start, state, profile), roadPoint(0, end, state, profile)],
-      width,
-      height,
-    );
+  const reducedChanged = state.reducedMotion !== profile.reducedMotion;
+  state.reducedMotion = profile.reducedMotion;
+  drivey.screen.active = !profile.reducedMotion;
+  if (profile.reducedMotion && (reducedChanged || state.staticSignature !== paletteSignature)) {
+    drivey.screen.renderPass.camera = drivey.screen.camera;
+    drivey.screen.composer.render();
+    state.staticSignature = paletteSignature;
   }
-  context.restore();
 }
 
 export function DriveyField({
@@ -159,78 +179,164 @@ export function DriveyField({
   onFrame,
   onRuntimeError,
 }) {
-  const canvasRef = useRef(null);
-  const valuesRef = useRef({ speed, audioLevel, theme, effect, settings, reducedMotion });
+  const frameRef = useRef(null);
+  const valuesRef = useRef({
+    speed,
+    audioLevel,
+    theme,
+    effect,
+    settings,
+    reducedMotion,
+    onFrame,
+    onRenderer,
+  });
   valuesRef.current = {
     speed,
     audioLevel,
     theme,
     effect,
-    settings: normalizeDriveySettings(settings),
+    settings,
     reducedMotion,
+    onFrame,
+    onRenderer,
   };
+  const source = useMemo(
+    () => new URL(`/${DRIVEY_UPSTREAM_ENTRY}`, window.location.origin).href,
+    [],
+  );
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    const context = canvas?.getContext("2d", { alpha: false });
-    if (!canvas || !context) {
-      onRenderer("Drivey unavailable");
-      onRuntimeError?.(new Error("DRIVEY Canvas2D context is unavailable"));
-      return undefined;
-    }
+    const frame = frameRef.current;
+    if (!frame) return undefined;
+
     let animationFrame = 0;
+    let readinessFrame = 0;
+    let childWindow = null;
+    let bridge = null;
+    let bridgeState = "waiting";
     let stopped = false;
-    let lastFrameAt = performance.now();
-    const state = {
-      time: 0,
-      travel: 0,
-      settings: valuesRef.current.settings,
-      reducedMotion: valuesRef.current.reducedMotion,
+    const appliedState = {
+      camera: null,
+      traffic: null,
+      renderMode: null,
+      rendererLabel: null,
+      palette: null,
+      reducedMotion: null,
+      staticSignature: null,
     };
-    onRenderer("Canvas2D · Drivey road field");
+
     const fail = (error) => {
-      if (stopped) return;
-      stopped = true;
+      if (stopped || bridgeState === "failed") return;
+      bridgeState = "failed";
+      if (bridge?.drivey?.screen) bridge.drivey.screen.active = false;
+      loadDeadline.clear();
       cancelAnimationFrame(animationFrame);
+      cancelAnimationFrame(readinessFrame);
+      frame.classList.remove("is-ready");
       onRenderer("Drivey unavailable");
       onRuntimeError?.(error instanceof Error ? error : new Error(String(error)));
     };
-    const render = (now) => {
-      if (stopped) return;
+
+    const onChildError = (event) => {
+      fail(event.error ?? new Error(event.message || "Original Drivey runtime error"));
+    };
+    const onChildRejection = (event) => {
+      fail(event.reason instanceof Error ? event.reason : new Error(String(event.reason)));
+    };
+
+    const finishBridge = (candidate) => {
+      bridge = candidate;
+      const { drivey } = bridge;
+      const pixelRatio = Math.min(window.devicePixelRatio || 1, MAX_DRIVEY_PIXEL_RATIO);
+      drivey.screen.renderer.setPixelRatio(pixelRatio);
+      drivey.screen.setResolution(1);
+      installFrameTelemetry(bridge, valuesRef, appliedState, fail);
+      applyBridgeState(bridge, valuesRef.current, appliedState);
+      bridgeState = "ready";
+      loadDeadline.clear();
+      frame.classList.add("is-ready");
+    };
+
+    const waitForRuntime = () => {
+      if (stopped || bridgeState !== "loading") return;
       try {
-        const { width, height } = surfaceSize(canvas);
-        if (canvas.width !== width || canvas.height !== height) {
-          canvas.width = width;
-          canvas.height = height;
+        const candidate = childWindow?.__SEDICIVALVOLE_DRIVEY__;
+        const ready = candidate?.drivey?.level
+          && candidate.drivey.screen?.renderer?.domElement
+          && candidate.drivey.cameraMountsByName;
+        if (ready) {
+          finishBridge(candidate);
+          return;
         }
-        const elapsed = Math.min(0.1, Math.max(0, (now - lastFrameAt) / 1000));
-        lastFrameAt = now;
-        const values = valuesRef.current;
-        const profile = driveyMotionProfile({
-          speedKmh: values.speed,
-          audioLevel: values.audioLevel,
-          effect: values.effect,
-          reducedMotion: values.reducedMotion,
-        });
-        state.settings = values.settings;
-        state.reducedMotion = values.reducedMotion;
-        state.time += profile.travelRate * elapsed;
-        state.travel = (state.travel + profile.travelRate * elapsed * 0.42) % 1;
-        context.fillStyle = rgb(values.theme.palette.base, 1, 0.36);
-        context.fillRect(0, 0, width, height);
-        drawRoad(context, width, height, state, profile, values.theme.palette);
-        onFrame(now, 1000 / 60, "Canvas2D", width, height);
-        animationFrame = requestAnimationFrame(render);
+        readinessFrame = requestAnimationFrame(waitForRuntime);
       } catch (error) {
         fail(error);
       }
     };
-    animationFrame = requestAnimationFrame(render);
+
+    const loadDeadline = createDriveyLoadDeadline({
+      schedule: (callback, delay) => window.setTimeout(callback, delay),
+      cancel: (timer) => window.clearTimeout(timer),
+      onTimeout: () => fail(new Error("Original Drivey load timed out")),
+    });
+
+    const onLoad = () => {
+      if (stopped || bridgeState === "failed") return;
+      try {
+        childWindow?.removeEventListener("error", onChildError);
+        childWindow?.removeEventListener("unhandledrejection", onChildRejection);
+        childWindow = frame.contentWindow;
+        if (!childWindow) throw new Error("Original Drivey window is unavailable");
+        childWindow.addEventListener("error", onChildError);
+        childWindow.addEventListener("unhandledrejection", onChildRejection);
+        bridgeState = "loading";
+        readinessFrame = requestAnimationFrame(waitForRuntime);
+      } catch (error) {
+        fail(error);
+      }
+    };
+
+    const sync = () => {
+      if (stopped) return;
+      animationFrame = requestAnimationFrame(sync);
+      if (bridgeState !== "ready" || !bridge) return;
+      try {
+        applyBridgeState(bridge, valuesRef.current, appliedState);
+      } catch (error) {
+        fail(error);
+      }
+    };
+
+    frame.addEventListener("load", onLoad);
+    try {
+      if (frame.contentDocument?.readyState === "complete" && frame.contentWindow?.location.href === source) {
+        onLoad();
+      }
+    } catch {
+      // The configured runtime is same-origin; navigation is bounded by the load deadline.
+    }
+    animationFrame = requestAnimationFrame(sync);
+
     return () => {
       stopped = true;
+      if (bridge?.drivey?.screen) bridge.drivey.screen.active = false;
+      loadDeadline.clear();
       cancelAnimationFrame(animationFrame);
+      cancelAnimationFrame(readinessFrame);
+      frame.removeEventListener("load", onLoad);
+      childWindow?.removeEventListener("error", onChildError);
+      childWindow?.removeEventListener("unhandledrejection", onChildRejection);
     };
-  }, [onFrame, onRenderer, onRuntimeError]);
+  }, [onRenderer, onRuntimeError, source]);
 
-  return <canvas className="field-canvas" ref={canvasRef} aria-hidden="true" />;
+  return (
+    <iframe
+      className="drivey-upstream-frame"
+      ref={frameRef}
+      src={source}
+      title="Original Rezmason Drivey visual environment"
+      aria-hidden="true"
+      tabIndex={-1}
+    />
+  );
 }
