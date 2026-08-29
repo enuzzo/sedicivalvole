@@ -41,4 +41,12 @@ e58d58520bc0dfde21f9e14e6a1b8c7f0a2a2a9e. The vendor snapshot retains its
 original usage notice and bundled-library licenses; it is not relicensed under
 the sedicivalvole AGPL grant. See THIRD_PARTY_NOTICES.md.
 
+Drivey by Rezmason, PRTCL, InfiniteTubes by Louis Hoebregts for
+Codrops/Tympanus, and GLSL: Primordial Soup by Liam Egan were studied as visual
+references for project-authored Flux environments on 2026-08-29. No code,
+runtime, shader text, texture, model, font, screenshot, or other asset from
+those works is included. The resulting Sedici Valvole code-generated visuals
+remain AGPL-3.0-or-later material. See THIRD_PARTY_NOTICES.md and
+docs/SOURCE-ADMISSION-2026-08-29.md for exact identities and boundaries.
+
 Source: https://github.com/enuzzo/sedicivalvole

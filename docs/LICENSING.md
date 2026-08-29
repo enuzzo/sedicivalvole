@@ -45,6 +45,22 @@ The current notice uses `sedicivalvole contributors` collectively. This avoids
 inventing a legal entity and does not decide who owns the copyright or a future
 trademark. Each contribution must be made by someone entitled to license it.
 
+## 2026-08-29 — external visual studies use project-authored implementations
+
+Drivey, PRTCL, InfiniteTubes, and CodePen `NXGbBo` were admitted as visual
+studies only. No upstream code, shader text, runtime, texture, model, font,
+screenshot, or other asset enters the repository or build. The resulting road,
+particle, tunnel, and fluid renderers are original sedicivalvole work under
+`AGPL-3.0-or-later`.
+
+This decision avoids relying on ambiguous asset scope in Drivey, PRTCL's
+missing `LICENSE` file despite its README claim, InfiniteTubes' restricted
+as-is distribution terms and unidentified Star Wars texture, and the separately
+attributed noise fragment embedded in the otherwise MIT-default CodePen. It
+does not erase the references: `THIRD_PARTY_NOTICES.md` retains credit and
+`SOURCE-ADMISSION-2026-08-29.md` records exact identities, evidence, selected
+mechanics, and excluded material.
+
 ## 2026-08-27 — textStep code integrated, and the sample-library decision
 
 Two facts changed on this date and are recorded here because both alter what the

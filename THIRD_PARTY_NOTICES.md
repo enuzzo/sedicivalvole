@@ -30,6 +30,24 @@ tracked source tree or production build output. Interface details and active
 project-authored fields are code-generated visuals, not copied Product Design
 reference assets.
 
+### Visual studies admitted on 2026-08-29
+
+Four external visual sources informed new project-authored Flux environments.
+No source code, runtime, shader text, texture, model, font, screenshot, or other
+asset from these sources is included in the repository or production build.
+Their original licences and usage notices remain with the referenced works.
+
+| Source | Audited identity | Authors / credit | Licence or permission evidence | Sedici Valvole treatment |
+|---|---|---|---|---|
+| [Drivey](https://github.com/Rezmason/drivey) | `5104cdade2a3158786b05b9b0680a50e942830cf` | Rezmason; original Drivey lineage credited upstream | repository includes GNU GPL version 3 text; bundled and visual assets were not assumed to share one grant | rendered wireframe road and camera grammar studied; original implementation only |
+| PRTCL | `2a22f33b975e2c40b7ee0bdd2d1acb4cee4f5060` | audited README credits `© 2026 Netmilk Studio` | README states MIT but the audited checkout contains no `LICENSE` file; repository owner supplied direct authorization for this work | Fractal Frequency, Murmuration, and Axiom studied; original implementation only |
+| [InfiniteTubes](https://github.com/Mamboleoo/InfiniteTubes) | `a3b831b6c95bed4d803dfeed8b66ec76de333996` | Louis Hoebregts for Codrops/Tympanus | custom Codrops integrated-use notice; as-is redistribution and pluginization restricted | Particles, Star Wars, and Triangle mechanics studied; original implementation only; all upstream assets excluded |
+| [GLSL: Primordial Soup](https://codepen.io/shubniggurath/pen/NXGbBo) | Pen `NXGbBo`, audited 2026-08-29 | Liam Egan; embedded value-noise fragment credits Inigo Quilez | public Pen covered by CodePen's current MIT default; separate terms for the embedded noise fragment were not established | rendered fluid mechanics studied; clean-room shader; no Pen or attributed noise source copied |
+
+The complete admission evidence, rejected assets, selected PRTCL effects, and
+runtime boundary are recorded in
+[`docs/SOURCE-ADMISSION-2026-08-29.md`](docs/SOURCE-ADMISSION-2026-08-29.md).
+
 Material kept only under `_references/` remains external local source material. It is not automatically approved, redistributable, or part of the product.
 
 ### MusicRadar SampleRadar sample libraries

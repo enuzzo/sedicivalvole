@@ -53,6 +53,14 @@ of Codrops/Tympanus Infinite Lights commit
 usage notice and the licenses of its bundled Three.js and post-processing
 libraries. The separately authored sedicivalvole bridge remains AGPL-licensed.
 
+The Drivey-, PRTCL-, InfiniteTubes-, and Primordial-inspired Flux environments
+admitted on 2026-08-29 are original sedicivalvole source code, shader source,
+and code-generated visuals and therefore remain inside the project's
+`AGPL-3.0-or-later` grant. No code or asset from the studied works is included.
+`THIRD_PARTY_NOTICES.md` and
+`docs/SOURCE-ADMISSION-2026-08-29.md` preserve the source credits, audited
+identities, usage evidence, and clean-room boundaries.
+
 The Flux score engine includes code translated from Lobo's
 [textStep](https://github.com/illobo/textStep) at commit
 `cb107d198b730db60cff4a87c7fd5b8d1fae3fb2`: the sequencer clock, the step
