@@ -223,13 +223,12 @@ dated study documents.
 - No sample pack file is committed or published. JUNCTION ships only the mixed,
   processed production permitted by the source terms. The development QA
   harness is excluded from production builds.
-- The requested third 1980s score is not implemented. A tracked-file audit at
-  `158eaf7` finds only the production `junction.svb` audio bank and no WAV,
-  AIFF, FLAC, MP3, Ogg or M4A source material. The only described WAV library
-  is inside the protected ignored reference tree, which this work is expressly
-  forbidden to inspect or copy. Authorship and sample classification therefore
-  require an approved source location outside that boundary; no musical facts
-  have been inferred from filenames or from the existing mixed bank.
+- The product owner subsequently authorized direct inspection and offline
+  analysis of the ignored 1980s WAV source library. Checkpoint `dd6bb5e`
+  inventories all 684 relevant files without committing raw audio. Provenance,
+  rights, level/transient evidence and compatibility findings are recorded in
+  [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
+  The third score is now in authorship, not source-blocked.
 - Diagnostic telemetry contains no coordinates and is sent only after the
   explicit `SEND DIAGNOSTIC` action. ATLAS location is a separate ephemeral
   feature: the latest reliable point stays in session memory; OpenFreeMap tile
@@ -245,9 +244,9 @@ dated study documents.
    ascent/descent and boundary reversals, JUNCTION's long PARK holds and later
    transition, and the OPEN/BLOOM gain changes. Automated visual, structural and
    loudness evidence is not perceptual acceptance.
-3. Provide the authorized third-track WAV sources through an approved path
-   outside the protected reference tree. Only then classify the real material
-   and author, test and listen to the requested 1980s adaptive score.
+3. Complete, encode, test and audition the third 1980s adaptive score from the
+   now-authorized ignored source library. Raw samples remain unpublishable;
+   only self-contained project-authored mixed performances may ship.
 4. Deploy the verified local checkpoints when a publication path is available
    that does not violate the prohibition on reading `.env`. The canonical live
    product is still commit `5685de3`, version `0.0.0`, build `20260829-1536`.

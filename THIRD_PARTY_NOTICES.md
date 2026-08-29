@@ -34,14 +34,16 @@ Material kept only under `_references/` remains external local source material. 
 
 ### MusicRadar SampleRadar sample libraries
 
-`_references/audio/samples/` holds two free sample libraries published by
+`_references/audio/samples/` holds four free sample libraries published by
 [MusicRadar](https://www.musicradar.com/) through its SampleRadar series, and
-originating from *Future Music* magazine:
+originating from *Future Music* or *Computer Music* magazine:
 
 | Library | Source | Credited creator |
 |---|---|---|
 | 207 free '90s jungle samples | <https://www.musicradar.com/news/sampleradar-free-90s-jungle-samples> | Cyclick Samples (`cyclickbob`) for MusicRadar |
 | 797 free '90s synth samples | <https://www.musicradar.com/news/sampleradar-free-90s-synth-samples> | MusicRadar |
+| 183 free 80s pop drums samples | <https://www.musicradar.com/news/sampleradar-free-80s-pop-drums-samples> | The MusicRadar Team; originally distributed by *Future Music* |
+| 502 free '80s samples | <https://www.musicradar.com/news/sampleradar-free-80s-samples-1> | The MusicRadar Team; originally distributed by *Computer Music* |
 
 **These samples are not ours. All rights in them remain with MusicRadar and the
 credited creators.**
@@ -61,7 +63,7 @@ does not hold.
 **The project's decision, and how it is honoured technically.**
 
 1. The libraries stay in the git-ignored `_references/` tree. No loop, one-shot
-   or multisample from either pack is committed to this repository.
+   or multisample from any pack is committed to this repository.
 2. They are used the way the terms allow: as source material for composing
    sedicivalvole's own music.
 3. What the product ships is that music. JUNCTION renders 192 bars of

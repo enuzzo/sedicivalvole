@@ -1174,14 +1174,21 @@ gap, but it still does not turn encoded metrics into a Tesla listening verdict.
 
 ## 7. Sources and material
 
-The third-score availability audit at tracked checkpoint `158eaf7` found no
-source WAV, AIFF, FLAC, MP3, Ogg or M4A files. The only tracked audio artifact is
-the already mixed and encoded `prototype/drive-lab/public/audio/junction.svb`.
-The source library described below remains in the protected ignored reference
-tree and was not opened, listed, copied or classified during this work. A real
-1980s score audit must begin from an explicitly approved source location outside
-that boundary; metadata compatibility in the existing production bank cannot
-stand in for hearing and classifying the authorized source recordings.
+The product owner explicitly superseded the earlier no-inspection boundary for
+the ignored source library. The 1980s audit at `dd6bb5e` inspected all 684 local
+WAVs without committing or serving them. It found a native drum ladder from
+`85–140 BPM` and six internally coordinated tonal construction kits from
+`93–126 BPM`. The audit keeps filename declarations separate from chroma
+proposals because root tags and low-margin chord estimates do not prove that
+two different kits share one progression or downbeat.
+
+**Listener-facing consequence:** the third score uses the drum-only pack as a
+native-tempo rhythmic spine under one project-authored A-minor grammar. It does
+not layer apparently compatible tonal loops across kits. This is the musical
+difference between arranging with a library and making a collage: one primary
+groove, one harmonic author, and complete eight-bar performances at every
+runtime boundary. Exact inventory and admission evidence live in
+[`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
 
 - `_references/audio/samples/` — MusicRadar SampleRadar packs. Royalty-free to
   use in music. See `THIRD_PARTY_NOTICES.md` for the terms and what follows from

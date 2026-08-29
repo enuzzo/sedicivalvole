@@ -34,9 +34,10 @@ The canonical development build is available at [sedicivalvole.app](https://sedi
 - ✅ ATLAS touch exploration with one-pointer bearing/pitch, two-pointer extended pinch zoom and a fresh six-second eased return; a compass, top-navigation GPS status/accuracy and non-blocking permission-recovery popup replace the old waiting splash, while full-width Wikipedia imagery and five nearby choices improve passenger reading;
 - ✅ FRACTURE, a production AudioWorklet score with an ambience-only launch, ten four-bar harmonic sections, a narrow tempo knee, quantized transitions, hysteresis, dwell, crossfades, and three authored half-time rhythm families that grow from sparse velvet pulse to weave before the full break is permitted at `88 km/h`; no automatic riff or response lane plays in normal playback;
 - ✅ JUNCTION, a sampled production built as one synchronous performance at a time: 24 complete eight-bar clips from 76 distinct recordings, one stable E-minor harmonic grammar, native 127–168 BPM pacing, six slowly evolving clockless PARK voicings without beat or bass, four-second rhythm entrances/releases, one 5.8 MB segmented Opus bank, recent-take avoidance, and no rave lead, tonal second deck, or loose source samples;
-- ⏸️ the requested third 1980s score remains blocked at its source boundary: no
-  source recordings are tracked, and the only described WAV library is inside
-  the protected ignored reference tree that this task may not inspect or copy;
+- 🧪 the requested third 1980s score is in authorship after the product owner
+  authorized inspection of the ignored source library: all 684 relevant WAVs
+  now have reproducible provenance, tempo, role, duration, level, transient and
+  cautious harmonic evidence; raw samples remain uncommitted and unpublished;
 - ✅ shared acceleration performance effects: OPEN widens and brightens either
   score, while the rarer BLOOM event bends only the `300 Hz–8 kHz` band through
   a bounded `8 → 0.8 ms` feed-forward delay and always yields to UNDERWATER;
