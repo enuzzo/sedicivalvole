@@ -56,7 +56,9 @@ would copy it without its dependencies and fail after deployment.
 - ten four-bar sections and forty bars before the form repeats;
 - production atmosphere, harmony, pad, sub, reese, drums, break detail, and effects; retired `riff` and `response` are audition-only;
 - atmosphere-only launch, with low end and rhythm entering through road energy and no automatic lead melody;
-- `162–176 BPM`, with half-time interpretation and density carrying low-to-high speed;
+- `162–176 BPM`, with three eight-bar-rotating half-time rhythm families carrying
+  low-to-high speed before full-time drumming becomes eligible at `88 km/h` and
+  releases below `82 km/h`;
 - structural changes only on musical boundaries, behind hysteresis, dwell,
   crossfades, and catch/recovery/sustained-release deceleration memory;
 - tested key membership, voiced consonance, held-note harmony, bass degrees,

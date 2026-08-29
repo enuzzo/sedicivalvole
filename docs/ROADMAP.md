@@ -50,7 +50,7 @@ Implemented:
 - tempo knee with asymptotic ceiling;
 - continuous energy separated from discrete layer/Brake events;
 - sample-accurate AudioWorklet transport, bar/phrase-quantized arrangement, hysteresis, asymmetric dwell, crossfades, and limiter;
-- FRACTURE: ambience-only launch, ten four-bar sections, production atmosphere/harmony/low-end/rhythm lanes with the recurring riff and response retired, offline rendering, development-only voice audition, and measured brake processing;
+- FRACTURE: ambience-only launch, ten four-bar sections, production atmosphere/harmony/low-end/rhythm lanes with the recurring riff and response retired, three authored half-time rhythm families before the `88 km/h` full-break gate, offline rendering, development-only voice audition, and measured brake processing;
 - the shared OPEN hard-acceleration gesture, with bounded low-mid scoop, air, stereo width, feed-forward trim, four-second hold and braking priority;
 - fixed `130 km/h` road-energy ceiling, early tunnel visibility near `40 km/h`, and curated `APERTURE 01` environment;
 - filtered acceleration/deceleration envelopes with single direction-change cues and steady-state decay;

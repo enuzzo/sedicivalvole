@@ -482,8 +482,8 @@ repetition while preserving native tempo, complete boundaries, the six-clip
 decoded limit and the four-second transition envelope. FRACTURE tests reject
 any live activation of the retired lanes while proving low end and rhythm still
 grow with road energy. Offline references remain part of the decision: the
-current no-lead FRACTURE drive renders at `-15.9 LUFS` integrated with `1.0 LU`
-range, `-1.4 dBTP` and zero clipped PCM frames; the simplified JUNCTION render
+current no-lead FRACTURE trajectory renders at `-16.775 LUFS` integrated and
+`-1.319 dBTP` with zero clipped PCM frames; the simplified JUNCTION render
 measures `-19.6 LUFS`, `14.1 LU` range and `-2.7 dBTP`.
 
 ### 5.12 Vehicle gestures should perform the mix, not replace the composition
@@ -777,15 +777,38 @@ the old speed before applying a new observation. A regression performs one
 departure, sends one stopped update, advances three seconds with no speed
 change, then requires the next departure to play exactly once.
 
-Crossing the native-policy threshold does not prove that FRACTURE's arrangement
-has already reached a full-time scene. A `20 km/h` observation can legitimately
-leave the authored REST or ROLL scene active while its structural boundary
-catches up. Reporting the full `162 BPM`, beat and bass at that instant described
-lanes the listener could not hear. FRACTURE therefore derives perceived tempo
-from the committed scene's half-time flag and derives beat/bass from the actual
-active lane set. Tests hold the sparse `20 km/h` case at `81 BPM` with neither
-beat nor bass, then prove that a populated BREAK scene reports its real `162 BPM`
-transport and audible low/rhythm lanes.
+The build the listener identified as “1430” is now exact: it was the local Vite
+development build `20260829-1430` on 29 August, not the unrelated repository
+build `20260827-1434`. The server retained its start stamp while hot module
+replacement followed the working tree later consolidated through `5685de3`.
+That distinction matters because the perceived jump was not hearsay about an
+older audio engine: the same code declared the shared native threshold at
+`21 km/h`, switched FRACTURE from half-time to full-time there, and enabled the
+fast snare/hat texture in one policy change. GPS smoothing and the next musical
+boundary placed the audible event near the reported `30 km/h`, where the tactus
+could therefore jump from roughly `85` to `170 BPM`.
+
+Do not repair a tactus fault by changing only the number printed in the UI.
+FRACTURE now earns full-time drumming through three audible half-time families:
+`SILK PULSE` from `10 km/h`, `BROKEN PULSE` from `32 km/h`, and `RHYTHM WEAVE`
+from `58 km/h`. Each owns four complementary two-bar cells, so the controlled
+rotation spans eight bars. Accents, long rests, ghost articulations, and soft
+kick, hat, brushed-snare, and clap colours prevent one isotone event from
+becoming a metronome. A speed leap may advance only one family per bar. The
+native full break can arm at `88 km/h`, stays latched through boundary noise,
+and returns to WEAVE below `82 km/h`; diagnostics report the same half- or
+full-time tactus actually sounding.
+
+Assert the trajectory as a musical form, not only as isolated thresholds. The
+production-core regression now renders the complete silent ascent and descent:
+`0 AIR`, `12 SILK`, `30 SILK`, `45 BROKEN`, `65 WEAVE`, `87 WEAVE`, `90 FULL`,
+then the reverse boundary through `83 FULL`, `81 WEAVE`, and `0 AIR`. It requires
+every state below `88 km/h` to remain at or below `100` perceived BPM, forbids
+sixteenth-note runs in every low-speed cell, proves four-timbre rotation and
+intentional rests, and exercises reversal hysteresis. The updated 148-second
+reference measures `-16.775 LUFS` and `-1.319 dBTP`. These checks prove timing,
+level, and clipping margin; only low-volume listening and a real Tesla can decide
+whether the phrasing feels elegant.
 
 The gesture needs a known parked origin. A confirmed PARK state followed by a
 telemetry jump directly to `5 km/h` still performs the two DEPART swells, because
@@ -1060,12 +1083,12 @@ apparently conservative master measurement was therefore partly the sound of a
 broken release, not safe gain staging.
 
 Preserve PARK's absolute master gain and trim density before the limiter. The
-stopped field remains at `0.552`, while the densest arrangement reaches `0.35`:
+stopped field remains at `0.552`, while the densest arrangement reaches `0.368`:
 adding six real lanes, articulation, saturation and spatial sends still creates
 the build, but the master no longer adds another `4.4 dB` merely because energy
 rose. FRACTURE now uses a `0.64` sample ceiling with inter-sample margin. The
-fresh 48 kHz full reference measures `-15.9 LUFS`, `1.0 LU` range and
-`-1.4 dBTP`, with zero clipped PCM frames. A full 148-second production-core
+current 48 kHz full trajectory measures `-16.775 LUFS` and `-1.319 dBTP`, with
+zero clipped PCM frames. A full 148-second production-core
 test applies BS.1770 K-weighting and four-times band-limited interpolation, so a
 future change cannot silently turn orchestration back into permanent limiting.
 

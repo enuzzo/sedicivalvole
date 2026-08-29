@@ -100,8 +100,12 @@ dated study documents.
   & Bass composition rendered by the production AudioWorklet.
 - FRACTURE has **10 four-bar sections**, a narrow `162–176 BPM` transport range,
   a clockless harmony-only PARK state, a sub-100-BPM perceived low-speed form,
-  arrangement density, deceleration memory, and the measured UNDERWATER brake
-  effect. Its
+  three authored half-time rhythm families, arrangement density, deceleration
+  memory, and the measured UNDERWATER brake effect. `SILK PULSE`, `BROKEN PULSE`,
+  and `RHYTHM WEAVE` rotate accents, rests, ghost articulations, and four
+  compatible timbres over eight bars. The native full break cannot arm before
+  `88 km/h` and releases below `82 km/h`; the displayed tactus remains the one
+  actually articulated. Its
   live arranger now builds only atmosphere, harmony, sub/reese and rhythm: the
   recurring `riff` and `response` lanes are retired from normal playback and
   remain reachable only through the parked development audition path.
@@ -130,9 +134,11 @@ dated study documents.
   CREEP begins a quiet two-chord micro-progression at `4 km/h`; ROLL introduces
   a restrained beat at `10 km/h` without restarting that progression. The
   listener-facing tactus stays at or below `84.667 BPM` through the displayed
-  `20 km/h` state. Native music enters at `21 km/h`; JUNCTION leaves native mode
-  below `20.5 km/h`, retaining a small hysteresis without allowing a displayed
-  `20 km/h` state to expose the `127 BPM` bank.
+  `20 km/h` state. JUNCTION native music enters at `21 km/h`; JUNCTION leaves
+  native mode below `20.5 km/h`, retaining a small hysteresis without allowing a
+  displayed `20 km/h` state to expose the `127 BPM` bank. FRACTURE continues its
+  authored half-time ladder through urban and medium road speeds, reaching its
+  full-time break only in the `80–90 km/h` band.
 - JUNCTION's oscillator bed and compact production bank are both lazy: a
   FRACTURE-only session constructs neither. Selecting JUNCTION creates its soft
   bed immediately, but the bank is not fetched or decoded below the native
