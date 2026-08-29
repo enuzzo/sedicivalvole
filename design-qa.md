@@ -434,7 +434,8 @@ Date: 2026-08-29
   respectively in the local exact-viewport harness, with no interval above
   `34 ms`. Browser logs contain Vite/React development info only, with zero
   warning or error. Eight focused PRTCL tests, the complete 343-test suite, and
-  the 131-module production build `20260829-2209` pass.
+  the exact 131-module production build `20260829-2222` carrying checkpoint
+  `9f177fa` pass.
 
 Local self-review severity: P0 none, P1 none after camera/framing corrections,
 P2 none. This is machine and design-review evidence, not product-owner or

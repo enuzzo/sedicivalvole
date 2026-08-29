@@ -267,12 +267,12 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The current checkout's local PRTCL gate passes 343 deterministic tests and a
-  131-module production build (`20260829-2209`). Six exact `773 × 601` muted
-  visual cases have distinct captured identities; two reduced-motion frames
-  taken 800 ms apart are byte-identical. The direct TYPE cycle returns to
-  Fractal, measures `94 × 34 px` at both agreed viewports, and the DOM contains
-  no `select`.
+- The current checkout's local PRTCL checkpoint is `9f177fa`. Its exact gate
+  passes 343 deterministic tests and a 131-module production build
+  (`20260829-2222`). Six exact `773 × 601` muted visual cases have distinct
+  captured identities; two reduced-motion frames taken 800 ms apart are
+  byte-identical. The direct TYPE cycle returns to Fractal, measures
+  `94 × 34 px` at both agreed viewports, and the DOM contains no `select`.
 - The canonical live product is version `0.0.0`, source commit `ba215be`, build
   `20260829-2110`. The final 2026-08-29 21:13 publication passed clean-source
   synchronization, two read-only preflights, the 89-file exact upload, the
