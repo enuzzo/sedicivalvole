@@ -8,6 +8,56 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Source-faithful DRIVEY recovery — 2026-08-29 21:13
+
+- build stamp: **`20260829-2110`**; deployed source commit: `ba215be`;
+  implementation checkpoint: `2b9e724`;
+- gate before upload: **PASS**. The checkout was clean, `main` matched
+  `origin/main`, every one of the 51 Drivey manifest entries passed SHA-256
+  verification, all six WAKE, nine DRIVEY, nine NIGHTSHIFT, 302 unit and nine
+  Sites checks passed (335 total), and the 128-module production build embedded
+  version `0.0.0`, commit `ba215be` and build `20260829-2110`;
+- correction boundary: the first upload used the previously verified bundle
+  from implementation commit `2b9e724`. Its embedded identity exposed the
+  mismatch before final acceptance. The bundle was rebuilt from `ba215be`, its
+  identity was inspected locally, and a fresh read-only preflight passed before
+  the corrective publication. The transient upload is not the accepted live
+  checkpoint;
+- final publication: **PASS**. The 89-file / 15,746,290-byte upload passed the
+  dynamic-root and exact legacy-cleanup gates and retained one prior
+  content-addressed asset for cache overlap. The post-publication FTP identity
+  gate returned network/login/directory/listing PASS and
+  `remote_writes=NONE`;
+- canonical identity and cache behavior: **PASS**. Bare and
+  `?build=20260829-2110` HTML return `200`, 788 bytes,
+  `no-store, no-cache, must-revalidate, max-age=0`, `pragma: no-cache`, and
+  cache `MISS`. Both responses are byte-identical to the local entry at SHA-256
+  `a0a1927c7ae969e86d8ea21bbcf34155cfa3878c76e1aa14157f79ea1f73bf69`;
+- asset identity: **PASS**. The live main JavaScript, CSS, score worklet, BLOOM
+  worklet, Drivey integration shell, Drivey runtime entry, upstream manifest and
+  bundled three.js module are byte-identical to the local build at SHA-256
+  `5f9bcca8f4aed8c045972e892ec22f367d4ff1139f6444314c6d32a954084b99`,
+  `45c422bbd8e9002795cee095346164e17bc8a76ad3a15b07516a09d0087757f6`,
+  `16887bddb25913752562789b286612c7e2ed659e4eddf2d3539153cdf06015c8`,
+  `0b0aabb6312de3934bdf952e33b610be08a8f38cc12cb23e1676edd02fc2610a`,
+  `bd04a170db990106ca77422cd06294213b15b1fd6620947c639d9e07ba7ffcf3`,
+  `0ebc9ca3355dc0140571b5b01a1514646ce972ba2eada8e3dcdeb5ae2c5ed14c`,
+  `a077ae2d117f118b73dcce9ca1242b547792a0fc6825cef72096326380519323`,
+  and `1a6585682579023aa039abf7c70db9b0c042c366297aeacf427a9aa51f944ba0`;
+- muted live product QA: **PASS within the technical contract**. At exact
+  `773 × 601`, `VIEW` completed Hood → Rear → Aerial → Hood, `RENDER`
+  completed Normal → Wire → Normal → Wire, BLUE 04 coloured both modes, both
+  text-only controls measured `94 × 34 px`, and the DOM contained no Drivey
+  panel or select. DIAG reported `WebGL · Original Drivey · Wireframe`, 59.41
+  FPS / 17.5 ms p95, zero runtime issues, `output muted`, and identity
+  `v0.0.0 · ba215be · build 20260829-2110`. The Browser log contained four
+  informational upstream renderer messages and zero warning/error. Captures are
+  `drivey-live-normal-blue-ba215be-773x601.png`,
+  `drivey-live-wire-blue-ba215be-773x601.png`, and
+  `drivey-live-diag-ba215be-773x601.png` in the recovery visualization folder.
+  Real-Tesla touch, motion comfort, frame pacing and thermal acceptance remain
+  open.
+
 ## DRIVEY 06 publication — 2026-08-29 18:28
 
 - build stamp: **`20260829-1826`**; deployed source commit: `ab7a00e`;
