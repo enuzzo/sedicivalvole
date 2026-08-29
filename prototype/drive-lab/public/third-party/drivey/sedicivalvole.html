@@ -27,7 +27,37 @@
         silhouetteMaterial,
         transparentMaterial,
       } from "./js/materials.js";
+      import { Input } from "./js/Input.js";
       import { Color } from "./lib/three/three.module.js";
+
+      const installDualPaletteMaterial = (material) => {
+        const singlePaletteShader = material.fragmentShader;
+        const singlePaletteRamp = `vec3 color = shade < 0.5
+          ? mix(darkTint, fullTint, shade * 2.0)
+          : mix(fullTint, lightTint, shade * 2.0 - 1.0);`;
+        if (
+          !singlePaletteShader.includes("uniform vec3 fullTint;")
+          || !singlePaletteShader.includes(singlePaletteRamp)
+        ) {
+          throw new Error("Sedici Valvole dual-palette shader bridge did not match the pinned Drivey source");
+        }
+        const dualPaletteShader = singlePaletteShader
+          .replace(
+            "uniform vec3 fullTint;",
+            "uniform vec3 fullTint;\n    uniform vec3 secondaryTint;",
+          )
+          .replace(
+            singlePaletteRamp,
+            `vec3 color = shade < 0.34
+          ? mix(darkTint, fullTint, shade / 0.34)
+          : shade < 0.68
+            ? mix(fullTint, secondaryTint, (shade - 0.34) / 0.34)
+            : mix(secondaryTint, lightTint, (shade - 0.68) / 0.32);`,
+          );
+        material.uniforms.secondaryTint = { value: new Color(1, 1, 1) };
+        material.fragmentShader = dualPaletteShader;
+        material.needsUpdate = true;
+      };
 
       const installPaletteWireframe = (screen) => {
         const background = new Color(0, 0, 0);
@@ -51,9 +81,9 @@
           void main() {
             float edge = clamp(texture2D(tDiffuse, vUV).r * 20.0, 0.0, 1.0);
             float lineStrength = smoothstep(0.10, 0.62, edge);
-            float highlightStrength = smoothstep(0.62, 1.0, edge) * 0.42;
-            vec3 colour = mix(backgroundTint, lineTint, lineStrength);
-            colour = mix(colour, highlightTint, highlightStrength);
+            float paletteBlend = smoothstep(0.18, 0.82, vUV.y);
+            vec3 pairedLine = mix(highlightTint, lineTint, paletteBlend);
+            vec3 colour = mix(backgroundTint, pairedLine, lineStrength);
             gl_FragColor = vec4(colour, 1.0);
           }
         `;
@@ -71,12 +101,15 @@
         passive: false,
       });
 
+      installDualPaletteMaterial(silhouetteMaterial);
+      installDualPaletteMaterial(transparentMaterial);
       const drivey = new Drivey();
       const paletteWireframe = installPaletteWireframe(drivey.screen);
       removeEmbeddedPlaylist();
       window.drivey = drivey;
       window.__SEDICIVALVOLE_DRIVEY__ = Object.freeze({
         Color,
+        Input,
         drivey,
         paletteWireframe,
         silhouetteMaterial,

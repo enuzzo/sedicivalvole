@@ -69,7 +69,10 @@ the field read as decorative strings/bars and lacked emotional or perceptual
 value. It was rejected before publication and removed from the runtime, QA and
 active tests. Aperture remains the fresh-session and invalid-preference
 fallback. WAKE was subsequently selected and implemented under an exact
-reference-fidelity contract; SLIP remains proposal-only.
+reference-fidelity contract, then rejected after repeated live review because
+its ribbons read as disordered rain rather than a convincing 3D field. Its
+catalog entry, renderer, fallback, tests and QA captures are removed; SLIP
+remains proposal-only.
 
 `MERIDIAN 03` follows the selected oblique-blade reference contract: sparse
 large red, white and secondary-colour Euclidean planes flank a low, readable
@@ -98,17 +101,19 @@ latest automatic position and camera. Product chrome is pointer-transparent
 only over the map surface; the GPS recovery, telemetry and low control planes
 remain interactive.
 
-`DRIVEY 06` embeds the actual Rezmason Drivey road, level, traffic, camera and
+`DRIVEY 05` embeds the actual Rezmason Drivey road, level, traffic, camera and
 rendering runtime pinned at commit
 `5104cdade2a3158786b05b9b0680a50e942830cf`. The 51 upstream files remain
 byte-identical under a checked SHA-256 manifest. A separate project-authored
 iframe shell and bridge map the existing speed, music, performance-effect and
 ten-palette state onto controls and material buffers already owned by the
-runtime. Its only direct controls are two compact text buttons: one cycles Hood,
+runtime. The bridge uses the upstream automatic `Input`, removes only the
+player car's random weaving, and exposes each theme's native `accent` and
+`secondary` colours simultaneously. Its only direct controls are two compact text buttons: one cycles Hood,
 Rear and Aerial views; the other cycles Normal and palette-coloured Wire render
 modes. Neither control opens a dropdown or panel.
 
-`PRTCL 07` is one environment with three particle families, not three catalog
+`PRTCL 06` is one environment with three particle families, not three catalog
 entries. Its project-authored WebGL2 renderer adapts the directly authorized
 Fractal Frequency, Murmuration, and Axiom formulas from PRTCL commit
 `2a22f33b975e2c40b7ee0bdd2d1acb4cee4f5060`, preserving the reviewed
@@ -217,7 +222,7 @@ acceptance in the vehicle.
 | Adaptive synth + sequencer | implemented prototype | FRACTURE runs in the AudioWorklet; real Tesla musical acceptance pending |
 | Modular Aperture generative visual | implemented prototype | WebGL2 plus Canvas2D fallback; Tesla performance pending |
 | PLUMB inertial-suspension visual | rejected and retired before publication | Exact-viewport review triggered its strings/bars retirement criterion; no active renderer |
-| Selectable visual environments | implemented prototype | Aperture, Vertigo, Meridian, Atlas, Wake, Drivey, and the local PRTCL candidate share normalized motion, safety, persistence, palette, failure, and diagnostic contracts; PRTCL awaits human approval before push/deploy |
+| Selectable visual environments | implemented prototype | Aperture, Vertigo, Meridian, Atlas, Drivey, and the local PRTCL candidate share normalized motion, safety, persistence, palette, failure, and diagnostic contracts; WAKE is retired and PRTCL awaits human approval before push/deploy |
 | Selectable musical environments | implemented prototype | FRACTURE, JUNCTION, and NIGHTSHIFT ready; four later directions remain pending |
 | Open packs | strategic goal | schema and licensing not frozen |
 | Offline audio core | implemented prototype | identical score DSP renders and analyses WAV references in Node |

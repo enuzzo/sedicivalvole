@@ -41,7 +41,7 @@ e58d58520bc0dfde21f9e14e6a1b8c7f0a2a2a9e. The vendor snapshot retains its
 original usage notice and bundled-library licenses; it is not relicensed under
 the sedicivalvole AGPL grant. See THIRD_PARTY_NOTICES.md.
 
-DRIVEY 06 integrates 51 byte-identical files from Drivey by Rezmason at commit
+DRIVEY 05 integrates 51 byte-identical files from Drivey by Rezmason at commit
 5104cdade2a3158786b05b9b0680a50e942830cf. They retain Drivey's supplied GNU
 GPL version 3 licence and the original notices for bundled libraries and are not
 relicensed under the sedicivalvole AGPL grant. The preserved 2018 Drivey.js

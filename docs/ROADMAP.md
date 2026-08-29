@@ -36,8 +36,9 @@ Exactly three revised minimal directions were presented after the luminous-axis 
 After REGISTER was rejected, the required second three-direction gate presented
 **PLUMB**, **SLIP**, and **WAKE**. PLUMB reached a local prototype, triggered its
 own strings/bars retirement rule at the exact Tesla viewport, and was rejected
-before publication. WAKE was selected and implemented; SLIP remains
-proposal-only. DRIVEY 06 later entered through a source-faithful integration of
+before publication. WAKE was selected and implemented, then rejected after
+repeated live review and removed from the product; SLIP remains proposal-only.
+DRIVEY 05 later entered through a source-faithful integration of
 the separately licensed Rezmason runtime. The six implemented environments
 use the same ten curated themes; Aperture remains the safe default.
 
@@ -94,25 +95,23 @@ Implemented:
 - an external `0–130 km/h` bridge that slows the original clock from stopped to its non-boosted `1×` rate and maps FOV from `90°` to `150°`, without editing the vendor runtime.
 - original `MERIDIAN 03`, rebuilt against the selected reference as a low stable corridor of sparse oblique blades and longitudinal shoulder planes. Bounded field motion, FOV, depth compression, peripheral stretch and parallax carry speed without conventional buildings, cloud slabs or a particle field;
 - lazy-loaded `ATLAS 04`, with a minimal palette-owned OpenFreeMap vector style, 3D buildings, nearby Italian Wikipedia context, four passenger links, a local QR and an explicit no-GPS Milan flight mode;
-- selected `WAKE 05`, with seven broad material roads whose real spline
-  geometry streams longitudinally, drapes softly at low speed and progressively
-  crosses and knots as speed rises;
-- source-faithful `DRIVEY 06`, with 51 byte-identical upstream files pinned at
+- source-faithful `DRIVEY 05`, with 51 byte-identical upstream files pinned at
   `5104cdade2a3158786b05b9b0680a50e942830cf`, a separate project-owned iframe
-  shell/bridge, native performance-effect and ten-palette mappings, compact
+  shell/bridge, upstream automatic road/curve following without random player
+  weaving, distinct native accent/secondary palette channels, compact
   Hood/Rear/Aerial and Normal/Wire cycling controls, and no dropdown panel;
-- locally verified `PRTCL 07`, with one bounded WebGL2 renderer adapting the
+- locally verified `PRTCL 06`, with one bounded WebGL2 renderer adapting the
   directly authorized Fractal Frequency, Murmuration, and Axiom formulas;
   `24,000` / `16,000` / `37,000` fixed draw counts; a direct `94 × 34 px`
   text-only TYPE cycle separate from Palette; and native speed, music,
   OPEN/UNDERWATER/BLOOM, reduced-motion, failure, and cleanup behavior;
 - safe environment preferences: every implemented choice remains intact, while
-  PLUMB and other missing, retired or invalid identifiers resolve to Aperture;
+  PLUMB, WAKE and other missing, retired or invalid identifiers resolve to Aperture;
 
 Queued next:
 
 - decide which visual and score combinations become authored audiovisual environments once more than FRACTURE is selectable;
-- retain PLUMB as a rejected decision record and SLIP as proposal-only;
+- retain PLUMB and WAKE as rejected decision records and SLIP as proposal-only;
 - obtain human visual approval for the local PRTCL source comparison before
   push/deploy, then implement INFINITE and PRIMORDIAL through their recorded
   project-authored renderer boundaries;

@@ -194,6 +194,12 @@ Passed locally at the required `773 × 601` viewport. Launch and core selectors 
 
 Date: 2026-08-29
 
+Status: **superseded and rejected later on 2026-08-29**. The product owner found
+that the final ribbons read as disordered rain rather than a convincing 3D
+field. The renderer, fallback, tests and current QA captures were removed. The
+record below is retained only to explain the abandoned iterations; its referenced
+captures remain recoverable from Git history but are not current product assets.
+
 ## Contract
 
 - Approved source: `/Users/enuzzo/.codex/generated_images/01a04c97-3426-7903-8336-af01ab3c6a15/exec-428d4bbf-ef29-46c1-9aee-2d8a2c1c6ca8.png`
@@ -443,3 +449,50 @@ real-Tesla acceptance.
 
 final result: local candidate ready for human visual approval; push, deploy,
 real-Tesla motion comfort, frame pacing and thermal acceptance remain open
+
+---
+
+# Design QA — DRIVEY 05 automatic road and dual-palette recovery
+
+Date: 2026-08-29
+
+## Product correction
+
+- The parent bridge now instantiates the pinned runtime's real `Input` class in
+  automatic mode instead of substituting a plain object. Manual steering remains
+  disabled, the player car's random `weaving` value is reset to zero, and the
+  original road approximation, look-ahead, tangent and steering code continues
+  to own every curve. None of the 51 manifest-listed upstream files changed.
+- Normal rendering now uses a four-stop project-owned runtime material ramp:
+  dark → native `accent` → native `secondary` → light. Wire uses the same two
+  native channels spatially, so it no longer averages a complementary pair into
+  one intermediate line colour. Deterministic checks cover all ten presets.
+- WAKE is rejected rather than revised again. Its catalog entry, renderer,
+  fallback, tests and current QA captures are removed; stale preferences fall
+  back to Aperture. DRIVEY and PRTCL close the active catalog as `05` and `06`.
+
+## Verified evidence
+
+- A muted held-speed Browser run remained aligned with the Industrial Zone road
+  and its visible right-hand curve for 22 seconds at the `130 km/h` ceiling. The
+  runtime readout stayed `WebGL · Original Drivey · Normal` at `60.0 FPS`, with
+  `18.6 ms` p95, `19.5 ms` maximum, and zero intervals above `34 ms`.
+- The exact `773 × 601` product frame shows RED 03 simultaneously as a red sky
+  and blue road/highlight channel in Normal mode. ACID 08 Wire simultaneously
+  shows magenta upper geometry and green road geometry. The compact controls,
+  footer, speed module and palette remain unobscured.
+- The exact `773 × 601` Visual library contains six entries, no WAKE node,
+  `DRIVEY 05`, and `PRTCL 06`. Current captures are
+  `/Users/enuzzo/.codex/visualizations/2026/08/29/01a04e7e-d9e8-7693-b050-beaedf042936/drivey-road-follow-dual-red-773x601.jpg`,
+  `/Users/enuzzo/.codex/visualizations/2026/08/29/01a04e7e-d9e8-7693-b050-beaedf042936/drivey-wire-dual-acid-773x601.jpg`, and
+  `/Users/enuzzo/.codex/visualizations/2026/08/29/01a04e7e-d9e8-7693-b050-beaedf042936/visual-catalog-no-wake-773x601.jpg`.
+- Ten focused DRIVEY checks, the complete 338-test suite, the exact 128-module
+  production build `20260829-2321`, and the 51-file upstream SHA-256 integrity
+  gate pass locally.
+
+Local self-review severity: P0 none. P1 none after restoring the upstream Input
+and suppressing only random player weaving. P2 none after separating both theme
+channels in Normal and Wire.
+
+final result: local candidate ready for product-owner and real-Tesla validation;
+push and deployment remain intentionally open behind PRTCL approval

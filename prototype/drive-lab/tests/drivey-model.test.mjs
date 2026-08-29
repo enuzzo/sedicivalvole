@@ -3,6 +3,7 @@ import { createHash } from "node:crypto";
 import { access, readFile } from "node:fs/promises";
 import test from "node:test";
 import {
+  createDriveyAutomaticInput,
   createDriveyLoadDeadline,
   DEFAULT_DRIVEY_SETTINGS,
   DRIVEY_CAMERAS,
@@ -14,6 +15,7 @@ import {
   nextDriveyCameraId,
   nextDriveyRenderModeId,
   normalizeDriveySettings,
+  stabilizeDriveyRoadFollower,
   themeToDriveyPalette,
 } from "../src/environments/drivey/drivey-model.js";
 import { getFluxTheme } from "../src/flux-themes.js";
@@ -81,6 +83,33 @@ test("road speed owns the original cruise while music only owns colour energy", 
   assert.ok(music.colourEnergy > rest.colourEnergy);
 });
 
+test("the integration uses the upstream automatic Input and removes random player weaving", () => {
+  class UpstreamInput {
+    constructor() {
+      this.upstream = true;
+      this.manualSteerSensitivity = 1;
+      this.autoSteerSensitivity = 0;
+      this.weaving = 1;
+    }
+
+    update() {}
+  }
+
+  const input = createDriveyAutomaticInput(UpstreamInput);
+  assert.ok(input instanceof UpstreamInput);
+  assert.equal(input.upstream, true);
+  assert.equal(input.steer, 0);
+  assert.equal(input.handbrake, 0);
+  assert.equal(input.manualSteerSensitivity, 0);
+  assert.equal(input.autoSteerSensitivity, 1);
+  assert.equal(input.cruiseSpeedMultiplier, 1);
+
+  const car = { weaving: 0.75 };
+  stabilizeDriveyRoadFollower(car);
+  assert.equal(car.weaving, 0);
+  assert.doesNotThrow(() => stabilizeDriveyRoadFollower(null));
+});
+
 test("OPEN, UNDERWATER, BLOOM and reduced motion use distinct bounded mappings", () => {
   const normal = driveyMotionProfile({ speedKmh: 70, audioLevel: 0.4 });
   const open = driveyMotionProfile({ speedKmh: 70, audioLevel: 0.4, effect: "OPEN" });
@@ -104,7 +133,7 @@ test("OPEN, UNDERWATER, BLOOM and reduced motion use distinct bounded mappings",
   }
 });
 
-test("every body-colour theme maps to bounded original Drivey material colours", () => {
+test("every theme keeps both native colours separate in the Drivey material palette", () => {
   const quiet = driveyMotionProfile({ speedKmh: 65, audioLevel: 0.1 });
   const musical = driveyMotionProfile({ speedKmh: 65, audioLevel: 0.9, effect: "BLOOM" });
   for (const themeId of ["pearl", "graphite", "red", "blue", "silver", "neon", "mint", "acid", "signal", "sulphur"]) {
@@ -115,11 +144,14 @@ test("every body-colour theme maps to bounded original Drivey material colours",
         assert.equal(color.length, 3);
         assert.ok(color.every((channel) => channel >= 0 && channel <= 1));
       }
+      assert.deepEqual(palette.full, theme.palette.accent, `${themeId} primary`);
+      assert.deepEqual(palette.secondary, theme.palette.secondary, `${themeId} secondary`);
+      assert.notDeepEqual(palette.full, palette.secondary, `${themeId} pair`);
     }
   }
   assert.notDeepEqual(
-    themeToDriveyPalette(getFluxTheme("red"), quiet).full,
-    themeToDriveyPalette(getFluxTheme("red"), musical).full,
+    themeToDriveyPalette(getFluxTheme("red"), quiet).light,
+    themeToDriveyPalette(getFluxTheme("red"), musical).light,
   );
 });
 
@@ -180,6 +212,7 @@ test("every admitted Drivey runtime file remains byte-identical to the pinned co
 test("the bridge embeds the original runtime and excludes unneeded image and legacy trees", async () => {
   assert.equal(DRIVEY_UPSTREAM_ENTRY, "third-party/drivey/sedicivalvole.html");
   assert.match(shellSource, /import Drivey from "\.\/js\/Drivey\.js"/);
+  assert.match(shellSource, /import \{ Input \} from "\.\/js\/Input\.js"/);
   assert.match(shellSource, /window\.__SEDICIVALVOLE_DRIVEY__/);
   assert.match(shellSource, /removeEmbeddedPlaylist/);
   assert.match(fieldSource, /<iframe/);
@@ -194,7 +227,12 @@ test("the bridge embeds the original runtime and excludes unneeded image and leg
   assert.match(shellSource, /backgroundTint/);
   assert.match(shellSource, /lineTint/);
   assert.match(shellSource, /highlightTint/);
+  assert.match(shellSource, /pairedLine = mix\(highlightTint, lineTint, paletteBlend\)/);
   assert.match(shellSource, /paletteWireframe/);
+  assert.match(shellSource, /secondaryTint/);
+  assert.match(shellSource, /shade < 0\.68/);
+  assert.match(fieldSource, /createDriveyAutomaticInput\(Input\)/);
+  assert.match(fieldSource, /stabilizeDriveyRoadFollower\(drivey\.myCar\)/);
   assert.match(appSource, /className="visual-cycle-button visual-view-cycle"/);
   assert.match(appSource, /className="visual-cycle-button visual-render-toggle"/);
   assert.match(appSource, /aria-pressed=\{wireframe\}/);

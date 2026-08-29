@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useRef } from "react";
 import {
+  createDriveyAutomaticInput,
   createDriveyLoadDeadline,
   DEFAULT_DRIVEY_SETTINGS,
   DRIVEY_UPSTREAM_ENTRY,
   driveyMotionProfile,
   normalizeDriveySettings,
+  stabilizeDriveyRoadFollower,
   themeToDriveyPalette,
 } from "./drivey-model.js";
 import {
@@ -22,22 +24,10 @@ function makeThreeColor(bridge, rgb) {
   return new bridge.Color().setRGB(rgb[0], rgb[1], rgb[2]);
 }
 
-function installNeutralRoadInput(drivey) {
+function installAutomaticRoadInput(bridge) {
+  const { drivey, Input } = bridge;
   if (drivey.__sedicivalvoleInputInstalled) return;
-  drivey.controlScheme = {
-    slow: false,
-    fast: false,
-    gasPedal: 0,
-    brakePedal: 0,
-    handbrake: 0,
-    steer: 0,
-    minCruiseSpeed: 0,
-    manualSteerSensitivity: 0,
-    autoSteerSensitivity: 1,
-    cruiseSpeedMultiplier: 1,
-    laneShift: 0,
-    update() {},
-  };
+  drivey.controlScheme = createDriveyAutomaticInput(Input);
   drivey.__sedicivalvoleInputInstalled = true;
 }
 
@@ -51,11 +41,12 @@ function applyPalette(bridge, palette) {
   for (const material of [silhouetteMaterial, transparentMaterial]) {
     setThreeColor(material?.uniforms?.darkTint?.value, palette.dark);
     setThreeColor(material?.uniforms?.fullTint?.value, palette.full);
+    setThreeColor(material?.uniforms?.secondaryTint?.value, palette.secondary);
     setThreeColor(material?.uniforms?.lightTint?.value, palette.light);
   }
   setThreeColor(paletteWireframe?.background, palette.background);
   setThreeColor(paletteWireframe?.line, palette.full);
-  setThreeColor(paletteWireframe?.highlight, palette.light);
+  setThreeColor(paletteWireframe?.highlight, palette.secondary);
   drivey.themeColors = {
     dark: makeThreeColor(bridge, palette.dark),
     full: makeThreeColor(bridge, palette.full),
@@ -121,7 +112,8 @@ function applyBridgeState(bridge, values, state) {
     reducedMotion: values.reducedMotion,
   });
 
-  installNeutralRoadInput(drivey);
+  installAutomaticRoadInput(bridge);
+  stabilizeDriveyRoadFollower(drivey.myCar);
   drivey.screen.setCycleColors(false);
   drivey.cruiseSpeed = profile.cruiseSpeed;
   drivey.npcControlScheme.cruiseSpeedMultiplier = profile.npcSpeedScale;

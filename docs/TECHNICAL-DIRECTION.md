@@ -308,21 +308,24 @@ driving mood even after boundary and acceleration responses were added. The
 archived source is evidence, not a roadmap commitment. The required replacement
 gate has now happened: PLUMB, SLIP and WAKE were the three presented directions.
 PLUMB was rejected after its first local prototype; WAKE was selected and
-implemented, while SLIP remains proposal-only.
+implemented, then rejected after repeated live review, while SLIP remains
+proposal-only.
 
-**Wake** is a project-authored WebGL2 ribbon renderer with a Canvas2D fallback.
-Seven continuously tessellated sheets advect their real spline geometry rather
-than merely moving light across static surfaces. Speed owns longitudinal flow,
-crossing and temporary knots; low speed retains velvet-like drape.
+**Wake** is retired. Its ribbons ultimately read as disordered rain rather than
+a convincing authored 3D field. The catalog entry, WebGL2 renderer, Canvas2D
+fallback, tests and current QA captures are removed; only historical Git and
+dated decision evidence remain.
 
 **Drivey** embeds the actual Rezmason Drivey runtime at commit
 `5104cdade2a3158786b05b9b0680a50e942830cf` in a same-origin iframe. Fifty-one
 upstream files remain byte-identical under a SHA-256 manifest and continue to
 own the road, levels, traffic, generated cars, cameras, materials, post-processing
 and rendering. The separate sedicivalvole shell and parent bridge clamp road
-speed, music level, reduced motion and performance state, map the ten palettes
-onto existing colour buffers/materials, and expose only Hood, Rear and Aerial
-views plus Normal/Wire rendering. Two compact text-only controls cycle those
+speed, music level, reduced motion and performance state, instantiate the
+upstream automatic `Input`, remove only the player car's random weaving, and map
+each theme's native `accent` and `secondary` colours onto separate material
+channels. It exposes only Hood, Rear and Aerial views plus Normal/Wire rendering.
+Two compact text-only controls cycle those
 states directly; they open no contextual panel and never edit the vendor tree.
 
 **PRTCL** is a project-owned WebGL2 point renderer around directly authorized

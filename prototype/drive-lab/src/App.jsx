@@ -40,7 +40,6 @@ import {
 import { SplashSignalGate } from "./splash-signal-gate.jsx";
 import { Interstate7Field } from "./interstate-7-field.jsx";
 import { MeridianField } from "./environments/meridian/meridian-field.jsx";
-import { WakeField } from "./environments/wake/wake-field.jsx";
 import { DriveyField } from "./environments/drivey/drivey-field.jsx";
 import { PrtclField } from "./environments/prtcl/prtcl-field.jsx";
 import {
@@ -2227,16 +2226,6 @@ export function App() {
                 onRuntimeError={handleEnvironmentError}
               />
             </Suspense>
-          ) : environment.renderer === "wake" ? (
-            <WakeField
-              speed={speed}
-              theme={theme}
-              reducedMotion={reducedMotion}
-              effect={activeEffect}
-              onRenderer={setRenderer}
-              onFrame={recordRenderedFrame}
-              onRuntimeError={handleEnvironmentError}
-            />
           ) : environment.renderer === "drivey" ? (
             <DriveyField
               speed={speed}

@@ -9,14 +9,14 @@ and licence boundaries are defined in
 
 ## Catalog shape
 
-The Flux visual library adds four entries after `WAKE 05`:
+After WAKE's retirement, the admitted source studies occupy these catalog slots:
 
 | Number | Environment | Contextual variants |
 |---:|---|---|
-| `06` | `DRIVEY` | Hood, Rear, Aerial cameras; Normal/Wire render modes |
-| `07` | `PRTCL` | Fractal Frequency, Murmuration, Axiom |
-| `08` | `INFINITE` | Particles, Star Wars, Triangle |
-| `09` | `PRIMORDIAL` | one fluid-field environment |
+| `05` | `DRIVEY` | Hood, Rear, Aerial cameras; Normal/Wire render modes |
+| `06` | `PRTCL` | Fractal Frequency, Murmuration, Axiom |
+| `07` | `INFINITE` | Particles, Star Wars, Triangle |
+| `08` | `PRIMORDIAL` | one fluid-field environment |
 
 Variants belong to their environment. They are not separate demo dumps and do
 not expand the primary visual picker into duplicated source entries.
@@ -45,8 +45,8 @@ previously measured outer placement:
   above the low control plane;
 - tall mobile: the panel's bottom bound moves above the existing `224 px`
   two-row footer and becomes internally scrollable;
-- the tuner is not rendered for APERTURE, VERTIGO, MERIDIAN, ATLAS, WAKE, or
-  DRIVEY, or PRTCL, so
+- the tuner is not rendered for APERTURE, VERTIGO, MERIDIAN, ATLAS, DRIVEY, or
+  PRTCL, so
   it cannot collide with the ATLAS compass, map attribution, or passenger panel;
 - the tuner exists only in the running experience, so it cannot collide with
   the Signal Gate support panel;

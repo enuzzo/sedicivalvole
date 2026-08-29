@@ -1,4 +1,4 @@
-// DRIVEY 06 — narrow controls for the original Rezmason Drivey runtime.
+// DRIVEY 05 — narrow controls for the original Rezmason Drivey runtime.
 //
 // Geometry, levels, cameras, car simulation, materials, post-processing and
 // rendering remain owned by the byte-identical upstream files under
@@ -127,6 +127,30 @@ export function driveyMotionProfile({
   });
 }
 
+export function createDriveyAutomaticInput(InputClass) {
+  if (typeof InputClass !== "function") {
+    throw new TypeError("Drivey Input constructor is unavailable");
+  }
+  const input = new InputClass();
+  input.slow = false;
+  input.fast = false;
+  input.gasPedal = 0;
+  input.brakePedal = 0;
+  input.handbrake = 0;
+  input.steer = 0;
+  input.minCruiseSpeed = 0;
+  input.manualSteerSensitivity = 0;
+  input.autoSteerSensitivity = 1;
+  input.cruiseSpeedMultiplier = 1;
+  input.laneShift = 0;
+  return input;
+}
+
+export function stabilizeDriveyRoadFollower(car) {
+  if (!car) return;
+  car.weaving = 0;
+}
+
 function mixRgb(from, to, amount) {
   return from.map((value, index) => value + (to[index] - value) * amount);
 }
@@ -137,17 +161,21 @@ function gainRgb(color, gain) {
 
 export function themeToDriveyPalette(theme, profile) {
   const { base, mid, light, accent, secondary } = theme.palette;
-  const colourMix = clamp(profile.colourEnergy * 0.52, 0, 0.52);
   let dark = mixRgb(base, mid, 0.06);
-  let full = mixRgb(accent, secondary, colourMix);
-  let bright = mixRgb(light, accent, profile.effect === "BLOOM" ? 0.22 : 0.06);
+  const full = [...accent];
+  const partner = [...secondary];
+  const colourLift = clamp(profile.colourEnergy * 0.12, 0, 0.12);
+  let bright = mixRgb(
+    light,
+    secondary,
+    (profile.effect === "BLOOM" ? 0.18 : 0.04) + colourLift,
+  );
 
   if (profile.effect === "UNDERWATER") {
     dark = mixRgb(base, secondary, 0.12);
-    full = mixRgb(full, mid, 0.34);
     bright = mixRgb(bright, secondary, 0.22);
   } else if (profile.effect === "OPEN") {
-    full = mixRgb(full, light, 0.12);
+    bright = mixRgb(bright, light, 0.12);
   }
 
   bright = gainRgb(bright, profile.lightGain);
@@ -155,6 +183,7 @@ export function themeToDriveyPalette(theme, profile) {
     background: gainRgb(dark, profile.effect === "UNDERWATER" ? 0.74 : 0.9),
     dark,
     full,
+    secondary: partner,
     light: bright,
   });
 }

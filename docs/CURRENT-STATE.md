@@ -13,20 +13,19 @@ dated study documents.
 - `Flux` is the implemented primary mode. `Engine` remains an equal confirmed
   mode, visible but disabled until its own audio model and one of exactly three
   Engine-specific visual directions are selected.
-- The source checkout's Flux catalog contains seven visual environments: **APERTURE 01**,
-  **VERTIGO 02**, **MERIDIAN 03**, **ATLAS 04**, **WAKE 05**, and
-  **DRIVEY 06**, plus the locally verified **PRTCL 07** candidate. Aperture
+- The source checkout's Flux catalog contains six visual environments: **APERTURE 01**,
+  **VERTIGO 02**, **MERIDIAN 03**, **ATLAS 04**, and **DRIVEY 05**, plus the
+  locally verified **PRTCL 06** candidate. Aperture
   remains the accepted fresh-session and invalid-preference fallback.
-- All seven environments use the shared catalog of **10 themes**. Vertigo keeps
+- All six environments use the shared catalog of **10 themes**. Vertigo keeps
   the upstream Interstate 7 files byte-identical while an external runtime
   bridge maps the selected theme onto its existing colour channels.
-- OPEN, UNDERWATER and BLOOM are visible in all seven checkout environments without
+- OPEN, UNDERWATER and BLOOM are visible in all six checkout environments without
   a shared overlay. Aperture performs its tiled projection and centre light;
   Vertigo changes only the original runtime's externally bridged time, FOV and
   colour controls; Meridian changes corridor projection, flow, fog and rail
-  energy; Atlas changes MapLibre camera and layer paint properties; Wake changes
-  authored ribbon width, separation, fold pressure and material light; Drivey
-  receives bounded speed, camera, traffic and material updates through its
+  energy; Atlas changes MapLibre camera and layer paint properties; Drivey
+  receives bounded speed, camera, traffic and two-channel material updates through its
   external bridge without editing the vendor files; PRTCL changes point scale,
   depth/travel, palette pulse, spread, attenuation, and glow within its own
   particle grammar.
@@ -55,24 +54,21 @@ dated study documents.
   the latest in-memory path in driving order. The `246 px` passenger panel
   collapses behind a persistent midpoint handle, has one touch-scroll context,
   and keeps mandatory attribution in a tiny translucent strip above the footer.
-- WAKE implements the approved reference as seven broad, continuously
-  tessellated material sheets circulating around stable negative space. It is a
-  project-authored WebGL2 renderer with a Canvas2D fallback; no third-party
-  runtime or asset was imported. Its exact `773 × 601` browser capture and the
-  normalized source were compared together through six fidelity passes, and
-  three subsequent live-review passes first made the surfaces themselves move,
-  then exposed that deformation in place was not road-like travel, and finally
-  added a separate integrated conveyor phase. Width, camber, relief, twist and
-  centerline compression now advect directionally along every spline. Low speed
-  remains slow, soft and velvet-like; speed progressively increases travel,
-  crossings and temporary knots. The blocking P0/P1/P2 gate in `design-qa.md`
-  passes locally after that correction.
+- WAKE is rejected after repeated live review: its ribbons read as disordered
+  rain rather than a convincing authored 3D road field. Its renderer, fallback,
+  tests, catalog entry and current QA captures have been removed. The historical
+  decision record remains in Git and the dated design document; a stale `wake`
+  preference resolves to Aperture.
 - DRIVEY embeds the actual Rezmason Drivey runtime pinned at commit
   `5104cdade2a3158786b05b9b0680a50e942830cf`. Its 51 upstream road, level,
   traffic, camera, rendering and bundled-library files remain byte-identical
   under a SHA-256 manifest; a project-authored iframe shell and external bridge
   apply bounded speed, music, reduced motion, named performance effects and all
-  ten Sedici Valvole palettes. Two compact `94 × 34 px` text-only controls cycle
+  ten Sedici Valvole palettes. The bridge now instantiates the upstream automatic
+  `Input`, fixes the player car's random weaving at zero, and leaves the original
+  road/curve steering in charge. Every preset keeps its native `accent` and
+  `secondary` colours as simultaneous material channels in both Normal and Wire.
+  Two compact `94 × 34 px` text-only controls cycle
   `HOOD → REAR → AERIAL` and `NORMAL ↔ WIRE` directly, with no dropdown, panel,
   native Driver/Chase/Satellite view, or original colour selector. Exact muted
   `773 × 601` and `390 × 844` Browser QA passes with zero warning or error.
@@ -86,8 +82,8 @@ dated study documents.
   the shared `PALETTE` remains a separate colour choice. Road speed alone owns
   point scale, depth, and travel; music owns colour phase and pulse. Exact muted
   `773 × 601` and `390 × 844` QA, every type, OPEN / UNDERWATER / BLOOM, zero
-  warning/error state, deterministic reduced motion, 343 tests, and the
-  131-module build pass locally. Human visual approval, push, deployment, and
+  warning/error state, deterministic reduced motion, 338 tests, and the
+  128-module build pass locally. Human visual approval, push, deployment, and
   real-Tesla acceptance remain open.
 - REGISTER was rejected after live review because its static print composition
   was inexplicable in motion and outside the product mood. Its source remains
@@ -96,7 +92,7 @@ dated study documents.
   Aperture. PLUMB later triggered its own retirement criterion in the first
   exact-viewport local review and was rejected before publication; its renderer,
   QA path and active tests have been removed as well. PLUMB, REGISTER,
-  LATITUDES and any other retired identifier now resolve to Aperture.
+  LATITUDES, WAKE and any other retired identifier now resolve to Aperture.
 - Speed, BPM, and energy remain visible together. The fixed road-energy ceiling
   is `130 km/h`, with Aperture visibly forming a tunnel near `40 km/h`.
 - The main experience retains an icon-only Mute control, GPS/Demo source
@@ -291,8 +287,8 @@ dated study documents.
 
 ## Open work
 
-1. Validate WAKE's velvet drape, longitudinal road flow, speed-dependent
-   crossing and knots in the Tesla. Validate ATLAS multitouch, live GPS
+1. Validate DRIVEY automatic road/curve following and both native palette
+   channels in the Tesla. Validate ATLAS multitouch, live GPS
    recovery, map matching, pulse direction, passenger readability and palette
    contrast on the target screen.
 2. Perform low-volume listening and a real-Tesla drive across FRACTURE's full
@@ -323,7 +319,7 @@ dated study documents.
 | Current | this page, `README.md`, `PRODUCT-SPEC.md`, `TECHNICAL-DIRECTION.md`, `ROADMAP.md`, `MODES.md`, `SESSION-HANDOFF.md` | Must describe the current repository and verified product state |
 | Evidence | `DEPLOY.md`, `DIAGNOSTICS.md`, `AUDIO-QA-2026-08-28.md`, `CHANGELOG.md` | Append-only chronology; older failures remain true historical evidence |
 | Knowledge | `MUSIC-CRAFT.md`, licensing and reference studies | Durable technique, provenance, and decision records |
-| Selection record | `FLUX-VISUAL-DIRECTIONS-2026-08-29.md` | PLUMB rejected and retired; WAKE selected and implemented; SLIP remains proposal-only |
+| Selection record | `FLUX-VISUAL-DIRECTIONS-2026-08-29.md` | PLUMB and WAKE rejected and retired; SLIP remains proposal-only |
 | Historical | `RECOVERED-REQUIREMENTS-2026-08-26.md`, `ADVERSARIAL-REVIEW.md`, `SOURCE-AUDIT.md`, dated work plans | Preserve the reasoning and rejected baselines; do not treat their “current” wording as current product state |
 
 `SESSION_HANDOFF.md` is a retained legacy filename and points to the canonical

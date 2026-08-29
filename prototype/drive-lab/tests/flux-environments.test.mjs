@@ -22,19 +22,17 @@ const stylesSource = readFileSync(new URL("../src/styles.css", import.meta.url),
 test("exposes the authored environments in a stable order", () => {
   assert.deepEqual(
     FLUX_ENVIRONMENTS.map(({ id }) => id),
-    ["aperture", "vertigo", "meridian", "atlas", "wake", "drivey", "prtcl"],
+    ["aperture", "vertigo", "meridian", "atlas", "drivey", "prtcl"],
   );
   assert.equal(getFluxEnvironment("vertigo").label, "VERTIGO");
   assert.equal(getFluxEnvironment("meridian").label, "MERIDIAN");
   assert.equal(getFluxEnvironment("meridian").number, "03");
   assert.equal(getFluxEnvironment("atlas").label, "ATLAS");
   assert.equal(getFluxEnvironment("atlas").number, "04");
-  assert.equal(getFluxEnvironment("wake").label, "WAKE");
-  assert.equal(getFluxEnvironment("wake").number, "05");
   assert.equal(getFluxEnvironment("drivey").label, "DRIVEY");
-  assert.equal(getFluxEnvironment("drivey").number, "06");
+  assert.equal(getFluxEnvironment("drivey").number, "05");
   assert.equal(getFluxEnvironment("prtcl").label, "PRTCL");
-  assert.equal(getFluxEnvironment("prtcl").number, "07");
+  assert.equal(getFluxEnvironment("prtcl").number, "06");
   assert.equal(getFluxEnvironment("plumb").id, "aperture");
   assert.equal(getFluxEnvironment("register").id, "aperture");
   assert.equal(getFluxEnvironment("latitudes").id, "aperture");
@@ -53,13 +51,14 @@ test("preserves implemented preferences and retires rejected identifiers to Aper
   assert.equal(migrateLegacyEnvironmentPreference("meridian", true), "meridian");
   assert.equal(migrateLegacyEnvironmentPreference("aperture", false), "aperture");
   assert.equal(migrateLegacyEnvironmentPreference("plumb", false), "aperture");
+  assert.equal(migrateLegacyEnvironmentPreference("wake", false), "aperture");
   assert.equal(migrateLegacyEnvironmentPreference("unknown", false), "aperture");
 });
 
 test("keeps rejected visual renderers outside the active runtime and QA", () => {
-  assert.doesNotMatch(appSource, /LatitudesField|RegisterField|PlumbField|renderer === "(?:latitudes|register|plumb)"/);
-  assert.doesNotMatch(qaSource, /environments\/(?:latitudes|register|plumb)|latitudes:|register:|plumb:/);
-  assert.doesNotMatch(packageSource, /tests\/(?:latitudes|register|plumb)-model\.test\.mjs/);
+  assert.doesNotMatch(appSource, /LatitudesField|RegisterField|PlumbField|WakeField|renderer === "(?:latitudes|register|plumb|wake)"/);
+  assert.doesNotMatch(qaSource, /environments\/(?:latitudes|register|plumb|wake)|latitudes:|register:|plumb:|wake:/);
+  assert.doesNotMatch(packageSource, /tests\/(?:latitudes|register|plumb|wake)-model\.test\.mjs|test:wake/);
 });
 
 test("gives every environment a unique identifier, number, and renderer", () => {
@@ -83,7 +82,6 @@ test("connects every implemented environment to body-colour theming", () => {
   assert.equal(getFluxEnvironment("aperture").themed, true);
   assert.equal(getFluxEnvironment("meridian").themed, true);
   assert.equal(getFluxEnvironment("atlas").themed, true);
-  assert.equal(getFluxEnvironment("wake").themed, true);
   assert.equal(getFluxEnvironment("drivey").themed, true);
   assert.equal(getFluxEnvironment("prtcl").themed, true);
 });

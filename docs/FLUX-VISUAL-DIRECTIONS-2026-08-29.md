@@ -1,10 +1,12 @@
 # Three Flux visual directions — 2026-08-29
 
-Status: **WAKE selected and implemented 2026-08-29**. PLUMB reached one local
+Status: **WAKE rejected and removed 2026-08-29**. PLUMB reached one local
 exact-viewport prototype, triggered its own retirement criterion, and was
 rejected before publication. Its runtime was removed. SLIP remains unselected.
-The selected WAKE capture is now a strict fidelity contract, implemented by a
-project-authored renderer with no imported third-party runtime or asset.
+WAKE was selected and implemented, but repeated live review found that its
+ribbons read as disordered rain rather than convincing 3D. Its catalog entry,
+renderer, fallback, tests and current QA captures are removed. The design study
+below remains a historical decision record, not an active implementation contract.
 
 Shared constraints: continuous low-amplitude motion at rest; strong peripheral
 speed and acceleration legibility; no starburst, particles, moire, halftone,

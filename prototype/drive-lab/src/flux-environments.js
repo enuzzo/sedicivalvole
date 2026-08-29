@@ -47,17 +47,9 @@ export const FLUX_ENVIRONMENTS = [
     themed: true,
   },
   {
-    id: "wake",
-    label: "WAKE",
-    number: "05",
-    rendererLabel: "Wake",
-    renderer: "wake",
-    themed: true,
-  },
-  {
     id: "drivey",
     label: "DRIVEY",
-    number: "06",
+    number: "05",
     rendererLabel: "Original Drivey.js",
     renderer: "drivey",
     themed: true,
@@ -66,7 +58,7 @@ export const FLUX_ENVIRONMENTS = [
   {
     id: "prtcl",
     label: "PRTCL",
-    number: "07",
+    number: "06",
     rendererLabel: "Fractal particle fields",
     renderer: "prtcl",
     themed: true,
