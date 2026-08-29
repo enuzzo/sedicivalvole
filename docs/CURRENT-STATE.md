@@ -230,8 +230,13 @@ dated study documents.
 - The shared post-score **OPEN** macro responds to a supported hard-acceleration
   trajectory: at least `+30 km/h` inside `2.2 s`, at least three coherent
   samples and `3.8 m/s²` average acceleration. It rejects inaccurate and stale
-  fixes, opens stereo width and air while removing low-mid density, releases
-  when the curve normalizes, and always yields to UNDERWATER braking.
+  fixes and makes the gesture independent of stereo separation by sweeping a
+  soft-limited score-derived focus band from `480` to `3200 Hz` over `350 ms`.
+  Restrained low-mid, air and width changes support that rising intake without
+  adding an oscillator, noise or replacement phrase. It releases when the
+  curve normalizes and always yields to UNDERWATER braking. Local build
+  `20260830-0031` at `ca5ffe9` passes objective mono/level/peak evidence, but
+  human headphone, cabin and real-Tesla listening remain open.
 - **BLOOM** is the rarer upper tier nested inside OPEN. A supported trajectory
   above `34 km/h`, `5.2 m/s²` and `0.7` normalized intensity sweeps a
   Hermite-interpolated feed-forward delay

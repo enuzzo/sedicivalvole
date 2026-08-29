@@ -595,3 +595,27 @@ P2 none after making the Warp default exactly representable.
 final result: local PRIMORDIAL candidate is implemented, tested, and visually
 documented; product-owner visual approval, push, canonical deployment, and
 real-Tesla motion, touch, frame-pacing, and thermal acceptance remain open
+
+---
+
+# Audio QA — unmistakable OPEN intake
+
+Date: 2026-08-30
+
+- The rejected baseline used a `320 Hz` cut, `9 kHz` shelf and `4.5 dB` side
+  expansion. Its eight-second FRACTURE excerpt measured `0.013798` stereo and
+  `0.011019` mono difference RMS, confirming why it could read only as reduced
+  body in a car cabin.
+- The revised path sweeps a music-derived band from `480` to `3200 Hz`, limits
+  only that band, and keeps width at `0.5 dB`. The same excerpt measures
+  `0.018116` stereo and `0.016630` mono difference RMS without normalization.
+- A full constant-OPEN pass over the current FRACTURE reference peaks at
+  `0.973394`; the old path peaked at `1.068865`. The A/B files are retained
+  outside Git as `open-before-subtle.wav` and `open-after-focus-sweep.wav` in
+  the current Codex visualization artifact directory.
+- Twenty-one focused audio/runtime checks pass. The complete project gate is
+  **351 / 351**, the 132-module build is `20260830-0031` at `ca5ffe9`, and muted
+  local Browser QA shows OPEN at `35 km/h` with no warning or error.
+
+final result: technically verified local candidate; human headphone/cabin A/B,
+push, canonical deployment, and real-Tesla listening acceptance remain open

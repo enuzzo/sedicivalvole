@@ -41,9 +41,11 @@ The canonical development build is available at [sedicivalvole.app](https://sedi
   MusicRadar drum families. Its clockless PARK form has six quiet voicings with
   no beat or bass; fast drumming cannot enter before `82 km/h`. The browser
   retains at most six decoded mixed performances and publishes no source loop;
-- ✅ shared acceleration performance effects: OPEN widens and brightens either
-  score, while the rarer BLOOM event bends only the `300 Hz–8 kHz` band through
-  a bounded `8 → 0.8 ms` feed-forward delay and always yields to UNDERWATER;
+- ✅ shared acceleration performance effects: OPEN makes hard acceleration
+  unmistakable by sweeping a soft-limited score-derived focus band from
+  `480 → 3200 Hz`, with only restrained supporting EQ and width; the rarer
+  BLOOM event bends only the `300 Hz–8 kHz` band through a bounded
+  `8 → 0.8 ms` feed-forward delay, and both always yield to UNDERWATER;
 - ✅ production build and deterministic signal, diagnostic-model, and packaging tests passing;
 - 🧪 a development-only harmony inventory now analyses the eight chord hits
   reachable by JUNCTION with byte identity, envelope/tuning measurements and

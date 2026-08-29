@@ -497,12 +497,27 @@ The first acceleration macro is **OPEN**. A single GPS derivative is not a
 musical event: callback cadence changes its magnitude, and one positional spike
 can imitate a launch. OPEN therefore requires a supported `+30 km/h` trajectory
 inside `2.2 s`, at least three coherent samples and `3.8 m/s²` average
-acceleration. It opens the stereo field by up to `4.5 dB` at the sides, removes
-up to `3.5 dB` around `320 Hz`, adds up to `2.8 dB` above `9 kHz`, and applies a
-`-0.2 dB` feed-forward trim. It attacks over `350 ms`, releases when recent
-acceleration remains below `1.15 m/s²`, and observes a five-second refractory
-period. Braking always takes priority. The result should feel like the mix
-opening under force while UNDERWATER closes and darkens it.
+acceleration. It opens the stereo field by up to `0.5 dB` at the sides, removes
+up to `2.5 dB` around `320 Hz`, adds up to `3 dB` above `6 kHz`, and applies a
+`-1 dB` feed-forward trim. More importantly, a parallel band derived from the
+score itself rises from `480` to `3200 Hz` during the `350 ms` attack. Its own
+soft limiter preserves quiet detail while bounding the added band, and stereo
+expansion is now only `0.5 dB` so the gesture does not depend on cabin channel
+separation. It releases when recent acceleration remains below `1.15 m/s²`
+and observes a five-second refractory period. Braking always takes priority.
+The result should feel like an intake opening under force while UNDERWATER
+closes and darkens it.
+
+The earlier OPEN failed perceptually because a high `9 kHz` shelf and side-only
+expansion can disappear through car-speaker roll-off, cabin reflections, or a
+near-mono listening position; the remaining low-mid cut then reads merely as
+less body. A vehicle gesture that must be recognized cannot rely on stereo or
+extreme treble alone. Assert the focus sweep, a minimum confirmed-event amount,
+mono difference, level stability and full-score peak safety. On the FRACTURE
+reference, the previous full-hold path reached `1.069` sample peak; the revised
+path reaches `0.973`, and the eight-second mono difference RMS rises from
+`0.0110` to `0.0166`. These measurements are regression evidence, not a claim
+of human or target-vehicle listening acceptance.
 
 Use the confirmed trajectory intensity as the continuous control; GPS-derived
 jerk is too noisy to drive a filter or delay directly. BLOOM uses the upper tier
