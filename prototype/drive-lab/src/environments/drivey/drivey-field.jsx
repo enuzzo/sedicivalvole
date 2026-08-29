@@ -3,8 +3,8 @@ import {
   createDriveyAutomaticInput,
   createDriveyLoadDeadline,
   DEFAULT_DRIVEY_SETTINGS,
-  DRIVEY_UPSTREAM_ENTRY,
   driveyMotionProfile,
+  driveyRuntimeUrl,
   normalizeDriveySettings,
   stabilizeDriveyRoadFollower,
   themeToDriveyPalette,
@@ -193,7 +193,7 @@ export function DriveyField({
     onRenderer,
   };
   const source = useMemo(
-    () => new URL(`/${DRIVEY_UPSTREAM_ENTRY}`, window.location.origin).href,
+    () => driveyRuntimeUrl(window.location.origin, __APP_BUILD__),
     [],
   );
 

@@ -11,6 +11,7 @@ import {
   DRIVEY_RENDER_MODES,
   DRIVEY_UPSTREAM_COMMIT,
   DRIVEY_UPSTREAM_ENTRY,
+  driveyRuntimeUrl,
   driveyMotionProfile,
   nextDriveyCameraId,
   nextDriveyRenderModeId,
@@ -211,6 +212,11 @@ test("every admitted Drivey runtime file remains byte-identical to the pinned co
 
 test("the bridge embeds the original runtime and excludes unneeded image and legacy trees", async () => {
   assert.equal(DRIVEY_UPSTREAM_ENTRY, "third-party/drivey/sedicivalvole.html");
+  assert.equal(
+    driveyRuntimeUrl("https://sedicivalvole.app", "20260829-2332"),
+    "https://sedicivalvole.app/third-party/drivey/sedicivalvole.html?build=20260829-2332",
+  );
+  assert.match(fieldSource, /driveyRuntimeUrl\(window\.location\.origin, __APP_BUILD__\)/);
   assert.match(shellSource, /import Drivey from "\.\/js\/Drivey\.js"/);
   assert.match(shellSource, /import \{ Input \} from "\.\/js\/Input\.js"/);
   assert.match(shellSource, /window\.__SEDICIVALVOLE_DRIVEY__/);

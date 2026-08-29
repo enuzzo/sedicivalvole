@@ -9,6 +9,13 @@ import { ROAD_SPEED_CEILING_KMH } from "../../signal-model.js";
 
 export const DRIVEY_UPSTREAM_COMMIT = "5104cdade2a3158786b05b9b0680a50e942830cf";
 export const DRIVEY_UPSTREAM_ENTRY = "third-party/drivey/sedicivalvole.html";
+
+export function driveyRuntimeUrl(origin, buildStamp) {
+  const url = new URL(`/${DRIVEY_UPSTREAM_ENTRY}`, origin);
+  const identity = String(buildStamp || "dev").trim() || "dev";
+  url.searchParams.set("build", identity);
+  return url.href;
+}
 export const DRIVEY_LOAD_TIMEOUT_MS = 15000;
 
 export const DRIVEY_CAMERAS = Object.freeze({
