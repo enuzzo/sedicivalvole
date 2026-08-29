@@ -8,6 +8,39 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## BLOOM and JUNCTION-analysis publication — 2026-08-29
+
+- build stamp: **`20260829-0200`**; deployed commit: `4ea0bd1`;
+  implementation checkpoint: `7e9b2e9`;
+- gate before upload: **PASS**. All 19 focused BLOOM, OPEN, selection,
+  transition, harmony and voicing checks passed; the production build passed;
+  183 of 184 unit checks and all four Sites packaging checks passed. The only
+  unavailable check is the unchanged diagnostic-mail fixture on this host,
+  which has no `php` executable;
+- audio evidence: **PASS within the offline contract**. The delayed 1 kHz path
+  measures approximately 1018 Hz, 60 Hz sub energy remains within 0.3 dB,
+  in-band peak growth stays below 0.5 dB, and the effect nulls after release.
+  The JUNCTION selection audit proves index-zero-only chord reachability; the
+  first audio-only transition pass measures 63 ordinary boundaries and flags 22
+  for listening under explicitly uncalibrated, non-blocking probes;
+- publication: **PASS**, 29 files / 8,316,609 bytes uploaded to the canonical
+  root. Dynamic-root and exact legacy-cleanup gates passed, one previous
+  content-addressed asset was retained for cache overlap, and the repeated
+  post-publication identity gate passed with `remote_writes=NONE`;
+- canonical identity: **PASS**. Bare and cache-busted HTML return `200` with
+  `no-store` / `no-cache` and cache `MISS`; both are byte-identical to the local
+  production entry. HTML, `index-D9pguc-B.js`, `index-f0E-xbVv.css`, and
+  `bloom-processor-CKq-AMR3.js` match the local build at SHA-256
+  `d6cee62ee9cf3c49a57c4b5eee6c8ac19bc23976a597361569f852d244bccbe1`,
+  `aa5d4c93a86696d5eba8afe03e64060233ec8ec13d3af603499c5948bf9b61e3`,
+  `647be96d4e05e6691e2658e1e5d6f526487bae00470b76d3f4b1bed96a60942a`,
+  and `fcfda65e8fbf0dde43752f81bcb324dd7977eb2679b39182508b158089ab3cbe`;
+- live interaction: **PASS for publication identity and ordinary launch**. The
+  visible in-app browser reports build `20260829-0200`, enters APERTURE with
+  FRACTURE, and exposes the expected primary controls. The BLOOM worklet is
+  present byte-for-byte on the canonical host. A real qualifying hard launch
+  and target-Tesla listening remain the perceptual acceptance boundary.
+
 ## REGISTER removal publication — 2026-08-29
 
 - build stamp: **`20260829-0121`**; deployed commit: `a47142c`;
