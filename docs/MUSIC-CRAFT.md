@@ -493,18 +493,21 @@ short, expressive change to the whole score without starting a new section.
 Hard acceleration needs the complementary gesture. It must not become a raw
 volume boost, a permanently rising tempo, or a noisy mapping of GPS jerk.
 
-The first acceleration macro is **OPEN**. Two consecutive acceleration readings
-above `3 m/s²`, while travelling at least `15 km/h`, open the stereo field by up
-to `4 dB` at the sides, remove up to `3.5 dB` around `320 Hz`, add up to `2 dB`
-above `9 kHz`, and apply a small feed-forward trim. It attacks over `350 ms`,
-holds for at most four seconds, releases over one second, and then observes a
-six-second refractory period. Braking always takes priority. The result should
-feel like the mix opening under force while UNDERWATER closes and darkens it.
+The first acceleration macro is **OPEN**. A single GPS derivative is not a
+musical event: callback cadence changes its magnitude, and one positional spike
+can imitate a launch. OPEN therefore requires a supported `+30 km/h` trajectory
+inside `2.2 s`, at least three coherent samples and `3.8 m/s²` average
+acceleration. It opens the stereo field by up to `4.5 dB` at the sides, removes
+up to `3.5 dB` around `320 Hz`, adds up to `2.8 dB` above `9 kHz`, and applies a
+`-0.2 dB` feed-forward trim. It attacks over `350 ms`, releases when recent
+acceleration remains below `1.15 m/s²`, and observes a five-second refractory
+period. Braking always takes priority. The result should feel like the mix
+opening under force while UNDERWATER closes and darkens it.
 
-Use acceleration as the continuous control and jerk only as a later discrete
-qualifier. GPS-derived jerk is too noisy to drive a filter or delay directly.
-The next candidate, **BLOOM**, may sweep a short filtered comb from `8 ms` toward
-`0.8 ms` with bounded feedback and wet level; **THROW** should wait until every
+Use the confirmed trajectory intensity as the continuous control; GPS-derived
+jerk is too noisy to drive a filter or delay directly. BLOOM uses the upper tier
+of the same trajectory rather than a separate derivative crossing. **THROW**
+should wait until every
 score shares an exact transport because a tempo-synchronous echo cannot be
 truthful without one. Before either enters production, assert short-term level,
 true peak, stereo width, spectral change, maximum duty cycle and the opposite
@@ -717,7 +720,7 @@ headroom.
 
 A global `(1-m)·dry + m·filteredDelay` crossfade is also rejected. High-passing
 the delayed send does not protect the bass if the global dry path is still
-multiplied by `1-m`; at `m = 0.42` the sub would fall by roughly 4.7 dB, making
+multiplied by `1-m`; at `m = 0.48` the sub would fall by roughly 5.7 dB, making
 the stated `0.3 dB` preservation test impossible. The implemented topology is
 band replacement:
 
@@ -726,10 +729,11 @@ band replacement:
 Only the 300 Hz–8 kHz band bends, while the signal outside it remains. The
 offline fixture measures the delayed 1 kHz path at about `1018 Hz`, keeps a
 60 Hz fundamental within `0.3 dB`, limits in-band peak growth to less than
-`0.5 dB`, and requires the effect to null after release. BLOOM may trigger only
-when OPEN is already active and acceleration crosses from at most `1.5 m/s²` to
-at least `4 m/s²` within three readings / 300 ms. It has a 25-second refractory
-period; UNDERWATER interrupts it with a 250 ms release and restarts that period.
+`0.6 dB`, and requires the effect to null after release. BLOOM may trigger only
+from a confirmed OPEN trajectory that also exceeds a `34 km/h` rise,
+`5.2 m/s²` average acceleration and `0.7` normalized intensity. It has a
+25-second refractory period; UNDERWATER interrupts it with a 250 ms release and
+restarts that period.
 
 Never let `no source candidate` mean `voiced`. It means the conditioned feature
 has no basis and must abstain. Search possible lower sources independently, then
@@ -920,10 +924,12 @@ the active cutoff changes only when the pending performance is promoted, and a
 brake change refreshes both the active target and the already scheduled boundary
 target without touching playback rate or pitch.
 
-Vehicle derivatives have an equivalent freshness rule. After the `700 ms`
-measurement window, acceleration becomes zero and its OPEN/BLOOM arming history
-is cleared. Updating only the observation timestamp would make an old launch or
-brake look newly measured and perform an effect the driver did not request.
+Vehicle trajectories have an equivalent freshness rule. A gap longer than
+`1.6 s` releases OPEN and clears its rolling evidence; no accepted interval may
+exceed `1.4 s`. Updating only the observation timestamp would make an old launch
+look newly measured and perform an effect the driver did not request. The
+braking derivative retains its stricter `700 ms` freshness because it answers a
+different question: whether the latest speed fall is still occurring now.
 
 ### 6.5 A score switch is one musical transition
 

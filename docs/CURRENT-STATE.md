@@ -19,6 +19,11 @@ dated study documents.
 - All four environments use the shared catalog of **10 themes**. Vertigo keeps
   the upstream Interstate 7 files byte-identical while an external runtime
   bridge maps the selected theme onto its existing colour channels.
+- OPEN, UNDERWATER and BLOOM are visible in all four active environments without
+  a shared overlay. Aperture performs its tiled projection and centre light;
+  Vertigo changes only the original runtime's externally bridged time, FOV and
+  colour controls; Meridian changes corridor projection, flow, fog and rail
+  energy; Atlas changes MapLibre camera and layer paint properties.
 - Meridian keeps one deterministic low corridor beneath sparse, large oblique
   blades and longitudinal shoulder planes. Its shared travel field has tightly
   bounded vertical motion; FOV, depth compression, peripheral stretch,
@@ -129,13 +134,14 @@ dated study documents.
   crossfade. Rapid reversals continue from the audible point, cancel overlapping
   Web Audio automation safely and retain revision-guarded cleanup. A score-local
   rhythm fade is not stacked onto the same native entrance.
-- The shared post-score **OPEN** macro responds to sustained hard acceleration:
-  it opens stereo width and air while removing low-mid density and applying a
-  small level trim. Two qualifying readings arm it above `15 km/h`; it holds no
-  longer than four seconds, releases over one second, and yields to UNDERWATER
-  whenever braking is detected.
-- **BLOOM** is the rarer acceleration event nested inside OPEN. A rapid
-  `1.5 → 4.0 m/s²` crossing sweeps a Hermite-interpolated feed-forward delay
+- The shared post-score **OPEN** macro responds to a supported hard-acceleration
+  trajectory: at least `+30 km/h` inside `2.2 s`, at least three coherent
+  samples and `3.8 m/s²` average acceleration. It rejects inaccurate and stale
+  fixes, opens stereo width and air while removing low-mid density, releases
+  when the curve normalizes, and always yields to UNDERWATER braking.
+- **BLOOM** is the rarer upper tier nested inside OPEN. A supported trajectory
+  above `34 km/h`, `5.2 m/s²` and `0.7` normalized intensity sweeps a
+  Hermite-interpolated feed-forward delay
   from `8` to `0.8 ms` over `400 ms` in the `300 Hz–8 kHz` band. It replaces
   only that band, preserving the sub; it observes a 25-second refractory period
   and yields immediately to UNDERWATER. The common 6.6 kB AudioWorklet sits
