@@ -159,7 +159,7 @@ test("Signal Gate phases every travelling gap independently", () => {
   assert.match(field, /for \(int rayIndex = 0; rayIndex < 8; rayIndex \+= 1\)/);
 });
 
-test("the complete product UI uses the local Orbitron variable font", () => {
+test("product chrome keeps Orbitron while DIAG owns its readable mono face", () => {
   const styles = read("styles.css");
   const index = readFileSync(resolve(PROJECT_ROOT, "index.html"), "utf8");
   const font = readFileSync(resolve(PROJECT_ROOT, "public/fonts/orbitron-latin-variable.woff2"));
@@ -167,7 +167,10 @@ test("the complete product UI uses the local Orbitron variable font", () => {
   assert.match(styles, /font-family: "Orbitron";/);
   assert.match(styles, /font-weight: 400 900;/);
   assert.match(styles, /--font-weight-text: 450;/);
-  assert.doesNotMatch(styles, /ui-monospace|SFMono|Roboto Mono|IBM Plex Mono|Menlo|Consolas/);
+  assert.match(styles, /--font-ui: "Orbitron"/);
+  assert.match(styles, /--font-data: "IBM Plex Mono"/);
+  assert.match(styles, /\.diagnostic-report-drawer \.drawer-panel \{[\s\S]*?font-family: var\(--font-data\)/);
+  assert.match(styles, /body \{[\s\S]*?font-family: var\(--font-ui\)/);
   assert.match(index, /rel="preload" href="\/fonts\/orbitron-latin-variable\.woff2"/);
   assert.ok(font.length > 10_000, "the packaged font should not be an empty placeholder");
 });

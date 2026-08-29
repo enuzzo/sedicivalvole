@@ -15,6 +15,7 @@ Third-party components retain their original licenses and are not relicensed und
 | Simple Icons GitHub mark | current path | Simple Icons contributors | CC0-1.0 | small inline monochrome SVG identifying the public source link | `prototype/drive-lab/src/App.jsx` |
 | Buy Me a Coffee QR and cup identity | user-supplied 2026-08-28 | Buy Me a Coffee / Coffee Inc. | service-generated brand material; trademark rights retained by the owner | supplied QR embedded unchanged; small interface cup redrawn for the trigger | `prototype/drive-lab/src/assets/bmc_qr.png`, `prototype/drive-lab/src/App.jsx` |
 | Orbitron variable font | Google Fonts v35 | Matt McInerney and the Orbitron Project Authors | SIL Open Font License 1.1 | locally hosted Latin WOFF2; interface weight hierarchy and tracking only | `prototype/drive-lab/public/fonts/` |
+| IBM Plex Mono | Google Fonts snapshot `2026-08-29` | IBM Corp. | SIL Open Font License 1.1; Reserved Font Name “Plex” | locally hosted unmodified Regular and SemiBold TrueType files for readable diagnostic data and raw reports | `prototype/drive-lab/public/fonts/` |
 | OpenFreeMap public instance | continuously updated | OpenFreeMap contributors; OpenMapTiles and OpenStreetMap data contributors | service and data terms; attribution retained in-map | minimal palette-owned vector style and 3D building layer | `prototype/drive-lab/src/environments/atlas/` |
 | Italian Wikipedia API / PageImages | continuously updated | Wikimedia contributors and individual media authors | page and media-specific free licenses; selected article remains linked | runtime-only nearby abstracts and free-license thumbnails; no content is stored or bundled | `prototype/drive-lab/src/environments/atlas/` |
 | Infinite Lights / Interstate 7 | commit `e58d58520bc0dfde21f9e14e6a1b8c7f0a2a2a9e` | Daniel Velasquez / Anemolo and Codrops/Tympanus | Custom Codrops usage notice in the vendored README | vendored files are byte-identical; external sedicivalvole runtime bridge only | `prototype/drive-lab/public/third-party/infinite-lights/` |
@@ -117,7 +118,7 @@ Translated from textStep at commit
 | `dsp/effects.js` | `src/audio/effects.rs` | `RampedParam`, `TubeSaturator` with its 2x oversampler, `SidechainEnvelope`, `LookaheadLimiter` (threshold lowered from 0.95 to 0.72), and the musical delay subdivisions |
 
 The following files in the same directory are **original sedicivalvole work**
-and are not derived from textStep: `arranger.js`, `score-core.js`,
+and are not derived from textStep: `arranger.js`, `fracture-rhythm.js`, `score-core.js`,
 `jungle-score.js`, `genres.js`, `dsp/brake-filter.js`,
 `worklet/score-processor.js`, and the `StereoReverb`, `StereoChorus`,
 `StereoWidth` and `TempoDelay` classes at the end of `dsp/effects.js`.

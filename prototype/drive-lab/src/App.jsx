@@ -427,6 +427,86 @@ function DialogSurface({
   );
 }
 
+function InstrumentMetric({ label, value, detail, tone = "neutral" }) {
+  return (
+    <div className={`instrument-metric is-${tone}`}>
+      <dt>{label}</dt>
+      <dd>
+        <strong>{value}</strong>
+        {detail ? <span>{detail}</span> : null}
+      </dd>
+    </div>
+  );
+}
+
+function DiagnosticReadme() {
+  return (
+    <div className="diagnostic-readme" id="diagnostic-readme" aria-labelledby="diagnostic-readme-title">
+      <header>
+        <small>TECHNICAL AND DATA NOTES</small>
+        <h3 id="diagnostic-readme-title">What this instrument measures</h3>
+        <p>
+          DIAG is a local performance instrument for the running Sedici Valvole session.
+          It records bounded technical evidence so rendering, audio, GPS confidence, and
+          failures can be compared without retaining a route.
+        </p>
+      </header>
+
+      <section>
+        <h4>Telemetry and privacy</h4>
+        <ul>
+          <li>No analytics or automatic remote telemetry is enabled.</li>
+          <li>Coordinates are not collected, stored, copied, or included in a diagnostic.</li>
+          <li>GPS evidence is limited to status, speed confidence, accuracy, and bounded counts.</li>
+          <li>A report leaves the browser only after the explicit SEND DIAGNOSTIC action.</li>
+          <li>The accepted report is attached as compressed JSON; server acceptance is not inbox delivery.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h4>ATLAS location boundary</h4>
+        <p>
+          ATLAS may keep the latest reliable position in session memory while the map is
+          selected. OpenFreeMap receives the tile area needed for the map and Wikimedia may
+          receive a coarse nearby-search cell. The point is never copied into DIAG or local storage.
+        </p>
+      </section>
+
+      <section>
+        <h4>Audio provenance</h4>
+        <p>
+          FRACTURE is an original generative score. JUNCTION is an original mixed production
+          authored from 76 royalty-free MusicRadar source recordings. The source packs are not
+          owned by this project and are never redistributed; the browser receives complete
+          produced performances, not loose loops, stems, or samples.
+        </p>
+      </section>
+
+      <section>
+        <h4>Licensing and source</h4>
+        <p>
+          Project code and documentation default to AGPL-3.0-or-later. Brand, screenshots,
+          original audio, and standalone media remain outside that grant unless stated
+          otherwise. Third-party components retain their own licences. Diagnostic text uses
+          IBM Plex Mono under the SIL Open Font License 1.1.
+        </p>
+        <nav aria-label="Technical source links">
+          <a href="https://github.com/enuzzo/sedicivalvole" target="_blank" rel="noreferrer">SOURCE REPOSITORY</a>
+          <a href="https://github.com/enuzzo/sedicivalvole/blob/main/THIRD_PARTY_NOTICES.md" target="_blank" rel="noreferrer">THIRD-PARTY NOTICES</a>
+          <a href="https://github.com/enuzzo/sedicivalvole/blob/main/LICENSE-SCOPE.md" target="_blank" rel="noreferrer">LICENSE SCOPE</a>
+          <a href="https://github.com/enuzzo/sedicivalvole/blob/main/docs/DIAGNOSTICS.md" target="_blank" rel="noreferrer">DIAGNOSTIC ARCHITECTURE</a>
+        </nav>
+      </section>
+
+      <footer>
+        <span>VERSION {APP_VERSION}</span>
+        <span>BUILD {APP_BUILD}</span>
+        <span>COMMIT {APP_COMMIT}</span>
+      </footer>
+    </div>
+  );
+}
+
 function FieldFailure({ label }) {
   return (
     <div className="field-failure" role="status">
@@ -794,6 +874,7 @@ export function App() {
   const [scorePickerOpen, setScorePickerOpen] = useState(false);
   const [supportOpen, setSupportOpen] = useState(false);
   const [rawReportOpen, setRawReportOpen] = useState(false);
+  const [diagnosticReadmeOpen, setDiagnosticReadmeOpen] = useState(false);
   const [mapPosition, setMapPosition] = useState(null);
   const reducedMotion = useMemo(
     () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false,
@@ -2170,138 +2251,157 @@ export function App() {
 
       {drawerOpen ? (
         <DialogSurface
-          className="diagnostic-drawer"
+          className="diagnostic-drawer diagnostic-report-drawer"
           labelledBy="diagnostic-title"
-          onClose={() => setDrawerOpen(false)}
+          onClose={() => {
+            setDrawerOpen(false);
+            setDiagnosticReadmeOpen(false);
+          }}
         >
             <div className="drawer-heading">
-              <div><small>TESLA CAPABILITY HARNESS</small><h2 id="diagnostic-title">Device report</h2></div>
-              <button data-dialog-initial-focus type="button" onClick={() => setDrawerOpen(false)} aria-label="Close report">CLOSE</button>
+              <div>
+                <small>LIVE SYSTEM INSTRUMENT</small>
+                <h2 id="diagnostic-title">{diagnosticReadmeOpen ? "Technical README" : "Session report"}</h2>
+              </div>
+              <div className="drawer-heading-actions">
+                <button
+                  type="button"
+                  aria-controls="diagnostic-readme"
+                  aria-expanded={diagnosticReadmeOpen}
+                  onClick={() => setDiagnosticReadmeOpen((open) => !open)}
+                >
+                  {diagnosticReadmeOpen ? "BACK TO METRICS" : "README"}
+                </button>
+                <button
+                  data-dialog-initial-focus
+                  type="button"
+                  onClick={() => {
+                    setDrawerOpen(false);
+                    setDiagnosticReadmeOpen(false);
+                  }}
+                  aria-label="Close report"
+                >
+                  CLOSE
+                </button>
+              </div>
             </div>
 
-            {/*
-              Grouped by what a reader is actually asking. The panel was one
-              undifferentiated grid of eight tiles followed by a raw JSON dump,
-              which made the two questions it answers — is the vehicle coping,
-              and what is the score doing — impossible to tell apart at a glance.
-            */}
-            <h3 className="diagnostic-group">Music</h3>
-            <div className="diagnostic-grid">
-              <article>
-                <small>PLAYING</small>
-                <strong>{getScoreGenre(genreId).label}</strong>
-                <span>{getScoreGenre(genreId).family}</span>
-              </article>
-              <article>
-                <small>ARRANGEMENT</small>
-                <strong>{scoreScene}</strong>
-                <span>{scoreStateRef.current?.rhythmLabel ?? (scoreStateRef.current?.halfTime ? "half-time" : "full break")} · {scoreStateRef.current?.section ?? "—"}</span>
-              </article>
-              <article>
-                <small>TRANSPORT</small>
-                <strong>{Math.round(transportBpm)} BPM</strong>
-                <span>{bpm == null ? "no beat in PARK" : `${Math.round(bpm)} BPM perceived`} · {scoreStateRef.current?.chord ?? "—"}</span>
-              </article>
-              <article>
-                <small>WEB AUDIO</small>
-                <strong>{diagnostics?.audio.state || "—"}</strong>
-                <span>{muted ? "muted" : `energy ${Math.round(energy * 100)}%`}</span>
-              </article>
-            </div>
-            <div className="drawer-inline-actions">
-              <button
-                type="button"
-                disabled={genreId !== "fracture"}
-                title={genreId === "fracture" ? "Audition FRACTURE voices" : "JUNCTION is auditioned as complete authored performances"}
-                onClick={() => {
-                  setDrawerOpen(false);
-                  setPreviewOpen(true);
-                }}
-              >
-                {genreId === "fracture" ? "AUDITION VOICES" : "COMPLETE PERFORMANCE ONLY"}
-              </button>
-            </div>
+            {diagnosticReadmeOpen ? <DiagnosticReadme /> : (
+              <div className="diagnostic-instrument">
+                <section className="diagnostic-health" aria-label="Current system health">
+                  <div className="is-primary">
+                    <span>FRAME</span>
+                    <strong>{diagnosticReport?.performance.frame.averageFps ?? "—"} FPS</strong>
+                    <small>{diagnosticReport?.performance.frame.p95FrameMs ?? "—"} ms p95</small>
+                  </div>
+                  <div className={gpsState === "live" ? "is-good" : "is-caution"}>
+                    <span>GPS</span>
+                    <strong>{gpsState === "permission denied" ? "denied" : gpsState}</strong>
+                    <small>{accuracy == null ? "accuracy unavailable" : `±${accuracy} m accuracy`}</small>
+                  </div>
+                  <div className={diagnostics?.audio.state === "running" ? "is-good" : "is-caution"}>
+                    <span>AUDIO</span>
+                    <strong>{diagnostics?.audio.state || "—"}</strong>
+                    <small>{muted ? "output muted" : `energy ${Math.round(energy * 100)}%`}</small>
+                  </div>
+                  <div className={(diagnosticReport?.runtimeIssues.length ?? 0) === 0 ? "is-good" : "is-alert"}>
+                    <span>ISSUES</span>
+                    <strong>{diagnosticReport?.runtimeIssues.length ?? "—"}</strong>
+                    <small>runtime events</small>
+                  </div>
+                </section>
 
-            <h3 className="diagnostic-group">Device</h3>
-            <div className="diagnostic-grid diagnostic-grid-device">
-              <article>
-                <small>VIEWPORT</small>
-                <strong>{diagnostics ? `${diagnostics.display.innerWidth} × ${diagnostics.display.innerHeight}` : "—"}</strong>
-                <span>{diagnostics ? `${diagnostics.display.mode} · DPR ${diagnostics.display.dpr}` : "—"}</span>
-              </article>
-              <article>
-                <small>RENDERER</small>
-                <strong>{renderer}</strong>
-                <span>{reducedMotion ? "reduced motion" : "motion active"}</span>
-              </article>
-              <article>
-                <small>FRAME PACING</small>
-                <strong>{diagnosticReport?.performance.frame.averageFps ?? "—"} FPS</strong>
-                <span>{diagnosticReport?.performance.frame.p95FrameMs ?? "—"} ms p95</span>
-              </article>
-              <article>
-                <small>MEMORY</small>
-                <strong>{currentUsedHeapMb == null ? "UNAVAILABLE" : `${currentUsedHeapMb} MB`}</strong>
-                <span>{currentDecodedAudioMb == null ? "audio PCM unavailable" : `${currentDecodedAudioMb} MB decoded audio`}</span>
-              </article>
-              <article>
-                <small>PERFORMANCE PHASES</small>
-                <strong>{Object.keys(diagnosticReport?.performance.phases ?? {}).length}</strong>
-                <span>{performancePhaseRef.current}</span>
-              </article>
-              <article>
-                <small>GPS SPEED</small>
-                <strong>{gpsState}</strong>
-                <span>{accuracy == null ? "accuracy unavailable" : `accuracy ±${accuracy} m`}</span>
-              </article>
-              <article>
-                <small>NETWORK</small>
-                <strong>{diagnosticReport?.network.current.effectiveType || (diagnosticReport?.network.current.online ? "online" : "offline") || "—"}</strong>
-                <span>{diagnosticReport?.network.current.roundTripTimeMs ?? "—"} ms RTT</span>
-              </article>
-              <article>
-                <small>RUNTIME ISSUES</small>
-                <strong>{diagnosticReport?.runtimeIssues.length ?? "—"}</strong>
-                <span>errors · rejections · WebGL loss</span>
-              </article>
-            </div>
+                <div className="instrument-grid">
+                  <section className="instrument-section" aria-labelledby="diag-motion-title">
+                    <h3 id="diag-motion-title">Motion and location</h3>
+                    <dl>
+                      <InstrumentMetric label="SPEED SOURCE" value={source} detail={`${Math.round(speed)} km/h current`} />
+                      <InstrumentMetric label="GPS STATUS" value={gpsState} detail={accuracy == null ? "accuracy unavailable" : `accuracy ±${accuracy} m`} tone={gpsState === "live" ? "good" : "caution"} />
+                      <InstrumentMetric label="ROAD ENERGY" value={`${Math.round(energy * 100)}%`} detail="normalized to 130 km/h" />
+                      <InstrumentMetric label="RECORDED POSITION" value="NONE" detail="coordinates excluded" tone="good" />
+                    </dl>
+                  </section>
 
-            <h3 className="diagnostic-group">Report</h3>
-            <div className="diagnostic-grid">
-              <article>
-                <small>FLIGHT RECORDER</small>
-                <strong>{diagnosticReport?.flightRecorder.summary.retainedSamples ?? "—"} SAMPLES</strong>
-                <span>{Math.round((diagnosticReport?.flightRecorder.summary.sessionDurationMs ?? 0) / 1000)} s recorded</span>
-              </article>
-              <article>
-                <small>PAYLOAD</small>
-                <strong>{Math.round(diagnosticPayloadBytes / 1024)} KB</strong>
-                <span>sent only on request</span>
-              </article>
-            </div>
-            <p className="privacy-note">
-              This diagnostic contains no coordinates. ATLAS keeps the current position
-              only in session memory and, while selected, requests map tiles from
-              OpenFreeMap and nearby reading from Wikimedia. SEND DIAGNOSTIC never
-              includes the position. Keep this page open until the report is sent.
-            </p>
+                  <section className="instrument-section" aria-labelledby="diag-runtime-title">
+                    <h3 id="diag-runtime-title">Runtime and rendering</h3>
+                    <dl>
+                      <InstrumentMetric label="VISUAL" value={environment.label} detail={renderer} />
+                      <InstrumentMetric label="VIEWPORT" value={diagnostics ? `${diagnostics.display.innerWidth} × ${diagnostics.display.innerHeight}` : "—"} detail={diagnostics ? `${diagnostics.display.mode} · DPR ${diagnostics.display.dpr}` : "display unavailable"} />
+                      <InstrumentMetric label="FRAME PACING" value={`${diagnosticReport?.performance.frame.averageFps ?? "—"} FPS`} detail={`${diagnosticReport?.performance.frame.p95FrameMs ?? "—"} ms p95`} tone="good" />
+                      <InstrumentMetric label="PERFORMANCE PHASES" value={Object.keys(diagnosticReport?.performance.phases ?? {}).length} detail={performancePhaseRef.current.replaceAll(":", " · ")} />
+                    </dl>
+                  </section>
 
-            <div className="drawer-actions">
-              <p className={`send-state send-state-${sendState}`} role="status" aria-live="polite">
-                {sendState === "sent" ? "Accepted by the server mail transport. Inbox delivery still needs confirmation." : null}
-                {sendState === "error" ? `${DIAGNOSTIC_SEND_ERROR_COPY[sendErrorCode] ?? "The report could not be sent."} No diagnostic data was stored by the app.` : null}
-              </p>
-              <button className="send-diagnostic-button" type="button" onClick={sendDiagnostic} disabled={sendState === "sending"}>
-                {sendState === "sending" ? "SENDING…" : sendState === "sent" ? "SENT" : "SEND DIAGNOSTIC"}
-              </button>
-              <button type="button" onClick={() => navigator.clipboard?.writeText(diagnosticText)}>COPY REPORT</button>
-              <button type="button" onClick={toggleSource}>{source === "GPS" ? "TRY DEMO MODE" : "RETURN TO GPS"}</button>
-              <button type="button" onClick={() => setRawReportOpen((open) => !open)} aria-expanded={rawReportOpen}>
-                {rawReportOpen ? "HIDE RAW" : "SHOW RAW"}
-              </button>
-            </div>
-            {/* The raw report is evidence, not a readout: it is available, not in the way. */}
-            {rawReportOpen ? <pre>{diagnosticText}</pre> : null}
+                  <section className="instrument-section" aria-labelledby="diag-audio-title">
+                    <div className="instrument-section-heading">
+                      <h3 id="diag-audio-title">Audio and resources</h3>
+                      {genreId === "fracture" ? (
+                        <button
+                          className="instrument-action"
+                          type="button"
+                          onClick={() => {
+                            setDrawerOpen(false);
+                            setPreviewOpen(true);
+                          }}
+                        >
+                          AUDITION VOICES
+                        </button>
+                      ) : null}
+                    </div>
+                    <dl>
+                      <InstrumentMetric label="PLAYING" value={getScoreGenre(genreId).label} detail={getScoreGenre(genreId).family} />
+                      <InstrumentMetric label="ARRANGEMENT" value={scoreScene} detail={`${scoreStateRef.current?.rhythmLabel ?? (scoreStateRef.current?.halfTime ? "half-time" : "full break")} · ${scoreStateRef.current?.section ?? "—"}`} />
+                      <InstrumentMetric label="TACTUS / TRANSPORT" value={bpm == null ? "CLOCKLESS" : `${Math.round(bpm)} BPM`} detail={`${Math.round(transportBpm)} BPM transport · ${scoreStateRef.current?.chord ?? "—"}`} />
+                      <InstrumentMetric label="WEB AUDIO" value={diagnostics?.audio.state || "—"} detail={muted ? "output muted" : `output level ${audioLevel}`} />
+                      <InstrumentMetric label="JAVASCRIPT HEAP" value={currentUsedHeapMb == null ? "UNAVAILABLE" : `${currentUsedHeapMb} MB`} detail="browser-exposed current phase" />
+                      <InstrumentMetric label="DECODED AUDIO" value={currentDecodedAudioMb == null ? "UNAVAILABLE" : `${currentDecodedAudioMb} MB`} detail="bounded PCM cache" />
+                    </dl>
+                  </section>
+
+                  <section className="instrument-section" aria-labelledby="diag-session-title">
+                    <h3 id="diag-session-title">Session and transport</h3>
+                    <dl>
+                      <InstrumentMetric label="FLIGHT RECORDER" value={`${diagnosticReport?.flightRecorder.summary.retainedSamples ?? "—"} SAMPLES`} detail={`${Math.round((diagnosticReport?.flightRecorder.summary.sessionDurationMs ?? 0) / 1000)} s bounded session`} />
+                      <InstrumentMetric label="NETWORK" value={diagnosticReport?.network.current.effectiveType || (diagnosticReport?.network.current.online ? "online" : "offline") || "—"} detail={`${diagnosticReport?.network.current.roundTripTimeMs ?? "—"} ms RTT`} />
+                      <InstrumentMetric label="PAYLOAD" value={`${Math.round(diagnosticPayloadBytes / 1024)} KB`} detail="complete report before fitting" />
+                      <InstrumentMetric label="IDENTITY" value={`v${APP_VERSION} · ${APP_COMMIT}`} detail={`build ${APP_BUILD}`} />
+                    </dl>
+                  </section>
+                </div>
+
+                <section className="diagnostic-submit" aria-labelledby="diagnostic-submit-title">
+                  <h3 id="diagnostic-submit-title">Submit evidence</h3>
+                  <p>
+                    Coordinate-free technical report. Nothing is transmitted until SEND DIAGNOSTIC.
+                    Keep this session open until the server responds; README explains the complete boundary.
+                  </p>
+                  <p className={`send-state send-state-${sendState}`} role="status" aria-live="polite">
+                    {sendState === "sent" ? "Accepted by the server mail transport. Inbox delivery still needs confirmation." : null}
+                    {sendState === "error" ? `${DIAGNOSTIC_SEND_ERROR_COPY[sendErrorCode] ?? "The report could not be sent."} No diagnostic data was stored by the app.` : null}
+                  </p>
+                  <div className="drawer-actions">
+                    <button className="send-diagnostic-button" type="button" onClick={sendDiagnostic} disabled={sendState === "sending"}>
+                      {sendState === "sending" ? "SENDING…" : sendState === "sent" ? "SENT" : "SEND DIAGNOSTIC"}
+                    </button>
+                    <button type="button" onClick={() => navigator.clipboard?.writeText(diagnosticText)}>COPY REPORT</button>
+                    <button type="button" onClick={toggleSource}>{source === "GPS" ? "TRY DEMO MODE" : "RETURN TO GPS"}</button>
+                    <button type="button" onClick={() => setRawReportOpen((open) => !open)} aria-expanded={rawReportOpen} aria-controls="diagnostic-raw-report">
+                      {rawReportOpen ? "HIDE RAW" : "SHOW RAW"}
+                    </button>
+                  </div>
+                </section>
+
+                {rawReportOpen ? (
+                  <section className="raw-report" id="diagnostic-raw-report" aria-labelledby="diagnostic-raw-title">
+                    <header>
+                      <h3 id="diagnostic-raw-title">Complete raw report</h3>
+                      <span>{Math.round(diagnosticPayloadBytes / 1024)} KB · JSON</span>
+                    </header>
+                    <pre>{diagnosticText}</pre>
+                  </section>
+                ) : null}
+              </div>
+            )}
         </DialogSurface>
       ) : null}
 
