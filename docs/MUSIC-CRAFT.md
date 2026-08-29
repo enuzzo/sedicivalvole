@@ -898,6 +898,18 @@ sample and remains far below an intrusive peak. This proves bounded gain and
 harmonic motion, not ambience quality: low-volume listening and a long real-
 Tesla stop remain the perceptual acceptance gates.
 
+The first real-browser long stop exposed a scheduler detail the fake parameter
+missed. Two PARK `setValueCurveAtTime()` breaths could overlap by only a few
+milliseconds after ordinary scheduler drift. Chromium rejects any overlap
+between value curves, even when a test double assumes `cancelAndHoldAtTime()`
+can shorten the active curve. At roughly 110 seconds the exception stopped the
+ambient scheduler. JUNCTION therefore expresses the same five-point breath as
+cancellable linear ramps and schedules each unequal hold from the actual
+transition time rather than compressing the next hold toward an ideal clock.
+An 86-second muted browser run then reached seven voicing changes with no beat,
+no bass and zero warnings or errors. Web Audio automation validity belongs to a
+real-browser long-duration gate; a permissive fake cannot prove it alone.
+
 FRACTURE revealed why `more than one oscillator is active` is not an adequate
 anti-drone rule. Its old PARK pad re-struck the same `Fm7` voicing on every
 private transport bar. The dark filter and register made one partial dominate,

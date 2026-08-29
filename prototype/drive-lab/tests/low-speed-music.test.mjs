@@ -228,7 +228,7 @@ test("JUNCTION PARK reaches six consonant voicings without a clock or immediate 
   assert.equal(bed.snapshot().beat, false);
   assert.equal(bed.snapshot().bass, false);
   assert.equal(bed.snapshot().parkVoicingChanges, JUNCTION_LOW_SPEED_CHORDS.length - 1);
-  assert.ok(context.gains.some((gain) => gain.gain.events.some((event) => event.type === "curve")));
+  assert.ok(context.gains.some((gain) => gain.gain.events.filter((event) => event.type === "ramp").length >= 5));
   bed.destroy();
 });
 

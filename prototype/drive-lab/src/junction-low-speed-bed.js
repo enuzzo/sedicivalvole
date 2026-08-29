@@ -123,11 +123,17 @@ export function createJunctionLowSpeedBed(context, destination) {
       expression.gain.cancelScheduledValues?.(time);
       expression.gain.setValueAtTime?.(expression.gain.value, time);
     }
-    expression.gain.setValueCurveAtTime(
-      new Float32Array([0.84, 0.93, 0.88, 0.98, 0.87]),
-      time,
-      holdSeconds,
-    );
+    // Value curves cannot be interrupted reliably in Chromium: scheduling a
+    // new curve while the previous curve's duration is still active throws.
+    // Plain ramps preserve the same breath and remain cancellable on an early
+    // stop/re-entry or delayed scheduler tick.
+    const breath = [0.84, 0.93, 0.88, 0.98, 0.87];
+    for (let index = 0; index < breath.length; index += 1) {
+      expression.gain.linearRampToValueAtTime(
+        breath[index],
+        time + ((index + 1) / breath.length) * Math.max(1, holdSeconds - 0.12),
+      );
+    }
     setTarget(filter.frequency, JUNCTION_LOW_SPEED_CHORDS[chordIndex].cutoffHz, time, 4.8);
     parkVoiceScheduled = true;
   }
@@ -222,9 +228,9 @@ export function createJunctionLowSpeedBed(context, destination) {
     if (policy.id === "park") {
       if (!parkVoiceScheduled) scheduleParkBreath(time);
       let nextIndex = chordIndex;
-      while (time >= nextParkChangeAt) {
+      if (time >= nextParkChangeAt) {
         nextIndex = (nextIndex + 1) % JUNCTION_LOW_SPEED_CHORDS.length;
-        nextParkChangeAt += JUNCTION_PARK_HOLD_SECONDS[nextIndex];
+        nextParkChangeAt = time + JUNCTION_PARK_HOLD_SECONDS[nextIndex];
         parkVoicingChanges += 1;
       }
       applyChord(nextIndex, time, true);
