@@ -12,8 +12,9 @@ import {
 } from "./signal-model.js";
 import {
   advanceAccelerationMacroAmount,
-  accelerationMacroAmount,
   accelerationMacroParameters,
+  accelerationMacroTargetAmount,
+  createAccelerationFocusCurve,
 } from "./acceleration-macro.js";
 import {
   BLOOM_GESTURE_MS,
@@ -87,6 +88,8 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
   const performanceBus = context.createGain();
   const accelerationScoop = context.createBiquadFilter();
   const accelerationAir = context.createBiquadFilter();
+  const accelerationFocus = context.createBiquadFilter();
+  const accelerationFocusLimiter = context.createWaveShaper();
   const accelerationSplitter = context.createChannelSplitter(2);
   const accelerationMerger = context.createChannelMerger(2);
   const leftToLeft = context.createGain();
@@ -97,6 +100,7 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
   const fractureGain = context.createGain();
   const junctionGain = context.createGain();
   const nightshiftGain = context.createGain();
+  const accelerationFocusGain = context.createGain();
   const meter = context.createAnalyser();
   meter.fftSize = 256;
   meter.smoothingTimeConstant = 0.55;
@@ -106,12 +110,23 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
   accelerationScoop.frequency.value = 320;
   accelerationScoop.Q.value = 0.8;
   accelerationAir.type = "highshelf";
-  accelerationAir.frequency.value = 9000;
+  accelerationAir.frequency.value = 6000;
+  accelerationFocus.type = "bandpass";
+  accelerationFocus.frequency.value = 480;
+  accelerationFocus.Q.value = 0.9;
+  accelerationFocusLimiter.curve = createAccelerationFocusCurve();
+  accelerationFocusLimiter.oversample = "2x";
+  accelerationFocusGain.gain.value = 0;
   leftToLeft.gain.value = 1;
   rightToLeft.gain.value = 0;
   leftToRight.gain.value = 0;
   rightToRight.gain.value = 1;
   performanceBus.connect(accelerationScoop).connect(accelerationAir).connect(accelerationSplitter);
+  accelerationAir
+    .connect(accelerationFocus)
+    .connect(accelerationFocusLimiter)
+    .connect(accelerationFocusGain)
+    .connect(accelerationTrim);
   accelerationSplitter.connect(leftToLeft, 0);
   accelerationSplitter.connect(leftToRight, 0);
   accelerationSplitter.connect(rightToLeft, 1);
@@ -466,7 +481,11 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
   function applyAccelerationMacro(time = context.currentTime) {
     const parameters = accelerationMacroParameters(accelerationAmount);
     accelerationScoop.gain.setTargetAtTime(parameters.midScoopDb, time, ACCELERATION_PARAM_SMOOTH_SECONDS);
+    accelerationAir.frequency.setTargetAtTime(parameters.airShelfFrequencyHz, time, ACCELERATION_PARAM_SMOOTH_SECONDS);
     accelerationAir.gain.setTargetAtTime(parameters.airShelfDb, time, ACCELERATION_PARAM_SMOOTH_SECONDS);
+    accelerationFocus.frequency.setTargetAtTime(parameters.focusFrequencyHz, time, ACCELERATION_PARAM_SMOOTH_SECONDS);
+    accelerationFocus.Q.setTargetAtTime(parameters.focusQ, time, ACCELERATION_PARAM_SMOOTH_SECONDS);
+    accelerationFocusGain.gain.setTargetAtTime(parameters.focusGain, time, ACCELERATION_PARAM_SMOOTH_SECONDS);
     accelerationTrim.gain.setTargetAtTime(parameters.trimGain, time, ACCELERATION_PARAM_SMOOTH_SECONDS);
     const direct = (1 + parameters.width) * 0.5;
     const cross = (1 - parameters.width) * 0.5;
@@ -488,12 +507,11 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
       braking: isBraking(),
     });
     accelerationActive = accelerationDetector.active;
-    const target = accelerationActive
-      ? Math.max(
-        accelerationDetector.intensity,
-        accelerationMacroAmount(accelerationDetector.averageMps2),
-      )
-      : 0;
+    const target = accelerationMacroTargetAmount({
+      active: accelerationActive,
+      intensity: accelerationDetector.intensity,
+      averageMps2: accelerationDetector.averageMps2,
+    });
     accelerationAmount = advanceAccelerationMacroAmount(
       accelerationAmount,
       target,

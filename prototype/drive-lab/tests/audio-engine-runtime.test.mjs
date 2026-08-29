@@ -119,6 +119,7 @@ class FakeContext {
     this.graphEvents = [];
     this.gains = [];
     this.filters = [];
+    this.shapers = [];
     this.worklets = [];
     this.destination = new FakeNode("destination", this.graphEvents);
     this.audioWorklet = { addModule };
@@ -135,6 +136,14 @@ class FakeContext {
       frequency: new FakeParam(), Q: new FakeParam(), gain: new FakeParam(),
     });
     this.filters.push(node);
+    return node;
+  }
+  createWaveShaper() {
+    const node = Object.assign(this.node(`waveshaper-${this.shapers.length}`), {
+      curve: null,
+      oversample: "none",
+    });
+    this.shapers.push(node);
     return node;
   }
   createChannelSplitter() { return this.node("splitter"); }
@@ -443,6 +452,38 @@ test("a FRACTURE processor error immediately restores JUNCTION instead of fading
       activeScoreId: "junction",
       message: "FRACTURE audio processor stopped unexpectedly",
     }]);
+    engine.destroy();
+  });
+});
+
+test("a confirmed OPEN trajectory drives the parallel rising focus sweep", async () => {
+  const effects = [];
+  await withFakeAudioEnvironment({}, async ({ createAudioEngine, context, timers, setClock }) => {
+    const engine = createAudioEngine(undefined, (effect) => effects.push(effect));
+    const accelerationAir = context.filters[1];
+    const accelerationFocus = context.filters[2];
+    const accelerationFocusLimiter = context.shapers[0];
+    const accelerationFocusGain = context.gains[10];
+    assert.equal(accelerationFocus.type, "bandpass");
+    assert.equal(accelerationFocusGain.gain.value, 0);
+    assert.equal(accelerationAir.connections.has(accelerationFocus), true);
+    assert.equal(accelerationFocus.connections.has(accelerationFocusLimiter), true);
+    assert.equal(accelerationFocusLimiter.connections.has(accelerationFocusGain), true);
+    assert.equal(accelerationFocusLimiter.oversample, "2x");
+    assert.equal(accelerationFocusLimiter.curve.length, 2049);
+    assert.equal(accelerationFocusGain.connections.has(context.gains[6]), true);
+
+    setClock(1);
+    engine.setSpeed(10);
+    setClock(801);
+    engine.setSpeed(27);
+    setClock(1601);
+    engine.setSpeed(44);
+    for (let tick = 0; tick < 6; tick += 1) timers.runIntervals(40);
+
+    assert.ok(accelerationFocus.frequency.value > 1600);
+    assert.ok(accelerationFocusGain.gain.value > 0.2);
+    assert.equal(effects.includes("OPEN"), true);
     engine.destroy();
   });
 });
