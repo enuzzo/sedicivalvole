@@ -1,8 +1,11 @@
 # Three Flux visual directions — 2026-08-29
 
-Status: **proposal only**. None of these directions is selected or implemented.
-They replace the rejected REGISTER study and must wait for explicit product-owner
-selection before a visual build.
+Status: **selection reopened 2026-08-29**. PLUMB reached one local exact-viewport
+prototype, triggered its own retirement criterion, and was rejected before
+publication. Its runtime was removed. SLIP and WAKE remain the other two
+unselected directions; no replacement may be built without a new explicit
+product-owner decision. A single WAKE concept capture and licensed-source study
+are advisory material, not a fourth direction or an implemented environment.
 
 Shared constraints: continuous low-amplitude motion at rest; strong peripheral
 speed and acceleration legibility; no starburst, particles, moire, halftone,
@@ -103,9 +106,60 @@ bands in one draw call; Canvas2D fallback uses five preallocated Bezier paths.
 read as a road, or steady 20 km/h and standstill are not distinguishable within
 two seconds of peripheral viewing.
 
+### WAKE licensed-source study (advisory only)
+
+No external runtime or asset has entered the repository. The safest route is a
+project-authored WAKE renderer built on narrowly selected, attributed
+open-source mechanics:
+
+- [`sumisonic/bezier-kit`](https://github.com/sumisonic/bezier-kit) is MIT,
+  current, zero-dependency in its core package, and provides allocation-aware 3D
+  paths plus twist-free Frenet frames suitable for broad ribbon geometry. It is
+  not audio-reactive by itself.
+- [`tgcnzn/Interactive-Particles-Music-Visualizer`](https://github.com/tgcnzn/Interactive-Particles-Music-Visualizer)
+  is an MIT Codrops project with a modern Vite/Three.js audio-band pipeline.
+  Its particle form and included music are unsuitable for WAKE; only its code
+  architecture is a possible attributed reference, never its media.
+- [`niko-dellic/wavefield`](https://github.com/niko-dellic/wavefield) is a
+  current MIT Three.js audio visualizer with tested feature extraction and modal
+  interpolation. Its cymatic field, post-processing stack and reported GPU
+  appetite make wholesale integration inappropriate for the Tesla target.
+- [`shader-park/shader-park-core`](https://github.com/shader-park/shader-park-core)
+  and its [Codrops audio-reactive Three.js
+  study](https://tympanus.net/codrops/2023/02/07/audio-reactive-shaders-with-three-js-and-shader-park/)
+  are MIT-licensed routes to genuinely volumetric, audio-driven form. The
+  signed-distance/ray-march approach is visually stronger than a conventional
+  spectrum display, but it needs a deliberately low iteration budget and must
+  be tested on the Tesla GPU before it can qualify as WAKE's renderer.
+- [`spite/THREE.MeshLine`](https://github.com/spite/THREE.MeshLine) is an
+  established MIT triangle-strip replacement for wide Three.js lines. Its
+  variable width and 3D-path support map directly to WAKE's five broad streams;
+  the older API and 2020 release make it a mechanics reference rather than a
+  dependency to adopt without a small compatibility proof.
+- [`kekkorider/threejs-audio-reactive-visual`](https://github.com/kekkorider/threejs-audio-reactive-visual)
+  is MIT but uses Parcel 1, Three.js `0.133`, Node 14-era tooling and one global
+  average-frequency influence. It is neither a maintainable base nor a musical
+  enough reaction model.
+- Codrops Animated Mesh Lines demonstrates useful ribbon grammar, but its demo
+  repository uses custom redistribution terms rather than a standard OSS
+  license. It remains visual research only. Public CodePens and repositories
+  that merely claim a license without a committed license file are excluded
+  until their exact code, imported dependencies and assets are verified.
+
+If WAKE is later selected, speed should own macro depth, length and tension;
+the existing internal score snapshot should own slow band energy and authored
+section changes; acceleration and braking should create bounded signed pressure
+impulses. PARK must retain slow material life without beat-driven twitch. This
+avoids a microphone/file-player subsystem and keeps the visual synchronized to
+the score the listener actually hears.
+
 ## Selection note
 
-PLUMB gives the clearest physical relationship to acceleration and the lowest
-implementation risk. SLIP is the most radically minimal and brandable. WAKE is
-the most atmospheric, but also carries the highest risk of being mistaken for
-the rejected tunnel/road family. Build only the selected direction.
+PLUMB's exact `773 × 601` capture was read as the decorative strings/bars named
+by its retirement rule and was rejected as visually banal and emotionally
+empty. That product verdict supersedes its earlier implementation-risk
+advantage. SLIP remains the most radically minimal but still risks becoming
+static wallpaper. WAKE remains the most atmospheric and is the strongest
+candidate for further selection review, provided any 3D or audio-reactive
+mechanics are independently licensed, attributed and adapted to the existing
+speed and score signals. Neither SLIP nor WAKE is selected or implemented.

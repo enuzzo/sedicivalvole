@@ -14,8 +14,8 @@ dated study documents.
   mode, visible but disabled until its own audio model and one of exactly three
   Engine-specific visual directions are selected.
 - The Flux catalog contains four visual environments: **APERTURE 01**,
-  **VERTIGO 02**, **MERIDIAN 03**, and **ATLAS 04**.
-  All four are published on the canonical experience.
+  **VERTIGO 02**, **MERIDIAN 03**, and **ATLAS 04**. Aperture remains the
+  accepted fresh-session and invalid-preference fallback.
 - All four environments use the shared catalog of **10 themes**. Vertigo keeps
   the upstream Interstate 7 files byte-identical while an external runtime
   bridge maps the selected theme onto its existing colour channels.
@@ -39,7 +39,11 @@ dated study documents.
 - REGISTER was rejected after live review because its static print composition
   was inexplicable in motion and outside the product mood. Its source remains
   only in the rejected-visual archive; the runtime, QA harness and active tests
-  do not import it. A stale stored `register` preference falls back to Aperture.
+  do not import it. Invalid or retired environment identifiers fall back to
+  Aperture. PLUMB later triggered its own retirement criterion in the first
+  exact-viewport local review and was rejected before publication; its renderer,
+  QA path and active tests have been removed as well. PLUMB, REGISTER,
+  LATITUDES and any other retired identifier now resolve to Aperture.
 - Speed, BPM, and energy remain visible together. The fixed road-energy ceiling
   is `130 km/h`, with Aperture visibly forming a tunnel near `40 km/h`.
 - The main experience retains an icon-only Mute control, GPS/Demo source
@@ -79,8 +83,9 @@ dated study documents.
 - **FRACTURE 02** is a selectable score. It is a generative Jungle / Drum
   & Bass composition rendered by the production AudioWorklet.
 - FRACTURE has **10 four-bar sections**, a narrow `162–176 BPM` transport range,
-  half-time interpretation at rest, an atmosphere-only launch, arrangement
-  density, deceleration memory, and the measured UNDERWATER brake effect. Its
+  a clockless harmony-only PARK state, a sub-100-BPM perceived low-speed form,
+  arrangement density, deceleration memory, and the measured UNDERWATER brake
+  effect. Its
   live arranger now builds only atmosphere, harmony, sub/reese and rhythm: the
   recurring `riff` and `response` lanes are retired from normal playback and
   remain reachable only through the parked development audition path.
@@ -90,21 +95,40 @@ dated study documents.
   the exact `Emin9 – Cmaj7 – Amin7 – Bmin9` grammar and contains its own vertical
   atmosphere, harmony, bass and break layers. There is no automatic lead, rave
   multisample, tonal second deck, or simultaneous independent identity. Rest is
-  harmony and atmosphere without a break or bassline;
-  rhythm fades in near `13 km/h`, moves through native `127`, `135`, `158` and
-  `164 BPM` recordings, and reaches `168 BPM` only at high energy. The `127 BPM`
-  state now covers 40 km/h and `135 BPM` covers 60 km/h; `158 BPM` begins above
-  approximately 65 km/h. The browser
+  harmony and atmosphere without a break or bassline. Native playback begins at
+  `21 km/h` with the quiet `127 BPM` OPEN family, advances to `135 BPM` near
+  `30 km/h`, `158 BPM` near `40 km/h`, `164 BPM` near `50 km/h`, and reaches
+  `168 BPM` only at high energy. The browser
   lazily retains at most six individual clips, finishes the current eight-bar
   phrase, then starts one different self-contained performance on the
   sample-accurate boundary. The primary take does not immediately repeat.
-  A rhythm entrance from rest rises for four seconds; a decision to return to
-  rest releases the active performance toward a near-silent floor over four
-  seconds, with cancellable recovery if road energy returns.
+  A rhythm entrance from the zero-beat bed rises for four seconds when JUNCTION
+  is already active; a decision to return toward low-speed ambience is
+  cancellable if road energy returns.
   Source sounds are never exposed or shuffled mid-phrase.
-- JUNCTION is preloaded but inaudible after `PLAY THE ROAD` while stationary. Its
-  score-local movement gate fades from silence at `4 km/h` to full level at
-  `10 km/h`, before the existing quiet break threshold near `13 km/h`.
+- Both scores now share one authored low-speed grammar. Below `0.8 km/h`, PARK
+  sustains a very quiet, clockless mood harmony with no beat or bass. A genuine
+  forward crossing at `1.2 km/h` plays exactly two soft consonant DEPART events;
+  it cannot retrigger until the vehicle has remained at or below `0.5 km/h` for
+  three seconds, and an initial GPS fix already in motion cannot invent it.
+  CREEP begins a quiet two-chord micro-progression at `4 km/h`; ROLL introduces
+  a restrained beat at `10 km/h` without restarting that progression. The
+  listener-facing tactus stays at or below `84.667 BPM` through the displayed
+  `20 km/h` state. Native music enters at `21 km/h`; JUNCTION leaves native mode
+  below `20.5 km/h`, retaining a small hysteresis without allowing a displayed
+  `20 km/h` state to expose the `127 BPM` bank.
+- JUNCTION's oscillator bed and compact production bank are both lazy: a
+  FRACTURE-only session constructs neither. Selecting JUNCTION creates its soft
+  bed immediately, but the bank is not fetched or decoded below the native
+  threshold. The first native performance waits for both the selected take and
+  a distinct companion to decode, then begins sample-accurately; a ready
+  companion is the exact-boundary fallback, immediate repetition is forbidden,
+  decode failures back off for ten audio-clock seconds, and the six-slot bound
+  still holds.
+- FRACTURE and JUNCTION hand off through one four-second equal-power score
+  crossfade. Rapid reversals continue from the audible point, cancel overlapping
+  Web Audio automation safely and retain revision-guarded cleanup. A score-local
+  rhythm fade is not stacked onto the same native entrance.
 - The shared post-score **OPEN** macro responds to sustained hard acceleration:
   it opens stereo width and air while removing low-mid density and applying a
   small level trim. Two qualifying readings arm it above `15 km/h`; it holds no
@@ -132,8 +156,9 @@ dated study documents.
   it now records calculated hypotheses separately from measured spectral peaks.
   A selection audit proves the current renderer reaches only index zero for all
   chord labels, and an audio-only report measures 63 printed chord transitions
-  without using pitch proposals. Its first uncalibrated pass flags 22 boundaries
-  for listening, led by EASE and `Cmaj7 → Amin7`; it cannot block production
+  without using pitch proposals. Its current uncalibrated pass validates all 63
+  printed boundaries and flags 24 for listening (39 clear; 30 total flag events),
+  led by EASE and `Cmaj7 → Amin7`; it cannot block production
   until live-delay and cross-clip transitions are included and calibrated.
   No authoritative pitch set or chord label is admitted. The ignored Python
   environment and reports never enter the product build or redistribute source
@@ -142,9 +167,9 @@ dated study documents.
 ## Verified boundaries
 
 - Local gate: `npm test` and `npm run build` from `prototype/drive-lab/`.
-- Current suite: 184 unit checks plus 4 Sites packaging checks. The latest local
-  run passes 183 unit checks and all four packaging checks; the remaining mail
-  fixture is unavailable only because this Mac has no `php` executable.
+- The exact suite count and build identity are refreshed after the final
+  integrated gate for each checkpoint; the current Mac Studio provides native
+  arm64 Node, Rollup, esbuild, Python analysis tools and Homebrew PHP.
 - Canonical development URL: <https://sedicivalvole.app/>. The most recent
   canonical publication evidence and build stamp are always the first entry in
   [`DEPLOY.md`](DEPLOY.md).
@@ -166,10 +191,11 @@ dated study documents.
    rebuild and the ATLAS flight camera in the Tesla.
 2. Send the new real-drive gzip attachment and compare the dedicated wall-retreat
    phase plus JUNCTION section/take exposure counters against the first complete report.
-3. Present the three proposal-only REGISTER replacements in
-   `FLUX-VISUAL-DIRECTIONS-2026-08-29.md` and wait for explicit selection before
-   building one. Design Engine only after exactly three Engine-specific
-   directions are shown and one is selected.
+3. PLUMB was rejected after its exact-viewport local prototype and is retired.
+   SLIP and WAKE remain unselected, unimplemented proposals and must not be
+   built without a new explicit product decision. The current WAKE screenshot
+   and licensed-source research are advisory only. Design Engine only after
+   exactly three Engine-specific directions are shown and one is selected.
 4. Replace the failed magnitude-residual decision with a three-way evidence
    stack. Validate shared ADSR/filter envelopes, phase seeds, detune, chorus,
    spectral slope and saturation; add stereo and phase-coherence evidence with
@@ -184,7 +210,7 @@ dated study documents.
 | Current | this page, `README.md`, `PRODUCT-SPEC.md`, `TECHNICAL-DIRECTION.md`, `ROADMAP.md`, `MODES.md`, `SESSION-HANDOFF.md` | Must describe the current repository and verified product state |
 | Evidence | `DEPLOY.md`, `DIAGNOSTICS.md`, `AUDIO-QA-2026-08-28.md`, `CHANGELOG.md` | Append-only chronology; older failures remain true historical evidence |
 | Knowledge | `MUSIC-CRAFT.md`, licensing and reference studies | Durable technique, provenance, and decision records |
-| Selection proposals | `FLUX-VISUAL-DIRECTIONS-2026-08-29.md` | Exactly three unimplemented REGISTER replacements awaiting product-owner selection |
+| Selection record | `FLUX-VISUAL-DIRECTIONS-2026-08-29.md` | PLUMB rejected and retired; SLIP and WAKE retained as unselected proposal-only alternatives |
 | Historical | `RECOVERED-REQUIREMENTS-2026-08-26.md`, `ADVERSARIAL-REVIEW.md`, `SOURCE-AUDIT.md`, dated work plans | Preserve the reasoning and rejected baselines; do not treat their “current” wording as current product state |
 
 `SESSION_HANDOFF.md` is a retained legacy filename and points to the canonical

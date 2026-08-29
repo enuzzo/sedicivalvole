@@ -39,7 +39,7 @@ Engine is an emulation driven by the signals the browser actually exposes. It mu
 
 See [`MODES.md`](MODES.md) for the boundary model, recommendations, and open decisions.
 
-## 4. Confirmed Flux visual direction
+## 4. Confirmed Flux visual directions
 
 ### Excluded
 
@@ -61,6 +61,16 @@ Exactly three revised Product Design directions were shown after the luminous-ax
 Framed controls use a restrained 6 px corner radius rather than completely sharp corners. The speed readout occupies an exact header-grid cell with the same divider stroke while the chrome is awake; when the header retires, the readout remains fixed in place and gains only the exposed lower corner treatment so it reads as a detached module rather than an unrelated overlay.
 
 Modular Aperture is calm and flat at rest. Zero speed uses a complete Swiss mosaic of large square modules, distributed evenly across four tones from the active palette, with no missing cells, black gaps, or central void. That intact mosaic is a rigid end wall: it recedes without deforming from `0–40 km/h`, progressively revealing the existing centered perspective tunnel behind it, then disappears at its terminus. Deceleration reverses the same wall travel so the complete grid returns without a flash. Above `40 km/h`, the approved tunnel, palette, perspective, flow and high-velocity radial compression continue unchanged. Ten curated palettes change both the visual character and interface accent without exposing low-level shader controls. See [`RECOVERED-REQUIREMENTS-2026-08-26.md`](RECOVERED-REQUIREMENTS-2026-08-26.md).
+
+After the later REGISTER rejection, exactly three new directions — PLUMB, SLIP
+and WAKE — were presented. PLUMB reached a local Canvas2D prototype, but its
+first exact `773 × 601` review triggered the direction's own retirement rule:
+the field read as decorative strings/bars and lacked emotional or perceptual
+value. It was rejected before publication and removed from the runtime, QA and
+active tests. Aperture remains the fresh-session and invalid-preference
+fallback. SLIP and WAKE remain documented, unselected directions and have no
+active renderer; WAKE source research and one concept capture do not constitute
+selection or implementation.
 
 `MERIDIAN 03` follows the selected oblique-blade reference contract: sparse
 large red, white and secondary-colour Euclidean planes flank a low, readable
@@ -177,7 +187,8 @@ acceptance in the vehicle.
 | Engine mode with synthesized/sampled models | confirmed primary mode | mapping, catalog, quality, and latency require dedicated spike |
 | Adaptive synth + sequencer | implemented prototype | FRACTURE runs in the AudioWorklet; real Tesla musical acceptance pending |
 | Modular Aperture generative visual | implemented prototype | WebGL2 plus Canvas2D fallback; Tesla performance pending |
-| Selectable visual environments | implemented prototype | Aperture, Vertigo, Meridian, and Atlas share normalized motion, safety, persistence, and diagnostic contracts |
+| PLUMB inertial-suspension visual | rejected and retired before publication | Exact-viewport review triggered its strings/bars retirement criterion; no active renderer |
+| Selectable visual environments | implemented prototype | Aperture, Vertigo, Meridian, and Atlas share normalized motion, safety, persistence, palette, failure, and diagnostic contracts |
 | Selectable musical environments | implemented prototype | FRACTURE and JUNCTION ready; five later directions remain pending |
 | Open packs | strategic goal | schema and licensing not frozen |
 | Offline audio core | implemented prototype | identical score DSP renders and analyses WAV references in Node |

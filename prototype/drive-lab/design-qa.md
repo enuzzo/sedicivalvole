@@ -25,7 +25,7 @@
 
 - Fonts and typography: existing monospace family, optical hierarchy, weights, and small-label tracking remain unchanged and legible at the target viewport.
 - Spacing and layout rhythm: the four-column Braun/Swiss control grid remains aligned; removing the slider reduces density without leaving an empty cell.
-- Colors and tokens: all five body-color themes remain parameter inputs; the Red QA state preserves the accepted black/red/off-white hierarchy.
+- Colors and tokens: all ten body-color themes remain parameter inputs; the Red QA state preserves the accepted black/red/off-white hierarchy.
 - Image quality and asset fidelity: both environments remain procedural WebGL2/Canvas2D fields; no raster placeholder, copied reference asset, or imported source scene is used.
 - Copy and content: `VISUAL`, `SCORE`, `PROTOTYPE`, and `TEXTSTEP · NEXT` accurately distinguish implemented behavior from roadmap work.
 - Focused-region comparison was not required because the control labels and geometry are readable at full target resolution; the critical source/implementation difference is the full-field motion composition.

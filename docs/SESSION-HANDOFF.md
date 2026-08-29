@@ -1,6 +1,6 @@
 # Session Handoff
 
-Status: **live working record**. Updated on 2026-08-28.
+Status: **live working record**. Updated on 2026-08-29.
 
 Start with [`CURRENT-STATE.md`](CURRENT-STATE.md) for the product overview. This
 file records implementation boundaries, verification commands, and next work so
@@ -37,10 +37,11 @@ The registry is `prototype/drive-lab/src/flux-environments.js`.
 | VERTIGO 02 | vendored Interstate 7 | upstream tree stays byte-identical; the external bridge drives speed/FOV and existing colour channels |
 | MERIDIAN 03 | original WebGL2 plus Canvas2D fallback | selected-reference corridor of sparse oblique blades and longitudinal planes; bounded vertical field plus monotonic FOV/depth/peripheral speed lens |
 | ATLAS 04 | lazy MapLibre/OpenFreeMap WebGL | ephemeral GPS or explicit Milan demo drives 3D city tiles, nearby Wikipedia reading and passenger QR |
-
 All four visuals use ten curated palettes. Vertigo is recoloured without editing
-its vendor tree. The fixed visual/music energy ceiling is `130 km/h`; Aperture
-must already read as a tunnel near `40 km/h`.
+its vendor tree. Aperture is the fresh-session and invalid-preference fallback;
+PLUMB and every other retired identifier resolve to it. The fixed
+visual/music energy ceiling is `130 km/h`; Aperture must already read as a
+tunnel near `40 km/h`.
 
 ## Flux music
 
@@ -91,7 +92,7 @@ asserted.
 ## Immediate work
 
 1. Run real Tesla listening and performance QA across the simplified FRACTURE,
-   single-performance JUNCTION and all four visual environments.
+   single-performance JUNCTION and all four active visual environments.
 2. Confirm the corrected diagnostic delivery path with a fresh real-drive report.
 3. Begin Engine discovery only through the required three-direction gate.
 

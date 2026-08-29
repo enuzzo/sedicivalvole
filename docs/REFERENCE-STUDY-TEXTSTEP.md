@@ -115,6 +115,8 @@ Completed:
 
 - exact upstream files, commit, modifications, authorization, and attribution recorded;
 - synthesis-first AudioWorklet integrated and deployed as FRACTURE;
+- JUNCTION sampler/runtime integrated as one bounded segmented bank without
+  exposing the source sample library;
 - deterministic transport, phrase queue, harmony, audition, brake, and deceleration-memory tests;
 - offline reference rendering and mix analysis;
 - no third-party sample included in the repository or deployed build.
@@ -122,6 +124,7 @@ Completed:
 Still required:
 
 - pass FRACTURE listening review in the target Tesla;
-- profile simultaneous AudioWorklet and all four WebGL environments at `773 × 601`;
-- implement JUNCTION's sampler/runtime without exposing the source sample library;
+- profile simultaneous AudioWorklet and all four active visual environments at
+  `773 × 601`;
+- pass JUNCTION listening and eight-bar transition review in the target Tesla;
 - record any future runtime asset or dependency before it enters the product.

@@ -27,6 +27,7 @@ The canonical development build is available at [sedicivalvole.app](https://sedi
 - ✅ source audit, product requirements, adversarial review, technical direction, and roadmap;
 - ✅ Modular Aperture selected after exactly three revised Product Design directions;
 - ✅ four selectable Flux visuals: procedural Aperture, byte-identical upstream Interstate 7 Vertigo, the original architectural Meridian environment, and the lazy-loaded OpenFreeMap ATLAS city field with a readable passenger panel and an oblique 3D motorway camera;
+- 🛑 PLUMB failed its first exact-viewport visual acceptance and is retired from the runtime; SLIP and WAKE remain proposal-only directions, and Aperture remains the accepted fresh-session fallback until a replacement is explicitly selected;
 - ✅ GPS/Demo speed source, icon-only Mute, a fixed `130 km/h` energy ceiling, 10 curated palettes, and an integrated capability report;
 - ✅ local-only speed processing and coordinate-free diagnostics; ATLAS alone keeps a reliable current position in session memory while selected and discloses its OpenFreeMap tile and Wikimedia nearby-reading requests;
 - ✅ FRACTURE, a production AudioWorklet score with an ambience-only launch, ten four-bar harmonic sections, a narrow tempo knee, quantized transitions, hysteresis, dwell, crossfades, speed-driven atmosphere/low-end/rhythm depth, and no automatic riff or response lane in normal playback;
@@ -58,7 +59,7 @@ The speed source is an explicit abstraction. GPS and the desktop simulator produ
 Confirmed product modes:
 
 - **Engine** — selectable engine-sound emulation with a dedicated instrument-inspired visual language. Audio modeling, catalog, and final visual direction are not implemented yet.
-- **Flux** — adaptive music driven by speed and motion, paired with four selectable visual environments. Aperture begins as a rigid square wall that recedes and disappears at the existing tunnel terminus by `40 km/h`. Vertigo embeds the original Codrops/Tympanus Interstate 7 runtime unchanged behind an external speed/FOV and palette bridge. Meridian is a low, stable corridor of sparse oblique palette-lit blades and longitudinal shoulder planes; speed widens FOV, compresses depth and stretches peripheral geometry without restoring towers, buildings or a particle field. ATLAS follows the trusted position and travel bearing above an OpenFreeMap city, retains an oblique 3D view at `130 km/h`, adds a selected-page Italian Wikipedia abstract and free thumbnail, gives the passenger four readable links with a local QR, and offers an explicit Milan test flight only when GPS is unavailable. This is the mode currently implemented as Drive Lab.
+- **Flux** — adaptive music driven by speed and motion, paired with four selectable visual environments. Aperture is the accepted default and begins as a rigid square wall that recedes and disappears at the existing tunnel terminus by `40 km/h`. Vertigo embeds the original Codrops/Tympanus Interstate 7 runtime unchanged behind an external speed/FOV and palette bridge. Meridian is a low, stable corridor of sparse oblique palette-lit blades and longitudinal shoulder planes; speed widens FOV, compresses depth and stretches peripheral geometry without restoring towers, buildings or a particle field. ATLAS follows the trusted position and travel bearing above an OpenFreeMap city, retains an oblique 3D view at `130 km/h`, adds a selected-page Italian Wikipedia abstract and free thumbnail, gives the passenger four readable links with a local QR, and offers an explicit Milan test flight only when GPS is unavailable. This is the mode currently implemented as Drive Lab.
 
 Shared foundations include the GPS/Demo speed source, integrated diagnostics, master Stop/Mute, reduced motion, renderer fallback, and touch-first safety behavior. The mode switch will remain clearly identifiable and reachable from both experiences.
 
@@ -71,7 +72,7 @@ relationship to real acceleration remain pending a Tesla listening test.
 
 ```bash
 cd prototype/drive-lab
-npm install
+npm ci
 npm run dev
 ```
 
@@ -87,8 +88,9 @@ The standalone technical harness remains in `diagnostics/tesla-capabilities/`; e
 ## Architecture
 
 The current prototype uses React, Vite, a sample-accurate AudioWorklet score
-engine, WebGL2 renderers with progressive fallbacks, and the same DSP core in
-Node for offline listening renders. This does not freeze a future release stack.
+engine, authored WebGL2 and Canvas2D renderers with progressive fallbacks, a
+lazy MapLibre city field, and the same DSP core in Node for offline listening
+renders. This does not freeze a future release stack.
 
 See [`docs/TECHNICAL-DIRECTION.md`](docs/TECHNICAL-DIRECTION.md).
 
@@ -115,8 +117,9 @@ No screenshot is published here yet. The repository will include only real, curr
 ## Roadmap
 
 The next gate is a real Tesla session at the verified split viewport: compare all
-four visuals across acceleration and deceleration, verify Aperture's 60 FPS
-desktop gain on the vehicle, listen critically to FRACTURE and JUNCTION, test
+four implemented visuals across acceleration and deceleration, verify
+Aperture's 60 FPS desktop gain on the vehicle,
+listen critically to FRACTURE and JUNCTION, test
 the Music/Visual/theme controls, and check touch reach while parked.
 
 See [`docs/ROADMAP.md`](docs/ROADMAP.md).

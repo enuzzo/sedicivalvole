@@ -74,7 +74,8 @@ The UI must not label a derived value as real Tesla RPM, throttle, gear, CAN, mo
 ### Flux
 
 - the approved Modular Aperture field, byte-identical upstream `VERTIGO 02`, architectural `MERIDIAN 03`, and passenger-oriented OpenFreeMap `ATLAS 04` environments;
-- ten curated palettes for every renderer; Vertigo is recoloured only through the external bridge while its upstream files stay byte-identical;
+- Aperture is the fresh-session and invalid-preference fallback; rejected PLUMB and other retired identifiers resolve to it;
+- ten curated palettes for all four renderers; Vertigo is recoloured only through the external bridge while its upstream files stay byte-identical;
 - the current environment selector changes visual mechanics while preserving the shared signal, safety, persistence, and diagnostic contracts; it will later select matching authored musical identities as well;
 - palette and supported geometry may be tuned per environment, with curated bounds rather than arbitrary live shader controls;
 - procedural road-like flow is allowed when it remains abstract and non-scenic;

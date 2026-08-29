@@ -5,7 +5,7 @@ The current integrated `sedicivalvole` Flux prototype for the verified Tesla spl
 ## Local run
 
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
@@ -20,7 +20,7 @@ The initial **PLAY THE ROAD** gesture is one flat typographic launch surface wit
 - the shared OPEN acceleration macro, which briefly widens and brightens either ready score without turning hard acceleration into a volume or tempo jump;
 - an honest Music library: generative FRACTURE and the compact adaptive JUNCTION music bank are selectable; five later directions remain disabled and marked `IN PREPARATION`;
 - GPS `coords.speed` input with null handling, physics-informed soft outlier tolerance, and Demo fallback;
-- a 64 px Tesla footer with touch-first Stop/Mute, Visual and Music libraries, disclosure carets, and ten curated body themes;
+- a 64 px Tesla footer with touch-first Stop/Mute, Visual and Music libraries, disclosure carets, and ten curated body themes shared by all four visuals;
 - fixed `130 km/h` energy/velocity ceiling with visible Aperture tunnel formation by approximately `40 km/h`;
 - integrated coordinate-free device report with continuity-safe per-phase FPS/frame-time, a dedicated Aperture morph phase, heap/decoded-audio memory, real output RMS/peak, GPS confidence, musical-family/take exposure, an in-memory driving flight recorder, and explicit gzip-attachment email send;
 - a measured 64 px `PALETTE` footer at `773 × 601`: icon-only audio state, vertically ordered Visual/Music choices, truthful disclosure carets, and a theme control shared by field and UI accent;
@@ -42,4 +42,4 @@ npm run build
 npm test
 ```
 
-The verified build is published to [https://sedicivalvole.app/](https://sedicivalvole.app/) after each approved checkpoint. GPS cadence, FRACTURE/JUNCTION listening acceptance, simultaneous audio/WebGL frame pacing, and touch reach remain pending validation in the target Tesla.
+The verified build is published to [https://sedicivalvole.app/](https://sedicivalvole.app/) after each approved checkpoint. GPS cadence, FRACTURE/JUNCTION listening acceptance, simultaneous audio/rendering frame pacing across all four visuals, and touch reach remain pending validation in the target Tesla.

@@ -29,9 +29,16 @@ Gate: a repeatable vehicle report with no invented values. If GPS speed is absen
 
 ## Phase 2 — Flux visual direction
 
-Status: **DIRECTION SELECTED; CURRENT BUILD IMPLEMENTED**.
+Status: **SECOND SELECTION REOPENED; CURRENT ACCEPTED BUILD IMPLEMENTED**.
 
 Exactly three revised minimal directions were presented after the luminous-axis rejection. The selected **Modular Aperture** direction uses a flat Braun/Swiss control plane and one continuous square-module field that shrinks and bends from a complete multi-colour mosaic into a centered tunnel. Ten body themes now serve the original renderers. The Laminar alternative is preserved only as an ignored study because its visible resemblance to Infinite Lights requires a stronger independent reinterpretation before use.
+
+After REGISTER was rejected, the required second three-direction gate presented
+**PLUMB**, **SLIP**, and **WAKE**. PLUMB reached a local prototype, triggered its
+own strings/bars retirement rule at the exact Tesla viewport, and was rejected
+before publication. SLIP and WAKE remain unselected documented directions and
+have not entered the runtime. The four accepted environments use the same ten
+curated themes; Aperture remains the safe default.
 
 ## Phase 3 — Flux signal and music spike
 
@@ -86,12 +93,14 @@ Implemented:
 - an external `0–130 km/h` bridge that slows the original clock from stopped to its non-boosted `1×` rate and maps FOV from `90°` to `150°`, without editing the vendor runtime.
 - original `MERIDIAN 03`, rebuilt against the selected reference as a low stable corridor of sparse oblique blades and longitudinal shoulder planes. Bounded field motion, FOV, depth compression, peripheral stretch and parallax carry speed without conventional buildings, cloud slabs or a particle field;
 - lazy-loaded `ATLAS 04`, with a minimal palette-owned OpenFreeMap vector style, 3D buildings, nearby Italian Wikipedia context, four passenger links, a local QR and an explicit no-GPS Milan flight mode;
+- safe environment preferences: every implemented choice remains intact, while
+  PLUMB and other missing, retired or invalid identifiers resolve to Aperture;
 
 Queued next:
 
 - decide which visual and score combinations become authored audiovisual environments once more than FRACTURE is selectable;
-- present exactly three new directions before selecting any replacement for the rejected and archived REGISTER study;
-- retain the two unselected Interstate-inspired directions in the ignored backlog for a later three-direction gate rather than presenting them as implemented;
+- retain PLUMB as a rejected decision record and SLIP/WAKE as unselected
+  direction records; none is an implemented environment;
 - profile the unmodified Interstate 7 renderer on the target Tesla; any later travel, projection, curvature, density, palette, or geometry changes require a new explicit product decision and must not be folded into the upstream-integrity checkpoint;
 - verify each environment at rest, intermediate speed, full energy, and sustained deceleration at `773 × 601` on the target vehicle.
 

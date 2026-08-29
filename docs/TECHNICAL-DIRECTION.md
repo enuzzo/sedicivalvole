@@ -10,7 +10,7 @@ This recommendation does not automatically adopt the bootstrap stack. It optimiz
 | UI shell | Preact or similarly small component runtime | maintainable state/accessibility with low overhead |
 | Real-time audio | AudioWorklet | stable scheduling away from the main thread |
 | DSP | JavaScript first; WASM only after profiling | avoids premature complexity and preserves fallback |
-| Visuals | WebGL2 with quality tiers, then Canvas2D/static fallback | rich generative field with progressive degradation |
+| Visuals | authored WebGL2 or Canvas2D per environment, with measured quality tiers and a shared fallback | rich generative fields without forcing one rendering technology onto every direction |
 | Persistence | versioned IndexedDB for packs; localStorage only for tiny preferences | explicit migrations and bounded data |
 | Offline | service worker after Tesla validation | resilient core without unverified PWA claims |
 | Backend | none for core | privacy, simplicity, and offline behavior |
@@ -270,14 +270,20 @@ The Flux renderer exposes four selectable environments, not static backgrounds.
 - reduced-motion mode with slow luminance/chroma breathing and no tunnel acceleration;
 - a continuously redrawn Canvas2D fallback.
 
+**Plumb** reached a local Canvas2D prototype after the later PLUMB / SLIP / WAKE
+gate, but its exact-viewport review triggered the direction's strings/bars
+retirement rule. It was rejected before publication and removed from the active
+renderer, QA harness and tests. Aperture remains the safe accepted default.
+
 **Vertigo** was selected as the second environment and now runs the complete upstream Interstate 7 scene from commit `e58d58520bc0dfde21f9e14e6a1b8c7f0a2a2a9e`. The vendored runtime retains the original road, instanced side light sticks, opposing instanced car-light tubes, fog, bloom/SMAA post-processing, deep-distortion shader injection, camera look-at distortion, and geometry. SHA-256 tests guard the vendor files against accidental edits. The external integration hides the editorial shell before revealing the iframe and maps themes onto existing colour buffers/uniforms. The earlier independent shader and Canvas2D interpretation were rejected and removed from the active source.
 
-**Meridian** is an original architectural corridor. One depth-parameterized
-displacement field controls geometry and camera aim; separate monotonic clocks
-move the restrained floor, geometric towers, glass volumes, cantilevers, posts,
-and travelling markers without coupling motion to frame rate. Deterministic
-visibility keys reveal a cross-section of every depth band at rest, then add
-mass, atmosphere, edge light and facade detail progressively with speed.
+**Meridian** is an original low architectural corridor. One
+depth-parameterized displacement field controls geometry and camera aim while a
+monotonic travel clock moves sparse large oblique blades, broad shoulder screens
+and three solid longitudinal bands without coupling motion to frame rate. Speed
+raises FOV, depth compression, peripheral stretch, parallax and optical flow;
+vertical excursion stays tightly bounded. Conventional buildings, stacked
+towers, high cloud slabs, scene-wide particles and wireframe grids are absent.
 
 **Atlas** is a lazy-loaded OpenFreeMap/MapLibre city field. It owns a minimal
 vector style rather than inheriting a generic street-map skin, extrudes building
@@ -299,10 +305,15 @@ local storage, diagnostics or the explicit diagnostic email.
 **Register** is rejected and archived outside the active runtime. Live review
 found its deterministic Swiss-print page static, inexplicable and outside the
 driving mood even after boundary and acceleration responses were added. The
-archived source is evidence, not a roadmap commitment. A replacement may be
-chosen only after exactly three new visual directions are presented.
+archived source is evidence, not a roadmap commitment. The required replacement
+gate has now happened: PLUMB, SLIP and WAKE were the three presented directions.
+PLUMB was rejected after its first local prototype; SLIP and WAKE remain
+unselected with no runtime code.
 
 The fixed road-speed mapping separates early recognition from maximum deformation. Aperture begins opening into recognizable tunnel space by approximately `40 km/h`; velocity, perspective, elongation, and travel then continue increasing until the shared `130 km/h` ceiling. Vertigo uses a narrow external bridge rather than new scene mathematics. It enters the untouched distortion at a composed `2.1 s` phase where the road already fills the Tesla viewport, and seeds the current motion/FOV controls before the iframe is revealed. Road speed follows a quadratic response through the original `speedUpTarget` path: zero cancels the base clock, `40 km/h` uses approximately `0.095×`, `60 km/h` approximately `0.213×`, and `130 km/h` restores the original non-boosted `1×` rate. The original FOV range still moves from `90°` to `150°` through that same curve. The upstream click boost is not dispatched.
+
+Environment preferences preserve every valid implemented selection. Missing,
+retired or invalid identifiers—including PLUMB—safely resolve to Aperture.
 
 The Flux chrome uses a shared 6 px UI radius for framed controls and diagnostic surfaces. At `773 x 601` the retracting footer is 64 px high, keeps Audio on one row, and exposes explicit Visual and Music libraries with disclosure carets. Structural rails remain aligned to the underlying grid. The absolute speed readout uses the same column dimensions and `--line` stroke as the top bar, so hiding the surrounding control layer does not move or restyle it as a separate overlay.
 
@@ -362,6 +373,7 @@ A future pack needs:
 - Brake envelope/cooldown;
 - audio unlock/resume and safe failure;
 - renderer fallback and reduced motion;
+- rejected-renderer exclusion and safe Aperture fallback;
 - package/build integrity.
 
 ### Target Tesla
