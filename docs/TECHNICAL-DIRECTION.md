@@ -251,7 +251,7 @@ Profile before adding WASM. It is justified only if measured DSP cost, not fashi
 
 ## Flux visual architecture
 
-The Flux renderer exposes four selectable environments, not static backgrounds.
+The Flux renderer exposes six selectable environments, not static backgrounds.
 **Modular Aperture** was selected from exactly three revised minimal alternatives:
 
 - central-axis depth and flow;
@@ -262,7 +262,7 @@ The Flux renderer exposes four selectable environments, not static backgrounds.
 - aspect-correct square insets at rest, an eased low-speed warp, a bounded central perspective singularity, and a continuous blend between adjoining tunnel walls so intermediate geometry cannot tear into diagonal fragments;
 - a central aperture whose radius opens geometrically with tunnel formation instead of appearing through opacity;
 - speed-driven radial panel elongation and reduced depth frequency in the 150 km/h velocity band;
-- ten curated palettes for all four renderers; Vertigo's external bridge updates only existing runtime colour channels;
+- ten curated palettes for all six renderers; Vertigo's external bridge updates only existing runtime colour channels;
 - energy-driven pressure, luminance, distortion, and rectangular panel density;
 - aggregate pulses rather than one flash per audio event;
 - renderer quality levels controlling resolution scale, shader complexity, passes, and frame rate;
@@ -307,8 +307,20 @@ found its deterministic Swiss-print page static, inexplicable and outside the
 driving mood even after boundary and acceleration responses were added. The
 archived source is evidence, not a roadmap commitment. The required replacement
 gate has now happened: PLUMB, SLIP and WAKE were the three presented directions.
-PLUMB was rejected after its first local prototype; SLIP and WAKE remain
-unselected with no runtime code.
+PLUMB was rejected after its first local prototype; WAKE was selected and
+implemented, while SLIP remains proposal-only.
+
+**Wake** is a project-authored WebGL2 ribbon renderer with a Canvas2D fallback.
+Seven continuously tessellated sheets advect their real spline geometry rather
+than merely moving light across static surfaces. Speed owns longitudinal flow,
+crossing and temporary knots; low speed retains velvet-like drape.
+
+**Drivey** is a separately authored bounded Canvas2D perspective-road engine.
+It imports no upstream runtime or media. One deterministic road model projects
+the lane bed, cross-sections and terrain contours for Driver, Hood and Rear
+cameras. Speed owns travel and perspective, music owns colour timing, and the
+named performance effects change native perspective, relief or line energy.
+The contextual tuner persists only clamped Camera and Structure values.
 
 The fixed road-speed mapping separates early recognition from maximum deformation. Aperture begins opening into recognizable tunnel space by approximately `40 km/h`; velocity, perspective, elongation, and travel then continue increasing until the shared `130 km/h` ceiling. Vertigo uses a narrow external bridge rather than new scene mathematics. It enters the untouched distortion at a composed `2.1 s` phase where the road already fills the Tesla viewport, and seeds the current motion/FOV controls before the iframe is revealed. Road speed follows a quadratic response through the original `speedUpTarget` path: zero cancels the base clock, `40 km/h` uses approximately `0.095×`, `60 km/h` approximately `0.213×`, and `130 km/h` restores the original non-boosted `1×` rate. The original FOV range still moves from `90°` to `150°` through that same curve. The upstream click boost is not dispatched.
 

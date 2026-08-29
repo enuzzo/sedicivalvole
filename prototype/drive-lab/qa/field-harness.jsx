@@ -6,12 +6,14 @@
 // index.html as an entry, so this page never reaches a build or a deployment.
 //
 // Query parameters:
-//   env    aperture | meridian                  (default: meridian)
+//   env    aperture | meridian | drivey         (default: meridian)
 //   speed  held km/h                            (default: 0)
 //   theme  pearl | graphite | red | blue | silver
 //   sweep  seconds for one 0 -> ceiling -> 0 pass; overrides `speed`
 //   reduced   "1" to force reduced motion
 //   readout   "0" to hide the measurement overlay for clean captures
+//   camera    driver | hood | rear              (DRIVEY only)
+//   structure 20..100                           (DRIVEY only)
 //
 // Example: /qa-field.html?env=meridian&speed=115&theme=red
 
@@ -28,6 +30,8 @@ const FIELDS = {
     .then((module) => ({ default: module.FluxField }))),
   meridian: lazy(() => import("../src/environments/meridian/meridian-field.jsx")
     .then((module) => ({ default: module.MeridianField }))),
+  drivey: lazy(() => import("../src/environments/drivey/drivey-field.jsx")
+    .then((module) => ({ default: module.DriveyField }))),
 };
 
 const parameters = new URLSearchParams(window.location.search);
@@ -42,6 +46,10 @@ const SWEEP_SECONDS = readNumber("sweep", 0);
 const THEME = getFluxTheme(parameters.get("theme") ?? "red");
 const REDUCED_MOTION = parameters.get("reduced") === "1";
 const SHOW_READOUT = parameters.get("readout") !== "0";
+const DRIVEY_SETTINGS = {
+  camera: parameters.get("camera") ?? "driver",
+  structure: readNumber("structure", 62),
+};
 
 function useHeldSpeed() {
   const [speed, setSpeed] = useState(HELD_SPEED);
@@ -125,7 +133,9 @@ function Harness() {
   const Field = FIELDS[ENVIRONMENT] ?? FIELDS.meridian;
   const extra = ENVIRONMENT === "aperture"
     ? { energy: speedToEnergy(speed), pulse: 0, brake: 0 }
-    : {};
+    : ENVIRONMENT === "drivey"
+      ? { audioLevel: readNumber("audio", 0), effect: parameters.get("effect"), settings: DRIVEY_SETTINGS }
+      : {};
 
   const APP_COMMIT = typeof __APP_COMMIT__ !== "undefined" ? __APP_COMMIT__ : "dev";
 

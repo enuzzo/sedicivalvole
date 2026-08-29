@@ -54,6 +54,15 @@ export const FLUX_ENVIRONMENTS = [
     renderer: "wake",
     themed: true,
   },
+  {
+    id: "drivey",
+    label: "DRIVEY",
+    number: "06",
+    rendererLabel: "Drivey",
+    renderer: "drivey",
+    themed: true,
+    tunable: true,
+  },
 ];
 
 export function getFluxEnvironment(environmentId) {

@@ -68,9 +68,8 @@ first exact `773 × 601` review triggered the direction's own retirement rule:
 the field read as decorative strings/bars and lacked emotional or perceptual
 value. It was rejected before publication and removed from the runtime, QA and
 active tests. Aperture remains the fresh-session and invalid-preference
-fallback. SLIP and WAKE remain documented, unselected directions and have no
-active renderer; WAKE source research and one concept capture do not constitute
-selection or implementation.
+fallback. WAKE was subsequently selected and implemented under an exact
+reference-fidelity contract; SLIP remains proposal-only.
 
 `MERIDIAN 03` follows the selected oblique-blade reference contract: sparse
 large red, white and secondary-colour Euclidean planes flank a low, readable
@@ -83,6 +82,12 @@ balconies, cheap wireframe grids and excessive particles are excluded.
 palette-driven 3D OpenFreeMap field, a concise selected-page Wikipedia abstract
 with a free thumbnail when available, four local reading choices and a QR for
 the selected page. The map runtime is
+
+`DRIVEY 06` is an original bounded Canvas2D wireframe road environment. It
+imports no upstream runtime, asset, car, level, model or branding. Speed owns
+road travel and perspective; music owns colour timing; each named performance
+macro changes native road geometry or material. A contextual `TUNE` surface
+exposes Driver, Hood and Rear cameras plus clamped wireframe Structure.
 loaded only when ATLAS is selected. Position is ephemeral, never enters the
 diagnostic report or persistence, and third-party map/nearby requests are
 disclosed in the interface and privacy documentation. The field centers on each
@@ -188,8 +193,8 @@ acceptance in the vehicle.
 | Adaptive synth + sequencer | implemented prototype | FRACTURE runs in the AudioWorklet; real Tesla musical acceptance pending |
 | Modular Aperture generative visual | implemented prototype | WebGL2 plus Canvas2D fallback; Tesla performance pending |
 | PLUMB inertial-suspension visual | rejected and retired before publication | Exact-viewport review triggered its strings/bars retirement criterion; no active renderer |
-| Selectable visual environments | implemented prototype | Aperture, Vertigo, Meridian, and Atlas share normalized motion, safety, persistence, palette, failure, and diagnostic contracts |
-| Selectable musical environments | implemented prototype | FRACTURE and JUNCTION ready; five later directions remain pending |
+| Selectable visual environments | implemented prototype | Aperture, Vertigo, Meridian, Atlas, Wake, and Drivey share normalized motion, safety, persistence, palette, failure, and diagnostic contracts |
+| Selectable musical environments | implemented prototype | FRACTURE, JUNCTION, and NIGHTSHIFT ready; four later directions remain pending |
 | Open packs | strategic goal | schema and licensing not frozen |
 | Offline audio core | implemented prototype | identical score DSP renders and analyses WAV references in Node |
 | Offline application cache | planned after capability test | browser persistence unknown |

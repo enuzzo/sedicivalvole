@@ -41,6 +41,12 @@ import { SplashSignalGate } from "./splash-signal-gate.jsx";
 import { Interstate7Field } from "./interstate-7-field.jsx";
 import { MeridianField } from "./environments/meridian/meridian-field.jsx";
 import { WakeField } from "./environments/wake/wake-field.jsx";
+import { DriveyField } from "./environments/drivey/drivey-field.jsx";
+import {
+  DEFAULT_DRIVEY_SETTINGS,
+  DRIVEY_CAMERAS,
+  normalizeDriveySettings,
+} from "./environments/drivey/drivey-model.js";
 import { atlasGpsPresentation, resolveAtlasHeading } from "./environments/atlas/atlas-model.js";
 import {
   advanceDemoMotion,
@@ -142,12 +148,14 @@ function readPreferences() {
       genreId: SCORE_GENRES.some((genre) => (
         genre.id === value?.genreId && genre.status === SCORE_STATUS.ready
       )) ? value.genreId : DEFAULT_GENRE_ID,
+      driveySettings: normalizeDriveySettings(value?.driveySettings),
     };
   } catch {
     return {
       themeId: "red",
       environmentId: DEFAULT_FLUX_ENVIRONMENT_ID,
       genreId: DEFAULT_GENRE_ID,
+      driveySettings: DEFAULT_DRIVEY_SETTINGS,
     };
   }
 }
@@ -642,6 +650,65 @@ function VisualPicker({ environmentId, onChange, onClose }) {
   );
 }
 
+function DriveyTuneControl({ open, settings, onChange, onToggle, onClose }) {
+  const camera = DRIVEY_CAMERAS[settings.camera] ?? DRIVEY_CAMERAS.driver;
+  return (
+    <div
+      className={`visual-tune ${open ? "is-open" : ""}`}
+      onPointerDown={(event) => event.stopPropagation()}
+    >
+      <button
+        className="visual-tune-trigger"
+        type="button"
+        aria-controls="drivey-tune-panel"
+        aria-expanded={open}
+        onClick={onToggle}
+      >
+        <span>TUNE</span>
+        <small>{camera.label}</small>
+      </button>
+      {open ? (
+        <section id="drivey-tune-panel" className="visual-tune-panel" aria-label="DRIVEY visual tuning">
+          <header>
+            <div><small>DRIVEY 06</small><strong>Road field</strong></div>
+            <button type="button" onClick={onClose}>CLOSE</button>
+          </header>
+          <fieldset>
+            <legend>CAMERA</legend>
+            <div className="visual-tune-options">
+              {Object.values(DRIVEY_CAMERAS).map((entry) => (
+                <button
+                  key={entry.id}
+                  type="button"
+                  aria-pressed={entry.id === settings.camera}
+                  onClick={() => onChange({ ...settings, camera: entry.id })}
+                >
+                  {entry.label}
+                </button>
+              ))}
+            </div>
+          </fieldset>
+          <label className="visual-tune-range">
+            <span>STRUCTURE <output>{settings.structure}</output></span>
+            <input
+              type="range"
+              min="20"
+              max="100"
+              step="1"
+              value={settings.structure}
+              aria-label="DRIVEY wireframe structure"
+              onChange={(event) => onChange(normalizeDriveySettings({
+                ...settings,
+                structure: event.currentTarget.value,
+              }))}
+            />
+          </label>
+        </section>
+      ) : null}
+    </div>
+  );
+}
+
 /**
  * The score library panel.
  *
@@ -899,10 +966,12 @@ export function App() {
   const [flightRecorderRevision, setFlightRecorderRevision] = useState(0);
   const [themeId, setThemeId] = useState(initialPreferences.themeId);
   const [environmentId, setEnvironmentId] = useState(initialPreferences.environmentId);
+  const [driveySettings, setDriveySettings] = useState(initialPreferences.driveySettings);
   const [environmentRuntimeError, setEnvironmentRuntimeError] = useState(null);
   const [genreId, setGenreId] = useState(initialPreferences.genreId);
   const [environmentPickerOpen, setEnvironmentPickerOpen] = useState(false);
   const [scorePickerOpen, setScorePickerOpen] = useState(false);
+  const [tuneOpen, setTuneOpen] = useState(false);
   const [supportOpen, setSupportOpen] = useState(false);
   const [rawReportOpen, setRawReportOpen] = useState(false);
   const [diagnosticReadmeOpen, setDiagnosticReadmeOpen] = useState(false);
@@ -983,6 +1052,7 @@ export function App() {
     || previewOpen
     || environmentPickerOpen
     || scorePickerOpen
+    || tuneOpen
     || supportOpen;
   const closeVoicePreview = useCallback(() => {
     setPreviewOpen(false);
@@ -1792,11 +1862,16 @@ export function App() {
   useEffect(() => { audioRef.current?.setMuted(muted); }, [muted]);
   useEffect(() => {
     try {
-      localStorage.setItem(PREFERENCES_KEY, JSON.stringify({ themeId, environmentId, genreId }));
+      localStorage.setItem(PREFERENCES_KEY, JSON.stringify({
+        themeId,
+        environmentId,
+        genreId,
+        driveySettings: normalizeDriveySettings(driveySettings),
+      }));
     } catch {
       // Preference persistence is optional.
     }
-  }, [environmentId, genreId, themeId]);
+  }, [driveySettings, environmentId, genreId, themeId]);
 
   const captureViewport = useCallback((reason) => {
     const snapshot = readDisplaySnapshot(reason);
@@ -2077,6 +2152,7 @@ export function App() {
 
   useEffect(() => {
     setEnvironmentRuntimeError(null);
+    if (environmentId !== "drivey") setTuneOpen(false);
   }, [environmentId]);
 
   return (
@@ -2143,6 +2219,18 @@ export function App() {
               onFrame={recordRenderedFrame}
               onRuntimeError={handleEnvironmentError}
             />
+          ) : environment.renderer === "drivey" ? (
+            <DriveyField
+              speed={speed}
+              audioLevel={audioLevel}
+              theme={theme}
+              settings={driveySettings}
+              reducedMotion={reducedMotion}
+              effect={activeEffect}
+              onRenderer={setRenderer}
+              onFrame={recordRenderedFrame}
+              onRuntimeError={handleEnvironmentError}
+            />
           ) : (
             <FluxField
               energy={energy}
@@ -2158,6 +2246,15 @@ export function App() {
             />
           )}
         </EnvironmentErrorBoundary>
+      ) : null}
+      {phase === "running" && environment.renderer === "drivey" ? (
+        <DriveyTuneControl
+          open={tuneOpen}
+          settings={driveySettings}
+          onChange={(value) => setDriveySettings(normalizeDriveySettings(value))}
+          onToggle={() => setTuneOpen((value) => !value)}
+          onClose={() => setTuneOpen(false)}
+        />
       ) : null}
       {keyboardHint ? <div className="keyboard-hint" role="status">{keyboardHint}</div> : null}
 
@@ -2315,7 +2412,10 @@ export function App() {
               )}
             </span>
           </button>
-          <VisualControl environment={environment} onOpen={() => setEnvironmentPickerOpen(true)} />
+          <VisualControl environment={environment} onOpen={() => {
+            setTuneOpen(false);
+            setEnvironmentPickerOpen(true);
+          }} />
           <MusicControl
             genreId={genreId}
             selection={scoreSelection}

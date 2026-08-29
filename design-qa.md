@@ -276,3 +276,50 @@ remains the acceptance boundary for apparent direction, cabin distance and
 display persistence.
 
 final result after pass 9: passed locally; vehicle acceptance open
+
+---
+
+# Design QA — DRIVEY 06 original road field
+
+Date: 2026-08-29
+
+## Contract and evidence
+
+- Admitted mechanics source: Drivey commit `5104cdad`, attribution and
+  implementation boundary already recorded in `THIRD_PARTY_NOTICES.md` and
+  `docs/SOURCE-ADMISSION-2026-08-29.md`.
+- Internal implementation concept:
+  `/Users/enuzzo/.codex/generated_images/01a04dcc-293b-7d32-87b8-b8aa744650ff/exec-833d4088-526e-4dd2-aa46-f39659ac4a33.png`.
+- Exact product captures:
+  `prototype/drive-lab/qa/drivey-design-qa/implementation-closed-773x601.png`
+  and `implementation-tune-773x601.png`.
+- Runtime boundary: project-authored Canvas2D road, lane and terrain projection;
+  no upstream source, shader, runtime, texture, model, level, vehicle, font,
+  screenshot or brand asset enters the product.
+
+## Fidelity ledger
+
+| Priority | Comparison point | Resolution and evidence |
+|---|---|---|
+| P1 | The first implementation exaggerated road relief into a mountain-like fold and made the Rear camera approach an accidental loop. | Reduced road elevation to a restrained fraction of the terrain profile and repeated the `60 / 130 km/h` render comparison. The road remains continuous, broad and readable in Driver, Hood and Rear views. |
+| P1 | The concept requires actual road travel rather than a static wireframe composition. | Longitudinal road sections and centre dashes advance through a frame-rate-independent phase. Speed owns travel rate and perspective; the deterministic model proves more than twentyfold rate separation between rest and `100 km/h`. |
+| P1 | TUNE must fit the real product without covering the speed module or footer. | The collapsed control occupies the measured upper-left gap at `16 × 82 px`; the 232 px panel ends above the 64 px Tesla footer. Responsive checks show no document overflow at `773 × 601`, `390 × 844`, or `601 × 390`. |
+| P2 | Palette and macro behavior must belong to the road rather than a generic overlay. | Road edges, centre guide, cross-sections and terrain read the selected Sedici palette. OPEN changes perspective, UNDERWATER compresses depth/relief, and BLOOM strengthens native line and colour timing. |
+| P2 | Camera and Structure controls must be purposeful and accessible. | Driver, Hood and Rear are 44 px pressed-state buttons; Structure is one clamped `20–100` range with an explicit accessible name and live value. No generic intensity control was added. |
+
+## Browser and responsive result
+
+- Exact `773 × 601` product flow: launch muted → Visual library → DRIVEY 06 →
+  RED 03 → TUNE → Hood → Structure `100` → `130 km/h` BLOOM: **PASS**.
+- Product chrome, title hierarchy, Music selection, palette control and the
+  existing 68 px / 64 px bands remain unchanged. Above-the-fold copy adds only
+  the approved `TUNE`, `DRIVEY 06`, Camera, and Structure labels.
+- Runtime: Canvas2D, 59.99 FPS, 17.9 ms p95, zero runtime issues, zero current
+  Browser warning or error.
+- Reduced motion freezes travel and musical colour animation while retaining a
+  legible road composition and every control.
+
+P0: none. P1: none after the relief correction. P2: none.
+
+final result: passed locally; real-Tesla motion comfort, touch and sustained
+thermal acceptance remain open

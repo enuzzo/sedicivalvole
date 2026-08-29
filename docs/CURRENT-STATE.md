@@ -13,10 +13,11 @@ dated study documents.
 - `Flux` is the implemented primary mode. `Engine` remains an equal confirmed
   mode, visible but disabled until its own audio model and one of exactly three
   Engine-specific visual directions are selected.
-- The Flux catalog contains five visual environments: **APERTURE 01**,
-  **VERTIGO 02**, **MERIDIAN 03**, **ATLAS 04**, and **WAKE 05**. Aperture
+- The Flux catalog contains six visual environments: **APERTURE 01**,
+  **VERTIGO 02**, **MERIDIAN 03**, **ATLAS 04**, **WAKE 05**, and
+  **DRIVEY 06**. Aperture
   remains the accepted fresh-session and invalid-preference fallback.
-- All five environments use the shared catalog of **10 themes**. Vertigo keeps
+- All six environments use the shared catalog of **10 themes**. Vertigo keeps
   the upstream Interstate 7 files byte-identical while an external runtime
   bridge maps the selected theme onto its existing colour channels.
 - OPEN, UNDERWATER and BLOOM are visible in all five active environments without
@@ -59,6 +60,15 @@ dated study documents.
   remains slow, soft and velvet-like; speed progressively increases travel,
   crossings and temporary knots. The blocking P0/P1/P2 gate in `design-qa.md`
   passes locally after that correction.
+- DRIVEY is an original bounded Canvas2D perspective-road renderer informed by
+  the admitted Drivey mechanics study without importing upstream code, assets,
+  levels, models, or branding. A continuous road bed, lane geometry and terrain
+  contours stream at a speed-owned rate; musical level changes colour timing,
+  while OPEN, UNDERWATER and BLOOM alter native perspective, relief and line
+  energy. Its contextual `TUNE` control exposes Driver, Hood and Rear cameras
+  plus a clamped Structure value in the measured upper-left gap. Exact
+  `773 × 601`, `390 × 844` and `601 × 390` Browser QA passes locally at
+  59.99 FPS / 17.9 ms p95 with zero runtime issue, warning or error.
 - REGISTER was rejected after live review because its static print composition
   was inexplicable in motion and outside the product mood. Its source remains
   only in the rejected-visual archive; the runtime, QA harness and active tests
@@ -268,8 +278,8 @@ dated study documents.
    spectral slope and saturation; add stereo and phase-coherence evidence with
    explicit invalidity reasons before any detected pitch set can gate JUNCTION
    material.
-5. Implement the licensed visual-environment plan for DRIVEY, PRTCL, INFINITE
-   and PRIMORDIAL without importing excluded upstream assets or code, then run
+5. Continue the licensed visual-environment plan with PRTCL, INFINITE and
+   PRIMORDIAL without importing excluded upstream assets or code, then run
    its source-comparison, accessibility, performance and target-viewport gates.
 6. Design Engine only after exactly three Engine-specific directions are shown
    and one is selected. Keep `VERSION` at `0.0.0` until an explicit release is
