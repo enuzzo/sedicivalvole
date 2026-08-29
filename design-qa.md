@@ -44,7 +44,6 @@ The normalized source and latest browser rendering were opened together in one `
 - P3: validate the ray visibility and ivory brightness on the physical Tesla display before increasing either; the current implementation intentionally prioritizes the road and typography.
 
 final result: passed
-
 ---
 
 # Historical design QA — Kinetic Meridian, rejected Latitudes, and ATLAS
@@ -188,3 +187,61 @@ final result: passed
 ## Browser QA Result
 
 Passed locally at the required `773 × 601` viewport. Launch and core selectors work; Meridian renders through WebGL2 across `0`, `40`, `90` and `130 km/h`; the fresh browser session reports no current console warnings/errors. The result is an implementation match within the practical limits of the real-time no-bloom renderer, not a generated-image substitution. Real-Tesla visual acceptance remains open.
+
+---
+
+# Design QA — WAKE fidelity contract
+
+Date: 2026-08-29
+
+## Contract
+
+- Approved source: `/Users/enuzzo/.codex/generated_images/01a04c97-3426-7903-8336-af01ab3c6a15/exec-428d4bbf-ef29-46c1-9aee-2d8a2c1c6ca8.png`
+- Source dimensions: `1423 × 1105`, normalized to the agreed `773 × 601` viewport for comparison.
+- Implementation capture: `prototype/drive-lab/qa/wake-design-qa/implementation-final-773x601.png`
+- Blocking side-by-side comparison: `prototype/drive-lab/qa/wake-design-qa/comparison-final.png`
+- Motion sequences: `prototype/drive-lab/qa/wake-design-qa/flow-20-sequence.png`,
+  `flow-60-sequence.png`, and `flow-130-sequence.png`.
+- Runtime state: Flux, WAKE 05, JUNCTION, RED 03, QA speed `20 km/h`, audio muted.
+
+## Comparison record
+
+The approved source and the running implementation were inspected together in
+one `1546 × 601` comparison image after each geometry and material pass. The
+final pass preserves the complete Sedici Valvole header and control plane and
+matches the source's seven authored surfaces: the upper red crossing, recessed
+upper shadow, returning graphite loop, folded lower-left red sheet, tapered
+right red sheet, lower graphite fold and lower-right maroon sheet.
+
+Live review reopened the gate twice: first because the material itself needed
+to move, then because draping was not enough and the surfaces needed to stream
+like roads. The final renderer therefore transports compression, width, fold
+and twist geometry longitudinally along every authored spline. Drape dominates
+at low speed; directional flow, crossings and temporary knots grow continuously
+with road energy. This is geometric advection, not a light-only animation.
+
+Three-frame browser sequences use `900 ms` intervals at each speed. Field-only
+frame-one-to-frame-three RMSE rises monotonically from `0.072862` at `20 km/h`
+to `0.161393` at `60 km/h` and `0.254572` at `130 km/h`, confirming that the
+surfaces themselves travel progressively faster. Deterministic model tests
+separately assert monotonic phase rate, sway, tangle, longitudinal compression
+and moving width.
+
+The implementation intentionally reports JUNCTION's current truthful `85 BPM`
+at `20 km/h`, rather than the superseded `127 BPM` shown by the static design
+source. The implementation capture is intentionally muted because unattended
+browser QA must not play through the speakers. Neither state difference changes
+the WAKE visual contract.
+
+## Severity gate
+
+- P0: none.
+- P1: none.
+- P2: none after pass 8. Continuous cross-section tessellation removed the
+  segmented edges; authored tapering restored the source composition; the
+  final material pass restored graphite separation, fold highlights, subtle
+  grain and red-to-maroon depth. The two live-review passes added geometric
+  cloth motion and directional road-like flow without altering the product
+  control plane.
+
+final result: passed

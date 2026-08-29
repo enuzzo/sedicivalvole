@@ -46,6 +46,14 @@ export const FLUX_ENVIRONMENTS = [
     renderer: "atlas",
     themed: true,
   },
+  {
+    id: "wake",
+    label: "WAKE",
+    number: "05",
+    rendererLabel: "Wake",
+    renderer: "wake",
+    themed: true,
+  },
 ];
 
 export function getFluxEnvironment(environmentId) {

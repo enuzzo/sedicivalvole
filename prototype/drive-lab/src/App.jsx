@@ -40,6 +40,7 @@ import {
 import { SplashSignalGate } from "./splash-signal-gate.jsx";
 import { Interstate7Field } from "./interstate-7-field.jsx";
 import { MeridianField } from "./environments/meridian/meridian-field.jsx";
+import { WakeField } from "./environments/wake/wake-field.jsx";
 import { resolveAtlasHeading } from "./environments/atlas/atlas-model.js";
 import {
   advanceDemoMotion,
@@ -1987,6 +1988,16 @@ export function App() {
                 onRuntimeError={handleEnvironmentError}
               />
             </Suspense>
+          ) : environment.renderer === "wake" ? (
+            <WakeField
+              speed={speed}
+              theme={theme}
+              reducedMotion={reducedMotion}
+              effect={activeEffect}
+              onRenderer={setRenderer}
+              onFrame={recordRenderedFrame}
+              onRuntimeError={handleEnvironmentError}
+            />
           ) : (
             <FluxField
               energy={energy}

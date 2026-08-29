@@ -13,17 +13,18 @@ dated study documents.
 - `Flux` is the implemented primary mode. `Engine` remains an equal confirmed
   mode, visible but disabled until its own audio model and one of exactly three
   Engine-specific visual directions are selected.
-- The Flux catalog contains four visual environments: **APERTURE 01**,
-  **VERTIGO 02**, **MERIDIAN 03**, and **ATLAS 04**. Aperture remains the
-  accepted fresh-session and invalid-preference fallback.
-- All four environments use the shared catalog of **10 themes**. Vertigo keeps
+- The Flux catalog contains five visual environments: **APERTURE 01**,
+  **VERTIGO 02**, **MERIDIAN 03**, **ATLAS 04**, and **WAKE 05**. Aperture
+  remains the accepted fresh-session and invalid-preference fallback.
+- All five environments use the shared catalog of **10 themes**. Vertigo keeps
   the upstream Interstate 7 files byte-identical while an external runtime
   bridge maps the selected theme onto its existing colour channels.
-- OPEN, UNDERWATER and BLOOM are visible in all four active environments without
+- OPEN, UNDERWATER and BLOOM are visible in all five active environments without
   a shared overlay. Aperture performs its tiled projection and centre light;
   Vertigo changes only the original runtime's externally bridged time, FOV and
   colour controls; Meridian changes corridor projection, flow, fog and rail
-  energy; Atlas changes MapLibre camera and layer paint properties.
+  energy; Atlas changes MapLibre camera and layer paint properties; Wake changes
+  authored ribbon width, separation, fold pressure and material light.
 - Meridian keeps one deterministic low corridor beneath sparse, large oblique
   blades and longitudinal shoulder planes. Its shared travel field has tightly
   bounded vertical motion; FOV, depth compression, peripheral stretch,
@@ -41,6 +42,16 @@ dated study documents.
   compact image-and-reading context and an `86 px` QR at the Tesla split viewport, collapses
   behind a persistent midpoint handle to return the complete field to the map,
   and keeps mandatory attribution in a tiny translucent strip above the footer.
+- WAKE implements the approved reference as seven broad, continuously
+  tessellated material sheets circulating around stable negative space. It is a
+  project-authored WebGL2 renderer with a Canvas2D fallback; no third-party
+  runtime or asset was imported. Its exact `773 × 601` browser capture and the
+  normalized source were compared together through six fidelity passes, and
+  two subsequent live-review passes made the surfaces themselves move and then
+  advect folds, width, compression and twist directionally like roads. Low speed
+  remains slow, soft and velvet-like; speed progressively increases travel,
+  crossings and temporary knots. The blocking P0/P1/P2 gate in `design-qa.md`
+  passes locally.
 - REGISTER was rejected after live review because its static print composition
   was inexplicable in motion and outside the product mood. Its source remains
   only in the rejected-visual archive; the runtime, QA harness and active tests

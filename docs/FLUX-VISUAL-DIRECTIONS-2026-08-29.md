@@ -1,11 +1,10 @@
 # Three Flux visual directions — 2026-08-29
 
-Status: **selection reopened 2026-08-29**. PLUMB reached one local exact-viewport
-prototype, triggered its own retirement criterion, and was rejected before
-publication. Its runtime was removed. SLIP and WAKE remain the other two
-unselected directions; no replacement may be built without a new explicit
-product-owner decision. A single WAKE concept capture and licensed-source study
-are advisory material, not a fourth direction or an implemented environment.
+Status: **WAKE selected and implemented 2026-08-29**. PLUMB reached one local
+exact-viewport prototype, triggered its own retirement criterion, and was
+rejected before publication. Its runtime was removed. SLIP remains unselected.
+The selected WAKE capture is now a strict fidelity contract, implemented by a
+project-authored renderer with no imported third-party runtime or asset.
 
 Shared constraints: continuous low-amplitude motion at rest; strong peripheral
 speed and acceleration legibility; no starburst, particles, moire, halftone,
@@ -81,9 +80,16 @@ material streams. The passenger reads motion from how the field bends around the
 void, like pressure around an unseen body, without depicting a car, road, tunnel,
 or particle flow.
 
-Five solid bands circulate continuously at rest with sub-pixel lateral drift.
-Their spacing is deliberately broad, so the field cannot become a retino or
-moire pattern.
+Seven broad solid surfaces circulate continuously at rest with sub-pixel
+lateral drift. Their spacing is deliberately broad, so the field cannot become
+a retino or moire pattern. The count and composition follow the approved source
+rather than the earlier five-band proposal sketch.
+
+The implemented material is not a stationary drape with travelling light.
+Compression, width, folds and twist are advected directionally along each
+spline. At low speed the motion reads as slow velvet cloth; road energy raises
+the transport rate, sway and fold travel before allowing crossings and
+temporary knots at high speed.
 
 | Speed | Field state |
 |---:|---|
@@ -99,18 +105,20 @@ separates a launch from cruising at the same speed. OPEN increases edge tension
 and makes the wake snap outward. UNDERWATER expands the void, slows circulation,
 and bends the bands inward as if external pressure increased.
 
-**Minimum prototype.** WebGL2 signed-distance void plus five analytic ribbon
-bands in one draw call; Canvas2D fallback uses five preallocated Bezier paths.
+**Implemented form.** One project-authored WebGL2 draw call tessellates seven
+Catmull-Rom material sheets with tapered cross-sections, depth, fold normals,
+theme colour, restrained grain and highlights. Canvas2D provides a broad-path
+fallback. Exact source-versus-runtime evidence and the blocking fidelity verdict
+are recorded in `design-qa.md`.
 
 **Retire if:** the central absence is read as a tunnel or portal, the bands are
 read as a road, or steady 20 km/h and standstill are not distinguishable within
 two seconds of peripheral viewing.
 
-### WAKE licensed-source study (advisory only)
+### WAKE licensed-source study (not imported)
 
-No external runtime or asset has entered the repository. The safest route is a
-project-authored WAKE renderer built on narrowly selected, attributed
-open-source mechanics:
+No external runtime or asset entered the repository. The project-authored
+renderer was selected, so the candidates below remain historical research only:
 
 - [`sumisonic/bezier-kit`](https://github.com/sumisonic/bezier-kit) is MIT,
   current, zero-dependency in its core package, and provides allocation-aware 3D
