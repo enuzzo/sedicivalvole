@@ -33,7 +33,7 @@ test("OPEN trades mid energy for air and width instead of adding raw level", () 
   const full = accelerationMacroParameters(1);
   assert.deepEqual(idle, { midScoopDb: -0, airShelfDb: 0, width: 1, trimGain: 1 });
   assert.equal(full.midScoopDb, -3.5);
-  assert.equal(full.airShelfDb, 2);
-  assert.ok(full.width > 1.58 && full.width < 1.59);
-  assert.ok(full.trimGain < 1);
+  assert.equal(full.airShelfDb, 2.8);
+  assert.ok(full.width > 1.67 && full.width < 1.69);
+  assert.ok(full.trimGain > 0.97 && full.trimGain < 0.98);
 });

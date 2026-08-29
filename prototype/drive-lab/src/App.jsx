@@ -107,6 +107,10 @@ const QA_SPEED = import.meta.env.DEV
 // A local-only QA latch lets exact-viewport browser checks exercise every
 // running state without sending Web Audio to the user's speakers.
 const QA_MUTED = import.meta.env.DEV && QA_PARAMS.get("qaMute") === "1";
+const QA_EFFECT = import.meta.env.DEV
+  && ["OPEN", "UNDERWATER", "BLOOM"].includes(QA_PARAMS.get("qaEffect"))
+  ? QA_PARAMS.get("qaEffect")
+  : null;
 const DIAGNOSTIC_SEND_ERROR_COPY = {
   payload_size_rejected: "The browser report exceeded the transport limit. Keep this page open and retry after an update.",
   report_rejected: "The server report exceeded the mail limit. Keep this page open and retry after an update.",
@@ -767,7 +771,7 @@ export function App() {
   const [diagnostics, setDiagnostics] = useState(null);
   const [sendState, setSendState] = useState("idle");
   const [sendErrorCode, setSendErrorCode] = useState(null);
-  const [activeEffect, setActiveEffect] = useState(null);
+  const [activeEffect, setActiveEffect] = useState(QA_EFFECT);
   const [scoreTransportTempo, setScoreTransportTempo] = useState(162);
   const [scorePerceivedTempo, setScorePerceivedTempo] = useState(null);
   const [scoreScene, setScoreScene] = useState("REST");
@@ -1002,6 +1006,7 @@ export function App() {
       (position) => {
         const capturedAtMs = performance.now();
         const accuracyM = Number.isFinite(position.coords.accuracy) ? position.coords.accuracy : null;
+        audioRef.current?.setGpsAccuracy(accuracyM);
         setAccuracy(Number.isFinite(accuracyM) ? Math.round(accuracyM) : null);
         const kmh = normalizeGpsSpeed(position.coords.speed);
         latestGpsObservationRef.current = { capturedAtMs, speedKmh: kmh };
@@ -1038,6 +1043,9 @@ export function App() {
         // between normal 2–3 m readings; it should be evidence, not a musical
         // or visual structural command.
         const unreliable = Number.isFinite(accuracyM) && accuracyM > 250;
+        if (!unreliable) {
+          audioRef.current?.setAccelerationSample(kmh, { capturedAtMs, accuracyM });
+        }
         if (!unreliable
           && Number.isFinite(position.coords.latitude)
           && Number.isFinite(position.coords.longitude)
@@ -1316,7 +1324,11 @@ export function App() {
     }
 
     try {
-      audioRef.current = createAudioEngine(triggerPulse, setActiveEffect, handleScoreRecovery);
+      audioRef.current = createAudioEngine(
+        triggerPulse,
+        (nextEffect) => setActiveEffect(QA_EFFECT ?? nextEffect),
+        handleScoreRecovery,
+      );
       if (!audioRef.current) throw new Error("Web Audio is unavailable");
       await audioRef.current.resume();
       audioRef.current.setMuted(QA_MUTED);
@@ -1946,6 +1958,7 @@ export function App() {
               speed={speed}
               theme={theme}
               reducedMotion={reducedMotion}
+              effect={activeEffect}
               onRenderer={setRenderer}
               onFrame={recordRenderedFrame}
               onRuntimeError={handleEnvironmentError}
@@ -1955,6 +1968,7 @@ export function App() {
               speed={speed}
               theme={theme}
               reducedMotion={reducedMotion}
+              effect={activeEffect}
               onRenderer={setRenderer}
               onFrame={recordRenderedFrame}
               onRuntimeError={handleEnvironmentError}
@@ -1966,6 +1980,7 @@ export function App() {
                 theme={theme}
                 position={mapPosition}
                 reducedMotion={reducedMotion}
+                effect={activeEffect}
                 keyboardShortcutsEnabled={!modalOpen}
                 onRenderer={setRenderer}
                 onFrame={recordRenderedFrame}
@@ -1980,6 +1995,7 @@ export function App() {
               reducedMotion={reducedMotion}
               pulse={activeEffect === "OPEN" ? 1 : 0}
               brake={activeEffect === "UNDERWATER" ? 1 : brakeFlash}
+              effect={activeEffect}
               onRenderer={setRenderer}
               onFrame={recordRenderedFrame}
               onRuntimeError={handleEnvironmentError}

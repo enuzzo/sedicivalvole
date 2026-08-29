@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef } from "react";
 import {
   createInterstateLoadDeadline,
   INTERSTATE7_ENTRY_PHASE_SECONDS,
-  speedToInterstate7Targets,
+  interstate7EffectTargets,
   themeToInterstate7Palette,
 } from "./interstate-7-bridge.js";
 import {
@@ -37,9 +37,10 @@ function recolourRoad(mesh, surface, markings) {
   setThreeColor(uniforms?.uShoulderLinesColor?.value, markings);
 }
 
-function applyTheme(app, theme) {
-  if (!theme?.palette || app.__sedicivalvoleThemeId === theme.id) return;
-  const palette = themeToInterstate7Palette(theme);
+function applyTheme(app, theme, effect) {
+  const signature = `${theme?.id ?? "unknown"}:${effect ?? "none"}`;
+  if (!theme?.palette || app.__sedicivalvoleThemeId === signature) return;
+  const palette = themeToInterstate7Palette(theme, effect);
   setThreeColor(app.scene?.fog?.color, palette.background);
   setThreeColor(app.fogUniforms?.fogColor?.value, palette.background);
   recolourInstances(app.leftCarLights?.mesh, palette.leftCars, true);
@@ -48,20 +49,21 @@ function applyTheme(app, theme) {
   recolourRoad(app.road?.leftRoadWay, palette.road, palette.markings);
   recolourRoad(app.road?.rightRoadWay, palette.road, palette.markings);
   recolourRoad(app.road?.island, palette.island, palette.markings);
-  app.__sedicivalvoleThemeId = theme.id;
+  app.__sedicivalvoleThemeId = signature;
 }
 
 export function Interstate7Field({
   speed,
   theme,
   reducedMotion,
+  effect,
   onRenderer,
   onFrame,
   onRuntimeError,
 }) {
   const frameRef = useRef(null);
-  const valuesRef = useRef({ speed, theme, reducedMotion, onRenderer, onFrame, onRuntimeError });
-  valuesRef.current = { speed, theme, reducedMotion, onRenderer, onFrame, onRuntimeError };
+  const valuesRef = useRef({ speed, theme, reducedMotion, effect, onRenderer, onFrame, onRuntimeError });
+  valuesRef.current = { speed, theme, reducedMotion, effect, onRenderer, onFrame, onRuntimeError };
   const source = useMemo(
     () => new URL(`/${ORIGINAL_INTERSTATE_7_PATH}`, window.location.origin).href,
     [],
@@ -114,8 +116,9 @@ export function Interstate7Field({
         if (!originalUpdate.__sedicivalvoleBridge) {
           const updateFromRoadSpeed = function updateFromRoadSpeed(delta) {
             try {
-              const { speedUpTarget, fovTarget } = speedToInterstate7Targets(
+              const { speedUpTarget, fovTarget } = interstate7EffectTargets(
                 frameWindow.__SEDICIVALVOLE_SPEED_KMH__ ?? 0,
+                frameWindow.__SEDICIVALVOLE_EFFECT__,
               );
               if (!this.__sedicivalvoleEntryFramed) {
               // Enter at an attractive existing phase of the untouched upstream
@@ -130,7 +133,11 @@ export function Interstate7Field({
               }
               this.speedUpTarget = speedUpTarget;
               this.fovTarget = fovTarget;
-              applyTheme(this, frameWindow.__SEDICIVALVOLE_THEME__);
+              applyTheme(
+                this,
+                frameWindow.__SEDICIVALVOLE_THEME__,
+                frameWindow.__SEDICIVALVOLE_EFFECT__,
+              );
               const result = originalUpdate.call(this, delta);
             // Count the upstream renderer's own update, not the parent frame's
             // requestAnimationFrame loop. If the vendor renderer stalls,
@@ -180,6 +187,7 @@ export function Interstate7Field({
           : valuesRef.current.speed;
         frameWindow.__SEDICIVALVOLE_SPEED_KMH__ = inputSpeed;
         frameWindow.__SEDICIVALVOLE_THEME__ = valuesRef.current.theme;
+        frameWindow.__SEDICIVALVOLE_EFFECT__ = valuesRef.current.effect;
       } catch (error) {
         fail(error);
       }

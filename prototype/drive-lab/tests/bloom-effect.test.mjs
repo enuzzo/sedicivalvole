@@ -68,11 +68,11 @@ test("BLOOM is transparent after its release and delay have drained", () => {
   assert.equal(effect.active, false);
 });
 
-test("BLOOM adds less than 0.5 dB on an in-band sine", () => {
+test("BLOOM stays below a 0.6 dB peak lift on an in-band sine", () => {
   const effect = new BloomEffect(SAMPLE_RATE);
   effect.trigger();
   const { output } = renderSine(1000, 0.65, effect);
   const peak = output.reduce((maximum, value) => Math.max(maximum, Math.abs(value)), 0);
   const gainDb = 20 * Math.log10(peak / 0.5);
-  assert.ok(gainDb < 0.5, `peak grew by ${gainDb.toFixed(3)} dB`);
+  assert.ok(gainDb < 0.6, `peak grew by ${gainDb.toFixed(3)} dB`);
 });

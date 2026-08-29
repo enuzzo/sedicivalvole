@@ -45,6 +45,42 @@ export function speedToAtlasCamera(speedKmh) {
   };
 }
 
+export function atlasEffectProfile(effect) {
+  if (effect === "OPEN") {
+    return {
+      zoomDelta: -0.16, pitchDelta: 2, durationScale: 0.72,
+      roadWidthScale: 1.16, roadOpacity: 0.72, waterOpacity: 0.2, buildingOpacity: 0.8,
+    };
+  }
+  if (effect === "UNDERWATER") {
+    return {
+      zoomDelta: 0.12, pitchDelta: -3, durationScale: 1.18,
+      roadWidthScale: 0.9, roadOpacity: 0.4, waterOpacity: 0.44, buildingOpacity: 0.64,
+    };
+  }
+  if (effect === "BLOOM") {
+    return {
+      zoomDelta: -0.28, pitchDelta: 3.5, durationScale: 0.55,
+      roadWidthScale: 1.32, roadOpacity: 0.84, waterOpacity: 0.28, buildingOpacity: 0.88,
+    };
+  }
+  return {
+    zoomDelta: 0, pitchDelta: 0, durationScale: 1,
+    roadWidthScale: 1, roadOpacity: 0.58, waterOpacity: 0.24, buildingOpacity: 0.78,
+  };
+}
+
+export function speedToAtlasEffectCamera(speedKmh, effect) {
+  const camera = speedToAtlasCamera(speedKmh);
+  const profile = atlasEffectProfile(effect);
+  return {
+    ...camera,
+    zoom: camera.zoom + profile.zoomDelta,
+    pitch: camera.pitch + profile.pitchDelta,
+    durationMs: Math.round(camera.durationMs * profile.durationScale),
+  };
+}
+
 /** Uses device heading when present, otherwise derives travel bearing from two trusted fixes. */
 export function resolveAtlasHeading(previous, next, reportedHeading, minimumTravelMetres = 3) {
   if (Number.isFinite(reportedHeading)) return ((reportedHeading % 360) + 360) % 360;

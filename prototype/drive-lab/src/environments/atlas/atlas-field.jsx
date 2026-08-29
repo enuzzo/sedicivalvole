@@ -2,12 +2,13 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import "maplibre-gl/dist/maplibre-gl.css";
 import {
   advanceAtlasDemoPosition,
+  atlasEffectProfile,
   atlasKeyboardShortcutAvailable,
   createLatestAtlasRequestGate,
   normalizeNearbyPages,
   createAtlasStyle,
   paletteToAtlasCss,
-  speedToAtlasCamera,
+  speedToAtlasEffectCamera,
   validAtlasPosition,
   wikipediaNearbyUrl,
 } from "./atlas-model.js";
@@ -19,17 +20,26 @@ import {
 
 const FALLBACK_POSITION = { latitude: 45.4642, longitude: 9.19, heading: 22 };
 
-function recolourStyle(map, palette) {
+function recolourStyle(map, palette, effect = null) {
   const colors = paletteToAtlasCss(palette);
+  const profile = atlasEffectProfile(effect);
   map.setPaintProperty("atlas-background", "background-color", colors.background);
   map.setPaintProperty("atlas-landcover", "fill-color", colors.terrain);
   map.setPaintProperty("atlas-landuse", "fill-color", colors.terrain);
   map.setPaintProperty("atlas-water", "fill-color", colors.secondary);
+  map.setPaintProperty("atlas-water", "fill-opacity", profile.waterOpacity);
   map.setPaintProperty("atlas-roads-underlay", "line-color", colors.background);
   map.setPaintProperty("atlas-roads", "line-color", colors.secondary);
+  map.setPaintProperty("atlas-roads", "line-opacity", profile.roadOpacity);
+  map.setPaintProperty("atlas-roads", "line-width", [
+    "interpolate", ["linear"], ["zoom"],
+    10, 0.25 * profile.roadWidthScale,
+    17, 2 * profile.roadWidthScale,
+  ]);
   map.setPaintProperty("atlas-place-labels", "text-color", colors.foreground);
   map.setPaintProperty("atlas-place-labels", "text-halo-color", colors.background);
   if (map.getLayer("sedicivalvole-buildings")) {
+    map.setPaintProperty("sedicivalvole-buildings", "fill-extrusion-opacity", profile.buildingOpacity);
     map.setPaintProperty("sedicivalvole-buildings", "fill-extrusion-color", [
       "interpolate", ["linear"], ["get", "render_height"],
       0, colors.terrain,
@@ -98,6 +108,7 @@ export default function AtlasField({
   theme,
   position,
   reducedMotion,
+  effect,
   onRenderer,
   onFrame,
   onRuntimeError,
@@ -105,7 +116,7 @@ export default function AtlasField({
 }) {
   const hostRef = useRef(null);
   const mapRef = useRef(null);
-  const valuesRef = useRef({ speed, theme, position, reducedMotion });
+  const valuesRef = useRef({ speed, theme, position, reducedMotion, effect });
   const [pages, setPages] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
   const [qrUrl, setQrUrl] = useState("");
@@ -116,7 +127,7 @@ export default function AtlasField({
   const qrRequestGateRef = useRef(null);
   if (!nearbyRequestGateRef.current) nearbyRequestGateRef.current = createLatestAtlasRequestGate();
   if (!qrRequestGateRef.current) qrRequestGateRef.current = createLatestAtlasRequestGate();
-  valuesRef.current = { speed, theme, position, reducedMotion, demoPosition };
+  valuesRef.current = { speed, theme, position, reducedMotion, effect, demoPosition };
 
   const effectivePosition = useMemo(() => {
     if (validAtlasPosition(position)) return position;
@@ -141,7 +152,7 @@ export default function AtlasField({
     (async () => {
       const { default: maplibregl } = await import("maplibre-gl");
       if (disposed || !hostRef.current) return;
-      const camera = speedToAtlasCamera(valuesRef.current.speed);
+      const camera = speedToAtlasEffectCamera(valuesRef.current.speed, valuesRef.current.effect);
       const map = new maplibregl.Map({
         container: hostRef.current,
         style: createAtlasStyle(valuesRef.current.theme.palette),
@@ -168,7 +179,7 @@ export default function AtlasField({
           map.setPaintProperty("sedicivalvole-buildings", "fill-extrusion-height", [
             "*", ["coalesce", ["get", "render_height"], 5], camera.buildingScale,
           ]);
-          recolourStyle(map, valuesRef.current.theme.palette);
+          recolourStyle(map, valuesRef.current.theme.palette, valuesRef.current.effect);
           mapReady = true;
           onRenderer("WebGL2 · OpenFreeMap");
         } catch (error) {
@@ -215,7 +226,10 @@ export default function AtlasField({
           const current = valuesRef.current;
           const point = validAtlasPosition(current.position) ? current.position : current.demoPosition;
           if (!point) return;
-          const nextCamera = speedToAtlasCamera(current.reducedMotion ? Math.min(current.speed, 20) : current.speed);
+          const nextCamera = speedToAtlasEffectCamera(
+            current.reducedMotion ? Math.min(current.speed, 20) : current.speed,
+            current.effect,
+          );
           if (Math.abs(nextCamera.buildingScale - lastBuildingScale) >= 0.035) {
             lastBuildingScale = nextCamera.buildingScale;
             map.setPaintProperty("sedicivalvole-buildings", "fill-extrusion-height", [
@@ -283,8 +297,8 @@ export default function AtlasField({
   }, [demo, Boolean(demoPosition)]);
 
   useEffect(() => {
-    if (mapRef.current?.loaded()) recolourStyle(mapRef.current, theme.palette);
-  }, [theme]);
+    if (mapRef.current?.loaded()) recolourStyle(mapRef.current, theme.palette, effect);
+  }, [effect, theme]);
 
   useEffect(() => {
     const resize = () => mapRef.current?.resize();

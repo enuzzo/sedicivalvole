@@ -379,7 +379,10 @@ test("FRACTURE selection waits for a connected worklet and has an audible fallba
   assert.match(source, /if \(fractureReadyState !== "ready"\) \{/);
   assert.match(source, /FRACTURE is not yet audible/);
   assert.match(app, /try \{\s*audioRef\.current = createAudioEngine[\s\S]*?audio\.start-failed/);
-  assert.match(app, /createAudioEngine\(triggerPulse, setActiveEffect, handleScoreRecovery\)/);
+  assert.match(
+    app,
+    /createAudioEngine\(\s*triggerPulse,\s*\(nextEffect\) => setActiveEffect\(QA_EFFECT \?\? nextEffect\),\s*handleScoreRecovery,/,
+  );
   assert.match(app, /score\.runtime-recovered/);
 });
 

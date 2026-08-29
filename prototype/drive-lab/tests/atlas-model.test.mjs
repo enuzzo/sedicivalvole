@@ -3,12 +3,14 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import {
   advanceAtlasDemoPosition,
+  atlasEffectProfile,
   atlasKeyboardShortcutAvailable,
   createLatestAtlasRequestGate,
   createAtlasStyle,
   normalizeNearbyPages,
   resolveAtlasHeading,
   speedToAtlasCamera,
+  speedToAtlasEffectCamera,
   validAtlasPosition,
   wikipediaNearbyUrl,
 } from "../src/environments/atlas/atlas-model.js";
@@ -39,6 +41,18 @@ test("Atlas camera widens with speed while retaining a strongly dimensional city
   assert.ok(road.pitch >= 55, "motorway view must retain an oblique 3D perspective");
   assert.ok(road.durationMs < rest.durationMs);
   assert.ok(road.buildingScale > rest.buildingScale);
+});
+
+test("Atlas expresses all three effects through map-native camera and layer properties", () => {
+  const idle = atlasEffectProfile(null);
+  const open = atlasEffectProfile("OPEN");
+  const underwater = atlasEffectProfile("UNDERWATER");
+  const bloom = atlasEffectProfile("BLOOM");
+  assert.ok(open.roadWidthScale > idle.roadWidthScale);
+  assert.ok(underwater.waterOpacity > idle.waterOpacity);
+  assert.ok(underwater.buildingOpacity < idle.buildingOpacity);
+  assert.ok(bloom.roadOpacity > open.roadOpacity);
+  assert.ok(speedToAtlasEffectCamera(60, "BLOOM").zoom < speedToAtlasCamera(60).zoom);
 });
 
 test("Atlas telemetry samples real render events at no more than 30 FPS", () => {

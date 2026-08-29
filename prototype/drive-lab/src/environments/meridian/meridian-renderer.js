@@ -19,6 +19,7 @@ import {
   advanceTimeOffset,
   lookAtFromDistortion,
   MERIDIAN_TRAVEL_LENGTH,
+  meridianEffectProfile,
   meridianDistortionGlsl,
   speedToDistortionField,
   speedToLayerDensity,
@@ -901,15 +902,21 @@ export function createMeridianRenderer(canvas, initialPalette) {
       gl.viewport(0, 0, width, height);
     },
 
-    render({ speedKmh, deltaSeconds, reducedMotion }) {
+    render({ speedKmh, deltaSeconds, reducedMotion, effect }) {
       if (disposed) return;
 
       const speed = reducedMotion ? Math.min(speedKmh, 20) : speedKmh;
-      const rate = speedToTimeRate(speed);
+      const effectProfile = meridianEffectProfile(effect);
+      const rate = speedToTimeRate(speed) * effectProfile.rateScale;
       timeOffset = advanceTimeOffset(timeOffset, rate, deltaSeconds);
       railScroll += rate * RAIL_SCROLL_RATE * Math.max(0, Math.min(deltaSeconds, 0.25)) * 60;
 
-      const field = speedToDistortionField(speed);
+      const baseField = speedToDistortionField(speed);
+      const field = {
+        ...baseField,
+        swayAmplitude: baseField.swayAmplitude * effectProfile.swayScale,
+        liftAmplitude: baseField.liftAmplitude * effectProfile.swayScale,
+      };
       const density = speedToLayerDensity(speed);
       const projection = speedToProjection(speed);
       const peripheral = speedToPeripheralDeformation(speed);
@@ -923,7 +930,9 @@ export function createMeridianRenderer(canvas, initialPalette) {
       const eye = [0, projection.cameraLift, 0];
       const viewProjection = multiply(
         perspective(
-          reducedMotion ? Math.min(projection.fovDegrees, 82) : projection.fovDegrees,
+          reducedMotion
+            ? Math.min(projection.fovDegrees + effectProfile.fovDelta, 82)
+            : projection.fovDegrees + effectProfile.fovDelta,
           width / height,
           0.1,
           MERIDIAN_TRAVEL_LENGTH * 1.6,
@@ -950,7 +959,10 @@ export function createMeridianRenderer(canvas, initialPalette) {
       gl.uniform3fv(backgroundUniforms.u_base, palette.base);
       gl.uniform3fv(backgroundUniforms.u_mid, palette.mid);
       gl.uniform3fv(backgroundUniforms.u_accent, palette.accent);
-      gl.uniform1f(backgroundUniforms.u_atmosphere, density.atmosphereFraction);
+      gl.uniform1f(
+        backgroundUniforms.u_atmosphere,
+        Math.min(1, density.atmosphereFraction + effectProfile.atmosphereDelta),
+      );
       gl.uniform1f(backgroundUniforms.u_flow, peripheral.parallax);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
       gl.enable(gl.DEPTH_TEST);
@@ -967,7 +979,7 @@ export function createMeridianRenderer(canvas, initialPalette) {
       gl.uniform3fv(architectureUniforms.u_light, palette.light);
       gl.uniform3fv(architectureUniforms.u_accent, palette.accent);
       gl.uniform3fv(architectureUniforms.u_secondary, palette.secondary);
-      gl.uniform1f(architectureUniforms.u_fogDensity, 1.85);
+      gl.uniform1f(architectureUniforms.u_fogDensity, 1.85 * effectProfile.fogScale);
       gl.uniform1f(architectureUniforms.u_volumeGlow, density.volumeGlow);
       gl.drawArraysInstanced(gl.TRIANGLES, 0, cube.vertexCount, architecture.count);
 
@@ -981,8 +993,8 @@ export function createMeridianRenderer(canvas, initialPalette) {
       gl.uniform3fv(railUniforms.u_accent, palette.accent);
       gl.uniform3fv(railUniforms.u_secondary, palette.secondary);
       gl.uniform1f(railUniforms.u_railScroll, railScroll);
-      gl.uniform1f(railUniforms.u_railGlow, density.railGlow);
-      gl.uniform1f(railUniforms.u_fogDensity, 2.5);
+      gl.uniform1f(railUniforms.u_railGlow, density.railGlow * effectProfile.railGlowScale);
+      gl.uniform1f(railUniforms.u_fogDensity, 2.5 * effectProfile.fogScale);
       gl.drawArraysInstanced(gl.TRIANGLES, 0, rail.vertexCount, RAIL_LANES.length);
 
       gl.useProgram(markProgram);
@@ -992,7 +1004,7 @@ export function createMeridianRenderer(canvas, initialPalette) {
       gl.uniform1f(markUniforms.u_markerFraction, density.streakFraction);
       gl.uniform1f(markUniforms.u_markerStretch, density.streakStretch);
       gl.uniform1f(markUniforms.u_windCurve, density.atmosphereFraction);
-      gl.uniform1f(markUniforms.u_fogDensity, 2.4);
+      gl.uniform1f(markUniforms.u_fogDensity, 2.4 * effectProfile.fogScale);
       gl.drawArraysInstanced(gl.TRIANGLES, 0, corner.length / 2, marks.count);
 
       gl.bindVertexArray(null);

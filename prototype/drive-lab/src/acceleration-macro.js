@@ -23,12 +23,12 @@ export function advanceAccelerationArmSamples(currentSamples, accelerationMps2, 
 
 export function accelerationMacroParameters(amount) {
   const mix = Math.min(1, Math.max(0, Number(amount) || 0));
-  const sideBoost = Math.pow(10, 4 / 20);
+  const sideBoost = Math.pow(10, 4.5 / 20);
   return {
     midScoopDb: -3.5 * mix,
-    airShelfDb: 2 * mix,
+    airShelfDb: 2.8 * mix,
     width: 1 + (sideBoost - 1) * mix,
-    trimGain: Math.pow(10, (-0.55 * mix) / 20),
+    trimGain: Math.pow(10, (-0.2 * mix) / 20),
   };
 }
 

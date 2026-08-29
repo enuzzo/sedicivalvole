@@ -9,6 +9,7 @@ import {
   MERIDIAN_FOV_REST_DEGREES,
   MERIDIAN_IDLE_RATE,
   MERIDIAN_PIN_PROGRESS,
+  meridianEffectProfile,
   meridianDistortionGlsl,
   speedToDistortionField,
   speedToLayerDensity,
@@ -24,6 +25,18 @@ test("keeps the corridor alive at rest and reaches the reference rate at the roa
   assert.ok(Math.abs(speedToTimeRate(ROAD_SPEED_CEILING_KMH) - 1) < 1e-12);
   assert.equal(speedToTimeRate(ROAD_SPEED_CEILING_KMH * 2), speedToTimeRate(ROAD_SPEED_CEILING_KMH));
   assert.equal(speedToTimeRate(-40), MERIDIAN_IDLE_RATE);
+});
+
+test("OPEN, UNDERWATER, and BLOOM remain distinct corridor-native gestures", () => {
+  const idle = meridianEffectProfile(null);
+  const open = meridianEffectProfile("OPEN");
+  const underwater = meridianEffectProfile("UNDERWATER");
+  const bloom = meridianEffectProfile("BLOOM");
+  assert.equal(idle.rateScale, 1);
+  assert.ok(open.fovDelta > 0 && open.railGlowScale > 1);
+  assert.ok(underwater.rateScale < 1 && underwater.fogScale > 1);
+  assert.ok(bloom.fovDelta > open.fovDelta);
+  assert.ok(bloom.railGlowScale > open.railGlowScale);
 });
 
 test("makes the first metres of movement clearly legible", () => {

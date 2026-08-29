@@ -479,13 +479,11 @@ test("a sustained brake releases an active BLOOM worklet only once", async () =>
     assert.ok(bloomNode);
 
     setClock(1);
-    engine.setSpeed(15);
-    setClock(101);
-    engine.setSpeed(16);
-    setClock(201);
-    engine.setSpeed(21);
-    setClock(301);
-    engine.setSpeed(26);
+    engine.setSpeed(10);
+    setClock(801);
+    engine.setSpeed(27);
+    setClock(1601);
+    engine.setSpeed(44);
     assert.equal(bloomNode.port.messages.filter((message) => message.type === "TRIGGER").length, 1);
 
     engine.brake();

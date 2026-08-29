@@ -153,6 +153,32 @@ export function speedToLayerDensity(speedKmh) {
   };
 }
 
+/** Renderer-native reactions for the three audio macros. */
+export function meridianEffectProfile(effect) {
+  if (effect === "OPEN") {
+    return {
+      rateScale: 1.08, fovDelta: 6, swayScale: 1.16,
+      railGlowScale: 1.22, fogScale: 0.88, atmosphereDelta: 0.06,
+    };
+  }
+  if (effect === "UNDERWATER") {
+    return {
+      rateScale: 0.68, fovDelta: -5, swayScale: 0.68,
+      railGlowScale: 0.62, fogScale: 1.5, atmosphereDelta: 0.1,
+    };
+  }
+  if (effect === "BLOOM") {
+    return {
+      rateScale: 1.16, fovDelta: 10, swayScale: 1.28,
+      railGlowScale: 1.45, fogScale: 0.76, atmosphereDelta: 0.16,
+    };
+  }
+  return {
+    rateScale: 1, fovDelta: 0, swayScale: 1,
+    railGlowScale: 1, fogScale: 1, atmosphereDelta: 0,
+  };
+}
+
 const unpinned = (progress, time, field) => {
   const p = clamp(progress, 0, 1);
   const sway =

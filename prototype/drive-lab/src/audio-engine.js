@@ -11,11 +11,6 @@ import {
   speedToEnergy,
 } from "./signal-model.js";
 import {
-  ACCELERATION_MACRO_MAX_HOLD_MS,
-  ACCELERATION_MACRO_MIN_SPEED_KMH,
-  ACCELERATION_MACRO_REFRACTORY_MS,
-  ACCELERATION_MACRO_RELEASE_MPS2,
-  advanceAccelerationArmSamples,
   advanceAccelerationMacroAmount,
   accelerationMacroAmount,
   accelerationMacroParameters,
@@ -23,9 +18,13 @@ import {
 import {
   BLOOM_GESTURE_MS,
   BLOOM_REFRACTORY_MS,
-  advanceBloomLaunchHistory,
-  isBloomHardLaunch,
 } from "./bloom-macro.js";
+import {
+  accelerationTrajectoryIsBloom,
+  advanceAccelerationDetectorClock,
+  createAccelerationDetectorState,
+  observeAccelerationDetector,
+} from "./acceleration-detector.js";
 import { createJunctionPlayer } from "./junction-player.js";
 import {
   createScoreCrossfadeState,
@@ -152,12 +151,9 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
   let accelerationAmount = 0;
   let accelerationActive = false;
   let accelerationReported = false;
-  let accelerationArmSamples = 0;
-  let accelerationStartedAt = 0;
-  let accelerationRefractoryUntil = 0;
+  let accelerationDetector = createAccelerationDetectorState();
   let reportedEffect = null;
   let gpsAccuracyM = null;
-  let bloomLaunchHistory = [];
   let bloomActiveUntil = 0;
   let bloomRefractoryUntil = 0;
   let bloomSuppressedByBrake = false;
@@ -453,22 +449,19 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
     const stale = now - lastSpeedAt > RATE_STALE_MS;
     if (stale && smoothedRateMps2 !== 0) {
       smoothedRateMps2 = 0;
-      accelerationArmSamples = 0;
-      bloomLaunchHistory = [];
       publishArrangement(arrangement);
     }
-    const timedOut = accelerationActive && now - accelerationStartedAt >= ACCELERATION_MACRO_MAX_HOLD_MS;
-    const mustRelease = stale
-      || speed < ACCELERATION_MACRO_MIN_SPEED_KMH
-      || smoothedRateMps2 < ACCELERATION_MACRO_RELEASE_MPS2
-      || isBraking()
-      || timedOut;
-    if (accelerationActive && mustRelease) {
-      accelerationActive = false;
-      accelerationRefractoryUntil = now + ACCELERATION_MACRO_REFRACTORY_MS;
-      accelerationArmSamples = 0;
-    }
-    const target = accelerationActive ? accelerationMacroAmount(smoothedRateMps2) : 0;
+    accelerationDetector = advanceAccelerationDetectorClock(accelerationDetector, {
+      nowMs: now,
+      braking: isBraking(),
+    });
+    accelerationActive = accelerationDetector.active;
+    const target = accelerationActive
+      ? Math.max(
+        accelerationDetector.intensity,
+        accelerationMacroAmount(accelerationDetector.averageMps2),
+      )
+      : 0;
     accelerationAmount = advanceAccelerationMacroAmount(
       accelerationAmount,
       target,
@@ -477,6 +470,29 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
     if (accelerationAmount < 0.001) accelerationAmount = 0;
     applyAccelerationMacro();
     reviewEffectBadges();
+  }
+
+  function observeAccelerationSample(nextSpeed, capturedAtMs, accuracyM) {
+    const observation = observeAccelerationDetector(accelerationDetector, {
+      speedKmh: nextSpeed,
+      capturedAtMs,
+      accuracyM,
+      braking: isBraking(),
+    });
+    accelerationDetector = observation.state;
+    accelerationActive = accelerationDetector.active;
+    if (observation.triggered
+      && bloomNode
+      && accelerationTrajectoryIsBloom(accelerationDetector)
+      && !isBraking()
+      && capturedAtMs >= bloomRefractoryUntil) {
+      bloomNode.port.postMessage({ type: "TRIGGER" });
+      bloomActiveUntil = capturedAtMs + BLOOM_GESTURE_MS;
+      bloomRefractoryUntil = capturedAtMs + BLOOM_REFRACTORY_MS;
+    }
+    if (observation.triggered || observation.released) publishArrangement(arrangement);
+    reviewEffectBadges();
+    return observation;
   }
 
   accelerationTimer = window.setInterval(tickAcceleration, ACCELERATION_TICK_MS);
@@ -599,43 +615,22 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
         elapsedMs,
       });
       smoothedRateMps2 = rate.rateMps2;
-      if (rate.stale) {
-        accelerationArmSamples = 0;
-        bloomLaunchHistory = [];
-      }
       lastSpeedAt = now;
       speed = nextSpeed;
       energy = speedToEnergy(speed);
-      bloomLaunchHistory = advanceBloomLaunchHistory(
-        bloomLaunchHistory,
-        smoothedRateMps2,
-        now,
-      );
       post("SPEED", { speed, energy });
       junction?.setSpeed(speed, energy, elapsedMs / 1000);
-      if (!accelerationActive) {
-        accelerationArmSamples = advanceAccelerationArmSamples(
-          accelerationArmSamples,
-          smoothedRateMps2,
-          now >= accelerationRefractoryUntil && speed >= ACCELERATION_MACRO_MIN_SPEED_KMH,
-        );
-        if (accelerationArmSamples >= 2) {
-          accelerationActive = true;
-          accelerationStartedAt = now;
-        }
-      }
-      if (bloomNode && isBloomHardLaunch(bloomLaunchHistory, {
-        openActive: accelerationActive,
-        braking: isBraking(),
-        accuracyM: gpsAccuracyM,
-        nowMs: now,
-        refractoryUntilMs: bloomRefractoryUntil,
-      })) {
-        bloomNode.port.postMessage({ type: "TRIGGER" });
-        bloomActiveUntil = now + BLOOM_GESTURE_MS;
-        bloomRefractoryUntil = now + BLOOM_REFRACTORY_MS;
-        reviewEffectBadges();
-      }
+      // Demo and QA speed feeds have no GPS accuracy and are observed here.
+      // Real GPS feeds provide their unsmoothed trusted sample through
+      // setAccelerationSample so UI smoothing cannot hide the launch.
+      if (gpsAccuracyM == null) observeAccelerationSample(speed, now, null);
+    },
+
+    setAccelerationSample(nextSpeed, {
+      capturedAtMs = performance.now(),
+      accuracyM = gpsAccuracyM,
+    } = {}) {
+      return observeAccelerationSample(nextSpeed, capturedAtMs, accuracyM);
     },
 
     setGpsAccuracy(accuracyM) {
@@ -683,6 +678,12 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
           brake: Math.round(brakeAmount * 100) / 100,
           accelerationMps2: Math.round(smoothedRateMps2 * 1000) / 1000,
           accelerationMacro: Math.round(accelerationAmount * 1000) / 1000,
+          accelerationTrajectory: {
+            active: accelerationDetector.active,
+            riseKmh: Math.round(accelerationDetector.riseKmh * 10) / 10,
+            averageMps2: Math.round(accelerationDetector.averageMps2 * 1000) / 1000,
+            intensity: Math.round(accelerationDetector.intensity * 1000) / 1000,
+          },
         };
       }
       return {
@@ -707,6 +708,12 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
         brake: Math.round(brakeAmount * 100) / 100,
         accelerationMps2: Math.round(smoothedRateMps2 * 1000) / 1000,
         accelerationMacro: Math.round(accelerationAmount * 1000) / 1000,
+        accelerationTrajectory: {
+          active: accelerationDetector.active,
+          riseKmh: Math.round(accelerationDetector.riseKmh * 10) / 10,
+          averageMps2: Math.round(accelerationDetector.averageMps2 * 1000) / 1000,
+          intensity: Math.round(accelerationDetector.intensity * 1000) / 1000,
+        },
       };
     },
 

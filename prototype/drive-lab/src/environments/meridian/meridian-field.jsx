@@ -10,6 +10,7 @@ import {
   advanceTimeOffset,
   distortionAt,
   MERIDIAN_TRAVEL_LENGTH,
+  meridianEffectProfile,
   speedToDistortionField,
   speedToLayerDensity,
   speedToProjection,
@@ -68,9 +69,14 @@ function startCanvasFallback(canvas, valuesRef, onRenderer, onFrame, onRuntimeEr
       if (elapsed >= 1 / 32) {
         lastFrameAt = now;
 
-        const { speed, reducedMotion, palette } = valuesRef.current;
+        const { speed, reducedMotion, palette, effect } = valuesRef.current;
         const effectiveSpeed = reducedMotion ? Math.min(speed, 20) : speed;
-        timeOffset = advanceTimeOffset(timeOffset, speedToTimeRate(effectiveSpeed), elapsed);
+        const effectProfile = meridianEffectProfile(effect);
+        timeOffset = advanceTimeOffset(
+          timeOffset,
+          speedToTimeRate(effectiveSpeed) * effectProfile.rateScale,
+          elapsed,
+        );
 
         const { width, height } = surfaceSize(canvas);
         if (canvas.width !== width || canvas.height !== height) {
@@ -78,10 +84,15 @@ function startCanvasFallback(canvas, valuesRef, onRenderer, onFrame, onRuntimeEr
           canvas.height = height;
         }
 
-        const field = speedToDistortionField(effectiveSpeed);
+        const rawField = speedToDistortionField(effectiveSpeed);
+        const field = {
+          ...rawField,
+          swayAmplitude: rawField.swayAmplitude * effectProfile.swayScale,
+          liftAmplitude: rawField.liftAmplitude * effectProfile.swayScale,
+        };
         const density = speedToLayerDensity(effectiveSpeed);
         const projection = speedToProjection(effectiveSpeed);
-        const focal = height / (2 * Math.tan((projection.fovDegrees * Math.PI) / 360));
+        const focal = height / (2 * Math.tan(((projection.fovDegrees + effectProfile.fovDelta) * Math.PI) / 360));
         const eyeY = projection.cameraLift;
 
         const project = (x, y, z) => {
@@ -156,14 +167,15 @@ export function MeridianField({
   speed,
   theme,
   reducedMotion,
+  effect,
   onRenderer,
   onFrame,
   onRuntimeError,
 }) {
   const canvasRef = useRef(null);
   const rendererRef = useRef(null);
-  const valuesRef = useRef({ speed, reducedMotion, palette: theme.palette });
-  valuesRef.current = { speed, reducedMotion, palette: theme.palette };
+  const valuesRef = useRef({ speed, reducedMotion, effect, palette: theme.palette });
+  valuesRef.current = { speed, reducedMotion, effect, palette: theme.palette };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -216,6 +228,7 @@ export function MeridianField({
           speedKmh: valuesRef.current.speed,
           deltaSeconds: elapsed,
           reducedMotion: valuesRef.current.reducedMotion,
+          effect: valuesRef.current.effect,
         });
 
         onFrame(now, WEBGL_TARGET_FRAME_MS, "WebGL2", width, height);

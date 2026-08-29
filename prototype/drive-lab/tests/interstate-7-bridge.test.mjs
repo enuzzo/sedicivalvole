@@ -6,6 +6,7 @@ import {
   createInterstateLoadDeadline,
   INTERSTATE7_ENTRY_PHASE_SECONDS,
   INTERSTATE7_LOAD_TIMEOUT_MS,
+  interstate7EffectTargets,
   speedToInterstate7Targets,
   themeToInterstate7Palette,
 } from "../src/interstate-7-bridge.js";
@@ -47,6 +48,17 @@ test("maps road speed to the original Interstate 7 time and FOV controls", () =>
     fovTarget: 150,
   });
   assert.deepEqual(speedToInterstate7Targets(260), speedToInterstate7Targets(130));
+});
+
+test("maps effects only through the original time, FOV, and colour controls", () => {
+  const idle = interstate7EffectTargets(65, null);
+  const open = interstate7EffectTargets(65, "OPEN");
+  const underwater = interstate7EffectTargets(65, "UNDERWATER");
+  const bloom = interstate7EffectTargets(65, "BLOOM");
+  assert.ok(open.fovTarget > idle.fovTarget);
+  assert.ok(underwater.fovTarget < idle.fovTarget);
+  assert.ok(bloom.fovTarget > open.fovTarget);
+  assert.ok(bloom.speedUpTarget > open.speedUpTarget);
 });
 
 test("keeps urban motion grounded and enters on the composed road phase", () => {

@@ -11,7 +11,7 @@ export const BLOOM_SWEEP_SECONDS = 0.4;
 export const BLOOM_RELEASE_SECONDS = 0.25;
 export const BLOOM_MAX_DELAY_SECONDS = 0.008;
 export const BLOOM_MIN_DELAY_SECONDS = 0.0008;
-export const BLOOM_DEPTH = 0.42;
+export const BLOOM_DEPTH = 0.48;
 
 function nextPowerOfTwo(value) {
   let result = 1;
