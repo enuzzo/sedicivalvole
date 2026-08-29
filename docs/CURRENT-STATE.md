@@ -135,6 +135,14 @@ dated study documents.
   is already active; a decision to return toward low-speed ambience is
   cancellable if road energy returns.
   Source sounds are never exposed or shuffled mid-phrase.
+- JUNCTION PARK is no longer a perpetual first-chord hold. Six root-light
+  voicings move through the score's existing `Emin9 – Cmaj7 – Amin7 – Bmin9`
+  grammar on unequal `9.8–15.4 s` holds with `3.6 s` crossfades, breathing
+  expression and changing filter colour. The form retains its position across
+  repeated stops, keeps every fundamental at C4 or above, and never enables a
+  beat, bassline, transport clock or production-bank decode. The conservative
+  reference measures `-54.290 dBFS` RMS and `-44.313 dBFS` sample peak; musical
+  quality still requires low-volume and real-Tesla listening.
 - Both scores now share one authored low-speed grammar. Below `0.8 km/h`, PARK
   sustains a very quiet, clockless mood harmony with no beat or bass. A genuine
   forward crossing at `1.2 km/h` plays exactly two soft consonant DEPART events;

@@ -9,7 +9,7 @@
 > layers. The exact derived files, modifications, license, and direct reuse
 > authorization are recorded in `THIRD_PARTY_NOTICES.md`.
 
-> Current state: **Flux Drive Lab runs the authored FRACTURE and JUNCTION music with four
+> Current state: **Flux Drive Lab runs the authored FRACTURE and JUNCTION music with five
 > selectable visual environments and is under vehicle validation**. This is a
 > development build, not a release.
 
@@ -26,12 +26,13 @@ The canonical development build is available at [sedicivalvole.app](https://sedi
 - ✅ a single ignored local reference library under `_references/`;
 - ✅ source audit, product requirements, adversarial review, technical direction, and roadmap;
 - ✅ Modular Aperture selected after exactly three revised Product Design directions;
-- ✅ four selectable Flux visuals: procedural Aperture, byte-identical upstream Interstate 7 Vertigo, the original architectural Meridian environment, and the lazy-loaded OpenFreeMap ATLAS city field with a readable passenger panel and an oblique 3D motorway camera;
-- 🛑 PLUMB failed its first exact-viewport visual acceptance and is retired from the runtime; SLIP and WAKE remain proposal-only directions, and Aperture remains the accepted fresh-session fallback until a replacement is explicitly selected;
+- ✅ five selectable Flux visuals: procedural Aperture, byte-identical upstream Interstate 7 Vertigo, the original architectural Meridian environment, the lazy-loaded OpenFreeMap ATLAS city field with a readable passenger panel and an oblique 3D motorway camera, and the approved project-authored WAKE ribbon field;
+- ✅ WAKE's seven broad material sheets retain soft velvet draping at low speed while their geometry streams longitudinally like roads, then crosses and knots more quickly as speed rises; its blocking Product Design comparison passes locally and real-Tesla visual acceptance remains open;
+- 🛑 PLUMB failed its first exact-viewport visual acceptance and is retired from the runtime; SLIP remains proposal-only, while Aperture remains the accepted fresh-session fallback;
 - ✅ GPS/Demo speed source, icon-only Mute, a fixed `130 km/h` energy ceiling, 10 curated palettes, and an integrated capability report;
 - ✅ local-only speed processing and coordinate-free diagnostics; ATLAS alone keeps a reliable current position in session memory while selected and discloses its OpenFreeMap tile and Wikimedia nearby-reading requests;
 - ✅ FRACTURE, a production AudioWorklet score with an ambience-only launch, ten four-bar harmonic sections, a narrow tempo knee, quantized transitions, hysteresis, dwell, crossfades, and three authored half-time rhythm families that grow from sparse velvet pulse to weave before the full break is permitted at `88 km/h`; no automatic riff or response lane plays in normal playback;
-- ✅ JUNCTION, a sampled production built as one synchronous performance at a time: 24 complete eight-bar clips from 76 distinct recordings, one stable E-minor harmonic grammar, native 127–168 BPM pacing, beatless ambient rest, four-second rhythm entrances/releases, one 5.8 MB segmented Opus bank, recent-take avoidance, and no rave lead, tonal second deck, or loose source samples;
+- ✅ JUNCTION, a sampled production built as one synchronous performance at a time: 24 complete eight-bar clips from 76 distinct recordings, one stable E-minor harmonic grammar, native 127–168 BPM pacing, six slowly evolving clockless PARK voicings without beat or bass, four-second rhythm entrances/releases, one 5.8 MB segmented Opus bank, recent-take avoidance, and no rave lead, tonal second deck, or loose source samples;
 - ✅ shared acceleration performance effects: OPEN widens and brightens either
   score, while the rarer BLOOM event bends only the `300 Hz–8 kHz` band through
   a bounded `8 → 0.8 ms` feed-forward delay and always yields to UNDERWATER;
