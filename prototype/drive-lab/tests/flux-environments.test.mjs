@@ -22,7 +22,7 @@ const stylesSource = readFileSync(new URL("../src/styles.css", import.meta.url),
 test("exposes the authored environments in a stable order", () => {
   assert.deepEqual(
     FLUX_ENVIRONMENTS.map(({ id }) => id),
-    ["aperture", "vertigo", "meridian", "atlas", "wake", "drivey"],
+    ["aperture", "vertigo", "meridian", "atlas", "wake", "drivey", "prtcl"],
   );
   assert.equal(getFluxEnvironment("vertigo").label, "VERTIGO");
   assert.equal(getFluxEnvironment("meridian").label, "MERIDIAN");
@@ -33,6 +33,8 @@ test("exposes the authored environments in a stable order", () => {
   assert.equal(getFluxEnvironment("wake").number, "05");
   assert.equal(getFluxEnvironment("drivey").label, "DRIVEY");
   assert.equal(getFluxEnvironment("drivey").number, "06");
+  assert.equal(getFluxEnvironment("prtcl").label, "PRTCL");
+  assert.equal(getFluxEnvironment("prtcl").number, "07");
   assert.equal(getFluxEnvironment("plumb").id, "aperture");
   assert.equal(getFluxEnvironment("register").id, "aperture");
   assert.equal(getFluxEnvironment("latitudes").id, "aperture");
@@ -83,6 +85,7 @@ test("connects every implemented environment to body-colour theming", () => {
   assert.equal(getFluxEnvironment("atlas").themed, true);
   assert.equal(getFluxEnvironment("wake").themed, true);
   assert.equal(getFluxEnvironment("drivey").themed, true);
+  assert.equal(getFluxEnvironment("prtcl").themed, true);
 });
 
 test("cycles every environment deterministically and returns to the start", () => {

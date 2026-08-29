@@ -63,15 +63,30 @@ project's AGPL grant; the independently authored sedicivalvole iframe shell,
 parent bridge, integration record and integrity tooling remain
 `AGPL-3.0-or-later`. The following section remains as the historical decision
 that this source-faithful integration superseded; the PRTCL, InfiniteTubes, and
-Primordial clean-room boundaries remain active.
+Primordial clean-room boundaries described there were later narrowed again for
+PRTCL as recorded immediately below. InfiniteTubes and Primordial remain
+clean-room studies.
+
+## 2026-08-29 — PRTCL formula adaptations directly authorized
+
+The PRTCL checkout at commit
+`2a22f33b975e2c40b7ee0bdd2d1acb4cee4f5060` has no `LICENSE` file despite an
+MIT statement in its README, so that statement is not used as the operative
+grant. The repository owner directly authorized reuse and modification for this
+work. Sedici Valvole therefore adapts only the selected Fractal Frequency,
+Murmuration, and Axiom formulas into its own bounded WebGL2 renderer. The PRTCL
+runtime, original preset files, UI, dependencies, fonts, screenshots, brand
+assets, and other effects remain excluded. The project-authored renderer and
+authorized adaptations are published under the project AGPL grant; no broader
+licence or ownership conclusion is inferred for PRTCL.
 
 ## 2026-08-29 — external visual studies use project-authored implementations
 
-Drivey, PRTCL, InfiniteTubes, and CodePen `NXGbBo` were admitted as visual
-studies only. No upstream code, shader text, runtime, texture, model, font,
-screenshot, or other asset enters the repository or build. The resulting road,
-particle, tunnel, and fluid renderers are original sedicivalvole work under
-`AGPL-3.0-or-later`.
+Drivey, PRTCL, InfiniteTubes, and CodePen `NXGbBo` were initially admitted as
+visual studies only. No upstream code, shader text, runtime, texture, model,
+font, screenshot, or other asset entered that clean-room implementation plan.
+The later Drivey and PRTCL decisions above supersede their respective parts of
+this historical boundary; InfiniteTubes and Primordial retain it.
 
 This decision avoids relying on ambiguous asset scope in Drivey, PRTCL's
 missing `LICENSE` file despite its README claim, InfiniteTubes' restricted

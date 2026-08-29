@@ -13,21 +13,23 @@ dated study documents.
 - `Flux` is the implemented primary mode. `Engine` remains an equal confirmed
   mode, visible but disabled until its own audio model and one of exactly three
   Engine-specific visual directions are selected.
-- The Flux catalog contains six visual environments: **APERTURE 01**,
+- The source checkout's Flux catalog contains seven visual environments: **APERTURE 01**,
   **VERTIGO 02**, **MERIDIAN 03**, **ATLAS 04**, **WAKE 05**, and
-  **DRIVEY 06**. Aperture
+  **DRIVEY 06**, plus the locally verified **PRTCL 07** candidate. Aperture
   remains the accepted fresh-session and invalid-preference fallback.
-- All six environments use the shared catalog of **10 themes**. Vertigo keeps
+- All seven environments use the shared catalog of **10 themes**. Vertigo keeps
   the upstream Interstate 7 files byte-identical while an external runtime
   bridge maps the selected theme onto its existing colour channels.
-- OPEN, UNDERWATER and BLOOM are visible in all six active environments without
+- OPEN, UNDERWATER and BLOOM are visible in all seven checkout environments without
   a shared overlay. Aperture performs its tiled projection and centre light;
   Vertigo changes only the original runtime's externally bridged time, FOV and
   colour controls; Meridian changes corridor projection, flow, fog and rail
   energy; Atlas changes MapLibre camera and layer paint properties; Wake changes
   authored ribbon width, separation, fold pressure and material light; Drivey
   receives bounded speed, camera, traffic and material updates through its
-  external bridge without editing the vendor files.
+  external bridge without editing the vendor files; PRTCL changes point scale,
+  depth/travel, palette pulse, spread, attenuation, and glow within its own
+  particle grammar.
 - Meridian keeps one deterministic low corridor beneath sparse, large oblique
   blades and longitudinal shoulder planes. Its shared travel field has tightly
   bounded vertical motion; FOV, depth compression, peripheral stretch,
@@ -71,6 +73,19 @@ dated study documents.
   `HOOD → REAR → AERIAL` and `NORMAL ↔ WIRE` directly, with no dropdown, panel,
   native Driver/Chase/Satellite view, or original colour selector. Exact muted
   `773 × 601` and `390 × 844` Browser QA passes with zero warning or error.
+- PRTCL adapts the directly authorized Fractal Frequency, Murmuration, and Axiom
+  formulas from the user-owned checkout at commit
+  `2a22f33b975e2c40b7ee0bdd2d1acb4cee4f5060` into a bounded project WebGL2
+  renderer. The reviewed particle budgets remain `24,000`, `16,000`, and
+  `37,000`; PRTCL's runtime, UI, dependencies, fonts, screenshots, assets, and
+  other effects are excluded. One `94 × 34 px` text-only `TYPE` button cycles
+  `FRACTAL → MURMURATION → AXIOM → FRACTAL` without a dropdown or panel, while
+  the shared `PALETTE` remains a separate colour choice. Road speed alone owns
+  point scale, depth, and travel; music owns colour phase and pulse. Exact muted
+  `773 × 601` and `390 × 844` QA, every type, OPEN / UNDERWATER / BLOOM, zero
+  warning/error state, deterministic reduced motion, 343 tests, and the
+  131-module build pass locally. Human visual approval, push, deployment, and
+  real-Tesla acceptance remain open.
 - REGISTER was rejected after live review because its static print composition
   was inexplicable in motion and outside the product mood. Its source remains
   only in the rejected-visual archive; the runtime, QA harness and active tests
@@ -252,6 +267,12 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
+- The current checkout's local PRTCL gate passes 343 deterministic tests and a
+  131-module production build (`20260829-2209`). Six exact `773 × 601` muted
+  visual cases have distinct captured identities; two reduced-motion frames
+  taken 800 ms apart are byte-identical. The direct TYPE cycle returns to
+  Fractal, measures `94 × 34 px` at both agreed viewports, and the DOM contains
+  no `select`.
 - The canonical live product is version `0.0.0`, source commit `ba215be`, build
   `20260829-2110`. The final 2026-08-29 21:13 publication passed clean-source
   synchronization, two read-only preflights, the 89-file exact upload, the
@@ -284,9 +305,10 @@ dated study documents.
    spectral slope and saturation; add stereo and phase-coherence evidence with
    explicit invalidity reasons before any detected pitch set can gate JUNCTION
    material.
-5. Continue the licensed visual-environment plan with PRTCL, INFINITE and
-   PRIMORDIAL without importing excluded upstream assets or code, then run
-   its source-comparison, accessibility, performance and target-viewport gates.
+5. Obtain human visual approval for the local PRTCL source comparison before
+   any push or deployment, then validate it on the target Tesla. Continue with
+   INFINITE and PRIMORDIAL only afterward and preserve their separate source,
+   accessibility, performance, and target-viewport gates.
 6. Design Engine only after exactly three Engine-specific directions are shown
    and one is selected. Keep `VERSION` at `0.0.0` until an explicit release is
    approved.

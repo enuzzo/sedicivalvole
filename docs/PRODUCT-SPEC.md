@@ -102,6 +102,20 @@ runtime. Its only direct controls are two compact text buttons: one cycles Hood,
 Rear and Aerial views; the other cycles Normal and palette-coloured Wire render
 modes. Neither control opens a dropdown or panel.
 
+`PRTCL 07` is one environment with three particle families, not three catalog
+entries. Its project-authored WebGL2 renderer adapts the directly authorized
+Fractal Frequency, Murmuration, and Axiom formulas from PRTCL commit
+`2a22f33b975e2c40b7ee0bdd2d1acb4cee4f5060`, preserving the reviewed
+`24,000`, `16,000`, and `37,000` draw counts and characteristic compositions
+without importing the PRTCL runtime, UI, dependencies, brand, or assets.
+Fractal Frequency is the default. One compact `94 × 34 px` text-only `TYPE`
+button cycles Fractal, Murmuration, and Axiom directly; it opens no dropdown or
+panel and remains separate from the shared `PALETTE` control. Road speed owns
+point size, depth, and travel; musical level owns colour and luminous pulse.
+OPEN, UNDERWATER, BLOOM, and reduced motion are implemented in this native
+particle grammar. Human visual approval and target-Tesla acceptance remain
+explicit gates.
+
 `VERTIGO 02` is the approved second visual environment and must render the original Interstate 7 scene, not an independent visual translation. The vendored files from upstream commit `e58d58520bc0dfde21f9e14e6a1b8c7f0a2a2a9e` remain byte-identical and retain the complete road, repeated side light sticks, opposing car-light trails, bloom, camera, deep distortion, fog, geometry, and bundled Three.js/post-processing pipeline. The sedicivalvole integration keeps the iframe black until the upstream editorial shell is hidden, so only the canvas appears. An external bridge maps `0–130 km/h` to the original `speedUpTarget` and FOV controls and maps the selected theme onto the runtime's existing colour attributes and uniforms without editing the vendor tree.
 
 The module identity must remain visually continuous across the entire speed range: size, aspect ratio, perspective, curvature, and depth may deform, but modules must not be replaced through an opacity fade. The zero-speed endpoint is genuinely two-dimensional and square; the maximum-speed endpoint is the most elongated and deeply projected version of that same field.
@@ -197,7 +211,7 @@ acceptance in the vehicle.
 | Adaptive synth + sequencer | implemented prototype | FRACTURE runs in the AudioWorklet; real Tesla musical acceptance pending |
 | Modular Aperture generative visual | implemented prototype | WebGL2 plus Canvas2D fallback; Tesla performance pending |
 | PLUMB inertial-suspension visual | rejected and retired before publication | Exact-viewport review triggered its strings/bars retirement criterion; no active renderer |
-| Selectable visual environments | implemented prototype | Aperture, Vertigo, Meridian, Atlas, Wake, and Drivey share normalized motion, safety, persistence, palette, failure, and diagnostic contracts |
+| Selectable visual environments | implemented prototype | Aperture, Vertigo, Meridian, Atlas, Wake, Drivey, and the local PRTCL candidate share normalized motion, safety, persistence, palette, failure, and diagnostic contracts; PRTCL awaits human approval before push/deploy |
 | Selectable musical environments | implemented prototype | FRACTURE, JUNCTION, and NIGHTSHIFT ready; four later directions remain pending |
 | Open packs | strategic goal | schema and licensing not frozen |
 | Offline audio core | implemented prototype | identical score DSP renders and analyses WAV references in Node |

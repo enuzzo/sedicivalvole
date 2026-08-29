@@ -42,6 +42,7 @@ import { Interstate7Field } from "./interstate-7-field.jsx";
 import { MeridianField } from "./environments/meridian/meridian-field.jsx";
 import { WakeField } from "./environments/wake/wake-field.jsx";
 import { DriveyField } from "./environments/drivey/drivey-field.jsx";
+import { PrtclField } from "./environments/prtcl/prtcl-field.jsx";
 import {
   DEFAULT_DRIVEY_SETTINGS,
   DRIVEY_CAMERAS,
@@ -50,6 +51,12 @@ import {
   nextDriveyRenderModeId,
   normalizeDriveySettings,
 } from "./environments/drivey/drivey-model.js";
+import {
+  DEFAULT_PRTCL_SETTINGS,
+  PRTCL_TYPES,
+  nextPrtclTypeId,
+  normalizePrtclSettings,
+} from "./environments/prtcl/prtcl-model.js";
 import { atlasGpsPresentation, resolveAtlasHeading } from "./environments/atlas/atlas-model.js";
 import {
   advanceDemoMotion,
@@ -152,6 +159,7 @@ function readPreferences() {
         genre.id === value?.genreId && genre.status === SCORE_STATUS.ready
       )) ? value.genreId : DEFAULT_GENRE_ID,
       driveySettings: normalizeDriveySettings(value?.driveySettings),
+      prtclSettings: normalizePrtclSettings(value?.prtclSettings),
     };
   } catch {
     return {
@@ -159,6 +167,7 @@ function readPreferences() {
       environmentId: DEFAULT_FLUX_ENVIRONMENT_ID,
       genreId: DEFAULT_GENRE_ID,
       driveySettings: DEFAULT_DRIVEY_SETTINGS,
+      prtclSettings: DEFAULT_PRTCL_SETTINGS,
     };
   }
 }
@@ -691,6 +700,29 @@ function DriveyCycleControl({ settings, onChange }) {
   );
 }
 
+function PrtclCycleControl({ settings, onChange }) {
+  const current = PRTCL_TYPES[settings.type] ?? PRTCL_TYPES.frequency;
+  const next = PRTCL_TYPES[nextPrtclTypeId(current.id)];
+  return (
+    <div
+      className="prtcl-cycle-control"
+      onPointerDown={(event) => event.stopPropagation()}
+    >
+      <div className="prtcl-cycle-rail">
+        <button
+          className="visual-cycle-button visual-particle-cycle"
+          type="button"
+          aria-label={`PRTCL type ${current.fullLabel}. Next ${next.fullLabel}`}
+          onClick={() => onChange({ type: next.id })}
+        >
+          <span>TYPE</span>
+          <small>{current.label}</small>
+        </button>
+      </div>
+    </div>
+  );
+}
+
 /**
  * The score library panel.
  *
@@ -949,6 +981,7 @@ export function App() {
   const [themeId, setThemeId] = useState(initialPreferences.themeId);
   const [environmentId, setEnvironmentId] = useState(initialPreferences.environmentId);
   const [driveySettings, setDriveySettings] = useState(initialPreferences.driveySettings);
+  const [prtclSettings, setPrtclSettings] = useState(initialPreferences.prtclSettings);
   const [environmentRuntimeError, setEnvironmentRuntimeError] = useState(null);
   const [genreId, setGenreId] = useState(initialPreferences.genreId);
   const [environmentPickerOpen, setEnvironmentPickerOpen] = useState(false);
@@ -1016,6 +1049,7 @@ export function App() {
   const accuracyRef = useRef(accuracy);
   const audioLevelRef = useRef(audioLevel);
   const environmentIdRef = useRef(environmentId);
+  const prtclSettingsRef = useRef(prtclSettings);
   const genreIdRef = useRef(genreId);
   const rendererRef = useRef(renderer);
   const drawerOpenRef = useRef(drawerOpen);
@@ -1047,6 +1081,7 @@ export function App() {
   accuracyRef.current = accuracy;
   audioLevelRef.current = audioLevel;
   environmentIdRef.current = environmentId;
+  prtclSettingsRef.current = prtclSettings;
   genreIdRef.current = genreId;
   rendererRef.current = renderer;
   drawerOpenRef.current = drawerOpen;
@@ -1847,11 +1882,12 @@ export function App() {
         environmentId,
         genreId,
         driveySettings: normalizeDriveySettings(driveySettings),
+        prtclSettings: normalizePrtclSettings(prtclSettings),
       }));
     } catch {
       // Preference persistence is optional.
     }
-  }, [driveySettings, environmentId, genreId, themeId]);
+  }, [driveySettings, environmentId, genreId, prtclSettings, themeId]);
 
   const captureViewport = useCallback((reason) => {
     const snapshot = readDisplaySnapshot(reason);
@@ -1986,6 +2022,9 @@ export function App() {
       energy: Math.round(speedToEnergy(speedRef.current) * 1000) / 1000,
       energyCeilingKmh: ROAD_SPEED_CEILING_KMH,
       paletteTheme: themeIdRef.current,
+      particleType: environmentIdRef.current === "prtcl"
+        ? normalizePrtclSettings(prtclSettingsRef.current).type
+        : null,
       muted: mutedRef.current,
       arrangement: audioRef.current?.getState() ?? null,
     },
@@ -2210,6 +2249,18 @@ export function App() {
               onFrame={recordRenderedFrame}
               onRuntimeError={handleEnvironmentError}
             />
+          ) : environment.renderer === "prtcl" ? (
+            <PrtclField
+              speed={speed}
+              audioLevel={audioLevel}
+              theme={theme}
+              settings={prtclSettings}
+              reducedMotion={reducedMotion}
+              effect={activeEffect}
+              onRenderer={setRenderer}
+              onFrame={recordRenderedFrame}
+              onRuntimeError={handleEnvironmentError}
+            />
           ) : (
             <FluxField
               energy={energy}
@@ -2230,6 +2281,12 @@ export function App() {
         <DriveyCycleControl
           settings={driveySettings}
           onChange={(value) => setDriveySettings(normalizeDriveySettings(value))}
+        />
+      ) : null}
+      {phase === "running" && environment.renderer === "prtcl" ? (
+        <PrtclCycleControl
+          settings={prtclSettings}
+          onChange={(value) => setPrtclSettings(normalizePrtclSettings(value))}
         />
       ) : null}
       {keyboardHint ? <div className="keyboard-hint" role="status">{keyboardHint}</div> : null}

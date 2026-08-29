@@ -101,6 +101,11 @@ Implemented:
   `5104cdade2a3158786b05b9b0680a50e942830cf`, a separate project-owned iframe
   shell/bridge, native performance-effect and ten-palette mappings, compact
   Hood/Rear/Aerial and Normal/Wire cycling controls, and no dropdown panel;
+- locally verified `PRTCL 07`, with one bounded WebGL2 renderer adapting the
+  directly authorized Fractal Frequency, Murmuration, and Axiom formulas;
+  `24,000` / `16,000` / `37,000` fixed draw counts; a direct `94 × 34 px`
+  text-only TYPE cycle separate from Palette; and native speed, music,
+  OPEN/UNDERWATER/BLOOM, reduced-motion, failure, and cleanup behavior;
 - safe environment preferences: every implemented choice remains intact, while
   PLUMB and other missing, retired or invalid identifiers resolve to Aperture;
 
@@ -108,9 +113,9 @@ Queued next:
 
 - decide which visual and score combinations become authored audiovisual environments once more than FRACTURE is selectable;
 - retain PLUMB as a rejected decision record and SLIP as proposal-only;
-- implement the admitted PRTCL environment next with a direct particle-type
-  cycle in addition to palette choice; then implement INFINITE and PRIMORDIAL
-  through their recorded project-authored renderer boundaries;
+- obtain human visual approval for the local PRTCL source comparison before
+  push/deploy, then implement INFINITE and PRIMORDIAL through their recorded
+  project-authored renderer boundaries;
 - profile the unmodified Interstate 7 renderer on the target Tesla; any later travel, projection, curvature, density, palette, or geometry changes require a new explicit product decision and must not be folded into the upstream-integrity checkpoint;
 - verify each environment at rest, intermediate speed, full energy, and sustained deceleration at `773 × 601` on the target vehicle.
 

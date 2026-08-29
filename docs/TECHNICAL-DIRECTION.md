@@ -325,6 +325,19 @@ onto existing colour buffers/materials, and expose only Hood, Rear and Aerial
 views plus Normal/Wire rendering. Two compact text-only controls cycle those
 states directly; they open no contextual panel and never edit the vendor tree.
 
+**PRTCL** is a project-owned WebGL2 point renderer around directly authorized
+adaptations of the Fractal Frequency, Murmuration, and Axiom formulas pinned at
+PRTCL commit `2a22f33b`. It uses `gl_VertexID` rather than CPU buffer rewrites,
+draws exactly `24,000`, `16,000`, or `37,000` points, caps DPR at `1.25`, and
+deletes its vertex array, shaders, and program on cleanup. The renderer imports
+no Three.js/R3F dependency or PRTCL runtime/UI/asset. Road speed alone controls
+point scale, depth, and the frame-rate-independent travel clock; score level
+controls palette interpolation and pulse. OPEN changes spread/depth,
+UNDERWATER attenuates and slows, BLOOM increases native point glow, and reduced
+motion freezes both travel and musical pulse. A single `94 × 34 px` text-only
+TYPE button cycles the three families; shared Palette remains independent and
+no contextual panel is created.
+
 The fixed road-speed mapping separates early recognition from maximum deformation. Aperture begins opening into recognizable tunnel space by approximately `40 km/h`; velocity, perspective, elongation, and travel then continue increasing until the shared `130 km/h` ceiling. Vertigo uses a narrow external bridge rather than new scene mathematics. It enters the untouched distortion at a composed `2.1 s` phase where the road already fills the Tesla viewport, and seeds the current motion/FOV controls before the iframe is revealed. Road speed follows a quadratic response through the original `speedUpTarget` path: zero cancels the base clock, `40 km/h` uses approximately `0.095×`, `60 km/h` approximately `0.213×`, and `130 km/h` restores the original non-boosted `1×` rate. The original FOV range still moves from `90°` to `150°` through that same curve. The upstream click boost is not dispatched.
 
 Environment preferences preserve every valid implemented selection. Missing,

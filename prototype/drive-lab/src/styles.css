@@ -124,7 +124,8 @@ button { -webkit-tap-highlight-color: transparent; }
   pointer-events: none;
 }
 
-.drivey-cycle-control {
+.drivey-cycle-control,
+.prtcl-cycle-control {
   position: absolute;
   top: 82px;
   left: 16px;
@@ -133,11 +134,16 @@ button { -webkit-tap-highlight-color: transparent; }
   color: var(--paper);
   transition: opacity 240ms ease;
 }
-.controls-resting .drivey-cycle-control { opacity: .58; }
+.controls-resting .drivey-cycle-control,
+.controls-resting .prtcl-cycle-control { opacity: .58; }
 .drivey-cycle-rail {
   display: grid;
   grid-template-columns: repeat(2, 94px);
   gap: 4px;
+}
+.prtcl-cycle-rail {
+  display: grid;
+  grid-template-columns: 94px;
 }
 .visual-cycle-button {
   display: grid;
@@ -1459,7 +1465,8 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
 .atlas-field .maplibregl-ctrl-compass { width: 32px; height: 32px; }
 
 @media (max-width: 650px) {
-  .drivey-cycle-control { top: 76px; left: 12px; }
+  .drivey-cycle-control,
+  .prtcl-cycle-control { top: 76px; left: 12px; }
   .atlas-field { --atlas-panel-width: 190px; }
   .atlas-panel { width: 190px; bottom: 224px; padding: 14px 11px 9px; }
   .atlas-selected-context { gap: 6px; }

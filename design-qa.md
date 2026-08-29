@@ -369,3 +369,76 @@ P0: none. P1: none. P2: none after the compact cycling-control correction.
 
 final result: accepted locally by the product owner; real-Tesla touch, motion
 comfort, frame pacing and sustained thermal acceptance remain open
+
+---
+
+# Design QA — PRTCL 07 local recovery candidate
+
+Date: 2026-08-29
+
+## Fidelity contract
+
+- Audited PRTCL identity: local commit
+  `2a22f33b975e2c40b7ee0bdd2d1acb4cee4f5060`.
+- Stable source captures at `773 × 601`:
+  `/Users/enuzzo/.codex/visualizations/2026/08/29/01a04e7e-d9e8-7693-b050-beaedf042936/prtcl-source-frequency-stable-2a22f33-773x601.png`,
+  `/Users/enuzzo/.codex/visualizations/2026/08/29/01a04e7e-d9e8-7693-b050-beaedf042936/prtcl-source-murmuration-stable-2a22f33-773x601.png`, and
+  `/Users/enuzzo/.codex/visualizations/2026/08/29/01a04e7e-d9e8-7693-b050-beaedf042936/prtcl-source-axiom-stable-2a22f33-773x601.png`.
+- Final clean-field candidates at the same viewport:
+  `/Users/enuzzo/.codex/visualizations/2026/08/29/01a04e7e-d9e8-7693-b050-beaedf042936/prtcl-qa-frequency-final-773x601.png`,
+  `/Users/enuzzo/.codex/visualizations/2026/08/29/01a04e7e-d9e8-7693-b050-beaedf042936/prtcl-qa-murmuration-final-773x601.png`, and
+  `/Users/enuzzo/.codex/visualizations/2026/08/29/01a04e7e-d9e8-7693-b050-beaedf042936/prtcl-qa-axiom-final-773x601.png`.
+- Current product captures preserve the full Sedici Valvole chrome and separate
+  TYPE / Palette choices:
+  `/Users/enuzzo/.codex/visualizations/2026/08/29/01a04e7e-d9e8-7693-b050-beaedf042936/prtcl-candidate-frequency-blue-773x601.png`,
+  `/Users/enuzzo/.codex/visualizations/2026/08/29/01a04e7e-d9e8-7693-b050-beaedf042936/prtcl-candidate-murmuration-blue-773x601.png`, and
+  `/Users/enuzzo/.codex/visualizations/2026/08/29/01a04e7e-d9e8-7693-b050-beaedf042936/prtcl-candidate-axiom-blue-773x601.png`.
+  The `390 × 844` responsive pass remains current because the final renderer
+  change did not alter layout. No PRTCL source UI, copy, brand, font,
+  dependency, or asset is present.
+
+## Comparison record
+
+- Fractal Frequency retains the continuous golden-angle folded harmonic body,
+  crest concentration, self-occluding depth, and slow rotation. The first local
+  pass was too large and clipped; its camera framing was reduced before the
+  final capture. Native spectral colour is deliberately replaced by the active
+  Sedici Valvole palette.
+- Murmuration retains the deterministic elongated flock, travelling wave,
+  breathing, split/reform, roll, and flight circuit. The first pass looked like
+  an undifferentiated cloud because it observed the flock along the wrong axis;
+  the corrected camera exposes the broad horizontal wave seen in the source.
+- Axiom retains the low rolling grid landscape, stacked moving waves, and the
+  distinct falling/sliding/respawning agent population. Terrain colour now
+  reserves the palette's light value for crests instead of whitening the whole
+  surface.
+- Portrait projection reduces camera zoom below `0.9` aspect so the particle
+  body remains legible above the existing two-row footer without changing the
+  exact Tesla-landscape composition.
+
+## Interaction and runtime evidence
+
+- One text-only `94 × 34 px` TYPE button cycles
+  `FRACTAL → MURMURATION → AXIOM → FRACTAL`; the measured size is identical at
+  `773 × 601` and `390 × 844`. The DOM contains zero `select` elements and no
+  PRTCL panel or disclosure.
+- The existing Palette control remains independent. RED 03 and BLUE 04 product
+  passes visibly recolour the same Fractal form without changing particle type.
+- OPEN, UNDERWATER, and BLOOM have current deterministic `773 × 601` captures
+  with distinct SHA-256 identities: base `3cd28078`, OPEN `a6cb5e08`,
+  UNDERWATER `87bc2c4d`, and BLOOM `023cfbe0`. OPEN widens/spreads, UNDERWATER
+  slows and attenuates, and BLOOM increases native point glow.
+- Two reduced-motion screenshots separated by `800 ms` are byte-identical:
+  `e734410e1a3888b2ef20408b415c60811746598b1658ada6e568aa68508f7462`.
+- Fractal, Murmuration, and Axiom sustained `60.0`, `60.0`, and `59.2 FPS`
+  respectively in the local exact-viewport harness, with no interval above
+  `34 ms`. Browser logs contain Vite/React development info only, with zero
+  warning or error. Eight focused PRTCL tests, the complete 343-test suite, and
+  the 131-module production build `20260829-2209` pass.
+
+Local self-review severity: P0 none, P1 none after camera/framing corrections,
+P2 none. This is machine and design-review evidence, not product-owner or
+real-Tesla acceptance.
+
+final result: local candidate ready for human visual approval; push, deploy,
+real-Tesla motion comfort, frame pacing and thermal acceptance remain open

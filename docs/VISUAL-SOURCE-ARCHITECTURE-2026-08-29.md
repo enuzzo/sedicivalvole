@@ -25,17 +25,19 @@ not expand the primary visual picker into duplicated source entries.
 
 At `773 × 601`, the existing top bar occupies `68 px`, the low control plane
 occupies `64 px`, and the persistent speed module owns the upper-right
-`280 × 68 px`. DRIVEY uses the measured open area at the upper left for two
-direct controls:
+`280 × 68 px`. DRIVEY and PRTCL use the measured open area at the upper left
+for direct controls:
 
 - a two-column rail starts `16 px` from the left and `82 px` from the top;
 - each text-only control is `94 × 34 px`; `VIEW` cycles Hood, Rear and Aerial,
   while `RENDER` cycles Normal and Wire;
 - pressing a control changes state directly; neither control opens a dropdown,
   disclosure panel, range, or icon menu.
+- PRTCL uses one button with the same `94 × 34 px` geometry; `TYPE` cycles
+  Fractal Frequency, Murmuration, and Axiom and always prints the current family.
 
-The not-yet-implemented PRTCL, INFINITE, and PRIMORDIAL contextual tuner retains
-the previously measured outer placement:
+The not-yet-implemented INFINITE and PRIMORDIAL contextual tuner retains the
+previously measured outer placement:
 
 - collapsed trigger: `16 px` from the left, `82 px` from the top, minimum
   `44 px` touch height;
@@ -44,7 +46,7 @@ the previously measured outer placement:
 - tall mobile: the panel's bottom bound moves above the existing `224 px`
   two-row footer and becomes internally scrollable;
 - the tuner is not rendered for APERTURE, VERTIGO, MERIDIAN, ATLAS, WAKE, or
-  DRIVEY, so
+  DRIVEY, or PRTCL, so
   it cannot collide with the ATLAS compass, map attribution, or passenger panel;
 - the tuner exists only in the running experience, so it cannot collide with
   the Signal Gate support panel;
@@ -53,15 +55,16 @@ the previously measured outer placement:
 
 The future trigger is named `TUNE`, not `Settings`, because it edits the current
 visual performance rather than application preferences. Every future select
-group and range has an explicit accessible name and value. DRIVEY deliberately
-uses the smaller always-visible cycling rail selected in product review.
+group and range has an explicit accessible name and value. DRIVEY and PRTCL
+deliberately use the smaller always-visible cycling controls selected in product
+review.
 
 ## Contextual controls
 
 | Environment | Controls |
 |---|---|
 | DRIVEY | View cycle, Render cycle |
-| PRTCL | Particle Type, Zoom, Particles, Colour Speed, Size; shared Palette remains separate |
+| PRTCL | Particle Type cycle; shared Palette remains separate; speed/music own the low-level response |
 | INFINITE | Variant, Curvature, Depth |
 | PRIMORDIAL | Scale, Flow, Warp |
 
@@ -74,7 +77,7 @@ rendering.
 Road speed and music enter every renderer through different model inputs:
 
 - road speed owns forward travel, perspective/FOV, convergence, spatial depth,
-  and — for Fractal Frequency — particle size;
+  and PRTCL particle size;
 - musical output level and transport phase own colour motion, pulse, flock
   breath, highlight timing, and local agitation;
 - OPEN, UNDERWATER, and BLOOM are named performance macros with native geometry
@@ -91,9 +94,13 @@ Road speed and music enter every renderer through different model inputs:
   iframe shell and parent bridge update only the runtime's existing controls,
   cameras, materials and colour buffers. The 51-file integrity manifest is a
   publication gate; vendor source is not patched.
-- PRTCL uses a bounded project-authored Canvas2D particle engine. Fixed maximum
-  arrays and point-size caps protect the Tesla viewport; each variant owns its
-  own parametric form.
+- PRTCL uses a bounded project-authored WebGL2 point renderer that adapts the
+  three directly authorized formulas pinned at PRTCL commit `2a22f33b`. It
+  preserves their reviewed `24,000`, `16,000`, and `37,000` particle budgets,
+  characteristic forms, and camera composition while replacing the native
+  palette/UI layer with Sedici Valvole state. A `1.25` pixel-ratio cap, fixed
+  draw counts, context-loss path, and explicit GPU cleanup protect the Tesla
+  viewport. No fallback may substitute the rejected coarse Canvas2D prototype.
 - INFINITE uses one bounded project-authored Canvas2D tunnel engine. Its three
   variants share path, convergence, touch, palette, macro, and cleanup logic.
   Star Wars is procedural and imports no galaxy texture.

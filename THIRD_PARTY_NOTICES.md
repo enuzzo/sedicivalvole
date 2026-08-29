@@ -32,16 +32,18 @@ reference assets.
 
 ### Visual sources admitted on 2026-08-29
 
-Four external visual sources informed new Flux environments. PRTCL,
-InfiniteTubes, and Primordial retain project-authored clean-room boundaries.
-After the first Drivey result was rejected, DRIVEY moved to a source-faithful
-integration of the separately licensed upstream runtime. Original licences and
-usage notices remain with every referenced or integrated work.
+Four external visual sources informed new Flux environments. InfiniteTubes and
+Primordial retain project-authored clean-room boundaries. PRTCL uses only three
+formula adaptations under the repository owner's direct authorization; its
+runtime, UI, dependencies, brand and assets remain excluded. After the first
+Drivey result was rejected, DRIVEY moved to a source-faithful integration of the
+separately licensed upstream runtime. Original licences and usage notices remain
+with every referenced or integrated work.
 
 | Source | Audited identity | Authors / credit | Licence or permission evidence | Sedici Valvole treatment |
 |---|---|---|---|---|
 | [Drivey](https://github.com/Rezmason/drivey) | `5104cdade2a3158786b05b9b0680a50e942830cf` | Rezmason; original Drivey lineage credited upstream | repository includes GNU GPL version 3 text; the unchanged 2018 `js/Drivey.js` header still says non-profit use and that GPLv3 was being considered; bundled three.js r115, expr-eval 2.0.2, and Hundred Rabbits Themes retain their MIT notices | 51 byte-identical modern-runtime files are integrated behind a separate sedicivalvole shell and bridge; `legacy/`, `readme_assets/`, screenshots and unnecessary media are excluded |
-| PRTCL | `2a22f33b975e2c40b7ee0bdd2d1acb4cee4f5060` | audited README credits `© 2026 Netmilk Studio` | README states MIT but the audited checkout contains no `LICENSE` file; repository owner supplied direct authorization for this work | Fractal Frequency, Murmuration, and Axiom studied; original implementation only |
+| PRTCL | `2a22f33b975e2c40b7ee0bdd2d1acb4cee4f5060` | audited README credits `© 2026 Netmilk Studio` | README states MIT but the audited checkout contains no `LICENSE` file; repository owner supplied direct reuse and modification authorization for this work | Fractal Frequency, Murmuration, and Axiom formulas are adapted into a bounded project renderer; no PRTCL runtime, original preset file, UI, dependency, font, screenshot, brand asset, or other effect is included |
 | [InfiniteTubes](https://github.com/Mamboleoo/InfiniteTubes) | `a3b831b6c95bed4d803dfeed8b66ec76de333996` | Louis Hoebregts for Codrops/Tympanus | custom Codrops integrated-use notice; as-is redistribution and pluginization restricted | Particles, Star Wars, and Triangle mechanics studied; original implementation only; all upstream assets excluded |
 | [GLSL: Primordial Soup](https://codepen.io/shubniggurath/pen/NXGbBo) | Pen `NXGbBo`, audited 2026-08-29 | Liam Egan; embedded value-noise fragment credits Inigo Quilez | public Pen covered by CodePen's current MIT default; separate terms for the embedded noise fragment were not established | rendered fluid mechanics studied; clean-room shader; no Pen or attributed noise source copied |
 

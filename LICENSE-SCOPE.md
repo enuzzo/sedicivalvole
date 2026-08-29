@@ -65,13 +65,16 @@ GPLv3 licence under consideration; that ambiguity is recorded rather than
 silently resolved. The separately authored sedicivalvole iframe shell, bridge,
 integration notice and integrity tooling remain AGPL-licensed.
 
-The PRTCL-, InfiniteTubes-, and Primordial-inspired Flux environments admitted
-on 2026-08-29 remain original sedicivalvole source code, shader source, and
-code-generated visuals inside the project's `AGPL-3.0-or-later` grant. No code
-or asset from those three studied works is included. `THIRD_PARTY_NOTICES.md`
-and `docs/SOURCE-ADMISSION-2026-08-29.md` preserve the source credits, audited
-identities, usage evidence, clean-room boundaries, and the distinct Drivey
-integration boundary.
+The PRTCL Flux environment admitted on 2026-08-29 contains project-authored
+renderer/lifecycle code plus adaptations of three procedural formulas under the
+PRTCL repository owner's direct reuse and modification authorization. Those
+adaptations are included within the project's `AGPL-3.0-or-later` source grant;
+this does not infer a broader licence for the PRTCL repository. Its runtime,
+original preset files, UI, dependencies, fonts, screenshots, brand assets, and
+other effects are excluded. The InfiniteTubes- and Primordial-inspired Flux
+environments remain original clean-room sedicivalvole source and code-generated
+visuals. `THIRD_PARTY_NOTICES.md` and
+`docs/SOURCE-ADMISSION-2026-08-29.md` preserve the exact boundaries and credits.
 
 The Flux score engine includes code translated from Lobo's
 [textStep](https://github.com/illobo/textStep) at commit

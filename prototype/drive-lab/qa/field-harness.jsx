@@ -6,7 +6,7 @@
 // index.html as an entry, so this page never reaches a build or a deployment.
 //
 // Query parameters:
-//   env    aperture | meridian | drivey         (default: meridian)
+//   env    aperture | meridian | drivey | prtcl (default: meridian)
 //   speed  held km/h                            (default: 0)
 //   theme  pearl | graphite | red | blue | silver
 //   sweep  seconds for one 0 -> ceiling -> 0 pass; overrides `speed`
@@ -15,6 +15,9 @@
 //   camera    hood | rear | aerial              (DRIVEY only)
 //   traffic   0..24                             (DRIVEY only)
 //   render    normal | wireframe                (DRIVEY only)
+//   type      frequency | murmuration | axiom    (PRTCL only)
+//   audio     held 0..1 score level              (DRIVEY / PRTCL)
+//   effect    OPEN | UNDERWATER | BLOOM          (DRIVEY / PRTCL)
 //
 // Example: /qa-field.html?env=meridian&speed=115&theme=red
 
@@ -33,6 +36,8 @@ const FIELDS = {
     .then((module) => ({ default: module.MeridianField }))),
   drivey: lazy(() => import("../src/environments/drivey/drivey-field.jsx")
     .then((module) => ({ default: module.DriveyField }))),
+  prtcl: lazy(() => import("../src/environments/prtcl/prtcl-field.jsx")
+    .then((module) => ({ default: module.PrtclField }))),
 };
 
 const parameters = new URLSearchParams(window.location.search);
@@ -54,6 +59,7 @@ const DRIVEY_SETTINGS = {
   traffic: readNumber("traffic", 16),
   renderMode: parameters.get("render") ?? "normal",
 };
+const PRTCL_SETTINGS = { type: parameters.get("type") ?? "frequency" };
 
 function useHeldSpeed() {
   const [speed, setSpeed] = useState(HELD_SPEED);
@@ -140,6 +146,8 @@ function Harness() {
     ? { energy: speedToEnergy(speed), pulse: 0, brake: 0 }
     : ENVIRONMENT === "drivey"
       ? { audioLevel: readNumber("audio", 0), effect: parameters.get("effect"), settings: DRIVEY_SETTINGS }
+      : ENVIRONMENT === "prtcl"
+        ? { audioLevel: readNumber("audio", 0), effect: parameters.get("effect"), settings: PRTCL_SETTINGS }
       : {};
 
   const APP_COMMIT = typeof __APP_COMMIT__ !== "undefined" ? __APP_COMMIT__ : "dev";

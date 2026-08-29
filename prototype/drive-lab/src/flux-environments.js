@@ -63,6 +63,15 @@ export const FLUX_ENVIRONMENTS = [
     themed: true,
     tunable: true,
   },
+  {
+    id: "prtcl",
+    label: "PRTCL",
+    number: "07",
+    rendererLabel: "Fractal particle fields",
+    renderer: "prtcl",
+    themed: true,
+    tunable: true,
+  },
 ];
 
 export function getFluxEnvironment(environmentId) {
