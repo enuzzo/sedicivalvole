@@ -250,10 +250,10 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The canonical live product is version `0.0.0`, source commit `2720a0a`, build
-  `20260829-1810`. The 2026-08-29 18:15 publication passed the read-only
+- The canonical live product is version `0.0.0`, source commit `ab7a00e`, build
+  `20260829-1826`. The 2026-08-29 18:28 publication passed the read-only
   preflight and post-publication identity gates, byte-for-byte HTML and asset
-  checks, cache-behavior checks and muted live DIAG QA at `773 × 601`.
+  checks, cache-behavior checks and muted live DRIVEY/DIAG QA at `773 × 601`.
 - Diagnostic telemetry contains no coordinates and is sent only after the
   explicit `SEND DIAGNOSTIC` action. ATLAS location is a separate ephemeral
   feature: the latest reliable point stays in session memory; OpenFreeMap tile

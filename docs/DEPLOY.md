@@ -8,6 +8,39 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## DRIVEY 06 publication — 2026-08-29 18:28
+
+- build stamp: **`20260829-1826`**; deployed source commit: `ab7a00e`;
+  implementation checkpoint: `5b1696c`;
+- gate before upload: **PASS**. The source tree was clean and matched
+  `origin/main`; six DRIVEY, six WAKE, nine NIGHTSHIFT, 302 unit and nine Sites
+  packaging checks passed. The exact 128-module production build identifies
+  version `0.0.0`, commit `ab7a00e` and build `20260829-1826`;
+- publication boundary: **PASS**. The authorized preflight verified the
+  canonical directory and remote identity with `remote_writes=NONE`. The
+  34-file / 14,230,590-byte upload passed dynamic-root and exact legacy-cleanup
+  gates, retained two prior content-addressed assets for overlap, and the
+  immediate post-publication gate again reported `remote_writes=NONE`;
+- canonical identity and cache behavior: **PASS**. Bare and cache-busted HTML
+  return `200`, `no-store, no-cache, must-revalidate, max-age=0`, `pragma:
+  no-cache` and cache `MISS`. Both 788-byte responses are byte-identical to the
+  local entry at SHA-256
+  `187096858637f6d2904ca803ef57b531e3c79a467ee12d90d62028d151bd604c`;
+- asset identity: **PASS**. The live main JavaScript, CSS, score worklet and
+  BLOOM worklet are byte-identical to the verified local build at SHA-256
+  `b90e7ec2158aecd2cb2dde421f2c671463b39350346a2cb56e55cb9b6bcd6c0e`,
+  `5ff962cb69f009914d684dd688a87e4e0544fc9426e70b00c365d0120e4125f5`,
+  `16887bddb25913752562789b286612c7e2ed659e4eddf2d3539153cdf06015c8`
+  and `0b0aabb6312de3934bdf952e33b610be08a8f38cc12cb23e1676edd02fc2610a`;
+- muted live product QA: **PASS within the technical contract**. Exact
+  `773 × 601` Browser interaction selected `DRIVEY 06`, RED 03 and the
+  contextual TUNE panel with Driver, Hood, Rear and Structure controls. DIAG
+  reported `Canvas2D · Drivey road field`, 55.56 FPS / 18.3 ms p95, zero
+  runtime issues, `output muted`, clockless NIGHTSHIFT PARK, version `0.0.0`,
+  commit `ab7a00e` and build `20260829-1826`; the live origin emitted no Browser
+  warning or error. Real-Tesla motion comfort, touch, thermal and sustained
+  frame-pacing acceptance remain open.
+
 ## NIGHTSHIFT and integrated Flux checkpoint publication — 2026-08-29 18:15
 
 - build stamp: **`20260829-1810`**; deployed source commit: `2720a0a`;
