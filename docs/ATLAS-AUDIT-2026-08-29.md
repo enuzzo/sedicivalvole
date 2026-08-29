@@ -1,6 +1,6 @@
 # ATLAS Product Design Audit — 2026-08-29
 
-Status: implementation gate opened from fresh local evidence. This audit uses
+Status: local Product Design gate passed from fresh local evidence. This audit uses
 the active product at the exact Tesla split viewport (`773 × 601`, DPR 2) with
 QA audio muted. It does not claim a real-GPS or vehicle result.
 
@@ -39,3 +39,43 @@ Milan demo, panel collapse/reopen, one- and two-pointer gesture paths, idle
 return, keyboard conflicts, all palette controls and responsive sidebar states.
 Real Tesla touch response, permission UI wording, live map matching and GPS
 recovery remain vehicle-only gates.
+
+## Implementation QA result
+
+Result: **passed locally** for the exact `773 × 601` browser state. The original
+and corrected active maps were inspected together in
+`08-before-after-active.png`; the original blocking GPS screen and corrected
+recovery state were inspected together in `09-before-after-gps.png`.
+
+- P0 passed: no-location ATLAS no longer installs a full-field waiting overlay.
+  The existing control plane remains reachable, top navigation exposes status
+  plus metre accuracy, and a non-modal accessible recovery popup covers retry,
+  the fixed Milan demo, privacy and software-version wording. A denied retry
+  returns to the same actionable state without a browser error.
+- P0 passed in deterministic interaction checks: one-pointer bearing/pitch,
+  two-pointer extended pinch zoom, clamped map limits and the `6000 ms` manual
+  lease are explicit. The return recomputes the latest point, bearing, pitch and
+  zoom at release time. Synthetic model checks pass; physical multitouch and
+  feel remain real-Tesla gates.
+- P1 passed: a chronological in-memory travel feature uses `line-progress` for
+  a speed-scaled directional pulse, is cleared with the renderer and is never
+  exposed to App diagnostics. A MapLibre compass and numeric heading occupy the
+  upper left.
+- P1 passed: all ten theme controls were captured after correcting a MapLibre
+  lifecycle defect where continuous pulse repaint kept `loaded()` false and
+  prevented later palette application. The final map-specific profiles prove
+  at least `7:1` label/background, `3.2:1` road/background and `2.8:1`
+  pulse/background contrast while preserving each theme's colour identity.
+- P1 passed: free Wikipedia imagery spans the sidebar width, the selected
+  description follows it at a larger readable size, five nearby entries appear
+  at the Tesla viewport and six are available on taller layouts. The panel has
+  one touch-scroll context and its collapse handle reopens it.
+- P2 passed: the hint now includes drag and pinch, mandatory attribution remains
+  the lowest subordinate map strip, and `601 × 390` retains a useful map,
+  scrollable passenger context and persistent collapse handle.
+
+The complete gate passes with 301 unit checks, six WAKE checks, nine packaging
+checks and a production build. Browser QA covered denied/retry/demo, collapse,
+reopen, all ten palettes, `773 × 601` and `601 × 390` with no new warning or
+error. It did not simulate a successful permission grant or physical two-finger
+contact; those remain explicitly open.

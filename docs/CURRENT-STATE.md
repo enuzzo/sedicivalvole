@@ -32,15 +32,20 @@ dated study documents.
   stacked towers, high cloud slabs and scene-wide particles are absent.
 - ATLAS dynamically loads MapLibre only when selected, draws a minimal
   palette-owned OpenFreeMap vector style with 3D buildings, and pairs it with a
-  selected-page Italian Wikipedia abstract and free thumbnail, four passenger
-  choices and a local QR.
-  Without reliable GPS, an explicit Milan-only test button enables keyboard
-  steering and the same speed-driven bird's-eye camera without entering demo
-  coordinates into diagnostics. The camera remains oblique and building-rich at
-  `130 km/h`; it centers on trusted fixes and follows reported heading or a
-  bearing inferred from successive positions. The `246 px` passenger panel uses
-  compact image-and-reading context and an `86 px` QR at the Tesla split viewport, collapses
-  behind a persistent midpoint handle to return the complete field to the map,
+  selected-page Italian Wikipedia abstract, full-width free image, five nearby
+  choices at the Tesla viewport and a local QR. All ten theme profiles now own
+  explicit label, road and pulse contrast floors.
+  Without reliable GPS, ATLAS keeps the normal control plane instead of a
+  blocking waiting splash. The top navigation reports GPS status and metre
+  accuracy; a non-modal accessible panel offers an honest retry path and a
+  fixed Milan demo without entering coordinates into diagnostics. The camera
+  remains oblique and building-rich at `130 km/h`, centers on trusted fixes and
+  follows reported or inferred heading. One pointer rotates and pitches; two
+  pointers pinch beyond the automatic zoom range. After six idle seconds it
+  eases to the current automatic point, bearing, pitch and zoom. A MapLibre
+  compass shows heading, and an ephemeral `line-progress` pulse travels along
+  the latest in-memory path in driving order. The `246 px` passenger panel
+  collapses behind a persistent midpoint handle, has one touch-scroll context,
   and keeps mandatory attribution in a tiny translucent strip above the footer.
 - WAKE implements the approved reference as seven broad, continuously
   tessellated material sheets circulating around stable negative space. It is a
