@@ -47,11 +47,13 @@ dated study documents.
   project-authored WebGL2 renderer with a Canvas2D fallback; no third-party
   runtime or asset was imported. Its exact `773 × 601` browser capture and the
   normalized source were compared together through six fidelity passes, and
-  two subsequent live-review passes made the surfaces themselves move and then
-  advect folds, width, compression and twist directionally like roads. Low speed
+  three subsequent live-review passes first made the surfaces themselves move,
+  then exposed that deformation in place was not road-like travel, and finally
+  added a separate integrated conveyor phase. Width, camber, relief, twist and
+  centerline compression now advect directionally along every spline. Low speed
   remains slow, soft and velvet-like; speed progressively increases travel,
   crossings and temporary knots. The blocking P0/P1/P2 gate in `design-qa.md`
-  passes locally.
+  passes locally after that correction.
 - REGISTER was rejected after live review because its static print composition
   was inexplicable in motion and outside the product mood. Its source remains
   only in the rejected-visual archive; the runtime, QA harness and active tests

@@ -245,3 +245,34 @@ the WAKE visual contract.
   control plane.
 
 final result: passed
+
+### Pass 9 — explicit road travel after live review
+
+The product owner reopened the motion gate after pass 8: the sheets moved and
+draped successfully, but the motion still read as deformation in place rather
+than ribbons travelling like roads. The previous RMSE evidence proved change,
+not a persistent direction of travel, and therefore did not satisfy that
+perceptual requirement by itself.
+
+- Previous and corrected `130 km/h` sequences were inspected together in
+  `prototype/drive-lab/qa/wake-road-flow-2026-08-29/old-vs-road-flow-130.png`.
+- A new integrated conveyor phase advances monotonically and independently of
+  the breathing/drape clock. It moves centerline compression, width, camber,
+  relief and twist; the synchronized shader cue is supporting evidence rather
+  than the source of motion.
+- The Canvas2D fallback now samples the same moving spline geometry instead of
+  drawing static authored control points.
+- Equal-interval muted browser sequences at exactly `773 × 601` use three
+  frames separated by `900 ms`. Frame-one-to-frame-three RMSE is `0.0620132`
+  at `20 km/h` and `0.205038` at `130 km/h`.
+- A deterministic check asserts forward phase travel, more than fivefold speed
+  separation between `20` and `130 km/h`, simultaneous centerline/depth/width
+  displacement, and a frozen conveyor under reduced motion.
+- Browser console warnings and errors: zero. Six WAKE model checks and the
+  production build pass.
+
+Pass 9 severity gate: **P0 none, P1 none, P2 none**. Real-Tesla visual review
+remains the acceptance boundary for apparent direction, cabin distance and
+display persistence.
+
+final result after pass 9: passed locally; vehicle acceptance open
