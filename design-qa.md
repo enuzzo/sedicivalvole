@@ -450,6 +450,11 @@ real-Tesla acceptance.
 final result: local candidate ready for human visual approval; push, deploy,
 real-Tesla motion comfort, frame pacing and thermal acceptance remain open
 
+Product-owner update, 2026-08-29 23:26 CEST: PRTCL is visually approved for
+publication. The fidelity, interaction, palette, source-boundary, and local
+runtime evidence above are accepted; exact-source push/deployment and real-Tesla
+motion comfort, frame pacing, thermal, and touch validation remain separate.
+
 ---
 
 # Design QA — DRIVEY 05 automatic road and dual-palette recovery

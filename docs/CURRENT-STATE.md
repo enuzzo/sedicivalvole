@@ -15,7 +15,7 @@ dated study documents.
   Engine-specific visual directions are selected.
 - The source checkout's Flux catalog contains six visual environments: **APERTURE 01**,
   **VERTIGO 02**, **MERIDIAN 03**, **ATLAS 04**, and **DRIVEY 05**, plus the
-  locally verified **PRTCL 06** candidate. Aperture
+  human-approved **PRTCL 06** checkpoint awaiting exact-source publication. Aperture
   remains the accepted fresh-session and invalid-preference fallback.
 - All six environments use the shared catalog of **10 themes**. Vertigo keeps
   the upstream Interstate 7 files byte-identical while an external runtime
@@ -83,8 +83,9 @@ dated study documents.
   point scale, depth, and travel; music owns colour phase and pulse. Exact muted
   `773 × 601` and `390 × 844` QA, every type, OPEN / UNDERWATER / BLOOM, zero
   warning/error state, deterministic reduced motion, 338 tests, and the
-  128-module build pass locally. Human visual approval, push, deployment, and
-  real-Tesla acceptance remain open.
+  128-module build pass locally. Human visual approval was recorded on
+  2026-08-29; exact-source push and deployment are in progress, while
+  real-Tesla acceptance remains open.
 - REGISTER was rejected after live review because its static print composition
   was inexplicable in motion and outside the product mood. Its source remains
   only in the rejected-visual archive; the runtime, QA harness and active tests
@@ -266,9 +267,9 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The current checkout's local PRTCL checkpoint is `9f177fa`. Its exact gate
-  passes 343 deterministic tests and a 131-module production build
-  (`20260829-2222`). Six exact `773 × 601` muted visual cases have distinct
+- The PRTCL implementation checkpoint is `9f177fa`; the later integrated
+  checkpoint through `633d526` passes 338 deterministic tests and a 128-module
+  production build (`20260829-2322`). Six exact `773 × 601` muted visual cases have distinct
   captured identities; two reduced-motion frames taken 800 ms apart are
   byte-identical. The direct TYPE cycle returns to Fractal, measures
   `94 × 34 px` at both agreed viewports, and the DOM contains no `select`.
@@ -304,10 +305,11 @@ dated study documents.
    spectral slope and saturation; add stereo and phase-coherence evidence with
    explicit invalidity reasons before any detected pitch set can gate JUNCTION
    material.
-5. Obtain human visual approval for the local PRTCL source comparison before
-   any push or deployment, then validate it on the target Tesla. Continue with
-   INFINITE and PRIMORDIAL only afterward and preserve their separate source,
-   accessibility, performance, and target-viewport gates.
+5. Publish and canonically verify the human-approved PRTCL checkpoint, then
+   validate it on the target Tesla. PRIMORDIAL is now explicitly authorized as
+   the next local implementation under its recorded clean-room boundary;
+   INFINITE remains queued, and both retain separate source, accessibility,
+   performance, target-viewport, human-review, and publication gates.
 6. Design Engine only after exactly three Engine-specific directions are shown
    and one is selected. Keep `VERSION` at `0.0.0` until an explicit release is
    approved.
