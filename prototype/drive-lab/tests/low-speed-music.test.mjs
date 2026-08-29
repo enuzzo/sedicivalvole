@@ -34,6 +34,8 @@ import {
   JUNCTION_DEPARTURE_GESTURE,
   JUNCTION_LOW_SPEED_CHORDS,
   JUNCTION_LOW_SPEED_LEVELS,
+  JUNCTION_PARK_CROSSFADE_SECONDS,
+  JUNCTION_PARK_HOLD_SECONDS,
 } from "../src/junction-low-speed-bed.js";
 
 class BedParam {
@@ -42,7 +44,10 @@ class BedParam {
     this.activeCurveUntil = Math.min(this.activeCurveUntil, time);
     this.events.push({ type: "cancel", time });
   }
-  cancelAndHoldAtTime(time) { this.events.push({ type: "hold", time, value: this.value }); }
+  cancelAndHoldAtTime(time) {
+    this.activeCurveUntil = Math.min(this.activeCurveUntil, time);
+    this.events.push({ type: "hold", time, value: this.value });
+  }
   linearRampToValueAtTime(value, time) { this.value = value; this.events.push({ type: "ramp", value, time }); }
   setTargetAtTime(value, time) { this.value = value; this.events.push({ type: "target", value, time }); }
   setValueAtTime(value, time) { this.value = value; this.events.push({ type: "set", value, time }); }
@@ -201,6 +206,29 @@ test("the CREEP micro-progression continues through ROLL without restarting", ()
   assert.equal(bed.snapshot().lowSpeedHarmony, "Cmaj7");
   bed.setSpeed(10, 0.1);
   assert.equal(bed.snapshot().lowSpeedHarmony, "Cmaj7");
+  bed.destroy();
+});
+
+test("JUNCTION PARK reaches six consonant voicings without a clock or immediate repetition", () => {
+  const context = createBedContext();
+  const bed = createJunctionLowSpeedBed(context, new BedNode());
+  bed.setActive(true);
+  bed.setSpeed(0);
+  const visited = [bed.snapshot().parkVoicing];
+  for (const holdSeconds of JUNCTION_PARK_HOLD_SECONDS.slice(0, -1)) {
+    context.currentTime += holdSeconds + 0.01;
+    bed.tick();
+    visited.push(bed.snapshot().parkVoicing);
+  }
+  assert.equal(new Set(visited).size, JUNCTION_LOW_SPEED_CHORDS.length);
+  for (let index = 1; index < visited.length; index += 1) {
+    assert.notEqual(visited[index], visited[index - 1]);
+  }
+  assert.equal(bed.snapshot().perceivedTempo, null);
+  assert.equal(bed.snapshot().beat, false);
+  assert.equal(bed.snapshot().bass, false);
+  assert.equal(bed.snapshot().parkVoicingChanges, JUNCTION_LOW_SPEED_CHORDS.length - 1);
+  assert.ok(context.gains.some((gain) => gain.gain.events.some((event) => event.type === "curve")));
   bed.destroy();
 });
 
@@ -457,13 +485,17 @@ test("the JUNCTION low-speed synthesis is consonant, high-register and softly pr
   const allowedByChord = {
     Emin9: new Set([4, 7, 11, 2, 6]),
     Cmaj7: new Set([0, 4, 7, 11]),
+    Amin7: new Set([9, 0, 4, 7]),
+    Bmin9: new Set([11, 2, 6, 9, 1]),
   };
   for (const chord of JUNCTION_LOW_SPEED_CHORDS) {
-    assert.ok(Math.min(...chord.frequencies) >= 329, `${chord.id} entered the bass register`);
+    assert.ok(Math.min(...chord.frequencies) >= 261, `${chord.id} entered the bass register`);
     for (const frequency of chord.frequencies) {
-      assert.ok(allowedByChord[chord.id].has(pitchClass(frequency)), `${chord.id}: ${frequency} Hz`);
+      assert.ok(allowedByChord[chord.chord].has(pitchClass(frequency)), `${chord.id}: ${frequency} Hz`);
     }
   }
+  assert.equal(new Set(JUNCTION_PARK_HOLD_SECONDS).size, JUNCTION_LOW_SPEED_CHORDS.length);
+  assert.ok(Math.min(...JUNCTION_PARK_HOLD_SECONDS) >= JUNCTION_PARK_CROSSFADE_SECONDS * 2.5);
   assert.ok(Math.max(
     JUNCTION_LOW_SPEED_LEVELS.park,
     JUNCTION_LOW_SPEED_LEVELS.depart,
@@ -479,6 +511,49 @@ test("the JUNCTION low-speed synthesis is consonant, high-register and softly pr
     assert.ok(event.peak <= 0.11, "departure gesture is too prominent");
     assert.ok(allowedByChord.Emin9.has(pitchClass(event.frequency)));
   }
+});
+
+test("JUNCTION PARK's unfiltered reference stays extremely polite and clip-safe", (context) => {
+  const sampleRate = 12000;
+  const durationSeconds = JUNCTION_PARK_HOLD_SECONDS.reduce((sum, value) => sum + value, 0);
+  let sumSquares = 0;
+  let peak = 0;
+  let elapsed = 0;
+  let boundary = JUNCTION_PARK_HOLD_SECONDS[0];
+  let voicingIndex = 0;
+  const voiceWeights = [0.9, 0.78, 0.66, 0.54];
+  for (let frame = 0; frame < Math.round(durationSeconds * sampleRate); frame += 1) {
+    const time = frame / sampleRate;
+    while (time >= boundary && voicingIndex < JUNCTION_LOW_SPEED_CHORDS.length - 1) {
+      elapsed = boundary;
+      voicingIndex += 1;
+      boundary += JUNCTION_PARK_HOLD_SECONDS[voicingIndex];
+    }
+    const transition = Math.min(1, Math.max(0, (time - elapsed) / JUNCTION_PARK_CROSSFADE_SECONDS));
+    const expressionPhase = Math.min(1, Math.max(0, (time - elapsed) / JUNCTION_PARK_HOLD_SECONDS[voicingIndex]));
+    const expression = 0.84 + Math.sin(expressionPhase * Math.PI) * 0.12;
+    const renderVoicing = (index) => JUNCTION_LOW_SPEED_CHORDS[index].frequencies.reduce((sum, frequency, voiceIndex) => {
+      const phase = time * frequency * Math.PI * 2 + voiceIndex * 0.37;
+      const oscillator = voiceIndex % 2 === 0
+        ? Math.sin(phase)
+        : (2 / Math.PI) * Math.asin(Math.sin(phase));
+      return sum + oscillator * voiceWeights[voiceIndex];
+    }, 0);
+    const current = renderVoicing(voicingIndex);
+    const previous = voicingIndex > 0 ? renderVoicing(voicingIndex - 1) : current;
+    const mixed = previous * (1 - transition) + current * transition;
+    const sample = mixed * expression * JUNCTION_LOW_SPEED_LEVELS.voice
+      * JUNCTION_LOW_SPEED_LEVELS.park * 0.9;
+    sumSquares += sample * sample;
+    peak = Math.max(peak, Math.abs(sample));
+  }
+  const rms = Math.sqrt(sumSquares / Math.round(durationSeconds * sampleRate));
+  const rmsDb = 20 * Math.log10(rms);
+  const peakDb = 20 * Math.log10(peak);
+  context.diagnostic(`JUNCTION PARK reference: ${rmsDb.toFixed(3)} dBFS RMS, ${peakDb.toFixed(3)} dBFS peak`);
+  assert.ok(rmsDb >= -55 && rmsDb <= -38, `PARK reference level escaped its polite window (${rmsDb.toFixed(2)} dBFS RMS)`);
+  assert.ok(peakDb <= -30, `PARK reference peak became intrusive (${peakDb.toFixed(2)} dBFS)`);
+  assert.ok(peak < 1, "PARK reference clipped");
 });
 
 test("FRACTURE renders evolving PARK harmony, then the quiet two-chord low-speed form", () => {

@@ -8,23 +8,30 @@ import {
 
 const HARMONIC_HOLD_SECONDS = (60 / JUNCTION_CREEP_BPM) * 8;
 const CHORD_CROSSFADE_SECONDS = 1.1;
+export const JUNCTION_PARK_CROSSFADE_SECONDS = 3.6;
+export const JUNCTION_PARK_HOLD_SECONDS = Object.freeze([11.3, 14.7, 9.8, 13.1, 10.6, 15.4]);
 
 export const JUNCTION_LOW_SPEED_LEVELS = Object.freeze({
-  park: 0.026,
+  park: 0.025,
   depart: 0.032,
   creep: 0.036,
   roll: 0.041,
-  voice: 0.105,
+  voice: 0.1,
   ambienceWet: 0.16,
   ambienceFeedback: 0.12,
 });
 
-// No voice enters the bass register. This is a quiet harmonic identity, not a
-// replacement groove: E minor nine and its C-major-seven neighbour share three
-// tones and can alternate without implying a second composition.
+// No voice enters the bass register. These are root-light inversions of the
+// same E minor / C major / A minor / B minor grammar as the native score. PARK
+// can therefore breathe through a real form without creating a second piece or
+// making the later transition harmonically false.
 export const JUNCTION_LOW_SPEED_CHORDS = Object.freeze([
-  Object.freeze({ id: "Emin9", frequencies: Object.freeze([329.628, 391.995, 493.883, 739.989]) }),
-  Object.freeze({ id: "Cmaj7", frequencies: Object.freeze([523.251, 659.255, 783.991, 987.767]) }),
+  Object.freeze({ id: "Emin9", chord: "Emin9", cutoffHz: 1320, frequencies: Object.freeze([391.995, 493.883, 587.330, 739.989]) }),
+  Object.freeze({ id: "Cmaj7", chord: "Cmaj7", cutoffHz: 1540, frequencies: Object.freeze([329.628, 391.995, 523.251, 987.767]) }),
+  Object.freeze({ id: "Amin7/E", chord: "Amin7", cutoffHz: 1180, frequencies: Object.freeze([329.628, 391.995, 440.000, 523.251]) }),
+  Object.freeze({ id: "Bmin9/D", chord: "Bmin9", cutoffHz: 1420, frequencies: Object.freeze([293.665, 369.994, 440.000, 554.365]) }),
+  Object.freeze({ id: "Emin9/E", chord: "Emin9", cutoffHz: 1080, frequencies: Object.freeze([329.628, 493.883, 587.330, 783.991]) }),
+  Object.freeze({ id: "Cmaj7/C", chord: "Cmaj7", cutoffHz: 1660, frequencies: Object.freeze([261.626, 391.995, 493.883, 659.255]) }),
 ]);
 
 export const JUNCTION_DEPARTURE_GESTURE = Object.freeze([
@@ -54,6 +61,8 @@ export function createJunctionLowSpeedBed(context, destination) {
   const ambienceFeedback = context.createGain();
   const ambienceWet = context.createGain();
   const chordGains = JUNCTION_LOW_SPEED_CHORDS.map(() => context.createGain());
+  const expression = context.createGain();
+  const groupFilters = [];
   const oscillators = [];
   const gestureNodes = new Set();
   const departureGate = createDepartureGate();
@@ -62,6 +71,9 @@ export function createJunctionLowSpeedBed(context, destination) {
   let speed = 0;
   let policy = lowSpeedPolicy(0);
   let progressionStartedAt = context.currentTime;
+  let nextParkChangeAt = context.currentTime + JUNCTION_PARK_HOLD_SECONDS[0];
+  let parkVoiceScheduled = false;
+  let parkVoicingChanges = 0;
   let lastDepartureUpdateAt = context.currentTime;
   let chordIndex = 0;
   let departureEventsPlayed = 0;
@@ -74,7 +86,8 @@ export function createJunctionLowSpeedBed(context, destination) {
   ambienceDelay.delayTime.value = 0.21;
   ambienceFeedback.gain.value = JUNCTION_LOW_SPEED_LEVELS.ambienceFeedback;
   ambienceWet.gain.value = JUNCTION_LOW_SPEED_LEVELS.ambienceWet;
-  master.connect(filter);
+  expression.gain.value = 0.88;
+  master.connect(expression).connect(filter);
   filter.connect(destination);
   filter.connect(ambienceDelay);
   ambienceDelay.connect(ambienceWet).connect(destination);
@@ -82,22 +95,44 @@ export function createJunctionLowSpeedBed(context, destination) {
 
   for (let groupIndex = 0; groupIndex < JUNCTION_LOW_SPEED_CHORDS.length; groupIndex += 1) {
     const group = chordGains[groupIndex];
+    const groupFilter = context.createBiquadFilter();
     group.gain.value = groupIndex === 0 ? 1 : 0;
-    group.connect(master);
+    groupFilter.type = "lowpass";
+    groupFilter.frequency.value = JUNCTION_LOW_SPEED_CHORDS[groupIndex].cutoffHz;
+    groupFilter.Q.value = 0.28 + (groupIndex % 3) * 0.08;
+    group.connect(groupFilter).connect(master);
+    groupFilters.push(groupFilter);
     for (let voiceIndex = 0; voiceIndex < JUNCTION_LOW_SPEED_CHORDS[groupIndex].frequencies.length; voiceIndex += 1) {
       const oscillator = context.createOscillator();
       const voiceGain = context.createGain();
       oscillator.type = voiceIndex % 2 === 0 ? "sine" : "triangle";
       oscillator.frequency.value = JUNCTION_LOW_SPEED_CHORDS[groupIndex].frequencies[voiceIndex];
       if (oscillator.detune) oscillator.detune.value = voiceIndex % 2 === 0 ? -2 : 2;
-      voiceGain.gain.value = JUNCTION_LOW_SPEED_LEVELS.voice;
+      voiceGain.gain.value = JUNCTION_LOW_SPEED_LEVELS.voice * [0.9, 0.78, 0.66, 0.54][voiceIndex];
       oscillator.connect(voiceGain).connect(group);
       oscillator.start();
       oscillators.push(oscillator);
     }
   }
 
-  function applyChord(nextIndex, time = context.currentTime) {
+  function scheduleParkBreath(time = context.currentTime) {
+    const holdSeconds = JUNCTION_PARK_HOLD_SECONDS[chordIndex];
+    if (typeof expression.gain.cancelAndHoldAtTime === "function") {
+      expression.gain.cancelAndHoldAtTime(time);
+    } else {
+      expression.gain.cancelScheduledValues?.(time);
+      expression.gain.setValueAtTime?.(expression.gain.value, time);
+    }
+    expression.gain.setValueCurveAtTime(
+      new Float32Array([0.84, 0.93, 0.88, 0.98, 0.87]),
+      time,
+      holdSeconds,
+    );
+    setTarget(filter.frequency, JUNCTION_LOW_SPEED_CHORDS[chordIndex].cutoffHz, time, 4.8);
+    parkVoiceScheduled = true;
+  }
+
+  function applyChord(nextIndex, time = context.currentTime, parkTransition = false) {
     if (nextIndex === chordIndex) return;
     chordIndex = nextIndex;
     for (let index = 0; index < chordGains.length; index += 1) {
@@ -105,9 +140,10 @@ export function createJunctionLowSpeedBed(context, destination) {
         chordGains[index].gain,
         index === chordIndex ? 1 : 0,
         time,
-        CHORD_CROSSFADE_SECONDS,
+        parkTransition ? JUNCTION_PARK_CROSSFADE_SECONDS : CHORD_CROSSFADE_SECONDS,
       );
     }
+    if (parkTransition) scheduleParkBreath(time);
   }
 
   function triggerDeparture(time = context.currentTime) {
@@ -183,8 +219,18 @@ export function createJunctionLowSpeedBed(context, destination) {
     // Re-arming belongs to elapsed stopped time, not to the cadence of GPS or
     // React state updates. A stable 0 km/h reading may not change for minutes.
     advanceDepartureClock(time);
+    if (policy.id === "park") {
+      if (!parkVoiceScheduled) scheduleParkBreath(time);
+      let nextIndex = chordIndex;
+      while (time >= nextParkChangeAt) {
+        nextIndex = (nextIndex + 1) % JUNCTION_LOW_SPEED_CHORDS.length;
+        nextParkChangeAt += JUNCTION_PARK_HOLD_SECONDS[nextIndex];
+        parkVoicingChanges += 1;
+      }
+      applyChord(nextIndex, time, true);
+      return;
+    }
     if (policy.harmony !== "micro-progression") {
-      applyChord(0, time);
       return;
     }
     const elapsed = Math.max(0, time - progressionStartedAt);
@@ -198,6 +244,10 @@ export function createJunctionLowSpeedBed(context, destination) {
     setActive(nextActive) {
       advanceDepartureClock();
       active = Boolean(nextActive);
+      if (active && policy.id === "park" && !parkVoiceScheduled) {
+        nextParkChangeAt = context.currentTime + JUNCTION_PARK_HOLD_SECONDS[chordIndex];
+        scheduleParkBreath();
+      }
       applyLevel();
     },
 
@@ -210,11 +260,19 @@ export function createJunctionLowSpeedBed(context, destination) {
       const nextPolicy = forceNative
         ? lowSpeedPolicy(NATIVE_GROOVE_SPEED_KMH)
         : lowSpeedPolicy(speed);
+      const previousPolicy = policy;
       if (policy.harmony !== "micro-progression" && nextPolicy.harmony === "micro-progression") {
         progressionStartedAt = context.currentTime;
         applyChord(0);
       }
       policy = nextPolicy;
+      if (policy.id === "park" && previousPolicy.id !== "park") {
+        parkVoiceScheduled = false;
+        const nextParkIndex = (chordIndex + 1) % JUNCTION_LOW_SPEED_CHORDS.length;
+        nextParkChangeAt = context.currentTime + JUNCTION_PARK_HOLD_SECONDS[nextParkIndex];
+        parkVoicingChanges += 1;
+        applyChord(nextParkIndex, context.currentTime, true);
+      }
       if (policy.id !== "native") nativeReady = false;
       const departureEvents = advanceDepartureGate(
         departureGate,
@@ -240,7 +298,9 @@ export function createJunctionLowSpeedBed(context, destination) {
         transportTempo: policy.transportBpm,
         beat: policy.id === "native" ? policy.beat : false,
         bass: policy.bass,
-        parkHarmony: JUNCTION_LOW_SPEED_CHORDS[0].id,
+        parkHarmony: JUNCTION_LOW_SPEED_CHORDS[chordIndex].chord,
+        parkVoicing: JUNCTION_LOW_SPEED_CHORDS[chordIndex].id,
+        parkVoicingChanges,
         lowSpeedHarmony: JUNCTION_LOW_SPEED_CHORDS[chordIndex].id,
         lowSpeedLevel: currentLevel,
         departureEventsPlayed,
@@ -262,7 +322,9 @@ export function createJunctionLowSpeedBed(context, destination) {
         oscillator.disconnect();
       }
       for (const gain of chordGains) gain.disconnect();
+      for (const groupFilter of groupFilters) groupFilter.disconnect();
       master.disconnect();
+      expression.disconnect();
       filter.disconnect();
       ambienceDelay.disconnect();
       ambienceFeedback.disconnect();

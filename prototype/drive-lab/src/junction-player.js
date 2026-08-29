@@ -213,6 +213,8 @@ export function createJunctionPlayer(context, destination, onSnapshot, onBankSta
       decodedPcmBytes: decodedPcmBytes(),
       playing: active && (!nativeAudible || activeSources.size > 0),
       parkHarmony: lowSpeed.parkHarmony,
+      parkVoicing: lowSpeed.parkVoicing,
+      parkVoicingChanges: lowSpeed.parkVoicingChanges,
       lowSpeedHarmony: lowSpeed.lowSpeedHarmony,
       lowSpeedLevel: lowSpeed.lowSpeedLevel,
       departureEventsPlayed: lowSpeed.departureEventsPlayed,

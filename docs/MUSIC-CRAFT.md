@@ -868,6 +868,36 @@ the next target's continuous starting point. The compatibility fallback snapshot
 automation contract rather than the simplified fake-parameter behavior tests
 once assumed.
 
+JUNCTION later exposed the same perceptual failure through a different control
+path. Its catalogue declared both `Emin9` and `Cmaj7`, but PARK was outside the
+micro-progression branch and called `applyChord(0)` on every scheduler tick.
+The stopped vehicle therefore held the first `Emin9` group forever. Multiple
+oscillators, a valid chord label, filtering and delay did not change the result:
+the listener heard one perpetual background note and described it as maddening,
+not ambient.
+
+PARK now follows the native score's own harmonic grammar without borrowing its
+clock. Six root-light upper voicings move through `Emin9`, `Cmaj7`, `Amin7` and
+`Bmin9`, then return through alternate E-minor and C-major inversions. Unequal
+`9.8–15.4 s` holds prevent a covert meter; each transition takes `3.6 s` and
+steers expression plus filter colour over the complete hold. The sequence keeps
+all fundamentals at C4 or above, never enables beat or bass, and retains its
+place across repeated stops so PARK does not always greet the driver with the
+same chord. DEPART inherits the current colour, while CREEP still resolves to
+the existing `Emin9 -> Cmaj7` micro-progression and native OPEN still begins at
+unity playback rate.
+
+Assert progression rather than oscillator count. The regression advances only
+`AudioContext.currentTime`, reaches all six voicings, rejects an immediate
+repeat, verifies every pitch class against its declared chord, requires six
+distinct unequal holds, and keeps the shortest hold at least 2.5 times the
+crossfade. A deliberately conservative unfiltered 74.9-second reference renders
+the same sine/triangle balance, voice weights, master level, expression breath
+and crossfades at `-54.290 dBFS` RMS and `-44.313 dBFS` sample peak. It clips no
+sample and remains far below an intrusive peak. This proves bounded gain and
+harmonic motion, not ambience quality: low-volume listening and a long real-
+Tesla stop remain the perceptual acceptance gates.
+
 FRACTURE revealed why `more than one oscillator is active` is not an adequate
 anti-drone rule. Its old PARK pad re-struck the same `Fm7` voicing on every
 private transport bar. The dark filter and register made one partial dominate,

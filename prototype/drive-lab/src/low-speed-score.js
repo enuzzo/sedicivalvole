@@ -2,8 +2,8 @@
 //
 // The transport may keep a faster private clock, but the listener only hears the
 // tactus reported here. PARK is deliberately clockless: a quiet ambient field,
-// no bass and no percussion. FRACTURE voice-leads that field slowly; JUNCTION
-// may hold its authored safety-bed harmony. Neither establishes a tactus.
+// no bass and no percussion. Both scores voice-lead that field slowly without
+// exposing a transport or establishing a tactus.
 
 import { FRACTURE_RHYTHM_RELEASE_KMH } from "./score/fracture-rhythm.js";
 
