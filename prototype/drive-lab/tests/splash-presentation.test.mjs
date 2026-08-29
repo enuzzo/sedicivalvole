@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
+import { isControlLayerFocused } from "../src/control-visibility.js";
 
 const TEST_DIR = dirname(fileURLToPath(import.meta.url));
 const SOURCE_ROOT = resolve(TEST_DIR, "../src");
@@ -11,6 +12,16 @@ const PROJECT_ROOT = resolve(TEST_DIR, "..");
 function read(relativePath) {
   return readFileSync(resolve(SOURCE_ROOT, relativePath), "utf8");
 }
+
+test("keyboard focus keeps the retracting control planes awake", () => {
+  const app = read("App.jsx");
+  assert.equal(isControlLayerFocused({ closest: (selector) => selector === ".control-layer" }), true);
+  assert.equal(isControlLayerFocused({ closest: () => null }), false);
+  assert.equal(isControlLayerFocused(null), false);
+  assert.match(app, /if \(isControlLayerFocused\(document\.activeElement\)\)/);
+  assert.match(app, /window\.setTimeout\(restWhenIdle, 800\)/);
+  assert.match(app, /onFocusCapture=\{wakeControls\}/);
+});
 
 test("launch surface contains only product and action copy", () => {
   const app = read("App.jsx");
@@ -65,7 +76,10 @@ test("Buy Me a Coffee opens a real, accessible support panel", () => {
   assert.match(app, /buymeacoffee\\\.com/);
   assert.match(app, /className="splash-support-trigger"/);
   assert.match(app, /aria-label="Open Buy Me a Coffee support panel"/);
-  assert.match(app, /role="dialog" aria-modal="true" aria-labelledby="support-title"/);
+  assert.match(app, /function DialogSurface\(/);
+  assert.match(app, /role="dialog"/);
+  assert.match(app, /aria-modal="true"/);
+  assert.match(app, /className="support-overlay"[\s\S]*?labelledBy="support-title"/);
   assert.match(app, /src=\{buyMeCoffeeQr\}/);
   assert.match(app, /href=\{SUPPORT_URL\}/);
   assert.match(app, /PROJECT SPARKS/);
@@ -73,6 +87,13 @@ test("Buy Me a Coffee opens a real, accessible support panel", () => {
   assert.match(app, /decodeSuggestionAddress\(\)/);
   assert.doesNotMatch(app, /enuzzo@gmail\.com/);
   assert.match(envExample, /VITE_SUPPORT_URL=https:\/\/buymeacoffee\.com\/your-handle/);
+});
+
+test("closing the voice audition returns to diagnostics instead of losing focus", () => {
+  const app = read("App.jsx");
+  assert.match(app, /const closeVoicePreview = useCallback\(\(\) => \{\s*setPreviewOpen\(false\);\s*setDrawerOpen\(true\);/);
+  assert.match(app, /labelledBy="preview-title"[\s\S]*?onClose=\{closeVoicePreview\}/);
+  assert.match(app, /onClick=\{closeVoicePreview\} aria-label="Close voice preview"/);
 });
 
 test("the support control is top-left and its panel stays compact", () => {
@@ -90,6 +111,13 @@ test("launch surface stays above every preloaded experience overlay", () => {
   assert.match(splash, /z-index: 20/);
   assert.match(styles, /\.atlas-waiting \{[\s\S]*?z-index: 5/);
   assert.match(styles, /\.atlas-panel \{[\s\S]*?z-index: 6/);
+});
+
+test("local exact-viewport QA can keep the Web Audio graph inaudible", () => {
+  const app = read("App.jsx");
+  assert.match(app, /const QA_MUTED = import\.meta\.env\.DEV && QA_PARAMS\.get\("qaMute"\) === "1"/);
+  assert.match(app, /const \[muted, setMuted\] = useState\(QA_MUTED\)/);
+  assert.match(app, /audioRef\.current\.setMuted\(QA_MUTED\)/);
 });
 
 test("launch copy has a continuous white-to-red travelling wave", () => {
@@ -156,4 +184,14 @@ test("Orbitron telemetry units sit below and align to the value edge", () => {
   assert.match(groups, /\.readout-labels \{[\s\S]*?flex-direction: row-reverse/);
   assert.match(groups, /\.readout-labels \{[\s\S]*?justify-content: flex-start/);
   assert.match(groups, /white-space: nowrap/);
+});
+
+test("compact viewports keep the mode switch separate and preserve a resting mode marker", () => {
+  const app = read("App.jsx");
+  const styles = read("styles.css");
+
+  assert.match(app, /className="active-mode-marker"[^>]*>FLUX<\/span>/);
+  assert.match(styles, /\.controls-resting \.active-mode-marker \{ opacity: \.82; \}/);
+  assert.match(styles, /@media \(max-width: 650px\) \{[\s\S]*?grid-template-columns: minmax\(90px, 1fr\) 116px 220px 52px/);
+  assert.match(styles, /@media \(max-width: 480px\) \{[\s\S]*?\.wordmark \{ display: none; \}[\s\S]*?\.mode-selector \{ grid-column: 1; \}/);
 });

@@ -1,4 +1,4 @@
-import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Component, lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import buyMeCoffeeQr from "./assets/bmc_qr.png";
 import { createAudioEngine } from "./audio-engine.js";
 import {
@@ -23,7 +23,12 @@ import {
   summarizePhasePerformanceTelemetry,
 } from "./diagnostics-model.js";
 import { FluxField } from "./flux-field.jsx";
-import { FLUX_ENVIRONMENTS, getFluxEnvironment } from "./flux-environments.js";
+import {
+  DEFAULT_FLUX_ENVIRONMENT_ID,
+  FLUX_ENVIRONMENTS,
+  getFluxEnvironment,
+  migrateLegacyEnvironmentPreference,
+} from "./flux-environments.js";
 import { FLUX_THEMES, getFluxTheme } from "./flux-themes.js";
 import {
   DEFAULT_GENRE_ID,
@@ -44,6 +49,8 @@ import {
   smoothGpsSpeed,
   speedToEnergy,
 } from "./signal-model.js";
+import { perceivedTempoFromSnapshot } from "./low-speed-score.js";
+import { isControlLayerFocused } from "./control-visibility.js";
 import {
   decodeSuggestionAddress,
   SUPPORT_COUNT_DURATION_MS,
@@ -77,7 +84,8 @@ const SCORE_VOICES = [
 const APP_VERSION = __APP_VERSION__;
 const APP_BUILD = __APP_BUILD__;
 const APP_COMMIT = __APP_COMMIT__;
-const PREFERENCES_KEY = "sedicivalvole.preferences.v1";
+const PREFERENCES_KEY = "sedicivalvole.preferences.v2";
+const LEGACY_PREFERENCES_KEY = "sedicivalvole.preferences.v1";
 function parseSupportUrl(value) {
   try {
     const url = new URL(String(value || "").trim());
@@ -90,9 +98,15 @@ function parseSupportUrl(value) {
 }
 const DEFAULT_SUPPORT_URL = "https://buymeacoffee.com/enuzzo";
 const SUPPORT_URL = parseSupportUrl(import.meta.env.VITE_SUPPORT_URL) || DEFAULT_SUPPORT_URL;
+const QA_PARAMS = import.meta.env.DEV
+  ? new URLSearchParams(window.location.search)
+  : null;
 const QA_SPEED = import.meta.env.DEV
-  ? Math.min(130, Math.max(0, Number(new URLSearchParams(window.location.search).get("qaSpeed")) || 0))
+  ? Math.min(130, Math.max(0, Number(QA_PARAMS.get("qaSpeed")) || 0))
   : 0;
+// A local-only QA latch lets exact-viewport browser checks exercise every
+// running state without sending Web Audio to the user's speakers.
+const QA_MUTED = import.meta.env.DEV && QA_PARAMS.get("qaMute") === "1";
 const DIAGNOSTIC_SEND_ERROR_COPY = {
   payload_size_rejected: "The browser report exceeded the transport limit. Keep this page open and retry after an update.",
   report_rejected: "The server report exceeded the mail limit. Keep this page open and retry after an update.",
@@ -108,19 +122,28 @@ const DIAGNOSTIC_SEND_ERROR_COPY = {
 
 function readPreferences() {
   try {
-    const value = JSON.parse(localStorage.getItem(PREFERENCES_KEY) || "null");
+    const currentValue = JSON.parse(localStorage.getItem(PREFERENCES_KEY) || "null");
+    const legacyValue = currentValue == null
+      ? JSON.parse(localStorage.getItem(LEGACY_PREFERENCES_KEY) || "null")
+      : null;
+    const value = currentValue ?? legacyValue;
     return {
       themeId: FLUX_THEMES.some((theme) => theme.id === value?.themeId) ? value.themeId : "red",
-      environmentId: FLUX_ENVIRONMENTS.some((environment) => environment.id === value?.environmentId)
-        ? value.environmentId
-        : "aperture",
+      environmentId: migrateLegacyEnvironmentPreference(
+        value?.environmentId,
+        legacyValue != null,
+      ),
       // A stored genre is only honoured if it still has an authored score.
       genreId: SCORE_GENRES.some((genre) => (
         genre.id === value?.genreId && genre.status === SCORE_STATUS.ready
       )) ? value.genreId : DEFAULT_GENRE_ID,
     };
   } catch {
-    return { themeId: "red", environmentId: "aperture", genreId: DEFAULT_GENRE_ID };
+    return {
+      themeId: "red",
+      environmentId: DEFAULT_FLUX_ENVIRONMENT_ID,
+      genreId: DEFAULT_GENRE_ID,
+    };
   }
 }
 
@@ -320,6 +343,113 @@ function canUseKeyboardTarget(target) {
   return !target.closest("input, textarea, select, button, [contenteditable='true'], [role='slider']");
 }
 
+const DIALOG_FOCUSABLE_SELECTOR = [
+  "a[href]",
+  "button:not([disabled])",
+  "input:not([disabled])",
+  "select:not([disabled])",
+  "textarea:not([disabled])",
+  "[tabindex]:not([tabindex='-1'])",
+].join(", ");
+
+function DialogSurface({
+  className,
+  labelledBy,
+  onClose,
+  backdropClass = "drawer-backdrop",
+  panelClass = "drawer-panel",
+  children,
+}) {
+  const panelRef = useRef(null);
+  const previousFocusRef = useRef(null);
+
+  useEffect(() => {
+    previousFocusRef.current = document.activeElement instanceof HTMLElement
+      ? document.activeElement
+      : null;
+    const frameId = requestAnimationFrame(() => {
+      const panel = panelRef.current;
+      const initial = panel?.querySelector("[data-dialog-initial-focus]")
+        ?? panel?.querySelector(DIALOG_FOCUSABLE_SELECTOR);
+      if (initial instanceof HTMLElement) initial.focus({ preventScroll: true });
+      else panel?.focus({ preventScroll: true });
+    });
+    return () => {
+      cancelAnimationFrame(frameId);
+      previousFocusRef.current?.focus?.({ preventScroll: true });
+    };
+  }, []);
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      event.stopPropagation();
+      onClose();
+      return;
+    }
+    if (event.key !== "Tab") return;
+    const focusable = Array.from(panelRef.current?.querySelectorAll(DIALOG_FOCUSABLE_SELECTOR) ?? [])
+      .filter((element) => element instanceof HTMLElement && element.tabIndex >= 0);
+    if (focusable.length === 0) {
+      event.preventDefault();
+      panelRef.current?.focus({ preventScroll: true });
+      return;
+    }
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  };
+
+  return (
+    <section
+      className={className}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={labelledBy}
+      onKeyDown={handleKeyDown}
+    >
+      <button className={backdropClass} type="button" tabIndex={-1} onClick={onClose} aria-label="Close" />
+      <div ref={panelRef} className={panelClass} role="document" tabIndex={-1}>
+        {children}
+      </div>
+    </section>
+  );
+}
+
+function FieldFailure({ label }) {
+  return (
+    <div className="field-failure" role="status">
+      <strong>{label}</strong>
+      <span>Visual unavailable · controls remain active</span>
+    </div>
+  );
+}
+
+class EnvironmentErrorBoundary extends Component {
+  state = { failed: false };
+
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+
+  componentDidCatch(error) {
+    this.props.onError?.(error);
+  }
+
+  render() {
+    if (this.state.failed) {
+      return <FieldFailure label={this.props.label} />;
+    }
+    return this.props.children;
+  }
+}
+
 function ModeSelector() {
   return (
     <nav className="mode-selector" aria-label="Experience mode">
@@ -362,20 +492,29 @@ function VisualControl({ environment, onOpen }) {
   );
 }
 
-function MusicControl({ genreId, onOpen }) {
-  const selected = getScoreGenre(genreId);
+function MusicControl({ genreId, selection, onOpen }) {
+  const pending = selection.status === "loading" ? selection.requestedScoreId : null;
+  const selected = getScoreGenre(pending ?? genreId);
+  const stateLabel = selection.status === "loading"
+    ? `${selected.label} · LOADING`
+    : selection.status === "restored"
+      ? `${selected.label} · RESTORED`
+      : selection.status === "unavailable"
+        ? `${selected.label} · UNAVAILABLE`
+        : selected.label;
   return (
     <button
       className="score-control"
       type="button"
       aria-haspopup="dialog"
-      aria-label={`Music ${selected.label}, ${selected.family}. Tap to change`}
+      aria-label={`Music ${stateLabel}, ${selected.family}. Tap to change`}
+      title={selection.message ?? undefined}
       onClick={onOpen}
     >
       <span className="control-label">MUSIC</span>
-      <strong>{selected.label}</strong>
-      <span className="control-disclosure" title={scoreSource(genreId).note}>
-        <small>{scoreSource(genreId).mark} {selected.number}</small><DisclosureCaret />
+      <strong aria-live="polite">{stateLabel}</strong>
+      <span className="control-disclosure" title={scoreSource(selected.id).note}>
+        <small>{scoreSource(selected.id).mark} {selected.number}</small><DisclosureCaret />
       </span>
     </button>
   );
@@ -383,42 +522,38 @@ function MusicControl({ genreId, onOpen }) {
 
 function VisualPicker({ environmentId, onChange, onClose }) {
   return (
-    <section
+    <DialogSurface
       className="diagnostic-drawer score-drawer environment-drawer"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="visual-picker-title"
+      labelledBy="visual-picker-title"
+      onClose={onClose}
     >
-      <button className="drawer-backdrop" type="button" onClick={onClose} aria-label="Close" />
-      <div className="drawer-panel">
-        <div className="drawer-heading">
-          <div><small>FLUX VISUAL LIBRARY</small><h2 id="visual-picker-title">Visual</h2></div>
-          <button type="button" onClick={onClose} aria-label="Close visual library">CLOSE</button>
-        </div>
-        <ul className="score-list">
-          {FLUX_ENVIRONMENTS.map((entry) => {
-            const active = entry.id === environmentId;
-            return (
-              <li key={entry.id}>
-                <button
-                  type="button"
-                  className={`score-entry${active ? " is-active" : ""}`}
-                  aria-pressed={active}
-                  onClick={() => {
-                    onChange(entry.id);
-                    onClose();
-                  }}
-                >
-                  <span className="score-entry-number">{entry.number}</span>
-                  <span className="score-entry-body"><strong>{entry.label}</strong><span>{entry.rendererLabel}</span></span>
-                  <span className="score-entry-state">{active ? "ACTIVE" : "SELECT"}</span>
-                </button>
-              </li>
-            );
-          })}
-        </ul>
+      <div className="drawer-heading">
+        <div><small>FLUX VISUAL LIBRARY</small><h2 id="visual-picker-title">Visual</h2></div>
+        <button data-dialog-initial-focus type="button" onClick={onClose} aria-label="Close visual library">CLOSE</button>
       </div>
-    </section>
+      <ul className="score-list">
+        {FLUX_ENVIRONMENTS.map((entry) => {
+          const active = entry.id === environmentId;
+          return (
+            <li key={entry.id}>
+              <button
+                type="button"
+                className={`score-entry${active ? " is-active" : ""}`}
+                aria-pressed={active}
+                onClick={() => {
+                  onChange(entry.id);
+                  onClose();
+                }}
+              >
+                <span className="score-entry-number">{entry.number}</span>
+                <span className="score-entry-body"><strong>{entry.label}</strong><span>{entry.rendererLabel}</span></span>
+                <span className="score-entry-state">{active ? "ACTIVE" : "SELECT"}</span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </DialogSurface>
   );
 }
 
@@ -432,60 +567,56 @@ function VisualPicker({ environmentId, onChange, onClose }) {
  */
 function MusicPicker({ genreId, onChange, onClose }) {
   return (
-    <section
+    <DialogSurface
       className="diagnostic-drawer score-drawer"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="score-picker-title"
+      labelledBy="score-picker-title"
+      onClose={onClose}
     >
-      <button className="drawer-backdrop" type="button" onClick={onClose} aria-label="Close" />
-      <div className="drawer-panel">
-        <div className="drawer-heading">
-          <div><small>FLUX MUSIC LIBRARY</small><h2 id="score-picker-title">Music</h2></div>
-          <button type="button" onClick={onClose} aria-label="Close music library">CLOSE</button>
-        </div>
-        <ul className="score-list">
-          {SCORE_GENRES.map((genre) => {
-            const ready = genre.status === SCORE_STATUS.ready;
-            const active = ready && genre.id === genreId;
-            return (
-              <li key={genre.id}>
-                <button
-                  type="button"
-                  className={`score-entry${active ? " is-active" : ""}${ready ? "" : " is-preparing"}`}
-                  disabled={!ready}
-                  aria-pressed={active}
-                  onClick={() => {
-                    if (!ready) return;
-                    onChange(genre.id);
-                    onClose();
-                  }}
-                >
-                  <span className="score-entry-number">{genre.number}</span>
-                  <span className="score-entry-body">
-                    <strong>
-                      {genre.label}
-                      <em className={`score-source is-${genre.source}`}>
-                        <span aria-hidden="true">{scoreSource(genre.id).mark}</span>
-                        {scoreSource(genre.id).label}
-                      </em>
-                    </strong>
-                    <span>{genre.family} · {genre.note}</span>
-                  </span>
-                  <span className="score-entry-state">
-                    {active ? "PLAYING" : ready ? "SELECT" : "IN PREPARATION"}
-                  </span>
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-        <p className="privacy-note">
-          Only finished music can be selected. The rest
-          name a direction and the rhythmic family it will be built from.
-        </p>
+      <div className="drawer-heading">
+        <div><small>FLUX MUSIC LIBRARY</small><h2 id="score-picker-title">Music</h2></div>
+        <button data-dialog-initial-focus type="button" onClick={onClose} aria-label="Close music library">CLOSE</button>
       </div>
-    </section>
+      <ul className="score-list">
+        {SCORE_GENRES.map((genre) => {
+          const ready = genre.status === SCORE_STATUS.ready;
+          const active = ready && genre.id === genreId;
+          return (
+            <li key={genre.id}>
+              <button
+                type="button"
+                className={`score-entry${active ? " is-active" : ""}${ready ? "" : " is-preparing"}`}
+                disabled={!ready}
+                aria-pressed={active}
+                onClick={() => {
+                  if (!ready) return;
+                  onChange(genre.id);
+                  onClose();
+                }}
+              >
+                <span className="score-entry-number">{genre.number}</span>
+                <span className="score-entry-body">
+                  <strong>
+                    {genre.label}
+                    <em className={`score-source is-${genre.source}`}>
+                      <span aria-hidden="true">{scoreSource(genre.id).mark}</span>
+                      {scoreSource(genre.id).label}
+                    </em>
+                  </strong>
+                  <span>{genre.family} · {genre.note}</span>
+                </span>
+                <span className="score-entry-state">
+                  {active ? "PLAYING" : ready ? "SELECT" : "IN PREPARATION"}
+                </span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+      <p className="privacy-note">
+        Only finished music can be selected. The rest
+        name a direction and the rhythmic family it will be built from.
+      </p>
+    </DialogSurface>
   );
 }
 
@@ -578,42 +709,45 @@ function SupportPanel({ onClose, reducedMotion }) {
   const mailSubject = encodeURIComponent("sedicivalvole suggestion");
 
   return (
-    <section className="support-overlay" role="dialog" aria-modal="true" aria-labelledby="support-title">
-      <button className="support-backdrop" type="button" onClick={onClose} aria-label="Close support panel" />
-      <div className="support-panel">
-        <header className="support-heading">
-          <div><small>OPEN CHANNEL</small><h2 id="support-title">Fuel the experiment</h2></div>
-          <button type="button" onClick={onClose} autoFocus>CLOSE</button>
-        </header>
-        <div className="support-body">
-          <img
-            className="support-qr"
-            src={buyMeCoffeeQr}
-            width="700"
-            height="700"
-            loading="lazy"
-            decoding="async"
-            alt="QR code for the sedicivalvole Buy Me a Coffee page"
-          />
-          <div className="support-copy">
-            <p>If this strange little road instrument made your drive better, you can leave a coffee.</p>
-            <a
-              className="support-primary-link"
-              href={SUPPORT_URL}
-              target="_blank"
-              rel="noreferrer"
-            >
-              BUY ME A COFFEE <span aria-hidden="true">↗</span>
-            </a>
-            <SupportMomentumCounter reducedMotion={reducedMotion} />
-          </div>
-          <p className="support-suggestions">
-            Suggestions are super welcome — coffee or not. Write to{" "}
-            <a href={`mailto:${suggestionAddress}?subject=${mailSubject}`}>{suggestionAddress}</a>
-          </p>
+    <DialogSurface
+      className="support-overlay"
+      labelledBy="support-title"
+      onClose={onClose}
+      backdropClass="support-backdrop"
+      panelClass="support-panel"
+    >
+      <header className="support-heading">
+        <div><small>OPEN CHANNEL</small><h2 id="support-title">Fuel the experiment</h2></div>
+        <button data-dialog-initial-focus type="button" onClick={onClose}>CLOSE</button>
+      </header>
+      <div className="support-body">
+        <img
+          className="support-qr"
+          src={buyMeCoffeeQr}
+          width="700"
+          height="700"
+          loading="lazy"
+          decoding="async"
+          alt="QR code for the sedicivalvole Buy Me a Coffee page"
+        />
+        <div className="support-copy">
+          <p>If this strange little road instrument made your drive better, you can leave a coffee.</p>
+          <a
+            className="support-primary-link"
+            href={SUPPORT_URL}
+            target="_blank"
+            rel="noreferrer"
+          >
+            BUY ME A COFFEE <span aria-hidden="true">↗</span>
+          </a>
+          <SupportMomentumCounter reducedMotion={reducedMotion} />
         </div>
+        <p className="support-suggestions">
+          Suggestions are super welcome — coffee or not. Write to{" "}
+          <a href={`mailto:${suggestionAddress}?subject=${mailSubject}`}>{suggestionAddress}</a>
+        </p>
       </div>
-    </section>
+    </DialogSurface>
   );
 }
 
@@ -625,7 +759,7 @@ export function App() {
   const [gpsState, setGpsState] = useState("not tested");
   const [accuracy, setAccuracy] = useState(null);
   const [renderer, setRenderer] = useState("checking…");
-  const [muted, setMuted] = useState(false);
+  const [muted, setMuted] = useState(QA_MUTED);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [controlsAwake, setControlsAwake] = useState(true);
@@ -633,16 +767,23 @@ export function App() {
   const [diagnostics, setDiagnostics] = useState(null);
   const [sendState, setSendState] = useState("idle");
   const [sendErrorCode, setSendErrorCode] = useState(null);
-  const [pulseFlash, setPulseFlash] = useState(0);
   const [activeEffect, setActiveEffect] = useState(null);
-  const [scoreTempo, setScoreTempo] = useState(162);
+  const [scoreTransportTempo, setScoreTransportTempo] = useState(162);
+  const [scorePerceivedTempo, setScorePerceivedTempo] = useState(null);
   const [scoreScene, setScoreScene] = useState("REST");
+  const [scoreSelection, setScoreSelection] = useState({
+    status: "ready",
+    requestedScoreId: null,
+    message: null,
+  });
   const scoreStateRef = useRef(null);
+  const scoreSelectionRevisionRef = useRef(0);
   const [keyboardHint, setKeyboardHint] = useState(null);
   const [audioLevel, setAudioLevel] = useState(0);
   const [flightRecorderRevision, setFlightRecorderRevision] = useState(0);
   const [themeId, setThemeId] = useState(initialPreferences.themeId);
   const [environmentId, setEnvironmentId] = useState(initialPreferences.environmentId);
+  const [environmentRuntimeError, setEnvironmentRuntimeError] = useState(null);
   const [genreId, setGenreId] = useState(initialPreferences.genreId);
   const [environmentPickerOpen, setEnvironmentPickerOpen] = useState(false);
   const [scorePickerOpen, setScorePickerOpen] = useState(false);
@@ -708,13 +849,28 @@ export function App() {
   const genreIdRef = useRef(genreId);
   const rendererRef = useRef(renderer);
   const drawerOpenRef = useRef(drawerOpen);
+  const themeIdRef = useRef(themeId);
+  const mutedRef = useRef(muted);
+  const bpmRef = useRef(null);
+  const transportBpmRef = useRef(scoreTransportTempo);
+  const mapPositionRef = useRef(mapPosition);
 
   const theme = getFluxTheme(themeId);
   const environment = getFluxEnvironment(environmentId);
   const energy = speedToEnergy(speed);
-  // The tempo shown is the transport's own, reported by the score. Deriving it
-  // from speed again would print a number the music never plays.
-  const bpm = scoreTempo;
+  const modalOpen = drawerOpen
+    || previewOpen
+    || environmentPickerOpen
+    || scorePickerOpen
+    || supportOpen;
+  const closeVoicePreview = useCallback(() => {
+    setPreviewOpen(false);
+    setDrawerOpen(true);
+  }, []);
+  // The driver-facing number describes the pulse they hear. PARK deliberately
+  // has no pulse, while diagnostics retain the score's true transport clock.
+  const bpm = speed < 0.8 ? null : scorePerceivedTempo;
+  const transportBpm = scoreTransportTempo;
   speedRef.current = speed;
   gpsStateRef.current = gpsState;
   accuracyRef.current = accuracy;
@@ -723,6 +879,11 @@ export function App() {
   genreIdRef.current = genreId;
   rendererRef.current = renderer;
   drawerOpenRef.current = drawerOpen;
+  themeIdRef.current = themeId;
+  mutedRef.current = muted;
+  bpmRef.current = bpm;
+  transportBpmRef.current = transportBpm;
+  mapPositionRef.current = mapPosition;
   performancePhaseRef.current = phase === "running"
     ? `drive:${environmentId}:${genreId}:${drawerOpen ? "diagnostics" : "visual"}`
       + (environmentId === "aperture" && speed <= 40 ? ":wall-retreat" : "")
@@ -754,30 +915,64 @@ export function App() {
   const wakeControls = useCallback(() => {
     setControlsAwake(true);
     window.clearTimeout(wakeTimerRef.current);
-    wakeTimerRef.current = window.setTimeout(() => setControlsAwake(false), 4200);
+    const restWhenIdle = () => {
+      if (isControlLayerFocused(document.activeElement)) {
+        wakeTimerRef.current = window.setTimeout(restWhenIdle, 800);
+        return;
+      }
+      setControlsAwake(false);
+    };
+    wakeTimerRef.current = window.setTimeout(restWhenIdle, 4200);
   }, []);
 
   const handleSurfacePointerDown = useCallback((event) => {
-    controlsHiddenAtPointerDownRef.current = !(controlsAwake || drawerOpen);
-    if (!(event.target instanceof Element)
-      || !event.target.closest("button, input, textarea, select, [contenteditable='true'], [role='slider']")) {
+    controlsHiddenAtPointerDownRef.current = !(controlsAwake || modalOpen);
+    if (!modalOpen && (
+      !(event.target instanceof Element)
+      || !event.target.closest("button, input, textarea, select, [contenteditable='true'], [role='slider']")
+    )) {
       appRef.current?.focus({ preventScroll: true });
     }
     wakeControls();
-  }, [controlsAwake, drawerOpen, wakeControls]);
+  }, [controlsAwake, modalOpen, wakeControls]);
 
   // The score reports its own arrangement about ten times a second. The full
   // snapshot lives in a ref so the flight recorder can read it without forcing a
-  // render; only the two values the interface shows become state, and only when
-  // they actually change.
+  // render. Only listener-facing values become state, and only when they
+  // actually change.
   const triggerPulse = useCallback((snapshot) => {
     if (!snapshot) return;
     scoreStateRef.current = snapshot;
-    const tempo = Math.round(snapshot.tempo ?? 0);
-    setScoreTempo((current) => (current === tempo ? current : tempo));
+    const transportTempo = Math.round(snapshot.transportTempo ?? snapshot.tempo ?? 0);
+    setScoreTransportTempo((current) => (
+      current === transportTempo ? current : transportTempo
+    ));
+    const inPark = String(snapshot.motionLane ?? snapshot.sceneId ?? "").toLowerCase() === "park"
+      || speedRef.current < 0.8;
+    const listenerTempo = perceivedTempoFromSnapshot(snapshot, transportTempo);
+    const perceivedTempo = inPark || listenerTempo == null
+      ? null
+      : Math.round(listenerTempo * 10) / 10;
+    setScorePerceivedTempo((current) => (
+      current === perceivedTempo ? current : perceivedTempo
+    ));
     const scene = String(snapshot.sceneId ?? "rest").toUpperCase();
     setScoreScene((current) => (current === scene ? current : scene));
   }, []);
+
+  const handleScoreRecovery = useCallback(({ failedScoreId, activeScoreId, message }) => {
+    setGenreId(activeScoreId);
+    setScoreSelection({
+      status: "restored",
+      requestedScoreId: null,
+      message: `${getScoreGenre(failedScoreId).label} unavailable · ${getScoreGenre(activeScoreId).label} restored`,
+    });
+    logDiagnosticEvent("score.runtime-recovered", {
+      failed: failedScoreId,
+      active: activeScoreId,
+      message,
+    });
+  }, [logDiagnosticEvent]);
 
   const triggerBrake = useCallback(() => {
     const now = performance.now();
@@ -1120,20 +1315,36 @@ export function App() {
       storage = false;
     }
 
-    audioRef.current = createAudioEngine(triggerPulse, setActiveEffect);
-    if (audioRef.current) {
+    try {
+      audioRef.current = createAudioEngine(triggerPulse, setActiveEffect, handleScoreRecovery);
+      if (!audioRef.current) throw new Error("Web Audio is unavailable");
       await audioRef.current.resume();
-      audioRef.current.setMuted(false);
+      audioRef.current.setMuted(QA_MUTED);
       // The speed effect may have run before the audio engine existed (notably
       // for an exact qaSpeed launch). Seed the engine from the current signal
       // before choosing a score so its first complete section is the right one.
       audioRef.current.setSpeed(speedRef.current);
-      audioRef.current.setScore(genreId);
+      const activeScoreId = await audioRef.current.setScore(genreId);
+      if (typeof activeScoreId === "string" && activeScoreId !== genreId) {
+        setGenreId(activeScoreId);
+        setScoreSelection({
+          status: "restored",
+          requestedScoreId: null,
+          message: `${getScoreGenre(genreId).label} unavailable · ${getScoreGenre(activeScoreId).label} restored`,
+        });
+        logDiagnosticEvent("score.fallback", { requested: genreId, active: activeScoreId });
+      }
       audioRef.current.startCue();
       window.clearInterval(audioMeterTimerRef.current);
       audioMeterTimerRef.current = window.setInterval(() => {
         setAudioLevel(audioRef.current?.getLevel() ?? 0);
       }, 180);
+    } catch (error) {
+      audioRef.current?.destroy();
+      audioRef.current = null;
+      const message = String(error?.message || "Audio engine unavailable").slice(0, 160);
+      setScoreSelection({ status: "unavailable", requestedScoreId: null, message });
+      logDiagnosticEvent("audio.start-failed", { message });
     }
     startGps();
     const display = readDisplaySnapshot("harness-start");
@@ -1190,18 +1401,46 @@ export function App() {
       wakeControls();
       window.requestAnimationFrame(() => appRef.current?.focus({ preventScroll: true }));
     }, reducedMotion ? 180 : 620);
-  }, [genreId, logDiagnosticEvent, reducedMotion, startGps, triggerPulse, wakeControls]);
+  }, [genreId, handleScoreRecovery, logDiagnosticEvent, reducedMotion, startGps, triggerPulse, wakeControls]);
 
-  useEffect(() => {
-    if (!supportOpen) return undefined;
-    const closeOnEscape = (event) => {
-      if (event.key !== "Escape") return;
-      event.preventDefault();
-      setSupportOpen(false);
-    };
-    window.addEventListener("keydown", closeOnEscape);
-    return () => window.removeEventListener("keydown", closeOnEscape);
-  }, [supportOpen]);
+  const selectScore = useCallback(async (requestedScoreId) => {
+    const revision = ++scoreSelectionRevisionRef.current;
+    const engine = audioRef.current;
+    if (!engine) {
+      const message = "Audio engine unavailable";
+      setScoreSelection({ status: "unavailable", requestedScoreId: null, message });
+      logDiagnosticEvent("score.change-failed", {
+        requested: requestedScoreId,
+        reason: "engine-unavailable",
+      });
+      return;
+    }
+    setScoreSelection({ status: "loading", requestedScoreId, message: null });
+    try {
+      const activeScoreId = await engine.setScore(requestedScoreId);
+      if (revision !== scoreSelectionRevisionRef.current) return;
+      const fallback = activeScoreId !== requestedScoreId;
+      setGenreId(activeScoreId);
+      setScoreSelection(fallback ? {
+        status: "restored",
+        requestedScoreId: null,
+        message: `${getScoreGenre(requestedScoreId).label} unavailable · ${getScoreGenre(activeScoreId).label} restored`,
+      } : { status: "ready", requestedScoreId: null, message: null });
+      logDiagnosticEvent("score.changed", {
+        requested: requestedScoreId,
+        active: activeScoreId,
+        fallback,
+      });
+    } catch (error) {
+      if (revision !== scoreSelectionRevisionRef.current) return;
+      setScoreSelection({
+        status: "unavailable",
+        requestedScoreId: null,
+        message: String(error?.message || "Music selection failed").slice(0, 160),
+      });
+      logDiagnosticEvent("score.change-failed", { requested: requestedScoreId });
+    }
+  }, [logDiagnosticEvent]);
 
   useEffect(() => {
     const supported = typeof PerformanceObserver !== "undefined"
@@ -1394,7 +1633,6 @@ export function App() {
     audioRef.current?.setGpsAccuracy(source === "GPS" ? accuracy : null);
   }, [accuracy, source]);
   useEffect(() => { audioRef.current?.setMuted(muted); }, [muted]);
-  useEffect(() => { audioRef.current?.setScore(genreId); }, [genreId]);
   useEffect(() => {
     try {
       localStorage.setItem(PREFERENCES_KEY, JSON.stringify({ themeId, environmentId, genreId }));
@@ -1444,15 +1682,17 @@ export function App() {
     if (phase !== "running") return undefined;
     const handleKeyDown = (event) => {
       if (!canUseKeyboardTarget(event.target)) return;
-      // Escape closes whatever is open. Clicking the field outside a panel
-      // already dismisses it; this is the same gesture from the keyboard.
-      if (event.key === "Escape") {
-        if (!(drawerOpen || previewOpen || environmentPickerOpen || scorePickerOpen)) return;
-        event.preventDefault();
-        setPreviewOpen(false);
-        setEnvironmentPickerOpen(false);
-        setScorePickerOpen(false);
-        setDrawerOpen(false);
+      // A modal owns the keyboard. It may be dismissed, but driving inputs can
+      // never leak through it to the vehicle simulator or the ATLAS camera.
+      if (modalOpen) {
+        if (event.key === "Escape") {
+          event.preventDefault();
+          setSupportOpen(false);
+          setPreviewOpen(false);
+          setEnvironmentPickerOpen(false);
+          setScorePickerOpen(false);
+          setDrawerOpen(false);
+        }
         return;
       }
       if (event.repeat) return;
@@ -1489,10 +1729,7 @@ export function App() {
     };
   }, [
     phase,
-    drawerOpen,
-    environmentPickerOpen,
-    previewOpen,
-    scorePickerOpen,
+    modalOpen,
     logDiagnosticEvent,
     releaseKeyboardAcceleration,
     releaseKeyboardBrake,
@@ -1520,7 +1757,7 @@ export function App() {
     audioRef.current?.destroy();
   }, [stopDemo]);
 
-  const diagnosticReport = useMemo(() => diagnostics ? {
+  const buildDiagnosticReport = useCallback(() => diagnostics ? {
     schema: "sedicivalvole.tesla-diagnostic.v3",
     generatedAt: new Date().toISOString(),
     app: {
@@ -1528,15 +1765,16 @@ export function App() {
       build: APP_BUILD,
       commit: APP_COMMIT,
       mode: "flux",
-      environment: environmentId,
+      environment: environmentIdRef.current,
       pageUrl: window.location.href,
-      source,
-      displayedSpeedKmh: Math.round(speed * 10) / 10,
-      bpm: Math.round(bpm * 10) / 10,
-      energy: Math.round(energy * 1000) / 1000,
+      source: sourceRef.current,
+      displayedSpeedKmh: Math.round(speedRef.current * 10) / 10,
+      bpm: bpmRef.current == null ? null : Math.round(bpmRef.current * 10) / 10,
+      transportBpm: Math.round(transportBpmRef.current * 10) / 10,
+      energy: Math.round(speedToEnergy(speedRef.current) * 1000) / 1000,
       energyCeilingKmh: ROAD_SPEED_CEILING_KMH,
-      paletteTheme: themeId,
-      muted,
+      paletteTheme: themeIdRef.current,
+      muted: mutedRef.current,
       arrangement: audioRef.current?.getState() ?? null,
     },
     simulation: {
@@ -1558,16 +1796,16 @@ export function App() {
     },
     display: diagnostics.display,
     viewportHistory: diagnostics.viewportHistory,
-    graphics: { ...diagnostics.graphics, activeRenderer: renderer },
+    graphics: { ...diagnostics.graphics, activeRenderer: rendererRef.current },
     audio: {
       ...diagnostics.audio,
       state: audioRef.current?.context.state ?? diagnostics.audio.state,
-      level: Math.round(audioLevel * 1000) / 1000,
+      level: Math.round(audioLevelRef.current * 1000) / 1000,
     },
     gps: {
-      state: gpsState,
-      speedField: gpsState === "live" ? "numeric" : "not-confirmed",
-      accuracyM: accuracy,
+      state: gpsStateRef.current,
+      speedField: gpsStateRef.current === "live" ? "numeric" : "not-confirmed",
+      accuracyM: accuracyRef.current,
       telemetry: summarizeGpsTelemetry(gpsTelemetryRef.current),
     },
     capabilities: diagnostics.capabilities,
@@ -1595,14 +1833,21 @@ export function App() {
       coordinatesCollected: false,
       coordinatesStored: false,
       coordinatesTransmitted: false,
-      atlasLocationFeatureActive: environmentId === "atlas",
-      atlasLocationHeldInMemory: Boolean(mapPosition),
-      atlasThirdPartyRequestsActive: environmentId === "atlas" && Boolean(mapPosition),
+      atlasLocationFeatureActive: environmentIdRef.current === "atlas",
+      atlasLocationHeldInMemory: Boolean(mapPositionRef.current),
+      atlasThirdPartyRequestsActive: environmentIdRef.current === "atlas" && Boolean(mapPositionRef.current),
       automaticRemoteTelemetry: false,
       transmissionRequiresExplicitGesture: true,
       recorderStorage: "bounded-session-memory-only",
     },
-  } : null, [diagnostics, drawerOpen, environmentId, flightRecorderRevision, mapPosition]);
+  } : null, [diagnostics]);
+  // Building and pretty-printing the complete report is intentionally cold.
+  // The drive hot path updates bounded refs; only opening DIAG or its two-second
+  // recorder refresh creates a serializable snapshot.
+  const diagnosticReport = useMemo(
+    () => drawerOpen ? buildDiagnosticReport() : null,
+    [buildDiagnosticReport, drawerOpen, flightRecorderRevision],
+  );
   const currentPerformancePhase = diagnosticReport?.performance.phases?.[performancePhaseRef.current] ?? null;
   const currentUsedHeapMb = Number.isFinite(currentPerformancePhase?.memory.latestUsedJsHeapBytes)
     ? Math.round(currentPerformancePhase.memory.latestUsedJsHeapBytes / 104857.6) / 10
@@ -1622,13 +1867,14 @@ export function App() {
   );
 
   const sendDiagnostic = useCallback(async () => {
-    if (!diagnosticReport || sendState === "sending") return;
+    const freshReport = buildDiagnosticReport();
+    if (!freshReport || sendState === "sending") return;
     setSendState("sending");
     setSendErrorCode(null);
     logDiagnosticEvent("diagnostic-send.requested");
     try {
       const reportToSend = fitDiagnosticReportForTransport({
-        ...diagnosticReport,
+        ...freshReport,
         generatedAt: new Date().toISOString(),
         flightRecorder: createDriveTelemetryReport(driveTelemetryRef.current, performance.now()),
         runtimeIssues: runtimeIssuesRef.current,
@@ -1655,60 +1901,96 @@ export function App() {
       setSendErrorCode(errorCode);
       logDiagnosticEvent("diagnostic-send.failed", { code: errorCode });
     }
-  }, [diagnosticReport, logDiagnosticEvent, sendState]);
+  }, [buildDiagnosticReport, logDiagnosticEvent, sendState]);
+
+  const handleEnvironmentError = useCallback((error) => {
+    const message = String(error?.message || "Unknown visual runtime error").slice(0, 500);
+    setEnvironmentRuntimeError(message);
+    setRenderer(`${environment.label} unavailable`);
+    if (diagnosticsActiveRef.current) {
+      runtimeIssuesRef.current = [...runtimeIssuesRef.current, {
+        at: new Date().toISOString(),
+        elapsedMs: roundMetric(performance.now() - sessionStartedAtRef.current),
+        type: "visual.runtime.error",
+        detail: { environment: environment.id, message },
+      }].slice(-24);
+    }
+    logDiagnosticEvent("visual.runtime.error", { environment: environment.id, message });
+  }, [environment.id, environment.label, logDiagnosticEvent]);
+
+  useEffect(() => {
+    setEnvironmentRuntimeError(null);
+  }, [environmentId]);
 
   return (
     <main
       ref={appRef}
       tabIndex={-1}
-      className={`app phase-${phase} ${controlsAwake || drawerOpen || environmentPickerOpen || scorePickerOpen ? "controls-awake" : "controls-resting"}`}
+      className={`app phase-${phase} ${controlsAwake || modalOpen ? "controls-awake" : "controls-resting"}`}
       data-theme={themeId}
       data-environment={environmentId}
       onPointerDown={handleSurfacePointerDown}
       onPointerMove={wakeControls}
+      onFocusCapture={wakeControls}
     >
-      {environment.renderer === "vertigo" ? (
-        <Interstate7Field
-          speed={speed}
-          theme={theme}
-          reducedMotion={reducedMotion}
-          onRenderer={setRenderer}
-          onFrame={recordRenderedFrame}
-        />
-      ) : environment.renderer === "meridian" ? (
-        <MeridianField
-          speed={speed}
-          theme={theme}
-          reducedMotion={reducedMotion}
-          onRenderer={setRenderer}
-          onFrame={recordRenderedFrame}
-        />
-      ) : environment.renderer === "atlas" ? (
-        <Suspense fallback={<div className="atlas-waiting"><strong>ATLAS</strong><span>Loading city field</span></div>}>
-          <AtlasField
-            speed={speed}
-            theme={theme}
-            position={mapPosition}
-            reducedMotion={reducedMotion}
-            onRenderer={setRenderer}
-            onFrame={recordRenderedFrame}
-          />
-        </Suspense>
-      ) : (
-        <FluxField
-          energy={energy}
-          speed={speed}
-          theme={theme}
-          reducedMotion={reducedMotion}
-          pulse={pulseFlash}
-          brake={brakeFlash}
-          onRenderer={setRenderer}
-          onFrame={recordRenderedFrame}
-        />
-      )}
+      {phase === "running" ? (
+        <EnvironmentErrorBoundary
+          key={environmentId}
+          label={environment.label}
+          onError={handleEnvironmentError}
+        >
+          {environmentRuntimeError ? (
+            <FieldFailure label={environment.label} />
+          ) : environment.renderer === "vertigo" ? (
+            <Interstate7Field
+              speed={speed}
+              theme={theme}
+              reducedMotion={reducedMotion}
+              onRenderer={setRenderer}
+              onFrame={recordRenderedFrame}
+              onRuntimeError={handleEnvironmentError}
+            />
+          ) : environment.renderer === "meridian" ? (
+            <MeridianField
+              speed={speed}
+              theme={theme}
+              reducedMotion={reducedMotion}
+              onRenderer={setRenderer}
+              onFrame={recordRenderedFrame}
+              onRuntimeError={handleEnvironmentError}
+            />
+          ) : environment.renderer === "atlas" ? (
+            <Suspense fallback={<div className="atlas-waiting"><strong>ATLAS</strong><span>Loading city field</span></div>}>
+              <AtlasField
+                speed={speed}
+                theme={theme}
+                position={mapPosition}
+                reducedMotion={reducedMotion}
+                keyboardShortcutsEnabled={!modalOpen}
+                onRenderer={setRenderer}
+                onFrame={recordRenderedFrame}
+                onRuntimeError={handleEnvironmentError}
+              />
+            </Suspense>
+          ) : (
+            <FluxField
+              energy={energy}
+              speed={speed}
+              theme={theme}
+              reducedMotion={reducedMotion}
+              pulse={activeEffect === "OPEN" ? 1 : 0}
+              brake={activeEffect === "UNDERWATER" ? 1 : brakeFlash}
+              onRenderer={setRenderer}
+              onFrame={recordRenderedFrame}
+              onRuntimeError={handleEnvironmentError}
+            />
+          )}
+        </EnvironmentErrorBoundary>
+      ) : null}
       {keyboardHint ? <div className="keyboard-hint" role="status">{keyboardHint}</div> : null}
 
-      <section className="splash" aria-hidden={phase === "running"}>
+      {phase !== "running" ? (
+      <section className="splash" aria-hidden="false" inert={supportOpen ? true : undefined}>
         <SplashSignalGate
           active={phase !== "running"}
           reducedMotion={reducedMotion}
@@ -1731,12 +2013,6 @@ export function App() {
           <span className="support-logo"><SupportCupMark /></span>
           <span>BUY ME A COFFEE</span>
         </button>
-        {supportOpen ? (
-          <SupportPanel
-            reducedMotion={reducedMotion}
-            onClose={() => setSupportOpen(false)}
-          />
-        ) : null}
         <div className="splash-action">
           <button className="launch-button" type="button" onClick={runHarness} disabled={phase === "testing"}>
             <span className="launch-brand">sedicivalvole</span>
@@ -1785,8 +2061,13 @@ export function App() {
           <small className="splash-privacy">Audio, display, motion, and GPS are checked locally.</small>
         </div>
       </section>
+      ) : null}
 
-      <section className="experience" aria-hidden={phase !== "running"}>
+      <section
+        className="experience"
+        aria-hidden={phase !== "running" || modalOpen}
+        inert={phase !== "running" || modalOpen ? true : undefined}
+      >
         <header className="topbar control-layer">
           <button className="wordmark" type="button" onClick={() => setDrawerOpen(true)} aria-label="Open diagnostic report">
             sedicivalvole
@@ -1798,13 +2079,14 @@ export function App() {
         </header>
 
         <button className="source-readout" type="button" onClick={toggleSource} aria-label={`Speed source ${source}. Tap to switch`}>
+          <span className="active-mode-marker" aria-hidden="true">FLUX</span>
           <div className="readout-group">
             <strong>{Math.round(speed)}</strong>
             <div className="readout-labels"><span>km/h</span><small>{source}</small></div>
           </div>
           <div className="readout-divider" />
           <div className="readout-group">
-            <strong>{Math.round(bpm)}</strong>
+            <strong>{bpm == null ? "—" : Math.round(bpm)}</strong>
             <div className="readout-labels"><span>bpm</span><small>tempo</small></div>
           </div>
           <div className="readout-divider" />
@@ -1843,18 +2125,31 @@ export function App() {
             </span>
           </button>
           <VisualControl environment={environment} onOpen={() => setEnvironmentPickerOpen(true)} />
-          <MusicControl genreId={genreId} onOpen={() => setScorePickerOpen(true)} />
+          <MusicControl
+            genreId={genreId}
+            selection={scoreSelection}
+            onOpen={() => setScorePickerOpen(true)}
+          />
           <PaletteControl themeId={themeId} onChange={setThemeId} />
         </footer>
       </section>
 
+      {supportOpen ? (
+        <SupportPanel
+          reducedMotion={reducedMotion}
+          onClose={() => setSupportOpen(false)}
+        />
+      ) : null}
+
       {drawerOpen ? (
-        <section className="diagnostic-drawer" role="dialog" aria-modal="true" aria-labelledby="diagnostic-title">
-          <button className="drawer-backdrop" type="button" onClick={() => setDrawerOpen(false)} aria-label="Close" />
-          <div className="drawer-panel">
+        <DialogSurface
+          className="diagnostic-drawer"
+          labelledBy="diagnostic-title"
+          onClose={() => setDrawerOpen(false)}
+        >
             <div className="drawer-heading">
               <div><small>TESLA CAPABILITY HARNESS</small><h2 id="diagnostic-title">Device report</h2></div>
-              <button type="button" onClick={() => setDrawerOpen(false)} aria-label="Close report">CLOSE</button>
+              <button data-dialog-initial-focus type="button" onClick={() => setDrawerOpen(false)} aria-label="Close report">CLOSE</button>
             </div>
 
             {/*
@@ -1877,8 +2172,8 @@ export function App() {
               </article>
               <article>
                 <small>TRANSPORT</small>
-                <strong>{Math.round(bpm)} BPM</strong>
-                <span>{scoreStateRef.current?.chord ?? "—"} · {scoreStateRef.current?.activeLanes?.length ?? 0} lanes</span>
+                <strong>{Math.round(transportBpm)} BPM</strong>
+                <span>{bpm == null ? "no beat in PARK" : `${Math.round(bpm)} BPM perceived`} · {scoreStateRef.current?.chord ?? "—"}</span>
               </article>
               <article>
                 <small>WEB AUDIO</small>
@@ -1887,7 +2182,17 @@ export function App() {
               </article>
             </div>
             <div className="drawer-inline-actions">
-              <button type="button" onClick={() => setPreviewOpen(true)}>AUDITION VOICES</button>
+              <button
+                type="button"
+                disabled={genreId !== "fracture"}
+                title={genreId === "fracture" ? "Audition FRACTURE voices" : "JUNCTION is auditioned as complete authored performances"}
+                onClick={() => {
+                  setDrawerOpen(false);
+                  setPreviewOpen(true);
+                }}
+              >
+                {genreId === "fracture" ? "AUDITION VOICES" : "COMPLETE PERFORMANCE ONLY"}
+              </button>
             </div>
 
             <h3 className="diagnostic-group">Device</h3>
@@ -1970,8 +2275,7 @@ export function App() {
             </div>
             {/* The raw report is evidence, not a readout: it is available, not in the way. */}
             {rawReportOpen ? <pre>{diagnosticText}</pre> : null}
-          </div>
-        </section>
+        </DialogSurface>
       ) : null}
 
       {environmentPickerOpen ? (
@@ -1988,21 +2292,20 @@ export function App() {
       {scorePickerOpen ? (
         <MusicPicker
           genreId={genreId}
-          onChange={(nextGenreId) => {
-            setGenreId(nextGenreId);
-            logDiagnosticEvent("score.changed", { score: nextGenreId });
-          }}
+          onChange={selectScore}
           onClose={() => setScorePickerOpen(false)}
         />
       ) : null}
 
       {previewOpen ? (
-        <section className="diagnostic-drawer preview-drawer" role="dialog" aria-modal="true" aria-labelledby="preview-title">
-          <button className="drawer-backdrop" type="button" onClick={() => setPreviewOpen(false)} aria-label="Close" />
-          <div className="drawer-panel">
+        <DialogSurface
+          className="diagnostic-drawer preview-drawer"
+          labelledBy="preview-title"
+          onClose={closeVoicePreview}
+        >
             <div className="drawer-heading">
               <div><small>FLUX SCORE ENGINE</small><h2 id="preview-title">Voices</h2></div>
-              <button type="button" onClick={() => setPreviewOpen(false)} aria-label="Close voice preview">CLOSE</button>
+              <button data-dialog-initial-focus type="button" onClick={closeVoicePreview} aria-label="Close voice preview">CLOSE</button>
             </div>
 
             <div className="preview-content">
@@ -2027,8 +2330,7 @@ export function App() {
                 ))}
               </div>
             </div>
-          </div>
-        </section>
+        </DialogSurface>
       ) : null}
 
     </main>

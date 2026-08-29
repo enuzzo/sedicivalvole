@@ -3,6 +3,8 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import {
   advanceAtlasDemoPosition,
+  atlasKeyboardShortcutAvailable,
+  createLatestAtlasRequestGate,
   createAtlasStyle,
   normalizeNearbyPages,
   resolveAtlasHeading,
@@ -10,6 +12,11 @@ import {
   validAtlasPosition,
   wikipediaNearbyUrl,
 } from "../src/environments/atlas/atlas-model.js";
+import {
+  canvasFramebufferSize,
+  frameTelemetryIsDue,
+  THIRTY_FPS_FRAME_INTERVAL_MS,
+} from "../src/render-telemetry.js";
 
 const appSource = readFileSync(new URL("../src/App.jsx", import.meta.url), "utf8");
 const atlasSource = readFileSync(new URL("../src/environments/atlas/atlas-field.jsx", import.meta.url), "utf8");
@@ -32,6 +39,52 @@ test("Atlas camera widens with speed while retaining a strongly dimensional city
   assert.ok(road.pitch >= 55, "motorway view must retain an oblique 3D perspective");
   assert.ok(road.durationMs < rest.durationMs);
   assert.ok(road.buildingScale > rest.buildingScale);
+});
+
+test("Atlas telemetry samples real render events at no more than 30 FPS", () => {
+  assert.equal(THIRTY_FPS_FRAME_INTERVAL_MS, 1000 / 30);
+  assert.equal(frameTelemetryIsDue(0, THIRTY_FPS_FRAME_INTERVAL_MS - 0.001, THIRTY_FPS_FRAME_INTERVAL_MS), false);
+  let lastFrameAt = null;
+  const captured = [0, 1000 / 60, 1000 / 30, 1000 / 20, 2000 / 30];
+  const reported = captured.filter((capturedAt) => {
+    if (!frameTelemetryIsDue(lastFrameAt, capturedAt, THIRTY_FPS_FRAME_INTERVAL_MS)) return false;
+    lastFrameAt = capturedAt;
+    return true;
+  });
+  assert.deepEqual(reported, [0, 1000 / 30, 2000 / 30]);
+  assert.deepEqual(canvasFramebufferSize({ width: 1546, height: 1202 }), { width: 1546, height: 1202 });
+  assert.match(atlasSource, /map\.on\("render"/);
+  assert.match(atlasSource, /frameTelemetryIsDue\([\s\S]*?THIRTY_FPS_FRAME_INTERVAL_MS/);
+  assert.doesNotMatch(atlasSource, /onFrame\(performance\.now\(\), 1000 \/ 30/);
+});
+
+test("an abandoned Atlas import cannot fail the newly selected environment", () => {
+  const catchAt = atlasSource.indexOf("})().catch((error) => {");
+  const disposedAt = atlasSource.indexOf("if (disposed) return;", catchAt);
+  const errorAt = atlasSource.indexOf('onRenderer("Atlas unavailable")', catchAt);
+  assert.ok(catchAt >= 0);
+  assert.ok(disposedAt > catchAt && disposedAt < errorAt);
+});
+
+test("Atlas reports fatal map and animation failures once through the app fallback", () => {
+  assert.match(atlasSource, /let failed = false;/);
+  assert.match(atlasSource, /const fail = \(error\) => \{[\s\S]*?if \(disposed \|\| failed\) return;[\s\S]*?onRuntimeError\?\./);
+  assert.match(atlasSource, /map\.on\("error", \(event\) =>/);
+  assert.match(atlasSource, /map\.on\("render", \(\) => \{[\s\S]*?catch \(error\) \{\s*fail\(error\);/);
+  assert.match(atlasSource, /const animate = \(now\) => \{[\s\S]*?catch \(error\) \{\s*fail\(error\);/);
+});
+
+test("Atlas demo steering yields to modal and interactive keyboard contexts", () => {
+  const interactiveTarget = { closest: () => ({ tagName: "BUTTON" }) };
+  const passiveTarget = { closest: () => null };
+  assert.equal(atlasKeyboardShortcutAvailable({ target: passiveTarget }, false), false);
+  assert.equal(atlasKeyboardShortcutAvailable({ target: interactiveTarget }), false);
+  assert.equal(atlasKeyboardShortcutAvailable({ target: passiveTarget, defaultPrevented: true }), false);
+  assert.equal(atlasKeyboardShortcutAvailable({ target: passiveTarget, altKey: true }), false);
+  assert.equal(atlasKeyboardShortcutAvailable({ target: passiveTarget }), true);
+  assert.match(atlasSource, /keyboardShortcutsEnabled = true/);
+  assert.match(atlasSource, /!demo \|\| !demoPosition \|\| !keyboardShortcutsEnabled/);
+  assert.match(atlasSource, /atlasKeyboardShortcutAvailable\(event, keyboardShortcutsEnabled\)/);
 });
 
 test("Atlas follows reported heading or infers it from successive trusted positions", () => {
@@ -101,6 +154,47 @@ test("Atlas nearby query is explicit and normalizes passenger content", () => {
     thumbnailWidth: 320,
     thumbnailHeight: 214,
   }]);
+});
+
+test("an aborted Atlas nearby request cannot clear the current loading state", async () => {
+  const gate = createLatestAtlasRequestGate();
+  let loading = false;
+  let finishStaleRequest;
+  const staleRequest = gate.begin();
+  staleRequest.commit(() => { loading = true; });
+  const staleCompletion = new Promise((resolve) => { finishStaleRequest = resolve; })
+    .finally(() => staleRequest.commit(() => { loading = false; }));
+
+  const currentRequest = gate.begin();
+  currentRequest.commit(() => { loading = true; });
+  finishStaleRequest();
+  await staleCompletion;
+  assert.equal(loading, true, "the stale finally hid the current request's progress");
+
+  currentRequest.commit(() => { loading = false; });
+  assert.equal(loading, false);
+  assert.match(atlasSource, /\.finally\(\(\) => request\.commit\(\(\) => setLoading\(false\)\)\)/);
+});
+
+test("Atlas clears a stale QR immediately and ignores late or rejected generation", async () => {
+  const gate = createLatestAtlasRequestGate();
+  let qrUrl = "qr:previous-article";
+  let finishStaleQr;
+  const staleRequest = gate.begin();
+  const staleGeneration = new Promise((resolve) => { finishStaleQr = resolve; })
+    .then((dataUrl) => staleRequest.commit(() => { qrUrl = dataUrl; }));
+
+  const currentRequest = gate.begin();
+  currentRequest.commit(() => { qrUrl = ""; });
+  finishStaleQr("qr:wrong-article");
+  await staleGeneration;
+  assert.equal(qrUrl, "", "the previous article's QR returned beside the current article");
+
+  await Promise.reject(new Error("QR chunk unavailable"))
+    .catch(() => currentRequest.commit(() => { qrUrl = ""; }));
+  assert.equal(qrUrl, "");
+  assert.match(atlasSource, /request\.commit\(\(\) => setQrUrl\(""\)\);[\s\S]*?import\("qrcode"\)/);
+  assert.match(atlasSource, /\.catch\(\(\) => \{\s*request\.commit\(\(\) => setQrUrl\(""\)\);/);
 });
 
 test("Atlas rejects unsafe or absent thumbnail URLs without losing the abstract", () => {
