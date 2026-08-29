@@ -8,7 +8,7 @@ Third-party components retain their original licenses and are not relicensed und
 |---|---:|---|---|---|---|
 | React | 19.2.0 | Meta Platforms, Inc. and contributors | MIT | none | `prototype/drive-lab/` |
 | React DOM | 19.2.0 | Meta Platforms, Inc. and contributors | MIT | none | `prototype/drive-lab/` |
-| Vite | 6.4.2 | Evan You and contributors | MIT | local configuration | `prototype/drive-lab/` |
+| Vite | 6.4.3 | Evan You and contributors | MIT | local configuration | `prototype/drive-lab/` |
 | @vitejs/plugin-react | 5.0.4 | Vite contributors | MIT | none | `prototype/drive-lab/` |
 | MapLibre GL JS | 5.7.1 | MapLibre contributors | BSD-3-Clause | lazy ATLAS renderer integration | `prototype/drive-lab/` |
 | qrcode | 1.5.4 | Kazuhiko Arase and contributors | MIT | local passenger-link QR generation | `prototype/drive-lab/` |
@@ -24,9 +24,10 @@ Third-party components retain their original licenses and are not relicensed und
 
 Transitive dependencies and integrity hashes are locked in `prototype/drive-lab/package-lock.json`. A public release must generate and verify the complete dependency notice set.
 
-`luminous-axis.png` is derived from the selected visual direction created during the Product Design workflow. It is original project material pending the final brand/visual policy and is not declared as a third-party asset.
-
-The three Braun launch-detail images under `prototype/drive-lab/public/ui/` are cropped from the user-selected Product Design direction generated for this project. They are original project material under the same interim brand/visual exclusion and are not declared as third-party assets.
+No standalone luminous-axis or Braun launch-detail raster is present in the
+tracked source tree or production build output. Interface details and active
+project-authored fields are code-generated visuals, not copied Product Design
+reference assets.
 
 Material kept only under `_references/` remains external local source material. It is not automatically approved, redistributable, or part of the product.
 
@@ -62,15 +63,15 @@ does not hold.
    or multisample from either pack is committed to this repository.
 2. They are used the way the terms allow: as source material for composing
    sedicivalvole's own music.
-3. What the product ships is that music. JUNCTION renders 1,280 bars of
+3. What the product ships is that music. JUNCTION renders 192 bars of
    sedicivalvole arrangement — layering, voicing, processing chain and bus —
-   into 160 complete clips: 20 takes for each of eight energy states, composed
-   from 134 distinct source recordings. It
-   uses the packs' native 127–168 BPM recordings without browser-side stretching,
-   then packages the encoded production as one segmented runtime bank. The
-   browser mixes two complete arrangements live only when tempo, harmony and
-   rhythmic spine all match; it never receives an isolated loop or stem. It is
-   not a disguised collection of source samples.
+   into 24 complete eight-bar clips: three interchangeable complete
+   performances for each of eight energy states, produced from 76 distinct
+   source recordings. It uses the packs' native 127–168 BPM recordings without
+   browser-side stretching, then packages the encoded production as one 5.8 MB
+   segmented runtime bank. The browser schedules one self-contained synchronous
+   performance at a time; it never receives an isolated loop or stem. It is not
+   a disguised collection of source samples.
 
 The distinction is the whole point, and it is not about Git. Serving the
 individual loops as separate assets would put the pack itself on the network for
@@ -136,8 +137,8 @@ browser bundle or the published product.
 |---|---:|---|---|
 | [Spotify Basic Pitch](https://github.com/spotify/basic-pitch) | `0.4.0` | Apache-2.0 | High-recall polyphonic note proposals; never the final harmonic verdict |
 | [NumPy](https://github.com/numpy/numpy) | `<2.1` | BSD-3-Clause | Numerical arrays used by the analysis stack |
-| [Numba](https://github.com/numba/numba) | `0.60.0` | BSD-2-Clause | Intel-macOS-compatible acceleration dependency |
-| [llvmlite](https://github.com/numba/llvmlite) | `0.43.0` | BSD-2-Clause | Precompiled Intel-macOS backend required by Numba |
+| [Numba](https://github.com/numba/numba) | `0.60.0` | BSD-2-Clause | Matched CPython 3.11 acceleration dependency for Apple-silicon and Intel macOS |
+| [llvmlite](https://github.com/numba/llvmlite) | `0.43.0` | BSD-2-Clause | Matched native macOS backend required by Numba |
 | [scikit-learn](https://github.com/scikit-learn/scikit-learn) | `<=1.5.1` | BSD-3-Clause | Version bounded to Core ML Tools' verified conversion range |
 | [setuptools](https://github.com/pypa/setuptools) | `<81` | MIT | Compatibility provider for the legacy `pkg_resources` import in Resampy |
 

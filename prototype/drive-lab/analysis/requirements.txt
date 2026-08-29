@@ -1,9 +1,10 @@
 # Development-only automatic music transcription stack.
 # The deterministic harmonic arbiter remains project-owned code; Basic Pitch is
 # used only to propose high-recall note candidates for it to falsify.
-# Numba 0.60 / llvmlite 0.43 are the last pair with published CPython 3.11
-# Intel-macOS wheels in the project's supported setup. Without these bounds,
-# pip may select a source-only LLVM build on this machine.
+# Numba 0.60 / llvmlite 0.43 provide matched CPython 3.11 wheels for both
+# Apple-silicon and Intel macOS. Keep the environment machine-local: a virtual
+# environment copied through Dropbox can retain an absolute interpreter link
+# and native wheels for the wrong architecture.
 numpy<2.1
 llvmlite==0.43.0
 numba==0.60.0

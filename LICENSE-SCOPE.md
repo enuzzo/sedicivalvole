@@ -34,9 +34,7 @@ it does:
 - the `sedicivalvole` name, future logo, marks, and brand assets;
 - product screenshots and marketing media;
 - original audio recordings, samples, and sound packs; and
-- standalone visual or media assets, including
-  `prototype/drive-lab/public/assets/luminous-axis.png` and the source-derived
-  Braun launch details under `prototype/drive-lab/public/ui/`.
+- standalone original visual or media assets when present.
 
 No permission to use a trademark is granted. All rights in excluded material
 remain reserved by the respective rights holders.
