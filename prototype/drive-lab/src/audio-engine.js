@@ -27,6 +27,16 @@ import {
   isBloomHardLaunch,
 } from "./bloom-macro.js";
 import { createJunctionPlayer } from "./junction-player.js";
+import {
+  createScoreCrossfadeState,
+  scheduleScoreCrossfade,
+  scheduleScoreCrossfadeCompletion,
+  shouldCompleteScoreCrossfade,
+  SCORE_SWITCH_CROSSFADE_SECONDS,
+} from "./score-crossfade.js";
+import { nextVehicleRate, VEHICLE_RATE_STALE_MS } from "./vehicle-rate.js";
+import { installBypassableSerialProcessor } from "./audio-runtime-guard.js";
+import { withReadinessTimeout } from "./promise-timeout.js";
 import bloomProcessorUrl from "./score/worklet/bloom-processor.js?audio-worklet";
 import processorUrl from "./score/worklet/score-processor.js?audio-worklet";
 
@@ -65,9 +75,10 @@ const ACCELERATION_BADGE_AT = 0.22;
 const ACCELERATION_PARAM_SMOOTH_SECONDS = 0.015;
 
 /** Deceleration is only meaningful for a moment; a stale reading must expire. */
-const RATE_STALE_MS = 700;
+const RATE_STALE_MS = VEHICLE_RATE_STALE_MS;
+export const AUDIO_WORKLET_READY_TIMEOUT_MS = 8000;
 
-export function createAudioEngine(onPulse, onEffectChange) {
+export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
   const AudioContext = window.AudioContext || window.webkitAudioContext;
   if (!AudioContext) return null;
 
@@ -84,6 +95,7 @@ export function createAudioEngine(onPulse, onEffectChange) {
   const rightToRight = context.createGain();
   const accelerationTrim = context.createGain();
   const fractureGain = context.createGain();
+  const junctionGain = context.createGain();
   const meter = context.createAnalyser();
   meter.fftSize = 256;
   meter.smoothingTimeConstant = 0.55;
@@ -109,16 +121,26 @@ export function createAudioEngine(onPulse, onEffectChange) {
   rightToRight.connect(accelerationMerger, 0, 1);
   accelerationMerger.connect(accelerationTrim).connect(masterGain);
   masterGain.connect(meter).connect(context.destination);
+  fractureGain.gain.value = 1;
+  junctionGain.gain.value = 0;
   fractureGain.connect(performanceBus);
+  junctionGain.connect(performanceBus);
 
   let node = null;
   let bloomNode = null;
+  let bloomSerialLink = null;
   let running = true;
   let muted = false;
   let speed = 0;
   let energy = 0;
   let scoreId = "fracture";
+  let requestedScoreId = "fracture";
+  let scoreStatus = "loading";
+  let scoreError = null;
   let scoreSwitchRevision = 0;
+  let scoreMixState = createScoreCrossfadeState("fracture", context.currentTime);
+  let fractureReadyState = "loading";
+  let fractureReadyError = null;
 
   let brakeAmount = 0;
   let brakeReported = false;
@@ -147,6 +169,9 @@ export function createAudioEngine(onPulse, onEffectChange) {
     scene: 0,
     halfTime: true,
     tempo: 162,
+    transportTempo: 162,
+    perceivedTempo: null,
+    motionLane: "PARK",
     energy: 0,
     decelerationState: "cruise",
     activeLanes: [],
@@ -158,15 +183,152 @@ export function createAudioEngine(onPulse, onEffectChange) {
       brake: Math.round(brakeAmount * 1000) / 1000,
     });
   }
-  const junction = createJunctionPlayer(context, performanceBus, (snapshot) => {
-    if (scoreId !== "junction") return;
-    arrangement = snapshot;
-    publishArrangement(arrangement);
-  });
+  let junction = null;
 
-  context.audioWorklet.addModule(processorUrl).then(() => {
-    if (!running) return;
+  function ensureJunction() {
+    if (!running) throw new Error("Audio engine is closed");
+    if (junction) return junction;
+    junction = createJunctionPlayer(context, junctionGain, (snapshot) => {
+      if (scoreId !== "junction") return;
+      arrangement = snapshot;
+      publishArrangement(arrangement);
+    }, (status, error) => {
+      if (scoreId !== "junction" && requestedScoreId !== "junction") return;
+      scoreStatus = status;
+      scoreError = error;
+    });
+    junction.setSpeed(speed, energy, 0);
+    junction.setBrake(brakeAmount);
+    return junction;
+  }
+
+  function beginScoreCrossfade(targetScoreId) {
+    if (!running) throw new Error("Audio engine is closed");
+    scoreMixState = scheduleScoreCrossfade({
+      fractureParam: fractureGain.gain,
+      junctionParam: junctionGain.gain,
+      state: scoreMixState,
+      targetScoreId,
+      startAt: context.currentTime,
+      durationSeconds: SCORE_SWITCH_CROSSFADE_SECONDS,
+    });
+    return scoreMixState;
+  }
+
+  function forceScoreMix(targetScoreId) {
+    const at = context.currentTime;
+    const fractureValue = targetScoreId === "fracture" ? 1 : 0;
+    const junctionValue = targetScoreId === "junction" ? 1 : 0;
+    fractureGain.gain.cancelScheduledValues?.(at);
+    junctionGain.gain.cancelScheduledValues?.(at);
+    fractureGain.gain.setValueAtTime(fractureValue, at);
+    junctionGain.gain.setValueAtTime(junctionValue, at);
+    scoreMixState = createScoreCrossfadeState(targetScoreId, at);
+  }
+
+  function commitJunctionSafetyBed(message) {
+    requestedScoreId = "junction";
+    scoreId = "junction";
+    scoreStatus = "error";
+    scoreError = message;
+    // There is no audible outgoing renderer in this recovery state. A four-
+    // second crossfade from its nominal gain would only fade up from silence.
+    forceScoreMix("junction");
+    arrangement = ensureJunction().getState();
+    publishArrangement(arrangement);
+    return "junction";
+  }
+
+  function finishScoreCrossfade(targetScoreId, revision, transition, options = {}) {
+    const { deactivateJunction = false, preserveError = false } = options;
+    return scheduleScoreCrossfadeCompletion({
+      transition,
+      // Wall timers keep firing while an AudioContext is suspended. Cleanup
+      // follows the audio clock so the outgoing graph cannot be removed before
+      // its scheduled gain curve has actually finished.
+      currentTime: () => context.currentTime,
+      schedule: (callback, delay) => window.setTimeout(callback, delay),
+      // Closing an AudioContext freezes its clock. Do not let a deferred
+      // cleanup timer reschedule itself forever after the engine is destroyed.
+      shouldContinue: () => running,
+      onComplete: async () => {
+        if (shouldCompleteScoreCrossfade({
+          running,
+          requestedScoreId,
+          targetScoreId,
+          revision,
+          currentRevision: scoreSwitchRevision,
+        })) {
+          if (deactivateJunction) await junction?.setActive(false).catch(() => {});
+          if (!preserveError) {
+            scoreStatus = "ready";
+            scoreError = null;
+          }
+        }
+      },
+      result: scoreId,
+    });
+  }
+
+  async function recoverFromFractureProcessorError(event) {
+    if (!running || fractureReadyState === "error") return;
+    const error = new Error("FRACTURE audio processor stopped unexpectedly");
+    fractureReadyState = "error";
+    fractureReadyError = error;
+    const failedNode = node;
+    node = null;
+    if (failedNode) {
+      failedNode.port.onmessage = null;
+      failedNode.onprocessorerror = null;
+      try { failedNode.disconnect(); } catch {}
+    }
+    console.error("[flux] FRACTURE processor failed", event);
+    if (scoreId !== "fracture" && requestedScoreId !== "fracture") return;
+
+    const revision = ++scoreSwitchRevision;
+    requestedScoreId = "junction";
+    scoreId = "junction";
+    scoreStatus = "error";
+    scoreError = error.message;
+    try {
+      const fallback = ensureJunction();
+      const activation = fallback.setActive(true, { externalEntranceFade: true });
+      // A dead processor is already silent. Restore the harmonic safety bed
+      // immediately rather than stretching silence across a musical crossfade.
+      forceScoreMix("junction");
+      arrangement = fallback.getState();
+      publishArrangement(arrangement);
+      onScoreRecovery?.({
+        failedScoreId: "fracture",
+        activeScoreId: "junction",
+        message: error.message,
+      });
+      await activation;
+      if (!running || revision !== scoreSwitchRevision || requestedScoreId !== "junction") return;
+      scoreStatus = "error";
+      scoreError = error.message;
+    } catch (fallbackError) {
+      if (!running || revision !== scoreSwitchRevision) return;
+      scoreStatus = "error";
+      scoreError = `${error.message}; JUNCTION fallback failed: ${fallbackError?.message || fallbackError}`;
+    }
+  }
+
+  const fractureReady = (async () => {
+    if (typeof context.audioWorklet?.addModule !== "function") {
+      throw new Error("AudioWorklet is unavailable");
+    }
+    await withReadinessTimeout(context.audioWorklet.addModule(processorUrl), {
+      label: "FRACTURE AudioWorklet",
+      timeoutMs: AUDIO_WORKLET_READY_TIMEOUT_MS,
+      schedule: window.setTimeout ?? globalThis.setTimeout,
+      cancel: window.clearTimeout ?? globalThis.clearTimeout,
+    });
+    if (!running) return false;
     node = new AudioWorkletNode(context, "score-processor", { outputChannelCount: [2] });
+    node.onprocessorerror = (event) => {
+      void recoverFromFractureProcessorError(event);
+    };
     node.port.onmessage = (event) => {
       if (event.data?.type !== "SNAPSHOT" || scoreId !== "fracture") return;
       arrangement = event.data.payload;
@@ -176,19 +338,43 @@ export function createAudioEngine(onPulse, onEffectChange) {
     post("MUTE", { muted });
     post("SPEED", { speed, energy });
     post("BRAKE", { brake: brakeAmount });
-  }).catch((error) => {
-    console.error("[flux] the score worklet did not load", error);
+    fractureReadyState = "ready";
+    return true;
+  })().catch((error) => {
+    if (!running) return false;
+    fractureReadyState = "error";
+    fractureReadyError = error instanceof Error ? error : new Error(String(error));
+    console.error("[flux] the score worklet did not load", fractureReadyError);
+    return false;
   });
 
-  context.audioWorklet.addModule(bloomProcessorUrl).then(() => {
-    if (!running) return;
-    bloomNode = new AudioWorkletNode(context, "bloom-processor", { outputChannelCount: [2] });
-    bloomNode.connect(accelerationScoop);
-    performanceBus.disconnect(accelerationScoop);
-    performanceBus.connect(bloomNode);
-  }).catch((error) => {
-    console.error("[flux] the BLOOM worklet did not load", error);
-  });
+  if (typeof context.audioWorklet?.addModule === "function") {
+    withReadinessTimeout(context.audioWorklet.addModule(bloomProcessorUrl), {
+      label: "BLOOM AudioWorklet",
+      timeoutMs: AUDIO_WORKLET_READY_TIMEOUT_MS,
+      schedule: window.setTimeout ?? globalThis.setTimeout,
+      cancel: window.clearTimeout ?? globalThis.clearTimeout,
+    }).then(() => {
+      if (!running) return;
+      bloomNode = new AudioWorkletNode(context, "bloom-processor", { outputChannelCount: [2] });
+      bloomSerialLink = installBypassableSerialProcessor({
+        source: performanceBus,
+        processor: bloomNode,
+        destination: accelerationScoop,
+        onProcessorError: (event) => {
+          if (!running) return;
+          bloomNode = null;
+          bloomSerialLink = null;
+          bloomActiveUntil = 0;
+          bloomSuppressedByBrake = false;
+          reportActiveEffect();
+          console.error("[flux] BLOOM processor failed; direct score bus restored", event);
+        },
+      });
+    }).catch((error) => {
+      console.error("[flux] the BLOOM worklet did not load", error);
+    });
+  }
 
   function post(type, payload) {
     node?.port.postMessage({ type, payload });
@@ -230,7 +416,7 @@ export function createAudioEngine(onPulse, onEffectChange) {
   function tickBrake() {
     const seconds = BRAKE_TICK_MS / 1000;
     const target = isBraking() ? 1 : 0;
-    if (target > 0 && performance.now() < bloomActiveUntil) {
+    if (target > 0 && performance.now() < bloomActiveUntil && !bloomSuppressedByBrake) {
       bloomNode?.port.postMessage({ type: "RELEASE" });
       bloomActiveUntil = performance.now() + 250;
       bloomSuppressedByBrake = true;
@@ -244,7 +430,7 @@ export function createAudioEngine(onPulse, onEffectChange) {
       bloomRefractoryUntil = performance.now() + BLOOM_REFRACTORY_MS;
     }
     post("BRAKE", { brake: brakeAmount });
-    junction.setBrake(brakeAmount);
+    junction?.setBrake(brakeAmount);
   }
 
   brakeTimer = window.setInterval(tickBrake, BRAKE_TICK_MS);
@@ -265,6 +451,12 @@ export function createAudioEngine(onPulse, onEffectChange) {
   function tickAcceleration() {
     const now = performance.now();
     const stale = now - lastSpeedAt > RATE_STALE_MS;
+    if (stale && smoothedRateMps2 !== 0) {
+      smoothedRateMps2 = 0;
+      accelerationArmSamples = 0;
+      bloomLaunchHistory = [];
+      publishArrangement(arrangement);
+    }
     const timedOut = accelerationActive && now - accelerationStartedAt >= ACCELERATION_MACRO_MAX_HOLD_MS;
     const mustRelease = stale
       || speed < ACCELERATION_MACRO_MIN_SPEED_KMH
@@ -321,33 +513,95 @@ export function createAudioEngine(onPulse, onEffectChange) {
     },
 
     setScore(nextScoreId) {
-      scoreId = nextScoreId === "junction" ? "junction" : "fracture";
+      if (!running) return Promise.reject(new Error("Audio engine is closed"));
+      requestedScoreId = nextScoreId === "junction" ? "junction" : "fracture";
       const revision = ++scoreSwitchRevision;
-      if (scoreId === "fracture") {
-        fractureGain.gain.setTargetAtTime(1, context.currentTime, 0.035);
-        junction.setActive(false).catch(() => {});
-        return;
+      scoreError = null;
+      if (requestedScoreId === "fracture") {
+        scoreStatus = fractureReadyState === "ready" ? "transitioning" : "loading";
+        return fractureReady.then(async (ready) => {
+          if (!running || requestedScoreId !== "fracture" || revision !== scoreSwitchRevision) return scoreId;
+          if (!ready || fractureReadyState !== "ready") {
+            const message = fractureReadyError?.message || "FRACTURE did not load";
+            let fallbackError = null;
+            try {
+              await ensureJunction().setActive(true, { externalEntranceFade: true });
+            } catch (error) {
+              // At native speed a bank failure rejects readiness, but JUNCTION
+              // intentionally keeps its zero-beat harmonic bed active.
+              fallbackError = error;
+            }
+            if (!running || requestedScoreId !== "fracture" || revision !== scoreSwitchRevision) return scoreId;
+            const detail = fallbackError
+              ? `${message}; JUNCTION native unavailable: ${fallbackError?.message || fallbackError}`
+              : message;
+            return commitJunctionSafetyBed(detail);
+          }
+
+          scoreId = "fracture";
+          const transition = beginScoreCrossfade("fracture");
+          if (!junction || transition.endAt <= context.currentTime + 0.01) {
+            scoreStatus = "ready";
+            return junction?.setActive(false).then(
+              () => "fracture",
+              () => "fracture",
+            ) ?? "fracture";
+          }
+          scoreStatus = "transitioning";
+          return finishScoreCrossfade("fracture", revision, transition, {
+            deactivateJunction: true,
+          });
+        });
       }
 
       // Keep FRACTURE audible while the compact bank crosses a slow vehicle
       // connection. The hand-off begins only after JUNCTION can really play,
       // so selecting a score never creates a loading-shaped hole in the music.
-      junction.setActive(true).then(() => {
-        if (scoreId !== "junction" || revision !== scoreSwitchRevision) return;
-        fractureGain.gain.setTargetAtTime(0, context.currentTime, 0.035);
-      }).catch(() => {
-        if (scoreId !== "junction" || revision !== scoreSwitchRevision) return;
+      scoreStatus = "loading";
+      return ensureJunction().setActive(true, { externalEntranceFade: true }).then(() => {
+        if (!running || requestedScoreId !== "junction" || revision !== scoreSwitchRevision) return scoreId;
+        scoreId = "junction";
+        scoreStatus = "transitioning";
+        const transition = beginScoreCrossfade("junction");
+        return finishScoreCrossfade("junction", revision, transition);
+      }).catch(async (error) => {
+        if (!running || requestedScoreId !== "junction" || revision !== scoreSwitchRevision) return scoreId;
+        // A loading FRACTURE worklet is not an audible fallback. Waiting for
+        // its bounded deadline would leave JUNCTION's already-running safety
+        // bed at zero gain for up to eight seconds, so recover immediately.
+        if (fractureReadyState !== "ready") {
+          const fractureDetail = fractureReadyState === "error"
+            ? fractureReadyError?.message || "FRACTURE is unavailable"
+            : "FRACTURE is not yet audible";
+          return commitJunctionSafetyBed(
+            `JUNCTION native unavailable: ${error?.message || error}; ${fractureDetail}`,
+          );
+        }
+        requestedScoreId = "fracture";
         scoreId = "fracture";
-        fractureGain.gain.setTargetAtTime(1, context.currentTime, 0.035);
+        scoreStatus = "error";
+        scoreError = error instanceof Error ? error.message : "JUNCTION did not load";
+        const fallbackTransition = beginScoreCrossfade("fracture");
+        return finishScoreCrossfade("fracture", revision, fallbackTransition, {
+          deactivateJunction: true,
+          preserveError: true,
+        });
       });
     },
 
     setSpeed(nextSpeed) {
       const now = performance.now();
-      const elapsedSeconds = lastSpeedAt > 0 ? (now - lastSpeedAt) / 1000 : 0;
-      if (elapsedSeconds > 0 && elapsedSeconds < 1) {
-        const rateMps2 = ((nextSpeed - speed) / 3.6) / elapsedSeconds;
-        smoothedRateMps2 = smoothedRateMps2 * 0.72 + rateMps2 * 0.28;
+      const elapsedMs = lastSpeedAt > 0 ? now - lastSpeedAt : 0;
+      const rate = nextVehicleRate({
+        previousRateMps2: smoothedRateMps2,
+        previousSpeedKmh: speed,
+        nextSpeedKmh: nextSpeed,
+        elapsedMs,
+      });
+      smoothedRateMps2 = rate.rateMps2;
+      if (rate.stale) {
+        accelerationArmSamples = 0;
+        bloomLaunchHistory = [];
       }
       lastSpeedAt = now;
       speed = nextSpeed;
@@ -358,7 +612,7 @@ export function createAudioEngine(onPulse, onEffectChange) {
         now,
       );
       post("SPEED", { speed, energy });
-      junction.setEnergy(energy);
+      junction?.setSpeed(speed, energy, elapsedMs / 1000);
       if (!accelerationActive) {
         accelerationArmSamples = advanceAccelerationArmSamples(
           accelerationArmSamples,
@@ -421,6 +675,9 @@ export function createAudioEngine(onPulse, onEffectChange) {
       if (scoreId === "junction") {
         return {
           ...junction.getState(),
+          requestedScoreId,
+          scoreStatus,
+          scoreError,
           energy,
           energyCeilingKmh: ROAD_SPEED_CEILING_KMH,
           brake: Math.round(brakeAmount * 100) / 100,
@@ -431,11 +688,19 @@ export function createAudioEngine(onPulse, onEffectChange) {
       return {
         score: arrangement.scoreId ?? "fracture",
         scoreLabel: arrangement.scoreLabel ?? "FRACTURE",
+        requestedScoreId,
+        scoreStatus,
+        scoreError,
         energy,
         scene: arrangement.scene,
         sceneId: arrangement.sceneId,
         halfTime: arrangement.halfTime,
         tempo: Math.round((arrangement.tempo ?? 0) * 10) / 10,
+        transportTempo: Math.round((arrangement.transportTempo ?? arrangement.tempo ?? 0) * 10) / 10,
+        perceivedTempo: arrangement.perceivedTempo == null
+          ? null
+          : Math.round(arrangement.perceivedTempo * 10) / 10,
+        motionLane: arrangement.motionLane ?? "DRIVE",
         activeLanes: arrangement.activeLanes,
         energyCeilingKmh: ROAD_SPEED_CEILING_KMH,
         motionPhase: arrangement.decelerationState,
@@ -446,15 +711,20 @@ export function createAudioEngine(onPulse, onEffectChange) {
     },
 
     destroy() {
+      if (!running) return;
       running = false;
+      scoreSwitchRevision += 1;
       window.clearInterval(brakeTimer);
       window.clearInterval(accelerationTimer);
       if (node) {
         node.port.onmessage = null;
+        node.onprocessorerror = null;
         node.disconnect();
       }
+      bloomSerialLink?.destroy();
       bloomNode?.disconnect();
-      junction.destroy();
+      junction?.destroy();
+      junctionGain.disconnect();
       fractureGain.disconnect();
       performanceBus.disconnect();
       accelerationScoop.disconnect();

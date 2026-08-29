@@ -336,6 +336,23 @@ test("the limiter holds the mix below its conservative ceiling", () => {
   assert.ok(peak > 0.3, "the limiter must not squash the mix to nothing");
 });
 
+test("the limiter releases after a non-Float32 peak leaves its window", () => {
+  const limiter = new LookaheadLimiter(SAMPLE_RATE);
+  // This value is intentionally not exactly representable in Float32. Keeping
+  // a double running peak beside a Float32 history used to make the outgoing
+  // peak comparison miss forever and latch roughly 10 dB of gain reduction.
+  limiter.tickStereo(2.3456789, 2.3456789);
+
+  let recovered = 0;
+  for (let index = 0; index < limiter.length + SAMPLE_RATE; index += 1) {
+    [recovered] = limiter.tickStereo(0.01, 0.01);
+  }
+
+  assert.ok(limiter.runningPeak <= 0.0100000001, `stale peak remained ${limiter.runningPeak}`);
+  assert.ok(limiter.gain > 0.999, `gain reduction remained latched at ${limiter.gain}`);
+  assert.ok(Math.abs(recovered - 0.01) < 1e-5, `quiet programme recovered to ${recovered}`);
+});
+
 test("the sidechain follower ducks on a transient and recovers", () => {
   const sidechain = new SidechainEnvelope(SAMPLE_RATE);
   for (let index = 0; index < 480; index += 1) sidechain.tick(1);

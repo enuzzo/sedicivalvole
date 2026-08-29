@@ -104,8 +104,6 @@ test("an audition ends on its own and does not hold a lane open", () => {
   const after = highBandPeak(1);
 
   assert.ok(during > baseline * 2, "the audition must be clearly audible over the piece");
-  assert.ok(
-    after < baseline * 1.3,
-    "the audition latched the lane open past its hold",
-  );
+  assert.ok(after < during * 0.05, "the audition latched the lane open past its hold");
+  assert.ok(after < 0.005, "the audition left a material high-frequency tail");
 });

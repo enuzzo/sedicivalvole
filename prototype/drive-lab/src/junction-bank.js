@@ -1,5 +1,15 @@
+import { NATIVE_GROOVE_SPEED_KMH } from "./low-speed-score.js";
+
 const MAGIC = "SVJCTN04";
 const HEADER_BYTES = 12;
+export const JUNCTION_MAX_DECODED_CLIPS = 6;
+
+export function junctionDecodedLimit(requestedLimit) {
+  const requested = Number.isInteger(requestedLimit)
+    ? requestedLimit
+    : JUNCTION_MAX_DECODED_CLIPS;
+  return Math.min(JUNCTION_MAX_DECODED_CLIPS, Math.max(2, requested));
+}
 
 export function parseJunctionBank(arrayBuffer) {
   const bytes = new Uint8Array(arrayBuffer);
@@ -21,10 +31,14 @@ export function parseJunctionBank(arrayBuffer) {
   if (!Array.isArray(manifest.assets) || manifest.assets.length === 0) {
     throw new Error("JUNCTION bank must contain segmented audio assets");
   }
+  if (manifest.maxDecodedClips !== JUNCTION_MAX_DECODED_CLIPS) {
+    throw new Error("JUNCTION bank decoded-memory contract is invalid");
+  }
   const assets = new Map();
   let cursor = audioOffset;
   for (const asset of manifest.assets) {
-    if (!asset?.id || assets.has(asset.id) || !Number.isInteger(asset.audioBytes) || asset.audioBytes <= 0) {
+    if (typeof asset?.id !== "string" || !asset.id || assets.has(asset.id)
+      || !Number.isInteger(asset.audioBytes) || asset.audioBytes <= 0) {
       throw new Error("JUNCTION bank asset manifest is invalid");
     }
     const end = cursor + asset.audioBytes;
@@ -36,6 +50,11 @@ export function parseJunctionBank(arrayBuffer) {
     cursor = end;
   }
   if (cursor !== bytes.byteLength) throw new Error("JUNCTION bank has an unexpected trailing payload");
+  if (manifest.sections.some((section) => (
+    typeof section?.assetId !== "string" || !assets.has(section.assetId)
+  ))) {
+    throw new Error("JUNCTION bank section asset reference is invalid");
+  }
   return {
     manifest,
     assets,
@@ -76,18 +95,6 @@ export function junctionPerformanceParameters(energy, bpm) {
   };
 }
 
-/**
- * Keeps the prepared ambient rest section silent on launch, then introduces
- * JUNCTION only after the vehicle is genuinely moving. Energy is normalized
- * against 130 km/h, so the fade spans 4–10 km/h and completes before the first
- * quiet break enters near 13 km/h.
- */
-export function junctionMovementGain(energy) {
-  const speedKmh = Math.min(130, Math.max(0, Number(energy) || 0) * 130);
-  const normalized = Math.min(1, Math.max(0, (speedKmh - 4) / 6));
-  return normalized * normalized * (3 - 2 * normalized);
-}
-
 export function junctionSectionForEnergy(energy, braking = false) {
   const value = Math.min(1, Math.max(0, Number(energy) || 0));
   if (braking) return value > 0.6 ? "turn" : value > 0.1 ? "ease" : "rest";
@@ -97,6 +104,24 @@ export function junctionSectionForEnergy(energy, braking = false) {
   if (value < 0.64) return "build";
   if (value < 0.82) return "break";
   return "full";
+}
+
+/** Inverse of the shared 130 km/h energy curve, used only for compatibility. */
+export function junctionSpeedForEnergy(energy) {
+  const value = Math.min(1, Math.max(0, Number(energy) || 0));
+  return 130 * (1 - (1 - value) ** (1 / 2.2));
+}
+
+/**
+ * The mixed native bank remains completely untouched through 20 km/h. Low-speed
+ * harmony is synthesized separately, so the 127 BPM recording is never slowed,
+ * relabelled or exposed early.
+ */
+export function junctionSectionForSpeed(speedKmh, energy, braking = false) {
+  const speed = Math.max(0, Number(speedKmh) || 0);
+  if (speed < NATIVE_GROOVE_SPEED_KMH) return "rest";
+  if (!braking && speed < 30) return "open";
+  return junctionSectionForEnergy(energy, braking);
 }
 
 export const JUNCTION_BANK_MAGIC = MAGIC;

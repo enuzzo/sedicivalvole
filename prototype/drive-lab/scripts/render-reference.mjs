@@ -78,6 +78,11 @@ const DRIVES = {
     [30, 16],
     [0, 12],
   ],
+  // One complete clockless PARK harmony cycle plus its return. This is the
+  // focused listening and loudness check for the stopped-vehicle ambience.
+  park: [
+    [0, 60],
+  ],
   // Urban driving only: the range a driver actually spends most time in.
   urban: [
     [0, 5],

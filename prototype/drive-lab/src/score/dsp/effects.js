@@ -172,7 +172,11 @@ export class LookaheadLimiter {
     this.length = Math.max(1, Math.trunc(sampleRate * 0.001));
     this.bufferLeft = new Float32Array(this.length);
     this.bufferRight = new Float32Array(this.length);
-    this.magnitudes = new Float32Array(this.length);
+    // Keep the window and `runningPeak` at the same precision. A Float32
+    // window rounded the stored peak away from the double used by JavaScript;
+    // when that sample left the lookahead window the equality check missed it,
+    // so gain reduction could remain latched for the rest of the drive.
+    this.magnitudes = new Float64Array(this.length);
     this.position = 0;
     this.threshold = threshold;
     this.gain = 1;

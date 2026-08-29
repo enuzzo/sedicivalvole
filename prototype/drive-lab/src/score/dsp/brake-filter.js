@@ -39,11 +39,11 @@ const BRAKE_FLOOR_HZ = 430;
  *
  * Not a taste value: it is calibrated against real score output by
  * `tests/score-brake.test.mjs`, which drives six seconds of the piece through
- * the filter and asserts that no more than about a decibel of level survives
- * the effect while the top end loses more than nine. Change it and that test
- * says whether the effect still is one.
+ * the filter and asserts that the wet level changes by no more than about one
+ * decibel while the top end loses more than nine. Change it and that test says
+ * whether the effect still is one.
  */
-const BRAKE_TRIM_AT_FULL = 0.52;
+const BRAKE_TRIM_AT_FULL = 0.62;
 
 export class BrakeFilter {
   constructor(sampleRate) {
@@ -102,7 +102,7 @@ export class BrakeFilter {
     return filtered * (1 - this.drive) + shaped * this.drive;
   }
 
-  /** Level trim under the filter. At full brake this is a tenth, not a half. */
+  /** Level trim under the filter. At full brake this loses a tenth, not a half. */
   gain() {
     return 1 - this.smoothed * (1 - BRAKE_RESIDUAL_GAIN);
   }

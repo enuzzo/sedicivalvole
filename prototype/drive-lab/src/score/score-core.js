@@ -47,23 +47,33 @@ import {
 import { OnePoleHighPass } from "./dsp/primitives.js";
 import { SynthVoice } from "./dsp/synth-voice.js";
 import { bassInterval, harmonyForBar, SCORE, sectionAt } from "./jungle-score.js";
+import { createFractureParkAmbience } from "./park-ambience.js";
+import {
+  advanceDepartureGate,
+  createDepartureGate,
+  lowSpeedPolicy,
+} from "../low-speed-score.js";
 
 /** Bars a lane takes to fade in or out. Entries and exits are crossfades. */
 const LANE_CROSSFADE_SECONDS = 0.35;
 
-/** Master trim. The limiter protects the ceiling; this sets the working level. */
-const MASTER_GAIN = 0.92;
+/** Absolute master gain at rest; PARK's authored floor depends on this value. */
+const RESTING_MASTER_GAIN = 0.552;
 
 /**
- * How much quieter the resting arrangement is than the full one.
+ * Working gain reached by the densest moving arrangement.
  *
- * Without this the piece hit the limiter at a standstill exactly as hard as it
- * did at the ceiling, so an arrangement that gains six lanes across a drive
- * gained no weight at all — the limiter simply gave back whatever was added.
- * Four and a half decibels is enough for the build to be felt and little enough
- * that the resting scene is still clearly playing.
+ * The original energy curve added another 4.4 dB on top of the six-lane
+ * orchestral build. Once the limiter's release was corrected, that make-up held
+ * the entire moving score against the ceiling and erased its dynamics. The
+ * arrangement already earns its weight through parts, articulation and drive,
+ * so the master applies restrained density compensation while leaving PARK's
+ * absolute level unchanged.
  */
-const RESTING_TRIM = 0.6;
+const MOVING_MASTER_GAIN = 0.35;
+
+/** FRACTURE-specific sample ceiling, with margin for inter-sample peaks. */
+const LIMITER_CEILING = 0.64;
 
 const SYNTH_LANES = ["sub", "reese", "riff", "response", "atmosphere"];
 
@@ -158,6 +168,23 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
   for (let index = 1; index < PAD_VOICES; index += 1) {
     padVoices.push(new SynthVoice(sampleRate));
   }
+  const parkAmbience = createFractureParkAmbience({ sampleRate });
+
+  // The pull-away signature is deliberately not a lane or a motif. Two quiet
+  // high chord tones sound once when the car genuinely starts moving, then the
+  // hysteresis gate must re-arm at PARK before they can sound again.
+  const departureVoices = [new SynthVoice(sampleRate), new SynthVoice(sampleRate)];
+  const departureSettings = {
+    ...score.synths.atmosphere,
+    volume: score.synths.atmosphere.volume * 0.22,
+  };
+  const departureReleaseSteps = [null, null];
+  const departureGate = createDepartureGate();
+  let departureEventsPending = 0;
+  let departureNextStep = 0;
+  let departureVoiceIndex = 0;
+  let departureEventsPlayed = 0;
+  let currentLowSpeedPolicy = lowSpeedPolicy(0);
 
   // Every lane's level is a ramp, so an entry or exit is always a crossfade and
   // never a discontinuity.
@@ -173,7 +200,7 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
   const reverb = new StereoReverb(sampleRate);
   const padChorus = new StereoChorus(sampleRate);
   const width = new StereoWidth(sampleRate);
-  const limiter = new LookaheadLimiter(sampleRate);
+  const limiter = new LookaheadLimiter(sampleRate, LIMITER_CEILING);
   // Everything except the kick and the sub is high-passed before it reaches the
   // bus. Without this the pad, the reese and the break all pile into the same
   // two octaves the low end needs, and the mix reads as mud at speed.
@@ -218,17 +245,35 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
   /** Lane level, lifted to full while that lane's voice is being auditioned. */
   function levelOf(laneId) {
     const scheduled = laneGain[laneId].next();
-    return auditioning(laneId) ? Math.max(scheduled, 1) : scheduled;
+    if (!auditioning(laneId)) return scheduled;
+    // The production PARK field is intentionally much quieter than a moving
+    // score. Its voice preview must still reveal the ordinary atmosphere patch
+    // clearly, so the audition alone gets a bounded lift.
+    const auditionLevel = laneId === "atmosphere" ? 1.7 : 1;
+    return Math.max(scheduled, auditionLevel);
   }
 
   let controls = continuousControls(arranger);
-  let masterGain = MASTER_GAIN * RESTING_TRIM;
+  let masterGain = RESTING_MASTER_GAIN;
   let fillBar = false;
   let lastEvent = null;
   let stepsElapsed = 0;
   let structuralEvents = 0;
   let sectionIndex = 0;
   let restingVoiced = true;
+  let soundingChord = sectionAt(0).harmony[0];
+
+  function chordForCurrentSpeed(barInPhrase) {
+    if (currentLowSpeedPolicy.id === "park" || currentLowSpeedPolicy.id === "depart") {
+      return sectionAt(0).harmony[0];
+    }
+    if (currentLowSpeedPolicy.id === "creep" || currentLowSpeedPolicy.id === "roll") {
+      // Fm7 -> Dbmaj7, each held for two transport bars. At the half-time
+      // listener tactus this is a quiet, audible two-chord micro-progression.
+      return sectionAt(0).harmony[Math.floor(barInPhrase / 2) % 2 === 0 ? 0 : 2];
+    }
+    return harmonyForBar(sectionIndex, barInPhrase);
+  }
 
   /** Applies the block-rate controls to the voices that read parameters live. */
   function refreshVoiceSettings() {
@@ -254,9 +299,10 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
     synthSettings.response.filterCutoff = 0.5 + 0.32 * brightness;
     synthSettings.atmosphere.filterCutoff = 0.26 + 0.24 * filterPressure;
 
-    // The working level follows energy, so the arrangement gets louder as it
-    // fills instead of handing the difference to the limiter.
-    masterGain = MASTER_GAIN * (RESTING_TRIM + (1 - RESTING_TRIM) * controls.energy ** 0.5);
+    // A small density trim lets the authored orchestral build create the
+    // dynamics without turning the limiter into a permanent compressor.
+    masterGain = RESTING_MASTER_GAIN
+      + (MOVING_MASTER_GAIN - RESTING_MASTER_GAIN) * controls.energy ** 0.5;
 
     drumSaturator.setDrive(drive);
     delay.setFeedback(controls.delayFeedback * 0.7);
@@ -309,7 +355,7 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
     // The form advances one section per phrase, so forty bars pass before
     // anything repeats. Sections only ever turn over on a phrase boundary, like
     // every other structural change.
-    if (event.isPhraseStart && stepsElapsed > 1) {
+    if (event.isPhraseStart && stepsElapsed > 1 && currentLowSpeedPolicy.id === "native") {
       sectionIndex += 1;
       // At a *standstill* the piece plays a phrase and then leaves one: holding a
       // resting arrangement continuously is the version that is unbearable at a
@@ -318,9 +364,35 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
       restingVoiced = controls.energy < STANDSTILL_ENERGY
         ? sectionIndex % 2 === 0
         : true;
+    } else if (currentLowSpeedPolicy.id !== "native") {
+      // PARK is one continuous harmonic state; moving slowly introduces the
+      // micro-progression but never alternates whole voiced and silent phrases.
+      restingVoiced = true;
     }
     const section = sectionAt(sectionIndex);
-    const chord = harmonyForBar(sectionIndex, barInPhrase);
+    const chord = chordForCurrentSpeed(barInPhrase);
+    soundingChord = currentLowSpeedPolicy.id === "park"
+      ? { name: parkAmbience.state().voicing }
+      : chord;
+
+    for (let index = 0; index < departureVoices.length; index += 1) {
+      if (departureReleaseSteps[index] !== null && stepsElapsed >= departureReleaseSteps[index]) {
+        departureVoices[index].release();
+        departureReleaseSteps[index] = null;
+      }
+    }
+    if (departureEventsPending > 0 && stepsElapsed >= departureNextStep) {
+      const voice = departureVoiceIndex % departureVoices.length;
+      const colourIndex = departureEventsPending === 2 ? 1 : 3;
+      const midi = sectionAt(0).harmony[0].bassMidi + 36
+        + sectionAt(0).harmony[0].colour[colourIndex];
+      departureVoices[voice].trigger(departureSettings, midi);
+      departureReleaseSteps[voice] = stepsElapsed + 6;
+      departureVoiceIndex += 1;
+      departureEventsPending -= 1;
+      departureEventsPlayed += 1;
+      departureNextStep = stepsElapsed + 8;
+    }
 
     // Adopt the section's theme voice. Everything the patch declares is copied
     // in; `refreshVoiceSettings` then writes the live controls over it.
@@ -334,18 +406,20 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
     // 2. Half-time reading: the transport keeps its tempo, the score takes only
     //    the strong placements and doubles its note lengths. This is how a
     //    standstill sounds slow without the clock being slow.
-    const halfTime = scene.halfTime;
+    const halfTime = currentLowSpeedPolicy.id === "native" ? scene.halfTime : true;
     const lengthScale = halfTime ? 2 : 1;
     const rhythmicStep = halfTime && patternStep % 2 !== 0 ? null : patternStep;
+    const allowBeat = currentLowSpeedPolicy.id === "native" || currentLowSpeedPolicy.id === "roll";
+    const allowFullBeat = currentLowSpeedPolicy.id === "native";
 
     // 3. Percussion.
     if (rhythmicStep !== null) {
       const kickVelocity = score.patterns.kick[rhythmicStep];
-      if (kickVelocity > 0 && arranger.laneGoals.kick > 0) {
+      if (allowBeat && kickVelocity > 0 && arranger.laneGoals.kick > 0) {
         drums.kick.trigger(score.kit.kick);
       }
 
-      if (arranger.laneGoals.snare > 0) {
+      if (allowFullBeat && arranger.laneGoals.snare > 0) {
         const snareVelocity = score.patterns.snare[rhythmicStep];
         if (snareVelocity >= 0.9) drums.snare.trigger(score.kit.snare);
         else if (snareVelocity > 0 && controls.ghostWeight > 0.15) {
@@ -354,11 +428,11 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
         if (score.patterns.clap[rhythmicStep] > 0) drums.clap.trigger(score.kit.clap);
       }
 
-      if (arranger.laneGoals.breakDetail > 0 && score.patterns.breakDetail[rhythmicStep] > 0) {
+      if (allowFullBeat && arranger.laneGoals.breakDetail > 0 && score.patterns.breakDetail[rhythmicStep] > 0) {
         drums.ghost.trigger(score.kit.ghost);
       }
 
-      if (arranger.laneGoals.closedHat > 0) {
+      if (allowBeat && arranger.laneGoals.closedHat > 0) {
         // Hat subdivision is continuous articulation, not structure, so it may
         // change between boundaries.
         const hatPattern = controls.hatSubdivision >= 3
@@ -371,14 +445,14 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
         }
       }
 
-      if (arranger.laneGoals.openHat > 0 && score.patterns.openHat[rhythmicStep] > 0) {
+      if (allowFullBeat && arranger.laneGoals.openHat > 0 && score.patterns.openHat[rhythmicStep] > 0) {
         drums.openHat.trigger(score.kit.openHat);
       }
     }
 
     // A fill is a bounded gesture, not a new section: extra snare articulation
     // through the final bar only.
-    if (fillBar && score.patterns.fillSnare[patternStep] > 0 && arranger.laneGoals.snare > 0) {
+    if (allowFullBeat && fillBar && score.patterns.fillSnare[patternStep] > 0 && arranger.laneGoals.snare > 0) {
       drums.ghost.trigger(score.kit.ghost);
     }
 
@@ -394,7 +468,7 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
       synthRelease[lane] = null;
     }
 
-    if (arranger.laneGoals.sub > 0 && restingVoiced) {
+    if (currentLowSpeedPolicy.bass && arranger.laneGoals.sub > 0 && restingVoiced) {
       for (const note of score.subNotes) {
         if (note.at !== patternStep) continue;
         if (halfTime && note.at % 2 !== 0) continue;
@@ -402,7 +476,7 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
       }
     }
 
-    if (arranger.laneGoals.reese > 0) {
+    if (currentLowSpeedPolicy.bass && arranger.laneGoals.reese > 0) {
       for (const note of score.reeseNotes) {
         if (note.at !== patternStep) continue;
         const interval = bassInterval(chord, note.degree);
@@ -414,7 +488,7 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
     // from the chord. Transposing them with the harmony is what made them clash:
     // the chord root already moves under a line that is written to sit over all
     // four chords, and moving the line too put it a semitone off twice a cycle.
-    if (arranger.laneGoals.riff > 0 && restingVoiced) {
+    if (allowFullBeat && arranger.laneGoals.riff > 0 && restingVoiced) {
       for (const note of section.theme) {
         if (note.at !== patternStep) continue;
         if (halfTime && note.at % 2 !== 0) continue;
@@ -424,7 +498,7 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
       }
     }
 
-    if (arranger.laneGoals.response > 0) {
+    if (allowFullBeat && arranger.laneGoals.response > 0) {
       for (const note of section.response) {
         if (note.at !== patternStep) continue;
         triggerSynth("response", note.midi, note.steps * lengthScale, stepsElapsed);
@@ -434,7 +508,10 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
     // The pad re-voices once per bar and holds the whole chord. Which voices
     // sound is continuous articulation: at low energy it states the chord
     // plainly, and the upper extension arrives with the arrangement.
-    if (arranger.laneGoals.atmosphere > 0 && restingVoiced && patternStep % STEPS_PER_BAR === 0) {
+    if (currentLowSpeedPolicy.id !== "park"
+      && arranger.laneGoals.atmosphere > 0
+      && restingVoiced
+      && patternStep % STEPS_PER_BAR === 0) {
       const voiced = controls.energy > 0.5 ? PAD_VOICES : PAD_VOICES - 1;
       for (let index = 0; index < padVoices.length; index += 1) {
         if (index >= voiced) {
@@ -487,7 +564,44 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
 
     /** Feeds the arrangement one block's worth of vehicle speed. */
     observe(speedKmh, deltaSeconds) {
+      const previousLowSpeedPolicy = currentLowSpeedPolicy;
+      const departureEvents = advanceDepartureGate(
+        departureGate,
+        speedKmh,
+        deltaSeconds,
+      );
+      if (departureEvents > 0) {
+        departureEventsPending = departureEvents;
+        departureNextStep = stepsElapsed + 1;
+      }
       observeSpeed(arranger, speedKmh, deltaSeconds);
+      currentLowSpeedPolicy = lowSpeedPolicy(speedKmh);
+      parkAmbience.setActive(currentLowSpeedPolicy.id === "park");
+      if (previousLowSpeedPolicy.id === "native" && currentLowSpeedPolicy.id !== "native") {
+        synths.sub.release();
+        synths.reese.release();
+        synths.riff.release();
+        synths.response.release();
+      }
+      if (currentLowSpeedPolicy.id === "park" && previousLowSpeedPolicy.id !== "park") {
+        soundingChord = { name: parkAmbience.state().voicing };
+        for (const voice of padVoices) voice.release();
+        synthRelease.atmosphere = null;
+        restingVoiced = true;
+      } else if (previousLowSpeedPolicy.id === "park"
+        && currentLowSpeedPolicy.id !== "park") {
+        // Do not wait for the next bar after movement begins. The ordinary pad
+        // overlaps PARK's long exit while the two authored departure breaths
+        // arrive, then CREEP/ROLL continue unchanged on their transport.
+        const chord = chordForCurrentSpeed(lastEvent?.barInPhrase ?? 0);
+        for (let index = 0; index < padVoices.length; index += 1) {
+          padVoices[index].trigger(
+            synthSettings.atmosphere,
+            chord.bassMidi + 24 + chord.colour[index],
+          );
+        }
+        synthRelease.atmosphere = stepsElapsed + STEPS_PER_BAR * 2;
+      }
       controls = continuousControls(arranger);
       refreshVoiceSettings();
     },
@@ -557,11 +671,14 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
         // stack is trimmed back to roughly the weight a single note carried.
         const padSample = padStack * 0.42 * levelOf("atmosphere");
         const [padLeft, padRight] = padChorus.tickStereo(padSample);
+        parkAmbience.tick();
+        const departureLeft = departureVoices[0].tick(departureSettings) * 0.32;
+        const departureRight = departureVoices[1].tick(departureSettings) * 0.32;
 
         let melodicLeft = riffSample * PAN.riff[0] + responseSample * PAN.response[0]
-          + padLeft * 0.9;
+          + padLeft * 0.9 + parkAmbience.left + departureLeft;
         let melodicRight = riffSample * PAN.riff[1] + responseSample * PAN.response[1]
-          + padRight * 0.9;
+          + padRight * 0.9 + parkAmbience.right + departureRight;
 
         // 4. Sends. The delay carries the melodic lanes and the ghost field; the
         //    reverb carries everything with detail but nothing with weight.
@@ -602,19 +719,24 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
 
     /** Current musical state, for diagnostics and tests. */
     snapshot() {
+      const park = parkAmbience.state();
       return {
         ...arrangementSnapshot(arranger),
         scoreId: score.id,
         scoreLabel: score.label,
         section: sectionAt(sectionIndex).name,
         riffVoice,
-        chord: harmonyForBar(sectionIndex, lastEvent?.barInPhrase ?? 0).name,
+        chord: soundingChord.name,
         restingVoiced,
+        departureEventsPlayed,
+        departureArmed: departureGate.armed,
         step: lastEvent?.globalStep ?? 0,
         patternStep: lastEvent?.patternStep ?? 0,
         stepsElapsed,
         structuralEvents,
         fillBar,
+        parkVoicing: park.voicing,
+        parkVoicingChanges: park.changes,
       };
     },
 

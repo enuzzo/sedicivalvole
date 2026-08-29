@@ -22,6 +22,7 @@
 // and cannot move the second.
 
 import { clamp, ROAD_SPEED_CEILING_KMH, speedToEnergy } from "../signal-model.js";
+import { lowSpeedPolicy, perceivedFractureBpm } from "../low-speed-score.js";
 
 export const TEMPO_REST_BPM = 162;
 export const TEMPO_CEILING_BPM = 176;
@@ -137,6 +138,7 @@ export function energyToSupportedScene(energy, currentScene) {
 
 export function createArrangerState() {
   return {
+    observedSpeedKmh: 0,
     smoothedSpeedKmh: 0,
     energy: 0,
     peakEnergy: 0,
@@ -170,6 +172,7 @@ export function observeSpeed(state, speedKmh, deltaSeconds) {
   const target = clamp(
     Number.isFinite(speedKmh) ? Math.max(0, speedKmh) : 0, 0, ROAD_SPEED_CEILING_KMH * 2,
   );
+  state.observedSpeedKmh = target;
 
   const difference = target - state.smoothedSpeedKmh;
   if (Math.abs(difference) > SPEED_DEADBAND_KMH) {
@@ -432,13 +435,36 @@ export function commitAtBoundary(state, boundary) {
 
 /** Everything a renderer or a test needs to describe the current arrangement. */
 export function arrangementSnapshot(state) {
+  // Arrangement energy remains smoothed, but the motion lane is the audible
+  // policy the renderer applies to the latest observation. Using smoothed speed
+  // here made the UI claim ROLL while the renderer had already opened DRIVE.
+  const policySpeed = state.observedSpeedKmh ?? state.smoothedSpeedKmh;
+  const lowSpeed = lowSpeedPolicy(policySpeed);
+  const arrangedLanes = LANES.filter((lane) => state.laneGoals[lane.id] > 0)
+    .map((lane) => lane.id);
+  const activeLanes = lowSpeed.id === "native"
+    ? arrangedLanes
+    : lowSpeed.id === "roll"
+      ? arrangedLanes.filter((lane) => ["atmosphere", "kick", "closedHat"].includes(lane))
+      : arrangedLanes.filter((lane) => lane === "atmosphere");
+  const halfTime = lowSpeed.id === "native" ? SCENES[state.scene].halfTime : true;
+  const beat = activeLanes.some((lane) => [
+    "kick", "closedHat", "snare", "breakDetail", "openHat",
+  ].includes(lane));
+  const bass = activeLanes.some((lane) => lane === "sub" || lane === "reese");
   return {
     scene: state.scene,
-    sceneId: SCENES[state.scene].id,
-    halfTime: SCENES[state.scene].halfTime,
+    sceneId: lowSpeed.id === "native" ? SCENES[state.scene].id : lowSpeed.id,
+    lowSpeedState: lowSpeed.id,
+    halfTime,
     tempo: state.committedTempo,
+    perceivedTempo: perceivedFractureBpm(policySpeed, state.committedTempo, halfTime),
+    transportTempo: state.committedTempo,
+    motionLane: lowSpeed.id === "native" ? "DRIVE" : lowSpeed.label,
+    beat,
+    bass,
     decelerationState: state.decelerationState,
-    activeLanes: LANES.filter((lane) => state.laneGoals[lane.id] > 0).map((lane) => lane.id),
+    activeLanes,
     ...continuousControls(state),
   };
 }

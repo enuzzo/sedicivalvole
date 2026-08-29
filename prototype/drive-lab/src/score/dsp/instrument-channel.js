@@ -131,8 +131,8 @@ export class InstrumentChannel {
  *
  * A sampler that plays the same file at the same level every time is the
  * loudest tell that something is not being performed. This returns a small,
- * deterministic spread of gain and of how far into the sample playback starts,
- * so repeated notes differ the way a played instrument's do.
+ * deterministic spread of gain and sub-two-cent detuning, so repeated notes
+ * differ subtly without changing their harmonic role.
  *
  * Deterministic rather than random: a render has to be reproducible, and a
  * pattern that changes every time it is heard cannot be judged.
@@ -146,8 +146,6 @@ export function noteVariation(seed) {
   return {
     // Roughly ±1.5 dB, which is about the spread of an evenly played phrase.
     gain: 0.88 + unit * 0.24,
-    // A few samples in, so the very first cycle is not always identical.
-    offsetFrames: Math.round(unit * 24),
     // A touch of detune, under two cents: it thickens a doubled line without
     // ever reading as a tuning error.
     rate: 1 + (unit - 0.5) * 0.0022,

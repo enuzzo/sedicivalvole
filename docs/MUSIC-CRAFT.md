@@ -482,9 +482,9 @@ repetition while preserving native tempo, complete boundaries, the six-clip
 decoded limit and the four-second transition envelope. FRACTURE tests reject
 any live activation of the retired lanes while proving low end and rhythm still
 grow with road energy. Offline references remain part of the decision: the
-no-lead FRACTURE drive renders at `-16.0 LUFS` integrated with `3.8 LU` range,
-`-0.8 dBFS` true peak and zero clipped PCM frames; the simplified JUNCTION
-render measures `-19.5 LUFS`, `14.2 LU` range and `-2.7 dBFS` true peak.
+current no-lead FRACTURE drive renders at `-15.9 LUFS` integrated with `1.0 LU`
+range, `-1.4 dBTP` and zero clipped PCM frames; the simplified JUNCTION render
+measures `-19.6 LUFS`, `14.1 LU` range and `-2.7 dBTP`.
 
 ### 5.12 Vehicle gestures should perform the mix, not replace the composition
 
@@ -651,20 +651,55 @@ master. This falsifies the assumed two-voicing variety, but does **not** authori
 turning the second files on: their proposed register centroids do not form an
 interchangeable deck. First prove compatibility, then change selection.
 
-The first audio-only pass measured 63 ordinary internal chord boundaries in the
-rendered master, excluding REST's sparse grammar. With deliberately uncalibrated
-probes, 22 boundaries were flagged for listening: `Cmaj7 → Amin7` accounted for
-10, `Amin7 → Bmin9` for 8, and `Emin9 → Cmaj7` for 4. EASE accounted for 8 of
-its 9 measured boundaries, while BREAK produced none. These counts are not a
+The current audio-only pass measured 63 ordinary internal chord boundaries in
+the rendered master, excluding REST's sparse grammar. All 63 boundaries were
+structurally valid: 39 cleared the deliberately conservative listening probes
+and 24 were flagged, producing 30 flag events because one boundary can exceed
+more than one probe. The events comprise 20 RMS changes above `1 dB`, eight
+roughness ratios above `1.15`, and two normalized-flux ratios above `2`.
+`Cmaj7 → Amin7` is the first chord priority at 11 of 21 boundaries, followed by
+`Amin7 → Bmin9` at 9 of 21 and `Emin9 → Cmaj7` at 4 of 21. EASE remains the
+first family to audition at 8 of 9 flagged boundaries; BUILD take 3 carries the
+largest roughness ratio (`1.852249`), TURN takes 2 and 3 carry the two flux-only
+flags, and BREAK clears all 9 measured boundaries. These counts are not a
 verdict — the live browser delay and cross-clip edges are still excluded — but
-they turn the listener's report of rough, incoherent changes into a bounded
-review queue instead of a pitch-label argument.
+they turn the listener's report of rough, incoherent changes into a bounded,
+ranked review queue instead of a pitch-label argument.
 
-Transition windows must follow the signal tail, not the nominal edit. A chord
-voice currently decays by `0.99985` per sample after its two-bar hold, reaching
-approximately `-60 dB` only after `0.96 s` at 48 kHz; the browser delay adds its
-own tempo-dependent tail. A 12 ms edge fade or 340 ms inspection window cannot
-by itself rule out an outgoing chord colliding with the next one.
+Transition windows must follow the signal tail, not the nominal edit. The
+intended chord voice holds for two bars, then decays by `0.99985` per sample,
+reaching approximately `-60 dB` only after another `0.96 s` at 48 kHz; the
+browser delay adds its own tempo-dependent tail. A 12 ms edge fade or 340 ms
+inspection window cannot by itself rule out an outgoing chord colliding with
+the next one.
+
+A historical renderer passed five arguments to a four-argument `SamplerVoice`
+constructor, duplicating gain where `holdFrames` belonged while JavaScript
+silently ignored the intended `barFrames * 2` fifth argument. That defect is a
+useful warning: a syntactically valid offline render can contradict its source
+comments. The current source passes exactly four arguments, a regression
+requires `barFrames * 2`, and the unused `noteVariation.offsetFrames` field was
+removed rather than implying a playback offset no renderer consumed.
+
+The current 5,812,361-byte `SVJCTN04` working bank with SHA-256
+`0662ec081d7999c7dd365162d72abc63022d773037f175aac9199a7775fe69b5` was
+forensically verified as a post-repair render. The corrected renderer predates
+the fresh WAV/report and bank writes; the builder always runs that renderer
+before packaging. Decoded HEAD and working-bank PCM remain identical until the
+new absolute-grid boundary, while all three 160 BPM TURN takes are bit-identical
+because the grid correction is a mathematical no-op there. A broken hold would
+have diverged much earlier. Keep the working bank: it removes the prior
+`91–118 ms` accumulated grid delays and is not evidence of the retired hold bug.
+Encoded transition and vehicle listening review remain necessary for musical
+acceptance, but a rebuild is not required to establish the two-bar hold fact.
+
+The v4 manifest has the same evidence boundary. It records each section's BPM,
+eight-bar length, three takes, one harmonic identity and a string list of the
+four-chord grammar, but it has no structured key and no per-bar chord timeline.
+The source classifier remains a proposal and filename labels remain declarations,
+not authoritative pitch observations. Open work is to add structured key/chord
+metadata and validate the encoded performances independently; until then the
+bank's chord consonance is a listening question, not an automated proof.
 
 Even a correct pitch-class inventory is not enough to mix two takes. Compare
 their actual registers: flag notes separated by one or thirteen semitones,
@@ -708,6 +743,362 @@ level reference empty and producing `0 dB` for every candidate. Materialize
 one-shot iterables before reusing them; otherwise a scientifically plausible
 report can carry internally false evidence without raising an exception.
 
+### 6.3 PARK has no tempo; moving slowly has a tactus
+
+The first low-speed maps exposed a perceptual category error. FRACTURE reported
+its private `162 BPM` transport at a standstill and JUNCTION reported the native
+`127 BPM` written into an ambient clip. Neither score played a corresponding
+beat, yet the interface and changing chords told the listener that the parked
+car was already rushing. Alternating voiced and silent phrases made the waiting
+state feel unstable as well. A private scheduling clock is not necessarily the
+tempo a listener hears.
+
+Both scores now share one deterministic motion grammar. Below `0.8 km/h`, PARK
+owns a quiet continuous ambience with no beat or bass and reports no perceived
+tempo. Crossing `1.2 km/h` performs two delicate high chord tones once; GPS
+jitter cannot repeat them until the car remains at or below `0.5 km/h` for three
+seconds. CREEP begins at `4 km/h`, ROLL at `10 km/h`, and neither score may expose
+a perceived tempo above `100 BPM` through the displayed `20 km/h` state.
+FRACTURE keeps its stable
+private transport and lets the listener hear it half-time. Diagnostics preserve
+that transport separately from the perceived tactus.
+
+The three-second re-arm must advance from elapsed parked time, not from the
+number of speed callbacks. A stable `0 km/h` React value produces no new effect
+and GPS may repeat no materially different sample, so adding `deltaSeconds`
+only inside `setSpeed()` left JUNCTION disarmed indefinitely at a real stop.
+Its low-speed bed now advances the departure clock from
+`AudioContext.currentTime` during the existing scheduler tick and accounts for
+the old speed before applying a new observation. A regression performs one
+departure, sends one stopped update, advances three seconds with no speed
+change, then requires the next departure to play exactly once.
+
+Crossing the native-policy threshold does not prove that FRACTURE's arrangement
+has already reached a full-time scene. A `20 km/h` observation can legitimately
+leave the authored REST or ROLL scene active while its structural boundary
+catches up. Reporting the full `162 BPM`, beat and bass at that instant described
+lanes the listener could not hear. FRACTURE therefore derives perceived tempo
+from the committed scene's half-time flag and derives beat/bass from the actual
+active lane set. Tests hold the sparse `20 km/h` case at `81 BPM` with neither
+beat nor bass, then prove that a populated BREAK scene reports its real `162 BPM`
+transport and audible low/rhythm lanes.
+
+The gesture needs a known parked origin. A confirmed PARK state followed by a
+telemetry jump directly to `5 km/h` still performs the two DEPART swells, because
+the road did move through the threshold even if GPS did not report every
+intermediate value. The first high-speed fix after launch does not invent a
+departure: without a preceding parked observation it establishes state only.
+This distinction prevents both a missed real entrance and a synthetic greeting
+when the page attaches to an already moving car.
+
+JUNCTION does not slow or relabel its encoded performances. A small synthesized
+`Emin9 -> Cmaj7` harmonic bed, with no voice in the bass register, owns the road
+through every speed displayed as `20 km/h`. Its `84 2/3 BPM` harmonic grid has
+an exact `3:2` relationship to the native `127 BPM` OPEN recording. At
+`21 km/h`, OPEN starts from its own downbeat at unity playback rate. Native mode
+remains latched only until the vehicle falls below `20.5 km/h`: this keeps a
+small GPS-noise guard without leaving `127 BPM` audible at a displayed
+`20 km/h`. If loading or decoding fails, the harmonic bed remains the
+audible score and another native start is not attempted for ten seconds. The
+listener hears a deliberate gear change rather than retry chatter; the encoded
+groove is never time-stretched, and no isolated source recording becomes a
+low-speed loop. The synthesized CREEP/ROLL grid is both its actual transport and
+its perceived tempo; PARK and DEPART have neither, because their constant chord
+and one-shot gesture do not establish a clock.
+
+The retry cooldown must advance on the audio scheduler, not on React speed
+updates. A steady vehicle above the native threshold can legitimately produce no
+new speed effect for minutes; retrying only inside `setSpeed()` turned a stated
+ten-second recovery into a permanent safety-bed fallback. The 50 ms player clock
+now reviews native readiness after the cooldown, and a regression advances only
+`AudioContext.currentTime` before requiring the second request.
+
+That clock must not subscribe repeatedly to the same pending start. A transfer
+or decode can legitimately occupy hundreds of 50 ms reviews; attaching a new
+rejection handler on each review turned one eventual network failure into a
+storm of duplicate status updates and logs. One attempt now owns one observer,
+and a regression holds the transfer pending through forty review ticks before
+requiring exactly one reported failure and one post-cooldown retry.
+
+This bed is a transition layer, not an oscillator-demo substitute for the
+authored bank. Its chord tones stay above the bass register, crossfade slowly,
+and pass through a dark filter plus a restrained ambient delay. The two DEPART
+tones are paired detuned layers with attacks longer than `400 ms`, low peaks and
+tails longer than `2.5 s`; they should read as soft harmonic swells, never naked
+pings. Tests bound the register, chord membership, wet/feedback amount, master
+level, attack, peak and release, because a listener notices those failures as a
+cheap notification sound long before identifying which synthesis parameter did
+it.
+
+Smooth target automation is part of that production. `cancelScheduledValues()`
+also cancels an automation that began before the cancellation time and may
+restore its pre-automation value immediately. Reissuing that sequence on every
+unchanged GPS sample restarted the PARK master ramp from zero and could pump or
+click during chord reversals. Unchanged levels are now ignored; real changes use
+`cancelAndHoldAtTime()` so the value computed at the current audio time becomes
+the next target's continuous starting point. The compatibility fallback snapshots
+`AudioParam.value` before cancelling. This behavior follows the Web Audio
+automation contract rather than the simplified fake-parameter behavior tests
+once assumed.
+
+FRACTURE revealed why `more than one oscillator is active` is not an adequate
+anti-drone rule. Its old PARK pad re-struck the same `Fm7` voicing on every
+private transport bar. The dark filter and register made one partial dominate,
+so the listener heard a single perpetual note: technically a chord, perceptually
+an exposed oscillator, and intolerable at a long stop.
+
+The corrected PARK field is an authored 46.2-second voice-leading cycle through
+six rootless upper voicings (`Fm9`, `Dbmaj9`, `Ab6/9`, `Eb6/9`, `Cm7`, `Fm11`).
+Unequal `6.1–9.2 s` holds are independent of the sequencer, adjacent voices move
+no more than two semitones, and two four-voice banks overlap with slow attacks
+and releases. A quiet sine body, a trace of filtered air, slow spectral drift,
+subtle stereo motion and the shared room provide life without establishing a
+pulse. Every pitch stays at C4 or above, so this is harmony without a covert
+bassline. Leaving PARK fades that field under the existing two-breath DEPART
+gesture; CREEP, ROLL and native FRACTURE keep their original transport grammar.
+
+The regression test checks both authorship and rendered evidence. It requires
+six unique consonant voicings, a recurrence longer than 45 seconds, no immediate
+repeat, cyclic voice-leading of at most two semitones, no note below MIDI 60,
+and at least three audible authored tones in every late-hold spectral probe. A
+52-second production-core render must remain continuously audible but below the
+PARK RMS/peak ceiling, retain a non-percussive crest factor, report no perceived
+tempo, beat or bass, and visit the six voicings in order. This guards the actual
+failure the listener heard rather than merely counting synth voices.
+
+The 48 kHz, 60-second offline PARK reference measured `-46.7 dBFS` RMS,
+`-33.9 dBFS` peak, `12.8 dB` crest, zero detected onsets and zero clipped frames.
+Those are mix diagnostics rather than a listening verdict, but they confirm the
+intended category: a low continuous colour with no transient clock, not a lead
+note trying to command attention.
+
+Tests assert the exact policy at `0`, `0.5`, `1.2`, `4`, `10`, `19.9`, `20`,
+`21` and `30 km/h`, evolving clockless PARK harmony, departure hysteresis and event count, the lack
+of low-speed bass, perceived/transport tempo separation, and unity-rate native
+playback.
+
+### 6.4 A rounded rhythmic grid must close on every bar
+
+The JUNCTION renderer once rounded one sixteenth-note duration and repeatedly
+added that integer. At `127`, `135` and `164 BPM`, the accumulated grid missed an
+exact two-bar boundary, so the next chord waited almost a whole sixteenth: about
+`91–118 ms`. The bass and break had already changed on the correct frame while
+the outgoing chord was still releasing. What the listener described as a rough
+harmonic transition was therefore a timing collision, not evidence that the
+whole progression was wrong.
+
+Derive each event from its absolute position inside the integer-length bar:
+`round(bar * barFrames + step * barFrames / 16)`. Never derive a later boundary
+by accumulating one rounded subdivision. The renderer test covers every authored
+BPM and permits at most one frame of error.
+
+The same boundary principle governs decoding. Before the first native downbeat,
+JUNCTION decodes both the selected primary performance and a distinct companion
+for the same authored state. At every later eight-bar boundary, the requested
+take may start only when it is already decoded. Otherwise the player continues
+with a distinct decoded complete performance at the exact boundary, records the
+fallback, and defers the requested take; the same primary take may never repeat
+immediately. Decode reservations include in-flight work, so a new decode evicts
+before allocation rather than briefly turning the six-clip contract into seven
+retained or reserved clips.
+
+The bound includes AudioBuffers retained by scheduled, playing and retiring
+`AudioBufferSourceNode`s, not only entries visible in the decoded cache. A
+threshold exit can hold a source for a 1.2-second release after its performance
+record is cleared; evicting that asset from the Map does not release the source's
+buffer. Each live source therefore retains its asset identity, cache trimming
+pins those identities, diagnostics count the union of decoded, decoding and
+source-held assets, and a threshold-bounce regression requires the real union to
+remain at or below six. The same tracking stops a retiring take before the shared
+sample gate opens for a restarted native take, preserving one primary groove.
+
+Phrase colour is boundary state too. Scheduling the next eight-bar performance
+up to 800 ms early once replaced the global open-filter cutoff immediately; a
+brake gesture during that window therefore used the future phrase's colour on
+the current take. Future effects are now scheduled explicitly at their boundary,
+the active cutoff changes only when the pending performance is promoted, and a
+brake change refreshes both the active target and the already scheduled boundary
+target without touching playback rate or pitch.
+
+Vehicle derivatives have an equivalent freshness rule. After the `700 ms`
+measurement window, acceleration becomes zero and its OPEN/BLOOM arming history
+is cleared. Updating only the observation timestamp would make an old launch or
+brake look newly measured and perform an effect the driver did not request.
+
+### 6.5 A score switch is one musical transition
+
+FRACTURE and JUNCTION once risked stacking score-local fades: two individually
+polite envelopes can still make a conspicuous level hole or a delayed entrance
+when they run in series. The score selector now owns one central four-second
+equal-power crossfade. Separate score gains follow one shared angle, with
+`fracture = cos(angle)` and `junction = sin(angle)`, so their squared gains sum
+to one throughout the hand-off. A selector-driven JUNCTION entrance bypasses
+the redundant internal native fade; JUNCTION still uses its own rhythmic
+entrance when the car itself crosses into native mode while that score is
+already active.
+
+Constant power solves level continuity, not tonal compatibility. FRACTURE's
+F-natural-minor field and JUNCTION's E-minor identity share only C and G; during
+the present four-second equal-power overlap both scores remain above `-12 dB`
+for about `2.71 s` and above `-6 dB` for about `1.33 s`. Adjacent fundamentals
+and chord extensions can therefore produce rough minor-second beating even
+though the gain law is mathematically correct. A generic low-pass cannot remove
+that conflict. The eventual authored bridge needs per-voice control: contract
+FRACTURE toward the shared C/G pivot, avoid direct non-pivot overlap above
+`-20 dB`, then let JUNCTION resolve through its own harmony at the next musical
+boundary. Until that bridge is rendered, tested and auditioned in the vehicle,
+the selector is technically continuous but not musically verified.
+
+Rapid reversals are part of the instrument, not an error case. A new selection
+cancels both active Web Audio curves, samples the current shared angle, and
+travels back from that exact point in proportion to the remaining distance. It
+must not restart a four-second fade from an endpoint, overlap an active value
+curve, or let an obsolete completion timer mute the score the driver just
+restored. Tests assert constant power, cancellation on both gains, proportional
+reverse duration and the final restored levels.
+
+JUNCTION's synthesis and bank graph are created lazily on first selection.
+Starting and remaining in FRACTURE therefore does not construct the eight
+low-speed oscillators, filters, delay or sample path for an unheard score. This
+is a performance optimization with a musical benefit: inactive orchestration
+has no hidden scheduling state that can leak into a later entrance.
+
+Readiness belongs to the musical transition contract. Creating an AudioContext
+does not mean FRACTURE can sound: its AudioWorklet module and node must be loaded,
+constructed and connected first. Score selection now waits only for that real
+readiness point, then schedules the audible crossfade without waiting for its
+four-second tail. If FRACTURE cannot become ready, JUNCTION's zero-beat harmonic
+bed is the audible fallback; a missing AudioWorklet or rejected resume is exposed
+as an explicit score error rather than letting Signal Gate open onto silence.
+The optional BLOOM processor does not block the underlying score.
+
+Readiness must also be bounded. A browser can resolve HTTP headers while never
+finishing the bank body, an AudioWorklet module can remain pending, and a decode
+can stall without rejecting. Each external stage therefore owns a deadline, but
+their lifetime rules differ. The bank-transfer deadline covers both headers and
+body and aborts its request. AudioWorklet readiness may reject without blocking
+the underlying score fallback. A browser decode cannot be aborted: its deadline
+rejects the current readiness attempt while retaining that native reservation
+until `decodeAudioData` itself settles. Retries reuse the same reserved work
+instead of starting another decode; a late success becomes the decoded cache
+entry and only native settlement releases the slot. The outer JUNCTION deadline
+is longer than one complete allowed transfer-plus-decode sequence. Through any
+timeout the zero-beat bed remains audible. Tests drive fake clocks and repeated
+retries against never-resolving native decodes, because a source-code check
+cannot prove either bounded readiness or bounded native lifetime.
+
+Teardown is another lifetime boundary. `decodeAudioData` may settle after the
+driver has left JUNCTION or the complete AudioContext has been destroyed. A
+late native promise once repopulated the decoded map after `destroy()` had
+cleared it, silently retaining PCM for a score that no longer existed. Destroy
+now aborts the player-owned bank transfer, marks the player closed and clears
+in-flight reservations; native settlement may finish internally but cannot
+re-enter the retained cache or rebuild state after teardown. Deferred-transfer
+and deferred-decode regressions destroy the player first, settle the external
+work afterward and require zero retained and zero in-flight clips.
+
+Crossfade cleanup follows the audio clock, not wall time. Browser timers keep
+advancing while an AudioContext is suspended, but scheduled gain curves do not.
+A one-shot four-second wall timer could therefore deactivate JUNCTION and mark
+the selector ready before the audible four-second curve had moved at all. The
+completion callback now rereads `AudioContext.currentTime` and reschedules
+until the musical endpoint is real, and its continuation predicate stops the
+reschedule loop when a closed context freezes that clock. Likewise, a readiness
+failure that restores the other score remains an explicit degraded state after
+the fade completes; generic cleanup must not erase the error merely because the
+safety bed is audible.
+
+Runtime processor failure is a different state from load failure. Web Audio
+makes a failed AudioWorkletNode permanently silent. If FRACTURE dies, switch
+immediately to JUNCTION's harmonic safety bed and report the recovered score to
+the product state; fading for four seconds from an already silent node only
+turns a recovery into a four-second hole. If a JUNCTION native load rejects
+while its bed is already the outgoing score, keep that bed active until the
+central FRACTURE crossfade completes. BLOOM is optional and serial, so its
+processor-error path reconnects the dry score bus before disconnecting the
+failed node. Behavioral fake-AudioContext tests assert all three topologies.
+If the JUNCTION bank fails while FRACTURE is still loading, that not-yet-created
+worklet is not an audible fallback: expose the already-running JUNCTION safety
+bed immediately instead of waiting up to the readiness deadline at zero gain.
+A held brake also sends one BLOOM release, not one command on every 40 ms control
+tick; control-rate repetition must never become event-rate musical spam.
+
+The six-decoded-clip ceiling is an absolute runtime contract, not advice from a
+bank manifest. Parsing and deployment reject a JUNCTION bank that declares any
+other limit, while the player clamps requested capacity to six as defense in
+depth. Otherwise a stale or malformed bank could turn a musically harmless
+metadata field into unbounded decoded PCM on the Tesla browser.
+
+The limiter's release is part of PARK authorship too. FRACTURE initially met its
+stopped-vehicle level target on a fresh launch, then returned roughly `10 dB`
+quieter after a loud drive. The lookahead window stored magnitudes as
+`Float32`, while its running peak kept JavaScript double precision. When the
+peak left the window, the rounded stored value missed an extremely tight
+equality check; the limiter therefore retained one historic gain reduction for
+the rest of the session. A technically present ambience below audibility is not
+a constant PARK field.
+
+Keep the running maximum and its history at the same precision. The direct DSP
+regression feeds a deliberately non-Float32 peak, waits beyond both lookahead
+and release, and requires unity gain. A production-core regression then drives
+FRACTURE at high energy, returns to PARK, and requires the settled ambience to
+recover within `3 dB` of its fresh-launch RMS while preserving its no-beat and
+no-bass state. Ceiling protection and release must always be tested together:
+one without the other can turn a limiter into a permanent volume control.
+
+Correct release also exposed a second defect that the latched limiter had
+hidden. With the historic master curve, the current FRACTURE reference rose to
+`-11.9 LUFS` integrated and `+0.3 dBTP`; dense driving held the output close to
+the limiter ceiling instead of letting the arrangement breathe. A previous
+apparently conservative master measurement was therefore partly the sound of a
+broken release, not safe gain staging.
+
+Preserve PARK's absolute master gain and trim density before the limiter. The
+stopped field remains at `0.552`, while the densest arrangement reaches `0.35`:
+adding six real lanes, articulation, saturation and spatial sends still creates
+the build, but the master no longer adds another `4.4 dB` merely because energy
+rose. FRACTURE now uses a `0.64` sample ceiling with inter-sample margin. The
+fresh 48 kHz full reference measures `-15.9 LUFS`, `1.0 LU` range and
+`-1.4 dBTP`, with zero clipped PCM frames. A full 148-second production-core
+test applies BS.1770 K-weighting and four-times band-limited interpolation, so a
+future change cannot silently turn orchestration back into permanent limiting.
+
+Effects calibrated downstream of faulty dynamics must be remeasured too. Once
+the limiter released normally, the full brake saturator added `1.8 dB` to the
+real score. Increasing its internal full-depth trim from `0.52` to `0.62`
+restored the effect to `-0.26 dB` while the energy above `2 kHz` still falls
+`12.31 dB`. This is the intended contract: controlled pressure, resonance and
+saturation change the character, but braking neither empties the score nor
+rewards the gesture with a loudness jump.
+
+JUNCTION exposed the complementary program-dependence fault. Its former single
+low-pass fell to `430 Hz` with no saturation or level compensation. Dense break
+states lost little, while the sparse REST material lost more than six loudness
+units; one fixed filter was therefore not one musical gesture across the form.
+The corrected chain uses a logarithmic sweep to `550 Hz`, restrained resonance
+from `Q 0.65` to `0.85`, a `84/16` filtered-to-residual blend, `tanh(2x)` soft
+saturation and `-4.32 dB` post-shaper calibration. Clean and processed paths
+crossfade continuously; playback rate, transport and pitch remain untouched.
+
+The calibration decodes only the tracked 24-clip `SVJCTN04` bank identified by
+SHA-256 `0662ec081d7999c7dd365162d72abc63022d773037f175aac9199a7775fe69b5`.
+Across all eight states and three takes, the full brake changes BS.1770
+integrated loudness by `-2.992` to `+0.706 LU`, reduces energy above `2 kHz` by
+at least `5.347 dB`, and keeps the highest processed sample peak at
+`-5.249 dBFS`. The checked-in calibration is bound to both that bank hash and
+the runtime parameters, so replacing either invalidates the regression. These
+are encoded-program measurements, not a listening verdict: the live delay,
+low-speed safety bed, automation curve and Tesla cabin still require audition.
+
+The calibration file is reproducible evidence, not a hand-entered assertion.
+`npm run analyze:junction-brake` decodes every tracked Ogg performance with
+FFmpeg, applies the full-depth browser filter, parallel blend, WaveShaper and
+makeup gain, then recomputes BS.1770 loudness, high-band energy and sample peak.
+The committed regression requires all 24 clips to reproduce within `0.025 dB`
+or LU while also matching the bank SHA-256 and runtime parameters; the current
+maximum numerical drift is `0.000002`. This closes the measurement-provenance
+gap, but it still does not turn encoded metrics into a Tesla listening verdict.
+
 ---
 
 ## 7. Sources and material
@@ -724,3 +1115,5 @@ report can carry internally false evidence without raising an exception.
   melodic loops declare tempo but not key; they remain excluded from automatic
   selection until they are catalogued by listening, because a large library is
   not permission to guess harmony.
+- Web Audio API 1.1, `AudioParam.cancelAndHoldAtTime()` automation semantics:
+  <https://webaudio.github.io/web-audio-api/#dom-audioparam-cancelandholdattime>.

@@ -4,7 +4,7 @@ import test from "node:test";
 
 import {
   chooseJunctionPerformance,
-  junctionMovementGain,
+  junctionDecodedLimit,
   junctionPerformanceParameters,
   junctionSectionForEnergy,
   parseJunctionBank,
@@ -15,6 +15,7 @@ import {
   JUNCTION_SECTIONS,
   JUNCTION_TAKES,
 } from "../scripts/junction-form.mjs";
+import { noteVariation } from "../src/score/dsp/instrument-channel.js";
 
 test("JUNCTION maps the representative road sequence onto authored native-tempo states", () => {
   const sequence = [0, 15, 40, 60, 90, 130, 90, 60, 40, 15, 0];
@@ -27,13 +28,40 @@ test("JUNCTION maps the representative road sequence onto authored native-tempo 
   assert.equal(junctionSectionForEnergy(0.08, true), "rest");
 });
 
-test("JUNCTION launch stays silent and fades in before the first quiet break", () => {
-  assert.equal(junctionMovementGain(0), 0);
-  assert.equal(junctionMovementGain(4 / 130), 0);
-  assert.ok(junctionMovementGain(7 / 130) > 0.45);
-  assert.ok(junctionMovementGain(7 / 130) < 0.55);
-  assert.equal(junctionMovementGain(10 / 130), 1);
-  assert.equal(junctionMovementGain(1), 1);
+test("JUNCTION enforces the six-clip decoded-memory ceiling against bank metadata", async () => {
+  assert.equal(junctionDecodedLimit(2), 2);
+  assert.equal(junctionDecodedLimit(6), 6);
+  assert.equal(junctionDecodedLimit(50), 6);
+  assert.equal(junctionDecodedLimit(undefined), 6);
+
+  const bank = await readFile(new URL("../public/audio/junction.svb", import.meta.url));
+  const malicious = Buffer.from(bank);
+  const marker = Buffer.from('"maxDecodedClips":6');
+  const at = malicious.indexOf(marker);
+  assert.ok(at >= 0);
+  malicious[at + marker.length - 1] = "9".charCodeAt(0);
+  assert.throws(
+    () => parseJunctionBank(malicious.buffer.slice(malicious.byteOffset, malicious.byteOffset + malicious.byteLength)),
+    /decoded-memory contract/,
+  );
+
+  const missingAsset = Buffer.from(bank);
+  const manifestLength = missingAsset.readUInt32LE(8);
+  const manifestText = missingAsset.subarray(12, 12 + manifestLength).toString("utf8");
+  const sectionsAt = manifestText.indexOf('"sections"');
+  const reference = /"assetId":"([^"]+)"/.exec(manifestText.slice(sectionsAt));
+  assert.ok(sectionsAt >= 0 && reference);
+  const referenceAt = 12 + sectionsAt + reference.index + reference[0].indexOf(reference[1]);
+  missingAsset.write("x".repeat(reference[1].length), referenceAt, "utf8");
+  assert.throws(
+    () => parseJunctionBank(
+      missingAsset.buffer.slice(
+        missingAsset.byteOffset,
+        missingAsset.byteOffset + missingAsset.byteLength,
+      ),
+    ),
+    /section asset reference/,
+  );
 });
 
 test("JUNCTION has one harmonic grammar, no automatic lead and one tonal identity", () => {
@@ -101,6 +129,28 @@ test("the active JUNCTION renderer cannot use rave multisamples or lead motifs",
   const activeSource = `${renderer}\n${form}\n${builder}`;
   assert.doesNotMatch(activeSource, /loadExactInstrumentNotes|Rave_Lead|RavePiano|JUNCTION_FAMILIES|leadInstrument|melodyVariant/);
   assert.doesNotMatch(activeSource, /two-deck|tonalDecks:\s*2|automaticLead:\s*true/);
+});
+
+test("JUNCTION chord voices receive their authored two-bar hold", async () => {
+  const renderer = await readFile(
+    new URL("../scripts/render-junction-sketch.mjs", import.meta.url),
+    "utf8",
+  );
+  assert.match(
+    renderer,
+    /new SamplerVoice\(\s*selected\.buffer,\s*variation\.rate,\s*section\.pad \* 0\.46 \* variation\.gain,\s*barFrames \* 2,\s*\)/,
+  );
+  assert.doesNotMatch(
+    renderer,
+    /section\.pad \* 0\.46 \* variation\.gain,\s*section\.pad \* 0\.46 \* variation\.gain/,
+  );
+});
+
+test("sample variation declares only the gain and detune dimensions the renderer applies", () => {
+  const variation = noteVariation(42);
+  assert.deepEqual(Object.keys(variation).sort(), ["gain", "rate"]);
+  assert.ok(variation.gain >= 0.88 && variation.gain <= 1.12);
+  assert.ok(variation.rate >= 0.9989 && variation.rate <= 1.0011);
 });
 
 test("the published JUNCTION bank is a small single-performance production bank", async () => {
