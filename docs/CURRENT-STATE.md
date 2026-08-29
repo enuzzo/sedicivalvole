@@ -15,7 +15,7 @@ dated study documents.
   Engine-specific visual directions are selected.
 - The source checkout's Flux catalog contains six visual environments: **APERTURE 01**,
   **VERTIGO 02**, **MERIDIAN 03**, **ATLAS 04**, and **DRIVEY 05**, plus the
-  human-approved **PRTCL 06** checkpoint awaiting exact-source publication. Aperture
+  human-approved and canonically published **PRTCL 06**. Aperture
   remains the accepted fresh-session and invalid-preference fallback.
 - All six environments use the shared catalog of **10 themes**. Vertigo keeps
   the upstream Interstate 7 files byte-identical while an external runtime
@@ -82,10 +82,10 @@ dated study documents.
   the shared `PALETTE` remains a separate colour choice. Road speed alone owns
   point scale, depth, and travel; music owns colour phase and pulse. Exact muted
   `773 × 601` and `390 × 844` QA, every type, OPEN / UNDERWATER / BLOOM, zero
-  warning/error state, deterministic reduced motion, 338 tests, and the
-  128-module build pass locally. Human visual approval was recorded on
-  2026-08-29; exact-source push and deployment are in progress, while
-  real-Tesla acceptance remains open.
+  warning/error state, deterministic reduced motion, 339 tests, and the
+  128-module build pass. Human visual approval was recorded on 2026-08-29;
+  source commit `b88070c`, build `20260829-2337`, is verified on the canonical
+  root, while real-Tesla acceptance remains open.
 - REGISTER was rejected after live review because its static print composition
   was inexplicable in motion and outside the product mood. Its source remains
   only in the rejected-visual archive; the runtime, QA harness and active tests
@@ -267,20 +267,22 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The PRTCL implementation checkpoint is `9f177fa`; the later integrated
-  checkpoint through `633d526` passes 338 deterministic tests and a 128-module
-  production build (`20260829-2322`). Six exact `773 × 601` muted visual cases have distinct
+- The PRTCL implementation checkpoint is `9f177fa`; the published integrated
+  source `b88070c` passes 339 deterministic tests and a 128-module production
+  build (`20260829-2337`). Six exact `773 × 601` muted visual cases have distinct
   captured identities; two reduced-motion frames taken 800 ms apart are
   byte-identical. The direct TYPE cycle returns to Fractal, measures
   `94 × 34 px` at both agreed viewports, and the DOM contains no `select`.
-- The canonical live product is version `0.0.0`, source commit `ba215be`, build
-  `20260829-2110`. The final 2026-08-29 21:13 publication passed clean-source
-  synchronization, two read-only preflights, the 89-file exact upload, the
+- The canonical live product is version `0.0.0`, source commit `b88070c`, build
+  `20260829-2337`. The final 2026-08-29 23:37 publication passed clean-source
+  synchronization, a read-only preflight, the 89-file / 15,756,155-byte upload, the
   post-publication no-write identity gate, byte-for-byte HTML and key-asset
-  checks, cache-behavior checks and muted live DRIVEY/DIAG QA at `773 × 601`.
-  The live controls measure `94 × 34 px`, every View/Render cycle completes,
-  no dropdown/panel exists, and diagnostics report WebGL Original Drivey,
-  59.41 FPS / 17.5 ms p95, zero runtime issue, and output muted.
+  checks, cache-behavior checks and muted live PRTCL/DRIVEY/DIAG QA at
+  `773 × 601`. PRTCL completes its three TYPE states independently of Palette;
+  Drivey's iframe carries the build identity, every View/Render cycle completes,
+  no dropdown/panel exists, and diagnostics report WebGL Original Drivey
+  Wireframe at 59.42 FPS / 17.6 ms p95 with zero runtime issue or Browser
+  warning/error and output muted.
 - Diagnostic telemetry contains no coordinates and is sent only after the
   explicit `SEND DIAGNOSTIC` action. ATLAS location is a separate ephemeral
   feature: the latest reliable point stays in session memory; OpenFreeMap tile
@@ -305,11 +307,11 @@ dated study documents.
    spectral slope and saturation; add stereo and phase-coherence evidence with
    explicit invalidity reasons before any detected pitch set can gate JUNCTION
    material.
-5. Publish and canonically verify the human-approved PRTCL checkpoint, then
-   validate it on the target Tesla. PRIMORDIAL is now explicitly authorized as
-   the next local implementation under its recorded clean-room boundary;
-   INFINITE remains queued, and both retain separate source, accessibility,
-   performance, target-viewport, human-review, and publication gates.
+5. Validate the published PRTCL checkpoint on the target Tesla. PRIMORDIAL is
+   explicitly authorized as the next local implementation under its recorded
+   clean-room boundary; INFINITE remains queued, and both retain separate source,
+   accessibility, performance, target-viewport, human-review, and publication
+   gates.
 6. Design Engine only after exactly three Engine-specific directions are shown
    and one is selected. Keep `VERSION` at `0.0.0` until an explicit release is
    approved.

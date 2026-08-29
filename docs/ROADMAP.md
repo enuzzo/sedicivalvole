@@ -100,7 +100,7 @@ Implemented:
   shell/bridge, upstream automatic road/curve following without random player
   weaving, distinct native accent/secondary palette channels, compact
   Hood/Rear/Aerial and Normal/Wire cycling controls, and no dropdown panel;
-- human-approved `PRTCL 06`, with one bounded WebGL2 renderer adapting the
+- human-approved and canonically published `PRTCL 06`, with one bounded WebGL2 renderer adapting the
   directly authorized Fractal Frequency, Murmuration, and Axiom formulas;
   `24,000` / `16,000` / `37,000` fixed draw counts; a direct `94 × 34 px`
   text-only TYPE cycle separate from Palette; and native speed, music,
@@ -112,7 +112,7 @@ Queued next:
 
 - decide which visual and score combinations become authored audiovisual environments once more than FRACTURE is selectable;
 - retain PLUMB and WAKE as rejected decision records and SLIP as proposal-only;
-- publish and verify the human-approved PRTCL checkpoint, then implement
+- validate the published PRTCL checkpoint on the target Tesla, then implement
   PRIMORDIAL through its recorded project-authored clean-room renderer boundary;
   keep INFINITE queued behind its own source comparison and human gate;
 - profile the unmodified Interstate 7 renderer on the target Tesla; any later travel, projection, curvature, density, palette, or geometry changes require a new explicit product decision and must not be folded into the upstream-integrity checkpoint;

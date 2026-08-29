@@ -455,6 +455,14 @@ publication. The fidelity, interaction, palette, source-boundary, and local
 runtime evidence above are accepted; exact-source push/deployment and real-Tesla
 motion comfort, frame pacing, thermal, and touch validation remain separate.
 
+Publication update, 2026-08-29 23:37 CEST: source commit `b88070c`, build
+`20260829-2337`, is live at the canonical root. Exact muted `773 × 601` Browser
+QA cycled Fractal, Murmuration and Axiom independently of Palette, measured the
+TYPE control at `94 × 34 px`, found zero `select` elements and returned zero
+warning/error. The same run proved Drivey's build-stamped iframe, Normal/Wire
+cycle and diagnostics at 59.42 FPS / 17.6 ms p95 with zero runtime issue.
+Real-Tesla validation remains open.
+
 ---
 
 # Design QA — DRIVEY 05 automatic road and dual-palette recovery

@@ -124,8 +124,8 @@ button cycles Fractal, Murmuration, and Axiom directly; it opens no dropdown or
 panel and remains separate from the shared `PALETTE` control. Road speed owns
 point size, depth, and travel; musical level owns colour and luminous pulse.
 OPEN, UNDERWATER, BLOOM, and reduced motion are implemented in this native
-particle grammar. Human visual approval and target-Tesla acceptance remain
-explicit gates.
+particle grammar. Human visual approval and canonical publication are complete;
+target-Tesla acceptance remains an explicit gate.
 
 `VERTIGO 02` is the approved second visual environment and must render the original Interstate 7 scene, not an independent visual translation. The vendored files from upstream commit `e58d58520bc0dfde21f9e14e6a1b8c7f0a2a2a9e` remain byte-identical and retain the complete road, repeated side light sticks, opposing car-light trails, bloom, camera, deep distortion, fog, geometry, and bundled Three.js/post-processing pipeline. The sedicivalvole integration keeps the iframe black until the upstream editorial shell is hidden, so only the canvas appears. An external bridge maps `0–130 km/h` to the original `speedUpTarget` and FOV controls and maps the selected theme onto the runtime's existing colour attributes and uniforms without editing the vendor tree.
 
@@ -222,7 +222,7 @@ acceptance in the vehicle.
 | Adaptive synth + sequencer | implemented prototype | FRACTURE runs in the AudioWorklet; real Tesla musical acceptance pending |
 | Modular Aperture generative visual | implemented prototype | WebGL2 plus Canvas2D fallback; Tesla performance pending |
 | PLUMB inertial-suspension visual | rejected and retired before publication | Exact-viewport review triggered its strings/bars retirement criterion; no active renderer |
-| Selectable visual environments | implemented prototype | Aperture, Vertigo, Meridian, Atlas, Drivey, and the human-approved PRTCL checkpoint share normalized motion, safety, persistence, palette, failure, and diagnostic contracts; WAKE is retired and PRTCL awaits exact-source publication and real-Tesla validation |
+| Selectable visual environments | implemented prototype | Aperture, Vertigo, Meridian, Atlas, Drivey, and the human-approved, canonically published PRTCL checkpoint share normalized motion, safety, persistence, palette, failure, and diagnostic contracts; WAKE is retired and real-Tesla validation remains open |
 | Selectable musical environments | implemented prototype | FRACTURE, JUNCTION, and NIGHTSHIFT ready; four later directions remain pending |
 | Open packs | strategic goal | schema and licensing not frozen |
 | Offline audio core | implemented prototype | identical score DSP renders and analyses WAV references in Node |

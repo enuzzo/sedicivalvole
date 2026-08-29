@@ -8,6 +8,55 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## PRTCL approval and integrated recovery publication — 2026-08-29 23:37
+
+- build stamp: **`20260829-2337`**; deployed source commit: `b88070c`;
+  PRTCL implementation checkpoint: `9f177fa`; integrated recovery checkpoints:
+  ATLAS desktop input `fe2a9a5`, DRIVEY automatic steering / dual palettes and
+  WAKE retirement `633d526`, bounded bridge-gate correction `f616bd9`;
+- gate before upload: **PASS**. The clean source matched `origin/main`, all 51
+  upstream Drivey manifest entries remained byte-identical, 10 DRIVEY, eight
+  PRTCL, nine NIGHTSHIFT, 303 unit and nine Sites checks passed (339 total), and
+  the 128-module build identified version `0.0.0`, commit `b88070c` and build
+  `20260829-2337`;
+- publication boundary: **PASS**. The read-only preflight reported network,
+  login, directory, listing and remote identity PASS with
+  `remote_writes=NONE`. The final upload wrote 89 files / 15,756,155 bytes,
+  passed dynamic-root and exact-cleanup gates, retained one prior
+  content-addressed asset for cache overlap, and the post-publication identity
+  gate again returned `remote_writes=NONE`;
+- corrective cache boundary: the preceding `a20ff9b` upload was complete over
+  FTP, but an uncached HTTPS request to the project-owned Drivey shell still
+  received the provider's old response while a cache-busted request received
+  the current file. That upload was not accepted as final. Commit `b88070c`
+  appends the build stamp to the Drivey iframe URL without modifying any vendor
+  file; the complete build was republished and the cache-busted shell now
+  matches the local build exactly;
+- canonical identity and headers: **PASS**. Bare and
+  `?build=20260829-2337` HTML return `200`, explicit
+  `no-store, no-cache, must-revalidate, max-age=0`, `pragma: no-cache` and
+  `X-Content-Type-Options`; both are byte-identical to the local entry at
+  SHA-256 `18232734ebe1fcd3d6744dbf1f4cb928a01ce57471acab32cf8a81e0138a9a61`;
+- asset identity: **PASS**. The local/live main bundle, Drivey shell and lazy
+  ATLAS chunk match at SHA-256
+  `23e78e98805628a7110638cfeb043389a894631f76fa14af83373d5d4e1c1505`,
+  `377939a7a175b528e4988a30ca279a35c9acca68a5ec386360fc865286e4b966`,
+  and `607d6e7fe2f062fdfa611b78987934833ac027f0a7f750f2b232965056b85bea`.
+  CSS, both worklets, upstream Drivey runtime, manifest and three.js module also
+  match the verified local build;
+- muted live product QA: **PASS within the technical contract**. At exact
+  `773 × 601`, PRTCL cycled Fractal → Murmuration → Axiom, Palette changed
+  independently to BLUE 04, TYPE measured `94 × 34 px`, the DOM contained zero
+  `select` elements, the Visual catalog contained six entries and no WAKE, and
+  Browser logs contained zero warning/error. Drivey's iframe source was exactly
+  `/third-party/drivey/sedicivalvole.html?build=20260829-2337`; Normal/Wire
+  cycled directly and DIAG reported `WebGL · Original Drivey · Wireframe`,
+  59.42 FPS / 17.6 ms p95, zero runtime issues, output muted, and identity
+  `v0.0.0 · b88070c · build 20260829-2337`. The PRTCL live capture is
+  `prtcl-live-axiom-blue-b88070c-773x601.png` in the recovery visualization
+  folder. Real-Tesla touch, motion comfort, frame pacing and thermal acceptance
+  remain open.
+
 ## Source-faithful DRIVEY recovery — 2026-08-29 21:13
 
 - build stamp: **`20260829-2110`**; deployed source commit: `ba215be`;

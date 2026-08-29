@@ -12,7 +12,7 @@
 > Current state: **Flux Drive Lab runs the authored FRACTURE, JUNCTION and
 > NIGHTSHIFT music with six selectable visual environments in the source
 > checkout and is under vehicle validation**. PRTCL 06 has human visual
-> approval and its exact-source publication is in progress. This is a
+> approval and is published on the canonical root. This is a
 > development build, not a release.
 
 Public development repository: [github.com/enuzzo/sedicivalvole](https://github.com/enuzzo/sedicivalvole).
@@ -124,8 +124,8 @@ No screenshot is published here yet. The repository will include only real, curr
 
 ## Roadmap
 
-The next gate is publication of the human-approved PRTCL checkpoint, followed
-by a local PRIMORDIAL source comparison and a real Tesla session at the
+The next gate is a local PRIMORDIAL source comparison, followed by a fresh
+human visual decision and a real Tesla session at the
 verified split viewport: compare all six implemented visuals across
 acceleration and deceleration, verify
 Aperture's 60 FPS desktop gain on the vehicle,
