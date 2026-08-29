@@ -16,7 +16,7 @@ dated study documents.
 - The source checkout's Flux catalog contains seven visual environments:
   **APERTURE 01**, **VERTIGO 02**, **MERIDIAN 03**, **ATLAS 04**, **DRIVEY 05**,
   the human-approved and canonically published **PRTCL 06**, and the locally
-  verified but unpublished **PRIMORDIAL 08** candidate. Slot `07` remains
+  accepted but not-yet-published **PRIMORDIAL 08** candidate. Slot `07` remains
   reserved for the future INFINITE study. Aperture remains the accepted
   fresh-session and invalid-preference fallback.
 - All seven source environments use the shared catalog of **10 themes**. Vertigo keeps
@@ -101,8 +101,9 @@ dated study documents.
   Scale, Flow, and Warp ranges in a `232 px` panel; it contains no select or
   dropdown, closes with Escape, persists its values, and pins the real product
   controls awake. Exact `773 × 601`, `390 × 844`, and `601 × 390` muted Browser
-  QA passes locally. Human visual approval, push, deployment, and target-Tesla
-  acceptance remain open.
+  QA passes locally. The user delegated remaining product decisions on
+  2026-08-30, so the recorded evidence admits this candidate for publication;
+  push, deployment, and target-Tesla acceptance remain separate open gates.
 - REGISTER was rejected after live review because its static print composition
   was inexplicable in motion and outside the product mood. Its source remains
   only in the rejected-visual archive; the runtime, QA harness and active tests
