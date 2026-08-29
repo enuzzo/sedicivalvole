@@ -75,9 +75,11 @@ dated study documents.
   destination, the supplied QR, an honestly labelled playful project-sparks
   signal and a runtime-reconstructed suggestion address; suggestions are
   explicitly welcome without a purchase.
-- All product chrome uses the locally packaged Orbitron variable font. Reading
-  text, telemetry, controls, operational labels and the launch command occupy a
-  deliberate `450–750` weight hierarchy rather than falling back to device fonts.
+- Product chrome uses the locally packaged Orbitron variable font. The launch,
+  controls and compact operational labels occupy a deliberate `450–750` weight
+  hierarchy rather than falling back to device fonts. DIAG measurements and
+  technical reading text use the separately packaged IBM Plex Mono Regular and
+  SemiBold faces under OFL-1.1, while its report title remains Orbitron.
 - The centered lowercase launch wordmark uses weight `750`; `PLAY THE ROAD` uses
   weight `600`, and neither adds tracking. The wordmark scales from `32–40 px`
   (`38.65 px` at `773 × 601`) inside a `68 px` product band, while the complete
@@ -90,6 +92,11 @@ dated study documents.
 - Diagnostics separate FPS/frame time, browser-exposed heap and decoded-audio
   memory by splash, active Visual/Music pairing, the Aperture wall-retreat pressure
   band and DIAG-open state. Re-entry gaps are not counted as slow frames.
+- The integrated DIAG surface leads with frame, GPS, audio and issue health,
+  then exposes aligned motion, rendering, audio/resource and session evidence.
+  Its actions no longer cover metrics, raw JSON uses the drawer's single scroll
+  context, and an accessible README contains telemetry/privacy, audio provenance,
+  licensing and source details without removing essential submission disclosure.
 - An explicit diagnostic send keeps the email body concise and attaches the
   complete accepted report as gzip-compressed JSON, named by build and server
   timestamp with uncompressed and compressed SHA-256 evidence.
