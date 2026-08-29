@@ -11,6 +11,7 @@
     "dev": "vite",
     "build": "vite build && node scripts/prepare-sites-build.mjs",
     "build:junction": "node scripts/build-junction-bank.mjs",
+    "analyze:eighties": ".sample-analysis-venv/bin/python scripts/analyse-eighties-library.py --source ../../_references/audio/samples/80s --output ../../_references/audio/analysis/eighties-library.json",
     "analyze:junction-brake": "node scripts/analyze-junction-brake.mjs --check",
     "preview": "vite preview",
     "test": "npm run test:wake && npm run test:unit && npm run test:sites",
