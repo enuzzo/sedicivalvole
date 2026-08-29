@@ -185,6 +185,8 @@ test("Atlas shows a compass and coordinate-free GPS recovery without a blocking 
   assert.match(appSource, /RETRY LOCATION/);
   assert.match(appSource, /EXPLORE MILAN DEMO/);
   assert.match(appSource, /Position stays in this ATLAS session and never enters DIAG/);
+  assert.match(appSource, /!mapPosition && !atlasDemoActive/);
+  assert.match(appSource, /setAtlasDemoActive\(true\)/);
   assert.doesNotMatch(atlasSource, /Waiting for a reliable GPS position/);
   assert.match(atlasSource, /className="atlas-field is-unlocated"/);
 });

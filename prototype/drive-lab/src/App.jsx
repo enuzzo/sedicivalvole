@@ -909,6 +909,7 @@ export function App() {
   const [mapPosition, setMapPosition] = useState(null);
   const [gpsHelpOpen, setGpsHelpOpen] = useState(false);
   const [atlasDemoRequest, setAtlasDemoRequest] = useState(0);
+  const [atlasDemoActive, setAtlasDemoActive] = useState(false);
   const reducedMotion = useMemo(
     () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false,
     [],
@@ -1215,12 +1216,15 @@ export function App() {
   }, [logDiagnosticEvent]);
 
   useEffect(() => {
-    if (phase === "running" && environmentId === "atlas" && !mapPosition
+    if (phase === "running" && environmentId === "atlas" && !mapPosition && !atlasDemoActive
       && atlasGpsPresentation(gpsState, accuracy, source).requiresHelp) {
       setGpsHelpOpen(true);
     }
-    if (mapPosition) setGpsHelpOpen(false);
-  }, [accuracy, environmentId, gpsState, mapPosition, phase, source]);
+    if (mapPosition) {
+      setAtlasDemoActive(false);
+      setGpsHelpOpen(false);
+    }
+  }, [accuracy, atlasDemoActive, environmentId, gpsState, mapPosition, phase, source]);
 
   useEffect(() => {
     if (!gpsHelpOpen) return undefined;
@@ -1232,6 +1236,7 @@ export function App() {
   }, [gpsHelpOpen]);
 
   const runAtlasDemo = useCallback(() => {
+    setAtlasDemoActive(true);
     setAtlasDemoRequest((current) => current + 1);
     setGpsHelpOpen(false);
     logDiagnosticEvent("atlas.demo-started", { location: "fixed-milan-fixture" });
