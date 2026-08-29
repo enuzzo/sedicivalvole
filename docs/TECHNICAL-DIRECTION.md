@@ -315,12 +315,15 @@ Seven continuously tessellated sheets advect their real spline geometry rather
 than merely moving light across static surfaces. Speed owns longitudinal flow,
 crossing and temporary knots; low speed retains velvet-like drape.
 
-**Drivey** is a separately authored bounded Canvas2D perspective-road engine.
-It imports no upstream runtime or media. One deterministic road model projects
-the lane bed, cross-sections and terrain contours for Driver, Hood and Rear
-cameras. Speed owns travel and perspective, music owns colour timing, and the
-named performance effects change native perspective, relief or line energy.
-The contextual tuner persists only clamped Camera and Structure values.
+**Drivey** embeds the actual Rezmason Drivey runtime at commit
+`5104cdade2a3158786b05b9b0680a50e942830cf` in a same-origin iframe. Fifty-one
+upstream files remain byte-identical under a SHA-256 manifest and continue to
+own the road, levels, traffic, generated cars, cameras, materials, post-processing
+and rendering. The separate sedicivalvole shell and parent bridge clamp road
+speed, music level, reduced motion and performance state, map the ten palettes
+onto existing colour buffers/materials, and expose only Hood, Rear and Aerial
+views plus Normal/Wire rendering. Two compact text-only controls cycle those
+states directly; they open no contextual panel and never edit the vendor tree.
 
 The fixed road-speed mapping separates early recognition from maximum deformation. Aperture begins opening into recognizable tunnel space by approximately `40 km/h`; velocity, perspective, elongation, and travel then continue increasing until the shared `130 km/h` ceiling. Vertigo uses a narrow external bridge rather than new scene mathematics. It enters the untouched distortion at a composed `2.1 s` phase where the road already fills the Tesla viewport, and seeds the current motion/FOV controls before the iframe is revealed. Road speed follows a quadratic response through the original `speedUpTarget` path: zero cancels the base clock, `40 km/h` uses approximately `0.095×`, `60 km/h` approximately `0.213×`, and `130 km/h` restores the original non-boosted `1×` rate. The original FOV range still moves from `90°` to `150°` through that same curve. The upstream click boost is not dispatched.
 

@@ -53,13 +53,25 @@ of Codrops/Tympanus Infinite Lights commit
 usage notice and the licenses of its bundled Three.js and post-processing
 libraries. The separately authored sedicivalvole bridge remains AGPL-licensed.
 
-The Drivey-, PRTCL-, InfiniteTubes-, and Primordial-inspired Flux environments
-admitted on 2026-08-29 are original sedicivalvole source code, shader source,
-and code-generated visuals and therefore remain inside the project's
-`AGPL-3.0-or-later` grant. No code or asset from the studied works is included.
-`THIRD_PARTY_NOTICES.md` and
-`docs/SOURCE-ADMISSION-2026-08-29.md` preserve the source credits, audited
-identities, usage evidence, and clean-room boundaries.
+The 51 files enumerated by
+`prototype/drive-lab/public/third-party/drivey/UPSTREAM-SHA256SUMS.txt` are an
+unmodified snapshot of the modern Rezmason Drivey runtime at commit
+`5104cdade2a3158786b05b9b0680a50e942830cf`. They are excluded from the
+project's AGPL grant and retain Drivey's supplied GNU GPL version 3 licence plus
+the preserved MIT notices for bundled three.js r115, expr-eval 2.0.2, and
+Hundred Rabbits Themes. The unchanged 2018 `js/Drivey.js` header conflicts with
+the later repository-level GPLv3 grant by still mentioning non-profit use and a
+GPLv3 licence under consideration; that ambiguity is recorded rather than
+silently resolved. The separately authored sedicivalvole iframe shell, bridge,
+integration notice and integrity tooling remain AGPL-licensed.
+
+The PRTCL-, InfiniteTubes-, and Primordial-inspired Flux environments admitted
+on 2026-08-29 remain original sedicivalvole source code, shader source, and
+code-generated visuals inside the project's `AGPL-3.0-or-later` grant. No code
+or asset from those three studied works is included. `THIRD_PARTY_NOTICES.md`
+and `docs/SOURCE-ADMISSION-2026-08-29.md` preserve the source credits, audited
+identities, usage evidence, clean-room boundaries, and the distinct Drivey
+integration boundary.
 
 The Flux score engine includes code translated from Lobo's
 [textStep](https://github.com/illobo/textStep) at commit

@@ -80,15 +80,9 @@ balconies, cheap wireframe grids and excessive particles are excluded.
 
 `ATLAS 04` is the passenger-oriented bird's-eye city environment. It presents a
 palette-driven 3D OpenFreeMap field, a concise selected-page Wikipedia abstract
-with a free thumbnail when available, four local reading choices and a QR for
-the selected page. The map runtime is
-
-`DRIVEY 06` is an original bounded Canvas2D wireframe road environment. It
-imports no upstream runtime, asset, car, level, model or branding. Speed owns
-road travel and perspective; music owns colour timing; each named performance
-macro changes native road geometry or material. A contextual `TUNE` surface
-exposes Driver, Hood and Rear cameras plus clamped wireframe Structure.
-loaded only when ATLAS is selected. Position is ephemeral, never enters the
+with a free thumbnail when available, five local reading choices and a QR for
+the selected page. The map runtime is loaded only when ATLAS is selected.
+Position is ephemeral, never enters the
 diagnostic report or persistence, and third-party map/nearby requests are
 disclosed in the interface and privacy documentation. The field centers on each
 trusted fix and follows its reported heading; when heading is absent, movement
@@ -97,6 +91,16 @@ the last reliable direction. Camera pull-back is bounded so the `130 km/h` view
 retains an oblique pitch and materially extruded buildings. At `773 × 601`, the
 passenger panel reserves `246 px`, uses `12 px` reading text and presents an
 `86 px` QR generated from a `192 px` source.
+
+`DRIVEY 06` embeds the actual Rezmason Drivey road, level, traffic, camera and
+rendering runtime pinned at commit
+`5104cdade2a3158786b05b9b0680a50e942830cf`. The 51 upstream files remain
+byte-identical under a checked SHA-256 manifest. A separate project-authored
+iframe shell and bridge map the existing speed, music, performance-effect and
+ten-palette state onto controls and material buffers already owned by the
+runtime. Its only direct controls are two compact text buttons: one cycles Hood,
+Rear and Aerial views; the other cycles Normal and palette-coloured Wire render
+modes. Neither control opens a dropdown or panel.
 
 `VERTIGO 02` is the approved second visual environment and must render the original Interstate 7 scene, not an independent visual translation. The vendored files from upstream commit `e58d58520bc0dfde21f9e14e6a1b8c7f0a2a2a9e` remain byte-identical and retain the complete road, repeated side light sticks, opposing car-light trails, bloom, camera, deep distortion, fog, geometry, and bundled Three.js/post-processing pipeline. The sedicivalvole integration keeps the iframe black until the upstream editorial shell is hidden, so only the canvas appears. An external bridge maps `0–130 km/h` to the original `speedUpTarget` and FOV controls and maps the selected theme onto the runtime's existing colour attributes and uniforms without editing the vendor tree.
 

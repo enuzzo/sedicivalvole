@@ -13,7 +13,7 @@ The Flux visual library adds four entries after `WAKE 05`:
 
 | Number | Environment | Contextual variants |
 |---:|---|---|
-| `06` | `DRIVEY` | Driver, Hood, Rear cameras |
+| `06` | `DRIVEY` | Hood, Rear, Aerial cameras; Normal/Wire render modes |
 | `07` | `PRTCL` | Fractal Frequency, Murmuration, Axiom |
 | `08` | `INFINITE` | Particles, Star Wars, Triangle |
 | `09` | `PRIMORDIAL` | one fluid-field environment |
@@ -25,8 +25,17 @@ not expand the primary visual picker into duplicated source entries.
 
 At `773 × 601`, the existing top bar occupies `68 px`, the low control plane
 occupies `64 px`, and the persistent speed module owns the upper-right
-`280 × 68 px`. The contextual tuner therefore uses the measured open area at
-the upper left:
+`280 × 68 px`. DRIVEY uses the measured open area at the upper left for two
+direct controls:
+
+- a two-column rail starts `16 px` from the left and `82 px` from the top;
+- each text-only control is `94 × 34 px`; `VIEW` cycles Hood, Rear and Aerial,
+  while `RENDER` cycles Normal and Wire;
+- pressing a control changes state directly; neither control opens a dropdown,
+  disclosure panel, range, or icon menu.
+
+The not-yet-implemented PRTCL, INFINITE, and PRIMORDIAL contextual tuner retains
+the previously measured outer placement:
 
 - collapsed trigger: `16 px` from the left, `82 px` from the top, minimum
   `44 px` touch height;
@@ -34,24 +43,25 @@ the upper left:
   above the low control plane;
 - tall mobile: the panel's bottom bound moves above the existing `224 px`
   two-row footer and becomes internally scrollable;
-- the tuner is not rendered for APERTURE, VERTIGO, MERIDIAN, ATLAS, or WAKE, so
+- the tuner is not rendered for APERTURE, VERTIGO, MERIDIAN, ATLAS, WAKE, or
+  DRIVEY, so
   it cannot collide with the ATLAS compass, map attribution, or passenger panel;
 - the tuner exists only in the running experience, so it cannot collide with
   the Signal Gate support panel;
 - opening it keeps the retracting header and footer awake; closing it restores
   the normal retreat timing.
 
-The trigger is named `TUNE`, not `Settings`, because it edits the current visual
-performance rather than application preferences. Every select group and range
-has an explicit accessible name and value. Variant buttons and the close button
-retain at least `44 px` touch targets.
+The future trigger is named `TUNE`, not `Settings`, because it edits the current
+visual performance rather than application preferences. Every future select
+group and range has an explicit accessible name and value. DRIVEY deliberately
+uses the smaller always-visible cycling rail selected in product review.
 
 ## Contextual controls
 
 | Environment | Controls |
 |---|---|
-| DRIVEY | Camera, Structure |
-| PRTCL | Variant, Zoom, Particles, Colour Speed, Size |
+| DRIVEY | View cycle, Render cycle |
+| PRTCL | Particle Type, Zoom, Particles, Colour Speed, Size; shared Palette remains separate |
 | INFINITE | Variant, Curvature, Depth |
 | PRIMORDIAL | Scale, Flow, Warp |
 
@@ -76,9 +86,11 @@ Road speed and music enter every renderer through different model inputs:
 
 ## Renderer boundaries
 
-- DRIVEY uses a bounded project-authored Canvas2D perspective road. Camera
-  variants change horizon, dashboard crop, and look direction without using an
-  upstream level or car asset.
+- DRIVEY embeds the byte-identical modern Rezmason runtime pinned at
+  `5104cdade2a3158786b05b9b0680a50e942830cf`. A project-authored same-origin
+  iframe shell and parent bridge update only the runtime's existing controls,
+  cameras, materials and colour buffers. The 51-file integrity manifest is a
+  publication gate; vendor source is not patched.
 - PRTCL uses a bounded project-authored Canvas2D particle engine. Fixed maximum
   arrays and point-size caps protect the Tesla viewport; each variant owns its
   own parametric form.

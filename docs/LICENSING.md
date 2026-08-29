@@ -45,6 +45,26 @@ The current notice uses `sedicivalvole contributors` collectively. This avoids
 inventing a legal entity and does not decide who owns the copyright or a future
 trademark. Each contribution must be made by someone entitled to license it.
 
+## 2026-08-29 — source-faithful Drivey supersedes the clean-room decision
+
+The product owner rejected the initial project-authored Drivey translation and
+selected the actual Rezmason runtime instead. DRIVEY now includes the 51 files
+required by the modern runtime at commit
+`5104cdade2a3158786b05b9b0680a50e942830cf`, protected byte-for-byte by a
+SHA-256 manifest. The upstream repository supplies a GNU GPL version 3 licence;
+the unchanged 2018 `js/Drivey.js` header nevertheless retains older non-profit
+and GPL-under-consideration language. Both facts are preserved, and upstream
+clarification remains advisable where commercial status is material.
+
+The import excludes `legacy/`, `readme_assets/`, screenshots and unnecessary
+media. Bundled three.js r115, expr-eval 2.0.2, and Hundred Rabbits Themes retain
+their MIT notices. The manifest-listed runtime is not relicensed under the
+project's AGPL grant; the independently authored sedicivalvole iframe shell,
+parent bridge, integration record and integrity tooling remain
+`AGPL-3.0-or-later`. The following section remains as the historical decision
+that this source-faithful integration superseded; the PRTCL, InfiniteTubes, and
+Primordial clean-room boundaries remain active.
+
 ## 2026-08-29 — external visual studies use project-authored implementations
 
 Drivey, PRTCL, InfiniteTubes, and CodePen `NXGbBo` were admitted as visual

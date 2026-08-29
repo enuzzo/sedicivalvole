@@ -20,12 +20,14 @@ dated study documents.
 - All six environments use the shared catalog of **10 themes**. Vertigo keeps
   the upstream Interstate 7 files byte-identical while an external runtime
   bridge maps the selected theme onto its existing colour channels.
-- OPEN, UNDERWATER and BLOOM are visible in all five active environments without
+- OPEN, UNDERWATER and BLOOM are visible in all six active environments without
   a shared overlay. Aperture performs its tiled projection and centre light;
   Vertigo changes only the original runtime's externally bridged time, FOV and
   colour controls; Meridian changes corridor projection, flow, fog and rail
   energy; Atlas changes MapLibre camera and layer paint properties; Wake changes
-  authored ribbon width, separation, fold pressure and material light.
+  authored ribbon width, separation, fold pressure and material light; Drivey
+  receives bounded speed, camera, traffic and material updates through its
+  external bridge without editing the vendor files.
 - Meridian keeps one deterministic low corridor beneath sparse, large oblique
   blades and longitudinal shoulder planes. Its shared travel field has tightly
   bounded vertical motion; FOV, depth compression, peripheral stretch,
@@ -60,15 +62,15 @@ dated study documents.
   remains slow, soft and velvet-like; speed progressively increases travel,
   crossings and temporary knots. The blocking P0/P1/P2 gate in `design-qa.md`
   passes locally after that correction.
-- DRIVEY is an original bounded Canvas2D perspective-road renderer informed by
-  the admitted Drivey mechanics study without importing upstream code, assets,
-  levels, models, or branding. A continuous road bed, lane geometry and terrain
-  contours stream at a speed-owned rate; musical level changes colour timing,
-  while OPEN, UNDERWATER and BLOOM alter native perspective, relief and line
-  energy. Its contextual `TUNE` control exposes Driver, Hood and Rear cameras
-  plus a clamped Structure value in the measured upper-left gap. Exact
-  `773 × 601`, `390 × 844` and `601 × 390` Browser QA passes locally at
-  59.99 FPS / 17.9 ms p95 with zero runtime issue, warning or error.
+- DRIVEY embeds the actual Rezmason Drivey runtime pinned at commit
+  `5104cdade2a3158786b05b9b0680a50e942830cf`. Its 51 upstream road, level,
+  traffic, camera, rendering and bundled-library files remain byte-identical
+  under a SHA-256 manifest; a project-authored iframe shell and external bridge
+  apply bounded speed, music, reduced motion, named performance effects and all
+  ten Sedici Valvole palettes. Two compact `94 × 34 px` text-only controls cycle
+  `HOOD → REAR → AERIAL` and `NORMAL ↔ WIRE` directly, with no dropdown, panel,
+  native Driver/Chase/Satellite view, or original colour selector. Exact muted
+  `773 × 601` and `390 × 844` Browser QA passes with zero warning or error.
 - REGISTER was rejected after live review because its static print composition
   was inexplicable in motion and outside the product mood. Its source remains
   only in the rejected-visual archive; the runtime, QA harness and active tests

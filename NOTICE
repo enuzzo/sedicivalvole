@@ -41,12 +41,19 @@ e58d58520bc0dfde21f9e14e6a1b8c7f0a2a2a9e. The vendor snapshot retains its
 original usage notice and bundled-library licenses; it is not relicensed under
 the sedicivalvole AGPL grant. See THIRD_PARTY_NOTICES.md.
 
-Drivey by Rezmason, PRTCL, InfiniteTubes by Louis Hoebregts for
-Codrops/Tympanus, and GLSL: Primordial Soup by Liam Egan were studied as visual
-references for project-authored Flux environments on 2026-08-29. No code,
-runtime, shader text, texture, model, font, screenshot, or other asset from
-those works is included. The resulting Sedici Valvole code-generated visuals
-remain AGPL-3.0-or-later material. See THIRD_PARTY_NOTICES.md and
+DRIVEY 06 integrates 51 byte-identical files from Drivey by Rezmason at commit
+5104cdade2a3158786b05b9b0680a50e942830cf. They retain Drivey's supplied GNU
+GPL version 3 licence and the original notices for bundled libraries and are not
+relicensed under the sedicivalvole AGPL grant. The preserved 2018 Drivey.js
+header contains older, conflicting non-profit / GPL-under-consideration text;
+see THIRD_PARTY_NOTICES.md for the exact boundary and ambiguity. The separate
+sedicivalvole iframe shell and parent bridge remain AGPL-3.0-or-later material.
+
+PRTCL, InfiniteTubes by Louis Hoebregts for Codrops/Tympanus, and GLSL:
+Primordial Soup by Liam Egan were studied as visual references for
+project-authored Flux environments on 2026-08-29. No source, runtime, shader
+text, texture, model, font, screenshot, or other asset from those three works is
+included. See THIRD_PARTY_NOTICES.md and
 docs/SOURCE-ADMISSION-2026-08-29.md for exact identities and boundaries.
 
 Source: https://github.com/enuzzo/sedicivalvole

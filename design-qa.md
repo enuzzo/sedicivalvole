@@ -323,3 +323,49 @@ P0: none. P1: none after the relief correction. P2: none.
 
 final result: passed locally; real-Tesla motion comfort, touch and sustained
 thermal acceptance remain open
+
+---
+
+# Design QA — DRIVEY 06 source-faithful recovery
+
+Date: 2026-08-29
+
+This gate supersedes the rejected clean-room result above without rewriting its
+historical evidence. The accepted implementation embeds the actual Rezmason
+Drivey runtime at commit
+`5104cdade2a3158786b05b9b0680a50e942830cf`; its 51 manifest-listed files are
+byte-identical. The project-authored same-origin iframe shell and parent bridge
+hide the editorial/native control chrome and map Sedici Valvole speed, music,
+effects and ten palettes onto state already owned by the upstream runtime.
+
+## Product-review corrections
+
+- Driver, Chase and Satellite are absent from the product surface. The remaining
+  `VIEW` control cycles `HOOD → REAR → AERIAL → HOOD` on repeated presses.
+- Native colour choices such as Technicolor are absent. Both Normal and Wire
+  rendering use the active Sedici Valvole palette.
+- `RENDER` cycles `NORMAL ↔ WIRE` on repeated presses. Wire is a full alternate
+  rendering mode, not a generic effect laid over the scene.
+- The initially approved controls were reduced to two `94 × 34 px` text-only
+  buttons after live review. There is no icon, dropdown, disclosure or tuner
+  panel; the visible text always reports the current state.
+
+## Verified evidence
+
+- Exact muted Browser flow at `773 × 601`: launch → DRIVEY → `VIEW` pressed
+  three times produced Hood, Rear, Aerial, Hood; `RENDER` pressed three times
+  produced Wire, Normal, Wire. The document contained zero DRIVEY panels and the
+  current Browser console contained zero warning or error.
+- A second muted pass at `390 × 844` confirmed that the compact rail fits without
+  overflow and retains both controls.
+- Current-build captures are
+  `/Users/enuzzo/.codex/visualizations/2026/08/29/01a04e7e-d9e8-7693-b050-beaedf042936/drivey-compact-normal-blue-773x601.png`,
+  `/Users/enuzzo/.codex/visualizations/2026/08/29/01a04e7e-d9e8-7693-b050-beaedf042936/drivey-compact-wire-blue-773x601.png`, and
+  `/Users/enuzzo/.codex/visualizations/2026/08/29/01a04e7e-d9e8-7693-b050-beaedf042936/drivey-compact-wire-blue-390x844.png`.
+- Nine focused DRIVEY tests, the complete 335-test suite, the 128-module
+  production build and the read-only canonical FTP preflight pass.
+
+P0: none. P1: none. P2: none after the compact cycling-control correction.
+
+final result: accepted locally by the product owner; real-Tesla touch, motion
+comfort, frame pacing and sustained thermal acceptance remain open
