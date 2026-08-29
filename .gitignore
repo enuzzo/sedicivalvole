@@ -17,5 +17,8 @@ __pycache__/
 /prototype/drive-lab/.playwright-cli/
 /prototype/drive-lab/output/
 
-# Local diagnostic delivery configuration. The example remains versionable.
+# Local diagnostic delivery configuration. It must remain outside Vite's
+# public tree as well as outside Git; the deploy script places it remotely.
+/prototype/drive-lab/config/diagnostic-recipient.local.php
+# Keep the retired location ignored as defense in depth on older checkouts.
 /prototype/drive-lab/public/api/recipient.local.php

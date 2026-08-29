@@ -1261,7 +1261,8 @@ Plain FTP sends credentials and content without encryption. Prefer certificate-v
 
 1. Confirm the intended build, protocol, host account, and exact remote path.
 2. Build and pass functional/visual QA locally.
-3. Upload assets before `index.html` so the entry point never references missing files.
+3. Upload and hash-verify every asset, audio bank, font, third-party subtree and
+   diagnostic API file before writing the generated live `index.php` entry.
 4. Never print credentials or raw FTP errors.
 5. Verify the canonical URL after upload:
    - HTTP status;
@@ -1271,7 +1272,14 @@ Plain FTP sends credentials and content without encryption. Prefer certificate-v
    - cache headers after a controlled reload;
    - visible behavior in the selected browser.
 
-Use `--preserve-existing` when publication is authorized but deletion of legacy remote files is not. This mode uploads content-addressed assets and the dynamic root entry, preserves any static entry and legacy tree, and reports cleanup as skipped. Canonical verification is still mandatory because a preserved `index.html` or edge cache may continue to win over the new `index.php`.
+The command is fail-closed: choose exactly one of `--verify-only` and
+`--publish`. A bare invocation performs no remote operation. Use
+`--preserve-existing` only together with `--publish` when publication is
+authorized but deletion of legacy remote files is not. This mode uploads and
+verifies the complete build before writing the dynamic root entry, preserves
+any static entry and legacy tree, and reports cleanup as skipped. Canonical
+verification is still mandatory because a preserved `index.html` or edge cache
+may continue to win over the new `index.php`.
 
 Use `--verify-only` to run the configuration, connection, exact-directory, and remote-identity gates without uploading, overwriting, or deleting any remote file.
 
@@ -1279,7 +1287,27 @@ An upload alone is not a successful deployment. The user reports that hosting ca
 
 Content-addressed JavaScript and CSS from the immediately previous entry point are retained during cache overlap. SiteGround has served stale canonical HTML briefly even while exposing the new origin timestamp; deleting the previous bundle in the same deployment can therefore break cached clients. Cache-busted verification confirms the new entry point, while the previous bundle remains available until canonical HTML converges.
 
-The canonical SiteGround deployment uses a generated `index.php` entry with explicit no-store/no-cache response headers. The Vite `index.html` remains the reproducible build input and stays available to the separate Sites-compatible package, but it is removed from the FTP root only after the dynamic entry is uploaded and verified byte-for-byte over FTP. Use `--stage-php-entry` to upload and verify the dynamic entry without switching the root during a first provider check.
+The canonical SiteGround deployment uses a generated `index.php` entry with
+explicit no-store/no-cache response headers. The Vite `index.html` remains the
+reproducible build input and stays available to the separate Sites-compatible
+package, but it is removed from the FTP root only after the dynamic entry is
+uploaded and verified byte-for-byte over FTP. `--publish --stage-php-entry`
+round-trips the candidate as the non-executable `index.php.stage` name and then
+deletes that candidate; it never writes the live `index.php` and never switches
+the static root. A normal `--publish` uploads `index.php.next`, reads it back and
+verifies its hash, then replaces `index.php` by a same-directory FTP rename and
+verifies the installed bytes. It never streams a partially uploaded payload
+directly into the live entry name. The provider must demonstrate support for
+replacing the existing target by rename during the real publication; failure
+leaves the previous live entry in place and aborts the release.
+
+This final-entry switch does not make the complete FTP publication atomic.
+Mutable `audio/junction.svb` and diagnostic API files are uploaded and verified
+before the entry rename. The current bank/parser and API contracts therefore
+remain backward compatible across that window, and publication still stops
+before the entry switch on any mismatch. A future incompatible bank or API
+revision should use a content-addressed filename or release directory rather
+than claiming whole-release atomicity from the entry rename alone.
 
 The first dynamic-entry activation passed FTP identity and byte verification, but the bare `/` cache key initially continued serving a previously cached 587-byte static entry with `x-proxy-cache: HIT`. This upstream object could not be safely purged with FTP credentials. The user later disabled SiteGround NGINX delivery caching and completed the provider cache flush; the canonical root now returns the current 655-byte no-store PHP entry with `x-proxy-cache: MISS` and byte-identical assets.
 

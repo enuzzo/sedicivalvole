@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
-// Copy this file to public/api/recipient.local.php and use the intended private recipient.
+// Copy this file to config/diagnostic-recipient.local.php and use the intended private recipient.
+// Keep the local copy outside public/ and dist/; the deploy gate places it remotely.
 // sedicivalvole local diagnostic recipient.
 return 'diagnostics@example.invalid';

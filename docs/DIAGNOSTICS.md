@@ -75,7 +75,14 @@ Server protections:
 - no CORS grant;
 - no-cache and `nosniff` response headers.
 
-The user-confirmed mail recipient is configured in the ignored local file `prototype/drive-lab/public/api/recipient.local.php` and is not present in public source code. The file is created from `prototype/drive-lab/config/diagnostic-recipient.local.php.example`, returns the recipient address without emitting it over HTTP, and is copied to the same private server location during deployment. The deployment identity gate recognizes the file by fixed structural markers and never prints its contents.
+The user-confirmed mail recipient is configured in the ignored local file
+`prototype/drive-lab/config/diagnostic-recipient.local.php`. It stays outside
+both `public/` and `dist/`, so neither the Vite development server nor any
+static package can serve it. The file is created from
+`prototype/drive-lab/config/diagnostic-recipient.local.php.example`, returns the
+recipient address without printing it, and is copied to the private remote API
+location only during explicit publication. The deployment identity gate
+recognizes the file by fixed structural markers and never prints its contents.
 
 A `202 accepted_by_mail_transport` response proves only that PHP `mail()` handed the multipart message and complete gzip-compressed JSON report, including the flight-recorder trace, to the hosting mail transport. It does not prove Gmail inbox delivery. Delivery requires confirmation in the recipient inbox and, if needed, inspection of message headers/SPF/DKIM behavior. Gmail may shorten the displayed text of a long message; the attachment is the authoritative complete report and is independent of that presentation limit.
 

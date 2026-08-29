@@ -1,10 +1,45 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { audioWorklet } from "./scripts/vite-audio-worklet.mjs";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { execSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
+import {
+  assertStaticTreeSafe,
+  readStaticTreeSafely,
+} from "./scripts/static-package-safety.mjs";
 
 const productVersion = readFileSync(new URL("../../VERSION", import.meta.url), "utf8").trim();
+const projectDirectory = fileURLToPath(new URL("./", import.meta.url));
+const publicDirectory = fileURLToPath(new URL("./public/", import.meta.url));
+const distDirectory = fileURLToPath(new URL("./dist/", import.meta.url));
+
+function verifyStaticBuildTrees() {
+  assertStaticTreeSafe(publicDirectory, projectDirectory);
+  if (existsSync(distDirectory)) assertStaticTreeSafe(distDirectory, projectDirectory);
+}
+
+function staticPackageSafety() {
+  return {
+    name: "sedicivalvole-static-package-safety",
+    apply: "build",
+    enforce: "pre",
+    buildStart() {
+      verifyStaticBuildTrees();
+      for (const asset of readStaticTreeSafely(publicDirectory, projectDirectory)) {
+        this.emitFile({ type: "asset", ...asset });
+      }
+    },
+    writeBundle(outputOptions) {
+      if (outputOptions.dir && existsSync(outputOptions.dir)) {
+        assertStaticTreeSafe(outputOptions.dir, projectDirectory);
+      }
+    },
+    closeBundle: verifyStaticBuildTrees,
+  };
+}
+
+verifyStaticBuildTrees();
 
 // Build stamp: local calendar time as YYYYMMDD-HHMM. This identifies the build
 // itself and is what must be quoted whenever a build is published or deployed.
@@ -37,9 +72,10 @@ function commitRef() {
 const productCommit = commitRef();
 
 export default defineConfig({
-  base: "./",
+  base: "/",
   build: {
     outDir: "dist/client",
+    copyPublicDir: false,
   },
   define: {
     __APP_VERSION__: JSON.stringify(productVersion),
@@ -56,5 +92,5 @@ export default defineConfig({
       clientFiles: ["./src/main.jsx"],
     },
   },
-  plugins: [react(), audioWorklet()],
+  plugins: [staticPackageSafety(), react(), audioWorklet()],
 });

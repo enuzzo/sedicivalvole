@@ -3,11 +3,15 @@
 
 from __future__ import annotations
 
+import argparse
 import ftplib
 import hashlib
 import io
 import json
+import math
+import os
 import re
+import stat
 import sys
 from pathlib import Path
 
@@ -17,6 +21,8 @@ BUILD = ROOT / "prototype" / "drive-lab" / "dist" / "client"
 LEGACY_ROOT_FILE = "Default.html"
 STATIC_ROOT_ENTRY = "index.html"
 DYNAMIC_ROOT_ENTRY = "index.php"
+DYNAMIC_STAGE_ENTRY = "index.php.stage"
+DYNAMIC_NEXT_ENTRY = "index.php.next"
 PHP_ENTRY_PREFIX = b"""<?php
 declare(strict_types=1);
 header('Content-Type: text/html; charset=UTF-8');
@@ -45,6 +51,9 @@ LEGACY_UI_HASHES = {
 }
 DIAGNOSTIC_ENDPOINT = "send-diagnostic.php"
 DIAGNOSTIC_RECIPIENT_CONFIG = "recipient.local.php"
+DIAGNOSTIC_RECIPIENT_SOURCE = (
+    ROOT / "prototype" / "drive-lab" / "config" / "diagnostic-recipient.local.php"
+)
 DIAGNOSTIC_ENDPOINT_MARKER_SETS = (
     (b"sedicivalvole.tesla-diagnostic.v3", b"EXPECTED_ORIGIN", b"recipient.local.php"),
     (b"sedicivalvole.tesla-diagnostic.v2", b"EXPECTED_ORIGIN", b"recipient.local.php"),
@@ -54,6 +63,32 @@ DIAGNOSTIC_RECIPIENT_CONFIG_MARKERS = (
     b"sedicivalvole local diagnostic recipient",
     b"return",
 )
+PRIVATE_STATIC_NAME_TOKEN = re.compile(
+    r"(^|[._-])(secret|secrets|credential|credentials|private|key|keys|cert|certs|certificate|certificates)([._-]|$)",
+    re.IGNORECASE,
+)
+PRIVATE_STATIC_EXTENSIONS = {
+    ".pem",
+    ".key",
+    ".p12",
+    ".pfx",
+    ".crt",
+    ".cer",
+    ".der",
+    ".jks",
+    ".keystore",
+}
+PRIVATE_STATIC_DOTFILE = re.compile(
+    r"^\.(docker|dockercfg|git|htpasswd|netrc|npmrc|pypirc|ssh)($|[^a-z0-9])",
+    re.IGNORECASE,
+)
+ENV_STATIC_NAME = re.compile(r"^\.env($|[^a-z0-9])", re.IGNORECASE)
+SSH_PRIVATE_KEY_NAME = re.compile(
+    r"^id_(rsa|dsa|ecdsa|ed25519)($|[^a-z0-9].*)",
+    re.IGNORECASE,
+)
+LOCAL_STATIC_NAME_TOKEN = re.compile(r"(^|[._-])local([._-]|$)", re.IGNORECASE)
+STATIC_SAFETY_ERROR = "static build contains a forbidden filename or symbolic link"
 REQUIRED = (
     "DEPLOY_PROTOCOL",
     "DEPLOY_HOST",
@@ -109,23 +144,34 @@ def verify_remote_static_tree(
     local_root: Path,
     *,
     tree_name: str,
+    require_complete: bool = False,
 ) -> None:
     """Verify that every existing remote static entry matches the local tree."""
     remote_names = safe_names(ftp)
     expected_names = {path.name for path in local_root.iterdir()}
-    if not remote_names.issubset(expected_names):
+    if require_complete and not expected_names.issubset(remote_names):
+        raise ValueError(f"incomplete {tree_name} upload")
+    if not require_complete and not remote_names.issubset(expected_names):
         raise ValueError(f"unexpected {tree_name} entry")
 
-    for name in remote_names:
+    names_to_verify = expected_names if require_complete else remote_names
+    for name in names_to_verify:
         local_path = local_root / name
         if local_path.is_dir():
             ftp.cwd(name)
             try:
-                verify_remote_static_tree(ftp, local_path, tree_name=tree_name)
+                verify_remote_static_tree(
+                    ftp,
+                    local_path,
+                    tree_name=tree_name,
+                    require_complete=require_complete,
+                )
             finally:
                 ftp.cwd("..")
             continue
-        if sha256_bytes(remote_bytes(ftp, name)) != hashlib.sha256(local_path.read_bytes()).hexdigest():
+        if sha256_bytes(remote_bytes(ftp, name)) != hashlib.sha256(
+            static_build_bytes(local_path)
+        ).hexdigest():
             raise ValueError(f"{tree_name} content mismatch")
 
 
@@ -133,8 +179,200 @@ def sha256_bytes(payload: bytes) -> str:
     return hashlib.sha256(payload).hexdigest()
 
 
+def is_forbidden_static_name(name: str) -> bool:
+    """Classify private-looking package names without opening their contents."""
+    basename = Path(name).name.lower()
+    return (
+        ENV_STATIC_NAME.search(basename) is not None
+        or basename == ".envrc"
+        or PRIVATE_STATIC_DOTFILE.search(basename) is not None
+        or SSH_PRIVATE_KEY_NAME.fullmatch(basename) is not None
+        or (
+            basename.endswith(".php")
+            and (
+                "recipient" in basename
+                or LOCAL_STATIC_NAME_TOKEN.search(basename) is not None
+            )
+        )
+        or PRIVATE_STATIC_NAME_TOKEN.search(basename) is not None
+        or Path(basename).suffix in PRIVATE_STATIC_EXTENSIONS
+    )
+
+
+def static_build_control_root() -> Path:
+    return ROOT if BUILD == ROOT or ROOT in BUILD.parents else BUILD.parent.parent
+
+
+def static_build_files() -> list[Path]:
+    """Return regular build files after a metadata-only, fail-closed walk."""
+    build_control_root = static_build_control_root()
+    candidate = BUILD
+    while True:
+        if candidate.is_symlink():
+            raise ValueError(STATIC_SAFETY_ERROR)
+        if candidate == build_control_root:
+            break
+        candidate = candidate.parent
+    if not BUILD.is_dir():
+        raise FileNotFoundError("production build is missing")
+
+    files: list[Path] = []
+    pending = [BUILD]
+    while pending:
+        directory = pending.pop()
+        for path in directory.iterdir():
+            if path.is_symlink() or is_forbidden_static_name(path.name):
+                raise ValueError(STATIC_SAFETY_ERROR)
+            if path.is_dir():
+                pending.append(path)
+            elif path.is_file():
+                files.append(path)
+            else:
+                raise ValueError(STATIC_SAFETY_ERROR)
+    return files
+
+
+def open_static_build_file(path: Path):
+    """Open a build file through pinned directories without following symlinks."""
+    control_root = static_build_control_root()
+    try:
+        path.relative_to(BUILD)
+        relative = path.relative_to(control_root)
+    except ValueError:
+        raise ValueError(STATIC_SAFETY_ERROR) from None
+    if not relative.parts:
+        raise ValueError(STATIC_SAFETY_ERROR)
+
+    directory_flags = os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW
+    directory_descriptor: int | None = None
+    file_descriptor: int | None = None
+    try:
+        directory_descriptor = os.open(control_root, directory_flags)
+        for part in relative.parts[:-1]:
+            next_descriptor = os.open(
+                part,
+                directory_flags,
+                dir_fd=directory_descriptor,
+            )
+            os.close(directory_descriptor)
+            directory_descriptor = next_descriptor
+        file_descriptor = os.open(
+            relative.parts[-1],
+            os.O_RDONLY | os.O_NOFOLLOW,
+            dir_fd=directory_descriptor,
+        )
+        if not stat.S_ISREG(os.fstat(file_descriptor).st_mode):
+            raise ValueError(STATIC_SAFETY_ERROR)
+        handle = os.fdopen(file_descriptor, "rb")
+        file_descriptor = None
+        return handle
+    except (OSError, ValueError):
+        raise ValueError(STATIC_SAFETY_ERROR)
+    finally:
+        if file_descriptor is not None:
+            os.close(file_descriptor)
+        if directory_descriptor is not None:
+            os.close(directory_descriptor)
+
+
+def static_build_bytes(path: Path) -> bytes:
+    with open_static_build_file(path) as handle:
+        return handle.read()
+
+
 def dynamic_root_payload() -> bytes:
-    return PHP_ENTRY_PREFIX + (BUILD / STATIC_ROOT_ENTRY).read_bytes()
+    static_build_files()
+    return PHP_ENTRY_PREFIX + static_build_bytes(BUILD / STATIC_ROOT_ENTRY)
+
+
+def static_upload_files() -> list[Path]:
+    """Return publishable build files while reserving both root-entry names."""
+    return sorted(
+        (
+            path
+            for path in static_build_files()
+            if path != BUILD / STATIC_ROOT_ENTRY
+            and path != BUILD / DYNAMIC_ROOT_ENTRY
+        ),
+        key=lambda path: path.as_posix(),
+    )
+
+
+def verify_staged_dynamic_root(ftp: ftplib.FTP, payload: bytes) -> None:
+    """Round-trip the generated entry under a non-executable temporary name."""
+    try:
+        ftp.storbinary(f"STOR {DYNAMIC_STAGE_ENTRY}", io.BytesIO(payload), blocksize=65536)
+        if sha256_bytes(remote_bytes(ftp, DYNAMIC_STAGE_ENTRY)) != sha256_bytes(payload):
+            raise ValueError("staged dynamic root upload mismatch")
+    finally:
+        if DYNAMIC_STAGE_ENTRY in safe_names(ftp):
+            ftp.delete(DYNAMIC_STAGE_ENTRY)
+
+
+def install_dynamic_root(ftp: ftplib.FTP, payload: bytes) -> None:
+    """Verify a complete candidate, then atomically rename it over the live entry."""
+    try:
+        ftp.storbinary(f"STOR {DYNAMIC_NEXT_ENTRY}", io.BytesIO(payload), blocksize=65536)
+        if sha256_bytes(remote_bytes(ftp, DYNAMIC_NEXT_ENTRY)) != sha256_bytes(payload):
+            raise ValueError("dynamic root candidate mismatch")
+        ftp.rename(DYNAMIC_NEXT_ENTRY, DYNAMIC_ROOT_ENTRY)
+        if sha256_bytes(remote_bytes(ftp, DYNAMIC_ROOT_ENTRY)) != sha256_bytes(payload):
+            raise ValueError("dynamic root upload mismatch")
+    finally:
+        if DYNAMIC_NEXT_ENTRY in safe_names(ftp):
+            ftp.delete(DYNAMIC_NEXT_ENTRY)
+
+
+def verify_completed_upload(ftp: ftplib.FTP, recipient_config: bytes) -> None:
+    """Verify every new build file before the live root entry is replaced."""
+    static_build_files()
+    remote_root_names = safe_names(ftp)
+    for local_path in BUILD.iterdir():
+        if local_path.name in {STATIC_ROOT_ENTRY, DYNAMIC_ROOT_ENTRY, "api"}:
+            continue
+        if local_path.is_dir():
+            if local_path.name not in remote_root_names:
+                raise ValueError(f"missing {local_path.name} upload")
+            ftp.cwd(local_path.name)
+            try:
+                verify_remote_static_tree(
+                    ftp,
+                    local_path,
+                    tree_name=local_path.name,
+                    require_complete=True,
+                )
+            finally:
+                ftp.cwd("..")
+            continue
+        if local_path.name not in remote_root_names:
+            raise ValueError(f"missing root upload: {local_path.name}")
+        if sha256_bytes(remote_bytes(ftp, local_path.name)) != hashlib.sha256(
+            static_build_bytes(local_path)
+        ).hexdigest():
+            raise ValueError(f"root upload mismatch: {local_path.name}")
+
+    ftp.cwd("api")
+    try:
+        api_names = safe_names(ftp)
+        expected_api_names = {
+            path.name
+            for path in (BUILD / "api").iterdir()
+            if path.is_file() and path.name != DIAGNOSTIC_RECIPIENT_CONFIG
+        } | {DIAGNOSTIC_RECIPIENT_CONFIG}
+        if not expected_api_names.issubset(api_names):
+            raise ValueError("incomplete API upload")
+        for name in expected_api_names - {DIAGNOSTIC_RECIPIENT_CONFIG}:
+            local_api_file = BUILD / "api" / name
+            if sha256_bytes(remote_bytes(ftp, name)) != hashlib.sha256(
+                static_build_bytes(local_api_file)
+            ).hexdigest():
+                raise ValueError(f"API upload mismatch: {name}")
+        if sha256_bytes(remote_bytes(ftp, DIAGNOSTIC_RECIPIENT_CONFIG)) != sha256_bytes(
+            recipient_config
+        ):
+            raise ValueError("diagnostic recipient upload mismatch")
+    finally:
+        ftp.cwd("..")
 
 
 def is_recognized_app_entry(payload: bytes) -> bool:
@@ -154,17 +392,60 @@ def is_recognized_junction_bank(payload: bytes) -> bool:
     if manifest_length <= 0 or audio_offset >= len(payload):
         return False
     try:
-        manifest = json.loads(payload[12:audio_offset].decode("utf-8"))
-    except (UnicodeDecodeError, json.JSONDecodeError):
+        def reject_nonstandard_constant(value: str) -> None:
+            raise ValueError(f"non-standard JSON constant: {value}")
+
+        manifest = json.loads(
+            payload[12:audio_offset].decode("utf-8"),
+            parse_constant=reject_nonstandard_constant,
+        )
+    except (UnicodeDecodeError, ValueError):
         return False
-    common_valid = (
+    if not isinstance(manifest, dict):
+        return False
+    sections = manifest.get("sections")
+    base_valid = (
         manifest.get("score") == "junction"
         and manifest.get("source") == "rendered-production"
-        and isinstance(manifest.get("sections"), list)
-        and len(manifest["sections"]) >= 8
+        and isinstance(sections, list)
+        and len(sections) >= 8
     )
     if manifest.get("format") == "sedicivalvole.music-bank.v1":
-        return common_valid and payload[:8] == b"SVJCTN01"
+        def numeric(value: object) -> bool:
+            return type(value) in {int, float} and math.isfinite(value)
+
+        duration = manifest.get("durationSeconds")
+        section_ids = [
+            section.get("id") for section in sections if isinstance(section, dict)
+        ]
+        return (
+            base_valid
+            and payload[:8] == b"SVJCTN01"
+            and len(sections) == 8
+            and isinstance(manifest.get("mime"), str)
+            and manifest["mime"].startswith("audio/")
+            and numeric(manifest.get("bpm"))
+            and manifest["bpm"] > 0
+            and numeric(manifest.get("bars"))
+            and manifest["bars"] > 0
+            and numeric(manifest.get("barsPerSection"))
+            and manifest["barsPerSection"] > 0
+            and numeric(duration)
+            and duration > 0
+            and len(section_ids) == len(sections)
+            and all(isinstance(section_id, str) and section_id for section_id in section_ids)
+            and len(set(section_ids)) == len(section_ids)
+            and all(
+                "assetId" not in section
+                and numeric(section.get("startSeconds"))
+                and section["startSeconds"] >= 0
+                and numeric(section.get("durationSeconds"))
+                and section["durationSeconds"] > 0
+                and section["startSeconds"] + section["durationSeconds"] <= duration + 1e-6
+                for section in sections
+            )
+        )
+    common_valid = base_valid and manifest.get("maxDecodedClips") == 6
     segmented_signatures = {
         "sedicivalvole.music-bank.v2": b"SVJCTN02",
         "sedicivalvole.music-bank.v3": b"SVJCTN03",
@@ -177,23 +458,33 @@ def is_recognized_junction_bank(payload: bytes) -> bool:
         return False
     asset_ids = [asset.get("id") for asset in assets if isinstance(asset, dict)]
     asset_lengths = [asset.get("audioBytes") for asset in assets if isinstance(asset, dict)]
+    asset_id_set = {asset_id for asset_id in asset_ids if isinstance(asset_id, str)}
+    section_asset_ids = [
+        section.get("assetId") for section in sections if isinstance(section, dict)
+    ]
     return (
         common_valid
         and len(asset_ids) == len(assets)
-        and len(set(asset_ids)) == len(asset_ids)
-        and all(isinstance(length, int) and length > 0 for length in asset_lengths)
+        and all(isinstance(asset_id, str) and asset_id for asset_id in asset_ids)
+        and len(asset_id_set) == len(asset_ids)
+        and all(type(length) is int and length > 0 for length in asset_lengths)
+        and len(section_asset_ids) == len(sections)
+        and all(asset_id in asset_id_set for asset_id in section_asset_ids)
         and sum(asset_lengths) == len(payload) - audio_offset
     )
 
 
 def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
     """Abort unless every overwrite/delete target can be identified read-only."""
+    static_build_files()
     root_names = safe_names(ftp)
     allowed_root_names = {
         LEGACY_ROOT_FILE,
         "diagnostics",
         STATIC_ROOT_ENTRY,
         DYNAMIC_ROOT_ENTRY,
+        DYNAMIC_STAGE_ENTRY,
+        DYNAMIC_NEXT_ENTRY,
         "assets",
         "audio",
         "api",
@@ -201,6 +492,11 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
         "third-party",
         "ui",
     }
+    allowed_root_names.update(
+        path.name
+        for path in BUILD.iterdir()
+        if path.is_file() and path.name not in {STATIC_ROOT_ENTRY, DYNAMIC_ROOT_ENTRY}
+    )
     unexpected_root_names = root_names - allowed_root_names
     if unexpected_root_names:
         unexpected = ",".join(sorted(unexpected_root_names))
@@ -219,6 +515,12 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
         if not current_php.startswith(PHP_ENTRY_PREFIX) or not is_recognized_app_entry(current_php):
             raise ValueError("unrecognized dynamic root application")
         current_entries.append(current_php)
+    for temporary_entry in (DYNAMIC_STAGE_ENTRY, DYNAMIC_NEXT_ENTRY):
+        if temporary_entry not in root_names:
+            continue
+        temporary_php = remote_bytes(ftp, temporary_entry)
+        if not temporary_php.startswith(PHP_ENTRY_PREFIX) or not is_recognized_app_entry(temporary_php):
+            raise ValueError("unrecognized dynamic root candidate")
 
     obsolete_root_assets: set[str] = set()
     if current_entries:
@@ -241,7 +543,7 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
             remote_asset_names = safe_names(ftp)
             local_assets = {path.name: path for path in (BUILD / "assets").iterdir() if path.is_file()}
             for name in remote_asset_names & local_assets.keys():
-                local_hash = hashlib.sha256(local_assets[name].read_bytes()).hexdigest()
+                local_hash = hashlib.sha256(static_build_bytes(local_assets[name])).hexdigest()
                 if sha256_bytes(remote_bytes(ftp, name)) != local_hash:
                     raise ValueError("content-addressed asset mismatch")
         finally:
@@ -424,40 +726,62 @@ def remove_legacy_publish(ftp: ftplib.FTP) -> tuple[int, int]:
     return deleted_files, removed_directories
 
 
-USAGE = """sedicivalvole publication
+def argument_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        description=(
+            "Verify or publish the built client at the canonical root. "
+            "Publication always requires the explicit --publish flag."
+        ),
+    )
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument(
+        "--publish",
+        action="store_true",
+        help="perform a real publication after all identity gates pass",
+    )
+    mode.add_argument(
+        "--verify-only",
+        action="store_true",
+        help="verify configuration and remote identity without remote writes",
+    )
+    parser.add_argument(
+        "--preserve-existing",
+        action="store_true",
+        help="publish without deleting the existing static entry or legacy tree",
+    )
+    parser.add_argument(
+        "--stage-php-entry",
+        action="store_true",
+        help="publish and verify the PHP entry without switching the static root",
+    )
+    return parser
 
-Uploads the built client to the canonical root. This performs a real
-publication; there is no dry-run mode.
 
-  python3 scripts/deploy_drive_lab_ftp.py           publish
-  python3 scripts/deploy_drive_lab_ftp.py --verify-only
-                                                  verify identity; write nothing
-  python3 scripts/deploy_drive_lab_ftp.py --help    show this and do nothing
-"""
-
-
-def parse_arguments(argv: list[str]) -> bool:
-    """Returns True when the caller asked to publish.
-
-    The script previously ignored every argument, so `--help` ran a real
-    deployment. That has now happened twice. An unrecognised argument must stop
-    the run rather than be treated as consent to publish.
-    """
-    if not argv:
-        return True
-    if argv == ["--verify-only"]:
-        return True
-    if argv == ["--help"] or argv == ["-h"]:
-        print(USAGE, end="")
-        return False
-    print(USAGE, end="")
-    print(f"\nunrecognised argument: {' '.join(argv)}\nnothing was published.")
-    return False
+def parse_arguments(argv: list[str]) -> argparse.Namespace:
+    """Parse a fail-closed deployment command without loading configuration."""
+    parser = argument_parser()
+    known_flags = {
+        "-h",
+        "--help",
+        "--publish",
+        "--verify-only",
+        "--preserve-existing",
+        "--stage-php-entry",
+    }
+    if any(argument not in known_flags for argument in argv):
+        parser.error("unsupported argument")
+    if len(argv) != len(set(argv)):
+        parser.error("arguments may not be repeated")
+    if ("-h" in argv or "--help" in argv) and len(argv) != 1:
+        parser.error("--help must be used alone")
+    arguments = parser.parse_args(argv)
+    if not arguments.publish and (arguments.preserve_existing or arguments.stage_php_entry):
+        parser.error("--preserve-existing and --stage-php-entry require --publish")
+    return arguments
 
 
 def main() -> int:
-    if not parse_arguments(sys.argv[1:]):
-        return 0
+    arguments = parse_arguments(sys.argv[1:])
     stage = "configuration"
     ftp: ftplib.FTP | None = None
     try:
@@ -466,13 +790,20 @@ def main() -> int:
             raise ValueError("missing required deploy field")
         if config["DEPLOY_PROTOCOL"].strip().lower() != "ftp":
             raise ValueError("configured protocol is not FTP")
-        port = int(config["DEPLOY_PORT"])
+        try:
+            port = int(config["DEPLOY_PORT"])
+        except (TypeError, ValueError):
+            raise ValueError("configured FTP port is invalid") from None
         if port != 21:
             raise ValueError("configured FTP port is not 21")
         if not (BUILD / "index.html").is_file():
             raise FileNotFoundError("production build is missing")
-        if not (BUILD / "api" / DIAGNOSTIC_RECIPIENT_CONFIG).is_file():
+        static_build_files()
+        if not DIAGNOSTIC_RECIPIENT_SOURCE.is_file():
             raise FileNotFoundError("local diagnostic recipient configuration is missing")
+        recipient_config = DIAGNOSTIC_RECIPIENT_SOURCE.read_bytes()
+        if not all(marker in recipient_config for marker in DIAGNOSTIC_RECIPIENT_CONFIG_MARKERS):
+            raise ValueError("local diagnostic recipient configuration is invalid")
 
         stage = "network"
         ftp = ftplib.FTP()
@@ -491,7 +822,7 @@ def main() -> int:
         stage = "read_only_identity"
         obsolete_root_assets = verify_remote_root(ftp)
         print("read_only_identity=PASS root_and_legacy_targets_verified")
-        if "--verify-only" in sys.argv[1:]:
+        if arguments.verify_only:
             remote_count = len(safe_names(ftp))
             ftp.quit()
             ftp = None
@@ -500,38 +831,56 @@ def main() -> int:
             return 0
 
         stage = "upload"
-        stage_php_entry = "--stage-php-entry" in sys.argv[1:]
-        preserve_existing = "--preserve-existing" in sys.argv[1:]
-        files = sorted(
-            (
-                path
-                for path in BUILD.rglob("*")
-                if path.is_file() and (stage_php_entry or path.name != STATIC_ROOT_ENTRY)
-            ),
-            key=lambda path: path.as_posix(),
-        )
+        stage_php_entry = arguments.stage_php_entry
+        preserve_existing = arguments.preserve_existing
+        php_entry = dynamic_root_payload()
+        if stage_php_entry:
+            verify_staged_dynamic_root(ftp, php_entry)
+            remote_count = len(safe_names(ftp))
+            ftp.quit()
+            ftp = None
+            print(f"upload=PASS files=1 bytes={len(php_entry)}")
+            print("dynamic_root=PASS staged=true static_entry_removed=false")
+            print("legacy_cleanup=SKIPPED staged_php_entry=true")
+            print(f"remote_listing=PASS entries={remote_count}")
+            print("remote_writes=STAGED_PHP_ENTRY_ONLY_REMOVED")
+            return 0
+
+        files = static_upload_files()
         uploaded_bytes = 0
         for local_file in files:
             relative = local_file.relative_to(BUILD)
             for part in relative.parts[:-1]:
                 enter_or_create(ftp, part)
-            with local_file.open("rb") as handle:
+            with open_static_build_file(local_file) as handle:
+                local_size = os.fstat(handle.fileno()).st_size
                 ftp.storbinary(f"STOR {relative.name}", handle, blocksize=65536)
             for _ in relative.parts[:-1]:
                 ftp.cwd("..")
-            uploaded_bytes += local_file.stat().st_size
+            uploaded_bytes += local_size
 
-        php_entry = dynamic_root_payload()
-        ftp.storbinary(f"STOR {DYNAMIC_ROOT_ENTRY}", io.BytesIO(php_entry), blocksize=65536)
-        uploaded_bytes += len(php_entry)
-        if sha256_bytes(remote_bytes(ftp, DYNAMIC_ROOT_ENTRY)) != sha256_bytes(php_entry):
-            raise ValueError("dynamic root upload mismatch")
-
-        ftp.cwd("audio")
+        enter_or_create(ftp, "api")
         try:
-            verify_remote_static_tree(ftp, BUILD / "audio", tree_name="audio")
+            ftp.storbinary(
+                f"STOR {DIAGNOSTIC_RECIPIENT_CONFIG}",
+                io.BytesIO(recipient_config),
+                blocksize=65536,
+            )
+            if sha256_bytes(remote_bytes(ftp, DIAGNOSTIC_RECIPIENT_CONFIG)) != sha256_bytes(
+                recipient_config
+            ):
+                raise ValueError("diagnostic recipient upload mismatch")
         finally:
             ftp.cwd("..")
+        uploaded_bytes += len(recipient_config)
+
+        verify_completed_upload(ftp, recipient_config)
+
+        # The canonical entry is deliberately the final content operation. The
+        # candidate is uploaded and verified under a non-executable name, then a
+        # same-directory FTP rename replaces the live file as one server action.
+        install_dynamic_root(ftp, php_entry)
+        uploaded_bytes += len(php_entry)
 
         switched_entry = False
         if not stage_php_entry and not preserve_existing and STATIC_ROOT_ENTRY in safe_names(ftp):
@@ -546,7 +895,7 @@ def main() -> int:
         remote_count = len(safe_names(ftp))
         ftp.quit()
         ftp = None
-        print(f"upload=PASS files={len(files) + 1} bytes={uploaded_bytes}")
+        print(f"upload=PASS files={len(files) + 2} bytes={uploaded_bytes}")
         print(f"dynamic_root=PASS staged={str(stage_php_entry).lower()} static_entry_removed={str(switched_entry).lower()}")
         if preserve_existing:
             print("legacy_cleanup=SKIPPED preserve_existing=true")
