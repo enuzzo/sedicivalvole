@@ -35,6 +35,16 @@ export function pinchAtlasZoom(zoom, previousDistance, nextDistance) {
   );
 }
 
+export function wheelAtlasZoom(zoom, deltaY, deltaMode = 0) {
+  const deltaUnit = Number(deltaMode) === 1 ? 16 : Number(deltaMode) === 2 ? 240 : 1;
+  const normalizedDelta = clamp(Number(deltaY) * deltaUnit, -240, 240);
+  return clamp(
+    Number(zoom) - normalizedDelta * 0.005,
+    ATLAS_MANUAL_CAMERA_LIMITS.minimumZoom,
+    ATLAS_MANUAL_CAMERA_LIMITS.maximumZoom,
+  );
+}
+
 export function atlasManualCameraShouldReturn(lastInteractionAt, now) {
   return Number.isFinite(lastInteractionAt)
     && Number(now) - lastInteractionAt >= ATLAS_MANUAL_IDLE_MS;

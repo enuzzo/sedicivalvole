@@ -380,6 +380,10 @@ button { -webkit-tap-highlight-color: transparent; }
 
 .experience { opacity: 0; visibility: hidden; transition: opacity 460ms ease, visibility 460ms; }
 .phase-running .experience { opacity: 1; visibility: visible; }
+.app[data-environment="atlas"] .experience { z-index: 8; pointer-events: none; }
+.app[data-environment="atlas"].controls-awake .experience .control-layer,
+.app[data-environment="atlas"] .experience .gps-help-popover,
+.app[data-environment="atlas"] .experience .source-readout { pointer-events: auto; }
 .control-layer {
   transition:
     opacity 480ms ease,
@@ -1335,6 +1339,7 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
   font-size: 8px;
   font-weight: var(--font-weight-label);
   letter-spacing: .12em;
+  pointer-events: none;
 }
 .atlas-heading {
   position: absolute;
@@ -1347,6 +1352,7 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
   font-size: 8px;
   font-weight: var(--font-weight-label);
   letter-spacing: .08em;
+  pointer-events: none;
 }
 .atlas-panel {
   position: absolute;

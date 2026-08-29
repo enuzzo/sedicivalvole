@@ -21,6 +21,7 @@ import {
   speedToAtlasCamera,
   speedToAtlasEffectCamera,
   validAtlasPosition,
+  wheelAtlasZoom,
   wikipediaNearbyUrl,
 } from "../src/environments/atlas/atlas-model.js";
 import { FLUX_THEMES } from "../src/flux-themes.js";
@@ -146,7 +147,7 @@ test("Atlas passenger reading and QR remain legible at the Tesla viewport", () =
   assert.match(atlasSource, /pages\.slice\(0, visiblePlaceCount\)/);
 });
 
-test("Atlas grants touch exploration for six seconds, then returns to fresh automatic camera", () => {
+test("Atlas grants touch and desktop exploration for six seconds, then returns to fresh automatic camera", () => {
   assert.equal(atlasManualCameraShouldReturn(1000, 1000 + ATLAS_MANUAL_IDLE_MS - 1), false);
   assert.equal(atlasManualCameraShouldReturn(1000, 1000 + ATLAS_MANUAL_IDLE_MS), true);
   const moved = manualAtlasCamera({ bearing: 350, pitch: 60, zoom: 16 }, 50, 40);
@@ -155,9 +156,20 @@ test("Atlas grants touch exploration for six seconds, then returns to fresh auto
   assert.ok(pinchAtlasZoom(16, 100, 160) > 16);
   assert.ok(pinchAtlasZoom(16, 100, 40) < 16);
   assert.ok(pinchAtlasZoom(20, 100, 1000) <= 20.5);
+  assert.ok(wheelAtlasZoom(16, -120) > 16);
+  assert.ok(wheelAtlasZoom(16, 120) < 16);
+  assert.equal(wheelAtlasZoom(20, -1000), 20.5);
+  assert.ok(wheelAtlasZoom(16, -3, 1) > 16, "line-mode mouse wheels should zoom in");
   assert.match(atlasSource, /canvas\.style\.touchAction = "none"/);
+  assert.match(atlasSource, /event\.pointerType === "mouse" && event\.button !== 0/);
+  assert.match(atlasSource, /event\.pointerType === "mouse" && \(event\.buttons & 1\) === 0/);
   assert.match(atlasSource, /manual\.pointers\.size === 1/);
   assert.match(atlasSource, /pinchAtlasZoom\(map\.getZoom\(\)/);
+  assert.match(atlasSource, /map\.scrollZoom\.disable\(\)/);
+  assert.match(atlasSource, /canvas\.addEventListener\("wheel", wheelManual, \{ passive: false \}\)/);
+  assert.match(atlasSource, /wheelAtlasZoom\(map\.getZoom\(\), event\.deltaY, event\.deltaMode\)/);
+  assert.match(styles, /\.app\[data-environment="atlas"\] \.experience \{ z-index: 8; pointer-events: none; \}/);
+  assert.match(styles, /\.app\[data-environment="atlas"\]\.controls-awake \.experience \.control-layer,[\s\S]*?pointer-events: auto;/);
   assert.match(atlasSource, /atlasManualCameraShouldReturn\(manual\.lastInteractionAt, now\)/);
   assert.match(atlasSource, /center: \[point\.longitude, point\.latitude\][\s\S]*?pitch: nextCamera\.pitch[\s\S]*?zoom: nextCamera\.zoom/);
 });

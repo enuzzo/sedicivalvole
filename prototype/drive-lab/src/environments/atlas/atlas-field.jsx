@@ -16,6 +16,7 @@ import {
   pinchAtlasZoom,
   speedToAtlasEffectCamera,
   validAtlasPosition,
+  wheelAtlasZoom,
   wikipediaNearbyUrl,
 } from "./atlas-model.js";
 import {
@@ -212,6 +213,7 @@ export default function AtlasField({
           map.dragPan.disable();
           map.dragRotate.disable();
           map.touchZoomRotate.disable();
+          map.scrollZoom.disable();
           map.doubleClickZoom.disable();
           onRenderer("WebGL2 · OpenFreeMap");
         } catch (error) {
@@ -226,11 +228,13 @@ export default function AtlasField({
 
       const canvas = map.getCanvas();
       canvas.style.touchAction = "none";
+      canvas.style.cursor = "grab";
       const pointerDistance = () => {
         const [first, second] = [...manual.pointers.values()];
         return first && second ? Math.hypot(second.x - first.x, second.y - first.y) : null;
       };
       const beginManual = (event) => {
+        if (event.pointerType === "mouse" && event.button !== 0) return;
         event.preventDefault();
         try {
           canvas.setPointerCapture?.(event.pointerId);
@@ -243,10 +247,17 @@ export default function AtlasField({
         manual.lastInteractionAt = performance.now();
         manual.returningUntil = 0;
         map.stop();
+        if (event.pointerType === "mouse") canvas.style.cursor = "grabbing";
       };
       const moveManual = (event) => {
         const previous = manual.pointers.get(event.pointerId);
         if (!previous) return;
+        if (event.pointerType === "mouse" && (event.buttons & 1) === 0) {
+          manual.pointers.delete(event.pointerId);
+          manual.previousPinchDistance = null;
+          canvas.style.cursor = "grab";
+          return;
+        }
         event.preventDefault();
         manual.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
         if (manual.pointers.size === 1) {
@@ -264,19 +275,33 @@ export default function AtlasField({
         manual.lastInteractionAt = performance.now();
       };
       const endManual = (event) => {
+        if (!manual.pointers.has(event.pointerId)) return;
         manual.pointers.delete(event.pointerId);
         manual.previousPinchDistance = manual.pointers.size >= 2 ? pointerDistance() : null;
         manual.lastInteractionAt = performance.now();
+        if (event.pointerType === "mouse") canvas.style.cursor = "grab";
+      };
+      const wheelManual = (event) => {
+        if (!mapReady) return;
+        event.preventDefault();
+        manual.lastInteractionAt = performance.now();
+        manual.returningUntil = 0;
+        map.stop();
+        map.jumpTo({ zoom: wheelAtlasZoom(map.getZoom(), event.deltaY, event.deltaMode) });
       };
       canvas.addEventListener("pointerdown", beginManual, { passive: false });
       canvas.addEventListener("pointermove", moveManual, { passive: false });
       canvas.addEventListener("pointerup", endManual);
       canvas.addEventListener("pointercancel", endManual);
+      canvas.addEventListener("lostpointercapture", endManual);
+      canvas.addEventListener("wheel", wheelManual, { passive: false });
       interactionCleanup = () => {
         canvas.removeEventListener("pointerdown", beginManual);
         canvas.removeEventListener("pointermove", moveManual);
         canvas.removeEventListener("pointerup", endManual);
         canvas.removeEventListener("pointercancel", endManual);
+        canvas.removeEventListener("lostpointercapture", endManual);
+        canvas.removeEventListener("wheel", wheelManual);
       };
       map.on("error", (event) => {
         const error = event?.error instanceof Error ? event.error : new Error("Atlas map runtime error");
@@ -347,7 +372,8 @@ export default function AtlasField({
           }
           travelPointsRef.current = appendAtlasTravelPoint(travelPointsRef.current, point);
           map.getSource("atlasTravel")?.setData(atlasTravelFeature(travelPointsRef.current));
-          if (manual.lastInteractionAt != null && !atlasManualCameraShouldReturn(manual.lastInteractionAt, now)) {
+          if (manual.pointers.size > 0
+            || (manual.lastInteractionAt != null && !atlasManualCameraShouldReturn(manual.lastInteractionAt, now))) {
             return;
           }
           if (manual.returningUntil > now) return;
@@ -521,7 +547,7 @@ export default function AtlasField({
       >
         {String(displayCamera?.heading ?? Math.round(effectivePosition.heading ?? 0)).padStart(3, "0")}°
       </div>
-      {demo ? <div className="atlas-demo-hint">DRIVE · BRAKE · STEER · DRAG · PINCH</div> : null}
+      {demo ? <div className="atlas-demo-hint">DRAG: ROTATE / TILT · WHEEL / PINCH: ZOOM</div> : null}
       <button
         className="atlas-panel-toggle"
         type="button"
