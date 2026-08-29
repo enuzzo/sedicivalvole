@@ -8,6 +8,46 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Low-speed life and runtime-resilience publication — 2026-08-29
+
+- build stamp: **`20260829-1536`**; deployed commit: `5685de3`;
+  implementation checkpoints: `892de32`, `39396c8`, `77da446`, `82fd3bf`,
+  `f3f5e82` and `330c503`;
+- gate before upload: **PASS**. All 274 unit checks, all nine Sites packaging
+  checks and the 116-module production build passed from the deployed commit;
+  the lockfile audit reports zero known vulnerabilities, and the locally
+  rebuilt Rollup, esbuild and fsevents dependencies are native or universal for
+  Apple silicon rather than machine-specific Dropbox copies;
+- silent product QA: **PASS within the technical contract**. Exact muted Browser
+  checks at `773 x 601`, `601 x 390` and `390 x 844` covered FRACTURE PARK,
+  DEPART/CREEP, JUNCTION at displayed `20` and `21 km/h`, responsive controls,
+  WebGL2 APERTURE and the six-slot decoded/source-held audio-memory bound. The
+  sustained visual pass measured approximately 60 FPS with a `17.6 ms` p95 and
+  zero runtime issues; audio was not played during this publication pass;
+- audio evidence: **PASS offline, listening gate open**. FRACTURE measures
+  `-15.9 LUFS` with PARK near `-46.6 dB RMS`; the reproducible JUNCTION brake
+  analyzer passes all 24 complete performances with maximum metric drift
+  `0.000002`. The 5,812,361-byte `SVJCTN04` bank is byte-identical at SHA-256
+  `0662ec081d7999c7dd365162d72abc63022d773037f175aac9199a7775fe69b5`;
+- publication: **PASS**, 30 files / 8,368,023 bytes uploaded to the canonical
+  root. Dynamic-root and exact legacy-cleanup gates passed, two prior
+  content-addressed assets were retained for cache overlap, and the repeated
+  post-publication identity gate passed with `remote_writes=NONE`;
+- canonical identity: **PASS**. Bare and cache-busted HTML return `200` with
+  `no-store` / `no-cache`, cache `MISS` and byte identity to the local entry.
+  HTML, `index-D3x2tYVw.js`, `index-z6NZMeRC.css` and
+  `score-processor-BjpRDiNh.js` match the local build at SHA-256
+  `1548ce734bb8d602b79d8a76d7b0337cd0e8327d775e10a91803291b9c208928`,
+  `050048ccf6bc672ec90a599a001ce7af053020ce270c98f7b7106d0a5e5bb7c3`,
+  `413f1dfad8514f1d94d7e0bac8321820b36e20dc16f7d9005fe607a630bd1646`
+  and `c56178d2d56ff743662f19ba45bc97f7cd5ef433addd56b4de0438b33c4ef9ed`;
+- live publication QA: **PASS for identity, presentation and cache behavior**.
+  The visible canonical splash reports version `0.0.0`, build
+  `20260829-1536` and commit `5685de3`, exposes the expected support, credits
+  and local-privacy copy, and logs no Browser warning or error. The launch
+  control was deliberately not activated, so this verification introduced no
+  background audio. Low-volume listening and real-Tesla acceptance remain open.
+
 ## BLOOM and JUNCTION-analysis publication — 2026-08-29
 
 - build stamp: **`20260829-0200`**; deployed commit: `4ea0bd1`;
