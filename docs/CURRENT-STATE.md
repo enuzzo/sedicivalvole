@@ -223,6 +223,13 @@ dated study documents.
 - No sample pack file is committed or published. JUNCTION ships only the mixed,
   processed production permitted by the source terms. The development QA
   harness is excluded from production builds.
+- The requested third 1980s score is not implemented. A tracked-file audit at
+  `158eaf7` finds only the production `junction.svb` audio bank and no WAV,
+  AIFF, FLAC, MP3, Ogg or M4A source material. The only described WAV library
+  is inside the protected ignored reference tree, which this work is expressly
+  forbidden to inspect or copy. Authorship and sample classification therefore
+  require an approved source location outside that boundary; no musical facts
+  have been inferred from filenames or from the existing mixed bank.
 - Diagnostic telemetry contains no coordinates and is sent only after the
   explicit `SEND DIAGNOSTIC` action. ATLAS location is a separate ephemeral
   feature: the latest reliable point stays in session memory; OpenFreeMap tile
@@ -230,23 +237,28 @@ dated study documents.
 
 ## Open work
 
-1. Validate Aperture's `0–40 km/h` rigid wall retreat, OPEN's level
-   compensation, the no-lead FRACTURE and
-   single-performance JUNCTION arrangements, the selected-concept Meridian
-   rebuild and the ATLAS flight camera in the Tesla.
-2. Send the new real-drive gzip attachment and compare the dedicated wall-retreat
-   phase plus JUNCTION section/take exposure counters against the first complete report.
-3. PLUMB was rejected after its exact-viewport local prototype and is retired.
-   SLIP and WAKE remain unselected, unimplemented proposals and must not be
-   built without a new explicit product decision. The current WAKE screenshot
-   and licensed-source research are advisory only. Design Engine only after
-   exactly three Engine-specific directions are shown and one is selected.
-4. Replace the failed magnitude-residual decision with a three-way evidence
+1. Validate WAKE's velvet drape, longitudinal road flow, speed-dependent
+   crossing and knots in the Tesla. Validate ATLAS multitouch, live GPS
+   recovery, map matching, pulse direction, passenger readability and palette
+   contrast on the target screen.
+2. Perform low-volume listening and a real-Tesla drive across FRACTURE's full
+   ascent/descent and boundary reversals, JUNCTION's long PARK holds and later
+   transition, and the OPEN/BLOOM gain changes. Automated visual, structural and
+   loudness evidence is not perceptual acceptance.
+3. Provide the authorized third-track WAV sources through an approved path
+   outside the protected reference tree. Only then classify the real material
+   and author, test and listen to the requested 1980s adaptive score.
+4. Deploy the verified local checkpoints when a publication path is available
+   that does not violate the prohibition on reading `.env`. The canonical live
+   product is still commit `5685de3`, version `0.0.0`, build `20260829-1536`.
+5. Replace the failed magnitude-residual decision with a three-way evidence
    stack. Validate shared ADSR/filter envelopes, phase seeds, detune, chorus,
    spectral slope and saturation; add stereo and phase-coherence evidence with
    explicit invalidity reasons before any detected pitch set can gate JUNCTION
    material.
-5. Keep `VERSION` at `0.0.0` until an explicit release is approved.
+6. Design Engine only after exactly three Engine-specific directions are shown
+   and one is selected. Keep `VERSION` at `0.0.0` until an explicit release is
+   approved.
 
 ## Documentation map
 
@@ -255,7 +267,7 @@ dated study documents.
 | Current | this page, `README.md`, `PRODUCT-SPEC.md`, `TECHNICAL-DIRECTION.md`, `ROADMAP.md`, `MODES.md`, `SESSION-HANDOFF.md` | Must describe the current repository and verified product state |
 | Evidence | `DEPLOY.md`, `DIAGNOSTICS.md`, `AUDIO-QA-2026-08-28.md`, `CHANGELOG.md` | Append-only chronology; older failures remain true historical evidence |
 | Knowledge | `MUSIC-CRAFT.md`, licensing and reference studies | Durable technique, provenance, and decision records |
-| Selection record | `FLUX-VISUAL-DIRECTIONS-2026-08-29.md` | PLUMB rejected and retired; SLIP and WAKE retained as unselected proposal-only alternatives |
+| Selection record | `FLUX-VISUAL-DIRECTIONS-2026-08-29.md` | PLUMB rejected and retired; WAKE selected and implemented; SLIP remains proposal-only |
 | Historical | `RECOVERED-REQUIREMENTS-2026-08-26.md`, `ADVERSARIAL-REVIEW.md`, `SOURCE-AUDIT.md`, dated work plans | Preserve the reasoning and rejected baselines; do not treat their “current” wording as current product state |
 
 `SESSION_HANDOFF.md` is a retained legacy filename and points to the canonical

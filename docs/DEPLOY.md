@@ -8,6 +8,29 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Pending local checkpoint and unchanged live identity — 2026-08-29 17:38
+
+- The WAKE road-flow, acceleration/effect, FRACTURE, JUNCTION PARK, DIAG and
+  ATLAS checkpoints through `158eaf7` are local and pushed, but **not deployed**.
+  No build stamp is assigned here because this is not publication evidence.
+- A read-only canonical request returns `200` from the live root with
+  `no-store`, `no-cache`, `must-revalidate`, `max-age=0` and `pragma: no-cache`.
+  Bare and cache-busted HTML are byte-identical at SHA-256
+  `1548ce734bb8d602b79d8a76d7b0337cd0e8327d775e10a91803291b9c208928`.
+  The entry still references `index-D3x2tYVw.js` and `index-z6NZMeRC.css`;
+  the 369,461-byte JavaScript asset is `050048ccf6bc672ec90a599a001ce7af053020ce270c98f7b7106d0a5e5bb7c3`
+  and embeds version `0.0.0`, commit `5685de3`, build `20260829-1536`.
+- Publication is blocked by the current confidentiality boundary, not by a
+  claimed upload. `scripts/deploy_drive_lab_ftp.py` unconditionally calls
+  `parse_env(ROOT / ".env")` before either `--verify-only` or `--publish` can
+  connect. This task expressly forbids reading `.env`, so the script was not
+  invoked and no remote write occurred. A compliant deploy requires either a
+  deployer whose no-write and publish paths receive credentials without reading
+  that file, or an explicit change to the current authorization boundary.
+- The canonical response proves the current server header is `nginx`; this is
+  observed evidence for this request only and is not treated as a hosting
+  configuration assumption.
+
 ## Low-speed life and runtime-resilience publication — 2026-08-29
 
 - build stamp: **`20260829-1536`**; deployed commit: `5685de3`;

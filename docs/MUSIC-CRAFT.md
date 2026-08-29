@@ -1174,6 +1174,15 @@ gap, but it still does not turn encoded metrics into a Tesla listening verdict.
 
 ## 7. Sources and material
 
+The third-score availability audit at tracked checkpoint `158eaf7` found no
+source WAV, AIFF, FLAC, MP3, Ogg or M4A files. The only tracked audio artifact is
+the already mixed and encoded `prototype/drive-lab/public/audio/junction.svb`.
+The source library described below remains in the protected ignored reference
+tree and was not opened, listed, copied or classified during this work. A real
+1980s score audit must begin from an explicitly approved source location outside
+that boundary; metadata compatibility in the existing production bank cannot
+stand in for hearing and classifying the authorized source recordings.
+
 - `_references/audio/samples/` — MusicRadar SampleRadar packs. Royalty-free to
   use in music. See `THIRD_PARTY_NOTICES.md` for the terms and what follows from
   them.
