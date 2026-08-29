@@ -5,6 +5,8 @@
 // no bass and no percussion. FRACTURE voice-leads that field slowly; JUNCTION
 // may hold its authored safety-bed harmony. Neither establishes a tactus.
 
+import { FRACTURE_RHYTHM_RELEASE_KMH } from "./score/fracture-rhythm.js";
+
 // Keep the displayed 20 km/h state inside the restrained sub-100-BPM layer.
 // Native material may enter only once the vehicle has moved beyond it.
 export const NATIVE_GROOVE_SPEED_KMH = 21;
@@ -121,12 +123,15 @@ export function advanceDepartureGate(state, speedKmh, deltaSeconds) {
   return 0;
 }
 
-/** FRACTURE reports the audible tactus, including half-time native scenes. */
-export function perceivedFractureBpm(speedKmh, transportBpm, nativeHalfTime = false) {
-  const policy = lowSpeedPolicy(speedKmh);
+/** FRACTURE reports the audible tactus, including its staged rhythm ladder. */
+export function perceivedFractureBpm(speedKmh, transportBpm, fullTimeRhythm = false) {
+  const speed = Math.max(0, Number(speedKmh) || 0);
+  const policy = lowSpeedPolicy(speed);
   if (policy.id === "park" || policy.id === "depart") return null;
   const transport = Math.max(0, Number(transportBpm) || 0);
-  return policy.id === "native" && !nativeHalfTime ? transport : transport * 0.5;
+  return fullTimeRhythm && speed >= FRACTURE_RHYTHM_RELEASE_KMH.native
+    ? transport
+    : transport * 0.5;
 }
 
 /**

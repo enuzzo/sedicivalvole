@@ -355,10 +355,14 @@ test("FRACTURE PARK recovers its authored level after a high-energy drive", () =
   assert.equal(core.snapshot().bass, false);
 });
 
-test("the full FRACTURE reference preserves its loudness target and true-peak margin", () => {
+test("the full FRACTURE reference preserves its loudness target and true-peak margin", (context) => {
   const { left, right } = renderReferenceDrive();
   const loudness = integratedLoudness(left, right);
   const truePeakDb = 20 * Math.log10(truePeak(left, right));
+
+  context.diagnostic(
+    `FRACTURE trajectory: ${loudness.toFixed(3)} LUFS, ${truePeakDb.toFixed(3)} dBTP`,
+  );
 
   assert.ok(loudness >= -16.8, `full reference fell below its working level (${loudness.toFixed(1)} LUFS)`);
   assert.ok(loudness <= -15.2, `full reference became over-limited (${loudness.toFixed(1)} LUFS)`);

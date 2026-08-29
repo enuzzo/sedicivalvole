@@ -49,6 +49,15 @@ import { SynthVoice } from "./dsp/synth-voice.js";
 import { bassInterval, harmonyForBar, SCORE, sectionAt } from "./jungle-score.js";
 import { createFractureParkAmbience } from "./park-ambience.js";
 import {
+  commitFractureRhythmAtBar,
+  createFractureRhythmState,
+  fractureLowRhythmEvent,
+  fractureRhythmPatternIndex,
+  fractureRhythmProfile,
+  isFractureFullTime,
+  observeFractureRhythm,
+} from "./fracture-rhythm.js";
+import {
   advanceDepartureGate,
   createDepartureGate,
   lowSpeedPolicy,
@@ -70,7 +79,7 @@ const RESTING_MASTER_GAIN = 0.552;
  * so the master applies restrained density compensation while leaving PARK's
  * absolute level unchanged.
  */
-const MOVING_MASTER_GAIN = 0.35;
+const MOVING_MASTER_GAIN = 0.368;
 
 /** FRACTURE-specific sample ceiling, with margin for inter-sample peaks. */
 const LIMITER_CEILING = 0.64;
@@ -148,6 +157,20 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
     openHat: new OpenHiHatVoice(sampleRate),
     clap: new ClapVoice(sampleRate),
   };
+  const lowDrums = {
+    kick: new KickVoice(sampleRate),
+    ghost: new SnareVoice(sampleRate),
+    hat: new ClosedHiHatVoice(sampleRate),
+    clap: new ClapVoice(sampleRate),
+  };
+  const lowDrumLevel = { kick: 0, ghost: 0, hat: 0, clap: 0 };
+  const lowKit = {
+    kick: { ...score.kit.kick, tune: 0.34, snap: 0.22, decay: 0.25, drive: 0.08 },
+    ghost: { ...score.kit.ghost, tune: 0.38, snap: 0.2, decay: 0.12, filter: 0.62 },
+    hat: { ...score.kit.closedHat, tune: 0.48, snap: 0.26, decay: 0.1, filter: 0.7 },
+    clap: { ...score.kit.clap, tune: 0.34, snap: 0.25, decay: 0.14, filter: 0.58 },
+  };
+  const fractureRhythm = createFractureRhythmState();
 
   const synths = {};
   const synthSettings = {};
@@ -340,6 +363,7 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
       }
       delay.setTime("eighthDotted", applied.tempo, crossfadeSamples);
     }
+    if (event.isBarStart) commitFractureRhythmAtBar(fractureRhythm);
 
     // A fill announces a coming climb, so it plays in the bar before the phrase
     // that introduces the new scene rather than after the fact.
@@ -406,11 +430,23 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
     // 2. Half-time reading: the transport keeps its tempo, the score takes only
     //    the strong placements and doubles its note lengths. This is how a
     //    standstill sounds slow without the clock being slow.
-    const halfTime = currentLowSpeedPolicy.id === "native" ? scene.halfTime : true;
+    const fastRhythmGateOpen = isFractureFullTime(fractureRhythm);
+    const fullTimeRhythm = fastRhythmGateOpen && !scene.halfTime;
+    const halfTime = !fullTimeRhythm;
     const lengthScale = halfTime ? 2 : 1;
     const rhythmicStep = halfTime && patternStep % 2 !== 0 ? null : patternStep;
-    const allowBeat = currentLowSpeedPolicy.id === "native" || currentLowSpeedPolicy.id === "roll";
-    const allowFullBeat = currentLowSpeedPolicy.id === "native";
+    const allowBeat = fullTimeRhythm;
+    const allowFullBeat = fullTimeRhythm;
+
+    const lowProfile = fractureRhythmProfile(fractureRhythm);
+    const lowProfileId = lowProfile.id === "native" ? "weave" : lowProfile.id;
+    const lowRhythmEvent = currentLowSpeedPolicy.beat && !fullTimeRhythm
+      ? fractureLowRhythmEvent(lowProfileId, event.globalStep)
+      : null;
+    if (lowRhythmEvent) {
+      lowDrums[lowRhythmEvent.voice].trigger(lowKit[lowRhythmEvent.voice]);
+      lowDrumLevel[lowRhythmEvent.voice] = lowRhythmEvent.level * 1.25;
+    }
 
     // 3. Percussion.
     if (rhythmicStep !== null) {
@@ -575,6 +611,7 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
         departureNextStep = stepsElapsed + 1;
       }
       observeSpeed(arranger, speedKmh, deltaSeconds);
+      observeFractureRhythm(fractureRhythm, speedKmh);
       currentLowSpeedPolicy = lowSpeedPolicy(speedKmh);
       parkAmbience.setActive(currentLowSpeedPolicy.id === "park");
       if (previousLowSpeedPolicy.id === "native" && currentLowSpeedPolicy.id !== "native") {
@@ -627,10 +664,14 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
         const hatSample = drums.closedHat.tick() * levelOf("closedHat");
         const openSample = drums.openHat.tick() * levelOf("openHat");
         const clapSample = drums.clap.tick() * 0.7 * clapLevel;
+        const lowKickSample = lowDrums.kick.tick() * lowDrumLevel.kick;
+        const lowGhostSample = lowDrums.ghost.tick() * lowDrumLevel.ghost;
+        const lowHatSample = lowDrums.hat.tick() * lowDrumLevel.hat;
+        const lowClapSample = lowDrums.clap.tick() * lowDrumLevel.clap;
 
         // The saturator runs on the centred backbeat only. Driving the placed
         // material through it would fold the field back to the middle.
-        const drumCentre = drumSaturator.tick(kickSample + snareSample);
+        const drumCentre = drumSaturator.tick(kickSample + snareSample + lowKickSample);
         let percussionLeft = drumCentre;
         let percussionRight = drumCentre;
         const placed = [
@@ -639,6 +680,9 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
           [hatSample, PAN.closedHat],
           [openSample, PAN.openHat],
           [clapSample, PAN.clap],
+          [lowGhostSample, PAN.ghost],
+          [lowHatSample, PAN.closedHat],
+          [lowClapSample, PAN.clap],
         ];
         for (let index = 0; index < placed.length; index += 1) {
           const [sample, pan] = placed[index];
@@ -648,7 +692,7 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
 
         // 2. Bass, ducked by the kick. The duck is what makes the low end
         //    breathe with the beat instead of masking it.
-        sidechain.tick(kickSample);
+        sidechain.tick(kickSample + lowKickSample);
         const duck = sidechain.duckGain(controls.duckDepth);
         const subSample = synths.sub.tick(synthSettings.sub) * levelOf("sub");
         // The reese is high-passed above the sub's own octave: the two share a
@@ -720,8 +764,18 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
     /** Current musical state, for diagnostics and tests. */
     snapshot() {
       const park = parkAmbience.state();
+      const rhythmProfile = fractureRhythmProfile(fractureRhythm);
+      const scene = SCENES[arranger.scene];
+      const fullTimeRhythm = isFractureFullTime(fractureRhythm) && !scene.halfTime;
+      const reportedRhythmProfile = rhythmProfile.id === "native" && !fullTimeRhythm
+        ? { id: "weave", label: "RHYTHM WEAVE" }
+        : rhythmProfile;
       return {
-        ...arrangementSnapshot(arranger),
+        ...arrangementSnapshot(arranger, {
+          fullTime: fullTimeRhythm,
+          profileId: reportedRhythmProfile.id,
+          label: reportedRhythmProfile.label,
+        }),
         scoreId: score.id,
         scoreLabel: score.label,
         section: sectionAt(sectionIndex).name,
@@ -735,6 +789,9 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
         stepsElapsed,
         structuralEvents,
         fillBar,
+        rhythmPattern: fullTimeRhythm
+          ? null
+          : fractureRhythmPatternIndex(lastEvent?.globalStep ?? 0),
         parkVoicing: park.voicing,
         parkVoicingChanges: park.changes,
       };

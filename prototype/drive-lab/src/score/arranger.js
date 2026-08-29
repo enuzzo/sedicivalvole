@@ -434,7 +434,7 @@ export function commitAtBoundary(state, boundary) {
 }
 
 /** Everything a renderer or a test needs to describe the current arrangement. */
-export function arrangementSnapshot(state) {
+export function arrangementSnapshot(state, rhythm = {}) {
   // Arrangement energy remains smoothed, but the motion lane is the audible
   // policy the renderer applies to the latest observation. Using smoothed speed
   // here made the UI claim ROLL while the renderer had already opened DRIVE.
@@ -442,25 +442,43 @@ export function arrangementSnapshot(state) {
   const lowSpeed = lowSpeedPolicy(policySpeed);
   const arrangedLanes = LANES.filter((lane) => state.laneGoals[lane.id] > 0)
     .map((lane) => lane.id);
+  const hasRhythmOverride = Object.prototype.hasOwnProperty.call(rhythm, "fullTime");
+  const fullTimeRhythm = hasRhythmOverride
+    ? rhythm.fullTime === true
+    : lowSpeed.id === "native" && !SCENES[state.scene].halfTime;
+  const rhythmProfile = rhythm.profileId ?? (lowSpeed.id === "native" ? "native" : lowSpeed.id);
+  const stagedNativeLanes = arrangedLanes.filter((lane) => [
+    "atmosphere", "sub", "reese",
+  ].includes(lane));
   const activeLanes = lowSpeed.id === "native"
-    ? arrangedLanes
+    ? fullTimeRhythm
+      ? arrangedLanes
+      : [...stagedNativeLanes, `rhythm:${rhythmProfile}`]
     : lowSpeed.id === "roll"
-      ? arrangedLanes.filter((lane) => ["atmosphere", "kick", "closedHat"].includes(lane))
+      ? [
+          ...arrangedLanes.filter((lane) => lane === "atmosphere"),
+          `rhythm:${rhythmProfile}`,
+        ]
       : arrangedLanes.filter((lane) => lane === "atmosphere");
-  const halfTime = lowSpeed.id === "native" ? SCENES[state.scene].halfTime : true;
-  const beat = activeLanes.some((lane) => [
+  const halfTime = !fullTimeRhythm;
+  const beat = activeLanes.some((lane) => lane.startsWith("rhythm:") || [
     "kick", "closedHat", "snare", "breakDetail", "openHat",
   ].includes(lane));
   const bass = activeLanes.some((lane) => lane === "sub" || lane === "reese");
   return {
     scene: state.scene,
-    sceneId: lowSpeed.id === "native" ? SCENES[state.scene].id : lowSpeed.id,
+    sceneId: fullTimeRhythm
+      ? SCENES[state.scene].id
+      : lowSpeed.id === "native" ? "roll" : lowSpeed.id,
     lowSpeedState: lowSpeed.id,
     halfTime,
     tempo: state.committedTempo,
-    perceivedTempo: perceivedFractureBpm(policySpeed, state.committedTempo, halfTime),
+    perceivedTempo: perceivedFractureBpm(policySpeed, state.committedTempo, fullTimeRhythm),
     transportTempo: state.committedTempo,
-    motionLane: lowSpeed.id === "native" ? "DRIVE" : lowSpeed.label,
+    motionLane: fullTimeRhythm
+      ? "DRIVE"
+      : lowSpeed.id === "native" ? "ROLL" : lowSpeed.label,
+    rhythmLabel: rhythm.label ?? (fullTimeRhythm ? "full break" : rhythmProfile),
     beat,
     bass,
     decelerationState: state.decelerationState,

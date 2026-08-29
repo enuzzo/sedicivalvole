@@ -116,19 +116,25 @@ test("FRACTURE reports listener tactus separately from its private transport", (
   assert.equal(perceivedFractureBpm(19.9, 176), 88);
   assert.equal(perceivedFractureBpm(20, 172, true), 86);
   assert.equal(perceivedFractureBpm(20, 172, false), 86);
-  assert.equal(perceivedFractureBpm(NATIVE_GROOVE_SPEED_KMH, 172, false), 172);
+  assert.equal(perceivedFractureBpm(87.9, 176, true), 176);
+  assert.equal(perceivedFractureBpm(81.9, 176, true), 88);
+  assert.equal(perceivedFractureBpm(88, 176, false), 88);
 });
 
 test("FRACTURE never reports an inaudible native beat, bass or double-time tactus", () => {
   const state = createArrangerState();
   state.observedSpeedKmh = NATIVE_GROOVE_SPEED_KMH;
   state.committedTempo = 162;
-  const sparseNative = arrangementSnapshot(state);
-  assert.equal(sparseNative.sceneId, "rest");
+  const sparseNative = arrangementSnapshot(state, {
+    fullTime: false,
+    profileId: "silk",
+    label: "SILK PULSE",
+  });
+  assert.equal(sparseNative.sceneId, "roll");
   assert.equal(sparseNative.perceivedTempo, 81);
-  assert.equal(sparseNative.beat, false);
+  assert.equal(sparseNative.beat, true);
   assert.equal(sparseNative.bass, false);
-  assert.deepEqual(sparseNative.activeLanes, ["atmosphere"]);
+  assert.deepEqual(sparseNative.activeLanes, ["atmosphere", "rhythm:silk"]);
 
   state.scene = 2;
   state.laneGoals.sub = 1;
@@ -136,7 +142,12 @@ test("FRACTURE never reports an inaudible native beat, bass or double-time tactu
   state.laneGoals.closedHat = 1;
   state.laneGoals.snare = 1;
   state.laneGoals.reese = 1;
-  const breakScene = arrangementSnapshot(state);
+  state.observedSpeedKmh = 90;
+  const breakScene = arrangementSnapshot(state, {
+    fullTime: true,
+    profileId: "native",
+    label: "FULL BREAK",
+  });
   assert.equal(breakScene.sceneId, "break");
   assert.equal(breakScene.perceivedTempo, 162);
   assert.equal(breakScene.beat, true);
@@ -517,7 +528,19 @@ test("FRACTURE renders evolving PARK harmony, then the quiet two-chord low-speed
   assert.equal(exactThresholdCore.snapshot().motionLane, "ROLL");
   assert.ok(exactThresholdCore.snapshot().perceivedTempo <= 100);
   exactThresholdCore.observe(NATIVE_GROOVE_SPEED_KMH, 0.04);
-  assert.equal(exactThresholdCore.snapshot().motionLane, "DRIVE");
+  assert.equal(exactThresholdCore.snapshot().motionLane, "ROLL");
+  assert.ok(exactThresholdCore.snapshot().perceivedTempo <= 100);
+
+  const fastCore = createScoreCore({ sampleRate });
+  const belowFast = render(fastCore, 87.9, 8);
+  assert.equal(belowFast.snapshot.motionLane, "ROLL");
+  assert.equal(belowFast.snapshot.halfTime, true);
+  assert.ok(belowFast.snapshot.perceivedTempo <= 100);
+  const full = render(fastCore, 100, 10);
+  assert.equal(full.snapshot.motionLane, "DRIVE");
+  assert.equal(full.snapshot.rhythmLabel, "FULL BREAK");
+  assert.equal(full.snapshot.halfTime, false);
+  assert.ok(full.snapshot.perceivedTempo >= 160);
 });
 
 test("a stale speed interval clears acceleration instead of refreshing it", () => {
