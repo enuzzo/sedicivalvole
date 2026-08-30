@@ -72,10 +72,19 @@ private messages or credentials never enter the repository.
   preference, reversible movement, fresh-target replacement, displaced-entry
   release evidence, and recovery refill without replacing the audible current
   item. Exhaustion never changes mode.
+- `src/soundtrack/media-deck-controller.js` maps those three metadata identities
+  onto at most three direct-source browser media elements. Synchronization only
+  prepares with native `preload=auto`; explicit play owns activation, late play
+  promises cannot revive an old role, and displaced/changed elements lose their
+  listeners and source before release. Its readiness/buffer snapshots are
+  browser observations, never an offline guarantee.
 - `tests/soundtrack-rotation.test.mjs` covers expiry, deduplication, three-role
   identity, broad rotation, back/forward, removal, exhaustion and recovery.
+- `tests/soundtrack-media-deck.test.mjs` covers direct-source preparation,
+  readiness, observed buffered time, explicit play/pause, deck reuse, source
+  replacement, stale events/promises, media failure and complete teardown.
 - These modules are not imported by the production application yet. Proxy
-  fetching, any approved persistent metadata layer, three transient browser
-  media elements, native `preload=auto`, UI, playback, attribution and canonical
-  deployment remain later checkpoints. The current `preparedMetadataSlots`
-  summary is not an audio-buffer or offline-duration claim.
+  fetching, any approved persistent metadata layer, App/audio-bus connection,
+  the approved 450 ms skip crossfade, UI, attribution and canonical deployment
+  remain later checkpoints. The current `preparedMetadataSlots` summary is not
+  an audio-buffer or offline-duration claim.

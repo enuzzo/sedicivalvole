@@ -334,8 +334,13 @@ dated study documents.
   session-memory metadata snapshots and rotates immutable
   previous/current/next roles with bounded track/artist memory, fresh-target
   validation, explicit displacement, refill after recovery and no automatic
-  mode fallback. It does not fetch, persist, preload or play audio, and reports
-  metadata depth rather than fictional offline minutes. See
+  mode fallback. A detached controller can now map the roles to three
+  direct-source browser media elements, reuse them through rotation, prepare
+  with native `preload=auto`, require explicit play, ignore stale play/events,
+  observe rather than promise browser buffering, and destructively release a
+  displaced source. Neither layer is imported by the production player; there
+  is no proxy fetch, persistent audio, live playback or fictional offline
+  duration. See
   [`SOUNDTRACK-SOURCE-POLICY.md`](SOUNDTRACK-SOURCE-POLICY.md).
 - `docs/MUSIC-CRAFT.md` records the musical defects and techniques already
   learned. Assertable musical rules belong in tests.

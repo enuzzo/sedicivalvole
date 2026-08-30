@@ -169,8 +169,14 @@ possible, validates a queued target against the newest fresh snapshot, reports
 displaced entries for later media disposal, and refills missing roles after
 recovery without replacing the audible current item. It explicitly reports
 metadata-slot depth, not browser-buffer bytes or offline duration, and never
-changes back to PLAY THE ROAD when exhausted. Network proxy, metadata persistence
-policy, native media elements and playback remain later boundaries.
+changes back to PLAY THE ROAD when exhausted. A detached controller now maps the
+three roles onto at most three direct-source media elements, prepares only with
+native `preload=auto`, requires explicit activation, rejects stale play/event
+completion, reuses retained roles, and removes listeners and `src` before a
+displaced element is released. Its readiness and buffered-time values are
+observations, never availability promises. Network proxy, metadata persistence,
+production App/audio-bus connection, the 450 ms skip transition and visible
+credit/playback controls remain later boundaries.
 
 JUNCTION is a 192-bar rendered production: eight adaptive energy states each
 have three complete takes, giving 24 clips from 76 distinct recordings in one

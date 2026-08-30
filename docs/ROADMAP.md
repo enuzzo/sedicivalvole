@@ -83,7 +83,11 @@ Completed in the current working line:
 - SOUNDTRACK's disconnected state foundation now admits only complete policy-gated
   metadata into a short-lived session snapshot and models previous/current/next
   rotation, recent-track/artist avoidance, stale/removed-target refusal and
-  recovery refill. It does not yet fetch, persist, preload or play recordings.
+  recovery refill. A detached three-element controller prepares only direct
+  stream URLs through browser-native `preload=auto`, requires explicit play,
+  rejects stale completion and releases displaced sources completely. It is not
+  connected to the production App/audio bus and adds no proxy, persistent audio,
+  offline guarantee, skip crossfade or visible playback/credit surface yet.
 
 Queued next:
 
