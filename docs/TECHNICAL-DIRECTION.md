@@ -182,15 +182,14 @@ completion by requested identity plus revision. A fail-closed attribution view
 then derives primary and secondary credit from the sampled audible gains, keeps
 all three identities during a rapid retarget, strips stream URLs, preserves the
 licence/provider/direct-link obligations, and refuses playback eligibility when
-any audible identity lacks complete credit. The admitted Jamendo record also
-retains only official `musicinfo.speed` and normalized genre tags for discovery.
-A detached selector maps AUTO across five provisional equal ranges of the fixed
-130 km/h ceiling with 3 km/h hysteresis, preserves an explicit MANUAL band until
-AUTO is restored, applies no pace when speed is unavailable, and filters exact
-source metadata only. Its catalogue view can replace future slots without
-changing the audible current item. Network proxy, metadata persistence,
+any audible identity lacks complete credit. The admitted Jamendo record retains
+normalized genre tags for manual discovery but no driving-pace field. A separate
+playback boundary fixes every recording at authored `1×`, prevents driving from
+selecting or retiming it, and divides processing into two explicit families:
+the manually enabled OPEN/UNDERWATER/BLOOM vehicle-reactive path and four manual
+flanger/reverb/chorus/beat-repeat controls. Network proxy, metadata persistence,
 production App/audio-bus MediaElementSource/gain routing, queue commit and
-visible library/pace/credit/QR/playback controls remain later boundaries.
+visible library/effects/credit/QR/playback controls remain later boundaries.
 
 JUNCTION is a 192-bar rendered production: eight adaptive energy states each
 have three complete takes, giving 24 clips from 76 distinct recordings in one

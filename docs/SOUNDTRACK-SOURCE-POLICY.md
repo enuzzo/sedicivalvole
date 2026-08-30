@@ -60,8 +60,8 @@ private messages or credentials never enter the repository.
 
 - `src/soundtrack/source-policy.js` owns licence parsing, Jamendo item
   normalization, direct-grant admission, and the effects gate. Its optional
-  discovery fields accept only the five official `musicinfo.speed` values and
-  normalized `musicinfo.tags.genres`; they never bypass the licence gate.
+  discovery fields retain normalized `musicinfo.tags.genres`; driving pace is
+  deliberately absent and metadata never bypasses the licence gate.
 - `tests/soundtrack-source-policy.test.mjs` covers unknown licences,
   NoDerivatives exclusion, Creative Commons obligations, Jamendo URL/credit
   validation, download-field removal, and explicit direct-grant decisions.
@@ -90,11 +90,12 @@ private messages or credentials never enter the repository.
   obligations, licence and direct content/QR destination. It follows every
   genuinely audible identity, never exposes a stream URL, and fails playback
   closed when any audible deck lacks complete admitted credit.
-- `src/soundtrack/selection-model.js` owns the detached next-track discovery
-  state. AUTO provisionally maps the shared 130 km/h ceiling into five equal
-  ranges with 3 km/h hysteresis; MANUAL remains selected until explicit restore.
-  Missing speed applies no pace filter, exact source pace never widens silently,
-  genre `any`/`all` behavior is explicit, and current playback is immutable.
+- `src/soundtrack/playback-boundary.js` makes the owner clarification
+  executable: fixed recordings remain at authored `1×` playback, and driving
+  cannot select or retime them. A manually operated footer master may enable
+  the existing OPEN/UNDERWATER/BLOOM vehicle-reactive effects, independently of
+  four normalized manual controls for flanger, reverb, chorus, and beat repeat.
+  The same source capability gate applies to both effects paths.
 - `tests/soundtrack-rotation.test.mjs` covers expiry, deduplication, three-role
   identity, broad rotation, back/forward, removal, exhaustion and recovery.
 - `tests/soundtrack-media-deck.test.mjs` covers direct-source preparation,
@@ -106,13 +107,14 @@ private messages or credentials never enter the repository.
 - `tests/soundtrack-attribution-model.test.mjs` covers display-field projection,
   stream removal, dominant/tied credit, three-deck retargeting, missing-credit
   refusal, optional artwork/album fallback and invalid transition evidence.
-- `tests/soundtrack-selection-model.test.mjs` covers five-band mapping,
-  hysteresis, manual/automatic restoration, missing GPS, exact pace plus
-  any/all genre views, honest empty results and future-slot-only queue refill.
+- `tests/soundtrack-playback-boundary.test.mjs` proves authored-rate and
+  track-selection invariants, explicit vehicle-FX enablement, the exact four
+  manual controls, normalized amounts, authorized passenger control, and
+  fail-closed source/control decisions.
 - These modules are not imported by the production application yet. Proxy
   fetching, any approved persistent metadata layer, App/audio-bus connection,
   MediaElementSource/gain routing and queue commit for the modelled 450 ms skip,
-  audible-state connection, visible library/pace/credit/QR UI, target-vehicle
-  threshold tuning and canonical deployment remain later checkpoints. The
+  audible-state connection, visible library/effects/credit/QR UI, target-vehicle
+  tuning and canonical deployment remain later checkpoints. The
   current `preparedMetadataSlots` summary is not an audio-buffer or
   offline-duration claim.
