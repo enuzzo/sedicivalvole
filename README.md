@@ -59,9 +59,10 @@ The canonical development build is available at [sedicivalvole.app](https://sedi
 - ✅ photographed Tesla split-view evidence at `773 × 601`, screen `1254 × 784`, DPR `1.53`;
 - ✅ compact-view v3 diagnostics redesigned as a readable IBM Plex Mono instrument with a health strip, aligned evidence groups, one-scroll raw JSON, and a dedicated telemetry/privacy/provenance/licensing/source README; no coordinates are retained, and the explicit same-origin email handoff attaches the complete report as verified gzip-compressed JSON;
 - ✅ the canonical bare root, direct PHP entry, and content-addressed assets are live and byte-identical after the SiteGround cache flush;
+- ✅ the owner-selected **16 Road** identity ships as dark, light, and genuine-alpha SVG masters, 512/1024 px PNGs, favicon/touch/product icons, and browser icon metadata; its large Orbitron-outline `16` is framed by mirrored vermilion and ivory roads that fill the square canvas;
 - ✅ the first complete Tesla report confirms 60.04 FPS overall, 16.8 ms p95, four slow frames, 33.2 MB peak decoded PCM, and no runtime issue during a 314-second drive;
 - ⏳ Aperture's `0–40 km/h` wall-retreat budget, the simplified FRACTURE/JUNCTION arrangements, the rebuilt Meridian speed corridor, and the ATLAS flight camera still require acceptance in the target Tesla;
-- ⛔ no committed release, PWA/offline cache, final audio pack, or final brand/license package yet.
+- ⛔ no committed release, PWA/offline cache, final audio pack, or final mixed-license package yet.
 
 ## Experience
 

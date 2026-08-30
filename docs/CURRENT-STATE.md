@@ -13,6 +13,13 @@ dated study documents.
 - `Flux` is the implemented primary mode. `Engine` remains an equal confirmed
   mode, visible but disabled until its own audio model and one of exactly three
   Engine-specific visual directions are selected.
+- The selected **16 Road** product mark is implemented as path-only SVG rather
+  than live text: a large Orbitron weight-750 `16` sits between mirrored
+  vermilion and warm-white three-line roads. Dark, warm-light, and true-alpha
+  masters plus 512/1024 px PNGs and favicon/touch/product derivatives live in
+  `logo/`; the current app packages and advertises the browser icons. The mark
+  fills its 512 px canvas to a 15–18 px optical edge. Replacing the existing
+  splash wordmark remains a separate owner-visible decision.
 - The source checkout's Flux catalog contains six visual environments:
   **APERTURE 01**, **VERTIGO 02**, **MERIDIAN 03**, **ATLAS 04**, **DRIVEY 05**,
   and the human-approved and canonically published **PRTCL 06**. Aperture

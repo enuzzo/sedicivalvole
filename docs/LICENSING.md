@@ -62,6 +62,18 @@ retains its custom notice and bundled licences, and reserved audio/media remain
 outside the software grant. This avoids both false revocation claims and a
 blanket noncommercial assertion over rights enuzzo does not own.
 
+## 2026-08-30 — selected 16 Road identity remains reserved brand material
+
+The owner-selected 16 Road logo and every derivative in `logo/` are original
+reserved brand assets outside the PolyForm software/documentation grant. No
+trademark licence is granted by their source visibility. The numeral uses
+vector outlines derived from the locally packaged Orbitron variable font at
+weight 750; Orbitron remains governed by SIL Open Font License 1.1 and is
+credited in `THIRD_PARTY_NOTICES.md`. Converting the two glyphs to outlines
+removes a runtime font dependency but does not erase the font's licence or
+credit. Browser favicon, touch-icon, and product-icon copies share the same
+reserved-brand scope.
+
 ## 2026-08-30 — SOUNDTRACK admission fails closed by capability
 
 The first SOUNDTRACK source-policy module separates permission to appear in the

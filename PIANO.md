@@ -1037,14 +1037,15 @@ The owner assigned stable IDs on 2026-08-30: `A5 DISCOVER`, `X9 Visual Library`,
 - `X11`: verify a weather provider and privacy/attribution boundary, then
   prototype only the contextual
   exception-led value beyond Tesla's own forecast and precipitation overlay.
-- `X12`: create a production identity kit only after the mandatory
-  exactly-three-direction visual gate. Each direction must remain legible at
-  favicon scale and explore a restrained `16` monogram with the product's
-  official typeface, black-field dual-band colour language, genuine-alpha and
-  light-background counterparts. The selected direction ships as clean SVG
-  masters plus at least 512 x 512 PNG product icons in a dedicated `logo/`
-  folder, and may then replace the splash mark. Keep the feeling vintage,
-  minimal and forceful; avoid ornamental detail that collapses at small sizes.
+- `X12`: selected and implemented as **16 Road** after the mandatory three-
+  direction gate. A large Orbitron weight-750 outline sits between two mirrored
+  three-line roads, with the road field reaching a 15–18 px optical canvas edge.
+  `logo/` contains path-only dark, warm-light, and genuine-alpha SVG masters;
+  512/1024 px PNGs; 16/32/48/180/192/512 px icons; and a multi-size favicon.
+  Browser favicon, Apple touch, and 192/512 product derivatives are packaged and
+  advertised. Two focused checks assert the 512 viewBox, outlined text,
+  symmetry, alpha color type, and packaged metadata. Replacing the existing
+  splash wordmark remains a separate owner-visible composition decision.
 - `SF1`: present exactly three directions before implementation: planar perceptual mesh,
   displaced depth, and restrained aurora/flow. Start with the project-owned
   one-pass direct-WebGL2 planar spike. Admit no ShaderGradient source/dependency

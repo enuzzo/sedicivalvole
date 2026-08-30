@@ -36,7 +36,7 @@ the public repository would not withdraw rights already received under AGPL.
 The PolyForm grant does not cover the following unless a specific file states
 otherwise:
 
-- the `sedicivalvole` name, future logo, marks, and brand assets;
+- the `sedicivalvole` name, logo, marks, and brand assets;
 - product screenshots and marketing media;
 - original audio recordings, samples, stems, sound packs, and encoded scores;
 - standalone original visual, image, video, or media assets.

@@ -60,6 +60,14 @@ Exactly three revised Product Design directions were shown after the luminous-ax
 
 Framed controls, cards, panels, and standalone buttons use one restrained `6 px` corner radius rather than completely sharp corners. This is a system token, not a per-component styling choice. The speed readout occupies an exact header-grid cell with the same divider stroke while the chrome is awake; when the header retires, the readout remains fixed in place and gains only the exposed lower corner treatment so it reads as a detached module rather than an unrelated overlay.
 
+The selected product identity is **16 Road**: a large path-outlined Orbitron
+weight-750 `16` framed by mirrored three-line roads using the Signal Gate's
+vermilion and warm-white language. It must remain readable from favicon to
+1024 px presentation scale, fill a square canvas without clipping, and retain
+dark, warm-light, and genuine-alpha masters. Browser icon adoption is approved;
+replacing the existing textual splash hierarchy requires a separate visible
+composition review rather than an automatic asset swap.
+
 Modular Aperture is calm and flat at rest. Zero speed uses a complete Swiss mosaic of large square modules, distributed evenly across four tones from the active palette, with no missing cells, black gaps, or central void. That intact mosaic is a rigid end wall: it recedes without deforming from `0–40 km/h`, progressively revealing the existing centered perspective tunnel behind it, then disappears at its terminus. Deceleration reverses the same wall travel so the complete grid returns without a flash. Above `40 km/h`, the approved tunnel, palette, perspective, flow and high-velocity radial compression continue unchanged. Ten curated palettes change both the visual character and interface accent without exposing low-level shader controls. See [`RECOVERED-REQUIREMENTS-2026-08-26.md`](RECOVERED-REQUIREMENTS-2026-08-26.md).
 
 After the later REGISTER rejection, exactly three new directions — PLUMB, SLIP
