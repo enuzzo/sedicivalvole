@@ -8,6 +8,27 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Instrument Deck section-label spacing — 2026-08-30 21:32
+
+- build stamp: **`20260830-2128`**; deployed source commit: `18aed57`;
+  implementation checkpoint: `3d38b9c`;
+- visual change: **PASS**. Both Instrument Deck fieldsets now use `16 px` top
+  padding while retaining `11 px` on the other edges, giving aligned `MUSIC`
+  and `VISUAL` labels more air without changing card dimensions;
+- verification gate: **PASS**. All 19 focused splash/launcher checks, all 9
+  Sites checks, the 130-module production build, and annotated in-app Browser
+  QA at `1297 × 933` pass. Exact live `773 × 601` QA confirms both computed
+  top paddings, zero document overflow, complete launcher content, and no
+  console warning or error;
+- publication boundary: **PASS**. Read-only preflight, 99-file /
+  16,321,766-byte guarded publication, and read-only postflight pass, with
+  `remote_writes=NONE` after publication;
+- canonical HTTP identity: **PASS**. Cache-busted HTML returns `200`, 1,095
+  bytes, explicit `no-store` / `no-cache`, `nosniff`, and proxy `MISS`. Live
+  HTML and CSS are byte-identical to the verified build at SHA-256
+  `9f36131acf2e7cbb64308ed0ad5ffffe6fd78153e789f16145ecf86d89680a6a`
+  and `642200d975c169012cdc7161c467e1ad9f40eee73f94cef728786bdda7a18864`.
+
 ## Space Grotesk and persistent palette accent — 2026-08-30 21:21
 
 - build stamp: **`20260830-2117`**; deployed source commit: `55d72c4`;
