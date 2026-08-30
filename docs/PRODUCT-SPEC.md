@@ -265,6 +265,7 @@ acceptance in the vehicle.
 | ATLAS OpenFreeMap flight | implemented prototype | ephemeral GPS or explicit Milan demo; nearby Wikipedia and QR; a bounded high-cadence position feed plus point interpolation, rendered-tile road-name extraction and English cardinal-sector models exist, while visible point/badge/compass wiring remains gated; Tesla network/memory acceptance pending |
 | LIGHT/DARK/AUTO interface appearance | model foundation | independent versioned preference/reset, safe storage failure, browser-scheme priority, offline solar phase, twilight/interaction hold; visible control, DARK tokens and product application remain gated |
 | Network activity notice | model foundation | raw REPORT state separates browser hints from instrumented app activity/failure/recovery and active download/upload direction; quiet navbar presentation remains gated |
+| SOUNDTRACK fixed recordings | model foundation | fail-closed source admission plus short-lived session metadata and previous/current/next rotation; proxy, persistent metadata decision, browser media, playback, credit UI and production connection remain pending |
 | WAV-to-parameter editor | future research | source lab not validated on real audio |
 | Trip postcard | not confirmed | privacy conflict requires review |
 

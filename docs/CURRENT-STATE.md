@@ -330,7 +330,12 @@ dated study documents.
   `allow`/`deny`/`unknown` capabilities. Known non-ND Creative Commons records
   preserve their obligations; ND and unknown records are excluded. Jamendo
   normalization requires complete credit and source-owned URLs and discards all
-  download fields. See
+  download fields. A second pure foundation now creates only short-lived
+  session-memory metadata snapshots and rotates immutable
+  previous/current/next roles with bounded track/artist memory, fresh-target
+  validation, explicit displacement, refill after recovery and no automatic
+  mode fallback. It does not fetch, persist, preload or play audio, and reports
+  metadata depth rather than fictional offline minutes. See
   [`SOUNDTRACK-SOURCE-POLICY.md`](SOUNDTRACK-SOURCE-POLICY.md).
 - `docs/MUSIC-CRAFT.md` records the musical defects and techniques already
   learned. Assertable musical rules belong in tests.

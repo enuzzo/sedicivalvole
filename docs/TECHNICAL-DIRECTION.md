@@ -159,6 +159,19 @@ from interpretation and arrangement rather than playback-rate escalation.
 
 The music registry separates `ready` from `preparing`. FRACTURE and JUNCTION are
 ready; the remaining five directions are truthful disabled roadmap entries.
+SOUNDTRACK's fixed-recording path remains disconnected from production, but its
+first state boundary is implemented. An already-admitted source policy may enter
+a bounded session-memory metadata snapshot only when it retains a complete HTTPS
+stream/backlink, provider credit and licence reference. Expired snapshots expose
+zero activatable entries. A separate immutable previous/current/next model keeps
+bounded recent track/artist identity, prefers a different recent artist when
+possible, validates a queued target against the newest fresh snapshot, reports
+displaced entries for later media disposal, and refills missing roles after
+recovery without replacing the audible current item. It explicitly reports
+metadata-slot depth, not browser-buffer bytes or offline duration, and never
+changes back to PLAY THE ROAD when exhausted. Network proxy, metadata persistence
+policy, native media elements and playback remain later boundaries.
+
 JUNCTION is a 192-bar rendered production: eight adaptive energy states each
 have three complete takes, giving 24 clips from 76 distinct recordings in one
 5.8 MB segmented Opus resource. Every clip uses one stable

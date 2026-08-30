@@ -1,7 +1,7 @@
 # SOUNDTRACK Source Policy
 
-Status: **implemented admission foundation; no network catalogue or player is
-connected yet**. Updated on 2026-08-30.
+Status: **implemented admission and transient metadata-rotation foundations; no
+network catalogue or player is connected yet**. Updated on 2026-08-31.
 
 This policy turns source and licence evidence into fail-closed runtime
 capabilities. It is an engineering gate, not a substitute for legal review.
@@ -63,6 +63,19 @@ private messages or credentials never enter the repository.
 - `tests/soundtrack-source-policy.test.mjs` covers unknown licences,
   NoDerivatives exclusion, Creative Commons obligations, Jamendo URL/credit
   validation, download-field removal, and explicit direct-grant decisions.
-- The module is not imported by the production application yet. Catalogue
-  fetching, short-lived metadata, three transient media slots, UI, playback,
-  and canonical deployment remain later checkpoints.
+- `src/soundtrack/catalog-store.js` accepts only already-admitted items with
+  complete stream, backlink, provider-credit and licence evidence; deduplicates
+  them; and exposes a bounded session-memory metadata snapshot that fails closed
+  after its TTL. No stale entry is returned for activation.
+- `src/soundtrack/rotation-model.js` owns immutable previous/current/next
+  metadata roles, bounded recent track/artist memory, different-artist
+  preference, reversible movement, fresh-target replacement, displaced-entry
+  release evidence, and recovery refill without replacing the audible current
+  item. Exhaustion never changes mode.
+- `tests/soundtrack-rotation.test.mjs` covers expiry, deduplication, three-role
+  identity, broad rotation, back/forward, removal, exhaustion and recovery.
+- These modules are not imported by the production application yet. Proxy
+  fetching, any approved persistent metadata layer, three transient browser
+  media elements, native `preload=auto`, UI, playback, attribution and canonical
+  deployment remain later checkpoints. The current `preparedMetadataSlots`
+  summary is not an audio-buffer or offline-duration claim.

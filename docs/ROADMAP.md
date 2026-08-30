@@ -80,6 +80,10 @@ Completed in the current working line:
 
 - JUNCTION's 24-clip browser runtime uses one 5.8 MB segmented Opus music bank built from 76 distinct recordings. Its eight energy states each own three interchangeable complete performances under one fixed E-minor harmonic grammar. Only one tonal performance plays at a time, changes stay on complete eight-bar boundaries, recent memory prevents an immediate repeat, 40 km/h remains at 127 BPM, 60 km/h remains at 135 BPM, and rest has no break or bassline;
 - the bank contains a mixed, processed production rather than loose source samples; browser-delivered bytes remain downloadable and are not described as secret;
+- SOUNDTRACK's disconnected state foundation now admits only complete policy-gated
+  metadata into a short-lived session snapshot and models previous/current/next
+  rotation, recent-track/artist avoidance, stale/removed-target refusal and
+  recovery refill. It does not yet fetch, persist, preload or play recordings.
 
 Queued next:
 
