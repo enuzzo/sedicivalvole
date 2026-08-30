@@ -307,6 +307,7 @@ question unless this review explicitly identifies a conflict.
 | Replace the growing flat Visual list with grouped, direct-selection buttons. | X2 plus a new owner-assigned Visual Library entry | Keep one tap from the open library to selection. Present all groups together rather than hiding visuals behind nested category pages; validate button density, active state, focus order and real current-build imagery in exactly three directions at `773 × 601`. |
 | Add `LIGHT`, `DARK`, and location-aware `AUTO` appearance modes. | X1/X2 plus a new owner-assigned Appearance entry | Theme shared chrome, dialogs and reading surfaces without recolouring the active visual or its selected palette. Match the current official Tesla Model 3 Light illustration as a measured reference, then verify on the target vehicle. Manual modes persist; AUTO first follows the browser colour-scheme signal if Tesla exposes its native Appearance setting, otherwise it falls back to session-only solar context without storing coordinates. |
 | Restore local weather to the queue, but avoid duplicating the Tesla forecast. | DISCOVER, M13, plus a new owner-assigned Conditions entry | Defer a generic forecast panel. Explore a quiet, exception-led road-context card: significant precipitation onset, temperature change, gusts or poor visibility, plus weather-aware DISCOVER suggestions. Retain an optional 6/12-hour and tomorrow detail view outside primary driving chrome. |
+| Study ShaderGradient as the basis for another speed-responsive visual. | T1, L1–L3, X2, plus a new owner-assigned Shader Field entry | Preserve the reference's deformed-mesh, three-colour, lighting and camera grammar in a project-authored direct-WebGL2 spike. Do not admit the package/source before an exact MIT/dependency notice review. Drive bounded time, deformation and macro envelopes from T1; profile one-pass pixel-density-1 rendering on Tesla; present exactly three visual directions before implementation. |
 | SoundCloud says tracks are downloadable. | M3, M8, M11 | Platform download availability is recorded separately from the owner's direct permission and from public playback/hosting provenance. |
 | README must document every source, including VERTIGO/Tympanus and visual references. | M7, M11 | README, NOTICE, licence scope, source-admission record and third-party notices are reconciled from one audited inventory. |
 | Local MP3s from a subsequently retired source were offered for audition. | M5/M5b/M5c | Superseded by the owner's later decision to remove that source. `_references/` remains untracked and the files are not inspected, auditioned, copied, admitted, or used. |
@@ -432,6 +433,40 @@ for coordinates without requiring a client secret. It remains only a candidate
 until current non-commercial terms, attribution, availability, model semantics,
 request limits and coarse-coordinate behavior pass the same dated source-admission
 review used elsewhere in this plan.
+
+### Shader-driven field reference proposal — 2026-08-30
+
+The live ShaderGradient customizer and official source confirm that the effect is
+a real-time 3D mesh system, not a rendered video or CSS gradient. A plane,
+sphere, or water surface is displaced by time-varying coherent noise in the
+vertex shader; the fragment shader mixes three colours from displaced position
+and passes them through physical lighting/reflection; camera/object controls
+frame the surface; optional visible grain adds a separate halftone post-process.
+The full preset is serializable as React props or URL parameters.
+
+The upstream repository and package declare MIT, but the current implementation
+brings React Three Fiber, Three.js and related scene dependencies. The product
+already has a direct-WebGL2 visual lifecycle, renderer diagnostics, context-loss
+handling, and Tesla-specific fallbacks. **⭐ Preferred path:** keep the source as
+a dated mechanics reference and first build an original one-pass WebGL2 spike;
+admit the component only if a measured comparison proves that its appearance or
+maintenance value outweighs bundle/GPU/runtime complexity. No upstream code,
+package, shader, preset, environment map, or asset is admitted by this plan.
+
+The proposed view belongs in `FIELD / ABSTRACT` and consumes T1 rather than raw
+GPS: sustained road energy drives bounded time rate and moderate deformation;
+positive acceleration produces a brief bright/seam impulse; deceleration releases
+asymmetrically without reversing or snapping; OPEN, UNDERWATER, and BLOOM use the
+shared timestamped envelopes. Baseline rendering uses pixel density `1`, one
+pass, restrained project-authored lighting, no HDR environment map, and no grain
+post-pass. LAB owns later endpoint tuning and adaptive-quality evidence.
+
+Implementation is blocked on a new owner-assigned stable ID and exactly three
+owner-visible directions at `773 × 601`. The gate must compare visual identity,
+rest state, 0/40/100/130 km/h response, all three macros, reduced motion,
+non-WebGL fallback, one-pass versus optional grain, and measured Tesla frame
+cost. The complete research and source-admission boundary are recorded in
+`docs/REFERENCE-STUDY-SHADERGRADIENT.md`.
 
 ### Real-Tesla diagnostic evidence — 2026-08-30
 
@@ -907,6 +942,10 @@ invented IDs:
 - Assign a stable owner ID to deferred CONDITIONS research. Verify a weather
   provider and privacy/attribution boundary, then prototype only the contextual
   exception-led value beyond Tesla's own forecast and precipitation overlay.
+- Assign a stable owner ID to the proposed Shader Field visual, then present
+  exactly three directions before implementation. Start with the project-owned
+  direct-WebGL2 spike and admit ShaderGradient source/dependencies only after a
+  measured Tesla comparison plus exact MIT and transitive-notice review.
 
 ## Coverage audit
 

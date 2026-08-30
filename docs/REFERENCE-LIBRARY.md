@@ -35,3 +35,8 @@ The original top-level file was moved reversibly into the reference library. It 
 
 - `tympanus-infinite-lights`: mechanics-only visual study; see [`REFERENCE-STUDY-INFINITE-LIGHTS.md`](REFERENCE-STUDY-INFINITE-LIGHTS.md).
 - `textStep`: authorized Rust synth/sequencer architecture and implementation source at commit `cb107d198b730db60cff4a87c7fd5b8d1fae3fb2`; see [`REFERENCE-STUDY-TEXTSTEP.md`](REFERENCE-STUDY-TEXTSTEP.md). It remains ignored and no source or preset data has entered the product yet.
+- `ShaderGradient`: browser-and-primary-source study of a configurable Three.js
+  mesh-gradient renderer; see
+  [`REFERENCE-STUDY-SHADERGRADIENT.md`](REFERENCE-STUDY-SHADERGRADIENT.md).
+  No local source copy, package, preset, shader, or asset has entered the
+  reference library or product.
