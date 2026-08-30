@@ -5,7 +5,8 @@ not an implementation record. The external request document
 `sedicivalvole-richieste-riordinate.md` was treated as proposed product intent;
 repository code, tests, licences, and already-recorded decisions were inspected
 independently. External service, API, and licence claims in that document have
-not yet been re-verified against current primary sources.
+not yet been re-verified against current primary sources except where this plan
+records a dated public check explicitly.
 
 ## Questions for the product owner
 
@@ -19,6 +20,10 @@ until its answer is recorded here.
    the archive date, without placing or naming private account files here.**
 
    Answer: ancora no, possiamo scaricarli, meglio usare gli mp3 di magnific o la loro API? tu cosa pensi? se ti va, posso comunque caricarteli per ora, li trovi in _references/audio/tracks - possiamo provarli e non ridistribuirli, senza problemi, come per i wav
+
+   **Superseded by the owner's 2026-08-30 decision:** Magnific is excluded from
+   the current product and authoring path. No login, PDF archive, local audition,
+   API integration, API key, credit spend, or recurring reminder is required.
 
 2. **Coverage count:** The document says 59 content IDs plus 24 Q IDs, but a
    deterministic parse finds **73 bracketed content IDs plus 24 Q IDs = 97**.
@@ -278,6 +283,9 @@ question unless this review explicitly identifies a conflict.
 | Passenger naming | `PATCH` is rejected. `COPLAY`, `TUNE THE ROAD`, and `COPILOT DJ` are candidates, paired with an unmistakable multi-user icon. | S3 remains a naming/design selection, not a missing requirement. Exactly three directions will be presented before product copy changes. |
 | Source structure | Product music is split into `PLAY THE ROAD` (FRACTURE, JUNCTION, NIGHTSHIFT) and `SOUNDTRACK` (fixed recordings browsed by source-supported genre and pace metadata). | M1/M1b/M1c are corrected; NIGHTSHIFT is not nested under JUNCTION and SOUNDTRACK is not speed-remixed. |
 | SOUNDTRACK sources | Jamendo plus owner-authorised Illobo are the initial sources; StreamBeats is permanently rejected; Freesound remains research-only if useful. | Q17/Q18/Q25 resolve. M8 removes StreamBeats and cannot admit material before M11 evidence. |
+| Jamendo readiness | The owner confirms that Jamendo API access is already prepared and selects it as the first SOUNDTRACK integration path. | Begin with a read-only operational/API-rights audit. Keep the credential outside Git, browser code, logs, screenshots, and documentation; only the future server boundary may use it. |
+| Magnific | Excluded from the current product, source catalogue, authoring workflow, local audition, and runtime. | M5/M5b/M5c are closed as deferred, not left as evidence gates. Reopening requires a future explicit owner decision plus fresh model-specific terms and cost review. |
+| Generative API economics | No metered generative API may run per listener, playback, skip, reconnect, or session. | If a future source is approved, generation is an offline authoring action only; the resulting fixed asset still requires explicit public playback, hosting, and distribution rights before admission. |
 | Illobo | The owner attests that all Illobo recordings may be used, processed, hosted as required, and prominently featured. Link/QR points to `https://soundcloud.com/illobo`. | Q9 is owner-resolved. A private written confirmation is still recommended evidence but is not treated as a second permission gate. Downloads still need a per-file provenance inventory. |
 | Public contact | Use the public repository's GitHub Issues route, not a public email address. | M7 is unblocked without exposing identity or email. |
 | Backend and secrets | Abandon claims of client-side protection. Use a separate evidence-selected backend, short-lived delivery authorisation, and public sample configuration only. | Q13/M4/X5 resolve. FTP access alone does not prove WebSocket, process, TLS, or secret-storage capability; M6 must audit the host before choosing a subdomain. |
@@ -298,7 +306,7 @@ question unless this review explicitly identifies a conflict.
 | Effects master sits beside Mute and produces central confirmation. | S4, S5 | Default state, click-free envelope release and large non-blocking confirmation are tested together. |
 | SoundCloud says tracks are downloadable. | M3, M8, M11 | Platform download availability is recorded separately from the owner's direct permission and from public playback/hosting provenance. |
 | README must document every source, including VERTIGO/Tympanus and visual references. | M7, M11 | README, NOTICE, licence scope, source-admission record and third-party notices are reconciled from one audited inventory. |
-| Existing Magnific MP3s may be tried locally but not redistributed. | M5/M5b/M5c | `_references/` remains untracked; local audition is allowed, product admission waits for archived terms and per-track evidence. API versus file delivery is not guessed before that evidence. |
+| Existing Magnific MP3s were offered for local audition. | M5/M5b/M5c | Superseded by the owner's later decision to skip Magnific. `_references/` remains untracked and the files are not inspected, auditioned, copied, admitted, or used. |
 
 ### Real-Tesla diagnostic evidence — 2026-08-30
 
@@ -379,10 +387,18 @@ Primary-source checks used for this review:
 - the repository's operative `LICENSE`, `LICENSE-SCOPE.md`, `NOTICE`,
   `THIRD_PARTY_NOTICES.md`, and `docs/LICENSING.md` for the actual local scope.
 
-No current Magnific terms/API page was independently established from a public
-primary source during this review. The user's private account-history PDFs and
-track records therefore remain the M5/M5c evidence gate rather than being
-reconstructed from search snippets.
+Magnific was rechecked on its public primary pages on 2026-08-30 before being
+excluded. Its [API page](https://www.magnific.com/api) states that API calls draw
+from the subscription's shared credit balance; its
+[pricing page](https://www.magnific.com/pricing) lists credit-based API usage and
+model-specific audio costs; and its
+[AI Product Terms](https://www.magnific.com/legal/terms-of-use#nav-ai-products)
+apply third-party model terms and special music restrictions. The pricing page
+advertises `music rights` only on some tiers, while the ElevenLabs-specific
+terms prohibit sharing generated songs on music-streaming platforms and
+standalone commercial exploitation. These facts do not establish a safe grant
+for sedicivalvole playback. M5/M5b/M5c are therefore closed as deferred and no
+private account evidence or login is requested.
 
 ### Remaining clarifications after evaluation
 
@@ -405,9 +421,9 @@ Only these points still need confirmation before their affected implementation:
    directions; copy source only if the embedded fragment's compatible grant or
    direct permission is archived.
 
-S3's final name, the three UI/flow directions, Magnific evidence, Jamendo API
-setup, and backend host capability are scheduled owner/technical gates rather
-than missing answers now.
+S3's final name, the three UI/flow directions, Jamendo API operational
+validation, and backend host capability are scheduled owner/technical gates
+rather than missing answers now.
 
 
 ## Planning conventions
@@ -478,9 +494,10 @@ than missing answers now.
     are already AGPL. Any client decryption scheme is corresponding source and
     cannot be treated as secret. This reopens the M4 architecture decision.
 15. **The document's licence/API claims are imported context, not current proof.**
-    Magnific terms, Jamendo API behavior/quotas/URLs, Creative Commons treatment,
-    Freesound, StreamBeats, and Strudel statements require fresh primary-source
-    evidence before they become repository facts.
+    Jamendo API behavior/quotas/URLs, Creative Commons treatment, Freesound,
+    StreamBeats, and Strudel statements require fresh primary-source evidence
+    before they become repository facts. Magnific was checked separately and
+    then excluded by owner decision.
 16. **Current test baseline is environment-limited.** DRIVEY (10/10), PRTCL
     (8/8), PRIMORDIAL (8/8), and NIGHTSHIFT (9/9) focused suites pass. The full
     suite has two environment failures: the installed `esbuild` binary is arm64
@@ -502,7 +519,7 @@ than missing answers now.
 | 3 | P1, P2, PF1, PF2, PM1, PA1, PA2, PP1 | These are shared-response consumers and require the LAB to set measured endpoints. | All three PRTCL families and PRIMORDIAL sweep smoothly through 0/40/100/130 and macro attack/release. |
 | 4 | X1, X2; A1, A3, A3b, A4 | Screen zones and overlay grammar precede new ATLAS chrome and onboarding. | Selected three-direction layout passes `773 × 601`; map interaction, GPS states/help, five-second chrome, bounded palettes, point interpolation, road badge, and cardinal compass pass. |
 | 5 | A2, S5, S4 | A2 becomes the first modal consumer; S5 is the shared non-modal feedback system; S4 supplies a universal state action. | Reader themes/type sizing and status feedback work with touch/keyboard; effect disable releases smoothly across all scores/visuals. |
-| 6 | M0, M5, M5b, M5c, M6, M7, M8, M11, Q16/Q17/Q18/Q22 evidence | Vocabulary, permissions, service architecture, and source admission must be true before catalogue code. | Primary-source evidence and private records are archived; public docs contain no secrets and M11 decides every admitted source. |
+| 6 | M0, M6, M7, M8, M11, Q16/Q17/Q18/Q22 evidence | Vocabulary, permissions, service architecture, and source admission must be true before catalogue code. Magnific is out of scope; M5/M5b/M5c require no work. | Primary-source evidence and private grants for admitted sources are archived; public docs contain no secrets and M11 decides every admitted source. |
 | 7 | M1, M1b–M1e, M2, M3, M4, M9, M10 | Build PLAY THE ROAD/SOUNDTRACK only after licences, vocabulary, proxy, cache, and open-source delivery reality are settled. | Seeded/offline metadata, streamed audio, attribution, two-mode selectors, onboarding, skip/shuffle, and cache refresh pass without shipping source audio. |
 | 8 | S1, S3, then S2/S2a–S2j, X7 | Local musical macros precede remote control; the server is designed once for proxy plus relay. | Central display revokes immediately; up to four named phones sync complete state, respect grants, release on disconnect, and survive measured latency. |
 | 9 | PP2 if Q3 is resolved | Faithful reference work cannot start without identity, licence, and a visual gate. | Exactly three reference-grounded directions are shown; selected result passes source/licence and viewport gates. |
@@ -565,7 +582,7 @@ than missing answers now.
 | S4 | Planned under recorded interpretation: universal effects master beside Mute, always present and enabled on every fresh session, with disabled state not persisted; release active macros normally. | `App.jsx`, `audio-engine.js`, fields via active envelope, CSS/tests/diagnostics | 2 | clarification 1 only if interpretation is wrong; T1/S5 | All score paths retain dry music; reload starts enabled; disable/re-enable is click-free and visibly confirmed in the central status layer. | Source capability policy must not be conflated with user master state. |
 | S5 | Expanded: large, brief, shared non-blocking feedback for automatic effects, mute/effects state, mood and later commands. | `App.jsx` status component, CSS, accessibility/timer tests | 1.5 | X1/X2 | Effect name gains clearly larger type/background during its envelope; consistent location, auto-dismiss/release behavior, deterministic replacement, no focus capture. | Feedback can obscure road/ATLAS information at 773×601. |
 | M0 | Planned vocabulary migration: use only SOUNDTRACK/score/source/selection semantics for the music product. | Score registry, App/protocol/server code, docs/tests | 1.5 | M1 architecture | Product-semantic scan passes without renaming unrelated geometric concepts. | Blind global replacements would corrupt Meridian and historical/legal quotations. |
-| M1 | Owner-corrected architecture: two primary music blocks—PLAY THE ROAD containing FRACTURE/JUNCTION/NIGHTSHIFT, and SOUNDTRACK containing fixed recordings browsed by genre and source-supported pace metadata. | `score/genres.js` refactor, App controls, audio engine, protocol/tests/docs | 4 | M0, M5/M6/M8/M9 | Both blocks and all three authored scores remain reachable; only SOUNDTRACK exposes a recording catalog; active mode/source is always explicit. | A second hierarchy can become too deep at 773×601. |
+| M1 | Owner-corrected architecture: two primary music blocks—PLAY THE ROAD containing FRACTURE/JUNCTION/NIGHTSHIFT, and SOUNDTRACK containing fixed recordings browsed by genre and source-supported pace metadata. | `score/genres.js` refactor, App controls, audio engine, protocol/tests/docs | 4 | M0, M6/M8/M9 | Both blocks and all three authored scores remain reachable; only SOUNDTRACK exposes a recording catalog; active mode/source is always explicit. | A second hierarchy can become too deep at 773×601. |
 | M1b | Recorded labels: primary blocks are PLAY THE ROAD and SOUNDTRACK; launch helper copy explains the difference. | Same registry/UI/docs | Included in M1 | X2 onboarding selection | Exact English labels and concise meaning appear consistently without reviving obsolete service terminology. | Product copy can over-explain the launch surface. |
 | M1c | Recorded mapping: PLAY THE ROAD music/effects may adapt to driving; SOUNDTRACK recordings never change tempo/selection mid-track from speed, while separately permitted vehicle/manual effects may process them. | Audio routing, score/source metadata, tests | 1 | M1, S4, X8 | Speed cannot re-time or replace the active SOUNDTRACK item; capability flags gate every effect bus. | Applying effects to ND or source-restricted tracks. |
 | M1d | Planned: use source genre/pace metadata for browsing and next-track selection only, never mid-track switching. | Catalog selector, protocol/state, tests | 1.5 | M9, Q23 | Driving-band changes affect the next choice only; deterministic seeded tests cover all bands. | Source metadata quality and semantics may be inconsistent. |
@@ -573,13 +590,13 @@ than missing answers now.
 | M2 | Expanded: skip, shuffle, title/artist, source-aware attribution, post-splash PLAY THE ROAD/SOUNDTRACK/MUTE choice, and selected one-time control onboarding. | App shared overlay/status, audio controller, CSS/tests | 3.5 | M1, M10, X1/X2, S2i | Controls work at 773×601; attribution stays visible; rapid skip metadata never goes stale; chosen onboarding completes under four seconds and respects reduced motion. | Mandatory attribution and onboarding can overload the launch flow. |
 | M3 | Owner-authorised: prominent Illobo featured selection inside SOUNDTRACK, complete per-file provenance, and QR/link to `https://soundcloud.com/illobo`; private written confirmation recommended. | Catalog seed/source adapter, UI/notices/tests | 1.5 | M11, owner-supplied/approved file inventory | Only owner-authorised works appear; each carries source/licence capability flags; QR/link is tested and featured treatment is explicit. | Platform download status is not a substitute for the direct grant or provenance. |
 | M4 | Owner-approved AGPL-aware delivery: no client-secret/protection claim; protected local sources use server-authorised short-lived segmented delivery, never Git audio, with harmless public sample configuration only. | Server delivery, client Media Source/blob path, `.gitignore`, sample config, docs/tests | 3 | source-specific grants, M6 | No source audio/credential/private host data in Git/static build/logs; expiring authorisation and segmented playback; docs call it delivery control, not protection. | Browser users can always capture decoded audio; network dependence in car. |
-| M5 | Verify before relying: archive current Magnific terms and per-track evidence; local MP3 audition under `_references/` is allowed but product admission/API choice waits for evidence. | Private archive (user), public `docs/LICENSING.md` summary after verification | 0.5 + user action | M5c | Primary terms/date/plan, API/file rights and allowed use are recorded without private documents; no unverified track ships. | Terms drift and legal interpretation. |
-| M5b | Recorded proposed boundary pending verification: Magnific only as audiovisual soundtrack material, never the SOUNDTRACK browsing catalog. | Catalogue capability metadata, docs/tests | 0.5 | M5 | Magnific items cannot appear in genre/mood browsing or phone track selection. | The attached document's legal conclusion is not independent legal advice. |
-| M5c | Persistent user action: download/archive licence PDFs while subscription access exists. | Private storage only; `PIANO.md` reminder state | 0 | Owner confirmation | Explicit owner confirmation with archive date; reminder then removed from session reports. | Evidence becomes unavailable after subscription changes. |
+| M5 | Closed/deferred by owner: Magnific is excluded from product, catalogue, authoring, local audition, and runtime. No API calls, keys, credits, or files are used. | `PIANO.md` decision record only | 0 | Future explicit owner reopening | Repository and runtime contain no Magnific dependency, asset, key, request, or product claim. | A future proposal could accidentally revive the source without rechecking current model-specific terms. |
+| M5b | Closed/superseded: no Magnific audiovisual-only exception is retained. | `PIANO.md` decision record only | 0 | M5 future reopening | Magnific cannot appear in any browsing, selection, playback, effect, or authoring path. | Treating a plan-tier marketing label as a sufficient music grant. |
+| M5c | Closed: the private PDF-download action and persistent reminder are cancelled while Magnific remains excluded. | `PIANO.md` decision record only | 0 | None | No account login or evidence reminder appears in work reports; `_references/` material remains untouched. | None while the source stays excluded. |
 | M6 | Planned source/server strategy: first audit the offered host beyond FTP, then deploy one minimal service for API proxy, catalogue refresh, delivery authorisation, and later relay on a purpose-specific subdomain such as `api.sedicivalvole.app`. | New server project/location after host decision, client adapters, tests/docs | 4 | X7, source verification, host capability evidence | TLS, runtime/process lifecycle, WebSocket, secret storage, logging and deploy/rollback are evidenced; credentials never reach browser/logs; offline catalogue and honest failure pass. | FTP-only hosting may not support a persistent relay or secure secret boundary. |
 | M7 | Owner-resolved contact: add an English music/licensing/removal policy and complete source inventory using the public repository's GitHub Issues route, not public email. | `README.md`, `docs/LICENSING.md`, `NOTICE`, `THIRD_PARTY_NOTICES.md` | 1.5 | M11 evidence | Public GitHub destination works; VERTIGO/Tympanus and every admitted/referenced source reconcile across documents; no private evidence or overclaim. | “Remove on request” does not substitute for permission. |
 | M8 | Narrowed research ledger: re-verify Jamendo, Freesound, FMA and SoundCloud on primary sources; StreamBeats is permanently rejected and absent. | `docs/SOURCE-ADMISSION-*`, `THIRD_PARTY_NOTICES.md` only after admission | 1.5 | Q17/Q18 | Dated source URLs, exact terms/API facts and M11 answers; no unapproved audio downloaded; StreamBeats has no code/UI/outreach. | Platform terms and API access drift. |
-| M9 | Planned Jamendo integration: proxy-populated cache, seed metadata, monthly/manual refresh, stable-URL and ND measurements. | Server adapter, `src/soundtrack/catalog-store.js`, IndexedDB module, seed JSON, tests | 4 | M6, M8, M13, Q16/Q22 | Offline seed boot, versioned cache, stale refresh, 200-item paging, URL-age evidence, no waveform/download URL. | Tesla storage eviction and stream URL expiry. |
+| M9 | Owner-selected first SOUNDTRACK integration: audit the prepared Jamendo API access read-only, then build a proxy-populated cache, seed metadata, monthly/manual refresh, stable-URL and ND measurements. | Server adapter, `src/soundtrack/catalog-store.js`, IndexedDB module, seed JSON, tests | 4 | M6, M8, M13, Q16/Q22 | Credential never reaches Git/browser/logs; offline seed boot, versioned cache, stale refresh, 200-item paging, URL-age evidence, no waveform/download URL. | Tesla storage eviction, stream URL expiry, and accidental client-side credential exposure. |
 | M10 | Planned source-aware visible attribution and Music & Licences settings page. | Track state/UI, settings surface, catalogue schema, tests/notices | 2 | M1/M9, X1/X2 | Artist/title/licence/source link visible per active Jamendo track; settings list matches active sources. | Overlay density versus mandatory visibility. |
 | M11 | Planned admission gate: derivatives, in-app selection, and no-host playback answers become typed source capabilities. | `src/soundtrack/source-policy.js`, tests, licensing docs | 1 | Fresh primary evidence | Unknown/false capability prevents admission or effect routing by construction. | Reducing nuanced licences to booleans without preserving evidence. |
 | M13 | Expanded from real-Tesla evidence: add the persistent-storage probe and long-lived IndexedDB canary; expose vehicle software only when explicitly supported; preserve coordinate-free GPS cadence/accuracy; retain significant events independently of GPS saturation; add phase/timestamp context to long tasks; distinguish unavailable output latency from measured zero. | New storage probe module, `App.jsx`, diagnostics model/UI/tests/docs | 3 | architecture-safe local baseline | Canary identity survives reload; no coordinates are retained; 240+ GPS samples cannot evict early significant events; a synthetic long task reports start/phase/renderer; unavailable latency is truthful; supplied field reports remain parseable. | Persistence needs elapsed time; added observability must stay bounded and must not collect sensitive location data. |
@@ -597,7 +614,7 @@ than missing answers now.
 | G7 | Recorded decision: do not adopt/fork/rewrite/integrate Strudel. | Dependency tests/package files remain unchanged | 0 | None | No `@strudel` dependency, copied source, or runtime import. | Decision rationale contains an obsolete AGPL premise; outcome still stands. |
 | G8 | Deferred: a project-owned constraint-first language may be researched separately from current implementation using public documentation, papers, general theory and project-owned experiments—not Strudel source. | Future approved research doc/tests | 4+ research | New owner-approved entry | Source boundary is logged before research; harmonic/register constraints are primitives; no source-derived clean-room claim. | Scope explosion and disputed derivation boundary. |
 | X3 | Recorded dependency: T1 consumers ship and are rechecked together, not as isolated fixes. | Test plan/phase tracking | 0 | T1 chain | One checkpoint covers D1/P1/P2/PF1/PF2/PM1/PA1/PP1/A3 as applicable. | D1 and A3 need domain-specific mechanics beyond scalar T1. |
-| X4 | Recorded dependency: remote passenger audio work follows verified source permission and M1. | Phase tracking | 0 | M5/M1/S1 | S2 audio controls cannot activate before source capability metadata exists. | Licence verification treated as a one-time checkbox. |
+| X4 | Recorded dependency: remote passenger audio work follows verified permission for each admitted source and M1. | Phase tracking | 0 | M1/S1/M11 | S2 audio controls cannot activate before source capability metadata exists. | Licence verification treated as a one-time checkbox. |
 | X5 | Reopened: Strudel rejection does not remove AGPL/client-obfuscation limits. | M4/G3 plan and licensing docs | 0.5 | question 27 | Corrected architecture is owner-approved and factual docs stay synchronised. | External document currently labels this resolved. |
 | X6 | Recorded high-leverage equivalence: LAB and phone are protocol clients with different transports. | L5 protocol, adapters/tests | Included in L5/S2 | Q15 | Same conformance suite runs against local and WebSocket transports. | UI code bypassing protocol for convenience. |
 | X7 | Planned: one server boundary for music proxy/delivery and passenger relay, with separated permissions internally. | Server architecture/implementation/tests | Included in M6/S2 | Host selection, M6/S2a | One deployment, separate routes/scopes/rate limits, no shared secret exposure. | Combining services can enlarge blast radius without isolation. |
@@ -614,7 +631,7 @@ than missing answers now.
 | Q5 | Resolved by owner | No Wikipedia iframe reader exists | 0 | A2/X1 only waits for visual selection | Reader works in motion with accessible type size and warm-light/dark themes. |
 | Q6 | Resolved by owner | No musical macro panel exists | 0 | None | Full macro controls remain usable on the central display while moving; parked/fullscreen may be richer. |
 | Q7 | Resolved in request document | S2a/X7 decision | 0 | None | Shared small server dependency accepted in principle; actual host remains evidence-based. |
-| Q8 | Resolved in request document, not independently verified | M5 says Premium | 0 | M5 verification | Preserve private subscription evidence; re-check current terms. |
+| Q8 | Closed/superseded by owner | Magnific was publicly rechecked, then excluded | 0 | None | Do not request account access or private subscription evidence; reopen only by explicit future decision. |
 | Q9 | Resolved by owner attestation | Owner authorises complete Illobo recording use/processing/hosting and featured promotion | 0 | None; written private copy recommended | Inventory exact files and public provenance; never publish the private message. |
 | Q10 | Resolved by owner | Source sentence was truncated | 0 | None | D1 is complete at road-centred, motionless zero; D3 adds nothing. |
 | Q11 | Resolved by operative policy and recommendation | `LICENSE`, `LICENSE-SCOPE.md`, package metadata; owner requested explanation, not relicensing | 0 | None | Keep `AGPL-3.0-or-later` for code/docs and separate asset exclusions unless owner explicitly changes strategy. |
@@ -714,8 +731,9 @@ invented IDs:
   PRIMORDIAL state.
 - Decide whether the external Italian requirements source should be translated
   to English and versioned under `docs/`, or remain private/external.
-- Independently verify every external API/licence conclusion in M5/M8/M9/G2
-  against current primary sources before committing it as project fact.
+- Independently verify every external API/licence conclusion in M8/M9/G2
+  against current primary sources before committing it as project fact; M5 is
+  closed and requires no further research while Magnific remains excluded.
 
 ## Coverage audit
 
@@ -768,8 +786,9 @@ number; question 2 asks the owner to confirm the 97-ID interpretation.
 6. Present exactly three X1/X2/S3 directions covering overlays, navbar/GPS,
    palette/chrome behavior, onboarding and passenger naming; implement only the
    selected path.
-7. Verify external rights/API facts and settle M4/M5/M6/M7/M8/M11 before adding
-   any SOUNDTRACK network or catalogue code.
+7. Verify external rights/API facts and settle M4/M6/M7/M8/M11 before adding
+   any SOUNDTRACK network or catalogue code; begin with the owner-ready Jamendo
+   API path and keep its credentials exclusively behind the server boundary.
 8. Build M1/M2/M3/M9/M10 with source-aware permissions, attribution, cache, and
    failure behavior.
 9. Build S1 locally with measured automatic/manual effect strength; only then
