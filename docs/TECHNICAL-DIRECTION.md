@@ -450,6 +450,15 @@ A future pack needs:
 
 The first vehicle evidence confirms a `773 × 601` split-view CSS viewport on a `1254 × 784` logical screen at DPR `1.53`. The integrated v3 report records viewport history, runtime/GPU/audio details, bounded GPS statistics, aggregate canvas frame pacing, long tasks, page/resource timing, memory/storage hints, connection changes, and a chronological event log. Phase telemetry separates the Signal Gate, active Visual/Music combinations, the Aperture `0–40 km/h` wall-retreat band and the session-report-open state; a returning phase begins a new continuity segment so time spent elsewhere is never counted as one slow frame. Each phase owns bounded frame distributions and two-second memory samples for browser-exposed JavaScript heap, JUNCTION's compressed bank and decoded PCM. A coordinate-free flight recorder adds a two-second trace of displayed and raw GPS speed, GPS confidence, input, energy/BPM, active Visual/Music, JUNCTION section/harmonic identity/single take/rhythm transition/bank readiness, real output RMS/peak, frame pacing, network state, and document visibility. It also summarizes the unique musical and visual exposure across the session. The event stream samples ordinary GPS evidence at two-second cadence while retaining null or low-confidence anomalies immediately, which prevents ten-hertz GPS traffic from evicting meaningful transitions. An isolated accuracy collapse above 250 m is recorded but does not command the smoothed experience. The recorder keeps 300 trace samples (approximately ten minutes) in session memory while full-session time, distance, motion, source, and input aggregates continue beyond rotation. Runtime errors, unhandled rejections, and WebGL context loss/restoration are separately bounded. High-frequency metrics accumulate outside React state so diagnostics do not add a per-frame render cost. The report contains no coordinates and disappears when the page closes or reloads.
 
+Network observability keeps browser hints and application evidence structurally
+separate. `navigator.onLine`, effective type, downlink and RTT remain estimates;
+resource bytes come only from exposed completed Resource Timing entries, while
+upload bytes and active direction counts require an instrumented app request.
+The REPORT derives a deterministic notice status for offline, unrecovered
+failure, transfer, recovery, constrained estimate, quiet online or unavailable
+evidence. It never claims device-wide throughput, RSSI, opaque/cache bytes or
+unrelated vehicle traffic. X2 still owns the eventual navbar presentation.
+
 Aperture keeps its existing square palette, perspective tunnel, flow and terminal
 behavior. The former full-frame morph evaluated flat and perspective coordinates
 for every fragment. The replacement treats the opening grid as one rigid end wall:

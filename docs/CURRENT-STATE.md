@@ -220,6 +220,12 @@ dated study documents.
   Its actions no longer cover metrics, raw JSON uses the drawer's single scroll
   context, and an accessible README contains telemetry/privacy, audio provenance,
   licensing and source details without removing essential submission disclosure.
+- The raw REPORT also derives one bounded network-notice state from two clearly
+  separated evidence classes: browser connectivity estimates and observed,
+  instrumented application transfers. Offline, recent request failure, active
+  download/upload, recovery, estimated constrained service, healthy hint and
+  unavailable states are deterministic. The visible navbar treatment is not yet
+  rendered and remains part of the X2 interface selection.
 - An explicit diagnostic send keeps the email body concise and attaches the
   complete accepted report as gzip-compressed JSON, named by build and server
   timestamp with uncompressed and compressed SHA-256 evidence.

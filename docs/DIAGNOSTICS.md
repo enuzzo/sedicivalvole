@@ -60,6 +60,11 @@ At the Tesla split viewport, four compact health cells lead a two-column instrum
 - session-bounded network observations: browser-exposed resource transfer bytes,
   successful app-known upload payload bytes, rolling current rates, peaks,
   active transfers, failures, and recoveries;
+- a deterministic network-notice state in the raw report that prioritizes the
+  browser's offline hint, recent unrecovered instrumented failure, active app
+  transfer, recent recovery, constrained Network Information estimate, quiet
+  online hint, and unavailable evidence without presenting any of them as a
+  device-wide traffic measurement;
 - a two-second coordinate-free driving trace containing displayed/raw GPS speed, GPS age/accuracy/confidence, input mode, energy/BPM, active Visual/Music, JUNCTION section/harmonic identity/single take/bank state, frame pacing, real output RMS/peak, network state, and visibility;
 - session exposure counts for unique visuals, scores, JUNCTION sections, harmonic identities, and performances;
 - full-session duration, estimated distance, moving/stationary time, source/input durations, speed/rate extrema, and GPS-accuracy aggregates even after old trace samples rotate;
@@ -77,7 +82,11 @@ the browser exposes it. They exclude unrelated Tesla traffic, unavailable TLS
 and protocol overhead, opaque cross-origin bodies, and cache activity the API
 does not reveal. Browser `downlink` and `rtt` values remain labelled estimates,
 not measured application throughput. Cellular RSSI is unavailable to ordinary
-Web applications.
+Web applications. Active download/upload counts cover only application requests
+that sedicivalvole explicitly instruments; Resource Timing becomes observable
+after completion and therefore cannot prove that an arbitrary browser resource
+is currently moving. The visible quiet-when-healthy navbar notice remains gated
+by the selected interface direction; the raw REPORT model is already available.
 
 ## Send Diagnostic architecture
 
