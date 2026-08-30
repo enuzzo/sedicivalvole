@@ -559,6 +559,10 @@ export function summarizeNetworkTelemetry(telemetry, generatedAtMs, windowMs = 5
     sessionDurationMs: Math.max(0, Math.round(generatedAtMs - telemetry.startedAtMs)),
     onlineHint: telemetry.online,
     activeTransfers: Object.keys(telemetry.activeTransfers).length,
+    activeDownloadTransfers: Object.values(telemetry.activeTransfers)
+      .filter((transfer) => transfer.direction === "download").length,
+    activeUploadTransfers: Object.values(telemetry.activeTransfers)
+      .filter((transfer) => transfer.direction === "upload").length,
     resourceEntries: telemetry.resourceEntries,
     unobservableResourceEntries: telemetry.unobservableResourceEntries,
     observedDownloadBytes: telemetry.observedDownloadBytes,
@@ -577,9 +581,106 @@ export function summarizeNetworkTelemetry(telemetry, generatedAtMs, windowMs = 5
     measurementBoundary: {
       download: "PerformanceResourceTiming transferSize when exposed; cache and opaque entries may be zero",
       upload: "known application payload bytes only after a successful instrumented request",
+      active: "instrumented application requests only; browser resource timing exposes completed entries",
       excludes: "unrelated device traffic, TLS overhead, unavailable headers, opaque cross-origin bytes, and unexposed cache traffic",
     },
     recentTransfers: telemetry.recentTransfers.map((transfer) => ({ ...transfer })),
+  };
+}
+
+export function deriveNetworkNoticeState({
+  connection = null,
+  traffic = null,
+  generatedAtMs = 0,
+  failureNoticeMs = 15_000,
+  recoveryNoticeMs = 8_000,
+} = {}) {
+  const onlineHint = typeof connection?.online === "boolean"
+    ? connection.online
+    : typeof traffic?.onlineHint === "boolean" ? traffic.onlineHint : null;
+  const effectiveType = typeof connection?.effectiveType === "string"
+    ? connection.effectiveType.toLowerCase()
+    : null;
+  const downlinkMbps = Number.isFinite(connection?.downlinkMbps)
+    ? Math.max(0, connection.downlinkMbps)
+    : null;
+  const roundTripTimeMs = Number.isFinite(connection?.roundTripTimeMs)
+    ? Math.max(0, connection.roundTripTimeMs)
+    : null;
+  const activeTransfers = Number.isFinite(traffic?.activeTransfers)
+    ? Math.max(0, Math.trunc(traffic.activeTransfers))
+    : 0;
+  const activeDownloadTransfers = Number.isFinite(traffic?.activeDownloadTransfers)
+    ? Math.max(0, Math.trunc(traffic.activeDownloadTransfers))
+    : 0;
+  const activeUploadTransfers = Number.isFinite(traffic?.activeUploadTransfers)
+    ? Math.max(0, Math.trunc(traffic.activeUploadTransfers))
+    : 0;
+  const latestFailureAtMs = Number.isFinite(traffic?.latestFailureAtMs)
+    ? traffic.latestFailureAtMs
+    : null;
+  const latestRecoveryAtMs = Number.isFinite(traffic?.latestRecoveryAtMs)
+    ? traffic.latestRecoveryAtMs
+    : null;
+  const failureAgeMs = latestFailureAtMs == null
+    ? null
+    : Math.max(0, generatedAtMs - latestFailureAtMs);
+  const recoveryAgeMs = latestRecoveryAtMs == null
+    ? null
+    : Math.max(0, generatedAtMs - latestRecoveryAtMs);
+  const hasUnrecoveredFailure = latestFailureAtMs != null
+    && (latestRecoveryAtMs == null || latestRecoveryAtMs < latestFailureAtMs);
+  const constrainedHint = ["slow-2g", "2g"].includes(effectiveType)
+    || (downlinkMbps != null && downlinkMbps <= 0.75)
+    || (roundTripTimeMs != null && roundTripTimeMs >= 1000);
+
+  let status = "unavailable";
+  let tone = "quiet";
+  let evidence = "no-browser-or-application-evidence";
+  if (onlineHint === false) {
+    status = "offline";
+    tone = "alert";
+    evidence = "browser-online-hint";
+  } else if (hasUnrecoveredFailure && failureAgeMs <= failureNoticeMs) {
+    status = "request-failed";
+    tone = "alert";
+    evidence = "instrumented-application-request";
+  } else if (activeTransfers > 0) {
+    status = "transferring";
+    tone = "active";
+    evidence = "instrumented-application-request";
+  } else if (latestRecoveryAtMs != null
+    && latestRecoveryAtMs >= (latestFailureAtMs ?? Number.NEGATIVE_INFINITY)
+    && recoveryAgeMs <= recoveryNoticeMs) {
+    status = "recovered";
+    tone = "good";
+    evidence = "browser-or-instrumented-application-event";
+  } else if (constrainedHint) {
+    status = "limited";
+    tone = "caution";
+    evidence = "browser-network-information-estimate";
+  } else if (onlineHint === true) {
+    status = "online";
+    tone = "quiet";
+    evidence = "browser-online-hint";
+  }
+
+  return {
+    status,
+    tone,
+    evidence,
+    onlineHint,
+    activeTransfers,
+    activeDownloadTransfers,
+    activeUploadTransfers,
+    effectiveType,
+    downlinkMbps: rounded(downlinkMbps, 2),
+    roundTripTimeMs: rounded(roundTripTimeMs, 2),
+    currentDownloadBytesPerSecond: rounded(traffic?.currentDownloadBytesPerSecond, 2) ?? 0,
+    currentUploadBytesPerSecond: rounded(traffic?.currentUploadBytesPerSecond, 2) ?? 0,
+    failureAgeMs: rounded(failureAgeMs, 2),
+    recoveryAgeMs: rounded(recoveryAgeMs, 2),
+    limitations: "Browser connectivity and Network Information values are hints; activity covers instrumented application requests only",
   };
 }
 

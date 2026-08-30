@@ -11,6 +11,7 @@ import {
   createDriveTelemetryReport,
   createLongTaskTelemetry,
   createNetworkTelemetry,
+  deriveNetworkNoticeState,
   DIAGNOSTIC_MAX_REQUEST_BODY_BYTES,
   DRIVE_TRACE_FIELDS,
   fitDiagnosticReportForTransport,
@@ -277,6 +278,78 @@ test("network telemetry reports only browser-observed and app-known bytes", () =
   assert.equal(summary.currentUploadBytesPerSecond, 4_000);
   assert.equal(summary.peakDownloadBytesPerSecond, 120_000);
   assert.equal(summary.peakUploadBytesPerSecond, 20_000);
+});
+
+test("network notice state keeps browser hints separate from observed app activity", () => {
+  const telemetry = createNetworkTelemetry(0);
+  recordNetworkOnlineState(telemetry, { online: true, capturedAtMs: 0 });
+  startAppNetworkTransfer(telemetry, {
+    id: "catalog",
+    direction: "download",
+    startedAtMs: 1000,
+    label: "soundtrack-catalog",
+  });
+  startAppNetworkTransfer(telemetry, {
+    id: "report",
+    direction: "upload",
+    startedAtMs: 1100,
+    knownBytes: 16_000,
+    label: "send-diagnostic",
+  });
+
+  let traffic = summarizeNetworkTelemetry(telemetry, 1200);
+  assert.equal(traffic.activeTransfers, 2);
+  assert.equal(traffic.activeDownloadTransfers, 1);
+  assert.equal(traffic.activeUploadTransfers, 1);
+  assert.deepEqual(
+    deriveNetworkNoticeState({
+      connection: { online: true, effectiveType: "4g", downlinkMbps: 8, roundTripTimeMs: 80 },
+      traffic,
+      generatedAtMs: 1200,
+    }),
+    {
+      status: "transferring",
+      tone: "active",
+      evidence: "instrumented-application-request",
+      onlineHint: true,
+      activeTransfers: 2,
+      activeDownloadTransfers: 1,
+      activeUploadTransfers: 1,
+      effectiveType: "4g",
+      downlinkMbps: 8,
+      roundTripTimeMs: 80,
+      currentDownloadBytesPerSecond: 0,
+      currentUploadBytesPerSecond: 0,
+      failureAgeMs: null,
+      recoveryAgeMs: null,
+      limitations: "Browser connectivity and Network Information values are hints; activity covers instrumented application requests only",
+    },
+  );
+
+  finishAppNetworkTransfer(telemetry, { id: "catalog", endedAtMs: 1500, success: true });
+  finishAppNetworkTransfer(telemetry, { id: "report", endedAtMs: 1600, success: false });
+  traffic = summarizeNetworkTelemetry(telemetry, 1700);
+  assert.equal(deriveNetworkNoticeState({
+    connection: { online: true },
+    traffic,
+    generatedAtMs: 1700,
+  }).status, "request-failed");
+
+  recordNetworkOnlineState(telemetry, { online: false, capturedAtMs: 2000 });
+  recordNetworkOnlineState(telemetry, { online: true, capturedAtMs: 2600 });
+  traffic = summarizeNetworkTelemetry(telemetry, 2700);
+  assert.equal(deriveNetworkNoticeState({ connection: { online: true }, traffic, generatedAtMs: 2700 }).status, "recovered");
+  assert.equal(deriveNetworkNoticeState({
+    connection: { online: true, effectiveType: "2g", downlinkMbps: 0.5, roundTripTimeMs: 1200 },
+    traffic,
+    generatedAtMs: 12_000,
+  }).status, "limited");
+  assert.equal(deriveNetworkNoticeState({
+    connection: { online: false, effectiveType: "4g" },
+    traffic,
+    generatedAtMs: 12_000,
+  }).status, "offline");
+  assert.equal(deriveNetworkNoticeState().status, "unavailable");
 });
 
 test("storage canary preserves creation time and reports truthful age", () => {

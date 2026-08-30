@@ -15,6 +15,7 @@ import {
   createLongTaskTelemetry,
   createNetworkTelemetry,
   createPhasePerformanceTelemetry,
+  deriveNetworkNoticeState,
   DRIVE_TRACE_INTERVAL_MS,
   fitDiagnosticReportForTransport,
   inferViewportMode,
@@ -304,6 +305,22 @@ function readConnectionSnapshot(reason) {
     downlinkMbps: connection?.downlink ?? null,
     roundTripTimeMs: connection?.rtt ?? null,
     saveData: connection?.saveData ?? null,
+  };
+}
+
+function readNetworkDiagnosticReport(telemetry, history, generatedAtMs = performance.now()) {
+  const current = readConnectionSnapshot("report-generated");
+  const observedSessionTraffic = summarizeNetworkTelemetry(telemetry, generatedAtMs);
+  return {
+    current,
+    history,
+    rawCellularSignalStrengthAvailable: false,
+    observedSessionTraffic,
+    notice: deriveNetworkNoticeState({
+      connection: current,
+      traffic: observedSessionTraffic,
+      generatedAtMs,
+    }),
   };
 }
 
@@ -2247,12 +2264,11 @@ export function App() {
       ...diagnostics.environment,
       currentVisibility: document.visibilityState,
     },
-    network: {
-      current: readConnectionSnapshot("report-generated"),
-      history: connectionHistoryRef.current,
-      rawCellularSignalStrengthAvailable: false,
-      observedSessionTraffic: summarizeNetworkTelemetry(networkTelemetryRef.current, performance.now()),
-    },
+    network: readNetworkDiagnosticReport(
+      networkTelemetryRef.current,
+      connectionHistoryRef.current,
+      performance.now(),
+    ),
     performance: readPerformanceSnapshot(
       frameTelemetryRef.current,
       phasePerformanceTelemetryRef.current,
