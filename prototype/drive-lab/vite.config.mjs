@@ -75,6 +75,7 @@ export default defineConfig({
   base: "/",
   build: {
     outDir: "dist/client",
+    emptyOutDir: true,
     copyPublicDir: false,
   },
   define: {
