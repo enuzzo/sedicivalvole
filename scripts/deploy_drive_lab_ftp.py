@@ -50,6 +50,12 @@ LEGACY_UI_HASHES = {
     "launch-safety.png": "19533d8ce389d7342806f6090ca52b17c582adfac841bb3172ef175e29359d8c",
     "launch-vent.png": "e78d35a833b66dc5dd2cada78521db77b8e146ff820fd7366b98bc828bda0f1c",
 }
+RETIRED_FONT_HASHES = {
+    "OFL-IBM-Plex-Mono.txt": "d741e57d5f865e294df801f96b7b5161a88b211df65887e4358d271c9fc5fb4f",
+    "ibm-plex-mono-regular.ttf": "6a3412f058c7d8dfd9170c41e85ade48e5156ecb89356110ca57a0a27734af46",
+    "ibm-plex-mono-semibold.ttf": "d3c38e55c78f5b0f28009fddba4834ec503278936a5986032424c9bd2d23aa46",
+    "orbitron-latin-variable.woff2": "c25a9f9da5d9f3db1bf2a01474722dc9b377675b7bbab6d0dfda6902794fd1ed",
+}
 DIAGNOSTIC_ENDPOINT = "send-diagnostic.php"
 DIAGNOSTIC_RECIPIENT_CONFIG = "recipient.local.php"
 DIAGNOSTIC_RECIPIENT_SOURCE = (
@@ -199,6 +205,12 @@ def is_recognized_project_owned_third_party_entry(
     return markers is not None and all(marker in payload for marker in markers)
 
 
+def is_recognized_retired_font(name: str, payload: bytes) -> bool:
+    """Admit only byte-identical previous fonts during cache-overlap deploys."""
+    expected_hash = RETIRED_FONT_HASHES.get(name)
+    return expected_hash is not None and sha256_bytes(payload) == expected_hash
+
+
 def verify_remote_static_tree(
     ftp: ftplib.FTP,
     local_root: Path,
@@ -212,10 +224,16 @@ def verify_remote_static_tree(
     expected_names = {path.name for path in local_root.iterdir()}
     if require_complete and not expected_names.issubset(remote_names):
         raise ValueError(f"incomplete {tree_name} upload")
-    if not require_complete and not remote_names.issubset(expected_names):
-        raise ValueError(f"unexpected {tree_name} entry")
+    if not require_complete:
+        unexpected_names = remote_names - expected_names
+        if tree_name != "fonts" or any(
+            not is_recognized_retired_font(name, remote_bytes(ftp, name))
+            for name in unexpected_names
+        ):
+            if unexpected_names:
+                raise ValueError(f"unexpected {tree_name} entry")
 
-    names_to_verify = expected_names if require_complete else remote_names
+    names_to_verify = expected_names if require_complete else remote_names & expected_names
     for name in names_to_verify:
         local_path = local_root / name
         relative_path = relative_root / name
