@@ -100,7 +100,10 @@ Implemented:
 - source-faithful `DRIVEY 05`, with 51 byte-identical upstream files pinned at
   `5104cdade2a3158786b05b9b0680a50e942830cf`, a separate project-owned iframe
   shell/bridge, upstream automatic road/curve following without random player
-  weaving, distinct native accent/secondary palette channels, compact
+  weaving, a shared frame-rate-independent road response, actual timestamped
+  audio-macro envelopes, a lane-centred motionless zero hold, deterministic
+  opposing-only NPC placement that fails closed to zero traffic, distinct native
+  accent/secondary palette channels, compact
   Hood/Rear/Aerial and Normal/Wire cycling controls, and no dropdown panel;
 - human-approved and canonically published `PRTCL 06`, with one bounded WebGL2 renderer adapting the
   directly authorized Fractal Frequency, Murmuration, and Axiom formulas;

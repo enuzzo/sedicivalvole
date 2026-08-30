@@ -652,21 +652,23 @@ than missing requirements.
    visuals remain live in source (APERTURE, VERTIGO, MERIDIAN, ATLAS, DRIVEY,
    PRTCL) and three authored scores are ready (FRACTURE, JUNCTION, NIGHTSHIFT).
    PRIMORDIAL was rejected and removed on 2026-08-30.
-4. **T1 does not exist yet.** Input GPS is plausibility-bounded and smoothed, but
-   visual profiles consume the latest speed and effect state directly. Scene
-   mappings therefore have no shared time constant, asymmetric attack/release,
-   or per-second slew limiter.
+4. **T1 mechanics are implemented locally.** The typed mapper owns endpoint
+   clamping, curve exponent, asymmetric attack/release, hard per-second slew and
+   frame-rate-independent scalar/vector state. Timestamped OPEN, UNDERWATER and
+   BLOOM snapshots use the same audio envelope definitions. DRIVEY is the first
+   visual consumer; the remaining PRTCL/ATLAS consumers stay assigned to X3.
 5. **P2 currently disagrees with the request.** PRTCL point scale runs linearly
    from `0.82` to `1.48` over `0–130 km/h`, with immediate uniform updates. It
    does not reach its full scale at `100 km/h`.
 6. **Q2 is answered by code.** MURMURATION has one fixed camera profile with
    `zoom: 1.5`; there is no discrete speed-driven zoom ladder. The likely step is
    in shared instantaneous inputs or effect state, not discrete zoom levels.
-7. **DRIVEY's likely D1 root is shared.** The untouched upstream `Car.drive()`
-   skips road following and speed matching when cruise speed is zero but still
-   integrates existing velocity and steering state. The external bridge can
-   enforce a zero-speed road hold without altering the integrity-guarded vendor
-   tree. Traffic currently defaults to 16.
+7. **DRIVEY D1/D2 are implemented locally without vendor edits.** At commanded
+   zero the external bridge projects the player to the current lane centre,
+   aligns it to the road tangent and clears motion/steering state. It retains 16
+   NPCs only when every generated car can be placed and verified opposite the
+   player direction; ambiguous metadata fails closed to zero traffic and the old
+   stored count preference is ignored.
 8. **ATLAS already owns part of A1/A3.** Touch and mouse camera exploration,
    `18–78°` pitch bounds, a six-second automatic return, compass control, and an
    ephemeral directional travel line already pass tests. It lacks the requested
@@ -735,9 +737,9 @@ than missing requirements.
 
 | ID | Status and one-line work | Files | Half-days | Dependencies | Proposed acceptance | Main risk |
 | --- | --- | --- | ---: | --- | --- | --- |
-| T1 | Owner-approved: add one typed scalar/vector response mapper with curve endpoints, asymmetric time constants, slew limits, and the actual shared audio macro envelopes. | `src/response-mapping.js` (new), scene models/fields, `tests/response-mapping.test.mjs` (new) | 3 | L5 contract | Monotonic/property tests, frame-rate invariance, no overshoot, every listed scene imports the shared mapper, and audio/visual envelopes share timestamped state. | One abstraction may erase scene character if it owns values rather than response mechanics. |
-| D1 | Planned: hold the upstream player car at zero velocity and road-centred state when commanded speed is zero, then resume without a teleport. | `src/environments/drivey/drivey-field.jsx`, `drivey-model.js`, `tests/drivey-model.test.mjs`, QA harness | 1.5 | T1 only for commanded transition | Zero for 10 s produces no longitudinal/lateral drift; 0→20 resumes on-road smoothly in all three cameras. | Vendor physics state may need a narrow bridge reset without touching 51 guarded files. |
-| D2 | Owner-approved fallback ladder: classify lanes and retain only opposing traffic when reliable; otherwise remove all NPC traffic and retire the old count preference. | `drivey-model.js`, `drivey-field.jsx`, external bridge, `App.jsx`, Drivey tests/docs | 1 | Lane-direction feasibility audit | No same-direction rear traffic can appear in the player lane; opposing traffic is retained only with deterministic direction tests; fallback zero is stable and migrated. | Upstream generated roads may not expose a trustworthy lane-direction identity. |
+| T1 | Phase 1 mechanics implemented locally: typed scalar/vector response mapper with curve endpoints, asymmetric time constants, hard slew limits and timestamped shared audio macro envelopes. DRIVEY is the first visual consumer; PRTCL/ATLAS adoption remains in X3. | `src/response-mapping.js`, scene models/fields, `tests/response-mapping.test.mjs` | 3 | L5 contract for later LAB use | Scalar/vector endpoints, 30/60/120 FPS invariance, no overshoot, typed snapshots and shared BLOOM envelope tests pass. | One abstraction may erase scene character if it owns values rather than response mechanics. |
+| D1 | Implemented locally: hold the upstream player car at zero velocity on the current lane centre, then resume without relocation. | `src/environments/drivey/drivey-field.jsx`, `drivey-model.js`, `tests/drivey-model.test.mjs`, QA harness | 1.5 | T1 commanded transition | A 600-frame zero hold has no drift; resume does not reposition; Hood/Rear/Aerial load at `773 × 601` with no browser errors. Real-Tesla motion remains open. | Target-browser physics timing still needs vehicle validation. |
+| D2 | Implemented locally: retain 16 NPCs only when every car is deterministically placed and verified opposite the player direction; otherwise fail closed to zero and ignore the retired count preference. | `drivey-model.js`, `drivey-field.jsx`, `App.jsx`, Drivey tests/docs | 1 | Lane-direction feasibility audit | Deterministic direction and zero-fallback tests pass; browser QA is clean. Real-Tesla traffic observation remains open. | Generated-road metadata may differ under target-session timing. |
 | D3 | Resolved with no additional product behavior: D1's road-centred, motionless player at zero is the complete requirement. | `PIANO.md`; D1 tests | 0 | None | D1 acceptance fully covers the owner's zero-speed request. | None beyond D1. |
 | P1 | Planned: route every PRTCL scale/depth response through T1. | `prtcl-model.js`, `prtcl-field.jsx`, `prtcl-renderer.js`, PRTCL tests | 1 | T1 | Abrupt input and macro sequences have continuous bounded output at 30/60/120 FPS. | GPU uniforms currently receive raw profile output every frame. |
 | P2 | Owner-approved: make scale minimum at 0, maximum at 100, saturated above 100, reversible and visibly smooth without changing the 130 km/h product ceiling. | Same PRTCL files plus LAB preset schema | 1 | T1 | Dense 0→130→0 sweep proves equal curve shape up/down, visible progression and local saturation. | Conflict with global 130 km/h ceiling if implemented globally. |
@@ -996,7 +998,7 @@ number; question 2 asks the owner to confirm the 97-ID interpretation.
 - Sedicivalvole is already a published experimental Flux product, not an empty prototype.
 - It has six active visuals, three authored adaptive scores, shared performance effects, and integrated diagnostics.
 - The new request's strongest architectural idea is T1: one response mechanism, with scene-authored endpoints.
-- T1 is absent today even though GPS input itself is already smoothed and plausibility-bounded.
+- T1 mechanics now exist and DRIVEY consumes them; PRTCL/ATLAS adoption remains in the combined X3 checkpoint.
 - The existing local QA field is the correct seed for LAB, provided L5 makes it a protocol client.
 - ATLAS already has substantial camera, compass, travel-line, sidebar, and privacy work to preserve.
 - DRIVEY can likely fix zero-speed drift in the external bridge without changing guarded upstream source.
@@ -1017,7 +1019,7 @@ number; question 2 asks the owner to confirm the 97-ID interpretation.
    scoped case by case.
 2. Resolve the owner-assigned non-ID baseline entries and the supplied Tesla
    diagnostic findings, then implement M13 and plant the canary.
-3. Deliver T1 with D1/D2, then run the combined X3 regression checkpoint.
+3. Complete the local T1/D1/D2 checkpoint and owner/Tesla acceptance, then extend T1 through the combined X3 consumers.
 4. Deliver L5 and the local-only LAB (L1–L4), preserving production exclusion.
 5. Tune PRTCL consumers in the LAB; retire PRIMORDIAL; present exactly three
    original `SF1` Gradient Field directions and implement only the selected one.

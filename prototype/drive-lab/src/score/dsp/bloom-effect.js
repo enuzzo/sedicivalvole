@@ -6,9 +6,14 @@
 // outside the send band unchanged by construction.
 
 import { OnePoleHighPass, OnePoleLowPass } from "./primitives.js";
+import { sampleTimedGestureEnvelope } from "../../response-mapping.js";
+import {
+  BLOOM_ATTACK_SECONDS,
+  BLOOM_RELEASE_SECONDS,
+  BLOOM_SWEEP_SECONDS,
+} from "../../bloom-macro.js";
+export { BLOOM_RELEASE_SECONDS, BLOOM_SWEEP_SECONDS } from "../../bloom-macro.js";
 
-export const BLOOM_SWEEP_SECONDS = 0.4;
-export const BLOOM_RELEASE_SECONDS = 0.25;
 export const BLOOM_MAX_DELAY_SECONDS = 0.008;
 export const BLOOM_MIN_DELAY_SECONDS = 0.0008;
 export const BLOOM_DEPTH = 0.48;
@@ -83,14 +88,16 @@ export class BloomEffect {
   currentDepth() {
     if (!this.active) return 0;
     const elapsedSeconds = this.elapsedSamples / this.sampleRate;
-    const attack = Math.min(1, elapsedSeconds / 0.03);
-    const automaticRelease = Math.max(0, elapsedSeconds - BLOOM_SWEEP_SECONDS);
     const explicitRelease = this.releaseStartSample === null
-      ? 0
+      ? null
       : (this.elapsedSamples - this.releaseStartSample) / this.sampleRate;
-    const releaseSeconds = Math.max(automaticRelease, explicitRelease);
-    const release = Math.max(0, 1 - releaseSeconds / BLOOM_RELEASE_SECONDS);
-    return this.depth * attack * release;
+    return this.depth * sampleTimedGestureEnvelope({
+      elapsedSeconds,
+      releaseElapsedSeconds: explicitRelease,
+      attackSeconds: BLOOM_ATTACK_SECONDS,
+      automaticReleaseAtSeconds: BLOOM_SWEEP_SECONDS,
+      releaseSeconds: BLOOM_RELEASE_SECONDS,
+    });
   }
 
   currentDelaySamples() {

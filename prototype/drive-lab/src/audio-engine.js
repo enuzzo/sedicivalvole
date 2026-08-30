@@ -17,9 +17,16 @@ import {
   createAccelerationFocusCurve,
 } from "./acceleration-macro.js";
 import {
+  BLOOM_ATTACK_SECONDS,
   BLOOM_GESTURE_MS,
+  BLOOM_RELEASE_SECONDS,
   BLOOM_REFRACTORY_MS,
+  BLOOM_SWEEP_SECONDS,
 } from "./bloom-macro.js";
+import {
+  createAudioMacroSnapshot,
+  sampleTimedGestureEnvelope,
+} from "./response-mapping.js";
 import {
   accelerationTrajectoryIsBloom,
   advanceAccelerationDetectorClock,
@@ -174,6 +181,8 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
   let reportedEffect = null;
   let gpsAccuracyM = null;
   let bloomActiveUntil = 0;
+  let bloomTriggeredAtMs = null;
+  let bloomReleasedAtMs = null;
   let bloomRefractoryUntil = 0;
   let bloomSuppressedByBrake = false;
 
@@ -408,6 +417,8 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
           bloomNode = null;
           bloomSerialLink = null;
           bloomActiveUntil = 0;
+          bloomTriggeredAtMs = null;
+          bloomReleasedAtMs = null;
           bloomSuppressedByBrake = false;
           reportActiveEffect();
           console.error("[flux] BLOOM processor failed; direct score bus restored", event);
@@ -430,6 +441,28 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
     if (nextEffect === reportedEffect) return;
     reportedEffect = nextEffect;
     onEffectChange?.(nextEffect);
+  }
+
+  function bloomMacroAmount(capturedAtMs) {
+    if (bloomTriggeredAtMs == null || capturedAtMs >= bloomActiveUntil) return 0;
+    return sampleTimedGestureEnvelope({
+      elapsedSeconds: (capturedAtMs - bloomTriggeredAtMs) / 1000,
+      releaseElapsedSeconds: bloomReleasedAtMs == null
+        ? null
+        : (capturedAtMs - bloomReleasedAtMs) / 1000,
+      attackSeconds: BLOOM_ATTACK_SECONDS,
+      automaticReleaseAtSeconds: BLOOM_SWEEP_SECONDS,
+      releaseSeconds: BLOOM_RELEASE_SECONDS,
+    });
+  }
+
+  function macroSnapshot(capturedAtMs = performance.now()) {
+    return createAudioMacroSnapshot({
+      capturedAtMs,
+      open: accelerationAmount,
+      underwater: brakeAmount,
+      bloom: bloomMacroAmount(capturedAtMs),
+    });
   }
 
   /** Reports effects only on real crossings, with braking taking priority. */
@@ -459,8 +492,10 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
     const seconds = BRAKE_TICK_MS / 1000;
     const target = isBraking() ? 1 : 0;
     if (target > 0 && performance.now() < bloomActiveUntil && !bloomSuppressedByBrake) {
+      const releasedAtMs = performance.now();
       bloomNode?.port.postMessage({ type: "RELEASE" });
-      bloomActiveUntil = performance.now() + 250;
+      bloomReleasedAtMs = releasedAtMs;
+      bloomActiveUntil = releasedAtMs + BLOOM_RELEASE_SECONDS * 1000;
       bloomSuppressedByBrake = true;
     }
     const constant = target > brakeAmount ? BRAKE_ATTACK_SECONDS : BRAKE_RELEASE_SECONDS;
@@ -537,6 +572,8 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
       && !isBraking()
       && capturedAtMs >= bloomRefractoryUntil) {
       bloomNode.port.postMessage({ type: "TRIGGER" });
+      bloomTriggeredAtMs = capturedAtMs;
+      bloomReleasedAtMs = null;
       bloomActiveUntil = capturedAtMs + BLOOM_GESTURE_MS;
       bloomRefractoryUntil = capturedAtMs + BLOOM_REFRACTORY_MS;
     }
@@ -753,6 +790,10 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
       return { ...meterState };
     },
 
+    getMacroSnapshot() {
+      return macroSnapshot();
+    },
+
     getState() {
       if (scoreId === "junction" || scoreId === "nightshift") {
         const sampledState = scoreId === "nightshift"
@@ -766,6 +807,7 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
           energy,
           energyCeilingKmh: ROAD_SPEED_CEILING_KMH,
           brake: Math.round(brakeAmount * 100) / 100,
+          macros: macroSnapshot(),
           accelerationMps2: Math.round(smoothedRateMps2 * 1000) / 1000,
           accelerationMacro: Math.round(accelerationAmount * 1000) / 1000,
           accelerationTrajectory: {
@@ -796,6 +838,7 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
         energyCeilingKmh: ROAD_SPEED_CEILING_KMH,
         motionPhase: arrangement.decelerationState,
         brake: Math.round(brakeAmount * 100) / 100,
+        macros: macroSnapshot(),
         accelerationMps2: Math.round(smoothedRateMps2 * 1000) / 1000,
         accelerationMacro: Math.round(accelerationAmount * 1000) / 1000,
         accelerationTrajectory: {

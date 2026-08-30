@@ -108,7 +108,13 @@ byte-identical under a checked SHA-256 manifest. A separate project-authored
 iframe shell and bridge map the existing speed, music, performance-effect and
 ten-palette state onto controls and material buffers already owned by the
 runtime. The bridge uses the upstream automatic `Input`, removes only the
-player car's random weaving, and exposes each theme's native `accent` and
+player car's random weaving, and applies the shared frame-rate-independent road
+response plus the actual timestamped OPEN, UNDERWATER and BLOOM envelopes. At
+commanded zero it holds the player motionless on the current lane centre; motion
+resumes from the same road location. Sixteen NPCs are retained only when every
+generated car can be deterministically placed and verified in the direction
+opposite the player, otherwise the runtime displays no NPC traffic. The former
+traffic-count preference is retired. Each theme exposes its native `accent` and
 `secondary` colours simultaneously. Its only direct controls are two compact text buttons: one cycles Hood,
 Rear and Aerial views; the other cycles Normal and palette-coloured Wire render
 modes. Neither control opens a dropdown or panel.

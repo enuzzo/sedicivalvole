@@ -39,6 +39,7 @@ import {
   startAppNetworkTransfer,
 } from "./diagnostics-model.js";
 import { runStorageDiagnostics } from "./storage-diagnostics.js";
+import { createAudioMacroSnapshot } from "./response-mapping.js";
 import { FluxField } from "./flux-field.jsx";
 import {
   DEFAULT_FLUX_ENVIRONMENT_ID,
@@ -988,6 +989,9 @@ export function App() {
   const scoreSelectionRevisionRef = useRef(0);
   const [keyboardHint, setKeyboardHint] = useState(null);
   const [audioLevel, setAudioLevel] = useState(0);
+  const [audioMacros, setAudioMacros] = useState(() => createAudioMacroSnapshot({
+    capturedAtMs: performance.now(),
+  }));
   const [flightRecorderRevision, setFlightRecorderRevision] = useState(0);
   const [themeId, setThemeId] = useState(initialPreferences.themeId);
   const [environmentId, setEnvironmentId] = useState(initialPreferences.environmentId);
@@ -1587,7 +1591,17 @@ export function App() {
       audioRef.current.startCue();
       window.clearInterval(audioMeterTimerRef.current);
       audioMeterTimerRef.current = window.setInterval(() => {
-        setAudioLevel(audioRef.current?.getLevel() ?? 0);
+        const engine = audioRef.current;
+        setAudioLevel(engine?.getLevel() ?? 0);
+        const snapshot = engine?.getMacroSnapshot() ?? createAudioMacroSnapshot({
+          capturedAtMs: performance.now(),
+        });
+        setAudioMacros(QA_EFFECT ? createAudioMacroSnapshot({
+          capturedAtMs: snapshot.capturedAtMs,
+          open: QA_EFFECT === "OPEN" ? 1 : 0,
+          underwater: QA_EFFECT === "UNDERWATER" ? 1 : 0,
+          bloom: QA_EFFECT === "BLOOM" ? 1 : 0,
+        }) : snapshot);
       }, 180);
     } catch (error) {
       audioRef.current?.destroy();
@@ -2307,6 +2321,7 @@ export function App() {
             <DriveyField
               speed={speed}
               audioLevel={audioLevel}
+              macroSnapshot={audioMacros}
               theme={theme}
               settings={driveySettings}
               reducedMotion={reducedMotion}

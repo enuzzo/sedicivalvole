@@ -1,14 +1,21 @@
 import { useEffect, useMemo, useRef } from "react";
 import {
+  configureDriveyOpposingTraffic,
   createDriveyAutomaticInput,
   createDriveyLoadDeadline,
   DEFAULT_DRIVEY_SETTINGS,
+  DRIVEY_ROAD_RESPONSE,
   driveyMotionProfile,
   driveyRuntimeUrl,
+  holdDriveyPlayerAtRest,
   normalizeDriveySettings,
   stabilizeDriveyRoadFollower,
   themeToDriveyPalette,
 } from "./drivey-model.js";
+import {
+  advanceResponse,
+  createResponseState,
+} from "../../response-mapping.js";
 import {
   canvasFramebufferSize,
   SIXTY_FPS_FRAME_INTERVAL_MS,
@@ -105,10 +112,19 @@ function installFrameTelemetry(bridge, valuesRef, appliedState, fail) {
 function applyBridgeState(bridge, values, state) {
   const { drivey } = bridge;
   const settings = normalizeDriveySettings(values.settings);
+  const capturedAtMs = performance.now();
+  if (!state.roadResponse) {
+    state.roadResponse = createResponseState(DRIVEY_ROAD_RESPONSE, 0, capturedAtMs);
+  }
+  state.roadResponse = values.speed <= 0
+    ? createResponseState(DRIVEY_ROAD_RESPONSE, 0, capturedAtMs)
+    : advanceResponse(DRIVEY_ROAD_RESPONSE, state.roadResponse, values.speed, capturedAtMs);
   const profile = driveyMotionProfile({
     speedKmh: values.speed,
+    roadResponse: state.roadResponse.value,
     audioLevel: values.audioLevel,
     effect: values.effect,
+    macroSnapshot: values.macroSnapshot,
     reducedMotion: values.reducedMotion,
   });
 
@@ -119,14 +135,14 @@ function applyBridgeState(bridge, values, state) {
   drivey.npcControlScheme.cruiseSpeedMultiplier = profile.npcSpeedScale;
   drivey.npcControlScheme.steer = 0;
   drivey.npcControlScheme.laneShift = 0;
+  if (values.speed <= 0) holdDriveyPlayerAtRest(drivey);
 
   if (state.camera !== settings.camera) {
     drivey.setCameraMount(settings.camera);
     state.camera = settings.camera;
   }
-  if (state.traffic !== settings.traffic) {
-    drivey.setNumOtherCars(settings.traffic);
-    state.traffic = settings.traffic;
+  if (state.trafficMode == null) {
+    state.trafficMode = configureDriveyOpposingTraffic(drivey).mode;
   }
   if (state.renderMode !== settings.renderMode) {
     applyRenderMode(bridge, settings.renderMode);
@@ -144,6 +160,9 @@ function applyBridgeState(bridge, values, state) {
     settings.renderMode,
     values.effect ?? "none",
     Math.round(profile.colourEnergy * 100),
+    Math.round(profile.macros.open * 100),
+    Math.round(profile.macros.underwater * 100),
+    Math.round(profile.macros.bloom * 100),
   ].join(":");
   if (state.palette !== paletteSignature) {
     applyPalette(bridge, themeToDriveyPalette(values.theme, profile));
@@ -163,6 +182,7 @@ function applyBridgeState(bridge, values, state) {
 export function DriveyField({
   speed,
   audioLevel = 0,
+  macroSnapshot = null,
   theme,
   effect,
   settings = DEFAULT_DRIVEY_SETTINGS,
@@ -175,6 +195,7 @@ export function DriveyField({
   const valuesRef = useRef({
     speed,
     audioLevel,
+    macroSnapshot,
     theme,
     effect,
     settings,
@@ -185,6 +206,7 @@ export function DriveyField({
   valuesRef.current = {
     speed,
     audioLevel,
+    macroSnapshot,
     theme,
     effect,
     settings,
@@ -209,7 +231,8 @@ export function DriveyField({
     let stopped = false;
     const appliedState = {
       camera: null,
-      traffic: null,
+      trafficMode: null,
+      roadResponse: null,
       renderMode: null,
       rendererLabel: null,
       palette: null,

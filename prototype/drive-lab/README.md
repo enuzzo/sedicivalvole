@@ -23,7 +23,7 @@ The initial **PLAY THE ROAD** gesture is one flat typographic launch surface wit
 - a 64 px Tesla footer with touch-first Stop/Mute, Visual and Music libraries, disclosure carets, and ten curated body themes shared by all four visuals;
 - fixed `130 km/h` energy/velocity ceiling with visible Aperture tunnel formation by approximately `40 km/h`;
 - integrated coordinate-free device report with continuity-safe per-phase FPS/frame-time, a dedicated Aperture morph phase, heap/decoded-audio memory, real output RMS/peak, GPS confidence, musical-family/take exposure, an in-memory driving flight recorder, and explicit gzip-attachment email send;
-- a measured 64 px `PALETTE` footer at `773 × 601`: icon-only audio state, vertically ordered Visual/Music choices, truthful disclosure carets, and a theme control shared by field and UI accent;
+- a measured 64 px `PALETTE` footer at `773 × 601`: icon-only audio state, vertically ordered Visual/Music choices, truthful disclosure carets, and a theme control shared by field and UI accent; a future approved X2/X9 layout pass will cap and right-anchor its fullscreen width instead of stretching the colour rail;
 - time-based Model 3 AWD Demo acceleration calibrated to the official zero-to-100 km/h figure;
 - desktop simulator: hold `ArrowUp` to accelerate, release it or press `ArrowDown` for progressive regenerative slowdown, and hold `Space` for stronger braking from the exact current speed;
 - `VERSION` injected at build time;

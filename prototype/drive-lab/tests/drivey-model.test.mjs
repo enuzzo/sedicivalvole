@@ -3,16 +3,21 @@ import { createHash } from "node:crypto";
 import { access, readFile } from "node:fs/promises";
 import test from "node:test";
 import {
+  configureDriveyOpposingTraffic,
   createDriveyAutomaticInput,
   createDriveyLoadDeadline,
   DEFAULT_DRIVEY_SETTINGS,
   DRIVEY_CAMERAS,
   DRIVEY_LOAD_TIMEOUT_MS,
+  DRIVEY_OPPOSING_TRAFFIC_COUNT,
   DRIVEY_RENDER_MODES,
+  DRIVEY_ROAD_RESPONSE,
   DRIVEY_UPSTREAM_COMMIT,
   DRIVEY_UPSTREAM_ENTRY,
+  driveyOpposingTrafficPlan,
   driveyRuntimeUrl,
   driveyMotionProfile,
+  holdDriveyPlayerAtRest,
   nextDriveyCameraId,
   nextDriveyRenderModeId,
   normalizeDriveySettings,
@@ -20,6 +25,11 @@ import {
   themeToDriveyPalette,
 } from "../src/environments/drivey/drivey-model.js";
 import { getFluxTheme } from "../src/flux-themes.js";
+import {
+  advanceResponse,
+  createAudioMacroSnapshot,
+  createResponseState,
+} from "../src/response-mapping.js";
 
 const read = (path) => readFile(new URL(path, import.meta.url), "utf8");
 const fieldSource = await read("../src/environments/drivey/drivey-field.jsx");
@@ -32,18 +42,16 @@ const appSource = await read("../src/App.jsx");
 const stylesSource = await read("../src/styles.css");
 const harnessSource = await read("../qa/field-harness.jsx");
 
-test("DRIVEY exposes only the selected cameras plus bounded traffic and render modes", () => {
+test("DRIVEY exposes only the selected cameras and render modes while retiring traffic preferences", () => {
   assert.deepEqual(Object.keys(DRIVEY_CAMERAS), ["hood", "rear", "aerial"]);
   assert.deepEqual(Object.keys(DRIVEY_RENDER_MODES), ["normal", "wireframe"]);
   assert.deepEqual(normalizeDriveySettings(null), DEFAULT_DRIVEY_SETTINGS);
   assert.deepEqual(normalizeDriveySettings({ camera: "rear", traffic: 999 }), {
     camera: "rear",
-    traffic: 24,
     renderMode: "normal",
   });
   assert.deepEqual(normalizeDriveySettings({ camera: "unknown", traffic: -1 }), {
     camera: "hood",
-    traffic: 0,
     renderMode: "normal",
   });
   assert.deepEqual(normalizeDriveySettings({
@@ -52,12 +60,10 @@ test("DRIVEY exposes only the selected cameras plus bounded traffic and render m
     renderMode: "wireframe",
   }), {
     camera: "aerial",
-    traffic: 24,
     renderMode: "wireframe",
   });
   assert.deepEqual(normalizeDriveySettings({ camera: "driver", renderMode: "technicolor" }), {
     camera: "hood",
-    traffic: 16,
     renderMode: "normal",
   });
 });
@@ -82,6 +88,39 @@ test("road speed owns the original cruise while music only owns colour energy", 
   assert.equal(road.colourEnergy, 0);
   assert.equal(music.cruiseSpeed, rest.cruiseSpeed);
   assert.ok(music.colourEnergy > rest.colourEnergy);
+});
+
+test("DRIVEY road response is bounded, smooth, reversible, and stable across frame rates", () => {
+  const run = (fps, target, seconds, initial = 0) => {
+    let state = createResponseState(DRIVEY_ROAD_RESPONSE, initial, 0);
+    for (let frame = 1; frame <= fps * seconds; frame += 1) {
+      state = advanceResponse(DRIVEY_ROAD_RESPONSE, state, target, frame * 1000 / fps);
+    }
+    return state;
+  };
+  const rise = [30, 60, 120].map((fps) => run(fps, 100, 1).value);
+  assert.ok(Math.max(...rise) - Math.min(...rise) < 1e-12, rise.join(", "));
+  assert.ok(rise[0] > 0 && rise[0] < 1);
+  const release = [30, 60, 120].map((fps) => run(fps, 0, 1, 100).value);
+  assert.ok(Math.max(...release) - Math.min(...release) < 1e-12, release.join(", "));
+  assert.ok(release[0] >= 0 && release[0] < rise[0]);
+});
+
+test("DRIVEY consumes the timestamped shared macro amounts instead of badge-only booleans", () => {
+  const partial = driveyMotionProfile({
+    speedKmh: 70,
+    audioLevel: 0.8,
+    effect: "BLOOM",
+    macroSnapshot: createAudioMacroSnapshot({
+      capturedAtMs: 100,
+      open: 0.25,
+      underwater: 0.5,
+      bloom: 0.4,
+    }),
+  });
+  assert.deepEqual(partial.macros, { open: 0.25, underwater: 0.5, bloom: 0.4 });
+  assert.ok(partial.lightGain > 0.9 && partial.lightGain < 1.2);
+  assert.ok(partial.cruiseSpeed > 0);
 });
 
 test("the integration uses the upstream automatic Input and removes random player weaving", () => {
@@ -109,6 +148,127 @@ test("the integration uses the upstream automatic Input and removes random playe
   stabilizeDriveyRoadFollower(car);
   assert.equal(car.weaving, 0);
   assert.doesNotThrow(() => stabilizeDriveyRoadFollower(null));
+});
+
+class Vector2Mock {
+  constructor(x = 0, y = 0) {
+    this.x = x;
+    this.y = y;
+  }
+
+  copy(value) {
+    this.x = value.x;
+    this.y = value.y;
+    return this;
+  }
+
+  set(x, y) {
+    this.x = x;
+    this.y = y;
+    return this;
+  }
+
+  add(value) {
+    this.x += value.x;
+    this.y += value.y;
+    return this;
+  }
+
+  multiplyScalar(value) {
+    this.x *= value;
+    this.y *= value;
+    return this;
+  }
+}
+
+test("zero speed holds the player motionless at the lane centre and releases without a resume teleport", () => {
+  const road = {
+    getPoint: () => new Vector2Mock(10, 20),
+    getNormal: () => new Vector2Mock(0, 1),
+    getTangent: () => new Vector2Mock(1, 0),
+  };
+  const car = {
+    road,
+    approximation: { getNearest: () => 0.4 },
+    pos: new Vector2Mock(99, 99),
+    lastPos: new Vector2Mock(98, 98),
+    vel: new Vector2Mock(8, 3),
+    lastVel: new Vector2Mock(7, 2),
+    roadDir: 1,
+    laneOffset: 2,
+    weaving: 0.5,
+    steerTo: 0.2,
+    spin: 1,
+    sliding: true,
+  };
+  let exteriorUpdates = 0;
+  const drivey = {
+    myCar: car,
+    myCarExterior: {},
+    drivingSide: -1,
+    updateCarExterior: () => { exteriorUpdates += 1; },
+  };
+
+  for (let frame = 0; frame < 600; frame += 1) {
+    assert.equal(holdDriveyPlayerAtRest(drivey), true);
+  }
+  assert.deepEqual([car.pos.x, car.pos.y], [10, 18]);
+  assert.deepEqual([car.lastPos.x, car.lastPos.y], [10, 18]);
+  assert.deepEqual([car.vel.x, car.vel.y], [0, 0]);
+  assert.deepEqual([car.lastVel.x, car.lastVel.y], [0, 0]);
+  assert.equal(car.angle, 0);
+  assert.equal(car.weaving, 0);
+  assert.equal(car.steerTo, 0);
+  assert.equal(car.spin, 0);
+  assert.equal(car.sliding, false);
+  assert.equal(exteriorUpdates, 600);
+
+  const releasePosition = [car.pos.x, car.pos.y];
+  car.vel.set(0.1, 0);
+  assert.deepEqual([car.pos.x, car.pos.y], releasePosition, "release itself must not reposition the car");
+});
+
+test("traffic is opposing-only when road direction is provable and otherwise fails closed to zero", () => {
+  const placements = [];
+  const road = { getPoint() {}, getNormal() {} };
+  const cars = Array.from({ length: DRIVEY_OPPOSING_TRAFFIC_COUNT }, () => ({
+    place(_road, _approximation, along, _laneWidth, _numLanes, _side, roadDir) {
+      this.roadDir = roadDir;
+      placements.push({ along, roadDir });
+    },
+  }));
+  const counts = [];
+  const drivey = {
+    myCar: { roadDir: 1 },
+    drivingSide: -1,
+    level: { mainRoad: road, laneWidth: 3.5, numLanes: 2, cruiseSpeed: 1 },
+    autoSteerApproximation: {},
+    otherCars: cars,
+    setNumOtherCars(count) { counts.push(count); },
+  };
+  assert.deepEqual(driveyOpposingTrafficPlan(drivey), {
+    mode: "opposing",
+    count: DRIVEY_OPPOSING_TRAFFIC_COUNT,
+    roadDirection: -1,
+  });
+  assert.deepEqual(configureDriveyOpposingTraffic(drivey, () => 0.25), {
+    mode: "opposing",
+    count: DRIVEY_OPPOSING_TRAFFIC_COUNT,
+    roadDirection: -1,
+  });
+  assert.equal(counts[0], DRIVEY_OPPOSING_TRAFFIC_COUNT);
+  assert.equal(placements.length, DRIVEY_OPPOSING_TRAFFIC_COUNT);
+  assert.ok(placements.every(({ along, roadDir }) => along === 0.25 && roadDir === -1));
+  assert.ok(cars.every((car) => car.weaving === 0));
+
+  const unreliableCounts = [];
+  const unreliable = {
+    ...drivey,
+    myCar: { roadDir: 0 },
+    setNumOtherCars(count) { unreliableCounts.push(count); },
+  };
+  assert.equal(configureDriveyOpposingTraffic(unreliable).mode, "none");
+  assert.deepEqual(unreliableCounts, [0]);
 });
 
 test("OPEN, UNDERWATER, BLOOM and reduced motion use distinct bounded mappings", () => {
@@ -225,7 +385,10 @@ test("the bridge embeds the original runtime and excludes unneeded image and leg
   assert.match(fieldSource, /WebGL · Original Drivey/);
   assert.match(fieldSource, /canvasFramebufferSize\(screen\.renderer\?\.domElement\)/);
   assert.match(fieldSource, /drivey\.setCameraMount\(settings\.camera\)/);
-  assert.match(fieldSource, /drivey\.setNumOtherCars\(settings\.traffic\)/);
+  assert.match(fieldSource, /configureDriveyOpposingTraffic\(drivey\)/);
+  assert.match(fieldSource, /holdDriveyPlayerAtRest\(drivey\)/);
+  assert.doesNotMatch(fieldSource, /settings\.traffic/);
+  assert.doesNotMatch(harnessSource, /parameters\.get\("traffic"\)/);
   assert.match(fieldSource, /drivey\.screen\.setWireframe\(wireframe\)/);
   assert.match(fieldSource, /drivey\.screen\.setCycleColors\(false\)/);
   assert.match(fieldSource, /silhouetteMaterial\.uniforms\.isWireframe\.value = wireframe/);

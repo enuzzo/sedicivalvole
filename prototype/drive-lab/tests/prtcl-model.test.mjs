@@ -113,5 +113,6 @@ test("the reproducible QA harness can hold every PRTCL type, macro, palette, and
   assert.match(harnessSource, /type.*frequency.*murmuration.*axiom/);
   assert.match(harnessSource, /PRTCL_SETTINGS/);
   assert.match(harnessSource, /audioLevel: readNumber\("audio", 0\)/);
-  assert.match(harnessSource, /effect: parameters\.get\("effect"\)/);
+  assert.match(harnessSource, /const QA_EFFECT = parameters\.get\("effect"\)/);
+  assert.match(harnessSource, /effect: QA_EFFECT/);
 });

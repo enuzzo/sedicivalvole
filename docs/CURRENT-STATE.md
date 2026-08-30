@@ -27,8 +27,9 @@ dated study documents.
   Vertigo changes only the original runtime's externally bridged time, FOV and
   colour controls; Meridian changes corridor projection, flow, fog and rail
   energy; Atlas changes MapLibre camera and layer paint properties; Drivey
-  receives bounded speed, camera, traffic and two-channel material updates through its
-  external bridge without editing the vendor files; PRTCL changes point scale,
+  receives smoothed bounded road response, timestamped audio-macro envelopes,
+  camera and two-channel material updates through its external bridge without
+  editing the vendor files; PRTCL changes point scale,
   depth/travel, palette pulse, spread, attenuation, and glow within its own
   particle grammar.
 - Meridian keeps one deterministic low corridor beneath sparse, large oblique
@@ -66,9 +67,13 @@ dated study documents.
   traffic, camera, rendering and bundled-library files remain byte-identical
   under a SHA-256 manifest; a project-authored iframe shell and external bridge
   apply bounded speed, music, reduced motion, named performance effects and all
-  ten Sedici Valvole palettes. The bridge now instantiates the upstream automatic
-  `Input`, fixes the player car's random weaving at zero, and leaves the original
-  road/curve steering in charge. Every preset keeps its native `accent` and
+  ten Sedici Valvole palettes. The bridge instantiates the upstream automatic
+  `Input`, fixes the player car's random weaving, and leaves the original
+  road/curve steering in charge while moving. At commanded zero it holds the car
+  motionless on the current lane centre and resumes from that same road location.
+  It requests 16 NPCs only when every generated car can be assigned and verified
+  on the direction opposite the player; otherwise traffic fails closed to zero.
+  The former stored traffic-count preference is ignored. Every preset keeps its native `accent` and
   `secondary` colours as simultaneous material channels in both Normal and Wire.
   Two compact `94 × 34 px` text-only controls cycle
   `HOOD → REAR → AERIAL` and `NORMAL ↔ WIRE` directly, with no dropdown, panel,
@@ -299,8 +304,9 @@ dated study documents.
 
 ## Open work
 
-1. Validate DRIVEY automatic road/curve following and both native palette
-   channels in the Tesla. Validate ATLAS multitouch, live GPS
+1. Validate DRIVEY automatic road/curve following, ten-second zero hold,
+   zero-to-motion resume, opposing-only traffic and both native palette channels
+   in the Tesla. Validate ATLAS multitouch, live GPS
    recovery, map matching, pulse direction, passenger readability and palette
    contrast on the target screen.
 2. Perform low-volume listening and a real-Tesla drive across FRACTURE's full

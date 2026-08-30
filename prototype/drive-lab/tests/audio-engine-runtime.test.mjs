@@ -484,6 +484,11 @@ test("a confirmed OPEN trajectory drives the parallel rising focus sweep", async
     assert.ok(accelerationFocus.frequency.value > 1600);
     assert.ok(accelerationFocusGain.gain.value > 0.2);
     assert.equal(effects.includes("OPEN"), true);
+    const macros = engine.getMacroSnapshot();
+    assert.equal(macros.schema, "sedicivalvole.audio-macros.v1");
+    assert.ok(macros.values.open > 0.2);
+    assert.equal(macros.values.underwater, 0);
+    assert.equal(engine.getState().macros.values.open, macros.values.open);
     engine.destroy();
   });
 });
@@ -526,6 +531,8 @@ test("a sustained brake releases an active BLOOM worklet only once", async () =>
     setClock(1601);
     engine.setSpeed(44);
     assert.equal(bloomNode.port.messages.filter((message) => message.type === "TRIGGER").length, 1);
+    setClock(1616);
+    assert.ok(engine.getMacroSnapshot().values.bloom > 0.45);
 
     engine.brake();
     for (let index = 0; index < 8; index += 1) timers.runIntervals(40);
@@ -534,6 +541,7 @@ test("a sustained brake releases an active BLOOM worklet only once", async () =>
       1,
       "held braking spammed redundant BLOOM release messages",
     );
+    assert.ok(engine.getMacroSnapshot().values.underwater > 0.4);
     engine.destroy();
   });
 });

@@ -3,6 +3,9 @@ export const BLOOM_LAUNCH_HIGH_MPS2 = 4;
 export const BLOOM_LAUNCH_WINDOW_MS = 300;
 export const BLOOM_REFRACTORY_MS = 25000;
 export const BLOOM_GESTURE_MS = 650;
+export const BLOOM_ATTACK_SECONDS = 0.03;
+export const BLOOM_SWEEP_SECONDS = 0.4;
+export const BLOOM_RELEASE_SECONDS = 0.25;
 
 export function advanceBloomLaunchHistory(history, accelerationMps2, capturedAtMs) {
   const now = Number(capturedAtMs) || 0;

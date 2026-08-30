@@ -14,7 +14,6 @@
 //   reduced   "1" to force reduced motion
 //   readout   "0" to hide the measurement overlay for clean captures
 //   camera    hood | rear | aerial              (DRIVEY only)
-//   traffic   0..24                             (DRIVEY only)
 //   render    normal | wireframe                (DRIVEY only)
 //   type      frequency | murmuration | axiom    (PRTCL only)
 //   audio     held 0..1 score level              (DRIVEY / PRTCL)
@@ -27,6 +26,7 @@ import { createRoot } from "react-dom/client";
 import "../src/styles.css";
 import { getFluxTheme } from "../src/flux-themes.js";
 import { ROAD_SPEED_CEILING_KMH, speedToEnergy } from "../src/signal-model.js";
+import { createAudioMacroSnapshot } from "../src/response-mapping.js";
 
 // Loaded on demand so the harness can run an environment that another branch
 // has not built yet, and so one broken renderer cannot block the others.
@@ -57,10 +57,16 @@ const REDUCED_MOTION = parameters.get("reduced") === "1";
 const SHOW_READOUT = parameters.get("readout") !== "0";
 const DRIVEY_SETTINGS = {
   camera: parameters.get("camera") ?? "hood",
-  traffic: readNumber("traffic", 16),
   renderMode: parameters.get("render") ?? "normal",
 };
 const PRTCL_SETTINGS = { type: parameters.get("type") ?? "frequency" };
+const QA_EFFECT = parameters.get("effect");
+const QA_MACROS = createAudioMacroSnapshot({
+  capturedAtMs: 0,
+  open: QA_EFFECT === "OPEN" ? 1 : 0,
+  underwater: QA_EFFECT === "UNDERWATER" ? 1 : 0,
+  bloom: QA_EFFECT === "BLOOM" ? 1 : 0,
+});
 
 function useHeldSpeed() {
   const [speed, setSpeed] = useState(HELD_SPEED);
@@ -146,9 +152,9 @@ function Harness() {
   const extra = ENVIRONMENT === "aperture"
     ? { energy: speedToEnergy(speed), pulse: 0, brake: 0 }
     : ENVIRONMENT === "drivey"
-      ? { audioLevel: readNumber("audio", 0), effect: parameters.get("effect"), settings: DRIVEY_SETTINGS }
+      ? { audioLevel: readNumber("audio", 0), effect: QA_EFFECT, macroSnapshot: QA_MACROS, settings: DRIVEY_SETTINGS }
       : ENVIRONMENT === "prtcl"
-        ? { audioLevel: readNumber("audio", 0), effect: parameters.get("effect"), settings: PRTCL_SETTINGS }
+        ? { audioLevel: readNumber("audio", 0), effect: QA_EFFECT, settings: PRTCL_SETTINGS }
       : {};
 
   const APP_COMMIT = typeof __APP_COMMIT__ !== "undefined" ? __APP_COMMIT__ : "dev";

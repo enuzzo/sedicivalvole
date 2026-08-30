@@ -324,7 +324,16 @@ and rendering. The separate sedicivalvole shell and parent bridge clamp road
 speed, music level, reduced motion and performance state, instantiate the
 upstream automatic `Input`, remove only the player car's random weaving, and map
 each theme's native `accent` and `secondary` colours onto separate material
-channels. It exposes only Hood, Rear and Aerial views plus Normal/Wire rendering.
+channels. A project-owned response mapper turns bounded scalar input into
+scalar/vector scene output with authored endpoints, curve exponent, asymmetric
+attack/release and hard per-second slew limits. Drivey is its first visual
+consumer; it also receives timestamped values for the exact OPEN, UNDERWATER
+and BLOOM envelopes used by audio. At commanded zero the bridge projects the
+player to the current lane centre, aligns it to the road tangent and clears
+velocity, steering and physics state. It asks upstream for 16 generated NPCs,
+then retains them only if all can be placed and verified opposite the player's
+road direction; any unavailable or ambiguous lane metadata fails closed to zero
+traffic. No vendor file is changed. It exposes only Hood, Rear and Aerial views plus Normal/Wire rendering.
 Two compact text-only controls cycle those
 states directly; they open no contextual panel and never edit the vendor tree.
 
