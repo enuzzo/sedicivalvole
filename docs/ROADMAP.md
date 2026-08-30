@@ -29,7 +29,7 @@ Gate: a repeatable vehicle report with no invented values. If GPS speed is absen
 
 ## Owner calibration surface
 
-Status: **IMPLEMENTED LOCALLY; CANONICAL ACCEPTANCE PENDING**.
+Status: **PUBLISHED; AUTHENTICATED OWNER AND VEHICLE ACCEPTANCE PENDING**.
 
 - selected Focus Canvas interface at desktop, mobile, and exact Tesla viewport;
 - server-side PHP authentication, expiring session, logout and protected mail route;

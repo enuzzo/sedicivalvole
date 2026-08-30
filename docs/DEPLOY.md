@@ -8,6 +8,39 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Protected owner LAB publication — 2026-08-30 18:34
+
+- build stamp: **`20260830-1828`**; deployed source commit: `9d82df2`;
+  implementation checkpoint: `cfd27dc`;
+- verification gate: **PASS within the local toolchain boundary**. The complete
+  native suite passes 327 of 328 checks; only the known local `spawn php ENOENT`
+  diagnostic-mail fixture is unavailable. All 18 focused LAB/deployment checks,
+  all 14 DRIVEY/integrity checks, the 130-module main build and the 43-module
+  protected inline LAB build pass;
+- publication boundary: **PASS**. Read-only preflight and immediate postflight
+  reported network, login, canonical directory, remote listing and identity PASS;
+  both no-write checks reported `remote_writes=NONE`. Publication transferred
+  93 files / 16,447,876 bytes through the guarded dynamic-root workflow. The
+  local output contained only the current referenced bundle before upload;
+- canonical root identity: **PASS**. Bare/cache-busted HTML returns `200` with
+  `no-store`, `no-cache` and `nosniff`, and is byte-identical to the local entry
+  at SHA-256
+  `ceed02ec4d1059dcb520c996f468e495394b4c33fecf599c4f62ff1e3008db35`.
+  Main JavaScript and CSS are byte-identical at
+  `7b28aaeb4146b4a26f57b245e7bf65e200a88bcd9beac8a37fb913f317ff1d9a`
+  and `c79a61df7c551f34ebaf6b5e31f61b9c901911d989921898e80f06018fb2fd32`;
+- unauthenticated LAB boundary: **PASS**. Canonical `/lab/` returns only the
+  owner-code form with no script tag, protected boot object or runtime root.
+  Direct `bootstrap.php` returns `404`; unauthenticated `send.php` returns `401`.
+  Response headers include no-store/no-cache, `nosniff`, same-origin referrer,
+  frame denial, a secure HttpOnly SameSite-Strict `/lab/` session cookie and a
+  nonce CSP whose default source is `none`;
+- exact live viewport: **PASS for the login surface**. At `773 × 601`, the form
+  measures exactly the viewport with no horizontal or vertical overflow and the
+  expected accessible textbox and action. Authenticated Focus Canvas behavior,
+  logout/session expiry, explicit mail handoff and real-Tesla physical acceptance
+  remain open until the owner completes the protected login.
+
 ## Phase 1 shared response and DRIVEY publication — 2026-08-30 17:15
 
 - build stamp: **`20260830-1707`**; deployed source commit: `656a07d`;
