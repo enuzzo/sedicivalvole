@@ -805,7 +805,7 @@ source implementation.
 | M1d | Planned: use source genre/pace metadata for browsing and next-track selection only, never mid-track switching. | Catalog selector, protocol/state, tests | 1.5 | M9, Q23 | Driving-band changes affect the next choice only; deterministic seeded tests cover all bands. | Source metadata quality and semantics may be inconsistent. |
 | M1e | Planned: five plain-language driving rhythm bands with automatic/manual modes. | SOUNDTRACK UI/schema/catalog query/tests | 1.5 | Q23, M1d | Every band has visible explanatory copy; manual override and restore-auto are unambiguous. | Italian labels in the request must become approved English product copy. |
 | M2 | Owner-approved launch mechanics plus planned playback controls: one short post-splash screen contains `MUSIC`, `VISUAL` and one final `START`; it resolves PLAY THE ROAD/SOUNDTRACK/MUTE and the initial Visual before starting. Skip, shuffle, title/artist, compact rich-credit control and selected one-time control onboarding remain planned. | App shared overlay/status, audio controller, Visual registry, CSS/tests | 3.5 | M1, M10, X1/X2/X9, S2i | Controls work at 773×601; the launch starts only after explicit Music + Visual resolution and MUTE still retains the selected Visual; attribution stays reachable; rich-credit state follows the audible track through rapid skip and never shows stale metadata; chosen onboarding completes under four seconds and respects reduced motion. | Mandatory attribution and two-axis onboarding can overload the launch flow. |
-| M3 | Owner-authorised: prominent Illobo featured selection inside SOUNDTRACK, complete per-file provenance, and QR/link to `https://soundcloud.com/illobo`; private written confirmation recommended. | Catalog seed/source adapter, UI/notices/tests | 1.5 | M11, owner-supplied/approved file inventory | Only owner-authorised works appear; each carries source/licence capability flags; QR/link is tested and featured treatment is explicit. | Platform download status is not a substitute for the direct grant or provenance. |
+| M3 | Owner-authorised: prominent Illobo featured selection inside SOUNDTRACK, complete per-file provenance, and QR/link to `https://soundcloud.com/illobo`; private written confirmation recommended. The selected featured treatment is `Signal Border`: one restrained moving red segment around the Illobo/SOUNDTRACK choice, static under reduced motion, without a decorative badge. | Catalog seed/source adapter, UI/notices/tests | 1.5 | M11, owner-supplied/approved file inventory | Only owner-authorised works appear; each carries source/licence capability flags; QR/link is tested and Signal Border is noticeable without changing the launcher hierarchy. | Platform download status is not a substitute for the direct grant or provenance. |
 | M4 | Owner-approved source-visible delivery: no client-secret/protection claim; protected local sources use server-authorised short-lived segmented delivery, never Git audio, with harmless public sample configuration only. | Server delivery, client Media Source/blob path, `.gitignore`, sample config, docs/tests | 3 | source-specific grants, M6 | No source audio/credential/private host data in Git/static build/logs; expiring authorisation and segmented playback; docs call it delivery control, not protection. | Browser users can always capture decoded audio; network dependence in car. |
 | M5 | Closed by owner: the retired external source is excluded from product, catalogue, authoring, local audition, and runtime. No API calls, keys, credits, or files are used. | `PIANO.md` decision record only | 0 | Future explicit owner reopening | Repository and runtime contain no dependency, asset, key, request, or product claim for the retired source. | A future proposal could accidentally revive the source without rechecking current model-specific terms. |
 | M5b | Closed/superseded: no audiovisual-only exception for the retired source is retained. | `PIANO.md` decision record only | 0 | M5 future reopening | The source cannot appear in any browsing, selection, playback, effect, or authoring path. | Treating a plan-tier marketing label as a sufficient music grant. |
@@ -820,17 +820,19 @@ source implementation.
 
 #### Illobo source-preparation note — 2026-08-30
 
-- The owner-supplied source directory is
-  `_references/audio/tracks/illobo/original/`. It contains 38 WAV files totalling
-  approximately 2.5 GB: 30 unique byte identities and eight exact `(1)` copies.
-  Duplicate files are ignored before encoding and never become separate catalogue
-  entries.
+- The owner-supplied intake directory is
+  `_references/audio/tracks/illobo/original/`. It originally contained 38 WAV
+  files totalling approximately 2.5 GB: 30 unique byte identities and eight exact
+  `(1)` copies. On 2026-08-30, the owner approved removing all eight verified
+  duplicates and the 37:51 long-form mix. They were moved to the recoverable
+  system Trash. The active ignored archive now contains exactly 29 unique WAV
+  masters totalling approximately 1.5 GB.
 - Preserve every original file unchanged. Admission creates a per-file manifest
   with original filename, SHA-256, duration, sample rate, bit depth, selected
   editorial title, output filename, encoded hash, encoder/version/settings,
   direct-grant capability flags and the public Illobo destination
   `https://soundcloud.com/illobo`.
-- Proposed web master: stereo MP3 through deterministic `libmp3lame` VBR `V2`
+- Selected web master: stereo MP3 through deterministic `libmp3lame` VBR `V2`
   (`-q:a 2`), preserving the source sample rate and programme dynamics, with no
   loudness normalization, remastering, clipping repair or destructive source
   rewrite. The 5–10 MB request is a normal-song target, not permission to lower
@@ -841,15 +843,15 @@ source implementation.
   title case, removed mastering-tool suffixes, stable ASCII slugs and explicit
   version labels such as `Edit`, `Final`, `Vox`, or `Due`. No new authorship,
   album, remix or release claim may be invented.
-- `Lobo-stranger_beats_carnival2023.wav` is a 2,270.8-second long-form mix
-  (approximately 37:51), not a normal song-sized asset. It remains outside the
-  first carousel until the owner chooses one of: keep it as a separately labelled
-  long mix with a larger file, provide authored chapter boundaries, or exclude it.
-  Automatic splitting and a sub-10-MB low-bitrate encode are prohibited.
-- The featured treatment remains behind the mandatory three-direction design
-  gate. It must be noticeable but restrained, respect reduced motion, keep the
-  normal Music/Visual launcher hierarchy, and link its rich attribution surface
-  to Illobo rather than presenting the project as the artist.
+- `Lobo-stranger_beats_carnival2023.wav` was explicitly rejected by the owner as
+  unnecessary for this catalogue and moved to the recoverable system Trash. It
+  must not be encoded, split, catalogued or published unless separately restored
+  and reopened.
+- The mandatory three-direction micro-design gate is resolved in favour of
+  **Signal Border**. A thin red signal segment travels slowly around the featured
+  Illobo/SOUNDTRACK choice, becomes static under reduced motion, preserves the
+  normal Music/Visual launcher hierarchy and opens attribution belonging to
+  Illobo rather than presenting sedicivalvole as the artist.
 
 ### Strudel evaluation and cross-cutting dependency records
 
