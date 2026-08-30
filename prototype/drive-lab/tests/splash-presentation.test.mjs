@@ -30,7 +30,7 @@ test("launch surface contains only product and action copy", () => {
     app.indexOf("</button>", app.indexOf('className="launch-button"')),
   );
 
-  assert.match(launchMarkup, /launch-brand">[\s\S]*?sedicivalvole-mark\.svg[\s\S]*?<span>sedicivalvole<\/span>/);
+  assert.match(launchMarkup, /launch-brand">[\s\S]*?BRAND_MARK_URL[\s\S]*?<span>sedicivalvole<\/span>/);
   assert.match(launchMarkup, /alt="" aria-hidden="true"/);
   assert.match(launchMarkup, /PLAY THE ROAD/);
   assert.doesNotMatch(launchMarkup, /launch-(?:index|vent|safety|latch)/);
@@ -44,7 +44,8 @@ test("the selected Instrument Deck resolves Music and Visual before START", () =
   assert.match(app, /setPhase\("choosing"\)/);
   assert.match(selector, /<legend>MUSIC<\/legend>/);
   assert.match(selector, /<legend>VISUAL<\/legend>/);
-  assert.match(selector, /className="launch-selector-mark"[\s\S]*?sedicivalvole-mark\.svg[\s\S]*?alt=""[\s\S]*?aria-hidden="true"/);
+  assert.match(app, /const BRAND_MARK_URL = `\/brand\/sedicivalvole-mark\.svg\?build=\$\{encodeURIComponent\(APP_BUILD\)\}`/);
+  assert.match(selector, /className="launch-selector-mark"[\s\S]*?src=\{BRAND_MARK_URL\}[\s\S]*?alt=""[\s\S]*?aria-hidden="true"/);
   assert.match(selector, /FLUX_ENVIRONMENTS\.map/);
   assert.match(selector, /disabled=\{!ready\}/);
   assert.match(selector, /musicId && environmentId/);

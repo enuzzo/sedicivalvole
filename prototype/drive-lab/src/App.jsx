@@ -118,6 +118,7 @@ const SCORE_VOICES = [
 const APP_VERSION = __APP_VERSION__;
 const APP_BUILD = __APP_BUILD__;
 const APP_COMMIT = __APP_COMMIT__;
+const BRAND_MARK_URL = `/brand/sedicivalvole-mark.svg?build=${encodeURIComponent(APP_BUILD)}`;
 const PREFERENCES_KEY = "sedicivalvole.preferences.v2";
 const LEGACY_PREFERENCES_KEY = "sedicivalvole.preferences.v1";
 const LAUNCH_MUSIC_CHOICES = Object.freeze([
@@ -994,7 +995,7 @@ function LaunchSelector({
       <header className="launch-selector-heading">
         <img
           className="launch-selector-mark"
-          src="/brand/sedicivalvole-mark.svg"
+          src={BRAND_MARK_URL}
           alt=""
           aria-hidden="true"
         />
@@ -2511,7 +2512,7 @@ export function App() {
             }}
           >
             <span className="launch-brand">
-              <img src="/brand/sedicivalvole-mark.svg" alt="" aria-hidden="true" />
+              <img src={BRAND_MARK_URL} alt="" aria-hidden="true" />
               <span>sedicivalvole</span>
             </span>
             <span className="launch-command">
