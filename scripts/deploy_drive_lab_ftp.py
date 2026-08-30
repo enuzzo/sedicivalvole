@@ -266,7 +266,9 @@ def verify_remote_static_tree(
             )
             if project_owned_update:
                 continue
-            raise ValueError(f"{tree_name} content mismatch")
+            raise ValueError(
+                f"{tree_name} content mismatch at {relative_path.as_posix()}"
+            )
 
 
 def sha256_bytes(payload: bytes) -> str:
