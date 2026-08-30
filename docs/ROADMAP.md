@@ -107,7 +107,7 @@ Implemented:
 - selectable `VERTIGO 02` using the byte-identical upstream Interstate 7 scene with its road, repeated side lights, opposing car trails, bloom, fog, camera, deep distortion, and original dependencies;
 - an external `0–130 km/h` bridge that slows the original clock from stopped to its non-boosted `1×` rate and maps FOV from `90°` to `150°`, without editing the vendor runtime.
 - original `MERIDIAN 03`, rebuilt against the selected reference as a low stable corridor of sparse oblique blades and longitudinal shoulder planes. Bounded field motion, FOV, depth compression, peripheral stretch and parallax carry speed without conventional buildings, cloud slabs or a particle field;
-- lazy-loaded `ATLAS 04`, with a minimal palette-owned OpenFreeMap vector style, 3D buildings, nearby Italian Wikipedia context, five passenger links, a local QR, an explicit no-GPS Milan flight mode, hard-clamped `0–85°` manual pitch, and tested but deliberately non-rendered timestamped point, rendered-tile road-name and English cardinal-sector foundations;
+- lazy-loaded `ATLAS 04`, with a minimal palette-owned OpenFreeMap vector style, 3D buildings, nearby Italian Wikipedia context, five passenger links, a local QR, an explicit no-GPS Milan flight mode, hard-clamped `0–85°` manual pitch, a bounded high-cadence timestamped position feed, and tested but deliberately non-rendered point, rendered-tile road-name and English cardinal-sector foundations;
 - source-faithful `DRIVEY 05`, with 51 byte-identical upstream files pinned at
   `5104cdade2a3158786b05b9b0680a50e942830cf`, a separate project-owned iframe
   shell/bridge, upstream automatic road/curve following without random player

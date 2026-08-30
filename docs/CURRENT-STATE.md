@@ -86,8 +86,11 @@ dated study documents.
   A bounded session-only A3 foundation now retains eight monotonic timestamped
   fixes and can interpolate the same path at 30 or 60 FPS with a `100 ms` delay,
   no extrapolation, a `1500 ms` stale freeze and no animation across long gaps.
-  It is not yet connected to a MapLibre point source or visible marker; feed
-  cadence and the point treatment remain behind the ATLAS overlay design gate.
+  Trusted coordinates feed that buffer at GPS cadence outside React state and
+  still arrive when numeric GPS speed is unavailable; the first calm
+  map/camera update is immediate and later ones remain throttled to `2500 ms`.
+  The buffer is not yet connected to a MapLibre point source or visible marker;
+  point treatment remains behind the ATLAS overlay design gate.
   Model-only A3b/A4 helpers also derive a bounded local road name strictly from
   already rendered transportation features and map headings to eight English
   cardinal sectors. They make no reverse-geocoding request and remain unwired

@@ -298,8 +298,11 @@ A3 has a deliberately non-rendered motion foundation: at most eight monotonic
 timestamped fixes remain in session memory, and a `100 ms` delayed sampler
 interpolates latitude, longitude and the shortest heading arc independently of
 render frame rate. It never extrapolates, freezes after `1500 ms`, and refuses
-to animate across gaps above `750 ms`. The high-rate GPS feed and MapLibre point
-source/layer remain separate work behind the selected overlay direction.
+to animate across gaps above `750 ms`. Trusted coordinates feed the bounded ref
+at GPS cadence even when `coords.speed` is null, without driving app-wide React
+state at that rate; the first map/camera fix is immediate and later camera
+updates remain at `2500 ms`. The MapLibre point source/layer remains separate
+work behind the selected overlay direction.
 A3b reads a bounded label only from the map's already rendered transportation
 features and never introduces reverse geocoding; A4 partitions normalized
 heading into eight deterministic English cardinal sectors. Both are pure model

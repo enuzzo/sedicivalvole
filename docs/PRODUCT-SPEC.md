@@ -255,7 +255,7 @@ acceptance in the vehicle.
 | Open packs | strategic goal | schema and licensing not frozen |
 | Offline audio core | implemented prototype | identical score DSP renders and analyses WAV references in Node |
 | Offline application cache | planned after capability test | browser persistence unknown |
-| ATLAS OpenFreeMap flight | implemented prototype | ephemeral GPS or explicit Milan demo; nearby Wikipedia and QR; bounded point interpolation, rendered-tile road-name extraction and English cardinal-sector models exist, while their high-rate feed and visible point/badge/compass wiring remain gated; Tesla network/memory acceptance pending |
+| ATLAS OpenFreeMap flight | implemented prototype | ephemeral GPS or explicit Milan demo; nearby Wikipedia and QR; a bounded high-cadence position feed plus point interpolation, rendered-tile road-name extraction and English cardinal-sector models exist, while visible point/badge/compass wiring remains gated; Tesla network/memory acceptance pending |
 | WAV-to-parameter editor | future research | source lab not validated on real audio |
 | Trip postcard | not confirmed | privacy conflict requires review |
 
