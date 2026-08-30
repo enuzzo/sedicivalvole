@@ -1,7 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
-  JAMENDO_TRACK_SPEEDS,
   SOURCE_CAPABILITY,
   allowsSoundtrackEffects,
   creativeCommonsPolicy,
@@ -72,7 +71,7 @@ test("a Jamendo item retains only playback and credit fields, never download dat
   assert.equal(policy.capabilities.hostedCopy, SOURCE_CAPABILITY.UNKNOWN);
 });
 
-test("Jamendo discovery metadata keeps only official pace values and normalized genres", () => {
+test("Jamendo discovery metadata keeps normalized genres but no driving pace", () => {
   const policy = evaluateJamendoTrack({
     ...JAMENDO_TRACK,
     musicinfo: {
@@ -80,15 +79,14 @@ test("Jamendo discovery metadata keeps only official pace values and normalized 
       tags: { genres: ["Rock", "rock", " Funk ", ""] },
     },
   });
-  assert.deepEqual(JAMENDO_TRACK_SPEEDS, ["verylow", "low", "medium", "high", "veryhigh"]);
-  assert.equal(policy.item.pace, "high");
+  assert.equal("pace" in policy.item, false);
   assert.deepEqual(policy.item.genres, ["rock", "funk"]);
 
   const unsupported = evaluateJamendoTrack({
     ...JAMENDO_TRACK,
     musicinfo: { speed: "extreme", tags: { genres: "rock" } },
   });
-  assert.equal(unsupported.item.pace, null);
+  assert.equal("pace" in unsupported.item, false);
   assert.deepEqual(unsupported.item.genres, []);
 });
 
