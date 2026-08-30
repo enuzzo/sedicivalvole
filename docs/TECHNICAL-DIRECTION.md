@@ -368,6 +368,13 @@ The fixed road-speed mapping separates early recognition from maximum deformatio
 
 Environment preferences preserve every valid implemented selection. Missing,
 retired or invalid identifiers—including PLUMB—safely resolve to Aperture.
+Interface appearance is a separate versioned preference with explicit reset;
+it never shares storage identity with the active visual palette. Its pure X10
+model resolves manual LIGHT/DARK directly and lets AUTO prefer a verified
+`prefers-color-scheme` signal. A network-free solar fallback consumes only the
+current ephemeral position and UTC time, classifies day/twilight/night, and
+holds the current family through twilight or active interaction. No coordinate
+or solar result is persisted. DOM tokens and the visible control remain gated.
 
 The Flux chrome uses a shared 6 px UI radius for framed controls and diagnostic surfaces. At `773 x 601` the retracting footer is 64 px high, keeps Audio on one row, and exposes explicit Visual and Music libraries with disclosure carets. Structural rails remain aligned to the underlying grid. The absolute speed readout uses the same column dimensions and `--line` stroke as the top bar, so hiding the surrounding control layer does not move or restyle it as a separate overlay.
 

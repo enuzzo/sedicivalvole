@@ -186,8 +186,11 @@ dated study documents.
 - Road Sheet now records the invariant interface anatomy for X10. LIGHT uses
   warm ivory, quiet gray, near-black, and vermilion; DARK will retain the same
   layout and hierarchy with near-black, charcoal, dark-gray, warm-light, and
-  vermilion tokens. Product-wide DARK/AUTO switching and its preference control
-  remain planned rather than silently active in this checkpoint.
+  vermilion tokens. A non-visual X10 model now owns the independent versioned
+  LIGHT/DARK/AUTO preference, explicit reset, safe storage failure, browser-
+  scheme priority, offline solar fallback, twilight hold and no-mid-gesture
+  rule. Product-wide tokens, capability adapter and visible control remain
+  planned rather than silently active in this checkpoint.
 - Space Grotesk remains the locally packaged face for all reading text, values,
   controls, operational labels, LAB controls and session-report content under
   OFL-1.1. Its deliberate `400–700` hierarchy and tabular numerals remain intact.

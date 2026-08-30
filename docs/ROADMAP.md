@@ -167,7 +167,8 @@ Planned only after vehicle evidence:
 - owner-selected Road Sheet interface grammar: the implemented LIGHT Instrument
   Deck is the reference anatomy; X10 must apply the same geometry, grouping,
   typography, hierarchy, and `6 px` corner language to DARK tokens, then add
-  explicit LIGHT/DARK/AUTO selection without recolouring the active visual;
+  the prepared independent preference/reset and browser/solar AUTO model to an
+  explicit visible selector without recolouring the active visual;
 - a landscape-first iPhone surface spanning representative `667 × 375` through
   `932 × 430` Safari viewports, with notch/home-indicator safe areas and no
   clipped launcher, top bar, REPORT, contextual control, or footer;

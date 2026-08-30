@@ -60,6 +60,13 @@ See [`MODES.md`](MODES.md) for the boundary model, recommendations, and open dec
 
 Exactly three revised Product Design directions were shown after the luminous-axis rejection. The user selected **Modular Aperture**: an ordered rectangular field with a low black control plane, flat monochrome geometry, and a restrained palette accent. The interface is Braun-influenced, Swiss, minimal, and slightly brutalist, with rectilinear actions softened by the shared `6 px` radius, a locally hosted Space Grotesk variable type system, no circular buttons, and no glassmorphism. The later owner-selected **Road Sheet** direction defines the shared interface anatomy and the LIGHT surface family: warm ivory, quiet control gray, near-black type and actions, vermilion state rails, and hairline structure. DARK must preserve that exact layout, grouping, spacing, typography, and interaction hierarchy while mapping it to near-black, charcoal, dark-gray, warm-light, and vermilion tokens. Space Grotesk uses `400` for reading text, `500` for primary values, `600` for controls and `700` for operational labels. Orbitron is the sole textual exception: exact `sedicivalvole` project wordmarks use weight `750` and restrained `-0.02em` tracking in the Signal Gate, Instrument Deck and owner LAB. The running top bar uses the 16 Road product mark without a textual wordmark. `PLAY THE ROAD` remains Space Grotesk `600` with zero added tracking. The active visual palette also drives the interface accent and persists locally across reloads and later visits; the future product-wide `LIGHT`/`DARK`/`AUTO` appearance remains a separate preference with an explicit reset path. AUTO chooses between the shared LIGHT and DARK grammars without recolouring or replacing the active visual palette.
 
+The separate X10 `LIGHT`/`DARK`/`AUTO` preference and explicit reset model are
+implemented. AUTO can prioritize a verified browser scheme or derive
+day/twilight/night from ephemeral position and UTC time without a network
+request or coordinate persistence. Product-wide token application and the
+visible control remain gated. Appearance never recolours or replaces the active
+visual palette.
+
 Framed controls, cards, panels, and standalone buttons use one restrained `6 px` corner radius rather than completely sharp corners. This is a system token, not a per-component styling choice. The speed readout occupies an exact header-grid cell with the same divider stroke while the chrome is awake; when the header retires, the readout remains fixed in place and gains only the exposed lower corner treatment so it reads as a detached module rather than an unrelated overlay. At Tesla width, the running top bar begins with a fixed `68 px` product-mark report trigger and keeps the telemetry lane flexible: the speed module stays pinned to the right while the lane's leading `195 px` at `773 × 601` and `124 px` at `702 × 546` remain available for future low-priority appearance or status controls. X10 must select a contrast-safe mark variant when LIGHT top-bar tokens are implemented.
 
 The selected product identity is **16 Road**: a large path-outlined Orbitron
@@ -256,6 +263,7 @@ acceptance in the vehicle.
 | Offline audio core | implemented prototype | identical score DSP renders and analyses WAV references in Node |
 | Offline application cache | planned after capability test | browser persistence unknown |
 | ATLAS OpenFreeMap flight | implemented prototype | ephemeral GPS or explicit Milan demo; nearby Wikipedia and QR; a bounded high-cadence position feed plus point interpolation, rendered-tile road-name extraction and English cardinal-sector models exist, while visible point/badge/compass wiring remains gated; Tesla network/memory acceptance pending |
+| LIGHT/DARK/AUTO interface appearance | model foundation | independent versioned preference/reset, safe storage failure, browser-scheme priority, offline solar phase, twilight/interaction hold; visible control, DARK tokens and product application remain gated |
 | WAV-to-parameter editor | future research | source lab not validated on real audio |
 | Trip postcard | not confirmed | privacy conflict requires review |
 

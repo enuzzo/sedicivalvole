@@ -437,10 +437,12 @@ vehicle screenshot at native scale and a pixel comparison.
   sheet in the cabin. Contrast, image legibility, map attribution, focus states,
   reduced motion, and exact Tesla viewports remain acceptance gates.
 
-Only the Road Sheet LIGHT launcher is implemented in this checkpoint. X10 still
-owns the product-wide DARK token application, the visible appearance control,
-preference/reset behavior, and AUTO day/night switching; no hidden automatic
-theme behavior is implied by the current launcher.
+Only the Road Sheet LIGHT launcher is visibly implemented in this checkpoint.
+X10's pure model now owns the separate versioned preference/reset, safe storage
+failure, browser-scheme priority, offline solar phase and twilight/interaction
+holds at `[fe100b6]`. Product-wide DARK token application, the visible control,
+system-signal capability adapter and position-to-AUTO wiring remain open; no
+hidden automatic theme behavior is implied by the current launcher.
 
 Tesla documentation now describes destination weather and, where equipped, a
 map weather overlay with approximately three hours of precipitation animation.
@@ -1073,8 +1075,10 @@ The owner assigned stable IDs on 2026-08-30: `A5 DISCOVER`, `X9 Visual Library`,
   X1/X2 and M13 dependencies without turning ATLAS into a permanently expanded
   content panel.
 - `X9` and `X10`: keep the grouped Visual Library and shared Appearance
-  system. Keep both in the X2 exactly-three-direction gate, but preserve their
-  separate implementation and acceptance ownership.
+  system. X10's persistence and AUTO resolution model exists at `[fe100b6]`;
+  keep its visible control and token application with X9 in the X2 exactly-
+  three-direction gate while preserving separate implementation and acceptance
+  ownership.
 - `X11`: verify a weather provider and privacy/attribution boundary, then
   prototype only the contextual
   exception-led value beyond Tesla's own forecast and precipitation overlay.
