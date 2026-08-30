@@ -720,7 +720,7 @@ than missing requirements.
     checked separately and then removed by owner decision.
 16. **Current test baseline is environment-limited.** The per-machine native
     cache removes the shared-checkout arm64/x64 package conflict. The last full
-    suite passes 328 of 329 checks, with only the PHP diagnostic-mail fixture
+    suite passes 340 of 341 checks, with only the PHP diagnostic-mail fixture
     unavailable locally because `php` is absent. After the renderer-lifecycle
     and keyboard-motion correction, all 11 focused PRTCL checks and all 6
     focused LAB packaging checks pass; both production builds complete
