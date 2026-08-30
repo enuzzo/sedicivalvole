@@ -1009,7 +1009,7 @@ source implementation.
 ## Newly assigned entries
 
 The owner assigned stable IDs on 2026-08-30: `A5 DISCOVER`, `X9 Visual Library`,
-`X10 Appearance`, `X11 CONDITIONS`, and `SF1 Gradient Field`.
+`X10 Appearance`, `X11 CONDITIONS`, `X12 Product Identity`, and `SF1 Gradient Field`.
 
 - The architecture-safe per-machine native cache is implemented; it leaves the
   shared Dropbox `node_modules` untouched and fixes the arm64/x64 build boundary.
@@ -1030,6 +1030,14 @@ The owner assigned stable IDs on 2026-08-30: `A5 DISCOVER`, `X9 Visual Library`,
 - `X11`: verify a weather provider and privacy/attribution boundary, then
   prototype only the contextual
   exception-led value beyond Tesla's own forecast and precipitation overlay.
+- `X12`: create a production identity kit only after the mandatory
+  exactly-three-direction visual gate. Each direction must remain legible at
+  favicon scale and explore a restrained `16` monogram with the product's
+  official typeface, black-field dual-band colour language, genuine-alpha and
+  light-background counterparts. The selected direction ships as clean SVG
+  masters plus at least 512 x 512 PNG product icons in a dedicated `logo/`
+  folder, and may then replace the splash mark. Keep the feeling vintage,
+  minimal and forceful; avoid ornamental detail that collapses at small sizes.
 - `SF1`: present exactly three directions before implementation: planar perceptual mesh,
   displaced depth, and restrained aurora/flow. Start with the project-owned
   one-pass direct-WebGL2 planar spike. Admit no ShaderGradient source/dependency

@@ -8,6 +8,7 @@ const indexSource = await read("../server/lab-index.php");
 const bootstrapSource = await read("../server/lab-bootstrap.php");
 const sendSource = await read("../server/lab-send.php");
 const packageSource = await read("../scripts/package-lab.mjs");
+const viteSource = await read("../vite.lab.config.mjs");
 const deploySource = await read("../../../scripts/deploy_drive_lab_ftp.py");
 const appSource = await read("../src/lab/main.jsx");
 
@@ -25,6 +26,8 @@ test("the canonical LAB gate keeps authentication and secrets on the PHP boundar
 });
 
 test("the LAB bundle is inlined behind the gate and leaves no directly fetchable client bundle", () => {
+  assert.match(viteSource, /"process\.env\.NODE_ENV": JSON\.stringify\("production"\)/);
+  assert.match(packageSource, /LAB browser bundle still contains an unresolved Node\.js environment reference/);
   assert.match(packageSource, /dist\/client\/lab/);
   assert.match(packageSource, /replace\("\/\*__LAB_CSS__\*\/", \(\) => safeCss\)/);
   assert.match(packageSource, /replace\("\/\*__LAB_JS__\*\/", \(\) => safeJavascript\)/);

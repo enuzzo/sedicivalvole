@@ -6,6 +6,9 @@ const template = await readFile(new URL("../server/lab-index.php", import.meta.u
 const css = await readFile(new URL("lab.css", buildDirectory), "utf8");
 const javascript = await readFile(new URL("lab.js", buildDirectory), "utf8");
 const font = await readFile(new URL("../public/fonts/orbitron-latin-variable.woff2", import.meta.url));
+if (/\bprocess\.env\b/.test(javascript)) {
+  throw new Error("LAB browser bundle still contains an unresolved Node.js environment reference");
+}
 const safeCss = css
   .replace("__LAB_FONT_BASE64__", font.toString("base64"))
   .replaceAll("</style", "<\\/style");

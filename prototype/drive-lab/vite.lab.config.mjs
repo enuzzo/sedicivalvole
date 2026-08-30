@@ -24,6 +24,7 @@ export default defineConfig({
     __APP_VERSION__: JSON.stringify(productVersion),
     __APP_BUILD__: JSON.stringify(buildStamp()),
     __APP_COMMIT__: JSON.stringify(commitRef()),
+    "process.env.NODE_ENV": JSON.stringify("production"),
   },
   build: {
     outDir: "dist/lab-build",
