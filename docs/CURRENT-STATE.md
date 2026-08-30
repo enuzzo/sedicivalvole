@@ -88,6 +88,10 @@ dated study documents.
   no extrapolation, a `1500 ms` stale freeze and no animation across long gaps.
   It is not yet connected to a MapLibre point source or visible marker; feed
   cadence and the point treatment remain behind the ATLAS overlay design gate.
+  Model-only A3b/A4 helpers also derive a bounded local road name strictly from
+  already rendered transportation features and map headings to eight English
+  cardinal sectors. They make no reverse-geocoding request and remain unwired
+  until road-badge and compass placement are selected.
 - WAKE is rejected after repeated live review: its ribbons read as disordered
   rain rather than a convincing authored 3D road field. Its renderer, fallback,
   tests, catalog entry and current QA captures have been removed. The historical

@@ -300,6 +300,10 @@ interpolates latitude, longitude and the shortest heading arc independently of
 render frame rate. It never extrapolates, freezes after `1500 ms`, and refuses
 to animate across gaps above `750 ms`. The high-rate GPS feed and MapLibre point
 source/layer remain separate work behind the selected overlay direction.
+A3b reads a bounded label only from the map's already rendered transportation
+features and never introduces reverse geocoding; A4 partitions normalized
+heading into eight deterministic English cardinal sectors. Both are pure model
+contracts until the shared overlay placement is selected.
 The selected map necessarily requests the surrounding tile area from
 OpenFreeMap; a `0.05°`-quantized cell is sent to the Italian Wikipedia Geosearch
 API only when the cell changes. The same response supplies each page's concise
