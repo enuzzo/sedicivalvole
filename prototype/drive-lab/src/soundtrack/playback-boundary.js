@@ -4,49 +4,93 @@ export const SOUNDTRACK_PLAYBACK_BOUNDARY_SCHEMA = "sedicivalvole.soundtrack-pla
 
 export const SOUNDTRACK_PLAYBACK_INVARIANTS = Object.freeze({
   playbackRate: 1,
-  reactsToDriving: false,
+  drivingCanChangeTrack: false,
+  drivingCanRetimeRecording: false,
   trackChangesAreManual: true,
-  effectChangesAreManual: true,
 });
 
 const CONTROL_SOURCES = new Set(["main-ui", "authorized-passenger"]);
+export const SOUNDTRACK_VEHICLE_MACROS = Object.freeze(["open", "underwater", "bloom"]);
+export const SOUNDTRACK_MANUAL_EFFECT_IDS = Object.freeze([
+  "flanger",
+  "reverb",
+  "chorus",
+  "beat-repeat",
+]);
 
-const asText = (value) => typeof value === "string" ? value.trim() : "";
+const asAmount = (value) => Number.isFinite(value)
+  ? Math.min(1, Math.max(0, value))
+  : 0;
+
+const normalizeManualEffects = (values = {}) => Object.freeze(Object.fromEntries(
+  SOUNDTRACK_MANUAL_EFFECT_IDS.map((id) => [id, asAmount(values[id])]),
+));
+
+const zeroManualEffects = () => Object.freeze(Object.fromEntries(
+  SOUNDTRACK_MANUAL_EFFECT_IDS.map((id) => [id, 0]),
+));
+
+const effectBlockReason = ({ requested, admitted, authorizedControl, licenceAllowsEffects }) => {
+  if (!requested) return null;
+  if (!admitted) return "track-not-admitted";
+  if (!authorizedControl) return "unauthorized-control";
+  if (!licenceAllowsEffects) return "licence-denies-effects";
+  return null;
+};
 
 export function deriveSoundtrackPlaybackBoundary({
   policy,
-  effectsRequested = false,
-  effectId = null,
+  vehicleEffectsRequested = false,
+  manualEffects = {},
   controlSource = "main-ui",
 } = {}) {
   const admitted = policy?.admitted === true;
   const authorizedControl = CONTROL_SOURCES.has(controlSource);
-  const requested = effectsRequested === true;
   const licenceAllowsEffects = allowsSoundtrackEffects(policy);
-  const effectsEnabled = admitted
-    && requested
+  const vehicleRequested = vehicleEffectsRequested === true;
+  const requestedManualEffects = normalizeManualEffects(manualEffects);
+  const manualRequested = Object.values(requestedManualEffects).some((value) => value > 0);
+  const effectPathAllowed = admitted
     && authorizedControl
     && licenceAllowsEffects;
-
-  let effectsBlockedReason = null;
-  if (requested && !admitted) effectsBlockedReason = "track-not-admitted";
-  else if (requested && !authorizedControl) effectsBlockedReason = "unauthorized-control";
-  else if (requested && !licenceAllowsEffects) effectsBlockedReason = "licence-denies-effects";
 
   return Object.freeze({
     schema: SOUNDTRACK_PLAYBACK_BOUNDARY_SCHEMA,
     playbackAllowed: admitted,
     playbackRate: SOUNDTRACK_PLAYBACK_INVARIANTS.playbackRate,
-    reactsToDriving: SOUNDTRACK_PLAYBACK_INVARIANTS.reactsToDriving,
+    drivingCanChangeTrack: SOUNDTRACK_PLAYBACK_INVARIANTS.drivingCanChangeTrack,
+    drivingCanRetimeRecording: SOUNDTRACK_PLAYBACK_INVARIANTS.drivingCanRetimeRecording,
     trackChangesAreManual: SOUNDTRACK_PLAYBACK_INVARIANTS.trackChangesAreManual,
-    effects: Object.freeze({
-      requested,
-      enabled: effectsEnabled,
-      effectId: effectsEnabled ? asText(effectId) || null : null,
+    vehicleEffects: Object.freeze({
+      requested: vehicleRequested,
+      enabled: vehicleRequested && effectPathAllowed,
+      reactsToDriving: vehicleRequested && effectPathAllowed,
+      macros: SOUNDTRACK_VEHICLE_MACROS,
       controlSource: authorizedControl ? controlSource : null,
-      changesAreManual: SOUNDTRACK_PLAYBACK_INVARIANTS.effectChangesAreManual,
+      masterChangesAreManual: true,
       licenceAllowsEffects,
-      blockedReason: effectsBlockedReason,
+      blockedReason: effectBlockReason({
+        requested: vehicleRequested,
+        admitted,
+        authorizedControl,
+        licenceAllowsEffects,
+      }),
+    }),
+    manualEffects: Object.freeze({
+      requested: manualRequested,
+      enabled: manualRequested && effectPathAllowed,
+      ids: SOUNDTRACK_MANUAL_EFFECT_IDS,
+      requestedValues: requestedManualEffects,
+      appliedValues: effectPathAllowed ? requestedManualEffects : zeroManualEffects(),
+      controlSource: authorizedControl ? controlSource : null,
+      changesAreManual: true,
+      licenceAllowsEffects,
+      blockedReason: effectBlockReason({
+        requested: manualRequested,
+        admitted,
+        authorizedControl,
+        licenceAllowsEffects,
+      }),
     }),
   });
 }
