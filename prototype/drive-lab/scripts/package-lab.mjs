@@ -5,7 +5,7 @@ const outputDirectory = new URL("../dist/client/lab/", import.meta.url);
 const template = await readFile(new URL("../server/lab-index.php", import.meta.url), "utf8");
 const css = await readFile(new URL("lab.css", buildDirectory), "utf8");
 const javascript = await readFile(new URL("lab.js", buildDirectory), "utf8");
-const font = await readFile(new URL("../public/fonts/orbitron-latin-variable.woff2", import.meta.url));
+const font = await readFile(new URL("../public/fonts/space-grotesk-variable.ttf", import.meta.url));
 if (/\bprocess\.env\b/.test(javascript)) {
   throw new Error("LAB browser bundle still contains an unresolved Node.js environment reference");
 }

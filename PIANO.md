@@ -397,6 +397,14 @@ approximately `#F4F4F6` for the primary vehicle/control surface, `#DDDEE2` for
 the map/secondary canvas, and `#000000` for the persistent bottom dock. These are
 reproducible image-derived targets, not Tesla-published design tokens; the manual
 itself warns that illustrations vary with software, market and configuration.
+
+The owner selected Space Grotesk for every live product, LAB, and diagnostic
+text surface. The outlined Orbitron `16` in the reserved logo remains unchanged.
+The active visual palette continues to own the interface accent and remains an
+optional versioned `localStorage` preference across reloads and later visits;
+future `LIGHT`/`DARK`/`AUTO` appearance is stored independently. X2/X10 must keep
+both choices immediately reversible and provide an explicit reset instead of
+silently expiring preferences on reload.
 The final claim of an exact target-vehicle match therefore requires a current
 vehicle screenshot at native scale and a pixel comparison.
 

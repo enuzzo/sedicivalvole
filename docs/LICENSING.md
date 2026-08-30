@@ -45,6 +45,16 @@ licensor identity. It does not imply a studio, company, or other legal entity.
 Third-party authors and rights holders retain the ownership, licences, and
 credits recorded in `THIRD_PARTY_NOTICES.md`.
 
+## 2026-08-30 — Space Grotesk becomes the live product typeface
+
+All live product, owner LAB, and diagnostic typography uses the locally hosted
+Space Grotesk version 2.000 variable TrueType file under SIL Open Font License
+1.1. The downloaded font and its unmodified OFL notice are recorded in
+`THIRD_PARTY_NOTICES.md`. Orbitron is no longer a runtime dependency, but its
+OFL notice and credit remain because the selected reserved 16 Road mark contains
+stable vector outlines derived from its numeral glyphs. IBM Plex Mono is no
+longer shipped or used.
+
 ## 2026-08-30 — original project material moves to PolyForm Noncommercial
 
 The product owner selected the source-visible noncommercial option after

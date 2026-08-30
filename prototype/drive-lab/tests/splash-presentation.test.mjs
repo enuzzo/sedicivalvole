@@ -179,14 +179,14 @@ test("launch copy has a continuous white-to-red travelling wave", () => {
   assert.match(styles, /#bd111d/);
 });
 
-test("launch typography follows the approved Orbitron hierarchy", () => {
+test("launch typography follows the approved Space Grotesk hierarchy", () => {
   const styles = read("styles.css");
   const brand = styles.slice(styles.indexOf(".launch-brand {"), styles.indexOf(".launch-command {"));
   const command = styles.slice(styles.indexOf(".launch-command > span:last-child {"), styles.indexOf("@keyframes launch-text-wave"));
 
   assert.match(brand, /justify-content: center/);
   assert.match(brand, /font-size: clamp\(32px, 5vw, 40px\)/);
-  assert.match(brand, /font-weight: 750/);
+  assert.match(brand, /font-weight: 700/);
   assert.match(brand, /letter-spacing: 0/);
   assert.match(brand, /text-align: center/);
   assert.match(command, /font-weight: 600/);
@@ -205,23 +205,23 @@ test("Signal Gate phases every travelling gap independently", () => {
   assert.match(field, /for \(int rayIndex = 0; rayIndex < 8; rayIndex \+= 1\)/);
 });
 
-test("product chrome keeps Orbitron while DIAG owns its readable mono face", () => {
+test("product chrome and DIAG share the locally packaged Space Grotesk face", () => {
   const styles = read("styles.css");
   const index = readFileSync(resolve(PROJECT_ROOT, "index.html"), "utf8");
-  const font = readFileSync(resolve(PROJECT_ROOT, "public/fonts/orbitron-latin-variable.woff2"));
+  const font = readFileSync(resolve(PROJECT_ROOT, "public/fonts/space-grotesk-variable.ttf"));
 
-  assert.match(styles, /font-family: "Orbitron";/);
-  assert.match(styles, /font-weight: 400 900;/);
-  assert.match(styles, /--font-weight-text: 450;/);
-  assert.match(styles, /--font-ui: "Orbitron"/);
-  assert.match(styles, /--font-data: "IBM Plex Mono"/);
+  assert.match(styles, /font-family: "Space Grotesk";/);
+  assert.match(styles, /font-weight: 300 700;/);
+  assert.match(styles, /--font-weight-text: 400;/);
+  assert.match(styles, /--font-ui: "Space Grotesk"/);
+  assert.match(styles, /--font-data: "Space Grotesk"/);
   assert.match(styles, /\.diagnostic-report-drawer \.drawer-panel \{[\s\S]*?font-family: var\(--font-data\)/);
   assert.match(styles, /body \{[\s\S]*?font-family: var\(--font-ui\)/);
-  assert.match(index, /rel="preload" href="\/fonts\/orbitron-latin-variable\.woff2"/);
+  assert.match(index, /rel="preload" href="\/fonts\/space-grotesk-variable\.ttf"/);
   assert.ok(font.length > 10_000, "the packaged font should not be an empty placeholder");
 });
 
-test("Orbitron telemetry units sit below and align to the value edge", () => {
+test("Space Grotesk telemetry units sit below and align to the value edge", () => {
   const styles = read("styles.css");
   const groups = styles.slice(
     styles.indexOf(".readout-group {"),
@@ -233,6 +233,16 @@ test("Orbitron telemetry units sit below and align to the value edge", () => {
   assert.match(groups, /\.readout-labels \{[\s\S]*?flex-direction: row-reverse/);
   assert.match(groups, /\.readout-labels \{[\s\S]*?justify-content: flex-start/);
   assert.match(groups, /white-space: nowrap/);
+});
+
+test("the visual palette owns the accent and persists as an optional local preference", () => {
+  const app = read("App.jsx");
+  const styles = read("styles.css");
+
+  assert.match(app, /localStorage\.setItem\(PREFERENCES_KEY, JSON\.stringify\(\{[\s\S]*?themeId/);
+  assert.match(app, /data-palette=\{themeId\}/);
+  assert.doesNotMatch(app, /data-theme=\{themeId\}/);
+  assert.match(styles, /\.app\[data-palette="red"\] \{ --accent: #ed2d24; \}/);
 });
 
 test("compact viewports keep the mode switch separate and preserve a resting mode marker", () => {

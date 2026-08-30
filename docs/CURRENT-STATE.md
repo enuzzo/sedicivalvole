@@ -161,12 +161,12 @@ dated study documents.
   player exists, and the Illobo featured treatment remains reserved for the
   future SOUNDTRACK library. The launcher and its controls use the shared
   restrained `6 px` radius and pass exact `773 × 601` interaction/geometry QA.
-- Product chrome uses the locally packaged Orbitron variable font. The launch,
-  controls and compact operational labels occupy a deliberate `450–750` weight
-  hierarchy rather than falling back to device fonts. DIAG measurements and
-  technical reading text use the separately packaged IBM Plex Mono Regular and
-  SemiBold faces under OFL-1.1, while its report title remains Orbitron.
-- The centered lowercase launch wordmark uses weight `750`; `PLAY THE ROAD` uses
+- All live product, LAB, and DIAG typography uses the locally packaged Space
+  Grotesk variable font under OFL-1.1. Reading text, values, controls, and compact
+  operational labels occupy a deliberate `400–700` hierarchy without a device-font
+  dependency; tabular numerals preserve diagnostic alignment. Orbitron remains
+  credited only because the selected 16 Road vector mark was outlined from it.
+- The centered lowercase launch wordmark uses weight `700`; `PLAY THE ROAD` uses
   weight `600`, and neither adds tracking. The wordmark scales from `32–40 px`
   (`38.65 px` at `773 × 601`) inside a `68 px` product band, while the complete
   action remains `390 × 170 px`. The command carries a seamless

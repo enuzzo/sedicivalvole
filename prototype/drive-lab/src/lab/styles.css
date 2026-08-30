@@ -1,13 +1,13 @@
 @font-face {
-  font-family: "Orbitron";
-  src: url("data:font/woff2;base64,__LAB_FONT_BASE64__") format("woff2");
+  font-family: "Space Grotesk";
+  src: url("data:font/ttf;base64,__LAB_FONT_BASE64__") format("truetype");
   font-display: swap;
-  font-weight: 400 900;
+  font-weight: 300 700;
 }
 
 :root {
   color-scheme: dark;
-  font-family: "Orbitron", ui-sans-serif, system-ui, sans-serif;
+  font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
   background: #050607;
   color: #f4f3ee;
   --lab-accent: #ef4136;

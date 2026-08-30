@@ -37,7 +37,7 @@ test("Tesla diagnostic actions stay in flow instead of obscuring metrics", () =>
   assert.doesNotMatch(actionStyles, /bottom: 0/);
 });
 
-test("the operational surface is an aligned mono instrument", () => {
+test("the operational surface is an aligned Space Grotesk instrument", () => {
   const app = read("App.jsx");
   const styles = read("styles.css");
 
@@ -46,7 +46,7 @@ test("the operational surface is an aligned mono instrument", () => {
   assert.match(app, /Runtime and rendering/);
   assert.match(app, /Audio and resources/);
   assert.match(app, /Session and transport/);
-  assert.match(styles, /--font-data: "IBM Plex Mono"/);
+  assert.match(styles, /--font-data: "Space Grotesk"/);
   assert.match(styles, /\.instrument-grid \{[\s\S]*?grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
   assert.match(styles, /\.instrument-metric \{[\s\S]*?grid-template-columns: minmax\(94px, \.72fr\) minmax\(0, 1\.28fr\)/);
   assert.match(styles, /font-variant-numeric: tabular-nums slashed-zero/);
@@ -77,13 +77,11 @@ test("raw JSON uses the drawer's single scroll context at readable size", () => 
   assert.doesNotMatch(rawStyles, /overflow: auto/);
 });
 
-test("IBM Plex Mono is packaged with its unmodified OFL notice", () => {
-  const regular = resolve(PUBLIC_ROOT, "fonts/ibm-plex-mono-regular.ttf");
-  const semibold = resolve(PUBLIC_ROOT, "fonts/ibm-plex-mono-semibold.ttf");
-  const license = readFileSync(resolve(PUBLIC_ROOT, "fonts/OFL-IBM-Plex-Mono.txt"), "utf8");
+test("Space Grotesk is packaged with its unmodified OFL notice", () => {
+  const variable = resolve(PUBLIC_ROOT, "fonts/space-grotesk-variable.ttf");
+  const license = readFileSync(resolve(PUBLIC_ROOT, "fonts/OFL-Space-Grotesk.txt"), "utf8");
 
-  assert.equal(statSync(regular).size, 135580);
-  assert.equal(statSync(semibold).size, 140216);
-  assert.match(license, /Copyright © 2017 IBM Corp/);
+  assert.equal(statSync(variable).size, 136676);
+  assert.match(license, /Copyright 2020 The Space Grotesk Project Authors/);
   assert.match(license, /SIL OPEN FONT LICENSE Version 1\.1/);
 });

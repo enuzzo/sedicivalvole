@@ -540,7 +540,7 @@ function DiagnosticReadme() {
           License 1.0.0. This is source-visible noncommercial software, not open source.
           Brand, screenshots, original audio, and standalone media remain outside that grant
           unless stated otherwise. Third-party components retain their own licences.
-          Diagnostic text uses IBM Plex Mono under the SIL Open Font License 1.1.
+          Product and diagnostic text use Space Grotesk under the SIL Open Font License 1.1.
         </p>
         <nav aria-label="Technical source links">
           <a href="https://github.com/enuzzo/sedicivalvole" target="_blank" rel="noreferrer">SOURCE REPOSITORY</a>
@@ -2359,7 +2359,7 @@ export function App() {
       ref={appRef}
       tabIndex={-1}
       className={`app phase-${phase} ${controlsAwake || controlsPinned ? "controls-awake" : "controls-resting"}`}
-      data-theme={themeId}
+      data-palette={themeId}
       data-environment={environmentId}
       onPointerDown={handleSurfacePointerDown}
       onPointerMove={wakeControls}
