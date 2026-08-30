@@ -8,6 +8,43 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Space Grotesk and persistent palette accent — 2026-08-30 21:21
+
+- build stamp: **`20260830-2117`**; deployed source commit: `55d72c4`;
+  typography/persistence implementation checkpoint: `2befcc0`; documentation
+  checkpoint: `030ef49`;
+- verification gate: **PASS within the local toolchain boundary**. All 47
+  focused typography, splash, diagnostic, LAB, and deployment-identity checks,
+  all 9 Sites checks, both production builds, and 343 of 344 complete-suite
+  checks pass. The sole unavailable check is the known local
+  `spawn php ENOENT` diagnostic-mail fixture;
+- typography: **PASS**. One locally hosted Space Grotesk version 2.000 variable
+  TrueType file now carries every live product, LAB, and DIAG surface. Orbitron
+  remains credited only for the outlined 16 Road logo asset, and IBM Plex Mono
+  is no longer shipped in the current build;
+- preference boundary: **PASS**. The active visual palette owns the interface
+  accent through `data-palette` and remains an optional versioned local
+  preference across reloads and later visits. Future `LIGHT`/`DARK`/`AUTO`
+  appearance remains separate and both axes retain an explicit reset path;
+- publication boundary: **PASS after one fail-closed preflight follow-up**. The
+  first read-only preflight rejected four retired font files retained remotely
+  for cache overlap. Follow-up `55d72c4` admits only those exact names and
+  SHA-256 identities; arbitrary or modified font files still fail closed. The
+  repeated preflight, 99-file / 16,321,756-byte guarded publication, and
+  read-only postflight pass, with `remote_writes=NONE` after publication;
+- canonical HTTP identity: **PASS**. Cache-busted HTML returns `200`, 1,095
+  bytes, explicit `no-store` / `no-cache`, `nosniff`, and proxy `MISS`, and is
+  byte-identical to the verified local build at SHA-256
+  `77ba838030eb7b3003bb4436a47f09733919f862e3e17127b60a8a248b65d343`.
+  The live CSS and Space Grotesk font also match locally at
+  `726a0552f99b8ab70334aabf5e791251604fcd317c698888f7d90943907aa516`
+  and `acad6de1fc93436f5c0f1f4137751ef04f1aea3063e7036535970ffcfbd79f72`;
+- exact live Browser QA: **PASS** at `773 × 601`. The splash and complete
+  Music/Visual launcher have zero page overflow, compute Space Grotesk at the
+  intended `700` launcher-heading weight, preload the canonical local font,
+  expose palette `signal`, and report no console warning or error. Physical
+  Tesla typography acceptance remains open.
+
 ## Independent LAB audio and PRTCL response — 2026-08-30 20:59
 
 - build stamp: **`20260830-2055`**; deployed source commit: `2a65cca`;
