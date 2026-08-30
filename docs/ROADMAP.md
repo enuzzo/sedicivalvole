@@ -89,8 +89,10 @@ Completed in the current working line:
   connected to the production App/audio bus. A second detached model now owns
   the revision-guarded 450 ms equal-power skip envelope, rapid retargeting and
   three-deck ceiling, but MediaElementSource/gain routing and queue commit remain
-  pending. No proxy, persistent audio, offline guarantee or visible
-  playback/credit surface exists yet.
+  pending. A third fail-closed view model derives display-safe credit from the
+  actual audible gain mix, including all identities in a rapid retarget, and
+  exposes no stream URL. No proxy, persistent audio, offline guarantee or
+  visible playback/credit surface exists yet.
 
 Queued next:
 

@@ -83,6 +83,11 @@ private messages or credentials never enter the repository.
   revision/request guards, continuous reversal/third-target retiming, a strict
   three-identity ceiling, native gain curves and segmented-ramp fallback keep
   the transition deterministic without selecting another music mode.
+- `src/soundtrack/attribution-model.js` projects that audio-clock mix into
+  display-safe credit only: artist, title, optional album/artwork, provider,
+  obligations, licence and direct content/QR destination. It follows every
+  genuinely audible identity, never exposes a stream URL, and fails playback
+  closed when any audible deck lacks complete admitted credit.
 - `tests/soundtrack-rotation.test.mjs` covers expiry, deduplication, three-role
   identity, broad rotation, back/forward, removal, exhaustion and recovery.
 - `tests/soundtrack-media-deck.test.mjs` covers direct-source preparation,
@@ -91,9 +96,12 @@ private messages or credentials never enter the repository.
 - `tests/soundtrack-transition-model.test.mjs` covers duration, constant power,
   rapid reversal, three-deck retargeting, the fourth-deck refusal, AudioParam
   capability validation, curve/ramp scheduling and stale completion guards.
+- `tests/soundtrack-attribution-model.test.mjs` covers display-field projection,
+  stream removal, dominant/tied credit, three-deck retargeting, missing-credit
+  refusal, optional artwork/album fallback and invalid transition evidence.
 - These modules are not imported by the production application yet. Proxy
   fetching, any approved persistent metadata layer, App/audio-bus connection,
   MediaElementSource/gain routing and queue commit for the modelled 450 ms skip,
-  UI, attribution and canonical deployment remain later checkpoints. The
-  current `preparedMetadataSlots` summary is not an audio-buffer or
-  offline-duration claim.
+  audible-state connection, visible credit/QR UI and canonical deployment
+  remain later checkpoints. The current `preparedMetadataSlots` summary is not
+  an audio-buffer or offline-duration claim.

@@ -340,10 +340,12 @@ dated study documents.
   observe rather than promise browser buffering, and destructively release a
   displaced source. A separate audio-clock model now describes the nominal
   450 ms equal-power skip, including rapid reversal, a third prepared target,
-  a strict three-deck ceiling and stale completion guards. None of these layers
-  is imported by the production player; there is no proxy fetch, persistent
-  audio, MediaElementSource/gain routing, live playback or fictional offline
-  duration. See
+  a strict three-deck ceiling and stale completion guards. A fail-closed credit
+  projection now follows the dominant and secondary audible identities without
+  exposing stream URLs; incomplete audible credit blocks playback eligibility.
+  None of these layers is imported by the production player; there is no proxy
+  fetch, persistent audio, MediaElementSource/gain routing, live credit card,
+  live playback or fictional offline duration. See
   [`SOUNDTRACK-SOURCE-POLICY.md`](SOUNDTRACK-SOURCE-POLICY.md).
 - `docs/MUSIC-CRAFT.md` records the musical defects and techniques already
   learned. Assertable musical rules belong in tests.
