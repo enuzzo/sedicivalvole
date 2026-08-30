@@ -26,13 +26,55 @@ test("keyboard focus keeps the retracting control planes awake", () => {
 test("launch surface contains only product and action copy", () => {
   const app = read("App.jsx");
   const launchMarkup = app.slice(
-    app.indexOf('<button className="launch-button"'),
-    app.indexOf("</button>", app.indexOf('<button className="launch-button"')),
+    app.indexOf('className="launch-button"'),
+    app.indexOf("</button>", app.indexOf('className="launch-button"')),
   );
 
   assert.match(launchMarkup, /launch-brand">sedicivalvole/);
   assert.match(launchMarkup, /PLAY THE ROAD/);
   assert.doesNotMatch(launchMarkup, /launch-(?:index|vent|safety|latch)/);
+});
+
+test("the selected Instrument Deck resolves Music and Visual before START", () => {
+  const app = read("App.jsx");
+  const styles = read("styles.css");
+  const selector = app.slice(app.indexOf("function LaunchSelector"), app.indexOf("export function App"));
+
+  assert.match(app, /setPhase\("choosing"\)/);
+  assert.match(selector, /<legend>MUSIC<\/legend>/);
+  assert.match(selector, /<legend>VISUAL<\/legend>/);
+  assert.match(selector, /FLUX_ENVIRONMENTS\.map/);
+  assert.match(selector, /disabled=\{!ready\}/);
+  assert.match(selector, /musicId && environmentId/);
+  assert.match(selector, /choice\.launchDescription/);
+  assert.match(app, /Adaptive scores shaped by the drive/);
+  assert.match(app, /Independent artist recordings/);
+  assert.match(app, /Visual experience without music/);
+  assert.doesNotMatch(selector, /ILLOBO FEATURED/i);
+  assert.match(styles, /\.launch-selector-body \{[\s\S]*?grid-template-columns: minmax\(0, \.9fr\) minmax\(0, 1\.25fr\)/);
+  assert.match(styles, /\.launch-visual-grid \{[^}]*grid-template-columns: repeat\(3, minmax\(0, 1fr\)\)/);
+  assert.match(styles, /--ui-radius: 6px/);
+  for (const selectorName of [
+    ".launch-selector",
+    ".launch-selector-heading",
+    ".launch-selector-heading button",
+    ".launch-selector-body",
+    ".launch-choice-button",
+    ".launch-start-button",
+  ]) {
+    const escapedSelector = selectorName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    assert.match(styles, new RegExp(`${escapedSelector} \\{[\\s\\S]*?border-radius: var\\(--ui-radius\\)`));
+  }
+});
+
+test("SOUNDTRACK stays visible but cannot start before its real player exists", () => {
+  const app = read("App.jsx");
+  const soundtrack = app.slice(app.indexOf('id: "soundtrack"'), app.indexOf('id: "mute"'));
+
+  assert.match(soundtrack, /label: "SOUNDTRACK"/);
+  assert.match(soundtrack, /available: false/);
+  assert.match(app, /disabled=\{!choice\.available\}/);
+  assert.match(app, /COMING NEXT/);
 });
 
 test("splash credits the collaborator and links the public source", () => {
@@ -120,7 +162,8 @@ test("local exact-viewport QA can keep the Web Audio graph inaudible", () => {
   const app = read("App.jsx");
   assert.match(app, /const QA_MUTED = import\.meta\.env\.DEV && QA_PARAMS\.get\("qaMute"\) === "1"/);
   assert.match(app, /const \[muted, setMuted\] = useState\(QA_MUTED\)/);
-  assert.match(app, /audioRef\.current\.setMuted\(QA_MUTED\)/);
+  assert.match(app, /const launchMuted = QA_MUTED \|\| musicId === "mute"/);
+  assert.match(app, /audioRef\.current\.setMuted\(launchMuted\)/);
 });
 
 test("launch copy has a continuous white-to-red travelling wave", () => {

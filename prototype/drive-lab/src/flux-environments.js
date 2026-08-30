@@ -16,6 +16,7 @@ export const FLUX_ENVIRONMENTS = [
     label: "APERTURE",
     number: "01",
     rendererLabel: "Aperture",
+    launchDescription: "Layered light tunnel",
     renderer: "aperture",
     /** Body-colour themes drive this environment's palette. */
     themed: true,
@@ -25,6 +26,7 @@ export const FLUX_ENVIRONMENTS = [
     label: "VERTIGO",
     number: "02",
     rendererLabel: "Vertigo",
+    launchDescription: "Infinite night highway",
     renderer: "vertigo",
     // The source tree stays byte-identical; the external integration bridge
     // maps themes onto the original runtime's existing colour channels.
@@ -35,6 +37,7 @@ export const FLUX_ENVIRONMENTS = [
     label: "MERIDIAN",
     number: "03",
     rendererLabel: "Meridian",
+    launchDescription: "Low moving corridor",
     renderer: "meridian",
     themed: true,
   },
@@ -43,6 +46,7 @@ export const FLUX_ENVIRONMENTS = [
     label: "ATLAS",
     number: "04",
     rendererLabel: "Atlas",
+    launchDescription: "Live city field",
     renderer: "atlas",
     themed: true,
   },
@@ -51,6 +55,7 @@ export const FLUX_ENVIRONMENTS = [
     label: "DRIVEY",
     number: "05",
     rendererLabel: "Original Drivey.js",
+    launchDescription: "Generative open road",
     renderer: "drivey",
     themed: true,
     tunable: true,
@@ -60,6 +65,7 @@ export const FLUX_ENVIRONMENTS = [
     label: "PRTCL",
     number: "06",
     rendererLabel: "Fractal particle fields",
+    launchDescription: "Reactive particle worlds",
     renderer: "prtcl",
     themed: true,
     tunable: true,

@@ -120,6 +120,26 @@ const APP_BUILD = __APP_BUILD__;
 const APP_COMMIT = __APP_COMMIT__;
 const PREFERENCES_KEY = "sedicivalvole.preferences.v2";
 const LEGACY_PREFERENCES_KEY = "sedicivalvole.preferences.v1";
+const LAUNCH_MUSIC_CHOICES = Object.freeze([
+  {
+    id: "play-road",
+    label: "PLAY THE ROAD",
+    description: "Adaptive scores shaped by the drive",
+    available: true,
+  },
+  {
+    id: "soundtrack",
+    label: "SOUNDTRACK",
+    description: "Independent artist recordings",
+    available: false,
+  },
+  {
+    id: "mute",
+    label: "MUTE",
+    description: "Visual experience without music",
+    available: true,
+  },
+]);
 function parseSupportUrl(value) {
   try {
     const url = new URL(String(value || "").trim());
@@ -960,9 +980,74 @@ function GpsHelpPopover({ open, status, accuracy, onClose, onRetry, onDemo }) {
   );
 }
 
+function LaunchSelector({
+  musicId,
+  environmentId,
+  onMusicChange,
+  onEnvironmentChange,
+  onBack,
+  onStart,
+}) {
+  const ready = Boolean(musicId && environmentId);
+  return (
+    <section className="launch-selector" aria-labelledby="launch-selector-title">
+      <header className="launch-selector-heading">
+        <h1 id="launch-selector-title">sedicivalvole</h1>
+        <button type="button" onClick={onBack}>BACK</button>
+      </header>
+      <div className="launch-selector-body">
+        <fieldset className="launch-music-choices">
+          <legend>MUSIC</legend>
+          {LAUNCH_MUSIC_CHOICES.map((choice) => (
+            <button
+              key={choice.id}
+              className="launch-choice-button"
+              type="button"
+              aria-pressed={musicId === choice.id}
+              disabled={!choice.available}
+              onClick={() => onMusicChange(choice.id)}
+            >
+              <strong>{choice.label}</strong>
+              <small>{choice.description}</small>
+              {!choice.available ? <em>COMING NEXT</em> : null}
+            </button>
+          ))}
+        </fieldset>
+        <fieldset className="launch-visual-choices">
+          <legend>VISUAL</legend>
+          <div className="launch-visual-grid">
+            {FLUX_ENVIRONMENTS.map((choice) => (
+              <button
+                key={choice.id}
+                className="launch-choice-button launch-visual-button"
+                type="button"
+                aria-pressed={environmentId === choice.id}
+                onClick={() => onEnvironmentChange(choice.id)}
+              >
+                <strong>{choice.label}</strong>
+                <small>{choice.launchDescription}</small>
+              </button>
+            ))}
+          </div>
+        </fieldset>
+      </div>
+      <button
+        className="launch-start-button"
+        type="button"
+        disabled={!ready}
+        onClick={onStart}
+      >
+        START
+      </button>
+    </section>
+  );
+}
+
 export function App() {
   const initialPreferences = useMemo(readPreferences, []);
   const [phase, setPhase] = useState("idle");
+  const [launchMusicId, setLaunchMusicId] = useState(null);
+  const [launchEnvironmentId, setLaunchEnvironmentId] = useState(null);
   const [speed, setSpeed] = useState(QA_SPEED);
   const [source, setSource] = useState(QA_SPEED > 0 ? "QA" : "GPS");
   const [gpsState, setGpsState] = useState("not tested");
@@ -1534,8 +1619,11 @@ export function App() {
     startKeyboardRegeneration("accelerator-release");
   }, [startKeyboardRegeneration]);
 
-  const runHarness = useCallback(async () => {
+  const runHarness = useCallback(async ({ musicId, selectedEnvironmentId }) => {
+    const launchMuted = QA_MUTED || musicId === "mute";
     setSupportOpen(false);
+    setMuted(launchMuted);
+    setEnvironmentId(selectedEnvironmentId);
     sessionStartedAtRef.current = performance.now();
     diagnosticsActiveRef.current = true;
     diagnosticEventsRef.current = createDiagnosticEventLedger();
@@ -1552,7 +1640,10 @@ export function App() {
     setFlightRecorderRevision((revision) => revision + 1);
     connectionHistoryRef.current = [readConnectionSnapshot("harness-start")];
     longTaskTelemetryRef.current = createLongTaskTelemetry(longTaskTelemetryRef.current.supported);
-    logDiagnosticEvent("harness.started");
+    logDiagnosticEvent("harness.started", {
+      musicMode: musicId,
+      environment: selectedEnvironmentId,
+    });
     setPhase("testing");
     wakeControls();
     const graphics = readGraphicsCapabilities();
@@ -1573,7 +1664,7 @@ export function App() {
       );
       if (!audioRef.current) throw new Error("Web Audio is unavailable");
       await audioRef.current.resume();
-      audioRef.current.setMuted(QA_MUTED);
+      audioRef.current.setMuted(launchMuted);
       // The speed effect may have run before the audio engine existed (notably
       // for an exact qaSpeed launch). Seed the engine from the current signal
       // before choosing a score so its first complete section is the right one.
@@ -2385,22 +2476,31 @@ export function App() {
             reported separately in the diagnostics. The active environment is
             still named in the live header. */}
         <small className="splash-status">BUILD {APP_BUILD}</small>
-        <button
-          className="splash-support-trigger"
-          type="button"
-          aria-label="Open Buy Me a Coffee support panel"
-          aria-haspopup="dialog"
-          aria-expanded={supportOpen}
-          onClick={() => setSupportOpen(true)}
-        >
-          <span className="support-logo"><SupportCupMark /></span>
-          <span>BUY ME A COFFEE</span>
-        </button>
-        <div className="splash-action">
-          <button className="launch-button" type="button" onClick={runHarness} disabled={phase === "testing"}>
+        {phase === "idle" ? (
+          <button
+            className="splash-support-trigger"
+            type="button"
+            aria-label="Open Buy Me a Coffee support panel"
+            aria-haspopup="dialog"
+            aria-expanded={supportOpen}
+            onClick={() => setSupportOpen(true)}
+          >
+            <span className="support-logo"><SupportCupMark /></span>
+            <span>BUY ME A COFFEE</span>
+          </button>
+        ) : null}
+        {phase === "idle" ? <div className="splash-action">
+          <button
+            className="launch-button"
+            type="button"
+            onClick={() => {
+              setSupportOpen(false);
+              setPhase("choosing");
+            }}
+          >
             <span className="launch-brand">sedicivalvole</span>
             <span className="launch-command">
-              <span>{phase === "testing" ? "STARTING" : "PLAY THE ROAD"}</span>
+              <span>PLAY THE ROAD</span>
             </span>
           </button>
           <small className="splash-credit">
@@ -2442,7 +2542,20 @@ export function App() {
             </a>
           </small>
           <small className="splash-privacy">Audio, display, motion, and GPS are checked locally.</small>
-        </div>
+        </div> : null}
+        {phase === "choosing" ? (
+          <LaunchSelector
+            musicId={launchMusicId}
+            environmentId={launchEnvironmentId}
+            onMusicChange={setLaunchMusicId}
+            onEnvironmentChange={setLaunchEnvironmentId}
+            onBack={() => setPhase("idle")}
+            onStart={() => runHarness({
+              musicId: launchMusicId,
+              selectedEnvironmentId: launchEnvironmentId,
+            })}
+          />
+        ) : null}
       </section>
       ) : null}
 
