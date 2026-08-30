@@ -336,15 +336,17 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The canonical live product is version `0.0.0`, source commit `50e837d`, build
-  `20260830-2216`. Its guarded publication and repeated read-only postflight
-  pass; canonical HTML, JavaScript, CSS, the pinned Tabler REPORT icon and its
-  complete MIT licence are byte-identical to the clean local build. Exact live
-  `773 × 601` Browser QA verifies the 54 px REPORT control, zero overflow,
-  Session report focus behavior, and zero warning/error. The complete suite
-  retains only the known missing local `php` executable for the deterministic
-  diagnostic-mail fixture; the production build completes with 130 modules.
-  Exact progressive evidence is in [`DEPLOY.md`](DEPLOY.md).
+- The canonical live product is version `0.0.0`, source commit `a4d34c8`, build
+  `20260830-2243`. Its guarded publication and read-only identity checks pass;
+  canonical HTML, JavaScript, CSS, restored Orbitron WOFF2 and approved 16 Road
+  SVG are byte-identical to the clean local build. Exact live `773 × 601`
+  Browser QA verifies the compact `360 × 160 px` home action, the loaded `42 px`
+  vector mark, Orbitron only on exact `sedicivalvole` wordmarks, Space Grotesk
+  everywhere else, zero overflow, a complete MUTE + APERTURE launch flow and
+  zero warning/error. The complete suite retains only the known missing local
+  `php` executable for the deterministic diagnostic-mail fixture; the
+  production build completes with 130 modules. Exact progressive evidence is
+  in [`DEPLOY.md`](DEPLOY.md).
 - Diagnostic telemetry contains no coordinates and is sent only after the
   explicit `SEND DIAGNOSTIC` action. ATLAS location is a separate ephemeral
   feature: the latest reliable point stays in session memory; OpenFreeMap tile

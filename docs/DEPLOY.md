@@ -8,6 +8,43 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## 16 Road launch lockup and Orbitron wordmarks — 2026-08-30 22:51
+
+- build stamp: **`20260830-2243`**; deployed source commit: `a4d34c8`;
+  implementation checkpoint: `3f45354`;
+- product change: **PASS**. The approved 16 Road SVG now sits to the left of the
+  textual home wordmark inside one `360 × 160 px` launch action. The mark renders
+  at `42 × 42 px`; the exact word `sedicivalvole` uses Orbitron `750` with
+  `-0.02em` tracking on Signal Gate, Instrument Deck, the running top bar and
+  owner LAB only. `PLAY THE ROAD`, controls, telemetry, REPORT and reading copy
+  remain Space Grotesk;
+- verification gate: **PASS within the local toolchain boundary**. Twenty-eight
+  focused splash, brand and LAB checks, forty-one broader presentation and
+  documentation checks, nine Sites checks and the 130-module production build
+  pass. The complete suite passes 345 of 346 checks; only the known local
+  `spawn php ENOENT` diagnostic-mail fixture is unavailable;
+- publication boundary: **PASS**. Read-only identity verification passed before
+  the guarded publication. The publisher transferred 102 files / 16,352,366
+  bytes, retained the expected fingerprinted cache overlap and performed no
+  legacy deletion;
+- canonical HTTP identity: **PASS**. Cache-busted HTML returns `200`, explicit
+  `no-store` / `no-cache`, `nosniff`, and proxy `MISS`. Live HTML, CSS,
+  JavaScript, Orbitron WOFF2 and 16 Road SVG are byte-identical to the verified
+  build at SHA-256
+  `749e2052dca51ea4272ace857e05c077fa3ba4500fa299f6c113a3ea7eed874e`,
+  `a1fa0325d6fd43fc38d3db89c477c5e9612d4c25abd2798f79b40ac99e6194b3`,
+  `7b89fea5c5ffb4f17f958cc3e9ac892cec11b0951b5c54fff74b2b8a45172d5c`,
+  `c25a9f9da5d9f3db1bf2a01474722dc9b377675b7bbab6d0dfda6902794fd1ed`
+  and `e47522c4166f6c4f7e8e978b09b9fd2e2835f438732cf67004aede57ff0d8ace`;
+- exact live Browser QA: **PASS** at `773 × 601`. The canonical splash reports
+  build `20260830-2243`; the launch action computes to `360 × 160 px`, the
+  complete SVG reports a `512 px` natural width and renders at `42 px`, the home
+  wordmark computes Orbitron `750` with `-0.64 px` tracking, and the page has no
+  horizontal overflow. Signal Gate → Instrument Deck → MUTE + APERTURE → START
+  succeeds; deck and top-bar wordmarks remain isolated Orbitron treatments, and
+  the live page emits no warning or error. Physical-Tesla cabin-distance
+  acceptance remains open.
+
 ## REPORT top-bar control — 2026-08-30 22:21
 
 - build stamp: **`20260830-2216`**; deployed source commit: `50e837d`;

@@ -10,6 +10,7 @@ Date: 2026-08-30
 - Browser-rendered Instrument Deck: `/private/tmp/sedicivalvole-brand-deck-773x601.png`.
 - Browser-rendered running top bar: `/private/tmp/sedicivalvole-brand-topbar-773x601.png`.
 - Browser-rendered desktop implementation: `/private/tmp/sedicivalvole-brand-home-1280x720.png`.
+- Canonical browser rendering: `/private/tmp/sedicivalvole-brand-live-773x601.jpg`.
 - Full-view normalized before/after comparison: `/private/tmp/sedicivalvole-brand-before-after-773x601.png`.
 - Tesla CSS viewport and screenshots: `773 × 601` at density `1`; desktop CSS viewport and screenshot: `1280 × 720` at density `1`.
 - State: idle Signal Gate for the primary comparison, then Instrument Deck and running MUTE + APERTURE for wordmark-isolation checks.
@@ -38,6 +39,8 @@ The prior and revised Signal Gate captures were joined into one `1554 × 601` co
 - The icon loads completely at its expected `512 px` natural width.
 - Browser console check reports zero warnings and zero errors after the complete interaction flow.
 - Exact `773 × 601` and `1280 × 720` screenshots both report zero horizontal or vertical document overflow.
+- Canonical build `20260830-2243` repeats the full Signal Gate → Instrument Deck → MUTE + APERTURE → START flow at exact `773 × 601`; the home action computes to `360 × 160 px`, the SVG loads at `42 px` from its `512 px` source, the deck and top-bar wordmarks retain isolated Orbitron metrics, and the live page reports zero warning/error.
+- Canonical HTML, CSS, JavaScript, Orbitron WOFF2 and 16 Road SVG are byte-identical to the verified local build; HTML returns explicit no-cache and `nosniff` headers.
 - Twenty-eight focused splash, brand and LAB checks pass; the broader forty-one-check documentation/presentation set passes; the complete production build transforms `130` modules and packages both fonts plus the protected LAB. The full suite retains only the known local `spawn php ENOENT` diagnostic-mail fixture limitation.
 
 ## Follow-up polish
