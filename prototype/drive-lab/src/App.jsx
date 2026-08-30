@@ -74,7 +74,11 @@ import {
   nextPrtclTypeId,
   normalizePrtclSettings,
 } from "./environments/prtcl/prtcl-model.js";
-import { atlasGpsPresentation, resolveAtlasHeading } from "./environments/atlas/atlas-model.js";
+import {
+  appendAtlasPositionSample,
+  atlasGpsPresentation,
+  resolveAtlasHeading,
+} from "./environments/atlas/atlas-model.js";
 import {
   advanceDemoMotion,
   MODEL_3_AWD_REFERENCE,
@@ -1152,7 +1156,8 @@ export function App() {
   const diagnosticEventsRef = useRef(createDiagnosticEventLedger());
   const runtimeIssuesRef = useRef([]);
   const latestGpsObservationRef = useRef({ capturedAtMs: null, speedKmh: null });
-  const mapPositionUpdatedAtRef = useRef(0);
+  const atlasPositionSamplesRef = useRef([]);
+  const mapPositionUpdatedAtRef = useRef(Number.NEGATIVE_INFINITY);
   const sessionStartedAtRef = useRef(performance.now());
   const gpsStateRef = useRef(gpsState);
   const accuracyRef = useRef(accuracy);
@@ -1307,6 +1312,8 @@ export function App() {
     lastGpsSampleAtRef.current = null;
     lastGpsEventAtRef.current = null;
     gpsSpeedLockedRef.current = false;
+    atlasPositionSamplesRef.current = [];
+    mapPositionUpdatedAtRef.current = Number.NEGATIVE_INFINITY;
     if (!navigator.geolocation) {
       setGpsState("unavailable");
       logDiagnosticEvent("gps.unavailable");
@@ -1332,6 +1339,31 @@ export function App() {
           || capturedAtMs - lastGpsEventAtRef.current >= 2000
           || kmh == null
           || (Number.isFinite(accuracyM) && accuracyM > 250);
+        // Preserve the last trusted motion value through isolated GPS accuracy
+        // collapses. The real Tesla report contained one 10 km-radius sample
+        // between normal 2–3 m readings; it should be evidence, not a musical
+        // or visual structural command.
+        const unreliable = Number.isFinite(accuracyM) && accuracyM > 250;
+        if (!unreliable
+          && Number.isFinite(position.coords.latitude)
+          && Number.isFinite(position.coords.longitude)) {
+          const previousPosition = atlasPositionSamplesRef.current.at(-1) ?? mapPositionRef.current;
+          const nextMapPosition = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            heading: resolveAtlasHeading(previousPosition, position.coords, position.coords.heading),
+            capturedAtMs,
+          };
+          atlasPositionSamplesRef.current = appendAtlasPositionSample(
+            atlasPositionSamplesRef.current,
+            nextMapPosition,
+            capturedAtMs,
+          );
+          if (capturedAtMs - mapPositionUpdatedAtRef.current >= 2500) {
+            mapPositionUpdatedAtRef.current = capturedAtMs;
+            setMapPosition(nextMapPosition);
+          }
+        }
         if (kmh == null) {
           if (shouldLogSample) {
             lastGpsEventAtRef.current = capturedAtMs;
@@ -1351,28 +1383,8 @@ export function App() {
         const next = gpsSpeedLockedRef.current
           ? smoothGpsSpeed(smoothedSpeedRef.current, kmh, elapsedSeconds)
           : kmh;
-        // Preserve the last trusted motion value through isolated GPS accuracy
-        // collapses. The real Tesla report contained one 10 km-radius sample
-        // between normal 2–3 m readings; it should be evidence, not a musical
-        // or visual structural command.
-        const unreliable = Number.isFinite(accuracyM) && accuracyM > 250;
         if (!unreliable) {
           audioRef.current?.setAccelerationSample(kmh, { capturedAtMs, accuracyM });
-        }
-        if (!unreliable
-          && Number.isFinite(position.coords.latitude)
-          && Number.isFinite(position.coords.longitude)
-          && capturedAtMs - mapPositionUpdatedAtRef.current >= 2500) {
-          mapPositionUpdatedAtRef.current = capturedAtMs;
-          const nextMapPosition = {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            capturedAtMs,
-          };
-          setMapPosition((current) => ({
-            ...nextMapPosition,
-            heading: resolveAtlasHeading(current, nextMapPosition, position.coords.heading),
-          }));
         }
         if (unreliable && gpsSpeedLockedRef.current) {
           if (shouldLogSample) {
@@ -2171,6 +2183,7 @@ export function App() {
     demoDriveInputRef.current = "auto";
     stopDemo();
     if (watchRef.current != null) navigator.geolocation?.clearWatch(watchRef.current);
+    atlasPositionSamplesRef.current = [];
     audioRef.current?.destroy();
   }, [stopDemo]);
 
@@ -2413,6 +2426,7 @@ export function App() {
                 speed={speed}
                 theme={theme}
                 position={mapPosition}
+                positionSamplesRef={atlasPositionSamplesRef}
                 reducedMotion={reducedMotion}
                 effect={activeEffect}
                 keyboardShortcutsEnabled={!modalOpen}

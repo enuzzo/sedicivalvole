@@ -116,6 +116,7 @@ export default function AtlasField({
   speed,
   theme,
   position,
+  positionSamplesRef = null,
   reducedMotion,
   effect,
   onRenderer,
@@ -126,7 +127,7 @@ export default function AtlasField({
 }) {
   const hostRef = useRef(null);
   const mapRef = useRef(null);
-  const valuesRef = useRef({ speed, theme, position, reducedMotion, effect });
+  const valuesRef = useRef({ speed, theme, position, positionSamplesRef, reducedMotion, effect });
   const [pages, setPages] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
   const [qrUrl, setQrUrl] = useState("");
@@ -140,7 +141,9 @@ export default function AtlasField({
   const travelPointsRef = useRef([]);
   if (!nearbyRequestGateRef.current) nearbyRequestGateRef.current = createLatestAtlasRequestGate();
   if (!qrRequestGateRef.current) qrRequestGateRef.current = createLatestAtlasRequestGate();
-  valuesRef.current = { speed, theme, position, reducedMotion, effect, demoPosition };
+  valuesRef.current = {
+    speed, theme, position, positionSamplesRef, reducedMotion, effect, demoPosition,
+  };
 
   const effectivePosition = useMemo(() => {
     if (validAtlasPosition(position)) return position;

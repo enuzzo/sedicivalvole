@@ -141,7 +141,7 @@ test("Atlas follows reported heading or infers it from successive trusted positi
   assert.equal(resolveAtlasHeading(milan, { latitude: milan.latitude, longitude: milan.longitude + 0.001 }, null), 90);
   assert.equal(resolveAtlasHeading(milan, { latitude: milan.latitude + 0.001, longitude: milan.longitude }, null), 0);
   assert.equal(resolveAtlasHeading(milan, { ...milan, longitude: milan.longitude + 0.000001 }, null), 18);
-  assert.match(appSource, /heading: resolveAtlasHeading\(current, nextMapPosition, position\.coords\.heading\)/);
+  assert.match(appSource, /heading: resolveAtlasHeading\(previousPosition, position\.coords, position\.coords\.heading\)/);
   assert.match(appSource, /const nextMapPosition = \{[\s\S]*?capturedAtMs,[\s\S]*?\};/);
   assert.match(atlasSource, /bearing: Number\.isFinite\(point\.heading\) \? point\.heading : map\.getBearing\(\)/);
 });
@@ -219,6 +219,31 @@ test("Atlas retains a bounded chronological position buffer without accepting ba
   assert.equal(unchanged, samples);
   assert.equal(appendAtlasPositionSample(samples, { latitude: 45.5, longitude: 9.2 }, 2100), samples);
   assert.equal(appendAtlasPositionSample(samples, { latitude: 45.5, longitude: 9.2 }, Number.NaN), samples);
+});
+
+test("Atlas feeds position samples at GPS cadence without driving React camera state at that cadence", () => {
+  const appendAt = appSource.indexOf("atlasPositionSamplesRef.current = appendAtlasPositionSample");
+  const nullSpeedAt = appSource.indexOf("if (kmh == null)", appendAt);
+  assert.ok(appendAt >= 0 && nullSpeedAt > appendAt, "coordinates must survive a null GPS speed sample");
+  assert.match(appSource, /const atlasPositionSamplesRef = useRef\(\[\]\)/);
+  assert.match(appSource, /const mapPositionUpdatedAtRef = useRef\(Number\.NEGATIVE_INFINITY\)/);
+  assert.match(appSource, /capturedAtMs - mapPositionUpdatedAtRef\.current >= 2500/);
+  assert.match(appSource, /positionSamplesRef=\{atlasPositionSamplesRef\}/);
+  assert.match(atlasSource, /positionSamplesRef = null/);
+  assert.match(atlasSource, /valuesRef\.current = \{[\s\S]*?positionSamplesRef/);
+  assert.match(
+    appSource,
+    /atlasPositionSamplesRef\.current = \[\];\s*mapPositionUpdatedAtRef\.current = Number\.NEGATIVE_INFINITY;[\s\S]*?if \(!navigator\.geolocation\)/,
+  );
+
+  const reportStart = appSource.indexOf("const buildDiagnosticReport");
+  const reportEnd = appSource.indexOf("const sendDiagnostic", reportStart);
+  assert.ok(reportStart >= 0 && reportEnd > reportStart);
+  assert.doesNotMatch(
+    appSource.slice(reportStart, reportEnd),
+    /atlasPositionSamplesRef|latitude|longitude/,
+    "the high-rate coordinate buffer must stay outside the diagnostic report",
+  );
 });
 
 test("Atlas position interpolation is timestamped, frame-rate independent and bounded", () => {
