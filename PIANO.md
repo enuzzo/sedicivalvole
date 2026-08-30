@@ -284,6 +284,7 @@ question unless this review explicitly identifies a conflict.
 | Public contact | Use the public repository's GitHub Issues route, not a public email address. | M7 is unblocked without exposing identity or email. |
 | Backend and secrets | Abandon claims of client-side protection. Use a separate evidence-selected backend, short-lived delivery authorisation, and public sample configuration only. | Q13/M4/X5 resolve. FTP access alone does not prove WebSocket, process, TLS, or secret-storage capability; M6 must audit the host before choosing a subdomain. |
 | Diagnostics and toolchain | Derive Tesla software information only when the diagnostics package explicitly supports it; otherwise report unavailable. Keep per-architecture dependencies outside the Dropbox-synchronised checkout when native packages differ. The two supplied real-Tesla reports become the first field baseline for GPS, render pacing, cold-cache music readiness, long tasks and event retention. | M13 and the baseline gate are approved without overwriting another Mac's dependency state. Phase 0 also preserves significant events separately from high-rate GPS samples, attributes long tasks to time/phase, and reproduces adaptive-bank startup on a cold constrained connection. |
+| Network observability | During the navbar/GPS revamp, add a compact, non-blocking network notice for active transfer, degraded connectivity, offline state, and recovery. Put detailed session counters and rates in DIAG. | X2 owns placement and visual hierarchy; M13 owns truthful measurement. Navbar stays quiet when healthy. DIAG labels browser estimates separately from measured app traffic and never claims device-wide or carrier-wide totals. |
 | Strudel | Reject the product, dependency, fork and source-derived rewrite. Do not download/read its source under a “clean-room” label; official Strudel guidance itself says source-informed clones are derivative. Public documentation or general music theory may be researched without importing source. | Q12 resolves as no source exposure; G7 remains final and G8 stays paper/documentation-only unless separately reopened. |
 
 ### Every side note mapped into the ledger
@@ -294,6 +295,7 @@ question unless this review explicitly identifies a conflict.
 | Fullscreen palettes become oversized and should stay right-aligned with a maximum size. | X2 | Exact-viewport and fullscreen screenshots enforce a maximum width and right alignment. |
 | Top/footer chrome sometimes remains open indefinitely; always hide it five seconds after the latest invocation. | X2 | Deterministic timer tests cover repeated invoke, pointer/touch, modal ownership and visibility changes. |
 | GPS status should be green when live and red/struck when unavailable, with accuracy/cadence below it and illustrated Tesla enablement help. | X2, M13 | Navbar information hierarchy, truthful stale/error states, numeric accuracy/cadence, and a real-icon help overlay are included in the three-direction gate. |
+| Users should be able to see whether data is moving and recognise a network problem; DIAG should show downloaded/uploaded MB, current rates, and session peaks. | X2, M13 | Navbar shows only actionable state/activity. DIAG reports exact app-managed payload bytes where instrumented, observable resource-transfer bytes where exposed, estimated browser downlink/RTT only when supported, and `unavailable` otherwise. Totals reset per page session and exclude unrelated Tesla traffic, protocol overhead the browser does not expose, cache hits, and opaque cross-origin transfers. |
 | All phones should reflect current sliders, knobs, visual and selection state live; car shows count and permits individual/all revocation. | S2d–S2g | Authoritative snapshots/revisions reconcile every controller after join/reconnect and revocation wins over queued commands. |
 | Manual fun effects should include flanger, reverb, chorus and beat repeat, and be strongly perceptible. | S1, M11 | The three-direction macro design must cover these desired characters without exposing raw DSP or applying derivatives where source rights forbid them. |
 | A brief post-splash choice should offer PLAY THE ROAD, SOUNDTRACK or MUTE; one-time sub-four-second control glow/scale onboarding should reveal interactivity. | M1, X2 | This is a visual/product-flow proposal and therefore joins the exactly-three-direction gate; motion/reduced-motion and repeat-visit suppression are testable. |
@@ -468,7 +470,11 @@ rather than missing answers now.
     visual gate; S5 needs a separate non-modal status surface.
 11. **M13 is only partially present.** DIAG records storage estimates and API
     availability once. It does not call `persisted()`/`persist()`, write an
-    IndexedDB canary, record canary age, or survive/reconcile app updates.
+    IndexedDB canary, record canary age, or survive/reconcile app updates. It
+    already snapshots `navigator.onLine`, browser connection estimates, and
+    aggregate Resource Timing byte counts, but has no live transfer observer,
+    app-owned upload counter, rolling throughput, peak rates, or honest
+    unavailable/opaque classification.
 12. **The local LAB has a seed.** `qa-field.html` already mounts isolated fields,
     held speed, sweeps, effects, and deterministic telemetry. It is correctly
     absent from production, but it is query-string driven and has no command
@@ -547,7 +553,7 @@ rather than missing answers now.
 | A3b | Planned: derive current road name from rendered map features and place it in the selected zone map. | ATLAS model/field, CSS, tests | 1 | Q28, X2 | Badge never overlaps compass; no extra network call; absent/multilingual names degrade cleanly. | Tile feature schemas vary by zoom and road class. |
 | A4 | Planned: replace degree text with N/NE/E/SE/S/SW/W/NW labels, using product-language direction naming consistently. | `atlas-model.js`, field, tests/CSS | 0.5 | X2 | Eight deterministic sectors including wraparound; no numeric degrees in visible UI. | Italian `O/SO/NO` versus English-source UI requirement must be resolved as English W/SW/NW. |
 | X1 | Planned: define one modal manager/primitive plus one non-modal status layer for A2/S1/M2/S5 and GPS help. | `App.jsx` component extraction, `styles.css`, accessibility tests | 2 | three-direction gate | Only one modal owns focus; replacement/close rules are deterministic; status feedback never blocks. | Treating transient feedback as a modal would violate S5. |
-| X2 | Expanded visual gate: produce exactly three coherent screen-zone/onboarding directions covering compass, road badge, GPS truth/help/metrics, participant count, passenger/modal area, status, top bar, five-second chrome, bounded right-aligned fullscreen palettes, post-splash mode choice, and 64 px footer. | Design evidence doc and later CSS/App/ATLAS | 2 | visual gate | Owner selects one map at 773×601; real icons and hierarchy are verified; chrome always hides five seconds after latest invocation; fullscreen palette has a tested max width; one-time onboarding lasts <4 s and respects reduced motion. | Scope density can obscure the driving field and map attribution. |
+| X2 | Expanded visual gate: produce exactly three coherent screen-zone/onboarding directions covering compass, road badge, GPS truth/help/metrics, compact network activity/problem/recovery notice, participant count, passenger/modal area, status, top bar, five-second chrome, bounded right-aligned fullscreen palettes, post-splash mode choice, and 64 px footer. | Design evidence doc and later CSS/App/ATLAS | 2 | visual gate | Owner selects one map at 773×601; real icons and hierarchy are verified; healthy network state stays quiet, activity is subtle, degraded/offline state is unambiguous and recoveries clear automatically; chrome always hides five seconds after latest invocation; fullscreen palette has a tested max width; one-time onboarding lasts <4 s and respects reduced motion. | Scope density can obscure the driving field and map attribution. |
 
 ### Audio controls, SOUNDTRACK, licensing, and server work
 
@@ -586,7 +592,7 @@ rather than missing answers now.
 | M9 | Owner-selected first SOUNDTRACK integration: audit the prepared Jamendo API access read-only, then build a proxy-populated cache, seed metadata, monthly/manual refresh, stable-URL and ND measurements. | Server adapter, `src/soundtrack/catalog-store.js`, IndexedDB module, seed JSON, tests | 4 | M6, M8, M13, Q16/Q22 | Credential never reaches Git/browser/logs; offline seed boot, versioned cache, stale refresh, 200-item paging, URL-age evidence, no waveform/download URL. | Tesla storage eviction, stream URL expiry, and accidental client-side credential exposure. |
 | M10 | Planned source-aware visible attribution and Music & Licences settings page. | Track state/UI, settings surface, catalogue schema, tests/notices | 2 | M1/M9, X1/X2 | Artist/title/licence/source link visible per active Jamendo track; settings list matches active sources. | Overlay density versus mandatory visibility. |
 | M11 | Planned admission gate: derivatives, in-app selection, and no-host playback answers become typed source capabilities. | `src/soundtrack/source-policy.js`, tests, licensing docs | 1 | Fresh primary evidence | Unknown/false capability prevents admission or effect routing by construction. | Reducing nuanced licences to booleans without preserving evidence. |
-| M13 | Expanded from real-Tesla evidence: add the persistent-storage probe and long-lived IndexedDB canary; expose vehicle software only when explicitly supported; preserve coordinate-free GPS cadence/accuracy; retain significant events independently of GPS saturation; add phase/timestamp context to long tasks; distinguish unavailable output latency from measured zero. | New storage probe module, `App.jsx`, diagnostics model/UI/tests/docs | 3 | architecture-safe local baseline | Canary identity survives reload; no coordinates are retained; 240+ GPS samples cannot evict early significant events; a synthetic long task reports start/phase/renderer; unavailable latency is truthful; supplied field reports remain parseable. | Persistence needs elapsed time; added observability must stay bounded and must not collect sensitive location data. |
+| M13 | Expanded from real-Tesla evidence: add the persistent-storage probe and long-lived IndexedDB canary; expose vehicle software only when explicitly supported; preserve coordinate-free GPS cadence/accuracy; retain significant events independently of GPS saturation; add phase/timestamp context to long tasks; distinguish unavailable output latency from measured zero; add bounded session network observability. | New storage/network probe modules, `App.jsx`, diagnostics model/UI/tests/docs | 4 | architecture-safe local baseline, X2 presentation | Canary identity survives reload; no coordinates are retained; 240+ GPS samples cannot evict early significant events; a synthetic long task reports start/phase/renderer; unavailable latency is truthful; DIAG separates browser-estimated connection state from observed app download/upload bytes, rolling rates, peaks, active transfers, errors, and recovery. Cross-origin/cache opacity is explicit and all counters are session-bounded. | Persistence needs elapsed time; added observability must stay bounded, avoid false precision, and must not collect sensitive location or unrelated device-network data. |
 
 ### Strudel evaluation and cross-cutting dependency records
 
@@ -645,6 +651,10 @@ rather than missing answers now.
   vehicle-software unavailability. Saturation fixtures prove that GPS sampling
   cannot evict significant events; synthetic long tasks retain start time and
   active phase; unsupported latency remains `unavailable`, not measured zero.
+  Network fixtures distinguish `online` hints from successful app requests,
+  simulate active/degraded/offline/recovered states, and verify session-only
+  observed download/upload totals plus rolling and peak rates without inventing
+  opaque cross-origin, cache, request-header, TLS, or unrelated-device bytes.
 - Tesla: open once while parked, send no telemetry automatically, then revisit
   after sleep and subsequent software updates. Photograph or send DIAG manually.
 - Engineering: reproduce cold-cache JUNCTION and NIGHTSHIFT selection at
@@ -682,7 +692,8 @@ rather than missing answers now.
   one.
 - Browser: pitch endpoints, mouse/touch/pinch, six-second return, interpolated
   dot, road badge, compass labels, reader type/theme/focus/scroll/close,
-  truthful GPS state/help/metrics, five-second chrome, bounded fullscreen
+  truthful GPS state/help/metrics, quiet-when-healthy network notice with active,
+  degraded, offline and recovered states, five-second chrome, bounded fullscreen
   palettes, collapsed panel, attribution, and short landscape.
 - Tesla: physical one/two-finger contact, real GPS cadence, road-name accuracy,
   moving/parked policy, Wikipedia frame behavior, and passenger readability.
@@ -771,8 +782,8 @@ number; question 2 asks the owner to confirm the 97-ID interpretation.
 5. Tune PRTCL/PRIMORDIAL consumers in the LAB and obtain viewport plus Tesla
    acceptance.
 6. Present exactly three X1/X2/S3 directions covering overlays, navbar/GPS,
-   palette/chrome behavior, onboarding and passenger naming; implement only the
-   selected path.
+   truthful network activity/problems, palette/chrome behavior, onboarding and
+   passenger naming; implement only the selected path.
 7. Verify external rights/API facts and settle M4/M6/M7/M8/M11 before adding
    any SOUNDTRACK network or catalogue code; begin with the owner-ready Jamendo
    API path and keep its credentials exclusively behind the server boundary.
