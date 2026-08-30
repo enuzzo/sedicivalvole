@@ -57,6 +57,28 @@ test("active overview documents do not restore superseded audio claims", () => {
   assert.ok(!activeOverview.includes("ATLAS 05"), "Atlas retained its superseded catalog number");
 });
 
+test("active product identity names enuzzo without a studio attribution", () => {
+  const activeIdentity = [
+    "README.md",
+    "LICENSE-SCOPE.md",
+    "NOTICE",
+    "docs/BRAND-ASSET-POLICY.md",
+    "docs/CURRENT-STATE.md",
+    "docs/LICENSING.md",
+    "docs/PRODUCT-SPEC.md",
+    "prototype/drive-lab/AGENTS.md",
+    "prototype/drive-lab/README.md",
+    "prototype/drive-lab/package.json",
+    "prototype/drive-lab/src/App.jsx",
+  ].map(read).join("\n");
+  const obsoleteStudioToken = ["net", "milk"].join("");
+
+  assert.ok(!activeIdentity.toLowerCase().includes(obsoleteStudioToken));
+  assert.match(activeIdentity, /Copyright \(C\) 2026 enuzzo/);
+  assert.match(activeIdentity, /A project by/);
+  assert.match(activeIdentity, /https:\/\/github\.com\/enuzzo/);
+});
+
 test("relative Markdown document links resolve", () => {
   const documents = [
     "README.md",

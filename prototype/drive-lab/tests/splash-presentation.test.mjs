@@ -38,8 +38,11 @@ test("launch surface contains only product and action copy", () => {
 test("splash credits the collaborator and links the public source", () => {
   const app = read("App.jsx");
 
-  assert.match(app, /href="https:\/\/netmilk\.ch"/);
-  assert.match(app, /aria-label="Netmilk Studio website"/);
+  assert.match(app, /A project by\{" "\}/);
+  assert.match(app, /href="https:\/\/github\.com\/enuzzo"/);
+  assert.match(app, /aria-label="enuzzo on GitHub"/);
+  assert.match(app, />\s*enuzzo\s*<\/a>/);
+  assert.doesNotMatch(app, new RegExp(["net", "milk"].join(""), "i"));
   assert.match(app, /href="https:\/\/github\.com\/illobo"/);
   assert.match(app, /with Illobo/);
   assert.match(app, /href="https:\/\/github\.com\/enuzzo\/sedicivalvole"/);

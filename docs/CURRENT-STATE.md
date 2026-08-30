@@ -121,8 +121,8 @@ dated study documents.
 - Signal Gate launches through the approved `390 × 170 px` flat typographic
   surface at the Tesla split viewport. Its enlarged wordmark and full-width
   `PLAY THE ROAD` field form one semantic gesture with no simulated controls.
-  The readable credit beneath it links Netmilk Studio to `netmilk.ch` and links
-  Illobo, followed by a monochrome GitHub-marked link to the public
+  The readable credit beneath it identifies and links the sole project creator,
+  enuzzo, credits Illobo, and is followed by a monochrome GitHub-marked link to the public
   `enuzzo/sedicivalvole` repository. Splash links retain light text on hover.
   A compact top-left support control opens the verified `buymeacoffee.com/enuzzo`
   destination, the supplied QR, an honestly labelled playful project-sparks

@@ -1,5 +1,9 @@
 # sedicivalvole
 
+`sedicivalvole` is created and maintained solely by
+[enuzzo](https://github.com/enuzzo). No studio or company identity is claimed;
+third-party work retains the credits and licences recorded below.
+
 > **Sequencer foundation — credit to Lobo.** The current Flux music system is
 > built in part from [textStep](https://github.com/illobo/textStep),
 > the step sequencer, synthesizer, and original DSP project created by

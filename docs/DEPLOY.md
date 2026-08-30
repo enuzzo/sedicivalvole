@@ -485,7 +485,7 @@ of truth and is reported separately in the diagnostics.
   `0ad3c6433e859bace58ddf5f24e01c8e5e16a203542c851da1db0469a7c73ffb`
   and `7b1aec5535068d1b7488bbcd8d4ce29e032eaf130b9703e60822419cdc4ae85d`;
 - live product QA: **PASS at exact `773 × 601`**. The canonical launch identifies
-  build `20260828-2249`; Netmilk Studio resolves to `https://netmilk.ch/`, the
+  build `20260828-2249`; the then-current, now-retired studio credit resolved to its former external destination, the
   source row renders an `11 × 11 px` monochrome GitHub mark, both text and mark
   retain the light paper colour on hover, the document has zero overflow, and
   the Browser console has zero warnings or errors.
@@ -530,8 +530,8 @@ of truth and is reported separately in the diagnostics.
   listing checks passed; the repeated post-publication identity gate passed
   with `remote_writes=NONE`;
 - live product QA: **PASS at exact `773 × 601`**. The cache-busted canonical URL
-  identifies build `20260828-2208`, renders the compact `A project by Netmilk
-  Studio · with Illobo` and source lines with zero horizontal or vertical
+  identifies build `20260828-2208`, renders the compact then-current project
+  credit with Illobo and source lines with zero horizontal or vertical
   document overflow, and emits zero Browser warnings or errors. Both links are
   visible and enabled; the Illobo target resolves to `github.com/illobo` with
   the page title `illobo · GitHub`.
@@ -1229,7 +1229,7 @@ unrecognised argument, and the script states that it has no dry-run mode.
 - development-only QA harness correctly absent: `/qa-field.html` and `/qa/field-harness.jsx`
   both **HTTP 404**;
 - live smoke test at `773 × 601`: Signal Gate splash, wordmark, `FLUX · APERTURE · 0.0.0`
-  status, `PLAY THE ROAD` control and Netmilk Studio credit all render.
+  status, `PLAY THE ROAD` control and the then-current project credit all render.
 
 This publication carries `MERIDIAN 03` and `LATITUDES 04` alongside the existing
 `APERTURE 01` and `VERTIGO 02`. No audio change ships in it: the ported textStep
@@ -1451,7 +1451,7 @@ splash lanes, and the rebuilt Aperture field. No audio change.
 - canonical HTML: 655 bytes, SHA-256 `f5c98e3276af460f827da6ec8c3036edfde74d3a56a461a5b1c6c625a6840e4a`, byte-identical local/live and referencing the current asset pair;
 - JavaScript: `index-v8c01CTk.js`, 257,875 bytes, SHA-256 `431ba3083a54dc95050171f0740e8ab1d00cbf4c6051626fee3b78fea36d1d1f`, byte-identical local/live;
 - CSS: `index-D32owX6g.css`, 12,721 bytes, SHA-256 `dce6b14fbd3ad6588cfa894e1b724c0f298aae049a5a88f09b3f48659c59d1d0`, byte-identical local/live;
-- live selected-browser QA at `773 × 601`: **PASS** for the animated Signal Gate, `PLAY THE ROAD`, centered `A project by Netmilk Studio`, launch into Drive Lab, visible speed readout, version `0.0.0`, and zero relevant console warnings/errors.
+- live selected-browser QA at `773 × 601`: **PASS** for the animated Signal Gate, `PLAY THE ROAD`, the centered then-current project credit, launch into Drive Lab, visible speed readout, version `0.0.0`, and zero relevant console warnings/errors.
 
 ## Original Interstate 7 publication evidence — 2026-08-27
 

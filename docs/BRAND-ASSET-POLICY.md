@@ -1,6 +1,6 @@
 # Brand and Asset Policy — Interim Structure
 
-Status: **interim scope rule, pending final policy**. The legal owner has not been identified. The operative exclusions are defined in [`../LICENSE-SCOPE.md`](../LICENSE-SCOPE.md); this document grants no additional rights and does not substitute for legal review.
+Status: **interim scope rule, pending final policy**. The sole original project creator and public licensor identity is `enuzzo`; no studio or company identity is claimed. The operative exclusions are defined in [`../LICENSE-SCOPE.md`](../LICENSE-SCOPE.md); this document grants no additional rights and does not substitute for legal review.
 
 The final policy must distinguish:
 
@@ -22,7 +22,7 @@ The final policy must distinguish:
 
 ## Required future sections
 
-1. exact legal owner;
+1. any future legal-name or entity registration behind the public `enuzzo` identity;
 2. reserved marks and brand identifiers;
 3. permitted descriptive and compatibility references;
 4. fork and rebranding requirements;

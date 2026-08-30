@@ -2,8 +2,9 @@
 
 Status: **active interim policy**. The repository now carries an
 `AGPL-3.0-or-later` code and documentation license with explicit asset and
-trademark exclusions. The exact legal owner and final brand policy remain open
-and require legal review. This document is not legal advice.
+trademark exclusions. The project's sole original creator and public licensor
+identity is `enuzzo`; the final brand policy remains open and requires legal
+review. This document is not legal advice.
 
 The operative files are the root [`LICENSE`](../LICENSE),
 [`LICENSE-SCOPE.md`](../LICENSE-SCOPE.md), and [`NOTICE`](../NOTICE).
@@ -41,9 +42,10 @@ licenses alone protects the project name, brand, or recognizable media assets.
 
 ## Ownership notice
 
-The current notice uses `sedicivalvole contributors` collectively. This avoids
-inventing a legal entity and does not decide who owns the copyright or a future
-trademark. Each contribution must be made by someone entitled to license it.
+The current notice uses `enuzzo`, the sole original project creator and public
+licensor identity. It does not imply a studio, company, or other legal entity.
+Third-party authors and rights holders retain the ownership, licences, and
+credits recorded in `THIRD_PARTY_NOTICES.md`.
 
 ## 2026-08-29 — source-faithful Drivey supersedes the clean-room decision
 

@@ -2422,12 +2422,12 @@ export function App() {
           <small className="splash-credit">
             A project by{" "}
             <a
-              href="https://netmilk.ch"
+              href="https://github.com/enuzzo"
               target="_blank"
               rel="noreferrer"
-              aria-label="Netmilk Studio website"
+              aria-label="enuzzo on GitHub"
             >
-              Netmilk Studio
+              enuzzo
             </a>{" "}
             <span aria-hidden="true">·</span>{" "}
             <a

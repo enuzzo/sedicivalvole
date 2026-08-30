@@ -1,8 +1,9 @@
 # License Scope
 
 This repository uses a mixed code-and-asset licensing policy. The policy is
-effective now, while the exact legal owner and a final standalone brand policy
-remain open decisions. This document is not legal advice.
+effective now. The project's sole original creator and public licensor identity
+is `enuzzo`; a final standalone brand policy remains an open decision. This
+document is not legal advice.
 
 ## AGPL-licensed material
 
@@ -16,9 +17,10 @@ SPDX expression `AGPL-3.0-or-later`:
 - build, deployment, and project configuration; and
 - project documentation.
 
-Copyright notices identify the current contributors collectively as
-`sedicivalvole contributors`. This is not a claim that a legal entity with that
-name exists, and it does not resolve the final ownership decision.
+Copyright notices identify the sole original project creator and licensor as
+`enuzzo`. This is a public creator identity, not a claim that a studio, company,
+or other legal entity exists. Third-party material remains owned and licensed
+by its respective rights holders.
 
 The AGPL permits copying, modification, distribution, commercial use, sale,
 forks, and rebranding. It requires compliance with its license, notice,
