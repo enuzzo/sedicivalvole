@@ -839,6 +839,15 @@ source implementation.
   long material until it sounds damaged; every exception is measured and listed.
   MP3 is preferred here because one playback file works across the supported
   Tesla/Chromium, Safari and desktop surfaces without a parallel fallback set.
+- The ignored conversion pass is complete at
+  `_references/audio/tracks/illobo/web/`, with full technical provenance in
+  `_references/audio/tracks/illobo/web-manifest.json`: 29 immutable WAV masters
+  became 29 unique, fully decodable MP3 files; 1,643,181,158 source bytes became
+  195,753,212 output bytes (88.087% reduction), with a 6.65 MB median and a
+  3.82–12.07 MB range. Source SHA-256 identities, sample rates and durations were
+  preserved; the maximum measured duration delta is `0.0 s`. Only `Floating
+  Stars` (12.07 MB / 8:04) and `Sliced Zucchini` (10.64 MB / 8:44) exceed 10 MB,
+  intentionally retaining V2 quality rather than forcing a destructive cap.
 - Titles and public filenames receive conservative editorial normalization—clean
   title case, removed mastering-tool suffixes, stable ASCII slugs and explicit
   version labels such as `Edit`, `Final`, `Vox`, or `Due`. No new authorship,
