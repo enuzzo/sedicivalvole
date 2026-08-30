@@ -152,6 +152,14 @@ test("the deploy gate verifies the packaged font tree explicitly", () => {
   assert.match(source, /BUILD \/ "fonts",\n\s+tree_name="fonts"/);
 });
 
+test("the deploy gate verifies the selected brand tree explicitly", () => {
+  const source = readFileSync(deployScript, "utf8");
+
+  assert.match(source, /"brand",\n\s+"fonts"/);
+  assert.match(source, /if "brand" in root_names:/);
+  assert.match(source, /BUILD \/ "brand",\n\s+tree_name="brand"/);
+});
+
 test("third-party upgrades are limited to recognized project-owned Drivey bridge files", () => {
   const source = readFileSync(deployScript, "utf8");
   assert.match(source, /tree_name == "third-party"/);

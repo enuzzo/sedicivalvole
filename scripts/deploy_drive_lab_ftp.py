@@ -620,6 +620,7 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
         "assets",
         "audio",
         "api",
+        "brand",
         "fonts",
         "third-party",
         "ui",
@@ -738,6 +739,17 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
                 ftp,
                 BUILD / "fonts",
                 tree_name="fonts",
+            )
+        finally:
+            ftp.cwd("..")
+
+    if "brand" in root_names:
+        ftp.cwd("brand")
+        try:
+            verify_remote_static_tree(
+                ftp,
+                BUILD / "brand",
+                tree_name="brand",
             )
         finally:
             ftp.cwd("..")
