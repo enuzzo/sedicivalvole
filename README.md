@@ -152,9 +152,14 @@ session when the device turns to landscape.
 
 See [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
+Long-horizon owner ideas and deliberately divergent proposals are preserved in
+the canonical [`docs/FUTURE-IDEAS.md`](docs/FUTURE-IDEAS.md) register. Entries
+there are not implementation promises; promoted work links back to the roadmap.
+
 ## Documentation
 
 - [`docs/CURRENT-STATE.md`](docs/CURRENT-STATE.md) — authoritative working overview and documentation map;
+- [`docs/FUTURE-IDEAS.md`](docs/FUTURE-IDEAS.md) — canonical recoverable register for owner ideas and clearly separated agent proposals;
 - [`docs/PRODUCT-SPEC.md`](docs/PRODUCT-SPEC.md) — confirmed requirements, assumptions, and open questions;
 - [`docs/ADVERSARIAL-REVIEW.md`](docs/ADVERSARIAL-REVIEW.md) — independent critique of the bootstrap proposals;
 - [`docs/TECHNICAL-DIRECTION.md`](docs/TECHNICAL-DIRECTION.md) — recommended architecture and signal model;

@@ -195,9 +195,16 @@ During private development, each user-approved build is deployed to the canonica
 ## Deferred until the core succeeds
 
 - reactive maps and speed-limit sources;
+- optional iPhone motion/accelerometer input for GPS-free or sensor-fused
+  friend's-car sessions, tracked as `FI-001` in
+  [`FUTURE-IDEAS.md`](FUTURE-IDEAS.md);
 - WAV-to-parameter editor;
 - large downloadable sound catalog;
 - trip postcards or route telemetry;
 - accounts, analytics, and social features.
 
 These are hypotheses, not committed roadmap promises.
+
+The complete recoverable idea register, including concepts already promoted to
+stable plan IDs and separate unapproved agent proposals, lives in
+[`FUTURE-IDEAS.md`](FUTURE-IDEAS.md).
