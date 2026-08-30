@@ -343,8 +343,11 @@ dated study documents.
   a strict three-deck ceiling and stale completion guards. A fail-closed credit
   projection now follows the dominant and secondary audible identities without
   exposing stream URLs; incomplete audible credit blocks playback eligibility.
+  A detached discovery model retains only official Jamendo pace/genre metadata,
+  supports exact five-band AUTO/MANUAL filtering with hysteresis, treats missing
+  GPS as unknown, and can refill future slots without replacing current audio.
   None of these layers is imported by the production player; there is no proxy
-  fetch, persistent audio, MediaElementSource/gain routing, live credit card,
+  fetch, persistent audio, MediaElementSource/gain routing, live selector/card,
   live playback or fictional offline duration. See
   [`SOUNDTRACK-SOURCE-POLICY.md`](SOUNDTRACK-SOURCE-POLICY.md).
 - `docs/MUSIC-CRAFT.md` records the musical defects and techniques already

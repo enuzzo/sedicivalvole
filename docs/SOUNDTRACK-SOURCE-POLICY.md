@@ -43,7 +43,7 @@ credit, image, licence, music-information, and `shareurl` fields. Accordingly,
 this repository still plans direct source streaming with transient browser
 media buffering only; it does not admit Jamendo hosted copies or offline audio.
 
-Primary sources checked on 2026-08-30:
+Primary sources checked on 2026-08-31:
 
 - [Jamendo API Terms of Use](https://devportal.jamendo.com/api_terms_of_use)
 - [Jamendo tracks API](https://developer.jamendo.com/v3.0/tracks)
@@ -59,7 +59,9 @@ private messages or credentials never enter the repository.
 ## Current implementation
 
 - `src/soundtrack/source-policy.js` owns licence parsing, Jamendo item
-  normalization, direct-grant admission, and the effects gate.
+  normalization, direct-grant admission, and the effects gate. Its optional
+  discovery fields accept only the five official `musicinfo.speed` values and
+  normalized `musicinfo.tags.genres`; they never bypass the licence gate.
 - `tests/soundtrack-source-policy.test.mjs` covers unknown licences,
   NoDerivatives exclusion, Creative Commons obligations, Jamendo URL/credit
   validation, download-field removal, and explicit direct-grant decisions.
@@ -88,6 +90,11 @@ private messages or credentials never enter the repository.
   obligations, licence and direct content/QR destination. It follows every
   genuinely audible identity, never exposes a stream URL, and fails playback
   closed when any audible deck lacks complete admitted credit.
+- `src/soundtrack/selection-model.js` owns the detached next-track discovery
+  state. AUTO provisionally maps the shared 130 km/h ceiling into five equal
+  ranges with 3 km/h hysteresis; MANUAL remains selected until explicit restore.
+  Missing speed applies no pace filter, exact source pace never widens silently,
+  genre `any`/`all` behavior is explicit, and current playback is immutable.
 - `tests/soundtrack-rotation.test.mjs` covers expiry, deduplication, three-role
   identity, broad rotation, back/forward, removal, exhaustion and recovery.
 - `tests/soundtrack-media-deck.test.mjs` covers direct-source preparation,
@@ -99,9 +106,13 @@ private messages or credentials never enter the repository.
 - `tests/soundtrack-attribution-model.test.mjs` covers display-field projection,
   stream removal, dominant/tied credit, three-deck retargeting, missing-credit
   refusal, optional artwork/album fallback and invalid transition evidence.
+- `tests/soundtrack-selection-model.test.mjs` covers five-band mapping,
+  hysteresis, manual/automatic restoration, missing GPS, exact pace plus
+  any/all genre views, honest empty results and future-slot-only queue refill.
 - These modules are not imported by the production application yet. Proxy
   fetching, any approved persistent metadata layer, App/audio-bus connection,
   MediaElementSource/gain routing and queue commit for the modelled 450 ms skip,
-  audible-state connection, visible credit/QR UI and canonical deployment
-  remain later checkpoints. The current `preparedMetadataSlots` summary is not
-  an audio-buffer or offline-duration claim.
+  audible-state connection, visible library/pace/credit/QR UI, target-vehicle
+  threshold tuning and canonical deployment remain later checkpoints. The
+  current `preparedMetadataSlots` summary is not an audio-buffer or
+  offline-duration claim.

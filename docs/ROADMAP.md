@@ -91,8 +91,10 @@ Completed in the current working line:
   three-deck ceiling, but MediaElementSource/gain routing and queue commit remain
   pending. A third fail-closed view model derives display-safe credit from the
   actual audible gain mix, including all identities in a rapid retarget, and
-  exposes no stream URL. No proxy, persistent audio, offline guarantee or
-  visible playback/credit surface exists yet.
+  exposes no stream URL. A fourth detached model normalizes official Jamendo
+  pace/genre discovery data and builds exact five-band AUTO/MANUAL next-track
+  views without replacing current playback. No proxy, persistent audio, offline
+  guarantee or visible library/playback/credit surface exists yet.
 
 Queued next:
 
