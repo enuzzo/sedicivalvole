@@ -817,6 +817,39 @@ source implementation.
 | M11 | Planned admission gate: derivatives, in-app selection, and no-host playback answers become typed source capabilities. | `src/soundtrack/source-policy.js`, tests, licensing docs | 1 | Fresh primary evidence | Unknown/false capability prevents admission or effect routing by construction. | Reducing nuanced licences to booleans without preserving evidence. |
 | M13 | Expanded from real-Tesla evidence: add the persistent-storage probe and long-lived IndexedDB canary; expose vehicle software only when explicitly supported; preserve coordinate-free GPS cadence/accuracy; retain significant events independently of GPS saturation; add phase/timestamp context to long tasks; distinguish unavailable output latency from measured zero; add bounded session network observability. | New storage/network probe modules, `App.jsx`, diagnostics model/UI/tests/docs | 4 | architecture-safe local baseline, X2 presentation | Canary identity survives reload; no coordinates are retained; 240+ GPS samples cannot evict early significant events; a synthetic long task reports start/phase/renderer; unavailable latency is truthful; DIAG separates browser-estimated connection state from observed app download/upload bytes, rolling rates, peaks, active transfers, errors, and recovery. Cross-origin/cache opacity is explicit and all counters are session-bounded. | Persistence needs elapsed time; added observability must stay bounded, avoid false precision, and must not collect sensitive location or unrelated device-network data. |
 
+#### Illobo source-preparation note — 2026-08-30
+
+- The owner-supplied source directory is
+  `_references/audio/tracks/illobo/original/`. It contains 38 WAV files totalling
+  approximately 2.5 GB: 30 unique byte identities and eight exact `(1)` copies.
+  Duplicate files are ignored before encoding and never become separate catalogue
+  entries.
+- Preserve every original file unchanged. Admission creates a per-file manifest
+  with original filename, SHA-256, duration, sample rate, bit depth, selected
+  editorial title, output filename, encoded hash, encoder/version/settings,
+  direct-grant capability flags and the public Illobo destination
+  `https://soundcloud.com/illobo`.
+- Proposed web master: stereo MP3 through deterministic `libmp3lame` VBR `V2`
+  (`-q:a 2`), preserving the source sample rate and programme dynamics, with no
+  loudness normalization, remastering, clipping repair or destructive source
+  rewrite. The 5–10 MB request is a normal-song target, not permission to lower
+  long material until it sounds damaged; every exception is measured and listed.
+  MP3 is preferred here because one playback file works across the supported
+  Tesla/Chromium, Safari and desktop surfaces without a parallel fallback set.
+- Titles and public filenames receive conservative editorial normalization—clean
+  title case, removed mastering-tool suffixes, stable ASCII slugs and explicit
+  version labels such as `Edit`, `Final`, `Vox`, or `Due`. No new authorship,
+  album, remix or release claim may be invented.
+- `Lobo-stranger_beats_carnival2023.wav` is a 2,270.8-second long-form mix
+  (approximately 37:51), not a normal song-sized asset. It remains outside the
+  first carousel until the owner chooses one of: keep it as a separately labelled
+  long mix with a larger file, provide authored chapter boundaries, or exclude it.
+  Automatic splitting and a sub-10-MB low-bitrate encode are prohibited.
+- The featured treatment remains behind the mandatory three-direction design
+  gate. It must be noticeable but restrained, respect reduced motion, keep the
+  normal Music/Visual launcher hierarchy, and link its rich attribution surface
+  to Illobo rather than presenting the project as the artist.
+
 ### Strudel evaluation and cross-cutting dependency records
 
 | ID | Status and one-line work | Files | Half-days | Dependencies | Proposed acceptance | Main risk |
