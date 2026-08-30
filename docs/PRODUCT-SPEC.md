@@ -136,10 +136,12 @@ without importing the PRTCL runtime, UI, dependencies, brand, or assets.
 Fractal Frequency is the default. One compact `94 × 34 px` text-only `TYPE`
 button cycles Fractal, Murmuration, and Axiom directly; it opens no dropdown or
 panel and remains separate from the shared `PALETTE` control. Road speed owns
-point size, depth, and travel; musical level owns colour and luminous pulse.
-OPEN, UNDERWATER, BLOOM, and reduced motion are implemented in this native
-particle grammar. Human visual approval and canonical publication are complete;
-target-Tesla acceptance remains an explicit gate.
+complete-form scale, point size, depth, and travel; both scale responses saturate
+at `100 km/h`, while depth and travel continue to `130 km/h`. Musical level owns
+colour and luminous pulse. OPEN, UNDERWATER, BLOOM, and reduced motion are
+implemented in this native particle grammar, with frame-rate-independent macro
+morphs rather than discrete state jumps. Human visual approval and canonical
+publication are complete; target-Tesla acceptance remains an explicit gate.
 
 `PRIMORDIAL 08` is retired. The product owner rejected it on 2026-08-30 and its
 renderer, fallback, tuner, preference payload, catalog entry, QA path and active

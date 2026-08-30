@@ -34,7 +34,8 @@ Status: **PUBLISHED; AUTHENTICATED OWNER AND VEHICLE ACCEPTANCE PENDING**.
 - selected Focus Canvas interface at desktop, mobile, and exact Tesla viewport;
 - server-side PHP authentication, expiring session, logout and protected mail route;
 - typed `param`/`command`/`state` protocol with declared parameter manifests;
-- all three PRTCL families plus 20 bounded grouped/context controls;
+- all three PRTCL families plus 18 bounded grouped/context controls;
+- independent disposable MUTE/generative/sampled test audio, excluded from visual presets;
 - one coordinate-free preset for import, copy and explicit authenticated email.
 
 ## Phase 2 — Flux visual direction

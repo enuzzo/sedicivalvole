@@ -36,13 +36,15 @@ dated study documents.
   energy; Atlas changes MapLibre camera and layer paint properties; Drivey
   receives smoothed bounded road response, timestamped audio-macro envelopes,
   camera and two-channel material updates through its external bridge without
-  editing the vendor files; PRTCL changes point scale,
-  depth/travel, palette pulse, spread, attenuation, and glow within its own
-  particle grammar.
+  editing the vendor files; PRTCL changes complete-form and point scale,
+  depth/travel, palette pulse, spread, attenuation, and glow through shared
+  frame-rate-independent macro envelopes within its own particle grammar.
 - The selected **Focus Canvas** owner LAB is implemented and canonically
   published behind a server-side `/lab/` session gate. Its first manifest controls all
-  three PRTCL families through 20 bounded Form, Response, Macro, Scene and
-  runtime-context options. Import, clipboard copy and explicit authenticated
+  three PRTCL families through 18 bounded Form, Response, Macro, Scene and
+  runtime-context options. Its separate test-audio selector can run MUTE,
+  FRACTURE, JUNCTION, or NIGHTSHIFT without writing a music association into
+  the visual state or preset. Import, clipboard copy and explicit authenticated
   email use one versioned coordinate-free preset; the browser receives no
   password verifier or recipient. The unauthenticated canonical gate, direct
   endpoint denial and exact Tesla-sized login surface are verified. Authenticated
@@ -52,6 +54,8 @@ dated study documents.
   context until it fails white. The LAB reuses the production motion model:
   `ArrowUp` accelerates, accelerator release regenerates, and `ArrowDown` or
   `Space` brakes without stealing keys from sliders, selects, or buttons.
+  The live audio meter drives only the disposable test signal and returns the
+  manual AUDIO control immediately when muted.
   Physical-Tesla acceptance remains open.
 - Meridian keeps one deterministic low corridor beneath sparse, large oblique
   blades and longitudinal shoulder planes. Its shared travel field has tightly
@@ -111,9 +115,11 @@ dated study documents.
   other effects are excluded. One `94 × 34 px` text-only `TYPE` button cycles
   `FRACTAL → MURMURATION → AXIOM → FRACTAL` without a dropdown or panel, while
   the shared `PALETTE` remains a separate colour choice. Road speed alone owns
-  point scale, depth, and travel; music owns colour phase and pulse. Point scale
-  reaches its maximum at `100 km/h` and holds above it, while depth and travel
-  continue through the global `130 km/h` road ceiling. Exact muted
+  complete-form scale, point scale, depth, and travel; music owns colour phase
+  and pulse. Both scale responses reach their maximum at `100 km/h` and hold
+  above it, while depth and travel continue through the global `130 km/h` road
+  ceiling. OPEN, UNDERWATER, and BLOOM morph continuously instead of switching
+  discrete geometry state. Exact muted
   `773 × 601` and `390 × 844` QA, every type, OPEN / UNDERWATER / BLOOM, zero
   warning/error state, deterministic reduced motion, 339 tests, and the
   128-module build pass. Human visual approval was recorded on 2026-08-29;

@@ -343,10 +343,11 @@ PRTCL commit `2a22f33b`. It uses `gl_VertexID` rather than CPU buffer rewrites,
 draws exactly `24,000`, `16,000`, or `37,000` points, caps DPR at `1.25`, and
 deletes its vertex array, shaders, and program on cleanup. The renderer imports
 no Three.js/R3F dependency or PRTCL runtime/UI/asset. Road speed alone controls
-point scale, depth, and the frame-rate-independent travel clock; score level
-controls palette interpolation and pulse. OPEN changes spread/depth,
-UNDERWATER attenuates and slows, BLOOM increases native point glow, and reduced
-motion freezes both travel and musical pulse. A single `94 × 34 px` text-only
+complete-form scale, point scale, depth, and the frame-rate-independent travel
+clock; score level controls palette interpolation and pulse. OPEN changes
+spread/depth, UNDERWATER attenuates and slows, and BLOOM increases native point
+glow through continuous frame-rate-independent envelopes rather than state
+snaps. Reduced motion freezes both travel and musical pulse. A single `94 × 34 px` text-only
 TYPE button cycles the three families; shared Palette remains independent and
 no contextual panel is created.
 
@@ -455,10 +456,13 @@ locally for engineering work without weakening the canonical gate.
 LAB presets use `sedicivalvole.control.v1`, the same versioned transport-neutral
 `param`/`command`/`state` protocol intended for later passenger clients.
 One export records app/version/build/commit/time, viewport and bounded runtime
-context, active Visual/Music/theme/input source, speed/BPM, grouped
+context, active visual/theme/input source, speed/manual audio level, grouped
 `form/response/macros`, every declared scene parameter, protocol revision and
-render-health snapshot. `COPY JSON`, import and explicit `SEND JSON` all operate
-on that identical validated object. The mail route reuses the existing private
+render-health snapshot. Music is an independent disposable test source with
+MUTE plus the currently available generative and sampled scores; it is never
+stored in, restored from, or associated with a visual preset. `COPY JSON`, import
+and explicit `SEND JSON` all operate on that identical visual-only validated
+object. The mail route reuses the existing private
 recipient boundary where appropriate, sends a digest-verifiable JSON attachment,
 retains failed presets for retry, and reports transport acceptance rather than
 inbox delivery. Coordinates, credentials, storage contents and unrelated device
@@ -466,8 +470,9 @@ or network activity are prohibited from the LAB envelope.
 
 The selected LAB presentation is **Focus Canvas**: a dominant live renderer,
 one compact four-group rail, one retractable inspector, three project macro
-controls and a low speed/BPM/preset action plane. The first declared manifest
-covers all three PRTCL families and 20 bounded options. Scene calibration is an
+controls and a low speed/audio-level/preset action plane. The first declared
+manifest covers all three PRTCL families and 18 bounded visual/test options.
+Scene calibration is an
 optional project-owned layer, so the public PRTCL defaults remain unchanged
 when no LAB values are supplied.
 

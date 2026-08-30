@@ -26,6 +26,7 @@ The initial **PLAY THE ROAD** gesture is one flat typographic launch surface wit
 - a measured 64 px `PALETTE` footer at `773 × 601`: icon-only audio state, vertically ordered Visual/Music choices, truthful disclosure carets, and a theme control shared by field and UI accent; a future approved X2/X9 layout pass will cap and right-anchor its fullscreen width instead of stretching the colour rail;
 - time-based Model 3 AWD Demo acceleration calibrated to the official zero-to-100 km/h figure;
 - desktop simulator: hold `ArrowUp` to accelerate, release it or press `ArrowDown` for progressive regenerative slowdown, and hold `Space` for stronger braking from the exact current speed;
+- owner LAB calibration with 18 visual/test parameters, smooth PRTCL macro transitions, speed-responsive complete-form scale, and independent MUTE/FRACTURE/JUNCTION/NIGHTSHIFT test audio that is never serialized into a visual preset;
 - `VERSION` injected at build time;
 - deterministic signal, score, documentation-consistency, and packaging tests.
 - a Git-ignored Python harmony-analysis environment that inventories the eight

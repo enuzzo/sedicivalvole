@@ -694,17 +694,21 @@ than missing requirements.
     truthful output-latency history, and bounded observed network counters.
     Calendar-time canary and target-Tesla evidence remain open.
 12. **The owner LAB is implemented and canonically published.** The
-    selected Focus Canvas drives all three PRTCL families through 20 declared
-    grouped/context parameters, the shared typed protocol, independent speed/BPM,
-    Visual/Music selectors, import, copy and authenticated email of one complete
-    coordinate-free preset. The unauthenticated gate and endpoint denial are
+    selected Focus Canvas drives all three PRTCL families through 18 declared
+    visual/context parameters and the shared typed protocol. Speed and manual
+    audio level remain visual test signals; MUTE/FRACTURE/JUNCTION/NIGHTSHIFT are
+    a separate disposable audio bench and never enter the preset. Import, copy,
+    and authenticated email carry one complete coordinate-free visual preset.
+    The unauthenticated gate and endpoint denial are
     verified. Authenticated canonical Browser QA now passes at the exact
     `773 × 601` CSS viewport with no overflow or console error; a preview macro
     overlap found there was corrected and published. A later lifecycle defect
     that rebuilt WebGL2 on every React update and eventually left a white canvas
     is fixed at `[8c37956]`: scene/type/control updates now preserve one renderer,
     and `ArrowUp`/release/`ArrowDown` reuse the production acceleration,
-    regeneration and braking model. Physical-Tesla use remains the open
+    regeneration and braking model. `[a40cfff]` adds complete-form speed scale,
+    smooth OPEN/UNDERWATER/BLOOM morphs, production audio-macro input, real LAB
+    audio/mute/meter behavior, and protected AudioWorklet packaging. Physical-Tesla use remains the open
     acceptance boundary.
 13. **No passenger relay or proxy exists.** The Sites worker remains a static SPA
     fallback with only an asset binding. The verified canonical PHP boundary now
@@ -722,8 +726,8 @@ than missing requirements.
     cache removes the shared-checkout arm64/x64 package conflict. The last full
     suite passes 340 of 341 checks, with only the PHP diagnostic-mail fixture
     unavailable locally because `php` is absent. After the renderer-lifecycle
-    and keyboard-motion correction, all 11 focused PRTCL checks and all 6
-    focused LAB packaging checks pass; both production builds complete
+    and audio/response correction, all 13 focused PRTCL checks and all 11
+    focused LAB/control checks pass; both production builds complete
     successfully.
 17. **Documentation drift was reconciled.** Active overview documents describe
     the 2026-08-30 PRIMORDIAL retirement and Phase 1 mechanics; immutable
@@ -955,7 +959,8 @@ source implementation.
 ### Phase 2 — LAB/protocol
 
 - Desktop, mobile, and exact Tesla viewport: authenticate to canonical `/lab/`,
-  select each visual/music path, move speed and BPM independently, manipulate
+  select each visual and independent test-audio path, move speed and the manual
+  audio-level test signal independently, manipulate
   grouped controls, copy/import JSON, explicitly send the identical JSON by
   email, and compare an imported replay against the captured state.
 - Access/security: `/qa-field.html` remains absent from the canonical root;
@@ -964,7 +969,7 @@ source implementation.
   access, CSRF/origin/rate/size/schema checks fail closed, and no auth or mail
   secret appears in Git, the static bundle, responses, screenshots, or logs.
 - Preset context: schema/version/build/commit/time, viewport/device/runtime,
-  selected Visual/Music/theme, input source, speed/BPM, every grouped and
+  selected Visual/theme, input source, speed/audio level, every grouped and
   scene-specific option, protocol revision, and bounded render status are
   present. Coordinates, secrets, raw credentials, storage contents, and claims
   about device-wide traffic are absent.
@@ -1083,7 +1088,7 @@ number; question 2 asks the owner to confirm the 97-ID interpretation.
 - Sedicivalvole is already a published experimental Flux product, not an empty prototype.
 - It has six active visuals, three authored adaptive scores, shared performance effects, and integrated diagnostics.
 - The new request's strongest architectural idea is T1: one response mechanism, with scene-authored endpoints.
-- T1 mechanics now exist and DRIVEY consumes them; PRTCL/ATLAS adoption remains in the combined X3 checkpoint.
+- T1 mechanics now exist and DRIVEY plus PRTCL consume them; ATLAS adoption remains in the combined X3 checkpoint.
 - The existing local QA field is the correct seed for the owner-only canonical `/lab/`, provided L5 makes it a protocol client and L1 keeps every protected surface behind server-side authentication.
 - ATLAS already has substantial camera, compass, travel-line, sidebar, and privacy work to preserve.
 - DRIVEY can likely fix zero-speed drift in the external bridge without changing guarded upstream source.
