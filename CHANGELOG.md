@@ -309,6 +309,7 @@ All notable changes to `sedicivalvole` are documented here. The format follows K
 
 ### Fixed
 
+- 2026-08-30 20:08 `[8c37956]`: Fixed the owner LAB preview repeatedly destroying and recreating its WebGL2 renderer on ordinary React updates. Callback changes now flow through stable refs, PRTCL type changes update the live renderer in place, and LAB calibration/settings avoid transient object churn. Switching Fractal, Murmuration and Axiom, changing macros, or moving controls no longer exhausts the WebGL context or leaves a white preview. The LAB now also reuses the production Tesla motion model: hold `ArrowUp` to accelerate, release it for regenerative deceleration, and hold `ArrowDown` or `Space` for service braking; interactive controls retain keyboard ownership. Seventeen focused checks, the 130-module main build, the 33-module protected LAB build, and an in-app Browser interaction sweep pass with no console warning/error.
 - 2026-08-28 09:57 `[436e9f9]`: Aperture keeps its exact shader, geometry and motion mapping but drops the Tesla-only 1.25× supersampling during the 18–40 km/h morph, reducing fragment work by 36% while retaining one physical pixel per CSS pixel. The 30 km/h harness sustained 60 FPS / 17.6 ms p95 with zero frames above 34 ms.
 - 2026-08-28 09:57 `[436e9f9]`: Phase telemetry no longer counts time spent in another visual state as one enormous frame when a phase returns. JUNCTION string sections are retained instead of failing a numeric-only check, and the audio field measures the output rather than duplicating road energy.
 

@@ -700,8 +700,12 @@ than missing requirements.
     coordinate-free preset. The unauthenticated gate and endpoint denial are
     verified. Authenticated canonical Browser QA now passes at the exact
     `773 × 601` CSS viewport with no overflow or console error; a preview macro
-    overlap found there was corrected and published. Physical-Tesla use remains
-    the open acceptance boundary.
+    overlap found there was corrected and published. A later lifecycle defect
+    that rebuilt WebGL2 on every React update and eventually left a white canvas
+    is fixed at `[8c37956]`: scene/type/control updates now preserve one renderer,
+    and `ArrowUp`/release/`ArrowDown` reuse the production acceleration,
+    regeneration and braking model. Physical-Tesla use remains the open
+    acceptance boundary.
 13. **No passenger relay or proxy exists.** The Sites worker remains a static SPA
     fallback with only an asset binding. The verified canonical PHP boundary now
     covers diagnostic mail and the packaged owner LAB session/mail routes; this
@@ -717,9 +721,10 @@ than missing requirements.
 16. **Current test baseline is environment-limited.** The per-machine native
     cache removes the shared-checkout arm64/x64 package conflict. The last full
     suite passes 328 of 329 checks, with only the PHP diagnostic-mail fixture
-    unavailable locally because `php` is absent. After P2 and the exact-viewport
-    LAB correction, all 10 focused PRTCL checks and all 5 focused LAB packaging
-    checks pass; the production build completes successfully.
+    unavailable locally because `php` is absent. After the renderer-lifecycle
+    and keyboard-motion correction, all 11 focused PRTCL checks and all 6
+    focused LAB packaging checks pass; both production builds complete
+    successfully.
 17. **Documentation drift was reconciled.** Active overview documents describe
     the 2026-08-30 PRIMORDIAL retirement and Phase 1 mechanics; immutable
     changelog and deployment evidence remain historical truth.
@@ -769,7 +774,7 @@ source implementation.
 | PP2 | Superseded by `SF1`. The CodePen remains credited as a historical visual reference, but no exact-copy or clean-room fidelity work continues. | Notices, source-admission docs, history | Included in SF1 | None | Active docs distinguish retired PRIMORDIAL from the new original Gradient Field; no Pen shader/runtime/noise enters SF1. | Accidentally treating visual inspiration as a source licence. |
 | SF1 | Owner-approved new Gradient Field: exactly three original WebGL/3D directions using independently authored gradient, depth and perceptual-colour mechanics. | New field/model/renderer only after visual selection; reference and licence docs; tests | 3+ | Three-direction owner gate, T1, LAB | Selected direction is original, one-pass/pixel-density-1 by default, smooth at 0/40/100/130, visibly macro-responsive and Tesla-profiled; all references remain case-by-case notices. | Excess 3D/postprocessing cost or accidental source/preset copying. |
 | L1 | Implemented and canonically published; authenticated desktop and simulated exact-Tesla-viewport acceptance pass, while physical-vehicle acceptance remains pending. The owner-only `/lab/` uses server-side authentication with an expiring PHP session and ignored password-hash configuration; no password or authentication decision exists in client JavaScript or static assets. | `lab.html`, `src/lab/`, `/lab/` PHP gate/session/logout, ignored local auth config, deployment and access tests | 3 | L5, T1; verified canonical PHP/TLS boundary | Local development works without weakening the production gate; unauthenticated canonical access reveals only the login surface, authenticated access reaches LAB at `773 × 601` without overflow or console error, logout/expiry revoke access, direct asset/API requests cannot bypass the gate, and no secret enters Git/build/logs. | A merely hidden URL or client-side password would expose controls and secrets; long-lived Tesla sessions need deliberate expiry/re-auth behavior. |
-| L2 | First manifest implemented for all three PRTCL families: independent speed/BPM, music, visual, and complete declared scene-specific controls. Expansion to every active visual remains incremental. | LAB UI/schema plus declared per-scene parameter manifests | 3 | L1, T1 | Every admitted visual is selectable and its declared parameters change without reloading. | An unbounded “everything” panel becomes unusable. |
+| L2 | First manifest implemented for all three PRTCL families: independent speed/BPM, music, visual, complete declared scene-specific controls, and keyboard motion using the shared Tesla acceleration/regeneration/braking model. The WebGL2 field keeps one renderer alive while values and family change. Expansion to every active visual remains incremental. | LAB UI/schema plus declared per-scene parameter manifests | 3 | L1, T1 | Every admitted visual is selectable and its declared parameters change without reloading or recreating the WebGL context; keyboard motion ignores interactive control focus. | An unbounded “everything” panel becomes unusable. |
 | L3 | Implemented for the first manifest: shared Form/Response/Macros/Scene groups render from declarations in the selected Focus Canvas. | LAB components/schema/tests | 1 | L2 | Every admitted scene uses the same group order and no flat orphan control exists. | Scene-specific semantics may be forced into misleading generic labels. |
 | L4 | Implemented locally for the first 20-option manifest: export/import schema version, UTC date, scene identity, app/build/commit identity, viewport/runtime context, selected Visual/Music/theme/input, speed/BPM, grouped and scene-specific values, render health, and protocol revision. `COPY JSON` and explicit authenticated `SEND JSON` use the identical validated preset. Coordinates, secrets, raw credentials, storage contents, and unrelated browsing/device traffic are forbidden. | LAB preset/context module and UI, authenticated `/lab/` mail endpoint, ignored recipient config, schema/security/round-trip tests | 2 | Q30, L1–L3 | Exact JSON round-trip; unknown-major rejection; visible copy/send/sent/retry states; mail attachment digest matches the exported JSON; CSRF, origin, size, schema and rate-limit checks pass; failed sends retain the preset locally for retry and never claim inbox delivery. | Clipboard limitations in embedded browsers, mail transport acceptance without inbox delivery, context bloat, or accidental sensitive telemetry. |
 | L5 | Implemented as `sedicivalvole.control.v1`: transport-neutral typed `param`, `command`, and `state` messages with manifest admission, ordering and bounded payloads. | `src/control-protocol.js`, tests, LAB adapter, later relay adapter | 2 | None | Versioned schema rejects malformed/unauthorised messages; ordering and idempotency tests pass. | Over-designing distributed behavior before local needs are known. |

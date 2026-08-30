@@ -46,9 +46,13 @@ dated study documents.
   email use one versioned coordinate-free preset; the browser receives no
   password verifier or recipient. The unauthenticated canonical gate, direct
   endpoint denial and exact Tesla-sized login surface are verified. Authenticated
-  canonical QA also passes at `773 × 601` with no overflow or console error; a
-  macro-strip overlap found there was corrected. Physical-Tesla acceptance
-  remains open.
+  canonical QA also passes at `773 × 601` with no overflow or console error. A
+  macro-strip overlap was corrected, and the PRTCL canvas now keeps one WebGL2
+  renderer alive while controls and families change instead of recreating the
+  context until it fails white. The LAB reuses the production motion model:
+  `ArrowUp` accelerates, accelerator release regenerates, and `ArrowDown` or
+  `Space` brakes without stealing keys from sliders, selects, or buttons.
+  Physical-Tesla acceptance remains open.
 - Meridian keeps one deterministic low corridor beneath sparse, large oblique
   blades and longitudinal shoulder planes. Its shared travel field has tightly
   bounded vertical motion; FOV, depth compression, peripheral stretch,
