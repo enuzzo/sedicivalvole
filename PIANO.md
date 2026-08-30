@@ -277,7 +277,7 @@ question unless this review explicitly identifies a conflict.
 | Passenger naming | `PATCH` is rejected. `COPLAY`, `TUNE THE ROAD`, and `COPILOT DJ` are candidates, paired with an unmistakable multi-user icon. | S3 remains a naming/design selection, not a missing requirement. Exactly three directions will be presented before product copy changes. |
 | Source structure | Product music is split into `PLAY THE ROAD` (FRACTURE, JUNCTION, NIGHTSHIFT) and `SOUNDTRACK` (fixed recordings browsed by source-supported genre and pace metadata). | M1/M1b/M1c are corrected; NIGHTSHIFT is not nested under JUNCTION and SOUNDTRACK is not speed-remixed. |
 | SOUNDTRACK sources | Jamendo plus owner-authorised Illobo are the initial sources; StreamBeats is permanently rejected; Freesound remains research-only if useful. | Q17/Q18/Q25 resolve. M8 removes StreamBeats and cannot admit material before M11 evidence. |
-| Jamendo readiness | The owner confirms that Jamendo API access is already prepared and selects it as the first SOUNDTRACK integration path. The app needs read methods only: request/read-only scope where available, keep OAuth redirect and client secret empty unless a future approved feature genuinely requires them, and register `https://sedicivalvole.app/` as the application home. | Begin with a read-only operational/API-rights audit. Keep the client ID outside Git, browser code, logs, screenshots, and documentation; only the future server boundary may use it. The public application description must disclose that the app is free, experimental, open source, has no advertising/subscription/paid-music/sponsorship/track monetisation, and includes an optional project-support link unrelated to music access. |
+| Jamendo readiness | The owner confirms that Jamendo API access is already prepared and selects it as the first SOUNDTRACK integration path. A secret-safe live check on 2026-08-30 returned API success, three distinct tracks from three artists, the required credit/catalogue fields, and a `206 audio/mpeg` range response from one stream. The app needs read methods only: request/read-only scope where available, keep OAuth redirect and client secret empty unless a future approved feature genuinely requires them, and register `https://sedicivalvole.app/` as the application home. | Operational connectivity is verified, not source admission: the sample included different Creative Commons capability sets, so M11 must still accept or reject each track and effect path. Keep the client ID outside Git, browser code, logs, screenshots, and documentation; only the future server boundary may use it. The public application description must disclose that the app is free, experimental, open source, has no advertising/subscription/paid-music/sponsorship/track monetisation, and includes an optional project-support link unrelated to music access. |
 | Jamendo continuity and rotation | Maintain three transient browser-media slots—previous, current, next—with their metadata. Use only the stream `audio` URL and browser-native `preload=auto`; never fetch/store complete audio as application blobs, Cache Storage, IndexedDB, service-worker entries, or download files. Replenish each consumed next slot with a fresh eligible track and keep bounded recent-track/artist memory. | This is operational skip/back/forward readiness, not an offline feature or an 8–10-minute guarantee. The browser decides how much media it buffers. Each displaced slot is released promptly. If connectivity exhausts the available buffer, SOUNDTRACK pauses with visible network/retry state and resumes when possible; the owner explicitly rejects automatic fallback to PLAY THE ROAD. |
 | Artist value and attribution | Treat credit as a first-class but low-clutter interaction: a compact now-playing/credit affordance in the navbar or selected corner opens a card with cover thumbnail, artist, track, optional album, licence, `Provided by Jamendo`, and direct track/artist destination exposed by touch plus QR. | M10 and X2 include this closed-by-default card in the three-direction visual gate. It must not cover the driving field until invoked; singles work without album metadata; no Jamendo logo/brand styling is modified or implied without an approved official asset. |
 | Retired external source | Excluded from the current product, source catalogue, authoring workflow, local audition, and runtime. | M5/M5b/M5c are closed, not left as evidence gates. Reopening requires a future explicit owner decision plus fresh model-specific terms and cost review. |
@@ -303,9 +303,63 @@ question unless this review explicitly identifies a conflict.
 | Manual fun effects should include flanger, reverb, chorus and beat repeat, and be strongly perceptible. | S1, M11 | The three-direction macro design must cover these desired characters without exposing raw DSP or applying derivatives where source rights forbid them. |
 | A brief post-splash choice should offer PLAY THE ROAD, SOUNDTRACK or MUTE; one-time sub-four-second control glow/scale onboarding should reveal interactivity. | M1, X2 | This is a visual/product-flow proposal and therefore joins the exactly-three-direction gate; motion/reduced-motion and repeat-visit suppression are testable. |
 | Effects master sits beside Mute and produces central confirmation. | S4, S5 | Default state, click-free envelope release and large non-blocking confirmation are tested together. |
+| Add a rich nearby-place discovery grid with imagery, concise context and a Google Maps handoff, possibly outside ATLAS. | A2, A3b, X1/X2, M13, plus a new owner-assigned entry | Treat DISCOVER as a companion surface rather than more permanent ATLAS chrome. Reuse its ephemeral location/heading and source adapters, keep coordinates out of persistence/diagnostics, and present exactly three visual directions before implementation. |
 | SoundCloud says tracks are downloadable. | M3, M8, M11 | Platform download availability is recorded separately from the owner's direct permission and from public playback/hosting provenance. |
 | README must document every source, including VERTIGO/Tympanus and visual references. | M7, M11 | README, NOTICE, licence scope, source-admission record and third-party notices are reconciled from one audited inventory. |
 | Local MP3s from a subsequently retired source were offered for audition. | M5/M5b/M5c | Superseded by the owner's later decision to remove that source. `_references/` remains untracked and the files are not inspected, auditioned, copied, admitted, or used. |
+
+### DISCOVER companion proposal — 2026-08-30
+
+`DISCOVER` is the working name for a passenger-oriented place-discovery surface,
+not a new permanent layer inside the ATLAS map. ATLAS remains the immediate map
+and travel context; DISCOVER turns the same ephemeral location context into an
+editorial grid that answers “what is interesting around and ahead of us?”. It is
+reachable from ATLAS and the selected shared navigation direction, but opening,
+closing, loading, or failing must never change the active visual or music mode.
+
+The first bounded product slice is:
+
+- **Nearby:** a diverse grid of image-led place cards around the current coarse
+  area, with progressive radius expansion when the immediate area is sparse;
+- **Ahead:** when heading quality is reliable, prefer a forward travel corridor
+  over equally close places already behind the vehicle;
+- **Region:** one slower-changing context card for the wider area, landscape,
+  culture, or history rather than another list of administrative names.
+
+Every normalized card carries a title, concise excerpt, distance/direction,
+source and category, plus an image only when its source/licence metadata is
+retained. Touch opens the richer A2 reader. `MAP` opens an explicit Google Maps
+search URL and `QR` transfers the same destination to a passenger phone; without
+a verified Place ID the UI says “Search in Google Maps”, never implying a
+verified Google listing. While moving, there is no auto-opening carousel,
+automatic route change, or long copy on the primary grid.
+
+The v1 data path deliberately stays narrow:
+
+1. Reuse ATLAS's session-only reliable position and heading; never persist exact
+   coordinates or include them in diagnostics.
+2. Extend the existing MediaWiki Geosearch/PageImages adapter to request page
+   coordinates and normalize source, image and language metadata. Wikipedia and
+   Wikimedia remain the only rich-content sources for v1.
+3. Rank testably by forward relevance, distance, image/summary quality, category
+   diversity and session novelty. Pure nearest-first order is insufficient.
+4. Cache only bounded normalized metadata in coarse cells with a session TTL,
+   abort stale requests, and prefetch one adjacent cell only while network state
+   is healthy. Exact route history and application-owned image/audio caches are
+   excluded.
+5. Prefer current rendered map features for a regional label. Do not make the
+   public Nominatim endpoint a production dependency; any later reverse-geocoder
+   requires its own hosted/provider, privacy, attribution and rate-limit review.
+6. Use truthful cached/offline/empty states. A sparse area may widen its bounded
+   radius; a failed request must not fabricate places or silently retain a stale
+   exact-position claim.
+
+The implementation remains blocked on a new owner-assigned stable ID and the
+mandatory exactly-three-direction visual gate. That gate must show DISCOVER at
+`773 × 601`, its relationship to the collapsed ATLAS sidebar, card density,
+reading handoff, source attribution, QR/Maps actions, loading/offline states, and
+an image-free fallback. A2, A3b, X1/X2 and M13 provide shared dependencies but do
+not silently absorb ownership of the new product surface.
 
 ### Real-Tesla diagnostic evidence — 2026-08-30
 
@@ -389,6 +443,16 @@ Primary-source checks used for this review:
 - [Jamendo tracks API](https://developer.jamendo.com/v3.0/tracks) for stream and
   download separation, download permission, track/artist/album metadata, image,
   licence, `shareurl`, audio format, pagination, and discovery fields;
+- [MediaWiki Geosearch](https://www.mediawiki.org/wiki/API:Geosearch/en) and
+  [PageImages](https://www.mediawiki.org/wiki/Extension:PageImages/en) for
+  coordinate-based nearby discovery, page coordinates, and thumbnails;
+- [Google Maps URLs](https://developers.google.com/maps/documentation/urls/get-started)
+  for a key-free external search/directions handoff rather than an embedded
+  Google data dependency;
+- [OpenStreetMap Foundation Nominatim usage policy](https://operations.osmfoundation.org/policies/nominatim/)
+  for the public service's strict capacity, identification, caching, and
+  attribution limits; the public endpoint is therefore not a default live
+  reverse-geocoding dependency;
 - the repository's operative `LICENSE`, `LICENSE-SCOPE.md`, `NOTICE`,
   `THIRD_PARTY_NOTICES.md`, and `docs/LICENSING.md` for the actual local scope.
 
@@ -597,7 +661,7 @@ rather than missing answers now.
 | M5c | Closed: the private PDF-download action and persistent reminder are cancelled while the source remains excluded. | `PIANO.md` decision record only | 0 | None | No account login or evidence reminder appears in work reports; `_references/` material remains untouched. | None while the source stays excluded. |
 | M6 | Planned source/server strategy: first audit the offered host beyond FTP, then deploy one minimal service for API proxy, catalogue refresh, delivery authorisation, and later relay on a purpose-specific subdomain such as `api.sedicivalvole.app`. | New server project/location after host decision, client adapters, tests/docs | 4 | X7, source verification, host capability evidence | TLS, runtime/process lifecycle, WebSocket, secret storage, logging and deploy/rollback are evidenced; credentials never reach browser/logs; offline catalogue and honest failure pass. | FTP-only hosting may not support a persistent relay or secure secret boundary. |
 | M7 | Owner-resolved contact: add an English music/licensing/removal policy and complete source inventory using the public repository's GitHub Issues route, not public email. | `README.md`, `docs/LICENSING.md`, `NOTICE`, `THIRD_PARTY_NOTICES.md` | 1.5 | M11 evidence | Public GitHub destination works; VERTIGO/Tympanus and every admitted/referenced source reconcile across documents; no private evidence or overclaim. | “Remove on request” does not substitute for permission. |
-| M8 | Partially verified research ledger: current public Jamendo API terms permit non-commercial API use, require member/provider credit and a direct content-page backlink, and prohibit apps designed for content caching or offline access; track docs expose the required metadata and download-permission distinction. Continue re-verifying track-level Creative Commons capabilities, Freesound, FMA and SoundCloud; StreamBeats remains permanently rejected. | `docs/SOURCE-ADMISSION-*`, `THIRD_PARTY_NOTICES.md` only after admission | 1.5 | Q17/Q18 | Dated source URLs, exact terms/API facts and M11 answers; no Jamendo offline-audio cache or unapproved download; StreamBeats has no code/UI/outreach. | The API terms date from 2013 and may drift; individual track licences still govern each use. |
+| M8 | Partially verified research ledger: current public Jamendo API terms permit non-commercial API use, require member/provider credit and a direct content-page backlink, and prohibit apps designed for content caching or offline access; track docs expose the required metadata and download-permission distinction. The prepared live API access passed a secret-safe operational check on 2026-08-30: API status success, three distinct tracks/artists, required metadata present, and a minimal range stream returning `206 audio/mpeg`. Continue re-verifying track-level Creative Commons capabilities, Freesound, FMA and SoundCloud; StreamBeats remains permanently rejected. | `docs/SOURCE-ADMISSION-*`, `THIRD_PARTY_NOTICES.md` only after admission | 1.5 | Q17/Q18 | Dated source URLs, exact terms/API facts and M11 answers; no Jamendo offline-audio cache or unapproved download; StreamBeats has no code/UI/outreach. Operational success must not bypass per-track capability admission. | The API terms date from 2013 and may drift; individual track licences still govern each use. |
 | M9 | Owner-selected first SOUNDTRACK integration: audit the prepared Jamendo read API access, then build a proxy-populated, short-lived metadata cache and three transient browser-media slots: previous/current/next. Refill next after consumption, exclude current/recent tracks, prefer a different recent artist when alternatives exist, validate metadata before playback, and release the displaced media element. Use the stream `audio` URL with browser-native `preload=auto`; never fetch complete application-owned blobs or retain audio in Cache Storage, IndexedDB, a service worker, or download files. | Server adapter, `src/soundtrack/catalog-store.js`, IndexedDB metadata module, three-deck media controller, tests | 4 | M6, M8, M13, Q16/Q22 | Client ID never reaches Git/browser/logs; OAuth secret/redirect remain unused; stale/removed metadata cannot start playback; previous/current/next identities stay coherent through rapid back/forward; no immediate newly selected repeat; recent memory produces broad deterministic rotation; buffer depth is reported rather than promised; exhausted buffer pauses/retries SOUNDTRACK without changing mode and resumes cleanly on recovery. | Stream URL expiry, `preload` being only a browser hint, accidental persistent audio storage, memory pressure, and repeated artists in a narrow filtered pool. |
 | M10 | Planned source-aware visible attribution and Music & Licences settings page. A compact closed-by-default navbar/corner credit control opens a polished card with API-provided cover `image`, track `name`, `artist_name`, optional `album_name`, licence link, textual `Provided by Jamendo`, and a direct touch link plus QR encoded from the current `shareurl`; an artist destination may be added only from a verified API field/query. | Track state/UI, settings surface, catalogue schema, QR component, tests/notices | 2.5 | M1/M9, X1/X2 | No persistent driving clutter; card always matches the audible track; singles fall back cleanly without album fields; touch and QR reach the exact source page; artist/title and provider credit satisfy the API terms; cover failure has a restrained text fallback; no unapproved logo or implied endorsement. | Stale attribution during crossfade, hidden credit becoming undiscoverable, and treating a QR alone as the required direct backlink. |
 | M11 | Planned admission gate: derivatives, in-app selection, and no-host playback answers become typed source capabilities. | `src/soundtrack/source-policy.js`, tests, licensing docs | 1 | Fresh primary evidence | Unknown/false capability prevents admission or effect routing by construction. | Reducing nuanced licences to booleans without preserving evidence. |
@@ -749,6 +813,10 @@ invented IDs:
 - Independently verify every external API/licence conclusion in M8/M9/G2
   against current primary sources before committing it as project fact; M5 is
   closed and requires no further research while the retired source remains excluded.
+- Assign a stable owner ID to the proposed DISCOVER companion surface, then run
+  its exactly-three-direction visual gate before implementation. Reuse A2/A3b,
+  X1/X2 and M13 dependencies without turning ATLAS into a permanently expanded
+  content panel.
 
 ## Coverage audit
 
