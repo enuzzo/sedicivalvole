@@ -129,13 +129,16 @@ button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible
 
 .lab-macro-strip {
   z-index: 11;
-  position: absolute;
-  left: 50%;
-  bottom: 84px;
+  position: relative;
+  grid-column: 2;
+  grid-row: 2;
+  align-self: end;
+  justify-self: center;
   display: grid;
   grid-template-columns: repeat(3, minmax(92px, 1fr));
   gap: 6px;
-  transform: translateX(-50%);
+  width: min(calc(100% - 24px), 360px);
+  margin-bottom: 12px;
 }
 .lab-macro-strip button { min-height: 54px; padding: 0 14px; color: var(--lab-muted); border: 1px solid var(--lab-line); border-radius: 4px; background: rgba(7, 9, 10, .88); font-size: 9px; font-weight: 650; letter-spacing: .06em; cursor: pointer; }
 .lab-macro-strip button.is-active { color: var(--lab-accent); border-color: var(--lab-accent); }
@@ -180,7 +183,6 @@ button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible
   .lab-range-heading { margin-bottom: 10px; font-size: 9px; }
   .lab-range input { height: 24px; }
   .lab-capture-count { padding: 0 16px; font-size: 8px; }
-  .lab-macro-strip { bottom: 78px; }
   .lab-footer { grid-template-columns: 92px 92px minmax(145px, 1fr) 88px 102px 112px; }
   .lab-signal { padding: 0 12px; }
   .lab-signal strong { font-size: 22px; }

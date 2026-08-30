@@ -11,6 +11,7 @@ const packageSource = await read("../scripts/package-lab.mjs");
 const viteSource = await read("../vite.lab.config.mjs");
 const deploySource = await read("../../../scripts/deploy_drive_lab_ftp.py");
 const appSource = await read("../src/lab/main.jsx");
+const stylesSource = await read("../src/lab/styles.css");
 
 test("the canonical LAB gate keeps authentication and secrets on the PHP boundary", () => {
   assert.match(indexSource, /hash_pbkdf2\('sha256'/);
@@ -35,6 +36,12 @@ test("the LAB bundle is inlined behind the gate and leaves no directly fetchable
   assert.match(indexSource, /\/\*__LAB_JS__\*\//);
   assert.doesNotMatch(indexSource, /<script[^>]+src=/i);
   assert.doesNotMatch(indexSource, /<link[^>]+stylesheet/i);
+});
+
+test("the live macro strip stays inside the preview column at the Tesla viewport", () => {
+  assert.match(stylesSource, /\.lab-macro-strip\s*\{[\s\S]*grid-column:\s*2;/);
+  assert.match(stylesSource, /width:\s*min\(calc\(100% - 24px\), 360px\)/);
+  assert.doesNotMatch(stylesSource, /\.lab-macro-strip\s*\{[\s\S]*?left:\s*50%/);
 });
 
 test("SEND JSON requires an authenticated session and preserves the preset privacy contract", () => {
