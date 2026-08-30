@@ -38,8 +38,10 @@ dated study documents.
   runtime-context options. Import, clipboard copy and explicit authenticated
   email use one versioned coordinate-free preset; the browser receives no
   password verifier or recipient. The unauthenticated canonical gate, direct
-  endpoint denial and exact Tesla-sized login surface are verified; authenticated
-  behavior and real-Tesla acceptance remain open until owner login.
+  endpoint denial and exact Tesla-sized login surface are verified. Authenticated
+  canonical QA also passes at `773 × 601` with no overflow or console error; a
+  macro-strip overlap found there was corrected. Physical-Tesla acceptance
+  remains open.
 - Meridian keeps one deterministic low corridor beneath sparse, large oblique
   blades and longitudinal shoulder planes. Its shared travel field has tightly
   bounded vertical motion; FOV, depth compression, peripheral stretch,
@@ -98,7 +100,9 @@ dated study documents.
   other effects are excluded. One `94 × 34 px` text-only `TYPE` button cycles
   `FRACTAL → MURMURATION → AXIOM → FRACTAL` without a dropdown or panel, while
   the shared `PALETTE` remains a separate colour choice. Road speed alone owns
-  point scale, depth, and travel; music owns colour phase and pulse. Exact muted
+  point scale, depth, and travel; music owns colour phase and pulse. Point scale
+  reaches its maximum at `100 km/h` and holds above it, while depth and travel
+  continue through the global `130 km/h` road ceiling. Exact muted
   `773 × 601` and `390 × 844` QA, every type, OPEN / UNDERWATER / BLOOM, zero
   warning/error state, deterministic reduced motion, 339 tests, and the
   128-module build pass. Human visual approval was recorded on 2026-08-29;
@@ -133,6 +137,13 @@ dated study documents.
   destination, the supplied QR, an honestly labelled playful project-sparks
   signal and a runtime-reconstructed suggestion address; suggestions are
   explicitly welcome without a purchase.
+- The opening action now leads to the owner-selected **Instrument Deck**: one
+  compact screen with `MUSIC` and `VISUAL` sections, concise descriptions, and
+  one `START` action that remains disabled until both axes are selected. MUTE
+  still requires a Visual. SOUNDTRACK is visible but disabled until its real
+  player exists, and the Illobo featured treatment remains reserved for the
+  future SOUNDTRACK library. The launcher and its controls use the shared
+  restrained `6 px` radius and pass exact `773 × 601` interaction/geometry QA.
 - Product chrome uses the locally packaged Orbitron variable font. The launch,
   controls and compact operational labels occupy a deliberate `450–750` weight
   hierarchy rather than falling back to device fonts. DIAG measurements and
@@ -253,6 +264,14 @@ dated study documents.
   after either score and before OPEN's shared tone/width stage.
 - **CUTWATER 04**, **LOWTIDE 05**, **NIGHTCAST 06**, and
   **STILLWATER 07** are declared honestly as `IN PREPARATION` and are disabled.
+- **SOUNDTRACK is not connected to the production player yet.** Its first
+  fail-closed source-policy foundation is implemented and tested: selection,
+  source streaming, audio effects, and hosted-copy rights are independent
+  `allow`/`deny`/`unknown` capabilities. Known non-ND Creative Commons records
+  preserve their obligations; ND and unknown records are excluded. Jamendo
+  normalization requires complete credit and source-owned URLs and discards all
+  download fields. See
+  [`SOUNDTRACK-SOURCE-POLICY.md`](SOUNDTRACK-SOURCE-POLICY.md).
 - `docs/MUSIC-CRAFT.md` records the musical defects and techniques already
   learned. Assertable musical rules belong in tests.
 - A development-only sample-harmony pilot now inventories the eight chord hits
@@ -299,15 +318,13 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The canonical live product is version `0.0.0`, source commit `7a026e4`, build
-  `20260830-1643`. The 2026-08-30 Phase 0 / M13 publication passed the focused
-  37-check gate, the 129-module production build, read-only preflight,
-  89-file / 15,771,162-byte upload, no-write postflight, byte-identical HTML,
-  JavaScript and CSS checks, cache checks, and muted live `773 × 601` QA with
-  zero browser warning or error. PRIMORDIAL is absent from the six-item live
-  catalog; the new latency, network, storage-canary and contextual long-task
-  surfaces are visible in DIAG. Exact progressive evidence is in
-  [`DEPLOY.md`](DEPLOY.md).
+- The canonical live product is version `0.0.0`, source commit `229acc0`, build
+  `20260830-1900`. Its guarded publication uploaded 93 files / 16,054,500 bytes;
+  authenticated canonical LAB QA identifies the build and the exact
+  `773 × 601` layout is clean. The latest complete local suite passes 328 of 329
+  checks, with only the known missing local `php` executable preventing the
+  diagnostic-mail fixture. The production build completes with 130 modules.
+  Exact progressive evidence is in [`DEPLOY.md`](DEPLOY.md).
 - Diagnostic telemetry contains no coordinates and is sent only after the
   explicit `SEND DIAGNOSTIC` action. ATLAS location is a separate ephemeral
   feature: the latest reliable point stays in session memory; OpenFreeMap tile

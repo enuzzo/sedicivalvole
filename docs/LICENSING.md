@@ -62,6 +62,25 @@ retains its custom notice and bundled licences, and reserved audio/media remain
 outside the software grant. This avoids both false revocation claims and a
 blanket noncommercial assertion over rights enuzzo does not own.
 
+## 2026-08-30 — SOUNDTRACK admission fails closed by capability
+
+The first SOUNDTRACK source-policy module separates permission to appear in the
+catalogue, stream from the source, enter the effects path, and host a copy. Each
+decision is `allow`, `deny`, or `unknown`; unknown never becomes permission by
+inference. Jamendo records require complete credit metadata, provider-owned
+HTTPS playback and content URLs, and a recognized Creative Commons identifier.
+The normalized record intentionally discards every download URL and flag.
+
+For this noncommercial project, CC BY, BY-SA, BY-NC, and BY-NC-SA preserve their
+attribution, noncommercial, and share-alike obligations as data. The stricter
+owner decision excludes BY-ND and BY-NC-ND recordings entirely instead of
+building an unprocessed-playback exception. Direct grants require a stable
+evidence reference and an explicit decision for every capability. This is only
+the admission foundation: no Jamendo catalogue, audio, credential, asset, or
+player has entered the production application. The complete contract and dated
+primary sources are recorded in
+[`SOUNDTRACK-SOURCE-POLICY.md`](SOUNDTRACK-SOURCE-POLICY.md).
+
 ## 2026-08-29 — source-faithful Drivey supersedes the clean-room decision
 
 The product owner rejected the initial project-authored Drivey translation and
