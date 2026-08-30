@@ -1367,6 +1367,7 @@ export function App() {
           const nextMapPosition = {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
+            capturedAtMs,
           };
           setMapPosition((current) => ({
             ...nextMapPosition,

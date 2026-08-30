@@ -7,6 +7,10 @@ export const ATLAS_MANUAL_CAMERA_LIMITS = Object.freeze({
   minimumPitch: 0,
   maximumPitch: 85,
 });
+export const ATLAS_POSITION_BUFFER_LIMIT = 8;
+export const ATLAS_POSITION_INTERPOLATION_DELAY_MS = 100;
+export const ATLAS_POSITION_MAXIMUM_GAP_MS = 750;
+export const ATLAS_POSITION_STALE_AFTER_MS = 1500;
 
 const clamp = (value, minimum, maximum) => Math.min(maximum, Math.max(minimum, value));
 
@@ -56,6 +60,115 @@ function atlasPointDistanceMetres(first, second) {
   const north = (second.latitude - first.latitude) * 111320;
   const east = (second.longitude - first.longitude) * 111320 * Math.cos(latitude);
   return Math.hypot(north, east);
+}
+
+function normalizeAtlasAngle(value) {
+  return ((Number(value) % 360) + 360) % 360;
+}
+
+function interpolateAtlasAngle(first, second, progress) {
+  if (!Number.isFinite(first)) return Number.isFinite(second) ? normalizeAtlasAngle(second) : null;
+  if (!Number.isFinite(second)) return normalizeAtlasAngle(first);
+  const delta = ((normalizeAtlasAngle(second) - normalizeAtlasAngle(first) + 540) % 360) - 180;
+  return normalizeAtlasAngle(first + delta * progress);
+}
+
+function interpolateAtlasLongitude(first, second, progress) {
+  const delta = ((second - first + 540) % 360) - 180;
+  return ((first + delta * progress + 540) % 360) - 180;
+}
+
+export function validAtlasPositionSample(sample) {
+  return validAtlasPosition(sample) && Number.isFinite(sample?.capturedAtMs);
+}
+
+/**
+ * Retains a small session-only, chronological GPS buffer for the future ATLAS
+ * vehicle point. Invalid and non-monotonic samples leave the last trusted
+ * position untouched instead of inventing motion.
+ */
+export function appendAtlasPositionSample(
+  samples,
+  position,
+  capturedAtMs = position?.capturedAtMs,
+  maximumSamples = ATLAS_POSITION_BUFFER_LIMIT,
+) {
+  const previous = Array.isArray(samples) ? samples : [];
+  if (!validAtlasPosition(position) || !Number.isFinite(capturedAtMs)) return previous;
+  const last = [...previous].reverse().find(validAtlasPositionSample);
+  if (last && capturedAtMs <= last.capturedAtMs) return previous;
+  const heading = Number.isFinite(position.heading)
+    ? normalizeAtlasAngle(position.heading)
+    : Number.isFinite(last?.heading)
+      ? normalizeAtlasAngle(last.heading)
+      : null;
+  return [...previous, {
+    latitude: position.latitude,
+    longitude: position.longitude,
+    heading,
+    capturedAtMs,
+  }].slice(-Math.max(2, Math.floor(Number(maximumSamples) || ATLAS_POSITION_BUFFER_LIMIT)));
+}
+
+function atlasHeldPosition(sample, stale = false) {
+  return {
+    latitude: sample.latitude,
+    longitude: sample.longitude,
+    heading: Number.isFinite(sample.heading) ? normalizeAtlasAngle(sample.heading) : null,
+    sourceCapturedAtMs: sample.capturedAtMs,
+    interpolating: false,
+    stale,
+  };
+}
+
+/**
+ * Samples the buffered GPS path against time, never frame count. A one-sample
+ * delay lets 30 and 60 FPS renderers traverse the same segment smoothly. The
+ * function never extrapolates and refuses to animate across a long data gap.
+ */
+export function interpolateAtlasPosition(samples, renderAtMs, {
+  delayMs = ATLAS_POSITION_INTERPOLATION_DELAY_MS,
+  maximumGapMs = ATLAS_POSITION_MAXIMUM_GAP_MS,
+  staleAfterMs = ATLAS_POSITION_STALE_AFTER_MS,
+} = {}) {
+  if (!Number.isFinite(renderAtMs)) return null;
+  const chronological = [];
+  for (const sample of Array.isArray(samples) ? samples : []) {
+    if (!validAtlasPositionSample(sample)) continue;
+    if (chronological.length && sample.capturedAtMs <= chronological.at(-1).capturedAtMs) continue;
+    chronological.push(sample);
+  }
+  if (!chronological.length) return null;
+
+  const latest = chronological.at(-1);
+  if (renderAtMs - latest.capturedAtMs > Math.max(0, Number(staleAfterMs) || 0)) {
+    return atlasHeldPosition(latest, true);
+  }
+
+  const targetAtMs = renderAtMs - Math.max(0, Number(delayMs) || 0);
+  const first = chronological[0];
+  if (targetAtMs <= first.capturedAtMs) return atlasHeldPosition(first);
+
+  const upperIndex = chronological.findIndex((sample) => sample.capturedAtMs >= targetAtMs);
+  if (upperIndex <= 0) return atlasHeldPosition(latest);
+  const lower = chronological[upperIndex - 1];
+  const upper = chronological[upperIndex];
+  const segmentMs = upper.capturedAtMs - lower.capturedAtMs;
+  if (segmentMs <= 0 || segmentMs > Math.max(1, Number(maximumGapMs) || 1)) {
+    return atlasHeldPosition(upper);
+  }
+
+  const progress = clamp((targetAtMs - lower.capturedAtMs) / segmentMs, 0, 1);
+  if (progress <= 0) return atlasHeldPosition(lower);
+  if (progress >= 1) return atlasHeldPosition(upper);
+  return {
+    latitude: lower.latitude + (upper.latitude - lower.latitude) * progress,
+    longitude: interpolateAtlasLongitude(lower.longitude, upper.longitude, progress),
+    heading: interpolateAtlasAngle(lower.heading, upper.heading, progress),
+    sourceCapturedAtMs: upper.capturedAtMs,
+    interpolating: true,
+    stale: false,
+  };
 }
 
 /**

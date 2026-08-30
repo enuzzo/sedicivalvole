@@ -3,9 +3,14 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import {
   advanceAtlasDemoPosition,
+  appendAtlasPositionSample,
   appendAtlasTravelPoint,
   ATLAS_MANUAL_CAMERA_LIMITS,
   ATLAS_MANUAL_IDLE_MS,
+  ATLAS_POSITION_BUFFER_LIMIT,
+  ATLAS_POSITION_INTERPOLATION_DELAY_MS,
+  ATLAS_POSITION_MAXIMUM_GAP_MS,
+  ATLAS_POSITION_STALE_AFTER_MS,
   atlasEffectProfile,
   atlasGpsPresentation,
   atlasKeyboardShortcutAvailable,
@@ -14,6 +19,7 @@ import {
   atlasTravelFeature,
   createLatestAtlasRequestGate,
   createAtlasStyle,
+  interpolateAtlasPosition,
   manualAtlasCamera,
   normalizeNearbyPages,
   paletteToAtlasMapChannels,
@@ -22,6 +28,7 @@ import {
   speedToAtlasCamera,
   speedToAtlasEffectCamera,
   validAtlasPosition,
+  validAtlasPositionSample,
   wheelAtlasZoom,
   wikipediaNearbyUrl,
 } from "../src/environments/atlas/atlas-model.js";
@@ -132,7 +139,94 @@ test("Atlas follows reported heading or infers it from successive trusted positi
   assert.equal(resolveAtlasHeading(milan, { latitude: milan.latitude + 0.001, longitude: milan.longitude }, null), 0);
   assert.equal(resolveAtlasHeading(milan, { ...milan, longitude: milan.longitude + 0.000001 }, null), 18);
   assert.match(appSource, /heading: resolveAtlasHeading\(current, nextMapPosition, position\.coords\.heading\)/);
+  assert.match(appSource, /const nextMapPosition = \{[\s\S]*?capturedAtMs,[\s\S]*?\};/);
   assert.match(atlasSource, /bearing: Number\.isFinite\(point\.heading\) \? point\.heading : map\.getBearing\(\)/);
+});
+
+test("Atlas retains a bounded chronological position buffer without accepting bad fixes", () => {
+  assert.equal(ATLAS_POSITION_BUFFER_LIMIT, 8);
+  let samples = [];
+  for (let index = 0; index < 12; index += 1) {
+    samples = appendAtlasPositionSample(samples, {
+      latitude: 45.46 + index * 0.00001,
+      longitude: 9.19 + index * 0.00001,
+      heading: index === 0 ? 350 : 10,
+    }, 1000 + index * 100);
+  }
+  assert.equal(samples.length, ATLAS_POSITION_BUFFER_LIMIT);
+  assert.equal(samples[0].capturedAtMs, 1400);
+  assert.equal(samples.at(-1).capturedAtMs, 2100);
+  assert.equal(validAtlasPositionSample(samples.at(-1)), true);
+
+  const unchanged = appendAtlasPositionSample(samples, { latitude: 95, longitude: 9.2 }, 2200);
+  assert.equal(unchanged, samples);
+  assert.equal(appendAtlasPositionSample(samples, { latitude: 45.5, longitude: 9.2 }, 2100), samples);
+  assert.equal(appendAtlasPositionSample(samples, { latitude: 45.5, longitude: 9.2 }, Number.NaN), samples);
+});
+
+test("Atlas position interpolation is timestamped, frame-rate independent and bounded", () => {
+  assert.equal(ATLAS_POSITION_INTERPOLATION_DELAY_MS, 100);
+  assert.equal(ATLAS_POSITION_MAXIMUM_GAP_MS, 750);
+  assert.equal(ATLAS_POSITION_STALE_AFTER_MS, 1500);
+  let samples = [];
+  for (let index = 0; index <= 10; index += 1) {
+    samples = appendAtlasPositionSample(samples, {
+      latitude: 45.46,
+      longitude: 9.19 + index * 0.0001,
+      heading: index < 5 ? 350 : 10,
+    }, 1000 + index * 100);
+  }
+
+  const midpoint = interpolateAtlasPosition(samples, 1750);
+  assert.ok(Math.abs(midpoint.longitude - 9.19065) < 1e-10);
+  assert.equal(midpoint.interpolating, true);
+  assert.equal(midpoint.stale, false);
+
+  const thirtyFps = Array.from({ length: 16 }, (_, index) => (
+    interpolateAtlasPosition(samples, 1400 + index * (1000 / 30)).longitude
+  ));
+  const sixtyFps = Array.from({ length: 31 }, (_, index) => (
+    interpolateAtlasPosition(samples, 1400 + index * (1000 / 60)).longitude
+  ));
+  thirtyFps.forEach((value, index) => {
+    assert.ok(Math.abs(value - sixtyFps[index * 2]) < 1e-12);
+    if (index > 0) assert.ok(value > thirtyFps[index - 1]);
+  });
+
+  const held = interpolateAtlasPosition(samples, 2150);
+  assert.equal(held.longitude, samples.at(-1).longitude);
+  assert.equal(held.interpolating, false, "the marker must not extrapolate beyond the latest fix");
+  const stale = interpolateAtlasPosition(samples, 3501);
+  assert.equal(stale.longitude, samples.at(-1).longitude);
+  assert.equal(stale.stale, true);
+  assert.equal(stale.interpolating, false);
+  assert.equal(interpolateAtlasPosition([], 1000), null);
+  assert.equal(interpolateAtlasPosition(samples, Number.NaN), null);
+});
+
+test("Atlas interpolates cyclic values by the short route and never cuts across a long sample gap", () => {
+  let samples = appendAtlasPositionSample([], {
+    latitude: 0,
+    longitude: 179.999,
+    heading: 350,
+  }, 1000);
+  samples = appendAtlasPositionSample(samples, {
+    latitude: 0,
+    longitude: -179.999,
+    heading: 10,
+  }, 1100);
+  const midpoint = interpolateAtlasPosition(samples, 1150);
+  assert.ok(Math.abs(Math.abs(midpoint.longitude) - 180) < 1e-9);
+  assert.ok(midpoint.heading < 0.001 || midpoint.heading > 359.999);
+
+  const gap = [
+    { latitude: 45.46, longitude: 9.19, heading: 0, capturedAtMs: 0 },
+    { latitude: 45.56, longitude: 9.29, heading: 90, capturedAtMs: 2000 },
+  ];
+  const recovered = interpolateAtlasPosition(gap, 2050);
+  assert.equal(recovered.latitude, gap[1].latitude);
+  assert.equal(recovered.longitude, gap[1].longitude);
+  assert.equal(recovered.interpolating, false);
 });
 
 test("Atlas passenger reading and QR remain legible at the Tesla viewport", () => {
