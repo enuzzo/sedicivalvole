@@ -20,6 +20,10 @@ Date: 2026-08-31
   `/private/tmp/sedicivalvole-road-sheet-spacing-after-773x601.png`.
 - Refined annotated-size Browser capture:
   `/private/tmp/sedicivalvole-road-sheet-spacing-after-702x546.png`.
+- Refined canonical exact-viewport Browser capture:
+  `/private/tmp/sedicivalvole-road-sheet-spacing-live-773x601.png`.
+- Refined canonical annotated-size Browser capture:
+  `/private/tmp/sedicivalvole-road-sheet-spacing-live-702x546.png`.
 - Reference pixels: `1423 × 1105`, normalized to the exact target ratio.
   Implementation CSS viewport and screenshot: `773 × 601` at density `1`.
 - State: Instrument Deck with PLAY THE ROAD and APERTURE selected, START enabled.
@@ -81,15 +85,25 @@ Signal Gate rather than static recreations of the concept.
 - Refined local Browser QA at `773 × 601` and `702 × 546` keeps page dimensions
   exact, preserves all approved font sizes, and completes MUTE + APERTURE into
   `phase-running` with one canvas and no retained launcher.
-- Canonical build `20260830-2344` repeats the exact `773 × 601` geometry: both
-  grids are `280 px` high from `y=195.5` through `475.5`, START enables after
-  PLAY THE ROAD + APERTURE, and MUTE + APERTURE enters the running canvas.
-  Document dimensions remain `773 × 601`; the warm-cache session reports zero
-  warning and zero error.
+- Canonical build `20260831-0006` repeats the refined exact `773 × 601`
+  geometry: the sheet remains `724 × 552 px`, the compact header is `72 px`,
+  the mark is `52 px`, and both fieldsets and both grids measure `378 px` and
+  `342 px`. The selected PLAY THE ROAD rail retains `27.7 px` clearance from
+  its title; APERTURE retains `49.63 px`.
+- The same canonical build at the annotated `702 × 546` viewport keeps the
+  document exact, the sheet at `654 × 498 px`, the header at `72 px`, and both
+  grids at `288 px`. PLAY THE ROAD retains the measured `11.45 px` minimum
+  rail/title clearance, title/description spacing remains `3 px`, and the
+  `10 px` card padding plus `8 px` grid gap remain shared by Music and Visual.
+- Canonical MUTE + APERTURE enters `phase-running` with one live canvas and no
+  retained launcher. Page identity, meaningful content, and framework-overlay
+  absence pass; the exact `773 × 601` canonical run reports zero warnings and
+  zero errors.
 - Live HTML, JavaScript, CSS, and the LIGHT SVG are byte-identical to the clean
-  build. Twenty-two focused cache/launcher/brand checks, sixteen deployment-
-  identity checks, nine Sites checks, and the 130-module production build pass.
-  The complete suite retains only the known local `spawn php ENOENT` fixture.
+  build. Twenty-six focused presentation/documentation checks, nine Sites
+  checks, sixteen deployment-identity checks, and the 130-module production
+  build pass. The complete suite retains only the known local
+  `spawn php ENOENT` fixture.
 
 ## Follow-up boundary
 

@@ -8,6 +8,48 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Compact Road Sheet lockup and spacing — 2026-08-31 00:14
+
+- build stamp: **`20260831-0006`**; deployed source commit: `1635d6e`;
+  implementation checkpoint: `a2bb583`;
+- product change: **PASS**. The Road Sheet keeps its approved `724 × 552 px`
+  LIGHT anatomy while replacing the separated `112 px` brand band with one
+  `72 px` left lockup: the `52 px` 16 Road mark sits beside the `32 px`
+  Orbitron wordmark and BACK remains independently anchored at right. Music
+  and Visual now share `10 px` card/field padding, `8 px` grid spacing, and a
+  `3 px` title/description gap. The selected vermilion rail is `34 × 3 px` at
+  `top: 7px` and no longer displaces or crosses its title;
+- future-row boundary: **PASS**. The Visual registry continues to derive its
+  row count. A temporary, non-committed three-row Browser stress at
+  `702 × 546` rendered three exact `90.66 px` tracks inside the fixed `288 px`
+  grid with `21.45 px` minimum content clearance, no clipping, no scroll
+  growth, and unchanged Music/Visual geometry;
+- verification gate: **PASS within the local toolchain boundary**. Twenty-six
+  focused presentation/documentation checks, nine Sites checks, sixteen
+  deployment-identity checks, and the 130-module production build pass. The
+  complete suite retains only the established local `spawn php ENOENT`
+  diagnostic-mail fixture limitation;
+- guarded publication: **PASS**. Read-only preflight passed with
+  `remote_writes=NONE`; the guarded publisher transferred 102 files /
+  16,355,793 bytes to the canonical root. Read-only postflight then passed with
+  `remote_writes=NONE` and eight expected root entries;
+- canonical HTTP identity: **PASS**. Cache-busted HTML returns `200` with
+  explicit `no-store` / `no-cache`, `nosniff`, and the selected build stamp.
+  Live HTML, JavaScript, CSS, and LIGHT SVG are byte-identical to the clean
+  build at SHA-256
+  `9b0859bf562b0691c4e3de6e2bd2f1d0e58d48892b4caf2aab79693d19b8d9bc`,
+  `d9088b6d245627fc5002b2f958d7e94a186d0e73a1060513ed5cdc3595de6ed5`,
+  `1ee235c4db3d6f2cd92a3eab6da1ec568168f9541d4dd096c55f8f45cb050d24`,
+  and `210b319522825982589907c213661720abbf7ea94d29b3a53a7fb4a7cec275e5`;
+- exact live Browser QA: **PASS at `773 × 601` and the annotated
+  `702 × 546` viewport**. At Tesla size, both fieldsets and both grids measure
+  `378 px` and `342 px`; selected PLAY THE ROAD and APERTURE keep `27.7 px`
+  and `49.63 px` rail/title clearance. At `702 × 546`, both grids remain
+  `288 px` and the closest clearance is `11.45 px`. MUTE + APERTURE enters
+  `phase-running` with one canvas and no retained launcher. The exact Tesla run
+  emits zero warning/error. Physical-Tesla cabin-distance, glare, and touch
+  acceptance remain open.
+
 ## Road Sheet LIGHT Instrument Deck — 2026-08-30 23:48
 
 - build stamp: **`20260830-2344`**; deployed source commit: `2c36acd`;
