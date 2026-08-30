@@ -105,9 +105,10 @@ retains an oblique pitch and materially extruded buildings. At `773 × 601`, the
 passenger panel reserves `246 px`, uses `12 px` reading text and presents an
 `86 px` QR generated from a `192 px` source.
 The manual camera accepts one-finger or primary-button mouse drag for bearing
-and pitch, two-finger pinch or wheel/trackpad scroll for bounded extended zoom,
-and retains every manual gesture for six idle seconds before easing back to the
-latest automatic position and camera. Product chrome is pointer-transparent
+and pitch hard-clamped to `0–85°` without elastic overshoot, two-finger pinch or
+wheel/trackpad scroll for bounded extended zoom, and retains every manual
+gesture for six idle seconds before easing back to the latest automatic
+position and camera. Product chrome is pointer-transparent
 only over the map surface; the GPS recovery, telemetry and low control planes
 remain interactive.
 

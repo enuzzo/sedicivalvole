@@ -702,11 +702,12 @@ than missing requirements.
    NPCs only when every generated car can be placed and verified opposite the
    player direction; ambiguous metadata fails closed to zero traffic and the old
    stored count preference is ignored.
-8. **ATLAS already owns part of A1/A3.** Touch and mouse camera exploration,
-   `18–78°` pitch bounds, a six-second automatic return, compass control, and an
-   ephemeral directional travel line already pass tests. It lacks the requested
-   full pitch range, round pulsing point, street badge, cardinal-only compass,
-   and embedded Wikipedia reader.
+8. **ATLAS now owns A1 and part of A3.** Touch and mouse camera exploration,
+   hard-clamped `0–85°` pitch bounds, a six-second automatic return, compass
+   control, and an ephemeral directional travel line pass tests. It still lacks
+   the requested round pulsing point, street badge, cardinal-only compass, and
+   embedded Wikipedia reader; physical endpoint feel and near-horizon vehicle
+   acceptance remain open.
 9. **A3 is not just smoothing.** GPS input is about 10 Hz, but the existing map
    animation updates camera ownership on a `1100 ms` cadence and the travel line
    is a separate representation. A round vehicle point needs its own
@@ -814,7 +815,7 @@ source implementation.
 
 | ID | Status and one-line work | Files | Half-days | Dependencies | Proposed acceptance | Main risk |
 | --- | --- | --- | ---: | --- | --- | --- |
-| A1 | Owner-approved partial: extend existing manual camera from `18–78°` to provisional `0–85°` endpoints and preserve the six-second return. | `atlas-model.js`, `atlas-field.jsx`, `atlas-model.test.mjs`, CSS/QA | 1.5 | Exact-scene owner review | Touch/mouse hit endpoints and clamps; one fresh automatic return begins 6000 ms after the latest interaction with no repeated ownership fight. | Near-horizon MapLibre cost and building occlusion. |
+| A1 | Implemented locally at `[8feb142]`: the manual camera is hard-clamped to `0–85°`, MapLibre receives the same bounds, and the exact six-second return is preserved. Physical endpoint feel remains an owner/vehicle acceptance item. | `atlas-model.js`, `atlas-field.jsx`, `atlas-model.test.mjs`, CSS/QA | 1.5 | Exact-scene owner review | Model and runtime share exact endpoints and clamps; one fresh automatic return begins 6000 ms after the latest interaction with no repeated ownership fight. | Near-horizon MapLibre cost and building occlusion. |
 | A2 | Owner-approved after visual gate: add Read more and an in-motion partial-page Wikipedia reader with shared modal behavior, small-A/large-A sizing and warm-light/dark themes. | ATLAS field, `App.jsx` shared overlay, `styles.css`, tests/notices | 2.5 | X1/X2, selected direction | X/backdrop/Escape/focus/scroll work; text sizing and themes persist accessibly; approved size/opacity at 773×601. | Wikipedia frame policy/network failure and driver distraction. |
 | A3 | Partial: add a round luminous blinking vehicle point interpolated between timestamped GPS samples; retain the separate ephemeral path. | `atlas-model.js`, `atlas-field.jsx`, tests | 2 | T1 concept, GPS timestamp data | 10 Hz synthetic fixes produce smooth 60/30 FPS point motion; stale/invalid fixes freeze honestly; no coordinates in DIAG/storage. | Interpolating across bad fixes can visibly cut corners. |
 | A3b | Planned: derive current road name from rendered map features and place it in the selected zone map. | ATLAS model/field, CSS, tests | 1 | Q28, X2 | Badge never overlaps compass; no extra network call; absent/multilingual names degrade cleanly. | Tile feature schemas vary by zoom and road class. |

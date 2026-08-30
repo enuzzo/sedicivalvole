@@ -1,3 +1,43 @@
+# Design QA — ATLAS manual pitch range
+
+Date: 2026-08-31
+
+## Source and implementation
+
+- Owner-approved A1 contract: extend manual camera pitch to a hard-clamped
+  `0–85°` range while preserving the exact six-second ownership lease and
+  automatic return.
+- Exact Tesla-viewport Browser evidence:
+  `/private/tmp/sedicivalvole-atlas-a1-773x601.png`.
+- State: ATLAS, explicit Milan demo, GPS unavailable, passenger panel open.
+
+## Deterministic checks
+
+- Project drag math reaches exactly `0°` and `85°`; further input at either
+  endpoint remains clamped with no elastic overshoot.
+- MapLibre receives the same `minPitch` and `maxPitch`, preventing native and
+  project interaction limits from diverging.
+- Invalid manual ownership does not trigger a return. A valid lease still
+  begins one fresh return only after `6000 ms` of inactivity.
+- Twenty-two focused ATLAS model checks and the 130-module production build
+  pass.
+
+## Rendered QA and residual acceptance
+
+- At exact `773 × 601`, the real lazy-loaded MapLibre field renders the Milan
+  demo, 3D buildings, passenger content and compass. Its initial automatic
+  camera reports `62°` pitch and `16.2` zoom; browser warnings/errors are zero.
+- The available in-app Browser exposes clicks but cannot synthesize the map's
+  pointer-drag gesture. Exact endpoint behavior is therefore covered by the
+  pure interaction model and explicit MapLibre constructor bounds; physical
+  endpoint feel, near-horizon building occlusion, thermal cost and real-Tesla
+  touch acceptance remain open.
+- Deployment is intentionally deferred by the owner.
+
+final result: passed
+
+---
+
 # Design QA — running topbar product mark
 
 Date: 2026-08-31
