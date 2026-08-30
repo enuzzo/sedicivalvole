@@ -52,6 +52,7 @@ test("the selected Instrument Deck resolves Music and Visual before START", () =
   assert.match(app, /Visual experience without music/);
   assert.doesNotMatch(selector, /ILLOBO FEATURED/i);
   assert.match(styles, /\.launch-selector-body \{[\s\S]*?grid-template-columns: minmax\(0, \.9fr\) minmax\(0, 1\.25fr\)/);
+  assert.match(styles, /\.launch-selector fieldset \{[\s\S]*?padding: 16px 11px 11px/);
   assert.match(styles, /\.launch-visual-grid \{[^}]*grid-template-columns: repeat\(3, minmax\(0, 1fr\)\)/);
   assert.match(styles, /--ui-radius: 6px/);
   for (const selectorName of [

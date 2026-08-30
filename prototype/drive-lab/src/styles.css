@@ -412,7 +412,7 @@ button { -webkit-tap-highlight-color: transparent; }
 .launch-selector fieldset {
   min-width: 0;
   margin: 0;
-  padding: 11px;
+  padding: 16px 11px 11px;
   border: 0;
 }
 .launch-selector fieldset + fieldset { border-left: 1px solid rgba(238, 234, 224, .4); }
