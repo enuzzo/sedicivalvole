@@ -8,6 +8,38 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Stable owner LAB renderer and keyboard motion — 2026-08-30 20:15
+
+- build stamp: **`20260830-2011`**; deployed source commit: `6893cd3`;
+  renderer/keyboard implementation checkpoint: `8c37956`;
+- verification gate: **PASS within the local toolchain boundary**. All 17
+  focused PRTCL/LAB checks, the 130-module main build, the 33-module protected
+  LAB build, and 340 of 341 complete-suite checks pass; only the known local
+  `spawn php ENOENT` diagnostic-mail fixture is unavailable;
+- renderer lifecycle: **PASS**. Fractal, Murmuration, Axiom, macro, scene and
+  signal changes preserve one live WebGL2 renderer instead of repeatedly
+  destroying contexts until shader compilation fails white;
+- keyboard motion: **PASS**. `ArrowUp` uses the shared production acceleration
+  curve, release enters regenerative deceleration, and `ArrowDown` / `Space`
+  use service braking; slider, select and button focus remain isolated;
+- publication boundary: **PASS**. Read-only preflight passed, guarded
+  publication transferred 99 files / 16,115,195 bytes, retained one previous
+  content-addressed asset for cache overlap, and read-only postflight passed
+  with `remote_writes=NONE`;
+- canonical HTTP: **PASS**. The cache-busted root, fingerprinted JavaScript and
+  protected `/lab/` route return `200`; the root and LAB send explicit
+  `no-store` / `no-cache` headers, and the LAB retains CSP, `DENY` framing,
+  strict same-site session and `nosniff` headers;
+- JavaScript: `index-D-MQ2_JI.js`, 456,114 bytes, SHA-256
+  `50465cf5dcb48337033954883cc5ebd323926e5aec4cb00e3eb5ca498bb7da4d`,
+  byte-identical local/live;
+- authenticated live Browser QA: **PASS** at the available `1280 × 720`
+  viewport. Build `20260830-2011` survives the complete
+  Murmuration → Axiom → Fractal switch, BLOOM, brake and accelerator-release
+  sequence with a visible non-white canvas, zero page overflow and zero console
+  warning/error. The Browser viewport override remained `1280 × 720`, so a new
+  exact `773 × 601` capture and physical-Tesla acceptance remain open.
+
 ## 16 Road browser-identity publication — 2026-08-30 19:59
 
 - build stamp: **`20260830-1953`**; deployed source commit: `b06e969`;
