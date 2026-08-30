@@ -4,6 +4,7 @@ import test from "node:test";
 import {
   advanceAtlasDemoPosition,
   appendAtlasTravelPoint,
+  ATLAS_MANUAL_CAMERA_LIMITS,
   ATLAS_MANUAL_IDLE_MS,
   atlasEffectProfile,
   atlasGpsPresentation,
@@ -148,11 +149,33 @@ test("Atlas passenger reading and QR remain legible at the Tesla viewport", () =
 });
 
 test("Atlas grants touch and desktop exploration for six seconds, then returns to fresh automatic camera", () => {
+  assert.deepEqual(ATLAS_MANUAL_CAMERA_LIMITS, {
+    minimumZoom: 3,
+    maximumZoom: 20.5,
+    minimumPitch: 0,
+    maximumPitch: 85,
+  });
+  assert.equal(atlasManualCameraShouldReturn(null, ATLAS_MANUAL_IDLE_MS), false);
   assert.equal(atlasManualCameraShouldReturn(1000, 1000 + ATLAS_MANUAL_IDLE_MS - 1), false);
   assert.equal(atlasManualCameraShouldReturn(1000, 1000 + ATLAS_MANUAL_IDLE_MS), true);
   const moved = manualAtlasCamera({ bearing: 350, pitch: 60, zoom: 16 }, 50, 40);
   assert.ok(moved.bearing < 20);
   assert.ok(moved.pitch < 60);
+  assert.equal(
+    manualAtlasCamera({ bearing: 0, pitch: 60, zoom: 16 }, 0, 1000).pitch,
+    0,
+    "dragging toward vertical must stop exactly at the approved floor",
+  );
+  assert.equal(
+    manualAtlasCamera({ bearing: 0, pitch: 60, zoom: 16 }, 0, -1000).pitch,
+    85,
+    "dragging toward the horizon must stop exactly at the approved ceiling",
+  );
+  assert.equal(
+    manualAtlasCamera({ bearing: 0, pitch: 85, zoom: 16 }, 0, -20).pitch,
+    85,
+    "the manual camera must not elastically overshoot the MapLibre ceiling",
+  );
   assert.ok(pinchAtlasZoom(16, 100, 160) > 16);
   assert.ok(pinchAtlasZoom(16, 100, 40) < 16);
   assert.ok(pinchAtlasZoom(20, 100, 1000) <= 20.5);
@@ -166,6 +189,8 @@ test("Atlas grants touch and desktop exploration for six seconds, then returns t
   assert.match(atlasSource, /manual\.pointers\.size === 1/);
   assert.match(atlasSource, /pinchAtlasZoom\(map\.getZoom\(\)/);
   assert.match(atlasSource, /map\.scrollZoom\.disable\(\)/);
+  assert.match(atlasSource, /minPitch: ATLAS_MANUAL_CAMERA_LIMITS\.minimumPitch/);
+  assert.match(atlasSource, /maxPitch: ATLAS_MANUAL_CAMERA_LIMITS\.maximumPitch/);
   assert.match(atlasSource, /canvas\.addEventListener\("wheel", wheelManual, \{ passive: false \}\)/);
   assert.match(atlasSource, /wheelAtlasZoom\(map\.getZoom\(\), event\.deltaY, event\.deltaMode\)/);
   assert.match(

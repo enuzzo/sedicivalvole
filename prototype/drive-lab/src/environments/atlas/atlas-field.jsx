@@ -3,6 +3,7 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import {
   advanceAtlasDemoPosition,
   appendAtlasTravelPoint,
+  ATLAS_MANUAL_CAMERA_LIMITS,
   atlasEffectProfile,
   atlasKeyboardShortcutAvailable,
   atlasManualCameraShouldReturn,
@@ -177,6 +178,8 @@ export default function AtlasField({
         center: [effectivePosition.longitude, effectivePosition.latitude],
         zoom: camera.zoom,
         pitch: camera.pitch,
+        minPitch: ATLAS_MANUAL_CAMERA_LIMITS.minimumPitch,
+        maxPitch: ATLAS_MANUAL_CAMERA_LIMITS.maximumPitch,
         bearing: Number.isFinite(effectivePosition.heading) ? effectivePosition.heading : 22,
         attributionControl: false,
         antialias: false,

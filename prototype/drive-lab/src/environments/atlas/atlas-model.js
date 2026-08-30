@@ -4,8 +4,8 @@ export const ATLAS_MANUAL_IDLE_MS = 6000;
 export const ATLAS_MANUAL_CAMERA_LIMITS = Object.freeze({
   minimumZoom: 3,
   maximumZoom: 20.5,
-  minimumPitch: 18,
-  maximumPitch: 78,
+  minimumPitch: 0,
+  maximumPitch: 85,
 });
 
 const clamp = (value, minimum, maximum) => Math.min(maximum, Math.max(minimum, value));
