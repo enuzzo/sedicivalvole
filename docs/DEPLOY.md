@@ -8,6 +8,34 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Instrument Deck and SOUNDTRACK policy publication — 2026-08-30 19:39
+
+- build stamp: **`20260830-1935`**; deployed source commit: `9856277`;
+  launcher implementation checkpoint: `bbc9f19`; SOUNDTRACK admission
+  checkpoint: `ad3127d`;
+- verification gate: **PASS within the local toolchain boundary**. All 33
+  focused launcher/environment/source-policy checks and the 130-module
+  production build pass. The complete suite passes 336 of 337 checks; only the
+  known local `spawn php ENOENT` diagnostic-mail fixture is unavailable;
+- publication boundary: **PASS**. Read-only preflight and immediate postflight
+  reported network, login, canonical directory, remote listing, and identity
+  PASS; both no-write checks reported `remote_writes=NONE`. Publication
+  transferred 93 files / 16,060,225 bytes through the guarded dynamic-root
+  workflow and retained two previous content-addressed assets for cache overlap;
+- canonical root identity: **PASS**. Cache-busted HTML returns `200`, explicit
+  `no-store` / `no-cache`, `nosniff`, and proxy `MISS`; its 788 bytes are
+  byte-identical to the local entry at SHA-256
+  `b55c804d8bbb51f318c2c914e55f222cc62de461b2048514caa4ef997b7693b2`.
+  Main JavaScript and CSS are byte-identical at
+  `78962d6fee77eac64ee359deff8b168d5ae585daf9af88fb34d0f1531a3027e0`
+  and `b1c57503972df566522ed5a33750e657854ee471becec03e4a4f34380635f3bc`;
+- exact live viewport: **PASS at `773 × 601`**. The canonical splash identifies
+  build `20260830-1935` with zero page overflow. Instrument Deck measures
+  `690 × 405 px` at `(41.5, 98)`, keeps START disabled before both choices, and
+  computes `6 px` radii for every tested framed surface. Selecting MUTE + PRTCL
+  enables START and enters PRTCL muted with no selector residue or overflow.
+  The verified live launcher remains open in the in-app browser for owner review.
+
 ## Protected owner LAB publication — 2026-08-30 18:34
 
 - build stamp: **`20260830-1828`**; deployed source commit: `9d82df2`;

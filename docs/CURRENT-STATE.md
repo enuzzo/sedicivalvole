@@ -318,11 +318,13 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The canonical live product is version `0.0.0`, source commit `229acc0`, build
-  `20260830-1900`. Its guarded publication uploaded 93 files / 16,054,500 bytes;
-  authenticated canonical LAB QA identifies the build and the exact
-  `773 × 601` layout is clean. The latest complete local suite passes 328 of 329
-  checks, with only the known missing local `php` executable preventing the
+- The canonical live product is version `0.0.0`, source commit `9856277`, build
+  `20260830-1935`. Its guarded publication uploaded 93 files / 16,060,225 bytes;
+  canonical HTML, JavaScript, and CSS are byte-identical to the clean local
+  build. Exact live `773 × 601` QA verifies the Instrument Deck, universal
+  launcher `6 px` radii, disabled START before both choices, successful MUTE +
+  PRTCL entry, and zero overflow. The latest complete local suite passes 336 of
+  337 checks, with only the known missing local `php` executable preventing the
   diagnostic-mail fixture. The production build completes with 130 modules.
   Exact progressive evidence is in [`DEPLOY.md`](DEPLOY.md).
 - Diagnostic telemetry contains no coordinates and is sent only after the
