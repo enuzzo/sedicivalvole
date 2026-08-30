@@ -8,6 +8,37 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Phase 0 and M13 publication — 2026-08-30 16:47
+
+- build stamp: **`20260830-1643`**; deployed source commit: `7a026e4`;
+  implementation checkpoint: `2642a4a`;
+- verification gate: **PASS**. Thirty-seven focused diagnostics, presentation,
+  documentation and visual-registry checks pass. The complete native suite
+  passes 312 of 313 checks; only the known local `spawn php ENOENT` fixture is
+  unavailable. The production build completed with 129 modules using the
+  architecture-specific cache without rewriting Dropbox-shared dependencies;
+- publication boundary: **PASS**. Read-only preflight and immediate postflight
+  reported network, login, canonical directory, remote listing and identity
+  PASS with `remote_writes=NONE`. Publication transferred 89 files /
+  15,771,162 bytes through the guarded dynamic-root workflow;
+- canonical identity and headers: **PASS**. Bare and
+  `?build=20260830-1643` HTML return `200`, explicit
+  `no-store, no-cache, must-revalidate, max-age=0`, `pragma: no-cache` and
+  `X-Content-Type-Options: nosniff`. Both are byte-identical to the local entry
+  at SHA-256
+  `7673f5e78efe43ef30003511b2f879ea1806faa4f5f07e357dbaee58f041e5e6`;
+- asset identity: **PASS**. The local/live main JavaScript and CSS are
+  byte-identical at SHA-256
+  `07ead922163d4625a3e9f835dbef9262a12d9a258deb2c3ab58f90c8e5f5c6ec`
+  and `c79a61df7c551f34ebaf6b5e31f61b9c901911d989921898e80f06018fb2fd32`;
+- muted live product QA: **PASS within the technical contract**. Exact
+  `773 × 601` launch reports version `0.0.0`, source `7a026e4`, build
+  `20260830-1643`, no horizontal overflow, and a six-item Visual library with
+  APERTURE, VERTIGO, MERIDIAN, ATLAS, DRIVEY and PRTCL but no PRIMORDIAL. DIAG
+  exposes output latency, observed data, current/peak rates, the persistent
+  canary and contextual long tasks with zero browser warning/error. Real-Tesla
+  persistence, network, long-task and physical-layout acceptance remain open.
+
 ## enuzzo identity correction publication — 2026-08-30 14:34
 
 - build stamp: **`20260830-1427`**; deployed source commit: `6326b52`;

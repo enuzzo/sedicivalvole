@@ -283,14 +283,15 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The canonical live product is version `0.0.0`, source commit `6326b52`, build
-  `20260830-1427`. The 2026-08-30 identity-correction publication passed the
-  complete 351-check gate available on the Intel Mac, a 132-module build,
-  read-only preflight, 90-file / 15,774,999-byte upload, no-write postflight,
-  byte-identical HTML and JavaScript checks, cache checks, and muted live
-  `773 × 601` launch/DIAG QA with zero browser warning or error. It predates the
-  local PRIMORDIAL retirement; its exact historical evidence remains progressive
-  and authoritative in [`DEPLOY.md`](DEPLOY.md).
+- The canonical live product is version `0.0.0`, source commit `7a026e4`, build
+  `20260830-1643`. The 2026-08-30 Phase 0 / M13 publication passed the focused
+  37-check gate, the 129-module production build, read-only preflight,
+  89-file / 15,771,162-byte upload, no-write postflight, byte-identical HTML,
+  JavaScript and CSS checks, cache checks, and muted live `773 × 601` QA with
+  zero browser warning or error. PRIMORDIAL is absent from the six-item live
+  catalog; the new latency, network, storage-canary and contextual long-task
+  surfaces are visible in DIAG. Exact progressive evidence is in
+  [`DEPLOY.md`](DEPLOY.md).
 - Diagnostic telemetry contains no coordinates and is sent only after the
   explicit `SEND DIAGNOSTIC` action. ATLAS location is a separate ephemeral
   feature: the latest reliable point stays in session memory; OpenFreeMap tile
