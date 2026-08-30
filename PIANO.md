@@ -708,10 +708,11 @@ than missing requirements.
    the requested round pulsing point, street badge, cardinal-only compass, and
    embedded Wikipedia reader; physical endpoint feel and near-horizon vehicle
    acceptance remain open.
-9. **A3 is not just smoothing.** GPS input is about 10 Hz, but the existing map
-   animation updates camera ownership on a `1100 ms` cadence and the travel line
-   is a separate representation. A round vehicle point needs its own
-   timestamped interpolation buffer, not only generic scalar smoothing.
+9. **A3 is not just smoothing.** The bounded eight-sample timestamped model now
+   exists at `[b1897e4]`: it is frame-rate independent, does not extrapolate and
+   freezes on stale or discontinuous data. The existing map still updates camera
+   ownership on a `1100 ms` cadence and the travel line is a separate
+   representation; the high-rate feed and visible round point remain gated.
 10. **X1 has a useful base.** `DialogSurface` already supplies backdrop close,
     Escape close, focus trapping, focus restoration, and one-modal ownership.
     It can become the shared overlay primitive after the required three-direction
@@ -817,7 +818,7 @@ source implementation.
 | --- | --- | --- | ---: | --- | --- | --- |
 | A1 | Implemented locally at `[8feb142]`: the manual camera is hard-clamped to `0–85°`, MapLibre receives the same bounds, and the exact six-second return is preserved. Physical endpoint feel remains an owner/vehicle acceptance item. | `atlas-model.js`, `atlas-field.jsx`, `atlas-model.test.mjs`, CSS/QA | 1.5 | Exact-scene owner review | Model and runtime share exact endpoints and clamps; one fresh automatic return begins 6000 ms after the latest interaction with no repeated ownership fight. | Near-horizon MapLibre cost and building occlusion. |
 | A2 | Owner-approved after visual gate: add Read more and an in-motion partial-page Wikipedia reader with shared modal behavior, small-A/large-A sizing and warm-light/dark themes. | ATLAS field, `App.jsx` shared overlay, `styles.css`, tests/notices | 2.5 | X1/X2, selected direction | X/backdrop/Escape/focus/scroll work; text sizing and themes persist accessibly; approved size/opacity at 773×601. | Wikipedia frame policy/network failure and driver distraction. |
-| A3 | Partial: add a round luminous blinking vehicle point interpolated between timestamped GPS samples; retain the separate ephemeral path. | `atlas-model.js`, `atlas-field.jsx`, tests | 2 | T1 concept, GPS timestamp data | 10 Hz synthetic fixes produce smooth 60/30 FPS point motion; stale/invalid fixes freeze honestly; no coordinates in DIAG/storage. | Interpolating across bad fixes can visibly cut corners. |
+| A3 | Model foundation implemented locally at `[b1897e4]`: eight monotonic session-only samples, a `100 ms` delayed 30/60 FPS invariant interpolator, cyclic longitude/heading handling, no extrapolation, `1500 ms` stale freeze and no animation across gaps above `750 ms`. High-rate feed, MapLibre source/layer and the selected round-point treatment remain open. | `atlas-model.js`, `atlas-field.jsx`, tests | 2 | T1 concept, GPS timestamp data, selected overlay direction | 10 Hz synthetic fixes produce smooth 60/30 FPS point motion; stale/invalid fixes freeze honestly; no coordinates in DIAG/storage; rendered point passes the selected direction. | Interpolating across bad fixes can visibly cut corners. |
 | A3b | Planned: derive current road name from rendered map features and place it in the selected zone map. | ATLAS model/field, CSS, tests | 1 | Q28, X2 | Badge never overlaps compass; no extra network call; absent/multilingual names degrade cleanly. | Tile feature schemas vary by zoom and road class. |
 | A4 | Planned: replace degree text with N/NE/E/SE/S/SW/W/NW labels, using product-language direction naming consistently. | `atlas-model.js`, field, tests/CSS | 0.5 | X2 | Eight deterministic sectors including wraparound; no numeric degrees in visible UI. | Italian `O/SO/NO` versus English-source UI requirement must be resolved as English W/SW/NW. |
 | X1 | Planned: define one modal manager/primitive plus one non-modal status layer for A2/S1/M2/S5 and GPS help. | `App.jsx` component extraction, `styles.css`, accessibility tests | 2 | three-direction gate | Only one modal owns focus; replacement/close rules are deterministic; status feedback never blocks. | Treating transient feedback as a modal would violate S5. |

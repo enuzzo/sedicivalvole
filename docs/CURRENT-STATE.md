@@ -83,6 +83,11 @@ dated study documents.
   the latest in-memory path in driving order. The `246 px` passenger panel
   collapses behind a persistent midpoint handle, has one touch-scroll context,
   and keeps mandatory attribution in a tiny translucent strip above the footer.
+  A bounded session-only A3 foundation now retains eight monotonic timestamped
+  fixes and can interpolate the same path at 30 or 60 FPS with a `100 ms` delay,
+  no extrapolation, a `1500 ms` stale freeze and no animation across long gaps.
+  It is not yet connected to a MapLibre point source or visible marker; feed
+  cadence and the point treatment remain behind the ATLAS overlay design gate.
 - WAKE is rejected after repeated live review: its ribbons read as disordered
   rain rather than a convincing authored 3D road field. Its renderer, fallback,
   tests, catalog entry and current QA captures have been removed. The historical

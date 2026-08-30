@@ -294,6 +294,12 @@ Every trusted fix recenters the map. Device heading owns the bearing when
 available; otherwise a displacement of at least three metres between fixes
 derives it, while smaller jitter preserves the last reliable direction. A
 reliable Geolocation point is held only in session memory.
+A3 has a deliberately non-rendered motion foundation: at most eight monotonic
+timestamped fixes remain in session memory, and a `100 ms` delayed sampler
+interpolates latitude, longitude and the shortest heading arc independently of
+render frame rate. It never extrapolates, freezes after `1500 ms`, and refuses
+to animate across gaps above `750 ms`. The high-rate GPS feed and MapLibre point
+source/layer remain separate work behind the selected overlay direction.
 The selected map necessarily requests the surrounding tile area from
 OpenFreeMap; a `0.05°`-quantized cell is sent to the Italian Wikipedia Geosearch
 API only when the cell changes. The same response supplies each page's concise
