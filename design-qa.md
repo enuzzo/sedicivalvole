@@ -10,14 +10,18 @@ Date: 2026-08-30
   `/private/tmp/sedicivalvole-road-sheet-selected-773x601.png`.
 - Normalized full-view side-by-side comparison:
   `/private/tmp/sedicivalvole-road-sheet-comparison.png`.
+- Warm-cache canonical rendering:
+  `/private/tmp/sedicivalvole-road-sheet-live-warm-cache-773x601.jpg`.
+- Normalized selected-reference/canonical comparison:
+  `/private/tmp/sedicivalvole-road-sheet-live-comparison.png`.
 - Reference pixels: `1423 × 1105`, normalized to the exact target ratio.
   Implementation CSS viewport and screenshot: `773 × 601` at density `1`.
 - State: Instrument Deck with PLAY THE ROAD and APERTURE selected, START enabled.
 
-The reference and current browser rendering were normalized to `773 × 601`,
-joined into one `1546 × 601` image, and opened as one comparison input. The
-browser frame is a real application render over the live Signal Gate rather than
-a static recreation of the concept.
+The reference and both local and canonical browser renderings were normalized to
+`773 × 601`, joined into `1546 × 601` comparison images, and opened as complete
+comparison inputs. The browser frames are real application renders over the live
+Signal Gate rather than static recreations of the concept.
 
 ## Required fidelity review
 
@@ -51,6 +55,7 @@ a static recreation of the concept.
 |---|---|---|---|
 | 1 | P1 | Native fieldset layout let Music grow beyond Visual and overlap the START row despite grid declarations. | Added explicit equal-height Music/Visual grid wrappers, bounded the body with `minmax(0, 1fr)`, and measured identical `280 px` grid bounds in Browser. |
 | 2 | — | No actionable P0, P1, or P2 mismatch remained in the joined reference/implementation review. | The implementation preserves the reference's hierarchy, direct controls, warm sheet, restrained signal color, and readable cabin-scale type while satisfying the stricter equal-height product constraint. |
+| 3 | P1 | The first canonical frame loaded the old dark SVG from a warm browser cache even though the deployed stable-name file was byte-identical to the new LIGHT master. | Both product-mark consumers now append the injected build stamp to the packaged asset URL. The same browser session then loaded `/brand/sedicivalvole-mark.svg?build=20260830-2344`; the final canonical comparison shows the correct warm-light master with no black plate. |
 
 ## Runtime checks
 
@@ -60,7 +65,15 @@ a static recreation of the concept.
   ROAD + APERTURE → enabled START; separate MUTE + APERTURE → running canvas.
 - The local Browser reports zero warnings and zero errors after the complete
   interaction flow.
-- Focused launcher/environment/brand checks pass before the full project gate.
+- Canonical build `20260830-2344` repeats the exact `773 × 601` geometry: both
+  grids are `280 px` high from `y=195.5` through `475.5`, START enables after
+  PLAY THE ROAD + APERTURE, and MUTE + APERTURE enters the running canvas.
+  Document dimensions remain `773 × 601`; the warm-cache session reports zero
+  warning and zero error.
+- Live HTML, JavaScript, CSS, and the LIGHT SVG are byte-identical to the clean
+  build. Twenty-two focused cache/launcher/brand checks, sixteen deployment-
+  identity checks, nine Sites checks, and the 130-module production build pass.
+  The complete suite retains only the known local `spawn php ENOENT` fixture.
 
 ## Follow-up boundary
 

@@ -8,6 +8,48 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Road Sheet LIGHT Instrument Deck — 2026-08-30 23:48
+
+- build stamp: **`20260830-2344`**; deployed source commit: `2c36acd`;
+  implementation checkpoint: `c89ce51`; exact brand-admission gate: `7be8725`;
+  warm-cache recovery: `e914611`;
+- product change: **PASS**. Direction 03 Road Sheet now defines the LIGHT
+  Instrument Deck and the invariant anatomy for future DARK/AUTO work. The
+  `724 × 552 px` open sheet carries the LIGHT 16 Road mark, centered Orbitron
+  wordmark, hairline structure, quiet-gray controls, vermilion state rails and
+  one black START field. Music and Visual grids both measure exactly `280 px`;
+  the registry-derived Visual row count can add a third compact row without
+  moving START or changing the launcher height;
+- verification gate: **PASS within the local toolchain boundary**. The joined
+  selected-reference/current-render and selected-reference/canonical Product
+  Design comparisons retain no P0/P1/P2 mismatch after the cache correction.
+  Twenty-two focused cache/launcher/brand checks, sixteen deployment-identity
+  checks, nine Sites checks and the 130-module production build pass. The
+  complete suite passes 345 of 346 checks; only the known local
+  `spawn php ENOENT` diagnostic-mail fixture is unavailable;
+- guarded publication: **PASS**. The first read-only preflight safely rejected
+  the intended dark-to-light stable SVG mismatch with no remote write. The
+  exact-hash brand gate then admitted only the prior and selected SVG masters.
+  Build `20260830-2334` transferred 102 files / 16,355,716 bytes and exposed the
+  browser warm-cache issue without a server-identity defect. The superseding
+  cache-safe build `20260830-2344` transferred 102 files / 16,355,725 bytes;
+  final read-only postflight passes with `remote_writes=NONE`;
+- canonical HTTP identity: **PASS**. Cache-busted HTML returns `200`, explicit
+  `no-store` / `no-cache`, `nosniff`, and proxy `MISS`. Live HTML, JavaScript,
+  CSS, and LIGHT SVG are byte-identical to the clean build at SHA-256
+  `f8ae2f573b0be6368a629e8caee5fc7862685fbf79a74eecaefad999f6481697`,
+  `3cd0b1cbdf5740bfb1936ff7a4ac007093cfc419c9eba2ec39dd9036a667acde`,
+  `daa8b0d86b06974b1e6279741e341b95a2aff31d52b25bb71fd976ef45853433`,
+  and `210b319522825982589907c213661720abbf7ea94d29b3a53a7fb4a7cec275e5`;
+- exact warm-cache live Browser QA: **PASS at `773 × 601`**. The same browser
+  session that had rendered the old dark master loads
+  `/brand/sedicivalvole-mark.svg?build=20260830-2344` at natural `512 × 512`
+  and displays the correct LIGHT mark without a black plate. The sheet is
+  `724 × 552 px`; Music and Visual share `y=195.5–475.5` and `280 px` height;
+  PLAY THE ROAD + APERTURE enable START; MUTE + APERTURE enters the running
+  canvas; the document has zero overflow and the console has zero warning/error.
+  Physical-Tesla cabin-distance, glare and touch acceptance remain open.
+
 ## 16 Road launch lockup and Orbitron wordmarks — 2026-08-30 22:51
 
 - build stamp: **`20260830-2243`**; deployed source commit: `a4d34c8`;
