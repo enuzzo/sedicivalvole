@@ -38,6 +38,10 @@ test("the LAB bundle is inlined behind the gate and leaves no directly fetchable
   assert.doesNotMatch(indexSource, /<link[^>]+stylesheet/i);
   assert.match(viteSource, /audioWorklet\(\)/);
   assert.match(packageSource, /audio runtime assets/);
+  assert.match(deploySource, /LAB_BLOOM_PROCESSOR_MARKERS/);
+  assert.match(deploySource, /LAB_SCORE_PROCESSOR_MARKERS/);
+  assert.match(deploySource, /"bloom-processor\.js"/);
+  assert.match(deploySource, /"score-processor\.js"/);
 });
 
 test("LAB audio is a disposable test source and never enters the visual preset", () => {
