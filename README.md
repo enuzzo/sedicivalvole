@@ -146,6 +146,9 @@ acceleration and deceleration, verify
 Aperture's 60 FPS desktop gain on the vehicle,
 listen critically to FRACTURE, JUNCTION and NIGHTSHIFT, test
 the Music/Visual/theme controls, and check touch reach while parked.
+The responsive queue also includes a landscape-first iPhone pass with safe-area
+handling and an accessible portrait rotation notice that preserves the running
+session when the device turns to landscape.
 
 See [`docs/ROADMAP.md`](docs/ROADMAP.md).
 

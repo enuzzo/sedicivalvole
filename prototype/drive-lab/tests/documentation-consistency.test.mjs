@@ -97,6 +97,21 @@ test("operative licensing stays noncommercial without relicensing third-party wo
   assert.match(notice, /not open source/);
 });
 
+test("the queued iPhone experience remains landscape-first and rotation-safe", () => {
+  const plan = read("PIANO.md");
+  const productSpec = read("docs/PRODUCT-SPEC.md");
+  const roadmap = read("docs/ROADMAP.md");
+  const currentState = read("docs/CURRENT-STATE.md");
+
+  assert.match(plan, /landscape-first iPhone presentation/i);
+  assert.match(productSpec, /phone experience is landscape-first/i);
+  assert.match(productSpec, /full-viewport accessible notice asks the user to rotate/i);
+  assert.match(productSpec, /portrait-like desktop windows and Tesla `773 × 601` remain unaffected/i);
+  assert.match(roadmap, /representative `667 × 375` through\s+`932 × 430` Safari viewports/i);
+  assert.match(roadmap, /without reloading or restarting the\s+current audio, selection, or renderer state/i);
+  assert.match(currentState, /Build the queued landscape-first iPhone presentation/i);
+});
+
 test("relative Markdown document links resolve", () => {
   const documents = [
     "README.md",

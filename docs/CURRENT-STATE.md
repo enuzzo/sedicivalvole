@@ -378,6 +378,11 @@ dated study documents.
 6. Design Engine only after exactly three Engine-specific directions are shown
    and one is selected. Keep `VERSION` at `0.0.0` until an explicit release is
    approved.
+7. Build the queued landscape-first iPhone presentation across representative
+   `667 × 375` through `932 × 430` Safari viewports. Apply safe-area insets,
+   replace the interactive phone portrait layout with an accessible inert
+   rotation notice, and preserve the running session across a live rotation
+   without changing desktop or Tesla `773 × 601` behavior.
 
 ## Documentation map
 

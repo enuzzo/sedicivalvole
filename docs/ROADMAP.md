@@ -164,12 +164,18 @@ Planned only after vehicle evidence:
 - local preferences without position persistence;
 - warm offline core and visible cache state if supported;
 - approved Signal Gate splash and audio-unlock flow, with final brand/version access still subject to release sign-off.
+- a landscape-first iPhone surface spanning representative `667 × 375` through
+  `932 × 430` Safari viewports, with notch/home-indicator safe areas and no
+  clipped launcher, top bar, REPORT, contextual control, or footer;
+- an accessible full-viewport portrait rotation notice that makes the product
+  underneath inert and clears on landscape without reloading or restarting the
+  current audio, selection, or renderer state.
 
 Gate: complete main flow, accessibility baseline, long-session stability, and safe passenger/parked validation.
 
 ## Phase 7 — Vehicle QA matrix
 
-Record model, year, MCU/browser/software context, viewport, GPS behavior, audio output, touch reach, thermal/frame behavior, denied permission, null/stale GPS, network loss, and cache reset.
+Record model, year, MCU/browser/software context, viewport, GPS behavior, audio output, touch reach, thermal/frame behavior, denied permission, null/stale GPS, network loss, and cache reset. Add representative iPhone Safari QA at `667 × 375`, `844 × 390` or `852 × 393`, and `932 × 430`, plus portrait counterparts and live portrait-to-landscape rotation. Verify safe-area use, an inert accessible portrait notice, state preservation, and no effect on desktop portrait-like windows or the Tesla `773 × 601` contract.
 
 Gate: visible and audible PASS/FAIL evidence, not automated tests alone.
 

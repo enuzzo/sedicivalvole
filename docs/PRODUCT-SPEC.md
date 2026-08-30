@@ -21,6 +21,8 @@ Status: **decision baseline, not an implementation contract**. “Confirmed” i
 - Full configuration is intended while parked; driving state emphasizes atmosphere, not manipulation.
 - Focus, active, disabled, and current-value states must remain distinct.
 - `prefers-reduced-motion` must meaningfully calm the experience.
+- The phone experience is landscape-first, with explicit support for current iPhone Safari viewport families and safe-area insets. Representative landscape widths from `667 × 375` through `932 × 430` must keep the launch flow, top bar, REPORT, contextual controls, and footer usable without clipping or horizontal scroll.
+- On a coarse-pointer phone in portrait, a full-viewport accessible notice asks the user to rotate to landscape and makes the underlying product inert. The notice clears after a real orientation change without reloading, duplicating the AudioContext, losing the current selection, or restarting music or the renderer. This is a request to rotate, not a claim that the browser can force orientation; portrait-like desktop windows and Tesla `773 × 601` remain unaffected.
 
 Tesla instructs drivers not to adjust the touchscreen while driving. This is a primary design constraint. WCAG's 24×24 CSS-pixel minimum is only a web floor, not an adequate physical in-car target.
 
