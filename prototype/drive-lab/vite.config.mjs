@@ -1,6 +1,7 @@
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 import { audioWorklet } from "./scripts/vite-audio-worklet.mjs";
+import { jamendoCatalogDevServer } from "./scripts/vite-jamendo-catalog.mjs";
 import { existsSync, readFileSync } from "node:fs";
 import { execSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
@@ -71,7 +72,19 @@ function commitRef() {
 
 const productCommit = commitRef();
 
-export default defineConfig({
+export default defineConfig(({ mode }) => {
+  const repositoryDirectory = fileURLToPath(new URL("../../", import.meta.url));
+  const repositoryEnv = loadEnv(mode, repositoryDirectory, "");
+  const jamendoEnv = loadEnv("jamendo", repositoryDirectory, "");
+  const prototypeEnv = loadEnv(mode, projectDirectory, "");
+  const jamendoClientId = process.env.JAMENDO_CLIENT_ID
+    || prototypeEnv.JAMENDO_CLIENT_ID
+    || repositoryEnv.JAMENDO_CLIENT_ID
+    || jamendoEnv.JAMENDO_CLIENT_ID
+    || jamendoEnv.JAMENDO_API_KEY
+    || "";
+
+  return ({
   base: "/",
   build: {
     outDir: "dist/client",
@@ -97,5 +110,11 @@ export default defineConfig({
       clientFiles: ["./src/main.jsx"],
     },
   },
-  plugins: [staticPackageSafety(), react(), audioWorklet()],
+  plugins: [
+    staticPackageSafety(),
+    react(),
+    audioWorklet(),
+    jamendoCatalogDevServer({ clientId: jamendoClientId }),
+  ],
+  });
 });
