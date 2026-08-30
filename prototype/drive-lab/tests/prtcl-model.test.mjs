@@ -55,11 +55,19 @@ test("road speed owns point scale, depth, and travel while music owns colour and
 
 test("point scale grows smoothly to 100 km/h and then holds while other road responses continue", () => {
   assert.equal(PRTCL_POINT_SCALE_CEILING_KMH, 100);
-  const samples = [0, 20, 40, 60, 80, 100].map((speedKmh) => (
-    prtclMotionProfile({ speedKmh }).pointScale
-  ));
-  for (let index = 1; index < samples.length; index += 1) {
-    assert.ok(samples[index] > samples[index - 1]);
+  const speeds = Array.from({ length: 131 }, (_, speedKmh) => speedKmh);
+  const forward = speeds.map((speedKmh) => prtclMotionProfile({ speedKmh }).pointScale);
+  const reverse = [...speeds]
+    .reverse()
+    .map((speedKmh) => prtclMotionProfile({ speedKmh }).pointScale)
+    .reverse();
+  assert.deepEqual(reverse, forward);
+  for (let index = 1; index <= PRTCL_POINT_SCALE_CEILING_KMH; index += 1) {
+    assert.ok(forward[index] > forward[index - 1]);
+    assert.ok(forward[index] - forward[index - 1] < 0.01);
+  }
+  for (let index = PRTCL_POINT_SCALE_CEILING_KMH + 1; index < forward.length; index += 1) {
+    assert.equal(forward[index], forward[PRTCL_POINT_SCALE_CEILING_KMH]);
   }
   const at100 = prtclMotionProfile({ speedKmh: 100 });
   const at130 = prtclMotionProfile({ speedKmh: 130 });

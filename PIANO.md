@@ -647,9 +647,9 @@ than missing requirements.
 
 1. **Viewport confirmed.** The compact Tesla browser viewport is genuinely
    `773 × 601` at measured DPR `1.53`; it is not an assumption copied from a mock.
-2. **Current source identity.** Phase 1 is published from clean source commit
-   `656a07d` as build `20260830-1707`; deployment evidence is pushed at
-   `4eb32fa`. Version remains `0.0.0`.
+2. **Current source identity.** The latest canonical checkpoint is published
+   from source commit `229acc0` as build `20260830-1900`. Version remains
+   `0.0.0`; the following documentation/test checkpoint records its evidence.
 3. **Current catalogue is larger than the original document assumes.** Six
    visuals remain live in source (APERTURE, VERTIGO, MERIDIAN, ATLAS, DRIVEY,
    PRTCL) and three authored scores are ready (FRACTURE, JUNCTION, NIGHTSHIFT).
@@ -659,9 +659,12 @@ than missing requirements.
    frame-rate-independent scalar/vector state. Timestamped OPEN, UNDERWATER and
    BLOOM snapshots use the same audio envelope definitions. DRIVEY is the first
    visual consumer; the remaining PRTCL/ATLAS consumers stay assigned to X3.
-5. **P2 currently disagrees with the request.** PRTCL point scale runs linearly
-   from `0.82` to `1.48` over `0–130 km/h`, with immediate uniform updates. It
-   does not reach its full scale at `100 km/h`.
+5. **P2 is implemented and published.** PRTCL point scale runs from `0.82` to
+   `1.48` over `0–100 km/h`, then holds that maximum above 100. Depth and travel
+   still progress through the global `130 km/h` road ceiling. A dense
+   `0→130→0` property check proves an identical reversible curve, bounded local
+   increments and saturation; static captures cover all three families at
+   `0/40/100/130`. T1 time-domain smoothing remains assigned to P1.
 6. **Q2 is answered by code.** MURMURATION has one fixed camera profile with
    `zoom: 1.5`; there is no discrete speed-driven zoom ladder. The likely step is
    in shared instantaneous inputs or effect state, not discrete zoom levels.
@@ -694,8 +697,10 @@ than missing requirements.
     grouped/context parameters, the shared typed protocol, independent speed/BPM,
     Visual/Music selectors, import, copy and authenticated email of one complete
     coordinate-free preset. The unauthenticated gate and endpoint denial are
-    verified; authenticated behavior and real-Tesla use remain the open
-    acceptance boundary.
+    verified. Authenticated canonical Browser QA now passes at the exact
+    `773 × 601` CSS viewport with no overflow or console error; a preview macro
+    overlap found there was corrected and published. Physical-Tesla use remains
+    the open acceptance boundary.
 13. **No passenger relay or proxy exists.** The Sites worker remains a static SPA
     fallback with only an asset binding. The verified canonical PHP boundary now
     covers diagnostic mail and the packaged owner LAB session/mail routes; this
@@ -709,10 +714,11 @@ than missing requirements.
     before they become repository facts. The retired generative source was
     checked separately and then removed by owner decision.
 16. **Current test baseline is environment-limited.** The per-machine native
-    cache removes the shared-checkout arm64/x64 package conflict. DRIVEY (14/14),
-    PRTCL (8/8), NIGHTSHIFT (9/9), all 9 Sites checks and 288 other Node checks
-    pass; only the PHP diagnostic-mail fixture is unavailable locally because
-    `php` is absent. The production build completes with 130 modules.
+    cache removes the shared-checkout arm64/x64 package conflict. The last full
+    suite passes 328 of 329 checks, with only the PHP diagnostic-mail fixture
+    unavailable locally because `php` is absent. After P2 and the exact-viewport
+    LAB correction, all 10 focused PRTCL checks and all 5 focused LAB packaging
+    checks pass; the production build completes successfully.
 17. **Documentation drift was reconciled.** Active overview documents describe
     the 2026-08-30 PRIMORDIAL retirement and Phase 1 mechanics; immutable
     changelog and deployment evidence remain historical truth.
@@ -752,16 +758,16 @@ source implementation.
 | D3 | Resolved with no additional product behavior: D1's road-centred, motionless player at zero is the complete requirement. | `PIANO.md`; D1 tests | 0 | None | D1 acceptance fully covers the owner's zero-speed request. | None beyond D1. |
 | D4 | Deferred nice to have: raise the Aerial camera smoothly as speed increases, using project-owned bridge state only. | `drivey-model.js`, `drivey-field.jsx`, Drivey tests/QA | 0.5 | T1; future owner review | Camera height is bounded and monotonic at 0/40/100/130 km/h, smooth and reversible at 30/60/120 FPS; Hood/Rear, zero hold, traffic and all 51 vendor hashes remain unchanged. | Excess height may make the road or opposing traffic unreadable; FOV substitution could distort the accepted composition. |
 | P1 | Planned: route every PRTCL scale/depth response through T1. | `prtcl-model.js`, `prtcl-field.jsx`, `prtcl-renderer.js`, PRTCL tests | 1 | T1 | Abrupt input and macro sequences have continuous bounded output at 30/60/120 FPS. | GPU uniforms currently receive raw profile output every frame. |
-| P2 | Owner-approved: make scale minimum at 0, maximum at 100, saturated above 100, reversible and visibly smooth without changing the 130 km/h product ceiling. | Same PRTCL files plus LAB preset schema | 1 | T1 | Dense 0→130→0 sweep proves equal curve shape up/down, visible progression and local saturation. | Conflict with global 130 km/h ceiling if implemented globally. |
-| PF1 | Planned: tune Fractal's rest camera/scale smaller and its speed growth through the shared curve. | `prtcl-model.js`, `prtcl-renderer.js`, LAB config, tests | 0.5 | P2, LAB | Captures at 0/40/100 show continuous identity-preserving scale progression. | “More zoomed out” is perceptual and needs owner approval. |
+| P2 | Implemented and canonically published: point scale is minimum at 0, reaches its maximum at 100, saturates above 100 and leaves depth/travel on the 130 km/h product ceiling. Engineering acceptance passes; physical-Tesla/owner perceptual acceptance remains. | Same PRTCL files plus LAB preset schema | 1 | T1 | Dense 0→130→0 sweep proves equal curve shape up/down, bounded local progression and saturation; 0/40/100/130 captures show every family. | Static engineering captures do not replace target-vehicle perception. |
+| PF1 | Static calibration ready for owner review: Fractal shows an identity-preserving 0/40/100/130 scale/depth progression through P2. Any additional rest-state camera reduction remains a perceptual decision. | `prtcl-model.js`, `prtcl-renderer.js`, LAB config, tests | 0.5 | P2, LAB | Captures at 0/40/100 show continuous identity-preserving scale progression. | “More zoomed out” is perceptual and needs owner approval. |
 | PF2 | Owner-approved: feed OPEN/UNDERWATER/BLOOM envelope values, not discrete effect names, into every PRTCL family and make each gesture visually unmistakable. | T1 module, `prtcl-model.js`, renderer uniforms, tests | 1 | T1 | Macro onset/release matches shared envelope samples across all PRTCL types; exact-viewport capture distinguishes all three at a glance. | Audio and visual clocks may disagree without timestamped snapshots. |
-| PM1 | Planned: tune Murmuration's fixed camera and shared scale response; do not invent a nonexistent discrete ladder. | `prtcl-renderer.js`, `prtcl-model.js`, LAB/tests | 0.5 | T1, P2; Q2 resolved by code | Smooth sweep and owner-approved smaller rest state; no frame-to-frame discontinuity. | Symptom may originate in source particle motion rather than camera scale. |
-| PA1 | Planned: apply the same shared continuity/progression contract to Axiom. | PRTCL model/renderer/LAB/tests | 0.5 | T1, P2 | Same property tests and exact-viewport sweep as Fractal/Murmuration. | Axiom has terrain and agents with different perceptual scales. |
+| PM1 | Static calibration ready for owner review: Murmuration uses its fixed camera and the shared P2 scale curve without a fabricated discrete ladder. T1 smoothing and any stronger perceptual rest/progression tuning remain open. | `prtcl-renderer.js`, `prtcl-model.js`, LAB/tests | 0.5 | T1, P2; Q2 resolved by code | Smooth sweep and owner-approved smaller rest state; no frame-to-frame discontinuity. | Symptom may originate in source particle motion rather than camera scale. |
+| PA1 | Static calibration ready for owner review: Axiom uses the shared P2 curve and visibly progresses at 0/40/100/130. T1 smoothing and owner perceptual approval remain open. | PRTCL model/renderer/LAB/tests | 0.5 | T1, P2 | Same property tests and exact-viewport sweep as Fractal/Murmuration. | Axiom has terrain and agents with different perceptual scales. |
 | PA2 | Planned: separate rain density, fall speed, and wave amplitude as LAB parameters, driven by one live speed curve. | `prtcl-model.js`, `prtcl-renderer.js`, LAB schema/UI, tests | 2 | T1, L1–L5 | LAB controls each axis independently; live preset maps 0–100 monotonically; 0/40/100 captures approved. | Current “agents” are not yet a semantically explicit rain system. |
 | PP1 | Retired by owner on 2026-08-30: do not tune or extend the current PRIMORDIAL field. | Registry, preferences, App/render path, tests/docs | 0.5 | None | PRIMORDIAL cannot be selected; persisted `primordial` migrates to Aperture; no orphan chunk/control remains in the production build. | Removing history instead of only runtime would damage provenance. |
 | PP2 | Superseded by `SF1`. The CodePen remains credited as a historical visual reference, but no exact-copy or clean-room fidelity work continues. | Notices, source-admission docs, history | Included in SF1 | None | Active docs distinguish retired PRIMORDIAL from the new original Gradient Field; no Pen shader/runtime/noise enters SF1. | Accidentally treating visual inspiration as a source licence. |
 | SF1 | Owner-approved new Gradient Field: exactly three original WebGL/3D directions using independently authored gradient, depth and perceptual-colour mechanics. | New field/model/renderer only after visual selection; reference and licence docs; tests | 3+ | Three-direction owner gate, T1, LAB | Selected direction is original, one-pass/pixel-density-1 by default, smooth at 0/40/100/130, visibly macro-responsive and Tesla-profiled; all references remain case-by-case notices. | Excess 3D/postprocessing cost or accidental source/preset copying. |
-| L1 | Implemented and canonically published; authenticated owner/vehicle acceptance pending: a separate owner-only calibration app at `/lab/`, usable from desktop, mobile, and the Tesla browser. Authentication is enforced server-side with an expiring PHP session and an ignored password-hash configuration; no password or authentication decision exists in client JavaScript or static assets. | `lab.html`, `src/lab/`, `/lab/` PHP gate/session/logout, ignored local auth config, deployment and access tests | 3 | L5, T1; verified canonical PHP/TLS boundary | Local development works without weakening the production gate; unauthenticated canonical access reveals only the login surface, authenticated access reaches LAB, logout/expiry revoke access, direct asset/API requests cannot bypass the gate, and no secret enters Git/build/logs. | A merely hidden URL or client-side password would expose controls and secrets; long-lived Tesla sessions need deliberate expiry/re-auth behavior. |
+| L1 | Implemented and canonically published; authenticated desktop and simulated exact-Tesla-viewport acceptance pass, while physical-vehicle acceptance remains pending. The owner-only `/lab/` uses server-side authentication with an expiring PHP session and ignored password-hash configuration; no password or authentication decision exists in client JavaScript or static assets. | `lab.html`, `src/lab/`, `/lab/` PHP gate/session/logout, ignored local auth config, deployment and access tests | 3 | L5, T1; verified canonical PHP/TLS boundary | Local development works without weakening the production gate; unauthenticated canonical access reveals only the login surface, authenticated access reaches LAB at `773 × 601` without overflow or console error, logout/expiry revoke access, direct asset/API requests cannot bypass the gate, and no secret enters Git/build/logs. | A merely hidden URL or client-side password would expose controls and secrets; long-lived Tesla sessions need deliberate expiry/re-auth behavior. |
 | L2 | First manifest implemented for all three PRTCL families: independent speed/BPM, music, visual, and complete declared scene-specific controls. Expansion to every active visual remains incremental. | LAB UI/schema plus declared per-scene parameter manifests | 3 | L1, T1 | Every admitted visual is selectable and its declared parameters change without reloading. | An unbounded “everything” panel becomes unusable. |
 | L3 | Implemented for the first manifest: shared Form/Response/Macros/Scene groups render from declarations in the selected Focus Canvas. | LAB components/schema/tests | 1 | L2 | Every admitted scene uses the same group order and no flat orphan control exists. | Scene-specific semantics may be forced into misleading generic labels. |
 | L4 | Implemented locally for the first 20-option manifest: export/import schema version, UTC date, scene identity, app/build/commit identity, viewport/runtime context, selected Visual/Music/theme/input, speed/BPM, grouped and scene-specific values, render health, and protocol revision. `COPY JSON` and explicit authenticated `SEND JSON` use the identical validated preset. Coordinates, secrets, raw credentials, storage contents, and unrelated browsing/device traffic are forbidden. | LAB preset/context module and UI, authenticated `/lab/` mail endpoint, ignored recipient config, schema/security/round-trip tests | 2 | Q30, L1–L3 | Exact JSON round-trip; unknown-major rejection; visible copy/send/sent/retry states; mail attachment digest matches the exported JSON; CSRF, origin, size, schema and rate-limit checks pass; failed sends retain the preset locally for retry and never claim inbox delivery. | Clipboard limitations in embedded browsers, mail transport acceptance without inbox delivery, context bloat, or accidental sensitive telemetry. |
