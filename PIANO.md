@@ -281,7 +281,7 @@ question unless this review explicitly identifies a conflict.
 | Illobo | The owner attests that all Illobo recordings may be used, processed, hosted as required, and prominently featured. Link/QR points to `https://soundcloud.com/illobo`. | Q9 is owner-resolved. A private written confirmation is still recommended evidence but is not treated as a second permission gate. Downloads still need a per-file provenance inventory. |
 | Public contact | Use the public repository's GitHub Issues route, not a public email address. | M7 is unblocked without exposing identity or email. |
 | Backend and secrets | Abandon claims of client-side protection. Use a separate evidence-selected backend, short-lived delivery authorisation, and public sample configuration only. | Q13/M4/X5 resolve. FTP access alone does not prove WebSocket, process, TLS, or secret-storage capability; M6 must audit the host before choosing a subdomain. |
-| Diagnostics and toolchain | Derive Tesla software information only when the diagnostics package explicitly supports it; otherwise report unavailable. Keep per-architecture dependencies outside the Dropbox-synchronised checkout when native packages differ. | M13 and the baseline gate are approved without overwriting another Mac's dependency state. |
+| Diagnostics and toolchain | Derive Tesla software information only when the diagnostics package explicitly supports it; otherwise report unavailable. Keep per-architecture dependencies outside the Dropbox-synchronised checkout when native packages differ. The two supplied real-Tesla reports become the first field baseline for GPS, render pacing, cold-cache music readiness, long tasks and event retention. | M13 and the baseline gate are approved without overwriting another Mac's dependency state. Phase 0 also preserves significant events separately from high-rate GPS samples, attributes long tasks to time/phase, and reproduces adaptive-bank startup on a cold constrained connection. |
 | Strudel | Reject the product, dependency, fork and source-derived rewrite. Do not download/read its source under a “clean-room” label; official Strudel guidance itself says source-informed clones are derivative. Public documentation or general music theory may be researched without importing source. | Q12 resolves as no source exposure; G7 remains final and G8 stays paper/documentation-only unless separately reopened. |
 
 ### Every side note mapped into the ledger
@@ -299,6 +299,30 @@ question unless this review explicitly identifies a conflict.
 | SoundCloud says tracks are downloadable. | M3, M8, M11 | Platform download availability is recorded separately from the owner's direct permission and from public playback/hosting provenance. |
 | README must document every source, including VERTIGO/Tympanus and visual references. | M7, M11 | README, NOTICE, licence scope, source-admission record and third-party notices are reconciled from one audited inventory. |
 | Existing Magnific MP3s may be tried locally but not redistributed. | M5/M5b/M5c | `_references/` remains untracked; local audition is allowed, product admission waits for archived terms and per-track evidence. API versus file delivery is not guessed before that evidence. |
+
+### Real-Tesla diagnostic evidence — 2026-08-30
+
+Two manually submitted, coordinate-free reports from build `20260830-0038`
+cover approximately 13.7 minutes and 7.87 km of real driving at the exact
+`773 × 601`, DPR `1.53` Tesla viewport. The private compressed reports remain
+under `_references/diagnostics/`; only the following derived engineering facts
+enter this plan.
+
+| Evidence | Classification | Plan consequence and acceptance |
+| --- | --- | --- |
+| Both reports contain zero recorded runtime issues. GPS is live and numeric at roughly 10 Hz, with no null-speed samples, observed accuracy between about 1.6 and 3.3 m, and maxima of 89 and 106 km/h. | Verified field fact | Preserve this cadence/accuracy baseline in M13. No coordinates enter the report, storage or transmission; manual send remains the only telemetry boundary. |
+| DRIVEY, APERTURE, MERIDIAN, PRTCL and PRIMORDIAL phase summaries remain approximately 59–60 FPS with bounded ordinary p95 frame times. | Verified field fact | Treat these as the current Tesla render baseline and detect regressions per phase rather than from one session-wide average. |
+| Every measured ATLAS driving phase sustains only about 22.4–23.1 FPS against its declared 30 FPS target, with p95 intervals around 52–65 ms. | Verified performance defect | Add an ATLAS Tesla profiling gate: identify map repaint/camera/tile costs, then either reach a stable measured 30 FPS or explicitly revise the authored target with owner-visible evidence. The unrelated session pause must not be used to explain away the repeated per-phase result. |
+| One visible-session pause contains a 12.741 s main-thread long task, a 13.5 s recorder gap and a GPS age near 13 s while ATLAS/JUNCTION remained selected. The report retains duration but not start time, active phase or attribution. | Verified symptom; cause unknown | M13 must retain long-task start time, phase, renderer and nearby state without coordinates. Reproduce before assigning the cause to MapLibre, audio decoding, the vehicle browser or another subsystem. |
+| One JUNCTION request restored FRACTURE, while a later retry activated JUNCTION. The report ended with a healthy 24-clip bank but did not retain the failed request's reason. The cold bank is about 5.81 MB, the reported connection estimate was 1.5 Mbps, and the current transfer timeout is 12 s. | Verified fallback; network-timeout cause is a strong inference, not yet proof | Add a cold-cache constrained-network test for JUNCTION and NIGHTSHIFT. Selection must remain audible, expose the exact failure reason, retry automatically where safe, and eventually activate without requiring a second user selection. Test at 1.5 Mbps and at offline/warm-cache boundaries before changing timeout or bank format. |
+| The first 240-entry event ring is dominated by 231 GPS samples and has lost early session interactions; the flight recorder retains state exposure but not every causal transition. | Verified diagnostic loss | Separate or aggregate high-rate GPS history so significant environment, score, failure, visibility and user-action events survive the full bounded session. Add a saturation test proving early significant events remain available. |
+| The second run exercises all three JUNCTION take-pair identities and 17 rhythm-pair identities; decoded retention ends at six clips. | Verified positive field evidence | Preserve the six-clip bound and variety regression. This is reachability evidence, not perceptual approval of musical transitions. |
+| ATLAS records no rendered frames during the first 22.8 s of the second run while GPS accuracy remains at the unavailable sentinel. The user switches away before valid fixes begin at about 34 s. | Expected waiting state, not a demonstrated renderer failure | Make `Atlas · waiting for GPS` explicit in phase diagnostics and UI evidence. A future report with a valid position but zero ATLAS frames is the failure condition. |
+| Audio output latency is reported as `0 ms` in one run and `272 ms` in the other, while base latency remains about `42.7 ms`. | Field observation; support/meaning uncertain | Record availability and time history rather than presenting `0` as confirmed zero latency. Correlate repeated values with score timing and audible cabin behavior before opening an audio-sync defect. |
+
+These reports do not close visual, comfort or listening acceptance: they prove
+runtime behavior and expose reproducible engineering gates, but they contain no
+human judgement about whether the music, motion or effects felt correct.
 
 ### What OPEN, UNDERWATER, and BLOOM mean today
 
@@ -558,7 +582,7 @@ than missing answers now.
 | M9 | Planned Jamendo integration: proxy-populated cache, seed metadata, monthly/manual refresh, stable-URL and ND measurements. | Server adapter, `src/soundtrack/catalog-store.js`, IndexedDB module, seed JSON, tests | 4 | M6, M8, M13, Q16/Q22 | Offline seed boot, versioned cache, stale refresh, 200-item paging, URL-age evidence, no waveform/download URL. | Tesla storage eviction and stream URL expiry. |
 | M10 | Planned source-aware visible attribution and Music & Licences settings page. | Track state/UI, settings surface, catalogue schema, tests/notices | 2 | M1/M9, X1/X2 | Artist/title/licence/source link visible per active Jamendo track; settings list matches active sources. | Overlay density versus mandatory visibility. |
 | M11 | Planned admission gate: derivatives, in-app selection, and no-host playback answers become typed source capabilities. | `src/soundtrack/source-policy.js`, tests, licensing docs | 1 | Fresh primary evidence | Unknown/false capability prevents admission or effect routing by construction. | Reducing nuanced licences to booleans without preserving evidence. |
-| M13 | Owner-approved first implementation: persistent-storage probe and long-lived IndexedDB canary in DIAG; expose vehicle software only when explicitly present/derivable from supplied diagnostics, otherwise `unavailable`; record GPS accuracy and sample cadence without coordinates. | New storage probe module, `App.jsx`, diagnostics model/UI/tests/docs | 2 | architecture-safe local baseline | Estimate/persisted/request result, capabilities, canary age/counter/app identity survive reload; truthful vehicle/GPS fields never invent versions or retain coordinates. | Persistence cannot be proven in one session; Tesla browser fields may remain unavailable. |
+| M13 | Expanded from real-Tesla evidence: add the persistent-storage probe and long-lived IndexedDB canary; expose vehicle software only when explicitly supported; preserve coordinate-free GPS cadence/accuracy; retain significant events independently of GPS saturation; add phase/timestamp context to long tasks; distinguish unavailable output latency from measured zero. | New storage probe module, `App.jsx`, diagnostics model/UI/tests/docs | 3 | architecture-safe local baseline | Canary identity survives reload; no coordinates are retained; 240+ GPS samples cannot evict early significant events; a synthetic long task reports start/phase/renderer; unavailable latency is truthful; supplied field reports remain parseable. | Persistence needs elapsed time; added observability must stay bounded and must not collect sensitive location data. |
 
 ### Strudel evaluation and cross-cutting dependency records
 
@@ -614,11 +638,16 @@ than missing answers now.
 
 - Desktop: DIAG shows quota/usage, persisted before/after, capability matrix,
   canary written/read age, counter, app version/build/commit, and truthful
-  vehicle-software unavailability.
+  vehicle-software unavailability. Saturation fixtures prove that GPS sampling
+  cannot evict significant events; synthetic long tasks retain start time and
+  active phase; unsupported latency remains `unavailable`, not measured zero.
 - Tesla: open once while parked, send no telemetry automatically, then revisit
   after sleep and subsequent software updates. Photograph or send DIAG manually.
-- Engineering: resolve the Node/native-package architecture mismatch without
-  modifying another machine's dependency state; record PHP fixture availability.
+- Engineering: reproduce cold-cache JUNCTION and NIGHTSHIFT selection at
+  `1.5 Mbps`, including timeout/fallback reason and automatic safe recovery;
+  profile ATLAS until its repeated 23-FPS field result is explained. Resolve the
+  Node/native-package architecture mismatch without modifying another machine's
+  dependency state and record PHP fixture availability.
 
 ### Phase 1 — Shared response and DRIVEY
 
@@ -730,8 +759,8 @@ number; question 2 asks the owner to confirm the 97-ID interpretation.
 
 1. Obtain only the three remaining clarifications in the evaluation section;
    all other answers and side notes are already mapped to stable rows.
-2. Resolve the owner-assigned non-ID baseline entries, then implement M13 and
-   plant the canary.
+2. Resolve the owner-assigned non-ID baseline entries and the supplied Tesla
+   diagnostic findings, then implement M13 and plant the canary.
 3. Deliver T1 with D1/D2, then run the combined X3 regression checkpoint.
 4. Deliver L5 and the local-only LAB (L1–L4), preserving production exclusion.
 5. Tune PRTCL/PRIMORDIAL consumers in the LAB and obtain viewport plus Tesla
