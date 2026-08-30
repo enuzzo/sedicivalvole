@@ -8,6 +8,31 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Independent LAB audio and PRTCL response — 2026-08-30 20:59
+
+- build stamp: **`20260830-2055`**; deployed source commit: `2a65cca`;
+  response/audio implementation checkpoint: `a40cfff`; documentation checkpoint:
+  `3aac8e8`;
+- verification gate: **PASS within the local toolchain boundary**. All 13
+  focused PRTCL checks, all 11 LAB/control checks, all 9 Sites checks, both
+  production builds, and the documentation consistency gate pass. The complete
+  suite retains only the known local `spawn php ENOENT` diagnostic-mail fixture;
+- behavior: **PASS**. PRTCL complete-form and point scale respond to road speed,
+  while OPEN, UNDERWATER and BLOOM use continuous frame-rate-independent
+  transitions. LAB exposes MUTE/FRACTURE/JUNCTION/NIGHTSHIFT as an independent
+  disposable audio bench; visual presets and JSON contain no music association;
+- publication boundary: **PASS after one fail-closed follow-up**. The first
+  postflight rejected the two newly packaged stable-name AudioWorklet files
+  because the remote identity gate had not admitted them. Follow-up `2a65cca`
+  added explicit processor-name and runtime-marker recognition plus regression
+  coverage. Repeated read-only preflight, guarded publication, and read-only
+  postflight then passed with `remote_writes=NONE`;
+- authenticated canonical Browser QA: **PASS**. `/lab/` reports build
+  `20260830-2055`, all 18 visual/test options remain present, FRACTURE starts as
+  independent test audio, MUTE restores the manual AUDIO signal and reports
+  `visual preset unchanged`, and the console contains no warning or error.
+  Physical-Tesla acceptance remains open.
+
 ## Stable owner LAB renderer and keyboard motion — 2026-08-30 20:15
 
 - build stamp: **`20260830-2011`**; deployed source commit: `6893cd3`;
