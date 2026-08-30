@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { PrtclField } from "../environments/prtcl/prtcl-field.jsx";
 import { PRTCL_TYPES } from "../environments/prtcl/prtcl-model.js";
 import { getFluxTheme } from "../flux-themes.js";
+import { advanceDemoMotion } from "../signal-model.js";
 import { applyParamMessage, createCommandMessage, createParamMessage } from "../control-protocol.js";
 import {
   DEFAULT_LAB_VALUES,
@@ -56,6 +57,11 @@ const MUSIC = Object.freeze([
   Object.freeze({ id: "junction", label: "JUNCTION" }),
   Object.freeze({ id: "nightshift", label: "NIGHTSHIFT" }),
 ]);
+
+function canUseDriveKeyboard(target) {
+  if (!(target instanceof HTMLElement)) return true;
+  return !target.closest("input, textarea, select, button, [contenteditable='true'], [role='slider']");
+}
 
 function useSmoothedValue(target, attackMs, releaseMs) {
   const [value, setValue] = useState(target);
@@ -177,12 +183,96 @@ function LabApp() {
   const revisionRef = useRef(0);
   const sequenceRef = useRef(0);
   const fileRef = useRef(null);
+  const valuesRef = useRef(values);
+  const driveInputRef = useRef("auto");
+  const motionRef = useRef({ speed: values["context.speedKmh"], direction: 0 });
+  const motionTimerRef = useRef(null);
+  valuesRef.current = values;
   const { onFrame, summary } = useFramePacing();
   const smoothSpeed = useSmoothedValue(
     values["context.speedKmh"],
     values["response.attackMs"],
     values["response.releaseMs"],
   );
+
+  const stopMotionTimer = useCallback(() => {
+    window.clearInterval(motionTimerRef.current);
+    motionTimerRef.current = null;
+  }, []);
+
+  const startMotionTimer = useCallback(() => {
+    if (motionTimerRef.current != null) return;
+    let previousAt = performance.now();
+    motionTimerRef.current = window.setInterval(() => {
+      const now = performance.now();
+      const elapsedSeconds = (now - previousAt) / 1000;
+      previousAt = now;
+      const input = driveInputRef.current;
+      const currentSpeed = valuesRef.current["context.speedKmh"];
+      const nextMotion = advanceDemoMotion(
+        { ...motionRef.current, speed: currentSpeed },
+        elapsedSeconds,
+        input === "brake",
+        input,
+      );
+      motionRef.current = nextMotion;
+      setValues((current) => ({
+        ...current,
+        "context.inputSource": "demo",
+        "context.speedKmh": Math.round(nextMotion.speed * 10) / 10,
+      }));
+      if (input === "auto" || (nextMotion.speed <= 0 && input !== "accelerator")) {
+        stopMotionTimer();
+      }
+    }, 50);
+  }, [stopMotionTimer]);
+
+  useEffect(() => {
+    const begin = (input, copy) => {
+      driveInputRef.current = input;
+      motionRef.current = {
+        speed: valuesRef.current["context.speedKmh"],
+        direction: input === "accelerator" ? 1 : -1,
+      };
+      revisionRef.current += 1;
+      setSendState("idle");
+      setNotice(copy);
+      startMotionTimer();
+    };
+    const handleKeyDown = (event) => {
+      if (!canUseDriveKeyboard(event.target) || event.repeat) return;
+      if (event.key === "ArrowUp") {
+        event.preventDefault();
+        begin("accelerator", "ACCELERATE · keyboard simulation");
+      } else if (event.key === "ArrowDown" || event.code === "Space") {
+        event.preventDefault();
+        begin("brake", "BRAKE · keyboard simulation");
+      }
+    };
+    const handleKeyUp = (event) => {
+      if (event.key === "ArrowUp" && driveInputRef.current === "accelerator") {
+        if (canUseDriveKeyboard(event.target)) event.preventDefault();
+        begin("regen", "REGEN · accelerator released");
+      } else if ((event.key === "ArrowDown" || event.code === "Space") && driveInputRef.current === "brake") {
+        if (canUseDriveKeyboard(event.target)) event.preventDefault();
+        driveInputRef.current = "auto";
+        setNotice("BRAKE RELEASED · speed held");
+      }
+    };
+    const handleBlur = () => {
+      driveInputRef.current = "auto";
+      stopMotionTimer();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+    window.addEventListener("blur", handleBlur);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+      window.removeEventListener("blur", handleBlur);
+      stopMotionTimer();
+    };
+  }, [startMotionTimer, stopMotionTimer]);
 
   const setParam = useCallback((id, rawValue) => {
     const message = createParamMessage({
@@ -207,7 +297,22 @@ function LabApp() {
     densityScale: values["scene.rainDensity"],
     driftScale: values["scene.drift"],
     cameraDepth: values["scene.cameraDepth"],
-  }), [values]);
+  }), [
+    values["form.scale"],
+    values["form.depth"],
+    values["form.flow"],
+    values["scene.particleSize"],
+    values["scene.rainDensity"],
+    values["scene.drift"],
+    values["scene.cameraDepth"],
+  ]);
+  const prtclSettings = useMemo(
+    () => ({ type: values["context.prtclType"] }),
+    [values["context.prtclType"]],
+  );
+  const handleRuntimeError = useCallback((error) => {
+    setNotice(`Renderer unavailable · ${error.message}`);
+  }, []);
 
   const preset = useCallback(() => createLabPreset({
     values,
@@ -317,18 +422,23 @@ function LabApp() {
         <a className="lab-logout" href={boot.logoutPath}>LOG OUT</a>
       </header>
 
-      <section className="lab-stage" aria-label="Live PRTCL preview">
+      <section
+        className="lab-stage"
+        aria-label="Live PRTCL preview; hold Arrow Up to accelerate and Arrow Down to brake"
+        title="Hold Arrow Up to accelerate; hold Arrow Down or Space to brake"
+        tabIndex={0}
+      >
         <PrtclField
           speed={smoothSpeed}
           audioLevel={values["context.audioLevel"]}
           theme={theme}
           effect={activeMacro}
-          settings={{ type: values["context.prtclType"] }}
+          settings={prtclSettings}
           calibration={calibration}
           reducedMotion={false}
           onRenderer={setRenderer}
           onFrame={onFrame}
-          onRuntimeError={(error) => setNotice(`Renderer unavailable · ${error.message}`)}
+          onRuntimeError={handleRuntimeError}
         />
       </section>
 
@@ -393,7 +503,7 @@ function LabApp() {
       </div>
 
       <footer className="lab-footer">
-        <label className="lab-signal">
+        <label className="lab-signal" title="Hold Arrow Up to accelerate; hold Arrow Down or Space to brake">
           <span className="sr-only">Manual speed in kilometres per hour</span>
           <strong>{Math.round(values["context.speedKmh"])}</strong><span>KM/H</span>
           <input type="range" min="0" max="130" step="1" value={values["context.speedKmh"]} onChange={(event) => setParam("context.speedKmh", Number(event.target.value))} />

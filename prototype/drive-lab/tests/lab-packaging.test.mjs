@@ -44,6 +44,16 @@ test("the live macro strip stays inside the preview column at the Tesla viewport
   assert.doesNotMatch(stylesSource, /\.lab-macro-strip\s*\{[\s\S]*?left:\s*50%/);
 });
 
+test("the LAB keyboard drives the shared vehicle motion model without stealing control focus", () => {
+  assert.match(appSource, /import \{ advanceDemoMotion \} from "\.\.\/signal-model\.js"/);
+  assert.match(appSource, /event\.key === "ArrowUp"/);
+  assert.match(appSource, /event\.key === "ArrowDown" \|\| event\.code === "Space"/);
+  assert.match(appSource, /canUseDriveKeyboard\(event\.target\)/);
+  assert.match(appSource, /"context\.inputSource": "demo"/);
+  assert.match(appSource, /REGEN · accelerator released/);
+  assert.match(appSource, /tabIndex=\{0\}/);
+});
+
 test("SEND JSON requires an authenticated session and preserves the preset privacy contract", () => {
   assert.match(sendSource, /labRequireAuthenticatedJson\(\$config\)/);
   assert.match(sendSource, /labRequireSameOrigin\(\)/);

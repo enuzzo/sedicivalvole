@@ -30,6 +30,9 @@ export function PrtclField({
 }) {
   const canvasRef = useRef(null);
   const rendererRef = useRef(null);
+  const callbacksRef = useRef({ onRenderer, onFrame, onRuntimeError });
+  callbacksRef.current = { onRenderer, onFrame, onRuntimeError };
+  const type = normalizePrtclSettings(settings).type;
   const valuesRef = useRef({
     speed,
     audioLevel,
@@ -51,8 +54,8 @@ export function PrtclField({
     const canvas = canvasRef.current;
     if (!canvas) return undefined;
     if (!prtclWebglAvailable()) {
-      onRenderer("PRTCL unavailable");
-      onRuntimeError?.(new Error("PRTCL requires WebGL2"));
+      callbacksRef.current.onRenderer("PRTCL unavailable");
+      callbacksRef.current.onRuntimeError?.(new Error("PRTCL requires WebGL2"));
       return undefined;
     }
     let renderer;
@@ -64,12 +67,12 @@ export function PrtclField({
       );
       if (!renderer) throw new Error("PRTCL WebGL2 context is unavailable");
     } catch (error) {
-      onRenderer("PRTCL unavailable");
-      onRuntimeError?.(error instanceof Error ? error : new Error(String(error)));
+      callbacksRef.current.onRenderer("PRTCL unavailable");
+      callbacksRef.current.onRuntimeError?.(error instanceof Error ? error : new Error(String(error)));
       return undefined;
     }
     rendererRef.current = renderer;
-    onRenderer(renderer.label);
+    callbacksRef.current.onRenderer(renderer.label);
     let animationFrame = 0;
     let stopped = false;
     let lastFrameAt = performance.now();
@@ -78,8 +81,8 @@ export function PrtclField({
       if (stopped) return;
       stopped = true;
       cancelAnimationFrame(animationFrame);
-      onRenderer("PRTCL unavailable");
-      onRuntimeError?.(error instanceof Error ? error : new Error(String(error)));
+      callbacksRef.current.onRenderer("PRTCL unavailable");
+      callbacksRef.current.onRuntimeError?.(error instanceof Error ? error : new Error(String(error)));
     };
     const render = (now) => {
       if (stopped) return;
@@ -99,7 +102,7 @@ export function PrtclField({
           deltaSeconds: elapsed,
           calibration: current.calibration,
         });
-        onFrame(now, 1000 / 60, "WebGL2", width, height);
+        callbacksRef.current.onFrame(now, 1000 / 60, "WebGL2", width, height);
         animationFrame = requestAnimationFrame(render);
       } catch (error) {
         fail(error);
@@ -118,7 +121,7 @@ export function PrtclField({
       canvas.removeEventListener("webglcontextlost", onContextLost);
       renderer.dispose();
     };
-  }, [onFrame, onRenderer, onRuntimeError]);
+  }, []);
 
   useEffect(() => {
     rendererRef.current?.setPalette(theme.palette);
@@ -127,9 +130,9 @@ export function PrtclField({
   useEffect(() => {
     const renderer = rendererRef.current;
     if (!renderer) return;
-    renderer.setType(normalizePrtclSettings(settings).type);
-    onRenderer(renderer.label);
-  }, [onRenderer, settings]);
+    renderer.setType(type);
+    callbacksRef.current.onRenderer(renderer.label);
+  }, [type]);
 
   return <canvas className="field-canvas prtcl-field" ref={canvasRef} aria-hidden="true" />;
 }

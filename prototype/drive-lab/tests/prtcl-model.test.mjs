@@ -121,6 +121,14 @@ test("renderer failure, context loss, frame accounting, and cleanup share the Fl
   assert.match(rendererSource, /gl\.deleteProgram\(program\)/);
 });
 
+test("PRTCL keeps one WebGL renderer alive while React callbacks and settings change", () => {
+  assert.match(fieldSource, /const callbacksRef = useRef\(\{ onRenderer, onFrame, onRuntimeError \}\)/);
+  assert.match(fieldSource, /callbacksRef\.current = \{ onRenderer, onFrame, onRuntimeError \}/);
+  assert.match(fieldSource, /\}, \[\]\);/);
+  assert.match(fieldSource, /\}, \[type\]\);/);
+  assert.doesNotMatch(fieldSource, /\}, \[onFrame, onRenderer, onRuntimeError\]\);/);
+});
+
 test("LAB calibration stays optional and bounded inside the project renderer", () => {
   assert.match(fieldSource, /calibration = null/);
   assert.match(rendererSource, /const multiplier = \(name, fallback = 1, minimum = 0, maximum = 3\)/);
