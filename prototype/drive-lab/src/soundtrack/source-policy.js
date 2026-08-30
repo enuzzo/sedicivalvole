@@ -1,5 +1,15 @@
 const DECISIONS = new Set(["allow", "deny", "unknown"]);
 
+export const JAMENDO_TRACK_SPEEDS = Object.freeze([
+  "verylow",
+  "low",
+  "medium",
+  "high",
+  "veryhigh",
+]);
+
+const JAMENDO_TRACK_SPEED_SET = new Set(JAMENDO_TRACK_SPEEDS);
+
 export const SOURCE_CAPABILITY = Object.freeze({
   ALLOW: "allow",
   DENY: "deny",
@@ -23,6 +33,12 @@ const CREATIVE_COMMONS_CODES = new Set([
 ]);
 
 const asText = (value) => typeof value === "string" ? value.trim() : "";
+
+const normalizedTags = (values) => Object.freeze([
+  ...new Set((Array.isArray(values) ? values : [])
+    .map((value) => asText(value).toLowerCase())
+    .filter(Boolean)),
+].slice(0, 24));
 
 const safeHttpsUrl = (value, allowedHost) => {
   try {
@@ -126,6 +142,7 @@ export function evaluateJamendoTrack(track) {
   if (!licencePolicy.admitted) return licencePolicy;
 
   const imageUrl = safeHttpsUrl(track.image, jamendoHost);
+  const sourcePace = asText(track.musicinfo?.speed).toLowerCase();
   return Object.freeze({
     ...licencePolicy,
     source: "jamendo",
@@ -140,6 +157,8 @@ export function evaluateJamendoTrack(track) {
       streamUrl: streamUrl.href,
       shareUrl: shareUrl.href,
       imageUrl: imageUrl?.href ?? null,
+      pace: JAMENDO_TRACK_SPEED_SET.has(sourcePace) ? sourcePace : null,
+      genres: normalizedTags(track.musicinfo?.tags?.genres),
     }),
   });
 }
