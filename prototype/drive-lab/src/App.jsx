@@ -119,6 +119,7 @@ const APP_VERSION = __APP_VERSION__;
 const APP_BUILD = __APP_BUILD__;
 const APP_COMMIT = __APP_COMMIT__;
 const BRAND_MARK_URL = `/brand/sedicivalvole-mark.svg?build=${encodeURIComponent(APP_BUILD)}`;
+const TOPBAR_MARK_URL = `/brand/product-icon-512.png?build=${encodeURIComponent(APP_BUILD)}`;
 const PREFERENCES_KEY = "sedicivalvole.preferences.v2";
 const LEGACY_PREFERENCES_KEY = "sedicivalvole.preferences.v1";
 const LAUNCH_MUSIC_CHOICES = Object.freeze([
@@ -2582,13 +2583,13 @@ export function App() {
       >
         <header className="topbar control-layer">
           <button
-            className="wordmark"
+            className="topbar-mark"
             type="button"
             onClick={() => setDrawerOpen(true)}
             aria-label="Open session report"
             aria-haspopup="dialog"
           >
-            sedicivalvole
+            <img src={TOPBAR_MARK_URL} alt="" aria-hidden="true" />
           </button>
           <ModeSelector />
           <span className="speed-spacer" aria-hidden="true" />

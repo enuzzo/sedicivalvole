@@ -238,8 +238,9 @@ test("Space Grotesk remains the UI face while Orbitron is isolated to project wo
   assert.match(styles, /--font-ui: "Space Grotesk"/);
   assert.match(styles, /--font-data: "Space Grotesk"/);
   assert.match(styles, /--font-brand: "Orbitron"/);
+  assert.match(styles, /\.launch-brand \{[\s\S]*?font-family: var\(--font-brand\)/);
   assert.match(styles, /\.launch-selector-heading h1 \{[\s\S]*?font-family: var\(--font-brand\)/);
-  assert.match(styles, /\.wordmark \{[\s\S]*?font-family: var\(--font-brand\)/);
+  assert.doesNotMatch(styles, /\.topbar-mark \{[\s\S]*?font-family: var\(--font-brand\)/);
   assert.match(styles, /\.diagnostic-report-drawer \.drawer-panel \{[\s\S]*?font-family: var\(--font-data\)/);
   assert.match(styles, /body \{[\s\S]*?font-family: var\(--font-ui\)/);
   assert.match(index, /rel="preload" href="\/fonts\/space-grotesk-variable\.ttf"/);
@@ -278,6 +279,6 @@ test("compact viewports keep the mode switch separate and preserve a resting mod
 
   assert.match(app, /className="active-mode-marker"[^>]*>FLUX<\/span>/);
   assert.match(styles, /\.controls-resting \.active-mode-marker \{ opacity: \.82; \}/);
-  assert.match(styles, /@media \(max-width: 650px\) \{[\s\S]*?grid-template-columns: minmax\(90px, 1fr\) 116px 220px 52px/);
-  assert.match(styles, /@media \(max-width: 480px\) \{[\s\S]*?\.wordmark \{ display: none; \}[\s\S]*?\.mode-selector \{ grid-column: 1; \}/);
+  assert.match(styles, /@media \(max-width: 650px\) \{[\s\S]*?grid-template-columns: 58px 116px minmax\(220px, 1fr\) 52px/);
+  assert.match(styles, /@media \(max-width: 480px\) \{[\s\S]*?\.topbar-mark \{ display: none; \}[\s\S]*?\.mode-selector \{ grid-column: 1; \}/);
 });

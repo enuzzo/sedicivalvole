@@ -16,6 +16,9 @@ function read(relativePath) {
 test("the top bar exposes the selected REPORT control with the pinned Tabler icon", () => {
   const app = read("App.jsx");
   const styles = read("styles.css");
+  const markStart = app.indexOf('<button\n            className="topbar-mark"');
+  const markEnd = app.indexOf("</button>", markStart);
+  const markMarkup = app.slice(markStart, markEnd);
   const reportStart = app.indexOf('<button\n            className="report-button"');
   const reportEnd = app.indexOf("</button>", reportStart);
   const reportMarkup = app.slice(reportStart, reportEnd);
@@ -24,6 +27,13 @@ test("the top bar exposes the selected REPORT control with the pinned Tabler ico
   const icon = readFileSync(resolve(PUBLIC_ROOT, "third-party/tabler-icons/report-analytics.svg"));
   const license = readFileSync(resolve(PUBLIC_ROOT, "third-party/tabler-icons/LICENSE"), "utf8");
 
+  assert.ok(markStart >= 0);
+  assert.match(app, /const TOPBAR_MARK_URL = `\/brand\/product-icon-512\.png\?build=\$\{encodeURIComponent\(APP_BUILD\)\}`/);
+  assert.match(markMarkup, /aria-label="Open session report"/);
+  assert.match(markMarkup, /src=\{TOPBAR_MARK_URL\}/);
+  assert.match(markMarkup, /alt=""/);
+  assert.match(markMarkup, /aria-hidden="true"/);
+  assert.doesNotMatch(markMarkup, />\s*sedicivalvole\s*</);
   assert.ok(reportStart >= 0);
   assert.match(reportMarkup, /aria-label="Open session report"/);
   assert.match(reportMarkup, /aria-haspopup="dialog"/);
@@ -33,6 +43,8 @@ test("the top bar exposes the selected REPORT control with the pinned Tabler ico
   assert.doesNotMatch(app.slice(topbarStart, topbarEnd), />DIAG</);
   assert.match(styles, /\.report-button \{[\s\S]*?grid-template-rows: 19px auto[\s\S]*?gap: 4px/);
   assert.match(styles, /\.report-button img \{[\s\S]*?width: 19px[\s\S]*?height: 19px/);
+  assert.match(styles, /\.topbar \{[\s\S]*?grid-template-columns: 72px auto minmax\(320px, 1fr\) 54px 58px/);
+  assert.match(styles, /\.topbar-mark img \{[\s\S]*?width: 46px;[\s\S]*?height: 46px/);
   assert.equal(icon.length, 618);
   assert.equal(createHash("sha256").update(icon).digest("hex"), "d58847492f890b8beedc7eff543860219e0f382e46d2c2695107d64ae434b9ba");
   assert.match(license, /Copyright \(c\) 2020-2026 Paweł Kuna/);
