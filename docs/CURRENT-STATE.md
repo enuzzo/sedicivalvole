@@ -156,15 +156,19 @@ dated study documents.
   explicitly welcome without a purchase.
 - The opening action now leads to the owner-selected **Instrument Deck** in the
   owner-selected LIGHT **Road Sheet** language: one open warm-ivory sheet, the
-  large light 16 Road mark, centered Orbitron wordmark, hairline structure,
+  compact left-aligned 16 Road and Orbitron wordmark lockup, hairline structure,
   quiet-gray direct controls, short vermilion state rails, and one black START
   field. `MUSIC` and `VISUAL` keep concise descriptions; START remains disabled
   until both axes are selected, and MUTE still requires a Visual. SOUNDTRACK is
   visible but disabled until its real player exists, and the Illobo featured
   treatment remains reserved for the future SOUNDTRACK library. At exact
   `773 × 601`, the complete Music and Visual button grids share the same
-  `280 px` height, top, and bottom. A registry-derived Visual row count keeps a
-  future third row inside that fixed block. The shared `6 px` radius and complete
+  `342 px` height, top, and bottom. The `72 px` header, shared compact padding,
+  `8 px` grid spacing, and `3 px` title/description gap reserve room without
+  reducing the approved type sizes. A registry-derived Visual row count keeps a
+  future third row inside that fixed block as three `108.66 px` tracks. The
+  selected `3 px` rail sits independently above content instead of moving or
+  crossing its title. The shared `6 px` radius and complete
   MUTE + APERTURE start flow pass interaction, geometry, and console QA.
 - Road Sheet now records the invariant interface anatomy for X10. LIGHT uses
   warm ivory, quiet gray, near-black, and vermilion; DARK will retain the same

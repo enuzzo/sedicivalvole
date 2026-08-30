@@ -1,6 +1,6 @@
 # Design QA — Road Sheet LIGHT Instrument Deck
 
-Date: 2026-08-30
+Date: 2026-08-31
 
 ## Source and implementation
 
@@ -14,6 +14,12 @@ Date: 2026-08-30
   `/private/tmp/sedicivalvole-road-sheet-live-warm-cache-773x601.jpg`.
 - Normalized selected-reference/canonical comparison:
   `/private/tmp/sedicivalvole-road-sheet-live-comparison.png`.
+- Pre-refinement exact-viewport Browser capture:
+  `/private/tmp/sedicivalvole-road-sheet-spacing-before-773x601.png`.
+- Refined exact-viewport Browser capture:
+  `/private/tmp/sedicivalvole-road-sheet-spacing-after-773x601.png`.
+- Refined annotated-size Browser capture:
+  `/private/tmp/sedicivalvole-road-sheet-spacing-after-702x546.png`.
 - Reference pixels: `1423 × 1105`, normalized to the exact target ratio.
   Implementation CSS viewport and screenshot: `773 × 601` at density `1`.
 - State: Instrument Deck with PLAY THE ROAD and APERTURE selected, START enabled.
@@ -28,24 +34,30 @@ Signal Gate rather than static recreations of the concept.
 - **Typography:** exact `sedicivalvole` wordmark uses the packaged Orbitron
   variable face at weight `750` and `-0.02em`; labels, titles, descriptions,
   state copy, and START use Space Grotesk. At the Tesla viewport, section labels
-  compute to `19 px`, choice titles to `15 px`, descriptions to `12.5 px`, and
-  the centered wordmark to `39.81 px`.
-- **Layout and rhythm:** one open `724 × 552 px` warm-ivory sheet keeps the large
-  light 16 Road mark at left, wordmark centered independently, and BACK at right.
-  The hairline header, two-column body, vertical divider, and black START field
-  reproduce the selected anatomy without nested black panels.
+  remain `19 px`, choice titles remain `15 px`, descriptions remain `12.5 px`,
+  and the compact adjacent wordmark computes to `32 px`.
+- **Layout and rhythm:** one open `724 × 552 px` warm-ivory sheet groups the
+  `52 px` light 16 Road mark and Orbitron wordmark in one left-aligned lockup,
+  while BACK remains independently anchored at right. The header contracts from
+  `112 px` to `72 px`; the hairline, two-column body, vertical divider, and
+  black START field retain the selected anatomy without nested black panels.
 - **Exact equal-height requirement:** Music and Visual fieldsets both measure
-  `326 px` from `y=161.5` to `y=487.5`. Their button grids both measure exactly
-  `280 px` from `y=195.5` to `y=475.5`. The selector has `scrollHeight ===
+  `378 px` from `y=117.5` to `y=495.5`. Their button grids both measure exactly
+  `342 px` from `y=145.5` to `y=487.5`. The selector has `scrollHeight ===
   clientHeight === 550` and the document remains exactly `773 × 601`.
 - **Future third Visual row:** row count derives from the Visual registry with a
-  floor of two rows. Three rows therefore divide the same fixed `280 px` grid
-  rather than growing the launcher, moving START, or breaking Music alignment.
+  floor of two rows. A temporary non-committed Browser QA row-count override at
+  `702 × 546` produced three exact `90.66 px` tracks inside the unchanged
+  `288 px` grid, with `21.45 px` minimum content clearance on both sides, no
+  scroll growth, and the same `3 px` title/description gap. At `773 × 601`, the
+  same formula yields three `108.66 px` tracks inside the fixed `342 px` grid.
 - **Color and materials:** LIGHT uses warm ivory `#EEE9DE`, quiet control gray
   `#DCD7CE`, near-black ink/actions, vermilion `#E32219` state rails, thin dark
   rules, and the shared `6 px` radius. No active Visual palette is recoloured.
-- **Interaction:** PLAY THE ROAD + APERTURE expose two measured `34 × 4 px`
-  vermilion rails and enable START. MUTE + APERTURE enters the running experience
+- **Interaction:** PLAY THE ROAD + APERTURE expose two measured `34 × 3 px`
+  vermilion rails and enable START. At the annotated `702 × 546` size, the
+  closest rail/title clearance is `11.45 px`; selected content no longer shifts
+  vertically. MUTE + APERTURE enters the running experience
   with `data-environment="aperture"`, a live canvas, no retained launcher, and no
   audio output.
 
@@ -56,6 +68,7 @@ Signal Gate rather than static recreations of the concept.
 | 1 | P1 | Native fieldset layout let Music grow beyond Visual and overlap the START row despite grid declarations. | Added explicit equal-height Music/Visual grid wrappers, bounded the body with `minmax(0, 1fr)`, and measured identical `280 px` grid bounds in Browser. |
 | 2 | — | No actionable P0, P1, or P2 mismatch remained in the joined reference/implementation review. | The implementation preserves the reference's hierarchy, direct controls, warm sheet, restrained signal color, and readable cabin-scale type while satisfying the stricter equal-height product constraint. |
 | 3 | P1 | The first canonical frame loaded the old dark SVG from a warm browser cache even though the deployed stable-name file was byte-identical to the new LIGHT master. | Both product-mark consumers now append the injected build stamp to the packaged asset URL. The same browser session then loaded `/brand/sedicivalvole-mark.svg?build=20260830-2344`; the final canonical comparison shows the correct warm-light master with no black plate. |
+| 4 | P1 | At the narrower annotated viewport, the selected vermilion rail could cross PLAY THE ROAD; the header consumed unnecessary height; Music and Visual used looser, inconsistent-feeling internal space before a planned third Visual row. | Raised the rail from `12 px` to `7 px`, reduced it to `3 px`, removed selected-title displacement, halved the title/description gap, standardized `10 px` card and field padding with `8 px` grid gaps, and replaced the separated `112 px` brand header with a compact `72 px` adjacent lockup. Exact `773 × 601`, annotated `702 × 546`, and temporary three-row Browser measurements pass without overflow or console output. |
 
 ## Runtime checks
 
@@ -65,6 +78,9 @@ Signal Gate rather than static recreations of the concept.
   ROAD + APERTURE → enabled START; separate MUTE + APERTURE → running canvas.
 - The local Browser reports zero warnings and zero errors after the complete
   interaction flow.
+- Refined local Browser QA at `773 × 601` and `702 × 546` keeps page dimensions
+  exact, preserves all approved font sizes, and completes MUTE + APERTURE into
+  `phase-running` with one canvas and no retained launcher.
 - Canonical build `20260830-2344` repeats the exact `773 × 601` geometry: both
   grids are `280 px` high from `y=195.5` through `475.5`, START enables after
   PLAY THE ROAD + APERTURE, and MUTE + APERTURE enters the running canvas.
