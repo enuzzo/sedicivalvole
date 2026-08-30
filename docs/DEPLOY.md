@@ -8,6 +8,36 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## 16 Road browser-identity publication — 2026-08-30 19:59
+
+- build stamp: **`20260830-1953`**; deployed source commit: `b06e969`;
+  identity implementation checkpoint: `c28fa9a`; publication-gate follow-up:
+  `da6d97f`;
+- verification gate: **PASS within the local toolchain boundary**. Both focused
+  brand checks, all 17 focused brand/deployment checks, the 130-module
+  production build, and 338 of 339 complete-suite checks pass; only the known
+  local `spawn php ENOENT` diagnostic-mail fixture is unavailable;
+- publication boundary: **PASS after one fail-closed follow-up**. Read-only
+  preflight passed, then guarded publication transferred 99 files / 16,109,834
+  bytes and retained one previous content-addressed asset for cache overlap. The
+  first postflight correctly rejected the newly introduced `brand/` root because
+  it was not yet an explicit identity-gate target. Follow-up `da6d97f` added
+  byte-for-byte static-tree verification for that exact directory; all 17
+  focused checks and the repeated read-only postflight pass with
+  `remote_writes=NONE`;
+- canonical root identity: **PASS**. Cache-busted HTML returns `200`, explicit
+  `no-store` / `no-cache`, `nosniff`, and proxy `MISS`; its 1,100 bytes are
+  byte-identical to the local entry at SHA-256
+  `3d7f6388fcebc1ec14996358d48f23855a4e24d8543ac34d89c521526f31591e`;
+- browser identity: **PASS**. Live build `20260830-1953` exposes SVG, 32 px PNG,
+  ICO, and 180 px Apple touch metadata with zero page overflow. The canonical
+  SVG, favicon PNG, and touch PNG are byte-identical to the local build at
+  `e47522c4166f6c4f7e8e978b09b9fd2e2835f438732cf67004aede57ff0d8ace`,
+  `7bb0bb0dc97d145b4bd30ebbae7e7db4ab40e31dce64e0afdc7095abe5235c2d`,
+  and `bc7d754e0009308fc9a8ad079d7dc9b461fa45f072292d3f2f21f83c7dfa9913`.
+  The existing textual splash mark is intentionally unchanged pending a
+  separate owner-visible composition review.
+
 ## Instrument Deck and SOUNDTRACK policy publication — 2026-08-30 19:39
 
 - build stamp: **`20260830-1935`**; deployed source commit: `9856277`;
