@@ -27,16 +27,16 @@ The compact viewport is the relevant driving layout because Tesla retains vehicl
 
 ## In-app report v3
 
-The main product exposes diagnostics through an always-visible top-bar `DIAG` control, including at `773 × 601`. The report is scrollable and records:
+The main product exposes diagnostics through an always-visible top-bar `REPORT` control, including at `773 × 601`. Its official Tabler report-analytics icon sits above the explicit label in the existing compact navigation cell; the control opens the scrollable session report.
 
-At the Tesla split viewport, Music and Report use compact 68 px evidence cards while the secondary Device evidence uses a denser four-by-two matrix with 58 px cards and smaller type. The layout preserves every value without giving glance-reading hierarchy to information intended for later diagnosis; below 480 px it returns to two columns. A sticky four-control action row keeps send success or failure text directly above the controls, so pressing **SEND DIAGNOSTIC** cannot leave the resulting state below the scroll boundary. The primary control retains a 48 px touch target; an empty status consumes no height.
+At the Tesla split viewport, four compact health cells lead a two-column instrument grid for motion, rendering, audio/resources, and session/transport evidence. The actions stay in normal report flow instead of covering metrics; below `620 px`, health returns to two columns, instrument sections to one column, and actions to two columns. The explicit send control retains a `48 px` touch target, and an empty status consumes no height.
 
 - current inner/document/VisualViewport/screen/available/outer dimensions;
 - DPR, orientation, safe-area insets, fullscreen state, and inferred split/expanded mode;
 - a bounded history of meaningful viewport changes;
 - WebGL2 vendor, renderer, maximum texture/renderbuffer size, and active renderer;
 - aggregate canvas frame pacing: average FPS, median/p95/maximum frame time, slow-frame counts, estimated missed target frames, render size, renderer, and configured target cadence;
-- phase-specific frame pacing for the Signal Gate, every active Visual/Music combination, the Aperture `0–40 km/h` wall-retreat band, and the same combination with DIAG open;
+- phase-specific frame pacing for the Signal Gate, every active Visual/Music combination, the Aperture `0–40 km/h` wall-retreat band, and the same combination with the session report open;
 - bounded main-thread long-task evidence when the browser exposes it, including
   observed start time, duration, active phase, renderer, Visual/Music, speed,
   coordinate-free GPS age/state, audio state, network hint, and visibility;

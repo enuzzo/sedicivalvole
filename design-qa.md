@@ -1,3 +1,52 @@
+# Design QA — REPORT top-bar control
+
+Date: 2026-08-30
+
+## Source and implementation
+
+- Source visual truth: `/Users/enuzzo/.codex/generated_images/01a0520f-bb95-7472-9af3-0100087ecc3e/exec-77d7458d-58a8-4f40-8c11-26e1def81082.png`.
+- Browser-rendered implementation: `/private/tmp/sedicivalvole-report-773x601.png`.
+- Open-dialog interaction evidence: `/private/tmp/sedicivalvole-report-dialog-773x601.png`.
+- Full-view normalized comparison: `/private/tmp/sedicivalvole-report-full-comparison.png`.
+- Focused control comparison: `/private/tmp/sedicivalvole-report-control-comparison.png`.
+- CSS viewport and implementation pixels: `773 × 601` at screenshot density `1`.
+- Source pixels: `1422 × 1106`, downsampled to `773 × 601`; its aspect ratio already matches the Tesla viewport within rounding.
+- State: running APERTURE with muted QA audio, RED 03 palette, controls awake, REPORT closed for the source comparison and open for the interaction check.
+
+The source and implementation were opened together in one `1546 × 601` image. A second `392 × 248` comparison normalizes the two REPORT cells to the same height so icon geometry, label scale, spacing, and edge treatment remain readable.
+
+## Required fidelity review
+
+- **Fonts and typography:** the visible `REPORT` label uses the product's locally packaged Space Grotesk at `8 px`, weight `600`, with restrained tracking. It stays fully legible inside the real `52 × 68 px` Tesla navigation cell and preserves the selected uppercase hierarchy.
+- **Spacing and layout rhythm:** the official icon sits above the label in a `19 px + auto` two-row stack with a `4 px` gap. The existing GPS cell, telemetry module, mode switch, wordmark, and `64 px` footer do not move; the document remains exactly `773 × 601` with no overflow.
+- **Colors and visual tokens:** the control keeps the product's near-black top bar, warm off-white foreground, one-pixel divider, and quiet inactive state. The outer top-right corner continues the approved shared `6 px` product radius instead of adopting the mock's larger illustrative rounding.
+- **Image quality and asset fidelity:** the icon is the official Tabler Icons `report-analytics` SVG from pinned release `3.46.0`, retained byte-identically at `618` bytes and SHA-256 `d58847492f890b8beedc7eff543860219e0f382e46d2c2695107d64ae434b9ba`. CSS changes only its monochrome presentation; the complete MIT licence ships beside it.
+- **Copy and content:** the opaque abbreviation `DIAG` is removed from the current top bar and nearby live privacy copy. The visible label is `REPORT`, the accessible name is `Open session report`, and the destination remains visibly titled `Session report`. The full word `diagnostic` remains where it accurately names the technical send action and architecture.
+- **Focused-region evidence:** the normalized crop confirms the same clipboard/report-with-metrics silhouette, icon-above-label anatomy, centered alignment, and monochrome treatment as the selected direction. The implementation is intentionally narrower because it preserves the real GPS and telemetry allocation at `773 × 601`.
+
+## Comparison history
+
+| Pass | Severity | Finding | Resolution and evidence |
+|---|---|---|---|
+| 1 | — | No actionable P0, P1, or P2 mismatch. | The full-view comparison preserves the existing approved product layout, while the focused comparison confirms the selected REPORT anatomy without introducing a gear, icon-only control, tooltip dependency, or top-bar reflow. |
+
+## Interaction and runtime checks
+
+- Flow tested: Signal Gate → Instrument Deck → MUTE + APERTURE → START → wake controls → REPORT → Session report → CLOSE.
+- REPORT opens the modal session report, whose initial focus lands on `Close session report`; closing returns focus to the exact `.report-button` trigger.
+- The rendered report confirms `773 × 601`, APERTURE, coordinate-free metrics, and zero captured runtime issues.
+- Browser page identity, non-blank content, framework-overlay absence, and console health pass; the in-app Browser reported zero warnings or errors.
+- Sixty-two focused presentation, ATLAS, documentation, launcher, and Sites checks pass. The production build completes with `130` modules and packages the pinned SVG plus its MIT licence.
+- The complete suite retains one pre-existing local-environment failure only: the deterministic mail fixture cannot spawn the absent `php` executable (`spawn php ENOENT`).
+
+## Follow-up polish
+
+- P3: physical-Tesla cabin-distance confirmation remains useful before changing the selected `19 px` icon or `8 px` label; the current proportions already match the normalized source and preserve the compact navigation contract.
+
+final result: passed
+
+---
+
 # Design QA — flat Signal Gate launch surface
 
 Date: 2026-08-28

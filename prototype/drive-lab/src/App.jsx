@@ -497,7 +497,7 @@ function DiagnosticReadme() {
         <small>TECHNICAL AND DATA NOTES</small>
         <h3 id="diagnostic-readme-title">What this instrument measures</h3>
         <p>
-          DIAG is a local performance instrument for the running Sedici Valvole session.
+          The session report is a local performance instrument for the running Sedici Valvole session.
           It records bounded technical evidence so rendering, audio, GPS confidence, and
           failures can be compared without retaining a route.
         </p>
@@ -519,7 +519,7 @@ function DiagnosticReadme() {
         <p>
           ATLAS may keep the latest reliable position in session memory while the map is
           selected. OpenFreeMap receives the tile area needed for the map and Wikimedia may
-          receive a coarse nearby-search cell. The point is never copied into DIAG or local storage.
+          receive a coarse nearby-search cell. The point is never copied into the session report or local storage.
         </p>
       </section>
 
@@ -975,7 +975,7 @@ function GpsHelpPopover({ open, status, accuracy, onClose, onRetry, onDemo }) {
         <button type="button" onClick={onRetry}>RETRY LOCATION</button>
         <button type="button" onClick={onDemo}>EXPLORE MILAN DEMO</button>
       </div>
-      <small className="gps-help-privacy">Position stays in this ATLAS session and never enters DIAG.</small>
+      <small className="gps-help-privacy">Position stays in this ATLAS session and never enters the session report.</small>
     </aside>
   );
 }
@@ -2251,7 +2251,7 @@ export function App() {
     },
   } : null, [diagnostics]);
   // Building and pretty-printing the complete report is intentionally cold.
-  // The drive hot path updates bounded refs; only opening DIAG or its two-second
+  // The drive hot path updates bounded refs; only opening the session report or its two-second
   // recorder refresh creates a serializable snapshot.
   const diagnosticReport = useMemo(
     () => drawerOpen ? buildDiagnosticReport() : null,
@@ -2566,7 +2566,13 @@ export function App() {
         inert={phase !== "running" || modalOpen ? true : undefined}
       >
         <header className="topbar control-layer">
-          <button className="wordmark" type="button" onClick={() => setDrawerOpen(true)} aria-label="Open diagnostic report">
+          <button
+            className="wordmark"
+            type="button"
+            onClick={() => setDrawerOpen(true)}
+            aria-label="Open session report"
+            aria-haspopup="dialog"
+          >
             sedicivalvole
           </button>
           <ModeSelector />
@@ -2582,7 +2588,20 @@ export function App() {
             <strong>{gpsPresentation.status}</strong>
             <small>{gpsPresentation.accuracy}</small>
           </button>
-          <button className="diag-button" type="button" onClick={() => setDrawerOpen(true)}>DIAG</button>
+          <button
+            className="report-button"
+            type="button"
+            onClick={() => setDrawerOpen(true)}
+            aria-label="Open session report"
+            aria-haspopup="dialog"
+          >
+            <img
+              src="/third-party/tabler-icons/report-analytics.svg"
+              alt=""
+              aria-hidden="true"
+            />
+            <span>REPORT</span>
+          </button>
         </header>
 
         <GpsHelpPopover
@@ -2689,7 +2708,7 @@ export function App() {
                     setDrawerOpen(false);
                     setDiagnosticReadmeOpen(false);
                   }}
-                  aria-label="Close report"
+                  aria-label="Close session report"
                 >
                   CLOSE
                 </button>

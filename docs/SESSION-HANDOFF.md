@@ -89,7 +89,7 @@ asserted.
 - the long-payload float serialization fix is deployed and synthetically
   verified, but a new real drive must still reach `SENT`, arrive in Gmail, and
   be inspected before inbox delivery is considered verified;
-- `DIAG` and the send action must remain reachable at `773 × 601`.
+- `REPORT` and the send action must remain reachable at `773 × 601`.
 
 ## Immediate work
 

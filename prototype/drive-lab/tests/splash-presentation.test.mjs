@@ -206,7 +206,7 @@ test("Signal Gate phases every travelling gap independently", () => {
   assert.match(field, /for \(int rayIndex = 0; rayIndex < 8; rayIndex \+= 1\)/);
 });
 
-test("product chrome and DIAG share the locally packaged Space Grotesk face", () => {
+test("product chrome and the session report share the locally packaged Space Grotesk face", () => {
   const styles = read("styles.css");
   const index = readFileSync(resolve(PROJECT_ROOT, "index.html"), "utf8");
   const font = readFileSync(resolve(PROJECT_ROOT, "public/fonts/space-grotesk-variable.ttf"));

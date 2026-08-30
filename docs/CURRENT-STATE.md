@@ -161,7 +161,7 @@ dated study documents.
   player exists, and the Illobo featured treatment remains reserved for the
   future SOUNDTRACK library. The launcher and its controls use the shared
   restrained `6 px` radius and pass exact `773 × 601` interaction/geometry QA.
-- All live product, LAB, and DIAG typography uses the locally packaged Space
+- All live product, LAB, and session-report typography uses the locally packaged Space
   Grotesk variable font under OFL-1.1. Reading text, values, controls, and compact
   operational labels occupy a deliberate `400–700` hierarchy without a device-font
   dependency; tabular numerals preserve diagnostic alignment. Orbitron remains
@@ -177,8 +177,9 @@ dated study documents.
   perspective airflow behind the road field.
 - Diagnostics separate FPS/frame time, browser-exposed heap and decoded-audio
   memory by splash, active Visual/Music pairing, the Aperture wall-retreat pressure
-  band and DIAG-open state. Re-entry gaps are not counted as slow frames.
-- The integrated DIAG surface leads with frame, GPS, audio and issue health,
+  band and session-report-open state. Re-entry gaps are not counted as slow frames.
+- The integrated REPORT surface uses the pinned Tabler report-analytics icon and
+  a visible label, then leads with frame, GPS, audio and issue health,
   then exposes aligned motion, rendering, audio/resource and session evidence.
   Its actions no longer cover metrics, raw JSON uses the drawer's single scroll
   context, and an accessible README contains telemetry/privacy, audio provenance,

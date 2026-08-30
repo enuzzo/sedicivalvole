@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { readFileSync, statSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import test from "node:test";
@@ -11,6 +12,32 @@ const PUBLIC_ROOT = resolve(TEST_DIR, "../public");
 function read(relativePath) {
   return readFileSync(resolve(SOURCE_ROOT, relativePath), "utf8");
 }
+
+test("the top bar exposes the selected REPORT control with the pinned Tabler icon", () => {
+  const app = read("App.jsx");
+  const styles = read("styles.css");
+  const reportStart = app.indexOf('<button\n            className="report-button"');
+  const reportEnd = app.indexOf("</button>", reportStart);
+  const reportMarkup = app.slice(reportStart, reportEnd);
+  const topbarStart = app.indexOf('<header className="topbar');
+  const topbarEnd = app.indexOf("</header>", topbarStart);
+  const icon = readFileSync(resolve(PUBLIC_ROOT, "third-party/tabler-icons/report-analytics.svg"));
+  const license = readFileSync(resolve(PUBLIC_ROOT, "third-party/tabler-icons/LICENSE"), "utf8");
+
+  assert.ok(reportStart >= 0);
+  assert.match(reportMarkup, /aria-label="Open session report"/);
+  assert.match(reportMarkup, /aria-haspopup="dialog"/);
+  assert.match(reportMarkup, /src="\/third-party\/tabler-icons\/report-analytics\.svg"/);
+  assert.match(reportMarkup, /aria-hidden="true"/);
+  assert.match(reportMarkup, /<span>REPORT<\/span>/);
+  assert.doesNotMatch(app.slice(topbarStart, topbarEnd), />DIAG</);
+  assert.match(styles, /\.report-button \{[\s\S]*?grid-template-rows: 19px auto[\s\S]*?gap: 4px/);
+  assert.match(styles, /\.report-button img \{[\s\S]*?width: 19px[\s\S]*?height: 19px/);
+  assert.equal(icon.length, 618);
+  assert.equal(createHash("sha256").update(icon).digest("hex"), "d58847492f890b8beedc7eff543860219e0f382e46d2c2695107d64ae434b9ba");
+  assert.match(license, /Copyright \(c\) 2020-2026 Paweł Kuna/);
+  assert.match(license, /MIT License/);
+});
 
 test("diagnostic submission keeps essential consent beside the action", () => {
   const app = read("App.jsx");

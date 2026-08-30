@@ -533,7 +533,7 @@ button { -webkit-tap-highlight-color: transparent; }
 .wordmark,
 .mode-selector button,
 .source-readout,
-.diag-button {
+.report-button {
   border: 0;
   border-radius: 0;
   color: var(--paper);
@@ -682,7 +682,30 @@ button { -webkit-tap-highlight-color: transparent; }
 .gps-help-actions button { min-height: 40px; padding: 7px; border: 1px solid rgba(238, 234, 224, .22); color: var(--paper); background: rgba(255, 255, 255, .035); font: var(--font-weight-label) 8px/1.25 var(--font-ui); letter-spacing: .06em; }
 .gps-help-actions button:first-child { border-color: color-mix(in srgb, var(--accent) 60%, transparent); }
 .gps-help-privacy { display: block; margin-top: 10px; line-height: 1.4; letter-spacing: .04em; }
-.diag-button { border-left: 1px solid var(--line); font-size: 10px; font-weight: var(--font-weight-label); letter-spacing: .08em; }
+.report-button {
+  display: grid;
+  grid-template-rows: 19px auto;
+  place-content: center;
+  gap: 4px;
+  min-width: 0;
+  padding: 7px 3px 6px;
+  border-left: 1px solid var(--line);
+  text-align: center;
+}
+.report-button img {
+  display: block;
+  width: 19px;
+  height: 19px;
+  margin: 0 auto;
+  filter: brightness(0) invert(1);
+  opacity: .92;
+}
+.report-button span {
+  font-size: 8px;
+  font-weight: var(--font-weight-label);
+  line-height: 1;
+  letter-spacing: .08em;
+}
 .energy-readout {
   position: absolute;
   left: 50%;
@@ -952,7 +975,7 @@ button { -webkit-tap-highlight-color: transparent; }
 .send-state-error { color: #ff8f85; }
 .send-state-sent { color: #9ad2bd; }
 
-/* DIAG remains an instrument rather than product theatre. Space Grotesk carries
+/* The session report remains an instrument rather than product theatre. Space Grotesk carries
    the complete product hierarchy, with tabular numerals preserving scanability. */
 .diagnostic-report-drawer .drawer-panel {
   width: min(700px, 100vw);
@@ -1276,7 +1299,7 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
   .speed-spacer { grid-column: 3; min-width: 220px; }
   .source-readout { right: 52px; width: 220px; gap: 6px; padding: 4px 6px; }
   .gps-state { display: none; }
-  .diag-button { grid-column: 4; }
+  .report-button { grid-column: 4; }
   .control-slab { min-height: 224px; grid-template-columns: 86px 1.1fr 1.3fr; grid-template-rows: 106px 118px; }
   .stop-button { grid-row: 1 / 3; }
   .environment-control { grid-column: 2; }
