@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import { audioWorklet } from "./scripts/vite-audio-worklet.mjs";
 import { execSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 
@@ -41,5 +42,5 @@ export default defineConfig({
       output: { inlineDynamicImports: true },
     },
   },
-  plugins: [react()],
+  plugins: [react(), audioWorklet()],
 });

@@ -36,6 +36,17 @@ test("the LAB bundle is inlined behind the gate and leaves no directly fetchable
   assert.match(indexSource, /\/\*__LAB_JS__\*\//);
   assert.doesNotMatch(indexSource, /<script[^>]+src=/i);
   assert.doesNotMatch(indexSource, /<link[^>]+stylesheet/i);
+  assert.match(viteSource, /audioWorklet\(\)/);
+  assert.match(packageSource, /audio runtime assets/);
+});
+
+test("LAB audio is a disposable test source and never enters the visual preset", () => {
+  assert.match(appSource, /import \{ createAudioEngine \} from "\.\.\/audio-engine\.js"/);
+  assert.match(appSource, /id: "mute", label: "MUTE"/);
+  assert.match(appSource, /GENERATIVE \/ FRACTURE/);
+  assert.match(appSource, /visual preset unchanged/);
+  assert.match(appSource, /START AUDIO/);
+  assert.doesNotMatch(appSource, /setParam\("context\.music"/);
 });
 
 test("the live macro strip stays inside the preview column at the Tesla viewport", () => {

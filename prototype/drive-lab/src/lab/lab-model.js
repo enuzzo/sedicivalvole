@@ -19,11 +19,9 @@ export const LAB_GROUPS = Object.freeze([
 export const LAB_PARAMETER_MANIFEST = Object.freeze({
   "context.visual": Object.freeze({ group: "context", normalize: choice(["prtcl"], "prtcl") }),
   "context.prtclType": Object.freeze({ group: "context", normalize: choice(["frequency", "murmuration", "axiom"], "frequency") }),
-  "context.music": Object.freeze({ group: "context", normalize: choice(["fracture", "junction", "nightshift"], "junction") }),
   "context.theme": Object.freeze({ group: "context", normalize: choice(["pearl", "graphite", "red", "blue", "silver", "neon", "mint", "acid", "signal", "sulphur"], "signal") }),
   "context.inputSource": Object.freeze({ group: "context", normalize: choice(["manual", "demo", "gps"], "manual") }),
   "context.speedKmh": Object.freeze({ group: "context", normalize: number(0, 130, 1) }),
-  "context.bpm": Object.freeze({ group: "context", normalize: number(40, 200, 0) }),
   "context.audioLevel": Object.freeze({ group: "context", normalize: number(0, 1, 2) }),
   "form.scale": Object.freeze({ group: "form", normalize: number(0.5, 1.8, 2) }),
   "form.depth": Object.freeze({ group: "form", normalize: number(0.5, 1.8, 2) }),
@@ -42,11 +40,9 @@ export const LAB_PARAMETER_MANIFEST = Object.freeze({
 export const DEFAULT_LAB_VALUES = Object.freeze({
   "context.visual": "prtcl",
   "context.prtclType": "frequency",
-  "context.music": "junction",
   "context.theme": "signal",
   "context.inputSource": "manual",
   "context.speedKmh": 72,
-  "context.bpm": 128,
   "context.audioLevel": 0.62,
   "form.scale": 1,
   "form.depth": 1,
@@ -109,13 +105,11 @@ export function createLabPreset({ values, app, runtime, revision, exportedAt = n
     selection: {
       visual: grouped.context.visual,
       visualVariant: grouped.context.prtclType,
-      music: grouped.context.music,
       theme: grouped.context.theme,
       inputSource: grouped.context.inputSource,
     },
     signal: {
       speedKmh: grouped.context.speedKmh,
-      bpm: grouped.context.bpm,
       audioLevel: grouped.context.audioLevel,
     },
     groups: {
@@ -144,11 +138,9 @@ export function importLabPreset(preset) {
   const candidate = {
     "context.visual": preset.selection?.visual,
     "context.prtclType": preset.selection?.visualVariant,
-    "context.music": preset.selection?.music,
     "context.theme": preset.selection?.theme,
     "context.inputSource": preset.selection?.inputSource,
     "context.speedKmh": preset.signal?.speedKmh,
-    "context.bpm": preset.signal?.bpm,
     "context.audioLevel": preset.signal?.audioLevel,
     "form.scale": preset.groups?.form?.scale,
     "form.depth": preset.groups?.form?.depth,

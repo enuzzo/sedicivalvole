@@ -72,7 +72,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && $labConfig !== null && !lab
 
 $authenticated = $labConfig !== null && labAuthenticated();
 $nonce = base64_encode(random_bytes(18));
-header("Content-Security-Policy: default-src 'none'; script-src 'nonce-{$nonce}'; style-src 'nonce-{$nonce}'; connect-src 'self'; font-src data:; form-action 'self'; frame-ancestors 'none'; base-uri 'none'");
+header("Content-Security-Policy: default-src 'none'; script-src 'nonce-{$nonce}' 'self'; worker-src 'self'; style-src 'nonce-{$nonce}'; connect-src 'self'; font-src data:; media-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'");
 ?>
 <!doctype html>
 <html lang="en">

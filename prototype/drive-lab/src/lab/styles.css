@@ -149,7 +149,7 @@ button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible
   grid-column: 1 / -1;
   grid-row: 3;
   display: grid;
-  grid-template-columns: 124px 124px minmax(180px, 1fr) auto auto auto;
+  grid-template-columns: 124px 124px minmax(180px, 1fr) auto auto auto auto;
   align-items: stretch;
   background: rgba(8, 10, 11, .98);
   border-top: 1px solid var(--lab-line);
@@ -184,7 +184,7 @@ button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible
   .lab-range-heading { margin-bottom: 10px; font-size: 9px; }
   .lab-range input { height: 24px; }
   .lab-capture-count { padding: 0 16px; font-size: 8px; }
-  .lab-footer { grid-template-columns: 92px 92px minmax(145px, 1fr) 88px 102px 112px; }
+  .lab-footer { grid-template-columns: 92px 92px minmax(145px, 1fr) 96px 88px 102px 112px; }
   .lab-signal { padding: 0 12px; }
   .lab-signal strong { font-size: 22px; }
   .lab-status { padding: 0 14px; font-size: 8px; }
@@ -209,7 +209,7 @@ button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible
   .lab-inspector { position: absolute; inset: auto 0 72px; max-height: 62%; transform: translateY(100%); border-left: 0; border-top: 1px solid var(--lab-line); }
   .is-drawer-open .lab-inspector { transform: translateY(0); }
   .lab-macro-strip { display: none; }
-  .lab-footer { grid-column: 1; grid-row: 4; grid-template-columns: 76px 76px minmax(0, 1fr) 82px 96px; }
+  .lab-footer { grid-column: 1; grid-row: 4; grid-template-columns: 76px 76px minmax(0, 1fr) 78px 82px 96px; }
   .lab-status { display: none; }
   .lab-action.is-primary { grid-column: auto; }
 }

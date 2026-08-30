@@ -2425,6 +2425,7 @@ export function App() {
             <PrtclField
               speed={speed}
               audioLevel={audioLevel}
+              macroSnapshot={audioMacros}
               theme={theme}
               settings={prtclSettings}
               reducedMotion={reducedMotion}

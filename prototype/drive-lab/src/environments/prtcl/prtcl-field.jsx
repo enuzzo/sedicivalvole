@@ -19,6 +19,7 @@ function surfaceSize(canvas) {
 export function PrtclField({
   speed,
   audioLevel = 0,
+  macroSnapshot = null,
   theme,
   effect,
   settings = DEFAULT_PRTCL_SETTINGS,
@@ -36,6 +37,7 @@ export function PrtclField({
   const valuesRef = useRef({
     speed,
     audioLevel,
+    macroSnapshot,
     effect,
     settings: normalizePrtclSettings(settings),
     calibration,
@@ -44,6 +46,7 @@ export function PrtclField({
   valuesRef.current = {
     speed,
     audioLevel,
+    macroSnapshot,
     effect,
     settings: normalizePrtclSettings(settings),
     calibration,
@@ -98,6 +101,7 @@ export function PrtclField({
           speedKmh: current.speed,
           audioLevel: current.audioLevel,
           effect: current.effect,
+          macroSnapshot: current.macroSnapshot,
           reducedMotion: current.reducedMotion,
           deltaSeconds: elapsed,
           calibration: current.calibration,

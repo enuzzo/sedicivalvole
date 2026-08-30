@@ -6,8 +6,12 @@ import {
   PRTCL_POINT_SCALE_CEILING_KMH,
   PRTCL_SOURCE_COMMIT,
   PRTCL_TYPES,
+  advancePrtclMacroTransition,
+  createPrtclMacroResponse,
+  createPrtclMacroTransitionState,
   nextPrtclTypeId,
   normalizePrtclSettings,
+  prtclMacroTargets,
   prtclMotionProfile,
 } from "../src/environments/prtcl/prtcl-model.js";
 
@@ -42,21 +46,24 @@ test("road speed owns point scale, depth, and travel while music owns colour and
   const road = prtclMotionProfile({ speedKmh: 110, audioLevel: 0 });
   const music = prtclMotionProfile({ speedKmh: 0, audioLevel: 0.8 });
   assert.ok(road.pointScale > rest.pointScale);
+  assert.ok(road.formScale > rest.formScale);
   assert.ok(road.depthScale > rest.depthScale);
   assert.ok(road.travelRate > rest.travelRate);
   assert.equal(road.colourEnergy, rest.colourEnergy);
   assert.equal(road.pulse, rest.pulse);
   assert.equal(music.pointScale, rest.pointScale);
+  assert.equal(music.formScale, rest.formScale);
   assert.equal(music.depthScale, rest.depthScale);
   assert.equal(music.travelRate, rest.travelRate);
   assert.ok(music.colourEnergy > rest.colourEnergy);
   assert.ok(music.pulse > rest.pulse);
 });
 
-test("point scale grows smoothly to 100 km/h and then holds while other road responses continue", () => {
+test("point and complete-form scale grow smoothly to 100 km/h and then hold", () => {
   assert.equal(PRTCL_POINT_SCALE_CEILING_KMH, 100);
   const speeds = Array.from({ length: 131 }, (_, speedKmh) => speedKmh);
   const forward = speeds.map((speedKmh) => prtclMotionProfile({ speedKmh }).pointScale);
+  const form = speeds.map((speedKmh) => prtclMotionProfile({ speedKmh }).formScale);
   const reverse = [...speeds]
     .reverse()
     .map((speedKmh) => prtclMotionProfile({ speedKmh }).pointScale)
@@ -65,17 +72,51 @@ test("point scale grows smoothly to 100 km/h and then holds while other road res
   for (let index = 1; index <= PRTCL_POINT_SCALE_CEILING_KMH; index += 1) {
     assert.ok(forward[index] > forward[index - 1]);
     assert.ok(forward[index] - forward[index - 1] < 0.01);
+    assert.ok(form[index] > form[index - 1]);
+    assert.ok(form[index] - form[index - 1] < 0.01);
   }
   for (let index = PRTCL_POINT_SCALE_CEILING_KMH + 1; index < forward.length; index += 1) {
     assert.equal(forward[index], forward[PRTCL_POINT_SCALE_CEILING_KMH]);
+    assert.equal(form[index], form[PRTCL_POINT_SCALE_CEILING_KMH]);
   }
   const at100 = prtclMotionProfile({ speedKmh: 100 });
   const at130 = prtclMotionProfile({ speedKmh: 130 });
   const aboveRoadLimit = prtclMotionProfile({ speedKmh: 260 });
   assert.equal(at100.pointScale, at130.pointScale);
+  assert.equal(at100.formScale, at130.formScale);
   assert.equal(at130.pointScale, aboveRoadLimit.pointScale);
   assert.ok(at130.depthScale > at100.depthScale);
   assert.ok(at130.travelRate > at100.travelRate);
+});
+
+test("macro targets morph continuously and remain frame-rate invariant", () => {
+  const response = createPrtclMacroResponse({ attackSeconds: 0.18, releaseSeconds: 0.64 });
+  const run = (fps, targets, durationMs, initial = createPrtclMacroTransitionState()) => {
+    let state = initial;
+    const frameMs = 1000 / fps;
+    for (let at = frameMs; at < durationMs; at += frameMs) {
+      state = advancePrtclMacroTransition(state, targets, at, response);
+    }
+    return advancePrtclMacroTransition(state, targets, durationMs, response);
+  };
+  const openTargets = prtclMacroTargets({ effect: "OPEN" });
+  const firstFrame = advancePrtclMacroTransition(
+    createPrtclMacroTransitionState(),
+    openTargets,
+    1000 / 60,
+    response,
+  );
+  assert.ok(firstFrame.value[0] > 0 && firstFrame.value[0] < 1, "OPEN snapped instead of morphing");
+  const open60 = run(60, openTargets, 600);
+  const open30 = run(30, openTargets, 600);
+  const open120 = run(120, openTargets, 600);
+  assert.ok(Math.abs(open60.value[0] - open30.value[0]) < 1e-9);
+  assert.ok(Math.abs(open60.value[0] - open120.value[0]) < 1e-9);
+
+  const bloomTargets = prtclMacroTargets({ effect: "BLOOM" });
+  const switched = advancePrtclMacroTransition(open60, bloomTargets, 616, response);
+  assert.ok(switched.value[0] > 0 && switched.value[0] < open60.value[0]);
+  assert.ok(switched.value[2] > 0 && switched.value[2] < 1);
 });
 
 test("OPEN, UNDERWATER, BLOOM, and reduced motion have bounded native responses", () => {
@@ -133,8 +174,16 @@ test("LAB calibration stays optional and bounded inside the project renderer", (
   assert.match(fieldSource, /calibration = null/);
   assert.match(rendererSource, /const multiplier = \(name, fallback = 1, minimum = 0, maximum = 3\)/);
   assert.match(rendererSource, /profile\.travelRate \* flowScale/);
-  assert.match(rendererSource, /profile\.pointScale \* multiplier\("pointScale"\) \* multiplier\("formScale"\)/);
+  assert.match(rendererSource, /profile\.pointScale \* multiplier\("pointScale"\)/);
+  assert.match(rendererSource, /profile\.formScale \* multiplier\("formScale"\)/);
+  assert.match(rendererSource, /position \*= u_formScale/);
+  assert.match(rendererSource, /advancePrtclMacroTransition/);
   assert.match(rendererSource, /particleCount \* densityScale/);
+});
+
+test("the product feeds authored audio macros into the shared PRTCL field", () => {
+  assert.match(fieldSource, /macroSnapshot = null/);
+  assert.match(appSource, /<PrtclField[\s\S]*?macroSnapshot=\{audioMacros\}/);
 });
 
 test("PRTCL uses one small text-only TYPE cycle separate from the shared palette", () => {

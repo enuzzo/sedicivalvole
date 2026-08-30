@@ -32,7 +32,6 @@ function buildLabPresetMail(array $preset, string $acceptedAt, string $recipient
         'Server accepted at: ' . $acceptedAt,
         'Visual: ' . (string) ($preset['selection']['visual'] ?? 'unknown'),
         'Variant: ' . (string) ($preset['selection']['visualVariant'] ?? 'unknown'),
-        'Music context: ' . (string) ($preset['selection']['music'] ?? 'unknown'),
         'Build: ' . (string) ($preset['app']['build'] ?? 'unknown'),
         'Privacy: coordinate-free; no credentials or persistent storage.',
         'JSON bytes: ' . strlen($json),

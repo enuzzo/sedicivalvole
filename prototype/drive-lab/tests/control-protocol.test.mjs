@@ -60,8 +60,11 @@ test("LAB preset round-trips every declared option with coordinate-free context"
   assert.equal(preset.privacy.coordinateFree, true);
   assert.equal(preset.privacy.secretsIncluded, false);
   assert.equal(preset.groups.scene.cameraDepth, 1.34);
+  assert.equal("music" in preset.selection, false);
+  assert.equal("bpm" in preset.signal, false);
+  assert.equal("context.music" in DEFAULT_LAB_VALUES, false);
   assert.deepEqual(importLabPreset(preset), { ...DEFAULT_LAB_VALUES, "scene.cameraDepth": 1.34 });
-  assert.doesNotMatch(JSON.stringify(preset), /latitude|longitude|coordinates|password/i);
+  assert.doesNotMatch(JSON.stringify(preset), /latitude|longitude|coordinates|password|music/i);
 });
 
 test("unknown preset major and weakened privacy boundary fail closed", () => {

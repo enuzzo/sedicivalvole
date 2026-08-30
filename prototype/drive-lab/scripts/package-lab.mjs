@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { copyFile, mkdir, readFile, writeFile } from "node:fs/promises";
 
 const buildDirectory = new URL("../dist/lab-build/", import.meta.url);
 const outputDirectory = new URL("../dist/client/lab/", import.meta.url);
@@ -25,4 +25,10 @@ await mkdir(outputDirectory, { recursive: true });
 await writeFile(new URL("index.php", outputDirectory), page);
 await writeFile(new URL("bootstrap.php", outputDirectory), await readFile(new URL("../server/lab-bootstrap.php", import.meta.url)));
 await writeFile(new URL("send.php", outputDirectory), await readFile(new URL("../server/lab-send.php", import.meta.url)));
-console.log("Packaged protected inline LAB: index.php, bootstrap.php, send.php");
+
+const runtimeAssets = Object.freeze(["bloom-processor.js", "score-processor.js"]);
+for (const asset of runtimeAssets) {
+  await copyFile(new URL(asset, buildDirectory), new URL(asset, outputDirectory));
+}
+
+console.log(`Packaged protected inline LAB with ${runtimeAssets.length} audio runtime assets`);

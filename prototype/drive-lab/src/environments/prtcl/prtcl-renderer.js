@@ -1,6 +1,10 @@
 import {
   PRTCL_TYPES,
+  advancePrtclMacroTransition,
+  createPrtclMacroResponse,
+  createPrtclMacroTransitionState,
   normalizePrtclSettings,
+  prtclMacroTargets,
   prtclMotionProfile,
 } from "./prtcl-model.js";
 
@@ -19,6 +23,7 @@ const VERTEX_SHADER = `#version 300 es
   uniform float u_time;
   uniform float u_pixelRatio;
   uniform float u_pointScale;
+  uniform float u_formScale;
   uniform float u_depthScale;
   uniform float u_colourEnergy;
   uniform float u_pulse;
@@ -250,6 +255,7 @@ const VERTEX_SHADER = `#version 300 es
       axiomParticle(index, count, position, colour, luminance, agent);
     }
 
+    position *= u_formScale;
     vec4 viewPosition = u_view * vec4(position, 1.0);
     float perspectiveScale = 20.0 / max(0.35, -viewPosition.z);
     float audioPulse = 1.0 + u_pulse * (0.06 + 0.08 * sin(u_time * 2.7 + index * 0.013));
@@ -417,6 +423,7 @@ export function createPrtclRenderer(canvas, initialPalette, initialTypeId = "fre
     time: uniform("u_time"),
     pixelRatio: uniform("u_pixelRatio"),
     pointScale: uniform("u_pointScale"),
+    formScale: uniform("u_formScale"),
     depthScale: uniform("u_depthScale"),
     colourEnergy: uniform("u_colourEnergy"),
     pulse: uniform("u_pulse"),
@@ -436,6 +443,11 @@ export function createPrtclRenderer(canvas, initialPalette, initialTypeId = "fre
   let height = 1;
   let pixelRatio = 1;
   let time = 0;
+  let transitionAtMs = 0;
+  let macroState = createPrtclMacroTransitionState();
+  let macroResponse = createPrtclMacroResponse();
+  let macroAttackSeconds = null;
+  let macroReleaseSeconds = null;
   let disposed = false;
 
   gl.enable(gl.BLEND);
@@ -464,15 +476,43 @@ export function createPrtclRenderer(canvas, initialPalette, initialTypeId = "fre
     setType(nextTypeId) {
       typeId = normalizePrtclSettings({ type: nextTypeId }).type;
     },
-    render({ speedKmh, audioLevel, effect, reducedMotion, deltaSeconds, calibration = null }) {
+    render({
+      speedKmh,
+      audioLevel,
+      effect,
+      macroSnapshot = null,
+      reducedMotion,
+      deltaSeconds,
+      calibration = null,
+    }) {
       if (disposed) return;
-      const profile = prtclMotionProfile({ speedKmh, audioLevel, effect, reducedMotion });
       const multiplier = (name, fallback = 1, minimum = 0, maximum = 3) => {
         const value = Number(calibration?.[name]);
         return Number.isFinite(value) ? Math.min(maximum, Math.max(minimum, value)) : fallback;
       };
+      const attackSeconds = multiplier("attackMs", 180, 0, 2000) / 1000;
+      const releaseSeconds = multiplier("releaseMs", 640, 0, 3000) / 1000;
+      if (attackSeconds !== macroAttackSeconds || releaseSeconds !== macroReleaseSeconds) {
+        macroAttackSeconds = attackSeconds;
+        macroReleaseSeconds = releaseSeconds;
+        macroResponse = createPrtclMacroResponse({ attackSeconds, releaseSeconds });
+      }
+      const frameSeconds = Math.max(0, Math.min(0.1, deltaSeconds));
+      transitionAtMs += frameSeconds * 1000;
+      macroState = advancePrtclMacroTransition(
+        macroState,
+        prtclMacroTargets({ effect, macroSnapshot }),
+        transitionAtMs,
+        macroResponse,
+      );
+      const profile = prtclMotionProfile({
+        speedKmh,
+        audioLevel,
+        macroAmounts: macroState.value,
+        reducedMotion,
+      });
       const flowScale = multiplier("flowScale") * multiplier("driftScale");
-      time += Math.max(0, Math.min(0.1, deltaSeconds)) * profile.travelRate * flowScale;
+      time += frameSeconds * profile.travelRate * flowScale;
       const camera = cameraForType(typeId, time);
       const cameraDepth = multiplier("cameraDepth", 1, 0.5, 2);
       const eye = camera.eye.map((value) => value * cameraDepth);
@@ -487,7 +527,8 @@ export function createPrtclRenderer(canvas, initialPalette, initialTypeId = "fre
       gl.uniformMatrix4fv(uniforms.projection, false, projection);
       gl.uniform1f(uniforms.time, time);
       gl.uniform1f(uniforms.pixelRatio, pixelRatio);
-      gl.uniform1f(uniforms.pointScale, profile.pointScale * multiplier("pointScale") * multiplier("formScale"));
+      gl.uniform1f(uniforms.pointScale, profile.pointScale * multiplier("pointScale"));
+      gl.uniform1f(uniforms.formScale, profile.formScale * multiplier("formScale"));
       gl.uniform1f(uniforms.depthScale, profile.depthScale * multiplier("depthScale"));
       gl.uniform1f(uniforms.colourEnergy, profile.colourEnergy);
       gl.uniform1f(uniforms.pulse, profile.pulse);

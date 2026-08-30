@@ -1,5 +1,6 @@
 import { StrictMode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
+import { createAudioEngine } from "../audio-engine.js";
 import { PrtclField } from "../environments/prtcl/prtcl-field.jsx";
 import { PRTCL_TYPES } from "../environments/prtcl/prtcl-model.js";
 import { getFluxTheme } from "../flux-themes.js";
@@ -53,9 +54,10 @@ const MACROS = Object.freeze([
 ]);
 
 const MUSIC = Object.freeze([
-  Object.freeze({ id: "fracture", label: "FRACTURE" }),
-  Object.freeze({ id: "junction", label: "JUNCTION" }),
-  Object.freeze({ id: "nightshift", label: "NIGHTSHIFT" }),
+  Object.freeze({ id: "mute", label: "MUTE" }),
+  Object.freeze({ id: "fracture", label: "GENERATIVE / FRACTURE" }),
+  Object.freeze({ id: "junction", label: "GENERATIVE / JUNCTION" }),
+  Object.freeze({ id: "nightshift", label: "GENERATIVE / NIGHTSHIFT" }),
 ]);
 
 function canUseDriveKeyboard(target) {
@@ -180,6 +182,9 @@ function LabApp() {
   const [renderer, setRenderer] = useState("Starting WebGL2");
   const [sendState, setSendState] = useState("idle");
   const [notice, setNotice] = useState("Preset complete · coordinate-free");
+  const [testMusic, setTestMusic] = useState("mute");
+  const [audioStatus, setAudioStatus] = useState("muted");
+  const [liveAudioLevel, setLiveAudioLevel] = useState(null);
   const revisionRef = useRef(0);
   const sequenceRef = useRef(0);
   const fileRef = useRef(null);
@@ -187,6 +192,9 @@ function LabApp() {
   const driveInputRef = useRef("auto");
   const motionRef = useRef({ speed: values["context.speedKmh"], direction: 0 });
   const motionTimerRef = useRef(null);
+  const audioRef = useRef(null);
+  const audioMeterTimerRef = useRef(null);
+  const lastScoreRef = useRef("junction");
   valuesRef.current = values;
   const { onFrame, summary } = useFramePacing();
   const smoothSpeed = useSmoothedValue(
@@ -194,6 +202,83 @@ function LabApp() {
     values["response.attackMs"],
     values["response.releaseMs"],
   );
+
+  const stopAudioMeter = useCallback(() => {
+    window.clearInterval(audioMeterTimerRef.current);
+    audioMeterTimerRef.current = null;
+  }, []);
+
+  const startAudioMeter = useCallback(() => {
+    if (audioMeterTimerRef.current != null) return;
+    audioMeterTimerRef.current = window.setInterval(() => {
+      setLiveAudioLevel(audioRef.current?.getLevel() ?? null);
+    }, 120);
+  }, []);
+
+  const startAudio = useCallback(async (scoreId) => {
+    const requestedScoreId = scoreId === "mute" ? lastScoreRef.current : scoreId;
+    setAudioStatus("loading");
+    setNotice(`Loading ${requestedScoreId.toUpperCase()} test audio…`);
+    try {
+      let engine = audioRef.current;
+      if (!engine) {
+        engine = createAudioEngine();
+        if (!engine) throw new Error("Web Audio is unavailable");
+        audioRef.current = engine;
+      }
+      await engine.resume();
+      engine.setSpeed(valuesRef.current["context.speedKmh"]);
+      const activeScoreId = await engine.setScore(requestedScoreId);
+      engine.setMuted(false);
+      lastScoreRef.current = activeScoreId;
+      setTestMusic(activeScoreId);
+      setAudioStatus("playing");
+      startAudioMeter();
+      setNotice(`${activeScoreId.toUpperCase()} · independent test audio`);
+    } catch (error) {
+      audioRef.current?.destroy();
+      audioRef.current = null;
+      stopAudioMeter();
+      setLiveAudioLevel(null);
+      setTestMusic("mute");
+      setAudioStatus("error");
+      setNotice(`Audio unavailable · ${String(error?.message || error).slice(0, 120)}`);
+    }
+  }, [startAudioMeter, stopAudioMeter]);
+
+  const selectMusic = useCallback((scoreId) => {
+    if (scoreId === "mute") {
+      audioRef.current?.setMuted(true);
+      stopAudioMeter();
+      setTestMusic("mute");
+      setAudioStatus("muted");
+      setLiveAudioLevel(null);
+      setNotice("MUTE · visual preset unchanged");
+      return;
+    }
+    lastScoreRef.current = scoreId;
+    void startAudio(scoreId);
+  }, [startAudio, stopAudioMeter]);
+
+  const toggleAudio = useCallback(() => {
+    if (audioStatus === "playing") {
+      selectMusic("mute");
+      return;
+    }
+    void startAudio(lastScoreRef.current);
+  }, [audioStatus, selectMusic, startAudio]);
+
+  useEffect(() => {
+    return () => {
+      stopAudioMeter();
+      audioRef.current?.destroy();
+      audioRef.current = null;
+    };
+  }, [stopAudioMeter]);
+
+  useEffect(() => {
+    audioRef.current?.setSpeed(smoothSpeed);
+  }, [smoothSpeed]);
 
   const stopMotionTimer = useCallback(() => {
     window.clearInterval(motionTimerRef.current);
@@ -237,6 +322,8 @@ function LabApp() {
       revisionRef.current += 1;
       setSendState("idle");
       setNotice(copy);
+      if (input === "brake") audioRef.current?.brake();
+      else audioRef.current?.releaseBrake();
       startMotionTimer();
     };
     const handleKeyDown = (event) => {
@@ -256,11 +343,13 @@ function LabApp() {
       } else if ((event.key === "ArrowDown" || event.code === "Space") && driveInputRef.current === "brake") {
         if (canUseDriveKeyboard(event.target)) event.preventDefault();
         driveInputRef.current = "auto";
+        audioRef.current?.releaseBrake();
         setNotice("BRAKE RELEASED · speed held");
       }
     };
     const handleBlur = () => {
       driveInputRef.current = "auto";
+      audioRef.current?.releaseBrake();
       stopMotionTimer();
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -297,6 +386,8 @@ function LabApp() {
     densityScale: values["scene.rainDensity"],
     driftScale: values["scene.drift"],
     cameraDepth: values["scene.cameraDepth"],
+    attackMs: values["response.attackMs"],
+    releaseMs: values["response.releaseMs"],
   }), [
     values["form.scale"],
     values["form.depth"],
@@ -305,6 +396,8 @@ function LabApp() {
     values["scene.rainDensity"],
     values["scene.drift"],
     values["scene.cameraDepth"],
+    values["response.attackMs"],
+    values["response.releaseMs"],
   ]);
   const prtclSettings = useMemo(
     () => ({ type: values["context.prtclType"] }),
@@ -406,10 +499,10 @@ function LabApp() {
           onChange={(value) => setParam("context.prtclType", value)}
         />
         <SelectControl
-          label="Music context"
-          value={values["context.music"]}
+          label="Independent test audio"
+          value={testMusic}
           options={MUSIC}
-          onChange={(value) => setParam("context.music", value)}
+          onChange={selectMusic}
         />
         <div className="lab-build">{APP.version} · {APP.build}</div>
         <div className="lab-connected">
@@ -430,7 +523,7 @@ function LabApp() {
       >
         <PrtclField
           speed={smoothSpeed}
-          audioLevel={values["context.audioLevel"]}
+          audioLevel={liveAudioLevel ?? values["context.audioLevel"]}
           theme={theme}
           effect={activeMacro}
           settings={prtclSettings}
@@ -509,12 +602,23 @@ function LabApp() {
           <input type="range" min="0" max="130" step="1" value={values["context.speedKmh"]} onChange={(event) => setParam("context.speedKmh", Number(event.target.value))} />
         </label>
         <label className="lab-signal">
-          <span className="sr-only">Music tempo in beats per minute</span>
-          <strong>{Math.round(values["context.bpm"])}</strong><span>BPM</span>
-          <input type="range" min="40" max="200" step="1" value={values["context.bpm"]} onChange={(event) => setParam("context.bpm", Number(event.target.value))} />
+          <span className="sr-only">Visual audio-level test signal</span>
+          <strong>{Math.round((liveAudioLevel ?? values["context.audioLevel"]) * 100)}</strong><span>AUDIO</span>
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.01"
+            value={liveAudioLevel ?? values["context.audioLevel"]}
+            disabled={liveAudioLevel != null}
+            onChange={(event) => setParam("context.audioLevel", Number(event.target.value))}
+          />
         </label>
         <div className={`lab-status is-${sendState}`} role="status">{notice}</div>
         <input ref={fileRef} className="sr-only" type="file" accept="application/json,.json" onChange={importJson} />
+        <button className="lab-action is-audio" type="button" onClick={toggleAudio} disabled={audioStatus === "loading"}>
+          {audioStatus === "loading" ? "LOADING" : audioStatus === "playing" ? "MUTE AUDIO" : "START AUDIO"}
+        </button>
         <button className="lab-action" type="button" onClick={() => fileRef.current?.click()}>IMPORT</button>
         <button className="lab-action" type="button" onClick={copyJson}>COPY JSON</button>
         <button className="lab-action is-primary" type="button" onClick={sendJson} disabled={sendState === "sending"}>
