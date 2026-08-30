@@ -6,6 +6,7 @@ Date: 2026-08-30
 
 - Source visual truth: `/Users/enuzzo/.codex/generated_images/01a0520f-bb95-7472-9af3-0100087ecc3e/exec-77d7458d-58a8-4f40-8c11-26e1def81082.png`.
 - Browser-rendered implementation: `/private/tmp/sedicivalvole-report-773x601.png`.
+- Canonical browser rendering: `/private/tmp/sedicivalvole-report-live-773x601.png`.
 - Open-dialog interaction evidence: `/private/tmp/sedicivalvole-report-dialog-773x601.png`.
 - Full-view normalized comparison: `/private/tmp/sedicivalvole-report-full-comparison.png`.
 - Focused control comparison: `/private/tmp/sedicivalvole-report-control-comparison.png`.

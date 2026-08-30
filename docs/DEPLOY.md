@@ -8,6 +8,53 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## REPORT top-bar control — 2026-08-30 22:21
+
+- build stamp: **`20260830-2216`**; deployed source commit: `50e837d`;
+  implementation checkpoint: `4f3d715`; deployment-diagnostic follow-up:
+  `8105c66`;
+- product change: **PASS**. The opaque `DIAG` abbreviation is replaced by the
+  explicit `REPORT` label with the pinned Tabler `report-analytics` outline
+  above it. The real Tesla allocation remains `54 × 67 px`; GPS, telemetry,
+  mode switching and the footer do not move, and the page has zero horizontal
+  or vertical overflow at `773 × 601`;
+- accessibility and interaction: **PASS**. The control exposes `Open session
+  report` and dialog semantics, opens the existing `Session report`, places
+  initial focus on `Close session report`, and returns focus to the exact
+  REPORT trigger when closed. The visible label removes any dependency on a
+  tooltip or icon recognition;
+- licence boundary: **PASS**. The official Tabler Icons `3.46.0`
+  `report-analytics` SVG ships byte-identically at 618 bytes and SHA-256
+  `d58847492f890b8beedc7eff543860219e0f382e46d2c2695107d64ae434b9ba`;
+  its complete 1,073-byte MIT licence is packaged beside it and the source is
+  recorded in `THIRD_PARTY_NOTICES.md`;
+- verification gate: **PASS within the local toolchain boundary**. Sixty-two
+  focused presentation, ATLAS, launcher, documentation and Sites checks, the
+  16 deployment-identity checks, the nine post-build Sites checks, the
+  130-module production build and same-input Product Design comparison pass.
+  The complete suite retains only the known local `spawn php ENOENT`
+  diagnostic-mail fixture;
+- publication boundary: **PASS**. The read-only preflight passed and the
+  guarded publication completed. The first immediate postflight observed a
+  transient third-party content mismatch; with no intervening remote write, a
+  repeated read-only identity check passed. Follow-up `8105c66` now includes
+  the safe relative path in any future static-tree mismatch while preserving
+  the fail-closed gate;
+- canonical HTTP identity: **PASS**. Cache-busted HTML returns `200`, 1,095
+  bytes, explicit `no-store` / `no-cache`, `nosniff`, and proxy `MISS`. Live
+  HTML, JavaScript, CSS, Tabler SVG and Tabler licence are byte-identical to the
+  verified build at SHA-256 `697b9fb3eedb16887f5c2fea6afb42bd18c4ff3735304dfb94b3de8a3da26e20`,
+  `81a424c1c0cac492a520a728e125d01c42d594a2f90e21c5ed64d9897a2c9d61`,
+  `8165f51161b58c3db1c640752fe8784b0dde48a383263fcf21633c2234bdc2ac`,
+  `d58847492f890b8beedc7eff543860219e0f382e46d2c2695107d64ae434b9ba`,
+  and `b740a1d46122672da62833e97f7e7c8a13fa85cbc7445b584b297cc00dde93db`;
+- exact live Browser QA: **PASS** at `773 × 601`. The canonical splash reports
+  build `20260830-2216`; MUTE + APERTURE reaches the running surface, loads the
+  24-unit SVG, renders REPORT in its 54 px cell, opens and closes the report
+  with correct focus restoration, records commit `50e837d`, and emits no
+  browser warning or error. Physical-Tesla cabin-distance acceptance remains
+  open.
+
 ## Instrument Deck section-label spacing — 2026-08-30 21:32
 
 - build stamp: **`20260830-2128`**; deployed source commit: `18aed57`;
