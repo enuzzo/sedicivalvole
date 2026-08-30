@@ -14,16 +14,10 @@ Reply with one short line per number. Each question contains a proposed default
 and a concrete acceptance boundary; no dependent implementation should begin
 until its answer is recorded here.
 
-1. **M5c — licence evidence:** Have all Magnific per-track licence PDFs already
-   been downloaded from the account history and archived privately in two
-   backed-up locations? **Answer `yes` or `no`; proposed acceptance: `yes` plus
-   the archive date, without placing or naming private account files here.**
-
-   Answer: ancora no, possiamo scaricarli, meglio usare gli mp3 di magnific o la loro API? tu cosa pensi? se ti va, posso comunque caricarteli per ora, li trovi in _references/audio/tracks - possiamo provarli e non ridistribuirli, senza problemi, come per i wav
-
-   **Superseded by the owner's 2026-08-30 decision:** Magnific is excluded from
-   the current product and authoring path. No login, PDF archive, local audition,
-   API integration, API key, credit spend, or recurring reminder is required.
+1. **M5c — retired-source record:** An external generative source considered in
+   the original request was explicitly removed by the owner on 2026-08-30. No
+   login, PDF archive, local audition, API integration, API key, credit spend,
+   product reference, or recurring reminder is required.
 
 2. **Coverage count:** The document says 59 content IDs plus 24 Q IDs, but a
    deterministic parse finds **73 bracketed content IDs plus 24 Q IDs = 97**.
@@ -144,7 +138,7 @@ until its answer is recorded here.
     API verification? **Proposed: yes; acceptance: no source enters the catalog
     before M11 passes and notices are recorded.**
 
-    si, per me va bene, ora ti procuro anche tutte le tracce di illobo, per jamendo guidami nella creazione di una API e onora la loro licenza, se vuoi trovi anche delle track gia' pronte di magnific.ai, scarica le loro licenze in pdf o converti le pagine ecc in pdf, vogliamo essere tutelati, e ricorda che se le usiamo e  non usiamo la loro api, dobbiamo distribuirle in chunks o blob o entrambe le cose, per non incorrere in problemi legali
+    si, per me va bene, ora ti procuro anche tutte le tracce di illobo, per jamendo guidami nella creazione di una API e onora la loro licenza. A previously mentioned external generative source and its delivery proposal were later removed by the owner and are no longer part of this plan.
 
 18. **Q16 / X8 — ND material:** May ND tracks be excluded at query time by
     default, with no “effects disabled” exception unless measured filtered
@@ -284,7 +278,7 @@ question unless this review explicitly identifies a conflict.
 | Source structure | Product music is split into `PLAY THE ROAD` (FRACTURE, JUNCTION, NIGHTSHIFT) and `SOUNDTRACK` (fixed recordings browsed by source-supported genre and pace metadata). | M1/M1b/M1c are corrected; NIGHTSHIFT is not nested under JUNCTION and SOUNDTRACK is not speed-remixed. |
 | SOUNDTRACK sources | Jamendo plus owner-authorised Illobo are the initial sources; StreamBeats is permanently rejected; Freesound remains research-only if useful. | Q17/Q18/Q25 resolve. M8 removes StreamBeats and cannot admit material before M11 evidence. |
 | Jamendo readiness | The owner confirms that Jamendo API access is already prepared and selects it as the first SOUNDTRACK integration path. | Begin with a read-only operational/API-rights audit. Keep the credential outside Git, browser code, logs, screenshots, and documentation; only the future server boundary may use it. |
-| Magnific | Excluded from the current product, source catalogue, authoring workflow, local audition, and runtime. | M5/M5b/M5c are closed as deferred, not left as evidence gates. Reopening requires a future explicit owner decision plus fresh model-specific terms and cost review. |
+| Retired external source | Excluded from the current product, source catalogue, authoring workflow, local audition, and runtime. | M5/M5b/M5c are closed, not left as evidence gates. Reopening requires a future explicit owner decision plus fresh model-specific terms and cost review. |
 | Generative API economics | No metered generative API may run per listener, playback, skip, reconnect, or session. | If a future source is approved, generation is an offline authoring action only; the resulting fixed asset still requires explicit public playback, hosting, and distribution rights before admission. |
 | Illobo | The owner attests that all Illobo recordings may be used, processed, hosted as required, and prominently featured. Link/QR points to `https://soundcloud.com/illobo`. | Q9 is owner-resolved. A private written confirmation is still recommended evidence but is not treated as a second permission gate. Downloads still need a per-file provenance inventory. |
 | Public contact | Use the public repository's GitHub Issues route, not a public email address. | M7 is unblocked without exposing identity or email. |
@@ -306,7 +300,7 @@ question unless this review explicitly identifies a conflict.
 | Effects master sits beside Mute and produces central confirmation. | S4, S5 | Default state, click-free envelope release and large non-blocking confirmation are tested together. |
 | SoundCloud says tracks are downloadable. | M3, M8, M11 | Platform download availability is recorded separately from the owner's direct permission and from public playback/hosting provenance. |
 | README must document every source, including VERTIGO/Tympanus and visual references. | M7, M11 | README, NOTICE, licence scope, source-admission record and third-party notices are reconciled from one audited inventory. |
-| Existing Magnific MP3s were offered for local audition. | M5/M5b/M5c | Superseded by the owner's later decision to skip Magnific. `_references/` remains untracked and the files are not inspected, auditioned, copied, admitted, or used. |
+| Local MP3s from a subsequently retired source were offered for audition. | M5/M5b/M5c | Superseded by the owner's later decision to remove that source. `_references/` remains untracked and the files are not inspected, auditioned, copied, admitted, or used. |
 
 ### Real-Tesla diagnostic evidence — 2026-08-30
 
@@ -368,7 +362,7 @@ fixture.
   Neither AGPL nor a README credit can supply missing rights.
 - Replacing AGPL with MIT or Apache would mainly make proprietary code forks
   easier. It would not make streamed audio uncopyable and would not improve the
-  rights position of Magnific, Jamendo or Illobo material.
+  rights position of third-party, Jamendo, or Illobo material.
 
 **⭐ Recommendation: keep `AGPL-3.0-or-later` for code/docs and preserve the
 current asset exclusions.** It matches the public collaborative product while
@@ -387,18 +381,11 @@ Primary-source checks used for this review:
 - the repository's operative `LICENSE`, `LICENSE-SCOPE.md`, `NOTICE`,
   `THIRD_PARTY_NOTICES.md`, and `docs/LICENSING.md` for the actual local scope.
 
-Magnific was rechecked on its public primary pages on 2026-08-30 before being
-excluded. Its [API page](https://www.magnific.com/api) states that API calls draw
-from the subscription's shared credit balance; its
-[pricing page](https://www.magnific.com/pricing) lists credit-based API usage and
-model-specific audio costs; and its
-[AI Product Terms](https://www.magnific.com/legal/terms-of-use#nav-ai-products)
-apply third-party model terms and special music restrictions. The pricing page
-advertises `music rights` only on some tiers, while the ElevenLabs-specific
-terms prohibit sharing generated songs on music-streaming platforms and
-standalone commercial exploitation. These facts do not establish a safe grant
-for sedicivalvole playback. M5/M5b/M5c are therefore closed as deferred and no
-private account evidence or login is requested.
+A previously considered metered generative source was checked against its public
+API, pricing, and AI-product terms on 2026-08-30, then removed by owner decision.
+Its credit economics and model-specific music restrictions did not establish a
+safe playback grant for sedicivalvole. M5/M5b/M5c are closed and no private
+account evidence or login is requested.
 
 ### Remaining clarifications after evaluation
 
@@ -496,8 +483,8 @@ rather than missing answers now.
 15. **The document's licence/API claims are imported context, not current proof.**
     Jamendo API behavior/quotas/URLs, Creative Commons treatment, Freesound,
     StreamBeats, and Strudel statements require fresh primary-source evidence
-    before they become repository facts. Magnific was checked separately and
-    then excluded by owner decision.
+    before they become repository facts. The retired generative source was
+    checked separately and then removed by owner decision.
 16. **Current test baseline is environment-limited.** DRIVEY (10/10), PRTCL
     (8/8), PRIMORDIAL (8/8), and NIGHTSHIFT (9/9) focused suites pass. The full
     suite has two environment failures: the installed `esbuild` binary is arm64
@@ -519,7 +506,7 @@ rather than missing answers now.
 | 3 | P1, P2, PF1, PF2, PM1, PA1, PA2, PP1 | These are shared-response consumers and require the LAB to set measured endpoints. | All three PRTCL families and PRIMORDIAL sweep smoothly through 0/40/100/130 and macro attack/release. |
 | 4 | X1, X2; A1, A3, A3b, A4 | Screen zones and overlay grammar precede new ATLAS chrome and onboarding. | Selected three-direction layout passes `773 × 601`; map interaction, GPS states/help, five-second chrome, bounded palettes, point interpolation, road badge, and cardinal compass pass. |
 | 5 | A2, S5, S4 | A2 becomes the first modal consumer; S5 is the shared non-modal feedback system; S4 supplies a universal state action. | Reader themes/type sizing and status feedback work with touch/keyboard; effect disable releases smoothly across all scores/visuals. |
-| 6 | M0, M6, M7, M8, M11, Q16/Q17/Q18/Q22 evidence | Vocabulary, permissions, service architecture, and source admission must be true before catalogue code. Magnific is out of scope; M5/M5b/M5c require no work. | Primary-source evidence and private grants for admitted sources are archived; public docs contain no secrets and M11 decides every admitted source. |
+| 6 | M0, M6, M7, M8, M11, Q16/Q17/Q18/Q22 evidence | Vocabulary, permissions, service architecture, and source admission must be true before catalogue code. The retired source is out of scope; M5/M5b/M5c require no work. | Primary-source evidence and private grants for admitted sources are archived; public docs contain no secrets and M11 decides every admitted source. |
 | 7 | M1, M1b–M1e, M2, M3, M4, M9, M10 | Build PLAY THE ROAD/SOUNDTRACK only after licences, vocabulary, proxy, cache, and open-source delivery reality are settled. | Seeded/offline metadata, streamed audio, attribution, two-mode selectors, onboarding, skip/shuffle, and cache refresh pass without shipping source audio. |
 | 8 | S1, S3, then S2/S2a–S2j, X7 | Local musical macros precede remote control; the server is designed once for proxy plus relay. | Central display revokes immediately; up to four named phones sync complete state, respect grants, release on disconnect, and survive measured latency. |
 | 9 | PP2 if Q3 is resolved | Faithful reference work cannot start without identity, licence, and a visual gate. | Exactly three reference-grounded directions are shown; selected result passes source/licence and viewport gates. |
@@ -590,9 +577,9 @@ rather than missing answers now.
 | M2 | Expanded: skip, shuffle, title/artist, source-aware attribution, post-splash PLAY THE ROAD/SOUNDTRACK/MUTE choice, and selected one-time control onboarding. | App shared overlay/status, audio controller, CSS/tests | 3.5 | M1, M10, X1/X2, S2i | Controls work at 773×601; attribution stays visible; rapid skip metadata never goes stale; chosen onboarding completes under four seconds and respects reduced motion. | Mandatory attribution and onboarding can overload the launch flow. |
 | M3 | Owner-authorised: prominent Illobo featured selection inside SOUNDTRACK, complete per-file provenance, and QR/link to `https://soundcloud.com/illobo`; private written confirmation recommended. | Catalog seed/source adapter, UI/notices/tests | 1.5 | M11, owner-supplied/approved file inventory | Only owner-authorised works appear; each carries source/licence capability flags; QR/link is tested and featured treatment is explicit. | Platform download status is not a substitute for the direct grant or provenance. |
 | M4 | Owner-approved AGPL-aware delivery: no client-secret/protection claim; protected local sources use server-authorised short-lived segmented delivery, never Git audio, with harmless public sample configuration only. | Server delivery, client Media Source/blob path, `.gitignore`, sample config, docs/tests | 3 | source-specific grants, M6 | No source audio/credential/private host data in Git/static build/logs; expiring authorisation and segmented playback; docs call it delivery control, not protection. | Browser users can always capture decoded audio; network dependence in car. |
-| M5 | Closed/deferred by owner: Magnific is excluded from product, catalogue, authoring, local audition, and runtime. No API calls, keys, credits, or files are used. | `PIANO.md` decision record only | 0 | Future explicit owner reopening | Repository and runtime contain no Magnific dependency, asset, key, request, or product claim. | A future proposal could accidentally revive the source without rechecking current model-specific terms. |
-| M5b | Closed/superseded: no Magnific audiovisual-only exception is retained. | `PIANO.md` decision record only | 0 | M5 future reopening | Magnific cannot appear in any browsing, selection, playback, effect, or authoring path. | Treating a plan-tier marketing label as a sufficient music grant. |
-| M5c | Closed: the private PDF-download action and persistent reminder are cancelled while Magnific remains excluded. | `PIANO.md` decision record only | 0 | None | No account login or evidence reminder appears in work reports; `_references/` material remains untouched. | None while the source stays excluded. |
+| M5 | Closed by owner: the retired external source is excluded from product, catalogue, authoring, local audition, and runtime. No API calls, keys, credits, or files are used. | `PIANO.md` decision record only | 0 | Future explicit owner reopening | Repository and runtime contain no dependency, asset, key, request, or product claim for the retired source. | A future proposal could accidentally revive the source without rechecking current model-specific terms. |
+| M5b | Closed/superseded: no audiovisual-only exception for the retired source is retained. | `PIANO.md` decision record only | 0 | M5 future reopening | The source cannot appear in any browsing, selection, playback, effect, or authoring path. | Treating a plan-tier marketing label as a sufficient music grant. |
+| M5c | Closed: the private PDF-download action and persistent reminder are cancelled while the source remains excluded. | `PIANO.md` decision record only | 0 | None | No account login or evidence reminder appears in work reports; `_references/` material remains untouched. | None while the source stays excluded. |
 | M6 | Planned source/server strategy: first audit the offered host beyond FTP, then deploy one minimal service for API proxy, catalogue refresh, delivery authorisation, and later relay on a purpose-specific subdomain such as `api.sedicivalvole.app`. | New server project/location after host decision, client adapters, tests/docs | 4 | X7, source verification, host capability evidence | TLS, runtime/process lifecycle, WebSocket, secret storage, logging and deploy/rollback are evidenced; credentials never reach browser/logs; offline catalogue and honest failure pass. | FTP-only hosting may not support a persistent relay or secure secret boundary. |
 | M7 | Owner-resolved contact: add an English music/licensing/removal policy and complete source inventory using the public repository's GitHub Issues route, not public email. | `README.md`, `docs/LICENSING.md`, `NOTICE`, `THIRD_PARTY_NOTICES.md` | 1.5 | M11 evidence | Public GitHub destination works; VERTIGO/Tympanus and every admitted/referenced source reconcile across documents; no private evidence or overclaim. | “Remove on request” does not substitute for permission. |
 | M8 | Narrowed research ledger: re-verify Jamendo, Freesound, FMA and SoundCloud on primary sources; StreamBeats is permanently rejected and absent. | `docs/SOURCE-ADMISSION-*`, `THIRD_PARTY_NOTICES.md` only after admission | 1.5 | Q17/Q18 | Dated source URLs, exact terms/API facts and M11 answers; no unapproved audio downloaded; StreamBeats has no code/UI/outreach. | Platform terms and API access drift. |
@@ -631,7 +618,7 @@ rather than missing answers now.
 | Q5 | Resolved by owner | No Wikipedia iframe reader exists | 0 | A2/X1 only waits for visual selection | Reader works in motion with accessible type size and warm-light/dark themes. |
 | Q6 | Resolved by owner | No musical macro panel exists | 0 | None | Full macro controls remain usable on the central display while moving; parked/fullscreen may be richer. |
 | Q7 | Resolved in request document | S2a/X7 decision | 0 | None | Shared small server dependency accepted in principle; actual host remains evidence-based. |
-| Q8 | Closed/superseded by owner | Magnific was publicly rechecked, then excluded | 0 | None | Do not request account access or private subscription evidence; reopen only by explicit future decision. |
+| Q8 | Closed/superseded by owner | The retired source was publicly rechecked, then removed | 0 | None | Do not request account access or private subscription evidence; reopen only by explicit future decision. |
 | Q9 | Resolved by owner attestation | Owner authorises complete Illobo recording use/processing/hosting and featured promotion | 0 | None; written private copy recommended | Inventory exact files and public provenance; never publish the private message. |
 | Q10 | Resolved by owner | Source sentence was truncated | 0 | None | D1 is complete at road-centred, motionless zero; D3 adds nothing. |
 | Q11 | Resolved by operative policy and recommendation | `LICENSE`, `LICENSE-SCOPE.md`, package metadata; owner requested explanation, not relicensing | 0 | None | Keep `AGPL-3.0-or-later` for code/docs and separate asset exclusions unless owner explicitly changes strategy. |
@@ -733,7 +720,7 @@ invented IDs:
   to English and versioned under `docs/`, or remain private/external.
 - Independently verify every external API/licence conclusion in M8/M9/G2
   against current primary sources before committing it as project fact; M5 is
-  closed and requires no further research while Magnific remains excluded.
+  closed and requires no further research while the retired source remains excluded.
 
 ## Coverage audit
 
