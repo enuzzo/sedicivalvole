@@ -464,12 +464,19 @@ export function createPrtclRenderer(canvas, initialPalette, initialTypeId = "fre
     setType(nextTypeId) {
       typeId = normalizePrtclSettings({ type: nextTypeId }).type;
     },
-    render({ speedKmh, audioLevel, effect, reducedMotion, deltaSeconds }) {
+    render({ speedKmh, audioLevel, effect, reducedMotion, deltaSeconds, calibration = null }) {
       if (disposed) return;
       const profile = prtclMotionProfile({ speedKmh, audioLevel, effect, reducedMotion });
-      time += Math.max(0, Math.min(0.1, deltaSeconds)) * profile.travelRate;
+      const multiplier = (name, fallback = 1, minimum = 0, maximum = 3) => {
+        const value = Number(calibration?.[name]);
+        return Number.isFinite(value) ? Math.min(maximum, Math.max(minimum, value)) : fallback;
+      };
+      const flowScale = multiplier("flowScale") * multiplier("driftScale");
+      time += Math.max(0, Math.min(0.1, deltaSeconds)) * profile.travelRate * flowScale;
       const camera = cameraForType(typeId, time);
-      const view = lookAt(camera.eye, camera.target, camera.up);
+      const cameraDepth = multiplier("cameraDepth", 1, 0.5, 2);
+      const eye = camera.eye.map((value) => value * cameraDepth);
+      const view = lookAt(eye, camera.target, camera.up);
       const aspect = width / Math.max(1, height);
       const responsiveZoom = camera.zoom * Math.min(1, Math.max(0.64, aspect / 0.9));
       const projection = perspective(aspect, responsiveZoom);
@@ -480,8 +487,8 @@ export function createPrtclRenderer(canvas, initialPalette, initialTypeId = "fre
       gl.uniformMatrix4fv(uniforms.projection, false, projection);
       gl.uniform1f(uniforms.time, time);
       gl.uniform1f(uniforms.pixelRatio, pixelRatio);
-      gl.uniform1f(uniforms.pointScale, profile.pointScale);
-      gl.uniform1f(uniforms.depthScale, profile.depthScale);
+      gl.uniform1f(uniforms.pointScale, profile.pointScale * multiplier("pointScale") * multiplier("formScale"));
+      gl.uniform1f(uniforms.depthScale, profile.depthScale * multiplier("depthScale"));
       gl.uniform1f(uniforms.colourEnergy, profile.colourEnergy);
       gl.uniform1f(uniforms.pulse, profile.pulse);
       gl.uniform1f(uniforms.brightness, profile.brightness);
@@ -493,7 +500,8 @@ export function createPrtclRenderer(canvas, initialPalette, initialTypeId = "fre
       gl.uniform3fv(uniforms.light, palette.light);
       gl.uniform3fv(uniforms.accent, palette.accent);
       gl.uniform3fv(uniforms.secondary, palette.secondary);
-      gl.drawArrays(gl.POINTS, 0, PRTCL_TYPES[typeId].particleCount);
+      const densityScale = multiplier("densityScale", 1, 0.1, 1);
+      gl.drawArrays(gl.POINTS, 0, Math.max(1, Math.round(PRTCL_TYPES[typeId].particleCount * densityScale)));
     },
     dispose() {
       if (disposed) return;

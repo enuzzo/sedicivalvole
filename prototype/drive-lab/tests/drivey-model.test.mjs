@@ -412,7 +412,7 @@ test("the bridge embeds the original runtime and excludes unneeded image and leg
   assert.doesNotMatch(stylesSource, /\.visual-tune-panel|\.visual-render-icon/);
   assert.match(harnessSource, /renderMode: parameters\.get\("render"\) \?\? "normal"/);
   assert.doesNotMatch(fieldSource, /getContext\("2d"|drawRoad|projectDriveyPoint/);
-  assert.match(viteConfigSource, /entries: \["index\.html", "qa-field\.html"\]/);
+  assert.match(viteConfigSource, /entries: \["index\.html", "qa-field\.html", "lab\.html"\]/);
   await assert.rejects(access(new URL("../public/third-party/drivey/readme_assets", import.meta.url)));
   await assert.rejects(access(new URL("../public/third-party/drivey/legacy", import.meta.url)));
 });

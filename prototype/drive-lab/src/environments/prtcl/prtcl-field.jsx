@@ -22,6 +22,7 @@ export function PrtclField({
   theme,
   effect,
   settings = DEFAULT_PRTCL_SETTINGS,
+  calibration = null,
   reducedMotion,
   onRenderer,
   onFrame,
@@ -34,6 +35,7 @@ export function PrtclField({
     audioLevel,
     effect,
     settings: normalizePrtclSettings(settings),
+    calibration,
     reducedMotion,
   });
   valuesRef.current = {
@@ -41,6 +43,7 @@ export function PrtclField({
     audioLevel,
     effect,
     settings: normalizePrtclSettings(settings),
+    calibration,
     reducedMotion,
   };
 
@@ -94,6 +97,7 @@ export function PrtclField({
           effect: current.effect,
           reducedMotion: current.reducedMotion,
           deltaSeconds: elapsed,
+          calibration: current.calibration,
         });
         onFrame(now, 1000 / 60, "WebGL2", width, height);
         animationFrame = requestAnimationFrame(render);

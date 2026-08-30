@@ -11,6 +11,7 @@ import json
 import math
 import os
 import re
+import secrets
 import stat
 import sys
 from pathlib import Path
@@ -63,6 +64,16 @@ DIAGNOSTIC_RECIPIENT_CONFIG_MARKERS = (
     b"sedicivalvole local diagnostic recipient",
     b"return",
 )
+LAB_DIRECTORY = "lab"
+LAB_AUTH_CONFIG = "auth.local.php"
+LAB_AUTH_CONFIG_MARKERS = (
+    b"sedicivalvole local LAB authentication",
+    b"password_hash_hex",
+    b"session_ttl_seconds",
+)
+LAB_PAGE_MARKERS = (b"sedicivalvole / LAB", b"SEDICIVALVOLE_LAB_BOOT", b"labLoadConfig")
+LAB_BOOTSTRAP_MARKERS = (b"LAB_EXPECTED_ORIGIN", b"labRequireAuthenticatedJson", b"auth.local.php")
+LAB_SEND_MARKERS = (b"sedicivalvole.lab-mail.v1", b"labRequireCsrf", b"buildLabPresetMail")
 PRIVATE_STATIC_NAME_TOKEN = re.compile(
     r"(^|[._-])(secret|secrets|credential|credentials|private|key|keys|cert|certs|certificate|certificates)([._-]|$)",
     re.IGNORECASE,
@@ -126,6 +137,31 @@ def parse_env(path: Path) -> dict[str, str]:
                 value = value[1:-1]
             values[key] = value
     return values
+
+
+def build_lab_auth_config(password: str) -> bytes:
+    """Build an upload-only PBKDF2 verifier without logging the password."""
+    if len(password) < 12 or len(password) > 256:
+        raise ValueError("LAB access password must contain 12 to 256 characters")
+    iterations = 310_000
+    salt = secrets.token_bytes(24)
+    password_hash = hashlib.pbkdf2_hmac(
+        "sha256",
+        password.encode("utf-8"),
+        salt,
+        iterations,
+        dklen=32,
+    )
+    return (
+        "<?php\n"
+        "// sedicivalvole local LAB authentication; generated during guarded deployment.\n"
+        "return [\n"
+        f"    'salt_hex' => '{salt.hex()}',\n"
+        f"    'password_hash_hex' => '{password_hash.hex()}',\n"
+        f"    'iterations' => {iterations},\n"
+        "    'session_ttl_seconds' => 28800,\n"
+        "];\n"
+    ).encode("utf-8")
 
 
 def enter_or_create(ftp: ftplib.FTP, name: str) -> None:
@@ -361,7 +397,11 @@ def install_dynamic_root(ftp: ftplib.FTP, payload: bytes) -> None:
             ftp.delete(DYNAMIC_NEXT_ENTRY)
 
 
-def verify_completed_upload(ftp: ftplib.FTP, recipient_config: bytes) -> None:
+def verify_completed_upload(
+    ftp: ftplib.FTP,
+    recipient_config: bytes,
+    lab_auth_config: bytes,
+) -> None:
     """Verify every new build file before the live root entry is replaced."""
     static_build_files()
     remote_root_names = safe_names(ftp)
@@ -409,6 +449,13 @@ def verify_completed_upload(ftp: ftplib.FTP, recipient_config: bytes) -> None:
             recipient_config
         ):
             raise ValueError("diagnostic recipient upload mismatch")
+    finally:
+        ftp.cwd("..")
+
+    ftp.cwd(LAB_DIRECTORY)
+    try:
+        if sha256_bytes(remote_bytes(ftp, LAB_AUTH_CONFIG)) != sha256_bytes(lab_auth_config):
+            raise ValueError("LAB authentication upload mismatch")
     finally:
         ftp.cwd("..")
 
@@ -576,6 +623,7 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
         "fonts",
         "third-party",
         "ui",
+        LAB_DIRECTORY,
     }
     allowed_root_names.update(
         path.name
@@ -651,6 +699,24 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
                 recipient_config = remote_bytes(ftp, DIAGNOSTIC_RECIPIENT_CONFIG)
                 if not all(marker in recipient_config for marker in DIAGNOSTIC_RECIPIENT_CONFIG_MARKERS):
                     raise ValueError("diagnostic recipient identity mismatch")
+        finally:
+            ftp.cwd("..")
+
+    if LAB_DIRECTORY in root_names:
+        ftp.cwd(LAB_DIRECTORY)
+        try:
+            lab_names = safe_names(ftp)
+            if not lab_names.issubset({"index.php", "bootstrap.php", "send.php", LAB_AUTH_CONFIG}):
+                raise ValueError("unexpected LAB entry")
+            marker_sets = {
+                "index.php": LAB_PAGE_MARKERS,
+                "bootstrap.php": LAB_BOOTSTRAP_MARKERS,
+                "send.php": LAB_SEND_MARKERS,
+                LAB_AUTH_CONFIG: LAB_AUTH_CONFIG_MARKERS,
+            }
+            for name in lab_names:
+                if not all(marker in remote_bytes(ftp, name) for marker in marker_sets[name]):
+                    raise ValueError("LAB entry identity mismatch")
         finally:
             ftp.cwd("..")
 
@@ -885,6 +951,8 @@ def main() -> int:
             raise ValueError("configured FTP port is invalid") from None
         if port != 21:
             raise ValueError("configured FTP port is not 21")
+        if not config.get("LAB_ACCESS_PASSWORD"):
+            raise ValueError("LAB access password is missing")
         if not (BUILD / "index.html").is_file():
             raise FileNotFoundError("production build is missing")
         static_build_files()
@@ -893,6 +961,9 @@ def main() -> int:
         recipient_config = DIAGNOSTIC_RECIPIENT_SOURCE.read_bytes()
         if not all(marker in recipient_config for marker in DIAGNOSTIC_RECIPIENT_CONFIG_MARKERS):
             raise ValueError("local diagnostic recipient configuration is invalid")
+        lab_auth_config = build_lab_auth_config(config["LAB_ACCESS_PASSWORD"])
+        if not all(marker in lab_auth_config for marker in LAB_AUTH_CONFIG_MARKERS):
+            raise ValueError("generated LAB authentication configuration is invalid")
 
         stage = "network"
         ftp = ftplib.FTP()
@@ -963,7 +1034,20 @@ def main() -> int:
             ftp.cwd("..")
         uploaded_bytes += len(recipient_config)
 
-        verify_completed_upload(ftp, recipient_config)
+        enter_or_create(ftp, LAB_DIRECTORY)
+        try:
+            ftp.storbinary(
+                f"STOR {LAB_AUTH_CONFIG}",
+                io.BytesIO(lab_auth_config),
+                blocksize=65536,
+            )
+            if sha256_bytes(remote_bytes(ftp, LAB_AUTH_CONFIG)) != sha256_bytes(lab_auth_config):
+                raise ValueError("LAB authentication upload mismatch")
+        finally:
+            ftp.cwd("..")
+        uploaded_bytes += len(lab_auth_config)
+
+        verify_completed_upload(ftp, recipient_config, lab_auth_config)
 
         # The canonical entry is deliberately the final content operation. The
         # candidate is uploaded and verified under a non-executable name, then a
@@ -984,7 +1068,7 @@ def main() -> int:
         remote_count = len(safe_names(ftp))
         ftp.quit()
         ftp = None
-        print(f"upload=PASS files={len(files) + 2} bytes={uploaded_bytes}")
+        print(f"upload=PASS files={len(files) + 3} bytes={uploaded_bytes}")
         print(f"dynamic_root=PASS staged={str(stage_php_entry).lower()} static_entry_removed={str(switched_entry).lower()}")
         if preserve_existing:
             print("legacy_cleanup=SKIPPED preserve_existing=true")

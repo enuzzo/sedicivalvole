@@ -95,6 +95,14 @@ test("renderer failure, context loss, frame accounting, and cleanup share the Fl
   assert.match(rendererSource, /gl\.deleteProgram\(program\)/);
 });
 
+test("LAB calibration stays optional and bounded inside the project renderer", () => {
+  assert.match(fieldSource, /calibration = null/);
+  assert.match(rendererSource, /const multiplier = \(name, fallback = 1, minimum = 0, maximum = 3\)/);
+  assert.match(rendererSource, /profile\.travelRate \* flowScale/);
+  assert.match(rendererSource, /profile\.pointScale \* multiplier\("pointScale"\) \* multiplier\("formScale"\)/);
+  assert.match(rendererSource, /particleCount \* densityScale/);
+});
+
 test("PRTCL uses one small text-only TYPE cycle separate from the shared palette", () => {
   const start = appSource.indexOf("function PrtclCycleControl");
   const end = appSource.indexOf("function MusicPicker", start);
