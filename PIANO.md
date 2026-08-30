@@ -645,14 +645,14 @@ than missing requirements.
 
 1. **Viewport confirmed.** The compact Tesla browser viewport is genuinely
    `773 × 601` at measured DPR `1.53`; it is not an assumption copied from a mock.
-2. **Current source identity.** The plan baseline is pushed at `6f37c4d`; the
-   owner-answer review is the only intended working-tree change during this
-   evaluation. Version remains `0.0.0`.
+2. **Current source identity.** Phase 1 is published from clean source commit
+   `656a07d` as build `20260830-1707`; deployment evidence is pushed at
+   `4eb32fa`. Version remains `0.0.0`.
 3. **Current catalogue is larger than the original document assumes.** Six
    visuals remain live in source (APERTURE, VERTIGO, MERIDIAN, ATLAS, DRIVEY,
    PRTCL) and three authored scores are ready (FRACTURE, JUNCTION, NIGHTSHIFT).
    PRIMORDIAL was rejected and removed on 2026-08-30.
-4. **T1 mechanics are implemented locally.** The typed mapper owns endpoint
+4. **T1 mechanics are implemented and published.** The typed mapper owns endpoint
    clamping, curve exponent, asymmetric attack/release, hard per-second slew and
    frame-rate-independent scalar/vector state. Timestamped OPEN, UNDERWATER and
    BLOOM snapshots use the same audio envelope definitions. DRIVEY is the first
@@ -663,7 +663,7 @@ than missing requirements.
 6. **Q2 is answered by code.** MURMURATION has one fixed camera profile with
    `zoom: 1.5`; there is no discrete speed-driven zoom ladder. The likely step is
    in shared instantaneous inputs or effect state, not discrete zoom levels.
-7. **DRIVEY D1/D2 are implemented locally without vendor edits.** At commanded
+7. **DRIVEY D1/D2 are implemented and published without vendor edits.** At commanded
    zero the external bridge projects the player to the current lane centre,
    aligns it to the road tangent and clears motion/steering state. It retains 16
    NPCs only when every generated car can be placed and verified opposite the
@@ -682,8 +682,8 @@ than missing requirements.
     Escape close, focus trapping, focus restoration, and one-modal ownership.
     It can become the shared overlay primitive after the required three-direction
     visual gate; S5 needs a separate non-modal status surface.
-11. **M13 was only partially present at audit time.** The current working line
-    now adds `persisted()`/gesture-bound `persist()`, a versioned IndexedDB
+11. **M13 was only partially present at audit time and is now published.** The
+    current runtime adds `persisted()`/gesture-bound `persist()`, a versioned IndexedDB
     canary, separate significant/sample event channels, contextual long tasks,
     truthful output-latency history, and bounded observed network counters.
     Calendar-time canary and target-Tesla evidence remain open.
@@ -704,18 +704,22 @@ than missing requirements.
     before they become repository facts. The retired generative source was
     checked separately and then removed by owner decision.
 16. **Current test baseline is environment-limited.** The per-machine native
-    cache removes the shared-checkout arm64/x64 package conflict. DRIVEY (10/10),
-    PRTCL (8/8), NIGHTSHIFT (9/9), diagnostics model and the remaining Node
-    suite pass; only the PHP diagnostic-mail fixture is unavailable locally
-    because `php` is absent.
-17. **Documentation drift was confirmed.** Active overview documents are being
-    reconciled to the 2026-08-30 PRIMORDIAL retirement; immutable changelog and
-    deployment evidence remain historical truth.
+    cache removes the shared-checkout arm64/x64 package conflict. DRIVEY (14/14),
+    PRTCL (8/8), NIGHTSHIFT (9/9), all 9 Sites checks and 288 other Node checks
+    pass; only the PHP diagnostic-mail fixture is unavailable locally because
+    `php` is absent. The production build completes with 130 modules.
+17. **Documentation drift was reconciled.** Active overview documents describe
+    the 2026-08-30 PRIMORDIAL retirement and Phase 1 mechanics; immutable
+    changelog and deployment evidence remain historical truth.
 18. **The source document is external to Git.** `PIANO.md` carries full ID
     coverage, but the original Italian source-of-truth file itself is not
     versioned. Importing or translating it requires explicit approval.
 
 ## Phase map
+
+Phases 0 and 1 are implemented, pushed and canonically published. Their
+remaining acceptance work is explicitly target-Tesla observation, not missing
+source implementation.
 
 | Phase | Scope | Why this order | Checkpoint |
 | --- | --- | --- | --- |
