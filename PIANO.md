@@ -305,7 +305,7 @@ question unless this review explicitly identifies a conflict.
 | Effects master sits beside Mute and produces central confirmation. | S4, S5 | Default state, click-free envelope release and large non-blocking confirmation are tested together. |
 | Add a rich nearby-place discovery grid with imagery, concise context and a Google Maps handoff, possibly outside ATLAS. | A2, A3b, X1/X2, M13, plus a new owner-assigned entry | Treat DISCOVER as a companion surface rather than more permanent ATLAS chrome. Reuse its ephemeral location/heading and source adapters, keep coordinates out of persistence/diagnostics, and present exactly three visual directions before implementation. |
 | Replace the growing flat Visual list with grouped, direct-selection buttons. | X2 plus a new owner-assigned Visual Library entry | Keep one tap from the open library to selection. Present all groups together rather than hiding visuals behind nested category pages; validate button density, active state, focus order and real current-build imagery in exactly three directions at `773 × 601`. |
-| Add `LIGHT`, `DARK`, and location-aware `AUTO` appearance modes. | X1/X2 plus a new owner-assigned Appearance entry | Theme shared chrome, dialogs and reading surfaces without recolouring the active visual or its selected palette. Manual modes persist; AUTO uses session-only solar context when reliable and falls back to the browser colour-scheme preference without storing coordinates. |
+| Add `LIGHT`, `DARK`, and location-aware `AUTO` appearance modes. | X1/X2 plus a new owner-assigned Appearance entry | Theme shared chrome, dialogs and reading surfaces without recolouring the active visual or its selected palette. Match the current official Tesla Model 3 Light illustration as a measured reference, then verify on the target vehicle. Manual modes persist; AUTO first follows the browser colour-scheme signal if Tesla exposes its native Appearance setting, otherwise it falls back to session-only solar context without storing coordinates. |
 | Restore local weather to the queue, but avoid duplicating the Tesla forecast. | DISCOVER, M13, plus a new owner-assigned Conditions entry | Defer a generic forecast panel. Explore a quiet, exception-led road-context card: significant precipitation onset, temperature change, gusts or poor visibility, plus weather-aware DISCOVER suggestions. Retain an optional 6/12-hour and tomorrow detail view outside primary driving chrome. |
 | SoundCloud says tracks are downloadable. | M3, M8, M11 | Platform download availability is recorded separately from the owner's direct permission and from public playback/hosting provenance. |
 | README must document every source, including VERTIGO/Tympanus and visual references. | M7, M11 | README, NOTICE, licence scope, source-admission record and third-party notices are reconciled from one audited inventory. |
@@ -381,15 +381,24 @@ the exactly-three-direction gate. Recent/favourite personalization is excluded
 until the base grid proves that it needs another hierarchy.
 
 `LIGHT`, `DARK`, and `AUTO` are an independent **interface appearance** setting,
-not another Flux palette:
+not another Flux palette. The current official Model 3 manual illustration is
+the provisional Light reference: browser sampling of broad flat regions measures
+approximately `#F4F4F6` for the primary vehicle/control surface, `#DDDEE2` for
+the map/secondary canvas, and `#000000` for the persistent bottom dock. These are
+reproducible image-derived targets, not Tesla-published design tokens; the manual
+itself warns that illustrations vary with software, market and configuration.
+The final claim of an exact target-vehicle match therefore requires a current
+vehicle screenshot at native scale and a pixel comparison.
 
 - the active environment and its ten authored palettes remain unchanged;
 - shared chrome, dialogs, DISCOVER cards, DIAG, and the A2 reader receive paired
   high-contrast tokens rather than one-off component inversions;
 - manual `LIGHT` or `DARK` persists as an explicit preference;
-- `AUTO` first uses reliable session-only position plus time to determine solar
-  day/twilight/night, without a network request or stored coordinates; without
-  reliable location it follows `prefers-color-scheme`;
+- `AUTO` first follows `prefers-color-scheme`; a real-Tesla gate toggles the
+  native `Dark`/`Light`/`Auto` setting and proves whether the browser reflects
+  it. If the signal is unavailable or static, reliable session-only position
+  plus time determines solar day/twilight/night without a network request or
+  stored coordinates;
 - a hysteresis window around twilight and a no-mid-gesture rule prevent visible
   flicker or a sudden theme flip while the user is interacting;
 - the light direction is warm and glare-bounded, never a pure-white full-screen
@@ -520,6 +529,11 @@ Primary-source checks used for this review:
   for current destination-weather behavior; current market/configuration
   manuals also document an optional precipitation overlay, so a generic forecast
   is not sufficient product differentiation;
+- [Tesla Model 3 Touchscreen](https://www.tesla.com/ownersmanual/model3/en_ie/GUID-518C51C1-E9AC-4A68-AE12-07F4FF8C881E.html)
+  and its [current official Light illustration](https://www.tesla.com/ownersmanual/images/GUID-CA0C3D61-CB14-4EDA-86B4-E09274AAD173-online-en-US.png)
+  for `Dark`/`Light`/`Auto`, ambient-light behavior, and provisional measured
+  Light surfaces. Tesla publishes no design-token values in this evidence and
+  explicitly warns that rendered details vary by software/market/configuration;
 - [Open-Meteo Forecast API](https://open-meteo.com/en/docs) for the candidate
   hourly variables, forecast window and sunrise/sunset capabilities; provider
   terms and attribution still require a dated admission gate before code;
