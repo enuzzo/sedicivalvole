@@ -174,9 +174,13 @@ three roles onto at most three direct-source media elements, prepares only with
 native `preload=auto`, requires explicit activation, rejects stale play/event
 completion, reuses retained roles, and removes listeners and `src` before a
 displaced element is released. Its readiness and buffered-time values are
-observations, never availability promises. Network proxy, metadata persistence,
-production App/audio-bus connection, the 450 ms skip transition and visible
-credit/playback controls remain later boundaries.
+observations, never availability promises. A separate transition state now
+models the nominal 450 ms equal-power skip on the audio clock. It preserves unit
+squared gain through reversal or a third prepared target, rejects a fourth
+simultaneous identity, validates all AudioParams before scheduling, and guards
+completion by requested identity plus revision. Network proxy, metadata
+persistence, production App/audio-bus MediaElementSource/gain routing, queue
+commit and visible credit/playback controls remain later boundaries.
 
 JUNCTION is a 192-bar rendered production: eight adaptive energy states each
 have three complete takes, giving 24 clips from 76 distinct recordings in one

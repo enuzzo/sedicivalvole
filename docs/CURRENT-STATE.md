@@ -338,8 +338,11 @@ dated study documents.
   direct-source browser media elements, reuse them through rotation, prepare
   with native `preload=auto`, require explicit play, ignore stale play/events,
   observe rather than promise browser buffering, and destructively release a
-  displaced source. Neither layer is imported by the production player; there
-  is no proxy fetch, persistent audio, live playback or fictional offline
+  displaced source. A separate audio-clock model now describes the nominal
+  450 ms equal-power skip, including rapid reversal, a third prepared target,
+  a strict three-deck ceiling and stale completion guards. None of these layers
+  is imported by the production player; there is no proxy fetch, persistent
+  audio, MediaElementSource/gain routing, live playback or fictional offline
   duration. See
   [`SOUNDTRACK-SOURCE-POLICY.md`](SOUNDTRACK-SOURCE-POLICY.md).
 - `docs/MUSIC-CRAFT.md` records the musical defects and techniques already

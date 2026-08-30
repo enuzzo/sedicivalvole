@@ -78,13 +78,22 @@ private messages or credentials never enter the repository.
   promises cannot revive an old role, and displaced/changed elements lose their
   listeners and source before release. Its readiness/buffer snapshots are
   browser observations, never an offline guarantee.
+- `src/soundtrack/transition-model.js` owns the nominal 450 ms equal-power skip
+  envelope independently of media and queue mutation. Audio-clock sampling,
+  revision/request guards, continuous reversal/third-target retiming, a strict
+  three-identity ceiling, native gain curves and segmented-ramp fallback keep
+  the transition deterministic without selecting another music mode.
 - `tests/soundtrack-rotation.test.mjs` covers expiry, deduplication, three-role
   identity, broad rotation, back/forward, removal, exhaustion and recovery.
 - `tests/soundtrack-media-deck.test.mjs` covers direct-source preparation,
   readiness, observed buffered time, explicit play/pause, deck reuse, source
   replacement, stale events/promises, media failure and complete teardown.
+- `tests/soundtrack-transition-model.test.mjs` covers duration, constant power,
+  rapid reversal, three-deck retargeting, the fourth-deck refusal, AudioParam
+  capability validation, curve/ramp scheduling and stale completion guards.
 - These modules are not imported by the production application yet. Proxy
   fetching, any approved persistent metadata layer, App/audio-bus connection,
-  the approved 450 ms skip crossfade, UI, attribution and canonical deployment
-  remain later checkpoints. The current `preparedMetadataSlots` summary is not
-  an audio-buffer or offline-duration claim.
+  MediaElementSource/gain routing and queue commit for the modelled 450 ms skip,
+  UI, attribution and canonical deployment remain later checkpoints. The
+  current `preparedMetadataSlots` summary is not an audio-buffer or
+  offline-duration claim.

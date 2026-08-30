@@ -86,8 +86,11 @@ Completed in the current working line:
   recovery refill. A detached three-element controller prepares only direct
   stream URLs through browser-native `preload=auto`, requires explicit play,
   rejects stale completion and releases displaced sources completely. It is not
-  connected to the production App/audio bus and adds no proxy, persistent audio,
-  offline guarantee, skip crossfade or visible playback/credit surface yet.
+  connected to the production App/audio bus. A second detached model now owns
+  the revision-guarded 450 ms equal-power skip envelope, rapid retargeting and
+  three-deck ceiling, but MediaElementSource/gain routing and queue commit remain
+  pending. No proxy, persistent audio, offline guarantee or visible
+  playback/credit surface exists yet.
 
 Queued next:
 
