@@ -1,3 +1,79 @@
+# Design QA — Road Sheet LIGHT Instrument Deck
+
+Date: 2026-08-30
+
+## Source and implementation
+
+- Owner-selected direction 03 reference:
+  `/Users/enuzzo/.codex/generated_images/01a0520f-bb95-7472-9af3-0100087ecc3e/exec-e84c6919-60af-41b9-be0d-8df9520d5d1c.png`.
+- Browser-rendered implementation:
+  `/private/tmp/sedicivalvole-road-sheet-selected-773x601.png`.
+- Normalized full-view side-by-side comparison:
+  `/private/tmp/sedicivalvole-road-sheet-comparison.png`.
+- Reference pixels: `1423 × 1105`, normalized to the exact target ratio.
+  Implementation CSS viewport and screenshot: `773 × 601` at density `1`.
+- State: Instrument Deck with PLAY THE ROAD and APERTURE selected, START enabled.
+
+The reference and current browser rendering were normalized to `773 × 601`,
+joined into one `1546 × 601` image, and opened as one comparison input. The
+browser frame is a real application render over the live Signal Gate rather than
+a static recreation of the concept.
+
+## Required fidelity review
+
+- **Typography:** exact `sedicivalvole` wordmark uses the packaged Orbitron
+  variable face at weight `750` and `-0.02em`; labels, titles, descriptions,
+  state copy, and START use Space Grotesk. At the Tesla viewport, section labels
+  compute to `19 px`, choice titles to `15 px`, descriptions to `12.5 px`, and
+  the centered wordmark to `39.81 px`.
+- **Layout and rhythm:** one open `724 × 552 px` warm-ivory sheet keeps the large
+  light 16 Road mark at left, wordmark centered independently, and BACK at right.
+  The hairline header, two-column body, vertical divider, and black START field
+  reproduce the selected anatomy without nested black panels.
+- **Exact equal-height requirement:** Music and Visual fieldsets both measure
+  `326 px` from `y=161.5` to `y=487.5`. Their button grids both measure exactly
+  `280 px` from `y=195.5` to `y=475.5`. The selector has `scrollHeight ===
+  clientHeight === 550` and the document remains exactly `773 × 601`.
+- **Future third Visual row:** row count derives from the Visual registry with a
+  floor of two rows. Three rows therefore divide the same fixed `280 px` grid
+  rather than growing the launcher, moving START, or breaking Music alignment.
+- **Color and materials:** LIGHT uses warm ivory `#EEE9DE`, quiet control gray
+  `#DCD7CE`, near-black ink/actions, vermilion `#E32219` state rails, thin dark
+  rules, and the shared `6 px` radius. No active Visual palette is recoloured.
+- **Interaction:** PLAY THE ROAD + APERTURE expose two measured `34 × 4 px`
+  vermilion rails and enable START. MUTE + APERTURE enters the running experience
+  with `data-environment="aperture"`, a live canvas, no retained launcher, and no
+  audio output.
+
+## Comparison history
+
+| Pass | Severity | Finding | Resolution and evidence |
+|---|---|---|---|
+| 1 | P1 | Native fieldset layout let Music grow beyond Visual and overlap the START row despite grid declarations. | Added explicit equal-height Music/Visual grid wrappers, bounded the body with `minmax(0, 1fr)`, and measured identical `280 px` grid bounds in Browser. |
+| 2 | — | No actionable P0, P1, or P2 mismatch remained in the joined reference/implementation review. | The implementation preserves the reference's hierarchy, direct controls, warm sheet, restrained signal color, and readable cabin-scale type while satisfying the stricter equal-height product constraint. |
+
+## Runtime checks
+
+- Page identity, non-blank content, meaningful launcher copy, and framework-
+  overlay absence pass.
+- Exact `773 × 601` interaction flow: Signal Gate → Instrument Deck → PLAY THE
+  ROAD + APERTURE → enabled START; separate MUTE + APERTURE → running canvas.
+- The local Browser reports zero warnings and zero errors after the complete
+  interaction flow.
+- Focused launcher/environment/brand checks pass before the full project gate.
+
+## Follow-up boundary
+
+- Product-wide DARK tokens, the Appearance control, persistence/reset behavior,
+  and AUTO day/night selection remain X10 work. They must reuse this exact Road
+  Sheet anatomy rather than redesigning the layout.
+- Physical-Tesla cabin-distance and glare validation remain required before
+  changing the approved type hierarchy or LIGHT surface luminance.
+
+final result: passed
+
+---
+
 # Design QA — 16 Road launch lockup and Orbitron wordmarks
 
 Date: 2026-08-30
@@ -723,3 +799,7 @@ Date: 2026-08-30
 final result: technically verified and canonically published in exact source
 `44a3a42`, build `20260830-0038`; human headphone/cabin A/B and real-Tesla
 listening acceptance remain open
+
+---
+
+final result: passed

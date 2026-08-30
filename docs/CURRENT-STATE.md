@@ -154,13 +154,23 @@ dated study documents.
   destination, the supplied QR, an honestly labelled playful project-sparks
   signal and a runtime-reconstructed suggestion address; suggestions are
   explicitly welcome without a purchase.
-- The opening action now leads to the owner-selected **Instrument Deck**: one
-  compact screen with `MUSIC` and `VISUAL` sections, concise descriptions, and
-  one `START` action that remains disabled until both axes are selected. MUTE
-  still requires a Visual. SOUNDTRACK is visible but disabled until its real
-  player exists, and the Illobo featured treatment remains reserved for the
-  future SOUNDTRACK library. The launcher and its controls use the shared
-  restrained `6 px` radius and pass exact `773 × 601` interaction/geometry QA.
+- The opening action now leads to the owner-selected **Instrument Deck** in the
+  owner-selected LIGHT **Road Sheet** language: one open warm-ivory sheet, the
+  large light 16 Road mark, centered Orbitron wordmark, hairline structure,
+  quiet-gray direct controls, short vermilion state rails, and one black START
+  field. `MUSIC` and `VISUAL` keep concise descriptions; START remains disabled
+  until both axes are selected, and MUTE still requires a Visual. SOUNDTRACK is
+  visible but disabled until its real player exists, and the Illobo featured
+  treatment remains reserved for the future SOUNDTRACK library. At exact
+  `773 × 601`, the complete Music and Visual button grids share the same
+  `280 px` height, top, and bottom. A registry-derived Visual row count keeps a
+  future third row inside that fixed block. The shared `6 px` radius and complete
+  MUTE + APERTURE start flow pass interaction, geometry, and console QA.
+- Road Sheet now records the invariant interface anatomy for X10. LIGHT uses
+  warm ivory, quiet gray, near-black, and vermilion; DARK will retain the same
+  layout and hierarchy with near-black, charcoal, dark-gray, warm-light, and
+  vermilion tokens. Product-wide DARK/AUTO switching and its preference control
+  remain planned rather than silently active in this checkpoint.
 - Space Grotesk remains the locally packaged face for all reading text, values,
   controls, operational labels, LAB controls and session-report content under
   OFL-1.1. Its deliberate `400–700` hierarchy and tabular numerals remain intact.

@@ -44,23 +44,30 @@ test("the selected Instrument Deck resolves Music and Visual before START", () =
   assert.match(app, /setPhase\("choosing"\)/);
   assert.match(selector, /<legend>MUSIC<\/legend>/);
   assert.match(selector, /<legend>VISUAL<\/legend>/);
+  assert.match(selector, /className="launch-selector-mark"[\s\S]*?sedicivalvole-mark\.svg[\s\S]*?alt=""[\s\S]*?aria-hidden="true"/);
   assert.match(selector, /FLUX_ENVIRONMENTS\.map/);
   assert.match(selector, /disabled=\{!ready\}/);
   assert.match(selector, /musicId && environmentId/);
   assert.match(selector, /choice\.launchDescription/);
-  assert.match(app, /Adaptive scores shaped by the drive/);
+  assert.match(app, /Adaptive music shaped by your drive/);
   assert.match(app, /Independent artist recordings/);
-  assert.match(app, /Visual experience without music/);
+  assert.match(app, /Visuals only\. No music\./);
   assert.doesNotMatch(selector, /ILLOBO FEATURED/i);
-  assert.match(styles, /\.launch-selector-body \{[\s\S]*?grid-template-columns: minmax\(0, \.9fr\) minmax\(0, 1\.25fr\)/);
-  assert.match(styles, /\.launch-selector fieldset \{[\s\S]*?padding: 16px 11px 11px/);
-  assert.match(styles, /\.launch-visual-grid \{[^}]*grid-template-columns: repeat\(3, minmax\(0, 1fr\)\)/);
+  assert.match(styles, /\.launch-selector \{[\s\S]*?--sheet-surface: var\(--road-sheet-light-surface\)[\s\S]*?grid-template-rows: 112px minmax\(0, 1fr\) 62px[\s\S]*?width: min\(724px, calc\(100vw - 48px\)\)[\s\S]*?height: min\(552px, calc\(100dvh - 48px\)\)/);
+  assert.match(styles, /\.launch-selector-body \{[\s\S]*?grid-template-columns: minmax\(0, \.8fr\) minmax\(0, 1\.2fr\)/);
+  assert.match(styles, /\.launch-selector fieldset \{[\s\S]*?display: flex[\s\S]*?min-height: 0[\s\S]*?padding: 0 14px 12px[\s\S]*?overflow: hidden/);
+  assert.match(selector, /className="launch-music-grid"/);
+  assert.match(styles, /\.launch-music-grid,[\s\S]*?\.launch-visual-grid \{[\s\S]*?flex: 1 1 auto[\s\S]*?margin-top: 10px/);
+  assert.match(styles, /\.launch-music-grid \{[^}]*grid-template-rows: repeat\(3, minmax\(0, 1fr\)\)/);
+  assert.match(styles, /\.launch-visual-grid \{[\s\S]*?grid-template-columns: repeat\(3, minmax\(0, 1fr\)\)[\s\S]*?grid-template-rows: repeat\(var\(--launch-visual-row-count, 2\), minmax\(0, 1fr\)\)/);
+  assert.match(selector, /--launch-visual-row-count[\s\S]*?Math\.max\(2, Math\.ceil\(FLUX_ENVIRONMENTS\.length \/ 3\)\)/);
+  assert.match(styles, /\.launch-choice-button strong \{ font-size: 15px/);
+  assert.match(styles, /\.launch-choice-button small \{ color: var\(--sheet-muted\); font-size: 12\.5px/);
+  assert.match(styles, /\.launch-selector legend \{[\s\S]*?font-size: 19px/);
   assert.match(styles, /--ui-radius: 6px/);
   for (const selectorName of [
     ".launch-selector",
-    ".launch-selector-heading",
     ".launch-selector-heading button",
-    ".launch-selector-body",
     ".launch-choice-button",
     ".launch-start-button",
   ]) {

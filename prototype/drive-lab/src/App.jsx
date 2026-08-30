@@ -124,7 +124,7 @@ const LAUNCH_MUSIC_CHOICES = Object.freeze([
   {
     id: "play-road",
     label: "PLAY THE ROAD",
-    description: "Adaptive scores shaped by the drive",
+    description: "Adaptive music shaped by your drive",
     available: true,
   },
   {
@@ -136,7 +136,7 @@ const LAUNCH_MUSIC_CHOICES = Object.freeze([
   {
     id: "mute",
     label: "MUTE",
-    description: "Visual experience without music",
+    description: "Visuals only. No music.",
     available: true,
   },
 ]);
@@ -992,30 +992,41 @@ function LaunchSelector({
   return (
     <section className="launch-selector" aria-labelledby="launch-selector-title">
       <header className="launch-selector-heading">
+        <img
+          className="launch-selector-mark"
+          src="/brand/sedicivalvole-mark.svg"
+          alt=""
+          aria-hidden="true"
+        />
         <h1 id="launch-selector-title">sedicivalvole</h1>
         <button type="button" onClick={onBack}>BACK</button>
       </header>
       <div className="launch-selector-body">
         <fieldset className="launch-music-choices">
           <legend>MUSIC</legend>
-          {LAUNCH_MUSIC_CHOICES.map((choice) => (
-            <button
-              key={choice.id}
-              className="launch-choice-button"
-              type="button"
-              aria-pressed={musicId === choice.id}
-              disabled={!choice.available}
-              onClick={() => onMusicChange(choice.id)}
-            >
-              <strong>{choice.label}</strong>
-              <small>{choice.description}</small>
-              {!choice.available ? <em>COMING NEXT</em> : null}
-            </button>
-          ))}
+          <div className="launch-music-grid">
+            {LAUNCH_MUSIC_CHOICES.map((choice) => (
+              <button
+                key={choice.id}
+                className="launch-choice-button"
+                type="button"
+                aria-pressed={musicId === choice.id}
+                disabled={!choice.available}
+                onClick={() => onMusicChange(choice.id)}
+              >
+                <strong>{choice.label}</strong>
+                <small>{choice.description}</small>
+                {!choice.available ? <em>COMING NEXT</em> : null}
+              </button>
+            ))}
+          </div>
         </fieldset>
         <fieldset className="launch-visual-choices">
           <legend>VISUAL</legend>
-          <div className="launch-visual-grid">
+          <div
+            className="launch-visual-grid"
+            style={{ "--launch-visual-row-count": Math.max(2, Math.ceil(FLUX_ENVIRONMENTS.length / 3)) }}
+          >
             {FLUX_ENVIRONMENTS.map((choice) => (
               <button
                 key={choice.id}

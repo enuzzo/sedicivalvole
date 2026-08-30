@@ -291,7 +291,7 @@ question unless this review explicitly identifies a conflict.
 | Repository licence direction | The owner selects source-visible, non-commercial licensing for original sedicivalvole material. Existing AGPL copies keep the rights already granted; third-party and directly authorised material keeps its own case-by-case terms. | Phase 0 completed the file-family audit and synchronized PolyForm Noncommercial across the operative licence, scope, notice, metadata, README, product copy and decision log. No blanket non-commercial claim is applied to GPL or other third-party material. |
 | Effects default | Every fresh page session starts sound and effects enabled. Turning the effects master off is session-only and is not restored after reload. | Q21/S4 is closed with option A. Disable/re-enable still uses the normal click-free envelope and central confirmation. |
 | Adaptive-score handoff | Switching FRACTURE/JUNCTION/NIGHTSHIFT responds immediately through the existing four-second equal-power crossfade; the selected score begins at its own phrase zero. | S2i is closed with option A. `QUEUED` and waiting for an outgoing eight-bar phrase are rejected for ordinary user selection. SOUNDTRACK skip remains a separate 450 ms crossfade. |
-| Initial launch structure | After the opening `PLAY THE ROAD` action, use one short screen with two visible sections—`MUSIC` and `VISUAL`—and one final `START` action. | The owner selected direction 03, **Instrument Deck**. It is implemented locally with concise per-choice descriptions, explicit Music + Visual resolution, and MUTE retaining its chosen Visual. SOUNDTRACK is visible but disabled until its player exists; Illobo featured belongs inside that later library. |
+| Initial launch structure | After the opening `PLAY THE ROAD` action, use one short screen with two visible sections—`MUSIC` and `VISUAL`—and one final `START` action. | The owner selected direction 03, **Instrument Deck**, then selected direction 03 **Road Sheet** as its visual language. The warm-light sheet is implemented with concise per-choice descriptions, explicit Music + Visual resolution, and MUTE retaining its chosen Visual. The complete Music and Visual button areas have identical measured top, bottom, and height; the Visual grid derives its row count so a third row compacts inside the same fixed block. SOUNDTRACK is visible but disabled until its player exists; Illobo featured belongs inside that later library. |
 | Corner language | Use the existing shared `6 px` radius for buttons, cards, panels, and other visible framed surfaces; do not leave standalone product UI with sharp corners. | `--ui-radius: 6px` is the single design token. The Instrument Deck and its regression check establish the rule; older touched surfaces migrate to it during their planned revamp. |
 | PRIMORDIAL replacement | The current project-authored PRIMORDIAL is rejected and retired from the product. `SF1` becomes a new original Gradient Field using project-authored WebGL/3D mechanics, with ShaderGradient, FeralUI and ColorFlow retained only within their audited reference boundaries. | Remove PRIMORDIAL as a selectable/persisted destination with Aperture migration. Preserve its history in Git/changelog rather than erasing evidence. Before Gradient Field implementation, present exactly three directions and admit no third-party shader, runtime, preset, export, embed or asset without its own licence gate. |
 | New stable IDs | `A5` DISCOVER, `X9` Visual Library, `X10` Appearance, `X11` CONDITIONS, and `SF1` Gradient Field are approved. | These IDs are internal traceability keys and do not force final product copy. |
@@ -392,12 +392,12 @@ the exactly-three-direction gate. Recent/favourite personalization is excluded
 until the base grid proves that it needs another hierarchy.
 
 `LIGHT`, `DARK`, and `AUTO` are an independent **interface appearance** setting,
-not another Flux palette. The current official Model 3 manual illustration is
-the provisional Light reference: browser sampling of broad flat regions measures
-approximately `#F4F4F6` for the primary vehicle/control surface, `#DDDEE2` for
-the map/secondary canvas, and `#000000` for the persistent bottom dock. These are
-reproducible image-derived targets, not Tesla-published design tokens; the manual
-itself warns that illustrations vary with software, market and configuration.
+not another Flux palette. The owner-selected Road Sheet is now the LIGHT source
+of truth: warm ivory `#EEE9DE`, quiet control gray `#DCD7CE`, near-black type and
+fields, vermilion state rails, hairline structure, and the shared `6 px` radius.
+The earlier Model 3 manual sampling remains research evidence rather than the
+product palette; its approximately `#F4F4F6`, `#DDDEE2`, and `#000000` regions
+were image-derived observations, not Tesla-published design tokens.
 
 The owner selected Space Grotesk for every live product, LAB, and diagnostic
 text surface except exact textual `sedicivalvole` wordmarks. Those project-title
@@ -412,6 +412,11 @@ The final claim of an exact target-vehicle match therefore requires a current
 vehicle screenshot at native scale and a pixel comparison.
 
 - the active environment and its ten authored palettes remain unchanged;
+- Road Sheet anatomy remains invariant across appearances: product lockup,
+  grouping, spacing, typography, control hierarchy, selection rail, and fixed
+  action geometry do not move when the surface family changes;
+- DARK maps the same anatomy to near-black, charcoal, dark-gray, warm-light,
+  and vermilion tokens rather than introducing a separate layout language;
 - shared chrome, dialogs, DISCOVER cards, DIAG, and the A2 reader receive paired
   high-contrast tokens rather than one-off component inversions;
 - manual `LIGHT` or `DARK` persists as an explicit preference;
@@ -425,6 +430,11 @@ vehicle screenshot at native scale and a pixel comparison.
 - the light direction is warm and glare-bounded, never a pure-white full-screen
   sheet in the cabin. Contrast, image legibility, map attribution, focus states,
   reduced motion, and exact Tesla viewports remain acceptance gates.
+
+Only the Road Sheet LIGHT launcher is implemented in this checkpoint. X10 still
+owns the product-wide DARK token application, the visible appearance control,
+preference/reset behavior, and AUTO day/night switching; no hidden automatic
+theme behavior is implied by the current launcher.
 
 Tesla documentation now describes destination weather and, where equipped, a
 map weather overlay with approximately three hours of precipitation animation.
