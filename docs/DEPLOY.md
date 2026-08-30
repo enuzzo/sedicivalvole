@@ -8,6 +8,39 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## enuzzo identity correction publication — 2026-08-30 14:34
+
+- build stamp: **`20260830-1427`**; deployed source commit: `6326b52`;
+  implementation checkpoint: `d90fd33`;
+- verification gate: **PASS**. Twenty focused identity/documentation checks
+  passed. The complete suite passed all 351 checks available on this Intel Mac;
+  the sole unavailable fixture is the known local PHP executable requirement.
+  The production build completed with 132 modules. Architecture-specific
+  esbuild and Rollup binaries were supplied from `/private/tmp` without
+  replacing the Dropbox-shared `node_modules` tree;
+- publication boundary: **PASS**. Read-only preflight and immediate postflight
+  reported network, login, canonical directory, remote listing and identity
+  PASS with `remote_writes=NONE`. Publication uploaded 90 files / 15,774,999
+  bytes, passed the dynamic-root and exact legacy-cleanup gates, and retained
+  one previous content-addressed asset for cache overlap;
+- canonical identity and headers: **PASS**. Bare and
+  `?build=20260830-1427` HTML return `200`, 788 bytes,
+  `no-store, no-cache, must-revalidate, max-age=0`, `pragma: no-cache`,
+  `X-Content-Type-Options: nosniff` and proxy cache `MISS`. Both are
+  byte-identical to the local entry at SHA-256
+  `ae2431a1824bb774b57cd72b6ebe1fe6a2669827bab2d5dc7d44a5fbd71740d3`;
+- asset identity: **PASS**. The local/live main JavaScript bundle is
+  byte-identical at SHA-256
+  `b387a359ac3446d68b43c0bf4be074365cbfabf151edf8f1facc3c86bc7812d0`;
+  the verified local CSS is
+  `02a4ab3b626e9d0ce40b425650872f7163a01ee5d978ab1486d2ed0f3a265cf7`;
+- muted local and live product QA: **PASS within the technical contract**. At
+  exact `773 × 601`, the Signal Gate displayed `A project by enuzzo`, linked
+  to `https://github.com/enuzzo`, contained no retired studio identity, and
+  produced zero browser warning/error. Launch dismissed the gate and exposed
+  DIAG successfully. This text-only identity correction did not require a new
+  real-Tesla acceptance run.
+
 ## PRIMORDIAL and OPEN publication — 2026-08-30 00:43
 
 - build stamp: **`20260830-0038`**; deployed source commit: `44a3a42`;
