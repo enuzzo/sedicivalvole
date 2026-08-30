@@ -189,6 +189,42 @@ test("the deploy gate verifies the selected brand tree explicitly", () => {
   assert.match(source, /"brand",\n\s+"fonts"/);
   assert.match(source, /if "brand" in root_names:/);
   assert.match(source, /BUILD \/ "brand",\n\s+tree_name="brand"/);
+  assert.match(source, /tree_name == "brand"/);
+
+  const program = String.raw`
+import importlib.util
+import sys
+
+spec = importlib.util.spec_from_file_location("sedicivalvole_deploy", sys.argv[1])
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+
+new_master = bytes.fromhex(sys.argv[2])
+assert module.PROJECT_OWNED_BRAND_HASHES["sedicivalvole-mark.svg"] == frozenset({
+    "e47522c4166f6c4f7e8e978b09b9fd2e2835f438732cf67004aede57ff0d8ace",
+    "210b319522825982589907c213661720abbf7ea94d29b3a53a7fb4a7cec275e5",
+})
+assert module.is_recognized_project_owned_brand_entry(
+    "sedicivalvole-mark.svg", new_master
+)
+assert not module.is_recognized_project_owned_brand_entry(
+    "sedicivalvole-mark.svg", b"arbitrary brand payload"
+)
+assert not module.is_recognized_project_owned_brand_entry(
+    "product-icon-512.png", new_master
+)
+`;
+  const newMaster = readFileSync(
+    new URL("../public/brand/sedicivalvole-mark.svg", import.meta.url),
+  );
+  execFileSync("python3", [
+    "-c",
+    program,
+    deployScript.pathname,
+    newMaster.toString("hex"),
+  ], {
+    env: { ...process.env, PYTHONDONTWRITEBYTECODE: "1" },
+  });
 });
 
 test("third-party upgrades are limited to recognized project-owned Drivey bridge files", () => {

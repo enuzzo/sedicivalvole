@@ -129,6 +129,13 @@ PROJECT_OWNED_THIRD_PARTY_MARKERS = {
         b"5104cdade2a3158786b05b9b0680a50e942830cf",
     ),
 }
+PROJECT_OWNED_BRAND_HASHES = {
+    "sedicivalvole-mark.svg": frozenset({
+        # Previously published dark master and the selected Road Sheet light master.
+        "e47522c4166f6c4f7e8e978b09b9fd2e2835f438732cf67004aede57ff0d8ace",
+        "210b319522825982589907c213661720abbf7ea94d29b3a53a7fb4a7cec275e5",
+    }),
+}
 
 
 def parse_env(path: Path) -> dict[str, str]:
@@ -211,6 +218,15 @@ def is_recognized_retired_font(name: str, payload: bytes) -> bool:
     return expected_hash is not None and sha256_bytes(payload) == expected_hash
 
 
+def is_recognized_project_owned_brand_entry(
+    relative_path: Path | str,
+    payload: bytes,
+) -> bool:
+    """Admit only exact reviewed project-owned brand revisions."""
+    expected_hashes = PROJECT_OWNED_BRAND_HASHES.get(Path(relative_path).as_posix())
+    return expected_hashes is not None and sha256_bytes(payload) in expected_hashes
+
+
 def verify_remote_static_tree(
     ftp: ftplib.FTP,
     local_root: Path,
@@ -254,14 +270,27 @@ def verify_remote_static_tree(
         local_payload = static_build_bytes(local_path)
         if sha256_bytes(remote_payload) != hashlib.sha256(local_payload).hexdigest():
             project_owned_update = (
-                tree_name == "third-party"
-                and is_recognized_project_owned_third_party_entry(
-                    relative_path,
-                    remote_payload,
+                (
+                    tree_name == "third-party"
+                    and is_recognized_project_owned_third_party_entry(
+                        relative_path,
+                        remote_payload,
+                    )
+                    and is_recognized_project_owned_third_party_entry(
+                        relative_path,
+                        local_payload,
+                    )
                 )
-                and is_recognized_project_owned_third_party_entry(
-                    relative_path,
-                    local_payload,
+                or (
+                    tree_name == "brand"
+                    and is_recognized_project_owned_brand_entry(
+                        relative_path,
+                        remote_payload,
+                    )
+                    and is_recognized_project_owned_brand_entry(
+                        relative_path,
+                        local_payload,
+                    )
                 )
             )
             if project_owned_update:
