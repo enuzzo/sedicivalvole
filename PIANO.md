@@ -307,7 +307,7 @@ question unless this review explicitly identifies a conflict.
 | Replace the growing flat Visual list with grouped, direct-selection buttons. | X2 plus a new owner-assigned Visual Library entry | Keep one tap from the open library to selection. Present all groups together rather than hiding visuals behind nested category pages; validate button density, active state, focus order and real current-build imagery in exactly three directions at `773 × 601`. |
 | Add `LIGHT`, `DARK`, and location-aware `AUTO` appearance modes. | X1/X2 plus a new owner-assigned Appearance entry | Theme shared chrome, dialogs and reading surfaces without recolouring the active visual or its selected palette. Match the current official Tesla Model 3 Light illustration as a measured reference, then verify on the target vehicle. Manual modes persist; AUTO first follows the browser colour-scheme signal if Tesla exposes its native Appearance setting, otherwise it falls back to session-only solar context without storing coordinates. |
 | Restore local weather to the queue, but avoid duplicating the Tesla forecast. | DISCOVER, M13, plus a new owner-assigned Conditions entry | Defer a generic forecast panel. Explore a quiet, exception-led road-context card: significant precipitation onset, temperature change, gusts or poor visibility, plus weather-aware DISCOVER suggestions. Retain an optional 6/12-hour and tomorrow detail view outside primary driving chrome. |
-| Study ShaderGradient as the basis for another speed-responsive visual. | T1, L1–L3, X2, plus a new owner-assigned Shader Field entry | Preserve the reference's deformed-mesh, three-colour, lighting and camera grammar in a project-authored direct-WebGL2 spike. Do not admit the package/source before an exact MIT/dependency notice review. Drive bounded time, deformation and macro envelopes from T1; profile one-pass pixel-density-1 rendering on Tesla; present exactly three visual directions before implementation. |
+| Study ShaderGradient, FeralUI Gradient Builder, and ColorFlow as references for another speed-responsive visual. | T1, L1–L3, X2, plus a new owner-assigned Shader Field entry | Combine only independently authored mechanics: optional displaced depth from ShaderGradient, palette/family authoring discipline from FeralUI, and lightweight control-mesh/perceptual-flow ideas from ColorFlow. Start with a project-authored one-pass direct-WebGL2 planar mesh; do not admit any package, source, embed, preset, export, shader, or asset before its exact licence and notice gate. Drive bounded time, topology and macro envelopes from T1; profile pixel-density-1 rendering on Tesla; present exactly three visual directions before implementation. |
 | SoundCloud says tracks are downloadable. | M3, M8, M11 | Platform download availability is recorded separately from the owner's direct permission and from public playback/hosting provenance. |
 | README must document every source, including VERTIGO/Tympanus and visual references. | M7, M11 | README, NOTICE, licence scope, source-admission record and third-party notices are reconciled from one audited inventory. |
 | Local MP3s from a subsequently retired source were offered for audition. | M5/M5b/M5c | Superseded by the owner's later decision to remove that source. `_references/` remains untracked and the files are not inspected, auditioned, copied, admitted, or used. |
@@ -434,7 +434,7 @@ until current non-commercial terms, attribution, availability, model semantics,
 request limits and coarse-coordinate behavior pass the same dated source-admission
 review used elsewhere in this plan.
 
-### Shader-driven field reference proposal — 2026-08-30
+### Gradient-field reference proposal — 2026-08-30
 
 The live ShaderGradient customizer and official source confirm that the effect is
 a real-time 3D mesh system, not a rendered video or CSS gradient. A plane,
@@ -453,6 +453,27 @@ admit the component only if a measured comparison proves that its appearance or
 maintenance value outweighs bundle/GPU/runtime complexity. No upstream code,
 package, shader, preset, environment map, or asset is admitted by this plan.
 
+Two additional live references sharpen that recommendation. FeralUI Gradient
+Builder is most useful as an authoring model: distinct visual families, named
+palette roles, contrast feedback, perceptual colour profiles, and separate
+motion/geometry/finish controls. Its terms explicitly leave unpublished demos,
+including the inspected Gradient Builder, unlicensed for copying or
+redistribution. ColorFlow is the closer runtime reference: a WebGL control mesh
+with rectangular/circular topology, draggable points and handles, RGB/Lab/Lch/
+OKLab interpolation, procedural point/handle/colour motion, independent pointer
+interactions, and optional effects. Its free personal/commercial-use statement
+does not provide an open-source licence for the editor, runtime, presets, embed,
+or effect implementations. Neither new reference is admitted as source,
+runtime, embed, export, preset, or asset.
+
+The first spike therefore becomes a project-authored planar control mesh with a
+small perceptually precomputed palette uploaded as uniforms or a tiny LUT. This
+keeps colour-space conversion out of the per-pixel hot path, retains one render
+pass, and tests the lightest useful interpretation first. A displaced/physically
+lit direction remains one of the later visual candidates rather than the
+baseline. Grain, blur, aberration, glass, halftone, and other post effects stay
+off until an individually profiled option proves its value on Tesla.
+
 The proposed view belongs in `FIELD / ABSTRACT` and consumes T1 rather than raw
 GPS: sustained road energy drives bounded time rate and moderate deformation;
 positive acceleration produces a brief bright/seam impulse; deceleration releases
@@ -466,7 +487,8 @@ owner-visible directions at `773 × 601`. The gate must compare visual identity,
 rest state, 0/40/100/130 km/h response, all three macros, reduced motion,
 non-WebGL fallback, one-pass versus optional grain, and measured Tesla frame
 cost. The complete research and source-admission boundary are recorded in
-`docs/REFERENCE-STUDY-SHADERGRADIENT.md`.
+`docs/REFERENCE-STUDY-SHADERGRADIENT.md` and
+`docs/REFERENCE-STUDY-GRADIENT-TOOLS.md`.
 
 ### Real-Tesla diagnostic evidence — 2026-08-30
 
@@ -943,9 +965,12 @@ invented IDs:
   provider and privacy/attribution boundary, then prototype only the contextual
   exception-led value beyond Tesla's own forecast and precipitation overlay.
 - Assign a stable owner ID to the proposed Shader Field visual, then present
-  exactly three directions before implementation. Start with the project-owned
-  direct-WebGL2 spike and admit ShaderGradient source/dependencies only after a
-  measured Tesla comparison plus exact MIT and transitive-notice review.
+  exactly three directions before implementation: planar perceptual mesh,
+  displaced depth, and restrained aurora/flow. Start with the project-owned
+  one-pass direct-WebGL2 planar spike. Admit no ShaderGradient source/dependency
+  without a measured Tesla comparison plus exact MIT/transitive-notice review,
+  and admit no FeralUI or ColorFlow source, runtime, embed, preset, export,
+  shader, or asset without separate explicit permission and provenance.
 
 ## Coverage audit
 

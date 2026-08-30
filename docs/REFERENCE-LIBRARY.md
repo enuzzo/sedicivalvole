@@ -40,3 +40,9 @@ The original top-level file was moved reversibly into the reference library. It 
   [`REFERENCE-STUDY-SHADERGRADIENT.md`](REFERENCE-STUDY-SHADERGRADIENT.md).
   No local source copy, package, preset, shader, or asset has entered the
   reference library or product.
+- `FeralUI Gradient Builder` and `ColorFlow`: live-product and official-terms
+  study of gradient-family authoring, perceptual colour interpolation, control
+  meshes, procedural motion, interaction, effects, export, and embed boundaries;
+  see [`REFERENCE-STUDY-GRADIENT-TOOLS.md`](REFERENCE-STUDY-GRADIENT-TOOLS.md).
+  Neither tool's source, runtime, embed, preset, export, or asset has entered the
+  reference library or product.

@@ -144,3 +144,5 @@ Tesla viewport rather than judged from desktop screenshots:
 - **Product view implemented:** no.
 - **Next gate:** assign a stable owner ID, then present exactly three visual
   directions before implementation.
+- **Companion comparison:** FeralUI Gradient Builder and ColorFlow are evaluated
+  in [`REFERENCE-STUDY-GRADIENT-TOOLS.md`](REFERENCE-STUDY-GRADIENT-TOOLS.md).
