@@ -1,3 +1,53 @@
+# Design QA — 16 Road launch lockup and Orbitron wordmarks
+
+Date: 2026-08-30
+
+## Source and implementation
+
+- Source product state: `/private/tmp/sedicivalvole-brand-before-773x601.png`.
+- Selected identity asset: `prototype/drive-lab/public/brand/sedicivalvole-mark.svg`; visual inspection used the packaged `512 × 512` product icon rendered from the same approved 16 Road master.
+- Browser-rendered Tesla implementation: `/private/tmp/sedicivalvole-brand-home-773x601.png`.
+- Browser-rendered Instrument Deck: `/private/tmp/sedicivalvole-brand-deck-773x601.png`.
+- Browser-rendered running top bar: `/private/tmp/sedicivalvole-brand-topbar-773x601.png`.
+- Browser-rendered desktop implementation: `/private/tmp/sedicivalvole-brand-home-1280x720.png`.
+- Full-view normalized before/after comparison: `/private/tmp/sedicivalvole-brand-before-after-773x601.png`.
+- Tesla CSS viewport and screenshots: `773 × 601` at density `1`; desktop CSS viewport and screenshot: `1280 × 720` at density `1`.
+- State: idle Signal Gate for the primary comparison, then Instrument Deck and running MUTE + APERTURE for wordmark-isolation checks.
+
+The prior and revised Signal Gate captures were joined into one `1554 × 601` comparison and opened as a single image. Both sides therefore share the exact viewport, field state family, crop and density. The selected brand mark was also opened independently at its full packaged `512 × 512` size before implementation.
+
+## Required fidelity review
+
+- **Fonts and typography:** exact textual `sedicivalvole` wordmarks use the restored, unmodified Orbitron variable font at weight `750` with restrained `-0.02em` tracking. The launch lockup computes to `-0.64 px` at `32 px`; Instrument Deck computes to `-0.58 px`; the compact top bar computes to `-0.34 px`. `PLAY THE ROAD`, all Music/Visual labels, telemetry, controls and the session report remain Space Grotesk. No unrelated typography changed.
+- **Spacing and layout rhythm:** the welcome contracts from `390 × 170 px` to `360 × 160 px`. The mark is `42 × 42 px`, separated from the wordmark by `12 px` inside a `64 px` identity band; the command keeps `74 px`. At `773 × 601`, the action remains centered with zero document overflow and leaves slightly more negative space around the visual field without appearing undersized.
+- **Colors and visual tokens:** the existing warm-ivory frame, near-black action field, vermilion/ice Signal Gate and travelling white-to-red command are unchanged. The real 16 Road asset supplies its own black, vermilion and warm-white palette without a synthetic recolour.
+- **Image quality and asset fidelity:** the home uses the existing approved vector master directly at `/brand/sedicivalvole-mark.svg`; no copied, redrawn, rasterised or approximate logo was introduced. The SVG reports its full natural `512 px` source width and renders sharply at `42 px`.
+- **Copy and content:** the welcome remains one semantic `PLAY THE ROAD` button. The mark is decorative inside that already named action (`alt=""`, `aria-hidden="true"`), avoiding duplicate screen-reader speech. Project title, command, creator, collaborator, source and local-capability copy are unchanged.
+- **Focused-region evidence:** the combined comparison shows the new horizontal mark/wordmark lockup filling its band more deliberately than the previous text-only title while the smaller outer plate reduces visual dominance. Instrument Deck confirms the same brand face at a useful title scale; the running top bar remains compact and leaves REPORT, GPS, mode and telemetry geometry unchanged.
+
+## Comparison history
+
+| Pass | Severity | Finding | Resolution and evidence |
+|---|---|---|---|
+| 1 | — | No actionable P0, P1 or P2 mismatch. | The side-by-side lockup preserves the selected Signal Gate hierarchy, uses the approved asset, reduces the welcome footprint, keeps tracking visibly restrained, and introduces no clipping or layout reflow at either tested viewport. |
+
+## Interaction and runtime checks
+
+- Flow tested: Signal Gate → `PLAY THE ROAD` → Instrument Deck → MUTE + APERTURE → START → running top bar.
+- Page identity and meaningful content pass; no Vite/framework overlay appears.
+- The icon loads completely at its expected `512 px` natural width.
+- Browser console check reports zero warnings and zero errors after the complete interaction flow.
+- Exact `773 × 601` and `1280 × 720` screenshots both report zero horizontal or vertical document overflow.
+- Twenty-eight focused splash, brand and LAB checks pass; the broader forty-one-check documentation/presentation set passes; the complete production build transforms `130` modules and packages both fonts plus the protected LAB. The full suite retains only the known local `spawn php ENOENT` diagnostic-mail fixture limitation.
+
+## Follow-up polish
+
+- P3: confirm the `42 px` mark and compact Orbitron top-bar wordmark from normal cabin distance on the physical Tesla before increasing either; the current desktop and exact-viewport evidence does not justify a larger lockup.
+
+final result: passed
+
+---
+
 # Design QA — REPORT top-bar control
 
 Date: 2026-08-30

@@ -400,7 +400,9 @@ reproducible image-derived targets, not Tesla-published design tokens; the manua
 itself warns that illustrations vary with software, market and configuration.
 
 The owner selected Space Grotesk for every live product, LAB, and diagnostic
-text surface. The outlined Orbitron `16` in the reserved logo remains unchanged.
+text surface except exact textual `sedicivalvole` wordmarks. Those project-title
+instances use restored Orbitron `750` with restrained `-0.02em` tracking; the
+outlined Orbitron `16` in the reserved logo remains unchanged.
 The active visual palette continues to own the interface accent and remains an
 optional versioned `localStorage` preference across reloads and later visits;
 future `LIGHT`/`DARK`/`AUTO` appearance is stored independently. X2/X10 must keep
@@ -1065,8 +1067,9 @@ The owner assigned stable IDs on 2026-08-30: `A5 DISCOVER`, `X9 Visual Library`,
   512/1024 px PNGs; 16/32/48/180/192/512 px icons; and a multi-size favicon.
   Browser favicon, Apple touch, and 192/512 product derivatives are packaged and
   advertised. Two focused checks assert the 512 viewBox, outlined text,
-  symmetry, alpha color type, and packaged metadata. Replacing the existing
-  splash wordmark remains a separate owner-visible composition decision.
+  symmetry, alpha color type, and packaged metadata. The owner-approved launch
+  composition places the `42 px` selected mark beside the Orbitron wordmark in a
+  compact `360 × 160 px` welcome surface.
 - `SF1`: present exactly three directions before implementation: planar perceptual mesh,
   displaced depth, and restrained aurora/flow. Start with the project-owned
   one-pass direct-WebGL2 planar spike. Admit no ShaderGradient source/dependency

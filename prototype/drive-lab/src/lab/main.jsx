@@ -491,7 +491,7 @@ function LabApp() {
   return (
     <main className={`lab-shell${drawerOpen ? " is-drawer-open" : ""}`}>
       <header className="lab-header">
-        <div className="lab-wordmark">sedicivalvole <span>/ LAB</span></div>
+        <div className="lab-wordmark"><strong className="lab-brand-name">sedicivalvole</strong><span>/ LAB</span></div>
         <SelectControl
           label="Visual and PRTCL family"
           value={values["context.prtclType"]}

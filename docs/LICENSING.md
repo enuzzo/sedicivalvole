@@ -48,11 +48,11 @@ credits recorded in `THIRD_PARTY_NOTICES.md`.
 ## 2026-08-30 — Space Grotesk becomes the live product typeface
 
 All live product, owner LAB, and diagnostic typography uses the locally hosted
-Space Grotesk version 2.000 variable TrueType file under SIL Open Font License
-1.1. The downloaded font and its unmodified OFL notice are recorded in
-`THIRD_PARTY_NOTICES.md`. Orbitron is no longer a runtime dependency, but its
-OFL notice and credit remain because the selected reserved 16 Road mark contains
-stable vector outlines derived from its numeral glyphs. IBM Plex Mono is no
+Space Grotesk version 2.000 variable TrueType file and the Orbitron v35 variable
+WOFF2 remain locally packaged under SIL Open Font License 1.1. Their unmodified
+OFL notices are recorded in `THIRD_PARTY_NOTICES.md`. Orbitron is loaded only
+for exact textual `sedicivalvole` wordmarks and remains the source of the stable
+vector numeral outlines in the selected reserved 16 Road mark. IBM Plex Mono is no
 longer shipped or used.
 
 ## 2026-08-30 — original project material moves to PolyForm Noncommercial

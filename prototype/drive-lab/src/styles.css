@@ -6,6 +6,14 @@
   src: url("/fonts/space-grotesk-variable.ttf") format("truetype");
 }
 
+@font-face {
+  font-family: "Orbitron";
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+  src: url("/fonts/orbitron-latin-variable.woff2") format("woff2");
+}
+
 :root {
   color: #eeeae0;
   background: #050707;
@@ -16,6 +24,7 @@
   --font-ui: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
   --font-data: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
   --font-diag: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-brand: "Orbitron", sans-serif;
   --font-weight-text: 400;
   --font-weight-value: 500;
   --font-weight-control: 600;
@@ -248,7 +257,7 @@ button { -webkit-tap-highlight-color: transparent; }
 .splash-action {
   left: 50%;
   bottom: 24px;
-  width: min(390px, calc(100vw - 48px));
+  width: min(360px, calc(100vw - 40px));
   display: grid;
   justify-items: center;
   transform: translateX(-50%);
@@ -286,11 +295,11 @@ button { -webkit-tap-highlight-color: transparent; }
    The visual language borrows Braun's discipline, never simulated hardware. */
 .launch-button {
   display: grid;
-  grid-template-rows: 68px 1fr;
+  grid-template-rows: 64px 1fr;
   gap: 0;
   width: 100%;
-  height: 170px;
-  padding: 12px;
+  height: 160px;
+  padding: 10px;
   border: 1px solid #b7b0a4;
   border-radius: var(--ui-radius);
   color: #070909;
@@ -302,19 +311,27 @@ button { -webkit-tap-highlight-color: transparent; }
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 18px;
+  gap: 12px;
+  padding: 0 14px;
   border: 1px solid rgba(7, 9, 9, .62);
   background: #e9e4d9;
-  font-size: clamp(32px, 5vw, 40px);
-  font-weight: 700;
-  letter-spacing: 0;
+  font-family: var(--font-brand);
+  font-size: clamp(26px, 4.15vw, 32px);
+  font-weight: 750;
+  letter-spacing: -.02em;
   text-align: center;
+}
+.launch-brand img {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  border-radius: 4px;
 }
 .launch-command {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 78px;
+  min-height: 74px;
   border: 1px solid rgba(7, 9, 9, .72);
   border-top: 0;
   background: #070909;
@@ -383,9 +400,10 @@ button { -webkit-tap-highlight-color: transparent; }
 }
 .launch-selector-heading h1 {
   margin: 0;
+  font-family: var(--font-brand);
   font-size: 29px;
-  font-weight: 700;
-  letter-spacing: 0;
+  font-weight: 750;
+  letter-spacing: -.02em;
   text-align: center;
 }
 .launch-selector-heading button {
@@ -544,9 +562,10 @@ button { -webkit-tap-highlight-color: transparent; }
   min-width: 0;
   padding: 0 24px;
   text-align: left;
+  font-family: var(--font-brand);
   font-size: clamp(16px, 2.25vw, 23px);
-  font-weight: var(--font-weight-control);
-  letter-spacing: .08em;
+  font-weight: 750;
+  letter-spacing: -.02em;
 }
 .mode-selector { display: flex; align-items: stretch; border-left: 1px solid var(--line); border-right: 1px solid var(--line); }
 .mode-selector button {
@@ -1293,7 +1312,7 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
   .splash-status { top: 62px; left: 27px; right: auto; }
   .splash-action { bottom: 16px; }
   .topbar { grid-template-columns: minmax(90px, 1fr) 116px 220px 52px; }
-  .wordmark { grid-column: 1; padding: 0 8px; font-size: 11px; letter-spacing: .02em; }
+  .wordmark { grid-column: 1; padding: 0 8px; font-size: 11px; letter-spacing: -.02em; }
   .mode-selector { grid-column: 2; }
   .mode-selector button { min-width: 58px; padding: 0 5px; font-size: 8px; }
   .speed-spacer { grid-column: 3; min-width: 220px; }

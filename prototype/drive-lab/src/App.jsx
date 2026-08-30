@@ -2499,7 +2499,10 @@ export function App() {
               setPhase("choosing");
             }}
           >
-            <span className="launch-brand">sedicivalvole</span>
+            <span className="launch-brand">
+              <img src="/brand/sedicivalvole-mark.svg" alt="" aria-hidden="true" />
+              <span>sedicivalvole</span>
+            </span>
             <span className="launch-command">
               <span>PLAY THE ROAD</span>
             </span>

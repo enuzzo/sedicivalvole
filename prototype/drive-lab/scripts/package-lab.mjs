@@ -6,18 +6,20 @@ const template = await readFile(new URL("../server/lab-index.php", import.meta.u
 const css = await readFile(new URL("lab.css", buildDirectory), "utf8");
 const javascript = await readFile(new URL("lab.js", buildDirectory), "utf8");
 const font = await readFile(new URL("../public/fonts/space-grotesk-variable.ttf", import.meta.url));
+const brandFont = await readFile(new URL("../public/fonts/orbitron-latin-variable.woff2", import.meta.url));
 if (/\bprocess\.env\b/.test(javascript)) {
   throw new Error("LAB browser bundle still contains an unresolved Node.js environment reference");
 }
 const safeCss = css
   .replace("__LAB_FONT_BASE64__", font.toString("base64"))
+  .replace("__LAB_BRAND_FONT_BASE64__", brandFont.toString("base64"))
   .replaceAll("</style", "<\\/style");
 const safeJavascript = javascript.replaceAll("</script", "<\\/script");
 const page = template
   .replace("/*__LAB_CSS__*/", () => safeCss)
   .replace("/*__LAB_JS__*/", () => safeJavascript);
 
-if (page.includes("/*__LAB_CSS__*/") || page.includes("/*__LAB_JS__*/") || page.includes("__LAB_FONT_BASE64__")) {
+if (page.includes("/*__LAB_CSS__*/") || page.includes("/*__LAB_JS__*/") || page.includes("__LAB_FONT_BASE64__") || page.includes("__LAB_BRAND_FONT_BASE64__")) {
   throw new Error("LAB package still contains an unresolved placeholder");
 }
 

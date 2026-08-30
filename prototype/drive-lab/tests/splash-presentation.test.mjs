@@ -30,7 +30,8 @@ test("launch surface contains only product and action copy", () => {
     app.indexOf("</button>", app.indexOf('className="launch-button"')),
   );
 
-  assert.match(launchMarkup, /launch-brand">sedicivalvole/);
+  assert.match(launchMarkup, /launch-brand">[\s\S]*?sedicivalvole-mark\.svg[\s\S]*?<span>sedicivalvole<\/span>/);
+  assert.match(launchMarkup, /alt="" aria-hidden="true"/);
   assert.match(launchMarkup, /PLAY THE ROAD/);
   assert.doesNotMatch(launchMarkup, /launch-(?:index|vent|safety|latch)/);
 });
@@ -180,21 +181,25 @@ test("launch copy has a continuous white-to-red travelling wave", () => {
   assert.match(styles, /#bd111d/);
 });
 
-test("launch typography follows the approved Space Grotesk hierarchy", () => {
+test("the launch lockup uses the 16 Road mark and isolated Orbitron wordmark", () => {
   const styles = read("styles.css");
   const brand = styles.slice(styles.indexOf(".launch-brand {"), styles.indexOf(".launch-command {"));
   const command = styles.slice(styles.indexOf(".launch-command > span:last-child {"), styles.indexOf("@keyframes launch-text-wave"));
 
   assert.match(brand, /justify-content: center/);
-  assert.match(brand, /font-size: clamp\(32px, 5vw, 40px\)/);
-  assert.match(brand, /font-weight: 700/);
-  assert.match(brand, /letter-spacing: 0/);
+  assert.match(brand, /font-family: var\(--font-brand\)/);
+  assert.match(brand, /font-size: clamp\(26px, 4\.15vw, 32px\)/);
+  assert.match(brand, /font-weight: 750/);
+  assert.match(brand, /letter-spacing: -\.02em/);
   assert.match(brand, /text-align: center/);
+  assert.match(styles, /\.splash-action \{[\s\S]*?width: min\(360px, calc\(100vw - 40px\)\)/);
+  assert.match(styles, /\.launch-button \{[\s\S]*?height: 160px/);
+  assert.match(styles, /\.launch-brand img \{[\s\S]*?width: 42px;[\s\S]*?height: 42px/);
   assert.match(command, /font-weight: 600/);
   assert.match(command, /letter-spacing: 0/);
   assert.doesNotMatch(command, /text-indent/);
-  assert.match(styles, /grid-template-rows: 68px 1fr/);
-  assert.match(styles, /min-height: 78px/);
+  assert.match(styles, /grid-template-rows: 64px 1fr/);
+  assert.match(styles, /min-height: 74px/);
 });
 
 test("Signal Gate phases every travelling gap independently", () => {
@@ -206,20 +211,26 @@ test("Signal Gate phases every travelling gap independently", () => {
   assert.match(field, /for \(int rayIndex = 0; rayIndex < 8; rayIndex \+= 1\)/);
 });
 
-test("product chrome and the session report share the locally packaged Space Grotesk face", () => {
+test("Space Grotesk remains the UI face while Orbitron is isolated to project wordmarks", () => {
   const styles = read("styles.css");
   const index = readFileSync(resolve(PROJECT_ROOT, "index.html"), "utf8");
   const font = readFileSync(resolve(PROJECT_ROOT, "public/fonts/space-grotesk-variable.ttf"));
+  const brandFont = readFileSync(resolve(PROJECT_ROOT, "public/fonts/orbitron-latin-variable.woff2"));
 
   assert.match(styles, /font-family: "Space Grotesk";/);
   assert.match(styles, /font-weight: 300 700;/);
   assert.match(styles, /--font-weight-text: 400;/);
   assert.match(styles, /--font-ui: "Space Grotesk"/);
   assert.match(styles, /--font-data: "Space Grotesk"/);
+  assert.match(styles, /--font-brand: "Orbitron"/);
+  assert.match(styles, /\.launch-selector-heading h1 \{[\s\S]*?font-family: var\(--font-brand\)/);
+  assert.match(styles, /\.wordmark \{[\s\S]*?font-family: var\(--font-brand\)/);
   assert.match(styles, /\.diagnostic-report-drawer \.drawer-panel \{[\s\S]*?font-family: var\(--font-data\)/);
   assert.match(styles, /body \{[\s\S]*?font-family: var\(--font-ui\)/);
   assert.match(index, /rel="preload" href="\/fonts\/space-grotesk-variable\.ttf"/);
+  assert.match(index, /rel="preload" href="\/fonts\/orbitron-latin-variable\.woff2"/);
   assert.ok(font.length > 10_000, "the packaged font should not be an empty placeholder");
+  assert.ok(brandFont.length > 10_000, "the packaged brand font should not be an empty placeholder");
 });
 
 test("Space Grotesk telemetry units sit below and align to the value edge", () => {

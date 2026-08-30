@@ -18,8 +18,8 @@ dated study documents.
   vermilion and warm-white three-line roads. Dark, warm-light, and true-alpha
   masters plus 512/1024 px PNGs and favicon/touch/product derivatives live in
   `logo/`; the current app packages and advertises the browser icons. The mark
-  fills its 512 px canvas to a 15–18 px optical edge. Replacing the existing
-  splash wordmark remains a separate owner-visible decision.
+  fills its 512 px canvas to a 15–18 px optical edge. The selected mark now sits
+  beside the textual wordmark in the compact Signal Gate launch surface.
 - The source checkout's Flux catalog contains six visual environments:
   **APERTURE 01**, **VERTIGO 02**, **MERIDIAN 03**, **ATLAS 04**, **DRIVEY 05**,
   and the human-approved and canonically published **PRTCL 06**. Aperture
@@ -144,8 +144,8 @@ dated study documents.
 - The main experience retains an icon-only Mute control, GPS/Demo source
   selection, vertically ordered Music and Visual libraries, a shared `PALETTE`
   control, and coordinate-free diagnostics in a measured 64 px footer.
-- Signal Gate launches through the approved `390 × 170 px` flat typographic
-  surface at the Tesla split viewport. Its enlarged wordmark and full-width
+- Signal Gate launches through the approved compact `360 × 160 px` flat surface
+  at the Tesla split viewport. Its `42 px` 16 Road mark, textual wordmark and full-width
   `PLAY THE ROAD` field form one semantic gesture with no simulated controls.
   The readable credit beneath it identifies and links the sole project creator,
   enuzzo, credits Illobo, and is followed by a monochrome GitHub-marked link to the public
@@ -161,15 +161,15 @@ dated study documents.
   player exists, and the Illobo featured treatment remains reserved for the
   future SOUNDTRACK library. The launcher and its controls use the shared
   restrained `6 px` radius and pass exact `773 × 601` interaction/geometry QA.
-- All live product, LAB, and session-report typography uses the locally packaged Space
-  Grotesk variable font under OFL-1.1. Reading text, values, controls, and compact
-  operational labels occupy a deliberate `400–700` hierarchy without a device-font
-  dependency; tabular numerals preserve diagnostic alignment. Orbitron remains
-  credited only because the selected 16 Road vector mark was outlined from it.
-- The centered lowercase launch wordmark uses weight `700`; `PLAY THE ROAD` uses
-  weight `600`, and neither adds tracking. The wordmark scales from `32–40 px`
-  (`38.65 px` at `773 × 601`) inside a `68 px` product band, while the complete
-  action remains `390 × 170 px`. The command carries a seamless
+- Space Grotesk remains the locally packaged face for all reading text, values,
+  controls, operational labels, LAB controls and session-report content under
+  OFL-1.1. Its deliberate `400–700` hierarchy and tabular numerals remain intact.
+  Orbitron is restored only for exact textual `sedicivalvole` wordmarks in the
+  launch surface, Instrument Deck, running top bar and owner LAB.
+- The launch wordmark uses Orbitron `750`, responsive `26–32 px` sizing and
+  restrained `-0.02em` tracking beside the `42 px` 16 Road mark. `PLAY THE ROAD`
+  remains Space Grotesk `600` with zero added tracking. The product band is
+  `64 px`, while the complete action is `360 × 160 px`. The command carries a seamless
   repeating white-to-red horizontal wave whose terminal frame is its first frame.
   The launch surface stays above every preloaded environment overlay, including
   ATLAS's no-GPS waiting state, until the gesture completes. Every Signal Gate

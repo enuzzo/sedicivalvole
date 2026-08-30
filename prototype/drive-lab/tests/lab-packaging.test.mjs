@@ -39,7 +39,10 @@ test("the LAB bundle is inlined behind the gate and leaves no directly fetchable
   assert.match(viteSource, /audioWorklet\(\)/);
   assert.match(packageSource, /audio runtime assets/);
   assert.match(packageSource, /space-grotesk-variable\.ttf/);
+  assert.match(packageSource, /orbitron-latin-variable\.woff2/);
+  assert.match(packageSource, /__LAB_BRAND_FONT_BASE64__/);
   assert.match(stylesSource, /font-family: "Space Grotesk"/);
+  assert.match(stylesSource, /\.lab-brand-name \{ font-family: var\(--font-brand\); font-weight: 750; letter-spacing: -\.02em; \}/);
   assert.match(deploySource, /LAB_BLOOM_PROCESSOR_MARKERS/);
   assert.match(deploySource, /LAB_SCORE_PROCESSOR_MARKERS/);
   assert.match(deploySource, /"bloom-processor\.js"/);

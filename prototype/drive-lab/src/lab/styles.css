@@ -5,6 +5,13 @@
   font-weight: 300 700;
 }
 
+@font-face {
+  font-family: "Orbitron";
+  src: url("data:font/woff2;base64,__LAB_BRAND_FONT_BASE64__") format("woff2");
+  font-display: swap;
+  font-weight: 400 900;
+}
+
 :root {
   color-scheme: dark;
   font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
@@ -15,6 +22,7 @@
   --lab-muted: rgba(244, 243, 238, .57);
   --lab-line: rgba(244, 243, 238, .18);
   --lab-panel: rgba(8, 10, 11, .96);
+  --font-brand: "Orbitron", sans-serif;
   font-synthesis: none;
 }
 
@@ -55,7 +63,8 @@ button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible
   border-right: 1px solid var(--lab-line);
   white-space: nowrap;
 }
-.lab-wordmark { font-size: clamp(17px, 2vw, 25px); font-weight: 650; letter-spacing: -.035em; text-transform: lowercase; }
+.lab-wordmark { font-size: clamp(17px, 2vw, 25px); font-weight: 650; text-transform: lowercase; }
+.lab-brand-name { font-family: var(--font-brand); font-weight: 750; letter-spacing: -.02em; }
 .lab-wordmark span { margin-left: 8px; color: var(--lab-paper); text-transform: uppercase; }
 .lab-build { color: var(--lab-muted); font-size: 11px; letter-spacing: .04em; }
 .lab-connected { gap: 8px; color: #51da7b; font-size: 11px; font-weight: 700; letter-spacing: .06em; }
