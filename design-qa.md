@@ -1,3 +1,54 @@
+# Design QA — running topbar product mark
+
+Date: 2026-08-31
+
+## Source and implementation
+
+- Owner browser annotation: replace the running textual `sedicivalvole`
+  wordmark with the logo alone so later navbar copy or LIGHT/DARK/AUTO controls
+  have a truthful allocation.
+- Before, exact Tesla viewport:
+  `/private/tmp/sedicivalvole-topbar-wordmark-before-773x601.png`.
+- After, exact Tesla viewport:
+  `/private/tmp/sedicivalvole-topbar-mark-after-773x601.png`.
+- After, annotated viewport:
+  `/private/tmp/sedicivalvole-topbar-mark-after-702x546.png`.
+- State: running APERTURE with muted QA audio, RED 03 palette, controls awake.
+
+## Required review
+
+- **Identity:** the trigger reuses the packaged project-owned transparent
+  `product-icon-512.png`; it introduces no new asset, licence, font, or remote
+  request. The image remains decorative inside the accessible `Open session
+  report` button.
+- **Tesla geometry:** at `773 × 601`, the former `263 px` wordmark cell becomes
+  a fixed `68 px` control with a centered `44 × 44 px` mark. ENGINE/FLUX moves
+  beside it while telemetry, GPS and REPORT retain their exact prior positions.
+  The resulting open lane between mode and telemetry measures `195 px`.
+- **Annotated geometry:** at `702 × 546`, the same control and image dimensions
+  remain intact, document dimensions stay exact, and the open lane remains
+  `124 px`. At `1280 × 720`, the mark grows to `46 px` inside `72 px` and the
+  open lane is `630 px`.
+- **Future appearance boundary:** no LIGHT/DARK/AUTO control is pre-implemented.
+  X10 owns the eventual control and must swap to a contrast-safe mark variant
+  if the top bar itself adopts LIGHT tokens.
+
+## Interaction and runtime checks
+
+- Flow tested: Signal Gate → Instrument Deck → MUTE + APERTURE → START → wake
+  controls → logo → Session report → CLOSE.
+- The logo opens the report, initial focus lands on `Close session report`, and
+  closing restores focus to `.topbar-mark` exactly.
+- Browser page identity, meaningful content, framework-overlay absence, and
+  console health pass at `773 × 601`, `702 × 546`, and `1280 × 720`; no tested
+  viewport overflows.
+- Twenty-six focused presentation/diagnostic checks and the 130-module
+  production build pass. Deployment is intentionally deferred by the owner.
+
+final result: passed
+
+---
+
 # Design QA — Road Sheet LIGHT Instrument Deck
 
 Date: 2026-08-31

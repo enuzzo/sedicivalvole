@@ -179,7 +179,13 @@ dated study documents.
   controls, operational labels, LAB controls and session-report content under
   OFL-1.1. Its deliberate `400–700` hierarchy and tabular numerals remain intact.
   Orbitron is restored only for exact textual `sedicivalvole` wordmarks in the
-  launch surface, Instrument Deck, running top bar and owner LAB.
+  launch surface, Instrument Deck and owner LAB.
+- The running top bar now uses the existing transparent 16 Road product mark
+  alone as its report trigger. Its fixed `68 px` cell and centered `44 px` mark
+  replace the former `263 px` textual wordmark at `773 × 601`, leaving a measured
+  `195 px` lane before telemetry; the annotated `702 × 546` viewport retains
+  `124 px`. GPS, telemetry and REPORT keep their exact prior positions. Future
+  X10 appearance controls may use this lane but are not silently implemented.
 - The launch wordmark uses Orbitron `750`, responsive `26–32 px` sizing and
   restrained `-0.02em` tracking beside the `42 px` 16 Road mark. `PLAY THE ROAD`
   remains Space Grotesk `600` with zero added tracking. The product band is
