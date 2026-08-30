@@ -1,6 +1,7 @@
 import { ROAD_SPEED_CEILING_KMH } from "../../signal-model.js";
 
 export const PRTCL_SOURCE_COMMIT = "2a22f33b975e2c40b7ee0bdd2d1acb4cee4f5060";
+export const PRTCL_POINT_SCALE_CEILING_KMH = 100;
 
 export const PRTCL_TYPES = Object.freeze({
   frequency: Object.freeze({
@@ -59,6 +60,8 @@ export function prtclMotionProfile({
   reducedMotion = false,
 } = {}) {
   const roadEnergy = clamp(speedKmh, 0, ROAD_SPEED_CEILING_KMH) / ROAD_SPEED_CEILING_KMH;
+  const pointScaleEnergy = clamp(speedKmh, 0, PRTCL_POINT_SCALE_CEILING_KMH)
+    / PRTCL_POINT_SCALE_CEILING_KMH;
   const colourEnergy = reducedMotion ? 0 : clamp(audioLevel);
   const underwater = effect === "UNDERWATER";
   const open = effect === "OPEN";
@@ -68,7 +71,7 @@ export function prtclMotionProfile({
   return {
     roadEnergy,
     colourEnergy,
-    pointScale: 0.82 + roadEnergy * 0.66,
+    pointScale: 0.82 + pointScaleEnergy * 0.66,
     depthScale: (0.86 + roadEnergy * 0.36) * (open ? 1.08 : underwater ? 0.92 : 1),
     travelRate: reducedMotion ? 0 : (0.42 + roadEnergy * 1.34) * motionScale,
     pulse: reducedMotion ? 0 : colourEnergy * (bloom ? 1.28 : underwater ? 0.58 : 1),

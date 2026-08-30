@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 import {
   DEFAULT_PRTCL_SETTINGS,
+  PRTCL_POINT_SCALE_CEILING_KMH,
   PRTCL_SOURCE_COMMIT,
   PRTCL_TYPES,
   nextPrtclTypeId,
@@ -50,6 +51,23 @@ test("road speed owns point scale, depth, and travel while music owns colour and
   assert.equal(music.travelRate, rest.travelRate);
   assert.ok(music.colourEnergy > rest.colourEnergy);
   assert.ok(music.pulse > rest.pulse);
+});
+
+test("point scale grows smoothly to 100 km/h and then holds while other road responses continue", () => {
+  assert.equal(PRTCL_POINT_SCALE_CEILING_KMH, 100);
+  const samples = [0, 20, 40, 60, 80, 100].map((speedKmh) => (
+    prtclMotionProfile({ speedKmh }).pointScale
+  ));
+  for (let index = 1; index < samples.length; index += 1) {
+    assert.ok(samples[index] > samples[index - 1]);
+  }
+  const at100 = prtclMotionProfile({ speedKmh: 100 });
+  const at130 = prtclMotionProfile({ speedKmh: 130 });
+  const aboveRoadLimit = prtclMotionProfile({ speedKmh: 260 });
+  assert.equal(at100.pointScale, at130.pointScale);
+  assert.equal(at130.pointScale, aboveRoadLimit.pointScale);
+  assert.ok(at130.depthScale > at100.depthScale);
+  assert.ok(at130.travelRate > at100.travelRate);
 });
 
 test("OPEN, UNDERWATER, BLOOM, and reduced motion have bounded native responses", () => {
