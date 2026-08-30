@@ -5,23 +5,40 @@ import {
   appendConnectionHistory,
   appendViewportHistory,
   classifyGpsConfidence,
+  createAudioLatencyTelemetry,
+  createDiagnosticEventLedger,
+  createDiagnosticEventReport,
   createDriveTelemetry,
   createDriveTelemetryReport,
   createFrameTelemetry,
   createGpsTelemetry,
+  createLongTaskTelemetry,
+  createNetworkTelemetry,
   createPhasePerformanceTelemetry,
   DRIVE_TRACE_INTERVAL_MS,
   fitDiagnosticReportForTransport,
   inferViewportMode,
+  finishAppNetworkTransfer,
+  readAudioLatencySnapshot,
+  recordAudioLatencySample,
+  recordDiagnosticEvent,
   recordDriveTelemetrySample,
   recordFrameSample,
+  recordLongTask,
+  recordNetworkOnlineState,
+  recordNetworkResourceEntry,
   recordPhaseFrame,
   recordPhaseMemorySample,
   recordGpsSample,
   summarizeFrameTelemetry,
   summarizeGpsTelemetry,
+  summarizeAudioLatencyTelemetry,
+  summarizeLongTaskTelemetry,
+  summarizeNetworkTelemetry,
   summarizePhasePerformanceTelemetry,
+  startAppNetworkTransfer,
 } from "./diagnostics-model.js";
+import { runStorageDiagnostics } from "./storage-diagnostics.js";
 import { FluxField } from "./flux-field.jsx";
 import {
   DEFAULT_FLUX_ENVIRONMENT_ID,
@@ -56,11 +73,6 @@ import {
   nextPrtclTypeId,
   normalizePrtclSettings,
 } from "./environments/prtcl/prtcl-model.js";
-import {
-  DEFAULT_PRIMORDIAL_SETTINGS,
-  PRIMORDIAL_CONTROLS,
-  normalizePrimordialSettings,
-} from "./environments/primordial/primordial-model.js";
 import { atlasGpsPresentation, resolveAtlasHeading } from "./environments/atlas/atlas-model.js";
 import {
   advanceDemoMotion,
@@ -80,8 +92,6 @@ import {
 } from "./support-model.js";
 
 const AtlasField = lazy(() => import("./environments/atlas/atlas-field.jsx"));
-const PrimordialField = lazy(() => import("./environments/primordial/primordial-field.jsx")
-  .then((module) => ({ default: module.PrimordialField })));
 
 /**
  * The lanes the voice preview can audition.
@@ -166,7 +176,6 @@ function readPreferences() {
       )) ? value.genreId : DEFAULT_GENRE_ID,
       driveySettings: normalizeDriveySettings(value?.driveySettings),
       prtclSettings: normalizePrtclSettings(value?.prtclSettings),
-      primordialSettings: normalizePrimordialSettings(value?.primordialSettings),
     };
   } catch {
     return {
@@ -175,7 +184,6 @@ function readPreferences() {
       genreId: DEFAULT_GENRE_ID,
       driveySettings: DEFAULT_DRIVEY_SETTINGS,
       prtclSettings: DEFAULT_PRTCL_SETTINGS,
-      primordialSettings: DEFAULT_PRIMORDIAL_SETTINGS,
     };
   }
 }
@@ -329,13 +337,7 @@ function readPerformanceSnapshot(frameTelemetry, phaseTelemetry, longTaskTelemet
     } : null,
     frame: summarizeFrameTelemetry(frameTelemetry),
     phases: summarizePhasePerformanceTelemetry(phaseTelemetry),
-    longTasks: {
-      supported: longTaskTelemetry.supported,
-      count: longTaskTelemetry.count,
-      totalDurationMs: roundMetric(longTaskTelemetry.totalDurationMs),
-      maximumDurationMs: roundMetric(longTaskTelemetry.maximumDurationMs),
-      recentDurationsMs: longTaskTelemetry.recentDurationsMs.map(roundMetric),
-    },
+    longTasks: summarizeLongTaskTelemetry(longTaskTelemetry),
   };
 }
 
@@ -513,10 +515,11 @@ function DiagnosticReadme() {
       <section>
         <h4>Licensing and source</h4>
         <p>
-          Project code and documentation default to AGPL-3.0-or-later. Brand, screenshots,
-          original audio, and standalone media remain outside that grant unless stated
-          otherwise. Third-party components retain their own licences. Diagnostic text uses
-          IBM Plex Mono under the SIL Open Font License 1.1.
+          Original project code and documentation default to the PolyForm Noncommercial
+          License 1.0.0. This is source-visible noncommercial software, not open source.
+          Brand, screenshots, original audio, and standalone media remain outside that grant
+          unless stated otherwise. Third-party components retain their own licences.
+          Diagnostic text uses IBM Plex Mono under the SIL Open Font License 1.1.
         </p>
         <nav aria-label="Technical source links">
           <a href="https://github.com/enuzzo/sedicivalvole" target="_blank" rel="noreferrer">SOURCE REPOSITORY</a>
@@ -728,69 +731,6 @@ function PrtclCycleControl({ settings, onChange }) {
         </button>
       </div>
     </div>
-  );
-}
-
-function PrimordialTuner({ settings, open, onOpenChange, onChange }) {
-  const values = normalizePrimordialSettings(settings);
-  return (
-    <section
-      className={`primordial-tuner${open ? " is-open" : ""}`}
-      onPointerDown={(event) => event.stopPropagation()}
-      onKeyDown={(event) => {
-        if (event.key !== "Escape" || !open) return;
-        event.preventDefault();
-        event.stopPropagation();
-        onOpenChange(false);
-      }}
-    >
-      <button
-        className="primordial-tuner-trigger"
-        type="button"
-        aria-expanded={open}
-        aria-controls="primordial-tuner-panel"
-        aria-label={open ? "Close PRIMORDIAL tuning" : "Open PRIMORDIAL tuning"}
-        onClick={() => onOpenChange(!open)}
-      >
-        <span>TUNE</span>
-        <small>{open ? "CLOSE" : "FIELD"}</small>
-      </button>
-      {open ? (
-        <div
-          className="primordial-tuner-panel"
-          id="primordial-tuner-panel"
-          role="group"
-          aria-labelledby="primordial-tuner-title"
-        >
-          <header id="primordial-tuner-title">
-            <small>PRIMORDIAL 08</small>
-            <strong>FLUID FIELD</strong>
-          </header>
-          <div className="primordial-tuner-controls">
-            {PRIMORDIAL_CONTROLS.map((control) => (
-              <label className="primordial-tuner-range" key={control.id}>
-                <span>
-                  <strong>{control.label}</strong>
-                  <output>{values[control.id].toFixed(2)}</output>
-                </span>
-                <input
-                  type="range"
-                  aria-label={`PRIMORDIAL ${control.label}`}
-                  min={control.min}
-                  max={control.max}
-                  step={control.step}
-                  value={values[control.id]}
-                  onChange={(event) => onChange(normalizePrimordialSettings({
-                    ...values,
-                    [control.id]: Number(event.currentTarget.value),
-                  }))}
-                />
-              </label>
-            ))}
-          </div>
-        </div>
-      ) : null}
-    </section>
   );
 }
 
@@ -1053,8 +993,6 @@ export function App() {
   const [environmentId, setEnvironmentId] = useState(initialPreferences.environmentId);
   const [driveySettings, setDriveySettings] = useState(initialPreferences.driveySettings);
   const [prtclSettings, setPrtclSettings] = useState(initialPreferences.prtclSettings);
-  const [primordialSettings, setPrimordialSettings] = useState(initialPreferences.primordialSettings);
-  const [primordialTunerOpen, setPrimordialTunerOpen] = useState(false);
   const [environmentRuntimeError, setEnvironmentRuntimeError] = useState(null);
   const [genreId, setGenreId] = useState(initialPreferences.genreId);
   const [environmentPickerOpen, setEnvironmentPickerOpen] = useState(false);
@@ -1106,14 +1044,10 @@ export function App() {
   const performancePhaseRef = useRef("splash:idle");
   const connectionHistoryRef = useRef([]);
   const diagnosticsActiveRef = useRef(false);
-  const longTaskTelemetryRef = useRef({
-    supported: false,
-    count: 0,
-    totalDurationMs: 0,
-    maximumDurationMs: null,
-    recentDurationsMs: [],
-  });
-  const diagnosticEventsRef = useRef([]);
+  const longTaskTelemetryRef = useRef(createLongTaskTelemetry(false));
+  const audioLatencyTelemetryRef = useRef(createAudioLatencyTelemetry());
+  const networkTelemetryRef = useRef(createNetworkTelemetry(performance.now()));
+  const diagnosticEventsRef = useRef(createDiagnosticEventLedger());
   const runtimeIssuesRef = useRef([]);
   const latestGpsObservationRef = useRef({ capturedAtMs: null, speedKmh: null });
   const mapPositionUpdatedAtRef = useRef(0);
@@ -1123,7 +1057,6 @@ export function App() {
   const audioLevelRef = useRef(audioLevel);
   const environmentIdRef = useRef(environmentId);
   const prtclSettingsRef = useRef(prtclSettings);
-  const primordialSettingsRef = useRef(primordialSettings);
   const genreIdRef = useRef(genreId);
   const rendererRef = useRef(renderer);
   const drawerOpenRef = useRef(drawerOpen);
@@ -1142,7 +1075,7 @@ export function App() {
     || environmentPickerOpen
     || scorePickerOpen
     || supportOpen;
-  const controlsPinned = modalOpen || primordialTunerOpen;
+  const controlsPinned = modalOpen;
   const closeVoicePreview = useCallback(() => {
     setPreviewOpen(false);
     setDrawerOpen(true);
@@ -1157,7 +1090,6 @@ export function App() {
   audioLevelRef.current = audioLevel;
   environmentIdRef.current = environmentId;
   prtclSettingsRef.current = prtclSettings;
-  primordialSettingsRef.current = primordialSettings;
   genreIdRef.current = genreId;
   rendererRef.current = renderer;
   drawerOpenRef.current = drawerOpen;
@@ -1172,12 +1104,12 @@ export function App() {
     : `splash:${phase}`;
 
   const logDiagnosticEvent = useCallback((type, detail = {}) => {
-    diagnosticEventsRef.current = [...diagnosticEventsRef.current, {
+    recordDiagnosticEvent(diagnosticEventsRef.current, {
       at: new Date().toISOString(),
       elapsedMs: Math.round((performance.now() - sessionStartedAtRef.current) * 10) / 10,
       type,
       detail,
-    }].slice(-240);
+    }, { sample: type === "gps.sample" });
   }, []);
 
   const recordRenderedFrame = useCallback((capturedAtMs, targetFrameMs, frameRenderer, canvasWidth, canvasHeight) => {
@@ -1602,20 +1534,20 @@ export function App() {
     setSupportOpen(false);
     sessionStartedAtRef.current = performance.now();
     diagnosticsActiveRef.current = true;
-    diagnosticEventsRef.current = [];
+    diagnosticEventsRef.current = createDiagnosticEventLedger();
     runtimeIssuesRef.current = [];
     frameTelemetryRef.current = createFrameTelemetry(performance.now());
     driveTelemetryRef.current = createDriveTelemetry(performance.now());
+    networkTelemetryRef.current = createNetworkTelemetry(performance.now());
+    recordNetworkOnlineState(networkTelemetryRef.current, {
+      online: navigator.onLine,
+      capturedAtMs: performance.now(),
+    });
+    audioLatencyTelemetryRef.current = createAudioLatencyTelemetry();
     latestGpsObservationRef.current = { capturedAtMs: null, speedKmh: null };
     setFlightRecorderRevision((revision) => revision + 1);
     connectionHistoryRef.current = [readConnectionSnapshot("harness-start")];
-    longTaskTelemetryRef.current = {
-      ...longTaskTelemetryRef.current,
-      count: 0,
-      totalDurationMs: 0,
-      maximumDurationMs: null,
-      recentDurationsMs: [],
-    };
+    longTaskTelemetryRef.current = createLongTaskTelemetry(longTaskTelemetryRef.current.supported);
     logDiagnosticEvent("harness.started");
     setPhase("testing");
     wakeControls();
@@ -1668,6 +1600,8 @@ export function App() {
     const display = readDisplaySnapshot("harness-start");
     const connection = navigator.connection ?? navigator.mozConnection ?? navigator.webkitConnection;
     const context = audioRef.current?.context;
+    const audioLatency = readAudioLatencySnapshot(context, performance.now());
+    recordAudioLatencySample(audioLatencyTelemetryRef.current, audioLatency);
     setDiagnostics({
       display,
       viewportHistory: [display],
@@ -1676,8 +1610,7 @@ export function App() {
         available: Boolean(context),
         state: context?.state ?? "unavailable",
         sampleRate: context?.sampleRate ?? null,
-        baseLatencyMs: Number.isFinite(context?.baseLatency) ? context.baseLatency * 1000 : null,
-        outputLatencyMs: Number.isFinite(context?.outputLatency) ? context.outputLatency * 1000 : null,
+        ...audioLatency,
         audioWorklet: Boolean(context?.audioWorklet),
       },
       capabilities: {
@@ -1708,10 +1641,16 @@ export function App() {
         userAgent: navigator.userAgent,
       },
     });
-    readExtendedCapabilities().then((extendedCapabilities) => {
+    Promise.all([
+      readExtendedCapabilities(),
+      runStorageDiagnostics({
+        identity: { version: APP_VERSION, build: APP_BUILD, commit: APP_COMMIT },
+        requestPersistence: true,
+      }),
+    ]).then(([extendedCapabilities, storageDiagnostics]) => {
       setDiagnostics((current) => current ? {
         ...current,
-        capabilities: { ...current.capabilities, ...extendedCapabilities },
+        capabilities: { ...current.capabilities, ...extendedCapabilities, storageDiagnostics },
       } : current);
     });
     window.setTimeout(() => {
@@ -1768,12 +1707,25 @@ export function App() {
     const observer = new PerformanceObserver((list) => {
       if (!diagnosticsActiveRef.current) return;
       for (const entry of list.getEntries()) {
-        const duration = Number.isFinite(entry.duration) ? entry.duration : 0;
-        const telemetry = longTaskTelemetryRef.current;
-        telemetry.count += 1;
-        telemetry.totalDurationMs += duration;
-        telemetry.maximumDurationMs = Math.max(telemetry.maximumDurationMs ?? duration, duration);
-        telemetry.recentDurationsMs = [...telemetry.recentDurationsMs, duration].slice(-60);
+        const observedAtMs = performance.now();
+        const gpsCapturedAtMs = latestGpsObservationRef.current.capturedAtMs;
+        const connection = readConnectionSnapshot("long-task");
+        recordLongTask(longTaskTelemetryRef.current, {
+          startTimeMs: entry.startTime,
+          durationMs: entry.duration,
+          observedAtMs,
+          phase: performancePhaseRef.current,
+          renderer: rendererRef.current,
+          visual: environmentIdRef.current,
+          music: genreIdRef.current,
+          speedKmh: speedRef.current,
+          gpsState: gpsStateRef.current,
+          gpsSampleAgeMs: Number.isFinite(gpsCapturedAtMs) ? observedAtMs - gpsCapturedAtMs : null,
+          audioState: audioRef.current?.context?.state ?? null,
+          online: connection.online,
+          effectiveType: connection.effectiveType,
+          visibility: document.visibilityState,
+        });
       }
     });
     observer.observe({ entryTypes: ["longtask"] });
@@ -1793,6 +1745,10 @@ export function App() {
         audioDecodedPcmBytes: audioState?.decodedPcmBytes,
         audioBankBytes: audioState?.bankBytes,
       });
+      recordAudioLatencySample(
+        audioLatencyTelemetryRef.current,
+        readAudioLatencySnapshot(audioRef.current?.context, performance.now()),
+      );
     };
     captureMemory();
     performanceSamplerTimerRef.current = window.setInterval(captureMemory, DRIVE_TRACE_INTERVAL_MS);
@@ -1807,6 +1763,10 @@ export function App() {
     const capture = (reason) => {
       if (!diagnosticsActiveRef.current) return;
       const snapshot = readConnectionSnapshot(reason);
+      recordNetworkOnlineState(networkTelemetryRef.current, {
+        online: snapshot.online,
+        capturedAtMs: performance.now(),
+      });
       connectionHistoryRef.current = appendConnectionHistory(connectionHistoryRef.current, snapshot);
       logDiagnosticEvent("network.changed", {
         reason,
@@ -1831,6 +1791,20 @@ export function App() {
       document.removeEventListener("visibilitychange", onVisibility);
     };
   }, [logDiagnosticEvent]);
+
+  useEffect(() => {
+    const supported = typeof PerformanceObserver !== "undefined"
+      && PerformanceObserver.supportedEntryTypes?.includes("resource");
+    if (!supported) return undefined;
+    const observer = new PerformanceObserver((list) => {
+      if (!diagnosticsActiveRef.current) return;
+      for (const entry of list.getEntries()) {
+        recordNetworkResourceEntry(networkTelemetryRef.current, entry);
+      }
+    });
+    observer.observe({ type: "resource", buffered: true });
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const retainIssue = (type, detail) => {
@@ -1959,12 +1933,11 @@ export function App() {
         genreId,
         driveySettings: normalizeDriveySettings(driveySettings),
         prtclSettings: normalizePrtclSettings(prtclSettings),
-        primordialSettings: normalizePrimordialSettings(primordialSettings),
       }));
     } catch {
       // Preference persistence is optional.
     }
-  }, [driveySettings, environmentId, genreId, primordialSettings, prtclSettings, themeId]);
+  }, [driveySettings, environmentId, genreId, prtclSettings, themeId]);
 
   const captureViewport = useCallback((reason) => {
     const snapshot = readDisplaySnapshot(reason);
@@ -2102,9 +2075,6 @@ export function App() {
       particleType: environmentIdRef.current === "prtcl"
         ? normalizePrtclSettings(prtclSettingsRef.current).type
         : null,
-      primordialSettings: environmentIdRef.current === "primordial"
-        ? normalizePrimordialSettings(primordialSettingsRef.current)
-        : null,
       muted: mutedRef.current,
       arrangement: audioRef.current?.getState() ?? null,
     },
@@ -2132,6 +2102,7 @@ export function App() {
       ...diagnostics.audio,
       state: audioRef.current?.context.state ?? diagnostics.audio.state,
       level: Math.round(audioLevelRef.current * 1000) / 1000,
+      latencyHistory: summarizeAudioLatencyTelemetry(audioLatencyTelemetryRef.current),
     },
     gps: {
       state: gpsStateRef.current,
@@ -2148,6 +2119,7 @@ export function App() {
       current: readConnectionSnapshot("report-generated"),
       history: connectionHistoryRef.current,
       rawCellularSignalStrengthAvailable: false,
+      observedSessionTraffic: summarizeNetworkTelemetry(networkTelemetryRef.current, performance.now()),
     },
     performance: readPerformanceSnapshot(
       frameTelemetryRef.current,
@@ -2157,7 +2129,8 @@ export function App() {
     ),
     flightRecorder: createDriveTelemetryReport(driveTelemetryRef.current, performance.now()),
     runtimeIssues: runtimeIssuesRef.current,
-    events: diagnosticEventsRef.current,
+    events: createDiagnosticEventReport(diagnosticEventsRef.current).events,
+    eventRetention: createDiagnosticEventReport(diagnosticEventsRef.current).retention,
     privacy: {
       // These three legacy fields describe the diagnostic payload itself. ATLAS
       // location use is disclosed separately without ever serializing a point.
@@ -2200,23 +2173,34 @@ export function App() {
   const sendDiagnostic = useCallback(async () => {
     const freshReport = buildDiagnosticReport();
     if (!freshReport || sendState === "sending") return;
+    const transferId = `diagnostic-${Date.now()}`;
     setSendState("sending");
     setSendErrorCode(null);
     logDiagnosticEvent("diagnostic-send.requested");
+    const eventReport = createDiagnosticEventReport(diagnosticEventsRef.current);
     try {
       const reportToSend = fitDiagnosticReportForTransport({
         ...freshReport,
         generatedAt: new Date().toISOString(),
         flightRecorder: createDriveTelemetryReport(driveTelemetryRef.current, performance.now()),
         runtimeIssues: runtimeIssuesRef.current,
-        events: diagnosticEventsRef.current,
+        events: eventReport.events,
+        eventRetention: eventReport.retention,
+      });
+      const body = JSON.stringify({ schema: reportToSend.schema, report: reportToSend });
+      startAppNetworkTransfer(networkTelemetryRef.current, {
+        id: transferId,
+        direction: "upload",
+        startedAtMs: performance.now(),
+        knownBytes: new TextEncoder().encode(body).byteLength,
+        label: "send-diagnostic",
       });
       const response = await fetch(`${import.meta.env.BASE_URL}api/send-diagnostic.php`, {
         method: "POST",
         credentials: "same-origin",
         cache: "no-store",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ schema: reportToSend.schema, report: reportToSend }),
+        body,
       });
       const result = await response.json().catch(() => null);
       if (!response.ok || result?.ok !== true) {
@@ -2224,9 +2208,21 @@ export function App() {
         error.code = typeof result?.status === "string" ? result.status : "network_error";
         throw error;
       }
+      finishAppNetworkTransfer(networkTelemetryRef.current, {
+        id: transferId,
+        endedAtMs: performance.now(),
+        success: true,
+      });
       setSendState("sent");
       logDiagnosticEvent("diagnostic-send.accepted", { status: result.status });
     } catch (error) {
+      if (networkTelemetryRef.current.activeTransfers[transferId]) {
+        finishAppNetworkTransfer(networkTelemetryRef.current, {
+          id: transferId,
+          endedAtMs: performance.now(),
+          success: false,
+        });
+      }
       const errorCode = typeof error?.code === "string" ? error.code : "network_error";
       setSendState("error");
       setSendErrorCode(errorCode);
@@ -2251,7 +2247,6 @@ export function App() {
 
   useEffect(() => {
     setEnvironmentRuntimeError(null);
-    setPrimordialTunerOpen(false);
   }, [environmentId]);
 
   return (
@@ -2332,21 +2327,6 @@ export function App() {
               onFrame={recordRenderedFrame}
               onRuntimeError={handleEnvironmentError}
             />
-          ) : environment.renderer === "primordial" ? (
-            <Suspense fallback={<div className="field-failure"><strong>PRIMORDIAL</strong><span>Loading fluid field</span></div>}>
-              <PrimordialField
-                speed={speed}
-                musicLevel={audioLevel}
-                bpm={transportBpm}
-                theme={theme}
-                settings={primordialSettings}
-                reducedMotion={reducedMotion}
-                effect={activeEffect}
-                onRenderer={setRenderer}
-                onFrame={recordRenderedFrame}
-                onRuntimeError={handleEnvironmentError}
-              />
-            </Suspense>
           ) : (
             <FluxField
               energy={energy}
@@ -2373,17 +2353,6 @@ export function App() {
         <PrtclCycleControl
           settings={prtclSettings}
           onChange={(value) => setPrtclSettings(normalizePrtclSettings(value))}
-        />
-      ) : null}
-      {phase === "running" && environment.renderer === "primordial" ? (
-        <PrimordialTuner
-          settings={primordialSettings}
-          open={primordialTunerOpen}
-          onOpenChange={(open) => {
-            setPrimordialTunerOpen(open);
-            wakeControls();
-          }}
-          onChange={setPrimordialSettings}
         />
       ) : null}
       {keyboardHint ? <div className="keyboard-hint" role="status">{keyboardHint}</div> : null}
@@ -2665,6 +2634,13 @@ export function App() {
                       <InstrumentMetric label="ARRANGEMENT" value={scoreScene} detail={`${scoreStateRef.current?.rhythmLabel ?? (scoreStateRef.current?.halfTime ? "half-time" : "full break")} · ${scoreStateRef.current?.section ?? "—"}`} />
                       <InstrumentMetric label="TACTUS / TRANSPORT" value={bpm == null ? "CLOCKLESS" : `${Math.round(bpm)} BPM`} detail={`${Math.round(transportBpm)} BPM transport · ${scoreStateRef.current?.chord ?? "—"}`} />
                       <InstrumentMetric label="WEB AUDIO" value={diagnostics?.audio.state || "—"} detail={muted ? "output muted" : `output level ${audioLevel}`} />
+                      <InstrumentMetric
+                        label="OUTPUT LATENCY"
+                        value={diagnosticReport?.audio.latencyHistory.latest?.outputLatencyStatus === "reported-positive"
+                          ? `${Math.round(diagnosticReport.audio.latencyHistory.latest.outputLatencyMs)} ms`
+                          : diagnosticReport?.audio.latencyHistory.latest?.outputLatencyStatus?.toUpperCase() || "UNAVAILABLE"}
+                        detail={`${diagnosticReport?.audio.latencyHistory.retainedSamples ?? 0} bounded readings · browser reported`}
+                      />
                       <InstrumentMetric label="JAVASCRIPT HEAP" value={currentUsedHeapMb == null ? "UNAVAILABLE" : `${currentUsedHeapMb} MB`} detail="browser-exposed current phase" />
                       <InstrumentMetric label="DECODED AUDIO" value={currentDecodedAudioMb == null ? "UNAVAILABLE" : `${currentDecodedAudioMb} MB`} detail="bounded PCM cache" />
                     </dl>
@@ -2675,6 +2651,32 @@ export function App() {
                     <dl>
                       <InstrumentMetric label="FLIGHT RECORDER" value={`${diagnosticReport?.flightRecorder.summary.retainedSamples ?? "—"} SAMPLES`} detail={`${Math.round((diagnosticReport?.flightRecorder.summary.sessionDurationMs ?? 0) / 1000)} s bounded session`} />
                       <InstrumentMetric label="NETWORK" value={diagnosticReport?.network.current.effectiveType || (diagnosticReport?.network.current.online ? "online" : "offline") || "—"} detail={`${diagnosticReport?.network.current.roundTripTimeMs ?? "—"} ms RTT`} />
+                      <InstrumentMetric
+                        label="OBSERVED DATA"
+                        value={`${Math.round((diagnosticReport?.network.observedSessionTraffic.observedDownloadBytes ?? 0) / 104857.6) / 10} MB ↓ · ${Math.round((diagnosticReport?.network.observedSessionTraffic.observedUploadBytes ?? 0) / 104857.6) / 10} MB ↑`}
+                        detail={`${diagnosticReport?.network.observedSessionTraffic.unobservableResourceEntries ?? 0} cache/opaque/unavailable entries excluded`}
+                      />
+                      <InstrumentMetric
+                        label="CURRENT / PEAK"
+                        value={`${Math.round((diagnosticReport?.network.observedSessionTraffic.currentDownloadBytesPerSecond ?? 0) / 1024)} / ${Math.round((diagnosticReport?.network.observedSessionTraffic.peakDownloadBytesPerSecond ?? 0) / 1024)} KB/s ↓`}
+                        detail={`${Math.round((diagnosticReport?.network.observedSessionTraffic.currentUploadBytesPerSecond ?? 0) / 1024)} / ${Math.round((diagnosticReport?.network.observedSessionTraffic.peakUploadBytesPerSecond ?? 0) / 1024)} KB/s ↑ · app/session only`}
+                      />
+                      <InstrumentMetric
+                        label="PERSISTENT CANARY"
+                        value={diagnosticReport?.capabilities.storageDiagnostics?.indexedDbStatus?.toUpperCase() || "PENDING"}
+                        detail={diagnosticReport?.capabilities.storageDiagnostics?.canary
+                          ? `${diagnosticReport.capabilities.storageDiagnostics.canary.seenCount} visits · ${Math.round(diagnosticReport.capabilities.storageDiagnostics.canary.ageMs / 3600000)} h old · persist ${diagnosticReport.capabilities.storageDiagnostics.persistence.granted ? "granted" : "not granted"}`
+                          : "IndexedDB read/write evidence unavailable"}
+                      />
+                      <InstrumentMetric
+                        label="LONG TASKS"
+                        value={diagnosticReport?.performance.longTasks.supported
+                          ? `${diagnosticReport.performance.longTasks.count} OBSERVED`
+                          : "UNAVAILABLE"}
+                        detail={diagnosticReport?.performance.longTasks.maximumDurationMs == null
+                          ? "phase attribution has no reading"
+                          : `${Math.round(diagnosticReport.performance.longTasks.maximumDurationMs)} ms max · phase retained`}
+                      />
                       <InstrumentMetric label="PAYLOAD" value={`${Math.round(diagnosticPayloadBytes / 1024)} KB`} detail="complete report before fitting" />
                       <InstrumentMetric label="IDENTITY" value={`v${APP_VERSION} · ${APP_COMMIT}`} detail={`build ${APP_BUILD}`} />
                     </dl>

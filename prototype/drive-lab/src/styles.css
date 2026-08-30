@@ -168,121 +168,6 @@ button { -webkit-tap-highlight-color: transparent; }
 .visual-cycle-button:focus-visible,
 .visual-render-toggle[aria-pressed="true"] { background: rgba(5, 7, 7, .96); border-color: var(--accent); outline: none; }
 
-.primordial-field-canvas { touch-action: none; }
-.primordial-tuner {
-  position: absolute;
-  top: 82px;
-  left: 16px;
-  z-index: 11;
-  width: 232px;
-  color: var(--paper);
-}
-.primordial-tuner-trigger {
-  display: grid;
-  grid-template-columns: auto auto;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  width: 94px;
-  min-height: 44px;
-  padding: 0 8px;
-  color: var(--paper);
-  background: rgba(5, 7, 7, .76);
-  border: 1px solid color-mix(in srgb, var(--accent) 42%, rgba(238, 234, 224, .28));
-  border-radius: 2px;
-  font-family: var(--font-ui);
-  cursor: pointer;
-  backdrop-filter: blur(10px);
-}
-.primordial-tuner-trigger > span {
-  font-size: 7.5px;
-  font-weight: var(--font-weight-label);
-  letter-spacing: .12em;
-}
-.primordial-tuner-trigger > small {
-  overflow: hidden;
-  color: var(--accent);
-  font-size: 8px;
-  font-weight: var(--font-weight-control);
-  letter-spacing: .035em;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.primordial-tuner-trigger:hover,
-.primordial-tuner-trigger:focus-visible,
-.primordial-tuner-trigger[aria-expanded="true"] {
-  background: rgba(5, 7, 7, .96);
-  border-color: var(--accent);
-  outline: none;
-}
-.primordial-tuner-panel {
-  width: 232px;
-  max-height: calc(100dvh - 210px);
-  margin-top: 4px;
-  overflow: auto;
-  border: 1px solid color-mix(in srgb, var(--accent) 34%, rgba(238, 234, 224, .22));
-  border-radius: 2px;
-  background: rgba(7, 9, 9, .94);
-  box-shadow: 0 18px 52px rgba(0, 0, 0, .48);
-  backdrop-filter: blur(12px);
-  overscroll-behavior: contain;
-  scrollbar-color: rgba(238, 234, 224, .32) transparent;
-  scrollbar-width: thin;
-}
-.primordial-tuner-panel::-webkit-scrollbar { width: 5px; }
-.primordial-tuner-panel::-webkit-scrollbar-thumb {
-  border-radius: 5px;
-  background: rgba(238, 234, 224, .28);
-}
-.primordial-tuner-panel > header {
-  display: grid;
-  gap: 3px;
-  padding: 10px;
-  border-bottom: 1px solid rgba(238, 234, 224, .16);
-}
-.primordial-tuner-panel > header small {
-  color: var(--accent);
-  font-size: 6.5px;
-  font-weight: var(--font-weight-label);
-  letter-spacing: .12em;
-}
-.primordial-tuner-panel > header strong {
-  font-size: 11px;
-  font-weight: var(--font-weight-control);
-  letter-spacing: .08em;
-}
-.primordial-tuner-controls { display: grid; padding: 2px 10px 8px; }
-.primordial-tuner-range {
-  display: grid;
-  gap: 3px;
-  margin: 0;
-  padding: 6px 0;
-  border-bottom: 1px solid rgba(238, 234, 224, .12);
-}
-.primordial-tuner-range:last-child { border-bottom: 0; }
-.primordial-tuner-range > span {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 10px;
-}
-.primordial-tuner-range strong {
-  color: rgba(238, 234, 224, .68);
-  font-size: 7px;
-  font-weight: var(--font-weight-label);
-  letter-spacing: .11em;
-  text-transform: uppercase;
-}
-.primordial-tuner-range output { color: var(--paper); font: 9px/1 var(--font-data); }
-.primordial-tuner-range input {
-  width: 100%;
-  min-height: 32px;
-  margin: 0;
-  accent-color: var(--accent);
-  cursor: pointer;
-  touch-action: manipulation;
-}
-
 .splash, .experience { position: absolute; inset: 0; z-index: 4; }
 .splash {
   z-index: 20;
@@ -495,13 +380,10 @@ button { -webkit-tap-highlight-color: transparent; }
 
 .experience { opacity: 0; visibility: hidden; transition: opacity 460ms ease, visibility 460ms; }
 .phase-running .experience { opacity: 1; visibility: visible; }
-.app[data-environment="atlas"] .experience,
-.app[data-environment="primordial"] .experience { z-index: 8; pointer-events: none; }
+.app[data-environment="atlas"] .experience { z-index: 8; pointer-events: none; }
 .app[data-environment="atlas"].controls-awake .experience .control-layer,
-.app[data-environment="primordial"].controls-awake .experience .control-layer,
 .app[data-environment="atlas"] .experience .gps-help-popover,
-.app[data-environment="atlas"] .experience .source-readout,
-.app[data-environment="primordial"] .experience .source-readout { pointer-events: auto; }
+.app[data-environment="atlas"] .experience .source-readout { pointer-events: auto; }
 .control-layer {
   transition:
     opacity 480ms ease,
@@ -1590,9 +1472,7 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
 
 @media (max-width: 650px) {
   .drivey-cycle-control,
-  .prtcl-cycle-control,
-  .primordial-tuner { top: 76px; left: 12px; }
-  .primordial-tuner-panel { max-height: calc(100dvh - 210px); }
+  .prtcl-cycle-control { top: 76px; left: 12px; }
   .atlas-field { --atlas-panel-width: 190px; }
   .atlas-panel { width: 190px; bottom: 224px; padding: 14px 11px 9px; }
   .atlas-selected-context { gap: 6px; }
@@ -1601,10 +1481,6 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
   .atlas-places button { min-height: 31px; }
   .atlas-qr { grid-template-columns: 52px 1fr; }
   .atlas-qr img { width: 52px; height: 52px; }
-}
-
-@media (max-width: 650px) and (min-height: 481px) {
-  .primordial-tuner-panel { max-height: calc(100dvh - 360px); }
 }
 
 /* A short landscape viewport is still a driving surface, not a portrait phone.

@@ -285,6 +285,304 @@ export function appendConnectionHistory(history, snapshot, limit = 60) {
   return [...history, snapshot].slice(-limit);
 }
 
+export const DIAGNOSTIC_SIGNIFICANT_EVENT_LIMIT = 120;
+export const DIAGNOSTIC_SAMPLE_EVENT_LIMIT = 120;
+
+export function createDiagnosticEventLedger() {
+  return {
+    significant: [],
+    samples: [],
+    totalSignificant: 0,
+    totalSamples: 0,
+    discardedSignificant: 0,
+    discardedSamples: 0,
+  };
+}
+
+export function recordDiagnosticEvent(ledger, event, { sample = false } = {}) {
+  const channel = sample ? "samples" : "significant";
+  const totalKey = sample ? "totalSamples" : "totalSignificant";
+  const discardedKey = sample ? "discardedSamples" : "discardedSignificant";
+  const limit = sample ? DIAGNOSTIC_SAMPLE_EVENT_LIMIT : DIAGNOSTIC_SIGNIFICANT_EVENT_LIMIT;
+  ledger[totalKey] += 1;
+  ledger[channel].push({ ...event, priority: sample ? "sample" : "significant" });
+  if (ledger[channel].length > limit) {
+    const overflow = ledger[channel].length - limit;
+    ledger[channel].splice(0, overflow);
+    ledger[discardedKey] += overflow;
+  }
+  return ledger;
+}
+
+export function createDiagnosticEventReport(ledger) {
+  const events = [...ledger.significant, ...ledger.samples]
+    .sort((left, right) => (left.elapsedMs ?? 0) - (right.elapsedMs ?? 0));
+  return {
+    events,
+    retention: {
+      significantLimit: DIAGNOSTIC_SIGNIFICANT_EVENT_LIMIT,
+      sampleLimit: DIAGNOSTIC_SAMPLE_EVENT_LIMIT,
+      totalSignificant: ledger.totalSignificant,
+      retainedSignificant: ledger.significant.length,
+      discardedSignificant: ledger.discardedSignificant,
+      totalSamples: ledger.totalSamples,
+      retainedSamples: ledger.samples.length,
+      discardedSamples: ledger.discardedSamples,
+    },
+  };
+}
+
+export function createLongTaskTelemetry(supported = false) {
+  return {
+    supported,
+    count: 0,
+    totalDurationMs: 0,
+    maximumDurationMs: null,
+    recentTasks: [],
+  };
+}
+
+export function recordLongTask(telemetry, task, limit = 60) {
+  const durationMs = Number.isFinite(task?.durationMs) ? Math.max(0, task.durationMs) : 0;
+  telemetry.count += 1;
+  telemetry.totalDurationMs += durationMs;
+  telemetry.maximumDurationMs = Math.max(telemetry.maximumDurationMs ?? durationMs, durationMs);
+  telemetry.recentTasks.push({
+    startTimeMs: rounded(task?.startTimeMs, 2),
+    durationMs: rounded(durationMs, 2),
+    observedAtMs: rounded(task?.observedAtMs, 2),
+    phase: normalizePerformancePhase(task?.phase),
+    renderer: typeof task?.renderer === "string" ? task.renderer.slice(0, 120) : null,
+    visual: typeof task?.visual === "string" ? task.visual.slice(0, 32) : null,
+    music: typeof task?.music === "string" ? task.music.slice(0, 32) : null,
+    speedKmh: rounded(task?.speedKmh, 1),
+    gpsState: typeof task?.gpsState === "string" ? task.gpsState.slice(0, 40) : null,
+    gpsSampleAgeMs: rounded(task?.gpsSampleAgeMs, 0),
+    audioState: typeof task?.audioState === "string" ? task.audioState.slice(0, 40) : null,
+    online: typeof task?.online === "boolean" ? task.online : null,
+    effectiveType: typeof task?.effectiveType === "string" ? task.effectiveType.slice(0, 20) : null,
+    visibility: typeof task?.visibility === "string" ? task.visibility.slice(0, 20) : null,
+  });
+  if (telemetry.recentTasks.length > limit) {
+    telemetry.recentTasks.splice(0, telemetry.recentTasks.length - limit);
+  }
+  return telemetry;
+}
+
+export function summarizeLongTaskTelemetry(telemetry) {
+  return {
+    supported: telemetry.supported,
+    count: telemetry.count,
+    totalDurationMs: rounded(telemetry.totalDurationMs, 2),
+    maximumDurationMs: rounded(telemetry.maximumDurationMs, 2),
+    retainedTasks: telemetry.recentTasks.length,
+    recentTasks: telemetry.recentTasks.map((task) => ({ ...task })),
+  };
+}
+
+export function readAudioLatencySnapshot(context, capturedAtMs = 0) {
+  const baseLatencyMs = Number.isFinite(context?.baseLatency) && context.baseLatency >= 0
+    ? context.baseLatency * 1000
+    : null;
+  const outputLatencyPropertyAvailable = Boolean(context && "outputLatency" in context);
+  const outputLatencyMs = outputLatencyPropertyAvailable
+    && Number.isFinite(context.outputLatency)
+    && context.outputLatency >= 0
+    ? context.outputLatency * 1000
+    : null;
+  return {
+    capturedAtMs: rounded(capturedAtMs, 2),
+    baseLatencyMs: rounded(baseLatencyMs, 3),
+    outputLatencyPropertyAvailable,
+    outputLatencyMs: rounded(outputLatencyMs, 3),
+    outputLatencyStatus: outputLatencyMs == null
+      ? "unavailable"
+      : outputLatencyMs === 0 ? "reported-zero" : "reported-positive",
+  };
+}
+
+export function createAudioLatencyTelemetry() {
+  return { samples: [], totalSamples: 0 };
+}
+
+export function recordAudioLatencySample(telemetry, snapshot, limit = 60) {
+  telemetry.totalSamples += 1;
+  telemetry.samples.push(snapshot);
+  if (telemetry.samples.length > limit) telemetry.samples.splice(0, telemetry.samples.length - limit);
+  return telemetry;
+}
+
+export function summarizeAudioLatencyTelemetry(telemetry) {
+  const reported = telemetry.samples.map((sample) => sample.outputLatencyMs).filter(Number.isFinite);
+  return {
+    totalSamples: telemetry.totalSamples,
+    retainedSamples: telemetry.samples.length,
+    latest: telemetry.samples.at(-1) ?? null,
+    minimumReportedOutputLatencyMs: reported.length ? Math.min(...reported) : null,
+    maximumReportedOutputLatencyMs: reported.length ? Math.max(...reported) : null,
+    reportedZeroSamples: telemetry.samples.filter((sample) => sample.outputLatencyStatus === "reported-zero").length,
+    samples: telemetry.samples.map((sample) => ({ ...sample })),
+  };
+}
+
+export function createNetworkTelemetry(startedAtMs = 0) {
+  return {
+    startedAtMs,
+    resourceEntries: 0,
+    observedDownloadBytes: 0,
+    observedUploadBytes: 0,
+    attemptedUploadBytes: 0,
+    unobservableResourceEntries: 0,
+    appRequests: 0,
+    failedAppRequests: 0,
+    recoveries: 0,
+    latestFailureAtMs: null,
+    latestRecoveryAtMs: null,
+    online: null,
+    activeTransfers: {},
+    recentTransfers: [],
+    peakDownloadBytesPerSecond: 0,
+    peakUploadBytesPerSecond: 0,
+  };
+}
+
+function retainNetworkTransfer(telemetry, transfer, limit = 80) {
+  telemetry.recentTransfers.push(transfer);
+  if (telemetry.recentTransfers.length > limit) {
+    telemetry.recentTransfers.splice(0, telemetry.recentTransfers.length - limit);
+  }
+}
+
+export function recordNetworkResourceEntry(telemetry, entry) {
+  telemetry.resourceEntries += 1;
+  const bytes = Number.isFinite(entry?.transferSize) && entry.transferSize > 0
+    ? entry.transferSize
+    : 0;
+  const durationMs = Number.isFinite(entry?.duration) ? Math.max(0, entry.duration) : 0;
+  const endedAtMs = Number.isFinite(entry?.responseEnd)
+    ? entry.responseEnd
+    : (Number(entry?.startTime) || 0) + durationMs;
+  if (bytes === 0) {
+    telemetry.unobservableResourceEntries += 1;
+    return telemetry;
+  }
+  telemetry.observedDownloadBytes += bytes;
+  const rate = durationMs > 0 ? bytes / (durationMs / 1000) : 0;
+  telemetry.peakDownloadBytesPerSecond = Math.max(telemetry.peakDownloadBytesPerSecond, rate);
+  retainNetworkTransfer(telemetry, {
+    direction: "download",
+    source: "resource-timing-transfer-size",
+    bytes,
+    durationMs: rounded(durationMs, 2),
+    endedAtMs: rounded(endedAtMs, 2),
+    initiatorType: typeof entry?.initiatorType === "string" ? entry.initiatorType.slice(0, 24) : "other",
+  });
+  return telemetry;
+}
+
+export function startAppNetworkTransfer(telemetry, {
+  id,
+  direction,
+  startedAtMs,
+  knownBytes = null,
+  label = "app-request",
+}) {
+  if (!id || !["upload", "download"].includes(direction)) return telemetry;
+  telemetry.appRequests += 1;
+  telemetry.activeTransfers[id] = {
+    direction,
+    startedAtMs,
+    knownBytes: Number.isFinite(knownBytes) ? Math.max(0, knownBytes) : null,
+    label: String(label).slice(0, 48),
+  };
+  return telemetry;
+}
+
+export function finishAppNetworkTransfer(telemetry, { id, endedAtMs, success }) {
+  const active = telemetry.activeTransfers[id];
+  if (!active) return telemetry;
+  delete telemetry.activeTransfers[id];
+  const durationMs = Math.max(0, endedAtMs - active.startedAtMs);
+  const bytes = active.knownBytes ?? 0;
+  if (!success) {
+    telemetry.failedAppRequests += 1;
+    telemetry.latestFailureAtMs = endedAtMs;
+    if (active.direction === "upload") telemetry.attemptedUploadBytes += bytes;
+  } else {
+    if (active.direction === "upload") telemetry.observedUploadBytes += bytes;
+    const rate = durationMs > 0 ? bytes / (durationMs / 1000) : 0;
+    if (active.direction === "upload") {
+      telemetry.peakUploadBytesPerSecond = Math.max(telemetry.peakUploadBytesPerSecond, rate);
+    } else {
+      telemetry.peakDownloadBytesPerSecond = Math.max(telemetry.peakDownloadBytesPerSecond, rate);
+    }
+    if (Number.isFinite(telemetry.latestFailureAtMs)
+      && (!Number.isFinite(telemetry.latestRecoveryAtMs) || telemetry.latestRecoveryAtMs < telemetry.latestFailureAtMs)) {
+      telemetry.recoveries += 1;
+      telemetry.latestRecoveryAtMs = endedAtMs;
+    }
+  }
+  retainNetworkTransfer(telemetry, {
+    direction: active.direction,
+    source: active.knownBytes == null ? "app-request-unmeasured" : "app-known-payload",
+    bytes: active.knownBytes,
+    durationMs: rounded(durationMs, 2),
+    endedAtMs: rounded(endedAtMs, 2),
+    label: active.label,
+    success: Boolean(success),
+  });
+  return telemetry;
+}
+
+export function recordNetworkOnlineState(telemetry, { online, capturedAtMs }) {
+  const previous = telemetry.online;
+  telemetry.online = Boolean(online);
+  if (previous === false && online === true) {
+    telemetry.recoveries += 1;
+    telemetry.latestRecoveryAtMs = capturedAtMs;
+  }
+  if (previous !== false && online === false) telemetry.latestFailureAtMs = capturedAtMs;
+  return telemetry;
+}
+
+export function summarizeNetworkTelemetry(telemetry, generatedAtMs, windowMs = 5000) {
+  const cutoff = generatedAtMs - windowMs;
+  let recentDownloadBytes = 0;
+  let recentUploadBytes = 0;
+  for (const transfer of telemetry.recentTransfers) {
+    if (!transfer.success && transfer.source !== "resource-timing-transfer-size") continue;
+    if (!Number.isFinite(transfer.bytes) || transfer.endedAtMs < cutoff) continue;
+    if (transfer.direction === "download") recentDownloadBytes += transfer.bytes;
+    if (transfer.direction === "upload") recentUploadBytes += transfer.bytes;
+  }
+  return {
+    sessionDurationMs: Math.max(0, Math.round(generatedAtMs - telemetry.startedAtMs)),
+    onlineHint: telemetry.online,
+    activeTransfers: Object.keys(telemetry.activeTransfers).length,
+    resourceEntries: telemetry.resourceEntries,
+    unobservableResourceEntries: telemetry.unobservableResourceEntries,
+    observedDownloadBytes: telemetry.observedDownloadBytes,
+    observedUploadBytes: telemetry.observedUploadBytes,
+    attemptedUploadBytes: telemetry.attemptedUploadBytes,
+    rollingWindowMs: windowMs,
+    currentDownloadBytesPerSecond: rounded(recentDownloadBytes / (windowMs / 1000), 2),
+    currentUploadBytesPerSecond: rounded(recentUploadBytes / (windowMs / 1000), 2),
+    peakDownloadBytesPerSecond: rounded(telemetry.peakDownloadBytesPerSecond, 2),
+    peakUploadBytesPerSecond: rounded(telemetry.peakUploadBytesPerSecond, 2),
+    appRequests: telemetry.appRequests,
+    failedAppRequests: telemetry.failedAppRequests,
+    recoveries: telemetry.recoveries,
+    latestFailureAtMs: rounded(telemetry.latestFailureAtMs, 2),
+    latestRecoveryAtMs: rounded(telemetry.latestRecoveryAtMs, 2),
+    measurementBoundary: {
+      download: "PerformanceResourceTiming transferSize when exposed; cache and opaque entries may be zero",
+      upload: "known application payload bytes only after a successful instrumented request",
+      excludes: "unrelated device traffic, TLS overhead, unavailable headers, opaque cross-origin bytes, and unexposed cache traffic",
+    },
+    recentTransfers: telemetry.recentTransfers.map((transfer) => ({ ...transfer })),
+  };
+}
+
 export const DRIVE_TRACE_INTERVAL_MS = 2000;
 export const DRIVE_TRACE_SAMPLE_LIMIT = 300;
 export const DIAGNOSTIC_MAX_REQUEST_BODY_BYTES = 1966080;
@@ -529,6 +827,21 @@ export function fitDiagnosticReportForTransport(report, maximumBytes = DIAGNOSTI
     },
   };
 
+  const trimSampleEvents = (count) => {
+    let remaining = count;
+    for (let index = 0; index < fitted.events.length && remaining > 0;) {
+      if (fitted.events[index]?.priority === "sample") {
+        fitted.events.splice(index, 1);
+        remaining -= 1;
+      } else {
+        index += 1;
+      }
+    }
+  };
+  while (serializedRequestUtf8Bytes(fitted) > trimmingTargetBytes
+    && fitted.events.some((event) => event?.priority === "sample")) {
+    trimSampleEvents(20);
+  }
   while (serializedRequestUtf8Bytes(fitted) > trimmingTargetBytes && fitted.events.length > 40) {
     fitted.events.splice(0, Math.min(20, fitted.events.length - 40));
   }

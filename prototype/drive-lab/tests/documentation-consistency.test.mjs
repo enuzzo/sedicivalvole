@@ -79,6 +79,24 @@ test("active product identity names enuzzo without a studio attribution", () => 
   assert.match(activeIdentity, /https:\/\/github\.com\/enuzzo/);
 });
 
+test("operative licensing stays noncommercial without relicensing third-party work", () => {
+  const license = read("LICENSE");
+  const scope = read("LICENSE-SCOPE.md");
+  const notice = read("NOTICE");
+  const packageMetadata = JSON.parse(read("prototype/drive-lab/package.json"));
+  const packageLock = JSON.parse(read("prototype/drive-lab/package-lock.json"));
+  const normalizedScope = scope.replace(/\s+/g, " ");
+
+  assert.match(license, /^# PolyForm Noncommercial License 1\.0\.0/m);
+  assert.equal(packageMetadata.license, "PolyForm-Noncommercial-1.0.0");
+  assert.equal(packageLock.packages[""].license, packageMetadata.license);
+  assert.match(normalizedScope, /source-visible/i);
+  assert.match(normalizedScope, /not an open-source project/i);
+  assert.match(normalizedScope, /already distributed under `AGPL-3\.0-or-later` retain/i);
+  assert.match(notice, /Third-party material keeps its original licence or direct permission/);
+  assert.match(notice, /not open source/);
+});
+
 test("relative Markdown document links resolve", () => {
   const documents = [
     "README.md",

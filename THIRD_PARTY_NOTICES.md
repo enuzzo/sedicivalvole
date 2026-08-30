@@ -2,7 +2,8 @@
 
 The current Drive Lab uses third-party software dependencies, includes code translated from textStep under its author's direct authorization, and ships JUNCTION as original mixed music produced with the royalty-free MusicRadar material documented below. No loose sample, loop, one-shot, multisample, or source-pack file has entered the repository or any build.
 
-Third-party components retain their original licenses and are not relicensed under the project's AGPL grant.
+Third-party components retain their original licences or direct permissions and
+are not relicensed under the project's PolyForm grant.
 
 | Component | Version | Copyright / authors | License | Changes | Location |
 |---|---:|---|---|---|---|
@@ -32,8 +33,9 @@ reference assets.
 
 ### Visual sources admitted on 2026-08-29
 
-Four external visual sources informed new Flux environments. InfiniteTubes and
-Primordial retain project-authored clean-room boundaries. PRTCL uses only three
+Four external visual sources informed Flux studies. InfiniteTubes remains a
+project-authored clean-room boundary; Primordial is now a retired historical
+study. PRTCL uses only three
 formula adaptations under the repository owner's direct authorization; its
 runtime, UI, dependencies, brand and assets remain excluded. After the first
 Drivey result was rejected, DRIVEY moved to a source-faithful integration of the
@@ -53,8 +55,9 @@ runtime boundary are recorded in
 The exact Drivey file hashes, bundled-library notices and unresolved header
 ambiguity are preserved under
 `prototype/drive-lab/public/third-party/drivey/`. Those manifest-listed files
-are not relicensed under the sedicivalvole AGPL grant; the project-authored
-`sedicivalvole.html` shell and parent bridge remain AGPL-licensed.
+are not relicensed under the sedicivalvole PolyForm grant; the project-authored
+`sedicivalvole.html` shell and parent bridge follow the repository's current
+PolyForm scope.
 
 Material kept only under `_references/` remains external local source material. It is not automatically approved, redistributable, or part of the product.
 
@@ -125,9 +128,10 @@ explicit credit wherever the integration is described.
 The upstream repository is published under GNU GPL version 2.0. The project
 maintainer confirms and accepts responsibility for Lobo's additional direct,
 unrestricted authorization to reuse its content, which is the basis on which the
-translated code is combined with this project's `AGPL-3.0-or-later` material.
-GPL v2.0 alone would not permit that combination; the direct authorization is
-therefore load-bearing and must not be dropped from these notices.
+translated code is combined with original sedicivalvole material under the
+current mixed policy. The direct authorization is load-bearing and must not be
+dropped from these notices; the translated code is not relicensed under
+PolyForm.
 
 **Derived code is now integrated and shipped.** As required, the exact
 provenance follows. Every file carries the same information in its own header.

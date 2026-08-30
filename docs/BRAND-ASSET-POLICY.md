@@ -14,8 +14,8 @@ The final policy must distinguish:
 
 ## Established principles
 
-- The active AGPL grant for code does not grant trademark rights.
-- Original brand, screenshots, audio, and standalone visual/media assets are outside the AGPL scope unless specifically licensed.
+- The active PolyForm software grant does not grant trademark rights.
+- Original brand, screenshots, audio, and standalone visual/media assets are outside the PolyForm scope unless specifically licensed.
 - Third-party assets keep their original licenses and require notice before entry.
 - Any asset shared under a separate media license must be marked per file or directory.
 - Creative Commons licenses are not used for software.

@@ -37,13 +37,29 @@ At the Tesla split viewport, Music and Report use compact 68 px evidence cards w
 - WebGL2 vendor, renderer, maximum texture/renderbuffer size, and active renderer;
 - aggregate canvas frame pacing: average FPS, median/p95/maximum frame time, slow-frame counts, estimated missed target frames, render size, renderer, and configured target cadence;
 - phase-specific frame pacing for the Signal Gate, every active Visual/Music combination, the Aperture `0–40 km/h` wall-retreat band, and the same combination with DIAG open;
-- aggregate main-thread long-task counts and durations when the browser exposes them;
-- AudioContext state, sample rate, reported base/output latency, AudioWorklet, and live level;
+- bounded main-thread long-task evidence when the browser exposes it, including
+  observed start time, duration, active phase, renderer, Visual/Music, speed,
+  coordinate-free GPS age/state, audio state, network hint, and visibility;
+- AudioContext state, sample rate, reported base/output latency, AudioWorklet,
+  and live level; output-latency samples distinguish unavailable, reported zero,
+  and reported positive values instead of treating zero as proven timing;
 - GPS state, numeric/null sample counts, interval and accuracy statistics, and min/max/latest speed;
-- WebAssembly, service worker, Cache Storage, IndexedDB, localStorage, OffscreenCanvas, WebCodecs, touch points, hardware hints, storage quota/usage, battery state, connection hints, language, and user-agent details when exposed;
+- WebAssembly, service worker, Cache Storage, IndexedDB, localStorage,
+  OffscreenCanvas, WebCodecs, touch points, hardware hints, storage quota/usage,
+  battery state, connection hints, language, and user-agent details when exposed;
+- a versioned IndexedDB storage canary with creation time, last-seen time,
+  observation count, current app identity, truthful `persisted()`/`persist()`
+  outcomes, and an explicitly unavailable vehicle-software field when the
+  browser exposes no supported source;
 - navigation, paint, resource-count/byte aggregates, and JavaScript heap metrics when exposed;
 - per-phase JavaScript heap minimum/latest/maximum plus JUNCTION bank and decoded-PCM memory, with unsupported browser fields reported as unavailable rather than estimated;
-- bounded connection history plus online/offline, document-visibility, throttled GPS, viewport, source, and control events;
+- bounded connection history plus online/offline, document-visibility,
+  throttled GPS, viewport, source, and control events; significant events and
+  high-rate GPS samples use separate bounded channels so sampling cannot evict
+  earlier user actions or failures;
+- session-bounded network observations: browser-exposed resource transfer bytes,
+  successful app-known upload payload bytes, rolling current rates, peaks,
+  active transfers, failures, and recoveries;
 - a two-second coordinate-free driving trace containing displayed/raw GPS speed, GPS age/accuracy/confidence, input mode, energy/BPM, active Visual/Music, JUNCTION section/harmonic identity/single take/bank state, frame pacing, real output RMS/peak, network state, and visibility;
 - session exposure counts for unique visuals, scores, JUNCTION sections, harmonic identities, and performances;
 - full-session duration, estimated distance, moving/stationary time, source/input durations, speed/rate extrema, and GPS-accuracy aggregates even after old trace samples rotate;
@@ -52,7 +68,16 @@ At the Tesla split viewport, Music and Report use compact 68 px evidence cards w
   and transmits no coordinates, plus separate booleans disclosing whether the
   ephemeral ATLAS location feature and its third-party requests are active.
 
-High-frequency frame observations and the flight recorder accumulate outside React state. Phase records retain aggregate counters and at most 300 recent frame intervals per phase; memory is sampled every two seconds, never per frame. A phase that disappears and later returns starts a new continuity segment, so the intervening time is not misreported as a dropped frame or low FPS. Ordinary GPS sample events are retained at two-second cadence while null and low-confidence anomalies are kept immediately; the ten-hertz GPS aggregates remain complete. The recorder samples every two seconds and retains at most 300 compact tabular samples, or approximately ten minutes, while its small aggregate and exposure counters cover the complete open session. The trace exists only in memory and is cleared by a reload or closed page. It does not retain every frame, resource URL, route, or coordinate. Runtime issue messages and stacks are truncated and bounded. Cellular RSSI is not available to ordinary Web applications; connection quality is represented only by browser-exposed effective type, downlink, RTT, online state, and changes over time.
+High-frequency frame observations and the flight recorder accumulate outside React state. Phase records retain aggregate counters and at most 300 recent frame intervals per phase; memory is sampled every two seconds, never per frame. A phase that disappears and later returns starts a new continuity segment, so the intervening time is not misreported as a dropped frame or low FPS. Ordinary GPS sample events are retained in their own 120-entry sample channel while significant actions, state changes, failures, and recoveries retain a separate 120-entry channel; the ten-hertz GPS aggregates remain complete. The recorder samples every two seconds and retains at most 300 compact tabular samples, or approximately ten minutes, while its small aggregate and exposure counters cover the complete open session. The trace exists only in memory and is cleared by a reload or closed page. It does not retain every frame, resource URL, route, or coordinate. Runtime issue messages and stacks are truncated and bounded.
+
+Network totals are deliberately narrower than a device or carrier meter. They
+include exact application payload bytes only where the application owns the
+transfer and the browser's `PerformanceResourceTiming.transferSize` only where
+the browser exposes it. They exclude unrelated Tesla traffic, unavailable TLS
+and protocol overhead, opaque cross-origin bodies, and cache activity the API
+does not reveal. Browser `downlink` and `rtt` values remain labelled estimates,
+not measured application throughput. Cellular RSSI is unavailable to ordinary
+Web applications.
 
 ## Send Diagnostic architecture
 

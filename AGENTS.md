@@ -51,7 +51,13 @@ These rules apply to every change in the `sedicivalvole` project.
 ## Licensing
 
 - Keep `LICENSE`, `LICENSE-SCOPE.md`, `NOTICE`, README licensing copy, package metadata, and the licensing decision log synchronized.
-- The repository's code and documentation default to `AGPL-3.0-or-later`; original brand, screenshots, audio, and standalone visual/media assets remain excluded unless specifically licensed.
-- Do not invent or publish a legal owner. The current collective notice is `sedicivalvole contributors` until ownership is formally resolved.
+- Original sedicivalvole code and documentation default to
+  `PolyForm-Noncommercial-1.0.0`; this is source-visible noncommercial software,
+  not open source. Original brand, screenshots, audio, and standalone
+  visual/media assets remain excluded unless specifically licensed. Public
+  versions already distributed under AGPL retain their earlier rights.
+- The sole original creator and public licensor identity is `enuzzo`; do not
+  imply a studio, company, or other legal entity. Third-party ownership and
+  credits remain exactly as recorded in `THIRD_PARTY_NOTICES.md`.
 - Record every third-party dependency or asset in `THIRD_PARTY_NOTICES.md` before it enters the product or repository.
 - Do not use Creative Commons licenses for software.

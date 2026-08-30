@@ -1,8 +1,9 @@
 # Licensing Decision Log
 
-Status: **active interim policy**. The repository now carries an
-`AGPL-3.0-or-later` code and documentation license with explicit asset and
-trademark exclusions. The project's sole original creator and public licensor
+Status: **active mixed noncommercial policy**. Original sedicivalvole software
+and documentation first distributed under the current policy use
+`PolyForm-Noncommercial-1.0.0`; reserved media and third-party material remain
+outside that default. The project's sole original creator and public licensor
 identity is `enuzzo`; the final brand policy remains open and requires legal
 review. This document is not legal advice.
 
@@ -13,32 +14,29 @@ The operative files are the root [`LICENSE`](../LICENSE),
 
 | Scope | Current treatment |
 |---|---|
-| Source code, tests, shader source, CSS, build/deployment configuration, project documentation | GNU Affero General Public License v3.0 or later (`AGPL-3.0-or-later`) |
-| Name `sedicivalvole`, future logo and marks, brand assets, screenshots, original audio, standalone visual/media assets | excluded from the AGPL grant; All Rights Reserved by the respective rights holders; no trademark license |
-| Third-party material and samples | original licenses preserved and recorded in `THIRD_PARTY_NOTICES.md` before use |
+| Original source code, tests, shader source, CSS, build/deployment configuration, project documentation | PolyForm Noncommercial License 1.0.0 (`PolyForm-Noncommercial-1.0.0`) |
+| Name `sedicivalvole`, future logo and marks, brand assets, screenshots, original audio, standalone visual/media assets | excluded from the PolyForm grant; All Rights Reserved by the respective rights holders; no trademark licence |
+| Third-party material and samples | original licences or direct permissions preserved and recorded in `THIRD_PARTY_NOTICES.md` before use |
 | Selected shareable creative assets | optional separate media license, decided and marked per file |
 
 Creative Commons may be considered for media, not software. See
 [`BRAND-ASSET-POLICY.md`](BRAND-ASSET-POLICY.md).
 
-## What AGPL does and does not do
+## What the current policy does and does not do
 
-- It allows copying, forks, modification, rebranding, sale, and commercial use;
-  it does not prevent cloning.
-- It requires compliance with its notice, license, modification, and
-  corresponding-source obligations.
-- A modified version used to provide a network service must offer corresponding
-  source to remote users as required by section 13.
-- Code-based shaders and generative visuals remain commercially reusable under
-  AGPL terms.
-- Attribution means preserving required copyright and license notices. It is not
-  a requirement to advertise or endorse the original project.
-- Preventing commercial reuse would require a different source-available or
-  commercial strategy, not this open-source license.
-
-MIT and Apache are too permissive for the stated copyleft goal. GPL does not
-address network-only modified services in the same way as AGPL. None of these
-licenses alone protects the project name, brand, or recognizable media assets.
+- PolyForm Noncommercial permits use, modification, and redistribution for the
+  noncommercial purposes defined in its text; it does not grant commercial use.
+- The repository is source-visible but is not described as open source, because
+  the Open Source Definition requires commercial use to be permitted.
+- Each recipient must receive the PolyForm terms or their URL and every
+  `Required Notice:` line supplied with the software.
+- Third-party GPL, MIT, BSD, custom, font, service, and direct-permission terms
+  remain independent. A repository-level noncommercial label cannot narrow or
+  replace rights granted by those parties.
+- Previously distributed AGPL versions remain usable under AGPL. Removing or
+  rebuilding Git history would not revoke those existing grants.
+- No software licence alone protects the project name, brand, or recognizable
+  media assets; those remain separately reserved unless marked otherwise.
 
 ## Ownership notice
 
@@ -46,6 +44,23 @@ The current notice uses `enuzzo`, the sole original project creator and public
 licensor identity. It does not imply a studio, company, or other legal entity.
 Third-party authors and rights holders retain the ownership, licences, and
 credits recorded in `THIRD_PARTY_NOTICES.md`.
+
+## 2026-08-30 — original project material moves to PolyForm Noncommercial
+
+The product owner selected the source-visible noncommercial option after
+confirming that commercial reuse conflicts with the project's purpose. The root
+licence, scope, notice, package metadata, product copy, README, specification,
+and this log were synchronized. Original sedicivalvole material now defaults to
+`PolyForm-Noncommercial-1.0.0`; the project is no longer described as open
+source.
+
+This decision is prospective. Public commits already distributed under AGPL
+retain their earlier licence. Third-party material is handled case by case:
+Drivey remains GPLv3 plus its preserved historical header, textStep-derived code
+remains GPLv2 plus Lobo's direct authorization, the VERTIGO vendor snapshot
+retains its custom notice and bundled licences, and reserved audio/media remain
+outside the software grant. This avoids both false revocation claims and a
+blanket noncommercial assertion over rights enuzzo does not own.
 
 ## 2026-08-29 — source-faithful Drivey supersedes the clean-room decision
 
@@ -162,6 +177,7 @@ still record the exact upstream commit, imported files, modifications, public
 license, and Lobo attribution before publication. See
 [`REFERENCE-STUDY-TEXTSTEP.md`](REFERENCE-STUDY-TEXTSTEP.md).
 
-Primary references: [GNU licenses](https://www.gnu.org/licenses/),
-[AGPL-3.0 text](https://www.gnu.org/licenses/agpl-3.0.html), and
+Primary references: [PolyForm Noncommercial 1.0.0](https://polyformproject.org/licenses/noncommercial/1.0.0),
+[SPDX licence identifier](https://spdx.org/licenses/PolyForm-Noncommercial-1.0.0.html),
+[GNU licenses](https://www.gnu.org/licenses/), and
 [Creative Commons software guidance](https://creativecommons.org/faq/#can-i-apply-a-creative-commons-license-to-software).

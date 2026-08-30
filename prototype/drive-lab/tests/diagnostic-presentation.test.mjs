@@ -60,7 +60,8 @@ test("README carries privacy, provenance, licensing, and source details", () => 
   assert.match(app, /Coordinates are not collected, stored, copied, or included/);
   assert.match(app, /76 royalty-free MusicRadar source recordings/);
   assert.match(app, /source packs are not[\s\S]*?redistributed/);
-  assert.match(app, /AGPL-3\.0-or-later/);
+  assert.match(app, /PolyForm Noncommercial\s+License 1\.0\.0/);
+  assert.match(app, /not open source/);
   assert.match(app, /THIRD-PARTY NOTICES/);
   assert.match(app, /DIAGNOSTIC ARCHITECTURE/);
 });

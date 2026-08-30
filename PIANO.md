@@ -268,7 +268,7 @@ question unless this review explicitly identifies a conflict.
 | Scope | Recorded owner decision | Plan impact |
 | --- | --- | --- |
 | Coverage and protocol | Preserve all 97 stable IDs; LAB and passenger control use the same typed protocol. | Q15 is resolved; L5/X6 move from pending to planned. |
-| Project identity | The sole original project creator and public licensor identity is `enuzzo`; no studio or company identity is claimed. Third-party credits remain intact. | Active product copy, metadata, notices, licence scope and current documentation use `enuzzo`. Historical changelog entries remain immutable evidence of earlier builds. This identity correction does not change AGPL's permission for commercial use. |
+| Project identity | The sole original project creator and public licensor identity is `enuzzo`; no studio or company identity is claimed. Third-party credits remain intact. | Active product copy, metadata, notices, licence scope and current documentation use `enuzzo`. Historical changelog entries remain immutable evidence of earlier builds. |
 | Shared response and PRTCL | Use the same audio macro envelope in every visual; PRTCL scale reaches and holds its maximum at 100 km/h while the global ceiling remains 130 km/h. | T1/P2 are unblocked. Perceptual strength is added to the acceptance gate, not left as an aesthetic note. |
 | DRIVEY | At zero the player car only needs to remain road-centred and motionless. Prefer opposing traffic only; if lane direction cannot be classified reliably, remove all NPC traffic. | D3 closes with no extra implementation. D2 changes from unconditional zero traffic to a measured opposing-only feasibility gate. |
 | ATLAS | Preserve the six-second camera return, provisionally allow 0–85° pitch, allow Wikipedia while moving, and add reader text-size plus warm-light/dark themes. | Q4/Q5 resolve; A1/A2 acceptance expands. The exact visual treatment still waits for the mandatory three-direction gate. |
@@ -277,7 +277,7 @@ question unless this review explicitly identifies a conflict.
 | Passenger naming | `PATCH` is rejected. `COPLAY`, `TUNE THE ROAD`, and `COPILOT DJ` are candidates, paired with an unmistakable multi-user icon. | S3 remains a naming/design selection, not a missing requirement. Exactly three directions will be presented before product copy changes. |
 | Source structure | Product music is split into `PLAY THE ROAD` (FRACTURE, JUNCTION, NIGHTSHIFT) and `SOUNDTRACK` (fixed recordings browsed by source-supported genre and pace metadata). | M1/M1b/M1c are corrected; NIGHTSHIFT is not nested under JUNCTION and SOUNDTRACK is not speed-remixed. |
 | SOUNDTRACK sources | Jamendo plus owner-authorised Illobo are the initial sources; StreamBeats is permanently rejected; Freesound remains research-only if useful. | Q17/Q18/Q25 resolve. M8 removes StreamBeats and cannot admit material before M11 evidence. |
-| Jamendo readiness | The owner confirms that Jamendo API access is already prepared and selects it as the first SOUNDTRACK integration path. A secret-safe live check on 2026-08-30 returned API success, three distinct tracks from three artists, the required credit/catalogue fields, and a `206 audio/mpeg` range response from one stream. The app needs read methods only: request/read-only scope where available, keep OAuth redirect and client secret empty unless a future approved feature genuinely requires them, and register `https://sedicivalvole.app/` as the application home. | Operational connectivity is verified, not source admission: the sample included different Creative Commons capability sets, so M11 must still accept or reject each track and effect path. Keep the client ID outside Git, browser code, logs, screenshots, and documentation; only the future server boundary may use it. The public application description must disclose that the app is free, experimental, open source, has no advertising/subscription/paid-music/sponsorship/track monetisation, and includes an optional project-support link unrelated to music access. |
+| Jamendo readiness | The owner confirms that Jamendo API access is already prepared and selects it as the first SOUNDTRACK integration path. A secret-safe live check on 2026-08-30 returned API success, three distinct tracks from three artists, the required credit/catalogue fields, and a `206 audio/mpeg` range response from one stream. The app needs read methods only: request/read-only scope where available, keep OAuth redirect and client secret empty unless a future approved feature genuinely requires them, and register `https://sedicivalvole.app/` as the application home. | Operational connectivity is verified, not source admission: the sample included different Creative Commons capability sets, so M11 must still accept or reject each track and effect path. Keep the client ID outside Git, browser code, logs, screenshots, and documentation; only the future server boundary may use it. The public application description must disclose that the app is free, experimental, source-visible and noncommercial, has no advertising/subscription/paid-music/sponsorship/track monetisation, and includes an optional project-support link unrelated to music access. |
 | Jamendo continuity and rotation | Maintain three transient browser-media slots—previous, current, next—with their metadata. Use only the stream `audio` URL and browser-native `preload=auto`; never fetch/store complete audio as application blobs, Cache Storage, IndexedDB, service-worker entries, or download files. Replenish each consumed next slot with a fresh eligible track and keep bounded recent-track/artist memory. | This is operational skip/back/forward readiness, not an offline feature or an 8–10-minute guarantee. The browser decides how much media it buffers. Each displaced slot is released promptly. If connectivity exhausts the available buffer, SOUNDTRACK pauses with visible network/retry state and resumes when possible; the owner explicitly rejects automatic fallback to PLAY THE ROAD. |
 | Artist value and attribution | Treat credit as a first-class but low-clutter interaction: a compact now-playing/credit affordance in the navbar or selected corner opens a card with cover thumbnail, artist, track, optional album, licence, `Provided by Jamendo`, and direct track/artist destination exposed by touch plus QR. | M10 and X2 include this closed-by-default card in the three-direction visual gate. It must not cover the driving field until invoked; singles work without album metadata; no Jamendo logo/brand styling is modified or implied without an approved official asset. |
 | Retired external source | Excluded from the current product, source catalogue, authoring workflow, local audition, and runtime. | M5/M5b/M5c are closed, not left as evidence gates. Reopening requires a future explicit owner decision plus fresh model-specific terms and cost review. |
@@ -288,13 +288,18 @@ question unless this review explicitly identifies a conflict.
 | Diagnostics and toolchain | Derive Tesla software information only when the diagnostics package explicitly supports it; otherwise report unavailable. Keep per-architecture dependencies outside the Dropbox-synchronised checkout when native packages differ. The two supplied real-Tesla reports become the first field baseline for GPS, render pacing, cold-cache music readiness, long tasks and event retention. | M13 and the baseline gate are approved without overwriting another Mac's dependency state. Phase 0 also preserves significant events separately from high-rate GPS samples, attributes long tasks to time/phase, and reproduces adaptive-bank startup on a cold constrained connection. |
 | Network observability | During the navbar/GPS revamp, add a compact, non-blocking network notice for active transfer, degraded connectivity, offline state, and recovery. Put detailed session counters and rates in DIAG. | X2 owns placement and visual hierarchy; M13 owns truthful measurement. Navbar stays quiet when healthy. DIAG labels browser estimates separately from measured app traffic and never claims device-wide or carrier-wide totals. |
 | Strudel | Reject the product, dependency, fork and source-derived rewrite. Do not download/read its source under a “clean-room” label; official Strudel guidance itself says source-informed clones are derivative. Public documentation or general music theory may be researched without importing source. | Q12 resolves as no source exposure; G7 remains final and G8 stays paper/documentation-only unless separately reopened. |
+| Repository licence direction | The owner selects source-visible, non-commercial licensing for original sedicivalvole material. Existing AGPL copies keep the rights already granted; third-party and directly authorised material keeps its own case-by-case terms. | Phase 0 completed the file-family audit and synchronized PolyForm Noncommercial across the operative licence, scope, notice, metadata, README, product copy and decision log. No blanket non-commercial claim is applied to GPL or other third-party material. |
+| Effects default | Every fresh page session starts sound and effects enabled. Turning the effects master off is session-only and is not restored after reload. | Q21/S4 is closed with option A. Disable/re-enable still uses the normal click-free envelope and central confirmation. |
+| Adaptive-score handoff | Switching FRACTURE/JUNCTION/NIGHTSHIFT responds immediately through the existing four-second equal-power crossfade; the selected score begins at its own phrase zero. | S2i is closed with option A. `QUEUED` and waiting for an outgoing eight-bar phrase are rejected for ordinary user selection. SOUNDTRACK skip remains a separate 450 ms crossfade. |
+| PRIMORDIAL replacement | The current project-authored PRIMORDIAL is rejected and retired from the product. `SF1` becomes a new original Gradient Field using project-authored WebGL/3D mechanics, with ShaderGradient, FeralUI and ColorFlow retained only within their audited reference boundaries. | Remove PRIMORDIAL as a selectable/persisted destination with Aperture migration. Preserve its history in Git/changelog rather than erasing evidence. Before Gradient Field implementation, present exactly three directions and admit no third-party shader, runtime, preset, export, embed or asset without its own licence gate. |
+| New stable IDs | `A5` DISCOVER, `X9` Visual Library, `X10` Appearance, `X11` CONDITIONS, and `SF1` Gradient Field are approved. | These IDs are internal traceability keys and do not force final product copy. |
 
 ### Every side note mapped into the ledger
 
 | Owner note | Tracked under | Acceptance added by this review |
 | --- | --- | --- |
 | UNDERWATER is nearly inaudible in NIGHTSHIFT/1980s material; OPEN is rare; BLOOM is unclear. | T1, S1, S5, X3 | Per-score audio measurements plus cabin listening; effect trigger telemetry; pronounced but level-safe sound; simultaneous visual response; a larger temporary effect badge. |
-| Fullscreen palettes become oversized and should stay right-aligned with a maximum size. | X2 | Exact-viewport and fullscreen screenshots enforce a maximum width and right alignment. |
+| Fullscreen palettes become oversized and should stay right-aligned with a maximum size; rebalance the footer areas so Mute, Visual, Music, and Palette form one harmonious composition instead of stretching the colour rail. | X2, X9 | Exact-viewport and fullscreen screenshots enforce a compact maximum palette width, right anchoring, stable swatch proportions, and deliberate footer column distribution. |
 | Top/footer chrome sometimes remains open indefinitely; always hide it five seconds after the latest invocation. | X2 | Deterministic timer tests cover repeated invoke, pointer/touch, modal ownership and visibility changes. |
 | GPS status should be green when live and red/struck when unavailable, with accuracy/cadence below it and illustrated Tesla enablement help. | X2, M13 | Navbar information hierarchy, truthful stale/error states, numeric accuracy/cadence, and a real-icon help overlay are included in the three-direction gate. |
 | Users should be able to see whether data is moving and recognise a network problem; DIAG should show downloaded/uploaded MB, current rates, and session peaks. | X2, M13 | Navbar shows only actionable state/activity. DIAG reports exact app-managed payload bytes where instrumented, observable resource-transfer bytes where exposed, estimated browser downlink/RTT only when supported, and `unavailable` otherwise. Totals reset per page session and exclude unrelated Tesla traffic, protocol overhead the browser does not expose, cache hits, and opaque cross-origin transfers. |
@@ -367,14 +372,15 @@ not silently absorb ownership of the new product surface.
 
 ### Visual library, appearance, and local conditions proposal — 2026-08-30
 
-The current Visual picker is a flat seven-row list. The registry itself is
+The current Visual picker is a flat six-row list. The registry itself is
 already structured data, so the product can change selection grammar without
 changing renderer ownership or fallback behavior.
 
 **⭐ Preferred Visual Library structure:** replace rows with direct-selection
 buttons in one scroll-safe surface and use visible section labels, not nested
 tabs. The initial semantic split is `ROAD / PLACE` (VERTIGO, MERIDIAN, ATLAS,
-DRIVEY) and `FIELD / ABSTRACT` (APERTURE, PRTCL, PRIMORDIAL). Categories are
+DRIVEY) and `FIELD / ABSTRACT` (APERTURE, PRTCL). The future Gradient Field
+joins the second group only after its three-direction gate. Categories are
 discovery aids only: they never alter IDs, numbering, persistence, diagnostics,
 or unlimited immediate switching. Each button must show active state and name;
 real current-build imagery, renderer descriptions, and density are decisions for
@@ -537,7 +543,7 @@ peak/loudness, envelope timing and effect visibility must be measured separately
 for FRACTURE, JUNCTION and NIGHTSHIFT rather than inferred from a generic test
 fixture.
 
-### Licensing recap and recommendation
+### Licensing recap and superseded recommendation
 
 - AGPL applies to the project's covered **software and documentation**. It
   allows commercial use, forks and rebranding, while requiring covered source
@@ -552,11 +558,11 @@ fixture.
   easier. It would not make streamed audio uncopyable and would not improve the
   rights position of third-party, Jamendo, or Illobo material.
 
-**⭐ Recommendation: keep `AGPL-3.0-or-later` for code/docs and preserve the
-current asset exclusions.** It matches the public collaborative product while
-keeping audio/brand permissions separate. Relicensing is therefore not added to
-the work plan unless the owner explicitly chooses a different strategic goal.
-This is a practical project reading, not legal advice.
+**Superseded on 2026-08-30:** the owner selected option B, so original
+sedicivalvole material now uses `PolyForm-Noncommercial-1.0.0`. Public AGPL
+versions keep their old rights; third-party licences and direct permissions
+remain case by case; reserved audio/brand/media stay separate. This is a
+practical project reading, not legal advice.
 
 Primary-source checks used for this review:
 
@@ -603,30 +609,22 @@ Its credit economics and model-specific music restrictions did not establish a
 safe playback grant for sedicivalvole. M5/M5b/M5c are closed and no private
 account evidence or login is requested.
 
-### Remaining clarifications after evaluation
+### Clarifications closed on 2026-08-30
 
-Only these points still need confirmation before their affected implementation:
+- **S4:** option A selected; fresh sessions start sound/effects enabled and OFF
+  is never persisted.
+- **S2i:** option A selected; adaptive-score selection uses the existing
+  immediate four-second crossfade and starts the selected score at phrase zero.
+- **PP2:** superseded. The current PRIMORDIAL implementation is rejected and
+  will be retired rather than refined or copied from the CodePen. `SF1` owns a
+  new, original Gradient Field after exactly three directions are presented.
+- **Licence strategy:** source-visible non-commercial is selected for original
+  sedicivalvole material, subject to the Phase 0 file-level compatibility audit.
+- **Traceability:** `A5`, `X9`, `X10`, `X11`, and `SF1` are approved.
 
-1. **S4 state wording:** this plan interprets “come da tua proposta” as: every
-   fresh page session starts with sound and effects enabled; turning effects off
-   is not remembered across reloads. Correct this only if “persistenti” meant
-   that the off state must survive reload.
-2. **S2i adaptive handoff:** the question concerns switching between PLAY THE
-   ROAD scores, not SOUNDTRACK energy. Proposed behavior: finish at most the
-   current eight-bar phrase, show `QUEUED`, then start the new score at phrase
-   zero; SOUNDTRACK skip remains the immediate `450 ms` crossfade. Confirm or
-   request immediate switching for adaptive scores.
-3. **PP2 exact copy:** the supplied public CodePen is currently covered by
-   CodePen's MIT default, but the Pen itself credits an embedded Inigo Quilez
-   noise fragment whose independent terms were not established. An identical
-   copy would also copy that fragment. Proposed safe choice: keep the published
-   clean-room PRIMORDIAL and pursue visual fidelity through three original
-   directions; copy source only if the embedded fragment's compatible grant or
-   direct permission is archived.
-
-S3's final name, the three UI/flow directions, Jamendo API operational
-validation, and backend host capability are scheduled owner/technical gates
-rather than missing answers now.
+S3's final name, the three UI/flow directions, backend host capability and the
+three Gradient Field directions remain scheduled owner/technical gates rather
+than missing requirements.
 
 
 ## Planning conventions
@@ -650,10 +648,10 @@ rather than missing answers now.
 2. **Current source identity.** The plan baseline is pushed at `6f37c4d`; the
    owner-answer review is the only intended working-tree change during this
    evaluation. Version remains `0.0.0`.
-3. **Current catalogue is larger than the document assumes.** Seven visuals are
-   live in source (APERTURE, VERTIGO, MERIDIAN, ATLAS, DRIVEY, PRTCL,
-   PRIMORDIAL) and three authored scores are ready (FRACTURE, JUNCTION,
-   NIGHTSHIFT).
+3. **Current catalogue is larger than the original document assumes.** Six
+   visuals remain live in source (APERTURE, VERTIGO, MERIDIAN, ATLAS, DRIVEY,
+   PRTCL) and three authored scores are ready (FRACTURE, JUNCTION, NIGHTSHIFT).
+   PRIMORDIAL was rejected and removed on 2026-08-30.
 4. **T1 does not exist yet.** Input GPS is plausibility-bounded and smoothed, but
    visual profiles consume the latest speed and effect state directly. Scene
    mappings therefore have no shared time constant, asymmetric attack/release,
@@ -682,13 +680,11 @@ rather than missing answers now.
     Escape close, focus trapping, focus restoration, and one-modal ownership.
     It can become the shared overlay primitive after the required three-direction
     visual gate; S5 needs a separate non-modal status surface.
-11. **M13 is only partially present.** DIAG records storage estimates and API
-    availability once. It does not call `persisted()`/`persist()`, write an
-    IndexedDB canary, record canary age, or survive/reconcile app updates. It
-    already snapshots `navigator.onLine`, browser connection estimates, and
-    aggregate Resource Timing byte counts, but has no live transfer observer,
-    app-owned upload counter, rolling throughput, peak rates, or honest
-    unavailable/opaque classification.
+11. **M13 was only partially present at audit time.** The current working line
+    now adds `persisted()`/gesture-bound `persist()`, a versioned IndexedDB
+    canary, separate significant/sample event channels, contextual long tasks,
+    truthful output-latency history, and bounded observed network counters.
+    Calendar-time canary and target-Tesla evidence remain open.
 12. **The local LAB has a seed.** `qa-field.html` already mounts isolated fields,
     held speed, sweeps, effects, and deterministic telemetry. It is correctly
     absent from production, but it is query-string driven and has no command
@@ -705,13 +701,14 @@ rather than missing answers now.
     StreamBeats, and Strudel statements require fresh primary-source evidence
     before they become repository facts. The retired generative source was
     checked separately and then removed by owner decision.
-16. **Current test baseline is environment-limited.** DRIVEY (10/10), PRTCL
-    (8/8), PRIMORDIAL (8/8), and NIGHTSHIFT (9/9) focused suites pass. The full
-    suite has two environment failures: the installed `esbuild` binary is arm64
-    while Node runs x64, and PHP is absent for the diagnostic-mail fixture.
-17. **Documentation drift already exists.** The authoritative current-state file
-    records PRIMORDIAL as published, while parts of README/roadmap still describe
-    it as pending. This needs a separately approved non-ID reconciliation entry.
+16. **Current test baseline is environment-limited.** The per-machine native
+    cache removes the shared-checkout arm64/x64 package conflict. DRIVEY (10/10),
+    PRTCL (8/8), NIGHTSHIFT (9/9), diagnostics model and the remaining Node
+    suite pass; only the PHP diagnostic-mail fixture is unavailable locally
+    because `php` is absent.
+17. **Documentation drift was confirmed.** Active overview documents are being
+    reconciled to the 2026-08-30 PRIMORDIAL retirement; immutable changelog and
+    deployment evidence remain historical truth.
 18. **The source document is external to Git.** `PIANO.md` carries full ID
     coverage, but the original Italian source-of-truth file itself is not
     versioned. Importing or translating it requires explicit approval.
@@ -723,13 +720,13 @@ rather than missing answers now.
 | 0 | M13 and baseline/toolchain gate | The storage canary needs calendar time; reliable tests are needed before product edits. | Canary appears in DIAG with age and truthful capabilities; focused and full baseline status is recorded. |
 | 1 | T1, D1, D2; close D3 | Shared response mechanics must exist before scene tuning; DRIVEY zero hold is independently high-value. | Deterministic curve/envelope/slew tests pass; DRIVEY stays centred and motionless at zero, with opposing-only NPCs when reliable or no NPCs otherwise. |
 | 2 | L5, L1–L4, X6 | The LAB must speak the future transport-independent protocol before scene-specific tuning. | Local-only LAB drives one scene through typed messages and exports a round-trippable preset. |
-| 3 | P1, P2, PF1, PF2, PM1, PA1, PA2, PP1 | These are shared-response consumers and require the LAB to set measured endpoints. | All three PRTCL families and PRIMORDIAL sweep smoothly through 0/40/100/130 and macro attack/release. |
+| 3 | P1, P2, PF1, PF2, PM1, PA1, PA2 | These are shared-response consumers and require the LAB to set measured endpoints. | All three PRTCL families sweep smoothly through 0/40/100/130 and macro attack/release; retired PRIMORDIAL has no runtime consumer. |
 | 4 | X1, X2; A1, A3, A3b, A4 | Screen zones and overlay grammar precede new ATLAS chrome and onboarding. | Selected three-direction layout passes `773 × 601`; map interaction, GPS states/help, five-second chrome, bounded palettes, point interpolation, road badge, and cardinal compass pass. |
 | 5 | A2, S5, S4 | A2 becomes the first modal consumer; S5 is the shared non-modal feedback system; S4 supplies a universal state action. | Reader themes/type sizing and status feedback work with touch/keyboard; effect disable releases smoothly across all scores/visuals. |
 | 6 | M0, M6, M7, M8, M11, Q16/Q17/Q18/Q22 evidence | Vocabulary, permissions, service architecture, and source admission must be true before catalogue code. The retired source is out of scope; M5/M5b/M5c require no work. | Primary-source evidence and private grants for admitted sources are archived; public docs contain no secrets and M11 decides every admitted source. |
-| 7 | M1, M1b–M1e, M2, M3, M4, M9, M10 | Build PLAY THE ROAD/SOUNDTRACK only after licences, vocabulary, proxy, cache, and open-source delivery reality are settled. | Seeded/offline metadata, streamed audio, attribution, two-mode selectors, onboarding, skip/shuffle, and cache refresh pass without shipping source audio. |
+| 7 | M1, M1b–M1e, M2, M3, M4, M9, M10 | Build PLAY THE ROAD/SOUNDTRACK only after licences, vocabulary, proxy, cache, and source-visible delivery reality are settled. | Seeded/offline metadata, streamed audio, attribution, two-mode selectors, onboarding, skip/shuffle, and cache refresh pass without shipping source audio. |
 | 8 | S1, S3, then S2/S2a–S2j, X7 | Local musical macros precede remote control; the server is designed once for proxy plus relay. | Central display revokes immediately; up to four named phones sync complete state, respect grants, release on disconnect, and survive measured latency. |
-| 9 | PP2 if Q3 is resolved | Faithful reference work cannot start without identity, licence, and a visual gate. | Exactly three reference-grounded directions are shown; selected result passes source/licence and viewport gates. |
+| 9 | SF1 | The new Gradient Field cannot start without identity, per-reference licence boundaries, and a visual gate. | Exactly three original directions are shown; the selected result passes source/licence and viewport gates. |
 | Deferred | G1–G8 | G7 rejects integration; G8 remains documentation/theory research only unless separately reopened. | No Strudel package/source enters the repository or an untracked study folder; any future language has a separately approved source-boundary brief. |
 
 ## Content-ID work ledger
@@ -749,8 +746,9 @@ rather than missing answers now.
 | PM1 | Planned: tune Murmuration's fixed camera and shared scale response; do not invent a nonexistent discrete ladder. | `prtcl-renderer.js`, `prtcl-model.js`, LAB/tests | 0.5 | T1, P2; Q2 resolved by code | Smooth sweep and owner-approved smaller rest state; no frame-to-frame discontinuity. | Symptom may originate in source particle motion rather than camera scale. |
 | PA1 | Planned: apply the same shared continuity/progression contract to Axiom. | PRTCL model/renderer/LAB/tests | 0.5 | T1, P2 | Same property tests and exact-viewport sweep as Fractal/Murmuration. | Axiom has terrain and agents with different perceptual scales. |
 | PA2 | Planned: separate rain density, fall speed, and wave amplitude as LAB parameters, driven by one live speed curve. | `prtcl-model.js`, `prtcl-renderer.js`, LAB schema/UI, tests | 2 | T1, L1–L5 | LAB controls each axis independently; live preset maps 0–100 monotonically; 0/40/100 captures approved. | Current “agents” are not yet a semantically explicit rain system. |
-| PP1 | Planned: route PRIMORDIAL convergence, flow, and macro response through T1 without flattening touch deformation. | `primordial-model.js`, field/renderer, source utilities, tests | 1.5 | T1, L1–L5 | Step/sweep tests prove continuous output and touch remains independent. | Music-level meter itself is noisy and may need a separate response lane. |
-| PP2 | Partially resolved, still blocked: reference is CodePen `NXGbBo`; public Pen code is MIT by CodePen policy, but its attributed Inigo Quilez fragment lacks confirmed compatible terms, so an identical source copy is not admitted. | PRIMORDIAL renderer/model, notices, source-admission docs | 3+ | Q3 fragment evidence or owner acceptance of clean-room route; three-direction gate | Preserve current clean-room source unless compatible fragment rights are archived; exactly three original fidelity directions; complete attribution reconciliation. | A platform default cannot safely relicense embedded third-party source. |
+| PP1 | Retired by owner on 2026-08-30: do not tune or extend the current PRIMORDIAL field. | Registry, preferences, App/render path, tests/docs | 0.5 | None | PRIMORDIAL cannot be selected; persisted `primordial` migrates to Aperture; no orphan chunk/control remains in the production build. | Removing history instead of only runtime would damage provenance. |
+| PP2 | Superseded by `SF1`. The CodePen remains credited as a historical visual reference, but no exact-copy or clean-room fidelity work continues. | Notices, source-admission docs, history | Included in SF1 | None | Active docs distinguish retired PRIMORDIAL from the new original Gradient Field; no Pen shader/runtime/noise enters SF1. | Accidentally treating visual inspiration as a source licence. |
+| SF1 | Owner-approved new Gradient Field: exactly three original WebGL/3D directions using independently authored gradient, depth and perceptual-colour mechanics. | New field/model/renderer only after visual selection; reference and licence docs; tests | 3+ | Three-direction owner gate, T1, LAB | Selected direction is original, one-pass/pixel-density-1 by default, smooth at 0/40/100/130, visibly macro-responsive and Tesla-profiled; all references remain case-by-case notices. | Excess 3D/postprocessing cost or accidental source/preset copying. |
 | L1 | Planned: evolve the existing local `qa-field.html` into a separate non-production calibration app. | `qa-field.html`, `qa/field-harness.jsx`, new `qa/lab-*`, Vite/deploy absence tests | 2 | L5, T1 | Local URL works; production build and canonical site return 404 for LAB assets. | Accidentally shipping development controls. |
 | L2 | Planned: add independent speed/BPM, music, visual, and complete scene-specific controls. | LAB UI/schema plus declared per-scene parameter manifests | 3 | L1, T1 | Every active visual is selectable and its declared parameters change without reloading. | An unbounded “everything” panel becomes unusable. |
 | L3 | Planned: render shared Form/Response/Macro groups from scene declarations. | LAB components/schema/tests | 1 | L2 | Every scene uses the same group order and no flat orphan control exists. | Scene-specific semantics may be forced into misleading generic labels. |
@@ -796,7 +794,7 @@ rather than missing answers now.
 | M1e | Planned: five plain-language driving rhythm bands with automatic/manual modes. | SOUNDTRACK UI/schema/catalog query/tests | 1.5 | Q23, M1d | Every band has visible explanatory copy; manual override and restore-auto are unambiguous. | Italian labels in the request must become approved English product copy. |
 | M2 | Expanded: skip, shuffle, title/artist, compact rich-credit control, post-splash PLAY THE ROAD/SOUNDTRACK/MUTE choice, and selected one-time control onboarding. | App shared overlay/status, audio controller, CSS/tests | 3.5 | M1, M10, X1/X2, S2i | Controls work at 773×601; attribution stays reachable; rich-credit state follows the audible track through rapid skip and never shows stale metadata; chosen onboarding completes under four seconds and respects reduced motion. | Mandatory attribution and onboarding can overload the launch flow. |
 | M3 | Owner-authorised: prominent Illobo featured selection inside SOUNDTRACK, complete per-file provenance, and QR/link to `https://soundcloud.com/illobo`; private written confirmation recommended. | Catalog seed/source adapter, UI/notices/tests | 1.5 | M11, owner-supplied/approved file inventory | Only owner-authorised works appear; each carries source/licence capability flags; QR/link is tested and featured treatment is explicit. | Platform download status is not a substitute for the direct grant or provenance. |
-| M4 | Owner-approved AGPL-aware delivery: no client-secret/protection claim; protected local sources use server-authorised short-lived segmented delivery, never Git audio, with harmless public sample configuration only. | Server delivery, client Media Source/blob path, `.gitignore`, sample config, docs/tests | 3 | source-specific grants, M6 | No source audio/credential/private host data in Git/static build/logs; expiring authorisation and segmented playback; docs call it delivery control, not protection. | Browser users can always capture decoded audio; network dependence in car. |
+| M4 | Owner-approved source-visible delivery: no client-secret/protection claim; protected local sources use server-authorised short-lived segmented delivery, never Git audio, with harmless public sample configuration only. | Server delivery, client Media Source/blob path, `.gitignore`, sample config, docs/tests | 3 | source-specific grants, M6 | No source audio/credential/private host data in Git/static build/logs; expiring authorisation and segmented playback; docs call it delivery control, not protection. | Browser users can always capture decoded audio; network dependence in car. |
 | M5 | Closed by owner: the retired external source is excluded from product, catalogue, authoring, local audition, and runtime. No API calls, keys, credits, or files are used. | `PIANO.md` decision record only | 0 | Future explicit owner reopening | Repository and runtime contain no dependency, asset, key, request, or product claim for the retired source. | A future proposal could accidentally revive the source without rechecking current model-specific terms. |
 | M5b | Closed/superseded: no audiovisual-only exception for the retired source is retained. | `PIANO.md` decision record only | 0 | M5 future reopening | The source cannot appear in any browsing, selection, playback, effect, or authoring path. | Treating a plan-tier marketing label as a sufficient music grant. |
 | M5c | Closed: the private PDF-download action and persistent reminder are cancelled while the source remains excluded. | `PIANO.md` decision record only | 0 | None | No account login or evidence reminder appears in work reports; `_references/` material remains untouched. | None while the source stays excluded. |
@@ -813,8 +811,8 @@ rather than missing answers now.
 | ID | Status and one-line work | Files | Half-days | Dependencies | Proposed acceptance | Main risk |
 | --- | --- | --- | ---: | --- | --- | --- |
 | G1 | Recorded evaluation request; no integration work. | `PIANO.md`; future research note only if reopened | 0 | G7 | Decision remains traceable. | Treating an evaluation as permission to import. |
-| G2 | Corrected fact: Strudel AGPL is not a new whole-app cost because Sedicivalvole is already AGPL; dependency/source licences still require review. | Root licence set, future research note | 0.5 | Primary-source re-verification | No claim that rejecting Strudel changes this repo's AGPL status. | Legal overstatement from the external document. |
-| G3 | Reopened architecture conflict: public client logic defeats secret-key obfuscation regardless of Strudel. | M4 plan/licensing docs | Included in M4 | question 27 | M4 records the current AGPL boundary accurately. | False sense of technical protection. |
+| G2 | Updated fact: Strudel's AGPL terms are not the selected licence for original sedicivalvole material; no Strudel source or dependency is admitted. | Root licence set, future research note | 0 | G7 | PolyForm and third-party boundaries stay factual without speculative compatibility claims. | Legal overstatement from the external document. |
+| G3 | Architecture fact: public client logic defeats secret-key obfuscation regardless of Strudel or repository licence. | M4 plan/licensing docs | Included in M4 | None | M4 records the source-visible boundary accurately. | False sense of technical protection. |
 | G4 | Recorded technical assessment: pattern algebra may fit; scheduler replacement does not. | `PIANO.md`; optional benchmark only if reopened | 0 | G7 | Current sample-accurate worklet remains authoritative. | Future enthusiasm bypassing the scheduler gate. |
 | G5 | Recorded musical risk: unconstrained recombination reopens known coherence failures. | `MUSIC-CRAFT.md` only if future experiment yields evidence | 0 | G7 | No runtime random pitch/pattern generation enters current scores. | Tool capability mistaken for product quality. |
 | G6 | Owner response evaluated: no Strudel source checkout, untracked study folder, integration or source-informed clone; public documentation/theory may inform general research. | No repository or `_references/` source copy | 0 | G7 | No Strudel source is downloaded/read for implementation and no runtime/dependency enters the product. | Calling source study “clean room” would misstate the derivation boundary. |
@@ -822,7 +820,7 @@ rather than missing answers now.
 | G8 | Deferred: a project-owned constraint-first language may be researched separately from current implementation using public documentation, papers, general theory and project-owned experiments—not Strudel source. | Future approved research doc/tests | 4+ research | New owner-approved entry | Source boundary is logged before research; harmonic/register constraints are primitives; no source-derived clean-room claim. | Scope explosion and disputed derivation boundary. |
 | X3 | Recorded dependency: T1 consumers ship and are rechecked together, not as isolated fixes. | Test plan/phase tracking | 0 | T1 chain | One checkpoint covers D1/P1/P2/PF1/PF2/PM1/PA1/PP1/A3 as applicable. | D1 and A3 need domain-specific mechanics beyond scalar T1. |
 | X4 | Recorded dependency: remote passenger audio work follows verified permission for each admitted source and M1. | Phase tracking | 0 | M1/S1/M11 | S2 audio controls cannot activate before source capability metadata exists. | Licence verification treated as a one-time checkbox. |
-| X5 | Reopened: Strudel rejection does not remove AGPL/client-obfuscation limits. | M4/G3 plan and licensing docs | 0.5 | question 27 | Corrected architecture is owner-approved and factual docs stay synchronised. | External document currently labels this resolved. |
+| X5 | Resolved: Strudel rejection does not make browser-delivered secrets or audio uncapturable; PolyForm changes reuse permission, not client visibility. | M4/G3 plan and licensing docs | 0 | None | Corrected architecture is owner-approved and factual docs stay synchronised. | False confidence from conflating licence and transport secrecy. |
 | X6 | Recorded high-leverage equivalence: LAB and phone are protocol clients with different transports. | L5 protocol, adapters/tests | Included in L5/S2 | Q15 | Same conformance suite runs against local and WebSocket transports. | UI code bypassing protocol for convenience. |
 | X7 | Planned: one server boundary for music proxy/delivery and passenger relay, with separated permissions internally. | Server architecture/implementation/tests | Included in M6/S2 | Host selection, M6/S2a | One deployment, separate routes/scopes/rate limits, no shared secret exposure. | Combining services can enlarge blast radius without isolation. |
 | X8 | Planned policy: real-time macros require derivative permission; ND is excluded or effects are enforced off by typed capability. | M11 policy, M9 query, audio routing/tests | 1 | Q16, source evidence | No forbidden source can reach effect-enabled bus; metadata and UI agree. | Creative Commons/legal interpretation requires qualified review. |
@@ -841,7 +839,7 @@ rather than missing answers now.
 | Q8 | Closed/superseded by owner | The retired source was publicly rechecked, then removed | 0 | None | Do not request account access or private subscription evidence; reopen only by explicit future decision. |
 | Q9 | Resolved by owner attestation | Owner authorises complete Illobo recording use/processing/hosting and featured promotion | 0 | None; written private copy recommended | Inventory exact files and public provenance; never publish the private message. |
 | Q10 | Resolved by owner | Source sentence was truncated | 0 | None | D1 is complete at road-centred, motionless zero; D3 adds nothing. |
-| Q11 | Resolved by operative policy and recommendation | `LICENSE`, `LICENSE-SCOPE.md`, package metadata; owner requested explanation, not relicensing | 0 | None | Keep `AGPL-3.0-or-later` for code/docs and separate asset exclusions unless owner explicitly changes strategy. |
+| Q11 | Resolved by owner: option B | `LICENSE`, `LICENSE-SCOPE.md`, package metadata, README, notice, decision log | 0 | None | Original project material uses `PolyForm-Noncommercial-1.0.0`; old AGPL grants remain; third-party and reserved material stay case by case. |
 | Q12 | Resolved: no source exposure | Owner offered optional study; review rejects it as incompatible with a clean-room claim | 0 | None | No Strudel source download/read/import; documentation/theory-only research may be separately approved. |
 | Q13 | Resolved by owner | Licence files and answer 27 | 0 | None | Abandon client-secret claims; M4/M6 use server delivery control and safe sample config. |
 | Q14 | Resolved by owner | Answers 12–13 | 0 | None | Maximum four equal controllers; room lasts for car session; named live peers; individual/all revoke. |
@@ -850,7 +848,7 @@ rather than missing answers now.
 | Q17 | Resolved by owner | Jamendo and directly authorised Illobo | 0 | None | M11 still verifies each source's operational capabilities before admission. |
 | Q18 | Resolved as optional research | No Freesound code or source admission | 0 | None | Open a licence-filtered study only if FRACTURE sourcing needs it; admit no audio during research. |
 | Q19 | Resolved in request document | S2i | 0 | None | Skip remains visible outside SOUNDTRACK with concise explanation. |
-| Q21 | Resolved under explicit interpretation | Answer 16 says always active “come da tua proposta” | 0 | None unless owner corrects clarification 1 | Fresh sessions always start sound/effects enabled; disabled effects state does not persist. |
+| Q21 | Resolved by owner: option A | Explicit 2026-08-30 follow-up | 0 | None | Fresh sessions always start sound/effects enabled; disabled effects state does not persist. |
 | Q22 | Open empirical test | No Jamendo adapter | 0.5 | M9 | Sample stream URLs are rechecked immediately and after documented age; redirects/expiry recorded. |
 | Q23 | Resolved by owner | No SOUNDTRACK selector | 0 | None | Automatic pace bands affect next SOUNDTRACK selection only; manual override persists until auto is restored. |
 | Q24 | Long-running measurement | DIAG reports API presence only | Included in M13 | M9 confidence | Canary evidence after reload, sleep, storage pressure where feasible, and at least one OTA boundary. |
@@ -893,10 +891,12 @@ rather than missing answers now.
 - Production: built/canonical `/qa-field.html`, LAB modules, and preset endpoints
   remain absent/404.
 
-### Phase 3 — Scene tuning
+### Phase 3 — Scene tuning and Gradient Field selection
 
 - Exact viewport: owner reviews 0/40/100/130 frames and continuous ascent/descent
-  video for Fractal, Murmuration, Axiom, and PRIMORDIAL.
+  video for Fractal, Murmuration, and Axiom. PRIMORDIAL is retired. Before
+  `SF1` implementation, the owner selects one of exactly three original
+  Gradient Field directions at `773 × 601`.
 - Tesla: touch, frame pacing, acceleration/braking response, macro entry/release,
   and reduced-motion state; no scene closes until vehicle verification.
 
@@ -940,32 +940,31 @@ rather than missing answers now.
 - Tesla: real car/phone cellular path while parked; no phone audio and no stale
   controller after sleep/off/revoke.
 
-## Proposed new entries requiring an owner-assigned ID
+## Newly assigned entries
 
-These were discovered in the repository and are deliberately **not** assigned
-invented IDs:
+The owner assigned stable IDs on 2026-08-30: `A5 DISCOVER`, `X9 Visual Library`,
+`X10 Appearance`, `X11 CONDITIONS`, and `SF1 Gradient Field`.
 
-- Establish an architecture-safe local dependency layout for the Dropbox
-  checkout; current arm64 `esbuild` and x64 Node prevent a green full suite.
-- Reconcile stale README/roadmap statements with the authoritative published
-  PRIMORDIAL state.
+- The architecture-safe per-machine native cache is implemented; it leaves the
+  shared Dropbox `node_modules` untouched and fixes the arm64/x64 build boundary.
+- Active README/roadmap/current-state statements are reconciled to the
+  PRIMORDIAL retirement; immutable deployment and changelog evidence remains.
 - Decide whether the external Italian requirements source should be translated
   to English and versioned under `docs/`, or remain private/external.
 - Independently verify every external API/licence conclusion in M8/M9/G2
   against current primary sources before committing it as project fact; M5 is
   closed and requires no further research while the retired source remains excluded.
-- Assign a stable owner ID to the proposed DISCOVER companion surface, then run
-  its exactly-three-direction visual gate before implementation. Reuse A2/A3b,
+- `A5`: run the DISCOVER companion surface's exactly-three-direction visual
+  gate before implementation. Reuse A2/A3b,
   X1/X2 and M13 dependencies without turning ATLAS into a permanently expanded
   content panel.
-- Assign stable owner IDs to the grouped Visual Library and shared Appearance
+- `X9` and `X10`: keep the grouped Visual Library and shared Appearance
   system. Keep both in the X2 exactly-three-direction gate, but preserve their
   separate implementation and acceptance ownership.
-- Assign a stable owner ID to deferred CONDITIONS research. Verify a weather
-  provider and privacy/attribution boundary, then prototype only the contextual
+- `X11`: verify a weather provider and privacy/attribution boundary, then
+  prototype only the contextual
   exception-led value beyond Tesla's own forecast and precipitation overlay.
-- Assign a stable owner ID to the proposed Shader Field visual, then present
-  exactly three directions before implementation: planar perceptual mesh,
+- `SF1`: present exactly three directions before implementation: planar perceptual mesh,
   displaced depth, and restrained aurora/flow. Start with the project-owned
   one-pass direct-WebGL2 planar spike. Admit no ShaderGradient source/dependency
   without a measured Tesla comparison plus exact MIT/transitive-notice review,
@@ -995,7 +994,7 @@ number; question 2 asks the owner to confirm the 97-ID interpretation.
 ## Short synthesis (maximum 15 lines)
 
 - Sedicivalvole is already a published experimental Flux product, not an empty prototype.
-- It has seven active visuals, three authored adaptive scores, shared performance effects, and integrated diagnostics.
+- It has six active visuals, three authored adaptive scores, shared performance effects, and integrated diagnostics.
 - The new request's strongest architectural idea is T1: one response mechanism, with scene-authored endpoints.
 - T1 is absent today even though GPS input itself is already smoothed and plausibility-bounded.
 - The existing local QA field is the correct seed for LAB, provided L5 makes it a protocol client.
@@ -1004,22 +1003,24 @@ number; question 2 asks the owner to confirm the 97-ID interpretation.
 - Music has two primary blocks: PLAY THE ROAD preserves FRACTURE/JUNCTION/NIGHTSHIFT; SOUNDTRACK owns fixed recordings.
 - Passenger control is feasible only after local macros, SOUNDTRACK, typed protocol, and one evidence-based server boundary.
 - Source permissions must become machine-enforced capabilities, not prose checked after playback.
-- The repository is already AGPL, so client-side audio secrecy is not restored by rejecting Strudel.
-- Keeping AGPL for code/docs does not automatically license the separately excluded original audio.
+- Existing public versions remain available under their published AGPL terms;
+  the selected future project-code direction is PolyForm Noncommercial, with
+  third-party material governed case by case and never silently relicensed.
 - M13 should start first because only elapsed calendar time can prove persistence.
 - Visual overlay/zone work must pass the mandatory exactly-three-direction gate before code.
 - Real-Tesla touch, motion, storage, network, and listening remain final acceptance boundaries.
 
 ## Ordered work list and tracking
 
-1. Obtain only the three remaining clarifications in the evaluation section;
-   all other answers and side notes are already mapped to stable rows.
+1. Record the closed owner decisions, complete the source-visible
+   non-commercial licence migration audit, and keep every third-party grant
+   scoped case by case.
 2. Resolve the owner-assigned non-ID baseline entries and the supplied Tesla
    diagnostic findings, then implement M13 and plant the canary.
 3. Deliver T1 with D1/D2, then run the combined X3 regression checkpoint.
 4. Deliver L5 and the local-only LAB (L1–L4), preserving production exclusion.
-5. Tune PRTCL/PRIMORDIAL consumers in the LAB and obtain viewport plus Tesla
-   acceptance.
+5. Tune PRTCL consumers in the LAB; retire PRIMORDIAL; present exactly three
+   original `SF1` Gradient Field directions and implement only the selected one.
 6. Present exactly three X1/X2/S3 directions covering overlays, navbar/GPS,
    truthful network activity/problems, palette/chrome behavior, the grouped
    Visual Library, interface appearance, onboarding and passenger naming;

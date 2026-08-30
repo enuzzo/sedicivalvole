@@ -127,21 +127,14 @@ OPEN, UNDERWATER, BLOOM, and reduced motion are implemented in this native
 particle grammar. Human visual approval and canonical publication are complete;
 target-Tesla acceptance remains an explicit gate.
 
-`PRIMORDIAL 08` is one clean-room fluid-field environment, not a copy or embed
-of the referenced [GLSL: Primordial Soup](https://codepen.io/shubniggurath/pen/NXGbBo)
-Pen. Its local candidate uses a project-authored full-screen WebGL2 shader with
-an independently authored coupled-sine warp system and a bounded Canvas2D
-failure path. No Pen HTML, CSS, JavaScript, shader, Three.js runtime, or
-separately attributed noise fragment enters the product. Speed controls field
-convergence; musical level and tempo control flow, colour motion, and local
-agitation. All five channels of the selected Sedici Valvole palette remain
-simultaneously available, and OPEN, UNDERWATER, BLOOM, reduced motion, and
-pointer deformation act through the fluid grammar. One compact `TUNE / FIELD`
-text trigger opens a `232 px` contextual panel with only three persisted bounded
-ranges: Scale, Flow, and Warp. It opens no select or dropdown, closes with
-Escape, and keeps the normal header/footer controls awake while open. The local
-implementation and exact-viewport gates pass; human visual approval, push,
-canonical deployment, and real-Tesla acceptance remain explicit later gates.
+`PRIMORDIAL 08` is retired. The product owner rejected it on 2026-08-30 and its
+renderer, fallback, tuner, preference payload, catalog entry, QA path and active
+tests are removed. Git and the dated source-admission record retain the decision
+history. Its proposed successor is a separate original Gradient Field: before
+implementation, exactly three visual directions must be presented and one must
+be selected. ShaderGradient, FeralUI Gradients, and ColorFlow are reference
+inputs only within their individually audited licence boundaries; no shader,
+runtime, preset, export, embed or asset enters the product by implication.
 
 `VERTIGO 02` is the approved second visual environment and must render the original Interstate 7 scene, not an independent visual translation. The vendored files from upstream commit `e58d58520bc0dfde21f9e14e6a1b8c7f0a2a2a9e` remain byte-identical and retain the complete road, repeated side light sticks, opposing car-light trails, bloom, camera, deep distortion, fog, geometry, and bundled Three.js/post-processing pipeline. The sedicivalvole integration keeps the iframe black until the upstream editorial shell is hidden, so only the canvas appears. An external bridge maps `0–130 km/h` to the original `speedUpTarget` and FOV controls and maps the selected theme onto the runtime's existing colour attributes and uniforms without editing the vendor tree.
 
@@ -238,7 +231,7 @@ acceptance in the vehicle.
 | Adaptive synth + sequencer | implemented prototype | FRACTURE runs in the AudioWorklet; real Tesla musical acceptance pending |
 | Modular Aperture generative visual | implemented prototype | WebGL2 plus Canvas2D fallback; Tesla performance pending |
 | PLUMB inertial-suspension visual | rejected and retired before publication | Exact-viewport review triggered its strings/bars retirement criterion; no active renderer |
-| Selectable visual environments | implemented prototype | Aperture, Vertigo, Meridian, Atlas, Drivey, PRTCL, and PRIMORDIAL are canonically published with normalized motion, safety, persistence, palette, failure, and diagnostic contracts; WAKE is retired and real-Tesla validation remains open |
+| Selectable visual environments | implemented prototype | Aperture, Vertigo, Meridian, Atlas, Drivey, and PRTCL are active with normalized motion, safety, persistence, palette, failure, and diagnostic contracts; PRIMORDIAL and WAKE are retired, the Gradient Field gate is pending, and real-Tesla validation remains open |
 | Selectable musical environments | implemented prototype | FRACTURE, JUNCTION, and NIGHTSHIFT ready; four later directions remain pending |
 | Open packs | strategic goal | schema and licensing not frozen |
 | Offline audio core | implemented prototype | identical score DSP renders and analyses WAV references in Node |
@@ -292,6 +285,11 @@ Tesla's official Model 3 page reports a 15.4-inch center display, but not a CSS 
 - README contains only implemented facts and real verified screenshots.
 - `CHANGELOG.md` keeps an `Unreleased` section.
 - During private development, user-approved builds go to the canonical root and are verified live.
-- The operative repository license is AGPL-3.0-or-later for code and documentation, with original brand/audio/standalone media outside that grant as defined in `LICENSE-SCOPE.md`.
-- AGPL allows commercial use, forks, rebranding, and sale; it does not prevent cloning.
+- Original sedicivalvole code and documentation first distributed under the
+  current policy use `PolyForm-Noncommercial-1.0.0`; commercial use is not
+  granted, while original brand/audio/standalone media remain reserved as
+  defined in `LICENSE-SCOPE.md`.
+- Previously published AGPL versions retain the rights already granted.
+  Third-party material keeps its own licence or direct permission and is never
+  blanket-relicensed by the project policy.
 - Exact legal ownership, trademark policy, contributor terms, and the final mixed-license asset policy remain open for legal review; do not invent an owner.

@@ -62,9 +62,10 @@ framing. Merely animating a CSS gradient would reproduce none of that depth.
 
 ## Licence and dependency boundary
 
-The upstream repository and `@shadergradient/react` package declare MIT. MIT is
-compatible with use inside this AGPL project when its copyright and permission
-notice are retained; it does not make the upstream work project-authored. Any
+The upstream repository and `@shadergradient/react` package declare MIT. That
+licence permits inclusion when its copyright and permission notice are retained;
+it does not make the upstream work project-authored or place it under this
+repository's PolyForm terms. Any
 admission must first record the exact version/commit, upstream notice,
 modifications, dependency licences, and shipped location in
 `THIRD_PARTY_NOTICES.md`.

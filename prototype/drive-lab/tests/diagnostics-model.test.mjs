@@ -4,8 +4,13 @@ import {
   appendConnectionHistory,
   appendViewportHistory,
   classifyGpsConfidence,
+  createAudioLatencyTelemetry,
+  createDiagnosticEventLedger,
+  createDiagnosticEventReport,
   createDriveTelemetry,
   createDriveTelemetryReport,
+  createLongTaskTelemetry,
+  createNetworkTelemetry,
   DIAGNOSTIC_MAX_REQUEST_BODY_BYTES,
   DRIVE_TRACE_FIELDS,
   fitDiagnosticReportForTransport,
@@ -14,14 +19,26 @@ import {
   createGpsTelemetry,
   inferViewportMode,
   recordDriveTelemetrySample,
+  recordAudioLatencySample,
+  recordDiagnosticEvent,
   recordFrameSample,
+  recordLongTask,
+  recordNetworkOnlineState,
+  recordNetworkResourceEntry,
   recordPhaseFrame,
   recordPhaseMemorySample,
   recordGpsSample,
   summarizeFrameTelemetry,
+  summarizeAudioLatencyTelemetry,
+  summarizeLongTaskTelemetry,
+  summarizeNetworkTelemetry,
   summarizePhasePerformanceTelemetry,
   summarizeGpsTelemetry,
+  finishAppNetworkTransfer,
+  readAudioLatencySnapshot,
+  startAppNetworkTransfer,
 } from "../src/diagnostics-model.js";
+import { nextStorageCanary, summarizeStorageCanary } from "../src/storage-diagnostics.js";
 
 test("identifies the photographed Tesla viewport as split view", () => {
   assert.equal(inferViewportMode({ innerWidth: 773, innerHeight: 601, screenWidth: 1254, screenHeight: 784 }), "split");
@@ -172,6 +189,105 @@ test("connection history deduplicates stable readings and keeps changes", () => 
 
   assert.equal(appendConnectionHistory([first], unchanged).length, 1);
   assert.deepEqual(appendConnectionHistory([first], offline), [first, offline]);
+});
+
+test("high-rate GPS samples cannot evict significant diagnostic events", () => {
+  const ledger = createDiagnosticEventLedger();
+  recordDiagnosticEvent(ledger, { elapsedMs: 0, type: "harness.started" });
+  for (let index = 0; index < 400; index += 1) {
+    recordDiagnosticEvent(ledger, { elapsedMs: index + 1, type: "gps.sample" }, { sample: true });
+  }
+  const report = createDiagnosticEventReport(ledger);
+
+  assert.equal(report.events.find((event) => event.type === "harness.started")?.priority, "significant");
+  assert.equal(report.retention.retainedSignificant, 1);
+  assert.equal(report.retention.retainedSamples, 120);
+  assert.equal(report.retention.discardedSamples, 280);
+});
+
+test("long tasks retain bounded phase and runtime context without coordinates", () => {
+  const telemetry = createLongTaskTelemetry(true);
+  recordLongTask(telemetry, {
+    startTimeMs: 1200,
+    durationMs: 12741,
+    observedAtMs: 13941,
+    phase: "drive:atlas:junction:visual",
+    renderer: "MapLibre GL",
+    visual: "atlas",
+    music: "junction",
+    speedKmh: 42.4,
+    gpsState: "live",
+    gpsSampleAgeMs: 13000,
+    audioState: "running",
+    online: true,
+    effectiveType: "4g",
+    visibility: "visible",
+  });
+  const summary = summarizeLongTaskTelemetry(telemetry);
+
+  assert.equal(summary.count, 1);
+  assert.equal(summary.maximumDurationMs, 12741);
+  assert.equal(summary.recentTasks[0].phase, "drive:atlas:junction:visual");
+  assert.equal(JSON.stringify(summary).includes("latitude"), false);
+});
+
+test("audio latency distinguishes unavailable, reported zero, and positive readings", () => {
+  const telemetry = createAudioLatencyTelemetry();
+  recordAudioLatencySample(telemetry, readAudioLatencySnapshot({ baseLatency: 0.042 }, 100));
+  recordAudioLatencySample(telemetry, readAudioLatencySnapshot({ baseLatency: 0.042, outputLatency: 0 }, 200));
+  recordAudioLatencySample(telemetry, readAudioLatencySnapshot({ baseLatency: 0.042, outputLatency: 0.272 }, 300));
+  const summary = summarizeAudioLatencyTelemetry(telemetry);
+
+  assert.equal(summary.samples[0].outputLatencyStatus, "unavailable");
+  assert.equal(summary.samples[1].outputLatencyStatus, "reported-zero");
+  assert.equal(summary.latest.outputLatencyStatus, "reported-positive");
+  assert.equal(summary.maximumReportedOutputLatencyMs, 272);
+});
+
+test("network telemetry reports only browser-observed and app-known bytes", () => {
+  const telemetry = createNetworkTelemetry(0);
+  recordNetworkOnlineState(telemetry, { online: true, capturedAtMs: 0 });
+  recordNetworkResourceEntry(telemetry, {
+    transferSize: 120_000,
+    duration: 1000,
+    responseEnd: 2000,
+    initiatorType: "fetch",
+  });
+  recordNetworkResourceEntry(telemetry, {
+    transferSize: 0,
+    encodedBodySize: 900_000,
+    duration: 1000,
+    responseEnd: 2500,
+    initiatorType: "fetch",
+  });
+  startAppNetworkTransfer(telemetry, {
+    id: "send-1",
+    direction: "upload",
+    startedAtMs: 3000,
+    knownBytes: 20_000,
+    label: "diagnostic",
+  });
+  finishAppNetworkTransfer(telemetry, { id: "send-1", endedAtMs: 4000, success: true });
+  const summary = summarizeNetworkTelemetry(telemetry, 5000);
+
+  assert.equal(summary.observedDownloadBytes, 120_000);
+  assert.equal(summary.unobservableResourceEntries, 1);
+  assert.equal(summary.observedUploadBytes, 20_000);
+  assert.equal(summary.currentDownloadBytesPerSecond, 24_000);
+  assert.equal(summary.currentUploadBytesPerSecond, 4_000);
+  assert.equal(summary.peakDownloadBytesPerSecond, 120_000);
+  assert.equal(summary.peakUploadBytesPerSecond, 20_000);
+});
+
+test("storage canary preserves creation time and reports truthful age", () => {
+  const first = nextStorageCanary(null, { version: "0.0.0", build: "one", commit: "abc" }, "2026-08-30T10:00:00.000Z");
+  const second = nextStorageCanary(first, { version: "0.0.0", build: "two", commit: "def" }, "2026-08-30T10:01:00.000Z");
+  const summary = summarizeStorageCanary(second, Date.parse("2026-08-30T10:02:00.000Z"));
+
+  assert.equal(second.createdAt, first.createdAt);
+  assert.equal(second.seenCount, 2);
+  assert.equal(summary.ageMs, 120_000);
+  assert.equal(summary.vehicleSoftware, "unavailable");
 });
 
 test("drive telemetry retains a bounded trace while preserving full-session aggregates", () => {

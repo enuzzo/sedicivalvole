@@ -13,16 +13,16 @@ dated study documents.
 - `Flux` is the implemented primary mode. `Engine` remains an equal confirmed
   mode, visible but disabled until its own audio model and one of exactly three
   Engine-specific visual directions are selected.
-- The source checkout's Flux catalog contains seven visual environments:
+- The source checkout's Flux catalog contains six visual environments:
   **APERTURE 01**, **VERTIGO 02**, **MERIDIAN 03**, **ATLAS 04**, **DRIVEY 05**,
-  the human-approved and canonically published **PRTCL 06**, and the accepted,
-  canonically published **PRIMORDIAL 08** field. Slot `07` remains
-  reserved for the future INFINITE study. Aperture remains the accepted
-  fresh-session and invalid-preference fallback.
-- All seven source environments use the shared catalog of **10 themes**. Vertigo keeps
+  and the human-approved and canonically published **PRTCL 06**. Aperture
+  remains the accepted fresh-session and invalid-preference fallback. The
+  rejected PRIMORDIAL field is absent from the current runtime; stored
+  `primordial` preferences migrate to Aperture.
+- All six source environments use the shared catalog of **10 themes**. Vertigo keeps
   the upstream Interstate 7 files byte-identical while an external runtime
   bridge maps the selected theme onto its existing colour channels.
-- OPEN, UNDERWATER and BLOOM are visible in all seven checkout environments without
+- OPEN, UNDERWATER and BLOOM are visible in all six checkout environments without
   a shared overlay. Aperture performs its tiled projection and centre light;
   Vertigo changes only the original runtime's externally bridged time, FOV and
   colour controls; Meridian changes corridor projection, flow, fog and rail
@@ -30,8 +30,7 @@ dated study documents.
   receives bounded speed, camera, traffic and two-channel material updates through its
   external bridge without editing the vendor files; PRTCL changes point scale,
   depth/travel, palette pulse, spread, attenuation, and glow within its own
-  particle grammar; Primordial changes convergence, pressure, flow, agitation,
-  contours, and field light within its own fluid grammar.
+  particle grammar.
 - Meridian keeps one deterministic low corridor beneath sparse, large oblique
   blades and longitudinal shoulder planes. Its shared travel field has tightly
   bounded vertical motion; FOV, depth compression, peripheral stretch,
@@ -89,22 +88,12 @@ dated study documents.
   128-module build pass. Human visual approval was recorded on 2026-08-29;
   source commit `b88070c`, build `20260829-2337`, is verified on the canonical
   root, while real-Tesla acceptance remains open.
-- PRIMORDIAL 08 is a clean-room implementation checkpoint at `9b733f6`, now
-  published through exact source `44a3a42`, build `20260830-0038`.
-  Its project-authored full-screen WebGL2 shader uses coupled sine domains and
-  independently authored warping; a bounded Canvas2D failure path remains
-  available. No CodePen HTML, CSS, JavaScript, shader, Three.js runtime, or
-  separately attributed noise fragment is copied. Speed owns convergence;
-  music owns flow, colour movement, and agitation. All ten palettes feed five
-  native colour channels, OPEN / UNDERWATER / BLOOM remain fluid-field
-  gestures, and reduced motion freezes periodic motion while preserving touch
-  deformation. A compact `94 × 44 px` text trigger opens only the three bounded
-  Scale, Flow, and Warp ranges in a `232 px` panel; it contains no select or
-  dropdown, closes with Escape, persists its values, and pins the real product
-  controls awake. Exact `773 × 601`, `390 × 844`, and `601 × 390` muted Browser
-  QA passes locally. The user delegated remaining product decisions on
-  2026-08-30; exact-source push, publication, HTTPS identity and muted live
-  `773 × 601` Browser QA pass. Target-Tesla acceptance remains open.
+- PRIMORDIAL 08 was published from project-authored clean-room code and later
+  rejected by the product owner on 2026-08-30. Its registry entry, renderer,
+  fallback, tuner, preferences, production imports, QA path and active tests are
+  removed; the dated admission record and Git history remain as provenance.
+  A future original Gradient Field is a separate project with its own exactly
+  three-direction visual gate and source-by-source licence review.
 - REGISTER was rejected after live review because its static print composition
   was inexplicable in motion and outside the product mood. Its source remains
   only in the rejected-visual archive; the runtime, QA harness and active tests
@@ -274,8 +263,11 @@ dated study documents.
 
 - Local gate: `npm test` and `npm run build` from `prototype/drive-lab/`.
 - The exact suite count and build identity are refreshed after the final
-  integrated gate for each checkpoint; the current Mac Studio provides native
-  arm64 Node, Rollup, esbuild, Python analysis tools and Homebrew PHP.
+  integrated gate for each checkpoint. This Dropbox checkout moves between
+  Intel and Apple-silicon Macs, so its shared `node_modules` tree is never
+  trusted as an architecture boundary. `npm run native:prepare`,
+  `npm run test:native`, and `npm run build:native` use exact lockfile versions
+  from a per-machine cache without rewriting the shared dependency tree.
 - Canonical development URL: <https://sedicivalvole.app/>. The most recent
   canonical publication evidence and build stamp are always the first entry in
   [`DEPLOY.md`](DEPLOY.md).
@@ -291,28 +283,14 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The PRTCL implementation checkpoint is `9f177fa`; the published integrated
-  source `b88070c` passes 339 deterministic tests and a 128-module production
-  build (`20260829-2337`). Six exact `773 × 601` muted visual cases have distinct
-  captured identities; two reduced-motion frames taken 800 ms apart are
-  byte-identical. The direct TYPE cycle returns to Fractal, measures
-  `94 × 34 px` at both agreed viewports, and the DOM contains no `select`.
-- The local PRIMORDIAL checkpoint `9b733f6`, build `20260830-0008`, passes all
-  347 deterministic tests and the 132-module production build. Exact
-  `773 × 601` QA reports 59.62 FPS / 18.3 ms p95 with zero runtime issue or
-  Browser warning/error; RED and MINT palettes, all three performance effects,
-  mouse/touch deformation, deterministic reduced motion, and the bounded tuner
-  were captured. This evidence is local only and changes no canonical identity.
-- The canonical live product is version `0.0.0`, source commit `b88070c`, build
-  `20260829-2337`. The final 2026-08-29 23:37 publication passed clean-source
-  synchronization, a read-only preflight, the 89-file / 15,756,155-byte upload, the
-  post-publication no-write identity gate, byte-for-byte HTML and key-asset
-  checks, cache-behavior checks and muted live PRTCL/DRIVEY/DIAG QA at
-  `773 × 601`. PRTCL completes its three TYPE states independently of Palette;
-  Drivey's iframe carries the build identity, every View/Render cycle completes,
-  no dropdown/panel exists, and diagnostics report WebGL Original Drivey
-  Wireframe at 59.42 FPS / 17.6 ms p95 with zero runtime issue or Browser
-  warning/error and output muted.
+- The canonical live product is version `0.0.0`, source commit `6326b52`, build
+  `20260830-1427`. The 2026-08-30 identity-correction publication passed the
+  complete 351-check gate available on the Intel Mac, a 132-module build,
+  read-only preflight, 90-file / 15,774,999-byte upload, no-write postflight,
+  byte-identical HTML and JavaScript checks, cache checks, and muted live
+  `773 × 601` launch/DIAG QA with zero browser warning or error. It predates the
+  local PRIMORDIAL retirement; its exact historical evidence remains progressive
+  and authoritative in [`DEPLOY.md`](DEPLOY.md).
 - Diagnostic telemetry contains no coordinates and is sent only after the
   explicit `SEND DIAGNOSTIC` action. ATLAS location is a separate ephemeral
   feature: the latest reliable point stays in session memory; OpenFreeMap tile
@@ -337,10 +315,11 @@ dated study documents.
    spectral slope and saturation; add stereo and phase-coherence evidence with
    explicit invalidity reasons before any detected pitch set can gate JUNCTION
    material.
-5. Validate the published PRTCL and PRIMORDIAL motion, performance, touch, and
-   thermal behavior on the target Tesla. Validate the revised OPEN intake at
-   real playback level. INFINITE remains queued behind its own source
-   comparison and human gate.
+5. Validate PRTCL motion, performance, touch, and thermal behavior on the target
+   Tesla. Present exactly three original Gradient Field directions before any
+   implementation, then admit only the selected direction through a fresh
+   licence and performance gate. Validate the revised OPEN intake at real
+   playback level.
 6. Design Engine only after exactly three Engine-specific directions are shown
    and one is selected. Keep `VERSION` at `0.0.0` until an explicit release is
    approved.
