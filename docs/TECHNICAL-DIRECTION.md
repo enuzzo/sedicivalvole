@@ -442,6 +442,26 @@ double coordinate evaluation as well. Above `40 km/h` the existing 1.25 cap rema
 
 The user explicitly approved a same-origin PHP send endpoint with a fixed private recipient and extensive technical reports after an explicit send gesture. It rejects cross-origin requests, oversized or malformed payloads, and common coordinate keys; applies a hashed temporary per-client rate limit; persists no report; and exposes no FTP credentials. Before submission, a deterministic recent-first fitter records original/transmitted counts and trims only if the pretty-printed report would exceed the mail budget. The endpoint forces shortest-round-trip float serialization because provider-level PHP precision settings must not expand compact telemetry decimals after fitting. The accepted schema/report envelope is then encoded as one gzip-compressed JSON attachment; the compact multipart body records its name, byte counts and SHA-256 digests, avoiding email-client preview clipping while preserving a verifiable complete artifact. Failed sends preserve the in-memory recorder for retry and expose only sanitized reason codes. PHP `mail()` acceptance is local transport handoff, not inbox-delivery proof.
 
+The planned calibration surface is an owner-only application at canonical
+`/lab/`, not security by obscurity and not part of the public driving flow. A
+PHP gate authenticates an ignored password hash, issues an expiring secure
+session cookie, protects the LAB document, assets, preset-mail route and logout,
+and validates CSRF, same-origin requests, rate, payload size and schema at the
+server boundary. Client JavaScript never receives the password, hash, recipient,
+or an authentication decision it could bypass. The same app remains runnable
+locally for engineering work without weakening the canonical gate.
+
+LAB presets use the same versioned control protocol as later passenger clients.
+One export records app/version/build/commit/time, viewport and bounded runtime
+context, active Visual/Music/theme/input source, speed/BPM, grouped
+`form/response/macros`, every declared scene parameter, protocol revision and
+render-health snapshot. `COPY JSON`, import and explicit `SEND JSON` all operate
+on that identical validated object. The mail route reuses the existing private
+recipient boundary where appropriate, sends a digest-verifiable JSON attachment,
+retains failed presets for retry, and reports transport acceptance rather than
+inbox delivery. Coordinates, credentials, storage contents and unrelated device
+or network activity are prohibited from the LAB envelope.
+
 ## Deployment
 
 Build output is static. During the current private development phase, user-approved builds are published to `https://sedicivalvole.app/`. The FTP channel is passive port 21 and therefore unencrypted. Every deploy must keep secrets out of commands/logs, upload assets before the entry point, and verify canonical HTML/assets/version/cache behavior after publication.

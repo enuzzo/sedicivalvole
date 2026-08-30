@@ -727,7 +727,7 @@ source implementation.
 | --- | --- | --- | --- |
 | 0 | M13 and baseline/toolchain gate | The storage canary needs calendar time; reliable tests are needed before product edits. | Canary appears in DIAG with age and truthful capabilities; focused and full baseline status is recorded. |
 | 1 | T1, D1, D2; close D3 | Shared response mechanics must exist before scene tuning; DRIVEY zero hold is independently high-value. | Deterministic curve/envelope/slew tests pass; DRIVEY stays centred and motionless at zero, with opposing-only NPCs when reliable or no NPCs otherwise. |
-| 2 | L5, L1–L4, X6 | The LAB must speak the future transport-independent protocol before scene-specific tuning. | Local-only LAB drives one scene through typed messages and exports a round-trippable preset. |
+| 2 | L5, L1–L4, X6 | The LAB must speak the future transport-independent protocol before scene-specific tuning. | The owner-only `/lab/` drives one scene through typed messages, exports a round-trippable preset, and can explicitly email that same complete preset from the authenticated session. |
 | 3 | P1, P2, PF1, PF2, PM1, PA1, PA2 | These are shared-response consumers and require the LAB to set measured endpoints. | All three PRTCL families sweep smoothly through 0/40/100/130 and macro attack/release; retired PRIMORDIAL has no runtime consumer. |
 | 4 | X1, X2; A1, A3, A3b, A4 | Screen zones and overlay grammar precede new ATLAS chrome and onboarding. | Selected three-direction layout passes `773 × 601`; map interaction, GPS states/help, five-second chrome, bounded palettes, point interpolation, road badge, and cardinal compass pass. |
 | 5 | A2, S5, S4 | A2 becomes the first modal consumer; S5 is the shared non-modal feedback system; S4 supplies a universal state action. | Reader themes/type sizing and status feedback work with touch/keyboard; effect disable releases smoothly across all scores/visuals. |
@@ -758,10 +758,10 @@ source implementation.
 | PP1 | Retired by owner on 2026-08-30: do not tune or extend the current PRIMORDIAL field. | Registry, preferences, App/render path, tests/docs | 0.5 | None | PRIMORDIAL cannot be selected; persisted `primordial` migrates to Aperture; no orphan chunk/control remains in the production build. | Removing history instead of only runtime would damage provenance. |
 | PP2 | Superseded by `SF1`. The CodePen remains credited as a historical visual reference, but no exact-copy or clean-room fidelity work continues. | Notices, source-admission docs, history | Included in SF1 | None | Active docs distinguish retired PRIMORDIAL from the new original Gradient Field; no Pen shader/runtime/noise enters SF1. | Accidentally treating visual inspiration as a source licence. |
 | SF1 | Owner-approved new Gradient Field: exactly three original WebGL/3D directions using independently authored gradient, depth and perceptual-colour mechanics. | New field/model/renderer only after visual selection; reference and licence docs; tests | 3+ | Three-direction owner gate, T1, LAB | Selected direction is original, one-pass/pixel-density-1 by default, smooth at 0/40/100/130, visibly macro-responsive and Tesla-profiled; all references remain case-by-case notices. | Excess 3D/postprocessing cost or accidental source/preset copying. |
-| L1 | Planned: evolve the existing local `qa-field.html` into a separate non-production calibration app. | `qa-field.html`, `qa/field-harness.jsx`, new `qa/lab-*`, Vite/deploy absence tests | 2 | L5, T1 | Local URL works; production build and canonical site return 404 for LAB assets. | Accidentally shipping development controls. |
+| L1 | Owner-approved: evolve the existing `qa-field.html` seed into a separate owner-only calibration app published at canonical `/lab/`, usable from desktop, mobile, and the Tesla browser. Authentication is enforced server-side with an expiring PHP session and an ignored password-hash configuration; no password or authentication decision may exist in client JavaScript or static assets. | `qa-field.html`, `qa/field-harness.jsx`, new LAB app, `/lab/` PHP gate/session/logout, ignored local auth config, deployment and access tests | 3 | L5, T1; verified canonical PHP/TLS boundary | Local development works without weakening the production gate; unauthenticated canonical access reveals only the login surface, authenticated access reaches LAB, logout/expiry revoke access, direct asset/API requests cannot bypass the gate, and no secret enters Git/build/logs. | A merely hidden URL or client-side password would expose controls and secrets; long-lived Tesla sessions need deliberate expiry/re-auth behavior. |
 | L2 | Planned: add independent speed/BPM, music, visual, and complete scene-specific controls. | LAB UI/schema plus declared per-scene parameter manifests | 3 | L1, T1 | Every active visual is selectable and its declared parameters change without reloading. | An unbounded “everything” panel becomes unusable. |
 | L3 | Planned: render shared Form/Response/Macro groups from scene declarations. | LAB components/schema/tests | 1 | L2 | Every scene uses the same group order and no flat orphan control exists. | Scene-specific semantics may be forced into misleading generic labels. |
-| L4 | Planned: export schema/version/date/identity and grouped values to clipboard with import/round-trip tests. | LAB preset module/UI/tests | 1 | Q30, L2/L3 | Exact JSON round-trip, unknown-major rejection, visible copy success/failure. | Clipboard permissions in embedded browsers; LAB remains desktop-local. |
+| L4 | Owner-approved expansion: export/import schema version, UTC date, scene identity, app/build/commit identity, viewport/device/runtime context, selected Visual/Music/theme, input source, speed/BPM, grouped `form/response/macros`, scene-specific parameters, render health, and current control-protocol revision. Offer both `COPY JSON` and explicit `SEND JSON`; the latter posts the identical validated preset to a same-origin authenticated PHP endpoint and emails it to an ignored fixed private recipient. Coordinates, secrets, raw credentials, storage contents, and unrelated browsing/device traffic are forbidden. | LAB preset/context module and UI, authenticated `/lab/` mail endpoint, shared safe mail utilities where appropriate, ignored recipient config, schema/security/round-trip tests | 2 | Q30, L1–L3 | Exact JSON round-trip; unknown-major rejection; visible copy/send/sent/retry states; mail attachment digest matches the exported JSON; CSRF, origin, size, schema and rate-limit checks pass; failed sends retain the preset locally for retry and never claim inbox delivery. | Clipboard limitations in embedded browsers, mail transport acceptance without inbox delivery, context bloat, or accidental sensitive telemetry. |
 | L5 | Owner-approved by delegated recommendation: define transport-neutral `param`, `command`, and `state` messages. | `src/control-protocol.js` (new), tests, LAB adapter, later relay adapter | 2 | None | Versioned schema rejects malformed/unauthorised messages; ordering and idempotency tests pass. | Over-designing distributed behavior before local needs are known. |
 
 ### ATLAS and shared interface surfaces
@@ -895,10 +895,20 @@ source implementation.
 
 ### Phase 2 — LAB/protocol
 
-- Desktop only: select each visual/music path, move speed and BPM independently,
-  manipulate grouped controls, copy/import JSON, and compare identical replay.
-- Production: built/canonical `/qa-field.html`, LAB modules, and preset endpoints
-  remain absent/404.
+- Desktop, mobile, and exact Tesla viewport: authenticate to canonical `/lab/`,
+  select each visual/music path, move speed and BPM independently, manipulate
+  grouped controls, copy/import JSON, explicitly send the identical JSON by
+  email, and compare an imported replay against the captured state.
+- Access/security: `/qa-field.html` remains absent from the canonical root;
+  unauthenticated `/lab/` requests expose only the login surface, protected
+  assets and endpoints cannot be fetched directly, session expiry/logout revoke
+  access, CSRF/origin/rate/size/schema checks fail closed, and no auth or mail
+  secret appears in Git, the static bundle, responses, screenshots, or logs.
+- Preset context: schema/version/build/commit/time, viewport/device/runtime,
+  selected Visual/Music/theme, input source, speed/BPM, every grouped and
+  scene-specific option, protocol revision, and bounded render status are
+  present. Coordinates, secrets, raw credentials, storage contents, and claims
+  about device-wide traffic are absent.
 
 ### Phase 3 — Scene tuning and Gradient Field selection
 
@@ -1006,7 +1016,7 @@ number; question 2 asks the owner to confirm the 97-ID interpretation.
 - It has six active visuals, three authored adaptive scores, shared performance effects, and integrated diagnostics.
 - The new request's strongest architectural idea is T1: one response mechanism, with scene-authored endpoints.
 - T1 mechanics now exist and DRIVEY consumes them; PRTCL/ATLAS adoption remains in the combined X3 checkpoint.
-- The existing local QA field is the correct seed for LAB, provided L5 makes it a protocol client.
+- The existing local QA field is the correct seed for the owner-only canonical `/lab/`, provided L5 makes it a protocol client and L1 keeps every protected surface behind server-side authentication.
 - ATLAS already has substantial camera, compass, travel-line, sidebar, and privacy work to preserve.
 - DRIVEY can likely fix zero-speed drift in the external bridge without changing guarded upstream source.
 - Music has two primary blocks: PLAY THE ROAD preserves FRACTURE/JUNCTION/NIGHTSHIFT; SOUNDTRACK owns fixed recordings.
@@ -1027,7 +1037,7 @@ number; question 2 asks the owner to confirm the 97-ID interpretation.
 2. Resolve the owner-assigned non-ID baseline entries and the supplied Tesla
    diagnostic findings, then implement M13 and plant the canary.
 3. Complete the local T1/D1/D2 checkpoint and owner/Tesla acceptance, then extend T1 through the combined X3 consumers.
-4. Deliver L5 and the local-only LAB (L1–L4), preserving production exclusion.
+4. Deliver L5 and the owner-only canonical `/lab/` (L1–L4), preserving public-product separation through server-side authentication and adding complete copy/import/email preset handoff.
 5. Tune PRTCL consumers in the LAB; retire PRIMORDIAL; present exactly three
    original `SF1` Gradient Field directions and implement only the selected one.
 6. Present exactly three X1/X2/S3 directions covering overlays, navbar/GPS,
