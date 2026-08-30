@@ -78,7 +78,10 @@ dated study documents.
   Two compact `94 × 34 px` text-only controls cycle
   `HOOD → REAR → AERIAL` and `NORMAL ↔ WIRE` directly, with no dropdown, panel,
   native Driver/Chase/Satellite view, or original colour selector. Exact muted
-  `773 × 601` and `390 × 844` Browser QA passes with zero warning or error.
+  `773 × 601` and `390 × 844` Browser QA passes with zero warning or error. The
+  owner accepted the current published Drivey presentation on 2026-08-30. A
+  speed-responsive rise of the Aerial camera is recorded only as a deferred
+  nice-to-have; it is not missing behavior in the accepted checkpoint.
 - PRTCL adapts the directly authorized Fractal Frequency, Murmuration, and Axiom
   formulas from the user-owned checkout at commit
   `2a22f33b975e2c40b7ee0bdd2d1acb4cee4f5060` into a bounded project WebGL2
