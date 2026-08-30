@@ -11,6 +11,10 @@ export const ATLAS_POSITION_BUFFER_LIMIT = 8;
 export const ATLAS_POSITION_INTERPOLATION_DELAY_MS = 100;
 export const ATLAS_POSITION_MAXIMUM_GAP_MS = 750;
 export const ATLAS_POSITION_STALE_AFTER_MS = 1500;
+export const ATLAS_CARDINAL_DIRECTIONS = Object.freeze([
+  "N", "NE", "E", "SE", "S", "SW", "W", "NW",
+]);
+export const ATLAS_ROAD_LAYER_IDS = Object.freeze(["atlas-roads"]);
 
 const clamp = (value, minimum, maximum) => Math.min(maximum, Math.max(minimum, value));
 
@@ -64,6 +68,49 @@ function atlasPointDistanceMetres(first, second) {
 
 function normalizeAtlasAngle(value) {
   return ((Number(value) % 360) + 360) % 360;
+}
+
+export function atlasCardinalDirection(heading) {
+  if (!Number.isFinite(heading)) return null;
+  const sector = Math.floor((normalizeAtlasAngle(heading) + 22.5) / 45) % 8;
+  return ATLAS_CARDINAL_DIRECTIONS[sector];
+}
+
+function normalizeAtlasRoadName(value) {
+  if (typeof value !== "string" && typeof value !== "number") return "";
+  return String(value)
+    .replace(/[\u0000-\u001f\u007f-\u009f]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 80);
+}
+
+/**
+ * Reads a road label only from already rendered OpenFreeMap transportation
+ * features. It never needs reverse geocoding or another coordinate request.
+ */
+export function atlasRoadNameFromFeatures(features, preferredLanguages = []) {
+  const languages = (Array.isArray(preferredLanguages) ? preferredLanguages : [preferredLanguages])
+    .map((language) => String(language || "").trim().toLowerCase().split("-")[0])
+    .filter(Boolean);
+  const keys = [
+    "name",
+    ...languages.flatMap((language) => [`name:${language}`, `name_${language}`]),
+    "name:latin",
+    "name_en",
+    "ref",
+  ];
+
+  for (const feature of Array.isArray(features) ? features : []) {
+    const layerId = feature?.layer?.id;
+    const sourceLayer = feature?.sourceLayer ?? feature?.layer?.["source-layer"];
+    if (sourceLayer !== "transportation" && !ATLAS_ROAD_LAYER_IDS.includes(layerId)) continue;
+    for (const key of keys) {
+      const label = normalizeAtlasRoadName(feature?.properties?.[key]);
+      if (label) return label;
+    }
+  }
+  return null;
 }
 
 function interpolateAtlasAngle(first, second, progress) {

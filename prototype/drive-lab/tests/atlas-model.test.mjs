@@ -5,17 +5,20 @@ import {
   advanceAtlasDemoPosition,
   appendAtlasPositionSample,
   appendAtlasTravelPoint,
+  ATLAS_CARDINAL_DIRECTIONS,
   ATLAS_MANUAL_CAMERA_LIMITS,
   ATLAS_MANUAL_IDLE_MS,
   ATLAS_POSITION_BUFFER_LIMIT,
   ATLAS_POSITION_INTERPOLATION_DELAY_MS,
   ATLAS_POSITION_MAXIMUM_GAP_MS,
   ATLAS_POSITION_STALE_AFTER_MS,
+  atlasCardinalDirection,
+  atlasContrastRatio,
   atlasEffectProfile,
   atlasGpsPresentation,
   atlasKeyboardShortcutAvailable,
   atlasManualCameraShouldReturn,
-  atlasContrastRatio,
+  atlasRoadNameFromFeatures,
   atlasTravelFeature,
   createLatestAtlasRequestGate,
   createAtlasStyle,
@@ -141,6 +144,60 @@ test("Atlas follows reported heading or infers it from successive trusted positi
   assert.match(appSource, /heading: resolveAtlasHeading\(current, nextMapPosition, position\.coords\.heading\)/);
   assert.match(appSource, /const nextMapPosition = \{[\s\S]*?capturedAtMs,[\s\S]*?\};/);
   assert.match(atlasSource, /bearing: Number\.isFinite\(point\.heading\) \? point\.heading : map\.getBearing\(\)/);
+});
+
+test("Atlas converts heading into deterministic English cardinal sectors", () => {
+  assert.deepEqual(ATLAS_CARDINAL_DIRECTIONS, ["N", "NE", "E", "SE", "S", "SW", "W", "NW"]);
+  assert.equal(atlasCardinalDirection(0), "N");
+  assert.equal(atlasCardinalDirection(22.499), "N");
+  assert.equal(atlasCardinalDirection(22.5), "NE");
+  assert.equal(atlasCardinalDirection(44.999), "NE");
+  assert.equal(atlasCardinalDirection(90), "E");
+  assert.equal(atlasCardinalDirection(180), "S");
+  assert.equal(atlasCardinalDirection(225), "SW");
+  assert.equal(atlasCardinalDirection(315), "NW");
+  assert.equal(atlasCardinalDirection(337.499), "NW");
+  assert.equal(atlasCardinalDirection(337.5), "N");
+  assert.equal(atlasCardinalDirection(-45), "NW");
+  assert.equal(atlasCardinalDirection(720), "N");
+  assert.equal(atlasCardinalDirection(Number.NaN), null);
+  assert.equal(atlasCardinalDirection(null), null);
+});
+
+test("Atlas derives a bounded street label only from rendered transportation features", () => {
+  const features = [
+    {
+      layer: { id: "sedicivalvole-buildings", "source-layer": "building" },
+      properties: { name: "Not a road" },
+    },
+    {
+      layer: { id: "atlas-roads", "source-layer": "transportation" },
+      properties: { name: "  Corso   Buenos\nAires  ", "name:en": "Buenos Aires Avenue" },
+    },
+  ];
+  assert.equal(atlasRoadNameFromFeatures(features, "en-US"), "Corso Buenos Aires");
+  assert.equal(atlasRoadNameFromFeatures([{
+    sourceLayer: "transportation",
+    properties: { "name:it": "Via Torino" },
+  }], ["it", "en"]), "Via Torino");
+  assert.equal(atlasRoadNameFromFeatures([{
+    layer: { id: "atlas-roads" },
+    properties: { ref: "A1" },
+  }]), "A1");
+  assert.equal(atlasRoadNameFromFeatures([{
+    sourceLayer: "place",
+    properties: { name: "Milano" },
+  }]), null);
+  assert.equal(atlasRoadNameFromFeatures([{
+    sourceLayer: "transportation",
+    properties: { name: "\u0000\u0007" },
+  }]), null);
+  assert.equal(atlasRoadNameFromFeatures(null), null);
+  assert.ok(atlasRoadNameFromFeatures([{
+    sourceLayer: "transportation",
+    properties: { name: "x".repeat(120) },
+  }]).length <= 80);
+  assert.doesNotMatch(atlasRoadNameFromFeatures.toString(), /fetch|XMLHttpRequest|https?:/);
 });
 
 test("Atlas retains a bounded chronological position buffer without accepting bad fixes", () => {
