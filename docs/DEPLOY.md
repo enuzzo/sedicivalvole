@@ -8,6 +8,39 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Phase 1 shared response and DRIVEY publication — 2026-08-30 17:15
+
+- build stamp: **`20260830-1707`**; deployed source commit: `656a07d`;
+  implementation checkpoint: `7989443`;
+- verification gate: **PASS within the local toolchain boundary**. The complete
+  native run passes 319 of 320 checks; only the known local `spawn php ENOENT`
+  fixture is unavailable. All 9 Sites checks pass and the production build
+  completes with 130 modules. Deterministic checks cover T1 scalar/vector
+  mapping, 30/60/120 FPS invariance, slew/no-overshoot behavior, timestamped
+  audio macros, DRIVEY's 600-frame zero hold, resume without reposition,
+  opposing-only placement, fail-closed zero traffic and all 51 upstream hashes;
+- publication boundary: **PASS**. Read-only preflight and immediate postflight
+  reported network, login, canonical directory, remote listing and identity
+  PASS with `remote_writes=NONE`. Publication transferred 89 files /
+  15,780,313 bytes through the guarded dynamic-root workflow;
+- canonical identity and headers: **PASS**. Bare and
+  `?build=20260830-1707` HTML return `200`, explicit
+  `no-store, no-cache, must-revalidate, max-age=0`, `pragma: no-cache` and
+  `X-Content-Type-Options: nosniff`. Both are byte-identical to the local entry
+  at SHA-256
+  `e5369a1d3ae7215238804c16f5afe74fd44aed26c9514921ad94279283b8dab0`;
+- asset identity: **PASS**. The local/live main JavaScript, CSS and project-owned
+  Drivey shell are byte-identical at SHA-256
+  `9377588f5fb25320fdf94433107f63df28f05e72a61401cb4b3b476d4fd9ec38`,
+  `c79a61df7c551f34ebaf6b5e31f61b9c901911d989921898e80f06018fb2fd32`
+  and `377939a7a175b528e4988a30ca279a35c9acca68a5ec386360fc865286e4b966`;
+- muted live product QA: **PASS within the technical contract**. Exact
+  `773 × 601` launch and DRIVEY selection report version `0.0.0`, source
+  `656a07d`, build `20260830-1707`, a ready original Drivey iframe, a centred
+  zero-speed road view, no horizontal overflow and zero browser warning/error.
+  Real-Tesla zero-hold, motion resume, lane-direction traffic and cabin
+  perception remain the acceptance boundary.
+
 ## Phase 0 and M13 publication — 2026-08-30 16:47
 
 - build stamp: **`20260830-1643`**; deployed source commit: `7a026e4`;
