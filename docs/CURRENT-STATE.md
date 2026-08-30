@@ -32,6 +32,13 @@ dated study documents.
   editing the vendor files; PRTCL changes point scale,
   depth/travel, palette pulse, spread, attenuation, and glow within its own
   particle grammar.
+- The selected **Focus Canvas** owner LAB is implemented and production-packaged
+  behind a server-side `/lab/` session gate. Its first manifest controls all
+  three PRTCL families through 20 bounded Form, Response, Macro, Scene and
+  runtime-context options. Import, clipboard copy and explicit authenticated
+  email use one versioned coordinate-free preset; the browser receives no
+  password verifier or recipient. Canonical authenticated and Tesla acceptance
+  remain open until publication and owner login.
 - Meridian keeps one deterministic low corridor beneath sparse, large oblique
   blades and longitudinal shoulder planes. Its shared travel field has tightly
   bounded vertical motion; FOV, depth compression, peripheral stretch,

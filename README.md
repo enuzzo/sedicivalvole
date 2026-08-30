@@ -100,6 +100,12 @@ npm test
 
 The standalone technical harness remains in `diagnostics/tesla-capabilities/`; equivalent high-value readings are accessible from the main Drive Lab report.
 
+The owner calibration surface is developed locally at `/lab.html` and packaged
+for a server-authenticated canonical `/lab/`. It is deliberately separate from
+the public driving flow. Production access requires ignored local configuration;
+no password, password verifier, mail recipient, coordinate, or raw credential is
+included in the client bundle or repository.
+
 ## Architecture
 
 The current prototype uses React, Vite, a sample-accurate AudioWorklet score

@@ -27,6 +27,16 @@ Measure:
 
 Gate: a repeatable vehicle report with no invented values. If GPS speed is absent or unreliable, Demo/manual mode becomes first-class rather than hidden failure recovery.
 
+## Owner calibration surface
+
+Status: **IMPLEMENTED LOCALLY; CANONICAL ACCEPTANCE PENDING**.
+
+- selected Focus Canvas interface at desktop, mobile, and exact Tesla viewport;
+- server-side PHP authentication, expiring session, logout and protected mail route;
+- typed `param`/`command`/`state` protocol with declared parameter manifests;
+- all three PRTCL families plus 20 bounded grouped/context controls;
+- one coordinate-free preset for import, copy and explicit authenticated email.
+
 ## Phase 2 — Flux visual direction
 
 Status: **SECOND SELECTION REOPENED; CURRENT ACCEPTED BUILD IMPLEMENTED**.
