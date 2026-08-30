@@ -304,6 +304,9 @@ question unless this review explicitly identifies a conflict.
 | A brief post-splash choice should offer PLAY THE ROAD, SOUNDTRACK or MUTE; one-time sub-four-second control glow/scale onboarding should reveal interactivity. | M1, X2 | This is a visual/product-flow proposal and therefore joins the exactly-three-direction gate; motion/reduced-motion and repeat-visit suppression are testable. |
 | Effects master sits beside Mute and produces central confirmation. | S4, S5 | Default state, click-free envelope release and large non-blocking confirmation are tested together. |
 | Add a rich nearby-place discovery grid with imagery, concise context and a Google Maps handoff, possibly outside ATLAS. | A2, A3b, X1/X2, M13, plus a new owner-assigned entry | Treat DISCOVER as a companion surface rather than more permanent ATLAS chrome. Reuse its ephemeral location/heading and source adapters, keep coordinates out of persistence/diagnostics, and present exactly three visual directions before implementation. |
+| Replace the growing flat Visual list with grouped, direct-selection buttons. | X2 plus a new owner-assigned Visual Library entry | Keep one tap from the open library to selection. Present all groups together rather than hiding visuals behind nested category pages; validate button density, active state, focus order and real current-build imagery in exactly three directions at `773 × 601`. |
+| Add `LIGHT`, `DARK`, and location-aware `AUTO` appearance modes. | X1/X2 plus a new owner-assigned Appearance entry | Theme shared chrome, dialogs and reading surfaces without recolouring the active visual or its selected palette. Manual modes persist; AUTO uses session-only solar context when reliable and falls back to the browser colour-scheme preference without storing coordinates. |
+| Restore local weather to the queue, but avoid duplicating the Tesla forecast. | DISCOVER, M13, plus a new owner-assigned Conditions entry | Defer a generic forecast panel. Explore a quiet, exception-led road-context card: significant precipitation onset, temperature change, gusts or poor visibility, plus weather-aware DISCOVER suggestions. Retain an optional 6/12-hour and tomorrow detail view outside primary driving chrome. |
 | SoundCloud says tracks are downloadable. | M3, M8, M11 | Platform download availability is recorded separately from the owner's direct permission and from public playback/hosting provenance. |
 | README must document every source, including VERTIGO/Tympanus and visual references. | M7, M11 | README, NOTICE, licence scope, source-admission record and third-party notices are reconciled from one audited inventory. |
 | Local MP3s from a subsequently retired source were offered for audition. | M5/M5b/M5c | Superseded by the owner's later decision to remove that source. `_references/` remains untracked and the files are not inspected, auditioned, copied, admitted, or used. |
@@ -360,6 +363,66 @@ mandatory exactly-three-direction visual gate. That gate must show DISCOVER at
 reading handoff, source attribution, QR/Maps actions, loading/offline states, and
 an image-free fallback. A2, A3b, X1/X2 and M13 provide shared dependencies but do
 not silently absorb ownership of the new product surface.
+
+### Visual library, appearance, and local conditions proposal — 2026-08-30
+
+The current Visual picker is a flat seven-row list. The registry itself is
+already structured data, so the product can change selection grammar without
+changing renderer ownership or fallback behavior.
+
+**⭐ Preferred Visual Library structure:** replace rows with direct-selection
+buttons in one scroll-safe surface and use visible section labels, not nested
+tabs. The initial semantic split is `ROAD / PLACE` (VERTIGO, MERIDIAN, ATLAS,
+DRIVEY) and `FIELD / ABSTRACT` (APERTURE, PRTCL, PRIMORDIAL). Categories are
+discovery aids only: they never alter IDs, numbering, persistence, diagnostics,
+or unlimited immediate switching. Each button must show active state and name;
+real current-build imagery, renderer descriptions, and density are decisions for
+the exactly-three-direction gate. Recent/favourite personalization is excluded
+until the base grid proves that it needs another hierarchy.
+
+`LIGHT`, `DARK`, and `AUTO` are an independent **interface appearance** setting,
+not another Flux palette:
+
+- the active environment and its ten authored palettes remain unchanged;
+- shared chrome, dialogs, DISCOVER cards, DIAG, and the A2 reader receive paired
+  high-contrast tokens rather than one-off component inversions;
+- manual `LIGHT` or `DARK` persists as an explicit preference;
+- `AUTO` first uses reliable session-only position plus time to determine solar
+  day/twilight/night, without a network request or stored coordinates; without
+  reliable location it follows `prefers-color-scheme`;
+- a hysteresis window around twilight and a no-mid-gesture rule prevent visible
+  flicker or a sudden theme flip while the user is interacting;
+- the light direction is warm and glare-bounded, never a pure-white full-screen
+  sheet in the cabin. Contrast, image legibility, map attribution, focus states,
+  reduced motion, and exact Tesla viewports remain acceptance gates.
+
+Tesla documentation now describes destination weather and, where equipped, a
+map weather overlay with approximately three hours of precipitation animation.
+A generic always-visible forecast would therefore duplicate the host vehicle and
+consume scarce chrome. The queued weather feature instead becomes
+**CONDITIONS**, a contextual and exception-led DISCOVER/ATLAS companion:
+
+- stay absent when conditions are ordinary;
+- surface concise changes that may alter a stop or discovery choice—rain/snow
+  onset, strong gusts, sharp temperature change, poor visibility, or meaningful
+  ultraviolet exposure—without presenting safety or route authority;
+- allow an expanded, passenger-oriented six/twelve-hour strip and tomorrow
+  summary, but never place the complete forecast permanently in the navbar;
+- optionally re-rank DISCOVER categories (indoor culture during sustained rain,
+  viewpoints/nature in clear conditions) while clearly separating weather data
+  from editorial inference;
+- request only a quantized coarse location, cache bounded forecast metadata for
+  the session, disclose the provider, show observation/model time, and keep
+  coordinates and forecast history out of diagnostics and persistence;
+- fail silently into the normal product: weather never blocks ATLAS, DISCOVER,
+  music, automatic appearance, or the active visual.
+
+Open-Meteo is a plausible first source because its forecast API exposes hourly
+conditions, sunrise/sunset, precipitation, temperature, wind, visibility and UV
+for coordinates without requiring a client secret. It remains only a candidate
+until current non-commercial terms, attribution, availability, model semantics,
+request limits and coarse-coordinate behavior pass the same dated source-admission
+review used elsewhere in this plan.
 
 ### Real-Tesla diagnostic evidence — 2026-08-30
 
@@ -453,6 +516,13 @@ Primary-source checks used for this review:
   for the public service's strict capacity, identification, caching, and
   attribution limits; the public endpoint is therefore not a default live
   reverse-geocoding dependency;
+- [Tesla Model 3 Maps and Navigation](https://www.tesla.com/ownersmanual/model3/en_us/GUID-01F1A582-99D1-4933-B5FB-B2F0203FFE6F.html)
+  for current destination-weather behavior; current market/configuration
+  manuals also document an optional precipitation overlay, so a generic forecast
+  is not sufficient product differentiation;
+- [Open-Meteo Forecast API](https://open-meteo.com/en/docs) for the candidate
+  hourly variables, forecast window and sunrise/sunset capabilities; provider
+  terms and attribution still require a dated admission gate before code;
 - the repository's operative `LICENSE`, `LICENSE-SCOPE.md`, `NOTICE`,
   `THIRD_PARTY_NOTICES.md`, and `docs/LICENSING.md` for the actual local scope.
 
@@ -626,7 +696,7 @@ rather than missing answers now.
 | A3b | Planned: derive current road name from rendered map features and place it in the selected zone map. | ATLAS model/field, CSS, tests | 1 | Q28, X2 | Badge never overlaps compass; no extra network call; absent/multilingual names degrade cleanly. | Tile feature schemas vary by zoom and road class. |
 | A4 | Planned: replace degree text with N/NE/E/SE/S/SW/W/NW labels, using product-language direction naming consistently. | `atlas-model.js`, field, tests/CSS | 0.5 | X2 | Eight deterministic sectors including wraparound; no numeric degrees in visible UI. | Italian `O/SO/NO` versus English-source UI requirement must be resolved as English W/SW/NW. |
 | X1 | Planned: define one modal manager/primitive plus one non-modal status layer for A2/S1/M2/S5 and GPS help. | `App.jsx` component extraction, `styles.css`, accessibility tests | 2 | three-direction gate | Only one modal owns focus; replacement/close rules are deterministic; status feedback never blocks. | Treating transient feedback as a modal would violate S5. |
-| X2 | Expanded visual gate: produce exactly three coherent screen-zone/onboarding directions covering compass, road badge, GPS truth/help/metrics, compact network activity/problem/recovery notice, a closed-by-default navbar/corner rich-credit control/card, participant count, passenger/modal area, status, top bar, five-second chrome, bounded right-aligned fullscreen palettes, post-splash mode choice, and 64 px footer. | Design evidence doc and later CSS/App/ATLAS | 2 | visual gate | Owner selects one map at 773×601; real icons and hierarchy are verified; healthy network state stays quiet, activity is subtle, degraded/offline state is unambiguous and recoveries clear automatically; credit adds no persistent driving clutter and remains readable/source-correct when invoked; chrome always hides five seconds after latest invocation; fullscreen palette has a tested max width; one-time onboarding lasts <4 s and respects reduced motion. | Scope density can obscure the driving field, map attribution, or music credit. |
+| X2 | Expanded visual gate: produce exactly three coherent screen-zone/onboarding directions covering compass, road badge, GPS truth/help/metrics, compact network activity/problem/recovery notice, a closed-by-default navbar/corner rich-credit control/card, participant count, passenger/modal area, status, top bar, five-second chrome, bounded right-aligned fullscreen palettes, post-splash mode choice, grouped direct-button Visual Library, `LIGHT`/`DARK`/`AUTO` appearance access, and 64 px footer. | Design evidence doc and later CSS/App/ATLAS | 2.5 | visual gate | Owner selects one map at 773×601; real icons and hierarchy are verified; every visual remains one tap from the open library; healthy network state stays quiet, activity is subtle, degraded/offline state is unambiguous and recoveries clear automatically; credit adds no persistent driving clutter and remains readable/source-correct when invoked; chrome always hides five seconds after latest invocation; fullscreen palette has a tested max width; appearance does not recolour active visual content; one-time onboarding lasts <4 s and respects reduced motion. | Scope density can obscure the driving field, map attribution, music credit, or the difference between interface appearance and visual palette. |
 
 ### Audio controls, SOUNDTRACK, licensing, and server work
 
@@ -817,6 +887,12 @@ invented IDs:
   its exactly-three-direction visual gate before implementation. Reuse A2/A3b,
   X1/X2 and M13 dependencies without turning ATLAS into a permanently expanded
   content panel.
+- Assign stable owner IDs to the grouped Visual Library and shared Appearance
+  system. Keep both in the X2 exactly-three-direction gate, but preserve their
+  separate implementation and acceptance ownership.
+- Assign a stable owner ID to deferred CONDITIONS research. Verify a weather
+  provider and privacy/attribution boundary, then prototype only the contextual
+  exception-led value beyond Tesla's own forecast and precipitation overlay.
 
 ## Coverage audit
 
@@ -867,8 +943,9 @@ number; question 2 asks the owner to confirm the 97-ID interpretation.
 5. Tune PRTCL/PRIMORDIAL consumers in the LAB and obtain viewport plus Tesla
    acceptance.
 6. Present exactly three X1/X2/S3 directions covering overlays, navbar/GPS,
-   truthful network activity/problems, palette/chrome behavior, onboarding and
-   passenger naming; implement only the selected path.
+   truthful network activity/problems, palette/chrome behavior, the grouped
+   Visual Library, interface appearance, onboarding and passenger naming;
+   implement only the selected path.
 7. Verify external rights/API facts and settle M4/M6/M7/M8/M11 before adding
    any SOUNDTRACK network or catalogue code; begin with the owner-ready Jamendo
    API path and keep its credentials exclusively behind the server boundary.
