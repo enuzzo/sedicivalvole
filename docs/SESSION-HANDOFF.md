@@ -100,7 +100,12 @@ asserted.
   and SOUNDTRACK requires fresh-session opt-in;
 - manual flanger, reverb, chorus, and beat repeat remain passenger-operated;
 - App and protected LAB expose transport and direct artist/title/licence/Jamendo
-  credit; physical-Tesla listening and audible equal-power skips remain open.
+  credit; physical-Tesla listening and audible equal-power skips remain open;
+- the next Music drawer keeps one explicit **Play the Road** / **Soundtrack**
+  switch. Do not label the first branch `Generative`, because JUNCTION and
+  NIGHTSHIFT are adaptive sampled scores. Soundtrack opens with **Illobo
+  Featured**, followed by manual genre and validated Jamendo pace browsing.
+  Pace is never connected to road speed, automatic selection, or playback rate.
 
 ## Diagnostics and privacy
 

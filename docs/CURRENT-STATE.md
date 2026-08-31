@@ -341,9 +341,16 @@ dated study documents.
   SOUNDTRACK remains a fresh-session opt-in. Manual flanger, reverb, chorus,
   and beat-repeat controls stay independent. The visible card
   follows the active track and exposes artwork, artist, title, licence, Jamendo
-  credit, and the direct source link. Audible crossfade/rapid-retarget integration,
-  the QR handoff, broader catalogue browsing, and physical-Tesla listening remain
-  open; no offline-duration promise is made. See
+  credit, and the direct source link. The broader Music drawer is specified but
+  not implemented: its top-level switch will separate **Play the Road** from
+  **Soundtrack** without inaccurately calling every adaptive score generative.
+  The Soundtrack branch will lead with **Illobo Featured**, then allow explicit
+  passenger browsing by Jamendo genre and, only after revalidating the current
+  official schema, Jamendo pace classification. Pace is manual discovery
+  metadata only: it can never follow vehicle speed, retime audio, or trigger an
+  automatic track change. Audible crossfade/rapid-retarget integration, this
+  drawer, the QR handoff, and physical-Tesla listening remain open; no
+  offline-duration promise is made. See
   [`SOUNDTRACK-SOURCE-POLICY.md`](SOUNDTRACK-SOURCE-POLICY.md).
 - **The running footer has its compact control geometry.** MUTE and EFFECTS are
   adjacent, both announce a 1.5-second centred status, and the two-row palette is

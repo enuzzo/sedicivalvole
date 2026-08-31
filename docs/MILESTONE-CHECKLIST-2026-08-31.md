@@ -30,7 +30,14 @@ still needs a human or target vehicle.
 - [ ] audition automatic braking/acceleration effects and all four manual
   controls in the physical Tesla cabin;
 - [ ] connect the modelled 450 ms equal-power transition to audible deck changes;
-- [ ] add the compact QR credit handoff and broader Soundtrack library browsing.
+- [ ] add a top-level **Play the Road** / **Soundtrack** switch to the Music
+  drawer; never call the complete adaptive branch `Generative`;
+- [ ] place **Illobo Featured** first in Soundtrack with the approved restrained
+  Signal Border treatment and artist-owned attribution;
+- [ ] add manual Soundtrack browsing by Jamendo genre and, after revalidating the
+  official schema, Jamendo pace classification. Pace must remain discovery
+  metadata only, never vehicle-speed input, automatic selection, or retiming;
+- [ ] add the compact QR credit handoff.
 
 ## Final gates and publication
 

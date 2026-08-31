@@ -132,3 +132,11 @@ private messages or credentials never enter the repository.
   physical-Tesla acceptance remain later checkpoints. `preparedMetadataSlots`
   reports metadata roles only; it is not an audio-buffer or offline-duration
   claim. No persistent audio layer is approved or planned.
+
+## Planned library discovery boundary
+
+The broader Music drawer may add a separately normalized Jamendo pace field only
+after the current official schema is revalidated. That value belongs exclusively
+to passenger-operated catalogue discovery alongside genre. It must not enter
+vehicle telemetry, automatic selection, playback timing, playback rate, effects
+automation, persistence, or an inference for records that omit it.
