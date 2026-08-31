@@ -112,3 +112,20 @@ test("every manual effect has a plainly wet full-depth endpoint", () => {
   assert.ok(parameters.echoWet >= 0.5);
   assert.ok(parameters.echoFeedback >= 0.4);
 });
+
+test("the FX Deck performance taps land on unmistakable musical depths", () => {
+  const parameters = manualEffectParameters({
+    flanger: 0.78,
+    reverb: 0.72,
+    chorus: 0.8,
+    echo: 0.74,
+  });
+  assert.ok(parameters.flangerWet > 0.68);
+  assert.ok(parameters.flangerFeedback > 0.43);
+  assert.ok(parameters.reverbWet > 0.62);
+  assert.ok(parameters.chorusWet > 0.67);
+  assert.ok(parameters.chorusModulationSeconds > 0.008);
+  assert.ok(parameters.echoWet > 0.55);
+  assert.ok(parameters.echoFeedback > 0.42);
+  assert.ok(parameters.echoDelaySeconds > 0.36);
+});

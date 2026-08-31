@@ -13,25 +13,34 @@ export const normalizeManualEffects = (values = {}) => Object.freeze(Object.from
   MANUAL_EFFECT_IDS.map((id) => [id, clamp01(values[id])]),
 ));
 
+const performanceCurve = (value) => Math.pow(value, 0.62);
+
 export function manualEffectParameters(values = {}) {
   const manual = normalizeManualEffects(values);
+  const flanger = performanceCurve(manual.flanger);
+  const reverb = performanceCurve(manual.reverb);
+  const chorus = performanceCurve(manual.chorus);
+  const echo = performanceCurve(manual.echo);
   return Object.freeze({
     manual,
-    flangerDry: 1 - manual.flanger * 0.18,
-    flangerWet: manual.flanger * 0.65,
-    flangerDelaySeconds: 0.0017 + manual.flanger * 0.0027,
-    flangerModulationSeconds: manual.flanger * 0.0016,
-    flangerFeedback: manual.flanger * 0.38,
-    chorusDry: 1 - manual.chorus * 0.22,
-    chorusWet: manual.chorus * 0.58,
-    chorusDelaySeconds: 0.016 + manual.chorus * 0.009,
-    chorusModulationSeconds: manual.chorus * 0.0065,
-    reverbDry: 1 - manual.reverb * 0.18,
-    reverbWet: manual.reverb * 0.62,
+    shaped: Object.freeze({ flanger, reverb, chorus, echo }),
+    flangerDry: 1 - flanger * 0.12,
+    flangerWet: flanger * 0.82,
+    flangerDelaySeconds: 0.0012 + flanger * 0.0043,
+    flangerModulationSeconds: flanger * 0.0032,
+    flangerFeedback: flanger * 0.52,
+    flangerRateHz: 0.18 + flanger * 0.22,
+    chorusDry: 1 - chorus * 0.18,
+    chorusWet: chorus * 0.78,
+    chorusDelaySeconds: 0.013 + chorus * 0.016,
+    chorusModulationSeconds: chorus * 0.01,
+    chorusRateHz: 0.22 + chorus * 0.18,
+    reverbDry: 1 - reverb * 0.18,
+    reverbWet: reverb * 0.78,
     echoDry: 1,
-    echoWet: manual.echo * 0.52,
-    echoDelaySeconds: 0.26 + manual.echo * 0.08,
-    echoFeedback: manual.echo * 0.42,
+    echoWet: echo * 0.68,
+    echoDelaySeconds: 0.24 + echo * 0.16,
+    echoFeedback: echo * 0.52,
   });
 }
 
@@ -47,7 +56,7 @@ const setParam = (param, value, context, seconds = 0.035) => {
   }
 };
 
-function makeImpulse(context, seconds = 2.15) {
+function makeImpulse(context, seconds = 2.65) {
   const length = Math.max(1, Math.floor(context.sampleRate * seconds));
   const buffer = context.createBuffer(2, length, context.sampleRate);
   for (let channel = 0; channel < 2; channel += 1) {
@@ -79,10 +88,13 @@ export function createManualEffectsGraph(context) {
   const reverbDry = context.createGain();
   const reverbPreDelay = context.createDelay(0.08);
   const reverb = context.createConvolver();
+  const reverbHighpass = context.createBiquadFilter();
+  const reverbTone = context.createBiquadFilter();
   const reverbWet = context.createGain();
   const reverbSum = context.createGain();
   const echoDry = context.createGain();
   const echoDelay = context.createDelay(0.8);
+  const echoTone = context.createBiquadFilter();
   const echoWet = context.createGain();
   const echoFeedback = context.createGain();
   const echoSum = context.createGain();
@@ -94,7 +106,14 @@ export function createManualEffectsGraph(context) {
   const chorusDepth = context.createGain();
 
   reverb.buffer = makeImpulse(context);
-  reverbPreDelay.delayTime.value = 0.026;
+  reverb.normalize = true;
+  reverbPreDelay.delayTime.value = 0.034;
+  reverbHighpass.type = "highpass";
+  reverbHighpass.frequency.value = 120;
+  reverbTone.type = "lowpass";
+  reverbTone.frequency.value = 7_200;
+  echoTone.type = "lowpass";
+  echoTone.frequency.value = 4_200;
   flangerLfo.type = "sine";
   flangerLfo.frequency.value = 0.23;
   chorusLfo.type = "sine";
@@ -111,11 +130,11 @@ export function createManualEffectsGraph(context) {
   flangerSum.connect(chorusDry).connect(chorusSum);
   flangerSum.connect(chorusDelay).connect(chorusWet).connect(chorusSum);
   chorusSum.connect(reverbDry).connect(reverbSum);
-  chorusSum.connect(reverbPreDelay).connect(reverb).connect(reverbWet).connect(reverbSum);
+  chorusSum.connect(reverbPreDelay).connect(reverb).connect(reverbHighpass).connect(reverbTone).connect(reverbWet).connect(reverbSum);
   reverbSum.connect(echoDry).connect(echoSum);
-  reverbSum.connect(echoDelay).connect(echoWet).connect(echoSum);
+  reverbSum.connect(echoDelay).connect(echoTone).connect(echoWet).connect(echoSum);
   echoSum.connect(limiter).connect(output);
-  echoDelay.connect(echoFeedback).connect(echoDelay);
+  echoTone.connect(echoFeedback).connect(echoDelay);
   flangerLfo.connect(flangerDepth).connect(flangerDelay.delayTime);
   chorusLfo.connect(chorusDepth).connect(chorusDelay.delayTime);
   flangerLfo.start();
@@ -131,10 +150,12 @@ export function createManualEffectsGraph(context) {
     setParam(flangerDelay.delayTime, parameters.flangerDelaySeconds, context);
     setParam(flangerDepth.gain, parameters.flangerModulationSeconds, context);
     setParam(flangerFeedback.gain, parameters.flangerFeedback, context);
+    setParam(flangerLfo.frequency, parameters.flangerRateHz, context);
     setParam(chorusDry.gain, parameters.chorusDry, context);
     setParam(chorusWet.gain, parameters.chorusWet, context);
     setParam(chorusDelay.delayTime, parameters.chorusDelaySeconds, context);
     setParam(chorusDepth.gain, parameters.chorusModulationSeconds, context);
+    setParam(chorusLfo.frequency, parameters.chorusRateHz, context);
     setParam(reverbDry.gain, parameters.reverbDry, context);
     setParam(reverbWet.gain, parameters.reverbWet, context);
     setParam(echoDry.gain, parameters.echoDry, context);
@@ -158,7 +179,8 @@ export function createManualEffectsGraph(context) {
       for (const node of [
         input, flangerDry, flangerDelay, flangerWet, flangerFeedback, flangerSum,
         chorusDry, chorusDelay, chorusWet, chorusSum, reverbDry, reverbPreDelay,
-        reverb, reverbWet, reverbSum, echoDry, echoDelay, echoWet, echoFeedback,
+        reverb, reverbHighpass, reverbTone, reverbWet, reverbSum, echoDry,
+        echoDelay, echoTone, echoWet, echoFeedback,
         echoSum, limiter,
         output, flangerLfo, flangerDepth, chorusLfo, chorusDepth,
       ]) {

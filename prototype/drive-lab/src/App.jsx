@@ -166,10 +166,10 @@ const LAUNCH_MUSIC_CHOICES = Object.freeze([
   },
 ]);
 const SOUNDTRACK_MANUAL_CONTROLS = Object.freeze([
-  Object.freeze({ id: "flanger", label: "FLANGER", displayLabel: "Flanger", note: "Moving comb colour" }),
-  Object.freeze({ id: "reverb", label: "REVERB", displayLabel: "Reverb", note: "Wide pressure room" }),
-  Object.freeze({ id: "chorus", label: "CHORUS", displayLabel: "Chorus", note: "Slow width and motion" }),
-  Object.freeze({ id: "echo", label: "ECHO", displayLabel: "Echo", note: "Controlled dub trail" }),
+  Object.freeze({ id: "flanger", label: "FLANGER", displayLabel: "Flanger", note: "Jet comb sweep", performanceAmount: 0.78 }),
+  Object.freeze({ id: "reverb", label: "REVERB", displayLabel: "Reverb", note: "Long pressure chamber", performanceAmount: 0.72 }),
+  Object.freeze({ id: "chorus", label: "CHORUS", displayLabel: "Chorus", note: "Wide moving double", performanceAmount: 0.8 }),
+  Object.freeze({ id: "echo", label: "ECHO", displayLabel: "Echo", note: "Dark feedback trail", performanceAmount: 0.74 }),
 ]);
 const EMPTY_SOUNDTRACK_MANUAL_EFFECTS = Object.freeze(Object.fromEntries(
   SOUNDTRACK_MANUAL_CONTROLS.map(({ id }) => [id, 0]),
@@ -896,8 +896,6 @@ function ScoreLibraryContent({ genreId, onChange }) {
 function SoundtrackLibraryContent({
   snapshot,
   jamendoPreviewEntries,
-  manualEffects,
-  onManualEffectChange,
   onFeatured,
   onBrowseSelection,
   onTrack,
@@ -1053,18 +1051,6 @@ function SoundtrackLibraryContent({
         </section>
       ) : null}
 
-      <details className="soundtrack-manual-disclosure">
-        <summary>MANUAL EFFECTS <span>GLOBAL VEHICLE FX REMAIN IN THE FOOTER</span></summary>
-        <section className="soundtrack-manual-effects" aria-label="Manual Soundtrack effects">
-          {SOUNDTRACK_MANUAL_CONTROLS.map((effect) => (
-            <label key={effect.id}>
-              <span><strong>{effect.displayLabel}</strong><small>{effect.note}</small></span>
-              <output>{Math.round(manualEffects[effect.id] * 100)}</output>
-              <input type="range" min="0" max="1" step="0.01" value={manualEffects[effect.id]} onChange={(event) => onManualEffectChange(effect.id, Number(event.target.value))} />
-            </label>
-          ))}
-        </section>
-      </details>
       <p className="privacy-note">Three browser-owned media elements keep previous, current, and next ready. Playback streams from the selected source; no offline copy is retained.</p>
     </div>
   );
@@ -1076,10 +1062,8 @@ function MusicLibraryPanel({
   genreId,
   snapshot,
   jamendoPreviewEntries,
-  manualEffects,
   onModeChange,
   onScoreChange,
-  onManualEffectChange,
   onFeatured,
   onBrowseSelection,
   onTrack,
@@ -1108,8 +1092,6 @@ function MusicLibraryPanel({
         <SoundtrackLibraryContent
           snapshot={snapshot}
           jamendoPreviewEntries={jamendoPreviewEntries}
-          manualEffects={manualEffects}
-          onManualEffectChange={onManualEffectChange}
           onFeatured={onFeatured}
           onBrowseSelection={onBrowseSelection}
           onTrack={onTrack}
@@ -1119,6 +1101,69 @@ function MusicLibraryPanel({
         />
       ) : <ScoreLibraryContent genreId={genreId} onChange={onScoreChange} />}
     </DialogSurface>
+  );
+}
+
+function ManualEffectsDeck({ values, onChange, onClose }) {
+  useEffect(() => {
+    const closeOnEscape = (event) => {
+      if (event.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [onClose]);
+
+  const activeCount = SOUNDTRACK_MANUAL_CONTROLS.filter(({ id }) => values[id] > 0.01).length;
+  return (
+    <section
+      id="manual-effects-deck"
+      className="manual-effects-deck control-layer"
+      role="dialog"
+      aria-modal="false"
+      aria-labelledby="manual-effects-title"
+    >
+      <header>
+        <div>
+          <small>GLOBAL · PLAY THE ROAD + SOUNDTRACK</small>
+          <h2 id="manual-effects-title">Performance FX</h2>
+        </div>
+        <span>{activeCount}/4 ACTIVE</span>
+        <button type="button" onClick={() => SOUNDTRACK_MANUAL_CONTROLS.forEach(({ id }) => onChange(id, 0))}>RESET</button>
+        <button type="button" autoFocus onClick={onClose}>CLOSE</button>
+      </header>
+      <div className="manual-effects-grid">
+        {SOUNDTRACK_MANUAL_CONTROLS.map((effect) => {
+          const amount = values[effect.id];
+          const active = amount > 0.01;
+          return (
+            <article key={effect.id} className={active ? "is-active" : ""}>
+              <button
+                className="manual-effect-hit"
+                type="button"
+                aria-pressed={active}
+                onClick={() => onChange(effect.id, active ? 0 : effect.performanceAmount)}
+              >
+                <span><strong>{effect.label}</strong><small>{effect.note}</small></span>
+                <em>{active ? "ON" : "HIT"}</em>
+              </button>
+              <label>
+                <span>DEPTH</span>
+                <output>{Math.round(amount * 100)}</output>
+                <input
+                  aria-label={`${effect.displayLabel} depth`}
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.01"
+                  value={amount}
+                  onInput={(event) => onChange(effect.id, Number(event.currentTarget.value))}
+                />
+              </label>
+            </article>
+          );
+        })}
+      </div>
+    </section>
   );
 }
 
@@ -1402,6 +1447,7 @@ export function App() {
   const [genreId, setGenreId] = useState(initialPreferences.genreId);
   const [environmentPickerOpen, setEnvironmentPickerOpen] = useState(false);
   const [soundtrackPanelOpen, setSoundtrackPanelOpen] = useState(false);
+  const [manualEffectsDeckOpen, setManualEffectsDeckOpen] = useState(false);
   const [musicMode, setMusicMode] = useState("play-road");
   const [musicModeLoading, setMusicModeLoading] = useState(null);
   const [soundtrackSnapshot, setSoundtrackSnapshot] = useState(null);
@@ -1493,7 +1539,7 @@ export function App() {
     || environmentPickerOpen
     || soundtrackPanelOpen
     || supportOpen;
-  const controlsPinned = modalOpen;
+  const controlsPinned = modalOpen || manualEffectsDeckOpen;
   const closeVoicePreview = useCallback(() => {
     setPreviewOpen(false);
     setDrawerOpen(true);
@@ -1575,6 +1621,12 @@ export function App() {
     showControlNotice("FX", enabled);
     logDiagnosticEvent("audio.vehicle-effects.changed", { enabled });
   }, [logDiagnosticEvent, showControlNotice]);
+
+  const updateManualEffect = useCallback((id, nextValue) => {
+    if (!SOUNDTRACK_MANUAL_CONTROLS.some((effect) => effect.id === id)) return;
+    const value = Math.min(1, Math.max(0, Number(nextValue) || 0));
+    setSoundtrackManualEffects((current) => ({ ...current, [id]: value }));
+  }, []);
 
   const toggleMuted = useCallback(async () => {
     const nextMuted = !muted;
@@ -3211,6 +3263,14 @@ export function App() {
           </div>
         ) : null}
 
+        {manualEffectsDeckOpen ? (
+          <ManualEffectsDeck
+            values={soundtrackManualEffects}
+            onChange={updateManualEffect}
+            onClose={() => setManualEffectsDeckOpen(false)}
+          />
+        ) : null}
+
         <footer className={`control-slab control-layer${musicMode === "soundtrack" ? " is-soundtrack" : ""}`} aria-label="Flux performance controls">
           <button
             className={`stop-button${muted ? " is-active" : ""}`}
@@ -3243,6 +3303,17 @@ export function App() {
             soundtrackSnapshot={soundtrackSnapshot}
             onOpen={() => setSoundtrackPanelOpen(true)}
           />
+          <button
+            className={`mix-button${manualEffectsDeckOpen ? " is-open" : ""}${SOUNDTRACK_MANUAL_CONTROLS.some(({ id }) => soundtrackManualEffects[id] > 0.01) ? " is-active" : ""}`}
+            type="button"
+            aria-expanded={manualEffectsDeckOpen}
+            aria-controls="manual-effects-deck"
+            onClick={() => setManualEffectsDeckOpen((open) => !open)}
+          >
+            <span>MIX</span>
+            <strong>{SOUNDTRACK_MANUAL_CONTROLS.filter(({ id }) => soundtrackManualEffects[id] > 0.01).length}/4</strong>
+            <small>{manualEffectsDeckOpen ? "CLOSE" : "PERFORM"}</small>
+          </button>
           <PaletteControl themeId={themeId} onChange={setThemeId} />
         </footer>
       </section>
@@ -3461,13 +3532,8 @@ export function App() {
           genreId={genreId}
           snapshot={soundtrackSnapshot}
           jamendoPreviewEntries={jamendoPreviewEntries}
-          manualEffects={soundtrackManualEffects}
           onModeChange={switchMusicMode}
           onScoreChange={selectScore}
-          onManualEffectChange={(id, value) => setSoundtrackManualEffects((current) => ({
-            ...current,
-            [id]: value,
-          }))}
           onFeatured={() => void playSoundtrackSelection({ kind: "featured", id: "signal-border" })}
           onBrowseSelection={(selection) => void playSoundtrackSelection(selection)}
           onTrack={(key) => void playSoundtrackTrack(key)}

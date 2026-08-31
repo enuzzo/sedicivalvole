@@ -197,7 +197,7 @@ test("the footer keeps a compact right palette and exposes one audio-effects mas
   assert.match(app, /const launchVehicleEffects = true/);
   assert.match(app, /audioRef\.current\.setVehicleEffectsEnabled\(launchVehicleEffects\)/);
   assert.match(app, /soundtrackRef\.current\?\.setVehicleMaster\(vehicleEffectsEnabled\)/);
-  assert.match(app, /GLOBAL VEHICLE FX REMAIN IN THE FOOTER/);
+  assert.doesNotMatch(app, /soundtrack-manual-disclosure/);
   assert.match(app, /CHOOSE A SOUNDTRACK PATH/);
   assert.match(app, /Fresh mix · changes every 30 min/);
   assert.match(app, /className=\{`effects-button\$\{vehicleEffectsEnabled \? " is-active" : ""\}`\}/);
@@ -210,10 +210,29 @@ test("the footer keeps a compact right palette and exposes one audio-effects mas
   assert.match(styles, /\.control-slab \{[\s\S]*?grid-template-columns: 79px 79px 190px 210px minmax\(0, 1fr\) 160px/);
   assert.match(styles, /\.palette-control \{[\s\S]*?grid-column: 6;[\s\S]*?border-left: 1px solid var\(--line\)/);
   assert.match(styles, /@media \(max-width: 820px\) \{[\s\S]*?grid-template-columns: 69px 69px 170px 190px minmax\(0, 1fr\) 138px/);
-  assert.match(styles, /\.stop-button,[\s\S]*?\.effects-button \{[\s\S]*?place-content: center/);
+  assert.match(styles, /\.stop-button,[\s\S]*?\.effects-button,[\s\S]*?\.mix-button \{[\s\S]*?place-content: center/);
   assert.match(styles, /\.stop-button::after,[\s\S]*?\.effects-button::after \{[\s\S]*?content: "GLOBAL"/);
   assert.match(styles, /\.swatch-housing button \{[^}]*min-height: 15px/);
   assert.match(styles, /\.control-status-notice \{[\s\S]*?top: 50%;[\s\S]*?left: 50%;[\s\S]*?border-radius: var\(--ui-radius\)/);
+});
+
+test("the selected FX Deck is a global footer overlay with four strong tap states", () => {
+  const app = read("App.jsx");
+  const styles = read("styles.css");
+  assert.match(app, /id="manual-effects-deck"/);
+  assert.match(app, /GLOBAL · PLAY THE ROAD \+ SOUNDTRACK/);
+  assert.match(app, /aria-controls="manual-effects-deck"/);
+  assert.match(app, /const controlsPinned = modalOpen \|\| manualEffectsDeckOpen/);
+  assert.doesNotMatch(app, /const modalOpen =[^;]*manualEffectsDeckOpen/);
+  assert.match(app, /<span>MIX<\/span>/);
+  assert.match(app, /active \? 0 : effect\.performanceAmount/);
+  assert.match(app, /performanceAmount: 0\.78/);
+  assert.match(app, /performanceAmount: 0\.72/);
+  assert.match(app, /performanceAmount: 0\.8/);
+  assert.match(app, /performanceAmount: 0\.74/);
+  assert.match(styles, /\.manual-effects-deck \{[\s\S]*?bottom: 76px/);
+  assert.match(styles, /\.manual-effects-grid \{[^}]*repeat\(4/);
+  assert.match(styles, /\.mix-button \{ grid-column: 5/);
 });
 
 test("vehicle macros and manual effects reach both audible engines", () => {
