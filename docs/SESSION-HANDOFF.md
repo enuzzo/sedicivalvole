@@ -128,9 +128,10 @@ asserted.
 ## Immediate work
 
 The session started from clean `main == origin/main == bb5a2c9`. The drive
-corrections are implementation checkpoint `ac11ed0`; the pre-publication
-documentation checkpoint is `de62ab7`; canonical live build is
-`20260831-1111`. Guarded no-delete publication, pre/postflight
+corrections are implementation checkpoint `ac11ed0`; milestone-row-6 audio
+evidence/recovery is implementation checkpoint `614872b`; its synchronized
+documentation/source checkpoint is `d1e3fb0`; canonical live build is
+`20260831-1143`. Guarded no-delete publication, pre/postflight
 `remote_writes=NONE`, HTML/main/CSS/ATLAS/MapLibre byte identity, and
 cache-busted exact `773 × 601` Browser QA pass. The Illobo mark remains
 explicitly provisional until the owner supplies the final logo.
@@ -141,7 +142,7 @@ shared `0.72` sampled-performance gain, a public-bank loudness audit, updated
 tests, a `1.25×` MapLibre-only framebuffer ceiling, consolidated `8 Hz` marker
 updates, and synchronized current/checklist/music/diagnostic documentation. Targeted Atlas,
 NIGHTSHIFT, JUNCTION, and FRACTURE checks pass `60/60`; the complete suite
-passes `478/478`, the 142-module App / 67-module LAB / Sites build passes, and
+passes `482/482`, the 143-module App / 68-module LAB / Sites build passes, and
 local and live exact-viewport Browser QA have no warning/error. Release work is
 complete; target-vehicle route/GPS/audio acceptance and a new report proving
 stable ATLAS 30 FPS remain separate gates.
@@ -156,8 +157,11 @@ for the observed `1.35 Mbps` / `250 ms` boundary. Both players abort genuine
 stalls, state the timeout, retain a harmonic bed and retry after ten audio
 seconds without reselection. Focused evidence/network checks pass `8/8`; the
 complete suite passes `482/482`, and the 143-module App / 68-module LAB / Sites
-build passes. This checkpoint is pushed but not yet canonical live; publish and
-verify it before starting row 7. Rows 2, 4 and 5 remain physical-Tesla gates.
+build passes. Protected build `20260831-1143` is canonical live: pre/postflight
+report `remote_writes=NONE`, HTML/JavaScript/CSS are byte-identical, and exact
+`773 × 601` Browser QA launches Play the Road, opens the Music drawer, changes
+NIGHTSHIFT to JUNCTION and observes zero warning/error. Rows 2, 4 and 5 remain
+physical-Tesla gates.
 
 Continue only from the 17-row execution order in
 [`MILESTONE-CHECKLIST-2026-08-31.md`](MILESTONE-CHECKLIST-2026-08-31.md). The

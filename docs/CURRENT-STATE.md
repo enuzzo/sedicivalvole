@@ -427,8 +427,8 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The canonical live product is version `0.0.0`, source commit `ac11ed0`, build
-  `20260831-1111`. Its guarded publication and read-only identity checks pass;
+- The canonical live product is version `0.0.0`, source commit `d1e3fb0`, build
+  `20260831-1143`. Its guarded publication and read-only identity checks pass;
   canonical HTML, JavaScript, CSS, restored Orbitron WOFF2 and approved 16 Road
   SVG are byte-identical to the clean local build. Exact live `773 × 601`
   Browser QA verifies the compact `360 × 160 px` home action, the loaded `42 px`

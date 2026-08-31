@@ -8,6 +8,44 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Sampled-bank evidence and constrained-network recovery — 2026-08-31 11:49
+
+- build stamp: **`20260831-1143`**; deployed source/documentation checkpoint:
+  `d1e3fb0`; audio-evidence implementation checkpoint: `614872b`;
+- verification gate: **PASS**. The tracked phase-aware JUNCTION evidence grid
+  covers ADSR, filter, phase seed, detune, chorus, spectral slope, saturation
+  and stereo coherence. Valid synthetic cases reach `1.0` recall / `0.0`
+  false-positive rate, every invalid case explicitly abstains, and complete
+  processed mixes remain unauthorized pitch gates. Focused evidence/network
+  checks pass `8/8`; the complete suite passes `482/482`, and the 143-module App
+  / 68-module LAB / Sites build passes;
+- constrained-network recovery: **PASS within the deterministic office
+  boundary**. The real `5,812,361`-byte JUNCTION and `5,504,595`-byte
+  NIGHTSHIFT banks fit the shared `45 s` budget derived from `1.35 Mbps`,
+  `250 ms` RTT and `18%` headroom. Both players abort a genuine stall, state
+  the exact timeout, keep a harmonic bed audible, wait ten audio seconds and
+  recover without another selection. Bank format and playback rate are
+  unchanged;
+- guarded publication: **PASS**. Read-only preflight and postflight both report
+  network/login/directory/listing/identity PASS, eight expected root entries and
+  `remote_writes=NONE`. The protected `--preserve-existing` publication uploaded
+  108 files / 16,979,008 bytes, retained the static entry and legacy tree, and
+  kept one prior fingerprinted asset for cache overlap;
+- canonical HTTP identity: **PASS**. Bare and cache-busted HTML return `200`,
+  `text/html`, `no-store, no-cache, must-revalidate, max-age=0`, `nosniff` and
+  cache `MISS`; both are byte-identical to local at SHA-256
+  `3918327fc364cd6cfffab76512bdd77b566a988a4f37f83ae084fd06b16cfa14`.
+  Live JavaScript and CSS return their expected MIME types and are byte-identical
+  at `12c989b076f2c59a92ed5b1168d2f5fd390e02b4da8e543c5226ef1e9810bb8f`
+  and `9d421d181ec50ea6ca0489727db0dabe88ba071639d55206f8378f7a88282087`;
+- exact live Browser QA: **PASS at `773 × 601`**. The cache-busted splash shows
+  build `20260831-1143`, loads meaningful content with no framework overlay,
+  and emits no warning/error. The complete `PLAY THE ROAD → Play the Road +
+  Aperture → START` flow has `773 × 601` document dimensions and zero overflow.
+  The running Music drawer changes NIGHTSHIFT to JUNCTION and reports JUNCTION
+  `PLAYING`; GPS permission was not accepted during this office-only smoke.
+  Real constrained Tesla networking and cabin listening remain rows 16 and 4.
+
 ## ATLAS drive corrections and sampled-score calibration — 2026-08-31 11:16
 
 - build stamp: **`20260831-1111`**; deployed implementation checkpoint:
