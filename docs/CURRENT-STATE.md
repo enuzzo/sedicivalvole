@@ -187,7 +187,10 @@ dated study documents.
   until both axes are selected, and MUTE still requires a Visual. SOUNDTRACK
   prepares three transient eligible Jamendo roles before START can unlock. The
   running Music drawer now presents compact equal-weight **Illobo Featured** and
-  **Jamendo Library** paths, with the final Illobo logo still pending. At exact
+  **Jamendo Library** paths. Its final Featured cover uses both supplied LOBO
+  SVG variants byte-identically and crossfades every three seconds; active fixed
+  playback also exposes `16 - Artist - Track title` through the page title for
+  Tesla's browser media surface. At exact
   `773 × 601`, the complete Music and Visual button grids share the same
   `342 px` height, top, and bottom. The `72 px` header, shared compact padding,
   `8 px` grid spacing, and `3 px` title/description gap reserve room without

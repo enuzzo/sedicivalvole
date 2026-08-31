@@ -86,12 +86,16 @@ adaptive branch is not called generative because it also contains sampled
 scores—then presents compact, equal-weight **Illobo Featured** and **Jamendo
 Library** alternatives. The Jamendo branch previews real cover art and starts
 immediately from a selected pace, genre, or track. Its deterministic fresh mix
-changes every 30 minutes. Pace remains passenger-selected discovery metadata and
+changes every 30 minutes. Illobo Featured uses both owner-supplied LOBO identity
+variants byte-identically as its cover, crossfading from one to the other every
+three seconds. Pace remains passenger-selected discovery metadata and
 never follows road speed or retimes audio; every recording remains at authored
 `1×`. Manual track changes use a nominal `450 ms` equal-power transition across
 at most three transient decks. The visible credit follows the audio-clock mix
 during rapid retargeting, while a compact QR always hands the passenger the
-current public track page rather than an audio stream URL.
+current public track page rather than an audio stream URL. During active fixed-
+recording playback, the document title exposes `16 - Artist - Track title` for
+Tesla's browser-labelled media surface and returns to the product title on pause.
 The launcher now
 establishes the owner-selected LIGHT **Road Sheet** language: one warm-ivory open
 sheet, a compact left-aligned 16 Road and Orbitron wordmark lockup, hairline

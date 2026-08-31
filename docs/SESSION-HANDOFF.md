@@ -138,9 +138,13 @@ is `614872b`; row-7 transition mechanics are `2dd3cb5`, atomic rollback is
 `8f03b34`, and transient transport activation is `dcb6801`. Canonical live
 build is `20260831-1241` from source/documentation checkpoint `7feea06`.
 Guarded no-delete publication, pre/postflight `remote_writes=NONE`, canonical
-HTML/main/CSS/worklet byte identity and catalogue/audio relay probes pass. The
-Illobo mark remains explicitly provisional until the owner supplies the final
-logo.
+HTML/main/CSS/worklet byte identity and catalogue/audio relay probes pass.
+Milestone row 8 is office-complete at `05a754b`: both owner-supplied Illobo LOBO
+SVG variants are retained byte-identically as the Featured cover and crossfade
+every three seconds. Active fixed playback publishes `16 - Artist - Track title`
+to the page title and restores the product title on pause. The complete suite,
+build, and exact local `773 × 601` Browser QA pass; canonical publication and
+target-Tesla checks `R8-01`–`R8-02` remain open.
 
 The published corrections provide complete ATLAS-view route retention with origin-preserving bounded
 compaction, one interpolated pulsing point/ripple, two-line colour-coded GPS,
