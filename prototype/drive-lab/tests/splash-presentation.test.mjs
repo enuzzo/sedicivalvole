@@ -216,6 +216,12 @@ test("the footer keeps a compact right palette and exposes one audio-effects mas
   assert.match(styles, /\.control-status-notice \{[\s\S]*?top: 50%;[\s\S]*?left: 50%;[\s\S]*?border-radius: var\(--ui-radius\)/);
 });
 
+test("the running Soundtrack badge identifies Illobo Featured separately from Jamendo", () => {
+  const app = read("App.jsx");
+  assert.match(app, /const providerMark = soundtrackSnapshot\?\.library\?\.selection\?\.kind === "featured" \? "LO" : "JM"/);
+  assert.match(app, /control-catalog-number is-provider">\{providerMark\}/);
+});
+
 test("catalog names use readable display labels and align their numbers on one baseline", () => {
   const app = read("App.jsx");
   const styles = read("styles.css");

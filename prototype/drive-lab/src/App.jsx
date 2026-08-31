@@ -689,6 +689,7 @@ function VisualControl({ environment, onOpen }) {
 function MusicControl({ genreId, selection, onOpen, musicMode, soundtrackSnapshot = null }) {
   if (musicMode === "soundtrack") {
     const current = soundtrackSnapshot?.current;
+    const providerMark = soundtrackSnapshot?.library?.selection?.kind === "featured" ? "LO" : "JM";
     const stateLabel = current?.title ?? (
       soundtrackSnapshot?.status === "loading" ? "Loading Jamendo" : "Soundtrack"
     );
@@ -703,7 +704,7 @@ function MusicControl({ genreId, selection, onOpen, musicMode, soundtrackSnapsho
         <span className="control-label">MUSIC</span>
         <span className="control-value">
           <strong aria-live="polite">{stateLabel}</strong>
-          <span className="control-catalog-number is-provider">JM</span>
+          <span className="control-catalog-number is-provider">{providerMark}</span>
         </span>
         <span className="control-disclosure"><DisclosureCaret /></span>
       </button>
