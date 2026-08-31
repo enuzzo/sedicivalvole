@@ -28,7 +28,11 @@ await writeFile(new URL("index.php", outputDirectory), page);
 await writeFile(new URL("bootstrap.php", outputDirectory), await readFile(new URL("../server/lab-bootstrap.php", import.meta.url)));
 await writeFile(new URL("send.php", outputDirectory), await readFile(new URL("../server/lab-send.php", import.meta.url)));
 
-const runtimeAssets = Object.freeze(["bloom-processor.js", "score-processor.js"]);
+const runtimeAssets = Object.freeze([
+  "bloom-processor.js",
+  "score-processor.js",
+  "soundtrack-repeat-processor.js",
+]);
 for (const asset of runtimeAssets) {
   await copyFile(new URL(asset, buildDirectory), new URL(asset, outputDirectory));
 }

@@ -144,6 +144,37 @@ test("sync creates exactly three transient browser media roles with honest readi
   }
 });
 
+test("a raw direct-source preview may omit CORS mode without changing production default", () => {
+  const defaultMedia = [];
+  const directMedia = [];
+  const defaultController = createSoundtrackMediaDeckController({
+    mediaFactory: () => {
+      const media = new FakeMedia();
+      defaultMedia.push(media);
+      return media;
+    },
+  });
+  const directController = createSoundtrackMediaDeckController({
+    crossOrigin: null,
+    mediaFactory: () => {
+      const media = new FakeMedia();
+      directMedia.push(media);
+      return media;
+    },
+  });
+  const queue = createSoundtrackQueue(makeCatalog([
+    makePolicy(1, 11),
+    makePolicy(2, 12),
+    makePolicy(3, 13),
+  ])).state;
+
+  defaultController.syncQueue(queue);
+  directController.syncQueue(queue);
+
+  assert.deepEqual(defaultMedia.map((media) => media.crossOrigin), ["anonymous", "anonymous", "anonymous"]);
+  assert.deepEqual(directMedia.map((media) => media.crossOrigin), [null, null, null]);
+});
+
 test("readiness and buffered time are browser observations rather than promises", () => {
   const fixture = createFixture();
   fixture.controller.syncQueue(fixture.queue);

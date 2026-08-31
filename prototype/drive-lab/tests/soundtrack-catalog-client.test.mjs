@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   fetchSoundtrackCatalog,
+  SOUNDTRACK_AUDIO_ENDPOINT,
   SOUNDTRACK_CATALOG_API_SCHEMA,
 } from "../src/soundtrack/catalog-client.js";
 
@@ -24,7 +25,7 @@ test("the client converts the same-origin response into a fresh admitted catalog
     nowMs: 1000,
     limit: 12,
     offset: 4,
-    endpoint: "/api/soundtrack-catalog.json",
+    endpoint: "/api/soundtrack-catalog.php",
     fetchImpl: async (url, options) => {
       request = { url: new URL(url), options };
       return {
@@ -38,13 +39,17 @@ test("the client converts the same-origin response into a fresh admitted catalog
     },
   });
 
-  assert.equal(request.url.pathname, "/api/soundtrack-catalog.json");
+  assert.equal(request.url.pathname, "/api/soundtrack-catalog.php");
   assert.equal(request.url.searchParams.get("limit"), "12");
   assert.equal(request.url.searchParams.get("offset"), "4");
   assert.equal(request.options.cache, "no-store");
   assert.equal(request.options.credentials, "same-origin");
   assert.equal(result.catalog.status, "fresh");
   assert.deepEqual(result.catalog.entries.map((entry) => entry.key), ["jamendo:1", "jamendo:3"]);
+  assert.equal(
+    result.catalog.entries[0].policy.item.playbackUrl,
+    `${SOUNDTRACK_AUDIO_ENDPOINT}?track=1`,
+  );
   assert.equal(result.receivedEntries, 3);
   assert.equal(result.admittedEntries, 2);
   assert.equal(result.rejectedEntries, 1);

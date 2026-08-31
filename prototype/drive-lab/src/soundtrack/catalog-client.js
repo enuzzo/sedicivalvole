@@ -4,8 +4,18 @@ import {
 } from "./catalog-store.js";
 import { evaluateJamendoTrack } from "./source-policy.js";
 
-export const SOUNDTRACK_CATALOG_ENDPOINT = "/api/soundtrack-catalog.json";
+export const SOUNDTRACK_CATALOG_ENDPOINT = "/api/soundtrack-catalog.php";
+export const SOUNDTRACK_AUDIO_ENDPOINT = "/api/soundtrack-audio.php";
 export const SOUNDTRACK_CATALOG_API_SCHEMA = "sedicivalvole.soundtrack-catalog-api.v1";
+
+const routePolicyThroughAudioRelay = (policy) => {
+  if (!policy?.admitted || !policy.item?.id) return policy;
+  const playbackUrl = `${SOUNDTRACK_AUDIO_ENDPOINT}?track=${encodeURIComponent(policy.item.id)}`;
+  return Object.freeze({
+    ...policy,
+    item: Object.freeze({ ...policy.item, playbackUrl }),
+  });
+};
 
 export async function fetchSoundtrackCatalog({
   fetchImpl = globalThis.fetch,
@@ -29,7 +39,7 @@ export async function fetchSoundtrackCatalog({
     throw new Error(payload?.status || "catalog-response-invalid");
   }
 
-  const policies = payload.tracks.map(evaluateJamendoTrack);
+  const policies = payload.tracks.map((track) => routePolicyThroughAudioRelay(evaluateJamendoTrack(track)));
   const snapshot = createSoundtrackCatalogSnapshot(policies, {
     fetchedAtMs: nowMs,
     revision: `${payload.fetchedAt ?? "jamendo"}:${payload.tracks.length}`,

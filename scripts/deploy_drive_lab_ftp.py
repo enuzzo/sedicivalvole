@@ -70,6 +70,14 @@ DIAGNOSTIC_RECIPIENT_CONFIG_MARKERS = (
     b"sedicivalvole local diagnostic recipient",
     b"return",
 )
+JAMENDO_CONFIG = "jamendo.local.php"
+JAMENDO_CONFIG_MARKERS = (b"sedicivalvole local Jamendo configuration", b"client_id")
+SOUNDTRACK_CATALOG_ENDPOINT = "soundtrack-catalog.php"
+SOUNDTRACK_AUDIO_ENDPOINT = "soundtrack-audio.php"
+SOUNDTRACK_API_MARKERS = {
+    SOUNDTRACK_CATALOG_ENDPOINT: (b"sedicivalvole.soundtrack-catalog-api.v1", b"JAMENDO_CONFIG_FILE"),
+    SOUNDTRACK_AUDIO_ENDPOINT: (b"JAMENDO_AUDIO_CONFIG_FILE", b"track_effects_not_admitted"),
+}
 LAB_DIRECTORY = "lab"
 LAB_AUTH_CONFIG = "auth.local.php"
 LAB_AUTH_CONFIG_MARKERS = (
@@ -82,6 +90,10 @@ LAB_BOOTSTRAP_MARKERS = (b"LAB_EXPECTED_ORIGIN", b"labRequireAuthenticatedJson",
 LAB_SEND_MARKERS = (b"sedicivalvole.lab-mail.v1", b"labRequireCsrf", b"buildLabPresetMail")
 LAB_BLOOM_PROCESSOR_MARKERS = (b"AudioWorkletProcessor", b'registerProcessor("bloom-processor"')
 LAB_SCORE_PROCESSOR_MARKERS = (b"AudioWorkletProcessor", b'registerProcessor("score-processor"')
+LAB_SOUNDTRACK_REPEAT_PROCESSOR_MARKERS = (
+    b"AudioWorkletProcessor",
+    b'registerProcessor("soundtrack-repeat-processor"',
+)
 PRIVATE_STATIC_NAME_TOKEN = re.compile(
     r"(^|[._-])(secret|secrets|credential|credentials|private|key|keys|cert|certs|certificate|certificates)([._-]|$)",
     re.IGNORECASE,
@@ -175,6 +187,20 @@ def build_lab_auth_config(password: str) -> bytes:
         f"    'password_hash_hex' => '{password_hash.hex()}',\n"
         f"    'iterations' => {iterations},\n"
         "    'session_ttl_seconds' => 28800,\n"
+        "];\n"
+    ).encode("utf-8")
+
+
+def build_jamendo_config(client_id: str) -> bytes:
+    """Build an upload-only Jamendo read API configuration without logging it."""
+    normalized = client_id.strip()
+    if not re.fullmatch(r"[A-Za-z0-9_-]{4,128}", normalized):
+        raise ValueError("Jamendo client ID is invalid")
+    return (
+        "<?php\n"
+        "// sedicivalvole local Jamendo configuration; generated during guarded deployment.\n"
+        "return [\n"
+        f"    'client_id' => '{normalized}',\n"
         "];\n"
     ).encode("utf-8")
 
@@ -452,6 +478,7 @@ def verify_completed_upload(
     ftp: ftplib.FTP,
     recipient_config: bytes,
     lab_auth_config: bytes,
+    jamendo_config: bytes,
 ) -> None:
     """Verify every new build file before the live root entry is replaced."""
     static_build_files()
@@ -487,10 +514,10 @@ def verify_completed_upload(
             path.name
             for path in (BUILD / "api").iterdir()
             if path.is_file() and path.name != DIAGNOSTIC_RECIPIENT_CONFIG
-        } | {DIAGNOSTIC_RECIPIENT_CONFIG}
+        } | {DIAGNOSTIC_RECIPIENT_CONFIG, JAMENDO_CONFIG}
         if not expected_api_names.issubset(api_names):
             raise ValueError("incomplete API upload")
-        for name in expected_api_names - {DIAGNOSTIC_RECIPIENT_CONFIG}:
+        for name in expected_api_names - {DIAGNOSTIC_RECIPIENT_CONFIG, JAMENDO_CONFIG}:
             local_api_file = BUILD / "api" / name
             if sha256_bytes(remote_bytes(ftp, name)) != hashlib.sha256(
                 static_build_bytes(local_api_file)
@@ -500,6 +527,8 @@ def verify_completed_upload(
             recipient_config
         ):
             raise ValueError("diagnostic recipient upload mismatch")
+        if sha256_bytes(remote_bytes(ftp, JAMENDO_CONFIG)) != sha256_bytes(jamendo_config):
+            raise ValueError("Jamendo configuration upload mismatch")
     finally:
         ftp.cwd("..")
 
@@ -738,7 +767,13 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
         ftp.cwd("api")
         try:
             api_names = safe_names(ftp)
-            if not api_names.issubset({DIAGNOSTIC_ENDPOINT, DIAGNOSTIC_RECIPIENT_CONFIG}):
+            if not api_names.issubset({
+                DIAGNOSTIC_ENDPOINT,
+                DIAGNOSTIC_RECIPIENT_CONFIG,
+                JAMENDO_CONFIG,
+                SOUNDTRACK_CATALOG_ENDPOINT,
+                SOUNDTRACK_AUDIO_ENDPOINT,
+            }):
                 raise ValueError("unexpected API entry")
             if DIAGNOSTIC_ENDPOINT in api_names:
                 endpoint = remote_bytes(ftp, DIAGNOSTIC_ENDPOINT)
@@ -751,6 +786,13 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
                 recipient_config = remote_bytes(ftp, DIAGNOSTIC_RECIPIENT_CONFIG)
                 if not all(marker in recipient_config for marker in DIAGNOSTIC_RECIPIENT_CONFIG_MARKERS):
                     raise ValueError("diagnostic recipient identity mismatch")
+            if JAMENDO_CONFIG in api_names:
+                jamendo_config = remote_bytes(ftp, JAMENDO_CONFIG)
+                if not all(marker in jamendo_config for marker in JAMENDO_CONFIG_MARKERS):
+                    raise ValueError("Jamendo configuration identity mismatch")
+            for name, markers in SOUNDTRACK_API_MARKERS.items():
+                if name in api_names and not all(marker in remote_bytes(ftp, name) for marker in markers):
+                    raise ValueError("Soundtrack API identity mismatch")
         finally:
             ftp.cwd("..")
 
@@ -764,6 +806,7 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
                 "send.php",
                 "bloom-processor.js",
                 "score-processor.js",
+                "soundtrack-repeat-processor.js",
                 LAB_AUTH_CONFIG,
             }):
                 raise ValueError("unexpected LAB entry")
@@ -773,6 +816,7 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
                 "send.php": LAB_SEND_MARKERS,
                 "bloom-processor.js": LAB_BLOOM_PROCESSOR_MARKERS,
                 "score-processor.js": LAB_SCORE_PROCESSOR_MARKERS,
+                "soundtrack-repeat-processor.js": LAB_SOUNDTRACK_REPEAT_PROCESSOR_MARKERS,
                 LAB_AUTH_CONFIG: LAB_AUTH_CONFIG_MARKERS,
             }
             for name in lab_names:
@@ -1025,6 +1069,9 @@ def main() -> int:
             raise ValueError("configured FTP port is not 21")
         if not config.get("LAB_ACCESS_PASSWORD"):
             raise ValueError("LAB access password is missing")
+        jamendo_client_id = config.get("JAMENDO_CLIENT_ID") or config.get("JAMENDO_API_KEY")
+        if not jamendo_client_id:
+            raise ValueError("Jamendo client ID is missing")
         if not (BUILD / "index.html").is_file():
             raise FileNotFoundError("production build is missing")
         static_build_files()
@@ -1036,6 +1083,9 @@ def main() -> int:
         lab_auth_config = build_lab_auth_config(config["LAB_ACCESS_PASSWORD"])
         if not all(marker in lab_auth_config for marker in LAB_AUTH_CONFIG_MARKERS):
             raise ValueError("generated LAB authentication configuration is invalid")
+        jamendo_config = build_jamendo_config(jamendo_client_id)
+        if not all(marker in jamendo_config for marker in JAMENDO_CONFIG_MARKERS):
+            raise ValueError("generated Jamendo configuration is invalid")
 
         stage = "network"
         ftp = ftplib.FTP()
@@ -1102,9 +1152,16 @@ def main() -> int:
                 recipient_config
             ):
                 raise ValueError("diagnostic recipient upload mismatch")
+            ftp.storbinary(
+                f"STOR {JAMENDO_CONFIG}",
+                io.BytesIO(jamendo_config),
+                blocksize=65536,
+            )
+            if sha256_bytes(remote_bytes(ftp, JAMENDO_CONFIG)) != sha256_bytes(jamendo_config):
+                raise ValueError("Jamendo configuration upload mismatch")
         finally:
             ftp.cwd("..")
-        uploaded_bytes += len(recipient_config)
+        uploaded_bytes += len(recipient_config) + len(jamendo_config)
 
         enter_or_create(ftp, LAB_DIRECTORY)
         try:
@@ -1119,7 +1176,7 @@ def main() -> int:
             ftp.cwd("..")
         uploaded_bytes += len(lab_auth_config)
 
-        verify_completed_upload(ftp, recipient_config, lab_auth_config)
+        verify_completed_upload(ftp, recipient_config, lab_auth_config, jamendo_config)
 
         # The canonical entry is deliberately the final content operation. The
         # candidate is uploaded and verified under a non-executable name, then a
@@ -1140,7 +1197,7 @@ def main() -> int:
         remote_count = len(safe_names(ftp))
         ftp.quit()
         ftp = None
-        print(f"upload=PASS files={len(files) + 3} bytes={uploaded_bytes}")
+        print(f"upload=PASS files={len(files) + 4} bytes={uploaded_bytes}")
         print(f"dynamic_root=PASS staged={str(stage_php_entry).lower()} static_entry_removed={str(switched_entry).lower()}")
         if preserve_existing:
             print("legacy_cleanup=SKIPPED preserve_existing=true")

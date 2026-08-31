@@ -5,6 +5,8 @@ import { PrtclField } from "../environments/prtcl/prtcl-field.jsx";
 import { PRTCL_TYPES } from "../environments/prtcl/prtcl-model.js";
 import { getFluxTheme } from "../flux-themes.js";
 import { advanceDemoMotion } from "../signal-model.js";
+import { createSoundtrackPreviewController } from "../soundtrack/preview-controller.js";
+import { createSoundtrackEffectsController } from "../soundtrack/effects-controller.js";
 import { applyParamMessage, createCommandMessage, createParamMessage } from "../control-protocol.js";
 import {
   DEFAULT_LAB_VALUES,
@@ -58,7 +60,19 @@ const MUSIC = Object.freeze([
   Object.freeze({ id: "fracture", label: "GENERATIVE / FRACTURE" }),
   Object.freeze({ id: "junction", label: "GENERATIVE / JUNCTION" }),
   Object.freeze({ id: "nightshift", label: "GENERATIVE / NIGHTSHIFT" }),
+  Object.freeze({ id: "soundtrack", label: "SOUNDTRACK / JAMENDO" }),
 ]);
+
+const SOUNDTRACK_MANUAL_CONTROLS = Object.freeze([
+  Object.freeze({ id: "flanger", label: "FLANGER" }),
+  Object.freeze({ id: "reverb", label: "REVERB" }),
+  Object.freeze({ id: "chorus", label: "CHORUS" }),
+  Object.freeze({ id: "beat-repeat", label: "BEAT REPEAT" }),
+]);
+
+const EMPTY_SOUNDTRACK_MANUAL_EFFECTS = Object.freeze(Object.fromEntries(
+  SOUNDTRACK_MANUAL_CONTROLS.map(({ id }) => [id, 0]),
+));
 
 function canUseDriveKeyboard(target) {
   if (!(target instanceof HTMLElement)) return true;
@@ -185,6 +199,9 @@ function LabApp() {
   const [testMusic, setTestMusic] = useState("mute");
   const [audioStatus, setAudioStatus] = useState("muted");
   const [liveAudioLevel, setLiveAudioLevel] = useState(null);
+  const [soundtrackPreview, setSoundtrackPreview] = useState(null);
+  const [soundtrackDriveFx, setSoundtrackDriveFx] = useState(false);
+  const [soundtrackManualEffects, setSoundtrackManualEffects] = useState(EMPTY_SOUNDTRACK_MANUAL_EFFECTS);
   const revisionRef = useRef(0);
   const sequenceRef = useRef(0);
   const fileRef = useRef(null);
@@ -193,8 +210,10 @@ function LabApp() {
   const motionRef = useRef({ speed: values["context.speedKmh"], direction: 0 });
   const motionTimerRef = useRef(null);
   const audioRef = useRef(null);
+  const soundtrackRef = useRef(null);
   const audioMeterTimerRef = useRef(null);
   const lastScoreRef = useRef("junction");
+  const lastTestMusicRef = useRef("junction");
   valuesRef.current = values;
   const { onFrame, summary } = useFramePacing();
   const smoothSpeed = useSmoothedValue(
@@ -211,7 +230,11 @@ function LabApp() {
   const startAudioMeter = useCallback(() => {
     if (audioMeterTimerRef.current != null) return;
     audioMeterTimerRef.current = window.setInterval(() => {
-      setLiveAudioLevel(audioRef.current?.getLevel() ?? null);
+      setLiveAudioLevel(
+        lastTestMusicRef.current === "soundtrack"
+          ? soundtrackRef.current?.getLevel() ?? null
+          : audioRef.current?.getLevel() ?? null,
+      );
     }, 120);
   }, []);
 
@@ -246,9 +269,60 @@ function LabApp() {
     }
   }, [startAudioMeter, stopAudioMeter]);
 
+  const soundtrackController = useCallback(() => {
+    if (soundtrackRef.current) return soundtrackRef.current;
+    soundtrackRef.current = createSoundtrackPreviewController({
+      effectsFactory: createSoundtrackEffectsController,
+      onState(state) {
+        setSoundtrackPreview(state);
+        if (state.status === "playing" && state.current) {
+          setAudioStatus("playing");
+          startAudioMeter();
+          setNotice(`${state.current.title} · ${state.current.artistName} · Jamendo preview`);
+        } else if (state.status === "loading") {
+          setAudioStatus("loading");
+          setNotice("Loading Jamendo catalog…");
+        } else if (state.status === "prepared") {
+          setAudioStatus("ready");
+          setNotice("Three transient tracks prepared · press PLAY");
+        } else if (state.status === "paused") {
+          setAudioStatus("muted");
+          setNotice("SOUNDTRACK paused · prepared media retained in browser memory");
+        } else if (state.status === "error") {
+          setAudioStatus("error");
+          setNotice(`SOUNDTRACK unavailable · ${state.error ?? "unknown error"}`);
+        }
+      },
+    });
+    soundtrackRef.current.setVehicleMaster(soundtrackDriveFx);
+    soundtrackRef.current.setVehicleEffects({
+      open: valuesRef.current["macros.open"] ? 1 : 0,
+      underwater: valuesRef.current["macros.underwater"] ? 1 : 0,
+      bloom: valuesRef.current["macros.bloom"] ? 1 : 0,
+    });
+    soundtrackRef.current.setManualEffects(soundtrackManualEffects);
+    return soundtrackRef.current;
+  }, [soundtrackDriveFx, soundtrackManualEffects, startAudioMeter]);
+
+  const startSoundtrack = useCallback(async () => {
+    audioRef.current?.setMuted(true);
+    stopAudioMeter();
+    setLiveAudioLevel(null);
+    setTestMusic("soundtrack");
+    lastTestMusicRef.current = "soundtrack";
+    const controller = soundtrackController();
+    const current = controller.getSnapshot();
+    if (current.status === "paused" || current.status === "prepared") {
+      await controller.resume();
+    } else if (current.status !== "playing") {
+      await controller.load();
+    }
+  }, [soundtrackController, stopAudioMeter]);
+
   const selectMusic = useCallback((scoreId) => {
     if (scoreId === "mute") {
       audioRef.current?.setMuted(true);
+      soundtrackRef.current?.pause();
       stopAudioMeter();
       setTestMusic("mute");
       setAudioStatus("muted");
@@ -256,29 +330,52 @@ function LabApp() {
       setNotice("MUTE · visual preset unchanged");
       return;
     }
+    if (scoreId === "soundtrack") {
+      void startSoundtrack();
+      return;
+    }
+    soundtrackRef.current?.pause();
+    lastTestMusicRef.current = scoreId;
     lastScoreRef.current = scoreId;
     void startAudio(scoreId);
-  }, [startAudio, stopAudioMeter]);
+  }, [startAudio, startSoundtrack, stopAudioMeter]);
 
   const toggleAudio = useCallback(() => {
     if (audioStatus === "playing") {
       selectMusic("mute");
       return;
     }
-    void startAudio(lastScoreRef.current);
-  }, [audioStatus, selectMusic, startAudio]);
+    selectMusic(lastTestMusicRef.current);
+  }, [audioStatus, selectMusic]);
 
   useEffect(() => {
     return () => {
       stopAudioMeter();
       audioRef.current?.destroy();
       audioRef.current = null;
+      soundtrackRef.current?.destroy();
+      soundtrackRef.current = null;
     };
   }, [stopAudioMeter]);
 
   useEffect(() => {
     audioRef.current?.setSpeed(smoothSpeed);
   }, [smoothSpeed]);
+
+  useEffect(() => {
+    const controller = soundtrackRef.current;
+    if (!controller) return;
+    controller.setVehicleMaster(soundtrackDriveFx);
+    controller.setVehicleEffects({
+      open: values["macros.open"] ? 1 : 0,
+      underwater: values["macros.underwater"] ? 1 : 0,
+      bloom: values["macros.bloom"] ? 1 : 0,
+    });
+  }, [soundtrackDriveFx, values]);
+
+  useEffect(() => {
+    soundtrackRef.current?.setManualEffects(soundtrackManualEffects);
+  }, [soundtrackManualEffects]);
 
   const stopMotionTimer = useCallback(() => {
     window.clearInterval(motionTimerRef.current);
@@ -485,8 +582,9 @@ function LabApp() {
       get preset() { return preset(); },
       get renderer() { return renderer; },
       get frame() { return summary; },
+      get soundtrack() { return soundtrackPreview; },
     };
-  }, [preset, renderer, summary, values]);
+  }, [preset, renderer, soundtrackPreview, summary, values]);
 
   return (
     <main className={`lab-shell${drawerOpen ? " is-drawer-open" : ""}`}>
@@ -533,6 +631,61 @@ function LabApp() {
           onFrame={onFrame}
           onRuntimeError={handleRuntimeError}
         />
+        {testMusic === "soundtrack" && soundtrackPreview?.current && (
+          <section className="lab-soundtrack-card" aria-label="Jamendo Soundtrack preview">
+            {soundtrackPreview.current.imageUrl && (
+              <img src={soundtrackPreview.current.imageUrl} alt="" width="68" height="68" />
+            )}
+            <div className="lab-soundtrack-credit">
+              <small>SOUNDTRACK · FX-READY PREVIEW</small>
+              <strong>{soundtrackPreview.current.title}</strong>
+              <span>{soundtrackPreview.current.artistName}</span>
+              <a href={soundtrackPreview.current.shareUrl} target="_blank" rel="noreferrer">
+                {soundtrackPreview.current.providerCredit} · {soundtrackPreview.current.licenceLabel}
+              </a>
+            </div>
+            <div className="lab-soundtrack-actions">
+              <button
+                type="button"
+                aria-label="Previous Jamendo track"
+                disabled={!soundtrackPreview.hasPrevious || audioStatus === "loading"}
+                onClick={() => void soundtrackRef.current?.move("previous")}
+              >PREV</button>
+              <button
+                type="button"
+                aria-label={audioStatus === "playing" ? "Pause Jamendo track" : "Resume Jamendo track"}
+                onClick={() => audioStatus === "playing"
+                  ? soundtrackRef.current?.pause()
+                  : void soundtrackRef.current?.resume()}
+              >{audioStatus === "playing" ? "PAUSE" : "PLAY"}</button>
+              <button
+                type="button"
+                aria-label="Next Jamendo track"
+                disabled={!soundtrackPreview.hasNext || audioStatus === "loading"}
+                onClick={() => void soundtrackRef.current?.move("next")}
+              >NEXT</button>
+            </div>
+            <div className="lab-soundtrack-effects" aria-label="Manual Soundtrack effects">
+              {SOUNDTRACK_MANUAL_CONTROLS.map((effect) => (
+                <label key={effect.id}>
+                  <span>{effect.label}</span>
+                  <output>{Math.round(soundtrackManualEffects[effect.id] * 100)}</output>
+                  <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    value={soundtrackManualEffects[effect.id]}
+                    onChange={(event) => setSoundtrackManualEffects((current) => ({
+                      ...current,
+                      [effect.id]: Number(event.target.value),
+                    }))}
+                  />
+                </label>
+              ))}
+            </div>
+          </section>
+        )}
       </section>
 
       <nav className="lab-rail" aria-label="LAB control groups">
@@ -619,6 +772,13 @@ function LabApp() {
         <button className="lab-action is-audio" type="button" onClick={toggleAudio} disabled={audioStatus === "loading"}>
           {audioStatus === "loading" ? "LOADING" : audioStatus === "playing" ? "MUTE AUDIO" : "START AUDIO"}
         </button>
+        <button
+          className={`lab-action is-drive-fx${soundtrackDriveFx ? " is-active" : ""}`}
+          type="button"
+          disabled={testMusic !== "soundtrack"}
+          aria-pressed={soundtrackDriveFx}
+          onClick={() => setSoundtrackDriveFx((current) => !current)}
+        >DRIVE FX</button>
         <button className="lab-action" type="button" onClick={() => fileRef.current?.click()}>IMPORT</button>
         <button className="lab-action" type="button" onClick={copyJson}>COPY JSON</button>
         <button className="lab-action is-primary" type="button" onClick={sendJson} disabled={sendState === "sending"}>
@@ -629,6 +789,10 @@ function LabApp() {
   );
 }
 
-createRoot(document.getElementById("lab-root")).render(
+const labRootElement = document.getElementById("lab-root");
+const labRoot = import.meta.hot?.data.labRoot ?? createRoot(labRootElement);
+if (import.meta.hot) import.meta.hot.data.labRoot = labRoot;
+
+labRoot.render(
   <StrictMode><LabApp /></StrictMode>,
 );

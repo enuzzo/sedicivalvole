@@ -47,6 +47,8 @@ test("the LAB bundle is inlined behind the gate and leaves no directly fetchable
   assert.match(deploySource, /LAB_SCORE_PROCESSOR_MARKERS/);
   assert.match(deploySource, /"bloom-processor\.js"/);
   assert.match(deploySource, /"score-processor\.js"/);
+  assert.match(packageSource, /"soundtrack-repeat-processor\.js"/);
+  assert.match(deploySource, /"soundtrack-repeat-processor\.js"/);
 });
 
 test("LAB audio is a disposable test source and never enters the visual preset", () => {
@@ -111,6 +113,36 @@ except ValueError:
     pass
 else:
     raise AssertionError("short password accepted")
+`;
+  execFileSync("python3", ["-c", program, new URL("../../../scripts/deploy_drive_lab_ftp.py", import.meta.url).pathname], {
+    env: { ...process.env, PYTHONDONTWRITEBYTECODE: "1" },
+  });
+});
+
+test("deployment derives an upload-only Jamendo read configuration without logging it", () => {
+  assert.match(deploySource, /build_jamendo_config/);
+  assert.match(deploySource, /JAMENDO_CLIENT_ID/);
+  assert.match(deploySource, /soundtrack-catalog\.php/);
+  assert.match(deploySource, /soundtrack-audio\.php/);
+  assert.doesNotMatch(deploySource, /print\([^\n]*jamendo_client_id/i);
+
+  const program = String.raw`
+import importlib.util
+import sys
+
+spec = importlib.util.spec_from_file_location("sedicivalvole_deploy", sys.argv[1])
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+payload = module.build_jamendo_config("fixture_client_123")
+assert b"fixture_client_123" in payload
+assert all(marker in payload for marker in module.JAMENDO_CONFIG_MARKERS)
+for invalid in ["", "has space", "a"]:
+    try:
+        module.build_jamendo_config(invalid)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("invalid Jamendo ID accepted")
 `;
   execFileSync("python3", ["-c", program, new URL("../../../scripts/deploy_drive_lab_ftp.py", import.meta.url).pathname], {
     env: { ...process.env, PYTHONDONTWRITEBYTECODE: "1" },

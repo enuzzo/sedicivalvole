@@ -11,6 +11,10 @@ const rounded = (value, precision = 2) => {
   return Math.round(value * factor) / factor;
 };
 
+const playbackUrl = (entry) => entry?.policy?.item?.playbackUrl
+  || entry?.policy?.item?.streamUrl
+  || "";
+
 const defaultMediaFactory = () => {
   if (typeof Audio !== "function") throw new Error("audio-constructor-unavailable");
   return new Audio();
@@ -59,6 +63,9 @@ function disposeMedia(media, listeners) {
 
 export function createSoundtrackMediaDeckController({
   mediaFactory = defaultMediaFactory,
+  crossOrigin = "anonymous",
+  onMediaCreate = null,
+  onMediaDispose = null,
   onSnapshot = null,
   onEnded = null,
   onError = null,
@@ -153,6 +160,7 @@ export function createSoundtrackMediaDeckController({
     const record = records.get(key);
     if (!record) return;
     records.delete(key);
+    try { onMediaDispose?.(key, record.media, record.entry); } catch { /* best effort */ }
     disposeMedia(record.media, record.listeners);
   };
 
@@ -211,11 +219,13 @@ export function createSoundtrackMediaDeckController({
     try {
       records.set(entry.key, record);
       media.preload = "auto";
-      media.crossOrigin = "anonymous";
-      media.src = entry.policy.item.streamUrl;
+      if (crossOrigin) media.crossOrigin = crossOrigin;
+      media.src = playbackUrl(entry);
       media.load?.();
+      onMediaCreate?.(entry.key, media, entry);
     } catch (error) {
       records.delete(entry.key);
+      try { onMediaDispose?.(entry.key, media, entry); } catch { /* best effort */ }
       disposeMedia(media, record.listeners);
       throw error;
     }
@@ -224,7 +234,7 @@ export function createSoundtrackMediaDeckController({
 
   const ensureRecord = (entry) => {
     const existing = records.get(entry.key);
-    if (existing?.entry.policy.item.streamUrl === entry.policy.item.streamUrl) {
+    if (existing && playbackUrl(existing.entry) === playbackUrl(entry)) {
       existing.entry = entry;
       return existing;
     }

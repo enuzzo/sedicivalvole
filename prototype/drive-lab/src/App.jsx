@@ -41,6 +41,8 @@ import {
 } from "./diagnostics-model.js";
 import { runStorageDiagnostics } from "./storage-diagnostics.js";
 import { createAudioMacroSnapshot } from "./response-mapping.js";
+import { createSoundtrackPreviewController } from "./soundtrack/preview-controller.js";
+import { createSoundtrackEffectsController } from "./soundtrack/effects-controller.js";
 import { FluxField } from "./flux-field.jsx";
 import {
   DEFAULT_FLUX_ENVIRONMENT_ID,
@@ -137,8 +139,8 @@ const LAUNCH_MUSIC_CHOICES = Object.freeze([
   {
     id: "soundtrack",
     label: "SOUNDTRACK",
-    description: "Independent artist recordings",
-    available: false,
+    description: "Independent Jamendo artist recordings",
+    available: true,
   },
   {
     id: "mute",
@@ -147,6 +149,15 @@ const LAUNCH_MUSIC_CHOICES = Object.freeze([
     available: true,
   },
 ]);
+const SOUNDTRACK_MANUAL_CONTROLS = Object.freeze([
+  Object.freeze({ id: "flanger", label: "FLANGER", note: "Moving comb colour" }),
+  Object.freeze({ id: "reverb", label: "REVERB", note: "Transient room tail" }),
+  Object.freeze({ id: "chorus", label: "CHORUS", note: "Slow width and motion" }),
+  Object.freeze({ id: "beat-repeat", label: "BEAT REPEAT", note: "Short live loop" }),
+]);
+const EMPTY_SOUNDTRACK_MANUAL_EFFECTS = Object.freeze(Object.fromEntries(
+  SOUNDTRACK_MANUAL_CONTROLS.map(({ id }) => [id, 0]),
+));
 function parseSupportUrl(value) {
   try {
     const url = new URL(String(value || "").trim());
@@ -652,7 +663,26 @@ function VisualControl({ environment, onOpen }) {
   );
 }
 
-function MusicControl({ genreId, selection, onOpen }) {
+function MusicControl({ genreId, selection, onOpen, soundtrack = null }) {
+  if (soundtrack) {
+    const current = soundtrack.snapshot?.current;
+    const stateLabel = current?.title ?? (
+      soundtrack.snapshot?.status === "loading" ? "LOADING JAMENDO" : "SOUNDTRACK"
+    );
+    return (
+      <button
+        className="score-control"
+        type="button"
+        aria-haspopup="dialog"
+        aria-label={`Soundtrack ${stateLabel}. Tap for artist credit and effects`}
+        onClick={onOpen}
+      >
+        <span className="control-label">MUSIC</span>
+        <strong aria-live="polite">{stateLabel}</strong>
+        <span className="control-disclosure"><small>JM</small><DisclosureCaret /></span>
+      </button>
+    );
+  }
   const pending = selection.status === "loading" ? selection.requestedScoreId : null;
   const selected = getScoreGenre(pending ?? genreId);
   const stateLabel = selection.status === "loading"
@@ -841,6 +871,83 @@ function MusicPicker({ genreId, onChange, onClose }) {
   );
 }
 
+function SoundtrackPanel({
+  snapshot,
+  vehicleFxEnabled,
+  manualEffects,
+  onVehicleFxChange,
+  onManualEffectChange,
+  onPrevious,
+  onPlayPause,
+  onNext,
+  onClose,
+}) {
+  const current = snapshot?.current;
+  const playing = snapshot?.status === "playing";
+  return (
+    <DialogSurface
+      className="diagnostic-drawer soundtrack-drawer"
+      labelledBy="soundtrack-title"
+      onClose={onClose}
+    >
+      <div className="drawer-heading">
+        <div><small>JAMENDO ARTIST RECORDING</small><h2 id="soundtrack-title">Soundtrack</h2></div>
+        <button data-dialog-initial-focus type="button" onClick={onClose}>CLOSE</button>
+      </div>
+      <div className="soundtrack-panel-body">
+        <section className="soundtrack-now-playing" aria-live="polite">
+          {current?.imageUrl ? <img src={current.imageUrl} alt="" width="104" height="104" /> : <span className="soundtrack-artwork-placeholder">JM</span>}
+          <div>
+            <small>NOW PLAYING</small>
+            <strong>{current?.title ?? "Preparing Jamendo catalog"}</strong>
+            <span>{current?.artistName ?? snapshot?.status ?? "idle"}</span>
+            {current?.shareUrl ? (
+              <a href={current.shareUrl} target="_blank" rel="noreferrer">
+                {current.providerCredit} · {current.licenceLabel} ↗
+              </a>
+            ) : null}
+          </div>
+        </section>
+        <div className="soundtrack-transport" aria-label="Soundtrack transport">
+          <button type="button" disabled={!snapshot?.hasPrevious} onClick={onPrevious}>PREVIOUS</button>
+          <button type="button" disabled={!current} onClick={onPlayPause}>{playing ? "PAUSE" : "PLAY"}</button>
+          <button type="button" disabled={!snapshot?.hasNext} onClick={onNext}>NEXT</button>
+        </div>
+        <section className="soundtrack-drive-fx">
+          <div>
+            <small>VEHICLE-REACTIVE EFFECTS</small>
+            <strong>OPEN · UNDERWATER · BLOOM</strong>
+            <span>Acceleration and braking shape effects only. Track and tempo never change.</span>
+          </div>
+          <button
+            type="button"
+            className={vehicleFxEnabled ? "is-active" : ""}
+            aria-pressed={vehicleFxEnabled}
+            onClick={() => onVehicleFxChange(!vehicleFxEnabled)}
+          >{vehicleFxEnabled ? "DRIVE FX ON" : "DRIVE FX OFF"}</button>
+        </section>
+        <section className="soundtrack-manual-effects" aria-label="Manual Soundtrack effects">
+          {SOUNDTRACK_MANUAL_CONTROLS.map((effect) => (
+            <label key={effect.id}>
+              <span><strong>{effect.label}</strong><small>{effect.note}</small></span>
+              <output>{Math.round(manualEffects[effect.id] * 100)}</output>
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                value={manualEffects[effect.id]}
+                onChange={(event) => onManualEffectChange(effect.id, Number(event.target.value))}
+              />
+            </label>
+          ))}
+        </section>
+        <p className="privacy-note">Three browser-owned media elements keep previous, current, and next ready. Audio is never stored persistently or offered offline.</p>
+      </div>
+    </DialogSurface>
+  );
+}
+
 /**
  * Palette.
  *
@@ -1010,8 +1117,9 @@ function LaunchSelector({
   onEnvironmentChange,
   onBack,
   onStart,
+  musicReady = true,
 }) {
-  const ready = Boolean(musicId && environmentId);
+  const ready = Boolean(musicId && environmentId && musicReady);
   return (
     <section className="launch-selector" aria-labelledby="launch-selector-title">
       <header className="launch-selector-heading">
@@ -1120,6 +1228,10 @@ export function App() {
   const [genreId, setGenreId] = useState(initialPreferences.genreId);
   const [environmentPickerOpen, setEnvironmentPickerOpen] = useState(false);
   const [scorePickerOpen, setScorePickerOpen] = useState(false);
+  const [soundtrackPanelOpen, setSoundtrackPanelOpen] = useState(false);
+  const [soundtrackSnapshot, setSoundtrackSnapshot] = useState(null);
+  const [soundtrackDriveFx, setSoundtrackDriveFx] = useState(false);
+  const [soundtrackManualEffects, setSoundtrackManualEffects] = useState(EMPTY_SOUNDTRACK_MANUAL_EFFECTS);
   const [supportOpen, setSupportOpen] = useState(false);
   const [rawReportOpen, setRawReportOpen] = useState(false);
   const [diagnosticReadmeOpen, setDiagnosticReadmeOpen] = useState(false);
@@ -1133,6 +1245,8 @@ export function App() {
   );
 
   const audioRef = useRef(null);
+  const soundtrackRef = useRef(null);
+  const sessionMusicModeRef = useRef(null);
   const appRef = useRef(null);
   const watchRef = useRef(null);
   const wakeTimerRef = useRef(null);
@@ -1198,12 +1312,38 @@ export function App() {
     || previewOpen
     || environmentPickerOpen
     || scorePickerOpen
+    || soundtrackPanelOpen
     || supportOpen;
   const controlsPinned = modalOpen;
   const closeVoicePreview = useCallback(() => {
     setPreviewOpen(false);
     setDrawerOpen(true);
   }, []);
+  const soundtrackController = useCallback(() => {
+    if (soundtrackRef.current) return soundtrackRef.current;
+    const controller = createSoundtrackPreviewController({
+      effectsFactory: createSoundtrackEffectsController,
+      onState: setSoundtrackSnapshot,
+    });
+    controller.setVehicleMaster(soundtrackDriveFx);
+    controller.setManualEffects(soundtrackManualEffects);
+    soundtrackRef.current = controller;
+    setSoundtrackSnapshot(controller.getSnapshot());
+    return controller;
+  }, [soundtrackDriveFx, soundtrackManualEffects]);
+
+  const selectLaunchMusic = useCallback((nextMusicId) => {
+    setLaunchMusicId(nextMusicId);
+    if (nextMusicId !== "soundtrack") {
+      soundtrackRef.current?.pause();
+      return;
+    }
+    const controller = soundtrackController();
+    const status = controller.getSnapshot().status;
+    if (!["loading", "prepared", "paused", "playing"].includes(status)) {
+      void controller.load();
+    }
+  }, [soundtrackController]);
   // The driver-facing number describes the pulse they hear. PARK deliberately
   // has no pulse, while diagnostics retain the score's true transport clock.
   const bpm = speed < 0.8 ? null : scorePerceivedTempo;
@@ -1664,6 +1804,10 @@ export function App() {
 
   const runHarness = useCallback(async ({ musicId, selectedEnvironmentId }) => {
     const launchMuted = QA_MUTED || musicId === "mute";
+    sessionMusicModeRef.current = musicId;
+    const soundtrackStart = musicId === "soundtrack"
+      ? soundtrackRef.current?.resume()
+      : null;
     setSupportOpen(false);
     setMuted(launchMuted);
     setEnvironmentId(selectedEnvironmentId);
@@ -1707,26 +1851,35 @@ export function App() {
       );
       if (!audioRef.current) throw new Error("Web Audio is unavailable");
       await audioRef.current.resume();
-      audioRef.current.setMuted(launchMuted);
+      audioRef.current.setMuted(launchMuted || musicId === "soundtrack");
       // The speed effect may have run before the audio engine existed (notably
       // for an exact qaSpeed launch). Seed the engine from the current signal
       // before choosing a score so its first complete section is the right one.
       audioRef.current.setSpeed(speedRef.current);
-      const activeScoreId = await audioRef.current.setScore(genreId);
-      if (typeof activeScoreId === "string" && activeScoreId !== genreId) {
-        setGenreId(activeScoreId);
-        setScoreSelection({
-          status: "restored",
-          requestedScoreId: null,
-          message: `${getScoreGenre(genreId).label} unavailable · ${getScoreGenre(activeScoreId).label} restored`,
-        });
-        logDiagnosticEvent("score.fallback", { requested: genreId, active: activeScoreId });
+      if (musicId === "play-road") {
+        const activeScoreId = await audioRef.current.setScore(genreId);
+        if (typeof activeScoreId === "string" && activeScoreId !== genreId) {
+          setGenreId(activeScoreId);
+          setScoreSelection({
+            status: "restored",
+            requestedScoreId: null,
+            message: `${getScoreGenre(genreId).label} unavailable · ${getScoreGenre(activeScoreId).label} restored`,
+          });
+          logDiagnosticEvent("score.fallback", { requested: genreId, active: activeScoreId });
+        }
+        audioRef.current.startCue();
+      } else if (musicId === "soundtrack") {
+        const started = await soundtrackStart;
+        if (started?.status !== "playing") throw new Error(started?.error || "Soundtrack playback was blocked");
       }
-      audioRef.current.startCue();
       window.clearInterval(audioMeterTimerRef.current);
       audioMeterTimerRef.current = window.setInterval(() => {
         const engine = audioRef.current;
-        setAudioLevel(engine?.getLevel() ?? 0);
+        setAudioLevel(
+          sessionMusicModeRef.current === "soundtrack"
+            ? soundtrackRef.current?.getLevel() ?? 0
+            : engine?.getLevel() ?? 0,
+        );
         const snapshot = engine?.getMacroSnapshot() ?? createAudioMacroSnapshot({
           capturedAtMs: performance.now(),
         });
@@ -2072,7 +2225,22 @@ export function App() {
   useEffect(() => {
     audioRef.current?.setGpsAccuracy(source === "GPS" ? accuracy : null);
   }, [accuracy, source]);
-  useEffect(() => { audioRef.current?.setMuted(muted); }, [muted]);
+  useEffect(() => {
+    audioRef.current?.setMuted(muted || sessionMusicModeRef.current === "soundtrack");
+  }, [muted]);
+  useEffect(() => {
+    soundtrackRef.current?.setVehicleMaster(soundtrackDriveFx);
+  }, [soundtrackDriveFx]);
+  useEffect(() => {
+    soundtrackRef.current?.setVehicleEffects({
+      open: audioMacros.open,
+      underwater: audioMacros.underwater,
+      bloom: audioMacros.bloom,
+    });
+  }, [audioMacros]);
+  useEffect(() => {
+    soundtrackRef.current?.setManualEffects(soundtrackManualEffects);
+  }, [soundtrackManualEffects]);
   useEffect(() => {
     try {
       localStorage.setItem(PREFERENCES_KEY, JSON.stringify({
@@ -2137,6 +2305,7 @@ export function App() {
           setPreviewOpen(false);
           setEnvironmentPickerOpen(false);
           setScorePickerOpen(false);
+          setSoundtrackPanelOpen(false);
           setDrawerOpen(false);
         }
         return;
@@ -2202,6 +2371,8 @@ export function App() {
     if (watchRef.current != null) navigator.geolocation?.clearWatch(watchRef.current);
     atlasPositionSamplesRef.current = [];
     audioRef.current?.destroy();
+    soundtrackRef.current?.destroy();
+    soundtrackRef.current = null;
   }, [stopDemo]);
 
   const buildDiagnosticReport = useCallback(() => diagnostics ? {
@@ -2595,7 +2766,8 @@ export function App() {
           <LaunchSelector
             musicId={launchMusicId}
             environmentId={launchEnvironmentId}
-            onMusicChange={setLaunchMusicId}
+            musicReady={launchMusicId !== "soundtrack" || ["prepared", "paused", "playing"].includes(soundtrackSnapshot?.status)}
+            onMusicChange={selectLaunchMusic}
             onEnvironmentChange={setLaunchEnvironmentId}
             onBack={() => setPhase("idle")}
             onStart={() => runHarness({
@@ -2681,12 +2853,17 @@ export function App() {
 
 
 
-        <footer className="control-slab control-layer" aria-label="Flux performance controls">
+        <footer className={`control-slab control-layer${sessionMusicModeRef.current === "soundtrack" ? " is-soundtrack" : ""}`} aria-label="Flux performance controls">
           <button
             className={`stop-button ${muted ? "is-muted" : ""}`}
             type="button"
             onClick={async () => {
-              if (muted) await audioRef.current?.resume();
+              if (sessionMusicModeRef.current === "soundtrack") {
+                if (muted) await soundtrackRef.current?.resume();
+                else soundtrackRef.current?.pause();
+              } else if (muted) {
+                await audioRef.current?.resume();
+              }
               setMuted((value) => !value);
             }}
             aria-pressed={muted}
@@ -2706,13 +2883,28 @@ export function App() {
               )}
             </span>
           </button>
+          {sessionMusicModeRef.current === "soundtrack" ? (
+            <button
+              className={`soundtrack-fx-button${soundtrackDriveFx ? " is-active" : ""}`}
+              type="button"
+              aria-pressed={soundtrackDriveFx}
+              onClick={() => setSoundtrackDriveFx((current) => !current)}
+            >
+              <span>DRIVE FX</span>
+              <strong>{soundtrackDriveFx ? "ON" : "OFF"}</strong>
+            </button>
+          ) : null}
           <VisualControl environment={environment} onOpen={() => {
             setEnvironmentPickerOpen(true);
           }} />
           <MusicControl
             genreId={genreId}
             selection={scoreSelection}
-            onOpen={() => setScorePickerOpen(true)}
+            soundtrack={sessionMusicModeRef.current === "soundtrack" ? { snapshot: soundtrackSnapshot } : null}
+            onOpen={() => {
+              if (sessionMusicModeRef.current === "soundtrack") setSoundtrackPanelOpen(true);
+              else setScorePickerOpen(true);
+            }}
           />
           <PaletteControl themeId={themeId} onChange={setThemeId} />
         </footer>
@@ -2930,6 +3122,26 @@ export function App() {
           genreId={genreId}
           onChange={selectScore}
           onClose={() => setScorePickerOpen(false)}
+        />
+      ) : null}
+
+      {soundtrackPanelOpen ? (
+        <SoundtrackPanel
+          snapshot={soundtrackSnapshot}
+          vehicleFxEnabled={soundtrackDriveFx}
+          manualEffects={soundtrackManualEffects}
+          onVehicleFxChange={setSoundtrackDriveFx}
+          onManualEffectChange={(id, value) => setSoundtrackManualEffects((current) => ({
+            ...current,
+            [id]: value,
+          }))}
+          onPrevious={() => void soundtrackRef.current?.move("previous")}
+          onPlayPause={() => {
+            if (soundtrackSnapshot?.status === "playing") soundtrackRef.current?.pause();
+            else void soundtrackRef.current?.resume();
+          }}
+          onNext={() => void soundtrackRef.current?.move("next")}
+          onClose={() => setSoundtrackPanelOpen(false)}
         />
       ) : null}
 

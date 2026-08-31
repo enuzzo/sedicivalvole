@@ -6,6 +6,11 @@ import {
   sanitizeJamendoPayload,
   SOUNDTRACK_CATALOG_API_SCHEMA,
 } from "../server/jamendo-catalog-core.mjs";
+import { createJamendoCatalogLoader } from "../scripts/vite-jamendo-catalog.mjs";
+import { readFile } from "node:fs/promises";
+
+const productionCatalogEndpoint = await readFile(new URL("../public/api/soundtrack-catalog.php", import.meta.url), "utf8");
+const productionAudioEndpoint = await readFile(new URL("../public/api/soundtrack-audio.php", import.meta.url), "utf8");
 
 const upstreamTrack = Object.freeze({
   id: "1848357",
@@ -84,4 +89,58 @@ test("missing credentials and malformed upstream payloads fail closed", async ()
     }),
     /http-error/,
   );
+});
+
+test("the local loader retries transient empty first pages and reuses only metadata", async () => {
+  let clock = 1_000;
+  let calls = 0;
+  const empty = Object.freeze({ returned: 0, tracks: Object.freeze([]) });
+  const populated = Object.freeze({ returned: 3, tracks: Object.freeze([upstreamTrack]) });
+  const load = createJamendoCatalogLoader({
+    clientId: "fixture",
+    nowMs: () => clock,
+    freshTtlMs: 100,
+    fallbackTtlMs: 1_000,
+    fetchCatalog: async () => {
+      calls += 1;
+      if (calls === 1) return empty;
+      if (calls === 2) return populated;
+      throw new Error("temporary-upstream-failure");
+    },
+  });
+
+  assert.equal((await load({ limit: "24", offset: "0" })).returned, 3);
+  assert.equal(calls, 2);
+  assert.equal((await load({ limit: "24", offset: "0" })).returned, 3);
+  assert.equal(calls, 2);
+
+  clock += 200;
+  assert.equal((await load({ limit: "24", offset: "0" })).returned, 3);
+  assert.equal(calls, 3);
+});
+
+test("the local loader bounds repeated first-page empties", async () => {
+  let calls = 0;
+  const load = createJamendoCatalogLoader({
+    clientId: "fixture",
+    fetchCatalog: async () => {
+      calls += 1;
+      return Object.freeze({ returned: 0, tracks: Object.freeze([]) });
+    },
+  });
+
+  assert.equal((await load({ limit: "24", offset: "0" })).returned, 0);
+  assert.equal(calls, 4);
+});
+
+test("production endpoints keep credentials server-side and audio transient", () => {
+  assert.match(productionCatalogEndpoint, /jamendo\.local\.php/);
+  assert.match(productionCatalogEndpoint, /persistentAudioStorage' => false/);
+  assert.match(productionCatalogEndpoint, /audioformat' => 'mp32/);
+  assert.doesNotMatch(productionCatalogEndpoint, /client_secret/);
+  assert.match(productionAudioEndpoint, /track_effects_not_admitted/);
+  assert.match(productionAudioEndpoint, /Cache-Control: no-store/);
+  assert.match(productionAudioEndpoint, /Cross-Origin-Resource-Policy: same-origin/);
+  assert.match(productionAudioEndpoint, /CURLOPT_PROTOCOLS => CURLPROTO_HTTPS/);
+  assert.doesNotMatch(productionAudioEndpoint, /file_put_contents|fopen\s*\([^,]+,\s*['\"]w/);
 });
