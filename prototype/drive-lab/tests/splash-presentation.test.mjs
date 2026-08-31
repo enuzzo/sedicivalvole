@@ -50,6 +50,11 @@ test("the selected Instrument Deck resolves Music and Visual before START", () =
   assert.match(selector, /disabled=\{!ready\}/);
   assert.match(selector, /musicId && environmentId/);
   assert.match(selector, /choice\.launchDescription/);
+  assert.match(selector, /<strong>\{choice\.displayLabel\}<\/strong>/);
+  assert.match(selector, /<strong>\{displayLabel\(choice\)\}<\/strong>/);
+  assert.match(app, /displayLabel: "Play the Road"/);
+  assert.match(app, /displayLabel: "Soundtrack"/);
+  assert.match(app, /displayLabel: "Mute"/);
   assert.match(app, /Adaptive music shaped by your drive/);
   assert.match(app, /Independent Jamendo artist recordings/);
   assert.match(app, /Visuals only\. No music\./);
@@ -202,6 +207,21 @@ test("the footer keeps a compact right palette and exposes one audio-effects mas
   assert.match(styles, /@media \(max-width: 820px\) \{[\s\S]*?grid-template-columns: 64px 74px 170px 190px minmax\(0, 1fr\) 138px/);
   assert.match(styles, /\.swatch-housing button \{[^}]*min-height: 15px/);
   assert.match(styles, /\.control-status-notice \{[\s\S]*?top: 50%;[\s\S]*?left: 50%;[\s\S]*?border-radius: var\(--ui-radius\)/);
+});
+
+test("catalog names use readable display labels and align their numbers on one baseline", () => {
+  const app = read("App.jsx");
+  const styles = read("styles.css");
+
+  assert.match(app, /function displayLabel\(entry\)/);
+  assert.match(app, /aria-label=\{`Visual \$\{name\} \$\{environment\.number\}\. Tap to change`\}/);
+  assert.match(app, /className="control-value"[\s\S]*?<strong>\{name\}<\/strong>[\s\S]*?className="control-catalog-number">\{environment\.number\}/);
+  assert.match(app, /className="control-catalog-number" title=\{scoreSource\(selected\.id\)\.note\}/);
+  assert.match(app, /<strong>\{displayLabel\(entry\)\}<\/strong>/);
+  assert.match(app, /\{displayLabel\(genre\)\}/);
+  assert.match(styles, /\.control-value \{[\s\S]*?display: flex;[\s\S]*?align-items: baseline;[\s\S]*?font-size: 17px/);
+  assert.match(styles, /\.control-catalog-number \{[^}]*font: inherit/);
+  assert.match(styles, /\.score-entry-number \{[^}]*font-size: 19px/);
 });
 
 test("launch copy has a continuous white-to-red travelling wave", () => {

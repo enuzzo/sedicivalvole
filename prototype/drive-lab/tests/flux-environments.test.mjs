@@ -28,6 +28,7 @@ test("exposes the authored environments in a stable order", () => {
   assert.equal(getFluxEnvironment("meridian").label, "MERIDIAN");
   assert.equal(getFluxEnvironment("meridian").number, "03");
   assert.equal(getFluxEnvironment("atlas").label, "ATLAS");
+  assert.equal(getFluxEnvironment("atlas").displayLabel, "Atlas");
   assert.equal(getFluxEnvironment("atlas").number, "04");
   assert.equal(getFluxEnvironment("drivey").label, "DRIVEY");
   assert.equal(getFluxEnvironment("drivey").number, "05");
@@ -67,7 +68,9 @@ test("gives every environment a unique identifier, number, and renderer", () => 
   const numbers = new Set();
   const renderers = new Set();
   for (const environment of FLUX_ENVIRONMENTS) {
-    assert.ok(environment.label && environment.rendererLabel, environment.id);
+    assert.ok(environment.label && environment.displayLabel && environment.rendererLabel, environment.id);
+    assert.equal(environment.label, environment.label.toUpperCase(), environment.id);
+    assert.notEqual(environment.displayLabel, environment.label, environment.id);
     assert.equal(typeof environment.themed, "boolean", environment.id);
     ids.add(environment.id);
     numbers.add(environment.number);

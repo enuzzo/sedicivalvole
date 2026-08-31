@@ -38,14 +38,15 @@ export const SCORE_SOURCE = Object.freeze({
 
 /** Short labels and marks for the two kinds, for the interface to render. */
 export const SCORE_SOURCE_LABEL = Object.freeze({
-  generative: { label: "GENERATIVE", mark: "◇", note: "Synthesised live" },
-  sampled: { label: "SAMPLED", mark: "◆", note: "Built from recordings" },
+  generative: { label: "Generative", mark: "◇", note: "Synthesised live" },
+  sampled: { label: "Sampled", mark: "◆", note: "Built from recordings" },
 });
 
 export const SCORE_GENRES = [
   {
     id: "junction",
     label: "JUNCTION",
+    displayLabel: "Junction",
     number: "01",
     family: "Jungle / Breakbeat",
     source: SCORE_SOURCE.sampled,
@@ -56,6 +57,7 @@ export const SCORE_GENRES = [
   {
     id: "fracture",
     label: "FRACTURE",
+    displayLabel: "Fracture",
     number: "02",
     family: "Jungle / Drum & Bass",
     source: SCORE_SOURCE.generative,
@@ -67,6 +69,7 @@ export const SCORE_GENRES = [
   {
     id: "nightshift",
     label: "NIGHTSHIFT",
+    displayLabel: "Nightshift",
     number: "03",
     family: "Synth-pop / 1980s",
     source: SCORE_SOURCE.sampled,
@@ -77,6 +80,7 @@ export const SCORE_GENRES = [
   {
     id: "cutwater",
     label: "CUTWATER",
+    displayLabel: "Cutwater",
     number: "04",
     family: "Breakbeat / Electro",
     source: SCORE_SOURCE.generative,
@@ -87,6 +91,7 @@ export const SCORE_GENRES = [
   {
     id: "lowtide",
     label: "LOWTIDE",
+    displayLabel: "Lowtide",
     number: "05",
     family: "Dub Techno",
     source: SCORE_SOURCE.generative,
@@ -97,6 +102,7 @@ export const SCORE_GENRES = [
   {
     id: "nightcast",
     label: "NIGHTCAST",
+    displayLabel: "Nightcast",
     number: "06",
     family: "Downtempo",
     source: SCORE_SOURCE.generative,
@@ -107,6 +113,7 @@ export const SCORE_GENRES = [
   {
     id: "stillwater",
     label: "STILLWATER",
+    displayLabel: "Stillwater",
     number: "07",
     family: "Ambient",
     source: SCORE_SOURCE.generative,

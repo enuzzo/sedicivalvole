@@ -429,9 +429,10 @@ test("the persistent music control exposes loading and restored fallback states"
   const source = await readFile(new URL("../src/App.jsx", import.meta.url), "utf8");
   assert.match(source, /status: "loading", requestedScoreId/);
   assert.match(source, /aria-live="polite"/);
-  assert.match(source, /`\$\{selected\.label\} · LOADING`/);
-  assert.match(source, /`\$\{selected\.label\} · RESTORED`/);
-  assert.match(source, /`\$\{selected\.label\} · UNAVAILABLE`/);
+  assert.match(source, /const selectedName = displayLabel\(selected\)/);
+  assert.match(source, /`\$\{selectedName\} · Loading`/);
+  assert.match(source, /`\$\{selectedName\} · Restored`/);
+  assert.match(source, /`\$\{selectedName\} · Unavailable`/);
   assert.match(source, /score\.change-failed/);
 });
 

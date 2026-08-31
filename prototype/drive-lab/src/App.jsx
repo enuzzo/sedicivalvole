@@ -133,27 +133,30 @@ const LAUNCH_MUSIC_CHOICES = Object.freeze([
   {
     id: "play-road",
     label: "PLAY THE ROAD",
+    displayLabel: "Play the Road",
     description: "Adaptive music shaped by your drive",
     available: true,
   },
   {
     id: "soundtrack",
     label: "SOUNDTRACK",
+    displayLabel: "Soundtrack",
     description: "Independent Jamendo artist recordings",
     available: true,
   },
   {
     id: "mute",
     label: "MUTE",
+    displayLabel: "Mute",
     description: "Visuals only. No music.",
     available: true,
   },
 ]);
 const SOUNDTRACK_MANUAL_CONTROLS = Object.freeze([
-  Object.freeze({ id: "flanger", label: "FLANGER", note: "Moving comb colour" }),
-  Object.freeze({ id: "reverb", label: "REVERB", note: "Transient room tail" }),
-  Object.freeze({ id: "chorus", label: "CHORUS", note: "Slow width and motion" }),
-  Object.freeze({ id: "beat-repeat", label: "BEAT REPEAT", note: "Short live loop" }),
+  Object.freeze({ id: "flanger", label: "FLANGER", displayLabel: "Flanger", note: "Moving comb colour" }),
+  Object.freeze({ id: "reverb", label: "REVERB", displayLabel: "Reverb", note: "Transient room tail" }),
+  Object.freeze({ id: "chorus", label: "CHORUS", displayLabel: "Chorus", note: "Slow width and motion" }),
+  Object.freeze({ id: "beat-repeat", label: "BEAT REPEAT", displayLabel: "Beat Repeat", note: "Short live loop" }),
 ]);
 const EMPTY_SOUNDTRACK_MANUAL_EFFECTS = Object.freeze(Object.fromEntries(
   SOUNDTRACK_MANUAL_CONTROLS.map(({ id }) => [id, 0]),
@@ -647,18 +650,26 @@ function DisclosureCaret() {
   );
 }
 
+function displayLabel(entry) {
+  return entry?.displayLabel ?? entry?.label ?? "";
+}
+
 function VisualControl({ environment, onOpen }) {
+  const name = displayLabel(environment);
   return (
     <button
       className="environment-control"
       type="button"
       aria-haspopup="dialog"
-      aria-label={`Visual ${environment.label}. Tap to change`}
+      aria-label={`Visual ${name} ${environment.number}. Tap to change`}
       onClick={onOpen}
     >
       <span className="control-label">VISUAL</span>
-      <strong>{environment.label}</strong>
-      <span className="control-disclosure"><small>{environment.number}</small><DisclosureCaret /></span>
+      <span className="control-value">
+        <strong>{name}</strong>
+        <span className="control-catalog-number">{environment.number}</span>
+      </span>
+      <span className="control-disclosure"><DisclosureCaret /></span>
     </button>
   );
 }
@@ -667,7 +678,7 @@ function MusicControl({ genreId, selection, onOpen, soundtrack = null }) {
   if (soundtrack) {
     const current = soundtrack.snapshot?.current;
     const stateLabel = current?.title ?? (
-      soundtrack.snapshot?.status === "loading" ? "LOADING JAMENDO" : "SOUNDTRACK"
+      soundtrack.snapshot?.status === "loading" ? "Loading Jamendo" : "Soundtrack"
     );
     return (
       <button
@@ -678,20 +689,24 @@ function MusicControl({ genreId, selection, onOpen, soundtrack = null }) {
         onClick={onOpen}
       >
         <span className="control-label">MUSIC</span>
-        <strong aria-live="polite">{stateLabel}</strong>
-        <span className="control-disclosure"><small>JM</small><DisclosureCaret /></span>
+        <span className="control-value">
+          <strong aria-live="polite">{stateLabel}</strong>
+          <span className="control-catalog-number is-provider">JM</span>
+        </span>
+        <span className="control-disclosure"><DisclosureCaret /></span>
       </button>
     );
   }
   const pending = selection.status === "loading" ? selection.requestedScoreId : null;
   const selected = getScoreGenre(pending ?? genreId);
+  const selectedName = displayLabel(selected);
   const stateLabel = selection.status === "loading"
-    ? `${selected.label} · LOADING`
+    ? `${selectedName} · Loading`
     : selection.status === "restored"
-      ? `${selected.label} · RESTORED`
+      ? `${selectedName} · Restored`
       : selection.status === "unavailable"
-        ? `${selected.label} · UNAVAILABLE`
-        : selected.label;
+        ? `${selectedName} · Unavailable`
+        : selectedName;
   return (
     <button
       className="score-control"
@@ -702,10 +717,13 @@ function MusicControl({ genreId, selection, onOpen, soundtrack = null }) {
       onClick={onOpen}
     >
       <span className="control-label">MUSIC</span>
-      <strong aria-live="polite">{stateLabel}</strong>
-      <span className="control-disclosure" title={scoreSource(selected.id).note}>
-        <small>{scoreSource(selected.id).mark} {selected.number}</small><DisclosureCaret />
+      <span className="control-value">
+        <strong aria-live="polite">{stateLabel}</strong>
+        <span className="control-catalog-number" title={scoreSource(selected.id).note}>
+          {scoreSource(selected.id).mark} {selected.number}
+        </span>
       </span>
+      <span className="control-disclosure"><DisclosureCaret /></span>
     </button>
   );
 }
@@ -736,7 +754,7 @@ function VisualPicker({ environmentId, onChange, onClose }) {
                 }}
               >
                 <span className="score-entry-number">{entry.number}</span>
-                <span className="score-entry-body"><strong>{entry.label}</strong><span>{entry.rendererLabel}</span></span>
+                <span className="score-entry-body"><strong>{displayLabel(entry)}</strong><span>{entry.rendererLabel}</span></span>
                 <span className="score-entry-state">{active ? "ACTIVE" : "SELECT"}</span>
               </button>
             </li>
@@ -847,7 +865,7 @@ function MusicPicker({ genreId, onChange, onClose }) {
                 <span className="score-entry-number">{genre.number}</span>
                 <span className="score-entry-body">
                   <strong>
-                    {genre.label}
+                    {displayLabel(genre)}
                     <em className={`score-source is-${genre.source}`}>
                       <span aria-hidden="true">{scoreSource(genre.id).mark}</span>
                       {scoreSource(genre.id).label}
@@ -929,7 +947,7 @@ function SoundtrackPanel({
         <section className="soundtrack-manual-effects" aria-label="Manual Soundtrack effects">
           {SOUNDTRACK_MANUAL_CONTROLS.map((effect) => (
             <label key={effect.id}>
-              <span><strong>{effect.label}</strong><small>{effect.note}</small></span>
+              <span><strong>{effect.displayLabel}</strong><small>{effect.note}</small></span>
               <output>{Math.round(manualEffects[effect.id] * 100)}</output>
               <input
                 type="range"
@@ -1145,7 +1163,7 @@ function LaunchSelector({
                 disabled={!choice.available}
                 onClick={() => onMusicChange(choice.id)}
               >
-                <strong>{choice.label}</strong>
+                <strong>{choice.displayLabel}</strong>
                 <small>{choice.description}</small>
                 {!choice.available ? <em>COMING NEXT</em> : null}
               </button>
@@ -1166,7 +1184,7 @@ function LaunchSelector({
                 aria-pressed={environmentId === choice.id}
                 onClick={() => onEnvironmentChange(choice.id)}
               >
-                <strong>{choice.label}</strong>
+                <strong>{displayLabel(choice)}</strong>
                 <small>{choice.launchDescription}</small>
               </button>
             ))}

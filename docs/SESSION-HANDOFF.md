@@ -26,6 +26,10 @@ a new session can continue without reviving superseded prototypes.
 - Never imply access to real RPM, throttle, gear, CAN, motor load, or coordinates.
 - The verified Tesla split viewport is `773 × 601` CSS pixels. Product-visible
   validation must include that size and the target vehicle.
+- Functional micro-labels remain uppercase, but editorial Music and Visual names
+  use dedicated Title Case display labels in the launcher, footer, and pickers.
+  Footer names and catalogue numbers share one baseline and type size; canonical
+  uppercase registry labels remain stable identity and diagnostic data.
 
 ## Flux visuals
 

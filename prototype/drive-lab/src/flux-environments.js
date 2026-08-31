@@ -14,6 +14,7 @@ export const FLUX_ENVIRONMENTS = [
   {
     id: "aperture",
     label: "APERTURE",
+    displayLabel: "Aperture",
     number: "01",
     rendererLabel: "Aperture",
     launchDescription: "Layered light tunnel",
@@ -24,6 +25,7 @@ export const FLUX_ENVIRONMENTS = [
   {
     id: "vertigo",
     label: "VERTIGO",
+    displayLabel: "Vertigo",
     number: "02",
     rendererLabel: "Vertigo",
     launchDescription: "Infinite night highway",
@@ -35,6 +37,7 @@ export const FLUX_ENVIRONMENTS = [
   {
     id: "meridian",
     label: "MERIDIAN",
+    displayLabel: "Meridian",
     number: "03",
     rendererLabel: "Meridian",
     launchDescription: "Low moving corridor",
@@ -44,6 +47,7 @@ export const FLUX_ENVIRONMENTS = [
   {
     id: "atlas",
     label: "ATLAS",
+    displayLabel: "Atlas",
     number: "04",
     rendererLabel: "Atlas",
     launchDescription: "Live map and places",
@@ -53,6 +57,7 @@ export const FLUX_ENVIRONMENTS = [
   {
     id: "drivey",
     label: "DRIVEY",
+    displayLabel: "Drivey",
     number: "05",
     rendererLabel: "Original Drivey.js",
     launchDescription: "Generative open road",
@@ -63,6 +68,7 @@ export const FLUX_ENVIRONMENTS = [
   {
     id: "prtcl",
     label: "PRTCL",
+    displayLabel: "Prtcl",
     number: "06",
     rendererLabel: "Fractal particle fields",
     launchDescription: "Reactive particle field",

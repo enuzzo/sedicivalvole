@@ -96,6 +96,9 @@ Completed in the current working line:
   the Tesla breakpoint, `160 px` on desktop), with the recovered centre span
   reserved for future controls. MUTE and EFFECTS changes emit a short centred
   confirmation;
+- launcher, footer, and picker catalogue names now use separate Title Case
+  display labels while functional micro-labels retain uppercase; footer names
+  and numbers share one baseline and one type size without changing registry IDs;
 
 Queued next:
 

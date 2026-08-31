@@ -349,6 +349,11 @@ dated study documents.
   adjacent, both announce a 1.5-second centred status, and the two-row palette is
   fixed to `138 px` at `773 × 601` / `160 px` on desktop at the far-right edge.
   The released centre span is intentionally empty rather than stretched.
+  Editorial Music and Visual names use Title Case display labels in the launcher,
+  footer, and both pickers; functional micro-labels remain uppercase. Each footer
+  catalogue number now sits beside its name on the same baseline at the same type
+  size, while canonical uppercase registry labels remain stable for identity,
+  diagnostics, and tests.
 - `docs/MUSIC-CRAFT.md` records the musical defects and techniques already
   learned. Assertable musical rules belong in tests.
 - A development-only sample-harmony pilot now inventories the eight chord hits

@@ -71,6 +71,18 @@ No new feature block may start after `03:00 CEST`. ATLAS implementation was not
 opened during this closeout window; finishing, proving, documenting, and
 publishing SOUNDTRACK is the final task block.
 
+## Catalogue typography checkpoint
+
+- [x] retain uppercase only for compact functional micro-labels;
+- [x] use dedicated Title Case display labels for Music, Visual, mode, and
+  manual-effect names in the launcher, running footer, and both pickers;
+- [x] keep canonical uppercase registry labels and stable identifiers unchanged;
+- [x] align each footer catalogue number beside its name on one baseline and at
+  the same type size;
+- [x] verify zero document overflow and exact name/number baselines locally at
+  `773 × 601` and `1280 × 720`;
+- [ ] publish the verified build and repeat cache-busted live Browser QA.
+
 ## Ordered next work
 
 1. Physical-Tesla SOUNDTRACK listening: automatic OPEN/UNDERWATER/BLOOM,

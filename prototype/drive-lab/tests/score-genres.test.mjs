@@ -16,9 +16,13 @@ test("exposes the score library in a stable order with unique identity", () => {
   const ids = SCORE_GENRES.map((genre) => genre.id);
   const numbers = SCORE_GENRES.map((genre) => genre.number);
   const labels = SCORE_GENRES.map((genre) => genre.label);
+  const displayLabels = SCORE_GENRES.map((genre) => genre.displayLabel);
   assert.equal(new Set(ids).size, ids.length, "identifiers must be unique");
   assert.equal(new Set(numbers).size, numbers.length, "numbers must be unique");
   assert.equal(new Set(labels).size, labels.length, "labels must be unique");
+  assert.equal(new Set(displayLabels).size, displayLabels.length, "display labels must be unique");
+  assert.ok(SCORE_GENRES.every((genre) => genre.label === genre.label.toUpperCase()));
+  assert.ok(SCORE_GENRES.every((genre) => genre.displayLabel !== genre.label));
   // The default is not required to be first: the library is ordered by where
   // the project is heading, and the default has to be a score that plays.
   assert.ok(
