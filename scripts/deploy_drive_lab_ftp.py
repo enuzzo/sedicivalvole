@@ -426,7 +426,6 @@ def illobo_archive() -> tuple[list[dict[str, object]], bytes]:
             "title": title.strip(),
             "artistName": "Illobo",
             "filename": filename,
-            "imageUrl": f"/artwork/illobo/{filename.removesuffix('.mp3')}.png",
             "durationSeconds": duration,
             "bytes": byte_count,
             "sha256": digest,
