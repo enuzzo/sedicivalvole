@@ -689,9 +689,10 @@ function VisualControl({ environment, onOpen }) {
 function MusicControl({ genreId, selection, onOpen, musicMode, soundtrackSnapshot = null }) {
   if (musicMode === "soundtrack") {
     const current = soundtrackSnapshot?.current;
-    const providerMark = soundtrackSnapshot?.library?.selection?.kind === "featured" ? "LO" : "JM";
+    const featured = soundtrackSnapshot?.library?.selection?.kind === "featured";
+    const providerMark = featured ? "LO" : "JM";
     const stateLabel = current?.title ?? (
-      soundtrackSnapshot?.status === "loading" ? "Loading Jamendo" : "Soundtrack"
+      soundtrackSnapshot?.status === "loading" ? `Loading ${featured ? "Illobo" : "Jamendo"}` : "Soundtrack"
     );
     return (
       <button
@@ -1066,6 +1067,7 @@ function SoundtrackLibraryContent({
 
 function MusicLibraryPanel({
   musicMode,
+  loadingMode,
   genreId,
   snapshot,
   manualEffects,
@@ -1090,6 +1092,12 @@ function MusicLibraryPanel({
         <button type="button" className={musicMode === "play-road" ? "is-active" : ""} aria-pressed={musicMode === "play-road"} onClick={() => onModeChange("play-road")}>PLAY THE ROAD</button>
         <button type="button" className={musicMode === "soundtrack" ? "is-active" : ""} aria-pressed={musicMode === "soundtrack"} onClick={() => onModeChange("soundtrack")}>SOUNDTRACK</button>
       </div>
+      {loadingMode === musicMode ? (
+        <p className="music-mode-loading" role="status" aria-live="polite">
+          <span aria-hidden="true" />
+          Loading {musicMode === "soundtrack" ? "Soundtrack" : "Play the Road"}…
+        </p>
+      ) : null}
       {musicMode === "soundtrack" ? (
         <SoundtrackLibraryContent
           snapshot={snapshot}
@@ -1388,6 +1396,7 @@ export function App() {
   const [environmentPickerOpen, setEnvironmentPickerOpen] = useState(false);
   const [soundtrackPanelOpen, setSoundtrackPanelOpen] = useState(false);
   const [musicMode, setMusicMode] = useState("play-road");
+  const [musicModeLoading, setMusicModeLoading] = useState(null);
   const [soundtrackSnapshot, setSoundtrackSnapshot] = useState(null);
   const [vehicleEffectsEnabled, setVehicleEffectsEnabled] = useState(true);
   const [soundtrackManualEffects, setSoundtrackManualEffects] = useState(EMPTY_SOUNDTRACK_MANUAL_EFFECTS);
@@ -1407,6 +1416,7 @@ export function App() {
   const audioRef = useRef(null);
   const soundtrackRef = useRef(null);
   const sessionMusicModeRef = useRef(null);
+  const musicModeRevisionRef = useRef(0);
   const appRef = useRef(null);
   const watchRef = useRef(null);
   const wakeTimerRef = useRef(null);
@@ -2198,28 +2208,70 @@ export function App() {
 
   const switchMusicMode = useCallback(async (nextMode) => {
     if (!["play-road", "soundtrack"].includes(nextMode)) return;
-    if (nextMode === "soundtrack") {
-      const controller = soundtrackController();
-      const state = controller.getSnapshot();
-      if (!["prepared", "paused", "playing"].includes(state.status)) {
-        await controller.load();
-      }
-      soundtrackRef.current?.setVehicleMaster(vehicleEffectsEnabledRef.current);
-      audioRef.current?.setMuted(true);
-      if (!mutedRef.current) await soundtrackRef.current?.resume();
-    } else {
-      soundtrackRef.current?.pause();
-      const engine = audioRef.current;
-      if (engine) {
+    const revision = ++musicModeRevisionRef.current;
+    const scoreRevision = ++scoreSelectionRevisionRef.current;
+    sessionMusicModeRef.current = nextMode;
+    setMusicMode(nextMode);
+    setMusicModeLoading(nextMode);
+    logDiagnosticEvent("music.mode.changed", { musicMode: nextMode });
+
+    try {
+      if (nextMode === "soundtrack") {
+        audioRef.current?.setMuted(true);
+        soundtrackRef.current?.setVehicleMaster(vehicleEffectsEnabledRef.current);
+        const controller = soundtrackController();
+        const state = controller.getSnapshot();
+        if (!["prepared", "paused", "playing"].includes(state.status)) {
+          await controller.load();
+        }
+        if (revision !== musicModeRevisionRef.current || sessionMusicModeRef.current !== nextMode) return;
+        if (!mutedRef.current) {
+          await controller.resume();
+          if (revision !== musicModeRevisionRef.current || sessionMusicModeRef.current !== nextMode) {
+            controller.pause();
+            return;
+          }
+        }
+      } else {
+        soundtrackRef.current?.pause();
+        const engine = audioRef.current;
+        const requestedScoreId = genreIdRef.current;
+        if (!engine) throw new Error("Audio engine unavailable");
+        setScoreSelection({ status: "loading", requestedScoreId, message: null });
+        engine.setMuted(true);
         await engine.resume();
-        await engine.setScore(genreIdRef.current);
+        if (revision !== musicModeRevisionRef.current || scoreRevision !== scoreSelectionRevisionRef.current) return;
+        const activeScoreId = await engine.setScore(requestedScoreId);
+        if (revision !== musicModeRevisionRef.current || scoreRevision !== scoreSelectionRevisionRef.current) return;
+        const fallback = activeScoreId !== requestedScoreId;
+        setGenreId(activeScoreId);
+        setScoreSelection(fallback ? {
+          status: "restored",
+          requestedScoreId: null,
+          message: `${getScoreGenre(requestedScoreId).label} unavailable · ${getScoreGenre(activeScoreId).label} restored`,
+        } : { status: "ready", requestedScoreId: null, message: null });
         engine.setMuted(mutedRef.current);
         engine.startCue();
       }
+    } catch (error) {
+      if (revision !== musicModeRevisionRef.current || sessionMusicModeRef.current !== nextMode) return;
+      if (nextMode === "play-road") {
+        setScoreSelection({
+          status: "unavailable",
+          requestedScoreId: null,
+          message: String(error?.message || "Music source failed to load").slice(0, 160),
+        });
+      }
+      setMusicModeLoading(null);
+      logDiagnosticEvent("music.mode.load-failed", {
+        musicMode: nextMode,
+        reason: String(error?.message || "unknown").slice(0, 120),
+      });
+      return;
     }
-    sessionMusicModeRef.current = nextMode;
-    setMusicMode(nextMode);
-    logDiagnosticEvent("music.mode.changed", { musicMode: nextMode });
+    if (revision !== musicModeRevisionRef.current || sessionMusicModeRef.current !== nextMode) return;
+    setMusicModeLoading(null);
+    logDiagnosticEvent("music.mode.ready", { musicMode: nextMode });
   }, [logDiagnosticEvent, soundtrackController]);
 
   const playSoundtrackSelection = useCallback(async (selection) => {
@@ -3391,6 +3443,7 @@ export function App() {
       {soundtrackPanelOpen ? (
         <MusicLibraryPanel
           musicMode={musicMode}
+          loadingMode={musicModeLoading}
           genreId={genreId}
           snapshot={soundtrackSnapshot}
           manualEffects={soundtrackManualEffects}

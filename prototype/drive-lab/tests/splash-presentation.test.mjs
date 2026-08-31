@@ -218,8 +218,28 @@ test("the footer keeps a compact right palette and exposes one audio-effects mas
 
 test("the running Soundtrack badge identifies Illobo Featured separately from Jamendo", () => {
   const app = read("App.jsx");
-  assert.match(app, /const providerMark = soundtrackSnapshot\?\.library\?\.selection\?\.kind === "featured" \? "LO" : "JM"/);
+  assert.match(app, /const featured = soundtrackSnapshot\?\.library\?\.selection\?\.kind === "featured"/);
+  assert.match(app, /const providerMark = featured \? "LO" : "JM"/);
+  assert.match(app, /`Loading \$\{featured \? "Illobo" : "Jamendo"\}`/);
   assert.match(app, /control-catalog-number is-provider">\{providerMark\}/);
+});
+
+test("music source tabs switch immediately and ignore stale asynchronous loads", () => {
+  const app = read("App.jsx");
+  const styles = read("styles.css");
+  const switcher = app.slice(
+    app.indexOf("const switchMusicMode = useCallback"),
+    app.indexOf("const playSoundtrackSelection = useCallback"),
+  );
+
+  assert.ok(switcher.indexOf("setMusicMode(nextMode)") < switcher.indexOf("await controller.load()"));
+  assert.ok(switcher.indexOf("setMusicModeLoading(nextMode)") < switcher.indexOf("await controller.load()"));
+  assert.match(switcher, /const revision = \+\+musicModeRevisionRef\.current/);
+  assert.match(switcher, /revision !== musicModeRevisionRef\.current \|\| sessionMusicModeRef\.current !== nextMode/);
+  assert.match(switcher, /scoreRevision !== scoreSelectionRevisionRef\.current/);
+  assert.match(app, /Loading \{musicMode === "soundtrack" \? "Soundtrack" : "Play the Road"\}…/);
+  assert.match(styles, /\.music-mode-loading \{/);
+  assert.match(styles, /@media \(prefers-reduced-motion: reduce\) \{[\s\S]*?\.music-mode-loading span \{ animation: none; \}/);
 });
 
 test("catalog names use readable display labels and align their numbers on one baseline", () => {
