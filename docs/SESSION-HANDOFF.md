@@ -121,6 +121,13 @@ asserted.
 
 ## Immediate work
 
+Current clean checkpoint: `main` aligned with `origin/main` at documentation
+commit `268c787`; implemented Music drawer commit `61f356d`; canonical live
+build `20260831-0853`. Its guarded 108-file no-delete deployment, byte identity,
+live Jamendo pace/genre endpoints, and cache-busted `773 × 601` Browser QA pass.
+The Illobo mark is explicitly provisional until the owner supplies the final
+logo.
+
 1. Run the physical-Tesla SOUNDTRACK checklist in
    [`MILESTONE-CHECKLIST-2026-08-31.md`](MILESTONE-CHECKLIST-2026-08-31.md).
 2. Resume ATLAS at the exactly-three overlay-direction gate, then connect the

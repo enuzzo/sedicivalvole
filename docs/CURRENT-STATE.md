@@ -173,8 +173,9 @@ dated study documents.
   quiet-gray direct controls, short vermilion state rails, and one black START
   field. `MUSIC` and `VISUAL` keep concise descriptions; START remains disabled
   until both axes are selected, and MUTE still requires a Visual. SOUNDTRACK
-  prepares three transient eligible Jamendo roles before START can unlock, and
-  the Illobo featured treatment remains reserved for its later library. At exact
+  prepares three transient eligible Jamendo roles before START can unlock. The
+  running Music drawer now presents compact equal-weight **Illobo Featured** and
+  **Jamendo Library** paths, with the final Illobo logo still pending. At exact
   `773 × 601`, the complete Music and Visual button grids share the same
   `342 px` height, top, and bottom. The `72 px` header, shared compact padding,
   `8 px` grid spacing, and `3 px` title/description gap reserve room without
