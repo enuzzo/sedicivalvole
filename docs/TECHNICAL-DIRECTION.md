@@ -371,10 +371,15 @@ compaction. On high-density displays, only the map framebuffer is capped at
 disabled and obsolete zoom-tile requests are cancelled. The cap is a measured
 response to repeated `23 FPS` real-Tesla ATLAS evidence and still requires a new
 target report to prove the deliberate `30 FPS` ceiling.
-A3b reads a bounded label only from the map's already rendered transportation
-features and never introduces reverse geocoding; A4 partitions normalized
-heading into eight deterministic English cardinal sectors. Both are pure model
-contracts until the shared overlay placement is selected.
+A3b reads a bounded label only from the map's already rendered
+`transportation_name` features and never introduces reverse geocoding; A4
+partitions normalized heading into eight deterministic English cardinal
+sectors. The selected Navigator Plaque wires both contracts into one compact
+overlay beside exact degrees and the official filled Tabler navigation icon.
+Its display heading is continuously unwrapped before the CSS transition so a
+`358° → 2°` update advances to `362°` instead of spinning backwards. A
+zero-opacity rendered line probe keeps road lookup inside the existing vector
+tile pipeline without adding visible map geometry or a network service.
 The selected map necessarily requests the surrounding tile area from
 OpenFreeMap; a `0.05°`-quantized cell is sent to the Italian Wikipedia Geosearch
 API only when the cell changes. The same response supplies each page's concise

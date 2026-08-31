@@ -8,6 +8,38 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## ATLAS Navigator Plaque — 2026-08-31 17:01
+
+- build stamp: **`20260831-1653`**; deployed source checkpoint:
+  **`79d9c9b`**;
+- interface change: **PASS**. The selected Navigator Plaque combines a filled
+  dynamic direction arrow, English cardinal, exact degrees and a road name
+  taken only from already rendered `transportation_name` vector data. It
+  replaces the separate MapLibre compass, unwraps heading continuously across
+  north, leaves the accepted route/point behavior unchanged and adds no reverse
+  geocoding;
+- tests/build: **PASS**. The complete `493/493` suite, 146-module App,
+  70-module LAB and Sites packaging pass;
+- protected publication: **PASS**. Read-only preflight and postflight both
+  passed with eight root entries and `remote_writes=NONE`; publication used
+  `--preserve-existing`. The publication process returned no retained transfer
+  summary to this session, so no file-count claim is invented;
+- canonical HTTP identity: **PASS**. Cache-busted HTML
+  SHA-256 `1fcd33ade91b41aec1929e852d4e487407934fe8f00e5eb242fc5fa209203825`,
+  JavaScript `assets/index-DT8ziHEU.js` SHA-256
+  `e07c48da54658768e4c09553496d2cf8c3e0dd21084a89fd835464cefce26316`,
+  CSS `assets/index-DWieer5Q.css` SHA-256
+  `0ff677d0cdf1d87665bd0b03254abb509992dba727b85b782a719fd846581ea3`
+  and `third-party/tabler-icons/navigation-filled.svg` SHA-256
+  `47ec73f7e51d5f0fc128753b7a9d33f75bf21ee65660feab7269c5f8e5c9ce1`
+  are byte-identical local/live. Root HTML returns `200`, no-store/no-cache and
+  `nosniff`;
+- exact live Browser QA: **PASS at `773 × 601`**. The canonical splash reports
+  build `20260831-1653`; ATLAS demo resolves `Corso di Porta Romana`, changes
+  the plaque from `SE 135°` to `S 184°` while the filled arrow rotates, and
+  retains exact `773 × 601` document bounds. No live-origin warning or error
+  was observed. Physical-Tesla acceptance remains `R9-01`–`R9-02`.
+
 ## Global MUTE / FX control parity — 2026-08-31 15:38
 
 - build stamp: **`20260831-1534`**; deployed source checkpoint:

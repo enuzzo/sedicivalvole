@@ -118,6 +118,13 @@ gesture for six idle seconds before easing back to the latest automatic
 position and camera. Product chrome is pointer-transparent
 only over the map surface; the GPS recovery, telemetry and low control planes
 remain interactive.
+The compact upper-left Navigator Plaque replaces the separate MapLibre compass.
+It presents one filled direction arrow, an English eight-sector cardinal,
+rounded degrees and, when the rendered vector data names the local road, that
+road name. Arrow rotation follows a continuously unwrapped heading so a north
+crossing takes the short visual path. The road is sampled from an invisible
+rendered `transportation_name` probe layer; no reverse-geocoding endpoint,
+coordinate persistence or diagnostic field is introduced.
 
 `DRIVEY 05` embeds the actual Rezmason Drivey road, level, traffic, camera and
 rendering runtime pinned at commit
@@ -262,7 +269,7 @@ acceptance in the vehicle.
 | Open packs | strategic goal | schema and licensing not frozen |
 | Offline audio core | implemented prototype | identical score DSP renders and analyses WAV references in Node |
 | Offline application cache | planned after capability test | browser persistence unknown |
-| ATLAS OpenFreeMap flight | implemented prototype | ephemeral GPS or explicit Milan demo; nearby Wikipedia and QR; a bounded high-cadence position feed plus point interpolation, rendered-tile road-name extraction and English cardinal-sector models exist, while visible point/badge/compass wiring remains gated; Tesla network/memory acceptance pending |
+| ATLAS OpenFreeMap flight | implemented prototype | ephemeral GPS or explicit Milan demo; nearby Wikipedia and QR; bounded high-cadence position interpolation; complete-view route plus pulsing endpoint; selected Navigator Plaque with tile-local road name, English cardinal, degrees and continuously rotating filled arrow; no reverse geocoding; Tesla network, motion and legibility acceptance pending |
 | LIGHT/DARK/AUTO interface appearance | model foundation | independent versioned preference/reset, safe storage failure, browser-scheme priority, offline solar phase, twilight/interaction hold; visible control, DARK tokens and product application remain gated |
 | Network activity notice | model foundation | raw REPORT state separates browser hints from instrumented app activity/failure/recovery and active download/upload direction; quiet navbar presentation remains gated |
 | SOUNDTRACK fixed recordings | production prototype | server-side Jamendo catalogue and exact-ID no-store audio relays; fail-closed effect-compatible non-ND admission; three transient previous/current/next browser media elements; authored `1×` playback with no driving-derived selection or retiming; App/LAB playback and audio-clock attribution card; global footer FX for OPEN/UNDERWATER/BLOOM plus manual flanger, reverb, chorus, and beat repeat. The Music drawer switches between Play the Road and Soundtrack, gives equal hierarchy to a compact rotating Illobo Featured playlist and Jamendo Library, previews real covers, starts immediately from pace/genre/exact-track gestures, and refreshes ordering every 30 minutes; pace remains editorial metadata, never vehicle automation. Manual changes use the nominal `450 ms` equal-power model through normal skips and rapid retargeting, keep every genuinely audible credit visible, preserve a strict three-element bound, and expose a compact QR for the current public track page without exposing its stream URL. Canonical publication, target-vehicle tuning, and physical listening remain pending; persistent/offline audio is prohibited. |

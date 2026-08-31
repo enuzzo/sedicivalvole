@@ -8,7 +8,7 @@ behavior.
 
 Do not begin the run until the final canonical build stamp is recorded below.
 
-- **Final test build:** `20260831-1534` · source `c0a2f78` · Illobo/title implementation `05a754b` · cover correction `6218f98` · Featured correction `1171157` · transition correction `dcb6801`
+- **Final test build:** `20260831-1653` · source `79d9c9b` · Illobo/title implementation `05a754b` · cover correction `6218f98` · Featured correction `1171157` · transition correction `dcb6801` · MUTE/FX parity `c0a2f78`
 - **Target viewport:** Tesla split view, nominal CSS `773 × 601`
 - **Result states:** `PASS`, `FAIL`, `NOT RUN`, `BLOCKED`
 - **Safety:** a passenger operates controls and records evidence; the driver
@@ -70,8 +70,15 @@ cannot substitute for the audible physical-cabin verdict.
 
 | ID | Status | Test | PASS condition | Linked work |
 |---|---|---|---|---|
-| `R8-01` | NOT RUN | On build `20260831-1534`, open Music → Soundtrack and watch the Illobo Featured cover for at least ten seconds. | A clearly white-on-black solid state dissolves into the original black-on-graphite outline state and back. Each full dissolve takes about four seconds, continues without a static hold, and has no flicker, clipped outer line, rounded corner, border, or layout movement. | Milestone row 8 · base `05a754b`; perceptual correction `6218f98`. |
+| `R8-01` | NOT RUN | On the final build recorded above, open Music → Soundtrack and watch the Illobo Featured cover for at least ten seconds. | A clearly white-on-black solid state dissolves into the original black-on-graphite outline state and back. Each full dissolve takes about four seconds, continues without a static hold, and has no flicker, clipped outer line, rounded corner, border, or layout movement. | Milestone row 8 · base `05a754b`; perceptual correction `6218f98`. |
 | `R8-02` | NOT RUN | Start one Soundtrack recording, inspect Tesla's browser-labelled mini-player, then pause it. | During play it shows `16 - Artist - Track title`; pausing restores the normal sedicivalvole page title. Audio, QR, and in-drawer credit remain on the same track. | Milestone row 8 · `05a754b`; Tesla browser behavior is the acceptance gate. |
+
+## ATLAS Navigator Plaque — milestone row 9
+
+| ID | Status | Test | PASS condition | Linked work |
+|---|---|---|---|---|
+| `R9-01` | NOT RUN | Drive with ATLAS through several real changes of direction, including one crossing of north if the route permits. | The filled arrow points in the actual travel direction and moves smoothly; cardinal and degrees agree with it; crossing north takes the short rotation without a near-full spin; the road name follows the current named road and disappears rather than inventing copy when rendered data has no name. | Selected Navigator Plaque, continuous heading unwrapping, eight English cardinal sectors and rendered `transportation_name` lookup in `79d9c9b`. |
+| `R9-02` | NOT RUN | From the passenger seat, observe the plaque with the side panel open and collapsed, then pan, rotate, tilt and zoom the map. | Arrow, cardinal, degrees and available road name remain legible and subordinate at a glance; the plaque neither blocks map gestures nor moves with the passenger panel; map interaction, attribution, route and pulsing point remain intact. | Milestone row 9 exact-viewport layout and interaction boundary in build `20260831-1653`. |
 
 ## Evening closeout
 

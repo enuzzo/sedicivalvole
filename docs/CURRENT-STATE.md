@@ -80,8 +80,10 @@ dated study documents.
   range. ATLAS passes map hits through the otherwise transparent
   product chrome while keeping its real controls and GPS popup interactive.
   After six idle seconds it eases to the current automatic point, bearing,
-  pitch and zoom. A MapLibre
-  compass shows heading. A bright route retains the complete current ATLAS-view
+  pitch and zoom. The separate MapLibre compass is replaced by the selected
+  compact Navigator Plaque: a filled arrow rotates continuously with heading,
+  while an English cardinal, rounded degrees and the local rendered-tile road
+  name share one readable surface. A bright route retains the complete current ATLAS-view
   trip and remains legible while zooming out; a `4096`-point ceiling compacts
   older detail instead of deleting the trip origin. One interpolated point at
   the route head pulses once per second with a restrained expanding ripple. The `246 px` passenger panel
@@ -95,10 +97,12 @@ dated study documents.
   map/camera update is immediate and later ones remain throttled to `2500 ms`.
   The buffer now drives the MapLibre point source at frame cadence without
   routing coordinates through React state or diagnostics.
-  Model-only A3b/A4 helpers also derive a bounded local road name strictly from
-  already rendered transportation features and map headings to eight English
-  cardinal sectors. They make no reverse-geocoding request and remain unwired
-  until road-badge and compass placement are selected.
+  A3b/A4 helpers derive a bounded local road name strictly from the already
+  rendered `transportation_name` layer and map headings to eight English
+  cardinal sectors. They now drive the selected Navigator Plaque with exact
+  degree copy and short-path continuous arrow rotation. They make no
+  reverse-geocoding request and add no coordinate persistence or diagnostic
+  field.
   The received build-`20260831-0853` real-drive report measures ATLAS/JUNCTION
   at `23.15 FPS` average and `51.7 ms` p95 for `248.2 s`, while Drivey and
   Vertigo remain near 60 FPS. The local correction caps only MapLibre at
@@ -384,7 +388,7 @@ dated study documents.
   that incoming media playback must be requested before awaiting effects/worklet
   readiness so Chromium retains the transport gesture's transient activation;
   checkpoint `dcb6801` enforces and tests that ordering. Build `20260831-1241`
-  first published that correction; current build `20260831-1534` retains it,
+  first published that correction; current build `20260831-1653` retains it,
   adds the final Illobo identity plus Tesla-facing playback title, and separates
   the explicit Featured launch from the default Library queue. Physical-Tesla listening of crossfade, buffering, touch, QR,
   transport, licence and effects behavior remain open; no offline-duration promise is made. See
@@ -445,20 +449,23 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The canonical live product is version `0.0.0`, source commit `c0a2f78`, build
-  `20260831-1534`, with Illobo/title implementation `05a754b`, cover correction
-  `6218f98`, Featured-launch correction `1171157`, and transition
-  correction `dcb6801`. Its guarded 109-file publication,
-  read-only pre/postflight and HTML/JavaScript/CSS/two-SVG byte identity pass.
+- The canonical live product is version `0.0.0`, source commit `79d9c9b`, build
+  `20260831-1653`, retaining MUTE/FX parity `c0a2f78`, Illobo/title
+  implementation `05a754b`, cover correction `6218f98`, Featured-launch
+  correction `1171157`, and transition correction `dcb6801`. Its guarded
+  publication, read-only pre/postflight and HTML/JavaScript/CSS/Tabler-SVG byte
+  identity pass.
   Prior exact live `773 × 601` Browser QA verifies the unchanged white-on-black
   solid and black-on-graphite outline endpoints, play/pause title behavior and
   zero warning/error. Current exact local Browser QA verifies the new Library →
   Featured interaction, synchronized track/title and zero horizontal overflow;
   current live audio interaction remains a Tesla gate because Browser control
   could not complete the direct `.php` catalogue request.
-  The complete `491/491` suite plus 146-module App / 70-module LAB / Sites build
-  pass, while physical-cabin checks remain `R4-06`, `R7-01`–`R7-07` and
-  `R8-01`–`R8-02`, plus the corrected explicit Featured launch in `R7-07`. Exact
+  Exact live ATLAS QA also proves the dynamic Navigator Plaque, local road copy,
+  zero overflow and no live-origin warning/error.
+  The complete `493/493` suite plus 146-module App / 70-module LAB / Sites build
+  pass, while physical-cabin checks remain `R4-06`, `R7-01`–`R7-07`,
+  `R8-01`–`R8-02` and `R9-01`–`R9-02`. Exact
   progressive evidence is in [`DEPLOY.md`](DEPLOY.md).
 - Diagnostic telemetry contains no coordinates and is sent only after the
   explicit `SEND DIAGNOSTIC` action. ATLAS location is a separate ephemeral
@@ -467,13 +474,14 @@ dated study documents.
 
 ## Open work
 
-1. Execute Tesla tests `R4-06`, `R7-01`–`R7-07` and `R8-01`–`R8-02` on live build `20260831-1534` from
+1. Execute Tesla tests `R4-06`, `R7-01`–`R7-07`, `R8-01`–`R8-02` and
+   `R9-01`–`R9-02` on live build `20260831-1653` from
    [`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md), including
    the live audio transport evidence that the available office Browser-control
    surfaces could not collect.
 2. Validate the complete ATLAS route, pulsing vehicle point, three-state GPS
-   control, measured 30 FPS ATLAS cadence and corrected NIGHTSHIFT level in the
-   Tesla after publication.
+   control, Navigator Plaque heading/road behavior, measured 30 FPS ATLAS
+   cadence and corrected NIGHTSHIFT level in the Tesla after publication.
 3. Validate DRIVEY automatic road/curve following, ten-second zero hold,
    zero-to-motion resume, opposing-only traffic and both native palette channels
    in the Tesla. Validate ATLAS multitouch, live GPS
