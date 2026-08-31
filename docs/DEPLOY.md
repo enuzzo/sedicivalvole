@@ -8,6 +8,50 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Global FX Deck — 2026-08-31 20:22
+
+- build stamp: **`20260831-2005`**; deployed product checkpoint:
+  **`0993e92`**; deployment-guard checkpoint: **`c9189c2`**;
+- behavior: **PASS**. Footer `MIX` opens the selected compact non-modal FX Deck
+  above the running visual. Flanger, Reverb, Chorus, and Echo have large strong
+  tap states at `78 / 72 / 80 / 74`, independent depth sliders, one reset, and
+  one persistent shared state across Play the Road and Soundtrack. The Music
+  drawer contains no buried duplicate controls;
+- audio graph: **PASS in code/tests and real-program measurement**. The four
+  effects share one post-source Web Audio graph and final limiter. Stronger
+  modulated-delay paths, normalized filtered convolution, and dark filtered
+  echo feedback satisfy tested wet/modulation/feedback floors. Offline real
+  Illobo/Jamendo approximations contain plainly measurable changed signal;
+  target-Tesla listening remains the final audibility and musicality gate;
+- deployment gate: **PASS after fail-closed correction**. The first preflight
+  stopped on the retired `soundtrack-repeat-processor.js`. Historical
+  reconstruction proved exact SHA-256
+  `4394837a3bebf6e065cd1dabc6b43e73f302bbead98bf43af830f9df15620aad`;
+  the guard now admits only that retired cache-overlap payload. The new build
+  neither packages nor uploads it, and no runtime references it;
+- tests/build: **PASS**. Complete `517/517`, focused deployment `17/17`,
+  147-module App, 71-module LAB, and Sites packaging pass;
+- publication: **PASS**. Read-only preflight and postflight both report eight
+  root entries and `remote_writes=NONE`. Protected publication uploaded 138
+  files / 212,292,932 bytes, retained two previous fingerprinted assets and
+  fully reverified all 29 Illobo recordings;
+- canonical identity: **PASS**. Root HTML references
+  `assets/index-DwZQZ7TE.js` and `assets/index-q8WX2e-G.css`. Local/live
+  SHA-256 is `6a53a42b2ff9bdf19a5f39fa2011ed308f6514f3fc32d981c2f3f677e7862039`
+  for HTML, `694a29c4cf415d611d1dd671ea0c0426b7fb9c1a0ce3a2abb3915a1be7def6e4`
+  for JavaScript, and
+  `c7923123fdf829c83a616e3858c3aa9d14ec9c9ef1d5d006fafa4299da946d53`
+  for CSS. The response is `200`, `no-store/no-cache`, and `nosniff`;
+- exact live Browser QA: **PASS at `773 × 601`**. The deck measures
+  `720 × 158 px`, sits `12 px` above the 64 px footer, and has zero document
+  overflow. All four pads reach their authored values, the active count reaches
+  `4/4`, the Music drawer contains no manual controls, and the four values
+  persist after switching to Soundtrack. Reset returns `0/4`; no live
+  warning/error was observed;
+- remaining acceptance: run `R4-04` and the expanded `R7-06` in the Tesla for
+  each adaptive score, Illobo, and Jamendo. Office proof does not establish
+  cabin audibility, musical balance, absence of clipping, or alert masking.
+
 ## Reversible Soundtrack path selection — 2026-08-31 19:11
 
 - build stamp: **`20260831-1911`**; deployed source checkpoint:

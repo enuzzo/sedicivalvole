@@ -404,7 +404,7 @@ dated study documents.
   the same immediate pending identity inside the Soundtrack path chooser,
   makes Jamendo and Illobo complete reversible controls, and preserves
   Jamendo-owned cover previews across Illobo playback. Current build
-  `20260831-1911` separates the
+  `20260831-2005` separates the
   true Illobo catalogue from Jamendo, publishes and verifies all 29
   owner-authorized recordings, retains the final Illobo identity plus
   Tesla-facing playback title, and makes every explicit Featured press start
@@ -469,8 +469,10 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The canonical live product is version `0.0.0`, source commit `0660d71`, build
-  `20260831-1911`, retaining reversible Soundtrack paths `0660d71`, immediate Music switching `137ddeb`, transport
+- The canonical live product is version `0.0.0`, source commit `0993e92`, build
+  `20260831-2005`, retaining global audio routing and the two-stage perceptual
+  UNDERWATER repair `8c53e8d`, the selected global FX Deck `0993e92`,
+  reversible Soundtrack paths `0660d71`, immediate Music switching `137ddeb`, transport
   hardening `57fed11`, Illobo provider identity `2c0f5f8`, ATLAS Navigator
   `79d9c9b`, MUTE/FX parity `c0a2f78`, Illobo/title
   implementation `05a754b`, cover correction `6218f98`, Featured-launch
@@ -494,7 +496,12 @@ dated study documents.
   return `206 audio/mpeg`. Audible cabin behavior remains a Tesla gate.
   Exact live ATLAS QA also proves the dynamic Navigator Plaque, local road copy,
   zero overflow and no live-origin warning/error.
-  The complete `512/512` suite plus 146-module App / 70-module LAB / Sites build
+  Current exact live `773 × 601` QA proves the `720 × 158 px` FX Deck and its
+  `12 px` footer gap, four strong tap states, reset, no duplicate Music-drawer
+  controls, and state persistence into Soundtrack with zero overflow or live
+  warning/error. Protected publication reverified all 29 Illobo masters and the
+  retired repeat worklet is admitted for cache overlap only by exact hash.
+  The complete `517/517` suite plus 147-module App / 71-module LAB / Sites build
   pass, while physical-cabin checks remain `R4-01`–`R4-06`, `R7-01`–`R7-07`,
   `R8-01`–`R8-02` and `R9-01`–`R9-02`. Exact
   progressive evidence is in [`DEPLOY.md`](DEPLOY.md).
@@ -506,7 +513,7 @@ dated study documents.
 ## Open work
 
 1. Execute Tesla tests `R4-01`–`R4-06`, `R7-01`–`R7-07`, `R8-01`–`R8-02` and
-   `R9-01`–`R9-02` on live build `20260831-1911` from
+   `R9-01`–`R9-02` on live build `20260831-2005` from
    [`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md), including
    the live audio transport evidence that the available office Browser-control
    surfaces could not collect.
