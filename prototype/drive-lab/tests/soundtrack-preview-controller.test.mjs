@@ -176,6 +176,52 @@ test("audible skips schedule the 450 ms model and keep rapid-retarget credits sy
   assert.deepEqual(settled.media.audibleKeys, [firstKey]);
 });
 
+test("an incoming deck starts before asynchronous effects readiness can consume user activation", async () => {
+  const events = [];
+  let resumeCalls = 0;
+  let releaseTransitionResume;
+  const transitionResume = new Promise((resolve) => { releaseTransitionResume = resolve; });
+  class OrderedMedia extends FakeMedia {
+    async play() {
+      events.push(`play:${this.src}`);
+      return super.play();
+    }
+  }
+  const effects = {
+    attachMedia: () => {},
+    detachMedia: () => {},
+    getClockTime: () => 10,
+    setImmediateTrackGains: () => ({ ok: true, mode: "test" }),
+    applyTransition: () => ({ ok: true, mode: "test" }),
+    resume() {
+      resumeCalls += 1;
+      events.push(`resume:${resumeCalls}`);
+      return resumeCalls === 1 ? Promise.resolve() : transitionResume;
+    },
+    setVehicleMaster: () => {},
+    setVehicleMacros: () => {},
+    setManualEffects: () => {},
+    getSnapshot: () => ({ status: "running" }),
+    getLevel: () => 0,
+    destroy: () => {},
+  };
+  const controller = createSoundtrackPreviewController({
+    fetchImpl: catalogFetch,
+    mediaFactory: () => new OrderedMedia(),
+    effectsFactory: () => effects,
+  });
+  await controller.load();
+  await controller.resume();
+  events.length = 0;
+
+  const moving = controller.move("next");
+  assert.equal(events.filter((event) => event.startsWith("play:")).length, 2);
+  assert.equal(events.at(-1), "resume:2");
+  releaseTransitionResume();
+
+  assert.equal((await moving).status, "playing");
+});
+
 test("a failed incoming deck never commits target metadata or a stale QR credit", async () => {
   const mediaByKey = new Map();
   const controller = createSoundtrackPreviewController({

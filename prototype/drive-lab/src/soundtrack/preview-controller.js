@@ -186,7 +186,6 @@ export function createSoundtrackPreviewController({
 
   const transitionToQueue = async (nextQueueState, revision) => {
     clearTransitionTimers();
-    await effects.resume();
     if (destroyed || revision !== requestRevision) return snapshot();
     const previousQueueState = queueState;
     const targetKey = nextQueueState?.slots?.current?.key;
@@ -207,7 +206,12 @@ export function createSoundtrackPreviewController({
       audibleKeys: retainedKeys,
     });
     effects.setImmediateTrackGains?.(prepared.state.fromGains);
-    const started = await deck.playKeys(retainedKeys);
+    // Start every newly audible media element while the transport click still
+    // owns transient user activation. Awaiting AudioContext/worklet readiness
+    // first can make Chromium reject the incoming deck as autoplay.
+    const playRequest = deck.playKeys(retainedKeys);
+    const resumeRequest = effects.resume();
+    const [started] = await Promise.all([playRequest, resumeRequest]);
     if (destroyed || revision !== requestRevision) return snapshot();
     if (!started.ok) {
       const previousKey = previousQueueState?.slots?.current?.key;
