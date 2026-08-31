@@ -26,6 +26,7 @@ const isHttpsUrl = (value) => {
 
 export function isAdmittedSoundtrackPolicy(policy) {
   const item = policy?.item;
+  const directGrant = policy?.licence?.code === "direct-grant";
   return Boolean(
     policy?.admitted === true
     && policy.capabilities?.inAppSelection === SOURCE_CAPABILITY.ALLOW
@@ -39,7 +40,7 @@ export function isAdmittedSoundtrackPolicy(policy) {
     && asText(policy.providerCredit)
     && policy.directBacklinkRequired === true
     && asText(policy.licence?.label)
-    && isHttpsUrl(policy.licence?.url),
+    && (directGrant || isHttpsUrl(policy.licence?.url)),
   );
 }
 

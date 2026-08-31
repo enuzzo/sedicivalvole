@@ -155,6 +155,52 @@ export function evaluateJamendoTrack(track) {
   });
 }
 
+const ILLOBO_FILE_NAME = /^[a-z0-9]+(?:-[a-z0-9]+)*\.mp3$/;
+const ILLOBO_SHARE_URL = "https://soundcloud.com/illobo";
+const ILLOBO_STREAM_ORIGIN = "https://sedicivalvole.app";
+
+export function evaluateIlloboTrack(track) {
+  if (!track || typeof track !== "object" || Array.isArray(track)) {
+    return unknownPolicy("invalid-track");
+  }
+  const id = asText(track.id);
+  const title = asText(track.title);
+  const filename = asText(track.filename);
+  if (!id || !title || !ILLOBO_FILE_NAME.test(filename)) {
+    return unknownPolicy("missing-credit-metadata");
+  }
+
+  const grant = directGrantPolicy({
+    source: "illobo",
+    evidenceRef: "PIANO.md#illobo-owner-authorization",
+    capabilities: {
+      inAppSelection: SOURCE_CAPABILITY.ALLOW,
+      sourceStreaming: SOURCE_CAPABILITY.ALLOW,
+      audioEffects: SOURCE_CAPABILITY.ALLOW,
+      hostedCopy: SOURCE_CAPABILITY.ALLOW,
+    },
+  });
+  const encodedFilename = encodeURIComponent(filename);
+  return Object.freeze({
+    ...grant,
+    providerCredit: "Illobo · artist-authorized recording",
+    directBacklinkRequired: true,
+    item: Object.freeze({
+      id,
+      title,
+      artistId: "illobo",
+      artistName: "Illobo",
+      albumName: "Signal Border",
+      streamUrl: `${ILLOBO_STREAM_ORIGIN}/audio/illobo/${encodedFilename}`,
+      playbackUrl: `/audio/illobo/${encodedFilename}`,
+      shareUrl: ILLOBO_SHARE_URL,
+      imageUrl: null,
+      pace: null,
+      genres: Object.freeze([]),
+    }),
+  });
+}
+
 export function directGrantPolicy({ source, evidenceRef, capabilities } = {}) {
   const normalizedSource = asText(source);
   const normalizedEvidence = asText(evidenceRef);

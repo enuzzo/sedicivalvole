@@ -5,6 +5,7 @@ import {
   allowsSoundtrackEffects,
   creativeCommonsPolicy,
   directGrantPolicy,
+  evaluateIlloboTrack,
   evaluateJamendoTrack,
 } from "../src/soundtrack/source-policy.js";
 
@@ -118,4 +119,25 @@ test("direct grants require an explicit decision for every capability", () => {
   assert.equal(complete.admitted, true);
   assert.equal(allowsSoundtrackEffects(complete), true);
   assert.equal(complete.licence.code, "direct-grant");
+});
+
+test("Illobo web masters are admitted only through the complete owner grant", () => {
+  const policy = evaluateIlloboTrack({
+    id: "floating-stars",
+    title: "Floating Stars",
+    filename: "floating-stars.mp3",
+  });
+  assert.equal(policy.admitted, true);
+  assert.equal(policy.source, "illobo");
+  assert.equal(policy.item.artistName, "Illobo");
+  assert.equal(policy.item.playbackUrl, "/audio/illobo/floating-stars.mp3");
+  assert.equal(policy.item.shareUrl, "https://soundcloud.com/illobo");
+  assert.equal(policy.capabilities.hostedCopy, SOURCE_CAPABILITY.ALLOW);
+  assert.equal(allowsSoundtrackEffects(policy), true);
+
+  assert.equal(evaluateIlloboTrack({
+    id: "unsafe",
+    title: "Unsafe",
+    filename: "../unsafe.mp3",
+  }).admitted, false);
 });

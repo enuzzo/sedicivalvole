@@ -908,6 +908,7 @@ function SoundtrackLibraryContent({
   const library = snapshot?.library;
   const entries = library?.entries ?? [];
   const selected = library?.selection;
+  const featuredSelected = selected?.kind === "featured";
   const attributionItems = snapshot?.attribution
     ? [snapshot.attribution.primary, ...(snapshot.attribution.secondary ?? [])].filter(Boolean)
     : [];
@@ -961,15 +962,15 @@ function SoundtrackLibraryContent({
         </section>
       </div>
 
-      <section className="jamendo-library" aria-labelledby="jamendo-library-title">
+      <section className="jamendo-library" aria-labelledby="soundtrack-library-title">
         <div className="music-library-section-heading">
-          <div><small>JAMENDO LIBRARY</small><h3 id="jamendo-library-title">Browse and play</h3></div>
+          <div><small>{featuredSelected ? "ILLOBO FEATURED" : "JAMENDO LIBRARY"}</small><h3 id="soundtrack-library-title">{featuredSelected ? "Signal Border playlist" : "Browse and play"}</h3></div>
           <div className="soundtrack-library-status">
             <span>AUTHORED PLAYBACK · 1×</span>
             <strong>{library?.refreshCopy ?? "Fresh mix · changes every 30 min"}</strong>
           </div>
         </div>
-        <div className="soundtrack-filter-group">
+        {!featuredSelected ? <div className="soundtrack-filter-group">
           <span>BY PACE</span>
           <div className="soundtrack-filter-row">
             {SOUNDTRACK_PACE_OPTIONS.map((pace) => (
@@ -979,8 +980,8 @@ function SoundtrackLibraryContent({
               </div>
             ))}
           </div>
-        </div>
-        <div className="soundtrack-filter-group">
+        </div> : null}
+        {!featuredSelected ? <div className="soundtrack-filter-group">
           <span>BY GENRE</span>
           <div className="soundtrack-filter-row is-genres">
             {SOUNDTRACK_GENRE_OPTIONS.map((genre) => (
@@ -990,7 +991,7 @@ function SoundtrackLibraryContent({
               </div>
             ))}
           </div>
-        </div>
+        </div> : null}
         <div className="soundtrack-track-list" aria-live="polite">
           {entries.slice(0, 6).map((entry) => (
             <button key={entry.key} type="button" className={entry.key === current?.key ? "is-current" : ""} onClick={() => onTrack(entry.key)}>
@@ -999,15 +1000,15 @@ function SoundtrackLibraryContent({
               <em>{entry.key === current?.key && playing ? "PLAYING" : "PLAY"}</em>
             </button>
           ))}
-          {!entries.length ? <p>{loading ? "Loading a fresh Jamendo mix…" : "No eligible tracks in this selection."}</p> : null}
+          {!entries.length ? <p>{loading ? `Loading ${featuredSelected ? "Illobo" : "a fresh Jamendo mix"}…` : "No eligible tracks in this selection."}</p> : null}
         </div>
       </section>
 
       <section className="soundtrack-now-playing" aria-live="polite">
-        {current?.imageUrl ? <img src={current.imageUrl} alt="" width="80" height="80" /> : <span className="soundtrack-artwork-placeholder">JM</span>}
+        {current?.imageUrl ? <img src={current.imageUrl} alt="" width="80" height="80" /> : <span className="soundtrack-artwork-placeholder">{featuredSelected ? "LO" : "JM"}</span>}
         <div>
           <small>NOW PLAYING</small>
-          <strong>{current?.title ?? "Preparing Jamendo catalog"}</strong>
+          <strong>{current?.title ?? `Preparing ${featuredSelected ? "Illobo playlist" : "Jamendo catalog"}`}</strong>
           <span>{current?.artistName ?? snapshot?.status ?? "idle"}</span>
           <span>{snapshot?.attribution?.transitioning ? "EQUAL-POWER TRANSITION · 450 MS" : "AUTHORED RECORDING · 1×"}</span>
         </div>
@@ -1027,14 +1028,14 @@ function SoundtrackLibraryContent({
                 <span>{item.isTarget ? "CURRENT" : "FADING"}</span>
                 <strong>{item.credit.title} — {item.credit.artistName}</strong>
                 <a href={item.credit.directContentUrl} target="_blank" rel="noreferrer">{item.credit.providerCredit} ↗</a>
-                <a href={item.credit.licence.url} target="_blank" rel="noreferrer">{item.credit.licence.label} ↗</a>
+                {item.credit.licence.url ? <a href={item.credit.licence.url} target="_blank" rel="noreferrer">{item.credit.licence.label} ↗</a> : <span>{item.credit.licence.label}</span>}
               </div>
             )) : (
               <div className="is-target">
                 <span>CURRENT</span>
                 <strong>{current.title} — {current.artistName}</strong>
                 <a href={current.shareUrl} target="_blank" rel="noreferrer">{current.providerCredit} ↗</a>
-                <a href={current.licenceUrl} target="_blank" rel="noreferrer">{current.licenceLabel} ↗</a>
+                {current.licenceUrl ? <a href={current.licenceUrl} target="_blank" rel="noreferrer">{current.licenceLabel} ↗</a> : <span>{current.licenceLabel}</span>}
               </div>
             )}
           </div>
@@ -1057,7 +1058,7 @@ function SoundtrackLibraryContent({
           ))}
         </section>
       </details>
-      <p className="privacy-note">Three browser-owned media elements keep previous, current, and next ready. Audio is never stored persistently or offered offline.</p>
+      <p className="privacy-note">Three browser-owned media elements keep previous, current, and next ready. Playback streams from the selected source; no offline copy is retained.</p>
     </div>
   );
 }

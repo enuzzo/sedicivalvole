@@ -72,6 +72,8 @@ export function createSoundtrackPreviewController({
     return catalogResult?.catalog?.status === "fresh"
       && Number.isFinite(catalogResult.catalog.expiresAtMs)
       && nowMs < catalogResult.catalog.expiresAtMs
+      && (currentSelection?.kind || "library") === selection.kind
+      && (currentSelection?.id || "all") === selection.id
       && (currentSelection?.genre || null) === (selection?.genre || null)
       && currentSpeeds.length === nextSpeeds.length
       && currentSpeeds.every((value, index) => value === nextSpeeds[index]);
@@ -337,6 +339,7 @@ export function createSoundtrackPreviewController({
         limit: 50,
         speed: normalizedSelection.speed,
         genre: normalizedSelection.genre,
+        selection: normalizedSelection,
         nowMs,
       });
       if (destroyed || revision !== requestRevision) return snapshot();

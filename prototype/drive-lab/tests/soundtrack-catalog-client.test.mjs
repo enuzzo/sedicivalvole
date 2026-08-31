@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   fetchSoundtrackCatalog,
+  ILLOBO_CATALOG_SCHEMA,
   SOUNDTRACK_AUDIO_ENDPOINT,
   SOUNDTRACK_CATALOG_API_SCHEMA,
 } from "../src/soundtrack/catalog-client.js";
@@ -58,7 +59,39 @@ test("the client converts the same-origin response into a fresh admitted catalog
   assert.equal(result.admittedEntries, 2);
   assert.equal(result.rejectedEntries, 1);
   assert.equal(result.persistentAudioStorage, false);
-  assert.deepEqual(result.selection, { speed: ["high", "veryhigh"], genre: "rock" });
+  assert.deepEqual(result.selection, { kind: "library", id: "all", speed: ["high", "veryhigh"], genre: "rock" });
+});
+
+test("the Featured path reads only the owner-authorized Illobo catalog", async () => {
+  let request = null;
+  const result = await fetchSoundtrackCatalog({
+    selection: { kind: "featured", id: "signal-border" },
+    nowMs: 1000,
+    fetchImpl: async (url) => {
+      request = new URL(url);
+      return {
+        ok: true,
+        json: async () => ({
+          schema: ILLOBO_CATALOG_SCHEMA,
+          generatedAt: "2026-08-30T16:43:00Z",
+          tracks: [
+            { id: "floating-stars", title: "Floating Stars", filename: "floating-stars.mp3" },
+            { id: "this-point", title: "This Point", filename: "this-point.mp3" },
+          ],
+        }),
+      };
+    },
+  });
+
+  assert.equal(request.pathname, "/audio/illobo/catalog.json");
+  assert.equal(request.search, "");
+  assert.deepEqual(result.catalog.entries.map((entry) => entry.key), [
+    "illobo:floating-stars",
+    "illobo:this-point",
+  ]);
+  assert.equal(result.source, "illobo");
+  assert.equal(result.admittedEntries, 2);
+  assert.deepEqual(result.selection, { kind: "featured", id: "signal-border", speed: [], genre: null });
 });
 
 test("HTTP and schema failures do not produce a partial catalog", async () => {

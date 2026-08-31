@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { SOUNDTRACK_CATALOG_API_SCHEMA } from "../src/soundtrack/catalog-client.js";
+import {
+  ILLOBO_CATALOG_SCHEMA,
+  SOUNDTRACK_CATALOG_API_SCHEMA,
+} from "../src/soundtrack/catalog-client.js";
 import { createSoundtrackPreviewController } from "../src/soundtrack/preview-controller.js";
 
 const track = (id) => ({
@@ -46,6 +49,25 @@ const catalogFetch = async () => ({
     tracks: [track(1), track(2), track(3), track(4)],
   }),
 });
+
+const sourceAwareCatalogFetch = async (url) => {
+  if (new URL(url).pathname === "/audio/illobo/catalog.json") {
+    return {
+      ok: true,
+      json: async () => ({
+        schema: ILLOBO_CATALOG_SCHEMA,
+        generatedAt: "2026-08-30T16:43:00Z",
+        tracks: [
+          { id: "floating-stars", title: "Floating Stars", filename: "floating-stars.mp3" },
+          { id: "this-point", title: "This Point", filename: "this-point.mp3" },
+          { id: "space-train", title: "Space Train", filename: "space-train.mp3" },
+          { id: "tropico", title: "Tropico", filename: "tropico.mp3" },
+        ],
+      }),
+    };
+  }
+  return catalogFetch();
+};
 
 test("the preview loads and prepares three media roles before explicit playback", async () => {
   const states = [];
@@ -109,7 +131,7 @@ test("the default Jamendo library and explicit Illobo Featured path are distinct
   const controller = createSoundtrackPreviewController({
     fetchImpl: async (...args) => {
       fetches += 1;
-      return catalogFetch(...args);
+      return sourceAwareCatalogFetch(...args);
     },
     mediaFactory: () => new FakeMedia(),
     random: () => randomValues.shift() ?? 0.75,
@@ -126,6 +148,7 @@ test("the default Jamendo library and explicit Illobo Featured path are distinct
   });
   assert.equal(featured.status, "playing");
   assert.equal(featured.library.selection.kind, "featured");
+  assert.ok(featured.library.entries.every((entry) => entry.key.startsWith("illobo:")));
   assert.equal(featured.library.refreshCopy, "Random start · fresh mix every 30 min");
   assert.notDeepEqual(
     featured.library.entries.map((entry) => entry.key),
@@ -145,7 +168,7 @@ test("the default Jamendo library and explicit Illobo Featured path are distinct
     new Set(repeated.library.entries.map((entry) => entry.key)),
     new Set(featured.library.entries.map((entry) => entry.key)),
   );
-  assert.equal(fetches, 1, "Featured must reuse the prepared catalogue inside the click gesture");
+  assert.equal(fetches, 2, "Jamendo and Illobo must use separate source catalogs");
 });
 
 test("a failed current deck cannot poison an explicitly selected replacement", async () => {

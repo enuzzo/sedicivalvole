@@ -9,7 +9,7 @@ import {
   createSoundtrackCatalogSnapshot,
   readSoundtrackCatalog,
 } from "../src/soundtrack/catalog-store.js";
-import { evaluateJamendoTrack } from "../src/soundtrack/source-policy.js";
+import { evaluateIlloboTrack, evaluateJamendoTrack } from "../src/soundtrack/source-policy.js";
 import {
   createSoundtrackTransitionState,
   scheduleSoundtrackTransition,
@@ -65,6 +65,22 @@ test("credit projection keeps required source facts and removes the stream URL",
   ]);
   assert.equal(credit.directBacklinkRequired, true);
   assert.equal(JSON.stringify(credit).includes("storage.jamendo.com"), false);
+});
+
+test("an Illobo owner grant is a complete credit without a fabricated licence URL", () => {
+  const entries = makeEntries(evaluateIlloboTrack({
+    id: "floating-stars",
+    title: "Floating Stars",
+    filename: "floating-stars.mp3",
+  }));
+  const credit = createSoundtrackCredit(entries[0]);
+
+  assert.equal(credit.key, "illobo:floating-stars");
+  assert.equal(credit.artistName, "Illobo");
+  assert.equal(credit.providerCredit, "Illobo · artist-authorized recording");
+  assert.equal(credit.directContentUrl, "https://soundcloud.com/illobo");
+  assert.equal(credit.licence.label, "Direct grant");
+  assert.equal(credit.licence.url, null);
 });
 
 test("the primary credit follows the actually dominant deck through a crossfade", () => {

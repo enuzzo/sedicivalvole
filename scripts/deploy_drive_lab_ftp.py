@@ -19,6 +19,14 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 BUILD = ROOT / "prototype" / "drive-lab" / "dist" / "client"
+ILLOBO_ARCHIVE_ROOT = ROOT / "_references" / "audio" / "tracks" / "illobo"
+ILLOBO_WEB_ROOT = ILLOBO_ARCHIVE_ROOT / "web"
+ILLOBO_SOURCE_MANIFEST = ILLOBO_ARCHIVE_ROOT / "web-manifest.json"
+ILLOBO_REMOTE_DIRECTORY = "illobo"
+ILLOBO_PUBLIC_CATALOG = "catalog.json"
+ILLOBO_PUBLIC_CATALOG_SCHEMA = "sedicivalvole.illobo-public-catalog.v1"
+ILLOBO_SOURCE_MANIFEST_SCHEMA = "sedicivalvole.illobo-web-audio-manifest.v1"
+ILLOBO_EXPECTED_TRACKS = 29
 LEGACY_ROOT_FILE = "Default.html"
 STATIC_ROOT_ENTRY = "index.html"
 DYNAMIC_ROOT_ENTRY = "index.php"
@@ -348,6 +356,103 @@ def sha256_bytes(payload: bytes) -> str:
     return hashlib.sha256(payload).hexdigest()
 
 
+def illobo_archive() -> tuple[list[dict[str, object]], bytes]:
+    """Validate the ignored Illobo masters and build their public metadata catalog."""
+    if ILLOBO_SOURCE_MANIFEST.is_symlink() or not ILLOBO_SOURCE_MANIFEST.is_file():
+        raise FileNotFoundError("Illobo source manifest is missing")
+    try:
+        manifest = json.loads(ILLOBO_SOURCE_MANIFEST.read_text(encoding="utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        raise ValueError("Illobo source manifest is invalid") from None
+    tracks = manifest.get("tracks") if isinstance(manifest, dict) else None
+    aggregate = manifest.get("aggregate") if isinstance(manifest, dict) else None
+    if (
+        manifest.get("schema") != ILLOBO_SOURCE_MANIFEST_SCHEMA
+        or not isinstance(tracks, list)
+        or len(tracks) != ILLOBO_EXPECTED_TRACKS
+        or not isinstance(aggregate, dict)
+        or aggregate.get("output_count") != ILLOBO_EXPECTED_TRACKS
+        or aggregate.get("validation") != "passed"
+    ):
+        raise ValueError("Illobo source manifest identity mismatch")
+
+    validated: list[dict[str, object]] = []
+    public_tracks: list[dict[str, object]] = []
+    seen_names: set[str] = set()
+    seen_hashes: set[str] = set()
+    for track in tracks:
+        editorial = track.get("editorial") if isinstance(track, dict) else None
+        output = track.get("output") if isinstance(track, dict) else None
+        filename = editorial.get("output_filename") if isinstance(editorial, dict) else None
+        title = editorial.get("title") if isinstance(editorial, dict) else None
+        artist = editorial.get("artist") if isinstance(editorial, dict) else None
+        digest = output.get("sha256") if isinstance(output, dict) else None
+        byte_count = output.get("bytes") if isinstance(output, dict) else None
+        duration = output.get("duration_seconds") if isinstance(output, dict) else None
+        if (
+            not isinstance(filename, str)
+            or re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*\.mp3", filename) is None
+            or not isinstance(title, str)
+            or not title.strip()
+            or artist != "Illobo"
+            or not isinstance(digest, str)
+            or re.fullmatch(r"[a-f0-9]{64}", digest) is None
+            or type(byte_count) is not int
+            or byte_count <= 0
+            or type(duration) not in {int, float}
+            or not math.isfinite(duration)
+            or duration <= 0
+            or filename in seen_names
+            or digest in seen_hashes
+        ):
+            raise ValueError("Illobo track manifest entry is invalid")
+        path = ILLOBO_WEB_ROOT / filename
+        if path.is_symlink() or not path.is_file():
+            raise FileNotFoundError("Illobo web master is missing")
+        if path.stat().st_size != byte_count:
+            raise ValueError("Illobo web master size mismatch")
+        with path.open("rb") as handle:
+            local_digest = hashlib.file_digest(handle, "sha256").hexdigest()
+        if local_digest != digest:
+            raise ValueError("Illobo web master identity mismatch")
+        seen_names.add(filename)
+        seen_hashes.add(digest)
+        validated.append({"path": path, "filename": filename, "bytes": byte_count, "sha256": digest})
+        public_tracks.append({
+            "id": filename.removesuffix(".mp3"),
+            "title": title.strip(),
+            "artistName": "Illobo",
+            "filename": filename,
+            "durationSeconds": duration,
+            "bytes": byte_count,
+            "sha256": digest,
+        })
+
+    public_payload = json.dumps({
+        "schema": ILLOBO_PUBLIC_CATALOG_SCHEMA,
+        "generatedAt": manifest.get("generated_at_utc"),
+        "trackCount": len(public_tracks),
+        "tracks": public_tracks,
+    }, ensure_ascii=False, separators=(",", ":"), sort_keys=True).encode("utf-8") + b"\n"
+    return validated, public_payload
+
+
+def verify_remote_illobo(ftp: ftplib.FTP, *, full_hash: bool) -> None:
+    tracks, catalog = illobo_archive()
+    names = safe_names(ftp)
+    expected_names = {ILLOBO_PUBLIC_CATALOG, *(str(track["filename"]) for track in tracks)}
+    if names != expected_names:
+        raise ValueError("Illobo remote playlist is incomplete")
+    if sha256_bytes(remote_bytes(ftp, ILLOBO_PUBLIC_CATALOG)) != sha256_bytes(catalog):
+        raise ValueError("Illobo remote catalog identity mismatch")
+    for track in tracks:
+        filename = str(track["filename"])
+        if ftp.size(filename) != track["bytes"]:
+            raise ValueError("Illobo remote track size mismatch")
+        if full_hash and sha256_bytes(remote_bytes(ftp, filename)) != track["sha256"]:
+            raise ValueError("Illobo remote track identity mismatch")
+
+
 def is_forbidden_static_name(name: str) -> bool:
     """Classify private-looking package names without opening their contents."""
     basename = Path(name).name.lower()
@@ -554,6 +659,16 @@ def verify_completed_upload(
     try:
         if sha256_bytes(remote_bytes(ftp, LAB_AUTH_CONFIG)) != sha256_bytes(lab_auth_config):
             raise ValueError("LAB authentication upload mismatch")
+    finally:
+        ftp.cwd("..")
+
+    ftp.cwd("audio")
+    try:
+        ftp.cwd(ILLOBO_REMOTE_DIRECTORY)
+        try:
+            verify_remote_illobo(ftp, full_hash=True)
+        finally:
+            ftp.cwd("..")
     finally:
         ftp.cwd("..")
 
@@ -880,7 +995,7 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
         ftp.cwd("audio")
         try:
             audio_names = safe_names(ftp)
-            if not audio_names.issubset({"junction.svb", "nightshift.svb"}):
+            if not audio_names.issubset({"junction.svb", "nightshift.svb", ILLOBO_REMOTE_DIRECTORY}):
                 raise ValueError("unexpected audio entry")
             if "junction.svb" in audio_names and not is_recognized_junction_bank(
                 remote_bytes(ftp, "junction.svb")
@@ -890,6 +1005,12 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
                 remote_bytes(ftp, "nightshift.svb")
             ):
                 raise ValueError("NIGHTSHIFT audio identity mismatch")
+            if ILLOBO_REMOTE_DIRECTORY in audio_names:
+                ftp.cwd(ILLOBO_REMOTE_DIRECTORY)
+                try:
+                    verify_remote_illobo(ftp, full_hash=True)
+                finally:
+                    ftp.cwd("..")
         finally:
             ftp.cwd("..")
 
@@ -1110,6 +1231,7 @@ def main() -> int:
         jamendo_config = build_jamendo_config(jamendo_client_id)
         if not all(marker in jamendo_config for marker in JAMENDO_CONFIG_MARKERS):
             raise ValueError("generated Jamendo configuration is invalid")
+        illobo_tracks, illobo_catalog = illobo_archive()
 
         stage = "network"
         ftp = ftplib.FTP()
@@ -1200,6 +1322,28 @@ def main() -> int:
             ftp.cwd("..")
         uploaded_bytes += len(lab_auth_config)
 
+        enter_or_create(ftp, "audio")
+        try:
+            enter_or_create(ftp, ILLOBO_REMOTE_DIRECTORY)
+            try:
+                ftp.storbinary(
+                    f"STOR {ILLOBO_PUBLIC_CATALOG}",
+                    io.BytesIO(illobo_catalog),
+                    blocksize=65536,
+                )
+                for track in illobo_tracks:
+                    with Path(track["path"]).open("rb") as handle:
+                        ftp.storbinary(
+                            f"STOR {track['filename']}",
+                            handle,
+                            blocksize=65536,
+                        )
+            finally:
+                ftp.cwd("..")
+        finally:
+            ftp.cwd("..")
+        uploaded_bytes += len(illobo_catalog) + sum(int(track["bytes"]) for track in illobo_tracks)
+
         verify_completed_upload(ftp, recipient_config, lab_auth_config, jamendo_config)
 
         # The canonical entry is deliberately the final content operation. The
@@ -1221,7 +1365,8 @@ def main() -> int:
         remote_count = len(safe_names(ftp))
         ftp.quit()
         ftp = None
-        print(f"upload=PASS files={len(files) + 4} bytes={uploaded_bytes}")
+        print(f"upload=PASS files={len(files) + 5 + len(illobo_tracks)} bytes={uploaded_bytes}")
+        print(f"illobo_playlist=PASS tracks={len(illobo_tracks)} full_hash_verification=true")
         print(f"dynamic_root=PASS staged={str(stage_php_entry).lower()} static_entry_removed={str(switched_entry).lower()}")
         if preserve_existing:
             print("legacy_cleanup=SKIPPED preserve_existing=true")

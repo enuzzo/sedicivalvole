@@ -24,7 +24,7 @@ export function createSoundtrackCredit(entry) {
   if (!entry?.key || !isAdmittedSoundtrackPolicy(policy)) return null;
   const shareUrl = httpsUrl(policy.item.shareUrl);
   const licenceUrl = httpsUrl(policy.licence.url);
-  if (!shareUrl || !licenceUrl) return null;
+  if (!shareUrl || (!licenceUrl && policy.licence.code !== "direct-grant")) return null;
 
   return Object.freeze({
     key: entry.key,
