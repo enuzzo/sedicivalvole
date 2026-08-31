@@ -8,7 +8,7 @@ behavior.
 
 Do not begin the run until the final canonical build stamp is recorded below.
 
-- **Final test build:** `20260831-1448` · source `6218f98` · Illobo/title implementation `05a754b` · transition correction `dcb6801`
+- **Final test build:** `20260831-1502` · source `1171157` · Illobo/title implementation `05a754b` · cover correction `6218f98` · transition correction `dcb6801`
 - **Target viewport:** Tesla split view, nominal CSS `773 × 601`
 - **Result states:** `PASS`, `FAIL`, `NOT RUN`, `BLOCKED`
 - **Safety:** a passenger operates controls and records evidence; the driver
@@ -63,12 +63,13 @@ cannot substitute for the audible physical-cabin verdict.
 | `R7-04` | NOT RUN | Scan the compact QR for the current track, change track, and scan again. | Each QR opens the exact current public track page; no stream URL or stale prior-track destination is exposed. | Published in build `20260831-1241`; compact direct-content QR handoff. |
 | `R7-05` | NOT RUN | From the passenger seat, operate track rows, PREVIOUS/PLAY/NEXT, licence links, and the QR at `773 × 601`. | Controls are comfortably reachable; transport targets are at least `48 px`; the complete licence/artist credit remains legible. | Published in build `20260831-1241`; Soundtrack drawer touch and attribution treatment. |
 | `R7-06` | NOT RUN | Set each manual effect, skip in both directions, toggle global OPEN/UNDERWATER/BLOOM, then pause/resume. | Effects remain continuous and attached to the audible tracks; playback stays fixed at `1×`; no stuck processing or level jump occurs. | Published in build `20260831-1241`; shared effects bus across media-deck transitions. |
+| `R7-07` | NOT RUN | Start Soundtrack, open Music, note the playing Jamendo Library track, then press `PLAY FEATURED`. | Illobo Featured becomes visibly selected and a different Featured track begins immediately; NOW PLAYING, the highlighted row, credit/QR and Tesla mini-player title all agree. | Fixed by `1171157` in build `20260831-1502`; distinct `library:all` and `featured:signal-border` queues. |
 
 ## Illobo identity and Tesla media title — milestone row 8
 
 | ID | Status | Test | PASS condition | Linked work |
 |---|---|---|---|---|
-| `R8-01` | NOT RUN | On build `20260831-1448`, open Music → Soundtrack and watch the Illobo Featured cover for at least ten seconds. | A clearly white-on-black solid state dissolves into the original black-on-graphite outline state and back. Each full dissolve takes about four seconds, continues without a static hold, and has no flicker, clipped outer line, rounded corner, border, or layout movement. | Milestone row 8 · base `05a754b`; perceptual correction `6218f98`. |
+| `R8-01` | NOT RUN | On build `20260831-1502`, open Music → Soundtrack and watch the Illobo Featured cover for at least ten seconds. | A clearly white-on-black solid state dissolves into the original black-on-graphite outline state and back. Each full dissolve takes about four seconds, continues without a static hold, and has no flicker, clipped outer line, rounded corner, border, or layout movement. | Milestone row 8 · base `05a754b`; perceptual correction `6218f98`. |
 | `R8-02` | NOT RUN | Start one Soundtrack recording, inspect Tesla's browser-labelled mini-player, then pause it. | During play it shows `16 - Artist - Track title`; pausing restores the normal sedicivalvole page title. Audio, QR, and in-drawer credit remain on the same track. | Milestone row 8 · `05a754b`; Tesla browser behavior is the acceptance gate. |
 
 ## Evening closeout

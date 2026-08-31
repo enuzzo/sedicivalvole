@@ -201,6 +201,10 @@ stable half-hour shuffle, and treats pace, genre, and exact-track gestures as
 explicit immediate play requests. The main App master affects only audio processing: macro detection
 and visual response continue independently. Metadata remains short-lived and
 audio remains non-persistent.
+The unqualified controller load normalizes to `library:all`; the Illobo button
+requests `featured:signal-border`, giving the two equal paths independent stable
+shuffle signatures and preventing an explicit Featured gesture from silently
+reloading the already active queue.
 The production deck now performs the nominal `450 ms` equal-power queue commit,
 including reversal and third-deck retargeting, and derives every visible credit
 from the same audio-clock gain vector. Its compact QR opens the current public

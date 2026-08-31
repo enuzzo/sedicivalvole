@@ -8,6 +8,40 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Illobo Featured launch correction — 2026-08-31 15:09
+
+- build stamp: **`20260831-1502`**; deployed source checkpoint:
+  **`1171157`**;
+- root cause: **CONFIRMED**. An unqualified Soundtrack load and the explicit
+  Illobo button both normalized to `featured:signal-border`. Inside one stable
+  half-hour window they therefore reconstructed the same queue and current
+  recording, making the explicit click appear inert;
+- correction: **PASS**. The initial unfiltered path is now `library:all`, while
+  `PLAY FEATURED` requests the independently seeded `featured:signal-border`
+  queue and starts it immediately. Pace, genre, track, authored `1×`, effects,
+  three-media bound and 30-minute cadence are unchanged;
+- tests/build: **PASS**. The complete `491/491` suite, 146-module App,
+  70-module LAB and Sites packaging pass;
+- protected publication: **PASS**. Read-only preflight and postflight both
+  passed with eight root entries and `remote_writes=NONE`; the no-delete
+  publication retained the static/legacy tree;
+- canonical HTTP identity: **PASS**. HTML SHA-256
+  `f4a8bd9786245e70f24a289df0eeb75fa8d249b1b13de0990cc8a221cf093cbe`,
+  JavaScript `assets/index-C148Fmup.js` SHA-256
+  `957a5008f955ea8ffb0cb5c5dca799265563fc98819e9a6f8c0449250ed0dcde`,
+  and CSS `assets/index-hKft6LK2.css` SHA-256
+  `6e686f4783e82c13542be3e2862ff5f448f328b17580df11e47e293d83b61f05`
+  are byte-identical local/live. Root HTML retains no-store/no-cache and
+  `nosniff`; the live API returned six schema-valid catalogue records;
+- exact Browser QA: **LOCAL PASS at `773 × 601`**. Jamendo Library is selected
+  initially with `Leave and Never Look Back`; the explicit Featured gesture
+  selects Illobo, starts `Boys, Girls, Toys & Words`, synchronizes the page
+  title and leaves document width exactly `773 px`. The live Browser-control
+  client again blocked direct `.php` preparation, so live audio interaction is
+  not claimed from that client; canonical byte identity and the independent
+  live API probe prove the deployed runtime and server boundary. Physical
+  acceptance remains `R7-07`.
+
 ## Illobo perceptual endpoint correction — 2026-08-31 14:53
 
 - build stamp: **`20260831-1448`**; deployed source checkpoint:

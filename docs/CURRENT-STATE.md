@@ -372,7 +372,10 @@ dated study documents.
   **Play the Road** from **Soundtrack** without inaccurately calling every
   adaptive score generative. Soundtrack presents compact, equal-weight **Illobo
   Featured** and **Jamendo Library** alternatives. The Featured playlist and
-  Jamendo cover preview rotate deterministically every 30 minutes. Jamendo
+  Jamendo cover preview rotate deterministically every 30 minutes. An
+  unqualified start is `library:all`; pressing `PLAY FEATURED` selects and
+  immediately starts the independently seeded `featured:signal-border` queue.
+  Jamendo
   browsing uses the official `speed` values and genre tags; selecting a pace,
   genre, or exact track starts playback immediately. Pace is manual discovery
   metadata only: it can never follow vehicle speed or retime audio. MUTE and FX
@@ -381,8 +384,9 @@ dated study documents.
   that incoming media playback must be requested before awaiting effects/worklet
   readiness so Chromium retains the transport gesture's transient activation;
   checkpoint `dcb6801` enforces and tests that ordering. Build `20260831-1241`
-  first published that correction; current build `20260831-1448` retains it and
-  adds the final Illobo identity plus Tesla-facing playback title. Physical-Tesla listening of crossfade, buffering, touch, QR,
+  first published that correction; current build `20260831-1502` retains it,
+  adds the final Illobo identity plus Tesla-facing playback title, and separates
+  the explicit Featured launch from the default Library queue. Physical-Tesla listening of crossfade, buffering, touch, QR,
   transport, licence and effects behavior remain open; no offline-duration promise is made. See
   [`SOUNDTRACK-SOURCE-POLICY.md`](SOUNDTRACK-SOURCE-POLICY.md).
 - **The running footer has its compact control geometry.** MUTE and EFFECTS are
@@ -440,17 +444,20 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The canonical live product is version `0.0.0`, source commit `6218f98`, build
-  `20260831-1448`, with Illobo/title implementation `05a754b` and transition
+- The canonical live product is version `0.0.0`, source commit `1171157`, build
+  `20260831-1502`, with Illobo/title implementation `05a754b`, cover correction
+  `6218f98`, Featured-launch correction `1171157`, and transition
   correction `dcb6801`. Its guarded 109-file publication,
   read-only pre/postflight and HTML/JavaScript/CSS/two-SVG byte identity pass.
-  Exact live `773 × 601` Browser QA verifies distinct white-on-black solid and
-  black-on-graphite outline endpoints across the continuous four-second-per-
-  direction cover, with no border, radius, or clipping, plus
-  zero page overflow, real Jamendo play/pause title changes, and zero warning/error.
-  The complete `490/490` suite plus 146-module App / 70-module LAB / Sites build
-  pass, while physical-cabin checks remain `R7-01`–`R7-06` and
-  `R8-01`–`R8-02`. Exact
+  Prior exact live `773 × 601` Browser QA verifies the unchanged white-on-black
+  solid and black-on-graphite outline endpoints, play/pause title behavior and
+  zero warning/error. Current exact local Browser QA verifies the new Library →
+  Featured interaction, synchronized track/title and zero horizontal overflow;
+  current live audio interaction remains a Tesla gate because Browser control
+  could not complete the direct `.php` catalogue request.
+  The complete `491/491` suite plus 146-module App / 70-module LAB / Sites build
+  pass, while physical-cabin checks remain `R7-01`–`R7-07` and
+  `R8-01`–`R8-02`, plus the corrected explicit Featured launch in `R7-07`. Exact
   progressive evidence is in [`DEPLOY.md`](DEPLOY.md).
 - Diagnostic telemetry contains no coordinates and is sent only after the
   explicit `SEND DIAGNOSTIC` action. ATLAS location is a separate ephemeral
@@ -459,7 +466,7 @@ dated study documents.
 
 ## Open work
 
-1. Execute Tesla tests `R7-01`–`R7-06` and `R8-01`–`R8-02` on live build `20260831-1448` from
+1. Execute Tesla tests `R7-01`–`R7-07` and `R8-01`–`R8-02` on live build `20260831-1502` from
    [`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md), including
    the live audio transport evidence that the available office Browser-control
    surfaces could not collect.
