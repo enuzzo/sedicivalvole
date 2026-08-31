@@ -8,7 +8,7 @@ behavior.
 
 Do not begin the run until the final canonical build stamp is recorded below.
 
-- **Final test build:** pending the last office checkpoint of the day
+- **Final test build:** pending the corrective build after rejected candidate `20260831-1219`
 - **Target viewport:** Tesla split view, nominal CSS `773 × 601`
 - **Result states:** `PASS`, `FAIL`, `NOT RUN`, `BLOCKED`
 - **Safety:** a passenger operates controls and records evidence; the driver

@@ -431,17 +431,17 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The canonical live product is version `0.0.0`, source commit `d1e3fb0`, build
-  `20260831-1143`. Its guarded publication and read-only identity checks pass;
-  canonical HTML, JavaScript, CSS, restored Orbitron WOFF2 and approved 16 Road
-  SVG are byte-identical to the clean local build. Exact live `773 × 601`
-  Browser QA verifies the compact `360 × 160 px` home action, the loaded `42 px`
-  vector mark, Orbitron only on exact `sedicivalvole` wordmarks, Space Grotesk
-  everywhere else, zero overflow, a complete MUTE + APERTURE launch flow and
-  zero warning/error. The complete suite retains only the known missing local
-  `php` executable for the deterministic diagnostic-mail fixture; the
-  production build completes with 130 modules. Exact progressive evidence is
-  in [`DEPLOY.md`](DEPLOY.md).
+- The canonical live product is version `0.0.0`, source commit `590ba74`, build
+  `20260831-1219`. Its guarded publication, read-only postflight and
+  HTML/JavaScript/CSS byte identity pass. Exact live `773 × 601` Browser QA
+  verifies the real Jamendo library, credit card, current-track QR, transport
+  and a normal two-credit fade, but rejects this candidate for evening testing:
+  a rapid `NEXT → PREVIOUS → NEXT` run exposed a persistent selected-title / prior-audible-credit
+  mismatch after an incoming play failure. Local correction `8f03b34` commits
+  queue, QR and credit atomically only after playback/gain admission and passes
+  the complete `485/485` suite plus 145-module App / 70-module LAB / Sites
+  build; corrective publication and repeat live proof are pending. Exact
+  progressive evidence is in [`DEPLOY.md`](DEPLOY.md).
 - Diagnostic telemetry contains no coordinates and is sent only after the
   explicit `SEND DIAGNOSTIC` action. ATLAS location is a separate ephemeral
   feature: the latest reliable point stays in session memory; OpenFreeMap tile
@@ -449,7 +449,7 @@ dated study documents.
 
 ## Open work
 
-1. Publish Soundtrack checkpoint `2dd3cb5`, run exact live `773 × 601` Browser
+1. Publish Soundtrack correction `8f03b34`, run exact live `773 × 601` Browser
    QA with real Jamendo metadata, and then execute Tesla tests `R7-01`–`R7-06`
    from [`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md).
 2. Validate the complete ATLAS route, pulsing vehicle point, three-state GPS

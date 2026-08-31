@@ -168,11 +168,15 @@ report `remote_writes=NONE`, HTML/JavaScript/CSS are byte-identical, and exact
 NIGHTSHIFT to JUNCTION and observes zero warning/error. Rows 2, 4 and 5 remain
 physical-Tesla gates.
 
-Milestone row 7's office implementation is pushed at `2dd3cb5`. Focused
-transition/deck/attribution checks pass `35/35`; the complete suite passes
-`484/484`, and the 145-module App / 70-module LAB / Sites build passes. The
-canonical publication and live real-catalog Browser QA are the next office
-gate. After publication, use the stable `R7-01`–`R7-06` identifiers in
+Milestone row 7's office implementation is pushed at `2dd3cb5`. First live
+candidate `20260831-1219` at `590ba74` passed publication identity and normal
+fade/QR/licence QA, but failed the rapid `NEXT → PREVIOUS → NEXT` gate when an
+incoming play failure left target title/QR beside the prior audible credit.
+Correction `8f03b34` makes the queue/QR/credit commit atomic and restores the
+prior coherent state on play or gain failure. The complete suite passes
+`485/485`, and the 145-module App / 70-module LAB / Sites build passes. Publish
+the correction and repeat live rapid navigation before using stable
+`R7-01`–`R7-06` identifiers in
 [`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md); the row
 cannot close until those cabin results pass.
 

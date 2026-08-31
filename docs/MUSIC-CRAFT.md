@@ -1344,6 +1344,14 @@ three-element bound, stale completion, and all audible credits. Cabin listening
 still decides whether the transition is perceptually clean through the Tesla
 browser and sound system.
 
+The first live rapid-navigation run exposed an additional transaction boundary:
+do not promote the requested title, QR, or queue current merely because its
+media element was prepared. Commit all three only after the incoming deck has
+started and the gain schedule has been accepted. If play or scheduling fails,
+restore the prior queue, stable gain, audible element and credit as one unit.
+Otherwise the attribution can be truthful about the old audible deck while the
+rest of the interface falsely claims the new target.
+
 ---
 
 ## 7. Sources and material

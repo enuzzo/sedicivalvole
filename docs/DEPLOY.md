@@ -8,6 +8,30 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Soundtrack row 7 first live candidate — 2026-08-31 12:22
+
+- build stamp: **`20260831-1219`**; deployed source/documentation checkpoint:
+  `590ba74`; Soundtrack implementation checkpoint: `2dd3cb5`;
+- protected publication: **PASS**. Read-only preflight/postflight passed with
+  canonical identity, eight root entries and `remote_writes=NONE`. The
+  `--preserve-existing` upload transferred 108 files / 17,008,940 bytes and
+  retained the static entry, legacy tree and two prior fingerprinted assets;
+- canonical HTTP identity: **PASS**. Bare and cache-busted HTML return `200`,
+  no-store/no-cache, `nosniff` and cache `MISS`; HTML, JavaScript
+  `assets/index-Cgq3FgyM.js`, and CSS `assets/index-DhhWIT7Y.css` are
+  byte-identical at SHA-256 `66a2fa8a906b7a0e2f06414f01b9d2d1fdf3cfece5e22b3e8521aeea51b54714`,
+  `a5387afd32cf18a3717ec05cd3de16bb3cdba981ac94132d468d2e469d15a935`,
+  and `fb314622b23c83541168621080bf672902ace02c8f8537a2e63f13bb472c6dde`;
+- exact live Browser QA: **FAIL for rapid navigation**. At `773 × 601`, real
+  Jamendo data, the QR, complete licence card, `48 px` transport and a normal
+  NEXT transition all rendered correctly; the fade card showed both CURRENT and
+  FADING credits. A later `NEXT → PREVIOUS → NEXT` stress run left the selected
+  title/QR on the requested target while the audio-clock card retained the prior
+  audible credit after an incoming play failure. The mismatch persisted after
+  the nominal fade. Build `20260831-1219` is therefore not approved for the
+  evening Tesla queue. Correction `8f03b34` makes queue/credit commit atomic and
+  awaits its own publication and repeated live proof.
+
 ## Sampled-bank evidence and constrained-network recovery — 2026-08-31 11:49
 
 - build stamp: **`20260831-1143`**; deployed source/documentation checkpoint:
