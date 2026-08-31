@@ -4,6 +4,7 @@ import { createSoundtrackQueue, moveSoundtrackQueue } from "./rotation-model.js"
 import {
   normalizeSoundtrackSelection,
   rotateSoundtrackEntries,
+  startSoundtrackEntriesAtRandom,
 } from "./library-model.js";
 import { deriveSoundtrackAttribution } from "./attribution-model.js";
 import {
@@ -48,6 +49,7 @@ export function createSoundtrackPreviewController({
     destroy: () => {},
   }),
   onState = null,
+  random = Math.random,
   setTimer = globalThis.setTimeout?.bind(globalThis),
   clearTimer = globalThis.clearTimeout?.bind(globalThis),
 } = {}) {
@@ -73,6 +75,18 @@ export function createSoundtrackPreviewController({
       && (currentSelection?.genre || null) === (selection?.genre || null)
       && currentSpeeds.length === nextSpeeds.length
       && currentSpeeds.every((value, index) => value === nextSpeeds[index]);
+  };
+
+  const rotateLibrary = (entries, selection, nowMs) => {
+    const rotated = rotateSoundtrackEntries(entries, { nowMs, selection });
+    if (selection.kind !== "featured") return rotated;
+    return Object.freeze({
+      ...rotated,
+      entries: startSoundtrackEntriesAtRandom(rotated.entries, {
+        random,
+        avoidKey: queueState?.slots?.current?.key,
+      }),
+    });
   };
 
   const clockTime = () => Number(effects.getClockTime?.()) || 0;
@@ -115,7 +129,9 @@ export function createSoundtrackPreviewController({
       selection: libraryRotation.selection,
       rotationWindow: libraryRotation.window,
       entries: Object.freeze(libraryRotation.entries.map(safeCredit).filter(Boolean)),
-      refreshCopy: "Fresh mix · changes every 30 min",
+      refreshCopy: libraryRotation.selection.kind === "featured"
+        ? "Random start · fresh mix every 30 min"
+        : "Fresh mix · changes every 30 min",
     }) : null,
     attribution: attribution(),
     transition: transitionState ? sampleSoundtrackTransition(transitionState, clockTime()) : null,
@@ -300,10 +316,7 @@ export function createSoundtrackPreviewController({
     try {
       const normalizedSelection = normalizeSoundtrackSelection(selection);
       if (catalogCanServeSelection(normalizedSelection, nowMs)) {
-        libraryRotation = rotateSoundtrackEntries(catalogResult.catalog.entries, {
-          nowMs,
-          selection: normalizedSelection,
-        });
+        libraryRotation = rotateLibrary(catalogResult.catalog.entries, normalizedSelection, nowMs);
         const rotatedCatalog = Object.freeze({
           ...catalogResult.catalog,
           entries: libraryRotation.entries,
@@ -327,10 +340,7 @@ export function createSoundtrackPreviewController({
         nowMs,
       });
       if (destroyed || revision !== requestRevision) return snapshot();
-      libraryRotation = rotateSoundtrackEntries(nextCatalogResult.catalog.entries, {
-        nowMs,
-        selection: normalizedSelection,
-      });
+      libraryRotation = rotateLibrary(nextCatalogResult.catalog.entries, normalizedSelection, nowMs);
       const rotatedCatalog = Object.freeze({
         ...nextCatalogResult.catalog,
         entries: libraryRotation.entries,

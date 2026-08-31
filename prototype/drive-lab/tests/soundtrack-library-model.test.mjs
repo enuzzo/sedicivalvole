@@ -4,6 +4,7 @@ import {
   normalizeSoundtrackSelection,
   rotateSoundtrackEntries,
   SOUNDTRACK_ROTATION_INTERVAL_MS,
+  startSoundtrackEntriesAtRandom,
   soundtrackRotationWindow,
 } from "../src/soundtrack/library-model.js";
 
@@ -31,6 +32,25 @@ test("the fresh mix is stable inside one half-hour window and changes at the bou
   assert.notDeepEqual(before.entries.map((entry) => entry.key), after.entries.map((entry) => entry.key));
   assert.equal(before.window.endsAtMs, SOUNDTRACK_ROTATION_INTERVAL_MS);
   assert.equal(soundtrackRotationWindow(SOUNDTRACK_ROTATION_INTERVAL_MS).id, 1);
+});
+
+test("a Featured press chooses a random start without dropping any playlist entry", () => {
+  const started = startSoundtrackEntriesAtRandom(entries, { random: () => 0.5 });
+  assert.deepEqual(started.map((entry) => entry.key), [
+    "jamendo:4",
+    "jamendo:5",
+    "jamendo:6",
+    "jamendo:1",
+    "jamendo:2",
+    "jamendo:3",
+  ]);
+  assert.deepEqual(new Set(started.map((entry) => entry.key)), new Set(entries.map((entry) => entry.key)));
+
+  const avoidsCurrent = startSoundtrackEntriesAtRandom(entries, {
+    random: () => 0.5,
+    avoidKey: "jamendo:4",
+  });
+  assert.equal(avoidsCurrent[0].key, "jamendo:5");
 });
 
 test("passenger pace choices map only to official Jamendo speed metadata", () => {
