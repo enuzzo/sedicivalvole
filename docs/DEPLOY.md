@@ -8,6 +8,42 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## MERIDIAN amplified immersion and surfacing — 2026-08-31 22:14
+
+- build stamp: **`20260831-2207`**; deployed product checkpoint:
+  **`e77d939`**;
+- behavior: **PASS in model and exact local viewport; Tesla retest pending**.
+  Dry projection now reaches `124°`, renewed acceleration responds in `0.22 s`,
+  and UNDERWATER applies `−11°` FOV, `0.58×` visual rate, `0.54×` field sway,
+  `0.46×` rail glow and `1.78×` fog. Engagement takes `0.24 s`; leaving it
+  preserves one continuous `0.50 s` surfacing across every parameter;
+- regression discovery: **PASS**. The first draft retained the surfacing
+  constant for one frame only. The 30/60/120-FPS comparison failed and blocked
+  release; transition state now retains the chosen response for the complete
+  emergence;
+- tests/build: **PASS**. Complete `520/520`, 147-module App, 71-module LAB and
+  Sites packaging pass;
+- local Browser QA: **PASS at `773 × 601`**. Fixed `65 km/h` UNDERWATER and dry
+  `100 km/h` states render distinctly with meaningful content, no framework
+  overlay and no warning/error;
+- publication: **PASS**. Read-only preflight and postflight both report eight
+  root entries and `remote_writes=NONE`. Protected publication uploaded 138
+  files / 212,293,906 bytes, retained one prior fingerprinted asset and fully
+  reverified all 29 Illobo recordings;
+- canonical identity: **PASS**. Root HTML references
+  `assets/index-DJ6m6j5m.js` and `assets/index-q8WX2e-G.css`. Local/live SHA-256
+  is `c56d6386bb862ed7fee370e5d478154f967c131508aeabdf6d65e9d1bbd499e9`
+  for HTML, `cc44f26918b849b7692e1f9baea990b47abdaca2dc251cd3c35aa6ddbf5ca9db`
+  for JavaScript, and
+  `c7923123fdf829c83a616e3858c3aa9d14ec9c9ef1d5d006fafa4299da946d53`
+  for CSS. The response is `200`, `no-store/no-cache`, `nosniff`, proxy `MISS`,
+  and the bundle carries `e77d939 / 20260831-2207`;
+- exact live Browser QA: **PASS at `773 × 601` for launch/runtime**. MERIDIAN
+  starts from the canonical build with meaningful content and zero warning/error.
+  Progressive vehicle motion remains `R5-02`. Audio DSP is unchanged; the owner
+  has confirmed audible brake engagement and is separately retesting Illobo and
+  Jamendo under `R4-04`.
+
 ## MERIDIAN full-range FOV and braking response — 2026-08-31 20:42
 
 - build stamp: **`20260831-2034`**; deployed product checkpoint:

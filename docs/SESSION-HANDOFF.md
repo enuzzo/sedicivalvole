@@ -39,7 +39,7 @@ The registry is `prototype/drive-lab/src/flux-environments.js`.
 |---|---|---|
 | APERTURE 01 | original WebGL2 plus Canvas2D fallback | rigid square wall recedes intact and disappears at the existing tunnel terminus by `40 km/h` |
 | VERTIGO 02 | vendored Interstate 7 | upstream tree stays byte-identical; the external bridge drives speed/FOV and existing colour channels |
-| MERIDIAN 03 | original WebGL2 plus Canvas2D fallback | selected-reference corridor of sparse oblique blades and longitudinal planes; bounded vertical field, `50–116°` full-range FOV, and shared frame-rate-independent acceleration/braking/visual-FX response |
+| MERIDIAN 03 | original WebGL2 plus Canvas2D fallback | selected-reference corridor of sparse oblique blades and longitudinal planes; bounded vertical field, `50–124°` full-range FOV, stronger UNDERWATER compression and one continuous visual surfacing response |
 | ATLAS 04 | lazy MapLibre/OpenFreeMap WebGL | ephemeral GPS or explicit Milan demo drives 3D city tiles, a bounded complete-view route, one pulsing position point, a Navigator Plaque with dynamic arrow/cardinal/degrees/tile-local road name, nearby Wikipedia reading and passenger QR |
 | DRIVEY 05 | byte-identical Rezmason runtime plus project bridge | road following, lane-centred zero hold, opposing-only traffic, three cameras, and normal/wire modes |
 | PRTCL 06 | original WebGL2 particle renderer | Fractal Frequency, Murmuration, and Axiom with speed-owned form/point scale, depth, and travel |
@@ -139,7 +139,7 @@ The session started from clean `main == origin/main == bb5a2c9`. Drive
 corrections are checkpoint `ac11ed0`; milestone-row-6 audio evidence/recovery
 is `614872b`; row-7 transition mechanics are `2dd3cb5`, atomic rollback is
 `8f03b34`, and transient transport activation is `dcb6801`. Canonical live
-build is `20260831-2034` from MERIDIAN response checkpoint `6a90621`, retaining
+build is `20260831-2207` from amplified MERIDIAN checkpoint `e77d939`, retaining
 FX Deck checkpoint `0993e92`, the global effects routing repair `8c53e8d` and
 reversible Soundtrack-path checkpoint `0660d71`,
 retaining immediate weak-network switch checkpoint `137ddeb`, transport-state hardening `57fed11`, provider-label correction
@@ -148,13 +148,17 @@ retaining immediate weak-network switch checkpoint `137ddeb`, transport-state ha
 Featured random-start logic `61471e8`, Tesla Soundtrack correction `4b36069`, ATLAS Navigator Plaque
 `79d9c9b`, MUTE/FX parity `c0a2f78`, Featured-launch correction `1171157`, and
 Illobo cover correction `6218f98`.
-The latest owner drive report found MERIDIAN braking stepped and its acceleration
-FOV too weak. Checkpoint `6a90621` fixes both renderer paths with `0.30 s`
-acceleration, `0.62 s` braking and `0.32 s` visual-FX easing, expands base FOV
-from `50°` to `116°`, and protects each `26 km/h` band with at least `10°` of
-projection change. Build `20260831-2034` passes `519/519`, exact local
-`773 × 601` endpoint QA, protected publication, canonical HTML/JS/CSS identity,
-and live runtime/console QA. Real progressive motion remains `R5-02`.
+The first owner drive report found MERIDIAN braking stepped and acceleration FOV
+too weak; `6a90621` fixed smoothness and materially widened the complete range.
+The owner then accepted MERIDIAN's beauty and confirmed audible UNDERWATER, but
+requested stronger visual braking and especially renewed-speed emergence.
+Checkpoint `e77d939` raises dry FOV to `124°`, responds to acceleration in
+`0.22 s`, strengthens UNDERWATER with `−11°` plus motion/glow/fog contrast, and
+preserves one `0.50 s` visual surfacing transition after `0.24 s` engagement.
+Build `20260831-2207` passes `520/520`, exact local `773 × 601` state comparison,
+protected publication, canonical HTML/JS/CSS identity, and live runtime/console
+QA. Real progressive motion remains `R5-02`; Illobo/Jamendo audio retest remains
+in progress under `R4-04` and the audio graph was not changed.
 Guarded no-delete publication, pre/postflight `remote_writes=NONE`, canonical
 HTML/main/CSS/worklet byte identity and catalogue/audio relay probes pass.
 Milestone row 8 is office-complete at `05a754b`: both owner-supplied Illobo LOBO

@@ -469,10 +469,11 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The canonical live product is version `0.0.0`, source commit `6a90621`, build
-  `20260831-2034`, adding the full-range MERIDIAN `50–116°` FOV and shared
-  frame-rate-independent acceleration/braking/visual-FX response while
-  retaining global audio routing and the two-stage perceptual
+- The canonical live product is version `0.0.0`, source commit `e77d939`, build
+  `20260831-2207`, adding the amplified MERIDIAN `50–124°` FOV, stronger
+  UNDERWATER projection/motion/glow/fog contrast and complete `0.50 s`
+  surfacing response while retaining global audio routing and the two-stage
+  perceptual
   UNDERWATER repair `8c53e8d`, the selected global FX Deck `0993e92`,
   reversible Soundtrack paths `0660d71`, immediate Music switching `137ddeb`, transport
   hardening `57fed11`, Illobo provider identity `2c0f5f8`, ATLAS Navigator
@@ -503,11 +504,12 @@ dated study documents.
   controls, and state persistence into Soundtrack with zero overflow or live
   warning/error. Protected publication reverified all 29 Illobo masters and the
   retired repeat worklet is admitted for cache overlap only by exact hash.
-  Exact local `773 × 601` MERIDIAN endpoint QA proves materially distinct rest
-  and full-speed projections; canonical HTML/JS/CSS byte identity proves the
-  same renderer is live with no warning/error. Progressive motion remains the
-  target-Tesla `R5-02` gate.
-  The complete `519/519` suite plus 147-module App / 71-module LAB / Sites build
+  Exact local `773 × 601` MERIDIAN QA proves distinct fixed UNDERWATER and dry
+  higher-speed states; canonical HTML/JS/CSS byte identity proves the same
+  renderer is live with no warning/error. The owner has accepted the corrected
+  smoothness and visual quality; stronger real progressive surfacing remains
+  the target-Tesla `R5-02` gate.
+  The complete `520/520` suite plus 147-module App / 71-module LAB / Sites build
   pass, while physical-cabin checks remain `R4-01`–`R4-06`, `R5-01`–`R5-05`,
   `R7-01`–`R7-07`, `R8-01`–`R8-02` and `R9-01`–`R9-02`. Exact
   progressive evidence is in [`DEPLOY.md`](DEPLOY.md).
@@ -519,10 +521,11 @@ dated study documents.
 ## Open work
 
 1. Execute Tesla tests `R4-01`–`R4-06`, `R5-01`–`R5-05`, `R7-01`–`R7-07`,
-   `R8-01`–`R8-02` and `R9-01`–`R9-02` on live build `20260831-2034` from
+   `R8-01`–`R8-02` and `R9-01`–`R9-02` on live build `20260831-2207` from
    [`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md), including
-   the live audio transport evidence and MERIDIAN `0 → 130 → brake` motion that
-   the available office Browser-control surfaces could not physically accept.
+   the live audio transport evidence and MERIDIAN
+   `0 → brake/UNDERWATER → renewed acceleration → 130` motion that the available
+   office Browser-control surfaces could not physically accept.
 2. Validate the complete ATLAS route, pulsing vehicle point, three-state GPS
    control, Navigator Plaque heading/road behavior, measured 30 FPS ATLAS
    cadence and corrected NIGHTSHIFT level in the Tesla after publication.

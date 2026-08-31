@@ -94,12 +94,14 @@ remains proposal-only.
 `MERIDIAN 03` follows the selected oblique-blade reference contract: sparse
 large red, white and secondary-colour Euclidean planes flank a low, readable
 corridor. The continuous field keeps vertical excursion gentle and bounded;
-speed opens FOV from `50°` to `116°` across the complete `0–130 km/h` road
+speed opens FOV from `50°` to `124°` across the complete `0–130 km/h` road
 range while also raising depth compression, peripheral stretch, parallax and
 longitudinal flow monotonically. A frame-rate-independent response uses a
-prompt `0.30 s` acceleration and a calmer `0.62 s` braking release; visual FX
-parameters ease over `0.32 s` so GPS sampling and UNDERWATER engagement cannot
-snap the projection or field. Conventional buildings, stacked towers,
+prompt `0.22 s` acceleration and a calmer `0.62 s` braking release. UNDERWATER
+compresses the projection by `11°` while lowering motion/glow and raising fog;
+its `0.24 s` engagement gives way to a continuous `0.50 s` surfacing transition
+so renewed acceleration visibly reopens and clears the field without snapping.
+Conventional buildings, stacked towers,
 balconies, cheap wireframe grids and excessive particles are excluded.
 
 `ATLAS 04` is the passenger-oriented bird's-eye city environment. It presents a
