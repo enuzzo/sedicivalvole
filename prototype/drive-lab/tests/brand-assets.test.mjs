@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { readFileSync, statSync } from "node:fs";
+import { readFileSync, readdirSync, statSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
@@ -69,4 +69,37 @@ test("both owner-supplied Illobo marks remain byte-identical in a slow continuou
   assert.doesNotMatch(styles, /\.illobo-featured-cover img:last-child\s*{[^}]*filter:/);
   assert.match(styles, /@keyframes illobo-featured-solid\s*{\s*0%\s*{ opacity: 1; }\s*50%\s*{ opacity: 0; }\s*100%\s*{ opacity: 1; }\s*}/);
   assert.match(styles, /@keyframes illobo-featured-outline\s*{\s*0%\s*{ opacity: 0; }\s*50%\s*{ opacity: 1; }\s*100%\s*{ opacity: 0; }\s*}/);
+});
+
+test("the music drawer packages one coherent square cover for every playable score and Illobo track", () => {
+  const artworkRoot = resolve(DRIVE_LAB_ROOT, "public/artwork");
+  const playRoadNames = readdirSync(resolve(artworkRoot, "play-road")).sort();
+  const illoboNames = readdirSync(resolve(artworkRoot, "illobo")).sort();
+  assert.deepEqual(playRoadNames, ["fracture.png", "junction.png", "nightshift.png"]);
+  assert.equal(illoboNames.length, 29);
+  assert.ok(illoboNames.every((name) => /^[a-z0-9]+(?:-[a-z0-9]+)*\.png$/.test(name)));
+
+  for (const relativePath of [
+    ...playRoadNames.map((name) => `play-road/${name}`),
+    ...illoboNames.map((name) => `illobo/${name}`),
+  ]) {
+    const bytes = readFileSync(resolve(artworkRoot, relativePath));
+    assert.equal(bytes.subarray(1, 4).toString(), "PNG");
+    assert.equal(bytes.readUInt32BE(16), 512, `${relativePath} width`);
+    assert.equal(bytes.readUInt32BE(20), 512, `${relativePath} height`);
+  }
+});
+
+test("music controls use the licensed Tabler media icon set", () => {
+  const iconRoot = resolve(DRIVE_LAB_ROOT, "public/third-party/tabler-icons");
+  for (const name of [
+    "player-play-filled.svg",
+    "player-pause-filled.svg",
+    "player-skip-back-filled.svg",
+    "player-skip-forward-filled.svg",
+  ]) {
+    const icon = readFileSync(resolve(iconRoot, name), "utf8");
+    assert.match(icon, /viewBox="0 0 24 24"/);
+    assert.doesNotMatch(icon, /<text\b/);
+  }
 });

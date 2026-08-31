@@ -131,6 +131,7 @@ test("Illobo web masters are admitted only through the complete owner grant", ()
   assert.equal(policy.source, "illobo");
   assert.equal(policy.item.artistName, "Illobo");
   assert.equal(policy.item.playbackUrl, "/audio/illobo/floating-stars.mp3");
+  assert.equal(policy.item.imageUrl, "/artwork/illobo/floating-stars.png");
   assert.equal(policy.item.shareUrl, "https://soundcloud.com/illobo");
   assert.equal(policy.capabilities.hostedCopy, SOURCE_CAPABILITY.ALLOW);
   assert.equal(allowsSoundtrackEffects(policy), true);

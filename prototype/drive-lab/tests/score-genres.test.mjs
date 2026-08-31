@@ -65,6 +65,8 @@ test("the ready scores name all three live music runtimes", () => {
   assert.equal(getScoreGenre("fracture").score, SCORE_ID);
   assert.equal(getScoreGenre("nightshift").score, "nightshift");
   assert.ok(ready.every((genre) => isScoreReady(genre.id)));
+  assert.ok(ready.every((genre) => genre.coverUrl?.startsWith("/artwork/play-road/")));
+  assert.ok(ready.every((genre) => genre.description?.length > 40));
   assert.match(getScoreGenre("junction").note, /one coherent harmonic identity/i);
   assert.doesNotMatch(getScoreGenre("junction").note, /160|five.*famil/i);
   assert.match(getScoreGenre("fracture").note, /no automatic lead/i);

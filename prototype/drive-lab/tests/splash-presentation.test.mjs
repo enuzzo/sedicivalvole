@@ -308,6 +308,34 @@ test("Soundtrack path cards round-trip between Illobo and Jamendo without losing
   assert.doesNotMatch(styles, /\.soundtrack-choice-card\.is-library \{ display: none; \}/);
 });
 
+test("the Tesla Music drawer uses whole-surface one-tap controls and a no-scroll compact composition", () => {
+  const app = read("App.jsx");
+  const styles = read("styles.css");
+  const scoreLibrary = app.slice(
+    app.indexOf("function ScoreLibraryContent"),
+    app.indexOf("function SoundtrackLibraryContent"),
+  );
+  const soundtrack = app.slice(
+    app.indexOf("function SoundtrackLibraryContent"),
+    app.indexOf("function MusicLibraryPanel"),
+  );
+
+  assert.match(scoreLibrary, /readyScoreGenres\(\)\.map/);
+  assert.doesNotMatch(scoreLibrary, /SCORE_GENRES\.map/);
+  assert.match(scoreLibrary, /className="score-entry-cover" src=\{genre\.coverUrl\}/);
+  assert.match(scoreLibrary, /\{genre\.description\}/);
+  assert.match(soundtrack, /SOUNDTRACK_GENRE_OPTIONS\.slice\(0, 8\)/);
+  assert.match(soundtrack, /SOUNDTRACK_GENRE_OPTIONS\.slice\(8\)/);
+  assert.match(soundtrack, /aria-pressed=\{selected\?\.kind === "pace"/);
+  assert.match(soundtrack, /aria-pressed=\{selected\?\.kind === "genre"/);
+  assert.match(soundtrack, /<MediaGlyph name="play" \/>/);
+  assert.doesNotMatch(soundtrack, />PLAY<\/button>/);
+  assert.match(styles, /@media \(min-width: 651px\) and \(max-height: 650px\)/);
+  assert.match(styles, /\.soundtrack-track-list \{ grid-template-columns: repeat\(3, minmax\(0, 1fr\)\); gap: 3px; \}/);
+  assert.match(styles, /\.soundtrack-filter-row > button \{ min-height: 44px; padding: 0 6px; \}/);
+  assert.match(styles, /\.soundtrack-panel-body > \.privacy-note \{ display: none; \}/);
+});
+
 test("catalog names use readable display labels and align their numbers on one baseline", () => {
   const app = read("App.jsx");
   const styles = read("styles.css");

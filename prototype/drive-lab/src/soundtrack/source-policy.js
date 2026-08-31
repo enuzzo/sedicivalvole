@@ -194,7 +194,7 @@ export function evaluateIlloboTrack(track) {
       streamUrl: `${ILLOBO_STREAM_ORIGIN}/audio/illobo/${encodedFilename}`,
       playbackUrl: `/audio/illobo/${encodedFilename}`,
       shareUrl: ILLOBO_SHARE_URL,
-      imageUrl: null,
+      imageUrl: `/artwork/illobo/${filename.slice(0, -4)}.png`,
       pace: null,
       genres: Object.freeze([]),
     }),

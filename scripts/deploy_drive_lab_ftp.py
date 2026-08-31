@@ -22,6 +22,7 @@ BUILD = ROOT / "prototype" / "drive-lab" / "dist" / "client"
 ILLOBO_ARCHIVE_ROOT = ROOT / "_references" / "audio" / "tracks" / "illobo"
 ILLOBO_WEB_ROOT = ILLOBO_ARCHIVE_ROOT / "web"
 ILLOBO_SOURCE_MANIFEST = ILLOBO_ARCHIVE_ROOT / "web-manifest.json"
+ILLOBO_ARTWORK_ROOT = ROOT / "prototype" / "drive-lab" / "public" / "artwork" / "illobo"
 ILLOBO_REMOTE_DIRECTORY = "illobo"
 ILLOBO_PUBLIC_CATALOG = "catalog.json"
 ILLOBO_PUBLIC_CATALOG_SCHEMA = "sedicivalvole.illobo-public-catalog.v1"
@@ -406,8 +407,11 @@ def illobo_archive() -> tuple[list[dict[str, object]], bytes]:
         ):
             raise ValueError("Illobo track manifest entry is invalid")
         path = ILLOBO_WEB_ROOT / filename
+        artwork_path = ILLOBO_ARTWORK_ROOT / f"{filename.removesuffix('.mp3')}.png"
         if path.is_symlink() or not path.is_file():
             raise FileNotFoundError("Illobo web master is missing")
+        if artwork_path.is_symlink() or not artwork_path.is_file():
+            raise FileNotFoundError("Illobo track artwork is missing")
         if path.stat().st_size != byte_count:
             raise ValueError("Illobo web master size mismatch")
         with path.open("rb") as handle:
@@ -422,6 +426,7 @@ def illobo_archive() -> tuple[list[dict[str, object]], bytes]:
             "title": title.strip(),
             "artistName": "Illobo",
             "filename": filename,
+            "imageUrl": f"/artwork/illobo/{filename.removesuffix('.mp3')}.png",
             "durationSeconds": duration,
             "bytes": byte_count,
             "sha256": digest,

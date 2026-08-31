@@ -65,6 +65,7 @@ import {
   getScoreGenre,
   SCORE_GENRES,
   SCORE_STATUS,
+  readyScoreGenres,
   scoreSource,
 } from "./score/genres.js";
 import { SplashSignalGate } from "./splash-signal-gate.jsx";
@@ -844,14 +845,11 @@ function PrtclCycleControl({ settings, onChange }) {
   );
 }
 
-/**
- * The score library panel.
- *
- * Every direction is shown, including the ones with nothing authored behind
- * them, and those say so on their own face. They are not hidden, because the
- * library is the roadmap; and they are not selectable, because the project rule
- * is explicit that an unimplemented genre may never be labelled as playing.
- */
+function MediaGlyph({ name }) {
+  return <span className={`media-glyph is-${name}`} aria-hidden="true" />;
+}
+
+/** The driving surface lists only scores that can play now. */
 function ScoreLibraryContent({ genreId, onChange }) {
   return (
     <div className="play-road-library">
@@ -860,31 +858,30 @@ function ScoreLibraryContent({ genreId, onChange }) {
         <span>ARRANGED BY THE DRIVE</span>
       </div>
       <ul className="score-list">
-        {SCORE_GENRES.map((genre) => {
-          const ready = genre.status === SCORE_STATUS.ready;
-          const active = ready && genre.id === genreId;
+        {readyScoreGenres().map((genre) => {
+          const active = genre.id === genreId;
           return (
             <li key={genre.id}>
               <button
                 type="button"
-                className={`score-entry${active ? " is-active" : ""}${ready ? "" : " is-preparing"}`}
-                disabled={!ready}
+                className={`score-entry${active ? " is-active" : ""}`}
                 aria-pressed={active}
-                onClick={() => ready && onChange(genre.id)}
+                onClick={() => onChange(genre.id)}
               >
-                <span className="score-entry-number">{genre.number}</span>
+                <img className="score-entry-cover" src={genre.coverUrl} alt="" width="72" height="72" />
                 <span className="score-entry-body">
                   <strong>
-                    {displayLabel(genre)}
+                    <span className="score-entry-title">{displayLabel(genre)} <b>{genre.number}</b></span>
                     <em className={`score-source is-${genre.source}`}>
                       <span aria-hidden="true">{scoreSource(genre.id).mark}</span>
                       {scoreSource(genre.id).label}
                     </em>
                   </strong>
-                  <span>{genre.family} · {genre.note}</span>
+                  <span>{genre.family} · {genre.description}</span>
                 </span>
                 <span className="score-entry-state">
-                  {active ? "PLAYING" : ready ? "PLAY" : "IN PREPARATION"}
+                  <MediaGlyph name={active ? "pause" : "play"} />
+                  <span className="visually-hidden">{active ? "Playing" : "Play"}</span>
                 </span>
               </button>
             </li>
@@ -914,6 +911,7 @@ function SoundtrackLibraryContent({
   const entries = library?.entries ?? [];
   const selected = library?.selection;
   const featuredSelected = selected?.kind === "featured";
+  const genreRows = [SOUNDTRACK_GENRE_OPTIONS.slice(0, 8), SOUNDTRACK_GENRE_OPTIONS.slice(8)];
   const jamendoCoverEntries = featuredSelected ? jamendoPreviewEntries : entries;
   const attributionItems = snapshot?.attribution
     ? [snapshot.attribution.primary, ...(snapshot.attribution.secondary ?? [])].filter(Boolean)
@@ -982,20 +980,38 @@ function SoundtrackLibraryContent({
           <span>BY PACE</span>
           <div className="soundtrack-filter-row">
             {SOUNDTRACK_PACE_OPTIONS.map((pace) => (
-              <div key={pace.id} className={selected?.kind === "pace" && selected.id === pace.id ? "is-selected" : ""}>
+              <button
+                key={pace.id}
+                type="button"
+                className={selected?.kind === "pace" && selected.id === pace.id ? "is-selected" : ""}
+                aria-pressed={selected?.kind === "pace" && selected.id === pace.id}
+                disabled={loading}
+                onClick={() => onBrowseSelection({ kind: "pace", id: pace.id })}
+              >
                 <strong>{pace.label}</strong>
-                <button type="button" disabled={loading} onClick={() => onBrowseSelection({ kind: "pace", id: pace.id })}>PLAY</button>
-              </div>
+                <MediaGlyph name="play" />
+              </button>
             ))}
           </div>
         </div> : null}
         {!featuredSelected ? <div className="soundtrack-filter-group">
           <span>BY GENRE</span>
-          <div className="soundtrack-filter-row is-genres">
-            {SOUNDTRACK_GENRE_OPTIONS.map((genre) => (
-              <div key={genre.id} className={selected?.kind === "genre" && selected.id === genre.id ? "is-selected" : ""}>
-                <strong>{genre.label}</strong>
-                <button type="button" disabled={loading} onClick={() => onBrowseSelection({ kind: "genre", id: genre.id })}>PLAY</button>
+          <div className="soundtrack-filter-rows is-genres">
+            {genreRows.map((row, rowIndex) => (
+              <div key={rowIndex} className="soundtrack-filter-row" style={{ "--filter-columns": row.length }}>
+                {row.map((genre) => (
+                  <button
+                    key={genre.id}
+                    type="button"
+                    className={selected?.kind === "genre" && selected.id === genre.id ? "is-selected" : ""}
+                    aria-pressed={selected?.kind === "genre" && selected.id === genre.id}
+                    disabled={loading}
+                    onClick={() => onBrowseSelection({ kind: "genre", id: genre.id })}
+                  >
+                    <strong>{genre.label}</strong>
+                    <MediaGlyph name="play" />
+                  </button>
+                ))}
               </div>
             ))}
           </div>
@@ -1005,30 +1021,33 @@ function SoundtrackLibraryContent({
             <button key={entry.key} type="button" className={entry.key === current?.key ? "is-current" : ""} onClick={() => onTrack(entry.key)}>
               {entry.imageUrl ? <img src={entry.imageUrl} alt="" width="48" height="48" /> : <span className="soundtrack-track-placeholder" />}
               <span><strong>{entry.title}</strong><small>{entry.artistName}</small></span>
-              <em>{entry.key === current?.key && playing ? "PLAYING" : "PLAY"}</em>
+              <em>
+                <MediaGlyph name={entry.key === current?.key && playing ? "pause" : "play"} />
+                <span className="visually-hidden">{entry.key === current?.key && playing ? "Playing" : "Play"}</span>
+              </em>
             </button>
           ))}
           {!entries.length ? <p>{loading ? `Loading ${featuredSelected ? "Illobo" : "a fresh Jamendo mix"}…` : "No eligible tracks in this selection."}</p> : null}
         </div>
       </section>
 
-      <section className="soundtrack-now-playing" aria-live="polite">
-        {current?.imageUrl ? <img src={current.imageUrl} alt="" width="80" height="80" /> : <span className="soundtrack-artwork-placeholder">{featuredSelected ? "LO" : "JM"}</span>}
-        <div>
-          <small>NOW PLAYING</small>
-          <strong>{current?.title ?? `Preparing ${featuredSelected ? "Illobo playlist" : "Jamendo catalog"}`}</strong>
-          <span>{current?.artistName ?? snapshot?.status ?? "idle"}</span>
-          <span>{snapshot?.attribution?.transitioning ? "EQUAL-POWER TRANSITION · 450 MS" : "AUTHORED RECORDING · 1×"}</span>
-        </div>
-        <div className="soundtrack-transport" aria-label="Soundtrack transport">
-          <button type="button" disabled={!snapshot?.hasPrevious} onClick={onPrevious}>PREVIOUS</button>
-          <button type="button" disabled={!current} onClick={onPlayPause}>{playing ? "PAUSE" : "PLAY"}</button>
-          <button type="button" disabled={!snapshot?.hasNext} onClick={onNext}>NEXT</button>
-        </div>
-      </section>
+      <div className="soundtrack-playback-grid">
+        <section className="soundtrack-now-playing" aria-live="polite">
+          {current?.imageUrl ? <img src={current.imageUrl} alt="" width="80" height="80" /> : <span className="soundtrack-artwork-placeholder">{featuredSelected ? "LO" : "JM"}</span>}
+          <div>
+            <small>NOW PLAYING</small>
+            <strong>{current?.title ?? `Preparing ${featuredSelected ? "Illobo playlist" : "Jamendo catalog"}`}</strong>
+            <span>{current?.artistName ?? snapshot?.status ?? "idle"}</span>
+            <span>{snapshot?.attribution?.transitioning ? "EQUAL-POWER TRANSITION · 450 MS" : "AUTHORED RECORDING · 1×"}</span>
+          </div>
+          <div className="soundtrack-transport" aria-label="Soundtrack transport">
+            <button type="button" disabled={!snapshot?.hasPrevious} onClick={onPrevious} aria-label="Previous track"><MediaGlyph name="previous" /></button>
+            <button type="button" disabled={!current} onClick={onPlayPause} aria-label={playing ? "Pause" : "Play"}><MediaGlyph name={playing ? "pause" : "play"} /></button>
+            <button type="button" disabled={!snapshot?.hasNext} onClick={onNext} aria-label="Next track"><MediaGlyph name="next" /></button>
+          </div>
+        </section>
 
-      {current ? (
-        <section className="soundtrack-credit-card" aria-label="Current Soundtrack credits and handoff">
+        {current ? <section className="soundtrack-credit-card" aria-label="Current Soundtrack credits and handoff">
           <div className="soundtrack-credit-copy">
             <small>{snapshot?.attribution?.transitioning ? "AUDIBLE CREDITS" : "TRACK CREDIT"}</small>
             {attributionItems.length ? attributionItems.map((item) => (
@@ -1051,8 +1070,8 @@ function SoundtrackLibraryContent({
             {trackQrUrl ? <img src={trackQrUrl} alt={`QR code for ${current.title} by ${current.artistName}`} width="72" height="72" /> : <span>QR</span>}
             <small>OPEN TRACK</small>
           </a>
-        </section>
-      ) : null}
+        </section> : null}
+      </div>
 
       <p className="privacy-note">Three browser-owned media elements keep previous, current, and next ready. Playback streams from the selected source; no offline copy is retained.</p>
     </div>

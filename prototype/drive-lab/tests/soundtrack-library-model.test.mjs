@@ -93,7 +93,7 @@ test("passenger pace choices map only to official Jamendo speed metadata", () =>
   });
 });
 
-test("the passenger genre selector exposes three complete rows of verified Jamendo tags", () => {
+test("the passenger genre selector exposes fifteen verified Jamendo tags for the two-row control", () => {
   assert.deepEqual(SOUNDTRACK_GENRE_OPTIONS, [
     { id: "lounge", label: "Lounge" },
     { id: "classical", label: "Classical" },
