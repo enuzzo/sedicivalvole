@@ -1248,6 +1248,39 @@ bank identity and raw-source exclusion. The full offline trajectory measures
 protect bounds and headroom; they do not claim listening acceptance in the
 Tesla cabin.
 
+### 6.7 Calibrate sampled scores at the same playback stage
+
+A real Tesla drive exposed NIGHTSHIFT as materially louder than the other Play
+the Road experiences even though its full offline render and encoded clips did
+not exceed JUNCTION's loudest clips. The mismatch was in the runtime graph:
+JUNCTION applied a `0.72` performance-entry gain before its output bus, while
+NIGHTSHIFT sent every complete sample performance into the corresponding bus at
+unity. Dense, continuous NIGHTSHIFT material therefore gained about `2.85 dB`
+at the exact stage where the two sampled scores should have matched.
+
+Every sampled adaptive score must use the shared performance-entry gain and pass
+the tracked encoded-bank audit before listening. `npm run
+analyze:sampled-score-levels` decodes only the public `.svb` artifacts and
+reports first-pass EBU R128 integrated loudness, range and true peak for every
+asset. The current JUNCTION clips span `-30.57` to `-16.71 LUFS` with a maximum
+`-2.54 dBTP`; NIGHTSHIFT spans `-25.54` to `-18.89 LUFS` with a maximum
+`-3.65 dBTP`. These figures catch gain and bank drift, but do not replace a
+matched-volume cabin comparison because arrangement density and spectral balance
+strongly influence perceived level.
+
+FRACTURE is synthesized rather than sampled, so it must not inherit the sample
+trim by category. Its full production-core fixture was rerun after the report
+and reproduced `-16.775 LUFS` and `-1.319 dBTP`; no blind correction was made.
+Use the same order for future level defects: measure the shipped signal, inspect
+the complete runtime gain graph, change the narrowest shared calibration point,
+then accept the result at low volume in the target cabin.
+
+The 2026-08-31 pre-correction real-cabin pass also confirmed that UNDERWATER was
+audibly active. That proves the effect path, not the final mix: the sampled-score
+normalization defect means the complete effects/listening matrix must be repeated
+after the shared gain correction is published. Never let one working effect or
+one loud source stand in for matched-level, alert-safe cabin acceptance.
+
 ---
 
 ## 7. Sources and material

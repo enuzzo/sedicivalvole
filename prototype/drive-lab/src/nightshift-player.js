@@ -6,6 +6,7 @@ import {
 import { createNightshiftLowSpeedBed } from "./nightshift-low-speed-bed.js";
 import { nightshiftStateForSpeed } from "./nightshift-model.js";
 import { withReadinessTimeout } from "./promise-timeout.js";
+import { SAMPLED_SCORE_PERFORMANCE_LEVEL } from "./sampled-score-levels.js";
 
 const BANK_URL = `/audio/nightshift.svb?build=${encodeURIComponent(__APP_BUILD__)}`;
 const REVIEW_INTERVAL_MS = 50;
@@ -203,7 +204,7 @@ export function createNightshiftPlayer(context, destination, onSnapshot, onBankS
     const section = select(state.id, null);
     const buffer = await ensureDecoded(section.assetId);
     if (!active || !nightshiftStateForSpeed(speed, targetStateId)) return null;
-    nativeGain.gain.setTargetAtTime(1, context.currentTime, 0.22);
+    nativeGain.gain.setTargetAtTime(SAMPLED_SCORE_PERFORMANCE_LEVEL, context.currentTime, 0.22);
     parkBed.setActive(false);
     current = startPrepared({ section, buffer }, context.currentTime + 0.04);
     prepared = null;
@@ -226,7 +227,7 @@ export function createNightshiftPlayer(context, destination, onSnapshot, onBankS
     parkBed.setActive(false);
     if (!nativeMode) {
       nativeMode = true;
-      nativeGain.gain.setTargetAtTime(1, context.currentTime, 0.22);
+      nativeGain.gain.setTargetAtTime(SAMPLED_SCORE_PERFORMANCE_LEVEL, context.currentTime, 0.22);
     }
     if (!current && !pending) {
       startNative().catch((error) => report("error", error));

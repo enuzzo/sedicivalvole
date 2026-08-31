@@ -765,7 +765,7 @@ button { -webkit-tap-highlight-color: transparent; }
 .controls-resting .source-readout:focus-visible { outline: 2px solid var(--paper); outline-offset: -3px; }
 .gps-state {
   display: grid;
-  grid-template-rows: auto auto auto;
+  grid-template-rows: auto auto;
   align-items: center;
   justify-content: center;
   gap: 1px;
@@ -774,7 +774,7 @@ button { -webkit-tap-highlight-color: transparent; }
   border: 0;
   border-left: 1px solid var(--line);
   border-radius: 0;
-  color: rgba(238, 234, 224, .62);
+  color: #ff6b64;
   background: transparent;
   font: inherit;
   font-size: 8px;
@@ -783,10 +783,11 @@ button { -webkit-tap-highlight-color: transparent; }
   letter-spacing: .08em;
   text-align: center;
 }
-.gps-state span { color: var(--paper); font-size: 8px; }
-.gps-state strong { max-width: 100%; overflow: hidden; color: var(--accent); font-size: 6px; text-overflow: ellipsis; white-space: nowrap; }
-.gps-state small { font-size: 6px; letter-spacing: .02em; }
-.gps-state.is-live strong { color: var(--paper); }
+.gps-state span { color: currentColor; font-size: 8px; }
+.gps-state small { color: currentColor; font-size: 6px; letter-spacing: .02em; }
+.gps-state.is-precise { color: #55d991; }
+.gps-state.is-imprecise { color: #f3a84c; }
+.gps-state.is-offline { color: #ff6b64; }
 .gps-help-popover {
   position: absolute;
   top: 78px;

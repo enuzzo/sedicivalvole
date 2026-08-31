@@ -3,15 +3,19 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import {
   advanceAtlasDemoPosition,
   appendAtlasTravelPoint,
+  ATLAS_MARKER_UPDATE_INTERVAL_MS,
   ATLAS_MANUAL_CAMERA_LIMITS,
   atlasEffectProfile,
   atlasKeyboardShortcutAvailable,
   atlasManualCameraShouldReturn,
+  atlasMapPixelRatio,
   atlasTravelFeature,
+  atlasVehicleFeature,
   createLatestAtlasRequestGate,
   normalizeNearbyPages,
   createAtlasStyle,
   manualAtlasCamera,
+  interpolateAtlasPosition,
   paletteToAtlasCss,
   paletteToAtlasMapCss,
   pinchAtlasZoom,
@@ -45,6 +49,10 @@ function recolourStyle(map, palette, effect = null) {
     17, 2 * profile.roadWidthScale,
   ]);
   map.setPaintProperty("atlas-travel-underlay", "line-color", colors.background);
+  map.setPaintProperty("atlas-travel-route", "line-color", colors.accent);
+  map.setPaintProperty("atlas-vehicle-ripple", "circle-color", colors.accent);
+  map.setPaintProperty("atlas-vehicle-dot", "circle-color", colors.accent);
+  map.setPaintProperty("atlas-vehicle-dot", "circle-stroke-color", colors.background);
   map.setPaintProperty("atlas-place-labels", "text-color", colors.foreground);
   map.setPaintProperty("atlas-place-labels", "text-halo-color", colors.background);
   if (map.getLayer("sedicivalvole-buildings")) {
@@ -187,6 +195,9 @@ export default function AtlasField({
         attributionControl: false,
         antialias: false,
         fadeDuration: 0,
+        pixelRatio: atlasMapPixelRatio(window.devicePixelRatio),
+        renderWorldCopies: false,
+        cancelPendingTileRequestsWhileZooming: true,
       });
       mapRef.current = map;
       const manual = {
@@ -339,33 +350,30 @@ export default function AtlasField({
       });
 
       let lastMoveAt = 0;
-      let lastPulseAt = 0;
+      let lastMarkerAt = 0;
       let lastBuildingScale = camera.buildingScale;
       const animate = (now) => {
         if (disposed || failed) return;
         frame = requestAnimationFrame(animate);
         try {
-          if (mapReady && now - lastPulseAt >= 90) {
-            lastPulseAt = now;
-            const phase = ((now / 1000) * (0.18 + Math.min(130, valuesRef.current.speed) / 54)) % 1;
-            const colors = paletteToAtlasMapCss(valuesRef.current.theme.palette);
-            const head = Math.max(0.001, Math.min(0.999, phase));
-            const before = Math.max(0, head - 0.12);
-            const after = Math.min(1, head + 0.12);
-            map.setPaintProperty("atlas-travel-pulse", "line-gradient", [
-              "interpolate", ["linear"], ["line-progress"],
-              0, colors.secondary,
-              before, colors.secondary,
-              head, colors.accent,
-              after, colors.secondary,
-              1, colors.secondary,
-            ]);
+          const current = valuesRef.current;
+          const interpolatedPosition = validAtlasPosition(current.position)
+            ? interpolateAtlasPosition(current.positionSamplesRef?.current, now)
+            : null;
+          const point = interpolatedPosition
+            ?? (validAtlasPosition(current.position) ? current.position : current.demoPosition);
+          if (!point) return;
+          if (mapReady && now - lastMarkerAt >= ATLAS_MARKER_UPDATE_INTERVAL_MS) {
+            lastMarkerAt = now;
+            const phase = current.reducedMotion ? 0 : (now % 1000) / 1000;
+            map.getSource("atlasVehicle")?.setData(atlasVehicleFeature(
+              point,
+              phase,
+              current.reducedMotion ? 0.24 : (1 - phase) * 0.36,
+            ));
           }
           if (now - lastMoveAt < 1100) return;
           lastMoveAt = now;
-          const current = valuesRef.current;
-          const point = validAtlasPosition(current.position) ? current.position : current.demoPosition;
-          if (!point) return;
           const nextCamera = speedToAtlasEffectCamera(
             current.reducedMotion ? Math.min(current.speed, 20) : current.speed,
             current.effect,

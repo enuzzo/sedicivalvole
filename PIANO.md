@@ -540,7 +540,7 @@ enter this plan.
 | --- | --- | --- |
 | Both reports contain zero recorded runtime issues. GPS is live and numeric at roughly 10 Hz, with no null-speed samples, observed accuracy between about 1.6 and 3.3 m, and maxima of 89 and 106 km/h. | Verified field fact | Preserve this cadence/accuracy baseline in M13. No coordinates enter the report, storage or transmission; manual send remains the only telemetry boundary. |
 | DRIVEY, APERTURE, MERIDIAN, PRTCL and PRIMORDIAL phase summaries remain approximately 59–60 FPS with bounded ordinary p95 frame times. | Verified field fact | Treat these as the current Tesla render baseline and detect regressions per phase rather than from one session-wide average. |
-| Every measured ATLAS driving phase sustains only about 22.4–23.1 FPS against its declared 30 FPS target, with p95 intervals around 52–65 ms. | Verified performance defect | Add an ATLAS Tesla profiling gate: identify map repaint/camera/tile costs, then either reach a stable measured 30 FPS or explicitly revise the authored target with owner-visible evidence. The unrelated session pause must not be used to explain away the repeated per-phase result. |
+| Every measured ATLAS driving phase sustains only about 22.4–23.1 FPS against its declared 30 FPS target, with p95 intervals around 52–65 ms. The received 2026-08-31 report independently reproduces `23.15 FPS` / `51.7 ms` p95 across `248.2 s`. | Verified performance defect; bounded local mitigation implemented | ATLAS now caps only its MapLibre framebuffer at `1.25×`, disables world copies, cancels obsolete zoom-tile requests, and consolidates the marker into one `8 Hz` data update. A fresh Tesla report must prove stable measured 30 FPS or the authored target must be explicitly revised with owner-visible evidence. The unrelated session pause must not be used to explain away the repeated per-phase result. |
 | One visible-session pause contains a 12.741 s main-thread long task, a 13.5 s recorder gap and a GPS age near 13 s while ATLAS/JUNCTION remained selected. The report retains duration but not start time, active phase or attribution. | Verified symptom; cause unknown | M13 must retain long-task start time, phase, renderer and nearby state without coordinates. Reproduce before assigning the cause to MapLibre, audio decoding, the vehicle browser or another subsystem. |
 | One JUNCTION request restored FRACTURE, while a later retry activated JUNCTION. The report ended with a healthy 24-clip bank but did not retain the failed request's reason. The cold bank is about 5.81 MB, the reported connection estimate was 1.5 Mbps, and the current transfer timeout is 12 s. | Verified fallback; network-timeout cause is a strong inference, not yet proof | Add a cold-cache constrained-network test for JUNCTION and NIGHTSHIFT. Selection must remain audible, expose the exact failure reason, retry automatically where safe, and eventually activate without requiring a second user selection. Test at 1.5 Mbps and at offline/warm-cache boundaries before changing timeout or bank format. |
 | The first 240-entry event ring is dominated by 231 GPS samples and has lost early session interactions; the flight recorder retains state exposure but not every causal transition. | Verified diagnostic loss | Separate or aggregate high-rate GPS history so significant environment, score, failure, visibility and user-action events survive the full bounded session. Add a saturation test proving early significant events remain available. |
@@ -704,18 +704,19 @@ than missing requirements.
    NPCs only when every generated car can be placed and verified opposite the
    player direction; ambiguous metadata fails closed to zero traffic and the old
    stored count preference is ignored.
-8. **ATLAS now owns A1 and part of A3.** Touch and mouse camera exploration,
+8. **ATLAS now owns A1 and the visible A3 point/route.** Touch and mouse camera exploration,
    hard-clamped `0–85°` pitch bounds, a six-second automatic return, compass
-   control, and an ephemeral directional travel line pass tests. It still lacks
-   the requested round pulsing point, street badge, cardinal-only compass, and
-   embedded Wikipedia reader; physical endpoint feel and near-horizon vehicle
-   acceptance remain open.
+   control, a bounded complete-view route, and one interpolated point with a
+   one-second pulse/ripple pass tests. It still lacks the street badge,
+   cardinal-only compass, and embedded Wikipedia reader; physical endpoint feel
+   and near-horizon vehicle acceptance remain open.
 9. **A3 is not just smoothing.** The bounded eight-sample timestamped model now
    exists at `[b1897e4]`: it is frame-rate independent, does not extrapolate and
    freezes on stale or discontinuous data. `[c7c6647]` feeds every trusted fix
    into that session-only ref before any missing-speed return while keeping
-   ordinary React camera state throttled. The travel line remains a separate
-   representation; the visible round point remains gated.
+   ordinary React camera state throttled. The interpolated feed now drives a
+   separate MapLibre point source; the route compacts old detail without losing
+   its origin and remains outside diagnostics.
 10. **X1 has a useful base.** `DialogSurface` already supplies backdrop close,
     Escape close, focus trapping, focus restoration, and one-modal ownership.
     It can become the shared overlay primitive after the required three-direction
@@ -823,7 +824,7 @@ source implementation.
 | --- | --- | --- | ---: | --- | --- | --- |
 | A1 | Implemented locally at `[8feb142]`: the manual camera is hard-clamped to `0–85°`, MapLibre receives the same bounds, and the exact six-second return is preserved. Physical endpoint feel remains an owner/vehicle acceptance item. | `atlas-model.js`, `atlas-field.jsx`, `atlas-model.test.mjs`, CSS/QA | 1.5 | Exact-scene owner review | Model and runtime share exact endpoints and clamps; one fresh automatic return begins 6000 ms after the latest interaction with no repeated ownership fight. | Near-horizon MapLibre cost and building occlusion. |
 | A2 | Owner-approved after visual gate: add Read more and an in-motion partial-page Wikipedia reader with shared modal behavior, small-A/large-A sizing and warm-light/dark themes. | ATLAS field, `App.jsx` shared overlay, `styles.css`, tests/notices | 2.5 | X1/X2, selected direction | X/backdrop/Escape/focus/scroll work; text sizing and themes persist accessibly; approved size/opacity at 773×601. | Wikipedia frame policy/network failure and driver distraction. |
-| A3 | Feed/model foundation implemented locally at `[b1897e4]` + `[c7c6647]`: trusted coordinates reach an eight-sample session-only ref at GPS cadence even when numeric speed is null; a `100 ms` delayed 30/60 FPS invariant interpolator handles cyclic longitude/heading, never extrapolates, freezes after `1500 ms` and does not animate across gaps above `750 ms`. React camera position stays at `2500 ms`; MapLibre source/layer and the selected round-point treatment remain open. | `atlas-model.js`, `atlas-field.jsx`, tests | 2 | T1 concept, GPS timestamp data, selected overlay direction | 10 Hz synthetic fixes produce smooth 60/30 FPS point motion; stale/invalid fixes freeze honestly; no coordinates in DIAG/storage; rendered point passes the selected direction. | Interpolating across bad fixes can visibly cut corners. |
+| A3 | Feed/model and owner-specified visible treatment implemented locally: trusted coordinates reach an eight-sample session-only ref at GPS cadence even when numeric speed is null; a `100 ms` delayed 30/60 FPS invariant interpolator handles cyclic longitude/heading, never extrapolates, freezes after `1500 ms` and does not animate across gaps above `750 ms`. React camera position stays at `2500 ms`; the MapLibre point source renders one round point with a one-second pulse/ripple. The bright current-view route has a `4096`-point ceiling and compacts older detail instead of dropping the trip origin. | `atlas-model.js`, `atlas-field.jsx`, tests | 2 | T1 concept, GPS timestamp data | 10 Hz synthetic fixes produce smooth 60/30 FPS point motion; stale/invalid fixes freeze honestly; no coordinates in DIAG/storage; route origin survives bounded compaction; target Tesla passes. | Interpolating across bad fixes can visibly cut corners; long-session MapLibre updates still need target profiling. |
 | A3b | Model foundation implemented locally at `[4a4e191]`: derive a bounded local road name only from already rendered transportation features, with language/ref fallbacks and no network path. `queryRenderedFeatures` wiring and selected badge placement remain open. | ATLAS model/field, CSS, tests | 1 | Q28, X2 | Badge never overlaps compass; no extra network call; absent/multilingual names degrade cleanly. | Tile feature schemas vary by zoom and road class. |
 | A4 | Model foundation implemented locally at `[4a4e191]`: normalized heading maps deterministically to English N/NE/E/SE/S/SW/W/NW including exact wraparound. Replacing degree text and selected compass placement remain open. | `atlas-model.js`, field, tests/CSS | 0.5 | X2 | Eight deterministic sectors including wraparound; no numeric degrees in visible UI. | Compact labels still need exact-viewport and cabin-distance acceptance. |
 | X1 | Planned: define one modal manager/primitive plus one non-modal status layer for A2/S1/M2/S5 and GPS help. | `App.jsx` component extraction, `styles.css`, accessibility tests | 2 | three-direction gate | Only one modal owns focus; replacement/close rules are deterministic; status feedback never blocks. | Treating transient feedback as a modal would violate S5. |
@@ -1143,6 +1144,11 @@ number; question 2 asks the owner to confirm the 97-ID interpretation.
 - Real-Tesla touch, motion, storage, network, and listening remain final acceptance boundaries.
 
 ## Ordered work list and tracking
+
+Superseded as an execution queue on 2026-08-31 by the consolidated 17-row order
+in [`docs/MILESTONE-CHECKLIST-2026-08-31.md`](docs/MILESTONE-CHECKLIST-2026-08-31.md).
+The list below remains historical dependency context and must not override that
+checklist.
 
 1. Record the closed owner decisions, complete the source-visible
    non-commercial licence migration audit, and keep every third-party grant

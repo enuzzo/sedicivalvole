@@ -28,6 +28,27 @@ import {
   nightshiftDrumCells,
   nightshiftStateForSpeed,
 } from "../scripts/nightshift-form.mjs";
+import { SAMPLED_SCORE_PERFORMANCE_LEVEL } from "../src/sampled-score-levels.js";
+
+test("sampled adaptive scores share one measured performance gain", async () => {
+  assert.equal(SAMPLED_SCORE_PERFORMANCE_LEVEL, 0.72);
+  const [nightshiftPlayer, junctionPlayer, analyzer, packageSource] = await Promise.all([
+    readFile(new URL("../src/nightshift-player.js", import.meta.url), "utf8"),
+    readFile(new URL("../src/junction-player.js", import.meta.url), "utf8"),
+    readFile(new URL("../scripts/analyze-sampled-score-levels.mjs", import.meta.url), "utf8"),
+    readFile(new URL("../package.json", import.meta.url), "utf8"),
+  ]);
+  assert.equal(
+    nightshiftPlayer.match(/setTargetAtTime\(SAMPLED_SCORE_PERFORMANCE_LEVEL/g)?.length,
+    2,
+  );
+  assert.equal(
+    junctionPlayer.match(/SAMPLED_SCORE_PERFORMANCE_LEVEL,/g)?.length,
+    2,
+  );
+  assert.match(analyzer, /FFmpeg loudnorm first pass \(EBU R128\)/);
+  assert.match(packageSource, /"analyze:sampled-score-levels"/);
+});
 
 test("NIGHTSHIFT grows through native 1980s tempo families without an early fast lane", () => {
   assert.deepEqual(NIGHTSHIFT_STATES.map(({ bpm }) => bpm), [85, 95, 110, 120, 130, 140]);

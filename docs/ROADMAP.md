@@ -79,6 +79,11 @@ requires a real Tesla listening session.
 Completed in the current working line:
 
 - JUNCTION's 24-clip browser runtime uses one 5.8 MB segmented Opus music bank built from 76 distinct recordings. Its eight energy states each own three interchangeable complete performances under one fixed E-minor harmonic grammar. Only one tonal performance plays at a time, changes stay on complete eight-bar boundaries, recent memory prevents an immediate repeat, 40 km/h remains at 127 BPM, 60 km/h remains at 135 BPM, and rest has no break or bassline;
+- JUNCTION and NIGHTSHIFT share one `0.72` sampled-performance entry gain. A
+  reproducible FFmpeg/EBU R128 audit measures every encoded asset in both tracked
+  banks; the common gain closes NIGHTSHIFT's runtime calibration gap, while
+  FRACTURE remains unchanged after its existing full-trajectory test reproduced
+  `-16.775 LUFS` and `-1.319 dBTP`;
 - the bank contains a mixed, processed production rather than loose source samples; browser-delivered bytes remain downloadable and are not described as secret;
 - SOUNDTRACK now uses server-side Jamendo catalogue and exact-ID audio relays,
   short-lived metadata, and three transient previous/current/next media elements
@@ -133,7 +138,7 @@ Implemented:
 - selectable `VERTIGO 02` using the byte-identical upstream Interstate 7 scene with its road, repeated side lights, opposing car trails, bloom, fog, camera, deep distortion, and original dependencies;
 - an external `0–130 km/h` bridge that slows the original clock from stopped to its non-boosted `1×` rate and maps FOV from `90°` to `150°`, without editing the vendor runtime.
 - original `MERIDIAN 03`, rebuilt against the selected reference as a low stable corridor of sparse oblique blades and longitudinal shoulder planes. Bounded field motion, FOV, depth compression, peripheral stretch and parallax carry speed without conventional buildings, cloud slabs or a particle field;
-- lazy-loaded `ATLAS 04`, with a minimal palette-owned OpenFreeMap vector style, 3D buildings, nearby Italian Wikipedia context, five passenger links, a local QR, an explicit no-GPS Milan flight mode, hard-clamped `0–85°` manual pitch, a bounded high-cadence timestamped position feed, and tested but deliberately non-rendered point, rendered-tile road-name and English cardinal-sector foundations;
+- lazy-loaded `ATLAS 04`, with a minimal palette-owned OpenFreeMap vector style, 3D buildings, nearby Italian Wikipedia context, five passenger links, a local QR, an explicit no-GPS Milan flight mode, hard-clamped `0–85°` manual pitch, a bounded high-cadence timestamped position feed, a bright complete-session route that compacts old detail instead of losing the origin, and one interpolated vehicle point with a one-second ripple. Repeated real-Tesla evidence around 23 FPS triggered a MapLibre-only `1.25×` framebuffer ceiling and consolidated `8 Hz` marker update; stable measured 30 FPS remains the next vehicle gate. Rendered-tile road-name and English cardinal-sector foundations remain deliberately unwired until their overlay direction is selected;
 - source-faithful `DRIVEY 05`, with 51 byte-identical upstream files pinned at
   `5104cdade2a3158786b05b9b0680a50e942830cf`, a separate project-owned iframe
   shell/bridge, upstream automatic road/curve following without random player

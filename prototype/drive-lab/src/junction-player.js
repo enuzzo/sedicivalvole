@@ -14,6 +14,7 @@ import {
 } from "./junction-brake.js";
 import { lowSpeedPolicy } from "./low-speed-score.js";
 import { withReadinessTimeout } from "./promise-timeout.js";
+import { SAMPLED_SCORE_PERFORMANCE_LEVEL } from "./sampled-score-levels.js";
 import {
   scheduleEqualPowerGain,
   SCORE_SWITCH_CROSSFADE_SECONDS,
@@ -22,7 +23,6 @@ import {
 const BANK_URL = `/audio/junction.svb?build=${encodeURIComponent(__APP_BUILD__)}`;
 const REVIEW_INTERVAL_MS = 50;
 const SCHEDULE_AHEAD_SECONDS = 0.8;
-const PERFORMANCE_LEVEL = 0.72;
 const OUTPUT_LEVEL = 0.9;
 const CLIP_EDGE_FADE_SECONDS = 0.012;
 export const JUNCTION_RHYTHM_FADE_SECONDS = SCORE_SWITCH_CROSSFADE_SECONDS;
@@ -559,11 +559,11 @@ export function createJunctionPlayer(context, destination, onSnapshot, onBankSta
     tone.frequency.setValueAtTime(effects.cutoff, startAt);
     performanceGain.gain.setValueAtTime(0, startAt);
     performanceGain.gain.linearRampToValueAtTime(
-      PERFORMANCE_LEVEL,
+      SAMPLED_SCORE_PERFORMANCE_LEVEL,
       Math.min(endAt, startAt + CLIP_EDGE_FADE_SECONDS),
     );
     performanceGain.gain.setValueAtTime(
-      PERFORMANCE_LEVEL,
+      SAMPLED_SCORE_PERFORMANCE_LEVEL,
       Math.max(startAt, endAt - CLIP_EDGE_FADE_SECONDS),
     );
     performanceGain.gain.linearRampToValueAtTime(0, endAt);

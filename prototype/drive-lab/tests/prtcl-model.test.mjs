@@ -188,7 +188,7 @@ test("the product feeds authored audio macros into the shared PRTCL field", () =
 
 test("PRTCL uses one small text-only TYPE cycle separate from the shared palette", () => {
   const start = appSource.indexOf("function PrtclCycleControl");
-  const end = appSource.indexOf("function MusicPicker", start);
+  const end = appSource.indexOf("function ScoreLibraryContent", start);
   const controlSource = appSource.slice(start, end);
   assert.ok(start >= 0 && end > start);
   assert.match(controlSource, /<span>TYPE<\/span>/);

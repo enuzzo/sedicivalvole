@@ -339,15 +339,22 @@ Every trusted fix recenters the map. Device heading owns the bearing when
 available; otherwise a displacement of at least three metres between fixes
 derives it, while smaller jitter preserves the last reliable direction. A
 reliable Geolocation point is held only in session memory.
-A3 has a deliberately non-rendered motion foundation: at most eight monotonic
+A3 has a rendered motion foundation: at most eight monotonic
 timestamped fixes remain in session memory, and a `100 ms` delayed sampler
 interpolates latitude, longitude and the shortest heading arc independently of
 render frame rate. It never extrapolates, freezes after `1500 ms`, and refuses
 to animate across gaps above `750 ms`. Trusted coordinates feed the bounded ref
 at GPS cadence even when `coords.speed` is null, without driving app-wide React
 state at that rate; the first map/camera fix is immediate and later camera
-updates remain at `2500 ms`. The MapLibre point source/layer remains separate
-work behind the selected overlay direction.
+updates remain at `2500 ms`. The MapLibre point source renders one pulsing point
+at the interpolated route head; its one-second ripple uses one data-driven
+source update at `8 Hz` rather than repeated style mutations. A bright route
+retains the current ATLAS-view trip through origin-preserving bounded
+compaction. On high-density displays, only the map framebuffer is capped at
+`1.25×`; product text and controls retain native resolution. World copies are
+disabled and obsolete zoom-tile requests are cancelled. The cap is a measured
+response to repeated `23 FPS` real-Tesla ATLAS evidence and still requires a new
+target report to prove the deliberate `30 FPS` ceiling.
 A3b reads a bounded label only from the map's already rendered transportation
 features and never introduces reverse geocoding; A4 partitions normalized
 heading into eight deterministic English cardinal sectors. Both are pure model

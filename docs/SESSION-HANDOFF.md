@@ -40,7 +40,7 @@ The registry is `prototype/drive-lab/src/flux-environments.js`.
 | APERTURE 01 | original WebGL2 plus Canvas2D fallback | rigid square wall recedes intact and disappears at the existing tunnel terminus by `40 km/h` |
 | VERTIGO 02 | vendored Interstate 7 | upstream tree stays byte-identical; the external bridge drives speed/FOV and existing colour channels |
 | MERIDIAN 03 | original WebGL2 plus Canvas2D fallback | selected-reference corridor of sparse oblique blades and longitudinal planes; bounded vertical field plus monotonic FOV/depth/peripheral speed lens |
-| ATLAS 04 | lazy MapLibre/OpenFreeMap WebGL | ephemeral GPS or explicit Milan demo drives 3D city tiles, nearby Wikipedia reading and passenger QR |
+| ATLAS 04 | lazy MapLibre/OpenFreeMap WebGL | ephemeral GPS or explicit Milan demo drives 3D city tiles, a bounded complete-view route, one pulsing position point, nearby Wikipedia reading and passenger QR |
 | DRIVEY 05 | byte-identical Rezmason runtime plus project bridge | road following, lane-centred zero hold, opposing-only traffic, three cameras, and normal/wire modes |
 | PRTCL 06 | original WebGL2 particle renderer | Fractal Frequency, Murmuration, and Axiom with speed-owned form/point scale, depth, and travel |
 All six visuals use ten curated palettes. Vertigo is recoloured without editing
@@ -80,6 +80,11 @@ would copy it without its dependencies and fail after deployment.
   performance at a time with changes at complete eight-bar boundaries, native 127–168 BPM pacing with
   127 BPM at 40 km/h and 135 BPM at 60 km/h, beatless ambient rest, and at most
   six decoded clips;
+- NIGHTSHIFT 03 — sampled and `ready`; 18 complete eight-bar performances,
+  three takes across native `85–140 BPM` states, one A-minor grammar, beatless
+  PARK, and at most six decoded clips. JUNCTION and NIGHTSHIFT now share the
+  `0.72` sampled-performance entry gain; the public bank audit is reproducible
+  with `npm run analyze:sampled-score-levels`;
 - PULSE 03, CUTWATER 04, LOWTIDE 05, NIGHTCAST 06, STILLWATER 07 — declared
   `preparing`, disabled, and must not be presented as playing.
 
@@ -114,26 +119,38 @@ asserted.
 - v3 reports are coordinate-free and transmitted only through the explicit
   `SEND DIAGNOSTIC` gesture;
 - the in-memory flight recorder is bounded and disappears on reload;
-- the long-payload float serialization fix is deployed and synthetically
-  verified, but a new real drive must still reach `SENT`, arrive in Gmail, and
-  be inspected before inbox delivery is considered verified;
+- the owner-supplied complete attachment from build `20260831-0853` closes the
+  `GPS → SENT → received` path. Its coordinate-free v3 payload has 3,928 numeric
+  fixes, 243 flight samples, zero runtime issues, and exposes a repeatable
+  `23.15 FPS` ATLAS phase that remains a target-performance gate;
 - `REPORT` and the send action must remain reachable at `773 × 601`.
 
 ## Immediate work
 
-Current clean checkpoint: `main` aligned with `origin/main` at documentation
-commit `268c787`; implemented Music drawer commit `61f356d`; canonical live
-build `20260831-0853`. Its guarded 108-file no-delete deployment, byte identity,
-live Jamendo pace/genre endpoints, and cache-busted `773 × 601` Browser QA pass.
-The Illobo mark is explicitly provisional until the owner supplies the final
-logo.
+The session started from clean `main == origin/main == bb5a2c9`; the implemented
+Music drawer remains commit `61f356d` and canonical live build
+`20260831-0853`. The guarded 108-file no-delete deployment, byte identity, live
+Jamendo pace/genre endpoints, and cache-busted `773 × 601` Browser QA pass. The
+Illobo mark is explicitly provisional until the owner supplies the final logo.
 
-1. Run the physical-Tesla SOUNDTRACK checklist in
-   [`MILESTONE-CHECKLIST-2026-08-31.md`](MILESTONE-CHECKLIST-2026-08-31.md).
-2. Resume ATLAS at the exactly-three overlay-direction gate, then connect the
-   selected A3/A3b/A4 marker, road, and cardinal treatment.
-3. Confirm the corrected diagnostic delivery path with a fresh real-drive report.
-4. Begin Engine discovery only through the required three-direction gate.
+The current working tree intentionally contains the locally verified drive
+corrections: complete ATLAS-view route retention with origin-preserving bounded
+compaction, one interpolated pulsing point/ripple, two-line colour-coded GPS,
+shared `0.72` sampled-performance gain, a public-bank loudness audit, updated
+tests, a `1.25×` MapLibre-only framebuffer ceiling, consolidated `8 Hz` marker
+updates, and synchronized current/checklist/music/diagnostic documentation. Targeted Atlas,
+NIGHTSHIFT, JUNCTION, and FRACTURE checks pass `60/60`; the complete suite
+passes `478/478`, the 142-module App / 67-module LAB / Sites build passes, and
+local exact-viewport Browser QA has no warning/error. The owner authorized the
+implementation checkpoint, push and canonical publication; completion of that
+release work and target-vehicle acceptance remain separate gates.
+
+Continue only from the 17-row execution order in
+[`MILESTONE-CHECKLIST-2026-08-31.md`](MILESTONE-CHECKLIST-2026-08-31.md). The
+first row is the explicit owner gate for committing, pushing, and publishing
+these corrections; the second is their physical-Tesla acceptance. Do not reopen
+the route/dot treatment as an ATLAS design exploration: only the still-unwired
+road/cardinal overlay retains the exactly-three direction gate.
 
 ## Verification
 

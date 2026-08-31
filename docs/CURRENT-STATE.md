@@ -66,10 +66,12 @@ dated study documents.
   palette-owned OpenFreeMap vector style with 3D buildings, and pairs it with a
   selected-page Italian Wikipedia abstract, full-width free image, five nearby
   choices at the Tesla viewport and a local QR. All ten theme profiles now own
-  explicit label, road and pulse contrast floors.
+  explicit label, road and route contrast floors.
   Without reliable GPS, ATLAS keeps the normal control plane instead of a
-  blocking waiting splash. The top navigation reports GPS status and metre
-  accuracy; a non-modal accessible panel offers an honest retry path and a
+  blocking waiting splash. The top navigation shows only `GPS` and metre
+  accuracy: green means a connected fix at `4 m` or better, orange means a
+  connected but less accurate fix, and red means GPS is disconnected. A
+  non-modal accessible panel offers an honest retry path and a
   fixed Milan demo without entering coordinates into diagnostics. The camera
   remains oblique and building-rich at `130 km/h`, centers on trusted fixes and
   follows reported or inferred heading. One pointer or a primary-button mouse
@@ -79,8 +81,10 @@ dated study documents.
   product chrome while keeping its real controls and GPS popup interactive.
   After six idle seconds it eases to the current automatic point, bearing,
   pitch and zoom. A MapLibre
-  compass shows heading, and an ephemeral `line-progress` pulse travels along
-  the latest in-memory path in driving order. The `246 px` passenger panel
+  compass shows heading. A bright route retains the complete current ATLAS-view
+  trip and remains legible while zooming out; a `4096`-point ceiling compacts
+  older detail instead of deleting the trip origin. One interpolated point at
+  the route head pulses once per second with a restrained expanding ripple. The `246 px` passenger panel
   collapses behind a persistent midpoint handle, has one touch-scroll context,
   and keeps mandatory attribution in a tiny translucent strip above the footer.
   A bounded session-only A3 foundation now retains eight monotonic timestamped
@@ -89,12 +93,20 @@ dated study documents.
   Trusted coordinates feed that buffer at GPS cadence outside React state and
   still arrive when numeric GPS speed is unavailable; the first calm
   map/camera update is immediate and later ones remain throttled to `2500 ms`.
-  The buffer is not yet connected to a MapLibre point source or visible marker;
-  point treatment remains behind the ATLAS overlay design gate.
+  The buffer now drives the MapLibre point source at frame cadence without
+  routing coordinates through React state or diagnostics.
   Model-only A3b/A4 helpers also derive a bounded local road name strictly from
   already rendered transportation features and map headings to eight English
   cardinal sectors. They make no reverse-geocoding request and remain unwired
   until road-badge and compass placement are selected.
+  The received build-`20260831-0853` real-drive report measures ATLAS/JUNCTION
+  at `23.15 FPS` average and `51.7 ms` p95 for `248.2 s`, while Drivey and
+  Vertigo remain near 60 FPS. The local correction caps only MapLibre at
+  `1.25×` pixel density, disables repeated world rendering, cancels obsolete
+  zoom-tile requests, and consolidates marker animation into one `8 Hz` data
+  update. Exact local `773 × 601` QA renders the full-width map framebuffer at
+  `966 × 751` without console warnings/errors; a new Tesla report must prove
+  the 30 FPS target.
 - WAKE is rejected after repeated live review: its ribbons read as disordered
   rain rather than a convincing authored 3D road field. Its renderer, fallback,
   tests, catalog entry and current QA captures have been removed. The historical
@@ -280,7 +292,12 @@ dated study documents.
   a six-voicing, clockless, breathing A-minor ambience with no beat or bass.
   The 5.5 MB Opus bank exposes only complete mixes and retains at most six
   decoded clips. Offline measurement is `-21.4 LUFS` integrated, `6.6 LU` LRA
-  and `-3.8 dBFS` true peak; listening acceptance remains open.
+  and `-3.8 dBFS` true peak. Encoded-bank analysis measures the individual
+  NIGHTSHIFT assets at `-25.54` to `-18.89 LUFS` and the JUNCTION assets at
+  `-30.57` to `-16.71 LUFS`. Both sampled adaptive players now apply the same
+  `0.72` performance-entry gain; this corrects NIGHTSHIFT's approximately
+  `2.85 dB` in-car level mismatch without changing FRACTURE. Listening
+  acceptance remains open.
 - The scores retain authored low-speed grammar. Below `0.8 km/h`, PARK
   sustains a very quiet, clockless mood harmony with no beat or bass. A genuine
   forward crossing at `1.2 km/h` plays exactly two soft consonant DEPART events;
@@ -410,8 +427,8 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The canonical live product is version `0.0.0`, source commit `a4d34c8`, build
-  `20260830-2243`. Its guarded publication and read-only identity checks pass;
+- The canonical live product is version `0.0.0`, source commit `61f356d`, build
+  `20260831-0853`. Its guarded publication and read-only identity checks pass;
   canonical HTML, JavaScript, CSS, restored Orbitron WOFF2 and approved 16 Road
   SVG are byte-identical to the clean local build. Exact live `773 × 601`
   Browser QA verifies the compact `360 × 160 px` home action, the loaded `42 px`
@@ -428,33 +445,39 @@ dated study documents.
 
 ## Open work
 
-1. Validate DRIVEY automatic road/curve following, ten-second zero hold,
+1. Publish the owner-authorized ATLAS/GPS/NIGHTSHIFT corrections through a
+   verified implementation checkpoint, guarded no-delete deployment and
+   canonical byte/cache/browser gates.
+2. Validate the complete ATLAS route, pulsing vehicle point, three-state GPS
+   control, measured 30 FPS ATLAS cadence and corrected NIGHTSHIFT level in the
+   Tesla after publication.
+3. Validate DRIVEY automatic road/curve following, ten-second zero hold,
    zero-to-motion resume, opposing-only traffic and both native palette channels
    in the Tesla. Validate ATLAS multitouch, live GPS
-   recovery, map matching, pulse direction, passenger readability and palette
+   recovery, map matching, route continuity, point/ripple behavior, passenger readability and palette
    contrast on the target screen.
-2. Perform low-volume listening and a real-Tesla drive across FRACTURE's full
+4. Perform low-volume listening and a real-Tesla drive across FRACTURE's full
    ascent/descent and boundary reversals, JUNCTION's long PARK holds and later
    transition, NIGHTSHIFT's PARK form and complete `85–140 BPM` ascent/descent,
    and the OPEN/BLOOM gain changes. Automated visual, structural and
    loudness evidence is not perceptual acceptance.
-3. Audition NIGHTSHIFT at low volume, verify perceived phrasing and loudness
+5. Audition NIGHTSHIFT at low volume, verify perceived phrasing and loudness
    against both existing scores, then validate acceleration/reversal behavior in
    the target Tesla. Automated measurements are not perceptual acceptance.
-4. Replace the failed magnitude-residual decision with a three-way evidence
+6. Replace the failed magnitude-residual decision with a three-way evidence
    stack. Validate shared ADSR/filter envelopes, phase seeds, detune, chorus,
    spectral slope and saturation; add stereo and phase-coherence evidence with
    explicit invalidity reasons before any detected pitch set can gate JUNCTION
    material.
-5. Validate PRTCL motion, performance, touch, and thermal behavior on the target
+7. Validate PRTCL motion, performance, touch, and thermal behavior on the target
    Tesla. Present exactly three original Gradient Field directions before any
    implementation, then admit only the selected direction through a fresh
    licence and performance gate. Validate the revised OPEN intake at real
    playback level.
-6. Design Engine only after exactly three Engine-specific directions are shown
+8. Design Engine only after exactly three Engine-specific directions are shown
    and one is selected. Keep `VERSION` at `0.0.0` until an explicit release is
    approved.
-7. Build the queued landscape-first iPhone presentation across representative
+9. Build the queued landscape-first iPhone presentation across representative
    `667 × 375` through `932 × 430` Safari viewports. Apply safe-area insets,
    replace the interactive phone portrait layout with an accessible inert
    rotation notice, and preserve the running session across a live rotation

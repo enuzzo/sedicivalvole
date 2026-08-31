@@ -16,6 +16,7 @@
     "render:nightshift": "node scripts/render-nightshift-sketch.mjs",
     "analyze:eighties": ".sample-analysis-venv/bin/python scripts/analyse-eighties-library.py --source ../../_references/audio/samples/80s --output ../../_references/audio/analysis/eighties-library.json",
     "analyze:junction-brake": "node scripts/analyze-junction-brake.mjs --check",
+    "analyze:sampled-score-levels": "node scripts/analyze-sampled-score-levels.mjs",
     "preview": "vite preview",
     "native:check": "node scripts/native-toolchain.mjs --check",
     "native:prepare": "node scripts/native-toolchain.mjs --prepare",

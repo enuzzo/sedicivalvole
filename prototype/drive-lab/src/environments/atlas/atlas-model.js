@@ -11,12 +11,30 @@ export const ATLAS_POSITION_BUFFER_LIMIT = 8;
 export const ATLAS_POSITION_INTERPOLATION_DELAY_MS = 100;
 export const ATLAS_POSITION_MAXIMUM_GAP_MS = 750;
 export const ATLAS_POSITION_STALE_AFTER_MS = 1500;
+export const ATLAS_TRAVEL_POINT_LIMIT = 4096;
+export const ATLAS_TRAVEL_MINIMUM_DISTANCE_M = 2;
+export const ATLAS_MAXIMUM_PIXEL_RATIO = 1.25;
+export const ATLAS_MARKER_UPDATE_INTERVAL_MS = 125;
+export const ATLAS_GPS_PRECISE_ACCURACY_M = 4;
 export const ATLAS_CARDINAL_DIRECTIONS = Object.freeze([
   "N", "NE", "E", "SE", "S", "SW", "W", "NW",
 ]);
 export const ATLAS_ROAD_LAYER_IDS = Object.freeze(["atlas-roads"]);
 
 const clamp = (value, minimum, maximum) => Math.min(maximum, Math.max(minimum, value));
+
+/**
+ * Bounds the MapLibre framebuffer independently from UI/text resolution.
+ * The verified Tesla DPR is approximately 1.53; a 1.25 ceiling removes about
+ * one third of the map pixels while retaining more than CSS-pixel resolution.
+ */
+export function atlasMapPixelRatio(devicePixelRatio) {
+  const ratio = Number(devicePixelRatio);
+  return Math.min(
+    ATLAS_MAXIMUM_PIXEL_RATIO,
+    Math.max(1, Number.isFinite(ratio) && ratio > 0 ? ratio : 1),
+  );
+}
 
 export function manualAtlasCamera(camera, deltaX, deltaY) {
   return {
@@ -219,18 +237,29 @@ export function interpolateAtlasPosition(samples, renderAtMs, {
 }
 
 /**
- * Keeps only an ephemeral, chronological travel line. The caller owns this
- * array in memory and clears it with the map; diagnostics never receive it.
+ * Keeps one ephemeral, chronological travel line for the current ATLAS view.
+ * When the bounded array fills, older detail is decimated instead of deleting
+ * the beginning of the trip. The complete route therefore remains visible
+ * while memory and GeoJSON work stay bounded; diagnostics never receive it.
  */
-export function appendAtlasTravelPoint(points, position, maximumPoints = 8) {
+export function appendAtlasTravelPoint(
+  points,
+  position,
+  maximumPoints = ATLAS_TRAVEL_POINT_LIMIT,
+) {
   if (!validAtlasPosition(position)) return Array.isArray(points) ? points : [];
   const previous = Array.isArray(points) ? points : [];
   const last = previous.at(-1);
-  if (last && atlasPointDistanceMetres(last, position) < 1.2) return previous;
-  return [...previous, {
+  if (last && atlasPointDistanceMetres(last, position) < ATLAS_TRAVEL_MINIMUM_DISTANCE_M) {
+    return previous;
+  }
+  const next = [...previous, {
     latitude: position.latitude,
     longitude: position.longitude,
-  }].slice(-Math.max(2, maximumPoints));
+  }];
+  const limit = Math.max(2, Math.floor(Number(maximumPoints) || ATLAS_TRAVEL_POINT_LIMIT));
+  if (next.length <= limit) return next;
+  return next.filter((_, index) => index === 0 || index === next.length - 1 || index % 2 === 0);
 }
 
 export function atlasTravelFeature(points) {
@@ -243,6 +272,20 @@ export function atlasTravelFeature(points) {
       type: "Feature",
       properties: {},
       geometry: { type: "LineString", coordinates },
+    }] : [],
+  };
+}
+
+export function atlasVehicleFeature(position, pulse = 0, rippleOpacity = 0.36) {
+  return {
+    type: "FeatureCollection",
+    features: validAtlasPosition(position) ? [{
+      type: "Feature",
+      properties: {
+        pulse: clamp(Number(pulse) || 0, 0, 1),
+        rippleOpacity: clamp(Number(rippleOpacity) || 0, 0, 1),
+      },
+      geometry: { type: "Point", coordinates: [position.longitude, position.latitude] },
     }] : [],
   };
 }
@@ -280,6 +323,7 @@ export function validAtlasPosition(position) {
 export function atlasGpsPresentation(gpsState, accuracyM, source = "GPS") {
   const state = String(gpsState || "not tested");
   const live = source === "DEMO" || state === "live";
+  const connected = source !== "DEMO" && state === "live";
   const requiresHelp = [
     "permission denied",
     "signal unavailable",
@@ -297,6 +341,11 @@ export function atlasGpsPresentation(gpsState, accuracyM, source = "GPS") {
     requiresHelp,
     status,
     accuracy: Number.isFinite(accuracyM) ? `±${Math.round(accuracyM)} m` : "±— m",
+    tone: !connected
+      ? "offline"
+      : Number.isFinite(accuracyM) && accuracyM <= ATLAS_GPS_PRECISE_ACCURACY_M
+        ? "precise"
+        : "imprecise",
   };
 }
 
@@ -519,8 +568,11 @@ export function createAtlasStyle(palette) {
       },
       atlasTravel: {
         type: "geojson",
-        lineMetrics: true,
         data: atlasTravelFeature([]),
+      },
+      atlasVehicle: {
+        type: "geojson",
+        data: atlasVehicleFeature(null),
       },
     },
     layers: [
@@ -550,17 +602,17 @@ export function createAtlasStyle(palette) {
         layout: { "line-cap": "round", "line-join": "round" },
         paint: {
           "line-color": colors.background,
-          "line-width": ["interpolate", ["linear"], ["zoom"], 10, 2.2, 17, 8],
-          "line-opacity": 0.72,
+          "line-width": ["interpolate", ["linear"], ["zoom"], 3, 4, 10, 5, 17, 9],
+          "line-opacity": 0.82,
         },
       },
       {
-        id: "atlas-travel-pulse", type: "line", source: "atlasTravel",
+        id: "atlas-travel-route", type: "line", source: "atlasTravel",
         layout: { "line-cap": "round", "line-join": "round" },
         paint: {
-          "line-width": ["interpolate", ["linear"], ["zoom"], 10, 0.9, 17, 3.2],
-          "line-opacity": 0.9,
-          "line-gradient": ["interpolate", ["linear"], ["line-progress"], 0, colors.secondary, 1, colors.accent],
+          "line-color": colors.accent,
+          "line-width": ["interpolate", ["linear"], ["zoom"], 3, 1.6, 10, 2.2, 17, 4],
+          "line-opacity": 0.96,
         },
       },
       {
@@ -573,6 +625,25 @@ export function createAtlasStyle(palette) {
           "fill-extrusion-height": ["coalesce", ["get", "render_height"], 5],
           "fill-extrusion-base": ["coalesce", ["get", "render_min_height"], 0],
           "fill-extrusion-opacity": 0.78,
+        },
+      },
+      {
+        id: "atlas-vehicle-ripple", type: "circle", source: "atlasVehicle",
+        paint: {
+          "circle-radius": ["interpolate", ["linear"], ["get", "pulse"], 0, 7, 1, 19],
+          "circle-color": colors.accent,
+          "circle-opacity": ["get", "rippleOpacity"],
+          "circle-blur": 0.18,
+        },
+      },
+      {
+        id: "atlas-vehicle-dot", type: "circle", source: "atlasVehicle",
+        paint: {
+          "circle-radius": ["interpolate", ["linear"], ["zoom"], 3, 3.5, 10, 4.5, 17, 6],
+          "circle-color": colors.accent,
+          "circle-stroke-color": colors.background,
+          "circle-stroke-width": 1.5,
+          "circle-opacity": 1,
         },
       },
       {

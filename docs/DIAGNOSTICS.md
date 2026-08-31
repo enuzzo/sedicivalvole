@@ -200,3 +200,36 @@ Sanitized endpoint failures are shown in the drawer. The page keeps the recorder
   discarded by a numeric-only check, and `audio` duplicated road energy rather
   than measuring the output. Section/harmonic-identity/take state and a real analyser
   RMS/peak meter are now recorded.
+
+## Received real-drive attachment — 2026-08-31
+
+The owner supplied the complete received attachment
+`sedicivalvole-diagnostic-20260831T070927Z-build-20260831-0853.json.gz` from the
+representative drive completed before the office session. The GZIP is valid and
+has SHA-256
+`24dcf0242f641dd76de448b01cf9f6630033f5b89cbab202d225adf7832fdcf5`.
+It identifies schema `sedicivalvole.tesla-diagnostic.v3`, source commit
+`61f356d`, build `20260831-0853`, the canonical URL, GPS input, an explicit
+send gesture, full-evidence transport, and server acceptance at
+`2026-08-31T07:09:27+00:00`. The owner-supplied received attachment closes the
+end-to-end `GPS → SENT → received` diagnostic-delivery gate.
+
+| Signal | Received evidence |
+|---|---|
+| Display | exact `773 × 601`, DPR `1.53`, split mode, `1254 × 784` logical screen |
+| GPS | `3928` numeric / `0` null samples, approximately `10 Hz`, `2.5 m` median accuracy, `84.0001 km/h` maximum |
+| Drive trace | `243` samples across `485.9 s`, approximately `4.078 km`, `384 s` moving and `100 s` stationary |
+| Exposure | Drivey, Atlas and Vertigo; JUNCTION and NIGHTSHIFT; BREAK/FULL/ENTER/CRUISE/GLIDE/PARK |
+| Audio | `48 kHz`, AudioWorklet available, `42.667 ms` base latency, `184–208 ms` positive output-latency history, six decoded NIGHTSHIFT clips / `49.3 MB` decoded PCM, no fallback |
+| Network | changing `3g`/`4g` estimate, `1.35–1.5 Mbps`, `100–250 ms` RTT; no failed instrumented application request |
+| Safety/privacy | zero runtime issues; coordinates collected/stored/transmitted all `false` |
+
+Non-ATLAS rendered phases remain healthy: Drivey/JUNCTION averages `59.9 FPS`,
+Vertigo/JUNCTION `59.85 FPS`, and Vertigo/NIGHTSHIFT `59.9 FPS`. ATLAS/JUNCTION
+is a repeatable performance defect rather than a session-pause artefact:
+`23.15 FPS` average, `43.75 ms` median, `51.7 ms` p95, `100.1 ms` maximum,
+`4967` frames above `34 ms`, and `934` frames above `50 ms` across `248.2 s`.
+Eight long tasks total `881 ms` with a `354 ms` maximum; no prior 12-second
+pause recurs. Local mitigation therefore reduces only the MapLibre framebuffer
+and repeated marker/style work. A new target-vehicle report must prove stable
+30 FPS before ATLAS performance acceptance can close.

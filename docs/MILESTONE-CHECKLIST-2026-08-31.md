@@ -4,6 +4,26 @@ This is the recoverable closeout for the autonomous pre-03:00 work window. It
 separates completed code, objective gates, publication evidence, and work that
 still needs a human or target vehicle.
 
+This file is now the single operational checklist. The complete requirement
+provenance remains in
+[`reconciliation/COMPLETE-USER-REQUIREMENTS-2026-08-29.md`](reconciliation/COMPLETE-USER-REQUIREMENTS-2026-08-29.md),
+the current factual overview in [`CURRENT-STATE.md`](CURRENT-STATE.md), and the
+phase dependencies in [`ROADMAP.md`](ROADMAP.md). A historical row in those
+sources is not a second active queue.
+
+## Consolidated completed work
+
+| Workstream | Status | What is complete | Remaining acceptance boundary |
+|---|---|---|---|
+| Recovery and scope | [x] RECONCILED | The conflicting-session inventory, complete user-requirement ledger, single-writer boundary, rejected directions, superseded interpretations, and current main checkout were recovered without reconstructing decisions from memory. | Keep this checklist and the current-state documents synchronized. |
+| Licensing and source safety | [x] IMPLEMENTED | PolyForm scope, creator identity, third-party notices, upstream integrity boundaries, ignored source-library policy, secret-safe Jamendo relay, and no-offline-copy rules are documented and tested. | Recheck source terms when a new source or asset is admitted. |
+| Signal and diagnostics | [x] IMPLEMENTED · LIVE | GPS/Demo normalization, bounded signal response, acceleration/braking macros, coordinate-free v3 report, bounded flight recorder, explicit send, and protected owner LAB are implemented. | Fresh Tesla `SENT` → received Gmail evidence remains open. |
+| Product shell and controls | [x] IMPLEMENTED · LIVE | Signal Gate, Instrument Deck, six-visual/six-score catalogue grammar, Title Case editorial labels, compact Tesla footer, global MUTE/FX, ten palettes, REPORT, and equal Engine/Flux navigation contract are in place. | Engine itself remains a design/audio milestone. |
+| Flux visual catalogue | [x] IMPLEMENTED · LIVE | Aperture, byte-identical Vertigo, Meridian, Atlas, source-faithful Drivey, and PRTCL are selectable; WAKE, PLUMB, and PRIMORDIAL are retired from runtime while their decisions remain recorded. | Target-Tesla motion, touch, thermal, and long-session acceptance is incomplete. |
+| Adaptive music | [x] IMPLEMENTED · LIVE BASELINE | FRACTURE, JUNCTION, and NIGHTSHIFT have authored low-speed behavior, complete transition contracts, bounded runtimes, measured dynamics, and shared OPEN/UNDERWATER/BLOOM processing. | Full low-volume and real-drive listening remains mandatory. |
+| Fixed Soundtrack | [x] IMPLEMENTED · LIVE | The equal **Play the Road** / **Soundtrack** drawer, Illobo Featured, Jamendo Library, 30-minute rotation, immediate passenger pace/genre/track selection, authored `1×`, attribution, transient three-deck media, and global MUTE/FX are live in build `20260831-0853`. | Physical effects, audible 450 ms skip, compact QR, and final Illobo logo remain open. |
+| 2026-08-31 drive corrections | [x] IMPLEMENTED LOCALLY | ATLAS retains the complete current-view route through bounded origin-preserving compaction, shows one interpolated pulsing point and ripple, and removes the moving line highlight. GPS now shows only `GPS` plus accuracy with green/orange/red state. NIGHTSHIFT now shares JUNCTION's `0.72` sample-performance gain; a repeatable bank audit was added; FRACTURE was measured and left unchanged. | Commit/push/deploy need explicit authorization; the corrected behavior then needs Tesla acceptance. |
+
 ## SOUNDTRACK production prototype
 
 - [x] keep the Jamendo read credential server-side and outside Git, logs, build
@@ -114,17 +134,40 @@ not a new autonomous feature block.
   16,452,947-byte no-delete transfer and repeat byte-identity plus cache-busted
   live Browser QA at both target viewports.
 
-## Ordered next work
+## Authoritative ordered next work
 
-1. Physical-Tesla SOUNDTRACK listening: automatic OPEN/UNDERWATER/BLOOM,
-   four manual effects, transport, buffering, touch size, and licence card.
-2. ATLAS overlay A3/A3b/A4: complete the required exactly-three visual direction
-   gate, then render the selected vehicle marker, road badge, and cardinal state.
-3. ATLAS target-Tesla profiling at the deliberate 30 FPS map ceiling.
-4. DISCOVER: exactly three image-led directions before implementation, reusing
-   session-only ATLAS location context and source-correct Wikimedia attribution.
-5. Gradient Field only after the ATLAS-derived passenger work above.
-6. X10 LIGHT/DARK/AUTO visible controls and DARK token mapping.
-7. Landscape-first iPhone presentation and inert portrait rotation notice.
-8. Nice-to-have register: iPhone motion input, DRIVEY Aerial speed zoom, local
-   CONDITIONS exceptions, grouped Visual Library, and future passenger controls.
+This is the execution order. `OFFICE` means it can be completed without the
+vehicle; `TESLA` requires the target car; `OWNER GATE` requires a product or
+publication choice before work can continue.
+
+| Order | Gate | Status | Work | What will be done | Completion evidence |
+|---:|---|---|---|---|---|
+| 1 | OWNER GATE → OFFICE | [ ] AUTHORIZED / IN PROGRESS | Release today's corrections | Owner authorization was received on 2026-08-31. Create the verified implementation checkpoint; add the append-only changelog entry with its real hash and build stamp; push; run read-only deployment preflight; publish without deletes; verify canonical HTML/assets/cache identity and exact `773 × 601` behavior. | Clean `main == origin/main`; recorded build stamp; pre/postflight `remote_writes=NONE`; byte identity; cache-busted Browser PASS. |
+| 2 | TESLA | [ ] OWNER WILL TEST WHILE DRIVING | Accept ATLAS route, marker, GPS, and NIGHTSHIFT level | Drive a route long enough to zoom out and confirm that its origin never disappears; confirm one point only, roughly one pulse/ripple per second, and no moving line. Observe green at `≤4 m`, orange above `4 m`, red without GPS. Compare NIGHTSHIFT at matched cabin volume with JUNCTION; recheck FRACTURE without assuming it needs correction. | Photos/video plus listening notes; exact software/viewport; PASS/FAIL for each state and one new report if anything regresses. |
+| 3 | TESLA | [x] VERIFIED 2026-08-31 | Close diagnostic delivery | The owner supplied the received complete attachment `sedicivalvole-diagnostic-20260831T070927Z-build-20260831-0853.json.gz`. Its v3 envelope records source `gps`, explicit-gesture full-evidence transport, `serverAcceptedAt 2026-08-31T07:09:27+00:00`, 3,928 numeric fixes at about 10 Hz, 243 flight samples, no coordinates, and zero runtime issues. Full findings are recorded in `DIAGNOSTICS.md`. | `GPS → SENT → received` evidence with coordinate-free payload review: PASS; attachment SHA-256 `24dcf0242f641dd76de448b01cf9f6630033f5b89cbab202d225adf7832fdcf5`. |
+| 4 | TESLA | [ ] PARTIAL — UNDERWATER PASS | Complete adaptive and Soundtrack listening | The owner confirmed that UNDERWATER worked in the real cabin on build `20260831-0853`, but the old sampled-score level mismatch invalidates a final comparative listening verdict. After publication of the shared gain correction, exercise FRACTURE ascent/descent/PARK, JUNCTION PARK/native boundaries and reversals, NIGHTSHIFT all six tempo families, OPEN, BLOOM, UNDERWATER, global FX, and Soundtrack flanger/reverb/chorus/beat repeat. Confirm vehicle alerts remain audible. | Per-mode PASS/FAIL matrix; no click, silence, masking, surprise level jump, or stuck processing. |
+| 5 | TESLA | [ ] IN PROGRESS — ATLAS DEFECT MEASURED | Complete visual/performance acceptance | The received report proves ATLAS/JUNCTION at `23.15 FPS` average, `43.75 ms` median and `51.7 ms` p95 against the deliberate 30 FPS ceiling, while Drivey and Vertigo remain near 60 FPS. The local mitigation caps only the MapLibre framebuffer at `1.25×`, disables world copies during this city view, cancels obsolete zoom-tile requests, and consolidates the pulsing marker into one 8 Hz source update; local `773 × 601` QA renders the full-width map at `966 × 751` with zero warning/error. The owner still needs to validate Aperture `0–40`, Vertigo, Meridian, ATLAS touch/readability and measured cadence, Drivey, and all PRTCL types/effects in the car. | Exact `773 × 601` visual evidence, new frame/thermal report, touch/reach notes, no audio degradation; ATLAS must reach stable measured 30 FPS or the target must be explicitly revised. |
+| 6 | OFFICE | [ ] | Close audio evidence debt | Replace the failed JUNCTION pitch-residual shortcut with the planned ADSR/filter/phase/detune/chorus/spectral/saturation plus stereo/coherence evidence stack. Add cold-cache constrained-network recovery tests for JUNCTION and NIGHTSHIFT at the observed low-bandwidth boundary before changing timeouts or bank format. | Reproducible analysis artifacts and focused green tests with explicit invalidity/fallback reasons. |
+| 7 | OFFICE + TESLA | [ ] | Finish Soundtrack mechanics | Wire the tested nominal `450 ms` equal-power model into audible media-deck changes, keep attribution synchronized through rapid retargeting, add the compact QR handoff, and verify buffering, touch size, transport, licence card, and effects in the car. | Automated rapid-skip/readiness tests, local/live Browser QA, then target-cabin PASS. |
+| 8 | OWNER GATE → OFFICE | [ ] | Final Illobo identity | Replace the provisional Featured mark only after the owner supplies or approves the final logo and its exact usage boundary. | Approved asset, notice/provenance update, build and canonical identity verification. |
+| 9 | OWNER GATE → OFFICE → TESLA | [ ] | Finish ATLAS road/cardinal overlay | Present exactly three focused treatments for the still-unwired rendered-tile road name and English cardinal state. Implement only the selected treatment without adding reverse geocoding, then validate legibility and map interaction in the car. The already specified route/dot correction is not reopened. | Three-direction selection record, model/UI tests, exact viewport QA, Tesla PASS. |
+| 10 | OWNER GATE → OFFICE | [ ] | DISCOVER passenger companion | Present exactly three image-led directions using session-only ATLAS context and source-correct Wikimedia attribution; implement only the selected direction with bounded loading/failure behavior. | Selection record, licensing/attribution checks, responsive Browser QA. |
+| 11 | OWNER GATE → OFFICE → TESLA | [ ] | Original Gradient Field | After DISCOVER, present exactly three original Swiss-influenced directions, admit one through fresh licence/performance review, implement it with project-authored rendering, and validate OPEN/UNDERWATER/BLOOM plus full speed range. | Selected direction, source boundary, performance tests, exact viewport and Tesla PASS. |
+| 12 | OWNER GATE → OFFICE | [ ] | Catalogue and audiovisual authorship | Decide intentional visual/score pairings once the expanded catalogue is stable; design the grouped direct-selection Visual Library without weakening immediate switching or current fallbacks. | Owner-approved mapping and navigation; deterministic selection tests; no overflow. |
+| 13 | OWNER GATE → OFFICE | [ ] | Shared appearance and network state | Apply the existing Road Sheet anatomy to DARK, expose LIGHT/DARK/AUTO using the prepared preference/solar model, and select the visible quiet-when-healthy network treatment without recolouring the active visual. | Three-state appearance QA, offline/twilight/storage tests, exact Tesla/desktop layouts. |
+| 14 | OFFICE + IPHONE | [ ] | Landscape-first iPhone surface | Cover representative `667 × 375` through `932 × 430` Safari sizes, safe areas, and live rotation; portrait becomes an accessible inert rotate notice while the running audio, selection, and renderer state survive. | Real iPhone viewport/rotation matrix with no Tesla or desktop regression. |
+| 15 | OWNER GATE → OFFICE → TESLA | [ ] | Engine mode | Present exactly three Engine-specific visual directions; select one; define the synthetic RPM/load/shift model honestly from normalized speed/acceleration; choose/prove its audio source; implement click-free Engine/Flux switching and alert-safe output. | Selected direction, provenance, mapping tests, build/browser QA, real-car listening. |
+| 16 | TESLA + IPHONE | [ ] | Full vehicle QA matrix | Repeat permissions, null/stale GPS, network loss/recovery, cache reset, long session, backgrounding, touch reach, orientation, audio latency, frame pacing, context loss, and safety across the supported Tesla and representative iPhone surfaces. | Visible and audible PASS/FAIL evidence; tests alone cannot close this row. |
+| 17 | OWNER GATE → OFFICE | [ ] | Production release | Only after the acceptance matrix, approve the release; update `VERSION`, create the dated release section, synchronize README/status/architecture/licensing, replace screenshots with verified current-build captures, deploy, and verify live identity/cache. | Explicit release approval, SemVer source of truth, immutable evidence, canonical acceptance. |
+
+## Preserved optional queue
+
+These are not allowed to interrupt the ordered core unless the owner promotes
+one explicitly:
+
+- [ ] `FI-001` optional iPhone motion/fusion input for other cars;
+- [ ] `FI-002` Drivey Aerial camera rising smoothly with speed;
+- [ ] `FI-006` exception-led local Conditions context;
+- [ ] future authorized-passenger remote controls beyond the current main UI;
+- [ ] `DI-001` GPS-free `MOTION` interpretation remains an unapproved agent
+  proposal, not owner scope.

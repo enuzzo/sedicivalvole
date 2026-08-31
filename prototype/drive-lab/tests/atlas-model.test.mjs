@@ -6,20 +6,26 @@ import {
   appendAtlasPositionSample,
   appendAtlasTravelPoint,
   ATLAS_CARDINAL_DIRECTIONS,
+  ATLAS_GPS_PRECISE_ACCURACY_M,
+  ATLAS_MARKER_UPDATE_INTERVAL_MS,
+  ATLAS_MAXIMUM_PIXEL_RATIO,
   ATLAS_MANUAL_CAMERA_LIMITS,
   ATLAS_MANUAL_IDLE_MS,
   ATLAS_POSITION_BUFFER_LIMIT,
   ATLAS_POSITION_INTERPOLATION_DELAY_MS,
   ATLAS_POSITION_MAXIMUM_GAP_MS,
   ATLAS_POSITION_STALE_AFTER_MS,
+  ATLAS_TRAVEL_POINT_LIMIT,
   atlasCardinalDirection,
   atlasContrastRatio,
   atlasEffectProfile,
   atlasGpsPresentation,
   atlasKeyboardShortcutAvailable,
   atlasManualCameraShouldReturn,
+  atlasMapPixelRatio,
   atlasRoadNameFromFeatures,
   atlasTravelFeature,
+  atlasVehicleFeature,
   createLatestAtlasRequestGate,
   createAtlasStyle,
   interpolateAtlasPosition,
@@ -54,14 +60,25 @@ test("Atlas accepts only bounded finite coordinates kept outside diagnostics", (
 
 test("Atlas GPS presentation covers denial, timeout, inaccurate fixes and recovery", () => {
   assert.deepEqual(atlasGpsPresentation("permission denied", null), {
-    live: false, requiresHelp: true, status: "DENIED", accuracy: "±— m",
+    live: false, requiresHelp: true, status: "DENIED", accuracy: "±— m", tone: "offline",
   });
+  assert.equal(ATLAS_GPS_PRECISE_ACCURACY_M, 4);
   assert.equal(atlasGpsPresentation("timeout", null).requiresHelp, true);
   assert.equal(atlasGpsPresentation("signal unavailable", null).requiresHelp, true);
-  assert.equal(atlasGpsPresentation("live", 247.7).accuracy, "±248 m");
-  assert.deepEqual(atlasGpsPresentation("live", 3.2), {
-    live: true, requiresHelp: false, status: "LIVE", accuracy: "±3 m",
+  assert.deepEqual(atlasGpsPresentation("live", 247.7), {
+    live: true, requiresHelp: false, status: "LIVE", accuracy: "±248 m", tone: "imprecise",
   });
+  assert.deepEqual(atlasGpsPresentation("live", 3.2), {
+    live: true, requiresHelp: false, status: "LIVE", accuracy: "±3 m", tone: "precise",
+  });
+  assert.equal(atlasGpsPresentation("live", 4.1).tone, "imprecise");
+  assert.equal(atlasGpsPresentation("permission denied", null, "DEMO").tone, "offline");
+  assert.match(appSource, /className=\{`gps-state is-\$\{gpsPresentation\.tone\}`\}/);
+  assert.match(appSource, /<span>GPS<\/span>\s*<small>\{gpsPresentation\.accuracy\}<\/small>/);
+  assert.doesNotMatch(appSource, /<strong>\{gpsPresentation\.status\}<\/strong>/);
+  assert.match(styles, /\.gps-state\.is-precise \{ color: #55d991; \}/);
+  assert.match(styles, /\.gps-state\.is-imprecise \{ color: #f3a84c; \}/);
+  assert.match(styles, /\.gps-state\.is-offline \{ color: #ff6b64; \}/);
 });
 
 test("Atlas camera widens with speed while retaining a strongly dimensional city", () => {
@@ -378,7 +395,7 @@ test("Atlas grants touch and desktop exploration for six seconds, then returns t
   assert.match(atlasSource, /center: \[point\.longitude, point\.latitude\][\s\S]*?pitch: nextCamera\.pitch[\s\S]*?zoom: nextCamera\.zoom/);
 });
 
-test("Atlas travel pulse is directional, ephemeral and absent from diagnostics", () => {
+test("Atlas keeps a bounded complete-session route with one pulsing vehicle point", () => {
   const first = { latitude: 45.4642, longitude: 9.19 };
   const second = { latitude: 45.4643, longitude: 9.1901 };
   let points = appendAtlasTravelPoint([], first);
@@ -388,10 +405,44 @@ test("Atlas travel pulse is directional, ephemeral and absent from diagnostics",
     [second.longitude, second.latitude],
   ]);
   assert.equal(appendAtlasTravelPoint(points, second), points, "sub-metre noise should not extend the line");
+  let compacted = [];
+  for (let index = 0; index < 7; index += 1) {
+    compacted = appendAtlasTravelPoint(compacted, {
+      latitude: first.latitude + index * 0.0001,
+      longitude: first.longitude,
+    }, 4);
+  }
+  assert.deepEqual(compacted[0], first, "bounded compaction must retain the trip origin");
+  assert.deepEqual(compacted.at(-1), {
+    latitude: first.latitude + 0.0006,
+    longitude: first.longitude,
+  });
+  assert.ok(compacted.length <= 4);
+  assert.equal(ATLAS_TRAVEL_POINT_LIMIT, 4096);
+  const vehicle = atlasVehicleFeature(second, 0.5, 0.18).features[0];
+  assert.deepEqual(vehicle.geometry.coordinates, [second.longitude, second.latitude]);
+  assert.deepEqual(vehicle.properties, { pulse: 0.5, rippleOpacity: 0.18 });
+  assert.equal(atlasVehicleFeature(null).features.length, 0);
   assert.match(atlasSource, /travelPointsRef = useRef\(\[\]\)/);
   assert.match(atlasSource, /travelPointsRef\.current = \[\];/);
-  assert.match(atlasSource, /\["line-progress"\]/);
+  assert.doesNotMatch(atlasSource, /\["line-progress"\]/);
+  assert.match(atlasSource, /\(now % 1000\) \/ 1000/);
+  assert.match(atlasSource, /atlasVehicleFeature\([\s\S]*?point,[\s\S]*?phase/);
   assert.doesNotMatch(appSource, /travelPointsRef|atlasTravelFeature/);
+});
+
+test("Atlas bounds map density and consolidates marker animation work", () => {
+  assert.equal(ATLAS_MAXIMUM_PIXEL_RATIO, 1.25);
+  assert.equal(ATLAS_MARKER_UPDATE_INTERVAL_MS, 125);
+  assert.equal(atlasMapPixelRatio(1), 1);
+  assert.equal(atlasMapPixelRatio(1.53), 1.25);
+  assert.equal(atlasMapPixelRatio(3), 1.25);
+  assert.equal(atlasMapPixelRatio(null), 1);
+  assert.match(atlasSource, /pixelRatio: atlasMapPixelRatio\(window\.devicePixelRatio\)/);
+  assert.match(atlasSource, /renderWorldCopies: false/);
+  assert.match(atlasSource, /cancelPendingTileRequestsWhileZooming: true/);
+  assert.doesNotMatch(atlasSource, /setPaintProperty\("atlas-vehicle-ripple", "circle-radius"/);
+  assert.match(atlasSource, /ATLAS_MARKER_UPDATE_INTERVAL_MS/);
 });
 
 test("Atlas shows a compass and coordinate-free GPS recovery without a blocking waiting splash", () => {
@@ -537,8 +588,9 @@ test("Atlas owns a minimal palette-driven OpenFreeMap style with mandatory attri
   assert.match(style.sources.openfreemap.url, /^https:\/\/tiles\.openfreemap\.org\/planet$/);
   assert.match(style.sources.openfreemap.attribution, /OpenStreetMap/);
   assert.ok(style.layers.some((layer) => layer.type === "fill-extrusion"));
-  assert.equal(style.sources.atlasTravel.lineMetrics, true);
-  assert.ok(style.layers.some((layer) => layer.id === "atlas-travel-pulse"));
+  assert.ok(style.layers.some((layer) => layer.id === "atlas-travel-route"));
+  assert.ok(style.layers.some((layer) => layer.id === "atlas-vehicle-ripple"));
+  assert.ok(style.layers.some((layer) => layer.id === "atlas-vehicle-dot"));
   assert.equal(style.layers.some((layer) => layer.type === "raster"), false);
   assert.match(atlasSource, /AttributionControl\(\{ compact: false \}\)/);
   assert.match(styles, /\.atlas-field \.maplibregl-ctrl-attrib \{[\s\S]*?font-size: 7px;[\s\S]*?opacity: \.46;/);

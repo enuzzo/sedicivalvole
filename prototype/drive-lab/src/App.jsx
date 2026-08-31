@@ -3012,14 +3012,14 @@ export function App() {
           <ModeSelector />
           <span className="speed-spacer" aria-hidden="true" />
           <button
-            className={`gps-state ${gpsPresentation.live ? "is-live" : ""}`}
+            className={`gps-state is-${gpsPresentation.tone}`}
             type="button"
             aria-controls="gps-help-popover"
             aria-expanded={gpsHelpOpen}
+            aria-label={`GPS ${gpsPresentation.status}, accuracy ${gpsPresentation.accuracy}`}
             onClick={() => setGpsHelpOpen((current) => !current)}
           >
             <span>GPS</span>
-            <strong>{gpsPresentation.status}</strong>
             <small>{gpsPresentation.accuracy}</small>
           </button>
           <button
