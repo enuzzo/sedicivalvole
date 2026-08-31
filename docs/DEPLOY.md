@@ -8,6 +8,48 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Equal-path Soundtrack library — 2026-08-31 08:59
+
+- build stamp: **`20260831-0853`**; deployed implementation checkpoint:
+  `61f356d`; documentation checkpoint before publication: `0e98020`;
+- product change: **PASS**. The running Music drawer now switches persistently
+  between Play the Road and Soundtrack. Soundtrack gives compact equal hierarchy
+  to Illobo Featured and Jamendo Library, rotates its visible mix every 30
+  minutes, previews real covers, and starts immediately from passenger pace,
+  genre, or exact-track gestures. Fixed recordings remain authored `1×`; MUTE
+  and FX remain global across both sources, and FX never suppresses visual macro
+  detection. The Illobo mark is explicitly provisional pending the final asset;
+- verification gate: **PASS within the local host boundary**. Eighty-nine
+  focused Soundtrack/presentation checks, nine Sites checks, thirty-two
+  build/deployment/documentation gates, reference/implementation Product Design
+  comparison QA, exact local Browser QA at `773 × 601`, and the 141-module App /
+  66-module LAB build pass. The complete unit suite passes 426 of 427; only the
+  unchanged local `spawn php ENOENT` diagnostic-mail fixture is unavailable;
+- guarded publication: **PASS**. Read-only preflight passed with
+  `remote_writes=NONE`; the no-delete publisher transferred 108 files /
+  16,975,254 bytes, preserved the existing static entry and legacy tree, and
+  retained two prior fingerprinted assets for cache overlap. Read-only
+  postflight passed with `remote_writes=NONE` and eight expected root entries;
+- canonical HTTP identity: **PASS**. Cache-busted live HTML, JavaScript, CSS,
+  and provisional Illobo PNG return `200` with their expected MIME types and are
+  byte-identical to the verified build. Their SHA-256 values are
+  `137fac14a941493db6c30ede7bf804f8a9ff42e1b924592c48dcecb8ca4e3a2a`,
+  `ceed11b1c6ab9d7751280c1c2f1887a3bb659b55d55897252ac8d5c7d2953bf4`,
+  `0f570ad62fdc4a3d8646cabb8aec2af7524a8235c176431658f9fb54b51ba7c4`,
+  and `da6d5086f06dc8a38ea580f3a5c4289363c214cb8736c9e84ffa39a462946e2b`.
+  Root HTML carries `no-store, no-cache, must-revalidate, max-age=0`;
+- live API boundary: **PASS**. Cache-busted canonical pace `medium` and genre
+  `rock` requests each returned six admitted records and echoed only their
+  normalized selection metadata;
+- exact live Browser QA: **PASS at `773 × 601`**. The complete selected layout,
+  real Jamendo metadata/covers, equal alternatives, visible refresh cadence,
+  authored `1×` label, pace and genre play actions render without horizontal
+  overflow. Evidence:
+  `/private/tmp/sedicivalvole-music-drawer-live-773x601.png`. The verified live
+  flow emitted no observed warning or error. Physical-Tesla listening, final
+  Illobo logo replacement, audible equal-power skips, and QR handoff remain
+  open.
+
 ## Catalogue display typography — 2026-08-31 03:38
 
 - build stamp: **`20260831-0333`**; deployed source and implementation

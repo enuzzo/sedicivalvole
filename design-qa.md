@@ -12,6 +12,8 @@ Date: 2026-08-31
   `/private/tmp/sedicivalvole-music-drawer-comparison.png`.
 - Exact Tesla-viewport implementation reviewed at `773 × 601` with Soundtrack
   open, real Jamendo metadata and cover art, muted QA startup, and APERTURE.
+- Cache-busted canonical exact-viewport evidence after publication:
+  `/private/tmp/sedicivalvole-music-drawer-live-773x601.png`.
 
 ## Fidelity and owner refinements
 
@@ -44,6 +46,9 @@ Date: 2026-08-31
 - Browser console warnings/errors are zero. The drawer and cover data render at
   both `1491 × 1055` and exact Tesla `773 × 601`; no cropped primary action or
   horizontal overflow was observed.
+- Canonical HTML, JavaScript, CSS, and the provisional Illobo asset are
+  byte-identical to the verified build; the live exact-viewport Browser repeats
+  the selected hierarchy with zero observed warning/error.
 - Eighty-nine focused Soundtrack/presentation checks pass. The complete unit
   suite is 426/427: its only failure is the unchanged host limitation
   `spawn php ENOENT` in the diagnostic-mail fixture. The 141-module production

@@ -75,6 +75,22 @@ still needs a human or target vehicle.
   107-file / 16,451,993-byte no-delete transfer, byte-identical HTML/JS/CSS,
   and exact live Browser QA at both target viewports.
 
+## Equal-path Music drawer publication checkpoint
+
+- [x] verify 89 focused Soundtrack/presentation checks, 9 Sites checks, and 32
+  build/deployment/documentation gates;
+- [x] retain the known complete-suite host boundary at 426/427: only
+  `spawn php ENOENT` in the unchanged diagnostic-mail fixture;
+- [x] pass joined reference/implementation Product Design QA and exact local
+  Browser QA at `773 × 601` with zero warning/error;
+- [x] publish build `20260831-0853` through the guarded 108-file /
+  16,975,254-byte no-delete transfer;
+- [x] pass read-only preflight/postflight and byte-identity verification for
+  live HTML, JavaScript, CSS, and the provisional Illobo asset;
+- [x] verify live pace `medium` and genre `rock` filters return admitted records;
+- [x] repeat cache-busted live Browser QA at exact `773 × 601` with real cover
+  art, equal alternatives, visible 30-minute cadence, and zero warning/error.
+
 ## Deliberately not opened after the cutoff
 
 No new feature block may start after `03:00 CEST`. ATLAS implementation was not
