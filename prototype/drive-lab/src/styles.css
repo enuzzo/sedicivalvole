@@ -1853,18 +1853,67 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
   letter-spacing: .12em;
   pointer-events: none;
 }
-.atlas-heading {
+.atlas-navigation-plaque {
   position: absolute;
   top: 82px;
-  left: 48px;
+  left: 16px;
   z-index: 5;
-  padding: 5px 6px;
-  color: rgba(238, 234, 224, .78);
-  background: rgba(7, 7, 10, .68);
-  font-size: 8px;
-  font-weight: var(--font-weight-label);
-  letter-spacing: .08em;
+  display: grid;
+  grid-template-columns: 22px auto auto;
+  grid-template-rows: auto auto;
+  align-items: center;
+  column-gap: 7px;
+  width: max-content;
+  max-width: min(222px, calc(100% - 64px));
+  box-sizing: border-box;
+  padding: 7px 10px 7px 8px;
+  color: rgba(238, 234, 224, .94);
+  background: rgba(7, 7, 10, .78);
+  border: 1px solid rgba(238, 234, 224, .11);
+  border-radius: 2px;
+  box-shadow: 0 3px 18px rgba(0, 0, 0, .22);
+  backdrop-filter: blur(8px);
   pointer-events: none;
+}
+.atlas-navigation-plaque.is-roadless {
+  grid-template-rows: auto;
+  padding-block: 8px;
+}
+.atlas-navigation-pointer {
+  grid-row: 1 / span 2;
+  width: 22px;
+  height: 22px;
+  background: currentColor;
+  mask: url("/third-party/tabler-icons/navigation-filled.svg") center / contain no-repeat;
+  transform: rotate(var(--atlas-pointer-heading));
+  transform-origin: 50% 50%;
+  transition: transform 260ms cubic-bezier(.2, .72, .24, 1);
+  will-change: transform;
+}
+.atlas-navigation-plaque.is-roadless .atlas-navigation-pointer { grid-row: 1; }
+.atlas-cardinal-direction {
+  font: var(--font-weight-control) 15px/1 var(--font-ui);
+  letter-spacing: .08em;
+}
+.atlas-heading-degrees {
+  color: rgba(238, 234, 224, .74);
+  font: var(--font-weight-label) 8px/1 var(--font-ui);
+  letter-spacing: .08em;
+}
+.atlas-road-name {
+  grid-column: 2 / 4;
+  overflow: hidden;
+  max-width: 166px;
+  margin-top: 4px;
+  color: color-mix(in srgb, var(--atlas-accent) 82%, white);
+  font: var(--font-weight-label) 8px/1.1 var(--font-ui);
+  letter-spacing: .08em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+@media (prefers-reduced-motion: reduce) {
+  .atlas-navigation-pointer { transition: none; }
 }
 .atlas-panel {
   position: absolute;

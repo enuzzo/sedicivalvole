@@ -62,8 +62,6 @@ Date: 2026-08-31
 
 final result: passed
 
----
-
 # Design QA — ATLAS manual pitch range
 
 Date: 2026-08-31
@@ -101,8 +99,6 @@ Date: 2026-08-31
 - Deployment is intentionally deferred by the owner.
 
 final result: passed
-
----
 
 # Design QA — running topbar product mark
 
@@ -1001,5 +997,58 @@ final result: technically verified and canonically published in exact source
 listening acceptance remain open
 
 ---
+
+final result: passed
+
+---
+
+# Design QA — ATLAS Navigator Plaque
+
+Date: 2026-08-31
+
+## Selected visual contract
+
+- The owner selected direction **1 — Navigator Plaque** after exactly three
+  focused ATLAS overlay treatments were presented.
+- The selected direction was refined once before implementation: a live
+  directional arrow must sit to the left of the English cardinal sector, with
+  degrees on the same row and the rendered-tile road name below.
+- Refined target:
+  `/Users/enuzzo/.codex/generated_images/01a056ca-c4ff-7433-92c5-7a0aa0abd6e3/exec-85f9dbbb-3eb2-45fa-8146-062669a74970.png`.
+- Exact local implementation:
+  `/tmp/sedicivalvole-atlas-navigator-final-773x601.jpg`.
+- Joined component comparison used for review:
+  `/tmp/atlas-nav-final-comparison.png`.
+
+## Visible comparison and iteration
+
+- The first implementation retained MapLibre's separate compass beside the
+  new plaque, which duplicated direction and did not match the selected target.
+  The final implementation replaces it with the integrated pointer and moves
+  the plaque to the target's `16 px` left alignment.
+- The first outline pointer read too lightly against the map. It was replaced
+  with the official byte-identical Tabler `navigation-filled` icon, rendered
+  through the existing monochrome interface treatment.
+- The initial road query inspected the visible `transportation` line layer,
+  whose rendered features carry geometry/class but no street name. The final
+  query uses a zero-opacity rendered line probe over OpenMapTiles'
+  `transportation_name` source layer. It reads `Corso di Porta Romana` from the
+  already loaded tile and performs no reverse-geocoding request.
+- At exact `773 × 601`, the final plaque retains the target hierarchy, dark
+  translucent field, square editorial geometry, filled pointer, cardinal,
+  degrees and blue road line without obscuring the route or passenger panel.
+
+## Interaction and responsive evidence
+
+- Demo steering moved the plaque from `SE / 135°` to `S / 180°`; the pointer's
+  continuous angle moved from `135deg` to `180deg` and the cardinal updated
+  with it. The unwrap helper protects `359° → 0°` from a long reverse spin.
+- Collapsing the passenger panel expanded the map from `527 px` to `773 px`;
+  reopening restored the selected layout. Document dimensions remained exactly
+  `773 × 601` with no horizontal or vertical overflow.
+- The final screenshot shows `S / 184° / CORSO DI PORTA ROMANA`; the arrow
+  points south and the road label remains stable while the automatic camera
+  finishes its short bearing ease.
+- Browser warning and error logs are empty.
 
 final result: passed

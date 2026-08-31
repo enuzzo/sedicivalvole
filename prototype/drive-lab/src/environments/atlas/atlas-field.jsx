@@ -5,10 +5,14 @@ import {
   appendAtlasTravelPoint,
   ATLAS_MARKER_UPDATE_INTERVAL_MS,
   ATLAS_MANUAL_CAMERA_LIMITS,
+  ATLAS_ROAD_LAYER_IDS,
+  atlasCardinalDirection,
+  atlasContinuousHeading,
   atlasEffectProfile,
   atlasKeyboardShortcutAvailable,
   atlasManualCameraShouldReturn,
   atlasMapPixelRatio,
+  atlasRoadNameFromFeatures,
   atlasTravelFeature,
   atlasVehicleFeature,
   createLatestAtlasRequestGate,
@@ -30,7 +34,7 @@ import {
   THIRTY_FPS_FRAME_INTERVAL_MS,
 } from "../../render-telemetry.js";
 
-const FALLBACK_POSITION = { latitude: 45.4642, longitude: 9.19, heading: 22 };
+const FALLBACK_POSITION = { latitude: 45.4570505, longitude: 9.1940018, heading: 135 };
 
 function recolourStyle(map, palette, effect = null) {
   const colors = paletteToAtlasMapCss(palette);
@@ -143,6 +147,7 @@ export default function AtlasField({
   const [demoPosition, setDemoPosition] = useState(null);
   const [panelCollapsed, setPanelCollapsed] = useState(false);
   const [displayCamera, setDisplayCamera] = useState(null);
+  const [roadName, setRoadName] = useState(null);
   const [visiblePlaceCount, setVisiblePlaceCount] = useState(() => (window.innerHeight >= 560 ? 5 : 4));
   const nearbyRequestGateRef = useRef(null);
   const qrRequestGateRef = useRef(null);
@@ -174,6 +179,7 @@ export default function AtlasField({
     let failed = false;
     let frame = 0;
     let interactionCleanup = () => {};
+    setRoadName(null);
     if (!hostRef.current || !effectivePosition) {
       onRenderer("Atlas · waiting for GPS");
       return undefined;
@@ -206,6 +212,9 @@ export default function AtlasField({
         lastInteractionAt: null,
         returningUntil: 0,
       };
+      let continuousHeading = Number.isFinite(effectivePosition.heading)
+        ? effectivePosition.heading
+        : 22;
       const fail = (error) => {
         if (disposed || failed) return;
         failed = true;
@@ -215,11 +224,6 @@ export default function AtlasField({
       };
       let mapReady = false;
       map.addControl(new maplibregl.AttributionControl({ compact: false }), "bottom-left");
-      map.addControl(new maplibregl.NavigationControl({
-        showCompass: true,
-        showZoom: false,
-        visualizePitch: true,
-      }), "top-left");
       map.on("load", () => {
         try {
           map.setPaintProperty("sedicivalvole-buildings", "fill-extrusion-height", [
@@ -237,11 +241,16 @@ export default function AtlasField({
           fail(error);
         }
       });
-      map.on("move", () => setDisplayCamera({
-        heading: Math.round(((map.getBearing() % 360) + 360) % 360),
-        pitch: Math.round(map.getPitch()),
-        zoom: Math.round(map.getZoom() * 10) / 10,
-      }));
+      map.on("move", () => {
+        const heading = Math.round(((map.getBearing() % 360) + 360) % 360);
+        continuousHeading = atlasContinuousHeading(continuousHeading, heading);
+        setDisplayCamera({
+          heading,
+          pointerHeading: continuousHeading,
+          pitch: Math.round(map.getPitch()),
+          zoom: Math.round(map.getZoom() * 10) / 10,
+        });
+      });
 
       const canvas = map.getCanvas();
       canvas.style.touchAction = "none";
@@ -374,6 +383,24 @@ export default function AtlasField({
           }
           if (now - lastMoveAt < 1100) return;
           lastMoveAt = now;
+          if (mapReady) {
+            const projected = map.project([point.longitude, point.latitude]);
+            const exactFeatures = map.queryRenderedFeatures(projected, {
+              layers: ATLAS_ROAD_LAYER_IDS,
+            });
+            const nearbyRoadFeatures = map.queryRenderedFeatures([
+              [projected.x - 28, projected.y - 28],
+              [projected.x + 28, projected.y + 28],
+            ], { layers: ATLAS_ROAD_LAYER_IDS });
+            const roadFeatures = [...exactFeatures, ...nearbyRoadFeatures];
+            const preferredLanguages = navigator.languages?.length
+              ? navigator.languages
+              : [navigator.language];
+            const nextRoadName = atlasRoadNameFromFeatures(roadFeatures, preferredLanguages);
+            setRoadName((currentRoadName) => currentRoadName === nextRoadName
+              ? currentRoadName
+              : nextRoadName);
+          }
           const nextCamera = speedToAtlasEffectCamera(
             current.reducedMotion ? Math.min(current.speed, 20) : current.speed,
             current.effect,
@@ -547,6 +574,10 @@ export default function AtlasField({
     );
   }
 
+  const heading = displayCamera?.heading ?? Math.round(effectivePosition.heading ?? 0);
+  const pointerHeading = displayCamera?.pointerHeading ?? heading;
+  const cardinalDirection = atlasCardinalDirection(heading) ?? "—";
+
   return (
     <section
       className={`atlas-field${panelCollapsed ? " is-panel-collapsed" : ""}`}
@@ -554,12 +585,19 @@ export default function AtlasField({
     >
       <div className="atlas-map" ref={hostRef} aria-hidden="true" />
       <div
-        className="atlas-heading"
-        aria-label={`Map heading ${displayCamera?.heading ?? Math.round(effectivePosition.heading ?? 0)} degrees`}
+        className={`atlas-navigation-plaque${roadName ? "" : " is-roadless"}`}
+        aria-label={`Heading ${cardinalDirection}, ${heading} degrees${roadName ? `, ${roadName}` : ""}`}
         data-pitch={displayCamera?.pitch ?? ""}
         data-zoom={displayCamera?.zoom ?? ""}
       >
-        {String(displayCamera?.heading ?? Math.round(effectivePosition.heading ?? 0)).padStart(3, "0")}°
+        <span
+          className="atlas-navigation-pointer"
+          style={{ "--atlas-pointer-heading": `${pointerHeading}deg` }}
+          aria-hidden="true"
+        />
+        <strong className="atlas-cardinal-direction">{cardinalDirection}</strong>
+        <span className="atlas-heading-degrees">{String(heading).padStart(3, "0")}°</span>
+        {roadName ? <span className="atlas-road-name">{roadName}</span> : null}
       </div>
       {demo ? <div className="atlas-demo-hint">DRAG: ROTATE / TILT · WHEEL / PINCH: ZOOM</div> : null}
       <button

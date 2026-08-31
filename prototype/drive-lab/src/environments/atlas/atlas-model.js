@@ -19,7 +19,7 @@ export const ATLAS_GPS_PRECISE_ACCURACY_M = 4;
 export const ATLAS_CARDINAL_DIRECTIONS = Object.freeze([
   "N", "NE", "E", "SE", "S", "SW", "W", "NW",
 ]);
-export const ATLAS_ROAD_LAYER_IDS = Object.freeze(["atlas-roads"]);
+export const ATLAS_ROAD_LAYER_IDS = Object.freeze(["atlas-road-name-probe"]);
 
 const clamp = (value, minimum, maximum) => Math.min(maximum, Math.max(minimum, value));
 
@@ -94,6 +94,21 @@ export function atlasCardinalDirection(heading) {
   return ATLAS_CARDINAL_DIRECTIONS[sector];
 }
 
+/**
+ * Unwraps a normalized heading onto the nearest continuous angle so the
+ * direction pointer never spins the long way when crossing north.
+ */
+export function atlasContinuousHeading(previousHeading, nextHeading) {
+  if (!Number.isFinite(nextHeading)) {
+    return Number.isFinite(previousHeading) ? previousHeading : null;
+  }
+  const next = normalizeAtlasAngle(nextHeading);
+  if (!Number.isFinite(previousHeading)) return next;
+  const previous = Number(previousHeading);
+  const delta = ((next - normalizeAtlasAngle(previous) + 540) % 360) - 180;
+  return previous + delta;
+}
+
 function normalizeAtlasRoadName(value) {
   if (typeof value !== "string" && typeof value !== "number") return "";
   return String(value)
@@ -122,7 +137,8 @@ export function atlasRoadNameFromFeatures(features, preferredLanguages = []) {
   for (const feature of Array.isArray(features) ? features : []) {
     const layerId = feature?.layer?.id;
     const sourceLayer = feature?.sourceLayer ?? feature?.layer?.["source-layer"];
-    if (sourceLayer !== "transportation" && !ATLAS_ROAD_LAYER_IDS.includes(layerId)) continue;
+    if (!["transportation", "transportation_name"].includes(sourceLayer)
+      && !ATLAS_ROAD_LAYER_IDS.includes(layerId)) continue;
     for (const key of keys) {
       const label = normalizeAtlasRoadName(feature?.properties?.[key]);
       if (label) return label;
@@ -596,6 +612,10 @@ export function createAtlasStyle(palette) {
       {
         id: "atlas-roads", type: "line", source: "openfreemap", "source-layer": "transportation",
         paint: { "line-color": colors.secondary, "line-width": ["interpolate", ["linear"], ["zoom"], 10, 0.25, 17, 2.0], "line-opacity": 0.58 },
+      },
+      {
+        id: "atlas-road-name-probe", type: "line", source: "openfreemap", "source-layer": "transportation_name", minzoom: 10,
+        paint: { "line-color": colors.background, "line-width": 24, "line-opacity": 0 },
       },
       {
         id: "atlas-travel-underlay", type: "line", source: "atlasTravel",

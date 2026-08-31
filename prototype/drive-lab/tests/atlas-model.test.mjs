@@ -17,6 +17,7 @@ import {
   ATLAS_POSITION_STALE_AFTER_MS,
   ATLAS_TRAVEL_POINT_LIMIT,
   atlasCardinalDirection,
+  atlasContinuousHeading,
   atlasContrastRatio,
   atlasEffectProfile,
   atlasGpsPresentation,
@@ -51,6 +52,10 @@ import {
 const appSource = readFileSync(new URL("../src/App.jsx", import.meta.url), "utf8");
 const atlasSource = readFileSync(new URL("../src/environments/atlas/atlas-field.jsx", import.meta.url), "utf8");
 const styles = readFileSync(new URL("../src/styles.css", import.meta.url), "utf8");
+const navigationIcon = readFileSync(
+  new URL("../public/third-party/tabler-icons/navigation-filled.svg", import.meta.url),
+  "utf8",
+);
 
 test("Atlas accepts only bounded finite coordinates kept outside diagnostics", () => {
   assert.equal(validAtlasPosition({ latitude: 45.46, longitude: 9.19 }), true);
@@ -181,6 +186,15 @@ test("Atlas converts heading into deterministic English cardinal sectors", () =>
   assert.equal(atlasCardinalDirection(null), null);
 });
 
+test("Atlas unwraps pointer heading across north without a long reverse spin", () => {
+  assert.equal(atlasContinuousHeading(null, 22), 22);
+  assert.equal(atlasContinuousHeading(358, 2), 362);
+  assert.equal(atlasContinuousHeading(2, 358), -2);
+  assert.equal(atlasContinuousHeading(725, 10), 730);
+  assert.equal(atlasContinuousHeading(42, Number.NaN), 42);
+  assert.equal(atlasContinuousHeading(null, Number.NaN), null);
+});
+
 test("Atlas derives a bounded street label only from rendered transportation features", () => {
   const features = [
     {
@@ -198,7 +212,11 @@ test("Atlas derives a bounded street label only from rendered transportation fea
     properties: { "name:it": "Via Torino" },
   }], ["it", "en"]), "Via Torino");
   assert.equal(atlasRoadNameFromFeatures([{
-    layer: { id: "atlas-roads" },
+    sourceLayer: "transportation_name",
+    properties: { name: "Corso di Porta Romana" },
+  }], ["it", "en"]), "Corso di Porta Romana");
+  assert.equal(atlasRoadNameFromFeatures([{
+    layer: { id: "atlas-road-name-probe" },
     properties: { ref: "A1" },
   }]), "A1");
   assert.equal(atlasRoadNameFromFeatures([{
@@ -215,6 +233,28 @@ test("Atlas derives a bounded street label only from rendered transportation fea
     properties: { name: "x".repeat(120) },
   }]).length <= 80);
   assert.doesNotMatch(atlasRoadNameFromFeatures.toString(), /fetch|XMLHttpRequest|https?:/);
+});
+
+test("Atlas wires the selected navigator plaque to rendered tiles and the live bearing", () => {
+  assert.match(atlasSource, /map\.queryRenderedFeatures\(projected/);
+  assert.match(atlasSource, /roadFeatures = \[\.\.\.exactFeatures, \.\.\.nearbyRoadFeatures\]/);
+  assert.match(atlasSource, /layers: ATLAS_ROAD_LAYER_IDS/);
+  assert.match(atlasSource, /atlasRoadNameFromFeatures\(roadFeatures, preferredLanguages\)/);
+  assert.match(atlasSource, /atlasCardinalDirection\(heading\)/);
+  assert.match(atlasSource, /className="atlas-navigation-pointer"/);
+  assert.match(atlasSource, /--atlas-pointer-heading/);
+  assert.match(atlasSource, /className="atlas-cardinal-direction"/);
+  assert.match(atlasSource, /className="atlas-road-name"/);
+  assert.match(styles, /mask: url\("\/third-party\/tabler-icons\/navigation-filled\.svg"\)/);
+  assert.match(styles, /transition: transform 260ms/);
+  assert.match(navigationIcon, /version: "2\.0"/);
+  assert.match(navigationIcon, /<path d="M11\.092 2\.581a1 1 0 0 1 1\.754/);
+  assert.ok(createAtlasStyle(FLUX_THEMES[0].palette).layers.some((layer) => (
+    layer.id === "atlas-road-name-probe"
+      && layer["source-layer"] === "transportation_name"
+      && layer.paint["line-opacity"] === 0
+  )));
+  assert.doesNotMatch(atlasSource, /reverse.?geocod/i);
 });
 
 test("Atlas retains a bounded chronological position buffer without accepting bad fixes", () => {
@@ -445,9 +485,9 @@ test("Atlas bounds map density and consolidates marker animation work", () => {
   assert.match(atlasSource, /ATLAS_MARKER_UPDATE_INTERVAL_MS/);
 });
 
-test("Atlas shows a compass and coordinate-free GPS recovery without a blocking waiting splash", () => {
-  assert.match(atlasSource, /NavigationControl\(\{[\s\S]*?showCompass: true/);
-  assert.match(atlasSource, /className="atlas-heading"/);
+test("Atlas shows an integrated compass and coordinate-free GPS recovery without a blocking waiting splash", () => {
+  assert.doesNotMatch(atlasSource, /NavigationControl/);
+  assert.match(atlasSource, /className=\{`atlas-navigation-plaque/);
   assert.match(appSource, /id="gps-help-popover"/);
   assert.match(appSource, /RETRY LOCATION/);
   assert.match(appSource, /EXPLORE MILAN DEMO/);
