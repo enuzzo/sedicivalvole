@@ -8,6 +8,38 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Reversible Soundtrack path selection — 2026-08-31 19:11
+
+- build stamp: **`20260831-1911`**; deployed source checkpoint:
+  **`0660d71`**;
+- target-Tesla defect: **REPRODUCED** on prior live build `20260831-1836`.
+  After Jamendo Library selected Illobo Featured, the Jamendo path could no
+  longer be selected and its covers disappeared;
+- root cause/correction: **PASS**. Both Soundtrack alternatives are now complete
+  enabled path buttons. Jamendo preview artwork is retained from the last real
+  Jamendo catalogue rather than borrowed from the active queue, and the
+  narrow-layout rule no longer removes the Jamendo path. Pending selection owns
+  its source identity immediately and obsolete requests cannot retake it;
+- tests/build: **PASS**. The complete `512/512` suite, 146-module App,
+  70-module LAB and Sites packaging pass;
+- exact live Browser QA: **PASS at `773 × 601`**. The complete
+  Jamendo → Illobo → Jamendo path retains two enabled path buttons and all three
+  Jamendo cover previews, exposes six Illobo rows, then restores all Jamendo
+  pace/genre controls and six catalogue rows. A rapid Illobo → Jamendo reversal
+  remains on Jamendo after settlement. No warning/error was observed;
+- publication: **PASS**. Read-only preflight and postflight both reported eight
+  root entries and `remote_writes=NONE`. Protected publication uploaded 140
+  files / 212,291,734 bytes and fully reverified all 29 Illobo recordings;
+- canonical identity: **PASS**. Root HTML references
+  `assets/index-BIufNfeS.js` and `assets/index-DBR16rTs.css`. Local/live
+  SHA-256 is `c881b07bb8664384fc363ed49248275ae648da1e5cc6c9aa0721257d2b87e348`
+  for JavaScript and
+  `39b5e00606bed8e7e3d5a26ae7b3cc45ef01c89e1ceacea4f897df7ab64744d5`
+  for CSS. The JavaScript carries `0660d71` and `20260831-1911`;
+- remaining acceptance: repeat the round trip from the passenger seat and
+  confirm audible continuity as the expanded `R7-07`; office Browser evidence
+  does not close cabin listening.
+
 ## Immediate weak-network Music switching — 2026-08-31 18:36
 
 - build stamp: **`20260831-1836`**; deployed source checkpoint:

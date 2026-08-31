@@ -1401,6 +1401,16 @@ catalogue must not relabel or stop music that is still playing. Deterministic
 stress should interleave NEXT, PREVIOUS, explicit selection, pause/resume and
 failure while asserting the deck ceiling and one coherent audible identity.
 
+The chooser itself belongs to this transaction. An alternative source cannot
+become a passive summary merely because another queue is active: every path
+must remain a complete enabled control, including at the narrow vehicle
+breakpoint. Its preview artwork must come from that source's last truthful
+catalogue, not from the active queue. Otherwise choosing Illobo can erase the
+visual affordance and Jamendo covers needed to return, making a healthy player
+look like a one-way state machine. Assert the full Jamendo → Illobo → Jamendo
+round trip, retained alternative artwork, and a rapid reverse selection whose
+late request cannot reclaim either pane or audio.
+
 ---
 
 ## 7. Sources and material

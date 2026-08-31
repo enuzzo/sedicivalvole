@@ -191,7 +191,10 @@ dated study documents.
   until both axes are selected, and MUTE still requires a Visual. SOUNDTRACK
   prepares three transient eligible Jamendo roles before START can unlock. The
   running Music drawer now presents compact equal-weight **Illobo Featured** and
-  **Jamendo Library** paths. Its final Featured cover uses both supplied LOBO
+  **Jamendo Library** paths. Both complete cards remain enabled and visible at
+  the narrow Tesla layout, so either path can always replace the other. Jamendo
+  preview artwork belongs to the last real Jamendo catalogue and remains
+  visible while Illobo owns the active queue. Its final Featured cover uses both supplied LOBO
   SVG variants byte-identically and crossfades continuously over four seconds
   in each direction from white-on-black solid to original black-on-graphite
   outline on an unclipped square field; active fixed
@@ -397,8 +400,11 @@ dated study documents.
   three decks. Checkpoint `137ddeb` makes the running Play the Road/Soundtrack
   pane change before any network/effects/score wait, exposes the selected
   loading state, silences the outgoing source immediately and rejects late
-  asynchronous completion after a rapid reversal. Current build
-  `20260831-1836` separates the
+  asynchronous completion after a rapid reversal. Checkpoint `0660d71` applies
+  the same immediate pending identity inside the Soundtrack path chooser,
+  makes Jamendo and Illobo complete reversible controls, and preserves
+  Jamendo-owned cover previews across Illobo playback. Current build
+  `20260831-1911` separates the
   true Illobo catalogue from Jamendo, publishes and verifies all 29
   owner-authorized recordings, retains the final Illobo identity plus
   Tesla-facing playback title, and makes every explicit Featured press start
@@ -463,8 +469,8 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The canonical live product is version `0.0.0`, source commit `137ddeb`, build
-  `20260831-1836`, retaining immediate Music switching `137ddeb`, transport
+- The canonical live product is version `0.0.0`, source commit `0660d71`, build
+  `20260831-1911`, retaining reversible Soundtrack paths `0660d71`, immediate Music switching `137ddeb`, transport
   hardening `57fed11`, Illobo provider identity `2c0f5f8`, ATLAS Navigator
   `79d9c9b`, MUTE/FX parity `c0a2f78`, Illobo/title
   implementation `05a754b`, cover correction `6218f98`, Featured-launch
@@ -473,7 +479,10 @@ dated study documents.
   `61471e8`, true Illobo catalogue `1a47e23`, and track-head guarantee
   `236f2c9`. Its guarded
   publication, read-only pre/postflight and HTML/JavaScript/CSS/Tabler-SVG byte
-  identity pass.
+  identity pass. Current exact live `773 × 601` Browser QA also proves the
+  complete Jamendo → Illobo → Jamendo round trip, persistent Jamendo covers,
+  restored Jamendo browsing, and a rapid reversal that cannot be reclaimed by
+  obsolete Illobo work.
   Prior exact live `773 × 601` Browser QA verifies the unchanged white-on-black
   solid and black-on-graphite outline endpoints, play/pause title behavior and
   zero warning/error. Current exact live Browser QA verifies immediate Play the
@@ -485,7 +494,7 @@ dated study documents.
   return `206 audio/mpeg`. Audible cabin behavior remains a Tesla gate.
   Exact live ATLAS QA also proves the dynamic Navigator Plaque, local road copy,
   zero overflow and no live-origin warning/error.
-  The complete `508/508` suite plus 146-module App / 70-module LAB / Sites build
+  The complete `512/512` suite plus 146-module App / 70-module LAB / Sites build
   pass, while physical-cabin checks remain `R4-01`–`R4-06`, `R7-01`–`R7-07`,
   `R8-01`–`R8-02` and `R9-01`–`R9-02`. Exact
   progressive evidence is in [`DEPLOY.md`](DEPLOY.md).
@@ -497,7 +506,7 @@ dated study documents.
 ## Open work
 
 1. Execute Tesla tests `R4-01`–`R4-06`, `R7-01`–`R7-07`, `R8-01`–`R8-02` and
-   `R9-01`–`R9-02` on live build `20260831-1836` from
+   `R9-01`–`R9-02` on live build `20260831-1911` from
    [`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md), including
    the live audio transport evidence that the available office Browser-control
    surfaces could not collect.

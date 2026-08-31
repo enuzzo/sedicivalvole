@@ -139,8 +139,8 @@ The session started from clean `main == origin/main == bb5a2c9`. Drive
 corrections are checkpoint `ac11ed0`; milestone-row-6 audio evidence/recovery
 is `614872b`; row-7 transition mechanics are `2dd3cb5`, atomic rollback is
 `8f03b34`, and transient transport activation is `dcb6801`. Canonical live
-build is `20260831-1836` from immediate weak-network switch checkpoint
-`137ddeb`, transport-state hardening `57fed11`, provider-label correction
+build is `20260831-1911` from reversible Soundtrack-path checkpoint `0660d71`,
+retaining immediate weak-network switch checkpoint `137ddeb`, transport-state hardening `57fed11`, provider-label correction
 `2c0f5f8`, track-head guarantee `236f2c9` and true Illobo source correction
 `1a47e23`, retaining
 Featured random-start logic `61471e8`, Tesla Soundtrack correction `4b36069`, ATLAS Navigator Plaque
@@ -176,7 +176,12 @@ deterministic 120-action transport stress remains coherent within three decks.
 Checkpoint `137ddeb` makes both drawer directions visually immediate under weak
 network and rejects late completions; exact live `773 × 601` QA captured
 `Loading Soundtrack…`, reversed before the catalogue completed, and remained on
-Play the Road after settlement. The complete suite passes `508/508`; the
+Play the Road after settlement. Checkpoint `0660d71` repairs the separate
+Soundtrack-path round trip: Jamendo and Illobo remain enabled as complete path
+buttons, the three Jamendo covers survive Illobo playback, Jamendo browsing
+returns after selection, and a rapid Illobo → Jamendo reversal cannot be
+reclaimed by an obsolete request. Exact live `773 × 601` QA passes that complete
+round trip with no warning/error. The complete suite passes `512/512`; the
 146-module App / 70-module LAB / Sites build, 140-file protected publication,
 29/29 full remote Illobo hashes, canonical HTML/JS/CSS identity and read-only
 postflight pass. Target-Tesla retests remain `R4-04`, `R7-01`–`R7-07`,
@@ -232,7 +237,7 @@ identifiers for the evening cabin run in
 cannot close until those cabin results pass.
 
 Milestone row 8 is implemented at `05a754b` and retained in current canonical build
-`20260831-1836`, with perceptual correction `6218f98`. Both owner-supplied LOBO variants
+`20260831-1911`, with perceptual correction `6218f98`. Both owner-supplied LOBO variants
 remain byte-identical, the old provisional PNG is retired behind an exact-hash
 cache-overlap gate, and the Featured cover uses a continuous four-second-per-
 direction dissolve from white-on-black solid to original black-on-graphite
