@@ -8,6 +8,52 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Immediate weak-network Music switching — 2026-08-31 18:36
+
+- build stamp: **`20260831-1836`**; deployed source checkpoint:
+  **`137ddeb`**; transport prerequisite: **`57fed11`**; provider-label
+  correction: **`2c0f5f8`**;
+- behavior: **PASS**. The selected Play the Road/Soundtrack drawer replaces the
+  prior pane before awaiting catalogue, effects, or sampled-score readiness and
+  states the active loading target. Revision guards prevent obsolete work from
+  restarting the source the passenger already left;
+- tests/build: **PASS**. The complete `508/508` suite, 146-module App,
+  70-module LAB and Sites packaging pass;
+- exact live Browser QA: **PASS at `773 × 601`**. Soundtrack becomes the active
+  pane immediately and exposes `Loading Soundtrack…` while the canonical
+  catalogue request is pending. Reversing to Play the Road during that request
+  remains stable after 2.5 seconds, with the product title restored and no
+  loading residue;
+- publication: **PASS**. Read-only preflight and postflight both reported eight
+  root entries and `remote_writes=NONE`. Protected publication uploaded 140
+  files / 212,290,005 bytes and fully reverified all 29 Illobo recordings;
+- canonical identity: **PASS**. Root HTML references
+  `assets/index-CgB3n_1P.js` and `assets/index-DXOMO70U.css`. Local/live SHA-256
+  is respectively `334699f40a15eb8b1a8c8f050542e58e338242f6d1772c8a4c5d0a823d847b07`
+  for HTML, `3177bdd2d5e9ffd84d75b213496c4e659cc40c903867ee43e270f205c5593160`
+  for JavaScript, and
+  `097051900aebd93187192b7b0462b10bf96e8c19370eff9974374b467c83fe89`
+  for CSS. The JavaScript carries `137ddeb` and `20260831-1836`;
+- remaining acceptance: exercise the same reversal with genuinely degraded
+  Tesla connectivity as `R7-03`; office Browser evidence does not close it.
+
+## Soundtrack transport state hardening — 2026-08-31 18:23
+
+- build stamp: **`20260831-1824`**; transport checkpoint: **`57fed11`**;
+  deployed source/provider checkpoint: **`2c0f5f8`**;
+- transport: **PASS**. Natural end, dormant preload failure, explicit restart,
+  failed catalogue replacement, effects readiness/rejection, NEXT/PREVIOUS and
+  pause/resume keep audible media, queue identity, title and credit coherent;
+- stress/tests/build: **PASS**. A deterministic 120-action transport run stays
+  within three decks with no duplicate audible identity; the complete
+  `507/507` suite, 146-module App, 70-module LAB and Sites packaging pass;
+- publication/identity: **PASS**. Protected publication uploaded 140 files /
+  212,288,246 bytes, fully verified all 29 Illobo recordings, passed read-only
+  postflight, and produced byte-identical canonical HTML/JavaScript/CSS;
+- exact live Browser QA: **PASS at `773 × 601`** for Illobo start, NEXT,
+  PREVIOUS, pause/resume, page title and the corrected `LO` running-provider
+  mark. Tesla cabin transitions and effects remain `R7-01`–`R7-07`.
+
 ## Illobo track-head restart guarantee — 2026-08-31 18:00
 
 - build stamp: **`20260831-1755`**; deployed source checkpoint:

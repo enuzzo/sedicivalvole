@@ -117,7 +117,10 @@ asserted.
   interaction weight to compact **Illobo Featured** and **Jamendo Library**
   alternatives. Featured and the cover preview rotate every 30 minutes; Jamendo
   pace, genre, and exact-track gestures start playback immediately. Pace is
-  never connected to road speed or playback rate.
+  never connected to road speed or playback rate. A source tap replaces the
+  visible pane before awaiting catalogue/effects/score preparation, names the
+  selected loading state, and uses monotonic mode/score revisions so obsolete
+  work cannot reclaim playback after a rapid reversal.
 
 ## Diagnostics and privacy
 
@@ -136,7 +139,10 @@ The session started from clean `main == origin/main == bb5a2c9`. Drive
 corrections are checkpoint `ac11ed0`; milestone-row-6 audio evidence/recovery
 is `614872b`; row-7 transition mechanics are `2dd3cb5`, atomic rollback is
 `8f03b34`, and transient transport activation is `dcb6801`. Canonical live
-build is `20260831-1755` from track-head guarantee `236f2c9` and true Illobo source correction `1a47e23`, retaining
+build is `20260831-1836` from immediate weak-network switch checkpoint
+`137ddeb`, transport-state hardening `57fed11`, provider-label correction
+`2c0f5f8`, track-head guarantee `236f2c9` and true Illobo source correction
+`1a47e23`, retaining
 Featured random-start logic `61471e8`, Tesla Soundtrack correction `4b36069`, ATLAS Navigator Plaque
 `79d9c9b`, MUTE/FX parity `c0a2f78`, Featured-launch correction `1171157`, and
 Illobo cover correction `6218f98`.
@@ -163,7 +169,17 @@ full SHA-256 verification passes, the live catalogue reports exactly 29 Illobo
 tracks, and all 29/29 HTTP byte-range probes return `206 audio/mpeg` with the
 catalogued total size. Checkpoint `236f2c9` further guarantees that randomness
 selects only the next complete recording: every Featured relaunch recreates its
-target and starts at `0:00`, with no random or retained seek position. Target-Tesla retests remain `R4-04`, `R7-06`, `R7-07`,
+target and starts at `0:00`, with no random or retained seek position.
+Checkpoint `57fed11` then hardens natural end, explicit restart, dormant preload
+failure, failed catalogue replacement and effects readiness/rejection. The
+deterministic 120-action transport stress remains coherent within three decks.
+Checkpoint `137ddeb` makes both drawer directions visually immediate under weak
+network and rejects late completions; exact live `773 × 601` QA captured
+`Loading Soundtrack…`, reversed before the catalogue completed, and remained on
+Play the Road after settlement. The complete suite passes `508/508`; the
+146-module App / 70-module LAB / Sites build, 140-file protected publication,
+29/29 full remote Illobo hashes, canonical HTML/JS/CSS identity and read-only
+postflight pass. Target-Tesla retests remain `R4-04`, `R7-01`–`R7-07`,
 and `R8-01`–`R8-02`.
 Milestone row 9 is also office-complete and live:
 its selected Navigator Plaque combines a filled continuously rotating arrow,
@@ -216,7 +232,7 @@ identifiers for the evening cabin run in
 cannot close until those cabin results pass.
 
 Milestone row 8 is implemented at `05a754b` and retained in current canonical build
-`20260831-1727`, with perceptual correction `6218f98`. Both owner-supplied LOBO variants
+`20260831-1836`, with perceptual correction `6218f98`. Both owner-supplied LOBO variants
 remain byte-identical, the old provisional PNG is retired behind an exact-hash
 cache-overlap gate, and the Featured cover uses a continuous four-second-per-
 direction dissolve from white-on-black solid to original black-on-graphite

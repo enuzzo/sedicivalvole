@@ -1377,6 +1377,30 @@ lands below `5 kHz`, while zero remains `18 kHz` and full braking remains
 owns the threshold, because an ON badge without a clearly changed sound is a
 product failure even when every state variable is technically non-zero.
 
+### 6.11 Source changes are transactions, not awaited interface events
+
+A fixed-recording player can be musically correct and still feel broken on a
+weak connection if the old library remains visible while the new catalogue or
+score prepares. The passenger's source tap is the transport decision: replace
+the visible pane, stop or silence the outgoing source, and state which source is
+loading before awaiting network, decoding, effects, or AudioContext work.
+
+Every asynchronous source change needs a monotonic revision. Before any late
+completion may start media, unmute a score, commit title/credit, or clear a
+loading state, it must still own both the latest revision and the selected
+source. If a Soundtrack resume becomes obsolete while its play promise is
+pending, pause it explicitly after settlement. If an adaptive score becomes
+obsolete, keep its engine muted. This preserves the musical boundary the
+passenger actually chose and prevents two individually valid promises from
+producing the wrong audible result together.
+
+Natural track end is a separate hard boundary, not an ordinary crossfade from
+an already-ended deck. Start only a fresh target at `0:00`. Dormant preload
+failure must not poison the current audible deck, and a failed replacement
+catalogue must not relabel or stop music that is still playing. Deterministic
+stress should interleave NEXT, PREVIOUS, explicit selection, pause/resume and
+failure while asserting the deck ceiling and one coherent audible identity.
+
 ---
 
 ## 7. Sources and material
