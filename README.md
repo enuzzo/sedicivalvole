@@ -87,8 +87,9 @@ scores—then presents compact, equal-weight **Illobo Featured** and **Jamendo
 Library** alternatives. The Jamendo branch previews real cover art and starts
 immediately from a selected pace, genre, or track. Its deterministic fresh mix
 changes every 30 minutes. Illobo Featured uses both owner-supplied LOBO identity
-variants byte-identically as its cover, crossfading from one to the other every
-three seconds. Pace remains passenger-selected discovery metadata and
+variants byte-identically as its cover on an unclipped square dark field. A
+continuous eight-second CSS cycle takes four seconds to dissolve fully from one
+variant to the other, with no hold between them. Pace remains passenger-selected discovery metadata and
 never follows road speed or retimes audio; every recording remains at authored
 `1×`. Manual track changes use a nominal `450 ms` equal-power transition across
 at most three transient decks. The visible credit follows the audio-clock mix

@@ -205,9 +205,11 @@ The production deck now performs the nominal `450 ms` equal-power queue commit,
 including reversal and third-deck retargeting, and derives every visible credit
 from the same audio-clock gain vector. Its compact QR opens the current public
 content page rather than the no-store stream relay. Two byte-identical supplied
-Illobo SVGs are stacked as the Featured cover and crossfaded by CSS on a six-
-second cycle, producing one variant change every three seconds without React
-timer state or path mutation. A pure bounded formatter derives the active
+Illobo SVGs are stacked on an unclipped square dark field and crossfaded by CSS
+on a continuous eight-second linear cycle. Each full transition takes four
+seconds with no static hold, and the outline is inverted at presentation time
+without changing either source asset. No React timer state or path mutation is
+used. A pure bounded formatter derives the active
 Soundtrack document title from admitted artist/title metadata only while status
 is `playing`; all other states restore the fixed product title. Canonical
 publication and target-Tesla tuning remain later boundaries.

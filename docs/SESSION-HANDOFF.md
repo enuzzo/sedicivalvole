@@ -136,12 +136,13 @@ The session started from clean `main == origin/main == bb5a2c9`. Drive
 corrections are checkpoint `ac11ed0`; milestone-row-6 audio evidence/recovery
 is `614872b`; row-7 transition mechanics are `2dd3cb5`, atomic rollback is
 `8f03b34`, and transient transport activation is `dcb6801`. Canonical live
-build is `20260831-1320` from source/documentation checkpoint `b59e6ec`.
+build is `20260831-1340` from presentation checkpoint `becc0c2`.
 Guarded no-delete publication, pre/postflight `remote_writes=NONE`, canonical
 HTML/main/CSS/worklet byte identity and catalogue/audio relay probes pass.
 Milestone row 8 is office-complete at `05a754b`: both owner-supplied Illobo LOBO
 SVG variants are retained byte-identically as the Featured cover and crossfade
-every three seconds. Active fixed playback publishes `16 - Artist - Track title`
+continuously over four seconds in each direction on an unclipped square dark
+field. Active fixed playback publishes `16 - Artist - Track title`
 to the page title and restores the product title on pause. The complete suite,
 build, and exact local/live `773 × 601` Browser QA pass. Protected publication,
 pre/postflight, canonical byte identity, timed fade, real play/pause title, and
@@ -193,10 +194,11 @@ identifiers for the evening cabin run in
 cannot close until those cabin results pass.
 
 Milestone row 8 is implemented at `05a754b` and canonical in build
-`20260831-1320` from checkpoint `b59e6ec`. Both owner-supplied LOBO variants
+`20260831-1340`, with presentation correction `becc0c2`. Both owner-supplied LOBO variants
 remain byte-identical, the old provisional PNG is retired behind an exact-hash
-cache-overlap gate, and the Featured cover changes variant every three seconds.
-Local and live `773 × 601` QA proves both states, exact dimensions, zero
+cache-overlap gate, and the Featured cover uses a continuous four-second-per-
+direction dissolve on an unclipped square dark field without a cover border or
+radius. Local and live `773 × 601` QA proves both states, exact dimensions, zero
 warning/error, real `16 - Artist - Track title` playback identity, and title
 restoration on pause. Use `R8-01`–`R8-02` for the evening Tesla acceptance.
 

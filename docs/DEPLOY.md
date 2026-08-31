@@ -8,6 +8,34 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Illobo continuous dark-field correction — 2026-08-31 13:41
+
+- final build stamp: **`20260831-1340`**; deployed source checkpoint:
+  **`becc0c2`**. The immediately preceding build `20260831-1337` from
+  `1a2acda` was published successfully but superseded after owner review found
+  its six-second-per-direction change too subtle;
+- presentation: **PASS**. The byte-identical SVGs remain unchanged. Their cover
+  now has the product graphite field, no border, no radius, and visible overflow
+  so the supplied outer outline cannot be clipped. A linear eight-second cycle
+  takes four seconds to dissolve fully in either direction with no static hold;
+- tests/build: **PASS**. Focused brand checks, the complete `490/490` suite, the
+  146-module App, 70-module LAB, and Sites packaging pass;
+- protected publication: **PASS**. Read-only preflight and postflight passed
+  with eight root entries and `remote_writes=NONE`; the guarded no-delete upload
+  transferred **109 files / 16,513,450 bytes**, retained the static/legacy tree,
+  and preserved two prior fingerprinted assets for cache overlap;
+- canonical HTTP identity: **PASS**. HTML SHA-256
+  `3b021c1a9f09025115f0593ad574e2e50dd3152a5bd6ff6ed7bf4b67cb04f066`,
+  CSS `assets/index-eJRhhJpg.css` SHA-256
+  `9d2543da4478e7dac8a2eca380e5175d45705a8b79fcb2e5323755c7eedcd9ca`,
+  and JavaScript `assets/index-BfLj9x4m.js` SHA-256
+  `842e20b77e6d49a7a60d4f152c5dee257c88de2857395d6436912638314bd115`
+  are byte-identical local/live;
+- exact live Browser QA: **PASS at `773 × 601`**. Opacity changed from
+  `0.946 / 0.054` to `0.442 / 0.558` over two seconds; computed cover style is
+  dark, square, borderless and unclipped. Page overflow is zero and no warning
+  or error was observed. Physical Tesla acceptance remains `R8-01`–`R8-02`.
+
 ## Illobo identity and Tesla playback title — 2026-08-31 13:25
 
 - build stamp: **`20260831-1320`**; deployed source/documentation checkpoint:

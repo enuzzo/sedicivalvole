@@ -102,8 +102,9 @@ Completed in the current working line:
   real covers, rotates its mix every 30 minutes, and starts immediately from a
   chosen Jamendo pace, genre, or exact track. Pace is a passenger-selected
   editorial filter only and never follows road speed or retimes a recording.
-  Illobo Featured now uses both approved supplied LOBO identity variants as a
-  three-second crossfading cover, and active fixed playback publishes
+  Illobo Featured now uses both approved supplied LOBO identity variants on an
+  unclipped square dark field with a continuous four-second-per-direction
+  crossfade, and active fixed playback publishes
   `16 - Artist - Track title` to the browser page title for the Tesla media
   surface.
   The office implementation now applies nominal `450 ms` equal-power skips and
