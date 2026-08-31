@@ -491,7 +491,7 @@ assert ftp.files == {}
 
 test("normal publication verifies the complete build before replacing the live PHP entry", () => {
   const source = readFileSync(deployScript, "utf8");
-  const completedGateAt = source.lastIndexOf("verify_completed_upload(ftp, recipient_config, lab_auth_config)");
+  const completedGateAt = source.lastIndexOf("verify_completed_upload(ftp, recipient_config, lab_auth_config, jamendo_config)");
   const liveEntryWriteAt = source.lastIndexOf("install_dynamic_root(ftp, php_entry)");
   assert.ok(completedGateAt >= 0);
   assert.ok(liveEntryWriteAt > completedGateAt);

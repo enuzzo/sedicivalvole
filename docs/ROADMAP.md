@@ -80,22 +80,17 @@ Completed in the current working line:
 
 - JUNCTION's 24-clip browser runtime uses one 5.8 MB segmented Opus music bank built from 76 distinct recordings. Its eight energy states each own three interchangeable complete performances under one fixed E-minor harmonic grammar. Only one tonal performance plays at a time, changes stay on complete eight-bar boundaries, recent memory prevents an immediate repeat, 40 km/h remains at 127 BPM, 60 km/h remains at 135 BPM, and rest has no break or bassline;
 - the bank contains a mixed, processed production rather than loose source samples; browser-delivered bytes remain downloadable and are not described as secret;
-- SOUNDTRACK's disconnected state foundation now admits only complete policy-gated
-  metadata into a short-lived session snapshot and models previous/current/next
-  rotation, recent-track/artist avoidance, stale/removed-target refusal and
-  recovery refill. A detached three-element controller prepares only direct
-  stream URLs through browser-native `preload=auto`, requires explicit play,
-  rejects stale completion and releases displaced sources completely. It is not
-  connected to the production App/audio bus. A second detached model now owns
-  the revision-guarded 450 ms equal-power skip envelope, rapid retargeting and
-  three-deck ceiling, but MediaElementSource/gain routing and queue commit remain
-  pending. A third fail-closed view model derives display-safe credit from the
-  actual audible gain mix, including all identities in a rapid retarget, and
-  exposes no stream URL. A fourth detached boundary preserves authored `1×`
-  playback, prohibits driving-derived track selection or retiming, and separates
-  the manually enabled vehicle-reactive macros from four manual DJ controls.
-  Jamendo discovery retains normalized genres but no pace. No proxy, persistent audio, offline
-  guarantee or visible library/playback/credit surface exists yet.
+- SOUNDTRACK now uses server-side Jamendo catalogue and exact-ID audio relays,
+  short-lived metadata, and three transient previous/current/next media elements
+  in both the App and owner LAB. MediaElementSource routing preserves authored
+  `1×` playback while a fresh-session DRIVE FX master applies the existing
+  OPEN/UNDERWATER/BLOOM vehicle macros and four independent manual controls apply
+  flanger, reverb, chorus, and beat repeat. The visible active-track card carries
+  artwork, artist, title, licence, provider credit, and direct source link.
+  Effects-disallowed, ND, unknown, incomplete, or stale items fail closed;
+  neither audio nor credentials enter persistent browser or repository storage.
+  Audible equal-power skip integration, QR handoff, broader browsing, physical-
+  Tesla listening, and target-vehicle effect tuning remain pending.
 
 Queued next:
 

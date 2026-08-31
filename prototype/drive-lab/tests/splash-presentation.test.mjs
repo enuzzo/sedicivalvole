@@ -51,7 +51,7 @@ test("the selected Instrument Deck resolves Music and Visual before START", () =
   assert.match(selector, /musicId && environmentId/);
   assert.match(selector, /choice\.launchDescription/);
   assert.match(app, /Adaptive music shaped by your drive/);
-  assert.match(app, /Independent artist recordings/);
+  assert.match(app, /Independent Jamendo artist recordings/);
   assert.match(app, /Visuals only\. No music\./);
   assert.doesNotMatch(selector, /ILLOBO FEATURED/i);
   assert.match(styles, /\.launch-selector \{[\s\S]*?--sheet-surface: var\(--road-sheet-light-surface\)[\s\S]*?grid-template-rows: 72px minmax\(0, 1fr\) 58px[\s\S]*?width: min\(724px, calc\(100vw - 48px\)\)[\s\S]*?height: min\(552px, calc\(100dvh - 48px\)\)/);
@@ -84,14 +84,15 @@ test("the selected Instrument Deck resolves Music and Visual before START", () =
   }
 });
 
-test("SOUNDTRACK stays visible but cannot start before its real player exists", () => {
+test("SOUNDTRACK stays visible and START waits for its prepared player", () => {
   const app = read("App.jsx");
   const soundtrack = app.slice(app.indexOf('id: "soundtrack"'), app.indexOf('id: "mute"'));
 
   assert.match(soundtrack, /label: "SOUNDTRACK"/);
-  assert.match(soundtrack, /available: false/);
+  assert.match(soundtrack, /available: true/);
   assert.match(app, /disabled=\{!choice\.available\}/);
-  assert.match(app, /COMING NEXT/);
+  assert.match(app, /musicReady=\{launchMusicId !== "soundtrack"/);
+  assert.match(app, /\["prepared", "paused", "playing"\]\.includes\(soundtrackSnapshot\?\.status\)/);
 });
 
 test("splash credits the collaborator and links the public source", () => {
@@ -180,7 +181,7 @@ test("local exact-viewport QA can keep the Web Audio graph inaudible", () => {
   assert.match(app, /const QA_MUTED = import\.meta\.env\.DEV && QA_PARAMS\.get\("qaMute"\) === "1"/);
   assert.match(app, /const \[muted, setMuted\] = useState\(QA_MUTED\)/);
   assert.match(app, /const launchMuted = QA_MUTED \|\| musicId === "mute"/);
-  assert.match(app, /audioRef\.current\.setMuted\(launchMuted\)/);
+  assert.match(app, /audioRef\.current\.setMuted\(launchMuted \|\| musicId === "soundtrack"\)/);
 });
 
 test("launch copy has a continuous white-to-red travelling wave", () => {

@@ -60,8 +60,8 @@ The canonical development build is available at [sedicivalvole.app](https://sedi
 - ✅ photographed Tesla split-view evidence at `773 × 601`, screen `1254 × 784`, DPR `1.53`;
 - ✅ compact-view v3 diagnostics redesigned as a readable Space Grotesk instrument with a health strip, aligned evidence groups, tabular numerals, one-scroll raw JSON, and a dedicated telemetry/privacy/provenance/licensing/source README; no coordinates are retained, and the explicit same-origin email handoff attaches the complete report as verified gzip-compressed JSON;
 - 🧱 bounded network telemetry now supplies the raw REPORT with a deterministic, non-visual notice state that separates browser connectivity estimates from observed app transfers, failures and recoveries; the quiet-when-healthy navbar treatment remains behind the three-direction interface gate;
-- 🧱 SOUNDTRACK now has tested, non-production metadata, media-deck, transition and audible-credit foundations: a short-lived fail-closed Jamendo catalogue view, immutable previous/current/next rotation, a detached three-element direct-source browser controller, a revision-guarded 450 ms equal-power skip model, and a stream-free attribution projection that follows every genuinely audible deck and blocks incomplete credit; it stores no audio and remains disconnected from the launcher/player and production audio bus;
-- 🧱 its fixed-recording boundary now preserves authored `1×` playback and keeps driving completely out of track selection and retiming. A separate fresh-session FX master may admit the existing OPEN/UNDERWATER/BLOOM vehicle gestures, while four manual passenger-play controls—flanger, reverb, chorus, and beat repeat—remain an independent effects family; source capability still gates what reaches either effects bus;
+- ✅ SOUNDTRACK now discovers eligible fixed recordings through a short-lived, server-side Jamendo catalogue relay, prepares previous/current/next as three transient browser media elements, and streams the selected track through a same-origin no-store audio relay into the production Web Audio graph. The App and owner LAB expose real artist, title, artwork, licence, Jamendo credit, and direct source links without persisting audio or exposing the credential;
+- ✅ fixed recordings remain at authored `1×` playback and driving never selects or retimes them. A fresh-session `DRIVE FX` master admits the existing OPEN/UNDERWATER/BLOOM vehicle gestures, while four independent passenger controls—flanger, reverb, chorus, and beat repeat—operate manually. Licences that disallow effects and all ND/unknown records fail closed before playback;
 - ✅ the canonical bare root, direct PHP entry, and content-addressed assets are live and byte-identical after the SiteGround cache flush;
 - ✅ the owner-selected **16 Road** identity ships as dark, light, and genuine-alpha SVG masters, 512/1024 px PNGs, favicon/touch/product icons, and browser icon metadata; its large Orbitron-outline `16` is framed by mirrored vermilion and ivory roads that fill the square canvas;
 - ✅ the first complete Tesla report confirms 60.04 FPS overall, 16.8 ms p95, four slow frames, 33.2 MB peak decoded PCM, and no runtime issue during a 314-second drive;
@@ -74,8 +74,9 @@ The product is configured while parked. One deliberate **PLAY THE ROAD** gesture
 on the animated Signal Gate splash opens the compact Instrument Deck. Its two
 visible sections require an explicit initial **MUSIC** choice—PLAY THE ROAD,
 SOUNDTRACK, or MUTE—and one **VISUAL** before **START** can unlock Web Audio,
-check capabilities, request GPS permission, and enter the experience. SOUNDTRACK
-remains visible but disabled until its real player exists. Every choice carries
+check capabilities, request GPS permission, and enter the experience. Selecting
+SOUNDTRACK prepares three eligible Jamendo roles before START is enabled; actual
+playback still begins only after that explicit user gesture. Every choice carries
 a short description; Illobo's featured treatment belongs inside the later
 SOUNDTRACK library rather than this top-level launcher. The launcher now
 establishes the owner-selected LIGHT **Road Sheet** language: one warm-ivory open

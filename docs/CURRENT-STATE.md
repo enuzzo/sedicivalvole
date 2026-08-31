@@ -172,9 +172,9 @@ dated study documents.
   compact left-aligned 16 Road and Orbitron wordmark lockup, hairline structure,
   quiet-gray direct controls, short vermilion state rails, and one black START
   field. `MUSIC` and `VISUAL` keep concise descriptions; START remains disabled
-  until both axes are selected, and MUTE still requires a Visual. SOUNDTRACK is
-  visible but disabled until its real player exists, and the Illobo featured
-  treatment remains reserved for the future SOUNDTRACK library. At exact
+  until both axes are selected, and MUTE still requires a Visual. SOUNDTRACK
+  prepares three transient eligible Jamendo roles before START can unlock, and
+  the Illobo featured treatment remains reserved for its later library. At exact
   `773 × 601`, the complete Music and Visual button grids share the same
   `342 px` height, top, and bottom. The `72 px` header, shared compact padding,
   `8 px` grid spacing, and `3 px` title/description gap reserve room without
@@ -324,33 +324,24 @@ dated study documents.
   after either score and before OPEN's shared tone/width stage.
 - **CUTWATER 04**, **LOWTIDE 05**, **NIGHTCAST 06**, and
   **STILLWATER 07** are declared honestly as `IN PREPARATION` and are disabled.
-- **SOUNDTRACK is not connected to the production player yet.** Its first
-  fail-closed source-policy foundation is implemented and tested: selection,
-  source streaming, audio effects, and hosted-copy rights are independent
-  `allow`/`deny`/`unknown` capabilities. Known non-ND Creative Commons records
-  preserve their obligations; ND and unknown records are excluded. Jamendo
-  normalization requires complete credit and source-owned URLs and discards all
-  download fields. A second pure foundation now creates only short-lived
-  session-memory metadata snapshots and rotates immutable
-  previous/current/next roles with bounded track/artist memory, fresh-target
-  validation, explicit displacement, refill after recovery and no automatic
-  mode fallback. A detached controller can now map the roles to three
-  direct-source browser media elements, reuse them through rotation, prepare
-  with native `preload=auto`, require explicit play, ignore stale play/events,
-  observe rather than promise browser buffering, and destructively release a
-  displaced source. A separate audio-clock model now describes the nominal
-  450 ms equal-power skip, including rapid reversal, a third prepared target,
-  a strict three-deck ceiling and stale completion guards. A fail-closed credit
-  projection now follows the dominant and secondary audible identities without
-  exposing stream URLs; incomplete audible credit blocks playback eligibility.
-  A detached boundary now fixes recordings at authored `1×`, forbids driving-
-  derived selection or retiming, permits the existing OPEN/UNDERWATER/BLOOM
-  gestures only behind the manual FX master, and models separate normalized
-  flanger, reverb, chorus, and beat-repeat controls for the main UI or an
-  authorized passenger. Jamendo discovery retains normalized genres, not pace.
-  None of these layers is imported by the production player; there is no proxy
-  fetch, persistent audio, MediaElementSource/gain routing, live library/card,
-  live playback or fictional offline duration. See
+- **SOUNDTRACK is connected to the App and owner LAB as a production prototype.**
+  A server-side catalogue relay keeps the Jamendo client ID out of browser code,
+  admits only complete effect-compatible non-ND Creative Commons records, and
+  returns a short-lived no-store metadata view. A separate same-origin relay
+  resolves an exact admitted track ID and streams byte ranges without writing an
+  audio file. Previous/current/next occupy at most three transient browser media
+  elements with native `preload=auto`; displaced sources are paused, detached,
+  and discarded rather than copied into Cache Storage, IndexedDB, a service
+  worker, or any offline store. Playback requires the explicit START/PLAY
+  gesture, has no automatic PLAY THE ROAD fallback, and remains at authored
+  `1×`: driving never chooses or retimes a recording. MediaElementSource
+  routing feeds a bounded Web Audio graph. A fresh-session `DRIVE FX` master
+  enables OPEN/UNDERWATER/BLOOM from the shared vehicle macros, independently of
+  manual flanger, reverb, chorus, and beat-repeat controls. The visible card
+  follows the active track and exposes artwork, artist, title, licence, Jamendo
+  credit, and the direct source link. Audible crossfade/rapid-retarget integration,
+  the QR handoff, broader catalogue browsing, and physical-Tesla listening remain
+  open; no offline-duration promise is made. See
   [`SOUNDTRACK-SOURCE-POLICY.md`](SOUNDTRACK-SOURCE-POLICY.md).
 - `docs/MUSIC-CRAFT.md` records the musical defects and techniques already
   learned. Assertable musical rules belong in tests.

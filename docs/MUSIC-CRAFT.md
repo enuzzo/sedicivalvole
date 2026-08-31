@@ -13,6 +13,30 @@ constrains, it says why, and the why is always something a listener noticed.
 researched, or a way to make the score better is discovered, record it here in
 the same session. `AGENTS.md` requires it.
 
+### 6.7 Fixed recordings need effects that respect authored time
+
+SOUNDTRACK exposed a different failure mode from the adaptive scores: treating a
+finished recording as if speed were arrangement data would change an artist's
+tempo, pitch, phrase timing, and intent. Every fixed recording therefore stays at
+`playbackRate = 1`; speed, acceleration, braking, and energy cannot choose a
+track or alter its transport. The listener noticed this boundary as a product
+identity issue, not merely a DSP implementation detail.
+
+Vehicle response is allowed only as bounded parallel processing behind the
+explicit fresh-session `DRIVE FX` master. OPEN changes focus and upper tone,
+UNDERWATER applies the braking low-pass gesture, and BLOOM keeps its short
+feed-forward event, but none controls the media element clock. Manual flanger,
+convolution reverb, chorus, and beat repeat form a separate passenger-play path.
+Beat repeat is intentionally bounded to `0.5–0.0625 s`, uses a short seam fade,
+and smooths wet release so experimentation does not create an unbounded buffer,
+click, or stuck loop. Source admission must allow effects before either family
+can process a track.
+
+The current browser graph and deterministic checks prove routing, bounds, and
+unchanged playback rate. They do not prove that the default depths are pleasant
+over every master or in the Tesla cabin; morning vehicle listening remains the
+authority for wet balance, braking intelligibility, and peak behaviour.
+
 ---
 
 ## 1. The mistakes this project has made

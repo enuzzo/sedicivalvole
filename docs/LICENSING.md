@@ -97,10 +97,13 @@ For this noncommercial project, CC BY, BY-SA, BY-NC, and BY-NC-SA preserve their
 attribution, noncommercial, and share-alike obligations as data. The stricter
 owner decision excludes BY-ND and BY-NC-ND recordings entirely instead of
 building an unprocessed-playback exception. Direct grants require a stable
-evidence reference and an explicit decision for every capability. This is only
-the admission foundation: no Jamendo catalogue, audio, credential, asset, or
-player has entered the production application. The complete contract and dated
-primary sources are recorded in
+evidence reference and an explicit decision for every capability. The production
+prototype now applies this boundary through a server-side catalogue relay and
+an exact-track, no-store byte-range relay. The credential never enters browser
+code; audio is streamed from the admitted Jamendo source without a hosted or
+offline copy. Only effect-compatible records reach the Web Audio graph, while
+the visible player preserves artist, title, licence, Jamendo provider credit,
+and the direct source link. The complete contract and dated primary sources are recorded in
 [`SOUNDTRACK-SOURCE-POLICY.md`](SOUNDTRACK-SOURCE-POLICY.md).
 
 ## 2026-08-29 — source-faithful Drivey supersedes the clean-room decision

@@ -96,6 +96,19 @@ private messages or credentials never enter the repository.
   the existing OPEN/UNDERWATER/BLOOM vehicle-reactive effects, independently of
   four normalized manual controls for flanger, reverb, chorus, and beat repeat.
   The same source capability gate applies to both effects paths.
+- `src/soundtrack/catalog-client.js` requests the same-origin catalogue relay,
+  normalizes its short-lived response through the admission policy, and never
+  receives a credential.
+- `src/soundtrack/preview-controller.js` composes catalogue, rotation, transient
+  media decks, attribution, and the live effect graph for explicit App/LAB use.
+- `src/soundtrack/effects-controller.js` owns the Web Audio graph for OPEN,
+  UNDERWATER, BLOOM, flanger, reverb, chorus, and bounded beat repeat while
+  keeping every media element at authored rate.
+- `public/api/soundtrack-catalog.php` keeps the Jamendo client ID server-side and
+  returns only display/playback fields with short-lived no-store headers.
+- `public/api/soundtrack-audio.php` resolves one exact admitted track ID, rejects
+  effects-disallowed licences, forwards byte ranges, and streams without writing
+  a hosted or offline copy.
 - `tests/soundtrack-rotation.test.mjs` covers expiry, deduplication, three-role
   identity, broad rotation, back/forward, removal, exhaustion and recovery.
 - `tests/soundtrack-media-deck.test.mjs` covers direct-source preparation,
@@ -111,10 +124,10 @@ private messages or credentials never enter the repository.
   track-selection invariants, explicit vehicle-FX enablement, the exact four
   manual controls, normalized amounts, authorized passenger control, and
   fail-closed source/control decisions.
-- These modules are not imported by the production application yet. Proxy
-  fetching, any approved persistent metadata layer, App/audio-bus connection,
-  MediaElementSource/gain routing and queue commit for the modelled 450 ms skip,
-  audible-state connection, visible library/effects/credit/QR UI, target-vehicle
-  tuning and canonical deployment remain later checkpoints. The
-  current `preparedMetadataSlots` summary is not an audio-buffer or
-  offline-duration claim.
+- The App and protected owner LAB now import the production preview/effect path.
+  They expose current-track credit, direct Jamendo navigation, transport, the
+  vehicle-FX master, and four manual effects. The modelled 450 ms audible
+  equal-power queue commit, QR UI, broader library, target-vehicle tuning, and
+  physical-Tesla acceptance remain later checkpoints. `preparedMetadataSlots`
+  reports metadata roles only; it is not an audio-buffer or offline-duration
+  claim. No persistent audio layer is approved or planned.

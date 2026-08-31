@@ -159,11 +159,12 @@ from interpretation and arrangement rather than playback-rate escalation.
 
 The music registry separates `ready` from `preparing`. FRACTURE and JUNCTION are
 ready; the remaining five directions are truthful disabled roadmap entries.
-SOUNDTRACK's fixed-recording path remains disconnected from production, but its
-first state boundary is implemented. An already-admitted source policy may enter
-a bounded session-memory metadata snapshot only when it retains a complete HTTPS
-stream/backlink, provider credit and licence reference. Expired snapshots expose
-zero activatable entries. A separate immutable previous/current/next model keeps
+SOUNDTRACK's fixed-recording path is now connected as a production prototype.
+A server-side catalogue relay keeps the Jamendo client ID outside browser code
+and admits a bounded session-memory metadata snapshot only when it retains a
+complete HTTPS stream/backlink, provider credit and effect-compatible licence
+reference. Expired snapshots expose zero activatable entries. A separate
+immutable previous/current/next model keeps
 bounded recent track/artist identity, prefers a different recent artist when
 possible, validates a queued target against the newest fresh snapshot, reports
 displaced entries for later media disposal, and refills missing roles after
@@ -183,13 +184,18 @@ then derives primary and secondary credit from the sampled audible gains, keeps
 all three identities during a rapid retarget, strips stream URLs, preserves the
 licence/provider/direct-link obligations, and refuses playback eligibility when
 any audible identity lacks complete credit. The admitted Jamendo record retains
-normalized genre tags for manual discovery but no driving-pace field. A separate
-playback boundary fixes every recording at authored `1×`, prevents driving from
-selecting or retiming it, and divides processing into two explicit families:
+normalized genre tags for manual discovery but no driving-pace field. A same-
+origin exact-ID relay validates admission again and streams byte ranges with
+`no-store`; it never writes a hosted copy. The App and LAB map the three roles
+onto transient media elements and a MediaElementSource graph. A separate playback
+boundary fixes every recording at authored `1×`, prevents driving from selecting
+or retiming it, and divides processing into two explicit families:
 the manually enabled OPEN/UNDERWATER/BLOOM vehicle-reactive path and four manual
-flanger/reverb/chorus/beat-repeat controls. Network proxy, metadata persistence,
-production App/audio-bus MediaElementSource/gain routing, queue commit and
-visible library/effects/credit/QR/playback controls remain later boundaries.
+flanger/reverb/chorus/beat-repeat controls. Playback, current-track attribution,
+direct source navigation, transport, and both effect families are visible in the
+App and LAB. Metadata remains short-lived and audio remains non-persistent.
+Audible equal-power queue commit, QR handoff, broader catalogue browsing, and
+target-Tesla tuning remain later boundaries.
 
 JUNCTION is a 192-bar rendered production: eight adaptive energy states each
 have three complete takes, giving 24 clips from 76 distinct recordings in one
