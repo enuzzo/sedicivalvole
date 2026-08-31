@@ -36,7 +36,8 @@ test("OPEN, UNDERWATER, and BLOOM remain distinct corridor-native gestures", () 
   const bloom = meridianEffectProfile("BLOOM");
   assert.equal(idle.rateScale, 1);
   assert.ok(open.fovDelta > 0 && open.railGlowScale > 1);
-  assert.ok(underwater.rateScale < 1 && underwater.fogScale > 1);
+  assert.ok(underwater.rateScale <= 0.58 && underwater.fogScale >= 1.75);
+  assert.ok(underwater.fovDelta <= -10 && underwater.railGlowScale <= 0.5);
   assert.ok(bloom.fovDelta > open.fovDelta);
   assert.ok(bloom.railGlowScale > open.railGlowScale);
 });
@@ -76,6 +77,10 @@ test("never restarts the clock on malformed timing input", () => {
 
 test("widens the projection with speed so acceleration is not only faster geometry", () => {
   assert.equal(speedToProjection(0).fovDegrees, MERIDIAN_FOV_REST_DEGREES);
+  assert.ok(
+    MERIDIAN_FOV_CEILING_DEGREES - MERIDIAN_FOV_REST_DEGREES >= 74,
+    "the road-speed lens must retain a materially wide full-range span",
+  );
   assert.ok(
     Math.abs(speedToProjection(ROAD_SPEED_CEILING_KMH).fovDegrees - MERIDIAN_FOV_CEILING_DEGREES)
       < 1e-12,
@@ -125,7 +130,7 @@ test("smooths acceleration and braking continuously instead of following GPS ste
   response = advanceMeridianVisualResponse(response, 0, "UNDERWATER", 1 / 60);
   assert.ok(response.speedKmh > 0, "braking must not snap to the sampled road speed");
   assert.ok(response.speedKmh < 130, "braking must begin on the next rendered frame");
-  assert.ok(response.effectProfile.rateScale < 1 && response.effectProfile.rateScale > 0.68);
+  assert.ok(response.effectProfile.rateScale < 1 && response.effectProfile.rateScale > 0.58);
 
   previousSpeed = response.speedKmh;
   for (let frame = 0; frame < 300; frame += 1) {
@@ -134,7 +139,31 @@ test("smooths acceleration and braking continuously instead of following GPS ste
     previousSpeed = response.speedKmh;
   }
   assert.ok(response.speedKmh < 0.05);
-  assert.ok(Math.abs(response.effectProfile.rateScale - 0.68) < 1e-6);
+  assert.ok(Math.abs(response.effectProfile.rateScale - 0.58) < 1e-6);
+});
+
+test("makes underwater compression and the following surfacing unmistakable but continuous", () => {
+  const roadSpeed = 65;
+  const dryFov = speedToProjection(roadSpeed).fovDegrees;
+  const underwaterFov = dryFov + meridianEffectProfile("UNDERWATER").fovDelta;
+  assert.ok(dryFov - underwaterFov >= 10, "underwater must visibly compress the projection");
+
+  let response = advanceMeridianVisualResponse(null, roadSpeed, "UNDERWATER", 1 / 60);
+  const submergedFovDelta = response.effectProfile.fovDelta;
+  response = advanceMeridianVisualResponse(response, 100, null, 1 / 60);
+  assert.ok(
+    response.effectProfile.fovDelta > submergedFovDelta,
+    "surfacing must start opening the projection on the first frame",
+  );
+  assert.ok(response.effectProfile.fovDelta < 0, "surfacing must not snap immediately to dry");
+  assert.ok(response.speedKmh > roadSpeed, "renewed acceleration must begin immediately");
+
+  for (let frame = 0; frame < 60; frame += 1) {
+    response = advanceMeridianVisualResponse(response, 100, null, 1 / 60);
+  }
+  assert.ok(response.effectProfile.fovDelta > -1.5, "the field must visibly emerge within one second");
+  assert.ok(response.effectProfile.railGlowScale > 0.9);
+  assert.ok(response.effectProfile.fogScale < 1.12);
 });
 
 test("keeps the visual response effectively frame-rate independent", () => {
@@ -159,7 +188,24 @@ test("keeps the visual response effectively frame-rate independent", () => {
     assert.ok(Math.abs(response.speedKmh - at60.speedKmh) < 1e-9);
     assert.ok(Math.abs(response.effectProfile.fovDelta - at60.effectProfile.fovDelta) < 1e-9);
   }
+
+  const simulateSurfacing = (framesPerSecond) => {
+    let response = advanceMeridianVisualResponse(null, 65, "UNDERWATER", 1 / framesPerSecond);
+    for (let frame = 0; frame < framesPerSecond; frame += 1) {
+      response = advanceMeridianVisualResponse(response, 100, null, 1 / framesPerSecond);
+    }
+    return response;
+  };
+  const surface30 = simulateSurfacing(30);
+  const surface60 = simulateSurfacing(60);
+  const surface120 = simulateSurfacing(120);
+  for (const response of [surface30, surface120]) {
+    assert.ok(Math.abs(response.speedKmh - surface60.speedKmh) < 1e-9);
+    assert.ok(Math.abs(response.effectProfile.fovDelta - surface60.effectProfile.fovDelta) < 1e-9);
+    assert.ok(Math.abs(response.effectProfile.fogScale - surface60.effectProfile.fogScale) < 1e-9);
+  }
   assert.ok(MERIDIAN_RESPONSE.brakingSeconds > MERIDIAN_RESPONSE.accelerationSeconds);
+  assert.ok(MERIDIAN_RESPONSE.surfacingSeconds > MERIDIAN_RESPONSE.effectEngageSeconds);
 });
 
 test("grows the displacement field continuously from rest to the ceiling", () => {

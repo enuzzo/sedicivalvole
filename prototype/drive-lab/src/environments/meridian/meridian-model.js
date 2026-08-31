@@ -43,7 +43,7 @@ export const MERIDIAN_PIN_PROGRESS = 0.015;
 export const MERIDIAN_SLOPE_STEP = 0.012;
 
 export const MERIDIAN_FOV_REST_DEGREES = 50;
-export const MERIDIAN_FOV_CEILING_DEGREES = 116;
+export const MERIDIAN_FOV_CEILING_DEGREES = 124;
 
 /**
  * Visual response times in seconds. Acceleration is prompt, while release is
@@ -52,9 +52,10 @@ export const MERIDIAN_FOV_CEILING_DEGREES = 116;
  * the field, projection, and fog on the frame where a macro changes.
  */
 export const MERIDIAN_RESPONSE = Object.freeze({
-  accelerationSeconds: 0.3,
+  accelerationSeconds: 0.22,
   brakingSeconds: 0.62,
-  effectSeconds: 0.32,
+  effectEngageSeconds: 0.24,
+  surfacingSeconds: 0.5,
 });
 
 const FIELD = Object.freeze({
@@ -178,8 +179,8 @@ export function meridianEffectProfile(effect) {
   }
   if (effect === "UNDERWATER") {
     return {
-      rateScale: 0.68, fovDelta: -5, swayScale: 0.68,
-      railGlowScale: 0.62, fogScale: 1.5, atmosphereDelta: 0.1,
+      rateScale: 0.58, fovDelta: -11, swayScale: 0.54,
+      railGlowScale: 0.46, fogScale: 1.78, atmosphereDelta: 0.16,
     };
   }
   if (effect === "BLOOM") {
@@ -215,14 +216,22 @@ export function advanceMeridianVisualResponse(
   effect,
   deltaSeconds,
 ) {
+  const normalizedEffect = ["OPEN", "UNDERWATER", "BLOOM"].includes(effect)
+    ? effect
+    : null;
   const targetSpeed = clamp(
     Number.isFinite(speedKmh) ? speedKmh : 0,
     0,
     ROAD_SPEED_CEILING_KMH,
   );
-  const targetEffect = meridianEffectProfile(effect);
+  const targetEffect = meridianEffectProfile(normalizedEffect);
   if (!previousResponse) {
-    return { speedKmh: targetSpeed, effectProfile: { ...targetEffect } };
+    return {
+      speedKmh: targetSpeed,
+      effect: normalizedEffect,
+      effectResponseSeconds: MERIDIAN_RESPONSE.effectEngageSeconds,
+      effectProfile: { ...targetEffect },
+    };
   }
 
   const previousSpeed = Number.isFinite(previousResponse.speedKmh)
@@ -231,6 +240,11 @@ export function advanceMeridianVisualResponse(
   const speedResponseSeconds = targetSpeed >= previousSpeed
     ? MERIDIAN_RESPONSE.accelerationSeconds
     : MERIDIAN_RESPONSE.brakingSeconds;
+  const effectResponseSeconds = previousResponse.effect === normalizedEffect
+    ? previousResponse.effectResponseSeconds ?? MERIDIAN_RESPONSE.effectEngageSeconds
+    : previousResponse.effect === "UNDERWATER" && normalizedEffect !== "UNDERWATER"
+      ? MERIDIAN_RESPONSE.surfacingSeconds
+      : MERIDIAN_RESPONSE.effectEngageSeconds;
   const previousEffect = previousResponse.effectProfile ?? meridianEffectProfile(null);
   const effectProfile = {};
   for (const key of Object.keys(targetEffect)) {
@@ -238,12 +252,14 @@ export function advanceMeridianVisualResponse(
       Number.isFinite(previousEffect[key]) ? previousEffect[key] : targetEffect[key],
       targetEffect[key],
       deltaSeconds,
-      MERIDIAN_RESPONSE.effectSeconds,
+      effectResponseSeconds,
     );
   }
 
   return {
     speedKmh: approach(previousSpeed, targetSpeed, deltaSeconds, speedResponseSeconds),
+    effect: normalizedEffect,
+    effectResponseSeconds,
     effectProfile,
   };
 }
