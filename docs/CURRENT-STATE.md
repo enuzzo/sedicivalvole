@@ -385,8 +385,9 @@ dated study documents.
   retaining all 29 identities. An unqualified start is `library:all`; pressing
   `PLAY FEATURED` switches catalogue source and immediately starts the
   `featured:signal-border` queue without reusing Jamendo cache state. Jamendo
-  browsing uses the official `speed` values and genre tags; selecting a pace,
-  genre, or exact track starts playback immediately. Pace is manual discovery
+  browsing uses the official `speed` values and a complete `5 × 3` selector of
+  15 live-verified Jamendo genre tags; selecting a pace, genre, or exact track
+  starts playback immediately. Pace is manual discovery
   metadata only: it can never follow vehicle speed or retime audio. MUTE and FX
   stay universal in the footer, and disabling FX suppresses audio processing
   without stopping visual macro detection. The second live candidate proved
@@ -404,10 +405,11 @@ dated study documents.
   the same immediate pending identity inside the Soundtrack path chooser,
   makes Jamendo and Illobo complete reversible controls, and preserves
   Jamendo-owned cover previews across Illobo playback. Current build
-  `20260831-2005` separates the
+  `20260831-2225` separates the
   true Illobo catalogue from Jamendo, publishes and verifies all 29
   owner-authorized recordings, retains the final Illobo identity plus
-  Tesla-facing playback title, and makes every explicit Featured press start
+  Tesla-facing playback title, exposes all 15 verified Jamendo genre routes,
+  and makes every explicit Featured press start
   randomly without dropping an Illobo identity, and recreates every explicit
   Featured target so the chosen complete recording starts at `0:00`. The earlier 23-track audit was
   Jamendo-only and is not Illobo evidence. Physical-Tesla listening of crossfade, buffering, touch, QR,

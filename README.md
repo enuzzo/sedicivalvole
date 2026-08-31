@@ -88,7 +88,8 @@ Library** alternatives. Both complete path cards remain enabled and visible at
 the Tesla breakpoint, so selecting one never removes the route back to the
 other. Jamendo cover previews remain owned by the last real Jamendo catalogue
 while Illobo is active rather than being derived from the active queue. The Jamendo branch previews real cover art and starts
-immediately from a selected pace, genre, or track. Its deterministic fresh mix
+immediately from a selected pace, one of 15 verified genre routes, or an exact
+track. Its deterministic fresh mix
 changes every 30 minutes; every explicit Featured press chooses a random start
 inside the complete admitted set and avoids the current track when alternatives
 exist. An unfiltered Soundtrack start belongs explicitly to

@@ -100,7 +100,7 @@ Completed in the current working line:
   including sampled adaptive scores. Soundtrack gives equal hierarchy to a
   compact rotating **Illobo Featured** playlist and **Jamendo Library**, previews
   real covers, rotates its mix every 30 minutes, and starts immediately from a
-  chosen Jamendo pace, genre, or exact track. Pace is a passenger-selected
+  chosen Jamendo pace, one of 15 live-verified genres, or an exact track. Pace is a passenger-selected
   editorial filter only and never follows road speed or retimes a recording.
   Illobo Featured now uses both approved supplied LOBO identity variants on an
   unclipped square dark field with a continuous four-second-per-direction
