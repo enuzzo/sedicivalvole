@@ -16,10 +16,10 @@
 // keeps the frame cost predictable on the target vehicle.
 
 import {
+  advanceMeridianVisualResponse,
   advanceTimeOffset,
   lookAtFromDistortion,
   MERIDIAN_TRAVEL_LENGTH,
-  meridianEffectProfile,
   meridianDistortionGlsl,
   speedToDistortionField,
   speedToLayerDensity,
@@ -863,6 +863,7 @@ export function createMeridianRenderer(canvas, initialPalette) {
 
   let timeOffset = 0;
   let railScroll = 0;
+  let visualResponse = null;
   let width = 1;
   let height = 1;
   let disposed = false;
@@ -905,8 +906,13 @@ export function createMeridianRenderer(canvas, initialPalette) {
     render({ speedKmh, deltaSeconds, reducedMotion, effect }) {
       if (disposed) return;
 
-      const speed = reducedMotion ? Math.min(speedKmh, 20) : speedKmh;
-      const effectProfile = meridianEffectProfile(effect);
+      visualResponse = advanceMeridianVisualResponse(
+        visualResponse,
+        reducedMotion ? Math.min(speedKmh, 20) : speedKmh,
+        effect,
+        deltaSeconds,
+      );
+      const { speedKmh: speed, effectProfile } = visualResponse;
       const rate = speedToTimeRate(speed) * effectProfile.rateScale;
       timeOffset = advanceTimeOffset(timeOffset, rate, deltaSeconds);
       railScroll += rate * RAIL_SCROLL_RATE * Math.max(0, Math.min(deltaSeconds, 0.25)) * 60;

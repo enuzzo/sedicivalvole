@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
+  advanceMeridianVisualResponse,
   advanceTimeOffset,
   distortionAt,
   lookAtFromDistortion,
@@ -9,6 +10,7 @@ import {
   MERIDIAN_FOV_REST_DEGREES,
   MERIDIAN_IDLE_RATE,
   MERIDIAN_PIN_PROGRESS,
+  MERIDIAN_RESPONSE,
   meridianEffectProfile,
   meridianDistortionGlsl,
   speedToDistortionField,
@@ -96,6 +98,68 @@ test("widens the projection with speed so acceleration is not only faster geomet
     previousLift = cameraLift;
     previousDepthCompression = depthCompression;
   }
+
+  const stages = [0, 26, 52, 78, 104, ROAD_SPEED_CEILING_KMH]
+    .map((speed) => speedToProjection(speed).fovDegrees);
+  for (let index = 1; index < stages.length; index += 1) {
+    assert.ok(
+      stages[index] - stages[index - 1] >= 10,
+      `every 26 km/h band must add a clearly visible FOV step: ${stages.join(", ")}`,
+    );
+  }
+});
+
+test("smooths acceleration and braking continuously instead of following GPS steps", () => {
+  let response = advanceMeridianVisualResponse(null, 0, null, 1 / 60);
+  response = advanceMeridianVisualResponse(response, 130, null, 1 / 60);
+  assert.ok(response.speedKmh > 0 && response.speedKmh < 130);
+
+  let previousSpeed = response.speedKmh;
+  for (let frame = 0; frame < 180; frame += 1) {
+    response = advanceMeridianVisualResponse(response, 130, null, 1 / 60);
+    assert.ok(response.speedKmh >= previousSpeed, "acceleration response must be monotonic");
+    previousSpeed = response.speedKmh;
+  }
+  assert.ok(Math.abs(response.speedKmh - 130) < 0.01);
+
+  response = advanceMeridianVisualResponse(response, 0, "UNDERWATER", 1 / 60);
+  assert.ok(response.speedKmh > 0, "braking must not snap to the sampled road speed");
+  assert.ok(response.speedKmh < 130, "braking must begin on the next rendered frame");
+  assert.ok(response.effectProfile.rateScale < 1 && response.effectProfile.rateScale > 0.68);
+
+  previousSpeed = response.speedKmh;
+  for (let frame = 0; frame < 300; frame += 1) {
+    response = advanceMeridianVisualResponse(response, 0, "UNDERWATER", 1 / 60);
+    assert.ok(response.speedKmh <= previousSpeed, "braking response must be monotonic");
+    previousSpeed = response.speedKmh;
+  }
+  assert.ok(response.speedKmh < 0.05);
+  assert.ok(Math.abs(response.effectProfile.rateScale - 0.68) < 1e-6);
+});
+
+test("keeps the visual response effectively frame-rate independent", () => {
+  const simulate = (framesPerSecond, seconds, targetSpeed, effect) => {
+    let response = advanceMeridianVisualResponse(null, 0, null, 1 / framesPerSecond);
+    const frames = Math.round(framesPerSecond * seconds);
+    for (let frame = 0; frame < frames; frame += 1) {
+      response = advanceMeridianVisualResponse(
+        response,
+        targetSpeed,
+        effect,
+        1 / framesPerSecond,
+      );
+    }
+    return response;
+  };
+
+  const at30 = simulate(30, 1.2, 130, "BLOOM");
+  const at60 = simulate(60, 1.2, 130, "BLOOM");
+  const at120 = simulate(120, 1.2, 130, "BLOOM");
+  for (const response of [at30, at120]) {
+    assert.ok(Math.abs(response.speedKmh - at60.speedKmh) < 1e-9);
+    assert.ok(Math.abs(response.effectProfile.fovDelta - at60.effectProfile.fovDelta) < 1e-9);
+  }
+  assert.ok(MERIDIAN_RESPONSE.brakingSeconds > MERIDIAN_RESPONSE.accelerationSeconds);
 });
 
 test("grows the displacement field continuously from rest to the ceiling", () => {

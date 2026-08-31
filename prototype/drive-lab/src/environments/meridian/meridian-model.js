@@ -42,8 +42,20 @@ export const MERIDIAN_PIN_PROGRESS = 0.015;
 /** Derivative step used to sample the field slope for camera aim. */
 export const MERIDIAN_SLOPE_STEP = 0.012;
 
-export const MERIDIAN_FOV_REST_DEGREES = 54;
-export const MERIDIAN_FOV_CEILING_DEGREES = 104;
+export const MERIDIAN_FOV_REST_DEGREES = 50;
+export const MERIDIAN_FOV_CEILING_DEGREES = 116;
+
+/**
+ * Visual response times in seconds. Acceleration is prompt, while release is
+ * deliberately longer so noisy or stepped GPS updates cannot make braking
+ * judder. FX parameters share their own short transition instead of snapping
+ * the field, projection, and fog on the frame where a macro changes.
+ */
+export const MERIDIAN_RESPONSE = Object.freeze({
+  accelerationSeconds: 0.3,
+  brakingSeconds: 0.62,
+  effectSeconds: 0.32,
+});
 
 const FIELD = Object.freeze({
   swayAmplitudeRest: 0.45,
@@ -92,7 +104,10 @@ export function advanceTimeOffset(previousOffset, timeRate, deltaSeconds) {
  *  acceleration rather than as faster scenery. */
 export function speedToProjection(speedKmh) {
   const normalized = normalizedSpeed(speedKmh);
-  const eased = normalized ** 0.92;
+  // Keep the projection change visible across the whole legal-road range.
+  // The sub-linear curve makes low speed legible without exhausting the FOV
+  // change before the upper half of the 0–130 km/h progression.
+  const eased = normalized ** 0.78;
   return {
     fovDegrees:
       MERIDIAN_FOV_REST_DEGREES
@@ -176,6 +191,60 @@ export function meridianEffectProfile(effect) {
   return {
     rateScale: 1, fovDelta: 0, swayScale: 1,
     railGlowScale: 1, fogScale: 1, atmosphereDelta: 0,
+  };
+}
+
+const approach = (current, target, deltaSeconds, timeConstant) => {
+  const delta = clamp(Number.isFinite(deltaSeconds) ? deltaSeconds : 0, 0, 0.25);
+  if (delta === 0) return current;
+  const blend = 1 - Math.exp(-delta / timeConstant);
+  return current + (target - current) * blend;
+};
+
+/**
+ * Frame-rate-independent visual response shared by WebGL2 and Canvas2D.
+ *
+ * A newly selected MERIDIAN scene starts at the current road state. Subsequent
+ * speed and FX changes approach their targets continuously, which prevents GPS
+ * sampling steps and the braking UNDERWATER macro from snapping the camera or
+ * displacement field.
+ */
+export function advanceMeridianVisualResponse(
+  previousResponse,
+  speedKmh,
+  effect,
+  deltaSeconds,
+) {
+  const targetSpeed = clamp(
+    Number.isFinite(speedKmh) ? speedKmh : 0,
+    0,
+    ROAD_SPEED_CEILING_KMH,
+  );
+  const targetEffect = meridianEffectProfile(effect);
+  if (!previousResponse) {
+    return { speedKmh: targetSpeed, effectProfile: { ...targetEffect } };
+  }
+
+  const previousSpeed = Number.isFinite(previousResponse.speedKmh)
+    ? previousResponse.speedKmh
+    : targetSpeed;
+  const speedResponseSeconds = targetSpeed >= previousSpeed
+    ? MERIDIAN_RESPONSE.accelerationSeconds
+    : MERIDIAN_RESPONSE.brakingSeconds;
+  const previousEffect = previousResponse.effectProfile ?? meridianEffectProfile(null);
+  const effectProfile = {};
+  for (const key of Object.keys(targetEffect)) {
+    effectProfile[key] = approach(
+      Number.isFinite(previousEffect[key]) ? previousEffect[key] : targetEffect[key],
+      targetEffect[key],
+      deltaSeconds,
+      MERIDIAN_RESPONSE.effectSeconds,
+    );
+  }
+
+  return {
+    speedKmh: approach(previousSpeed, targetSpeed, deltaSeconds, speedResponseSeconds),
+    effectProfile,
   };
 }
 

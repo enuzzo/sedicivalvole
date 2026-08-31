@@ -7,10 +7,10 @@
 
 import { useEffect, useRef } from "react";
 import {
+  advanceMeridianVisualResponse,
   advanceTimeOffset,
   distortionAt,
   MERIDIAN_TRAVEL_LENGTH,
-  meridianEffectProfile,
   speedToDistortionField,
   speedToLayerDensity,
   speedToProjection,
@@ -51,6 +51,7 @@ function startCanvasFallback(canvas, valuesRef, onRenderer, onFrame, onRuntimeEr
   let animationFrame = 0;
   let stopped = false;
   let timeOffset = 0;
+  let visualResponse = null;
   let lastFrameAt = performance.now();
   onRenderer("Canvas2D · Meridian");
 
@@ -70,8 +71,13 @@ function startCanvasFallback(canvas, valuesRef, onRenderer, onFrame, onRuntimeEr
         lastFrameAt = now;
 
         const { speed, reducedMotion, palette, effect } = valuesRef.current;
-        const effectiveSpeed = reducedMotion ? Math.min(speed, 20) : speed;
-        const effectProfile = meridianEffectProfile(effect);
+        visualResponse = advanceMeridianVisualResponse(
+          visualResponse,
+          reducedMotion ? Math.min(speed, 20) : speed,
+          effect,
+          elapsed,
+        );
+        const { speedKmh: effectiveSpeed, effectProfile } = visualResponse;
         timeOffset = advanceTimeOffset(
           timeOffset,
           speedToTimeRate(effectiveSpeed) * effectProfile.rateScale,
