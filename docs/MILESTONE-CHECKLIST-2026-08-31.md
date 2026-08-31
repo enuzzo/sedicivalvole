@@ -73,6 +73,9 @@ publishing SOUNDTRACK is the final task block.
 
 ## Catalogue typography checkpoint
 
+This owner-requested post-cutoff correction is a bounded readability refinement,
+not a new autonomous feature block.
+
 - [x] retain uppercase only for compact functional micro-labels;
 - [x] use dedicated Title Case display labels for Music, Visual, mode, and
   manual-effect names in the launcher, running footer, and both pickers;
@@ -81,7 +84,9 @@ publishing SOUNDTRACK is the final task block.
   the same type size;
 - [x] verify zero document overflow and exact name/number baselines locally at
   `773 × 601` and `1280 × 720`;
-- [ ] publish the verified build and repeat cache-busted live Browser QA.
+- [x] publish build `20260831-0333` through the guarded 107-file /
+  16,452,947-byte no-delete transfer and repeat byte-identity plus cache-busted
+  live Browser QA at both target viewports.
 
 ## Ordered next work
 

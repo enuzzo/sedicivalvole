@@ -8,6 +8,40 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Catalogue display typography — 2026-08-31 03:38
+
+- build stamp: **`20260831-0333`**; deployed source and implementation
+  checkpoint: `7656928`;
+- product change: **PASS**. The Instrument Deck, running footer, both catalogue
+  pickers, source badges, and manual Soundtrack controls use dedicated Title Case
+  display labels for editorial names. Compact functional micro-labels remain
+  uppercase; stable IDs and canonical uppercase registry labels remain unchanged.
+  Footer names and numbers now form one baseline-aligned value at one type size,
+  while the disclosure caret remains independently anchored at the far edge;
+- verification gate: **PASS within the local host boundary**. Sixty-three focused
+  UI/catalogue checks pass. The complete native suite passes 421 of 422 checks;
+  only the unchanged local `spawn php ENOENT` diagnostic-mail fixture is
+  unavailable. Documentation consistency, the 140-module production build,
+  65-module LAB build, protected LAB packaging, and Sites packaging pass;
+- guarded publication: **PASS**. Read-only preflight passed with
+  `remote_writes=NONE`; the no-delete publisher transferred 107 files /
+  16,452,947 bytes, preserved the existing static entry and legacy tree, and
+  retained two prior fingerprinted assets for cache overlap. Read-only
+  postflight passed with `remote_writes=NONE` and eight expected root entries;
+- canonical HTTP identity: **PASS**. Cache-busted live root HTML, JavaScript, and
+  CSS are byte-identical to the verified build. Their matching local/live
+  SHA-256 values are
+  `b8c7161d5317937d1f1b2d7fc29ce5b184df7fd9907e141a8c59facf30cf7f36`,
+  `168c538c723ed4ec99abe589d85a7eb3a5aaa52d3b4f6755e8712724e9fe796b`,
+  and `edfd79380390f085deebc55c5cd97190568cc9c7b9608ee11a448b7602274b71`;
+- exact live Browser QA: **PASS at `773 × 601` and `1280 × 720`**. The
+  cache-busted launcher, Visual picker, and Music picker expose readable Title
+  Case names. At Tesla size, `Atlas` / `04` and `Fracture` / `◇ 02` are all
+  `14 px` at `y = 571.25`; at desktop they are all `17 px` at `y = 686.75`.
+  Neither viewport grows the document, and the live page emitted no observed
+  warning or error. Physical-Tesla distance legibility remains the perceptual
+  acceptance gate.
+
 ## Compact footer palette and EFFECTS master — 2026-08-31 03:22
 
 - build stamp: **`20260831-0315`**; deployed source and implementation
