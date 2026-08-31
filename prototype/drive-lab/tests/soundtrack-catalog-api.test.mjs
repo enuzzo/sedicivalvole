@@ -137,6 +137,9 @@ test("production endpoints keep credentials server-side and audio transient", ()
   assert.match(productionCatalogEndpoint, /jamendo\.local\.php/);
   assert.match(productionCatalogEndpoint, /persistentAudioStorage' => false/);
   assert.match(productionCatalogEndpoint, /audioformat' => 'mp32/);
+  assert.match(productionCatalogEndpoint, /\$attempt < 4/);
+  assert.match(productionCatalogEndpoint, /count\(\$candidate\['results'\]\) > 0/);
+  assert.match(productionCatalogEndpoint, /usleep\(120000\)/);
   assert.doesNotMatch(productionCatalogEndpoint, /client_secret/);
   assert.match(productionAudioEndpoint, /track_effects_not_admitted/);
   assert.match(productionAudioEndpoint, /'id\[\]' => \$trackId/);

@@ -44,25 +44,34 @@ $query = http_build_query([
     'order' => 'popularity_total',
 ], '', '&', PHP_QUERY_RFC3986);
 
-$curl = curl_init('https://api.jamendo.com/v3.0/tracks/?' . $query);
-curl_setopt_array($curl, [
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_CONNECTTIMEOUT => 5,
-    CURLOPT_TIMEOUT => 10,
-    CURLOPT_FOLLOWLOCATION => false,
-    CURLOPT_HTTPHEADER => ['Accept: application/json'],
-    CURLOPT_USERAGENT => 'sedicivalvole/' . SOUNDTRACK_CATALOG_SCHEMA,
-]);
-$raw = curl_exec($curl);
-$status = (int)curl_getinfo($curl, CURLINFO_RESPONSE_CODE);
-curl_close($curl);
-if (!is_string($raw) || $status !== 200) {
-    soundtrackJson(502, ['ok' => false, 'status' => 'upstream_unavailable']);
+$upstream = null;
+for ($attempt = 0; $attempt < 4; $attempt += 1) {
+    $curl = curl_init('https://api.jamendo.com/v3.0/tracks/?' . $query);
+    curl_setopt_array($curl, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_CONNECTTIMEOUT => 5,
+        CURLOPT_TIMEOUT => 10,
+        CURLOPT_FOLLOWLOCATION => false,
+        CURLOPT_HTTPHEADER => ['Accept: application/json'],
+        CURLOPT_USERAGENT => 'sedicivalvole/' . SOUNDTRACK_CATALOG_SCHEMA,
+    ]);
+    $raw = curl_exec($curl);
+    $status = (int)curl_getinfo($curl, CURLINFO_RESPONSE_CODE);
+    curl_close($curl);
+    $candidate = is_string($raw) && $status === 200 ? json_decode($raw, true) : null;
+    if (is_array($candidate)
+        && strtolower((string)($candidate['headers']['status'] ?? '')) === 'success'
+        && is_array($candidate['results'] ?? null)) {
+        $upstream = $candidate;
+        if ($offset > 0 || count($candidate['results']) > 0) {
+            break;
+        }
+    }
+    if ($attempt < 3) {
+        usleep(120000);
+    }
 }
-$upstream = json_decode($raw, true);
-if (!is_array($upstream)
-    || strtolower((string)($upstream['headers']['status'] ?? '')) !== 'success'
-    || !is_array($upstream['results'] ?? null)) {
+if (!is_array($upstream)) {
     soundtrackJson(502, ['ok' => false, 'status' => 'upstream_payload_invalid']);
 }
 
