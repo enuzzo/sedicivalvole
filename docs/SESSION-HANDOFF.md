@@ -136,15 +136,16 @@ The session started from clean `main == origin/main == bb5a2c9`. Drive
 corrections are checkpoint `ac11ed0`; milestone-row-6 audio evidence/recovery
 is `614872b`; row-7 transition mechanics are `2dd3cb5`, atomic rollback is
 `8f03b34`, and transient transport activation is `dcb6801`. Canonical live
-build is `20260831-1241` from source/documentation checkpoint `7feea06`.
+build is `20260831-1320` from source/documentation checkpoint `b59e6ec`.
 Guarded no-delete publication, pre/postflight `remote_writes=NONE`, canonical
 HTML/main/CSS/worklet byte identity and catalogue/audio relay probes pass.
 Milestone row 8 is office-complete at `05a754b`: both owner-supplied Illobo LOBO
 SVG variants are retained byte-identically as the Featured cover and crossfade
 every three seconds. Active fixed playback publishes `16 - Artist - Track title`
 to the page title and restores the product title on pause. The complete suite,
-build, and exact local `773 × 601` Browser QA pass; canonical publication and
-target-Tesla checks `R8-01`–`R8-02` remain open.
+build, and exact local/live `773 × 601` Browser QA pass. Protected publication,
+pre/postflight, canonical byte identity, timed fade, real play/pause title, and
+console gates pass; target-Tesla checks `R8-01`–`R8-02` remain open.
 
 The published corrections provide complete ATLAS-view route retention with origin-preserving bounded
 compaction, one interpolated pulsing point/ripple, two-line colour-coded GPS,
@@ -182,7 +183,7 @@ media `play()` consumed Chromium's transient transport activation, so coherent
 rollback stopped the prior track. Correction `dcb6801` requests both audible
 decks before that await and has a deterministic ordering regression test. The
 complete suite passes `486/486`, and the 145-module App / 70-module LAB / Sites
-build passes. Build `20260831-1241` at `7feea06` is canonical after protected
+build passes. Build `20260831-1241` at `7feea06` published the row-7 correction after protected
 publication, read-only pre/postflight, byte-identical HTML/main/CSS/worklet and
 live catalogue/audio relay probes. Exact Browser layout/build/log QA passes,
 but automated live transport is not claimed because Browser control blocked
@@ -190,6 +191,14 @@ direct `.php` catalogue access and later detached. Use stable `R7-01`–`R7-06`
 identifiers for the evening cabin run in
 [`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md); the row
 cannot close until those cabin results pass.
+
+Milestone row 8 is implemented at `05a754b` and canonical in build
+`20260831-1320` from checkpoint `b59e6ec`. Both owner-supplied LOBO variants
+remain byte-identical, the old provisional PNG is retired behind an exact-hash
+cache-overlap gate, and the Featured cover changes variant every three seconds.
+Local and live `773 × 601` QA proves both states, exact dimensions, zero
+warning/error, real `16 - Artist - Track title` playback identity, and title
+restoration on pause. Use `R8-01`–`R8-02` for the evening Tesla acceptance.
 
 Continue only from the 17-row execution order in
 [`MILESTONE-CHECKLIST-2026-08-31.md`](MILESTONE-CHECKLIST-2026-08-31.md). The

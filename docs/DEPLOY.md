@@ -8,6 +8,38 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Illobo identity and Tesla playback title — 2026-08-31 13:25
+
+- build stamp: **`20260831-1320`**; deployed source/documentation checkpoint:
+  **`b59e6ec`**; product implementation: **`05a754b`**; strict retired-asset
+  cache-overlap gate: **`edd1a31`**;
+- first read-only preflight: **EXPECTED FAIL with no remote writes**. It stopped
+  at `unexpected_brand_entry` because the prior provisional Illobo PNG remained
+  on the canonical brand tree. The corrective gate admits only that exact
+  filename at its recorded SHA-256; mutated or unknown brand entries still abort;
+- protected publication: **PASS**. Corrected read-only preflight and final
+  postflight passed with eight root entries and `remote_writes=NONE`. The
+  `--preserve-existing` upload transferred **109 files / 16,513,466 bytes**,
+  retained the static/legacy tree and two prior fingerprinted assets;
+- canonical HTTP identity: **PASS**. Cache-busted HTML, JavaScript
+  `assets/index-BKsAQQ87.js`, CSS `assets/index-B54LNb_j.css`, and both
+  `brand/illobo-featured-*.svg` files return `200` with expected MIME types and
+  are byte-identical to local at SHA-256
+  `8b18d77b2f90ffce95d0f1d2fa4cde97c5cbb5a5d3ac322a2c4f0f349beda424`,
+  `a3e0c95ffaec03626b364d0ad14c26fcaa8b7a558014e3115d1f7149cfd7f974`,
+  `5110092d1bb9e96dc6e13759e084b68dd127a2a10ae810e2d242aec3d51cd66e`,
+  `e2fec599ff690cc78d599c8941cfacb43f49d39054379e0ab9f5257b1c887ad4`,
+  and `d713938e350118727752e7b190b3cad946452dd104f8fcab7d5716b231d3b7cd`.
+  Root HTML retains no-store/no-cache and `nosniff`; SVGs report
+  `image/svg+xml`;
+- exact live Browser QA: **PASS at `773 × 601`**. Build `20260831-1320`
+  renders both supplied Illobo variants in alternating states 3.1 seconds
+  apart, keeps document dimensions at exactly `773 × 601`, and emits no warning
+  or error. A real admitted Jamendo recording changes the title to
+  `16 - Modern Pitch - Boys, Girls, Toys & Words`; explicit pause restores
+  `sedicivalvole — Adaptive Music for the Road`. Physical Tesla mini-player and
+  cabin visual acceptance remain `R8-01`–`R8-02`.
+
 ## Soundtrack row 7 corrective test build — 2026-08-31 12:50
 
 - build stamp: **`20260831-1241`**; deployed source/documentation checkpoint:

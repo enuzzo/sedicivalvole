@@ -379,7 +379,8 @@ dated study documents.
   that incoming media playback must be requested before awaiting effects/worklet
   readiness so Chromium retains the transport gesture's transient activation;
   checkpoint `dcb6801` enforces and tests that ordering. Build `20260831-1241`
-  publishes that correction. Physical-Tesla listening of crossfade, buffering, touch, QR,
+  first published that correction; current build `20260831-1320` retains it and
+  adds the final Illobo identity plus Tesla-facing playback title. Physical-Tesla listening of crossfade, buffering, touch, QR,
   transport, licence and effects behavior remain open; no offline-duration promise is made. See
   [`SOUNDTRACK-SOURCE-POLICY.md`](SOUNDTRACK-SOURCE-POLICY.md).
 - **The running footer has its compact control geometry.** MUTE and EFFECTS are
@@ -438,16 +439,14 @@ dated study documents.
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
 - The canonical live product is version `0.0.0`, source/documentation commit
-  `7feea06`, build `20260831-1241`, with transition correction `dcb6801`. Its
-  guarded 108-file publication, read-only pre/postflight and
-  HTML/JavaScript/CSS/BLOOM-worklet byte identity pass. Catalogue and two
-  exact-ID audio relay probes pass with schema-valid metadata and ranged
-  `206 audio/mpeg` responses. Exact `773 × 601` Browser QA verifies build and
-  launch layout with zero warning/error, but automated live transport is not
-  claimed because both available control surfaces blocked direct `.php`
-  catalogue access and the Chrome control session later detached. The complete
-  `486/486` suite plus 145-module App / 70-module LAB / Sites build pass, while
-  the physical-cabin checks remain `R7-01`–`R7-06`. Exact
+  `b59e6ec`, build `20260831-1320`, with Illobo/title implementation `05a754b`
+  and transition correction `dcb6801`. Its guarded 109-file publication,
+  read-only pre/postflight and HTML/JavaScript/CSS/two-SVG byte identity pass.
+  Exact live `773 × 601` Browser QA verifies both three-second cover states,
+  zero overflow, real Jamendo play/pause title changes, and zero warning/error.
+  The complete `490/490` suite plus 146-module App / 70-module LAB / Sites build
+  pass, while physical-cabin checks remain `R7-01`–`R7-06` and
+  `R8-01`–`R8-02`. Exact
   progressive evidence is in [`DEPLOY.md`](DEPLOY.md).
 - Diagnostic telemetry contains no coordinates and is sent only after the
   explicit `SEND DIAGNOSTIC` action. ATLAS location is a separate ephemeral
@@ -456,7 +455,7 @@ dated study documents.
 
 ## Open work
 
-1. Execute Tesla tests `R7-01`–`R7-06` on live build `20260831-1241` from
+1. Execute Tesla tests `R7-01`–`R7-06` and `R8-01`–`R8-02` on live build `20260831-1320` from
    [`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md), including
    the live audio transport evidence that the available office Browser-control
    surfaces could not collect.

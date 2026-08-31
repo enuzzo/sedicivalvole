@@ -8,7 +8,7 @@ behavior.
 
 Do not begin the run until the final canonical build stamp is recorded below.
 
-- **Final test build:** `20260831-1241` · source/docs `7feea06` · transition correction `dcb6801`
+- **Final test build:** `20260831-1320` · source/docs `b59e6ec` · Illobo/title implementation `05a754b` · transition correction `dcb6801`
 - **Target viewport:** Tesla split view, nominal CSS `773 × 601`
 - **Result states:** `PASS`, `FAIL`, `NOT RUN`, `BLOCKED`
 - **Safety:** a passenger operates controls and records evidence; the driver
