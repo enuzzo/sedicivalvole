@@ -122,6 +122,7 @@ else:
 test("deployment derives an upload-only Jamendo read configuration without logging it", () => {
   assert.match(deploySource, /build_jamendo_config/);
   assert.match(deploySource, /JAMENDO_CLIENT_ID/);
+  assert.match(deploySource, /parse_env\(ROOT \/ "\.env\.jamendo\.local"\)/);
   assert.match(deploySource, /soundtrack-catalog\.php/);
   assert.match(deploySource, /soundtrack-audio\.php/);
   assert.doesNotMatch(deploySource, /print\([^\n]*jamendo_client_id/i);

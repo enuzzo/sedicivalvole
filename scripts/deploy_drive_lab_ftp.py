@@ -1057,6 +1057,7 @@ def main() -> int:
     ftp: ftplib.FTP | None = None
     try:
         config = parse_env(ROOT / ".env")
+        jamendo_local = parse_env(ROOT / ".env.jamendo.local")
         if any(not config.get(key) for key in REQUIRED):
             raise ValueError("missing required deploy field")
         if config["DEPLOY_PROTOCOL"].strip().lower() != "ftp":
@@ -1069,7 +1070,12 @@ def main() -> int:
             raise ValueError("configured FTP port is not 21")
         if not config.get("LAB_ACCESS_PASSWORD"):
             raise ValueError("LAB access password is missing")
-        jamendo_client_id = config.get("JAMENDO_CLIENT_ID") or config.get("JAMENDO_API_KEY")
+        jamendo_client_id = (
+            config.get("JAMENDO_CLIENT_ID")
+            or config.get("JAMENDO_API_KEY")
+            or jamendo_local.get("JAMENDO_CLIENT_ID")
+            or jamendo_local.get("JAMENDO_API_KEY")
+        )
         if not jamendo_client_id:
             raise ValueError("Jamendo client ID is missing")
         if not (BUILD / "index.html").is_file():
