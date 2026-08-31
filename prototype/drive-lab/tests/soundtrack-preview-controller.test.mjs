@@ -103,6 +103,31 @@ test("pace, genre, and exact track choices start playback immediately", async ()
   assert.equal(selected.current.key, target.key);
 });
 
+test("the default Jamendo library and explicit Illobo Featured path are distinct immediate-play queues", async () => {
+  const controller = createSoundtrackPreviewController({
+    fetchImpl: catalogFetch,
+    mediaFactory: () => new FakeMedia(),
+  });
+
+  const library = await controller.load({ autoplay: true, nowMs: 0 });
+  assert.equal(library.status, "playing");
+  assert.equal(library.library.selection.kind, "library");
+
+  const featured = await controller.load({
+    selection: { kind: "featured", id: "signal-border" },
+    autoplay: true,
+    nowMs: 0,
+  });
+  assert.equal(featured.status, "playing");
+  assert.equal(featured.library.selection.kind, "featured");
+  assert.notDeepEqual(
+    featured.library.entries.map((entry) => entry.key),
+    library.library.entries.map((entry) => entry.key),
+  );
+  assert.notEqual(featured.current.key, library.current.key);
+  assert.equal(featured.media.currentAudibleKey, featured.current.key);
+});
+
 test("manual next and previous keep reversible identities and playback ownership", async () => {
   const controller = createSoundtrackPreviewController({
     fetchImpl: catalogFetch,

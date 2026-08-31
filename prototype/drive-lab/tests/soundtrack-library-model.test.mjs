@@ -34,6 +34,20 @@ test("the fresh mix is stable inside one half-hour window and changes at the bou
 });
 
 test("passenger pace choices map only to official Jamendo speed metadata", () => {
+  assert.deepEqual(normalizeSoundtrackSelection(), {
+    kind: "library",
+    id: "all",
+    label: "Jamendo Library",
+    speed: [],
+    genre: null,
+  });
+  assert.deepEqual(normalizeSoundtrackSelection({ kind: "featured" }), {
+    kind: "featured",
+    id: "signal-border",
+    label: "Signal Border",
+    speed: [],
+    genre: null,
+  });
   assert.deepEqual(normalizeSoundtrackSelection({ kind: "pace", id: "slow" }), {
     kind: "pace",
     id: "slow",

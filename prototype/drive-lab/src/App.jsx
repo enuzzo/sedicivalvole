@@ -2230,8 +2230,8 @@ export function App() {
     setMusicMode("soundtrack");
     const result = await soundtrackController().load({ selection, autoplay: true });
     logDiagnosticEvent("soundtrack.selection.played", {
-      kind: selection?.kind ?? "featured",
-      id: selection?.id ?? "signal-border",
+      kind: selection?.kind ?? "library",
+      id: selection?.id ?? "all",
       status: result?.status ?? "unknown",
     });
   }, [logDiagnosticEvent, showControlNotice, soundtrackController]);
@@ -2506,7 +2506,7 @@ export function App() {
   useEffect(() => {
     if (!soundtrackPanelOpen || musicMode !== "soundtrack") return undefined;
     const rotationWindow = soundtrackSnapshot?.library?.rotationWindow;
-    const selection = soundtrackSnapshot?.library?.selection ?? { kind: "featured", id: "signal-border" };
+    const selection = soundtrackSnapshot?.library?.selection ?? { kind: "library", id: "all" };
     const refreshAtMs = rotationWindow?.endsAtMs ?? Date.now();
     const refresh = () => {
       const autoplay = soundtrackRef.current?.getSnapshot().status === "playing";

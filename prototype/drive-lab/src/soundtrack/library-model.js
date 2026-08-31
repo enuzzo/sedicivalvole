@@ -48,7 +48,10 @@ export function normalizeSoundtrackSelection(selection = {}) {
     const genre = SOUNDTRACK_GENRE_OPTIONS.find((entry) => entry.id === selection.id);
     if (genre) return Object.freeze({ kind: "genre", id: genre.id, label: genre.label, speed: Object.freeze([]), genre: genre.id });
   }
-  return Object.freeze({ kind: "featured", id: "signal-border", label: "Signal Border", speed: Object.freeze([]), genre: null });
+  if (selection?.kind === "featured") {
+    return Object.freeze({ kind: "featured", id: "signal-border", label: "Signal Border", speed: Object.freeze([]), genre: null });
+  }
+  return Object.freeze({ kind: "library", id: "all", label: "Jamendo Library", speed: Object.freeze([]), genre: null });
 }
 
 export function soundtrackSelectionSignature(selection = {}) {
