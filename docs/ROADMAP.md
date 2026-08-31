@@ -15,7 +15,7 @@ Status: **COMPLETE**.
 
 ## Phase 1 — Real Tesla capability profile
 
-Status: **PARTIAL VEHICLE PASS**. Split-view display, WebGL2, Web Audio, AudioWorklet, WASM, storage APIs, touch points, and numeric GPS speed are now photographed on the target vehicle. The extended v3 report, bounded coordinate-free driving flight recorder, fixed private recipient, explicit mail handoff, and canonical bare-root publication are implemented; inbox delivery, real-drive trace analysis, GPS cadence/quality, long-session performance, physical reach, and audio acceptance remain pending.
+Status: **PARTIAL VEHICLE PASS**. Split-view display, WebGL2, Web Audio, AudioWorklet, WASM, storage APIs, touch points, and numeric GPS speed are photographed on the target vehicle. The owner-supplied complete build-`20260831-0853` attachment closes the coordinate-free v3 `GPS → SENT → received` path and establishes approximately 10 Hz / 2.5 m GPS plus phase-specific performance evidence. It also reproduces ATLAS at `23.15 FPS` / `51.7 ms` p95, so fresh post-mitigation frame/thermal evidence, physical reach, and complete audio acceptance remain pending.
 
 Measure:
 
@@ -57,7 +57,7 @@ environments use the same ten curated themes; Aperture remains the safe default.
 
 ## Phase 3 — Flux signal and music spike
 
-Status: **FIRST AUTHORED SCORE IMPLEMENTED; VEHICLE LISTENING PENDING**.
+Status: **THREE AUTHORED SCORES AND SOUNDTRACK IMPLEMENTED; VEHICLE LISTENING PENDING**.
 
 Implemented:
 
