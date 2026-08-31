@@ -136,7 +136,7 @@ The session started from clean `main == origin/main == bb5a2c9`. Drive
 corrections are checkpoint `ac11ed0`; milestone-row-6 audio evidence/recovery
 is `614872b`; row-7 transition mechanics are `2dd3cb5`, atomic rollback is
 `8f03b34`, and transient transport activation is `dcb6801`. Canonical live
-build is `20260831-1744` from true Illobo source correction `1a47e23`, retaining
+build is `20260831-1755` from track-head guarantee `236f2c9` and true Illobo source correction `1a47e23`, retaining
 Featured random-start logic `61471e8`, Tesla Soundtrack correction `4b36069`, ATLAS Navigator Plaque
 `79d9c9b`, MUTE/FX parity `c0a2f78`, Featured-launch correction `1171157`, and
 Illobo cover correction `6218f98`.
@@ -161,7 +161,9 @@ identities, and permits the direct-grant effects path. Build `20260831-1744`
 uploaded 29/29 MP3 web masters without entering them into Git; local and remote
 full SHA-256 verification passes, the live catalogue reports exactly 29 Illobo
 tracks, and all 29/29 HTTP byte-range probes return `206 audio/mpeg` with the
-catalogued total size. Target-Tesla retests remain `R4-04`, `R7-06`, `R7-07`,
+catalogued total size. Checkpoint `236f2c9` further guarantees that randomness
+selects only the next complete recording: every Featured relaunch recreates its
+target and starts at `0:00`, with no random or retained seek position. Target-Tesla retests remain `R4-04`, `R7-06`, `R7-07`,
 and `R8-01`–`R8-02`.
 Milestone row 9 is also office-complete and live:
 its selected Navigator Plaque combines a filled continuously rotating arrow,

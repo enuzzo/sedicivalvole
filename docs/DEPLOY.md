@@ -8,6 +8,23 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Illobo track-head restart guarantee — 2026-08-31 18:00
+
+- build stamp: **`20260831-1755`**; deployed source checkpoint:
+  **`236f2c9`**;
+- behavior: **PASS**. An explicit Featured gesture chooses a random complete
+  Illobo track, avoids current/audible decks, recreates a prepared target and
+  starts it at `0:00`. No random seek position exists;
+- tests/build: **PASS**. A prepared-media fixture is left at `1:27` and the
+  replacement play position is exactly zero. The complete `500/500` suite,
+  146-module App, 70-module LAB and Sites packaging pass;
+- publication: **PASS**. The protected publisher uploaded 140 files /
+  212,285,522 bytes, verified all 29 Illobo remote hashes, retained the existing
+  root, and passed postflight with eight root entries and `remote_writes=NONE`;
+- canonical identity: **PASS**. Root HTML references
+  `assets/index-Dg1T83d_.js`; the bundle carries commit `236f2c9` and build
+  `20260831-1755`. Target-Tesla confirmation remains `R7-07`.
+
 ## True Illobo catalogue and hosted-audio correction — 2026-08-31 17:50
 
 - build stamp: **`20260831-1744`**; deployed source checkpoint:

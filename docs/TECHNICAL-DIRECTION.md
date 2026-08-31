@@ -207,7 +207,9 @@ controller load normalizes to Jamendo `library:all`; the Illobo button requests
 owner-authorized recordings. Catalogue cache reuse includes source kind and
 identifier, so an Illobo gesture cannot reuse Jamendo entries. Each explicit
 Featured gesture rotates the complete Illobo set to a random non-current start
-while preserving stable 30-minute ordering.
+while preserving stable 30-minute ordering. The target media instance is
+recreated for that explicit playlist gesture, so randomness selects a track but
+never a timestamp: playback begins at `0:00`.
 The production deck now performs the nominal `450 ms` equal-power queue commit,
 including reversal and third-deck retargeting, and derives every visible credit
 from the same audio-clock gain vector. Its compact QR opens the current public

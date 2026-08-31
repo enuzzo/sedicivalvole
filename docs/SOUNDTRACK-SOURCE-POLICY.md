@@ -118,7 +118,9 @@ Commons licence URL.
   deterministic per-selection shuffle that changes at each 30-minute boundary.
   Each explicit Featured gesture rotates the complete 29-track Illobo ordering
   to a random start, avoiding the current identity when alternatives exist; it
-  never substitutes a Jamendo record or discards an Illobo identity.
+  never substitutes a Jamendo record or discards an Illobo identity. Here
+  `random start` means a random playlist head only: the chosen recording is
+  recreated and begins at `0:00`, never at a random or retained media timestamp.
 - `src/soundtrack/preview-controller.js` composes catalogue, rotation, transient
   media decks, attribution, and the live effect graph for explicit App/LAB use.
 - `src/soundtrack/effects-controller.js` owns the Web Audio graph for OPEN,
@@ -161,8 +163,9 @@ Commons licence URL.
   `450 ms` equal-power model through normal skips, reversals, and rapid
   third-deck retargeting without exceeding three transient elements. The compact
   QR opens the current public track page and never exposes its relay or stream.
-  Canonical publication and 29/29 FTP/HTTP identity checks pass on build
-  `20260831-1744`; target-vehicle playback/effects acceptance remains open.
+  Canonical publication and 29/29 FTP/HTTP identity checks pass; build
+  `20260831-1755` adds the explicit `0:00` track-head guarantee. Target-vehicle
+  playback/effects acceptance remains open.
   `preparedMetadataSlots`
   reports metadata roles only; it is not an audio-buffer or offline-duration
   claim. The browser retains no offline copy; owner-authorized Illobo web masters

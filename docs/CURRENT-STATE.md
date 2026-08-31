@@ -390,11 +390,12 @@ dated study documents.
   that incoming media playback must be requested before awaiting effects/worklet
   readiness so Chromium retains the transport gesture's transient activation;
   checkpoint `dcb6801` enforces and tests that ordering. Build `20260831-1241`
-  first published that correction. Current build `20260831-1744` separates the
+  first published that correction. Current build `20260831-1755` separates the
   true Illobo catalogue from Jamendo, publishes and verifies all 29
   owner-authorized recordings, retains the final Illobo identity plus
   Tesla-facing playback title, and makes every explicit Featured press start
-  randomly without dropping an Illobo identity. The earlier 23-track audit was
+  randomly without dropping an Illobo identity, and recreates every explicit
+  Featured target so the chosen complete recording starts at `0:00`. The earlier 23-track audit was
   Jamendo-only and is not Illobo evidence. Physical-Tesla listening of crossfade, buffering, touch, QR,
   transport, licence and effects behavior remain open; no offline-duration promise is made. See
   [`SOUNDTRACK-SOURCE-POLICY.md`](SOUNDTRACK-SOURCE-POLICY.md).

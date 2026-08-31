@@ -41,6 +41,15 @@ unchanged playback rate. They do not prove that the default depths are pleasant
 over every master or in the Tesla cabin; morning vehicle listening remains the
 authority for wet balance, braking intelligibility, and peak behaviour.
 
+A playlist relaunch has a second authored-time boundary: random means choosing
+a complete recording, never choosing a timestamp inside it. A browser may keep
+the `currentTime` of a previously prepared media element, so selecting a new
+playlist head must not merely reuse that element and call `play()`. The Illobo
+Featured launcher now avoids every audible deck, discards any paused prepared
+instance of its random target, creates a fresh media element, and starts at
+`0:00`. The regression fixture deliberately leaves a target at `1:27` and proves
+that a new playlist gesture still begins at the track head.
+
 ---
 
 ## 1. The mistakes this project has made
