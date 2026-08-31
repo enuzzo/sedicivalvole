@@ -1411,6 +1411,42 @@ look like a one-way state machine. Assert the full Jamendo → Illobo → Jamend
 round trip, retained alternative artwork, and a rapid reverse selection whose
 late request cannot reclaim either pane or audio.
 
+### 6.12 Prove the audible graph, not the badge or the control object
+
+A second target-vehicle pass showed UNDERWATER on screen while Illobo, Jamendo,
+and NIGHTSHIFT all remained dry. The Soundtrack defect was not filter tuning:
+the App forwarded `audioMacros.open`, `.underwater`, and `.bloom`, but the
+shared macro snapshot stores those scalars under `audioMacros.values`. The
+normalizer correctly failed undefined values to zero, so the badge and visual
+consumer could be active while the fixed-recording audio graph received three
+zeros. A test must therefore assert the exact object boundary that feeds every
+audible engine; an active detector or badge is not routing evidence.
+
+NIGHTSHIFT exposed a separate perceptual failure. Its local linear filter still
+bottomed out at `5.5 kHz`, and the visible engagement threshold stayed near
+`13 kHz`. All three music paths now use one shared two-stage logarithmic brake.
+At the minimum visible amount `0.4`, its corner frequencies are approximately
+`1487 Hz` and `1606 Hz`, reinforced by a bounded `240 Hz` pressure shelf and
+small makeup gain; full depth reaches approximately `460 Hz` and `497 Hz`.
+Two stages make the state categorical over cabin noise without replacing it
+with a mute, and the final limiter contains the makeup and any manual wet sum.
+
+The proof stack must cross independent layers: source-level routing assertions,
+exact transfer-function checks, a real build, and a decoded real-recording
+measurement. On representative 15-second source excerpts at minimum visible
+depth, the energy above `4 kHz` fell from `-28.1` to `-48.9 dB` for Illobo and
+from `-20.9` to `-39.7 dB` for Jamendo. These `20.8 dB` and `18.8 dB` changes
+prove a materially darkened signal before cabin listening; they do not replace
+the final Tesla test.
+
+Manual performance effects follow the same rule. They belong after the complete
+audible source, not inside one player's private graph. Flanger, reverb, chorus,
+and bounded echo now share one graph for both adaptive scores and fixed
+recordings. Each full-depth endpoint must exceed a tested wet floor, and the
+sum must end in a limiter. The former Beat Repeat is retired because its only
+perceptible state was also musically objectionable; retaining a bad effect just
+because it is audible is not success.
+
 ---
 
 ## 7. Sources and material

@@ -186,6 +186,19 @@ round trip with no warning/error. The complete suite passes `512/512`; the
 29/29 full remote Illobo hashes, canonical HTML/JS/CSS identity and read-only
 postflight pass. Target-Tesla retests remain `R4-04`, `R7-01`–`R7-07`,
 and `R8-01`–`R8-02`.
+After that publication, the owner reported a second cabin failure: UNDERWATER
+was dry on Illobo, Jamendo, and NIGHTSHIFT, and the four manual effects were
+ineffective across both music sources. Local audio checkpoint `8c53e8d` repairs
+the real object-boundary fault (`audioMacros.values` had been read as nonexistent
+top-level fields), replaces the separate weak NIGHTSHIFT filter with the shared
+two-stage perceptual model, and routes flanger, reverb, chorus, and replacement
+Echo through one limited post-source graph for both Play the Road and
+Soundtrack. Decoded real Illobo/Jamendo excerpts lose `20.8/18.8 dB` above
+`4 kHz` at the minimum visible state; the complete local suite passes `514/514`
+and the App/LAB/Sites build passes. This checkpoint is not deployed. Exactly
+three manual-effects overlay directions have been presented; implementation is
+blocked only on the owner's `1`, `2`, or `3` selection, after which exact
+viewport QA, canonical publication, and Tesla listening remain required.
 Milestone row 9 is also office-complete and live:
 its selected Navigator Plaque combines a filled continuously rotating arrow,
 English cardinal, exact degrees and a rendered-tile road name without reverse
