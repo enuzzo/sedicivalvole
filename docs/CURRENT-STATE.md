@@ -189,7 +189,8 @@ dated study documents.
   running Music drawer now presents compact equal-weight **Illobo Featured** and
   **Jamendo Library** paths. Its final Featured cover uses both supplied LOBO
   SVG variants byte-identically and crossfades continuously over four seconds
-  in each direction on an unclipped square dark field; active fixed
+  in each direction from white-on-black solid to original black-on-graphite
+  outline on an unclipped square field; active fixed
   playback also exposes `16 - Artist - Track title` through the page title for
   Tesla's browser media surface. At exact
   `773 × 601`, the complete Music and Visual button grids share the same
@@ -380,7 +381,7 @@ dated study documents.
   that incoming media playback must be requested before awaiting effects/worklet
   readiness so Chromium retains the transport gesture's transient activation;
   checkpoint `dcb6801` enforces and tests that ordering. Build `20260831-1241`
-  first published that correction; current build `20260831-1340` retains it and
+  first published that correction; current build `20260831-1448` retains it and
   adds the final Illobo identity plus Tesla-facing playback title. Physical-Tesla listening of crossfade, buffering, touch, QR,
   transport, licence and effects behavior remain open; no offline-duration promise is made. See
   [`SOUNDTRACK-SOURCE-POLICY.md`](SOUNDTRACK-SOURCE-POLICY.md).
@@ -439,12 +440,13 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The canonical live product is version `0.0.0`, source commit `becc0c2`, build
-  `20260831-1340`, with Illobo/title implementation `05a754b` and transition
+- The canonical live product is version `0.0.0`, source commit `6218f98`, build
+  `20260831-1448`, with Illobo/title implementation `05a754b` and transition
   correction `dcb6801`. Its guarded 109-file publication,
   read-only pre/postflight and HTML/JavaScript/CSS/two-SVG byte identity pass.
-  Exact live `773 × 601` Browser QA verifies the continuous four-second-per-
-  direction square dark-field cover with no border, radius, or clipping, plus
+  Exact live `773 × 601` Browser QA verifies distinct white-on-black solid and
+  black-on-graphite outline endpoints across the continuous four-second-per-
+  direction cover, with no border, radius, or clipping, plus
   zero page overflow, real Jamendo play/pause title changes, and zero warning/error.
   The complete `490/490` suite plus 146-module App / 70-module LAB / Sites build
   pass, while physical-cabin checks remain `R7-01`–`R7-06` and
@@ -457,7 +459,7 @@ dated study documents.
 
 ## Open work
 
-1. Execute Tesla tests `R7-01`–`R7-06` and `R8-01`–`R8-02` on live build `20260831-1340` from
+1. Execute Tesla tests `R7-01`–`R7-06` and `R8-01`–`R8-02` on live build `20260831-1448` from
    [`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md), including
    the live audio transport evidence that the available office Browser-control
    surfaces could not collect.

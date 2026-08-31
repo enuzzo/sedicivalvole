@@ -8,7 +8,7 @@ behavior.
 
 Do not begin the run until the final canonical build stamp is recorded below.
 
-- **Final test build:** `20260831-1340` · source `becc0c2` · Illobo/title implementation `05a754b` · transition correction `dcb6801`
+- **Final test build:** `20260831-1448` · source `6218f98` · Illobo/title implementation `05a754b` · transition correction `dcb6801`
 - **Target viewport:** Tesla split view, nominal CSS `773 × 601`
 - **Result states:** `PASS`, `FAIL`, `NOT RUN`, `BLOCKED`
 - **Safety:** a passenger operates controls and records evidence; the driver
@@ -68,7 +68,7 @@ cannot substitute for the audible physical-cabin verdict.
 
 | ID | Status | Test | PASS condition | Linked work |
 |---|---|---|---|---|
-| `R8-01` | NOT RUN | On build `20260831-1340`, open Music → Soundtrack and watch the Illobo Featured cover for at least ten seconds. | Both supplied LOBO variants are sharp and undistorted on the square dark field. Each full dissolve takes about four seconds, continues without a static hold, and has no flicker, clipped outer line, rounded corner, border, or layout movement. | Milestone row 8 · base `05a754b`; presentation correction `becc0c2`. |
+| `R8-01` | NOT RUN | On build `20260831-1448`, open Music → Soundtrack and watch the Illobo Featured cover for at least ten seconds. | A clearly white-on-black solid state dissolves into the original black-on-graphite outline state and back. Each full dissolve takes about four seconds, continues without a static hold, and has no flicker, clipped outer line, rounded corner, border, or layout movement. | Milestone row 8 · base `05a754b`; perceptual correction `6218f98`. |
 | `R8-02` | NOT RUN | Start one Soundtrack recording, inspect Tesla's browser-labelled mini-player, then pause it. | During play it shows `16 - Artist - Track title`; pausing restores the normal sedicivalvole page title. Audio, QR, and in-drawer credit remain on the same track. | Milestone row 8 · `05a754b`; Tesla browser behavior is the acceptance gate. |
 
 ## Evening closeout

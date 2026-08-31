@@ -8,6 +8,39 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Illobo perceptual endpoint correction — 2026-08-31 14:53
+
+- build stamp: **`20260831-1448`**; deployed source checkpoint:
+  **`6218f98`**;
+- root cause: **CONFIRMED**. The CSS animation and both network-loaded SVGs were
+  healthy, moving naturally from `0.988 / 0.012` through `0.508 / 0.492` to
+  `0.004 / 0.996`. Inverting the outline on the near-black field made its shared
+  LOBO glyph geometry white like the solid source, leaving almost only the thin
+  outer perimeter to change. A valid crossfade therefore read as one fixed cover;
+- presentation correction: **PASS**. Both supplied SVGs remain byte-identical.
+  The solid source remains white on black; the outline keeps its original black
+  paths over a `40%` paper / `60%` ink graphite field. The eight-second linear
+  cycle, four-second transitions, square shape, zero border/radius and unclipped
+  outer perimeter remain unchanged. Jamendo artwork is untouched;
+- tests/build: **PASS**. The complete `490/490` suite, 146-module App,
+  70-module LAB, and Sites packaging pass;
+- protected publication: **PASS**. Read-only preflight and postflight passed
+  with eight root entries and `remote_writes=NONE`; the guarded no-delete upload
+  transferred **109 files / 16,513,469 bytes**, retained the static/legacy tree,
+  and preserved two prior fingerprinted assets for cache overlap;
+- canonical HTTP identity: **PASS**. HTML SHA-256
+  `38690d14931a98272a40e1e42c6ab8c3be59d38ab2ae86066dd070fff60fc6a3`,
+  CSS `assets/index-hKft6LK2.css` SHA-256
+  `6e686f4783e82c13542be3e2862ff5f448f328b17580df11e47e293d83b61f05`,
+  and JavaScript `assets/index-DSyIcBTb.js` SHA-256
+  `5a2acd9316df03c7e7af808d494e0c2ab4bab715cc8e0563fafb97d01d71d0e1`
+  are byte-identical local/live;
+- exact live Browser QA: **PASS at `773 × 601`**. Natural-cycle screenshots
+  prove visibly different white-on-black solid and black-on-graphite outline
+  endpoints. Both images use `filter: none`; the cover remains `64 × 64`, page
+  overflow is zero, and no warning or error was observed. Physical Tesla
+  acceptance remains `R8-01`–`R8-02`.
+
 ## Illobo continuous dark-field correction — 2026-08-31 13:41
 
 - final build stamp: **`20260831-1340`**; deployed source checkpoint:

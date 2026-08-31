@@ -207,8 +207,10 @@ from the same audio-clock gain vector. Its compact QR opens the current public
 content page rather than the no-store stream relay. Two byte-identical supplied
 Illobo SVGs are stacked on an unclipped square dark field and crossfaded by CSS
 on a continuous eight-second linear cycle. Each full transition takes four
-seconds with no static hold, and the outline is inverted at presentation time
-without changing either source asset. No React timer state or path mutation is
+seconds with no static hold. The solid SVG retains its white-on-black state;
+the outline retains its original black paths on a 40-percent-paper graphite
+field. Recolouring both states identically is prohibited because it makes their
+shared glyph geometry appear static. No React timer state or path mutation is
 used. A pure bounded formatter derives the active
 Soundtrack document title from admitted artist/title metadata only while status
 is `playing`; all other states restore the fixed product title. Canonical

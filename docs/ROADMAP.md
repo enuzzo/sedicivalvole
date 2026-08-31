@@ -104,7 +104,8 @@ Completed in the current working line:
   editorial filter only and never follows road speed or retimes a recording.
   Illobo Featured now uses both approved supplied LOBO identity variants on an
   unclipped square dark field with a continuous four-second-per-direction
-  crossfade, and active fixed playback publishes
+  crossfade between a white-on-black solid state and the original black-on-
+  graphite outline state, and active fixed playback publishes
   `16 - Artist - Track title` to the browser page title for the Tesla media
   surface.
   The office implementation now applies nominal `450 ms` equal-power skips and
