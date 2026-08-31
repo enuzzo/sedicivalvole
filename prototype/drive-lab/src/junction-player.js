@@ -15,6 +15,7 @@ import {
 import { lowSpeedPolicy } from "./low-speed-score.js";
 import { withReadinessTimeout } from "./promise-timeout.js";
 import { SAMPLED_SCORE_PERFORMANCE_LEVEL } from "./sampled-score-levels.js";
+import { SAMPLED_BANK_TRANSFER_TIMEOUT_MS } from "./sampled-bank-network.js";
 import {
   scheduleEqualPowerGain,
   SCORE_SWITCH_CROSSFADE_SECONDS,
@@ -34,9 +35,9 @@ const JUNCTION_RHYTHM_RECOVERY_SECONDS = 1.2;
 // sub-100-BPM low-speed bed.
 export const JUNCTION_NATIVE_EXIT_SPEED_KMH = 20.5;
 export const JUNCTION_NATIVE_RETRY_SECONDS = 10;
-export const JUNCTION_TRANSFER_TIMEOUT_MS = 12000;
+export const JUNCTION_TRANSFER_TIMEOUT_MS = SAMPLED_BANK_TRANSFER_TIMEOUT_MS;
 export const JUNCTION_DECODE_TIMEOUT_MS = 10000;
-export const JUNCTION_READINESS_TIMEOUT_MS = 24000;
+export const JUNCTION_READINESS_TIMEOUT_MS = 56000;
 
 export function createJunctionPlayer(context, destination, onSnapshot, onBankStatus) {
   let destroyed = false;

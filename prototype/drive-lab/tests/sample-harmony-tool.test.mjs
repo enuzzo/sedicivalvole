@@ -7,6 +7,8 @@ const requirementsUrl = new URL("../analysis/requirements.txt", import.meta.url)
 const arbiterUrl = new URL("../analysis/harmonic_arbiter.py", import.meta.url);
 const sourceInspectorUrl = new URL("../scripts/inspect-independent-harmonic-sources.py", import.meta.url);
 const ignoreUrl = new URL("../../../.gitignore", import.meta.url);
+const evidenceValidatorUrl = new URL("../scripts/validate-junction-pitch-evidence.py", import.meta.url);
+const evidenceArtifactUrl = new URL("../analysis/junction-pitch-evidence.json", import.meta.url);
 
 test("the harmony pilot covers the four reachable JUNCTION labels", async () => {
   const source = await readFile(analyzerUrl, "utf8");
@@ -58,4 +60,36 @@ test("the development environment is pinned and cannot enter Git", async () => {
   assert.match(requirements, /^llvmlite==0\.43\.0$/m);
   assert.match(requirements, /^numba==0\.60\.0$/m);
   assert.match(ignore, /\/prototype\/drive-lab\/\.sample-analysis-venv\//);
+});
+
+test("the replacement pitch evidence covers every planned axis and abstains explicitly", async () => {
+  const [source, artifactSource, packageSource] = await Promise.all([
+    readFile(evidenceValidatorUrl, "utf8"),
+    readFile(evidenceArtifactUrl, "utf8"),
+    readFile(new URL("../package.json", import.meta.url), "utf8"),
+  ]);
+  const artifact = JSON.parse(artifactSource);
+  assert.deepEqual(artifact.result.required_axes, [
+    "adsr",
+    "filter",
+    "phase_seed",
+    "detune",
+    "chorus",
+    "spectral_slope",
+    "saturation",
+    "stereo_coherence",
+  ]);
+  assert.equal(artifact.legacy_shortcut.status, "rejected");
+  assert.equal(artifact.result.synthetic_acceptance_passed, true);
+  assert.equal(artifact.result.real_audio_pitch_gate_authorized, false);
+  assert.equal(artifact.result.passed, true);
+  assert.ok(
+    artifact.cases.filter(({ valid }) => !valid)
+      .every(({ verdict, invalidity_reasons: reasons }) => verdict === "unknown" && reasons.length > 0),
+  );
+  assert.match(source, /phase_aware_two_frequency_model_with_multiaxis_validity_gates/);
+  assert.match(source, /sustain_shorter_than_300_ms/);
+  assert.match(source, /multiple_unresolved_detuned_sources/);
+  assert.match(source, /independent_chorus_modulation_breaks_phase_stationarity/);
+  assert.match(packageSource, /"analyze:junction-pitch-evidence"/);
 });

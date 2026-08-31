@@ -1,0 +1,1115 @@
+{
+  "schema_version": "sedicivalvole.junction-pitch-evidence.v1",
+  "method": "phase_aware_two_frequency_model_with_multiaxis_validity_gates",
+  "legacy_shortcut": {
+    "status": "rejected",
+    "reason": "proposal_conditioned_magnitude_residual_was_anti_correlated_with_richer_voicings"
+  },
+  "frequencies_hz": {
+    "source": 184.997211,
+    "source_harmonic": 554.991634,
+    "candidate": 554.365262,
+    "ratio_candidate_to_source": 2.996614
+  },
+  "acceptance": {
+    "minimum_valid_case_recall": 0.9,
+    "maximum_valid_case_false_positive_rate": 0.05,
+    "required_invalid_case_explicit_abstention_rate": 1.0
+  },
+  "result": {
+    "required_axes": [
+      "adsr",
+      "filter",
+      "phase_seed",
+      "detune",
+      "chorus",
+      "spectral_slope",
+      "saturation",
+      "stereo_coherence"
+    ],
+    "axes_covered": true,
+    "valid_case_recall": 1.0,
+    "valid_case_false_positive_rate": 0.0,
+    "invalid_case_explicit_abstention_rate": 1.0,
+    "synthetic_acceptance_passed": true,
+    "real_audio_pitch_gate_authorized": false,
+    "real_audio_reason": "complete_processed_mixes_lack_isolated_source_provenance_for_detune_chorus_and_nonlinear_components",
+    "passed": true
+  },
+  "cases": [
+    {
+      "fixture": "clean",
+      "target_present": false,
+      "expected": "harmonic_of",
+      "verdict": "harmonic_of",
+      "valid": true,
+      "invalidity_reasons": [],
+      "passed": true,
+      "evidence": {
+        "adsr": {
+          "attack_seconds": 0.04,
+          "sustain_seconds": 1.75
+        },
+        "filter": {
+          "cutoff_hz": null,
+          "spectral_centroid_hz": 438.99
+        },
+        "phase": {
+          "seed": 11,
+          "two_tone_model_gain_db": 0.143,
+          "target_phase_stability": 0.788016
+        },
+        "detune": {
+          "cents": 0.0
+        },
+        "chorus": {
+          "depth_ms": 0.0
+        },
+        "spectrum": {
+          "configured_partial_slope": 1.45,
+          "measured_log_slope": -1.410989,
+          "candidate_db_relative_to_source": -45.046
+        },
+        "saturation": {
+          "drive": 0.0,
+          "crest_db": 6.303
+        },
+        "stereo": {
+          "target_pan": 0.0,
+          "correlation": 1.0,
+          "phase_coherence": 1.0
+        }
+      }
+    },
+    {
+      "fixture": "clean",
+      "target_present": true,
+      "expected": "voiced",
+      "verdict": "voiced",
+      "valid": true,
+      "invalidity_reasons": [],
+      "passed": true,
+      "evidence": {
+        "adsr": {
+          "attack_seconds": 0.04,
+          "sustain_seconds": 1.75
+        },
+        "filter": {
+          "cutoff_hz": null,
+          "spectral_centroid_hz": 440.045
+        },
+        "phase": {
+          "seed": 11,
+          "two_tone_model_gain_db": 7.868,
+          "target_phase_stability": 0.839629
+        },
+        "detune": {
+          "cents": 0.0
+        },
+        "chorus": {
+          "depth_ms": 0.0
+        },
+        "spectrum": {
+          "configured_partial_slope": 1.45,
+          "measured_log_slope": -1.411057,
+          "candidate_db_relative_to_source": -20.551
+        },
+        "saturation": {
+          "drive": 0.0,
+          "crest_db": 6.788
+        },
+        "stereo": {
+          "target_pan": 0.0,
+          "correlation": 1.0,
+          "phase_coherence": 1.0
+        }
+      }
+    },
+    {
+      "fixture": "shared_slow_adsr",
+      "target_present": false,
+      "expected": "harmonic_of",
+      "verdict": "harmonic_of",
+      "valid": true,
+      "invalidity_reasons": [],
+      "passed": true,
+      "evidence": {
+        "adsr": {
+          "attack_seconds": 0.42,
+          "sustain_seconds": 1.75
+        },
+        "filter": {
+          "cutoff_hz": null,
+          "spectral_centroid_hz": 439.016
+        },
+        "phase": {
+          "seed": 11,
+          "two_tone_model_gain_db": 0.144,
+          "target_phase_stability": 0.788832
+        },
+        "detune": {
+          "cents": 0.0
+        },
+        "chorus": {
+          "depth_ms": 0.0
+        },
+        "spectrum": {
+          "configured_partial_slope": 1.45,
+          "measured_log_slope": -1.410989,
+          "candidate_db_relative_to_source": -45.033
+        },
+        "saturation": {
+          "drive": 0.0,
+          "crest_db": 6.303
+        },
+        "stereo": {
+          "target_pan": 0.0,
+          "correlation": 1.0,
+          "phase_coherence": 1.0
+        }
+      }
+    },
+    {
+      "fixture": "shared_slow_adsr",
+      "target_present": true,
+      "expected": "voiced",
+      "verdict": "voiced",
+      "valid": true,
+      "invalidity_reasons": [],
+      "passed": true,
+      "evidence": {
+        "adsr": {
+          "attack_seconds": 0.42,
+          "sustain_seconds": 1.75
+        },
+        "filter": {
+          "cutoff_hz": null,
+          "spectral_centroid_hz": 444.09
+        },
+        "phase": {
+          "seed": 11,
+          "two_tone_model_gain_db": 13.623,
+          "target_phase_stability": 0.617639
+        },
+        "detune": {
+          "cents": 0.0
+        },
+        "chorus": {
+          "depth_ms": 0.0
+        },
+        "spectrum": {
+          "configured_partial_slope": 1.45,
+          "measured_log_slope": -1.410901,
+          "candidate_db_relative_to_source": -19.86
+        },
+        "saturation": {
+          "drive": 0.0,
+          "crest_db": 6.792
+        },
+        "stereo": {
+          "target_pan": 0.0,
+          "correlation": 1.0,
+          "phase_coherence": 1.0
+        }
+      }
+    },
+    {
+      "fixture": "dark_filter",
+      "target_present": false,
+      "expected": "harmonic_of",
+      "verdict": "harmonic_of",
+      "valid": true,
+      "invalidity_reasons": [],
+      "passed": true,
+      "evidence": {
+        "adsr": {
+          "attack_seconds": 0.04,
+          "sustain_seconds": 1.75
+        },
+        "filter": {
+          "cutoff_hz": 1250.0,
+          "spectral_centroid_hz": 391.95
+        },
+        "phase": {
+          "seed": 11,
+          "two_tone_model_gain_db": 0.142,
+          "target_phase_stability": 0.788006
+        },
+        "detune": {
+          "cents": 0.0
+        },
+        "chorus": {
+          "depth_ms": 0.0
+        },
+        "spectrum": {
+          "configured_partial_slope": 1.45,
+          "measured_log_slope": -1.536055,
+          "candidate_db_relative_to_source": -45.108
+        },
+        "saturation": {
+          "drive": 0.0,
+          "crest_db": 6.091
+        },
+        "stereo": {
+          "target_pan": 0.0,
+          "correlation": 1.0,
+          "phase_coherence": 1.0
+        }
+      }
+    },
+    {
+      "fixture": "dark_filter",
+      "target_present": true,
+      "expected": "voiced",
+      "verdict": "voiced",
+      "valid": true,
+      "invalidity_reasons": [],
+      "passed": true,
+      "evidence": {
+        "adsr": {
+          "attack_seconds": 0.04,
+          "sustain_seconds": 1.75
+        },
+        "filter": {
+          "cutoff_hz": 1250.0,
+          "spectral_centroid_hz": 393.268
+        },
+        "phase": {
+          "seed": 11,
+          "two_tone_model_gain_db": 7.872,
+          "target_phase_stability": 0.839587
+        },
+        "detune": {
+          "cents": 0.0
+        },
+        "chorus": {
+          "depth_ms": 0.0
+        },
+        "spectrum": {
+          "configured_partial_slope": 1.45,
+          "measured_log_slope": -1.536124,
+          "candidate_db_relative_to_source": -20.564
+        },
+        "saturation": {
+          "drive": 0.0,
+          "crest_db": 6.59
+        },
+        "stereo": {
+          "target_pan": 0.0,
+          "correlation": 1.0,
+          "phase_coherence": 1.0
+        }
+      }
+    },
+    {
+      "fixture": "alternate_phase_seed",
+      "target_present": false,
+      "expected": "harmonic_of",
+      "verdict": "harmonic_of",
+      "valid": true,
+      "invalidity_reasons": [],
+      "passed": true,
+      "evidence": {
+        "adsr": {
+          "attack_seconds": 0.04,
+          "sustain_seconds": 1.75
+        },
+        "filter": {
+          "cutoff_hz": null,
+          "spectral_centroid_hz": 437.714
+        },
+        "phase": {
+          "seed": 73,
+          "two_tone_model_gain_db": 0.141,
+          "target_phase_stability": 0.788885
+        },
+        "detune": {
+          "cents": 0.0
+        },
+        "chorus": {
+          "depth_ms": 0.0
+        },
+        "spectrum": {
+          "configured_partial_slope": 1.45,
+          "measured_log_slope": -1.410989,
+          "candidate_db_relative_to_source": -45.192
+        },
+        "saturation": {
+          "drive": 0.0,
+          "crest_db": 5.052
+        },
+        "stereo": {
+          "target_pan": 0.0,
+          "correlation": 1.0,
+          "phase_coherence": 1.0
+        }
+      }
+    },
+    {
+      "fixture": "alternate_phase_seed",
+      "target_present": true,
+      "expected": "voiced",
+      "verdict": "voiced",
+      "valid": true,
+      "invalidity_reasons": [],
+      "passed": true,
+      "evidence": {
+        "adsr": {
+          "attack_seconds": 0.04,
+          "sustain_seconds": 1.75
+        },
+        "filter": {
+          "cutoff_hz": null,
+          "spectral_centroid_hz": 439.609
+        },
+        "phase": {
+          "seed": 73,
+          "two_tone_model_gain_db": 8.507,
+          "target_phase_stability": 0.820822
+        },
+        "detune": {
+          "cents": 0.0
+        },
+        "chorus": {
+          "depth_ms": 0.0
+        },
+        "spectrum": {
+          "configured_partial_slope": 1.45,
+          "measured_log_slope": -1.411029,
+          "candidate_db_relative_to_source": -20.422
+        },
+        "saturation": {
+          "drive": 0.0,
+          "crest_db": 5.617
+        },
+        "stereo": {
+          "target_pan": 0.0,
+          "correlation": 1.0,
+          "phase_coherence": 1.0
+        }
+      }
+    },
+    {
+      "fixture": "shallow_spectral_slope",
+      "target_present": false,
+      "expected": "harmonic_of",
+      "verdict": "harmonic_of",
+      "valid": true,
+      "invalidity_reasons": [],
+      "passed": true,
+      "evidence": {
+        "adsr": {
+          "attack_seconds": 0.04,
+          "sustain_seconds": 1.75
+        },
+        "filter": {
+          "cutoff_hz": null,
+          "spectral_centroid_hz": 538.694
+        },
+        "phase": {
+          "seed": 11,
+          "two_tone_model_gain_db": 0.144,
+          "target_phase_stability": 0.788053
+        },
+        "detune": {
+          "cents": 0.0
+        },
+        "chorus": {
+          "depth_ms": 0.0
+        },
+        "spectrum": {
+          "configured_partial_slope": 1.05,
+          "measured_log_slope": -1.010989,
+          "candidate_db_relative_to_source": -41.199
+        },
+        "saturation": {
+          "drive": 0.0,
+          "crest_db": 7.318
+        },
+        "stereo": {
+          "target_pan": 0.0,
+          "correlation": 1.0,
+          "phase_coherence": 1.0
+        }
+      }
+    },
+    {
+      "fixture": "shallow_spectral_slope",
+      "target_present": true,
+      "expected": "voiced",
+      "verdict": "voiced",
+      "valid": true,
+      "invalidity_reasons": [],
+      "passed": true,
+      "evidence": {
+        "adsr": {
+          "attack_seconds": 0.04,
+          "sustain_seconds": 1.75
+        },
+        "filter": {
+          "cutoff_hz": null,
+          "spectral_centroid_hz": 539.108
+        },
+        "phase": {
+          "seed": 11,
+          "two_tone_model_gain_db": 5.482,
+          "target_phase_stability": 0.837715
+        },
+        "detune": {
+          "cents": 0.0
+        },
+        "chorus": {
+          "depth_ms": 0.0
+        },
+        "spectrum": {
+          "configured_partial_slope": 1.05,
+          "measured_log_slope": -1.011034,
+          "candidate_db_relative_to_source": -20.717
+        },
+        "saturation": {
+          "drive": 0.0,
+          "crest_db": 7.71
+        },
+        "stereo": {
+          "target_pan": 0.0,
+          "correlation": 1.0,
+          "phase_coherence": 1.0
+        }
+      }
+    },
+    {
+      "fixture": "steep_spectral_slope",
+      "target_present": false,
+      "expected": "harmonic_of",
+      "verdict": "harmonic_of",
+      "valid": true,
+      "invalidity_reasons": [],
+      "passed": true,
+      "evidence": {
+        "adsr": {
+          "attack_seconds": 0.04,
+          "sustain_seconds": 1.75
+        },
+        "filter": {
+          "cutoff_hz": null,
+          "spectral_centroid_hz": 345.506
+        },
+        "phase": {
+          "seed": 11,
+          "two_tone_model_gain_db": 0.143,
+          "target_phase_stability": 0.787912
+        },
+        "detune": {
+          "cents": 0.0
+        },
+        "chorus": {
+          "depth_ms": 0.0
+        },
+        "spectrum": {
+          "configured_partial_slope": 1.95,
+          "measured_log_slope": -1.910989,
+          "candidate_db_relative_to_source": -49.831
+        },
+        "saturation": {
+          "drive": 0.0,
+          "crest_db": 5.213
+        },
+        "stereo": {
+          "target_pan": 0.0,
+          "correlation": 1.0,
+          "phase_coherence": 1.0
+        }
+      }
+    },
+    {
+      "fixture": "steep_spectral_slope",
+      "target_present": true,
+      "expected": "voiced",
+      "verdict": "voiced",
+      "valid": true,
+      "invalidity_reasons": [],
+      "passed": true,
+      "evidence": {
+        "adsr": {
+          "attack_seconds": 0.04,
+          "sustain_seconds": 1.75
+        },
+        "filter": {
+          "cutoff_hz": null,
+          "spectral_centroid_hz": 349.619
+        },
+        "phase": {
+          "seed": 11,
+          "two_tone_model_gain_db": 10.619,
+          "target_phase_stability": 0.747568
+        },
+        "detune": {
+          "cents": 0.0
+        },
+        "chorus": {
+          "depth_ms": 0.0
+        },
+        "spectrum": {
+          "configured_partial_slope": 1.95,
+          "measured_log_slope": -1.911103,
+          "candidate_db_relative_to_source": -20.422
+        },
+        "saturation": {
+          "drive": 0.0,
+          "crest_db": 5.795
+        },
+        "stereo": {
+          "target_pan": 0.0,
+          "correlation": 1.0,
+          "phase_coherence": 1.0
+        }
+      }
+    },
+    {
+      "fixture": "saturated",
+      "target_present": false,
+      "expected": "harmonic_of",
+      "verdict": "harmonic_of",
+      "valid": true,
+      "invalidity_reasons": [],
+      "passed": true,
+      "evidence": {
+        "adsr": {
+          "attack_seconds": 0.04,
+          "sustain_seconds": 1.75
+        },
+        "filter": {
+          "cutoff_hz": null,
+          "spectral_centroid_hz": 422.574
+        },
+        "phase": {
+          "seed": 11,
+          "two_tone_model_gain_db": 0.147,
+          "target_phase_stability": 0.787386
+        },
+        "detune": {
+          "cents": 0.0
+        },
+        "chorus": {
+          "depth_ms": 0.0
+        },
+        "spectrum": {
+          "configured_partial_slope": 1.45,
+          "measured_log_slope": -1.368628,
+          "candidate_db_relative_to_source": -45.502
+        },
+        "saturation": {
+          "drive": 2.8,
+          "crest_db": 2.123
+        },
+        "stereo": {
+          "target_pan": 0.0,
+          "correlation": 1.0,
+          "phase_coherence": 1.0
+        }
+      }
+    },
+    {
+      "fixture": "saturated",
+      "target_present": true,
+      "expected": "voiced",
+      "verdict": "voiced",
+      "valid": true,
+      "invalidity_reasons": [],
+      "passed": true,
+      "evidence": {
+        "adsr": {
+          "attack_seconds": 0.04,
+          "sustain_seconds": 1.75
+        },
+        "filter": {
+          "cutoff_hz": null,
+          "spectral_centroid_hz": 430.925
+        },
+        "phase": {
+          "seed": 11,
+          "two_tone_model_gain_db": 5.546,
+          "target_phase_stability": 0.873058
+        },
+        "detune": {
+          "cents": 0.0
+        },
+        "chorus": {
+          "depth_ms": 0.0
+        },
+        "spectrum": {
+          "configured_partial_slope": 1.45,
+          "measured_log_slope": -1.386693,
+          "candidate_db_relative_to_source": -24.013
+        },
+        "saturation": {
+          "drive": 2.8,
+          "crest_db": 2.33
+        },
+        "stereo": {
+          "target_pan": 0.0,
+          "correlation": 1.0,
+          "phase_coherence": 1.0
+        }
+      }
+    },
+    {
+      "fixture": "stereo_split",
+      "target_present": false,
+      "expected": "harmonic_of",
+      "verdict": "harmonic_of",
+      "valid": true,
+      "invalidity_reasons": [],
+      "passed": true,
+      "evidence": {
+        "adsr": {
+          "attack_seconds": 0.04,
+          "sustain_seconds": 1.75
+        },
+        "filter": {
+          "cutoff_hz": null,
+          "spectral_centroid_hz": 438.99
+        },
+        "phase": {
+          "seed": 11,
+          "two_tone_model_gain_db": 0.143,
+          "target_phase_stability": 0.788016
+        },
+        "detune": {
+          "cents": 0.0
+        },
+        "chorus": {
+          "depth_ms": 0.0
+        },
+        "spectrum": {
+          "configured_partial_slope": 1.45,
+          "measured_log_slope": -1.410989,
+          "candidate_db_relative_to_source": -45.046
+        },
+        "saturation": {
+          "drive": 0.0,
+          "crest_db": 6.303
+        },
+        "stereo": {
+          "target_pan": 0.72,
+          "correlation": 1.0,
+          "phase_coherence": 1.0
+        }
+      }
+    },
+    {
+      "fixture": "stereo_split",
+      "target_present": true,
+      "expected": "voiced",
+      "verdict": "voiced",
+      "valid": true,
+      "invalidity_reasons": [],
+      "passed": true,
+      "evidence": {
+        "adsr": {
+          "attack_seconds": 0.04,
+          "sustain_seconds": 1.75
+        },
+        "filter": {
+          "cutoff_hz": null,
+          "spectral_centroid_hz": 440.065
+        },
+        "phase": {
+          "seed": 11,
+          "two_tone_model_gain_db": 7.418,
+          "target_phase_stability": 0.841073
+        },
+        "detune": {
+          "cents": 0.0
+        },
+        "chorus": {
+          "depth_ms": 0.0
+        },
+        "spectrum": {
+          "configured_partial_slope": 1.45,
+          "measured_log_slope": -1.411052,
+          "candidate_db_relative_to_source": -21.299
+        },
+        "saturation": {
+          "drive": 0.0,
+          "crest_db": 6.753
+        },
+        "stereo": {
+          "target_pan": 0.72,
+          "correlation": 0.997517,
+          "phase_coherence": 0.997971
+        }
+      }
+    },
+    {
+      "fixture": "detuned_unison",
+      "target_present": false,
+      "expected": "unknown",
+      "verdict": "unknown",
+      "valid": false,
+      "invalidity_reasons": [
+        "multiple_unresolved_detuned_sources"
+      ],
+      "passed": true,
+      "evidence": {
+        "adsr": {
+          "attack_seconds": 0.04,
+          "sustain_seconds": 1.75
+        },
+        "filter": {
+          "cutoff_hz": null,
+          "spectral_centroid_hz": 456.763
+        },
+        "phase": {
+          "seed": 11,
+          "two_tone_model_gain_db": 0.032,
+          "target_phase_stability": 0.208848
+        },
+        "detune": {
+          "cents": 4.5
+        },
+        "chorus": {
+          "depth_ms": 0.0
+        },
+        "spectrum": {
+          "configured_partial_slope": 1.45,
+          "measured_log_slope": -4.835014,
+          "candidate_db_relative_to_source": -23.696
+        },
+        "saturation": {
+          "drive": 0.0,
+          "crest_db": 7.656
+        },
+        "stereo": {
+          "target_pan": 0.0,
+          "correlation": 1.0,
+          "phase_coherence": 1.0
+        }
+      }
+    },
+    {
+      "fixture": "detuned_unison",
+      "target_present": true,
+      "expected": "unknown",
+      "verdict": "unknown",
+      "valid": false,
+      "invalidity_reasons": [
+        "multiple_unresolved_detuned_sources"
+      ],
+      "passed": true,
+      "evidence": {
+        "adsr": {
+          "attack_seconds": 0.04,
+          "sustain_seconds": 1.75
+        },
+        "filter": {
+          "cutoff_hz": null,
+          "spectral_centroid_hz": 460.709
+        },
+        "phase": {
+          "seed": 11,
+          "two_tone_model_gain_db": 1.842,
+          "target_phase_stability": 0.402601
+        },
+        "detune": {
+          "cents": 4.5
+        },
+        "chorus": {
+          "depth_ms": 0.0
+        },
+        "spectrum": {
+          "configured_partial_slope": 1.45,
+          "measured_log_slope": -4.832488,
+          "candidate_db_relative_to_source": -5.117
+        },
+        "saturation": {
+          "drive": 0.0,
+          "crest_db": 8.111
+        },
+        "stereo": {
+          "target_pan": 0.0,
+          "correlation": 1.0,
+          "phase_coherence": 1.0
+        }
+      }
+    },
+    {
+      "fixture": "chorused",
+      "target_present": false,
+      "expected": "unknown",
+      "verdict": "unknown",
+      "valid": false,
+      "invalidity_reasons": [
+        "independent_chorus_modulation_breaks_phase_stationarity"
+      ],
+      "passed": true,
+      "evidence": {
+        "adsr": {
+          "attack_seconds": 0.04,
+          "sustain_seconds": 1.75
+        },
+        "filter": {
+          "cutoff_hz": null,
+          "spectral_centroid_hz": 528.139
+        },
+        "phase": {
+          "seed": 11,
+          "two_tone_model_gain_db": 0.086,
+          "target_phase_stability": 0.470264
+        },
+        "detune": {
+          "cents": 0.0
+        },
+        "chorus": {
+          "depth_ms": 3.5
+        },
+        "spectrum": {
+          "configured_partial_slope": 1.45,
+          "measured_log_slope": -2.713537,
+          "candidate_db_relative_to_source": -27.948
+        },
+        "saturation": {
+          "drive": 0.0,
+          "crest_db": 8.903
+        },
+        "stereo": {
+          "target_pan": 0.0,
+          "correlation": 0.097492,
+          "phase_coherence": 0.154224
+        }
+      }
+    },
+    {
+      "fixture": "chorused",
+      "target_present": true,
+      "expected": "unknown",
+      "verdict": "unknown",
+      "valid": false,
+      "invalidity_reasons": [
+        "independent_chorus_modulation_breaks_phase_stationarity"
+      ],
+      "passed": true,
+      "evidence": {
+        "adsr": {
+          "attack_seconds": 0.04,
+          "sustain_seconds": 1.75
+        },
+        "filter": {
+          "cutoff_hz": null,
+          "spectral_centroid_hz": 528.031
+        },
+        "phase": {
+          "seed": 11,
+          "two_tone_model_gain_db": 0.065,
+          "target_phase_stability": 0.58241
+        },
+        "detune": {
+          "cents": 0.0
+        },
+        "chorus": {
+          "depth_ms": 3.5
+        },
+        "spectrum": {
+          "configured_partial_slope": 1.45,
+          "measured_log_slope": -2.714036,
+          "candidate_db_relative_to_source": -28.247
+        },
+        "saturation": {
+          "drive": 0.0,
+          "crest_db": 9.313
+        },
+        "stereo": {
+          "target_pan": 0.0,
+          "correlation": 0.096874,
+          "phase_coherence": 0.154241
+        }
+      }
+    },
+    {
+      "fixture": "short_sustain",
+      "target_present": false,
+      "expected": "unknown",
+      "verdict": "unknown",
+      "valid": false,
+      "invalidity_reasons": [
+        "sustain_shorter_than_300_ms"
+      ],
+      "passed": true,
+      "evidence": {
+        "adsr": {
+          "attack_seconds": 0.04,
+          "sustain_seconds": 0.24
+        },
+        "filter": {
+          "cutoff_hz": null,
+          "spectral_centroid_hz": 433.333
+        },
+        "phase": {
+          "seed": 11,
+          "two_tone_model_gain_db": 0.0,
+          "target_phase_stability": 0.0
+        },
+        "detune": {
+          "cents": 0.0
+        },
+        "chorus": {
+          "depth_ms": 0.0
+        },
+        "spectrum": {
+          "configured_partial_slope": 1.45,
+          "measured_log_slope": -1.429633,
+          "candidate_db_relative_to_source": -235.863
+        },
+        "saturation": {
+          "drive": 0.0,
+          "crest_db": 6.322
+        },
+        "stereo": {
+          "target_pan": 0.0,
+          "correlation": 1.0,
+          "phase_coherence": 1.0
+        }
+      }
+    },
+    {
+      "fixture": "short_sustain",
+      "target_present": true,
+      "expected": "unknown",
+      "verdict": "unknown",
+      "valid": false,
+      "invalidity_reasons": [
+        "sustain_shorter_than_300_ms"
+      ],
+      "passed": true,
+      "evidence": {
+        "adsr": {
+          "attack_seconds": 0.04,
+          "sustain_seconds": 0.24
+        },
+        "filter": {
+          "cutoff_hz": null,
+          "spectral_centroid_hz": 437.067
+        },
+        "phase": {
+          "seed": 11,
+          "two_tone_model_gain_db": 0.0,
+          "target_phase_stability": 0.0
+        },
+        "detune": {
+          "cents": 0.0
+        },
+        "chorus": {
+          "depth_ms": 0.0
+        },
+        "spectrum": {
+          "configured_partial_slope": 1.45,
+          "measured_log_slope": -1.429392,
+          "candidate_db_relative_to_source": -235.715
+        },
+        "saturation": {
+          "drive": 0.0,
+          "crest_db": 6.204
+        },
+        "stereo": {
+          "target_pan": 0.0,
+          "correlation": 1.0,
+          "phase_coherence": 1.0
+        }
+      }
+    },
+    {
+      "fixture": "chorused_saturation",
+      "target_present": false,
+      "expected": "unknown",
+      "verdict": "unknown",
+      "valid": false,
+      "invalidity_reasons": [
+        "independent_chorus_modulation_breaks_phase_stationarity",
+        "nonlinear_cross_products_follow_modulated_components"
+      ],
+      "passed": true,
+      "evidence": {
+        "adsr": {
+          "attack_seconds": 0.04,
+          "sustain_seconds": 1.75
+        },
+        "filter": {
+          "cutoff_hz": null,
+          "spectral_centroid_hz": 555.569
+        },
+        "phase": {
+          "seed": 11,
+          "two_tone_model_gain_db": 0.086,
+          "target_phase_stability": 0.47008
+        },
+        "detune": {
+          "cents": 0.0
+        },
+        "chorus": {
+          "depth_ms": 3.5
+        },
+        "spectrum": {
+          "configured_partial_slope": 1.45,
+          "measured_log_slope": -2.672547,
+          "candidate_db_relative_to_source": -28.555
+        },
+        "saturation": {
+          "drive": 2.8,
+          "crest_db": 4.613
+        },
+        "stereo": {
+          "target_pan": 0.0,
+          "correlation": 0.111894,
+          "phase_coherence": 0.154681
+        }
+      }
+    },
+    {
+      "fixture": "chorused_saturation",
+      "target_present": true,
+      "expected": "unknown",
+      "verdict": "unknown",
+      "valid": false,
+      "invalidity_reasons": [
+        "independent_chorus_modulation_breaks_phase_stationarity",
+        "nonlinear_cross_products_follow_modulated_components"
+      ],
+      "passed": true,
+      "evidence": {
+        "adsr": {
+          "attack_seconds": 0.04,
+          "sustain_seconds": 1.75
+        },
+        "filter": {
+          "cutoff_hz": null,
+          "spectral_centroid_hz": 558.997
+        },
+        "phase": {
+          "seed": 11,
+          "two_tone_model_gain_db": 0.113,
+          "target_phase_stability": 0.491857
+        },
+        "detune": {
+          "cents": 0.0
+        },
+        "chorus": {
+          "depth_ms": 3.5
+        },
+        "spectrum": {
+          "configured_partial_slope": 1.45,
+          "measured_log_slope": -2.638627,
+          "candidate_db_relative_to_source": -27.013
+        },
+        "saturation": {
+          "drive": 2.8,
+          "crest_db": 4.822
+        },
+        "stereo": {
+          "target_pan": 0.0,
+          "correlation": 0.112083,
+          "phase_coherence": 0.155196
+        }
+      }
+    }
+  ]
+}

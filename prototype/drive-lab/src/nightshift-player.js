@@ -7,13 +7,15 @@ import { createNightshiftLowSpeedBed } from "./nightshift-low-speed-bed.js";
 import { nightshiftStateForSpeed } from "./nightshift-model.js";
 import { withReadinessTimeout } from "./promise-timeout.js";
 import { SAMPLED_SCORE_PERFORMANCE_LEVEL } from "./sampled-score-levels.js";
+import { SAMPLED_BANK_TRANSFER_TIMEOUT_MS } from "./sampled-bank-network.js";
 
 const BANK_URL = `/audio/nightshift.svb?build=${encodeURIComponent(__APP_BUILD__)}`;
 const REVIEW_INTERVAL_MS = 50;
 const SCHEDULE_AHEAD_SECONDS = 0.85;
 const OUTPUT_LEVEL = 0.91;
-export const NIGHTSHIFT_TRANSFER_TIMEOUT_MS = 12000;
+export const NIGHTSHIFT_TRANSFER_TIMEOUT_MS = SAMPLED_BANK_TRANSFER_TIMEOUT_MS;
 export const NIGHTSHIFT_DECODE_TIMEOUT_MS = 10000;
+export const NIGHTSHIFT_NATIVE_RETRY_SECONDS = 10;
 
 export function createNightshiftPlayer(context, destination, onSnapshot, onBankStatus) {
   let destroyed = false;
@@ -33,6 +35,10 @@ export function createNightshiftPlayer(context, destination, onSnapshot, onBankS
   let bankBytes = 0;
   let boundaryFallbacks = 0;
   let nativeMode = false;
+  let nativeStartPromise = null;
+  let nativeRetryAt = 0;
+  let nativeRevision = 0;
+  let bankTransferController = null;
   const decoded = new Map();
   const decoding = new Map();
   const recent = [];
@@ -59,8 +65,13 @@ export function createNightshiftPlayer(context, destination, onSnapshot, onBankS
     if (bank) return bank;
     if (loading) return loading;
     report("loading");
+    const controller = typeof AbortController === "function" ? new AbortController() : null;
+    bankTransferController = controller;
     loading = withReadinessTimeout((async () => {
-      const response = await fetch(BANK_URL, { cache: "force-cache" });
+      const response = await fetch(BANK_URL, {
+        cache: "force-cache",
+        ...(controller ? { signal: controller.signal } : {}),
+      });
       if (!response.ok) throw new Error(`NIGHTSHIFT bank request failed (${response.status})`);
       const parsed = parseNightshiftBank(await response.arrayBuffer());
       if (destroyed) throw new Error("NIGHTSHIFT player is closed");
@@ -73,10 +84,12 @@ export function createNightshiftPlayer(context, destination, onSnapshot, onBankS
       timeoutMs: NIGHTSHIFT_TRANSFER_TIMEOUT_MS,
       schedule: window.setTimeout ?? globalThis.setTimeout,
       cancel: window.clearTimeout ?? globalThis.clearTimeout,
+      onTimeout: () => controller?.abort(),
     }).catch((error) => {
       loading = null;
-      if (!destroyed) report("error", error);
       throw error;
+    }).finally(() => {
+      if (bankTransferController === controller) bankTransferController = null;
     });
     return loading;
   }
@@ -195,21 +208,40 @@ export function createNightshiftPlayer(context, destination, onSnapshot, onBankS
     return performance;
   }
 
-  async function startNative() {
+  function startNative() {
     const state = nightshiftStateForSpeed(speed, targetStateId);
     targetStateId = state?.id ?? null;
-    if (!active || !state) return null;
+    if (!active || !state || context.currentTime < nativeRetryAt) return Promise.resolve(null);
+    if (current) return Promise.resolve(current);
+    if (nativeStartPromise) return nativeStartPromise;
     nativeMode = true;
-    await load();
-    const section = select(state.id, null);
-    const buffer = await ensureDecoded(section.assetId);
-    if (!active || !nightshiftStateForSpeed(speed, targetStateId)) return null;
-    nativeGain.gain.setTargetAtTime(SAMPLED_SCORE_PERFORMANCE_LEVEL, context.currentTime, 0.22);
-    parkBed.setActive(false);
-    current = startPrepared({ section, buffer }, context.currentTime + 0.04);
-    prepared = null;
-    prepare(targetStateId).catch((error) => report("error", error));
-    return current;
+    const revision = ++nativeRevision;
+    nativeStartPromise = (async () => {
+      await load();
+      const section = select(state.id, null);
+      if (!section) throw new Error(`NIGHTSHIFT has no complete performance for: ${state.id}`);
+      const buffer = await ensureDecoded(section.assetId);
+      if (!active || revision !== nativeRevision || !nightshiftStateForSpeed(speed, targetStateId)) return null;
+      nativeGain.gain.setTargetAtTime(SAMPLED_SCORE_PERFORMANCE_LEVEL, context.currentTime, 0.22);
+      parkBed.setActive(false);
+      current = startPrepared({ section, buffer }, context.currentTime + 0.04);
+      prepared = null;
+      nativeRetryAt = 0;
+      report("ready");
+      prepare(targetStateId).catch((error) => report("error", error));
+      return current;
+    })().catch((error) => {
+      if (!destroyed && revision === nativeRevision) {
+        nativeMode = false;
+        nativeRetryAt = context.currentTime + NIGHTSHIFT_NATIVE_RETRY_SECONDS;
+        parkBed.setActive(true);
+        report("error", error);
+      }
+      throw error;
+    }).finally(() => {
+      if (revision === nativeRevision) nativeStartPromise = null;
+    });
+    return nativeStartPromise;
   }
 
   function review() {
@@ -224,13 +256,15 @@ export function createNightshiftPlayer(context, destination, onSnapshot, onBankS
       if (nativeMode) stopNative();
       return;
     }
-    parkBed.setActive(false);
+    parkBed.setActive(!current);
     if (!nativeMode) {
       nativeMode = true;
       nativeGain.gain.setTargetAtTime(SAMPLED_SCORE_PERFORMANCE_LEVEL, context.currentTime, 0.22);
     }
     if (!current && !pending) {
-      startNative().catch((error) => report("error", error));
+      if (!nativeStartPromise && context.currentTime >= nativeRetryAt) {
+        startNative().catch(() => {});
+      }
       return;
     }
     if (pending && context.currentTime >= pending.startAt) {
@@ -310,6 +344,9 @@ export function createNightshiftPlayer(context, destination, onSnapshot, onBankS
       parkBed.setActive(active && !state);
       if (active && state && !current) await startNative();
       if (!active) {
+        nativeRevision += 1;
+        nativeStartPromise = null;
+        nativeRetryAt = 0;
         nativeGain.gain.setTargetAtTime(0, context.currentTime, 0.08);
         stopNative();
       }
@@ -331,6 +368,10 @@ export function createNightshiftPlayer(context, destination, onSnapshot, onBankS
     destroy() {
       if (destroyed) return;
       destroyed = true;
+      active = false;
+      nativeRevision += 1;
+      bankTransferController?.abort();
+      bankTransferController = null;
       window.clearInterval(reviewTimer);
       for (const source of sources) {
         try { source.stop(); } catch {}
