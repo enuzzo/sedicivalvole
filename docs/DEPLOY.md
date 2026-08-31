@@ -8,6 +8,39 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## MERIDIAN full-range FOV and braking response — 2026-08-31 20:42
+
+- build stamp: **`20260831-2034`**; deployed product checkpoint:
+  **`6a90621`**;
+- behavior: **PASS in model and exact local viewport; Tesla retest pending**.
+  Base projection now opens from `50°` to `116°` across `0–130 km/h`, with at
+  least `10°` added in each `26 km/h` band. Shared WebGL2/Canvas2D response uses
+  `0.30 s` acceleration, `0.62 s` braking and `0.32 s` visual-FX easing so GPS
+  sampling and UNDERWATER engagement do not snap the camera, field, rate, glow,
+  or fog;
+- tests/build: **PASS**. Complete `519/519`, 147-module App, 71-module LAB and
+  Sites packaging pass. The response is monotonic and equivalent at 30, 60 and
+  120 FPS;
+- local Browser QA: **PASS at `773 × 601`**. Deterministic `0` and `130 km/h`
+  endpoints show a narrow stable rest corridor and a materially wider
+  full-speed field, with no warning/error;
+- publication: **PASS**. Read-only preflight and postflight both report eight
+  root entries and `remote_writes=NONE`. Protected publication uploaded 138
+  files / 212,293,605 bytes, retained one prior fingerprinted asset for cache
+  overlap and fully reverified all 29 Illobo recordings;
+- canonical identity: **PASS**. Root HTML references
+  `assets/index-BSP0_brf.js` and `assets/index-q8WX2e-G.css`. Local/live SHA-256
+  is `d342448e7ec9b4e42ec53d149633e5cb742d4b1d328e5e00e49e3ba286baec04`
+  for HTML, `8afa8f52932d797003ce63a1e274a0e7d8099ad2cf5ed3c3e622ad05ccb7fba2`
+  for JavaScript, and
+  `c7923123fdf829c83a616e3858c3aa9d14ec9c9ef1d5d006fafa4299da946d53`
+  for CSS. The response is `200`, `no-store/no-cache`, `nosniff`, and proxy
+  `MISS`; the bundle carries `6a90621 / 20260831-2034`;
+- live Browser QA: **PASS for identity/runtime**. The canonical build opens
+  MERIDIAN at the target viewport without warning/error. Production correctly
+  excludes local-only fixed-speed QA parameters; real progressive motion and
+  cabin acceptance therefore remain `R5-02`.
+
 ## Global FX Deck — 2026-08-31 20:22
 
 - build stamp: **`20260831-2005`**; deployed product checkpoint:

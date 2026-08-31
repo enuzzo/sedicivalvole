@@ -469,8 +469,10 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The canonical live product is version `0.0.0`, source commit `0993e92`, build
-  `20260831-2005`, retaining global audio routing and the two-stage perceptual
+- The canonical live product is version `0.0.0`, source commit `6a90621`, build
+  `20260831-2034`, adding the full-range MERIDIAN `50–116°` FOV and shared
+  frame-rate-independent acceleration/braking/visual-FX response while
+  retaining global audio routing and the two-stage perceptual
   UNDERWATER repair `8c53e8d`, the selected global FX Deck `0993e92`,
   reversible Soundtrack paths `0660d71`, immediate Music switching `137ddeb`, transport
   hardening `57fed11`, Illobo provider identity `2c0f5f8`, ATLAS Navigator
@@ -501,9 +503,13 @@ dated study documents.
   controls, and state persistence into Soundtrack with zero overflow or live
   warning/error. Protected publication reverified all 29 Illobo masters and the
   retired repeat worklet is admitted for cache overlap only by exact hash.
-  The complete `517/517` suite plus 147-module App / 71-module LAB / Sites build
-  pass, while physical-cabin checks remain `R4-01`–`R4-06`, `R7-01`–`R7-07`,
-  `R8-01`–`R8-02` and `R9-01`–`R9-02`. Exact
+  Exact local `773 × 601` MERIDIAN endpoint QA proves materially distinct rest
+  and full-speed projections; canonical HTML/JS/CSS byte identity proves the
+  same renderer is live with no warning/error. Progressive motion remains the
+  target-Tesla `R5-02` gate.
+  The complete `519/519` suite plus 147-module App / 71-module LAB / Sites build
+  pass, while physical-cabin checks remain `R4-01`–`R4-06`, `R5-01`–`R5-05`,
+  `R7-01`–`R7-07`, `R8-01`–`R8-02` and `R9-01`–`R9-02`. Exact
   progressive evidence is in [`DEPLOY.md`](DEPLOY.md).
 - Diagnostic telemetry contains no coordinates and is sent only after the
   explicit `SEND DIAGNOSTIC` action. ATLAS location is a separate ephemeral
@@ -512,11 +518,11 @@ dated study documents.
 
 ## Open work
 
-1. Execute Tesla tests `R4-01`–`R4-06`, `R7-01`–`R7-07`, `R8-01`–`R8-02` and
-   `R9-01`–`R9-02` on live build `20260831-2005` from
+1. Execute Tesla tests `R4-01`–`R4-06`, `R5-01`–`R5-05`, `R7-01`–`R7-07`,
+   `R8-01`–`R8-02` and `R9-01`–`R9-02` on live build `20260831-2034` from
    [`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md), including
-   the live audio transport evidence that the available office Browser-control
-   surfaces could not collect.
+   the live audio transport evidence and MERIDIAN `0 → 130 → brake` motion that
+   the available office Browser-control surfaces could not physically accept.
 2. Validate the complete ATLAS route, pulsing vehicle point, three-state GPS
    control, Navigator Plaque heading/road behavior, measured 30 FPS ATLAS
    cadence and corrected NIGHTSHIFT level in the Tesla after publication.
