@@ -56,7 +56,10 @@ if (!preg_match('/^[A-Za-z0-9_-]{4,128}$/D', $clientId)) {
 $metadataQuery = http_build_query([
     'client_id' => $clientId,
     'format' => 'json',
-    'id' => $trackId,
+    // Jamendo declares the tracks `id` filter as an integer array. Using the
+    // explicit bracket form keeps one exact admitted identity without relying
+    // on the API's inconsistent scalar coercion.
+    'id[]' => $trackId,
     'limit' => 1,
     'include' => 'musicinfo',
     'audioformat' => 'mp32',

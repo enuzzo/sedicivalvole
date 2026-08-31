@@ -139,6 +139,7 @@ test("production endpoints keep credentials server-side and audio transient", ()
   assert.match(productionCatalogEndpoint, /audioformat' => 'mp32/);
   assert.doesNotMatch(productionCatalogEndpoint, /client_secret/);
   assert.match(productionAudioEndpoint, /track_effects_not_admitted/);
+  assert.match(productionAudioEndpoint, /'id\[\]' => \$trackId/);
   assert.match(productionAudioEndpoint, /Cache-Control: no-store/);
   assert.match(productionAudioEndpoint, /Cross-Origin-Resource-Policy: same-origin/);
   assert.match(productionAudioEndpoint, /CURLOPT_PROTOCOLS => CURLPROTO_HTTPS/);
