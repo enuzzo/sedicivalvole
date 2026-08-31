@@ -213,6 +213,13 @@ assert not module.is_recognized_project_owned_brand_entry(
 assert not module.is_recognized_project_owned_brand_entry(
     "product-icon-512.png", new_master
 )
+assert module.RETIRED_BRAND_HASHES == {
+    "illobo-featured-provisional.png": "da6d5086f06dc8a38ea580f3a5c4289363c214cb8736c9e84ffa39a462946e2b",
+}
+module.RETIRED_BRAND_HASHES = {"old.png": module.sha256_bytes(b"retired")}
+assert module.is_recognized_retired_brand("old.png", b"retired")
+assert not module.is_recognized_retired_brand("old.png", b"mutated")
+assert not module.is_recognized_retired_brand("unknown.png", new_master)
 `;
   const newMaster = readFileSync(
     new URL("../public/brand/sedicivalvole-mark.svg", import.meta.url),

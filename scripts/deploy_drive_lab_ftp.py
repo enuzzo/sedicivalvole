@@ -56,6 +56,9 @@ RETIRED_FONT_HASHES = {
     "ibm-plex-mono-semibold.ttf": "d3c38e55c78f5b0f28009fddba4834ec503278936a5986032424c9bd2d23aa46",
     "orbitron-latin-variable.woff2": "c25a9f9da5d9f3db1bf2a01474722dc9b377675b7bbab6d0dfda6902794fd1ed",
 }
+RETIRED_BRAND_HASHES = {
+    "illobo-featured-provisional.png": "da6d5086f06dc8a38ea580f3a5c4289363c214cb8736c9e84ffa39a462946e2b",
+}
 DIAGNOSTIC_ENDPOINT = "send-diagnostic.php"
 DIAGNOSTIC_RECIPIENT_CONFIG = "recipient.local.php"
 DIAGNOSTIC_RECIPIENT_SOURCE = (
@@ -244,6 +247,12 @@ def is_recognized_retired_font(name: str, payload: bytes) -> bool:
     return expected_hash is not None and sha256_bytes(payload) == expected_hash
 
 
+def is_recognized_retired_brand(name: str, payload: bytes) -> bool:
+    """Admit only byte-identical retired brand assets during cache overlap."""
+    expected_hash = RETIRED_BRAND_HASHES.get(name)
+    return expected_hash is not None and sha256_bytes(payload) == expected_hash
+
+
 def is_recognized_project_owned_brand_entry(
     relative_path: Path | str,
     payload: bytes,
@@ -268,12 +277,21 @@ def verify_remote_static_tree(
         raise ValueError(f"incomplete {tree_name} upload")
     if not require_complete:
         unexpected_names = remote_names - expected_names
-        if tree_name != "fonts" or any(
-            not is_recognized_retired_font(name, remote_bytes(ftp, name))
-            for name in unexpected_names
-        ):
-            if unexpected_names:
-                raise ValueError(f"unexpected {tree_name} entry")
+        recognized_overlap = (
+            tree_name == "fonts"
+            and all(
+                is_recognized_retired_font(name, remote_bytes(ftp, name))
+                for name in unexpected_names
+            )
+        ) or (
+            tree_name == "brand"
+            and all(
+                is_recognized_retired_brand(name, remote_bytes(ftp, name))
+                for name in unexpected_names
+            )
+        )
+        if unexpected_names and not recognized_overlap:
+            raise ValueError(f"unexpected {tree_name} entry")
 
     names_to_verify = expected_names if require_complete else remote_names & expected_names
     for name in names_to_verify:
