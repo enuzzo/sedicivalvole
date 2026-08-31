@@ -194,11 +194,16 @@ top-level fields), replaces the separate weak NIGHTSHIFT filter with the shared
 two-stage perceptual model, and routes flanger, reverb, chorus, and replacement
 Echo through one limited post-source graph for both Play the Road and
 Soundtrack. Decoded real Illobo/Jamendo excerpts lose `20.8/18.8 dB` above
-`4 kHz` at the minimum visible state; the complete local suite passes `514/514`
-and the App/LAB/Sites build passes. This checkpoint is not deployed. Exactly
-three manual-effects overlay directions have been presented; implementation is
-blocked only on the owner's `1`, `2`, or `3` selection, after which exact
-viewport QA, canonical publication, and Tesla listening remain required.
+`4 kHz` at the minimum visible state. The owner selected FX Deck, and checkpoint
+`0993e92` replaces the buried Music-drawer controls with a persistent footer
+`MIX` control plus a compact non-modal overlay. Its four large tap states enter
+at strong `78 / 72 / 80 / 74` depths, keep independent sliders and reset, and
+persist across Play the Road and Soundtrack. Exact local `773 × 601` QA measures
+a `720 × 158 px` deck with a `12 px` footer gap, zero overflow, and no console
+issue; all taps, sliders, reset, close, switching, and persistence pass. The
+complete suite passes `516/516`; the 147-module App / 71-module LAB / Sites
+build `20260831-2005` passes. Canonical publication and Tesla listening remain
+required.
 Milestone row 9 is also office-complete and live:
 its selected Navigator Plaque combines a filled continuously rotating arrow,
 English cardinal, exact degrees and a rendered-tile road name without reverse

@@ -1447,6 +1447,38 @@ sum must end in a limiter. The former Beat Repeat is retired because its only
 perceptible state was also musically objectionable; retaining a bad effect just
 because it is audible is not success.
 
+### 6.13 A performance-effects tap must cross an audible threshold
+
+The first cabin test of the manual effects produced visible state changes with
+no useful audible result. A passenger performance control cannot begin at an
+engineering-demo depth: its primary tap must land immediately on a musical,
+unmistakable state, while a separate continuous control remains available for
+fine adjustment. The selected FX Deck therefore maps each tap to an authored
+default—Flanger `0.78`, Reverb `0.72`, Chorus `0.80`, and Echo `0.74`—and uses a
+sublinear response curve so the lower half of the slider still changes the wet
+graph materially.
+
+The effects remain conventional Web Audio building blocks rather than visual
+facsimiles. Flanger and chorus use modulated short delays with stronger wet
+paths; reverb uses a normalized `ConvolverNode`, longer impulse, pre-delay, and
+bounded high/low filtering; echo uses a filtered delay feedback loop; and the
+complete serial sum still terminates in a dynamics limiter. The Web Audio
+specification explicitly models convolution as room/reverberation processing,
+delay as a time-varying latency primitive, and dynamics compression as a way to
+reduce clipping risk. The feedback path must retain an intervening delay,
+because a zero-delay graph cycle is invalid.
+
+Tests protect minimum wet, modulation, feedback, and delay endpoints for the
+four authored tap states. As an independent audibility check on real programme
+material, matching offline approximations produced wet-minus-dry differences
+between `-13.5` and `-10.2 dB` on Illobo and between `-7.1` and `-5.5 dB` on
+Jamendo. Those measurements prove that a substantial changed signal exists;
+they do not prove the exact browser graph or replace target-Tesla listening.
+
+Sources: [Web Audio API 1.1](https://www.w3.org/TR/webaudio-1.1/),
+[MDN `ConvolverNode`](https://developer.mozilla.org/en-US/docs/Web/API/ConvolverNode),
+and [MDN `AudioNode.connect()` feedback cycles](https://developer.mozilla.org/en-US/docs/Web/API/AudioNode/connect).
+
 ---
 
 ## 7. Sources and material
