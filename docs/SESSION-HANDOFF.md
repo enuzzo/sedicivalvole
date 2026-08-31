@@ -136,9 +136,9 @@ The session started from clean `main == origin/main == bb5a2c9`. Drive
 corrections are checkpoint `ac11ed0`; milestone-row-6 audio evidence/recovery
 is `614872b`; row-7 transition mechanics are `2dd3cb5`, atomic rollback is
 `8f03b34`, and transient transport activation is `dcb6801`. Canonical live
-build is `20260831-1653` from ATLAS Navigator Plaque checkpoint `79d9c9b`,
-retaining MUTE/FX parity `c0a2f78`, Featured-launch correction `1171157` and
-perceptual correction `6218f98`.
+build is `20260831-1714` from Tesla Soundtrack correction `4b36069`, retaining
+ATLAS Navigator Plaque `79d9c9b`, MUTE/FX parity `c0a2f78`, Featured-launch
+correction `1171157`, and Illobo cover correction `6218f98`.
 Guarded no-delete publication, pre/postflight `remote_writes=NONE`, canonical
 HTML/main/CSS/worklet byte identity and catalogue/audio relay probes pass.
 Milestone row 8 is office-complete at `05a754b`: both owner-supplied Illobo LOBO
@@ -148,8 +148,14 @@ field. Active fixed playback publishes `16 - Artist - Track title`
 to the page title and restores the product title on pause. The complete suite,
 build, and exact local/live `773 × 601` Browser QA pass. Protected publication,
 pre/postflight, canonical byte identity, timed fade, real play/pause title, and
-console gates pass; target-Tesla checks `R7-01`–`R7-07` and
-`R8-01`–`R8-02` remain open. Milestone row 9 is also office-complete and live:
+console gates pass. The owner then reported that build `20260831-1653` failed
+every Illobo start and made visible Jamendo UNDERWATER engagement acoustically
+dry. Checkpoint `4b36069` corrects the exact-ID relay fallback, synchronous
+Featured activation, failed-deck recovery, and the low-pass sweep's perceptual
+onset. The formerly failing live track and three adjacent Featured tracks now
+return `206 audio/mpeg`; local exact-viewport playback state passes. Target-
+Tesla retests remain `R4-04`, `R7-06`, `R7-07`, and `R8-01`–`R8-02`.
+Milestone row 9 is also office-complete and live:
 its selected Navigator Plaque combines a filled continuously rotating arrow,
 English cardinal, exact degrees and a rendered-tile road name without reverse
 geocoding. Run `R9-01`–`R9-02` for target-vehicle acceptance.
@@ -200,18 +206,20 @@ identifiers for the evening cabin run in
 cannot close until those cabin results pass.
 
 Milestone row 8 is implemented at `05a754b` and retained in current canonical build
-`20260831-1653`, with perceptual correction `6218f98`. Both owner-supplied LOBO variants
+`20260831-1714`, with perceptual correction `6218f98`. Both owner-supplied LOBO variants
 remain byte-identical, the old provisional PNG is retired behind an exact-hash
 cache-overlap gate, and the Featured cover uses a continuous four-second-per-
 direction dissolve from white-on-black solid to original black-on-graphite
 outline on an unclipped square field without a cover border or radius. Local
 and live `773 × 601` QA proves both endpoints, exact dimensions, zero
 warning/error, real `16 - Artist - Track title` playback identity, and title
-restoration on pause. Source correction `1171157` also makes an unqualified
-Soundtrack start explicitly `library:all`; `PLAY FEATURED` now changes to and
-immediately starts the distinct `featured:signal-border` queue. Local exact-
-viewport interaction QA and canonical byte identity pass; use `R7-07` for its
-Tesla acceptance and `R8-01`–`R8-02` for the cover/title acceptance.
+restoration on pause. Source correction `1171157` makes an unqualified
+Soundtrack start explicitly `library:all`; `4b36069` additionally reuses the
+prepared catalogue within the `PLAY FEATURED` gesture, retries exact server
+metadata variants, and prevents a failed current deck from poisoning its
+replacement. Local exact-viewport interaction QA, live relay probes, and
+canonical byte identity pass; use `R7-06`–`R7-07` for the corrected Soundtrack
+cabin acceptance and `R8-01`–`R8-02` for the cover/title acceptance.
 
 Continue only from the 17-row execution order in
 [`MILESTONE-CHECKLIST-2026-08-31.md`](MILESTONE-CHECKLIST-2026-08-31.md). The

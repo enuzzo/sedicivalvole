@@ -388,9 +388,12 @@ dated study documents.
   that incoming media playback must be requested before awaiting effects/worklet
   readiness so Chromium retains the transport gesture's transient activation;
   checkpoint `dcb6801` enforces and tests that ordering. Build `20260831-1241`
-  first published that correction; current build `20260831-1653` retains it,
-  adds the final Illobo identity plus Tesla-facing playback title, and separates
-  the explicit Featured launch from the default Library queue. Physical-Tesla listening of crossfade, buffering, touch, QR,
+  first published that correction. Current build `20260831-1714` additionally
+  retries exact array/scalar metadata queries, verifies returned identity,
+  reuses the prepared catalogue synchronously inside `PLAY FEATURED`, excludes
+  failed decks from replacement transitions, retains the final Illobo identity
+  plus Tesla-facing playback title, and separates the explicit Featured launch
+  from the default Library queue. Physical-Tesla listening of crossfade, buffering, touch, QR,
   transport, licence and effects behavior remain open; no offline-duration promise is made. See
   [`SOUNDTRACK-SOURCE-POLICY.md`](SOUNDTRACK-SOURCE-POLICY.md).
 - **The running footer has its compact control geometry.** MUTE and FX are
@@ -449,22 +452,25 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The canonical live product is version `0.0.0`, source commit `79d9c9b`, build
-  `20260831-1653`, retaining MUTE/FX parity `c0a2f78`, Illobo/title
+- The canonical live product is version `0.0.0`, source commit `4b36069`, build
+  `20260831-1714`, retaining ATLAS Navigator `79d9c9b`, MUTE/FX parity `c0a2f78`, Illobo/title
   implementation `05a754b`, cover correction `6218f98`, Featured-launch
-  correction `1171157`, and transition correction `dcb6801`. Its guarded
+  correction `1171157`, transition correction `dcb6801`, and Tesla Soundtrack
+  relay/activation/effect correction `4b36069`. Its guarded
   publication, read-only pre/postflight and HTML/JavaScript/CSS/Tabler-SVG byte
   identity pass.
   Prior exact live `773 × 601` Browser QA verifies the unchanged white-on-black
   solid and black-on-graphite outline endpoints, play/pause title behavior and
   zero warning/error. Current exact local Browser QA verifies the new Library →
   Featured interaction, synchronized track/title and zero horizontal overflow;
+  the formerly failing live Illobo relay ID and three adjacent entries now
+  return `206 audio/mpeg`;
   current live audio interaction remains a Tesla gate because Browser control
   could not complete the direct `.php` catalogue request.
   Exact live ATLAS QA also proves the dynamic Navigator Plaque, local road copy,
   zero overflow and no live-origin warning/error.
-  The complete `493/493` suite plus 146-module App / 70-module LAB / Sites build
-  pass, while physical-cabin checks remain `R4-06`, `R7-01`–`R7-07`,
+  The complete `495/495` suite plus 146-module App / 70-module LAB / Sites build
+  pass, while physical-cabin checks remain `R4-01`–`R4-06`, `R7-01`–`R7-07`,
   `R8-01`–`R8-02` and `R9-01`–`R9-02`. Exact
   progressive evidence is in [`DEPLOY.md`](DEPLOY.md).
 - Diagnostic telemetry contains no coordinates and is sent only after the
@@ -474,8 +480,8 @@ dated study documents.
 
 ## Open work
 
-1. Execute Tesla tests `R4-06`, `R7-01`–`R7-07`, `R8-01`–`R8-02` and
-   `R9-01`–`R9-02` on live build `20260831-1653` from
+1. Execute Tesla tests `R4-01`–`R4-06`, `R7-01`–`R7-07`, `R8-01`–`R8-02` and
+   `R9-01`–`R9-02` on live build `20260831-1714` from
    [`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md), including
    the live audio transport evidence that the available office Browser-control
    surfaces could not collect.

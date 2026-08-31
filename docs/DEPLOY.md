@@ -8,6 +8,44 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Tesla Soundtrack playback/effect correction — 2026-08-31 17:19
+
+- build stamp: **`20260831-1714`**; deployed source checkpoint:
+  **`4b36069`**;
+- field failures: **REPRODUCED AND CORRECTED**. Illobo Featured admitted track
+  `1187970`, but the production exact-ID metadata lookup returned no candidate;
+  the failed current deck could then remain in a later transition source set.
+  Jamendo UNDERWATER visibly engaged at `0.4`, but its linear-Hz sweep still
+  left the low-pass near `11 kHz`, making it effectively dry under cabin noise;
+- correction: **PASS in code and server probes**. The relay retries exact array
+  and scalar ID queries, verifies the returned ID and remains fail-closed.
+  Featured reuses the prepared catalogue inside the passenger gesture, and only
+  genuinely audible media keys may feed a transition. UNDERWATER retains its
+  `18 kHz` and `520 Hz` endpoints but reaches them through a perceptual
+  logarithmic sweep, placing visible engagement below `5 kHz`;
+- tests/build: **PASS**. The complete `495/495` suite, 146-module App,
+  70-module LAB and Sites packaging pass;
+- protected publication: **PASS**. Read-only preflight and postflight both
+  passed with eight root entries and `remote_writes=NONE`; publication used
+  `--preserve-existing`. The publication process returned no retained transfer
+  summary to this session, so no file-count claim is invented;
+- canonical HTTP identity: **PASS**. Cache-busted root HTML returns `200`,
+  no-store/no-cache and `nosniff`, references `assets/index-BeVjpOx1.js` and
+  `assets/index-DWieer5Q.css`, and carries build `20260831-1714`. JavaScript
+  SHA-256 `f9c571bc5b46caaa7d1502c4d42f86c483be4051ec126a2df87132c18a8190d7`
+  and CSS SHA-256
+  `0ff677d0cdf1d87665bd0b03254abb509992dba727b85b782a719fd846581ea3`
+  are byte-identical local/live;
+- production relay: **PASS**. Formerly failing Featured track `1187970` and
+  tracks `1321406`, `26736`, and `1165005` each return `206 audio/mpeg` for a
+  `0–1023` range; track `1187970` is recognized as an ID3 audio file;
+- exact Browser QA: **LOCAL PASS at `773 × 601`**. `PLAY FEATURED` immediately
+  selects Illobo, starts `All Rights Reserved`, synchronizes the highlighted
+  row, NOW PLAYING and `16 - Anny Sky - All Rights Reserved` page title, keeps
+  the document at `773 × 601`, and emits no warning/error. The Browser-control
+  client still cannot prove live cabin audio. Physical Tesla listening remains
+  `R7-06`, `R7-07`, and `R4-04`.
+
 ## ATLAS Navigator Plaque — 2026-08-31 17:01
 
 - build stamp: **`20260831-1653`**; deployed source checkpoint:
