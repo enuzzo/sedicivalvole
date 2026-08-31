@@ -356,9 +356,15 @@ export function createSoundtrackPreviewController({
     }, durationMs * 0.52);
     scheduleTransitionTimer(() => {
       if (destroyed || revision !== requestRevision || transitionState?.revision !== transitionRevision) return;
+      // AudioContext.currentTime can stop while Chromium suspends an audio
+      // context (for example during a brief output-device interruption). The
+      // wall-clock cleanup must still collapse the two-deck state once its
+      // 450 ms deadline has elapsed, otherwise the UI and transport remain
+      // permanently stuck on FADING even after audio resumes.
+      const settledAt = Math.max(clockTime(), transitionState.endAt);
       const settled = settleSoundtrackTransition({
         state: transitionState,
-        at: clockTime(),
+        at: settledAt,
         requestedKey: targetKey,
         currentRevision: transitionRevision,
       });

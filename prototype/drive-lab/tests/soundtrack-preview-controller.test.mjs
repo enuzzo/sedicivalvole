@@ -502,6 +502,48 @@ test("audible skips schedule the 450 ms model and keep rapid-retarget credits sy
   assert.deepEqual(settled.media.audibleKeys, [firstKey]);
 });
 
+test("wall-clock cleanup settles a skip when Chromium freezes the audio clock", async () => {
+  const frozenAudioTime = 10;
+  const timers = [];
+  const media = new Map();
+  const effects = {
+    attachMedia(key, element) { media.set(key, element); },
+    detachMedia(key) { media.delete(key); },
+    getClockTime: () => frozenAudioTime,
+    setImmediateTrackGains: () => ({ ok: true, mode: "test" }),
+    applyTransition: () => ({ ok: true, mode: "test" }),
+    resume: async () => {},
+    setVehicleMaster: () => {},
+    setVehicleMacros: () => {},
+    setManualEffects: () => {},
+    getSnapshot: () => ({ status: "suspended", attachedMediaElements: media.size }),
+    getLevel: () => 0,
+    destroy: () => {},
+  };
+  const controller = createSoundtrackPreviewController({
+    fetchImpl: catalogFetch,
+    mediaFactory: () => new FakeMedia(),
+    effectsFactory: () => effects,
+    setTimer: (callback, delay) => {
+      const timer = { callback, delay, cleared: false };
+      timers.push(timer);
+      return timer;
+    },
+    clearTimer: (timer) => { timer.cleared = true; },
+  });
+
+  await controller.load({ autoplay: true, nowMs: 0 });
+  const moved = await controller.move("next");
+  assert.equal(moved.transition.status, "active");
+  assert.equal(moved.transition.targetKey, moved.current.key);
+
+  for (const timer of timers.filter((item) => !item.cleared)) timer.callback();
+  const settled = controller.getSnapshot();
+  assert.equal(settled.attribution.transitioning, false);
+  assert.deepEqual(settled.attribution.audibleKeys, [moved.current.key]);
+  assert.deepEqual(settled.media.audibleKeys, [moved.current.key]);
+});
+
 test("an incoming deck starts before asynchronous effects readiness can consume user activation", async () => {
   const events = [];
   let resumeCalls = 0;

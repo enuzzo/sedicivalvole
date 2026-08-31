@@ -513,6 +513,8 @@ test("normal publication verifies the complete build before replacing the live P
   assert.doesNotMatch(source, /STOR \{DYNAMIC_ROOT_ENTRY\}/);
   assert.match(source, /require_complete=True/);
   assert.match(source, /if require_complete and not expected_names\.issubset\(remote_names\)/);
+  assert.match(source, /"artwork",/);
+  assert.match(source, /BUILD \/ "artwork"/);
   assert.match(source, /expected_api_names = \{/);
 });
 
