@@ -1624,7 +1624,7 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
   height: 64px;
   overflow: hidden;
   border-radius: var(--ui-radius);
-  background: var(--paper);
+  background: var(--ink);
 }
 .illobo-featured-cover img {
   position: absolute;
@@ -1633,16 +1633,19 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
   height: 100%;
   object-fit: cover;
 }
-.illobo-featured-cover img:first-child { animation: illobo-featured-solid 6s ease-in-out infinite; }
-.illobo-featured-cover img:last-child { animation: illobo-featured-outline 6s ease-in-out infinite; }
+.illobo-featured-cover img:first-child { animation: illobo-featured-solid 12s linear infinite; }
+.illobo-featured-cover img:last-child {
+  filter: invert(1);
+  animation: illobo-featured-outline 12s linear infinite;
+}
 @keyframes illobo-featured-solid {
-  0%, 42% { opacity: 1; }
-  50%, 92% { opacity: 0; }
+  0% { opacity: 1; }
+  50% { opacity: 0; }
   100% { opacity: 1; }
 }
 @keyframes illobo-featured-outline {
-  0%, 42% { opacity: 0; }
-  50%, 92% { opacity: 1; }
+  0% { opacity: 0; }
+  50% { opacity: 1; }
   100% { opacity: 0; }
 }
 .soundtrack-choice-card > div:not(.soundtrack-cover-stack) { display: grid; min-width: 0; gap: 3px; }

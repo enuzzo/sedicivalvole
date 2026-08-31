@@ -48,7 +48,7 @@ test("browser icon metadata points only to packaged selected-mark assets", () =>
   assert.match(html, /href="\/brand\/apple-touch-icon\.png" sizes="180x180"/);
 });
 
-test("both owner-supplied Illobo marks remain byte-identical and crossfade every three seconds", () => {
+test("both owner-supplied Illobo marks remain byte-identical in a slow continuous dark-field crossfade", () => {
   const app = readFileSync(resolve(DRIVE_LAB_ROOT, "src/App.jsx"), "utf8");
   const styles = readFileSync(resolve(DRIVE_LAB_ROOT, "src/styles.css"), "utf8");
   const expected = [
@@ -63,8 +63,9 @@ test("both owner-supplied Illobo marks remain byte-identical and crossfade every
   }
 
   assert.match(app, /className="illobo-featured-cover" role="img" aria-label="Illobo Featured"/);
-  assert.match(styles, /illobo-featured-solid 6s ease-in-out infinite/);
-  assert.match(styles, /illobo-featured-outline 6s ease-in-out infinite/);
-  assert.match(styles, /@keyframes illobo-featured-solid[\s\S]*?42%[\s\S]*?50%/);
-  assert.match(styles, /@keyframes illobo-featured-outline[\s\S]*?42%[\s\S]*?50%/);
+  assert.match(styles, /\.illobo-featured-cover[\s\S]*?background: var\(--ink\)/);
+  assert.match(styles, /illobo-featured-solid 12s linear infinite/);
+  assert.match(styles, /filter: invert\(1\);[\s\S]*?illobo-featured-outline 12s linear infinite/);
+  assert.match(styles, /@keyframes illobo-featured-solid\s*{\s*0%\s*{ opacity: 1; }\s*50%\s*{ opacity: 0; }\s*100%\s*{ opacity: 1; }\s*}/);
+  assert.match(styles, /@keyframes illobo-featured-outline\s*{\s*0%\s*{ opacity: 0; }\s*50%\s*{ opacity: 1; }\s*100%\s*{ opacity: 0; }\s*}/);
 });
