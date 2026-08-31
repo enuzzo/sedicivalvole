@@ -120,7 +120,12 @@ asserted.
   never connected to road speed or playback rate. A source tap replaces the
   visible pane before awaiting catalogue/effects/score preparation, names the
   selected loading state, and uses monotonic mode/score revisions so obsolete
-  work cannot reclaim playback after a rapid reversal.
+  work cannot reclaim playback after a rapid reversal. Checkpoint `856232b`
+  makes Pace and Genre whole-surface one-tap controls, arranges all fifteen
+  genres as `8 + 7`, places six tracks in two rows, and keeps player plus credit
+  visible without scrolling at `773 × 601`. Play the Road now exposes only its
+  three playable scores with individual artwork and concise descriptions; the
+  29-track Illobo catalogue maps every recording to its own coherent cover.
 
 ## Diagnostics and privacy
 
@@ -197,7 +202,7 @@ reclaimed by an obsolete request. Exact live `773 × 601` QA passes that complet
 round trip with no warning/error. The complete suite passes `512/512`; the
 146-module App / 70-module LAB / Sites build, 140-file protected publication,
 29/29 full remote Illobo hashes, canonical HTML/JS/CSS identity and read-only
-postflight pass. Target-Tesla retests remain `R4-04`, `R7-01`–`R7-07`,
+postflight pass. Target-Tesla retests remain `R4-04`, `R7-01`–`R7-08`,
 and `R8-01`–`R8-02`.
 After that publication, the owner reported a second cabin failure: UNDERWATER
 was dry on Illobo, Jamendo, and NIGHTSHIFT, and the four manual effects were
@@ -266,7 +271,7 @@ build passes. Build `20260831-1241` at `7feea06` published the row-7 correction 
 publication, read-only pre/postflight, byte-identical HTML/main/CSS/worklet and
 live catalogue/audio relay probes. Exact Browser layout/build/log QA passes,
 but automated live transport is not claimed because Browser control blocked
-direct `.php` catalogue access and later detached. Use stable `R7-01`–`R7-07`
+direct `.php` catalogue access and later detached. Use stable `R7-01`–`R7-08`
 identifiers for the evening cabin run in
 [`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md); the row
 cannot close until those cabin results pass.

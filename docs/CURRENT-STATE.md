@@ -199,7 +199,13 @@ dated study documents.
   in each direction from white-on-black solid to original black-on-graphite
   outline on an unclipped square field; active fixed
   playback also exposes `16 - Artist - Track title` through the page title for
-  Tesla's browser media surface. At exact
+  Tesla's browser media surface. The running drawer now gives the complete Pace
+  and Genre chip surface one-tap behavior, fits the fifteen genres in two
+  deliberate `8 + 7` rows, fits six tracks in two rows, and keeps Now Playing
+  beside Track Credit without a scrollbar at exact `773 × 601`. Play the Road
+  lists only the three playable scores with individual covers and concise copy;
+  all 29 Illobo tracks use title-specific square covers from the same dark
+  Swiss-modernist family. At exact
   `773 × 601`, the complete Music and Visual button grids share the same
   `342 px` height, top, and bottom. The `72 px` header, shared compact padding,
   `8 px` grid spacing, and `3 px` title/description gap reserve room without
@@ -385,7 +391,7 @@ dated study documents.
   retaining all 29 identities. An unqualified start is `library:all`; pressing
   `PLAY FEATURED` switches catalogue source and immediately starts the
   `featured:signal-border` queue without reusing Jamendo cache state. Jamendo
-  browsing uses the official `speed` values and a complete `5 × 3` selector of
+  browsing uses the official `speed` values and a complete two-row `8 + 7` selector of
   15 live-verified Jamendo genre tags; selecting a pace, genre, or exact track
   starts playback immediately. Pace is manual discovery
   metadata only: it can never follow vehicle speed or retime audio. MUTE and FX
@@ -516,9 +522,9 @@ dated study documents.
   renderer is live with no warning/error. The owner has accepted the corrected
   smoothness and visual quality; stronger real progressive surfacing remains
   the target-Tesla `R5-02` gate.
-  The complete `520/520` suite plus 147-module App / 71-module LAB / Sites build
+  The complete `525/525` suite plus 147-module App / 71-module LAB / Sites build
   pass, while physical-cabin checks remain `R4-01`–`R4-06`, `R5-01`–`R5-05`,
-  `R7-01`–`R7-07`, `R8-01`–`R8-02` and `R9-01`–`R9-02`. Exact
+  `R7-01`–`R7-08`, `R8-01`–`R8-02` and `R9-01`–`R9-02`. Exact
   progressive evidence is in [`DEPLOY.md`](DEPLOY.md).
 - Diagnostic telemetry contains no coordinates and is sent only after the
   explicit `SEND DIAGNOSTIC` action. ATLAS location is a separate ephemeral
@@ -527,7 +533,7 @@ dated study documents.
 
 ## Open work
 
-1. Execute Tesla tests `R4-01`–`R4-06`, `R5-01`–`R5-05`, `R7-01`–`R7-07`,
+1. Execute Tesla tests `R4-01`–`R4-06`, `R5-01`–`R5-05`, `R7-01`–`R7-08`,
    `R8-01`–`R8-02` and `R9-01`–`R9-02` on live build `20260831-2207` from
    [`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md), including
    the live audio transport evidence and MERIDIAN
