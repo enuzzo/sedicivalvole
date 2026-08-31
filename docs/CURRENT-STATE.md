@@ -427,8 +427,8 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The canonical live product is version `0.0.0`, source commit `61f356d`, build
-  `20260831-0853`. Its guarded publication and read-only identity checks pass;
+- The canonical live product is version `0.0.0`, source commit `ac11ed0`, build
+  `20260831-1111`. Its guarded publication and read-only identity checks pass;
   canonical HTML, JavaScript, CSS, restored Orbitron WOFF2 and approved 16 Road
   SVG are byte-identical to the clean local build. Exact live `773 × 601`
   Browser QA verifies the compact `360 × 160 px` home action, the loaded `42 px`
@@ -445,39 +445,36 @@ dated study documents.
 
 ## Open work
 
-1. Publish the owner-authorized ATLAS/GPS/NIGHTSHIFT corrections through a
-   verified implementation checkpoint, guarded no-delete deployment and
-   canonical byte/cache/browser gates.
-2. Validate the complete ATLAS route, pulsing vehicle point, three-state GPS
+1. Validate the complete ATLAS route, pulsing vehicle point, three-state GPS
    control, measured 30 FPS ATLAS cadence and corrected NIGHTSHIFT level in the
    Tesla after publication.
-3. Validate DRIVEY automatic road/curve following, ten-second zero hold,
+2. Validate DRIVEY automatic road/curve following, ten-second zero hold,
    zero-to-motion resume, opposing-only traffic and both native palette channels
    in the Tesla. Validate ATLAS multitouch, live GPS
    recovery, map matching, route continuity, point/ripple behavior, passenger readability and palette
    contrast on the target screen.
-4. Perform low-volume listening and a real-Tesla drive across FRACTURE's full
+3. Perform low-volume listening and a real-Tesla drive across FRACTURE's full
    ascent/descent and boundary reversals, JUNCTION's long PARK holds and later
    transition, NIGHTSHIFT's PARK form and complete `85–140 BPM` ascent/descent,
    and the OPEN/BLOOM gain changes. Automated visual, structural and
    loudness evidence is not perceptual acceptance.
-5. Audition NIGHTSHIFT at low volume, verify perceived phrasing and loudness
+4. Audition NIGHTSHIFT at low volume, verify perceived phrasing and loudness
    against both existing scores, then validate acceleration/reversal behavior in
    the target Tesla. Automated measurements are not perceptual acceptance.
-6. Replace the failed magnitude-residual decision with a three-way evidence
+5. Replace the failed magnitude-residual decision with a three-way evidence
    stack. Validate shared ADSR/filter envelopes, phase seeds, detune, chorus,
    spectral slope and saturation; add stereo and phase-coherence evidence with
    explicit invalidity reasons before any detected pitch set can gate JUNCTION
    material.
-7. Validate PRTCL motion, performance, touch, and thermal behavior on the target
+6. Validate PRTCL motion, performance, touch, and thermal behavior on the target
    Tesla. Present exactly three original Gradient Field directions before any
    implementation, then admit only the selected direction through a fresh
    licence and performance gate. Validate the revised OPEN intake at real
    playback level.
-8. Design Engine only after exactly three Engine-specific directions are shown
+7. Design Engine only after exactly three Engine-specific directions are shown
    and one is selected. Keep `VERSION` at `0.0.0` until an explicit release is
    approved.
-9. Build the queued landscape-first iPhone presentation across representative
+8. Build the queued landscape-first iPhone presentation across representative
    `667 × 375` through `932 × 430` Safari viewports. Apply safe-area insets,
    replace the interactive phone portrait layout with an accessible inert
    rotation notice, and preserve the running session across a live rotation

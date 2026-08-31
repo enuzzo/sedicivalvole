@@ -127,28 +127,28 @@ asserted.
 
 ## Immediate work
 
-The session started from clean `main == origin/main == bb5a2c9`; the implemented
-Music drawer remains commit `61f356d` and canonical live build
-`20260831-0853`. The guarded 108-file no-delete deployment, byte identity, live
-Jamendo pace/genre endpoints, and cache-busted `773 × 601` Browser QA pass. The
-Illobo mark is explicitly provisional until the owner supplies the final logo.
+The session started from clean `main == origin/main == bb5a2c9`. The drive
+corrections are implementation checkpoint `ac11ed0`; the pre-publication
+documentation checkpoint is `de62ab7`; canonical live build is
+`20260831-1111`. Guarded no-delete publication, pre/postflight
+`remote_writes=NONE`, HTML/main/CSS/ATLAS/MapLibre byte identity, and
+cache-busted exact `773 × 601` Browser QA pass. The Illobo mark remains
+explicitly provisional until the owner supplies the final logo.
 
-The current working tree intentionally contains the locally verified drive
-corrections: complete ATLAS-view route retention with origin-preserving bounded
+The published corrections provide complete ATLAS-view route retention with origin-preserving bounded
 compaction, one interpolated pulsing point/ripple, two-line colour-coded GPS,
 shared `0.72` sampled-performance gain, a public-bank loudness audit, updated
 tests, a `1.25×` MapLibre-only framebuffer ceiling, consolidated `8 Hz` marker
 updates, and synchronized current/checklist/music/diagnostic documentation. Targeted Atlas,
 NIGHTSHIFT, JUNCTION, and FRACTURE checks pass `60/60`; the complete suite
 passes `478/478`, the 142-module App / 67-module LAB / Sites build passes, and
-local exact-viewport Browser QA has no warning/error. The owner authorized the
-implementation checkpoint, push and canonical publication; completion of that
-release work and target-vehicle acceptance remain separate gates.
+local and live exact-viewport Browser QA have no warning/error. Release work is
+complete; target-vehicle route/GPS/audio acceptance and a new report proving
+stable ATLAS 30 FPS remain separate gates.
 
 Continue only from the 17-row execution order in
 [`MILESTONE-CHECKLIST-2026-08-31.md`](MILESTONE-CHECKLIST-2026-08-31.md). The
-first row is the explicit owner gate for committing, pushing, and publishing
-these corrections; the second is their physical-Tesla acceptance. Do not reopen
+first row is complete; the second is physical-Tesla acceptance. Do not reopen
 the route/dot treatment as an ATLAS design exploration: only the still-unwired
 road/cardinal overlay retains the exactly-three direction gate.
 

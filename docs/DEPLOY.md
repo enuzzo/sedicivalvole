@@ -8,6 +8,45 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## ATLAS drive corrections and sampled-score calibration — 2026-08-31 11:16
+
+- build stamp: **`20260831-1111`**; deployed implementation checkpoint:
+  `ac11ed0`; pre-publication documentation checkpoint: `de62ab7`;
+- product change: **PASS within the office boundary**. ATLAS retains the
+  complete current-view route through origin-preserving bounded compaction,
+  renders one interpolated point with a one-second pulse/ripple, removes the
+  moving line highlight, and bounds only its MapLibre framebuffer to `1.25×`.
+  GPS presents only `GPS` plus metre accuracy in precise-green,
+  imprecise-orange or disconnected-red. JUNCTION and NIGHTSHIFT share the
+  measured `0.72` sampled-performance entry gain; FRACTURE remains unchanged;
+- verification gate: **PASS**. All 478 tests, the 142-module App / 67-module LAB
+  / Sites build, reproducible FFmpeg/EBU R128 public-bank analysis, and exact
+  local Browser QA at `773 × 601` pass. The static candidate contains 105 files
+  / 16,976,957 bytes;
+- guarded publication: **PASS**. Read-only preflight and postflight both report
+  network/login/directory/listing/identity PASS, eight expected root entries,
+  and `remote_writes=NONE`. Publication used `--preserve-existing`, retaining
+  the static entry and legacy tree. The transfer process returned no textual
+  file-count summary to this session, so the static candidate count above is
+  recorded instead of inventing a transferred-file count;
+- canonical HTTP identity: **PASS**. Cache-busted HTML, main JavaScript, CSS,
+  ATLAS chunk and MapLibre runtime return `200` with expected MIME types and are
+  byte-identical to the verified build. Their matching SHA-256 values are
+  `9f7ce3f08a7ad18b478889d4caebd99b10fcc477db6d03be17ad98280144d91e`,
+  `5083f08f93eabd29b8ecf50db74273f68eb6e7b08c2d6d8465faa06ac5492473`,
+  `9d421d181ec50ea6ca0489727db0dabe88ba071639d55206f8378f7a88282087`,
+  `342d285cc8d9473af667c6a63a7f1d08b8659f9a6a59733b48e6c3baa5510553`,
+  and `75969ec9f3037f5f6df42b5753d8c6def9de2927831d77fdf734bfee4aa90b58`.
+  Root HTML retains `no-store, no-cache, must-revalidate, max-age=0` and
+  `nosniff`;
+- exact live Browser QA: **PASS at `773 × 601`**. The cache-busted canonical
+  build identifies `20260831-1111`; MUTE + ATLAS renders the disconnected red
+  `GPS / ±— m` state, one point/ripple, no document overflow, and no observed
+  warning/error. Collapsing the passenger panel expands the map to the complete
+  `773 × 601`; its `966 × 751` framebuffer proves the intended `1.25×` ceiling.
+  Real route continuity, green/orange GPS states, cabin level, touch/thermal
+  behavior and stable measured ATLAS 30 FPS remain target-vehicle gates.
+
 ## Equal-path Soundtrack library — 2026-08-31 08:59
 
 - build stamp: **`20260831-0853`**; deployed implementation checkpoint:
