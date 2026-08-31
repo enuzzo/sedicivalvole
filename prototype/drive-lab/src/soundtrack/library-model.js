@@ -54,6 +54,20 @@ export function normalizeSoundtrackSelection(selection = {}) {
   return Object.freeze({ kind: "library", id: "all", label: "Jamendo Library", speed: Object.freeze([]), genre: null });
 }
 
+export function retainJamendoPreviewEntries(currentEntries = [], snapshot = null) {
+  const retained = Array.isArray(currentEntries) ? currentEntries : [];
+  const library = snapshot?.library;
+  if (!library || library.selection?.kind === "featured") return retained;
+  const next = (Array.isArray(library.entries) ? library.entries : [])
+    .filter((entry) => typeof entry?.imageUrl === "string" && entry.imageUrl.length > 0)
+    .slice(0, 3);
+  if (!next.length) return retained;
+  if (next.length === retained.length && next.every((entry, index) => (
+    entry.key === retained[index]?.key && entry.imageUrl === retained[index]?.imageUrl
+  ))) return retained;
+  return Object.freeze(next);
+}
+
 export function soundtrackSelectionSignature(selection = {}) {
   const normalized = normalizeSoundtrackSelection(selection);
   return `${normalized.kind}:${normalized.id}`;

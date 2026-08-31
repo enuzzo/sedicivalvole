@@ -186,7 +186,84 @@ test("the default Jamendo library and explicit Illobo Featured path are distinct
     new Set(repeated.library.entries.map((entry) => entry.key)),
     new Set(featured.library.entries.map((entry) => entry.key)),
   );
-  assert.equal(fetches, 2, "Jamendo and Illobo must use separate source catalogs");
+  const returnedLibrary = await controller.load({
+    selection: { kind: "library", id: "all" },
+    autoplay: true,
+    nowMs: 0,
+  });
+  assert.equal(returnedLibrary.status, "playing");
+  assert.equal(returnedLibrary.library.selection.kind, "library");
+  assert.ok(returnedLibrary.library.entries.every((entry) => entry.key.startsWith("jamendo:")));
+  assert.ok(returnedLibrary.current.key.startsWith("jamendo:"));
+  assert.equal(returnedLibrary.media.currentAudibleKey, returnedLibrary.current.key);
+  assert.equal(fetches, 3, "Jamendo → Illobo → Jamendo must fetch only the selected source catalog");
+});
+
+test("a pending path exposes its own loading identity before the network resolves", async () => {
+  let releaseFeatured;
+  const featuredResponse = new Promise((resolve) => { releaseFeatured = resolve; });
+  const states = [];
+  const controller = createSoundtrackPreviewController({
+    fetchImpl: async (url) => (
+      new URL(url).pathname === "/audio/illobo/catalog.json"
+        ? featuredResponse
+        : catalogFetch()
+    ),
+    mediaFactory: () => new FakeMedia(),
+    onState: (state) => states.push(state),
+  });
+  await controller.load({ autoplay: true, nowMs: 0 });
+
+  const loadingFeatured = controller.load({
+    selection: { kind: "featured", id: "signal-border" },
+    autoplay: true,
+    nowMs: 0,
+  });
+  const pending = controller.getSnapshot();
+  assert.equal(pending.status, "loading");
+  assert.equal(pending.library.selection.kind, "featured");
+  assert.deepEqual(pending.library.entries, []);
+
+  releaseFeatured(await sourceAwareCatalogFetch("https://example.test/audio/illobo/catalog.json"));
+  assert.equal((await loadingFeatured).library.selection.kind, "featured");
+  assert.ok(states.some((state) => state.status === "loading" && state.library?.selection?.kind === "featured"));
+});
+
+test("Jamendo reclaims the path when a slower Illobo request finishes late", async () => {
+  let releaseFeatured;
+  const featuredResponse = new Promise((resolve) => { releaseFeatured = resolve; });
+  const controller = createSoundtrackPreviewController({
+    fetchImpl: async (url) => (
+      new URL(url).pathname === "/audio/illobo/catalog.json"
+        ? featuredResponse
+        : catalogFetch()
+    ),
+    mediaFactory: () => new FakeMedia(),
+  });
+  await controller.load({ autoplay: true, nowMs: 0 });
+
+  const slowFeatured = controller.load({
+    selection: { kind: "featured", id: "signal-border" },
+    autoplay: true,
+    nowMs: 0,
+  });
+  assert.equal(controller.getSnapshot().library.selection.kind, "featured");
+
+  const returned = await controller.load({
+    selection: { kind: "library", id: "all" },
+    autoplay: true,
+    nowMs: 0,
+  });
+  assert.equal(returned.status, "playing");
+  assert.equal(returned.library.selection.kind, "library");
+  assert.ok(returned.current.key.startsWith("jamendo:"));
+
+  releaseFeatured(await sourceAwareCatalogFetch("https://example.test/audio/illobo/catalog.json"));
+  await slowFeatured;
+  const settled = controller.getSnapshot();
+  assert.equal(settled.library.selection.kind, "library");
+  assert.ok(settled.current.key.startsWith("jamendo:"));
+  assert.equal(settled.media.currentAudibleKey, settled.current.key);
 });
 
 test("a failed current deck cannot poison an explicitly selected replacement", async () => {

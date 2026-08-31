@@ -48,6 +48,7 @@ import {
   soundtrackPageTitle,
 } from "./soundtrack/page-title.js";
 import {
+  retainJamendoPreviewEntries,
   SOUNDTRACK_GENRE_OPTIONS,
   SOUNDTRACK_PACE_OPTIONS,
 } from "./soundtrack/library-model.js";
@@ -894,6 +895,7 @@ function ScoreLibraryContent({ genreId, onChange }) {
 
 function SoundtrackLibraryContent({
   snapshot,
+  jamendoPreviewEntries,
   manualEffects,
   onManualEffectChange,
   onFeatured,
@@ -911,6 +913,7 @@ function SoundtrackLibraryContent({
   const entries = library?.entries ?? [];
   const selected = library?.selection;
   const featuredSelected = selected?.kind === "featured";
+  const jamendoCoverEntries = featuredSelected ? jamendoPreviewEntries : entries;
   const attributionItems = snapshot?.attribution
     ? [snapshot.attribution.primary, ...(snapshot.attribution.secondary ?? [])].filter(Boolean)
     : [];
@@ -937,31 +940,33 @@ function SoundtrackLibraryContent({
         <strong>Two equal ways to start listening</strong>
       </div>
       <div className="soundtrack-choice-grid">
-        <section className={`soundtrack-choice-card${selected?.kind === "featured" ? " is-selected" : ""}`}>
+        <button type="button" className={`soundtrack-choice-card${selected?.kind === "featured" ? " is-selected" : ""}`} aria-pressed={selected?.kind === "featured"} onClick={onFeatured}>
           <span className="illobo-featured-cover" role="img" aria-label="Illobo Featured">
             {ILLOBO_FEATURED_MARK_URLS.map((source, index) => (
               <img key={source} src={source} alt="" aria-hidden="true" width="64" height="64" data-illobo-variant={index + 1} />
             ))}
           </span>
-          <div>
+          <span className="soundtrack-choice-copy">
             <small>ILLOBO FEATURED</small>
             <strong>Signal Border</strong>
             <span>A rotating playlist curated by Illobo.</span>
-          </div>
-          <button type="button" disabled={loading} onClick={onFeatured}>PLAY FEATURED</button>
-        </section>
-        <section className={`soundtrack-choice-card is-library${selected?.kind !== "featured" ? " is-selected" : ""}`}>
-          <div className="soundtrack-cover-stack" aria-hidden="true">
-            {entries.slice(0, 3).map((entry) => entry.imageUrl
-              ? <img key={entry.key} src={entry.imageUrl} alt="" width="64" height="64" />
-              : null)}
-          </div>
-          <div>
+          </span>
+          <span className="soundtrack-choice-action">PLAY FEATURED</span>
+        </button>
+        <button type="button" className={`soundtrack-choice-card is-library${selected?.kind !== "featured" ? " is-selected" : ""}`} aria-pressed={selected?.kind !== "featured"} onClick={() => onBrowseSelection({ kind: "library", id: "all" })}>
+          <span className="soundtrack-cover-stack" aria-hidden="true">
+            {jamendoCoverEntries.filter((entry) => entry.imageUrl).slice(0, 3).map((entry) => (
+              <img key={entry.key} src={entry.imageUrl} alt="" width="64" height="64" />
+            ))}
+            {!jamendoCoverEntries.some((entry) => entry.imageUrl) ? <span className="soundtrack-cover-placeholder">JM</span> : null}
+          </span>
+          <span className="soundtrack-choice-copy">
             <small>JAMENDO LIBRARY</small>
             <strong>Choose your route</strong>
             <span>Start by pace, genre, or an individual track.</span>
-          </div>
-        </section>
+          </span>
+          <span className="soundtrack-choice-action">OPEN LIBRARY</span>
+        </button>
       </div>
 
       <section className="jamendo-library" aria-labelledby="soundtrack-library-title">
@@ -1070,6 +1075,7 @@ function MusicLibraryPanel({
   loadingMode,
   genreId,
   snapshot,
+  jamendoPreviewEntries,
   manualEffects,
   onModeChange,
   onScoreChange,
@@ -1101,6 +1107,7 @@ function MusicLibraryPanel({
       {musicMode === "soundtrack" ? (
         <SoundtrackLibraryContent
           snapshot={snapshot}
+          jamendoPreviewEntries={jamendoPreviewEntries}
           manualEffects={manualEffects}
           onManualEffectChange={onManualEffectChange}
           onFeatured={onFeatured}
@@ -1398,6 +1405,7 @@ export function App() {
   const [musicMode, setMusicMode] = useState("play-road");
   const [musicModeLoading, setMusicModeLoading] = useState(null);
   const [soundtrackSnapshot, setSoundtrackSnapshot] = useState(null);
+  const [jamendoPreviewEntries, setJamendoPreviewEntries] = useState([]);
   const [vehicleEffectsEnabled, setVehicleEffectsEnabled] = useState(true);
   const [soundtrackManualEffects, setSoundtrackManualEffects] = useState(EMPTY_SOUNDTRACK_MANUAL_EFFECTS);
   const [controlNotice, setControlNotice] = useState(null);
@@ -1490,18 +1498,22 @@ export function App() {
     setPreviewOpen(false);
     setDrawerOpen(true);
   }, []);
+  const updateSoundtrackSnapshot = useCallback((nextSnapshot) => {
+    setSoundtrackSnapshot(nextSnapshot);
+    setJamendoPreviewEntries((current) => retainJamendoPreviewEntries(current, nextSnapshot));
+  }, []);
   const soundtrackController = useCallback(() => {
     if (soundtrackRef.current) return soundtrackRef.current;
     const controller = createSoundtrackPreviewController({
       effectsFactory: createSoundtrackEffectsController,
-      onState: setSoundtrackSnapshot,
+      onState: updateSoundtrackSnapshot,
     });
     controller.setVehicleMaster(vehicleEffectsEnabled);
     controller.setManualEffects(soundtrackManualEffects);
     soundtrackRef.current = controller;
-    setSoundtrackSnapshot(controller.getSnapshot());
+    updateSoundtrackSnapshot(controller.getSnapshot());
     return controller;
-  }, [vehicleEffectsEnabled, soundtrackManualEffects]);
+  }, [soundtrackManualEffects, updateSoundtrackSnapshot, vehicleEffectsEnabled]);
 
   const selectLaunchMusic = useCallback((nextMusicId) => {
     setLaunchMusicId(nextMusicId);
@@ -3446,6 +3458,7 @@ export function App() {
           loadingMode={musicModeLoading}
           genreId={genreId}
           snapshot={soundtrackSnapshot}
+          jamendoPreviewEntries={jamendoPreviewEntries}
           manualEffects={soundtrackManualEffects}
           onModeChange={switchMusicMode}
           onScoreChange={selectScore}

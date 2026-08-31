@@ -242,6 +242,23 @@ test("music source tabs switch immediately and ignore stale asynchronous loads",
   assert.match(styles, /@media \(prefers-reduced-motion: reduce\) \{[\s\S]*?\.music-mode-loading span \{ animation: none; \}/);
 });
 
+test("Soundtrack path cards round-trip between Illobo and Jamendo without losing covers", () => {
+  const app = read("App.jsx");
+  const styles = read("styles.css");
+  const soundtrack = app.slice(
+    app.indexOf("function SoundtrackLibraryContent"),
+    app.indexOf("function MusicLibraryPanel"),
+  );
+
+  assert.match(soundtrack, /<button type="button" className=\{`soundtrack-choice-card/);
+  assert.match(soundtrack, /onClick=\{onFeatured\}/);
+  assert.match(soundtrack, /onClick=\{\(\) => onBrowseSelection\(\{ kind: "library", id: "all" \}\)\}/);
+  assert.match(soundtrack, /jamendoCoverEntries = featuredSelected \? jamendoPreviewEntries : entries/);
+  assert.match(app, /retainJamendoPreviewEntries\(current, nextSnapshot\)/);
+  assert.match(styles, /\.soundtrack-choice-card\.is-library \{ grid-template-columns: 84px minmax\(0, 1fr\) auto; \}/);
+  assert.doesNotMatch(styles, /\.soundtrack-choice-card\.is-library \{ display: none; \}/);
+});
+
 test("catalog names use readable display labels and align their numbers on one baseline", () => {
   const app = read("App.jsx");
   const styles = read("styles.css");

@@ -58,6 +58,7 @@ export function createSoundtrackPreviewController({
   let catalogResult = null;
   let queueState = null;
   let libraryRotation = null;
+  let pendingLibraryRotation = null;
   let status = "idle";
   let error = null;
   let mediaSnapshot = null;
@@ -117,34 +118,37 @@ export function createSoundtrackPreviewController({
     })
     : null;
 
-  const snapshot = () => Object.freeze({
-    schema: SOUNDTRACK_PREVIEW_SCHEMA,
-    status: destroyed ? "destroyed" : status,
-    error,
-    current: safeCredit(queueState?.slots?.current),
-    hasPrevious: Boolean(queueState?.slots?.previous),
-    hasNext: Boolean(queueState?.slots?.next),
-    receivedEntries: catalogResult?.receivedEntries ?? 0,
-    admittedEntries: catalogResult?.admittedEntries ?? 0,
-    rejectedEntries: catalogResult?.rejectedEntries ?? 0,
-    library: libraryRotation ? Object.freeze({
-      schema: libraryRotation.schema,
-      selection: libraryRotation.selection,
-      rotationWindow: libraryRotation.window,
-      entries: Object.freeze(libraryRotation.entries.map(safeCredit).filter(Boolean)),
-      refreshCopy: libraryRotation.selection.kind === "featured"
-        ? "Random start · fresh mix every 30 min"
-        : "Fresh mix · changes every 30 min",
-    }) : null,
-    attribution: attribution(),
-    transition: transitionState ? sampleSoundtrackTransition(transitionState, clockTime()) : null,
-    media: mediaSnapshot,
-    effects: effects.getSnapshot(),
-    playbackRate: 1,
-    drivingCanChangeTrack: false,
-    drivingCanRetimeRecording: false,
-    persistentAudioStorage: false,
-  });
+  const snapshot = () => {
+    const presentedLibrary = pendingLibraryRotation ?? libraryRotation;
+    return Object.freeze({
+      schema: SOUNDTRACK_PREVIEW_SCHEMA,
+      status: destroyed ? "destroyed" : status,
+      error,
+      current: safeCredit(queueState?.slots?.current),
+      hasPrevious: Boolean(queueState?.slots?.previous),
+      hasNext: Boolean(queueState?.slots?.next),
+      receivedEntries: catalogResult?.receivedEntries ?? 0,
+      admittedEntries: catalogResult?.admittedEntries ?? 0,
+      rejectedEntries: catalogResult?.rejectedEntries ?? 0,
+      library: presentedLibrary ? Object.freeze({
+        schema: presentedLibrary.schema,
+        selection: presentedLibrary.selection,
+        rotationWindow: presentedLibrary.window,
+        entries: Object.freeze(presentedLibrary.entries.map(safeCredit).filter(Boolean)),
+        refreshCopy: presentedLibrary.selection.kind === "featured"
+          ? "Random start · fresh mix every 30 min"
+          : "Fresh mix · changes every 30 min",
+      }) : null,
+      attribution: attribution(),
+      transition: transitionState ? sampleSoundtrackTransition(transitionState, clockTime()) : null,
+      media: mediaSnapshot,
+      effects: effects.getSnapshot(),
+      playbackRate: 1,
+      drivingCanChangeTrack: false,
+      drivingCanRetimeRecording: false,
+      persistentAudioStorage: false,
+    });
+  };
 
   const emit = () => {
     const state = snapshot();
@@ -377,13 +381,15 @@ export function createSoundtrackPreviewController({
     const audibleBeforeLoad = queueState?.slots?.current?.key
       && mediaSnapshot?.audibleKeys?.includes(queueState.slots.current.key);
     const revision = ++requestRevision;
+    const normalizedSelection = normalizeSoundtrackSelection(selection);
+    pendingLibraryRotation = rotateSoundtrackEntries([], { selection: normalizedSelection, nowMs });
     status = "loading";
     error = null;
     emit();
     try {
-      const normalizedSelection = normalizeSoundtrackSelection(selection);
       if (catalogCanServeSelection(normalizedSelection, nowMs)) {
         libraryRotation = rotateLibrary(catalogResult.catalog.entries, normalizedSelection, nowMs);
+        pendingLibraryRotation = null;
         const rotatedCatalog = Object.freeze({
           ...catalogResult.catalog,
           entries: libraryRotation.entries,
@@ -409,6 +415,7 @@ export function createSoundtrackPreviewController({
       });
       if (destroyed || revision !== requestRevision) return snapshot();
       libraryRotation = rotateLibrary(nextCatalogResult.catalog.entries, normalizedSelection, nowMs);
+      pendingLibraryRotation = null;
       const rotatedCatalog = Object.freeze({
         ...nextCatalogResult.catalog,
         entries: libraryRotation.entries,
@@ -428,6 +435,7 @@ export function createSoundtrackPreviewController({
       return playPreparedCurrent(revision);
     } catch (caught) {
       if (destroyed || revision !== requestRevision) return snapshot();
+      pendingLibraryRotation = null;
       status = audibleBeforeLoad ? "playing" : "error";
       error = String(caught?.message || caught || "catalog-unavailable").slice(0, 80);
       return emit();

@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   normalizeSoundtrackSelection,
+  retainJamendoPreviewEntries,
   rotateSoundtrackEntries,
   SOUNDTRACK_ROTATION_INTERVAL_MS,
   startSoundtrackEntriesAtRandom,
@@ -89,4 +90,32 @@ test("passenger pace choices map only to official Jamendo speed metadata", () =>
     speed: [],
     genre: "jazz",
   });
+});
+
+test("Jamendo cover previews survive an Illobo selection and refresh only from Jamendo", () => {
+  const first = Object.freeze([
+    Object.freeze({ key: "jamendo:1", imageUrl: "https://usercontent.jamendo.com/1.jpg" }),
+    Object.freeze({ key: "jamendo:2", imageUrl: "https://usercontent.jamendo.com/2.jpg" }),
+  ]);
+  const featured = retainJamendoPreviewEntries(first, {
+    library: {
+      selection: { kind: "featured", id: "signal-border" },
+      entries: [{ key: "illobo:space-train", imageUrl: null }],
+    },
+  });
+  assert.equal(featured, first);
+
+  const refreshed = retainJamendoPreviewEntries(featured, {
+    library: {
+      selection: { kind: "genre", id: "jazz" },
+      entries: [
+        { key: "jamendo:3", imageUrl: "https://usercontent.jamendo.com/3.jpg" },
+        { key: "jamendo:4", imageUrl: "" },
+        { key: "jamendo:5", imageUrl: "https://usercontent.jamendo.com/5.jpg" },
+        { key: "jamendo:6", imageUrl: "https://usercontent.jamendo.com/6.jpg" },
+        { key: "jamendo:7", imageUrl: "https://usercontent.jamendo.com/7.jpg" },
+      ],
+    },
+  });
+  assert.deepEqual(refreshed.map((entry) => entry.key), ["jamendo:3", "jamendo:5", "jamendo:6"]);
 });
