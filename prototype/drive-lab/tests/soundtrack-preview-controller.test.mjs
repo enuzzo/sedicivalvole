@@ -32,7 +32,10 @@ class FakeMedia {
   removeAttribute(name) { if (name === "src") this.src = ""; }
   load() {}
   pause() { this.paused = true; }
-  async play() { this.paused = false; }
+  async play() {
+    if (this.rejectPlay) throw Object.assign(new Error("blocked"), { name: "NotAllowedError" });
+    this.paused = false;
+  }
 }
 
 const catalogFetch = async () => ({
@@ -171,6 +174,29 @@ test("audible skips schedule the 450 ms model and keep rapid-retarget credits sy
   assert.equal(settled.attribution.status, "audible");
   assert.deepEqual(settled.attribution.audibleKeys, [firstKey]);
   assert.deepEqual(settled.media.audibleKeys, [firstKey]);
+});
+
+test("a failed incoming deck never commits target metadata or a stale QR credit", async () => {
+  const mediaByKey = new Map();
+  const controller = createSoundtrackPreviewController({
+    fetchImpl: catalogFetch,
+    mediaFactory: (entry) => {
+      const media = new FakeMedia();
+      mediaByKey.set(entry.key, media);
+      return media;
+    },
+  });
+  await controller.load({ autoplay: true, nowMs: 0 });
+  const before = controller.getSnapshot();
+  const targetKey = before.media.roles.next.key;
+  mediaByKey.get(targetKey).rejectPlay = true;
+  const failed = await controller.move("next");
+
+  assert.equal(failed.status, "error");
+  assert.equal(failed.current.key, before.current.key);
+  assert.equal(failed.attribution.targetKey, before.current.key);
+  assert.deepEqual(failed.attribution.audibleKeys, [before.current.key]);
+  assert.equal(failed.media.currentAudibleKey, before.current.key);
 });
 
 test("pause, resume, and destruction remain explicit and bounded", async () => {

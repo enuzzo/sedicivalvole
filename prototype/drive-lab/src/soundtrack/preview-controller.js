@@ -188,6 +188,7 @@ export function createSoundtrackPreviewController({
     clearTransitionTimers();
     await effects.resume();
     if (destroyed || revision !== requestRevision) return snapshot();
+    const previousQueueState = queueState;
     const targetKey = nextQueueState?.slots?.current?.key;
     const prepared = scheduleWithTrackLimit(targetKey, clockTime());
     if (prepared.blockedReason) {
@@ -201,8 +202,7 @@ export function createSoundtrackPreviewController({
         .map(([key]) => key),
       targetKey,
     ])];
-    queueState = nextQueueState;
-    mediaSnapshot = deck.syncQueue(queueState, {
+    mediaSnapshot = deck.syncQueue(nextQueueState, {
       retainKeys: retainedKeys,
       audibleKeys: retainedKeys,
     });
@@ -210,6 +210,13 @@ export function createSoundtrackPreviewController({
     const started = await deck.playKeys(retainedKeys);
     if (destroyed || revision !== requestRevision) return snapshot();
     if (!started.ok) {
+      const previousKey = previousQueueState?.slots?.current?.key;
+      if (previousKey) {
+        transitionState = createSoundtrackTransitionState(previousKey, clockTime());
+        effects.setImmediateTrackGains?.({ [previousKey]: 1 });
+        mediaSnapshot = deck.pauseExcept([previousKey]);
+        mediaSnapshot = deck.syncQueue(previousQueueState, { audibleKeys: [previousKey] });
+      }
       status = "error";
       error = error || started.reason;
       return emit();
@@ -224,10 +231,18 @@ export function createSoundtrackPreviewController({
     transitionState = scheduled.state;
     const applied = effects.applyTransition?.(transitionState);
     if (applied?.ok === false) {
+      const previousKey = previousQueueState?.slots?.current?.key;
+      if (previousKey) {
+        transitionState = createSoundtrackTransitionState(previousKey, clockTime());
+        effects.setImmediateTrackGains?.({ [previousKey]: 1 });
+        mediaSnapshot = deck.pauseExcept([previousKey]);
+        mediaSnapshot = deck.syncQueue(previousQueueState, { audibleKeys: [previousKey] });
+      }
       status = "error";
       error = applied.reason || "transition-gain-failed";
       return emit();
     }
+    queueState = nextQueueState;
     status = "playing";
     error = null;
     emit();
