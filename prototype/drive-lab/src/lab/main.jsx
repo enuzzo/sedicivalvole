@@ -67,7 +67,7 @@ const SOUNDTRACK_MANUAL_CONTROLS = Object.freeze([
   Object.freeze({ id: "flanger", label: "FLANGER" }),
   Object.freeze({ id: "reverb", label: "REVERB" }),
   Object.freeze({ id: "chorus", label: "CHORUS" }),
-  Object.freeze({ id: "beat-repeat", label: "BEAT REPEAT" }),
+  Object.freeze({ id: "echo", label: "ECHO" }),
 ]);
 
 const EMPTY_SOUNDTRACK_MANUAL_EFFECTS = Object.freeze(Object.fromEntries(

@@ -24,7 +24,7 @@
     "test:native": "node scripts/native-toolchain.mjs -- npm test",
     "build:native": "node scripts/native-toolchain.mjs -- npm run build",
     "test": "npm run test:drivey && npm run test:prtcl && npm run test:nightshift && npm run test:soundtrack-fx && npm run test:unit && npm run test:sites",
-    "test:soundtrack-fx": "node --test tests/soundtrack-beat-repeat.test.mjs tests/soundtrack-effects-controller.test.mjs",
+    "test:soundtrack-fx": "node --test tests/soundtrack-effects-controller.test.mjs",
     "test:drivey": "node --test tests/drivey-model.test.mjs",
     "test:prtcl": "node --test tests/prtcl-model.test.mjs",
     "test:nightshift": "node --test tests/nightshift-bank.test.mjs",

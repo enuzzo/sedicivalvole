@@ -101,10 +101,6 @@ LAB_BOOTSTRAP_MARKERS = (b"LAB_EXPECTED_ORIGIN", b"labRequireAuthenticatedJson",
 LAB_SEND_MARKERS = (b"sedicivalvole.lab-mail.v1", b"labRequireCsrf", b"buildLabPresetMail")
 LAB_BLOOM_PROCESSOR_MARKERS = (b"AudioWorkletProcessor", b'registerProcessor("bloom-processor"')
 LAB_SCORE_PROCESSOR_MARKERS = (b"AudioWorkletProcessor", b'registerProcessor("score-processor"')
-LAB_SOUNDTRACK_REPEAT_PROCESSOR_MARKERS = (
-    b"AudioWorkletProcessor",
-    b'registerProcessor("soundtrack-repeat-processor"',
-)
 PRIVATE_STATIC_NAME_TOKEN = re.compile(
     r"(^|[._-])(secret|secrets|credential|credentials|private|key|keys|cert|certs|certificate|certificates)([._-]|$)",
     re.IGNORECASE,
@@ -939,7 +935,6 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
                 "send.php",
                 "bloom-processor.js",
                 "score-processor.js",
-                "soundtrack-repeat-processor.js",
                 LAB_AUTH_CONFIG,
             }):
                 raise ValueError("unexpected LAB entry")
@@ -949,7 +944,6 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
                 "send.php": LAB_SEND_MARKERS,
                 "bloom-processor.js": LAB_BLOOM_PROCESSOR_MARKERS,
                 "score-processor.js": LAB_SCORE_PROCESSOR_MARKERS,
-                "soundtrack-repeat-processor.js": LAB_SOUNDTRACK_REPEAT_PROCESSOR_MARKERS,
                 LAB_AUTH_CONFIG: LAB_AUTH_CONFIG_MARKERS,
             }
             for name in lab_names:

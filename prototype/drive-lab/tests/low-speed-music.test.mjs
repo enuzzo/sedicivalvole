@@ -70,7 +70,7 @@ function createBedContext() {
     gains,
     currentTime: 0,
     createBiquadFilter() {
-      return Object.assign(new BedNode(), { frequency: new BedParam(), Q: new BedParam() });
+      return Object.assign(new BedNode(), { frequency: new BedParam(), Q: new BedParam(), gain: new BedParam() });
     },
     createDelay() { return Object.assign(new BedNode(), { delayTime: new BedParam() }); },
     createGain() {

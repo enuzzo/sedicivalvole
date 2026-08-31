@@ -67,7 +67,7 @@ test("the four separate DJ controls are manual normalized amounts", () => {
       flanger: 0.25,
       reverb: 1.4,
       chorus: -0.2,
-      "beat-repeat": 0.75,
+      echo: 0.75,
       invented: 1,
     },
   });
@@ -76,13 +76,13 @@ test("the four separate DJ controls are manual normalized amounts", () => {
     "flanger",
     "reverb",
     "chorus",
-    "beat-repeat",
+    "echo",
   ]);
   assert.deepEqual(result.manualEffects.requestedValues, {
     flanger: 0.25,
     reverb: 1,
     chorus: 0,
-    "beat-repeat": 0.75,
+    echo: 0.75,
   });
   assert.deepEqual(result.manualEffects.appliedValues, result.manualEffects.requestedValues);
   assert.equal(result.manualEffects.enabled, true);
@@ -120,7 +120,7 @@ test("an unknown controller cannot change either effect family", () => {
     flanger: 0,
     reverb: 0,
     chorus: 0,
-    "beat-repeat": 0,
+    echo: 0,
   });
   assert.equal(result.manualEffects.blockedReason, "unauthorized-control");
 });
@@ -152,7 +152,7 @@ test("the boundary contains no driving-derived selection or retiming state", () 
   const result = deriveSoundtrackPlaybackBoundary({
     policy: makePolicy(),
     vehicleEffectsRequested: true,
-    manualEffects: { "beat-repeat": 0.5 },
+    manualEffects: { echo: 0.5 },
   });
   const keys = JSON.stringify(result).toLowerCase();
 

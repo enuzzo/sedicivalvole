@@ -216,6 +216,17 @@ test("the footer keeps a compact right palette and exposes one audio-effects mas
   assert.match(styles, /\.control-status-notice \{[\s\S]*?top: 50%;[\s\S]*?left: 50%;[\s\S]*?border-radius: var\(--ui-radius\)/);
 });
 
+test("vehicle macros and manual effects reach both audible engines", () => {
+  const app = read("App.jsx");
+  assert.match(app, /open: audioMacros\.values\.open/);
+  assert.match(app, /underwater: audioMacros\.values\.underwater/);
+  assert.match(app, /bloom: audioMacros\.values\.bloom/);
+  assert.doesNotMatch(app, /underwater: audioMacros\.underwater/);
+  assert.match(app, /soundtrackRef\.current\?\.setManualEffects\(soundtrackManualEffects\)/);
+  assert.match(app, /audioRef\.current\?\.setManualEffects\(soundtrackManualEffects\)/);
+  assert.match(app, /audioRef\.current\.setManualEffects\(soundtrackManualEffects\)/);
+});
+
 test("the running Soundtrack badge identifies Illobo Featured separately from Jamendo", () => {
   const app = read("App.jsx");
   assert.match(app, /const featured = soundtrackSnapshot\?\.library\?\.selection\?\.kind === "featured"/);

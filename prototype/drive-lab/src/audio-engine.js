@@ -47,6 +47,7 @@ import { installBypassableSerialProcessor } from "./audio-runtime-guard.js";
 import { withReadinessTimeout } from "./promise-timeout.js";
 import bloomProcessorUrl from "./score/worklet/bloom-processor.js?audio-worklet";
 import processorUrl from "./score/worklet/score-processor.js?audio-worklet";
+import { createManualEffectsGraph } from "./manual-effects-graph.js";
 
 /**
  * Brake detection.
@@ -108,6 +109,7 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
   const junctionGain = context.createGain();
   const nightshiftGain = context.createGain();
   const accelerationFocusGain = context.createGain();
+  const manualEffectsGraph = createManualEffectsGraph(context);
   const meter = context.createAnalyser();
   meter.fftSize = 256;
   meter.smoothingTimeConstant = 0.55;
@@ -142,7 +144,8 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
   rightToLeft.connect(accelerationMerger, 0, 0);
   leftToRight.connect(accelerationMerger, 0, 1);
   rightToRight.connect(accelerationMerger, 0, 1);
-  accelerationMerger.connect(accelerationTrim).connect(masterGain);
+  accelerationMerger.connect(accelerationTrim).connect(manualEffectsGraph.input);
+  manualEffectsGraph.output.connect(masterGain);
   masterGain.connect(meter).connect(context.destination);
   fractureGain.gain.value = 1;
   junctionGain.gain.value = 0;
@@ -648,6 +651,11 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
       return vehicleEffectsEnabled;
     },
 
+    /** Applies the same passenger-controlled effect chain to every adaptive score. */
+    setManualEffects(values) {
+      return manualEffectsGraph.set(values);
+    },
+
     setScore(nextScoreId) {
       if (!running) return Promise.reject(new Error("Audio engine is closed"));
       requestedScoreId = nextScoreId === "junction"
@@ -911,6 +919,7 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
       rightToRight.disconnect();
       accelerationMerger.disconnect();
       accelerationTrim.disconnect();
+      manualEffectsGraph.destroy();
       masterGain.disconnect();
       meter.disconnect();
       if (context.state !== "closed") context.close().catch(() => {});

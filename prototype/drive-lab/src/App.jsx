@@ -167,9 +167,9 @@ const LAUNCH_MUSIC_CHOICES = Object.freeze([
 ]);
 const SOUNDTRACK_MANUAL_CONTROLS = Object.freeze([
   Object.freeze({ id: "flanger", label: "FLANGER", displayLabel: "Flanger", note: "Moving comb colour" }),
-  Object.freeze({ id: "reverb", label: "REVERB", displayLabel: "Reverb", note: "Transient room tail" }),
+  Object.freeze({ id: "reverb", label: "REVERB", displayLabel: "Reverb", note: "Wide pressure room" }),
   Object.freeze({ id: "chorus", label: "CHORUS", displayLabel: "Chorus", note: "Slow width and motion" }),
-  Object.freeze({ id: "beat-repeat", label: "BEAT REPEAT", displayLabel: "Beat Repeat", note: "Short live loop" }),
+  Object.freeze({ id: "echo", label: "ECHO", displayLabel: "Echo", note: "Controlled dub trail" }),
 ]);
 const EMPTY_SOUNDTRACK_MANUAL_EFFECTS = Object.freeze(Object.fromEntries(
   SOUNDTRACK_MANUAL_CONTROLS.map(({ id }) => [id, 0]),
@@ -2070,6 +2070,7 @@ export function App() {
       await audioRef.current.resume();
       audioRef.current.setMuted(launchMuted || musicId === "soundtrack");
       audioRef.current.setVehicleEffectsEnabled(launchVehicleEffects);
+      audioRef.current.setManualEffects(soundtrackManualEffects);
       // The speed effect may have run before the audio engine existed (notably
       // for an exact qaSpeed launch). Seed the engine from the current signal
       // before choosing a score so its first complete section is the right one.
@@ -2177,7 +2178,7 @@ export function App() {
       wakeControls();
       window.requestAnimationFrame(() => appRef.current?.focus({ preventScroll: true }));
     }, reducedMotion ? 180 : 620);
-  }, [genreId, handleScoreRecovery, logDiagnosticEvent, reducedMotion, startGps, triggerPulse, wakeControls]);
+  }, [genreId, handleScoreRecovery, logDiagnosticEvent, reducedMotion, soundtrackManualEffects, startGps, triggerPulse, wakeControls]);
 
   const selectScore = useCallback(async (requestedScoreId) => {
     const revision = ++scoreSelectionRevisionRef.current;
@@ -2548,13 +2549,14 @@ export function App() {
   }, [vehicleEffectsEnabled]);
   useEffect(() => {
     soundtrackRef.current?.setVehicleEffects({
-      open: audioMacros.open,
-      underwater: audioMacros.underwater,
-      bloom: audioMacros.bloom,
+      open: audioMacros.values.open,
+      underwater: audioMacros.values.underwater,
+      bloom: audioMacros.values.bloom,
     });
   }, [audioMacros]);
   useEffect(() => {
     soundtrackRef.current?.setManualEffects(soundtrackManualEffects);
+    audioRef.current?.setManualEffects(soundtrackManualEffects);
   }, [soundtrackManualEffects]);
   useEffect(() => {
     document.title = musicMode === "soundtrack"

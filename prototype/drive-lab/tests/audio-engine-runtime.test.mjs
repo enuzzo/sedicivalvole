@@ -116,6 +116,7 @@ class FakeContext {
   constructor(addModule) {
     this.currentTime = 0;
     this.state = "running";
+    this.sampleRate = 48_000;
     this.graphEvents = [];
     this.gains = [];
     this.filters = [];
@@ -156,6 +157,17 @@ class FakeContext {
     });
   }
   createDelay() { return Object.assign(this.node("delay"), { delayTime: new FakeParam() }); }
+  createConvolver() { return Object.assign(this.node("convolver"), { buffer: null }); }
+  createDynamicsCompressor() {
+    return Object.assign(this.node("compressor"), {
+      threshold: new FakeParam(), knee: new FakeParam(), ratio: new FakeParam(),
+      attack: new FakeParam(), release: new FakeParam(),
+    });
+  }
+  createBuffer(channels, length) {
+    const data = Array.from({ length: channels }, () => new Float32Array(length));
+    return { getChannelData(channel) { return data[channel]; } };
+  }
   createOscillator() {
     return Object.assign(new FakeSource("oscillator", this.graphEvents), {
       frequency: new FakeParam(), detune: new FakeParam(),
@@ -529,6 +541,21 @@ test("the vehicle-effects master silences audio processing without suppressing v
       fractureNode.port.messages.filter((message) => message.type === "BRAKE").at(-1).payload.brake > 0.4,
       "UNDERWATER did not return when effects were enabled",
     );
+    engine.destroy();
+  });
+});
+
+test("the shared manual chain is audible on every Play the Road score", async () => {
+  await withFakeAudioEnvironment({}, async ({ createAudioEngine, context }) => {
+    const engine = createAudioEngine();
+    const result = engine.setManualEffects({ flanger: 1, reverb: 1, chorus: 1, echo: 1 });
+    assert.deepEqual(result.values, { flanger: 1, reverb: 1, chorus: 1, echo: 1 });
+    assert.ok(result.parameters.flangerWet >= 0.6);
+    assert.ok(result.parameters.reverbWet >= 0.6);
+    assert.ok(result.parameters.chorusWet >= 0.55);
+    assert.ok(result.parameters.echoWet >= 0.5);
+    assert.equal(context.gains[6].connections.has(context.gains[11]), true);
+    assert.equal(context.gains[26].connections.has(context.gains[0]), true);
     engine.destroy();
   });
 });

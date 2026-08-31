@@ -34,7 +34,7 @@ function fakeContext() {
     currentTime: 0,
     createGain() { return Object.assign(new FakeNode(), { gain: new FakeParam() }); },
     createBiquadFilter() {
-      return Object.assign(new FakeNode(), { frequency: new FakeParam(), Q: new FakeParam() });
+      return Object.assign(new FakeNode(), { frequency: new FakeParam(), Q: new FakeParam(), gain: new FakeParam() });
     },
     createWaveShaper() { return Object.assign(new FakeNode(), { curve: null, oversample: "none" }); },
     createDelay() { return Object.assign(new FakeNode(), { delayTime: new FakeParam() }); },

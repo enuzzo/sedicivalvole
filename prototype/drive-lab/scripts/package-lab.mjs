@@ -31,7 +31,6 @@ await writeFile(new URL("send.php", outputDirectory), await readFile(new URL("..
 const runtimeAssets = Object.freeze([
   "bloom-processor.js",
   "score-processor.js",
-  "soundtrack-repeat-processor.js",
 ]);
 for (const asset of runtimeAssets) {
   await copyFile(new URL(asset, buildDirectory), new URL(asset, outputDirectory));

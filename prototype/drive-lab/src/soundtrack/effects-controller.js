@@ -1,5 +1,5 @@
 import bloomProcessorUrl from "../score/worklet/bloom-processor.js?audio-worklet";
-import repeatProcessorUrl from "./soundtrack-repeat-processor.js?audio-worklet";
+import { createManualEffectsGraph } from "../manual-effects-graph.js";
 import {
   SOUNDTRACK_PLAYBACK_INVARIANTS,
 } from "./playback-boundary.js";
@@ -32,22 +32,6 @@ const setParam = (param, value, context, seconds = 0.045) => {
     param.value = value;
   }
 };
-
-function makeImpulse(context, seconds = 1.7) {
-  const length = Math.max(1, Math.floor(context.sampleRate * seconds));
-  const buffer = context.createBuffer(2, length, context.sampleRate);
-  for (let channel = 0; channel < 2; channel += 1) {
-    const data = buffer.getChannelData(channel);
-    let seed = 0x6d2b79f5 ^ (channel * 0x9e3779b9);
-    for (let index = 0; index < length; index += 1) {
-      seed = Math.imul(seed ^ (seed >>> 15), seed | 1);
-      seed ^= seed + Math.imul(seed ^ (seed >>> 7), seed | 61);
-      const noise = (((seed ^ (seed >>> 14)) >>> 0) / 0xffffffff) * 2 - 1;
-      data[index] = noise * (1 - index / length) ** 2.8;
-    }
-  }
-  return buffer;
-}
 
 function createUnavailableController(reason = "web-audio-unavailable") {
   const mediaElements = new Map();
@@ -135,27 +119,13 @@ export function createSoundtrackEffectsController({
   const openSum = context.createGain();
   const underwaterOne = context.createBiquadFilter();
   const underwaterTwo = context.createBiquadFilter();
+  const underwaterPressure = context.createBiquadFilter();
   const postVehicle = context.createGain();
-  const flangerDry = context.createGain();
-  const flangerDelay = context.createDelay(0.02);
-  const flangerWet = context.createGain();
-  const flangerSum = context.createGain();
-  const chorusDry = context.createGain();
-  const chorusDelay = context.createDelay(0.05);
-  const chorusWet = context.createGain();
-  const chorusSum = context.createGain();
-  const reverbDry = context.createGain();
-  const reverb = context.createConvolver();
-  const reverbWet = context.createGain();
-  const reverbSum = context.createGain();
+  const manualGraph = createManualEffectsGraph(context);
   const output = context.createGain();
   const limiter = context.createDynamicsCompressor();
   const analyser = context.createAnalyser();
   const master = context.createGain();
-  const flangerLfo = context.createOscillator();
-  const flangerDepth = context.createGain();
-  const chorusLfo = context.createOscillator();
-  const chorusDepth = context.createGain();
 
   openScoop.type = "peaking";
   openScoop.frequency.value = 320;
@@ -167,7 +137,7 @@ export function createSoundtrackEffectsController({
   openFocus.Q.value = 0.82;
   underwaterOne.type = "lowpass";
   underwaterTwo.type = "lowpass";
-  reverb.buffer = makeImpulse(context);
+  underwaterPressure.type = "lowshelf";
   limiter.threshold.value = -2.5;
   limiter.knee.value = 8;
   limiter.ratio.value = 10;
@@ -185,38 +155,14 @@ export function createSoundtrackEffectsController({
   openFocusGain.connect(openSum);
   openSum.connect(underwaterOne);
   underwaterOne.connect(underwaterTwo);
-  underwaterTwo.connect(postVehicle);
-  postVehicle.connect(flangerDry);
-  postVehicle.connect(flangerDelay);
-  flangerDry.connect(flangerSum);
-  flangerDelay.connect(flangerWet);
-  flangerWet.connect(flangerSum);
-  flangerSum.connect(chorusDry);
-  flangerSum.connect(chorusDelay);
-  chorusDry.connect(chorusSum);
-  chorusDelay.connect(chorusWet);
-  chorusWet.connect(chorusSum);
-  chorusSum.connect(reverbDry);
-  chorusSum.connect(reverb);
-  reverbDry.connect(reverbSum);
-  reverb.connect(reverbWet);
-  reverbWet.connect(reverbSum);
-  reverbSum.connect(output);
+  underwaterTwo.connect(underwaterPressure);
+  underwaterPressure.connect(postVehicle);
+  postVehicle.connect(manualGraph.input);
+  manualGraph.output.connect(output);
   output.connect(limiter);
   limiter.connect(analyser);
   analyser.connect(master);
   master.connect(context.destination);
-
-  flangerLfo.type = "sine";
-  flangerLfo.frequency.value = 0.19;
-  flangerLfo.connect(flangerDepth);
-  flangerDepth.connect(flangerDelay.delayTime);
-  chorusLfo.type = "sine";
-  chorusLfo.frequency.value = 0.43;
-  chorusLfo.connect(chorusDepth);
-  chorusDepth.connect(chorusDelay.delayTime);
-  flangerLfo.start();
-  chorusLfo.start();
 
   const mediaSources = new Map();
   const meterBuffer = new Float32Array(analyser.fftSize);
@@ -225,7 +171,6 @@ export function createSoundtrackEffectsController({
   let manualEffects = normalizeSoundtrackManualEffects();
   let destroyed = false;
   let bloomNode = null;
-  let repeatNode = null;
   let bloomActive = false;
   let workletStatus = typeof context.audioWorklet?.addModule === "function" ? "loading" : "unavailable";
   let workletError = null;
@@ -236,20 +181,13 @@ export function createSoundtrackEffectsController({
     setParam(openAir.gain, values.openAirDb, context);
     setParam(openFocusGain.gain, values.openFocusGain, context);
     setParam(underwaterOne.frequency, values.underwaterCutoffHz, context, 0.08);
-    setParam(underwaterTwo.frequency, values.underwaterCutoffHz * 1.1, context, 0.08);
+    setParam(underwaterTwo.frequency, values.underwaterSecondCutoffHz, context, 0.08);
     setParam(underwaterOne.Q, values.underwaterResonance, context);
-    setParam(underwaterTwo.Q, Math.max(0.7, values.underwaterResonance * 0.62), context);
-    setParam(flangerDry.gain, 1 - values.flangerWet * 0.5, context);
-    setParam(flangerWet.gain, values.flangerWet, context);
-    setParam(flangerDelay.delayTime, values.flangerDelaySeconds, context);
-    setParam(flangerDepth.gain, values.flangerWet * 0.0025, context);
-    setParam(chorusDry.gain, 1 - values.chorusWet * 0.35, context);
-    setParam(chorusWet.gain, values.chorusWet, context);
-    setParam(chorusDelay.delayTime, values.chorusDelaySeconds, context);
-    setParam(chorusDepth.gain, values.chorusWet * 0.006, context);
-    setParam(reverbDry.gain, 1 - values.reverbWet * 0.32, context);
-    setParam(reverbWet.gain, values.reverbWet, context);
-    repeatNode?.port.postMessage({ type: "SET_AMOUNT", amount: values.beatRepeat });
+    setParam(underwaterTwo.Q, values.underwaterSecondResonance, context);
+    setParam(underwaterPressure.frequency, values.underwaterPressureFrequencyHz, context);
+    setParam(underwaterPressure.gain, values.underwaterPressureGainDb, context);
+    setParam(postVehicle.gain, values.underwaterMakeupGain, context);
+    manualGraph.set(manualEffects);
     const shouldBloom = values.bloom > 0.06;
     if (bloomNode && shouldBloom !== bloomActive) {
       bloomNode.port.postMessage({ type: shouldBloom ? "TRIGGER" : "RELEASE" });
@@ -261,20 +199,12 @@ export function createSoundtrackEffectsController({
   const ready = (async () => {
     if (workletStatus === "unavailable") return;
     try {
-      await Promise.all([
-        context.audioWorklet.addModule(bloomProcessorUrl),
-        context.audioWorklet.addModule(repeatProcessorUrl),
-      ]);
+      await context.audioWorklet.addModule(bloomProcessorUrl);
       if (destroyed) return;
       bloomNode = new AudioWorkletNode(context, "bloom-processor", { outputChannelCount: [2] });
-      repeatNode = new AudioWorkletNode(context, "soundtrack-repeat-processor", { outputChannelCount: [2] });
       postVehicle.disconnect();
       postVehicle.connect(bloomNode);
-      bloomNode.connect(flangerDry);
-      bloomNode.connect(flangerDelay);
-      reverbSum.disconnect();
-      reverbSum.connect(repeatNode);
-      repeatNode.connect(output);
+      bloomNode.connect(manualGraph.input);
       const bypass = (node, upstream, downstreams) => {
         node.onprocessorerror = () => {
           try { upstream.disconnect(); } catch { /* already disconnected */ }
@@ -284,8 +214,7 @@ export function createSoundtrackEffectsController({
           workletError = "processor-error";
         };
       };
-      bypass(bloomNode, postVehicle, [flangerDry, flangerDelay]);
-      bypass(repeatNode, reverbSum, [output]);
+      bypass(bloomNode, postVehicle, [manualGraph.input]);
       workletStatus = "ready";
       apply();
     } catch (error) {
@@ -375,8 +304,7 @@ export function createSoundtrackEffectsController({
       if (destroyed) return getSnapshot();
       destroyed = true;
       for (const key of [...mediaSources.keys()]) controller.detachMedia(key);
-      try { flangerLfo.stop(); } catch { /* already stopped */ }
-      try { chorusLfo.stop(); } catch { /* already stopped */ }
+      manualGraph.destroy();
       void context.close?.();
       return getSnapshot();
     },

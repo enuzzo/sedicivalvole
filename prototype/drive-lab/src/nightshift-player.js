@@ -8,6 +8,7 @@ import { nightshiftStateForSpeed } from "./nightshift-model.js";
 import { withReadinessTimeout } from "./promise-timeout.js";
 import { SAMPLED_SCORE_PERFORMANCE_LEVEL } from "./sampled-score-levels.js";
 import { SAMPLED_BANK_TRANSFER_TIMEOUT_MS } from "./sampled-bank-network.js";
+import { underwaterEffectParameters } from "./underwater-model.js";
 
 const BANK_URL = `/audio/nightshift.svb?build=${encodeURIComponent(__APP_BUILD__)}`;
 const REVIEW_INTERVAL_MS = 50;
@@ -46,13 +47,30 @@ export function createNightshiftPlayer(context, destination, onSnapshot, onBankS
 
   const output = context.createGain();
   const nativeGain = context.createGain();
-  const tone = context.createBiquadFilter();
+  const toneOne = context.createBiquadFilter();
+  const toneTwo = context.createBiquadFilter();
+  const pressure = context.createBiquadFilter();
+  const brakeMakeup = context.createGain();
   output.gain.value = 0;
   nativeGain.gain.value = 0;
-  tone.type = "lowpass";
-  tone.frequency.value = 18000;
-  tone.Q.value = 0.28;
-  nativeGain.connect(tone).connect(output).connect(destination);
+  toneOne.type = "lowpass";
+  toneTwo.type = "lowpass";
+  pressure.type = "lowshelf";
+  const openBrake = underwaterEffectParameters(0);
+  toneOne.frequency.value = openBrake.cutoffHz;
+  toneTwo.frequency.value = openBrake.secondCutoffHz;
+  toneOne.Q.value = openBrake.q;
+  toneTwo.Q.value = openBrake.secondQ;
+  pressure.frequency.value = openBrake.pressureFrequencyHz;
+  pressure.gain.value = 0;
+  brakeMakeup.gain.value = 1;
+  nativeGain
+    .connect(toneOne)
+    .connect(toneTwo)
+    .connect(pressure)
+    .connect(brakeMakeup)
+    .connect(output)
+    .connect(destination);
   const parkBed = createNightshiftLowSpeedBed(context, output);
 
   function report(status, error = null) {
@@ -362,7 +380,13 @@ export function createNightshiftPlayer(context, destination, onSnapshot, onBankS
     },
     setBrake(nextBrake) {
       brake = Math.min(1, Math.max(0, Number(nextBrake) || 0));
-      tone.frequency.setTargetAtTime(18000 - brake * 12500, context.currentTime, 0.1);
+      const parameters = underwaterEffectParameters(brake);
+      toneOne.frequency.setTargetAtTime(parameters.cutoffHz, context.currentTime, 0.08);
+      toneTwo.frequency.setTargetAtTime(parameters.secondCutoffHz, context.currentTime, 0.08);
+      toneOne.Q.setTargetAtTime(parameters.q, context.currentTime, 0.08);
+      toneTwo.Q.setTargetAtTime(parameters.secondQ, context.currentTime, 0.08);
+      pressure.gain.setTargetAtTime(parameters.pressureGainDb, context.currentTime, 0.08);
+      brakeMakeup.gain.setTargetAtTime(parameters.makeupGain, context.currentTime, 0.08);
     },
     getState: snapshot,
     destroy() {
@@ -380,7 +404,10 @@ export function createNightshiftPlayer(context, destination, onSnapshot, onBankS
       sources.clear();
       parkBed.destroy();
       nativeGain.disconnect();
-      tone.disconnect();
+      toneOne.disconnect();
+      toneTwo.disconnect();
+      pressure.disconnect();
+      brakeMakeup.disconnect();
       output.disconnect();
       decoded.clear();
       decoding.clear();

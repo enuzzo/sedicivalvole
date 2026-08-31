@@ -1,4 +1,5 @@
 import { allowsSoundtrackEffects } from "./source-policy.js";
+import { MANUAL_EFFECT_IDS, normalizeManualEffects } from "../manual-effects-graph.js";
 
 export const SOUNDTRACK_PLAYBACK_BOUNDARY_SCHEMA = "sedicivalvole.soundtrack-playback-boundary.v1";
 
@@ -11,20 +12,7 @@ export const SOUNDTRACK_PLAYBACK_INVARIANTS = Object.freeze({
 
 const CONTROL_SOURCES = new Set(["main-ui", "authorized-passenger"]);
 export const SOUNDTRACK_VEHICLE_MACROS = Object.freeze(["open", "underwater", "bloom"]);
-export const SOUNDTRACK_MANUAL_EFFECT_IDS = Object.freeze([
-  "flanger",
-  "reverb",
-  "chorus",
-  "beat-repeat",
-]);
-
-const asAmount = (value) => Number.isFinite(value)
-  ? Math.min(1, Math.max(0, value))
-  : 0;
-
-const normalizeManualEffects = (values = {}) => Object.freeze(Object.fromEntries(
-  SOUNDTRACK_MANUAL_EFFECT_IDS.map((id) => [id, asAmount(values[id])]),
-));
+export const SOUNDTRACK_MANUAL_EFFECT_IDS = MANUAL_EFFECT_IDS;
 
 const zeroManualEffects = () => Object.freeze(Object.fromEntries(
   SOUNDTRACK_MANUAL_EFFECT_IDS.map((id) => [id, 0]),
