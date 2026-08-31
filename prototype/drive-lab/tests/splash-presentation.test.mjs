@@ -184,6 +184,26 @@ test("local exact-viewport QA can keep the Web Audio graph inaudible", () => {
   assert.match(app, /audioRef\.current\.setMuted\(launchMuted \|\| musicId === "soundtrack"\)/);
 });
 
+test("the footer keeps a compact right palette and exposes one audio-effects master", () => {
+  const app = read("App.jsx");
+  const styles = read("styles.css");
+
+  assert.match(app, /const \[vehicleEffectsEnabled, setVehicleEffectsEnabled\] = useState\(true\)/);
+  assert.match(app, /const launchVehicleEffects = musicId !== "soundtrack"/);
+  assert.match(app, /audioRef\.current\.setVehicleEffectsEnabled\(launchVehicleEffects\)/);
+  assert.match(app, /soundtrackRef\.current\?\.setVehicleMaster\(vehicleEffectsEnabled\)/);
+  assert.match(app, /className=\{`effects-button\$\{vehicleEffectsEnabled \? " is-active" : ""\}`\}/);
+  assert.match(app, /<span>EFFECTS<\/span>/);
+  assert.match(app, /showControlNotice\("VOLUME", !nextMuted\)/);
+  assert.match(app, /showControlNotice\("EFFECTS", enabled\)/);
+  assert.match(app, /className="control-status-notice" role="status" aria-live="polite"/);
+  assert.match(styles, /\.control-slab \{[\s\S]*?grid-template-columns: 72px 86px 190px 210px minmax\(0, 1fr\) 160px/);
+  assert.match(styles, /\.palette-control \{[\s\S]*?grid-column: 6;[\s\S]*?border-left: 1px solid var\(--line\)/);
+  assert.match(styles, /@media \(max-width: 820px\) \{[\s\S]*?grid-template-columns: 64px 74px 170px 190px minmax\(0, 1fr\) 138px/);
+  assert.match(styles, /\.swatch-housing button \{[^}]*min-height: 15px/);
+  assert.match(styles, /\.control-status-notice \{[\s\S]*?top: 50%;[\s\S]*?left: 50%;[\s\S]*?border-radius: var\(--ui-radius\)/);
+});
+
 test("launch copy has a continuous white-to-red travelling wave", () => {
   const styles = read("styles.css");
 

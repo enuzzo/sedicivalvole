@@ -335,14 +335,20 @@ dated study documents.
   worker, or any offline store. Playback requires the explicit START/PLAY
   gesture, has no automatic PLAY THE ROAD fallback, and remains at authored
   `1×`: driving never chooses or retimes a recording. MediaElementSource
-  routing feeds a bounded Web Audio graph. A fresh-session `DRIVE FX` master
-  enables OPEN/UNDERWATER/BLOOM from the shared vehicle macros, independently of
-  manual flanger, reverb, chorus, and beat-repeat controls. The visible card
+  routing feeds a bounded Web Audio graph. The shared footer `EFFECTS` master
+  gates only audible OPEN/UNDERWATER/BLOOM processing while the same vehicle
+  macros remain available to every visual; PLAY THE ROAD starts enabled and
+  SOUNDTRACK remains a fresh-session opt-in. Manual flanger, reverb, chorus,
+  and beat-repeat controls stay independent. The visible card
   follows the active track and exposes artwork, artist, title, licence, Jamendo
   credit, and the direct source link. Audible crossfade/rapid-retarget integration,
   the QR handoff, broader catalogue browsing, and physical-Tesla listening remain
   open; no offline-duration promise is made. See
   [`SOUNDTRACK-SOURCE-POLICY.md`](SOUNDTRACK-SOURCE-POLICY.md).
+- **The running footer has its compact control geometry.** MUTE and EFFECTS are
+  adjacent, both announce a 1.5-second centred status, and the two-row palette is
+  fixed to `138 px` at `773 × 601` / `160 px` on desktop at the far-right edge.
+  The released centre span is intentionally empty rather than stretched.
 - `docs/MUSIC-CRAFT.md` records the musical defects and techniques already
   learned. Assertable musical rules belong in tests.
 - A development-only sample-harmony pilot now inventories the eight chord hits

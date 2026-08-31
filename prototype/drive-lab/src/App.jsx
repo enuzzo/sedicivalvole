@@ -924,7 +924,7 @@ function SoundtrackPanel({
             className={vehicleFxEnabled ? "is-active" : ""}
             aria-pressed={vehicleFxEnabled}
             onClick={() => onVehicleFxChange(!vehicleFxEnabled)}
-          >{vehicleFxEnabled ? "DRIVE FX ON" : "DRIVE FX OFF"}</button>
+          >{vehicleFxEnabled ? "EFFECTS ON" : "EFFECTS OFF"}</button>
         </section>
         <section className="soundtrack-manual-effects" aria-label="Manual Soundtrack effects">
           {SOUNDTRACK_MANUAL_CONTROLS.map((effect) => (
@@ -1230,8 +1230,9 @@ export function App() {
   const [scorePickerOpen, setScorePickerOpen] = useState(false);
   const [soundtrackPanelOpen, setSoundtrackPanelOpen] = useState(false);
   const [soundtrackSnapshot, setSoundtrackSnapshot] = useState(null);
-  const [soundtrackDriveFx, setSoundtrackDriveFx] = useState(false);
+  const [vehicleEffectsEnabled, setVehicleEffectsEnabled] = useState(true);
   const [soundtrackManualEffects, setSoundtrackManualEffects] = useState(EMPTY_SOUNDTRACK_MANUAL_EFFECTS);
+  const [controlNotice, setControlNotice] = useState(null);
   const [supportOpen, setSupportOpen] = useState(false);
   const [rawReportOpen, setRawReportOpen] = useState(false);
   const [diagnosticReadmeOpen, setDiagnosticReadmeOpen] = useState(false);
@@ -1274,6 +1275,7 @@ export function App() {
   const flightRecorderTimerRef = useRef(null);
   const performanceSamplerTimerRef = useRef(null);
   const viewportCaptureTimerRef = useRef(null);
+  const controlNoticeTimerRef = useRef(null);
   const gpsTelemetryRef = useRef(createGpsTelemetry(performance.now()));
   const driveTelemetryRef = useRef(createDriveTelemetry(performance.now()));
   const frameTelemetryRef = useRef(createFrameTelemetry(performance.now()));
@@ -1300,6 +1302,7 @@ export function App() {
   const drawerOpenRef = useRef(drawerOpen);
   const themeIdRef = useRef(themeId);
   const mutedRef = useRef(muted);
+  const vehicleEffectsEnabledRef = useRef(vehicleEffectsEnabled);
   const bpmRef = useRef(null);
   const transportBpmRef = useRef(scoreTransportTempo);
   const mapPositionRef = useRef(mapPosition);
@@ -1325,12 +1328,12 @@ export function App() {
       effectsFactory: createSoundtrackEffectsController,
       onState: setSoundtrackSnapshot,
     });
-    controller.setVehicleMaster(soundtrackDriveFx);
+    controller.setVehicleMaster(vehicleEffectsEnabled);
     controller.setManualEffects(soundtrackManualEffects);
     soundtrackRef.current = controller;
     setSoundtrackSnapshot(controller.getSnapshot());
     return controller;
-  }, [soundtrackDriveFx, soundtrackManualEffects]);
+  }, [vehicleEffectsEnabled, soundtrackManualEffects]);
 
   const selectLaunchMusic = useCallback((nextMusicId) => {
     setLaunchMusicId(nextMusicId);
@@ -1359,6 +1362,7 @@ export function App() {
   drawerOpenRef.current = drawerOpen;
   themeIdRef.current = themeId;
   mutedRef.current = muted;
+  vehicleEffectsEnabledRef.current = vehicleEffectsEnabled;
   bpmRef.current = bpm;
   transportBpmRef.current = transportBpm;
   mapPositionRef.current = mapPosition;
@@ -1375,6 +1379,35 @@ export function App() {
       detail,
     }, { sample: type === "gps.sample" });
   }, []);
+
+  const showControlNotice = useCallback((label, enabled) => {
+    window.clearTimeout(controlNoticeTimerRef.current);
+    setControlNotice(`${label} ${enabled ? "ON" : "OFF"}`);
+    controlNoticeTimerRef.current = window.setTimeout(() => {
+      setControlNotice(null);
+      controlNoticeTimerRef.current = null;
+    }, 1500);
+  }, []);
+
+  const updateVehicleEffects = useCallback((nextEnabled) => {
+    const enabled = nextEnabled === true;
+    setVehicleEffectsEnabled(enabled);
+    showControlNotice("EFFECTS", enabled);
+    logDiagnosticEvent("audio.vehicle-effects.changed", { enabled });
+  }, [logDiagnosticEvent, showControlNotice]);
+
+  const toggleMuted = useCallback(async () => {
+    const nextMuted = !muted;
+    if (sessionMusicModeRef.current === "soundtrack") {
+      if (nextMuted) soundtrackRef.current?.pause();
+      else await soundtrackRef.current?.resume();
+    } else if (!nextMuted) {
+      await audioRef.current?.resume();
+    }
+    setMuted(nextMuted);
+    showControlNotice("VOLUME", !nextMuted);
+    logDiagnosticEvent("audio.mute.changed", { muted: nextMuted });
+  }, [logDiagnosticEvent, muted, showControlNotice]);
 
   const recordRenderedFrame = useCallback((capturedAtMs, targetFrameMs, frameRenderer, canvasWidth, canvasHeight) => {
     const sample = {
@@ -1804,12 +1837,15 @@ export function App() {
 
   const runHarness = useCallback(async ({ musicId, selectedEnvironmentId }) => {
     const launchMuted = QA_MUTED || musicId === "mute";
+    const launchVehicleEffects = musicId !== "soundtrack";
     sessionMusicModeRef.current = musicId;
+    soundtrackRef.current?.setVehicleMaster(launchVehicleEffects);
     const soundtrackStart = musicId === "soundtrack"
       ? soundtrackRef.current?.resume()
       : null;
     setSupportOpen(false);
     setMuted(launchMuted);
+    setVehicleEffectsEnabled(launchVehicleEffects);
     setEnvironmentId(selectedEnvironmentId);
     sessionStartedAtRef.current = performance.now();
     diagnosticsActiveRef.current = true;
@@ -1852,6 +1888,7 @@ export function App() {
       if (!audioRef.current) throw new Error("Web Audio is unavailable");
       await audioRef.current.resume();
       audioRef.current.setMuted(launchMuted || musicId === "soundtrack");
+      audioRef.current.setVehicleEffectsEnabled(launchVehicleEffects);
       // The speed effect may have run before the audio engine existed (notably
       // for an exact qaSpeed launch). Seed the engine from the current signal
       // before choosing a score so its first complete section is the right one.
@@ -2229,8 +2266,9 @@ export function App() {
     audioRef.current?.setMuted(muted || sessionMusicModeRef.current === "soundtrack");
   }, [muted]);
   useEffect(() => {
-    soundtrackRef.current?.setVehicleMaster(soundtrackDriveFx);
-  }, [soundtrackDriveFx]);
+    audioRef.current?.setVehicleEffectsEnabled(vehicleEffectsEnabled);
+    soundtrackRef.current?.setVehicleMaster(vehicleEffectsEnabled);
+  }, [vehicleEffectsEnabled]);
   useEffect(() => {
     soundtrackRef.current?.setVehicleEffects({
       open: audioMacros.open,
@@ -2359,6 +2397,7 @@ export function App() {
     window.clearTimeout(keyboardHintTimerRef.current);
     window.clearTimeout(keyboardLeaseTimerRef.current);
     window.clearTimeout(brakeFlashTimerRef.current);
+    window.clearTimeout(controlNoticeTimerRef.current);
     window.clearInterval(audioMeterTimerRef.current);
     window.clearInterval(flightRecorderTimerRef.current);
     window.clearInterval(performanceSamplerTimerRef.current);
@@ -2396,6 +2435,7 @@ export function App() {
         ? normalizePrtclSettings(prtclSettingsRef.current).type
         : null,
       muted: mutedRef.current,
+      vehicleAudioEffectsEnabled: vehicleEffectsEnabledRef.current,
       arrangement: audioRef.current?.getState() ?? null,
     },
     simulation: {
@@ -2851,21 +2891,17 @@ export function App() {
           {activeEffect && <div className="effect-badge">{activeEffect}</div>}
         </button>
 
-
+        {controlNotice ? (
+          <div className="control-status-notice" role="status" aria-live="polite" aria-atomic="true">
+            {controlNotice}
+          </div>
+        ) : null}
 
         <footer className={`control-slab control-layer${sessionMusicModeRef.current === "soundtrack" ? " is-soundtrack" : ""}`} aria-label="Flux performance controls">
           <button
             className={`stop-button ${muted ? "is-muted" : ""}`}
             type="button"
-            onClick={async () => {
-              if (sessionMusicModeRef.current === "soundtrack") {
-                if (muted) await soundtrackRef.current?.resume();
-                else soundtrackRef.current?.pause();
-              } else if (muted) {
-                await audioRef.current?.resume();
-              }
-              setMuted((value) => !value);
-            }}
+            onClick={toggleMuted}
             aria-pressed={muted}
             aria-label={muted ? "Unmute audio" : "Mute audio"}
           >
@@ -2883,17 +2919,17 @@ export function App() {
               )}
             </span>
           </button>
-          {sessionMusicModeRef.current === "soundtrack" ? (
-            <button
-              className={`soundtrack-fx-button${soundtrackDriveFx ? " is-active" : ""}`}
-              type="button"
-              aria-pressed={soundtrackDriveFx}
-              onClick={() => setSoundtrackDriveFx((current) => !current)}
-            >
-              <span>DRIVE FX</span>
-              <strong>{soundtrackDriveFx ? "ON" : "OFF"}</strong>
-            </button>
-          ) : null}
+          <button
+            className={`effects-button${vehicleEffectsEnabled ? " is-active" : ""}`}
+            type="button"
+            aria-pressed={vehicleEffectsEnabled}
+            aria-label={`${vehicleEffectsEnabled ? "Disable" : "Enable"} vehicle-reactive audio effects`}
+            title="OPEN, UNDERWATER, and BLOOM audio processing"
+            onClick={() => updateVehicleEffects(!vehicleEffectsEnabled)}
+          >
+            <span>EFFECTS</span>
+            <strong>{vehicleEffectsEnabled ? "ON" : "OFF"}</strong>
+          </button>
           <VisualControl environment={environment} onOpen={() => {
             setEnvironmentPickerOpen(true);
           }} />
@@ -3128,9 +3164,9 @@ export function App() {
       {soundtrackPanelOpen ? (
         <SoundtrackPanel
           snapshot={soundtrackSnapshot}
-          vehicleFxEnabled={soundtrackDriveFx}
+          vehicleFxEnabled={vehicleEffectsEnabled}
           manualEffects={soundtrackManualEffects}
-          onVehicleFxChange={setSoundtrackDriveFx}
+          onVehicleFxChange={updateVehicleEffects}
           onManualEffectChange={(id, value) => setSoundtrackManualEffects((current) => ({
             ...current,
             [id]: value,

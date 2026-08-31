@@ -23,9 +23,13 @@ track or alter its transport. The listener noticed this boundary as a product
 identity issue, not merely a DSP implementation detail.
 
 Vehicle response is allowed only as bounded parallel processing behind the
-explicit fresh-session `DRIVE FX` master. OPEN changes focus and upper tone,
+explicit footer `EFFECTS` master. OPEN changes focus and upper tone,
 UNDERWATER applies the braking low-pass gesture, and BLOOM keeps its short
-feed-forward event, but none controls the media element clock. Manual flanger,
+feed-forward event, but none controls the media element clock. Some drivers do
+not enjoy braking or launch processing during an otherwise calm listen, so the
+master now gates the audible graph without stopping detection or visual macro
+snapshots. PLAY THE ROAD retains its authored default with effects on;
+SOUNDTRACK retains its fresh-session opt-in. Manual flanger,
 convolution reverb, chorus, and beat repeat form a separate passenger-play path.
 Beat repeat is intentionally bounded to `0.5–0.0625 s`, uses a short seam fade,
 and smooths wet release so experimentation does not create an unbounded buffer,

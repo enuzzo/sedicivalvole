@@ -190,10 +190,12 @@ origin exact-ID relay validates admission again and streams byte ranges with
 onto transient media elements and a MediaElementSource graph. A separate playback
 boundary fixes every recording at authored `1×`, prevents driving from selecting
 or retiming it, and divides processing into two explicit families:
-the manually enabled OPEN/UNDERWATER/BLOOM vehicle-reactive path and four manual
+the footer-gated OPEN/UNDERWATER/BLOOM vehicle-reactive audio path and four manual
 flanger/reverb/chorus/beat-repeat controls. Playback, current-track attribution,
 direct source navigation, transport, and both effect families are visible in the
-App and LAB. Metadata remains short-lived and audio remains non-persistent.
+App and LAB. The main App master affects only audio processing: macro detection
+and visual response continue independently. Metadata remains short-lived and
+audio remains non-persistent.
 Audible equal-power queue commit, QR handoff, broader catalogue browsing, and
 target-Tesla tuning remain later boundaries.
 

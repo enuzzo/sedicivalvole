@@ -92,7 +92,8 @@ private messages or credentials never enter the repository.
   closed when any audible deck lacks complete admitted credit.
 - `src/soundtrack/playback-boundary.js` makes the owner clarification
   executable: fixed recordings remain at authored `1×` playback, and driving
-  cannot select or retime them. A manually operated footer master may enable
+  cannot select or retime them. The shared manually operated footer `EFFECTS`
+  master may enable
   the existing OPEN/UNDERWATER/BLOOM vehicle-reactive effects, independently of
   four normalized manual controls for flanger, reverb, chorus, and beat repeat.
   The same source capability gate applies to both effects paths.

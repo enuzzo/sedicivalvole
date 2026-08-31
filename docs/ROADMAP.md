@@ -83,14 +83,19 @@ Completed in the current working line:
 - SOUNDTRACK now uses server-side Jamendo catalogue and exact-ID audio relays,
   short-lived metadata, and three transient previous/current/next media elements
   in both the App and owner LAB. MediaElementSource routing preserves authored
-  `1×` playback while a fresh-session DRIVE FX master applies the existing
-  OPEN/UNDERWATER/BLOOM vehicle macros and four independent manual controls apply
+  `1×` playback while a shared footer EFFECTS master applies the existing
+  OPEN/UNDERWATER/BLOOM processing without suppressing visual macros; PLAY THE
+  ROAD starts enabled and SOUNDTRACK requires fresh-session opt-in. Four independent manual controls apply
   flanger, reverb, chorus, and beat repeat. The visible active-track card carries
   artwork, artist, title, licence, provider credit, and direct source link.
   Effects-disallowed, ND, unknown, incomplete, or stale items fail closed;
   neither audio nor credentials enter persistent browser or repository storage.
   Audible equal-power skip integration, QR handoff, broader browsing, physical-
   Tesla listening, and target-vehicle effect tuning remain pending.
+- the footer palette is now a fixed two-row block at the far right (`138 px` at
+  the Tesla breakpoint, `160 px` on desktop), with the recovered centre span
+  reserved for future controls. MUTE and EFFECTS changes emit a short centred
+  confirmation;
 
 Queued next:
 

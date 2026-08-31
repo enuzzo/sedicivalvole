@@ -156,6 +156,7 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
   let bloomSerialLink = null;
   let running = true;
   let muted = false;
+  let vehicleEffectsEnabled = true;
   let speed = 0;
   let energy = 0;
   let scoreId = "fracture";
@@ -185,6 +186,7 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
   let bloomReleasedAtMs = null;
   let bloomRefractoryUntil = 0;
   let bloomSuppressedByBrake = false;
+  let bloomAudioActive = false;
 
   // Last arrangement snapshot posted by the worklet. Read, never written, by
   // the interface and the diagnostics.
@@ -223,7 +225,7 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
       scoreError = error;
     });
     junction.setSpeed(speed, energy, 0);
-    junction.setBrake(brakeAmount);
+    junction.setBrake(vehicleEffectsEnabled ? brakeAmount : 0);
     return junction;
   }
 
@@ -240,7 +242,7 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
       scoreError = error;
     });
     nightshift.setSpeed(speed, energy, 0);
-    nightshift.setBrake(brakeAmount);
+    nightshift.setBrake(vehicleEffectsEnabled ? brakeAmount : 0);
     return nightshift;
   }
 
@@ -388,7 +390,7 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
     node.connect(fractureGain);
     post("MUTE", { muted });
     post("SPEED", { speed, energy });
-    post("BRAKE", { brake: brakeAmount });
+    post("BRAKE", { brake: vehicleEffectsEnabled ? brakeAmount : 0 });
     fractureReadyState = "ready";
     return true;
   })().catch((error) => {
@@ -420,6 +422,7 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
           bloomTriggeredAtMs = null;
           bloomReleasedAtMs = null;
           bloomSuppressedByBrake = false;
+          bloomAudioActive = false;
           reportActiveEffect();
           console.error("[flux] BLOOM processor failed; direct score bus restored", event);
         },
@@ -493,7 +496,8 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
     const target = isBraking() ? 1 : 0;
     if (target > 0 && performance.now() < bloomActiveUntil && !bloomSuppressedByBrake) {
       const releasedAtMs = performance.now();
-      bloomNode?.port.postMessage({ type: "RELEASE" });
+      if (bloomAudioActive) bloomNode?.port.postMessage({ type: "RELEASE" });
+      bloomAudioActive = false;
       bloomReleasedAtMs = releasedAtMs;
       bloomActiveUntil = releasedAtMs + BLOOM_RELEASE_SECONDS * 1000;
       bloomSuppressedByBrake = true;
@@ -506,15 +510,16 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
       bloomSuppressedByBrake = false;
       bloomRefractoryUntil = performance.now() + BLOOM_REFRACTORY_MS;
     }
-    post("BRAKE", { brake: brakeAmount });
-    junction?.setBrake(brakeAmount);
-    nightshift?.setBrake(brakeAmount);
+    const audibleBrake = vehicleEffectsEnabled ? brakeAmount : 0;
+    post("BRAKE", { brake: audibleBrake });
+    junction?.setBrake(audibleBrake);
+    nightshift?.setBrake(audibleBrake);
   }
 
   brakeTimer = window.setInterval(tickBrake, BRAKE_TICK_MS);
 
   function applyAccelerationMacro(time = context.currentTime) {
-    const parameters = accelerationMacroParameters(accelerationAmount);
+    const parameters = accelerationMacroParameters(vehicleEffectsEnabled ? accelerationAmount : 0);
     accelerationScoop.gain.setTargetAtTime(parameters.midScoopDb, time, ACCELERATION_PARAM_SMOOTH_SECONDS);
     accelerationAir.frequency.setTargetAtTime(parameters.airShelfFrequencyHz, time, ACCELERATION_PARAM_SMOOTH_SECONDS);
     accelerationAir.gain.setTargetAtTime(parameters.airShelfDb, time, ACCELERATION_PARAM_SMOOTH_SECONDS);
@@ -571,11 +576,14 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
       && accelerationTrajectoryIsBloom(accelerationDetector)
       && !isBraking()
       && capturedAtMs >= bloomRefractoryUntil) {
-      bloomNode.port.postMessage({ type: "TRIGGER" });
       bloomTriggeredAtMs = capturedAtMs;
       bloomReleasedAtMs = null;
       bloomActiveUntil = capturedAtMs + BLOOM_GESTURE_MS;
       bloomRefractoryUntil = capturedAtMs + BLOOM_REFRACTORY_MS;
+      if (vehicleEffectsEnabled && bloomNode) {
+        bloomNode.port.postMessage({ type: "TRIGGER" });
+        bloomAudioActive = true;
+      }
     }
     if (observation.triggered || observation.released) publishArrangement(arrangement);
     reviewEffectBadges();
@@ -613,6 +621,31 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
       muted = nextMuted;
       masterGain.gain.setTargetAtTime(muted ? 0 : 1, context.currentTime, 0.015);
       post("MUTE", { muted });
+    },
+
+    /**
+     * Gates only the vehicle-reactive audio processing. Detection and macro
+     * snapshots keep running so every visual retains the same road response.
+     */
+    setVehicleEffectsEnabled(nextEnabled) {
+      vehicleEffectsEnabled = nextEnabled === true;
+      const audibleBrake = vehicleEffectsEnabled ? brakeAmount : 0;
+      applyAccelerationMacro();
+      post("BRAKE", { brake: audibleBrake });
+      junction?.setBrake(audibleBrake);
+      nightshift?.setBrake(audibleBrake);
+      if (!vehicleEffectsEnabled && bloomAudioActive) {
+        bloomNode?.port.postMessage({ type: "RELEASE" });
+        bloomAudioActive = false;
+      } else if (vehicleEffectsEnabled
+        && bloomNode
+        && !bloomAudioActive
+        && !bloomSuppressedByBrake
+        && performance.now() < bloomActiveUntil) {
+        bloomNode.port.postMessage({ type: "TRIGGER" });
+        bloomAudioActive = true;
+      }
+      return vehicleEffectsEnabled;
     },
 
     setScore(nextScoreId) {

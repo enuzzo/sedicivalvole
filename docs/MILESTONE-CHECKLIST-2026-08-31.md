@@ -16,15 +16,15 @@ still needs a human or target vehicle.
   release displaced sources;
 - [x] preserve authored `1×` rate and keep driving out of track selection,
   transport timing, tempo, and pitch;
-- [x] connect OPEN, UNDERWATER, and BLOOM behind a fresh-session `DRIVE FX`
-  master beside MUTE;
+- [x] connect OPEN, UNDERWATER, and BLOOM behind a shared footer `EFFECTS`
+  master beside MUTE, retaining SOUNDTRACK fresh-session opt-in;
 - [x] connect independent manual flanger, reverb, chorus, and bounded beat repeat;
 - [x] expose Soundtrack selection, preparation, playback, transport, effects,
   artwork, artist, title, licence, Jamendo credit, and direct link in the App;
 - [x] expose the same disposable music/effect test path in the protected LAB
   without including any music state in exported visual presets;
 - [x] verify a real admitted Jamendo track locally through the App and LAB, with
-  analyser activity, DRIVE FX enabled, explicit pause, and clean consoles;
+  analyser activity, EFFECTS enabled, explicit pause, and clean consoles;
 - [x] add focused relay, controller, worklet, packaging, and production-endpoint
   checks;
 - [ ] audition automatic braking/acceleration effects and all four manual
@@ -46,9 +46,22 @@ still needs a human or target vehicle.
 - [x] live catalogue/audio-range endpoint verification: 3 schema-valid tracks
   and a 1,024-byte `206 audio/mpeg` range with `Content-Range` and `no-store`;
 - [x] live cache-busted Browser interaction and console QA at the available
-  `1280 × 720` viewport, ending paused with DRIVE FX enabled;
+  `1280 × 720` viewport, ending paused with EFFECTS enabled;
 - [x] deployment evidence recorded for build `20260831-0249`; final documentation
   checkpoint pushed with a clean aligned tree.
+
+## Footer control checkpoint
+
+- [x] expose one `EFFECTS` audio master beside MUTE for every music mode;
+- [x] keep vehicle macro detection and visual response alive while audio effects
+  are off;
+- [x] preserve PLAY THE ROAD effects-on and SOUNDTRACK fresh-session effects-off
+  defaults;
+- [x] show 1.5-second centred `VOLUME ON/OFF` and `EFFECTS ON/OFF` notices;
+- [x] compact the far-right palette to `138 px` at exact `773 × 601` and `160 px`
+  at `1280 × 720`, with no horizontal or vertical document overflow;
+- [x] focused runtime/UI tests and local Browser interaction QA pass;
+- [ ] publish and verify this checkpoint at the canonical root.
 
 ## Deliberately not opened after the cutoff
 

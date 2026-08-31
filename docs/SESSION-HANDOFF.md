@@ -91,7 +91,9 @@ asserted.
   never become a persistent or offline audio store;
 - every fixed recording remains at authored `1×`; driving never selects or
   retimes it;
-- `DRIVE FX` separately enables OPEN/UNDERWATER/BLOOM from vehicle macros;
+- the footer `EFFECTS` master separately gates audible OPEN/UNDERWATER/BLOOM;
+  the shared vehicle macros continue to drive visuals, PLAY THE ROAD starts on,
+  and SOUNDTRACK requires fresh-session opt-in;
 - manual flanger, reverb, chorus, and beat repeat remain passenger-operated;
 - App and protected LAB expose transport and direct artist/title/licence/Jamendo
   credit; physical-Tesla listening and audible equal-power skips remain open.

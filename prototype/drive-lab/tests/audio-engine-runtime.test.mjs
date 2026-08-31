@@ -493,6 +493,46 @@ test("a confirmed OPEN trajectory drives the parallel rising focus sweep", async
   });
 });
 
+test("the vehicle-effects master silences audio processing without suppressing visual macros", async () => {
+  const effects = [];
+  await withFakeAudioEnvironment({}, async ({ createAudioEngine, context, timers, setClock }) => {
+    const engine = createAudioEngine(undefined, (effect) => effects.push(effect));
+    await engine.setScore("fracture");
+    const fractureNode = context.worklets.find((node) => node.processorName === "score-processor");
+    const accelerationFocusGain = context.gains[10];
+
+    engine.setVehicleEffectsEnabled(false);
+    setClock(1);
+    engine.setSpeed(10);
+    setClock(801);
+    engine.setSpeed(27);
+    setClock(1601);
+    engine.setSpeed(44);
+    for (let tick = 0; tick < 6; tick += 1) timers.runIntervals(40);
+
+    assert.ok(engine.getMacroSnapshot().values.open > 0.2, "the visual OPEN macro stopped");
+    assert.equal(accelerationFocusGain.gain.value, 0, "OPEN remained audible with effects off");
+    assert.equal(effects.includes("OPEN"), true, "the shared road gesture was no longer reported");
+
+    engine.brake();
+    for (let tick = 0; tick < 8; tick += 1) timers.runIntervals(40);
+    assert.ok(engine.getMacroSnapshot().values.underwater > 0.4, "the visual UNDERWATER macro stopped");
+    assert.equal(
+      fractureNode.port.messages.filter((message) => message.type === "BRAKE").at(-1).payload.brake,
+      0,
+      "UNDERWATER remained audible with effects off",
+    );
+
+    engine.setVehicleEffectsEnabled(true);
+    assert.ok(accelerationFocusGain.gain.value > 0.2, "OPEN did not return when effects were enabled");
+    assert.ok(
+      fractureNode.port.messages.filter((message) => message.type === "BRAKE").at(-1).payload.brake > 0.4,
+      "UNDERWATER did not return when effects were enabled",
+    );
+    engine.destroy();
+  });
+});
+
 test("a BLOOM processor error reconnects the direct score bus before removing the failed node", async () => {
   await withFakeAudioEnvironment({ bloomModule: Promise.resolve() }, async ({ createAudioEngine, context }) => {
     const engine = createAudioEngine();
