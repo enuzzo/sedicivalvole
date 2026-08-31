@@ -1625,7 +1625,7 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
   overflow: visible;
   border: 0;
   border-radius: 0;
-  background: var(--ink);
+  background: color-mix(in srgb, var(--paper) 40%, var(--ink));
 }
 .illobo-featured-cover img {
   position: absolute;
@@ -1636,7 +1636,6 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
 }
 .illobo-featured-cover img:first-child { animation: illobo-featured-solid 8s linear infinite; }
 .illobo-featured-cover img:last-child {
-  filter: invert(1);
   animation: illobo-featured-outline 8s linear infinite;
 }
 @keyframes illobo-featured-solid {
