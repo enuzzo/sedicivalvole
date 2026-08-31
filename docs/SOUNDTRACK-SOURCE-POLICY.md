@@ -134,10 +134,14 @@ private messages or credentials never enter the repository.
   The App Music drawer switches between Play the Road and Soundtrack; within
   Soundtrack it presents equal compact Illobo Featured and Jamendo Library
   alternatives, real cover previews, immediate play by pace/genre/exact track,
-  and the 30-minute refresh notice. Both surfaces expose current-track credit,
-  direct Jamendo navigation, transport, the global vehicle-FX master, and four
-  manual effects. The modelled 450 ms audible equal-power queue commit, QR UI,
-  target-vehicle tuning, and physical-Tesla acceptance remain later checkpoints.
+  and the 30-minute refresh notice. Both surfaces expose audio-clock-derived
+  audible credits, direct Jamendo navigation, transport, the global vehicle-FX
+  master, and four manual effects. The production deck applies the nominal
+  `450 ms` equal-power model through normal skips, reversals, and rapid
+  third-deck retargeting without exceeding three transient elements. The compact
+  QR opens the current public track page and never exposes its relay or stream.
+  Canonical publication, target-vehicle tuning, and physical-Tesla acceptance
+  remain later checkpoints.
   `preparedMetadataSlots`
   reports metadata roles only; it is not an audio-buffer or offline-duration
   claim. No persistent audio layer is approved or planned.

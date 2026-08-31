@@ -201,8 +201,11 @@ stable half-hour shuffle, and treats pace, genre, and exact-track gestures as
 explicit immediate play requests. The main App master affects only audio processing: macro detection
 and visual response continue independently. Metadata remains short-lived and
 audio remains non-persistent.
-Audible equal-power queue commit, QR handoff, and target-Tesla tuning remain
-later boundaries.
+The production deck now performs the nominal `450 ms` equal-power queue commit,
+including reversal and third-deck retargeting, and derives every visible credit
+from the same audio-clock gain vector. Its compact QR opens the current public
+content page rather than the no-store stream relay. Canonical publication and
+target-Tesla tuning remain later boundaries.
 
 JUNCTION is a 192-bar rendered production: eight adaptive energy states each
 have three complete takes, giving 24 clips from 76 distinct recordings in one

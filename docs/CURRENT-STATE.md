@@ -357,9 +357,13 @@ dated study documents.
   gates only audible OPEN/UNDERWATER/BLOOM processing while the same vehicle
   macros remain available to every visual; PLAY THE ROAD starts enabled and
   SOUNDTRACK remains a fresh-session opt-in. Manual flanger, reverb, chorus,
-  and beat-repeat controls stay independent. The visible card
-  follows the active track and exposes artwork, artist, title, licence, Jamendo
-  credit, and the direct source link. The running Music drawer now separates
+  and beat-repeat controls stay independent. The visible card follows the
+  audio-clock gain mix and exposes every genuinely audible artwork, artist,
+  title, licence, Jamendo credit, and direct source link. Manual changes use the
+  tested nominal `450 ms` equal-power curve for normal skips, reversals, and
+  rapid third-deck retargeting while keeping the media-element ceiling at three.
+  A compact QR follows the requested current track and opens only its public
+  Jamendo page, never the relay or stream URL. The running Music drawer now separates
   **Play the Road** from **Soundtrack** without inaccurately calling every
   adaptive score generative. Soundtrack presents compact, equal-weight **Illobo
   Featured** and **Jamendo Library** alternatives. The Featured playlist and
@@ -368,9 +372,9 @@ dated study documents.
   genre, or exact track starts playback immediately. Pace is manual discovery
   metadata only: it can never follow vehicle speed or retime audio. MUTE and FX
   stay universal in the footer, and disabling FX suppresses audio processing
-  without stopping visual macro detection. Audible crossfade/rapid-retarget
-  integration, the QR handoff, and physical-Tesla listening remain open; no
-  offline-duration promise is made. See
+  without stopping visual macro detection. Canonical publication and
+  physical-Tesla listening of crossfade, buffering, touch, QR, transport,
+  licence and effects behavior remain open; no offline-duration promise is made. See
   [`SOUNDTRACK-SOURCE-POLICY.md`](SOUNDTRACK-SOURCE-POLICY.md).
 - **The running footer has its compact control geometry.** MUTE and EFFECTS are
   adjacent, both announce a 1.5-second centred status, and the two-row palette is
@@ -445,35 +449,38 @@ dated study documents.
 
 ## Open work
 
-1. Validate the complete ATLAS route, pulsing vehicle point, three-state GPS
+1. Publish Soundtrack checkpoint `2dd3cb5`, run exact live `773 × 601` Browser
+   QA with real Jamendo metadata, and then execute Tesla tests `R7-01`–`R7-06`
+   from [`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md).
+2. Validate the complete ATLAS route, pulsing vehicle point, three-state GPS
    control, measured 30 FPS ATLAS cadence and corrected NIGHTSHIFT level in the
    Tesla after publication.
-2. Validate DRIVEY automatic road/curve following, ten-second zero hold,
+3. Validate DRIVEY automatic road/curve following, ten-second zero hold,
    zero-to-motion resume, opposing-only traffic and both native palette channels
    in the Tesla. Validate ATLAS multitouch, live GPS
    recovery, map matching, route continuity, point/ripple behavior, passenger readability and palette
    contrast on the target screen.
-3. Perform low-volume listening and a real-Tesla drive across FRACTURE's full
+4. Perform low-volume listening and a real-Tesla drive across FRACTURE's full
    ascent/descent and boundary reversals, JUNCTION's long PARK holds and later
    transition, NIGHTSHIFT's PARK form and complete `85–140 BPM` ascent/descent,
    and the OPEN/BLOOM gain changes. Automated visual, structural and
    loudness evidence is not perceptual acceptance.
-4. Audition NIGHTSHIFT at low volume, verify perceived phrasing and loudness
+5. Audition NIGHTSHIFT at low volume, verify perceived phrasing and loudness
    against both existing scores, then validate acceleration/reversal behavior in
    the target Tesla. Automated measurements are not perceptual acceptance.
-5. Keep JUNCTION real-audio pitch admission disabled until isolated-source
+6. Keep JUNCTION real-audio pitch admission disabled until isolated-source
    provenance can satisfy the now-tracked ADSR/filter/phase/detune/chorus/
    spectral/saturation and stereo-coherence validity gates. The synthetic stack
    is complete; its explicit abstention is the current correct result.
-6. Validate PRTCL motion, performance, touch, and thermal behavior on the target
+7. Validate PRTCL motion, performance, touch, and thermal behavior on the target
    Tesla. Present exactly three original Gradient Field directions before any
    implementation, then admit only the selected direction through a fresh
    licence and performance gate. Validate the revised OPEN intake at real
    playback level.
-7. Design Engine only after exactly three Engine-specific directions are shown
+8. Design Engine only after exactly three Engine-specific directions are shown
    and one is selected. Keep `VERSION` at `0.0.0` until an explicit release is
    approved.
-8. Build the queued landscape-first iPhone presentation across representative
+9. Build the queued landscape-first iPhone presentation across representative
    `667 × 375` through `932 × 430` Safari viewports. Apply safe-area insets,
    replace the interactive phone portrait layout with an accessible inert
    rotation notice, and preserve the running session across a live rotation

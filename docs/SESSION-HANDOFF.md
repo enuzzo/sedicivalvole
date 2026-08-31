@@ -96,16 +96,21 @@ asserted.
 
 - server-side Jamendo catalogue and exact-ID no-store audio relays keep the read
   credential outside browser code and reject incomplete/effects-disallowed items;
-- three transient previous/current/next media elements use explicit playback and
-  never become a persistent or offline audio store;
+- three transient previous/current/next media elements use explicit playback,
+  independent transition gain stages, and never become a persistent or offline
+  audio store;
 - every fixed recording remains at authored `1×`; driving never selects or
   retimes it;
 - the footer `EFFECTS` master separately gates audible OPEN/UNDERWATER/BLOOM;
   the shared vehicle macros continue to drive visuals, PLAY THE ROAD starts on,
   and SOUNDTRACK requires fresh-session opt-in;
 - manual flanger, reverb, chorus, and beat repeat remain passenger-operated;
-- App and protected LAB expose transport and direct artist/title/licence/Jamendo
-  credit; physical-Tesla listening and audible equal-power skips remain open;
+- App and protected LAB expose transport plus audio-clock-derived
+  artist/title/licence/Jamendo credits. Manual changes use the tested nominal
+  `450 ms` equal-power model through normal skips, reversals, and rapid
+  third-deck retargeting without exceeding three media elements. The visible
+  card includes every genuinely audible credit, and a compact QR opens the exact
+  current public track page without exposing a relay or stream URL;
 - the running Music drawer keeps one explicit **Play the Road** / **Soundtrack**
   switch. Do not label the first branch `Generative`, because JUNCTION and
   NIGHTSHIFT are adaptive sampled scores. Soundtrack gives equal visual and
@@ -163,9 +168,19 @@ report `remote_writes=NONE`, HTML/JavaScript/CSS are byte-identical, and exact
 NIGHTSHIFT to JUNCTION and observes zero warning/error. Rows 2, 4 and 5 remain
 physical-Tesla gates.
 
+Milestone row 7's office implementation is pushed at `2dd3cb5`. Focused
+transition/deck/attribution checks pass `35/35`; the complete suite passes
+`484/484`, and the 145-module App / 70-module LAB / Sites build passes. The
+canonical publication and live real-catalog Browser QA are the next office
+gate. After publication, use the stable `R7-01`–`R7-06` identifiers in
+[`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md); the row
+cannot close until those cabin results pass.
+
 Continue only from the 17-row execution order in
 [`MILESTONE-CHECKLIST-2026-08-31.md`](MILESTONE-CHECKLIST-2026-08-31.md). The
-first and sixth rows are complete; the second is physical-Tesla acceptance. Do not reopen
+first and sixth rows are complete; the second is physical-Tesla acceptance and
+the seventh is split between finished office implementation and open
+publication/Tesla gates. Do not reopen
 the route/dot treatment as an ATLAS design exploration: only the still-unwired
 road/cardinal overlay retains the exactly-three direction gate.
 

@@ -1316,6 +1316,34 @@ deadline could not cover the measured boundary, and then exercise failure and
 recovery for both scores. This changes readiness policy, not bank format or
 authored playback rate.
 
+### 6.9 A fixed-recording skip is a short mix, not a metadata swap
+
+The first Soundtrack player paused the audible media before it promoted and
+played the next prepared element. That control flow was logically tidy but
+audibly guaranteed a hole, and the visible credit could follow the latest click
+rather than the sound still leaving the speakers. Fixed recordings need the
+same sample-conscious transition discipline as an authored score even though
+their arrangement does not react to driving.
+
+Each transient media element now enters the shared effects chain through its
+own gain stage. The nominal `450 ms` equal-power state supplies matched
+65-sample AudioParam curves, so squared gain remains one through a normal skip.
+A reversal begins from the gain vector that is actually audible at that audio
+clock instant; a third prepared target can join without a level hole. The deck
+retains at most three media elements. A fourth simultaneous identity is not
+silently mixed: the controller collapses to the current dominant deck and
+starts a fresh bounded transition.
+
+Attribution must be computed from the same gain vector. During a fade the card
+names every track above the audible epsilon, marks the requested target, and
+settles only when the guarded audio-clock revision completes. The QR is a
+separate passenger handoff for the requested current track and points to the
+public content page, never the audio relay or stream. Tests must cover the
+normal `450 ms` duration, mid-fade reversal, third-target retarget, unit power,
+three-element bound, stale completion, and all audible credits. Cabin listening
+still decides whether the transition is perceptually clean through the Tesla
+browser and sound system.
+
 ---
 
 ## 7. Sources and material

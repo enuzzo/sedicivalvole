@@ -88,7 +88,10 @@ Library** alternatives. The Jamendo branch previews real cover art and starts
 immediately from a selected pace, genre, or track. Its deterministic fresh mix
 changes every 30 minutes. Pace remains passenger-selected discovery metadata and
 never follows road speed or retimes audio; every recording remains at authored
-`1×`.
+`1×`. Manual track changes use a nominal `450 ms` equal-power transition across
+at most three transient decks. The visible credit follows the audio-clock mix
+during rapid retargeting, while a compact QR always hands the passenger the
+current public track page rather than an audio stream URL.
 The launcher now
 establishes the owner-selected LIGHT **Road Sheet** language: one warm-ivory open
 sheet, a compact left-aligned 16 Road and Orbitron wordmark lockup, hairline
