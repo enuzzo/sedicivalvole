@@ -132,14 +132,15 @@ asserted.
 
 ## Immediate work
 
-The session started from clean `main == origin/main == bb5a2c9`. The drive
-corrections are implementation checkpoint `ac11ed0`; milestone-row-6 audio
-evidence/recovery is implementation checkpoint `614872b`; its synchronized
-documentation/source checkpoint is `d1e3fb0`; canonical live build is
-`20260831-1143`. Guarded no-delete publication, pre/postflight
-`remote_writes=NONE`, HTML/main/CSS/ATLAS/MapLibre byte identity, and
-cache-busted exact `773 × 601` Browser QA pass. The Illobo mark remains
-explicitly provisional until the owner supplies the final logo.
+The session started from clean `main == origin/main == bb5a2c9`. Drive
+corrections are checkpoint `ac11ed0`; milestone-row-6 audio evidence/recovery
+is `614872b`; row-7 transition mechanics are `2dd3cb5`, atomic rollback is
+`8f03b34`, and transient transport activation is `dcb6801`. Canonical live
+build is `20260831-1241` from source/documentation checkpoint `7feea06`.
+Guarded no-delete publication, pre/postflight `remote_writes=NONE`, canonical
+HTML/main/CSS/worklet byte identity and catalogue/audio relay probes pass. The
+Illobo mark remains explicitly provisional until the owner supplies the final
+logo.
 
 The published corrections provide complete ATLAS-view route retention with origin-preserving bounded
 compaction, one interpolated pulsing point/ripple, two-line colour-coded GPS,
@@ -177,16 +178,20 @@ media `play()` consumed Chromium's transient transport activation, so coherent
 rollback stopped the prior track. Correction `dcb6801` requests both audible
 decks before that await and has a deterministic ordering regression test. The
 complete suite passes `486/486`, and the 145-module App / 70-module LAB / Sites
-build passes. Publish the correction and repeat normal plus rapid live navigation before using stable
-`R7-01`–`R7-06` identifiers in
+build passes. Build `20260831-1241` at `7feea06` is canonical after protected
+publication, read-only pre/postflight, byte-identical HTML/main/CSS/worklet and
+live catalogue/audio relay probes. Exact Browser layout/build/log QA passes,
+but automated live transport is not claimed because Browser control blocked
+direct `.php` catalogue access and later detached. Use stable `R7-01`–`R7-06`
+identifiers for the evening cabin run in
 [`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md); the row
 cannot close until those cabin results pass.
 
 Continue only from the 17-row execution order in
 [`MILESTONE-CHECKLIST-2026-08-31.md`](MILESTONE-CHECKLIST-2026-08-31.md). The
 first and sixth rows are complete; the second is physical-Tesla acceptance and
-the seventh is split between corrected office implementation and open
-publication/Tesla gates. Do not reopen
+the seventh is split between published office implementation and open Tesla
+gates. Do not reopen
 the route/dot treatment as an ATLAS design exploration: only the still-unwired
 road/cardinal overlay retains the exactly-three direction gate.
 

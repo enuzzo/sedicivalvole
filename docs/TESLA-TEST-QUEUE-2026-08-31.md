@@ -8,7 +8,7 @@ behavior.
 
 Do not begin the run until the final canonical build stamp is recorded below.
 
-- **Final test build:** pending the corrective build after rejected candidates `20260831-1219` and `20260831-1229`
+- **Final test build:** `20260831-1241` · source/docs `7feea06` · transition correction `dcb6801`
 - **Target viewport:** Tesla split view, nominal CSS `773 × 601`
 - **Result states:** `PASS`, `FAIL`, `NOT RUN`, `BLOCKED`
 - **Safety:** a passenger operates controls and records evidence; the driver
@@ -52,17 +52,17 @@ Do not begin the run until the final canonical build stamp is recorded below.
 
 ## Soundtrack mechanics — milestone row 7
 
-These tests become runnable only after row 7 is published and the final build
-stamp at the top of this file is updated.
+These tests are now runnable on the final build recorded above. Office tests
+cannot substitute for the audible physical-cabin verdict.
 
 | ID | Status | Test | PASS condition | Linked work |
 |---|---|---|---|---|
-| `R7-01` | BLOCKED — PUBLICATION PENDING | Play Soundtrack, then use NEXT and PREVIOUS at normal intervals. | Every change is an audible nominal `450 ms` equal-power crossfade with no click or silence. | Implemented at `2dd3cb5`; audible media-deck transition wiring. |
-| `R7-02` | BLOCKED — PUBLICATION PENDING | While a fade is active, perform `NEXT → PREVIOUS → NEXT` rapidly. | The audible mix never drops; the licence/credit card never names a non-audible track and settles on the final target. | Implemented at `2dd3cb5`; rapid-retarget transition and attribution state. |
-| `R7-03` | BLOCKED — PUBLICATION PENDING | Start with a slow connection, observe buffering, then recover; if practical, briefly interrupt connectivity. | Loading/error state is truthful, current audio is not silently replaced, and recovery remains inside Soundtrack. | Browser-owned readiness and error boundary. |
-| `R7-04` | BLOCKED — PUBLICATION PENDING | Scan the compact QR for the current track, change track, and scan again. | Each QR opens the exact current public track page; no stream URL or stale prior-track destination is exposed. | Implemented at `2dd3cb5`; compact direct-content QR handoff. |
-| `R7-05` | BLOCKED — PUBLICATION PENDING | From the passenger seat, operate track rows, PREVIOUS/PLAY/NEXT, licence links, and the QR at `773 × 601`. | Controls are comfortably reachable; transport targets are at least `48 px`; the complete licence/artist credit remains legible. | Implemented at `2dd3cb5`; Soundtrack drawer touch and attribution treatment. |
-| `R7-06` | BLOCKED — PUBLICATION PENDING | Set each manual effect, skip in both directions, toggle global OPEN/UNDERWATER/BLOOM, then pause/resume. | Effects remain continuous and attached to the audible tracks; playback stays fixed at `1×`; no stuck processing or level jump occurs. | Implemented at `2dd3cb5`; shared effects bus across media-deck transitions. |
+| `R7-01` | NOT RUN | Play Soundtrack, then use NEXT and PREVIOUS at normal intervals. | Every change is an audible nominal `450 ms` equal-power crossfade with no click or silence. | Published in build `20260831-1241`; audible media-deck transition wiring plus transient gesture ordering. |
+| `R7-02` | NOT RUN | While a fade is active, perform `NEXT → PREVIOUS → NEXT` rapidly. | The audible mix never drops; the licence/credit card never names a non-audible track and settles on the final target. | Published in build `20260831-1241`; rapid-retarget transition, atomic queue commit and attribution state. |
+| `R7-03` | NOT RUN | Start with a slow connection, observe buffering, then recover; if practical, briefly interrupt connectivity. | Loading/error state is truthful, current audio is not silently replaced, and recovery remains inside Soundtrack. | Browser-owned readiness and error boundary. |
+| `R7-04` | NOT RUN | Scan the compact QR for the current track, change track, and scan again. | Each QR opens the exact current public track page; no stream URL or stale prior-track destination is exposed. | Published in build `20260831-1241`; compact direct-content QR handoff. |
+| `R7-05` | NOT RUN | From the passenger seat, operate track rows, PREVIOUS/PLAY/NEXT, licence links, and the QR at `773 × 601`. | Controls are comfortably reachable; transport targets are at least `48 px`; the complete licence/artist credit remains legible. | Published in build `20260831-1241`; Soundtrack drawer touch and attribution treatment. |
+| `R7-06` | NOT RUN | Set each manual effect, skip in both directions, toggle global OPEN/UNDERWATER/BLOOM, then pause/resume. | Effects remain continuous and attached to the audible tracks; playback stays fixed at `1×`; no stuck processing or level jump occurs. | Published in build `20260831-1241`; shared effects bus across media-deck transitions. |
 
 ## Evening closeout
 

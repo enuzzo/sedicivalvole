@@ -375,8 +375,8 @@ dated study documents.
   without stopping visual macro detection. The second live candidate proved
   that incoming media playback must be requested before awaiting effects/worklet
   readiness so Chromium retains the transport gesture's transient activation;
-  checkpoint `dcb6801` enforces and tests that ordering. Corrective canonical
-  publication and physical-Tesla listening of crossfade, buffering, touch, QR,
+  checkpoint `dcb6801` enforces and tests that ordering. Build `20260831-1241`
+  publishes that correction. Physical-Tesla listening of crossfade, buffering, touch, QR,
   transport, licence and effects behavior remain open; no offline-duration promise is made. See
   [`SOUNDTRACK-SOURCE-POLICY.md`](SOUNDTRACK-SOURCE-POLICY.md).
 - **The running footer has its compact control geometry.** MUTE and EFFECTS are
@@ -434,17 +434,17 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The canonical live product is version `0.0.0`, source commit `051d637`, build
-  `20260831-1229`. Its guarded publication, read-only postflight and
-  HTML/JavaScript/CSS/BLOOM-worklet byte identity pass. Exact clean single-tab
-  `773 × 601` Browser QA verifies real Jamendo playback, the credit card,
-  current-track QR and transport, but rejects this candidate for evening
-  testing: its atomic rollback keeps metadata coherent when an incoming deck
-  fails, yet normal NEXT stops the prior track because the incoming `play()`
-  starts only after awaiting effects readiness. Local correction `dcb6801`
-  requests both audible decks inside transient transport activation, passes the
-  complete `486/486` suite plus 145-module App / 70-module LAB / Sites build,
-  and remains pending canonical publication and repeat live proof. Exact
+- The canonical live product is version `0.0.0`, source/documentation commit
+  `7feea06`, build `20260831-1241`, with transition correction `dcb6801`. Its
+  guarded 108-file publication, read-only pre/postflight and
+  HTML/JavaScript/CSS/BLOOM-worklet byte identity pass. Catalogue and two
+  exact-ID audio relay probes pass with schema-valid metadata and ranged
+  `206 audio/mpeg` responses. Exact `773 × 601` Browser QA verifies build and
+  launch layout with zero warning/error, but automated live transport is not
+  claimed because both available control surfaces blocked direct `.php`
+  catalogue access and the Chrome control session later detached. The complete
+  `486/486` suite plus 145-module App / 70-module LAB / Sites build pass, while
+  the physical-cabin checks remain `R7-01`–`R7-06`. Exact
   progressive evidence is in [`DEPLOY.md`](DEPLOY.md).
 - Diagnostic telemetry contains no coordinates and is sent only after the
   explicit `SEND DIAGNOSTIC` action. ATLAS location is a separate ephemeral
@@ -453,9 +453,10 @@ dated study documents.
 
 ## Open work
 
-1. Publish Soundtrack correction `dcb6801`, run exact live `773 × 601` Browser
-   QA with real Jamendo metadata, and then execute Tesla tests `R7-01`–`R7-06`
-   from [`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md).
+1. Execute Tesla tests `R7-01`–`R7-06` on live build `20260831-1241` from
+   [`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md), including
+   the live audio transport evidence that the available office Browser-control
+   surfaces could not collect.
 2. Validate the complete ATLAS route, pulsing vehicle point, three-state GPS
    control, measured 30 FPS ATLAS cadence and corrected NIGHTSHIFT level in the
    Tesla after publication.

@@ -8,6 +8,39 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Soundtrack row 7 corrective test build — 2026-08-31 12:50
+
+- build stamp: **`20260831-1241`**; deployed source/documentation checkpoint:
+  **`7feea06`**; transient-user-activation correction: **`dcb6801`**;
+- protected publication: **PASS**. Read-only preflight/postflight passed with
+  canonical identity, eight root entries and `remote_writes=NONE`. The
+  `--preserve-existing` upload transferred **108 files / 17,009,929 bytes**,
+  retained the static/legacy tree and one prior fingerprinted asset;
+- canonical HTTP identity: **PASS**. Cache-busted HTML returned `200`,
+  no-store/no-cache, `nosniff` and cache `MISS`. HTML SHA-256 is
+  `6b8faf6103aa088d5e9d14b0f9b3f56a32befbb423129d2a560fdf5cf36a096e`;
+  JavaScript `assets/index-IUAUAGqO.js` is
+  `1235e0c93d278d9d770a693d85b0062da2272741cfcf6595fd37ede65f0bd771`;
+  CSS `assets/index-DhhWIT7Y.css` is
+  `fb314622b23c83541168621080bf672902ace02c8f8537a2e63f13bb472c6dde`;
+  BLOOM worklet `assets/bloom-processor-D718jG56.js` is
+  `6561b35a7ee7c753ee858e4682894adacc7010001f073210844b93bb102f222a`.
+  Every digest is byte-identical to local and the checked worklet has JavaScript
+  MIME;
+- live source endpoints: **PASS by direct HTTP evidence**. The catalogue
+  returned schema-valid admitted Jamendo metadata; exact-ID requests for tracks
+  `1119654` and `135660` each returned `206 audio/mpeg`, `Content-Range`,
+  `Accept-Ranges: bytes`, `Access-Control-Allow-Origin: *` and no-store/no-cache;
+- exact `773 × 601` Browser evidence: build identity, launch layout and zero
+  observed console warning/error **PASS**. Automated live audio transport is
+  **NOT CLAIMED**: both available Browser-control surfaces blocked direct
+  `.php` catalogue navigation with `ERR_BLOCKED_BY_CLIENT`, and the Chrome
+  control session later detached. Earlier build `20260831-1229` did reproduce
+  real first-track playback and the delayed-play failure; `dcb6801` is covered
+  by deterministic user-activation ordering plus atomic rollback, transition,
+  attribution and full-suite tests. This is the published evening Tesla test
+  build, but `R7-01`–`R7-06` remain physical-cabin gates.
+
 ## Soundtrack row 7 second rejected candidate — 2026-08-31 12:30
 
 - build stamp: **`20260831-1229`**; deployed source/documentation checkpoint:
