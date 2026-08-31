@@ -167,10 +167,16 @@ export function createSoundtrackPreviewController({
       mediaSnapshot = nextSnapshot;
       emit();
     },
-    onEnded() {
-      if (!destroyed) void move("next");
+    onEnded(entry) {
+      if (!destroyed) void advanceAfterEnded(entry);
     },
     onError(detail) {
+      const currentKey = queueState?.slots?.current?.key;
+      const audibleKeys = new Set(mediaSnapshot?.audibleKeys ?? []);
+      if (detail?.key && detail.key !== currentKey && !audibleKeys.has(detail.key)) {
+        emit();
+        return;
+      }
       error = [
         detail?.code ?? "media-error",
         Number.isFinite(detail?.mediaErrorCode) ? `code-${detail.mediaErrorCode}` : null,
@@ -181,14 +187,64 @@ export function createSoundtrackPreviewController({
     },
   });
 
+  async function advanceAfterEnded(endedEntry) {
+    if (destroyed || !catalogResult || !queueState) return snapshot();
+    if (endedEntry?.key !== queueState.slots.current?.key) return snapshot();
+    const revision = ++requestRevision;
+    clearTransitionTimers();
+    const movement = moveSoundtrackQueue(queueState, catalogResult.catalog, "next");
+    if (!movement.activated) {
+      status = "error";
+      error = movement.blockedReason;
+      return emit();
+    }
+
+    queueState = movement.state;
+    const targetKey = queueState.slots.current.key;
+    transitionState = createSoundtrackTransitionState(targetKey, clockTime());
+    mediaSnapshot = deck.syncQueue(queueState, { restartKeys: [targetKey] });
+    effects.setImmediateTrackGains?.({ [targetKey]: 1 });
+    status = "prepared";
+    error = null;
+    emit();
+
+    let started;
+    try {
+      [started] = await Promise.all([deck.playCurrent(), effects.resume()]);
+    } catch (caught) {
+      if (destroyed || revision !== requestRevision) return snapshot();
+      mediaSnapshot = deck.pauseExcept([]);
+      status = "error";
+      error = String(caught?.message || caught || "audio-resume-failed").slice(0, 80);
+      return emit();
+    }
+    if (destroyed || revision !== requestRevision) return snapshot();
+    if (!started.ok) {
+      status = "error";
+      error = error || started.reason;
+      return emit();
+    }
+    status = "playing";
+    error = null;
+    return emit();
+  }
+
   const playPreparedCurrent = async (revision) => {
-    await effects.resume();
     const currentKey = queueState?.slots?.current?.key;
     if (currentKey) {
       transitionState = createSoundtrackTransitionState(currentKey, clockTime());
       effects.setImmediateTrackGains?.({ [currentKey]: 1 });
     }
-    const result = await deck.playCurrent();
+    let result;
+    try {
+      [result] = await Promise.all([deck.playCurrent(), effects.resume()]);
+    } catch (caught) {
+      if (destroyed || revision !== requestRevision) return snapshot();
+      mediaSnapshot = deck.pauseExcept([]);
+      status = "error";
+      error = String(caught?.message || caught || "audio-resume-failed").slice(0, 80);
+      return emit();
+    }
     if (destroyed || revision !== requestRevision) return snapshot();
     if (!result.ok) {
       status = "error";
@@ -219,6 +275,14 @@ export function createSoundtrackPreviewController({
     clearTransitionTimers();
     if (destroyed || revision !== requestRevision) return snapshot();
     const previousQueueState = queueState;
+    const restorePreviousQueue = () => {
+      const previousKey = previousQueueState?.slots?.current?.key;
+      if (!previousKey) return;
+      transitionState = createSoundtrackTransitionState(previousKey, clockTime());
+      effects.setImmediateTrackGains?.({ [previousKey]: 1 });
+      mediaSnapshot = deck.pauseExcept([previousKey]);
+      mediaSnapshot = deck.syncQueue(previousQueueState, { audibleKeys: [previousKey] });
+    };
     const targetKey = nextQueueState?.slots?.current?.key;
     const prepared = scheduleWithTrackLimit(targetKey, clockTime());
     if (prepared.blockedReason) {
@@ -244,16 +308,19 @@ export function createSoundtrackPreviewController({
     // first can make Chromium reject the incoming deck as autoplay.
     const playRequest = deck.playKeys(retainedKeys);
     const resumeRequest = effects.resume();
-    const [started] = await Promise.all([playRequest, resumeRequest]);
+    let started;
+    try {
+      [started] = await Promise.all([playRequest, resumeRequest]);
+    } catch (caught) {
+      if (destroyed || revision !== requestRevision) return snapshot();
+      restorePreviousQueue();
+      status = "error";
+      error = String(caught?.message || caught || "audio-resume-failed").slice(0, 80);
+      return emit();
+    }
     if (destroyed || revision !== requestRevision) return snapshot();
     if (!started.ok) {
-      const previousKey = previousQueueState?.slots?.current?.key;
-      if (previousKey) {
-        transitionState = createSoundtrackTransitionState(previousKey, clockTime());
-        effects.setImmediateTrackGains?.({ [previousKey]: 1 });
-        mediaSnapshot = deck.pauseExcept([previousKey]);
-        mediaSnapshot = deck.syncQueue(previousQueueState, { audibleKeys: [previousKey] });
-      }
+      restorePreviousQueue();
       status = "error";
       error = error || started.reason;
       return emit();
@@ -268,13 +335,7 @@ export function createSoundtrackPreviewController({
     transitionState = scheduled.state;
     const applied = effects.applyTransition?.(transitionState);
     if (applied?.ok === false) {
-      const previousKey = previousQueueState?.slots?.current?.key;
-      if (previousKey) {
-        transitionState = createSoundtrackTransitionState(previousKey, clockTime());
-        effects.setImmediateTrackGains?.({ [previousKey]: 1 });
-        mediaSnapshot = deck.pauseExcept([previousKey]);
-        mediaSnapshot = deck.syncQueue(previousQueueState, { audibleKeys: [previousKey] });
-      }
+      restorePreviousQueue();
       status = "error";
       error = applied.reason || "transition-gain-failed";
       return emit();
@@ -313,6 +374,8 @@ export function createSoundtrackPreviewController({
     nowMs = Date.now(),
   } = {}) => {
     if (destroyed) return snapshot();
+    const audibleBeforeLoad = queueState?.slots?.current?.key
+      && mediaSnapshot?.audibleKeys?.includes(queueState.slots.current.key);
     const revision = ++requestRevision;
     status = "loading";
     error = null;
@@ -328,9 +391,7 @@ export function createSoundtrackPreviewController({
         const queue = createSoundtrackQueue(rotatedCatalog);
         if (!queue.state.slots.current) throw new Error(queue.blockedReason || "catalog-empty");
         catalogResult = Object.freeze({ ...catalogResult, catalog: rotatedCatalog });
-        if (autoplay) return transitionToQueue(queue.state, revision, {
-          restartTarget: normalizedSelection.kind === "featured",
-        });
+        if (autoplay) return transitionToQueue(queue.state, revision, { restartTarget: true });
         queueState = queue.state;
         mediaSnapshot = deck.syncQueue(queueState);
         transitionState = createSoundtrackTransitionState(queueState.slots.current.key, clockTime());
@@ -367,7 +428,7 @@ export function createSoundtrackPreviewController({
       return playPreparedCurrent(revision);
     } catch (caught) {
       if (destroyed || revision !== requestRevision) return snapshot();
-      status = "error";
+      status = audibleBeforeLoad ? "playing" : "error";
       error = String(caught?.message || caught || "catalog-unavailable").slice(0, 80);
       return emit();
     }
@@ -390,7 +451,7 @@ export function createSoundtrackPreviewController({
     status = "prepared";
     error = null;
     emit();
-    return transitionToQueue(queue.state, revision);
+    return transitionToQueue(queue.state, revision, { restartTarget: true });
   };
 
   const move = async (direction) => {
@@ -405,7 +466,7 @@ export function createSoundtrackPreviewController({
     status = "prepared";
     error = null;
     emit();
-    return transitionToQueue(movement.state, revision);
+    return transitionToQueue(movement.state, revision, { restartTarget: true });
   };
 
   const pause = () => {

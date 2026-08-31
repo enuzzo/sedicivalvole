@@ -33,6 +33,7 @@ class FakeMedia {
   }
   addEventListener(name, listener) { this.listeners.set(name, listener); }
   removeEventListener(name) { this.listeners.delete(name); }
+  emit(name) { this.listeners.get(name)?.(); }
   removeAttribute(name) { if (name === "src") this.src = ""; }
   load() {}
   pause() { this.paused = true; }
@@ -210,19 +211,161 @@ test("a failed current deck cannot poison an explicitly selected replacement", a
 });
 
 test("manual next and previous keep reversible identities and playback ownership", async () => {
+  const mediaByKey = new Map();
   const controller = createSoundtrackPreviewController({
     fetchImpl: catalogFetch,
-    mediaFactory: () => new FakeMedia(),
+    mediaFactory: (entry) => {
+      const media = new FakeMedia();
+      const instances = mediaByKey.get(entry.key) ?? [];
+      instances.push(media);
+      mediaByKey.set(entry.key, instances);
+      return media;
+    },
   });
   await controller.load();
   const firstKey = controller.getSnapshot().current.key;
   const next = await controller.move("next");
+  mediaByKey.get(firstKey).at(-1).currentTime = 42;
   const previous = await controller.move("previous");
 
   assert.notEqual(next.current.key, firstKey);
   assert.equal(next.status, "playing");
   assert.equal(previous.current.key, firstKey);
   assert.equal(previous.media.currentAudibleKey, firstKey);
+  assert.equal(
+    mediaByKey.get(firstKey).at(-1).playPositions.at(-1),
+    0,
+    "returning to a settled previous track must restart it from the beginning",
+  );
+});
+
+test("natural track end advances once to a fresh target without replaying the ended deck", async () => {
+  const mediaByKey = new Map();
+  const controller = createSoundtrackPreviewController({
+    fetchImpl: catalogFetch,
+    mediaFactory: (entry) => {
+      const media = new FakeMedia();
+      mediaByKey.set(entry.key, media);
+      return media;
+    },
+    setTimer: () => ({}),
+    clearTimer: () => {},
+  });
+  await controller.load({ autoplay: true, nowMs: 0 });
+  const before = controller.getSnapshot();
+  const endedMedia = mediaByKey.get(before.current.key);
+  endedMedia.currentTime = endedMedia.duration;
+  endedMedia.paused = true;
+  endedMedia.ended = true;
+  endedMedia.emit("ended");
+  await new Promise((resolve) => setImmediate(resolve));
+
+  const advanced = controller.getSnapshot();
+  assert.equal(advanced.status, "playing");
+  assert.notEqual(advanced.current.key, before.current.key);
+  assert.equal(advanced.media.currentAudibleKey, advanced.current.key);
+  assert.equal(endedMedia.playPositions.length, 1, "the ended deck must never be replayed");
+  assert.equal(mediaByKey.get(advanced.current.key).playPositions.at(-1), 0);
+});
+
+test("a dormant preload error does not stop the audible track and is refreshed on activation", async () => {
+  const mediaByKey = new Map();
+  const controller = createSoundtrackPreviewController({
+    fetchImpl: catalogFetch,
+    mediaFactory: (entry) => {
+      const media = new FakeMedia();
+      const instances = mediaByKey.get(entry.key) ?? [];
+      instances.push(media);
+      mediaByKey.set(entry.key, instances);
+      return media;
+    },
+  });
+  await controller.load({ autoplay: true, nowMs: 0 });
+  const before = controller.getSnapshot();
+  const targetKey = before.media.roles.next.key;
+  const failedPreload = mediaByKey.get(targetKey).at(-1);
+  failedPreload.error = { code: 2 };
+  failedPreload.emit("error");
+
+  const degraded = controller.getSnapshot();
+  assert.equal(degraded.status, "playing");
+  assert.equal(degraded.error, null);
+  assert.equal(degraded.media.currentAudibleKey, before.current.key);
+
+  const moved = await controller.move("next");
+  assert.equal(moved.status, "playing");
+  assert.equal(moved.current.key, targetKey);
+  assert.notEqual(mediaByKey.get(targetKey).at(-1), failedPreload);
+  assert.equal(mediaByKey.get(targetKey).at(-1).playPositions.at(-1), 0);
+});
+
+test("a failed playlist request preserves the already audible track and transport state", async () => {
+  let requests = 0;
+  const controller = createSoundtrackPreviewController({
+    fetchImpl: async () => {
+      requests += 1;
+      if (requests === 1) return catalogFetch();
+      return { ok: false, json: async () => ({ status: "upstream_unavailable" }) };
+    },
+    mediaFactory: () => new FakeMedia(),
+  });
+  await controller.load({ autoplay: true, nowMs: 0 });
+  const before = controller.getSnapshot();
+  const failed = await controller.load({
+    selection: { kind: "genre", id: "jazz" },
+    autoplay: true,
+    nowMs: 1,
+  });
+
+  assert.equal(failed.status, "playing");
+  assert.equal(failed.current.key, before.current.key);
+  assert.equal(failed.media.currentAudibleKey, before.current.key);
+  assert.equal(failed.error, "upstream_unavailable");
+});
+
+test("transport remains coherent through 120 deterministic skips, reversals, selections, and resumes", async () => {
+  let now = 10;
+  const controller = createSoundtrackPreviewController({
+    fetchImpl: catalogFetch,
+    mediaFactory: () => new FakeMedia(),
+    effectsFactory: () => ({
+      attachMedia: () => {},
+      detachMedia: () => {},
+      getClockTime: () => now,
+      setImmediateTrackGains: () => ({ ok: true, mode: "test" }),
+      applyTransition: () => ({ ok: true, mode: "test" }),
+      resume: async () => {},
+      setVehicleMaster: () => {},
+      setVehicleMacros: () => {},
+      setManualEffects: () => {},
+      getSnapshot: () => ({ status: "running" }),
+      getLevel: () => 0,
+      destroy: () => {},
+    }),
+    setTimer: () => ({}),
+    clearTimer: () => {},
+  });
+  await controller.load({ autoplay: true, nowMs: 0 });
+
+  for (let index = 0; index < 120; index += 1) {
+    now += 0.6;
+    let state;
+    if (index > 0 && index % 17 === 0) {
+      const entries = controller.getSnapshot().library.entries;
+      state = await controller.select(entries[(index / 17) % entries.length | 0].key);
+    } else if (index > 0 && index % 13 === 0) {
+      controller.pause();
+      state = await controller.resume();
+    } else {
+      state = await controller.move(index % 5 === 0 ? "previous" : "next");
+    }
+    assert.equal(state.status, "playing", `transport action ${index} must remain playable`);
+    assert.equal(state.error, null);
+    assert.equal(state.media.currentAudibleKey, state.current.key);
+    assert.ok(state.media.preparedMediaElements <= 3);
+    assert.ok(state.media.audibleKeys.length <= 2);
+    assert.equal(new Set(state.media.audibleKeys).size, state.media.audibleKeys.length);
+  }
 });
 
 test("audible skips schedule the 450 ms model and keep rapid-retarget credits synchronized", async () => {
@@ -326,6 +469,69 @@ test("an incoming deck starts before asynchronous effects readiness can consume 
   releaseTransitionResume();
 
   assert.equal((await moving).status, "playing");
+});
+
+test("initial playback starts the media deck before asynchronous effects readiness", async () => {
+  const events = [];
+  let releaseResume;
+  const resumeReady = new Promise((resolve) => { releaseResume = resolve; });
+  class OrderedMedia extends FakeMedia {
+    async play() {
+      events.push("play");
+      return super.play();
+    }
+  }
+  const controller = createSoundtrackPreviewController({
+    fetchImpl: catalogFetch,
+    mediaFactory: () => new OrderedMedia(),
+    effectsFactory: () => ({
+      attachMedia: () => {},
+      detachMedia: () => {},
+      getClockTime: () => 10,
+      setImmediateTrackGains: () => ({ ok: true, mode: "test" }),
+      applyTransition: () => ({ ok: true, mode: "test" }),
+      resume() { events.push("resume"); return resumeReady; },
+      setVehicleMaster: () => {},
+      setVehicleMacros: () => {},
+      setManualEffects: () => {},
+      getSnapshot: () => ({ status: "running" }),
+      getLevel: () => 0,
+      destroy: () => {},
+    }),
+  });
+  await controller.load();
+  const playing = controller.resume();
+  assert.deepEqual(events, ["play", "resume"]);
+  releaseResume();
+  assert.equal((await playing).status, "playing");
+});
+
+test("an effects-resume rejection becomes a bounded transport error without phantom playback", async () => {
+  const controller = createSoundtrackPreviewController({
+    fetchImpl: catalogFetch,
+    mediaFactory: () => new FakeMedia(),
+    effectsFactory: () => ({
+      attachMedia: () => {},
+      detachMedia: () => {},
+      getClockTime: () => 10,
+      setImmediateTrackGains: () => ({ ok: true, mode: "test" }),
+      applyTransition: () => ({ ok: true, mode: "test" }),
+      resume: async () => { throw new Error("audio context blocked"); },
+      setVehicleMaster: () => {},
+      setVehicleMacros: () => {},
+      setManualEffects: () => {},
+      getSnapshot: () => ({ status: "suspended" }),
+      getLevel: () => 0,
+      destroy: () => {},
+    }),
+  });
+  await controller.load();
+  const failed = await controller.resume();
+
+  assert.equal(failed.status, "error");
+  assert.equal(failed.error, "audio context blocked");
+  assert.equal(failed.media.currentAudibleKey, null);
+  assert.deepEqual(failed.media.audibleKeys, []);
 });
 
 test("a failed incoming deck never commits target metadata or a stale QR credit", async () => {

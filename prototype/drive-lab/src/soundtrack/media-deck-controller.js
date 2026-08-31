@@ -238,7 +238,9 @@ export function createSoundtrackMediaDeckController({
 
   const ensureRecord = (entry) => {
     const existing = records.get(entry.key);
-    if (existing && playbackUrl(existing.entry) === playbackUrl(entry)) {
+    if (existing
+      && safeErrorCode(existing.media) == null
+      && playbackUrl(existing.entry) === playbackUrl(entry)) {
       existing.entry = entry;
       return existing;
     }
@@ -258,6 +260,11 @@ export function createSoundtrackMediaDeckController({
     for (const key of new Set(restartKeys)) {
       const record = records.get(key);
       if (!record || record.media.paused === false) continue;
+      const position = asFinite(record.media.currentTime) ?? 0;
+      const needsFreshMedia = position > 0.05
+        || record.media.ended === true
+        || safeErrorCode(record.media) != null;
+      if (!needsFreshMedia) continue;
       disposeRecord(key);
     }
     const desired = new Map();
