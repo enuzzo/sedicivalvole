@@ -32,6 +32,7 @@ Do not begin the run until the final canonical build stamp is recorded below.
 | `R4-03` | NOT RUN | NIGHTSHIFT: PARK, all six tempo families on ascent, then descent and reversal. | Every family becomes reachable without a loud jump, dropout, or stale family. | NIGHTSHIFT family mapping, shared gain correction, and readiness safeguards. |
 | `R4-04` | NOT RUN | Toggle OPEN, BLOOM, and UNDERWATER across Play the Road selections, then disable global FX. | Each effect is audible but controlled; UNDERWATER retains usable level; disabling FX restores dry output. | Global vehicle FX path. UNDERWATER already had one provisional cabin PASS on build `20260831-0853`. |
 | `R4-05` | NOT RUN | While music plays, trigger or wait for one normal vehicle alert/navigation prompt. | The vehicle alert remains clearly audible and is not masked by the product. | Alert-safe level and effects boundary. |
+| `R4-06` | NOT RUN | Reveal the running footer, compare MUTE with FX, then toggle each one independently in both directions. | Both controls have the same width and `LABEL / ON–OFF / GLOBAL` hierarchy; each state changes immediately without changing the other control. | Shared MUTE/FX control anatomy and equal-width Tesla grid tracks. |
 
 ## Visual and performance acceptance — milestone row 5
 

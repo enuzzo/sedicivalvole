@@ -389,8 +389,9 @@ dated study documents.
   the explicit Featured launch from the default Library queue. Physical-Tesla listening of crossfade, buffering, touch, QR,
   transport, licence and effects behavior remain open; no offline-duration promise is made. See
   [`SOUNDTRACK-SOURCE-POLICY.md`](SOUNDTRACK-SOURCE-POLICY.md).
-- **The running footer has its compact control geometry.** MUTE and EFFECTS are
-  adjacent, both announce a 1.5-second centred status, and the two-row palette is
+- **The running footer has its compact control geometry.** MUTE and FX are
+  adjacent equal-width controls with one shared `LABEL / ON–OFF / GLOBAL`
+  hierarchy, both announce a 1.5-second centred status, and the two-row palette is
   fixed to `138 px` at `773 × 601` / `160 px` on desktop at the far-right edge.
   The released centre span is intentionally empty rather than stretched.
   Editorial Music and Visual names use Title Case display labels in the launcher,

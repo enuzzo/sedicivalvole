@@ -105,7 +105,7 @@ test("cycles every environment deterministically and returns to the start", () =
 test("short landscape keeps the control slab on one low row without changing portrait mobile", () => {
   assert.match(
     stylesSource,
-    /@media \(min-width: 500px\) and \(max-width: 650px\) and \(max-height: 480px\) and \(orientation: landscape\) \{[\s\S]*?\.control-slab \{[\s\S]*?min-height: 64px;[\s\S]*?grid-template-columns: 52px 66px 20vw 23vw minmax\(0, 1fr\) 112px;[\s\S]*?grid-template-rows: auto;[\s\S]*?\.control-slab \.effects-button,[\s\S]*?\.control-slab \.palette-control \{[\s\S]*?grid-column: auto;[\s\S]*?grid-row: auto;[\s\S]*?\.control-slab \.palette-control \{ justify-self: stretch; width: auto; border-top: 0; \}[\s\S]*?\.atlas-panel \{ bottom: 73px; \}[\s\S]*?\}/,
+    /@media \(min-width: 500px\) and \(max-width: 650px\) and \(max-height: 480px\) and \(orientation: landscape\) \{[\s\S]*?\.control-slab \{[\s\S]*?min-height: 64px;[\s\S]*?grid-template-columns: 59px 59px 20vw 23vw minmax\(0, 1fr\) 112px;[\s\S]*?grid-template-rows: auto;[\s\S]*?\.control-slab \.effects-button,[\s\S]*?\.control-slab \.palette-control \{[\s\S]*?grid-column: auto;[\s\S]*?grid-row: auto;[\s\S]*?\.control-slab \.palette-control \{ justify-self: stretch; width: auto; border-top: 0; \}[\s\S]*?\.atlas-panel \{ bottom: 73px; \}[\s\S]*?\}/,
   );
   assert.match(
     stylesSource,

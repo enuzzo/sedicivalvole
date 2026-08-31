@@ -3145,26 +3145,14 @@ export function App() {
 
         <footer className={`control-slab control-layer${musicMode === "soundtrack" ? " is-soundtrack" : ""}`} aria-label="Flux performance controls">
           <button
-            className={`stop-button ${muted ? "is-muted" : ""}`}
+            className={`stop-button${muted ? " is-active" : ""}`}
             type="button"
             onClick={toggleMuted}
             aria-pressed={muted}
             aria-label={muted ? "Unmute audio" : "Mute audio"}
           >
-            <span className="mute-icon" aria-hidden="true">
-              {muted ? (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor" stroke="none" />
-                  <path d="m16 9 5 6M21 9l-5 6" />
-                </svg>
-              ) : (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor" stroke="none" />
-                  <path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13" />
-                </svg>
-              )}
-            </span>
-            <span className="mute-label">MUTE</span>
+            <span>MUTE</span>
+            <strong>{muted ? "ON" : "OFF"}</strong>
           </button>
           <button
             className={`effects-button${vehicleEffectsEnabled ? " is-active" : ""}`}
