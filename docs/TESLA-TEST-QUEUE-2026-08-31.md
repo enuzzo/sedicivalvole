@@ -8,7 +8,7 @@ behavior.
 
 Do not begin the run until the final canonical build stamp is recorded below.
 
-- **Final test build:** `20260831-1714` · source `4b36069` · Tesla Soundtrack correction `4b36069` · ATLAS Navigator `79d9c9b` · Illobo/title implementation `05a754b` · cover correction `6218f98` · Featured queue correction `1171157` · transition correction `dcb6801` · MUTE/FX parity `c0a2f78`
+- **Final test build:** `20260831-1727` · source `61471e8` · Featured random-start/full relay audit `61471e8` · Tesla Soundtrack correction `4b36069` · ATLAS Navigator `79d9c9b` · Illobo/title implementation `05a754b` · cover correction `6218f98` · Featured queue correction `1171157` · transition correction `dcb6801` · MUTE/FX parity `c0a2f78`
 - **Target viewport:** Tesla split view, nominal CSS `773 × 601`
 - **Result states:** `PASS`, `FAIL`, `NOT RUN`, `BLOCKED`
 - **Safety:** a passenger operates controls and records evidence; the driver
@@ -64,7 +64,7 @@ cannot substitute for the audible physical-cabin verdict.
 | `R7-04` | NOT RUN | Scan the compact QR for the current track, change track, and scan again. | Each QR opens the exact current public track page; no stream URL or stale prior-track destination is exposed. | Published in build `20260831-1241`; compact direct-content QR handoff. |
 | `R7-05` | NOT RUN | From the passenger seat, operate track rows, PREVIOUS/PLAY/NEXT, licence links, and the QR at `773 × 601`. | Controls are comfortably reachable; transport targets are at least `48 px`; the complete licence/artist credit remains legible. | Published in build `20260831-1241`; Soundtrack drawer touch and attribution treatment. |
 | `R7-06` | FAIL 2026-08-31 · FIX LIVE · RETEST | Set each manual effect, skip in both directions, toggle global OPEN/UNDERWATER/BLOOM, then pause/resume. | Effects remain continuous and clearly audible from their visible engagement, stay attached to the audible tracks, retain authored `1×`, and produce no stuck processing or level jump. | Owner saw UNDERWATER engage but heard dry Jamendo playback in build `20260831-1653`. Build `20260831-1714` uses the perceptual low-pass sweep from `4b36069`; cabin audibility is not yet accepted. |
-| `R7-07` | FAIL 2026-08-31 · FIX LIVE · RETEST | Start Soundtrack, open Music, note the playing Jamendo Library track, then press `PLAY FEATURED`; also try NEXT after any failed start. | Illobo Featured becomes visibly selected and a different Featured track begins immediately; NOW PLAYING, the highlighted row, credit/QR and Tesla mini-player title all agree; one failed source cannot poison later tracks. | Build `20260831-1653` failed every Illobo start in the Tesla. `4b36069` fixes exact-ID relay fallback, synchronous gesture activation and failed-deck recovery; build `20260831-1714` returns `206 audio/mpeg` for the formerly failing track. |
+| `R7-07` | FAIL 2026-08-31 · FIX LIVE · RETEST | Start Soundtrack, open Music, note the playing Jamendo Library track, then press `PLAY FEATURED` three times at normal intervals; also try NEXT. | Every press immediately starts a different random Featured track; NOW PLAYING, highlighted row, credit/QR and Tesla mini-player title agree; NEXT remains in the playlist and one failed source cannot poison later tracks. | Build `20260831-1653` failed every Illobo start. `4b36069` fixes relay/activation/recovery; `61471e8` adds non-repeating random starts. Build `20260831-1727` passed the complete 23/23 admitted-track live relay audit and three-start local Tesla-size QA. |
 
 ## Illobo identity and Tesla media title — milestone row 8
 

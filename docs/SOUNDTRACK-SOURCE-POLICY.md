@@ -104,6 +104,9 @@ private messages or credentials never enter the repository.
 - `src/soundtrack/library-model.js` maps three passenger-facing pace choices to
   the official Jamendo `speed` enum, keeps a small explicit genre set, and owns a
   deterministic per-selection shuffle that changes at each 30-minute boundary.
+  Each explicit Featured gesture rotates that complete admitted ordering to a
+  random start, avoiding the current identity when alternatives exist; it does
+  not discard entries or convert the playlist into permanent storage.
 - `src/soundtrack/preview-controller.js` composes catalogue, rotation, transient
   media decks, attribution, and the live effect graph for explicit App/LAB use.
 - `src/soundtrack/effects-controller.js` owns the Web Audio graph for OPEN,
@@ -134,7 +137,8 @@ private messages or credentials never enter the repository.
   The App Music drawer switches between Play the Road and Soundtrack; within
   Soundtrack it presents equal compact Illobo Featured and Jamendo Library
   alternatives, real cover previews, immediate play by pace/genre/exact track,
-  and the 30-minute refresh notice. Both surfaces expose audio-clock-derived
+  a random Featured start on every press, and the 30-minute refresh notice.
+  Both surfaces expose audio-clock-derived
   audible credits, direct Jamendo navigation, transport, the global vehicle-FX
   master, and four manual effects. The production deck applies the nominal
   `450 ms` equal-power model through normal skips, reversals, and rapid

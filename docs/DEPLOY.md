@@ -8,6 +8,41 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Illobo Featured random-start and full relay audit — 2026-08-31 17:32
+
+- build stamp: **`20260831-1727`**; deployed source checkpoint:
+  **`61471e8`**;
+- behavior: **PASS**. Every explicit `PLAY FEATURED` chooses a random start,
+  avoids the currently audible track when alternatives exist, retains every
+  admitted playlist identity, and leaves the 30-minute editorial ordering plus
+  NEXT/PREVIOUS traversal intact;
+- tests/build: **PASS**. The complete `496/496` suite, 146-module App,
+  70-module LAB and Sites packaging pass;
+- exact local Browser QA: **PASS at `773 × 601`**. Three consecutive presses
+  started `Lemon Pop`, `Dreams`, and `Boys, Girls, Toys & Words`; row, NOW
+  PLAYING and Tesla-facing page title stayed synchronized, document overflow
+  remained zero, and no warning/error was observed;
+- protected FTP publication: **PASS**. Read-only preflight and postflight both
+  passed with eight canonical-root entries, verified the expected API and
+  static trees, and reported `remote_writes=NONE`; publication used
+  `--preserve-existing`. The publisher returned no retained transfer summary,
+  so no file-count claim is invented;
+- canonical HTTP identity: **PASS**. Cache-busted root HTML returns `200`,
+  no-store/no-cache and `nosniff`, references `assets/index-DjHgzRF4.js` and
+  `assets/index-DWieer5Q.css`, and carries build `20260831-1727`. JavaScript
+  SHA-256 `5b25064ce5e1bc328077f231b20096eda011f2f0282d5da748505df33580454d`
+  and CSS SHA-256
+  `0ff677d0cdf1d87665bd0b03254abb509992dba727b85b782a719fd846581ea3`
+  are byte-identical local/live;
+- complete playlist/relay audit: **PASS**. The live server returned 50 raw
+  Jamendo records; policy admitted 23 and correctly rejected 27 ND or
+  unrecognized-licence records. Range probes for every admitted identity passed
+  **23/23** at `206 audio/mpeg`, with zero retry and zero failure;
+- storage boundary: the FTP tree contains the deployed catalogue/audio relay
+  code and configuration boundary, not hosted Jamendo MP3 copies. Audio is
+  resolved by exact ID and streamed transiently with `no-store`, as required by
+  the source policy. Physical-Tesla acceptance remains `R7-07`.
+
 ## Tesla Soundtrack playback/effect correction — 2026-08-31 17:19
 
 - build stamp: **`20260831-1714`**; deployed source checkpoint:

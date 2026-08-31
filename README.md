@@ -86,7 +86,9 @@ adaptive branch is not called generative because it also contains sampled
 scores—then presents compact, equal-weight **Illobo Featured** and **Jamendo
 Library** alternatives. The Jamendo branch previews real cover art and starts
 immediately from a selected pace, genre, or track. Its deterministic fresh mix
-changes every 30 minutes. An unfiltered Soundtrack start belongs explicitly to
+changes every 30 minutes; every explicit Featured press chooses a random start
+inside the complete admitted set and avoids the current track when alternatives
+exist. An unfiltered Soundtrack start belongs explicitly to
 Jamendo Library; `PLAY FEATURED` switches to and immediately starts Illobo's
 independently seeded half-hour queue instead of reloading the same selection.
 That gesture reuses its prepared catalogue before transient playback activation

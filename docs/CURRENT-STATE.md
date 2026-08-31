@@ -376,7 +376,9 @@ dated study documents.
   **Play the Road** from **Soundtrack** without inaccurately calling every
   adaptive score generative. Soundtrack presents compact, equal-weight **Illobo
   Featured** and **Jamendo Library** alternatives. The Featured playlist and
-  Jamendo cover preview rotate deterministically every 30 minutes. An
+  Jamendo cover preview rotate deterministically every 30 minutes; each
+  explicit Featured press chooses a random non-current start while retaining
+  the complete admitted ordering. An
   unqualified start is `library:all`; pressing `PLAY FEATURED` selects and
   immediately starts the independently seeded `featured:signal-border` queue.
   Jamendo
@@ -388,12 +390,13 @@ dated study documents.
   that incoming media playback must be requested before awaiting effects/worklet
   readiness so Chromium retains the transport gesture's transient activation;
   checkpoint `dcb6801` enforces and tests that ordering. Build `20260831-1241`
-  first published that correction. Current build `20260831-1714` additionally
+  first published that correction. Current build `20260831-1727` additionally
   retries exact array/scalar metadata queries, verifies returned identity,
   reuses the prepared catalogue synchronously inside `PLAY FEATURED`, excludes
   failed decks from replacement transitions, retains the final Illobo identity
   plus Tesla-facing playback title, and separates the explicit Featured launch
-  from the default Library queue. Physical-Tesla listening of crossfade, buffering, touch, QR,
+  from the default Library queue, and makes every explicit Featured press start
+  randomly without dropping an admitted identity. Physical-Tesla listening of crossfade, buffering, touch, QR,
   transport, licence and effects behavior remain open; no offline-duration promise is made. See
   [`SOUNDTRACK-SOURCE-POLICY.md`](SOUNDTRACK-SOURCE-POLICY.md).
 - **The running footer has its compact control geometry.** MUTE and FX are
@@ -452,11 +455,12 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The canonical live product is version `0.0.0`, source commit `4b36069`, build
-  `20260831-1714`, retaining ATLAS Navigator `79d9c9b`, MUTE/FX parity `c0a2f78`, Illobo/title
+- The canonical live product is version `0.0.0`, source commit `61471e8`, build
+  `20260831-1727`, retaining ATLAS Navigator `79d9c9b`, MUTE/FX parity `c0a2f78`, Illobo/title
   implementation `05a754b`, cover correction `6218f98`, Featured-launch
   correction `1171157`, transition correction `dcb6801`, and Tesla Soundtrack
-  relay/activation/effect correction `4b36069`. Its guarded
+  relay/activation/effect correction `4b36069`, and Featured random-start/full
+  relay audit `61471e8`. Its guarded
   publication, read-only pre/postflight and HTML/JavaScript/CSS/Tabler-SVG byte
   identity pass.
   Prior exact live `773 × 601` Browser QA verifies the unchanged white-on-black
@@ -469,7 +473,7 @@ dated study documents.
   could not complete the direct `.php` catalogue request.
   Exact live ATLAS QA also proves the dynamic Navigator Plaque, local road copy,
   zero overflow and no live-origin warning/error.
-  The complete `495/495` suite plus 146-module App / 70-module LAB / Sites build
+  The complete `496/496` suite plus 146-module App / 70-module LAB / Sites build
   pass, while physical-cabin checks remain `R4-01`–`R4-06`, `R7-01`–`R7-07`,
   `R8-01`–`R8-02` and `R9-01`–`R9-02`. Exact
   progressive evidence is in [`DEPLOY.md`](DEPLOY.md).
@@ -481,7 +485,7 @@ dated study documents.
 ## Open work
 
 1. Execute Tesla tests `R4-01`–`R4-06`, `R7-01`–`R7-07`, `R8-01`–`R8-02` and
-   `R9-01`–`R9-02` on live build `20260831-1714` from
+   `R9-01`–`R9-02` on live build `20260831-1727` from
    [`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md), including
    the live audio transport evidence that the available office Browser-control
    surfaces could not collect.
