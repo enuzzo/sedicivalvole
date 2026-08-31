@@ -56,6 +56,16 @@ stable evidence reference and an explicit decision for every capability. The
 public policy object records only that reference and the capability decisions;
 private messages or credentials never enter the repository.
 
+The current Illobo grant explicitly allows in-product selection, source
+delivery, effects processing, and a project-hosted copy. Its 29 immutable WAV
+masters and 29 derived MP3 web masters remain in the ignored provenance archive;
+neither enters Git. At publication time the protected deploy gate validates the
+complete local manifest and every MP3 SHA-256, generates a bounded public
+metadata catalogue, uploads the 29 web masters to `/audio/illobo/`, and verifies
+every remote hash. The product links credit and QR to Illobo's public SoundCloud
+page and labels the permission `Direct grant`; it never fabricates a Creative
+Commons licence URL.
+
 ## Current implementation
 
 - `src/soundtrack/source-policy.js` owns licence parsing, Jamendo item
@@ -98,15 +108,17 @@ private messages or credentials never enter the repository.
   the existing OPEN/UNDERWATER/BLOOM vehicle-reactive effects, independently of
   four normalized manual controls for flanger, reverb, chorus, and beat repeat.
   The same source capability gate applies to both effects paths.
-- `src/soundtrack/catalog-client.js` requests the same-origin catalogue relay,
-  forwards explicit passenger pace/genre filters, normalizes the short-lived
-  response through the admission policy, and never receives a credential.
+- `src/soundtrack/catalog-client.js` keeps two source adapters distinct. Jamendo
+  requests use the same-origin API/audio relays and explicit passenger
+  pace/genre filters. Featured requests use only the static Illobo catalogue and
+  same-origin hosted recordings. A source switch cannot reuse the other
+  adapter's cached catalogue.
 - `src/soundtrack/library-model.js` maps three passenger-facing pace choices to
   the official Jamendo `speed` enum, keeps a small explicit genre set, and owns a
   deterministic per-selection shuffle that changes at each 30-minute boundary.
-  Each explicit Featured gesture rotates that complete admitted ordering to a
-  random start, avoiding the current identity when alternatives exist; it does
-  not discard entries or convert the playlist into permanent storage.
+  Each explicit Featured gesture rotates the complete 29-track Illobo ordering
+  to a random start, avoiding the current identity when alternatives exist; it
+  never substitutes a Jamendo record or discards an Illobo identity.
 - `src/soundtrack/preview-controller.js` composes catalogue, rotation, transient
   media decks, attribution, and the live effect graph for explicit App/LAB use.
 - `src/soundtrack/effects-controller.js` owns the Web Audio graph for OPEN,
@@ -117,7 +129,11 @@ private messages or credentials never enter the repository.
   display/playback fields with short-lived no-store headers.
 - `public/api/soundtrack-audio.php` resolves one exact admitted track ID, rejects
   effects-disallowed licences, forwards byte ranges, and streams without writing
-  a hosted or offline copy.
+  a hosted or offline Jamendo copy. This relay is not used by Illobo Featured.
+- `scripts/deploy_drive_lab_ftp.py` is the sole Illobo publication boundary. It
+  reads the ignored provenance manifest without copying it into Git, validates
+  all 29 local masters, publishes the public catalogue and web audio, and checks
+  all 29 remote hashes before the canonical entry can switch.
 - `tests/soundtrack-rotation.test.mjs` covers expiry, deduplication, three-role
   identity, broad rotation, back/forward, removal, exhaustion and recovery.
 - `tests/soundtrack-media-deck.test.mjs` covers direct-source preparation,
@@ -136,19 +152,21 @@ private messages or credentials never enter the repository.
 - The App and protected owner LAB now import the production preview/effect path.
   The App Music drawer switches between Play the Road and Soundtrack; within
   Soundtrack it presents equal compact Illobo Featured and Jamendo Library
-  alternatives, real cover previews, immediate play by pace/genre/exact track,
-  a random Featured start on every press, and the 30-minute refresh notice.
+  alternatives. Illobo exposes its own complete playlist with a random start on
+  every press; Jamendo alone exposes cover previews and immediate play by
+  pace/genre/exact track. Both retain the 30-minute editorial refresh notice.
   Both surfaces expose audio-clock-derived
   audible credits, direct Jamendo navigation, transport, the global vehicle-FX
   master, and four manual effects. The production deck applies the nominal
   `450 ms` equal-power model through normal skips, reversals, and rapid
   third-deck retargeting without exceeding three transient elements. The compact
   QR opens the current public track page and never exposes its relay or stream.
-  Canonical publication, target-vehicle tuning, and physical-Tesla acceptance
-  remain later checkpoints.
+  Canonical publication and 29/29 FTP/HTTP identity checks pass on build
+  `20260831-1744`; target-vehicle playback/effects acceptance remains open.
   `preparedMetadataSlots`
   reports metadata roles only; it is not an audio-buffer or offline-duration
-  claim. No persistent audio layer is approved or planned.
+  claim. The browser retains no offline copy; owner-authorized Illobo web masters
+  are deliberately hosted server-side, while Jamendo remains transient only.
 
 ## Library discovery boundary
 

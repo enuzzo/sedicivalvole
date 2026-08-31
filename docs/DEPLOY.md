@@ -8,6 +8,38 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## True Illobo catalogue and hosted-audio correction — 2026-08-31 17:50
+
+- build stamp: **`20260831-1744`**; deployed source checkpoint:
+  **`1a47e23`**;
+- source correction: **PASS**. `PLAY FEATURED` now reads only the separate
+  owner-authorized Illobo catalogue. Jamendo Library, pace, genre and exact-track
+  requests remain on the Jamendo API/audio relay. Source kind and selection ID
+  are part of cache identity, so a Featured click cannot reuse Jamendo records;
+- local archive gate: **PASS**. The ignored provenance manifest declares 29
+  unique MP3 web masters and the deploy gate recomputed every local SHA-256,
+  size, safe filename and title before opening the network. Audio and the private
+  provenance manifest remain outside Git;
+- tests/build: **PASS**. The complete `499/499` suite, 146-module App,
+  70-module LAB and Sites packaging pass;
+- protected FTP publication: **PASS**. Initial read-only preflight proved there
+  was no Illobo directory and made no writes. Publication uploaded 140 files /
+  212,284,605 bytes with `--preserve-existing`, then read and hashed every remote
+  Illobo recording. The publisher reported `illobo_playlist=PASS tracks=29
+  full_hash_verification=true`; read-only postflight passed with eight root
+  entries and `remote_writes=NONE`;
+- canonical HTTP: **PASS**. The root references
+  `assets/index-CuT0aWht.js` and `assets/index-DWieer5Q.css`. The public Illobo
+  catalogue returns `200 application/json`, schema
+  `sedicivalvole.illobo-public-catalog.v1`, exactly 29 records and only artist
+  `Illobo`. Range probes for all **29/29** recordings return `206 audio/mpeg` and
+  a total byte size matching the signed catalogue. Target-Tesla playback and
+  effects acceptance remain `R7-06`–`R7-07`.
+
+The earlier `20260831-1727` section below remains immutable deployment history.
+Its **23/23** evidence verifies the admitted Jamendo relay only; it is not and
+must never again be treated as an Illobo playlist audit.
+
 ## Illobo Featured random-start and full relay audit — 2026-08-31 17:32
 
 - build stamp: **`20260831-1727`**; deployed source checkpoint:

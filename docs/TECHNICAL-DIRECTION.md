@@ -199,12 +199,15 @@ Soundtrack source switch. Its Soundtrack branch gives equal hierarchy to the
 rotating Illobo Featured playlist and the filterable Jamendo Library, uses a
 stable half-hour shuffle, and treats pace, genre, and exact-track gestures as
 explicit immediate play requests. The main App master affects only audio processing: macro detection
-and visual response continue independently. Metadata remains short-lived and
-audio remains non-persistent.
-The unqualified controller load normalizes to `library:all`; the Illobo button
-requests `featured:signal-border`, giving the two equal paths independent stable
-shuffle signatures and preventing an explicit Featured gesture from silently
-reloading the already active queue.
+and visual response continue independently. Jamendo metadata remains short-lived
+and its audio remains non-persistent; owner-authorized Illobo web masters are
+hosted deliberately without creating a browser offline store. The unqualified
+controller load normalizes to Jamendo `library:all`; the Illobo button requests
+`featured:signal-border` through a separate static catalogue of 29
+owner-authorized recordings. Catalogue cache reuse includes source kind and
+identifier, so an Illobo gesture cannot reuse Jamendo entries. Each explicit
+Featured gesture rotates the complete Illobo set to a random non-current start
+while preserving stable 30-minute ordering.
 The production deck now performs the nominal `450 ms` equal-power queue commit,
 including reversal and third-deck retargeting, and derives every visible credit
 from the same audio-clock gain vector. Its compact QR opens the current public

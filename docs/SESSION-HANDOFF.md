@@ -136,8 +136,8 @@ The session started from clean `main == origin/main == bb5a2c9`. Drive
 corrections are checkpoint `ac11ed0`; milestone-row-6 audio evidence/recovery
 is `614872b`; row-7 transition mechanics are `2dd3cb5`, atomic rollback is
 `8f03b34`, and transient transport activation is `dcb6801`. Canonical live
-build is `20260831-1727` from Featured random-start/full relay audit `61471e8`,
-retaining Tesla Soundtrack correction `4b36069`, ATLAS Navigator Plaque
+build is `20260831-1744` from true Illobo source correction `1a47e23`, retaining
+Featured random-start logic `61471e8`, Tesla Soundtrack correction `4b36069`, ATLAS Navigator Plaque
 `79d9c9b`, MUTE/FX parity `c0a2f78`, Featured-launch correction `1171157`, and
 Illobo cover correction `6218f98`.
 Guarded no-delete publication, pre/postflight `remote_writes=NONE`, canonical
@@ -151,14 +151,18 @@ build, and exact local/live `773 × 601` Browser QA pass. Protected publication,
 pre/postflight, canonical byte identity, timed fade, real play/pause title, and
 console gates pass. The owner then reported that build `20260831-1653` failed
 every Illobo start and made visible Jamendo UNDERWATER engagement acoustically
-dry. Checkpoint `4b36069` corrects the exact-ID relay fallback, synchronous
-Featured activation, failed-deck recovery, and the low-pass sweep's perceptual
-onset. Checkpoint `61471e8` additionally gives every Featured press a random
-non-current start while preserving the complete admitted queue. The live server
-returns 50 raw records, rejects 27 ND/unknown-licence records, and serves every
-admitted identity: **23/23** `206 audio/mpeg` probes passed after publication.
-Local exact-viewport three-start playback state passes. Target-
-Tesla retests remain `R4-04`, `R7-06`, `R7-07`, and `R8-01`–`R8-02`.
+dry. Investigation established that the first defect was more fundamental than
+the relay diagnosis: Featured was a second ordering of Jamendo records, not an
+Illobo catalogue. Therefore the earlier **23/23** relay audit is valid Jamendo
+evidence only and must never be cited as Lobo verification. Checkpoint `1a47e23`
+now loads a separate 29-track owner-authorized Illobo catalogue, prevents
+cross-source cache reuse, keeps random non-current starts within those 29
+identities, and permits the direct-grant effects path. Build `20260831-1744`
+uploaded 29/29 MP3 web masters without entering them into Git; local and remote
+full SHA-256 verification passes, the live catalogue reports exactly 29 Illobo
+tracks, and all 29/29 HTTP byte-range probes return `206 audio/mpeg` with the
+catalogued total size. Target-Tesla retests remain `R4-04`, `R7-06`, `R7-07`,
+and `R8-01`–`R8-02`.
 Milestone row 9 is also office-complete and live:
 its selected Navigator Plaque combines a filled continuously rotating arrow,
 English cardinal, exact degrees and a rendered-tile road name without reverse

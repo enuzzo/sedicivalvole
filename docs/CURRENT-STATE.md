@@ -375,13 +375,13 @@ dated study documents.
   Jamendo page, never the relay or stream URL. The running Music drawer now separates
   **Play the Road** from **Soundtrack** without inaccurately calling every
   adaptive score generative. Soundtrack presents compact, equal-weight **Illobo
-  Featured** and **Jamendo Library** alternatives. The Featured playlist and
-  Jamendo cover preview rotate deterministically every 30 minutes; each
-  explicit Featured press chooses a random non-current start while retaining
-  the complete admitted ordering. An
-  unqualified start is `library:all`; pressing `PLAY FEATURED` selects and
-  immediately starts the independently seeded `featured:signal-border` queue.
-  Jamendo
+  Featured** and **Jamendo Library** alternatives backed by separate source
+  adapters. Illobo Featured contains the complete 29-track owner-authorized
+  hosted catalogue; Jamendo remains transient through its API/audio relay. Each
+  explicit Featured press chooses a random non-current Illobo start while
+  retaining all 29 identities. An unqualified start is `library:all`; pressing
+  `PLAY FEATURED` switches catalogue source and immediately starts the
+  `featured:signal-border` queue without reusing Jamendo cache state. Jamendo
   browsing uses the official `speed` values and genre tags; selecting a pace,
   genre, or exact track starts playback immediately. Pace is manual discovery
   metadata only: it can never follow vehicle speed or retime audio. MUTE and FX
@@ -390,13 +390,12 @@ dated study documents.
   that incoming media playback must be requested before awaiting effects/worklet
   readiness so Chromium retains the transport gesture's transient activation;
   checkpoint `dcb6801` enforces and tests that ordering. Build `20260831-1241`
-  first published that correction. Current build `20260831-1727` additionally
-  retries exact array/scalar metadata queries, verifies returned identity,
-  reuses the prepared catalogue synchronously inside `PLAY FEATURED`, excludes
-  failed decks from replacement transitions, retains the final Illobo identity
-  plus Tesla-facing playback title, and separates the explicit Featured launch
-  from the default Library queue, and makes every explicit Featured press start
-  randomly without dropping an admitted identity. Physical-Tesla listening of crossfade, buffering, touch, QR,
+  first published that correction. Current build `20260831-1744` separates the
+  true Illobo catalogue from Jamendo, publishes and verifies all 29
+  owner-authorized recordings, retains the final Illobo identity plus
+  Tesla-facing playback title, and makes every explicit Featured press start
+  randomly without dropping an Illobo identity. The earlier 23-track audit was
+  Jamendo-only and is not Illobo evidence. Physical-Tesla listening of crossfade, buffering, touch, QR,
   transport, licence and effects behavior remain open; no offline-duration promise is made. See
   [`SOUNDTRACK-SOURCE-POLICY.md`](SOUNDTRACK-SOURCE-POLICY.md).
 - **The running footer has its compact control geometry.** MUTE and FX are
