@@ -101,6 +101,9 @@ LAB_BOOTSTRAP_MARKERS = (b"LAB_EXPECTED_ORIGIN", b"labRequireAuthenticatedJson",
 LAB_SEND_MARKERS = (b"sedicivalvole.lab-mail.v1", b"labRequireCsrf", b"buildLabPresetMail")
 LAB_BLOOM_PROCESSOR_MARKERS = (b"AudioWorkletProcessor", b'registerProcessor("bloom-processor"')
 LAB_SCORE_PROCESSOR_MARKERS = (b"AudioWorkletProcessor", b'registerProcessor("score-processor"')
+RETIRED_LAB_HASHES = {
+    "soundtrack-repeat-processor.js": "4394837a3bebf6e065cd1dabc6b43e73f302bbead98bf43af830f9df15620aad",
+}
 PRIVATE_STATIC_NAME_TOKEN = re.compile(
     r"(^|[._-])(secret|secrets|credential|credentials|private|key|keys|cert|certs|certificate|certificates)([._-]|$)",
     re.IGNORECASE,
@@ -929,15 +932,17 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
         ftp.cwd(LAB_DIRECTORY)
         try:
             lab_names = safe_names(ftp)
-            if not lab_names.issubset({
+            admitted_lab_names = {
                 "index.php",
                 "bootstrap.php",
                 "send.php",
                 "bloom-processor.js",
                 "score-processor.js",
                 LAB_AUTH_CONFIG,
-            }):
-                raise ValueError("unexpected LAB entry")
+            } | RETIRED_LAB_HASHES.keys()
+            unexpected_lab_names = sorted(lab_names - admitted_lab_names)
+            if unexpected_lab_names:
+                raise ValueError(f"unexpected LAB entry: {','.join(unexpected_lab_names)}")
             marker_sets = {
                 "index.php": LAB_PAGE_MARKERS,
                 "bootstrap.php": LAB_BOOTSTRAP_MARKERS,
@@ -947,6 +952,10 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
                 LAB_AUTH_CONFIG: LAB_AUTH_CONFIG_MARKERS,
             }
             for name in lab_names:
+                if name in RETIRED_LAB_HASHES:
+                    if sha256_bytes(remote_bytes(ftp, name)) != RETIRED_LAB_HASHES[name]:
+                        raise ValueError("retired LAB entry identity mismatch")
+                    continue
                 if not all(marker in remote_bytes(ftp, name) for marker in marker_sets[name]):
                     raise ValueError("LAB entry identity mismatch")
         finally:

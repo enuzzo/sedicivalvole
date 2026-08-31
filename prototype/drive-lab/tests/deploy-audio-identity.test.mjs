@@ -144,6 +144,14 @@ assert not module.is_recognized_nightshift_bank(mutated)
   });
 });
 
+test("the deploy gate admits only the byte-identical retired repeat worklet", () => {
+  const source = readFileSync(deployScript, "utf8");
+  assert.match(source, /RETIRED_LAB_HASHES = \{/);
+  assert.match(source, /"soundtrack-repeat-processor\.js": "4394837a3bebf6e065cd1dabc6b43e73f302bbead98bf43af830f9df15620aad"/);
+  assert.match(source, /sha256_bytes\(remote_bytes\(ftp, name\)\) != RETIRED_LAB_HASHES\[name\]/);
+  assert.match(source, /raise ValueError\("retired LAB entry identity mismatch"\)/);
+});
+
 test("the deploy gate verifies the packaged font tree explicitly", () => {
   const source = readFileSync(deployScript, "utf8");
 
