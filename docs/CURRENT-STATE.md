@@ -384,7 +384,7 @@ dated study documents.
   that incoming media playback must be requested before awaiting effects/worklet
   readiness so Chromium retains the transport gesture's transient activation;
   checkpoint `dcb6801` enforces and tests that ordering. Build `20260831-1241`
-  first published that correction; current build `20260831-1502` retains it,
+  first published that correction; current build `20260831-1534` retains it,
   adds the final Illobo identity plus Tesla-facing playback title, and separates
   the explicit Featured launch from the default Library queue. Physical-Tesla listening of crossfade, buffering, touch, QR,
   transport, licence and effects behavior remain open; no offline-duration promise is made. See
@@ -445,8 +445,8 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The canonical live product is version `0.0.0`, source commit `1171157`, build
-  `20260831-1502`, with Illobo/title implementation `05a754b`, cover correction
+- The canonical live product is version `0.0.0`, source commit `c0a2f78`, build
+  `20260831-1534`, with Illobo/title implementation `05a754b`, cover correction
   `6218f98`, Featured-launch correction `1171157`, and transition
   correction `dcb6801`. Its guarded 109-file publication,
   read-only pre/postflight and HTML/JavaScript/CSS/two-SVG byte identity pass.
@@ -457,7 +457,7 @@ dated study documents.
   current live audio interaction remains a Tesla gate because Browser control
   could not complete the direct `.php` catalogue request.
   The complete `491/491` suite plus 146-module App / 70-module LAB / Sites build
-  pass, while physical-cabin checks remain `R7-01`–`R7-07` and
+  pass, while physical-cabin checks remain `R4-06`, `R7-01`–`R7-07` and
   `R8-01`–`R8-02`, plus the corrected explicit Featured launch in `R7-07`. Exact
   progressive evidence is in [`DEPLOY.md`](DEPLOY.md).
 - Diagnostic telemetry contains no coordinates and is sent only after the
@@ -467,7 +467,7 @@ dated study documents.
 
 ## Open work
 
-1. Execute Tesla tests `R7-01`–`R7-07` and `R8-01`–`R8-02` on live build `20260831-1502` from
+1. Execute Tesla tests `R4-06`, `R7-01`–`R7-07` and `R8-01`–`R8-02` on live build `20260831-1534` from
    [`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md), including
    the live audio transport evidence that the available office Browser-control
    surfaces could not collect.

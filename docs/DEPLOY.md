@@ -8,6 +8,34 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Global MUTE / FX control parity — 2026-08-31 15:38
+
+- build stamp: **`20260831-1534`**; deployed source checkpoint:
+  **`c0a2f78`**;
+- interface correction: **PASS**. MUTE now uses the existing FX control anatomy,
+  including `LABEL / ON–OFF / GLOBAL`, the shared active treatment and the same
+  responsive width. The controls remain independent and retain truthful
+  accessible mute/unmute and effect-enable/disable names;
+- tests/build: **PASS**. The complete `491/491` suite, 146-module App,
+  70-module LAB and Sites packaging pass;
+- protected publication: **PASS**. Read-only preflight and postflight both
+  passed with eight root entries and `remote_writes=NONE`; the no-delete
+  publication uploaded **113 files / 18,016,843 bytes** and retained two prior
+  fingerprinted assets for cache overlap;
+- canonical HTTP identity: **PASS**. HTML SHA-256
+  `4d3fb3fdb4dba609822ca6d38d844f153e6bac22987e8cd58d07315b367dff88`,
+  JavaScript `assets/index-C4yHqBXM.js` SHA-256
+  `2d43311d03c1ba9364fce63616d8f6197581c0cf004e98edd2942b7b5a42a37f`,
+  and CSS `assets/index-D-oO6VWp.css` SHA-256
+  `6d2cc13b7344a511a43d0fb2b56dcbfe55ed07465d22227aa5be0a31278e836f`
+  are byte-identical local/live. The cache-busted canonical root returns `200`,
+  `no-store, no-cache`, and `nosniff`;
+- exact live Browser QA: **PASS at `773 × 601`**. MUTE and FX both measure
+  `69 px`, both expose `GLOBAL`, and each changes its own ON/OFF and
+  `aria-pressed` state without changing the other. Document overflow is zero
+  and no warning or error was observed. Physical Tesla touch/glance acceptance
+  remains `R4-06`.
+
 ## Illobo Featured launch correction — 2026-08-31 15:09
 
 - build stamp: **`20260831-1502`**; deployed source checkpoint:
