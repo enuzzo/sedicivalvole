@@ -19,7 +19,9 @@ const writeJson = (response, statusCode, payload) => {
   response.end(JSON.stringify(payload));
 };
 
-const requestKey = ({ limit, offset }) => `${limit ?? ""}:${offset ?? ""}`;
+const requestKey = ({ limit, offset, speed, genre }) => (
+  `${limit ?? ""}:${offset ?? ""}:${speed ?? ""}:${genre ?? ""}`
+);
 
 export function createJamendoCatalogLoader({
   clientId,
@@ -30,12 +32,19 @@ export function createJamendoCatalogLoader({
 } = {}) {
   let cached = null;
 
-  return async ({ limit, offset, signal } = {}) => {
-    const key = requestKey({ limit, offset });
+  return async ({ limit, offset, speed, genre, signal } = {}) => {
+    const key = requestKey({ limit, offset, speed, genre });
     const ageMs = cached?.key === key ? nowMs() - cached.storedAtMs : Number.POSITIVE_INFINITY;
     if (cached && cached.key === key && ageMs <= freshTtlMs) return cached.payload;
 
-    const requestCatalog = () => fetchCatalog({ clientId, limit, offset, signal });
+    const requestCatalog = () => fetchCatalog({
+      clientId,
+      limit,
+      offset,
+      speed,
+      genre,
+      signal,
+    });
     try {
       const firstPage = !Number.isFinite(Number(offset)) || Number(offset) === 0;
       const attempts = firstPage ? FIRST_PAGE_ATTEMPTS : 1;
@@ -88,6 +97,8 @@ export function jamendoCatalogDevServer({ clientId }) {
           const payload = await loadCatalog({
             limit: requestUrl.searchParams.get("limit"),
             offset: requestUrl.searchParams.get("offset"),
+            speed: requestUrl.searchParams.get("speed"),
+            genre: requestUrl.searchParams.get("genre"),
             signal: controller.signal,
           });
           audioRegistry.admitCatalog(payload);

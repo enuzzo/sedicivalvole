@@ -68,12 +68,13 @@ function emptyQueueState({
   recentTrackLimit = DEFAULT_RECENT_TRACK_LIMIT,
   recentArtistLimit = DEFAULT_RECENT_ARTIST_LIMIT,
   catalogRevision = null,
+  selectionCursor = 0,
 } = {}) {
   return freezeQueueState({
     slots: { previous: null, current: null, next: null },
     recentTrackKeys: [],
     recentArtistKeys: [],
-    selectionCursor: 0,
+    selectionCursor: Math.max(0, Math.trunc(selectionCursor)),
     recentTrackLimit: boundedLimit(recentTrackLimit, DEFAULT_RECENT_TRACK_LIMIT),
     recentArtistLimit: boundedLimit(recentArtistLimit, DEFAULT_RECENT_ARTIST_LIMIT),
     catalogRevision,
@@ -175,7 +176,12 @@ export function createSoundtrackQueue(catalog, options = {}) {
     });
   }
 
-  state = fillRole(state, catalog, "current");
+  const preferred = options.preferredKey
+    ? findSoundtrackCatalogEntry(catalog, options.preferredKey)
+    : null;
+  state = preferred
+    ? withSlots(state, { ...state.slots, current: preferred }, catalog.revision)
+    : fillRole(state, catalog, "current");
   state = rememberCurrent(state, state.slots.current);
   state = fillRole(state, catalog, "next");
   state = fillRole(state, catalog, "previous");

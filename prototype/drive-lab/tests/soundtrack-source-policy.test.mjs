@@ -71,7 +71,7 @@ test("a Jamendo item retains only playback and credit fields, never download dat
   assert.equal(policy.capabilities.hostedCopy, SOURCE_CAPABILITY.UNKNOWN);
 });
 
-test("Jamendo discovery metadata keeps normalized genres but no driving pace", () => {
+test("Jamendo discovery metadata keeps normalized genres and a non-reactive catalogue pace", () => {
   const policy = evaluateJamendoTrack({
     ...JAMENDO_TRACK,
     musicinfo: {
@@ -79,14 +79,14 @@ test("Jamendo discovery metadata keeps normalized genres but no driving pace", (
       tags: { genres: ["Rock", "rock", " Funk ", ""] },
     },
   });
-  assert.equal("pace" in policy.item, false);
+  assert.equal(policy.item.pace, "high");
   assert.deepEqual(policy.item.genres, ["rock", "funk"]);
 
   const unsupported = evaluateJamendoTrack({
     ...JAMENDO_TRACK,
     musicinfo: { speed: "extreme", tags: { genres: "rock" } },
   });
-  assert.equal("pace" in unsupported.item, false);
+  assert.equal(unsupported.item.pace, null);
   assert.deepEqual(unsupported.item.genres, []);
 });
 

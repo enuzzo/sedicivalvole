@@ -22,6 +22,8 @@ const CREATIVE_COMMONS_CODES = new Set([
   "by-nc-nd",
 ]);
 
+const JAMENDO_DISCOVERY_PACES = new Set(["verylow", "low", "medium", "high", "veryhigh"]);
+
 const asText = (value) => typeof value === "string" ? value.trim() : "";
 
 const normalizedTags = (values) => Object.freeze([
@@ -132,6 +134,7 @@ export function evaluateJamendoTrack(track) {
   if (!licencePolicy.admitted) return licencePolicy;
 
   const imageUrl = safeHttpsUrl(track.image, jamendoHost);
+  const discoveryPace = asText(track.musicinfo?.speed).toLowerCase();
   return Object.freeze({
     ...licencePolicy,
     source: "jamendo",
@@ -146,6 +149,7 @@ export function evaluateJamendoTrack(track) {
       streamUrl: streamUrl.href,
       shareUrl: shareUrl.href,
       imageUrl: imageUrl?.href ?? null,
+      pace: JAMENDO_DISCOVERY_PACES.has(discoveryPace) ? discoveryPace : null,
       genres: normalizedTags(track.musicinfo?.tags?.genres),
     }),
   });

@@ -36,6 +36,7 @@ test("the upstream request is read-only and asks for music metadata without OAut
   assert.equal(url.searchParams.get("offset"), "0");
   assert.equal(url.searchParams.get("include"), "musicinfo");
   assert.equal(url.searchParams.get("audioformat"), "mp32");
+  assert.equal(url.searchParams.get("groupby"), "artist_id");
   assert.equal(url.searchParams.has("client_secret"), false);
   assert.equal(url.searchParams.has("redirect_uri"), false);
 });
@@ -50,11 +51,23 @@ test("catalog sanitation emits only the application fields and removes download 
   assert.equal(result.returned, 1);
   assert.equal(result.providerCredit, "Provided by Jamendo");
   assert.deepEqual(result.tracks[0].musicinfo.tags.genres, ["rock", "funk"]);
-  assert.equal("speed" in result.tracks[0].musicinfo, false);
+  assert.equal(result.tracks[0].musicinfo.speed, "high");
   assert.equal(JSON.stringify(result).includes("audiodownload"), false);
   assert.equal(JSON.stringify(result).includes("client"), false);
   assert.equal(result.persistentAudioStorage, false);
   assert.equal(result.automaticPlayback, false);
+});
+
+test("official Jamendo pace and genre filters stay server-side and preserve relevance", () => {
+  const url = buildJamendoTracksUrl("fixture-client-id", {
+    speed: ["verylow", "low", "invalid"],
+    genre: "electronic",
+  });
+
+  assert.equal(url.searchParams.get("speed"), "verylow low");
+  assert.equal(url.searchParams.get("tags"), "electronic");
+  assert.equal(url.searchParams.get("boost"), "popularity_total");
+  assert.equal(url.searchParams.has("order"), false);
 });
 
 test("the fetch boundary never returns the credential or unchecked upstream fields", async () => {

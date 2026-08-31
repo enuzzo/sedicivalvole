@@ -194,13 +194,16 @@ test("the footer keeps a compact right palette and exposes one audio-effects mas
   const styles = read("styles.css");
 
   assert.match(app, /const \[vehicleEffectsEnabled, setVehicleEffectsEnabled\] = useState\(true\)/);
-  assert.match(app, /const launchVehicleEffects = musicId !== "soundtrack"/);
+  assert.match(app, /const launchVehicleEffects = true/);
   assert.match(app, /audioRef\.current\.setVehicleEffectsEnabled\(launchVehicleEffects\)/);
   assert.match(app, /soundtrackRef\.current\?\.setVehicleMaster\(vehicleEffectsEnabled\)/);
+  assert.match(app, /GLOBAL VEHICLE FX REMAIN IN THE FOOTER/);
+  assert.match(app, /CHOOSE A SOUNDTRACK PATH/);
+  assert.match(app, /Fresh mix · changes every 30 min/);
   assert.match(app, /className=\{`effects-button\$\{vehicleEffectsEnabled \? " is-active" : ""\}`\}/);
-  assert.match(app, /<span>EFFECTS<\/span>/);
+  assert.match(app, /<span>FX<\/span>/);
   assert.match(app, /showControlNotice\("VOLUME", !nextMuted\)/);
-  assert.match(app, /showControlNotice\("EFFECTS", enabled\)/);
+  assert.match(app, /showControlNotice\("FX", enabled\)/);
   assert.match(app, /className="control-status-notice" role="status" aria-live="polite"/);
   assert.match(styles, /\.control-slab \{[\s\S]*?grid-template-columns: 72px 86px 190px 210px minmax\(0, 1fr\) 160px/);
   assert.match(styles, /\.palette-control \{[\s\S]*?grid-column: 6;[\s\S]*?border-left: 1px solid var\(--line\)/);

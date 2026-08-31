@@ -51,10 +51,12 @@ test("the preview loads and prepares three media roles before explicit playback"
     mediaFactory: () => new FakeMedia(),
     onState: (state) => states.push(state),
   });
-  const loaded = await controller.load();
+  const loaded = await controller.load({ nowMs: 0 });
 
   assert.equal(loaded.status, "prepared");
-  assert.equal(loaded.current.key, "jamendo:1");
+  assert.ok(["jamendo:1", "jamendo:2", "jamendo:3", "jamendo:4"].includes(loaded.current.key));
+  assert.equal(loaded.library.entries.length, 4);
+  assert.equal(loaded.library.refreshCopy, "Fresh mix · changes every 30 min");
   assert.equal(loaded.media.preparedMediaElements, 3);
   assert.equal(loaded.media.currentAudibleKey, null);
   assert.equal(loaded.playbackRate, 1);
@@ -63,7 +65,39 @@ test("the preview loads and prepares three media roles before explicit playback"
   assert.equal(loaded.persistentAudioStorage, false);
   assert.ok(states.some((state) => state.status === "loading"));
   assert.equal((await controller.resume()).status, "playing");
-  assert.equal(controller.getSnapshot().media.currentAudibleKey, "jamendo:1");
+  assert.equal(controller.getSnapshot().media.currentAudibleKey, loaded.current.key);
+});
+
+test("pace, genre, and exact track choices start playback immediately", async () => {
+  const requests = [];
+  const controller = createSoundtrackPreviewController({
+    fetchImpl: async (url) => {
+      requests.push(new URL(url));
+      return catalogFetch();
+    },
+    mediaFactory: () => new FakeMedia(),
+  });
+
+  const pace = await controller.load({
+    selection: { kind: "pace", id: "fast" },
+    autoplay: true,
+    nowMs: 0,
+  });
+  assert.equal(pace.status, "playing");
+  assert.equal(requests[0].searchParams.get("speed"), "high veryhigh");
+
+  const genre = await controller.load({
+    selection: { kind: "genre", id: "jazz" },
+    autoplay: true,
+    nowMs: 0,
+  });
+  assert.equal(genre.status, "playing");
+  assert.equal(requests[1].searchParams.get("genre"), "jazz");
+
+  const target = genre.library.entries.find((entry) => entry.key !== genre.current.key);
+  const selected = await controller.select(target.key);
+  assert.equal(selected.status, "playing");
+  assert.equal(selected.current.key, target.key);
 });
 
 test("manual next and previous keep reversible identities and playback ownership", async () => {

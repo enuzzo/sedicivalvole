@@ -34,15 +34,37 @@ $limit = filter_input(INPUT_GET, 'limit', FILTER_VALIDATE_INT, [
 $offset = filter_input(INPUT_GET, 'offset', FILTER_VALIDATE_INT, [
     'options' => ['default' => 0, 'min_range' => 0, 'max_range' => 10000],
 ]);
-$query = http_build_query([
+$allowedSpeeds = ['verylow', 'low', 'medium', 'high', 'veryhigh'];
+$requestedSpeeds = preg_split('/[\s,+]+/', strtolower(trim((string)($_GET['speed'] ?? '')))) ?: [];
+$speeds = array_values(array_unique(array_filter(
+    $requestedSpeeds,
+    static fn($value): bool => in_array($value, $allowedSpeeds, true)
+)));
+$genre = strtolower(trim((string)($_GET['genre'] ?? '')));
+if (!preg_match('/^[a-z0-9-]{2,32}$/D', $genre)) {
+    $genre = '';
+}
+$queryParameters = [
     'client_id' => $clientId,
     'format' => 'json',
     'limit' => $limit,
     'offset' => $offset,
     'include' => 'musicinfo',
     'audioformat' => 'mp32',
-    'order' => 'popularity_total',
-], '', '&', PHP_QUERY_RFC3986);
+    'groupby' => 'artist_id',
+];
+if (count($speeds) > 0) {
+    $queryParameters['speed'] = implode(' ', $speeds);
+}
+if ($genre !== '') {
+    $queryParameters['tags'] = $genre;
+}
+if (count($speeds) > 0 || $genre !== '') {
+    $queryParameters['boost'] = 'popularity_total';
+} else {
+    $queryParameters['order'] = 'popularity_total';
+}
+$query = http_build_query($queryParameters, '', '&', PHP_QUERY_RFC3986);
 
 $upstream = null;
 for ($attempt = 0; $attempt < 4; $attempt += 1) {
@@ -91,6 +113,9 @@ foreach ($upstream['results'] as $track) {
         'shareurl' => trim((string)($track['shareurl'] ?? '')),
         'image' => trim((string)($track['image'] ?? '')),
         'musicinfo' => [
+            'speed' => in_array(strtolower(trim((string)($track['musicinfo']['speed'] ?? ''))), $allowedSpeeds, true)
+                ? strtolower(trim((string)$track['musicinfo']['speed']))
+                : null,
             'tags' => [
                 'genres' => array_values(array_slice(array_filter(array_map(
                     static fn($value): string => strtolower(trim((string)$value)),
@@ -115,6 +140,10 @@ soundtrackJson(200, [
     'providerCredit' => 'Provided by Jamendo',
     'tracks' => $tracks,
     'returned' => count($tracks),
+    'selection' => [
+        'speed' => $speeds,
+        'genre' => $genre !== '' ? $genre : null,
+    ],
     'persistentAudioStorage' => false,
     'automaticPlayback' => false,
 ]);

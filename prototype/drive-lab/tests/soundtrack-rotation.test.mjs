@@ -100,6 +100,20 @@ test("the initial queue prepares three distinct metadata roles without an offlin
   });
 });
 
+test("an explicit library track becomes current without changing authored playback semantics", () => {
+  const catalog = freshCatalog([
+    makePolicy(1, 10),
+    makePolicy(2, 20),
+    makePolicy(3, 30),
+    makePolicy(4, 40),
+  ]);
+  const queue = createSoundtrackQueue(catalog, { preferredKey: "jamendo:3" });
+
+  assert.equal(queue.activated.key, "jamendo:3");
+  assert.equal(queue.state.slots.current.key, "jamendo:3");
+  assert.equal(new Set(Object.values(queue.state.slots).map((entry) => entry.key)).size, 3);
+});
+
 test("next and previous rotate coherently, release only displaced metadata, and preserve forward history", () => {
   const catalog = freshCatalog([
     makePolicy(1, 10),

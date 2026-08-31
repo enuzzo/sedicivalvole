@@ -184,7 +184,8 @@ then derives primary and secondary credit from the sampled audible gains, keeps
 all three identities during a rapid retarget, strips stream URLs, preserves the
 licence/provider/direct-link obligations, and refuses playback eligibility when
 any audible identity lacks complete credit. The admitted Jamendo record retains
-normalized genre tags for manual discovery but no driving-pace field. A same-
+normalized genre tags and one validated official Jamendo pace classification for
+manual discovery; neither field enters vehicle-reactive state. A same-
 origin exact-ID relay validates admission again and streams byte ranges with
 `no-store`; it never writes a hosted copy. The App and LAB map the three roles
 onto transient media elements and a MediaElementSource graph. A separate playback
@@ -193,11 +194,15 @@ or retiming it, and divides processing into two explicit families:
 the footer-gated OPEN/UNDERWATER/BLOOM vehicle-reactive audio path and four manual
 flanger/reverb/chorus/beat-repeat controls. Playback, current-track attribution,
 direct source navigation, transport, and both effect families are visible in the
-App and LAB. The main App master affects only audio processing: macro detection
+App and LAB. The running Music drawer owns the persistent Play the Road /
+Soundtrack source switch. Its Soundtrack branch gives equal hierarchy to the
+rotating Illobo Featured playlist and the filterable Jamendo Library, uses a
+stable half-hour shuffle, and treats pace, genre, and exact-track gestures as
+explicit immediate play requests. The main App master affects only audio processing: macro detection
 and visual response continue independently. Metadata remains short-lived and
 audio remains non-persistent.
-Audible equal-power queue commit, QR handoff, broader catalogue browsing, and
-target-Tesla tuning remain later boundaries.
+Audible equal-power queue commit, QR handoff, and target-Tesla tuning remain
+later boundaries.
 
 JUNCTION is a 192-bar rendered production: eight adaptive energy states each
 have three complete takes, giving 24 clips from 76 distinct recordings in one

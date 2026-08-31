@@ -79,13 +79,16 @@ SOUNDTRACK, or MUTE—and one **VISUAL** before **START** can unlock Web Audio,
 check capabilities, request GPS permission, and enter the experience. Selecting
 SOUNDTRACK prepares three eligible Jamendo roles before START is enabled; actual
 playback still begins only after that explicit user gesture. Every choice carries
-a short description; Illobo's featured treatment belongs inside the later
-SOUNDTRACK library rather than this top-level launcher. The planned running
-Music drawer first switches between **Play the Road** and **Soundtrack**—the
+a short description; Illobo's featured treatment belongs inside the running
+SOUNDTRACK library rather than this top-level launcher. The running Music drawer
+switches between **Play the Road** and **Soundtrack**—the
 adaptive branch is not called generative because it also contains sampled
-scores—then leads Soundtrack with **Illobo Featured** before manual Jamendo
-genre and validated pace browsing. Pace remains passenger-selected discovery
-metadata and never follows road speed, selects automatically, or retimes audio.
+scores—then presents compact, equal-weight **Illobo Featured** and **Jamendo
+Library** alternatives. The Jamendo branch previews real cover art and starts
+immediately from a selected pace, genre, or track. Its deterministic fresh mix
+changes every 30 minutes. Pace remains passenger-selected discovery metadata and
+never follows road speed or retimes audio; every recording remains at authored
+`1×`.
 The launcher now
 establishes the owner-selected LIGHT **Road Sheet** language: one warm-ivory open
 sheet, a compact left-aligned 16 Road and Orbitron wordmark lockup, hairline

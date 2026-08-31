@@ -101,11 +101,13 @@ asserted.
 - manual flanger, reverb, chorus, and beat repeat remain passenger-operated;
 - App and protected LAB expose transport and direct artist/title/licence/Jamendo
   credit; physical-Tesla listening and audible equal-power skips remain open;
-- the next Music drawer keeps one explicit **Play the Road** / **Soundtrack**
+- the running Music drawer keeps one explicit **Play the Road** / **Soundtrack**
   switch. Do not label the first branch `Generative`, because JUNCTION and
-  NIGHTSHIFT are adaptive sampled scores. Soundtrack opens with **Illobo
-  Featured**, followed by manual genre and validated Jamendo pace browsing.
-  Pace is never connected to road speed, automatic selection, or playback rate.
+  NIGHTSHIFT are adaptive sampled scores. Soundtrack gives equal visual and
+  interaction weight to compact **Illobo Featured** and **Jamendo Library**
+  alternatives. Featured and the cover preview rotate every 30 minutes; Jamendo
+  pace, genre, and exact-track gestures start playback immediately. Pace is
+  never connected to road speed or playback rate.
 
 ## Diagnostics and privacy
 

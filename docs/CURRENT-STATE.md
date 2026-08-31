@@ -335,21 +335,23 @@ dated study documents.
   worker, or any offline store. Playback requires the explicit START/PLAY
   gesture, has no automatic PLAY THE ROAD fallback, and remains at authored
   `1×`: driving never chooses or retimes a recording. MediaElementSource
-  routing feeds a bounded Web Audio graph. The shared footer `EFFECTS` master
+  routing feeds a bounded Web Audio graph. The shared footer `FX` master
   gates only audible OPEN/UNDERWATER/BLOOM processing while the same vehicle
   macros remain available to every visual; PLAY THE ROAD starts enabled and
   SOUNDTRACK remains a fresh-session opt-in. Manual flanger, reverb, chorus,
   and beat-repeat controls stay independent. The visible card
   follows the active track and exposes artwork, artist, title, licence, Jamendo
-  credit, and the direct source link. The broader Music drawer is specified but
-  not implemented: its top-level switch will separate **Play the Road** from
-  **Soundtrack** without inaccurately calling every adaptive score generative.
-  The Soundtrack branch will lead with **Illobo Featured**, then allow explicit
-  passenger browsing by Jamendo genre and, only after revalidating the current
-  official schema, Jamendo pace classification. Pace is manual discovery
-  metadata only: it can never follow vehicle speed, retime audio, or trigger an
-  automatic track change. Audible crossfade/rapid-retarget integration, this
-  drawer, the QR handoff, and physical-Tesla listening remain open; no
+  credit, and the direct source link. The running Music drawer now separates
+  **Play the Road** from **Soundtrack** without inaccurately calling every
+  adaptive score generative. Soundtrack presents compact, equal-weight **Illobo
+  Featured** and **Jamendo Library** alternatives. The Featured playlist and
+  Jamendo cover preview rotate deterministically every 30 minutes. Jamendo
+  browsing uses the official `speed` values and genre tags; selecting a pace,
+  genre, or exact track starts playback immediately. Pace is manual discovery
+  metadata only: it can never follow vehicle speed or retime audio. MUTE and FX
+  stay universal in the footer, and disabling FX suppresses audio processing
+  without stopping visual macro detection. Audible crossfade/rapid-retarget
+  integration, the QR handoff, and physical-Tesla listening remain open; no
   offline-duration promise is made. See
   [`SOUNDTRACK-SOURCE-POLICY.md`](SOUNDTRACK-SOURCE-POLICY.md).
 - **The running footer has its compact control geometry.** MUTE and EFFECTS are

@@ -22,12 +22,19 @@ export async function fetchSoundtrackCatalog({
   endpoint = SOUNDTRACK_CATALOG_ENDPOINT,
   limit = 24,
   offset = 0,
+  speed = [],
+  genre = null,
   nowMs = Date.now(),
 } = {}) {
   if (typeof fetchImpl !== "function") throw new Error("catalog-fetch-unavailable");
   const url = new URL(endpoint, globalThis.location?.origin ?? "https://local.invalid");
   url.searchParams.set("limit", String(limit));
   url.searchParams.set("offset", String(offset));
+  const speeds = (Array.isArray(speed) ? speed : String(speed ?? "").split(/[\s,+]+/))
+    .map((value) => String(value).trim().toLowerCase())
+    .filter(Boolean);
+  if (speeds.length) url.searchParams.set("speed", speeds.join(" "));
+  if (genre) url.searchParams.set("genre", String(genre).trim().toLowerCase());
   const response = await fetchImpl(url.href, {
     method: "GET",
     cache: "no-store",
@@ -53,6 +60,7 @@ export async function fetchSoundtrackCatalog({
     duplicateEntries: snapshot.duplicateEntries,
     source: "jamendo",
     providerCredit: "Provided by Jamendo",
+    selection: Object.freeze({ speed: Object.freeze(speeds), genre: genre || null }),
     persistentAudioStorage: false,
   });
 }

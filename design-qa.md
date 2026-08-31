@@ -1,3 +1,64 @@
+# Design QA — equal-path Soundtrack library
+
+Date: 2026-08-31
+
+## Source and implementation
+
+- Owner-selected Product Design direction 02:
+  `/Users/enuzzo/.codex/generated_images/01a0566c-fcda-7f42-9ed8-1f8898dd5258/exec-d149c4d6-8971-4694-abad-3d46c8135a84.png`.
+- Browser-rendered implementation at the reference viewport:
+  `/private/tmp/sedicivalvole-music-drawer-1491x1055.png`.
+- Joined reference/implementation comparison opened as one visual input:
+  `/private/tmp/sedicivalvole-music-drawer-comparison.png`.
+- Exact Tesla-viewport implementation reviewed at `773 × 601` with Soundtrack
+  open, real Jamendo metadata and cover art, muted QA startup, and APERTURE.
+
+## Fidelity and owner refinements
+
+- The implementation preserves direction 02's split overlay, persistent source
+  switch, dark Swiss/Braun surface, vermilion selection rails, compact filter
+  rows, cover-led track list, and anchored now-playing transport.
+- The owner-requested refinement deliberately supersedes the mock's dominant
+  Featured album: **Illobo Featured** and **Jamendo Library** are two compact,
+  equal-width, equal-border alternatives under the explicit copy `Two equal
+  ways to start listening`. The provisional generated mark stays replaceable by
+  the owner-supplied final logo.
+- Jamendo Library previews six real covers in two columns at the wide viewport.
+  At `773 × 601`, the drawer becomes full-width and touch-first while retaining
+  both alternatives, all three pace actions, all five genre actions, and the
+  first cover row above the scroll fold.
+- The interface says `AUTHORED PLAYBACK · 1×` and `Fresh mix · changes every 30
+  min`. Catalogue pace is visibly a passenger choice and never appears as a
+  playback-rate or vehicle-speed control.
+
+## Interaction and runtime checks
+
+- Signal Gate → Instrument Deck → SOUNDTRACK + APERTURE → START prepares a real
+  eligible catalogue, enters the running field, and opens the Soundtrack branch.
+- Focused model/runtime tests prove that Featured, pace, genre, and exact-track
+  gestures request immediate playback; the stable shuffle is unchanged inside
+  a half-hour window and changes at the next boundary.
+- MUTE and FX remain adjacent global footer controls across both source modes.
+  FX off affects only audible OPEN/UNDERWATER/BLOOM processing; visual macro
+  detection remains active.
+- Browser console warnings/errors are zero. The drawer and cover data render at
+  both `1491 × 1055` and exact Tesla `773 × 601`; no cropped primary action or
+  horizontal overflow was observed.
+- Eighty-nine focused Soundtrack/presentation checks pass. The complete unit
+  suite is 426/427: its only failure is the unchanged host limitation
+  `spawn php ENOENT` in the diagnostic-mail fixture. The 141-module production
+  build and protected LAB build pass.
+
+## Residual boundary
+
+- Replace the provisional Illobo image when the final logo is supplied.
+- Physical-Tesla cabin listening, the modelled audible 450 ms equal-power skip,
+  and QR handoff remain separate acceptance work.
+
+final result: passed
+
+---
+
 # Design QA — ATLAS manual pitch range
 
 Date: 2026-08-31

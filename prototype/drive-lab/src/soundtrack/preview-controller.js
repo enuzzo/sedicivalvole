@@ -1,6 +1,10 @@
 import { fetchSoundtrackCatalog } from "./catalog-client.js";
 import { createSoundtrackMediaDeckController } from "./media-deck-controller.js";
 import { createSoundtrackQueue, moveSoundtrackQueue } from "./rotation-model.js";
+import {
+  normalizeSoundtrackSelection,
+  rotateSoundtrackEntries,
+} from "./library-model.js";
 
 export const SOUNDTRACK_PREVIEW_SCHEMA = "sedicivalvole.soundtrack-preview.v1";
 
@@ -14,6 +18,8 @@ const safeCredit = (entry) => entry ? Object.freeze({
   providerCredit: entry.policy.providerCredit,
   licenceLabel: entry.policy.licence.label,
   licenceUrl: entry.policy.licence.url,
+  pace: entry.policy.item.pace,
+  genres: entry.policy.item.genres,
 }) : null;
 
 export function createSoundtrackPreviewController({
@@ -37,6 +43,7 @@ export function createSoundtrackPreviewController({
   let requestRevision = 0;
   let catalogResult = null;
   let queueState = null;
+  let libraryRotation = null;
   let status = "idle";
   let error = null;
   let mediaSnapshot = null;
@@ -52,6 +59,13 @@ export function createSoundtrackPreviewController({
     receivedEntries: catalogResult?.receivedEntries ?? 0,
     admittedEntries: catalogResult?.admittedEntries ?? 0,
     rejectedEntries: catalogResult?.rejectedEntries ?? 0,
+    library: libraryRotation ? Object.freeze({
+      schema: libraryRotation.schema,
+      selection: libraryRotation.selection,
+      rotationWindow: libraryRotation.window,
+      entries: Object.freeze(libraryRotation.entries.map(safeCredit).filter(Boolean)),
+      refreshCopy: "Fresh mix · changes every 30 min",
+    }) : null,
     media: mediaSnapshot,
     effects: effects.getSnapshot(),
     playbackRate: 1,
@@ -109,28 +123,71 @@ export function createSoundtrackPreviewController({
     return emit();
   };
 
-  const load = async () => {
+  const load = async ({
+    selection = null,
+    autoplay = false,
+    nowMs = Date.now(),
+  } = {}) => {
     if (destroyed) return snapshot();
     const revision = ++requestRevision;
     status = "loading";
     error = null;
     emit();
     try {
-      const nextCatalogResult = await fetchSoundtrackCatalog({ fetchImpl });
+      const normalizedSelection = normalizeSoundtrackSelection(selection);
+      const nextCatalogResult = await fetchSoundtrackCatalog({
+        fetchImpl,
+        limit: 50,
+        speed: normalizedSelection.speed,
+        genre: normalizedSelection.genre,
+        nowMs,
+      });
       if (destroyed || revision !== requestRevision) return snapshot();
-      const queue = createSoundtrackQueue(nextCatalogResult.catalog);
+      libraryRotation = rotateSoundtrackEntries(nextCatalogResult.catalog.entries, {
+        nowMs,
+        selection: normalizedSelection,
+      });
+      const rotatedCatalog = Object.freeze({
+        ...nextCatalogResult.catalog,
+        entries: libraryRotation.entries,
+      });
+      const queue = createSoundtrackQueue(rotatedCatalog);
       if (!queue.state.slots.current) throw new Error(queue.blockedReason || "catalog-empty");
-      catalogResult = nextCatalogResult;
+      catalogResult = Object.freeze({ ...nextCatalogResult, catalog: rotatedCatalog });
       queueState = queue.state;
       mediaSnapshot = deck.syncQueue(queueState);
       status = "prepared";
-      return emit();
+      emit();
+      return autoplay ? playPreparedCurrent(revision) : snapshot();
     } catch (caught) {
       if (destroyed || revision !== requestRevision) return snapshot();
       status = "error";
       error = String(caught?.message || caught || "catalog-unavailable").slice(0, 80);
       return emit();
     }
+  };
+
+  const select = async (key) => {
+    if (destroyed || !catalogResult || !queueState) return snapshot();
+    const revision = ++requestRevision;
+    const queue = createSoundtrackQueue(catalogResult.catalog, {
+      preferredKey: key,
+      selectionCursor: queueState.selectionCursor,
+      recentTrackLimit: queueState.recentTrackLimit,
+      recentArtistLimit: queueState.recentArtistLimit,
+    });
+    if (!queue.activated || queue.activated.key !== key) {
+      status = "error";
+      error = "track-unavailable";
+      return emit();
+    }
+    deck.pauseCurrent();
+    queueState = queue.state;
+    mediaSnapshot = deck.syncQueue(queueState);
+    status = "prepared";
+    error = null;
+    emit();
+    return playPreparedCurrent(revision);
   };
 
   const move = async (direction) => {
@@ -175,11 +232,13 @@ export function createSoundtrackPreviewController({
     effects.destroy();
     queueState = null;
     catalogResult = null;
+    libraryRotation = null;
     return emit();
   };
 
   return Object.freeze({
     load,
+    select,
     move,
     pause,
     resume,

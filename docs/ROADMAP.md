@@ -90,15 +90,15 @@ Completed in the current working line:
   artwork, artist, title, licence, provider credit, and direct source link.
   Effects-disallowed, ND, unknown, incomplete, or stale items fail closed;
   neither audio nor credentials enter persistent browser or repository storage.
-  The pending broader Music drawer starts with a persistent **Play the Road** /
+  The running Music drawer now has a persistent **Play the Road** /
   **Soundtrack** switch; Play the Road retains the complete adaptive catalogue,
-  including sampled adaptive scores, while Soundtrack leads with an
-  **Illobo Featured** collection and then offers manual browsing by Jamendo
-  genre or validated Jamendo pace metadata. Pace is a passenger-selected
-  editorial filter only and must never follow road speed, select automatically,
-  or retime a recording. Audible equal-power skip integration, this drawer, QR
-  handoff, physical-Tesla listening, and target-vehicle effect tuning remain
-  pending.
+  including sampled adaptive scores. Soundtrack gives equal hierarchy to a
+  compact rotating **Illobo Featured** playlist and **Jamendo Library**, previews
+  real covers, rotates its mix every 30 minutes, and starts immediately from a
+  chosen Jamendo pace, genre, or exact track. Pace is a passenger-selected
+  editorial filter only and never follows road speed or retimes a recording.
+  Audible equal-power skip integration, QR handoff, physical-Tesla listening,
+  and target-vehicle effect tuning remain pending.
 - the footer palette is now a fixed two-row block at the far right (`138 px` at
   the Tesla breakpoint, `160 px` on desktop), with the recovered centre span
   reserved for future controls. MUTE and EFFECTS changes emit a short centred

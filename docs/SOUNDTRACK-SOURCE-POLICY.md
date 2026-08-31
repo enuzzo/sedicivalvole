@@ -1,7 +1,7 @@
 # SOUNDTRACK Source Policy
 
-Status: **implemented admission and transient metadata-rotation foundations; no
-network catalogue or player is connected yet**. Updated on 2026-08-31.
+Status: **implemented server-side discovery, transient playback, vehicle/manual
+effects, and passenger-operated library browsing**. Updated on 2026-08-31.
 
 This policy turns source and licence evidence into fail-closed runtime
 capabilities. It is an engineering gate, not a substitute for legal review.
@@ -40,7 +40,7 @@ member and Jamendo plus a direct backlink for every content item, and prohibit
 applications designed for content caching or offline access. The tracks API
 separates the stream `audio` field from downloads and exposes the required
 credit, image, licence, music-information, and `shareurl` fields. Accordingly,
-this repository still plans direct source streaming with transient browser
+this repository uses direct source streaming with transient browser
 media buffering only; it does not admit Jamendo hosted copies or offline audio.
 
 Primary sources checked on 2026-08-31:
@@ -60,8 +60,9 @@ private messages or credentials never enter the repository.
 
 - `src/soundtrack/source-policy.js` owns licence parsing, Jamendo item
   normalization, direct-grant admission, and the effects gate. Its optional
-  discovery fields retain normalized `musicinfo.tags.genres`; driving pace is
-  deliberately absent and metadata never bypasses the licence gate.
+  discovery fields retain normalized `musicinfo.tags.genres` and only the five
+  official `musicinfo.speed` values. Catalogue pace is never driving pace, and
+  metadata never bypasses the licence gate.
 - `tests/soundtrack-source-policy.test.mjs` covers unknown licences,
   NoDerivatives exclusion, Creative Commons obligations, Jamendo URL/credit
   validation, download-field removal, and explicit direct-grant decisions.
@@ -98,15 +99,19 @@ private messages or credentials never enter the repository.
   four normalized manual controls for flanger, reverb, chorus, and beat repeat.
   The same source capability gate applies to both effects paths.
 - `src/soundtrack/catalog-client.js` requests the same-origin catalogue relay,
-  normalizes its short-lived response through the admission policy, and never
-  receives a credential.
+  forwards explicit passenger pace/genre filters, normalizes the short-lived
+  response through the admission policy, and never receives a credential.
+- `src/soundtrack/library-model.js` maps three passenger-facing pace choices to
+  the official Jamendo `speed` enum, keeps a small explicit genre set, and owns a
+  deterministic per-selection shuffle that changes at each 30-minute boundary.
 - `src/soundtrack/preview-controller.js` composes catalogue, rotation, transient
   media decks, attribution, and the live effect graph for explicit App/LAB use.
 - `src/soundtrack/effects-controller.js` owns the Web Audio graph for OPEN,
   UNDERWATER, BLOOM, flanger, reverb, chorus, and bounded beat repeat while
   keeping every media element at authored rate.
-- `public/api/soundtrack-catalog.php` keeps the Jamendo client ID server-side and
-  returns only display/playback fields with short-lived no-store headers.
+- `public/api/soundtrack-catalog.php` keeps the Jamendo client ID server-side,
+  validates official speed and bounded genre filters, and returns only
+  display/playback fields with short-lived no-store headers.
 - `public/api/soundtrack-audio.php` resolves one exact admitted track ID, rejects
   effects-disallowed licences, forwards byte ranges, and streams without writing
   a hosted or offline copy.
@@ -126,17 +131,24 @@ private messages or credentials never enter the repository.
   manual controls, normalized amounts, authorized passenger control, and
   fail-closed source/control decisions.
 - The App and protected owner LAB now import the production preview/effect path.
-  They expose current-track credit, direct Jamendo navigation, transport, the
-  vehicle-FX master, and four manual effects. The modelled 450 ms audible
-  equal-power queue commit, QR UI, broader library, target-vehicle tuning, and
-  physical-Tesla acceptance remain later checkpoints. `preparedMetadataSlots`
+  The App Music drawer switches between Play the Road and Soundtrack; within
+  Soundtrack it presents equal compact Illobo Featured and Jamendo Library
+  alternatives, real cover previews, immediate play by pace/genre/exact track,
+  and the 30-minute refresh notice. Both surfaces expose current-track credit,
+  direct Jamendo navigation, transport, the global vehicle-FX master, and four
+  manual effects. The modelled 450 ms audible equal-power queue commit, QR UI,
+  target-vehicle tuning, and physical-Tesla acceptance remain later checkpoints.
+  `preparedMetadataSlots`
   reports metadata roles only; it is not an audio-buffer or offline-duration
   claim. No persistent audio layer is approved or planned.
 
-## Planned library discovery boundary
+## Library discovery boundary
 
-The broader Music drawer may add a separately normalized Jamendo pace field only
-after the current official schema is revalidated. That value belongs exclusively
-to passenger-operated catalogue discovery alongside genre. It must not enter
-vehicle telemetry, automatic selection, playback timing, playback rate, effects
-automation, persistence, or an inference for records that omit it.
+The official Jamendo tracks schema was revalidated on 2026-08-31. The server may
+send only `verylow`, `low`, `medium`, `high`, or `veryhigh` through its `speed`
+filter and a bounded normalized genre through `tags`. These values belong
+exclusively to passenger-operated catalogue discovery. Pressing a pace, genre,
+or exact track is an explicit request to start that chosen catalogue path; no
+vehicle event may make that request. Pace must not enter vehicle telemetry,
+playback timing, playback rate, pitch, effects automation, persistent storage,
+or an inference for records that omit it.
