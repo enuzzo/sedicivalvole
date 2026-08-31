@@ -18,7 +18,7 @@ sources is not a second active queue.
 | Recovery and scope | [x] RECONCILED | The conflicting-session inventory, complete user-requirement ledger, single-writer boundary, rejected directions, superseded interpretations, and current main checkout were recovered without reconstructing decisions from memory. | Keep this checklist and the current-state documents synchronized. |
 | Licensing and source safety | [x] IMPLEMENTED | PolyForm scope, creator identity, third-party notices, upstream integrity boundaries, ignored source-library policy, secret-safe Jamendo relay, and no-offline-copy rules are documented and tested. | Recheck source terms when a new source or asset is admitted. |
 | Signal and diagnostics | [x] IMPLEMENTED · LIVE · DELIVERY VERIFIED | GPS/Demo normalization, bounded signal response, acceleration/braking macros, coordinate-free v3 report, bounded flight recorder, explicit send, and protected owner LAB are implemented. The owner-supplied complete build-`20260831-0853` attachment closes `GPS → SENT → received`. | Repeat only when a new diagnostic defect needs evidence. |
-| Product shell and controls | [x] IMPLEMENTED · LIVE | Signal Gate, Instrument Deck, six-visual/six-score catalogue grammar, Title Case editorial labels, compact Tesla footer, global MUTE/FX, ten palettes, REPORT, and equal Engine/Flux navigation contract are in place. | Engine itself remains a design/audio milestone. |
+| Product shell and controls | [x] IMPLEMENTED · LIVE | Signal Gate, Instrument Deck, six-visual/six-score catalogue grammar, Title Case editorial labels, compact Tesla footer, global MUTE/FX, ten palettes, REPORT, equal Engine/Flux navigation, and central focus release after completed controls are in place. | Engine itself remains a design/audio milestone. Retest automatic chrome retraction in the target Tesla. |
 | Flux visual catalogue | [x] IMPLEMENTED · LIVE | Aperture, byte-identical Vertigo, Meridian, Atlas, source-faithful Drivey, and PRTCL are selectable; WAKE, PLUMB, and PRIMORDIAL are retired from runtime while their decisions remain recorded. | Target-Tesla motion, touch, thermal, and long-session acceptance is incomplete. |
 | Adaptive music | [x] IMPLEMENTED · LIVE BASELINE | FRACTURE, JUNCTION, and NIGHTSHIFT have authored low-speed behavior, complete transition contracts, bounded runtimes, measured dynamics, and shared OPEN/UNDERWATER/BLOOM processing. | Full low-volume and real-drive listening remains mandatory. |
 | Fixed Soundtrack | [x] OFFICE IMPLEMENTED · CORRECTED LIVE | The equal **Play the Road** / **Soundtrack** drawer, true 29-track Illobo Featured catalogue, separate Jamendo Library with 15 live-verified genre routes in a `5 × 3` selector, 30-minute rotation, immediate passenger selection, authored `1×`, three-deck media, and global MUTE/FX are live. Checkpoint `57fed11` hardens end/skip/restart/preload/catalogue/effects state; `137ddeb` makes weak-network source changes visually immediate, exposes the selected loading state, and prevents obsolete asynchronous work from reclaiming playback. Checkpoint `33687dd` fixes the complete ordered genre set and its selection normalization; build `20260831-2225` passes local/canonical Ambient and Reggae interaction QA. | Retest `R7-06`–`R7-07`; run `R7-01`–`R7-05`, especially degraded-network switch test `R7-03`, plus `R8-01`–`R8-02` in the Tesla. |
@@ -98,6 +98,23 @@ sources is not a second active queue.
 - [x] publish and verify build `20260831-0315` at the canonical root: guarded
   107-file / 16,451,993-byte no-delete transfer, byte-identical HTML/JS/CSS,
   and exact live Browser QA at both target viewports.
+
+## Control focus recovery checkpoint
+
+- [x] identify the persistent chrome lock as restored/retained DOM focus on a
+  control trigger rather than an animation, hover, or GPS-state defect;
+- [x] return focus to the neutral running experience after the final pinned
+  surface closes and after direct MUTE, FX, or palette actions, while preserving
+  focus containment for open surfaces and keyboard navigation;
+- [x] pass the focused `27/27` presentation checks, complete `522/522` suite,
+  147-module App / 71-module LAB / Sites build, and exact local `773 × 601`
+  Music, palette, MUTE, and Performance FX interaction QA;
+- [x] publish and verify checkpoint `9daf8f6`, build `20260831-2244`, with
+  read-only pre/postflight, 29/29 Illobo hashes, byte-identical canonical
+  HTML/JavaScript/CSS, and an empty live Browser console;
+- [ ] repeat drawer-close and direct-control idle retraction in the target Tesla,
+  confirming that header/footer always retract after 4.2 seconds without a tap
+  on the visual.
 
 ## Equal-path Music drawer publication checkpoint
 

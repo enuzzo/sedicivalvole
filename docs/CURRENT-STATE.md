@@ -420,6 +420,11 @@ dated study documents.
   hierarchy, both announce a 1.5-second centred status, and the two-row palette is
   fixed to `138 px` at `773 × 601` / `160 px` on desktop at the far-right edge.
   The released centre span is intentionally empty rather than stretched.
+  After a direct footer action or the final Music, Visual, diagnostics, GPS-help,
+  or Performance-FX surface closes, focus returns to the neutral running
+  experience instead of its trigger. Open surfaces and keyboard navigation keep
+  their accessible focus; an idle experience retracts its header and footer
+  after 4.2 seconds without requiring a passenger click on the visual.
   Editorial Music and Visual names use Title Case display labels in the launcher,
   footer, and both pickers; functional micro-labels remain uppercase. Each footer
   catalogue number now sits beside its name on the same baseline at the same type
