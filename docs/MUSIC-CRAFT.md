@@ -1281,6 +1281,41 @@ normalization defect means the complete effects/listening matrix must be repeate
 after the shared gain correction is published. Never let one working effect or
 one loud source stand in for matched-level, alert-safe cabin acceptance.
 
+### 6.8 Evidence must bound both musical inference and slow-bank readiness
+
+The failed pitch-residual shortcut was not repaired by choosing another scalar
+threshold. `npm run analyze:junction-pitch-evidence` now rebuilds a tracked
+stereo fixture grid across shared ADSR, filter cutoff, phase seed, detuned
+unison, chorus, partial slope, saturation and stereo coherence. A phase-aware
+two-frequency model reaches `1.0` recall and `0.0` false-positive rate on the
+valid controlled cases. Every deliberately short, unresolved-detuned or
+independently chorused case abstains as `unknown` with an explicit reason.
+
+The important result is the boundary, not the perfect synthetic score. The
+published JUNCTION assets are complete processed mixes, so they cannot prove
+the isolated processing provenance needed to exclude detune, chorus and
+nonlinear cross-products. The tracked report therefore keeps
+`real_audio_pitch_gate_authorized` false. This is a reproducible replacement for
+the anti-correlated magnitude residual: it can rank review evidence, but it
+cannot certify a real pitch set until the same validity inputs are observable.
+
+Cold-cache readiness has an equally physical boundary. The public JUNCTION and
+NIGHTSHIFT banks are `5,812,361` and `5,504,595` bytes. At the slowest browser
+hint observed in the vehicle, `1.35 Mbps` with `250 ms` RTT, they need more than
+the old `12 s` deadline even before conservative transport headroom. The shared
+budget now applies `18%` headroom and a `45 s` transfer deadline; JUNCTION's
+outer readiness bound is `56 s`, long enough for one allowed transfer plus one
+allowed decode.
+
+Both players retain an audible harmonic safety bed, abort a body that really
+stalls at the transfer deadline, expose the exact timeout reason, wait ten audio
+seconds and retry without another selection. NIGHTSHIFT now has the same
+single-attempt, abort, cooldown and teardown discipline JUNCTION already had.
+Deterministic fake-clock tests use the real bank byte lengths, prove that the old
+deadline could not cover the measured boundary, and then exercise failure and
+recovery for both scores. This changes readiness policy, not bank format or
+authored playback rate.
+
 ---
 
 ## 7. Sources and material

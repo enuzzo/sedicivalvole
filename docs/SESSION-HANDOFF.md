@@ -146,9 +146,22 @@ local and live exact-viewport Browser QA have no warning/error. Release work is
 complete; target-vehicle route/GPS/audio acceptance and a new report proving
 stable ATLAS 30 FPS remain separate gates.
 
+Milestone row 6 is implemented and pushed at `614872b`, after the live build
+above. The tracked JUNCTION evidence grid covers ADSR, filter, phase seed,
+detune, chorus, spectral slope, saturation and stereo coherence; it passes its
+synthetic acceptance while explicitly refusing to authorize pitch gating on
+complete processed mixes. The actual `5,812,361`-byte JUNCTION and
+`5,504,595`-byte NIGHTSHIFT banks now share a measured `45 s` transfer budget
+for the observed `1.35 Mbps` / `250 ms` boundary. Both players abort genuine
+stalls, state the timeout, retain a harmonic bed and retry after ten audio
+seconds without reselection. Focused evidence/network checks pass `8/8`; the
+complete suite passes `482/482`, and the 143-module App / 68-module LAB / Sites
+build passes. This checkpoint is pushed but not yet canonical live; publish and
+verify it before starting row 7. Rows 2, 4 and 5 remain physical-Tesla gates.
+
 Continue only from the 17-row execution order in
 [`MILESTONE-CHECKLIST-2026-08-31.md`](MILESTONE-CHECKLIST-2026-08-31.md). The
-first row is complete; the second is physical-Tesla acceptance. Do not reopen
+first and sixth rows are complete; the second is physical-Tesla acceptance. Do not reopen
 the route/dot treatment as an ATLAS design exploration: only the still-unwired
 road/cardinal overlay retains the exactly-three direction gate.
 

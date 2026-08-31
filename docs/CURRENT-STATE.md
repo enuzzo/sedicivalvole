@@ -461,11 +461,10 @@ dated study documents.
 4. Audition NIGHTSHIFT at low volume, verify perceived phrasing and loudness
    against both existing scores, then validate acceleration/reversal behavior in
    the target Tesla. Automated measurements are not perceptual acceptance.
-5. Replace the failed magnitude-residual decision with a three-way evidence
-   stack. Validate shared ADSR/filter envelopes, phase seeds, detune, chorus,
-   spectral slope and saturation; add stereo and phase-coherence evidence with
-   explicit invalidity reasons before any detected pitch set can gate JUNCTION
-   material.
+5. Keep JUNCTION real-audio pitch admission disabled until isolated-source
+   provenance can satisfy the now-tracked ADSR/filter/phase/detune/chorus/
+   spectral/saturation and stereo-coherence validity gates. The synthetic stack
+   is complete; its explicit abstention is the current correct result.
 6. Validate PRTCL motion, performance, touch, and thermal behavior on the target
    Tesla. Present exactly three original Gradient Field directions before any
    implementation, then admit only the selected direction through a fresh

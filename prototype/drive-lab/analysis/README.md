@@ -75,6 +75,28 @@ Chroma plots may support human inspection, but pitch-class chroma never votes:
 folding octaves together cannot distinguish a separately voiced note from an
 overlapping harmonic.
 
+## Reproduce the replacement evidence stack
+
+```sh
+npm run analyze:junction-pitch-evidence
+```
+
+This command rebuilds the tracked
+`analysis/junction-pitch-evidence.json` artifact from deterministic stereo
+fixtures. It varies shared ADSR, filter cutoff, oscillator phase seed, detuned
+unison, chorus, partial slope, saturation, and stereo placement/coherence. The
+phase-aware two-frequency model reaches `1.0` recall and `0.0` false-positive
+rate on the valid synthetic cases, while every short-sustain, unresolved-detune,
+or independently chorused case returns `unknown` with a named invalidity reason.
+
+That synthetic result does **not** authorize a pitch gate on the published
+JUNCTION performances. They are complete processed mixes and do not expose the
+isolated-source provenance needed to rule out detune, chorus, or nonlinear
+cross-products. The artifact therefore records
+`real_audio_pitch_gate_authorized: false`. This explicit abstention replaces the
+failed magnitude-residual shortcut; it does not disguise uncertainty as a chord
+verdict.
+
 ## Review-only source and voicing reports
 
 The independent-source report now retains every inspected harmonic hypothesis,
