@@ -3,7 +3,10 @@ import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
-import { isControlLayerFocused } from "../src/control-visibility.js";
+import {
+  isControlLayerFocused,
+  shouldReleaseControlFocus,
+} from "../src/control-visibility.js";
 
 const TEST_DIR = dirname(fileURLToPath(import.meta.url));
 const SOURCE_ROOT = resolve(TEST_DIR, "../src");
@@ -21,6 +24,22 @@ test("keyboard focus keeps the retracting control planes awake", () => {
   assert.match(app, /if \(isControlLayerFocused\(document\.activeElement\)\)/);
   assert.match(app, /window\.setTimeout\(restWhenIdle, 800\)/);
   assert.match(app, /onFocusCapture=\{wakeControls\}/);
+});
+
+test("completed control actions and closed surfaces return focus to the experience", () => {
+  const app = read("App.jsx");
+  const controlAction = {
+    closest: (selector) => selector.includes(".control-layer button") ? {} : null,
+  };
+  assert.equal(shouldReleaseControlFocus(controlAction, false), true);
+  assert.equal(shouldReleaseControlFocus(controlAction, true), false);
+  assert.equal(shouldReleaseControlFocus({ closest: () => null }, false), false);
+  assert.equal(shouldReleaseControlFocus(null, false), false);
+  assert.match(app, /const controlsPinned = modalOpen \|\| manualEffectsDeckOpen \|\| gpsHelpOpen/);
+  assert.match(app, /if \(wasPinned && !controlsPinned\) queueExperienceFocus\(\)/);
+  assert.match(app, /if \(phase !== "running" \|\| controlsPinnedRef\.current\) return/);
+  assert.match(app, /appRef\.current\?\.focus\(\{ preventScroll: true \}\)/);
+  assert.match(app, /onClickCapture=\{handleControlActivation\}/);
 });
 
 test("launch surface contains only product and action copy", () => {

@@ -100,7 +100,10 @@ import {
   speedToEnergy,
 } from "./signal-model.js";
 import { perceivedTempoFromSnapshot } from "./low-speed-score.js";
-import { isControlLayerFocused } from "./control-visibility.js";
+import {
+  isControlLayerFocused,
+  shouldReleaseControlFocus,
+} from "./control-visibility.js";
 import {
   decodeSuggestionAddress,
   SUPPORT_COUNT_DURATION_MS,
@@ -1539,7 +1542,10 @@ export function App() {
     || environmentPickerOpen
     || soundtrackPanelOpen
     || supportOpen;
-  const controlsPinned = modalOpen || manualEffectsDeckOpen;
+  const controlsPinned = modalOpen || manualEffectsDeckOpen || gpsHelpOpen;
+  const controlsPinnedRef = useRef(controlsPinned);
+  const previousControlsPinnedRef = useRef(controlsPinned);
+  controlsPinnedRef.current = controlsPinned;
   const closeVoicePreview = useCallback(() => {
     setPreviewOpen(false);
     setDrawerOpen(true);
@@ -1667,6 +1673,25 @@ export function App() {
     };
     wakeTimerRef.current = window.setTimeout(restWhenIdle, 4200);
   }, []);
+
+  const queueExperienceFocus = useCallback((activationTarget = null) => {
+    window.requestAnimationFrame(() => {
+      if (phase !== "running" || controlsPinnedRef.current) return;
+      if (activationTarget && !shouldReleaseControlFocus(activationTarget, false)) return;
+      appRef.current?.focus({ preventScroll: true });
+      wakeControls();
+    });
+  }, [phase, wakeControls]);
+
+  const handleControlActivation = useCallback((event) => {
+    queueExperienceFocus(event.target);
+  }, [queueExperienceFocus]);
+
+  useEffect(() => {
+    const wasPinned = previousControlsPinnedRef.current;
+    previousControlsPinnedRef.current = controlsPinned;
+    if (wasPinned && !controlsPinned) queueExperienceFocus();
+  }, [controlsPinned, queueExperienceFocus]);
 
   const handleSurfacePointerDown = useCallback((event) => {
     controlsHiddenAtPointerDownRef.current = !(controlsAwake || modalOpen);
@@ -2983,6 +3008,7 @@ export function App() {
       data-environment={environmentId}
       onPointerDown={handleSurfacePointerDown}
       onPointerMove={wakeControls}
+      onClickCapture={handleControlActivation}
       onFocusCapture={wakeControls}
     >
       {phase === "running" ? (
