@@ -78,6 +78,10 @@ The following boundaries are load-bearing:
 - MusicRadar source libraries remain ignored and unredistributed. Only original
   rendered arrangements are delivered, and those encoded scores remain
   reserved original audio rather than PolyForm software.
+- The two Illobo LOBO identity SVGs remain Lobo's brand material under his
+  direct permission to use both supplied variants. They are not covered by the
+  repository's PolyForm grant; their byte-identical paths and colours are not
+  modified by the project-authored presentation crossfade.
 
 ## Contributions and future grants
 

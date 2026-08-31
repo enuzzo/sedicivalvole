@@ -1617,7 +1617,34 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
   background: rgba(238, 234, 224, .035);
 }
 .soundtrack-choice-card.is-selected { box-shadow: inset 0 3px var(--accent); }
-.soundtrack-choice-card > img { width: 64px; height: 64px; border-radius: var(--ui-radius); object-fit: cover; }
+.illobo-featured-cover {
+  position: relative;
+  display: block;
+  width: 64px;
+  height: 64px;
+  overflow: hidden;
+  border-radius: var(--ui-radius);
+  background: var(--paper);
+}
+.illobo-featured-cover img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.illobo-featured-cover img:first-child { animation: illobo-featured-solid 6s ease-in-out infinite; }
+.illobo-featured-cover img:last-child { animation: illobo-featured-outline 6s ease-in-out infinite; }
+@keyframes illobo-featured-solid {
+  0%, 42% { opacity: 1; }
+  50%, 92% { opacity: 0; }
+  100% { opacity: 1; }
+}
+@keyframes illobo-featured-outline {
+  0%, 42% { opacity: 0; }
+  50%, 92% { opacity: 1; }
+  100% { opacity: 0; }
+}
 .soundtrack-choice-card > div:not(.soundtrack-cover-stack) { display: grid; min-width: 0; gap: 3px; }
 .soundtrack-choice-card > div > strong { overflow: hidden; font-size: 16px; font-weight: var(--font-weight-control); text-overflow: ellipsis; white-space: nowrap; }
 .soundtrack-choice-card > div > span { color: rgba(238, 234, 224, .58); font-size: 10px; line-height: 1.25; }
@@ -1704,7 +1731,7 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
   .soundtrack-drawer .drawer-panel { width: 100vw; padding-right: 10px; padding-left: 10px; }
   .soundtrack-choice-grid { grid-template-columns: 1fr; }
   .soundtrack-choice-card { grid-template-columns: 54px minmax(0, 1fr) auto; min-height: 76px; padding: 7px; }
-  .soundtrack-choice-card > img { width: 54px; height: 54px; }
+  .illobo-featured-cover { width: 54px; height: 54px; }
   .soundtrack-choice-card.is-library { display: none; }
   .music-library-section-heading h3 { font-size: 16px; }
   .soundtrack-filter-row.is-genres { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -1716,6 +1743,11 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
   .soundtrack-credit-copy > div { grid-template-columns: 44px minmax(0, 1fr); gap: 3px 7px; }
   .soundtrack-credit-copy a { grid-column: 2; }
   .soundtrack-manual-effects label { min-height: 72px; padding: 9px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .illobo-featured-cover img:first-child { animation: none; opacity: 1; }
+  .illobo-featured-cover img:last-child { animation: none; opacity: 0; }
 }
 
 @media (max-width: 650px) {

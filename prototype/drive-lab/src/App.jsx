@@ -44,6 +44,10 @@ import { createAudioMacroSnapshot } from "./response-mapping.js";
 import { createSoundtrackPreviewController } from "./soundtrack/preview-controller.js";
 import { createSoundtrackEffectsController } from "./soundtrack/effects-controller.js";
 import {
+  DEFAULT_PAGE_TITLE,
+  soundtrackPageTitle,
+} from "./soundtrack/page-title.js";
+import {
   SOUNDTRACK_GENRE_OPTIONS,
   SOUNDTRACK_PACE_OPTIONS,
 } from "./soundtrack/library-model.js";
@@ -131,7 +135,10 @@ const APP_BUILD = __APP_BUILD__;
 const APP_COMMIT = __APP_COMMIT__;
 const BRAND_MARK_URL = `/brand/sedicivalvole-mark.svg?build=${encodeURIComponent(APP_BUILD)}`;
 const TOPBAR_MARK_URL = `/brand/product-icon-512.png?build=${encodeURIComponent(APP_BUILD)}`;
-const ILLOBO_FEATURED_MARK_URL = `/brand/illobo-featured-provisional.png?build=${encodeURIComponent(APP_BUILD)}`;
+const ILLOBO_FEATURED_MARK_URLS = Object.freeze([
+  `/brand/illobo-featured-solid.svg?build=${encodeURIComponent(APP_BUILD)}`,
+  `/brand/illobo-featured-outline.svg?build=${encodeURIComponent(APP_BUILD)}`,
+]);
 const PREFERENCES_KEY = "sedicivalvole.preferences.v2";
 const LEGACY_PREFERENCES_KEY = "sedicivalvole.preferences.v1";
 const LAUNCH_MUSIC_CHOICES = Object.freeze([
@@ -928,7 +935,11 @@ function SoundtrackLibraryContent({
       </div>
       <div className="soundtrack-choice-grid">
         <section className={`soundtrack-choice-card${selected?.kind === "featured" ? " is-selected" : ""}`}>
-          <img src={ILLOBO_FEATURED_MARK_URL} alt="Provisional Illobo featured mark" width="64" height="64" />
+          <span className="illobo-featured-cover" role="img" aria-label="Illobo Featured">
+            {ILLOBO_FEATURED_MARK_URLS.map((source, index) => (
+              <img key={source} src={source} alt="" aria-hidden="true" width="64" height="64" data-illobo-variant={index + 1} />
+            ))}
+          </span>
           <div>
             <small>ILLOBO FEATURED</small>
             <strong>Signal Border</strong>
@@ -2479,6 +2490,19 @@ export function App() {
   useEffect(() => {
     soundtrackRef.current?.setManualEffects(soundtrackManualEffects);
   }, [soundtrackManualEffects]);
+  useEffect(() => {
+    document.title = musicMode === "soundtrack"
+      ? soundtrackPageTitle(soundtrackSnapshot)
+      : DEFAULT_PAGE_TITLE;
+    return () => {
+      document.title = DEFAULT_PAGE_TITLE;
+    };
+  }, [
+    musicMode,
+    soundtrackSnapshot?.current?.artistName,
+    soundtrackSnapshot?.current?.title,
+    soundtrackSnapshot?.status,
+  ]);
   useEffect(() => {
     if (!soundtrackPanelOpen || musicMode !== "soundtrack") return undefined;
     const rotationWindow = soundtrackSnapshot?.library?.rotationWindow;
