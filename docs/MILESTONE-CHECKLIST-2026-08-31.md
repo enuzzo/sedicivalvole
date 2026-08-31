@@ -40,12 +40,15 @@ still needs a human or target vehicle.
 - [x] deployment and launcher regression checks updated for the production path;
 - [x] complete native suite: 418/419 pass; only the unchanged local
   `spawn php ENOENT` diagnostic-mail fixture is unavailable on this host;
-- [ ] read-only canonical preflight;
-- [ ] guarded no-delete publication;
-- [ ] read-only canonical postflight and byte-identity verification;
-- [ ] live catalogue/audio-range endpoint verification;
-- [ ] live cache-busted Browser interaction and console QA;
-- [ ] deployment evidence, build stamp, commit, and pushed clean-tree checkpoint.
+- [x] read-only canonical preflight;
+- [x] guarded no-delete publication: 107 files / 16,449,992 bytes;
+- [x] read-only canonical postflight and byte-identity verification;
+- [x] live catalogue/audio-range endpoint verification: 3 schema-valid tracks
+  and a 1,024-byte `206 audio/mpeg` range with `Content-Range` and `no-store`;
+- [x] live cache-busted Browser interaction and console QA at the available
+  `1280 × 720` viewport, ending paused with DRIVE FX enabled;
+- [x] deployment evidence recorded for build `20260831-0249`; final documentation
+  checkpoint pushed with a clean aligned tree.
 
 ## Deliberately not opened after the cutoff
 

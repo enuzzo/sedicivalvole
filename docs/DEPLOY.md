@@ -8,6 +8,50 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Jamendo SOUNDTRACK production prototype — 2026-08-31 02:58
+
+- build stamp: **`20260831-0249`**; deployed source commit: `9af5156`;
+  implementation checkpoint: `7cec946`; live relay corrections: `57fb390` and
+  `5c7b0d0`;
+- product change: **PASS**. The App and protected owner LAB now prepare three
+  transient Jamendo media roles, preserve every fixed recording at authored
+  `1×`, expose artist/title/artwork/licence/provider credit and transport, and
+  route playback through a same-origin Web Audio graph. `DRIVE FX` controls the
+  existing OPEN/UNDERWATER/BLOOM vehicle gestures independently of manual
+  flanger, reverb, chorus, and bounded beat repeat. Audio is not persisted or
+  offered offline;
+- verification gate: **PASS within the local host boundary**. Thirty-nine
+  focused SOUNDTRACK integration checks, 42 focused deployment/documentation/
+  launcher checks, ten final catalogue/audio-relay checks, both Vite builds,
+  protected LAB packaging, and Sites packaging pass. The complete native suite
+  passes 418 of 419 checks; only the unchanged local `spawn php ENOENT`
+  diagnostic-mail fixture is unavailable;
+- guarded publication: **PASS**. Final read-only preflight passed with
+  `remote_writes=NONE`; the no-delete publisher transferred 107 files /
+  16,449,992 bytes, retained one prior fingerprinted asset for cache overlap,
+  did not remove the static entry or legacy tree, and wrote only the canonical
+  root. Final read-only postflight passed with `remote_writes=NONE` and eight
+  expected root entries;
+- canonical HTTP identity: **PASS**. Cache-busted root HTML, JavaScript, and CSS
+  return `200` and are byte-identical to the verified build. Their SHA-256
+  values are `5283a0af848a3ff22b592814db0a48446293f0464344236428e70d63b7bfeb8b`,
+  `be9865e708f17bfcde1a2235fc4a3a55fbb3e7094d7dbdd7036b1e0a49c948e5`,
+  and `c1571a14c0f69dc2d1546c13dcd4267ed6626e3b52383bfc287e7fb5212657ba`.
+  Root and catalogue responses carry explicit no-store/no-cache policy;
+- live API boundary: **PASS**. The canonical catalogue returned three complete
+  schema-valid records after the bounded empty-first-page protection. An exact
+  admitted track request returned `206`, exactly 1,024 bytes, `audio/mpeg`, a
+  `Content-Range`, and explicit no-store/no-cache headers without exposing an
+  ID, credential, or upstream audio URL in the evidence;
+- live Browser QA: **PASS at the available `1280 × 720` viewport**. A fresh
+  cache-busted tab selected SOUNDTRACK + PRTCL, enabled START after preparation,
+  played the admitted recording, showed direct artist/licence/Jamendo credit,
+  enabled DRIVE FX, exposed all four manual controls, accepted a manual slider
+  interaction, and paused cleanly with zero console warning/error. Exact
+  `773 × 601` physical-Tesla listening, automatic-effect audibility, wet
+  balance, touch ergonomics, and network handoff remain the morning acceptance
+  gate.
+
 ## Compact Road Sheet lockup and spacing — 2026-08-31 00:14
 
 - build stamp: **`20260831-0006`**; deployed source commit: `1635d6e`;
