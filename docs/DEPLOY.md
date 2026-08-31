@@ -8,6 +8,43 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Compact footer palette and EFFECTS master — 2026-08-31 03:22
+
+- build stamp: **`20260831-0315`**; deployed source and implementation
+  checkpoint: `f5b9ba8`;
+- product change: **PASS**. The running footer keeps MUTE and one shared
+  `EFFECTS` master adjacent in every music mode. The master gates audible
+  OPEN/UNDERWATER/BLOOM processing while vehicle gesture detection and visual
+  macro snapshots continue. PLAY THE ROAD starts enabled and SOUNDTRACK retains
+  fresh-session opt-in. Both controls announce their state with a centred,
+  1.5-second status. The far-right two-row palette is fixed to `138 px` at the
+  Tesla breakpoint and `160 px` on desktop;
+- verification gate: **PASS within the local host boundary**. Forty-three
+  focused runtime/presentation checks pass. The complete native suite passes
+  420 of 421 checks; only the unchanged local `spawn php ENOENT`
+  diagnostic-mail fixture is unavailable. The 140-module production build,
+  65-module LAB build, protected LAB packaging, and Sites packaging pass;
+- guarded publication: **PASS**. Read-only preflight passed with
+  `remote_writes=NONE`; the no-delete publisher transferred 107 files /
+  16,451,993 bytes, preserved the existing static entry and legacy tree, and
+  retained two prior fingerprinted assets for cache overlap. Read-only
+  postflight passed with `remote_writes=NONE` and eight expected root entries;
+- canonical HTTP identity: **PASS**. Cache-busted root HTML, JavaScript, and CSS
+  return `200`, proxy `MISS`, the expected MIME types and exact local byte
+  lengths. Their live/local SHA-256 values are
+  `9ac04aed3f6a49fe1ce280ea160fd2f5c18e130fb7da443dc19f178050583848`,
+  `abb48ee0fbc7d3555b524310d4282b32394ccf81ae8abc6f38efee61bb92e1ab`,
+  and `1c7f8163d54921a65b4537609c8aa618f4f1a87fe13d0b26e59176afa8efc7e2`.
+  Root HTML carries explicit `no-store, no-cache` policy;
+- exact live Browser QA: **PASS at `773 × 601` and `1280 × 720`**. The Tesla
+  footer is exactly `64 px`, its palette is `138 px` at the right edge and its
+  swatches are `15 px` high; desktop retains the same `64 px` footer with a
+  `160 px` right-edge palette. Neither viewport grows the document. EFFECTS
+  changes `aria-pressed`, audible-master state and `EFFECTS ON/OFF`; MUTE emits
+  `VOLUME OFF/ON`. The verified live interaction emitted no warning or error.
+  Physical-Tesla audibility, wet balance, glare and touch acceptance remain the
+  target-vehicle gate.
+
 ## Jamendo SOUNDTRACK production prototype — 2026-08-31 02:58
 
 - build stamp: **`20260831-0249`**; deployed source commit: `9af5156`;

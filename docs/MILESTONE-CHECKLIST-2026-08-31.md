@@ -61,7 +61,9 @@ still needs a human or target vehicle.
 - [x] compact the far-right palette to `138 px` at exact `773 × 601` and `160 px`
   at `1280 × 720`, with no horizontal or vertical document overflow;
 - [x] focused runtime/UI tests and local Browser interaction QA pass;
-- [ ] publish and verify this checkpoint at the canonical root.
+- [x] publish and verify build `20260831-0315` at the canonical root: guarded
+  107-file / 16,451,993-byte no-delete transfer, byte-identical HTML/JS/CSS,
+  and exact live Browser QA at both target viewports.
 
 ## Deliberately not opened after the cutoff
 
