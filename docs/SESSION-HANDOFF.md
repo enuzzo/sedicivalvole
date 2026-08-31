@@ -169,13 +169,15 @@ NIGHTSHIFT to JUNCTION and observes zero warning/error. Rows 2, 4 and 5 remain
 physical-Tesla gates.
 
 Milestone row 7's office implementation is pushed at `2dd3cb5`. First live
-candidate `20260831-1219` at `590ba74` passed publication identity and normal
-fade/QR/licence QA, but failed the rapid `NEXT → PREVIOUS → NEXT` gate when an
-incoming play failure left target title/QR beside the prior audible credit.
-Correction `8f03b34` makes the queue/QR/credit commit atomic and restores the
-prior coherent state on play or gain failure. The complete suite passes
-`485/485`, and the 145-module App / 70-module LAB / Sites build passes. Publish
-the correction and repeat live rapid navigation before using stable
+candidate `20260831-1219` at `590ba74` failed the rapid attribution gate;
+`8f03b34` made the queue/QR/credit commit atomic. Second candidate
+`20260831-1229` at `051d637` passed canonical byte identity and clean real-track
+startup but failed normal NEXT: awaiting effects readiness before the incoming
+media `play()` consumed Chromium's transient transport activation, so coherent
+rollback stopped the prior track. Correction `dcb6801` requests both audible
+decks before that await and has a deterministic ordering regression test. The
+complete suite passes `486/486`, and the 145-module App / 70-module LAB / Sites
+build passes. Publish the correction and repeat normal plus rapid live navigation before using stable
 `R7-01`–`R7-06` identifiers in
 [`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md); the row
 cannot close until those cabin results pass.
@@ -183,7 +185,7 @@ cannot close until those cabin results pass.
 Continue only from the 17-row execution order in
 [`MILESTONE-CHECKLIST-2026-08-31.md`](MILESTONE-CHECKLIST-2026-08-31.md). The
 first and sixth rows are complete; the second is physical-Tesla acceptance and
-the seventh is split between finished office implementation and open
+the seventh is split between corrected office implementation and open
 publication/Tesla gates. Do not reopen
 the route/dot treatment as an ATLAS design exploration: only the still-unwired
 road/cardinal overlay retains the exactly-three direction gate.

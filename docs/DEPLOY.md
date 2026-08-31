@@ -8,6 +8,31 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Soundtrack row 7 second rejected candidate — 2026-08-31 12:30
+
+- build stamp: **`20260831-1229`**; deployed source/documentation checkpoint:
+  **`051d637`**; atomic playback/credit implementation: **`8f03b34`**;
+- protected publication transferred **108 files / 17,009,883 bytes** with
+  existing static/legacy material preserved; read-only preflight and postflight
+  passed with `remote_writes=NONE`;
+- canonical HTML SHA-256
+  `ad632296e2b78ce171c07d8a22e822aeb6ca32e504c39c08f7bd2f1c9cc3268e`,
+  main JavaScript `assets/index-CKWTEbY8.js` SHA-256
+  `4eebac24e9c69a305417353af987dbdb06ada29c7347627114df18d5596eadff`,
+  and CSS `assets/index-DhhWIT7Y.css` SHA-256
+  `fb314622b23c83541168621080bf672902ace02c8f8537a2e63f13bb472c6dde`
+  were byte-identical to local. The BLOOM worklet was also byte-identical;
+  every checked asset returned `200` with expected MIME, while root HTML
+  retained no-store/no-cache, `nosniff` and cache `MISS`;
+- exact clean single-tab `773 × 601` Browser QA started the real Jamendo track
+  **Over Me — Jemex** and verified the matching public-track QR and complete
+  licence card. A normal NEXT preserved coherent prior metadata on failure but
+  stopped playback: the incoming media `play()` was deferred until after the
+  effects-readiness await and was rejected by Chromium's autoplay boundary.
+  The candidate is **rejected for Tesla testing**. Correction `dcb6801` starts
+  incoming playback inside transient transport activation and awaits effects
+  readiness in parallel; publication and repeat live proof remain pending.
+
 ## Soundtrack row 7 first live candidate — 2026-08-31 12:22
 
 - build stamp: **`20260831-1219`**; deployed source/documentation checkpoint:
