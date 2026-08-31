@@ -224,6 +224,26 @@ test("queue rotation reuses retained decks and destroys only the displaced one",
   assert.equal(snapshot.currentAudibleKey, null);
 });
 
+test("a transition keeps the outgoing deck inside the strict three-element bound", async () => {
+  const fixture = createFixture();
+  fixture.controller.syncQueue(fixture.queue);
+  await fixture.controller.playCurrent();
+  const outgoingKey = fixture.queue.slots.current.key;
+  const moved = moveSoundtrackQueue(fixture.queue, fixture.catalog, "next");
+  const incomingKey = moved.state.slots.current.key;
+  const prepared = fixture.controller.syncQueue(moved.state, {
+    retainKeys: [outgoingKey, incomingKey],
+    audibleKeys: [outgoingKey, incomingKey],
+  });
+  const started = await fixture.controller.playKeys([outgoingKey, incomingKey]);
+
+  assert.equal(prepared.preparedMediaElements, 3);
+  assert.equal(started.ok, true);
+  assert.deepEqual(new Set(started.snapshot.audibleKeys), new Set([outgoingKey, incomingKey]));
+  const settled = fixture.controller.pauseExcept([incomingKey]);
+  assert.deepEqual(settled.audibleKeys, [incomingKey]);
+});
+
 test("a refreshed queued URL replaces its dormant media before activation", () => {
   const fixture = createFixture();
   fixture.controller.syncQueue(fixture.queue);

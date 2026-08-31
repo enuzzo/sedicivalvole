@@ -895,11 +895,31 @@ function SoundtrackLibraryContent({
   onNext,
 }) {
   const current = snapshot?.current;
+  const [trackQrUrl, setTrackQrUrl] = useState("");
   const playing = snapshot?.status === "playing";
   const loading = snapshot?.status === "loading";
   const library = snapshot?.library;
   const entries = library?.entries ?? [];
   const selected = library?.selection;
+  const attributionItems = snapshot?.attribution
+    ? [snapshot.attribution.primary, ...(snapshot.attribution.secondary ?? [])].filter(Boolean)
+    : [];
+  useEffect(() => {
+    let active = true;
+    setTrackQrUrl("");
+    if (!current?.shareUrl) return () => { active = false; };
+    import("qrcode").then(({ default: QRCode }) => QRCode.toDataURL(current.shareUrl, {
+      width: 160,
+      margin: 1,
+      color: { dark: "#070909", light: "#EEEAE0" },
+      errorCorrectionLevel: "M",
+    })).then((dataUrl) => {
+      if (active) setTrackQrUrl(dataUrl);
+    }).catch(() => {
+      if (active) setTrackQrUrl("");
+    });
+    return () => { active = false; };
+  }, [current?.key, current?.shareUrl]);
   return (
     <div className="soundtrack-panel-body">
       <div className="soundtrack-choice-heading">
@@ -978,7 +998,7 @@ function SoundtrackLibraryContent({
           <small>NOW PLAYING</small>
           <strong>{current?.title ?? "Preparing Jamendo catalog"}</strong>
           <span>{current?.artistName ?? snapshot?.status ?? "idle"}</span>
-          {current?.shareUrl ? <a href={current.shareUrl} target="_blank" rel="noreferrer">{current.providerCredit} · {current.licenceLabel} ↗</a> : null}
+          <span>{snapshot?.attribution?.transitioning ? "EQUAL-POWER TRANSITION · 450 MS" : "AUTHORED RECORDING · 1×"}</span>
         </div>
         <div className="soundtrack-transport" aria-label="Soundtrack transport">
           <button type="button" disabled={!snapshot?.hasPrevious} onClick={onPrevious}>PREVIOUS</button>
@@ -986,6 +1006,33 @@ function SoundtrackLibraryContent({
           <button type="button" disabled={!snapshot?.hasNext} onClick={onNext}>NEXT</button>
         </div>
       </section>
+
+      {current ? (
+        <section className="soundtrack-credit-card" aria-label="Current Soundtrack credits and handoff">
+          <div className="soundtrack-credit-copy">
+            <small>{snapshot?.attribution?.transitioning ? "AUDIBLE CREDITS" : "TRACK CREDIT"}</small>
+            {attributionItems.length ? attributionItems.map((item) => (
+              <div key={item.key} className={item.isTarget ? "is-target" : ""}>
+                <span>{item.isTarget ? "CURRENT" : "FADING"}</span>
+                <strong>{item.credit.title} — {item.credit.artistName}</strong>
+                <a href={item.credit.directContentUrl} target="_blank" rel="noreferrer">{item.credit.providerCredit} ↗</a>
+                <a href={item.credit.licence.url} target="_blank" rel="noreferrer">{item.credit.licence.label} ↗</a>
+              </div>
+            )) : (
+              <div className="is-target">
+                <span>CURRENT</span>
+                <strong>{current.title} — {current.artistName}</strong>
+                <a href={current.shareUrl} target="_blank" rel="noreferrer">{current.providerCredit} ↗</a>
+                <a href={current.licenceUrl} target="_blank" rel="noreferrer">{current.licenceLabel} ↗</a>
+              </div>
+            )}
+          </div>
+          <a className="soundtrack-qr-handoff" href={current.shareUrl} target="_blank" rel="noreferrer" aria-label={`Open ${current.title} by ${current.artistName}`}>
+            {trackQrUrl ? <img src={trackQrUrl} alt={`QR code for ${current.title} by ${current.artistName}`} width="72" height="72" /> : <span>QR</span>}
+            <small>OPEN TRACK</small>
+          </a>
+        </section>
+      ) : null}
 
       <details className="soundtrack-manual-disclosure">
         <summary>MANUAL EFFECTS <span>GLOBAL VEHICLE FX REMAIN IN THE FOOTER</span></summary>

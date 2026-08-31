@@ -1677,6 +1677,18 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
 .soundtrack-transport { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
 .soundtrack-transport button { min-height: 48px; border: 1px solid rgba(238, 234, 224, .22); border-radius: var(--ui-radius); color: var(--paper); background: rgba(238, 234, 224, .06); font-size: 9px; font-weight: var(--font-weight-label); letter-spacing: .06em; cursor: pointer; }
 .soundtrack-transport button:disabled { opacity: .35; cursor: default; }
+.soundtrack-credit-card { display: grid; grid-template-columns: minmax(0, 1fr) 88px; align-items: stretch; gap: 8px; padding: 9px; border: 1px solid rgba(238, 234, 224, .18); border-radius: var(--ui-radius); background: rgba(238, 234, 224, .025); }
+.soundtrack-credit-copy { display: grid; gap: 5px; min-width: 0; }
+.soundtrack-credit-copy > small { color: var(--accent); font-size: 9px; font-weight: var(--font-weight-label); letter-spacing: .1em; }
+.soundtrack-credit-copy > div { display: grid; grid-template-columns: 52px minmax(0, 1fr) auto auto; align-items: center; gap: 7px; min-height: 30px; padding-top: 4px; border-top: 1px solid rgba(238, 234, 224, .1); }
+.soundtrack-credit-copy > div > span { color: rgba(238, 234, 224, .48); font-size: 8px; font-weight: var(--font-weight-label); letter-spacing: .08em; }
+.soundtrack-credit-copy > div.is-target > span { color: var(--accent); }
+.soundtrack-credit-copy strong { overflow: hidden; font-size: 10px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+.soundtrack-credit-copy a { color: rgba(238, 234, 224, .72); font-size: 8px; text-decoration-thickness: 1px; text-underline-offset: 3px; white-space: nowrap; }
+.soundtrack-qr-handoff { display: grid; min-height: 104px; place-items: center; align-content: center; gap: 4px; border-radius: var(--ui-radius); color: var(--ink); background: var(--paper); text-decoration: none; }
+.soundtrack-qr-handoff img { width: 72px; height: 72px; image-rendering: crisp-edges; }
+.soundtrack-qr-handoff > span { display: grid; width: 72px; height: 72px; place-items: center; border: 1px solid rgba(7, 9, 9, .22); font-size: 11px; font-weight: var(--font-weight-label); }
+.soundtrack-qr-handoff small { font-size: 8px; font-weight: var(--font-weight-label); letter-spacing: .08em; }
 .soundtrack-manual-disclosure { border: 1px solid rgba(238, 234, 224, .18); border-radius: var(--ui-radius); }
 .soundtrack-manual-disclosure summary { display: flex; min-height: 46px; align-items: center; justify-content: space-between; gap: 12px; padding: 0 12px; color: var(--paper); font-size: 10px; font-weight: var(--font-weight-label); letter-spacing: .08em; cursor: pointer; }
 .soundtrack-manual-disclosure summary span { color: rgba(238, 234, 224, .5); font-size: 8px; }
@@ -1701,6 +1713,8 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
   .soundtrack-now-playing img,
   .soundtrack-artwork-placeholder { width: 62px; height: 62px; }
   .soundtrack-now-playing .soundtrack-transport { grid-column: 1 / -1; }
+  .soundtrack-credit-copy > div { grid-template-columns: 44px minmax(0, 1fr); gap: 3px 7px; }
+  .soundtrack-credit-copy a { grid-column: 2; }
   .soundtrack-manual-effects label { min-height: 72px; padding: 9px; }
 }
 

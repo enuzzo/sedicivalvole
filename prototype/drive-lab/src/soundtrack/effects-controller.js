@@ -4,6 +4,10 @@ import {
   SOUNDTRACK_PLAYBACK_INVARIANTS,
 } from "./playback-boundary.js";
 import {
+  applySoundtrackTransitionGains,
+  sampleSoundtrackTransition,
+} from "./transition-model.js";
+import {
   normalizeSoundtrackManualEffects,
   normalizeSoundtrackVehicleMacros,
   soundtrackEffectParameters,
@@ -46,6 +50,8 @@ function makeImpulse(context, seconds = 1.7) {
 }
 
 function createUnavailableController(reason = "web-audio-unavailable") {
+  const mediaElements = new Map();
+  let transitionFrame = null;
   let vehicleMaster = false;
   let vehicleMacros = normalizeSoundtrackVehicleMacros();
   let manualEffects = normalizeSoundtrackManualEffects();
@@ -57,19 +63,57 @@ function createUnavailableController(reason = "web-audio-unavailable") {
     vehicleMaster,
     vehicleMacros,
     manualEffects,
-    attachedMediaElements: 0,
+    attachedMediaElements: mediaElements.size,
     playbackRate: SOUNDTRACK_PLAYBACK_INVARIANTS.playbackRate,
   });
-  return Object.freeze({
-    attachMedia: () => getSnapshot(),
-    detachMedia: () => getSnapshot(),
+  const controller = Object.freeze({
+    attachMedia(key, media) {
+      if (key && media) mediaElements.set(key, media);
+      return getSnapshot();
+    },
+    detachMedia(key) { mediaElements.delete(key); return getSnapshot(); },
+    getClockTime: () => (globalThis.performance?.now?.() ?? Date.now()) / 1000,
+    setImmediateTrackGains(gains = {}) {
+      for (const [key, media] of mediaElements) {
+        try { media.volume = Math.min(1, Math.max(0, Number(gains[key]) || 0)); } catch { /* best effort */ }
+      }
+      return Object.freeze({ ok: true, mode: "media-volume", reason: null });
+    },
+    applyTransition(state) {
+      if (transitionFrame != null) {
+        if (typeof globalThis.cancelAnimationFrame === "function") globalThis.cancelAnimationFrame(transitionFrame);
+        else globalThis.clearTimeout?.(transitionFrame);
+      }
+      const tick = () => {
+        const sampled = sampleSoundtrackTransition(state, controller.getClockTime());
+        controller.setImmediateTrackGains(sampled.gains);
+        if (sampled.status === "complete" || destroyed) {
+          transitionFrame = null;
+          return;
+        }
+        transitionFrame = typeof globalThis.requestAnimationFrame === "function"
+          ? globalThis.requestAnimationFrame(tick)
+          : globalThis.setTimeout?.(tick, 16);
+      };
+      tick();
+      return Object.freeze({ ok: true, mode: "media-volume", reason: null });
+    },
     resume: async () => getSnapshot(),
     setVehicleMaster(value) { vehicleMaster = value === true; return getSnapshot(); },
     setVehicleMacros(values) { vehicleMacros = normalizeSoundtrackVehicleMacros(values); return getSnapshot(); },
     setManualEffects(values) { manualEffects = normalizeSoundtrackManualEffects(values); return getSnapshot(); },
     getSnapshot,
-    destroy() { destroyed = true; return getSnapshot(); },
+    destroy() {
+      destroyed = true;
+      if (transitionFrame != null) {
+        if (typeof globalThis.cancelAnimationFrame === "function") globalThis.cancelAnimationFrame(transitionFrame);
+        else globalThis.clearTimeout?.(transitionFrame);
+      }
+      mediaElements.clear();
+      return getSnapshot();
+    },
   });
+  return controller;
 }
 
 export function createSoundtrackEffectsController({
@@ -277,8 +321,11 @@ export function createSoundtrackEffectsController({
       if (destroyed || !key || !media || mediaSources.has(key)) return getSnapshot();
       try {
         const source = context.createMediaElementSource(media);
-        source.connect(input);
-        mediaSources.set(key, { media, source });
+        const transitionGain = context.createGain();
+        transitionGain.gain.value = 0;
+        source.connect(transitionGain);
+        transitionGain.connect(input);
+        mediaSources.set(key, { media, source, transitionGain });
       } catch (error) {
         workletError = String(error?.message || "media-source-failed").slice(0, 80);
       }
@@ -288,6 +335,7 @@ export function createSoundtrackEffectsController({
       const record = mediaSources.get(key);
       if (record) {
         try { record.source.disconnect(); } catch { /* teardown is best effort */ }
+        try { record.transitionGain.disconnect(); } catch { /* teardown is best effort */ }
         mediaSources.delete(key);
       }
       return getSnapshot();
@@ -296,6 +344,27 @@ export function createSoundtrackEffectsController({
       await ready;
       if (!destroyed && context.state === "suspended") await context.resume();
       return getSnapshot();
+    },
+    getClockTime: () => context.currentTime,
+    setImmediateTrackGains(gains = {}) {
+      const at = context.currentTime;
+      for (const [key, record] of mediaSources) {
+        const gain = Math.min(1, Math.max(0, Number(gains[key]) || 0));
+        try {
+          record.transitionGain.gain.cancelScheduledValues(at);
+          record.transitionGain.gain.setValueAtTime(gain, at);
+        } catch {
+          record.transitionGain.gain.value = gain;
+        }
+      }
+      return Object.freeze({ ok: true, mode: "audio-param", reason: null });
+    },
+    applyTransition(state) {
+      const params = Object.fromEntries(
+        [...mediaSources].map(([key, record]) => [key, record.transitionGain.gain]),
+      );
+      const result = applySoundtrackTransitionGains(state, params);
+      return Object.freeze({ ...result, mode: "audio-param" });
     },
     setVehicleMaster(value) { vehicleMaster = value === true; apply(); return getSnapshot(); },
     setVehicleMacros(values) { vehicleMacros = normalizeSoundtrackVehicleMacros(values); apply(); return getSnapshot(); },

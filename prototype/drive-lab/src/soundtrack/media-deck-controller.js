@@ -116,6 +116,9 @@ export function createSoundtrackMediaDeckController({
     const values = Object.values(roleSnapshots).filter(Boolean);
     const current = roleSnapshots.current;
     const mediaFailure = values.some((value) => ["error", "unavailable"].includes(value.state));
+    const audibleKeys = [...records]
+      .filter(([, record]) => record.media.paused === false && record.media.ended !== true)
+      .map(([key]) => key);
     return Object.freeze({
       status: destroyed
         ? "destroyed"
@@ -126,6 +129,7 @@ export function createSoundtrackMediaDeckController({
       currentAudibleKey: current && current.paused === false && current.ended === false
         ? current.key
         : null,
+      audibleKeys: Object.freeze(audibleKeys),
       browserPreloadHint: "auto",
       browserBufferOwnership: "browser-owned-observation-only",
       offlineAudioAvailable: false,
@@ -242,7 +246,7 @@ export function createSoundtrackMediaDeckController({
     return createRecord(entry);
   };
 
-  const syncQueue = (queueState) => {
+  const syncQueue = (queueState, { retainKeys = [], audibleKeys = [] } = {}) => {
     if (destroyed) return getSnapshot();
     if (queueState?.schema !== SOUNDTRACK_QUEUE_SCHEMA) {
       controllerError = "invalid-queue";
@@ -253,16 +257,27 @@ export function createSoundtrackMediaDeckController({
     controllerError = null;
     const desired = new Map();
     const nextRoles = { previous: null, current: null, next: null };
+    const queueKeys = MEDIA_ROLES
+      .map((role) => queueState.slots?.[role]?.key)
+      .filter(Boolean);
+    if (new Set(queueKeys).size !== queueKeys.length) {
+      controllerError = "duplicate-queue-entry";
+      reportError({ code: controllerError, key: null, mediaErrorCode: null });
+      return emit("queue:duplicate");
+    }
+    const currentEntry = queueState.slots?.current ?? null;
+    if (currentEntry) desired.set(currentEntry.key, currentEntry);
+    for (const key of retainKeys) {
+      const record = records.get(key);
+      if (record && !desired.has(key) && desired.size < MEDIA_ROLES.length) {
+        desired.set(key, record.entry);
+      }
+    }
     for (const role of MEDIA_ROLES) {
       const entry = queueState.slots?.[role] ?? null;
       if (!entry) continue;
-      if (desired.has(entry.key)) {
-        controllerError = "duplicate-queue-entry";
-        reportError({ code: controllerError, key: entry.key, mediaErrorCode: null });
-        return emit("queue:duplicate");
-      }
-      desired.set(entry.key, entry);
-      nextRoles[role] = entry.key;
+      if (!desired.has(entry.key) && desired.size < MEDIA_ROLES.length) desired.set(entry.key, entry);
+      if (desired.has(entry.key)) nextRoles[role] = entry.key;
     }
 
     for (const key of records.keys()) {
@@ -282,8 +297,9 @@ export function createSoundtrackMediaDeckController({
       }
     }
     roles = nextRoles;
+    const audibleSet = new Set(audibleKeys);
     for (const [key, record] of records) {
-      if (key === roles.current || record.media.paused !== false) continue;
+      if (key === roles.current || audibleSet.has(key) || record.media.paused !== false) continue;
       try {
         record.media.pause?.();
       } catch {
@@ -323,6 +339,40 @@ export function createSoundtrackMediaDeckController({
     }
   };
 
+  const playKeys = async (keys = []) => {
+    if (destroyed) return Object.freeze({ ok: false, reason: "destroyed", snapshot: getSnapshot() });
+    const requested = [...new Set(keys)].filter(Boolean);
+    if (!requested.length || requested.some((key) => !records.has(key))) {
+      return Object.freeze({ ok: false, reason: "transition-media-unavailable", snapshot: getSnapshot() });
+    }
+    try {
+      await Promise.all(requested.map((key) => records.get(key).media.play?.()));
+      if (destroyed || requested.some((key) => !records.has(key))) {
+        return Object.freeze({ ok: false, reason: "stale-play-request", snapshot: getSnapshot() });
+      }
+      for (const key of requested) records.get(key).lastEvent = "transition-play-resolved";
+      return Object.freeze({ ok: true, reason: null, snapshot: emit("transition:playing") });
+    } catch (error) {
+      reportError({
+        code: "play-rejected",
+        key: roles.current,
+        mediaErrorCode: safeErrorCode(records.get(roles.current)?.media),
+        reason: String(error?.name || error?.message || "unknown").slice(0, 80),
+      });
+      return Object.freeze({ ok: false, reason: "play-rejected", snapshot: emit("transition:play-rejected") });
+    }
+  };
+
+  const pauseExcept = (keys = []) => {
+    const keep = new Set(keys);
+    for (const [key, record] of records) {
+      if (keep.has(key) || record.media.paused !== false) continue;
+      try { record.media.pause?.(); } catch { controllerError = "media-pause-failed"; }
+      record.lastEvent = "transition-pause-requested";
+    }
+    return emit("transition:paused-outgoing");
+  };
+
   const pauseCurrent = () => {
     const record = roles.current ? records.get(roles.current) : null;
     if (!record) return getSnapshot();
@@ -342,6 +392,8 @@ export function createSoundtrackMediaDeckController({
   return Object.freeze({
     syncQueue,
     playCurrent,
+    playKeys,
+    pauseExcept,
     pauseCurrent,
     getSnapshot,
     getMediaForRole: (role) => records.get(roles[role])?.media ?? null,

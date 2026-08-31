@@ -116,6 +116,63 @@ test("manual next and previous keep reversible identities and playback ownership
   assert.equal(previous.media.currentAudibleKey, firstKey);
 });
 
+test("audible skips schedule the 450 ms model and keep rapid-retarget credits synchronized", async () => {
+  let now = 10;
+  const timers = [];
+  const applied = [];
+  const media = new Map();
+  const effects = {
+    attachMedia(key, element) { media.set(key, element); },
+    detachMedia(key) { media.delete(key); },
+    getClockTime: () => now,
+    setImmediateTrackGains: () => ({ ok: true, mode: "test" }),
+    applyTransition(state) { applied.push(state); return { ok: true, mode: "test" }; },
+    resume: async () => {},
+    setVehicleMaster: () => {},
+    setVehicleMacros: () => {},
+    setManualEffects: () => {},
+    getSnapshot: () => ({ status: "running", attachedMediaElements: media.size }),
+    getLevel: () => 0,
+    destroy: () => {},
+  };
+  const controller = createSoundtrackPreviewController({
+    fetchImpl: catalogFetch,
+    mediaFactory: () => new FakeMedia(),
+    effectsFactory: () => effects,
+    setTimer: (callback, delay) => {
+      const timer = { callback, delay, cleared: false };
+      timers.push(timer);
+      return timer;
+    },
+    clearTimer: (timer) => { timer.cleared = true; },
+  });
+  await controller.load({ autoplay: true, nowMs: 0 });
+  const firstKey = controller.getSnapshot().current.key;
+  const next = await controller.move("next");
+  const secondKey = next.current.key;
+
+  assert.equal(next.status, "playing");
+  assert.equal(applied.length, 1);
+  assert.ok(Math.abs(applied[0].durationSeconds - 0.45) < 1e-9);
+  assert.equal(applied[0].targetKey, secondKey);
+  assert.deepEqual(new Set(applied[0].fromGains ? Object.keys(applied[0].fromGains) : []), new Set([firstKey, secondKey]));
+  assert.equal(next.media.preparedMediaElements, 3);
+
+  now = 10.225;
+  const previous = await controller.move("previous");
+  assert.equal(previous.current.key, firstKey);
+  assert.equal(applied.length, 2);
+  assert.equal(applied[1].targetKey, firstKey);
+  assert.deepEqual(new Set(controller.getSnapshot().attribution.audibleKeys), new Set([firstKey, secondKey]));
+
+  now = applied[1].endAt + 0.03;
+  for (const timer of timers.filter((item) => !item.cleared)) timer.callback();
+  const settled = controller.getSnapshot();
+  assert.equal(settled.attribution.status, "audible");
+  assert.deepEqual(settled.attribution.audibleKeys, [firstKey]);
+  assert.deepEqual(settled.media.audibleKeys, [firstKey]);
+});
+
 test("pause, resume, and destruction remain explicit and bounded", async () => {
   const controller = createSoundtrackPreviewController({
     fetchImpl: catalogFetch,

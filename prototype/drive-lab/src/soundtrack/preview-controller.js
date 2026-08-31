@@ -5,6 +5,13 @@ import {
   normalizeSoundtrackSelection,
   rotateSoundtrackEntries,
 } from "./library-model.js";
+import { deriveSoundtrackAttribution } from "./attribution-model.js";
+import {
+  createSoundtrackTransitionState,
+  sampleSoundtrackTransition,
+  scheduleSoundtrackTransition,
+  settleSoundtrackTransition,
+} from "./transition-model.js";
 
 export const SOUNDTRACK_PREVIEW_SCHEMA = "sedicivalvole.soundtrack-preview.v1";
 
@@ -29,6 +36,9 @@ export function createSoundtrackPreviewController({
   effectsFactory = () => ({
     attachMedia: () => {},
     detachMedia: () => {},
+    getClockTime: () => (globalThis.performance?.now?.() ?? Date.now()) / 1000,
+    setImmediateTrackGains: () => Object.freeze({ ok: true, mode: "bypassed" }),
+    applyTransition: () => Object.freeze({ ok: true, mode: "bypassed" }),
     resume: async () => {},
     setVehicleMaster: () => {},
     setVehicleMacros: () => {},
@@ -38,6 +48,8 @@ export function createSoundtrackPreviewController({
     destroy: () => {},
   }),
   onState = null,
+  setTimer = globalThis.setTimeout?.bind(globalThis),
+  clearTimer = globalThis.clearTimeout?.bind(globalThis),
 } = {}) {
   let destroyed = false;
   let requestRevision = 0;
@@ -47,7 +59,34 @@ export function createSoundtrackPreviewController({
   let status = "idle";
   let error = null;
   let mediaSnapshot = null;
+  let transitionState = null;
+  const transitionTimers = new Set();
   const effects = effectsFactory();
+
+  const clockTime = () => Number(effects.getClockTime?.()) || 0;
+
+  const clearTransitionTimers = () => {
+    for (const timer of transitionTimers) clearTimer?.(timer);
+    transitionTimers.clear();
+  };
+
+  const scheduleTransitionTimer = (callback, delayMs) => {
+    if (typeof setTimer !== "function") return null;
+    const timer = setTimer(() => {
+      transitionTimers.delete(timer);
+      callback();
+    }, Math.max(0, delayMs));
+    transitionTimers.add(timer);
+    return timer;
+  };
+
+  const attribution = () => transitionState && catalogResult
+    ? deriveSoundtrackAttribution({
+      transitionState,
+      at: clockTime(),
+      entries: catalogResult.catalog.entries,
+    })
+    : null;
 
   const snapshot = () => Object.freeze({
     schema: SOUNDTRACK_PREVIEW_SCHEMA,
@@ -66,6 +105,8 @@ export function createSoundtrackPreviewController({
       entries: Object.freeze(libraryRotation.entries.map(safeCredit).filter(Boolean)),
       refreshCopy: "Fresh mix · changes every 30 min",
     }) : null,
+    attribution: attribution(),
+    transition: transitionState ? sampleSoundtrackTransition(transitionState, clockTime()) : null,
     media: mediaSnapshot,
     effects: effects.getSnapshot(),
     playbackRate: 1,
@@ -111,6 +152,11 @@ export function createSoundtrackPreviewController({
 
   const playPreparedCurrent = async (revision) => {
     await effects.resume();
+    const currentKey = queueState?.slots?.current?.key;
+    if (currentKey) {
+      transitionState = createSoundtrackTransitionState(currentKey, clockTime());
+      effects.setImmediateTrackGains?.({ [currentKey]: 1 });
+    }
     const result = await deck.playCurrent();
     if (destroyed || revision !== requestRevision) return snapshot();
     if (!result.ok) {
@@ -121,6 +167,92 @@ export function createSoundtrackPreviewController({
       error = null;
     }
     return emit();
+  };
+
+  const scheduleWithTrackLimit = (targetKey, at) => {
+    const initial = transitionState
+      ?? createSoundtrackTransitionState(queueState?.slots?.current?.key, at);
+    let scheduled = scheduleSoundtrackTransition({ state: initial, targetKey, startAt: at });
+    if (scheduled.blockedReason !== "transition-track-limit") return scheduled;
+    const sampled = sampleSoundtrackTransition(initial, at);
+    const fallbackKey = sampled.dominantKey || initial.targetKey;
+    const collapsed = createSoundtrackTransitionState(fallbackKey, at);
+    effects.setImmediateTrackGains?.({ [fallbackKey]: 1 });
+    deck.pauseExcept([fallbackKey]);
+    scheduled = scheduleSoundtrackTransition({ state: collapsed, targetKey, startAt: at });
+    transitionState = collapsed;
+    return scheduled;
+  };
+
+  const transitionToQueue = async (nextQueueState, revision) => {
+    clearTransitionTimers();
+    await effects.resume();
+    if (destroyed || revision !== requestRevision) return snapshot();
+    const targetKey = nextQueueState?.slots?.current?.key;
+    const prepared = scheduleWithTrackLimit(targetKey, clockTime());
+    if (prepared.blockedReason) {
+      status = "error";
+      error = prepared.blockedReason;
+      return emit();
+    }
+    const retainedKeys = [...new Set([
+      ...Object.entries(prepared.state.fromGains)
+        .filter(([, gain]) => gain > 0.000001)
+        .map(([key]) => key),
+      targetKey,
+    ])];
+    queueState = nextQueueState;
+    mediaSnapshot = deck.syncQueue(queueState, {
+      retainKeys: retainedKeys,
+      audibleKeys: retainedKeys,
+    });
+    effects.setImmediateTrackGains?.(prepared.state.fromGains);
+    const started = await deck.playKeys(retainedKeys);
+    if (destroyed || revision !== requestRevision) return snapshot();
+    if (!started.ok) {
+      status = "error";
+      error = error || started.reason;
+      return emit();
+    }
+
+    const scheduled = scheduleWithTrackLimit(targetKey, clockTime());
+    if (scheduled.blockedReason) {
+      status = "error";
+      error = scheduled.blockedReason;
+      return emit();
+    }
+    transitionState = scheduled.state;
+    const applied = effects.applyTransition?.(transitionState);
+    if (applied?.ok === false) {
+      status = "error";
+      error = applied.reason || "transition-gain-failed";
+      return emit();
+    }
+    status = "playing";
+    error = null;
+    emit();
+
+    const transitionRevision = transitionState.revision;
+    const durationMs = transitionState.durationSeconds * 1000;
+    scheduleTransitionTimer(() => {
+      if (!destroyed && revision === requestRevision && transitionState?.revision === transitionRevision) emit();
+    }, durationMs * 0.52);
+    scheduleTransitionTimer(() => {
+      if (destroyed || revision !== requestRevision || transitionState?.revision !== transitionRevision) return;
+      const settled = settleSoundtrackTransition({
+        state: transitionState,
+        at: clockTime(),
+        requestedKey: targetKey,
+        currentRevision: transitionRevision,
+      });
+      if (!settled.completed) return;
+      transitionState = settled.state;
+      effects.setImmediateTrackGains?.({ [targetKey]: 1 });
+      mediaSnapshot = deck.pauseExcept([targetKey]);
+      mediaSnapshot = deck.syncQueue(queueState, { audibleKeys: [targetKey] });
+      emit();
+    }, durationMs + 24);
+    return snapshot();
   };
 
   const load = async ({
@@ -156,6 +288,8 @@ export function createSoundtrackPreviewController({
       catalogResult = Object.freeze({ ...nextCatalogResult, catalog: rotatedCatalog });
       queueState = queue.state;
       mediaSnapshot = deck.syncQueue(queueState);
+      transitionState = createSoundtrackTransitionState(queueState.slots.current.key, clockTime());
+      effects.setImmediateTrackGains?.({ [queueState.slots.current.key]: 1 });
       status = "prepared";
       emit();
       return autoplay ? playPreparedCurrent(revision) : snapshot();
@@ -181,13 +315,10 @@ export function createSoundtrackPreviewController({
       error = "track-unavailable";
       return emit();
     }
-    deck.pauseCurrent();
-    queueState = queue.state;
-    mediaSnapshot = deck.syncQueue(queueState);
     status = "prepared";
     error = null;
     emit();
-    return playPreparedCurrent(revision);
+    return transitionToQueue(queue.state, revision);
   };
 
   const move = async (direction) => {
@@ -199,18 +330,19 @@ export function createSoundtrackPreviewController({
       status = "error";
       return emit();
     }
-    deck.pauseCurrent();
-    queueState = movement.state;
-    mediaSnapshot = deck.syncQueue(queueState);
     status = "prepared";
     error = null;
     emit();
-    return playPreparedCurrent(revision);
+    return transitionToQueue(movement.state, revision);
   };
 
   const pause = () => {
     if (destroyed) return snapshot();
-    mediaSnapshot = deck.pauseCurrent();
+    clearTransitionTimers();
+    const currentKey = queueState?.slots?.current?.key;
+    effects.setImmediateTrackGains?.(currentKey ? { [currentKey]: 1 } : {});
+    mediaSnapshot = deck.pauseExcept([]);
+    if (currentKey) transitionState = createSoundtrackTransitionState(currentKey, clockTime());
     status = "paused";
     error = null;
     return emit();
@@ -228,6 +360,7 @@ export function createSoundtrackPreviewController({
     if (destroyed) return snapshot();
     destroyed = true;
     requestRevision += 1;
+    clearTransitionTimers();
     mediaSnapshot = deck.destroy();
     effects.destroy();
     queueState = null;
