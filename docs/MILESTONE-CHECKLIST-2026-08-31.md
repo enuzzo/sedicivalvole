@@ -112,7 +112,7 @@ sources is not a second active queue.
 - [x] publish and verify checkpoint `9daf8f6`, build `20260831-2244`, with
   read-only pre/postflight, 29/29 Illobo hashes, byte-identical canonical
   HTML/JavaScript/CSS, and an empty live Browser console;
-- [ ] repeat drawer-close and direct-control idle retraction in the target Tesla,
+- [ ] run `R1-01`: repeat drawer-close and direct-control idle retraction in the target Tesla,
   confirming that header/footer always retract after 4.2 seconds without a tap
   on the visual.
 

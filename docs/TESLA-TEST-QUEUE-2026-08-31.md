@@ -8,11 +8,17 @@ behavior.
 
 Do not begin the run until the final canonical build stamp is recorded below.
 
-- **Final test build:** `20260831-2207` · source/MERIDIAN immersion and surfacing `e77d939` · global audio routing/UNDERWATER `8c53e8d` · selected FX Deck `0993e92` · reversible Jamendo/Illobo paths `0660d71` · weak-network immediate switch `137ddeb` · transport hardening `57fed11` · Illobo provider mark `2c0f5f8` · track-head guarantee `236f2c9` · true Illobo catalogue `1a47e23` · Featured random-start `61471e8` · ATLAS Navigator `79d9c9b` · Illobo/title implementation `05a754b` · cover correction `6218f98` · MUTE/FX parity `c0a2f78`
+- **Final test build:** `20260831-2244` · control-focus recovery `9daf8f6` · 15-genre Jamendo selector `33687dd` · source/MERIDIAN immersion and surfacing `e77d939` · global audio routing/UNDERWATER `8c53e8d` · selected FX Deck `0993e92` · reversible Jamendo/Illobo paths `0660d71` · weak-network immediate switch `137ddeb` · transport hardening `57fed11` · Illobo provider mark `2c0f5f8` · track-head guarantee `236f2c9` · true Illobo catalogue `1a47e23` · Featured random-start `61471e8` · ATLAS Navigator `79d9c9b` · Illobo/title implementation `05a754b` · cover correction `6218f98` · MUTE/FX parity `c0a2f78`
 - **Target viewport:** Tesla split view, nominal CSS `773 × 601`
 - **Result states:** `PASS`, `FAIL`, `NOT RUN`, `BLOCKED`
 - **Safety:** a passenger operates controls and records evidence; the driver
   only judges the experience when safe.
+
+## Product-shell focus and chrome retraction — milestone row 1
+
+| ID | Status | Test | PASS condition | Linked work |
+|---|---|---|---|---|
+| `R1-01` | NOT RUN | Open and close Music, Visual, REPORT, GPS help, and Performance FX one at a time. Then change a palette and toggle MUTE and FX. After each completed action, touch nothing for at least five seconds. | Every drawer closes normally; no trigger keeps a white focus stroke or selected state; header and footer retract automatically after about 4.2 seconds without tapping the visual. Keyboard focus remains contained only while a surface is open. | Central post-action focus handoff in `9daf8f6`, live build `20260831-2244`; exact local and canonical Browser QA already pass. |
 
 ## Route, GPS, and sampled-score corrections — milestone row 2
 
