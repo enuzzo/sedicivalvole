@@ -1352,6 +1352,22 @@ restore the prior queue, stable gain, audible element and credit as one unit.
 Otherwise the attribution can be truthful about the old audible deck while the
 rest of the interface falsely claims the new target.
 
+### 6.10 An effect threshold must be perceptual, not merely numeric
+
+The target-vehicle run showed UNDERWATER in the visual state while a Jamendo
+recording sounded completely dry. The routing state was changing, but the
+fixed-recording filter mapped its normalized amount by interpolating linearly
+between `18 kHz` and `520 Hz`. At the `0.4` visual engage threshold this still
+left the cutoff around `11 kHz`: a numerically large movement that is weak over
+road noise and many mastered recordings because pitch and filter frequency are
+heard approximately logarithmically.
+
+The cutoff now follows a logarithmic frequency sweep. The same `0.4` threshold
+lands below `5 kHz`, while zero remains `18 kHz` and full braking remains
+`520 Hz`; playback rate and track choice are unchanged. A deterministic test
+owns the threshold, because an ON badge without a clearly changed sound is a
+product failure even when every state variable is technically non-zero.
+
 ---
 
 ## 7. Sources and material

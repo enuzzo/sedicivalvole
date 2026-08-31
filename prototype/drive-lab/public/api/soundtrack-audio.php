@@ -53,32 +53,47 @@ if (!preg_match('/^[A-Za-z0-9_-]{4,128}$/D', $clientId)) {
     soundtrackAudioError(503, 'configuration_unavailable');
 }
 
-$metadataQuery = http_build_query([
-    'client_id' => $clientId,
-    'format' => 'json',
-    // Jamendo declares the tracks `id` filter as an integer array. Using the
-    // explicit bracket form keeps one exact admitted identity without relying
-    // on the API's inconsistent scalar coercion.
-    'id[]' => $trackId,
-    'limit' => 1,
-    'include' => 'musicinfo',
-    'audioformat' => 'mp32',
-], '', '&', PHP_QUERY_RFC3986);
-$metadata = curl_init('https://api.jamendo.com/v3.0/tracks/?' . $metadataQuery);
-curl_setopt_array($metadata, [
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_CONNECTTIMEOUT => 5,
-    CURLOPT_TIMEOUT => 10,
-    CURLOPT_FOLLOWLOCATION => false,
-    CURLOPT_HTTPHEADER => ['Accept: application/json'],
-    CURLOPT_USERAGENT => 'sedicivalvole/soundtrack-audio-relay',
-]);
-$raw = curl_exec($metadata);
-$metadataStatus = (int)curl_getinfo($metadata, CURLINFO_RESPONSE_CODE);
-curl_close($metadata);
-$payload = is_string($raw) ? json_decode($raw, true) : null;
-$track = is_array($payload['results'][0] ?? null) ? $payload['results'][0] : null;
-if ($metadataStatus !== 200 || !is_array($track)) {
+$track = null;
+$metadataStatus = 0;
+// Jamendo documents `id` as an integer array, but the live API can admit a
+// track in the catalogue and then return an empty exact `id[]` lookup for that
+// same identity. Try the documented form first, then its scalar compatibility
+// form, always verifying the returned identity before the relay can stream it.
+foreach ([['id[]' => $trackId], ['id' => $trackId]] as $identityFilter) {
+    for ($attempt = 0; $attempt < 2; $attempt += 1) {
+        $metadataQuery = http_build_query(array_merge([
+            'client_id' => $clientId,
+            'format' => 'json',
+            'limit' => 1,
+            'include' => 'musicinfo',
+            'audioformat' => 'mp32',
+        ], $identityFilter), '', '&', PHP_QUERY_RFC3986);
+        $metadata = curl_init('https://api.jamendo.com/v3.0/tracks/?' . $metadataQuery);
+        curl_setopt_array($metadata, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CONNECTTIMEOUT => 5,
+            CURLOPT_TIMEOUT => 10,
+            CURLOPT_FOLLOWLOCATION => false,
+            CURLOPT_HTTPHEADER => ['Accept: application/json'],
+            CURLOPT_USERAGENT => 'sedicivalvole/soundtrack-audio-relay',
+        ]);
+        $raw = curl_exec($metadata);
+        $metadataStatus = (int)curl_getinfo($metadata, CURLINFO_RESPONSE_CODE);
+        curl_close($metadata);
+        $payload = is_string($raw) ? json_decode($raw, true) : null;
+        $candidate = is_array($payload['results'][0] ?? null) ? $payload['results'][0] : null;
+        if ($metadataStatus === 200
+            && is_array($candidate)
+            && trim((string)($candidate['id'] ?? '')) === $trackId) {
+            $track = $candidate;
+            break 2;
+        }
+        if ($attempt === 0) {
+            usleep(120000);
+        }
+    }
+}
+if (!is_array($track)) {
     soundtrackAudioError(404, 'track_not_admitted');
 }
 $sourceUrl = trustedJamendoAudioUrl(trim((string)($track['audio'] ?? '')));

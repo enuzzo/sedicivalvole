@@ -156,6 +156,9 @@ test("production endpoints keep credentials server-side and audio transient", ()
   assert.doesNotMatch(productionCatalogEndpoint, /client_secret/);
   assert.match(productionAudioEndpoint, /track_effects_not_admitted/);
   assert.match(productionAudioEndpoint, /'id\[\]' => \$trackId/);
+  assert.match(productionAudioEndpoint, /\['id' => \$trackId\]/);
+  assert.match(productionAudioEndpoint, /trim\(\(string\)\(\$candidate\['id'\]/);
+  assert.match(productionAudioEndpoint, /\$attempt < 2/);
   assert.match(productionAudioEndpoint, /Cache-Control: no-store/);
   assert.match(productionAudioEndpoint, /Cross-Origin-Resource-Policy: same-origin/);
   assert.match(productionAudioEndpoint, /CURLOPT_PROTOCOLS => CURLPROTO_HTTPS/);

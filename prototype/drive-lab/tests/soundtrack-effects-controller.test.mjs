@@ -22,6 +22,21 @@ test("vehicle effects remain silent until the fresh-session master is enabled", 
   assert.equal(on.bloom, 1);
 });
 
+test("UNDERWATER is already audible at the visual engage threshold", () => {
+  const threshold = soundtrackEffectParameters({
+    vehicleMaster: true,
+    vehicleMacros: { underwater: 0.4 },
+  });
+  const full = soundtrackEffectParameters({
+    vehicleMaster: true,
+    vehicleMacros: { underwater: 1 },
+  });
+
+  assert.ok(threshold.underwaterCutoffHz < 5_000, threshold.underwaterCutoffHz);
+  assert.ok(threshold.underwaterCutoffHz > full.underwaterCutoffHz);
+  assert.equal(full.underwaterCutoffHz, 520);
+});
+
 test("manual controls are clamped and never expose a playback-rate control", () => {
   assert.deepEqual(normalizeSoundtrackManualEffects({
     flanger: 2,

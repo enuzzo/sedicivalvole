@@ -63,6 +63,18 @@ export function createSoundtrackPreviewController({
   const transitionTimers = new Set();
   const effects = effectsFactory();
 
+  const catalogCanServeSelection = (selection, nowMs) => {
+    const currentSelection = catalogResult?.selection;
+    const currentSpeeds = Array.isArray(currentSelection?.speed) ? currentSelection.speed : [];
+    const nextSpeeds = Array.isArray(selection?.speed) ? selection.speed : [];
+    return catalogResult?.catalog?.status === "fresh"
+      && Number.isFinite(catalogResult.catalog.expiresAtMs)
+      && nowMs < catalogResult.catalog.expiresAtMs
+      && (currentSelection?.genre || null) === (selection?.genre || null)
+      && currentSpeeds.length === nextSpeeds.length
+      && currentSpeeds.every((value, index) => value === nextSpeeds[index]);
+  };
+
   const clockTime = () => Number(effects.getClockTime?.()) || 0;
 
   const clearTransitionTimers = () => {
@@ -195,9 +207,10 @@ export function createSoundtrackPreviewController({
       error = prepared.blockedReason;
       return emit();
     }
+    const audibleKeys = new Set(mediaSnapshot?.audibleKeys ?? []);
     const retainedKeys = [...new Set([
       ...Object.entries(prepared.state.fromGains)
-        .filter(([, gain]) => gain > 0.000001)
+        .filter(([key, gain]) => gain > 0.000001 && audibleKeys.has(key))
         .map(([key]) => key),
       targetKey,
     ])];
@@ -286,6 +299,26 @@ export function createSoundtrackPreviewController({
     emit();
     try {
       const normalizedSelection = normalizeSoundtrackSelection(selection);
+      if (catalogCanServeSelection(normalizedSelection, nowMs)) {
+        libraryRotation = rotateSoundtrackEntries(catalogResult.catalog.entries, {
+          nowMs,
+          selection: normalizedSelection,
+        });
+        const rotatedCatalog = Object.freeze({
+          ...catalogResult.catalog,
+          entries: libraryRotation.entries,
+        });
+        const queue = createSoundtrackQueue(rotatedCatalog);
+        if (!queue.state.slots.current) throw new Error(queue.blockedReason || "catalog-empty");
+        catalogResult = Object.freeze({ ...catalogResult, catalog: rotatedCatalog });
+        if (autoplay) return transitionToQueue(queue.state, revision);
+        queueState = queue.state;
+        mediaSnapshot = deck.syncQueue(queueState);
+        transitionState = createSoundtrackTransitionState(queueState.slots.current.key, clockTime());
+        effects.setImmediateTrackGains?.({ [queueState.slots.current.key]: 1 });
+        status = "prepared";
+        return emit();
+      }
       const nextCatalogResult = await fetchSoundtrackCatalog({
         fetchImpl,
         limit: 50,

@@ -104,8 +104,12 @@ test("pace, genre, and exact track choices start playback immediately", async ()
 });
 
 test("the default Jamendo library and explicit Illobo Featured path are distinct immediate-play queues", async () => {
+  let fetches = 0;
   const controller = createSoundtrackPreviewController({
-    fetchImpl: catalogFetch,
+    fetchImpl: async (...args) => {
+      fetches += 1;
+      return catalogFetch(...args);
+    },
     mediaFactory: () => new FakeMedia(),
   });
 
@@ -126,6 +130,28 @@ test("the default Jamendo library and explicit Illobo Featured path are distinct
   );
   assert.notEqual(featured.current.key, library.current.key);
   assert.equal(featured.media.currentAudibleKey, featured.current.key);
+  assert.equal(fetches, 1, "Featured must reuse the prepared catalogue inside the click gesture");
+});
+
+test("a failed current deck cannot poison an explicitly selected replacement", async () => {
+  const mediaByKey = new Map();
+  const controller = createSoundtrackPreviewController({
+    fetchImpl: catalogFetch,
+    mediaFactory: (entry) => {
+      const media = new FakeMedia();
+      mediaByKey.set(entry.key, media);
+      return media;
+    },
+  });
+  const prepared = await controller.load({ nowMs: 0 });
+  mediaByKey.get(prepared.current.key).rejectPlay = true;
+  assert.equal((await controller.resume()).status, "error");
+
+  const target = prepared.library.entries.find((entry) => entry.key !== prepared.current.key);
+  const recovered = await controller.select(target.key);
+  assert.equal(recovered.status, "playing");
+  assert.equal(recovered.current.key, target.key);
+  assert.equal(recovered.media.currentAudibleKey, target.key);
 });
 
 test("manual next and previous keep reversible identities and playback ownership", async () => {
