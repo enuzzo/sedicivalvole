@@ -63,9 +63,9 @@ test("both owner-supplied Illobo marks remain byte-identical in a slow continuou
   }
 
   assert.match(app, /className="illobo-featured-cover" role="img" aria-label="Illobo Featured"/);
-  assert.match(styles, /\.illobo-featured-cover[\s\S]*?background: var\(--ink\)/);
-  assert.match(styles, /illobo-featured-solid 12s linear infinite/);
-  assert.match(styles, /filter: invert\(1\);[\s\S]*?illobo-featured-outline 12s linear infinite/);
+  assert.match(styles, /\.illobo-featured-cover[\s\S]*?overflow: visible;[\s\S]*?border: 0;[\s\S]*?border-radius: 0;[\s\S]*?background: var\(--ink\)/);
+  assert.match(styles, /illobo-featured-solid 8s linear infinite/);
+  assert.match(styles, /filter: invert\(1\);[\s\S]*?illobo-featured-outline 8s linear infinite/);
   assert.match(styles, /@keyframes illobo-featured-solid\s*{\s*0%\s*{ opacity: 1; }\s*50%\s*{ opacity: 0; }\s*100%\s*{ opacity: 1; }\s*}/);
   assert.match(styles, /@keyframes illobo-featured-outline\s*{\s*0%\s*{ opacity: 0; }\s*50%\s*{ opacity: 1; }\s*100%\s*{ opacity: 0; }\s*}/);
 });

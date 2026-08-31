@@ -1622,8 +1622,9 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
   display: block;
   width: 64px;
   height: 64px;
-  overflow: hidden;
-  border-radius: var(--ui-radius);
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
   background: var(--ink);
 }
 .illobo-featured-cover img {
@@ -1633,10 +1634,10 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
   height: 100%;
   object-fit: cover;
 }
-.illobo-featured-cover img:first-child { animation: illobo-featured-solid 12s linear infinite; }
+.illobo-featured-cover img:first-child { animation: illobo-featured-solid 8s linear infinite; }
 .illobo-featured-cover img:last-child {
   filter: invert(1);
-  animation: illobo-featured-outline 12s linear infinite;
+  animation: illobo-featured-outline 8s linear infinite;
 }
 @keyframes illobo-featured-solid {
   0% { opacity: 1; }
