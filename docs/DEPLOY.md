@@ -8,6 +8,42 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Tesla Music library and suspended-clock transport recovery — 2026-09-01 00:22
+
+- build stamp: **`20260901-0012`**; deployed product checkpoint:
+  **`7085941`**; selected Music UI checkpoint: **`856232b`**;
+- behavior: **PASS in exact live Browser QA; Tesla acceptance pending**. Play
+  the Road exposes exactly three playable score cards with covers and concise
+  descriptions. Soundtrack places all 15 one-tap genres in two rows, six track
+  choices in two rows, and the player/credit area in one `601/601 px` surface;
+- transport correction: **PASS**. Live acceptance of the previous candidate
+  exposed a frozen-`AudioContext.currentTime` edge case that could leave NEXT
+  permanently on `FADING`. The nominal 450 ms wall-clock cleanup now collapses
+  the transition to its requested target even while Chromium's audio clock is
+  suspended, reapplies the target gain, and pauses the outgoing deck. A focused
+  regression reproduces the frozen clock;
+- tests/build: **PASS**. Complete `526/526`, 147-module App, 71-module LAB and
+  Sites packaging pass;
+- publication: **PASS**. Protected publication uploaded 174 files /
+  223,256,589 bytes, retained one prior fingerprinted asset, fully reverified
+  all 29 Illobo recordings, and passed read-only preflight/postflight with nine
+  root entries and `remote_writes=NONE`;
+- canonical identity: **PASS**. Root HTML references
+  `assets/index-DsA6clzj.js` and `assets/index-D5GbMdlA.css`. Local/live SHA-256
+  is `9c9e9b01cfa2790927421bdc1ed55490c830b5cae507dddc9927d3bf40ed660c`
+  for HTML, `cdac70efa1a98ae4e5217249cfa1beb809f43c2abecd997b56c9a2af879fda56`
+  for JavaScript, and
+  `b78192d6769c96e78f94798c5b1869188f1999ca98bf6f8733d620d83c32c60e`
+  for CSS. The bundle carries `7085941 / 20260901-0012`;
+- exact live Browser QA: **PASS at `773 × 601`**. Both Music paths measure
+  `601/601 px`; all three Play the Road covers and six distinct visible Illobo
+  covers load; Rock responds as one whole chip; two successive Illobo NEXT
+  actions settle on new CURRENT tracks with zero residual FADING state; the
+  return to Jamendo restores all 15 genres, six tracks, player and credit; no
+  warning/error was observed;
+- remaining acceptance: execute `R7-01`–`R7-08` in the target Tesla. Office
+  evidence cannot accept cabin audibility, touch comfort, or vehicle chrome.
+
 ## MERIDIAN amplified immersion and surfacing — 2026-08-31 22:14
 
 - build stamp: **`20260831-2207`**; deployed product checkpoint:

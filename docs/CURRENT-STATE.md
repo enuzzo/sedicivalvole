@@ -482,8 +482,10 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The canonical live product is version `0.0.0`, source commit `e77d939`, build
-  `20260831-2207`, adding the amplified MERIDIAN `50–124°` FOV, stronger
+- The canonical live product is version `0.0.0`, source commit `7085941`, build
+  `20260901-0012`, publishing the one-tap Music library and suspended-clock
+  Soundtrack transition recovery while retaining the amplified MERIDIAN
+  `50–124°` FOV, stronger
   UNDERWATER projection/motion/glow/fog contrast and complete `0.50 s`
   surfacing response while retaining global audio routing and the two-stage
   perceptual
@@ -522,7 +524,7 @@ dated study documents.
   renderer is live with no warning/error. The owner has accepted the corrected
   smoothness and visual quality; stronger real progressive surfacing remains
   the target-Tesla `R5-02` gate.
-  The complete `525/525` suite plus 147-module App / 71-module LAB / Sites build
+  The complete `526/526` suite plus 147-module App / 71-module LAB / Sites build
   pass, while physical-cabin checks remain `R4-01`–`R4-06`, `R5-01`–`R5-05`,
   `R7-01`–`R7-08`, `R8-01`–`R8-02` and `R9-01`–`R9-02`. Exact
   progressive evidence is in [`DEPLOY.md`](DEPLOY.md).
@@ -534,7 +536,7 @@ dated study documents.
 ## Open work
 
 1. Execute Tesla tests `R4-01`–`R4-06`, `R5-01`–`R5-05`, `R7-01`–`R7-08`,
-   `R8-01`–`R8-02` and `R9-01`–`R9-02` on live build `20260831-2207` from
+   `R8-01`–`R8-02` and `R9-01`–`R9-02` on live build `20260901-0012` from
    [`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md), including
    the live audio transport evidence and MERIDIAN
    `0 → brake/UNDERWATER → renewed acceleration → 130` motion that the available

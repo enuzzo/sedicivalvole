@@ -1,6 +1,6 @@
 # Session Handoff
 
-Status: **live working record**. Updated on 2026-08-31.
+Status: **live working record**. Updated on 2026-09-01.
 
 Start with [`CURRENT-STATE.md`](CURRENT-STATE.md) for the product overview. This
 file records implementation boundaries, verification commands, and next work so
@@ -126,6 +126,14 @@ asserted.
   visible without scrolling at `773 × 601`. Play the Road now exposes only its
   three playable scores with individual artwork and concise descriptions; the
   29-track Illobo catalogue maps every recording to its own coherent cover.
+  Build `20260901-0012` publishes this exact layout. During final live transport
+  QA, NEXT exposed a Chromium suspension edge case: if the audio clock stopped,
+  the nominal wall timer fired but settlement still sampled the frozen clock,
+  leaving the UI on FADING. Checkpoint `7085941` makes the 450 ms wall deadline
+  force the requested deck into the settled state, reapplies its gain, and
+  releases the outgoing deck. A frozen-clock regression passes; two consecutive
+  Illobo NEXT actions and the return to Jamendo now pass live with no residual
+  FADING or console warning/error.
 
 ## Diagnostics and privacy
 
