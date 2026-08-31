@@ -51,6 +51,12 @@ test("a Featured press chooses a random start without dropping any playlist entr
     avoidKey: "jamendo:4",
   });
   assert.equal(avoidsCurrent[0].key, "jamendo:5");
+
+  const avoidsEveryAudibleDeck = startSoundtrackEntriesAtRandom(entries, {
+    random: () => 0.5,
+    avoidKeys: ["jamendo:4", "jamendo:5"],
+  });
+  assert.equal(avoidsEveryAudibleDeck[0].key, "jamendo:6");
 });
 
 test("passenger pace choices map only to official Jamendo speed metadata", () => {

@@ -87,6 +87,7 @@ export function createSoundtrackPreviewController({
       entries: startSoundtrackEntriesAtRandom(rotated.entries, {
         random,
         avoidKey: queueState?.slots?.current?.key,
+        avoidKeys: mediaSnapshot?.audibleKeys,
       }),
     });
   };
@@ -214,7 +215,7 @@ export function createSoundtrackPreviewController({
     return scheduled;
   };
 
-  const transitionToQueue = async (nextQueueState, revision) => {
+  const transitionToQueue = async (nextQueueState, revision, { restartTarget = false } = {}) => {
     clearTransitionTimers();
     if (destroyed || revision !== requestRevision) return snapshot();
     const previousQueueState = queueState;
@@ -235,6 +236,7 @@ export function createSoundtrackPreviewController({
     mediaSnapshot = deck.syncQueue(nextQueueState, {
       retainKeys: retainedKeys,
       audibleKeys: retainedKeys,
+      restartKeys: restartTarget ? [targetKey] : [],
     });
     effects.setImmediateTrackGains?.(prepared.state.fromGains);
     // Start every newly audible media element while the transport click still
@@ -326,7 +328,9 @@ export function createSoundtrackPreviewController({
         const queue = createSoundtrackQueue(rotatedCatalog);
         if (!queue.state.slots.current) throw new Error(queue.blockedReason || "catalog-empty");
         catalogResult = Object.freeze({ ...catalogResult, catalog: rotatedCatalog });
-        if (autoplay) return transitionToQueue(queue.state, revision);
+        if (autoplay) return transitionToQueue(queue.state, revision, {
+          restartTarget: normalizedSelection.kind === "featured",
+        });
         queueState = queue.state;
         mediaSnapshot = deck.syncQueue(queueState);
         transitionState = createSoundtrackTransitionState(queueState.slots.current.key, clockTime());
@@ -357,7 +361,10 @@ export function createSoundtrackPreviewController({
       effects.setImmediateTrackGains?.({ [queueState.slots.current.key]: 1 });
       status = "prepared";
       emit();
-      return autoplay ? playPreparedCurrent(revision) : snapshot();
+      if (!autoplay) return snapshot();
+      if (normalizedSelection.kind !== "featured") return playPreparedCurrent(revision);
+      mediaSnapshot = deck.syncQueue(queueState, { restartKeys: [queueState.slots.current.key] });
+      return playPreparedCurrent(revision);
     } catch (caught) {
       if (destroyed || revision !== requestRevision) return snapshot();
       status = "error";

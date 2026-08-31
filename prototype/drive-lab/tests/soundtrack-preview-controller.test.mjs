@@ -27,6 +27,7 @@ class FakeMedia {
     this.readyState = 4;
     this.networkState = 1;
     this.currentTime = 0;
+    this.playPositions = [];
     this.duration = 180;
     this.buffered = { length: 1, start: () => 0, end: () => 30 };
   }
@@ -36,6 +37,7 @@ class FakeMedia {
   load() {}
   pause() { this.paused = true; }
   async play() {
+    this.playPositions.push(this.currentTime);
     if (this.rejectPlay) throw Object.assign(new Error("blocked"), { name: "NotAllowedError" });
     this.paused = false;
   }
@@ -128,12 +130,19 @@ test("pace, genre, and exact track choices start playback immediately", async ()
 test("the default Jamendo library and explicit Illobo Featured path are distinct immediate-play queues", async () => {
   let fetches = 0;
   const randomValues = [0, 0.5];
+  const mediaByKey = new Map();
   const controller = createSoundtrackPreviewController({
     fetchImpl: async (...args) => {
       fetches += 1;
       return sourceAwareCatalogFetch(...args);
     },
-    mediaFactory: () => new FakeMedia(),
+    mediaFactory: (entry) => {
+      const media = new FakeMedia();
+      const instances = mediaByKey.get(entry.key) ?? [];
+      instances.push(media);
+      mediaByKey.set(entry.key, instances);
+      return media;
+    },
     random: () => randomValues.shift() ?? 0.75,
   });
 
@@ -157,6 +166,12 @@ test("the default Jamendo library and explicit Illobo Featured path are distinct
   assert.notEqual(featured.current.key, library.current.key);
   assert.equal(featured.media.currentAudibleKey, featured.current.key);
 
+  for (const instances of mediaByKey.values()) {
+    for (const media of instances) {
+      if (media.paused) media.currentTime = 87;
+    }
+  }
+
   const repeated = await controller.load({
     selection: { kind: "featured", id: "signal-border" },
     autoplay: true,
@@ -164,6 +179,8 @@ test("the default Jamendo library and explicit Illobo Featured path are distinct
   });
   assert.equal(repeated.status, "playing");
   assert.notEqual(repeated.current.key, featured.current.key);
+  const repeatedMedia = mediaByKey.get(repeated.current.key).at(-1);
+  assert.equal(repeatedMedia.playPositions.at(-1), 0, "a new random track must start at 0:00");
   assert.deepEqual(
     new Set(repeated.library.entries.map((entry) => entry.key)),
     new Set(featured.library.entries.map((entry) => entry.key)),

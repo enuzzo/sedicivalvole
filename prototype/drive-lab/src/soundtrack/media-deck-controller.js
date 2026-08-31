@@ -246,7 +246,7 @@ export function createSoundtrackMediaDeckController({
     return createRecord(entry);
   };
 
-  const syncQueue = (queueState, { retainKeys = [], audibleKeys = [] } = {}) => {
+  const syncQueue = (queueState, { retainKeys = [], audibleKeys = [], restartKeys = [] } = {}) => {
     if (destroyed) return getSnapshot();
     if (queueState?.schema !== SOUNDTRACK_QUEUE_SCHEMA) {
       controllerError = "invalid-queue";
@@ -255,6 +255,11 @@ export function createSoundtrackMediaDeckController({
     }
 
     controllerError = null;
+    for (const key of new Set(restartKeys)) {
+      const record = records.get(key);
+      if (!record || record.media.paused === false) continue;
+      disposeRecord(key);
+    }
     const desired = new Map();
     const nextRoles = { previous: null, current: null, next: null };
     const queueKeys = MEDIA_ROLES

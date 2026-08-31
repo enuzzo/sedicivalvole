@@ -144,6 +144,21 @@ test("sync creates exactly three transient browser media roles with honest readi
   }
 });
 
+test("an explicit playlist restart recreates a prepared target at zero", () => {
+  const fixture = createFixture();
+  fixture.controller.syncQueue(fixture.queue);
+  const key = fixture.queue.slots.current.key;
+  const previousMedia = fixture.controller.getMediaForRole("current");
+  previousMedia.currentTime = 87;
+
+  fixture.controller.syncQueue(fixture.queue, { restartKeys: [key] });
+  const restartedMedia = fixture.controller.getMediaForRole("current");
+
+  assert.notEqual(restartedMedia, previousMedia);
+  assert.equal(previousMedia.removedSource, true);
+  assert.equal(restartedMedia.currentTime, 0);
+});
+
 test("a raw direct-source preview may omit CORS mode without changing production default", () => {
   const defaultMedia = [];
   const directMedia = [];

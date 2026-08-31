@@ -82,6 +82,7 @@ export function rotateSoundtrackEntries(entries, {
 export function startSoundtrackEntriesAtRandom(entries, {
   random = Math.random,
   avoidKey = null,
+  avoidKeys = [],
 } = {}) {
   const list = Array.isArray(entries) ? [...entries] : [];
   if (list.length < 2) return Object.freeze(list);
@@ -93,9 +94,18 @@ export function startSoundtrackEntriesAtRandom(entries, {
   }
   const unit = Math.min(0.999999, Math.max(0, sample));
   let startIndex = Math.floor(unit * list.length);
-  const normalizedAvoidKey = asText(avoidKey);
-  if (normalizedAvoidKey && asText(list[startIndex]?.key) === normalizedAvoidKey) {
-    startIndex = (startIndex + 1) % list.length;
+  const blockedKeys = new Set([
+    asText(avoidKey),
+    ...(Array.isArray(avoidKeys) ? avoidKeys : []).map(asText),
+  ].filter(Boolean));
+  if (blockedKeys.has(asText(list[startIndex]?.key)) && blockedKeys.size < list.length) {
+    for (let offset = 1; offset < list.length; offset += 1) {
+      const candidateIndex = (startIndex + offset) % list.length;
+      if (!blockedKeys.has(asText(list[candidateIndex]?.key))) {
+        startIndex = candidateIndex;
+        break;
+      }
+    }
   }
   return Object.freeze([
     ...list.slice(startIndex),
