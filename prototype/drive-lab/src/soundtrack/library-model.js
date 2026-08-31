@@ -7,13 +7,25 @@ export const SOUNDTRACK_PACE_OPTIONS = Object.freeze([
   Object.freeze({ id: "fast", label: "Fast", speeds: Object.freeze(["high", "veryhigh"]) }),
 ]);
 
-// These are the genre chart tags recommended by the current Jamendo tracks API.
+// Jamendo recommends the first twelve tags for genre charts. Ambient, Funk,
+// and Reggae are verified genre tags with eligible catalogue results; together
+// they complete the three-row passenger selector without inventing empty paths.
 export const SOUNDTRACK_GENRE_OPTIONS = Object.freeze([
   Object.freeze({ id: "lounge", label: "Lounge" }),
+  Object.freeze({ id: "classical", label: "Classical" }),
   Object.freeze({ id: "electronic", label: "Electronic" }),
   Object.freeze({ id: "jazz", label: "Jazz" }),
+  Object.freeze({ id: "pop", label: "Pop" }),
+  Object.freeze({ id: "hiphop", label: "Hip Hop" }),
+  Object.freeze({ id: "relaxation", label: "Relaxation" }),
   Object.freeze({ id: "rock", label: "Rock" }),
+  Object.freeze({ id: "songwriter", label: "Songwriter" }),
+  Object.freeze({ id: "world", label: "World" }),
+  Object.freeze({ id: "metal", label: "Metal" }),
   Object.freeze({ id: "soundtrack", label: "Soundtrack" }),
+  Object.freeze({ id: "ambient", label: "Ambient" }),
+  Object.freeze({ id: "funk", label: "Funk" }),
+  Object.freeze({ id: "reggae", label: "Reggae" }),
 ]);
 
 const asText = (value) => typeof value === "string" ? value.trim() : "";

@@ -4,6 +4,7 @@ import {
   normalizeSoundtrackSelection,
   retainJamendoPreviewEntries,
   rotateSoundtrackEntries,
+  SOUNDTRACK_GENRE_OPTIONS,
   SOUNDTRACK_ROTATION_INTERVAL_MS,
   startSoundtrackEntriesAtRandom,
   soundtrackRotationWindow,
@@ -90,6 +91,36 @@ test("passenger pace choices map only to official Jamendo speed metadata", () =>
     speed: [],
     genre: "jazz",
   });
+});
+
+test("the passenger genre selector exposes three complete rows of verified Jamendo tags", () => {
+  assert.deepEqual(SOUNDTRACK_GENRE_OPTIONS, [
+    { id: "lounge", label: "Lounge" },
+    { id: "classical", label: "Classical" },
+    { id: "electronic", label: "Electronic" },
+    { id: "jazz", label: "Jazz" },
+    { id: "pop", label: "Pop" },
+    { id: "hiphop", label: "Hip Hop" },
+    { id: "relaxation", label: "Relaxation" },
+    { id: "rock", label: "Rock" },
+    { id: "songwriter", label: "Songwriter" },
+    { id: "world", label: "World" },
+    { id: "metal", label: "Metal" },
+    { id: "soundtrack", label: "Soundtrack" },
+    { id: "ambient", label: "Ambient" },
+    { id: "funk", label: "Funk" },
+    { id: "reggae", label: "Reggae" },
+  ]);
+  assert.equal(new Set(SOUNDTRACK_GENRE_OPTIONS.map(({ id }) => id)).size, 15);
+  for (const { id, label } of SOUNDTRACK_GENRE_OPTIONS) {
+    assert.deepEqual(normalizeSoundtrackSelection({ kind: "genre", id }), {
+      kind: "genre",
+      id,
+      label,
+      speed: [],
+      genre: id,
+    });
+  }
 });
 
 test("Jamendo cover previews survive an Illobo selection and refresh only from Jamendo", () => {
