@@ -131,8 +131,10 @@ dated study documents.
   search, reader updates and the joined Product Design comparison.
   Checkpoint `e268169` makes it reachable as `DISCOVER 07` from both the initial
   Instrument Deck and the running Visual library while preserving the six-entry
-  renderer and preference boundary; canonical publication of that reachability
-  correction is pending.
+  renderer and preference boundary. Exact Browser review then found the seventh
+  running row below the fold; `a257e0c` compacts only that drawer so all seven
+  remain simultaneously visible at `773 × 601`. Canonical publication of both
+  reachability corrections is pending.
 - WAKE is rejected after repeated live review: its ribbons read as disordered
   rain rather than a convincing authored 3D road field. Its renderer, fallback,
   tests, catalog entry and current QA captures have been removed. The historical
@@ -546,7 +548,9 @@ dated study documents.
   turns the launch grid into the intended `3–3–1` composition. START opens the
   Passenger Index over Aperture; the running picker labels Discover as an OPEN
   destination and does not replace or persist the active renderer. The complete
-  `535/535` suite passes. Canonical and exact-viewport acceptance remain open.
+  `535/535` suite passes. Follow-up `a257e0c` makes all seven running rows
+  simultaneously visible without scroll and raises the complete suite to
+  `536/536`. Canonical and final exact-viewport acceptance remain open.
 - Product checkpoint `5c498ac` adds the selected DISCOVER Passenger Index and
   Music Navigator Rail. Build `20260901-0933` passes the complete `533/533`
   suite, 148-module App / 71-module LAB / Sites build, protected publication,
