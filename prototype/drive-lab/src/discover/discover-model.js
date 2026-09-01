@@ -127,7 +127,7 @@ export function discoverWikipediaArticleDocument(payload, { language = "en", tit
     :root { color-scheme: dark; }
     * { box-sizing: border-box; }
     html { background: #0b0d0d; scrollbar-color: rgba(238,234,224,.38) transparent; scrollbar-width: thin; }
-    body { margin: 0; padding: 18px 20px 42px; color: rgba(238,234,224,.9); background: #0b0d0d; font: 500 16px/1.58 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; overflow-wrap: anywhere; }
+    body { margin: 0; padding: 18px 20px 42px; color: rgba(238,234,224,.9); background: #0b0d0d; font: 500 16px/1.58 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; overflow-wrap: break-word; }
     a { color: #ff4aac; text-decoration-thickness: 1px; text-underline-offset: 3px; }
     p { margin: 0 0 1em; }
     h1, h2, h3, h4 { clear: both; margin: 1.2em 0 .55em; color: #f3efe5; line-height: 1.15; letter-spacing: -.025em; }
@@ -138,9 +138,10 @@ export function discoverWikipediaArticleDocument(payload, { language = "en", tit
     ul, ol { padding-inline-start: 1.45em; }
     li { margin: .28em 0; }
     img { max-width: 100%; height: auto; }
-    .infobox, .sidebar, .vertical-navbox { float: right; width: 43vw !important; min-width: 0 !important; max-width: 300px !important; margin: 2px 0 18px 22px; border: 1px solid rgba(238,234,224,.22); background: #141717; table-layout: fixed; }
+    .infobox, .sidebar, .vertical-navbox { float: right; width: clamp(150px, 35vw, 240px) !important; min-width: 0 !important; max-width: 38% !important; margin: 2px 0 18px 18px; border: 1px solid rgba(238,234,224,.22); background: #141717; table-layout: fixed; }
     figure, .thumb { width: auto; max-width: 100%; margin: 12px 0 18px; border: 1px solid rgba(238,234,224,.22); background: #141717; }
     figure img, .thumb img, .infobox img, .sidebar img, .vertical-navbox img { display: block; max-width: 100%; height: auto; }
+    .infobox img, .sidebar img, .vertical-navbox img { max-height: 260px; margin-inline: auto; object-fit: contain; }
     figcaption, .thumbcaption { padding: 8px 10px; color: rgba(238,234,224,.72); font-size: 13px; line-height: 1.35; }
     table { max-width: 100%; border-collapse: collapse; color: inherit; background: #121515; font-size: 14px; line-height: 1.42; }
     th, td { padding: 7px 9px; border: 1px solid rgba(238,234,224,.18); vertical-align: top; overflow-wrap: anywhere; }
@@ -154,7 +155,7 @@ export function discoverWikipediaArticleDocument(payload, { language = "en", tit
     .gallerybox { width: auto !important; list-style: none; }
     .gallerytext { font-size: 13px; line-height: 1.35; }
     .mw-parser-output::after { display: block; clear: both; content: ""; }
-    @media (max-width: 380px) {
+    @media (max-width: 420px) {
       body { padding: 15px 16px 36px; font-size: 15px; }
       figure, .thumb, .infobox, .sidebar, .vertical-navbox { float: none; width: 100% !important; max-width: 100% !important; margin: 0 0 18px; }
       .gallery { grid-template-columns: 1fr; }

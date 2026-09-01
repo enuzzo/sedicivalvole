@@ -66,6 +66,10 @@ test("Discover requests the complete localized article and isolates it in a read
   assert.match(document, /Content-Security-Policy/);
   assert.match(document, /font: 500 16px\/1\.58/);
   assert.match(document, /\.infobox/);
+  assert.match(document, /width: clamp\(150px, 35vw, 240px\)/);
+  assert.match(document, /max-width: 38%/);
+  assert.match(document, /max-height: 260px/);
+  assert.match(document, /@media \(max-width: 420px\)/);
   assert.match(document, /<h2>Storia<\/h2><p>Complete article\.<\/p>/);
 });
 
