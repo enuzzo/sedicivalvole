@@ -8,6 +8,38 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## ATLAS Drive Lab composite — 2026-09-01 16:12
+
+- build stamp: **`20260901-1559`**; deployed source/document checkpoint:
+  **`3f505a0`**; product checkpoint: **`6ac4259`**;
+- behavior: **PASS in exact live Browser QA; Tesla acceptance pending**. The
+  `300 px` no-scroll panel fits Speed, Distance, Moving time and Average speed
+  in its first line; Accel/Braking, five Speed bands, Heading history and
+  Moving/Stopped in a two-by-two field; and full-width Elevation below. One
+  control drives every chart through `15 MIN / 1 H / SESSION`. ATLAS contains
+  no Discover, Wikipedia, place-card or QR action;
+- tests/build: **PASS**. Focused ATLAS `33/33`, complete `541/541`, 148-module
+  App, 71-module LAB, protected LAB packaging and Sites build pass;
+- protected publication: the verified upload wrote the canonical root only,
+  uploaded `181` files / `223,312,659` bytes, fully reverified `29/29` Illobo
+  masters, preserved the dynamic root and confirmed nine root entries;
+- canonical identity: cache-busted HTML is HTTP 200 with `no-store/no-cache`
+  and `nosniff`. HTML, main JavaScript, main CSS, ATLAS JavaScript and ATLAS CSS
+  match the candidate byte-for-byte at SHA-256
+  `d6b41ab420dc4844c0e22213f27d083a02a75c52b999ebfbb9225adaffc4a71a`,
+  `eb178531d493b39a7ee0103dbac5ddb22234db3b3535c9bd74177ca6056f7110`,
+  `00f4baa350025c8ece57785468a22788290bfebe5ae9f17689e05e40aa0459b1`,
+  `d6fa66672d0e776fd71119a29f85176f6413adef7ad37de84c9a461f6f47ef1e`
+  and `715dbf736f7fdc9671a7ab3ec3b2fc5e3cdb252f3cc59758d52914bd2c9e57a3`;
+- exact live `773 × 601` Browser QA: **PASS**. Document and body remain exactly
+  `773 × 601 px`; the shared history control cycles
+  `15 MIN → 1 H → SESSION → 15 MIN`; the icon-only midpoint tab collapses to
+  the complete map and reopens the unchanged dashboard. All requested modules,
+  terrain source copy, header and footer remain visible with no page scroll;
+- remaining acceptance: run target-Tesla `R9-01`–`R9-05`, especially real GPS
+  direction, live motion redistribution, cabin legibility, physical touch and
+  sustained map/dashboard cadence.
+
 ## DISCOVER complete reader and ATLAS separation — 2026-09-01 15:34
 
 - build stamp: **`20260901-1524`**; deployed source/document checkpoint:

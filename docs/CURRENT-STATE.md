@@ -106,8 +106,9 @@ dated study documents.
   full-height rail. Mandatory attribution remains a tiny translucent strip
   above the footer. Exact local `773 × 601` QA at checkpoint `6ac4259` proves
   the complete no-scroll dashboard, live Open-Meteo response, three-range
-  cycle, full-map collapse/reopen and no header/footer collision; canonical
-  publication and real-Tesla acceptance remain separate gates.
+  cycle, full-map collapse/reopen and no header/footer collision. Canonical
+  build `20260901-1559` repeats those exact live checks and byte identity;
+  real-Tesla acceptance remains a separate gate.
   A bounded session-only A3 foundation now retains eight monotonic timestamped
   fixes and can interpolate the same path at 30 or 60 FPS with a `100 ms` delay,
   no extrapolation, a `1500 ms` stale freeze and no animation across long gaps.
@@ -531,8 +532,10 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The canonical live product is version `0.0.0`, source commit `0d50a88`, build
-  `20260901-1524`, publishing the complete readable DISCOVER reader and its
+- The canonical live product is version `0.0.0`, deployed documentation commit
+  `3f505a0`, product commit `6ac4259`, build `20260901-1559`, publishing the
+  owner-selected composite ATLAS Drive Lab together with the complete readable
+  DISCOVER reader and its
   independent boundary from ATLAS on top of the owner-selected ATLAS Live
   Navigator, rounded-cell remote terrain elevation, three bounded history
   ranges, speed statistics, and canonical fit correction, plus DISCOVER 07 in
@@ -556,11 +559,11 @@ dated study documents.
   `236f2c9`. Its guarded
   publication, read-only pre/postflight and HTML/main-JavaScript/main-CSS/ATLAS-
   JavaScript/ATLAS-CSS byte identity pass. Current exact live `773 × 601`
-  Browser QA proves DISCOVER's `272 px` rail, five-row fold plus `+10 MORE`,
+  Browser QA proves the ATLAS `300 px` no-scroll dashboard, shared three-range
+  cycle and full-map collapse/reopen, plus DISCOVER's `272 px` rail, five-row fold plus `+10 MORE`,
   continuous 15-result scroll, complete `486 × 523 px` Wikipedia reader and
-  absence of an ATLAS action. Current local QA proves the complete `300 px`
-  ATLAS Drive Lab, full-map collapse/reopen, live terrain elevation and
-  three-range cycling without Wikipedia/place duplication. It also retains the
+  absence of an ATLAS action. The live ATLAS dashboard retains terrain elevation
+  and three-range cycling without Wikipedia/place duplication. It also retains the
   complete Jamendo → Illobo → Jamendo round trip, persistent Jamendo covers,
   restored Jamendo browsing, and a rapid reversal that cannot be reclaimed by
   obsolete Illobo work.

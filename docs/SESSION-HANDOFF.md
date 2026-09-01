@@ -261,8 +261,10 @@ English cardinal, exact degrees and a rendered-tile road name without reverse
 geocoding. The owner-selected composite dashboard adds the four-value trip line,
 four central motion charts and full-width Elevation, all sharing `15 MIN / 1 H /
 SESSION`; the icon-only `36 × 30 px` midpoint tab collapses it. ATLAS contains
-no Discover/Wikipedia duplication. Canonical publication is pending; then run
-`R9-01`–`R9-05` for target-vehicle acceptance.
+no Discover/Wikipedia duplication. Canonical build `20260901-1559` carries
+documentation checkpoint `3f505a0` and product checkpoint `6ac4259`; exact live
+`773 × 601` range/collapse QA and byte identity pass. Run `R9-01`–`R9-05` for
+target-vehicle acceptance.
 
 The published corrections provide complete ATLAS-view route retention with origin-preserving bounded
 compaction, one interpolated pulsing point/ripple, two-line colour-coded GPS,
@@ -341,10 +343,11 @@ HTML/JS/CSS byte identity and exact live `773 × 601` QA. Only
 `R10-00A`–`R10-05` Tesla acceptance remains open. ATLAS is an independent
 data-first Drive Lab: do not add DISCOVER or duplicate its place cards. The
 owner selected the composite of all six preferred telemetry modules; checkpoint
-`6ac4259` implements it and exact local `773 × 601` QA passes. Canonical
-publication remains before target-Tesla `R9-01`–`R9-05` acceptance. Row 10
-office/canonical work is complete; row 11 Original Gradient Field follows after
-the ATLAS publication checkpoint.
+`6ac4259` implements it; canonical build `20260901-1559` carries documentation
+checkpoint `3f505a0`, passes exact live `773 × 601` QA and preserves canonical
+byte identity. Target-Tesla `R9-01`–`R9-05` acceptance remains open. Row 10
+office/canonical work is complete; row 11 Original Gradient Field is the next
+owner-gated feature milestone.
 
 ## Verification
 
