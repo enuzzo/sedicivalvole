@@ -256,15 +256,15 @@ compressor. Exact local `773 × 601` QA measures a `720 × 267 px` `2 × 4` deck
 with zero overflow; all eight taps, sliders, hostile full-depth sum, reset,
 close/focus release, switching, and persistence pass. A real browser offline
 render proves the published baseline finite and non-silent. Checkpoint
-`f48b5b2` now adds a smooth processor-specific stunt zone only over `82–100%`,
+`f48b5b2` adds a smooth processor-specific stunt zone only over `82–100%`,
 leaving every authored hit below that boundary unchanged. A fresh real-browser
 comparison measures every full endpoint `1.3925–2.5184×` more transformed than
 its tap, manual Underwater `1.8005×`, maximum individual peak `0.99121`, and
 the hostile full sum `0.60941`; the complete suite passes `544/544`. Build
-`20260901-1823` publishes `f48b5b2`; replacement checkpoint `0f4a501` passes
-`544/544`, production build, dedicated High Cut sine evidence, a bounded
-hostile render, and exact local `773 × 601` family/order/RESET/focus QA. Publish
-it before the revised Tesla `R4-07`. The
+`20260901-1943` publishes checkpoint `0f4a501`; `544/544`, production build,
+dedicated High Cut sine evidence, a bounded hostile render, canonical byte
+identity, and exact local/live `773 × 601` family/order/RESET/focus QA all
+pass. Revised Tesla listening `R4-07` remains open. The
 complete suite passes `517/517`; the 147-module App / 71-module LAB / Sites
 build `20260831-2005` passes. Protected publication uploaded 138 files /
 212,292,932 bytes, fully reverified 29/29 Illobo masters, and passed read-only
@@ -370,15 +370,15 @@ byte identity. Target-Tesla `R9-01`–`R9-05` acceptance remains open.
 
 Owner VoiceNotes recorded on 2026-09-01 at 09:01–09:15 supersede the prior
 "row 11 next" handoff. Milestone row 4's mandatory eight-effect `2 × 4`
-Performance FX revision and stronger full-depth checkpoint `f48b5b2` are live
-in build `20260901-1823`; High Cut replacement `0f4a501` is office-PASS and
-awaiting canonical publication before Tesla `R4-07`. Mandatory insert `10A`
-follows and requires truthful
+Performance FX revision, stronger full-depth checkpoint `f48b5b2`, and High
+Cut replacement `0f4a501` are live in build `20260901-1943`; exact
+office/canonical QA passes and Tesla `R4-07` remains open. Mandatory insert
+`10A` follows and requires truthful
 ATLAS cold start/refinement, larger Tesla palette, persistent transport,
 supported Media Session previous/next, committed-track notice, direction-aware
 drawer dismissal and measured WebP Illobo artwork while retaining local HD
-masters. Row 4's prior roster is present in build `20260901-1823`; the High Cut
-replacement and `10A` tasks are not yet canonical.
+masters. Row 4's current roster is present in build `20260901-1943`; the `10A`
+tasks are not yet canonical.
 Their tests are `R1-02`, `R4-07`, `R7-10`–`R7-12`, `R8-03`, `R9-06`, and
 `R13-00`. Promoted X10 `LIGHT / DARK / AUTO` is confirmed in milestone 13
 with `R13-01`–`R13-03`. Row 11 Original Gradient Field is blocked until row 4

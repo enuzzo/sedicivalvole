@@ -431,9 +431,9 @@ dated study documents.
   that remains separate from Underwater pressure and texture.
   The compact footer `FX ↑` trigger opens a `2 × 4` deck with independent depth,
   authored one-tap defaults, RESET, and one final compressor. Checkpoint
-  `f48b5b2` is live in build `20260901-1823`; replacement checkpoint `0f4a501`
-  passes office DSP/build/exact-viewport QA and awaits canonical publication
-  before the revised Tesla `R4-07`.
+  `0f4a501` is live in build `20260901-1943`; office DSP/build/exact-viewport
+  QA, canonical byte identity, and exact live `773 × 601` interaction QA pass.
+  Revised Tesla listening `R4-07` remains open.
   The visible card follows the
   audio-clock gain mix and exposes every genuinely audible artwork, artist,
   title, licence, Jamendo credit, and direct source link. Manual changes use the
@@ -669,17 +669,17 @@ dated study documents.
 ## Mandatory 2026-09-01 owner corrections
 
 The 09:01–09:15 owner VoiceNotes are promoted into the active milestone and
-test queue, not the optional future register. Row 4's eight-effect baseline is
-canonical in build `20260901-1823`; replacement checkpoint `0f4a501` removes
+test queue, not the optional future register. Row 4's current eight-effect
+roster is canonical in build `20260901-1943`: checkpoint `0f4a501` removes
 Echo, adds High Cut, groups the three tone/filter controls, and passes office
-DSP/build/exact Tesla-size Browser QA. Its canonical publication, Tesla
-listening, and the remaining `10A` items are still open:
+DSP/build plus exact local/canonical Tesla-size Browser QA. Tesla listening
+and the remaining `10A` items are still open:
 
-- publish and physically accept the revised eight-effect `2 × 4` Performance FX
-  deck from `0f4a501`; deterministic graph tests, `544/544`, the production
-  build, exact local `773 × 601` tone-family/RESET/focus QA, dedicated High Cut
-  spectrum evidence, and a bounded hostile full-depth render pass, while
-  canonical identity and Tesla listening remain open;
+- physically accept the revised eight-effect `2 × 4` Performance FX deck from
+  live build `20260901-1943`; deterministic graph tests, `544/544`, the
+  production build, exact local/canonical `773 × 601`
+  tone-family/RESET/focus QA, dedicated High Cut spectrum evidence, and a
+  bounded hostile full-depth render pass, while Tesla listening remains open;
 - fix ATLAS's owner-observed black cold start by preparing from the best
   truthful session fix and showing an explicit waiting/degraded state when no
   position is usable, then refining without requiring movement or restarting;

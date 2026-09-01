@@ -8,14 +8,14 @@ behavior.
 
 Do not begin the run until the final canonical build stamp is recorded below.
 
-- **Final test build:** `20260901-1823` remains the last canonical build. Do **not** run final `R4-07` yet: replacement checkpoint `0f4a501` removes Echo, adds High Cut, and is office-PASS but awaiting publication. All other recorded checkpoint identities remain unchanged.
+- **Final test build:** `20260901-1943` is canonical. Revised `R4-07` is ready: checkpoint `0f4a501` removes Echo, adds High Cut, and is office/canonical PASS. All other recorded checkpoint identities remain unchanged.
 - **Target viewport:** Tesla split view, nominal CSS `773 × 601`
 - **Result states:** `PASS`, `FAIL`, `NOT RUN`, `BLOCKED`
 - **Safety:** a passenger operates controls and records evidence; the driver
   only judges the experience when safe.
 - **Planned-test boundary:** codes marked `PLANNED · NOT IMPLEMENTED` preserve
   accepted mandatory work from the 2026-09-01 VoiceNotes. They are **not**
-  runnable on build `20260901-1823`; their eventual canonical build stamp must
+  runnable on build `20260901-1943`; their eventual canonical build stamp must
   replace this warning before the owner tests them. `R4-07` is implemented and
   runnable on this build.
 
@@ -45,7 +45,7 @@ Do not begin the run until the final canonical build stamp is recorded below.
 | `R4-04` | PARTIAL PASS 2026-08-31 · ILLOBO/JAMENDO RETEST IN PROGRESS | Toggle OPEN, BLOOM, and UNDERWATER across FRACTURE, JUNCTION, NIGHTSHIFT, Illobo, and Jamendo, then disable global FX. | Each effect is audible but controlled; UNDERWATER is unmistakably dark from its visible engagement while retaining usable level; disabling FX restores dry output in every source. | The owner now confirms that UNDERWATER decisively enters during braking in the active drive test. Illobo and Jamendo verification is still in progress, so the complete five-source matrix remains open. `8c53e8d` supplies the repaired audio path; `e77d939` changes MERIDIAN visuals only. |
 | `R4-05` | NOT RUN | While music plays, trigger or wait for one normal vehicle alert/navigation prompt. | The vehicle alert remains clearly audible and is not masked by the product. | Alert-safe level and effects boundary. |
 | `R4-06` | NOT RUN | Reveal the running footer, compare MUTE with FX, then toggle each one independently in both directions. | Both controls have the same width and `LABEL / ON–OFF / GLOBAL` hierarchy; each state changes immediately without changing the other control. | Shared MUTE/FX control anatomy and equal-width Tesla grid tracks. |
-| `R4-07` | NOT RUN · HIGH CUT `0f4a501` PUBLICATION PENDING | Open the `2 × 4` Performance FX deck in FRACTURE, JUNCTION, NIGHTSHIFT, Illobo, and Jamendo. Compare every authored tap with `100%`, especially manual Underwater dry → submerged → dry and the adjacent Bass Drive / Radio Cut / High Cut family; then combine deliberately hostile pairs and RESET. | The tap is immediately playful and the last `82–100%` becomes unmistakably more extreme. Manual Underwater produces progressive immersion, textured maximum depth and surfacing; Bass Drive adds low weight, Radio Cut isolates the middle, and High Cut progressively removes the top end without becoming Underwater. No state clicks, clips, silences, runs away, changes `1×`, disables braking Underwater, or leaks after RESET/source switching. | `0f4a501`: `544/544`, exact local `773 × 601`, High Cut `8 kHz` attenuation `−12.94 dB` tap / `−59.68 dB` full with `300 Hz` at `+0.30 dB`, hostile sum peak `0.91672`. Wait for the new canonical build stamp. |
+| `R4-07` | NOT RUN · READY ON LIVE `20260901-1943` | Open the `2 × 4` Performance FX deck in FRACTURE, JUNCTION, NIGHTSHIFT, Illobo, and Jamendo. Compare every authored tap with `100%`, especially manual Underwater dry → submerged → dry and the adjacent Bass Drive / Radio Cut / High Cut family; then combine deliberately hostile pairs and RESET. | The tap is immediately playful and the last `82–100%` becomes unmistakably more extreme. Manual Underwater produces progressive immersion, textured maximum depth and surfacing; Bass Drive adds low weight, Radio Cut isolates the middle, and High Cut progressively removes the top end without becoming Underwater. No state clicks, clips, silences, runs away, changes `1×`, disables braking Underwater, or leaks after RESET/source switching. | `0f4a501`, live build `20260901-1943`: `544/544`, exact local and canonical `773 × 601`, High Cut `8 kHz` attenuation `−12.94 dB` tap / `−59.68 dB` full with `300 Hz` at `+0.30 dB`, hostile sum peak `0.91672`, canonical byte identity and RESET/focus/log QA. |
 
 ## Visual and performance acceptance — milestone row 5
 

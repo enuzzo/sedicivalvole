@@ -8,6 +8,39 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Grouped High Cut Performance FX — 2026-09-01 19:52
+
+- build stamp: **`20260901-1943`**; deployed documentation checkpoint:
+  **`bf95912`**; product checkpoint: **`0f4a501`**;
+- behavior: **PASS in exact live Browser QA; Tesla acceptance pending**. Echo
+  is removed and High Cut completes the eight-effect roster. Bass Drive, Radio
+  Cut, and High Cut are consecutive and share one `3 px` cyan family marker;
+- audio evidence: **PASS**. A real-browser sine render preserves `300 Hz` at
+  `+0.30 dB`, reduces `8 kHz` by `−12.94 dB` at the authored `0.76` tap and
+  `−59.68 dB` at full depth. A deterministic wide-band render keeps the hostile
+  eight-at-100 sum finite/non-silent at `0.25913` RMS / `0.91672` peak;
+- tests/build: **PASS**. The complete suite passes `544/544`; 148-module App,
+  71-module LAB, protected LAB packaging and Sites build pass;
+- protected publication: read-only preflight and postflight report
+  `remote_writes=NONE`; publication uploaded `181` files / `223,323,630` bytes,
+  fully reverified all `29/29` Illobo masters, retained two previous
+  content-addressed assets for cache overlap, preserved the dynamic root, and
+  reported `remote_writes=ROOT_UPLOAD_ONLY`;
+- canonical identity: cache-busted HTML is HTTP 200 with `no-store/no-cache`
+  and `nosniff`. HTML, main JavaScript and main CSS match the candidate
+  byte-for-byte at SHA-256
+  `b7eb5aa30ca826cfc82d12e13ca03a6b51fc0d32d5c6824ef11ce0fff730cdb3`,
+  `7a51174a50e64fb21e51f580999f34ff82b73b0e1d075d08b0073a9b29781e6f`
+  and `50ab886246ac38e688b266b9932e15841e0bd057ed36659e4887443985c24a92`;
+- exact live `773 × 601` Browser QA: **PASS**. The deck measures
+  `720 × 267 px`, exposes exactly Flanger / Reverb / Underwater / Phaser /
+  Bitcrush / Bass Drive / Radio Cut / High Cut, activates the three contiguous
+  tone-family controls at `100`, has zero page overflow, resets all eight to
+  zero, closes onto the central experience and reaches `controls-resting` after
+  4.6 seconds. Browser warnings/errors are absent;
+- remaining acceptance: run revised `R4-07` across FRACTURE, JUNCTION,
+  NIGHTSHIFT, Illobo, and Jamendo in the target Tesla.
+
 ## Performance FX full-depth stunt zone — 2026-09-01 18:30
 
 - build stamp: **`20260901-1823`**; deployed documentation checkpoint:
