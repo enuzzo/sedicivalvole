@@ -2061,7 +2061,7 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
 .discover-view-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-bottom: 1px solid rgba(238, 234, 224, .14); }
 .discover-view-tabs button {
   position: relative;
-  min-height: 42px;
+  min-height: 38px;
   border: 0;
   border-right: 1px solid rgba(238, 234, 224, .12);
   color: rgba(238, 234, 224, .52);
@@ -2095,7 +2095,7 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
 .discover-results > button > img.is-placeholder { padding: 10px; box-sizing: border-box; background: rgba(238, 234, 224, .05); filter: brightness(0) invert(1); opacity: .45; }
 .discover-results > button > span { display: grid; min-width: 0; gap: 4px; }
 .discover-results > button strong { display: -webkit-box; overflow: hidden; font-size: 12.5px; font-weight: 620; line-height: 1.16; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
-.discover-results > button em { color: rgba(238, 234, 224, .62); font-size: 10px; font-style: normal; line-height: 1.15; letter-spacing: .015em; }
+.discover-results > button em { color: rgba(238, 234, 224, .62); font-size: 11.5px; font-style: normal; line-height: 1.18; letter-spacing: .01em; }
 .discover-results > button.is-selected { color: var(--ink); background: var(--paper); box-shadow: inset 4px 0 var(--accent); }
 .discover-results > button.is-selected small,
 .discover-results > button.is-selected em { color: rgba(7, 9, 9, .58); }

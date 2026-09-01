@@ -739,7 +739,7 @@ function DiscoverPanel({ position, onClose, onRetryLocation, onDemoLocation }) {
         <aside className="discover-index" aria-label="Places index">
           <div className="discover-tools">
             <label>
-              <span>LANGUAGE</span>
+              <span className="visually-hidden">Wikipedia language</span>
               <select value={language} onChange={(event) => setLanguage(event.target.value)} aria-label="Wikipedia language">
                 {DISCOVER_LANGUAGE_OPTIONS.map((option) => (
                   <option key={option.id} value={option.id}>{option.label}</option>

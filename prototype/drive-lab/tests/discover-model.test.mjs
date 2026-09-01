@@ -124,6 +124,8 @@ test("Discover renders a self-contained split index with language and search con
   assert.match(appSource, /function DiscoverPanel/);
   assert.match(appSource, /navigator\.languages \?\? \[navigator\.language\]/);
   assert.match(appSource, /type="search" placeholder="Search places"/);
+  assert.match(appSource, /className="visually-hidden">Wikipedia language<\/span>/);
+  assert.doesNotMatch(appSource, /<span>LANGUAGE<\/span>/);
   assert.match(appSource, /\+\{hiddenCount\} MORE/);
   assert.match(appSource, /discoverVisibleResultCapacity/);
   assert.match(appSource, /sandbox="allow-popups allow-popups-to-escape-sandbox"/);
@@ -132,6 +134,8 @@ test("Discover renders a self-contained split index with language and search con
   assert.doesNotMatch(appSource, /onOpenAtlas/);
   assert.match(styles, /\.discover-workspace \{ display: grid; grid-template-columns: 272px minmax\(0, 1fr\)/);
   assert.match(styles, /\.discover-reader \{ display: grid/);
+  assert.match(styles, /\.discover-view-tabs button \{[\s\S]*?min-height: 38px/);
+  assert.match(styles, /\.discover-results > button em \{[^\n]*font-size: 11\.5px/);
 });
 
 test("Discover is reachable from both Visual catalogue entry points", () => {
