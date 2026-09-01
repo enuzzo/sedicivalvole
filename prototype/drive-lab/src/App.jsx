@@ -100,7 +100,10 @@ import {
   DISCOVER_LANGUAGE_OPTIONS,
   discoverGoogleMapsUrl,
   discoverPreferredLanguage,
+  discoverVisibleResultCapacity,
   discoverViewPages,
+  discoverWikipediaArticleDocument,
+  discoverWikipediaArticleUrl,
   discoverWikipediaContinuationUrl,
   discoverWikipediaUrl,
   filterDiscoverPages,
@@ -552,7 +555,7 @@ const DISCOVER_VIEWS = Object.freeze([
   { id: "region", label: "REGION" },
 ]);
 
-function DiscoverPanel({ position, onClose, onOpenAtlas, onRetryLocation, onDemoLocation }) {
+function DiscoverPanel({ position, onClose, onRetryLocation, onDemoLocation }) {
   const [language, setLanguage] = useState(() => discoverPreferredLanguage(
     typeof navigator === "undefined" ? ["en"] : (navigator.languages ?? [navigator.language]),
   ));
@@ -560,16 +563,25 @@ function DiscoverPanel({ position, onClose, onOpenAtlas, onRetryLocation, onDemo
   const [query, setQuery] = useState("");
   const [pages, setPages] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
-  const [expanded, setExpanded] = useState(false);
+  const [visibleResultCapacity, setVisibleResultCapacity] = useState(DISCOVER_INITIAL_VISIBLE_RESULTS);
+  const [article, setArticle] = useState({ key: "", status: "idle", document: "", error: "" });
   const [reloadToken, setReloadToken] = useState(0);
   const [status, setStatus] = useState(position ? "loading" : "location");
   const [error, setError] = useState("");
+  const resultsRef = useRef(null);
+  const articleCacheRef = useRef(new Map());
 
   const requestUrl = useMemo(() => discoverWikipediaUrl(position, {
     language,
     view,
     requestLimit: 35,
   }), [language, position?.latitude, position?.longitude, view]);
+
+  useEffect(() => {
+    setPages([]);
+    setSelectedId(null);
+    setArticle({ key: "", status: "idle", document: "", error: "" });
+  }, [language]);
 
   useEffect(() => {
     if (!requestUrl) {
@@ -616,22 +628,100 @@ function DiscoverPanel({ position, onClose, onOpenAtlas, onRetryLocation, onDemo
     return () => controller.abort();
   }, [reloadToken, requestUrl]);
 
-  useEffect(() => {
-    setExpanded(false);
-  }, [language, query, view]);
-
   const viewPages = useMemo(() => discoverViewPages(pages, {
     view,
     heading: position?.heading,
   }), [pages, position?.heading, view]);
   const filteredPages = useMemo(() => filterDiscoverPages(viewPages, query), [query, viewPages]);
-  const visiblePages = expanded
-    ? filteredPages
-    : filteredPages.slice(0, DISCOVER_INITIAL_VISIBLE_RESULTS);
-  const hiddenCount = Math.max(0, filteredPages.length - visiblePages.length);
   const selected = filteredPages.find((page) => page.id === selectedId) ?? filteredPages[0] ?? null;
+  const visiblePages = filteredPages.slice(0, visibleResultCapacity);
+  const remainingPages = filteredPages.slice(visibleResultCapacity);
+  const hiddenCount = remainingPages.length;
   const mapsUrl = discoverGoogleMapsUrl(selected);
   const languageLabel = DISCOVER_LANGUAGE_OPTIONS.find((item) => item.id === language)?.label ?? language;
+  const selectedArticleKey = selected ? `${language}:${selected.id}` : "";
+  const articleUrl = useMemo(() => discoverWikipediaArticleUrl(selected?.title, { language }), [language, selected?.title]);
+
+  useEffect(() => {
+    const element = resultsRef.current;
+    if (!element) return undefined;
+    const updateCapacity = () => {
+      const nextCapacity = discoverVisibleResultCapacity(element.clientHeight, filteredPages.length);
+      setVisibleResultCapacity((current) => (current === nextCapacity ? current : nextCapacity));
+    };
+    updateCapacity();
+    if (typeof ResizeObserver === "undefined") {
+      window.addEventListener("resize", updateCapacity);
+      return () => window.removeEventListener("resize", updateCapacity);
+    }
+    const observer = new ResizeObserver(updateCapacity);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [filteredPages.length]);
+
+  useEffect(() => {
+    resultsRef.current?.scrollTo({ top: 0 });
+  }, [language, query, view]);
+
+  useEffect(() => {
+    if (!selected || !articleUrl) {
+      setArticle({ key: "", status: "idle", document: "", error: "" });
+      return undefined;
+    }
+    const key = `${language}:${selected.id}`;
+    const cached = articleCacheRef.current.get(key);
+    if (cached) {
+      setArticle(cached);
+      return undefined;
+    }
+    const controller = new AbortController();
+    setArticle({ key, status: "loading", document: "", error: "" });
+    fetch(articleUrl, { signal: controller.signal })
+      .then((response) => {
+        if (!response.ok) throw new Error(`Wikipedia returned ${response.status}`);
+        return response.json();
+      })
+      .then((payload) => {
+        const document = discoverWikipediaArticleDocument(payload, { language, title: selected.title });
+        if (!document) throw new Error("Wikipedia returned an empty article.");
+        const nextArticle = { key, status: "ready", document, error: "" };
+        articleCacheRef.current.set(key, nextArticle);
+        if (articleCacheRef.current.size > 3) {
+          articleCacheRef.current.delete(articleCacheRef.current.keys().next().value);
+        }
+        setArticle(nextArticle);
+      })
+      .catch((nextError) => {
+        if (nextError?.name === "AbortError") return;
+        setArticle({ key, status: "error", document: "", error: nextError?.message || "The complete article is unavailable." });
+      });
+    return () => controller.abort();
+  }, [articleUrl, language, selected?.id, selected?.title]);
+
+  const renderResult = (page, index) => (
+    <button
+      key={page.id}
+      data-discover-result-index={index}
+      type="button"
+      className={selected?.id === page.id ? "is-selected" : ""}
+      aria-pressed={selected?.id === page.id}
+      onClick={() => setSelectedId(page.id)}
+    >
+      <small>{String(index + 1).padStart(2, "0")}</small>
+      {page.thumbnail ? <img src={page.thumbnail} alt="" /> : <img className="is-placeholder" src="/third-party/tabler-icons/brand-wikipedia.svg" alt="" aria-hidden="true" />}
+      <span><strong>{page.title}</strong><em>{page.distanceLabel} · ≈ {page.estimatedMinutes} min</em></span>
+    </button>
+  );
+
+  const revealRemainingResults = () => {
+    const firstRemaining = resultsRef.current?.querySelector(`[data-discover-result-index="${visibleResultCapacity}"]`);
+    if (!firstRemaining) return;
+    firstRemaining.focus({ preventScroll: true });
+    firstRemaining.scrollIntoView({
+      block: "nearest",
+      behavior: window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+    });
+  };
 
   return (
     <DialogSurface className="diagnostic-drawer discover-drawer" labelledBy="discover-title" onClose={onClose}>
@@ -641,10 +731,6 @@ function DiscoverPanel({ position, onClose, onOpenAtlas, onRetryLocation, onDemo
           <small>Passenger Index</small>
         </div>
         <div className="discover-heading-actions">
-          <button type="button" onClick={onOpenAtlas}>
-            <img src="/third-party/tabler-icons/map-search.svg" alt="" aria-hidden="true" />
-            ATLAS
-          </button>
           <button data-dialog-initial-focus type="button" onClick={onClose}>CLOSE</button>
         </div>
       </header>
@@ -673,14 +759,14 @@ function DiscoverPanel({ position, onClose, onOpenAtlas, onRetryLocation, onDemo
             ))}
           </div>
 
-          <div className="discover-results" aria-live="polite" aria-busy={status === "loading"}>
-            {visiblePages.map((page, index) => (
-              <button key={page.id} type="button" className={selected?.id === page.id ? "is-selected" : ""} aria-pressed={selected?.id === page.id} onClick={() => setSelectedId(page.id)}>
-                <small>{String(index + 1).padStart(2, "0")}</small>
-                {page.thumbnail ? <img src={page.thumbnail} alt="" /> : <img className="is-placeholder" src="/third-party/tabler-icons/brand-wikipedia.svg" alt="" aria-hidden="true" />}
-                <span><strong>{page.title}</strong><em>{page.distanceLabel} · ≈ {page.estimatedMinutes} min</em></span>
+          <div ref={resultsRef} className="discover-results" aria-live="polite" aria-busy={status === "loading"}>
+            {visiblePages.map(renderResult)}
+            {hiddenCount ? (
+              <button className="discover-more" type="button" onClick={revealRemainingResults} aria-label={`Show ${hiddenCount} more places`}>
+                +{hiddenCount} MORE <span aria-hidden="true" />
               </button>
-            ))}
+            ) : null}
+            {remainingPages.map((page, index) => renderResult(page, visibleResultCapacity + index))}
             {status === "loading" ? <p className="discover-status"><span aria-hidden="true" />Finding places in {languageLabel}…</p> : null}
             {status === "location" ? (
               <div className="discover-empty-state">
@@ -696,9 +782,6 @@ function DiscoverPanel({ position, onClose, onOpenAtlas, onRetryLocation, onDemo
               <div className="discover-empty-state"><strong>No matching places</strong><p>Try another scope, language, or search.</p></div>
             ) : null}
           </div>
-
-          {hiddenCount ? <button className="discover-more" type="button" onClick={() => setExpanded(true)}>+{hiddenCount} MORE</button> : null}
-          {expanded && filteredPages.length > DISCOVER_INITIAL_VISIBLE_RESULTS ? <button className="discover-more" type="button" onClick={() => setExpanded(false)}>SHOW LESS</button> : null}
           <p className="discover-privacy">Wikipedia · {languageLabel} · session-only location</p>
         </aside>
 
@@ -706,20 +789,38 @@ function DiscoverPanel({ position, onClose, onOpenAtlas, onRetryLocation, onDemo
           {selected ? (
             <>
               <header>
-                <div><small>SELECTED PLACE</small><h3>{selected.title}</h3></div>
+                <div>
+                  <small>SELECTED PLACE</small>
+                  <h3>{selected.title}</h3>
+                  <span className="discover-reader-meta">{selected.distanceLabel} · ≈ {selected.estimatedMinutes} min drive</span>
+                </div>
                 {mapsUrl ? <a href={mapsUrl} target="_blank" rel="noreferrer"><span>OPEN IN GOOGLE MAPS</span><img src="/third-party/tabler-icons/external-link.svg" alt="" aria-hidden="true" /></a> : null}
               </header>
-              <div className="discover-reader-media">
-                {selected.thumbnail ? <img src={selected.thumbnail} alt="" /> : <img className="is-placeholder" src="/third-party/tabler-icons/brand-wikipedia.svg" alt="" aria-hidden="true" />}
-                <span>{selected.distanceLabel} · ≈ {selected.estimatedMinutes} MIN DRIVE</span>
+              <div className="discover-reader-body">
+                {article.status === "ready" && article.key === selectedArticleKey ? (
+                  <iframe
+                    key={article.key}
+                    className="discover-article-frame"
+                    title={`${selected.title} — complete Wikipedia article`}
+                    sandbox="allow-popups allow-popups-to-escape-sandbox"
+                    referrerPolicy="no-referrer"
+                    srcDoc={article.document}
+                  />
+                ) : (
+                  <div className="discover-article-fallback" aria-live="polite">
+                    {selected.thumbnail ? <img src={selected.thumbnail} alt="" /> : <img className="is-placeholder" src="/third-party/tabler-icons/brand-wikipedia.svg" alt="" aria-hidden="true" />}
+                    <div>
+                      <strong>{article.status === "error" && article.key === selectedArticleKey ? "Complete article unavailable" : "Loading complete article…"}</strong>
+                      <p>{selected.summary || "Wikipedia has no short introduction for this place."}</p>
+                      {article.status === "error" && article.key === selectedArticleKey ? <small>{article.error}</small> : null}
+                    </div>
+                  </div>
+                )}
               </div>
-              <div className="discover-reader-copy">
-                <p>{selected.summary || "Wikipedia has no short introduction for this place."}</p>
-                <div>
-                  <span><img src="/third-party/tabler-icons/brand-wikipedia.svg" alt="" aria-hidden="true" />WIKIPEDIA · {language.toUpperCase()}</span>
-                  <a href={selected.url} target="_blank" rel="noreferrer">READ FULL ARTICLE <img src="/third-party/tabler-icons/external-link.svg" alt="" aria-hidden="true" /></a>
-                </div>
-              </div>
+              <footer className="discover-reader-source">
+                <span><img src="/third-party/tabler-icons/brand-wikipedia.svg" alt="" aria-hidden="true" />WIKIPEDIA · {language.toUpperCase()}</span>
+                <a href={selected.url} target="_blank" rel="noreferrer">OPEN ON WIKIPEDIA <img src="/third-party/tabler-icons/external-link.svg" alt="" aria-hidden="true" /></a>
+              </footer>
             </>
           ) : (
             <div className="discover-reader-placeholder">
@@ -3827,11 +3928,6 @@ export function App() {
           position={mapPosition ?? (atlasDemoActive ? ATLAS_DEMO_POSITION : null)}
           onRetryLocation={startGps}
           onDemoLocation={runAtlasDemo}
-          onOpenAtlas={() => {
-            setDiscoverOpen(false);
-            setEnvironmentId("atlas");
-            logDiagnosticEvent("environment.changed", { environment: "atlas", source: "discover" });
-          }}
           onClose={() => setDiscoverOpen(false)}
         />
       ) : null}

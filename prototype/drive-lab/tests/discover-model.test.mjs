@@ -3,11 +3,14 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import {
   DISCOVER_RESULT_LIMIT,
+  discoverVisibleResultCapacity,
   discoverDistanceMetres,
   discoverGoogleMapsUrl,
   discoverPreferredLanguage,
   discoverViewPages,
   discoverWikipediaContinuationUrl,
+  discoverWikipediaArticleDocument,
+  discoverWikipediaArticleUrl,
   discoverWikipediaUrl,
   filterDiscoverPages,
   formatDiscoverDistance,
@@ -47,6 +50,30 @@ test("Discover carries MediaWiki continuation tokens without accepting unsafe ke
   assert.equal(continued.searchParams.get("ggsoffset"), "10");
   assert.equal(continued.searchParams.has("bad-key!"), false);
   assert.equal(continued.searchParams.has("nested"), false);
+});
+
+test("Discover requests the complete localized article and isolates it in a readable document", () => {
+  const url = new URL(discoverWikipediaArticleUrl("Basilica di San Calimero", { language: "it" }));
+  assert.equal(url.hostname, "it.wikipedia.org");
+  assert.equal(url.searchParams.get("action"), "parse");
+  assert.equal(url.searchParams.get("page"), "Basilica di San Calimero");
+  assert.equal(url.searchParams.get("prop"), "text|displaytitle");
+  assert.equal(url.searchParams.get("origin"), "*");
+  const document = discoverWikipediaArticleDocument({ parse: { text: "<h2>Storia</h2><p>Complete article.</p>" } }, {
+    language: "it",
+    title: "Basilica di San Calimero",
+  });
+  assert.match(document, /Content-Security-Policy/);
+  assert.match(document, /font: 500 16px\/1\.58/);
+  assert.match(document, /\.infobox/);
+  assert.match(document, /<h2>Storia<\/h2><p>Complete article\.<\/p>/);
+});
+
+test("Discover derives the first-screen result count from real available height", () => {
+  assert.equal(discoverVisibleResultCapacity(699, 15), 10);
+  assert.equal(discoverVisibleResultCapacity(395, 15), 5);
+  assert.equal(discoverVisibleResultCapacity(1000, 12), 12);
+  assert.equal(discoverVisibleResultCapacity(0, 15), 5);
 });
 
 test("Discover normalizes at most fifteen places with distance and a bounded local ETA", () => {
@@ -89,14 +116,17 @@ test("Discover creates an official Maps directions handoff without fixing the or
   assert.equal(url.searchParams.has("origin"), false);
 });
 
-test("Discover renders the selected split index, language/search controls and reciprocal Atlas action", () => {
+test("Discover renders a self-contained split index with language and search controls", () => {
   assert.match(appSource, /function DiscoverPanel/);
   assert.match(appSource, /navigator\.languages \?\? \[navigator\.language\]/);
   assert.match(appSource, /type="search" placeholder="Search places"/);
   assert.match(appSource, /\+\{hiddenCount\} MORE/);
+  assert.match(appSource, /discoverVisibleResultCapacity/);
+  assert.match(appSource, /sandbox="allow-popups allow-popups-to-escape-sandbox"/);
+  assert.match(appSource, /setSelectedId\(null\);[\s\S]*?setArticle\([\s\S]*?\[language\]/);
   assert.match(appSource, /OPEN IN GOOGLE MAPS/);
-  assert.match(appSource, /onOpenAtlas/);
-  assert.match(styles, /\.discover-workspace \{ display: grid; grid-template-columns: 246px minmax\(0, 1fr\)/);
+  assert.doesNotMatch(appSource, /onOpenAtlas/);
+  assert.match(styles, /\.discover-workspace \{ display: grid; grid-template-columns: 272px minmax\(0, 1fr\)/);
   assert.match(styles, /\.discover-reader \{ display: grid/);
 });
 

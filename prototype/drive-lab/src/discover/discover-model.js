@@ -1,5 +1,7 @@
 export const DISCOVER_RESULT_LIMIT = 15;
 export const DISCOVER_INITIAL_VISIBLE_RESULTS = 5;
+export const DISCOVER_RESULT_ROW_HEIGHT = 66;
+export const DISCOVER_MORE_ROW_HEIGHT = 38;
 
 export const DISCOVER_LANGUAGE_OPTIONS = Object.freeze([
   { id: "en", label: "English" },
@@ -85,6 +87,94 @@ export function discoverWikipediaContinuationUrl(requestUrl, continuation) {
     url.searchParams.set(key, String(value));
   }
   return url.toString();
+}
+
+export function discoverWikipediaArticleUrl(title, { language = "en" } = {}) {
+  const normalizedTitle = String(title ?? "").trim();
+  const normalizedLanguage = normalizeDiscoverLanguage(language) ?? "en";
+  if (!normalizedTitle) return null;
+  const params = new URLSearchParams({
+    action: "parse",
+    format: "json",
+    formatversion: "2",
+    origin: "*",
+    page: normalizedTitle,
+    prop: "text|displaytitle",
+    redirects: "1",
+    disableeditsection: "1",
+  });
+  return `https://${normalizedLanguage}.wikipedia.org/w/api.php?${params}`;
+}
+
+export function discoverWikipediaArticleDocument(payload, { language = "en", title = "Wikipedia article" } = {}) {
+  const articleHtml = String(payload?.parse?.text ?? "").trim();
+  if (!articleHtml) return "";
+  const normalizedLanguage = normalizeDiscoverLanguage(language) ?? "en";
+  const escapedTitle = String(title ?? "Wikipedia article")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
+  return `<!doctype html>
+<html lang="${normalizedLanguage}" dir="auto">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src https: data:; media-src https:; style-src 'unsafe-inline'; base-uri https:; form-action 'none'; frame-src 'none'">
+  <base href="https://${normalizedLanguage}.wikipedia.org/" target="_blank">
+  <title>${escapedTitle}</title>
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    html { background: #0b0d0d; scrollbar-color: rgba(238,234,224,.38) transparent; scrollbar-width: thin; }
+    body { margin: 0; padding: 18px 20px 42px; color: rgba(238,234,224,.9); background: #0b0d0d; font: 500 16px/1.58 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; overflow-wrap: anywhere; }
+    a { color: #ff4aac; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    p { margin: 0 0 1em; }
+    h1, h2, h3, h4 { clear: both; margin: 1.2em 0 .55em; color: #f3efe5; line-height: 1.15; letter-spacing: -.025em; }
+    h1 { font-size: 28px; }
+    h2 { padding-bottom: 7px; border-bottom: 1px solid rgba(238,234,224,.22); font-size: 24px; }
+    h3 { font-size: 20px; }
+    h4 { font-size: 17px; }
+    ul, ol { padding-inline-start: 1.45em; }
+    li { margin: .28em 0; }
+    img { max-width: 100%; height: auto; }
+    .infobox, .sidebar, .vertical-navbox { float: right; width: 43vw !important; min-width: 0 !important; max-width: 300px !important; margin: 2px 0 18px 22px; border: 1px solid rgba(238,234,224,.22); background: #141717; table-layout: fixed; }
+    figure, .thumb { width: auto; max-width: 100%; margin: 12px 0 18px; border: 1px solid rgba(238,234,224,.22); background: #141717; }
+    figure img, .thumb img, .infobox img, .sidebar img, .vertical-navbox img { display: block; max-width: 100%; height: auto; }
+    figcaption, .thumbcaption { padding: 8px 10px; color: rgba(238,234,224,.72); font-size: 13px; line-height: 1.35; }
+    table { max-width: 100%; border-collapse: collapse; color: inherit; background: #121515; font-size: 14px; line-height: 1.42; }
+    th, td { padding: 7px 9px; border: 1px solid rgba(238,234,224,.18); vertical-align: top; overflow-wrap: anywhere; }
+    th { color: #f3efe5; background: rgba(238,234,224,.07); text-align: start; }
+    .infobox { font-size: 13px; }
+    .infobox caption { padding: 10px; color: #f3efe5; font-size: 17px; font-weight: 750; }
+    .toc, .mw-warning, .hatnote { margin: 0 0 18px; padding: 12px 14px; border-left: 3px solid #ff3cac; background: rgba(238,234,224,.045); }
+    .mw-editsection, .mw-editsection-like, .ambox, .noprint, .nomobile, .navigation-not-searchable { display: none !important; }
+    .references, .reflist, .refbegin { font-size: 13px; line-height: 1.45; }
+    .gallery { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 16px 0; padding: 0; }
+    .gallerybox { width: auto !important; list-style: none; }
+    .gallerytext { font-size: 13px; line-height: 1.35; }
+    .mw-parser-output::after { display: block; clear: both; content: ""; }
+    @media (max-width: 380px) {
+      body { padding: 15px 16px 36px; font-size: 15px; }
+      figure, .thumb, .infobox, .sidebar, .vertical-navbox { float: none; width: 100% !important; max-width: 100% !important; margin: 0 0 18px; }
+      .gallery { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>${articleHtml}</body>
+</html>`;
+}
+
+export function discoverVisibleResultCapacity(availableHeight, resultCount = DISCOVER_RESULT_LIMIT) {
+  const normalizedCount = Math.max(0, Math.min(DISCOVER_RESULT_LIMIT, Math.floor(Number(resultCount) || 0)));
+  if (!normalizedCount) return 0;
+  const normalizedHeight = Number(availableHeight);
+  if (!Number.isFinite(normalizedHeight) || normalizedHeight <= 0) {
+    return Math.min(DISCOVER_INITIAL_VISIBLE_RESULTS, normalizedCount);
+  }
+  if (normalizedCount * DISCOVER_RESULT_ROW_HEIGHT <= normalizedHeight) return normalizedCount;
+  const capacity = Math.floor((normalizedHeight - DISCOVER_MORE_ROW_HEIGHT) / DISCOVER_RESULT_ROW_HEIGHT);
+  return Math.max(1, Math.min(normalizedCount - 1, capacity));
 }
 
 export function discoverDistanceMetres(origin, destination) {
