@@ -381,8 +381,24 @@ masters. Row 4's current roster is present in build `20260901-1943`; the `10A`
 tasks are not yet canonical.
 Their tests are `R1-02`, `R4-07`, `R7-10`–`R7-12`, `R8-03`, `R9-06`, and
 `R13-00`. Promoted X10 `LIGHT / DARK / AUTO` is confirmed in milestone 13
-with `R13-01`–`R13-03`. Row 11 Original Gradient Field is blocked until row 4
-and `10A` reach office/canonical PASS.
+with `R13-01`–`R13-03`.
+
+Five later owner notes recorded at 17:52–18:07 form mandatory insert `10B`
+after `10A`: Discover's outbound Maps action becomes an in-place
+destination-only QR with official Tesla-app phone-share / `Locations →
+Navigate → Send to Car` guidance (`R10-06`); Jamendo removes its redundant
+library/authored heading block while preserving larger PACE / GENRE, the
+right-aligned 30-minute fresh-mix notice, clearer Now Playing and its real
+playback-bound activity mark (`R7-13`); the running Visual drawer becomes a
+two-column description-led surface (`R5-06`); APERTURE's low-speed wall motion
+must be profiled and de-stuttered without weakening it (`R5-07`); and safe
+product state gains lifecycle restoration plus CLEAR SAVED STATE in splash and
+settings (`R1-03`). The current catalogue has seven choices—six renderers plus
+Discover—so an eighth must not be fabricated. “Position” needs owner
+clarification between playback time and UI location; GPS, route history,
+diagnostics, transient stream URLs and automatic vehicle envelopes remain
+session-only. Row 11 Original Gradient Field is blocked until row 4, `10A` and
+`10B` reach office/canonical PASS.
 
 ## Verification
 

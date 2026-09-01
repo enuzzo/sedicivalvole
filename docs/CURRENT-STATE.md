@@ -696,15 +696,44 @@ and the remaining `10A` items are still open:
   `LIGHT / DARK / AUTO` appearance switch remains milestone 13, uses the
   measured free top-rail lane and never recolours the active visual palette.
 
-Mandatory insert `10A` is next; row 11 Original Gradient Field is blocked until
-those office/canonical corrections pass.
+Mandatory insert `10A` is next.
+
+The owner's five additional 17:52–18:07 Tesla notes are preserved as mandatory
+insert `10B`, queued immediately after `10A` rather than merged into completed
+work:
+
+- Discover must keep the browser on the article and replace its outbound Maps
+  action with a large destination-only Google Maps QR plus concise Tesla-app
+  sharing instructions. Official Tesla owner documentation supports both the
+  phone share sheet after Tesla-app access is granted and Tesla app
+  `Locations → Navigate → Send to Car`; actual vehicle receipt remains `R10-06`;
+- the existing Jamendo vertical Pace rail, 15-genre board and real
+  playback-bound activity mark remain the implementation baseline. Remove only
+  the redundant `JAMENDO LIBRARY / Browse and play` and
+  `AUTHORED PLAYBACK · 1×` block, retain PACE / GENRE plus the right-aligned
+  fresh-mix notice, enlarge filter/track/artist copy, and rebalance Now Playing
+  without introducing page scroll (`R7-13`);
+- the running Visual drawer must become a two-column, description-led no-scroll
+  surface. The registry currently contains seven choices—six renderers plus
+  Discover—so `R5-06` requires owner clarification before naming an eighth;
+- APERTURE's owner-observed low-speed forward/reverse wall stutter is a measured
+  performance defect (`R5-07`), not a request to slow or weaken its motion;
+- versioned safe product preferences must restore across supported history and
+  reload lifecycles, with one CLEAR SAVED STATE action exposed in splash and
+  settings (`R1-03`). Geographic position/route, diagnostics, ephemeral audio
+  URLs and automatic vehicle-effect envelopes remain session-only. “Position”
+  still requires owner clarification between playback time and UI location.
+
+Row 11 Original Gradient Field is blocked until both `10A` and `10B` reach
+office/canonical PASS.
 
 ## Open work
 
-1. Execute live Tesla `R4-07`, implement and publish `10A`, then replace the planned-test
-   warning with its canonical build stamp. Execute Tesla tests
-   `R1-01`–`R1-02`, `R4-01`–`R4-07`, `R5-01`–`R5-05`, `R7-01`–`R7-12`,
-   `R8-01`–`R8-03`, `R9-01`–`R9-06`, `R10-00A`–`R10-05`, and later
+1. Execute live Tesla `R4-07`, implement and publish `10A`, then implement and
+   publish `10B`; replace each planned-test warning with its canonical build
+   stamp. Execute Tesla tests `R1-01`–`R1-03`, `R4-01`–`R4-07`,
+   `R5-01`–`R5-07`, `R7-01`–`R7-13`, `R8-01`–`R8-03`, `R9-01`–`R9-06`,
+   `R10-00A`–`R10-06`, and later
    `R13-00`–`R13-03` from
    [`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md), including
    the live audio transport evidence and MERIDIAN
