@@ -29,22 +29,24 @@ feed-forward event, but none controls the media element clock. Some drivers do
 not enjoy braking or launch processing during an otherwise calm listen, so the
 master now gates the audible graph without stopping detection or visual macro
 snapshots. PLAY THE ROAD retains its authored default with effects on;
-SOUNDTRACK retains its fresh-session opt-in. The published manual
-Flanger/Reverb/Chorus/Echo chain is a baseline rather than the accepted finish.
-The owner requires eight passenger-controlled effects: retain Flanger, Reverb,
-and Echo; remove Chorus; add five differentiated processors including a manual
-Underwater control with continuous immersion/surfacing plus intentional low/high
-frequency transformations. Full depth must be dramatically recognizable, but
-the shared post-source graph still needs bounded gain, feedback, tails and
-release so experimentation cannot click, clip, silence the source or remain
-stuck. The retired Beat Repeat worklet must not return. Source admission must
-allow effects before either family can process a track.
+SOUNDTRACK retains its fresh-session opt-in. The shared post-source Performance
+FX graph has eight passenger-controlled processors: Flanger, Reverb, Echo,
+Underwater, Phaser, Bitcrush, Bass Drive, and Radio Cut. Chorus is removed. The
+manual Underwater control gives a continuous immersion/surfacing gesture; Bass
+Drive deliberately reshapes low-frequency weight; Radio Cut deliberately
+removes both frequency extremes. Full depth is dramatically recognizable, but
+bounded gain, feedback, tails, release, and a final compressor prevent clicks,
+runaway feedback, silence, or destructive level jumps. The retired Beat Repeat
+worklet must not return. Source admission must allow effects before either
+family can process a track.
 
-The current four-effect browser graph and deterministic checks prove the
-baseline routing, bounds, and unchanged playback rate; they do not satisfy the
-new eight-effect requirement. Objective difference/level/teardown checks must
-precede listening, but only the Tesla cabin can accept full-depth identity, wet
-balance, braking intelligibility, surfacing and peak behaviour.
+Deterministic browser-graph checks now prove all eight endpoints, zero-depth
+neutrality, routing, teardown, unchanged playback rate, and absence of Chorus.
+An independent real `OfflineAudioContext` render also proves that every
+processor produces a finite, non-silent difference and that the hostile
+eight-effect sum remains bounded. These checks precede listening, but only the
+Tesla cabin can accept full-depth identity, wet balance, braking intelligibility,
+manual surfacing, and perceived peak behaviour.
 
 A playlist relaunch has a second authored-time boundary: random means choosing
 a complete recording, never choosing a timestamp inside it. A browser may keep
@@ -1445,12 +1447,16 @@ prove a materially darkened signal before cabin listening; they do not replace
 the final Tesla test.
 
 Manual performance effects follow the same rule. They belong after the complete
-audible source, not inside one player's private graph. Flanger, reverb, chorus,
-and bounded echo now share one graph for both adaptive scores and fixed
-recordings. Each full-depth endpoint must exceed a tested wet floor, and the
-sum must end in a limiter. The former Beat Repeat is retired because its only
-perceptible state was also musically objectionable; retaining a bad effect just
-because it is audible is not success.
+audible source, not inside one player's private graph. All eight processors now
+share one serial post-source graph for adaptive scores and fixed recordings.
+Each full-depth endpoint must exceed a tested wet floor, and the sum must end in
+a limiter. Manual and vehicle Underwater parameters require separate names:
+an earlier draft reused `underwaterWet` for both and the later object spread
+would have silently replaced the braking value. A control can be individually
+correct and still disable another effect when its parameter namespace is not
+owned. The former Beat Repeat is retired because its only perceptible state was
+also musically objectionable; retaining a bad effect just because it is audible
+is not success.
 
 ### 6.13 A performance-effects tap must cross an audible threshold
 
@@ -1459,29 +1465,40 @@ no useful audible result. A passenger performance control cannot begin at an
 engineering-demo depth: its primary tap must land immediately on a musical,
 unmistakable state, while a separate continuous control remains available for
 fine adjustment. The selected FX Deck therefore maps each tap to an authored
-default—Flanger `0.78`, Reverb `0.72`, Chorus `0.80`, and Echo `0.74`—and uses a
+default—Flanger `0.78`, Reverb `0.72`, Echo `0.74`, Underwater `0.76`, Phaser
+`0.78`, Bitcrush `0.72`, Bass Drive `0.74`, and Radio Cut `0.76`—and uses a
 sublinear response curve so the lower half of the slider still changes the wet
 graph materially.
 
 The effects remain conventional Web Audio building blocks rather than visual
-facsimiles. Flanger and chorus use modulated short delays with stronger wet
-paths; reverb uses a normalized `ConvolverNode`, longer impulse, pre-delay, and
-bounded high/low filtering; echo uses a filtered delay feedback loop; and the
-complete serial sum still terminates in a dynamics limiter. The Web Audio
-specification explicitly models convolution as room/reverberation processing,
-delay as a time-varying latency primitive, and dynamics compression as a way to
-reduce clipping risk. The feedback path must retain an intervening delay,
-because a zero-delay graph cycle is invalid.
+facsimiles. Flanger uses a modulated short delay; Reverb uses a normalized
+`ConvolverNode`, pre-delay, and bounded tone filtering; Echo uses a filtered
+delay feedback loop; Underwater uses two logarithmic low-pass stages plus a
+pressure shelf; Phaser uses four modulated all-pass stages; Bitcrush uses a
+quantizing `WaveShaperNode`; Bass Drive combines a low shelf with bounded
+saturation; and Radio Cut combines high-pass, low-pass, presence, and bounded
+drive. The complete serial sum terminates in a dynamics compressor.
 
-Tests protect minimum wet, modulation, feedback, and delay endpoints for the
-four authored tap states. As an independent audibility check on real programme
-material, matching offline approximations produced wet-minus-dry differences
-between `-13.5` and `-10.2 dB` on Illobo and between `-7.1` and `-5.5 dB` on
-Jamendo. Those measurements prove that a substantial changed signal exists;
-they do not prove the exact browser graph or replace target-Tesla listening.
+New wet nodes must be initialized explicitly at zero before the graph starts.
+The platform default for a `GainNode` is unity; relying only on the first ramp
+briefly exposes every wet branch at launch, creating a transient even though
+the steady-state parameters are correct. Neutral initialization is therefore a
+tested part of effect construction, not only of later automation.
+
+Tests protect the exact roster, zero-depth neutral state, modulation, filters,
+feedback, drive curves, bounds, oscillator lifecycle, and teardown. In a real
+browser `OfflineAudioContext`, a deterministic wide-band fixture produced
+wet-minus-dry RMS differences from `0.05855` to `0.34343` across the eight
+individual processors. The largest individual peak was `0.94357`; the largest
+individual RMS ratio was `1.5314`; and all eight at full depth together remained
+finite and non-silent at `0.18828` RMS / `0.55443` peak. Those measurements
+prove the actual shared graph transforms and contains a signal; they do not
+replace target-Tesla listening.
 
 Sources: [Web Audio API 1.1](https://www.w3.org/TR/webaudio-1.1/),
-[MDN `ConvolverNode`](https://developer.mozilla.org/en-US/docs/Web/API/ConvolverNode),
+[MDN `BiquadFilterNode.type`](https://developer.mozilla.org/en-US/docs/Web/API/BiquadFilterNode/type),
+[MDN `WaveShaperNode.oversample`](https://developer.mozilla.org/en-US/docs/Web/API/WaveShaperNode/oversample),
+[MDN `DynamicsCompressorNode`](https://developer.mozilla.org/en-US/docs/Web/API/DynamicsCompressorNode),
 and [MDN `AudioNode.connect()` feedback cycles](https://developer.mozilla.org/en-US/docs/Web/API/AudioNode/connect).
 
 ---

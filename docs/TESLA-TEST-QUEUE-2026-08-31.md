@@ -16,7 +16,8 @@ Do not begin the run until the final canonical build stamp is recorded below.
 - **Planned-test boundary:** codes marked `PLANNED · NOT IMPLEMENTED` preserve
   accepted mandatory work from the 2026-09-01 VoiceNotes. They are **not**
   runnable on build `20260901-1624`; their eventual canonical build stamp must
-  replace this warning before the owner tests them.
+  replace this warning before the owner tests them. `R4-07` is now office-PASS
+  at `c7ef484` but remains non-runnable until that checkpoint is published.
 
 ## Product-shell focus and chrome retraction — milestone row 1
 
@@ -44,7 +45,7 @@ Do not begin the run until the final canonical build stamp is recorded below.
 | `R4-04` | PARTIAL PASS 2026-08-31 · ILLOBO/JAMENDO RETEST IN PROGRESS | Toggle OPEN, BLOOM, and UNDERWATER across FRACTURE, JUNCTION, NIGHTSHIFT, Illobo, and Jamendo, then disable global FX. | Each effect is audible but controlled; UNDERWATER is unmistakably dark from its visible engagement while retaining usable level; disabling FX restores dry output in every source. | The owner now confirms that UNDERWATER decisively enters during braking in the active drive test. Illobo and Jamendo verification is still in progress, so the complete five-source matrix remains open. `8c53e8d` supplies the repaired audio path; `e77d939` changes MERIDIAN visuals only. |
 | `R4-05` | NOT RUN | While music plays, trigger or wait for one normal vehicle alert/navigation prompt. | The vehicle alert remains clearly audible and is not masked by the product. | Alert-safe level and effects boundary. |
 | `R4-06` | NOT RUN | Reveal the running footer, compare MUTE with FX, then toggle each one independently in both directions. | Both controls have the same width and `LABEL / ON–OFF / GLOBAL` hierarchy; each state changes immediately without changing the other control. | Shared MUTE/FX control anatomy and equal-width Tesla grid tracks. |
-| `R4-07` | PLANNED · NOT IMPLEMENTED | Open the `2 × 4` Performance FX deck in FRACTURE, JUNCTION, NIGHTSHIFT, Illobo, and Jamendo. Test all eight pads at their default hit and at `100%`, especially manual Underwater from dry → submerged → dry, then combine deliberately hostile pairs and RESET. | The deck contains exactly eight differentiated effects: Flanger, Reverb, Echo, and five replacements/additions; Chorus is absent. Every `100%` state is unmistakably extreme, manual Underwater produces progressive immersion and surfacing, tonal processors audibly reshape low/high energy, and no state clicks, clips, silences, runs away, changes `1×`, or leaks after RESET/source switching. | Mandatory row 4 revision; new DSP/level/teardown evidence must precede this cabin test. |
+| `R4-07` | OFFICE PASS `c7ef484` · CANONICAL PENDING · NOT RUN IN TESLA | Open the `2 × 4` Performance FX deck in FRACTURE, JUNCTION, NIGHTSHIFT, Illobo, and Jamendo. Test Flanger, Reverb, Echo, Underwater, Phaser, Bitcrush, Bass Drive, and Radio Cut at their default hit and at `100%`, especially manual Underwater from dry → submerged → dry; then combine deliberately hostile pairs and RESET. | Exactly eight differentiated effects are present and Chorus is absent. Every `100%` state is unmistakably extreme; manual Underwater produces progressive immersion and surfacing; Bass Drive and Radio Cut audibly reshape low/high energy; no state clicks, clips, silences, runs away, changes `1×`, disables braking Underwater, or leaks after RESET/source switching. | `c7ef484`: exact local `773 × 601` 2 × 4 interaction QA, `543/543`, graph routing/level/teardown tests, and real-browser offline audio PASS. Wait for the canonical build stamp before running this cabin test. |
 
 ## Visual and performance acceptance — milestone row 5
 

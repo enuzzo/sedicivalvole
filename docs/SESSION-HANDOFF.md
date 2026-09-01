@@ -234,8 +234,8 @@ round trip with no warning/error. The complete suite passes `512/512`; the
 postflight pass. Target-Tesla retests remain `R4-04`, `R7-01`–`R7-09`,
 and `R8-01`–`R8-02`.
 After that publication, the owner reported a second cabin failure: UNDERWATER
-was dry on Illobo, Jamendo, and NIGHTSHIFT, and the four manual effects were
-ineffective across both music sources. Local audio checkpoint `8c53e8d` repairs
+was dry on Illobo, Jamendo, and NIGHTSHIFT, and the original four manual effects
+were ineffective across both music sources. Local audio checkpoint `8c53e8d` repairs
 the real object-boundary fault (`audioMacros.values` had been read as nonexistent
 top-level fields), replaces the separate weak NIGHTSHIFT filter with the shared
 two-stage perceptual model, and routes flanger, reverb, chorus, and replacement
@@ -245,9 +245,17 @@ Soundtrack. Decoded real Illobo/Jamendo excerpts lose `20.8/18.8 dB` above
 `0993e92` replaces the buried Music-drawer controls with a persistent footer
 `MIX` control plus a compact non-modal overlay. Its four large tap states enter
 at strong `78 / 72 / 80 / 74` depths, keep independent sliders and reset, and
-persist across Play the Road and Soundtrack. Exact local `773 × 601` QA measures
-a `720 × 158 px` deck with a `12 px` footer gap, zero overflow, and no console
-issue; all taps, sliders, reset, close, switching, and persistence pass. The
+persist across Play the Road and Soundtrack. That four-pad surface is historical
+baseline evidence only. Checkpoint `c7ef484` now replaces it with exactly
+Flanger, Reverb, Echo, Underwater, Phaser, Bitcrush, Bass Drive, and Radio Cut;
+Chorus is absent. The shared serial graph separately namespaces manual and
+vehicle Underwater, initializes every wet branch at zero, and ends in one
+compressor. Exact local `773 × 601` QA measures a `720 × 267 px` `2 × 4` deck
+with zero overflow; all eight taps, sliders, hostile full-depth sum, reset,
+close/focus release, switching, and persistence pass. A real browser offline
+render proves all eight effects finite and non-silent with a largest individual
+peak of `0.94357` and a combined peak of `0.55443`; the complete suite passes
+`543/543`. Canonical publication and Tesla `R4-07` remain open. The
 complete suite passes `517/517`; the 147-module App / 71-module LAB / Sites
 build `20260831-2005` passes. Protected publication uploaded 138 files /
 212,292,932 bytes, fully reverified 29/29 Illobo masters, and passed read-only
@@ -352,16 +360,15 @@ checkpoint `3f505a0`, passes exact live `773 × 601` QA and preserves canonical
 byte identity. Target-Tesla `R9-01`–`R9-05` acceptance remains open.
 
 Owner VoiceNotes recorded on 2026-09-01 at 09:01–09:15 supersede the prior
-"row 11 next" handoff. Milestone row 4 now requires the mandatory eight-effect
-`2 × 4` Performance FX revision: retain Flanger/Reverb/Echo, remove Chorus and
-add five strong differentiated processors including manual Underwater and
-low/high tonal transformations. Mandatory insert `10A` then requires truthful
+"row 11 next" handoff. Milestone row 4's mandatory eight-effect `2 × 4`
+Performance FX revision is implemented and pushed at `c7ef484`, with canonical
+publication and Tesla `R4-07` still open. Mandatory insert `10A` then requires truthful
 ATLAS cold start/refinement, larger Tesla palette, persistent transport,
 supported Media Session previous/next, committed-track notice, direction-aware
 drawer dismissal and measured WebP Illobo artwork while retaining local HD
-masters. These tasks are explicitly NOT IMPLEMENTED in build `20260901-1624`;
-their planned tests are `R1-02`, `R4-07`, `R7-10`–`R7-12`, `R8-03`, `R9-06`,
-and `R13-00`. Promoted X10 `LIGHT / DARK / AUTO` is confirmed in milestone 13
+masters. Row 4 and these `10A` tasks are not present in build `20260901-1624`;
+their tests are `R1-02`, `R4-07`, `R7-10`–`R7-12`, `R8-03`, `R9-06`, and
+`R13-00`. Promoted X10 `LIGHT / DARK / AUTO` is confirmed in milestone 13
 with `R13-01`–`R13-03`. Row 11 Original Gradient Field is blocked until row 4
 and `10A` reach office/canonical PASS.
 

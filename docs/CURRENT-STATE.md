@@ -423,9 +423,13 @@ dated study documents.
   routing feeds a bounded Web Audio graph. The shared footer `FX` master
   gates only audible OPEN/UNDERWATER/BLOOM processing while the same vehicle
   macros remain available to every visual; PLAY THE ROAD starts enabled and
-  SOUNDTRACK remains a fresh-session opt-in. Manual flanger, reverb, chorus,
-  and bounded echo remain the published four-effect baseline; the accepted
-  mandatory finish is the eight-effect row-4 revision recorded below. The visible card follows the
+  SOUNDTRACK remains a fresh-session opt-in. The office implementation now
+  exposes eight manual post-source processors: Flanger, Reverb, Echo,
+  Underwater, Phaser, Bitcrush, Bass Drive, and Radio Cut; Chorus is removed.
+  The compact footer `FX ↑` trigger opens a `2 × 4` deck with independent depth,
+  authored one-tap defaults, RESET, and one final compressor. Checkpoint
+  `c7ef484` is pushed and awaiting canonical publication plus Tesla `R4-07`.
+  The visible card follows the
   audio-clock gain mix and exposes every genuinely audible artwork, artist,
   title, licence, Jamendo credit, and direct source link. Manual changes use the
   tested nominal `450 ms` equal-power curve for normal skips, reversals, and
@@ -660,13 +664,15 @@ dated study documents.
 ## Mandatory 2026-09-01 owner corrections
 
 The 09:01–09:15 owner VoiceNotes are promoted into the active milestone and
-test queue, not the optional future register. They do not exist in canonical
-build `20260901-1624` yet:
+test queue, not the optional future register. Row 4 is implemented and pushed
+at `c7ef484` but does not exist in canonical build `20260901-1624` yet; the
+remaining `10A` items are still unimplemented:
 
-- replace the four-effect Performance FX baseline with eight effects in a
-  `2 × 4` deck: retain Flanger/Reverb/Echo, remove Chorus, add five distinct
-  effects including progressive manual Underwater and deliberate low/high
-  processors, and make `100%` extreme but limited;
+- publish and physically accept the new eight-effect `2 × 4` Performance FX
+  deck from `c7ef484`; deterministic graph tests, `543/543`, the production
+  build, exact local `773 × 601` interaction QA, and real browser offline-audio
+  difference/level checks pass, while canonical identity and Tesla listening
+  remain open;
 - fix ATLAS's owner-observed black cold start by preparing from the best
   truthful session fix and showing an explicit waiting/degraded state when no
   position is usable, then refining without requiring movement or restarting;
@@ -683,12 +689,13 @@ build `20260901-1624` yet:
   `LIGHT / DARK / AUTO` appearance switch remains milestone 13, uses the
   measured free top-rail lane and never recolours the active visual palette.
 
-Milestone row 4 runs first, then mandatory insert `10A`; row 11 Original
-Gradient Field is blocked until those office/canonical corrections pass.
+Milestone row 4 publication runs first, then mandatory insert `10A`; row 11
+Original Gradient Field is blocked until those office/canonical corrections
+pass.
 
 ## Open work
 
-1. Implement and publish mandatory row 4 / `10A`, then replace the planned-test
+1. Publish mandatory row 4, implement and publish `10A`, then replace the planned-test
    warning with its canonical build stamp. Execute Tesla tests
    `R1-01`–`R1-02`, `R4-01`–`R4-07`, `R5-01`–`R5-05`, `R7-01`–`R7-12`,
    `R8-01`–`R8-03`, `R9-01`–`R9-06`, `R10-00A`–`R10-05`, and later
