@@ -719,14 +719,21 @@ work:
   without introducing page scroll (`R7-13`);
 - the running Visual drawer must become a two-column, description-led no-scroll
   surface. The registry currently contains seven choices—six renderers plus
-  Discover—so `R5-06` requires owner clarification before naming an eighth;
+  Discover—and row 11's Original Gradient Field is the confirmed eighth after
+  its mandatory three-direction selection gate;
 - APERTURE's owner-observed low-speed forward/reverse wall stutter is a measured
   performance defect (`R5-07`), not a request to slow or weaken its motion;
 - versioned safe product preferences must restore across supported history and
   reload lifecycles, with one CLEAR SAVED STATE action exposed in splash and
-  settings (`R1-03`). Geographic position/route, diagnostics, ephemeral audio
-  URLs and automatic vehicle-effect envelopes remain session-only. “Position”
-  still requires owner clarification between playback time and UI location.
+  settings (`R1-03`). GPS “position” is a distinct session-only requirement:
+  after permission, one app-level collector must remain active regardless of
+  the selected visual and retain the latest reliable point plus bounded
+  route/journey history in memory so ATLAS and DISCOVER hydrate immediately
+  after visual switches (`R9-07`). Coordinates, diagnostics, ephemeral audio
+  URLs and automatic vehicle-effect envelopes remain outside persistent state.
+  The watch and latest/eight-sample position buffer are already App-scoped;
+  bounded route and Drive Lab journey aggregation still live inside the mounted
+  ATLAS component and therefore remain the specific implementation gap.
 
 Row 11 Original Gradient Field is blocked until both `10A` and `10B` reach
 office/canonical PASS.

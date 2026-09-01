@@ -396,13 +396,22 @@ right-aligned 30-minute fresh-mix notice, clearer Now Playing and its real
 playback-bound activity mark (`R7-13`); the running Visual drawer becomes a
 two-column description-led surface (`R5-06`); APERTURE's low-speed wall motion
 must be profiled and de-stuttered without weakening it (`R5-07`); and safe
-product state gains lifecycle restoration plus CLEAR SAVED STATE in splash and
-settings (`R1-03`). The current catalogue has seven choices—six renderers plus
-Discover—so an eighth must not be fabricated. “Position” needs owner
-clarification between playback time and UI location; GPS, route history,
-diagnostics, transient stream URLs and automatic vehicle envelopes remain
-session-only. Row 11 Original Gradient Field is blocked until row 4, `10A` and
-`10B` reach office/canonical PASS.
+product preferences gain lifecycle restoration plus CLEAR SAVED STATE in splash
+and settings (`R1-03`). The current catalogue has seven choices—six renderers
+plus Discover—and row 11's approved future role is the eighth Original Gradient
+Field, still subject to its three-direction selection gate. “Position” is now
+clarified as GPS state: after permission, an app-level collector must continue
+for the whole running session regardless of selected visual and retain the
+latest reliable point plus bounded route/journey history in memory, allowing
+ATLAS and DISCOVER to open already hydrated after visual switches (`R9-07`). No
+coordinate may enter persistent storage, diagnostics or automatic telemetry.
+Current code already starts the Geolocation watch when the running experience
+starts and keeps the latest point plus the eight-sample interpolation buffer at
+App scope. The missing work is to move bounded route and Drive Lab journey
+aggregation out of the mounted ATLAS renderer so it survives ATLAS remounts;
+do not restart or duplicate the GPS watch to implement it.
+Row 11 Original Gradient Field remains blocked until row 4, `10A` and `10B`
+reach office/canonical PASS.
 
 ## Verification
 

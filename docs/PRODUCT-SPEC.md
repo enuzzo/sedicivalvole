@@ -230,9 +230,14 @@ The Geolocation API requires a secure context and explicit permission. `coords.s
 - smoothing, deadband/hysteresis, upper bound, stale-state handling, and manual fallback;
 - explicit handling for denied permission, absent API, inaccurate fixes, slow cadence, and null speed;
 - no persistence or telemetry of raw position;
-- ATLAS may retain the latest reliable point only in session memory and use it
-  for disclosed OpenFreeMap tile and coarse Wikimedia Geosearch requests while
-  that environment is selected;
+- after permission, one app-level location collector continues throughout the
+  running session regardless of the selected visual. It retains the latest
+  reliable point plus bounded route/journey history only in session memory so
+  ATLAS and DISCOVER can open already hydrated after visual switches;
+- ATLAS may use that session state for disclosed OpenFreeMap tile and rounded
+  Open-Meteo elevation requests only while ATLAS is selected. DISCOVER may use
+  the latest point for its disclosed coarse Wikimedia Geosearch request only
+  while DISCOVER is open;
 - a bounded session-memory flight recorder may retain speed, GPS age/accuracy, input state, audiovisual state, performance, network, and lifecycle evidence, but never position; transmission remains manual and explicit;
 - understandable degraded GPS state without intrusive alarms.
 

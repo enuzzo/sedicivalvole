@@ -128,6 +128,20 @@ test("future ideas preserve owner provenance and the motion-input truth boundary
   assert.match(plan, /Prefer an honest motion-reactive first spike/);
 });
 
+test("Gradient is the eighth choice and GPS journey continuity stays session-only", () => {
+  const checklist = read("docs/MILESTONE-CHECKLIST-2026-08-31.md");
+  const productSpec = read("docs/PRODUCT-SPEC.md");
+  const testQueue = read("docs/TESLA-TEST-QUEUE-2026-08-31.md");
+
+  assert.match(checklist, /eighth Original Gradient Field/);
+  assert.match(checklist, /app-level collector must continue for the whole running session/);
+  assert.match(productSpec, /regardless of the selected visual/);
+  assert.match(productSpec, /bounded route\/journey history only in session memory/);
+  assert.match(testQueue, /R9-07/);
+  assert.doesNotMatch(checklist, /owner must identify any intended eighth visual/);
+  assert.doesNotMatch(checklist, /“position” must be clarified/);
+});
+
 test("relative Markdown document links resolve", () => {
   const documents = [
     "README.md",
