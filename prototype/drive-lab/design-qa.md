@@ -22,10 +22,11 @@
   visible `LANGUAGE` label without weakening the select's accessible name,
   reduces the scope row from `42 px` to `38 px`, and raises distance/ETA copy
   from `10 px / 1.15` to `11.5 px / 1.18`;
-- expected same-state geometry: approximately `166 px` infobox width and
-  `251 px` lead-copy measure at the measured Basilica body, a roughly `23%`
-  increase in readable text width while preserving the complete two-column
-  relationship;
+- verified same-state geometry: the live reader remains `486 × 523 px` with a
+  `475 px` article body; the Basilica infobox is now `165.3 px` wide with an
+  `18 px` left margin, and its lead image is `145.3 × 218.8 px` beneath the
+  `260 px` uncropped ceiling. The complete article remains independently
+  scrollable at `5,290 px` content height;
 - fonts and typography: unchanged `16 px / 1.58` article body and existing
   hierarchy; the correction targets measure and wrapping rather than shrinking
   cabin-readable type;
@@ -37,17 +38,22 @@
   proportional and uncropped; only its maximum rendered height changes;
 - copy and content: complete localized Wikipedia markup, headings, tables,
   links and destination-only Maps action remain unchanged;
-- comparison history: P1 owner finding is the overly narrow lead beside the
-  dominant infobox. The code and deterministic geometry are corrected, but the
-  in-app Browser rejected the automated reload of the already-open local tab,
-  so a post-fix same-state screenshot is not yet available for the required
-  joined visual comparison;
-- implementation screenshot path: pending same-state Browser recapture;
-- primary interactions tested: pending recapture; focused source/document tests
-  pass `10/10`, complete tests pass `541/541`, and production build passes;
-- console errors checked: pending recapture.
+- comparison history: the owner's P1 finding was the overly narrow lead beside
+  the dominant infobox. The canonical post-fix capture at the identical
+  `773 × 601` viewport and Basilica/English/article-top state now shows a
+  balanced two-column lead, readable paragraph measure and an uncropped card;
+- implementation screenshot: in-app Browser capture of canonical
+  `https://sedicivalvole.app/?build=20260901-1624&commit=fd4b636&qaMute=1`;
+- primary interactions tested: Milan demo loading, exact `+10 MORE` counter,
+  continuous `398 / 1,028 px` result scroll, complete article loading and
+  internal scrolling. The visible `LANGUAGE` label is absent while the select
+  retains `Wikipedia language`; scope controls measure `38 px`; distance/ETA
+  copy measures `11.5 px / 13.57 px`;
+- tests/build: focused source/document checks pass `10/10`, complete tests pass
+  `541/541`, and the 148-module App / 71-module LAB / Sites build passes;
+- console errors checked: canonical Browser log is empty.
 
-final result: blocked
+final result: passed
 
 ## ATLAS Drive Lab composite — 2026-09-01
 

@@ -8,6 +8,37 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## DISCOVER article balance and passenger-index density — 2026-09-01 16:37
+
+- build stamp: **`20260901-1624`**; deployed documentation checkpoint:
+  **`fd4b636`**; product checkpoints: **`55caa8d`** and **`f8f554b`**;
+- behavior: **PASS in exact live Browser QA; Tesla acceptance pending**. The
+  complete Wikipedia reader keeps a responsive `150–240 px` infobox capped at
+  `38%`, bounds lead imagery to `260 px` without cropping, and stacks only at
+  `420 px` or narrower. The redundant visible language label is removed, scope
+  controls are `38 px` high, and result distance/ETA grows to `11.5 px`;
+- tests/build: **PASS**. Focused DISCOVER `10/10`, complete `541/541`,
+  148-module App, 71-module LAB, protected LAB packaging and Sites build pass;
+- protected publication: the verified upload wrote the canonical root only,
+  uploaded `181` files / `223,312,837` bytes, fully reverified all `29/29`
+  Illobo masters, preserved the dynamic root and confirmed nine root entries;
+- canonical identity: cache-busted HTML is HTTP 200 with `no-store/no-cache`
+  and `nosniff`. HTML, main JavaScript and main CSS match the candidate
+  byte-for-byte at SHA-256
+  `8c601a0bcf2fc4415bf267b462813f609a754a2ed33010303af58928cd8be677`,
+  `ffbc444117224407b0f66461bdcc8b27b7269d62efde80de48041612b58c6c1c`
+  and `8529fc406048d93ced9b2dc08b9541d55ca3108bc6c6cc43da96f3e0606ff463`;
+- exact live `773 × 601` Browser QA: **PASS**. The drawer measures
+  `760 × 589 px`, rail `272 × 523 px`, and reader `486 × 523 px`. Scope tabs
+  measure `38 px`; metadata measures `11.5 px / 13.57 px`; the visible
+  `LANGUAGE` row is absent while the select keeps its accessible name. The
+  Basilica infobox measures `165.3 px`, its lead image `145.3 × 218.8 px`, the
+  complete article remains scrollable, `+10 MORE` moves the continuous result
+  scroll, and the Browser warning/error log is empty;
+- remaining acceptance: run revised target-Tesla `R10-00A`–`R10-05`, especially
+  physical scrolling, cabin-distance metadata, language switching and the
+  responsive article card across several places.
+
 ## ATLAS Drive Lab composite — 2026-09-01 16:12
 
 - build stamp: **`20260901-1559`**; deployed source/document checkpoint:

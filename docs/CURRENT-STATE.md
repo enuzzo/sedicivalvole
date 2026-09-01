@@ -600,14 +600,19 @@ dated study documents.
   measured `475 px` article body this expands the lead-copy measure from about
   `204 px` to `251 px` while preserving the complete article and its own scroll.
   Focused `10/10`, complete `541/541` and the 148-module App / 71-module LAB /
-  Sites build pass; same-state Browser recapture and canonical publication are
-  still required before this correction joins the final Tesla build.
+  Sites build pass.
 - Follow-up checkpoint `f8f554b` spends that recovered sidebar height on
   content rather than labels: the visible `LANGUAGE` row is removed while the
   localized select keeps its accessible name, the three scope controls measure
   `38 px` high, and result distance/ETA metadata grows to `11.5 px`. Focused
   `10/10`, complete `541/541` and the 148-module App / 71-module LAB / Sites
-  build pass together with the image-balance correction.
+  build pass together with the image-balance correction. Canonical build
+  `20260901-1624` at `fd4b636` publishes both checkpoints with byte-identical
+  HTML/JS/CSS. Exact live `773 × 601` Browser QA measures the responsive
+  Basilica infobox at `165.3 px`, confirms the uncropped `145.3 × 218.8 px`
+  lead image, accessible label-free language selector, `38 px` scopes,
+  `11.5 px` metadata, complete article/result scrolling and an empty log. Only
+  target-Tesla `R10-00A`–`R10-05` acceptance remains open.
 - Product checkpoint `5c498ac` adds the selected DISCOVER Passenger Index and
   Music Navigator Rail. Build `20260901-0933` passes the complete `533/533`
   suite, 148-module App / 71-module LAB / Sites build, protected publication,

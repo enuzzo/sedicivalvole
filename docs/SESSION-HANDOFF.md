@@ -333,13 +333,17 @@ Continue only from the 17-row execution order in
 [`MILESTONE-CHECKLIST-2026-08-31.md`](MILESTONE-CHECKLIST-2026-08-31.md). The
 first and sixth rows are complete; the second is physical-Tesla acceptance and
 the seventh, eighth and ninth are split between published office implementation
-and open Tesla gates. Row 10 DISCOVER is owner-selected and published through
-build `20260901-1105`; checkpoint `f843ea6` makes its split Passenger Index
+and open Tesla gates. Row 10 DISCOVER is owner-selected and published;
+checkpoint `f843ea6` makes its split Passenger Index
 readable at driving distance, keeps all 15 sources in one measured-height
 scroll, loads the complete localized Wikipedia article in a scriptless reader,
 and removes the superseded reciprocal ATLAS action. Canonical build
-`20260901-1524` carries `0d50a88` and passes `541/541`, protected publication,
-HTML/JS/CSS byte identity and exact live `773 × 601` QA. Only
+`20260901-1624` carries documentation checkpoint `fd4b636` plus responsive
+article-image checkpoint `55caa8d` and sidebar-density checkpoint `f8f554b`.
+It passes `541/541`, protected publication, HTML/JS/CSS byte identity and exact
+live `773 × 601` QA, including the `165.3 px` Basilica infobox, uncropped lead
+image, label-free accessible language select, `38 px` scopes, `11.5 px`
+distance/ETA and empty Browser log. Only
 `R10-00A`–`R10-05` Tesla acceptance remains open. ATLAS is an independent
 data-first Drive Lab: do not add DISCOVER or duplicate its place cards. The
 owner selected the composite of all six preferred telemetry modules; checkpoint
