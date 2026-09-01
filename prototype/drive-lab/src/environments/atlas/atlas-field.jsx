@@ -79,13 +79,6 @@ function AtlasDriveLabCanvas({ samples, metrics, statistics, colors, terrain, ra
       const line = "rgba(238, 234, 224, .13)";
       const accent = colors.accent;
       const secondary = colors.secondary;
-      const gap = 8;
-      const halfWidth = (bounds.width - gap) / 2;
-      const microHeight = Math.floor((bounds.height - gap - 104) / 2);
-      const elevationTop = microHeight * 2 + gap * 2;
-      const card = (column, row) => ({
-        x: column * (halfWidth + gap), y: row * (microHeight + gap), width: halfWidth, height: microHeight,
-      });
       const text = (value, x, y, font, color = paper, align = "left") => {
         context.fillStyle = color;
         context.font = font;
@@ -93,128 +86,206 @@ function AtlasDriveLabCanvas({ samples, metrics, statistics, colors, terrain, ra
         context.textBaseline = "alphabetic";
         context.fillText(value, x, y);
       };
-      const frame = ({ x, y, width, height }) => {
-        context.fillStyle = "rgba(255,255,255,.018)";
-        context.fillRect(x, y, width, height);
+      const rule = (y) => {
         context.strokeStyle = line;
         context.lineWidth = 1;
-        context.strokeRect(x + .5, y + .5, width - 1, height - 1);
+        context.beginPath();
+        context.moveTo(.5, y + .5);
+        context.lineTo(bounds.width - .5, y + .5);
+        context.stroke();
       };
-      const label = (value, region) => text(value, region.x + 8, region.y + 14, "600 8px ui-monospace, monospace", muted);
+      const label = (value, x, y, color = accent) => text(value, x, y, "700 8px ui-monospace, monospace", color);
       const percent = (value) => `${Math.round(Math.max(0, Math.min(1, value)) * 100)}%`;
+      const dotLegend = (value, x, y, color) => {
+        context.fillStyle = color;
+        context.fillRect(x, y - 5, 7, 2);
+        text(value, x + 10, y, "600 6.5px ui-monospace, monospace", muted);
+      };
+      const timeLabels = rangeLabel === "1 H"
+        ? ["−1 H", "−40", "−20", "NOW"]
+        : rangeLabel === "SESSION"
+          ? ["START", "⅓", "⅔", "NOW"]
+          : ["−15 MIN", "−10", "−5", "NOW"];
+      const timeAxis = (y, left, right) => {
+        timeLabels.forEach((value, index) => {
+          const x = left + index / (timeLabels.length - 1) * (right - left);
+          text(value, x, y, "600 6px ui-monospace, monospace", muted, index === 0 ? "left" : index === timeLabels.length - 1 ? "right" : "center");
+        });
+      };
+      const smoothPath = (points) => {
+        if (!points.length) return;
+        context.moveTo(points[0].x, points[0].y);
+        for (let index = 1; index < points.length - 1; index += 1) {
+          const point = points[index];
+          const next = points[index + 1];
+          context.quadraticCurveTo(point.x, point.y, (point.x + next.x) / 2, (point.y + next.y) / 2);
+        }
+        if (points.length > 1) context.lineTo(points.at(-1).x, points.at(-1).y);
+      };
 
-      const balance = card(0, 0);
-      frame(balance);
-      label("ACCEL / BRAKING", balance);
-      text(percent(metrics.accelerationShare), balance.x + 8, balance.y + 32, "600 15px ui-sans-serif, sans-serif", accent);
-      text(percent(metrics.brakingShare), balance.x + balance.width - 8, balance.y + 32, "600 15px ui-sans-serif, sans-serif", secondary, "right");
-      const balanceX = balance.x + 8;
-      const balanceY = balance.y + balance.height - 17;
-      const balanceWidth = balance.width - 16;
-      context.fillStyle = "rgba(238,234,224,.1)";
-      context.fillRect(balanceX, balanceY, balanceWidth, 7);
-      context.fillStyle = accent;
-      context.fillRect(balanceX, balanceY, balanceWidth * metrics.accelerationShare, 7);
-      context.fillStyle = secondary;
-      context.fillRect(balanceX + balanceWidth * metrics.accelerationShare, balanceY, balanceWidth * metrics.brakingShare, 7);
+      const acceleration = { top: 0, height: 82 };
+      const speedBands = { top: 82, height: 60 };
+      const heading = { top: 142, height: 72 };
+      const elevation = { top: 214, height: 94 };
+      const motion = { top: 308, height: Math.max(48, bounds.height - 308) };
+      const plotLeft = 30;
+      const plotRight = bounds.width - 8;
 
-      const bands = card(1, 0);
-      frame(bands);
-      label("SPEED BANDS", bands);
-      const bandMaximum = Math.max(1, ...metrics.speedBands.map((band) => band.share));
-      const bandGap = 4;
-      const bandWidth = (bands.width - 16 - bandGap * 4) / 5;
+      rule(acceleration.top);
+      label("ACCEL / BRAKING BALANCE", 0, acceleration.top + 12);
+      text("KM/H/S", bounds.width, acceleration.top + 12, "600 6px ui-monospace, monospace", muted, "right");
+      dotLegend(`ACCEL ${percent(metrics.accelerationShare)}`, 0, acceleration.top + 25, accent);
+      dotLegend(`BRAKE ${percent(metrics.brakingShare)}`, 91, acceleration.top + 25, secondary);
+      const accelerationSamples = samples.filter((sample) => (
+        Number.isFinite(sample.accelerationGainKmh) || Number.isFinite(sample.brakingLossKmh)
+      ));
+      const accelerationValues = accelerationSamples.map((sample) => (
+        ((Number(sample.accelerationGainKmh) || 0) - (Number(sample.brakingLossKmh) || 0))
+        / Math.max(1, ATLAS_JOURNEY_SAMPLE_INTERVAL_MS / 1000)
+      ));
+      const accelerationMaximum = Math.max(1, ...accelerationValues.map((value) => Math.abs(value)));
+      const accelerationMidline = acceleration.top + 49;
+      text(`+${accelerationMaximum.toFixed(1)}`, 0, acceleration.top + 36, "600 6px ui-monospace, monospace", muted);
+      text("0", 0, accelerationMidline + 2, "600 6px ui-monospace, monospace", muted);
+      text(`−${accelerationMaximum.toFixed(1)}`, 0, acceleration.top + 67, "600 6px ui-monospace, monospace", muted);
+      context.strokeStyle = "rgba(238,234,224,.2)";
+      context.beginPath();
+      context.moveTo(plotLeft, accelerationMidline + .5);
+      context.lineTo(plotRight, accelerationMidline + .5);
+      context.stroke();
+      if (accelerationValues.length >= 2) {
+        const zeroPoints = accelerationValues.map((_, index) => ({
+          x: plotLeft + index / Math.max(1, accelerationValues.length - 1) * (plotRight - plotLeft),
+          y: accelerationMidline,
+        }));
+        const positivePoints = accelerationValues.map((value, index) => ({
+          x: zeroPoints[index].x,
+          y: accelerationMidline - Math.max(0, value) / accelerationMaximum * 15,
+        }));
+        const negativePoints = accelerationValues.map((value, index) => ({
+          x: zeroPoints[index].x,
+          y: accelerationMidline + Math.max(0, -value) / accelerationMaximum * 15,
+        }));
+        for (const [points, color, direction] of [[positivePoints, accent, -1], [negativePoints, secondary, 1]]) {
+          context.beginPath();
+          smoothPath(points);
+          context.lineTo(points.at(-1).x, accelerationMidline);
+          context.lineTo(points[0].x, accelerationMidline);
+          context.closePath();
+          const gradient = context.createLinearGradient(0, accelerationMidline, 0, accelerationMidline + direction * 17);
+          gradient.addColorStop(0, color.replace(")", " / .08)"));
+          gradient.addColorStop(1, color.replace(")", " / .62)"));
+          context.fillStyle = gradient;
+          context.fill();
+          context.strokeStyle = color;
+          context.lineWidth = 1.25;
+          context.beginPath();
+          smoothPath(points);
+          context.stroke();
+        }
+      }
+      timeAxis(acceleration.top + acceleration.height - 4, plotLeft, plotRight);
+
+      rule(speedBands.top);
+      label("SPEED BAND DISTRIBUTION", 0, speedBands.top + 13);
+      const bandX = 0;
+      const bandY = speedBands.top + 22;
+      const bandGap = 2;
+      const bandWidth = (bounds.width - bandGap * 4) / 5;
       metrics.speedBands.forEach((band, index) => {
-        const x = bands.x + 8 + index * (bandWidth + bandGap);
-        const availableHeight = Math.max(16, bands.height - 44);
-        const height = Math.max(2, availableHeight * band.share / bandMaximum);
+        const x = bandX + index * (bandWidth + bandGap);
         context.fillStyle = index === 4 ? secondary : accent;
-        context.globalAlpha = .48 + index * .1;
-        context.fillRect(x, bands.y + bands.height - 17 - height, bandWidth, height);
+        context.globalAlpha = .32 + Math.min(.62, band.share * 1.8);
+        context.fillRect(x, bandY, bandWidth, 8);
         context.globalAlpha = 1;
-        text(["0", "30", "60", "90", "130+"][index], x + bandWidth / 2, bands.y + bands.height - 5, "600 6px ui-monospace, monospace", muted, "center");
+        text(band.label, x + bandWidth / 2, bandY + 19, "600 6px ui-monospace, monospace", muted, "center");
+        text(percent(band.share), x + bandWidth / 2, bandY + 31, "700 8px ui-monospace, monospace", band.share ? (index === 4 ? secondary : accent) : muted, "center");
       });
 
-      const heading = card(0, 1);
-      frame(heading);
-      label("HEADING HISTORY", heading);
+      rule(heading.top);
+      label("HEADING HISTORY", 0, heading.top + 13);
+      dotLegend("BEARING °", 94, heading.top + 13, accent);
       const headings = samples.filter((sample) => Number.isFinite(sample.headingDegrees));
-      const currentHeading = headings.at(-1)?.headingDegrees;
-      text(Number.isFinite(currentHeading) ? `${atlasCardinalDirection(currentHeading)} ${Math.round(currentHeading)}°` : "COLLECTING", heading.x + 8, heading.y + 32, "600 14px ui-sans-serif, sans-serif", paper);
-      if (headings.length >= 2) {
-        const continuous = [];
-        headings.forEach((sample) => continuous.push(atlasContinuousHeading(continuous.at(-1), sample.headingDegrees)));
-        const minimum = Math.min(...continuous);
-        const maximum = Math.max(...continuous);
-        const span = Math.max(45, maximum - minimum);
+      const continuous = [];
+      headings.forEach((sample) => continuous.push(atlasContinuousHeading(continuous.at(-1), sample.headingDegrees)));
+      if (continuous.length >= 2) {
+        const minimum = Math.floor(Math.min(...continuous) / 45) * 45;
+        const maximum = Math.max(minimum + 90, Math.ceil(Math.max(...continuous) / 45) * 45);
+        const span = maximum - minimum;
+        const headingTop = heading.top + 21;
+        const headingBottom = heading.top + 53;
+        const headingPoints = continuous.map((value, index) => ({
+          x: plotLeft + index / Math.max(1, continuous.length - 1) * (plotRight - plotLeft),
+          y: headingBottom - (value - minimum) / span * (headingBottom - headingTop),
+        }));
+        const normalizedMaximum = ((maximum % 360) + 360) % 360;
+        const normalizedMinimum = ((minimum % 360) + 360) % 360;
+        text(`${atlasCardinalDirection(normalizedMaximum)} ${Math.round(normalizedMaximum)}°`, 0, headingTop + 2, "600 6px ui-monospace, monospace", muted);
+        text(`${atlasCardinalDirection(normalizedMinimum)} ${Math.round(normalizedMinimum)}°`, 0, headingBottom + 2, "600 6px ui-monospace, monospace", muted);
         context.strokeStyle = accent;
         context.lineWidth = 1.5;
-        context.lineJoin = "round";
         context.beginPath();
-        continuous.forEach((value, index) => {
-          const x = heading.x + 8 + index / Math.max(1, continuous.length - 1) * (heading.width - 16);
-          const y = heading.y + heading.height - 10 - (value - minimum) / span * Math.max(12, heading.height - 50);
-          if (index) context.lineTo(x, y); else context.moveTo(x, y);
-        });
+        smoothPath(headingPoints);
         context.stroke();
+      } else {
+        text("COLLECTING DIRECTION SAMPLES", plotLeft, heading.top + 42, "600 6px ui-monospace, monospace", muted);
       }
+      timeAxis(heading.top + heading.height - 4, plotLeft, plotRight);
 
-      const motion = card(1, 1);
-      frame(motion);
-      label("MOVING / STOPPED", motion);
-      text(percent(metrics.movingShare), motion.x + 8, motion.y + 32, "600 15px ui-sans-serif, sans-serif", accent);
-      text(percent(metrics.stoppedShare), motion.x + motion.width - 8, motion.y + 32, "600 15px ui-sans-serif, sans-serif", muted, "right");
-      const motionX = motion.x + 8;
-      const motionY = motion.y + motion.height - 17;
-      const motionWidth = motion.width - 16;
-      context.fillStyle = "rgba(238,234,224,.16)";
-      context.fillRect(motionX, motionY, motionWidth, 7);
-      context.fillStyle = accent;
-      context.fillRect(motionX, motionY, motionWidth * metrics.movingShare, 7);
-
-      const elevation = { x: 0, y: elevationTop, width: bounds.width, height: bounds.height - elevationTop };
-      frame(elevation);
-      label("ELEVATION", elevation);
+      rule(elevation.top);
+      label("ELEVATION", 0, elevation.top + 13);
+      dotLegend("GROUND M", 73, elevation.top + 13, secondary);
       const elevationValues = samples.filter((sample) => Number.isFinite(sample.groundElevationM));
       const elevationMinimum = statistics.minimumGroundElevationM;
       const elevationMaximum = statistics.maximumGroundElevationM;
       const elevationSummary = Number.isFinite(elevationMinimum) && Number.isFinite(elevationMaximum)
         ? `${Math.round(elevationMinimum)}–${Math.round(elevationMaximum)} M`
         : terrain.status === "loading" ? "LOADING" : "UNAVAILABLE";
-      text(elevationSummary, elevation.x + elevation.width - 8, elevation.y + 13, "600 7px ui-monospace, monospace", terrain.status === "live" ? accent : muted, "right");
+      text(elevationSummary, bounds.width, elevation.top + 13, "600 6px ui-monospace, monospace", terrain.status === "live" ? secondary : muted, "right");
       if (elevationValues.length >= 2) {
         const minimum = Math.min(...elevationValues.map((sample) => sample.groundElevationM));
         const maximum = Math.max(...elevationValues.map((sample) => sample.groundElevationM));
         const span = Math.max(4, maximum - minimum);
         const timeMinimum = elevationValues[0].capturedAtMs;
         const timeMaximum = Math.max(timeMinimum + 1, elevationValues.at(-1).capturedAtMs);
+        const elevationTopY = elevation.top + 25;
+        const elevationBottomY = elevation.top + 70;
+        const elevationPoints = elevationValues.map((sample) => ({
+          x: plotLeft + (sample.capturedAtMs - timeMinimum) / (timeMaximum - timeMinimum) * (plotRight - plotLeft),
+          y: elevationBottomY - (sample.groundElevationM - minimum) / span * (elevationBottomY - elevationTopY),
+        }));
+        text(`${Math.round(maximum)} M`, 0, elevationTopY + 2, "600 6px ui-monospace, monospace", muted);
+        text(`${Math.round(minimum)} M`, 0, elevationBottomY + 2, "600 6px ui-monospace, monospace", muted);
         context.beginPath();
-        elevationValues.forEach((sample, index) => {
-          const x = elevation.x + 8 + (sample.capturedAtMs - timeMinimum) / (timeMaximum - timeMinimum) * (elevation.width - 16);
-          const y = elevation.y + elevation.height - 13 - (sample.groundElevationM - minimum) / span * (elevation.height - 36);
-          if (index) context.lineTo(x, y); else context.moveTo(x, y);
-        });
-        context.lineTo(elevation.x + elevation.width - 8, elevation.y + elevation.height - 10);
-        context.lineTo(elevation.x + 8, elevation.y + elevation.height - 10);
+        smoothPath(elevationPoints);
+        context.lineTo(elevationPoints.at(-1).x, elevationBottomY);
+        context.lineTo(elevationPoints[0].x, elevationBottomY);
         context.closePath();
-        const gradient = context.createLinearGradient(0, elevation.y, 0, elevation.y + elevation.height);
-        gradient.addColorStop(0, secondary.replace(")", " / .46)"));
-        gradient.addColorStop(1, secondary.replace(")", " / .03)"));
+        const gradient = context.createLinearGradient(0, elevationTopY, 0, elevationBottomY);
+        gradient.addColorStop(0, secondary.replace(")", " / .42)"));
+        gradient.addColorStop(1, secondary.replace(")", " / .02)"));
         context.fillStyle = gradient;
         context.fill();
         context.strokeStyle = secondary;
-        context.lineWidth = 1.75;
+        context.lineWidth = 1.6;
         context.beginPath();
-        elevationValues.forEach((sample, index) => {
-          const x = elevation.x + 8 + (sample.capturedAtMs - timeMinimum) / (timeMaximum - timeMinimum) * (elevation.width - 16);
-          const y = elevation.y + elevation.height - 13 - (sample.groundElevationM - minimum) / span * (elevation.height - 36);
-          if (index) context.lineTo(x, y); else context.moveTo(x, y);
-        });
+        smoothPath(elevationPoints);
         context.stroke();
       } else {
-        text("COLLECTING TERRAIN SAMPLES", elevation.x + 8, elevation.y + elevation.height - 18, "600 7px ui-monospace, monospace", muted);
+        text("COLLECTING TERRAIN SAMPLES", plotLeft, elevation.top + 49, "600 6px ui-monospace, monospace", muted);
       }
-      text(rangeLabel, elevation.x + elevation.width - 8, elevation.y + elevation.height - 8, "600 6px ui-monospace, monospace", muted, "right");
+      timeAxis(elevation.top + elevation.height - 5, plotLeft, plotRight);
+
+      rule(motion.top);
+      label("MOVING VS STOPPED", 0, motion.top + 13);
+      dotLegend(`MOVING ${percent(metrics.movingShare)}`, 0, motion.top + 27, accent);
+      dotLegend(`STOPPED ${percent(metrics.stoppedShare)}`, 102, motion.top + 27, muted);
+      const motionY = motion.top + 35;
+      context.fillStyle = "rgba(238,234,224,.18)";
+      context.fillRect(0, motionY, bounds.width, 8);
+      context.fillStyle = accent;
+      context.fillRect(0, motionY, bounds.width * metrics.movingShare, 8);
+      text("% OF SELECTED RANGE", bounds.width, Math.min(bounds.height - 2, motionY + 19), "600 6px ui-monospace, monospace", muted, "right");
     };
     draw();
     const observer = new ResizeObserver(draw);

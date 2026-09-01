@@ -514,9 +514,13 @@ test("Atlas Drive Lab fits its selected telemetry hierarchy at the Tesla viewpor
   assert.match(styles, /\.atlas-drive-lab-canvas \{[\s\S]*?width: 100%;[\s\S]*?height: 368px;/);
   assert.match(atlasSource, /appendAtlasJourneySample/);
   assert.match(atlasSource, /atlasJourneyDistanceMetres\(travelPointsRef\.current\)/);
-  for (const label of ["ACCEL / BRAKING", "SPEED BANDS", "HEADING HISTORY", "MOVING / STOPPED", "ELEVATION"]) {
+  for (const label of ["ACCEL / BRAKING BALANCE", "SPEED BAND DISTRIBUTION", "HEADING HISTORY", "MOVING VS STOPPED", "ELEVATION"]) {
     assert.match(atlasSource, new RegExp(label.replace("/", "\\/")));
   }
+  assert.match(atlasSource, /quadraticCurveTo/);
+  assert.match(atlasSource, /BEARING °/);
+  assert.match(atlasSource, /GROUND M/);
+  assert.match(atlasSource, /% OF SELECTED RANGE/);
 });
 
 test("Atlas grants touch and desktop exploration for six seconds, then returns to fresh automatic camera", () => {
