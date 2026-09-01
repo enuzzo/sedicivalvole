@@ -602,6 +602,12 @@ dated study documents.
   Focused `10/10`, complete `541/541` and the 148-module App / 71-module LAB /
   Sites build pass; same-state Browser recapture and canonical publication are
   still required before this correction joins the final Tesla build.
+- Follow-up checkpoint `f8f554b` spends that recovered sidebar height on
+  content rather than labels: the visible `LANGUAGE` row is removed while the
+  localized select keeps its accessible name, the three scope controls measure
+  `38 px` high, and result distance/ETA metadata grows to `11.5 px`. Focused
+  `10/10`, complete `541/541` and the 148-module App / 71-module LAB / Sites
+  build pass together with the image-balance correction.
 - Product checkpoint `5c498ac` adds the selected DISCOVER Passenger Index and
   Music Navigator Rail. Build `20260901-0933` passes the complete `533/533`
   suite, 148-module App / 71-module LAB / Sites build, protected publication,

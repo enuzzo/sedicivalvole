@@ -18,6 +18,10 @@
   `clamp(150px, 35vw, 240px)` with a `38%` ceiling and `18 px` margin, bounds
   its imagery to `260 px` without cropping, replaces arbitrary word breaking,
   and stacks cards only when the reader width reaches `420 px`;
+- follow-up density correction: checkpoint `f8f554b` removes the redundant
+  visible `LANGUAGE` label without weakening the select's accessible name,
+  reduces the scope row from `42 px` to `38 px`, and raises distance/ETA copy
+  from `10 px / 1.15` to `11.5 px / 1.18`;
 - expected same-state geometry: approximately `166 px` infobox width and
   `251 px` lead-copy measure at the measured Basilica body, a roughly `23%`
   increase in readable text width while preserving the complete two-column
