@@ -3361,6 +3361,36 @@ The first dynamic-entry activation passed FTP identity and byte verification, bu
 
 For the energy-wave deployment, the canonical unqualified URL continued returning the previous 587-byte HTML body, while a cache-busted query returned the new 658-byte HTML with a byte-identical local/live SHA-256. Both previous and current JavaScript bundles return HTTP 200, so cached clients remain functional. An unauthenticated HTTP `PURGE` request was rejected with 403; do not retry or bypass provider cache controls without an authorized SiteGround mechanism.
 
+## Native Minerva dark Discover publication — 2026-09-01 23:11
+
+- product checkpoint: `cdccbd7`; documentation/deployment checkpoint:
+  `c98414d`; build stamp: `20260901-2300`;
+- verification gate: focused Discover `10/10`, complete `486/486`, nine Sites
+  packaging checks, 148-module App, 71-module LAB and protected LAB package all
+  pass;
+- protected FTP publication: **PASS**, 181 files / 213,618,403 bytes; all 29
+  Illobo tracks pass full-hash verification, no retired artwork required
+  deletion, two fingerprinted root assets remain for cache overlap, nine root
+  entries remain and read-only postflight reports `remote_writes=NONE`;
+- canonical cache-busted root: **PASS**, HTTP 200 with `no-store/no-cache`,
+  `nosniff`, Nginx/PHP evidence and the current `index-DG0k7mde.js` /
+  `index-vwYYWer2.css` asset pair;
+- byte identity: HTML 1,206 bytes at SHA-256
+  `1462543673cd2c306cea85570755aab2864878d0e7e518afbb284b132d49e010`;
+  JavaScript 579,977 bytes at
+  `4098af0d3dc5577db640885fb317d244caea643b2fafe4c084016de89feb4ce4`;
+  CSS 98,816 bytes at
+  `7f94deb2b79892f05a60f1faef4297855a175643d02ff9bbe79b00a71411b7db`;
+- exact live selected-browser QA at `773 × 601`: **PASS**. Discover loads the
+  complete article directly from localized Wikipedia with
+  `useskin=minerva&minervanightmode=1`; the native document reports
+  `skin-theme-clientpref-night`, body background `rgb(16, 20, 24)` and text
+  `rgb(234, 236, 240)`. English Basilica and Italian Crocetta pages expose
+  responsive information cards, chapters, links and independent scrolling.
+  No canonical warning/error is present;
+- remaining boundary: physical-Tesla cabin legibility and touch/scroll comfort
+  remain `R10-03`; no office or live-browser evidence closes that gate.
+
 ## Development policy
 
 During this private development phase, the current verified product build is deployed directly to the canonical root after user approval. Diagnostics remain accessible from the product's integrated report. Do not publish credentials, `_references/`, source archives, or local-only files.

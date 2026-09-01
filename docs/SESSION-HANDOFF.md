@@ -427,9 +427,13 @@ at `useskin=minerva&minervanightmode=1`; a `1.2×` outer scale supplies the
 selected large vehicle-reading presentation while Wikipedia owns responsive
 cards, imagery, chapters, links, colours and localized chrome. Exact local
 `773 × 601` English/Italian Browser QA, focused Discover `10/10`, complete
-`486/486`, nine Sites checks and the production build pass. Canonical
-publication is the immediate release action; target-Tesla `R10-03` remains
-open and must not be reported as accepted from office evidence.
+`486/486`, nine Sites checks and the production build pass. Canonical build
+`20260901-2300` is now published from documentation/deployment checkpoint
+`c98414d`: protected upload and postflight pass, HTML/JS/CSS are byte-identical,
+and exact live `773 × 601` QA confirms the native night class, dark native
+colours, complete responsive article and English-to-Italian interface switch
+with no canonical warning/error. Target-Tesla `R10-03` remains open and must
+not be reported as accepted from office evidence.
 
 ## Verification
 

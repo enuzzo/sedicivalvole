@@ -642,7 +642,10 @@ dated study documents.
   reading size without rewriting article CSS. Focused Discover `10/10`, complete
   `486/486`, nine Sites packaging checks, the 148-module App / 71-module LAB /
   protected LAB build and exact local `773 × 601` English/Italian Browser QA
-  pass. Canonical publication and target-Tesla `R10-03` remain open.
+  pass. Build `20260901-2300`, published from checkpoint `c98414d`, adds
+  protected FTP publication, canonical HTML/JS/CSS byte identity and exact live
+  English/Italian Minerva verification with no canonical warning/error.
+  Target-Tesla `R10-03` remains open.
 - Product checkpoint `5c498ac` adds the selected DISCOVER Passenger Index and
   Music Navigator Rail. Build `20260901-0933` passes the complete `533/533`
   suite, 148-module App / 71-module LAB / Sites build, protected publication,
@@ -753,8 +756,8 @@ PASS, and still begins with exactly three owner-selectable directions.
 ## Open work
 
 1. Execute live Tesla `R4-07` and the newly canonical `10A` / `10B` coded
-   tests on build `20260901-2232`. Execute Tesla tests `R1-01`–`R1-03`, `R4-01`–`R4-07`,
-   `R5-01`–`R5-07`, `R7-01`–`R7-13`, `R8-01`–`R8-03`, `R9-01`–`R9-06`,
+   tests on build `20260901-2300`. Execute Tesla tests `R1-01`–`R1-03`, `R4-01`–`R4-07`,
+   `R5-01`–`R5-07`, `R7-01`–`R7-13`, `R8-01`–`R8-03`, `R9-01`–`R9-07`,
    `R10-00A`–`R10-06`, and later
    `R13-00`–`R13-03` from
    [`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md), including
