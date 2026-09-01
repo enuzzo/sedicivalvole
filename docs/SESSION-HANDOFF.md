@@ -390,19 +390,20 @@ drawer dismissal and measured WebP Illobo artwork while retaining local HD
 masters. Row 4's current roster is present in build `20260901-1943`; the `10A`
 tasks are not yet canonical.
 Their tests are `R1-02`, `R4-07`, `R7-10`–`R7-12`, `R8-03`, `R9-06`, and
-`R13-00`. Promoted X10 `LIGHT / DARK / AUTO` is confirmed in milestone 13
+`R13-00`. Checkpoint `d45f8dd` now passes the complete office implementation;
+canonical publication and target-Tesla acceptance remain open. Promoted X10 `LIGHT / DARK / AUTO` is confirmed in milestone 13
 with `R13-01`–`R13-03`.
 
-Five later owner notes recorded at 17:52–18:07 form mandatory insert `10B`
-after `10A`: Discover's outbound Maps action becomes an in-place
+Five later owner notes recorded at 17:52–18:07 form mandatory insert `10B`.
+Checkpoint `d45f8dd` implements them with `10A`: Discover's outbound Maps action is an in-place
 destination-only QR with official Tesla-app phone-share / `Locations →
 Navigate → Send to Car` guidance (`R10-06`); Jamendo removes its redundant
 library/authored heading block while preserving larger PACE / GENRE, the
 right-aligned 30-minute fresh-mix notice, clearer Now Playing and its real
-playback-bound activity mark (`R7-13`); the running Visual drawer becomes a
+playback-bound activity mark (`R7-13`); the running Visual drawer is now a
 two-column description-led surface (`R5-06`); APERTURE's low-speed wall motion
-must be profiled and de-stuttered without weakening it (`R5-07`); and safe
-product preferences gain lifecycle restoration plus CLEAR SAVED STATE in splash
+now uses smoothed raw speed and cached canvas dimensions without weakening its mapping (`R5-07`); and safe
+product preferences gain lifecycle restoration plus RESET SAVED STATE in splash
 and settings (`R1-03`). The current catalogue has seven choices—six renderers
 plus Discover—and row 11's approved future role is the eighth Original Gradient
 Field, still subject to its three-direction selection gate. “Position” is now
@@ -411,13 +412,12 @@ for the whole running session regardless of selected visual and retain the
 latest reliable point plus bounded route/journey history in memory, allowing
 ATLAS and DISCOVER to open already hydrated after visual switches (`R9-07`). No
 coordinate may enter persistent storage, diagnostics or automatic telemetry.
-Current code already starts the Geolocation watch when the running experience
-starts and keeps the latest point plus the eight-sample interpolation buffer at
-App scope. The missing work is to move bounded route and Drive Lab journey
-aggregation out of the mounted ATLAS renderer so it survives ATLAS remounts;
-do not restart or duplicate the GPS watch to implement it.
-Row 11 Original Gradient Field remains blocked until row 4, `10A` and `10B`
-reach office/canonical PASS.
+The Geolocation watch and bounded route/Drive Lab journey aggregate now live at
+App scope and survive ATLAS remounts without duplicating the watch. Safe stored
+preferences explicitly exclude coordinates. The complete office suite passes
+`485/485`; the production build and exact local `773 × 601` Browser flows pass.
+Row 11 Original Gradient Field remains behind canonical publication and the
+mandatory three-direction owner selection gate; target-Tesla tests remain open.
 
 ## Verification
 

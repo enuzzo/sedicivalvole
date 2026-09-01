@@ -1,5 +1,51 @@
 # Drive Lab Design QA — fixed road ceiling and refined Vertigo
 
+## 10A / 10B Tesla interaction and density closeout — 2026-09-01
+
+- selected source truth: the owner's annotated `773 × 601` Music and Discover
+  captures, Generated image 35 for Play the Road, the approved `3–3–1` launch
+  grid, and the 2026-09-01 09:01–09:15 / 17:52–18:07 VoiceNotes;
+- comparison method: source captures and the post-change in-app Browser states
+  were inspected at the same `773 × 601` CSS viewport. The launch deck, running
+  shell, Play the Road, Jamendo, Visual Library, REPORT reset and support flow
+  were compared in their matching top-of-surface states rather than against an
+  unrelated archived mock;
+- Music result: horizontal primary tabs remain at top; Play the Road retains the
+  approved two sampled cards plus full-width responsive-generative card;
+  Jamendo removes the redundant header block, preserves all 15 genres and six
+  tracks, increases filter/title/artist legibility, separates Pace/Genre, and
+  keeps Now Playing plus credits inside one `601 px` no-scroll surface;
+- Visual result: all seven current destinations fit in two columns with one
+  useful description each; no unapproved eighth item is fabricated;
+- running-shell result: the persistent transport occupies the measured
+  bottom-centre lane above the 64 px footer; the `3.2 s` committed-track notice
+  is centred below the top telemetry. Both preserve the GPS/header/footer
+  hierarchy at `773 × 601`;
+- Discover result: navigation opens an in-place destination QR and Tesla-app
+  handoff card without leaving or linking to ATLAS;
+- palette/assets: Tesla swatches rise from `15 px` to `18 px`; 29 public Illobo
+  WebP derivatives total about `380 KB` while the approximately `9.6 MB` set of
+  512 px PNG masters remains local outside the publish tree;
+- interactions checked: Buy Me a Coffee opens and navigates to its real support
+  destination in the same tab; reset returns the visible launch selection to
+  Play the Road/Aperture after reload; Music and Visual drawers open/close; the
+  persistent transport and committed-track notice render correctly;
+- accessibility: Media Session actions are registered defensively; buttons keep
+  explicit names; swipe dismissal ignores interactive descendants, preserves
+  Escape/CLOSE/focus and cancels below its thresholds;
+- performance/privacy: APERTURE wall motion smooths sampled speed and caches
+  canvas dimensions instead of reading layout every frame. GPS journey state is
+  bounded and session-only; preference tests reject coordinates and transient
+  media data;
+- tests/build: complete suite `485/485`; 148-module App, 71-module LAB,
+  protected LAB and Sites builds pass;
+- remaining evidence: target-Tesla gesture, Media Session exposure, cabin
+  typography/audio, WebP sharpness/network and real-GPS continuity remain the
+  coded acceptance queue. Original Gradient still requires exactly three
+  directions before implementation.
+
+final result: passed for office implementation; Tesla acceptance pending
+
 ## DISCOVER responsive article imagery correction — 2026-09-01
 
 - source visual truth: owner annotation on the selected-place reader at

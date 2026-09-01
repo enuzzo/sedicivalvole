@@ -681,36 +681,32 @@ test queue, not the optional future register. Row 4's current eight-effect
 roster is canonical in build `20260901-1943`: checkpoint `0f4a501` removes
 Echo, adds High Cut, groups the three tone/filter controls, and passes office
 DSP/build plus exact local/canonical Tesla-size Browser QA. Tesla listening
-and the remaining `10A` items are still open:
+and checkpoint `d45f8dd` closes the remaining `10A` office implementation:
 
 - physically accept the revised eight-effect `2 × 4` Performance FX deck from
   live build `20260901-1943`; deterministic graph tests, `544/544`, the
   production build, exact local/canonical `773 × 601`
   tone-family/RESET/focus QA, dedicated High Cut spectrum evidence, and a
   bounded hostile full-depth render pass, while Tesla listening remains open;
-- fix ATLAS's owner-observed black cold start by preparing from the best
-  truthful session fix and showing an explicit waiting/degraded state when no
-  position is usable, then refining without requiring movement or restarting;
-- add directly reachable previous / play-pause / next transport over the
-  running experience, wire supported Media Session actions to the same
-  transactional player, and show one large title/album-or-source/artist notice
-  only for a committed track change;
-- add direction-aware swipe dismissal to every closable drawer/surface while
-  preserving scroll, CLOSE, Escape, focus release, cancellation and reduced
-  motion;
-- measure Illobo artwork slots, preserve the HD masters locally and publish
-  no-more-than-approximately-`2×` WebP derivatives instead of oversized PNGs;
-- enlarge the Tesla footer palette. The separate promoted X10
+- ATLAS prepares from the best truthful session fix, exposes a visible
+  waiting/degraded state without a black lock, and refines without restart;
+- previous / play-pause / next stay directly reachable over the running
+  experience, supported Media Session actions share the same transport, and a
+  large bounded notice follows committed title/album-or-source/artist identity;
+- every shared drawer accepts cancelable downward/rightward swipe dismissal
+  while preserving scroll, CLOSE, Escape and focus release;
+- 29 measured public Illobo WebP derivatives total about `380 KB`; the matching
+  512 px HD PNG masters remain local under `artwork-masters` and are not shipped;
+- the Tesla footer palette uses taller colour targets. The separate promoted X10
   `LIGHT / DARK / AUTO` appearance switch remains milestone 13, uses the
   measured free top-rail lane and never recolours the active visual palette.
 
-Mandatory insert `10A` is next.
+Mandatory insert `10A` has office PASS; canonical and Tesla gates remain open.
 
-The owner's five additional 17:52–18:07 Tesla notes are preserved as mandatory
-insert `10B`, queued immediately after `10A` rather than merged into completed
-work:
+The owner's five additional 17:52–18:07 Tesla notes are mandatory insert `10B`
+and also have office implementation in checkpoint `d45f8dd`:
 
-- Discover must keep the browser on the article and replace its outbound Maps
+- Discover keeps the browser on the article and replaces its outbound Maps
   action with a large destination-only Google Maps QR plus concise Tesla-app
   sharing instructions. Official Tesla owner documentation supports both the
   phone share sheet after Tesla-app access is granted and Tesla app
@@ -719,33 +715,32 @@ work:
   playback-bound activity mark remain the implementation baseline. Remove only
   the redundant `JAMENDO LIBRARY / Browse and play` and
   `AUTHORED PLAYBACK · 1×` block, retain PACE / GENRE plus the right-aligned
-  fresh-mix notice, enlarge filter/track/artist copy, and rebalance Now Playing
-  without introducing page scroll (`R7-13`);
-- the running Visual drawer must become a two-column, description-led no-scroll
+  fresh-mix notice, larger filter/track/artist copy, and rebalanced Now Playing
+  without page scroll (`R7-13`);
+- the running Visual drawer is a two-column, description-led no-scroll
   surface. The registry currently contains seven choices—six renderers plus
   Discover—and row 11's Original Gradient Field is the confirmed eighth after
   its mandatory three-direction selection gate;
-- APERTURE's owner-observed low-speed forward/reverse wall stutter is a measured
-  performance defect (`R5-07`), not a request to slow or weaken its motion;
-- versioned safe product preferences must restore across supported history and
-  reload lifecycles, with one CLEAR SAVED STATE action exposed in splash and
+- APERTURE smooths its raw low-speed wall input and caches canvas dimensions,
+  removing the per-frame layout read without slowing its motion (`R5-07`);
+- versioned safe product preferences restore across supported history and
+  reload lifecycles, with RESET SAVED STATE exposed in splash and
   settings (`R1-03`). GPS “position” is a distinct session-only requirement:
   after permission, one app-level collector must remain active regardless of
   the selected visual and retain the latest reliable point plus bounded
   route/journey history in memory so ATLAS and DISCOVER hydrate immediately
   after visual switches (`R9-07`). Coordinates, diagnostics, ephemeral audio
   URLs and automatic vehicle-effect envelopes remain outside persistent state.
-  The watch and latest/eight-sample position buffer are already App-scoped;
-  bounded route and Drive Lab journey aggregation still live inside the mounted
-  ATLAS component and therefore remain the specific implementation gap.
+  The watch, latest/eight-sample position buffer, bounded route and Drive Lab
+  journey aggregation are App-scoped and survive ATLAS remounts.
 
-Row 11 Original Gradient Field is blocked until both `10A` and `10B` reach
-office/canonical PASS.
+Row 11 Original Gradient Field is next after `10A` and `10B` reach canonical
+PASS and still begins with exactly three owner-selectable directions.
 
 ## Open work
 
-1. Execute live Tesla `R4-07`, implement and publish `10A`, then implement and
-   publish `10B`; replace each planned-test warning with its canonical build
+1. Publish the verified `10A`/`10B` office checkpoint, then execute live Tesla
+   `R4-07` and the new coded tests; replace each planned-test warning with its canonical build
    stamp. Execute Tesla tests `R1-01`–`R1-03`, `R4-01`–`R4-07`,
    `R5-01`–`R5-07`, `R7-01`–`R7-13`, `R8-01`–`R8-03`, `R9-01`–`R9-06`,
    `R10-00A`–`R10-06`, and later
