@@ -518,6 +518,52 @@ test("normal publication verifies the complete build before replacing the live P
   assert.match(source, /expected_api_names = \{/);
 });
 
+test("the artwork migration admits and removes only exact retired Illobo PNG masters", () => {
+  const program = String.raw`
+import importlib.util
+import pathlib
+import sys
+import tempfile
+
+spec = importlib.util.spec_from_file_location("sedicivalvole_deploy", sys.argv[1])
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+
+with tempfile.TemporaryDirectory() as directory:
+    root = pathlib.Path(directory)
+    module.ILLOBO_ARTWORK_MASTERS_ROOT = root / "masters"
+    module.ILLOBO_ARTWORK_ROOT = root / "public"
+    module.ILLOBO_ARTWORK_MASTERS_ROOT.mkdir()
+    module.ILLOBO_ARTWORK_ROOT.mkdir()
+    (module.ILLOBO_ARTWORK_MASTERS_ROOT / "track.png").write_bytes(b"reviewed png master")
+    (module.ILLOBO_ARTWORK_ROOT / "track.webp").write_bytes(b"optimized webp")
+
+    assert module.is_recognized_retired_illobo_artwork(
+        pathlib.Path("illobo/track.png"),
+        b"reviewed png master",
+    )
+    assert not module.is_recognized_retired_illobo_artwork(
+        pathlib.Path("illobo/track.png"),
+        b"changed remote payload",
+    )
+    assert not module.is_recognized_retired_illobo_artwork(
+        pathlib.Path("other/track.png"),
+        b"reviewed png master",
+    )
+`;
+
+  execFileSync("python3", ["-c", program, deployScript.pathname], {
+    env: { ...process.env, PYTHONDONTWRITEBYTECODE: "1" },
+  });
+
+  const source = readFileSync(deployScript, "utf8");
+  const removeAt = source.lastIndexOf("retired_illobo_artwork = remove_retired_illobo_artwork(ftp)");
+  const verifyAt = source.lastIndexOf("verify_completed_upload(ftp, recipient_config, lab_auth_config, jamendo_config)");
+  assert.ok(removeAt >= 0);
+  assert.ok(verifyAt > removeAt);
+  assert.match(source, /illobo_artwork_migration=PASS retired_png_files=/);
+});
+
 test("the live PHP entry is installed only by verified same-directory rename", () => {
   const program = String.raw`
 import importlib.util

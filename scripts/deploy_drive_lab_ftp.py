@@ -23,6 +23,7 @@ ILLOBO_ARCHIVE_ROOT = ROOT / "_references" / "audio" / "tracks" / "illobo"
 ILLOBO_WEB_ROOT = ILLOBO_ARCHIVE_ROOT / "web"
 ILLOBO_SOURCE_MANIFEST = ILLOBO_ARCHIVE_ROOT / "web-manifest.json"
 ILLOBO_ARTWORK_ROOT = ROOT / "prototype" / "drive-lab" / "public" / "artwork" / "illobo"
+ILLOBO_ARTWORK_MASTERS_ROOT = ROOT / "prototype" / "drive-lab" / "artwork-masters" / "illobo"
 ILLOBO_REMOTE_DIRECTORY = "illobo"
 ILLOBO_PUBLIC_CATALOG = "catalog.json"
 ILLOBO_PUBLIC_CATALOG_SCHEMA = "sedicivalvole.illobo-public-catalog.v1"
@@ -261,6 +262,26 @@ def is_recognized_retired_brand(name: str, payload: bytes) -> bool:
     return expected_hash is not None and sha256_bytes(payload) == expected_hash
 
 
+def is_recognized_retired_illobo_artwork(
+    relative_path: Path | str,
+    payload: bytes,
+) -> bool:
+    """Admit only byte-identical PNG masters replaced by public WebP derivatives."""
+    path = Path(relative_path)
+    if len(path.parts) != 2 or path.parts[0] != "illobo" or path.suffix.lower() != ".png":
+        return False
+    master = ILLOBO_ARTWORK_MASTERS_ROOT / path.name
+    derivative = ILLOBO_ARTWORK_ROOT / f"{path.stem}.webp"
+    if (
+        master.is_symlink()
+        or not master.is_file()
+        or derivative.is_symlink()
+        or not derivative.is_file()
+    ):
+        return False
+    return sha256_bytes(payload) == hashlib.sha256(master.read_bytes()).hexdigest()
+
+
 def is_recognized_project_owned_brand_entry(
     relative_path: Path | str,
     payload: bytes,
@@ -295,6 +316,15 @@ def verify_remote_static_tree(
             tree_name == "brand"
             and all(
                 is_recognized_retired_brand(name, remote_bytes(ftp, name))
+                for name in unexpected_names
+            )
+        ) or (
+            tree_name == "artwork"
+            and all(
+                is_recognized_retired_illobo_artwork(
+                    relative_root / name,
+                    remote_bytes(ftp, name),
+                )
                 for name in unexpected_names
             )
         )
@@ -407,7 +437,7 @@ def illobo_archive() -> tuple[list[dict[str, object]], bytes]:
         ):
             raise ValueError("Illobo track manifest entry is invalid")
         path = ILLOBO_WEB_ROOT / filename
-        artwork_path = ILLOBO_ARTWORK_ROOT / f"{filename.removesuffix('.mp3')}.png"
+        artwork_path = ILLOBO_ARTWORK_ROOT / f"{filename.removesuffix('.mp3')}.webp"
         if path.is_symlink() or not path.is_file():
             raise FileNotFoundError("Illobo web master is missing")
         if artwork_path.is_symlink() or not artwork_path.is_file():
@@ -1155,6 +1185,33 @@ def remove_legacy_publish(ftp: ftplib.FTP) -> tuple[int, int]:
     return deleted_files, removed_directories
 
 
+def remove_retired_illobo_artwork(ftp: ftplib.FTP) -> int:
+    """Delete only verified PNG masters superseded by the public WebP set."""
+    root_names = safe_names(ftp)
+    if "artwork" not in root_names:
+        return 0
+    ftp.cwd("artwork")
+    try:
+        if "illobo" not in safe_names(ftp):
+            return 0
+        ftp.cwd("illobo")
+        try:
+            deleted = 0
+            for name in sorted(safe_names(ftp)):
+                if not is_recognized_retired_illobo_artwork(
+                    Path("illobo") / name,
+                    remote_bytes(ftp, name),
+                ):
+                    continue
+                ftp.delete(name)
+                deleted += 1
+            return deleted
+        finally:
+            ftp.cwd("..")
+    finally:
+        ftp.cwd("..")
+
+
 def argument_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description=(
@@ -1363,6 +1420,8 @@ def main() -> int:
             ftp.cwd("..")
         uploaded_bytes += len(illobo_catalog) + sum(int(track["bytes"]) for track in illobo_tracks)
 
+        retired_illobo_artwork = remove_retired_illobo_artwork(ftp)
+
         verify_completed_upload(ftp, recipient_config, lab_auth_config, jamendo_config)
 
         # The canonical entry is deliberately the final content operation. The
@@ -1386,6 +1445,7 @@ def main() -> int:
         ftp = None
         print(f"upload=PASS files={len(files) + 5 + len(illobo_tracks)} bytes={uploaded_bytes}")
         print(f"illobo_playlist=PASS tracks={len(illobo_tracks)} full_hash_verification=true")
+        print(f"illobo_artwork_migration=PASS retired_png_files={retired_illobo_artwork}")
         print(f"dynamic_root=PASS staged={str(stage_php_entry).lower()} static_entry_removed={str(switched_entry).lower()}")
         if preserve_existing:
             print("legacy_cleanup=SKIPPED preserve_existing=true")
