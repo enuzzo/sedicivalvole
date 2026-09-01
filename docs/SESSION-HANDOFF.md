@@ -121,13 +121,16 @@ asserted.
   visible pane before awaiting catalogue/effects/score preparation, names the
   selected loading state, and uses monotonic mode/score revisions so obsolete
   work cannot reclaim playback after a rapid reversal. Checkpoint `856232b`
-  makes Pace and Genre whole-surface one-tap controls, arranges all fifteen
-  genres as `8 + 7`, places six tracks in two rows, and keeps player plus credit
-  visible without scrolling at `773 × 601`. Play the Road now exposes only its
+  makes Pace and Genre whole-surface one-tap controls, places Pace in a narrow
+  vertical rail and all fifteen genres in a readable `5 × 3` grid, places six
+  tracks in two rows, and keeps player plus credit visible without scrolling at
+  `773 × 601`. Play the Road now exposes only its
   three playable scores with individual artwork and concise descriptions; the
   29-track Illobo catalogue maps every recording to its own coherent cover.
-  Build `20260901-0012` publishes this exact layout. During final live transport
-  QA, NEXT exposed a Chromium suspension edge case: if the audio clock stopped,
+  Build `20260901-0012` publishes the preceding one-tap/covers baseline;
+  checkpoint `5c498ac` adds the locally verified Navigator composition and is
+  pending its own canonical build. During final live transport QA, NEXT exposed
+  a Chromium suspension edge case: if the audio clock stopped,
   the nominal wall timer fired but settlement still sampled the frozen clock,
   leaving the UI on FADING. Checkpoint `7085941` makes the 450 ms wall deadline
   force the requested deck into the settled state, reapplies its gain, and
@@ -210,7 +213,7 @@ reclaimed by an obsolete request. Exact live `773 × 601` QA passes that complet
 round trip with no warning/error. The complete suite passes `512/512`; the
 146-module App / 70-module LAB / Sites build, 140-file protected publication,
 29/29 full remote Illobo hashes, canonical HTML/JS/CSS identity and read-only
-postflight pass. Target-Tesla retests remain `R4-04`, `R7-01`–`R7-08`,
+postflight pass. Target-Tesla retests remain `R4-04`, `R7-01`–`R7-09`,
 and `R8-01`–`R8-02`.
 After that publication, the owner reported a second cabin failure: UNDERWATER
 was dry on Illobo, Jamendo, and NIGHTSHIFT, and the four manual effects were
@@ -279,7 +282,7 @@ build passes. Build `20260831-1241` at `7feea06` published the row-7 correction 
 publication, read-only pre/postflight, byte-identical HTML/main/CSS/worklet and
 live catalogue/audio relay probes. Exact Browser layout/build/log QA passes,
 but automated live transport is not claimed because Browser control blocked
-direct `.php` catalogue access and later detached. Use stable `R7-01`–`R7-08`
+direct `.php` catalogue access and later detached. Use stable `R7-01`–`R7-09`
 identifiers for the evening cabin run in
 [`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md); the row
 cannot close until those cabin results pass.
@@ -306,9 +309,13 @@ Continue only from the 17-row execution order in
 [`MILESTONE-CHECKLIST-2026-08-31.md`](MILESTONE-CHECKLIST-2026-08-31.md). The
 first and sixth rows are complete; the second is physical-Tesla acceptance and
 the seventh, eighth and ninth are split between published office implementation
-and open Tesla gates. Do not reopen the route/dot or Navigator Plaque treatment
-as an ATLAS design exploration. The next owner-gated product task is row 10,
-DISCOVER.
+and open Tesla gates. Row 10 DISCOVER is owner-selected and locally implemented
+at `5c498ac`; its split Passenger Index, localized source/search controls,
+bounded 15-source disclosure, reader, distance/ETA and reciprocal map actions
+pass exact local `773 × 601` QA but still require canonical publication and
+`R10-01`–`R10-05` Tesla acceptance. Do not reopen the route/dot or Navigator
+Plaque treatment as an ATLAS design exploration. Once row 10 is published, the
+next owner-gated product task is row 11, Original Gradient Field.
 
 ## Verification
 

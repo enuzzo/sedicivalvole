@@ -192,13 +192,15 @@ onto transient media elements and a MediaElementSource graph. A separate playbac
 boundary fixes every recording at authored `1×`, prevents driving from selecting
 or retiming it, and divides processing into two explicit families:
 the footer-gated OPEN/UNDERWATER/BLOOM vehicle-reactive audio path and four manual
-flanger/reverb/chorus/beat-repeat controls. Playback, current-track attribution,
+flanger/reverb/chorus/echo controls. Playback, current-track attribution,
 direct source navigation, transport, and both effect families are visible in the
-App and LAB. The running Music drawer owns the persistent Play the Road /
-Soundtrack source switch. Its Soundtrack branch gives equal hierarchy to the
-rotating Illobo Featured playlist and the filterable Jamendo Library, uses a
+App and LAB. The running Music drawer owns the persistent left Navigator Rail
+for Play the Road / Soundtrack. Its Soundtrack branch gives equal hierarchy to
+the artist-owned Lobo Playlist and the filterable Jamendo Library, places Pace
+in a three-item vertical rail beside the readable `5 × 3` genre grid, uses a
 stable half-hour shuffle, and treats pace, genre, and exact-track gestures as
-explicit immediate play requests. The main App master affects only audio processing: macro detection
+explicit immediate play requests. Now Playing animation follows real playback,
+and credits reserve a separate QR column. The main App master affects only audio processing: macro detection
 and visual response continue independently. Jamendo metadata remains short-lived
 and its audio remains non-persistent; owner-authorized Illobo web masters are
 hosted deliberately without creating a browser offline store. The unqualified
@@ -386,12 +388,27 @@ Its display heading is continuously unwrapped before the CSS transition so a
 zero-opacity rendered line probe keeps road lookup inside the existing vector
 tile pipeline without adding visible map geometry or a network service.
 The selected map necessarily requests the surrounding tile area from
-OpenFreeMap; a `0.05°`-quantized cell is sent to the Italian Wikipedia Geosearch
+OpenFreeMap; a `0.05°`-quantized cell is sent to the localized Wikipedia Geosearch
 API only when the cell changes. The same response supplies each page's concise
 introduction and, when available, a free-license PageImages thumbnail; no second
 content request is needed when the passenger changes selection. Up to four nearby
 pages and one selected QR are rendered for the passenger. No coordinate enters
 local storage, diagnostics or the explicit diagnostic email.
+
+DISCOVER reuses the same ephemeral position boundary outside permanent ATLAS
+chrome. The selected split surface owns a left index and always-open reader.
+The browser's first supported language selects the Wikipedia host automatically;
+an explicit selector can choose among 14 supported languages without storing a
+preference. One bounded continuation loop performs at most four requests,
+deduplicates pages by identity, and stops at 15 normalized coordinate-bearing
+results. Five remain visible before the `+N MORE` control expands the existing
+scroll rail. Nearby/Region vary radius; Ahead ranks against the session heading
+and falls back to the closest set when too few results lie inside the forward
+cone. Search is local over the admitted title/summary fields. Haversine distance
+and a documented local road-factor heuristic supply an approximate ETA; the
+official Google Maps directions handoff intentionally omits origin so the Maps
+client can use its own current location. No route estimate is presented as live
+traffic or API-derived navigation evidence.
 
 **Register** is rejected and archived outside the active runtime. Live review
 found its deterministic Swiss-print page static, inexplicable and outside the

@@ -64,7 +64,7 @@ dated study documents.
   stacked towers, high cloud slabs and scene-wide particles are absent.
 - ATLAS dynamically loads MapLibre only when selected, draws a minimal
   palette-owned OpenFreeMap vector style with 3D buildings, and pairs it with a
-  selected-page Italian Wikipedia abstract, full-width free image, five nearby
+  selected-page localized Wikipedia abstract, full-width free image, five nearby
   choices at the Tesla viewport and a local QR. All ten theme profiles now own
   explicit label, road and route contrast floors.
   Without reliable GPS, ATLAS keeps the normal control plane instead of a
@@ -111,6 +111,18 @@ dated study documents.
   update. Exact local `773 × 601` QA renders the full-width map framebuffer at
   `966 × 751` without console warnings/errors; a new Tesla report must prove
   the 30 FPS target.
+- DISCOVER is implemented as the owner-selected separate Passenger Index rather
+  than permanent ATLAS chrome. A `246 px` left rail keeps five image-led results
+  visible and expands through `+N MORE` to at most 15 unique Wikipedia pages;
+  the selected reader remains open at right. The first supported browser
+  language is automatic, with 14 explicit languages and local title/summary
+  search available inside the rail. Nearby/Ahead/Region reuse session-only
+  position and heading; bounded continuation, deduplication and failure states
+  prevent unbounded work. Distance is a Haversine estimate and drive time is
+  explicitly approximate. The selected header links to official Google Maps
+  destination directions and back to ATLAS. Exact local `773 × 601` Browser QA
+  proves 15 English results with `+10 MORE`, Italian endpoint/content switching,
+  search, reader updates and the joined Product Design comparison.
 - WAKE is rejected after repeated live review: its ribbons read as disordered
   rain rather than a convincing authored 3D road field. Its renderer, fallback,
   tests, catalog entry and current QA captures have been removed. The historical
@@ -190,8 +202,10 @@ dated study documents.
   field. `MUSIC` and `VISUAL` keep concise descriptions; START remains disabled
   until both axes are selected, and MUTE still requires a Visual. SOUNDTRACK
   prepares three transient eligible Jamendo roles before START can unlock. The
-  running Music drawer now presents compact equal-weight **Illobo Featured** and
-  **Jamendo Library** paths. Both complete cards remain enabled and visible at
+  running Music drawer now presents the approved left Navigator Rail plus
+  compact equal-weight **Lobo Playlist** and **Jamendo Library** paths. The
+  Lobo card says **FEATURED ARTIST** and identifies original music written and
+  performed by Illobo. Both complete cards remain enabled and visible at
   the narrow Tesla layout, so either path can always replace the other. Jamendo
   preview artwork belongs to the last real Jamendo catalogue and remains
   visible while Illobo owns the active queue. Its final Featured cover uses both supplied LOBO
@@ -201,8 +215,10 @@ dated study documents.
   playback also exposes `16 - Artist - Track title` through the page title for
   Tesla's browser media surface. The running drawer now gives the complete Pace
   and Genre chip surface one-tap behavior, fits the fifteen genres in two
-  deliberate `8 + 7` rows, fits six tracks in two rows, and keeps Now Playing
-  beside Track Credit without a scrollbar at exact `773 × 601`. Play the Road
+  `5 × 3` rows beside a three-item vertical Pace rail, fits six tracks in two
+  rows, animates the licensed Now Playing indicator only during real playback,
+  and keeps Track Credit beside an independently bounded QR column without a
+  scrollbar at exact `773 × 601`. Play the Road
   lists only the three playable scores with individual covers and concise copy;
   all 29 Illobo tracks use title-specific square covers from the same dark
   Swiss-modernist family. At exact
@@ -375,7 +391,7 @@ dated study documents.
   gates only audible OPEN/UNDERWATER/BLOOM processing while the same vehicle
   macros remain available to every visual; PLAY THE ROAD starts enabled and
   SOUNDTRACK remains a fresh-session opt-in. Manual flanger, reverb, chorus,
-  and beat-repeat controls stay independent. The visible card follows the
+  and bounded echo controls stay independent. The visible card follows the
   audio-clock gain mix and exposes every genuinely audible artwork, artist,
   title, licence, Jamendo credit, and direct source link. Manual changes use the
   tested nominal `450 ms` equal-power curve for normal skips, reversals, and
@@ -391,8 +407,9 @@ dated study documents.
   retaining all 29 identities. An unqualified start is `library:all`; pressing
   `PLAY FEATURED` switches catalogue source and immediately starts the
   `featured:signal-border` queue without reusing Jamendo cache state. Jamendo
-  browsing uses the official `speed` values and a complete two-row `8 + 7` selector of
-  15 live-verified Jamendo genre tags; selecting a pace, genre, or exact track
+  browsing uses the official `speed` values, a narrow three-item Pace rail and a
+  complete readable `5 × 3` selector of 15 live-verified Jamendo genre tags;
+  selecting a pace, genre, or exact track
   starts playback immediately. Pace is manual discovery
   metadata only: it can never follow vehicle speed or retime audio. MUTE and FX
   stay universal in the footer, and disabling FX suppresses audio processing
@@ -503,6 +520,10 @@ dated study documents.
   complete Jamendo → Illobo → Jamendo round trip, persistent Jamendo covers,
   restored Jamendo browsing, and a rapid reversal that cannot be reclaimed by
   obsolete Illobo work.
+- Local product checkpoint `5c498ac` adds the selected DISCOVER Passenger Index
+  and Music Navigator Rail. The focused tests, 148-module App / 71-module LAB /
+  Sites build and exact `773 × 601` Product Design QA pass; canonical publication
+  remains pending until its separate deployment checkpoint is recorded.
   Prior exact live `773 × 601` Browser QA verifies the unchanged white-on-black
   solid and black-on-graphite outline endpoints, play/pause title behavior and
   zero warning/error. Current exact live Browser QA verifies immediate Play the
@@ -526,7 +547,8 @@ dated study documents.
   the target-Tesla `R5-02` gate.
   The complete `526/526` suite plus 147-module App / 71-module LAB / Sites build
   pass, while physical-cabin checks remain `R4-01`–`R4-06`, `R5-01`–`R5-05`,
-  `R7-01`–`R7-08`, `R8-01`–`R8-02` and `R9-01`–`R9-02`. Exact
+  `R7-01`–`R7-09`, `R8-01`–`R8-02`, `R9-01`–`R9-02` and
+  `R10-01`–`R10-05`. Exact
   progressive evidence is in [`DEPLOY.md`](DEPLOY.md).
 - Diagnostic telemetry contains no coordinates and is sent only after the
   explicit `SEND DIAGNOSTIC` action. ATLAS location is a separate ephemeral
@@ -535,8 +557,9 @@ dated study documents.
 
 ## Open work
 
-1. Execute Tesla tests `R4-01`–`R4-06`, `R5-01`–`R5-05`, `R7-01`–`R7-08`,
-   `R8-01`–`R8-02` and `R9-01`–`R9-02` on live build `20260901-0012` from
+1. Publish checkpoint `5c498ac`, record its final build stamp, then execute
+   Tesla tests `R4-01`–`R4-06`, `R5-01`–`R5-05`, `R7-01`–`R7-09`,
+   `R8-01`–`R8-02`, `R9-01`–`R9-02` and `R10-01`–`R10-05` from
    [`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md), including
    the live audio transport evidence and MERIDIAN
    `0 → brake/UNDERWATER → renewed acceleration → 130` motion that the available
