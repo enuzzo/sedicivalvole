@@ -8,6 +8,37 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## DISCOVER complete reader and ATLAS separation — 2026-09-01 15:34
+
+- build stamp: **`20260901-1524`**; deployed source/document checkpoint:
+  **`0d50a88`**; product checkpoint: **`f843ea6`**;
+- behavior: **PASS in exact live Browser QA; Tesla acceptance pending**. The
+  `272 px` rail fills its measured fold before an exact inline `+N MORE`, keeps
+  all 15 results in one scroll, and the always-open reader renders the complete
+  localized Wikipedia article in a scriptless sandbox. DISCOVER has no ATLAS
+  action and does not change the active renderer;
+- tests/build: **PASS**. Focused DISCOVER `10/10`, complete `541/541`,
+  148-module App, 71-module LAB, protected LAB packaging and Sites build pass;
+- protected publication: read-only preflight and postflight both report nine
+  root entries and `remote_writes=NONE`. Publication uploaded `181` files /
+  `223,311,015` bytes, fully reverified `29/29` Illobo masters and retained two
+  fingerprinted assets for cache overlap;
+- canonical identity: cache-busted HTML is HTTP 200 with `no-store/no-cache`,
+  `nosniff` and cache MISS. HTML, main JavaScript and main CSS are byte-identical
+  at SHA-256 `34137f1e94d82a6bd7dba619fcd186b8c0e185dfdfabf912bba96f5d230a445d`,
+  `7079f8ea7481e722c24e457b456b130bbe4867177c2b82692ef4c1747cfb959b`
+  and `347d122a3dcf6ed81d91068f7f5138376acb6cf341bac2c0641b2b0f7493b278`.
+  The live bundle carries `0d50a88 / 20260901-1524`;
+- exact live `773 × 601` Browser QA: **PASS**. Document geometry is
+  `773/601 px`; rail width is `272 px`; the result scroller measures
+  `379/1028 px`, exposes 15 rows and inserts `+10 MORE` after the five-row fold.
+  The reader is `486 × 523 px`; the Basilica article exposes its complete
+  tables, images, headings, references and external links. The Discover header
+  exposes `CLOSE` only, proving the reciprocal ATLAS action is absent;
+- remaining acceptance: run target-Tesla `R10-00A`–`R10-05`, especially
+  physical scrolling, cabin-distance typography, language switching and the
+  independent Discover/ATLAS boundary.
+
 ## ATLAS terrain and journey histories — 2026-09-01 14:45
 
 - build stamp: **`20260901-1438`**; product/source checkpoint:

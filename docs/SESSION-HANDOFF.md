@@ -334,9 +334,10 @@ and open Tesla gates. Row 10 DISCOVER is owner-selected and published through
 build `20260901-1105`; checkpoint `f843ea6` makes its split Passenger Index
 readable at driving distance, keeps all 15 sources in one measured-height
 scroll, loads the complete localized Wikipedia article in a scriptless reader,
-and removes the superseded reciprocal ATLAS action. Local exact `773 × 601` QA
-passes; canonical publication and `R10-01`–`R10-05` Tesla acceptance remain
-open. ATLAS is now directed as an independent data-first Drive Lab: do not add
+and removes the superseded reciprocal ATLAS action. Canonical build
+`20260901-1524` carries `0d50a88` and passes `541/541`, protected publication,
+HTML/JS/CSS byte identity and exact live `773 × 601` QA. Only
+`R10-00A`–`R10-05` Tesla acceptance remains open. ATLAS is now directed as an independent data-first Drive Lab: do not add
 DISCOVER or duplicate its place cards. Wait for the owner's choice among the
 three supplied Drive Lab directions before replacing the published Live
 Navigator. Owner-selected Live Navigator
@@ -348,8 +349,9 @@ QA. Real Open-Meteo CORS returns Copernicus GLO-90 ground elevation, the
 automated range cycle returns to `15 MIN`, and Wikipedia place/summary, two
 nearby rows and QR remain visible at exact `465/465 px`. Only target-Tesla
 `R9-01`–`R9-05` acceptance remains open.
-With row 10 published, the next owner-gated product task is row 11, Original
-Gradient Field.
+Row 10 office/canonical work is complete. The next owner-gated task is the
+row-9 ATLAS Drive Lab direction choice; row 11 Original Gradient Field follows
+after that separate decision.
 
 ## Verification
 

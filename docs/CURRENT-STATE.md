@@ -529,10 +529,12 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The canonical live product is version `0.0.0`, source commit `7debfe3`, build
-  `20260901-1438`, publishing the owner-selected ATLAS Live Navigator, its
-  rounded-cell remote terrain elevation, three bounded history ranges and speed statistics, plus its
-  canonical fit correction on top of DISCOVER 07 in both Visual entry points, the
+- The canonical live product is version `0.0.0`, source commit `0d50a88`, build
+  `20260901-1524`, publishing the complete readable DISCOVER reader and its
+  independent boundary from ATLAS on top of the owner-selected ATLAS Live
+  Navigator, rounded-cell remote terrain elevation, three bounded history
+  ranges, speed statistics, and canonical fit correction, plus DISCOVER 07 in
+  both Visual entry points, the
   no-scroll seven-row running Visual library, the horizontal Music selectors and owner-selected
   Generated image 35 Play the Road composition on top of DISCOVER, the one-tap
   library and suspended-clock Soundtrack transition recovery while
@@ -552,7 +554,9 @@ dated study documents.
   `236f2c9`. Its guarded
   publication, read-only pre/postflight and HTML/main-JavaScript/main-CSS/ATLAS-
   JavaScript/ATLAS-CSS byte identity pass. Current exact live `773 × 601`
-  Browser QA proves `465/465 px` ATLAS panel fit, full-map collapse/reopen,
+  Browser QA proves DISCOVER's `272 px` rail, five-row fold plus `+10 MORE`,
+  continuous 15-result scroll, complete `486 × 523 px` Wikipedia reader and
+  absence of an ATLAS action. Prior live QA proves `465/465 px` ATLAS panel fit, full-map collapse/reopen,
   live terrain elevation, three-range cycling, localized Wikipedia place
   content, two nearby choices and QR. It also retains the
   complete Jamendo → Illobo → Jamendo round trip, persistent Jamendo covers,
@@ -576,6 +580,14 @@ dated study documents.
   `536/536`. Canonical build `20260901-1105` passes protected publication,
   byte identity and both exact live `773 × 601` interaction loops with an empty
   Browser log. Target-Tesla acceptance remains open.
+- Product checkpoint `f843ea6` enlarges the complete DISCOVER hierarchy,
+  derives the first-fold result capacity from measured height, retains all 15
+  sources in one scroll, loads the complete localized Wikipedia article in a
+  scriptless sandbox, prevents cross-edition page-ID collisions and removes the
+  reciprocal ATLAS action. Canonical build `20260901-1524` at `0d50a88` passes
+  focused `10/10`, complete `541/541`, protected publication, 29/29 Illobo
+  hashes, HTML/JS/CSS byte identity and exact live `773 × 601` Browser QA. Only
+  target-Tesla `R10-00A`–`R10-05` acceptance remains open.
 - Product checkpoint `5c498ac` adds the selected DISCOVER Passenger Index and
   Music Navigator Rail. Build `20260901-0933` passes the complete `533/533`
   suite, 148-module App / 71-module LAB / Sites build, protected publication,
