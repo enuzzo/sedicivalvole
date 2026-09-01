@@ -88,10 +88,22 @@ import {
   normalizePrtclSettings,
 } from "./environments/prtcl/prtcl-model.js";
 import {
+  ATLAS_DEMO_POSITION,
   appendAtlasPositionSample,
   atlasGpsPresentation,
   resolveAtlasHeading,
 } from "./environments/atlas/atlas-model.js";
+import {
+  DISCOVER_INITIAL_VISIBLE_RESULTS,
+  DISCOVER_LANGUAGE_OPTIONS,
+  discoverGoogleMapsUrl,
+  discoverPreferredLanguage,
+  discoverViewPages,
+  discoverWikipediaContinuationUrl,
+  discoverWikipediaUrl,
+  filterDiscoverPages,
+  normalizeDiscoverPages,
+} from "./discover/discover-model.js";
 import {
   advanceDemoMotion,
   MODEL_3_AWD_REFERENCE,
@@ -532,6 +544,194 @@ function DialogSurface({
   );
 }
 
+const DISCOVER_VIEWS = Object.freeze([
+  { id: "nearby", label: "NEARBY" },
+  { id: "ahead", label: "AHEAD" },
+  { id: "region", label: "REGION" },
+]);
+
+function DiscoverPanel({ position, onClose, onOpenAtlas, onRetryLocation, onDemoLocation }) {
+  const [language, setLanguage] = useState(() => discoverPreferredLanguage(
+    typeof navigator === "undefined" ? ["en"] : (navigator.languages ?? [navigator.language]),
+  ));
+  const [view, setView] = useState("nearby");
+  const [query, setQuery] = useState("");
+  const [pages, setPages] = useState([]);
+  const [selectedId, setSelectedId] = useState(null);
+  const [expanded, setExpanded] = useState(false);
+  const [reloadToken, setReloadToken] = useState(0);
+  const [status, setStatus] = useState(position ? "loading" : "location");
+  const [error, setError] = useState("");
+
+  const requestUrl = useMemo(() => discoverWikipediaUrl(position, {
+    language,
+    view,
+    requestLimit: 35,
+  }), [language, position?.latitude, position?.longitude, view]);
+
+  useEffect(() => {
+    if (!requestUrl) {
+      setStatus("location");
+      setPages([]);
+      setSelectedId(null);
+      return undefined;
+    }
+    const controller = new AbortController();
+    setStatus("loading");
+    setError("");
+    (async () => {
+      const mergedPages = new Map();
+      let nextUrl = requestUrl;
+      for (let requestIndex = 0; requestIndex < 4 && nextUrl; requestIndex += 1) {
+        const response = await fetch(nextUrl, { signal: controller.signal });
+        if (!response.ok) throw new Error(`Wikipedia returned ${response.status}`);
+        const payload = await response.json();
+        for (const page of payload?.query?.pages ?? []) {
+          const key = String(page?.pageid ?? page?.title ?? mergedPages.size);
+          mergedPages.set(key, { ...(mergedPages.get(key) ?? {}), ...page });
+        }
+        const candidatePages = normalizeDiscoverPages({ query: { pages: [...mergedPages.values()] } }, position);
+        if (candidatePages.length >= 15) break;
+        const continuationUrl = discoverWikipediaContinuationUrl(requestUrl, payload?.continue);
+        nextUrl = continuationUrl && continuationUrl !== nextUrl ? continuationUrl : null;
+      }
+      return normalizeDiscoverPages({ query: { pages: [...mergedPages.values()] } }, position);
+    })()
+      .then((nextPages) => {
+        setPages(nextPages);
+        setSelectedId((current) => (
+          nextPages.some((page) => page.id === current) ? current : nextPages[0]?.id ?? null
+        ));
+        setStatus(nextPages.length ? "ready" : "empty");
+      })
+      .catch((nextError) => {
+        if (nextError?.name === "AbortError") return;
+        setPages([]);
+        setSelectedId(null);
+        setError(nextError?.message || "Wikipedia is unavailable right now.");
+        setStatus("error");
+      });
+    return () => controller.abort();
+  }, [reloadToken, requestUrl]);
+
+  useEffect(() => {
+    setExpanded(false);
+  }, [language, query, view]);
+
+  const viewPages = useMemo(() => discoverViewPages(pages, {
+    view,
+    heading: position?.heading,
+  }), [pages, position?.heading, view]);
+  const filteredPages = useMemo(() => filterDiscoverPages(viewPages, query), [query, viewPages]);
+  const visiblePages = expanded
+    ? filteredPages
+    : filteredPages.slice(0, DISCOVER_INITIAL_VISIBLE_RESULTS);
+  const hiddenCount = Math.max(0, filteredPages.length - visiblePages.length);
+  const selected = filteredPages.find((page) => page.id === selectedId) ?? filteredPages[0] ?? null;
+  const mapsUrl = discoverGoogleMapsUrl(selected);
+  const languageLabel = DISCOVER_LANGUAGE_OPTIONS.find((item) => item.id === language)?.label ?? language;
+
+  return (
+    <DialogSurface className="diagnostic-drawer discover-drawer" labelledBy="discover-title" onClose={onClose}>
+      <header className="discover-heading">
+        <div>
+          <h2 id="discover-title">Discover</h2>
+          <small>Passenger Index</small>
+        </div>
+        <div className="discover-heading-actions">
+          <button type="button" onClick={onOpenAtlas}>
+            <img src="/third-party/tabler-icons/map-search.svg" alt="" aria-hidden="true" />
+            ATLAS
+          </button>
+          <button data-dialog-initial-focus type="button" onClick={onClose}>CLOSE</button>
+        </div>
+      </header>
+
+      <div className="discover-workspace">
+        <aside className="discover-index" aria-label="Places index">
+          <div className="discover-tools">
+            <label>
+              <span>LANGUAGE</span>
+              <select value={language} onChange={(event) => setLanguage(event.target.value)} aria-label="Wikipedia language">
+                {DISCOVER_LANGUAGE_OPTIONS.map((option) => (
+                  <option key={option.id} value={option.id}>{option.label}</option>
+                ))}
+              </select>
+            </label>
+            <label className="discover-search">
+              <span className="visually-hidden">Search places</span>
+              <img src="/third-party/tabler-icons/search.svg" alt="" aria-hidden="true" />
+              <input value={query} onChange={(event) => setQuery(event.target.value)} type="search" placeholder="Search places" />
+            </label>
+          </div>
+
+          <div className="discover-view-tabs" aria-label="Discover scope">
+            {DISCOVER_VIEWS.map((item) => (
+              <button key={item.id} type="button" className={view === item.id ? "is-active" : ""} aria-pressed={view === item.id} onClick={() => setView(item.id)}>{item.label}</button>
+            ))}
+          </div>
+
+          <div className="discover-results" aria-live="polite" aria-busy={status === "loading"}>
+            {visiblePages.map((page, index) => (
+              <button key={page.id} type="button" className={selected?.id === page.id ? "is-selected" : ""} aria-pressed={selected?.id === page.id} onClick={() => setSelectedId(page.id)}>
+                <small>{String(index + 1).padStart(2, "0")}</small>
+                {page.thumbnail ? <img src={page.thumbnail} alt="" /> : <img className="is-placeholder" src="/third-party/tabler-icons/brand-wikipedia.svg" alt="" aria-hidden="true" />}
+                <span><strong>{page.title}</strong><em>{page.distanceLabel} · ≈ {page.estimatedMinutes} min</em></span>
+              </button>
+            ))}
+            {status === "loading" ? <p className="discover-status"><span aria-hidden="true" />Finding places in {languageLabel}…</p> : null}
+            {status === "location" ? (
+              <div className="discover-empty-state">
+                <strong>Location required</strong>
+                <p>Discover uses the current session position to find nearby places.</p>
+                <div><button type="button" onClick={onRetryLocation}>RETRY GPS</button><button type="button" onClick={onDemoLocation}>MILAN DEMO</button></div>
+              </div>
+            ) : null}
+            {status === "error" ? (
+              <div className="discover-empty-state"><strong>Source unavailable</strong><p>{error}</p><button type="button" onClick={() => setReloadToken((current) => current + 1)}>TRY AGAIN</button></div>
+            ) : null}
+            {status === "empty" || (status === "ready" && !filteredPages.length) ? (
+              <div className="discover-empty-state"><strong>No matching places</strong><p>Try another scope, language, or search.</p></div>
+            ) : null}
+          </div>
+
+          {hiddenCount ? <button className="discover-more" type="button" onClick={() => setExpanded(true)}>+{hiddenCount} MORE</button> : null}
+          {expanded && filteredPages.length > DISCOVER_INITIAL_VISIBLE_RESULTS ? <button className="discover-more" type="button" onClick={() => setExpanded(false)}>SHOW LESS</button> : null}
+          <p className="discover-privacy">Wikipedia · {languageLabel} · session-only location</p>
+        </aside>
+
+        <article className="discover-reader" aria-live="polite">
+          {selected ? (
+            <>
+              <header>
+                <div><small>SELECTED PLACE</small><h3>{selected.title}</h3></div>
+                {mapsUrl ? <a href={mapsUrl} target="_blank" rel="noreferrer"><span>OPEN IN GOOGLE MAPS</span><img src="/third-party/tabler-icons/external-link.svg" alt="" aria-hidden="true" /></a> : null}
+              </header>
+              <div className="discover-reader-media">
+                {selected.thumbnail ? <img src={selected.thumbnail} alt="" /> : <img className="is-placeholder" src="/third-party/tabler-icons/brand-wikipedia.svg" alt="" aria-hidden="true" />}
+                <span>{selected.distanceLabel} · ≈ {selected.estimatedMinutes} MIN DRIVE</span>
+              </div>
+              <div className="discover-reader-copy">
+                <p>{selected.summary || "Wikipedia has no short introduction for this place."}</p>
+                <div>
+                  <span><img src="/third-party/tabler-icons/brand-wikipedia.svg" alt="" aria-hidden="true" />WIKIPEDIA · {language.toUpperCase()}</span>
+                  <a href={selected.url} target="_blank" rel="noreferrer">READ FULL ARTICLE <img src="/third-party/tabler-icons/external-link.svg" alt="" aria-hidden="true" /></a>
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="discover-reader-placeholder">
+              <img src="/third-party/tabler-icons/brand-wikipedia.svg" alt="" aria-hidden="true" />
+              <strong>Passenger reading, ready when the road is.</strong>
+              <span>Select a place from the index to keep its story open here.</span>
+            </div>
+          )}
+        </article>
+      </div>
+    </DialogSurface>
+  );
+}
+
 function InstrumentMetric({ label, value, detail, tone = "neutral" }) {
   return (
     <div className={`instrument-metric is-${tone}`}>
@@ -911,7 +1111,11 @@ function SoundtrackLibraryContent({
   const entries = library?.entries ?? [];
   const selected = library?.selection;
   const featuredSelected = selected?.kind === "featured";
-  const genreRows = [SOUNDTRACK_GENRE_OPTIONS.slice(0, 8), SOUNDTRACK_GENRE_OPTIONS.slice(8)];
+  const genreRows = [
+    SOUNDTRACK_GENRE_OPTIONS.slice(0, 5),
+    SOUNDTRACK_GENRE_OPTIONS.slice(5, 10),
+    SOUNDTRACK_GENRE_OPTIONS.slice(10, 15),
+  ];
   const jamendoCoverEntries = featuredSelected ? jamendoPreviewEntries : entries;
   const attributionItems = snapshot?.attribution
     ? [snapshot.attribution.primary, ...(snapshot.attribution.secondary ?? [])].filter(Boolean)
@@ -946,11 +1150,11 @@ function SoundtrackLibraryContent({
             ))}
           </span>
           <span className="soundtrack-choice-copy">
-            <small>ILLOBO FEATURED</small>
-            <strong>Signal Border</strong>
-            <span>A rotating playlist curated by Illobo.</span>
+            <small className="is-featured-artist">FEATURED ARTIST</small>
+            <strong>Lobo Playlist</strong>
+            <span>Original music written and performed by Illobo.</span>
           </span>
-          <span className="soundtrack-choice-action">PLAY FEATURED</span>
+          <span className="soundtrack-choice-action"><MediaGlyph name="play" /><span className="visually-hidden">Play Lobo Playlist</span></span>
         </button>
         <button type="button" className={`soundtrack-choice-card is-library${selected?.kind !== "featured" ? " is-selected" : ""}`} aria-pressed={selected?.kind !== "featured"} onClick={() => onBrowseSelection({ kind: "library", id: "all" })}>
           <span className="soundtrack-cover-stack" aria-hidden="true">
@@ -964,21 +1168,22 @@ function SoundtrackLibraryContent({
             <strong>Choose your route</strong>
             <span>Start by pace, genre, or an individual track.</span>
           </span>
-          <span className="soundtrack-choice-action">OPEN LIBRARY</span>
+          <span className="soundtrack-choice-action"><MediaGlyph name="play" /><span className="visually-hidden">Open Jamendo library</span></span>
         </button>
       </div>
 
       <section className="jamendo-library" aria-labelledby="soundtrack-library-title">
         <div className="music-library-section-heading">
-          <div><small>{featuredSelected ? "ILLOBO FEATURED" : "JAMENDO LIBRARY"}</small><h3 id="soundtrack-library-title">{featuredSelected ? "Signal Border playlist" : "Browse and play"}</h3></div>
+          <div><small>{featuredSelected ? "FEATURED ARTIST · ILLOBO" : "JAMENDO LIBRARY"}</small><h3 id="soundtrack-library-title">{featuredSelected ? "Lobo Playlist" : "Browse and play"}</h3></div>
           <div className="soundtrack-library-status">
             <span>AUTHORED PLAYBACK · 1×</span>
             <strong>{library?.refreshCopy ?? "Fresh mix · changes every 30 min"}</strong>
           </div>
         </div>
-        {!featuredSelected ? <div className="soundtrack-filter-group">
-          <span>BY PACE</span>
-          <div className="soundtrack-filter-row">
+        {!featuredSelected ? <div className="soundtrack-filter-layout">
+          <div className="soundtrack-filter-group soundtrack-pace-rail">
+            <span>PACE</span>
+            <div className="soundtrack-filter-row">
             {SOUNDTRACK_PACE_OPTIONS.map((pace) => (
               <button
                 key={pace.id}
@@ -992,28 +1197,29 @@ function SoundtrackLibraryContent({
                 <MediaGlyph name="play" />
               </button>
             ))}
+            </div>
           </div>
-        </div> : null}
-        {!featuredSelected ? <div className="soundtrack-filter-group">
-          <span>BY GENRE</span>
-          <div className="soundtrack-filter-rows is-genres">
-            {genreRows.map((row, rowIndex) => (
-              <div key={rowIndex} className="soundtrack-filter-row" style={{ "--filter-columns": row.length }}>
-                {row.map((genre) => (
-                  <button
-                    key={genre.id}
-                    type="button"
-                    className={selected?.kind === "genre" && selected.id === genre.id ? "is-selected" : ""}
-                    aria-pressed={selected?.kind === "genre" && selected.id === genre.id}
-                    disabled={loading}
-                    onClick={() => onBrowseSelection({ kind: "genre", id: genre.id })}
-                  >
-                    <strong>{genre.label}</strong>
-                    <MediaGlyph name="play" />
-                  </button>
-                ))}
-              </div>
-            ))}
+          <div className="soundtrack-filter-group soundtrack-genre-board">
+            <span>GENRE</span>
+            <div className="soundtrack-filter-rows is-genres">
+              {genreRows.map((row, rowIndex) => (
+                <div key={rowIndex} className="soundtrack-filter-row" style={{ "--filter-columns": row.length }}>
+                  {row.map((genre) => (
+                    <button
+                      key={genre.id}
+                      type="button"
+                      className={selected?.kind === "genre" && selected.id === genre.id ? "is-selected" : ""}
+                      aria-pressed={selected?.kind === "genre" && selected.id === genre.id}
+                      disabled={loading}
+                      onClick={() => onBrowseSelection({ kind: "genre", id: genre.id })}
+                    >
+                      <strong>{genre.label}</strong>
+                      <MediaGlyph name="play" />
+                    </button>
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
         </div> : null}
         <div className="soundtrack-track-list" aria-live="polite">
@@ -1035,7 +1241,7 @@ function SoundtrackLibraryContent({
         <section className="soundtrack-now-playing" aria-live="polite">
           {current?.imageUrl ? <img src={current.imageUrl} alt="" width="80" height="80" /> : <span className="soundtrack-artwork-placeholder">{featuredSelected ? "LO" : "JM"}</span>}
           <div>
-            <small>NOW PLAYING</small>
+            <small className={`soundtrack-now-label${playing ? " is-playing" : ""}`}><img src="/third-party/tabler-icons/chart-bar.svg" alt="" aria-hidden="true" />NOW PLAYING</small>
             <strong>{current?.title ?? `Preparing ${featuredSelected ? "Illobo playlist" : "Jamendo catalog"}`}</strong>
             <span>{current?.artistName ?? snapshot?.status ?? "idle"}</span>
             <span>{snapshot?.attribution?.transitioning ? "EQUAL-POWER TRANSITION · 450 MS" : "AUTHORED RECORDING · 1×"}</span>
@@ -1100,28 +1306,32 @@ function MusicLibraryPanel({
         <div><small>FLUX MUSIC LIBRARY</small><h2 id="music-library-title">Music</h2></div>
         <button data-dialog-initial-focus type="button" onClick={onClose}>CLOSE</button>
       </div>
-      <div className="music-source-switch" aria-label="Music source">
-        <button type="button" className={musicMode === "play-road" ? "is-active" : ""} aria-pressed={musicMode === "play-road"} onClick={() => onModeChange("play-road")}>PLAY THE ROAD</button>
-        <button type="button" className={musicMode === "soundtrack" ? "is-active" : ""} aria-pressed={musicMode === "soundtrack"} onClick={() => onModeChange("soundtrack")}>SOUNDTRACK</button>
+      <div className="music-drawer-workspace">
+        <nav className="music-source-switch" aria-label="Music source">
+          <button type="button" className={musicMode === "play-road" ? "is-active" : ""} aria-pressed={musicMode === "play-road"} onClick={() => onModeChange("play-road")}><small>ADAPTIVE</small><strong>PLAY<br />THE ROAD</strong></button>
+          <button type="button" className={musicMode === "soundtrack" ? "is-active" : ""} aria-pressed={musicMode === "soundtrack"} onClick={() => onModeChange("soundtrack")}><small>LIBRARY</small><strong>SOUNDTRACK</strong></button>
+        </nav>
+        <main className="music-drawer-content">
+          {loadingMode === musicMode ? (
+            <p className="music-mode-loading" role="status" aria-live="polite">
+              <span aria-hidden="true" />
+              Loading {musicMode === "soundtrack" ? "Soundtrack" : "Play the Road"}…
+            </p>
+          ) : null}
+          {musicMode === "soundtrack" ? (
+            <SoundtrackLibraryContent
+              snapshot={snapshot}
+              jamendoPreviewEntries={jamendoPreviewEntries}
+              onFeatured={onFeatured}
+              onBrowseSelection={onBrowseSelection}
+              onTrack={onTrack}
+              onPrevious={onPrevious}
+              onPlayPause={onPlayPause}
+              onNext={onNext}
+            />
+          ) : <ScoreLibraryContent genreId={genreId} onChange={onScoreChange} />}
+        </main>
       </div>
-      {loadingMode === musicMode ? (
-        <p className="music-mode-loading" role="status" aria-live="polite">
-          <span aria-hidden="true" />
-          Loading {musicMode === "soundtrack" ? "Soundtrack" : "Play the Road"}…
-        </p>
-      ) : null}
-      {musicMode === "soundtrack" ? (
-        <SoundtrackLibraryContent
-          snapshot={snapshot}
-          jamendoPreviewEntries={jamendoPreviewEntries}
-          onFeatured={onFeatured}
-          onBrowseSelection={onBrowseSelection}
-          onTrack={onTrack}
-          onPrevious={onPrevious}
-          onPlayPause={onPlayPause}
-          onNext={onNext}
-        />
-      ) : <ScoreLibraryContent genreId={genreId} onChange={onScoreChange} />}
     </DialogSurface>
   );
 }
@@ -1469,6 +1679,7 @@ export function App() {
   const [genreId, setGenreId] = useState(initialPreferences.genreId);
   const [environmentPickerOpen, setEnvironmentPickerOpen] = useState(false);
   const [soundtrackPanelOpen, setSoundtrackPanelOpen] = useState(false);
+  const [discoverOpen, setDiscoverOpen] = useState(false);
   const [manualEffectsDeckOpen, setManualEffectsDeckOpen] = useState(false);
   const [musicMode, setMusicMode] = useState("play-road");
   const [musicModeLoading, setMusicModeLoading] = useState(null);
@@ -1560,6 +1771,7 @@ export function App() {
     || previewOpen
     || environmentPickerOpen
     || soundtrackPanelOpen
+    || discoverOpen
     || supportOpen;
   const controlsPinned = modalOpen || manualEffectsDeckOpen || gpsHelpOpen;
   const controlsPinnedRef = useRef(controlsPinned);
@@ -3259,6 +3471,16 @@ export function App() {
             <small>{gpsPresentation.accuracy}</small>
           </button>
           <button
+            className="discover-button"
+            type="button"
+            onClick={() => setDiscoverOpen(true)}
+            aria-label="Open Discover passenger index"
+            aria-haspopup="dialog"
+          >
+            <img src="/third-party/tabler-icons/map-search.svg" alt="" aria-hidden="true" />
+            <span>DISCOVER</span>
+          </button>
+          <button
             className="report-button"
             type="button"
             onClick={() => setDrawerOpen(true)}
@@ -3567,6 +3789,20 @@ export function App() {
             logDiagnosticEvent("environment.changed", { environment: nextEnvironmentId });
           }}
           onClose={() => setEnvironmentPickerOpen(false)}
+        />
+      ) : null}
+
+      {discoverOpen ? (
+        <DiscoverPanel
+          position={mapPosition ?? (atlasDemoActive ? ATLAS_DEMO_POSITION : null)}
+          onRetryLocation={startGps}
+          onDemoLocation={runAtlasDemo}
+          onOpenAtlas={() => {
+            setDiscoverOpen(false);
+            setEnvironmentId("atlas");
+            logDiagnosticEvent("environment.changed", { environment: "atlas", source: "discover" });
+          }}
+          onClose={() => setDiscoverOpen(false)}
         />
       ) : null}
 

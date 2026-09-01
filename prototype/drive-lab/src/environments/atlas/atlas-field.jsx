@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import "maplibre-gl/dist/maplibre-gl.css";
 import {
   advanceAtlasDemoPosition,
+  ATLAS_DEMO_POSITION,
   appendAtlasTravelPoint,
   ATLAS_MARKER_UPDATE_INTERVAL_MS,
   ATLAS_MANUAL_CAMERA_LIMITS,
@@ -33,8 +34,6 @@ import {
   frameTelemetryIsDue,
   THIRTY_FPS_FRAME_INTERVAL_MS,
 } from "../../render-telemetry.js";
-
-const FALLBACK_POSITION = { latitude: 45.4570505, longitude: 9.1940018, heading: 135 };
 
 function recolourStyle(map, palette, effect = null) {
   const colors = paletteToAtlasMapCss(palette);
@@ -171,7 +170,7 @@ export default function AtlasField({
 
   useEffect(() => {
     if (!demoRequestToken || validAtlasPosition(position)) return;
-    setDemoPosition({ ...FALLBACK_POSITION });
+    setDemoPosition({ ...ATLAS_DEMO_POSITION });
   }, [demoRequestToken, position]);
 
   useEffect(() => {

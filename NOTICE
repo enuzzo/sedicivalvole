@@ -26,9 +26,10 @@ boundaries are recorded in THIRD_PARTY_NOTICES.md. In particular:
   not imply a licence for excluded PRTCL material;
 - MusicRadar source samples are not redistributed and remain the property of
   MusicRadar and their credited creators.
-- The REPORT control and ATLAS direction plaque use the pinned Tabler
-  `report-analytics` and `navigation` icons under MIT; their unmodified SVGs and
-  complete licence text ship with the product.
+- REPORT, ATLAS, DISCOVER, Music, and Now Playing controls use the pinned Tabler
+  report, navigation, media, search, chart, map, external-link, and
+  Wikipedia-brand icons under MIT; their unmodified SVGs and complete licence
+  text ship with the product.
 
 Public versions previously distributed under AGPL-3.0-or-later retain those
 rights. The current policy does not revoke or rewrite historical grants.

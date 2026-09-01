@@ -20,6 +20,11 @@ export const ATLAS_CARDINAL_DIRECTIONS = Object.freeze([
   "N", "NE", "E", "SE", "S", "SW", "W", "NW",
 ]);
 export const ATLAS_ROAD_LAYER_IDS = Object.freeze(["atlas-road-name-probe"]);
+export const ATLAS_DEMO_POSITION = Object.freeze({
+  latitude: 45.4570505,
+  longitude: 9.1940018,
+  heading: 135,
+});
 
 const clamp = (value, minimum, maximum) => Math.min(maximum, Math.max(minimum, value));
 

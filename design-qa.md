@@ -1,3 +1,58 @@
+# Design QA — DISCOVER Passenger Index
+
+Date: 2026-09-01
+
+## Source and implementation
+
+- Owner-selected direction 01:
+  `/Users/enuzzo/.codex/generated_images/01a056ca-c4ff-7433-92c5-7a0aa0abd6e3/exec-f977a5e7-622f-422f-bc57-17525d8e41eb.png`.
+- Exact Tesla-viewport implementation:
+  `/Users/enuzzo/Library/CloudStorage/Dropbox/Mitnick/sedicivalvole/_references/audits/discover-implementation-20260901-final-773x601.png`.
+- Joined source/implementation comparison:
+  `/Users/enuzzo/Library/CloudStorage/Dropbox/Mitnick/sedicivalvole/_references/audits/discover-design-comparison-20260901.png`.
+- Reference pixels: `1423 × 1105`, normalized to `773 × 601`.
+- Implementation CSS viewport and screenshot: `773 × 601` at density `1`.
+
+## Fidelity and owner refinements
+
+- The implementation preserves the selected split Passenger Index: a bounded
+  place rail on the left and one always-open article reader on the right.
+- It retains the dark Swiss instrument surface, vermilion navigation state,
+  image-led place choices, prominent selected title, large source image,
+  distance/ETA line, Google Maps handoff, Wikipedia attribution, and reciprocal
+  ATLAS action.
+- The owner's refinements are integrated rather than stacked below the concept:
+  browser-language detection, an internal language selector, search, 15-source
+  pagination, and a bottom `+N MORE` counter share the fixed left rail.
+- The local ETA is explicitly approximate. Google Maps owns actual directions
+  and starts from the device's current origin because the generated directions
+  URL supplies only the destination.
+
+## Interaction and runtime checks
+
+- A GPS-denied session presents bounded `RETRY GPS` and `MILAN DEMO` recovery.
+- The Milan demo returns 15 English places and `+10 MORE`; expansion exposes all
+  15 without growing the document. Italian selection switches to
+  `it.wikipedia.org`, Italian article copy, and an Italian source link.
+- Search for `Berchet` reduces the index to one result and updates the open
+  reader. Nearby/Ahead/Region controls, place selection, `READ FULL ARTICLE`,
+  `OPEN IN GOOGLE MAPS`, ATLAS, CLOSE, and retry remain operable.
+- The same-viewport Music QA also confirms the selected Navigator Rail, all 15
+  readable genre chips, six tracks, player, and non-overlapping QR credits on
+  one `773 × 601` surface.
+
+## Comparison history
+
+| Pass | Severity | Finding | Resolution and evidence |
+|---|---|---|---|
+| 1 | P2 | The first implementation used text-only index rows, losing the source direction's image-led scanning. | Added real free-license Wikipedia thumbnails plus a licensed Wikipedia-icon fallback within the same five-row viewport. |
+| 2 | P1 | One MediaWiki response page exposed only ten candidates despite the 15-place product ceiling. | Added bounded continuation handling, safe continuation-token admission, deduplication, and a four-request ceiling; the final English demo exposes 15 places and `+10 MORE`. |
+| 3 | — | No actionable P0, P1, or P2 mismatch remains. | The joined `1546 × 601` comparison preserves the selected hierarchy while fitting the owner-required language/search and source-count controls. |
+
+final result: passed
+
+---
+
 # Design QA — equal-path Soundtrack library
 
 Date: 2026-08-31

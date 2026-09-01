@@ -324,15 +324,23 @@ test("the Tesla Music drawer uses whole-surface one-tap controls and a no-scroll
   assert.doesNotMatch(scoreLibrary, /SCORE_GENRES\.map/);
   assert.match(scoreLibrary, /className="score-entry-cover" src=\{genre\.coverUrl\}/);
   assert.match(scoreLibrary, /\{genre\.description\}/);
-  assert.match(soundtrack, /SOUNDTRACK_GENRE_OPTIONS\.slice\(0, 8\)/);
-  assert.match(soundtrack, /SOUNDTRACK_GENRE_OPTIONS\.slice\(8\)/);
+  assert.match(soundtrack, /SOUNDTRACK_GENRE_OPTIONS\.slice\(0, 5\)/);
+  assert.match(soundtrack, /SOUNDTRACK_GENRE_OPTIONS\.slice\(5, 10\)/);
+  assert.match(soundtrack, /SOUNDTRACK_GENRE_OPTIONS\.slice\(10, 15\)/);
   assert.match(soundtrack, /aria-pressed=\{selected\?\.kind === "pace"/);
   assert.match(soundtrack, /aria-pressed=\{selected\?\.kind === "genre"/);
   assert.match(soundtrack, /<MediaGlyph name="play" \/>/);
   assert.doesNotMatch(soundtrack, />PLAY<\/button>/);
+  assert.match(app, /className="music-drawer-workspace"/);
+  assert.match(app, /<nav className="music-source-switch"/);
+  assert.match(soundtrack, /FEATURED ARTIST/);
+  assert.match(soundtrack, /Original music written and performed by Illobo\./);
+  assert.doesNotMatch(soundtrack, /curated by Illobo/);
+  assert.match(soundtrack, /soundtrack-now-label/);
   assert.match(styles, /@media \(min-width: 651px\) and \(max-height: 650px\)/);
   assert.match(styles, /\.soundtrack-track-list \{ grid-template-columns: repeat\(3, minmax\(0, 1fr\)\); gap: 3px; \}/);
-  assert.match(styles, /\.soundtrack-filter-row > button \{ min-height: 44px; padding: 0 6px; \}/);
+  assert.match(styles, /\.soundtrack-filter-layout \{ grid-template-columns: 88px minmax\(0, 1fr\); gap: 3px; \}/);
+  assert.match(styles, /\.soundtrack-filter-row > button \{ min-height: 34px; padding: 0 6px; \}/);
   assert.match(styles, /\.soundtrack-panel-body > \.privacy-note \{ display: none; \}/);
 });
 

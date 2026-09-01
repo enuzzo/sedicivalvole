@@ -43,7 +43,7 @@ test("the top bar exposes the selected REPORT control with the pinned Tabler ico
   assert.doesNotMatch(app.slice(topbarStart, topbarEnd), />DIAG</);
   assert.match(styles, /\.report-button \{[\s\S]*?grid-template-rows: 19px auto[\s\S]*?gap: 4px/);
   assert.match(styles, /\.report-button img \{[\s\S]*?width: 19px[\s\S]*?height: 19px/);
-  assert.match(styles, /\.topbar \{[\s\S]*?grid-template-columns: 72px auto minmax\(320px, 1fr\) 54px 58px/);
+  assert.match(styles, /\.topbar \{[\s\S]*?grid-template-columns: 72px auto minmax\(320px, 1fr\) 54px 72px 58px/);
   assert.match(styles, /\.topbar-mark img \{[\s\S]*?width: 46px;[\s\S]*?height: 46px/);
   assert.equal(icon.length, 618);
   assert.equal(createHash("sha256").update(icon).digest("hex"), "d58847492f890b8beedc7eff543860219e0f382e46d2c2695107d64ae434b9ba");
