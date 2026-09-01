@@ -330,12 +330,16 @@ Continue only from the 17-row execution order in
 [`MILESTONE-CHECKLIST-2026-08-31.md`](MILESTONE-CHECKLIST-2026-08-31.md). The
 first and sixth rows are complete; the second is physical-Tesla acceptance and
 the seventh, eighth and ninth are split between published office implementation
-and open Tesla gates. Row 10 DISCOVER is owner-selected and published in build
-`20260901-0933` from `5c498ac`; its split Passenger Index, localized
-source/search controls, bounded 15-source disclosure, reader, distance/ETA and
-reciprocal map actions pass exact local and canonical `773 × 601` QA but still
-require `R10-01`–`R10-05` Tesla acceptance. Do not reopen the route/dot or Navigator
-Plaque treatment as an ATLAS design exploration. Owner-selected Live Navigator
+and open Tesla gates. Row 10 DISCOVER is owner-selected and published through
+build `20260901-1105`; checkpoint `f843ea6` makes its split Passenger Index
+readable at driving distance, keeps all 15 sources in one measured-height
+scroll, loads the complete localized Wikipedia article in a scriptless reader,
+and removes the superseded reciprocal ATLAS action. Local exact `773 × 601` QA
+passes; canonical publication and `R10-01`–`R10-05` Tesla acceptance remain
+open. ATLAS is now directed as an independent data-first Drive Lab: do not add
+DISCOVER or duplicate its place cards. Wait for the owner's choice among the
+three supplied Drive Lab directions before replacing the published Live
+Navigator. Owner-selected Live Navigator
 checkpoint `3ce5c98` and terrain/history extension `7debfe3` complete row-9
 office implementation. Canonical build `20260901-1438` passes `539/539`,
 App/LAB/Sites build, protected publication, read-only pre/postflight, 29/29

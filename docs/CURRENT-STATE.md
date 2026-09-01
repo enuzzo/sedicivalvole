@@ -128,18 +128,23 @@ dated study documents.
   update. Exact local `773 × 601` QA renders the full-width map framebuffer at
   `966 × 751` without console warnings/errors; a new Tesla report must prove
   the 30 FPS target.
-- DISCOVER is implemented as the owner-selected separate Passenger Index rather
-  than permanent ATLAS chrome. A `246 px` left rail keeps five image-led results
-  visible and expands through `+N MORE` to at most 15 unique Wikipedia pages;
-  the selected reader remains open at right. The first supported browser
-  language is automatic, with 14 explicit languages and local title/summary
-  search available inside the rail. Nearby/Ahead/Region reuse session-only
-  position and heading; bounded continuation, deduplication and failure states
-  prevent unbounded work. Distance is a Haversine estimate and drive time is
-  explicitly approximate. The selected header links to official Google Maps
-  destination directions and back to ATLAS. Exact local `773 × 601` Browser QA
-  proves 15 English results with `+10 MORE`, Italian endpoint/content switching,
-  search, reader updates and the joined Product Design comparison.
+- DISCOVER is implemented as the owner-selected independent Passenger Index,
+  not ATLAS chrome. Its `272 px` left rail measures the available height, fills
+  the first fold, inserts the exact hidden count as `+N MORE`, and keeps all of
+  the at-most-15 image-led results reachable in the same scroll; the selected
+  reader remains open at right. The first supported browser language is
+  automatic, with 14 explicit languages and local title/summary search inside
+  the rail. Nearby/Ahead/Region reuse session-only position and heading;
+  bounded continuation, deduplication and failure states prevent unbounded
+  work. Distance is a Haversine estimate and drive time is explicitly
+  approximate. The selected header links only to official Google Maps
+  destination directions. The complete localized Wikipedia article now loads
+  inside a scriptless sandbox with readable chapters, images and information
+  cards; language changes clear edition-local page identity before refetching.
+  DISCOVER has no ATLAS action and does not change the active visual. Exact
+  local `773 × 601` Browser QA proves 15 results with `+10 MORE`, internal list
+  and article scrolling, Italian content switching, two-column lead/infobox
+  composition and no Browser warning/error.
   Checkpoint `e268169` makes it reachable as `DISCOVER 07` from both the initial
   Instrument Deck and the running Visual library while preserving the six-entry
   renderer and preference boundary. Exact Browser review then found the seventh

@@ -1,5 +1,30 @@
 # Drive Lab Design QA — fixed road ceiling and refined Vertigo
 
+## DISCOVER complete reader and driving-distance typography — 2026-09-01
+
+- selected source: the owner's annotated canonical `1114 × 905` Discover
+  capture and the supplied Wikipedia two-column article reference;
+- fidelity contract: enlarge the complete left-rail and reader hierarchy for
+  one-glance vehicle reading, fill the measured rail before an exact inline
+  `+N MORE`, keep every loaded result scrollable, and render the complete
+  localized article with chapters, images and information cards;
+- implementation evidence: exact local `773 × 601` Browser inspection measures
+  `12.5 px` result titles, `10 px` result metadata, a `22 px` reader heading and
+  `16 px / 1.58` article copy. Fifteen results produce `+10 MORE`; the list
+  scrolls independently, and the Basilica article exposes 19 images plus its
+  full heading hierarchy in a roughly `6,000 px` internal document;
+- responsive evidence: the article infobox measures about `209 px` in the
+  Tesla reader, lead copy flows alongside it without single-character columns,
+  and compact readers stack the card. English-to-Italian switching clears
+  edition-local page identity before refetching;
+- separation decision: DISCOVER exposes destination-only Google Maps and no
+  ATLAS action. It never changes the active renderer; ATLAS remains an
+  independent Drive Lab awaiting a separate owner-selected redesign;
+- accessibility and safety: the article iframe is scriptless and sandboxed,
+  external links open independently, and close/focus recovery remains owned by
+  the shared dialog boundary;
+- final result: passed.
+
 ## ATLAS Live Navigator — 2026-09-01
 
 - selected Product Design direction: 03, preserving the map as the dominant

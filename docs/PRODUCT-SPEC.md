@@ -133,17 +133,22 @@ rendered `transportation_name` probe layer; no reverse-geocoding endpoint,
 coordinate persistence or diagnostic field is introduced.
 
 `DISCOVER` is the separate passenger reading companion. Its owner-selected
-split surface keeps an image-led place index at left and one selected Wikipedia
-reader permanently open at right. The first supported browser language is used
-automatically, while an internal selector and search field remain available.
-Nearby, Ahead, and Region reuse only the ephemeral session position and heading;
-bounded MediaWiki continuation yields at most 15 unique pages, initially exposes
-five, and reports the remainder as `+N MORE`. Every result carries straight-line
-distance and an explicitly approximate local driving time. The selected header
-opens an official Google Maps destination-only directions URL so Maps can use
-the device's current origin, and a reciprocal ATLAS action returns to the map.
-Wikipedia and media links remain source-correct. No result, query, coordinate,
-or preference enters persistence or diagnostics.
+split surface keeps a `272 px` image-led place index at left and one selected
+Wikipedia reader permanently open at right. The first supported browser
+language is used automatically, while an internal selector and search field
+remain available. Nearby, Ahead, and Region reuse only the ephemeral session
+position and heading; bounded MediaWiki continuation yields at most 15 unique
+pages. The rail fills its measured available height, then inserts an exact
+`+N MORE` marker while every loaded result remains reachable in the same
+scroll. Every result carries straight-line distance and an explicitly
+approximate local driving time. The reader requests the complete localized
+MediaWiki article and renders its chapters, images, tables and infoboxes inside
+a scriptless sandbox; readable lead text and a floated information card share
+the width when space permits. The selected header opens an official Google Maps
+destination-only directions URL so Maps can use the device's current origin.
+DISCOVER and ATLAS remain independent: neither surface links to or switches to
+the other. Wikipedia and media links remain source-correct. No result, query,
+coordinate, or preference enters persistence or diagnostics.
 
 `DRIVEY 05` embeds the actual Rezmason Drivey road, level, traffic, camera and
 rendering runtime pinned at commit
@@ -293,7 +298,7 @@ acceptance in the vehicle.
 | LIGHT/DARK/AUTO interface appearance | model foundation | independent versioned preference/reset, safe storage failure, browser-scheme priority, offline solar phase, twilight/interaction hold; visible control, DARK tokens and product application remain gated |
 | Network activity notice | model foundation | raw REPORT state separates browser hints from instrumented app activity/failure/recovery and active download/upload direction; quiet navbar presentation remains gated |
 | SOUNDTRACK fixed recordings | production prototype | server-side Jamendo catalogue and exact-ID no-store audio relays; fail-closed effect-compatible non-ND admission; three transient previous/current/next browser media elements; authored `1×` playback with no driving-derived selection or retiming; App/LAB playback and audio-clock attribution card; global footer FX for OPEN/UNDERWATER/BLOOM plus manual flanger, reverb, chorus, and bounded echo. Two horizontal top selectors switch Play the Road and Soundtrack without hiding the return route; Pace is a narrow vertical rail and all 15 genres use a readable `5 × 3` grid. The Lobo card states original artist authorship, Now Playing has a playback-bound activity mark, and Track Credit keeps its QR separate. Manual changes use the nominal `450 ms` equal-power model through normal skips and rapid retargeting, keep every genuinely audible credit visible, preserve a strict three-element bound, and expose a compact QR for the current public track page without exposing its stream URL. Target-vehicle tuning and physical listening remain pending; persistent/offline audio is prohibited. |
-| DISCOVER passenger index | production prototype | separate split passenger surface with up to five image-led sources plus exact `+N MORE`, a fixed reader, internal search, automatic browser language plus 14-language override, Nearby/Ahead/Region ordering, session-only coarse location, local distance/ETA, destination-only Google Maps directions and reciprocal ATLAS handoff; canonical build `20260901-0933` passes, Tesla acceptance pending. |
+| DISCOVER passenger index | production prototype | independent split passenger surface with a measured-height `272 px` rail, up to 15 image-led sources in one scroll, exact inline `+N MORE`, internal search, automatic browser language plus 14-language override, Nearby/Ahead/Region ordering, session-only coarse location, local distance/ETA, destination-only Google Maps directions and a complete localized Wikipedia article in a scriptless reader; no ATLAS handoff. Tesla acceptance pending. |
 | WAV-to-parameter editor | future research | source lab not validated on real audio |
 | Trip postcard | not confirmed | privacy conflict requires review |
 
