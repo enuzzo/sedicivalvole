@@ -8,6 +8,32 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Signal Gate support-dialog visibility repair — 2026-09-01 21:44
+
+- build stamp: **`20260901-2137`**; product checkpoint: **`a9aad78`**;
+- defect and repair: **PASS**. The support trigger changed state and mounted its
+  accessible dialog, but the splash layer at `20` painted above the older
+  support layer at `8`. The modal support overlay now owns layer `30`; no
+  content, destination, QR, focus behavior or launch composition changed;
+- tests/build: **PASS**. Focused splash/presentation `29/29`, complete
+  `545/545`, 148-module App, 71-module LAB, protected LAB packaging and Sites
+  build pass;
+- protected publication: preflight and postflight are read-only PASS with
+  `remote_writes=NONE`; publication uploaded `181` files / `223,324,958` bytes,
+  fully reverified all `29` Illobo masters, retained two previous assets for
+  cache overlap, preserved the dynamic root and reported
+  `remote_writes=ROOT_UPLOAD_ONLY`;
+- canonical identity: cache-busted HTML is HTTP 200 with `no-store/no-cache`
+  and `nosniff`. HTML, main JavaScript and main CSS match the candidate
+  byte-for-byte at SHA-256
+  `14e256796c8d0cbcd0d660b88995a69e1d2a261193330bf213219e05bba2c8ae`,
+  `48b23fbb221b365b526173787c37e9789bd9544d6c4be04d5887a4759792f13f`
+  and `820b4f62ead6155a949203e8e107bd0c974ddcfb7f596dad9814c234d993d470`;
+- exact live `773 × 601` Browser QA: **PASS**. The button opens the visible
+  complete dialog above the Signal Gate, QR/link/counter content is present,
+  CLOSE removes it and restores focus to the trigger, and the warning/error log
+  is empty.
+
 ## ATLAS Drive Lab hierarchy correction — 2026-09-01 20:23
 
 - build stamp: **`20260901-2012`**; product checkpoint: **`7c9df06`**;

@@ -272,6 +272,12 @@ pre/postflight plus canonical HTML/JS/CSS byte identity. Exact live `773 × 601`
 QA repeats all four taps, removal from the Music drawer, source switching,
 state persistence, reset, zero overflow, and zero warning/error. Tesla
 listening remains required as `R4-04` and the expanded `R7-06`.
+Signal Gate support-dialog regression checkpoint `a9aad78` is canonical in
+build `20260901-2137`: the trigger was mounting the accessible dialog behind
+the splash because its `z-index: 8` was below the splash layer `20`. The modal
+overlay now owns layer `30`. Focused `29/29`, complete `545/545`, protected
+build/publication, byte identity and exact live `773 × 601` open/close/focus
+QA pass with an empty Browser warning/error log.
 Milestone row 9 has an office-complete Drive Lab hierarchy checkpoint `7c9df06`:
 its selected Navigator Plaque combines a filled continuously rotating arrow,
 English cardinal, exact degrees and a rendered-tile road name without reverse

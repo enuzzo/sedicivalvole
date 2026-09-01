@@ -229,7 +229,10 @@ dated study documents.
   A compact top-left support control opens the verified `buymeacoffee.com/enuzzo`
   destination, the supplied QR, an honestly labelled playful project-sparks
   signal and a runtime-reconstructed suggestion address; suggestions are
-  explicitly welcome without a purchase.
+  explicitly welcome without a purchase. Checkpoint `a9aad78`, canonical build
+  `20260901-2137`, restores the dialog above the Signal Gate after its overlay
+  fell behind the raised splash stacking layer; open, close and focus return
+  pass exact live `773 × 601` Browser QA.
 - The opening action now leads to the owner-selected **Instrument Deck** in the
   owner-selected LIGHT **Road Sheet** language: one open warm-ivory sheet, the
   compact left-aligned 16 Road and Orbitron wordmark lockup, hairline structure,
@@ -545,8 +548,9 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The canonical live product is version `0.0.0`, product checkpoint `7c9df06`,
-  build `20260901-2012`, publishing the corrected owner-selected vertical ATLAS
+- The canonical live product is version `0.0.0`, latest product checkpoint
+  `a9aad78`, build `20260901-2137`, publishing the restored Signal Gate support
+  dialog together with the corrected owner-selected vertical ATLAS
   Drive Lab hierarchy together with the complete readable
   DISCOVER reader and its
   independent boundary from ATLAS on top of the owner-selected ATLAS Live
