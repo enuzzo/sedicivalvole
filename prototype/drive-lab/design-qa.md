@@ -1,5 +1,50 @@
 # Drive Lab Design QA — fixed road ceiling and refined Vertigo
 
+## DISCOVER responsive article imagery correction — 2026-09-01
+
+- source visual truth: owner annotation on the selected-place reader at
+  `http://127.0.0.1:5178/?qaMute=1`, `773 × 601` CSS viewport, Basilica di San
+  Calimero selected, complete English article loaded;
+- source pixels and density: the Browser-rendered source capture is `773 × 601`
+  CSS pixels at the in-app Browser's current device density. The implementation
+  must be recaptured in the same tab, viewport, place, language and article
+  scroll origin before comparison;
+- pre-correction evidence: the reader is `486 × 523 px`; its article body is
+  `475 px` wide; the floated infobox is about `209 px` wide with a `22 px` left
+  margin, leaving approximately `204 px` for the lead and causing the annotated
+  over-narrow wrapping. The infobox remains floated for over `1,100 px` of
+  article height;
+- correction applied: checkpoint `55caa8d` changes the infobox to
+  `clamp(150px, 35vw, 240px)` with a `38%` ceiling and `18 px` margin, bounds
+  its imagery to `260 px` without cropping, replaces arbitrary word breaking,
+  and stacks cards only when the reader width reaches `420 px`;
+- expected same-state geometry: approximately `166 px` infobox width and
+  `251 px` lead-copy measure at the measured Basilica body, a roughly `23%`
+  increase in readable text width while preserving the complete two-column
+  relationship;
+- fonts and typography: unchanged `16 px / 1.58` article body and existing
+  hierarchy; the correction targets measure and wrapping rather than shrinking
+  cabin-readable type;
+- spacing and layout rhythm: the infobox margin decreases from `22 px` to
+  `18 px`; reader, rail, header, footer and independent scroll boundaries are
+  unchanged;
+- colors and visual tokens: unchanged;
+- image quality and asset fidelity: original Wikipedia imagery remains remote,
+  proportional and uncropped; only its maximum rendered height changes;
+- copy and content: complete localized Wikipedia markup, headings, tables,
+  links and destination-only Maps action remain unchanged;
+- comparison history: P1 owner finding is the overly narrow lead beside the
+  dominant infobox. The code and deterministic geometry are corrected, but the
+  in-app Browser rejected the automated reload of the already-open local tab,
+  so a post-fix same-state screenshot is not yet available for the required
+  joined visual comparison;
+- implementation screenshot path: pending same-state Browser recapture;
+- primary interactions tested: pending recapture; focused source/document tests
+  pass `10/10`, complete tests pass `541/541`, and production build passes;
+- console errors checked: pending recapture.
+
+final result: blocked
+
 ## ATLAS Drive Lab composite — 2026-09-01
 
 - selected Product Design direction: owner-approved composite of the six

@@ -593,6 +593,15 @@ dated study documents.
   focused `10/10`, complete `541/541`, protected publication, 29/29 Illobo
   hashes, HTML/JS/CSS byte identity and exact live `773 × 601` Browser QA. Only
   target-Tesla `R10-00A`–`R10-05` acceptance remains open.
+- Correction checkpoint `55caa8d` responds to the owner's annotated Basilica
+  reader: complete Wikipedia infoboxes now float within a responsive
+  `150–240 px` width capped at `38%`, lead imagery is bounded to `260 px`
+  without cropping, and readers at `420 px` or narrower stack the card. At the
+  measured `475 px` article body this expands the lead-copy measure from about
+  `204 px` to `251 px` while preserving the complete article and its own scroll.
+  Focused `10/10`, complete `541/541` and the 148-module App / 71-module LAB /
+  Sites build pass; same-state Browser recapture and canonical publication are
+  still required before this correction joins the final Tesla build.
 - Product checkpoint `5c498ac` adds the selected DISCOVER Passenger Index and
   Music Navigator Rail. Build `20260901-0933` passes the complete `533/533`
   suite, 148-module App / 71-module LAB / Sites build, protected publication,
