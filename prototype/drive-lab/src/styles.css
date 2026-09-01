@@ -2422,6 +2422,22 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
   font: var(--font-weight-label) 7px/1 var(--font-ui);
   letter-spacing: .1em;
 }
+.atlas-history-range {
+  min-width: 58px;
+  min-height: 22px;
+  padding: 0 7px;
+  color: color-mix(in srgb, var(--atlas-accent) 78%, white);
+  background: color-mix(in srgb, var(--atlas-accent) 9%, rgba(7, 7, 10, .7));
+  border: 1px solid color-mix(in srgb, var(--atlas-accent) 38%, transparent);
+  border-radius: 11px;
+  font: var(--font-weight-label) 7px/1 var(--font-ui);
+  letter-spacing: .08em;
+}
+.atlas-history-range:hover,
+.atlas-history-range:focus-visible {
+  color: var(--paper);
+  border-color: var(--atlas-accent);
+}
 .atlas-motion-readouts {
   display: grid;
   grid-template-columns: 76px 1fr;
@@ -2462,15 +2478,33 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
   font: var(--font-weight-control) 11px/1.1 var(--font-ui);
   white-space: nowrap;
 }
-.atlas-journey-chart { margin-top: 8px; }
+.atlas-journey-chart { margin-top: 5px; }
 .atlas-journey-chart-label { display: flex; align-items: center; justify-content: space-between; }
 .atlas-journey-chart-label > span {
+  overflow: hidden;
+  max-width: 166px;
   color: rgba(238, 234, 224, .37);
-  font: var(--font-weight-label) 7px/1 var(--font-ui);
-  letter-spacing: .08em;
+  font: var(--font-weight-label) 6px/1 var(--font-ui);
+  letter-spacing: .045em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
-.atlas-journey-chart canvas { display: block; width: 100%; height: 30px; margin-top: 4px; }
+.atlas-journey-chart canvas { display: block; width: 100%; height: 25px; margin-top: 3px; }
 .atlas-journey-chart.is-empty canvas { opacity: .44; }
+.atlas-terrain-source {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 3px;
+  color: rgba(238, 234, 224, .38);
+  font: var(--font-weight-label) 6px/1 var(--font-ui);
+  letter-spacing: .05em;
+}
+.atlas-terrain-source a { color: inherit; text-decoration: none; }
+.atlas-terrain-source.is-live a { color: #55d991; }
+.atlas-terrain-source.is-loading a,
+.atlas-terrain-source.is-stale a { color: #f3a84c; }
+.atlas-terrain-source.is-unavailable a { color: #ff6b64; }
 .atlas-place-context { display: flex; min-height: 0; flex-direction: column; padding-bottom: 0 !important; }
 .atlas-place-context > header strong {
   display: block;

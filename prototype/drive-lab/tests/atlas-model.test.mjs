@@ -4,12 +4,15 @@ import test from "node:test";
 import {
   advanceAtlasDemoPosition,
   appendAtlasJourneySample,
+  appendAtlasSessionJourneySample,
   appendAtlasPositionSample,
   appendAtlasTravelPoint,
   ATLAS_CARDINAL_DIRECTIONS,
   ATLAS_GPS_PRECISE_ACCURACY_M,
   ATLAS_JOURNEY_HISTORY_LIMIT,
   ATLAS_JOURNEY_SAMPLE_INTERVAL_MS,
+  ATLAS_HISTORY_RANGES,
+  ATLAS_SESSION_HISTORY_LIMIT,
   ATLAS_MARKER_UPDATE_INTERVAL_MS,
   ATLAS_MAXIMUM_PIXEL_RATIO,
   ATLAS_MANUAL_CAMERA_LIMITS,
@@ -26,16 +29,21 @@ import {
   atlasGpsPresentation,
   atlasKeyboardShortcutAvailable,
   atlasJourneyDistanceMetres,
+  atlasJourneySamplesForRange,
+  atlasJourneyStatistics,
   atlasManualCameraShouldReturn,
   atlasMapPixelRatio,
   atlasRoadNameFromFeatures,
   atlasTravelFeature,
   atlasVehicleFeature,
   createLatestAtlasRequestGate,
+  cycleAtlasHistoryRange,
   createAtlasStyle,
   interpolateAtlasPosition,
   manualAtlasCamera,
   normalizeNearbyPages,
+  normalizeOpenMeteoElevation,
+  openMeteoElevationUrl,
   paletteToAtlasMapChannels,
   pinchAtlasZoom,
   resolveAtlasHeading,
@@ -284,13 +292,15 @@ test("Atlas retains a bounded chronological position buffer without accepting ba
 
 test("Atlas keeps a bounded, truthful live journey history", () => {
   assert.equal(ATLAS_JOURNEY_SAMPLE_INTERVAL_MS, 2000);
-  assert.equal(ATLAS_JOURNEY_HISTORY_LIMIT, 60);
+  assert.equal(ATLAS_JOURNEY_HISTORY_LIMIT, 1800);
   let samples = appendAtlasJourneySample([], {
     capturedAtMs: 1000,
     speedKmh: 42,
     altitudeM: 121.4,
   });
-  assert.deepEqual(samples, [{ capturedAtMs: 1000, speedKmh: 42, altitudeM: 121.4 }]);
+  assert.deepEqual(samples, [{
+    capturedAtMs: 1000, speedKmh: 42, altitudeM: 121.4, groundElevationM: null,
+  }]);
   assert.equal(appendAtlasJourneySample(samples, {
     capturedAtMs: 2999,
     speedKmh: 50,
@@ -301,9 +311,11 @@ test("Atlas keeps a bounded, truthful live journey history", () => {
     speedKmh: 50,
     altitudeM: null,
   });
-  assert.deepEqual(samples.at(-1), { capturedAtMs: 3000, speedKmh: 50, altitudeM: null });
+  assert.deepEqual(samples.at(-1), {
+    capturedAtMs: 3000, speedKmh: 50, altitudeM: null, groundElevationM: null,
+  });
   assert.equal(appendAtlasJourneySample(samples, { capturedAtMs: Number.NaN }), samples);
-  for (let index = 0; index < 80; index += 1) {
+  for (let index = 0; index < 1900; index += 1) {
     samples = appendAtlasJourneySample(samples, {
       capturedAtMs: 5000 + index * 2000,
       speedKmh: index,
@@ -311,7 +323,7 @@ test("Atlas keeps a bounded, truthful live journey history", () => {
     });
   }
   assert.equal(samples.length, ATLAS_JOURNEY_HISTORY_LIMIT);
-  assert.equal(samples.at(-1).speedKmh, 79);
+  assert.equal(samples.at(-1).speedKmh, 1899);
 
   const route = [
     { latitude: 45.46, longitude: 9.19 },
@@ -320,6 +332,60 @@ test("Atlas keeps a bounded, truthful live journey history", () => {
     { latitude: 45.462, longitude: 9.19 },
   ];
   assert.ok(Math.abs(atlasJourneyDistanceMetres(route) - 222.64) < 0.5);
+});
+
+test("Atlas cycles 15 minute, one hour and bounded all-session histories", () => {
+  assert.deepEqual(ATLAS_HISTORY_RANGES.map(({ id, label }) => ({ id, label })), [
+    { id: "15m", label: "15 MIN" },
+    { id: "1h", label: "1 H" },
+    { id: "session", label: "SESSION" },
+  ]);
+  assert.equal(cycleAtlasHistoryRange("15m").id, "1h");
+  assert.equal(cycleAtlasHistoryRange("1h").id, "session");
+  assert.equal(cycleAtlasHistoryRange("session").id, "15m");
+
+  const recent = [
+    { capturedAtMs: 0, speedKmh: 10 },
+    { capturedAtMs: 46 * 60 * 1000, speedKmh: 20 },
+    { capturedAtMs: 56 * 60 * 1000, speedKmh: 30 },
+  ];
+  assert.deepEqual(
+    atlasJourneySamplesForRange(recent, [], "15m", 60 * 60 * 1000).map((sample) => sample.speedKmh),
+    [20, 30],
+  );
+  assert.equal(atlasJourneySamplesForRange(recent, [], "1h", 60 * 60 * 1000).length, 3);
+
+  let session = [];
+  for (let index = 0; index < ATLAS_SESSION_HISTORY_LIMIT + 40; index += 1) {
+    session = appendAtlasSessionJourneySample(session, {
+      capturedAtMs: index * ATLAS_JOURNEY_SAMPLE_INTERVAL_MS,
+      speedKmh: index % 100,
+      groundElevationM: 100 + (index % 30),
+    });
+  }
+  assert.ok(session.length <= ATLAS_SESSION_HISTORY_LIMIT);
+  const statistics = atlasJourneyStatistics(session);
+  assert.equal(statistics.maximumSpeedKmh, 99);
+  assert.equal(statistics.minimumGroundElevationM, 100);
+  assert.equal(statistics.maximumGroundElevationM, 129);
+  assert.ok(statistics.averageSpeedKmh > 45 && statistics.averageSpeedKmh < 55);
+  assert.ok(statistics.movingAverageSpeedKmh > statistics.averageSpeedKmh);
+});
+
+test("Atlas obtains coarse terrain elevation separately from browser GPS altitude", () => {
+  const url = new URL(openMeteoElevationUrl({ latitude: 45.46421, longitude: 9.19003 }));
+  assert.equal(url.origin, "https://api.open-meteo.com");
+  assert.equal(url.pathname, "/v1/elevation");
+  assert.equal(url.searchParams.get("latitude"), "45.464");
+  assert.equal(url.searchParams.get("longitude"), "9.19");
+  assert.equal(openMeteoElevationUrl(null), null);
+  assert.equal(normalizeOpenMeteoElevation({ elevation: [122] }), 122);
+  assert.equal(normalizeOpenMeteoElevation({ elevation: [12000] }), null);
+  assert.equal(normalizeOpenMeteoElevation({}), null);
+  assert.match(atlasSource, /GPS ALT/);
+  assert.match(atlasSource, /OPEN-METEO \/ COPERNICUS/);
+  assert.match(atlasSource, /window\.setInterval\(updateJourney, ATLAS_JOURNEY_SAMPLE_INTERVAL_MS\)/);
+  assert.match(styles, /\.atlas-history-range/);
 });
 
 test("Atlas feeds position samples at GPS cadence without driving React camera state at that cadence", () => {
@@ -416,7 +482,7 @@ test("Atlas live journey and place reading remain legible at the Tesla viewport"
   assert.match(styles, /\.atlas-field \{[\s\S]*?--atlas-panel-width: 272px;/);
   assert.match(styles, /\.atlas-panel \{[\s\S]*?width: var\(--atlas-panel-width\);[\s\S]*?padding: 0;/);
   assert.match(styles, /\.atlas-motion-readouts \{[\s\S]*?grid-template-columns: 76px 1fr;/);
-  assert.match(styles, /\.atlas-journey-chart canvas \{[^}]*width: 100%;[^}]*height: 30px;/);
+  assert.match(styles, /\.atlas-journey-chart canvas \{[^}]*width: 100%;[^}]*height: 25px;/);
   assert.match(styles, /\.atlas-selected-context \{[\s\S]*?grid-template-columns: 72px 1fr;/);
   assert.match(styles, /\.atlas-selected-context img \{[\s\S]*?width: 72px;[\s\S]*?height: 62px;/);
   assert.match(styles, /\.atlas-selected-context p \{[\s\S]*?font-size: 9px;[\s\S]*?-webkit-line-clamp: 3;/);
@@ -428,7 +494,7 @@ test("Atlas live journey and place reading remain legible at the Tesla viewport"
   assert.match(atlasSource, /appendAtlasJourneySample/);
   assert.match(atlasSource, /atlasJourneyDistanceMetres\(travelPointsRef\.current\)/);
   assert.match(atlasSource, /field="speedKmh"/);
-  assert.match(atlasSource, /field="altitudeM"/);
+  assert.match(atlasSource, /field="groundElevationM"/);
 });
 
 test("Atlas grants touch and desktop exploration for six seconds, then returns to fresh automatic camera", () => {

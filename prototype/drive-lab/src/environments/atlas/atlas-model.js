@@ -16,7 +16,15 @@ export const ATLAS_TRAVEL_MINIMUM_DISTANCE_M = 2;
 export const ATLAS_MAXIMUM_PIXEL_RATIO = 1.25;
 export const ATLAS_MARKER_UPDATE_INTERVAL_MS = 125;
 export const ATLAS_JOURNEY_SAMPLE_INTERVAL_MS = 2000;
-export const ATLAS_JOURNEY_HISTORY_LIMIT = 60;
+export const ATLAS_JOURNEY_HISTORY_LIMIT = 1800;
+export const ATLAS_SESSION_HISTORY_LIMIT = 720;
+export const ATLAS_MOVING_SPEED_THRESHOLD_KMH = 2;
+export const ATLAS_HISTORY_RANGES = Object.freeze([
+  Object.freeze({ id: "15m", label: "15 MIN", durationMs: 15 * 60 * 1000 }),
+  Object.freeze({ id: "1h", label: "1 H", durationMs: 60 * 60 * 1000 }),
+  Object.freeze({ id: "session", label: "SESSION", durationMs: null }),
+]);
+export const OPEN_METEO_ELEVATION_URL = "https://api.open-meteo.com/v1/elevation";
 export const ATLAS_GPS_PRECISE_ACCURACY_M = 4;
 export const ATLAS_CARDINAL_DIRECTIONS = Object.freeze([
   "N", "NE", "E", "SE", "S", "SW", "W", "NW",
@@ -116,12 +124,200 @@ export function appendAtlasJourneySample(
   }
   const speedKmh = sample?.speedKmh;
   const altitudeM = sample?.altitudeM;
+  const groundElevationM = sample?.groundElevationM;
   const next = [...previous, {
     capturedAtMs,
     speedKmh: Number.isFinite(speedKmh) ? Math.max(0, speedKmh) : null,
     altitudeM: Number.isFinite(altitudeM) ? altitudeM : null,
+    groundElevationM: Number.isFinite(groundElevationM) ? groundElevationM : null,
   }];
   return next.slice(-Math.max(2, Math.floor(Number(maximumSamples) || ATLAS_JOURNEY_HISTORY_LIMIT)));
+}
+
+function atlasSessionSample(sample) {
+  const capturedAtMs = Number(sample?.capturedAtMs);
+  if (!Number.isFinite(capturedAtMs)) return null;
+  const speedKmh = Number.isFinite(sample?.speedKmh) ? Math.max(0, sample.speedKmh) : null;
+  const altitudeM = Number.isFinite(sample?.altitudeM) ? sample.altitudeM : null;
+  const groundElevationM = Number.isFinite(sample?.groundElevationM)
+    ? sample.groundElevationM
+    : null;
+  return {
+    capturedAtMs,
+    speedKmh,
+    altitudeM,
+    groundElevationM,
+    sampleCount: 1,
+    speedSampleCount: Number.isFinite(speedKmh) ? 1 : 0,
+    speedSumKmh: Number.isFinite(speedKmh) ? speedKmh : 0,
+    movingSampleCount: Number.isFinite(speedKmh) && speedKmh >= ATLAS_MOVING_SPEED_THRESHOLD_KMH ? 1 : 0,
+    movingSpeedSumKmh: Number.isFinite(speedKmh) && speedKmh >= ATLAS_MOVING_SPEED_THRESHOLD_KMH
+      ? speedKmh
+      : 0,
+    speedMaximumKmh: speedKmh,
+    groundMinimumM: groundElevationM,
+    groundMaximumM: groundElevationM,
+  };
+}
+
+function mergeAtlasSessionSamples(first, second) {
+  const sampleCount = first.sampleCount + second.sampleCount;
+  const average = (field) => {
+    const firstFinite = Number.isFinite(first[field]);
+    const secondFinite = Number.isFinite(second[field]);
+    if (!firstFinite && !secondFinite) return null;
+    if (!firstFinite) return second[field];
+    if (!secondFinite) return first[field];
+    return (
+      first[field] * first.sampleCount + second[field] * second.sampleCount
+    ) / sampleCount;
+  };
+  const finiteValues = (field) => [first[field], second[field]].filter(Number.isFinite);
+  const minimum = (field) => {
+    const values = finiteValues(field);
+    return values.length ? Math.min(...values) : null;
+  };
+  const maximum = (field) => {
+    const values = finiteValues(field);
+    return values.length ? Math.max(...values) : null;
+  };
+  return {
+    capturedAtMs: average("capturedAtMs"),
+    speedKmh: average("speedKmh"),
+    altitudeM: average("altitudeM"),
+    groundElevationM: average("groundElevationM"),
+    sampleCount,
+    speedSampleCount: first.speedSampleCount + second.speedSampleCount,
+    speedSumKmh: first.speedSumKmh + second.speedSumKmh,
+    movingSampleCount: first.movingSampleCount + second.movingSampleCount,
+    movingSpeedSumKmh: first.movingSpeedSumKmh + second.movingSpeedSumKmh,
+    speedMaximumKmh: maximum("speedMaximumKmh"),
+    groundMinimumM: minimum("groundMinimumM"),
+    groundMaximumM: maximum("groundMaximumM"),
+  };
+}
+
+/**
+ * Keeps an all-session chart without allowing an all-session memory leak.
+ * Once full, adjacent samples are averaged into weighted rollups. Scalar
+ * statistics remain exact because their counts, sums, minima and maxima are
+ * retained inside every rollup.
+ */
+export function appendAtlasSessionJourneySample(
+  samples,
+  sample,
+  maximumSamples = ATLAS_SESSION_HISTORY_LIMIT,
+) {
+  const previous = Array.isArray(samples) ? samples : [];
+  const nextSample = atlasSessionSample(sample);
+  if (!nextSample) return previous;
+  const last = previous.at(-1);
+  if (last && nextSample.capturedAtMs <= last.capturedAtMs) return previous;
+  if (last && nextSample.capturedAtMs - last.capturedAtMs < ATLAS_JOURNEY_SAMPLE_INTERVAL_MS) {
+    return previous;
+  }
+  const next = [...previous, nextSample];
+  const limit = Math.max(4, Math.floor(Number(maximumSamples) || ATLAS_SESSION_HISTORY_LIMIT));
+  if (next.length <= limit) return next;
+  const rolled = [];
+  for (let index = 0; index < next.length; index += 2) {
+    rolled.push(next[index + 1]
+      ? mergeAtlasSessionSamples(next[index], next[index + 1])
+      : next[index]);
+  }
+  return rolled;
+}
+
+export function cycleAtlasHistoryRange(rangeId) {
+  const index = ATLAS_HISTORY_RANGES.findIndex((range) => range.id === rangeId);
+  return ATLAS_HISTORY_RANGES[(index + 1 + ATLAS_HISTORY_RANGES.length)
+    % ATLAS_HISTORY_RANGES.length];
+}
+
+export function atlasJourneySamplesForRange(recentSamples, sessionSamples, rangeId, nowMs) {
+  const range = ATLAS_HISTORY_RANGES.find((candidate) => candidate.id === rangeId)
+    ?? ATLAS_HISTORY_RANGES[0];
+  if (range.durationMs == null) return Array.isArray(sessionSamples) ? sessionSamples : [];
+  const cutoff = Number(nowMs) - range.durationMs;
+  return (Array.isArray(recentSamples) ? recentSamples : [])
+    .filter((sample) => Number(sample?.capturedAtMs) >= cutoff);
+}
+
+export function atlasJourneyStatistics(samples) {
+  const source = Array.isArray(samples) ? samples : [];
+  let speedSampleCount = 0;
+  let speedSumKmh = 0;
+  let movingSampleCount = 0;
+  let movingSpeedSumKmh = 0;
+  let maximumSpeedKmh = null;
+  let minimumGroundElevationM = null;
+  let maximumGroundElevationM = null;
+  for (const sample of source) {
+    const speedCount = Number.isFinite(sample?.speedSampleCount)
+      ? sample.speedSampleCount
+      : Number.isFinite(sample?.speedKmh) ? 1 : 0;
+    const speedSum = Number.isFinite(sample?.speedSumKmh)
+      ? sample.speedSumKmh
+      : Number.isFinite(sample?.speedKmh) ? sample.speedKmh : 0;
+    const movingCount = Number.isFinite(sample?.movingSampleCount)
+      ? sample.movingSampleCount
+      : Number.isFinite(sample?.speedKmh) && sample.speedKmh >= ATLAS_MOVING_SPEED_THRESHOLD_KMH ? 1 : 0;
+    const movingSum = Number.isFinite(sample?.movingSpeedSumKmh)
+      ? sample.movingSpeedSumKmh
+      : movingCount ? sample.speedKmh : 0;
+    const speedMaximum = Number.isFinite(sample?.speedMaximumKmh)
+      ? sample.speedMaximumKmh
+      : sample?.speedKmh;
+    const groundMinimum = Number.isFinite(sample?.groundMinimumM)
+      ? sample.groundMinimumM
+      : sample?.groundElevationM;
+    const groundMaximum = Number.isFinite(sample?.groundMaximumM)
+      ? sample.groundMaximumM
+      : sample?.groundElevationM;
+    speedSampleCount += speedCount;
+    speedSumKmh += speedSum;
+    movingSampleCount += movingCount;
+    movingSpeedSumKmh += movingSum;
+    if (Number.isFinite(speedMaximum)) {
+      maximumSpeedKmh = maximumSpeedKmh == null
+        ? speedMaximum
+        : Math.max(maximumSpeedKmh, speedMaximum);
+    }
+    if (Number.isFinite(groundMinimum)) {
+      minimumGroundElevationM = minimumGroundElevationM == null
+        ? groundMinimum
+        : Math.min(minimumGroundElevationM, groundMinimum);
+    }
+    if (Number.isFinite(groundMaximum)) {
+      maximumGroundElevationM = maximumGroundElevationM == null
+        ? groundMaximum
+        : Math.max(maximumGroundElevationM, groundMaximum);
+    }
+  }
+  return {
+    averageSpeedKmh: speedSampleCount ? speedSumKmh / speedSampleCount : null,
+    movingAverageSpeedKmh: movingSampleCount ? movingSpeedSumKmh / movingSampleCount : null,
+    maximumSpeedKmh,
+    minimumGroundElevationM,
+    maximumGroundElevationM,
+    sampleCount: speedSampleCount,
+  };
+}
+
+export function openMeteoElevationUrl(position) {
+  if (!validAtlasPosition(position)) return null;
+  const latitude = Math.round(position.latitude * 1000) / 1000;
+  const longitude = Math.round(position.longitude * 1000) / 1000;
+  const params = new URLSearchParams({
+    latitude: String(latitude),
+    longitude: String(longitude),
+  });
+  return `${OPEN_METEO_ELEVATION_URL}?${params}`;
+}
+
+export function normalizeOpenMeteoElevation(payload) {
+  const value = Array.isArray(payload?.elevation) ? Number(payload.elevation[0]) : Number.NaN;
+  return Number.isFinite(value) && value >= -500 && value <= 9000 ? value : null;
 }
 
 function normalizeAtlasAngle(value) {

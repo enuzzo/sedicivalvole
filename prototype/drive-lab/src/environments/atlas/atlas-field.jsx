@@ -3,7 +3,10 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import {
   advanceAtlasDemoPosition,
   ATLAS_DEMO_POSITION,
+  ATLAS_HISTORY_RANGES,
+  ATLAS_JOURNEY_SAMPLE_INTERVAL_MS,
   appendAtlasJourneySample,
+  appendAtlasSessionJourneySample,
   appendAtlasTravelPoint,
   ATLAS_MARKER_UPDATE_INTERVAL_MS,
   ATLAS_MANUAL_CAMERA_LIMITS,
@@ -13,13 +16,18 @@ import {
   atlasEffectProfile,
   atlasKeyboardShortcutAvailable,
   atlasJourneyDistanceMetres,
+  atlasJourneySamplesForRange,
+  atlasJourneyStatistics,
   atlasManualCameraShouldReturn,
   atlasMapPixelRatio,
   atlasRoadNameFromFeatures,
   atlasTravelFeature,
   atlasVehicleFeature,
   createLatestAtlasRequestGate,
+  cycleAtlasHistoryRange,
   normalizeNearbyPages,
+  normalizeOpenMeteoElevation,
+  openMeteoElevationUrl,
   createAtlasStyle,
   manualAtlasCamera,
   interpolateAtlasPosition,
@@ -51,7 +59,7 @@ function formatAtlasDistance(distanceM) {
   return metres < 1000 ? `${Math.round(metres)} m` : `${(metres / 1000).toFixed(1)} km`;
 }
 
-function AtlasJourneyChart({ label, samples, field, color, fixedMaximum = null }) {
+function AtlasJourneyChart({ label, samples, field, color, summary, rangeLabel, fixedMaximum = null }) {
   const canvasRef = useRef(null);
   const values = samples
     .map((sample) => sample[field])
@@ -83,7 +91,8 @@ function AtlasJourneyChart({ label, samples, field, color, fixedMaximum = null }
       const plotted = samples.filter((sample) => Number.isFinite(sample[field]));
       if (plotted.length < 2) return;
       const minimum = fixedMaximum == null ? Math.min(...plotted.map((sample) => sample[field])) : 0;
-      const maximum = fixedMaximum == null ? Math.max(...plotted.map((sample) => sample[field])) : fixedMaximum;
+      const observedMaximum = Math.max(...plotted.map((sample) => sample[field]));
+      const maximum = fixedMaximum == null ? observedMaximum : Math.max(fixedMaximum, observedMaximum);
       const padding = fixedMaximum == null ? Math.max(4, (maximum - minimum) * 0.2) : 0;
       const domainMinimum = minimum - padding;
       const domainMaximum = Math.max(domainMinimum + 1, maximum + padding);
@@ -91,12 +100,20 @@ function AtlasJourneyChart({ label, samples, field, color, fixedMaximum = null }
       context.lineWidth = 1.75;
       context.lineJoin = "round";
       context.lineCap = "round";
+      const timeMinimum = samples[0]?.capturedAtMs ?? 0;
+      const timeMaximum = Math.max(timeMinimum + 1, samples.at(-1)?.capturedAtMs ?? timeMinimum + 1);
+      let drawing = false;
       context.beginPath();
-      plotted.forEach((sample, index) => {
-        const x = plotted.length === 1 ? 0 : (index / (plotted.length - 1)) * bounds.width;
+      samples.forEach((sample) => {
+        if (!Number.isFinite(sample[field])) {
+          drawing = false;
+          return;
+        }
+        const x = ((sample.capturedAtMs - timeMinimum) / (timeMaximum - timeMinimum)) * bounds.width;
         const y = bounds.height - ((sample[field] - domainMinimum) / (domainMaximum - domainMinimum)) * bounds.height;
-        if (index === 0) context.moveTo(x, y);
+        if (!drawing) context.moveTo(x, y);
         else context.lineTo(x, y);
+        drawing = true;
       });
       context.stroke();
     };
@@ -110,9 +127,9 @@ function AtlasJourneyChart({ label, samples, field, color, fixedMaximum = null }
     <div className={`atlas-journey-chart${hasSeries ? "" : " is-empty"}`}>
       <div className="atlas-journey-chart-label">
         <small>{label}</small>
-        <span>{hasSeries ? "2 MIN · LIVE" : "COLLECTING"}</span>
+        <span>{hasSeries ? summary : "COLLECTING"}</span>
       </div>
-      <canvas ref={canvasRef} role="img" aria-label={`${label}: ${hasSeries ? "live two minute trend" : "waiting for two samples"}`} />
+      <canvas ref={canvasRef} role="img" aria-label={`${label}: ${hasSeries ? `${rangeLabel} trend, ${summary}` : "waiting for two samples"}`} />
     </div>
   );
 }
@@ -164,11 +181,21 @@ function NearbyPanel({
   roadName,
   journey,
   colors,
+  historyRange,
+  onCycleHistoryRange,
+  terrain,
 }) {
   const selected = pages.find((page) => page.id === selectedId) ?? pages[0];
   const location = pages[0];
   const nearby = pages.filter((page) => page.id !== selected?.id).slice(0, visiblePlaceCount);
-  const altitude = Number.isFinite(journey.altitudeM) ? `${Math.round(journey.altitudeM)} m` : "— m";
+  const groundElevation = Number.isFinite(journey.groundElevationM)
+    ? `${Math.round(journey.groundElevationM)} m`
+    : "— m";
+  const speedSummary = `AVG ${Number.isFinite(journey.statistics.averageSpeedKmh) ? Math.round(journey.statistics.averageSpeedKmh) : "—"} · MOV ${Number.isFinite(journey.statistics.movingAverageSpeedKmh) ? Math.round(journey.statistics.movingAverageSpeedKmh) : "—"} · MAX ${Number.isFinite(journey.statistics.maximumSpeedKmh) ? Math.round(journey.statistics.maximumSpeedKmh) : "—"}`;
+  const elevationSummary = Number.isFinite(journey.statistics.minimumGroundElevationM)
+    && Number.isFinite(journey.statistics.maximumGroundElevationM)
+    ? `${Math.round(journey.statistics.minimumGroundElevationM)}–${Math.round(journey.statistics.maximumGroundElevationM)} M`
+    : terrain.status === "loading" ? "TERRAIN LOADING" : "TERRAIN UNAVAILABLE";
   return (
     <aside
       id="atlas-passenger-panel"
@@ -180,7 +207,15 @@ function NearbyPanel({
       <section className="atlas-live-motion" aria-label="Live journey status">
         <header className="atlas-panel-section-heading">
           <small>LIVE MOTION</small>
-          <span>{demo ? "DEMO" : "SESSION LIVE"}</span>
+          <button
+            type="button"
+            className="atlas-history-range"
+            onClick={onCycleHistoryRange}
+            aria-label={`History range ${historyRange.label}. Press to show ${cycleAtlasHistoryRange(historyRange.id).label}`}
+            title="Cycle history range"
+          >
+            {historyRange.label}
+          </button>
         </header>
         <div className="atlas-motion-readouts">
           <div className="atlas-speed-readout">
@@ -189,7 +224,7 @@ function NearbyPanel({
             <span>KM/H</span>
           </div>
           <dl>
-            <div><dt>ALTITUDE</dt><dd>{altitude}</dd></div>
+            <div><dt>GROUND</dt><dd>{groundElevation}</dd></div>
             <div><dt>DISTANCE</dt><dd>{formatAtlasDistance(journey.distanceM)}</dd></div>
             <div><dt>TRIP TIME</dt><dd>{formatAtlasDuration(journey.elapsedMs)}</dd></div>
           </dl>
@@ -199,14 +234,29 @@ function NearbyPanel({
           samples={journey.samples}
           field="speedKmh"
           color={colors.accent}
+          summary={speedSummary}
+          rangeLabel={historyRange.label}
           fixedMaximum={130}
         />
         <AtlasJourneyChart
-          label="ALTITUDE HISTORY"
+          label="GROUND HISTORY"
           samples={journey.samples}
-          field="altitudeM"
+          field="groundElevationM"
           color={colors.secondary}
+          summary={elevationSummary}
+          rangeLabel={historyRange.label}
         />
+        <div className={`atlas-terrain-source is-${terrain.status}`}>
+          <span>{demo ? "DEMO · " : ""}GPS ALT {Number.isFinite(journey.gpsAltitudeM) ? `${Math.round(journey.gpsAltitudeM)} M` : "—"}</span>
+          <a
+            href="https://open-meteo.com/en/docs/elevation-api"
+            target="_blank"
+            rel="noreferrer"
+            title="Terrain elevation: Open-Meteo / Copernicus DEM GLO-90"
+          >
+            {terrain.status.toUpperCase()} · OPEN-METEO / COPERNICUS
+          </a>
+        </div>
       </section>
       <section className="atlas-place-context" aria-label="Current place and nearby reading">
         <header>
@@ -283,14 +333,23 @@ export default function AtlasField({
   const [displayCamera, setDisplayCamera] = useState(null);
   const [roadName, setRoadName] = useState(null);
   const [visiblePlaceCount, setVisiblePlaceCount] = useState(() => (window.innerHeight >= 560 ? 2 : 1));
-  const [journey, setJourney] = useState({ samples: [], distanceM: 0, elapsedMs: 0, altitudeM: null });
+  const [historyRangeId, setHistoryRangeId] = useState(ATLAS_HISTORY_RANGES[0].id);
+  const [journey, setJourney] = useState({
+    recentSamples: [], sessionSamples: [], distanceM: 0, elapsedMs: 0,
+    gpsAltitudeM: null, groundElevationM: null, nowMs: 0,
+  });
+  const [terrain, setTerrain] = useState({ elevationM: null, status: "unavailable" });
   const nearbyRequestGateRef = useRef(null);
   const qrRequestGateRef = useRef(null);
+  const elevationRequestGateRef = useRef(null);
   const travelPointsRef = useRef([]);
   const journeySamplesRef = useRef([]);
+  const sessionJourneySamplesRef = useRef([]);
+  const terrainRef = useRef({ elevationM: null, status: "unavailable" });
   const journeyStartedAtRef = useRef(null);
   if (!nearbyRequestGateRef.current) nearbyRequestGateRef.current = createLatestAtlasRequestGate();
   if (!qrRequestGateRef.current) qrRequestGateRef.current = createLatestAtlasRequestGate();
+  if (!elevationRequestGateRef.current) elevationRequestGateRef.current = createLatestAtlasRequestGate();
   valuesRef.current = {
     speed, theme, position, positionSamplesRef, reducedMotion, effect, demoPosition,
   };
@@ -304,35 +363,110 @@ export default function AtlasField({
     latitude: Math.round(effectivePosition.latitude * 20) / 20,
     longitude: Math.round(effectivePosition.longitude * 20) / 20,
   } : null, [effectivePosition?.latitude, effectivePosition?.longitude]);
+  const elevationPosition = useMemo(() => effectivePosition ? {
+    latitude: Math.round(effectivePosition.latitude * 1000) / 1000,
+    longitude: Math.round(effectivePosition.longitude * 1000) / 1000,
+  } : null, [effectivePosition?.latitude, effectivePosition?.longitude]);
   const demo = !validAtlasPosition(position) && Boolean(effectivePosition);
+  const historyRange = ATLAS_HISTORY_RANGES.find((range) => range.id === historyRangeId)
+    ?? ATLAS_HISTORY_RANGES[0];
+  const selectedJourneySamples = useMemo(() => atlasJourneySamplesForRange(
+    journey.recentSamples,
+    journey.sessionSamples,
+    historyRangeId,
+    journey.nowMs,
+  ), [journey.nowMs, journey.recentSamples, journey.sessionSamples, historyRangeId]);
+  const selectedJourneyStatistics = useMemo(
+    () => atlasJourneyStatistics(selectedJourneySamples),
+    [selectedJourneySamples],
+  );
 
   useEffect(() => {
     journeySamplesRef.current = [];
+    sessionJourneySamplesRef.current = [];
     journeyStartedAtRef.current = canStart ? performance.now() : null;
-    setJourney({ samples: [], distanceM: 0, elapsedMs: 0, altitudeM: null });
+    setJourney({
+      recentSamples: [], sessionSamples: [], distanceM: 0, elapsedMs: 0,
+      gpsAltitudeM: null, groundElevationM: null, nowMs: 0,
+    });
     if (!canStart) return undefined;
     const updateJourney = () => {
       const now = performance.now();
       const latestPosition = valuesRef.current.positionSamplesRef?.current?.at(-1)
         ?? valuesRef.current.position
         ?? valuesRef.current.demoPosition;
-      const altitudeM = Number.isFinite(latestPosition?.altitudeM) ? latestPosition.altitudeM : null;
-      journeySamplesRef.current = appendAtlasJourneySample(journeySamplesRef.current, {
+      const gpsAltitudeM = Number.isFinite(latestPosition?.altitudeM) ? latestPosition.altitudeM : null;
+      const groundElevationM = terrainRef.current.elevationM;
+      const nextSample = {
         capturedAtMs: now,
         speedKmh: valuesRef.current.speed,
-        altitudeM,
-      });
+        altitudeM: gpsAltitudeM,
+        groundElevationM,
+      };
+      journeySamplesRef.current = appendAtlasJourneySample(journeySamplesRef.current, nextSample);
+      sessionJourneySamplesRef.current = appendAtlasSessionJourneySample(
+        sessionJourneySamplesRef.current,
+        nextSample,
+      );
       setJourney({
-        samples: journeySamplesRef.current,
+        recentSamples: journeySamplesRef.current,
+        sessionSamples: sessionJourneySamplesRef.current,
         distanceM: atlasJourneyDistanceMetres(travelPointsRef.current),
         elapsedMs: now - journeyStartedAtRef.current,
-        altitudeM,
+        gpsAltitudeM,
+        groundElevationM,
+        nowMs: now,
       });
     };
     updateJourney();
-    const timer = window.setInterval(updateJourney, 1000);
+    const timer = window.setInterval(updateJourney, ATLAS_JOURNEY_SAMPLE_INTERVAL_MS);
     return () => window.clearInterval(timer);
   }, [canStart]);
+
+  useEffect(() => {
+    const request = elevationRequestGateRef.current.begin();
+    const url = openMeteoElevationUrl(elevationPosition);
+    if (!url) {
+      request.commit(() => {
+        const next = { elevationM: null, status: "unavailable" };
+        terrainRef.current = next;
+        setTerrain(next);
+      });
+      return () => request.cancel();
+    }
+    request.commit(() => {
+      const next = { ...terrainRef.current, status: "loading" };
+      terrainRef.current = next;
+      setTerrain(next);
+    });
+    const controller = new AbortController();
+    fetch(url, { signal: controller.signal })
+      .then((response) => response.ok ? response.json() : Promise.reject(new Error("elevation unavailable")))
+      .then((payload) => {
+        const elevationM = normalizeOpenMeteoElevation(payload);
+        if (!Number.isFinite(elevationM)) throw new Error("invalid elevation");
+        request.commit(() => {
+          const next = { elevationM, status: "live" };
+          terrainRef.current = next;
+          setTerrain(next);
+        });
+      })
+      .catch((error) => {
+        if (error.name === "AbortError") return;
+        request.commit(() => {
+          const next = {
+            elevationM: terrainRef.current.elevationM,
+            status: Number.isFinite(terrainRef.current.elevationM) ? "stale" : "unavailable",
+          };
+          terrainRef.current = next;
+          setTerrain(next);
+        });
+      });
+    return () => {
+      request.cancel();
+      controller.abort();
+    };
+  }, [elevationPosition?.latitude, elevationPosition?.longitude]);
 
   useEffect(() => {
     if (!demoRequestToken || validAtlasPosition(position)) return;
@@ -790,7 +924,14 @@ export default function AtlasField({
         visiblePlaceCount={visiblePlaceCount}
         speed={speed}
         roadName={roadName}
-        journey={journey}
+        journey={{
+          ...journey,
+          samples: selectedJourneySamples,
+          statistics: selectedJourneyStatistics,
+        }}
+        historyRange={historyRange}
+        onCycleHistoryRange={() => setHistoryRangeId((current) => cycleAtlasHistoryRange(current).id)}
+        terrain={terrain}
         colors={paletteToAtlasCss(theme.palette)}
       />
     </section>
