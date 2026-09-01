@@ -24,6 +24,27 @@ When implementing from a selected generated mock, treat that image as the source
 - `Engine` is a separate engine-emulation mode with selectable engine sound models and an instrument-inspired generative visual system. Do not implement its final visual direction before presenting exactly three Engine-specific directions.
 - Mode switching shares the normalized speed source, diagnostics, audio-unlock lifecycle, master Stop/Mute, safety limits, and accessibility behavior. Never imply access to real RPM, throttle, gear, or CAN data without evidence.
 - Keep the scene abstract, minimal and atmospheric; no scenery, characters or illustrative decoration.
+- `GRADIENT 08` is the owner-selected continuous hybrid of **Tension Plane** at
+  low speed and **Chromatic Fold** at high speed. Keep it as one project-owned
+  WebGL2 tessellated 3D field with coherent displacement, interpolated smooth
+  lighting, three-colour spatial mixing, and a subtle in-pass grain treatment.
+  Road speed owns the complete slow-to-fast morph. Play the Road may also feed
+  bounded authored audio energy into breadth/radiance; Soundtrack must remain
+  speed-only. All response reaches its final state at `130 km/h` even when the
+  truthful speed readout is higher. ShaderGradient, FeralUI, and ColorFlow stay
+  mechanics references only; do not import their runtime, presets, shaders, or
+  assets by implication.
+- PRTCL UNDERWATER must collapse all three complete forms dramatically to about
+  one fifth of their natural speed-owned size, then surface quickly back to that
+  exact natural scale as braking releases. Do not reduce this to a subtle glow
+  or point-size-only treatment.
+- Every shared drawer closes through CLOSE, Escape, a tap on the exposed
+  backdrop, or one dominant directional swipe matching its exit. Capture the
+  pointer after a non-control drag begins, suppress browser overscroll within
+  the app, and reserve the first `28 px` of the left edge for Chromium's native
+  history gesture so one physical swipe cannot commit both actions. Never claim
+  the embedded Tesla Chromium gesture can be disabled; the app owns interior
+  swipes and deliberately yields the native edge.
 - The initial flow is one deliberate `PLAY THE ROAD` gesture, then a continuous fade into Drive Lab.
 - The approved splash is the **Signal Gate** direction: paired vermilion and ice-blue light lanes bend from the lower edges into a narrow central vertical gate on black. Implement it as a restrained generative WebGL2 field with a Canvas2D fallback, not a static raster. The single large CTA reads `PLAY THE ROAD`; the `A project by enuzzo` / Illobo credit, public source and local-capability note sit below it at a clearly readable scale, never ultra-small. The restrained top-left Buy Me a Coffee control uses the verified `buymeacoffee.com/enuzzo` destination, the supplied QR and a payment-independent suggestion invitation. A playful project-energy signal may grow slowly from 15 only when it is explicitly labelled as not representing purchases; never fabricate a donation or customer total.
 - The approved Signal Gate CTA is one flat, non-skeuomorphic `360 × 160 px` launch surface at the Tesla split viewport: warm ivory frame, the selected `42 px` 16 Road mark beside a lowercase Orbitron `750` `sedicivalvole` wordmark with restrained `-0.02em` tracking, and a full-width black Space Grotesk activation field containing only `PLAY THE ROAD`. Exact textual `sedicivalvole` project wordmarks in the Instrument Deck, running top bar and owner LAB use the same isolated Orbitron treatment; all other interface and report typography remains Space Grotesk. Keep the welcome as one semantic launch button; do not add simulated buttons, knobs, vents, latches, safety inserts or other nonfunctional appliance controls.

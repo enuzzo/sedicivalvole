@@ -401,7 +401,7 @@ local storage, diagnostics or the explicit diagnostic email.
 DISCOVER reuses the same ephemeral position boundary outside permanent ATLAS
 chrome. The selected split surface owns a left index and always-open reader.
 It enters the shared Visual catalogue as destination `07`, not as a renderer:
-the launch grid therefore contains seven choices in `3–3–1`, starts the normal
+the launch grid therefore contains eight choices in `3–3–2`, starts the normal
 Aperture runtime behind the passenger surface, and the running Visual library
 can reopen it without replacing or persisting the active field.
 The browser's first supported language selects the Wikipedia host automatically;
@@ -483,6 +483,18 @@ The Flux chrome uses a shared 6 px UI radius for framed controls and diagnostic 
 The Codrops/Tympanus Infinite Lights reference is useful for coordinated instancing, depth cues, distortion, FOV response, eased speed offset, and the matched distortion/look-at relationship. Vertigo intentionally vendors the byte-identical Interstate 7 runtime as separately licensed third-party material. Meridian studies its mechanical grammar without copying that runtime's source or visual skin. See [`REFERENCE-STUDY-INFINITE-LIGHTS.md`](REFERENCE-STUDY-INFINITE-LIGHTS.md).
 
 The renderer consumes a small snapshot and never blocks the audio event queue.
+
+`GRADIENT 08` is a project-owned direct WebGL2 renderer, not a Three.js,
+ShaderGradient, FeralUI, or ColorFlow integration. One indexed tessellated plane
+uses coherent 3D noise, analytical smooth normals, spatial three-colour mixing,
+directional/specular lighting, and one fragment-stage grain term in a single
+draw call. The field continuously morphs from low-speed Tension Plane to
+high-speed Chromatic Fold through the shared smoothed `0–130 km/h` response.
+Play the Road may supply bounded audio energy to displacement/radiance;
+Soundtrack passes zero audio response. A `1×` pixel-density ceiling,
+WebGL-context loss handling, explicit disposal, reduced motion, and Canvas2D
+fallback bound the runtime. The truthful speed readout is independent and may
+show higher values while the response remains fixed at its 130 endpoint.
 
 ## Engine visual architecture
 

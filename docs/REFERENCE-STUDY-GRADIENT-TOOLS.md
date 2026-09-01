@@ -132,7 +132,10 @@ fallbacks.
 - **Licence boundary checked:** yes; neither new tool is approved as product
   source or runtime.
 - **Source, embed, export, preset, or dependency admitted:** no.
-- **Product view implemented:** no.
-- **Next gate:** assign the proposed Shader Field a stable owner ID and present
-  exactly three owner-visible directions at `773 × 601`: a planar perceptual
-  mesh, a deeper displaced surface, and a restrained aurora/flow field.
+- **Product view implemented:** yes, as project-owned direct WebGL2
+  `GRADIENT 08`; no studied tool runtime, source, shader, preset, export, embed,
+  or asset was admitted.
+- **Selected direction:** one continuous low-speed Tension Plane to high-speed
+  Chromatic Fold hybrid with bounded in-pass grain.
+- **Remaining gate:** target-Tesla motion, frame pacing, grain, audio/source
+  boundary and thermal acceptance.

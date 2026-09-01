@@ -1,5 +1,6 @@
 export const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 export const ROAD_SPEED_CEILING_KMH = 130;
+export const DISPLAY_SPEED_SANITY_CEILING_KMH = 260;
 export const MODEL_3_AWD_REFERENCE = Object.freeze({
   label: "Model 3 Long Range AWD Highland reference",
   curbMassKg: 1824,
@@ -18,7 +19,7 @@ export function speedToEnergy(speedKmh) {
 }
 
 export function speedToBpm(speedKmh) {
-  const normalized = Math.max(0, speedKmh) / 72;
+  const normalized = clamp(Math.max(0, speedKmh), 0, ROAD_SPEED_CEILING_KMH) / 72;
   return 58 + 58 * (normalized / (1 + normalized));
 }
 
@@ -75,7 +76,7 @@ export function energyToSection(energy, currentSection = 0) {
 
 export function normalizeGpsSpeed(speedMps) {
   if (speedMps == null || !Number.isFinite(speedMps) || speedMps < 0) return null;
-  return clamp(speedMps * 3.6, 0, 260);
+  return clamp(speedMps * 3.6, 0, DISPLAY_SPEED_SANITY_CEILING_KMH);
 }
 
 export function smoothSpeed(previousKmh, nextKmh, deadbandKmh = 1.1, alpha = 0.24) {
@@ -164,7 +165,7 @@ export function advanceDemoMotion(
   brakeHeld = false,
   driveInput = "auto",
 ) {
-  const speed = clamp(state?.speed ?? 0, 0, ROAD_SPEED_CEILING_KMH);
+  const speed = clamp(state?.speed ?? 0, 0, DISPLAY_SPEED_SANITY_CEILING_KMH);
   const elapsed = clamp(elapsedSeconds, 1 / 240, 0.25);
   const input = brakeHeld
     ? "brake"

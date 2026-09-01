@@ -20,6 +20,12 @@ Status: **decision baseline, not an implementation contract**. “Confirmed” i
 - Stop/Mute and current audio state must remain immediately recognizable.
 - Full configuration is intended while parked; driving state emphasizes atmosphere, not manipulation.
 - Focus, active, disabled, and current-value states must remain distinct.
+- Every shared drawer closes through its visible CLOSE action, Escape, a tap on
+  the exposed backdrop, or one dominant swipe in its exit direction. Interior
+  swipes use pointer capture and app-level overscroll suppression. The first
+  `28 px` at the left edge remains reserved for embedded Chromium's native
+  history gesture so one physical swipe cannot commit both app close and Back.
+  The product does not claim it can disable Tesla Chromium's native navigation.
 - `prefers-reduced-motion` must meaningfully calm the experience.
 - The phone experience is landscape-first, with explicit support for current iPhone Safari viewport families and safe-area insets. Representative landscape widths from `667 × 375` through `932 × 430` must keep the launch flow, top bar, REPORT, contextual controls, and footer usable without clipping or horizontal scroll.
 - On a coarse-pointer phone in portrait, a full-viewport accessible notice asks the user to rotate to landscape and makes the underlying product inert. The notice clears after a real orientation change without reloading, duplicating the AudioContext, losing the current selection, or restarting music or the renderer. This is a request to rotate, not a claim that the browser can force orientation; portrait-like desktop windows and Tesla `773 × 601` remain unaffected.
@@ -194,11 +200,24 @@ publication are complete; target-Tesla acceptance remains an explicit gate.
 `PRIMORDIAL 08` is retired. The product owner rejected it on 2026-08-30 and its
 renderer, fallback, tuner, preference payload, catalog entry, QA path and active
 tests are removed. Git and the dated source-admission record retain the decision
-history. Its proposed successor is a separate original Gradient Field: before
-implementation, exactly three visual directions must be presented and one must
-be selected. ShaderGradient, FeralUI Gradients, and ColorFlow are reference
-inputs only within their individually audited licence boundaries; no shader,
-runtime, preset, export, embed or asset enters the product by implication.
+history. Its successor is `GRADIENT 08`. After the required exactly-three
+direction gate, the owner selected one continuous sequence: a broad low-speed
+**Tension Plane** progressively opens into the high-speed **Chromatic Fold**,
+with a fine visible grain finish. The implementation is a project-owned direct
+WebGL2 tessellated surface with coherent displacement, smooth interpolated
+lighting, three-colour spatial mixing, one draw call, a one-pass grain term,
+context-loss recovery, reduced-motion behavior, and Canvas2D fallback. Speed
+owns the complete morph; Play the Road may add bounded authored audio breadth
+and radiance, while Soundtrack is strictly speed-only. ShaderGradient, FeralUI
+Gradients, and ColorFlow remain reference inputs only within their individually
+audited licence boundaries; no shader, runtime, preset, export, embed or asset
+enters the product by implication.
+
+The speed readout remains truthful above `130 km/h`, but every visual, audio,
+tempo, density, motion, and effect response treats `130 km/h` as 100 percent and
+holds there. The product must never create a discoverable post-ceiling behavior.
+The launch surface explicitly says the experience is configured while parked
+and operated by a passenger while moving.
 
 `VERTIGO 02` is the approved second visual environment and must render the original Interstate 7 scene, not an independent visual translation. The vendored files from upstream commit `e58d58520bc0dfde21f9e14e6a1b8c7f0a2a2a9e` remain byte-identical and retain the complete road, repeated side light sticks, opposing car-light trails, bloom, camera, deep distortion, fog, geometry, and bundled Three.js/post-processing pipeline. The sedicivalvole integration keeps the iframe black until the upstream editorial shell is hidden, so only the canvas appears. An external bridge maps `0–130 km/h` to the original `speedUpTarget` and FOV controls and maps the selected theme onto the runtime's existing colour attributes and uniforms without editing the vendor tree.
 
@@ -228,6 +247,8 @@ The Geolocation API requires a secure context and explicit permission. `coords.s
 
 - a controlled non-linear speed-to-energy curve;
 - smoothing, deadband/hysteresis, upper bound, stale-state handling, and manual fallback;
+- the readout displays a valid observed speed above `130 km/h`, while every
+  audiovisual response clamps at the `130 km/h` legal-road ceiling;
 - explicit handling for denied permission, absent API, inaccurate fixes, slow cadence, and null speed;
 - no persistence or telemetry of raw position;
 - after permission, one app-level location collector continues throughout the
@@ -301,7 +322,7 @@ acceptance in the vehicle.
 | Adaptive synth + sequencer | implemented prototype | FRACTURE runs in the AudioWorklet; real Tesla musical acceptance pending |
 | Modular Aperture generative visual | implemented prototype | WebGL2 plus Canvas2D fallback; Tesla performance pending |
 | PLUMB inertial-suspension visual | rejected and retired before publication | Exact-viewport review triggered its strings/bars retirement criterion; no active renderer |
-| Selectable visual environments | implemented prototype | Aperture, Vertigo, Meridian, Atlas, Drivey, and PRTCL are active with normalized motion, safety, persistence, palette, failure, and diagnostic contracts; PRIMORDIAL and WAKE are retired, the Gradient Field gate is pending, and real-Tesla validation remains open |
+| Selectable visual environments | implemented prototype | Aperture, Vertigo, Meridian, Atlas, Drivey, PRTCL, and Gradient are active with normalized motion, safety, persistence, palette, failure, and diagnostic contracts; Discover is a separate catalogue destination; PRIMORDIAL and WAKE are retired; real-Tesla validation remains open |
 | Selectable musical environments | implemented prototype | FRACTURE, JUNCTION, and NIGHTSHIFT ready; four later directions remain pending |
 | Open packs | strategic goal | schema and licensing not frozen |
 | Offline audio core | implemented prototype | identical score DSP renders and analyses WAV references in Node |

@@ -36,8 +36,8 @@ export const DEFAULT_PRTCL_SETTINGS = Object.freeze({ type: "frequency" });
 
 const TYPE_IDS = Object.freeze(Object.keys(PRTCL_TYPES));
 const PRTCL_MACRO_IDS = Object.freeze(["open", "underwater", "bloom"]);
-export const PRTCL_MACRO_ATTACK_SECONDS = 0.18;
-export const PRTCL_MACRO_RELEASE_SECONDS = 0.64;
+export const PRTCL_MACRO_ATTACK_SECONDS = 0.12;
+export const PRTCL_MACRO_RELEASE_SECONDS = 0.28;
 
 export function createPrtclMacroResponse({
   attackSeconds = PRTCL_MACRO_ATTACK_SECONDS,
@@ -139,17 +139,20 @@ export function prtclMotionProfile({
     ? prtclMacroTargets({ effect, macroSnapshot })
     : Array.from(macroAmounts, (value) => clamp(value));
   const motionScale = 1 + open * 0.08 - underwater * 0.54;
+  const naturalPointScale = 0.82 + pointScaleEnergy * 0.66;
+  const naturalFormScale = 0.68 + pointScaleEnergy * 0.47;
+  const collapse = 1 - underwater;
 
   return {
     roadEnergy,
     colourEnergy,
-    pointScale: 0.82 + pointScaleEnergy * 0.66,
-    formScale: 0.68 + pointScaleEnergy * 0.47,
-    depthScale: (0.86 + roadEnergy * 0.36) * (1 + open * 0.08 - underwater * 0.08),
+    pointScale: naturalPointScale * (0.22 + collapse * 0.78),
+    formScale: naturalFormScale * (0.18 + collapse * 0.82),
+    depthScale: (0.86 + roadEnergy * 0.36) * (1 + open * 0.08) * (0.38 + collapse * 0.62),
     travelRate: reducedMotion ? 0 : (0.42 + roadEnergy * 1.34) * motionScale,
     pulse: reducedMotion ? 0 : colourEnergy * (1 + bloom * 0.28 - underwater * 0.42),
     brightness: 1 + bloom * 0.34 - underwater * 0.28 + open * 0.08,
-    spreadScale: 1 + open * 0.1 - underwater * 0.05,
+    spreadScale: (1 + open * 0.1) * (0.34 + collapse * 0.66),
     bloom,
     underwater,
   };

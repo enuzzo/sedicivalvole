@@ -142,8 +142,20 @@ Tesla viewport rather than judged from desktop screenshots:
 - **Collected:** yes.
 - **Reference mechanism understood:** yes.
 - **Source or dependency admitted:** no.
-- **Product view implemented:** no.
-- **Next gate:** assign a stable owner ID, then present exactly three visual
-  directions before implementation.
+- **Product view implemented:** yes, as project-owned direct WebGL2
+  `GRADIENT 08`; ShaderGradient and Three.js remain outside the dependency tree.
+- **Selected direction:** exactly three directions were shown; the owner chose a
+  continuous low-speed Tension Plane to high-speed Chromatic Fold hybrid with
+  fine grain.
+- **Remaining gate:** target-Tesla motion, frame pacing, grain, source-response
+  boundary and thermal acceptance.
 - **Companion comparison:** FeralUI Gradient Builder and ColorFlow are evaluated
   in [`REFERENCE-STUDY-GRADIENT-TOOLS.md`](REFERENCE-STUDY-GRADIENT-TOOLS.md).
+
+The implementation uses one indexed tessellated surface, project-authored
+coherent deformation, smooth analytical lighting normals, three-colour spatial
+mixing, one draw call, and one fragment-stage grain term. The grain is the
+owner-approved bounded exception to the earlier no-grain baseline and adds no
+post-processing pass. Play the Road admits bounded audio breadth and radiance;
+Soundtrack remains speed-only. All response clamps at `130 km/h`, while the
+independent readout may truthfully show a higher valid speed.

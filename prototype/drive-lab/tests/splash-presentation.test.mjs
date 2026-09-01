@@ -240,7 +240,7 @@ test("the footer keeps a compact right palette and exposes one audio-effects mas
   assert.match(app, /className="control-status-notice" role="status" aria-live="polite"/);
   assert.match(styles, /\.control-slab \{[\s\S]*?grid-template-columns: 79px 79px 190px 210px 79px minmax\(160px, 1fr\)/);
   assert.match(styles, /\.palette-control \{[\s\S]*?grid-column: 6;[\s\S]*?border-left: 1px solid var\(--line\)/);
-  assert.match(styles, /@media \(max-width: 820px\) \{[\s\S]*?grid-template-columns: 69px 69px 170px 190px 69px minmax\(138px, 1fr\)/);
+  assert.match(styles, /@media \(max-width: 820px\) \{[\s\S]*?grid-template-columns: 69px 69px 160px 180px 69px minmax\(158px, 1fr\)/);
   assert.match(styles, /\.stop-button,[\s\S]*?\.effects-button,[\s\S]*?\.mix-button \{[\s\S]*?place-content: center/);
   assert.match(styles, /\.stop-button::after,[\s\S]*?\.effects-button::after \{[\s\S]*?content: "GLOBAL"/);
   assert.match(styles, /\.swatch-housing button \{[^}]*min-height: 15px/);
@@ -500,7 +500,7 @@ test("safe product state persists locally and can be reset without storing GPS",
   assert.match(styles, /\.splash-reset-state \{/);
 });
 
-test("the vehicle gets persistent transport, Media Session actions, track notices, and swipe dismissal", () => {
+test("the vehicle gets persistent transport, Media Session actions, track notices, and directional dismissal", () => {
   const app = read("App.jsx");
   const styles = read("styles.css");
 
@@ -509,7 +509,11 @@ test("the vehicle gets persistent transport, Media Session actions, track notice
   assert.match(app, /previoustrack: \(\) => void moveTransport\("previous"\)/);
   assert.match(app, /nexttrack: \(\) => void moveTransport\("next"\)/);
   assert.match(app, /className="track-change-notice" role="status" aria-live="polite"/);
-  assert.match(app, /deltaX >= 110 \|\| deltaY >= 88/);
+  assert.match(app, /data-dismiss-direction=\{dismissDirection\}/);
+  assert.match(app, /velocity >= 0\.62/);
+  assert.match(app, /className=\{backdropClass\}[\s\S]*?onClick=\{onClose\}/);
+  assert.match(app, /className="manual-effects-backdrop"[\s\S]*?onClick=\{onClose\}/);
+  assert.match(styles, /\.drawer-panel \{[\s\S]*?touch-action: pan-y/);
   assert.match(styles, /\.persistent-transport \{[\s\S]*?bottom: 72px/);
   assert.match(styles, /\.track-change-notice \{[\s\S]*?width: min\(390px/);
   assert.match(styles, /\.drawer-panel\.is-dragging/);

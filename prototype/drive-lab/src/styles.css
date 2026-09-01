@@ -255,7 +255,11 @@ button { -webkit-tap-highlight-color: transparent; }
   color: var(--ink);
   background: #e4dfd4;
   box-shadow: 0 22px 70px rgba(0, 0, 0, .62);
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  transition: transform 180ms cubic-bezier(.2, .72, .2, 1);
 }
+.support-panel.is-dragging { transform: translate3d(var(--drawer-drag-x, 0), var(--drawer-drag-y, 0), 0); transition: none; user-select: none; }
 .support-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; padding: 16px 17px 13px; border-bottom: 1px solid rgba(7, 9, 9, .36); }
 .support-heading small { display: block; margin-bottom: 4px; font-size: 8px; font-weight: var(--font-weight-label); letter-spacing: .14em; }
 .support-heading h2 { margin: 0; font-size: 19px; line-height: 1.05; letter-spacing: -.015em; }
@@ -305,6 +309,21 @@ button { -webkit-tap-highlight-color: transparent; }
 .splash-repository a { display: inline-flex; align-items: center; gap: 5px; }
 .splash-github-mark { width: 11px; height: 11px; flex: 0 0 auto; fill: currentColor; }
 .splash-privacy { margin-top: 5px; font-size: 10.5px; letter-spacing: .01em; }
+.splash-safety {
+  width: 100%;
+  display: grid;
+  gap: 2px;
+  margin-top: 8px;
+  padding: 7px 10px 7px 12px;
+  border-left: 3px solid var(--accent);
+  color: rgba(238, 234, 224, .82);
+  background: rgba(2, 3, 3, .72);
+  text-align: left;
+  text-shadow: 0 1px 2px #000;
+}
+.splash-safety strong { color: var(--paper); font-size: 8.5px; font-weight: var(--font-weight-label); letter-spacing: .12em; }
+.splash-safety span { font-size: 9.5px; line-height: 1.24; }
+.splash-safety small { color: rgba(238, 234, 224, .58); font-size: 8px; line-height: 1.2; }
 .splash-reset-state { min-height: 24px; margin-top: 6px; padding: 0 7px; border: 1px solid rgba(238, 234, 224, .28); border-radius: var(--ui-radius); color: rgba(238, 234, 224, .64); background: rgba(2, 3, 3, .56); font-size: 7.5px; font-weight: var(--font-weight-label); letter-spacing: .08em; cursor: pointer; }
 .splash-reset-state:hover,
 .splash-reset-state:focus-visible { border-color: var(--paper); color: var(--paper); outline: none; }
@@ -1192,6 +1211,9 @@ button { -webkit-tap-highlight-color: transparent; }
   color: var(--paper);
   background: #090b0b;
   box-shadow: -18px 0 48px rgba(0, 0, 0, .5);
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  transition: transform 180ms cubic-bezier(.2, .72, .2, 1);
 }
 .drawer-panel.is-dragging {
   transform: translate3d(var(--drawer-drag-x, 0), var(--drawer-drag-y, 0), 0);
@@ -1564,8 +1586,8 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
   .source-readout { right: 172px; width: 280px; min-height: 68px; gap: 10px; }
   .speed-spacer { min-width: 280px; }
   .source-readout strong { font-size: 27px; }
-  .control-slab { min-height: 64px; grid-template-columns: 69px 69px 170px 190px 69px minmax(138px, 1fr); }
-  .control-slab.is-soundtrack { grid-template-columns: 69px 69px 170px 190px 69px minmax(138px, 1fr); }
+  .control-slab { min-height: 64px; grid-template-columns: 69px 69px 160px 180px 69px minmax(158px, 1fr); }
+  .control-slab.is-soundtrack { grid-template-columns: 69px 69px 160px 180px 69px minmax(158px, 1fr); }
   .control-slab > * { padding-left: 10px; padding-right: 10px; }
   .environment-control,
   .score-control { gap: 7px; padding-top: 8px; padding-bottom: 8px; }
@@ -1907,9 +1929,11 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
 .soundtrack-qr-handoff > span { display: grid; width: 72px; height: 72px; place-items: center; border: 1px solid rgba(7, 9, 9, .22); font-size: 11px; font-weight: var(--font-weight-label); }
 .soundtrack-qr-handoff small { font-size: 8px; font-weight: var(--font-weight-label); letter-spacing: .08em; }
 
+.manual-effects-overlay { position: absolute; z-index: 25; inset: 0; }
+.manual-effects-backdrop { position: absolute; z-index: 0; inset: 0; padding: 0; border: 0; background: rgba(0, 0, 0, .18); cursor: default; touch-action: manipulation; }
 .manual-effects-deck {
   position: absolute;
-  z-index: 26;
+  z-index: 1;
   left: 50%;
   bottom: 76px;
   width: min(720px, calc(100% - 24px));

@@ -13,7 +13,7 @@ The initial **PLAY THE ROAD** gesture is one flat typographic launch surface wit
 
 ## Implemented
 
-- seven driver-facing Visual choices: six rendered environments—`APERTURE 01`, byte-identical upstream Interstate 7 `VERTIGO 02`, original `MERIDIAN 03`, lazy OpenFreeMap `ATLAS 04`, source-faithful `DRIVEY 05`, and original `PRTCL 06`—plus the separate `DISCOVER 07` Passenger Index destination. The Instrument Deck arranges them `3–3–1`, and the running Visual library exposes the same destination without persisting it as a renderer;
+- eight driver-facing Visual choices: seven rendered environments—`APERTURE 01`, byte-identical upstream Interstate 7 `VERTIGO 02`, original `MERIDIAN 03`, lazy OpenFreeMap `ATLAS 04`, source-faithful `DRIVEY 05`, original `PRTCL 06`, and project-owned `GRADIENT 08`—plus the separate `DISCOVER 07` Passenger Index destination. The Instrument Deck arranges them `3–3–2`, and the running Visual library exposes the same destination without persisting it as a renderer;
 - a dedicated WebGL2 Signal Gate splash with independently phased travelling lane gaps, restrained perspective airflow, and Canvas2D/reduced-motion fallbacks;
 - continuously redrawn Canvas2D fallback and reduced-motion behavior for Aperture; Vertigo retains the original Three.js/post-processing renderer and caps its speed input in reduced-motion mode;
 - FRACTURE, a generative AudioWorklet score with ten four-bar sections, a narrow `162–176 BPM` range, tested harmony, staged deceleration memory, and an offline render path;
@@ -21,7 +21,7 @@ The initial **PLAY THE ROAD** gesture is one flat typographic launch surface wit
 - an honest Music library: generative FRACTURE and the compact adaptive JUNCTION music bank are selectable; five later directions remain disabled and marked `IN PREPARATION`;
 - GPS `coords.speed` input with null handling, physics-informed soft outlier tolerance, and Demo fallback;
 - a 64 px Tesla footer with touch-first Mute, vehicle FX, Visual and Music libraries, Performance FX, and ten curated body themes shared by all six renderers;
-- fixed `130 km/h` energy/velocity ceiling with visible Aperture tunnel formation by approximately `40 km/h`;
+- fixed `130 km/h` energy/velocity ceiling with truthful higher-speed display and visible Aperture tunnel formation by approximately `40 km/h`;
 - integrated coordinate-free device report with continuity-safe per-phase FPS/frame-time, a dedicated Aperture morph phase, heap/decoded-audio memory, real output RMS/peak, GPS confidence, musical-family/take exposure, an in-memory driving flight recorder, and explicit gzip-attachment email send;
 - a measured 64 px `PALETTE` footer at `773 × 601`: icon-only audio state, vertically ordered Visual/Music choices, truthful disclosure carets, and a theme control shared by field and UI accent; a future approved X2/X9 layout pass will cap and right-anchor its fullscreen width instead of stretching the colour rail;
 - time-based Model 3 AWD Demo acceleration calibrated to the official zero-to-100 km/h figure;
@@ -43,4 +43,4 @@ npm run build
 npm test
 ```
 
-The verified build is published to [https://sedicivalvole.app/](https://sedicivalvole.app/) after each approved checkpoint. GPS cadence, music/effect listening acceptance, simultaneous audio/rendering frame pacing across the six rendered visuals, and touch reach remain pending validation in the target Tesla.
+The verified build is published to [https://sedicivalvole.app/](https://sedicivalvole.app/) after each approved checkpoint. GPS cadence, music/effect listening acceptance, simultaneous audio/rendering frame pacing across the seven rendered visuals, and touch reach remain pending validation in the target Tesla.

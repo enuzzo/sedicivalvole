@@ -90,7 +90,7 @@ test("point and complete-form scale grow smoothly to 100 km/h and then hold", ()
 });
 
 test("macro targets morph continuously and remain frame-rate invariant", () => {
-  const response = createPrtclMacroResponse({ attackSeconds: 0.18, releaseSeconds: 0.64 });
+  const response = createPrtclMacroResponse({ attackSeconds: 0.12, releaseSeconds: 0.28 });
   const run = (fps, targets, durationMs, initial = createPrtclMacroTransitionState()) => {
     let state = initial;
     const frameMs = 1000 / fps;
@@ -128,14 +128,30 @@ test("OPEN, UNDERWATER, BLOOM, and reduced motion have bounded native responses"
   assert.ok(open.spreadScale > normal.spreadScale);
   assert.ok(underwater.travelRate < normal.travelRate);
   assert.ok(underwater.brightness < normal.brightness);
+  assert.ok(underwater.pointScale < normal.pointScale * 0.24);
+  assert.ok(underwater.formScale < normal.formScale * 0.2);
+  assert.ok(underwater.depthScale < normal.depthScale * 0.4);
+  assert.ok(underwater.spreadScale < normal.spreadScale * 0.35);
   assert.ok(bloom.brightness > normal.brightness);
   assert.equal(bloom.bloom, 1);
   assert.equal(reduced.travelRate, 0);
   assert.equal(reduced.colourEnergy, 0);
   assert.equal(reduced.pulse, 0);
   for (const profile of [normal, open, underwater, bloom, reduced]) {
-    assert.ok(profile.pointScale >= 0.82 && profile.pointScale <= 1.48);
-    assert.ok(profile.depthScale >= 0.79 && profile.depthScale <= 1.32);
+    assert.ok(profile.pointScale >= 0.18 && profile.pointScale <= 1.48);
+    assert.ok(profile.depthScale >= 0.32 && profile.depthScale <= 1.32);
+  }
+});
+
+test("UNDERWATER collapses every family and the release returns exactly to its speed-owned scale", () => {
+  for (const speedKmh of [0, 40, 100, 130]) {
+    const natural = prtclMotionProfile({ speedKmh, audioLevel: 0.5 });
+    const submerged = prtclMotionProfile({ speedKmh, audioLevel: 0.5, effect: "UNDERWATER" });
+    const surfaced = prtclMotionProfile({ speedKmh, audioLevel: 0.5, macroAmounts: [0, 0, 0] });
+    assert.ok(submerged.pointScale <= natural.pointScale * 0.22 + 1e-12);
+    assert.ok(submerged.formScale <= natural.formScale * 0.18 + 1e-12);
+    assert.equal(surfaced.pointScale, natural.pointScale);
+    assert.equal(surfaced.formScale, natural.formScale);
   }
 });
 

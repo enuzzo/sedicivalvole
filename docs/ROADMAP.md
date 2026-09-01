@@ -147,7 +147,7 @@ Implemented:
 - selectable `VERTIGO 02` using the byte-identical upstream Interstate 7 scene with its road, repeated side lights, opposing car trails, bloom, fog, camera, deep distortion, and original dependencies;
 - an external `0–130 km/h` bridge that slows the original clock from stopped to its non-boosted `1×` rate and maps FOV from `90°` to `150°`, without editing the vendor runtime.
 - original `MERIDIAN 03`, rebuilt against the selected reference as a low stable corridor of sparse oblique blades and longitudinal shoulder planes. A frame-rate-independent `0.22 s` acceleration / `0.62 s` braking response prevents GPS steps, while the `50–124°` FOV progression remains visibly active across the complete `0–130 km/h` range. UNDERWATER uses a stronger `−11°` projection, motion/glow compression and fog increase, followed by one continuous `0.50 s` visual surfacing. Bounded field motion, depth compression, peripheral stretch and parallax carry speed without conventional buildings, cloud slabs or a particle field;
-- lazy-loaded `ATLAS 04`, with a minimal palette-owned OpenFreeMap vector style, 3D buildings, localized nearby Wikipedia context, five passenger links, a local QR, an explicit no-GPS Milan flight mode, hard-clamped `0–85°` manual pitch, a bounded high-cadence timestamped position feed, a bright complete-session route that compacts old detail instead of losing the origin, and one interpolated vehicle point with a one-second ripple. Repeated real-Tesla evidence around 23 FPS triggered a MapLibre-only `1.25×` framebuffer ceiling and consolidated `8 Hz` marker update; stable measured 30 FPS remains the next vehicle gate. The selected Navigator Plaque now exposes a rendered-tile road name, English cardinal, degrees and a continuously rotating filled arrow without reverse geocoding; target-Tesla glance and motion acceptance remain open;
+- lazy-loaded `ATLAS 04`, with a minimal palette-owned OpenFreeMap vector style, 3D buildings, an explicit no-GPS Milan flight mode, hard-clamped `0–85°` manual pitch, a bounded high-cadence timestamped position feed, a bright complete-session route that compacts old detail instead of losing the origin, and one interpolated vehicle point with a one-second ripple. The selected vertical Drive Lab prioritizes journey telemetry and deliberately contains no Discover/Wikipedia duplication. Repeated real-Tesla evidence around 23 FPS triggered a MapLibre-only `1.25×` framebuffer ceiling and consolidated `8 Hz` marker update; stable measured 30 FPS remains the next vehicle gate. The selected Navigator Plaque now exposes a rendered-tile road name, English cardinal, degrees and a continuously rotating filled arrow without reverse geocoding; target-Tesla glance and motion acceptance remain open;
 - source-faithful `DRIVEY 05`, with 51 byte-identical upstream files pinned at
   `5104cdade2a3158786b05b9b0680a50e942830cf`, a separate project-owned iframe
   shell/bridge, upstream automatic road/curve following without random player
@@ -161,6 +161,12 @@ Implemented:
   `24,000` / `16,000` / `37,000` fixed draw counts; a direct `94 × 34 px`
   text-only TYPE cycle separate from Palette; and native speed, music,
   OPEN/UNDERWATER/BLOOM, reduced-motion, failure, and cleanup behavior;
+- owner-selected `GRADIENT 08`, with one project-owned direct WebGL2 3D surface
+  morphing continuously from low-speed Tension Plane to high-speed Chromatic
+  Fold. Coherent deformation, smooth lighting, three-colour spatial mixing and
+  fine single-pass grain share one indexed draw call; Play the Road admits
+  bounded audio response while Soundtrack remains speed-only. All response
+  saturates at `130 km/h` while the readout remains truthful above it;
 - safe environment preferences: every implemented choice remains intact, while
   PLUMB, WAKE, PRIMORDIAL and other missing, retired or invalid identifiers
   resolve to Aperture;
@@ -170,9 +176,9 @@ Queued next:
 - decide which visual and score combinations become authored audiovisual environments once more than FRACTURE is selectable;
 - retain PLUMB, WAKE and PRIMORDIAL as rejected decision records and SLIP as
   proposal-only;
-- validate PRTCL on the target Tesla; present exactly three original Gradient
-  Field directions, then implement only the owner-selected direction using
-  project-authored WebGL/3D code and separately audited reference boundaries;
+- validate PRTCL's stronger UNDERWATER collapse/recovery and GRADIENT 08's
+  slow-to-fast morph, audio/speed boundary, frame pacing, grain and thermal
+  behavior on the target Tesla;
 - profile the unmodified Interstate 7 renderer on the target Tesla; any later travel, projection, curvature, density, palette, or geometry changes require a new explicit product decision and must not be folded into the upstream-integrity checkpoint;
 - verify each environment at rest, intermediate speed, full energy, and sustained deceleration at `773 × 601` on the target vehicle.
 

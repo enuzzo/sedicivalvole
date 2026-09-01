@@ -76,6 +76,7 @@ import { Interstate7Field } from "./interstate-7-field.jsx";
 import { MeridianField } from "./environments/meridian/meridian-field.jsx";
 import { DriveyField } from "./environments/drivey/drivey-field.jsx";
 import { PrtclField } from "./environments/prtcl/prtcl-field.jsx";
+import { GradientField } from "./environments/gradient/gradient-field.jsx";
 import {
   DEFAULT_DRIVEY_SETTINGS,
   DRIVEY_CAMERAS,
@@ -224,7 +225,7 @@ const QA_PARAMS = import.meta.env.DEV
   ? new URLSearchParams(window.location.search)
   : null;
 const QA_SPEED = import.meta.env.DEV
-  ? Math.min(130, Math.max(0, Number(QA_PARAMS.get("qaSpeed")) || 0))
+  ? Math.min(260, Math.max(0, Number(QA_PARAMS.get("qaSpeed")) || 0))
   : 0;
 // A local-only QA latch lets exact-viewport browser checks exercise every
 // running state without sending Web Audio to the user's speakers.
@@ -508,6 +509,7 @@ function DialogSurface({
   onClose,
   backdropClass = "drawer-backdrop",
   panelClass = "drawer-panel",
+  dismissDirection = "right",
   children,
 }) {
   const panelRef = useRef(null);
@@ -576,11 +578,13 @@ function DialogSurface({
       && event.target.closest("button, a, input, select, textarea, [role='slider'], [contenteditable='true']")) return;
     const panel = panelRef.current;
     if (!panel) return;
+    if (dismissDirection === "right" && event.clientX < 28) return;
     dragRef.current = {
       pointerId: event.pointerId,
       x: event.clientX,
       y: event.clientY,
       scrollTop: panel.scrollTop,
+      startedAt: performance.now(),
       active: false,
     };
     panel.setPointerCapture?.(event.pointerId);
@@ -590,16 +594,18 @@ function DialogSurface({
     const drag = dragRef.current;
     const panel = panelRef.current;
     if (!drag || drag.pointerId !== event.pointerId || !panel) return;
-    const deltaX = Math.max(0, event.clientX - drag.x);
-    const deltaY = Math.max(0, event.clientY - drag.y);
-    const verticalAllowed = drag.scrollTop <= 1 && panel.scrollTop <= 1;
-    const travelX = deltaX > deltaY * 1.1 ? deltaX : 0;
-    const travelY = verticalAllowed && deltaY > deltaX * 1.1 ? deltaY : 0;
-    if (!drag.active && Math.max(travelX, travelY) < 12) return;
+    const deltaX = event.clientX - drag.x;
+    const deltaY = event.clientY - drag.y;
+    const primary = dismissDirection === "down" ? Math.max(0, deltaY) : Math.max(0, deltaX);
+    const cross = dismissDirection === "down" ? Math.abs(deltaX) : Math.abs(deltaY);
+    const scrollAllowed = dismissDirection !== "down" || (drag.scrollTop <= 1 && panel.scrollTop <= 1);
+    const travel = scrollAllowed && primary > cross * 1.18 ? primary : 0;
+    if (!drag.active && travel < 12) return;
     drag.active = true;
     panel.classList.add("is-dragging");
-    panel.style.setProperty("--drawer-drag-x", `${Math.min(180, travelX)}px`);
-    panel.style.setProperty("--drawer-drag-y", `${Math.min(140, travelY)}px`);
+    const elasticTravel = Math.min(190, travel * (travel < 90 ? 0.9 : 0.72));
+    panel.style.setProperty("--drawer-drag-x", `${dismissDirection === "right" ? elasticTravel : 0}px`);
+    panel.style.setProperty("--drawer-drag-y", `${dismissDirection === "down" ? elasticTravel : 0}px`);
     event.preventDefault();
   };
 
@@ -608,7 +614,11 @@ function DialogSurface({
     if (!drag || drag.pointerId !== event.pointerId) return;
     const deltaX = Math.max(0, event.clientX - drag.x);
     const deltaY = Math.max(0, event.clientY - drag.y);
-    finishDrag(drag.active && (deltaX >= 110 || deltaY >= 88));
+    const travel = dismissDirection === "down" ? deltaY : deltaX;
+    const elapsed = Math.max(16, performance.now() - drag.startedAt);
+    const velocity = travel / elapsed;
+    const distanceThreshold = Math.min(150, Math.max(76, panelRef.current.clientWidth * 0.18));
+    finishDrag(drag.active && (travel >= distanceThreshold || (travel >= 44 && velocity >= 0.62)));
   };
 
   return (
@@ -617,6 +627,7 @@ function DialogSurface({
       role="dialog"
       aria-modal="true"
       aria-labelledby={labelledBy}
+      data-dismiss-direction={dismissDirection}
       onKeyDown={handleKeyDown}
     >
       <button className={backdropClass} type="button" tabIndex={-1} onClick={onClose} aria-label="Close" />
@@ -1555,13 +1566,15 @@ function ManualEffectsDeck({ values, onChange, onClose }) {
 
   const activeCount = SOUNDTRACK_MANUAL_CONTROLS.filter(({ id }) => values[id] > 0.01).length;
   return (
-    <section
-      id="manual-effects-deck"
-      className="manual-effects-deck control-layer"
-      role="dialog"
-      aria-modal="false"
-      aria-labelledby="manual-effects-title"
-    >
+    <div className="manual-effects-overlay">
+      <button className="manual-effects-backdrop" type="button" tabIndex={-1} onClick={onClose} aria-label="Close Performance FX" />
+      <section
+        id="manual-effects-deck"
+        className="manual-effects-deck control-layer"
+        role="dialog"
+        aria-modal="false"
+        aria-labelledby="manual-effects-title"
+      >
       <header>
         <div>
           <small>GLOBAL · PLAY THE ROAD + SOUNDTRACK</small>
@@ -1606,7 +1619,8 @@ function ManualEffectsDeck({ values, onChange, onClose }) {
           );
         })}
       </div>
-    </section>
+      </section>
+    </div>
   );
 }
 
@@ -3740,6 +3754,18 @@ export function App() {
               onFrame={recordRenderedFrame}
               onRuntimeError={handleEnvironmentError}
             />
+          ) : environment.renderer === "gradient" ? (
+            <GradientField
+              speed={speed}
+              audioLevel={audioLevel}
+              musicMode={musicMode}
+              theme={theme}
+              reducedMotion={reducedMotion}
+              effect={activeEffect}
+              onRenderer={setRenderer}
+              onFrame={recordRenderedFrame}
+              onRuntimeError={handleEnvironmentError}
+            />
           ) : (
             <FluxField
               energy={energy}
@@ -3855,6 +3881,11 @@ export function App() {
             </a>
           </small>
           <small className="splash-privacy">Audio, display, motion, and GPS are checked locally.</small>
+          <aside className="splash-safety" aria-label="Road safety">
+            <strong>DRIVE RESPONSIBLY</strong>
+            <span>Passenger controls only while moving. Drivers: set up while parked and keep eyes on the road.</span>
+            <small>Visual and audio response reaches 100% at 130 km/h. Higher indicated speeds add no new effects.</small>
+          </aside>
           <button className="splash-reset-state" type="button" onClick={resetSavedState}>RESET SAVED STATE</button>
         </div> : null}
         {phase === "choosing" ? (

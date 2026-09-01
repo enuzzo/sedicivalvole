@@ -171,8 +171,8 @@ test("uses vehicle dynamics as a soft GPS tolerance without inventing motion", (
 test("tempo has a knee and approaches a musical ceiling", () => {
   assert.equal(speedToBpm(0), 58);
   assert.ok(speedToBpm(70) < 100);
-  assert.ok(speedToBpm(260) < 116);
-  assert.ok(speedToBpm(260) > speedToBpm(130));
+  assert.ok(speedToBpm(130) < 116);
+  assert.equal(speedToBpm(260), speedToBpm(130));
 });
 
 test("energy uses the fixed legal-road ceiling", () => {

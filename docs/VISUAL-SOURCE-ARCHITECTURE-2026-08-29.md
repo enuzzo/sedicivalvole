@@ -121,3 +121,17 @@ comparisons pass at `773 × 601`. Those checks can establish implementation and
 machine evidence only. Human visual/listening review and real-Tesla touch,
 readability, frame pacing, thermal behaviour, and motion comfort remain explicit
 acceptance gates.
+
+## 2026-09-02 current-catalog addendum
+
+This dated study retains retired INFINITE/PRIMORDIAL decisions as provenance;
+the active source architecture now uses `GRADIENT 08` in the eighth slot.
+Gradient is a project-owned direct WebGL2 tessellated 3D surface with a
+Canvas2D fallback. One indexed draw call combines coherent displacement, smooth
+analytical normals, spatial three-colour mixing, bounded lighting, and a fine
+fragment-stage grain term. It continuously morphs from Tension Plane to
+Chromatic Fold across the smoothed `0–130 km/h` range; the speed readout may
+truthfully exceed that ceiling without unlocking further response. Play the
+Road admits bounded audio breadth/radiance and Soundtrack remains speed-only.
+No ShaderGradient, FeralUI, ColorFlow, or Three.js code, preset, shader, embed,
+asset, or dependency entered the runtime.

@@ -76,6 +76,16 @@ export const FLUX_ENVIRONMENTS = [
     themed: true,
     tunable: true,
   },
+  {
+    id: "gradient",
+    label: "GRADIENT",
+    displayLabel: "Gradient",
+    number: "08",
+    rendererLabel: "Three-dimensional gradient field",
+    launchDescription: "Tension opens into chromatic folds",
+    renderer: "gradient",
+    themed: true,
+  },
 ];
 
 // DISCOVER belongs in the driver-facing Visual catalogue, but it is a
@@ -94,8 +104,9 @@ export const DISCOVER_VISUAL_CHOICE = {
 };
 
 export const FLUX_VISUAL_CHOICES = [
-  ...FLUX_ENVIRONMENTS,
+  ...FLUX_ENVIRONMENTS.filter(({ id }) => id !== "gradient"),
   DISCOVER_VISUAL_CHOICE,
+  FLUX_ENVIRONMENTS.find(({ id }) => id === "gradient"),
 ];
 
 export function getFluxEnvironment(environmentId) {

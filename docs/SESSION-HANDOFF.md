@@ -42,16 +42,17 @@ The registry is `prototype/drive-lab/src/flux-environments.js`.
 | MERIDIAN 03 | original WebGL2 plus Canvas2D fallback | selected-reference corridor of sparse oblique blades and longitudinal planes; bounded vertical field, `50–124°` full-range FOV, stronger UNDERWATER compression and one continuous visual surfacing response |
 | ATLAS 04 | lazy MapLibre/OpenFreeMap WebGL plus one Canvas2D dashboard | ephemeral GPS or explicit Milan demo drives 3D city tiles, a bounded complete-view route, one pulsing position point and a Navigator Plaque; the owner-selected Drive Lab cycles `15 MIN / 1 H / SESSION` across Speed/Distance/Moving/Average, Accel/Braking, five speed bands, continuous Heading history, Moving/Stopped and full-width Open-Meteo/Copernicus Elevation; an icon-only `36 × 30 px` midpoint tab collapses it and ATLAS contains no Discover/Wikipedia surface |
 | DRIVEY 05 | byte-identical Rezmason runtime plus project bridge | road following, lane-centred zero hold, opposing-only traffic, three cameras, and normal/wire modes |
-| PRTCL 06 | original WebGL2 particle renderer | Fractal Frequency, Murmuration, and Axiom with speed-owned form/point scale, depth, and travel |
-All six visuals use ten curated palettes. Vertigo is recoloured without editing
+| PRTCL 06 | original WebGL2 particle renderer | Fractal Frequency, Murmuration, and Axiom with speed-owned form/point scale, depth, and travel; UNDERWATER collapses the complete form dramatically and surfaces quickly |
+| GRADIENT 08 | original direct WebGL2 3D field plus Canvas2D fallback | continuous Tension Plane to Chromatic Fold speed morph, smooth lighting, spatial colour, fine grain; Play the Road adds bounded audio response and Soundtrack remains speed-only |
+All seven visuals use ten curated palettes. Vertigo is recoloured without editing
 its vendor tree. Aperture is the fresh-session and invalid-preference fallback;
 PLUMB and every other retired identifier resolve to it. The fixed
 visual/music energy ceiling is `130 km/h`; Aperture must already read as a
 tunnel near `40 km/h`.
 
-The driver-facing Visual catalogue adds **DISCOVER 07** after those six
+The driver-facing Visual catalogue adds **DISCOVER 07** beside those seven
 renderers. It is a destination, not a render environment: the launch selector
-uses a `3–3–1` grid and opens the Passenger Index over Aperture, while the
+uses a `3–3–2` grid and opens the Passenger Index over Aperture, while the
 running Visual library opens the same surface without changing the active
 environment. Closing Discover returns to the real visual and normal focus
 recovery. This placement is implemented in `e268169`; canonical publication is
@@ -404,9 +405,10 @@ playback-bound activity mark (`R7-13`); the running Visual drawer is now a
 two-column description-led surface (`R5-06`); APERTURE's low-speed wall motion
 now uses smoothed raw speed and cached canvas dimensions without weakening its mapping (`R5-07`); and safe
 product preferences gain lifecycle restoration plus RESET SAVED STATE in splash
-and settings (`R1-03`). The current catalogue has seven choices—six renderers
-plus Discover—and row 11's approved future role is the eighth Original Gradient
-Field, still subject to its three-direction selection gate. “Position” is now
+and settings (`R1-03`). The current catalogue now has eight choices—seven
+renderers plus Discover. Row 11's Original Gradient Field passed its
+three-direction gate; the owner selected the Tension Plane / Chromatic Fold
+hybrid with grain, now implemented locally as `GRADIENT 08`. “Position” is now
 clarified as GPS state: after permission, an app-level collector must continue
 for the whole running session regardless of selected visual and retain the
 latest reliable point plus bounded route/journey history in memory, allowing
@@ -417,8 +419,7 @@ App scope and survive ATLAS remounts without duplicating the watch. Safe stored
 preferences explicitly exclude coordinates. The complete suite passes
 `486/486`; the production build, read-only pre/postflight, byte-identical
 canonical assets and exact local/live `773 × 601` Browser flows pass. Row 11
-Original Gradient Field is now next and begins with the mandatory
-three-direction owner selection gate; target-Tesla tests remain open.
+now awaits canonical publication and target-Tesla motion/performance acceptance.
 
 The owner then explicitly selected native **Minerva dark** for Discover, even
 with Wikipedia's accepted test parameter. Product checkpoint `cdccbd7` replaces

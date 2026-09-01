@@ -490,8 +490,8 @@ export function createPrtclRenderer(canvas, initialPalette, initialTypeId = "fre
         const value = Number(calibration?.[name]);
         return Number.isFinite(value) ? Math.min(maximum, Math.max(minimum, value)) : fallback;
       };
-      const attackSeconds = multiplier("attackMs", 180, 0, 2000) / 1000;
-      const releaseSeconds = multiplier("releaseMs", 640, 0, 3000) / 1000;
+      const attackSeconds = multiplier("attackMs", 120, 0, 2000) / 1000;
+      const releaseSeconds = multiplier("releaseMs", 280, 0, 3000) / 1000;
       if (attackSeconds !== macroAttackSeconds || releaseSeconds !== macroReleaseSeconds) {
         macroAttackSeconds = attackSeconds;
         macroReleaseSeconds = releaseSeconds;

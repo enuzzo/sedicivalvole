@@ -24,7 +24,7 @@ const stylesSource = readFileSync(new URL("../src/styles.css", import.meta.url),
 test("exposes the authored environments in a stable order", () => {
   assert.deepEqual(
     FLUX_ENVIRONMENTS.map(({ id }) => id),
-    ["aperture", "vertigo", "meridian", "atlas", "drivey", "prtcl"],
+    ["aperture", "vertigo", "meridian", "atlas", "drivey", "prtcl", "gradient"],
   );
   assert.equal(getFluxEnvironment("vertigo").label, "VERTIGO");
   assert.equal(getFluxEnvironment("meridian").label, "MERIDIAN");
@@ -36,20 +36,23 @@ test("exposes the authored environments in a stable order", () => {
   assert.equal(getFluxEnvironment("drivey").number, "05");
   assert.equal(getFluxEnvironment("prtcl").label, "PRTCL");
   assert.equal(getFluxEnvironment("prtcl").number, "06");
+  assert.equal(getFluxEnvironment("gradient").label, "GRADIENT");
+  assert.equal(getFluxEnvironment("gradient").number, "08");
   assert.equal(getFluxEnvironment("plumb").id, "aperture");
   assert.equal(getFluxEnvironment("register").id, "aperture");
   assert.equal(getFluxEnvironment("latitudes").id, "aperture");
 });
 
-test("adds Discover as the seventh Visual destination without treating it as a renderer", () => {
+test("keeps Discover seventh and adds Gradient as the eighth rendered Visual", () => {
   assert.deepEqual(
     FLUX_VISUAL_CHOICES.map(({ id }) => id),
-    ["aperture", "vertigo", "meridian", "atlas", "drivey", "prtcl", "discover"],
+    ["aperture", "vertigo", "meridian", "atlas", "drivey", "prtcl", "discover", "gradient"],
   );
   assert.equal(DISCOVER_VISUAL_CHOICE.number, "07");
   assert.equal(DISCOVER_VISUAL_CHOICE.kind, "destination");
   assert.equal(FLUX_ENVIRONMENTS.some(({ id }) => id === "discover"), false);
   assert.equal(getFluxEnvironment("discover").id, DEFAULT_FLUX_ENVIRONMENT_ID);
+  assert.equal(FLUX_VISUAL_CHOICES.at(-1).number, "08");
 });
 
 test("keeps Aperture as the accepted fresh and invalid-preference default", () => {
@@ -101,6 +104,7 @@ test("connects every implemented environment to body-colour theming", () => {
   assert.equal(getFluxEnvironment("atlas").themed, true);
   assert.equal(getFluxEnvironment("drivey").themed, true);
   assert.equal(getFluxEnvironment("prtcl").themed, true);
+  assert.equal(getFluxEnvironment("gradient").themed, true);
 });
 
 test("cycles every environment deterministically and returns to the start", () => {

@@ -72,6 +72,76 @@ final result: passed
 
 ---
 
+# GRADIENT 08 Design QA — 2026-09-02
+
+## Source of truth
+
+- selected direction: one continuous sequence combining the owner-approved
+  low-speed Tension Plane and high-speed Chromatic Fold;
+- slow reference:
+  `/Users/enuzzo/.codex/generated_images/01a056ca-c4ff-7433-92c5-7a0aa0abd6e3/exec-fdcf91cc-0fd8-44c7-ac1c-ccb21dfb3c09.png`;
+- fast reference:
+  `/Users/enuzzo/.codex/generated_images/01a056ca-c4ff-7433-92c5-7a0aa0abd6e3/exec-bf685923-ccf4-4d62-94dc-bfefc45f914d.png`;
+- required additions: visible grain, genuine WebGL/3D shader behavior, strong
+  speed response, Play-the-Road audio response, and Soundtrack speed-only
+  behavior.
+
+The two images are direction references for consecutive speed states, not a
+request to reproduce one frozen frame pixel-for-pixel. Their persistent product
+chrome, ACID 08 palette, central convergence, smooth dimensional surface, and
+slow/fast hierarchy are the comparison anchors.
+
+## Implementation evidence
+
+- environment: local Vite product runtime in the in-app browser;
+- viewport: `773 × 601` CSS pixels;
+- slow state: `20 km/h`, ACID 08, Play the Road;
+- fast state: `130 km/h`, ACID 08, Play the Road;
+- slow capture:
+  `prototype/drive-lab/qa/gradient-design-qa-2026-09-02/gradient-slow-acid-773x601.png`;
+- fast capture:
+  `prototype/drive-lab/qa/gradient-design-qa-2026-09-02/gradient-fast-acid-773x601.png`;
+- full joined comparison used during QA:
+  `/tmp/sedicivalvole-gradient-compare-all-final.png`.
+
+Both source references were normalized to `773 × 601` before being placed
+beside the implementation captures in one comparison image.
+
+## Visible comparison and iteration
+
+1. The first high-speed mesh failed because it read as faceted mountain terrain.
+   Smooth analytical normals and lower high-speed noise removed the facets.
+2. The second mesh still failed because it read as one horizontal landscape
+   with uncovered black regions. Geometry changed to one continuous inside-view
+   cylindrical 3D surface so low speed converges and high speed folds around the
+   viewer.
+3. The first tunnel version failed because it retained a large terminus and an
+   open wedge. The final surface overlaps beyond a complete circumference,
+   extends to the far convergence plane, and uses the matching projection bound.
+4. The final slow state is broad, calm, grain-bearing, and convergent; the final
+   fast state produces multiple large chromatic folds around the same central
+   depth axis. ACID 08 preserves the selected magenta/green hierarchy while the
+   real header, transport, and footer stay unchanged.
+
+## Focused checks
+
+| Region | Result | Evidence |
+|---|---|---|
+| Header and footer | PASS | Existing Road Sheet chrome remains bounded at `773 × 601`. |
+| Slow identity | PASS | Broad Tension Plane, low phase rate, deep convergence, subordinate grain. |
+| Fast identity | PASS | Distinct Chromatic Fold, larger radial deformation, sharper colour separation, no low-poly facets. |
+| State continuity | PASS | One smoothed model and one persistent renderer; no crossfade between presets. |
+| Palette | PASS | Three project palette channels remain simultaneous; ACID 08 supplies the reference comparison. |
+| Interaction | PASS | Transport, selectors, Performance FX, drawer gestures/backdrops, and widened palette remain reachable. |
+| Console | PASS | No warning or error in the captured slow/fast states. |
+
+Target-Tesla sustained frame pacing, thermal behavior, cabin motion comfort, and
+audio-reactive perception remain separate physical acceptance gates.
+
+final result: passed
+
+---
+
 # Design QA — DISCOVER Visual catalogue placement
 
 Date: 2026-09-01
