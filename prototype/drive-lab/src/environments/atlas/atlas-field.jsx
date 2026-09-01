@@ -13,6 +13,7 @@ import {
   ATLAS_ROAD_LAYER_IDS,
   atlasCardinalDirection,
   atlasContinuousHeading,
+  atlasDriveLabMetrics,
   atlasEffectProfile,
   atlasKeyboardShortcutAvailable,
   atlasJourneyDistanceMetres,
@@ -25,7 +26,6 @@ import {
   atlasVehicleFeature,
   createLatestAtlasRequestGate,
   cycleAtlasHistoryRange,
-  normalizeNearbyPages,
   normalizeOpenMeteoElevation,
   openMeteoElevationUrl,
   createAtlasStyle,
@@ -37,7 +37,6 @@ import {
   speedToAtlasEffectCamera,
   validAtlasPosition,
   wheelAtlasZoom,
-  wikipediaNearbyUrl,
 } from "./atlas-model.js";
 import {
   canvasFramebufferSize,
@@ -59,12 +58,8 @@ function formatAtlasDistance(distanceM) {
   return metres < 1000 ? `${Math.round(metres)} m` : `${(metres / 1000).toFixed(1)} km`;
 }
 
-function AtlasJourneyChart({ label, samples, field, color, summary, rangeLabel, fixedMaximum = null }) {
+function AtlasDriveLabCanvas({ samples, metrics, statistics, colors, terrain, rangeLabel }) {
   const canvasRef = useRef(null);
-  const values = samples
-    .map((sample) => sample[field])
-    .filter(Number.isFinite);
-  const hasSeries = values.length >= 2;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -79,58 +74,158 @@ function AtlasJourneyChart({ label, samples, field, color, summary, rangeLabel, 
       if (!context) return;
       context.setTransform(ratio, 0, 0, ratio, 0, 0);
       context.clearRect(0, 0, bounds.width, bounds.height);
-      context.strokeStyle = "rgba(238, 234, 224, .12)";
-      context.lineWidth = 1;
-      for (const fraction of [0, 0.5, 1]) {
-        const y = Math.round(1 + fraction * (bounds.height - 2)) + 0.5;
+      const paper = "rgba(238, 234, 224, .92)";
+      const muted = "rgba(238, 234, 224, .46)";
+      const line = "rgba(238, 234, 224, .13)";
+      const accent = colors.accent;
+      const secondary = colors.secondary;
+      const gap = 8;
+      const halfWidth = (bounds.width - gap) / 2;
+      const microHeight = Math.floor((bounds.height - gap - 104) / 2);
+      const elevationTop = microHeight * 2 + gap * 2;
+      const card = (column, row) => ({
+        x: column * (halfWidth + gap), y: row * (microHeight + gap), width: halfWidth, height: microHeight,
+      });
+      const text = (value, x, y, font, color = paper, align = "left") => {
+        context.fillStyle = color;
+        context.font = font;
+        context.textAlign = align;
+        context.textBaseline = "alphabetic";
+        context.fillText(value, x, y);
+      };
+      const frame = ({ x, y, width, height }) => {
+        context.fillStyle = "rgba(255,255,255,.018)";
+        context.fillRect(x, y, width, height);
+        context.strokeStyle = line;
+        context.lineWidth = 1;
+        context.strokeRect(x + .5, y + .5, width - 1, height - 1);
+      };
+      const label = (value, region) => text(value, region.x + 8, region.y + 14, "600 8px ui-monospace, monospace", muted);
+      const percent = (value) => `${Math.round(Math.max(0, Math.min(1, value)) * 100)}%`;
+
+      const balance = card(0, 0);
+      frame(balance);
+      label("ACCEL / BRAKING", balance);
+      text(percent(metrics.accelerationShare), balance.x + 8, balance.y + 32, "600 15px ui-sans-serif, sans-serif", accent);
+      text(percent(metrics.brakingShare), balance.x + balance.width - 8, balance.y + 32, "600 15px ui-sans-serif, sans-serif", secondary, "right");
+      const balanceX = balance.x + 8;
+      const balanceY = balance.y + balance.height - 17;
+      const balanceWidth = balance.width - 16;
+      context.fillStyle = "rgba(238,234,224,.1)";
+      context.fillRect(balanceX, balanceY, balanceWidth, 7);
+      context.fillStyle = accent;
+      context.fillRect(balanceX, balanceY, balanceWidth * metrics.accelerationShare, 7);
+      context.fillStyle = secondary;
+      context.fillRect(balanceX + balanceWidth * metrics.accelerationShare, balanceY, balanceWidth * metrics.brakingShare, 7);
+
+      const bands = card(1, 0);
+      frame(bands);
+      label("SPEED BANDS", bands);
+      const bandMaximum = Math.max(1, ...metrics.speedBands.map((band) => band.share));
+      const bandGap = 4;
+      const bandWidth = (bands.width - 16 - bandGap * 4) / 5;
+      metrics.speedBands.forEach((band, index) => {
+        const x = bands.x + 8 + index * (bandWidth + bandGap);
+        const availableHeight = Math.max(16, bands.height - 44);
+        const height = Math.max(2, availableHeight * band.share / bandMaximum);
+        context.fillStyle = index === 4 ? secondary : accent;
+        context.globalAlpha = .48 + index * .1;
+        context.fillRect(x, bands.y + bands.height - 17 - height, bandWidth, height);
+        context.globalAlpha = 1;
+        text(["0", "30", "60", "90", "130+"][index], x + bandWidth / 2, bands.y + bands.height - 5, "600 6px ui-monospace, monospace", muted, "center");
+      });
+
+      const heading = card(0, 1);
+      frame(heading);
+      label("HEADING HISTORY", heading);
+      const headings = samples.filter((sample) => Number.isFinite(sample.headingDegrees));
+      const currentHeading = headings.at(-1)?.headingDegrees;
+      text(Number.isFinite(currentHeading) ? `${atlasCardinalDirection(currentHeading)} ${Math.round(currentHeading)}°` : "COLLECTING", heading.x + 8, heading.y + 32, "600 14px ui-sans-serif, sans-serif", paper);
+      if (headings.length >= 2) {
+        const continuous = [];
+        headings.forEach((sample) => continuous.push(atlasContinuousHeading(continuous.at(-1), sample.headingDegrees)));
+        const minimum = Math.min(...continuous);
+        const maximum = Math.max(...continuous);
+        const span = Math.max(45, maximum - minimum);
+        context.strokeStyle = accent;
+        context.lineWidth = 1.5;
+        context.lineJoin = "round";
         context.beginPath();
-        context.moveTo(0, y);
-        context.lineTo(bounds.width, y);
+        continuous.forEach((value, index) => {
+          const x = heading.x + 8 + index / Math.max(1, continuous.length - 1) * (heading.width - 16);
+          const y = heading.y + heading.height - 10 - (value - minimum) / span * Math.max(12, heading.height - 50);
+          if (index) context.lineTo(x, y); else context.moveTo(x, y);
+        });
         context.stroke();
       }
-      const plotted = samples.filter((sample) => Number.isFinite(sample[field]));
-      if (plotted.length < 2) return;
-      const minimum = fixedMaximum == null ? Math.min(...plotted.map((sample) => sample[field])) : 0;
-      const observedMaximum = Math.max(...plotted.map((sample) => sample[field]));
-      const maximum = fixedMaximum == null ? observedMaximum : Math.max(fixedMaximum, observedMaximum);
-      const padding = fixedMaximum == null ? Math.max(4, (maximum - minimum) * 0.2) : 0;
-      const domainMinimum = minimum - padding;
-      const domainMaximum = Math.max(domainMinimum + 1, maximum + padding);
-      context.strokeStyle = color;
-      context.lineWidth = 1.75;
-      context.lineJoin = "round";
-      context.lineCap = "round";
-      const timeMinimum = samples[0]?.capturedAtMs ?? 0;
-      const timeMaximum = Math.max(timeMinimum + 1, samples.at(-1)?.capturedAtMs ?? timeMinimum + 1);
-      let drawing = false;
-      context.beginPath();
-      samples.forEach((sample) => {
-        if (!Number.isFinite(sample[field])) {
-          drawing = false;
-          return;
-        }
-        const x = ((sample.capturedAtMs - timeMinimum) / (timeMaximum - timeMinimum)) * bounds.width;
-        const y = bounds.height - ((sample[field] - domainMinimum) / (domainMaximum - domainMinimum)) * bounds.height;
-        if (!drawing) context.moveTo(x, y);
-        else context.lineTo(x, y);
-        drawing = true;
-      });
-      context.stroke();
+
+      const motion = card(1, 1);
+      frame(motion);
+      label("MOVING / STOPPED", motion);
+      text(percent(metrics.movingShare), motion.x + 8, motion.y + 32, "600 15px ui-sans-serif, sans-serif", accent);
+      text(percent(metrics.stoppedShare), motion.x + motion.width - 8, motion.y + 32, "600 15px ui-sans-serif, sans-serif", muted, "right");
+      const motionX = motion.x + 8;
+      const motionY = motion.y + motion.height - 17;
+      const motionWidth = motion.width - 16;
+      context.fillStyle = "rgba(238,234,224,.16)";
+      context.fillRect(motionX, motionY, motionWidth, 7);
+      context.fillStyle = accent;
+      context.fillRect(motionX, motionY, motionWidth * metrics.movingShare, 7);
+
+      const elevation = { x: 0, y: elevationTop, width: bounds.width, height: bounds.height - elevationTop };
+      frame(elevation);
+      label("ELEVATION", elevation);
+      const elevationValues = samples.filter((sample) => Number.isFinite(sample.groundElevationM));
+      const elevationMinimum = statistics.minimumGroundElevationM;
+      const elevationMaximum = statistics.maximumGroundElevationM;
+      const elevationSummary = Number.isFinite(elevationMinimum) && Number.isFinite(elevationMaximum)
+        ? `${Math.round(elevationMinimum)}–${Math.round(elevationMaximum)} M`
+        : terrain.status === "loading" ? "LOADING" : "UNAVAILABLE";
+      text(elevationSummary, elevation.x + elevation.width - 8, elevation.y + 13, "600 7px ui-monospace, monospace", terrain.status === "live" ? accent : muted, "right");
+      if (elevationValues.length >= 2) {
+        const minimum = Math.min(...elevationValues.map((sample) => sample.groundElevationM));
+        const maximum = Math.max(...elevationValues.map((sample) => sample.groundElevationM));
+        const span = Math.max(4, maximum - minimum);
+        const timeMinimum = elevationValues[0].capturedAtMs;
+        const timeMaximum = Math.max(timeMinimum + 1, elevationValues.at(-1).capturedAtMs);
+        context.beginPath();
+        elevationValues.forEach((sample, index) => {
+          const x = elevation.x + 8 + (sample.capturedAtMs - timeMinimum) / (timeMaximum - timeMinimum) * (elevation.width - 16);
+          const y = elevation.y + elevation.height - 13 - (sample.groundElevationM - minimum) / span * (elevation.height - 36);
+          if (index) context.lineTo(x, y); else context.moveTo(x, y);
+        });
+        context.lineTo(elevation.x + elevation.width - 8, elevation.y + elevation.height - 10);
+        context.lineTo(elevation.x + 8, elevation.y + elevation.height - 10);
+        context.closePath();
+        const gradient = context.createLinearGradient(0, elevation.y, 0, elevation.y + elevation.height);
+        gradient.addColorStop(0, secondary.replace(")", " / .46)"));
+        gradient.addColorStop(1, secondary.replace(")", " / .03)"));
+        context.fillStyle = gradient;
+        context.fill();
+        context.strokeStyle = secondary;
+        context.lineWidth = 1.75;
+        context.beginPath();
+        elevationValues.forEach((sample, index) => {
+          const x = elevation.x + 8 + (sample.capturedAtMs - timeMinimum) / (timeMaximum - timeMinimum) * (elevation.width - 16);
+          const y = elevation.y + elevation.height - 13 - (sample.groundElevationM - minimum) / span * (elevation.height - 36);
+          if (index) context.lineTo(x, y); else context.moveTo(x, y);
+        });
+        context.stroke();
+      } else {
+        text("COLLECTING TERRAIN SAMPLES", elevation.x + 8, elevation.y + elevation.height - 18, "600 7px ui-monospace, monospace", muted);
+      }
+      text(rangeLabel, elevation.x + elevation.width - 8, elevation.y + elevation.height - 8, "600 6px ui-monospace, monospace", muted, "right");
     };
     draw();
     const observer = new ResizeObserver(draw);
     observer.observe(canvas);
     return () => observer.disconnect();
-  }, [color, field, fixedMaximum, samples]);
+  }, [colors, metrics, rangeLabel, samples, statistics, terrain.status]);
+
+  const summary = `Acceleration ${Math.round(metrics.accelerationShare * 100)} percent, braking ${Math.round(metrics.brakingShare * 100)} percent. Moving ${Math.round(metrics.movingShare * 100)} percent, stopped ${Math.round(metrics.stoppedShare * 100)} percent. Elevation ${Number.isFinite(statistics.minimumGroundElevationM) ? `${Math.round(statistics.minimumGroundElevationM)} to ${Math.round(statistics.maximumGroundElevationM)} metres` : "not yet available"}.`;
 
   return (
-    <div className={`atlas-journey-chart${hasSeries ? "" : " is-empty"}`}>
-      <div className="atlas-journey-chart-label">
-        <small>{label}</small>
-        <span>{hasSeries ? summary : "COLLECTING"}</span>
-      </div>
-      <canvas ref={canvasRef} role="img" aria-label={`${label}: ${hasSeries ? `${rangeLabel} trend, ${summary}` : "waiting for two samples"}`} />
-    </div>
+    <canvas className="atlas-drive-lab-canvas" ref={canvasRef} role="img" aria-label={summary} />
   );
 }
 
@@ -168,34 +263,18 @@ function recolourStyle(map, palette, effect = null) {
   }
 }
 
-function NearbyPanel({
-  pages,
-  selectedId,
-  onSelect,
-  qrUrl,
-  loading,
+function AtlasDriveLabPanel({
   demo,
   collapsed,
-  visiblePlaceCount,
   speed,
-  roadName,
   journey,
   colors,
   historyRange,
   onCycleHistoryRange,
   terrain,
 }) {
-  const selected = pages.find((page) => page.id === selectedId) ?? pages[0];
-  const location = pages[0];
-  const nearby = pages.filter((page) => page.id !== selected?.id).slice(0, visiblePlaceCount);
-  const groundElevation = Number.isFinite(journey.groundElevationM)
-    ? `${Math.round(journey.groundElevationM)} m`
-    : "— m";
-  const speedSummary = `AVG ${Number.isFinite(journey.statistics.averageSpeedKmh) ? Math.round(journey.statistics.averageSpeedKmh) : "—"} · MOV ${Number.isFinite(journey.statistics.movingAverageSpeedKmh) ? Math.round(journey.statistics.movingAverageSpeedKmh) : "—"} · MAX ${Number.isFinite(journey.statistics.maximumSpeedKmh) ? Math.round(journey.statistics.maximumSpeedKmh) : "—"}`;
-  const elevationSummary = Number.isFinite(journey.statistics.minimumGroundElevationM)
-    && Number.isFinite(journey.statistics.maximumGroundElevationM)
-    ? `${Math.round(journey.statistics.minimumGroundElevationM)}–${Math.round(journey.statistics.maximumGroundElevationM)} M`
-    : terrain.status === "loading" ? "TERRAIN LOADING" : "TERRAIN UNAVAILABLE";
+  const metrics = useMemo(() => atlasDriveLabMetrics(journey.samples), [journey.samples]);
+  const movingTimeMs = journey.elapsedMs * metrics.movingShare;
   return (
     <aside
       id="atlas-passenger-panel"
@@ -204,9 +283,9 @@ function NearbyPanel({
       aria-hidden={collapsed}
       inert={collapsed ? true : undefined}
     >
-      <section className="atlas-live-motion" aria-label="Live journey status">
+      <section className="atlas-drive-lab" aria-label="Atlas Drive Lab journey telemetry">
         <header className="atlas-panel-section-heading">
-          <small>LIVE MOTION</small>
+          <div><small>ATLAS</small><strong>DRIVE LAB</strong></div>
           <button
             type="button"
             className="atlas-history-range"
@@ -217,33 +296,18 @@ function NearbyPanel({
             {historyRange.label}
           </button>
         </header>
-        <div className="atlas-motion-readouts">
-          <div className="atlas-speed-readout">
-            <small>GPS SPEED</small>
-            <strong>{Math.round(Math.max(0, Number(speed) || 0))}</strong>
-            <span>KM/H</span>
-          </div>
-          <dl>
-            <div><dt>GROUND</dt><dd>{groundElevation}</dd></div>
-            <div><dt>DISTANCE</dt><dd>{formatAtlasDistance(journey.distanceM)}</dd></div>
-            <div><dt>TRIP TIME</dt><dd>{formatAtlasDuration(journey.elapsedMs)}</dd></div>
-          </dl>
-        </div>
-        <AtlasJourneyChart
-          label="SPEED HISTORY"
+        <dl className="atlas-drive-summary">
+          <div><dt>SPEED</dt><dd>{Math.round(Math.max(0, Number(speed) || 0))}<span>KM/H</span></dd></div>
+          <div><dt>DISTANCE</dt><dd>{formatAtlasDistance(journey.distanceM)}</dd></div>
+          <div><dt>MOVING</dt><dd>{formatAtlasDuration(movingTimeMs)}</dd></div>
+          <div><dt>AVG SPEED</dt><dd>{Number.isFinite(journey.statistics.averageSpeedKmh) ? Math.round(journey.statistics.averageSpeedKmh) : "—"}<span>KM/H</span></dd></div>
+        </dl>
+        <AtlasDriveLabCanvas
           samples={journey.samples}
-          field="speedKmh"
-          color={colors.accent}
-          summary={speedSummary}
-          rangeLabel={historyRange.label}
-          fixedMaximum={130}
-        />
-        <AtlasJourneyChart
-          label="GROUND HISTORY"
-          samples={journey.samples}
-          field="groundElevationM"
-          color={colors.secondary}
-          summary={elevationSummary}
+          metrics={metrics}
+          statistics={journey.statistics}
+          colors={colors}
+          terrain={terrain}
           rangeLabel={historyRange.label}
         />
         <div className={`atlas-terrain-source is-${terrain.status}`}>
@@ -257,52 +321,6 @@ function NearbyPanel({
             {terrain.status.toUpperCase()} · OPEN-METEO / COPERNICUS
           </a>
         </div>
-      </section>
-      <section className="atlas-place-context" aria-label="Current place and nearby reading">
-        <header>
-          <small>WHERE YOU ARE</small>
-          <strong>{location?.title ?? (loading ? "Reading the city…" : "Location unavailable")}</strong>
-          <span>{roadName ?? (demo ? "Milan demonstration route" : "Road name unavailable")}</span>
-        </header>
-        {selected?.summary || selected?.thumbnail ? (
-          <div className={`atlas-selected-context${selected.thumbnail ? "" : " is-text-only"}`}>
-            {selected.thumbnail ? (
-              <img
-                src={selected.thumbnail}
-                width={selected.thumbnailWidth ?? undefined}
-                height={selected.thumbnailHeight ?? undefined}
-                alt=""
-                decoding="async"
-              />
-            ) : null}
-            <div>
-              <strong>{selected.title}</strong>
-              {selected.summary ? <p>{selected.summary}</p> : null}
-            </div>
-          </div>
-        ) : null}
-        {nearby.length ? (
-          <div className="atlas-places">
-            <small>NEARBY</small>
-            {nearby.map((page) => (
-            <button
-              key={page.id}
-              type="button"
-              className={page.id === selected?.id ? "active" : ""}
-              onClick={() => onSelect(page.id)}
-            >
-              <span>{String(pages.indexOf(page) + 1).padStart(2, "0")}</span>
-              <strong>{page.title}</strong>
-            </button>
-          ))}
-          </div>
-        ) : null}
-        {selected && qrUrl ? (
-          <a className="atlas-qr" href={selected.url} target="_blank" rel="noreferrer" aria-label={`Open ${selected.title} on Wikipedia`}>
-            <img src={qrUrl} alt="" />
-            <span>OPEN PLACE ARTICLE</span>
-          </a>
-        ) : null}
       </section>
     </aside>
   );
@@ -324,31 +342,22 @@ export default function AtlasField({
   const hostRef = useRef(null);
   const mapRef = useRef(null);
   const valuesRef = useRef({ speed, theme, position, positionSamplesRef, reducedMotion, effect });
-  const [pages, setPages] = useState([]);
-  const [selectedId, setSelectedId] = useState(null);
-  const [qrUrl, setQrUrl] = useState("");
-  const [loading, setLoading] = useState(false);
   const [demoPosition, setDemoPosition] = useState(null);
   const [panelCollapsed, setPanelCollapsed] = useState(false);
   const [displayCamera, setDisplayCamera] = useState(null);
   const [roadName, setRoadName] = useState(null);
-  const [visiblePlaceCount, setVisiblePlaceCount] = useState(() => (window.innerHeight >= 560 ? 2 : 1));
   const [historyRangeId, setHistoryRangeId] = useState(ATLAS_HISTORY_RANGES[0].id);
   const [journey, setJourney] = useState({
     recentSamples: [], sessionSamples: [], distanceM: 0, elapsedMs: 0,
     gpsAltitudeM: null, groundElevationM: null, nowMs: 0,
   });
   const [terrain, setTerrain] = useState({ elevationM: null, status: "unavailable" });
-  const nearbyRequestGateRef = useRef(null);
-  const qrRequestGateRef = useRef(null);
   const elevationRequestGateRef = useRef(null);
   const travelPointsRef = useRef([]);
   const journeySamplesRef = useRef([]);
   const sessionJourneySamplesRef = useRef([]);
   const terrainRef = useRef({ elevationM: null, status: "unavailable" });
   const journeyStartedAtRef = useRef(null);
-  if (!nearbyRequestGateRef.current) nearbyRequestGateRef.current = createLatestAtlasRequestGate();
-  if (!qrRequestGateRef.current) qrRequestGateRef.current = createLatestAtlasRequestGate();
   if (!elevationRequestGateRef.current) elevationRequestGateRef.current = createLatestAtlasRequestGate();
   valuesRef.current = {
     speed, theme, position, positionSamplesRef, reducedMotion, effect, demoPosition,
@@ -359,10 +368,6 @@ export default function AtlasField({
     return demoPosition;
   }, [position, demoPosition]);
   const canStart = Boolean(effectivePosition);
-  const nearbyPosition = useMemo(() => effectivePosition ? {
-    latitude: Math.round(effectivePosition.latitude * 20) / 20,
-    longitude: Math.round(effectivePosition.longitude * 20) / 20,
-  } : null, [effectivePosition?.latitude, effectivePosition?.longitude]);
   const elevationPosition = useMemo(() => effectivePosition ? {
     latitude: Math.round(effectivePosition.latitude * 1000) / 1000,
     longitude: Math.round(effectivePosition.longitude * 1000) / 1000,
@@ -402,11 +407,12 @@ export default function AtlasField({
         speedKmh: valuesRef.current.speed,
         altitudeM: gpsAltitudeM,
         groundElevationM,
+        headingDegrees: latestPosition?.heading,
       };
       journeySamplesRef.current = appendAtlasJourneySample(journeySamplesRef.current, nextSample);
       sessionJourneySamplesRef.current = appendAtlasSessionJourneySample(
         sessionJourneySamplesRef.current,
-        nextSample,
+        journeySamplesRef.current.at(-1) ?? nextSample,
       );
       setJourney({
         recentSamples: journeySamplesRef.current,
@@ -806,65 +812,6 @@ export default function AtlasField({
     };
   }, [panelCollapsed]);
 
-  useEffect(() => {
-    const resize = () => setVisiblePlaceCount(window.innerHeight >= 700 ? 3 : window.innerHeight >= 560 ? 2 : 1);
-    resize();
-    window.addEventListener("resize", resize);
-    return () => window.removeEventListener("resize", resize);
-  }, []);
-
-  useEffect(() => {
-    const request = nearbyRequestGateRef.current.begin();
-    const url = wikipediaNearbyUrl(nearbyPosition);
-    if (!url) {
-      request.commit(() => {
-        setPages([]);
-        setLoading(false);
-      });
-      return () => request.cancel();
-    }
-    const controller = new AbortController();
-    request.commit(() => setLoading(true));
-    fetch(url, { signal: controller.signal })
-      .then((response) => response.ok ? response.json() : Promise.reject(new Error("nearby unavailable")))
-      .then((payload) => {
-        request.commit(() => {
-          const nextPages = normalizeNearbyPages(payload);
-          setPages(nextPages);
-          setSelectedId(nextPages[0]?.id ?? null);
-        });
-      })
-      .catch((error) => {
-        request.commit(() => {
-          if (error.name !== "AbortError") setPages([]);
-        });
-      })
-      .finally(() => request.commit(() => setLoading(false)));
-    return () => {
-      request.cancel();
-      controller.abort();
-    };
-  }, [nearbyPosition?.latitude, nearbyPosition?.longitude]);
-
-  useEffect(() => {
-    const request = qrRequestGateRef.current.begin();
-    request.commit(() => setQrUrl(""));
-    const selected = pages.find((page) => page.id === selectedId) ?? pages[0];
-    if (!selected) {
-      return () => request.cancel();
-    }
-    import("qrcode").then(({ default: QRCode }) => QRCode.toDataURL(selected.url, {
-      width: 192,
-      margin: 1,
-      color: { dark: "#09090b", light: "#f1eee5" },
-    })).then((dataUrl) => {
-      request.commit(() => setQrUrl(dataUrl));
-    }).catch(() => {
-      request.commit(() => setQrUrl(""));
-    });
-    return () => request.cancel();
-  }, [pages, selectedId]);
-
   if (!effectivePosition) {
     return (
       <section className="atlas-field is-unlocated" aria-label="Atlas is waiting for location permission">
@@ -907,23 +854,15 @@ export default function AtlasField({
         type="button"
         aria-controls="atlas-passenger-panel"
         aria-expanded={!panelCollapsed}
-        aria-label={panelCollapsed ? "Open Atlas passenger panel" : "Collapse Atlas passenger panel"}
+        aria-label={panelCollapsed ? "Open Atlas Drive Lab" : "Collapse Atlas Drive Lab"}
         onClick={() => setPanelCollapsed((current) => !current)}
       >
         <span className={`atlas-panel-toggle-icon ${panelCollapsed ? "is-open" : "is-collapse"}`} aria-hidden="true" />
-        <span className="atlas-panel-toggle-label">{panelCollapsed ? "SHOW INFO" : "HIDE INFO"}</span>
       </button>
-      <NearbyPanel
-        pages={pages}
-        selectedId={selectedId}
-        onSelect={setSelectedId}
-        qrUrl={qrUrl}
-        loading={loading}
+      <AtlasDriveLabPanel
         demo={demo}
         collapsed={panelCollapsed}
-        visiblePlaceCount={visiblePlaceCount}
         speed={speed}
-        roadName={roadName}
         journey={{
           ...journey,
           samples: selectedJourneySamples,

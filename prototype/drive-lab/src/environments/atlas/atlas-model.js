@@ -19,6 +19,14 @@ export const ATLAS_JOURNEY_SAMPLE_INTERVAL_MS = 2000;
 export const ATLAS_JOURNEY_HISTORY_LIMIT = 1800;
 export const ATLAS_SESSION_HISTORY_LIMIT = 720;
 export const ATLAS_MOVING_SPEED_THRESHOLD_KMH = 2;
+export const ATLAS_MOTION_DELTA_THRESHOLD_KMH = 1;
+export const ATLAS_SPEED_BANDS = Object.freeze([
+  Object.freeze({ id: "urban", label: "0–30", minimumKmh: 0, maximumKmh: 30 }),
+  Object.freeze({ id: "city", label: "30–60", minimumKmh: 30, maximumKmh: 60 }),
+  Object.freeze({ id: "road", label: "60–90", minimumKmh: 60, maximumKmh: 90 }),
+  Object.freeze({ id: "fast", label: "90–130", minimumKmh: 90, maximumKmh: 130 }),
+  Object.freeze({ id: "over", label: "130+", minimumKmh: 130, maximumKmh: Infinity }),
+]);
 export const ATLAS_HISTORY_RANGES = Object.freeze([
   Object.freeze({ id: "15m", label: "15 MIN", durationMs: 15 * 60 * 1000 }),
   Object.freeze({ id: "1h", label: "1 H", durationMs: 60 * 60 * 1000 }),
@@ -125,11 +133,20 @@ export function appendAtlasJourneySample(
   const speedKmh = sample?.speedKmh;
   const altitudeM = sample?.altitudeM;
   const groundElevationM = sample?.groundElevationM;
+  const headingDegrees = Number.isFinite(sample?.headingDegrees)
+    ? normalizeAtlasAngle(sample.headingDegrees)
+    : null;
+  const speedDeltaKmh = Number.isFinite(speedKmh) && Number.isFinite(last?.speedKmh)
+    ? speedKmh - last.speedKmh
+    : 0;
   const next = [...previous, {
     capturedAtMs,
     speedKmh: Number.isFinite(speedKmh) ? Math.max(0, speedKmh) : null,
     altitudeM: Number.isFinite(altitudeM) ? altitudeM : null,
     groundElevationM: Number.isFinite(groundElevationM) ? groundElevationM : null,
+    headingDegrees,
+    accelerationGainKmh: speedDeltaKmh >= ATLAS_MOTION_DELTA_THRESHOLD_KMH ? speedDeltaKmh : 0,
+    brakingLossKmh: speedDeltaKmh <= -ATLAS_MOTION_DELTA_THRESHOLD_KMH ? Math.abs(speedDeltaKmh) : 0,
   }];
   return next.slice(-Math.max(2, Math.floor(Number(maximumSamples) || ATLAS_JOURNEY_HISTORY_LIMIT)));
 }
@@ -142,11 +159,19 @@ function atlasSessionSample(sample) {
   const groundElevationM = Number.isFinite(sample?.groundElevationM)
     ? sample.groundElevationM
     : null;
+  const headingDegrees = Number.isFinite(sample?.headingDegrees)
+    ? normalizeAtlasAngle(sample.headingDegrees)
+    : null;
+  const headingRadians = Number.isFinite(headingDegrees) ? headingDegrees * Math.PI / 180 : null;
+  const speedBandCounts = ATLAS_SPEED_BANDS.map((band) => (
+    Number.isFinite(speedKmh) && speedKmh >= band.minimumKmh && speedKmh < band.maximumKmh ? 1 : 0
+  ));
   return {
     capturedAtMs,
     speedKmh,
     altitudeM,
     groundElevationM,
+    headingDegrees,
     sampleCount: 1,
     speedSampleCount: Number.isFinite(speedKmh) ? 1 : 0,
     speedSumKmh: Number.isFinite(speedKmh) ? speedKmh : 0,
@@ -157,6 +182,12 @@ function atlasSessionSample(sample) {
     speedMaximumKmh: speedKmh,
     groundMinimumM: groundElevationM,
     groundMaximumM: groundElevationM,
+    headingSampleCount: Number.isFinite(headingDegrees) ? 1 : 0,
+    headingSinSum: Number.isFinite(headingRadians) ? Math.sin(headingRadians) : 0,
+    headingCosSum: Number.isFinite(headingRadians) ? Math.cos(headingRadians) : 0,
+    accelerationGainKmh: Number.isFinite(sample?.accelerationGainKmh) ? sample.accelerationGainKmh : 0,
+    brakingLossKmh: Number.isFinite(sample?.brakingLossKmh) ? sample.brakingLossKmh : 0,
+    speedBandCounts,
   };
 }
 
@@ -181,11 +212,18 @@ function mergeAtlasSessionSamples(first, second) {
     const values = finiteValues(field);
     return values.length ? Math.max(...values) : null;
   };
+  const headingSampleCount = (first.headingSampleCount ?? 0) + (second.headingSampleCount ?? 0);
+  const headingSinSum = (first.headingSinSum ?? 0) + (second.headingSinSum ?? 0);
+  const headingCosSum = (first.headingCosSum ?? 0) + (second.headingCosSum ?? 0);
+  const headingDegrees = headingSampleCount
+    ? normalizeAtlasAngle(Math.atan2(headingSinSum, headingCosSum) * 180 / Math.PI)
+    : null;
   return {
     capturedAtMs: average("capturedAtMs"),
     speedKmh: average("speedKmh"),
     altitudeM: average("altitudeM"),
     groundElevationM: average("groundElevationM"),
+    headingDegrees,
     sampleCount,
     speedSampleCount: first.speedSampleCount + second.speedSampleCount,
     speedSumKmh: first.speedSumKmh + second.speedSumKmh,
@@ -194,6 +232,14 @@ function mergeAtlasSessionSamples(first, second) {
     speedMaximumKmh: maximum("speedMaximumKmh"),
     groundMinimumM: minimum("groundMinimumM"),
     groundMaximumM: maximum("groundMaximumM"),
+    headingSampleCount,
+    headingSinSum,
+    headingCosSum,
+    accelerationGainKmh: (first.accelerationGainKmh ?? 0) + (second.accelerationGainKmh ?? 0),
+    brakingLossKmh: (first.brakingLossKmh ?? 0) + (second.brakingLossKmh ?? 0),
+    speedBandCounts: ATLAS_SPEED_BANDS.map((_, index) => (
+      (first.speedBandCounts?.[index] ?? 0) + (second.speedBandCounts?.[index] ?? 0)
+    )),
   };
 }
 
@@ -301,6 +347,55 @@ export function atlasJourneyStatistics(samples) {
     minimumGroundElevationM,
     maximumGroundElevationM,
     sampleCount: speedSampleCount,
+  };
+}
+
+export function atlasDriveLabMetrics(samples) {
+  const source = Array.isArray(samples) ? samples : [];
+  const speedBandCounts = ATLAS_SPEED_BANDS.map(() => 0);
+  let speedSampleCount = 0;
+  let movingSampleCount = 0;
+  let accelerationGainKmh = 0;
+  let brakingLossKmh = 0;
+  source.forEach((sample) => {
+    const sampleWeight = Number.isFinite(sample?.speedSampleCount)
+      ? sample.speedSampleCount
+      : Number.isFinite(sample?.speedKmh) ? 1 : 0;
+    const movingWeight = Number.isFinite(sample?.movingSampleCount)
+      ? sample.movingSampleCount
+      : Number.isFinite(sample?.speedKmh) && sample.speedKmh >= ATLAS_MOVING_SPEED_THRESHOLD_KMH ? 1 : 0;
+    speedSampleCount += sampleWeight;
+    movingSampleCount += movingWeight;
+    accelerationGainKmh += Math.max(0, Number(sample?.accelerationGainKmh) || 0);
+    brakingLossKmh += Math.max(0, Number(sample?.brakingLossKmh) || 0);
+    if (Array.isArray(sample?.speedBandCounts)) {
+      sample.speedBandCounts.forEach((count, index) => {
+        if (index < speedBandCounts.length) speedBandCounts[index] += Math.max(0, Number(count) || 0);
+      });
+    } else if (Number.isFinite(sample?.speedKmh)) {
+      const index = ATLAS_SPEED_BANDS.findIndex((band) => (
+        sample.speedKmh >= band.minimumKmh && sample.speedKmh < band.maximumKmh
+      ));
+      if (index >= 0) speedBandCounts[index] += 1;
+    }
+  });
+  const motionTotalKmh = accelerationGainKmh + brakingLossKmh;
+  const stoppedSampleCount = Math.max(0, speedSampleCount - movingSampleCount);
+  return {
+    accelerationGainKmh,
+    brakingLossKmh,
+    accelerationShare: motionTotalKmh ? accelerationGainKmh / motionTotalKmh : 0,
+    brakingShare: motionTotalKmh ? brakingLossKmh / motionTotalKmh : 0,
+    speedBands: ATLAS_SPEED_BANDS.map((band, index) => ({
+      ...band,
+      count: speedBandCounts[index],
+      share: speedSampleCount ? speedBandCounts[index] / speedSampleCount : 0,
+    })),
+    speedSampleCount,
+    movingSampleCount,
+    stoppedSampleCount,
+    movingShare: speedSampleCount ? movingSampleCount / speedSampleCount : 0,
+    stoppedShare: speedSampleCount ? stoppedSampleCount / speedSampleCount : 0,
   };
 }
 

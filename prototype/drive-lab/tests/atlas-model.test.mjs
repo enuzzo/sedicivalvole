@@ -13,6 +13,7 @@ import {
   ATLAS_JOURNEY_SAMPLE_INTERVAL_MS,
   ATLAS_HISTORY_RANGES,
   ATLAS_SESSION_HISTORY_LIMIT,
+  ATLAS_SPEED_BANDS,
   ATLAS_MARKER_UPDATE_INTERVAL_MS,
   ATLAS_MAXIMUM_PIXEL_RATIO,
   ATLAS_MANUAL_CAMERA_LIMITS,
@@ -25,6 +26,7 @@ import {
   atlasCardinalDirection,
   atlasContinuousHeading,
   atlasContrastRatio,
+  atlasDriveLabMetrics,
   atlasEffectProfile,
   atlasGpsPresentation,
   atlasKeyboardShortcutAvailable,
@@ -300,6 +302,7 @@ test("Atlas keeps a bounded, truthful live journey history", () => {
   });
   assert.deepEqual(samples, [{
     capturedAtMs: 1000, speedKmh: 42, altitudeM: 121.4, groundElevationM: null,
+    headingDegrees: null, accelerationGainKmh: 0, brakingLossKmh: 0,
   }]);
   assert.equal(appendAtlasJourneySample(samples, {
     capturedAtMs: 2999,
@@ -313,6 +316,7 @@ test("Atlas keeps a bounded, truthful live journey history", () => {
   });
   assert.deepEqual(samples.at(-1), {
     capturedAtMs: 3000, speedKmh: 50, altitudeM: null, groundElevationM: null,
+    headingDegrees: null, accelerationGainKmh: 8, brakingLossKmh: 0,
   });
   assert.equal(appendAtlasJourneySample(samples, { capturedAtMs: Number.NaN }), samples);
   for (let index = 0; index < 1900; index += 1) {
@@ -370,6 +374,31 @@ test("Atlas cycles 15 minute, one hour and bounded all-session histories", () =>
   assert.equal(statistics.maximumGroundElevationM, 129);
   assert.ok(statistics.averageSpeedKmh > 45 && statistics.averageSpeedKmh < 55);
   assert.ok(statistics.movingAverageSpeedKmh > statistics.averageSpeedKmh);
+});
+
+test("Atlas Drive Lab derives truthful motion, speed-band and heading telemetry", () => {
+  assert.deepEqual(ATLAS_SPEED_BANDS.map((band) => band.label), ["0–30", "30–60", "60–90", "90–130", "130+"]);
+  let samples = [];
+  for (const [index, speedKmh, headingDegrees] of [
+    [0, 0, 350], [1, 20, 355], [2, 10, 2], [3, 70, 8],
+  ]) {
+    samples = appendAtlasJourneySample(samples, {
+      capturedAtMs: index * ATLAS_JOURNEY_SAMPLE_INTERVAL_MS,
+      speedKmh,
+      headingDegrees,
+      groundElevationM: 100 + index,
+    });
+  }
+  const metrics = atlasDriveLabMetrics(samples);
+  assert.equal(metrics.accelerationGainKmh, 80);
+  assert.equal(metrics.brakingLossKmh, 10);
+  assert.equal(metrics.movingSampleCount, 3);
+  assert.equal(metrics.stoppedSampleCount, 1);
+  assert.deepEqual(metrics.speedBands.map((band) => band.count), [3, 0, 1, 0, 0]);
+  assert.equal(samples.at(-1).headingDegrees, 8);
+  const steady = atlasDriveLabMetrics([{ capturedAtMs: 0, speedKmh: 0 }]);
+  assert.equal(steady.accelerationShare, 0);
+  assert.equal(steady.brakingShare, 0);
 });
 
 test("Atlas obtains coarse terrain elevation separately from browser GPS altitude", () => {
@@ -478,23 +507,16 @@ test("Atlas interpolates cyclic values by the short route and never cuts across 
   assert.equal(recovered.interpolating, false);
 });
 
-test("Atlas live journey and place reading remain legible at the Tesla viewport", () => {
-  assert.match(styles, /\.atlas-field \{[\s\S]*?--atlas-panel-width: 272px;/);
+test("Atlas Drive Lab fits its selected telemetry hierarchy at the Tesla viewport", () => {
+  assert.match(styles, /\.atlas-field \{[\s\S]*?--atlas-panel-width: 300px;/);
   assert.match(styles, /\.atlas-panel \{[\s\S]*?width: var\(--atlas-panel-width\);[\s\S]*?padding: 0;/);
-  assert.match(styles, /\.atlas-motion-readouts \{[\s\S]*?grid-template-columns: 76px 1fr;/);
-  assert.match(styles, /\.atlas-journey-chart canvas \{[^}]*width: 100%;[^}]*height: 25px;/);
-  assert.match(styles, /\.atlas-selected-context \{[\s\S]*?grid-template-columns: 72px 1fr;/);
-  assert.match(styles, /\.atlas-selected-context img \{[\s\S]*?width: 72px;[\s\S]*?height: 62px;/);
-  assert.match(styles, /\.atlas-selected-context p \{[\s\S]*?font-size: 9px;[\s\S]*?-webkit-line-clamp: 3;/);
-  assert.match(styles, /\.atlas-places button strong \{[^}]*font-size: 10px;/);
-  assert.match(styles, /\.atlas-qr img \{ width: 34px; height: 34px;/);
-  assert.match(atlasSource, /width: 192,/);
-  assert.match(atlasSource, /window\.innerHeight >= 560 \? 2 : 1/);
-  assert.match(atlasSource, /window\.innerHeight >= 700 \? 3 : window\.innerHeight >= 560 \? 2 : 1/);
+  assert.match(styles, /\.atlas-drive-summary \{[\s\S]*?grid-template-columns: 1\.05fr 1fr 1fr 1fr;/);
+  assert.match(styles, /\.atlas-drive-lab-canvas \{[\s\S]*?width: 100%;[\s\S]*?height: 368px;/);
   assert.match(atlasSource, /appendAtlasJourneySample/);
   assert.match(atlasSource, /atlasJourneyDistanceMetres\(travelPointsRef\.current\)/);
-  assert.match(atlasSource, /field="speedKmh"/);
-  assert.match(atlasSource, /field="groundElevationM"/);
+  for (const label of ["ACCEL / BRAKING", "SPEED BANDS", "HEADING HISTORY", "MOVING / STOPPED", "ELEVATION"]) {
+    assert.match(atlasSource, new RegExp(label.replace("/", "\\/")));
+  }
 });
 
 test("Atlas grants touch and desktop exploration for six seconds, then returns to fresh automatic camera", () => {
@@ -625,7 +647,7 @@ test("every shared palette gets map-specific road and label contrast", () => {
   assert.match(atlasSource, /recolourStyle\(mapRef\.current, theme\.palette, effect\)/);
 });
 
-test("Atlas passenger reading collapses behind a persistent midpoint handle", () => {
+test("Atlas Drive Lab collapses behind a persistent icon-only midpoint handle", () => {
   assert.match(atlasSource, /const \[panelCollapsed, setPanelCollapsed\] = useState\(false\)/);
   assert.match(atlasSource, /aria-controls="atlas-passenger-panel"/);
   assert.match(atlasSource, /aria-expanded=\{!panelCollapsed\}/);
@@ -633,9 +655,9 @@ test("Atlas passenger reading collapses behind a persistent midpoint handle", ()
   assert.match(atlasSource, /inert=\{collapsed \? true : undefined\}/);
   assert.match(atlasSource, /setPanelCollapsed\(\(current\) => !current\)/);
   assert.match(styles, /\.atlas-panel-toggle \{[\s\S]*?top: 50%;[\s\S]*?right: var\(--atlas-panel-width\);/);
-  assert.match(styles, /\.atlas-panel-toggle \{[\s\S]*?width: 42px;[\s\S]*?height: 116px;/);
+  assert.match(styles, /\.atlas-panel-toggle \{[\s\S]*?width: 36px;[\s\S]*?height: 30px;/);
   assert.match(styles, /\.atlas-panel-toggle-icon\.is-collapse \{ mask-image: url\("\/third-party\/tabler-icons\/chevron-right\.svg"\); \}/);
-  assert.match(atlasSource, /panelCollapsed \? "SHOW INFO" : "HIDE INFO"/);
+  assert.doesNotMatch(atlasSource, /SHOW INFO|HIDE INFO/);
   assert.match(styles, /\.atlas-field\.is-panel-collapsed \.atlas-panel-toggle \{ right: 0; \}/);
   assert.match(styles, /\.atlas-field\.is-panel-collapsed \.atlas-map \{ right: 0; \}/);
 });
@@ -686,59 +708,9 @@ test("Atlas exposes up to six normalized nearby pages", () => {
   assert.equal(normalizeNearbyPages({ query: { pages } }).length, 6);
 });
 
-test("an aborted Atlas nearby request cannot clear the current loading state", async () => {
-  const gate = createLatestAtlasRequestGate();
-  let loading = false;
-  let finishStaleRequest;
-  const staleRequest = gate.begin();
-  staleRequest.commit(() => { loading = true; });
-  const staleCompletion = new Promise((resolve) => { finishStaleRequest = resolve; })
-    .finally(() => staleRequest.commit(() => { loading = false; }));
-
-  const currentRequest = gate.begin();
-  currentRequest.commit(() => { loading = true; });
-  finishStaleRequest();
-  await staleCompletion;
-  assert.equal(loading, true, "the stale finally hid the current request's progress");
-
-  currentRequest.commit(() => { loading = false; });
-  assert.equal(loading, false);
-  assert.match(atlasSource, /\.finally\(\(\) => request\.commit\(\(\) => setLoading\(false\)\)\)/);
-});
-
-test("Atlas clears a stale QR immediately and ignores late or rejected generation", async () => {
-  const gate = createLatestAtlasRequestGate();
-  let qrUrl = "qr:previous-article";
-  let finishStaleQr;
-  const staleRequest = gate.begin();
-  const staleGeneration = new Promise((resolve) => { finishStaleQr = resolve; })
-    .then((dataUrl) => staleRequest.commit(() => { qrUrl = dataUrl; }));
-
-  const currentRequest = gate.begin();
-  currentRequest.commit(() => { qrUrl = ""; });
-  finishStaleQr("qr:wrong-article");
-  await staleGeneration;
-  assert.equal(qrUrl, "", "the previous article's QR returned beside the current article");
-
-  await Promise.reject(new Error("QR chunk unavailable"))
-    .catch(() => currentRequest.commit(() => { qrUrl = ""; }));
-  assert.equal(qrUrl, "");
-  assert.match(atlasSource, /request\.commit\(\(\) => setQrUrl\(""\)\);[\s\S]*?import\("qrcode"\)/);
-  assert.match(atlasSource, /\.catch\(\(\) => \{\s*request\.commit\(\(\) => setQrUrl\(""\)\);/);
-});
-
-test("Atlas rejects unsafe or absent thumbnail URLs without losing the abstract", () => {
-  const [page] = normalizeNearbyPages({ query: { pages: [{
-    pageid: 8,
-    title: "Milano",
-    extract: "City abstract.",
-    fullurl: "https://it.wikipedia.org/wiki/Milano",
-    thumbnail: { source: "javascript:alert(1)", width: 320, height: 200 },
-  }] } });
-  assert.equal(page.thumbnail, "");
-  assert.equal(page.summary, "City abstract.");
-  assert.match(atlasSource, /className=\{`atlas-selected-context/);
-  assert.match(atlasSource, /decoding="async"/);
+test("Atlas leaves place discovery and Wikipedia reading to Discover", () => {
+  assert.doesNotMatch(atlasSource, /wikipediaNearbyUrl|normalizeNearbyPages|setQrUrl|qrcode/);
+  assert.doesNotMatch(atlasSource, /WHERE YOU ARE|NEARBY|OPEN PLACE ARTICLE/);
 });
 
 test("Atlas owns a minimal palette-driven OpenFreeMap style with mandatory attribution", () => {

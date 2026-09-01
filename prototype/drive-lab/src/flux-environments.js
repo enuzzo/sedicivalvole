@@ -50,7 +50,7 @@ export const FLUX_ENVIRONMENTS = [
     displayLabel: "Atlas",
     number: "04",
     rendererLabel: "Atlas",
-    launchDescription: "Live map and places",
+    launchDescription: "Live map and drive telemetry",
     renderer: "atlas",
     themed: true,
   },
