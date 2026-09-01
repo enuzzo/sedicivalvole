@@ -128,8 +128,8 @@ asserted.
   three playable scores with individual artwork and concise descriptions; the
   29-track Illobo catalogue maps every recording to its own coherent cover.
   Build `20260901-0012` publishes the preceding one-tap/covers baseline;
-  checkpoint `5c498ac` adds the locally verified Navigator composition and is
-  pending its own canonical build. During final live transport QA, NEXT exposed
+  checkpoint `5c498ac` adds the Navigator composition and is published in
+  canonical build `20260901-0933`. During final live transport QA, NEXT exposed
   a Chromium suspension edge case: if the audio clock stopped,
   the nominal wall timer fired but settlement still sampled the frozen clock,
   leaving the UI on FADING. Checkpoint `7085941` makes the 450 ms wall deadline
@@ -309,12 +309,12 @@ Continue only from the 17-row execution order in
 [`MILESTONE-CHECKLIST-2026-08-31.md`](MILESTONE-CHECKLIST-2026-08-31.md). The
 first and sixth rows are complete; the second is physical-Tesla acceptance and
 the seventh, eighth and ninth are split between published office implementation
-and open Tesla gates. Row 10 DISCOVER is owner-selected and locally implemented
-at `5c498ac`; its split Passenger Index, localized source/search controls,
-bounded 15-source disclosure, reader, distance/ETA and reciprocal map actions
-pass exact local `773 × 601` QA but still require canonical publication and
-`R10-01`–`R10-05` Tesla acceptance. Do not reopen the route/dot or Navigator
-Plaque treatment as an ATLAS design exploration. Once row 10 is published, the
+and open Tesla gates. Row 10 DISCOVER is owner-selected and published in build
+`20260901-0933` from `5c498ac`; its split Passenger Index, localized
+source/search controls, bounded 15-source disclosure, reader, distance/ETA and
+reciprocal map actions pass exact local and canonical `773 × 601` QA but still
+require `R10-01`–`R10-05` Tesla acceptance. Do not reopen the route/dot or Navigator
+Plaque treatment as an ATLAS design exploration. With row 10 published, the
 next owner-gated product task is row 11, Original Gradient Field.
 
 ## Verification

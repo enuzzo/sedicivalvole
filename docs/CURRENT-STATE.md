@@ -499,9 +499,10 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The canonical live product is version `0.0.0`, source commit `7085941`, build
-  `20260901-0012`, publishing the one-tap Music library and suspended-clock
-  Soundtrack transition recovery while retaining the amplified MERIDIAN
+- The canonical live product is version `0.0.0`, source commit `5c498ac`, build
+  `20260901-0933`, publishing DISCOVER and the Music Navigator Rail on top of
+  the one-tap library and suspended-clock Soundtrack transition recovery while
+  retaining the amplified MERIDIAN
   `50–124°` FOV, stronger
   UNDERWATER projection/motion/glow/fog contrast and complete `0.50 s`
   surfacing response while retaining global audio routing and the two-stage
@@ -520,10 +521,14 @@ dated study documents.
   complete Jamendo → Illobo → Jamendo round trip, persistent Jamendo covers,
   restored Jamendo browsing, and a rapid reversal that cannot be reclaimed by
   obsolete Illobo work.
-- Local product checkpoint `5c498ac` adds the selected DISCOVER Passenger Index
-  and Music Navigator Rail. The focused tests, 148-module App / 71-module LAB /
-  Sites build and exact `773 × 601` Product Design QA pass; canonical publication
-  remains pending until its separate deployment checkpoint is recorded.
+- Product checkpoint `5c498ac` adds the selected DISCOVER Passenger Index and
+  Music Navigator Rail. Build `20260901-0933` passes the complete `533/533`
+  suite, 148-module App / 71-module LAB / Sites build, protected publication,
+  read-only pre/postflight, 29/29 Illobo verification and canonical HTML/JS/CSS
+  byte identity. Exact live `773 × 601` QA proves five results plus `+10 MORE`,
+  expansion to 15, English/Italian source switching, Berchet search, the fixed
+  reader and Maps handoff; Music exposes all 15 genres, six Jamendo tracks,
+  correct Lobo authorship, six Illobo rows and a complete return to Jamendo.
   Prior exact live `773 × 601` Browser QA verifies the unchanged white-on-black
   solid and black-on-graphite outline endpoints, play/pause title behavior and
   zero warning/error. Current exact live Browser QA verifies immediate Play the
@@ -545,20 +550,20 @@ dated study documents.
   renderer is live with no warning/error. The owner has accepted the corrected
   smoothness and visual quality; stronger real progressive surfacing remains
   the target-Tesla `R5-02` gate.
-  The complete `526/526` suite plus 147-module App / 71-module LAB / Sites build
+  The complete `533/533` suite plus 148-module App / 71-module LAB / Sites build
   pass, while physical-cabin checks remain `R4-01`–`R4-06`, `R5-01`–`R5-05`,
   `R7-01`–`R7-09`, `R8-01`–`R8-02`, `R9-01`–`R9-02` and
   `R10-01`–`R10-05`. Exact
   progressive evidence is in [`DEPLOY.md`](DEPLOY.md).
 - Diagnostic telemetry contains no coordinates and is sent only after the
-  explicit `SEND DIAGNOSTIC` action. ATLAS location is a separate ephemeral
-  feature: the latest reliable point stays in session memory; OpenFreeMap tile
-  requests and a coarse Wikimedia nearby-search cell occur only while selected.
+  explicit `SEND DIAGNOSTIC` action. ATLAS/DISCOVER location is a separate
+  ephemeral feature: the latest reliable point stays in session memory;
+  OpenFreeMap tile requests and a coarse localized Wikipedia nearby-search cell
+  occur only while the related surface is selected.
 
 ## Open work
 
-1. Publish checkpoint `5c498ac`, record its final build stamp, then execute
-   Tesla tests `R4-01`–`R4-06`, `R5-01`–`R5-05`, `R7-01`–`R7-09`,
+1. Execute Tesla tests `R4-01`–`R4-06`, `R5-01`–`R5-05`, `R7-01`–`R7-09`,
    `R8-01`–`R8-02`, `R9-01`–`R9-02` and `R10-01`–`R10-05` from
    [`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md), including
    the live audio transport evidence and MERIDIAN

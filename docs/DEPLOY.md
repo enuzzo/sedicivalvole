@@ -8,6 +8,38 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## DISCOVER Passenger Index and Music Navigator Rail — 2026-09-01 09:45
+
+- build stamp: **`20260901-0933`**; deployed product checkpoint:
+  **`5c498ac`**; milestone/test-record checkpoint: **`204b2a1`**;
+- behavior: **PASS in exact live Browser QA; Tesla acceptance pending**.
+  DISCOVER shows five image-led English sources plus `+10 MORE`, expands to 15,
+  switches to Italian Wikipedia, narrows to the Berchet result through internal
+  search, keeps its reader open and exposes a destination-only Google Maps
+  driving link. Music shows the approved source rail, three-item Pace column,
+  all 15 readable genres, six Jamendo tracks, correct FEATURED ARTIST / Lobo
+  Playlist authorship, six Illobo rows, bounded QR credit and a complete return
+  to Jamendo;
+- tests/build: **PASS**. Complete `533/533`, 148-module App, 71-module LAB and
+  Sites packaging pass. Joined Product Design QA at exact `773 × 601` has no
+  remaining P0/P1/P2 finding;
+- publication: **PASS**. Protected publication uploaded 179 files /
+  223,283,322 bytes, fully reverified all 29 Illobo masters, preserved the
+  existing root, retained two prior fingerprinted assets, and passed read-only
+  preflight/postflight with nine root entries and `remote_writes=NONE`;
+- canonical identity: **PASS**. Root HTML references
+  `assets/index-BnDR4hf1.js` and `assets/index-Bu2zjVU6.css`. Local/live
+  SHA-256 is `aa06d1c08651b1989b5227672b4e2e9395dd68afb43a2ec2d2bd3945623c9bd1`
+  for HTML, `2a8992bb17e56bc05000b328a68177dc9e8bb4201b7937e263c1907af5431e27`
+  for JavaScript, and
+  `33a5401c58ba09d7f90cb73d7882c41e6d70d64469979503c22c9cb496e13f03`
+  for CSS. The root returns HTTP 200 with explicit no-store/no-cache and
+  `nosniff`; the bundle carries `5c498ac / 20260901-0933`;
+- remaining acceptance: execute `R7-01`–`R7-09`, `R8-01`–`R8-02`,
+  `R9-01`–`R9-02` and `R10-01`–`R10-05` in the target Tesla. Office evidence
+  cannot accept physical touch, real GPS, vehicle chrome, cabin listening or
+  motion behavior.
+
 ## Tesla Music library and suspended-clock transport recovery — 2026-09-01 00:22
 
 - build stamp: **`20260901-0012`**; deployed product checkpoint:

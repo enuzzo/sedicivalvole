@@ -124,7 +124,7 @@ Commons licence URL.
 - `src/soundtrack/preview-controller.js` composes catalogue, rotation, transient
   media decks, attribution, and the live effect graph for explicit App/LAB use.
 - `src/soundtrack/effects-controller.js` owns the Web Audio graph for OPEN,
-  UNDERWATER, BLOOM, flanger, reverb, chorus, and bounded beat repeat while
+  UNDERWATER, BLOOM, flanger, reverb, chorus, and bounded echo while
   keeping every media element at authored rate.
 - `public/api/soundtrack-catalog.php` keeps the Jamendo client ID server-side,
   validates official speed and bounded genre filters, and returns only
