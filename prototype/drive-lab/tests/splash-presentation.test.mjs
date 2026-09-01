@@ -195,7 +195,7 @@ test("the support control is top-left and its panel stays compact", () => {
 
   assert.match(styles, /\.splash-support-trigger \{[\s\S]*?position: absolute;[\s\S]*?left: clamp\(22px, 4vw, 42px\)/);
   assert.match(styles, /\.support-panel \{[\s\S]*?width: min\(390px, calc\(100vw - 44px\)\)/);
-  assert.match(styles, /\.support-overlay \{[\s\S]*?z-index: 8/);
+  assert.match(styles, /\.support-overlay \{[\s\S]*?z-index: 30/);
 });
 
 test("launch surface stays above every preloaded experience overlay", () => {
@@ -205,6 +205,7 @@ test("launch surface stays above every preloaded experience overlay", () => {
   assert.match(splash, /z-index: 20/);
   assert.match(styles, /\.atlas-waiting \{[\s\S]*?z-index: 5/);
   assert.match(styles, /\.atlas-panel \{[\s\S]*?z-index: 6/);
+  assert.match(styles, /\.support-overlay \{[\s\S]*?z-index: 30/);
 });
 
 test("local exact-viewport QA can keep the Web Audio graph inaudible", () => {

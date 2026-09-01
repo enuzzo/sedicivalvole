@@ -241,7 +241,7 @@ button { -webkit-tap-highlight-color: transparent; }
   background: #ffdd00;
 }
 .support-cup-mark { width: 20px; height: 20px; overflow: visible; fill: none; stroke: currentColor; stroke-width: 2.25; stroke-linecap: round; stroke-linejoin: round; }
-.support-overlay { position: absolute; inset: 0; z-index: 8; }
+.support-overlay { position: absolute; inset: 0; z-index: 30; }
 .support-backdrop { position: absolute; inset: 0; border: 0; background: rgba(0, 0, 0, .68); cursor: default; }
 .support-panel {
   position: absolute;
