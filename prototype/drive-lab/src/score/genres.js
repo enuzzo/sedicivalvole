@@ -53,7 +53,7 @@ export const SCORE_GENRES = [
     status: SCORE_STATUS.ready,
     score: "junction",
     coverUrl: "/artwork/play-road/junction.png",
-    description: "Sampled jungle that grows from beatless rest into complete eight-bar performances.",
+    description: "Jungle recordings assemble into complete eight-bar performances as momentum rises.",
     note: "24 complete performances · one coherent harmonic identity.",
   },
   {
@@ -67,7 +67,7 @@ export const SCORE_GENRES = [
     /** Resolved by the worklet to an authored score module. */
     score: "fracture",
     coverUrl: "/artwork/play-road/fracture.png",
-    description: "Generated live: atmosphere, harmony, sub and rhythm reshape continuously with motion.",
+    description: "A live score that continuously recomposes harmony, atmosphere, bass and rhythm around the driver.",
     note: "Atmosphere, harmony, low end and rhythm. No automatic lead.",
   },
   {
@@ -80,7 +80,7 @@ export const SCORE_GENRES = [
     status: SCORE_STATUS.ready,
     score: "nightshift",
     coverUrl: "/artwork/play-road/nightshift.png",
-    description: "Sampled synth-pop across six native-tempo states, from quiet night road to full drive.",
+    description: "Synth-pop recordings move through six authored states, following the energy of the drive.",
     note: "18 complete performances · native 85–140 BPM drum families.",
   },
   {

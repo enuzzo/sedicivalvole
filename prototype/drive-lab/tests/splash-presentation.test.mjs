@@ -320,8 +320,14 @@ test("the Tesla Music drawer uses whole-surface one-tap controls and a no-scroll
     app.indexOf("function MusicLibraryPanel"),
   );
 
-  assert.match(scoreLibrary, /readyScoreGenres\(\)\.map/);
+  assert.match(scoreLibrary, /const readyScores = readyScoreGenres\(\)/);
+  assert.match(scoreLibrary, /SCORE_SOURCE\.sampled/);
+  assert.match(scoreLibrary, /SCORE_SOURCE\.generative/);
   assert.doesNotMatch(scoreLibrary, /SCORE_GENRES\.map/);
+  assert.match(scoreLibrary, /THE ROAD BECOMES THE ARRANGEMENT/);
+  assert.match(scoreLibrary, /Speed builds the layers\. Braking pulls them underwater\. Stillness leaves room to breathe\./);
+  assert.match(scoreLibrary, /Responsive generative/);
+  assert.match(scoreLibrary, /className=\{`score-list-item is-\$\{genre\.source\}`\}/);
   assert.match(scoreLibrary, /className="score-entry-cover" src=\{genre\.coverUrl\}/);
   assert.match(scoreLibrary, /\{genre\.description\}/);
   assert.match(soundtrack, /SOUNDTRACK_GENRE_OPTIONS\.slice\(0, 5\)/);
@@ -333,11 +339,17 @@ test("the Tesla Music drawer uses whole-surface one-tap controls and a no-scroll
   assert.doesNotMatch(soundtrack, />PLAY<\/button>/);
   assert.match(app, /className="music-drawer-workspace"/);
   assert.match(app, /<nav className="music-source-switch"/);
+  assert.match(app, /<strong>PLAY THE ROAD<\/strong>/);
+  assert.match(app, /<strong>SOUNDTRACK<\/strong>/);
   assert.match(soundtrack, /FEATURED ARTIST/);
   assert.match(soundtrack, /Original music written and performed by Illobo\./);
   assert.doesNotMatch(soundtrack, /curated by Illobo/);
   assert.match(soundtrack, /soundtrack-now-label/);
   assert.match(styles, /@media \(min-width: 651px\) and \(max-height: 650px\)/);
+  assert.match(styles, /\.music-drawer-workspace \{ grid-template-rows: 38px minmax\(0, 1fr\);/);
+  assert.match(styles, /\.music-source-switch \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\); \}/);
+  assert.match(styles, /\.play-road-library \.score-list \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\);/);
+  assert.match(styles, /\.play-road-library \.score-list-item\.is-generative \{ grid-column: 1 \/ -1; \}/);
   assert.match(styles, /\.soundtrack-track-list \{ grid-template-columns: repeat\(3, minmax\(0, 1fr\)\); gap: 3px; \}/);
   assert.match(styles, /\.soundtrack-filter-layout \{ grid-template-columns: 88px minmax\(0, 1fr\); gap: 3px; \}/);
   assert.match(styles, /\.soundtrack-filter-row > button \{ min-height: 34px; padding: 0 6px; \}/);

@@ -64,6 +64,7 @@ import {
   DEFAULT_GENRE_ID,
   getScoreGenre,
   SCORE_GENRES,
+  SCORE_SOURCE,
   SCORE_STATUS,
   readyScoreGenres,
   scoreSource,
@@ -1051,17 +1052,22 @@ function MediaGlyph({ name }) {
 
 /** The driving surface lists only scores that can play now. */
 function ScoreLibraryContent({ genreId, onChange }) {
+  const readyScores = readyScoreGenres();
+  const displayScores = [
+    ...readyScores.filter((genre) => genre.source === SCORE_SOURCE.sampled),
+    ...readyScores.filter((genre) => genre.source === SCORE_SOURCE.generative),
+  ];
   return (
     <div className="play-road-library">
-      <div className="music-library-section-heading">
-        <div><small>ADAPTIVE SCORES</small><h3>Play the Road</h3></div>
-        <span>ARRANGED BY THE DRIVE</span>
-      </div>
+      <section className="play-road-intro">
+        <h3>THE ROAD BECOMES THE ARRANGEMENT</h3>
+        <p>Speed builds the layers. Braking pulls them underwater. Stillness leaves room to breathe.</p>
+      </section>
       <ul className="score-list">
-        {readyScoreGenres().map((genre) => {
+        {displayScores.map((genre) => {
           const active = genre.id === genreId;
           return (
-            <li key={genre.id}>
+            <li key={genre.id} className={`score-list-item is-${genre.source}`}>
               <button
                 type="button"
                 className={`score-entry${active ? " is-active" : ""}`}
@@ -1074,10 +1080,11 @@ function ScoreLibraryContent({ genreId, onChange }) {
                     <span className="score-entry-title">{displayLabel(genre)} <b>{genre.number}</b></span>
                     <em className={`score-source is-${genre.source}`}>
                       <span aria-hidden="true">{scoreSource(genre.id).mark}</span>
-                      {scoreSource(genre.id).label}
+                      {genre.source === SCORE_SOURCE.generative ? "Responsive generative" : scoreSource(genre.id).label}
                     </em>
                   </strong>
-                  <span>{genre.family} · {genre.description}</span>
+                  <span className="score-entry-family">{genre.family}</span>
+                  <span className="score-entry-description">{genre.description}</span>
                 </span>
                 <span className="score-entry-state">
                   <MediaGlyph name={active ? "pause" : "play"} />
@@ -1308,8 +1315,8 @@ function MusicLibraryPanel({
       </div>
       <div className="music-drawer-workspace">
         <nav className="music-source-switch" aria-label="Music source">
-          <button type="button" className={musicMode === "play-road" ? "is-active" : ""} aria-pressed={musicMode === "play-road"} onClick={() => onModeChange("play-road")}><small>ADAPTIVE</small><strong>PLAY<br />THE ROAD</strong></button>
-          <button type="button" className={musicMode === "soundtrack" ? "is-active" : ""} aria-pressed={musicMode === "soundtrack"} onClick={() => onModeChange("soundtrack")}><small>LIBRARY</small><strong>SOUNDTRACK</strong></button>
+          <button type="button" className={musicMode === "play-road" ? "is-active" : ""} aria-pressed={musicMode === "play-road"} onClick={() => onModeChange("play-road")}><strong>PLAY THE ROAD</strong></button>
+          <button type="button" className={musicMode === "soundtrack" ? "is-active" : ""} aria-pressed={musicMode === "soundtrack"} onClick={() => onModeChange("soundtrack")}><strong>SOUNDTRACK</strong></button>
         </nav>
         <main className="music-drawer-content">
           {loadingMode === musicMode ? (

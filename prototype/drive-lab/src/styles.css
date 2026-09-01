@@ -1066,10 +1066,12 @@ button { -webkit-tap-highlight-color: transparent; }
   letter-spacing: .12em;
 }
 .score-source.is-sampled { color: var(--ink); background: var(--accent); }
-.score-source.is-generative { color: rgba(238, 234, 224, .74); background: rgba(238, 234, 224, .13); }
+.score-source.is-generative { color: #041116; background: #34c7f3; }
 .score-entry.is-active .score-source.is-generative { color: rgba(7, 9, 9, .7); background: rgba(7, 9, 9, .1); }
 .score-entry.is-preparing .score-source.is-sampled { background: rgba(238, 234, 224, .13); color: rgba(238, 234, 224, .6); }
 .score-entry-body span { display: block; margin-top: 5px; color: rgba(238, 234, 224, .58); font-size: 13px; line-height: 1.4; }
+.score-entry-body .score-entry-family { color: rgba(238, 234, 224, .72); }
+.score-entry-body .score-entry-description { margin-top: 4px; }
 .score-entry-state { font-size: 11px; font-weight: var(--font-weight-label); letter-spacing: .09em; white-space: nowrap; }
 .score-entry.is-active { color: var(--ink); background: var(--paper); }
 .score-entry.is-active .score-entry-number,
@@ -1078,8 +1080,15 @@ button { -webkit-tap-highlight-color: transparent; }
 .score-entry.is-preparing .score-entry-number { color: rgba(238, 234, 224, .3); }
 .score-entry.is-preparing .score-entry-state { color: var(--accent); opacity: .8; }
 .score-entry:not(:disabled):not(.is-active):active { background: rgba(238, 234, 224, .16); }
-.play-road-library .score-list { margin-top: 12px; }
-.play-road-library .score-entry { grid-template-columns: 72px minmax(0, 1fr) 44px; gap: 12px; min-height: 88px; padding: 8px; }
+.play-road-library .score-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
+.play-road-library .score-list-item.is-generative { grid-column: 1 / -1; }
+.play-road-library .score-entry { grid-template-columns: 72px minmax(0, 1fr) 44px; gap: 12px; min-height: 118px; padding: 10px; border: 1px solid rgba(238, 234, 224, .18); background: rgba(238, 234, 224, .035); }
+.play-road-library .score-list-item.is-generative .score-entry { min-height: 104px; border-color: rgba(52, 199, 243, .84); background: rgba(52, 199, 243, .035); }
+.play-road-library .score-entry.is-active { color: var(--paper); border-color: var(--accent); background: color-mix(in srgb, var(--accent) 9%, #090b0b); }
+.play-road-library .score-list-item.is-generative .score-entry.is-active { border-color: #34c7f3; background: rgba(52, 199, 243, .09); }
+.play-road-library .score-entry.is-active .score-entry-body span { color: rgba(238, 234, 224, .66); }
+.play-road-library .score-entry.is-active .score-source.is-generative { color: #041116; background: #34c7f3; }
+.play-road-library .score-entry.is-active .score-entry-title b { color: var(--accent); }
 .score-entry-cover { width: 72px; height: 72px; border-radius: var(--ui-radius); object-fit: cover; }
 .score-entry-title { display: inline-flex; align-items: baseline; gap: 6px; margin: 0; color: inherit; font-size: inherit; }
 .score-entry-title b { color: var(--accent); font-size: 11px; font-weight: var(--font-weight-label); letter-spacing: .06em; }
@@ -1585,7 +1594,7 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
 }
 .music-drawer-workspace {
   display: grid;
-  grid-template-columns: 108px minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
   min-height: 0;
   gap: 10px;
   padding-top: 8px;
@@ -1593,36 +1602,32 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
 .music-drawer-content { min-width: 0; min-height: 0; overflow-y: auto; scrollbar-color: rgba(238, 234, 224, .3) transparent; scrollbar-width: thin; }
 .music-source-switch {
   display: grid;
-  grid-template-rows: repeat(2, minmax(92px, 1fr));
-  align-content: start;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1px;
   min-width: 0;
   border: 1px solid rgba(238, 234, 224, .16);
+  border-radius: var(--ui-radius);
   background: #090b0b;
 }
 .music-source-switch button {
   position: relative;
   display: grid;
-  align-content: center;
-  justify-items: start;
-  gap: 6px;
+  place-items: center;
   min-width: 0;
-  min-height: 92px;
-  padding: 12px 10px;
+  min-height: 48px;
+  padding: 0 12px;
   border: 0;
-  border-bottom: 1px solid rgba(238, 234, 224, .16);
+  border-right: 1px solid rgba(238, 234, 224, .16);
   border-radius: 0;
   color: rgba(238, 234, 224, .68);
   background: rgba(238, 234, 224, .018);
   font: inherit;
-  text-align: left;
+  text-align: center;
   cursor: pointer;
 }
-.music-source-switch button:last-child { border-bottom: 0; }
-.music-source-switch button small { color: rgba(238, 234, 224, .42); font-size: 7px; font-weight: var(--font-weight-label); letter-spacing: .12em; }
-.music-source-switch button strong { font-size: 10px; font-weight: var(--font-weight-label); line-height: 1.25; letter-spacing: .07em; }
-.music-source-switch button.is-active { color: var(--paper); background: rgba(238, 234, 224, .075); box-shadow: inset 4px 0 var(--accent); }
-.music-source-switch button.is-active small { color: var(--accent); }
+.music-source-switch button:last-child { border-right: 0; }
+.music-source-switch button strong { font-size: 12px; font-weight: var(--font-weight-label); line-height: 1; letter-spacing: .09em; }
+.music-source-switch button.is-active { color: var(--paper); background: rgba(238, 234, 224, .075); box-shadow: inset 0 -4px var(--accent); }
 .music-source-switch button:focus-visible { outline: 1px solid var(--accent); outline-offset: -2px; }
 .music-mode-loading {
   display: flex;
@@ -1651,7 +1656,9 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
   .music-mode-loading span { animation: none; }
 }
 .play-road-library { padding-top: 12px; }
-.music-library-section-heading { display: flex; align-items: end; justify-content: space-between; gap: 16px; padding-bottom: 9px; border-bottom: 1px solid rgba(238, 234, 224, .18); }
+.play-road-intro { padding: 15px 18px; border: 1px solid rgba(238, 234, 224, .18); border-radius: var(--ui-radius); background: rgba(238, 234, 224, .025); }
+.play-road-intro h3 { margin: 0; font-size: 17px; font-weight: var(--font-weight-label); letter-spacing: .09em; }
+.play-road-intro p { margin: 7px 0 0; color: rgba(238, 234, 224, .62); font-size: 12px; line-height: 1.35; }
 .music-library-section-heading small,
 .soundtrack-choice-card small { color: var(--accent); font-size: 9px; font-weight: var(--font-weight-label); letter-spacing: .11em; }
 .soundtrack-choice-card small.is-featured-artist { color: #ff4c43; }
@@ -1886,12 +1893,11 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
   .music-library-heading small { font-size: 8px; }
   .music-library-heading h2 { margin-top: 1px; font-size: 18px; }
   .music-library-heading > button { min-width: 72px; min-height: 36px; }
-  .music-drawer-workspace { grid-template-columns: 88px minmax(0, 1fr); gap: 6px; padding-top: 4px; overflow: hidden; }
+  .music-drawer-workspace { grid-template-rows: 38px minmax(0, 1fr); gap: 4px; padding-top: 4px; overflow: hidden; }
   .music-drawer-content { overflow: hidden; }
-  .music-source-switch { grid-template-rows: repeat(2, minmax(0, 1fr)); }
-  .music-source-switch button { min-height: 0; padding: 8px; }
-  .music-source-switch button small { font-size: 6px; }
-  .music-source-switch button strong { font-size: 9px; }
+  .music-source-switch { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .music-source-switch button { min-height: 0; padding: 0 8px; }
+  .music-source-switch button strong { font-size: 10px; }
   .soundtrack-panel-body { gap: 5px; padding-top: 2px; }
   .soundtrack-choice-heading { min-height: 14px; }
   .soundtrack-choice-heading span { font-size: 7px; }
@@ -1954,11 +1960,20 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
   .soundtrack-qr-handoff > span { width: 52px; height: 52px; }
   .soundtrack-qr-handoff small { font-size: 6px; }
   .soundtrack-panel-body > .privacy-note { display: none; }
-  .play-road-library { padding-top: 6px; }
-  .play-road-library .score-list { gap: 6px; margin-top: 8px; }
-  .play-road-library .score-entry { grid-template-columns: 64px minmax(0, 1fr) 44px; min-height: 80px; }
-  .play-road-library .score-entry-cover { width: 64px; height: 64px; }
-  .play-road-library .privacy-note { margin-top: 8px; }
+  .play-road-library { padding-top: 4px; }
+  .play-road-intro { min-height: 72px; padding: 11px 14px; }
+  .play-road-intro h3 { font-size: 14px; }
+  .play-road-intro p { margin-top: 6px; font-size: 10px; line-height: 1.25; }
+  .play-road-library .score-list { gap: 5px; margin-top: 5px; }
+  .play-road-library .score-entry { grid-template-columns: 82px minmax(0, 1fr) 42px; gap: 9px; min-height: 160px; padding: 8px; }
+  .play-road-library .score-list-item.is-generative .score-entry { min-height: 145px; }
+  .play-road-library .score-entry-cover { width: 82px; height: 82px; }
+  .play-road-library .score-entry-body strong { align-items: center; flex-wrap: wrap; gap: 6px; font-size: 16px; }
+  .play-road-library .score-entry-body > span { margin-top: 6px; font-size: 11px; line-height: 1.25; }
+  .play-road-library .score-entry-body .score-entry-description { margin-top: 5px; font-size: 10px; line-height: 1.3; }
+  .play-road-library .score-source { font-size: 8px; }
+  .play-road-library .score-entry-state { width: 42px; height: 42px; }
+  .play-road-library .privacy-note { margin-top: 5px; font-size: 8px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
