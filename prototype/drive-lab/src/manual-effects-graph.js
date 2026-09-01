@@ -19,11 +19,18 @@ export const normalizeManualEffects = (values = {}) => Object.freeze(Object.from
 
 const performanceCurve = (value) => Math.pow(value, 0.58);
 const exponentialRange = (start, end, amount) => start * Math.pow(end / start, amount);
+const stuntCurve = (value) => {
+  const normalized = clamp01((value - 0.82) / 0.18);
+  return normalized * normalized * (3 - 2 * normalized);
+};
 
 export function manualEffectParameters(values = {}) {
   const manual = normalizeManualEffects(values);
   const shaped = Object.freeze(Object.fromEntries(
     MANUAL_EFFECT_IDS.map((id) => [id, performanceCurve(manual[id])]),
+  ));
+  const stunt = Object.freeze(Object.fromEntries(
+    MANUAL_EFFECT_IDS.map((id) => [id, stuntCurve(manual[id])]),
   ));
   const {
     flanger, reverb, echo, underwater, phaser, bitcrush, bassDrive, radioCut,
@@ -31,46 +38,49 @@ export function manualEffectParameters(values = {}) {
   return Object.freeze({
     manual,
     shaped,
-    flangerDry: 1 - flanger * 0.18,
-    flangerWet: flanger * 0.88,
+    stunt,
+    flangerDry: Math.max(0.2, 1 - flanger * 0.18 - stunt.flanger * 0.62),
+    flangerWet: flanger * 0.88 + stunt.flanger * 0.22,
     flangerDelaySeconds: 0.0012 + flanger * 0.0048,
-    flangerModulationSeconds: flanger * 0.0038,
-    flangerFeedback: flanger * 0.56,
-    flangerRateHz: 0.18 + flanger * 0.34,
-    reverbDry: 1 - reverb * 0.26,
-    reverbWet: reverb * 0.9,
-    echoDry: 1 - echo * 0.05,
-    echoWet: echo * 0.78,
-    echoDelaySeconds: 0.22 + echo * 0.2,
-    echoFeedback: echo * 0.58,
-    manualUnderwaterDry: 1 - underwater * 0.92,
-    manualUnderwaterWet: underwater * 0.72,
-    manualUnderwaterCutoffHz: exponentialRange(18_000, 460, underwater),
-    manualUnderwaterSecondCutoffHz: exponentialRange(20_000, 720, underwater),
-    manualUnderwaterResonance: 0.7 + underwater * 3.8,
+    flangerModulationSeconds: flanger * 0.0038 + stunt.flanger * 0.0007,
+    flangerFeedback: flanger * 0.56 + stunt.flanger * 0.12,
+    flangerRateHz: 0.18 + flanger * 0.34 + stunt.flanger * 0.48,
+    reverbDry: Math.max(0.29, 1 - reverb * 0.26 - stunt.reverb * 0.45),
+    reverbWet: reverb * 0.9 + stunt.reverb * 0.2,
+    echoDry: Math.max(0.5, 1 - echo * 0.05 - stunt.echo * 0.45),
+    echoWet: echo * 0.78 + stunt.echo * 0.22,
+    echoDelaySeconds: 0.22 + echo * 0.2 + stunt.echo * 0.16,
+    echoFeedback: echo * 0.58 + stunt.echo * 0.12,
+    manualUnderwaterDry: Math.max(0, 1 - underwater * 0.92 - stunt.underwater * 0.08),
+    manualUnderwaterWet: underwater * 0.72 + stunt.underwater * 0.18,
+    manualUnderwaterCutoffHz: exponentialRange(18_000, 460, underwater) * (1 - stunt.underwater * 0.52),
+    manualUnderwaterSecondCutoffHz: exponentialRange(20_000, 720, underwater) * (1 - stunt.underwater * 0.52),
+    manualUnderwaterResonance: 0.7 + underwater * 3.8 + stunt.underwater * 2.5,
     manualUnderwaterPressureGainDb: underwater * 8,
-    manualUnderwaterMakeupGain: 0.9 + underwater * 0.12,
-    phaserDry: 1 - phaser * 0.24,
-    phaserWet: phaser * 0.96,
+    manualUnderwaterMakeupGain: 0.9 + underwater * 0.12 - stunt.underwater * 0.52,
+    manualUnderwaterTextureDrive: stunt.underwater * 4,
+    phaserDry: Math.max(0.2, 1 - phaser * 0.24 - stunt.phaser * 0.56),
+    phaserWet: phaser * 0.96 + stunt.phaser * 0.1,
     phaserCenterHz: 420 + phaser * 380,
-    phaserModulationHz: phaser * 980,
-    phaserRateHz: 0.12 + phaser * 0.72,
-    phaserFeedback: phaser * 0.48,
-    bitcrushDry: 1 - bitcrush * 0.92,
+    phaserModulationHz: phaser * 980 + stunt.phaser * 1_000,
+    phaserRateHz: 0.12 + phaser * 0.72 + stunt.phaser * 0.7,
+    phaserFeedback: phaser * 0.48 + stunt.phaser * 0.12,
+    bitcrushDry: Math.max(0, 1 - bitcrush * 0.92 - stunt.bitcrush * 0.08),
     bitcrushWet: bitcrush,
-    bitcrushLevels: Math.max(8, Math.round(64 - bitcrush * 56)),
-    bitcrushToneHz: exponentialRange(16_000, 3_400, bitcrush),
-    bassDriveDry: 1 - bassDrive * 0.34,
-    bassDriveWet: bassDrive * 0.72,
-    bassDriveShelfDb: bassDrive * 18,
-    bassDriveAmount: 1 + bassDrive * 10,
-    bassDriveMakeup: 0.58 - bassDrive * 0.18,
-    radioCutDry: 1 - radioCut * 0.96,
-    radioCutWet: radioCut * 0.52,
-    radioCutHighpassHz: 30 + radioCut * 650,
-    radioCutLowpassHz: exponentialRange(20_000, 3_200, radioCut),
-    radioCutPresenceDb: radioCut * 10,
-    radioCutDrive: 1 + radioCut * 3.2,
+    bitcrushLevels: Math.max(4, Math.round(64 - bitcrush * 56 - stunt.bitcrush * 4)),
+    bitcrushToneHz: exponentialRange(16_000, 3_400, bitcrush) * (1 - stunt.bitcrush * 0.68),
+    bassDriveDry: Math.max(0.2, 1 - bassDrive * 0.34 - stunt.bassDrive * 0.46),
+    bassDriveWet: bassDrive * 0.72 + stunt.bassDrive * 0.23,
+    bassDriveShelfDb: bassDrive * 18 + stunt.bassDrive * 10,
+    bassDriveAmount: 1 + bassDrive * 10 + stunt.bassDrive * 17,
+    bassDriveMakeup: 0.58 - bassDrive * 0.18 - stunt.bassDrive * 0.1,
+    bassDriveToneHz: 1_100 - stunt.bassDrive * 500,
+    radioCutDry: Math.max(0, 1 - radioCut * 0.96 - stunt.radioCut * 0.04),
+    radioCutWet: radioCut * 0.52 + stunt.radioCut * 0.1,
+    radioCutHighpassHz: 30 + radioCut * 650 + stunt.radioCut * 270,
+    radioCutLowpassHz: exponentialRange(20_000, 3_200, radioCut) * (1 - stunt.radioCut * 0.35),
+    radioCutPresenceDb: radioCut * 10 + stunt.radioCut * 4,
+    radioCutDrive: 1 + radioCut * 3.2 + stunt.radioCut * 4.8,
   });
 }
 
@@ -115,10 +125,11 @@ function makeQuantizedCurve(levels) {
 
 function makeDriveCurve(amount) {
   const curve = new Float32Array(4_097);
-  const normalizer = Math.tanh(amount);
+  const drive = Math.max(0, amount);
+  const normalizer = drive > 0 ? Math.tanh(drive) : 1;
   for (let index = 0; index < curve.length; index += 1) {
     const value = index / (curve.length - 1) * 2 - 1;
-    curve[index] = Math.tanh(value * amount) / normalizer;
+    curve[index] = drive > 0 ? Math.tanh(value * drive) / normalizer : value;
   }
   return curve;
 }
@@ -154,6 +165,7 @@ export function createManualEffectsGraph(context) {
   const underwaterOne = context.createBiquadFilter();
   const underwaterTwo = context.createBiquadFilter();
   const underwaterPressure = context.createBiquadFilter();
+  const underwaterTexture = context.createWaveShaper();
   const underwaterWet = context.createGain();
   const underwaterSum = context.createGain();
 
@@ -202,6 +214,7 @@ export function createManualEffectsGraph(context) {
   underwaterTwo.type = "lowpass";
   underwaterPressure.type = "lowshelf";
   underwaterPressure.frequency.value = 180;
+  underwaterTexture.oversample = "2x";
   phaserStages.forEach((stage, index) => {
     stage.type = "allpass";
     stage.frequency.value = 420 * (1 + index * 0.34);
@@ -253,7 +266,7 @@ export function createManualEffectsGraph(context) {
   echoTone.connect(echoFeedback).connect(echoDelay);
 
   echoSum.connect(underwaterDry).connect(underwaterSum);
-  echoSum.connect(underwaterOne).connect(underwaterTwo).connect(underwaterPressure).connect(underwaterWet).connect(underwaterSum);
+  echoSum.connect(underwaterOne).connect(underwaterTwo).connect(underwaterPressure).connect(underwaterTexture).connect(underwaterWet).connect(underwaterSum);
 
   underwaterSum.connect(phaserDry).connect(phaserSum);
   underwaterSum.connect(phaserStages[0]);
@@ -301,6 +314,7 @@ export function createManualEffectsGraph(context) {
     setParam(underwaterOne.Q, parameters.manualUnderwaterResonance, context);
     setParam(underwaterTwo.Q, parameters.manualUnderwaterResonance * 0.82, context);
     setParam(underwaterPressure.gain, parameters.manualUnderwaterPressureGainDb, context);
+    underwaterTexture.curve = makeDriveCurve(parameters.manualUnderwaterTextureDrive);
     setParam(phaserDry.gain, parameters.phaserDry, context);
     setParam(phaserWet.gain, parameters.phaserWet, context);
     setParam(phaserFeedback.gain, parameters.phaserFeedback, context);
@@ -316,6 +330,7 @@ export function createManualEffectsGraph(context) {
     setParam(bassDriveDry.gain, parameters.bassDriveDry, context);
     setParam(bassDriveWet.gain, parameters.bassDriveWet * parameters.bassDriveMakeup, context);
     setParam(bassDriveShelf.gain, parameters.bassDriveShelfDb, context);
+    setParam(bassDriveTone.frequency, parameters.bassDriveToneHz, context);
     bassDriveShaper.curve = makeDriveCurve(parameters.bassDriveAmount);
     setParam(radioCutDry.gain, parameters.radioCutDry, context);
     setParam(radioCutWet.gain, parameters.radioCutWet, context);
@@ -332,7 +347,7 @@ export function createManualEffectsGraph(context) {
     flangerLfo, flangerDepth, reverbDry, reverbPreDelay, reverb, reverbHighpass,
     reverbTone, reverbWet, reverbSum, echoDry, echoDelay, echoTone, echoWet,
     echoFeedback, echoSum, underwaterDry, underwaterOne, underwaterTwo,
-    underwaterPressure, underwaterWet, underwaterSum, phaserDry, ...phaserStages,
+    underwaterPressure, underwaterTexture, underwaterWet, underwaterSum, phaserDry, ...phaserStages,
     phaserWet, phaserFeedback, phaserSum, phaserLfo, ...phaserDepths, bitcrushDry,
     bitcrushShaper, bitcrushTone, bitcrushWet, bitcrushSum, bassDriveDry,
     bassDriveShelf, bassDriveShaper, bassDriveTone, bassDriveWet, bassDriveSum,

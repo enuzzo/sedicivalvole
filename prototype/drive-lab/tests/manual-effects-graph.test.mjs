@@ -74,6 +74,16 @@ function createFakeContext() {
 }
 
 const allAt = (amount) => Object.fromEntries(MANUAL_EFFECT_IDS.map((id) => [id, amount]));
+const authoredHits = Object.freeze({
+  flanger: 0.78,
+  reverb: 0.72,
+  echo: 0.74,
+  underwater: 0.76,
+  phaser: 0.78,
+  bitcrush: 0.72,
+  bassDrive: 0.74,
+  radioCut: 0.76,
+});
 
 test("the performance graph owns exactly eight distinct effects and no retired Chorus", () => {
   assert.deepEqual(MANUAL_EFFECT_IDS, [
@@ -102,13 +112,64 @@ test("zero depth is a neutral serial path and full depth reaches bounded extreme
   ]) assert.equal(zero[key], 1, `${key} was not unity`);
 
   const full = manualEffectParameters(allAt(1));
-  assert.ok(full.flangerFeedback < 0.6);
-  assert.ok(full.echoFeedback < 0.6);
-  assert.ok(full.phaserFeedback < 0.5);
-  assert.ok(full.manualUnderwaterCutoffHz >= 450);
-  assert.ok(full.bitcrushLevels >= 8);
-  assert.ok(full.bassDriveWet * full.bassDriveMakeup < 0.5);
-  assert.ok(full.radioCutWet <= 1.1);
+  assert.equal(Object.values(full.stunt).every((amount) => amount === 1), true);
+  assert.ok(full.flangerDry <= 0.201);
+  assert.ok(full.flangerWet >= 1.099);
+  assert.ok(full.flangerFeedback < 0.7);
+  assert.ok(full.reverbDry <= 0.3);
+  assert.ok(full.reverbWet >= 1.099);
+  assert.ok(full.echoDry <= 0.5);
+  assert.ok(full.echoWet >= 1);
+  assert.ok(full.echoFeedback < 0.71);
+  assert.equal(full.manualUnderwaterDry, 0);
+  assert.ok(full.manualUnderwaterWet >= 0.899);
+  assert.ok(full.manualUnderwaterCutoffHz <= 225);
+  assert.ok(full.manualUnderwaterSecondCutoffHz <= 350);
+  assert.ok(full.manualUnderwaterPressureGainDb >= 8);
+  assert.ok(full.manualUnderwaterTextureDrive >= 4);
+  assert.ok(full.phaserDry <= 0.2);
+  assert.ok(full.phaserWet >= 1.06);
+  assert.ok(full.phaserModulationHz >= 1_980);
+  assert.ok(full.phaserFeedback < 0.61);
+  assert.equal(full.bitcrushDry, 0);
+  assert.equal(full.bitcrushLevels, 4);
+  assert.ok(full.bitcrushToneHz <= 1_100);
+  assert.ok(full.bassDriveDry <= 0.2);
+  assert.ok(full.bassDriveShelfDb >= 28);
+  assert.ok(full.bassDriveAmount >= 28);
+  assert.ok(full.bassDriveWet * full.bassDriveMakeup < 0.3);
+  assert.ok(full.bassDriveToneHz <= 600);
+  assert.ok(full.radioCutDry <= 0.001);
+  assert.ok(full.radioCutWet >= 0.619);
+  assert.ok(full.radioCutHighpassHz >= 950);
+  assert.ok(full.radioCutLowpassHz <= 2_100);
+  assert.ok(full.radioCutPresenceDb >= 14);
+  assert.ok(full.radioCutDrive >= 9);
+});
+
+test("authored hits stay musical while the final slider segment unlocks the stunt zone", () => {
+  const hit = manualEffectParameters(authoredHits);
+  assert.deepEqual(hit.stunt, allAt(0));
+
+  const justBelow = manualEffectParameters(allAt(0.82));
+  assert.deepEqual(justBelow.stunt, allAt(0));
+
+  const rising = manualEffectParameters(allAt(0.91));
+  for (const amount of Object.values(rising.stunt)) {
+    assert.ok(amount > 0.49 && amount < 0.51);
+  }
+
+  const full = manualEffectParameters(allAt(1));
+  assert.ok(full.flangerDry < hit.flangerDry - 0.6);
+  assert.ok(full.reverbWet > hit.reverbWet + 0.3);
+  assert.ok(full.echoFeedback > hit.echoFeedback + 0.2);
+  assert.ok(full.manualUnderwaterCutoffHz < hit.manualUnderwaterCutoffHz * 0.4);
+  assert.equal(hit.manualUnderwaterTextureDrive, 0);
+  assert.ok(full.manualUnderwaterTextureDrive >= 4);
+  assert.ok(full.phaserModulationHz > hit.phaserModulationHz * 2);
+  assert.ok(full.bitcrushLevels < hit.bitcrushLevels / 3);
+  assert.ok(full.bassDriveAmount > hit.bassDriveAmount * 2.5);
+  assert.ok(full.radioCutHighpassHz > hit.radioCutHighpassHz * 1.5);
 });
 
 test("the graph updates every processor, creates transfer curves, and tears down cleanly", () => {
@@ -121,7 +182,7 @@ test("the graph updates every processor, creates transfer curves, and tears down
   const result = graph.set(allAt(1));
   assert.deepEqual(result.values, allAt(1));
   const shapers = context.nodes.filter((node) => node.kind === "waveshaper");
-  assert.equal(shapers.length, 3);
+  assert.equal(shapers.length, 4);
   assert.equal(shapers.every((node) => node.curve instanceof Float32Array), true);
   assert.equal(shapers.every((node) => node.curve.length === 4_097), true);
 
