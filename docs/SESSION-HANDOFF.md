@@ -272,16 +272,18 @@ pre/postflight plus canonical HTML/JS/CSS byte identity. Exact live `773 × 601`
 QA repeats all four taps, removal from the Music drawer, source switching,
 state persistence, reset, zero overflow, and zero warning/error. Tesla
 listening remains required as `R4-04` and the expanded `R7-06`.
-Milestone row 9 has a new office-complete Drive Lab checkpoint `6ac4259`:
+Milestone row 9 has an office-complete Drive Lab hierarchy checkpoint `7c9df06`:
 its selected Navigator Plaque combines a filled continuously rotating arrow,
 English cardinal, exact degrees and a rendered-tile road name without reverse
-geocoding. The owner-selected composite dashboard adds the four-value trip line,
-four central motion charts and full-width Elevation, all sharing `15 MIN / 1 H /
-SESSION`; the icon-only `36 × 30 px` midpoint tab collapses it. ATLAS contains
-no Discover/Wikipedia duplication. Canonical build `20260901-1559` carries
-documentation checkpoint `3f505a0` and product checkpoint `6ac4259`; exact live
-`773 × 601` range/collapse QA and byte identity pass. Run `R9-01`–`R9-05` for
-target-vehicle acceptance.
+geocoding. The owner-selected composite dashboard is a vertical instrument:
+four-value trip line; full-width Accel/Braking; low Speed-band strip;
+full-width Heading; full-width Elevation; and low Moving/Stopped strip. Direct
+legends, labelled axes and smoothed curves are visible, all sharing `15 MIN / 1
+H / SESSION`; the icon-only `36 × 30 px` midpoint tab collapses it. ATLAS
+contains no Discover/Wikipedia duplication. Canonical build `20260901-2012`
+carries product checkpoint `7c9df06`; `544/544`, protected build/publication,
+canonical byte identity and exact live `773 × 601` range/collapse/reopen QA
+pass. Run `R9-01`–`R9-05` for target-vehicle acceptance.
 
 The published corrections provide complete ATLAS-view route retention with origin-preserving bounded
 compaction, one interpolated pulsing point/ripple, two-line colour-coded GPS,
@@ -363,10 +365,12 @@ image, label-free accessible language select, `38 px` scopes, `11.5 px`
 distance/ETA and empty Browser log. Only
 `R10-00A`–`R10-05` Tesla acceptance remains open. ATLAS is an independent
 data-first Drive Lab: do not add DISCOVER or duplicate its place cards. The
-owner selected the composite of all six preferred telemetry modules; checkpoint
-`6ac4259` implements it; canonical build `20260901-1559` carries documentation
-checkpoint `3f505a0`, passes exact live `773 × 601` QA and preserves canonical
-byte identity. Target-Tesla `R9-01`–`R9-05` acceptance remains open.
+owner selected the composite of all six preferred telemetry modules. Checkpoint
+`7c9df06` corrects their visual hierarchy into the approved vertical instrument
+with low band strips, full-width histories, labelled axes, direct legends and
+smoothed curves; canonical build `20260901-2012` passes `544/544`, exact live
+`773 × 601` QA and canonical byte identity. Target-Tesla `R9-01`–`R9-05`
+acceptance remains open.
 
 Owner VoiceNotes recorded on 2026-09-01 at 09:01–09:15 supersede the prior
 "row 11 next" handoff. Milestone row 4's mandatory eight-effect `2 × 4`

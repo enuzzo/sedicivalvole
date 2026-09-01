@@ -72,10 +72,13 @@ dated study documents.
   palette-owned OpenFreeMap vector style with 3D buildings, and pairs it with
   the owner-selected Drive Lab. Its `300 px` dashboard keeps Speed, Distance,
   Moving time and Average speed in one first line; Accel/Braking balance,
-  five-band speed distribution, continuous Heading history and Moving/Stopped
-  occupy a two-by-two field; Open-Meteo/Copernicus GLO-90 Elevation spans the
-  complete bottom width. One tap cycles every chart through `15 MIN / 1 H /
-  SESSION`. Missing GPS or terrain data remains explicit; weighted bounded
+  five-band speed distribution, continuous Heading history, full-width
+  Open-Meteo/Copernicus GLO-90 Elevation and Moving/Stopped follow as one
+  vertical instrument. Accel/Braking owns a centered `km/h/s` timeline;
+  Speed bands and Moving/Stopped are low horizontal strips rather than square
+  cards; every history has value/time axes, a direct legend and smoothed curves.
+  One tap cycles every chart through `15 MIN / 1 H / SESSION`. Missing GPS or
+  terrain data remains explicit; weighted bounded
   all-session rollups preserve exact motion, distribution, heading and terrain
   aggregates. Journey samples and coordinates remain session-only and absent
   from storage and diagnostics. ATLAS contains no Wikipedia, nearby-place, QR
@@ -104,11 +107,11 @@ dated study documents.
   Drive Lab collapses behind a persistent icon-only `36 × 30 px` midpoint tab
   with an accessible action name, giving the complete map width back without a
   full-height rail. Mandatory attribution remains a tiny translucent strip
-  above the footer. Exact local `773 × 601` QA at checkpoint `6ac4259` proves
-  the complete no-scroll dashboard, live Open-Meteo response, three-range
-  cycle, full-map collapse/reopen and no header/footer collision. Canonical
-  build `20260901-1559` repeats those exact live checks and byte identity;
-  real-Tesla acceptance remains a separate gate.
+  above the footer. Exact local and canonical `773 × 601` QA at checkpoint
+  `7c9df06`, build `20260901-2012`, proves the corrected vertical no-scroll
+  hierarchy, explicit empty-state axes/legends, three-range cycle, full-map
+  collapse/reopen, no header/footer collision and canonical byte identity;
+  real moving traces and cabin legibility remain a separate Tesla gate.
   A bounded session-only A3 foundation now retains eight monotonic timestamped
   fixes and can interpolate the same path at 30 or 60 FPS with a `100 ms` delay,
   no extrapolation, a `1500 ms` stale freeze and no animation across long gaps.
@@ -542,9 +545,9 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The canonical live product is version `0.0.0`, deployed documentation commit
-  `3f505a0`, product commit `6ac4259`, build `20260901-1559`, publishing the
-  owner-selected composite ATLAS Drive Lab together with the complete readable
+- The canonical live product is version `0.0.0`, product checkpoint `7c9df06`,
+  build `20260901-2012`, publishing the corrected owner-selected vertical ATLAS
+  Drive Lab hierarchy together with the complete readable
   DISCOVER reader and its
   independent boundary from ATLAS on top of the owner-selected ATLAS Live
   Navigator, rounded-cell remote terrain elevation, three bounded history
@@ -561,7 +564,7 @@ dated study documents.
   UNDERWATER repair `8c53e8d`, the selected global FX Deck `0993e92`,
   reversible Soundtrack paths `0660d71`, immediate Music switching `137ddeb`, transport
   hardening `57fed11`, Illobo provider identity `2c0f5f8`, ATLAS Navigator
-  Plaque `79d9c9b`, Drive Lab `6ac4259`, MUTE/FX parity `c0a2f78`, Illobo/title
+  Plaque `79d9c9b`, corrected Drive Lab `7c9df06`, MUTE/FX parity `c0a2f78`, Illobo/title
   implementation `05a754b`, cover correction `6218f98`, Featured-launch
   correction `1171157`, transition correction `dcb6801`, and Tesla Soundtrack
   relay/activation/effect correction `4b36069`, Featured random-start
@@ -569,8 +572,9 @@ dated study documents.
   `236f2c9`. Its guarded
   publication, read-only pre/postflight and HTML/main-JavaScript/main-CSS/ATLAS-
   JavaScript/ATLAS-CSS byte identity pass. Current exact live `773 × 601`
-  Browser QA proves the ATLAS `300 px` no-scroll dashboard, shared three-range
-  cycle and full-map collapse/reopen, plus DISCOVER's `272 px` rail, five-row fold plus `+10 MORE`,
+  Browser QA proves the ATLAS `300 px` vertical no-scroll dashboard with direct
+  legends, labelled axes and smoothed curves, shared three-range cycle and
+  full-map collapse/reopen, plus DISCOVER's `272 px` rail, five-row fold plus `+10 MORE`,
   continuous 15-result scroll, complete `486 × 523 px` Wikipedia reader and
   absence of an ATLAS action. The live ATLAS dashboard retains terrain elevation
   and three-range cycling without Wikipedia/place duplication. It also retains the

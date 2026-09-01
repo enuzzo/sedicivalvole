@@ -58,18 +58,31 @@ final result: passed
 ## ATLAS Drive Lab composite — 2026-09-01
 
 - selected Product Design direction: owner-approved composite of the six
-  strongest modules from the three reviewed directions;
-- fidelity contract: keep one first-line summary with Speed, Distance, Moving
-  time and Average speed; place Accel/Braking balance, Speed-band distribution,
-  Heading history and Moving/Stopped in a two-by-two field; reserve the complete
-  bottom width for Elevation;
+  strongest modules from the three reviewed directions. The visual sources are
+  `exec-22fb6214-36b8-411b-8140-5c1b3c9e081b.png`,
+  `exec-4b117a6b-5852-477a-989a-d2b17e2fd86e.png`, and
+  `exec-f0ca5ea9-919f-4a53-93d4-4b74f7feece9.png` under the ignored generated
+  image store;
+- owner composite: one first-line summary with Speed, Distance, Moving time and
+  Average speed; full-width Accel/Braking balance; a low horizontal Speed-band
+  distribution; full-width Heading history; full-width Elevation; and a low
+  horizontal Moving/Stopped strip;
 - separation contract: ATLAS is journey telemetry, not place discovery. The
   previous Wikipedia, nearby-place and QR surfaces are removed; DISCOVER stays
   independent and neither feature links to the other;
-- exact local evidence: the clean Milan demo at `773 × 601` shows the complete
-  `300 px` panel without scrolling or footer/header collision. The four
-  microcharts and full-width elevation remain simultaneously visible, while
-  collapsing expands the map from a `300 px` inset to the full `773 px` field;
+- comparison evidence: the earlier canonical `20260901-1943` capture and the
+  three selected sources were normalized to `773 × 601` and compared together
+  in `_references/audits/atlas-drive-lab-redesign-2026-09-01/`. That comparison
+  exposed a P1 fidelity failure: a uniform two-by-two card grid replaced the
+  approved vertical instrument, and short bar modules consumed square cards;
+- corrected live evidence: build `20260901-2012` at `773 × 601` shows the
+  complete `300 px` no-scroll panel in the Milan demo with `15 MIN` selected.
+  The tracked current-build capture is
+  `qa/atlas-drive-lab-redesign-2026-09-01/after-live-20260901-2012-773x601.png`;
+- finding closure: Accel/Braking now owns a full-width centred `km/h/s`
+  timeline, Speed bands and Moving/Stopped are low strips, and Heading and
+  Elevation are full-width histories. Direct legends plus value/time axes close
+  the prior ambiguity, while quadratic curves replace angular polylines;
 - truthful-data evidence: no-motion balance reads `0% / 0%`, heading crosses
   north through continuous angle unwrapping, speed distribution uses five
   fixed labelled bands, and weighted all-session rollups preserve motion,
@@ -80,6 +93,13 @@ final result: passed
 - implementation economy: the five charts share one density-capped Canvas2D
   surface rather than five independent renderers, while React owns the visible
   summary values and range control;
+- typography, spacing, colour, copy and complete-view hierarchy were checked
+  against the combined source/current-build comparison. Live range cycling,
+  collapse and reopen pass; the Browser warning/error log is empty;
+- validation: the complete suite passes `544/544`; the 148-module App,
+  71-module LAB, protected LAB packaging and Sites build pass; canonical HTML,
+  main JavaScript, main CSS, ATLAS JavaScript and ATLAS CSS are byte-identical
+  to the verified candidate;
 - remaining boundary: real-GPS motion, cabin-distance legibility, touch comfort,
   terrain changes and sustained frame/thermal behavior remain Tesla tests.
 

@@ -8,6 +8,35 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## ATLAS Drive Lab hierarchy correction — 2026-09-01 20:23
+
+- build stamp: **`20260901-2012`**; product checkpoint: **`7c9df06`**;
+- correction: the first implementation's uniform two-by-two cards are replaced
+  by the owner-approved vertical instrument. Accel/Braking is full-width around
+  a labelled zero axis; Speed distribution and Moving/Stopped are low strips;
+  Heading and Elevation are labelled histories. Time/value axes, direct legends
+  and quadratic curve smoothing are visible without changing the six-module
+  telemetry set or its session-only privacy boundary;
+- tests/build: **PASS**. Complete `544/544`, 148-module App, 71-module LAB,
+  protected LAB packaging and Sites build pass;
+- protected publication: preflight and postflight are read-only PASS with
+  `remote_writes=NONE`; publication uploaded `181` files / `223,324,957` bytes,
+  fully reverified all `29` Illobo masters, preserved the dynamic root and
+  reported `remote_writes=ROOT_UPLOAD_ONLY`;
+- canonical identity: cache-busted HTML is HTTP 200 with `no-store/no-cache`
+  and `nosniff`. HTML, main JavaScript, main CSS, ATLAS JavaScript and ATLAS CSS
+  match the candidate byte-for-byte at SHA-256
+  `a068d07ad878070d42380223566616f35c42b368ac73704aa84bd70731a338f8`,
+  `72a09d6c04604391283a083b09d16356ade0a5f9b38fdf34d80714900ecbe061`,
+  `50ab886246ac38e688b266b9932e15841e0bd057ed36659e4887443985c24a92`,
+  `d3d425574a1acb14a5752aab8fca336e35956d44e84a5714b4cfb50c41a390c4`
+  and `715dbf736f7fdc9671a7ab3ec3b2fc5e3cdb252f3cc59758d52914bd2c9e57a3`;
+- exact live `773 × 601` Browser QA: **PASS** for the six corrected sections,
+  explicit empty-state axes/legends, `15 MIN → 1 H`, collapse/reopen, zero page
+  overflow and an empty warning/error log;
+- remaining acceptance: moving curve shape, physical glance legibility and
+  sustained GPS/terrain behavior remain real-Tesla `R9-03`–`R9-05` gates.
+
 ## Grouped High Cut Performance FX — 2026-09-01 19:52
 
 - build stamp: **`20260901-1943`**; deployed documentation checkpoint:
