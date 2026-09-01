@@ -8,6 +8,42 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Eight-effect Performance FX — 2026-09-01 18:09
+
+- build stamp: **`20260901-1802`**; deployed documentation checkpoint:
+  **`1fb58cb`**; product checkpoint: **`c7ef484`**;
+- behavior: **PASS in exact live Browser QA; Tesla acceptance pending**. The
+  shared post-source graph exposes Flanger, Reverb, Echo, Underwater, Phaser,
+  Bitcrush, Bass Drive, and Radio Cut; Chorus is absent. The footer exposes a
+  compact `FX ↑` trigger and the deck is a `2 × 4` performance surface;
+- tests/build: **PASS**. Deterministic effect roster, zero-depth neutrality,
+  routing, parameter bounds, drive curves, oscillator lifecycle and teardown
+  checks join the complete `543/543`; 148-module App, 71-module LAB, protected
+  LAB packaging and Sites build pass. A real browser `OfflineAudioContext`
+  render proves every processor finite/non-silent, largest individual peak
+  `0.94357`, and the full hostile sum `0.18828` RMS / `0.55443` peak;
+- protected publication: read-only preflight and postflight report
+  `remote_writes=NONE`; publication uploaded `181` files / `223,320,937` bytes,
+  fully reverified all `29/29` Illobo masters, retained two previous
+  content-addressed assets for cache overlap, preserved the dynamic root, and
+  reported `remote_writes=ROOT_UPLOAD_ONLY`;
+- canonical identity: cache-busted HTML is HTTP 200 with `no-store/no-cache`
+  and `nosniff`. HTML, main JavaScript and main CSS match the candidate
+  byte-for-byte at SHA-256
+  `f1e7cc846cc1c22cec7f8cf540c41cc254e199b1a84b4236400b497c9d37162d`,
+  `07c19fad93a812045141d01c9e58aabe6cbcd0c98454e42235d22030cf8d0611`
+  and `b4a2975854565c2b8a98457025139d6da5f52ff11ad616a52d32e03f41d9b394`;
+- exact live `773 × 601` Browser QA: **PASS**. The deck measures
+  `720 × 267 px`, lists exactly eight controls over two rows, activates the
+  authored defaults at `78 / 72 / 74 / 76 / 78 / 72 / 74 / 76`, resets every
+  slider to zero, closes with focus on the central experience and allows chrome
+  retraction after 4.6 seconds. Page overflow, framework overlays, visible app
+  errors and Browser warnings/errors are all absent;
+- remaining acceptance: run `R4-07` across FRACTURE, JUNCTION, NIGHTSHIFT,
+  Illobo, and Jamendo in the target Tesla, including every default hit, `100%`,
+  manual immersion/surfacing, hostile pairs, RESET, source switching and
+  automatic braking Underwater coexistence.
+
 ## DISCOVER article balance and passenger-index density — 2026-09-01 16:37
 
 - build stamp: **`20260901-1624`**; deployed documentation checkpoint:

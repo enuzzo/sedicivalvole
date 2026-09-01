@@ -428,7 +428,7 @@ dated study documents.
   Underwater, Phaser, Bitcrush, Bass Drive, and Radio Cut; Chorus is removed.
   The compact footer `FX ↑` trigger opens a `2 × 4` deck with independent depth,
   authored one-tap defaults, RESET, and one final compressor. Checkpoint
-  `c7ef484` is pushed and awaiting canonical publication plus Tesla `R4-07`.
+  `c7ef484` is live in build `20260901-1802`; Tesla `R4-07` remains open.
   The visible card follows the
   audio-clock gain mix and exposes every genuinely audible artwork, artist,
   title, licence, Jamendo credit, and direct source link. Manual changes use the
@@ -664,15 +664,15 @@ dated study documents.
 ## Mandatory 2026-09-01 owner corrections
 
 The 09:01–09:15 owner VoiceNotes are promoted into the active milestone and
-test queue, not the optional future register. Row 4 is implemented and pushed
-at `c7ef484` but does not exist in canonical build `20260901-1624` yet; the
-remaining `10A` items are still unimplemented:
+test queue, not the optional future register. Row 4 is implemented and canonical
+in build `20260901-1802`; its Tesla listening remains open and the remaining
+`10A` items are still unimplemented:
 
-- publish and physically accept the new eight-effect `2 × 4` Performance FX
+- physically accept the new eight-effect `2 × 4` Performance FX
   deck from `c7ef484`; deterministic graph tests, `543/543`, the production
   build, exact local `773 × 601` interaction QA, and real browser offline-audio
-  difference/level checks pass, while canonical identity and Tesla listening
-  remain open;
+  difference/level checks and canonical identity pass, while Tesla listening
+  remains open;
 - fix ATLAS's owner-observed black cold start by preparing from the best
   truthful session fix and showing an explicit waiting/degraded state when no
   position is usable, then refining without requiring movement or restarting;
@@ -689,13 +689,12 @@ remaining `10A` items are still unimplemented:
   `LIGHT / DARK / AUTO` appearance switch remains milestone 13, uses the
   measured free top-rail lane and never recolours the active visual palette.
 
-Milestone row 4 publication runs first, then mandatory insert `10A`; row 11
-Original Gradient Field is blocked until those office/canonical corrections
-pass.
+Mandatory insert `10A` is next; row 11 Original Gradient Field is blocked until
+those office/canonical corrections pass.
 
 ## Open work
 
-1. Publish mandatory row 4, implement and publish `10A`, then replace the planned-test
+1. Execute live Tesla `R4-07`, implement and publish `10A`, then replace the planned-test
    warning with its canonical build stamp. Execute Tesla tests
    `R1-01`–`R1-02`, `R4-01`–`R4-07`, `R5-01`–`R5-05`, `R7-01`–`R7-12`,
    `R8-01`–`R8-03`, `R9-01`–`R9-06`, `R10-00A`–`R10-05`, and later
