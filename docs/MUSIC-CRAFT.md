@@ -1468,14 +1468,19 @@ fine adjustment. The selected FX Deck therefore maps each tap to an authored
 default—Flanger `0.78`, Reverb `0.72`, Echo `0.74`, Underwater `0.76`, Phaser
 `0.78`, Bitcrush `0.72`, Bass Drive `0.74`, and Radio Cut `0.76`—and uses a
 sublinear response curve so the lower half of the slider still changes the wet
-graph materially.
+graph materially. Those one-tap values all remain below a separate stunt zone:
+the final `82–100%` of every slider uses a smooth accelerated curve that reaches
+zero at the boundary and full strength only at the endpoint. A tap therefore
+stays musical, while the passenger who deliberately pushes to `100%` gets a
+categorically more extreme processor rather than a barely louder version of the
+same state.
 
 The effects remain conventional Web Audio building blocks rather than visual
 facsimiles. Flanger uses a modulated short delay; Reverb uses a normalized
 `ConvolverNode`, pre-delay, and bounded tone filtering; Echo uses a filtered
 delay feedback loop; Underwater uses two logarithmic low-pass stages plus a
-pressure shelf; Phaser uses four modulated all-pass stages; Bitcrush uses a
-quantizing `WaveShaperNode`; Bass Drive combines a low shelf with bounded
+pressure shelf and adds stunt-only saturated pressure texture; Phaser uses four
+modulated all-pass stages; Bitcrush uses a quantizing `WaveShaperNode`; Bass Drive combines a low shelf with bounded
 saturation; and Radio Cut combines high-pass, low-pass, presence, and bounded
 drive. The complete serial sum terminates in a dynamics compressor.
 
@@ -1485,14 +1490,16 @@ briefly exposes every wet branch at launch, creating a transient even though
 the steady-state parameters are correct. Neutral initialization is therefore a
 tested part of effect construction, not only of later automation.
 
-Tests protect the exact roster, zero-depth neutral state, modulation, filters,
-feedback, drive curves, bounds, oscillator lifecycle, and teardown. In a real
-browser `OfflineAudioContext`, a deterministic wide-band fixture produced
-wet-minus-dry RMS differences from `0.05855` to `0.34343` across the eight
-individual processors. The largest individual peak was `0.94357`; the largest
-individual RMS ratio was `1.5314`; and all eight at full depth together remained
-finite and non-silent at `0.18828` RMS / `0.55443` peak. Those measurements
-prove the actual shared graph transforms and contains a signal; they do not
+Tests protect the exact roster, zero-depth neutral state, authored-hit/stunt
+separation, modulation, filters, feedback, drive curves, bounds, oscillator
+lifecycle, and teardown. In a real browser `OfflineAudioContext`, a deterministic
+wide-band fixture compared each authored tap with its own `100%` render. Full
+depth is `1.3925–2.5184×` more different from dry than its corresponding tap;
+manual Underwater is `1.8005×`. The eight full-depth wet-minus-dry RMS values
+span `0.11920–0.50727`; the largest individual peak is `0.99121`; and all eight
+at full depth together remain finite and non-silent at `0.22828` RMS / `0.60941`
+peak. This proves that the final slider segment increases character without
+using clipping or an uncontrolled full-bus level jump as the effect. It does not
 replace target-Tesla listening.
 
 Sources: [Web Audio API 1.1](https://www.w3.org/TR/webaudio-1.1/),
