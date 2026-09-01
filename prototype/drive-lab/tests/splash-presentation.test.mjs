@@ -260,9 +260,13 @@ test("the selected FX Deck is a global footer overlay with eight strong tap stat
   assert.match(app, /id: "bitcrush"[\s\S]*?performanceAmount: 0\.72/);
   assert.match(app, /id: "bassDrive"[\s\S]*?performanceAmount: 0\.74/);
   assert.match(app, /id: "radioCut"[\s\S]*?performanceAmount: 0\.76/);
+  assert.match(app, /id: "highCut"[\s\S]*?performanceAmount: 0\.76/);
+  assert.match(app, /id: "bassDrive"[\s\S]*?family: "tone"[\s\S]*?id: "radioCut"[\s\S]*?family: "tone"[\s\S]*?id: "highCut"[\s\S]*?family: "tone"/);
+  assert.doesNotMatch(app, /id: "echo"/);
   assert.doesNotMatch(app, /id: "chorus"/);
   assert.match(styles, /\.manual-effects-deck \{[\s\S]*?bottom: 76px/);
   assert.match(styles, /\.manual-effects-grid \{[^}]*repeat\(4/);
+  assert.match(styles, /article\.is-family-tone::before[\s\S]*?width: 3px[\s\S]*?background: #59d7ff/);
   assert.match(styles, /\.mix-button \{ grid-column: 5/);
 });
 

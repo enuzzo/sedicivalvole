@@ -77,24 +77,24 @@ const allAt = (amount) => Object.fromEntries(MANUAL_EFFECT_IDS.map((id) => [id, 
 const authoredHits = Object.freeze({
   flanger: 0.78,
   reverb: 0.72,
-  echo: 0.74,
   underwater: 0.76,
   phaser: 0.78,
   bitcrush: 0.72,
   bassDrive: 0.74,
   radioCut: 0.76,
+  highCut: 0.76,
 });
 
 test("the performance graph owns exactly eight distinct effects and no retired Chorus", () => {
   assert.deepEqual(MANUAL_EFFECT_IDS, [
     "flanger",
     "reverb",
-    "echo",
     "underwater",
     "phaser",
     "bitcrush",
     "bassDrive",
     "radioCut",
+    "highCut",
   ]);
   assert.equal(MANUAL_EFFECT_IDS.includes("chorus"), false);
   assert.equal(new Set(MANUAL_EFFECT_IDS).size, 8);
@@ -103,12 +103,12 @@ test("the performance graph owns exactly eight distinct effects and no retired C
 test("zero depth is a neutral serial path and full depth reaches bounded extreme endpoints", () => {
   const zero = manualEffectParameters(allAt(0));
   for (const key of [
-    "flangerWet", "reverbWet", "echoWet", "manualUnderwaterWet", "phaserWet",
-    "bitcrushWet", "bassDriveWet", "radioCutWet",
+    "flangerWet", "reverbWet", "manualUnderwaterWet", "phaserWet",
+    "bitcrushWet", "bassDriveWet", "radioCutWet", "highCutWet",
   ]) assert.equal(zero[key], 0, `${key} was not bypassed`);
   for (const key of [
-    "flangerDry", "reverbDry", "echoDry", "manualUnderwaterDry", "phaserDry",
-    "bitcrushDry", "bassDriveDry", "radioCutDry",
+    "flangerDry", "reverbDry", "manualUnderwaterDry", "phaserDry",
+    "bitcrushDry", "bassDriveDry", "radioCutDry", "highCutDry",
   ]) assert.equal(zero[key], 1, `${key} was not unity`);
 
   const full = manualEffectParameters(allAt(1));
@@ -118,9 +118,6 @@ test("zero depth is a neutral serial path and full depth reaches bounded extreme
   assert.ok(full.flangerFeedback < 0.7);
   assert.ok(full.reverbDry <= 0.3);
   assert.ok(full.reverbWet >= 1.099);
-  assert.ok(full.echoDry <= 0.5);
-  assert.ok(full.echoWet >= 1);
-  assert.ok(full.echoFeedback < 0.71);
   assert.equal(full.manualUnderwaterDry, 0);
   assert.ok(full.manualUnderwaterWet >= 0.899);
   assert.ok(full.manualUnderwaterCutoffHz <= 225);
@@ -145,6 +142,11 @@ test("zero depth is a neutral serial path and full depth reaches bounded extreme
   assert.ok(full.radioCutLowpassHz <= 2_100);
   assert.ok(full.radioCutPresenceDb >= 14);
   assert.ok(full.radioCutDrive >= 9);
+  assert.equal(full.highCutDry, 0);
+  assert.ok(full.highCutWet >= 0.979);
+  assert.ok(full.highCutCutoffHz <= 1_160);
+  assert.ok(full.highCutSecondCutoffHz <= 2_100);
+  assert.ok(full.highCutResonance < 1.5);
 });
 
 test("authored hits stay musical while the final slider segment unlocks the stunt zone", () => {
@@ -162,7 +164,6 @@ test("authored hits stay musical while the final slider segment unlocks the stun
   const full = manualEffectParameters(allAt(1));
   assert.ok(full.flangerDry < hit.flangerDry - 0.6);
   assert.ok(full.reverbWet > hit.reverbWet + 0.3);
-  assert.ok(full.echoFeedback > hit.echoFeedback + 0.2);
   assert.ok(full.manualUnderwaterCutoffHz < hit.manualUnderwaterCutoffHz * 0.4);
   assert.equal(hit.manualUnderwaterTextureDrive, 0);
   assert.ok(full.manualUnderwaterTextureDrive >= 4);
@@ -170,6 +171,7 @@ test("authored hits stay musical while the final slider segment unlocks the stun
   assert.ok(full.bitcrushLevels < hit.bitcrushLevels / 3);
   assert.ok(full.bassDriveAmount > hit.bassDriveAmount * 2.5);
   assert.ok(full.radioCutHighpassHz > hit.radioCutHighpassHz * 1.5);
+  assert.ok(full.highCutCutoffHz < hit.highCutCutoffHz * 0.4);
 });
 
 test("the graph updates every processor, creates transfer curves, and tears down cleanly", () => {

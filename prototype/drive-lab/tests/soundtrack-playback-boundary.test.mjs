@@ -66,12 +66,12 @@ test("the eight separate performance controls are manual normalized amounts", ()
     manualEffects: {
       flanger: 0.25,
       reverb: 1.4,
-      echo: 0.75,
       underwater: -0.2,
       phaser: 0.4,
       bitcrush: 0.5,
       bassDrive: 0.6,
       radioCut: 0.7,
+      highCut: 0.75,
       invented: 1,
     },
   });
@@ -79,22 +79,22 @@ test("the eight separate performance controls are manual normalized amounts", ()
   assert.deepEqual(SOUNDTRACK_MANUAL_EFFECT_IDS, [
     "flanger",
     "reverb",
-    "echo",
     "underwater",
     "phaser",
     "bitcrush",
     "bassDrive",
     "radioCut",
+    "highCut",
   ]);
   assert.deepEqual(result.manualEffects.requestedValues, {
     flanger: 0.25,
     reverb: 1,
-    echo: 0.75,
     underwater: 0,
     phaser: 0.4,
     bitcrush: 0.5,
     bassDrive: 0.6,
     radioCut: 0.7,
+    highCut: 0.75,
   });
   assert.deepEqual(result.manualEffects.appliedValues, result.manualEffects.requestedValues);
   assert.equal(result.manualEffects.enabled, true);
@@ -131,12 +131,12 @@ test("an unknown controller cannot change either effect family", () => {
   assert.deepEqual(result.manualEffects.appliedValues, {
     flanger: 0,
     reverb: 0,
-    echo: 0,
     underwater: 0,
     phaser: 0,
     bitcrush: 0,
     bassDrive: 0,
     radioCut: 0,
+    highCut: 0,
   });
   assert.equal(result.manualEffects.blockedReason, "unauthorized-control");
 });
@@ -168,7 +168,7 @@ test("the boundary contains no driving-derived selection or retiming state", () 
   const result = deriveSoundtrackPlaybackBoundary({
     policy: makePolicy(),
     vehicleEffectsRequested: true,
-    manualEffects: { echo: 0.5 },
+    manualEffects: { highCut: 0.5 },
   });
   const keys = JSON.stringify(result).toLowerCase();
 
