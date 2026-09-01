@@ -92,9 +92,23 @@ test("manual controls are clamped and never expose a playback-rate control", () 
   assert.deepEqual(normalizeSoundtrackManualEffects({
     flanger: 2,
     reverb: -1,
-    chorus: 0.4,
     echo: Number.NaN,
-  }), { flanger: 1, reverb: 0, chorus: 0.4, echo: 0 });
+    underwater: 0.4,
+    phaser: 1.4,
+    bitcrush: -0.2,
+    bassDrive: 0.6,
+    radioCut: Number.NaN,
+    chorus: 1,
+  }), {
+    flanger: 1,
+    reverb: 0,
+    echo: 0,
+    underwater: 0.4,
+    phaser: 1,
+    bitcrush: 0,
+    bassDrive: 0.6,
+    radioCut: 0,
+  });
   assert.equal("playbackRate" in soundtrackEffectParameters(), false);
 });
 
@@ -102,30 +116,53 @@ test("every manual effect has a plainly wet full-depth endpoint", () => {
   const parameters = manualEffectParameters({
     flanger: 1,
     reverb: 1,
-    chorus: 1,
     echo: 1,
+    underwater: 1,
+    phaser: 1,
+    bitcrush: 1,
+    bassDrive: 1,
+    radioCut: 1,
   });
   assert.ok(parameters.flangerWet >= 0.6);
   assert.ok(parameters.flangerFeedback >= 0.35);
   assert.ok(parameters.reverbWet >= 0.6);
-  assert.ok(parameters.chorusWet >= 0.55);
   assert.ok(parameters.echoWet >= 0.5);
   assert.ok(parameters.echoFeedback >= 0.4);
+  assert.ok(parameters.manualUnderwaterDry <= 0.1);
+  assert.ok(parameters.manualUnderwaterCutoffHz <= 500);
+  assert.ok(parameters.phaserWet >= 0.9);
+  assert.ok(parameters.phaserFeedback >= 0.4);
+  assert.ok(parameters.bitcrushDry <= 0.1);
+  assert.ok(parameters.bitcrushLevels <= 8);
+  assert.ok(parameters.bassDriveShelfDb >= 16);
+  assert.ok(parameters.bassDriveAmount >= 10);
+  assert.ok(parameters.radioCutDry <= 0.05);
+  assert.ok(parameters.radioCutHighpassHz >= 650);
+  assert.ok(parameters.radioCutLowpassHz <= 3_300);
 });
 
 test("the FX Deck performance taps land on unmistakable musical depths", () => {
   const parameters = manualEffectParameters({
     flanger: 0.78,
     reverb: 0.72,
-    chorus: 0.8,
     echo: 0.74,
+    underwater: 0.76,
+    phaser: 0.78,
+    bitcrush: 0.72,
+    bassDrive: 0.74,
+    radioCut: 0.76,
   });
   assert.ok(parameters.flangerWet > 0.68);
   assert.ok(parameters.flangerFeedback > 0.43);
   assert.ok(parameters.reverbWet > 0.62);
-  assert.ok(parameters.chorusWet > 0.67);
-  assert.ok(parameters.chorusModulationSeconds > 0.008);
   assert.ok(parameters.echoWet > 0.55);
   assert.ok(parameters.echoFeedback > 0.42);
   assert.ok(parameters.echoDelaySeconds > 0.36);
+  assert.ok(parameters.manualUnderwaterDry < 0.25);
+  assert.ok(parameters.manualUnderwaterCutoffHz < 900);
+  assert.ok(parameters.phaserWet > 0.8);
+  assert.ok(parameters.bitcrushLevels <= 18);
+  assert.ok(parameters.bassDriveShelfDb > 14);
+  assert.ok(parameters.radioCutHighpassHz > 550);
+  assert.ok(parameters.radioCutLowpassHz < 4_500);
 });

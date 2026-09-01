@@ -548,14 +548,28 @@ test("the vehicle-effects master silences audio processing without suppressing v
 test("the shared manual chain is audible on every Play the Road score", async () => {
   await withFakeAudioEnvironment({}, async ({ createAudioEngine, context }) => {
     const engine = createAudioEngine();
-    const result = engine.setManualEffects({ flanger: 1, reverb: 1, chorus: 1, echo: 1 });
-    assert.deepEqual(result.values, { flanger: 1, reverb: 1, chorus: 1, echo: 1 });
+    const allEffects = {
+      flanger: 1,
+      reverb: 1,
+      echo: 1,
+      underwater: 1,
+      phaser: 1,
+      bitcrush: 1,
+      bassDrive: 1,
+      radioCut: 1,
+    };
+    const result = engine.setManualEffects(allEffects);
+    assert.deepEqual(result.values, allEffects);
     assert.ok(result.parameters.flangerWet >= 0.6);
     assert.ok(result.parameters.reverbWet >= 0.6);
-    assert.ok(result.parameters.chorusWet >= 0.55);
     assert.ok(result.parameters.echoWet >= 0.5);
+    assert.ok(result.parameters.manualUnderwaterCutoffHz <= 500);
+    assert.ok(result.parameters.phaserWet >= 0.9);
+    assert.ok(result.parameters.bitcrushLevels <= 8);
+    assert.ok(result.parameters.bassDriveShelfDb >= 16);
+    assert.ok(result.parameters.radioCutLowpassHz <= 3_300);
     assert.equal(context.gains[6].connections.has(context.gains[11]), true);
-    assert.equal(context.gains[26].connections.has(context.gains[0]), true);
+    assert.equal(context.gains.at(-1).connections.has(context.gains[0]), true);
     engine.destroy();
   });
 });

@@ -189,8 +189,12 @@ const LAUNCH_MUSIC_CHOICES = Object.freeze([
 const SOUNDTRACK_MANUAL_CONTROLS = Object.freeze([
   Object.freeze({ id: "flanger", label: "FLANGER", displayLabel: "Flanger", note: "Jet comb sweep", performanceAmount: 0.78 }),
   Object.freeze({ id: "reverb", label: "REVERB", displayLabel: "Reverb", note: "Long pressure chamber", performanceAmount: 0.72 }),
-  Object.freeze({ id: "chorus", label: "CHORUS", displayLabel: "Chorus", note: "Wide moving double", performanceAmount: 0.8 }),
   Object.freeze({ id: "echo", label: "ECHO", displayLabel: "Echo", note: "Dark feedback trail", performanceAmount: 0.74 }),
+  Object.freeze({ id: "underwater", label: "UNDERWATER", displayLabel: "Underwater", note: "Dive and surface", performanceAmount: 0.76 }),
+  Object.freeze({ id: "phaser", label: "PHASER", displayLabel: "Phaser", note: "Deep phase orbit", performanceAmount: 0.78 }),
+  Object.freeze({ id: "bitcrush", label: "BITCRUSH", displayLabel: "Bitcrush", note: "Digital fracture", performanceAmount: 0.72 }),
+  Object.freeze({ id: "bassDrive", label: "BASS DRIVE", displayLabel: "Bass Drive", note: "Driven low-end weight", performanceAmount: 0.74 }),
+  Object.freeze({ id: "radioCut", label: "RADIO CUT", displayLabel: "Radio Cut", note: "Hard mid-band focus", performanceAmount: 0.76 }),
 ]);
 const EMPTY_SOUNDTRACK_MANUAL_EFFECTS = Object.freeze(Object.fromEntries(
   SOUNDTRACK_MANUAL_CONTROLS.map(({ id }) => [id, 0]),
@@ -1470,7 +1474,7 @@ function ManualEffectsDeck({ values, onChange, onClose }) {
           <small>GLOBAL · PLAY THE ROAD + SOUNDTRACK</small>
           <h2 id="manual-effects-title">Performance FX</h2>
         </div>
-        <span>{activeCount}/4 ACTIVE</span>
+        <span>{activeCount}/8 ACTIVE</span>
         <button type="button" onClick={() => SOUNDTRACK_MANUAL_CONTROLS.forEach(({ id }) => onChange(id, 0))}>RESET</button>
         <button type="button" autoFocus onClick={onClose}>CLOSE</button>
       </header>
@@ -3700,13 +3704,14 @@ export function App() {
           <button
             className={`mix-button${manualEffectsDeckOpen ? " is-open" : ""}${SOUNDTRACK_MANUAL_CONTROLS.some(({ id }) => soundtrackManualEffects[id] > 0.01) ? " is-active" : ""}`}
             type="button"
+            aria-label="Open Performance FX"
             aria-expanded={manualEffectsDeckOpen}
             aria-controls="manual-effects-deck"
             onClick={() => setManualEffectsDeckOpen((open) => !open)}
           >
-            <span>MIX</span>
-            <strong>{SOUNDTRACK_MANUAL_CONTROLS.filter(({ id }) => soundtrackManualEffects[id] > 0.01).length}/4</strong>
-            <small>{manualEffectsDeckOpen ? "CLOSE" : "PERFORM"}</small>
+            <span>FX</span>
+            <strong aria-hidden="true">↑</strong>
+            <small>{SOUNDTRACK_MANUAL_CONTROLS.filter(({ id }) => soundtrackManualEffects[id] > 0.01).length}/8 ACTIVE</small>
           </button>
           <PaletteControl themeId={themeId} onChange={setThemeId} />
         </footer>

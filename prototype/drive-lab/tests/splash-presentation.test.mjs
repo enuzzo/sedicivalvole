@@ -233,16 +233,16 @@ test("the footer keeps a compact right palette and exposes one audio-effects mas
   assert.match(app, /showControlNotice\("VOLUME", !nextMuted\)/);
   assert.match(app, /showControlNotice\("FX", enabled\)/);
   assert.match(app, /className="control-status-notice" role="status" aria-live="polite"/);
-  assert.match(styles, /\.control-slab \{[\s\S]*?grid-template-columns: 79px 79px 190px 210px minmax\(0, 1fr\) 160px/);
+  assert.match(styles, /\.control-slab \{[\s\S]*?grid-template-columns: 79px 79px 190px 210px 79px minmax\(160px, 1fr\)/);
   assert.match(styles, /\.palette-control \{[\s\S]*?grid-column: 6;[\s\S]*?border-left: 1px solid var\(--line\)/);
-  assert.match(styles, /@media \(max-width: 820px\) \{[\s\S]*?grid-template-columns: 69px 69px 170px 190px minmax\(0, 1fr\) 138px/);
+  assert.match(styles, /@media \(max-width: 820px\) \{[\s\S]*?grid-template-columns: 69px 69px 170px 190px 69px minmax\(138px, 1fr\)/);
   assert.match(styles, /\.stop-button,[\s\S]*?\.effects-button,[\s\S]*?\.mix-button \{[\s\S]*?place-content: center/);
   assert.match(styles, /\.stop-button::after,[\s\S]*?\.effects-button::after \{[\s\S]*?content: "GLOBAL"/);
   assert.match(styles, /\.swatch-housing button \{[^}]*min-height: 15px/);
   assert.match(styles, /\.control-status-notice \{[\s\S]*?top: 50%;[\s\S]*?left: 50%;[\s\S]*?border-radius: var\(--ui-radius\)/);
 });
 
-test("the selected FX Deck is a global footer overlay with four strong tap states", () => {
+test("the selected FX Deck is a global footer overlay with eight strong tap states", () => {
   const app = read("App.jsx");
   const styles = read("styles.css");
   assert.match(app, /id="manual-effects-deck"/);
@@ -250,12 +250,17 @@ test("the selected FX Deck is a global footer overlay with four strong tap state
   assert.match(app, /aria-controls="manual-effects-deck"/);
   assert.match(app, /const controlsPinned = modalOpen \|\| manualEffectsDeckOpen/);
   assert.doesNotMatch(app, /const modalOpen =[^;]*manualEffectsDeckOpen/);
-  assert.match(app, /<span>MIX<\/span>/);
+  assert.match(app, /<span>FX<\/span>[\s\S]*?<strong aria-hidden="true">↑<\/strong>/);
   assert.match(app, /active \? 0 : effect\.performanceAmount/);
   assert.match(app, /performanceAmount: 0\.78/);
   assert.match(app, /performanceAmount: 0\.72/);
-  assert.match(app, /performanceAmount: 0\.8/);
   assert.match(app, /performanceAmount: 0\.74/);
+  assert.match(app, /id: "underwater"[\s\S]*?performanceAmount: 0\.76/);
+  assert.match(app, /id: "phaser"[\s\S]*?performanceAmount: 0\.78/);
+  assert.match(app, /id: "bitcrush"[\s\S]*?performanceAmount: 0\.72/);
+  assert.match(app, /id: "bassDrive"[\s\S]*?performanceAmount: 0\.74/);
+  assert.match(app, /id: "radioCut"[\s\S]*?performanceAmount: 0\.76/);
+  assert.doesNotMatch(app, /id: "chorus"/);
   assert.match(styles, /\.manual-effects-deck \{[\s\S]*?bottom: 76px/);
   assert.match(styles, /\.manual-effects-grid \{[^}]*repeat\(4/);
   assert.match(styles, /\.mix-button \{ grid-column: 5/);

@@ -66,8 +66,12 @@ const MUSIC = Object.freeze([
 const SOUNDTRACK_MANUAL_CONTROLS = Object.freeze([
   Object.freeze({ id: "flanger", label: "FLANGER" }),
   Object.freeze({ id: "reverb", label: "REVERB" }),
-  Object.freeze({ id: "chorus", label: "CHORUS" }),
   Object.freeze({ id: "echo", label: "ECHO" }),
+  Object.freeze({ id: "underwater", label: "UNDERWATER" }),
+  Object.freeze({ id: "phaser", label: "PHASER" }),
+  Object.freeze({ id: "bitcrush", label: "BITCRUSH" }),
+  Object.freeze({ id: "bassDrive", label: "BASS DRIVE" }),
+  Object.freeze({ id: "radioCut", label: "RADIO CUT" }),
 ]);
 
 const EMPTY_SOUNDTRACK_MANUAL_EFFECTS = Object.freeze(Object.fromEntries(

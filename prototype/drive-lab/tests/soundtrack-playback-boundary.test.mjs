@@ -60,14 +60,18 @@ test("the footer master may enable the existing vehicle-reactive macros", () => 
   assert.equal(result.drivingCanChangeTrack, false);
 });
 
-test("the four separate DJ controls are manual normalized amounts", () => {
+test("the eight separate performance controls are manual normalized amounts", () => {
   const result = deriveSoundtrackPlaybackBoundary({
     policy: makePolicy(),
     manualEffects: {
       flanger: 0.25,
       reverb: 1.4,
-      chorus: -0.2,
       echo: 0.75,
+      underwater: -0.2,
+      phaser: 0.4,
+      bitcrush: 0.5,
+      bassDrive: 0.6,
+      radioCut: 0.7,
       invented: 1,
     },
   });
@@ -75,14 +79,22 @@ test("the four separate DJ controls are manual normalized amounts", () => {
   assert.deepEqual(SOUNDTRACK_MANUAL_EFFECT_IDS, [
     "flanger",
     "reverb",
-    "chorus",
     "echo",
+    "underwater",
+    "phaser",
+    "bitcrush",
+    "bassDrive",
+    "radioCut",
   ]);
   assert.deepEqual(result.manualEffects.requestedValues, {
     flanger: 0.25,
     reverb: 1,
-    chorus: 0,
     echo: 0.75,
+    underwater: 0,
+    phaser: 0.4,
+    bitcrush: 0.5,
+    bassDrive: 0.6,
+    radioCut: 0.7,
   });
   assert.deepEqual(result.manualEffects.appliedValues, result.manualEffects.requestedValues);
   assert.equal(result.manualEffects.enabled, true);
@@ -93,7 +105,7 @@ test("an authorized passenger may control both effect families", () => {
   const result = deriveSoundtrackPlaybackBoundary({
     policy: makePolicy(),
     vehicleEffectsRequested: true,
-    manualEffects: { chorus: 0.6 },
+    manualEffects: { underwater: 0.6 },
     controlSource: "authorized-passenger",
   });
 
@@ -119,8 +131,12 @@ test("an unknown controller cannot change either effect family", () => {
   assert.deepEqual(result.manualEffects.appliedValues, {
     flanger: 0,
     reverb: 0,
-    chorus: 0,
     echo: 0,
+    underwater: 0,
+    phaser: 0,
+    bitcrush: 0,
+    bassDrive: 0,
+    radioCut: 0,
   });
   assert.equal(result.manualEffects.blockedReason, "unauthorized-control");
 });
