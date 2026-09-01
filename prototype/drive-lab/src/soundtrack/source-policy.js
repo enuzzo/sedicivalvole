@@ -194,7 +194,9 @@ export function evaluateIlloboTrack(track) {
       streamUrl: `${ILLOBO_STREAM_ORIGIN}/audio/illobo/${encodedFilename}`,
       playbackUrl: `/audio/illobo/${encodedFilename}`,
       shareUrl: ILLOBO_SHARE_URL,
-      imageUrl: `/artwork/illobo/${filename.slice(0, -4)}.png`,
+      // Keep the 512 px PNG masters in the repository for the artist while the
+      // vehicle receives a compact WebP derivative sized for the actual UI.
+      imageUrl: `/artwork/illobo/${filename.slice(0, -4)}.webp`,
       pace: null,
       genres: Object.freeze([]),
     }),

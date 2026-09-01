@@ -425,19 +425,26 @@ test("Atlas feeds position samples at GPS cadence without driving React camera s
   assert.match(appSource, /const mapPositionUpdatedAtRef = useRef\(Number\.NEGATIVE_INFINITY\)/);
   assert.match(appSource, /capturedAtMs - mapPositionUpdatedAtRef\.current >= 2500/);
   assert.match(appSource, /positionSamplesRef=\{atlasPositionSamplesRef\}/);
+  assert.match(appSource, /sessionJourneyRef=\{atlasSessionJourneyRef\}/);
+  assert.match(appSource, /const atlasSessionJourneyRef = useRef\(\{/);
+  assert.match(appSource, /recentSamples: appendAtlasJourneySample|const recentSamples = appendAtlasJourneySample/);
+  assert.match(appSource, /travelPoints: appendAtlasTravelPoint\(previousJourney\.travelPoints, nextMapPosition\)/);
   assert.match(atlasSource, /positionSamplesRef = null/);
+  assert.match(atlasSource, /sessionJourneyRef = null/);
   assert.match(atlasSource, /valuesRef\.current = \{[\s\S]*?positionSamplesRef/);
   assert.match(
     appSource,
-    /atlasPositionSamplesRef\.current = \[\];\s*mapPositionUpdatedAtRef\.current = Number\.NEGATIVE_INFINITY;[\s\S]*?if \(!navigator\.geolocation\)/,
+    /atlasPositionSamplesRef\.current = \[\];[\s\S]*?atlasSessionJourneyRef\.current = \{[\s\S]*?mapPositionUpdatedAtRef\.current = Number\.NEGATIVE_INFINITY;[\s\S]*?if \(!navigator\.geolocation\)/,
   );
+  assert.match(atlasSource, /const seededJourney = valuesRef\.current\.sessionJourneyRef\?\.current/);
+  assert.match(atlasSource, /const externalJourney = valuesRef\.current\.sessionJourneyRef\?\.current/);
 
   const reportStart = appSource.indexOf("const buildDiagnosticReport");
   const reportEnd = appSource.indexOf("const sendDiagnostic", reportStart);
   assert.ok(reportStart >= 0 && reportEnd > reportStart);
   assert.doesNotMatch(
     appSource.slice(reportStart, reportEnd),
-    /atlasPositionSamplesRef|latitude|longitude/,
+    /atlasPositionSamplesRef|atlasSessionJourneyRef|latitude|longitude/,
     "the high-rate coordinate buffer must stay outside the diagnostic report",
   );
 });

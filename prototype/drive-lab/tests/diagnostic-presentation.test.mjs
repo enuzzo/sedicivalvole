@@ -71,7 +71,7 @@ test("Tesla diagnostic actions stay in flow instead of obscuring metrics", () =>
   const actionStyles = styles.slice(actionStart, styles.indexOf(".raw-report {", actionStart));
 
   assert.match(actionStyles, /position: static/);
-  assert.match(actionStyles, /grid-template-columns: repeat\(4, minmax\(0, 1fr\)\)/);
+  assert.match(actionStyles, /grid-template-columns: repeat\(5, minmax\(0, 1fr\)\)/);
   assert.doesNotMatch(actionStyles, /position: sticky/);
   assert.doesNotMatch(actionStyles, /bottom: 0/);
 });

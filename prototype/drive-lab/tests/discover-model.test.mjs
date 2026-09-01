@@ -130,12 +130,18 @@ test("Discover renders a self-contained split index with language and search con
   assert.match(appSource, /discoverVisibleResultCapacity/);
   assert.match(appSource, /sandbox="allow-popups allow-popups-to-escape-sandbox"/);
   assert.match(appSource, /setSelectedId\(null\);[\s\S]*?setArticle\([\s\S]*?\[language\]/);
-  assert.match(appSource, /OPEN IN GOOGLE MAPS/);
+  assert.match(appSource, /SEND TO NAVIGATION/);
+  assert.match(appSource, /className="discover-navigation-handoff"/);
+  assert.match(appSource, /QRCode\.toDataURL\(mapsUrl/);
+  assert.match(appSource, /On your phone, use Share and choose the Tesla app\./);
+  assert.match(appSource, /Tesla app → Locations → Navigate → Send to Car\./);
+  assert.doesNotMatch(appSource, /href=\{mapsUrl\} target="_blank"/);
   assert.doesNotMatch(appSource, /onOpenAtlas/);
   assert.match(styles, /\.discover-workspace \{ display: grid; grid-template-columns: 272px minmax\(0, 1fr\)/);
   assert.match(styles, /\.discover-reader \{ display: grid/);
   assert.match(styles, /\.discover-view-tabs button \{[\s\S]*?min-height: 38px/);
   assert.match(styles, /\.discover-results > button em \{[^\n]*font-size: 11\.5px/);
+  assert.match(styles, /\.discover-navigation-card > div \{ display: grid; grid-template-columns: 176px minmax\(0, 1fr\)/);
 });
 
 test("Discover is reachable from both Visual catalogue entry points", () => {

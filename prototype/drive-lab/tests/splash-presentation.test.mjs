@@ -108,10 +108,12 @@ test("the selected Instrument Deck resolves Music and Visual before START", () =
   }
 });
 
-test("the seven-row running Visual library fits the Tesla height without hiding Discover", () => {
+test("the running Visual library uses a complete two-column Tesla catalogue", () => {
+  const app = read("App.jsx");
   const styles = read("styles.css");
-  assert.match(styles, /\.environment-drawer \.score-list \{ gap: 6px; margin-top: 12px; \}/);
-  assert.match(styles, /\.environment-drawer \.score-entry \{[\s\S]*?min-height: 60px;[\s\S]*?padding: 8px 14px;/);
+  assert.match(app, /<span>\{entry\.launchDescription\}<\/span>/);
+  assert.match(styles, /\.environment-drawer \.score-list \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\); gap: 8px; margin-top: 12px; \}/);
+  assert.match(styles, /\.environment-drawer \.score-entry \{[\s\S]*?min-height: 86px;[\s\S]*?padding: 11px 13px;/);
   assert.match(styles, /\.environment-drawer \.score-entry-number,[\s\S]*?font-size: 17px/);
 });
 
@@ -176,6 +178,8 @@ test("Buy Me a Coffee opens a real, accessible support panel", () => {
   assert.match(app, /className="support-overlay"[\s\S]*?labelledBy="support-title"/);
   assert.match(app, /src=\{buyMeCoffeeQr\}/);
   assert.match(app, /href=\{SUPPORT_URL\}/);
+  assert.doesNotMatch(app.slice(app.indexOf('className="support-primary-link"'), app.indexOf("</a>", app.indexOf('className="support-primary-link"'))), /target="_blank"/);
+  assert.match(app, /onPointerUp=\{\(event\) => \{[\s\S]*?event\.pointerType !== "mouse"[\s\S]*?setSupportOpen\(true\)/);
   assert.match(app, /PROJECT SPARKS/);
   assert.match(app, /PLAYFUL SIGNAL · NOT PURCHASES/);
   assert.match(app, /decodeSuggestionAddress\(\)/);
@@ -211,8 +215,8 @@ test("launch surface stays above every preloaded experience overlay", () => {
 test("local exact-viewport QA can keep the Web Audio graph inaudible", () => {
   const app = read("App.jsx");
   assert.match(app, /const QA_MUTED = import\.meta\.env\.DEV && QA_PARAMS\.get\("qaMute"\) === "1"/);
-  assert.match(app, /const \[muted, setMuted\] = useState\(QA_MUTED\)/);
-  assert.match(app, /const launchMuted = QA_MUTED \|\| musicId === "mute"/);
+  assert.match(app, /const \[muted, setMuted\] = useState\(QA_MUTED \|\| initialPreferences\.muted\)/);
+  assert.match(app, /const launchMuted = QA_MUTED \|\| mutedRef\.current \|\| musicId === "mute"/);
   assert.match(app, /audioRef\.current\.setMuted\(launchMuted \|\| musicId === "soundtrack"\)/);
 });
 
@@ -220,8 +224,8 @@ test("the footer keeps a compact right palette and exposes one audio-effects mas
   const app = read("App.jsx");
   const styles = read("styles.css");
 
-  assert.match(app, /const \[vehicleEffectsEnabled, setVehicleEffectsEnabled\] = useState\(true\)/);
-  assert.match(app, /const launchVehicleEffects = true/);
+  assert.match(app, /const \[vehicleEffectsEnabled, setVehicleEffectsEnabled\] = useState\(initialPreferences\.vehicleEffectsEnabled\)/);
+  assert.match(app, /const launchVehicleEffects = vehicleEffectsEnabledRef\.current/);
   assert.match(app, /audioRef\.current\.setVehicleEffectsEnabled\(launchVehicleEffects\)/);
   assert.match(app, /soundtrackRef\.current\?\.setVehicleMaster\(vehicleEffectsEnabled\)/);
   assert.doesNotMatch(app, /soundtrack-manual-disclosure/);
@@ -367,9 +371,15 @@ test("the Tesla Music drawer uses whole-surface one-tap controls and a no-scroll
   assert.match(styles, /\.music-source-switch \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\); \}/);
   assert.match(styles, /\.play-road-library \.score-list \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\);/);
   assert.match(styles, /\.play-road-library \.score-list-item\.is-generative \{ grid-column: 1 \/ -1; \}/);
-  assert.match(styles, /\.soundtrack-track-list \{ grid-template-columns: repeat\(3, minmax\(0, 1fr\)\); gap: 3px; \}/);
-  assert.match(styles, /\.soundtrack-filter-layout \{ grid-template-columns: 88px minmax\(0, 1fr\); gap: 3px; \}/);
+  assert.match(soundtrack, /className=\{`music-library-section-heading\$\{featuredSelected \? "" : " is-jamendo-browser"\}`\}/);
+  assert.match(soundtrack, /Jamendo soundtrack browser/);
+  assert.doesNotMatch(soundtrack, />JAMENDO LIBRARY<\/small><h3 id="soundtrack-library-title">Browse and play<\/h3>/);
+  assert.match(styles, /\.soundtrack-track-list \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\); gap: 3px; \}/);
+  assert.match(styles, /\.soundtrack-filter-layout \{ grid-template-columns: 96px minmax\(0, 1fr\); gap: 5px; \}/);
+  assert.match(styles, /\.soundtrack-genre-board \{ padding-left: 7px; border-left-width: 2px; \}/);
   assert.match(styles, /\.soundtrack-filter-row > button \{ min-height: 34px; padding: 0 6px; \}/);
+  assert.match(styles, /\.soundtrack-filter-row strong \{ overflow: visible; font-size: 10\.5px/);
+  assert.match(styles, /\.soundtrack-now-playing \{ grid-template-columns: 48px minmax\(0, 1fr\) 126px;/);
   assert.match(styles, /\.soundtrack-panel-body > \.privacy-note \{ display: none; \}/);
 });
 
@@ -468,14 +478,41 @@ test("Space Grotesk telemetry units sit below and align to the value edge", () =
   assert.match(groups, /white-space: nowrap/);
 });
 
-test("the visual palette owns the accent and persists as an optional local preference", () => {
+test("safe product state persists locally and can be reset without storing GPS", () => {
   const app = read("App.jsx");
   const styles = read("styles.css");
 
   assert.match(app, /localStorage\.setItem\(PREFERENCES_KEY, JSON\.stringify\(\{[\s\S]*?themeId/);
+  assert.match(app, /soundtrackSelection: \{[\s\S]*?kind: preferredSoundtrackSelectionRef\.current\.kind/);
+  assert.match(app, /manualEffects: normalizeManualEffectPreferences\(soundtrackManualEffects\)/);
+  assert.match(app, /vehicleEffectsEnabled,[\s\S]*?muted/);
+  assert.match(app, /const \[launchMusicId, setLaunchMusicId\] = useState\(initialPreferences\.musicMode\)/);
+  assert.match(app, /const \[launchEnvironmentId, setLaunchEnvironmentId\] = useState\(initialPreferences\.environmentId\)/);
+  assert.match(app, /const resetSavedState = useCallback/);
+  assert.match(app, /localStorage\.removeItem\(PREFERENCES_KEY\)/);
+  assert.match(app, /className="splash-reset-state"[\s\S]*?RESET SAVED STATE/);
+  assert.match(app, /className="drawer-actions"[\s\S]*?onClick=\{resetSavedState\}>RESET SAVED STATE/);
+  const preferenceWrite = app.slice(app.indexOf("localStorage.setItem(PREFERENCES_KEY"), app.indexOf("const captureViewport"));
+  assert.doesNotMatch(preferenceWrite, /latitude|longitude|mapPosition|atlasPositionSamplesRef/);
   assert.match(app, /data-palette=\{themeId\}/);
   assert.doesNotMatch(app, /data-theme=\{themeId\}/);
   assert.match(styles, /\.app\[data-palette="red"\] \{ --accent: #ed2d24; \}/);
+  assert.match(styles, /\.splash-reset-state \{/);
+});
+
+test("the vehicle gets persistent transport, Media Session actions, track notices, and swipe dismissal", () => {
+  const app = read("App.jsx");
+  const styles = read("styles.css");
+
+  assert.match(app, /className="persistent-transport" aria-label="Music transport"/);
+  assert.match(app, /navigator\.mediaSession\.setActionHandler\(action, handler\)/);
+  assert.match(app, /previoustrack: \(\) => void moveTransport\("previous"\)/);
+  assert.match(app, /nexttrack: \(\) => void moveTransport\("next"\)/);
+  assert.match(app, /className="track-change-notice" role="status" aria-live="polite"/);
+  assert.match(app, /deltaX >= 110 \|\| deltaY >= 88/);
+  assert.match(styles, /\.persistent-transport \{[\s\S]*?bottom: 72px/);
+  assert.match(styles, /\.track-change-notice \{[\s\S]*?width: min\(390px/);
+  assert.match(styles, /\.drawer-panel\.is-dragging/);
 });
 
 test("compact viewports keep the mode switch separate and preserve a resting mode marker", () => {

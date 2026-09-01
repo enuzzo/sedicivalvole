@@ -1,5 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import {
   APERTURE_TUNING,
   apertureReadout,
@@ -8,6 +11,9 @@ import {
   apertureSmoothing,
   apertureWall,
 } from "../src/aperture-model.js";
+
+const TEST_DIR = dirname(fileURLToPath(import.meta.url));
+const fieldSource = readFileSync(resolve(TEST_DIR, "../src/flux-field.jsx"), "utf8");
 
 test("Aperture wall at standstill (0 km/h) covers the full screen plane", () => {
   const wall = apertureWall(0);
@@ -71,6 +77,16 @@ test("time-based easing preserves the approved 30 FPS motion at 60 FPS", () => {
     assert.ok(Math.abs(twoHalfFrames - coefficient) < 1e-12, coefficient);
     assert.ok(Math.abs(apertureSmoothing(coefficient, 1 / 30) - coefficient) < 1e-12);
   }
+});
+
+test("Aperture smooths the low-speed wall and avoids a per-frame layout read", () => {
+  assert.match(fieldSource, /let visualWallSpeed =/);
+  assert.match(fieldSource, /nextWallSpeed >= visualWallSpeed \? 0\.22 : 0\.16/);
+  assert.match(fieldSource, /aperturePixelRatio\(window\.devicePixelRatio, visualWallSpeed\)/);
+  assert.match(fieldSource, /apertureShaderControls\(\s*visualWallSpeed/);
+  assert.match(fieldSource, /new ResizeObserver\(updateCanvasSize\)/);
+  const renderLoop = fieldSource.slice(fieldSource.indexOf("const render = (now) =>", fieldSource.indexOf("WebGL2 · Aperture")));
+  assert.doesNotMatch(renderLoop, /canvas\.clientWidth \* ratio|canvas\.clientHeight \* ratio/);
 });
 
 test("shader controls preserve every existing speed threshold", () => {

@@ -75,18 +75,31 @@ test("the music drawer packages one coherent square cover for every playable sco
   const artworkRoot = resolve(DRIVE_LAB_ROOT, "public/artwork");
   const playRoadNames = readdirSync(resolve(artworkRoot, "play-road")).sort();
   const illoboNames = readdirSync(resolve(artworkRoot, "illobo")).sort();
+  const illoboMasterRoot = resolve(DRIVE_LAB_ROOT, "artwork-masters/illobo");
+  const illoboMasters = readdirSync(illoboMasterRoot).sort();
+  const illoboDerivatives = illoboNames.filter((name) => name.endsWith(".webp"));
   assert.deepEqual(playRoadNames, ["fracture.png", "junction.png", "nightshift.png"]);
-  assert.equal(illoboNames.length, 29);
-  assert.ok(illoboNames.every((name) => /^[a-z0-9]+(?:-[a-z0-9]+)*\.png$/.test(name)));
+  assert.equal(illoboMasters.length, 29);
+  assert.equal(illoboDerivatives.length, 29);
+  assert.deepEqual(illoboDerivatives.map((name) => name.replace(/\.webp$/, ".png")), illoboMasters);
+  assert.ok(illoboMasters.every((name) => /^[a-z0-9]+(?:-[a-z0-9]+)*\.png$/.test(name)));
 
   for (const relativePath of [
     ...playRoadNames.map((name) => `play-road/${name}`),
-    ...illoboNames.map((name) => `illobo/${name}`),
+    ...illoboMasters.map((name) => `../../artwork-masters/illobo/${name}`),
   ]) {
     const bytes = readFileSync(resolve(artworkRoot, relativePath));
     assert.equal(bytes.subarray(1, 4).toString(), "PNG");
     assert.equal(bytes.readUInt32BE(16), 512, `${relativePath} width`);
     assert.equal(bytes.readUInt32BE(20), 512, `${relativePath} height`);
+  }
+
+  for (const name of illoboDerivatives) {
+    const webp = readFileSync(resolve(artworkRoot, "illobo", name));
+    const png = readFileSync(resolve(illoboMasterRoot, name.replace(/\.webp$/, ".png")));
+    assert.equal(webp.subarray(0, 4).toString(), "RIFF", `${name} RIFF header`);
+    assert.equal(webp.subarray(8, 12).toString(), "WEBP", `${name} WebP header`);
+    assert.ok(webp.length < png.length * 0.25, `${name} is materially smaller than its HD master`);
   }
 });
 

@@ -49,6 +49,7 @@ import {
 } from "./soundtrack/page-title.js";
 import {
   retainJamendoPreviewEntries,
+  normalizeSoundtrackSelection,
   SOUNDTRACK_GENRE_OPTIONS,
   SOUNDTRACK_PACE_OPTIONS,
 } from "./soundtrack/library-model.js";
@@ -91,7 +92,10 @@ import {
 } from "./environments/prtcl/prtcl-model.js";
 import {
   ATLAS_DEMO_POSITION,
+  appendAtlasJourneySample,
   appendAtlasPositionSample,
+  appendAtlasSessionJourneySample,
+  appendAtlasTravelPoint,
   atlasGpsPresentation,
   resolveAtlasHeading,
 } from "./environments/atlas/atlas-model.js";
@@ -199,6 +203,12 @@ const SOUNDTRACK_MANUAL_CONTROLS = Object.freeze([
 const EMPTY_SOUNDTRACK_MANUAL_EFFECTS = Object.freeze(Object.fromEntries(
   SOUNDTRACK_MANUAL_CONTROLS.map(({ id }) => [id, 0]),
 ));
+function normalizeManualEffectPreferences(value) {
+  return Object.fromEntries(SOUNDTRACK_MANUAL_CONTROLS.map(({ id }) => [
+    id,
+    Math.min(1, Math.max(0, Number(value?.[id]) || 0)),
+  ]));
+}
 function parseSupportUrl(value) {
   try {
     const url = new URL(String(value || "").trim());
@@ -256,6 +266,11 @@ function readPreferences() {
       )) ? value.genreId : DEFAULT_GENRE_ID,
       driveySettings: normalizeDriveySettings(value?.driveySettings),
       prtclSettings: normalizePrtclSettings(value?.prtclSettings),
+      musicMode: value?.musicMode === "soundtrack" ? "soundtrack" : "play-road",
+      soundtrackSelection: normalizeSoundtrackSelection(value?.soundtrackSelection),
+      manualEffects: normalizeManualEffectPreferences(value?.manualEffects),
+      vehicleEffectsEnabled: value?.vehicleEffectsEnabled !== false,
+      muted: value?.muted === true,
     };
   } catch {
     return {
@@ -264,6 +279,11 @@ function readPreferences() {
       genreId: DEFAULT_GENRE_ID,
       driveySettings: DEFAULT_DRIVEY_SETTINGS,
       prtclSettings: DEFAULT_PRTCL_SETTINGS,
+      musicMode: "play-road",
+      soundtrackSelection: normalizeSoundtrackSelection(),
+      manualEffects: EMPTY_SOUNDTRACK_MANUAL_EFFECTS,
+      vehicleEffectsEnabled: true,
+      muted: false,
     };
   }
 }
@@ -493,6 +513,7 @@ function DialogSurface({
 }) {
   const panelRef = useRef(null);
   const previousFocusRef = useRef(null);
+  const dragRef = useRef(null);
 
   useEffect(() => {
     previousFocusRef.current = document.activeElement instanceof HTMLElement
@@ -537,6 +558,60 @@ function DialogSurface({
     }
   };
 
+  const finishDrag = useCallback((shouldClose = false) => {
+    const panel = panelRef.current;
+    const drag = dragRef.current;
+    if (panel) {
+      panel.style.removeProperty("--drawer-drag-x");
+      panel.style.removeProperty("--drawer-drag-y");
+      panel.classList.remove("is-dragging");
+    }
+    if (drag?.pointerId != null) panel?.releasePointerCapture?.(drag.pointerId);
+    dragRef.current = null;
+    if (shouldClose) onClose();
+  }, [onClose]);
+
+  const handlePointerDown = (event) => {
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    if (event.target instanceof HTMLElement
+      && event.target.closest("button, a, input, select, textarea, [role='slider'], [contenteditable='true']")) return;
+    const panel = panelRef.current;
+    if (!panel) return;
+    dragRef.current = {
+      pointerId: event.pointerId,
+      x: event.clientX,
+      y: event.clientY,
+      scrollTop: panel.scrollTop,
+      active: false,
+    };
+    panel.setPointerCapture?.(event.pointerId);
+  };
+
+  const handlePointerMove = (event) => {
+    const drag = dragRef.current;
+    const panel = panelRef.current;
+    if (!drag || drag.pointerId !== event.pointerId || !panel) return;
+    const deltaX = Math.max(0, event.clientX - drag.x);
+    const deltaY = Math.max(0, event.clientY - drag.y);
+    const verticalAllowed = drag.scrollTop <= 1 && panel.scrollTop <= 1;
+    const travelX = deltaX > deltaY * 1.1 ? deltaX : 0;
+    const travelY = verticalAllowed && deltaY > deltaX * 1.1 ? deltaY : 0;
+    if (!drag.active && Math.max(travelX, travelY) < 12) return;
+    drag.active = true;
+    panel.classList.add("is-dragging");
+    panel.style.setProperty("--drawer-drag-x", `${Math.min(180, travelX)}px`);
+    panel.style.setProperty("--drawer-drag-y", `${Math.min(140, travelY)}px`);
+    event.preventDefault();
+  };
+
+  const handlePointerUp = (event) => {
+    const drag = dragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    const deltaX = Math.max(0, event.clientX - drag.x);
+    const deltaY = Math.max(0, event.clientY - drag.y);
+    finishDrag(drag.active && (deltaX >= 110 || deltaY >= 88));
+  };
+
   return (
     <section
       className={className}
@@ -546,7 +621,16 @@ function DialogSurface({
       onKeyDown={handleKeyDown}
     >
       <button className={backdropClass} type="button" tabIndex={-1} onClick={onClose} aria-label="Close" />
-      <div ref={panelRef} className={panelClass} role="document" tabIndex={-1}>
+      <div
+        ref={panelRef}
+        className={panelClass}
+        role="document"
+        tabIndex={-1}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={() => finishDrag(false)}
+      >
         {children}
       </div>
     </section>
@@ -572,6 +656,8 @@ function DiscoverPanel({ position, onClose, onRetryLocation, onDemoLocation }) {
   const [reloadToken, setReloadToken] = useState(0);
   const [status, setStatus] = useState(position ? "loading" : "location");
   const [error, setError] = useState("");
+  const [navigationOpen, setNavigationOpen] = useState(false);
+  const [mapsQrUrl, setMapsQrUrl] = useState("");
   const resultsRef = useRef(null);
   const articleCacheRef = useRef(new Map());
 
@@ -645,6 +731,24 @@ function DiscoverPanel({ position, onClose, onRetryLocation, onDemoLocation }) {
   const languageLabel = DISCOVER_LANGUAGE_OPTIONS.find((item) => item.id === language)?.label ?? language;
   const selectedArticleKey = selected ? `${language}:${selected.id}` : "";
   const articleUrl = useMemo(() => discoverWikipediaArticleUrl(selected?.title, { language }), [language, selected?.title]);
+
+  useEffect(() => {
+    let active = true;
+    setNavigationOpen(false);
+    setMapsQrUrl("");
+    if (!mapsUrl) return () => { active = false; };
+    import("qrcode").then(({ default: QRCode }) => QRCode.toDataURL(mapsUrl, {
+      width: 320,
+      margin: 1,
+      color: { dark: "#070909", light: "#EEEAE0" },
+      errorCorrectionLevel: "M",
+    })).then((dataUrl) => {
+      if (active) setMapsQrUrl(dataUrl);
+    }).catch(() => {
+      if (active) setMapsQrUrl("");
+    });
+    return () => { active = false; };
+  }, [mapsUrl]);
 
   useEffect(() => {
     const element = resultsRef.current;
@@ -798,7 +902,18 @@ function DiscoverPanel({ position, onClose, onRetryLocation, onDemoLocation }) {
                   <h3>{selected.title}</h3>
                   <span className="discover-reader-meta">{selected.distanceLabel} · ≈ {selected.estimatedMinutes} min drive</span>
                 </div>
-                {mapsUrl ? <a href={mapsUrl} target="_blank" rel="noreferrer"><span>OPEN IN GOOGLE MAPS</span><img src="/third-party/tabler-icons/external-link.svg" alt="" aria-hidden="true" /></a> : null}
+                {mapsUrl ? (
+                  <button
+                    type="button"
+                    className="discover-navigation-trigger"
+                    aria-expanded={navigationOpen}
+                    aria-controls="discover-navigation-handoff"
+                    onClick={() => setNavigationOpen((open) => !open)}
+                  >
+                    <span>SEND TO NAVIGATION</span>
+                    <img src="/third-party/tabler-icons/navigation-filled.svg" alt="" aria-hidden="true" />
+                  </button>
+                ) : null}
               </header>
               <div className="discover-reader-body">
                 {article.status === "ready" && article.key === selectedArticleKey ? (
@@ -820,6 +935,25 @@ function DiscoverPanel({ position, onClose, onRetryLocation, onDemoLocation }) {
                     </div>
                   </div>
                 )}
+                {navigationOpen ? (
+                  <section id="discover-navigation-handoff" className="discover-navigation-handoff" aria-labelledby="discover-navigation-title">
+                    <div className="discover-navigation-card">
+                      <header>
+                        <div><small>PHONE → TESLA</small><h4 id="discover-navigation-title">Send this place to the car</h4></div>
+                        <button type="button" onClick={() => setNavigationOpen(false)} aria-label="Close navigation handoff">CLOSE</button>
+                      </header>
+                      <div>
+                        {mapsQrUrl ? <img src={mapsQrUrl} width="176" height="176" alt={`Google Maps QR code for ${selected.title}`} /> : <span className="discover-navigation-qr-placeholder">BUILDING QR…</span>}
+                        <ol>
+                          <li>Scan the QR code to open this destination in Google Maps.</li>
+                          <li>On your phone, use Share and choose the Tesla app.</li>
+                          <li>Tesla sends the destination to the car navigation.</li>
+                        </ol>
+                        <p>Official alternative: Tesla app → Locations → Navigate → Send to Car.</p>
+                      </div>
+                    </div>
+                  </section>
+                ) : null}
               </div>
               <footer className="discover-reader-source">
                 <span><img src="/third-party/tabler-icons/brand-wikipedia.svg" alt="" aria-hidden="true" />WIKIPEDIA · {language.toUpperCase()}</span>
@@ -1082,7 +1216,7 @@ function VisualPicker({ environmentId, onChange, onOpenDiscover, onClose }) {
                 }}
               >
                 <span className="score-entry-number">{entry.number}</span>
-                <span className="score-entry-body"><strong>{displayLabel(entry)}</strong><span>{entry.rendererLabel}</span></span>
+                <span className="score-entry-body"><strong>{displayLabel(entry)}</strong><span>{entry.launchDescription}</span></span>
                 <span className="score-entry-state">{destination ? "OPEN" : active ? "ACTIVE" : "SELECT"}</span>
               </button>
             </li>
@@ -1288,10 +1422,10 @@ function SoundtrackLibraryContent({
       </div>
 
       <section className="jamendo-library" aria-labelledby="soundtrack-library-title">
-        <div className="music-library-section-heading">
-          <div><small>{featuredSelected ? "FEATURED ARTIST · ILLOBO" : "JAMENDO LIBRARY"}</small><h3 id="soundtrack-library-title">{featuredSelected ? "Lobo Playlist" : "Browse and play"}</h3></div>
+        <div className={`music-library-section-heading${featuredSelected ? "" : " is-jamendo-browser"}`}>
+          {featuredSelected ? <div><small>FEATURED ARTIST · ILLOBO</small><h3 id="soundtrack-library-title">Lobo Playlist</h3></div> : <h3 id="soundtrack-library-title" className="visually-hidden">Jamendo soundtrack browser</h3>}
           <div className="soundtrack-library-status">
-            <span>AUTHORED PLAYBACK · 1×</span>
+            {featuredSelected ? <span>ORIGINAL RECORDINGS · 1×</span> : null}
             <strong>{library?.refreshCopy ?? "Fresh mix · changes every 30 min"}</strong>
           </div>
         </div>
@@ -1632,10 +1766,8 @@ function SupportPanel({ onClose, reducedMotion }) {
           <a
             className="support-primary-link"
             href={SUPPORT_URL}
-            target="_blank"
-            rel="noreferrer"
           >
-            BUY ME A COFFEE <span aria-hidden="true">↗</span>
+            BUY ME A COFFEE <span aria-hidden="true">→</span>
           </a>
           <SupportMomentumCounter reducedMotion={reducedMotion} />
         </div>
@@ -1757,14 +1889,14 @@ function LaunchSelector({
 export function App() {
   const initialPreferences = useMemo(readPreferences, []);
   const [phase, setPhase] = useState("idle");
-  const [launchMusicId, setLaunchMusicId] = useState(null);
-  const [launchEnvironmentId, setLaunchEnvironmentId] = useState(null);
+  const [launchMusicId, setLaunchMusicId] = useState(initialPreferences.musicMode);
+  const [launchEnvironmentId, setLaunchEnvironmentId] = useState(initialPreferences.environmentId);
   const [speed, setSpeed] = useState(QA_SPEED);
   const [source, setSource] = useState(QA_SPEED > 0 ? "QA" : "GPS");
   const [gpsState, setGpsState] = useState("not tested");
   const [accuracy, setAccuracy] = useState(null);
   const [renderer, setRenderer] = useState("checking…");
-  const [muted, setMuted] = useState(QA_MUTED);
+  const [muted, setMuted] = useState(QA_MUTED || initialPreferences.muted);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [controlsAwake, setControlsAwake] = useState(true);
@@ -1799,13 +1931,15 @@ export function App() {
   const [soundtrackPanelOpen, setSoundtrackPanelOpen] = useState(false);
   const [discoverOpen, setDiscoverOpen] = useState(false);
   const [manualEffectsDeckOpen, setManualEffectsDeckOpen] = useState(false);
-  const [musicMode, setMusicMode] = useState("play-road");
+  const [musicMode, setMusicMode] = useState(initialPreferences.musicMode);
   const [musicModeLoading, setMusicModeLoading] = useState(null);
   const [soundtrackSnapshot, setSoundtrackSnapshot] = useState(null);
   const [jamendoPreviewEntries, setJamendoPreviewEntries] = useState([]);
-  const [vehicleEffectsEnabled, setVehicleEffectsEnabled] = useState(true);
-  const [soundtrackManualEffects, setSoundtrackManualEffects] = useState(EMPTY_SOUNDTRACK_MANUAL_EFFECTS);
+  const [vehicleEffectsEnabled, setVehicleEffectsEnabled] = useState(initialPreferences.vehicleEffectsEnabled);
+  const [soundtrackManualEffects, setSoundtrackManualEffects] = useState(initialPreferences.manualEffects);
   const [controlNotice, setControlNotice] = useState(null);
+  const [trackNotice, setTrackNotice] = useState(null);
+  const [playRoadPaused, setPlayRoadPaused] = useState(false);
   const [supportOpen, setSupportOpen] = useState(false);
   const [rawReportOpen, setRawReportOpen] = useState(false);
   const [diagnosticReadmeOpen, setDiagnosticReadmeOpen] = useState(false);
@@ -1822,6 +1956,7 @@ export function App() {
   const soundtrackRef = useRef(null);
   const sessionMusicModeRef = useRef(null);
   const musicModeRevisionRef = useRef(0);
+  const preferredSoundtrackSelectionRef = useRef(initialPreferences.soundtrackSelection);
   const appRef = useRef(null);
   const watchRef = useRef(null);
   const wakeTimerRef = useRef(null);
@@ -1850,6 +1985,8 @@ export function App() {
   const performanceSamplerTimerRef = useRef(null);
   const viewportCaptureTimerRef = useRef(null);
   const controlNoticeTimerRef = useRef(null);
+  const trackNoticeTimerRef = useRef(null);
+  const announcedTrackRef = useRef("");
   const gpsTelemetryRef = useRef(createGpsTelemetry(performance.now()));
   const driveTelemetryRef = useRef(createDriveTelemetry(performance.now()));
   const frameTelemetryRef = useRef(createFrameTelemetry(performance.now()));
@@ -1864,6 +2001,13 @@ export function App() {
   const runtimeIssuesRef = useRef([]);
   const latestGpsObservationRef = useRef({ capturedAtMs: null, speedKmh: null });
   const atlasPositionSamplesRef = useRef([]);
+  const atlasSessionJourneyRef = useRef({
+    recentSamples: [],
+    sessionSamples: [],
+    travelPoints: [],
+    startedAtMs: null,
+    updatedAtMs: null,
+  });
   const mapPositionUpdatedAtRef = useRef(Number.NEGATIVE_INFINITY);
   const sessionStartedAtRef = useRef(performance.now());
   const gpsStateRef = useRef(gpsState);
@@ -1901,6 +2045,9 @@ export function App() {
   }, []);
   const updateSoundtrackSnapshot = useCallback((nextSnapshot) => {
     setSoundtrackSnapshot(nextSnapshot);
+    if (nextSnapshot?.library?.selection) {
+      preferredSoundtrackSelectionRef.current = normalizeSoundtrackSelection(nextSnapshot.library.selection);
+    }
     setJamendoPreviewEntries((current) => retainJamendoPreviewEntries(current, nextSnapshot));
   }, []);
   const soundtrackController = useCallback(() => {
@@ -1925,7 +2072,7 @@ export function App() {
     const controller = soundtrackController();
     const status = controller.getSnapshot().status;
     if (!["loading", "prepared", "paused", "playing"].includes(status)) {
-      void controller.load();
+      void controller.load({ selection: preferredSoundtrackSelectionRef.current });
     }
   }, [soundtrackController]);
   // The driver-facing number describes the pulse they hear. PARK deliberately
@@ -2109,6 +2256,13 @@ export function App() {
     lastGpsEventAtRef.current = null;
     gpsSpeedLockedRef.current = false;
     atlasPositionSamplesRef.current = [];
+    atlasSessionJourneyRef.current = {
+      recentSamples: [],
+      sessionSamples: [],
+      travelPoints: [],
+      startedAtMs: null,
+      updatedAtMs: null,
+    };
     mapPositionUpdatedAtRef.current = Number.NEGATIVE_INFINITY;
     if (!navigator.geolocation) {
       setGpsState("unavailable");
@@ -2161,6 +2315,25 @@ export function App() {
             nextMapPosition,
             capturedAtMs,
           );
+          const previousJourney = atlasSessionJourneyRef.current;
+          const recentSamples = appendAtlasJourneySample(previousJourney.recentSamples, {
+            capturedAtMs,
+            speedKmh: kmh,
+            altitudeM: nextMapPosition.altitudeM,
+            groundElevationM: null,
+            headingDegrees: nextMapPosition.heading,
+          });
+          const latestJourneySample = recentSamples.at(-1);
+          const sessionSamples = latestJourneySample?.capturedAtMs !== previousJourney.recentSamples.at(-1)?.capturedAtMs
+            ? appendAtlasSessionJourneySample(previousJourney.sessionSamples, latestJourneySample)
+            : previousJourney.sessionSamples;
+          atlasSessionJourneyRef.current = {
+            recentSamples,
+            sessionSamples,
+            travelPoints: appendAtlasTravelPoint(previousJourney.travelPoints, nextMapPosition),
+            startedAtMs: previousJourney.startedAtMs ?? capturedAtMs,
+            updatedAtMs: capturedAtMs,
+          };
           if (capturedAtMs - mapPositionUpdatedAtRef.current >= 2500) {
             mapPositionUpdatedAtRef.current = capturedAtMs;
             setMapPosition(nextMapPosition);
@@ -2448,8 +2621,8 @@ export function App() {
   }, [startKeyboardRegeneration]);
 
   const runHarness = useCallback(async ({ musicId, selectedEnvironmentId }) => {
-    const launchMuted = QA_MUTED || musicId === "mute";
-    const launchVehicleEffects = true;
+    const launchMuted = QA_MUTED || mutedRef.current || musicId === "mute";
+    const launchVehicleEffects = vehicleEffectsEnabledRef.current;
     const launchDiscover = selectedEnvironmentId === DISCOVER_VISUAL_CHOICE.id;
     const runtimeEnvironmentId = launchDiscover
       ? DEFAULT_FLUX_ENVIRONMENT_ID
@@ -2729,6 +2902,35 @@ export function App() {
     logDiagnosticEvent("music.mode.ready", { musicMode: nextMode });
   }, [logDiagnosticEvent, soundtrackController]);
 
+  const resetSavedState = useCallback(() => {
+    try {
+      localStorage.removeItem(PREFERENCES_KEY);
+      localStorage.removeItem(LEGACY_PREFERENCES_KEY);
+      localStorage.removeItem("sedicivalvole.appearance.v1");
+    } catch {
+      // Reset remains useful even when storage access is unavailable.
+    }
+    preferredSoundtrackSelectionRef.current = normalizeSoundtrackSelection();
+    setLaunchMusicId("play-road");
+    setLaunchEnvironmentId(DEFAULT_FLUX_ENVIRONMENT_ID);
+    setThemeId("red");
+    setEnvironmentId(DEFAULT_FLUX_ENVIRONMENT_ID);
+    setGenreId(DEFAULT_GENRE_ID);
+    setDriveySettings(DEFAULT_DRIVEY_SETTINGS);
+    setPrtclSettings(DEFAULT_PRTCL_SETTINGS);
+    setSoundtrackManualEffects(EMPTY_SOUNDTRACK_MANUAL_EFFECTS);
+    setVehicleEffectsEnabled(true);
+    setMuted(QA_MUTED);
+    if (phase === "running") {
+      void switchMusicMode("play-road");
+      showControlNotice("SAVED STATE RESET", true);
+    } else {
+      soundtrackRef.current?.pause();
+      setMusicMode("play-road");
+    }
+    logDiagnosticEvent("preferences.reset", { scope: "local-product-state" });
+  }, [logDiagnosticEvent, phase, showControlNotice, switchMusicMode]);
+
   const playSoundtrackSelection = useCallback(async (selection) => {
     if (mutedRef.current) {
       setMuted(false);
@@ -2756,6 +2958,110 @@ export function App() {
     const result = await soundtrackController().select(key);
     logDiagnosticEvent("soundtrack.track.played", { key, status: result?.status ?? "unknown" });
   }, [logDiagnosticEvent, showControlNotice, soundtrackController]);
+
+  const moveTransport = useCallback(async (direction) => {
+    if (sessionMusicModeRef.current === "soundtrack") {
+      await soundtrackRef.current?.move(direction);
+      return;
+    }
+    const scores = readyScoreGenres();
+    const currentIndex = Math.max(0, scores.findIndex((entry) => entry.id === genreIdRef.current));
+    const offset = direction === "previous" ? -1 : 1;
+    const nextIndex = (currentIndex + offset + scores.length) % scores.length;
+    await selectScore(scores[nextIndex].id);
+  }, [selectScore]);
+
+  const toggleTransport = useCallback(async (forcePlaying = null) => {
+    if (sessionMusicModeRef.current === "soundtrack") {
+      const playing = soundtrackRef.current?.getSnapshot?.().status === "playing";
+      const shouldPlay = forcePlaying == null ? !playing : forcePlaying;
+      if (shouldPlay) {
+        if (mutedRef.current) setMuted(false);
+        await soundtrackRef.current?.resume();
+      } else {
+        soundtrackRef.current?.pause();
+      }
+      return;
+    }
+    const context = audioRef.current?.context;
+    if (!context) return;
+    const playing = context.state === "running" && !playRoadPaused;
+    const shouldPlay = forcePlaying == null ? !playing : forcePlaying;
+    if (shouldPlay) {
+      if (mutedRef.current) setMuted(false);
+      await context.resume();
+      setPlayRoadPaused(false);
+    } else {
+      await context.suspend();
+      setPlayRoadPaused(true);
+    }
+  }, [playRoadPaused]);
+
+  const currentTrack = useMemo(() => {
+    if (musicMode === "soundtrack") {
+      const current = soundtrackSnapshot?.current;
+      return current ? {
+        key: `soundtrack:${current.key}`,
+        title: current.title,
+        album: current.albumName || (soundtrackSnapshot?.library?.selection?.kind === "featured" ? "Lobo Playlist" : "Jamendo Library"),
+        artist: current.artistName,
+        artwork: current.imageUrl || null,
+      } : null;
+    }
+    const current = getScoreGenre(genreId);
+    return {
+      key: `play-road:${current.id}`,
+      title: `${displayLabel(current)} ${current.number}`,
+      album: "Play the Road",
+      artist: "16 Road",
+      artwork: current.coverUrl,
+    };
+  }, [genreId, musicMode, soundtrackSnapshot?.current?.key, soundtrackSnapshot?.library?.selection?.kind]);
+
+  const transportPlaying = !muted && (musicMode === "soundtrack"
+    ? soundtrackSnapshot?.status === "playing"
+    : !playRoadPaused);
+
+  useEffect(() => {
+    if (phase !== "running" || !currentTrack || announcedTrackRef.current === currentTrack.key) return;
+    announcedTrackRef.current = currentTrack.key;
+    window.clearTimeout(trackNoticeTimerRef.current);
+    setTrackNotice(currentTrack);
+    trackNoticeTimerRef.current = window.setTimeout(() => {
+      setTrackNotice(null);
+      trackNoticeTimerRef.current = null;
+    }, 3200);
+  }, [currentTrack, phase]);
+
+  useEffect(() => {
+    if (!("mediaSession" in navigator) || !("MediaMetadata" in window) || !currentTrack) return undefined;
+    const artwork = currentTrack.artwork ? [{
+      src: new URL(currentTrack.artwork, window.location.href).href,
+      sizes: "512x512",
+      type: currentTrack.artwork.endsWith(".webp") ? "image/webp" : "image/png",
+    }] : [];
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: currentTrack.title,
+      artist: currentTrack.artist,
+      album: currentTrack.album,
+      artwork,
+    });
+    navigator.mediaSession.playbackState = transportPlaying ? "playing" : "paused";
+    const handlers = {
+      play: () => void toggleTransport(true),
+      pause: () => void toggleTransport(false),
+      previoustrack: () => void moveTransport("previous"),
+      nexttrack: () => void moveTransport("next"),
+    };
+    for (const [action, handler] of Object.entries(handlers)) {
+      try { navigator.mediaSession.setActionHandler(action, handler); } catch { /* unsupported action */ }
+    }
+    return () => {
+      for (const action of Object.keys(handlers)) {
+        try { navigator.mediaSession.setActionHandler(action, null); } catch { /* unsupported action */ }
+      }
+    };
+  }, [currentTrack, moveTransport, toggleTransport, transportPlaying]);
 
   useEffect(() => {
     const supported = typeof PerformanceObserver !== "undefined"
@@ -3044,11 +3350,31 @@ export function App() {
         genreId,
         driveySettings: normalizeDriveySettings(driveySettings),
         prtclSettings: normalizePrtclSettings(prtclSettings),
+        musicMode,
+        soundtrackSelection: {
+          kind: preferredSoundtrackSelectionRef.current.kind,
+          id: preferredSoundtrackSelectionRef.current.id,
+        },
+        manualEffects: normalizeManualEffectPreferences(soundtrackManualEffects),
+        vehicleEffectsEnabled,
+        muted,
       }));
     } catch {
       // Preference persistence is optional.
     }
-  }, [driveySettings, environmentId, genreId, prtclSettings, themeId]);
+  }, [
+    driveySettings,
+    environmentId,
+    genreId,
+    musicMode,
+    muted,
+    prtclSettings,
+    soundtrackManualEffects,
+    soundtrackSnapshot?.library?.selection?.id,
+    soundtrackSnapshot?.library?.selection?.kind,
+    themeId,
+    vehicleEffectsEnabled,
+  ]);
 
   const captureViewport = useCallback((reason) => {
     const snapshot = readDisplaySnapshot(reason);
@@ -3154,6 +3480,7 @@ export function App() {
     window.clearTimeout(keyboardLeaseTimerRef.current);
     window.clearTimeout(brakeFlashTimerRef.current);
     window.clearTimeout(controlNoticeTimerRef.current);
+    window.clearTimeout(trackNoticeTimerRef.current);
     window.clearInterval(audioMeterTimerRef.current);
     window.clearInterval(flightRecorderTimerRef.current);
     window.clearInterval(performanceSamplerTimerRef.current);
@@ -3165,6 +3492,13 @@ export function App() {
     stopDemo();
     if (watchRef.current != null) navigator.geolocation?.clearWatch(watchRef.current);
     atlasPositionSamplesRef.current = [];
+    atlasSessionJourneyRef.current = {
+      recentSamples: [],
+      sessionSamples: [],
+      travelPoints: [],
+      startedAtMs: null,
+      updatedAtMs: null,
+    };
     audioRef.current?.destroy();
     soundtrackRef.current?.destroy();
     soundtrackRef.current = null;
@@ -3411,6 +3745,7 @@ export function App() {
                 theme={theme}
                 position={mapPosition}
                 positionSamplesRef={atlasPositionSamplesRef}
+                sessionJourneyRef={atlasSessionJourneyRef}
                 reducedMotion={reducedMotion}
                 effect={activeEffect}
                 keyboardShortcutsEnabled={!modalOpen}
@@ -3496,6 +3831,9 @@ export function App() {
             aria-label="Open Buy Me a Coffee support panel"
             aria-haspopup="dialog"
             aria-expanded={supportOpen}
+            onPointerUp={(event) => {
+              if (event.pointerType !== "mouse") setSupportOpen(true);
+            }}
             onClick={() => setSupportOpen(true)}
           >
             <span className="support-logo"><SupportCupMark /></span>
@@ -3558,6 +3896,7 @@ export function App() {
             </a>
           </small>
           <small className="splash-privacy">Audio, display, motion, and GPS are checked locally.</small>
+          <button className="splash-reset-state" type="button" onClick={resetSavedState}>RESET SAVED STATE</button>
         </div> : null}
         {phase === "choosing" ? (
           <LaunchSelector
@@ -3663,6 +4002,19 @@ export function App() {
             {controlNotice}
           </div>
         ) : null}
+
+        {trackNotice ? (
+          <div className="track-change-notice" role="status" aria-live="polite" aria-atomic="true">
+            {trackNotice.artwork ? <img src={trackNotice.artwork} alt="" width="64" height="64" /> : null}
+            <span><small>NOW PLAYING</small><strong>{trackNotice.title}</strong><em>{trackNotice.artist} · {trackNotice.album}</em></span>
+          </div>
+        ) : null}
+
+        <div className="persistent-transport" aria-label="Music transport">
+          <button type="button" onClick={() => void moveTransport("previous")} aria-label="Previous track"><MediaGlyph name="previous" /></button>
+          <button type="button" onClick={() => void toggleTransport()} aria-label={transportPlaying ? "Pause" : "Play"}><MediaGlyph name={transportPlaying ? "pause" : "play"} /></button>
+          <button type="button" onClick={() => void moveTransport("next")} aria-label="Next track"><MediaGlyph name="next" /></button>
+        </div>
 
         {manualEffectsDeckOpen ? (
           <ManualEffectsDeck
@@ -3899,6 +4251,7 @@ export function App() {
                     <button type="button" onClick={() => setRawReportOpen((open) => !open)} aria-expanded={rawReportOpen} aria-controls="diagnostic-raw-report">
                       {rawReportOpen ? "HIDE RAW" : "SHOW RAW"}
                     </button>
+                    <button type="button" onClick={resetSavedState}>RESET SAVED STATE</button>
                   </div>
                 </section>
 
@@ -3952,12 +4305,9 @@ export function App() {
           onFeatured={() => void playSoundtrackSelection({ kind: "featured", id: "signal-border" })}
           onBrowseSelection={(selection) => void playSoundtrackSelection(selection)}
           onTrack={(key) => void playSoundtrackTrack(key)}
-          onPrevious={() => void soundtrackRef.current?.move("previous")}
-          onPlayPause={() => {
-            if (soundtrackSnapshot?.status === "playing") soundtrackRef.current?.pause();
-            else void soundtrackRef.current?.resume();
-          }}
-          onNext={() => void soundtrackRef.current?.move("next")}
+          onPrevious={() => void moveTransport("previous")}
+          onPlayPause={() => void toggleTransport()}
+          onNext={() => void moveTransport("next")}
           onClose={() => setSoundtrackPanelOpen(false)}
         />
       ) : null}

@@ -402,6 +402,7 @@ export default function AtlasField({
   theme,
   position,
   positionSamplesRef = null,
+  sessionJourneyRef = null,
   reducedMotion,
   effect,
   onRenderer,
@@ -412,7 +413,7 @@ export default function AtlasField({
 }) {
   const hostRef = useRef(null);
   const mapRef = useRef(null);
-  const valuesRef = useRef({ speed, theme, position, positionSamplesRef, reducedMotion, effect });
+  const valuesRef = useRef({ speed, theme, position, positionSamplesRef, sessionJourneyRef, reducedMotion, effect });
   const [demoPosition, setDemoPosition] = useState(null);
   const [panelCollapsed, setPanelCollapsed] = useState(false);
   const [displayCamera, setDisplayCamera] = useState(null);
@@ -431,7 +432,7 @@ export default function AtlasField({
   const journeyStartedAtRef = useRef(null);
   if (!elevationRequestGateRef.current) elevationRequestGateRef.current = createLatestAtlasRequestGate();
   valuesRef.current = {
-    speed, theme, position, positionSamplesRef, reducedMotion, effect, demoPosition,
+    speed, theme, position, positionSamplesRef, sessionJourneyRef, reducedMotion, effect, demoPosition,
   };
 
   const effectivePosition = useMemo(() => {
@@ -458,16 +459,42 @@ export default function AtlasField({
   );
 
   useEffect(() => {
-    journeySamplesRef.current = [];
-    sessionJourneySamplesRef.current = [];
-    journeyStartedAtRef.current = canStart ? performance.now() : null;
+    const seededJourney = valuesRef.current.sessionJourneyRef?.current;
+    journeySamplesRef.current = [...(seededJourney?.recentSamples ?? [])];
+    sessionJourneySamplesRef.current = [...(seededJourney?.sessionSamples ?? [])];
+    travelPointsRef.current = [...(seededJourney?.travelPoints ?? [])];
+    journeyStartedAtRef.current = canStart
+      ? seededJourney?.startedAtMs ?? performance.now()
+      : null;
     setJourney({
-      recentSamples: [], sessionSamples: [], distanceM: 0, elapsedMs: 0,
-      gpsAltitudeM: null, groundElevationM: null, nowMs: 0,
+      recentSamples: journeySamplesRef.current,
+      sessionSamples: sessionJourneySamplesRef.current,
+      distanceM: atlasJourneyDistanceMetres(travelPointsRef.current),
+      elapsedMs: 0,
+      gpsAltitudeM: journeySamplesRef.current.at(-1)?.altitudeM ?? null,
+      groundElevationM: null,
+      nowMs: performance.now(),
     });
     if (!canStart) return undefined;
     const updateJourney = () => {
       const now = performance.now();
+      const externalJourney = valuesRef.current.sessionJourneyRef?.current;
+      if (externalJourney?.recentSamples?.length) {
+        journeySamplesRef.current = [...externalJourney.recentSamples];
+        sessionJourneySamplesRef.current = [...externalJourney.sessionSamples];
+        travelPointsRef.current = [...externalJourney.travelPoints];
+        const latestExternalSample = journeySamplesRef.current.at(-1);
+        setJourney({
+          recentSamples: journeySamplesRef.current,
+          sessionSamples: sessionJourneySamplesRef.current,
+          distanceM: atlasJourneyDistanceMetres(travelPointsRef.current),
+          elapsedMs: now - (externalJourney.startedAtMs ?? journeyStartedAtRef.current ?? now),
+          gpsAltitudeM: latestExternalSample?.altitudeM ?? null,
+          groundElevationM: terrainRef.current.elevationM,
+          nowMs: now,
+        });
+        return;
+      }
       const latestPosition = valuesRef.current.positionSamplesRef?.current?.at(-1)
         ?? valuesRef.current.position
         ?? valuesRef.current.demoPosition;

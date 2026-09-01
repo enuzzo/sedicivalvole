@@ -255,6 +255,9 @@ function startCanvasFallback(
   let visualVelocity = speedToVisualVelocity(
     reducedMotion ? Math.min(valuesRef.current.speed, 20) : valuesRef.current.speed,
   );
+  let visualWallSpeed = reducedMotion
+    ? Math.min(valuesRef.current.speed, 20)
+    : valuesRef.current.speed;
   let lastFrameAt = performance.now();
   let lastDrawAt = 0;
   onRenderer("Canvas2D · Aperture");
@@ -280,13 +283,20 @@ function startCanvasFallback(
           reducedMotion ? Math.min(valuesRef.current.speed, 20) : valuesRef.current.speed,
         );
         visualVelocity += (nextVelocity - visualVelocity) * (nextVelocity >= visualVelocity ? 0.14 : 0.12);
+        const nextWallSpeed = reducedMotion
+          ? Math.min(valuesRef.current.speed, 20)
+          : valuesRef.current.speed;
+        visualWallSpeed += (nextWallSpeed - visualWallSpeed) * apertureSmoothing(
+          nextWallSpeed >= visualWallSpeed ? 0.22 : 0.16,
+          deltaSeconds,
+        );
         if (!reducedMotion) flow += deltaSeconds * energyToFlowRate(visualEnergy, valuesRef.current.speed);
         drawCanvasFallback(
           context,
           canvas,
           visualEnergy,
           visualVelocity,
-          valuesRef.current.speed,
+          visualWallSpeed,
           valuesRef.current.theme.palette,
           flow,
           valuesRef.current.effect,
@@ -403,7 +413,19 @@ export function FluxField({
     let restRecolour = 0;
     let visualEnergy = reducedMotion ? Math.min(energy, 0.28) : energy;
     let visualVelocity = speedToVisualVelocity(reducedMotion ? Math.min(speed, 20) : speed);
+    let visualWallSpeed = reducedMotion ? Math.min(speed, 20) : speed;
     let lastFrameAt = performance.now();
+    let canvasCssWidth = Math.max(1, canvas.clientWidth);
+    let canvasCssHeight = Math.max(1, canvas.clientHeight);
+    const updateCanvasSize = () => {
+      canvasCssWidth = Math.max(1, canvas.clientWidth);
+      canvasCssHeight = Math.max(1, canvas.clientHeight);
+    };
+    const resizeObserver = typeof ResizeObserver === "undefined"
+      ? null
+      : new ResizeObserver(updateCanvasSize);
+    resizeObserver?.observe(canvas);
+    if (!resizeObserver) window.addEventListener("resize", updateCanvasSize);
     onRenderer("WebGL2 · Aperture");
 
     const fail = (error) => {
@@ -432,13 +454,19 @@ export function FluxField({
           deltaSeconds,
         );
         visualVelocity += (nextVelocity - visualVelocity) * velocitySmoothing;
+        const nextWallSpeed = reducedMotion ? Math.min(currentSpeed, 20) : currentSpeed;
+        const wallSmoothing = apertureSmoothing(
+          nextWallSpeed >= visualWallSpeed ? 0.22 : 0.16,
+          deltaSeconds,
+        );
+        visualWallSpeed += (nextWallSpeed - visualWallSpeed) * wallSmoothing;
         if (!reducedMotion) flow += deltaSeconds * energyToFlowRate(visualEnergy, currentSpeed);
 
         if (currentSpeed < REST_RECOLOUR_SPEED_KMH) restSeconds += deltaSeconds;
 
-        const ratio = aperturePixelRatio(window.devicePixelRatio, currentSpeed);
-        const width = Math.max(1, Math.floor(canvas.clientWidth * ratio));
-        const height = Math.max(1, Math.floor(canvas.clientHeight * ratio));
+        const ratio = aperturePixelRatio(window.devicePixelRatio, visualWallSpeed);
+        const width = Math.max(1, Math.floor(canvasCssWidth * ratio));
+        const height = Math.max(1, Math.floor(canvasCssHeight * ratio));
         if (canvas.width !== width || canvas.height !== height) {
           canvas.width = width;
           canvas.height = height;
@@ -447,7 +475,7 @@ export function FluxField({
 
         const { palette } = valuesRef.current.theme;
         const shaderControls = apertureShaderControls(
-          reducedMotion ? Math.min(currentSpeed, 20) : currentSpeed,
+          visualWallSpeed,
         );
 
         gl.useProgram(program);
@@ -486,6 +514,8 @@ export function FluxField({
       stopped = true;
       cancelAnimationFrame(animationFrame);
       canvas.removeEventListener("webglcontextlost", onContextLost);
+      resizeObserver?.disconnect();
+      if (!resizeObserver) window.removeEventListener("resize", updateCanvasSize);
       gl.deleteBuffer(buffer);
       gl.deleteProgram(program);
       gl.deleteShader(vertexShader);
