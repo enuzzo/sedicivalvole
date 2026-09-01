@@ -108,6 +108,13 @@ test("the selected Instrument Deck resolves Music and Visual before START", () =
   }
 });
 
+test("the seven-row running Visual library fits the Tesla height without hiding Discover", () => {
+  const styles = read("styles.css");
+  assert.match(styles, /\.environment-drawer \.score-list \{ gap: 6px; margin-top: 12px; \}/);
+  assert.match(styles, /\.environment-drawer \.score-entry \{[\s\S]*?min-height: 60px;[\s\S]*?padding: 8px 14px;/);
+  assert.match(styles, /\.environment-drawer \.score-entry-number,[\s\S]*?font-size: 17px/);
+});
+
 test("SOUNDTRACK stays visible and START waits for its prepared player", () => {
   const app = read("App.jsx");
   const soundtrack = app.slice(app.indexOf('id: "soundtrack"'), app.indexOf('id: "mute"'));
