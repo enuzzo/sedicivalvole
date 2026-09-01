@@ -259,8 +259,9 @@ leaving every authored hit below that boundary unchanged. A fresh real-browser
 comparison measures every full endpoint `1.3925–2.5184×` more transformed than
 its tap, manual Underwater `1.8005×`, maximum individual peak `0.99121`, and
 the hostile full sum `0.60941`; the complete suite passes `544/544`. Build
-`20260901-1802` remains the canonical baseline; publish `f48b5b2` before Tesla
-`R4-07`. The
+`20260901-1823` publishes `f48b5b2`; canonical byte identity and exact live
+`773 × 601` 8/8-at-100, RESET, focus and overflow QA pass. Tesla `R4-07`
+remains the physical listening gate. The
 complete suite passes `517/517`; the 147-module App / 71-module LAB / Sites
 build `20260831-2005` passes. Protected publication uploaded 138 files /
 212,292,932 bytes, fully reverified 29/29 Illobo masters, and passed read-only
@@ -366,13 +367,13 @@ byte identity. Target-Tesla `R9-01`–`R9-05` acceptance remains open.
 
 Owner VoiceNotes recorded on 2026-09-01 at 09:01–09:15 supersede the prior
 "row 11 next" handoff. Milestone row 4's mandatory eight-effect `2 × 4`
-Performance FX revision is live in build `20260901-1802`; stronger full-depth
-checkpoint `f48b5b2` is office-PASS and pending publication before Tesla
-`R4-07`. Mandatory insert `10A` follows and requires truthful
+Performance FX revision and stronger full-depth checkpoint `f48b5b2` are live
+in build `20260901-1823`; Tesla `R4-07` remains open. Mandatory insert `10A`
+follows and requires truthful
 ATLAS cold start/refinement, larger Tesla palette, persistent transport,
 supported Media Session previous/next, committed-track notice, direction-aware
 drawer dismissal and measured WebP Illobo artwork while retaining local HD
-masters. Row 4 is present in build `20260901-1802`; the `10A` tasks are not.
+masters. Row 4 is present in build `20260901-1823`; the `10A` tasks are not.
 Their tests are `R1-02`, `R4-07`, `R7-10`–`R7-12`, `R8-03`, `R9-06`, and
 `R13-00`. Promoted X10 `LIGHT / DARK / AUTO` is confirmed in milestone 13
 with `R13-01`–`R13-03`. Row 11 Original Gradient Field is blocked until row 4
