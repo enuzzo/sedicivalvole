@@ -1,6 +1,6 @@
 # Session Handoff
 
-Status: **live working record**. Updated on 2026-09-01.
+Status: **live working record**. Updated on 2026-09-02.
 
 Start with [`CURRENT-STATE.md`](CURRENT-STATE.md) for the product overview. This
 file records implementation boundaries, verification commands, and next work so
@@ -408,7 +408,8 @@ product preferences gain lifecycle restoration plus RESET SAVED STATE in splash
 and settings (`R1-03`). The current catalogue now has eight choices—seven
 renderers plus Discover. Row 11's Original Gradient Field passed its
 three-direction gate; the owner selected the Tension Plane / Chromatic Fold
-hybrid with grain, now implemented locally as `GRADIENT 08`. “Position” is now
+hybrid with grain, now implemented and canonical as `GRADIENT 08` in build
+`20260902-0103`. “Position” is now
 clarified as GPS state: after permission, an app-level collector must continue
 for the whole running session regardless of selected visual and retain the
 latest reliable point plus bounded route/journey history in memory, allowing
@@ -419,7 +420,7 @@ App scope and survive ATLAS remounts without duplicating the watch. Safe stored
 preferences explicitly exclude coordinates. The complete suite passes
 `486/486`; the production build, read-only pre/postflight, byte-identical
 canonical assets and exact local/live `773 × 601` Browser flows pass. Row 11
-now awaits canonical publication and target-Tesla motion/performance acceptance.
+now awaits only target-Tesla motion/performance acceptance.
 
 The owner then explicitly selected native **Minerva dark** for Discover, even
 with Wikipedia's accepted test parameter. Product checkpoint `cdccbd7` replaces

@@ -1,6 +1,6 @@
 # Current Project State
 
-Status: **authoritative working overview**. Updated on 2026-09-01.
+Status: **authoritative working overview**. Updated on 2026-09-02.
 
 This page is the shortest reliable answer to “what exists now?”. Product
 requirements remain in [`PRODUCT-SPEC.md`](PRODUCT-SPEC.md), architecture in
@@ -23,8 +23,8 @@ dated study documents.
 - The source checkout's Flux catalogue contains eight driver-facing Visual
   choices: seven rendered environments,
   **APERTURE 01**, **VERTIGO 02**, **MERIDIAN 03**, **ATLAS 04**, **DRIVEY 05**,
-  the human-approved and canonically published **PRTCL 06**, and the locally
-  verified **GRADIENT 08**, plus the separate **DISCOVER 07** Passenger Index
+  the human-approved and canonically published **PRTCL 06**, and the canonically
+  published **GRADIENT 08**, plus the separate **DISCOVER 07** Passenger Index
   destination. The initial Instrument Deck presents them as `3–3–2`, and the
   running Visual library exposes the same eight actions. Discover never enters the renderer registry: launch uses
   Aperture behind the passenger surface and closing it returns to a real visual.
@@ -217,8 +217,9 @@ dated study documents.
   Chromatic Fold hybrid with visible grain. The implementation is project-owned
   direct WebGL2 and imports no ShaderGradient, FeralUI, or ColorFlow runtime,
   shader, preset, export, embed, or asset. Play the Road admits bounded audio
-  energy; Soundtrack remains speed-only. Local Tesla-viewport and automated QA
-  pass; target-Tesla motion/performance acceptance remains open.
+  energy; Soundtrack remains speed-only. Local and canonical Tesla-viewport
+  Browser QA plus automated QA pass; target-Tesla motion/performance acceptance
+  remains open.
 - REGISTER was rejected after live review because its static print composition
   was inexplicable in motion and outside the product mood. Its source remains
   only in the rejected-visual archive; the runtime, QA harness and active tests
@@ -560,8 +561,11 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The canonical live product is version `0.0.0`, product checkpoint `d45f8dd`,
-  deployment checkpoint `7e990ee`, build `20260901-2232`. It publishes the
+- The canonical live product is version `0.0.0`, product checkpoint `367e40d`,
+  build `20260902-0103`. It publishes GRADIENT 08, the stronger PRTCL
+  UNDERWATER/surfacing response, the truthful post-130 readout with a clamped
+  audiovisual ceiling, the passenger safety disclosure, backdrop/swipe drawer
+  dismissal and the `226 px` Tesla palette, together with the
   complete `10A` / `10B` drive-note interaction and density closeout, including
   the verified Buy Me a Coffee flow, together with the corrected owner-selected vertical ATLAS
   Drive Lab hierarchy together with the complete readable
@@ -748,8 +752,8 @@ and also have office implementation in checkpoint `d45f8dd`:
   without page scroll (`R7-13`);
 - the running Visual drawer is a two-column, description-led no-scroll
   surface. The registry now contains eight choices—seven renderers plus
-  Discover—and row 11's Original Gradient Field is implemented locally after
-  its mandatory three-direction selection gate;
+  Discover—and row 11's Original Gradient Field is implemented and canonical
+  after its mandatory three-direction selection gate;
 - APERTURE smooths its raw low-speed wall input and caches canvas dimensions,
   removing the per-frame layout read without slowing its motion (`R5-07`);
 - versioned safe product preferences restore across supported history and
@@ -763,15 +767,16 @@ and also have office implementation in checkpoint `d45f8dd`:
   The watch, latest/eight-sample position buffer, bounded route and Drive Lab
   journey aggregation are App-scoped and survive ATLAS remounts.
 
-Row 11 Original Gradient Field has local implementation and QA PASS. Canonical
-publication and target-Tesla motion/performance acceptance remain open.
+Row 11 Original Gradient Field has local implementation, canonical publication,
+automated QA and exact live `773 × 601` Browser PASS. Target-Tesla
+motion/performance acceptance remains open.
 
 ## Open work
 
-1. Execute live Tesla `R4-07` and the newly canonical `10A` / `10B` coded
-   tests on build `20260901-2300`. Execute Tesla tests `R1-01`–`R1-03`, `R4-01`–`R4-07`,
+1. Execute live Tesla `R4-07`, the canonical `10A` / `10B` codes, and row 11
+   on build `20260902-0103`. Execute Tesla tests `R1-01`–`R1-03`, `R4-01`–`R4-07`,
    `R5-01`–`R5-07`, `R7-01`–`R7-13`, `R8-01`–`R8-03`, `R9-01`–`R9-07`,
-   `R10-00A`–`R10-06`, and later
+   `R10-00A`–`R10-06`, `R11-01`–`R11-06`, and later
    `R13-00`–`R13-03` from
    [`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md), including
    the live audio transport evidence and MERIDIAN

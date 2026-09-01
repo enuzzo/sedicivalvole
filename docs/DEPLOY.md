@@ -8,6 +8,31 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## GRADIENT 08 and drive-interaction closeout — 2026-09-02 01:16
+
+- build stamp: **`20260902-0103`**; product checkpoint: **`367e40d`**;
+- tests/build: **PASS**. Focused Gradient, PRTCL, signal, environment and splash
+  checks plus complete `486/486`, nine Sites packaging checks, 151-module App,
+  71-module LAB and protected LAB packaging pass;
+- protected publication: read-only preflight and postflight report
+  `remote_writes=NONE`; publication uploaded `181` files / `213,636,615` bytes,
+  fully reverified all `29` Illobo recordings, retained two fingerprinted assets
+  for cache overlap and preserved the dynamic root;
+- canonical identity: cache-busted HTML is HTTP 200 with `no-store/no-cache`,
+  `nosniff` and cache `MISS`. HTML, main JavaScript and main CSS match the
+  candidate byte-for-byte at SHA-256
+  `6b58aa6007611d39ec29d46273b3e4b9166120e5e050c040114850c9d1606f8a`,
+  `8a5dfabda6522bda1921c4719d4f06732420c6b37d6b87cac84398c124e633dd`
+  and `6aaa6f76ffacf1d6917852c69e8c45aecfc4fc5a0489f833e90b35bbab58b936`;
+- exact live `773 × 601` Browser QA: **PASS**. Signal Gate reports build
+  `20260902-0103`; the launcher contains all eight choices in the approved
+  `3–3–2` arrangement; GRADIENT 08 starts a real full-viewport WebGL canvas and
+  presents its low-speed Tension Plane with bounded grain and no recorded
+  runtime error;
+- remaining acceptance: run `R11-01`–`R11-06` in the target Tesla, including
+  sustained thermal/frame behavior and passenger gesture coexistence with the
+  embedded Chromium history gestures.
+
 ## Drive-note interaction and density closeout — 2026-09-01 22:37
 
 - build stamp: **`20260901-2232`**; product checkpoint: **`d45f8dd`**;
