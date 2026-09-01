@@ -1,3 +1,77 @@
+# Design QA — ATLAS Live Navigator
+
+Date: 2026-09-01
+
+## Source and implementation
+
+- Owner-selected Product Design direction 03:
+  `/Users/enuzzo/.codex/generated_images/01a056ca-c4ff-7433-92c5-7a0aa0abd6e3/exec-70c9d268-7497-4498-bbb2-6d357dab8e2a.png`.
+- Source pixels: `1423 × 1105`, normalized with a centred cover crop to the
+  target `773 × 601` CSS viewport.
+- Browser-rendered implementation:
+  `/Users/enuzzo/Library/CloudStorage/Dropbox/Mitnick/sedicivalvole/_references/audits/atlas-live-navigator-20260901/implementation-open-773x601.png`.
+- Collapsed interaction state:
+  `/Users/enuzzo/Library/CloudStorage/Dropbox/Mitnick/sedicivalvole/_references/audits/atlas-live-navigator-20260901/implementation-collapsed-773x601.png`.
+- Joined full-view comparison:
+  `/Users/enuzzo/Library/CloudStorage/Dropbox/Mitnick/sedicivalvole/_references/audits/atlas-live-navigator-20260901/joined-reference-implementation-1546x601.png`.
+- Joined focused panel comparison:
+  `/Users/enuzzo/Library/CloudStorage/Dropbox/Mitnick/sedicivalvole/_references/audits/atlas-live-navigator-20260901/joined-panel-focus-544x465.png`.
+- Implementation screenshot: `773 × 601` at the browser's device density;
+  comparison dimensions are normalized to `773 × 601` per half.
+- State: ATLAS, explicit Milan demo, selected RED 03 palette, panel open;
+  the collapsed state was also captured and measured.
+
+## Fidelity review
+
+- **Fonts and typography:** the implementation deliberately retains the
+  product's local Space Grotesk hierarchy instead of the generated mock's
+  approximate face. LIVE MOTION, values, graph labels, WHERE YOU ARE and place
+  rows remain legible at the exact Tesla viewport with bounded truncation.
+- **Spacing and layout:** MapLibre remains the majority surface at `501 px`;
+  the selected two-layer panel occupies `272 px`. The owner's refinement
+  supersedes the full-height mock rail with a `42 × 116 px` midpoint handle,
+  approximately one quarter of the `465 px` field. Final panel geometry is
+  exactly `465 / 465 px` client/scroll height and the document is exactly
+  `773 × 601` with no overflow.
+- **Colors and tokens:** the active shared palette continues to own the map,
+  panel rule, speed trace, altitude trace and handle state. The panel retains
+  the approved black/ivory/accent hierarchy without introducing a detached
+  dashboard palette.
+- **Images and icons:** the selected Wikipedia thumbnail remains a real
+  free-license source image. The direction pointer and panel chevrons use
+  official local Tabler assets; no glyph, CSS drawing or placeholder replaces
+  a visible icon.
+- **Copy and content:** LIVE MOTION contains GPS speed, honest GPS altitude,
+  session distance/time and two direct-labelled trends. WHERE YOU ARE keeps
+  locality, tile-local road name, selected place context, two nearby choices
+  and the exact article QR. Missing altitude remains `— m`; demo and live
+  sessions are explicitly distinguished.
+
+## Interaction and runtime checks
+
+- `HIDE INFO` collapses the panel, changes its accessible expansion state to
+  false, returns the map to `right: 0`, and leaves a `42 × 116 px` `SHOW INFO`
+  control at the right midpoint. `SHOW INFO` restores the panel immediately.
+- Two Canvas2D microcharts own only sampled marks. HTML owns values, labels and
+  accessibility text; one-second UI refreshes are decimated into a bounded
+  60-sample, two-second history. Speed uses a fixed `0–130 km/h` domain;
+  altitude refuses to draw until two finite GPS samples exist.
+- Journey samples, altitude, distance and coordinates remain session-only and
+  outside the diagnostic report. The browser warning/error log is empty.
+- Focused ATLAS tests pass `32/32`; the 148-module App, 71-module LAB and Sites
+  build pass.
+
+## Comparison history
+
+| Pass | Severity | Finding | Resolution and evidence |
+|---|---|---|---|
+| 1 | P2 | The first open implementation exposed the QR but its lower section produced an 11 px internal overflow. | Removed only unused lower section padding; final panel geometry is exactly `465 / 465 px`, with the QR and both nearby rows fully visible. |
+| 2 | — | No actionable P0, P1 or P2 mismatch remains. | Full-view and focused joined comparisons preserve the selected hierarchy; exact open/collapsed geometry, interaction, honest empty altitude state and empty Browser log pass. |
+
+final result: passed
+
+---
+
 # Design QA — DISCOVER Visual catalogue placement
 
 Date: 2026-09-01

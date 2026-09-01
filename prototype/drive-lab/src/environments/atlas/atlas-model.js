@@ -15,6 +15,8 @@ export const ATLAS_TRAVEL_POINT_LIMIT = 4096;
 export const ATLAS_TRAVEL_MINIMUM_DISTANCE_M = 2;
 export const ATLAS_MAXIMUM_PIXEL_RATIO = 1.25;
 export const ATLAS_MARKER_UPDATE_INTERVAL_MS = 125;
+export const ATLAS_JOURNEY_SAMPLE_INTERVAL_MS = 2000;
+export const ATLAS_JOURNEY_HISTORY_LIMIT = 60;
 export const ATLAS_GPS_PRECISE_ACCURACY_M = 4;
 export const ATLAS_CARDINAL_DIRECTIONS = Object.freeze([
   "N", "NE", "E", "SE", "S", "SW", "W", "NW",
@@ -81,12 +83,45 @@ export function atlasManualCameraShouldReturn(lastInteractionAt, now) {
     && Number(now) - lastInteractionAt >= ATLAS_MANUAL_IDLE_MS;
 }
 
-function atlasPointDistanceMetres(first, second) {
+export function atlasPointDistanceMetres(first, second) {
   if (!validAtlasPosition(first) || !validAtlasPosition(second)) return Number.POSITIVE_INFINITY;
   const latitude = ((first.latitude + second.latitude) * Math.PI) / 360;
   const north = (second.latitude - first.latitude) * 111320;
   const east = (second.longitude - first.longitude) * 111320 * Math.cos(latitude);
   return Math.hypot(north, east);
+}
+
+export function atlasJourneyDistanceMetres(points) {
+  const trusted = (Array.isArray(points) ? points : []).filter(validAtlasPosition);
+  return trusted.slice(1).reduce((total, point, index) => (
+    total + atlasPointDistanceMetres(trusted[index], point)
+  ), 0);
+}
+
+export function appendAtlasJourneySample(
+  samples,
+  sample,
+  {
+    intervalMs = ATLAS_JOURNEY_SAMPLE_INTERVAL_MS,
+    maximumSamples = ATLAS_JOURNEY_HISTORY_LIMIT,
+  } = {},
+) {
+  const previous = Array.isArray(samples) ? samples : [];
+  const capturedAtMs = Number(sample?.capturedAtMs);
+  if (!Number.isFinite(capturedAtMs)) return previous;
+  const last = previous.at(-1);
+  if (last && capturedAtMs <= last.capturedAtMs) return previous;
+  if (last && capturedAtMs - last.capturedAtMs < Math.max(0, Number(intervalMs) || 0)) {
+    return previous;
+  }
+  const speedKmh = sample?.speedKmh;
+  const altitudeM = sample?.altitudeM;
+  const next = [...previous, {
+    capturedAtMs,
+    speedKmh: Number.isFinite(speedKmh) ? Math.max(0, speedKmh) : null,
+    altitudeM: Number.isFinite(altitudeM) ? altitudeM : null,
+  }];
+  return next.slice(-Math.max(2, Math.floor(Number(maximumSamples) || ATLAS_JOURNEY_HISTORY_LIMIT)));
 }
 
 function normalizeAtlasAngle(value) {
@@ -192,6 +227,10 @@ export function appendAtlasPositionSample(
     latitude: position.latitude,
     longitude: position.longitude,
     heading,
+    speedKmh: Number.isFinite(position.speedKmh) ? Math.max(0, position.speedKmh) : null,
+    altitudeM: Number.isFinite(position.altitudeM) ? position.altitudeM : null,
+    altitudeAccuracyM: Number.isFinite(position.altitudeAccuracyM) ? Math.max(0, position.altitudeAccuracyM) : null,
+    accuracyM: Number.isFinite(position.accuracyM) ? Math.max(0, position.accuracyM) : null,
     capturedAtMs,
   }].slice(-Math.max(2, Math.floor(Number(maximumSamples) || ATLAS_POSITION_BUFFER_LIMIT)));
 }
@@ -201,6 +240,10 @@ function atlasHeldPosition(sample, stale = false) {
     latitude: sample.latitude,
     longitude: sample.longitude,
     heading: Number.isFinite(sample.heading) ? normalizeAtlasAngle(sample.heading) : null,
+    speedKmh: Number.isFinite(sample.speedKmh) ? sample.speedKmh : null,
+    altitudeM: Number.isFinite(sample.altitudeM) ? sample.altitudeM : null,
+    altitudeAccuracyM: Number.isFinite(sample.altitudeAccuracyM) ? sample.altitudeAccuracyM : null,
+    accuracyM: Number.isFinite(sample.accuracyM) ? sample.accuracyM : null,
     sourceCapturedAtMs: sample.capturedAtMs,
     interpolating: false,
     stale,
@@ -251,6 +294,12 @@ export function interpolateAtlasPosition(samples, renderAtMs, {
     latitude: lower.latitude + (upper.latitude - lower.latitude) * progress,
     longitude: interpolateAtlasLongitude(lower.longitude, upper.longitude, progress),
     heading: interpolateAtlasAngle(lower.heading, upper.heading, progress),
+    speedKmh: Number.isFinite(upper.speedKmh) ? upper.speedKmh : null,
+    altitudeM: Number.isFinite(lower.altitudeM) && Number.isFinite(upper.altitudeM)
+      ? lower.altitudeM + (upper.altitudeM - lower.altitudeM) * progress
+      : Number.isFinite(upper.altitudeM) ? upper.altitudeM : null,
+    altitudeAccuracyM: Number.isFinite(upper.altitudeAccuracyM) ? upper.altitudeAccuracyM : null,
+    accuracyM: Number.isFinite(upper.accuracyM) ? upper.accuracyM : null,
     sourceCapturedAtMs: upper.capturedAtMs,
     interpolating: true,
     stale: false,

@@ -2040,6 +2040,12 @@ export function App() {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
             heading: resolveAtlasHeading(previousPosition, position.coords, position.coords.heading),
+            speedKmh: kmh,
+            altitudeM: Number.isFinite(position.coords.altitude) ? position.coords.altitude : null,
+            altitudeAccuracyM: Number.isFinite(position.coords.altitudeAccuracy)
+              ? position.coords.altitudeAccuracy
+              : null,
+            accuracyM,
             capturedAtMs,
           };
           atlasPositionSamplesRef.current = appendAtlasPositionSample(

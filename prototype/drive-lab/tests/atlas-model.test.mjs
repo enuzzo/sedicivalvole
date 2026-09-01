@@ -3,10 +3,13 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import {
   advanceAtlasDemoPosition,
+  appendAtlasJourneySample,
   appendAtlasPositionSample,
   appendAtlasTravelPoint,
   ATLAS_CARDINAL_DIRECTIONS,
   ATLAS_GPS_PRECISE_ACCURACY_M,
+  ATLAS_JOURNEY_HISTORY_LIMIT,
+  ATLAS_JOURNEY_SAMPLE_INTERVAL_MS,
   ATLAS_MARKER_UPDATE_INTERVAL_MS,
   ATLAS_MAXIMUM_PIXEL_RATIO,
   ATLAS_MANUAL_CAMERA_LIMITS,
@@ -22,6 +25,7 @@ import {
   atlasEffectProfile,
   atlasGpsPresentation,
   atlasKeyboardShortcutAvailable,
+  atlasJourneyDistanceMetres,
   atlasManualCameraShouldReturn,
   atlasMapPixelRatio,
   atlasRoadNameFromFeatures,
@@ -278,6 +282,46 @@ test("Atlas retains a bounded chronological position buffer without accepting ba
   assert.equal(appendAtlasPositionSample(samples, { latitude: 45.5, longitude: 9.2 }, Number.NaN), samples);
 });
 
+test("Atlas keeps a bounded, truthful live journey history", () => {
+  assert.equal(ATLAS_JOURNEY_SAMPLE_INTERVAL_MS, 2000);
+  assert.equal(ATLAS_JOURNEY_HISTORY_LIMIT, 60);
+  let samples = appendAtlasJourneySample([], {
+    capturedAtMs: 1000,
+    speedKmh: 42,
+    altitudeM: 121.4,
+  });
+  assert.deepEqual(samples, [{ capturedAtMs: 1000, speedKmh: 42, altitudeM: 121.4 }]);
+  assert.equal(appendAtlasJourneySample(samples, {
+    capturedAtMs: 2999,
+    speedKmh: 50,
+    altitudeM: 122,
+  }), samples, "sub-interval UI ticks must not inflate the chart buffer");
+  samples = appendAtlasJourneySample(samples, {
+    capturedAtMs: 3000,
+    speedKmh: 50,
+    altitudeM: null,
+  });
+  assert.deepEqual(samples.at(-1), { capturedAtMs: 3000, speedKmh: 50, altitudeM: null });
+  assert.equal(appendAtlasJourneySample(samples, { capturedAtMs: Number.NaN }), samples);
+  for (let index = 0; index < 80; index += 1) {
+    samples = appendAtlasJourneySample(samples, {
+      capturedAtMs: 5000 + index * 2000,
+      speedKmh: index,
+      altitudeM: index % 2 ? 130 + index : null,
+    });
+  }
+  assert.equal(samples.length, ATLAS_JOURNEY_HISTORY_LIMIT);
+  assert.equal(samples.at(-1).speedKmh, 79);
+
+  const route = [
+    { latitude: 45.46, longitude: 9.19 },
+    { latitude: 45.461, longitude: 9.19 },
+    { latitude: 95, longitude: 9.19 },
+    { latitude: 45.462, longitude: 9.19 },
+  ];
+  assert.ok(Math.abs(atlasJourneyDistanceMetres(route) - 222.64) < 0.5);
+});
+
 test("Atlas feeds position samples at GPS cadence without driving React camera state at that cadence", () => {
   const appendAt = appSource.indexOf("atlasPositionSamplesRef.current = appendAtlasPositionSample");
   const nullSpeedAt = appSource.indexOf("if (kmh == null)", appendAt);
@@ -368,17 +412,23 @@ test("Atlas interpolates cyclic values by the short route and never cuts across 
   assert.equal(recovered.interpolating, false);
 });
 
-test("Atlas passenger reading and QR remain legible at the Tesla viewport", () => {
-  assert.match(styles, /\.atlas-field \{[\s\S]*?--atlas-panel-width: 246px;/);
-  assert.match(styles, /\.atlas-panel \{[\s\S]*?width: var\(--atlas-panel-width\);[\s\S]*?padding: 16px 16px 12px;/);
-  assert.match(styles, /\.atlas-selected-context \{[\s\S]*?flex-direction: column;/);
-  assert.match(styles, /\.atlas-selected-context img \{[\s\S]*?width: 100%;[\s\S]*?height: 96px;/);
-  assert.match(styles, /\.atlas-selected-context p \{[\s\S]*?font-size: 11\.5px;[\s\S]*?-webkit-line-clamp: 3;/);
-  assert.match(styles, /\.atlas-places button strong \{[^}]*font-size: 12px;/);
-  assert.match(styles, /\.atlas-qr img \{ width: 58px; height: 58px;/);
+test("Atlas live journey and place reading remain legible at the Tesla viewport", () => {
+  assert.match(styles, /\.atlas-field \{[\s\S]*?--atlas-panel-width: 272px;/);
+  assert.match(styles, /\.atlas-panel \{[\s\S]*?width: var\(--atlas-panel-width\);[\s\S]*?padding: 0;/);
+  assert.match(styles, /\.atlas-motion-readouts \{[\s\S]*?grid-template-columns: 76px 1fr;/);
+  assert.match(styles, /\.atlas-journey-chart canvas \{[^}]*width: 100%;[^}]*height: 30px;/);
+  assert.match(styles, /\.atlas-selected-context \{[\s\S]*?grid-template-columns: 72px 1fr;/);
+  assert.match(styles, /\.atlas-selected-context img \{[\s\S]*?width: 72px;[\s\S]*?height: 62px;/);
+  assert.match(styles, /\.atlas-selected-context p \{[\s\S]*?font-size: 9px;[\s\S]*?-webkit-line-clamp: 3;/);
+  assert.match(styles, /\.atlas-places button strong \{[^}]*font-size: 10px;/);
+  assert.match(styles, /\.atlas-qr img \{ width: 34px; height: 34px;/);
   assert.match(atlasSource, /width: 192,/);
-  assert.match(atlasSource, /window\.innerHeight >= 560 \? 5 : 4/);
-  assert.match(atlasSource, /pages\.slice\(0, visiblePlaceCount\)/);
+  assert.match(atlasSource, /window\.innerHeight >= 560 \? 2 : 1/);
+  assert.match(atlasSource, /window\.innerHeight >= 700 \? 3 : window\.innerHeight >= 560 \? 2 : 1/);
+  assert.match(atlasSource, /appendAtlasJourneySample/);
+  assert.match(atlasSource, /atlasJourneyDistanceMetres\(travelPointsRef\.current\)/);
+  assert.match(atlasSource, /field="speedKmh"/);
+  assert.match(atlasSource, /field="altitudeM"/);
 });
 
 test("Atlas grants touch and desktop exploration for six seconds, then returns to fresh automatic camera", () => {
@@ -517,6 +567,9 @@ test("Atlas passenger reading collapses behind a persistent midpoint handle", ()
   assert.match(atlasSource, /inert=\{collapsed \? true : undefined\}/);
   assert.match(atlasSource, /setPanelCollapsed\(\(current\) => !current\)/);
   assert.match(styles, /\.atlas-panel-toggle \{[\s\S]*?top: 50%;[\s\S]*?right: var\(--atlas-panel-width\);/);
+  assert.match(styles, /\.atlas-panel-toggle \{[\s\S]*?width: 42px;[\s\S]*?height: 116px;/);
+  assert.match(styles, /\.atlas-panel-toggle-icon\.is-collapse \{ mask-image: url\("\/third-party\/tabler-icons\/chevron-right\.svg"\); \}/);
+  assert.match(atlasSource, /panelCollapsed \? "SHOW INFO" : "HIDE INFO"/);
   assert.match(styles, /\.atlas-field\.is-panel-collapsed \.atlas-panel-toggle \{ right: 0; \}/);
   assert.match(styles, /\.atlas-field\.is-panel-collapsed \.atlas-map \{ right: 0; \}/);
 });

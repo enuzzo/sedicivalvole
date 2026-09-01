@@ -3,6 +3,7 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import {
   advanceAtlasDemoPosition,
   ATLAS_DEMO_POSITION,
+  appendAtlasJourneySample,
   appendAtlasTravelPoint,
   ATLAS_MARKER_UPDATE_INTERVAL_MS,
   ATLAS_MANUAL_CAMERA_LIMITS,
@@ -11,6 +12,7 @@ import {
   atlasContinuousHeading,
   atlasEffectProfile,
   atlasKeyboardShortcutAvailable,
+  atlasJourneyDistanceMetres,
   atlasManualCameraShouldReturn,
   atlasMapPixelRatio,
   atlasRoadNameFromFeatures,
@@ -34,6 +36,86 @@ import {
   frameTelemetryIsDue,
   THIRTY_FPS_FRAME_INTERVAL_MS,
 } from "../../render-telemetry.js";
+
+const ATLAS_CHART_PIXEL_RATIO_LIMIT = 1.5;
+
+function formatAtlasDuration(elapsedMs) {
+  const totalSeconds = Math.max(0, Math.floor((Number(elapsedMs) || 0) / 1000));
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+}
+
+function formatAtlasDistance(distanceM) {
+  const metres = Math.max(0, Number(distanceM) || 0);
+  return metres < 1000 ? `${Math.round(metres)} m` : `${(metres / 1000).toFixed(1)} km`;
+}
+
+function AtlasJourneyChart({ label, samples, field, color, fixedMaximum = null }) {
+  const canvasRef = useRef(null);
+  const values = samples
+    .map((sample) => sample[field])
+    .filter(Number.isFinite);
+  const hasSeries = values.length >= 2;
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return undefined;
+    const draw = () => {
+      const bounds = canvas.getBoundingClientRect();
+      if (!bounds.width || !bounds.height) return;
+      const ratio = Math.min(ATLAS_CHART_PIXEL_RATIO_LIMIT, Math.max(1, window.devicePixelRatio || 1));
+      canvas.width = Math.round(bounds.width * ratio);
+      canvas.height = Math.round(bounds.height * ratio);
+      const context = canvas.getContext("2d");
+      if (!context) return;
+      context.setTransform(ratio, 0, 0, ratio, 0, 0);
+      context.clearRect(0, 0, bounds.width, bounds.height);
+      context.strokeStyle = "rgba(238, 234, 224, .12)";
+      context.lineWidth = 1;
+      for (const fraction of [0, 0.5, 1]) {
+        const y = Math.round(1 + fraction * (bounds.height - 2)) + 0.5;
+        context.beginPath();
+        context.moveTo(0, y);
+        context.lineTo(bounds.width, y);
+        context.stroke();
+      }
+      const plotted = samples.filter((sample) => Number.isFinite(sample[field]));
+      if (plotted.length < 2) return;
+      const minimum = fixedMaximum == null ? Math.min(...plotted.map((sample) => sample[field])) : 0;
+      const maximum = fixedMaximum == null ? Math.max(...plotted.map((sample) => sample[field])) : fixedMaximum;
+      const padding = fixedMaximum == null ? Math.max(4, (maximum - minimum) * 0.2) : 0;
+      const domainMinimum = minimum - padding;
+      const domainMaximum = Math.max(domainMinimum + 1, maximum + padding);
+      context.strokeStyle = color;
+      context.lineWidth = 1.75;
+      context.lineJoin = "round";
+      context.lineCap = "round";
+      context.beginPath();
+      plotted.forEach((sample, index) => {
+        const x = plotted.length === 1 ? 0 : (index / (plotted.length - 1)) * bounds.width;
+        const y = bounds.height - ((sample[field] - domainMinimum) / (domainMaximum - domainMinimum)) * bounds.height;
+        if (index === 0) context.moveTo(x, y);
+        else context.lineTo(x, y);
+      });
+      context.stroke();
+    };
+    draw();
+    const observer = new ResizeObserver(draw);
+    observer.observe(canvas);
+    return () => observer.disconnect();
+  }, [color, field, fixedMaximum, samples]);
+
+  return (
+    <div className={`atlas-journey-chart${hasSeries ? "" : " is-empty"}`}>
+      <div className="atlas-journey-chart-label">
+        <small>{label}</small>
+        <span>{hasSeries ? "2 MIN · LIVE" : "COLLECTING"}</span>
+      </div>
+      <canvas ref={canvasRef} role="img" aria-label={`${label}: ${hasSeries ? "live two minute trend" : "waiting for two samples"}`} />
+    </div>
+  );
+}
 
 function recolourStyle(map, palette, effect = null) {
   const colors = paletteToAtlasMapCss(palette);
@@ -69,8 +151,24 @@ function recolourStyle(map, palette, effect = null) {
   }
 }
 
-function NearbyPanel({ pages, selectedId, onSelect, qrUrl, loading, demo, collapsed, visiblePlaceCount }) {
+function NearbyPanel({
+  pages,
+  selectedId,
+  onSelect,
+  qrUrl,
+  loading,
+  demo,
+  collapsed,
+  visiblePlaceCount,
+  speed,
+  roadName,
+  journey,
+  colors,
+}) {
   const selected = pages.find((page) => page.id === selectedId) ?? pages[0];
+  const location = pages[0];
+  const nearby = pages.filter((page) => page.id !== selected?.id).slice(0, visiblePlaceCount);
+  const altitude = Number.isFinite(journey.altitudeM) ? `${Math.round(journey.altitudeM)} m` : "— m";
   return (
     <aside
       id="atlas-passenger-panel"
@@ -79,9 +177,43 @@ function NearbyPanel({ pages, selectedId, onSelect, qrUrl, loading, demo, collap
       aria-hidden={collapsed}
       inert={collapsed ? true : undefined}
     >
-      <header>
-        <small>{demo ? "DEMO LOCATION" : "NEARBY"}</small>
-        <strong>{selected?.title ?? (loading ? "Reading the city…" : "Location unavailable")}</strong>
+      <section className="atlas-live-motion" aria-label="Live journey status">
+        <header className="atlas-panel-section-heading">
+          <small>LIVE MOTION</small>
+          <span>{demo ? "DEMO" : "SESSION LIVE"}</span>
+        </header>
+        <div className="atlas-motion-readouts">
+          <div className="atlas-speed-readout">
+            <small>GPS SPEED</small>
+            <strong>{Math.round(Math.max(0, Number(speed) || 0))}</strong>
+            <span>KM/H</span>
+          </div>
+          <dl>
+            <div><dt>ALTITUDE</dt><dd>{altitude}</dd></div>
+            <div><dt>DISTANCE</dt><dd>{formatAtlasDistance(journey.distanceM)}</dd></div>
+            <div><dt>TRIP TIME</dt><dd>{formatAtlasDuration(journey.elapsedMs)}</dd></div>
+          </dl>
+        </div>
+        <AtlasJourneyChart
+          label="SPEED HISTORY"
+          samples={journey.samples}
+          field="speedKmh"
+          color={colors.accent}
+          fixedMaximum={130}
+        />
+        <AtlasJourneyChart
+          label="ALTITUDE HISTORY"
+          samples={journey.samples}
+          field="altitudeM"
+          color={colors.secondary}
+        />
+      </section>
+      <section className="atlas-place-context" aria-label="Current place and nearby reading">
+        <header>
+          <small>WHERE YOU ARE</small>
+          <strong>{location?.title ?? (loading ? "Reading the city…" : "Location unavailable")}</strong>
+          <span>{roadName ?? (demo ? "Milan demonstration route" : "Road name unavailable")}</span>
+        </header>
         {selected?.summary || selected?.thumbnail ? (
           <div className={`atlas-selected-context${selected.thumbnail ? "" : " is-text-only"}`}>
             {selected.thumbnail ? (
@@ -93,32 +225,35 @@ function NearbyPanel({ pages, selectedId, onSelect, qrUrl, loading, demo, collap
                 decoding="async"
               />
             ) : null}
-            {selected.summary ? <p>{selected.summary}</p> : null}
+            <div>
+              <strong>{selected.title}</strong>
+              {selected.summary ? <p>{selected.summary}</p> : null}
+            </div>
           </div>
         ) : null}
-      </header>
-      {pages.length ? (
-        <div className="atlas-places">
-          <small>FOR THE PASSENGER</small>
-          {pages.slice(0, visiblePlaceCount).map((page, index) => (
+        {nearby.length ? (
+          <div className="atlas-places">
+            <small>NEARBY</small>
+            {nearby.map((page) => (
             <button
               key={page.id}
               type="button"
               className={page.id === selected?.id ? "active" : ""}
               onClick={() => onSelect(page.id)}
             >
-              <span>{String(index + 1).padStart(2, "0")}</span>
+              <span>{String(pages.indexOf(page) + 1).padStart(2, "0")}</span>
               <strong>{page.title}</strong>
             </button>
           ))}
-        </div>
-      ) : null}
-      {selected && qrUrl ? (
-        <a className="atlas-qr" href={selected.url} target="_blank" rel="noreferrer" aria-label={`Open ${selected.title} on Wikipedia`}>
-          <img src={qrUrl} alt="" />
-          <span>SCAN TO READ</span>
-        </a>
-      ) : null}
+          </div>
+        ) : null}
+        {selected && qrUrl ? (
+          <a className="atlas-qr" href={selected.url} target="_blank" rel="noreferrer" aria-label={`Open ${selected.title} on Wikipedia`}>
+            <img src={qrUrl} alt="" />
+            <span>OPEN PLACE ARTICLE</span>
+          </a>
+        ) : null}
+      </section>
     </aside>
   );
 }
@@ -147,10 +282,13 @@ export default function AtlasField({
   const [panelCollapsed, setPanelCollapsed] = useState(false);
   const [displayCamera, setDisplayCamera] = useState(null);
   const [roadName, setRoadName] = useState(null);
-  const [visiblePlaceCount, setVisiblePlaceCount] = useState(() => (window.innerHeight >= 560 ? 5 : 4));
+  const [visiblePlaceCount, setVisiblePlaceCount] = useState(() => (window.innerHeight >= 560 ? 2 : 1));
+  const [journey, setJourney] = useState({ samples: [], distanceM: 0, elapsedMs: 0, altitudeM: null });
   const nearbyRequestGateRef = useRef(null);
   const qrRequestGateRef = useRef(null);
   const travelPointsRef = useRef([]);
+  const journeySamplesRef = useRef([]);
+  const journeyStartedAtRef = useRef(null);
   if (!nearbyRequestGateRef.current) nearbyRequestGateRef.current = createLatestAtlasRequestGate();
   if (!qrRequestGateRef.current) qrRequestGateRef.current = createLatestAtlasRequestGate();
   valuesRef.current = {
@@ -167,6 +305,34 @@ export default function AtlasField({
     longitude: Math.round(effectivePosition.longitude * 20) / 20,
   } : null, [effectivePosition?.latitude, effectivePosition?.longitude]);
   const demo = !validAtlasPosition(position) && Boolean(effectivePosition);
+
+  useEffect(() => {
+    journeySamplesRef.current = [];
+    journeyStartedAtRef.current = canStart ? performance.now() : null;
+    setJourney({ samples: [], distanceM: 0, elapsedMs: 0, altitudeM: null });
+    if (!canStart) return undefined;
+    const updateJourney = () => {
+      const now = performance.now();
+      const latestPosition = valuesRef.current.positionSamplesRef?.current?.at(-1)
+        ?? valuesRef.current.position
+        ?? valuesRef.current.demoPosition;
+      const altitudeM = Number.isFinite(latestPosition?.altitudeM) ? latestPosition.altitudeM : null;
+      journeySamplesRef.current = appendAtlasJourneySample(journeySamplesRef.current, {
+        capturedAtMs: now,
+        speedKmh: valuesRef.current.speed,
+        altitudeM,
+      });
+      setJourney({
+        samples: journeySamplesRef.current,
+        distanceM: atlasJourneyDistanceMetres(travelPointsRef.current),
+        elapsedMs: now - journeyStartedAtRef.current,
+        altitudeM,
+      });
+    };
+    updateJourney();
+    const timer = window.setInterval(updateJourney, 1000);
+    return () => window.clearInterval(timer);
+  }, [canStart]);
 
   useEffect(() => {
     if (!demoRequestToken || validAtlasPosition(position)) return;
@@ -507,7 +673,7 @@ export default function AtlasField({
   }, [panelCollapsed]);
 
   useEffect(() => {
-    const resize = () => setVisiblePlaceCount(window.innerHeight >= 700 ? 6 : window.innerHeight >= 560 ? 5 : 4);
+    const resize = () => setVisiblePlaceCount(window.innerHeight >= 700 ? 3 : window.innerHeight >= 560 ? 2 : 1);
     resize();
     window.addEventListener("resize", resize);
     return () => window.removeEventListener("resize", resize);
@@ -580,7 +746,10 @@ export default function AtlasField({
   return (
     <section
       className={`atlas-field${panelCollapsed ? " is-panel-collapsed" : ""}`}
-      style={{ "--atlas-accent": paletteToAtlasCss(theme.palette).accent }}
+      style={{
+        "--atlas-accent": paletteToAtlasCss(theme.palette).accent,
+        "--atlas-secondary": paletteToAtlasCss(theme.palette).secondary,
+      }}
     >
       <div className="atlas-map" ref={hostRef} aria-hidden="true" />
       <div
@@ -607,7 +776,8 @@ export default function AtlasField({
         aria-label={panelCollapsed ? "Open Atlas passenger panel" : "Collapse Atlas passenger panel"}
         onClick={() => setPanelCollapsed((current) => !current)}
       >
-        <span aria-hidden="true">{panelCollapsed ? "‹" : "›"}</span>
+        <span className={`atlas-panel-toggle-icon ${panelCollapsed ? "is-open" : "is-collapse"}`} aria-hidden="true" />
+        <span className="atlas-panel-toggle-label">{panelCollapsed ? "SHOW INFO" : "HIDE INFO"}</span>
       </button>
       <NearbyPanel
         pages={pages}
@@ -618,6 +788,10 @@ export default function AtlasField({
         demo={demo}
         collapsed={panelCollapsed}
         visiblePlaceCount={visiblePlaceCount}
+        speed={speed}
+        roadName={roadName}
+        journey={journey}
+        colors={paletteToAtlasCss(theme.palette)}
       />
     </section>
   );
