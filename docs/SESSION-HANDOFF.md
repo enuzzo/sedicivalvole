@@ -40,7 +40,7 @@ The registry is `prototype/drive-lab/src/flux-environments.js`.
 | APERTURE 01 | original WebGL2 plus Canvas2D fallback | rigid square wall recedes intact and disappears at the existing tunnel terminus by `40 km/h` |
 | VERTIGO 02 | vendored Interstate 7 | upstream tree stays byte-identical; the external bridge drives speed/FOV and existing colour channels |
 | MERIDIAN 03 | original WebGL2 plus Canvas2D fallback | selected-reference corridor of sparse oblique blades and longitudinal planes; bounded vertical field, `50–124°` full-range FOV, stronger UNDERWATER compression and one continuous visual surfacing response |
-| ATLAS 04 | lazy MapLibre/OpenFreeMap WebGL | ephemeral GPS or explicit Milan demo drives 3D city tiles, a bounded complete-view route, one pulsing position point, a Navigator Plaque with dynamic arrow/cardinal/degrees/tile-local road name, nearby Wikipedia reading and passenger QR |
+| ATLAS 04 | lazy MapLibre/OpenFreeMap WebGL | ephemeral GPS or explicit Milan demo drives 3D city tiles, a bounded complete-view route, one pulsing position point and a Navigator Plaque; the selected Live Navigator panel adds honest GPS speed/altitude, bounded session distance/time, two-minute trends, locality/road, compact Wikipedia reading and a `42 × 116 px` persistent `HIDE INFO / SHOW INFO` handle |
 | DRIVEY 05 | byte-identical Rezmason runtime plus project bridge | road following, lane-centred zero hold, opposing-only traffic, three cameras, and normal/wire modes |
 | PRTCL 06 | original WebGL2 particle renderer | Fractal Frequency, Murmuration, and Axiom with speed-owned form/point scale, depth, and travel |
 All six visuals use ten curated palettes. Vertigo is recoloured without editing
@@ -332,8 +332,12 @@ and open Tesla gates. Row 10 DISCOVER is owner-selected and published in build
 source/search controls, bounded 15-source disclosure, reader, distance/ETA and
 reciprocal map actions pass exact local and canonical `773 × 601` QA but still
 require `R10-01`–`R10-05` Tesla acceptance. Do not reopen the route/dot or Navigator
-Plaque treatment as an ATLAS design exploration. With row 10 published, the
-next owner-gated product task is row 11, Original Gradient Field.
+Plaque treatment as an ATLAS design exploration. Owner-selected Live Navigator
+checkpoint `3ce5c98` completes the new row-9 office implementation: exact local
+`773 × 601` fit, full-map collapse/reopen, `537/537`, App/LAB/Sites build and
+Product Design QA pass; canonical publication and `R9-03`–`R9-04` remain open.
+With row 10 published, the next owner-gated product task is row 11, Original
+Gradient Field.
 
 ## Verification
 

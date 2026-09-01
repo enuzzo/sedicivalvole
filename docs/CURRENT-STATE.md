@@ -69,10 +69,14 @@ dated study documents.
   parallax and flow rise monotonically with speed. Conventional buildings,
   stacked towers, high cloud slabs and scene-wide particles are absent.
 - ATLAS dynamically loads MapLibre only when selected, draws a minimal
-  palette-owned OpenFreeMap vector style with 3D buildings, and pairs it with a
-  selected-page localized Wikipedia abstract, full-width free image, five nearby
-  choices at the Tesla viewport and a local QR. All ten theme profiles now own
-  explicit label, road and route contrast floors.
+  palette-owned OpenFreeMap vector style with 3D buildings, and pairs it with
+  the owner-selected Live Navigator. Its `272 px` passenger panel separates
+  LIVE MOTION—GPS speed, honest GPS altitude, bounded session distance/time and
+  direct-labelled two-minute Canvas2D trends—from WHERE YOU ARE: locality,
+  rendered-tile road, selected localized Wikipedia context, two nearby choices
+  and a local article QR. Missing altitude remains `— m`; journey samples and
+  coordinates remain session-only and absent from storage and diagnostics. All
+  ten theme profiles own explicit label, road, chart and route contrast.
   Without reliable GPS, ATLAS keeps the normal control plane instead of a
   blocking waiting splash. The top navigation shows only `GPS` and metre
   accuracy: green means a connected fix at `4 m` or better, orange means a
@@ -92,9 +96,12 @@ dated study documents.
   name share one readable surface. A bright route retains the complete current ATLAS-view
   trip and remains legible while zooming out; a `4096`-point ceiling compacts
   older detail instead of deleting the trip origin. One interpolated point at
-  the route head pulses once per second with a restrained expanding ripple. The `246 px` passenger panel
-  collapses behind a persistent midpoint handle, has one touch-scroll context,
-  and keeps mandatory attribution in a tiny translucent strip above the footer.
+  the route head pulses once per second with a restrained expanding ripple. The
+  passenger panel collapses behind a persistent `42 × 116 px` midpoint
+  `HIDE INFO / SHOW INFO` handle—roughly one quarter of the field rather than a
+  full-height rail—and keeps mandatory attribution in a tiny translucent strip
+  above the footer. Exact local `773 × 601` QA measures the panel at
+  `465/465 px`, with no panel or document overflow.
   A bounded session-only A3 foundation now retains eight monotonic timestamped
   fixes and can interpolate the same path at 30 or 60 FPS with a `100 ms` delay,
   no extrapolation, a `1500 ms` stale freeze and no animation across long gaps.
