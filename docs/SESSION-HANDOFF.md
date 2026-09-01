@@ -420,6 +420,17 @@ canonical assets and exact local/live `773 × 601` Browser flows pass. Row 11
 Original Gradient Field is now next and begins with the mandatory
 three-direction owner selection gate; target-Tesla tests remain open.
 
+The owner then explicitly selected native **Minerva dark** for Discover, even
+with Wikipedia's accepted test parameter. Product checkpoint `cdccbd7` replaces
+the custom scriptless article document with the complete localized native page
+at `useskin=minerva&minervanightmode=1`; a `1.2×` outer scale supplies the
+selected large vehicle-reading presentation while Wikipedia owns responsive
+cards, imagery, chapters, links, colours and localized chrome. Exact local
+`773 × 601` English/Italian Browser QA, focused Discover `10/10`, complete
+`486/486`, nine Sites checks and the production build pass. Canonical
+publication is the immediate release action; target-Tesla `R10-03` remains
+open and must not be reported as accepted from office evidence.
+
 ## Verification
 
 ```bash

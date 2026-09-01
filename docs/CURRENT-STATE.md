@@ -145,12 +145,14 @@ dated study documents.
   work. Distance is a Haversine estimate and drive time is explicitly
   approximate. The selected header links only to official Google Maps
   destination directions. The complete localized Wikipedia article now loads
-  inside a scriptless sandbox with readable chapters, images and information
-  cards; language changes clear edition-local page identity before refetching.
+  as Wikipedia's native responsive Minerva page with the owner-approved dark
+  test parameter and a `1.2×` outer large-reading scale. Wikipedia retains
+  ownership of article colours, cards, media, chapters, links and localized
+  interface; language changes navigate to the selected edition.
   DISCOVER has no ATLAS action and does not change the active visual. Exact
   local `773 × 601` Browser QA proves 15 results with `+10 MORE`, internal list
-  and article scrolling, Italian content switching, two-column lead/infobox
-  composition and no Browser warning/error.
+  and article scrolling, native English/Italian Minerva switching, responsive
+  information-card composition and no Browser warning/error.
   Checkpoint `e268169` makes it reachable as `DISCOVER 07` from both the initial
   Instrument Deck and the running Visual library while preserving the six-entry
   renderer and preference boundary. Exact Browser review then found the seventh
@@ -632,6 +634,15 @@ dated study documents.
   lead image, accessible label-free language selector, `38 px` scopes,
   `11.5 px` metadata, complete article/result scrolling and an empty log. Only
   target-Tesla `R10-00A`–`R10-05` acceptance remains open.
+- Product checkpoint `cdccbd7` supersedes only the custom article renderer.
+  Discover now embeds the complete localized Wikipedia page directly with
+  `useskin=minerva&minervanightmode=1`, leaving responsive layout, information
+  cards, media, chapters, links, colours and edition-local chrome to Wikipedia.
+  The iframe presentation is scaled `1.2×` for the owner-selected large cabin
+  reading size without rewriting article CSS. Focused Discover `10/10`, complete
+  `486/486`, nine Sites packaging checks, the 148-module App / 71-module LAB /
+  protected LAB build and exact local `773 × 601` English/Italian Browser QA
+  pass. Canonical publication and target-Tesla `R10-03` remain open.
 - Product checkpoint `5c498ac` adds the selected DISCOVER Passenger Index and
   Music Navigator Rail. Build `20260901-0933` passes the complete `533/533`
   suite, 148-module App / 71-module LAB / Sites build, protected publication,
