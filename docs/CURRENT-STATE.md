@@ -133,8 +133,9 @@ dated study documents.
   Instrument Deck and the running Visual library while preserving the six-entry
   renderer and preference boundary. Exact Browser review then found the seventh
   running row below the fold; `a257e0c` compacts only that drawer so all seven
-  remain simultaneously visible at `773 × 601`. Canonical publication of both
-  reachability corrections is pending.
+  remain simultaneously visible at `773 × 601`. Canonical build
+  `20260901-1105` publishes both corrections and passes both exact-viewport
+  entry loops, byte identity, focus return and an empty Browser log.
 - WAKE is rejected after repeated live review: its ribbons read as disordered
   rain rather than a convincing authored 3D road field. Its renderer, fallback,
   tests, catalog entry and current QA captures have been removed. The historical
@@ -512,8 +513,9 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The canonical live product is version `0.0.0`, source commit `1dcb5bc`, build
-  `20260901-1041`, publishing the horizontal Music selectors and owner-selected
+- The canonical live product is version `0.0.0`, source commit `f72b15b`, build
+  `20260901-1105`, publishing DISCOVER 07 in both Visual entry points, the
+  no-scroll seven-row running Visual library, the horizontal Music selectors and owner-selected
   Generated image 35 Play the Road composition on top of DISCOVER, the one-tap
   library and suspended-clock Soundtrack transition recovery while
   retaining the amplified MERIDIAN
@@ -550,7 +552,9 @@ dated study documents.
   destination and does not replace or persist the active renderer. The complete
   `535/535` suite passes. Follow-up `a257e0c` makes all seven running rows
   simultaneously visible without scroll and raises the complete suite to
-  `536/536`. Canonical and final exact-viewport acceptance remain open.
+  `536/536`. Canonical build `20260901-1105` passes protected publication,
+  byte identity and both exact live `773 × 601` interaction loops with an empty
+  Browser log. Target-Tesla acceptance remains open.
 - Product checkpoint `5c498ac` adds the selected DISCOVER Passenger Index and
   Music Navigator Rail. Build `20260901-0933` passes the complete `533/533`
   suite, 148-module App / 71-module LAB / Sites build, protected publication,

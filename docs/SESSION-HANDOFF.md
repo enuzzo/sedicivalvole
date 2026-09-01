@@ -55,9 +55,11 @@ uses a `3–3–1` grid and opens the Passenger Index over Aperture, while the
 running Visual library opens the same surface without changing the active
 environment. Closing Discover returns to the real visual and normal focus
 recovery. This placement is implemented in `e268169`; canonical publication is
-the next gate. Exact Browser inspection found its seventh running row below the
-fold; `a257e0c` compacts only that Visual drawer so all seven rows fit together
-at `773 × 601` without changing Music geometry.
+complete in build `20260901-1105`. Exact Browser inspection found its seventh
+running row below the fold; `a257e0c` compacts only that Visual drawer so all
+seven rows fit together at `773 × 601` without changing Music geometry. The
+canonical launch and running-picker loops, byte identity, console and focus
+recovery all pass; vehicle tests remain `R10-00A`–`R10-05`.
 
 ## Flux music
 

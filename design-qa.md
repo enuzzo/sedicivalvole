@@ -1,3 +1,46 @@
+# Design QA — DISCOVER Visual catalogue placement
+
+Date: 2026-09-01
+
+## Source and implementation
+
+- Owner requirement: expose Discover in both the initial Visual selection and
+  the running Visual library; make the initial seven-card grid `3–3–1`.
+- Exact canonical launch screenshot:
+  `/Users/enuzzo/Library/CloudStorage/Dropbox/Mitnick/sedicivalvole/_references/audits/discover-visual-catalog-20260901/live-launch-3-3-1-20260901-1105.jpg`.
+- Exact canonical running-picker screenshot:
+  `/Users/enuzzo/Library/CloudStorage/Dropbox/Mitnick/sedicivalvole/_references/audits/discover-visual-catalog-20260901/live-running-visual-seven-rows-20260901-1105.jpg`.
+- Exact canonical opened-surface screenshot:
+  `/Users/enuzzo/Library/CloudStorage/Dropbox/Mitnick/sedicivalvole/_references/audits/discover-visual-catalog-20260901/live-discover-open-from-visual-20260901-1105.jpg`.
+- CSS viewport: `773 × 601`; canonical build `20260901-1105`.
+
+## Interaction and runtime checks
+
+- The launch surface contains exactly seven Visual cards in three measured rows
+  at `y=146 / 262 / 379`; DISCOVER is the only third-row item and ends at
+  `487 px`, with zero document overflow.
+- Selecting Mute plus Discover enables START. START runs Aperture, opens the
+  Passenger Index, and CLOSE returns neutral focus to `main.app`.
+- The running Visual drawer measures `601 / 601 px`; all seven rows are visible
+  together, and the DISCOVER row spans `493–553 px` with an explicit `OPEN`
+  state. No scroll gesture is required.
+- Opening Discover from that row closes the picker, preserves Aperture as the
+  active renderer, and the final CLOSE again returns focus to `main.app`.
+- The complete `536/536` suite, 148-module App build, 71-module LAB build,
+  Sites package, canonical byte identity and Browser warning/error log pass.
+
+## Comparison history
+
+| Pass | Severity | Finding | Resolution and evidence |
+|---|---|---|---|
+| 1 | P1 | DISCOVER existed only as header chrome and was absent from both user-requested Visual entry points. | `e268169` adds one shared seven-choice catalogue while retaining the six-entry renderer registry. |
+| 2 | P2 | The running picker contained DISCOVER 07, but exact `773 × 601` review placed it below the first fold. | `a257e0c` compacts only that drawer to seven `60 px` rows; the final row is fully visible at `493–553 px`. |
+| 3 | — | No actionable P0, P1 or P2 issue remains in the requested placement flow. | Exact canonical screenshots, geometry, both interaction loops, focus return and empty Browser log pass. |
+
+final result: passed
+
+---
+
 # Design QA — horizontal Music sources and Play the Road
 
 Date: 2026-09-01

@@ -8,6 +8,43 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## DISCOVER Visual-catalogue reachability — 2026-09-01 11:14
+
+- build stamp: **`20260901-1105`**; deployed bundle/document checkpoint:
+  **`f72b15b`**; catalogue checkpoint: **`e268169`**; exact-height refinement:
+  **`a257e0c`**;
+- behavior: **PASS in exact live Browser QA; Tesla acceptance pending**. The
+  initial Instrument Deck contains seven Visual choices in a `3–3–1` grid.
+  DISCOVER 07 starts the Passenger Index over Aperture. The running Visual
+  library fits all seven rows together without scrolling, opens Discover as a
+  destination, and preserves the active renderer when the surface closes;
+- tests/build: **PASS**. Complete `536/536`, 148-module App, 71-module LAB and
+  Sites packaging pass;
+- publication: **PASS**. Protected publication uploaded 179 files /
+  223,285,866 bytes, fully reverified all 29 Illobo masters, preserved the
+  existing root, retained two prior fingerprinted assets, and passed read-only
+  preflight/postflight with nine root entries and `remote_writes=NONE`;
+- canonical identity: **PASS**. Root HTML references
+  `assets/index-CHQpxgSr.js` and `assets/index-Nv1KndGH.css`. Local/live SHA-256
+  is `ecd8f87f16bf7acbb40fa364db6d98566805b5cb88d35be3a8a7882cf0ffa254`
+  for HTML, `f5b23c854d2cca63a41dfa1059c893ae2e9b0b6ee8dca431a0e66ebdd281edc7`
+  for JavaScript, and
+  `0fff1160d734ab9322061927df86bb129bd2b10bfd184bae74d21a15cfdf5013`
+  for CSS. Cache-busted HTML returns HTTP 200 with explicit no-store/no-cache,
+  `nosniff` and cache MISS; the bundle carries `f72b15b / 20260901-1105`;
+- exact live Browser QA: **PASS at `773 × 601`**. The launch choices occupy
+  three measured rows at `y=146 / 262 / 379`, the seventh card ends at `487 px`,
+  and page overflow is zero. The running drawer measures `601/601 px`, its
+  seventh row spans `493–553 px`, all seven are visible, Aperture remains the
+  active renderer through both Discover loops, focus returns to `main.app`, and
+  the warning/error log is empty;
+- evidence: ignored real-build captures live at
+  `_references/audits/discover-visual-catalog-20260901/` for the launch grid,
+  seven-row running picker and opened Passenger Index;
+- remaining acceptance: execute `R10-00A`–`R10-05` in the target Tesla. Office
+  evidence cannot accept physical touch, vehicle browser chrome, real GPS or
+  driving-distance legibility.
+
 ## Horizontal Music sources and selected Play the Road — 2026-09-01 10:47
 
 - build stamp: **`20260901-1041`**; deployed bundle/document checkpoint:
