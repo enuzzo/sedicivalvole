@@ -111,8 +111,9 @@ asserted.
   third-deck retargeting without exceeding three media elements. The visible
   card includes every genuinely audible credit, and a compact QR opens the exact
   current public track page without exposing a relay or stream URL;
-- the running Music drawer keeps one explicit **Play the Road** / **Soundtrack**
-  switch. Do not label the first branch `Generative`, because JUNCTION and
+- the running Music drawer keeps two explicit horizontal top selectors for
+  **Play the Road** / **Soundtrack**. Do not label the first branch
+  `Generative`, because JUNCTION and
   NIGHTSHIFT are adaptive sampled scores. Soundtrack gives equal visual and
   interaction weight to compact **Illobo Featured** and **Jamendo Library**
   alternatives. Featured and the cover preview rotate every 30 minutes; Jamendo
@@ -124,8 +125,10 @@ asserted.
   makes Pace and Genre whole-surface one-tap controls, places Pace in a narrow
   vertical rail and all fifteen genres in a readable `5 × 3` grid, places six
   tracks in two rows, and keeps player plus credit visible without scrolling at
-  `773 × 601`. Play the Road now exposes only its
-  three playable scores with individual artwork and concise descriptions; the
+  `773 × 601`. Owner selection **Generated image 35** supersedes the temporary
+  Music Navigator Rail: Play the Road exposes sampled JUNCTION and NIGHTSHIFT
+  as two first-row cards and responsive-generative FRACTURE as one full-width
+  row, with individual artwork and concise descriptions; the
   29-track Illobo catalogue maps every recording to its own coherent cover.
   Build `20260901-0012` publishes the preceding one-tap/covers baseline;
   checkpoint `5c498ac` adds the Navigator composition and is published in

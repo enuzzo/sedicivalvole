@@ -95,9 +95,10 @@ Completed in the current working line:
   artwork, artist, title, licence, provider credit, and direct source link.
   Effects-disallowed, ND, unknown, incomplete, or stale items fail closed;
   neither audio nor credentials enter persistent browser or repository storage.
-  The running Music drawer now has a persistent **Play the Road** /
-  **Soundtrack** switch; Play the Road retains the complete adaptive catalogue,
-  including sampled adaptive scores. Soundtrack gives equal hierarchy to a
+  The running Music drawer now has two persistent horizontal top selectors for
+  **Play the Road** / **Soundtrack**. Play the Road presents its two sampled
+  scores side by side and the responsive-generative score full-width below;
+  Soundtrack gives equal hierarchy to a
   compact rotating **Illobo Featured** playlist and **Jamendo Library**, previews
   real covers, rotates its mix every 30 minutes, and starts immediately from a
   chosen Jamendo pace, one of 15 live-verified genres, or an exact track. Pace is a passenger-selected

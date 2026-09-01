@@ -1,3 +1,61 @@
+# Design QA — horizontal Music sources and Play the Road
+
+Date: 2026-09-01
+
+## Source and implementation
+
+- Owner annotation removing the temporary vertical rail:
+  `/var/folders/48/00rryty17dzb6g7877yxqym00000gn/T/codex-clipboard-919b70f2-9b4e-47ba-92d8-fb38d1dd1c4e.png`.
+- Owner-selected Play the Road direction **Generated image 35**:
+  `/var/folders/48/00rryty17dzb6g7877yxqym00000gn/T/codex-clipboard-f1b70547-66b1-4448-98aa-9609f7effc23.png`.
+- Exact implementation screenshot:
+  `/Users/enuzzo/Library/CloudStorage/Dropbox/Mitnick/sedicivalvole/_references/audits/music-horizontal-play-road-20260901/implementation-773x601.png`.
+- Joined normalized source/implementation comparison:
+  `/Users/enuzzo/Library/CloudStorage/Dropbox/Mitnick/sedicivalvole/_references/audits/music-horizontal-play-road-20260901/joined-source-vs-implementation.png`.
+- Implementation CSS viewport and screenshot: `773 × 601` at density `1`.
+
+## Fidelity and owner refinements
+
+- The temporary left Navigator Rail is removed. `PLAY THE ROAD` and
+  `SOUNDTRACK` return to one persistent horizontal selector pair directly below
+  the Music heading.
+- Play the Road preserves the selected hierarchy and supplied artwork: sampled
+  JUNCTION and NIGHTSHIFT share the first row, responsive-generative FRACTURE
+  spans the row below, and the introductory arrangement copy remains above all
+  three cards.
+- The generative badge uses the selected cyan hierarchy instead of appearing
+  subordinate to the sampled scores. Family and listener description occupy
+  distinct lines, preserving the source's scan order at driving distance.
+- The implementation retains the product's established Space Grotesk type,
+  current palette accent, compact square media controls, and actual playback
+  state rather than copying a static mock state.
+
+## Interaction and runtime checks
+
+- Exact `773 × 601` Play the Road geometry measures `494 px` client height and
+  `494 px` scroll height inside the drawer content; the complete panel measures
+  `601 / 601 px`.
+- Soundtrack retains all 15 genres, six tracks, current player and credit after
+  the horizontal selector change and also measures `494 / 494 px` with no
+  scroll.
+- Both source selectors remain one-tap controls and preserve the existing
+  immediate pane-switch and stale-request guards.
+- The complete `533/533` suite, 148-module App build, 71-module LAB build and
+  Sites package pass. Browser warning/error log: empty.
+
+## Comparison history
+
+| Pass | Severity | Finding | Resolution and evidence |
+|---|---|---|---|
+| 1 | P1 | The previous implementation contradicted the owner's annotation by moving the two primary sources into a tall left rail. | Restored the two equal horizontal selectors at the top and removed the rail-only labels. |
+| 1 | P1 | Play the Road did not record Generated image 35 and rendered all three scores as one vertical list. | Implemented the selected two-sampled-plus-one-generative card hierarchy, exact copy direction, existing covers and cyan generative emphasis. |
+| 2 | P2 | The first local pass compressed family and description onto one line and made the selected hierarchy scan too densely. | Split family and description into separate lines and increased the exact-Tesla card typography and artwork scale without introducing scroll. |
+| 3 | — | No actionable P0, P1 or P2 mismatch remains. | Joined source/implementation review, exact geometry and Browser interaction/console QA pass. |
+
+final result: passed
+
+---
+
 # Design QA — DISCOVER Passenger Index
 
 Date: 2026-09-01

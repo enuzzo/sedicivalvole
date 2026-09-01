@@ -194,8 +194,11 @@ or retiming it, and divides processing into two explicit families:
 the footer-gated OPEN/UNDERWATER/BLOOM vehicle-reactive audio path and four manual
 flanger/reverb/chorus/echo controls. Playback, current-track attribution,
 direct source navigation, transport, and both effect families are visible in the
-App and LAB. The running Music drawer owns the persistent left Navigator Rail
-for Play the Road / Soundtrack. Its Soundtrack branch gives equal hierarchy to
+App and LAB. The running Music drawer owns two persistent horizontal top
+selectors for Play the Road / Soundtrack. Play the Road follows the owner-
+selected Generated image 35 hierarchy: sampled JUNCTION and NIGHTSHIFT share
+the first row, while responsive-generative FRACTURE occupies the full-width row
+below. Its Soundtrack branch gives equal hierarchy to
 the artist-owned Lobo Playlist and the filterable Jamendo Library, places Pace
 in a three-item vertical rail beside the readable `5 × 3` genre grid, uses a
 stable half-hour shuffle, and treats pace, genre, and exact-track gestures as

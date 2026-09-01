@@ -1,6 +1,6 @@
 # Current Project State
 
-Status: **authoritative working overview**. Updated on 2026-08-31.
+Status: **authoritative working overview**. Updated on 2026-09-01.
 
 This page is the shortest reliable answer to “what exists now?”. Product
 requirements remain in [`PRODUCT-SPEC.md`](PRODUCT-SPEC.md), architecture in
@@ -202,7 +202,7 @@ dated study documents.
   field. `MUSIC` and `VISUAL` keep concise descriptions; START remains disabled
   until both axes are selected, and MUTE still requires a Visual. SOUNDTRACK
   prepares three transient eligible Jamendo roles before START can unlock. The
-  running Music drawer now presents the approved left Navigator Rail plus
+  running Music drawer now presents two horizontal top source selectors plus
   compact equal-weight **Lobo Playlist** and **Jamendo Library** paths. The
   Lobo card says **FEATURED ARTIST** and identifies original music written and
   performed by Illobo. Both complete cards remain enabled and visible at
@@ -218,8 +218,9 @@ dated study documents.
   `5 × 3` rows beside a three-item vertical Pace rail, fits six tracks in two
   rows, animates the licensed Now Playing indicator only during real playback,
   and keeps Track Credit beside an independently bounded QR column without a
-  scrollbar at exact `773 × 601`. Play the Road
-  lists only the three playable scores with individual covers and concise copy;
+  scrollbar at exact `773 × 601`. The owner-selected Generated image 35 layout
+  puts sampled JUNCTION and NIGHTSHIFT side by side and responsive-generative
+  FRACTURE full-width below, with individual covers and concise copy;
   all 29 Illobo tracks use title-specific square covers from the same dark
   Swiss-modernist family. At exact
   `773 × 601`, the complete Music and Visual button grids share the same
