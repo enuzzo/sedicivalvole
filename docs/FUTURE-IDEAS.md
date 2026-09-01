@@ -28,7 +28,7 @@ presented as an owner decision or enter the product without explicit approval.
 | `FI-002` | Smoothly raise DRIVEY's Aerial camera as speed increases | OWNER | 2026-08-30 | CAPTURED | [`PIANO.md`](../PIANO.md) `D4` |
 | `FI-003` | DISCOVER image-led nearby-place companion | OWNER | 2026-08-30 | PROMOTED | [`PIANO.md`](../PIANO.md) `A5` |
 | `FI-004` | Grouped, direct-selection Visual Library | OWNER | 2026-08-30 | PROMOTED | [`PIANO.md`](../PIANO.md) `X9` |
-| `FI-005` | Shared LIGHT/DARK/AUTO interface appearance | OWNER | 2026-08-30 | PROMOTED | [`PIANO.md`](../PIANO.md) `X10` |
+| `FI-005` | Shared LIGHT/DARK/AUTO interface appearance | OWNER | 2026-08-30 | PROMOTED | [`MILESTONE-CHECKLIST-2026-08-31.md`](MILESTONE-CHECKLIST-2026-08-31.md) row 13; [`PIANO.md`](../PIANO.md) `X10` |
 | `FI-006` | Exception-led local CONDITIONS and weather context | OWNER | 2026-08-30 | PROMOTED | [`PIANO.md`](../PIANO.md) `X11` |
 | `FI-007` | Original speed-responsive Gradient Field | OWNER | 2026-08-30 | PROMOTED | [`PIANO.md`](../PIANO.md) `SF1` |
 | `FI-008` | Landscape-first iPhone presentation with an inert portrait rotation notice | OWNER | 2026-08-30 | PROMOTED | [`PIANO.md`](../PIANO.md) `X2`; [`ROADMAP.md`](ROADMAP.md) Phase 6 |

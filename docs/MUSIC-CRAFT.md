@@ -29,17 +29,22 @@ feed-forward event, but none controls the media element clock. Some drivers do
 not enjoy braking or launch processing during an otherwise calm listen, so the
 master now gates the audible graph without stopping detection or visual macro
 snapshots. PLAY THE ROAD retains its authored default with effects on;
-SOUNDTRACK retains its fresh-session opt-in. Manual flanger,
-convolution reverb, chorus, and beat repeat form a separate passenger-play path.
-Beat repeat is intentionally bounded to `0.5–0.0625 s`, uses a short seam fade,
-and smooths wet release so experimentation does not create an unbounded buffer,
-click, or stuck loop. Source admission must allow effects before either family
-can process a track.
+SOUNDTRACK retains its fresh-session opt-in. The published manual
+Flanger/Reverb/Chorus/Echo chain is a baseline rather than the accepted finish.
+The owner requires eight passenger-controlled effects: retain Flanger, Reverb,
+and Echo; remove Chorus; add five differentiated processors including a manual
+Underwater control with continuous immersion/surfacing plus intentional low/high
+frequency transformations. Full depth must be dramatically recognizable, but
+the shared post-source graph still needs bounded gain, feedback, tails and
+release so experimentation cannot click, clip, silence the source or remain
+stuck. The retired Beat Repeat worklet must not return. Source admission must
+allow effects before either family can process a track.
 
-The current browser graph and deterministic checks prove routing, bounds, and
-unchanged playback rate. They do not prove that the default depths are pleasant
-over every master or in the Tesla cabin; morning vehicle listening remains the
-authority for wet balance, braking intelligibility, and peak behaviour.
+The current four-effect browser graph and deterministic checks prove the
+baseline routing, bounds, and unchanged playback rate; they do not satisfy the
+new eight-effect requirement. Objective difference/level/teardown checks must
+precede listening, but only the Tesla cabin can accept full-depth identity, wet
+balance, braking intelligibility, surfacing and peak behaviour.
 
 A playlist relaunch has a second authored-time boundary: random means choosing
 a complete recording, never choosing a timestamp inside it. A browser may keep

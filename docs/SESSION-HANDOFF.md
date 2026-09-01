@@ -329,7 +329,7 @@ dropping any playlist identity. Local exact-viewport interaction QA, the full
 canonical byte identity pass; use `R7-06`–`R7-07` for the corrected Soundtrack
 cabin acceptance and `R8-01`–`R8-02` for the cover/title acceptance.
 
-Continue only from the 17-row execution order in
+Continue only from the 17 stable numbered rows plus mandatory insert `10A` in
 [`MILESTONE-CHECKLIST-2026-08-31.md`](MILESTONE-CHECKLIST-2026-08-31.md). The
 first and sixth rows are complete; the second is physical-Tesla acceptance and
 the seventh, eighth and ninth are split between published office implementation
@@ -349,9 +349,21 @@ data-first Drive Lab: do not add DISCOVER or duplicate its place cards. The
 owner selected the composite of all six preferred telemetry modules; checkpoint
 `6ac4259` implements it; canonical build `20260901-1559` carries documentation
 checkpoint `3f505a0`, passes exact live `773 × 601` QA and preserves canonical
-byte identity. Target-Tesla `R9-01`–`R9-05` acceptance remains open. Row 10
-office/canonical work is complete; row 11 Original Gradient Field is the next
-owner-gated feature milestone.
+byte identity. Target-Tesla `R9-01`–`R9-05` acceptance remains open.
+
+Owner VoiceNotes recorded on 2026-09-01 at 09:01–09:15 supersede the prior
+"row 11 next" handoff. Milestone row 4 now requires the mandatory eight-effect
+`2 × 4` Performance FX revision: retain Flanger/Reverb/Echo, remove Chorus and
+add five strong differentiated processors including manual Underwater and
+low/high tonal transformations. Mandatory insert `10A` then requires truthful
+ATLAS cold start/refinement, larger Tesla palette, persistent transport,
+supported Media Session previous/next, committed-track notice, direction-aware
+drawer dismissal and measured WebP Illobo artwork while retaining local HD
+masters. These tasks are explicitly NOT IMPLEMENTED in build `20260901-1624`;
+their planned tests are `R1-02`, `R4-07`, `R7-10`–`R7-12`, `R8-03`, `R9-06`,
+and `R13-00`. Promoted X10 `LIGHT / DARK / AUTO` is confirmed in milestone 13
+with `R13-01`–`R13-03`. Row 11 Original Gradient Field is blocked until row 4
+and `10A` reach office/canonical PASS.
 
 ## Verification
 

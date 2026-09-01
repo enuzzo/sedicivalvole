@@ -424,7 +424,8 @@ dated study documents.
   gates only audible OPEN/UNDERWATER/BLOOM processing while the same vehicle
   macros remain available to every visual; PLAY THE ROAD starts enabled and
   SOUNDTRACK remains a fresh-session opt-in. Manual flanger, reverb, chorus,
-  and bounded echo controls stay independent. The visible card follows the
+  and bounded echo remain the published four-effect baseline; the accepted
+  mandatory finish is the eight-effect row-4 revision recorded below. The visible card follows the
   audio-clock gain mix and exposes every genuinely audible artwork, artist,
   title, licence, Jamendo credit, and direct source link. Manual changes use the
   tested nominal `450 ms` equal-power curve for normal skips, reversals, and
@@ -643,8 +644,9 @@ dated study documents.
   smoothness and visual quality; stronger real progressive surfacing remains
   the target-Tesla `R5-02` gate.
   The complete `539/539` suite plus 148-module App / 71-module LAB / Sites build
-  pass, while physical-cabin checks remain `R4-01`–`R4-06`, `R5-01`–`R5-05`,
-  `R7-01`–`R7-09`, `R8-01`–`R8-02`, `R9-01`–`R9-05` and
+  pass, while physical-cabin checks for the published baseline remain
+  `R4-01`–`R4-06`, `R5-01`–`R5-05`, `R7-01`–`R7-09`, `R8-01`–`R8-02`,
+  `R9-01`–`R9-05` and
   `R10-01`–`R10-05`. Exact
   progressive evidence is in [`DEPLOY.md`](DEPLOY.md).
 - Diagnostic telemetry contains no coordinates and is sent only after the
@@ -655,10 +657,42 @@ dated study documents.
   approximately `0.001°` rounded cell to Open-Meteo for Copernicus terrain
   elevation; the response and histories remain session-only.
 
+## Mandatory 2026-09-01 owner corrections
+
+The 09:01–09:15 owner VoiceNotes are promoted into the active milestone and
+test queue, not the optional future register. They do not exist in canonical
+build `20260901-1624` yet:
+
+- replace the four-effect Performance FX baseline with eight effects in a
+  `2 × 4` deck: retain Flanger/Reverb/Echo, remove Chorus, add five distinct
+  effects including progressive manual Underwater and deliberate low/high
+  processors, and make `100%` extreme but limited;
+- fix ATLAS's owner-observed black cold start by preparing from the best
+  truthful session fix and showing an explicit waiting/degraded state when no
+  position is usable, then refining without requiring movement or restarting;
+- add directly reachable previous / play-pause / next transport over the
+  running experience, wire supported Media Session actions to the same
+  transactional player, and show one large title/album-or-source/artist notice
+  only for a committed track change;
+- add direction-aware swipe dismissal to every closable drawer/surface while
+  preserving scroll, CLOSE, Escape, focus release, cancellation and reduced
+  motion;
+- measure Illobo artwork slots, preserve the HD masters locally and publish
+  no-more-than-approximately-`2×` WebP derivatives instead of oversized PNGs;
+- enlarge the Tesla footer palette. The separate promoted X10
+  `LIGHT / DARK / AUTO` appearance switch remains milestone 13, uses the
+  measured free top-rail lane and never recolours the active visual palette.
+
+Milestone row 4 runs first, then mandatory insert `10A`; row 11 Original
+Gradient Field is blocked until those office/canonical corrections pass.
+
 ## Open work
 
-1. Execute Tesla tests `R4-01`–`R4-06`, `R5-01`–`R5-05`, `R7-01`–`R7-09`,
-   `R8-01`–`R8-02`, `R9-01`–`R9-05` and `R10-00A`–`R10-05` from
+1. Implement and publish mandatory row 4 / `10A`, then replace the planned-test
+   warning with its canonical build stamp. Execute Tesla tests
+   `R1-01`–`R1-02`, `R4-01`–`R4-07`, `R5-01`–`R5-05`, `R7-01`–`R7-12`,
+   `R8-01`–`R8-03`, `R9-01`–`R9-06`, `R10-00A`–`R10-05`, and later
+   `R13-00`–`R13-03` from
    [`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md), including
    the live audio transport evidence and MERIDIAN
    `0 → brake/UNDERWATER → renewed acceleration → 130` motion that the available
