@@ -246,9 +246,11 @@ Soundtrack. Decoded real Illobo/Jamendo excerpts lose `20.8/18.8 dB` above
 `MIX` control plus a compact non-modal overlay. Its four large tap states enter
 at strong `78 / 72 / 80 / 74` depths, keep independent sliders and reset, and
 persist across Play the Road and Soundtrack. That four-pad surface is historical
-baseline evidence only. Checkpoint `c7ef484` now replaces it with exactly
-Flanger, Reverb, Echo, Underwater, Phaser, Bitcrush, Bass Drive, and Radio Cut;
-Chorus is absent. The shared serial graph separately namespaces manual and
+baseline evidence only. Checkpoint `c7ef484` replaced it with the first
+eight-effect roster. Owner-approved checkpoint `0f4a501` now replaces Echo and
+exposes exactly Flanger, Reverb, Underwater, Phaser, Bitcrush, Bass Drive, Radio
+Cut, and High Cut; Chorus and Echo are absent. Bass Drive, Radio Cut, and High
+Cut are contiguous behind one cyan family marker. The shared serial graph separately namespaces manual and
 vehicle Underwater, initializes every wet branch at zero, and ends in one
 compressor. Exact local `773 × 601` QA measures a `720 × 267 px` `2 × 4` deck
 with zero overflow; all eight taps, sliders, hostile full-depth sum, reset,
@@ -259,9 +261,10 @@ leaving every authored hit below that boundary unchanged. A fresh real-browser
 comparison measures every full endpoint `1.3925–2.5184×` more transformed than
 its tap, manual Underwater `1.8005×`, maximum individual peak `0.99121`, and
 the hostile full sum `0.60941`; the complete suite passes `544/544`. Build
-`20260901-1823` publishes `f48b5b2`; canonical byte identity and exact live
-`773 × 601` 8/8-at-100, RESET, focus and overflow QA pass. Tesla `R4-07`
-remains the physical listening gate. The
+`20260901-1823` publishes `f48b5b2`; replacement checkpoint `0f4a501` passes
+`544/544`, production build, dedicated High Cut sine evidence, a bounded
+hostile render, and exact local `773 × 601` family/order/RESET/focus QA. Publish
+it before the revised Tesla `R4-07`. The
 complete suite passes `517/517`; the 147-module App / 71-module LAB / Sites
 build `20260831-2005` passes. Protected publication uploaded 138 files /
 212,292,932 bytes, fully reverified 29/29 Illobo masters, and passed read-only
@@ -368,12 +371,14 @@ byte identity. Target-Tesla `R9-01`–`R9-05` acceptance remains open.
 Owner VoiceNotes recorded on 2026-09-01 at 09:01–09:15 supersede the prior
 "row 11 next" handoff. Milestone row 4's mandatory eight-effect `2 × 4`
 Performance FX revision and stronger full-depth checkpoint `f48b5b2` are live
-in build `20260901-1823`; Tesla `R4-07` remains open. Mandatory insert `10A`
+in build `20260901-1823`; High Cut replacement `0f4a501` is office-PASS and
+awaiting canonical publication before Tesla `R4-07`. Mandatory insert `10A`
 follows and requires truthful
 ATLAS cold start/refinement, larger Tesla palette, persistent transport,
 supported Media Session previous/next, committed-track notice, direction-aware
 drawer dismissal and measured WebP Illobo artwork while retaining local HD
-masters. Row 4 is present in build `20260901-1823`; the `10A` tasks are not.
+masters. Row 4's prior roster is present in build `20260901-1823`; the High Cut
+replacement and `10A` tasks are not yet canonical.
 Their tests are `R1-02`, `R4-07`, `R7-10`–`R7-12`, `R8-03`, `R9-06`, and
 `R13-00`. Promoted X10 `LIGHT / DARK / AUTO` is confirmed in milestone 13
 with `R13-01`–`R13-03`. Row 11 Original Gradient Field is blocked until row 4

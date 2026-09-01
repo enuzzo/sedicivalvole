@@ -424,12 +424,16 @@ dated study documents.
   gates only audible OPEN/UNDERWATER/BLOOM processing while the same vehicle
   macros remain available to every visual; PLAY THE ROAD starts enabled and
   SOUNDTRACK remains a fresh-session opt-in. The office implementation now
-  exposes eight manual post-source processors: Flanger, Reverb, Echo,
-  Underwater, Phaser, Bitcrush, Bass Drive, and Radio Cut; Chorus is removed.
+  exposes eight manual post-source processors: Flanger, Reverb, Underwater,
+  Phaser, Bitcrush, Bass Drive, Radio Cut, and High Cut; Chorus and Echo are
+  removed. Bass Drive, Radio Cut, and High Cut are adjacent behind one cyan
+  tone/filter family marker. High Cut is a clean dual-stage upper-spectrum roll-off
+  that remains separate from Underwater pressure and texture.
   The compact footer `FX ↑` trigger opens a `2 × 4` deck with independent depth,
   authored one-tap defaults, RESET, and one final compressor. Checkpoint
-  `f48b5b2` is live in build `20260901-1823`; its full-depth stunt zone is
-  canonical and Tesla `R4-07` remains open.
+  `f48b5b2` is live in build `20260901-1823`; replacement checkpoint `0f4a501`
+  passes office DSP/build/exact-viewport QA and awaits canonical publication
+  before the revised Tesla `R4-07`.
   The visible card follows the
   audio-clock gain mix and exposes every genuinely audible artwork, artist,
   title, licence, Jamendo credit, and direct source link. Manual changes use the
@@ -666,15 +670,16 @@ dated study documents.
 
 The 09:01–09:15 owner VoiceNotes are promoted into the active milestone and
 test queue, not the optional future register. Row 4's eight-effect baseline is
-canonical in build `20260901-1823`; the stronger `82–100%` stunt-zone
-refinement at `f48b5b2` passes canonical byte identity and exact live Tesla-size
-Browser QA. Tesla listening and the remaining `10A` items are still open:
+canonical in build `20260901-1823`; replacement checkpoint `0f4a501` removes
+Echo, adds High Cut, groups the three tone/filter controls, and passes office
+DSP/build/exact Tesla-size Browser QA. Its canonical publication, Tesla
+listening, and the remaining `10A` items are still open:
 
-- physically accept the new eight-effect `2 × 4` Performance FX stunt zone
-  from live build `20260901-1823`; deterministic graph tests, `544/544`, the
-  production build, exact local/canonical `773 × 601` 8/8-at-100 interaction
-  QA, canonical byte identity and real-browser full-vs-tap audio/level checks
-  pass, while Tesla listening remains open;
+- publish and physically accept the revised eight-effect `2 × 4` Performance FX
+  deck from `0f4a501`; deterministic graph tests, `544/544`, the production
+  build, exact local `773 × 601` tone-family/RESET/focus QA, dedicated High Cut
+  spectrum evidence, and a bounded hostile full-depth render pass, while
+  canonical identity and Tesla listening remain open;
 - fix ATLAS's owner-observed black cold start by preparing from the best
   truthful session fix and showing an explicit waiting/degraded state when no
   position is usable, then refining without requiring movement or restarting;

@@ -30,11 +30,13 @@ not enjoy braking or launch processing during an otherwise calm listen, so the
 master now gates the audible graph without stopping detection or visual macro
 snapshots. PLAY THE ROAD retains its authored default with effects on;
 SOUNDTRACK retains its fresh-session opt-in. The shared post-source Performance
-FX graph has eight passenger-controlled processors: Flanger, Reverb, Echo,
-Underwater, Phaser, Bitcrush, Bass Drive, and Radio Cut. Chorus is removed. The
+FX graph has eight passenger-controlled processors: Flanger, Reverb,
+Underwater, Phaser, Bitcrush, Bass Drive, Radio Cut, and High Cut. Chorus and
+Echo are removed. The
 manual Underwater control gives a continuous immersion/surfacing gesture; Bass
 Drive deliberately reshapes low-frequency weight; Radio Cut deliberately
-removes both frequency extremes. Full depth is dramatically recognizable, but
+removes both frequency extremes; High Cut cleanly removes the upper spectrum
+without borrowing Underwater's pressure, resonance, or texture. Full depth is dramatically recognizable, but
 bounded gain, feedback, tails, release, and a final compressor prevent clicks,
 runaway feedback, silence, or destructive level jumps. The retired Beat Repeat
 worklet must not return. Source admission must allow effects before either
@@ -1465,8 +1467,9 @@ no useful audible result. A passenger performance control cannot begin at an
 engineering-demo depth: its primary tap must land immediately on a musical,
 unmistakable state, while a separate continuous control remains available for
 fine adjustment. The selected FX Deck therefore maps each tap to an authored
-default—Flanger `0.78`, Reverb `0.72`, Echo `0.74`, Underwater `0.76`, Phaser
-`0.78`, Bitcrush `0.72`, Bass Drive `0.74`, and Radio Cut `0.76`—and uses a
+default—Flanger `0.78`, Reverb `0.72`, Underwater `0.76`, Phaser
+`0.78`, Bitcrush `0.72`, Bass Drive `0.74`, Radio Cut `0.76`, and High Cut
+`0.76`—and uses a
 sublinear response curve so the lower half of the slider still changes the wet
 graph materially. Those one-tap values all remain below a separate stunt zone:
 the final `82–100%` of every slider uses a smooth accelerated curve that reaches
@@ -1477,12 +1480,13 @@ same state.
 
 The effects remain conventional Web Audio building blocks rather than visual
 facsimiles. Flanger uses a modulated short delay; Reverb uses a normalized
-`ConvolverNode`, pre-delay, and bounded tone filtering; Echo uses a filtered
-delay feedback loop; Underwater uses two logarithmic low-pass stages plus a
+`ConvolverNode`, pre-delay, and bounded tone filtering; Underwater uses two logarithmic low-pass stages plus a
 pressure shelf and adds stunt-only saturated pressure texture; Phaser uses four
 modulated all-pass stages; Bitcrush uses a quantizing `WaveShaperNode`; Bass Drive combines a low shelf with bounded
 saturation; and Radio Cut combines high-pass, low-pass, presence, and bounded
-drive. The complete serial sum terminates in a dynamics compressor.
+drive. High Cut uses two clean low-pass stages after the other tone processors,
+preserves the low band, and reaches approximately `1.15 / 2.09 kHz` only at
+full stunt depth. The complete serial sum terminates in a dynamics compressor.
 
 New wet nodes must be initialized explicitly at zero before the graph starts.
 The platform default for a `GainNode` is unity; relying only on the first ramp
@@ -1501,6 +1505,16 @@ at full depth together remain finite and non-silent at `0.22828` RMS / `0.60941`
 peak. This proves that the final slider segment increases character without
 using clipping or an uncontrolled full-bus level jump as the effect. It does not
 replace target-Tesla listening.
+
+The owner later preferred a complementary clean high-frequency control over
+Echo. Dedicated real-browser sine renders verify the perceptual contract rather
+than merely the parameter endpoints: `300 Hz` changes by only `+0.30 dB` at
+full depth, while `8 kHz` falls by `−12.94 dB` at the authored `0.76` tap and
+`−59.68 dB` at `100%`. A fresh deterministic wide-band render keeps the current
+eight-effect hostile sum finite and non-silent at `0.25913` RMS / `0.91672`
+peak. Bass Drive, Radio Cut, and High Cut are contiguous in the performance
+surface and share one visual family marker; that grouping does not merge their
+state or processing paths.
 
 Sources: [Web Audio API 1.1](https://www.w3.org/TR/webaudio-1.1/),
 [MDN `BiquadFilterNode.type`](https://developer.mozilla.org/en-US/docs/Web/API/BiquadFilterNode/type),
