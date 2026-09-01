@@ -2413,7 +2413,7 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
   transform: rotate(180deg);
 }
 .atlas-field.is-panel-collapsed .atlas-panel-toggle { right: 0; }
-.atlas-panel section { box-sizing: border-box; padding: 11px 14px; }
+.atlas-panel section { box-sizing: border-box; padding: 10px 14px; }
 .atlas-panel small { color: color-mix(in srgb, var(--atlas-accent) 72%, white); font-size: 9px; font-weight: var(--font-weight-label); line-height: 1.2; letter-spacing: .1em; }
 .atlas-live-motion { border-bottom: 1px solid rgba(238, 234, 224, .16); }
 .atlas-panel-section-heading { display: flex; align-items: center; justify-content: space-between; }
