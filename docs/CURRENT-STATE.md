@@ -20,9 +20,15 @@ dated study documents.
   `logo/`; the current app packages and advertises the browser icons. The mark
   fills its 512 px canvas to a 15–18 px optical edge. The selected mark now sits
   beside the textual wordmark in the compact Signal Gate launch surface.
-- The source checkout's Flux catalog contains six visual environments:
+- The source checkout's Flux catalogue contains seven driver-facing Visual
+  choices: six rendered environments,
   **APERTURE 01**, **VERTIGO 02**, **MERIDIAN 03**, **ATLAS 04**, **DRIVEY 05**,
-  and the human-approved and canonically published **PRTCL 06**. Aperture
+  and the human-approved and canonically published **PRTCL 06**, plus the
+  separate **DISCOVER 07** Passenger Index destination. The initial Instrument
+  Deck presents them as `3–3–1`, and the running Visual library exposes the same
+  seventh action. Discover never enters the renderer registry: launch uses
+  Aperture behind the passenger surface and closing it returns to a real visual.
+  Aperture
   remains the accepted fresh-session and invalid-preference fallback. The
   rejected PRIMORDIAL field is absent from the current runtime; stored
   `primordial` preferences migrate to Aperture.
@@ -123,6 +129,10 @@ dated study documents.
   destination directions and back to ATLAS. Exact local `773 × 601` Browser QA
   proves 15 English results with `+10 MORE`, Italian endpoint/content switching,
   search, reader updates and the joined Product Design comparison.
+  Checkpoint `e268169` makes it reachable as `DISCOVER 07` from both the initial
+  Instrument Deck and the running Visual library while preserving the six-entry
+  renderer and preference boundary; canonical publication of that reachability
+  correction is pending.
 - WAKE is rejected after repeated live review: its ribbons read as disordered
   rain rather than a convincing authored 3D road field. Its renderer, fallback,
   tests, catalog entry and current QA captures have been removed. The historical
@@ -532,6 +542,11 @@ dated study documents.
   Exact live `773 × 601` QA measures both panes at `494/494 px` inside a
   `601/601 px` drawer, retains 15 genres plus six Jamendo tracks and reports no
   warning/error. Target-Tesla `R7-08` / `R7-09` acceptance remains open.
+- Product checkpoint `e268169` adds DISCOVER 07 to both Visual entry points and
+  turns the launch grid into the intended `3–3–1` composition. START opens the
+  Passenger Index over Aperture; the running picker labels Discover as an OPEN
+  destination and does not replace or persist the active renderer. The complete
+  `535/535` suite passes. Canonical and exact-viewport acceptance remain open.
 - Product checkpoint `5c498ac` adds the selected DISCOVER Passenger Index and
   Music Navigator Rail. Build `20260901-0933` passes the complete `533/533`
   suite, 148-module App / 71-module LAB / Sites build, protected publication,

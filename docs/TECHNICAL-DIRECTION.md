@@ -400,6 +400,10 @@ local storage, diagnostics or the explicit diagnostic email.
 
 DISCOVER reuses the same ephemeral position boundary outside permanent ATLAS
 chrome. The selected split surface owns a left index and always-open reader.
+It enters the shared Visual catalogue as destination `07`, not as a renderer:
+the launch grid therefore contains seven choices in `3–3–1`, starts the normal
+Aperture runtime behind the passenger surface, and the running Visual library
+can reopen it without replacing or persisting the active field.
 The browser's first supported language selects the Wikipedia host automatically;
 an explicit selector can choose among 14 supported languages without storing a
 preference. One bounded continuation loop performs at most four requests,

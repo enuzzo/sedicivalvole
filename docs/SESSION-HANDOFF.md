@@ -49,6 +49,14 @@ PLUMB and every other retired identifier resolve to it. The fixed
 visual/music energy ceiling is `130 km/h`; Aperture must already read as a
 tunnel near `40 km/h`.
 
+The driver-facing Visual catalogue adds **DISCOVER 07** after those six
+renderers. It is a destination, not a render environment: the launch selector
+uses a `3–3–1` grid and opens the Passenger Index over Aperture, while the
+running Visual library opens the same surface without changing the active
+environment. Closing Discover returns to the real visual and normal focus
+recovery. This placement is implemented in `e268169`; canonical publication is
+the next gate.
+
 ## Flux music
 
 The live engine is `prototype/drive-lab/src/score/` and the browser entry is
