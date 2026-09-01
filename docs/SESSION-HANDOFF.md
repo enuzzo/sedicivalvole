@@ -40,7 +40,7 @@ The registry is `prototype/drive-lab/src/flux-environments.js`.
 | APERTURE 01 | original WebGL2 plus Canvas2D fallback | rigid square wall recedes intact and disappears at the existing tunnel terminus by `40 km/h` |
 | VERTIGO 02 | vendored Interstate 7 | upstream tree stays byte-identical; the external bridge drives speed/FOV and existing colour channels |
 | MERIDIAN 03 | original WebGL2 plus Canvas2D fallback | selected-reference corridor of sparse oblique blades and longitudinal planes; bounded vertical field, `50–124°` full-range FOV, stronger UNDERWATER compression and one continuous visual surfacing response |
-| ATLAS 04 | lazy MapLibre/OpenFreeMap WebGL | ephemeral GPS or explicit Milan demo drives 3D city tiles, a bounded complete-view route, one pulsing position point and a Navigator Plaque; Live Navigator separates GPS altitude from Open-Meteo/Copernicus terrain elevation, cycles `15 MIN / 1 H / SESSION` histories with average/moving-average/maximum speed, and retains locality/road, compact Wikipedia reading and a `42 × 116 px` `HIDE INFO / SHOW INFO` handle |
+| ATLAS 04 | lazy MapLibre/OpenFreeMap WebGL plus one Canvas2D dashboard | ephemeral GPS or explicit Milan demo drives 3D city tiles, a bounded complete-view route, one pulsing position point and a Navigator Plaque; the owner-selected Drive Lab cycles `15 MIN / 1 H / SESSION` across Speed/Distance/Moving/Average, Accel/Braking, five speed bands, continuous Heading history, Moving/Stopped and full-width Open-Meteo/Copernicus Elevation; an icon-only `36 × 30 px` midpoint tab collapses it and ATLAS contains no Discover/Wikipedia surface |
 | DRIVEY 05 | byte-identical Rezmason runtime plus project bridge | road following, lane-centred zero hold, opposing-only traffic, three cameras, and normal/wire modes |
 | PRTCL 06 | original WebGL2 particle renderer | Fractal Frequency, Murmuration, and Axiom with speed-owned form/point scale, depth, and travel |
 All six visuals use ten curated palettes. Vertigo is recoloured without editing
@@ -255,13 +255,14 @@ pre/postflight plus canonical HTML/JS/CSS byte identity. Exact live `773 × 601`
 QA repeats all four taps, removal from the Music drawer, source switching,
 state persistence, reset, zero overflow, and zero warning/error. Tesla
 listening remains required as `R4-04` and the expanded `R7-06`.
-Milestone row 9 is also office-complete and live:
+Milestone row 9 has a new office-complete Drive Lab checkpoint `6ac4259`:
 its selected Navigator Plaque combines a filled continuously rotating arrow,
 English cardinal, exact degrees and a rendered-tile road name without reverse
-geocoding; its selected Live Navigator adds the compact journey/place panel,
-terrain/history extension and quarter-height collapse action. Run
-`R9-01`–`R9-05` for target-vehicle
-acceptance.
+geocoding. The owner-selected composite dashboard adds the four-value trip line,
+four central motion charts and full-width Elevation, all sharing `15 MIN / 1 H /
+SESSION`; the icon-only `36 × 30 px` midpoint tab collapses it. ATLAS contains
+no Discover/Wikipedia duplication. Canonical publication is pending; then run
+`R9-01`–`R9-05` for target-vehicle acceptance.
 
 The published corrections provide complete ATLAS-view route retention with origin-preserving bounded
 compaction, one interpolated pulsing point/ripple, two-line colour-coded GPS,
@@ -337,21 +338,13 @@ scroll, loads the complete localized Wikipedia article in a scriptless reader,
 and removes the superseded reciprocal ATLAS action. Canonical build
 `20260901-1524` carries `0d50a88` and passes `541/541`, protected publication,
 HTML/JS/CSS byte identity and exact live `773 × 601` QA. Only
-`R10-00A`–`R10-05` Tesla acceptance remains open. ATLAS is now directed as an independent data-first Drive Lab: do not add
-DISCOVER or duplicate its place cards. Wait for the owner's choice among the
-three supplied Drive Lab directions before replacing the published Live
-Navigator. Owner-selected Live Navigator
-checkpoint `3ce5c98` and terrain/history extension `7debfe3` complete row-9
-office implementation. Canonical build `20260901-1438` passes `539/539`,
-App/LAB/Sites build, protected publication, read-only pre/postflight, 29/29
-Illobo hashes, five-asset byte identity and exact live open/collapsed/reopened
-QA. Real Open-Meteo CORS returns Copernicus GLO-90 ground elevation, the
-automated range cycle returns to `15 MIN`, and Wikipedia place/summary, two
-nearby rows and QR remain visible at exact `465/465 px`. Only target-Tesla
-`R9-01`–`R9-05` acceptance remains open.
-Row 10 office/canonical work is complete. The next owner-gated task is the
-row-9 ATLAS Drive Lab direction choice; row 11 Original Gradient Field follows
-after that separate decision.
+`R10-00A`–`R10-05` Tesla acceptance remains open. ATLAS is an independent
+data-first Drive Lab: do not add DISCOVER or duplicate its place cards. The
+owner selected the composite of all six preferred telemetry modules; checkpoint
+`6ac4259` implements it and exact local `773 × 601` QA passes. Canonical
+publication remains before target-Tesla `R9-01`–`R9-05` acceptance. Row 10
+office/canonical work is complete; row 11 Original Gradient Field follows after
+the ATLAS publication checkpoint.
 
 ## Verification
 

@@ -1,5 +1,35 @@
 # Drive Lab Design QA — fixed road ceiling and refined Vertigo
 
+## ATLAS Drive Lab composite — 2026-09-01
+
+- selected Product Design direction: owner-approved composite of the six
+  strongest modules from the three reviewed directions;
+- fidelity contract: keep one first-line summary with Speed, Distance, Moving
+  time and Average speed; place Accel/Braking balance, Speed-band distribution,
+  Heading history and Moving/Stopped in a two-by-two field; reserve the complete
+  bottom width for Elevation;
+- separation contract: ATLAS is journey telemetry, not place discovery. The
+  previous Wikipedia, nearby-place and QR surfaces are removed; DISCOVER stays
+  independent and neither feature links to the other;
+- exact local evidence: the clean Milan demo at `773 × 601` shows the complete
+  `300 px` panel without scrolling or footer/header collision. The four
+  microcharts and full-width elevation remain simultaneously visible, while
+  collapsing expands the map from a `300 px` inset to the full `773 px` field;
+- truthful-data evidence: no-motion balance reads `0% / 0%`, heading crosses
+  north through continuous angle unwrapping, speed distribution uses five
+  fixed labelled bands, and weighted all-session rollups preserve motion,
+  direction, distribution and terrain statistics;
+- interaction and accessibility: one tap cycles `15 MIN → 1 H → SESSION`; the
+  chart canvas exposes a complete text alternative; the persistent midpoint
+  handle is an icon-only `36 × 30 px` rectangle with an accessible action name;
+- implementation economy: the five charts share one density-capped Canvas2D
+  surface rather than five independent renderers, while React owns the visible
+  summary values and range control;
+- remaining boundary: real-GPS motion, cabin-distance legibility, touch comfort,
+  terrain changes and sustained frame/thermal behavior remain Tesla tests.
+
+final result: passed
+
 ## DISCOVER complete reader and driving-distance typography — 2026-09-01
 
 - selected source: the owner's annotated canonical `1114 × 905` Discover

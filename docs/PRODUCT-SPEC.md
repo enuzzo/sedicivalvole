@@ -104,19 +104,21 @@ so renewed acceleration visibly reopens and clears the field without snapping.
 Conventional buildings, stacked towers,
 balconies, cheap wireframe grids and excessive particles are excluded.
 
-`ATLAS 04` is the passenger-oriented bird's-eye city environment. It presents a
-palette-driven 3D OpenFreeMap field, a concise selected-page Wikipedia abstract
-with a free thumbnail when available, five local reading choices and a QR for
-the selected page. The map runtime is loaded only when ATLAS is selected.
-Position is ephemeral, never enters the
-diagnostic report or persistence, and third-party map/nearby requests are
-disclosed in the interface and privacy documentation. The field centers on each
-trusted fix and follows its reported heading; when heading is absent, movement
-between successive fixes supplies the bearing while near-standstill jitter keeps
-the last reliable direction. Camera pull-back is bounded so the `130 km/h` view
-retains an oblique pitch and materially extruded buildings. At `773 × 601`, the
-passenger panel reserves `246 px`, uses `12 px` reading text and presents an
-`86 px` QR generated from a `192 px` source.
+`ATLAS 04` is the passenger-oriented bird's-eye city Drive Lab. It presents a
+palette-driven 3D OpenFreeMap field and a `300 px` journey dashboard loaded only
+when ATLAS is selected. The first line contains Speed, Distance, Moving time and
+Average speed. A two-by-two chart field contains Accel/Braking balance, five
+fixed speed bands, continuously unwrapped Heading history and Moving/Stopped;
+Open-Meteo/Copernicus GLO-90 Elevation spans the complete bottom width. One tap
+cycles the whole dashboard through `15 MIN`, `1 H`, and bounded weighted
+`SESSION` data. Position and chart samples are ephemeral and never enter the
+diagnostic report or persistence. ATLAS contains no place cards, Wikipedia, QR,
+or DISCOVER handoff; DISCOVER is an independent passenger destination. The
+field centers on each trusted fix and follows its reported heading; when
+heading is absent, movement between successive fixes supplies the bearing while
+near-standstill jitter keeps the last reliable direction. Camera pull-back is
+bounded so the `130 km/h` view retains an oblique pitch and materially extruded
+buildings.
 The manual camera accepts one-finger or primary-button mouse drag for bearing
 and pitch hard-clamped to `0–85°` without elastic overshoot, two-finger pinch or
 wheel/trackpad scroll for bounded extended zoom, and retains every manual
@@ -131,6 +133,9 @@ road name. Arrow rotation follows a continuously unwrapped heading so a north
 crossing takes the short visual path. The road is sampled from an invisible
 rendered `transportation_name` probe layer; no reverse-geocoding endpoint,
 coordinate persistence or diagnostic field is introduced.
+The Drive Lab collapses behind an icon-only `36 × 30 px` right-midpoint tab
+whose accessible label names the current action. Collapsing returns the full
+map width; reopening restores the same dashboard and selected history range.
 
 `DISCOVER` is the separate passenger reading companion. Its owner-selected
 split surface keeps a `272 px` image-led place index at left and one selected
@@ -294,7 +299,7 @@ acceptance in the vehicle.
 | Open packs | strategic goal | schema and licensing not frozen |
 | Offline audio core | implemented prototype | identical score DSP renders and analyses WAV references in Node |
 | Offline application cache | planned after capability test | browser persistence unknown |
-| ATLAS OpenFreeMap flight | implemented prototype | ephemeral GPS or explicit Milan demo; nearby Wikipedia and QR; bounded high-cadence position interpolation; complete-view route plus pulsing endpoint; selected Navigator Plaque with tile-local road name, English cardinal, degrees and continuously rotating filled arrow; no reverse geocoding; Tesla network, motion and legibility acceptance pending |
+| ATLAS OpenFreeMap Drive Lab | implemented prototype | ephemeral GPS or explicit Milan demo; bounded high-cadence position interpolation; complete-view route plus pulsing endpoint; selected Navigator Plaque; shared-range Speed/Distance/Moving/Average, Accel/Braking, speed bands, Heading, Moving/Stopped and full-width Elevation dashboard; no Discover/Wikipedia duplication or reverse geocoding; Tesla network, motion and legibility acceptance pending |
 | LIGHT/DARK/AUTO interface appearance | model foundation | independent versioned preference/reset, safe storage failure, browser-scheme priority, offline solar phase, twilight/interaction hold; visible control, DARK tokens and product application remain gated |
 | Network activity notice | model foundation | raw REPORT state separates browser hints from instrumented app activity/failure/recovery and active download/upload direction; quiet navbar presentation remains gated |
 | SOUNDTRACK fixed recordings | production prototype | server-side Jamendo catalogue and exact-ID no-store audio relays; fail-closed effect-compatible non-ND admission; three transient previous/current/next browser media elements; authored `1×` playback with no driving-derived selection or retiming; App/LAB playback and audio-clock attribution card; global footer FX for OPEN/UNDERWATER/BLOOM plus manual flanger, reverb, chorus, and bounded echo. Two horizontal top selectors switch Play the Road and Soundtrack without hiding the return route; Pace is a narrow vertical rail and all 15 genres use a readable `5 × 3` grid. The Lobo card states original artist authorship, Now Playing has a playback-bound activity mark, and Track Credit keeps its QR separate. Manual changes use the nominal `450 ms` equal-power model through normal skips and rapid retargeting, keep every genuinely audible credit visible, preserve a strict three-element bound, and expose a compact QR for the current public track page without exposing its stream URL. Target-vehicle tuning and physical listening remain pending; persistent/offline audio is prohibited. |

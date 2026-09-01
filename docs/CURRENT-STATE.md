@@ -70,14 +70,17 @@ dated study documents.
   stacked towers, high cloud slabs and scene-wide particles are absent.
 - ATLAS dynamically loads MapLibre only when selected, draws a minimal
   palette-owned OpenFreeMap vector style with 3D buildings, and pairs it with
-  the owner-selected Live Navigator. Its `272 px` passenger panel separates
-  LIVE MOTION—GPS speed and altitude, separate Open-Meteo/Copernicus GLO-90
-  ground elevation, bounded session distance/time, one-tap `15 MIN / 1 H /
-  SESSION` Canvas2D trends, and average/moving-average/maximum speed—from WHERE YOU ARE: locality,
-  rendered-tile road, selected localized Wikipedia context, two nearby choices
-  and a local article QR. Missing GPS or terrain values remain `— m`; journey
-  samples and coordinates remain session-only and absent from storage and diagnostics. All
-  ten theme profiles own explicit label, road, chart and route contrast.
+  the owner-selected Drive Lab. Its `300 px` dashboard keeps Speed, Distance,
+  Moving time and Average speed in one first line; Accel/Braking balance,
+  five-band speed distribution, continuous Heading history and Moving/Stopped
+  occupy a two-by-two field; Open-Meteo/Copernicus GLO-90 Elevation spans the
+  complete bottom width. One tap cycles every chart through `15 MIN / 1 H /
+  SESSION`. Missing GPS or terrain data remains explicit; weighted bounded
+  all-session rollups preserve exact motion, distribution, heading and terrain
+  aggregates. Journey samples and coordinates remain session-only and absent
+  from storage and diagnostics. ATLAS contains no Wikipedia, nearby-place, QR
+  or DISCOVER action; DISCOVER owns that separate passenger task. All ten theme
+  profiles own explicit label, road, chart and route contrast.
   Without reliable GPS, ATLAS keeps the normal control plane instead of a
   blocking waiting splash. The top navigation shows only `GPS` and metre
   accuracy: green means a connected fix at `4 m` or better, orange means a
@@ -98,14 +101,13 @@ dated study documents.
   trip and remains legible while zooming out; a `4096`-point ceiling compacts
   older detail instead of deleting the trip origin. One interpolated point at
   the route head pulses once per second with a restrained expanding ripple. The
-  passenger panel collapses behind a persistent `42 × 116 px` midpoint
-  `HIDE INFO / SHOW INFO` handle—roughly one quarter of the field rather than a
-  full-height rail—and keeps mandatory attribution in a tiny translucent strip
-  above the footer. Exact local and canonical build `20260901-1438`
-  `773 × 601` QA measure the panel at `465/465 px`, with no panel or document
-  overflow; real Open-Meteo CORS, the complete three-range cycle,
-  open/collapsed/reopened geometry, localized place content, two nearby rows and
-  the article QR pass.
+  Drive Lab collapses behind a persistent icon-only `36 × 30 px` midpoint tab
+  with an accessible action name, giving the complete map width back without a
+  full-height rail. Mandatory attribution remains a tiny translucent strip
+  above the footer. Exact local `773 × 601` QA at checkpoint `6ac4259` proves
+  the complete no-scroll dashboard, live Open-Meteo response, three-range
+  cycle, full-map collapse/reopen and no header/footer collision; canonical
+  publication and real-Tesla acceptance remain separate gates.
   A bounded session-only A3 foundation now retains eight monotonic timestamped
   fixes and can interpolate the same path at 30 or 60 FPS with a `100 ms` delay,
   no extrapolation, a `1500 ms` stale freeze and no animation across long gaps.
@@ -546,7 +548,7 @@ dated study documents.
   UNDERWATER repair `8c53e8d`, the selected global FX Deck `0993e92`,
   reversible Soundtrack paths `0660d71`, immediate Music switching `137ddeb`, transport
   hardening `57fed11`, Illobo provider identity `2c0f5f8`, ATLAS Navigator
-  Plaque `79d9c9b`, Live Navigator `3ce5c98`, MUTE/FX parity `c0a2f78`, Illobo/title
+  Plaque `79d9c9b`, Drive Lab `6ac4259`, MUTE/FX parity `c0a2f78`, Illobo/title
   implementation `05a754b`, cover correction `6218f98`, Featured-launch
   correction `1171157`, transition correction `dcb6801`, and Tesla Soundtrack
   relay/activation/effect correction `4b36069`, Featured random-start
@@ -556,9 +558,9 @@ dated study documents.
   JavaScript/ATLAS-CSS byte identity pass. Current exact live `773 × 601`
   Browser QA proves DISCOVER's `272 px` rail, five-row fold plus `+10 MORE`,
   continuous 15-result scroll, complete `486 × 523 px` Wikipedia reader and
-  absence of an ATLAS action. Prior live QA proves `465/465 px` ATLAS panel fit, full-map collapse/reopen,
-  live terrain elevation, three-range cycling, localized Wikipedia place
-  content, two nearby choices and QR. It also retains the
+  absence of an ATLAS action. Current local QA proves the complete `300 px`
+  ATLAS Drive Lab, full-map collapse/reopen, live terrain elevation and
+  three-range cycling without Wikipedia/place duplication. It also retains the
   complete Jamendo → Illobo → Jamendo round trip, persistent Jamendo covers,
   restored Jamendo browsing, and a rapid reversal that cannot be reclaimed by
   obsolete Illobo work.
@@ -625,8 +627,8 @@ dated study documents.
 - Diagnostic telemetry contains no coordinates and is sent only after the
   explicit `SEND DIAGNOSTIC` action. ATLAS/DISCOVER location is a separate
   ephemeral feature: the latest reliable point stays in session memory;
-  OpenFreeMap tile requests and a coarse localized Wikipedia nearby-search cell
-  occur only while the related surface is selected. ATLAS additionally sends an
+  OpenFreeMap tile requests occur only while ATLAS is selected, while DISCOVER
+  alone sends a coarse localized Wikipedia nearby-search cell. ATLAS additionally sends an
   approximately `0.001°` rounded cell to Open-Meteo for Copernicus terrain
   elevation; the response and histories remain session-only.
 
