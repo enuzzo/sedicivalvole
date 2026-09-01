@@ -39,7 +39,7 @@ of truth and is reported separately in the diagnostics.
   returns all eight to zero; close returns focus to the central experience and
   chrome reaches `controls-resting` after 4.6 seconds. Page overflow and
   canonical Browser warnings/errors are absent;
-- postflight caveat: two immediate read-only FTP identity retries returned a
+- postflight caveat: immediate read-only FTP identity retries returned a
   sanitized network failure after the successful upload. No contradictory
   remote state was observed: the independent HTTPS byte comparison and exact
   live interaction passed. Repeat the read-only FTP check at the next office
