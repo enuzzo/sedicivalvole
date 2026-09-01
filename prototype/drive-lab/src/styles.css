@@ -2223,7 +2223,15 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
 .discover-reader-source a img { width: 15px; height: 15px; filter: brightness(0) invert(1); }
 .discover-navigation-trigger[aria-expanded="true"] img { filter: brightness(0); }
 .discover-reader-body { position: relative; min-width: 0; min-height: 0; overflow: hidden; background: #0b0d0d; }
-.discover-article-frame { display: block; width: 100%; height: 100%; border: 0; background: #0b0d0d; }
+.discover-article-frame {
+  display: block;
+  width: 83.3334%;
+  height: 83.3334%;
+  border: 0;
+  background: #101418;
+  transform: scale(1.2);
+  transform-origin: 0 0;
+}
 .discover-article-fallback { display: grid; grid-template-columns: minmax(150px, 42%) minmax(0, 1fr); gap: 18px; min-height: 100%; align-content: start; padding: 16px; }
 .discover-article-fallback > img { width: 100%; max-height: 300px; border-radius: var(--ui-radius); object-fit: cover; filter: saturate(.84) contrast(1.06); }
 .discover-article-fallback > img.is-placeholder { padding: 36px; box-sizing: border-box; background: rgba(238, 234, 224, .04); filter: brightness(0) invert(1); opacity: .22; }

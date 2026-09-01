@@ -106,7 +106,6 @@ import {
   discoverPreferredLanguage,
   discoverVisibleResultCapacity,
   discoverViewPages,
-  discoverWikipediaArticleDocument,
   discoverWikipediaArticleUrl,
   discoverWikipediaContinuationUrl,
   discoverWikipediaUrl,
@@ -652,14 +651,12 @@ function DiscoverPanel({ position, onClose, onRetryLocation, onDemoLocation }) {
   const [pages, setPages] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
   const [visibleResultCapacity, setVisibleResultCapacity] = useState(DISCOVER_INITIAL_VISIBLE_RESULTS);
-  const [article, setArticle] = useState({ key: "", status: "idle", document: "", error: "" });
   const [reloadToken, setReloadToken] = useState(0);
   const [status, setStatus] = useState(position ? "loading" : "location");
   const [error, setError] = useState("");
   const [navigationOpen, setNavigationOpen] = useState(false);
   const [mapsQrUrl, setMapsQrUrl] = useState("");
   const resultsRef = useRef(null);
-  const articleCacheRef = useRef(new Map());
 
   const requestUrl = useMemo(() => discoverWikipediaUrl(position, {
     language,
@@ -670,7 +667,6 @@ function DiscoverPanel({ position, onClose, onRetryLocation, onDemoLocation }) {
   useEffect(() => {
     setPages([]);
     setSelectedId(null);
-    setArticle({ key: "", status: "idle", document: "", error: "" });
   }, [language]);
 
   useEffect(() => {
@@ -729,7 +725,6 @@ function DiscoverPanel({ position, onClose, onRetryLocation, onDemoLocation }) {
   const hiddenCount = remainingPages.length;
   const mapsUrl = discoverGoogleMapsUrl(selected);
   const languageLabel = DISCOVER_LANGUAGE_OPTIONS.find((item) => item.id === language)?.label ?? language;
-  const selectedArticleKey = selected ? `${language}:${selected.id}` : "";
   const articleUrl = useMemo(() => discoverWikipediaArticleUrl(selected?.title, { language }), [language, selected?.title]);
 
   useEffect(() => {
@@ -770,41 +765,6 @@ function DiscoverPanel({ position, onClose, onRetryLocation, onDemoLocation }) {
   useEffect(() => {
     resultsRef.current?.scrollTo({ top: 0 });
   }, [language, query, view]);
-
-  useEffect(() => {
-    if (!selected || !articleUrl) {
-      setArticle({ key: "", status: "idle", document: "", error: "" });
-      return undefined;
-    }
-    const key = `${language}:${selected.id}`;
-    const cached = articleCacheRef.current.get(key);
-    if (cached) {
-      setArticle(cached);
-      return undefined;
-    }
-    const controller = new AbortController();
-    setArticle({ key, status: "loading", document: "", error: "" });
-    fetch(articleUrl, { signal: controller.signal })
-      .then((response) => {
-        if (!response.ok) throw new Error(`Wikipedia returned ${response.status}`);
-        return response.json();
-      })
-      .then((payload) => {
-        const document = discoverWikipediaArticleDocument(payload, { language, title: selected.title });
-        if (!document) throw new Error("Wikipedia returned an empty article.");
-        const nextArticle = { key, status: "ready", document, error: "" };
-        articleCacheRef.current.set(key, nextArticle);
-        if (articleCacheRef.current.size > 3) {
-          articleCacheRef.current.delete(articleCacheRef.current.keys().next().value);
-        }
-        setArticle(nextArticle);
-      })
-      .catch((nextError) => {
-        if (nextError?.name === "AbortError") return;
-        setArticle({ key, status: "error", document: "", error: nextError?.message || "The complete article is unavailable." });
-      });
-    return () => controller.abort();
-  }, [articleUrl, language, selected?.id, selected?.title]);
 
   const renderResult = (page, index) => (
     <button
@@ -916,22 +876,21 @@ function DiscoverPanel({ position, onClose, onRetryLocation, onDemoLocation }) {
                 ) : null}
               </header>
               <div className="discover-reader-body">
-                {article.status === "ready" && article.key === selectedArticleKey ? (
+                {articleUrl ? (
                   <iframe
-                    key={article.key}
+                    key={articleUrl}
                     className="discover-article-frame"
                     title={`${selected.title} — complete Wikipedia article`}
-                    sandbox="allow-popups allow-popups-to-escape-sandbox"
-                    referrerPolicy="no-referrer"
-                    srcDoc={article.document}
+                    sandbox="allow-same-origin allow-scripts allow-popups allow-popups-to-escape-sandbox"
+                    referrerPolicy="origin"
+                    src={articleUrl}
                   />
                 ) : (
                   <div className="discover-article-fallback" aria-live="polite">
                     {selected.thumbnail ? <img src={selected.thumbnail} alt="" /> : <img className="is-placeholder" src="/third-party/tabler-icons/brand-wikipedia.svg" alt="" aria-hidden="true" />}
                     <div>
-                      <strong>{article.status === "error" && article.key === selectedArticleKey ? "Complete article unavailable" : "Loading complete article…"}</strong>
+                      <strong>Complete article unavailable</strong>
                       <p>{selected.summary || "Wikipedia has no short introduction for this place."}</p>
-                      {article.status === "error" && article.key === selectedArticleKey ? <small>{article.error}</small> : null}
                     </div>
                   </div>
                 )}

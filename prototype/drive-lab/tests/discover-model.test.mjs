@@ -9,7 +9,6 @@ import {
   discoverPreferredLanguage,
   discoverViewPages,
   discoverWikipediaContinuationUrl,
-  discoverWikipediaArticleDocument,
   discoverWikipediaArticleUrl,
   discoverWikipediaUrl,
   filterDiscoverPages,
@@ -52,25 +51,12 @@ test("Discover carries MediaWiki continuation tokens without accepting unsafe ke
   assert.equal(continued.searchParams.has("nested"), false);
 });
 
-test("Discover requests the complete localized article and isolates it in a readable document", () => {
+test("Discover opens the complete localized article in native Minerva dark mode", () => {
   const url = new URL(discoverWikipediaArticleUrl("Basilica di San Calimero", { language: "it" }));
   assert.equal(url.hostname, "it.wikipedia.org");
-  assert.equal(url.searchParams.get("action"), "parse");
-  assert.equal(url.searchParams.get("page"), "Basilica di San Calimero");
-  assert.equal(url.searchParams.get("prop"), "text|displaytitle");
-  assert.equal(url.searchParams.get("origin"), "*");
-  const document = discoverWikipediaArticleDocument({ parse: { text: "<h2>Storia</h2><p>Complete article.</p>" } }, {
-    language: "it",
-    title: "Basilica di San Calimero",
-  });
-  assert.match(document, /Content-Security-Policy/);
-  assert.match(document, /font: 500 16px\/1\.58/);
-  assert.match(document, /\.infobox/);
-  assert.match(document, /width: clamp\(150px, 35vw, 240px\)/);
-  assert.match(document, /max-width: 38%/);
-  assert.match(document, /max-height: 260px/);
-  assert.match(document, /@media \(max-width: 420px\)/);
-  assert.match(document, /<h2>Storia<\/h2><p>Complete article\.<\/p>/);
+  assert.equal(url.pathname, "/wiki/Basilica_di_San_Calimero");
+  assert.equal(url.searchParams.get("useskin"), "minerva");
+  assert.equal(url.searchParams.get("minervanightmode"), "1");
 });
 
 test("Discover derives the first-screen result count from real available height", () => {
@@ -128,8 +114,10 @@ test("Discover renders a self-contained split index with language and search con
   assert.doesNotMatch(appSource, /<span>LANGUAGE<\/span>/);
   assert.match(appSource, /\+\{hiddenCount\} MORE/);
   assert.match(appSource, /discoverVisibleResultCapacity/);
-  assert.match(appSource, /sandbox="allow-popups allow-popups-to-escape-sandbox"/);
-  assert.match(appSource, /setSelectedId\(null\);[\s\S]*?setArticle\([\s\S]*?\[language\]/);
+  assert.match(appSource, /sandbox="allow-same-origin allow-scripts allow-popups allow-popups-to-escape-sandbox"/);
+  assert.match(appSource, /src=\{articleUrl\}/);
+  assert.doesNotMatch(appSource, /srcDoc=/);
+  assert.match(appSource, /const articleUrl = useMemo\(\(\) => discoverWikipediaArticleUrl/);
   assert.match(appSource, /SEND TO NAVIGATION/);
   assert.match(appSource, /className="discover-navigation-handoff"/);
   assert.match(appSource, /QRCode\.toDataURL\(mapsUrl/);
@@ -139,6 +127,7 @@ test("Discover renders a self-contained split index with language and search con
   assert.doesNotMatch(appSource, /onOpenAtlas/);
   assert.match(styles, /\.discover-workspace \{ display: grid; grid-template-columns: 272px minmax\(0, 1fr\)/);
   assert.match(styles, /\.discover-reader \{ display: grid/);
+  assert.match(styles, /\.discover-article-frame \{[\s\S]*?transform: scale\(1\.2\)/);
   assert.match(styles, /\.discover-view-tabs button \{[\s\S]*?min-height: 38px/);
   assert.match(styles, /\.discover-results > button em \{[^\n]*font-size: 11\.5px/);
   assert.match(styles, /\.discover-navigation-card > div \{ display: grid; grid-template-columns: 176px minmax\(0, 1fr\)/);
