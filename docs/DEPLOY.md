@@ -8,6 +8,37 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Horizontal Music sources and selected Play the Road — 2026-09-01 10:47
+
+- build stamp: **`20260901-1041`**; deployed bundle/document checkpoint:
+  **`1dcb5bc`**; owner-selected product checkpoint: **`8450109`**;
+- behavior: **PASS in exact live Browser QA; Tesla acceptance pending**. The
+  running Music drawer restores Play the Road / Soundtrack as two horizontal
+  top selectors. Play the Road follows Generated image 35 with sampled JUNCTION
+  and NIGHTSHIFT side by side and responsive-generative FRACTURE full-width;
+- tests/build: **PASS**. Complete `533/533`, 148-module App, 71-module LAB and
+  Sites packaging pass. Joined Product Design QA at exact `773 × 601` has no
+  remaining P0/P1/P2 finding;
+- publication: **PASS**. Protected publication uploaded 179 files /
+  223,285,011 bytes, fully reverified all 29 Illobo masters, preserved the
+  existing root, retained two prior fingerprinted assets, and passed read-only
+  preflight/postflight with nine root entries and `remote_writes=NONE`;
+- canonical identity: **PASS**. Root HTML references
+  `assets/index-CIEbKjI1.js` and `assets/index-DGeeEo6V.css`. Local/live
+  SHA-256 is `842d58056e0823057ec80b58ea6d8e39f5f6d88b362198a2ad5c7ecd313f21c2`
+  for HTML, `6498337467ce91a864634807d75fe25282dc0d9194f5bb4329e2e3f65ad6ed59`
+  for JavaScript, and
+  `40e3bc46b2b9f4e0a9bcdd2b2d57df0e3e111eddb0bb4dff65f3c302a7d5df7b`
+  for CSS. Cache-busted HTML returns HTTP 200 with explicit no-store/no-cache,
+  `nosniff` and cache MISS; the bundle carries `1dcb5bc / 20260901-1041`;
+- exact live Browser QA: **PASS at `773 × 601`**. Play the Road and Soundtrack
+  each measure `494/494 px` client/scroll height within a `601/601 px` drawer;
+  all three selected Play the Road cards, 15 Jamendo genres, six Jamendo tracks
+  and empty warning/error logs pass;
+- remaining acceptance: execute `R7-08` and `R7-09` in the target Tesla. Office
+  evidence cannot accept physical touch, driving-distance legibility or vehicle
+  browser chrome.
+
 ## DISCOVER Passenger Index and Music Navigator Rail — 2026-09-01 09:45
 
 - build stamp: **`20260901-0933`**; deployed product checkpoint:

@@ -131,8 +131,11 @@ asserted.
   row, with individual artwork and concise descriptions; the
   29-track Illobo catalogue maps every recording to its own coherent cover.
   Build `20260901-0012` publishes the preceding one-tap/covers baseline;
-  checkpoint `5c498ac` adds the Navigator composition and is published in
-  canonical build `20260901-0933`. During final live transport QA, NEXT exposed
+  checkpoint `5c498ac` adds the Soundtrack composition and DISCOVER. Owner
+  checkpoint `8450109` supersedes its temporary Music rail with the horizontal
+  source selectors and Generated image 35 Play the Road layout; documentation
+  checkpoint `1dcb5bc` is live in canonical build `20260901-1041`. During final
+  live transport QA, NEXT exposed
   a Chromium suspension edge case: if the audio clock stopped,
   the nominal wall timer fired but settlement still sampled the frozen clock,
   leaving the UI on FADING. Checkpoint `7085941` makes the 450 ms wall deadline

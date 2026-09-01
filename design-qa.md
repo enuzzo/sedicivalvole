@@ -10,6 +10,8 @@ Date: 2026-09-01
   `/var/folders/48/00rryty17dzb6g7877yxqym00000gn/T/codex-clipboard-f1b70547-66b1-4448-98aa-9609f7effc23.png`.
 - Exact implementation screenshot:
   `/Users/enuzzo/Library/CloudStorage/Dropbox/Mitnick/sedicivalvole/_references/audits/music-horizontal-play-road-20260901/implementation-773x601.png`.
+- Exact canonical build `20260901-1041` screenshot:
+  `/Users/enuzzo/Library/CloudStorage/Dropbox/Mitnick/sedicivalvole/_references/audits/music-horizontal-play-road-20260901/live-20260901-1041-773x601.png`.
 - Joined normalized source/implementation comparison:
   `/Users/enuzzo/Library/CloudStorage/Dropbox/Mitnick/sedicivalvole/_references/audits/music-horizontal-play-road-20260901/joined-source-vs-implementation.png`.
 - Implementation CSS viewport and screenshot: `773 × 601` at density `1`.

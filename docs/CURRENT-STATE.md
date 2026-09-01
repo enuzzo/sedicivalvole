@@ -500,9 +500,10 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The canonical live product is version `0.0.0`, source commit `5c498ac`, build
-  `20260901-0933`, publishing DISCOVER and the Music Navigator Rail on top of
-  the one-tap library and suspended-clock Soundtrack transition recovery while
+- The canonical live product is version `0.0.0`, source commit `1dcb5bc`, build
+  `20260901-1041`, publishing the horizontal Music selectors and owner-selected
+  Generated image 35 Play the Road composition on top of DISCOVER, the one-tap
+  library and suspended-clock Soundtrack transition recovery while
   retaining the amplified MERIDIAN
   `50–124°` FOV, stronger
   UNDERWATER projection/motion/glow/fog contrast and complete `0.50 s`
@@ -522,6 +523,15 @@ dated study documents.
   complete Jamendo → Illobo → Jamendo round trip, persistent Jamendo covers,
   restored Jamendo browsing, and a rapid reversal that cannot be reclaimed by
   obsolete Illobo work.
+- Owner checkpoint `8450109` supersedes the temporary Music Navigator Rail with
+  two horizontal top selectors and the selected Play the Road hierarchy:
+  sampled JUNCTION/NIGHTSHIFT side by side and responsive-generative FRACTURE
+  full-width below. Canonical build `20260901-1041` passes `533/533`, the
+  148-module App / 71-module LAB / Sites build, protected publication,
+  read-only pre/postflight, 29/29 Illobo hashes and byte-identical HTML/JS/CSS.
+  Exact live `773 × 601` QA measures both panes at `494/494 px` inside a
+  `601/601 px` drawer, retains 15 genres plus six Jamendo tracks and reports no
+  warning/error. Target-Tesla `R7-08` / `R7-09` acceptance remains open.
 - Product checkpoint `5c498ac` adds the selected DISCOVER Passenger Index and
   Music Navigator Rail. Build `20260901-0933` passes the complete `533/533`
   suite, 148-module App / 71-module LAB / Sites build, protected publication,
