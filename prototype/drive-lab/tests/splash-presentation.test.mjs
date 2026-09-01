@@ -65,7 +65,7 @@ test("the selected Instrument Deck resolves Music and Visual before START", () =
   assert.match(selector, /<legend>VISUAL<\/legend>/);
   assert.match(app, /const BRAND_MARK_URL = `\/brand\/sedicivalvole-mark\.svg\?build=\$\{encodeURIComponent\(APP_BUILD\)\}`/);
   assert.match(selector, /className="launch-selector-mark"[\s\S]*?src=\{BRAND_MARK_URL\}[\s\S]*?alt=""[\s\S]*?aria-hidden="true"/);
-  assert.match(selector, /FLUX_ENVIRONMENTS\.map/);
+  assert.match(selector, /FLUX_VISUAL_CHOICES\.map/);
   assert.match(selector, /disabled=\{!ready\}/);
   assert.match(selector, /musicId && environmentId/);
   assert.match(selector, /choice\.launchDescription/);
@@ -89,7 +89,7 @@ test("the selected Instrument Deck resolves Music and Visual before START", () =
   assert.match(styles, /\.launch-music-grid,[\s\S]*?\.launch-visual-grid \{[\s\S]*?flex: 1 1 auto[\s\S]*?margin-top: 6px/);
   assert.match(styles, /\.launch-music-grid \{[^}]*grid-template-rows: repeat\(3, minmax\(0, 1fr\)\)[^}]*gap: 8px/);
   assert.match(styles, /\.launch-visual-grid \{[\s\S]*?grid-template-columns: repeat\(3, minmax\(0, 1fr\)\)[\s\S]*?grid-template-rows: repeat\(var\(--launch-visual-row-count, 2\), minmax\(0, 1fr\)\)[\s\S]*?gap: 8px/);
-  assert.match(selector, /--launch-visual-row-count[\s\S]*?Math\.max\(2, Math\.ceil\(FLUX_ENVIRONMENTS\.length \/ 3\)\)/);
+  assert.match(selector, /--launch-visual-row-count[\s\S]*?Math\.max\(2, Math\.ceil\(FLUX_VISUAL_CHOICES\.length \/ 3\)\)/);
   assert.match(styles, /\.launch-choice-button \{[\s\S]*?gap: 3px;[\s\S]*?padding: 10px/);
   assert.match(styles, /\.launch-choice-button::before \{[\s\S]*?top: 7px;[\s\S]*?left: 10px;[\s\S]*?height: 3px/);
   assert.doesNotMatch(styles, /\.launch-choice-button\[aria-pressed="true"\] strong \{[^}]*padding-top/);

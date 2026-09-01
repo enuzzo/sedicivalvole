@@ -55,7 +55,8 @@ import {
 import { FluxField } from "./flux-field.jsx";
 import {
   DEFAULT_FLUX_ENVIRONMENT_ID,
-  FLUX_ENVIRONMENTS,
+  DISCOVER_VISUAL_CHOICE,
+  FLUX_VISUAL_CHOICES,
   getFluxEnvironment,
   migrateLegacyEnvironmentPreference,
 } from "./flux-environments.js";
@@ -948,7 +949,7 @@ function MusicControl({ genreId, selection, onOpen, musicMode, soundtrackSnapsho
   );
 }
 
-function VisualPicker({ environmentId, onChange, onClose }) {
+function VisualPicker({ environmentId, onChange, onOpenDiscover, onClose }) {
   return (
     <DialogSurface
       className="diagnostic-drawer score-drawer environment-drawer"
@@ -960,22 +961,24 @@ function VisualPicker({ environmentId, onChange, onClose }) {
         <button data-dialog-initial-focus type="button" onClick={onClose} aria-label="Close visual library">CLOSE</button>
       </div>
       <ul className="score-list">
-        {FLUX_ENVIRONMENTS.map((entry) => {
-          const active = entry.id === environmentId;
+        {FLUX_VISUAL_CHOICES.map((entry) => {
+          const destination = entry.kind === "destination";
+          const active = !destination && entry.id === environmentId;
           return (
             <li key={entry.id}>
               <button
                 type="button"
-                className={`score-entry${active ? " is-active" : ""}`}
-                aria-pressed={active}
+                className={`score-entry${active ? " is-active" : ""}${destination ? " is-destination" : ""}`}
+                aria-pressed={destination ? undefined : active}
                 onClick={() => {
-                  onChange(entry.id);
+                  if (destination) onOpenDiscover();
+                  else onChange(entry.id);
                   onClose();
                 }}
               >
                 <span className="score-entry-number">{entry.number}</span>
                 <span className="score-entry-body"><strong>{displayLabel(entry)}</strong><span>{entry.rendererLabel}</span></span>
-                <span className="score-entry-state">{active ? "ACTIVE" : "SELECT"}</span>
+                <span className="score-entry-state">{destination ? "OPEN" : active ? "ACTIVE" : "SELECT"}</span>
               </button>
             </li>
           );
@@ -1614,9 +1617,9 @@ function LaunchSelector({
           <legend>VISUAL</legend>
           <div
             className="launch-visual-grid"
-            style={{ "--launch-visual-row-count": Math.max(2, Math.ceil(FLUX_ENVIRONMENTS.length / 3)) }}
+            style={{ "--launch-visual-row-count": Math.max(2, Math.ceil(FLUX_VISUAL_CHOICES.length / 3)) }}
           >
-            {FLUX_ENVIRONMENTS.map((choice) => (
+            {FLUX_VISUAL_CHOICES.map((choice) => (
               <button
                 key={choice.id}
                 className="launch-choice-button launch-visual-button"
@@ -2333,6 +2336,10 @@ export function App() {
   const runHarness = useCallback(async ({ musicId, selectedEnvironmentId }) => {
     const launchMuted = QA_MUTED || musicId === "mute";
     const launchVehicleEffects = true;
+    const launchDiscover = selectedEnvironmentId === DISCOVER_VISUAL_CHOICE.id;
+    const runtimeEnvironmentId = launchDiscover
+      ? DEFAULT_FLUX_ENVIRONMENT_ID
+      : selectedEnvironmentId;
     sessionMusicModeRef.current = musicId;
     setMusicMode(musicId === "soundtrack" ? "soundtrack" : "play-road");
     soundtrackRef.current?.setVehicleMaster(launchVehicleEffects);
@@ -2342,7 +2349,8 @@ export function App() {
     setSupportOpen(false);
     setMuted(launchMuted);
     setVehicleEffectsEnabled(launchVehicleEffects);
-    setEnvironmentId(selectedEnvironmentId);
+    setDiscoverOpen(false);
+    setEnvironmentId(runtimeEnvironmentId);
     sessionStartedAtRef.current = performance.now();
     diagnosticsActiveRef.current = true;
     diagnosticEventsRef.current = createDiagnosticEventLedger();
@@ -2361,7 +2369,8 @@ export function App() {
     longTaskTelemetryRef.current = createLongTaskTelemetry(longTaskTelemetryRef.current.supported);
     logDiagnosticEvent("harness.started", {
       musicMode: musicId,
-      environment: selectedEnvironmentId,
+      environment: runtimeEnvironmentId,
+      launchDestination: launchDiscover ? DISCOVER_VISUAL_CHOICE.id : null,
     });
     setPhase("testing");
     wakeControls();
@@ -2490,6 +2499,10 @@ export function App() {
     });
     window.setTimeout(() => {
       setPhase("running");
+      if (launchDiscover) {
+        setDiscoverOpen(true);
+        logDiagnosticEvent("discover.opened", { source: "launch-selector" });
+      }
       wakeControls();
       window.requestAnimationFrame(() => appRef.current?.focus({ preventScroll: true }));
     }, reducedMotion ? 180 : 620);
@@ -3794,6 +3807,10 @@ export function App() {
           onChange={(nextEnvironmentId) => {
             setEnvironmentId(nextEnvironmentId);
             logDiagnosticEvent("environment.changed", { environment: nextEnvironmentId });
+          }}
+          onOpenDiscover={() => {
+            setDiscoverOpen(true);
+            logDiagnosticEvent("discover.opened", { source: "visual-library" });
           }}
           onClose={() => setEnvironmentPickerOpen(false)}
         />

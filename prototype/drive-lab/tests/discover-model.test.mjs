@@ -99,3 +99,11 @@ test("Discover renders the selected split index, language/search controls and re
   assert.match(styles, /\.discover-workspace \{ display: grid; grid-template-columns: 246px minmax\(0, 1fr\)/);
   assert.match(styles, /\.discover-reader \{ display: grid/);
 });
+
+test("Discover is reachable from both Visual catalogue entry points", () => {
+  assert.match(appSource, /FLUX_VISUAL_CHOICES\.map/);
+  assert.match(appSource, /launchDiscover = selectedEnvironmentId === DISCOVER_VISUAL_CHOICE\.id/);
+  assert.match(appSource, /setDiscoverOpen\(true\);[\s\S]*?source: "launch-selector"/);
+  assert.match(appSource, /onOpenDiscover=\{\(\) => \{[\s\S]*?setDiscoverOpen\(true\);[\s\S]*?source: "visual-library"/);
+  assert.match(appSource, /destination \? "OPEN" : active \? "ACTIVE" : "SELECT"/);
+});

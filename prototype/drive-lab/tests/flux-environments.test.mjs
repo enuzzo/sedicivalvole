@@ -3,7 +3,9 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import {
   DEFAULT_FLUX_ENVIRONMENT_ID,
+  DISCOVER_VISUAL_CHOICE,
   FLUX_ENVIRONMENTS,
+  FLUX_VISUAL_CHOICES,
   getFluxEnvironment,
   migrateLegacyEnvironmentPreference,
   nextFluxEnvironmentId,
@@ -37,6 +39,17 @@ test("exposes the authored environments in a stable order", () => {
   assert.equal(getFluxEnvironment("plumb").id, "aperture");
   assert.equal(getFluxEnvironment("register").id, "aperture");
   assert.equal(getFluxEnvironment("latitudes").id, "aperture");
+});
+
+test("adds Discover as the seventh Visual destination without treating it as a renderer", () => {
+  assert.deepEqual(
+    FLUX_VISUAL_CHOICES.map(({ id }) => id),
+    ["aperture", "vertigo", "meridian", "atlas", "drivey", "prtcl", "discover"],
+  );
+  assert.equal(DISCOVER_VISUAL_CHOICE.number, "07");
+  assert.equal(DISCOVER_VISUAL_CHOICE.kind, "destination");
+  assert.equal(FLUX_ENVIRONMENTS.some(({ id }) => id === "discover"), false);
+  assert.equal(getFluxEnvironment("discover").id, DEFAULT_FLUX_ENVIRONMENT_ID);
 });
 
 test("keeps Aperture as the accepted fresh and invalid-preference default", () => {
