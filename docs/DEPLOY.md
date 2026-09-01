@@ -8,6 +8,32 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## Drive-note interaction and density closeout — 2026-09-01 22:37
+
+- build stamp: **`20260901-2232`**; product checkpoint: **`d45f8dd`**;
+  deployment checkpoint: **`7e990ee`**;
+- tests/build: **PASS**. Complete `486/486`, nine Sites packaging checks,
+  148-module App, 71-module LAB and protected LAB packaging pass;
+- protected publication: read-only preflight and postflight report
+  `remote_writes=NONE`; publication uploaded `181` files / `213,623,482` bytes,
+  fully reverified all `29` Illobo recordings, retained two fingerprinted assets
+  for cache overlap and preserved the dynamic root;
+- artwork migration: **PASS**. The gate admitted only 29 byte-identical retired
+  PNG masters with matching public WebP derivatives, then removed exactly those
+  29 remote PNG files before complete-tree verification. A representative WebP
+  returns HTTP 200 and the retired PNG returns HTTP 404;
+- canonical identity: cache-busted HTML is HTTP 200 with `no-store/no-cache`,
+  `nosniff` and cache `MISS`. HTML, main JavaScript and main CSS match the
+  candidate byte-for-byte at SHA-256
+  `84c3f584781258c0407c50b30ece287398aa3b9e931365a626c4c310b3442f11`,
+  `d25d7220297d573fe47155783a07566f7aaca49d68ec12235571eb06c712d248`
+  and `a47165ee0da96628ebf1bee5cb446343118b09561ff63d782dbde0c8587611fa`;
+- exact live `773 × 601` Browser QA: **PASS**. The launch reports build
+  `20260901-2232`; Buy Me a Coffee opens its complete visible dialog and its
+  action navigates in the same tab to the real owner destination;
+- remaining acceptance: run the stable `10A` / `10B` and existing physical
+  Tesla codes in `TESLA-TEST-QUEUE-2026-08-31.md`.
+
 ## Signal Gate support-dialog visibility repair — 2026-09-01 21:44
 
 - build stamp: **`20260901-2137`**; product checkpoint: **`a9aad78`**;

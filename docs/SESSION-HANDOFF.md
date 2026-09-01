@@ -388,10 +388,10 @@ ATLAS cold start/refinement, larger Tesla palette, persistent transport,
 supported Media Session previous/next, committed-track notice, direction-aware
 drawer dismissal and measured WebP Illobo artwork while retaining local HD
 masters. Row 4's current roster is present in build `20260901-1943`; the `10A`
-tasks are not yet canonical.
+and `10B` implementation is canonical in build `20260901-2232`.
 Their tests are `R1-02`, `R4-07`, `R7-10`–`R7-12`, `R8-03`, `R9-06`, and
-`R13-00`. Checkpoint `d45f8dd` now passes the complete office implementation;
-canonical publication and target-Tesla acceptance remain open. Promoted X10 `LIGHT / DARK / AUTO` is confirmed in milestone 13
+`R13-00`. Checkpoint `d45f8dd`, deployed by `7e990ee`, passes the complete office
+and canonical implementation; target-Tesla acceptance remains open. Promoted X10 `LIGHT / DARK / AUTO` is confirmed in milestone 13
 with `R13-01`–`R13-03`.
 
 Five later owner notes recorded at 17:52–18:07 form mandatory insert `10B`.
@@ -414,10 +414,11 @@ ATLAS and DISCOVER to open already hydrated after visual switches (`R9-07`). No
 coordinate may enter persistent storage, diagnostics or automatic telemetry.
 The Geolocation watch and bounded route/Drive Lab journey aggregate now live at
 App scope and survive ATLAS remounts without duplicating the watch. Safe stored
-preferences explicitly exclude coordinates. The complete office suite passes
-`485/485`; the production build and exact local `773 × 601` Browser flows pass.
-Row 11 Original Gradient Field remains behind canonical publication and the
-mandatory three-direction owner selection gate; target-Tesla tests remain open.
+preferences explicitly exclude coordinates. The complete suite passes
+`486/486`; the production build, read-only pre/postflight, byte-identical
+canonical assets and exact local/live `773 × 601` Browser flows pass. Row 11
+Original Gradient Field is now next and begins with the mandatory
+three-direction owner selection gate; target-Tesla tests remain open.
 
 ## Verification
 

@@ -37,14 +37,18 @@
   canvas dimensions instead of reading layout every frame. GPS journey state is
   bounded and session-only; preference tests reject coordinates and transient
   media data;
-- tests/build: complete suite `485/485`; 148-module App, 71-module LAB,
+- tests/build: complete suite `486/486`; 148-module App, 71-module LAB,
   protected LAB and Sites builds pass;
+- canonical result: build `20260901-2232` on deployment checkpoint `7e990ee`
+  passes read-only pre/postflight, cache-busted byte identity and exact live
+  `773 × 601` launch/support QA. The public WebP returns 200 while its verified
+  retired PNG returns 404;
 - remaining evidence: target-Tesla gesture, Media Session exposure, cabin
   typography/audio, WebP sharpness/network and real-GPS continuity remain the
   coded acceptance queue. Original Gradient still requires exactly three
   directions before implementation.
 
-final result: passed for office implementation; Tesla acceptance pending
+final result: passed for office and canonical implementation; Tesla acceptance pending
 
 ## DISCOVER responsive article imagery correction — 2026-09-01
 

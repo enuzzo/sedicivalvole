@@ -477,7 +477,7 @@ dated study documents.
   the same immediate pending identity inside the Soundtrack path chooser,
   makes Jamendo and Illobo complete reversible controls, and preserves
   Jamendo-owned cover previews across Illobo playback. Current build
-  `20260831-2225` separates the
+  `20260901-2232` separates the
   true Illobo catalogue from Jamendo, publishes and verifies all 29
   owner-authorized recordings, retains the final Illobo identity plus
   Tesla-facing playback title, exposes all 15 verified Jamendo genre routes,
@@ -548,9 +548,10 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The canonical live product is version `0.0.0`, latest product checkpoint
-  `a9aad78`, build `20260901-2137`, publishing the restored Signal Gate support
-  dialog together with the corrected owner-selected vertical ATLAS
+- The canonical live product is version `0.0.0`, product checkpoint `d45f8dd`,
+  deployment checkpoint `7e990ee`, build `20260901-2232`. It publishes the
+  complete `10A` / `10B` drive-note interaction and density closeout, including
+  the verified Buy Me a Coffee flow, together with the corrected owner-selected vertical ATLAS
   Drive Lab hierarchy together with the complete readable
   DISCOVER reader and its
   independent boundary from ATLAS on top of the owner-selected ATLAS Live
@@ -701,7 +702,8 @@ and checkpoint `d45f8dd` closes the remaining `10A` office implementation:
   `LIGHT / DARK / AUTO` appearance switch remains milestone 13, uses the
   measured free top-rail lane and never recolours the active visual palette.
 
-Mandatory insert `10A` has office PASS; canonical and Tesla gates remain open.
+Mandatory inserts `10A` and `10B` have office and canonical PASS in build
+`20260901-2232`; target-Tesla gates remain open.
 
 The owner's five additional 17:52–18:07 Tesla notes are mandatory insert `10B`
 and also have office implementation in checkpoint `d45f8dd`:
@@ -734,14 +736,13 @@ and also have office implementation in checkpoint `d45f8dd`:
   The watch, latest/eight-sample position buffer, bounded route and Drive Lab
   journey aggregation are App-scoped and survive ATLAS remounts.
 
-Row 11 Original Gradient Field is next after `10A` and `10B` reach canonical
-PASS and still begins with exactly three owner-selectable directions.
+Row 11 Original Gradient Field is next now that `10A` and `10B` have canonical
+PASS, and still begins with exactly three owner-selectable directions.
 
 ## Open work
 
-1. Publish the verified `10A`/`10B` office checkpoint, then execute live Tesla
-   `R4-07` and the new coded tests; replace each planned-test warning with its canonical build
-   stamp. Execute Tesla tests `R1-01`–`R1-03`, `R4-01`–`R4-07`,
+1. Execute live Tesla `R4-07` and the newly canonical `10A` / `10B` coded
+   tests on build `20260901-2232`. Execute Tesla tests `R1-01`–`R1-03`, `R4-01`–`R4-07`,
    `R5-01`–`R5-07`, `R7-01`–`R7-13`, `R8-01`–`R8-03`, `R9-01`–`R9-06`,
    `R10-00A`–`R10-06`, and later
    `R13-00`–`R13-03` from
