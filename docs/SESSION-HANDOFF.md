@@ -258,7 +258,9 @@ listening remains required as `R4-04` and the expanded `R7-06`.
 Milestone row 9 is also office-complete and live:
 its selected Navigator Plaque combines a filled continuously rotating arrow,
 English cardinal, exact degrees and a rendered-tile road name without reverse
-geocoding. Run `R9-01`–`R9-02` for target-vehicle acceptance.
+geocoding; its selected Live Navigator adds the compact journey/place panel and
+quarter-height collapse action. Run `R9-01`–`R9-04` for target-vehicle
+acceptance.
 
 The published corrections provide complete ATLAS-view route retention with origin-preserving bounded
 compaction, one interpolated pulsing point/ripple, two-line colour-coded GPS,
@@ -335,7 +337,11 @@ require `R10-01`–`R10-05` Tesla acceptance. Do not reopen the route/dot or Nav
 Plaque treatment as an ATLAS design exploration. Owner-selected Live Navigator
 checkpoint `3ce5c98` completes the new row-9 office implementation: exact local
 `773 × 601` fit, full-map collapse/reopen, `537/537`, App/LAB/Sites build and
-Product Design QA pass; canonical publication and `R9-03`–`R9-04` remain open.
+Product Design QA pass. Canonical build `20260901-1414` at `e24e753` passes
+protected publication, read-only pre/postflight, 29/29 Illobo hashes, five-asset
+byte identity and exact live open/collapsed/reopened QA. Wikipedia place,
+summary, two nearby rows and QR are visible; the final panel is `465/465 px`.
+Only target-Tesla `R9-01`–`R9-04` acceptance remains open.
 With row 10 published, the next owner-gated product task is row 11, Original
 Gradient Field.
 

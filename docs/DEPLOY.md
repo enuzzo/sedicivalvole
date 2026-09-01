@@ -8,6 +8,52 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## ATLAS Live Navigator — 2026-09-01 14:21
+
+- build stamp: **`20260901-1414`**; deployed product checkpoint:
+  **`e24e753`**; selected Live Navigator checkpoint: **`3ce5c98`**;
+- behavior: **PASS in exact live Browser QA; Tesla acceptance pending**. The
+  `272 px` panel combines honest live motion, two bounded charts, local place
+  reading, two nearby choices and exact Wikipedia QR. Its persistent
+  `HIDE INFO / SHOW INFO` action measures `42 × 116 px`, about one quarter of
+  the field, and gives the full width back to the map when collapsed;
+- tests/build: **PASS**. Complete `537/537`, 148-module App, 71-module LAB and
+  Sites packaging pass. The first canonical candidate exposed a one-pixel
+  font-dependent internal overflow; `e24e753` reduces only the section padding
+  and the final live panel now measures `465/465 px`;
+- publication: **PASS**. Protected publication uploaded 181 files /
+  223,295,701 bytes, fully reverified all 29 Illobo masters, preserved the
+  existing root, retained two prior fingerprinted assets, and passed read-only
+  preflight/postflight with nine root entries and `remote_writes=NONE`;
+- canonical identity: **PASS**. Root HTML references
+  `assets/index-C1DxTuxT.js` and `assets/index-I7CVj7FL.css`; the ATLAS chunks
+  are `assets/atlas-field-n8nZYzXA.js` and
+  `assets/atlas-field-DIYHhGHm.css`. Local/live SHA-256 is
+  `9266203c656b7672ce303156c78696308acb80524459a607dc706d3e2363ebbb`
+  for HTML, `19086828fee45d14be3869fea28f6f1a0bf2f8b71c28cae3a310db28cdb97934`
+  for main JavaScript,
+  `0e62786c05e5ccd82a07a10dac622eccbd8d55fdce4502b62bda3ee8dc960402`
+  for main CSS,
+  `70a2becdc35aa67d11b0d87146f8330ba4acee3029db36e47a63debdea849620`
+  for ATLAS JavaScript and
+  `715dbf736f7fdc9671a7ab3ec3b2fc5e3cdb252f3cc59758d52914bd2c9e57a3`
+  for ATLAS CSS. Cache-busted HTML returns HTTP 200 with explicit
+  no-store/no-cache and `nosniff`; the bundle carries
+  `e24e753 / 20260901-1414`;
+- exact live Browser QA: **PASS at `773 × 601`**. Open, collapsed and reopened
+  states keep document dimensions at `773 × 601`; panel client/scroll height is
+  `465/465 px`; the handle is `42 × 116 px`; map right inset changes
+  `272 px → 0 px → 272 px`. Wikipedia returns six localized pages and the UI
+  displays Porta Romana, its summary, two nearby choices and the article QR.
+  The application emits no warning/error; Chromium reports only its known
+  headless WebGL `ReadPixels` performance notice while screenshots are taken;
+- evidence: ignored current-build captures live at
+  `_references/audits/atlas-live-navigator-20260901/live-open-773x601.png` and
+  `live-collapsed-773x601.png`;
+- remaining acceptance: execute `R9-01`–`R9-04` in the target Tesla. Office
+  evidence cannot accept real GPS altitude, cabin-distance legibility, physical
+  touch, map gestures or sustained vehicle frame pacing.
+
 ## DISCOVER Visual-catalogue reachability — 2026-09-01 11:14
 
 - build stamp: **`20260901-1105`**; deployed bundle/document checkpoint:

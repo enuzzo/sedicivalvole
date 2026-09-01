@@ -100,8 +100,10 @@ dated study documents.
   passenger panel collapses behind a persistent `42 × 116 px` midpoint
   `HIDE INFO / SHOW INFO` handle—roughly one quarter of the field rather than a
   full-height rail—and keeps mandatory attribution in a tiny translucent strip
-  above the footer. Exact local `773 × 601` QA measures the panel at
-  `465/465 px`, with no panel or document overflow.
+  above the footer. Exact local and canonical build `20260901-1414`
+  `773 × 601` QA measure the panel at `465/465 px`, with no panel or document
+  overflow; open/collapsed/reopened geometry, localized place content, two
+  nearby rows and the article QR pass.
   A bounded session-only A3 foundation now retains eight monotonic timestamped
   fixes and can interpolate the same path at 30 or 60 FPS with a `100 ms` delay,
   no extrapolation, a `1500 ms` stale freeze and no animation across long gaps.
@@ -520,8 +522,9 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The canonical live product is version `0.0.0`, source commit `f72b15b`, build
-  `20260901-1105`, publishing DISCOVER 07 in both Visual entry points, the
+- The canonical live product is version `0.0.0`, source commit `e24e753`, build
+  `20260901-1414`, publishing the owner-selected ATLAS Live Navigator and its
+  canonical fit correction on top of DISCOVER 07 in both Visual entry points, the
   no-scroll seven-row running Visual library, the horizontal Music selectors and owner-selected
   Generated image 35 Play the Road composition on top of DISCOVER, the one-tap
   library and suspended-clock Soundtrack transition recovery while
@@ -533,14 +536,16 @@ dated study documents.
   UNDERWATER repair `8c53e8d`, the selected global FX Deck `0993e92`,
   reversible Soundtrack paths `0660d71`, immediate Music switching `137ddeb`, transport
   hardening `57fed11`, Illobo provider identity `2c0f5f8`, ATLAS Navigator
-  `79d9c9b`, MUTE/FX parity `c0a2f78`, Illobo/title
+  Plaque `79d9c9b`, Live Navigator `3ce5c98`, MUTE/FX parity `c0a2f78`, Illobo/title
   implementation `05a754b`, cover correction `6218f98`, Featured-launch
   correction `1171157`, transition correction `dcb6801`, and Tesla Soundtrack
   relay/activation/effect correction `4b36069`, Featured random-start
   `61471e8`, true Illobo catalogue `1a47e23`, and track-head guarantee
   `236f2c9`. Its guarded
-  publication, read-only pre/postflight and HTML/JavaScript/CSS/Tabler-SVG byte
-  identity pass. Current exact live `773 × 601` Browser QA also proves the
+  publication, read-only pre/postflight and HTML/main-JavaScript/main-CSS/ATLAS-
+  JavaScript/ATLAS-CSS byte identity pass. Current exact live `773 × 601`
+  Browser QA proves `465/465 px` ATLAS panel fit, full-map collapse/reopen,
+  localized Wikipedia place content, two nearby choices and QR. It also retains the
   complete Jamendo → Illobo → Jamendo round trip, persistent Jamendo covers,
   restored Jamendo browsing, and a rapid reversal that cannot be reclaimed by
   obsolete Illobo work.
@@ -593,7 +598,7 @@ dated study documents.
   the target-Tesla `R5-02` gate.
   The complete `533/533` suite plus 148-module App / 71-module LAB / Sites build
   pass, while physical-cabin checks remain `R4-01`–`R4-06`, `R5-01`–`R5-05`,
-  `R7-01`–`R7-09`, `R8-01`–`R8-02`, `R9-01`–`R9-02` and
+  `R7-01`–`R7-09`, `R8-01`–`R8-02`, `R9-01`–`R9-04` and
   `R10-01`–`R10-05`. Exact
   progressive evidence is in [`DEPLOY.md`](DEPLOY.md).
 - Diagnostic telemetry contains no coordinates and is sent only after the
@@ -605,7 +610,7 @@ dated study documents.
 ## Open work
 
 1. Execute Tesla tests `R4-01`–`R4-06`, `R5-01`–`R5-05`, `R7-01`–`R7-09`,
-   `R8-01`–`R8-02`, `R9-01`–`R9-02` and `R10-01`–`R10-05` from
+   `R8-01`–`R8-02`, `R9-01`–`R9-04` and `R10-00A`–`R10-05` from
    [`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md), including
    the live audio transport evidence and MERIDIAN
    `0 → brake/UNDERWATER → renewed acceleration → 130` motion that the available

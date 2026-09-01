@@ -1,5 +1,35 @@
 # Drive Lab Design QA — fixed road ceiling and refined Vertigo
 
+## ATLAS Live Navigator — 2026-09-01
+
+- selected Product Design direction: 03, preserving the map as the dominant
+  field and organizing one `272 px` passenger column into LIVE MOTION and
+  WHERE YOU ARE;
+- fidelity contract: retain the existing Navigator Plaque, route and pulsing
+  endpoint; add honest GPS speed/altitude, session distance/time, two bounded
+  direct-labelled charts, local road/place reading, two nearby choices and the
+  exact Wikipedia article QR;
+- owner correction: the persistent collapse action must be a broad readable
+  label but only about one quarter of the field height. The implementation is
+  `42 × 116 px` inside the `465 px` running field, never a full-height rail;
+- local and live implementation evidence: ignored
+  `_references/audits/atlas-live-navigator-20260901/` captures exact open and
+  collapsed `773 × 601` states. The final canonical build measures the panel at
+  `465/465 px`, keeps the document at `773 × 601`, changes the map inset
+  `272 px → 0 px → 272 px`, and restores the same panel after reopening;
+- content evidence: the localized Wikipedia request returns six pages; the
+  visible panel contains the current place, rendered road, selected image and
+  summary, two nearby choices and article QR. Missing GPS altitude stays `— m`
+  and its chart stays in `COLLECTING` rather than inventing data;
+- correction history: the first canonical candidate measured `466 px` of
+  internal content in a `465 px` field because served-font metrics differed by
+  one pixel. Checkpoint `e24e753` reduced only section padding; final local and
+  canonical measurements are both `465/465 px`;
+- remaining boundary: physical Tesla touch, real GPS/altitude, sustained map
+  performance and cabin-distance reading remain `R9-01`–`R9-04`.
+
+final result: passed
+
 ## Visual truth and implementation
 
 - Aperture source truth: ignored `_references/visual/qa/modular-aperture-2026-08-26/source-normalized-773x601.png` (`773 × 601`);
