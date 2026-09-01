@@ -40,7 +40,7 @@ The registry is `prototype/drive-lab/src/flux-environments.js`.
 | APERTURE 01 | original WebGL2 plus Canvas2D fallback | rigid square wall recedes intact and disappears at the existing tunnel terminus by `40 km/h` |
 | VERTIGO 02 | vendored Interstate 7 | upstream tree stays byte-identical; the external bridge drives speed/FOV and existing colour channels |
 | MERIDIAN 03 | original WebGL2 plus Canvas2D fallback | selected-reference corridor of sparse oblique blades and longitudinal planes; bounded vertical field, `50–124°` full-range FOV, stronger UNDERWATER compression and one continuous visual surfacing response |
-| ATLAS 04 | lazy MapLibre/OpenFreeMap WebGL | ephemeral GPS or explicit Milan demo drives 3D city tiles, a bounded complete-view route, one pulsing position point and a Navigator Plaque; the selected Live Navigator panel adds honest GPS speed/altitude, bounded session distance/time, two-minute trends, locality/road, compact Wikipedia reading and a `42 × 116 px` persistent `HIDE INFO / SHOW INFO` handle |
+| ATLAS 04 | lazy MapLibre/OpenFreeMap WebGL | ephemeral GPS or explicit Milan demo drives 3D city tiles, a bounded complete-view route, one pulsing position point and a Navigator Plaque; Live Navigator separates GPS altitude from Open-Meteo/Copernicus terrain elevation, cycles `15 MIN / 1 H / SESSION` histories with average/moving-average/maximum speed, and retains locality/road, compact Wikipedia reading and a `42 × 116 px` `HIDE INFO / SHOW INFO` handle |
 | DRIVEY 05 | byte-identical Rezmason runtime plus project bridge | road following, lane-centred zero hold, opposing-only traffic, three cameras, and normal/wire modes |
 | PRTCL 06 | original WebGL2 particle renderer | Fractal Frequency, Murmuration, and Axiom with speed-owned form/point scale, depth, and travel |
 All six visuals use ten curated palettes. Vertigo is recoloured without editing
@@ -258,8 +258,9 @@ listening remains required as `R4-04` and the expanded `R7-06`.
 Milestone row 9 is also office-complete and live:
 its selected Navigator Plaque combines a filled continuously rotating arrow,
 English cardinal, exact degrees and a rendered-tile road name without reverse
-geocoding; its selected Live Navigator adds the compact journey/place panel and
-quarter-height collapse action. Run `R9-01`–`R9-04` for target-vehicle
+geocoding; its selected Live Navigator adds the compact journey/place panel,
+terrain/history extension and quarter-height collapse action. Run
+`R9-01`–`R9-05` for target-vehicle
 acceptance.
 
 The published corrections provide complete ATLAS-view route retention with origin-preserving bounded
@@ -335,13 +336,14 @@ source/search controls, bounded 15-source disclosure, reader, distance/ETA and
 reciprocal map actions pass exact local and canonical `773 × 601` QA but still
 require `R10-01`–`R10-05` Tesla acceptance. Do not reopen the route/dot or Navigator
 Plaque treatment as an ATLAS design exploration. Owner-selected Live Navigator
-checkpoint `3ce5c98` completes the new row-9 office implementation: exact local
-`773 × 601` fit, full-map collapse/reopen, `537/537`, App/LAB/Sites build and
-Product Design QA pass. Canonical build `20260901-1414` at `e24e753` passes
-protected publication, read-only pre/postflight, 29/29 Illobo hashes, five-asset
-byte identity and exact live open/collapsed/reopened QA. Wikipedia place,
-summary, two nearby rows and QR are visible; the final panel is `465/465 px`.
-Only target-Tesla `R9-01`–`R9-04` acceptance remains open.
+checkpoint `3ce5c98` and terrain/history extension `7debfe3` complete row-9
+office implementation. Canonical build `20260901-1438` passes `539/539`,
+App/LAB/Sites build, protected publication, read-only pre/postflight, 29/29
+Illobo hashes, five-asset byte identity and exact live open/collapsed/reopened
+QA. Real Open-Meteo CORS returns Copernicus GLO-90 ground elevation, the
+automated range cycle returns to `15 MIN`, and Wikipedia place/summary, two
+nearby rows and QR remain visible at exact `465/465 px`. Only target-Tesla
+`R9-01`–`R9-05` acceptance remains open.
 With row 10 published, the next owner-gated product task is row 11, Original
 Gradient Field.
 

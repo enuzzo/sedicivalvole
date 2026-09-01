@@ -8,6 +8,34 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+## ATLAS terrain and journey histories — 2026-09-01 14:45
+
+- build stamp: **`20260901-1438`**; product/source checkpoint:
+  **`7debfe3`**;
+- complete verification: **PASS**, `539/539`; focused ATLAS `34/34`; production
+  App `148` modules, LAB `71` modules, protected LAB packaging and Sites build pass;
+- protected publication: preflight and postflight both report nine root entries
+  and `remote_writes=NONE`; publication uploaded `181` files / `223,303,932`
+  bytes, fully reverified `29/29` Illobo masters and retained two fingerprinted
+  assets for cache overlap;
+- canonical identity: cache-busted HTML is HTTP 200 with no-store/no-cache and
+  `nosniff`. HTML / main JS / main CSS / ATLAS JS / ATLAS CSS match the
+  candidate byte-for-byte at SHA-256 `6061466abe9866b08582bf1701dbd8c0d5e41f74e7158f4215cf1550b55e8123`,
+  `1a2b5dbd171184342a8ea3436b323230c65004fc5a6c8dc35024a44e5d184af3`,
+  `c43c47d670ce463f1758356478934bf23da5e7ce72ef9a420aa27b5683c8fa80`,
+  `eaa6428a63d5210317e333a8ba65cdf5b0af0cfc2b6fe927df12ae0e9dcd9857`,
+  and `715dbf736f7fdc9671a7ab3ec3b2fc5e3cdb252f3cc59758d52914bd2c9e57a3`;
+- exact live `773 × 601` Browser QA: **PASS**. Panel and document are exactly
+  `465/465 px` and `773/601 px`; the range control cycles
+  `15 MIN → 1 H → SESSION → 15 MIN`; the real Open-Meteo request returns HTTP
+  200 and displays a Copernicus ground value separately from GPS altitude.
+  Collapse/reopen restores `272 px → 0 px → 272 px`; Wikipedia place, two
+  nearby rows and QR remain visible. Headless Chromium emits only its known
+  GPU `ReadPixels` diagnostics, with no application/runtime error;
+- remaining acceptance: run target-Tesla `R9-01`–`R9-05`, especially live GPS
+  versus terrain separation, range-dependent statistics, long-session memory,
+  cabin legibility and map cadence.
+
 ## ATLAS Live Navigator — 2026-09-01 14:21
 
 - build stamp: **`20260901-1414`**; deployed product checkpoint:

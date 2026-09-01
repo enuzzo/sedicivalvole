@@ -71,11 +71,12 @@ dated study documents.
 - ATLAS dynamically loads MapLibre only when selected, draws a minimal
   palette-owned OpenFreeMap vector style with 3D buildings, and pairs it with
   the owner-selected Live Navigator. Its `272 px` passenger panel separates
-  LIVE MOTION—GPS speed, honest GPS altitude, bounded session distance/time and
-  direct-labelled two-minute Canvas2D trends—from WHERE YOU ARE: locality,
+  LIVE MOTION—GPS speed and altitude, separate Open-Meteo/Copernicus GLO-90
+  ground elevation, bounded session distance/time, one-tap `15 MIN / 1 H /
+  SESSION` Canvas2D trends, and average/moving-average/maximum speed—from WHERE YOU ARE: locality,
   rendered-tile road, selected localized Wikipedia context, two nearby choices
-  and a local article QR. Missing altitude remains `— m`; journey samples and
-  coordinates remain session-only and absent from storage and diagnostics. All
+  and a local article QR. Missing GPS or terrain values remain `— m`; journey
+  samples and coordinates remain session-only and absent from storage and diagnostics. All
   ten theme profiles own explicit label, road, chart and route contrast.
   Without reliable GPS, ATLAS keeps the normal control plane instead of a
   blocking waiting splash. The top navigation shows only `GPS` and metre
@@ -100,10 +101,11 @@ dated study documents.
   passenger panel collapses behind a persistent `42 × 116 px` midpoint
   `HIDE INFO / SHOW INFO` handle—roughly one quarter of the field rather than a
   full-height rail—and keeps mandatory attribution in a tiny translucent strip
-  above the footer. Exact local and canonical build `20260901-1414`
+  above the footer. Exact local and canonical build `20260901-1438`
   `773 × 601` QA measure the panel at `465/465 px`, with no panel or document
-  overflow; open/collapsed/reopened geometry, localized place content, two
-  nearby rows and the article QR pass.
+  overflow; real Open-Meteo CORS, the complete three-range cycle,
+  open/collapsed/reopened geometry, localized place content, two nearby rows and
+  the article QR pass.
   A bounded session-only A3 foundation now retains eight monotonic timestamped
   fixes and can interpolate the same path at 30 or 60 FPS with a `100 ms` delay,
   no extrapolation, a `1500 ms` stale freeze and no animation across long gaps.
@@ -522,8 +524,9 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The canonical live product is version `0.0.0`, source commit `e24e753`, build
-  `20260901-1414`, publishing the owner-selected ATLAS Live Navigator and its
+- The canonical live product is version `0.0.0`, source commit `7debfe3`, build
+  `20260901-1438`, publishing the owner-selected ATLAS Live Navigator, its
+  rounded-cell remote terrain elevation, three bounded history ranges and speed statistics, plus its
   canonical fit correction on top of DISCOVER 07 in both Visual entry points, the
   no-scroll seven-row running Visual library, the horizontal Music selectors and owner-selected
   Generated image 35 Play the Road composition on top of DISCOVER, the one-tap
@@ -545,7 +548,8 @@ dated study documents.
   publication, read-only pre/postflight and HTML/main-JavaScript/main-CSS/ATLAS-
   JavaScript/ATLAS-CSS byte identity pass. Current exact live `773 × 601`
   Browser QA proves `465/465 px` ATLAS panel fit, full-map collapse/reopen,
-  localized Wikipedia place content, two nearby choices and QR. It also retains the
+  live terrain elevation, three-range cycling, localized Wikipedia place
+  content, two nearby choices and QR. It also retains the
   complete Jamendo → Illobo → Jamendo round trip, persistent Jamendo covers,
   restored Jamendo browsing, and a rapid reversal that cannot be reclaimed by
   obsolete Illobo work.
@@ -596,21 +600,23 @@ dated study documents.
   renderer is live with no warning/error. The owner has accepted the corrected
   smoothness and visual quality; stronger real progressive surfacing remains
   the target-Tesla `R5-02` gate.
-  The complete `533/533` suite plus 148-module App / 71-module LAB / Sites build
+  The complete `539/539` suite plus 148-module App / 71-module LAB / Sites build
   pass, while physical-cabin checks remain `R4-01`–`R4-06`, `R5-01`–`R5-05`,
-  `R7-01`–`R7-09`, `R8-01`–`R8-02`, `R9-01`–`R9-04` and
+  `R7-01`–`R7-09`, `R8-01`–`R8-02`, `R9-01`–`R9-05` and
   `R10-01`–`R10-05`. Exact
   progressive evidence is in [`DEPLOY.md`](DEPLOY.md).
 - Diagnostic telemetry contains no coordinates and is sent only after the
   explicit `SEND DIAGNOSTIC` action. ATLAS/DISCOVER location is a separate
   ephemeral feature: the latest reliable point stays in session memory;
   OpenFreeMap tile requests and a coarse localized Wikipedia nearby-search cell
-  occur only while the related surface is selected.
+  occur only while the related surface is selected. ATLAS additionally sends an
+  approximately `0.001°` rounded cell to Open-Meteo for Copernicus terrain
+  elevation; the response and histories remain session-only.
 
 ## Open work
 
 1. Execute Tesla tests `R4-01`–`R4-06`, `R5-01`–`R5-05`, `R7-01`–`R7-09`,
-   `R8-01`–`R8-02`, `R9-01`–`R9-04` and `R10-00A`–`R10-05` from
+   `R8-01`–`R8-02`, `R9-01`–`R9-05` and `R10-00A`–`R10-05` from
    [`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md), including
    the live audio transport evidence and MERIDIAN
    `0 → brake/UNDERWATER → renewed acceleration → 130` motion that the available
