@@ -12,8 +12,9 @@ a new session can continue without reviving superseded prototypes.
 - semantic version: `VERSION` = `0.0.0`; no release exists;
 - canonical development URL: <https://sedicivalvole.app/>;
 - latest verified publication evidence: first entry in [`DEPLOY.md`](DEPLOY.md);
-- latest local product checkpoint: `fa122b4`; canonical publication remains the
-  preceding build until the protected deployment and live identity checks pass;
+- latest product checkpoint: `fa122b4`; published source checkpoint: `01d3deb`;
+  canonical build: `20260903-0015`, with protected publication, byte identity,
+  exact `773 × 601` catalogue/Gradient QA and an empty warning/error log passing;
 - repository code, comments, documentation, interface copy, and logs are English;
 - `.env` and local variants must never be read, printed, diffed, logged, or committed;
 - `_references/` is local and ignored; never copy its external material into Git.

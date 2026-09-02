@@ -17,6 +17,42 @@ URL import remain outside the public surface. Exact
 dependency and local run instructions are recorded in
 `LOCAL-SHADERGRADIENT-LAB.md`.
 
+## Visual catalogue, Gradient, and PRTCL refinement — 2026-09-03 00:24
+
+- build stamp: **`20260903-0015`**; implementation checkpoint:
+  **`fa122b4`**; published source checkpoint: **`01d3deb`**;
+- presentation: both launch and running Visual catalogues omit internal-choice
+  counts; the running drawer alone retains aligned `01–08` catalogue numbers;
+- Gradient: Japanese Mist, Acid Orchard, and Chromatic Silk use the active
+  product palette's exact accent and secondary channels plus one light-tinted
+  derivative. Continuous UNDERWATER braking slows, folds, and densifies the
+  field before exact restoration;
+- PRTCL: active TYPE selection is `FRACTAL ↔ AXIOM`; Murmuration is parked and
+  saved Murmuration state migrates to Fractal. The deepest Fractal brake state
+  is exactly 25% larger than its prior minimum;
+- tests/build: **PASS**. Focused checks pass `32/32`, the complete suite passes
+  `576/576`, and production builds process `235` App modules and `159`
+  protected-LAB modules;
+- protected publication: read-only preflight and postflight pass with final
+  `remote_writes=NONE`; publication uploaded `181` files / `215,859,453` bytes,
+  fully reverified all `29` Illobo recordings, retained two prior assets and
+  preserved the dynamic root;
+- canonical response: cache-busted root returns HTTP/2 200 with
+  `no-store, no-cache, must-revalidate, max-age=0`, `nosniff`, and cache `MISS`;
+- byte identity: local/live HTML SHA-256 is
+  `2d0342907be49f376bb9ae814cec81967a7ec0e4aa19d933e8208dda75d9258b`,
+  JavaScript `index-DnyzbKKg.js` is
+  `5a26ce44de44f2384d7d58ece082ba89dcad281318d502a30561c57339c51e10`,
+  and CSS `index-GKW8PE_S.css` is
+  `dbb8813ea8038e122ebdf5c26be956fba8ec94ea4ff8194a387c3f7ac5c09b78`;
+- rendered QA: **PASS** at exact canonical `773 × 601`. The launch deck has
+  eight visually uniform count-free cards, the running drawer preserves the
+  aligned `01–08` `2 × 4` catalogue, Gradient renders with the active shared
+  palette, the build reports `20260903-0015`, and warning/error logs are empty;
+- remaining acceptance: judge Gradient brake/release motion and the revised
+  Fractal full-brake minimum in the physical Tesla under `R11B-02` and
+  `R11B-03`.
+
 ## Discover global Wikipedia search — 2026-09-02 23:52
 
 - build stamp: **`20260902-2346`**; implementation checkpoint:
