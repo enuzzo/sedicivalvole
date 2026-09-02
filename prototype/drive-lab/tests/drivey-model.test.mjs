@@ -9,11 +9,13 @@ import {
   DEFAULT_DRIVEY_SETTINGS,
   DRIVEY_CAMERAS,
   DRIVEY_LOAD_TIMEOUT_MS,
+  DRIVEY_NOMINAL_LEVEL_SPEED_MPS,
   DRIVEY_OPPOSING_TRAFFIC_COUNT,
   DRIVEY_RENDER_MODES,
   DRIVEY_ROAD_RESPONSE,
   DRIVEY_UPSTREAM_COMMIT,
   DRIVEY_UPSTREAM_ENTRY,
+  driveyCruiseMultiplierForSpeed,
   driveyOpposingTrafficPlan,
   driveyRuntimeUrl,
   driveyMotionProfile,
@@ -22,8 +24,10 @@ import {
   nextDriveyRenderModeId,
   normalizeDriveySettings,
   stabilizeDriveyRoadFollower,
+  synchronizeDriveyRoadSpeed,
   themeToDriveyPalette,
 } from "../src/environments/drivey/drivey-model.js";
+import { speedToInterstate7Targets } from "../src/interstate-7-bridge.js";
 import { getFluxTheme } from "../src/flux-themes.js";
 import {
   advanceResponse,
@@ -88,6 +92,21 @@ test("road speed owns the original cruise while music only owns colour energy", 
   assert.equal(road.colourEnergy, 0);
   assert.equal(music.cruiseSpeed, rest.cruiseSpeed);
   assert.ok(music.colourEnergy > rest.colourEnergy);
+});
+
+test("DRIVEY reuses VERTIGO's quadratic road curve and cancels the upstream square-root speed gain", () => {
+  for (const speedKmh of [0, 5, 40, 90, 130]) {
+    const profile = driveyMotionProfile({ speedKmh, audioLevel: 0 });
+    const vertigo = speedToInterstate7Targets(speedKmh);
+    assert.ok(Math.abs(profile.roadResponse - vertigo.playbackRate) < 1e-12, `${speedKmh} km/h curve`);
+    assert.ok(Math.abs(profile.targetSpeedMps * 3.6 - speedKmh) < 1e-9, `${speedKmh} km/h target`);
+    assert.ok(Math.abs(
+      profile.cruiseSpeed
+      - driveyCruiseMultiplierForSpeed(profile.targetSpeedMps, DRIVEY_NOMINAL_LEVEL_SPEED_MPS)
+    ) < 1e-12, `${speedKmh} km/h cruise`);
+  }
+  const walking = driveyMotionProfile({ speedKmh: 5 });
+  assert.ok(walking.cruiseSpeed < 0.002, "walking pace must not select the old fast cruise range");
 });
 
 test("DRIVEY road response is bounded, smooth, reversible, and stable across frame rates", () => {
@@ -162,6 +181,23 @@ class Vector2Mock {
     return this;
   }
 
+  clone() {
+    return new Vector2Mock(this.x, this.y);
+  }
+
+  length() {
+    return Math.hypot(this.x, this.y);
+  }
+
+  normalize() {
+    const magnitude = this.length();
+    if (magnitude > 0) {
+      this.x /= magnitude;
+      this.y /= magnitude;
+    }
+    return this;
+  }
+
   set(x, y) {
     this.x = x;
     this.y = y;
@@ -180,6 +216,27 @@ class Vector2Mock {
     return this;
   }
 }
+
+test("the bridge removes the upstream launch overspeed from player and opposing traffic", () => {
+  const player = {
+    vel: new Vector2Mock(100, 0),
+    lastVel: new Vector2Mock(100, 0),
+    dir: () => new Vector2Mock(1, 0),
+  };
+  const opposing = {
+    vel: new Vector2Mock(-100, 0),
+    lastVel: new Vector2Mock(-100, 0),
+    dir: () => new Vector2Mock(-1, 0),
+  };
+  const targetSpeedMps = 5 / 3.6;
+  assert.equal(synchronizeDriveyRoadSpeed({ myCar: player, otherCars: [opposing] }, targetSpeedMps, true), true);
+  assert.ok(Math.abs(player.vel.length() - targetSpeedMps) < 1e-12);
+  assert.ok(Math.abs(opposing.vel.length() - targetSpeedMps) < 1e-12);
+  assert.equal(Math.sign(player.vel.x), 1);
+  assert.equal(Math.sign(opposing.vel.x), -1);
+  assert.deepEqual([player.lastVel.x, player.lastVel.y], [player.vel.x, player.vel.y]);
+  assert.deepEqual([opposing.lastVel.x, opposing.lastVel.y], [opposing.vel.x, opposing.vel.y]);
+});
 
 test("zero speed holds the player motionless at the lane centre and releases without a resume teleport", () => {
   const road = {

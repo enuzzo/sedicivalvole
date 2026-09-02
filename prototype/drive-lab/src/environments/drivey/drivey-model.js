@@ -39,10 +39,20 @@ export const DEFAULT_DRIVEY_SETTINGS = Object.freeze({
   renderMode: "normal",
 });
 export const DRIVEY_OPPOSING_TRAFFIC_COUNT = 16;
+// The bundled Industrial Zone uses Drivey's default `50 / 3` world-units per
+// second cruise value. Drivey's Car physics applies 10 units of drive force
+// and 0.1 linear drag, so its steady velocity is the square root of the cruise
+// input rather than the input itself. The quadratic road curve below is the
+// same compensation used by VERTIGO: after Drivey's native physics, the car's
+// world velocity once again matches the measured GPS speed.
+export const DRIVEY_NOMINAL_LEVEL_SPEED_MPS = 50 / 3;
+const DRIVEY_DRIVE_FORCE = 10;
+const DRIVEY_LINEAR_DRAG = 0.1;
+const DRIVEY_NPC_IDLE_SPEED_MPS = 0.0001;
 export const DRIVEY_ROAD_RESPONSE = createResponseDefinition({
   input: [0, ROAD_SPEED_CEILING_KMH],
   output: [0, 1],
-  exponent: 1.18,
+  exponent: 2,
   attackSeconds: 0.32,
   releaseSeconds: 0.24,
   risePerSecond: 2.5,
@@ -53,6 +63,41 @@ const DRIVEY_CAMERA_SEQUENCE = Object.freeze(Object.keys(DRIVEY_CAMERAS));
 const DRIVEY_RENDER_MODE_SEQUENCE = Object.freeze(Object.keys(DRIVEY_RENDER_MODES));
 
 const clamp = (value, minimum, maximum) => Math.min(maximum, Math.max(minimum, value));
+
+export function driveyCruiseMultiplierForSpeed(
+  targetSpeedMps,
+  levelSpeedMps = DRIVEY_NOMINAL_LEVEL_SPEED_MPS,
+) {
+  const speed = Math.max(0, Number(targetSpeedMps) || 0);
+  const levelSpeed = Number(levelSpeedMps);
+  if (!(levelSpeed > 0)) return 0;
+  return (speed * speed * DRIVEY_LINEAR_DRAG) / (DRIVEY_DRIVE_FORCE * levelSpeed);
+}
+
+function setCarSpeed(car, targetSpeedMps, settlePrevious) {
+  if (!car?.vel?.copy) return false;
+  const speed = Math.max(0, Number(targetSpeedMps) || 0);
+  const currentDirection = car.vel.length?.() > 0
+    ? car.vel.clone?.().normalize?.()
+    : car.dir?.();
+  if (!currentDirection?.multiplyScalar) return false;
+  car.vel.copy(currentDirection.multiplyScalar(speed));
+  if (settlePrevious) car.lastVel?.copy?.(car.vel);
+  return true;
+}
+
+/** Align the original Drivey vehicles with the smoothed GPS-derived velocity. */
+export function synchronizeDriveyRoadSpeed(drivey, targetSpeedMps, settlePrevious = false) {
+  const player = setCarSpeed(drivey?.myCar, targetSpeedMps, settlePrevious);
+  const trafficSpeed = Math.max(
+    DRIVEY_NPC_IDLE_SPEED_MPS,
+    Math.max(0, Number(targetSpeedMps) || 0),
+  );
+  for (const car of drivey?.otherCars ?? []) {
+    setCarSpeed(car, trafficSpeed, settlePrevious);
+  }
+  return player;
+}
 
 export function normalizeDriveySettings(value) {
   const camera = Object.hasOwn(DRIVEY_CAMERAS, value?.camera)
@@ -130,12 +175,17 @@ export function driveyMotionProfile({
   const underwater = hasMacroSnapshot ? audioMacroAmount(macroSnapshot, "underwater") : effect === "UNDERWATER" ? 1 : 0;
   const bloom = hasMacroSnapshot ? audioMacroAmount(macroSnapshot, "bloom") : effect === "BLOOM" ? 1 : 0;
   const effectSpeedScale = 1 - underwater * 0.28;
+  const targetSpeedMps = reducedMotion
+    ? 0
+    : Math.sqrt(mappedRoadResponse) * (ROAD_SPEED_CEILING_KMH / 3.6) * effectSpeedScale;
+  const cruiseSpeed = driveyCruiseMultiplierForSpeed(targetSpeedMps);
 
   return Object.freeze({
     normalizedSpeed,
     roadResponse: mappedRoadResponse,
-    cruiseSpeed: reducedMotion ? 0 : mappedRoadResponse * 4 * effectSpeedScale,
-    npcSpeedScale: reducedMotion ? 0 : mappedRoadResponse * effectSpeedScale,
+    targetSpeedMps,
+    cruiseSpeed,
+    npcSpeedScale: cruiseSpeed,
     fov: clamp(90 + normalizedSpeed * 8 + open * 8 - underwater * 6 + bloom * 4, 78, 112),
     colourEnergy: reducedMotion ? 0 : musicLevel * (0.68 + bloom * 0.32),
     lightGain: clamp(1 + bloom * 0.24 + open * 0.1 - underwater * 0.22, 0.7, 1.34),

@@ -5,11 +5,13 @@ import {
   createDriveyLoadDeadline,
   DEFAULT_DRIVEY_SETTINGS,
   DRIVEY_ROAD_RESPONSE,
+  driveyCruiseMultiplierForSpeed,
   driveyMotionProfile,
   driveyRuntimeUrl,
   holdDriveyPlayerAtRest,
   normalizeDriveySettings,
   stabilizeDriveyRoadFollower,
+  synchronizeDriveyRoadSpeed,
   themeToDriveyPalette,
 } from "./drivey-model.js";
 import {
@@ -131,8 +133,12 @@ function applyBridgeState(bridge, values, state) {
   installAutomaticRoadInput(bridge);
   stabilizeDriveyRoadFollower(drivey.myCar);
   drivey.screen.setCycleColors(false);
-  drivey.cruiseSpeed = profile.cruiseSpeed;
-  drivey.npcControlScheme.cruiseSpeedMultiplier = profile.npcSpeedScale;
+  const calibratedCruiseSpeed = driveyCruiseMultiplierForSpeed(
+    profile.targetSpeedMps,
+    drivey.level?.cruiseSpeed,
+  );
+  drivey.cruiseSpeed = calibratedCruiseSpeed;
+  drivey.npcControlScheme.cruiseSpeedMultiplier = calibratedCruiseSpeed;
   drivey.npcControlScheme.steer = 0;
   drivey.npcControlScheme.laneShift = 0;
   if (values.speed <= 0) holdDriveyPlayerAtRest(drivey);
@@ -144,6 +150,8 @@ function applyBridgeState(bridge, values, state) {
   if (state.trafficMode == null) {
     state.trafficMode = configureDriveyOpposingTraffic(drivey).mode;
   }
+  synchronizeDriveyRoadSpeed(drivey, profile.targetSpeedMps, !state.speedSynchronized);
+  state.speedSynchronized = true;
   if (state.renderMode !== settings.renderMode) {
     applyRenderMode(bridge, settings.renderMode);
     state.renderMode = settings.renderMode;
@@ -237,6 +245,7 @@ export function DriveyField({
       rendererLabel: null,
       palette: null,
       reducedMotion: null,
+      speedSynchronized: false,
       staticSignature: null,
     };
 
