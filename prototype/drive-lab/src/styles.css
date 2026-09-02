@@ -1965,8 +1965,8 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
 .soundtrack-artwork-placeholder { display: grid; place-items: center; color: var(--ink); background: var(--accent); font-weight: 700; }
 .soundtrack-now-playing > div:not(.soundtrack-transport) { display: grid; min-width: 0; gap: 3px; }
 .soundtrack-now-playing small { color: var(--accent); font-size: 9px; font-weight: var(--font-weight-label); letter-spacing: .1em; }
-.soundtrack-now-label { display: flex; align-items: center; gap: 5px; }
-.soundtrack-now-label img { width: 14px; height: 14px; filter: none; transform-origin: center bottom; opacity: .5; }
+.soundtrack-now-label { display: flex; align-items: center; gap: 5px; white-space: nowrap; }
+.soundtrack-now-label img { width: 14px; height: 14px; filter: brightness(0) invert(1); transform-origin: center bottom; opacity: .5; }
 .soundtrack-now-label.is-playing img { opacity: 1; animation: soundtrack-now-pulse .72s ease-in-out infinite alternate; }
 @keyframes soundtrack-now-pulse {
   from { transform: scaleY(.42); }

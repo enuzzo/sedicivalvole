@@ -396,6 +396,9 @@ test("the Tesla Music drawer uses whole-surface one-tap controls and a no-scroll
   assert.match(soundtrack, /Original music written and performed by Illobo\./);
   assert.doesNotMatch(soundtrack, /curated by Illobo/);
   assert.match(soundtrack, /soundtrack-now-label/);
+  assert.match(soundtrack, /third-party\/tabler-icons\/chart-bar\.svg/);
+  assert.match(styles, /\.soundtrack-now-label \{[^}]*white-space: nowrap/);
+  assert.match(styles, /\.soundtrack-now-label img \{[^}]*filter: brightness\(0\) invert\(1\)/);
   assert.match(styles, /@media \(min-width: 651px\) and \(max-height: 650px\)/);
   assert.match(styles, /\.music-drawer-workspace \{ grid-template-rows: 38px minmax\(0, 1fr\);/);
   assert.match(styles, /\.music-source-switch \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\); \}/);
