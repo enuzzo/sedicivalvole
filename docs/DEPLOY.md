@@ -17,6 +17,36 @@ URL import remain outside the public surface. Exact
 dependency and local run instructions are recorded in
 `LOCAL-SHADERGRADIENT-LAB.md`.
 
+## Mandatory 10C vehicle-note closeout — 2026-09-02 21:14
+
+- build stamp: **`20260902-2106`**; implementation checkpoint:
+  **`7378d3b`**; published source checkpoint: **`e1005f9`**;
+- scope: publishes mandatory insert `10C` while retaining, not repeating, the
+  Soundtrack context/transport correction from `1ef48be`;
+- tests/build: **PASS**. Focused checks pass `80/80`, the complete suite passes
+  `579/579`, and production builds process `235` App modules and `159`
+  protected-LAB modules;
+- protected publication: read-only preflight and postflight report
+  `remote_writes=NONE`; publication uploaded `181` files / `215,863,239` bytes,
+  fully reverified all `29` Illobo recordings, retained two prior assets and
+  preserved the dynamic root;
+- canonical response: bare and cache-busted roots return HTTP/2 200 with
+  `no-store, no-cache, must-revalidate, max-age=0` and `nosniff`;
+- byte identity: local/live HTML SHA-256 is
+  `6e0686e2b7c0abfdf86f1899844280c0157dd75cbe1a22ddad04985ddb4ec8ed`,
+  JavaScript `index-BNnllUHM.js` is
+  `cb659850c6f2648a28a36f25f4895b3c86c7167e1b59427f7a2e586cad486987`,
+  and CSS `index-CPN1DFu5.css` is
+  `7b404a480093d439092b2fe2f09bc336b55ff1d10c9a29beb1a6759b1cf21508`;
+- exact canonical `773 × 601` Browser QA: **PASS**. The splash keeps START
+  enabled while Soundtrack data is pending; APERTURE launches; the Soundtrack
+  navbar has non-overlapping `116 / 48 / 48 / 70 / 54 px` cells and speed-only
+  readout; idle transport is hidden/non-interactive; Discover measures `38 px`
+  high by a `246 px` rail; and the fresh runtime records no warning/error;
+- remaining acceptance: native Tesla Media Session/artwork, real weak/offline
+  transitions, phone-to-Tesla QR handoff, moving APERTURE seams and cabin
+  touch/readability remain physical gates under `R10C-01`–`R10C-08`.
+
 ## Soundtrack context and transport regression recovery — 2026-09-02 20:04
 
 - build stamp: **`20260902-1954`**; product checkpoint: **`1ef48be`**;

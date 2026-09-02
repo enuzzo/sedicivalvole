@@ -585,10 +585,11 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The canonical live product is version `0.0.0`, product checkpoint `1ef48be`,
-  build `20260902-1954`. It publishes the single three-variant GRADIENT 08
-  family, shared Soundtrack/adaptive AudioContext and bounded recoverable media
-  starts, together with the stronger PRTCL
+- The canonical live product is version `0.0.0`, implementation checkpoint
+  `7378d3b`, published source checkpoint `e1005f9`, build `20260902-2106`. It
+  publishes mandatory insert `10C` while retaining the single three-variant
+  GRADIENT 08 family, shared Soundtrack/adaptive AudioContext and bounded
+  recoverable media starts from `1ef48be`, together with the stronger PRTCL
   UNDERWATER/surfacing response, the truthful post-130 readout with a clamped
   audiovisual ceiling, the passenger safety disclosure, backdrop/swipe drawer
   dismissal and the `226 px` Tesla palette, together with the
@@ -794,9 +795,10 @@ and also have office implementation in checkpoint `d45f8dd`:
   journey aggregation are App-scoped and survive ATLAS remounts.
 
 Mandatory insert `10C` records the 2026-09-01 evening–09-02 vehicle notes.
-Local checkpoint `7378d3b` is implemented and verified but not canonical. It
-does not redo Soundtrack checkpoint `1ef48be`: it keeps that ten-second atomic
-transport boundary and fixes the surrounding launch/vehicle experience.
+Implementation checkpoint `7378d3b`, published source checkpoint `e1005f9`, is
+canonical as build `20260902-2106`. It does not redo Soundtrack checkpoint
+`1ef48be`: it keeps that ten-second atomic transport boundary and fixes the
+surrounding launch/vehicle experience.
 
 - Visual launch is independent from remote Soundtrack preparation. START is
   available after Music + Visual selection, explains offline/limited or pending
@@ -827,8 +829,9 @@ Focused checks pass `80/80`; the complete suite passes `579/579`; the
 235-module App / 159-module protected LAB / Sites production build passes.
 Exact local `773 × 601` QA covers constrained-network START, preference reload,
 non-overlapping Soundtrack navbar cells, chrome retraction, the measured
-Discover composition and corrected APERTURE seams. Canonical deployment and all
-physical `R10C-*` acceptance remain open.
+Discover composition and corrected APERTURE seams. Protected publication,
+local/live byte identity and exact canonical Browser QA pass. All physical
+Tesla/phone `R10C-*` acceptance remains open.
 
 Row 11's earlier Original Gradient Field is retired. Its replacement—one
 Gradient 08 family with Japanese Mist, Acid Orchard, and Chromatic Silk
@@ -857,10 +860,11 @@ authenticated target-Tesla rendering and control reach remain `R11A-01`.
 
 ## Open work
 
-1. Execute live Tesla `R4-07`–`R4-08`, the canonical `10A` / `10B` codes, and row 11
-   on build `20260902-1954`. Execute Tesla tests `R1-01`–`R1-03`, `R4-01`–`R4-08`,
+1. Execute live Tesla `R4-07`–`R4-08`, the canonical `10A` / `10B` / `10C`
+   codes, and row 11 on build `20260902-2106`. Execute Tesla tests
+   `R1-01`–`R1-03`, `R4-01`–`R4-08`,
    `R5-01`–`R5-07`, `R7-01`–`R7-14`, `R8-01`–`R8-03`, `R9-01`–`R9-07`,
-   `R10-00A`–`R10-06`, `R11-01`–`R11-06`, `R11A-01`, and later
+   `R10-00A`–`R10-06`, `R10C-01`–`R10C-08`, `R11-01`–`R11-06`, `R11A-01`, and later
    `R13-00`–`R13-03` from
    [`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md), including
    the live audio transport evidence and MERIDIAN

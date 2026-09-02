@@ -488,8 +488,10 @@ The local navbar geometry has non-overlapping `116 / 48 / 48 / 70 / 54 px`
 readout/network/GPS/Discover/Report cells; after idle the transport computes to
 hidden/non-interactive. Discover measures exactly `38 px` high and `246 px`
 wide, reload restores Soundtrack + Aperture, and fresh runtime inspection added
-no warning/error. Canonical publication and `R10C-01`–`R10C-08` target-device
-acceptance remain open.
+no warning/error. Published source checkpoint `e1005f9` is canonical as build
+`20260902-2106`; protected publication, local/live byte identity and exact live
+Browser QA pass. `R10C-01`–`R10C-08` target-Tesla and phone acceptance remain
+open.
 
 The owner then explicitly selected native **Minerva dark** for Discover, even
 with Wikipedia's accepted test parameter. Product checkpoint `cdccbd7` replaces
