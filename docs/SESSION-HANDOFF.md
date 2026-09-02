@@ -604,6 +604,15 @@ complete `496/496` unit group, all feature/Sites suites, production build and
 empty Browser warning/error logs pass. Canonical publication and physical-Tesla
 colour/touch acceptance remain open.
 
+The same checkpoint is now canonical as build `20260903-0118`, built from
+source/documentation commit `9df530d`. Protected publication, read-only
+postflight, and HTML/main-JavaScript/main-CSS/ATLAS-JavaScript/ATLAS-CSS byte
+identity pass. Exact live `773 × 601` QA proves immediate PALETTE/STANDARD
+switching, persistence after reload, a measured `12 px` collapsed-panel right
+edge, restored PALETTE state, and empty Browser warning/error logs. Physical
+Tesla colour, glare, legibility, and touch acceptance remains open under
+`R9A-01`.
+
 ## Verification
 
 ```bash

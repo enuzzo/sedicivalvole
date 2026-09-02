@@ -17,6 +17,45 @@ URL import remain outside the public surface. Exact
 dependency and local run instructions are recorded in
 `LOCAL-SHADERGRADIENT-LAB.md`.
 
+## ATLAS semantic map colours — 2026-09-03 01:30
+
+- build stamp: **`20260903-0118`**; implementation checkpoint:
+  **`febbba3`**; built source/documentation checkpoint: **`9df530d`**;
+- product behavior: the map-local `MAP COLOR` control switches the existing
+  MapLibre paint properties between product `PALETTE` and dark semantic
+  `STANDARD` colours without rebuilding the map, losing the route, or moving
+  the camera. Route, marker, Navigator Plaque, Drive Lab, and UI accent remain
+  product-palette owned;
+- tests/build: **PASS**. Focused ATLAS checks pass `36/36`, the complete unit
+  group passes `496/496`, all feature and Sites suites pass, and production
+  builds process `235` App modules and `159` protected-LAB modules;
+- protected publication: **PASS**. Each guarded run uploaded `181` files /
+  `215,866,151` bytes, fully reverified all `29` Illobo recordings, preserved
+  the dynamic root, and retained the required cache overlap. The same
+  byte-identical build was inadvertently published twice while an asynchronous
+  run was being polled; both runs completed successfully and converged on the
+  same remote state. Final read-only postflight reports `remote_writes=NONE`;
+- canonical response: cache-busted root returns HTTP/2 200 with
+  `no-store, no-cache, must-revalidate, max-age=0`, `nosniff`, Nginx/PHP
+  evidence, and cache `MISS`;
+- byte identity: local/live HTML SHA-256 is
+  `f2d9bd35483bc8fb85d951908427f6723198d362998b874030f61c9edf36456d`,
+  main JavaScript `index-DreYuOoa.js` is
+  `48191848cb2736a2a217e8000abbf477764c50686801fd90ef922d953c8c1869`,
+  main CSS `index-BIFkZ_G0.css` is
+  `4aa6585911c09780ca448bb04737d9bc467bf3a2627409f3a510913818ae8e59`,
+  ATLAS JavaScript is
+  `d3c057cb1faf80016a3e84930289fa129e423b0c7f5060c19a32c79af0c61200`,
+  and ATLAS CSS is
+  `715dbf736f7fdc9671a7ab3ec3b2fc5e3cdb252f3cc59758d52914bd2c9e57a3`;
+- rendered QA: **PASS** locally and canonically at exact `773 × 601`.
+  PALETTE and STANDARD render distinctly, the switch is immediate, STANDARD
+  survives reload, PALETTE restores correctly, and the control follows the
+  collapsed panel to a measured `12 px` right edge. Browser warning/error logs
+  are empty;
+- remaining acceptance: collect physical-Tesla touch, cabin glare, colour
+  separation, and route-legibility evidence under `R9A-01`.
+
 ## ATLAS Drive Lab typography and Direction History — 2026-09-03 00:57
 
 - build stamp: **`20260903-0042`**; implementation checkpoint:

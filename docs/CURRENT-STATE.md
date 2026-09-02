@@ -616,7 +616,13 @@ dated study documents.
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
 - The canonical live product is version `0.0.0`, implementation checkpoint
-  `4624f70`, published source checkpoint `5691f58`, build `20260902-2322`. It
+  `febbba3`, built source/documentation checkpoint `9df530d`, build
+  `20260903-0118`. It adds the ATLAS-local persisted
+  `MAP COLOR / PALETTE|STANDARD` switch and dark semantic cartography while
+  retaining product-palette route, marker, Navigator Plaque, Drive Lab and UI
+  accents. Exact local/canonical `773 × 601` interaction QA, protected
+  publication, read-only postflight and byte identity pass; physical-Tesla
+  colour/glare/touch acceptance remains `R9A-01`. The same build
   publishes mandatory insert `10C` while retaining the single three-variant
   GRADIENT 08 family, shared Soundtrack/adaptive AudioContext and bounded
   recoverable media starts from `1ef48be`, together with the stronger PRTCL
