@@ -793,6 +793,43 @@ and also have office implementation in checkpoint `d45f8dd`:
   The watch, latest/eight-sample position buffer, bounded route and Drive Lab
   journey aggregation are App-scoped and survive ATLAS remounts.
 
+Mandatory insert `10C` records the 2026-09-01 evening–09-02 vehicle notes.
+Local checkpoint `7378d3b` is implemented and verified but not canonical. It
+does not redo Soundtrack checkpoint `1ef48be`: it keeps that ten-second atomic
+transport boundary and fixes the surrounding launch/vehicle experience.
+
+- Visual launch is independent from remote Soundtrack preparation. START is
+  available after Music + Visual selection, explains offline/limited or pending
+  data, enters the visual immediately, resumes a later prepared track, and
+  retries a recoverable catalogue failure. Mute is no longer the only apparent
+  route around the launch wait.
+- The three transient previous/current/next media roles remain the audio
+  prefetch boundary. Safe previous/current/next metadata now also drives browser
+  artwork prefetch; supported Media Session previous/next remain wired.
+- Soundtrack's black source readout is a `116 px` speed-only module. FLUX, BPM
+  and energy are absent in this mode. The on-screen transport shares the chrome
+  lifecycle and becomes hidden/non-interactive after idle.
+- The navbar adds a compact `NET` state derived from browser hints. It is
+  explicitly an estimate, not cellular signal strength, and it does not create
+  a continuous ping service.
+- Discover uses a measured `38 px` header, `246 px` left rail and `16 px`
+  result-number track at `773 × 601`. Navigation QR URLs use Google Maps search
+  without `dir_action`, origin or automatic route start.
+- APERTURE's four perspective planes share one longitudinal grid origin so
+  depth cuts align at the corners. Drivey, PRTCL and Gradient expose their
+  `3 VIEWS · 2 RENDERS`, `3 TYPES`, and `3 VARIANTS` counts.
+- Existing versioned safe preferences and both reset controls cover the requested
+  product-state restoration. Coordinates, route history, transient audio URLs,
+  autoplay state and automatic vehicle envelopes remain deliberately
+  session-only.
+
+Focused checks pass `80/80`; the complete suite passes `579/579`; the
+235-module App / 159-module protected LAB / Sites production build passes.
+Exact local `773 × 601` QA covers constrained-network START, preference reload,
+non-overlapping Soundtrack navbar cells, chrome retraction, the measured
+Discover composition and corrected APERTURE seams. Canonical deployment and all
+physical `R10C-*` acceptance remain open.
+
 Row 11's earlier Original Gradient Field is retired. Its replacement—one
 Gradient 08 family with Japanese Mist, Acid Orchard, and Chromatic Silk
 variants—has automated plus exact local and canonical `773 × 601`

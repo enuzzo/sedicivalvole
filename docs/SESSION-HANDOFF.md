@@ -467,6 +467,30 @@ context topology, running effects/worklet, three playable media roles and
 Jamendo `NEXT → PREVIOUS → NEXT` with no warning/error. This is implementation
 and live evidence, not cabin acceptance: run `R4-08` and `R7-14` on the Tesla.
 
+The next owner vehicle-note batch is mandatory insert `10C`. Local product
+checkpoint `7378d3b` deliberately does not repeat the `1ef48be` Soundtrack
+deadline repair. It instead separates visual launch from remote music
+readiness, explains constrained/offline or pending music data, resumes a track
+that finishes preparing after START, and retries recoverable catalogue failure
+without making Mute a special bypass. Soundtrack keeps the existing three audio
+roles and now prefetches adjacent artwork; supported Media Session
+previous/next remain wired. Its navbar readout is speed-only and the on-screen
+transport retracts with the footer. The navbar `NET` state is explicitly a
+browser estimate, not cellular strength or a synthetic ping score.
+
+The same checkpoint compacts Discover to a measured `38 px` heading and
+`246 px` rail, narrows the result-number track, and changes the QR target from
+immediate directions to exploratory Google Maps place search. APERTURE uses one
+longitudinal origin across all tunnel planes, while Drivey, PRTCL and Gradient
+state their internal choice counts. Focused `80/80`, complete `579/579`, the
+235-module App / 159-module LAB build, and exact local `773 × 601` checks pass.
+The local navbar geometry has non-overlapping `116 / 48 / 48 / 70 / 54 px`
+readout/network/GPS/Discover/Report cells; after idle the transport computes to
+hidden/non-interactive. Discover measures exactly `38 px` high and `246 px`
+wide, reload restores Soundtrack + Aperture, and fresh runtime inspection added
+no warning/error. Canonical publication and `R10C-01`–`R10C-08` target-device
+acceptance remain open.
+
 The owner then explicitly selected native **Minerva dark** for Discover, even
 with Wikipedia's accepted test parameter. Product checkpoint `cdccbd7` replaces
 the custom scriptless article document with the complete localized native page

@@ -55,12 +55,36 @@ When implementing from a selected generated mock, treat that image as the source
 - The selected Instrument Deck restyle is **Road Sheet**: one warm-light open sheet over the Signal Gate, a large light 16 Road mark and Orbitron wordmark, black/ink typography, light-grey direct-choice controls, restrained vermilion selection rails, and one black `START` field. At `773 × 601`, the MUSIC button stack and VISUAL button grid must align to exactly the same top and bottom edges. Keep the visual grid's overall height fixed and derive its row count from the registry so a third row compacts inside the existing block rather than enlarging the deck or moving `START`.
 - Controls are touch-first, flat, and fully legible; the GL field provides the visual contrast. At the verified `773 x 601` viewport, the retracting footer is approximately 64 px high, Audio stays on one row, and Visual/Music open explicit caret-marked libraries rather than cycling blindly.
 - The running Music drawer has one persistent `Play the Road` / `Soundtrack` switch. Soundtrack gives compact equal hierarchy to `Illobo Featured` and `Jamendo Library`, rotates its displayed playlist and cover preview on a stable 30-minute window, and states that cadence. Jamendo pace, genre, and exact-track controls start playback immediately; pace is catalogue discovery only and never road-speed automation or playback-rate control. All fixed recordings stay at authored `1×`. Footer MUTE and FX are universal across both music sources; FX off silences OPEN/UNDERWATER/BLOOM audio processing without suppressing the same macros in visuals.
+- Soundtrack selection must never block `START`. Enter the visual immediately,
+  state truthfully when remote music data is pending or the browser reports a
+  constrained connection, and start prepared audio automatically when it
+  arrives. Mute follows the same launch path; it is not a hidden bypass.
+- Keep exactly three transient Soundtrack media roles and prefetch the adjacent
+  artwork as well as audio. Browser Media Session owns supported play, pause,
+  previous and next actions. In Soundtrack, the black source module shows speed
+  only—no `FLUX`, BPM or energy—and the on-screen transport retracts with the
+  footer instead of remaining over the visual.
 - At the `773 × 601` Tesla viewport, Music is a no-scroll driving surface whenever the available content fits: Pace and Genre are whole-surface one-tap chips with standard media icons, the fifteen Jamendo genres occupy two deliberate rows, and track rows are whole-surface controls. Play the Road lists only the three scores that can actually play, each with concise listener-facing copy and its own coherent cover; roadmap-only scores stay out of the running drawer. Illobo tracks use a coherent title-specific cover collection while the two supplied Illobo marks remain the playlist identity.
 - Treat the vehicle-macro snapshot as a typed boundary: audible consumers read `snapshot.values`, never undeclared top-level aliases. Soundtrack and NIGHTSHIFT share the two-stage perceptual UNDERWATER model. The current four-effect graph is only a published baseline: the mandatory revision has exactly eight manual effects, retains Flanger/Reverb/Echo, removes Chorus, and adds five differentiated processors including progressive manual Underwater plus deliberate low/high-frequency transformations. All eight share one level-bounded post-source graph across Play the Road and Soundtrack; do not restore the retired Beat Repeat worklet.
 - The selected manual-effects surface is **FX Deck**: a persistent footer `MIX` control opens a compact non-modal overlay above the footer while the visual keeps running. Expand it to a readable `2 × 4` touch layout; make every `100%` state highly distorted and unmistakable without click, silence, clipping, runaway feedback, or destructive level jumps. Retain independent depth sliders and one reset, persist values when switching between Play the Road and Soundtrack, and never return these controls to the bottom of the Music drawer. The deck may pin the controls open but must never enter the application's inert modal boundary.
 - ATLAS keeps its mandatory attribution as a tiny, low and translucent text strip immediately above the footer, never as a large white pill. The passenger-location sidebar collapses behind a persistent midpoint handle on the right edge; the collapsed state gives the full field back to the map and the same handle reopens it.
 - The owner-selected ATLAS direction is the composite **Drive Lab**: the first line is Speed, Distance, Moving time, and Average speed; the two-by-two chart field is Accel/Braking balance, Speed-band distribution, Heading history, and Moving/Stopped; Elevation spans the complete bottom width. All charts follow the shared `15 MIN / 1 H / SESSION` range. ATLAS is not a place index: never add a DISCOVER action, Wikipedia reading, QR, or duplicated place cards. The persistent midpoint handle is an icon-only `36 × 30 px` rectangular tab with an accessible action name and no visible text; never make it a full-height rail.
-- DISCOVER is a separate passenger index and complete localized Wikipedia reader. Keep its `272 px` searchable language-aware rail readable at a glance, fill the available height before inserting an exact `+N MORE` marker, retain every loaded result in the same scroll, and render the complete selected article in a scriptless sandbox with readable chapters, images and infoboxes. It may open destination-only Google Maps directions, but it must not open, switch to, or link back to ATLAS.
+- DISCOVER is a separate passenger index and complete localized Wikipedia
+  reader. At `773 × 601`, keep its compact `38 px` heading and `246 px`
+  searchable language-aware rail readable at a glance, fill the available
+  height before inserting an exact `+N MORE` marker, retain every loaded result
+  in the same scroll, and render the complete selected article in a sandbox
+  with readable chapters, images and infoboxes. Its QR opens the selected place
+  in exploratory Google Maps search without starting navigation; the passenger
+  may refine, explore, share, or explicitly request Directions. It must not
+  open, switch to, or link back to ATLAS.
+- APERTURE uses one exact longitudinal grid origin across ceiling, floor and
+  side walls so perspective cuts meet cleanly at every corner. Visual catalogue
+  cards expose an explicit choice count whenever a visual owns internal views,
+  render modes, types, or variants.
+- The compact navbar network state is an honest browser connection estimate,
+  never a claimed cellular signal meter or an active ping service. Healthy
+  state stays subordinate; constrained and offline states remain explicit.
 - In the DISCOVER reader, a Wikipedia infobox or lead image must never compress the article lead into a word-column at the Tesla viewport. Keep the desktop two-column reading relationship, but cap floated infoboxes responsively, bound lead-image height without cropping, and stack them only when the reader itself becomes narrow.
 - Keep DISCOVER's language selector self-explanatory without a visible `LANGUAGE` label, keep the `NEARBY / AHEAD / REGION` scope row vertically compact, and render each result's distance/ETA metadata large enough for a passenger to read at a glance.
 - GPS and demo feed the same normalized speed signal; never display, persist or transmit coordinates.
