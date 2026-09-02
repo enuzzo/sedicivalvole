@@ -102,6 +102,7 @@ import {
   appendAtlasSessionJourneySample,
   appendAtlasTravelPoint,
   atlasGpsPresentation,
+  normalizeAtlasMapAppearance,
   resolveAtlasHeading,
 } from "./environments/atlas/atlas-model.js";
 import {
@@ -243,6 +244,10 @@ const QA_NETWORK = import.meta.env.DEV
   && ["offline", "limited", "online"].includes(QA_PARAMS.get("qaNetwork"))
   ? QA_PARAMS.get("qaNetwork")
   : null;
+const QA_ATLAS_DEMO = import.meta.env.DEV && QA_PARAMS.get("qaAtlasDemo") === "1";
+const QA_ATLAS_MAP_APPEARANCE = import.meta.env.DEV && QA_PARAMS.get("qaAtlasMap") === "standard"
+  ? "standard"
+  : null;
 const DIAGNOSTIC_SEND_ERROR_COPY = {
   payload_size_rejected: "The browser report exceeded the transport limit. Keep this page open and retry after an update.",
   report_rejected: "The server report exceeded the mail limit. Keep this page open and retry after an update.",
@@ -275,6 +280,7 @@ function readPreferences() {
       )) ? value.genreId : DEFAULT_GENRE_ID,
       driveySettings: normalizeDriveySettings(value?.driveySettings),
       prtclSettings: normalizePrtclSettings(value?.prtclSettings),
+      atlasMapAppearance: normalizeAtlasMapAppearance(value?.atlasMapAppearance),
       musicMode: value?.musicMode === "soundtrack" ? "soundtrack" : "play-road",
       soundtrackSelection: normalizeSoundtrackSelection(value?.soundtrackSelection),
       manualEffects: normalizeManualEffectPreferences(value?.manualEffects),
@@ -288,6 +294,7 @@ function readPreferences() {
       genreId: DEFAULT_GENRE_ID,
       driveySettings: DEFAULT_DRIVEY_SETTINGS,
       prtclSettings: DEFAULT_PRTCL_SETTINGS,
+      atlasMapAppearance: "palette",
       musicMode: "play-road",
       soundtrackSelection: normalizeSoundtrackSelection(),
       manualEffects: EMPTY_SOUNDTRACK_MANUAL_EFFECTS,
@@ -2025,6 +2032,9 @@ export function App() {
   const [environmentId, setEnvironmentId] = useState(initialPreferences.environmentId);
   const [driveySettings, setDriveySettings] = useState(initialPreferences.driveySettings);
   const [prtclSettings, setPrtclSettings] = useState(initialPreferences.prtclSettings);
+  const [atlasMapAppearance, setAtlasMapAppearance] = useState(
+    QA_ATLAS_MAP_APPEARANCE ?? initialPreferences.atlasMapAppearance,
+  );
   const [environmentRuntimeError, setEnvironmentRuntimeError] = useState(null);
   const [genreId, setGenreId] = useState(initialPreferences.genreId);
   const [environmentPickerOpen, setEnvironmentPickerOpen] = useState(false);
@@ -2046,8 +2056,8 @@ export function App() {
   const [diagnosticReadmeOpen, setDiagnosticReadmeOpen] = useState(false);
   const [mapPosition, setMapPosition] = useState(null);
   const [gpsHelpOpen, setGpsHelpOpen] = useState(false);
-  const [atlasDemoRequest, setAtlasDemoRequest] = useState(0);
-  const [atlasDemoActive, setAtlasDemoActive] = useState(false);
+  const [atlasDemoRequest, setAtlasDemoRequest] = useState(QA_ATLAS_DEMO ? 1 : 0);
+  const [atlasDemoActive, setAtlasDemoActive] = useState(QA_ATLAS_DEMO);
   const reducedMotion = useMemo(
     () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false,
     [],
@@ -3069,6 +3079,7 @@ export function App() {
     setGenreId(DEFAULT_GENRE_ID);
     setDriveySettings(DEFAULT_DRIVEY_SETTINGS);
     setPrtclSettings(DEFAULT_PRTCL_SETTINGS);
+    setAtlasMapAppearance("palette");
     setSoundtrackManualEffects(EMPTY_SOUNDTRACK_MANUAL_EFFECTS);
     setVehicleEffectsEnabled(true);
     setMuted(QA_MUTED);
@@ -3529,6 +3540,7 @@ export function App() {
         genreId,
         driveySettings: normalizeDriveySettings(driveySettings),
         prtclSettings: normalizePrtclSettings(prtclSettings),
+        atlasMapAppearance: normalizeAtlasMapAppearance(atlasMapAppearance),
         musicMode,
         soundtrackSelection: {
           kind: preferredSoundtrackSelectionRef.current.kind,
@@ -3543,6 +3555,7 @@ export function App() {
     }
   }, [
     driveySettings,
+    atlasMapAppearance,
     environmentId,
     genreId,
     musicMode,
@@ -3945,6 +3958,8 @@ export function App() {
                 effect={activeEffect}
                 keyboardShortcutsEnabled={!modalOpen}
                 demoRequestToken={atlasDemoRequest}
+                mapAppearance={atlasMapAppearance}
+                onMapAppearanceChange={(value) => setAtlasMapAppearance(normalizeAtlasMapAppearance(value))}
                 onRenderer={setRenderer}
                 onFrame={recordRenderedFrame}
                 onRuntimeError={handleEnvironmentError}

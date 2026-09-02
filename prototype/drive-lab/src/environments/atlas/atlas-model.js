@@ -39,6 +39,7 @@ export const ATLAS_GPS_PRECISE_ACCURACY_M = 4;
 export const ATLAS_CARDINAL_DIRECTIONS = Object.freeze([
   "N", "NE", "E", "SE", "S", "SW", "W", "NW",
 ]);
+export const ATLAS_MAP_APPEARANCES = Object.freeze(["palette", "standard"]);
 export const ATLAS_ROAD_LAYER_IDS = Object.freeze(["atlas-road-name-probe"]);
 export const ATLAS_DEMO_POSITION = Object.freeze({
   latitude: 45.4570505,
@@ -987,8 +988,95 @@ export function paletteToAtlasMapCss(palette) {
     .map(([key, channels]) => [key, css(channels)]));
 }
 
-export function createAtlasStyle(palette) {
+export function normalizeAtlasMapAppearance(value) {
+  return ATLAS_MAP_APPEARANCES.includes(value) ? value : "palette";
+}
+
+const ATLAS_STANDARD_MAP_COLORS = Object.freeze({
+  background: "#171c1e",
+  land: "#292f2d",
+  park: "#3f674a",
+  forest: "#28513a",
+  grass: "#5e744e",
+  sand: "#756443",
+  hospital: "#754b52",
+  water: "#246f93",
+  roadCasing: "#151819",
+  road: "#d3d0c7",
+  majorRoad: "#dfb855",
+  motorway: "#dc775b",
+  buildingLow: "#715e50",
+  buildingMid: "#a17a60",
+  buildingHigh: "#d0b09a",
+  label: "#f0eee7",
+  labelHalo: "#171b1c",
+});
+
+/** Keeps live trip state in the product palette while optionally making the basemap semantic. */
+export function atlasMapPaint(palette, appearance = "palette") {
   const colors = paletteToAtlasMapCss(palette);
+  if (normalizeAtlasMapAppearance(appearance) !== "standard") {
+    return {
+      ...colors,
+      landcover: colors.terrain,
+      landuse: colors.terrain,
+      water: colors.secondary,
+      road: colors.secondary,
+      roadCasing: colors.background,
+      label: colors.foreground,
+      labelHalo: colors.background,
+      landcoverOpacity: 0.25,
+      landuseOpacity: 0.38,
+      waterOpacityFloor: 0,
+      roadOpacityBoost: 0,
+      standard: false,
+    };
+  }
+  return {
+    ...colors,
+    background: ATLAS_STANDARD_MAP_COLORS.background,
+    terrain: ATLAS_STANDARD_MAP_COLORS.land,
+    landcover: [
+      "match", ["coalesce", ["get", "class"], ""],
+      "wood", ATLAS_STANDARD_MAP_COLORS.forest,
+      "grass", ATLAS_STANDARD_MAP_COLORS.grass,
+      "farmland", ATLAS_STANDARD_MAP_COLORS.grass,
+      "sand", ATLAS_STANDARD_MAP_COLORS.sand,
+      ATLAS_STANDARD_MAP_COLORS.park,
+    ],
+    landuse: [
+      "match", ["coalesce", ["get", "class"], ""],
+      "park", ATLAS_STANDARD_MAP_COLORS.park,
+      "cemetery", ATLAS_STANDARD_MAP_COLORS.park,
+      "hospital", ATLAS_STANDARD_MAP_COLORS.hospital,
+      "school", ATLAS_STANDARD_MAP_COLORS.sand,
+      ATLAS_STANDARD_MAP_COLORS.land,
+    ],
+    water: ATLAS_STANDARD_MAP_COLORS.water,
+    road: [
+      "match", ["coalesce", ["get", "class"], ""],
+      "motorway", ATLAS_STANDARD_MAP_COLORS.motorway,
+      "trunk", ATLAS_STANDARD_MAP_COLORS.motorway,
+      "primary", ATLAS_STANDARD_MAP_COLORS.majorRoad,
+      "secondary", ATLAS_STANDARD_MAP_COLORS.majorRoad,
+      ATLAS_STANDARD_MAP_COLORS.road,
+    ],
+    roadCasing: ATLAS_STANDARD_MAP_COLORS.roadCasing,
+    buildingLow: ATLAS_STANDARD_MAP_COLORS.buildingLow,
+    buildingMid: ATLAS_STANDARD_MAP_COLORS.buildingMid,
+    buildingHigh: ATLAS_STANDARD_MAP_COLORS.buildingHigh,
+    label: ATLAS_STANDARD_MAP_COLORS.label,
+    labelHalo: ATLAS_STANDARD_MAP_COLORS.labelHalo,
+    landcoverOpacity: 0.82,
+    landuseOpacity: 0.72,
+    waterOpacityFloor: 0.68,
+    roadOpacityBoost: 0.28,
+    standard: true,
+  };
+}
+
+export function createAtlasStyle(palette, appearance = "palette") {
+  const colors = atlasMapPaint(palette, appearance);
   return {
     version: 8,
     glyphs: "https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf",
@@ -1011,23 +1099,23 @@ export function createAtlasStyle(palette) {
       { id: "atlas-background", type: "background", paint: { "background-color": colors.background } },
       {
         id: "atlas-landcover", type: "fill", source: "openfreemap", "source-layer": "landcover",
-        paint: { "fill-color": colors.terrain, "fill-opacity": 0.25 },
+        paint: { "fill-color": colors.landcover, "fill-opacity": colors.landcoverOpacity },
       },
       {
         id: "atlas-landuse", type: "fill", source: "openfreemap", "source-layer": "landuse",
-        paint: { "fill-color": colors.terrain, "fill-opacity": 0.38 },
+        paint: { "fill-color": colors.landuse, "fill-opacity": colors.landuseOpacity },
       },
       {
         id: "atlas-water", type: "fill", source: "openfreemap", "source-layer": "water",
-        paint: { "fill-color": colors.secondary, "fill-opacity": 0.24 },
+        paint: { "fill-color": colors.water, "fill-opacity": Math.max(0.24, colors.waterOpacityFloor) },
       },
       {
         id: "atlas-roads-underlay", type: "line", source: "openfreemap", "source-layer": "transportation",
-        paint: { "line-color": colors.background, "line-width": ["interpolate", ["linear"], ["zoom"], 10, 0.6, 17, 5.5], "line-opacity": 0.9 },
+        paint: { "line-color": colors.roadCasing, "line-width": ["interpolate", ["linear"], ["zoom"], 10, 0.6, 17, 5.5], "line-opacity": 0.9 },
       },
       {
         id: "atlas-roads", type: "line", source: "openfreemap", "source-layer": "transportation",
-        paint: { "line-color": colors.secondary, "line-width": ["interpolate", ["linear"], ["zoom"], 10, 0.25, 17, 2.0], "line-opacity": 0.58 },
+        paint: { "line-color": colors.road, "line-width": ["interpolate", ["linear"], ["zoom"], 10, 0.25, 17, 2.0], "line-opacity": Math.min(1, 0.58 + colors.roadOpacityBoost) },
       },
       {
         id: "atlas-road-name-probe", type: "line", source: "openfreemap", "source-layer": "transportation_name", minzoom: 10,
@@ -1056,7 +1144,7 @@ export function createAtlasStyle(palette) {
         paint: {
           "fill-extrusion-color": [
             "interpolate", ["linear"], ["coalesce", ["get", "render_height"], 5],
-            0, colors.buildingLow, 80, colors.accent, 240, colors.foreground,
+            0, colors.buildingLow, 80, colors.buildingMid ?? colors.accent, 240, colors.buildingHigh ?? colors.foreground,
           ],
           "fill-extrusion-height": ["coalesce", ["get", "render_height"], 5],
           "fill-extrusion-base": ["coalesce", ["get", "render_min_height"], 0],
@@ -1091,8 +1179,8 @@ export function createAtlasStyle(palette) {
           "text-letter-spacing": 0.08,
         },
         paint: {
-          "text-color": colors.foreground,
-          "text-halo-color": colors.background,
+          "text-color": colors.label,
+          "text-halo-color": colors.labelHalo,
           "text-halo-width": 1.2,
           "text-opacity": 0.82,
         },

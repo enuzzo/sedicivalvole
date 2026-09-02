@@ -21,6 +21,7 @@ import {
   atlasJourneySamplesForRange,
   atlasJourneyStatistics,
   atlasManualCameraShouldReturn,
+  atlasMapPaint,
   atlasMapPixelRatio,
   atlasRoadNameFromFeatures,
   atlasTravelFeature,
@@ -33,7 +34,6 @@ import {
   manualAtlasCamera,
   interpolateAtlasPosition,
   paletteToAtlasCss,
-  paletteToAtlasMapCss,
   pinchAtlasZoom,
   speedToAtlasEffectCamera,
   validAtlasPosition,
@@ -358,17 +358,19 @@ function AtlasDriveLabCanvas({ samples, metrics, statistics, colors, terrain, ra
   );
 }
 
-function recolourStyle(map, palette, effect = null) {
-  const colors = paletteToAtlasMapCss(palette);
+function recolourStyle(map, palette, effect = null, mapAppearance = "palette") {
+  const colors = atlasMapPaint(palette, mapAppearance);
   const profile = atlasEffectProfile(effect);
   map.setPaintProperty("atlas-background", "background-color", colors.background);
-  map.setPaintProperty("atlas-landcover", "fill-color", colors.terrain);
-  map.setPaintProperty("atlas-landuse", "fill-color", colors.terrain);
-  map.setPaintProperty("atlas-water", "fill-color", colors.secondary);
-  map.setPaintProperty("atlas-water", "fill-opacity", profile.waterOpacity);
-  map.setPaintProperty("atlas-roads-underlay", "line-color", colors.background);
-  map.setPaintProperty("atlas-roads", "line-color", colors.secondary);
-  map.setPaintProperty("atlas-roads", "line-opacity", profile.roadOpacity);
+  map.setPaintProperty("atlas-landcover", "fill-color", colors.landcover);
+  map.setPaintProperty("atlas-landcover", "fill-opacity", colors.landcoverOpacity);
+  map.setPaintProperty("atlas-landuse", "fill-color", colors.landuse);
+  map.setPaintProperty("atlas-landuse", "fill-opacity", colors.landuseOpacity);
+  map.setPaintProperty("atlas-water", "fill-color", colors.water);
+  map.setPaintProperty("atlas-water", "fill-opacity", Math.min(1, colors.waterOpacityFloor + profile.waterOpacity));
+  map.setPaintProperty("atlas-roads-underlay", "line-color", colors.roadCasing);
+  map.setPaintProperty("atlas-roads", "line-color", colors.road);
+  map.setPaintProperty("atlas-roads", "line-opacity", Math.min(1, colors.roadOpacityBoost + profile.roadOpacity));
   map.setPaintProperty("atlas-roads", "line-width", [
     "interpolate", ["linear"], ["zoom"],
     10, 0.25 * profile.roadWidthScale,
@@ -379,15 +381,15 @@ function recolourStyle(map, palette, effect = null) {
   map.setPaintProperty("atlas-vehicle-ripple", "circle-color", colors.accent);
   map.setPaintProperty("atlas-vehicle-dot", "circle-color", colors.accent);
   map.setPaintProperty("atlas-vehicle-dot", "circle-stroke-color", colors.background);
-  map.setPaintProperty("atlas-place-labels", "text-color", colors.foreground);
-  map.setPaintProperty("atlas-place-labels", "text-halo-color", colors.background);
+  map.setPaintProperty("atlas-place-labels", "text-color", colors.label);
+  map.setPaintProperty("atlas-place-labels", "text-halo-color", colors.labelHalo);
   if (map.getLayer("sedicivalvole-buildings")) {
     map.setPaintProperty("sedicivalvole-buildings", "fill-extrusion-opacity", profile.buildingOpacity);
     map.setPaintProperty("sedicivalvole-buildings", "fill-extrusion-color", [
       "interpolate", ["linear"], ["get", "render_height"],
       0, colors.buildingLow,
-      80, colors.accent,
-      240, colors.foreground,
+      80, colors.buildingMid ?? colors.accent,
+      240, colors.buildingHigh ?? colors.foreground,
     ]);
   }
 }
@@ -467,10 +469,12 @@ export default function AtlasField({
   onRuntimeError,
   keyboardShortcutsEnabled = true,
   demoRequestToken = 0,
+  mapAppearance = "palette",
+  onMapAppearanceChange,
 }) {
   const hostRef = useRef(null);
   const mapRef = useRef(null);
-  const valuesRef = useRef({ speed, theme, position, positionSamplesRef, sessionJourneyRef, reducedMotion, effect });
+  const valuesRef = useRef({ speed, theme, position, positionSamplesRef, sessionJourneyRef, reducedMotion, effect, mapAppearance });
   const [demoPosition, setDemoPosition] = useState(null);
   const [panelCollapsed, setPanelCollapsed] = useState(false);
   const [displayCamera, setDisplayCamera] = useState(null);
@@ -489,7 +493,7 @@ export default function AtlasField({
   const journeyStartedAtRef = useRef(null);
   if (!elevationRequestGateRef.current) elevationRequestGateRef.current = createLatestAtlasRequestGate();
   valuesRef.current = {
-    speed, theme, position, positionSamplesRef, sessionJourneyRef, reducedMotion, effect, demoPosition,
+    speed, theme, position, positionSamplesRef, sessionJourneyRef, reducedMotion, effect, mapAppearance, demoPosition,
   };
 
   const effectivePosition = useMemo(() => {
@@ -651,7 +655,7 @@ export default function AtlasField({
       const camera = speedToAtlasEffectCamera(valuesRef.current.speed, valuesRef.current.effect);
       const map = new maplibregl.Map({
         container: hostRef.current,
-        style: createAtlasStyle(valuesRef.current.theme.palette),
+        style: createAtlasStyle(valuesRef.current.theme.palette, valuesRef.current.mapAppearance),
         center: [effectivePosition.longitude, effectivePosition.latitude],
         zoom: camera.zoom,
         pitch: camera.pitch,
@@ -689,7 +693,12 @@ export default function AtlasField({
           map.setPaintProperty("sedicivalvole-buildings", "fill-extrusion-height", [
             "*", ["coalesce", ["get", "render_height"], 5], camera.buildingScale,
           ]);
-          recolourStyle(map, valuesRef.current.theme.palette, valuesRef.current.effect);
+          recolourStyle(
+            map,
+            valuesRef.current.theme.palette,
+            valuesRef.current.effect,
+            valuesRef.current.mapAppearance,
+          );
           mapReady = true;
           map.dragPan.disable();
           map.dragRotate.disable();
@@ -949,13 +958,13 @@ export default function AtlasField({
   useEffect(() => {
     if (!mapRef.current) return;
     try {
-      recolourStyle(mapRef.current, theme.palette, effect);
+      recolourStyle(mapRef.current, theme.palette, effect, mapAppearance);
     } catch {
       // The map's load handler applies the latest ref values if the style is
       // still constructing. Continuous travel-pulse repaints must not make a
       // legitimate later palette change wait for MapLibre's `loaded()` flag.
     }
-  }, [effect, theme]);
+  }, [effect, mapAppearance, theme]);
 
   useEffect(() => {
     const resize = () => mapRef.current?.resize();
@@ -978,6 +987,9 @@ export default function AtlasField({
   const heading = displayCamera?.heading ?? Math.round(effectivePosition.heading ?? 0);
   const pointerHeading = displayCamera?.pointerHeading ?? heading;
   const cardinalDirection = atlasCardinalDirection(heading) ?? "—";
+  const toggleMapAppearance = () => onMapAppearanceChange?.(
+    mapAppearance === "standard" ? "palette" : "standard",
+  );
 
   return (
     <section
@@ -1004,6 +1016,25 @@ export default function AtlasField({
         {roadName ? <span className="atlas-road-name">{roadName}</span> : null}
       </div>
       {demo ? <div className="atlas-demo-hint">DRAG: ROTATE / TILT · WHEEL / PINCH: ZOOM</div> : null}
+      <button
+        className="atlas-map-appearance"
+        type="button"
+        aria-pressed={mapAppearance === "standard"}
+        aria-label={mapAppearance === "standard"
+          ? "Map colors: standard cartographic. Switch to product palette."
+          : "Map colors: product palette. Switch to standard cartographic colors."}
+        onPointerDown={(event) => event.stopPropagation()}
+        onPointerUp={(event) => {
+          event.stopPropagation();
+          toggleMapAppearance();
+        }}
+        onClick={(event) => {
+          if (event.detail === 0) toggleMapAppearance();
+        }}
+      >
+        <small>MAP COLOR</small>
+        <strong>{mapAppearance === "standard" ? "STANDARD" : "PALETTE"}</strong>
+      </button>
       <button
         className="atlas-panel-toggle"
         type="button"

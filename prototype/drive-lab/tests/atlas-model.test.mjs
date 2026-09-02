@@ -17,6 +17,7 @@ import {
   ATLAS_SESSION_HISTORY_LIMIT,
   ATLAS_SPEED_BANDS,
   ATLAS_MARKER_UPDATE_INTERVAL_MS,
+  ATLAS_MAP_APPEARANCES,
   ATLAS_MAXIMUM_PIXEL_RATIO,
   ATLAS_MANUAL_CAMERA_LIMITS,
   ATLAS_MANUAL_IDLE_MS,
@@ -37,6 +38,7 @@ import {
   atlasJourneySamplesForRange,
   atlasJourneyStatistics,
   atlasManualCameraShouldReturn,
+  atlasMapPaint,
   atlasMapPixelRatio,
   atlasRoadNameFromFeatures,
   atlasTravelFeature,
@@ -47,6 +49,7 @@ import {
   interpolateAtlasPosition,
   manualAtlasCamera,
   normalizeNearbyPages,
+  normalizeAtlasMapAppearance,
   normalizeOpenMeteoElevation,
   openMeteoElevationUrl,
   paletteToAtlasMapChannels,
@@ -682,7 +685,45 @@ test("every shared palette gets map-specific road and label contrast", () => {
     assert.ok(atlasContrastRatio(colors.accent, colors.background) >= 2.8, `${theme.id} pulse`);
   }
   assert.doesNotMatch(atlasSource, /mapRef\.current\?\.loaded\(\).*recolourStyle/);
-  assert.match(atlasSource, /recolourStyle\(mapRef\.current, theme\.palette, effect\)/);
+  assert.match(atlasSource, /recolourStyle\(mapRef\.current, theme\.palette, effect, mapAppearance\)/);
+});
+
+test("Atlas standard map colors are semantic, reversible and keep trip state in the product palette", () => {
+  const palette = FLUX_THEMES[0].palette;
+  assert.deepEqual(ATLAS_MAP_APPEARANCES, ["palette", "standard"]);
+  assert.equal(normalizeAtlasMapAppearance("standard"), "standard");
+  assert.equal(normalizeAtlasMapAppearance("satellite"), "palette");
+
+  const palettePaint = atlasMapPaint(palette, "palette");
+  const standardPaint = atlasMapPaint(palette, "standard");
+  assert.equal(palettePaint.standard, false);
+  assert.equal(standardPaint.standard, true);
+  assert.equal(standardPaint.accent, palettePaint.accent);
+  assert.equal(standardPaint.secondary, palettePaint.secondary);
+  assert.notEqual(standardPaint.background, palettePaint.background);
+  assert.ok(Array.isArray(standardPaint.landcover));
+  assert.ok(Array.isArray(standardPaint.landuse));
+  assert.ok(Array.isArray(standardPaint.road));
+  assert.match(JSON.stringify(standardPaint.landcover), /wood|grass|farmland/);
+  assert.match(JSON.stringify(standardPaint.landuse), /park|hospital|school/);
+  assert.match(JSON.stringify(standardPaint.road), /motorway|primary|secondary/);
+
+  const style = createAtlasStyle(palette, "standard");
+  assert.deepEqual(style.layers.find((layer) => layer.id === "atlas-roads").paint["line-color"], standardPaint.road);
+  assert.equal(style.layers.find((layer) => layer.id === "atlas-water").paint["fill-color"], standardPaint.water);
+});
+
+test("Atlas exposes a persistent map-only color control without rebuilding MapLibre", () => {
+  assert.match(appSource, /atlasMapAppearance: normalizeAtlasMapAppearance\(value\?\.atlasMapAppearance\)/);
+  assert.match(appSource, /setAtlasMapAppearance\("palette"\)/);
+  assert.match(appSource, /mapAppearance=\{atlasMapAppearance\}/);
+  assert.match(atlasSource, /className="atlas-map-appearance"/);
+  assert.match(atlasSource, /aria-pressed=\{mapAppearance === "standard"\}/);
+  assert.match(atlasSource, /MAP COLOR/);
+  assert.match(atlasSource, /STANDARD/);
+  assert.doesNotMatch(atlasSource, /setStyle\(/);
+  assert.match(styles, /\.atlas-map-appearance \{[\s\S]*?top: 82px;[\s\S]*?right: calc\(var\(--atlas-panel-width\) \+ 12px\);/);
+  assert.match(styles, /\.atlas-field\.is-panel-collapsed \.atlas-map-appearance \{ right: 12px; \}/);
 });
 
 test("Atlas Drive Lab collapses behind a persistent icon-only midpoint handle", () => {
