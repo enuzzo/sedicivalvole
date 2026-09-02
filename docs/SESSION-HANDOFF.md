@@ -443,14 +443,16 @@ Later that day the owner selected all three registered starting points, then
 clarified that they belong inside one public **GRADIENT 08** family as the
 **Japanese Mist**, **Acid Orchard**, and **Chromatic Silk** variants. The former
 project-owned Gradient renderer is deleted; its stored identifier migrates to
-Japanese Mist. The exact upstream stack is
-unmodified and moves to production dependencies, isolated in one lazy chunk.
-Project code owns the registry, bounded road/audio response, telemetry, reduced
-motion, and Canvas2D fallback. Product checkpoint `8f300ee` is canonical as
-build `20260902-1801` after read-only pre/postflight, `563/563` complete checks,
-byte-identical HTML/main JS/CSS/lazy ShaderGradient assets, and exact live
-`773 × 601` WebGL/console QA for all three fields. Target-Tesla GPU, motion,
-switching and thermal acceptance remain open under the stable `R11-*` codes.
+Japanese Mist. The exact upstream stack is unmodified and isolated in one lazy
+chunk. Project code owns the registry, bounded road/audio response, telemetry,
+reduced motion, and Canvas2D fallback. Product checkpoint `87a5668` is canonical
+as build `20260902-1905`: both catalogues expose one Gradient card among eight
+primary choices; a single tap starts the remembered variant, and a persistent
+`VARIANT` control cycles `MIST → ORCHARD → SILK → MIST` without a picker or
+reload. Read-only pre/postflight, `563/563` complete checks, byte-identical
+HTML/main JS/CSS/lazy ShaderGradient assets, and exact live `773 × 601`
+interaction/WebGL QA pass. Target-Tesla GPU, motion, repeated switching and
+thermal acceptance remain open under the stable `R11-*` codes.
 
 The owner then explicitly selected native **Minerva dark** for Discover, even
 with Wikipedia's accepted test parameter. Product checkpoint `cdccbd7` replaces

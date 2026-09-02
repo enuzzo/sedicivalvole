@@ -10,11 +10,45 @@ of truth and is reported separately in the diagnostics.
 
 `shadergradient-lab.html` is a development-only standalone workbench entry and
 must not be uploaded to the canonical root. Its reusable workbench is also
-included in the authenticated protected-LAB bundle. The public App imports only
-the three selected starting points and exact MIT renderer through a separate
-lazy chunk; LAB controls and URL import remain outside the public surface. Exact
+included in the authenticated protected-LAB bundle. The public App exposes the
+three selected starting points as variants of one `GRADIENT 08` family and
+imports the exact MIT renderer through a separate lazy chunk; LAB controls and
+URL import remain outside the public surface. Exact
 dependency and local run instructions are recorded in
 `LOCAL-SHADERGRADIENT-LAB.md`.
+
+## Gradient 08 family and persistent variant cycle — 2026-09-02 19:21
+
+- build stamp: **`20260902-1905`**; product checkpoint: **`87a5668`**;
+- product boundary: the public launch and running Visual catalogues contain
+  exactly eight primary choices and one `GRADIENT 08` card. Japanese Mist,
+  Acid Orchard, and Chromatic Silk remain separate internal environments but
+  are no longer separately numbered catalogue entries;
+- interaction: one tap starts the remembered Gradient variant, or Japanese
+  Mist on first use. The persistent running-field `VARIANT` control cycles
+  `MIST → ORCHARD → SILK → MIST` without a picker or page reload and retains
+  the latest variant across visual changes;
+- tests/build: **PASS**. The complete suite passes `563/563`; the 235-module
+  public App, 159-module protected LAB and production build pass;
+- protected publication: read-only preflight and postflight report
+  `remote_writes=NONE`; publication uploaded `181` files / `215,855,736` bytes,
+  fully reverified all `29` Illobo recordings, retained two fingerprinted
+  assets for cache overlap and preserved the dynamic root;
+- canonical identity: cache-busted root HTML is HTTP 200 with
+  `no-store/no-cache` and `nosniff`. HTML, main JavaScript, main CSS and lazy
+  ShaderGradient JavaScript match the candidate byte-for-byte at SHA-256
+  `817b11b1ddd57b4928eb3ee9df88adb22509b6fa70e3421b7b2dd6996caad901`,
+  `78aee9f932418a18d683858cf10c76da603aec0b23280cd7cc79c57a0ddf355b`,
+  `a67ea85f92b9451bd89e84881b30b5ede0e0900fb858a17b2e32d8b9b4301264`
+  and `6f23427caa5631eb00c050fe5e593edd1f36e46dc2b479ac11e1337ee88156f5`;
+- exact live `773 × 601` Browser QA: **PASS**. The launcher exposes eight
+  choices, Gradient appears once, START opens the remembered variant, and the
+  persistent control advances the visible and accessible identity from Silk to
+  Mist to Orchard. No warning/error is recorded; expected informational WebGL
+  context-release logs appear when the renderer is replaced;
+- remaining acceptance: target-Tesla `R11-01`–`R11-03`, `R11-06`, and
+  `R11A-01` retain the physical motion, repeated-switching, frame-pacing,
+  thermal and protected-LAB GPU gates.
 
 ## Three autonomous ShaderGradient visuals — 2026-09-02 18:14
 
