@@ -777,9 +777,12 @@ and also have office implementation in checkpoint `d45f8dd`:
   journey aggregation are App-scoped and survive ATLAS remounts.
 
 Row 11's earlier Original Gradient Field is retired. Its replacement—Japanese
-Mist 08, Acid Orchard 09, and Chromatic Silk 10—has automated and exact local
-`773 × 601` WebGL/console PASS. Canonical publication and target-Tesla
-motion/performance acceptance remain open.
+Mist 08, Acid Orchard 09, and Chromatic Silk 10—has automated plus exact local
+and canonical `773 × 601` WebGL/console PASS in build `20260902-1801` from
+product checkpoint `8f300ee`; the complete suite passes `563/563`. Canonical
+HTML, main JavaScript, CSS and the lazy
+ShaderGradient chunk are byte-identical to the verified candidate. Target-Tesla
+motion/performance acceptance remains open.
 
 Row 11A's comparison bench is complete locally and inside the protected LAB. Its
 three selected studies now also enter the public product as separate lazy
@@ -798,7 +801,7 @@ authenticated target-Tesla rendering and control reach remain `R11A-01`.
 ## Open work
 
 1. Execute live Tesla `R4-07`, the canonical `10A` / `10B` codes, and row 11
-   on build `20260902-0103`. Execute Tesla tests `R1-01`–`R1-03`, `R4-01`–`R4-07`,
+   on build `20260902-1801`. Execute Tesla tests `R1-01`–`R1-03`, `R4-01`–`R4-07`,
    `R5-01`–`R5-07`, `R7-01`–`R7-13`, `R8-01`–`R8-03`, `R9-01`–`R9-07`,
    `R10-00A`–`R10-06`, `R11-01`–`R11-06`, `R11A-01`, and later
    `R13-00`–`R13-03` from

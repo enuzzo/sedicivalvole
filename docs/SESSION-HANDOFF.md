@@ -447,9 +447,11 @@ autonomous public visuals, not variants: **JAPANESE MIST 08**, **ACID ORCHARD
 its stored identifier migrates to Japanese Mist. The exact upstream stack is
 unmodified and moves to production dependencies, isolated in one lazy chunk.
 Project code owns the registry, bounded road/audio response, telemetry, reduced
-motion, and Canvas2D fallback. Focused and complete automated checks, the build,
-and exact local `773 × 601` WebGL/console QA pass; canonical publication and
-target-Tesla GPU acceptance remain open.
+motion, and Canvas2D fallback. Product checkpoint `8f300ee` is canonical as
+build `20260902-1801` after read-only pre/postflight, `563/563` complete checks,
+byte-identical HTML/main JS/CSS/lazy ShaderGradient assets, and exact live
+`773 × 601` WebGL/console QA for all three fields. Target-Tesla GPU, motion,
+switching and thermal acceptance remain open under the stable `R11-*` codes.
 
 The owner then explicitly selected native **Minerva dark** for Discover, even
 with Wikipedia's accepted test parameter. Product checkpoint `cdccbd7` replaces

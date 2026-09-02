@@ -16,6 +16,48 @@ lazy chunk; LAB controls and URL import remain outside the public surface. Exact
 dependency and local run instructions are recorded in
 `LOCAL-SHADERGRADIENT-LAB.md`.
 
+## Three autonomous ShaderGradient visuals — 2026-09-02 18:14
+
+- build stamp: **`20260902-1801`**; product checkpoint: **`8f300ee`**;
+  deployment-safety checkpoint: **`3f07feb`**;
+- product boundary: the former project-owned `GRADIENT 08` is deleted and
+  replaced completely by `JAPANESE MIST 08`, `ACID ORCHARD 09`, and
+  `CHROMATIC SILK 10`. They are separate Visual catalogue entries, not presets
+  inside one product field. Legacy saved `gradient` state migrates to Japanese
+  Mist;
+- renderer boundary: the exact unmodified MIT ShaderGradient stack is isolated
+  in one `1,084,718`-byte lazy product chunk. The public App receives only the
+  three selected settings and project-owned road/audio adapters; LAB controls
+  and URL import remain protected. Canvas2D fallback, context-loss handling,
+  reduced motion and telemetry stay active;
+- response contract: all three use half their base motion at `0 km/h`, scale
+  continuously to the existing `130 km/h` response ceiling, accept bounded
+  authored-audio response only in Play the Road, and remain speed-only in
+  Soundtrack;
+- tests/build: **PASS**. Focused product/LAB `13/13`, deployment `19/19`,
+  complete `563/563`, nine Sites packaging checks, 235-module public App,
+  159-module protected LAB and production build pass;
+- protected publication: read-only preflight and postflight report
+  `remote_writes=NONE`; publication uploaded `181` files / `215,853,846` bytes,
+  fully reverified all `29` Illobo recordings, removed one exact recognized
+  Finder `.DS_Store` from the canonical root, retained two fingerprinted
+  assets for cache overlap and preserved the dynamic root;
+- canonical identity: cache-busted root HTML is HTTP 200 with
+  `no-store/no-cache` and `nosniff`. HTML, main JavaScript, main CSS and lazy
+  ShaderGradient JavaScript match the candidate byte-for-byte at SHA-256
+  `b07028fb37d874e75e122a13d5a75b17caecfc13f4b8d7c51b4715d35b9d22e2`,
+  `37ca0372ba6ae312872639eb14a9162fe36aabaf487474f6c2b189ef929d817c`,
+  `378e2396e269eafdb54b86e8d0441b12d211bab45663cde7cb57e32aab653529`
+  and `32baee38e7be29f442ff8d0de856086f364d98b735ae4a9110f8b735d7f693ba`;
+- exact live `773 × 601` Browser QA: **PASS**. The splash reports build
+  `20260902-1801`; the launcher exposes all ten choices; Japanese Mist, Acid
+  Orchard and Chromatic Silk each render as a distinct full-screen WebGL field;
+  no Browser warning/error is recorded. The expected informational WebGL
+  context-release log appears when a renderer is intentionally replaced;
+- remaining acceptance: target-Tesla `R11-01`–`R11-03`, `R11-06`, and
+  `R11A-01` retain the physical motion, switching, frame-pacing, thermal and
+  protected-LAB GPU gates.
+
 ## Protected ShaderGradient owner LAB — 2026-09-02 13:52
 
 - build stamp: **`20260902-1341`**; product checkpoint: **`1a79cea`**;
