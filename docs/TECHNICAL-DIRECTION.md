@@ -401,7 +401,7 @@ local storage, diagnostics or the explicit diagnostic email.
 DISCOVER reuses the same ephemeral position boundary outside permanent ATLAS
 chrome. The selected split surface owns a left index and always-open reader.
 It enters the shared Visual catalogue as destination `07`, not as a renderer:
-the launch grid therefore contains ten choices, starts the normal
+the launch grid therefore contains eight primary choices, starts the normal
 Aperture runtime behind the passenger surface, and the running Visual library
 can reopen it without replacing or persisting the active field.
 The browser's first supported language selects the Wikipedia host automatically;
@@ -485,15 +485,16 @@ The Codrops/Tympanus Infinite Lights reference is useful for coordinated instanc
 The renderer consumes a small snapshot and never blocks the audio event queue.
 
 The former project-owned `GRADIENT 08` renderer is retired and deleted. A legacy
-saved selection migrates to `JAPANESE MIST 08`.
+saved selection migrates to the Japanese Mist variant.
 
-`JAPANESE MIST 08`, `ACID ORCHARD 09`, and `CHROMATIC SILK 10` are three
-autonomous public ShaderGradient environments. One shared registry contains the
+`GRADIENT 08` is one public ShaderGradient family with Japanese Mist, Acid
+Orchard, and Chromatic Silk variants. One shared registry contains the
 exact owner-selected LAB starting-point props; one lazy field imports the exact,
 unmodified `@shadergradient/react@2.4.20`, React Three Fiber, Three.js,
 three-stdlib, and camera-controls production stack only when one of the three is
 selected. The main entry therefore does not parse or execute that renderer for
-the other visuals. Idle animation runs at half each starting point's base rate;
+the other visuals. The primary catalogues expose one family entry and a
+persistent in-visual control cycles the three variants. Idle animation runs at half each starting point's base rate;
 road response reaches the previous endpoint at `130 km/h`. Play the Road admits
 bounded audio energy, Soundtrack passes zero audio response, and reduced motion
 sets motion to zero. OPEN, UNDERWATER, and BLOOM alter the registered native

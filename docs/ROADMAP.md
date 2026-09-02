@@ -161,8 +161,8 @@ Implemented:
   `24,000` / `16,000` / `37,000` fixed draw counts; a direct `94 × 34 px`
   text-only TYPE cycle separate from Palette; and native speed, music,
   OPEN/UNDERWATER/BLOOM, reduced-motion, failure, and cleanup behavior;
-- owner-selected autonomous `JAPANESE MIST 08`, `ACID ORCHARD 09`, and
-  `CHROMATIC SILK 10`, using their exact registered ShaderGradient settings in
+- owner-selected `GRADIENT 08` family with Japanese Mist, Acid Orchard, and
+  Chromatic Silk variants, using their exact registered ShaderGradient settings in
   one separate lazy product chunk. Each begins at half its LAB base rate at
   rest, reaches its bounded endpoint at `130 km/h`, admits bounded Play the Road
   audio response, keeps Soundtrack speed-only, and owns reduced motion,

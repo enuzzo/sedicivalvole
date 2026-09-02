@@ -7,9 +7,9 @@ environment for the official ShaderGradient React renderer. The same reusable
 workbench is available standalone in development and inside the authenticated
 protected `/lab`.
 
-The owner promoted its three registered starting points as autonomous public
-visuals—`JAPANESE MIST 08`, `ACID ORCHARD 09`, and `CHROMATIC SILK 10`—and
-retired the former project-owned `GRADIENT 08`. `shadergradient-lab.html` remains
+The owner promoted its three registered starting points as Japanese Mist, Acid
+Orchard, and Chromatic Silk variants of one public `GRADIENT 08` family and
+retired the former project-owned renderer. `shadergradient-lab.html` remains
 absent from the public App entry list, while the public product imports only the
 selected renderer and exact starting-point registry through a separate lazy
 chunk. LAB-only tuning controls and URL import never enter the public surface.

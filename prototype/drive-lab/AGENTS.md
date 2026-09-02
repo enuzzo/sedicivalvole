@@ -25,14 +25,16 @@ When implementing from a selected generated mock, treat that image as the source
 - Mode switching shares the normalized speed source, diagnostics, audio-unlock lifecycle, master Stop/Mute, safety limits, and accessibility behavior. Never imply access to real RPM, throttle, gear, or CAN data without evidence.
 - Keep the scene abstract, minimal and atmospheric; no scenery, characters or illustrative decoration.
 - The retired project-owned `GRADIENT 08` renderer must not return. Its saved
-  preference migrates to **JAPANESE MIST 08**.
-- The exact MIT ShaderGradient / Three / R3F stack powers three owner-selected
-  autonomous public visuals: **JAPANESE MIST 08**, **ACID ORCHARD 09**, and
-  **CHROMATIC SILK 10**. They share the exact registered LAB starting-point
-  settings and project-owned road/audio response, but they are separate Visual
-  catalogue entries rather than variants. Keep Soundtrack speed-only; Play the
-  Road may add bounded audio response. Load the upstream stack only when one of
-  these visuals is selected, keep it in a separate product chunk, retain the MIT
+  preference migrates to the **Japanese Mist** variant of the new family.
+- The exact MIT ShaderGradient / Three / R3F stack powers one owner-selected
+  public **GRADIENT 08** family with three internal variants: **Japanese Mist**,
+  **Acid Orchard**, and **Chromatic Silk**. The launch and running catalogues
+  expose one family entry; a persistent in-visual `VARIANT` control cycles the
+  three variants without reopening a catalogue. They share the
+  exact registered LAB starting-point settings and project-owned road/audio
+  response. Keep Soundtrack speed-only; Play the Road may add bounded audio
+  response. Load the upstream stack only when one of these variants is selected,
+  keep it in a separate product chunk, retain the MIT
   notice, preserve the Canvas2D fallback and reduced-motion path, and hold all
   response at the `130 km/h` ceiling. Target-Tesla GPU acceptance remains a gate.
   FeralUI and ColorFlow remain mechanics references only.

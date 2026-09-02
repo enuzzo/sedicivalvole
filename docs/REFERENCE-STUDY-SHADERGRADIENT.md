@@ -149,11 +149,12 @@ Tesla viewport rather than judged from desktop screenshots:
 - **Source or dependency admitted:** yes, exact unmodified npm production
   dependencies for one lazy public renderer chunk and both LAB surfaces; no
   upstream shader or source is copied or modified.
-- **Product views implemented:** `JAPANESE MIST 08`, `ACID ORCHARD 09`, and
-  `CHROMATIC SILK 10` as three autonomous catalogue entries using the exact
-  registered LAB starting points. The old project-owned Gradient is retired.
-- **Selected direction:** the owner explicitly selected all three starting
-  points, not one hybrid and not variants behind one entry.
+- **Product view implemented:** one `GRADIENT 08` catalogue family with
+  Japanese Mist, Acid Orchard, and Chromatic Silk as three internal variants
+  using the exact registered LAB starting points. The old project-owned Gradient
+  renderer is retired.
+- **Selected direction:** the owner explicitly grouped all three starting
+  points as variants behind one family entry, not autonomous numbered visuals.
 - **Remaining gate:** target-Tesla motion, switching, frame pacing, grain,
   source-response boundary, sustained run, and thermal acceptance.
 - **Companion comparison:** FeralUI Gradient Builder and ColorFlow are evaluated

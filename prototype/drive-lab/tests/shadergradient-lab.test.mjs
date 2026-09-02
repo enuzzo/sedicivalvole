@@ -133,7 +133,8 @@ test('the ShaderGradient MIT boundary and local guide are retained', async () =>
 
   assert.match(notice, /ShaderGradient React.*2\.4\.20/)
   assert.match(scope, /ShaderGradient remains MIT material/)
-  assert.match(guide, /autonomous public[\s\S]*JAPANESE MIST 08/)
+  assert.match(guide, /one public `GRADIENT 08` family/)
+  assert.match(guide, /Japanese Mist, Acid[\s\S]*Chromatic Silk/)
   assert.match(guide, /separate lazy[\s\S]*chunk/)
   assert.match(license, /Copyright \(c\) ruucm, stone-skipper/)
   assert.match(license, /Permission is hereby granted/)

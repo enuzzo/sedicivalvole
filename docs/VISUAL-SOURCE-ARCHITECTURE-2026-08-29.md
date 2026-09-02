@@ -126,9 +126,9 @@ acceptance gates.
 
 This dated study retains retired INFINITE/PRIMORDIAL decisions as provenance.
 The earlier project-owned `GRADIENT 08` was also retired by explicit owner
-decision on 2026-09-02. The active architecture replaces it with three
-autonomous public ShaderGradient environments: `JAPANESE MIST 08`,
-`ACID ORCHARD 09`, and `CHROMATIC SILK 10`. The exact unmodified MIT
+decision on 2026-09-02. The active architecture replaces its renderer with one
+public `GRADIENT 08` ShaderGradient family containing Japanese Mist, Acid
+Orchard, and Chromatic Silk variants. The exact unmodified MIT
 ShaderGradient/Three/R3F stack is isolated in one lazy product chunk and remains
 available in the standalone and authenticated LAB workbenches. Project-owned
 adapters register the exact selected settings, bounded response, telemetry,

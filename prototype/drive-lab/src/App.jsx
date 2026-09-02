@@ -61,7 +61,10 @@ import {
   DISCOVER_VISUAL_CHOICE,
   FLUX_VISUAL_CHOICES,
   getFluxEnvironment,
+  isShaderGradientEnvironmentId,
   migrateLegacyEnvironmentPreference,
+  nextShaderGradientEnvironmentId,
+  SHADERGRADIENT_ENVIRONMENTS,
 } from "./flux-environments.js";
 import { FLUX_THEMES, getFluxTheme } from "./flux-themes.js";
 import {
@@ -1160,7 +1163,7 @@ function MusicControl({ genreId, selection, onOpen, musicMode, soundtrackSnapsho
   );
 }
 
-function VisualPicker({ environmentId, onChange, onOpenDiscover, onClose }) {
+function VisualPicker({ environmentId, onChange, onOpenDiscover, onSelectGradient, onClose }) {
   return (
     <DialogSurface
       className="diagnostic-drawer score-drawer environment-drawer"
@@ -1174,7 +1177,10 @@ function VisualPicker({ environmentId, onChange, onOpenDiscover, onClose }) {
       <ul className="score-list">
         {FLUX_VISUAL_CHOICES.map((entry) => {
           const destination = entry.kind === "destination";
-          const active = !destination && entry.id === environmentId;
+          const family = entry.kind === "family";
+          const active = family
+            ? isShaderGradientEnvironmentId(environmentId)
+            : !destination && entry.id === environmentId;
           return (
             <li key={entry.id}>
               <button
@@ -1183,13 +1189,16 @@ function VisualPicker({ environmentId, onChange, onOpenDiscover, onClose }) {
                 aria-pressed={destination ? undefined : active}
                 onClick={() => {
                   if (destination) onOpenDiscover();
+                  else if (family) onSelectGradient();
                   else onChange(entry.id);
                   onClose();
                 }}
               >
                 <span className="score-entry-number">{entry.number}</span>
                 <span className="score-entry-body"><strong>{displayLabel(entry)}</strong><span>{entry.launchDescription}</span></span>
-                <span className="score-entry-state">{destination ? "OPEN" : active ? "ACTIVE" : "SELECT"}</span>
+                <span className="score-entry-state">
+                  {destination ? "OPEN" : family ? (active ? "ACTIVE" : "SELECT") : active ? "ACTIVE" : "SELECT"}
+                </span>
               </button>
             </li>
           );
@@ -1254,6 +1263,28 @@ function PrtclCycleControl({ settings, onChange }) {
         >
           <span>TYPE</span>
           <small>{current.label}</small>
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function ShaderGradientCycleControl({ environment, onChange }) {
+  const nextEnvironment = getFluxEnvironment(nextShaderGradientEnvironmentId(environment.id));
+  return (
+    <div
+      className="gradient-cycle-control"
+      onPointerDown={(event) => event.stopPropagation()}
+    >
+      <div className="gradient-cycle-rail">
+        <button
+          className="visual-cycle-button visual-gradient-cycle"
+          type="button"
+          aria-label={`Gradient variant ${displayLabel(environment)}. Next ${displayLabel(nextEnvironment)}`}
+          onClick={() => onChange(nextEnvironment.id)}
+        >
+          <span>VARIANT</span>
+          <small>{environment.variantLabel}</small>
         </button>
       </div>
     </div>
@@ -1791,6 +1822,7 @@ function LaunchSelector({
   environmentId,
   onMusicChange,
   onEnvironmentChange,
+  onSelectGradient,
   onBack,
   onStart,
   musicReady = true,
@@ -1834,18 +1866,30 @@ function LaunchSelector({
             className="launch-visual-grid"
             style={{ "--launch-visual-row-count": Math.max(2, Math.ceil(FLUX_VISUAL_CHOICES.length / 3)) }}
           >
-            {FLUX_VISUAL_CHOICES.map((choice) => (
-              <button
-                key={choice.id}
-                className="launch-choice-button launch-visual-button"
-                type="button"
-                aria-pressed={environmentId === choice.id}
-                onClick={() => onEnvironmentChange(choice.id)}
-              >
-                <strong>{displayLabel(choice)}</strong>
-                <small>{choice.launchDescription}</small>
-              </button>
-            ))}
+            {FLUX_VISUAL_CHOICES.map((choice) => {
+              const family = choice.kind === "family";
+              const active = family
+                ? isShaderGradientEnvironmentId(environmentId)
+                : environmentId === choice.id;
+              const description = family && active
+                ? `${displayLabel(getFluxEnvironment(environmentId))} selected`
+                : choice.launchDescription;
+              return (
+                <button
+                  key={choice.id}
+                  className={`launch-choice-button launch-visual-button${family ? " is-family" : ""}`}
+                  type="button"
+                  aria-pressed={active}
+                  onClick={() => {
+                    if (family) onSelectGradient();
+                    else onEnvironmentChange(choice.id);
+                  }}
+                >
+                  <strong>{displayLabel(choice)}{family ? <span className="launch-choice-number"> 08</span> : null}</strong>
+                  <small>{description}</small>
+                </button>
+              );
+            })}
           </div>
         </fieldset>
       </div>
@@ -1989,6 +2033,11 @@ export function App() {
   const accuracyRef = useRef(accuracy);
   const audioLevelRef = useRef(audioLevel);
   const environmentIdRef = useRef(environmentId);
+  const lastGradientVariantRef = useRef(
+    isShaderGradientEnvironmentId(initialPreferences.environmentId)
+      ? initialPreferences.environmentId
+      : SHADERGRADIENT_ENVIRONMENTS[0].id,
+  );
   const prtclSettingsRef = useRef(prtclSettings);
   const genreIdRef = useRef(genreId);
   const rendererRef = useRef(renderer);
@@ -3671,6 +3720,9 @@ export function App() {
 
   useEffect(() => {
     setEnvironmentRuntimeError(null);
+    if (isShaderGradientEnvironmentId(environmentId)) {
+      lastGradientVariantRef.current = environmentId;
+    }
   }, [environmentId]);
 
   return (
@@ -3798,6 +3850,19 @@ export function App() {
           onChange={(value) => setPrtclSettings(normalizePrtclSettings(value))}
         />
       ) : null}
+      {phase === "running" && environment.renderer === "shadergradient" ? (
+        <ShaderGradientCycleControl
+          environment={environment}
+          onChange={(nextEnvironmentId) => {
+            lastGradientVariantRef.current = nextEnvironmentId;
+            setEnvironmentId(nextEnvironmentId);
+            logDiagnosticEvent("environment.variant.changed", {
+              environment: nextEnvironmentId,
+              family: "gradient-08",
+            });
+          }}
+        />
+      ) : null}
       {keyboardHint ? <div className="keyboard-hint" role="status">{keyboardHint}</div> : null}
 
       {phase !== "running" ? (
@@ -3899,6 +3964,7 @@ export function App() {
             musicReady={launchMusicId !== "soundtrack" || ["prepared", "paused", "playing"].includes(soundtrackSnapshot?.status)}
             onMusicChange={selectLaunchMusic}
             onEnvironmentChange={setLaunchEnvironmentId}
+            onSelectGradient={() => setLaunchEnvironmentId(lastGradientVariantRef.current)}
             onBack={() => setPhase("idle")}
             onStart={() => runHarness({
               musicId: launchMusicId,
@@ -4273,6 +4339,14 @@ export function App() {
           onOpenDiscover={() => {
             setDiscoverOpen(true);
             logDiagnosticEvent("discover.opened", { source: "visual-library" });
+          }}
+          onSelectGradient={() => {
+            const nextEnvironmentId = lastGradientVariantRef.current;
+            setEnvironmentId(nextEnvironmentId);
+            logDiagnosticEvent("environment.changed", {
+              environment: nextEnvironmentId,
+              family: "gradient-08",
+            });
           }}
           onClose={() => setEnvironmentPickerOpen(false)}
         />

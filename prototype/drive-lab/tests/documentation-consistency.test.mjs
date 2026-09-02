@@ -128,14 +128,14 @@ test("future ideas preserve owner provenance and the motion-input truth boundary
   assert.match(plan, /Prefer an honest motion-reactive first spike/);
 });
 
-test("the three ShaderGradient visuals replace Gradient and GPS journey continuity stays session-only", () => {
+test("one Gradient family owns three ShaderGradient variants and GPS journey continuity stays session-only", () => {
   const checklist = read("docs/MILESTONE-CHECKLIST-2026-08-31.md");
   const productSpec = read("docs/PRODUCT-SPEC.md");
   const testQueue = read("docs/TESLA-TEST-QUEUE-2026-08-31.md");
 
-  assert.match(checklist, /JAPANESE MIST 08/);
-  assert.match(checklist, /ACID ORCHARD 09/);
-  assert.match(checklist, /CHROMATIC SILK 10/);
+  assert.match(checklist, /one public `GRADIENT 08` family/);
+  assert.match(checklist, /Japanese Mist, Acid Orchard, and Chromatic Silk/);
+  assert.match(checklist, /persistent in-visual `VARIANT` button/);
   assert.match(checklist, /retired and deleted the earlier project-owned `GRADIENT 08`/);
   assert.match(checklist, /app-level collector must continue for the whole running session/);
   assert.match(productSpec, /regardless of the selected visual/);

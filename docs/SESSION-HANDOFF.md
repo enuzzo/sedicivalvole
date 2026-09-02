@@ -43,19 +43,17 @@ The registry is `prototype/drive-lab/src/flux-environments.js`.
 | ATLAS 04 | lazy MapLibre/OpenFreeMap WebGL plus one Canvas2D dashboard | ephemeral GPS or explicit Milan demo drives 3D city tiles, a bounded complete-view route, one pulsing position point and a Navigator Plaque; the owner-selected Drive Lab cycles `15 MIN / 1 H / SESSION` across Speed/Distance/Moving/Average, Accel/Braking, five speed bands, continuous Heading history, Moving/Stopped and full-width Open-Meteo/Copernicus Elevation; an icon-only `36 × 30 px` midpoint tab collapses it and ATLAS contains no Discover/Wikipedia surface |
 | DRIVEY 05 | byte-identical Rezmason runtime plus project bridge | road following, lane-centred zero hold, opposing-only traffic, three cameras, and normal/wire modes |
 | PRTCL 06 | original WebGL2 particle renderer | Fractal Frequency, Murmuration, and Axiom with speed-owned form/point scale, depth, and travel; UNDERWATER collapses the complete form dramatically and surfaces quickly |
-| JAPANESE MIST 08 | lazy ShaderGradient plus Canvas2D fallback | exact selected water-plane starting point; half-speed idle motion, bounded road and optional Play the Road audio response |
-| ACID ORCHARD 09 | lazy ShaderGradient plus Canvas2D fallback | exact selected plane starting point; high-contrast folding with the same response boundary |
-| CHROMATIC SILK 10 | lazy ShaderGradient plus Canvas2D fallback | exact selected cosmic sphere starting point; luminous sculptural folds with the same response boundary |
-The first six visuals use ten curated palettes; the three ShaderGradient entries
+| GRADIENT 08 | lazy ShaderGradient plus Canvas2D fallback | one family with exact Japanese Mist water plane, Acid Orchard plane, and Chromatic Silk cosmic-sphere variants; the persistent VARIANT control cycles them without a drawer or reload |
+The first six visuals use ten curated palettes; the three Gradient variants
 retain their exact selected colour identities. Vertigo is recoloured without
 editing its vendor tree. Aperture is the fresh-session and invalid-preference fallback;
 PLUMB and every other retired identifier resolve to it. The fixed
 visual/music energy ceiling is `130 km/h`; Aperture must already read as a
 tunnel near `40 km/h`.
 
-The driver-facing Visual catalogue adds **DISCOVER 07** beside those nine
-renderers. It is a destination, not a render environment: the launch selector
-fits all ten choices and opens the Passenger Index over Aperture, while the
+The driver-facing Visual catalogue adds **DISCOVER 07** beside those seven
+rendered families. It is a destination, not a render environment: the launch selector
+fits all eight primary choices and opens the Passenger Index over Aperture, while the
 running Visual library opens the same surface without changing the active
 environment. Closing Discover returns to the real visual and normal focus
 recovery. This placement is implemented in `e268169`; canonical publication is
@@ -441,10 +439,11 @@ Checkpoint `1a79cea` is published as protected build `20260902-1341` after
 read-only pre/postflight, complete packaging and canonical HTTP gate checks.
 The live owner gate is clean; authenticated Tesla rendering remains `R11A-01`.
 
-Later that day the owner selected all three registered starting points as
-autonomous public visuals, not variants: **JAPANESE MIST 08**, **ACID ORCHARD
-09**, and **CHROMATIC SILK 10**. The former project-owned Gradient is deleted;
-its stored identifier migrates to Japanese Mist. The exact upstream stack is
+Later that day the owner selected all three registered starting points, then
+clarified that they belong inside one public **GRADIENT 08** family as the
+**Japanese Mist**, **Acid Orchard**, and **Chromatic Silk** variants. The former
+project-owned Gradient renderer is deleted; its stored identifier migrates to
+Japanese Mist. The exact upstream stack is
 unmodified and moves to production dependencies, isolated in one lazy chunk.
 Project code owns the registry, bounded road/audio response, telemetry, reduced
 motion, and Canvas2D fallback. Product checkpoint `8f300ee` is canonical as

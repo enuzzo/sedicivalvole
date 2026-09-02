@@ -66,11 +66,13 @@ test("the selected Instrument Deck resolves Music and Visual before START", () =
   assert.match(app, /const BRAND_MARK_URL = `\/brand\/sedicivalvole-mark\.svg\?build=\$\{encodeURIComponent\(APP_BUILD\)\}`/);
   assert.match(selector, /className="launch-selector-mark"[\s\S]*?src=\{BRAND_MARK_URL\}[\s\S]*?alt=""[\s\S]*?aria-hidden="true"/);
   assert.match(selector, /FLUX_VISUAL_CHOICES\.map/);
+  assert.match(selector, /isShaderGradientEnvironmentId\(environmentId\)/);
+  assert.match(selector, /if \(family\) onSelectGradient\(\)/);
   assert.match(selector, /disabled=\{!ready\}/);
   assert.match(selector, /musicId && environmentId/);
   assert.match(selector, /choice\.launchDescription/);
   assert.match(selector, /<strong>\{choice\.displayLabel\}<\/strong>/);
-  assert.match(selector, /<strong>\{displayLabel\(choice\)\}<\/strong>/);
+  assert.match(selector, /<strong>\{displayLabel\(choice\)\}\{family \? <span className="launch-choice-number"> 08<\/span> : null\}<\/strong>/);
   assert.match(app, /displayLabel: "Play the Road"/);
   assert.match(app, /displayLabel: "Soundtrack"/);
   assert.match(app, /displayLabel: "Mute"/);
@@ -112,6 +114,10 @@ test("the running Visual library uses a complete two-column Tesla catalogue", ()
   const app = read("App.jsx");
   const styles = read("styles.css");
   assert.match(app, /<span>\{entry\.launchDescription\}<\/span>/);
+  assert.match(app, /function ShaderGradientCycleControl/);
+  assert.match(app, /nextShaderGradientEnvironmentId\(environment\.id\)/);
+  assert.match(app, /environment\.renderer === "shadergradient"[\s\S]*?<ShaderGradientCycleControl/);
+  assert.match(app, /onSelectGradient=\{\(\) => setLaunchEnvironmentId\(lastGradientVariantRef\.current\)\}/);
   assert.match(styles, /\.environment-drawer \.score-list \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\); gap: 8px; margin-top: 12px; \}/);
   assert.match(styles, /\.environment-drawer \.score-entry \{[\s\S]*?min-height: 86px;[\s\S]*?padding: 11px 13px;/);
   assert.match(styles, /\.environment-drawer \.score-entry-number,[\s\S]*?font-size: 17px/);

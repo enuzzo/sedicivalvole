@@ -20,13 +20,15 @@ dated study documents.
   `logo/`; the current app packages and advertises the browser icons. The mark
   fills its 512 px canvas to a 15–18 px optical edge. The selected mark now sits
   beside the textual wordmark in the compact Signal Gate launch surface.
-- The source checkout's Flux catalogue contains ten driver-facing Visual
-  choices: nine rendered environments,
+- The source checkout's Flux catalogue contains eight driver-facing Visual
+  choices: seven rendered environment families,
   **APERTURE 01**, **VERTIGO 02**, **MERIDIAN 03**, **ATLAS 04**, **DRIVEY 05**,
-  the human-approved **PRTCL 06**, and the owner-selected ShaderGradient visuals
-  **JAPANESE MIST 08**, **ACID ORCHARD 09**, and **CHROMATIC SILK 10**, plus the
+  the human-approved **PRTCL 06**, and the owner-selected **GRADIENT 08** family
+  with **Japanese Mist**, **Acid Orchard**, and **Chromatic Silk** variants, plus the
   separate **DISCOVER 07** Passenger Index destination. The initial Instrument
-  Deck and running Visual library expose the same ten actions at `773 × 601`.
+  Deck and running Visual library expose the same eight actions at `773 × 601`.
+  Diagnostics retain the internal variant identities `JAPANESE MIST`,
+  `ACID ORCHARD`, and `CHROMATIC SILK` without promoting them to catalogue rows.
   Discover never enters the renderer registry: launch uses
   Aperture behind the passenger surface and closing it returns to a real visual.
   Aperture
@@ -46,7 +48,7 @@ dated study documents.
   editing the vendor files; PRTCL changes complete-form and point scale,
   depth/travel, palette pulse, spread, attenuation, and glow through shared
   frame-rate-independent macro envelopes within its own particle grammar; the
-  three ShaderGradient visuals use their exact registered starting points with
+  three ShaderGradient variants use their exact registered starting points with
   half-speed idle motion, bounded road response, optional Play the Road audio
   energy, and speed-only Soundtrack behavior.
 - The selected **Focus Canvas** owner LAB is implemented and canonically
@@ -215,11 +217,11 @@ dated study documents.
   removed; the dated admission record and Git history remain as provenance.
   Its successor, the earlier project-owned `GRADIENT 08`, was then itself
   retired by the owner on 2026-09-02. Stored `gradient` preferences migrate to
-  `JAPANESE MIST 08`; the old renderer, model, and fallback are deleted.
+  the Japanese Mist variant; the old renderer, model, and fallback are deleted.
 - On 2026-09-02, the owner promoted all three exact registered starting points
-  from the MIT `@shadergradient/react@2.4.20` comparison workbench as autonomous
-  public visuals: **JAPANESE MIST 08**, **ACID ORCHARD 09**, and
-  **CHROMATIC SILK 10**. The package and pinned Three/R3F peers are production
+  from the MIT `@shadergradient/react@2.4.20` comparison workbench as variants
+  of one public **GRADIENT 08** family: **Japanese Mist**, **Acid Orchard**, and
+  **Chromatic Silk**. The package and pinned Three/R3F peers are production
   dependencies isolated in one lazy product chunk. Project-owned adapters own
   bounded road/audio response, runtime telemetry, reduced motion, and Canvas2D
   fallback; no upstream source is modified. The LABs retain direct geometry,
@@ -760,9 +762,9 @@ and also have office implementation in checkpoint `d45f8dd`:
   fresh-mix notice, larger filter/track/artist copy, and rebalanced Now Playing
   without page scroll (`R7-13`);
 - the running Visual drawer is a two-column, description-led no-scroll
-  surface. The registry now contains ten choices—nine renderers plus Discover.
-  The retired project-owned Gradient is replaced by three autonomous lazy
-  ShaderGradient visuals;
+  surface. The primary catalogue now contains eight choices—seven rendered
+  families plus Discover. One Gradient entry starts its remembered variant; a
+  persistent in-visual control cycles its three exact lazy ShaderGradient variants;
 - APERTURE smooths its raw low-speed wall input and caches canvas dimensions,
   removing the per-frame layout read without slowing its motion (`R5-07`);
 - versioned safe product preferences restore across supported history and
@@ -776,8 +778,8 @@ and also have office implementation in checkpoint `d45f8dd`:
   The watch, latest/eight-sample position buffer, bounded route and Drive Lab
   journey aggregation are App-scoped and survive ATLAS remounts.
 
-Row 11's earlier Original Gradient Field is retired. Its replacement—Japanese
-Mist 08, Acid Orchard 09, and Chromatic Silk 10—has automated plus exact local
+Row 11's earlier Original Gradient Field is retired. Its replacement—one
+Gradient 08 family with Japanese Mist, Acid Orchard, and Chromatic Silk variants—has automated plus exact local
 and canonical `773 × 601` WebGL/console PASS in build `20260902-1801` from
 product checkpoint `8f300ee`; the complete suite passes `563/563`. Canonical
 HTML, main JavaScript, CSS and the lazy
@@ -785,7 +787,7 @@ ShaderGradient chunk are byte-identical to the verified candidate. Target-Tesla
 motion/performance acceptance remains open.
 
 Row 11A's comparison bench is complete locally and inside the protected LAB. Its
-three selected studies now also enter the public product as separate lazy
+three selected studies now also enter the public product as variants behind one lazy
 visuals. For pinned ShaderGradient `2.4.20`, the workbench
 exposes all ten exported upstream presets, all three geometries, all four
 registered shader families, and every useful public visual/runtime parameter in

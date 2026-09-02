@@ -7,8 +7,12 @@ import {
   FLUX_ENVIRONMENTS,
   FLUX_VISUAL_CHOICES,
   getFluxEnvironment,
+  isShaderGradientEnvironmentId,
   migrateLegacyEnvironmentPreference,
   nextFluxEnvironmentId,
+  nextShaderGradientEnvironmentId,
+  SHADERGRADIENT_ENVIRONMENTS,
+  SHADERGRADIENT_VISUAL_CHOICE,
 } from "../src/flux-environments.js";
 
 const appSource = readFileSync(new URL("../src/App.jsx", import.meta.url), "utf8");
@@ -38,23 +42,38 @@ test("exposes the authored environments in a stable order", () => {
   assert.equal(getFluxEnvironment("prtcl").number, "06");
   assert.equal(getFluxEnvironment("japanese-mist").label, "JAPANESE MIST");
   assert.equal(getFluxEnvironment("japanese-mist").number, "08");
-  assert.equal(getFluxEnvironment("acid-orchard").number, "09");
-  assert.equal(getFluxEnvironment("chromatic-silk").number, "10");
+  assert.equal(getFluxEnvironment("acid-orchard").number, "08");
+  assert.equal(getFluxEnvironment("chromatic-silk").number, "08");
   assert.equal(getFluxEnvironment("plumb").id, "aperture");
   assert.equal(getFluxEnvironment("register").id, "aperture");
   assert.equal(getFluxEnvironment("latitudes").id, "aperture");
 });
 
-test("keeps Discover seventh and adds the three selected ShaderGradient visuals", () => {
+test("keeps Discover seventh and exposes one Gradient 08 family", () => {
   assert.deepEqual(
     FLUX_VISUAL_CHOICES.map(({ id }) => id),
-    ["aperture", "vertigo", "meridian", "atlas", "drivey", "prtcl", "discover", "japanese-mist", "acid-orchard", "chromatic-silk"],
+    ["aperture", "vertigo", "meridian", "atlas", "drivey", "prtcl", "discover", "shadergradient"],
   );
   assert.equal(DISCOVER_VISUAL_CHOICE.number, "07");
   assert.equal(DISCOVER_VISUAL_CHOICE.kind, "destination");
   assert.equal(FLUX_ENVIRONMENTS.some(({ id }) => id === "discover"), false);
   assert.equal(getFluxEnvironment("discover").id, DEFAULT_FLUX_ENVIRONMENT_ID);
-  assert.equal(FLUX_VISUAL_CHOICES.at(-1).number, "10");
+  assert.equal(SHADERGRADIENT_VISUAL_CHOICE.kind, "family");
+  assert.equal(SHADERGRADIENT_VISUAL_CHOICE.number, "08");
+  assert.equal(FLUX_VISUAL_CHOICES.at(-1), SHADERGRADIENT_VISUAL_CHOICE);
+  assert.deepEqual(SHADERGRADIENT_ENVIRONMENTS.map(({ id }) => id), [
+    "japanese-mist",
+    "acid-orchard",
+    "chromatic-silk",
+  ]);
+  assert.equal(isShaderGradientEnvironmentId("japanese-mist"), true);
+  assert.equal(isShaderGradientEnvironmentId("acid-orchard"), true);
+  assert.equal(isShaderGradientEnvironmentId("chromatic-silk"), true);
+  assert.equal(isShaderGradientEnvironmentId("aperture"), false);
+  assert.equal(nextShaderGradientEnvironmentId("japanese-mist"), "acid-orchard");
+  assert.equal(nextShaderGradientEnvironmentId("acid-orchard"), "chromatic-silk");
+  assert.equal(nextShaderGradientEnvironmentId("chromatic-silk"), "japanese-mist");
+  assert.equal(nextShaderGradientEnvironmentId("unknown"), "japanese-mist");
 });
 
 test("keeps Aperture as the accepted fresh and invalid-preference default", () => {
@@ -82,9 +101,8 @@ test("keeps rejected visual renderers outside the active runtime and QA", () => 
   assert.doesNotMatch(packageSource, /tests\/(?:latitudes|register|plumb|wake|primordial)-model\.test\.mjs|test:(?:wake|primordial)/);
 });
 
-test("gives every environment a unique identifier, number, and renderer", () => {
+test("gives every internal environment a unique identifier and renderer study", () => {
   const ids = new Set();
-  const numbers = new Set();
   const rendererStudies = new Set();
   for (const environment of FLUX_ENVIRONMENTS) {
     assert.ok(environment.label && environment.displayLabel && environment.rendererLabel, environment.id);
@@ -92,12 +110,11 @@ test("gives every environment a unique identifier, number, and renderer", () => 
     assert.notEqual(environment.displayLabel, environment.label, environment.id);
     assert.equal(typeof environment.themed, "boolean", environment.id);
     ids.add(environment.id);
-    numbers.add(environment.number);
     rendererStudies.add(`${environment.renderer}:${environment.studyId ?? environment.id}`);
   }
   assert.equal(ids.size, FLUX_ENVIRONMENTS.length);
-  assert.equal(numbers.size, FLUX_ENVIRONMENTS.length);
   assert.equal(rendererStudies.size, FLUX_ENVIRONMENTS.length);
+  assert.equal(new Set(FLUX_VISUAL_CHOICES.map(({ number }) => number)).size, FLUX_VISUAL_CHOICES.length);
 });
 
 test("connects every implemented environment to body-colour theming", () => {

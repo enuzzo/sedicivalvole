@@ -81,6 +81,7 @@ export const FLUX_ENVIRONMENTS = [
     label: "JAPANESE MIST",
     displayLabel: "Japanese Mist",
     number: "08",
+    variantLabel: "MIST",
     rendererLabel: "ShaderGradient water plane",
     launchDescription: "Soft water and slow chromatic tide",
     renderer: "shadergradient",
@@ -91,7 +92,8 @@ export const FLUX_ENVIRONMENTS = [
     id: "acid-orchard",
     label: "ACID ORCHARD",
     displayLabel: "Acid Orchard",
-    number: "09",
+    number: "08",
+    variantLabel: "ORCHARD",
     rendererLabel: "ShaderGradient graphic plane",
     launchDescription: "Punchy speed-led graphic folding",
     renderer: "shadergradient",
@@ -102,7 +104,8 @@ export const FLUX_ENVIRONMENTS = [
     id: "chromatic-silk",
     label: "CHROMATIC SILK",
     displayLabel: "Chromatic Silk",
-    number: "10",
+    number: "08",
+    variantLabel: "SILK",
     rendererLabel: "ShaderGradient cosmic sphere",
     launchDescription: "Luminous sculptural colour folds",
     renderer: "shadergradient",
@@ -126,10 +129,39 @@ export const DISCOVER_VISUAL_CHOICE = {
   kind: "destination",
 };
 
+// ShaderGradient is one authored visual family in the driver-facing catalogue.
+// Its exact studies remain separate internal environments so persisted choices,
+// diagnostics, and renderer recovery retain the selected variant.
+export const SHADERGRADIENT_ENVIRONMENTS = FLUX_ENVIRONMENTS.filter(
+  ({ renderer }) => renderer === "shadergradient",
+);
+
+export const SHADERGRADIENT_VISUAL_CHOICE = {
+  id: "shadergradient",
+  label: "GRADIENT",
+  displayLabel: "Gradient",
+  number: "08",
+  rendererLabel: "ShaderGradient family",
+  launchDescription: "Three reactive gradient variants",
+  kind: "family",
+};
+
+export function isShaderGradientEnvironmentId(environmentId) {
+  return SHADERGRADIENT_ENVIRONMENTS.some(({ id }) => id === environmentId);
+}
+
+export function nextShaderGradientEnvironmentId(environmentId) {
+  const index = SHADERGRADIENT_ENVIRONMENTS.findIndex(({ id }) => id === environmentId);
+  if (index < 0) return SHADERGRADIENT_ENVIRONMENTS[0].id;
+  return SHADERGRADIENT_ENVIRONMENTS[
+    (index + 1) % SHADERGRADIENT_ENVIRONMENTS.length
+  ].id;
+}
+
 export const FLUX_VISUAL_CHOICES = [
-  ...FLUX_ENVIRONMENTS.filter(({ id }) => !["japanese-mist", "acid-orchard", "chromatic-silk"].includes(id)),
+  ...FLUX_ENVIRONMENTS.filter(({ renderer }) => renderer !== "shadergradient"),
   DISCOVER_VISUAL_CHOICE,
-  ...FLUX_ENVIRONMENTS.filter(({ id }) => ["japanese-mist", "acid-orchard", "chromatic-silk"].includes(id)),
+  SHADERGRADIENT_VISUAL_CHOICE,
 ];
 
 export function getFluxEnvironment(environmentId) {

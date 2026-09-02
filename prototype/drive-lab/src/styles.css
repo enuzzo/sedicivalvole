@@ -146,7 +146,8 @@ button { -webkit-tap-highlight-color: transparent; }
 }
 
 .drivey-cycle-control,
-.prtcl-cycle-control {
+.prtcl-cycle-control,
+.gradient-cycle-control {
   position: absolute;
   top: 82px;
   left: 16px;
@@ -156,7 +157,8 @@ button { -webkit-tap-highlight-color: transparent; }
   transition: opacity 240ms ease;
 }
 .controls-resting .drivey-cycle-control,
-.controls-resting .prtcl-cycle-control { opacity: .58; }
+.controls-resting .prtcl-cycle-control,
+.controls-resting .gradient-cycle-control { opacity: .58; }
 .drivey-cycle-rail {
   display: grid;
   grid-template-columns: repeat(2, 94px);
@@ -165,6 +167,10 @@ button { -webkit-tap-highlight-color: transparent; }
 .prtcl-cycle-rail {
   display: grid;
   grid-template-columns: 94px;
+}
+.gradient-cycle-rail {
+  display: grid;
+  grid-template-columns: 116px;
 }
 .visual-cycle-button {
   display: grid;
@@ -594,6 +600,17 @@ button { -webkit-tap-highlight-color: transparent; }
 .launch-choice-button:disabled small,
 .launch-choice-button:disabled em { color: var(--sheet-disabled); }
 .launch-visual-button { min-height: 0; }
+.launch-choice-number { color: var(--sheet-signal); }
+.launch-visual-button.is-family::after {
+  position: absolute;
+  right: 9px;
+  bottom: 8px;
+  color: var(--sheet-signal);
+  font-size: 9px;
+  font-weight: var(--font-weight-label);
+  letter-spacing: .08em;
+  content: "3 VARIANTS";
+}
 .launch-start-button {
   width: 100%;
   min-height: 58px;
@@ -2789,7 +2806,8 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
 
 @media (max-width: 650px) {
   .drivey-cycle-control,
-  .prtcl-cycle-control { top: 76px; left: 12px; }
+  .prtcl-cycle-control,
+  .gradient-cycle-control { top: 76px; left: 12px; }
   .atlas-field { --atlas-panel-width: 190px; }
   .atlas-panel { width: 190px; bottom: 224px; padding: 14px 11px 9px; }
   .atlas-selected-context { gap: 6px; }

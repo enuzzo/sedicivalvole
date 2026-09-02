@@ -45,14 +45,14 @@ licensor identity. It does not imply a studio, company, or other legal entity.
 Third-party authors and rights holders retain the ownership, licences, and
 credits recorded in `THIRD_PARTY_NOTICES.md`.
 
-## 2026-09-02 — Three ShaderGradient studies promoted to the public catalogue
+## 2026-09-02 — Three ShaderGradient studies promoted as one public family
 
 The owner explicitly selected the three registered LAB starting points as
-autonomous public visuals and retired the earlier project-owned `GRADIENT 08`:
-`JAPANESE MIST 08`, `ACID ORCHARD 09`, and `CHROMATIC SILK 10`. The exact,
+Japanese Mist, Acid Orchard, and Chromatic Silk variants of one public
+`GRADIENT 08` family and retired the earlier project-owned renderer. The exact,
 unmodified `@shadergradient/react@2.4.20` package and pinned Three/R3F peers are
 therefore production dependencies. They are loaded only through a separate lazy
-product chunk when one of those three visuals is selected and remain available
+product chunk when one of those three variants is selected and remain available
 in both LAB surfaces.
 
 The retained MIT notice remains `licenses/ShaderGradient-MIT.txt`; no upstream

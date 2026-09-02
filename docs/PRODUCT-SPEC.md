@@ -202,11 +202,11 @@ renderer, fallback, tuner, preference payload, catalog entry, QA path and active
 tests are removed. Git and the dated source-admission record retain the decision
 history. Its first successor, the project-owned `GRADIENT 08`, was also retired
 by explicit owner decision on 2026-09-02; its renderer, model, and fallback are
-deleted, while stored `gradient` preferences migrate to `JAPANESE MIST 08`.
+deleted, while stored `gradient` preferences migrate to the Japanese Mist variant.
 
-The owner selected the three exact ShaderGradient LAB starting points as three
-autonomous public visuals: `JAPANESE MIST 08`, `ACID ORCHARD 09`, and
-`CHROMATIC SILK 10`. They use the unmodified MIT
+The owner selected the three exact ShaderGradient LAB starting points as
+Japanese Mist, Acid Orchard, and Chromatic Silk variants of one public
+`GRADIENT 08` family. They use the unmodified MIT
 `@shadergradient/react@2.4.20` renderer and pinned Three/R3F peers through one
 separate lazy product chunk. Project-owned adapters register the exact settings,
 map speed from half-rate idle motion to the fixed `130 km/h` endpoint, admit

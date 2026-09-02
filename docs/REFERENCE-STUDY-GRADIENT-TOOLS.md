@@ -136,10 +136,10 @@ fallbacks.
 - **Source, embed, export, preset, or dependency admitted:** ShaderGradient is
   admitted as exact unmodified MIT production dependencies for one lazy public
   renderer chunk and both LAB surfaces; FeralUI and ColorFlow remain unadmitted.
-- **Product views implemented:** the exact registered `JAPANESE MIST 08`,
-  `ACID ORCHARD 09`, and `CHROMATIC SILK 10` starting points. The former
-  project-owned Gradient is retired and deleted.
-- **Selected direction:** all three starting points are autonomous public
-  visuals, not variants behind one entry.
+- **Product view implemented:** one public `GRADIENT 08` family with the exact
+  registered Japanese Mist, Acid Orchard, and Chromatic Silk starting points as
+  its variants. The former project-owned Gradient renderer is retired and deleted.
+- **Selected direction:** all three starting points are variants behind one
+  family entry, not autonomous numbered visuals.
 - **Remaining gate:** target-Tesla motion, switching, frame pacing, grain,
   audio/source boundary, sustained run, and thermal acceptance.

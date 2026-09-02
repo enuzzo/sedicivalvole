@@ -6,19 +6,29 @@ import {
   shaderGradientResponse,
   SHADERGRADIENT_STUDY_IDS,
 } from "../src/environments/shadergradient/studies.js";
+import {
+  FLUX_VISUAL_CHOICES,
+  SHADERGRADIENT_ENVIRONMENTS,
+  SHADERGRADIENT_VISUAL_CHOICE,
+} from "../src/flux-environments.js";
 
 const read = (path) => readFile(new URL(path, import.meta.url), "utf8");
 const fieldSource = await read("../src/environments/shadergradient/shadergradient-field.jsx");
 const appSource = await read("../src/App.jsx");
 const packageSource = JSON.parse(await read("../package.json"));
 
-test("the three owner-selected ShaderGradient studies replace the retired Gradient", () => {
+test("three owner-selected ShaderGradient studies power one Gradient 08 family", () => {
   assert.deepEqual(SHADERGRADIENT_STUDY_IDS, ["japanese-mist", "acid-orchard", "chromatic-silk"]);
   assert.equal(getShaderGradientStudy("japanese-mist").type, "waterPlane");
   assert.equal(getShaderGradientStudy("acid-orchard").type, "plane");
   assert.equal(getShaderGradientStudy("chromatic-silk").type, "sphere");
   assert.equal(getShaderGradientStudy("chromatic-silk").shader, "cosmic");
   assert.equal(getShaderGradientStudy("unknown").id, "japanese-mist");
+  assert.equal(SHADERGRADIENT_VISUAL_CHOICE.number, "08");
+  assert.equal(SHADERGRADIENT_VISUAL_CHOICE.kind, "family");
+  assert.equal(FLUX_VISUAL_CHOICES.filter(({ kind }) => kind === "family").length, 1);
+  assert.equal(SHADERGRADIENT_ENVIRONMENTS.length, 3);
+  assert.deepEqual(new Set(SHADERGRADIENT_ENVIRONMENTS.map(({ number }) => number)), new Set(["08"]));
 });
 
 test("every study runs at half base speed at rest and retains its former 130 km/h endpoint", () => {
