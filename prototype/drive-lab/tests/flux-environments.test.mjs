@@ -60,6 +60,9 @@ test("keeps Discover seventh and exposes one Gradient 08 family", () => {
   assert.equal(getFluxEnvironment("discover").id, DEFAULT_FLUX_ENVIRONMENT_ID);
   assert.equal(SHADERGRADIENT_VISUAL_CHOICE.kind, "family");
   assert.equal(SHADERGRADIENT_VISUAL_CHOICE.number, "08");
+  assert.equal(SHADERGRADIENT_VISUAL_CHOICE.choiceBadge, "3 VARIANTS");
+  assert.equal(FLUX_VISUAL_CHOICES.find(({ id }) => id === "drivey").choiceBadge, "3 VIEWS · 2 RENDERS");
+  assert.equal(FLUX_VISUAL_CHOICES.find(({ id }) => id === "prtcl").choiceBadge, "3 TYPES");
   assert.equal(FLUX_VISUAL_CHOICES.at(-1), SHADERGRADIENT_VISUAL_CHOICE);
   assert.deepEqual(SHADERGRADIENT_ENVIRONMENTS.map(({ id }) => id), [
     "japanese-mist",
@@ -74,6 +77,12 @@ test("keeps Discover seventh and exposes one Gradient 08 family", () => {
   assert.equal(nextShaderGradientEnvironmentId("acid-orchard"), "chromatic-silk");
   assert.equal(nextShaderGradientEnvironmentId("chromatic-silk"), "japanese-mist");
   assert.equal(nextShaderGradientEnvironmentId("unknown"), "japanese-mist");
+});
+
+test("Aperture shares one longitudinal grid origin across every tunnel plane", () => {
+  assert.match(apertureFieldSource, /Every wall shares one exact longitudinal origin/);
+  assert.equal((apertureFieldSource.match(/3\.5 \+ depth - u_flow/g) ?? []).length, 2);
+  assert.doesNotMatch(apertureFieldSource, /3\.5 \* u_aspect \+ depth - u_flow/);
 });
 
 test("keeps Aperture as the accepted fresh and invalid-preference default", () => {

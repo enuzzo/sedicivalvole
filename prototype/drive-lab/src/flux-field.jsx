@@ -94,7 +94,10 @@ const FRAGMENT_SHADER = `#version 300 es
     bool isSide = absX >= absY;
     vec2 gridPos;
     if (isSide) {
-      gridPos = vec2(sign(uvNorm.x) * (3.5 * u_aspect + depth - u_flow), uvNorm.y * 3.5 / absX);
+      // Every wall shares one exact longitudinal origin. The prior side-wall
+      // aspect offset shifted its depth cuts away from the top/bottom cuts,
+      // so the four perspective seams no longer met cleanly at the corners.
+      gridPos = vec2(sign(uvNorm.x) * (3.5 + depth - u_flow), uvNorm.y * 3.5 / absX);
     } else {
       gridPos = vec2(uvNorm.x * u_aspect * 3.5 / absY, sign(uvNorm.y) * (3.5 + depth - u_flow));
     }

@@ -123,7 +123,7 @@ test("the running Visual library uses a complete two-column Tesla catalogue", ()
   assert.match(styles, /\.environment-drawer \.score-entry-number,[\s\S]*?font-size: 17px/);
 });
 
-test("SOUNDTRACK stays visible and START waits for its prepared player", () => {
+test("SOUNDTRACK stays visible while START remains independent from remote audio readiness", () => {
   const app = read("App.jsx");
   const soundtrack = app.slice(app.indexOf('id: "soundtrack"'), app.indexOf('id: "mute"'));
 
@@ -132,6 +132,12 @@ test("SOUNDTRACK stays visible and START waits for its prepared player", () => {
   assert.match(app, /disabled=\{!choice\.available\}/);
   assert.match(app, /musicReady=\{launchMusicId !== "soundtrack"/);
   assert.match(app, /\["prepared", "paused", "playing"\]\.includes\(soundtrackSnapshot\?\.status\)/);
+  assert.match(app, /const ready = Boolean\(musicId && environmentId\)/);
+  assert.match(app, /START NOW · MUSIC WILL JOIN WHEN READY/);
+  assert.match(app, /MUSIC DATA PENDING · START NOW · AUDIO WILL JOIN WHEN READY/);
+  assert.match(app, /audio\.start-deferred/);
+  assert.match(app, /audio\.start-recovered/);
+  assert.match(app, /soundtrackStatus === "prepared"[\s\S]*?await controller\.resume\(\)/);
 });
 
 test("splash credits the collaborator and links the public source", () => {
@@ -511,7 +517,7 @@ test("the vehicle gets persistent transport, Media Session actions, track notice
   const app = read("App.jsx");
   const styles = read("styles.css");
 
-  assert.match(app, /className="persistent-transport" aria-label="Music transport"/);
+  assert.match(app, /className="persistent-transport control-layer" aria-label="Music transport"/);
   assert.match(app, /navigator\.mediaSession\.setActionHandler\(action, handler\)/);
   assert.match(app, /previoustrack: \(\) => void moveTransport\("previous"\)/);
   assert.match(app, /nexttrack: \(\) => void moveTransport\("next"\)/);
@@ -522,6 +528,9 @@ test("the vehicle gets persistent transport, Media Session actions, track notice
   assert.match(app, /className="manual-effects-backdrop"[\s\S]*?onClick=\{onClose\}/);
   assert.match(styles, /\.drawer-panel \{[\s\S]*?touch-action: pan-y/);
   assert.match(styles, /\.persistent-transport \{[\s\S]*?bottom: 72px/);
+  assert.match(styles, /\.controls-resting \.persistent-transport \{[\s\S]*?opacity: 0;[\s\S]*?pointer-events: none/);
+  assert.match(app, /soundtrackSnapshot\?\.previous\?\.imageUrl/);
+  assert.match(app, /soundtrackSnapshot\?\.next\?\.imageUrl/);
   assert.match(styles, /\.track-change-notice \{[\s\S]*?width: min\(390px/);
   assert.match(styles, /\.drawer-panel\.is-dragging/);
 });
@@ -534,4 +543,16 @@ test("compact viewports keep the mode switch separate and preserve a resting mod
   assert.match(styles, /\.controls-resting \.active-mode-marker \{ opacity: \.82; \}/);
   assert.match(styles, /@media \(max-width: 650px\) \{[\s\S]*?grid-template-columns: 58px 116px minmax\(220px, 1fr\) 52px/);
   assert.match(styles, /@media \(max-width: 480px\) \{[\s\S]*?\.topbar-mark \{ display: none; \}[\s\S]*?\.mode-selector \{ grid-column: 1; \}/);
+});
+
+test("Soundtrack reduces the source module to speed and exposes an honest browser network estimate", () => {
+  const app = read("App.jsx");
+  const styles = read("styles.css");
+
+  assert.match(app, /musicMode !== "soundtrack" \? <span className="active-mode-marker"/);
+  assert.match(app, /musicMode !== "soundtrack" \? <>[\s\S]*?<span>bpm<\/span>[\s\S]*?<span>%<\/span>/);
+  assert.match(app, /className=\{`network-state is-\$\{networkNotice\.tone\}`\}/);
+  assert.match(app, /Browser connection quality is an estimate/);
+  assert.match(styles, /\.source-readout\.is-soundtrack \{[\s\S]*?width: 116px/);
+  assert.match(styles, /\.network-state\.is-caution \{ color: #f3a84c; \}/);
 });

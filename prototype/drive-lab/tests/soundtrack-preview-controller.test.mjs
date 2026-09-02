@@ -304,7 +304,12 @@ test("manual next and previous keep reversible identities and playback ownership
     },
   });
   await controller.load();
-  const firstKey = controller.getSnapshot().current.key;
+  const prepared = controller.getSnapshot();
+  const firstKey = prepared.current.key;
+  assert.equal(prepared.previous.key, prepared.media.roles.previous.key);
+  assert.equal(prepared.next.key, prepared.media.roles.next.key);
+  assert.ok(prepared.previous.imageUrl);
+  assert.ok(prepared.next.imageUrl);
   const next = await controller.move("next");
   mediaByKey.get(firstKey).at(-1).currentTime = 42;
   const previous = await controller.move("previous");

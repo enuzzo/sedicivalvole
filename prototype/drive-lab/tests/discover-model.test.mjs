@@ -96,14 +96,15 @@ test("Ahead prioritizes the driver's bearing and search covers title plus summar
   assert.deepEqual(filterDiscoverPages(pages, "museum").map(({ id }) => id), ["north", "north-east"]);
 });
 
-test("Discover creates an official Maps directions handoff without fixing the origin", () => {
+test("Discover creates an exploratory Maps place handoff without starting navigation", () => {
   const url = new URL(discoverGoogleMapsUrl({ latitude: 45.4642, longitude: 9.19 }));
   assert.equal(url.origin, "https://www.google.com");
-  assert.equal(url.pathname, "/maps/dir/");
+  assert.equal(url.pathname, "/maps/search/");
   assert.equal(url.searchParams.get("api"), "1");
-  assert.equal(url.searchParams.get("destination"), "45.4642,9.19");
-  assert.equal(url.searchParams.get("travelmode"), "driving");
+  assert.equal(url.searchParams.get("query"), "45.4642,9.19");
   assert.equal(url.searchParams.has("origin"), false);
+  assert.equal(url.searchParams.has("dir_action"), false);
+  assert.equal(url.searchParams.has("travelmode"), false);
 });
 
 test("Discover renders a self-contained split index with language and search controls", () => {
@@ -121,11 +122,14 @@ test("Discover renders a self-contained split index with language and search con
   assert.match(appSource, /SEND TO NAVIGATION/);
   assert.match(appSource, /className="discover-navigation-handoff"/);
   assert.match(appSource, /QRCode\.toDataURL\(mapsUrl/);
-  assert.match(appSource, /On your phone, use Share and choose the Tesla app\./);
+  assert.match(appSource, /without starting navigation/);
+  assert.match(appSource, /Use Share and choose the Tesla app to send your final choice\./);
   assert.match(appSource, /Tesla app → Locations → Navigate → Send to Car\./);
   assert.doesNotMatch(appSource, /href=\{mapsUrl\} target="_blank"/);
   assert.doesNotMatch(appSource, /onOpenAtlas/);
-  assert.match(styles, /\.discover-workspace \{ display: grid; grid-template-columns: 272px minmax\(0, 1fr\)/);
+  assert.match(styles, /\.discover-heading \{[\s\S]*?min-height: 38px/);
+  assert.match(styles, /\.discover-workspace \{ display: grid; grid-template-columns: 246px minmax\(0, 1fr\); height: calc\(100% - 38px\)/);
+  assert.match(styles, /\.discover-results > button \{[\s\S]*?grid-template-columns: 16px 44px minmax\(0, 1fr\)/);
   assert.match(styles, /\.discover-reader \{ display: grid/);
   assert.match(styles, /\.discover-article-frame \{[\s\S]*?transform: scale\(1\.2\)/);
   assert.match(styles, /\.discover-view-tabs button \{[\s\S]*?min-height: 38px/);

@@ -64,6 +64,7 @@ export const FLUX_ENVIRONMENTS = [
     renderer: "drivey",
     themed: true,
     tunable: true,
+    choiceBadge: "3 VIEWS · 2 RENDERS",
   },
   {
     id: "prtcl",
@@ -75,6 +76,7 @@ export const FLUX_ENVIRONMENTS = [
     renderer: "prtcl",
     themed: true,
     tunable: true,
+    choiceBadge: "3 TYPES",
   },
   {
     id: "japanese-mist",
@@ -143,6 +145,7 @@ export const SHADERGRADIENT_VISUAL_CHOICE = {
   number: "08",
   rendererLabel: "ShaderGradient family",
   launchDescription: "Three reactive gradient variants",
+  choiceBadge: "3 VARIANTS",
   kind: "family",
 };
 

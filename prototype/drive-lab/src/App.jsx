@@ -239,6 +239,10 @@ const QA_EFFECT = import.meta.env.DEV
   && ["OPEN", "UNDERWATER", "BLOOM"].includes(QA_PARAMS.get("qaEffect"))
   ? QA_PARAMS.get("qaEffect")
   : null;
+const QA_NETWORK = import.meta.env.DEV
+  && ["offline", "limited", "online"].includes(QA_PARAMS.get("qaNetwork"))
+  ? QA_PARAMS.get("qaNetwork")
+  : null;
 const DIAGNOSTIC_SEND_ERROR_COPY = {
   payload_size_rejected: "The browser report exceeded the transport limit. Keep this page open and retry after an update.",
   report_rejected: "The server report exceeded the mail limit. Keep this page open and retry after an update.",
@@ -383,6 +387,40 @@ function readConnectionSnapshot(reason) {
     roundTripTimeMs: connection?.rtt ?? null,
     saveData: connection?.saveData ?? null,
   };
+}
+
+function readNetworkUiNotice(reason = "ui") {
+  if (QA_NETWORK === "offline") {
+    return deriveNetworkNoticeState({ connection: { online: false } });
+  }
+  if (QA_NETWORK === "limited") {
+    return deriveNetworkNoticeState({
+      connection: { online: true, effectiveType: "3g", downlinkMbps: 0.4, roundTripTimeMs: 900 },
+    });
+  }
+  if (QA_NETWORK === "online") {
+    return deriveNetworkNoticeState({ connection: { online: true, effectiveType: "4g", downlinkMbps: 10, roundTripTimeMs: 50 } });
+  }
+  return deriveNetworkNoticeState({ connection: readConnectionSnapshot(reason) });
+}
+
+function networkUiCopy(notice) {
+  if (notice?.status === "offline") return "OFFLINE";
+  if (["limited", "request-failed"].includes(notice?.status)) return "LIMITED";
+  if (notice?.status === "recovered") return "RECOVERED";
+  return "ONLINE";
+}
+
+function mediaArtworkType(url) {
+  try {
+    const pathname = new URL(url, window.location.href).pathname.toLowerCase();
+    if (pathname.endsWith(".webp")) return "image/webp";
+    if (pathname.endsWith(".jpg") || pathname.endsWith(".jpeg")) return "image/jpeg";
+    if (pathname.endsWith(".avif")) return "image/avif";
+  } catch {
+    // A missing or malformed artwork URL simply falls back to PNG metadata.
+  }
+  return "image/png";
 }
 
 function readNetworkDiagnosticReport(telemetry, history, generatedAtMs = performance.now()) {
@@ -920,9 +958,10 @@ function DiscoverPanel({ position, onClose, onRetryLocation, onDemoLocation }) {
                       <div>
                         {mapsQrUrl ? <img src={mapsQrUrl} width="176" height="176" alt={`Google Maps QR code for ${selected.title}`} /> : <span className="discover-navigation-qr-placeholder">BUILDING QR…</span>}
                         <ol>
-                          <li>Scan the QR code to open this destination in Google Maps.</li>
-                          <li>On your phone, use Share and choose the Tesla app.</li>
-                          <li>Tesla sends the destination to the car navigation.</li>
+                          <li>Scan the QR code to open this place in Google Maps without starting navigation.</li>
+                          <li>Refine the pin, explore nearby, or choose Directions when you are ready.</li>
+                          <li>Use Share and choose the Tesla app to send your final choice.</li>
+                          <li>Tesla can then pass that destination to the car navigation.</li>
                         </ol>
                         <p>Official alternative: Tesla app → Locations → Navigate → Send to Car.</p>
                       </div>
@@ -1195,7 +1234,11 @@ function VisualPicker({ environmentId, onChange, onOpenDiscover, onSelectGradien
                 }}
               >
                 <span className="score-entry-number">{entry.number}</span>
-                <span className="score-entry-body"><strong>{displayLabel(entry)}</strong><span>{entry.launchDescription}</span></span>
+                <span className="score-entry-body">
+                  <strong>{displayLabel(entry)}</strong>
+                  <span>{entry.launchDescription}</span>
+                  {entry.choiceBadge ? <small>{entry.choiceBadge}</small> : null}
+                </span>
                 <span className="score-entry-state">
                   {destination ? "OPEN" : family ? (active ? "ACTIVE" : "SELECT") : active ? "ACTIVE" : "SELECT"}
                 </span>
@@ -1826,8 +1869,16 @@ function LaunchSelector({
   onBack,
   onStart,
   musicReady = true,
+  networkNotice,
 }) {
-  const ready = Boolean(musicId && environmentId && musicReady);
+  const ready = Boolean(musicId && environmentId);
+  const networkConstrained = ["offline", "limited", "request-failed"].includes(networkNotice?.status);
+  const musicWaiting = musicId !== "mute" && (!musicReady || networkConstrained);
+  const startDetail = musicWaiting && networkConstrained
+    ? `NETWORK ${networkUiCopy(networkNotice)} · START NOW · MUSIC WILL JOIN WHEN READY`
+    : musicWaiting
+      ? "MUSIC DATA PENDING · START NOW · AUDIO WILL JOIN WHEN READY"
+      : networkConstrained ? `NETWORK ${networkUiCopy(networkNotice)} · VISUALS REMAIN AVAILABLE` : null;
   return (
     <section className="launch-selector" aria-labelledby="launch-selector-title">
       <header className="launch-selector-heading">
@@ -1877,7 +1928,7 @@ function LaunchSelector({
               return (
                 <button
                   key={choice.id}
-                  className={`launch-choice-button launch-visual-button${family ? " is-family" : ""}`}
+                  className="launch-choice-button launch-visual-button"
                   type="button"
                   aria-pressed={active}
                   onClick={() => {
@@ -1887,6 +1938,7 @@ function LaunchSelector({
                 >
                   <strong>{displayLabel(choice)}{family ? <span className="launch-choice-number"> 08</span> : null}</strong>
                   <small>{description}</small>
+                  {choice.choiceBadge ? <em className="launch-choice-badge">{choice.choiceBadge}</em> : null}
                 </button>
               );
             })}
@@ -1899,7 +1951,8 @@ function LaunchSelector({
         disabled={!ready}
         onClick={onStart}
       >
-        START
+        <strong>START</strong>
+        {startDetail ? <small>{startDetail}</small> : null}
       </button>
     </section>
   );
@@ -1956,6 +2009,7 @@ export function App() {
   const [jamendoPreviewEntries, setJamendoPreviewEntries] = useState([]);
   const [vehicleEffectsEnabled, setVehicleEffectsEnabled] = useState(initialPreferences.vehicleEffectsEnabled);
   const [soundtrackManualEffects, setSoundtrackManualEffects] = useState(initialPreferences.manualEffects);
+  const [networkNotice, setNetworkNotice] = useState(() => readNetworkUiNotice("app-start"));
   const [controlNotice, setControlNotice] = useState(null);
   const [trackNotice, setTrackNotice] = useState(null);
   const [playRoadPaused, setPlayRoadPaused] = useState(false);
@@ -2687,6 +2741,15 @@ export function App() {
     });
     setPhase("testing");
     wakeControls();
+    window.setTimeout(() => {
+      setPhase("running");
+      if (launchDiscover) {
+        setDiscoverOpen(true);
+        logDiagnosticEvent("discover.opened", { source: "launch-selector" });
+      }
+      wakeControls();
+      window.requestAnimationFrame(() => appRef.current?.focus({ preventScroll: true }));
+    }, reducedMotion ? 180 : 620);
     const graphics = readGraphicsCapabilities();
     let storage = false;
     try {
@@ -2731,7 +2794,11 @@ export function App() {
         audioRef.current.startCue();
       } else if (musicId === "soundtrack") {
         const started = await soundtrackStart;
-        if (started?.status !== "playing") throw new Error(started?.error || "Soundtrack playback was blocked");
+        if (started?.status !== "playing") {
+          const message = started?.error || "Soundtrack will start when the connection is ready";
+          setScoreSelection({ status: "waiting", requestedScoreId: null, message });
+          logDiagnosticEvent("audio.start-deferred", { message });
+        }
       }
       window.clearInterval(audioMeterTimerRef.current);
       audioMeterTimerRef.current = window.setInterval(() => {
@@ -2815,15 +2882,6 @@ export function App() {
         capabilities: { ...current.capabilities, ...extendedCapabilities, storageDiagnostics },
       } : current);
     });
-    window.setTimeout(() => {
-      setPhase("running");
-      if (launchDiscover) {
-        setDiscoverOpen(true);
-        logDiagnosticEvent("discover.opened", { source: "launch-selector" });
-      }
-      wakeControls();
-      window.requestAnimationFrame(() => appRef.current?.focus({ preventScroll: true }));
-    }, reducedMotion ? 180 : 620);
   }, [genreId, handleScoreRecovery, logDiagnosticEvent, reducedMotion, soundtrackManualEffects, startGps, triggerPulse, wakeControls]);
 
   const selectScore = useCallback(async (requestedScoreId) => {
@@ -2932,6 +2990,43 @@ export function App() {
     setMusicModeLoading(null);
     logDiagnosticEvent("music.mode.ready", { musicMode: nextMode });
   }, [logDiagnosticEvent, soundtrackController]);
+
+  useEffect(() => {
+    const soundtrackStatus = soundtrackSnapshot?.status;
+    if (phase !== "running"
+      || musicMode !== "soundtrack"
+      || muted
+      || !["idle", "error", "prepared"].includes(soundtrackStatus)) return undefined;
+    let cancelled = false;
+    let retrying = false;
+    const retry = async () => {
+      if (cancelled || retrying) return;
+      if (soundtrackStatus !== "prepared"
+        && (networkNotice.status === "offline" || !navigator.onLine)) return;
+      retrying = true;
+      const controller = soundtrackController();
+      const result = soundtrackStatus === "prepared"
+        ? await controller.resume()
+        : await controller.load({
+          selection: preferredSoundtrackSelectionRef.current,
+          autoplay: true,
+        });
+      retrying = false;
+      if (!cancelled && result?.status === "playing") {
+        setScoreSelection({ status: "ready", requestedScoreId: null, message: null });
+        logDiagnosticEvent("audio.start-recovered", { source: "automatic-network-retry" });
+      }
+    };
+    const timer = soundtrackStatus === "prepared"
+      ? window.setTimeout(() => void retry(), 0)
+      : window.setTimeout(() => void retry(), 8000);
+    window.addEventListener("online", retry);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+      window.removeEventListener("online", retry);
+    };
+  }, [logDiagnosticEvent, musicMode, muted, networkNotice.status, phase, soundtrackController, soundtrackSnapshot?.status]);
 
   const resetSavedState = useCallback(() => {
     try {
@@ -3075,7 +3170,7 @@ export function App() {
     const artwork = currentTrack.artwork ? [{
       src: new URL(currentTrack.artwork, window.location.href).href,
       sizes: "512x512",
-      type: currentTrack.artwork.endsWith(".webp") ? "image/webp" : "image/png",
+      type: mediaArtworkType(currentTrack.artwork),
     }] : [];
     navigator.mediaSession.metadata = new MediaMetadata({
       title: currentTrack.title,
@@ -3099,6 +3194,27 @@ export function App() {
       }
     };
   }, [currentTrack, moveTransport, toggleTransport, transportPlaying]);
+
+  useEffect(() => {
+    const artworkUrls = [
+      soundtrackSnapshot?.previous?.imageUrl,
+      soundtrackSnapshot?.current?.imageUrl,
+      soundtrackSnapshot?.next?.imageUrl,
+    ].filter(Boolean);
+    const preloadedArtwork = artworkUrls.map((url) => {
+      const image = new Image();
+      image.decoding = "async";
+      image.src = url;
+      return image;
+    });
+    return () => {
+      for (const image of preloadedArtwork) image.onload = null;
+    };
+  }, [
+    soundtrackSnapshot?.current?.key,
+    soundtrackSnapshot?.next?.key,
+    soundtrackSnapshot?.previous?.key,
+  ]);
 
   useEffect(() => {
     const supported = typeof PerformanceObserver !== "undefined"
@@ -3162,8 +3278,9 @@ export function App() {
   useEffect(() => {
     const connection = navigator.connection ?? navigator.mozConnection ?? navigator.webkitConnection;
     const capture = (reason) => {
-      if (!diagnosticsActiveRef.current) return;
       const snapshot = readConnectionSnapshot(reason);
+      setNetworkNotice(readNetworkUiNotice(reason));
+      if (!diagnosticsActiveRef.current) return;
       recordNetworkOnlineState(networkTelemetryRef.current, {
         online: snapshot.online,
         capturedAtMs: performance.now(),
@@ -3989,6 +4106,7 @@ export function App() {
             musicId={launchMusicId}
             environmentId={launchEnvironmentId}
             musicReady={launchMusicId !== "soundtrack" || ["prepared", "paused", "playing"].includes(soundtrackSnapshot?.status)}
+            networkNotice={networkNotice}
             onMusicChange={selectLaunchMusic}
             onEnvironmentChange={setLaunchEnvironmentId}
             onSelectGradient={() => setLaunchEnvironmentId(lastGradientVariantRef.current)}
@@ -4007,7 +4125,7 @@ export function App() {
         aria-hidden={phase !== "running" || modalOpen}
         inert={phase !== "running" || modalOpen ? true : undefined}
       >
-        <header className="topbar control-layer">
+        <header className={`topbar control-layer${musicMode === "soundtrack" ? " is-soundtrack" : ""}`}>
           <button
             className="topbar-mark"
             type="button"
@@ -4019,6 +4137,15 @@ export function App() {
           </button>
           <ModeSelector />
           <span className="speed-spacer" aria-hidden="true" />
+          <div
+            className={`network-state is-${networkNotice.tone}`}
+            role="status"
+            aria-label={`Network ${networkUiCopy(networkNotice)}. Browser connection quality is an estimate.`}
+            title="Browser connection estimate · not cellular signal strength"
+          >
+            <span>NET</span>
+            <small>{networkUiCopy(networkNotice)}</small>
+          </div>
           <button
             className={`gps-state is-${gpsPresentation.tone}`}
             type="button"
@@ -4065,22 +4192,24 @@ export function App() {
           onDemo={runAtlasDemo}
         />
 
-        <button className="source-readout" type="button" onClick={toggleSource} aria-label={`Speed source ${source}. Tap to switch`}>
-          <span className="active-mode-marker" aria-hidden="true">FLUX</span>
+        <button className={`source-readout${musicMode === "soundtrack" ? " is-soundtrack" : ""}`} type="button" onClick={toggleSource} aria-label={`Speed source ${source}. Tap to switch`}>
+          {musicMode !== "soundtrack" ? <span className="active-mode-marker" aria-hidden="true">FLUX</span> : null}
           <div className="readout-group">
             <strong>{Math.round(speed)}</strong>
             <div className="readout-labels"><span>km/h</span><small>{source}</small></div>
           </div>
-          <div className="readout-divider" />
-          <div className="readout-group">
-            <strong>{bpm == null ? "—" : Math.round(bpm)}</strong>
-            <div className="readout-labels"><span>bpm</span><small>tempo</small></div>
-          </div>
-          <div className="readout-divider" />
-          <div className="readout-group">
-            <strong>{Math.round(energy * 100)}</strong>
-            <div className="readout-labels"><span>%</span><small>energy</small></div>
-          </div>
+          {musicMode !== "soundtrack" ? <>
+            <div className="readout-divider" />
+            <div className="readout-group">
+              <strong>{bpm == null ? "—" : Math.round(bpm)}</strong>
+              <div className="readout-labels"><span>bpm</span><small>tempo</small></div>
+            </div>
+            <div className="readout-divider" />
+            <div className="readout-group">
+              <strong>{Math.round(energy * 100)}</strong>
+              <div className="readout-labels"><span>%</span><small>energy</small></div>
+            </div>
+          </> : null}
           {activeEffect && <div className="effect-badge">{activeEffect}</div>}
         </button>
 
@@ -4097,7 +4226,7 @@ export function App() {
           </div>
         ) : null}
 
-        <div className="persistent-transport" aria-label="Music transport">
+        <div className="persistent-transport control-layer" aria-label="Music transport">
           <button type="button" onClick={() => void moveTransport("previous")} aria-label="Previous track"><MediaGlyph name="previous" /></button>
           <button type="button" onClick={() => void toggleTransport()} aria-label={transportPlaying ? "Pause" : "Play"}><MediaGlyph name={transportPlaying ? "pause" : "play"} /></button>
           <button type="button" onClick={() => void moveTransport("next")} aria-label="Next track"><MediaGlyph name="next" /></button>

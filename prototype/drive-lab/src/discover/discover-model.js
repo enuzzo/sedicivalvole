@@ -219,11 +219,9 @@ export function discoverGoogleMapsUrl(place) {
   if (!Number.isFinite(place?.latitude) || !Number.isFinite(place?.longitude)) return null;
   const params = new URLSearchParams({
     api: "1",
-    destination: `${place.latitude},${place.longitude}`,
-    travelmode: "driving",
-    dir_action: "navigate",
+    query: `${place.latitude},${place.longitude}`,
     utm_source: "sedicivalvole",
-    utm_campaign: "discover_directions",
+    utm_campaign: "discover_place",
   });
-  return `https://www.google.com/maps/dir/?${params}`;
+  return `https://www.google.com/maps/search/?${params}`;
 }
