@@ -454,6 +454,19 @@ HTML/main JS/CSS/lazy ShaderGradient assets, and exact live `773 × 601`
 interaction/WebGL QA pass. Target-Tesla GPU, motion, repeated switching and
 thermal acceptance remain open under the stable `R11-*` codes.
 
+The first physical-Tesla run of that build then exposed two critical Soundtrack
+regressions: automatic braking UNDERWATER was inaudible and one Jamendo track
+could leave all later transport pending. Product checkpoint `1ef48be` is live
+as build `20260902-1954`. It makes Soundtrack and the adaptive vehicle-macro
+detector share one exact AudioContext in either launch order with ownership-aware
+teardown. It also bounds every media start to ten wall-clock seconds, atomically
+restores the previous audible identity on timeout, discards the incomplete
+target and prevents a late promise from resurrecting stale audio. The complete
+suite passes `553/553`; exact local and canonical `773 × 601` QA proves shared
+context topology, running effects/worklet, three playable media roles and
+Jamendo `NEXT → PREVIOUS → NEXT` with no warning/error. This is implementation
+and live evidence, not cabin acceptance: run `R4-08` and `R7-14` on the Tesla.
+
 The owner then explicitly selected native **Minerva dark** for Discover, even
 with Wikipedia's accepted test parameter. Product checkpoint `cdccbd7` replaces
 the custom scriptless article document with the complete localized native page

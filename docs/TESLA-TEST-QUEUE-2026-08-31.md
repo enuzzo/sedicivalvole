@@ -8,7 +8,7 @@ behavior.
 
 Do not begin the run until the final canonical build stamp is recorded below.
 
-- **Final test build:** `20260902-1905` from product checkpoint `87a5668`. It contains the single `GRADIENT 08` catalogue family and persistent `MIST → ORCHARD → SILK` variant cycle required by revised tests `R11-01`–`R11-06`.
+- **Final test build:** `20260902-1954` from product checkpoint `1ef48be`. It retains the single `GRADIENT 08` family and adds the shared Soundtrack/adaptive AudioContext plus bounded, recoverable fixed-track transport required by `R4-08` and `R7-14`.
 - **Target viewport:** Tesla split view, nominal CSS `773 × 601`
 - **Result states:** `PASS`, `FAIL`, `NOT RUN`, `BLOCKED`
 - **Safety:** a passenger operates controls and records evidence; the driver
@@ -45,6 +45,7 @@ Do not begin the run until the final canonical build stamp is recorded below.
 | `R4-05` | NOT RUN | While music plays, trigger or wait for one normal vehicle alert/navigation prompt. | The vehicle alert remains clearly audible and is not masked by the product. | Alert-safe level and effects boundary. |
 | `R4-06` | NOT RUN | Reveal the running footer, compare MUTE with FX, then toggle each one independently in both directions. | Both controls have the same width and `LABEL / ON–OFF / GLOBAL` hierarchy; each state changes immediately without changing the other control. | Shared MUTE/FX control anatomy and equal-width Tesla grid tracks. |
 | `R4-07` | NOT RUN · READY ON LIVE `20260901-1943` | Open the `2 × 4` Performance FX deck in FRACTURE, JUNCTION, NIGHTSHIFT, Illobo, and Jamendo. Compare every authored tap with `100%`, especially manual Underwater dry → submerged → dry and the adjacent Bass Drive / Radio Cut / High Cut family; then combine deliberately hostile pairs and RESET. | The tap is immediately playful and the last `82–100%` becomes unmistakably more extreme. Manual Underwater produces progressive immersion, textured maximum depth and surfacing; Bass Drive adds low weight, Radio Cut isolates the middle, and High Cut progressively removes the top end without becoming Underwater. No state clicks, clips, silences, runs away, changes `1×`, disables braking Underwater, or leaks after RESET/source switching. | `0f4a501`, live build `20260901-1943`: `544/544`, exact local and canonical `773 × 601`, High Cut `8 kHz` attenuation `−12.94 dB` tap / `−59.68 dB` full with `300 Hz` at `+0.30 dB`, hostile sum peak `0.91672`, canonical byte identity and RESET/focus/log QA. |
+| `R4-08` | REGRESSION FIX LIVE `20260902-1954` · TESLA RETEST | With global FX ON and manual Underwater at zero, play one Jamendo track and one Illobo track. For each, brake until the visible automatic UNDERWATER state is established, hold briefly, then release and regain speed. | Both recordings become unmistakably submerged during braking and audibly resurface on release; the effect never depends on opening Play the Road first, survives source switching, and does not change authored `1×` playback. | `1ef48be` shares one exact AudioContext between the audible Soundtrack graph and vehicle-macro detector in either launch order. Local/canonical REPORT proves `shared` topology, running effects/worklet, vehicle master enabled and changing underwater macro; cabin audibility remains this test. |
 
 ## Visual and performance acceptance — milestone row 5
 
@@ -68,7 +69,8 @@ Do not begin the run until the final canonical build stamp is recorded below.
 ## Soundtrack mechanics — milestone row 7
 
 Tests `R7-01`–`R7-09` are runnable on the canonical build recorded above.
-`R7-10`–`R7-13` are canonical in build `20260901-2232` and are now runnable.
+`R7-10`–`R7-13` are canonical in build `20260901-2232`; regression test
+`R7-14` is canonical in build `20260902-1954`.
 Office/live Browser tests cannot
 substitute for the audible physical-cabin verdict.
 
@@ -87,6 +89,7 @@ substitute for the audible physical-cabin verdict.
 | `R7-11` | CANONICAL PASS `20260901-2232` · TESLA PENDING | With a playing fixed track, press play/pause, previous, and next in Tesla's browser-labelled mini-player wherever exposed. Repeat rapidly during one transition. | Every exposed control invokes the shared transport exactly once; previous/next stay in the source; unsupported actions are absent or harmless; metadata remains coherent. | `play`, `pause`, `previoustrack`, and `nexttrack` handlers plus MediaMetadata are registered defensively; Tesla exposure remains the acceptance gate. |
 | `R7-12` | CANONICAL PASS `20260901-2232` · TESLA PENDING | Change tracks by row tap, persistent transport, automatic end, Illobo Featured and Tesla Media Session. Include a failed/stale replacement. | Every committed identity shows one `3.2 s` notice with title, album/source and artist; failed, stale or preloaded targets show none; the overlay is glance-readable and does not pin chrome. | The notice subscribes to committed current identity and exact local/live viewport QA passes. |
 | `R7-13` | CANONICAL PASS `20260901-2232` · TESLA PENDING | Open Music → Soundtrack → Jamendo at `773 × 601`; compare Pace, 15 genres, six tracks and Now Playing while stopped/loading/playing/paused. | Redundant library/authored headings are absent; Pace/Genre are vertically separated; fresh mix stays right-aligned; filters/titles/artists are larger; the compact activity mark follows real playback; no page scroll appears. | Exact local/live no-scroll Browser QA passes with all 15 genres, six tracks, player and credit visible. |
+| `R7-14` | REGRESSION FIX LIVE `20260902-1954` · TESLA RETEST | On a cold or weak connection, start Jamendo, use NEXT to request another track, then exercise PREVIOUS/NEXT again. If one requested track stalls, wait at least ten seconds; repeat once after recovery and let one track end naturally if practical. | A healthy target starts normally. A stalled start never blocks transport indefinitely: within about ten seconds the prior audible identity is restored with a recoverable error, later controls work, and a delayed stale track never starts by itself. Natural end advances once from the new track's beginning. | `1ef48be` adds an owned wall-clock deadline, atomic rollback, incomplete-record disposal and exact-record stale guard. Deterministic never-settling and late-resolution tests plus canonical `NEXT → PREVIOUS → NEXT` pass; weak-network Tesla behavior remains this test. |
 
 ## Illobo identity and Tesla media title — milestone row 8
 

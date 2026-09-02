@@ -17,6 +17,41 @@ URL import remain outside the public surface. Exact
 dependency and local run instructions are recorded in
 `LOCAL-SHADERGRADIENT-LAB.md`.
 
+## Soundtrack context and transport regression recovery — 2026-09-02 20:04
+
+- build stamp: **`20260902-1954`**; product checkpoint: **`1ef48be`**;
+- target reports: the physical Tesla on prior build `20260902-1905` could play
+  one Jamendo recording but then left NEXT/PREVIOUS pending, and automatic
+  braking UNDERWATER was inaudible on fixed Soundtrack playback;
+- root cause: **CONFIRMED**. Soundtrack effects and the muted adaptive macro
+  detector owned separate AudioContexts, allowing embedded Chromium to suspend
+  the macro clock while keeping fixed media audible. Separately, media
+  `play()` promises had rejection handling but no wall-clock deadline and could
+  remain pending forever on a weak network;
+- correction: **PASS in code and browser**. Either launch order now produces
+  one shared AudioContext with ownership-aware teardown. All transport starts
+  use a ten-second deadline with atomic prior-track rollback, incomplete-record
+  disposal, exact-record stale protection and safe late settlement;
+- tests/build: **PASS**. Four focused Soundtrack/audio files pass `57/57`; the
+  complete suite passes `553/553`; the public App builds `235` modules and the
+  protected LAB builds `159` modules;
+- protected publication: read-only preflight and postflight report
+  `remote_writes=NONE`; publication uploaded `181` files / `215,858,514` bytes,
+  fully reverified all `29` Illobo masters, retained one cache-overlap asset and
+  preserved the dynamic root;
+- canonical identity: cache-busted HTML is HTTP/2 200 with
+  `no-store/no-cache` and `nosniff`; live/local main JavaScript
+  `index-Dq1NMDhf.js` is byte-identical at SHA-256
+  `efc687d831cff44042ff0f8eb70afb834ee741ab01502cb8f8f9b67b59bf7823`;
+- exact local/canonical `773 × 601` Browser QA: **PASS**. Raw REPORT shows
+  `contextTopology: shared`, running context/effects, ready worklet, enabled
+  vehicle master and three playable media roles. Canonical Jamendo
+  `NEXT → PREVIOUS → NEXT` updates the audible/title identity and records no
+  warning/error;
+- remaining acceptance: run `R4-08` for audible brake/submerge/release on both
+  Jamendo and Illobo, and `R7-14` for weak-network timeout/recovery on the
+  physical Tesla. Office Browser evidence does not close either cabin gate.
+
 ## Gradient 08 family and persistent variant cycle — 2026-09-02 19:21
 
 - build stamp: **`20260902-1905`**; product checkpoint: **`87a5668`**;

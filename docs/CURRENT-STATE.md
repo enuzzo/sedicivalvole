@@ -511,6 +511,19 @@ dated study documents.
   Jamendo-only and is not Illobo evidence. Physical-Tesla listening of crossfade, buffering, touch, QR,
   transport, licence and effects behavior remain open; no offline-duration promise is made. See
   [`SOUNDTRACK-SOURCE-POLICY.md`](SOUNDTRACK-SOURCE-POLICY.md).
+  Regression checkpoint `1ef48be`, canonical as build `20260902-1954`, removes
+  two latent browser-lifecycle hazards exposed by the Tesla. Soundtrack and the
+  adaptive macro detector now borrow one exact AudioContext in either launch
+  order, with ownership-aware teardown, so a separately suspended muted engine
+  cannot starve the audible Soundtrack graph of vehicle macros. Initial play,
+  selection, NEXT, PREVIOUS and natural-end advancement now have a ten-second
+  wall-clock start deadline: a never-settling media `play()` rolls back to the
+  prior audible identity, discards the incomplete target, silences any late
+  stale settlement and remains retryable. Raw REPORT states the context
+  topology, macros, media roles and effects readiness without exposing URLs.
+  Deterministic pending-promise coverage and exact local/canonical `773 × 601`
+  transport QA pass; physical braking audibility and degraded-network recovery
+  remain Tesla tests `R4-08` and `R7-14`.
 - **The running footer has its compact control geometry.** MUTE and FX are
   adjacent equal-width controls with one shared `LABEL / ON–OFF / GLOBAL`
   hierarchy, both announce a 1.5-second centred status, and the two-row palette is
@@ -572,8 +585,10 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The canonical live product is version `0.0.0`, product checkpoint `367e40d`,
-  build `20260902-0103`. It publishes GRADIENT 08, the stronger PRTCL
+- The canonical live product is version `0.0.0`, product checkpoint `1ef48be`,
+  build `20260902-1954`. It publishes the single three-variant GRADIENT 08
+  family, shared Soundtrack/adaptive AudioContext and bounded recoverable media
+  starts, together with the stronger PRTCL
   UNDERWATER/surfacing response, the truthful post-130 readout with a clamped
   audiovisual ceiling, the passenger safety disclosure, backdrop/swipe drawer
   dismissal and the `226 px` Tesla palette, together with the
@@ -805,9 +820,9 @@ authenticated target-Tesla rendering and control reach remain `R11A-01`.
 
 ## Open work
 
-1. Execute live Tesla `R4-07`, the canonical `10A` / `10B` codes, and row 11
-   on build `20260902-1905`. Execute Tesla tests `R1-01`–`R1-03`, `R4-01`–`R4-07`,
-   `R5-01`–`R5-07`, `R7-01`–`R7-13`, `R8-01`–`R8-03`, `R9-01`–`R9-07`,
+1. Execute live Tesla `R4-07`–`R4-08`, the canonical `10A` / `10B` codes, and row 11
+   on build `20260902-1954`. Execute Tesla tests `R1-01`–`R1-03`, `R4-01`–`R4-08`,
+   `R5-01`–`R5-07`, `R7-01`–`R7-14`, `R8-01`–`R8-03`, `R9-01`–`R9-07`,
    `R10-00A`–`R10-06`, `R11-01`–`R11-06`, `R11A-01`, and later
    `R13-00`–`R13-03` from
    [`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md), including

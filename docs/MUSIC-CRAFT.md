@@ -1516,6 +1516,36 @@ peak. Bass Drive, Radio Cut, and High Cut are contiguous in the performance
 surface and share one visual family marker; that grouping does not merge their
 state or processing paths.
 
+### 6.14 One audible graph needs one clock, and transport needs a deadline
+
+The Tesla regression in build `20260902-1905` exposed two lifecycle assumptions
+that desktop happy-path tests had not owned. Soundtrack effects ran on one
+AudioContext, while the muted adaptive engine ran on another and alone detected
+the vehicle OPEN/UNDERWATER/BLOOM macros. Embedded Chromium could keep the
+media-backed Soundtrack context running while suspending the second context.
+The recording therefore remained audible and the braking state could remain
+visible, but no changing underwater amount reached the graph that listeners
+heard. The Gradient work did not change effect coefficients; it exposed this
+pre-existing dual-clock architecture under the target device's resource and
+activation lifecycle.
+
+Soundtrack and the adaptive engine now share the exact same AudioContext no
+matter which one starts first. The borrower never closes a context it does not
+own. Release evidence must assert `running` context state, `shared` topology,
+audible Soundtrack, enabled vehicle master, changing macro values and attached
+media roles together. A control badge or one healthy context is not sufficient.
+
+The same drive revealed a second unbounded boundary: an
+`HTMLMediaElement.play()` promise may remain pending indefinitely under weak
+network conditions rather than resolving or rejecting. Initial play, explicit
+selection, NEXT, PREVIOUS and natural-end advancement now use a ten-second
+wall-clock start deadline. Timeout restores the prior audible track and queue,
+discards the incomplete target, pauses a late-settling stale media record, and
+leaves transport retryable. The regression test deliberately supplies a play
+promise that never settles, then resolves it late and proves that it cannot
+resurrect the abandoned track. Every future asynchronous media start needs an
+owned deadline and rollback; rejection-only coverage is incomplete.
+
 Sources: [Web Audio API 1.1](https://www.w3.org/TR/webaudio-1.1/),
 [MDN `BiquadFilterNode.type`](https://developer.mozilla.org/en-US/docs/Web/API/BiquadFilterNode/type),
 [MDN `WaveShaperNode.oversample`](https://developer.mozilla.org/en-US/docs/Web/API/WaveShaperNode/oversample),
