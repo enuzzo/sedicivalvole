@@ -193,9 +193,10 @@ dated study documents.
   `HOOD → REAR → AERIAL` and `NORMAL ↔ WIRE` directly, with no dropdown, panel,
   native Driver/Chase/Satellite view, or original colour selector. Exact muted
   `773 × 601` and `390 × 844` Browser QA passes with zero warning or error. The
-  owner accepted the prior published Drivey presentation on 2026-08-30; the
-  new GPS-speed calibration remains pending canonical and physical-Tesla
-  acceptance. A
+  owner accepted the prior Drivey presentation on 2026-08-30. GPS-speed
+  calibration checkpoint `4624f70`, published source `5691f58`, is canonical as
+  build `20260902-2322`; local/live byte identity and rendered Browser/console
+  checks pass, while physical-Tesla motion acceptance remains open. A
   speed-responsive rise of the Aerial camera is recorded only as a deferred
   nice-to-have; it is not missing behavior in the accepted checkpoint.
 - PRTCL adapts the directly authorized Fractal Frequency, Murmuration, and Axiom
@@ -593,7 +594,7 @@ dated study documents.
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
 - The canonical live product is version `0.0.0`, implementation checkpoint
-  `543978e`, published source checkpoint `a501545`, build `20260902-2142`. It
+  `4624f70`, published source checkpoint `5691f58`, build `20260902-2322`. It
   publishes mandatory insert `10C` while retaining the single three-variant
   GRADIENT 08 family, shared Soundtrack/adaptive AudioContext and bounded
   recoverable media starts from `1ef48be`, together with the stronger PRTCL
@@ -882,7 +883,7 @@ authenticated target-Tesla rendering and control reach remain `R11A-01`.
 ## Open work
 
 1. Execute live Tesla `R4-07`–`R4-08`, the canonical `10A` / `10B` / `10C`
-   codes, and row 11 on final build `20260902-2142`. Execute Tesla tests
+   codes, and row 11 on final build `20260902-2322`. Execute Tesla tests
    `R1-01`–`R1-03`, `R4-01`–`R4-08`,
    `R5-01`–`R5-07`, `R7-01`–`R7-14`, `R8-01`–`R8-03`, `R9-01`–`R9-07`,
    `R10-00A`–`R10-06`, `R10C-01`–`R10C-08`, `R11-01`–`R11-06`, `R11A-01`, and later

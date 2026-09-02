@@ -17,6 +17,44 @@ URL import remain outside the public surface. Exact
 dependency and local run instructions are recorded in
 `LOCAL-SHADERGRADIENT-LAB.md`.
 
+## DRIVEY GPS-speed calibration — 2026-09-02 23:30
+
+- build stamp: **`20260902-2322`**; implementation checkpoint:
+  **`4624f70`**; published source checkpoint: **`5691f58`**;
+- correction: DRIVEY reuses VERTIGO's quadratic low-speed response to
+  compensate the original car model's square-root cruise physics. The external
+  bridge solves the active level's drive-force/linear-drag equilibrium and
+  synchronizes the player plus opposing traffic before revealing the iframe;
+- calibration: deterministic equilibrium is exactly
+  `5.000 / 40.000 / 90.000 / 130.000 km/h`. The `5 km/h` cruise multiplier is
+  `0.001157`, replacing the former fast range without changing GPS truth or the
+  global `130 km/h` audiovisual ceiling;
+- upstream boundary: **PASS**. All pinned Drivey files remain byte-identical;
+  local/live `Drivey.js` SHA-256 is
+  `0ebc9ca3355dc0140571b5b01a1514646ce972ba2eada8e3dcdeb5ae2c5ed14c`;
+- tests/build: **PASS**. Focused DRIVEY checks pass `16/16`, the complete suite
+  passes `572/572`, documentation checks pass `8/8`, and production builds
+  process `235` App modules and `159` protected-LAB modules;
+- protected publication: read-only preflight and postflight pass, with final
+  `remote_writes=NONE`; publication uploaded `181` files / `215,864,133` bytes,
+  fully reverified all `29` Illobo recordings, retained one prior asset and
+  preserved the dynamic root;
+- canonical response: cache-busted root returns HTTP/2 200 with
+  `no-store, no-cache, must-revalidate, max-age=0` and `nosniff`;
+- byte identity: local/live HTML SHA-256 is
+  `7102c2f85cadafd17030a05b57dabc87d9081df9558339ab043f8904da002b8d`,
+  JavaScript `index-DPQDS7ZQ.js` is
+  `eb4f2f14add945d0b34f0d17a05c2cffd8e3d5759407f1dcb776a2d655f13328`,
+  and CSS `index-DU26jWHZ.css` is
+  `a4d2baaf013efcbb3ea1b67bda90229f42369d7ee4fe00e2c7adfad406fe448f`;
+- rendered QA: **PASS within the available Browser evidence**. Local DRIVEY at
+  fixed `5 km/h` (`840 × 827`) shows a stable walking-pace field with the
+  expected readout and no warning/error. Canonical muted DRIVEY (`1280 × 720`)
+  loads the original iframe at rest, exposes both view/render controls, reports
+  build `20260902-2322`, and records no warning/error;
+- remaining acceptance: judge `5 / 40 / 90 / 130 km/h` road/traffic motion at
+  the physical Tesla `773 × 601` viewport under revised test `R5-04`.
+
 ## Now Playing dark-surface contrast — 2026-09-02 23:09
 
 - build stamp: **`20260902-2142`**; implementation checkpoint:

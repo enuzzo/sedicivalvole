@@ -526,8 +526,11 @@ solves the original drive-force/linear-drag equilibrium for the active level,
 and synchronizes the player plus opposing traffic before the iframe becomes
 visible. The vendor tree remains byte-identical. Exact model evidence returns
 `5.000 / 40.000 / 90.000 / 130.000 km/h`; focused `16/16`, complete `572/572`,
-production builds and rendered local `5 km/h`/clean-console QA pass. Canonical
-publication and physical-Tesla motion judgement remain open.
+production builds and rendered local `5 km/h`/clean-console QA pass. Published
+source checkpoint `5691f58` is canonical as build `20260902-2322`; protected
+publication, HTML/JavaScript/CSS/unchanged-vendor byte identity and canonical
+muted DRIVEY render/console QA pass. Physical-Tesla motion judgement remains
+open under revised `R5-04`.
 
 The owner then explicitly selected native **Minerva dark** for Discover, even
 with Wikipedia's accepted test parameter. Product checkpoint `cdccbd7` replaces
