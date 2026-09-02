@@ -137,6 +137,14 @@ substitute for the audible physical-cabin verdict.
 | `R10C-07` | CANONICAL SOURCE PASS `20260902-2106` · TESLA PENDING | Hold APERTURE near `40 km/h` and inspect all four diagonal seams during motion. | Ceiling, floor and side-wall longitudinal cuts meet at the corners without phase-shifted rows; no geometry or frame-pacing regression appears. | Shared shader origin plus exact local/canonical `773 × 601` visual comparison pass; moving Tesla acceptance remains open. |
 | `R10C-08` | CANONICAL PASS `20260902-2106` · TESLA PENDING | Inspect both Visual catalogues and cycle every choice-owning visual. | Drivey states `3 VIEWS · 2 RENDERS`, PRTCL states `3 TYPES`, Gradient states `3 VARIANTS`; single-state visuals show no fabricated count and every in-visual selector agrees. | Registry/presentation tests and canonical launcher QA pass. |
 
+## Visual catalogue, Gradient palette/brake, and PRTCL refinement — milestone row 11B
+
+| ID | Current state | Run in the vehicle | Pass condition | Evidence |
+|---|---|---|---|---|
+| `R11B-01` | LOCAL PASS `fa122b4` · CANONICAL/TESLA PENDING | Open the Instrument Deck and running Visual library at the Tesla split viewport. | All eight cards share one hierarchy with no view/render/type/variant counts or inline Gradient number; the drawer alone retains aligned `01–08`, state labels, and a no-scroll `2 × 4` grid. | Frontend-design review, presentation tests, exact local `773 × 601` screenshots, and empty warning/error log pass. |
+| `R11B-02` | LOCAL MODEL/RENDER PASS `fa122b4` · CANONICAL/TESLA PENDING | Cycle Japanese Mist, Acid Orchard, and Chromatic Silk; change palettes; brake firmly and release at representative speeds. | Every variant changes with the shared palette. Braking visibly slows, folds, and densifies the field continuously; release restores the road-owned composition without a snap or stale colour. | Deterministic palette/response tests and local Red/Blue plus `80 km/h` road/UNDERWATER renders pass. |
+| `R11B-03` | LOCAL MODEL/RENDER PASS `fa122b4` · CANONICAL/TESLA PENDING | Open PRTCL, cycle TYPE repeatedly, then brake Fractal fully and release. | TYPE cycles only `FRACTAL ↔ AXIOM`; Murmuration never appears. Fractal still contracts dramatically but remains visibly larger than the previous dot-like minimum, then returns exactly to its natural speed-owned scale. | Registry/migration/shader tests prove two active forms and exact `22.5%` form / `27.5%` point minima; local rendered cycle and full-brake capture pass. |
+
 ## ShaderGradient visuals, PRTCL surfacing, safety, and response ceiling — milestone row 11
 
 The three selected LAB starting points are variants of one public `GRADIENT 08`
