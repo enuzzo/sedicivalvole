@@ -152,6 +152,28 @@ test("the deploy gate admits only the byte-identical retired repeat worklet", ()
   assert.match(source, /raise ValueError\("retired LAB entry identity mismatch"\)/);
 });
 
+test("the deploy gate removes only bounded Finder metadata from the canonical root", () => {
+  const program = String.raw`
+import importlib.util
+import sys
+
+spec = importlib.util.spec_from_file_location("sedicivalvole_deploy", sys.argv[1])
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+
+assert module.is_recognized_macos_metadata(b"\x00\x00\x00\x01Bud1payload")
+assert not module.is_recognized_macos_metadata(b"not finder metadata")
+assert not module.is_recognized_macos_metadata(b"\x00\x00\x00\x01Bud1" + b"x" * (1024 * 1024))
+`;
+  execFileSync("python3", ["-c", program, deployScript.pathname], {
+    env: { ...process.env, PYTHONDONTWRITEBYTECODE: "1" },
+  });
+
+  const source = readFileSync(deployScript, "utf8");
+  assert.match(source, /MACOS_METADATA_ROOT_ENTRY = "\.DS_Store"/);
+  assert.match(source, /root_metadata_cleanup=PASS removed=/);
+});
+
 test("the deploy gate verifies the packaged font tree explicitly", () => {
   const source = readFileSync(deployScript, "utf8");
 

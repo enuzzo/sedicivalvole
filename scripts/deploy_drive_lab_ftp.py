@@ -34,6 +34,7 @@ STATIC_ROOT_ENTRY = "index.html"
 DYNAMIC_ROOT_ENTRY = "index.php"
 DYNAMIC_STAGE_ENTRY = "index.php.stage"
 DYNAMIC_NEXT_ENTRY = "index.php.next"
+MACOS_METADATA_ROOT_ENTRY = ".DS_Store"
 PHP_ENTRY_PREFIX = b"""<?php
 declare(strict_types=1);
 header('Content-Type: text/html; charset=UTF-8');
@@ -239,6 +240,21 @@ def remote_bytes(ftp: ftplib.FTP, name: str) -> bytes:
     buffer = io.BytesIO()
     ftp.retrbinary(f"RETR {name}", buffer.write)
     return buffer.getvalue()
+
+
+def is_recognized_macos_metadata(payload: bytes) -> bool:
+    """Recognize a bounded Finder metadata file without admitting arbitrary data."""
+    return 8 <= len(payload) <= 1024 * 1024 and payload[:8] == b"\x00\x00\x00\x01Bud1"
+
+
+def remove_recognized_macos_metadata(ftp: ftplib.FTP) -> bool:
+    """Remove only the exact Finder metadata filename after format verification."""
+    if MACOS_METADATA_ROOT_ENTRY not in safe_names(ftp):
+        return False
+    if not is_recognized_macos_metadata(remote_bytes(ftp, MACOS_METADATA_ROOT_ENTRY)):
+        raise ValueError("unrecognized canonical-root Finder metadata")
+    ftp.delete(MACOS_METADATA_ROOT_ENTRY)
+    return True
 
 
 def is_recognized_project_owned_third_party_entry(
@@ -872,6 +888,7 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
         "third-party",
         "ui",
         LAB_DIRECTORY,
+        MACOS_METADATA_ROOT_ENTRY,
     }
     allowed_root_names.update(
         path.name
@@ -882,6 +899,12 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
     if unexpected_root_names:
         unexpected = ",".join(sorted(unexpected_root_names))
         raise ValueError(f"unexpected canonical-root entry: {unexpected}")
+
+    if (
+        MACOS_METADATA_ROOT_ENTRY in root_names
+        and not is_recognized_macos_metadata(remote_bytes(ftp, MACOS_METADATA_ROOT_ENTRY))
+    ):
+        raise ValueError("unrecognized canonical-root Finder metadata")
 
     if LEGACY_ROOT_FILE in root_names:
         default_page = remote_bytes(ftp, LEGACY_ROOT_FILE)
@@ -1421,6 +1444,7 @@ def main() -> int:
         uploaded_bytes += len(illobo_catalog) + sum(int(track["bytes"]) for track in illobo_tracks)
 
         retired_illobo_artwork = remove_retired_illobo_artwork(ftp)
+        removed_macos_metadata = remove_recognized_macos_metadata(ftp)
 
         verify_completed_upload(ftp, recipient_config, lab_auth_config, jamendo_config)
 
@@ -1446,6 +1470,7 @@ def main() -> int:
         print(f"upload=PASS files={len(files) + 5 + len(illobo_tracks)} bytes={uploaded_bytes}")
         print(f"illobo_playlist=PASS tracks={len(illobo_tracks)} full_hash_verification=true")
         print(f"illobo_artwork_migration=PASS retired_png_files={retired_illobo_artwork}")
+        print(f"root_metadata_cleanup=PASS removed={str(removed_macos_metadata).lower()}")
         print(f"dynamic_root=PASS staged={str(stage_php_entry).lower()} static_entry_removed={str(switched_entry).lower()}")
         if preserve_existing:
             print("legacy_cleanup=SKIPPED preserve_existing=true")
