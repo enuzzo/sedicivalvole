@@ -78,7 +78,6 @@ import { Interstate7Field } from "./interstate-7-field.jsx";
 import { MeridianField } from "./environments/meridian/meridian-field.jsx";
 import { DriveyField } from "./environments/drivey/drivey-field.jsx";
 import { PrtclField } from "./environments/prtcl/prtcl-field.jsx";
-import { GradientField } from "./environments/gradient/gradient-field.jsx";
 import {
   DEFAULT_DRIVEY_SETTINGS,
   DRIVEY_CAMERAS,
@@ -136,6 +135,7 @@ import {
 } from "./support-model.js";
 
 const AtlasField = lazy(() => import("./environments/atlas/atlas-field.jsx"));
+const ShaderGradientField = lazy(() => import("./environments/shadergradient/shadergradient-field.jsx"));
 
 /**
  * The lanes the voice preview can audition.
@@ -3756,18 +3756,20 @@ export function App() {
               onFrame={recordRenderedFrame}
               onRuntimeError={handleEnvironmentError}
             />
-          ) : environment.renderer === "gradient" ? (
-            <GradientField
-              speed={speed}
-              audioLevel={audioLevel}
-              musicMode={musicMode}
-              theme={theme}
-              reducedMotion={reducedMotion}
-              effect={activeEffect}
-              onRenderer={setRenderer}
-              onFrame={recordRenderedFrame}
-              onRuntimeError={handleEnvironmentError}
-            />
+          ) : environment.renderer === "shadergradient" ? (
+            <Suspense fallback={<div className="atlas-waiting"><strong>{environment.label}</strong><span>Loading gradient field</span></div>}>
+              <ShaderGradientField
+                studyId={environment.studyId}
+                speed={speed}
+                audioLevel={audioLevel}
+                musicMode={musicMode}
+                reducedMotion={reducedMotion}
+                effect={activeEffect}
+                onRenderer={setRenderer}
+                onFrame={recordRenderedFrame}
+                onRuntimeError={handleEnvironmentError}
+              />
+            </Suspense>
           ) : (
             <FluxField
               energy={energy}

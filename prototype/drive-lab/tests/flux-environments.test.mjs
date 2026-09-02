@@ -24,7 +24,7 @@ const stylesSource = readFileSync(new URL("../src/styles.css", import.meta.url),
 test("exposes the authored environments in a stable order", () => {
   assert.deepEqual(
     FLUX_ENVIRONMENTS.map(({ id }) => id),
-    ["aperture", "vertigo", "meridian", "atlas", "drivey", "prtcl", "gradient"],
+    ["aperture", "vertigo", "meridian", "atlas", "drivey", "prtcl", "japanese-mist", "acid-orchard", "chromatic-silk"],
   );
   assert.equal(getFluxEnvironment("vertigo").label, "VERTIGO");
   assert.equal(getFluxEnvironment("meridian").label, "MERIDIAN");
@@ -36,23 +36,25 @@ test("exposes the authored environments in a stable order", () => {
   assert.equal(getFluxEnvironment("drivey").number, "05");
   assert.equal(getFluxEnvironment("prtcl").label, "PRTCL");
   assert.equal(getFluxEnvironment("prtcl").number, "06");
-  assert.equal(getFluxEnvironment("gradient").label, "GRADIENT");
-  assert.equal(getFluxEnvironment("gradient").number, "08");
+  assert.equal(getFluxEnvironment("japanese-mist").label, "JAPANESE MIST");
+  assert.equal(getFluxEnvironment("japanese-mist").number, "08");
+  assert.equal(getFluxEnvironment("acid-orchard").number, "09");
+  assert.equal(getFluxEnvironment("chromatic-silk").number, "10");
   assert.equal(getFluxEnvironment("plumb").id, "aperture");
   assert.equal(getFluxEnvironment("register").id, "aperture");
   assert.equal(getFluxEnvironment("latitudes").id, "aperture");
 });
 
-test("keeps Discover seventh and adds Gradient as the eighth rendered Visual", () => {
+test("keeps Discover seventh and adds the three selected ShaderGradient visuals", () => {
   assert.deepEqual(
     FLUX_VISUAL_CHOICES.map(({ id }) => id),
-    ["aperture", "vertigo", "meridian", "atlas", "drivey", "prtcl", "discover", "gradient"],
+    ["aperture", "vertigo", "meridian", "atlas", "drivey", "prtcl", "discover", "japanese-mist", "acid-orchard", "chromatic-silk"],
   );
   assert.equal(DISCOVER_VISUAL_CHOICE.number, "07");
   assert.equal(DISCOVER_VISUAL_CHOICE.kind, "destination");
   assert.equal(FLUX_ENVIRONMENTS.some(({ id }) => id === "discover"), false);
   assert.equal(getFluxEnvironment("discover").id, DEFAULT_FLUX_ENVIRONMENT_ID);
-  assert.equal(FLUX_VISUAL_CHOICES.at(-1).number, "08");
+  assert.equal(FLUX_VISUAL_CHOICES.at(-1).number, "10");
 });
 
 test("keeps Aperture as the accepted fresh and invalid-preference default", () => {
@@ -70,6 +72,7 @@ test("preserves implemented preferences and retires rejected identifiers to Aper
   assert.equal(migrateLegacyEnvironmentPreference("aperture", false), "aperture");
   assert.equal(migrateLegacyEnvironmentPreference("plumb", false), "aperture");
   assert.equal(migrateLegacyEnvironmentPreference("wake", false), "aperture");
+  assert.equal(migrateLegacyEnvironmentPreference("gradient", false), "japanese-mist");
   assert.equal(migrateLegacyEnvironmentPreference("unknown", false), "aperture");
 });
 
@@ -82,7 +85,7 @@ test("keeps rejected visual renderers outside the active runtime and QA", () => 
 test("gives every environment a unique identifier, number, and renderer", () => {
   const ids = new Set();
   const numbers = new Set();
-  const renderers = new Set();
+  const rendererStudies = new Set();
   for (const environment of FLUX_ENVIRONMENTS) {
     assert.ok(environment.label && environment.displayLabel && environment.rendererLabel, environment.id);
     assert.equal(environment.label, environment.label.toUpperCase(), environment.id);
@@ -90,11 +93,11 @@ test("gives every environment a unique identifier, number, and renderer", () => 
     assert.equal(typeof environment.themed, "boolean", environment.id);
     ids.add(environment.id);
     numbers.add(environment.number);
-    renderers.add(environment.renderer);
+    rendererStudies.add(`${environment.renderer}:${environment.studyId ?? environment.id}`);
   }
   assert.equal(ids.size, FLUX_ENVIRONMENTS.length);
   assert.equal(numbers.size, FLUX_ENVIRONMENTS.length);
-  assert.equal(renderers.size, FLUX_ENVIRONMENTS.length);
+  assert.equal(rendererStudies.size, FLUX_ENVIRONMENTS.length);
 });
 
 test("connects every implemented environment to body-colour theming", () => {
@@ -104,7 +107,9 @@ test("connects every implemented environment to body-colour theming", () => {
   assert.equal(getFluxEnvironment("atlas").themed, true);
   assert.equal(getFluxEnvironment("drivey").themed, true);
   assert.equal(getFluxEnvironment("prtcl").themed, true);
-  assert.equal(getFluxEnvironment("gradient").themed, true);
+  assert.equal(getFluxEnvironment("japanese-mist").themed, false);
+  assert.equal(getFluxEnvironment("acid-orchard").themed, false);
+  assert.equal(getFluxEnvironment("chromatic-silk").themed, false);
 });
 
 test("cycles every environment deterministically and returns to the start", () => {

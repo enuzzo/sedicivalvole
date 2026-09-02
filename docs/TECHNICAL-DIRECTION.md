@@ -401,7 +401,7 @@ local storage, diagnostics or the explicit diagnostic email.
 DISCOVER reuses the same ephemeral position boundary outside permanent ATLAS
 chrome. The selected split surface owns a left index and always-open reader.
 It enters the shared Visual catalogue as destination `07`, not as a renderer:
-the launch grid therefore contains eight choices in `3–3–2`, starts the normal
+the launch grid therefore contains ten choices, starts the normal
 Aperture runtime behind the passenger surface, and the running Visual library
 can reopen it without replacing or persisting the active field.
 The browser's first supported language selects the Wikipedia host automatically;
@@ -484,27 +484,28 @@ The Codrops/Tympanus Infinite Lights reference is useful for coordinated instanc
 
 The renderer consumes a small snapshot and never blocks the audio event queue.
 
-`GRADIENT 08` is a project-owned direct WebGL2 renderer, not a Three.js,
-ShaderGradient, FeralUI, or ColorFlow integration. One indexed tessellated plane
-uses coherent 3D noise, analytical smooth normals, spatial three-colour mixing,
-directional/specular lighting, and one fragment-stage grain term in a single
-draw call. The field continuously morphs from low-speed Tension Plane to
-high-speed Chromatic Fold through the shared smoothed `0–130 km/h` response.
-Play the Road may supply bounded audio energy to displacement/radiance;
-Soundtrack passes zero audio response. A `1×` pixel-density ceiling,
-WebGL-context loss handling, explicit disposal, reduced motion, and Canvas2D
-fallback bound the runtime. The truthful speed readout is independent and may
-show higher values while the response remains fixed at its 130 endpoint.
+The former project-owned `GRADIENT 08` renderer is retired and deleted. A legacy
+saved selection migrates to `JAPANESE MIST 08`.
 
-`shadergradient-lab.html` is a separate development-only comparison surface. Its
-reusable workbench is also selectable inside the authenticated protected LAB.
-Both load exact `@shadergradient/react@2.4.20`, React Three Fiber, Three.js,
-three-stdlib, and camera-controls development dependencies, default to local
-`3d` lighting instead of remote HDR maps, and expose direct parameters plus a
-bounded road/audio simulator. The public App entry list does not contain them.
-Any later product promotion must identify selected behavior or modified
-upstream code, retain MIT notices, measure bundle/GPU cost, and add the same
-fallback and target-Tesla gates as a native renderer.
+`JAPANESE MIST 08`, `ACID ORCHARD 09`, and `CHROMATIC SILK 10` are three
+autonomous public ShaderGradient environments. One shared registry contains the
+exact owner-selected LAB starting-point props; one lazy field imports the exact,
+unmodified `@shadergradient/react@2.4.20`, React Three Fiber, Three.js,
+three-stdlib, and camera-controls production stack only when one of the three is
+selected. The main entry therefore does not parse or execute that renderer for
+the other visuals. Idle animation runs at half each starting point's base rate;
+road response reaches the previous endpoint at `130 km/h`. Play the Road admits
+bounded audio energy, Soundtrack passes zero audio response, and reduced motion
+sets motion to zero. OPEN, UNDERWATER, and BLOOM alter the registered native
+parameters without adding a shared overlay. A project-owned Canvas2D fallback,
+error boundary, explicit frame telemetry, and no remote HDR dependency bound the
+runtime. The truthful speed readout remains independent above the response
+ceiling.
+
+`shadergradient-lab.html` remains the standalone development workbench and the
+same reusable workbench remains selectable inside the authenticated protected
+LAB. Both keep the exhaustive controls and exact registry. The upstream MIT
+notice is retained; no upstream package source is copied or modified.
 
 ## Engine visual architecture
 

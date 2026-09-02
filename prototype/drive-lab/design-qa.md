@@ -45,8 +45,8 @@
   retired PNG returns 404;
 - remaining evidence: target-Tesla gesture, Media Session exposure, cabin
   typography/audio, WebP sharpness/network and real-GPS continuity remain the
-  coded acceptance queue. Original Gradient still requires exactly three
-  directions before implementation.
+  coded acceptance queue. The later Gradient gate and its subsequent retirement
+  are tracked in milestone row 11; three ShaderGradient visuals now replace it.
 
 final result: passed for office and canonical implementation; Tesla acceptance pending
 

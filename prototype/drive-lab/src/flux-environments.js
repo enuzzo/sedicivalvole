@@ -77,14 +77,37 @@ export const FLUX_ENVIRONMENTS = [
     tunable: true,
   },
   {
-    id: "gradient",
-    label: "GRADIENT",
-    displayLabel: "Gradient",
+    id: "japanese-mist",
+    label: "JAPANESE MIST",
+    displayLabel: "Japanese Mist",
     number: "08",
-    rendererLabel: "Three-dimensional gradient field",
-    launchDescription: "Tension opens into chromatic folds",
-    renderer: "gradient",
-    themed: true,
+    rendererLabel: "ShaderGradient water plane",
+    launchDescription: "Soft water and slow chromatic tide",
+    renderer: "shadergradient",
+    studyId: "japanese-mist",
+    themed: false,
+  },
+  {
+    id: "acid-orchard",
+    label: "ACID ORCHARD",
+    displayLabel: "Acid Orchard",
+    number: "09",
+    rendererLabel: "ShaderGradient graphic plane",
+    launchDescription: "Punchy speed-led graphic folding",
+    renderer: "shadergradient",
+    studyId: "acid-orchard",
+    themed: false,
+  },
+  {
+    id: "chromatic-silk",
+    label: "CHROMATIC SILK",
+    displayLabel: "Chromatic Silk",
+    number: "10",
+    rendererLabel: "ShaderGradient cosmic sphere",
+    launchDescription: "Luminous sculptural colour folds",
+    renderer: "shadergradient",
+    studyId: "chromatic-silk",
+    themed: false,
   },
 ];
 
@@ -104,9 +127,9 @@ export const DISCOVER_VISUAL_CHOICE = {
 };
 
 export const FLUX_VISUAL_CHOICES = [
-  ...FLUX_ENVIRONMENTS.filter(({ id }) => id !== "gradient"),
+  ...FLUX_ENVIRONMENTS.filter(({ id }) => !["japanese-mist", "acid-orchard", "chromatic-silk"].includes(id)),
   DISCOVER_VISUAL_CHOICE,
-  FLUX_ENVIRONMENTS.find(({ id }) => id === "gradient"),
+  ...FLUX_ENVIRONMENTS.filter(({ id }) => ["japanese-mist", "acid-orchard", "chromatic-silk"].includes(id)),
 ];
 
 export function getFluxEnvironment(environmentId) {
@@ -120,6 +143,7 @@ export function getFluxEnvironment(environmentId) {
  * accepted Aperture fallback.
  */
 export function migrateLegacyEnvironmentPreference(environmentId) {
+  if (environmentId === "gradient") return "japanese-mist";
   return FLUX_ENVIRONMENTS.some((environment) => environment.id === environmentId)
     ? environmentId
     : DEFAULT_FLUX_ENVIRONMENT_ID;

@@ -133,7 +133,7 @@ automated tests green, and no masking of vehicle alerts.
 
 ## Phase 4 — Flux generative renderer spike
 
-Status: **SIX SOURCE ENVIRONMENTS IMPLEMENTED; GRADIENT FIELD THREE-DIRECTION GATE PENDING**.
+Status: **NINE SOURCE ENVIRONMENTS IMPLEMENTED; THREE SHADERGRADIENT VISUALS AWAIT TARGET-TESLA ACCEPTANCE**.
 
 Implemented:
 
@@ -161,12 +161,14 @@ Implemented:
   `24,000` / `16,000` / `37,000` fixed draw counts; a direct `94 × 34 px`
   text-only TYPE cycle separate from Palette; and native speed, music,
   OPEN/UNDERWATER/BLOOM, reduced-motion, failure, and cleanup behavior;
-- owner-selected `GRADIENT 08`, with one project-owned direct WebGL2 3D surface
-  morphing continuously from low-speed Tension Plane to high-speed Chromatic
-  Fold. Coherent deformation, smooth lighting, three-colour spatial mixing and
-  fine single-pass grain share one indexed draw call; Play the Road admits
-  bounded audio response while Soundtrack remains speed-only. All response
-  saturates at `130 km/h` while the readout remains truthful above it;
+- owner-selected autonomous `JAPANESE MIST 08`, `ACID ORCHARD 09`, and
+  `CHROMATIC SILK 10`, using their exact registered ShaderGradient settings in
+  one separate lazy product chunk. Each begins at half its LAB base rate at
+  rest, reaches its bounded endpoint at `130 km/h`, admits bounded Play the Road
+  audio response, keeps Soundtrack speed-only, and owns reduced motion,
+  telemetry, error handling, and Canvas2D fallback. The old project-owned
+  Gradient renderer is deleted and its saved preference migrates to Japanese
+  Mist;
 - safe environment preferences: every implemented choice remains intact, while
   PLUMB, WAKE, PRIMORDIAL and other missing, retired or invalid identifiers
   resolve to Aperture;
@@ -176,15 +178,13 @@ Queued next:
 - decide which visual and score combinations become authored audiovisual environments once more than FRACTURE is selectable;
 - retain PLUMB, WAKE and PRIMORDIAL as rejected decision records and SLIP as
   proposal-only;
-- validate PRTCL's stronger UNDERWATER collapse/recovery and GRADIENT 08's
-  slow-to-fast morph, audio/speed boundary, frame pacing, grain and thermal
-  behavior on the target Tesla;
-- use the standalone or authenticated protected ShaderGradient Lab to record
-  promising parameter JSON and compare its official MIT renderer against current
-  Gradient behavior on desktop and the Tesla viewport;
-  do not promote a package, preset, or modified shader into the product without
-  a new explicit owner selection plus bundle, fallback, licensing and physical
-  Tesla performance evidence;
+- validate PRTCL's stronger UNDERWATER collapse/recovery and each of Japanese
+  Mist, Acid Orchard, and Chromatic Silk across the speed/audio boundary, frame
+  pacing, grain, switching, background/foreground, and thermal behavior on the
+  target Tesla;
+- keep the standalone and authenticated ShaderGradient LABs as the controlled
+  place for tuning and export; any upstream source modification still requires
+  a fresh explicit owner decision and retained MIT inventory;
 - profile the unmodified Interstate 7 renderer on the target Tesla; any later travel, projection, curvature, density, palette, or geometry changes require a new explicit product decision and must not be folded into the upstream-integrity checkpoint;
 - verify each environment at rest, intermediate speed, full energy, and sustained deceleration at `773 × 601` on the target vehicle.
 

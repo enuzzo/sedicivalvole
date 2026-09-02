@@ -2,72 +2,69 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 import {
-  advanceGradientResponse,
-  gradientMotionProfile,
-} from "../src/environments/gradient/gradient-model.js";
+  getShaderGradientStudy,
+  shaderGradientResponse,
+  SHADERGRADIENT_STUDY_IDS,
+} from "../src/environments/shadergradient/studies.js";
 
 const read = (path) => readFile(new URL(path, import.meta.url), "utf8");
-const rendererSource = await read("../src/environments/gradient/gradient-renderer.js");
-const fieldSource = await read("../src/environments/gradient/gradient-field.jsx");
+const fieldSource = await read("../src/environments/shadergradient/shadergradient-field.jsx");
 const appSource = await read("../src/App.jsx");
+const packageSource = JSON.parse(await read("../package.json"));
 
-test("speed continuously opens Tension Plane into Chromatic Fold and saturates at 130 km/h", () => {
-  const rest = gradientMotionProfile({ speedKmh: 0 });
-  const city = gradientMotionProfile({ speedKmh: 50 });
-  const ceiling = gradientMotionProfile({ speedKmh: 130 });
-  const above = gradientMotionProfile({ speedKmh: 260 });
-  assert.equal(rest.foldMorph, 0);
-  assert.ok(city.foldMorph > rest.foldMorph && city.foldMorph < ceiling.foldMorph);
-  assert.equal(ceiling.foldMorph, 1);
-  assert.deepEqual(above, ceiling);
-  assert.ok(ceiling.foldDepth > rest.foldDepth * 5);
-  assert.ok(ceiling.seamFocus > rest.seamFocus * 3);
+test("the three owner-selected ShaderGradient studies replace the retired Gradient", () => {
+  assert.deepEqual(SHADERGRADIENT_STUDY_IDS, ["japanese-mist", "acid-orchard", "chromatic-silk"]);
+  assert.equal(getShaderGradientStudy("japanese-mist").type, "waterPlane");
+  assert.equal(getShaderGradientStudy("acid-orchard").type, "plane");
+  assert.equal(getShaderGradientStudy("chromatic-silk").type, "sphere");
+  assert.equal(getShaderGradientStudy("chromatic-silk").shader, "cosmic");
+  assert.equal(getShaderGradientStudy("unknown").id, "japanese-mist");
 });
 
-test("Play the Road admits score energy while Soundtrack stays speed-only", () => {
-  const roadQuiet = gradientMotionProfile({ speedKmh: 72, audioLevel: 0, musicMode: "play-road" });
-  const roadLoud = gradientMotionProfile({ speedKmh: 72, audioLevel: 1, musicMode: "play-road" });
-  const soundtrackQuiet = gradientMotionProfile({ speedKmh: 72, audioLevel: 0, musicMode: "soundtrack" });
-  const soundtrackLoud = gradientMotionProfile({ speedKmh: 72, audioLevel: 1, musicMode: "soundtrack" });
-  assert.ok(roadLoud.displacement > roadQuiet.displacement);
-  assert.ok(roadLoud.flowRate > roadQuiet.flowRate);
-  assert.equal(soundtrackLoud.audioEnergy, 0);
+test("every study runs at half base speed at rest and retains its former 130 km/h endpoint", () => {
+  for (const studyId of SHADERGRADIENT_STUDY_IDS) {
+    const study = getShaderGradientStudy(studyId);
+    const rest = shaderGradientResponse(study, { speedKmh: 0, audioLevel: 0, responseMode: "road" });
+    const ceiling = shaderGradientResponse(study, { speedKmh: 130, audioLevel: 0, responseMode: "road" });
+    const above = shaderGradientResponse(study, { speedKmh: 260, audioLevel: 0, responseMode: "road" });
+    assert.ok(Math.abs(rest.uSpeed - study.uSpeed * 0.5) < 1e-12, studyId);
+    assert.ok(Math.abs(ceiling.uSpeed - study.uSpeed * 2.8) < 1e-12, studyId);
+    assert.deepEqual(above, ceiling, studyId);
+  }
+});
+
+test("Play the Road admits bounded audio while Soundtrack remains speed-only", () => {
+  const study = getShaderGradientStudy("japanese-mist");
+  const roadQuiet = shaderGradientResponse(study, { speedKmh: 72, audioLevel: 0, responseMode: "road-audio" });
+  const roadLoud = shaderGradientResponse(study, { speedKmh: 72, audioLevel: 1, responseMode: "road-audio" });
+  const soundtrackQuiet = shaderGradientResponse(study, { speedKmh: 72, audioLevel: 0, responseMode: "road" });
+  const soundtrackLoud = shaderGradientResponse(study, { speedKmh: 72, audioLevel: 1, responseMode: "road" });
+  assert.ok(roadLoud.uSpeed > roadQuiet.uSpeed);
+  assert.ok(roadLoud.uStrength > roadQuiet.uStrength);
   assert.deepEqual(soundtrackLoud, soundtrackQuiet);
 });
 
-test("grain is one-pass, bounded, and reduced motion stops phase travel", () => {
-  const rest = gradientMotionProfile({ speedKmh: 0 });
-  const ceiling = gradientMotionProfile({ speedKmh: 130 });
-  const reduced = gradientMotionProfile({ speedKmh: 130, audioLevel: 1, reducedMotion: true });
-  assert.ok(rest.grain >= 0.03 && ceiling.grain <= 0.06);
-  assert.equal(reduced.flowRate, 0);
-  assert.equal(reduced.audioEnergy, 0);
-  assert.match(rendererSource, /float grain = hash\(gl_FragCoord\.xy/);
-  assert.equal((rendererSource.match(/gl\.drawElements\(/g) ?? []).length, 1);
+test("reduced motion and vehicle macros remain bounded and recognizable", () => {
+  const study = getShaderGradientStudy("acid-orchard");
+  const plain = shaderGradientResponse(study, { speedKmh: 80, responseMode: "road" });
+  const reduced = shaderGradientResponse(study, { speedKmh: 80, responseMode: "road", reducedMotion: true });
+  const underwater = shaderGradientResponse(study, { speedKmh: 80, responseMode: "road", effect: "UNDERWATER" });
+  const open = shaderGradientResponse(study, { speedKmh: 80, responseMode: "road", effect: "OPEN" });
+  const bloom = shaderGradientResponse(study, { speedKmh: 80, responseMode: "road", effect: "BLOOM" });
+  assert.equal(reduced.uSpeed, 0);
+  assert.ok(underwater.uSpeed < plain.uSpeed * 0.5);
+  assert.ok(open.uStrength > plain.uStrength);
+  assert.ok(bloom.brightness > plain.brightness);
 });
 
-test("response interpolation is continuous and frame-rate independent enough for the visual envelope", () => {
-  const target = gradientMotionProfile({ speedKmh: 130, audioLevel: 1 });
-  const start = gradientMotionProfile({ speedKmh: 0, audioLevel: 0 });
-  const first = advanceGradientResponse(start, target, 1 / 60);
-  assert.ok(first.foldMorph > 0 && first.foldMorph < 1);
-  const run = (fps) => {
-    let value = start;
-    for (let frame = 0; frame < fps; frame += 1) value = advanceGradientResponse(value, target, 1 / fps);
-    return value;
-  };
-  assert.ok(Math.abs(run(30).foldMorph - run(60).foldMorph) < 1e-9);
-  assert.ok(Math.abs(run(60).foldMorph - run(120).foldMorph) < 1e-9);
-});
-
-test("the selected visual is an owned bounded WebGL2 field with lifecycle failure handling", () => {
-  assert.match(rendererSource, /getContext\("webgl2"/);
-  assert.match(rendererSource, /coherentNoise/);
-  assert.match(rendererSource, /createGrid\(columns = GRID_COLUMNS, rows = GRID_ROWS\)/);
-  assert.doesNotMatch(rendererSource + fieldSource, /from "three"|@react-three|@shadergradient/);
-  assert.match(fieldSource, /MAX_GRADIENT_PIXEL_RATIO = 1/);
-  assert.match(fieldSource, /webglcontextlost/);
-  assert.match(fieldSource, /renderer\.dispose\(\)/);
-  assert.match(appSource, /environment\.renderer === "gradient"/);
-  assert.match(appSource, /<GradientField[\s\S]*?musicMode=\{musicMode\}/);
+test("the public visual lazily loads the exact renderer and owns a Canvas2D fallback", () => {
+  assert.match(fieldSource, /from "@shadergradient\/react"/);
+  assert.match(fieldSource, /ShaderGradientCanvas/);
+  assert.match(fieldSource, /ShaderGradientFallback/);
+  assert.match(fieldSource, /getContext\("2d"/);
+  assert.match(fieldSource, /pixelDensity=\{1\}/);
+  assert.match(appSource, /lazy\(\(\) => import\("\.\/environments\/shadergradient\/shadergradient-field\.jsx"\)\)/);
+  assert.match(appSource, /environment\.renderer === "shadergradient"/);
+  assert.match(appSource, /studyId=\{environment\.studyId\}/);
+  assert.equal(packageSource.dependencies["@shadergradient/react"], "2.4.20");
 });

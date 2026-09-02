@@ -9,7 +9,7 @@ existing ShaderGradient study:
 | --- | --- | --- | --- |
 | FeralUI Gradient Builder | <https://feralui.dev/gradients> | Live Studio, Mesh, Aurora, and Export interfaces inspected on 2026-08-30; site terms at <https://feralui.dev/terms> | The Gradient Builder is not among the site's MIT npm packages. FeralUI's terms say unpublished demos are shown as work and are not licensed for copying or redistribution. |
 | ColorFlow | <https://colorflow.ls.graphics/> | Live editor and official introduction at <https://www.ls.graphics/ideas/introducing-color-flow-create-professional-mesh-gradients-in-minutes>, inspected on 2026-08-30; provider terms at <https://www.ls.graphics/terms-of-service> | The product says generated work is free for personal and commercial use. This is not an open-source licence for its editor, WebGL runtime, presets, effects, or embed implementation; the provider's general terms retain ownership and restrict redistribution and replication. |
-| ShaderGradient | <https://shadergradient.co/> | Existing live and official-source study plus the local and authenticated protected-LAB comparison surfaces admitted on 2026-09-02 | Exact `@shadergradient/react@2.4.20` and pinned peers are MIT development dependencies; they remain outside the public App and canonical client bundle. See [`REFERENCE-STUDY-SHADERGRADIENT.md`](REFERENCE-STUDY-SHADERGRADIENT.md). |
+| ShaderGradient | <https://shadergradient.co/> | Existing live and official-source study plus the local and authenticated protected-LAB workbenches; three exact registered starting points promoted on 2026-09-02 | Exact `@shadergradient/react@2.4.20` and pinned peers are MIT production dependencies isolated in one lazy public renderer chunk. See [`REFERENCE-STUDY-SHADERGRADIENT.md`](REFERENCE-STUDY-SHADERGRADIENT.md). |
 
 FeralUI and ColorFlow remain browser-and-primary-source studies only. No preset,
 export, embed, image, video, JSON, source, shader, package, or runtime from
@@ -134,13 +134,12 @@ fallbacks.
 - **Licence boundary checked:** yes; neither new tool is approved as product
   source or runtime.
 - **Source, embed, export, preset, or dependency admitted:** ShaderGradient is
-  admitted only as exact MIT development dependencies for the isolated local
-  and authenticated protected-LAB comparison surfaces; FeralUI and ColorFlow
-  remain unadmitted.
-- **Product view implemented:** yes, as project-owned direct WebGL2
-  `GRADIENT 08`; no studied tool runtime, source, shader, preset, export, embed,
-  or asset entered that production implementation.
-- **Selected direction:** one continuous low-speed Tension Plane to high-speed
-  Chromatic Fold hybrid with bounded in-pass grain.
-- **Remaining gate:** target-Tesla motion, frame pacing, grain, audio/source
-  boundary and thermal acceptance.
+  admitted as exact unmodified MIT production dependencies for one lazy public
+  renderer chunk and both LAB surfaces; FeralUI and ColorFlow remain unadmitted.
+- **Product views implemented:** the exact registered `JAPANESE MIST 08`,
+  `ACID ORCHARD 09`, and `CHROMATIC SILK 10` starting points. The former
+  project-owned Gradient is retired and deleted.
+- **Selected direction:** all three starting points are autonomous public
+  visuals, not variants behind one entry.
+- **Remaining gate:** target-Tesla motion, switching, frame pacing, grain,
+  audio/source boundary, sustained run, and thermal acceptance.

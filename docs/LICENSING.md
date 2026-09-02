@@ -45,6 +45,23 @@ licensor identity. It does not imply a studio, company, or other legal entity.
 Third-party authors and rights holders retain the ownership, licences, and
 credits recorded in `THIRD_PARTY_NOTICES.md`.
 
+## 2026-09-02 — Three ShaderGradient studies promoted to the public catalogue
+
+The owner explicitly selected the three registered LAB starting points as
+autonomous public visuals and retired the earlier project-owned `GRADIENT 08`:
+`JAPANESE MIST 08`, `ACID ORCHARD 09`, and `CHROMATIC SILK 10`. The exact,
+unmodified `@shadergradient/react@2.4.20` package and pinned Three/R3F peers are
+therefore production dependencies. They are loaded only through a separate lazy
+product chunk when one of those three visuals is selected and remain available
+in both LAB surfaces.
+
+The retained MIT notice remains `licenses/ShaderGradient-MIT.txt`; no upstream
+source is copied, modified, or relicensed. Project-owned code registers the
+selected settings and supplies road/audio response, runtime telemetry,
+reduced-motion handling, and a Canvas2D fallback. The dependency, build, local
+WebGL, and console gates pass; target-Tesla GPU and sustained-run acceptance
+remain mandatory.
+
 ## 2026-09-02 — ShaderGradient admitted for owner comparison labs
 
 The project pins `@shadergradient/react@2.4.20` and its required Three/R3F

@@ -8,11 +8,13 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
-`shadergradient-lab.html` is a development-only standalone comparison entry and
-must not be uploaded to the canonical root. Its reusable workbench is included
-only in the authenticated protected-LAB bundle. Exact MIT dependencies and
-local run instructions are recorded in `LOCAL-SHADERGRADIENT-LAB.md`; the public
-App Vite entry deliberately omits the stack.
+`shadergradient-lab.html` is a development-only standalone workbench entry and
+must not be uploaded to the canonical root. Its reusable workbench is also
+included in the authenticated protected-LAB bundle. The public App imports only
+the three selected starting points and exact MIT renderer through a separate
+lazy chunk; LAB controls and URL import remain outside the public surface. Exact
+dependency and local run instructions are recorded in
+`LOCAL-SHADERGRADIENT-LAB.md`.
 
 ## Protected ShaderGradient owner LAB — 2026-09-02 13:52
 

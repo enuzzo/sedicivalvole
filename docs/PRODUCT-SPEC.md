@@ -200,23 +200,20 @@ publication are complete; target-Tesla acceptance remains an explicit gate.
 `PRIMORDIAL 08` is retired. The product owner rejected it on 2026-08-30 and its
 renderer, fallback, tuner, preference payload, catalog entry, QA path and active
 tests are removed. Git and the dated source-admission record retain the decision
-history. Its successor is `GRADIENT 08`. After the required exactly-three
-direction gate, the owner selected one continuous sequence: a broad low-speed
-**Tension Plane** progressively opens into the high-speed **Chromatic Fold**,
-with a fine visible grain finish. The implementation is a project-owned direct
-WebGL2 tessellated surface with coherent displacement, smooth interpolated
-lighting, three-colour spatial mixing, one draw call, a one-pass grain term,
-context-loss recovery, reduced-motion behavior, and Canvas2D fallback. Speed
-owns the complete morph; Play the Road may add bounded authored audio breadth
-and radiance, while Soundtrack is strictly speed-only. ShaderGradient, FeralUI
-Gradients, and ColorFlow remain reference inputs within their individually
-audited licence boundaries; no shader, runtime, preset, export, embed or asset
-enters the product by implication. The exact MIT ShaderGradient stack is now
-installed only as a development dependency for `shadergradient-lab.html` and
-the authenticated protected-LAB workbench. Both remain excluded from the public
-App, product catalogue, and canonical client bundle. Their experiments do not
-alter this production contract until an
-explicit selection and new performance/fallback gate promote a behavior.
+history. Its first successor, the project-owned `GRADIENT 08`, was also retired
+by explicit owner decision on 2026-09-02; its renderer, model, and fallback are
+deleted, while stored `gradient` preferences migrate to `JAPANESE MIST 08`.
+
+The owner selected the three exact ShaderGradient LAB starting points as three
+autonomous public visuals: `JAPANESE MIST 08`, `ACID ORCHARD 09`, and
+`CHROMATIC SILK 10`. They use the unmodified MIT
+`@shadergradient/react@2.4.20` renderer and pinned Three/R3F peers through one
+separate lazy product chunk. Project-owned adapters register the exact settings,
+map speed from half-rate idle motion to the fixed `130 km/h` endpoint, admit
+bounded Play the Road audio energy while keeping Soundtrack speed-only, report
+frames, honor reduced motion, and provide a Canvas2D fallback. No upstream
+source is modified or relicensed. Desktop and exact `773 × 601` WebGL/console
+verification are complete; sustained target-Tesla GPU acceptance remains open.
 
 The speed readout remains truthful above `130 km/h`, but every visual, audio,
 tempo, density, motion, and effect response treats `130 km/h` as 100 percent and

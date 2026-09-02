@@ -39,9 +39,9 @@ The original top-level file was moved reversibly into the reference library. It 
   mesh-gradient renderer; see
   [`REFERENCE-STUDY-SHADERGRADIENT.md`](REFERENCE-STUDY-SHADERGRADIENT.md).
   The ignored reference library still contains no copied upstream package,
-  preset, shader, or asset. Exact MIT npm development dependencies now power
-  the tracked standalone `shadergradient-lab.html` and authenticated protected-
-  LAB comparison surfaces; they do not enter the public App. See
+  preset, shader, or asset. Exact unmodified MIT npm production dependencies
+  power three owner-selected lazy public visuals plus the tracked standalone
+  `shadergradient-lab.html` and authenticated protected-LAB workbenches. See
   [`LOCAL-SHADERGRADIENT-LAB.md`](LOCAL-SHADERGRADIENT-LAB.md).
 - `FeralUI Gradient Builder` and `ColorFlow`: live-product and official-terms
   study of gradient-family authoring, perceptual colour interpolation, control

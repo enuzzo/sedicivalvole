@@ -146,17 +146,16 @@ Tesla viewport rather than judged from desktop screenshots:
 
 - **Collected:** yes.
 - **Reference mechanism understood:** yes.
-- **Source or dependency admitted:** yes, exact npm development dependencies for
-  the standalone and authenticated protected-LAB comparison surfaces; no public
-  App dependency or copied shader is admitted.
-- **Product view implemented:** yes, as project-owned direct WebGL2
-  `GRADIENT 08`; ShaderGradient and its Three/R3F peers remain outside the
-  production dependency graph and output.
-- **Selected direction:** exactly three directions were shown; the owner chose a
-  continuous low-speed Tension Plane to high-speed Chromatic Fold hybrid with
-  fine grain.
-- **Remaining gate:** target-Tesla motion, frame pacing, grain, source-response
-  boundary and thermal acceptance.
+- **Source or dependency admitted:** yes, exact unmodified npm production
+  dependencies for one lazy public renderer chunk and both LAB surfaces; no
+  upstream shader or source is copied or modified.
+- **Product views implemented:** `JAPANESE MIST 08`, `ACID ORCHARD 09`, and
+  `CHROMATIC SILK 10` as three autonomous catalogue entries using the exact
+  registered LAB starting points. The old project-owned Gradient is retired.
+- **Selected direction:** the owner explicitly selected all three starting
+  points, not one hybrid and not variants behind one entry.
+- **Remaining gate:** target-Tesla motion, switching, frame pacing, grain,
+  source-response boundary, sustained run, and thermal acceptance.
 - **Companion comparison:** FeralUI Gradient Builder and ColorFlow are evaluated
   in [`REFERENCE-STUDY-GRADIENT-TOOLS.md`](REFERENCE-STUDY-GRADIENT-TOOLS.md).
 - **Local comparison surface:** `shadergradient-lab.html`, with three starting

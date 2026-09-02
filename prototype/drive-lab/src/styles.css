@@ -96,6 +96,10 @@ button { -webkit-tap-highlight-color: transparent; }
 .app[data-palette="signal"] { --accent: #e4362a; }
 .app[data-palette="sulphur"] { --accent: #e6d02a; }
 .field-canvas { position: absolute; inset: 0; z-index: 0; display: block; width: 100%; height: 100%; }
+.shadergradient-field { overflow: hidden; background: #050507; }
+.shadergradient-field .shadergradient-canvas,
+.shadergradient-field .shadergradient-canvas > div,
+.shadergradient-field canvas { width: 100% !important; height: 100% !important; }
 .field-failure {
   position: absolute;
   inset: 0;

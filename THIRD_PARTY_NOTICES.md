@@ -11,11 +11,11 @@ are not relicensed under the project's PolyForm grant.
 | React DOM | 19.2.0 | Meta Platforms, Inc. and contributors | MIT | none | `prototype/drive-lab/` |
 | Vite | 6.4.3 | Evan You and contributors | MIT | local configuration | `prototype/drive-lab/` |
 | @vitejs/plugin-react | 5.0.4 | Vite contributors | MIT | none | `prototype/drive-lab/` |
-| [ShaderGradient React](https://github.com/ruucm/shadergradient) | 2.4.20 | ruucm and stone-skipper | MIT | unmodified package used only by the local `shadergradient-lab.html` comparison environment and authenticated protected LAB; excluded from the public App | `prototype/drive-lab/` development dependencies |
-| React Three Fiber | 9.7.0 | Paul Henschel and contributors | MIT | unmodified ShaderGradient comparison rendering peer; admitted only to local and authenticated LAB surfaces | `prototype/drive-lab/` development dependencies |
-| Three.js | 0.169.0 | mrdoob and contributors | MIT | unmodified ShaderGradient comparison rendering peer; distinct from the older r109 VERTIGO vendor copy and excluded from the public App | `prototype/drive-lab/` development dependencies |
-| three-stdlib | 2.36.1 | Paul Henschel and contributors | MIT | unmodified ShaderGradient comparison rendering peer; admitted only to local and authenticated LAB surfaces | `prototype/drive-lab/` development dependencies |
-| camera-controls | 2.9.0 | Yomotsu | MIT | unmodified ShaderGradient comparison rendering peer; admitted only to local and authenticated LAB surfaces | `prototype/drive-lab/` development dependencies |
+| [ShaderGradient React](https://github.com/ruucm/shadergradient) | 2.4.20 | ruucm and stone-skipper | MIT | unmodified package; exact owner-selected starting points are registered by project-owned adapters for three lazy public visuals and both LAB surfaces | `prototype/drive-lab/` production dependencies |
+| React Three Fiber | 9.7.0 | Paul Henschel and contributors | MIT | unmodified ShaderGradient rendering peer used only by the lazy ShaderGradient product chunk and LAB surfaces | `prototype/drive-lab/` production dependencies |
+| Three.js | 0.169.0 | mrdoob and contributors | MIT | unmodified ShaderGradient rendering peer, distinct from the older r109 VERTIGO vendor copy | `prototype/drive-lab/` production dependencies |
+| three-stdlib | 2.36.1 | Paul Henschel and contributors | MIT | unmodified ShaderGradient rendering peer used only by the lazy ShaderGradient product chunk and LAB surfaces | `prototype/drive-lab/` production dependencies |
+| camera-controls | 2.9.0 | Yomotsu | MIT | unmodified ShaderGradient rendering peer used only by the lazy ShaderGradient product chunk and LAB surfaces | `prototype/drive-lab/` production dependencies |
 | MapLibre GL JS | 5.7.1 | MapLibre contributors | BSD-3-Clause | lazy ATLAS renderer integration | `prototype/drive-lab/` |
 | qrcode | 1.5.4 | Kazuhiko Arase and contributors | MIT | local passenger-link QR generation | `prototype/drive-lab/` |
 | Simple Icons GitHub mark | current path | Simple Icons contributors | CC0-1.0 | small inline monochrome SVG identifying the public source link | `prototype/drive-lab/src/App.jsx` |
@@ -34,13 +34,17 @@ are not relicensed under the project's PolyForm grant.
 
 Transitive dependencies and integrity hashes are locked in `prototype/drive-lab/package-lock.json`. A public release must generate and verify the complete dependency notice set.
 
-The ShaderGradient package is admitted only for the tracked local comparison
-page and authenticated protected-LAB workbench. Its MIT permission notice is retained in
-`licenses/ShaderGradient-MIT.txt`. MIT permits use, modification and
-redistribution, including an adapted future integration, provided that the
-copyright and permission notice travels with copied or modified portions. No
-ShaderGradient code is relicensed under PolyForm, and no public App asset
-imports the package.
+The ShaderGradient package is admitted unmodified for the tracked local and
+protected LAB workbenches and for the three owner-selected public visuals
+`JAPANESE MIST 08`, `ACID ORCHARD 09`, and `CHROMATIC SILK 10`. Its MIT
+permission notice is retained in `licenses/ShaderGradient-MIT.txt`. MIT permits
+use, modification, and redistribution provided that the copyright and
+permission notice travels with copied or modified portions. No ShaderGradient
+code is relicensed under PolyForm. The project-owned adapters live in
+`prototype/drive-lab/src/environments/shadergradient/`; they register the exact
+selected settings, map bounded vehicle/audio response, lazy-load the upstream
+renderer, report telemetry, and own the independent Canvas2D fallback. No
+upstream package source is copied or modified.
 
 No standalone luminous-axis or Braun launch-detail raster is present in the
 tracked source tree or production build output. Interface details and active

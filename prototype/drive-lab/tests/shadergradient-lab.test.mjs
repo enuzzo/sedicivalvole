@@ -42,19 +42,22 @@ test('the local owner LAB uses the same canonical route as production', async ()
 })
 
 test('ShaderGradient Lab exposes every registered family, official presets, and bounded road response', async () => {
-  const source = await read('src/shadergradient-lab/workbench.jsx')
+  const [source, studies] = await Promise.all([
+    read('src/shadergradient-lab/workbench.jsx'),
+    read('src/environments/shadergradient/studies.js'),
+  ])
 
-  assert.match(source, /Japanese Mist/)
-  assert.match(source, /Acid Orchard/)
-  assert.match(source, /Chromatic Silk/)
+  assert.match(studies, /Japanese Mist/)
+  assert.match(studies, /Acid Orchard/)
+  assert.match(studies, /Chromatic Silk/)
   assert.match(source, /presetsArray as officialPresets/)
   assert.match(source, /3 studies \+ 10 official/)
   for (const shader of ['defaults', 'positionMix', 'cosmic', 'glass']) {
     assert.match(source, new RegExp(`value: '${shader}'`))
   }
-  assert.match(source, /settings\.speed \/ 130/)
-  assert.match(source, /responseMode === 'free' \? 1 : 0\.5 \+ road \* 2\.3/)
-  assert.match(source, /settings\.uSpeed \* \(motionScale \+ audio \* 0\.45\)/)
+  assert.match(source, /shaderGradientResponse\(settings\)/)
+  assert.match(studies, /responseMode === "free" \? 1 : 0\.5 \+ road \* 2\.3/)
+  assert.match(studies, /settings\.uSpeed \* \(motionScale \+ audio \* 0\.45\)/)
   assert.match(source, /Road \+ audio/)
   assert.match(source, /lightType=\{settings\.lightType\}/)
   assert.doesNotMatch(source, /key=\{`\$\{settings\.type\}/)
@@ -85,18 +88,18 @@ test('ShaderGradient Lab exposes the complete useful v2.4.20 runtime control sur
   assert.match(source, /canvasKey = `\$\{settings\.preserveDrawingBuffer\}:\$\{settings\.powerPreference\}`/)
 })
 
-test('ShaderGradient and its rendering peers are exact development dependencies', async () => {
+test('promoted ShaderGradient and its rendering peers are exact production dependencies', async () => {
   const manifest = JSON.parse(await read('package.json'))
 
-  assert.equal(manifest.devDependencies['@shadergradient/react'], '2.4.20')
-  assert.equal(manifest.devDependencies['@react-three/fiber'], '9.7.0')
-  assert.equal(manifest.devDependencies.three, '0.169.0')
-  assert.equal(manifest.devDependencies['three-stdlib'], '2.36.1')
-  assert.equal(manifest.devDependencies['camera-controls'], '2.9.0')
-  assert.equal(manifest.dependencies?.['@shadergradient/react'], undefined)
+  assert.equal(manifest.dependencies['@shadergradient/react'], '2.4.20')
+  assert.equal(manifest.dependencies['@react-three/fiber'], '9.7.0')
+  assert.equal(manifest.dependencies.three, '0.169.0')
+  assert.equal(manifest.dependencies['three-stdlib'], '2.36.1')
+  assert.equal(manifest.dependencies['camera-controls'], '2.9.0')
+  assert.equal(manifest.devDependencies?.['@shadergradient/react'], undefined)
 })
 
-test('the public app excludes ShaderGradient while the protected LAB admits the workbench', async () => {
+test('the public app admits only the selected lazy field while the LAB retains the workbench', async () => {
   const [manifest, labConfig, app, lab] = await Promise.all([
     read('package.json'),
     read('vite.lab.config.mjs'),
@@ -107,6 +110,7 @@ test('the public app excludes ShaderGradient while the protected LAB admits the 
   assert.doesNotMatch(manifest, /shadergradient-lab\.html/)
   assert.match(labConfig, /src\/lab\/main\.jsx/)
   assert.doesNotMatch(app, /shadergradient-lab/)
+  assert.match(app, /environments\/shadergradient\/shadergradient-field\.jsx/)
   assert.match(lab, /shadergradient-lab\/workbench\.jsx/)
 })
 
@@ -129,7 +133,8 @@ test('the ShaderGradient MIT boundary and local guide are retained', async () =>
 
   assert.match(notice, /ShaderGradient React.*2\.4\.20/)
   assert.match(scope, /ShaderGradient remains MIT material/)
-  assert.match(guide, /does \*\*not\*\* replace/)
+  assert.match(guide, /autonomous public[\s\S]*JAPANESE MIST 08/)
+  assert.match(guide, /separate lazy[\s\S]*chunk/)
   assert.match(license, /Copyright \(c\) ruucm, stone-skipper/)
   assert.match(license, /Permission is hereby granted/)
 })

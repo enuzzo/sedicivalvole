@@ -2,15 +2,17 @@
 
 ## Purpose and boundary
 
-The ShaderGradient Lab is a development-only comparison environment for the
-product owner. It makes the official ShaderGradient React renderer directly
-playable before any behavior is selected for sedicivalvole.
+The ShaderGradient Lab is the product owner's complete tuning and comparison
+environment for the official ShaderGradient React renderer. The same reusable
+workbench is available standalone in development and inside the authenticated
+protected `/lab`.
 
-It does **not** replace, patch, import into, or publish the project-owned
-`GRADIENT 08` renderer. `shadergradient-lab.html` remains intentionally absent
-from the public App entry list. The same reusable workbench is also available
-inside the authenticated protected `/lab`; only that gated LAB bundle admits
-the dependency stack.
+The owner promoted its three registered starting points as autonomous public
+visuals—`JAPANESE MIST 08`, `ACID ORCHARD 09`, and `CHROMATIC SILK 10`—and
+retired the former project-owned `GRADIENT 08`. `shadergradient-lab.html` remains
+absent from the public App entry list, while the public product imports only the
+selected renderer and exact starting-point registry through a separate lazy
+chunk. LAB-only tuning controls and URL import never enter the public surface.
 
 ## Run locally
 
@@ -84,21 +86,23 @@ useful visual/runtime surface, not a dump of implementation internals.
 | `three-stdlib` | 2.36.1 | Three ecosystem helpers | MIT |
 | `camera-controls` | 2.9.0 | camera control peer | MIT |
 
-All five are exact development dependencies in `package.json` and locked with
-integrity hashes in `package-lock.json`.
+All five are exact production dependencies in `package.json` and locked with
+integrity hashes in `package-lock.json`. The public App loads them only from the
+separate ShaderGradient chunk when one of the three selected visuals is active.
 
-## Modification and future integration
+## Modification and integration boundary
 
 ShaderGradient's MIT licence permits use, modification, merging,
-redistribution, sublicensing, and commercial distribution. If a future owner
-decision imports or adapts upstream code, the ShaderGradient copyright and
-permission notice must remain with all copied or substantial modified portions.
-Those portions stay MIT and are not relicensed as original PolyForm-covered
+redistribution, sublicensing, and commercial distribution. The product uses the
+published package without copying or changing upstream source. If a future
+owner decision adapts upstream code, the ShaderGradient copyright and permission
+notice must remain with every copied or substantial modified portion. Those
+portions stay MIT and are not relicensed as original PolyForm-covered
 sedicivalvole code.
 
-Before promotion into the product, record the selected parameters or modified
-files, re-run the complete dependency notice inventory, compare bundle and GPU
-cost against the current direct WebGL2 renderer, implement reduced-motion and
-non-WebGL fallbacks, and pass the exact Tesla viewport plus physical-vehicle
-performance gates. The retained upstream notice is
+The current promotion records exact selected parameters, retains the dependency
+notice inventory, isolates bundle cost in a lazy chunk, provides reduced-motion
+and Canvas2D fallbacks, and passes exact desktop/Tesla-viewport WebGL QA. The
+physical-vehicle GPU, sustained frame-pacing, and thermal gates remain open. The
+retained upstream notice is
 [`../licenses/ShaderGradient-MIT.txt`](../licenses/ShaderGradient-MIT.txt).

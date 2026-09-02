@@ -30,12 +30,12 @@ boundaries are recorded in THIRD_PARTY_NOTICES.md. In particular:
   report, navigation, media, search, chart, map, external-link, and
   Wikipedia-brand icons under MIT; their unmodified SVGs and complete licence
   text ship with the product.
-- the development-only ShaderGradient Lab uses `@shadergradient/react@2.4.20`
-  by ruucm and stone-skipper under MIT, with React Three Fiber, Three.js,
-  three-stdlib, and camera-controls as pinned MIT rendering peers. The local
-  page and authenticated protected LAB include this stack; the public App does
-  not. The retained ShaderGradient permission notice is in
-  `licenses/ShaderGradient-MIT.txt`.
+- the three lazy public visuals JAPANESE MIST 08, ACID ORCHARD 09, and
+  CHROMATIC SILK 10, plus the standalone and protected ShaderGradient LABs,
+  use the unmodified `@shadergradient/react@2.4.20` package by ruucm and
+  stone-skipper under MIT, with React Three Fiber, Three.js, three-stdlib, and
+  camera-controls as pinned MIT rendering peers. The retained ShaderGradient
+  permission notice is in `licenses/ShaderGradient-MIT.txt`.
 
 Public versions previously distributed under AGPL-3.0-or-later retain those
 rights. The current policy does not revoke or rewrite historical grants.

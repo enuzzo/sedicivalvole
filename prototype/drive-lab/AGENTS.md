@@ -24,20 +24,17 @@ When implementing from a selected generated mock, treat that image as the source
 - `Engine` is a separate engine-emulation mode with selectable engine sound models and an instrument-inspired generative visual system. Do not implement its final visual direction before presenting exactly three Engine-specific directions.
 - Mode switching shares the normalized speed source, diagnostics, audio-unlock lifecycle, master Stop/Mute, safety limits, and accessibility behavior. Never imply access to real RPM, throttle, gear, or CAN data without evidence.
 - Keep the scene abstract, minimal and atmospheric; no scenery, characters or illustrative decoration.
-- `GRADIENT 08` is the owner-selected continuous hybrid of **Tension Plane** at
-  low speed and **Chromatic Fold** at high speed. Keep it as one project-owned
-  WebGL2 tessellated 3D field with coherent displacement, interpolated smooth
-  lighting, three-colour spatial mixing, and a subtle in-pass grain treatment.
-  Road speed owns the complete slow-to-fast morph. Play the Road may also feed
-  bounded authored audio energy into breadth/radiance; Soundtrack must remain
-  speed-only. All response reaches its final state at `130 km/h` even when the
-  truthful speed readout is higher. The exact MIT-licensed
-  `@shadergradient/react@2.4.20` stack is admitted only inside the dedicated
-  development entry point `shadergradient-lab.html` and the authenticated
-  protected LAB for owner comparison. It must not enter the public App,
-  product catalogue, canonical client bundle, or unprotected deployment unless
-  a later explicit owner selection promotes a specific
-  behavior with fresh dependency, performance, fallback, and Tesla gates.
+- The retired project-owned `GRADIENT 08` renderer must not return. Its saved
+  preference migrates to **JAPANESE MIST 08**.
+- The exact MIT ShaderGradient / Three / R3F stack powers three owner-selected
+  autonomous public visuals: **JAPANESE MIST 08**, **ACID ORCHARD 09**, and
+  **CHROMATIC SILK 10**. They share the exact registered LAB starting-point
+  settings and project-owned road/audio response, but they are separate Visual
+  catalogue entries rather than variants. Keep Soundtrack speed-only; Play the
+  Road may add bounded audio response. Load the upstream stack only when one of
+  these visuals is selected, keep it in a separate product chunk, retain the MIT
+  notice, preserve the Canvas2D fallback and reduced-motion path, and hold all
+  response at the `130 km/h` ceiling. Target-Tesla GPU acceptance remains a gate.
   FeralUI and ColorFlow remain mechanics references only.
 - PRTCL UNDERWATER must collapse all three complete forms dramatically to about
   one fifth of their natural speed-owned size, then surface quickly back to that

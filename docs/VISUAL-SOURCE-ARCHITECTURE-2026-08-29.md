@@ -124,18 +124,12 @@ acceptance gates.
 
 ## 2026-09-02 current-catalog addendum
 
-This dated study retains retired INFINITE/PRIMORDIAL decisions as provenance;
-the active source architecture now uses `GRADIENT 08` in the eighth slot.
-Gradient is a project-owned direct WebGL2 tessellated 3D surface with a
-Canvas2D fallback. One indexed draw call combines coherent displacement, smooth
-analytical normals, spatial three-colour mixing, bounded lighting, and a fine
-fragment-stage grain term. It continuously morphs from Tension Plane to
-Chromatic Fold across the smoothed `0–130 km/h` range; the speed readout may
-truthfully exceed that ceiling without unlocking further response. Play the
-Road admits bounded audio breadth/radiance and Soundtrack remains speed-only.
-No ShaderGradient, FeralUI, ColorFlow, or Three.js code, preset, shader, embed,
-asset, or dependency entered that production runtime. A 2026-09-02 addendum
-admits exact MIT ShaderGradient/Three/R3F packages only as development
-dependencies for the isolated `shadergradient-lab.html` comparison page and
-authenticated protected-LAB workbench. The stack remains absent from the public
-App entry and cannot silently change the source architecture recorded here.
+This dated study retains retired INFINITE/PRIMORDIAL decisions as provenance.
+The earlier project-owned `GRADIENT 08` was also retired by explicit owner
+decision on 2026-09-02. The active architecture replaces it with three
+autonomous public ShaderGradient environments: `JAPANESE MIST 08`,
+`ACID ORCHARD 09`, and `CHROMATIC SILK 10`. The exact unmodified MIT
+ShaderGradient/Three/R3F stack is isolated in one lazy product chunk and remains
+available in the standalone and authenticated LAB workbenches. Project-owned
+adapters register the exact selected settings, bounded response, telemetry,
+reduced motion, and Canvas2D fallback. No upstream source is copied or modified.

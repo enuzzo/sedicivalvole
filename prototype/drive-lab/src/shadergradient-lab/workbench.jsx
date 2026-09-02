@@ -5,128 +5,19 @@ import {
   ShaderGradient,
   ShaderGradientCanvas,
 } from '@shadergradient/react'
+import {
+  DEFAULT_SHADERGRADIENT_STUDY_ID,
+  SHADERGRADIENT_BASE_SETTINGS,
+  SHADERGRADIENT_STUDIES,
+  shaderGradientResponse,
+} from '../environments/shadergradient/studies.js'
 import './workbench.css'
 
 const STORAGE_KEY = 'sedicivalvole:shadergradient-lab:v2'
 
-const BASE_SETTINGS = {
-  type: 'waterPlane',
-  shader: 'defaults',
-  color1: '#f5ead2',
-  color2: '#e55d87',
-  color3: '#5078d0',
-  animate: 'on',
-  uTime: 0,
-  uSpeed: 0.22,
-  uStrength: 2.6,
-  uDensity: 1.15,
-  uFrequency: 3.4,
-  uAmplitude: 0,
-  range: 'disabled',
-  rangeStart: 0,
-  rangeEnd: 40,
-  loop: 'on',
-  loopDuration: 12,
-  grain: 'on',
-  grainBlending: 0.24,
-  wireframe: false,
-  lightType: '3d',
-  envPreset: 'city',
-  brightness: 1.2,
-  reflection: 0.18,
-  rotationX: 18,
-  rotationY: 0,
-  rotationZ: 18,
-  positionX: 0,
-  positionY: 0,
-  positionZ: 0,
-  cAzimuthAngle: 175,
-  cPolarAngle: 82,
-  cDistance: 4.2,
-  cameraZoom: 1,
-  smoothTime: 0.05,
-  zoomOut: false,
-  toggleAxis: false,
-  enableTransition: true,
-  enableCameraUpdate: false,
-  fov: 48,
-  pixelDensity: 1,
-  pointerEvents: 'none',
-  lazyLoad: true,
-  threshold: 0.1,
-  rootMargin: '0px',
-  preserveDrawingBuffer: false,
-  powerPreference: 'high-performance',
-  envBasePath: '',
-  responseMode: 'road-audio',
-  speed: 35,
-  audioEnergy: 0.25,
-}
-
-const PRESETS = {
-  'japanese-mist': {
-    ...BASE_SETTINGS,
-    label: 'Japanese Mist',
-    description: 'Soft water, warm paper, and a slow chromatic tide.',
-  },
-  'acid-orchard': {
-    ...BASE_SETTINGS,
-    label: 'Acid Orchard',
-    description: 'A broad graphic field with punchy, speed-led folding.',
-    type: 'plane',
-    color1: '#ff3b30',
-    color2: '#d8ff43',
-    color3: '#ff62bd',
-    uSpeed: 0.34,
-    uStrength: 3.8,
-    uDensity: 1.3,
-    uFrequency: 5.2,
-    uAmplitude: 1.1,
-    brightness: 1.3,
-    reflection: 0.08,
-    rotationX: 0,
-    rotationY: 14,
-    rotationZ: 48,
-    positionX: -0.7,
-    cAzimuthAngle: 205,
-    cPolarAngle: 90,
-    cDistance: 5.4,
-    fov: 52,
-    responseMode: 'road',
-    speed: 70,
-    audioEnergy: 0.15,
-  },
-  'chromatic-silk': {
-    ...BASE_SETTINGS,
-    label: 'Chromatic Silk',
-    description: 'A luminous sculptural fold for stronger motion studies.',
-    type: 'sphere',
-    shader: 'cosmic',
-    color1: '#28d7cc',
-    color2: '#6c45ff',
-    color3: '#ff7b32',
-    uSpeed: 0.3,
-    uStrength: 1.1,
-    uDensity: 0.85,
-    uFrequency: 4.8,
-    uAmplitude: 4.5,
-    brightness: 1.45,
-    reflection: 0.32,
-    rotationX: 0,
-    rotationY: 24,
-    rotationZ: 132,
-    cAzimuthAngle: 245,
-    cPolarAngle: 128,
-    cDistance: 2.4,
-    cameraZoom: 7,
-    fov: 44,
-    responseMode: 'road-audio',
-    speed: 105,
-    audioEnergy: 0.55,
-  },
-}
-
-const DEFAULT_PRESET = 'japanese-mist'
+const BASE_SETTINGS = SHADERGRADIENT_BASE_SETTINGS
+const PRESETS = SHADERGRADIENT_STUDIES
+const DEFAULT_PRESET = DEFAULT_SHADERGRADIENT_STUDY_ID
 const SETTING_KEYS = new Set(Object.keys(BASE_SETTINGS))
 const NUMBER_KEYS = new Set(Object.entries(BASE_SETTINGS)
   .filter(([, value]) => typeof value === 'number')
@@ -281,17 +172,7 @@ export function ShaderGradientLab({ embedded = false }) {
   }, [settings])
 
   const effective = useMemo(() => {
-    const road = settings.responseMode === 'free' ? 0 : settings.speed / 130
-    const audio = settings.responseMode === 'road-audio' ? settings.audioEnergy : 0
-    const motionScale = settings.responseMode === 'free' ? 1 : 0.5 + road * 2.3
-    return {
-      uSpeed: settings.uSpeed * (motionScale + audio * 0.45),
-      uStrength: settings.uStrength + road * 2.8 + audio * 1.25,
-      uDensity: settings.uDensity + road * 0.55 + audio * 0.18,
-      uFrequency: settings.uFrequency + road * 1.6,
-      brightness: settings.brightness + road * 0.2 + audio * 0.22,
-      rotationZ: settings.rotationZ + road * 32,
-    }
+    return shaderGradientResponse(settings)
   }, [settings])
 
   const choosePreset = useCallback((presetKey) => {

@@ -20,22 +20,23 @@ dated study documents.
   `logo/`; the current app packages and advertises the browser icons. The mark
   fills its 512 px canvas to a 15–18 px optical edge. The selected mark now sits
   beside the textual wordmark in the compact Signal Gate launch surface.
-- The source checkout's Flux catalogue contains eight driver-facing Visual
-  choices: seven rendered environments,
+- The source checkout's Flux catalogue contains ten driver-facing Visual
+  choices: nine rendered environments,
   **APERTURE 01**, **VERTIGO 02**, **MERIDIAN 03**, **ATLAS 04**, **DRIVEY 05**,
-  the human-approved and canonically published **PRTCL 06**, and the canonically
-  published **GRADIENT 08**, plus the separate **DISCOVER 07** Passenger Index
-  destination. The initial Instrument Deck presents them as `3–3–2`, and the
-  running Visual library exposes the same eight actions. Discover never enters the renderer registry: launch uses
+  the human-approved **PRTCL 06**, and the owner-selected ShaderGradient visuals
+  **JAPANESE MIST 08**, **ACID ORCHARD 09**, and **CHROMATIC SILK 10**, plus the
+  separate **DISCOVER 07** Passenger Index destination. The initial Instrument
+  Deck and running Visual library expose the same ten actions at `773 × 601`.
+  Discover never enters the renderer registry: launch uses
   Aperture behind the passenger surface and closing it returns to a real visual.
   Aperture
   remains the accepted fresh-session and invalid-preference fallback. The
   rejected PRIMORDIAL field is absent from the current runtime; stored
   `primordial` preferences migrate to Aperture.
-- All seven source environments use the shared catalog of **10 themes**. Vertigo keeps
+- The six themed source environments use the shared catalog of **10 themes**. Vertigo keeps
   the upstream Interstate 7 files byte-identical while an external runtime
   bridge maps the selected theme onto its existing colour channels.
-- OPEN, UNDERWATER and BLOOM are visible in all seven checkout environments without
+- OPEN, UNDERWATER and BLOOM are visible in all nine checkout environments without
   a shared overlay. Aperture performs its tiled projection and centre light;
   Vertigo changes only the original runtime's externally bridged time, FOV and
   colour controls; Meridian changes corridor projection, flow, fog and rail
@@ -44,10 +45,10 @@ dated study documents.
   camera and two-channel material updates through its external bridge without
   editing the vendor files; PRTCL changes complete-form and point scale,
   depth/travel, palette pulse, spread, attenuation, and glow through shared
-  frame-rate-independent macro envelopes within its own particle grammar;
-  Gradient morphs continuously from a broad low-speed Tension Plane into a
-  high-speed Chromatic Fold with coherent WebGL2 displacement, smooth lighting,
-  spatial colour mixing, and bounded single-pass grain.
+  frame-rate-independent macro envelopes within its own particle grammar; the
+  three ShaderGradient visuals use their exact registered starting points with
+  half-speed idle motion, bounded road response, optional Play the Road audio
+  energy, and speed-only Soundtrack behavior.
 - The selected **Focus Canvas** owner LAB is implemented and canonically
   published behind a server-side `/lab/` session gate. Its first manifest controls all
   three PRTCL families through 18 bounded Form, Response, Macro, Scene and
@@ -212,24 +213,22 @@ dated study documents.
   rejected by the product owner on 2026-08-30. Its registry entry, renderer,
   fallback, tuner, preferences, production imports, QA path and active tests are
   removed; the dated admission record and Git history remain as provenance.
-  Its successor, **GRADIENT 08**, passed the required exactly-three-direction
-  visual gate on 2026-09-02. The owner selected a continuous Tension Plane to
-  Chromatic Fold hybrid with visible grain. The implementation is project-owned
-  direct WebGL2 and imports no ShaderGradient, FeralUI, or ColorFlow runtime,
-  shader, preset, export, embed, or asset. Play the Road admits bounded audio
-  energy; Soundtrack remains speed-only. Local and canonical Tesla-viewport
-  Browser QA plus automated QA pass; target-Tesla motion/performance acceptance
-  remains open.
-- On 2026-09-02, exact MIT `@shadergradient/react@2.4.20` and pinned
-  Three/R3F rendering peers were installed as development dependencies for an
-  isolated local owner playground and authenticated protected-LAB workbench.
-  Both expose three starting points, direct geometry/shader/palette/surface/
+  Its successor, the earlier project-owned `GRADIENT 08`, was then itself
+  retired by the owner on 2026-09-02. Stored `gradient` preferences migrate to
+  `JAPANESE MIST 08`; the old renderer, model, and fallback are deleted.
+- On 2026-09-02, the owner promoted all three exact registered starting points
+  from the MIT `@shadergradient/react@2.4.20` comparison workbench as autonomous
+  public visuals: **JAPANESE MIST 08**, **ACID ORCHARD 09**, and
+  **CHROMATIC SILK 10**. The package and pinned Three/R3F peers are production
+  dependencies isolated in one lazy product chunk. Project-owned adapters own
+  bounded road/audio response, runtime telemetry, reduced motion, and Canvas2D
+  fallback; no upstream source is modified. The LABs retain direct geometry,
+  shader, palette, surface,
   camera controls, local persistence, JSON capture, and bounded road/audio
   preview. Local development and protected production share the canonical
   `/lab/` route. The workbench uses a side inspector on desktop and at
   `773 × 601`.
-  It is not a public product catalogue entry, is absent from the App entry, and
-  does not alter canonical `GRADIENT 08`.
+  Target-Tesla GPU and sustained-run acceptance remain open.
 - REGISTER was rejected after live review because its static print composition
   was inexplicable in motion and outside the product mood. Its source remains
   only in the rejected-visual archive; the runtime, QA harness and active tests
@@ -761,9 +760,9 @@ and also have office implementation in checkpoint `d45f8dd`:
   fresh-mix notice, larger filter/track/artist copy, and rebalanced Now Playing
   without page scroll (`R7-13`);
 - the running Visual drawer is a two-column, description-led no-scroll
-  surface. The registry now contains eight choices—seven renderers plus
-  Discover—and row 11's Original Gradient Field is implemented and canonical
-  after its mandatory three-direction selection gate;
+  surface. The registry now contains ten choices—nine renderers plus Discover.
+  The retired project-owned Gradient is replaced by three autonomous lazy
+  ShaderGradient visuals;
 - APERTURE smooths its raw low-speed wall input and caches canvas dimensions,
   removing the per-frame layout read without slowing its motion (`R5-07`);
 - versioned safe product preferences restore across supported history and
@@ -777,12 +776,14 @@ and also have office implementation in checkpoint `d45f8dd`:
   The watch, latest/eight-sample position buffer, bounded route and Drive Lab
   journey aggregation are App-scoped and survive ATLAS remounts.
 
-Row 11 Original Gradient Field has local implementation, canonical publication,
-automated QA and exact live `773 × 601` Browser PASS. Target-Tesla
-motion/performance acceptance remains open.
+Row 11's earlier Original Gradient Field is retired. Its replacement—Japanese
+Mist 08, Acid Orchard 09, and Chromatic Silk 10—has automated and exact local
+`773 × 601` WebGL/console PASS. Canonical publication and target-Tesla
+motion/performance acceptance remain open.
 
-Row 11A's separate comparison bench is complete locally and inside the protected
-LAB without entering the public product. For pinned ShaderGradient `2.4.20`, it
+Row 11A's comparison bench is complete locally and inside the protected LAB. Its
+three selected studies now also enter the public product as separate lazy
+visuals. For pinned ShaderGradient `2.4.20`, the workbench
 exposes all ten exported upstream presets, all three geometries, all four
 registered shader families, and every useful public visual/runtime parameter in
 organized disclosure groups. These cover motion/timeline, colour and grain,
@@ -825,10 +826,11 @@ authenticated target-Tesla rendering and control reach remain `R11A-01`.
    provenance can satisfy the now-tracked ADSR/filter/phase/detune/chorus/
    spectral/saturation and stereo-coherence validity gates. The synthetic stack
    is complete; its explicit abstention is the current correct result.
-7. Validate PRTCL's stronger UNDERWATER collapse/recovery and GRADIENT 08's
-   complete slow-to-fast morph, grain, Play-the-Road audio response,
-   Soundtrack speed-only boundary, sustained frame pacing and thermal behavior
-   on the target Tesla. Validate the revised OPEN intake at real playback level.
+7. Validate PRTCL's stronger UNDERWATER collapse/recovery and each of Japanese
+   Mist 08, Acid Orchard 09, and Chromatic Silk 10 across rest-to-130 motion,
+   Play-the-Road audio response, Soundtrack speed-only behavior, sustained frame
+   pacing, and thermal behavior on the target Tesla. Validate the revised OPEN
+   intake at real playback level.
 8. Design Engine only after exactly three Engine-specific directions are shown
    and one is selected. Keep `VERSION` at `0.0.0` until an explicit release is
    approved.

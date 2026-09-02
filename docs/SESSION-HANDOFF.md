@@ -43,16 +43,19 @@ The registry is `prototype/drive-lab/src/flux-environments.js`.
 | ATLAS 04 | lazy MapLibre/OpenFreeMap WebGL plus one Canvas2D dashboard | ephemeral GPS or explicit Milan demo drives 3D city tiles, a bounded complete-view route, one pulsing position point and a Navigator Plaque; the owner-selected Drive Lab cycles `15 MIN / 1 H / SESSION` across Speed/Distance/Moving/Average, Accel/Braking, five speed bands, continuous Heading history, Moving/Stopped and full-width Open-Meteo/Copernicus Elevation; an icon-only `36 × 30 px` midpoint tab collapses it and ATLAS contains no Discover/Wikipedia surface |
 | DRIVEY 05 | byte-identical Rezmason runtime plus project bridge | road following, lane-centred zero hold, opposing-only traffic, three cameras, and normal/wire modes |
 | PRTCL 06 | original WebGL2 particle renderer | Fractal Frequency, Murmuration, and Axiom with speed-owned form/point scale, depth, and travel; UNDERWATER collapses the complete form dramatically and surfaces quickly |
-| GRADIENT 08 | original direct WebGL2 3D field plus Canvas2D fallback | continuous Tension Plane to Chromatic Fold speed morph, smooth lighting, spatial colour, fine grain; Play the Road adds bounded audio response and Soundtrack remains speed-only |
-All seven visuals use ten curated palettes. Vertigo is recoloured without editing
-its vendor tree. Aperture is the fresh-session and invalid-preference fallback;
+| JAPANESE MIST 08 | lazy ShaderGradient plus Canvas2D fallback | exact selected water-plane starting point; half-speed idle motion, bounded road and optional Play the Road audio response |
+| ACID ORCHARD 09 | lazy ShaderGradient plus Canvas2D fallback | exact selected plane starting point; high-contrast folding with the same response boundary |
+| CHROMATIC SILK 10 | lazy ShaderGradient plus Canvas2D fallback | exact selected cosmic sphere starting point; luminous sculptural folds with the same response boundary |
+The first six visuals use ten curated palettes; the three ShaderGradient entries
+retain their exact selected colour identities. Vertigo is recoloured without
+editing its vendor tree. Aperture is the fresh-session and invalid-preference fallback;
 PLUMB and every other retired identifier resolve to it. The fixed
 visual/music energy ceiling is `130 km/h`; Aperture must already read as a
 tunnel near `40 km/h`.
 
-The driver-facing Visual catalogue adds **DISCOVER 07** beside those seven
+The driver-facing Visual catalogue adds **DISCOVER 07** beside those nine
 renderers. It is a destination, not a render environment: the launch selector
-uses a `3–3–2` grid and opens the Passenger Index over Aperture, while the
+fits all ten choices and opens the Passenger Index over Aperture, while the
 running Visual library opens the same surface without changing the active
 environment. Closing Discover returns to the real visual and normal focus
 recovery. This placement is implemented in `e268169`; canonical publication is
@@ -405,11 +408,9 @@ playback-bound activity mark (`R7-13`); the running Visual drawer is now a
 two-column description-led surface (`R5-06`); APERTURE's low-speed wall motion
 now uses smoothed raw speed and cached canvas dimensions without weakening its mapping (`R5-07`); and safe
 product preferences gain lifecycle restoration plus RESET SAVED STATE in splash
-and settings (`R1-03`). The current catalogue now has eight choices—seven
-renderers plus Discover. Row 11's Original Gradient Field passed its
-three-direction gate; the owner selected the Tension Plane / Chromatic Fold
-hybrid with grain, now implemented and canonical as `GRADIENT 08` in build
-`20260902-0103`. “Position” is now
+and settings (`R1-03`). The earlier catalogue had eight choices and the
+project-owned `GRADIENT 08` was published in build `20260902-0103`; that visual
+is now explicitly retired and deleted. “Position” is now
 clarified as GPS state: after permission, an app-level collector must continue
 for the whole running session regardless of selected visual and retain the
 latest reliable point plus bounded route/journey history in memory, allowing
@@ -422,11 +423,10 @@ preferences explicitly exclude coordinates. The complete suite passes
 canonical assets and exact local/live `773 × 601` Browser flows pass. Row 11
 now awaits only target-Tesla motion/performance acceptance.
 
-On 2026-09-02 the owner requested an official-renderer comparison before any
-further Gradient integration decision. Exact MIT
+On 2026-09-02 the owner requested an official-renderer comparison. Exact MIT
 `@shadergradient/react@2.4.20`, React Three Fiber `9.7.0`, Three.js `0.169.0`,
-three-stdlib `2.36.1`, and camera-controls `2.9.0` are now pinned development
-dependencies. The isolated `/shadergradient-lab.html` page offers three project
+three-stdlib `2.36.1`, and camera-controls `2.9.0` were first pinned for the LAB.
+The isolated `/shadergradient-lab.html` page offers three project
 studies, all ten exported official presets, all `3 × 4` registered
 geometry/shader combinations, and the complete useful public visual/runtime
 surface for motion/timeline, palette, lighting/HDR environment, transform,
@@ -435,13 +435,21 @@ persistence, JSON capture, and bounded `FREE / ROAD / ROAD + AUDIO` simulation.
 The same reusable workbench is now selectable as `SHADERGRADIENT / LAB` inside
 the authenticated protected LAB. Local Vite maps the clean `/lab/` route to its
 private development entry, matching production without exposing `lab.html` in
-normal use. Desktop and `773 × 601` side-inspector layouts pass. It remains
-excluded from the public App and product catalogue; canonical `GRADIENT 08` is
-unchanged.
+normal use. Desktop and `773 × 601` side-inspector layouts pass.
 The usage and licence boundary are in `LOCAL-SHADERGRADIENT-LAB.md`.
 Checkpoint `1a79cea` is published as protected build `20260902-1341` after
 read-only pre/postflight, complete packaging and canonical HTTP gate checks.
 The live owner gate is clean; authenticated Tesla rendering remains `R11A-01`.
+
+Later that day the owner selected all three registered starting points as
+autonomous public visuals, not variants: **JAPANESE MIST 08**, **ACID ORCHARD
+09**, and **CHROMATIC SILK 10**. The former project-owned Gradient is deleted;
+its stored identifier migrates to Japanese Mist. The exact upstream stack is
+unmodified and moves to production dependencies, isolated in one lazy chunk.
+Project code owns the registry, bounded road/audio response, telemetry, reduced
+motion, and Canvas2D fallback. Focused and complete automated checks, the build,
+and exact local `773 × 601` WebGL/console QA pass; canonical publication and
+target-Tesla GPU acceptance remain open.
 
 The owner then explicitly selected native **Minerva dark** for Discover, even
 with Wikipedia's accepted test parameter. Product checkpoint `cdccbd7` replaces
