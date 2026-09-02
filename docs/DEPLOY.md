@@ -17,6 +17,39 @@ URL import remain outside the public surface. Exact
 dependency and local run instructions are recorded in
 `LOCAL-SHADERGRADIENT-LAB.md`.
 
+## Now Playing dark-surface contrast — 2026-09-02 23:09
+
+- build stamp: **`20260902-2142`**; implementation checkpoint:
+  **`543978e`**; published source checkpoint: **`a501545`**;
+- correction: the Music drawer keeps the pinned black Tabler
+  `chart-bar.svg` source byte-identical, presents it in white on the current
+  dark surface, and keeps `NOW PLAYING` on one line. The retained black source
+  remains ready for the future LIGHT appearance without duplicating or
+  recolouring the vendor asset;
+- tests/build: **PASS**. Focused presentation checks pass `32/32`, the complete
+  suite passes `580/580`, documentation checks pass `8/8`, and production
+  builds process `235` App modules and `159` protected-LAB modules;
+- protected publication: read-only preflight and postflight report
+  `remote_writes=NONE`; publication uploaded `181` files / `215,863,236` bytes,
+  fully reverified all `29` Illobo recordings, retained two prior assets and
+  preserved the dynamic root;
+- canonical response: cache-busted root returns HTTP/2 200 with
+  `no-store, no-cache, must-revalidate, max-age=0` and `nosniff`;
+- byte identity: local/live HTML SHA-256 is
+  `57b64122e7add6d950b50a54a13e3ccc1dfa3213135cac8f65c29566f2f0f765`,
+  JavaScript `index-Kq37MkUr.js` is
+  `129682a8141ea9c4f5005fd931dd5057f503484a38f2b081af0515dab919c2af`,
+  CSS `index-DU26jWHZ.css` is
+  `a4d2baaf013efcbb3ea1b67bda90229f42369d7ee4fe00e2c7adfad406fe448f`,
+  and the retained black `chart-bar.svg` is
+  `5fbe60a66fbebaf0a06d4b5bede3af05301d9f580c4f8f7bd65a39077389e4ae`;
+- rendered local Soundtrack-drawer QA: **PASS**. The icon is visibly white on
+  black, `NOW PLAYING` remains on one line, and no warning/error is recorded.
+  Canonical Browser QA separately confirms build `20260902-2142`, the expected
+  page title, a clean warning/error log, and byte-identical presentation assets;
+- remaining acceptance: confirm contrast and one-line fit on the physical Tesla.
+  The shared `LIGHT / DARK / AUTO` milestone remains intentionally unimplemented.
+
 ## Motion-independent chrome wake follow-up — 2026-09-02 21:35
 
 - build stamp: **`20260902-2127`**; implementation checkpoint:

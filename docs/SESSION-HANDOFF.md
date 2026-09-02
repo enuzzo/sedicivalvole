@@ -512,7 +512,10 @@ pinned black Tabler SVG byte-identical, applies a white presentation filter on
 the current dark drawer, and gives `NOW PLAYING` an explicit one-line contract.
 This intentionally preserves the black source for milestone 13 LIGHT mode.
 Focused `32/32`, complete `580/580`, rendered local drawer QA and a clean console
-pass; canonical publication remains open.
+pass. Published source checkpoint `a501545` is canonical as build
+`20260902-2142`; protected publication, HTML/JavaScript/CSS/original-icon byte
+identity and canonical build/console checks pass. Physical-Tesla contrast and
+one-line-fit confirmation remains open; milestone 13 itself is not implemented.
 
 The owner then explicitly selected native **Minerva dark** for Discover, even
 with Wikipedia's accepted test parameter. Product checkpoint `cdccbd7` replaces

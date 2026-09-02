@@ -8,7 +8,7 @@ behavior.
 
 Do not begin the run until the final canonical build stamp is recorded below.
 
-- **Final test build:** `20260902-2127` from implementation checkpoint `92e581b` and published source checkpoint `16afc61`. It retains the `1ef48be` shared Soundtrack/adaptive AudioContext and bounded recoverable transport repair, mandatory insert `10C`, and the motion-independent chrome-wake follow-up.
+- **Final test build:** `20260902-2142` from implementation checkpoint `543978e` and published source checkpoint `a501545`. It retains the `1ef48be` shared Soundtrack/adaptive AudioContext and bounded recoverable transport repair, mandatory insert `10C`, the motion-independent chrome-wake follow-up, and the dark-drawer white Now Playing presentation with its original black icon preserved for future LIGHT appearance.
 - **Target viewport:** Tesla split view, nominal CSS `773 × 601`
 - **Result states:** `PASS`, `FAIL`, `NOT RUN`, `BLOCKED`
 - **Safety:** a passenger operates controls and records evidence; the driver

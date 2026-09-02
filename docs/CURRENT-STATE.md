@@ -586,7 +586,7 @@ dated study documents.
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
 - The canonical live product is version `0.0.0`, implementation checkpoint
-  `92e581b`, published source checkpoint `16afc61`, build `20260902-2127`. It
+  `543978e`, published source checkpoint `a501545`, build `20260902-2142`. It
   publishes mandatory insert `10C` while retaining the single three-variant
   GRADIENT 08 family, shared Soundtrack/adaptive AudioContext and bounded
   recoverable media starts from `1ef48be`, together with the stronger PRTCL
@@ -818,6 +818,9 @@ surrounding launch/vehicle experience.
   Tabler Now Playing source icon in white on the current dark surface and keeps
   `NOW PLAYING` on one line. The source stays black for milestone 13's future
   LIGHT appearance; contrast remains an appearance-token responsibility.
+  Published source checkpoint `a501545` is canonical as build `20260902-2142`;
+  local rendered drawer QA, canonical byte identity and canonical Browser
+  identity/console checks pass. Physical-Tesla visual confirmation remains open.
 - The navbar adds a compact `NET` state derived from browser hints. It is
   explicitly an estimate, not cellular signal strength, and it does not create
   a continuous ping service.
@@ -872,7 +875,7 @@ authenticated target-Tesla rendering and control reach remain `R11A-01`.
 ## Open work
 
 1. Execute live Tesla `R4-07`–`R4-08`, the canonical `10A` / `10B` / `10C`
-   codes, and row 11 on build `20260902-2127`. Execute Tesla tests
+   codes, and row 11 on final build `20260902-2142`. Execute Tesla tests
    `R1-01`–`R1-03`, `R4-01`–`R4-08`,
    `R5-01`–`R5-07`, `R7-01`–`R7-14`, `R8-01`–`R8-03`, `R9-01`–`R9-07`,
    `R10-00A`–`R10-06`, `R10C-01`–`R10C-08`, `R11-01`–`R11-06`, `R11A-01`, and later
