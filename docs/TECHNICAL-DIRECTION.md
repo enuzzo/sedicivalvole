@@ -390,6 +390,13 @@ Its display heading is continuously unwrapped before the CSS transition so a
 `358° → 2°` update advances to `362°` instead of spinning backwards. A
 zero-opacity rendered line probe keeps road lookup inside the existing vector
 tile pipeline without adding visible map geometry or a network service.
+The same owned style exposes two normalized paint profiles. `palette` derives
+the basemap from the selected product theme. `standard` supplies dark semantic
+expressions for OpenMapTiles land-cover, land-use and transportation classes,
+plus blue water and warm height-interpolated buildings. A paint-only update
+changes those layers without `setStyle`, source replacement, renderer teardown,
+camera reset, or route loss. Product accent/secondary channels continue to own
+the trip line, marker, Navigator Plaque and Drive Lab in both profiles.
 The Drive Lab reuses one density-capped Canvas2D surface. Its Direction History
 partitions moving samples into eight fixed `45°` sectors and draws at most five
 annular tiles per sector relative to the strongest share. Session compaction

@@ -145,6 +145,12 @@ substitute for the audible physical-cabin verdict.
 | `R11B-02` | CANONICAL MODEL/RENDER PASS `20260903-0015` · TESLA PENDING | Cycle Japanese Mist, Acid Orchard, and Chromatic Silk; change palettes; brake firmly and release at representative speeds. | Every variant changes with the shared palette. Braking visibly slows, folds, and densifies the field continuously; release restores the road-owned composition without a snap or stale colour. | Deterministic palette/response tests, local Red/Blue plus `80 km/h` road/UNDERWATER renders, and canonical Gradient/shared-palette render pass. |
 | `R11B-03` | CANONICAL SOURCE PASS `20260903-0015` · TESLA PENDING | Open PRTCL, cycle TYPE repeatedly, then brake Fractal fully and release. | TYPE cycles only `FRACTAL ↔ AXIOM`; Murmuration never appears. Fractal still contracts dramatically but remains visibly larger than the previous dot-like minimum, then returns exactly to its natural speed-owned scale. | Registry/migration/shader tests prove two active forms and exact `22.5%` form / `27.5%` point minima; local rendered cycle/full-brake capture and canonical byte identity pass. |
 
+## ATLAS semantic cartography — milestone insert 9A
+
+| ID | Status | Test | PASS condition | Linked work |
+|---|---|---|---|---|
+| `R9A-01` | LOCAL MODEL/RENDER PASS · CANONICAL/TESLA PENDING | At `773 × 601`, open ATLAS and switch `MAP COLOR` from `PALETTE` to `STANDARD` and back with Drive Lab open, then collapsed. Reload in STANDARD, use RESET SAVED STATE, and repeat on a route containing water, vegetation/park, buildings, local streets and a primary or motorway. | The control stays in the map's upper-right lane and follows the panel edge without overlapping navigation, footer or map gestures. STANDARD is dark enough for the cabin but clearly separates semantic feature classes. The current route, vehicle marker, Navigator Plaque, Drive Lab and UI accent retain the selected product palette. Switching is immediate with no loader, camera jump, route loss, renderer rebuild or stale state; reload restores the choice and reset returns PALETTE. | Checkpoint `febbba3`; exact local PALETTE/STANDARD renders, deterministic paint/persistence checks, full suite and production build pass. Canonical identity and physical-Tesla touch/colour/glare evidence remain required. |
+
 ## ShaderGradient visuals, PRTCL surfacing, safety, and response ceiling — milestone row 11
 
 The three selected LAB starting points are variants of one public `GRADIENT 08`

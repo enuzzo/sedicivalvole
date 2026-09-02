@@ -131,6 +131,13 @@ heading is absent, movement between successive fixes supplies the bearing while
 near-standstill jitter keeps the last reliable direction. Camera pull-back is
 bounded so the `130 km/h` view retains an oblique pitch and materially extruded
 buildings.
+An ATLAS-only `MAP COLOR` control stays in the map's free upper-right lane and
+follows the Drive Lab edge when the panel opens or collapses. `PALETTE` is the
+default product-colour field. `STANDARD` applies dark, semantically conventional
+water, vegetation, park, building and road colours to the existing MapLibre
+layers without rebuilding the map. Route, position marker, Navigator Plaque,
+Drive Lab and interface accent remain palette-owned. The choice is a safe,
+resettable browser preference; it never stores or changes position data.
 The manual camera accepts one-finger or primary-button mouse drag for bearing
 and pitch hard-clamped to `0–85°` without elastic overshoot, two-finger pinch or
 wheel/trackpad scroll for bounded extended zoom, and retains every manual

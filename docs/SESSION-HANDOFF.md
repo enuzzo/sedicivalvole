@@ -589,6 +589,21 @@ proposals were recovered to the owner's Desktop as `01-trip-pulse.png`,
 `02-motion-lab.png`, and `03-journey-ledger.png`; Motion Lab contains the radial
 direction study referenced by the owner.
 
+The next owner-requested ATLAS map-colour mode is implemented at checkpoint
+`febbba3` after a frontend-design review of the exact `773 × 601` surface. A
+compact `MAP COLOR / PALETTE|STANDARD` button occupies the map's free
+upper-right lane, follows the `300 px` Drive Lab edge, and remains available
+when the panel collapses. STANDARD changes the existing MapLibre paint
+properties in place to a dark semantic map: blue water, green land cover and
+parks, warm buildings, neutral local streets, and distinct major-road classes.
+The current route, vehicle marker, Navigator Plaque, Drive Lab and UI accent
+remain product-palette owned. The safe preference survives reload and RESET
+SAVED STATE restores PALETTE; coordinates and journey state remain excluded.
+Exact local PALETTE/STANDARD renders at `773 × 601`, focused ATLAS `36/36`, the
+complete `496/496` unit group, all feature/Sites suites, production build and
+empty Browser warning/error logs pass. Canonical publication and physical-Tesla
+colour/touch acceptance remain open.
+
 ## Verification
 
 ```bash

@@ -92,7 +92,14 @@ dated study documents.
   aggregates. Journey samples and coordinates remain session-only and absent
   from storage and diagnostics. ATLAS contains no Wikipedia, nearby-place, QR
   or DISCOVER action; DISCOVER owns that separate passenger task. All ten theme
-  profiles own explicit label, road, chart and route contrast.
+  profiles own explicit label, road, chart and route contrast. An ATLAS-local
+  `MAP COLOR` control switches the live style in place between product
+  `PALETTE` and dark semantic `STANDARD` cartography. STANDARD distinguishes
+  blue water, green vegetation/parks, warm buildings, neutral local roads and
+  major-road classes while keeping the route, marker, Navigator Plaque, Drive
+  Lab and interface accent in the selected product palette. The state persists
+  with safe browser preferences and RESET SAVED STATE returns it to PALETTE;
+  no MapLibre renderer, route, position or camera is recreated.
   Without reliable GPS, ATLAS keeps the normal control plane instead of a
   blocking waiting splash. The top navigation shows only `GPS` and metre
   accuracy: green means a connected fix at `4 m` or better, orange means a
