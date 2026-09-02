@@ -390,6 +390,15 @@ Its display heading is continuously unwrapped before the CSS transition so a
 `358° → 2°` update advances to `362°` instead of spinning backwards. A
 zero-opacity rendered line probe keeps road lookup inside the existing vector
 tile pipeline without adding visible map geometry or a network service.
+The Drive Lab reuses one density-capped Canvas2D surface. Its Direction History
+partitions moving samples into eight fixed `45°` sectors and draws at most five
+annular tiles per sector relative to the strongest share. Session compaction
+sums the eight-bin histogram inside every rollup, so the display never derives a
+false sector from an averaged circular heading. Samples below `2 km/h` are
+excluded from the distribution, while the latest bearing remains a separate
+needle. The same two-second journey cadence drives the remaining proportional
+speed strip, Accel/Braking history, terrain trace and Moving/Stopped strip; no
+continuous chart animation or additional renderer is introduced.
 The selected map necessarily requests the surrounding tile area from
 OpenFreeMap; a `0.05°`-quantized cell is sent to the localized Wikipedia Geosearch
 API only when the cell changes. The same response supplies each page's concise

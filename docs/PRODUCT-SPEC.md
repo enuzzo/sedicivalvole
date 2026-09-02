@@ -114,10 +114,14 @@ balconies, cheap wireframe grids and excessive particles are excluded.
 palette-driven 3D OpenFreeMap field and a `300 px` journey dashboard loaded only
 when ATLAS is selected. The first line contains Speed, Distance, Moving time and
 Average speed. The corrected vertical instrument contains a full-width
-Accel/Braking history, a low five-band Speed distribution, a continuously
-unwrapped Heading history, full-width Open-Meteo/Copernicus GLO-90 Elevation,
-and a low Moving/Stopped strip. Time/value axes, direct legends and smoothed
-curves make each signal readable without changing its truthful data boundary. One tap
+Accel/Braking history, one proportional five-band Speed distribution, an
+eight-sector Direction History rose, compact Open-Meteo/Copernicus GLO-90
+Elevation, and a low Moving/Stopped strip. Each direction sector covers `45°`;
+up to five discrete outward tiles encode relative moving-time share, while a
+separate needle shows the latest bearing. Samples below `2 km/h` cannot dominate
+the rose, and weighted session rollups retain exact sector counts. Larger direct
+labels, time/value axes and explicit empty states make each signal readable
+without changing its truthful data boundary. One tap
 cycles the whole dashboard through `15 MIN`, `1 H`, and bounded weighted
 `SESSION` data. Position and chart samples are ephemeral and never enter the
 diagnostic report or persistence. ATLAS contains no place cards, Wikipedia, QR,

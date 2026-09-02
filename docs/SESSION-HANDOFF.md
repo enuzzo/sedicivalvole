@@ -43,7 +43,7 @@ The registry is `prototype/drive-lab/src/flux-environments.js`.
 | APERTURE 01 | original WebGL2 plus Canvas2D fallback | rigid square wall recedes intact and disappears at the existing tunnel terminus by `40 km/h` |
 | VERTIGO 02 | vendored Interstate 7 | upstream tree stays byte-identical; the external bridge drives speed/FOV and existing colour channels |
 | MERIDIAN 03 | original WebGL2 plus Canvas2D fallback | selected-reference corridor of sparse oblique blades and longitudinal planes; bounded vertical field, `50–124°` full-range FOV, stronger UNDERWATER compression and one continuous visual surfacing response |
-| ATLAS 04 | lazy MapLibre/OpenFreeMap WebGL plus one Canvas2D dashboard | ephemeral GPS or explicit Milan demo drives 3D city tiles, a bounded complete-view route, one pulsing position point and a Navigator Plaque; the owner-selected Drive Lab cycles `15 MIN / 1 H / SESSION` across Speed/Distance/Moving/Average, Accel/Braking, five speed bands, continuous Heading history, Moving/Stopped and full-width Open-Meteo/Copernicus Elevation; an icon-only `36 × 30 px` midpoint tab collapses it and ATLAS contains no Discover/Wikipedia surface |
+| ATLAS 04 | lazy MapLibre/OpenFreeMap WebGL plus one Canvas2D dashboard | ephemeral GPS or explicit Milan demo drives 3D city tiles, a bounded complete-view route, one pulsing position point and a Navigator Plaque; the owner-selected Drive Lab cycles `15 MIN / 1 H / SESSION` across Speed/Distance/Moving/Average, Accel/Braking, a proportional five-band speed strip, an eight-sector moving-only Direction History rose, compact Elevation and Moving/Stopped; an icon-only `36 × 30 px` midpoint tab collapses it and ATLAS contains no Discover/Wikipedia surface |
 | DRIVEY 05 | byte-identical Rezmason runtime plus project bridge | road following, lane-centred zero hold, opposing-only traffic, three cameras, and normal/wire modes |
 | PRTCL 06 | original WebGL2 particle renderer | Fractal Frequency and Axiom remain active; Murmuration is parked; UNDERWATER holds Fractal at 22.5% form / 27.5% point scale and surfaces quickly |
 | GRADIENT 08 | lazy ShaderGradient plus Canvas2D fallback | Japanese Mist, Acid Orchard, and Chromatic Silk retain their selected geometry/motion, use the shared palette, and fold/densify during braking |
@@ -567,6 +567,24 @@ and exact live `773 × 601` QA confirms the native night class, dark native
 colours, complete responsive article and English-to-Italian interface switch
 with no canonical warning/error. Target-Tesla `R10-03` remains open and must
 not be reported as accepted from office evidence.
+
+The next owner-requested ATLAS Drive Lab refinement is implemented at checkpoint
+`8068975`. A frontend-design review measured summary labels at `6 px`, chart
+titles at `8 px`, axes at `6 px`, and the range control at `7 px / 22 px` on the
+`773 × 601` surface. The panel remains `300 px` and map-majority, but typography,
+contrast and the range target are larger. Speed bands now use one proportional
+stacked strip, Moving/Stopped is a direct-labelled ratio, and zero acceleration
+states say `NO CHANGE`. The former Heading polyline is replaced by an
+eight-sector `45°` Direction History rose derived only from samples at or above
+`2 km/h`; up to five outward annular tiles encode relative moving-time share,
+the current bearing remains a separate needle, and exact sector counts survive
+bounded session rollups. Focused ATLAS `34/34`, all feature/Sites suites, the
+complete `494/494` unit group, production build `20260903-0039`, and exact local
+`773 × 601` Browser composition pass. Canonical publication and physical-Tesla
+legibility remain open under revised `R9-03`–`R9-05`. The three earlier visual
+proposals were recovered to the owner's Desktop as `01-trip-pulse.png`,
+`02-motion-lab.png`, and `03-journey-ledger.png`; Motion Lab contains the radial
+direction study referenced by the owner.
 
 ## Verification
 

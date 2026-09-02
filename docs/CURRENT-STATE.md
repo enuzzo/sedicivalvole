@@ -78,14 +78,17 @@ dated study documents.
   palette-owned OpenFreeMap vector style with 3D buildings, and pairs it with
   the owner-selected Drive Lab. Its `300 px` dashboard keeps Speed, Distance,
   Moving time and Average speed in one first line; Accel/Braking balance,
-  five-band speed distribution, continuous Heading history, full-width
-  Open-Meteo/Copernicus GLO-90 Elevation and Moving/Stopped follow as one
-  vertical instrument. Accel/Braking owns a centered `km/h/s` timeline;
+  proportional five-band speed distribution, an eight-sector Direction History
+  rose, compact Open-Meteo/Copernicus GLO-90 Elevation and Moving/Stopped follow
+  as one vertical instrument. Accel/Braking owns a centered `km/h/s` timeline;
   Speed bands and Moving/Stopped are low horizontal strips rather than square
-  cards; every history has value/time axes, a direct legend and smoothed curves.
+  cards. Direction tiles grow outward in five discrete levels from moving-only
+  time share, with an explicit dominant direction and a separate current-bearing
+  needle; bounded session rollups retain exact sector counts. Direct labels,
+  axes and source copy are larger and higher contrast at the Tesla viewport.
   One tap cycles every chart through `15 MIN / 1 H / SESSION`. Missing GPS or
   terrain data remains explicit; weighted bounded
-  all-session rollups preserve exact motion, distribution, heading and terrain
+  all-session rollups preserve exact motion, speed, direction-sector and terrain
   aggregates. Journey samples and coordinates remain session-only and absent
   from storage and diagnostics. ATLAS contains no Wikipedia, nearby-place, QR
   or DISCOVER action; DISCOVER owns that separate passenger task. All ten theme
