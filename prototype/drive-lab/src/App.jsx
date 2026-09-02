@@ -2606,8 +2606,7 @@ export function App() {
       referenceVehicle: MODEL_3_AWD_REFERENCE.label,
       curbMassKg: MODEL_3_AWD_REFERENCE.curbMassKg,
     });
-    wakeControls();
-  }, [logDiagnosticEvent, startDemo, triggerBrake, wakeControls]);
+  }, [logDiagnosticEvent, startDemo, triggerBrake]);
 
   const releaseKeyboardBrake = useCallback(() => {
     if (!brakeHeldRef.current) return;
@@ -2666,8 +2665,7 @@ export function App() {
       speedKmh: Math.round(speedRef.current * 10) / 10,
       referenceVehicle: MODEL_3_AWD_REFERENCE.label,
     });
-    wakeControls();
-  }, [logDiagnosticEvent, startDemo, wakeControls]);
+  }, [logDiagnosticEvent, startDemo]);
 
   const startKeyboardRegeneration = useCallback((reason = "accelerator-release") => {
     acceleratorHeldRef.current = false;
@@ -2692,8 +2690,7 @@ export function App() {
       estimatedPeakRegenerativeDecelerationMps2:
         MODEL_3_AWD_REFERENCE.estimatedPeakRegenerativeDecelerationMps2,
     });
-    wakeControls();
-  }, [logDiagnosticEvent, startDemo, wakeControls]);
+  }, [logDiagnosticEvent, startDemo]);
 
   const releaseKeyboardAcceleration = useCallback(() => {
     if (!acceleratorHeldRef.current) return;
@@ -3877,7 +3874,6 @@ export function App() {
       data-palette={themeId}
       data-environment={environmentId}
       onPointerDown={handleSurfacePointerDown}
-      onPointerMove={wakeControls}
       onClickCapture={handleControlActivation}
       onFocusCapture={wakeControls}
     >

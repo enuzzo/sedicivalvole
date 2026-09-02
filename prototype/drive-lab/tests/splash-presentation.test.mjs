@@ -26,6 +26,23 @@ test("keyboard focus keeps the retracting control planes awake", () => {
   assert.match(app, /onFocusCapture=\{wakeControls\}/);
 });
 
+test("vehicle motion and pointer hover never wake resting controls", () => {
+  const app = read("App.jsx");
+  const keyboardBrake = app.slice(
+    app.indexOf("const startKeyboardBrake"),
+    app.indexOf("const releaseKeyboardBrake"),
+  );
+  const keyboardAcceleration = app.slice(
+    app.indexOf("const startKeyboardAcceleration"),
+    app.indexOf("const releaseKeyboardAcceleration"),
+  );
+
+  assert.doesNotMatch(keyboardBrake, /wakeControls/);
+  assert.doesNotMatch(keyboardAcceleration, /wakeControls/);
+  assert.doesNotMatch(app, /onPointerMove=\{wakeControls\}/);
+  assert.match(app, /onPointerDown=\{handleSurfacePointerDown\}/);
+});
+
 test("completed control actions and closed surfaces return focus to the experience", () => {
   const app = read("App.jsx");
   const controlAction = {
