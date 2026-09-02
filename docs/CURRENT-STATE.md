@@ -814,6 +814,10 @@ surrounding launch/vehicle experience.
   `92e581b` prevents GPS/demo motion, acceleration, braking, regeneration and
   passive pointer movement from waking resting chrome; a deliberate pointer
   press/touch still wakes it, and intentional keyboard focus remains accessible.
+- Music-drawer checkpoint `543978e` presents the retained byte-identical black
+  Tabler Now Playing source icon in white on the current dark surface and keeps
+  `NOW PLAYING` on one line. The source stays black for milestone 13's future
+  LIGHT appearance; contrast remains an appearance-token responsibility.
 - The navbar adds a compact `NET` state derived from browser hints. It is
   explicitly an estimate, not cellular signal strength, and it does not create
   a continuous ping service.

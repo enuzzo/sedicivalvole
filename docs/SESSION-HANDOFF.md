@@ -506,6 +506,14 @@ Published source checkpoint `16afc61` is canonical as build `20260902-2127`;
 protected publication, byte identity and the same canonical Browser interaction
 pass. Only physical-Tesla confirmation remains open under `R10C-04`.
 
+The owner's next local Browser check found the Music drawer's Now Playing chart
+icon black on black and its label able to wrap. Checkpoint `543978e` leaves the
+pinned black Tabler SVG byte-identical, applies a white presentation filter on
+the current dark drawer, and gives `NOW PLAYING` an explicit one-line contract.
+This intentionally preserves the black source for milestone 13 LIGHT mode.
+Focused `32/32`, complete `580/580`, rendered local drawer QA and a clean console
+pass; canonical publication remains open.
+
 The owner then explicitly selected native **Minerva dark** for Discover, even
 with Wikipedia's accepted test parameter. Product checkpoint `cdccbd7` replaces
 the custom scriptless article document with the complete localized native page
