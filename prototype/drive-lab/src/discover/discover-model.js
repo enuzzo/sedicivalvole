@@ -79,6 +79,34 @@ export function discoverWikipediaUrl(position, { language = "en", view = "nearby
   return `https://${normalizedLanguage}.wikipedia.org/w/api.php?${params}`;
 }
 
+export function discoverWikipediaSearchUrl(query, { language = "en", requestLimit = 25 } = {}) {
+  const normalizedQuery = String(query ?? "").trim();
+  const normalizedLanguage = normalizeDiscoverLanguage(language) ?? "en";
+  if (!normalizedQuery) return null;
+  const params = new URLSearchParams({
+    action: "query",
+    format: "json",
+    formatversion: "2",
+    origin: "*",
+    generator: "search",
+    gsrsearch: normalizedQuery,
+    gsrnamespace: "0",
+    gsrlimit: String(clamp(Math.round(Number(requestLimit) || 25), 1, 50)),
+    prop: "coordinates|extracts|info|pageimages",
+    coprop: "type|dim|country|region|globe",
+    exintro: "1",
+    exlimit: "20",
+    explaintext: "1",
+    exsentences: "4",
+    inprop: "url",
+    piprop: "thumbnail",
+    pilimit: "20",
+    pithumbsize: "720",
+    pilicense: "free",
+  });
+  return `https://${normalizedLanguage}.wikipedia.org/w/api.php?${params}`;
+}
+
 export function discoverWikipediaContinuationUrl(requestUrl, continuation) {
   if (!requestUrl || !continuation || typeof continuation !== "object") return null;
   const url = new URL(requestUrl);
@@ -169,9 +197,9 @@ function safeThumbnail(page) {
   return /^https:\/\//i.test(source) ? source : "";
 }
 
-export function normalizeDiscoverPages(payload, origin, limit = DISCOVER_RESULT_LIMIT) {
+export function normalizeDiscoverPages(payload, origin, limit = DISCOVER_RESULT_LIMIT, { searchRanked = false } = {}) {
   const pages = Array.isArray(payload?.query?.pages) ? payload.query.pages : [];
-  return pages.flatMap((page) => {
+  const normalizedPages = pages.flatMap((page, sourceOrder) => {
     const coordinate = page?.coordinates?.find((item) => Number.isFinite(item?.lat) && Number.isFinite(item?.lon));
     if (!page?.title || !page?.fullurl || !coordinate) return [];
     const destination = { latitude: coordinate.lat, longitude: coordinate.lon };
@@ -190,9 +218,17 @@ export function normalizeDiscoverPages(payload, origin, limit = DISCOVER_RESULT_
       distanceLabel: formatDiscoverDistance(distanceMetres),
       estimatedMinutes: discoverEstimatedDrivingMinutes(distanceMetres),
       bearing: discoverBearingDegrees(origin, destination),
+      searchRank: Number.isFinite(Number(page.index)) ? Number(page.index) : sourceOrder,
     }];
-  }).sort((first, second) => (first.distanceMetres ?? Infinity) - (second.distanceMetres ?? Infinity))
-    .slice(0, Math.max(1, Math.min(DISCOVER_RESULT_LIMIT, Number(limit) || DISCOVER_RESULT_LIMIT)));
+  });
+  if (searchRanked) {
+    normalizedPages.sort((first, second) => first.searchRank - second.searchRank);
+  } else {
+    normalizedPages.sort((first, second) => (first.distanceMetres ?? Infinity) - (second.distanceMetres ?? Infinity));
+  }
+  return normalizedPages
+    .slice(0, Math.max(1, Math.min(DISCOVER_RESULT_LIMIT, Number(limit) || DISCOVER_RESULT_LIMIT)))
+    .map(({ searchRank: _searchRank, ...page }) => page);
 }
 
 export function discoverViewPages(pages, { view = "nearby", heading = null } = {}) {

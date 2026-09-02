@@ -10,6 +10,7 @@ import {
   discoverViewPages,
   discoverWikipediaContinuationUrl,
   discoverWikipediaArticleUrl,
+  discoverWikipediaSearchUrl,
   discoverWikipediaUrl,
   filterDiscoverPages,
   formatDiscoverDistance,
@@ -38,6 +39,20 @@ test("Discover sends only a quantized session position to the localized Wikipedi
   assert.equal(url.searchParams.get("ggsradius"), "10000");
   assert.equal(url.searchParams.get("ggslimit"), "50");
   assert.equal(url.searchParams.get("pilicense"), "free");
+});
+
+test("Discover searches Wikipedia globally without requiring or sending a position", () => {
+  const url = new URL(discoverWikipediaSearchUrl(
+    "  Tokyo Tower  ",
+    { language: "ja-JP", requestLimit: 99 },
+  ));
+  assert.equal(url.hostname, "ja.wikipedia.org");
+  assert.equal(url.searchParams.get("generator"), "search");
+  assert.equal(url.searchParams.get("gsrsearch"), "Tokyo Tower");
+  assert.equal(url.searchParams.get("gsrlimit"), "50");
+  assert.equal(url.searchParams.has("ggscoord"), false);
+  assert.equal(url.searchParams.has("ggsradius"), false);
+  assert.equal(discoverWikipediaSearchUrl("   "), null);
 });
 
 test("Discover carries MediaWiki continuation tokens without accepting unsafe keys", () => {
@@ -86,6 +101,21 @@ test("Discover normalizes at most fifteen places with distance and a bounded loc
   assert.ok(discoverDistanceMetres({ latitude: 45.46, longitude: 9.19 }, { latitude: 45.47, longitude: 9.19 }) > 1000);
 });
 
+test("Global Discover results preserve Wikipedia relevance order instead of sorting by distance", () => {
+  const pages = [
+    { pageid: 2, index: 2, title: "Tokyo local namesake", fullurl: "https://en.wikipedia.org/wiki/Tokyo_local", coordinates: [{ lat: 45.47, lon: 9.2 }] },
+    { pageid: 1, index: 1, title: "Tokyo", fullurl: "https://en.wikipedia.org/wiki/Tokyo", coordinates: [{ lat: 35.6764, lon: 139.65 }] },
+  ];
+  const normalized = normalizeDiscoverPages(
+    { query: { pages } },
+    { latitude: 45.46, longitude: 9.19 },
+    15,
+    { searchRanked: true },
+  );
+  assert.deepEqual(normalized.map(({ id }) => id), ["1", "2"]);
+  assert.ok(normalized[0].distanceMetres > normalized[1].distanceMetres);
+});
+
 test("Ahead prioritizes the driver's bearing and search covers title plus summary", () => {
   const pages = [
     { id: "north", title: "North Museum", summary: "Art", bearing: 2, distanceMetres: 900 },
@@ -110,7 +140,10 @@ test("Discover creates an exploratory Maps place handoff without starting naviga
 test("Discover renders a self-contained split index with language and search controls", () => {
   assert.match(appSource, /function DiscoverPanel/);
   assert.match(appSource, /navigator\.languages \?\? \[navigator\.language\]/);
-  assert.match(appSource, /type="search" placeholder="Search places"/);
+  assert.match(appSource, /type="search" placeholder="Search Wikipedia worldwide"/);
+  assert.match(appSource, /discoverWikipediaSearchUrl\(debouncedQuery/);
+  assert.match(appSource, /Searching Wikipedia globally in/);
+  assert.match(appSource, /You can still search Wikipedia globally above\./);
   assert.match(appSource, /className="visually-hidden">Wikipedia language<\/span>/);
   assert.doesNotMatch(appSource, /<span>LANGUAGE<\/span>/);
   assert.match(appSource, /\+\{hiddenCount\} MORE/);

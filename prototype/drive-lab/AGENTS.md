@@ -80,6 +80,10 @@ When implementing from a selected generated mock, treat that image as the source
   in exploratory Google Maps search without starting navigation; the passenger
   may refine, explore, share, or explicitly request Directions. It must not
   open, switch to, or link back to ATLAS.
+- DISCOVER free-text search is global across the selected Wikipedia language,
+  independent of the current position and available without GPS. Preserve
+  Wikipedia relevance order for global results; use location and heading only
+  for the empty-search `NEARBY / AHEAD / REGION` scopes.
 - APERTURE uses one exact longitudinal grid origin across ceiling, floor and
   side walls so perspective cuts meet cleanly at every corner. Visual catalogue
   cards expose an explicit choice count whenever a visual owns internal views,

@@ -114,7 +114,7 @@ import {
   discoverWikipediaArticleUrl,
   discoverWikipediaContinuationUrl,
   discoverWikipediaUrl,
-  filterDiscoverPages,
+  discoverWikipediaSearchUrl,
   normalizeDiscoverPages,
 } from "./discover/discover-model.js";
 import {
@@ -702,6 +702,7 @@ function DiscoverPanel({ position, onClose, onRetryLocation, onDemoLocation }) {
   ));
   const [view, setView] = useState("nearby");
   const [query, setQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
   const [pages, setPages] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
   const [visibleResultCapacity, setVisibleResultCapacity] = useState(DISCOVER_INITIAL_VISIBLE_RESULTS);
@@ -712,11 +713,19 @@ function DiscoverPanel({ position, onClose, onRetryLocation, onDemoLocation }) {
   const [mapsQrUrl, setMapsQrUrl] = useState("");
   const resultsRef = useRef(null);
 
-  const requestUrl = useMemo(() => discoverWikipediaUrl(position, {
-    language,
-    view,
-    requestLimit: 35,
-  }), [language, position?.latitude, position?.longitude, view]);
+  const globalSearchActive = Boolean(debouncedQuery);
+  const queryPending = query.trim() !== debouncedQuery;
+  const requestUrl = useMemo(() => (
+    globalSearchActive
+      ? discoverWikipediaSearchUrl(debouncedQuery, { language, requestLimit: 35 })
+      : discoverWikipediaUrl(position, { language, view, requestLimit: 35 })
+  ), [debouncedQuery, globalSearchActive, language, position?.latitude, position?.longitude, view]);
+
+  useEffect(() => {
+    const normalizedQuery = query.trim();
+    const timeout = window.setTimeout(() => setDebouncedQuery(normalizedQuery), 320);
+    return () => window.clearTimeout(timeout);
+  }, [query]);
 
   useEffect(() => {
     setPages([]);
@@ -733,6 +742,8 @@ function DiscoverPanel({ position, onClose, onRetryLocation, onDemoLocation }) {
     const controller = new AbortController();
     setStatus("loading");
     setError("");
+    setPages([]);
+    setSelectedId(null);
     (async () => {
       const mergedPages = new Map();
       let nextUrl = requestUrl;
@@ -744,12 +755,22 @@ function DiscoverPanel({ position, onClose, onRetryLocation, onDemoLocation }) {
           const key = String(page?.pageid ?? page?.title ?? mergedPages.size);
           mergedPages.set(key, { ...(mergedPages.get(key) ?? {}), ...page });
         }
-        const candidatePages = normalizeDiscoverPages({ query: { pages: [...mergedPages.values()] } }, position);
+        const candidatePages = normalizeDiscoverPages(
+          { query: { pages: [...mergedPages.values()] } },
+          position,
+          15,
+          { searchRanked: globalSearchActive },
+        );
         if (candidatePages.length >= 15) break;
         const continuationUrl = discoverWikipediaContinuationUrl(requestUrl, payload?.continue);
         nextUrl = continuationUrl && continuationUrl !== nextUrl ? continuationUrl : null;
       }
-      return normalizeDiscoverPages({ query: { pages: [...mergedPages.values()] } }, position);
+      return normalizeDiscoverPages(
+        { query: { pages: [...mergedPages.values()] } },
+        position,
+        15,
+        { searchRanked: globalSearchActive },
+      );
     })()
       .then((nextPages) => {
         setPages(nextPages);
@@ -766,13 +787,13 @@ function DiscoverPanel({ position, onClose, onRetryLocation, onDemoLocation }) {
         setStatus("error");
       });
     return () => controller.abort();
-  }, [reloadToken, requestUrl]);
+  }, [globalSearchActive, reloadToken, requestUrl]);
 
-  const viewPages = useMemo(() => discoverViewPages(pages, {
-    view,
-    heading: position?.heading,
-  }), [pages, position?.heading, view]);
-  const filteredPages = useMemo(() => filterDiscoverPages(viewPages, query), [query, viewPages]);
+  const filteredPages = useMemo(() => {
+    if (queryPending) return [];
+    if (globalSearchActive) return pages;
+    return discoverViewPages(pages, { view, heading: position?.heading });
+  }, [globalSearchActive, pages, position?.heading, queryPending, view]);
   const selected = filteredPages.find((page) => page.id === selectedId) ?? filteredPages[0] ?? null;
   const visiblePages = filteredPages.slice(0, visibleResultCapacity);
   const remainingPages = filteredPages.slice(visibleResultCapacity);
@@ -831,7 +852,12 @@ function DiscoverPanel({ position, onClose, onRetryLocation, onDemoLocation }) {
     >
       <small>{String(index + 1).padStart(2, "0")}</small>
       {page.thumbnail ? <img src={page.thumbnail} alt="" /> : <img className="is-placeholder" src="/third-party/tabler-icons/brand-wikipedia.svg" alt="" aria-hidden="true" />}
-      <span><strong>{page.title}</strong><em>{page.distanceLabel} · ≈ {page.estimatedMinutes} min</em></span>
+      <span>
+        <strong>{page.title}</strong>
+        <em>{globalSearchActive
+          ? (Number.isFinite(page.distanceMetres) ? page.distanceLabel : "GLOBAL RESULT")
+          : `${page.distanceLabel} · ≈ ${page.estimatedMinutes} min`}</em>
+      </span>
     </button>
   );
 
@@ -871,7 +897,7 @@ function DiscoverPanel({ position, onClose, onRetryLocation, onDemoLocation }) {
             <label className="discover-search">
               <span className="visually-hidden">Search places</span>
               <img src="/third-party/tabler-icons/search.svg" alt="" aria-hidden="true" />
-              <input value={query} onChange={(event) => setQuery(event.target.value)} type="search" placeholder="Search places" />
+              <input value={query} onChange={(event) => setQuery(event.target.value)} type="search" placeholder="Search Wikipedia worldwide" />
             </label>
           </div>
 
@@ -889,11 +915,13 @@ function DiscoverPanel({ position, onClose, onRetryLocation, onDemoLocation }) {
               </button>
             ) : null}
             {remainingPages.map((page, index) => renderResult(page, visibleResultCapacity + index))}
-            {status === "loading" ? <p className="discover-status"><span aria-hidden="true" />Finding places in {languageLabel}…</p> : null}
+            {status === "loading" || queryPending ? (
+              <p className="discover-status"><span aria-hidden="true" />{query.trim() ? `Searching Wikipedia globally in ${languageLabel}…` : `Finding places in ${languageLabel}…`}</p>
+            ) : null}
             {status === "location" ? (
               <div className="discover-empty-state">
                 <strong>Location required</strong>
-                <p>Discover uses the current session position to find nearby places.</p>
+                <p>Location is required for nearby scopes. You can still search Wikipedia globally above.</p>
                 <div><button type="button" onClick={onRetryLocation}>RETRY GPS</button><button type="button" onClick={onDemoLocation}>MILAN DEMO</button></div>
               </div>
             ) : null}
@@ -901,10 +929,10 @@ function DiscoverPanel({ position, onClose, onRetryLocation, onDemoLocation }) {
               <div className="discover-empty-state"><strong>Source unavailable</strong><p>{error}</p><button type="button" onClick={() => setReloadToken((current) => current + 1)}>TRY AGAIN</button></div>
             ) : null}
             {status === "empty" || (status === "ready" && !filteredPages.length) ? (
-              <div className="discover-empty-state"><strong>No matching places</strong><p>Try another scope, language, or search.</p></div>
+              <div className="discover-empty-state"><strong>No matching places</strong><p>{globalSearchActive ? "Try another global Wikipedia search or language." : "Try another scope, language, or global search."}</p></div>
             ) : null}
           </div>
-          <p className="discover-privacy">Wikipedia · {languageLabel} · session-only location</p>
+          <p className="discover-privacy">Wikipedia · {languageLabel} · {globalSearchActive ? "global search" : "session-only location"}</p>
         </aside>
 
         <article className="discover-reader" aria-live="polite">
@@ -914,7 +942,9 @@ function DiscoverPanel({ position, onClose, onRetryLocation, onDemoLocation }) {
                 <div>
                   <small>SELECTED PLACE</small>
                   <h3>{selected.title}</h3>
-                  <span className="discover-reader-meta">{selected.distanceLabel} · ≈ {selected.estimatedMinutes} min drive</span>
+                  <span className="discover-reader-meta">{globalSearchActive
+                    ? (Number.isFinite(selected.distanceMetres) ? `${selected.distanceLabel} away` : "Global Wikipedia result")
+                    : `${selected.distanceLabel} · ≈ ${selected.estimatedMinutes} min drive`}</span>
                 </div>
                 {mapsUrl ? (
                   <button
