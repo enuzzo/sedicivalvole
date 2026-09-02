@@ -53,6 +53,8 @@ test('ShaderGradient Lab exposes every registered family, official presets, and 
     assert.match(source, new RegExp(`value: '${shader}'`))
   }
   assert.match(source, /settings\.speed \/ 130/)
+  assert.match(source, /responseMode === 'free' \? 1 : 0\.5 \+ road \* 2\.3/)
+  assert.match(source, /settings\.uSpeed \* \(motionScale \+ audio \* 0\.45\)/)
   assert.match(source, /Road \+ audio/)
   assert.match(source, /lightType=\{settings\.lightType\}/)
   assert.doesNotMatch(source, /key=\{`\$\{settings\.type\}/)

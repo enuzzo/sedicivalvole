@@ -283,8 +283,9 @@ export function ShaderGradientLab({ embedded = false }) {
   const effective = useMemo(() => {
     const road = settings.responseMode === 'free' ? 0 : settings.speed / 130
     const audio = settings.responseMode === 'road-audio' ? settings.audioEnergy : 0
+    const motionScale = settings.responseMode === 'free' ? 1 : 0.5 + road * 2.3
     return {
-      uSpeed: settings.uSpeed * (1 + road * 1.8 + audio * 0.45),
+      uSpeed: settings.uSpeed * (motionScale + audio * 0.45),
       uStrength: settings.uStrength + road * 2.8 + audio * 1.25,
       uDensity: settings.uDensity + road * 0.55 + audio * 0.18,
       uFrequency: settings.uFrequency + road * 1.6,
