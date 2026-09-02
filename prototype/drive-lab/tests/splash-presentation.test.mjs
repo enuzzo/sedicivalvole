@@ -89,7 +89,8 @@ test("the selected Instrument Deck resolves Music and Visual before START", () =
   assert.match(selector, /musicId && environmentId/);
   assert.match(selector, /choice\.launchDescription/);
   assert.match(selector, /<strong>\{choice\.displayLabel\}<\/strong>/);
-  assert.match(selector, /<strong>\{displayLabel\(choice\)\}\{family \? <span className="launch-choice-number"> 08<\/span> : null\}<\/strong>/);
+  assert.match(selector, /<strong>\{displayLabel\(choice\)\}<\/strong>/);
+  assert.doesNotMatch(selector, /choiceBadge|launch-choice-badge|launch-choice-number/);
   assert.match(app, /displayLabel: "Play the Road"/);
   assert.match(app, /displayLabel: "Soundtrack"/);
   assert.match(app, /displayLabel: "Mute"/);

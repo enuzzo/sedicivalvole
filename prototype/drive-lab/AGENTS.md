@@ -30,18 +30,23 @@ When implementing from a selected generated mock, treat that image as the source
   public **GRADIENT 08** family with three internal variants: **Japanese Mist**,
   **Acid Orchard**, and **Chromatic Silk**. The launch and running catalogues
   expose one family entry; a persistent in-visual `VARIANT` control cycles the
-  three variants without reopening a catalogue. They share the
-  exact registered LAB starting-point settings and project-owned road/audio
-  response. Keep Soundtrack speed-only; Play the Road may add bounded audio
+  three variants without reopening a catalogue. They retain the exact
+  registered LAB geometry and motion settings while the selected product
+  palette supplies both primary colours plus one light-tinted derivative.
+  Project-owned road/audio response must make braking visibly fold and densify
+  the field, then restore the exact road state. Keep Soundtrack speed-only;
+  Play the Road may add bounded audio
   response. Load the upstream stack only when one of these variants is selected,
   keep it in a separate product chunk, retain the MIT
   notice, preserve the Canvas2D fallback and reduced-motion path, and hold all
   response at the `130 km/h` ceiling. Target-Tesla GPU acceptance remains a gate.
   FeralUI and ColorFlow remain mechanics references only.
-- PRTCL UNDERWATER must collapse all three complete forms dramatically to about
-  one fifth of their natural speed-owned size, then surface quickly back to that
-  exact natural scale as braking releases. Do not reduce this to a subtle glow
-  or point-size-only treatment.
+- PRTCL exposes Fractal and Axiom; Murmuration is parked outside the active
+  product until a new owner decision. UNDERWATER must collapse both complete
+  forms dramatically, with Fractal holding at `22.5%` of its natural form scale
+  and `27.5%` of its natural point scale, then surface quickly back to the exact
+  speed-owned scale as braking releases. Do not reduce this to a subtle glow or
+  point-size-only treatment.
 - Every shared drawer closes through CLOSE, Escape, a tap on the exposed
   backdrop, or one dominant directional swipe matching its exit. Capture the
   pointer after a non-control drag begins, suppress browser overscroll within
@@ -85,9 +90,10 @@ When implementing from a selected generated mock, treat that image as the source
   Wikipedia relevance order for global results; use location and heading only
   for the empty-search `NEARBY / AHEAD / REGION` scopes.
 - APERTURE uses one exact longitudinal grid origin across ceiling, floor and
-  side walls so perspective cuts meet cleanly at every corner. Visual catalogue
-  cards expose an explicit choice count whenever a visual owns internal views,
-  render modes, types, or variants.
+  side walls so perspective cuts meet cleanly at every corner. Splash and
+  running Visual catalogue cards never advertise internal view, render, type,
+  or variant counts. Keep the stable `01–08` catalogue numbering in the running
+  drawer and let each visual reveal its own persistent internal controls.
 - The compact navbar network state is an honest browser connection estimate,
   never a claimed cellular signal meter or an active ping service. Healthy
   state stays subordinate; constrained and offline states remain explicit.

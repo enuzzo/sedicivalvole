@@ -3,9 +3,12 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 import {
   getShaderGradientStudy,
+  shaderGradientPalette,
   shaderGradientResponse,
   SHADERGRADIENT_STUDY_IDS,
 } from "../src/environments/shadergradient/studies.js";
+import { getFluxTheme } from "../src/flux-themes.js";
+import { createAudioMacroSnapshot } from "../src/response-mapping.js";
 import {
   FLUX_VISUAL_CHOICES,
   SHADERGRADIENT_ENVIRONMENTS,
@@ -54,6 +57,31 @@ test("Play the Road admits bounded audio while Soundtrack remains speed-only", (
   assert.deepEqual(soundtrackLoud, soundtrackQuiet);
 });
 
+test("every Gradient variant carries the shared theme colours plus one in-mood derivative", () => {
+  const theme = getFluxTheme("red");
+  assert.deepEqual(shaderGradientPalette("japanese-mist", theme), {
+    color1: "#ed1209",
+    color2: "#ef9083",
+    color3: "#0a33b8",
+  });
+  assert.deepEqual(shaderGradientPalette("acid-orchard", theme), {
+    color1: "#ed1209",
+    color2: "#0a33b8",
+    color3: "#5871c4",
+  });
+  assert.deepEqual(shaderGradientPalette("chromatic-silk", theme), {
+    color1: "#0a33b8",
+    color2: "#ed1209",
+    color3: "#ee766a",
+  });
+  const study = getShaderGradientStudy("japanese-mist");
+  assert.deepEqual(shaderGradientPalette(study.id, null), {
+    color1: study.color1,
+    color2: study.color2,
+    color3: study.color3,
+  });
+});
+
 test("reduced motion and vehicle macros remain bounded and recognizable", () => {
   const study = getShaderGradientStudy("acid-orchard");
   const plain = shaderGradientResponse(study, { speedKmh: 80, responseMode: "road" });
@@ -67,6 +95,24 @@ test("reduced motion and vehicle macros remain bounded and recognizable", () => 
   assert.ok(bloom.brightness > plain.brightness);
 });
 
+test("braking folds and densifies Gradient continuously, then restores the exact road state", () => {
+  const study = getShaderGradientStudy("acid-orchard");
+  const plain = shaderGradientResponse(study, { speedKmh: 80, responseMode: "road", underwaterAmount: 0 });
+  const halfBrake = shaderGradientResponse(study, { speedKmh: 80, responseMode: "road", underwaterAmount: 0.5 });
+  const fullBrake = shaderGradientResponse(study, { speedKmh: 80, responseMode: "road", underwaterAmount: 1 });
+  const restored = shaderGradientResponse(study, { speedKmh: 80, responseMode: "road", underwaterAmount: 0 });
+  assert.ok(halfBrake.uStrength > plain.uStrength);
+  assert.ok(fullBrake.uStrength > halfBrake.uStrength);
+  assert.ok(halfBrake.uDensity > plain.uDensity);
+  assert.ok(fullBrake.uDensity > halfBrake.uDensity);
+  assert.ok(fullBrake.uSpeed < plain.uSpeed * 0.5);
+  assert.deepEqual(restored, plain);
+
+  const snapshot = createAudioMacroSnapshot({ underwater: 0.76 });
+  assert.equal(snapshot.values.underwater, 0.76);
+  assert.match(fieldSource, /audioMacroAmount\(macroSnapshot, "underwater"\)/);
+});
+
 test("the public visual lazily loads the exact renderer and owns a Canvas2D fallback", () => {
   assert.match(fieldSource, /from "@shadergradient\/react"/);
   assert.match(fieldSource, /ShaderGradientCanvas/);
@@ -76,5 +122,7 @@ test("the public visual lazily loads the exact renderer and owns a Canvas2D fall
   assert.match(appSource, /lazy\(\(\) => import\("\.\/environments\/shadergradient\/shadergradient-field\.jsx"\)\)/);
   assert.match(appSource, /environment\.renderer === "shadergradient"/);
   assert.match(appSource, /studyId=\{environment\.studyId\}/);
+  assert.match(appSource, /<ShaderGradientField[\s\S]*?macroSnapshot=\{audioMacros\}[\s\S]*?theme=\{theme\}/);
+  assert.match(fieldSource, /color1=\{colors\.color1\}/);
   assert.equal(packageSource.dependencies["@shadergradient/react"], "2.4.20");
 });

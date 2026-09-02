@@ -18,7 +18,7 @@ export const LAB_GROUPS = Object.freeze([
 
 export const LAB_PARAMETER_MANIFEST = Object.freeze({
   "context.visual": Object.freeze({ group: "context", normalize: choice(["prtcl"], "prtcl") }),
-  "context.prtclType": Object.freeze({ group: "context", normalize: choice(["frequency", "murmuration", "axiom"], "frequency") }),
+  "context.prtclType": Object.freeze({ group: "context", normalize: choice(["frequency", "axiom"], "frequency") }),
   "context.theme": Object.freeze({ group: "context", normalize: choice(["pearl", "graphite", "red", "blue", "silver", "neon", "mint", "acid", "signal", "sulphur"], "signal") }),
   "context.inputSource": Object.freeze({ group: "context", normalize: choice(["manual", "demo", "gps"], "manual") }),
   "context.speedKmh": Object.freeze({ group: "context", normalize: number(0, 130, 1) }),

@@ -205,20 +205,23 @@ dated study documents.
   checks pass, while physical-Tesla motion acceptance remains open. A
   speed-responsive rise of the Aerial camera is recorded only as a deferred
   nice-to-have; it is not missing behavior in the accepted checkpoint.
-- PRTCL adapts the directly authorized Fractal Frequency, Murmuration, and Axiom
+- PRTCL adapts the directly authorized Fractal Frequency and Axiom
   formulas from the user-owned checkout at commit
   `2a22f33b975e2c40b7ee0bdd2d1acb4cee4f5060` into a bounded project WebGL2
-  renderer. The reviewed particle budgets remain `24,000`, `16,000`, and
-  `37,000`; PRTCL's runtime, UI, dependencies, fonts, screenshots, assets, and
+  renderer. The active reviewed particle budgets are `24,000` and `37,000`;
+  Murmuration is temporarily outside the product and remains recoverable from
+  Git and the source-admission record. PRTCL's runtime, UI, dependencies, fonts,
+  screenshots, assets, and
   other effects are excluded. One `94 × 34 px` text-only `TYPE` button cycles
-  `FRACTAL → MURMURATION → AXIOM → FRACTAL` without a dropdown or panel, while
+  `FRACTAL → AXIOM → FRACTAL` without a dropdown or panel, while
   the shared `PALETTE` remains a separate colour choice. Road speed alone owns
   complete-form scale, point scale, depth, and travel; music owns colour phase
   and pulse. Both scale responses reach their maximum at `100 km/h` and hold
   above it, while depth and travel continue through the global `130 km/h` road
   ceiling. OPEN, UNDERWATER, and BLOOM morph continuously instead of switching
-  discrete geometry state. UNDERWATER now collapses the complete form to roughly
-  one fifth of its natural speed-owned scale and returns rapidly to that exact
+  discrete geometry state. UNDERWATER now holds Fractal at `22.5%` of natural
+  form scale and `27.5%` of natural point scale—25% larger than the previous
+  minima—and returns rapidly to the exact
   scale on surfacing. Exact muted
   `773 × 601` and `390 × 844` QA, every type, OPEN / UNDERWATER / BLOOM, zero
   warning/error state, deterministic reduced motion, 339 tests, and the
@@ -237,8 +240,11 @@ dated study documents.
   of one public **GRADIENT 08** family: **Japanese Mist**, **Acid Orchard**, and
   **Chromatic Silk**. The package and pinned Three/R3F peers are production
   dependencies isolated in one lazy product chunk. Project-owned adapters own
-  bounded road/audio response, runtime telemetry, reduced motion, and Canvas2D
-  fallback; no upstream source is modified. The LABs retain direct geometry,
+  the active product palette through accent, secondary, and one light-tinted
+  derivative, plus bounded road/audio response that continuously folds and
+  densifies under braking before restoring. They also own runtime telemetry,
+  reduced motion, and Canvas2D fallback; no upstream source is modified. The
+  LABs retain direct geometry,
   shader, palette, surface,
   camera controls, local persistence, JSON capture, and bounded road/audio
   preview. Local development and protected production share the canonical
@@ -842,8 +848,9 @@ surrounding launch/vehicle experience.
   result-number track at `773 × 601`. Navigation QR URLs use Google Maps search
   without `dir_action`, origin or automatic route start.
 - APERTURE's four perspective planes share one longitudinal grid origin so
-  depth cuts align at the corners. Drivey, PRTCL and Gradient expose their
-  `3 VIEWS · 2 RENDERS`, `3 TYPES`, and `3 VARIANTS` counts.
+  depth cuts align at the corners. Splash and running Visual catalogues omit
+  internal-choice counts; the drawer keeps only stable `01–08` catalogue numbers,
+  while each visual reveals its own controls after selection.
 - Existing versioned safe preferences and both reset controls cover the requested
   product-state restoration. Coordinates, route history, transient audio URLs,
   autoplay state and automatic vehicle envelopes remain deliberately

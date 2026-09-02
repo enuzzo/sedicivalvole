@@ -64,7 +64,6 @@ export const FLUX_ENVIRONMENTS = [
     renderer: "drivey",
     themed: true,
     tunable: true,
-    choiceBadge: "3 VIEWS · 2 RENDERS",
   },
   {
     id: "prtcl",
@@ -76,7 +75,6 @@ export const FLUX_ENVIRONMENTS = [
     renderer: "prtcl",
     themed: true,
     tunable: true,
-    choiceBadge: "3 TYPES",
   },
   {
     id: "japanese-mist",
@@ -88,7 +86,7 @@ export const FLUX_ENVIRONMENTS = [
     launchDescription: "Soft water and slow chromatic tide",
     renderer: "shadergradient",
     studyId: "japanese-mist",
-    themed: false,
+    themed: true,
   },
   {
     id: "acid-orchard",
@@ -100,7 +98,7 @@ export const FLUX_ENVIRONMENTS = [
     launchDescription: "Punchy speed-led graphic folding",
     renderer: "shadergradient",
     studyId: "acid-orchard",
-    themed: false,
+    themed: true,
   },
   {
     id: "chromatic-silk",
@@ -112,7 +110,7 @@ export const FLUX_ENVIRONMENTS = [
     launchDescription: "Luminous sculptural colour folds",
     renderer: "shadergradient",
     studyId: "chromatic-silk",
-    themed: false,
+    themed: true,
   },
 ];
 
@@ -144,8 +142,7 @@ export const SHADERGRADIENT_VISUAL_CHOICE = {
   displayLabel: "Gradient",
   number: "08",
   rendererLabel: "ShaderGradient family",
-  launchDescription: "Three reactive gradient variants",
-  choiceBadge: "3 VARIANTS",
+  launchDescription: "Reactive gradient field",
   kind: "family",
 };
 

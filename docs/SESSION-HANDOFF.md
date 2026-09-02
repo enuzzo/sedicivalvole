@@ -42,10 +42,11 @@ The registry is `prototype/drive-lab/src/flux-environments.js`.
 | MERIDIAN 03 | original WebGL2 plus Canvas2D fallback | selected-reference corridor of sparse oblique blades and longitudinal planes; bounded vertical field, `50–124°` full-range FOV, stronger UNDERWATER compression and one continuous visual surfacing response |
 | ATLAS 04 | lazy MapLibre/OpenFreeMap WebGL plus one Canvas2D dashboard | ephemeral GPS or explicit Milan demo drives 3D city tiles, a bounded complete-view route, one pulsing position point and a Navigator Plaque; the owner-selected Drive Lab cycles `15 MIN / 1 H / SESSION` across Speed/Distance/Moving/Average, Accel/Braking, five speed bands, continuous Heading history, Moving/Stopped and full-width Open-Meteo/Copernicus Elevation; an icon-only `36 × 30 px` midpoint tab collapses it and ATLAS contains no Discover/Wikipedia surface |
 | DRIVEY 05 | byte-identical Rezmason runtime plus project bridge | road following, lane-centred zero hold, opposing-only traffic, three cameras, and normal/wire modes |
-| PRTCL 06 | original WebGL2 particle renderer | Fractal Frequency, Murmuration, and Axiom with speed-owned form/point scale, depth, and travel; UNDERWATER collapses the complete form dramatically and surfaces quickly |
-| GRADIENT 08 | lazy ShaderGradient plus Canvas2D fallback | one family with exact Japanese Mist water plane, Acid Orchard plane, and Chromatic Silk cosmic-sphere variants; the persistent VARIANT control cycles them without a drawer or reload |
-The first six visuals use ten curated palettes; the three Gradient variants
-retain their exact selected colour identities. Vertigo is recoloured without
+| PRTCL 06 | original WebGL2 particle renderer | Fractal Frequency and Axiom remain active; Murmuration is parked; UNDERWATER holds Fractal at 22.5% form / 27.5% point scale and surfaces quickly |
+| GRADIENT 08 | lazy ShaderGradient plus Canvas2D fallback | Japanese Mist, Acid Orchard, and Chromatic Silk retain their selected geometry/motion, use the shared palette, and fold/densify during braking |
+All rendered visuals use the ten curated palettes. Each Gradient variant keeps
+both exact theme colour channels and derives one light-tinted third colour.
+Vertigo is recoloured without
 editing its vendor tree. Aperture is the fresh-session and invalid-preference fallback;
 PLUMB and every other retired identifier resolve to it. The fixed
 visual/music energy ceiling is `130 km/h`; Aperture must already read as a
@@ -481,8 +482,10 @@ browser estimate, not cellular strength or a synthetic ping score.
 The same checkpoint compacts Discover to a measured `38 px` heading and
 `246 px` rail, narrows the result-number track, and changes the QR target from
 immediate directions to exploratory Google Maps place search. APERTURE uses one
-longitudinal origin across all tunnel planes, while Drivey, PRTCL and Gradient
-state their internal choice counts. Focused `80/80`, complete `579/579`, the
+longitudinal origin across all tunnel planes. The later owner refinement removes
+all internal-choice counts from splash and running Visual cards while retaining
+the drawer's stable catalogue numerals and each visual's internal control.
+Focused `80/80`, complete `579/579`, the
 235-module App / 159-module LAB build, and exact local `773 × 601` checks pass.
 The local navbar geometry has non-overlapping `116 / 48 / 48 / 70 / 54 px`
 readout/network/GPS/Discover/Report cells; after idle the transport computes to

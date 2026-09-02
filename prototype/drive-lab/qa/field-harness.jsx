@@ -15,7 +15,7 @@
 //   readout   "0" to hide the measurement overlay for clean captures
 //   camera    hood | rear | aerial              (DRIVEY only)
 //   render    normal | wireframe                (DRIVEY only)
-//   type      frequency | murmuration | axiom    (PRTCL only)
+//   type      frequency | axiom                  (PRTCL only)
 //   audio     held 0..1 score level              (DRIVEY / PRTCL)
 //   effect    OPEN | UNDERWATER | BLOOM          (DRIVEY / PRTCL)
 //

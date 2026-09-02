@@ -131,11 +131,57 @@ export function getShaderGradientStudy(studyId) {
   return SHADERGRADIENT_STUDIES[studyId] ?? SHADERGRADIENT_STUDIES[DEFAULT_SHADERGRADIENT_STUDY_ID];
 }
 
+function rgbToHex(rgb) {
+  const channel = (value) => Math.round(clamp(value) * 255).toString(16).padStart(2, "0");
+  return `#${rgb.map(channel).join("")}`;
+}
+
+function mixRgb(first, second, amount) {
+  const mix = clamp(amount);
+  return first.map((value, index) => value + (second[index] - value) * mix);
+}
+
+/**
+ * Carry the complete product palette into every Gradient variant. Accent and
+ * secondary remain exact theme channels; the third colour is a light-tinted
+ * derivative so three-colour shaders stay inside the selected mood.
+ */
+export function shaderGradientPalette(studyId, theme) {
+  const study = getShaderGradientStudy(studyId);
+  const palette = theme?.palette;
+  if (!palette?.accent || !palette?.secondary || !palette?.light) {
+    return Object.freeze({ color1: study.color1, color2: study.color2, color3: study.color3 });
+  }
+
+  const accent = rgbToHex(palette.accent);
+  const secondary = rgbToHex(palette.secondary);
+  if (study.id === "japanese-mist") {
+    return Object.freeze({
+      color1: accent,
+      color2: rgbToHex(mixRgb(palette.accent, palette.light, 0.58)),
+      color3: secondary,
+    });
+  }
+  if (study.id === "acid-orchard") {
+    return Object.freeze({
+      color1: accent,
+      color2: secondary,
+      color3: rgbToHex(mixRgb(palette.secondary, palette.light, 0.34)),
+    });
+  }
+  return Object.freeze({
+    color1: secondary,
+    color2: accent,
+    color3: rgbToHex(mixRgb(palette.accent, palette.light, 0.46)),
+  });
+}
+
 export function shaderGradientResponse(settings, {
   speedKmh = settings.speed,
   audioLevel = settings.audioEnergy,
   responseMode = settings.responseMode,
   effect = null,
+  underwaterAmount = null,
   reducedMotion = false,
 } = {}) {
   const road = responseMode === "free"
@@ -143,18 +189,22 @@ export function shaderGradientResponse(settings, {
     : clamp(speedKmh, 0, ROAD_SPEED_CEILING_KMH) / ROAD_SPEED_CEILING_KMH;
   const audio = responseMode === "road-audio" && !reducedMotion ? clamp(audioLevel) : 0;
   const motionScale = responseMode === "free" ? 1 : 0.5 + road * 2.3;
-  const underwater = effect === "UNDERWATER";
+  const underwater = underwaterAmount == null
+    ? effect === "UNDERWATER" ? 1 : 0
+    : clamp(underwaterAmount);
   const open = effect === "OPEN";
   const bloom = effect === "BLOOM";
 
   return Object.freeze({
     uSpeed: reducedMotion
       ? 0
-      : settings.uSpeed * (motionScale + audio * 0.45) * (underwater ? 0.42 : 1),
-    uStrength: settings.uStrength + road * 2.8 + audio * 1.25 + (open ? 0.65 : 0),
-    uDensity: settings.uDensity + road * 0.55 + audio * 0.18,
+      : settings.uSpeed * (motionScale + audio * 0.45) * (1 - underwater * 0.58),
+    uStrength: settings.uStrength + road * 2.8 + audio * 1.25 + (open ? 0.65 : 0)
+      + underwater * (settings.type === "sphere" ? 2.8 : 3.6),
+    uDensity: settings.uDensity + road * 0.55 + audio * 0.18 + underwater * 1.15,
     uFrequency: settings.uFrequency + road * 1.6,
     brightness: settings.brightness + road * 0.2 + audio * 0.22 + (bloom ? 0.42 : 0),
     rotationZ: settings.rotationZ + road * 32,
+    underwater,
   });
 }

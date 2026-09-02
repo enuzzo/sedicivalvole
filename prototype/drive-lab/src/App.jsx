@@ -1267,7 +1267,6 @@ function VisualPicker({ environmentId, onChange, onOpenDiscover, onSelectGradien
                 <span className="score-entry-body">
                   <strong>{displayLabel(entry)}</strong>
                   <span>{entry.launchDescription}</span>
-                  {entry.choiceBadge ? <small>{entry.choiceBadge}</small> : null}
                 </span>
                 <span className="score-entry-state">
                   {destination ? "OPEN" : family ? (active ? "ACTIVE" : "SELECT") : active ? "ACTIVE" : "SELECT"}
@@ -1966,9 +1965,8 @@ function LaunchSelector({
                     else onEnvironmentChange(choice.id);
                   }}
                 >
-                  <strong>{displayLabel(choice)}{family ? <span className="launch-choice-number"> 08</span> : null}</strong>
+                  <strong>{displayLabel(choice)}</strong>
                   <small>{description}</small>
-                  {choice.choiceBadge ? <em className="launch-choice-badge">{choice.choiceBadge}</em> : null}
                 </button>
               );
             })}
@@ -3985,6 +3983,8 @@ export function App() {
                 speed={speed}
                 audioLevel={audioLevel}
                 musicMode={musicMode}
+                macroSnapshot={audioMacros}
+                theme={theme}
                 reducedMotion={reducedMotion}
                 effect={activeEffect}
                 onRenderer={setRenderer}

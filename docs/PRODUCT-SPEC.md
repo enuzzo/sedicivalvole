@@ -181,15 +181,17 @@ traffic-count preference is retired. Each theme exposes its native `accent` and
 Rear and Aerial views; the other cycles Normal and palette-coloured Wire render
 modes. Neither control opens a dropdown or panel.
 
-`PRTCL 06` is one environment with three particle families, not three catalog
-entries. Its project-authored WebGL2 renderer adapts the directly authorized
-Fractal Frequency, Murmuration, and Axiom formulas from PRTCL commit
-`2a22f33b975e2c40b7ee0bdd2d1acb4cee4f5060`, preserving the reviewed
-`24,000`, `16,000`, and `37,000` draw counts and characteristic compositions
-without importing the PRTCL runtime, UI, dependencies, brand, or assets.
-Fractal Frequency is the default. One compact `94 × 34 px` text-only `TYPE`
-button cycles Fractal, Murmuration, and Axiom directly; it opens no dropdown or
-panel and remains separate from the shared `PALETTE` control. Road speed owns
+`PRTCL 06` is one environment with two active particle families, not separate
+catalog entries. Its project-authored WebGL2 renderer adapts the directly
+authorized Fractal Frequency and Axiom formulas from PRTCL commit
+`2a22f33b975e2c40b7ee0bdd2d1acb4cee4f5060`, preserving their reviewed
+`24,000` and `37,000` draw counts and characteristic compositions without
+importing the PRTCL runtime, UI, dependencies, brand, or assets. Murmuration is
+temporarily parked outside the active renderer and remains recoverable through
+Git history and the dated source-admission record. Fractal Frequency is the
+default. One compact `94 × 34 px` text-only `TYPE` button cycles Fractal and
+Axiom directly; it opens no dropdown or panel and remains separate from the
+shared `PALETTE` control. Road speed owns
 complete-form scale, point size, depth, and travel; both scale responses saturate
 at `100 km/h`, while depth and travel continue to `130 km/h`. Musical level owns
 colour and luminous pulse. OPEN, UNDERWATER, BLOOM, and reduced motion are
@@ -209,9 +211,12 @@ Japanese Mist, Acid Orchard, and Chromatic Silk variants of one public
 `GRADIENT 08` family. They use the unmodified MIT
 `@shadergradient/react@2.4.20` renderer and pinned Three/R3F peers through one
 separate lazy product chunk. Project-owned adapters register the exact settings,
-map speed from half-rate idle motion to the fixed `130 km/h` endpoint, admit
-bounded Play the Road audio energy while keeping Soundtrack speed-only, report
-frames, honor reduced motion, and provide a Canvas2D fallback. No upstream
+map speed from half-rate idle motion to the fixed `130 km/h` endpoint, apply
+the active product palette through its exact accent/secondary channels plus one
+light-tinted derivative, admit bounded Play the Road audio energy while keeping
+Soundtrack speed-only, and fold/densify continuously with UNDERWATER before
+restoring the exact road state. They report frames, honor reduced motion, and
+provide a Canvas2D fallback. No upstream
 source is modified or relicensed. Desktop and exact `773 × 601` WebGL/console
 verification are complete; sustained target-Tesla GPU acceptance remains open.
 

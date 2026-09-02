@@ -2,27 +2,30 @@ import { Component, useEffect, useMemo, useRef } from "react";
 import { ShaderGradient, ShaderGradientCanvas } from "@shadergradient/react";
 import {
   getShaderGradientStudy,
+  shaderGradientPalette,
   shaderGradientResponse,
 } from "./studies.js";
+import { audioMacroAmount } from "../../response-mapping.js";
 
-function drawFallback(context, width, height, study, speedKmh, elapsedSeconds) {
+function drawFallback(context, width, height, colors, response, speedKmh, elapsedSeconds) {
   const road = Math.min(1, Math.max(0, speedKmh / 130));
   const travel = elapsedSeconds * (0.035 + road * 0.24);
-  const x = width * (0.32 + Math.sin(travel) * 0.1);
-  const y = height * (0.46 + Math.cos(travel * 0.72) * 0.12);
-  const radius = Math.max(width, height) * (0.68 + road * 0.18);
+  const brake = response.underwater;
+  const x = width * (0.32 + Math.sin(travel) * (0.1 + brake * 0.24));
+  const y = height * (0.46 + Math.cos(travel * 0.72) * (0.12 + brake * 0.18));
+  const radius = Math.max(width, height) * (0.68 + road * 0.18 - brake * 0.24);
   const field = context.createRadialGradient(x, y, 0, width * 0.5, height * 0.5, radius);
-  field.addColorStop(0, study.color1);
-  field.addColorStop(0.48, study.color2);
-  field.addColorStop(1, study.color3);
+  field.addColorStop(0, colors.color1);
+  field.addColorStop(0.48, colors.color2);
+  field.addColorStop(1, colors.color3);
   context.fillStyle = field;
   context.fillRect(0, 0, width, height);
 }
 
-function ShaderGradientFallback({ study, speed, reducedMotion, onRenderer, onRuntimeError }) {
+function ShaderGradientFallback({ study, colors, response, speed, reducedMotion, onRenderer, onRuntimeError }) {
   const canvasRef = useRef(null);
-  const valuesRef = useRef({ speed, reducedMotion });
-  valuesRef.current = { speed, reducedMotion };
+  const valuesRef = useRef({ colors, response, speed, reducedMotion });
+  valuesRef.current = { colors, response, speed, reducedMotion };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -46,7 +49,15 @@ function ShaderGradientFallback({ study, speed, reducedMotion, onRenderer, onRun
         canvas.width = width;
         canvas.height = height;
       }
-      drawFallback(context, width, height, study, valuesRef.current.speed, elapsedSeconds);
+      drawFallback(
+        context,
+        width,
+        height,
+        valuesRef.current.colors,
+        valuesRef.current.response,
+        valuesRef.current.speed,
+        elapsedSeconds,
+      );
       animationFrame = requestAnimationFrame(render);
     };
     animationFrame = requestAnimationFrame(render);
@@ -80,6 +91,8 @@ export default function ShaderGradientField({
   speed,
   audioLevel = 0,
   musicMode = "play-road",
+  macroSnapshot = null,
+  theme,
   reducedMotion,
   effect,
   onRenderer,
@@ -91,13 +104,21 @@ export default function ShaderGradientField({
   callbacksRef.current = { onRenderer, onFrame, onRuntimeError };
   const study = getShaderGradientStudy(studyId);
   const responseMode = musicMode === "play-road" ? "road-audio" : "road";
+  const underwaterAmount = macroSnapshot == null
+    ? null
+    : audioMacroAmount(macroSnapshot, "underwater");
+  const colors = useMemo(
+    () => shaderGradientPalette(study.id, theme),
+    [study.id, theme],
+  );
   const effective = useMemo(() => shaderGradientResponse(study, {
     speedKmh: speed,
     audioLevel,
     responseMode,
     effect,
+    underwaterAmount,
     reducedMotion,
-  }), [audioLevel, effect, reducedMotion, responseMode, speed, study]);
+  }), [audioLevel, effect, reducedMotion, responseMode, speed, study, underwaterAmount]);
 
   useEffect(() => {
     callbacksRef.current.onRenderer?.(`ShaderGradient · ${study.label}`);
@@ -123,6 +144,8 @@ export default function ShaderGradientField({
   const fallback = (
     <ShaderGradientFallback
       study={study}
+      colors={colors}
+      response={effective}
       speed={speed}
       reducedMotion={reducedMotion}
       onRenderer={onRenderer}
@@ -155,9 +178,9 @@ export default function ShaderGradientField({
             grain={study.grain}
             grainBlending={study.grainBlending}
             wireframe={study.wireframe}
-            color1={study.color1}
-            color2={study.color2}
-            color3={study.color3}
+            color1={colors.color1}
+            color2={colors.color2}
+            color3={colors.color3}
             uTime={study.uTime}
             uSpeed={effective.uSpeed}
             uStrength={effective.uStrength}

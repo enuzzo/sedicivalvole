@@ -600,17 +600,6 @@ button { -webkit-tap-highlight-color: transparent; }
 .launch-choice-button:disabled small,
 .launch-choice-button:disabled em { color: var(--sheet-disabled); }
 .launch-visual-button { min-height: 0; }
-.launch-choice-number { color: var(--sheet-signal); }
-.launch-choice-badge {
-  position: absolute;
-  right: 9px;
-  bottom: 8px;
-  color: var(--sheet-signal);
-  font-size: 9px;
-  font-style: normal;
-  font-weight: var(--font-weight-label);
-  letter-spacing: .08em;
-}
 .launch-start-button {
   width: 100%;
   min-height: 58px;

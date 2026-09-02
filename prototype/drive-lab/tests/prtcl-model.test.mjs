@@ -25,19 +25,19 @@ const packageSource = await read("../package.json");
 const packageMetadata = JSON.parse(packageSource);
 const admissionSource = await read("../../../docs/SOURCE-ADMISSION-2026-08-29.md");
 
-test("PRTCL exposes only the three reviewed particle families and defaults to Fractal", () => {
-  assert.deepEqual(Object.keys(PRTCL_TYPES), ["frequency", "murmuration", "axiom"]);
+test("PRTCL exposes Fractal and Axiom, retires Murmuration, and defaults to Fractal", () => {
+  assert.deepEqual(Object.keys(PRTCL_TYPES), ["frequency", "axiom"]);
   assert.deepEqual(normalizePrtclSettings(null), DEFAULT_PRTCL_SETTINGS);
   assert.deepEqual(normalizePrtclSettings({ type: "axiom" }), { type: "axiom" });
   assert.deepEqual(normalizePrtclSettings({ type: "electromagnetic" }), { type: "frequency" });
   assert.equal(PRTCL_TYPES.frequency.particleCount, 24000);
-  assert.equal(PRTCL_TYPES.murmuration.particleCount, 16000);
   assert.equal(PRTCL_TYPES.axiom.particleCount, 37000);
+  assert.deepEqual(normalizePrtclSettings({ type: "murmuration" }), { type: "frequency" });
 });
 
 test("the compact TYPE control cycles directly and returns to Fractal", () => {
-  assert.equal(nextPrtclTypeId("frequency"), "murmuration");
-  assert.equal(nextPrtclTypeId("murmuration"), "axiom");
+  assert.equal(nextPrtclTypeId("frequency"), "axiom");
+  assert.equal(nextPrtclTypeId("murmuration"), "frequency");
   assert.equal(nextPrtclTypeId("axiom"), "frequency");
   assert.equal(nextPrtclTypeId("unknown"), "frequency");
 });
@@ -129,8 +129,8 @@ test("OPEN, UNDERWATER, BLOOM, and reduced motion have bounded native responses"
   assert.ok(open.spreadScale > normal.spreadScale);
   assert.ok(underwater.travelRate < normal.travelRate);
   assert.ok(underwater.brightness < normal.brightness);
-  assert.ok(underwater.pointScale < normal.pointScale * 0.24);
-  assert.ok(underwater.formScale < normal.formScale * 0.2);
+  assert.ok(underwater.pointScale < normal.pointScale * 0.28);
+  assert.ok(underwater.formScale < normal.formScale * 0.23);
   assert.ok(underwater.depthScale < normal.depthScale * 0.4);
   assert.ok(underwater.spreadScale < normal.spreadScale * 0.35);
   assert.ok(bloom.brightness > normal.brightness);
@@ -144,13 +144,15 @@ test("OPEN, UNDERWATER, BLOOM, and reduced motion have bounded native responses"
   }
 });
 
-test("UNDERWATER collapses every family and the release returns exactly to its speed-owned scale", () => {
+test("UNDERWATER keeps the Fractal minimum 25% larger and returns exactly to its speed-owned scale", () => {
   for (const speedKmh of [0, 40, 100, 130]) {
     const natural = prtclMotionProfile({ speedKmh, audioLevel: 0.5 });
     const submerged = prtclMotionProfile({ speedKmh, audioLevel: 0.5, effect: "UNDERWATER" });
     const surfaced = prtclMotionProfile({ speedKmh, audioLevel: 0.5, macroAmounts: [0, 0, 0] });
-    assert.ok(submerged.pointScale <= natural.pointScale * 0.22 + 1e-12);
-    assert.ok(submerged.formScale <= natural.formScale * 0.18 + 1e-12);
+    assert.ok(Math.abs(submerged.pointScale / natural.pointScale - 0.275) < 1e-12);
+    assert.ok(Math.abs(submerged.formScale / natural.formScale - 0.225) < 1e-12);
+    assert.ok(Math.abs(0.275 / 0.22 - 1.25) < 1e-12);
+    assert.ok(Math.abs(0.225 / 0.18 - 1.25) < 1e-12);
     assert.equal(surfaced.pointScale, natural.pointScale);
     assert.equal(surfaced.formScale, natural.formScale);
   }
@@ -162,7 +164,7 @@ test("the source-faithful renderer is bounded WebGL2 with no imported PRTCL runt
   assert.match(rendererSource, /gl_VertexID/);
   assert.match(rendererSource, /gl\.drawArrays\(gl\.POINTS/);
   assert.match(rendererSource, /24000\.0/);
-  assert.match(rendererSource, /16000\.0/);
+  assert.doesNotMatch(rendererSource, /murmuration|16000\.0/);
   assert.match(rendererSource, /37000\.0/);
   assert.match(fieldSource, /MAX_PRTCL_PIXEL_RATIO = 1\.25/);
   assert.doesNotMatch(fieldSource + rendererSource, /getContext\("2d"|@react-three|from "three"|prtcl\.es/);
@@ -219,7 +221,8 @@ test("PRTCL uses one small text-only TYPE cycle separate from the shared palette
 
 test("the reproducible QA harness can hold every PRTCL type, macro, palette, and signal", () => {
   assert.match(harnessSource, /prtcl: lazy/);
-  assert.match(harnessSource, /type.*frequency.*murmuration.*axiom/);
+  assert.match(harnessSource, /type.*frequency.*axiom/);
+  assert.doesNotMatch(harnessSource, /murmuration/);
   assert.match(harnessSource, /PRTCL_SETTINGS/);
   assert.match(harnessSource, /audioLevel: readNumber\("audio", 0\)/);
   assert.match(harnessSource, /const QA_EFFECT = parameters\.get\("effect"\)/);

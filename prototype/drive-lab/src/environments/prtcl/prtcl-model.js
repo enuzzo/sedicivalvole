@@ -16,13 +16,6 @@ export const PRTCL_TYPES = Object.freeze({
     particleCount: 24000,
     pointSize: 0.43,
   }),
-  murmuration: Object.freeze({
-    id: "murmuration",
-    label: "MURMURATION",
-    fullLabel: "Murmuration",
-    particleCount: 16000,
-    pointSize: 0.57,
-  }),
   axiom: Object.freeze({
     id: "axiom",
     label: "AXIOM",
@@ -146,8 +139,8 @@ export function prtclMotionProfile({
   return {
     roadEnergy,
     colourEnergy,
-    pointScale: naturalPointScale * (0.22 + collapse * 0.78),
-    formScale: naturalFormScale * (0.18 + collapse * 0.82),
+    pointScale: naturalPointScale * (0.275 + collapse * 0.725),
+    formScale: naturalFormScale * (0.225 + collapse * 0.775),
     depthScale: (0.86 + roadEnergy * 0.36) * (1 + open * 0.08) * (0.38 + collapse * 0.62),
     travelRate: reducedMotion ? 0 : (0.42 + roadEnergy * 1.34) * motionScale,
     pulse: reducedMotion ? 0 : colourEnergy * (1 + bloom * 0.28 - underwater * 0.42),

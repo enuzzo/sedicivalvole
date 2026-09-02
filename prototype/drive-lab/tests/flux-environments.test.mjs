@@ -60,9 +60,10 @@ test("keeps Discover seventh and exposes one Gradient 08 family", () => {
   assert.equal(getFluxEnvironment("discover").id, DEFAULT_FLUX_ENVIRONMENT_ID);
   assert.equal(SHADERGRADIENT_VISUAL_CHOICE.kind, "family");
   assert.equal(SHADERGRADIENT_VISUAL_CHOICE.number, "08");
-  assert.equal(SHADERGRADIENT_VISUAL_CHOICE.choiceBadge, "3 VARIANTS");
-  assert.equal(FLUX_VISUAL_CHOICES.find(({ id }) => id === "drivey").choiceBadge, "3 VIEWS · 2 RENDERS");
-  assert.equal(FLUX_VISUAL_CHOICES.find(({ id }) => id === "prtcl").choiceBadge, "3 TYPES");
+  assert.equal(SHADERGRADIENT_VISUAL_CHOICE.launchDescription, "Reactive gradient field");
+  assert.equal(FLUX_VISUAL_CHOICES.some(({ choiceBadge }) => choiceBadge), false);
+  assert.equal(FLUX_ENVIRONMENTS.filter(({ renderer }) => renderer === "shadergradient").every(({ themed }) => themed), true);
+  assert.doesNotMatch(appSource, /choiceBadge|launch-choice-badge|launch-choice-number/);
   assert.equal(FLUX_VISUAL_CHOICES.at(-1), SHADERGRADIENT_VISUAL_CHOICE);
   assert.deepEqual(SHADERGRADIENT_ENVIRONMENTS.map(({ id }) => id), [
     "japanese-mist",
@@ -133,9 +134,9 @@ test("connects every implemented environment to body-colour theming", () => {
   assert.equal(getFluxEnvironment("atlas").themed, true);
   assert.equal(getFluxEnvironment("drivey").themed, true);
   assert.equal(getFluxEnvironment("prtcl").themed, true);
-  assert.equal(getFluxEnvironment("japanese-mist").themed, false);
-  assert.equal(getFluxEnvironment("acid-orchard").themed, false);
-  assert.equal(getFluxEnvironment("chromatic-silk").themed, false);
+  assert.equal(getFluxEnvironment("japanese-mist").themed, true);
+  assert.equal(getFluxEnvironment("acid-orchard").themed, true);
+  assert.equal(getFluxEnvironment("chromatic-silk").themed, true);
 });
 
 test("cycles every environment deterministically and returns to the start", () => {

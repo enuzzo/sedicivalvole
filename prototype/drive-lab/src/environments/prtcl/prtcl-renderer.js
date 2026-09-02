@@ -8,9 +8,9 @@ import {
   prtclMotionProfile,
 } from "./prtcl-model.js";
 
-const TYPE_INDEX = Object.freeze({ frequency: 0, murmuration: 1, axiom: 2 });
+const TYPE_INDEX = Object.freeze({ frequency: 0, axiom: 1 });
 
-// The three procedural families below are GPU adaptations of the selected
+// The two active procedural families below are GPU adaptations of the selected
 // formulas in the user-owned PRTCL checkout at the pinned source commit. The
 // renderer itself, its camera/palette bridge, and its lifecycle are authored
 // for sedicivalvole; no PRTCL runtime, UI, dependency, font, or asset is bundled.
@@ -89,67 +89,6 @@ const VERTEX_SHADER = `#version 300 es
     float crest = clamp(abs(wave) * 1.18, 0.0, 1.0);
     colour = paletteBand(0.12 + crest * 0.88, fraction);
     luminance = 0.46 + crest * 0.92;
-  }
-
-  void murmurationParticle(float index, float count, out vec3 position, out vec3 colour, out float luminance) {
-    float fraction = index / count;
-    float time = u_time * 0.5;
-    float seed = index * 1.6180339887;
-    float h1 = hashIndex(index, 127.1);
-    float h2 = hashIndex(index, 269.5);
-    float h3 = hashIndex(index, 419.2);
-    float h4 = hashIndex(index, 631.7);
-    float phi = acos(2.0 * h1 - 1.0);
-    float theta = h2 * 6.28318530718;
-    float radius = pow(h3, 0.4) * 2.065;
-    float baseX = radius * sin(phi) * cos(theta) * 4.0;
-    float baseY = radius * sin(phi) * sin(theta) * 0.55;
-    float baseZ = radius * cos(phi) * 0.65;
-    float waveSpeed = 0.575;
-    float wave1 = sin(baseX * 2.0 + time * waveSpeed * 3.0) * 0.8;
-    float wave2 = sin(baseY * 3.0 + baseX * 1.5 + time * waveSpeed * 2.3) * 0.5;
-    float wave3 = sin(baseZ * 2.5 + time * waveSpeed * 1.7 + baseY) * 0.4;
-    float waveX = wave2 * 0.6 + wave3 * 0.3;
-    float waveY = wave1 * 0.8 + wave3 * 0.4;
-    float waveZ = wave1 * 0.3 + wave2 * 0.5;
-    float spin = time * 0.4;
-    float cosine = cos(spin);
-    float sine = sin(spin);
-    float flockX = baseX + waveX;
-    float flockY = (baseY + waveY) * cosine - (baseZ + waveZ) * sine;
-    float flockZ = (baseY + waveY) * sine + (baseZ + waveZ) * cosine;
-    float breath = 1.0 + sin(time * 0.6) * 0.06;
-    flockX *= breath;
-    flockY *= breath;
-    flockZ *= breath;
-    float splitPhase = sin(time * 0.3) * 0.5 + 0.5;
-    float splitDirection = h4 > 0.5 ? 1.0 : -1.0;
-    float splitOffset = splitDirection * splitPhase * sin(time * 0.7) * 0.9;
-    float chaos = 0.035;
-    float jitterX = sin(fraction * 311.7 + time * 4.0 * chaos) * chaos * 0.3;
-    float jitterY = sin(fraction * 523.1 + time * 3.7 * chaos) * chaos * 0.2;
-    float jitterZ = sin(fraction * 197.3 + time * 4.3 * chaos) * chaos * 0.25;
-    float pathX = sin(time * 0.23) * 1.6;
-    float pathY = sin(time * 0.31 + 1.7) * 0.7;
-    float pathZ = sin(time * 0.17 + 0.6) * 1.1;
-    float roll = cos(time * 0.31 + 1.7) * 0.28;
-    float rollCosine = cos(roll);
-    float rollSine = sin(roll);
-    float bankedX = flockX * rollCosine - flockY * rollSine;
-    float bankedY = flockX * rollSine + flockY * rollCosine;
-
-    position = vec3(
-      bankedX + splitOffset + jitterX + pathX,
-      bankedY + jitterY + pathY,
-      (flockZ + jitterZ + pathZ) * u_depthScale
-    ) * 0.35 * u_spreadScale;
-    float waveEnergy = abs(wave1) + abs(wave2) * 0.5;
-    float crest = clamp(pow(waveEnergy, 1.4) * 0.72, 0.0, 1.0);
-    colour = mix(u_accent, u_light, smoothstep(0.28, 0.96, crest));
-    colour = mix(colour, u_secondary, h2 * 0.12 * (1.0 - crest));
-    float musical = 0.5 + 0.5 * sin(u_time * 2.1 + h2 * 11.0);
-    colour = mix(colour, mix(colour, u_light, musical * 0.42), u_colourEnergy * 0.45);
-    luminance = 0.9 + crest * 2.0;
   }
 
   float axiomSurface(float x, float z, float time, float spread, float height) {
@@ -245,10 +184,6 @@ const VERTEX_SHADER = `#version 300 es
       count = 24000.0;
       pointSize = 0.43;
       frequencyParticle(index, count, position, colour, luminance);
-    } else if (u_type == 1) {
-      count = 16000.0;
-      pointSize = 0.57;
-      murmurationParticle(index, count, position, colour, luminance);
     } else {
       count = 37000.0;
       pointSize = 0.93;
@@ -264,7 +199,7 @@ const VERTEX_SHADER = `#version 300 es
     v_colour = colour;
     v_luminance = luminance * u_brightness * mix(1.0, 0.86, u_underwater);
     v_agent = agent;
-    v_nativeBloom = u_type == 2 ? 0.0 : 1.0;
+    v_nativeBloom = u_type == 1 ? 0.0 : 1.0;
   }
 `;
 
@@ -350,14 +285,6 @@ function perspective(aspect, zoom = 1) {
 }
 
 function cameraForType(typeId, time) {
-  if (typeId === "murmuration") {
-    return {
-      eye: [0, 0, 6],
-      target: [0, 0.35, 0],
-      up: [0, 1, 0],
-      zoom: 1.5,
-    };
-  }
   if (typeId === "axiom") {
     return {
       eye: [3.271, 0.862, -3.755],
