@@ -157,7 +157,10 @@ dated study documents.
   as Wikipedia's native responsive Minerva page with the owner-approved dark
   test parameter and a `1.2×` outer large-reading scale. Wikipedia retains
   ownership of article colours, cards, media, chapters, links and localized
-  interface; language changes navigate to the selected edition.
+  interface; language changes navigate to the selected edition. Canonical
+  build `20260902-2346` passes the no-GPS `Tokyo Tower` global-search flow,
+  source-asset byte identity and an empty warning/error log; physical-Tesla
+  touch/network acceptance remains `R10-02`.
   DISCOVER has no ATLAS action and does not change the active visual. Exact
   local `773 × 601` Browser QA proves 15 results with `+10 MORE`, internal list
   and article scrolling, native English/Italian Minerva switching, responsive

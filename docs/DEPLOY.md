@@ -17,6 +17,38 @@ URL import remain outside the public surface. Exact
 dependency and local run instructions are recorded in
 `LOCAL-SHADERGRADIENT-LAB.md`.
 
+## Discover global Wikipedia search — 2026-09-02 23:52
+
+- build stamp: **`20260902-2346`**; implementation checkpoint:
+  **`5b4e776`**; published source checkpoint: **`ec48971`**;
+- correction: free text now issues a `320 ms` debounced global query against
+  the selected Wikipedia edition, requires and sends no GPS position, and
+  orders coordinate-bearing place results by MediaWiki's explicit relevance
+  `index`. Empty search retains the session-only `NEARBY / AHEAD / REGION`
+  geosearch and its distance/direction ranking;
+- tests/build: **PASS**. Focused DISCOVER checks pass `12/12`, the complete
+  suite passes `574/574`, documentation checks pass `8/8`, and production
+  builds process `235` App modules and `159` protected-LAB modules;
+- protected publication: read-only preflight and postflight pass, with final
+  `remote_writes=NONE`; publication uploaded `181` files / `215,865,235` bytes,
+  fully reverified all `29` Illobo recordings, retained one prior asset and
+  preserved the dynamic root;
+- canonical response: cache-busted root returns HTTP/2 200 with
+  `no-store, no-cache, must-revalidate, max-age=0` and `nosniff`;
+- byte identity: local/live HTML SHA-256 is
+  `fbb3b2aad6e607e0b57e44734b5fe52896e48a8b97d1043a12ecdff486adfcd0`,
+  JavaScript `index-pHkvzZaM.js` is
+  `fdd278295c0027c821ca49ed70a340f37d4a4630770fea248304312f14cb8f2a`,
+  and CSS `index-DU26jWHZ.css` is
+  `a4d2baaf013efcbb3ea1b67bda90229f42369d7ee4fe00e2c7adfad406fe448f`;
+- rendered QA: **PASS** locally at `840 × 827` and canonically at
+  `1280 × 720`. With GPS denied, `Tokyo Tower` is result `01`, opens its
+  matching complete native Minerva article, retains all 15 global results plus
+  exact `+8 MORE` and exposes the destination-only Maps handoff. Both warning/
+  error logs are empty;
+- remaining acceptance: repeat global search, language switching and result
+  selection through physical Tesla touch/network conditions under `R10-02`.
+
 ## DRIVEY GPS-speed calibration — 2026-09-02 23:30
 
 - build stamp: **`20260902-2322`**; implementation checkpoint:

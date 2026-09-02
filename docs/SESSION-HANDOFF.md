@@ -541,8 +541,11 @@ explicit relevance `index`; rendered no-GPS QA caught and fixed the API's
 non-ranked page-array order, then proved `Tokyo Tower` at result `01`, its
 complete native Minerva article, destination-only Maps handoff and an empty
 warning/error log. Focused `12/12`, complete `574/574`, the 235-module App,
-159-module protected LAB and Sites build pass. Canonical publication and
-target-Tesla search remain separate gates under revised `R10-02`.
+159-module protected LAB and Sites build pass. Published source checkpoint
+`ec48971` is canonical as build `20260902-2346`; protected publication,
+HTML/JavaScript/CSS byte identity and the repeated live no-GPS `Tokyo Tower`
+flow pass with an empty warning/error log. Physical-Tesla touch/network search
+remains open under revised `R10-02`.
 
 The owner then explicitly selected native **Minerva dark** for Discover, even
 with Wikipedia's accepted test parameter. Product checkpoint `cdccbd7` replaces
