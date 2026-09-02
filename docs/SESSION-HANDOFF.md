@@ -439,6 +439,9 @@ normal use. Desktop and `773 × 601` side-inspector layouts pass. It remains
 excluded from the public App and product catalogue; canonical `GRADIENT 08` is
 unchanged.
 The usage and licence boundary are in `LOCAL-SHADERGRADIENT-LAB.md`.
+Checkpoint `1a79cea` is published as protected build `20260902-1341` after
+read-only pre/postflight, complete packaging and canonical HTTP gate checks.
+The live owner gate is clean; authenticated Tesla rendering remains `R11A-01`.
 
 The owner then explicitly selected native **Minerva dark** for Discover, even
 with Wikipedia's accepted test parameter. Product checkpoint `cdccbd7` replaces

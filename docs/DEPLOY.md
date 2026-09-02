@@ -14,6 +14,34 @@ only in the authenticated protected-LAB bundle. Exact MIT dependencies and
 local run instructions are recorded in `LOCAL-SHADERGRADIENT-LAB.md`; the public
 App Vite entry deliberately omits the stack.
 
+## Protected ShaderGradient owner LAB — 2026-09-02 13:52
+
+- build stamp: **`20260902-1341`**; product checkpoint: **`1a79cea`**;
+- tests/build: **PASS**. Focused Gradient/LAB `13/13`, complete `562/562`,
+  151-module public App, 158-module protected LAB and Sites packaging pass;
+- boundary: exact MIT ShaderGradient and its pinned rendering peers enter only
+  the standalone local playground and protected inline LAB bundle. The public
+  App bundle and Visual catalogue do not import the dependency;
+- protected publication: read-only preflight and postflight report
+  `remote_writes=NONE`; publication uploaded `181` files / `214,789,407` bytes,
+  fully reverified all `29` Illobo recordings, retained one previous asset for
+  cache overlap, and preserved the dynamic root;
+- canonical identity: cache-busted root HTML is HTTP 200 with
+  `no-store/no-cache`, `nosniff` and cache `MISS`. HTML, main JavaScript and CSS
+  match the candidate byte-for-byte at SHA-256
+  `549766684a62e50147eb77a0cd93bee28a216b3c2d58ec82c5b4934e01154195`,
+  `e8ddada5ba380fcf9d77847ac430f62bb171fa7647c0383811c1ad7e55bfe2d0`
+  and `6aaa6f76ffacf1d6917852c69e8c45aecfc4fc5a0489f833e90b35bbab58b936`;
+- protected route: bare `/lab` redirects to `/lab/`. The cache-busted route
+  returns HTTP 200 with `no-store`, a Secure HttpOnly SameSite-Strict session
+  cookie, strict CSP, frame denial and the owner access form. Browser DOM,
+  screenshot and warning/error inspection pass without entering a credential;
+- authenticated bundle: FTP packaging and byte verification pass for the
+  `1,697,901`-byte protected `index.php`, whose local SHA-256 is
+  `760eb8d106d93acfa3a328da7177086e636a6abd93597019750b592471067f03`.
+  Authenticated live rendering, control reach and thermal behavior remain
+  target-Tesla `R11A-01`.
+
 ## GRADIENT 08 and drive-interaction closeout — 2026-09-02 01:16
 
 - build stamp: **`20260902-0103`**; product checkpoint: **`367e40d`**;

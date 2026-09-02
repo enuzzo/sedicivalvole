@@ -790,13 +790,16 @@ organized disclosure groups. These cover motion/timeline, colour and grain,
 official-URL import. Default 3D lighting remains local; HDR mode is explicitly
 marked as a remote dependency. Framer panel metadata and raw callback/object
 plumbing are not misrepresented as creative controls.
+Checkpoint `1a79cea` is canonical as protected build `20260902-1341`.
+Preflight/postflight, protected packaging and the unauthenticated live gate pass;
+authenticated target-Tesla rendering and control reach remain `R11A-01`.
 
 ## Open work
 
 1. Execute live Tesla `R4-07`, the canonical `10A` / `10B` codes, and row 11
    on build `20260902-0103`. Execute Tesla tests `R1-01`–`R1-03`, `R4-01`–`R4-07`,
    `R5-01`–`R5-07`, `R7-01`–`R7-13`, `R8-01`–`R8-03`, `R9-01`–`R9-07`,
-   `R10-00A`–`R10-06`, `R11-01`–`R11-06`, and later
+   `R10-00A`–`R10-06`, `R11-01`–`R11-06`, `R11A-01`, and later
    `R13-00`–`R13-03` from
    [`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md), including
    the live audio transport evidence and MERIDIAN
