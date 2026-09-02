@@ -579,9 +579,12 @@ eight-sector `45°` Direction History rose derived only from samples at or above
 `2 km/h`; up to five outward annular tiles encode relative moving-time share,
 the current bearing remains a separate needle, and exact sector counts survive
 bounded session rollups. Focused ATLAS `34/34`, all feature/Sites suites, the
-complete `494/494` unit group, production build `20260903-0039`, and exact local
-`773 × 601` Browser composition pass. Canonical publication and physical-Tesla
-legibility remain open under revised `R9-03`–`R9-05`. The three earlier visual
+complete `494/494` unit group, and production build pass. Published source
+checkpoint `af151a9` is canonical as build `20260903-0042`; protected preflight,
+publication/postflight, HTML/JavaScript/CSS/ATLAS-chunk byte identity, and exact
+live `773 × 601` empty/range/collapse/reopen QA pass with empty Browser logs.
+Physical-Tesla moving-data and cabin legibility remain open under revised
+`R9-03` and `R9-04`. The three earlier visual
 proposals were recovered to the owner's Desktop as `01-trip-pulse.png`,
 `02-motion-lab.png`, and `03-journey-ledger.png`; Motion Lab contains the radial
 direction study referenced by the owner.

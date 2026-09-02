@@ -17,6 +17,50 @@ URL import remain outside the public surface. Exact
 dependency and local run instructions are recorded in
 `LOCAL-SHADERGRADIENT-LAB.md`.
 
+## ATLAS Drive Lab typography and Direction History — 2026-09-03 00:57
+
+- build stamp: **`20260903-0042`**; implementation checkpoint:
+  **`8068975`**; published source checkpoint: **`af151a9`**;
+- presentation: the `300 px` map-majority Drive Lab keeps its no-scroll Tesla
+  hierarchy with larger and higher-contrast header, range, summary, chart,
+  axis, legend, percentage, and terrain-source typography;
+- visualization: Speed bands use one proportional stacked strip,
+  Moving/Stopped uses a direct-labelled ratio, and an idle Accel/Braking trace
+  says `NO CHANGE`. Direction History uses eight `45°` sectors with up to five
+  outward tiles for relative moving-time share; samples below `2 km/h` are
+  excluded, exact sector counts survive session rollups, and the latest bearing
+  remains a separate needle;
+- tests/build: **PASS**. Focused ATLAS checks pass `34/34`, the complete unit
+  group passes `494/494`, all feature and Sites suites pass, documentation
+  consistency passes `8/8`, and production builds process `235` App modules and
+  `159` protected-LAB modules;
+- protected publication: an initial read-only gate caught a transient content
+  mismatch on `plastic-cans.webp` and refused writes. Independent canonical
+  HTTP/local SHA-256 both returned
+  `dbaa2958ee1e3b72c021c2efb6d8d335b6c9049e0c9487c880d9bd6d4345340c`;
+  the repeated complete preflight passed with `remote_writes=NONE`. Publication
+  then uploaded `181` files / `215,862,115` bytes, fully reverified all `29`
+  Illobo recordings, retained no obsolete assets and preserved the dynamic
+  root. The complete postflight passes with `remote_writes=NONE`;
+- byte identity: local/live HTML SHA-256 is
+  `b98a210826d0a67e5e0014c333e1bc3f1640cac09519740e7dbd18f60cba9388`,
+  JavaScript `index-CNJaD4gq.js` is
+  `142b11636760cdb0bee319b564a0e0bf1a14b1f035c7c872ea62204e1a655020`,
+  CSS `index-C6LywjSx.css` is
+  `cb801eacc9f233f1c79b112f8d418de915e022c1a6a1de6169cf9e41b39ae5f1`,
+  ATLAS JavaScript `atlas-field-BQJ_cd40.js` is
+  `27ce44df72d3cb8182f79a2a381181b0055b0e0ec73a8a7d6e44019f39cd27a8`,
+  and ATLAS CSS `atlas-field-DIYHhGHm.css` is
+  `715dbf736f7fdc9671a7ab3ec3b2fc5e3cdb252f3cc59758d52914bd2c9e57a3`;
+- rendered QA: **PASS** locally and canonically at exact `773 × 601`. The live
+  splash reports `20260903-0042`; GPS-denied recovery opens the Milan demo;
+  empty Direction History remains explicit; `15 MIN → 1 H → SESSION → 15 MIN`
+  returns exactly; collapse gives the map its full field and reopen restores the
+  complete panel after its transition. Browser warning/error logs are empty;
+- remaining acceptance: collect real moving direction, speed-band, terrain,
+  braking, and cabin-reading evidence under `R9-03` and `R9-04` in the target
+  Tesla.
+
 ## Visual catalogue, Gradient, and PRTCL refinement — 2026-09-03 00:24
 
 - build stamp: **`20260903-0015`**; implementation checkpoint:
