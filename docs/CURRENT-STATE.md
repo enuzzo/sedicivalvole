@@ -176,9 +176,14 @@ dated study documents.
   traffic, camera, rendering and bundled-library files remain byte-identical
   under a SHA-256 manifest; a project-authored iframe shell and external bridge
   apply bounded speed, music, reduced motion, named performance effects and all
-  ten Sedici Valvole palettes. The bridge instantiates the upstream automatic
-  `Input`, fixes the player car's random weaving, and leaves the original
-  road/curve steering in charge while moving. At commanded zero it holds the car
+  ten Sedici Valvole palettes. Checkpoint `4624f70` reuses VERTIGO's quadratic
+  low-speed curve to cancel the original car model's square-root cruise gain,
+  then synchronizes the player and opposing traffic to the smoothed GPS-derived
+  world velocity before revealing the iframe. Deterministic equilibrium is
+  exactly `5 / 40 / 90 / 130 km/h`, so walking pace no longer resembles road
+  speed above `40 km/h`. The bridge instantiates the upstream automatic `Input`,
+  fixes the player car's random weaving, and leaves the original road/curve
+  steering in charge while moving. At commanded zero it holds the car
   motionless on the current lane centre and resumes from that same road location.
   It requests 16 NPCs only when every generated car can be assigned and verified
   on the direction opposite the player; otherwise traffic fails closed to zero.
@@ -188,7 +193,9 @@ dated study documents.
   `HOOD → REAR → AERIAL` and `NORMAL ↔ WIRE` directly, with no dropdown, panel,
   native Driver/Chase/Satellite view, or original colour selector. Exact muted
   `773 × 601` and `390 × 844` Browser QA passes with zero warning or error. The
-  owner accepted the current published Drivey presentation on 2026-08-30. A
+  owner accepted the prior published Drivey presentation on 2026-08-30; the
+  new GPS-speed calibration remains pending canonical and physical-Tesla
+  acceptance. A
   speed-responsive rise of the Aerial camera is recorded only as a deferred
   nice-to-have; it is not missing behavior in the accepted checkpoint.
 - PRTCL adapts the directly authorized Fractal Frequency, Murmuration, and Axiom

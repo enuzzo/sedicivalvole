@@ -517,6 +517,18 @@ pass. Published source checkpoint `a501545` is canonical as build
 identity and canonical build/console checks pass. Physical-Tesla contrast and
 one-line-fit confirmation remains open; milestone 13 itself is not implemented.
 
+The owner's next `qaSpeed=40` DRIVEY review found that walking-speed GPS motion
+still looked far too fast. Checkpoint `4624f70` confirms the cause in the pinned
+upstream physics: Drivey's steady vehicle velocity is proportional to the square
+root of its cruise command, while the external bridge had supplied an almost
+linear input. The bridge now shares VERTIGO's quadratic low-speed response,
+solves the original drive-force/linear-drag equilibrium for the active level,
+and synchronizes the player plus opposing traffic before the iframe becomes
+visible. The vendor tree remains byte-identical. Exact model evidence returns
+`5.000 / 40.000 / 90.000 / 130.000 km/h`; focused `16/16`, complete `572/572`,
+production builds and rendered local `5 km/h`/clean-console QA pass. Canonical
+publication and physical-Tesla motion judgement remain open.
+
 The owner then explicitly selected native **Minerva dark** for Discover, even
 with Wikipedia's accepted test parameter. Product checkpoint `cdccbd7` replaces
 the custom scriptless article document with the complete localized native page
