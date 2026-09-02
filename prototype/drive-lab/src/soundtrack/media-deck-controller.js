@@ -357,9 +357,13 @@ export function createSoundtrackMediaDeckController({
     if (!requested.length || requested.some((key) => !records.has(key))) {
       return Object.freeze({ ok: false, reason: "transition-media-unavailable", snapshot: getSnapshot() });
     }
+    const requestedRecords = new Map(requested.map((key) => [key, records.get(key)]));
     try {
-      await Promise.all(requested.map((key) => records.get(key).media.play?.()));
-      if (destroyed || requested.some((key) => !records.has(key))) {
+      await Promise.all(requested.map((key) => requestedRecords.get(key).media.play?.()));
+      if (destroyed || requested.some((key) => records.get(key) !== requestedRecords.get(key))) {
+        for (const record of requestedRecords.values()) {
+          try { record.media.pause?.(); } catch { /* stale playback must still be silenced */ }
+        }
         return Object.freeze({ ok: false, reason: "stale-play-request", snapshot: getSnapshot() });
       }
       for (const key of requested) records.get(key).lastEvent = "transition-play-resolved";
@@ -385,6 +389,11 @@ export function createSoundtrackMediaDeckController({
     return emit("transition:paused-outgoing");
   };
 
+  const discardKeys = (keys = []) => {
+    for (const key of new Set(keys)) disposeRecord(key);
+    return emit("media:discarded");
+  };
+
   const pauseCurrent = () => {
     const record = roles.current ? records.get(roles.current) : null;
     if (!record) return getSnapshot();
@@ -406,6 +415,7 @@ export function createSoundtrackMediaDeckController({
     playCurrent,
     playKeys,
     pauseExcept,
+    discardKeys,
     pauseCurrent,
     getSnapshot,
     getMediaForRole: (role) => records.get(roles[role])?.media ?? null,

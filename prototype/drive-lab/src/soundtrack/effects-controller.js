@@ -56,6 +56,7 @@ function createUnavailableController(reason = "web-audio-unavailable") {
       return getSnapshot();
     },
     detachMedia(key) { mediaElements.delete(key); return getSnapshot(); },
+    getAudioContext: () => null,
     getClockTime: () => (globalThis.performance?.now?.() ?? Date.now()) / 1000,
     setImmediateTrackGains(gains = {}) {
       for (const [key, media] of mediaElements) {
@@ -102,11 +103,13 @@ function createUnavailableController(reason = "web-audio-unavailable") {
 
 export function createSoundtrackEffectsController({
   AudioContextClass = globalThis.AudioContext || globalThis.webkitAudioContext,
+  audioContext = null,
 } = {}) {
-  if (typeof AudioContextClass !== "function") return createUnavailableController();
+  if (!audioContext && typeof AudioContextClass !== "function") return createUnavailableController();
   let context;
+  const ownsContext = !audioContext;
   try {
-    context = new AudioContextClass({ latencyHint: "interactive" });
+    context = audioContext ?? new AudioContextClass({ latencyHint: "interactive" });
   } catch (error) {
     return createUnavailableController(String(error?.message || "audio-context-failed").slice(0, 80));
   }
@@ -274,6 +277,7 @@ export function createSoundtrackEffectsController({
       if (!destroyed && context.state === "suspended") await context.resume();
       return getSnapshot();
     },
+    getAudioContext: () => context,
     getClockTime: () => context.currentTime,
     setImmediateTrackGains(gains = {}) {
       const at = context.currentTime;
@@ -305,7 +309,7 @@ export function createSoundtrackEffectsController({
       destroyed = true;
       for (const key of [...mediaSources.keys()]) controller.detachMedia(key);
       manualGraph.destroy();
-      void context.close?.();
+      if (ownsContext) void context.close?.();
       return getSnapshot();
     },
   };

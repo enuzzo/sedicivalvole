@@ -4,7 +4,10 @@ import {
   ILLOBO_CATALOG_SCHEMA,
   SOUNDTRACK_CATALOG_API_SCHEMA,
 } from "../src/soundtrack/catalog-client.js";
-import { createSoundtrackPreviewController } from "../src/soundtrack/preview-controller.js";
+import {
+  createSoundtrackPreviewController,
+  SOUNDTRACK_TRANSPORT_START_TIMEOUT_MS,
+} from "../src/soundtrack/preview-controller.js";
 
 const track = (id) => ({
   id: String(id),
@@ -40,6 +43,7 @@ class FakeMedia {
   async play() {
     this.playPositions.push(this.currentTime);
     if (this.rejectPlay) throw Object.assign(new Error("blocked"), { name: "NotAllowedError" });
+    if (this.pendingPlay) await this.pendingPlay;
     this.paused = false;
   }
 }
@@ -674,6 +678,82 @@ test("a failed incoming deck never commits target metadata or a stale QR credit"
   assert.equal(failed.attribution.targetKey, before.current.key);
   assert.deepEqual(failed.attribution.audibleKeys, [before.current.key]);
   assert.equal(failed.media.currentAudibleKey, before.current.key);
+});
+
+test("a Jamendo play request that never settles times out, rolls back, and remains retryable", async () => {
+  const timers = [];
+  const mediaByKey = new Map();
+  let releasePendingPlay;
+  const pendingPlay = new Promise((resolve) => { releasePendingPlay = resolve; });
+  const controller = createSoundtrackPreviewController({
+    fetchImpl: catalogFetch,
+    mediaFactory: (entry) => {
+      const media = new FakeMedia();
+      const instances = mediaByKey.get(entry.key) ?? [];
+      instances.push(media);
+      mediaByKey.set(entry.key, instances);
+      return media;
+    },
+    setTimer: (callback, delay) => {
+      const timer = { callback, delay, cleared: false };
+      timers.push(timer);
+      return timer;
+    },
+    clearTimer: (timer) => { timer.cleared = true; },
+  });
+  await controller.load({ autoplay: true, nowMs: 0 });
+  const before = controller.getSnapshot();
+  const targetKey = before.media.roles.next.key;
+  const blockedMedia = mediaByKey.get(targetKey).at(-1);
+  blockedMedia.pendingPlay = pendingPlay;
+
+  const moving = controller.move("next");
+  const deadline = timers.find((timer) => (
+    !timer.cleared && timer.delay === SOUNDTRACK_TRANSPORT_START_TIMEOUT_MS
+  ));
+  assert.ok(deadline, "the incoming Jamendo deck has no bounded start deadline");
+  deadline.callback();
+  const failed = await moving;
+
+  assert.equal(failed.status, "error");
+  assert.equal(failed.error, "transport-start-timeout");
+  assert.equal(failed.current.key, before.current.key);
+  assert.equal(failed.media.currentAudibleKey, before.current.key);
+  assert.notEqual(mediaByKey.get(targetKey).at(-1), blockedMedia);
+
+  releasePendingPlay();
+  await new Promise((resolve) => setImmediate(resolve));
+  assert.equal(blockedMedia.paused, true, "a discarded late deck became audible after timeout");
+
+  const retried = await controller.move("next");
+  assert.equal(retried.status, "playing");
+  assert.equal(retried.current.key, targetKey);
+  assert.equal(retried.media.currentAudibleKey, targetKey);
+});
+
+test("the preview exposes the exact effects AudioContext for one-context vehicle macros", () => {
+  const audioContext = { state: "running" };
+  const controller = createSoundtrackPreviewController({
+    fetchImpl: catalogFetch,
+    mediaFactory: () => new FakeMedia(),
+    effectsFactory: () => ({
+      attachMedia: () => {},
+      detachMedia: () => {},
+      getAudioContext: () => audioContext,
+      getClockTime: () => 0,
+      setImmediateTrackGains: () => ({ ok: true }),
+      applyTransition: () => ({ ok: true }),
+      resume: async () => {},
+      setVehicleMaster: () => {},
+      setVehicleMacros: () => {},
+      setManualEffects: () => {},
+      getSnapshot: () => ({ status: "running" }),
+      getLevel: () => 0,
+      destroy: () => {},
+    }),
+  });
+
+  assert.equal(controller.getAudioContext(), audioContext);
 });
 
 test("pause, resume, and destruction remain explicit and bounded", async () => {

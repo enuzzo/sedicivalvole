@@ -2077,7 +2077,9 @@ export function App() {
   const soundtrackController = useCallback(() => {
     if (soundtrackRef.current) return soundtrackRef.current;
     const controller = createSoundtrackPreviewController({
-      effectsFactory: createSoundtrackEffectsController,
+      effectsFactory: () => createSoundtrackEffectsController({
+        audioContext: audioRef.current?.context ?? null,
+      }),
       onState: updateSoundtrackSnapshot,
     });
     controller.setVehicleMaster(vehicleEffectsEnabled);
@@ -2700,6 +2702,11 @@ export function App() {
         triggerPulse,
         (nextEffect) => setActiveEffect(QA_EFFECT ?? nextEffect),
         handleScoreRecovery,
+        {
+          audioContext: musicId === "soundtrack"
+            ? soundtrackRef.current?.getAudioContext?.() ?? null
+            : null,
+        },
       );
       if (!audioRef.current) throw new Error("Web Audio is unavailable");
       await audioRef.current.resume();
@@ -2985,7 +2992,13 @@ export function App() {
 
   const moveTransport = useCallback(async (direction) => {
     if (sessionMusicModeRef.current === "soundtrack") {
-      await soundtrackRef.current?.move(direction);
+      const result = await soundtrackRef.current?.move(direction);
+      logDiagnosticEvent("soundtrack.transport.moved", {
+        direction,
+        status: result?.status ?? "unavailable",
+        error: result?.error ?? null,
+        currentKey: result?.current?.key ?? null,
+      });
       return;
     }
     const scores = readyScoreGenres();
@@ -2993,7 +3006,7 @@ export function App() {
     const offset = direction === "previous" ? -1 : 1;
     const nextIndex = (currentIndex + offset + scores.length) % scores.length;
     await selectScore(scores[nextIndex].id);
-  }, [selectScore]);
+  }, [logDiagnosticEvent, selectScore]);
 
   const toggleTransport = useCallback(async (forcePlaying = null) => {
     if (sessionMusicModeRef.current === "soundtrack") {
@@ -3577,6 +3590,20 @@ export function App() {
       state: audioRef.current?.context.state ?? diagnostics.audio.state,
       level: Math.round(audioLevelRef.current * 1000) / 1000,
       latencyHistory: summarizeAudioLatencyTelemetry(audioLatencyTelemetryRef.current),
+      soundtrack: sessionMusicModeRef.current === "soundtrack" ? (() => {
+        const soundtrack = soundtrackRef.current?.getSnapshot?.();
+        return {
+          status: soundtrack?.status ?? "unavailable",
+          error: soundtrack?.error ?? null,
+          currentKey: soundtrack?.current?.key ?? null,
+          contextTopology: audioRef.current?.context
+            && audioRef.current.context === soundtrackRef.current?.getAudioContext?.()
+            ? "shared"
+            : "separate-or-unavailable",
+          media: soundtrack?.media ?? null,
+          effects: soundtrack?.effects ?? null,
+        };
+      })() : null,
     },
     gps: {
       state: gpsStateRef.current,

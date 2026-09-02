@@ -13,8 +13,10 @@ import {
   scheduleSoundtrackTransition,
   settleSoundtrackTransition,
 } from "./transition-model.js";
+import { withReadinessTimeout } from "../promise-timeout.js";
 
 export const SOUNDTRACK_PREVIEW_SCHEMA = "sedicivalvole.soundtrack-preview.v1";
+export const SOUNDTRACK_TRANSPORT_START_TIMEOUT_MS = 10000;
 
 const safeCredit = (entry) => entry ? Object.freeze({
   key: entry.key,
@@ -37,6 +39,7 @@ export function createSoundtrackPreviewController({
   effectsFactory = () => ({
     attachMedia: () => {},
     detachMedia: () => {},
+    getAudioContext: () => null,
     getClockTime: () => (globalThis.performance?.now?.() ?? Date.now()) / 1000,
     setImmediateTrackGains: () => Object.freeze({ ok: true, mode: "bypassed" }),
     applyTransition: () => Object.freeze({ ok: true, mode: "bypassed" }),
@@ -52,6 +55,7 @@ export function createSoundtrackPreviewController({
   random = Math.random,
   setTimer = globalThis.setTimeout?.bind(globalThis),
   clearTimer = globalThis.clearTimeout?.bind(globalThis),
+  transportStartTimeoutMs = SOUNDTRACK_TRANSPORT_START_TIMEOUT_MS,
 } = {}) {
   let destroyed = false;
   let requestRevision = 0;
@@ -65,6 +69,18 @@ export function createSoundtrackPreviewController({
   let transitionState = null;
   const transitionTimers = new Set();
   const effects = effectsFactory();
+
+  const transportError = (caught) => caught?.code === "READINESS_TIMEOUT"
+    ? "transport-start-timeout"
+    : String(caught?.message || caught || "audio-resume-failed").slice(0, 80);
+
+  const awaitTransportStart = (promise, { onTimeout } = {}) => withReadinessTimeout(promise, {
+    label: "Soundtrack transport start",
+    timeoutMs: transportStartTimeoutMs,
+    schedule: setTimer,
+    cancel: clearTimer,
+    onTimeout,
+  });
 
   const catalogCanServeSelection = (selection, nowMs) => {
     const currentSelection = catalogResult?.selection;
@@ -214,12 +230,21 @@ export function createSoundtrackPreviewController({
 
     let started;
     try {
-      [started] = await Promise.all([deck.playCurrent(), effects.resume()]);
+      [started] = await awaitTransportStart(
+        Promise.all([deck.playCurrent(), effects.resume()]),
+        {
+          onTimeout: () => {
+            deck.pauseExcept([]);
+            deck.discardKeys([targetKey]);
+            mediaSnapshot = deck.syncQueue(queueState);
+          },
+        },
+      );
     } catch (caught) {
       if (destroyed || revision !== requestRevision) return snapshot();
       mediaSnapshot = deck.pauseExcept([]);
       status = "error";
-      error = String(caught?.message || caught || "audio-resume-failed").slice(0, 80);
+      error = transportError(caught);
       return emit();
     }
     if (destroyed || revision !== requestRevision) return snapshot();
@@ -241,12 +266,21 @@ export function createSoundtrackPreviewController({
     }
     let result;
     try {
-      [result] = await Promise.all([deck.playCurrent(), effects.resume()]);
+      [result] = await awaitTransportStart(
+        Promise.all([deck.playCurrent(), effects.resume()]),
+        {
+          onTimeout: () => {
+            deck.pauseExcept([]);
+            deck.discardKeys(currentKey ? [currentKey] : []);
+            if (queueState) mediaSnapshot = deck.syncQueue(queueState);
+          },
+        },
+      );
     } catch (caught) {
       if (destroyed || revision !== requestRevision) return snapshot();
       mediaSnapshot = deck.pauseExcept([]);
       status = "error";
-      error = String(caught?.message || caught || "audio-resume-failed").slice(0, 80);
+      error = transportError(caught);
       return emit();
     }
     if (destroyed || revision !== requestRevision) return snapshot();
@@ -279,9 +313,10 @@ export function createSoundtrackPreviewController({
     clearTransitionTimers();
     if (destroyed || revision !== requestRevision) return snapshot();
     const previousQueueState = queueState;
-    const restorePreviousQueue = () => {
+    const restorePreviousQueue = ({ discardTarget = false } = {}) => {
       const previousKey = previousQueueState?.slots?.current?.key;
       if (!previousKey) return;
+      if (discardTarget && targetKey && targetKey !== previousKey) deck.discardKeys([targetKey]);
       transitionState = createSoundtrackTransitionState(previousKey, clockTime());
       effects.setImmediateTrackGains?.({ [previousKey]: 1 });
       mediaSnapshot = deck.pauseExcept([previousKey]);
@@ -314,12 +349,15 @@ export function createSoundtrackPreviewController({
     const resumeRequest = effects.resume();
     let started;
     try {
-      [started] = await Promise.all([playRequest, resumeRequest]);
+      [started] = await awaitTransportStart(
+        Promise.all([playRequest, resumeRequest]),
+        { onTimeout: () => restorePreviousQueue({ discardTarget: true }) },
+      );
     } catch (caught) {
       if (destroyed || revision !== requestRevision) return snapshot();
       restorePreviousQueue();
       status = "error";
-      error = String(caught?.message || caught || "audio-resume-failed").slice(0, 80);
+      error = transportError(caught);
       return emit();
     }
     if (destroyed || revision !== requestRevision) return snapshot();
@@ -525,6 +563,7 @@ export function createSoundtrackPreviewController({
     setVehicleMaster(value) { effects.setVehicleMaster(value); return emit(); },
     setVehicleEffects(values) { effects.setVehicleMacros(values); return emit(); },
     setManualEffects(values) { effects.setManualEffects(values); return emit(); },
+    getAudioContext: () => effects.getAudioContext?.() ?? null,
     getLevel: () => effects.getLevel?.() ?? 0,
     destroy,
     getSnapshot: snapshot,

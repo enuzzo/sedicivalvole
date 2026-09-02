@@ -87,11 +87,14 @@ const ACCELERATION_PARAM_SMOOTH_SECONDS = 0.015;
 const RATE_STALE_MS = VEHICLE_RATE_STALE_MS;
 export const AUDIO_WORKLET_READY_TIMEOUT_MS = 8000;
 
-export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
+export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
+  audioContext = null,
+} = {}) {
   const AudioContext = window.AudioContext || window.webkitAudioContext;
-  if (!AudioContext) return null;
+  if (!audioContext && !AudioContext) return null;
 
-  const context = new AudioContext({ latencyHint: "interactive" });
+  const ownsContext = !audioContext;
+  const context = audioContext ?? new AudioContext({ latencyHint: "interactive" });
   const masterGain = context.createGain();
   const performanceBus = context.createGain();
   const accelerationScoop = context.createBiquadFilter();
@@ -922,7 +925,7 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery) {
       manualEffectsGraph.destroy();
       masterGain.disconnect();
       meter.disconnect();
-      if (context.state !== "closed") context.close().catch(() => {});
+      if (ownsContext && context.state !== "closed") context.close().catch(() => {});
     },
   };
 }

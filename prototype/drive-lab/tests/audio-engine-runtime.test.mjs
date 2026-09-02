@@ -331,6 +331,15 @@ test("destroy invalidates a pending score load without constructing a late fallb
   });
 });
 
+test("Soundtrack can lend its AudioContext to vehicle macro detection without losing ownership", async () => {
+  await withFakeAudioEnvironment({}, async ({ createAudioEngine, context }) => {
+    const engine = createAudioEngine(null, null, null, { audioContext: context });
+    assert.equal(engine.context, context);
+    engine.destroy();
+    assert.equal(context.state, "running", "the macro engine closed Soundtrack's shared AudioContext");
+  });
+});
+
 test("a hung FRACTURE module reaches the JUNCTION safety bed at the bounded deadline", async () => {
   const score = deferred();
   const junction = fakeJunction([undefined]);

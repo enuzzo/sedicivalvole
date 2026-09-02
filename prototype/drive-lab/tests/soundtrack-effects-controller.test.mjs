@@ -52,6 +52,16 @@ test("vehicle effects remain silent until the fresh-session master is enabled", 
   assert.equal(on.bloom, 1);
 });
 
+test("Soundtrack and the vehicle macro engine are wired to share one AudioContext", () => {
+  const effectsSource = readFileSync(new URL("../src/soundtrack/effects-controller.js", import.meta.url), "utf8");
+  const appSource = readFileSync(new URL("../src/App.jsx", import.meta.url), "utf8");
+  assert.match(effectsSource, /audioContext = null/);
+  assert.match(effectsSource, /getAudioContext: \(\) => context/);
+  assert.match(effectsSource, /if \(ownsContext\) void context\.close/);
+  assert.match(appSource, /audioContext: audioRef\.current\?\.context \?\? null/);
+  assert.match(appSource, /soundtrackRef\.current\?\.getAudioContext\?\.\(\) \?\? null/);
+});
+
 test("UNDERWATER is already audible at the visual engage threshold", () => {
   const threshold = soundtrackEffectParameters({
     vehicleMaster: true,
