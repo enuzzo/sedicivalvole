@@ -14,6 +14,7 @@ import {
   atlasCardinalDirection,
   atlasContinuousHeading,
   atlasDriveLabMetrics,
+  atlasHeadingDistribution,
   atlasEffectProfile,
   atlasKeyboardShortcutAvailable,
   atlasJourneyDistanceMetres,
@@ -60,6 +61,7 @@ function formatAtlasDistance(distanceM) {
 
 function AtlasDriveLabCanvas({ samples, metrics, statistics, colors, terrain, rangeLabel }) {
   const canvasRef = useRef(null);
+  const headingDistribution = useMemo(() => atlasHeadingDistribution(samples), [samples]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -75,7 +77,7 @@ function AtlasDriveLabCanvas({ samples, metrics, statistics, colors, terrain, ra
       context.setTransform(ratio, 0, 0, ratio, 0, 0);
       context.clearRect(0, 0, bounds.width, bounds.height);
       const paper = "rgba(238, 234, 224, .92)";
-      const muted = "rgba(238, 234, 224, .46)";
+      const muted = "rgba(238, 234, 224, .68)";
       const line = "rgba(238, 234, 224, .13)";
       const accent = colors.accent;
       const secondary = colors.secondary;
@@ -94,12 +96,12 @@ function AtlasDriveLabCanvas({ samples, metrics, statistics, colors, terrain, ra
         context.lineTo(bounds.width - .5, y + .5);
         context.stroke();
       };
-      const label = (value, x, y, color = accent) => text(value, x, y, "700 8px ui-monospace, monospace", color);
+      const label = (value, x, y) => text(value, x, y, "700 9px ui-monospace, monospace", paper);
       const percent = (value) => `${Math.round(Math.max(0, Math.min(1, value)) * 100)}%`;
       const dotLegend = (value, x, y, color) => {
         context.fillStyle = color;
-        context.fillRect(x, y - 5, 7, 2);
-        text(value, x + 10, y, "600 6.5px ui-monospace, monospace", muted);
+        context.fillRect(x, y - 6, 8, 3);
+        text(value, x + 11, y, "650 7.5px ui-monospace, monospace", muted);
       };
       const timeLabels = rangeLabel === "1 H"
         ? ["−1 H", "−40", "−20", "NOW"]
@@ -109,7 +111,7 @@ function AtlasDriveLabCanvas({ samples, metrics, statistics, colors, terrain, ra
       const timeAxis = (y, left, right) => {
         timeLabels.forEach((value, index) => {
           const x = left + index / (timeLabels.length - 1) * (right - left);
-          text(value, x, y, "600 6px ui-monospace, monospace", muted, index === 0 ? "left" : index === timeLabels.length - 1 ? "right" : "center");
+          text(value, x, y, "600 7px ui-monospace, monospace", muted, index === 0 ? "left" : index === timeLabels.length - 1 ? "right" : "center");
         });
       };
       const smoothPath = (points) => {
@@ -123,19 +125,18 @@ function AtlasDriveLabCanvas({ samples, metrics, statistics, colors, terrain, ra
         if (points.length > 1) context.lineTo(points.at(-1).x, points.at(-1).y);
       };
 
-      const acceleration = { top: 0, height: 82 };
-      const speedBands = { top: 82, height: 60 };
-      const heading = { top: 142, height: 72 };
-      const elevation = { top: 214, height: 94 };
-      const motion = { top: 308, height: Math.max(48, bounds.height - 308) };
-      const plotLeft = 30;
+      const acceleration = { top: 0, height: 88 };
+      const speedBands = { top: 88, height: 66 };
+      const instruments = { top: 154, height: 146 };
+      const motion = { top: 300, height: Math.max(58, bounds.height - 300) };
+      const plotLeft = 36;
       const plotRight = bounds.width - 8;
 
       rule(acceleration.top);
       label("ACCEL / BRAKING BALANCE", 0, acceleration.top + 12);
-      text("KM/H/S", bounds.width, acceleration.top + 12, "600 6px ui-monospace, monospace", muted, "right");
-      dotLegend(`ACCEL ${percent(metrics.accelerationShare)}`, 0, acceleration.top + 25, accent);
-      dotLegend(`BRAKE ${percent(metrics.brakingShare)}`, 91, acceleration.top + 25, secondary);
+      text("KM/H/S", bounds.width, acceleration.top + 12, "600 7px ui-monospace, monospace", muted, "right");
+      dotLegend(`ACCEL ${percent(metrics.accelerationShare)}`, 0, acceleration.top + 27, accent);
+      dotLegend(`BRAKE ${percent(metrics.brakingShare)}`, 104, acceleration.top + 27, secondary);
       const accelerationSamples = samples.filter((sample) => (
         Number.isFinite(sample.accelerationGainKmh) || Number.isFinite(sample.brakingLossKmh)
       ));
@@ -144,10 +145,10 @@ function AtlasDriveLabCanvas({ samples, metrics, statistics, colors, terrain, ra
         / Math.max(1, ATLAS_JOURNEY_SAMPLE_INTERVAL_MS / 1000)
       ));
       const accelerationMaximum = Math.max(1, ...accelerationValues.map((value) => Math.abs(value)));
-      const accelerationMidline = acceleration.top + 49;
-      text(`+${accelerationMaximum.toFixed(1)}`, 0, acceleration.top + 36, "600 6px ui-monospace, monospace", muted);
-      text("0", 0, accelerationMidline + 2, "600 6px ui-monospace, monospace", muted);
-      text(`−${accelerationMaximum.toFixed(1)}`, 0, acceleration.top + 67, "600 6px ui-monospace, monospace", muted);
+      const accelerationMidline = acceleration.top + 53;
+      text(`+${accelerationMaximum.toFixed(1)}`, 0, acceleration.top + 41, "600 7px ui-monospace, monospace", muted);
+      text("0", 0, accelerationMidline + 3, "600 7px ui-monospace, monospace", muted);
+      text(`−${accelerationMaximum.toFixed(1)}`, 0, acceleration.top + 72, "600 7px ui-monospace, monospace", muted);
       context.strokeStyle = "rgba(238,234,224,.2)";
       context.beginPath();
       context.moveTo(plotLeft, accelerationMidline + .5);
@@ -160,11 +161,11 @@ function AtlasDriveLabCanvas({ samples, metrics, statistics, colors, terrain, ra
         }));
         const positivePoints = accelerationValues.map((value, index) => ({
           x: zeroPoints[index].x,
-          y: accelerationMidline - Math.max(0, value) / accelerationMaximum * 15,
+          y: accelerationMidline - Math.max(0, value) / accelerationMaximum * 16,
         }));
         const negativePoints = accelerationValues.map((value, index) => ({
           x: zeroPoints[index].x,
-          y: accelerationMidline + Math.max(0, -value) / accelerationMaximum * 15,
+          y: accelerationMidline + Math.max(0, -value) / accelerationMaximum * 16,
         }));
         for (const [points, color, direction] of [[positivePoints, accent, -1], [negativePoints, secondary, 1]]) {
           context.beginPath();
@@ -183,79 +184,128 @@ function AtlasDriveLabCanvas({ samples, metrics, statistics, colors, terrain, ra
           smoothPath(points);
           context.stroke();
         }
+      } else {
+        text("NO CHANGE", (plotLeft + plotRight) / 2, accelerationMidline - 6, "700 7.5px ui-monospace, monospace", muted, "center");
       }
       timeAxis(acceleration.top + acceleration.height - 4, plotLeft, plotRight);
 
       rule(speedBands.top);
       label("SPEED BAND DISTRIBUTION", 0, speedBands.top + 13);
-      const bandX = 0;
-      const bandY = speedBands.top + 22;
-      const bandGap = 2;
-      const bandWidth = (bounds.width - bandGap * 4) / 5;
+      const bandY = speedBands.top + 23;
+      context.fillStyle = "rgba(238,234,224,.14)";
+      context.fillRect(0, bandY, bounds.width, 11);
+      let bandOffset = 0;
       metrics.speedBands.forEach((band, index) => {
-        const x = bandX + index * (bandWidth + bandGap);
+        const segmentWidth = bounds.width * band.share;
         context.fillStyle = index === 4 ? secondary : accent;
-        context.globalAlpha = .32 + Math.min(.62, band.share * 1.8);
-        context.fillRect(x, bandY, bandWidth, 8);
+        context.globalAlpha = .44 + index * .09;
+        context.fillRect(bandOffset, bandY, segmentWidth, 11);
         context.globalAlpha = 1;
-        text(band.label, x + bandWidth / 2, bandY + 19, "600 6px ui-monospace, monospace", muted, "center");
-        text(percent(band.share), x + bandWidth / 2, bandY + 31, "700 8px ui-monospace, monospace", band.share ? (index === 4 ? secondary : accent) : muted, "center");
+        bandOffset += segmentWidth;
+        const cellWidth = bounds.width / metrics.speedBands.length;
+        const centre = cellWidth * (index + .5);
+        text(band.label, centre, bandY + 24, "600 7px ui-monospace, monospace", muted, "center");
+        text(percent(band.share), centre, bandY + 37, "750 9px ui-monospace, monospace", band.share ? (index === 4 ? secondary : accent) : muted, "center");
       });
 
-      rule(heading.top);
-      label("HEADING HISTORY", 0, heading.top + 13);
-      dotLegend("BEARING °", 94, heading.top + 13, accent);
-      const headings = samples.filter((sample) => Number.isFinite(sample.headingDegrees));
-      const continuous = [];
-      headings.forEach((sample) => continuous.push(atlasContinuousHeading(continuous.at(-1), sample.headingDegrees)));
-      if (continuous.length >= 2) {
-        const minimum = Math.floor(Math.min(...continuous) / 45) * 45;
-        const maximum = Math.max(minimum + 90, Math.ceil(Math.max(...continuous) / 45) * 45);
-        const span = maximum - minimum;
-        const headingTop = heading.top + 21;
-        const headingBottom = heading.top + 53;
-        const headingPoints = continuous.map((value, index) => ({
-          x: plotLeft + index / Math.max(1, continuous.length - 1) * (plotRight - plotLeft),
-          y: headingBottom - (value - minimum) / span * (headingBottom - headingTop),
-        }));
-        const normalizedMaximum = ((maximum % 360) + 360) % 360;
-        const normalizedMinimum = ((minimum % 360) + 360) % 360;
-        text(`${atlasCardinalDirection(normalizedMaximum)} ${Math.round(normalizedMaximum)}°`, 0, headingTop + 2, "600 6px ui-monospace, monospace", muted);
-        text(`${atlasCardinalDirection(normalizedMinimum)} ${Math.round(normalizedMinimum)}°`, 0, headingBottom + 2, "600 6px ui-monospace, monospace", muted);
-        context.strokeStyle = accent;
+      rule(instruments.top);
+      const splitX = Math.min(137, bounds.width * .5);
+      context.strokeStyle = line;
+      context.beginPath();
+      context.moveTo(splitX + .5, instruments.top + 8);
+      context.lineTo(splitX + .5, instruments.top + instruments.height - 8);
+      context.stroke();
+
+      label("DIRECTION HISTORY", 0, instruments.top + 13);
+      text(`${headingDistribution.sectorSizeDegrees}° SECTORS`, 0, instruments.top + 25, "600 7px ui-monospace, monospace", muted);
+      const roseCentre = { x: 63, y: instruments.top + 83 };
+      const roseInnerRadius = 10;
+      const roseRingStep = 7;
+      const roseOuterRadius = roseInnerRadius + headingDistribution.tileLimit * roseRingStep;
+      context.strokeStyle = "rgba(238,234,224,.14)";
+      context.lineWidth = 1;
+      for (let ring = 1; ring <= headingDistribution.tileLimit; ring += 1) {
+        context.beginPath();
+        context.arc(roseCentre.x, roseCentre.y, roseInnerRadius + ring * roseRingStep, 0, Math.PI * 2);
+        context.stroke();
+      }
+      const sectorAngle = Math.PI * 2 / headingDistribution.sectors.length;
+      headingDistribution.sectors.forEach((sector) => {
+        const start = sector.index * sectorAngle - Math.PI / 2 - sectorAngle / 2;
+        const end = start + sectorAngle;
+        for (let tile = 0; tile < sector.tileCount; tile += 1) {
+          const inner = roseInnerRadius + tile * roseRingStep + 1;
+          const outer = inner + roseRingStep - 2;
+          context.beginPath();
+          context.arc(roseCentre.x, roseCentre.y, outer, start + .035, end - .035);
+          context.arc(roseCentre.x, roseCentre.y, inner, end - .035, start + .035, true);
+          context.closePath();
+          context.fillStyle = accent;
+          context.globalAlpha = .4 + tile / Math.max(1, headingDistribution.tileLimit - 1) * .5;
+          context.fill();
+          context.globalAlpha = 1;
+        }
+        const angle = sector.index * sectorAngle - Math.PI / 2;
+        text(
+          sector.label,
+          roseCentre.x + Math.cos(angle) * (roseOuterRadius + 9),
+          roseCentre.y + Math.sin(angle) * (roseOuterRadius + 9) + 3,
+          "700 7px ui-monospace, monospace",
+          muted,
+          "center",
+        );
+      });
+      const currentHeading = [...samples].reverse().find((sample) => Number.isFinite(sample.headingDegrees))?.headingDegrees;
+      if (Number.isFinite(currentHeading)) {
+        const currentAngle = currentHeading * Math.PI / 180 - Math.PI / 2;
+        context.strokeStyle = paper;
         context.lineWidth = 1.5;
         context.beginPath();
-        smoothPath(headingPoints);
+        context.moveTo(roseCentre.x, roseCentre.y);
+        context.lineTo(
+          roseCentre.x + Math.cos(currentAngle) * (roseOuterRadius - 2),
+          roseCentre.y + Math.sin(currentAngle) * (roseOuterRadius - 2),
+        );
         context.stroke();
-      } else {
-        text("COLLECTING DIRECTION SAMPLES", plotLeft, heading.top + 42, "600 6px ui-monospace, monospace", muted);
+        context.fillStyle = paper;
+        context.beginPath();
+        context.arc(roseCentre.x, roseCentre.y, 2.5, 0, Math.PI * 2);
+        context.fill();
       }
-      timeAxis(heading.top + heading.height - 4, plotLeft, plotRight);
+      const dominantHeading = headingDistribution.dominant;
+      text(
+        dominantHeading ? `${dominantHeading.label} · ${percent(dominantHeading.share)} DOMINANT` : "COLLECTING HEADING",
+        roseCentre.x,
+        instruments.top + 140,
+        "700 7.5px ui-monospace, monospace",
+        dominantHeading ? accent : muted,
+        "center",
+      );
 
-      rule(elevation.top);
-      label("ELEVATION", 0, elevation.top + 13);
-      dotLegend("GROUND M", 73, elevation.top + 13, secondary);
+      const elevationLeft = splitX + 10;
+      const elevationRight = bounds.width;
+      label("ELEVATION", elevationLeft, instruments.top + 13);
       const elevationValues = samples.filter((sample) => Number.isFinite(sample.groundElevationM));
       const elevationMinimum = statistics.minimumGroundElevationM;
       const elevationMaximum = statistics.maximumGroundElevationM;
       const elevationSummary = Number.isFinite(elevationMinimum) && Number.isFinite(elevationMaximum)
         ? `${Math.round(elevationMinimum)}–${Math.round(elevationMaximum)} M`
         : terrain.status === "loading" ? "LOADING" : "UNAVAILABLE";
-      text(elevationSummary, bounds.width, elevation.top + 13, "600 6px ui-monospace, monospace", terrain.status === "live" ? secondary : muted, "right");
+      text(elevationSummary, elevationRight, instruments.top + 26, "700 8px ui-monospace, monospace", terrain.status === "live" ? secondary : muted, "right");
       if (elevationValues.length >= 2) {
         const minimum = Math.min(...elevationValues.map((sample) => sample.groundElevationM));
         const maximum = Math.max(...elevationValues.map((sample) => sample.groundElevationM));
         const span = Math.max(4, maximum - minimum);
         const timeMinimum = elevationValues[0].capturedAtMs;
         const timeMaximum = Math.max(timeMinimum + 1, elevationValues.at(-1).capturedAtMs);
-        const elevationTopY = elevation.top + 25;
-        const elevationBottomY = elevation.top + 70;
+        const elevationTopY = instruments.top + 43;
+        const elevationBottomY = instruments.top + 117;
         const elevationPoints = elevationValues.map((sample) => ({
-          x: plotLeft + (sample.capturedAtMs - timeMinimum) / (timeMaximum - timeMinimum) * (plotRight - plotLeft),
+          x: elevationLeft + (sample.capturedAtMs - timeMinimum) / (timeMaximum - timeMinimum) * (elevationRight - elevationLeft),
           y: elevationBottomY - (sample.groundElevationM - minimum) / span * (elevationBottomY - elevationTopY),
         }));
-        text(`${Math.round(maximum)} M`, 0, elevationTopY + 2, "600 6px ui-monospace, monospace", muted);
-        text(`${Math.round(minimum)} M`, 0, elevationBottomY + 2, "600 6px ui-monospace, monospace", muted);
+        text(`${Math.round(maximum)} M`, elevationLeft, elevationTopY + 2, "600 7px ui-monospace, monospace", muted);
+        text(`${Math.round(minimum)} M`, elevationLeft, elevationBottomY - 3, "600 7px ui-monospace, monospace", muted);
         context.beginPath();
         smoothPath(elevationPoints);
         context.lineTo(elevationPoints.at(-1).x, elevationBottomY);
@@ -272,28 +322,36 @@ function AtlasDriveLabCanvas({ samples, metrics, statistics, colors, terrain, ra
         smoothPath(elevationPoints);
         context.stroke();
       } else {
-        text("COLLECTING TERRAIN SAMPLES", plotLeft, elevation.top + 49, "600 6px ui-monospace, monospace", muted);
+        text("COLLECTING", elevationLeft, instruments.top + 72, "700 8px ui-monospace, monospace", muted);
+        text("TERRAIN SAMPLES", elevationLeft, instruments.top + 86, "600 7px ui-monospace, monospace", muted);
       }
-      timeAxis(elevation.top + elevation.height - 5, plotLeft, plotRight);
+      timeAxis(instruments.top + instruments.height - 5, elevationLeft, elevationRight);
 
       rule(motion.top);
       label("MOVING VS STOPPED", 0, motion.top + 13);
-      dotLegend(`MOVING ${percent(metrics.movingShare)}`, 0, motion.top + 27, accent);
-      dotLegend(`STOPPED ${percent(metrics.stoppedShare)}`, 102, motion.top + 27, muted);
-      const motionY = motion.top + 35;
+      text(`MOVING ${percent(metrics.movingShare)}`, 0, motion.top + 29, "750 9px ui-monospace, monospace", accent);
+      text(`STOPPED ${percent(metrics.stoppedShare)}`, bounds.width, motion.top + 29, "750 9px ui-monospace, monospace", muted, "right");
+      const motionY = motion.top + 36;
       context.fillStyle = "rgba(238,234,224,.18)";
-      context.fillRect(0, motionY, bounds.width, 8);
+      context.fillRect(0, motionY, bounds.width, 11);
       context.fillStyle = accent;
-      context.fillRect(0, motionY, bounds.width * metrics.movingShare, 8);
-      text("% OF SELECTED RANGE", bounds.width, Math.min(bounds.height - 2, motionY + 19), "600 6px ui-monospace, monospace", muted, "right");
+      context.fillRect(0, motionY, bounds.width * metrics.movingShare, 11);
+      text("SHARE OF SELECTED RANGE", bounds.width, Math.min(bounds.height - 2, motionY + 24), "600 7px ui-monospace, monospace", muted, "right");
     };
     draw();
     const observer = new ResizeObserver(draw);
     observer.observe(canvas);
     return () => observer.disconnect();
-  }, [colors, metrics, rangeLabel, samples, statistics, terrain.status]);
+  }, [colors, headingDistribution, metrics, rangeLabel, samples, statistics, terrain.status]);
 
-  const summary = `Acceleration ${Math.round(metrics.accelerationShare * 100)} percent, braking ${Math.round(metrics.brakingShare * 100)} percent. Moving ${Math.round(metrics.movingShare * 100)} percent, stopped ${Math.round(metrics.stoppedShare * 100)} percent. Elevation ${Number.isFinite(statistics.minimumGroundElevationM) ? `${Math.round(statistics.minimumGroundElevationM)} to ${Math.round(statistics.maximumGroundElevationM)} metres` : "not yet available"}.`;
+  const dominantSpeedBand = metrics.speedBands.reduce(
+    (best, band) => (band.share > best.share ? band : best),
+    metrics.speedBands[0],
+  );
+  const headingSummary = headingDistribution.dominant
+    ? `Dominant moving direction ${headingDistribution.dominant.label}, ${Math.round(headingDistribution.dominant.share * 100)} percent, across ${headingDistribution.sectorSizeDegrees} degree sectors.`
+    : "Moving direction is still being collected.";
+  const summary = `Acceleration ${Math.round(metrics.accelerationShare * 100)} percent, braking ${Math.round(metrics.brakingShare * 100)} percent. Most used speed band ${dominantSpeedBand.label} kilometres per hour, ${Math.round(dominantSpeedBand.share * 100)} percent. ${headingSummary} Moving ${Math.round(metrics.movingShare * 100)} percent, stopped ${Math.round(metrics.stoppedShare * 100)} percent. Elevation ${Number.isFinite(statistics.minimumGroundElevationM) ? `${Math.round(statistics.minimumGroundElevationM)} to ${Math.round(statistics.maximumGroundElevationM)} metres` : "not yet available"}.`;
 
   return (
     <canvas className="atlas-drive-lab-canvas" ref={canvasRef} role="img" aria-label={summary} />
@@ -350,7 +408,6 @@ function AtlasDriveLabPanel({
     <aside
       id="atlas-passenger-panel"
       className="atlas-panel"
-      aria-live="polite"
       aria-hidden={collapsed}
       inert={collapsed ? true : undefined}
     >

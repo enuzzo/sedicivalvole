@@ -9,6 +9,8 @@ import {
   appendAtlasTravelPoint,
   ATLAS_CARDINAL_DIRECTIONS,
   ATLAS_GPS_PRECISE_ACCURACY_M,
+  ATLAS_HEADING_SECTOR_COUNT,
+  ATLAS_HEADING_TILE_LIMIT,
   ATLAS_JOURNEY_HISTORY_LIMIT,
   ATLAS_JOURNEY_SAMPLE_INTERVAL_MS,
   ATLAS_HISTORY_RANGES,
@@ -29,6 +31,7 @@ import {
   atlasDriveLabMetrics,
   atlasEffectProfile,
   atlasGpsPresentation,
+  atlasHeadingDistribution,
   atlasKeyboardShortcutAvailable,
   atlasJourneyDistanceMetres,
   atlasJourneySamplesForRange,
@@ -517,17 +520,41 @@ test("Atlas interpolates cyclic values by the short route and never cuts across 
 test("Atlas Drive Lab fits its selected telemetry hierarchy at the Tesla viewport", () => {
   assert.match(styles, /\.atlas-field \{[\s\S]*?--atlas-panel-width: 300px;/);
   assert.match(styles, /\.atlas-panel \{[\s\S]*?width: var\(--atlas-panel-width\);[\s\S]*?padding: 0;/);
-  assert.match(styles, /\.atlas-drive-summary \{[\s\S]*?grid-template-columns: 1\.05fr 1fr 1fr 1fr;/);
-  assert.match(styles, /\.atlas-drive-lab-canvas \{[\s\S]*?width: 100%;[\s\S]*?height: 368px;/);
+  assert.match(styles, /\.atlas-drive-summary \{[\s\S]*?grid-template-columns: 1\.15fr 1fr 1fr 1\.15fr;/);
+  assert.match(styles, /\.atlas-drive-lab-canvas \{[\s\S]*?width: 100%;[\s\S]*?height: 358px;/);
   assert.match(atlasSource, /appendAtlasJourneySample/);
   assert.match(atlasSource, /atlasJourneyDistanceMetres\(travelPointsRef\.current\)/);
-  for (const label of ["ACCEL / BRAKING BALANCE", "SPEED BAND DISTRIBUTION", "HEADING HISTORY", "MOVING VS STOPPED", "ELEVATION"]) {
+  for (const label of ["ACCEL / BRAKING BALANCE", "SPEED BAND DISTRIBUTION", "DIRECTION HISTORY", "MOVING VS STOPPED", "ELEVATION"]) {
     assert.match(atlasSource, new RegExp(label.replace("/", "\\/")));
   }
   assert.match(atlasSource, /quadraticCurveTo/);
-  assert.match(atlasSource, /BEARING °/);
-  assert.match(atlasSource, /GROUND M/);
-  assert.match(atlasSource, /% OF SELECTED RANGE/);
+  assert.match(atlasSource, /headingDistribution\.sectors\.forEach/);
+  assert.match(atlasSource, /context\.arc\(roseCentre\.x/);
+  assert.match(atlasSource, /° SECTORS/);
+  assert.match(atlasSource, /SHARE OF SELECTED RANGE/);
+  assert.doesNotMatch(atlasSource, /aria-live="polite"/);
+});
+
+test("Atlas Direction History preserves weighted moving headings as radial tiles", () => {
+  assert.equal(ATLAS_HEADING_SECTOR_COUNT, 8);
+  assert.equal(ATLAS_HEADING_TILE_LIMIT, 5);
+  const distribution = atlasHeadingDistribution([
+    { speedKmh: 18, headingDegrees: 359 },
+    { speedKmh: 22, headingDegrees: 1 },
+    { speedKmh: 30, headingDegrees: 47 },
+    { speedKmh: 0, headingDegrees: 180 },
+    { headingSectorCounts: [3, 0, 0, 0, 0, 0, 0, 1] },
+  ]);
+  assert.equal(distribution.sectorSizeDegrees, 45);
+  assert.equal(distribution.total, 7, "stopped headings must not influence direction history");
+  assert.equal(distribution.dominant.label, "N");
+  assert.equal(distribution.dominant.count, 5);
+  assert.equal(distribution.dominant.tileCount, 5);
+  assert.equal(distribution.sectors[1].label, "NE");
+  assert.equal(distribution.sectors[1].count, 1);
+  assert.equal(distribution.sectors[7].count, 1);
+  assert.equal(distribution.sectors[4].count, 0);
+  assert.equal(atlasHeadingDistribution([{ speedKmh: 0, headingDegrees: 90 }]).dominant, null);
 });
 
 test("Atlas grants touch and desktop exploration for six seconds, then returns to fresh automatic camera", () => {

@@ -20,6 +20,8 @@ export const ATLAS_JOURNEY_HISTORY_LIMIT = 1800;
 export const ATLAS_SESSION_HISTORY_LIMIT = 720;
 export const ATLAS_MOVING_SPEED_THRESHOLD_KMH = 2;
 export const ATLAS_MOTION_DELTA_THRESHOLD_KMH = 1;
+export const ATLAS_HEADING_SECTOR_COUNT = 8;
+export const ATLAS_HEADING_TILE_LIMIT = 5;
 export const ATLAS_SPEED_BANDS = Object.freeze([
   Object.freeze({ id: "urban", label: "0–30", minimumKmh: 0, maximumKmh: 30 }),
   Object.freeze({ id: "city", label: "30–60", minimumKmh: 30, maximumKmh: 60 }),
@@ -163,6 +165,17 @@ function atlasSessionSample(sample) {
     ? normalizeAtlasAngle(sample.headingDegrees)
     : null;
   const headingRadians = Number.isFinite(headingDegrees) ? headingDegrees * Math.PI / 180 : null;
+  const headingSectorCounts = Array.from({ length: ATLAS_HEADING_SECTOR_COUNT }, () => 0);
+  if (
+    Number.isFinite(headingDegrees)
+    && Number.isFinite(speedKmh)
+    && speedKmh >= ATLAS_MOVING_SPEED_THRESHOLD_KMH
+  ) {
+    const sectorSize = 360 / ATLAS_HEADING_SECTOR_COUNT;
+    const sectorIndex = Math.floor((headingDegrees + sectorSize / 2) / sectorSize)
+      % ATLAS_HEADING_SECTOR_COUNT;
+    headingSectorCounts[sectorIndex] = 1;
+  }
   const speedBandCounts = ATLAS_SPEED_BANDS.map((band) => (
     Number.isFinite(speedKmh) && speedKmh >= band.minimumKmh && speedKmh < band.maximumKmh ? 1 : 0
   ));
@@ -185,6 +198,7 @@ function atlasSessionSample(sample) {
     headingSampleCount: Number.isFinite(headingDegrees) ? 1 : 0,
     headingSinSum: Number.isFinite(headingRadians) ? Math.sin(headingRadians) : 0,
     headingCosSum: Number.isFinite(headingRadians) ? Math.cos(headingRadians) : 0,
+    headingSectorCounts,
     accelerationGainKmh: Number.isFinite(sample?.accelerationGainKmh) ? sample.accelerationGainKmh : 0,
     brakingLossKmh: Number.isFinite(sample?.brakingLossKmh) ? sample.brakingLossKmh : 0,
     speedBandCounts,
@@ -235,6 +249,9 @@ function mergeAtlasSessionSamples(first, second) {
     headingSampleCount,
     headingSinSum,
     headingCosSum,
+    headingSectorCounts: Array.from({ length: ATLAS_HEADING_SECTOR_COUNT }, (_, index) => (
+      (first.headingSectorCounts?.[index] ?? 0) + (second.headingSectorCounts?.[index] ?? 0)
+    )),
     accelerationGainKmh: (first.accelerationGainKmh ?? 0) + (second.accelerationGainKmh ?? 0),
     brakingLossKmh: (first.brakingLossKmh ?? 0) + (second.brakingLossKmh ?? 0),
     speedBandCounts: ATLAS_SPEED_BANDS.map((_, index) => (
@@ -397,6 +414,60 @@ export function atlasDriveLabMetrics(samples) {
     movingShare: speedSampleCount ? movingSampleCount / speedSampleCount : 0,
     stoppedShare: speedSampleCount ? stoppedSampleCount / speedSampleCount : 0,
   };
+}
+
+/**
+ * Converts moving journey headings into a compact radial distribution. Session
+ * rollups retain the exact sector counts so bounded history never invents a
+ * direction from an averaged bearing.
+ */
+export function atlasHeadingDistribution(
+  samples,
+  sectorCount = ATLAS_HEADING_SECTOR_COUNT,
+  tileLimit = ATLAS_HEADING_TILE_LIMIT,
+) {
+  const count = Math.max(4, Math.floor(Number(sectorCount) || ATLAS_HEADING_SECTOR_COUNT));
+  const maximumTiles = Math.max(1, Math.floor(Number(tileLimit) || ATLAS_HEADING_TILE_LIMIT));
+  const sectorSizeDegrees = 360 / count;
+  const counts = Array.from({ length: count }, () => 0);
+  for (const sample of Array.isArray(samples) ? samples : []) {
+    if (count === ATLAS_HEADING_SECTOR_COUNT && Array.isArray(sample?.headingSectorCounts)) {
+      sample.headingSectorCounts.forEach((value, index) => {
+        if (index < counts.length) counts[index] += Math.max(0, Number(value) || 0);
+      });
+      continue;
+    }
+    if (
+      !Number.isFinite(sample?.headingDegrees)
+      || !Number.isFinite(sample?.speedKmh)
+      || sample.speedKmh < ATLAS_MOVING_SPEED_THRESHOLD_KMH
+    ) continue;
+    const index = Math.floor(
+      (normalizeAtlasAngle(sample.headingDegrees) + sectorSizeDegrees / 2) / sectorSizeDegrees,
+    ) % count;
+    counts[index] += Number.isFinite(sample?.sampleCount) ? Math.max(1, sample.sampleCount) : 1;
+  }
+  const total = counts.reduce((sum, value) => sum + value, 0);
+  const maximum = Math.max(0, ...counts);
+  const sectors = counts.map((sectorSampleCount, index) => {
+    const centreDegrees = index * sectorSizeDegrees;
+    return {
+      index,
+      centreDegrees,
+      label: count === ATLAS_CARDINAL_DIRECTIONS.length
+        ? ATLAS_CARDINAL_DIRECTIONS[index]
+        : `${Math.round(centreDegrees)}°`,
+      count: sectorSampleCount,
+      share: total ? sectorSampleCount / total : 0,
+      tileCount: maximum
+        ? Math.max(0, Math.ceil(sectorSampleCount / maximum * maximumTiles))
+        : 0,
+    };
+  });
+  const dominant = total
+    ? sectors.reduce((best, sector) => (sector.count > best.count ? sector : best), sectors[0])
+    : null;
+  return { sectors, dominant, total, sectorSizeDegrees, tileLimit: maximumTiles };
 }
 
 export function openMeteoElevationUrl(position) {
