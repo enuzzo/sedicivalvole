@@ -502,7 +502,9 @@ only deliberate pointer press/touch wakes the surface, while intentional
 keyboard focus remains accessible. Focused `32/32`, complete `580/580`, the
 235-module App / 159-module LAB build, rendered
 `resting → ArrowUp → resting → visual click → awake` QA and a clean console pass.
-Canonical publication and physical-Tesla confirmation remain open.
+Published source checkpoint `16afc61` is canonical as build `20260902-2127`;
+protected publication, byte identity and the same canonical Browser interaction
+pass. Only physical-Tesla confirmation remains open under `R10C-04`.
 
 The owner then explicitly selected native **Minerva dark** for Discover, even
 with Wikipedia's accepted test parameter. Product checkpoint `cdccbd7` replaces

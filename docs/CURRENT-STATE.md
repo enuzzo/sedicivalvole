@@ -586,7 +586,7 @@ dated study documents.
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
 - The canonical live product is version `0.0.0`, implementation checkpoint
-  `7378d3b`, published source checkpoint `e1005f9`, build `20260902-2106`. It
+  `92e581b`, published source checkpoint `16afc61`, build `20260902-2127`. It
   publishes mandatory insert `10C` while retaining the single three-variant
   GRADIENT 08 family, shared Soundtrack/adaptive AudioContext and bounded
   recoverable media starts from `1ef48be`, together with the stronger PRTCL
@@ -795,8 +795,8 @@ and also have office implementation in checkpoint `d45f8dd`:
   journey aggregation are App-scoped and survive ATLAS remounts.
 
 Mandatory insert `10C` records the 2026-09-01 evening–09-02 vehicle notes.
-Implementation checkpoint `7378d3b`, published source checkpoint `e1005f9`, is
-canonical as build `20260902-2106`. It does not redo Soundtrack checkpoint
+Implementation checkpoint `92e581b`, published source checkpoint `16afc61`, is
+canonical as build `20260902-2127`. It does not redo Soundtrack checkpoint
 `1ef48be`: it keeps that ten-second atomic transport boundary and fixes the
 surrounding launch/vehicle experience.
 
@@ -835,9 +835,10 @@ non-overlapping Soundtrack navbar cells, chrome retraction, the measured
 Discover composition and corrected APERTURE seams. Protected publication,
 local/live byte identity and exact canonical Browser QA pass. All physical
 Tesla/phone `R10C-*` acceptance remains open. The `92e581b` retraction follow-up
-passes focused `32/32`, complete `580/580`, production build and rendered local
-`controls-resting → ArrowUp → controls-resting` interaction QA; publication is
-pending.
+passes focused `32/32`, complete `580/580`, production build, protected
+publication, byte identity and rendered local/canonical
+`controls-resting → ArrowUp → controls-resting → visual click → controls-awake`
+interaction QA. Physical `R10C-04` remains open.
 
 Row 11's earlier Original Gradient Field is retired. Its replacement—one
 Gradient 08 family with Japanese Mist, Acid Orchard, and Chromatic Silk
@@ -867,7 +868,7 @@ authenticated target-Tesla rendering and control reach remain `R11A-01`.
 ## Open work
 
 1. Execute live Tesla `R4-07`–`R4-08`, the canonical `10A` / `10B` / `10C`
-   codes, and row 11 on build `20260902-2106`. Execute Tesla tests
+   codes, and row 11 on build `20260902-2127`. Execute Tesla tests
    `R1-01`–`R1-03`, `R4-01`–`R4-08`,
    `R5-01`–`R5-07`, `R7-01`–`R7-14`, `R8-01`–`R8-03`, `R9-01`–`R9-07`,
    `R10-00A`–`R10-06`, `R10C-01`–`R10C-08`, `R11-01`–`R11-06`, `R11A-01`, and later

@@ -17,6 +17,38 @@ URL import remain outside the public surface. Exact
 dependency and local run instructions are recorded in
 `LOCAL-SHADERGRADIENT-LAB.md`.
 
+## Motion-independent chrome wake follow-up — 2026-09-02 21:35
+
+- build stamp: **`20260902-2127`**; implementation checkpoint:
+  **`92e581b`**; published source checkpoint: **`16afc61`**;
+- correction: accelerator, regenerative release, service-brake and passive
+  pointer-move inputs no longer call the human-interaction chrome wake path.
+  Deliberate pointer press/touch still wakes the controls, while intentional
+  keyboard focus remains accessible;
+- tests/build: **PASS**. Focused presentation checks pass `32/32`, the complete
+  suite passes `580/580`, documentation checks pass `8/8`, and production
+  builds process `235` App modules and `159` protected-LAB modules;
+- protected publication: read-only preflight and postflight report
+  `remote_writes=NONE`; publication uploaded `181` files / `215,863,198` bytes,
+  fully reverified all `29` Illobo recordings, retained one prior asset and
+  preserved the dynamic root;
+- canonical response: cache-busted root returns HTTP/2 200 with
+  `no-store, no-cache, must-revalidate, max-age=0` and `nosniff`;
+- byte identity: local/live HTML SHA-256 is
+  `886d2ecf23c7caa4c8eb7d36b9c170ead09e67fed8661af41cb1323e26ca6e5f`,
+  JavaScript `index-D3074lnC.js` is
+  `fdae40a0548b3f1d5bb088e54fb714a478ac5e2461a31dbf0f7069e3fa2a38ae`,
+  and CSS `index-CPN1DFu5.css` is
+  `7b404a480093d439092b2fe2f09bc336b55ff1d10c9a29beb1a6759b1cf21508`;
+- rendered local and canonical Browser interaction: **PASS**. After the idle
+  deadline the root is `controls-resting`; `ArrowUp` leaves it resting; a
+  visual click changes it to `controls-awake`; a later idle returns it to
+  resting; no warning/error is recorded. Canonical proof used the available
+  `840 × 827` in-app viewport because this interaction is viewport-independent;
+- remaining acceptance: repeat accelerator, lift-off and braking with untouched
+  display on the physical Tesla under `R10C-04`. Browser evidence does not close
+  the cabin gate.
+
 ## Mandatory 10C vehicle-note closeout — 2026-09-02 21:14
 
 - build stamp: **`20260902-2106`**; implementation checkpoint:
