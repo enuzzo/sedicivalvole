@@ -493,6 +493,17 @@ no warning/error. Published source checkpoint `e1005f9` is canonical as build
 Browser QA pass. `R10C-01`–`R10C-08` target-Tesla and phone acceptance remain
 open.
 
+The owner's immediate Browser run then exposed one `R10C-04` follow-up: desktop
+accelerator/brake keys reopened the navbar/footer, and passive pointer motion
+was also admitted as activity. Checkpoint `92e581b` separates vehicle motion
+from human chrome wake. GPS/demo speed updates, accelerator, regenerative
+release, service brake and pointer hover leave `controls-resting` unchanged;
+only deliberate pointer press/touch wakes the surface, while intentional
+keyboard focus remains accessible. Focused `32/32`, complete `580/580`, the
+235-module App / 159-module LAB build, rendered
+`resting → ArrowUp → resting → visual click → awake` QA and a clean console pass.
+Canonical publication and physical-Tesla confirmation remain open.
+
 The owner then explicitly selected native **Minerva dark** for Discover, even
 with Wikipedia's accepted test parameter. Product checkpoint `cdccbd7` replaces
 the custom scriptless article document with the complete localized native page

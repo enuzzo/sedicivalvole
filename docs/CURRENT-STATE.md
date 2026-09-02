@@ -810,7 +810,10 @@ surrounding launch/vehicle experience.
   artwork prefetch; supported Media Session previous/next remain wired.
 - Soundtrack's black source readout is a `116 px` speed-only module. FLUX, BPM
   and energy are absent in this mode. The on-screen transport shares the chrome
-  lifecycle and becomes hidden/non-interactive after idle.
+  lifecycle and becomes hidden/non-interactive after idle. Follow-up checkpoint
+  `92e581b` prevents GPS/demo motion, acceleration, braking, regeneration and
+  passive pointer movement from waking resting chrome; a deliberate pointer
+  press/touch still wakes it, and intentional keyboard focus remains accessible.
 - The navbar adds a compact `NET` state derived from browser hints. It is
   explicitly an estimate, not cellular signal strength, and it does not create
   a continuous ping service.
@@ -831,7 +834,10 @@ Exact local `773 × 601` QA covers constrained-network START, preference reload,
 non-overlapping Soundtrack navbar cells, chrome retraction, the measured
 Discover composition and corrected APERTURE seams. Protected publication,
 local/live byte identity and exact canonical Browser QA pass. All physical
-Tesla/phone `R10C-*` acceptance remains open.
+Tesla/phone `R10C-*` acceptance remains open. The `92e581b` retraction follow-up
+passes focused `32/32`, complete `580/580`, production build and rendered local
+`controls-resting → ArrowUp → controls-resting` interaction QA; publication is
+pending.
 
 Row 11's earlier Original Gradient Field is retired. Its replacement—one
 Gradient 08 family with Japanese Mist, Acid Orchard, and Chromatic Silk

@@ -9,7 +9,7 @@ When implementing from a selected generated mock, treat that image as the source
 ## Durable product direction
 
 - The approved Flux direction is **Modular Aperture**: a sparse rectangular field that is flat and calm at rest, forms a centered tunnel with normalized energy, and releases coherently during deceleration.
-- The tunnel terminus is a dark void, never a bright portal. At rest, header and footer must retreat completely off-canvas, secondary readouts disappear, and only speed plus its unit remain visible; the first wake interaction must not change a value.
+- The tunnel terminus is a dark void, never a bright portal. At rest, header and footer must retreat completely off-canvas, secondary readouts disappear, and only speed plus its unit remain visible; the first deliberate pointer press/touch wakes chrome without changing a value. GPS updates, demo acceleration/braking, regeneration and passive pointer movement must never wake it; keyboard focus may keep an intentionally focused control accessible.
 - The Flux interface is Braun-influenced, Swiss, minimal, and slightly brutalist: flat black/off-white surfaces, strict monospace typography, square buttons, and sliders inside restrained rounded housings. Do not add circular buttons, knob controls, glassmorphism, or decorative chrome.
 - `PALETTE` is the purposeful colour control for the complete Flux surface. Its curated themes change both the generative field and the interface accent without exposing low-level shader parameters; do not return to the vehicle-paint metaphor.
 - Every DRIVEY theme renders its native `accent` and `secondary` colours as two simultaneous material channels in both Normal and Wire modes; never collapse the pair into one interpolated tint.
