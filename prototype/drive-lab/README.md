@@ -53,7 +53,9 @@ The initial **PLAY THE ROAD** gesture is one flat typographic launch surface wit
 - a compact Discover composition with a `38 px` heading, `246 px` rail and
   `16 px` result-number track at the Tesla viewport. Its navigation QR opens
   exploratory Google Maps place search without fixing an origin or starting a
-  route automatically;
+  route automatically. Empty search retains session-only Nearby/Ahead/Region;
+  free text performs a debounced, relevance-ranked global Wikipedia search
+  without requiring or sending GPS position;
 - time-based Model 3 AWD Demo acceleration calibrated to the official zero-to-100 km/h figure;
 - desktop simulator: hold `ArrowUp` to accelerate, release it or press `ArrowDown` for progressive regenerative slowdown, and hold `Space` for stronger braking from the exact current speed;
 - owner LAB calibration with 18 visual/test parameters, smooth PRTCL macro transitions, speed-responsive complete-form scale, and independent MUTE/FRACTURE/JUNCTION/NIGHTSHIFT test audio that is never serialized into a visual preset;

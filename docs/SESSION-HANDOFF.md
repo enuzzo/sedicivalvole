@@ -532,6 +532,18 @@ publication, HTML/JavaScript/CSS/unchanged-vendor byte identity and canonical
 muted DRIVEY render/console QA pass. Physical-Tesla motion judgement remains
 open under revised `R5-04`.
 
+The next DISCOVER correction is implemented at checkpoint `5b4e776`. The
+search field no longer filters only the geosearch pages around the current
+vehicle: after a `320 ms` debounce it performs a global query against the
+selected Wikipedia language, works without GPS and sends no position. Empty
+search preserves `NEARBY / AHEAD / REGION`. Global results use MediaWiki's
+explicit relevance `index`; rendered no-GPS QA caught and fixed the API's
+non-ranked page-array order, then proved `Tokyo Tower` at result `01`, its
+complete native Minerva article, destination-only Maps handoff and an empty
+warning/error log. Focused `12/12`, complete `574/574`, the 235-module App,
+159-module protected LAB and Sites build pass. Canonical publication and
+target-Tesla search remain separate gates under revised `R10-02`.
+
 The owner then explicitly selected native **Minerva dark** for Discover, even
 with Wikipedia's accepted test parameter. Product checkpoint `cdccbd7` replaces
 the custom scriptless article document with the complete localized native page
