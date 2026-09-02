@@ -422,6 +422,24 @@ preferences explicitly exclude coordinates. The complete suite passes
 canonical assets and exact local/live `773 × 601` Browser flows pass. Row 11
 now awaits only target-Tesla motion/performance acceptance.
 
+On 2026-09-02 the owner requested an official-renderer comparison before any
+further Gradient integration decision. Exact MIT
+`@shadergradient/react@2.4.20`, React Three Fiber `9.7.0`, Three.js `0.169.0`,
+three-stdlib `2.36.1`, and camera-controls `2.9.0` are now pinned development
+dependencies. The isolated `/shadergradient-lab.html` page offers three project
+studies, all ten exported official presets, all `3 × 4` registered
+geometry/shader combinations, and the complete useful public visual/runtime
+surface for motion/timeline, palette, lighting/HDR environment, transform,
+camera/touch, canvas/performance and safe official-URL import. It retains local
+persistence, JSON capture, and bounded `FREE / ROAD / ROAD + AUDIO` simulation.
+The same reusable workbench is now selectable as `SHADERGRADIENT / LAB` inside
+the authenticated protected LAB. Local Vite maps the clean `/lab/` route to its
+private development entry, matching production without exposing `lab.html` in
+normal use. Desktop and `773 × 601` side-inspector layouts pass. It remains
+excluded from the public App and product catalogue; canonical `GRADIENT 08` is
+unchanged.
+The usage and licence boundary are in `LOCAL-SHADERGRADIENT-LAB.md`.
+
 The owner then explicitly selected native **Minerva dark** for Discover, even
 with Wikipedia's accepted test parameter. Product checkpoint `cdccbd7` replaces
 the custom scriptless article document with the complete localized native page

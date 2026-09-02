@@ -8,6 +8,7 @@ import { advanceDemoMotion } from "../signal-model.js";
 import { createSoundtrackPreviewController } from "../soundtrack/preview-controller.js";
 import { createSoundtrackEffectsController } from "../soundtrack/effects-controller.js";
 import { applyParamMessage, createCommandMessage, createParamMessage } from "../control-protocol.js";
+import { ShaderGradientLab } from "../shadergradient-lab/workbench.jsx";
 import {
   DEFAULT_LAB_VALUES,
   LAB_CLIENT_ID,
@@ -61,6 +62,11 @@ const MUSIC = Object.freeze([
   Object.freeze({ id: "junction", label: "GENERATIVE / JUNCTION" }),
   Object.freeze({ id: "nightshift", label: "GENERATIVE / NIGHTSHIFT" }),
   Object.freeze({ id: "soundtrack", label: "SOUNDTRACK / JAMENDO" }),
+]);
+
+const LAB_SURFACES = Object.freeze([
+  ...Object.values(PRTCL_TYPES).map((entry) => Object.freeze({ id: `prtcl:${entry.id}`, label: `PRTCL / ${entry.label}` })),
+  Object.freeze({ id: "shadergradient", label: "SHADERGRADIENT / LAB" }),
 ]);
 
 const SOUNDTRACK_MANUAL_CONTROLS = Object.freeze([
@@ -195,6 +201,7 @@ function runtimeContext(renderer, frame) {
 
 function LabApp() {
   const [values, setValues] = useState(DEFAULT_LAB_VALUES);
+  const [labSurface, setLabSurface] = useState("prtcl");
   const [activeGroup, setActiveGroup] = useState("scene");
   const [drawerOpen, setDrawerOpen] = useState(true);
   const [renderer, setRenderer] = useState("Starting WebGL2");
@@ -580,6 +587,17 @@ function LabApp() {
   const controls = activeGroup === "macros" ? null : CONTROL_DEFINITIONS[activeGroup];
   const selectedType = PRTCL_TYPES[values["context.prtclType"]];
 
+  const selectLabSurface = useCallback((value) => {
+    if (value === "shadergradient") {
+      setLabSurface("shadergradient");
+      setNotice("ShaderGradient experiment · protected LAB only");
+      return;
+    }
+    const [, prtclType] = value.split(":");
+    setLabSurface("prtcl");
+    setParam("context.prtclType", prtclType);
+  }, [setParam]);
+
   useEffect(() => {
     window.__SEDICIVALVOLE_LAB__ = {
       get values() { return values; },
@@ -591,14 +609,14 @@ function LabApp() {
   }, [preset, renderer, soundtrackPreview, summary, values]);
 
   return (
-    <main className={`lab-shell${drawerOpen ? " is-drawer-open" : ""}`}>
+    <main className={`lab-shell${drawerOpen ? " is-drawer-open" : ""}${labSurface === "shadergradient" ? " is-shadergradient" : ""}`}>
       <header className="lab-header">
         <div className="lab-wordmark"><strong className="lab-brand-name">sedicivalvole</strong><span>/ LAB</span></div>
         <SelectControl
-          label="Visual and PRTCL family"
-          value={values["context.prtclType"]}
-          options={Object.values(PRTCL_TYPES).map((entry) => ({ id: entry.id, label: `PRTCL / ${entry.label}` }))}
-          onChange={(value) => setParam("context.prtclType", value)}
+          label="LAB visual tool"
+          value={labSurface === "shadergradient" ? "shadergradient" : `prtcl:${values["context.prtclType"]}`}
+          options={LAB_SURFACES}
+          onChange={selectLabSurface}
         />
         <SelectControl
           label="Independent test audio"
@@ -616,6 +634,11 @@ function LabApp() {
         </div>
         <a className="lab-logout" href={boot.logoutPath}>LOG OUT</a>
       </header>
+
+      {labSurface === "shadergradient" ? (
+        <ShaderGradientLab embedded />
+      ) : (
+        <>
 
       <section
         className="lab-stage"
@@ -789,6 +812,8 @@ function LabApp() {
           {sendState === "sending" ? "SENDING" : "SEND JSON"}
         </button>
       </footer>
+        </>
+      )}
     </main>
   );
 }

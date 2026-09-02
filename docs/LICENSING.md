@@ -45,6 +45,24 @@ licensor identity. It does not imply a studio, company, or other legal entity.
 Third-party authors and rights holders retain the ownership, licences, and
 credits recorded in `THIRD_PARTY_NOTICES.md`.
 
+## 2026-09-02 — ShaderGradient admitted for owner comparison labs
+
+The project pins `@shadergradient/react@2.4.20` and its required Three/R3F
+rendering peers as development dependencies for the isolated
+`shadergradient-lab.html` page and authenticated protected-LAB workbench. The
+package and upstream repository declare MIT;
+the retained notice is `licenses/ShaderGradient-MIT.txt`. MIT permits the owner
+to use, modify, merge, redistribute, sublicense, and integrate the software,
+provided the copyright and permission notice remains with copied or substantial
+modified portions.
+
+This admission does not relicense ShaderGradient under PolyForm and does not
+change the current project-owned `GRADIENT 08`. The stack is absent from the
+public App and product catalogue and is admitted only into owner-only comparison
+surfaces. A later product promotion must record exact reused or modified upstream
+code and re-run dependency,
+fallback, bundle/GPU, and target-Tesla acceptance gates.
+
 ## 2026-08-30 — Space Grotesk becomes the live product typeface
 
 All live product, owner LAB, and diagnostic typography uses the locally hosted

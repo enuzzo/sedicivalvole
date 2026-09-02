@@ -9,10 +9,34 @@ npm ci
 npm run dev
 ```
 
+The development-only ShaderGradient comparison environment is available at
+`http://127.0.0.1:5173/shadergradient-lab.html` from the normal dev server. To
+give it a dedicated stable port instead, run:
+
+```bash
+npm run dev:shadergradient
+```
+
+and open `http://127.0.0.1:5180/lab/`. This matches the canonical production
+path while Vite maps it to the local owner-LAB entry. The page persists its
+own local settings, can copy the current parameter JSON, imports official
+ShaderGradient URLs, and simulates bounded road plus audio response. It exposes
+all ten official presets, every registered geometry/shader combination, and the
+complete useful public visual/runtime control surface for the pinned version.
+The same workbench is selectable inside the
+authenticated `/lab/`; its wide inspector remains beside the stage on desktop
+and in the `773 × 601` Tesla layout. It is not a public product entry point and
+does not alter the canonical `GRADIENT 08` renderer. See
+[`../../docs/LOCAL-SHADERGRADIENT-LAB.md`](../../docs/LOCAL-SHADERGRADIENT-LAB.md).
+
 The initial **PLAY THE ROAD** gesture is one flat typographic launch surface with an enlarged `sedicivalvole` wordmark and no simulated hardware. It sits over the animated Signal Gate, unlocks Web Audio, runs capability checks, requests GPS permission, and fades into the scene. Its readable footer identifies the project as created by [enuzzo](https://github.com/enuzzo), credits [Illobo](https://github.com/illobo), and links the public [source repository](https://github.com/enuzzo/sedicivalvole) with a small monochrome GitHub mark. A top-left Buy Me a Coffee control opens the verified `enuzzo` profile, its supplied QR, an explicitly playful project-sparks signal that is not presented as a purchase count, and a runtime-reconstructed suggestion address. Suggestions are invited independently of financial support.
 
 ## Implemented
 
+- a local and authenticated-LAB ShaderGradient visual laboratory using exact
+  MIT-licensed `@shadergradient/react@2.4.20` and pinned rendering peers, kept
+  outside the public App bundle and product catalogue, with three project
+  studies, ten upstream presets and exhaustive organized visual/runtime controls;
 - eight driver-facing Visual choices: seven rendered environments—`APERTURE 01`, byte-identical upstream Interstate 7 `VERTIGO 02`, original `MERIDIAN 03`, lazy OpenFreeMap `ATLAS 04`, source-faithful `DRIVEY 05`, original `PRTCL 06`, and project-owned `GRADIENT 08`—plus the separate `DISCOVER 07` Passenger Index destination. The Instrument Deck arranges them `3–3–2`, and the running Visual library exposes the same destination without persisting it as a renderer;
 - a dedicated WebGL2 Signal Gate splash with independently phased travelling lane gaps, restrained perspective airflow, and Canvas2D/reduced-motion fallbacks;
 - continuously redrawn Canvas2D fallback and reduced-motion behavior for Aperture; Vertigo retains the original Three.js/post-processing renderer and caps its speed input in reduced-motion mode;

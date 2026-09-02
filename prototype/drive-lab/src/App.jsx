@@ -1,5 +1,7 @@
 import { Component, lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import buyMeCoffeeQr from "./assets/bmc_qr.png";
+// Keep the support QR inside the already-loaded application bundle so opening
+// the panel does not depend on a later image request over a weak connection.
+import buyMeCoffeeQr from "./assets/bmc_qr.png?inline";
 import { createAudioEngine } from "./audio-engine.js";
 import {
   appendConnectionHistory,

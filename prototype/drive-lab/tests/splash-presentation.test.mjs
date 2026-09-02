@@ -166,6 +166,7 @@ test("Buy Me a Coffee opens a real, accessible support panel", () => {
   const app = read("App.jsx");
   const envExample = readFileSync(resolve(PROJECT_ROOT, ".env.example"), "utf8");
 
+  assert.match(app, /import buyMeCoffeeQr from "\.\/assets\/bmc_qr\.png\?inline"/);
   assert.match(app, /const DEFAULT_SUPPORT_URL = "https:\/\/buymeacoffee\.com\/enuzzo"/);
   assert.match(app, /parseSupportUrl\(import\.meta\.env\.VITE_SUPPORT_URL\) \|\| DEFAULT_SUPPORT_URL/);
   assert.match(app, /url\.protocol === "https:"/);

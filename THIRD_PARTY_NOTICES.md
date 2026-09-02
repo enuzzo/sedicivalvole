@@ -11,6 +11,11 @@ are not relicensed under the project's PolyForm grant.
 | React DOM | 19.2.0 | Meta Platforms, Inc. and contributors | MIT | none | `prototype/drive-lab/` |
 | Vite | 6.4.3 | Evan You and contributors | MIT | local configuration | `prototype/drive-lab/` |
 | @vitejs/plugin-react | 5.0.4 | Vite contributors | MIT | none | `prototype/drive-lab/` |
+| [ShaderGradient React](https://github.com/ruucm/shadergradient) | 2.4.20 | ruucm and stone-skipper | MIT | unmodified package used only by the local `shadergradient-lab.html` comparison environment and authenticated protected LAB; excluded from the public App | `prototype/drive-lab/` development dependencies |
+| React Three Fiber | 9.7.0 | Paul Henschel and contributors | MIT | unmodified ShaderGradient comparison rendering peer; admitted only to local and authenticated LAB surfaces | `prototype/drive-lab/` development dependencies |
+| Three.js | 0.169.0 | mrdoob and contributors | MIT | unmodified ShaderGradient comparison rendering peer; distinct from the older r109 VERTIGO vendor copy and excluded from the public App | `prototype/drive-lab/` development dependencies |
+| three-stdlib | 2.36.1 | Paul Henschel and contributors | MIT | unmodified ShaderGradient comparison rendering peer; admitted only to local and authenticated LAB surfaces | `prototype/drive-lab/` development dependencies |
+| camera-controls | 2.9.0 | Yomotsu | MIT | unmodified ShaderGradient comparison rendering peer; admitted only to local and authenticated LAB surfaces | `prototype/drive-lab/` development dependencies |
 | MapLibre GL JS | 5.7.1 | MapLibre contributors | BSD-3-Clause | lazy ATLAS renderer integration | `prototype/drive-lab/` |
 | qrcode | 1.5.4 | Kazuhiko Arase and contributors | MIT | local passenger-link QR generation | `prototype/drive-lab/` |
 | Simple Icons GitHub mark | current path | Simple Icons contributors | CC0-1.0 | small inline monochrome SVG identifying the public source link | `prototype/drive-lab/src/App.jsx` |
@@ -28,6 +33,14 @@ are not relicensed under the project's PolyForm grant.
 | textStep (transport, DSP) | commit `cb107d198b730db60cff4a87c7fd5b8d1fae3fb2` | Lobo (`illobo`) | GNU GPL v2.0, plus the author's direct unrestricted authorization | translated from Rust to JavaScript; see the per-file list below | `prototype/drive-lab/src/score/` |
 
 Transitive dependencies and integrity hashes are locked in `prototype/drive-lab/package-lock.json`. A public release must generate and verify the complete dependency notice set.
+
+The ShaderGradient package is admitted only for the tracked local comparison
+page and authenticated protected-LAB workbench. Its MIT permission notice is retained in
+`licenses/ShaderGradient-MIT.txt`. MIT permits use, modification and
+redistribution, including an adapted future integration, provided that the
+copyright and permission notice travels with copied or modified portions. No
+ShaderGradient code is relicensed under PolyForm, and no public App asset
+imports the package.
 
 No standalone luminous-axis or Braun launch-detail raster is present in the
 tracked source tree or production build output. Interface details and active

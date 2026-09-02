@@ -134,4 +134,8 @@ Chromatic Fold across the smoothed `0–130 km/h` range; the speed readout may
 truthfully exceed that ceiling without unlocking further response. Play the
 Road admits bounded audio breadth/radiance and Soundtrack remains speed-only.
 No ShaderGradient, FeralUI, ColorFlow, or Three.js code, preset, shader, embed,
-asset, or dependency entered the runtime.
+asset, or dependency entered that production runtime. A 2026-09-02 addendum
+admits exact MIT ShaderGradient/Three/R3F packages only as development
+dependencies for the isolated `shadergradient-lab.html` comparison page and
+authenticated protected-LAB workbench. The stack remains absent from the public
+App entry and cannot silently change the source architecture recorded here.

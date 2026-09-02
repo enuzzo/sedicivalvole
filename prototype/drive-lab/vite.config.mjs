@@ -40,6 +40,25 @@ function staticPackageSafety() {
   };
 }
 
+// Production exposes the authenticated owner surface at /lab/. Keep that same
+// canonical route during local development so bookmarks and QA instructions do
+// not need to know Vite's lab.html entry filename.
+export function canonicalLabDevRoute() {
+  return {
+    name: "sedicivalvole-canonical-lab-dev-route",
+    apply: "serve",
+    configureServer(server) {
+      server.middlewares.use((request, _response, next) => {
+        const [pathname, query = ""] = (request.url || "").split("?", 2);
+        if (pathname === "/lab" || pathname === "/lab/") {
+          request.url = `/lab.html${query ? `?${query}` : ""}`;
+        }
+        next();
+      });
+    },
+  };
+}
+
 verifyStaticBuildTrees();
 
 // Build stamp: local calendar time as YYYYMMDD-HHMM. This identifies the build
@@ -111,6 +130,7 @@ export default defineConfig(({ mode }) => {
     },
   },
   plugins: [
+    canonicalLabDevRoute(),
     staticPackageSafety(),
     react(),
     audioWorklet(),

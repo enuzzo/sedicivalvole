@@ -8,6 +8,12 @@ when publishing or deploying**, and record it with the evidence for that
 publication. It identifies the build; `VERSION` remains the only SemVer source
 of truth and is reported separately in the diagnostics.
 
+`shadergradient-lab.html` is a development-only standalone comparison entry and
+must not be uploaded to the canonical root. Its reusable workbench is included
+only in the authenticated protected-LAB bundle. Exact MIT dependencies and
+local run instructions are recorded in `LOCAL-SHADERGRADIENT-LAB.md`; the public
+App Vite entry deliberately omits the stack.
+
 ## GRADIENT 08 and drive-interaction closeout — 2026-09-02 01:16
 
 - build stamp: **`20260902-0103`**; product checkpoint: **`367e40d`**;

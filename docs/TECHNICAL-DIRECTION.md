@@ -496,6 +496,16 @@ WebGL-context loss handling, explicit disposal, reduced motion, and Canvas2D
 fallback bound the runtime. The truthful speed readout is independent and may
 show higher values while the response remains fixed at its 130 endpoint.
 
+`shadergradient-lab.html` is a separate development-only comparison surface. Its
+reusable workbench is also selectable inside the authenticated protected LAB.
+Both load exact `@shadergradient/react@2.4.20`, React Three Fiber, Three.js,
+three-stdlib, and camera-controls development dependencies, default to local
+`3d` lighting instead of remote HDR maps, and expose direct parameters plus a
+bounded road/audio simulator. The public App entry list does not contain them.
+Any later product promotion must identify selected behavior or modified
+upstream code, retain MIT notices, measure bundle/GPU cost, and add the same
+fallback and target-Tesla gates as a native renderer.
+
 ## Engine visual architecture
 
 Engine may use an abstract tachometer, throttle/load arc, acceleration trace, mechanical light field, or related instrument-like motif. It must not collapse into a generic dashboard, imply unavailable telemetry, or copy a protected vehicle cluster. The next Product Design gate is exactly three Engine-specific directions; no final palette, instrument anatomy, or motion grammar is selected yet.

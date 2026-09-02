@@ -32,6 +32,7 @@ The canonical development build is available at [sedicivalvole.app](https://sedi
 
 - ✅ a single ignored local reference library under `_references/`;
 - ✅ source audit, product requirements, adversarial review, technical direction, and roadmap;
+- 🧪 a development-only `ShaderGradient Lab`, available standalone at `/shadergradient-lab.html` and from the authenticated `/lab` visual-tool selector, is backed by exact `@shadergradient/react@2.4.20` MIT dependencies. It provides three project studies, all ten official presets, all three geometries and four registered shader families, plus the complete useful public visual/runtime controls for motion, timeline, palette, lighting/HDR environment, transform, camera/touch, canvas/performance, official-URL import, road speed, and audio energy. It is deliberately excluded from the public App and does not replace or modify `GRADIENT 08`;
 - ✅ Modular Aperture selected after exactly three revised Product Design directions;
 - ✅ eight choices in the shared Flux Visual catalogue: seven rendered environments—procedural Aperture, byte-identical upstream Interstate 7 Vertigo, the original architectural Meridian environment, lazy-loaded OpenFreeMap ATLAS, source-faithful Rezmason Drivey, PRTCL, and the project-owned `GRADIENT 08`—plus the separate DISCOVER 07 Passenger Index destination. The initial Instrument Deck lays them out `3–3–2`; the running Visual library fits all eight cards together at `773 × 601` and exposes the same catalogue without pretending that Discover is a renderer;
 - 🛑 PRIMORDIAL and WAKE were rejected after visual review and have been removed from the catalog, runtime, tests, and current QA surface. PLUMB remains retired, SLIP remains proposal-only, and Aperture remains the accepted fresh-session fallback;
@@ -184,8 +185,9 @@ npm test
 
 The standalone technical harness remains in `diagnostics/tesla-capabilities/`; equivalent high-value readings are accessible from the main Drive Lab report.
 
-The owner calibration surface is developed locally at `/lab.html` and packaged
-for a server-authenticated canonical `/lab/`. It is deliberately separate from
+The owner calibration surface is developed locally at the canonical `/lab/`
+route, which Vite maps to its private development entry, and is packaged for
+the same server-authenticated `/lab/` path. It is deliberately separate from
 the public driving flow. Production access requires ignored local configuration;
 no password, password verifier, mail recipient, coordinate, or raw credential is
 included in the client bundle or repository.
@@ -224,7 +226,9 @@ No screenshot is published here yet. The repository will include only real, curr
 The Gradient gate produced exactly three project-authored directions informed
 by the separately audited ShaderGradient, FeralUI Gradients, and ColorFlow
 boundaries. The owner-selected hybrid is now `GRADIENT 08`; no reference runtime
-or asset was admitted. A real Tesla session at the verified split viewport will
+or asset entered that production renderer. A separate local-only ShaderGradient
+comparison lab is now admitted under MIT so future effects can be explored
+without silently changing the canonical visual. A real Tesla session at the verified split viewport will
 compare the seven rendered visuals across
 acceleration and deceleration, verify
 Aperture's 60 FPS desktop gain on the vehicle,
@@ -249,6 +253,7 @@ there are not implementation promises; promoted work links back to the roadmap.
 - [`docs/TECHNICAL-DIRECTION.md`](docs/TECHNICAL-DIRECTION.md) — recommended architecture and signal model;
 - [`docs/SOURCE-AUDIT.md`](docs/SOURCE-AUDIT.md) — archive integrity and source findings;
 - [`docs/REFERENCE-LIBRARY.md`](docs/REFERENCE-LIBRARY.md) — local external-material convention;
+- [`docs/LOCAL-SHADERGRADIENT-LAB.md`](docs/LOCAL-SHADERGRADIENT-LAB.md) — exact local run, controls, production boundary, and MIT modification rules for the ShaderGradient playground;
 - [`docs/DEPLOY.md`](docs/DEPLOY.md) — sanitized deployment procedure and verified state;
 - [`docs/DIAGNOSTICS.md`](docs/DIAGNOSTICS.md) — verified Tesla measurements and report-delivery architecture;
 - [`docs/MODES.md`](docs/MODES.md) — confirmed Engine/Flux product architecture and open decisions;

@@ -209,9 +209,14 @@ lighting, three-colour spatial mixing, one draw call, a one-pass grain term,
 context-loss recovery, reduced-motion behavior, and Canvas2D fallback. Speed
 owns the complete morph; Play the Road may add bounded authored audio breadth
 and radiance, while Soundtrack is strictly speed-only. ShaderGradient, FeralUI
-Gradients, and ColorFlow remain reference inputs only within their individually
+Gradients, and ColorFlow remain reference inputs within their individually
 audited licence boundaries; no shader, runtime, preset, export, embed or asset
-enters the product by implication.
+enters the product by implication. The exact MIT ShaderGradient stack is now
+installed only as a development dependency for `shadergradient-lab.html` and
+the authenticated protected-LAB workbench. Both remain excluded from the public
+App, product catalogue, and canonical client bundle. Their experiments do not
+alter this production contract until an
+explicit selection and new performance/fallback gate promote a behavior.
 
 The speed readout remains truthful above `130 km/h`, but every visual, audio,
 tempo, density, motion, and effect response treats `130 km/h` as 100 percent and

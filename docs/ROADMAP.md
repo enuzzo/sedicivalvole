@@ -179,6 +179,12 @@ Queued next:
 - validate PRTCL's stronger UNDERWATER collapse/recovery and GRADIENT 08's
   slow-to-fast morph, audio/speed boundary, frame pacing, grain and thermal
   behavior on the target Tesla;
+- use the standalone or authenticated protected ShaderGradient Lab to record
+  promising parameter JSON and compare its official MIT renderer against current
+  Gradient behavior on desktop and the Tesla viewport;
+  do not promote a package, preset, or modified shader into the product without
+  a new explicit owner selection plus bundle, fallback, licensing and physical
+  Tesla performance evidence;
 - profile the unmodified Interstate 7 renderer on the target Tesla; any later travel, projection, curvature, density, palette, or geometry changes require a new explicit product decision and must not be folded into the upstream-integrity checkpoint;
 - verify each environment at rest, intermediate speed, full energy, and sustained deceleration at `773 × 601` on the target vehicle.
 

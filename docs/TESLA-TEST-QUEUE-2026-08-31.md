@@ -123,6 +123,16 @@ substitute for the audible physical-cabin verdict.
 
 ## GRADIENT 08, PRTCL surfacing, safety, and response ceiling — milestone row 11
 
+The development-only ShaderGradient Lab is milestone insert `11A`, not a public
+product or canonical-App test target. Its standalone page and authenticated
+protected-LAB workbench support owner exploration and JSON capture on desktop
+and at `773 × 601`; that comparison does not replace the `R11-*` physical-Tesla
+acceptance of the current project-owned `GRADIENT 08`.
+
+| ID | Status | Test | PASS condition | Linked work |
+|---|---|---|---|---|
+| `R11A-01` | CANONICAL PUBLICATION AUTHORIZED · TESLA PENDING | While parked, open the authenticated `https://sedicivalvole.app/lab/`, choose `SHADERGRADIENT / LAB`, try at least one project study, one official preset, each geometry, and the Road speed control. Scroll the inspector through its complete height and return to a PRTCL surface. | The protected gate opens; the clean `/lab/` URL remains; the shader never becomes blank or visibly corrupt; every requested change renders; the stage remains useful beside the inspector; scrolling does not move the whole page or hide the header; returning to PRTCL succeeds without reload. Record any thermal warning, Chromium tab reload, severe stutter, or unusable control size. | Milestone `11A`; exact MIT dependency boundary, protected inline bundle, shared canonical route, and local `773 × 601` layout. |
+
 | ID | Status | Test | PASS condition | Linked work |
 |---|---|---|---|---|
 | `R11-01` | CANONICAL PASS `20260902-0103` · TESLA PENDING | Select GRADIENT 08 with Play the Road and drive progressively through rest, urban, medium, motorway, and `130 km/h`. | One continuous 3D field reads as a broad calm Tension Plane at low speed and increasingly deep Chromatic Fold at high speed. The transition has no preset cut, frozen band, low-poly faceting, blank frame, or unreadable chrome; fine grain remains visible but subordinate. | Project-owned direct WebGL2 field, smooth analytical normals, one draw call and bounded grain; exact live low-speed canvas QA passes. |

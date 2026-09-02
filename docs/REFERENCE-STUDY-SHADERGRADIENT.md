@@ -7,15 +7,19 @@
 - source URL: <https://github.com/ruucm/shadergradient>;
 - authors credited upstream: `ruucm` and `stone-skipper`;
 - inspected branch: `main`;
-- inspected on: 2026-08-30;
+- first inspected on: 2026-08-30; local package admission verified on
+  2026-09-02;
 - public licence: MIT;
 - package observed in the current repository manifest: `@shadergradient/react`
-  `2.4.24`.
+  `2.4.20`.
 
-This is a browser-and-source study only. No ShaderGradient package, shader,
-asset, preset, environment map, or source file has entered sedicivalvole. An
-exact upstream commit and full transitive notice inventory remain mandatory if
-the project later admits any upstream code.
+The original product decision was a browser-and-source study only. On
+2026-09-02 the exact `@shadergradient/react@2.4.20` package and pinned rendering
+peers were admitted as development dependencies for a dedicated local
+comparison page and its reusable authenticated protected-LAB workbench. No
+ShaderGradient package, shader, preset, environment map, or asset enters the
+public App, product catalogue, or canonical client bundle. See
+[`LOCAL-SHADERGRADIENT-LAB.md`](LOCAL-SHADERGRADIENT-LAB.md).
 
 ## What the live customizer proved
 
@@ -71,12 +75,13 @@ modifications, dependency licences, and shipped location in
 `THIRD_PARTY_NOTICES.md`.
 
 The current renderer expects React, React DOM, Three.js, React Three Fiber, and
-in documented setups `three-stdlib` plus `camera-controls`. The sedicivalvole
-prototype currently has React 19 but deliberately uses project-owned direct
-WebGL2 renderers rather than Three/R3F. Adding the component would therefore be
-an architectural and GPU-budget decision, not a free visual preset. The public
-package is local runtime code: there is no per-view API charge or listener-based
-service cost.
+in documented setups `three-stdlib` plus `camera-controls`. The local comparison
+lab pins those dependencies exactly and uses only ShaderGradient's local `3d`
+light mode; it deliberately avoids the remote HDR environment-map path. The
+production sedicivalvole renderer still uses project-owned direct WebGL2 rather
+than Three/R3F. Promoting the component would therefore remain an architectural
+and GPU-budget decision, not a free visual preset. The public package is local
+runtime code: there is no per-view API charge or listener-based service cost.
 
 ## Recommended sedicivalvole translation
 
@@ -141,9 +146,12 @@ Tesla viewport rather than judged from desktop screenshots:
 
 - **Collected:** yes.
 - **Reference mechanism understood:** yes.
-- **Source or dependency admitted:** no.
+- **Source or dependency admitted:** yes, exact npm development dependencies for
+  the standalone and authenticated protected-LAB comparison surfaces; no public
+  App dependency or copied shader is admitted.
 - **Product view implemented:** yes, as project-owned direct WebGL2
-  `GRADIENT 08`; ShaderGradient and Three.js remain outside the dependency tree.
+  `GRADIENT 08`; ShaderGradient and its Three/R3F peers remain outside the
+  production dependency graph and output.
 - **Selected direction:** exactly three directions were shown; the owner chose a
   continuous low-speed Tension Plane to high-speed Chromatic Fold hybrid with
   fine grain.
@@ -151,6 +159,12 @@ Tesla viewport rather than judged from desktop screenshots:
   boundary and thermal acceptance.
 - **Companion comparison:** FeralUI Gradient Builder and ColorFlow are evaluated
   in [`REFERENCE-STUDY-GRADIENT-TOOLS.md`](REFERENCE-STUDY-GRADIENT-TOOLS.md).
+- **Local comparison surface:** `shadergradient-lab.html`, with three starting
+  points, direct renderer parameters, local persistence, JSON capture, and
+  bounded road/audio simulation.
+- **Protected comparison surface:** the same workbench is selectable from the
+  first `/lab` header control, with a desktop and `773 × 601` side-inspector
+  layout.
 
 The implementation uses one indexed tessellated surface, project-authored
 coherent deformation, smooth analytical lighting normals, three-colour spatial

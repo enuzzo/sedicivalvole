@@ -220,6 +220,16 @@ dated study documents.
   energy; Soundtrack remains speed-only. Local and canonical Tesla-viewport
   Browser QA plus automated QA pass; target-Tesla motion/performance acceptance
   remains open.
+- On 2026-09-02, exact MIT `@shadergradient/react@2.4.20` and pinned
+  Three/R3F rendering peers were installed as development dependencies for an
+  isolated local owner playground and authenticated protected-LAB workbench.
+  Both expose three starting points, direct geometry/shader/palette/surface/
+  camera controls, local persistence, JSON capture, and bounded road/audio
+  preview. Local development and protected production share the canonical
+  `/lab/` route. The workbench uses a side inspector on desktop and at
+  `773 × 601`.
+  It is not a public product catalogue entry, is absent from the App entry, and
+  does not alter canonical `GRADIENT 08`.
 - REGISTER was rejected after live review because its static print composition
   was inexplicable in motion and outside the product mood. Its source remains
   only in the rejected-visual archive; the runtime, QA harness and active tests
@@ -771,6 +781,16 @@ Row 11 Original Gradient Field has local implementation, canonical publication,
 automated QA and exact live `773 × 601` Browser PASS. Target-Tesla
 motion/performance acceptance remains open.
 
+Row 11A's separate comparison bench is complete locally and inside the protected
+LAB without entering the public product. For pinned ShaderGradient `2.4.20`, it
+exposes all ten exported upstream presets, all three geometries, all four
+registered shader families, and every useful public visual/runtime parameter in
+organized disclosure groups. These cover motion/timeline, colour and grain,
+3D/HDR lighting, transform, camera/touch, canvas/performance and normalized
+official-URL import. Default 3D lighting remains local; HDR mode is explicitly
+marked as a remote dependency. Framer panel metadata and raw callback/object
+plumbing are not misrepresented as creative controls.
+
 ## Open work
 
 1. Execute live Tesla `R4-07`, the canonical `10A` / `10B` codes, and row 11
@@ -821,7 +841,7 @@ motion/performance acceptance remains open.
 |---|---|---|
 | Current | this page, `README.md`, `PRODUCT-SPEC.md`, `TECHNICAL-DIRECTION.md`, `ROADMAP.md`, `MODES.md`, `SESSION-HANDOFF.md` | Must describe the current repository and verified product state |
 | Evidence | `DEPLOY.md`, `DIAGNOSTICS.md`, `AUDIO-QA-2026-08-28.md`, `CHANGELOG.md` | Append-only chronology; older failures remain true historical evidence |
-| Knowledge | `MUSIC-CRAFT.md`, licensing and reference studies | Durable technique, provenance, and decision records |
+| Knowledge | `MUSIC-CRAFT.md`, `LOCAL-SHADERGRADIENT-LAB.md`, licensing and reference studies | Durable technique, provenance, local comparison instructions, and decision records |
 | Future ideas | `FUTURE-IDEAS.md` | Canonical long-horizon owner-idea register; agent proposals remain explicitly separate and unapproved |
 | Selection record | `FLUX-VISUAL-DIRECTIONS-2026-08-29.md` | PLUMB and WAKE rejected and retired; SLIP remains proposal-only |
 | Historical | `RECOVERED-REQUIREMENTS-2026-08-26.md`, `ADVERSARIAL-REVIEW.md`, `SOURCE-AUDIT.md`, dated work plans | Preserve the reasoning and rejected baselines; do not treat their “current” wording as current product state |

@@ -38,8 +38,11 @@ The original top-level file was moved reversibly into the reference library. It 
 - `ShaderGradient`: browser-and-primary-source study of a configurable Three.js
   mesh-gradient renderer; see
   [`REFERENCE-STUDY-SHADERGRADIENT.md`](REFERENCE-STUDY-SHADERGRADIENT.md).
-  No local source copy, package, preset, shader, or asset has entered the
-  reference library or product.
+  The ignored reference library still contains no copied upstream package,
+  preset, shader, or asset. Exact MIT npm development dependencies now power
+  the tracked standalone `shadergradient-lab.html` and authenticated protected-
+  LAB comparison surfaces; they do not enter the public App. See
+  [`LOCAL-SHADERGRADIENT-LAB.md`](LOCAL-SHADERGRADIENT-LAB.md).
 - `FeralUI Gradient Builder` and `ColorFlow`: live-product and official-terms
   study of gradient-family authoring, perceptual colour interpolation, control
   meshes, procedural motion, interaction, effects, export, and embed boundaries;

@@ -82,6 +82,14 @@ The following boundaries are load-bearing:
   direct permission to use both supplied variants. They are not covered by the
   repository's PolyForm grant; their byte-identical paths and colours are not
   modified by the project-authored presentation crossfade.
+- The exact `@shadergradient/react@2.4.20` package and its pinned rendering
+  peers are third-party development dependencies used only by
+  `shadergradient-lab.html` and the authenticated protected LAB.
+  ShaderGradient remains MIT material; its retained notice is in
+  `licenses/ShaderGradient-MIT.txt`. The project may modify or
+  integrate it under MIT, but copied or modified upstream portions keep that
+  notice and do not become PolyForm-covered original code. The current
+  project-owned `GRADIENT 08` production renderer remains separate.
 
 ## Contributions and future grants
 

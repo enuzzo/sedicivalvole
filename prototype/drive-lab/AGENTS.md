@@ -31,9 +31,14 @@ When implementing from a selected generated mock, treat that image as the source
   Road speed owns the complete slow-to-fast morph. Play the Road may also feed
   bounded authored audio energy into breadth/radiance; Soundtrack must remain
   speed-only. All response reaches its final state at `130 km/h` even when the
-  truthful speed readout is higher. ShaderGradient, FeralUI, and ColorFlow stay
-  mechanics references only; do not import their runtime, presets, shaders, or
-  assets by implication.
+  truthful speed readout is higher. The exact MIT-licensed
+  `@shadergradient/react@2.4.20` stack is admitted only inside the dedicated
+  development entry point `shadergradient-lab.html` and the authenticated
+  protected LAB for owner comparison. It must not enter the public App,
+  product catalogue, canonical client bundle, or unprotected deployment unless
+  a later explicit owner selection promotes a specific
+  behavior with fresh dependency, performance, fallback, and Tesla gates.
+  FeralUI and ColorFlow remain mechanics references only.
 - PRTCL UNDERWATER must collapse all three complete forms dramatically to about
   one fifth of their natural speed-owned size, then surface quickly back to that
   exact natural scale as braking releases. Do not reduce this to a subtle glow

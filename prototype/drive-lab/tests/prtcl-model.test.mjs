@@ -22,6 +22,7 @@ const appSource = await read("../src/App.jsx");
 const stylesSource = await read("../src/styles.css");
 const harnessSource = await read("../qa/field-harness.jsx");
 const packageSource = await read("../package.json");
+const packageMetadata = JSON.parse(packageSource);
 const admissionSource = await read("../../../docs/SOURCE-ADMISSION-2026-08-29.md");
 
 test("PRTCL exposes only the three reviewed particle families and defaults to Fractal", () => {
@@ -165,7 +166,8 @@ test("the source-faithful renderer is bounded WebGL2 with no imported PRTCL runt
   assert.match(rendererSource, /37000\.0/);
   assert.match(fieldSource, /MAX_PRTCL_PIXEL_RATIO = 1\.25/);
   assert.doesNotMatch(fieldSource + rendererSource, /getContext\("2d"|@react-three|from "three"|prtcl\.es/);
-  assert.doesNotMatch(packageSource, /@react-three|"three"/);
+  assert.equal(packageMetadata.dependencies?.["@react-three/fiber"], undefined);
+  assert.equal(packageMetadata.dependencies?.three, undefined);
   assert.match(admissionSource, /2a22f33b975e2c40b7ee0bdd2d1acb4cee4f5060/);
 });
 

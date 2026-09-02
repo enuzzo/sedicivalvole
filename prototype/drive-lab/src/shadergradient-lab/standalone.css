@@ -1,0 +1,37 @@
+@font-face {
+  font-family: 'Space Grotesk';
+  src: url('/fonts/space-grotesk-variable.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Orbitron';
+  src: url('/fonts/orbitron-latin-variable.woff2') format('woff2');
+  font-display: swap;
+}
+
+:root {
+  color: #f4f0e8;
+  background: #11110f;
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-synthesis: none;
+}
+
+html,
+body,
+#shadergradient-lab-root {
+  width: 100%;
+  min-width: 320px;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+@media (max-width: 820px) {
+  html,
+  body,
+  #shadergradient-lab-root {
+    height: auto;
+    min-height: 100%;
+    overflow: auto;
+  }
+}
