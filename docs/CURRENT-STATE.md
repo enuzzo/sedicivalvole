@@ -930,8 +930,8 @@ authenticated target-Tesla rendering and control reach remain `R11A-01`.
 
 ### 2026-09-03 Automotive Glance and Soundtrack stability checkpoint
 
-Implementation checkpoint `d38c333`, with exact-live copy follow-up `68b1830`,
-responds to the physical-Tesla report from
+Implementation checkpoint `d38c333`, exact-live copy follow-up `68b1830`, and
+always-visible overlay correction `be74aa6` respond to the physical-Tesla report from
 canonical build `20260903-0843` without claiming that office evidence closes
 vehicle listening. The selected **Automotive Glance** system establishes a
 tested universal `20 px` visible-type floor across the public App, owner LAB,
@@ -949,7 +949,9 @@ artwork, title, artist/source, and `72 px` previous/play-pause/next controls.
 It follows the committed identity for Jamendo and Illobo, natural track end,
 explicit drawer selection, and on-screen or native transport. Handler
 registration is stable for the whole running session and every previous/next
-request enters one serialized queue.
+request enters one serialized queue. The overlay sits outside the inert visual
+experience so it remains visibly and interactively above every in-page drawer;
+drawers reserve its lower space instead of hiding content behind it.
 
 The three-deck loader now gives bandwidth to the audible programme first.
 Current owns automatic preload; adjacent roles start metadata-only and promote

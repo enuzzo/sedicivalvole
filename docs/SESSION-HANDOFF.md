@@ -12,9 +12,10 @@ a new session can continue without reviving superseded prototypes.
 - semantic version: `VERSION` = `0.0.0`; no release exists;
 - canonical development URL: <https://sedicivalvole.app/>;
 - latest verified publication evidence: first entry in [`DEPLOY.md`](DEPLOY.md);
-- latest product checkpoint: `68b1830`; published source checkpoint: `bbc7bb9`;
-  canonical build: `20260903-0843`. The new Automotive Glance/Soundtrack
-  checkpoint passes local tests, build, and Browser QA but is not canonical yet;
+- latest product checkpoint: `be74aa6`; published source checkpoint: `1913189`;
+  canonical build: `20260903-1140`. The Automotive Glance/Soundtrack candidate
+  is canonical, while the final always-above-drawers Now Playing correction is
+  locally verified and awaits republication;
 - repository code, comments, documentation, interface copy, and logs are English;
 - `.env` and local variants must never be read, printed, diffed, logged, or committed;
 - `_references/` is local and ignored; never copy its external material into Git.
@@ -638,9 +639,9 @@ receipt of the explicitly sent fresh attachment remain open under `R10C-03`.
 
 ### Latest local checkpoint: Automotive Glance and stable Soundtrack
 
-Checkpoint `d38c333`, plus target-viewport copy follow-up `68b1830`, both pushed
-to `origin/main`, implement the owner-selected Direction 3 / **Automotive Glance**
-and every 2026-09-03 Soundtrack note. They
+Checkpoint `d38c333`, target-viewport copy follow-up `68b1830`, and overlay
+correction `be74aa6`, all pushed to `origin/main`, implement the owner-selected
+Direction 3 / **Automotive Glance** and every 2026-09-03 Soundtrack note. They
 starts from the clean `6e13898` / live-build-`20260903-0843` baseline.
 
 - A test rejects any visible CSS type below `20 px` in the public App, owner
@@ -673,7 +674,9 @@ the overlay immediately above the footer, and real Jamendo PREVIOUS/NEXT track
 changes with an empty warning/error log. The in-app Browser does not expose
 Media Session, so native handler invocation remains a physical-Tesla gate. The
 first exact live target-viewport pass found only the pending-network START
-sentence wrapping; `68b1830` shortens it without changing behavior.
+sentence wrapping; `68b1830` shortens it without changing behavior. A subsequent
+live drawer pass proved the dock was mounted but visually covered; `be74aa6`
+moves it above every in-page overlay and reserves drawer scroll space beneath it.
 
 Do not mark `R10C-02`, `R10C-03`, `R10C-06`, or `R10C-07` complete from these
 office results. Their code/model/canonical prerequisites pass, but weak-network
