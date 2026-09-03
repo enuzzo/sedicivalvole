@@ -17,6 +17,52 @@ URL import remain outside the public surface. Exact
 dependency and local run instructions are recorded in
 `LOCAL-SHADERGRADIENT-LAB.md`.
 
+## Road Sheet appearance and native media controls — 2026-09-03 18:07
+
+- build stamp: **`20260903-1752`**; version: **`0.0.0`**; implementation
+  checkpoint: **`6cda7ee`**; deployed source/documentation checkpoint:
+  **`bd572b2`**;
+- product behavior: Direction 2 Road Sheet is live with LIGHT as the default
+  and a persisted official-Tabler-icon LIGHT/DARK/AUTO top-rail menu. AUTO
+  follows a genuinely observable system scheme first, then an existing
+  consented session position for solar phase, and otherwise a safe no-prompt
+  fallback. Appearance changes semantic chrome without changing
+  `data-palette`, renderer, iframe, map, or authored visual pixels. Stable
+  browser-native and on-screen Play, Pause, Previous, and Next handlers serve
+  Play the Road and Soundtrack through one serialized, cancellable transport;
+  publication of metadata, artwork, playback state, and valid position remains
+  truthful;
+- tests/build: **PASS**. The aggregate gate passes `615/615`, including
+  `521/521` unit and `9/9` Sites checks. Production builds process `239` App
+  modules and `159` protected-LAB modules;
+- protected publication: **PASS**. Read-only preflight and postflight each
+  report nine root entries and `remote_writes=NONE`. Publication uploaded `184`
+  files / `215,967,240` bytes, fully reverified all `29` Illobo recordings,
+  retained two prior fingerprinted assets for cache overlap, preserved the
+  dynamic root, and performed no legacy deletion;
+- canonical response: bare root, cache-busted root, and direct `index.php`
+  each return HTTP/2 200 with `no-store/no-cache`, `nosniff`, and provider
+  diagnostic `0 NC:000000 UP:`. The live app exposes version `0.0.0`, commit
+  `bd572b2`, and build `20260903-1752`;
+- byte identity: local/live HTML SHA-256 is
+  `3f25e5220c5fb6f956b3a4932f103bcf5b420506d3ccc49712ece8c9fb8fc31c`;
+  JavaScript `index-DwlHaIJt.js` is `749260` bytes at SHA-256
+  `361fc560b5b2883832d5dda2fb48b4479e204ab7cef736e1b4f9bafa6587ba60`;
+  CSS `index-CblIIy_l.css` is `164849` bytes at SHA-256
+  `0b3669e8e1c7829be41fe904b4e8eaad8c09ede3658443b7f5df1ae07da3f23a`;
+- public/protected boundaries: direct `/index.html` and
+  `/shadergradient-lab.html` return 404. `/lab/` retains the expected no-store,
+  HttpOnly, SameSite-Strict, DENY, and CSP gate;
+- rendered QA: **PASS**. Exact live in-app Browser QA at `773 × 601` measures
+  an exact `773 × 601` document; exercises LIGHT, DARK, and AUTO; confirms AUTO
+  resolves to DARK on the system-dark host while `data-palette=acid` remains
+  unchanged; verifies visible menu semantics/focus; and returns the product to
+  LIGHT. Real on-screen pointer interaction pauses and resumes playback, NEXT
+  changes `Junction 01 → Fracture 02`, and PREVIOUS returns to `Junction 01`.
+  The canonical console log is empty;
+- remaining acceptance: native Tesla Media Session controls and physical
+  listening, glare, viewing-distance, and touch acceptance remain open.
+
 ## Swiss Compact product-wide calibration — 2026-09-03 15:00
 
 - build stamp: **`20260903-1448`**; implementation checkpoint:

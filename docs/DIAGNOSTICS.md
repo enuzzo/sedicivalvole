@@ -37,14 +37,18 @@ Canonical HTML, main JavaScript, and CSS are byte-identical to that candidate;
 the physical Tesla Media Session result and received fresh attachment remain
 open under `R10C-03`.
 
-Local source checkpoint `6cda7ee` extends that evidence without changing the
-privacy boundary. Every native Play, Pause, Previous, and Next invocation now
-receives a monotonic action ID and records synchronous receipt plus its ordered,
-correlated completion or failure. The same stable handlers serve Play the Road
-and Soundtrack. The report distinguishes committed audible state from pending
-buffer work, and its Media Session publication remains truthful for metadata,
-artwork, playback state, and valid position state. Physical-Tesla native-control
-receipt and listening remain open; office tests do not close `R10C-03`.
+Canonical build `20260903-1752` publishes source checkpoint `6cda7ee` and
+extends that evidence without changing the privacy boundary. Every native Play,
+Pause, Previous, and Next invocation now receives a monotonic action ID and
+records synchronous receipt plus its ordered, correlated completion or failure.
+The same stable handlers serve Play the Road and Soundtrack. The report
+distinguishes committed audible state from pending buffer work, and its Media
+Session publication remains truthful for metadata, artwork, playback state,
+and valid position state. Exact live on-screen Pause/Play and
+`Junction 01 → Fracture 02 → Junction 01` Next/Previous pass with an empty
+console. Physical-Tesla native-control receipt and listening remain open; the
+in-app Browser exposes no native Media Session API and does not close
+`R10C-03`.
 
 ## In-app report v3
 

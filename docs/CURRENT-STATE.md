@@ -623,11 +623,12 @@ dated study documents.
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
 - The canonical live product is version `0.0.0`, implementation checkpoint
-  `bcec32e`, built source/documentation checkpoint `5303fdf`, build
-  `20260903-1448`. It publishes Swiss Compact across the public product,
-  diagnostics, Discover, ATLAS, owner LAB package, and ShaderGradient
-  workbench without changing audio, Media Session, renderer, remote-source, or
-  licensing boundaries. It retains the ATLAS-local persisted
+  `6cda7ee`, deployed source/documentation checkpoint `bd572b2`, build
+  `20260903-1752`. It publishes Road Sheet LIGHT/DARK/AUTO and Swiss Compact
+  across the public product, diagnostics, Discover, ATLAS, owner LAB package,
+  and ShaderGradient workbench. It also hardens the shared Media Session and
+  on-screen transport while preserving the audio-source, renderer,
+  remote-source, and licensing boundaries. It retains the ATLAS-local persisted
   `MAP COLOR / PALETTE|STANDARD` switch and dark semantic cartography while
   retaining product-palette route, marker, Navigator Plaque, Drive Lab and UI
   accents. The same build
@@ -664,12 +665,13 @@ dated study documents.
   `236f2c9`. Its guarded publication, read-only pre/postflight, and
   HTML/main-JavaScript/main-CSS byte identity pass. Exact live `773 × 601`
   Browser QA proves Swiss Compact's `72 / 384 / 72 / 72 px` vertical
-  composition, six-track top/footer grids, persistent `532 px` Now Playing,
+  composition, seven-track top and six-track footer grids, persistent `532 px` Now Playing,
   Music's single scroll, Discover's non-clipping `246 px` rail and `64 px`
   result rhythm, REPORT, and the `320 px` ATLAS Drive Lab with full-map
   collapse/reopen and mandatory attribution clear of hint and transport. Exact
-  live `1280 × 720` QA proves the wide shell without source/network collision.
-  All inspected canonical warning/error logs are empty. The authenticated LAB
+  local `702 × 546` and `1280 × 720` QA proves responsive shell bounds without
+  source/network collision. All inspected canonical warning/error logs are
+  empty. The authenticated LAB
   gate retains its no-store/CSP boundary; physical-Tesla cabin/glare/touch,
   motion, native Media Session, and listening acceptance remain open.
 - Owner checkpoint `8450109` supersedes the temporary Music Navigator Rail with
@@ -800,9 +802,9 @@ and checkpoint `d45f8dd` closes the remaining `10A` office implementation:
   512 px HD PNG masters remain local under `artwork-masters` and are not shipped;
 - the Tesla footer palette now measures `226 px` wide at `773 × 601`, with larger
   colour targets. The separate X10 `LIGHT / DARK / AUTO` appearance switch is
-  implemented locally at checkpoint `6cda7ee`, uses the measured top-rail lane,
-  and never recolours the active visual palette; canonical and Tesla acceptance
-  remain milestone 13 gates.
+  implemented at checkpoint `6cda7ee` and canonical in build `20260903-1752`,
+  uses the measured top-rail lane, and never recolours the active visual
+  palette; physical Tesla acceptance remains the milestone 13 gate.
 
 Mandatory inserts `10A` and `10B` have office and canonical PASS in build
 `20260901-2232`; target-Tesla gates remain open.
@@ -1029,10 +1031,11 @@ package passed the local build and typography matrix; its live authenticated
 boundary remains intact. Physical-Tesla legibility, glare, touch, motion,
 native Media Session, and listening remain open.
 
-### 2026-09-03 Road Sheet appearance and media-control source checkpoint
+### 2026-09-03 Road Sheet appearance and media-control canonical checkpoint
 
-Implementation checkpoint `6cda7ee` is pushed source ahead of the canonical
-build. It makes LIGHT the default and adds the direct persisted
+Implementation checkpoint `6cda7ee` is canonical through deployed
+source/documentation checkpoint `bd572b2`, build `20260903-1752`. It makes LIGHT
+the default and adds the direct persisted
 LIGHT/DARK/AUTO sun/moon/sun-moon menu. AUTO uses an observable system scheme
 first, then an already-consented session position for solar phase, and finally
 a safe fallback; it neither requests GPS nor stores coordinates. Appearance
@@ -1047,21 +1050,25 @@ one activation, and Pause then Play preserves the observed position. Native
 invocation IDs, order, and correlated outcomes enter the coordinate-free flight
 recorder.
 
-The aggregate local gate passes `615/615`: unit `521/521`, Sites `9/9`, and all
-feature suites. The production build passes. Exact Browser QA passes at
-`773 × 601` LIGHT, `702 × 546` DARK, and `1280 × 720` DARK, with persistence,
-AUTO/palette separation, keyboard focus, bounded chrome, and an empty fresh
-console. Canonical publication and physical-Tesla native-control, listening,
-distance, glare, and touch evidence remain open.
+The aggregate gate passes `615/615`: unit `521/521`, Sites `9/9`, and all
+feature suites. The `239`-module App / `159`-module protected-LAB production
+build passes. Protected publication uploaded `184` files / `215,967,240` bytes
+after and before read-only `remote_writes=NONE` checks; canonical HTML,
+JavaScript, and CSS are byte-identical to the candidate. Exact live
+`773 × 601` Browser QA passes LIGHT/DARK/AUTO, system-dark AUTO with unchanged
+`data-palette=acid`, menu focus, return to LIGHT, on-screen Pause/Play, and
+`Junction 01 → Fracture 02 → Junction 01` Next/Previous with an empty console.
+Local `702 × 546` and `1280 × 720` responsive QA also passes. Physical-Tesla
+native-control, listening, distance, glare, and touch evidence remains open.
 
 ## Open work
 
 1. Execute live Tesla `R4-07`–`R4-08`, the canonical `10A` / `10B` / `10C`
-   codes, and row 11 on final build `20260903-1448`. Execute Tesla tests
+   codes, and row 11 on final build `20260903-1752`. Execute Tesla tests
    `R1-01`–`R1-03`, `R4-01`–`R4-08`,
    `R5-01`–`R5-07`, `R7-01`–`R7-14`, `R8-01`–`R8-03`, `R9-01`–`R9-07`,
    `R10-00A`–`R10-06`, `R10C-01`–`R10C-08`, `R11-01`–`R11-06`, `R11A-01`, and
-   the now locally runnable `R13-00`–`R13-03` from
+   the now canonical `R13-00`–`R13-03` from
    [`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md), including
    the live audio transport evidence and MERIDIAN
    `0 → brake/UNDERWATER → renewed acceleration → 130` motion that the available

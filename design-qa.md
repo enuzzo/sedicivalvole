@@ -1511,4 +1511,19 @@ Physical-Tesla cabin acceptance remains open.
   distance, glare, touch, native Media Session behavior, and listening remain
   explicit acceptance gates.
 
+## Canonical publication update — 2026-09-03 18:07 CEST
+
+- Deployed source/documentation checkpoint `bd572b2`, implementation
+  `6cda7ee`, version `0.0.0`, and build `20260903-1752` pass protected
+  publication and local/live HTML, JavaScript, and CSS byte identity.
+- Exact live `773 × 601` in-app Browser QA exercises LIGHT, DARK, and AUTO;
+  confirms system-dark AUTO without changing `data-palette=acid`; verifies
+  menu semantics and visible focus; and returns the product to LIGHT. The
+  canonical document remains exactly `773 × 601` and the console is empty.
+- Real pointer interaction pauses and resumes the on-screen player. NEXT moves
+  `Junction 01 → Fracture 02`; PREVIOUS returns to `Junction 01`.
+- This closes the canonical Road Sheet and on-screen transport gate only.
+  Native Tesla Media Session behavior and physical listening, glare,
+  viewing-distance, and touch acceptance remain open.
+
 final result: passed

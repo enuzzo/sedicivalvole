@@ -12,8 +12,9 @@ a new session can continue without reviving superseded prototypes.
 - semantic version: `VERSION` = `0.0.0`; no release exists;
 - canonical development URL: <https://sedicivalvole.app/>;
 - latest verified publication evidence: first entry in [`DEPLOY.md`](DEPLOY.md);
-- latest product checkpoint: `bcec32e`; published source/documentation
-  checkpoint: `5303fdf`; canonical build: `20260903-1448`. Swiss Compact,
+- latest product checkpoint: `6cda7ee`; published source/documentation
+  checkpoint: `bd572b2`; canonical build: `20260903-1752`. Road Sheet
+  LIGHT/DARK/AUTO, Swiss Compact, hardened native/on-screen media transport,
   buffer-first Soundtrack, and always-above-drawers Now Playing are canonical;
 - repository code, comments, documentation, interface copy, and logs are English;
 - `.env` and local variants must never be read, printed, diffed, logged, or committed;
@@ -689,7 +690,7 @@ office results. Their code/model/canonical prerequisites pass, but weak-network
 Tesla playback, native mini-player controls and sent report receipt, phone/car
 QR handoff, and moving APERTURE seams respectively remain physical evidence.
 
-### Latest canonical checkpoint: Swiss Compact
+### Previous canonical checkpoint: Swiss Compact
 
 The selected Direction 1 calibration is applied across the public App,
 diagnostics, Discover, ATLAS, owner LAB, and ShaderGradient workbench. It keeps
@@ -720,10 +721,11 @@ covers the shell, Music, Discover, REPORT, and ATLAS open/collapsed at
 logs. Physical-Tesla legibility, glare, touch, motion, native Media Session, and
 listening remain separate gates.
 
-### Latest source checkpoint: Road Sheet appearance and native media controls
+### Latest canonical checkpoint: Road Sheet appearance and native media controls
 
-Implementation checkpoint `6cda7ee` is pushed but is not yet canonical. The
-owner selected Direction 2 / **Road Sheet** in LIGHT. LIGHT is the default; the
+Implementation checkpoint `6cda7ee` is published through source/documentation
+checkpoint `bd572b2`, build `20260903-1752`. The owner selected Direction 2 /
+**Road Sheet** in LIGHT. LIGHT is the default; the
 top rail exposes persisted LIGHT/DARK/AUTO through official Tabler sun, moon,
 and sun-moon icons. AUTO accepts a system scheme only when it is genuinely
 observable, then uses solar phase only from an already-consented session
@@ -738,10 +740,15 @@ while buffering shares one activation, and Pause then Play preserves position.
 The flight recorder retains native invocation IDs, ordering, and outcomes.
 
 The aggregate gate passes `615/615`, including unit `521/521` and Sites `9/9`;
-the production build passes. Exact local in-app Browser QA passes at
-`773 × 601` LIGHT, `702 × 546` DARK, and `1280 × 720` DARK with a clean fresh
-console. Canonical deployment and physical-Tesla native-control, listening,
-glare, distance, and touch acceptance remain open.
+the `239`-module App / `159`-module protected-LAB production build passes.
+Preflight/postflight are read-only and report `remote_writes=NONE`; canonical
+HTML, JavaScript, and CSS are byte-identical to the candidate. Exact live
+`773 × 601` in-app Browser QA passes LIGHT/DARK/AUTO, system-dark AUTO with
+unchanged `data-palette=acid`, menu focus, return to LIGHT, on-screen
+Pause/Play, and `Junction 01 → Fracture 02 → Junction 01` Next/Previous with an
+empty console. Local `702 × 546` and `1280 × 720` responsive QA passes.
+Physical-Tesla native-control, listening, glare, distance, and touch acceptance
+remain open.
 
 ## Verification
 
