@@ -4279,7 +4279,7 @@ export function App() {
     <main
       ref={appRef}
       tabIndex={-1}
-      className={`app phase-${phase} ${controlsAwake || controlsPinned ? "controls-awake" : "controls-resting"}`}
+      className={`app phase-${phase} ${controlsAwake || controlsPinned ? "controls-awake" : "controls-resting"}${modalOpen ? " modal-open" : ""}${currentTrack ? " has-now-playing" : ""}`}
       data-palette={themeId}
       data-environment={environmentId}
       onPointerDown={handleSurfacePointerDown}
@@ -4617,24 +4617,6 @@ export function App() {
           </div>
         ) : null}
 
-        {currentTrack ? (
-          <div className="now-playing-dock persistent-transport control-layer" aria-label="Now playing and music transport">
-            <div className="now-playing-summary" role="status" aria-live="polite" aria-atomic="true">
-              {currentTrack.artwork ? <img src={currentTrack.artwork} alt="" width="72" height="72" /> : <span className="now-playing-artwork" aria-hidden="true">16</span>}
-              <span className="now-playing-copy">
-                <small>{soundtrackSnapshot?.status === "buffering" ? `LOADING ${String(soundtrackSnapshot?.pending?.direction || "TRACK").toUpperCase()}` : "NOW PLAYING"}</small>
-                <strong>{currentTrack.title}</strong>
-                <em>{currentTrack.artist} · {currentTrack.album}</em>
-              </span>
-            </div>
-            <div className="now-playing-transport" aria-label="Music transport">
-              <button type="button" onClick={() => void moveTransport("previous", "persistent-transport")} aria-label="Previous track"><MediaGlyph name="previous" /></button>
-              <button type="button" onClick={() => void toggleTransport(null, "persistent-transport")} aria-label={transportPlaying ? "Pause" : "Play"}><MediaGlyph name={transportPlaying ? "pause" : "play"} /></button>
-              <button type="button" onClick={() => void moveTransport("next", "persistent-transport")} aria-label="Next track"><MediaGlyph name="next" /></button>
-            </div>
-          </div>
-        ) : null}
-
         {manualEffectsDeckOpen ? (
           <ManualEffectsDeck
             values={soundtrackManualEffects}
@@ -4690,6 +4672,24 @@ export function App() {
           <PaletteControl themeId={themeId} onChange={setThemeId} />
         </footer>
       </section>
+
+      {phase === "running" && currentTrack ? (
+        <div className="now-playing-dock persistent-transport control-layer" aria-label="Now playing and music transport">
+          <div className="now-playing-summary" role="status" aria-live="polite" aria-atomic="true">
+            {currentTrack.artwork ? <img src={currentTrack.artwork} alt="" width="72" height="72" /> : <span className="now-playing-artwork" aria-hidden="true">16</span>}
+            <span className="now-playing-copy">
+              <small>{soundtrackSnapshot?.status === "buffering" ? `LOADING ${String(soundtrackSnapshot?.pending?.direction || "TRACK").toUpperCase()}` : "NOW PLAYING"}</small>
+              <strong>{currentTrack.title}</strong>
+              <em>{currentTrack.artist} · {currentTrack.album}</em>
+            </span>
+          </div>
+          <div className="now-playing-transport" aria-label="Music transport">
+            <button type="button" onClick={() => void moveTransport("previous", "persistent-transport")} aria-label="Previous track"><MediaGlyph name="previous" /></button>
+            <button type="button" onClick={() => void toggleTransport(null, "persistent-transport")} aria-label={transportPlaying ? "Pause" : "Play"}><MediaGlyph name={transportPlaying ? "pause" : "play"} /></button>
+            <button type="button" onClick={() => void moveTransport("next", "persistent-transport")} aria-label="Next track"><MediaGlyph name="next" /></button>
+          </div>
+        </div>
+      ) : null}
 
       {supportOpen ? (
         <SupportPanel

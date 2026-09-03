@@ -3001,7 +3001,7 @@ html { font-size: var(--font-size-floor); }
 .swatch-housing button { min-height: 20px; }
 
 .persistent-transport.now-playing-dock {
-  z-index: 12;
+  z-index: 35;
   bottom: 100px;
   width: min(610px, calc(100vw - 24px));
   display: grid;
@@ -3011,6 +3011,8 @@ html { font-size: var(--font-size-floor); }
   border: 1px solid rgba(238, 234, 224, .42);
   background: rgba(7, 9, 9, .96);
 }
+.app.modal-open .persistent-transport.now-playing-dock { bottom: 12px; }
+.app.modal-open.has-now-playing .drawer-panel { padding-bottom: 124px; }
 .now-playing-summary {
   display: grid;
   grid-template-columns: 72px minmax(0, 1fr);

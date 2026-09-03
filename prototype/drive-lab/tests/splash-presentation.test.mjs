@@ -553,6 +553,10 @@ test("the vehicle gets persistent Now Playing, stable Media Session actions, and
   assert.match(app, /className="manual-effects-backdrop"[\s\S]*?onClick=\{onClose\}/);
   assert.match(styles, /\.drawer-panel \{[\s\S]*?touch-action: pan-y/);
   assert.match(styles, /\.persistent-transport\.now-playing-dock \{[\s\S]*?bottom: 100px/);
+  assert.match(styles, /\.persistent-transport\.now-playing-dock \{[\s\S]*?z-index: 35/);
+  assert.match(styles, /\.app\.modal-open \.persistent-transport\.now-playing-dock \{ bottom: 12px; \}/);
+  assert.match(styles, /\.app\.modal-open\.has-now-playing \.drawer-panel \{ padding-bottom: 124px; \}/);
+  assert.match(app, /phase === "running" && currentTrack \? \([\s\S]*?className="now-playing-dock persistent-transport control-layer"/);
   assert.match(styles, /\.controls-resting \.persistent-transport \{[\s\S]*?opacity: 0;[\s\S]*?pointer-events: none/);
   assert.match(app, /soundtrackSnapshot\?\.previous\?\.imageUrl/);
   assert.match(app, /soundtrackSnapshot\?\.next\?\.imageUrl/);
