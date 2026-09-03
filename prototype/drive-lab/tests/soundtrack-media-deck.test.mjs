@@ -130,7 +130,7 @@ test("sync creates exactly three transient roles and gives the current track fir
   assert.equal(snapshot.status, "prepared");
   assert.equal(snapshot.preparedMediaElements, 3);
   assert.equal(snapshot.playableMediaElements, 0);
-  assert.equal(snapshot.browserPreloadHint, "current-first-staged-adjacent");
+  assert.equal(snapshot.browserPreloadHint, "current-first-next-only");
   assert.equal(snapshot.browserBufferOwnership, "browser-owned-observation-only");
   assert.equal(snapshot.offlineAudioAvailable, false);
   assert.equal(snapshot.persistentAudioStorage, false);
@@ -159,7 +159,7 @@ test("an explicit playlist restart rewinds a healthy prepared target without dis
   assert.equal(restartedMedia.currentTime, 0);
 });
 
-test("adjacent audio preloading starts only after the current track has stable headroom", () => {
+test("only the next track preloads after the current track has stable headroom", () => {
   const fixture = createFixture();
   fixture.controller.syncQueue(fixture.queue);
   const current = fixture.controller.getMediaForRole("current");
@@ -171,7 +171,7 @@ test("adjacent audio preloading starts only after the current track has stable h
   current.buffered = new FakeTimeRanges([[0, 6.25]]);
   current.emit("progress");
 
-  assert.equal(fixture.controller.getMediaForRole("previous").preload, "auto");
+  assert.equal(fixture.controller.getMediaForRole("previous").preload, "metadata");
   assert.equal(fixture.controller.getMediaForRole("next").preload, "auto");
 });
 

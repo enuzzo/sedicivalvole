@@ -150,7 +150,7 @@ export function createSoundtrackMediaDeckController({
         ? current.key
         : null,
       audibleKeys: Object.freeze(audibleKeys),
-      browserPreloadHint: "current-first-staged-adjacent",
+      browserPreloadHint: "current-first-next-only",
       browserBufferOwnership: "browser-owned-observation-only",
       offlineAudioAvailable: false,
       persistentAudioStorage: false,
@@ -190,9 +190,14 @@ export function createSoundtrackMediaDeckController({
 
   const applyPreloadPolicy = () => {
     const currentRecord = roles.current ? records.get(roles.current) : null;
-    const adjacentMayLoad = hasStableBuffer(currentRecord?.media);
+    const nextMayLoad = hasStableBuffer(currentRecord?.media);
     for (const [key, record] of records) {
-      const desired = key === roles.current || adjacentMayLoad ? "auto" : "metadata";
+      // Protect the current decoder on constrained embedded browsers. Once it
+      // has real headroom, only the next track may compete for audio data; the
+      // previous element keeps any browser-owned buffer without a new preload.
+      const desired = key === roles.current || (nextMayLoad && key === roles.next)
+        ? "auto"
+        : "metadata";
       if (record.media.preload !== desired) record.media.preload = desired;
     }
   };

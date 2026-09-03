@@ -340,6 +340,25 @@ test("Soundtrack can lend its AudioContext to vehicle macro detection without lo
   });
 });
 
+test("Soundtrack defers silent score worklets until Play the Road is selected", async () => {
+  await withFakeAudioEnvironment({}, async ({ createAudioEngine, context }) => {
+    const engine = createAudioEngine(null, null, null, {
+      audioContext: context,
+      deferScoreWorklets: true,
+    });
+    await Promise.resolve();
+    assert.equal(context.worklets.length, 0, "Soundtrack started a silent Play the Road processor");
+    assert.equal(engine.getState().scoreWorklets, "deferred");
+    assert.equal(engine.getState().bloomWorklet, "deferred");
+
+    assert.equal(await engine.setScore("fracture"), "fracture");
+    assert.ok(context.worklets.some((worklet) => worklet.processorName === "score-processor"));
+    assert.equal(engine.getState().scoreWorklets, "requested");
+    assert.equal(engine.getState().bloomWorklet, "requested");
+    engine.destroy();
+  });
+});
+
 test("a hung FRACTURE module reaches the JUNCTION safety bed at the bounded deadline", async () => {
   const score = deferred();
   const junction = fakeJunction([undefined]);

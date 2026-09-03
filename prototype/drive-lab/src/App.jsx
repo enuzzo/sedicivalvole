@@ -3133,6 +3133,7 @@ export function App() {
           audioContext: musicId === "soundtrack"
             ? soundtrackRef.current?.getAudioContext?.() ?? null
             : null,
+          deferScoreWorklets: musicId === "soundtrack",
         },
       );
       if (!audioRef.current) throw new Error("Web Audio is unavailable");

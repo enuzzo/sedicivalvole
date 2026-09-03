@@ -89,6 +89,7 @@ export const AUDIO_WORKLET_READY_TIMEOUT_MS = 8000;
 
 export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
   audioContext = null,
+  deferScoreWorklets = false,
 } = {}) {
   const AudioContext = window.AudioContext || window.webkitAudioContext;
   if (!audioContext && !AudioContext) return null;
@@ -373,48 +374,60 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
     }
   }
 
-  const fractureReady = (async () => {
-    if (typeof context.audioWorklet?.addModule !== "function") {
-      throw new Error("AudioWorklet is unavailable");
-    }
-    await withReadinessTimeout(context.audioWorklet.addModule(processorUrl), {
-      label: "FRACTURE AudioWorklet",
-      timeoutMs: AUDIO_WORKLET_READY_TIMEOUT_MS,
-      schedule: window.setTimeout ?? globalThis.setTimeout,
-      cancel: window.clearTimeout ?? globalThis.clearTimeout,
+  let fractureReady = null;
+  function prepareFracture() {
+    if (fractureReady) return fractureReady;
+    fractureReadyState = "loading";
+    fractureReady = (async () => {
+      if (typeof context.audioWorklet?.addModule !== "function") {
+        throw new Error("AudioWorklet is unavailable");
+      }
+      await withReadinessTimeout(context.audioWorklet.addModule(processorUrl), {
+        label: "FRACTURE AudioWorklet",
+        timeoutMs: AUDIO_WORKLET_READY_TIMEOUT_MS,
+        schedule: window.setTimeout ?? globalThis.setTimeout,
+        cancel: window.clearTimeout ?? globalThis.clearTimeout,
+      });
+      if (!running) return false;
+      node = new AudioWorkletNode(context, "score-processor", { outputChannelCount: [2] });
+      node.onprocessorerror = (event) => {
+        void recoverFromFractureProcessorError(event);
+      };
+      node.port.onmessage = (event) => {
+        if (event.data?.type !== "SNAPSHOT" || scoreId !== "fracture") return;
+        arrangement = event.data.payload;
+        publishArrangement(arrangement);
+      };
+      node.connect(fractureGain);
+      post("MUTE", { muted });
+      post("SPEED", { speed, energy });
+      post("BRAKE", { brake: vehicleEffectsEnabled ? brakeAmount : 0 });
+      fractureReadyState = "ready";
+      return true;
+    })().catch((error) => {
+      if (!running) return false;
+      fractureReadyState = "error";
+      fractureReadyError = error instanceof Error ? error : new Error(String(error));
+      console.error("[flux] the score worklet did not load", fractureReadyError);
+      return false;
     });
-    if (!running) return false;
-    node = new AudioWorkletNode(context, "score-processor", { outputChannelCount: [2] });
-    node.onprocessorerror = (event) => {
-      void recoverFromFractureProcessorError(event);
-    };
-    node.port.onmessage = (event) => {
-      if (event.data?.type !== "SNAPSHOT" || scoreId !== "fracture") return;
-      arrangement = event.data.payload;
-      publishArrangement(arrangement);
-    };
-    node.connect(fractureGain);
-    post("MUTE", { muted });
-    post("SPEED", { speed, energy });
-    post("BRAKE", { brake: vehicleEffectsEnabled ? brakeAmount : 0 });
-    fractureReadyState = "ready";
-    return true;
-  })().catch((error) => {
-    if (!running) return false;
-    fractureReadyState = "error";
-    fractureReadyError = error instanceof Error ? error : new Error(String(error));
-    console.error("[flux] the score worklet did not load", fractureReadyError);
-    return false;
-  });
+    return fractureReady;
+  }
 
-  if (typeof context.audioWorklet?.addModule === "function") {
-    withReadinessTimeout(context.audioWorklet.addModule(bloomProcessorUrl), {
+  let bloomReady = null;
+  function prepareBloom() {
+    if (bloomReady) return bloomReady;
+    if (typeof context.audioWorklet?.addModule !== "function") {
+      bloomReady = Promise.resolve(false);
+      return bloomReady;
+    }
+    bloomReady = withReadinessTimeout(context.audioWorklet.addModule(bloomProcessorUrl), {
       label: "BLOOM AudioWorklet",
       timeoutMs: AUDIO_WORKLET_READY_TIMEOUT_MS,
       schedule: window.setTimeout ?? globalThis.setTimeout,
       cancel: window.clearTimeout ?? globalThis.clearTimeout,
     }).then(() => {
-      if (!running) return;
+      if (!running) return false;
       bloomNode = new AudioWorkletNode(context, "bloom-processor", { outputChannelCount: [2] });
       bloomSerialLink = installBypassableSerialProcessor({
         source: performanceBus,
@@ -433,9 +446,21 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
           console.error("[flux] BLOOM processor failed; direct score bus restored", event);
         },
       });
+      return true;
     }).catch((error) => {
       console.error("[flux] the BLOOM worklet did not load", error);
+      return false;
     });
+    return bloomReady;
+  }
+
+  // Soundtrack borrows this engine only for vehicle-macro detection. Starting
+  // silent Play the Road processors in that mode wastes real-time audio-thread
+  // budget on embedded vehicle Chromium. Lazily promote the same engine if the
+  // listener switches to Play the Road later in the session.
+  if (!deferScoreWorklets) {
+    void prepareFracture();
+    void prepareBloom();
   }
 
   function post(type, payload) {
@@ -661,6 +686,7 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
 
     setScore(nextScoreId) {
       if (!running) return Promise.reject(new Error("Audio engine is closed"));
+      void prepareBloom();
       requestedScoreId = nextScoreId === "junction"
         ? "junction"
         : nextScoreId === "nightshift" ? "nightshift" : "fracture";
@@ -668,7 +694,7 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
       scoreError = null;
       if (requestedScoreId === "fracture") {
         scoreStatus = fractureReadyState === "ready" ? "transitioning" : "loading";
-        return fractureReady.then(async (ready) => {
+        return prepareFracture().then(async (ready) => {
           if (!running || requestedScoreId !== "fracture" || revision !== scoreSwitchRevision) return scoreId;
           if (!ready || fractureReadyState !== "ready") {
             const message = fractureReadyError?.message || "FRACTURE did not load";
@@ -845,6 +871,8 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
           : junction?.getState();
         return {
           ...sampledState,
+          scoreWorklets: fractureReady ? "requested" : "deferred",
+          bloomWorklet: bloomReady ? "requested" : "deferred",
           requestedScoreId,
           scoreStatus,
           scoreError,
@@ -865,6 +893,8 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
       return {
         score: arrangement.scoreId ?? "fracture",
         scoreLabel: arrangement.scoreLabel ?? "FRACTURE",
+        scoreWorklets: fractureReady ? "requested" : "deferred",
+        bloomWorklet: bloomReady ? "requested" : "deferred",
         requestedScoreId,
         scoreStatus,
         scoreError,
