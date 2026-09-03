@@ -264,7 +264,7 @@ const QA_EFFECT = import.meta.env.DEV
   ? QA_PARAMS.get("qaEffect")
   : null;
 const QA_NETWORK = import.meta.env.DEV
-  && ["offline", "limited", "online"].includes(QA_PARAMS.get("qaNetwork"))
+  && ["offline", "limited", "medium", "online"].includes(QA_PARAMS.get("qaNetwork"))
   ? QA_PARAMS.get("qaNetwork")
   : null;
 const QA_ATLAS_DEMO = import.meta.env.DEV && QA_PARAMS.get("qaAtlasDemo") === "1";
@@ -419,19 +419,32 @@ function readConnectionSnapshot(reason) {
   };
 }
 
-function readNetworkUiNotice(reason = "ui") {
+function readNetworkUiNotice(reason = "ui", traffic = null, generatedAtMs = performance.now()) {
   if (QA_NETWORK === "offline") {
-    return deriveNetworkNoticeState({ connection: { online: false } });
+    return deriveNetworkNoticeState({ connection: { online: false }, traffic, generatedAtMs });
   }
   if (QA_NETWORK === "limited") {
     return deriveNetworkNoticeState({
-      connection: { online: true, effectiveType: "3g", downlinkMbps: 0.4, roundTripTimeMs: 900 },
+      connection: { online: true, effectiveType: "2g", downlinkMbps: 0.4, roundTripTimeMs: 1100 },
+      traffic,
+      generatedAtMs,
+    });
+  }
+  if (QA_NETWORK === "medium") {
+    return deriveNetworkNoticeState({
+      connection: { online: true, effectiveType: "3g", downlinkMbps: 2, roundTripTimeMs: 450 },
+      traffic,
+      generatedAtMs,
     });
   }
   if (QA_NETWORK === "online") {
-    return deriveNetworkNoticeState({ connection: { online: true, effectiveType: "4g", downlinkMbps: 10, roundTripTimeMs: 50 } });
+    return deriveNetworkNoticeState({
+      connection: { online: true, effectiveType: "4g", downlinkMbps: 10, roundTripTimeMs: 50 },
+      traffic,
+      generatedAtMs,
+    });
   }
-  return deriveNetworkNoticeState({ connection: readConnectionSnapshot(reason) });
+  return deriveNetworkNoticeState({ connection: readConnectionSnapshot(reason), traffic, generatedAtMs });
 }
 
 function networkUiCopy(notice) {
@@ -443,14 +456,17 @@ function networkUiCopy(notice) {
 }
 
 function networkUiDetail(notice) {
-  if (notice?.status === "limited" && Number.isFinite(notice.downlinkMbps)) {
-    return `${notice.downlinkMbps} Mb/s`;
+  if (notice?.status === "offline") return "0 Mb/s";
+  const observedBytesPerSecond = notice?.currentDownloadBytesPerSecond > 0
+    ? notice.currentDownloadBytesPerSecond
+    : notice?.lastObservedDownloadBytesPerSecond;
+  if (observedBytesPerSecond > 0) {
+    return `${Math.max(0.01, observedBytesPerSecond * 8 / 1_000_000).toFixed(2)} Mb/s OBS`;
   }
-  if (notice?.status === "request-failed") return "REQUEST FAILED";
-  if (notice?.status === "offline") return "OFFLINE";
-  if (notice?.status === "recovered") return "RESTORED";
-  if (notice?.status === "transferring") return "LOADING";
-  return null;
+  if (Number.isFinite(notice?.downlinkMbps)) {
+    return `${notice.downlinkMbps.toFixed(1)} Mb/s EST`;
+  }
+  return "— Mb/s";
 }
 
 function boundedDiagnosticText(value, limit = 96) {
@@ -1427,10 +1443,10 @@ function DriveyCycleControl({ settings, onChange }) {
   const nextRenderMode = DRIVEY_RENDER_MODES[nextDriveyRenderModeId(renderMode.id)];
   return (
     <div
-      className="drivey-cycle-control"
+      className="visual-cycle-control drivey-cycle-control"
       onPointerDown={(event) => event.stopPropagation()}
     >
-      <div className="drivey-cycle-rail">
+      <div className="visual-cycle-rail drivey-cycle-rail">
         <button
           className="visual-cycle-button visual-view-cycle"
           type="button"
@@ -1460,10 +1476,10 @@ function PrtclCycleControl({ settings, onChange }) {
   const next = PRTCL_TYPES[nextPrtclTypeId(current.id)];
   return (
     <div
-      className="prtcl-cycle-control"
+      className="visual-cycle-control prtcl-cycle-control"
       onPointerDown={(event) => event.stopPropagation()}
     >
-      <div className="prtcl-cycle-rail">
+      <div className="visual-cycle-rail prtcl-cycle-rail">
         <button
           className="visual-cycle-button visual-particle-cycle"
           type="button"
@@ -1482,10 +1498,10 @@ function ShaderGradientCycleControl({ environment, onChange }) {
   const nextEnvironment = getFluxEnvironment(nextShaderGradientEnvironmentId(environment.id));
   return (
     <div
-      className="gradient-cycle-control"
+      className="visual-cycle-control gradient-cycle-control"
       onPointerDown={(event) => event.stopPropagation()}
     >
-      <div className="gradient-cycle-rail">
+      <div className="visual-cycle-rail gradient-cycle-rail">
         <button
           className="visual-cycle-button visual-gradient-cycle"
           type="button"
@@ -3990,12 +4006,14 @@ export function App() {
   useEffect(() => {
     const connection = navigator.connection ?? navigator.mozConnection ?? navigator.webkitConnection;
     const capture = (reason) => {
+      const generatedAtMs = performance.now();
       const snapshot = readConnectionSnapshot(reason);
-      setNetworkNotice(readNetworkUiNotice(reason));
+      const traffic = summarizeNetworkTelemetry(networkTelemetryRef.current, generatedAtMs);
+      setNetworkNotice(readNetworkUiNotice(reason, traffic, generatedAtMs));
       if (!diagnosticsActiveRef.current) return;
       recordNetworkOnlineState(networkTelemetryRef.current, {
         online: snapshot.online,
-        capturedAtMs: performance.now(),
+        capturedAtMs: generatedAtMs,
       });
       connectionHistoryRef.current = appendConnectionHistory(connectionHistoryRef.current, snapshot);
       logDiagnosticEvent("network.changed", {
@@ -4027,13 +4045,26 @@ export function App() {
       && PerformanceObserver.supportedEntryTypes?.includes("resource");
     if (!supported) return undefined;
     const observer = new PerformanceObserver((list) => {
-      if (!diagnosticsActiveRef.current) return;
       for (const entry of list.getEntries()) {
         recordNetworkResourceEntry(networkTelemetryRef.current, entry);
       }
+      const generatedAtMs = performance.now();
+      const traffic = summarizeNetworkTelemetry(networkTelemetryRef.current, generatedAtMs);
+      setNetworkNotice(readNetworkUiNotice("resource-observed", traffic, generatedAtMs));
     });
     observer.observe({ type: "resource", buffered: true });
     return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const refresh = () => {
+      const generatedAtMs = performance.now();
+      const traffic = summarizeNetworkTelemetry(networkTelemetryRef.current, generatedAtMs);
+      setNetworkNotice(readNetworkUiNotice("ui-sample", traffic, generatedAtMs));
+    };
+    refresh();
+    const timer = window.setInterval(refresh, DRIVE_TRACE_INTERVAL_MS);
+    return () => window.clearInterval(timer);
   }, []);
 
   useEffect(() => {
@@ -4865,13 +4896,13 @@ export function App() {
           <ModeSelector />
           <span className="speed-spacer" aria-hidden="true" />
           <div
-            className={`network-state is-${networkNotice.tone}${networkUiDetail(networkNotice) ? " has-copy" : ""}`}
+            className={`network-state is-${networkNotice.tone} has-copy`}
             role="status"
-            aria-label={`Network ${networkUiCopy(networkNotice)}. Browser connection quality is an estimate.`}
-            title="Browser connection estimate · not cellular signal strength"
+            aria-label={`Network ${networkUiCopy(networkNotice)}, ${networkUiDetail(networkNotice)}. Browser-observed application transfer or connection estimate; not cellular signal strength.`}
+            title="Browser-observed app transfer or connection estimate · not cellular signal strength"
           >
             <span className="network-state-dot" aria-hidden="true" />
-            {networkUiDetail(networkNotice) ? <strong>{networkUiDetail(networkNotice)}</strong> : null}
+            <strong>{networkUiDetail(networkNotice)}</strong>
           </div>
           <AppearanceControl
             mode={appearanceMode}
@@ -4927,10 +4958,9 @@ export function App() {
         />
 
         <button className={`source-readout${musicMode === "soundtrack" ? " is-soundtrack" : ""}`} type="button" onClick={toggleSource} aria-label={`Speed source ${source}. Tap to switch`}>
-          {musicMode !== "soundtrack" ? <span className="active-mode-marker" aria-hidden="true">FLUX</span> : null}
           <div className="readout-group">
             <strong>{Math.round(speed)}</strong>
-            <div className="readout-labels"><span>km/h</span><small>{source}</small></div>
+            <span className="readout-unit">km/h</span>
           </div>
           {activeEffect && <div className="effect-badge">{activeEffect}</div>}
         </button>

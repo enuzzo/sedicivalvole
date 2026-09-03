@@ -134,7 +134,6 @@ test("the driving surface assigns product roles instead of applying one universa
   const roleContracts = [
     [".source-readout strong", "--type-value"],
     [".source-readout span", "--type-meta"],
-    [".source-readout small", "--type-meta"],
     [".mode-selector button", "--type-label"],
     [".discover-button span", "--type-label"],
     [".report-button span", "--type-label"],

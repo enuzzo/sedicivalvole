@@ -562,11 +562,21 @@ export function summarizeNetworkTelemetry(telemetry, generatedAtMs, windowMs = 5
   const cutoff = generatedAtMs - windowMs;
   let recentDownloadBytes = 0;
   let recentUploadBytes = 0;
+  let lastObservedDownloadBytesPerSecond = 0;
+  let latestObservedDownloadAtMs = Number.NEGATIVE_INFINITY;
   for (const transfer of telemetry.recentTransfers) {
     if (!transfer.success && transfer.source !== "resource-timing-transfer-size") continue;
     if (!Number.isFinite(transfer.bytes) || transfer.endedAtMs < cutoff) continue;
     if (transfer.direction === "download") recentDownloadBytes += transfer.bytes;
     if (transfer.direction === "upload") recentUploadBytes += transfer.bytes;
+  }
+  for (const transfer of telemetry.recentTransfers) {
+    if (transfer.direction !== "download" || transfer.success === false) continue;
+    if (!Number.isFinite(transfer.bytes) || transfer.bytes <= 0) continue;
+    if (!Number.isFinite(transfer.durationMs) || transfer.durationMs <= 0) continue;
+    if (!Number.isFinite(transfer.endedAtMs) || transfer.endedAtMs < latestObservedDownloadAtMs) continue;
+    latestObservedDownloadAtMs = transfer.endedAtMs;
+    lastObservedDownloadBytesPerSecond = transfer.bytes / (transfer.durationMs / 1000);
   }
   return {
     sessionDurationMs: Math.max(0, Math.round(generatedAtMs - telemetry.startedAtMs)),
@@ -584,6 +594,7 @@ export function summarizeNetworkTelemetry(telemetry, generatedAtMs, windowMs = 5
     rollingWindowMs: windowMs,
     currentDownloadBytesPerSecond: rounded(recentDownloadBytes / (windowMs / 1000), 2),
     currentUploadBytesPerSecond: rounded(recentUploadBytes / (windowMs / 1000), 2),
+    lastObservedDownloadBytesPerSecond: rounded(lastObservedDownloadBytesPerSecond, 2),
     peakDownloadBytesPerSecond: rounded(telemetry.peakDownloadBytesPerSecond, 2),
     peakUploadBytesPerSecond: rounded(telemetry.peakUploadBytesPerSecond, 2),
     appRequests: telemetry.appRequests,
@@ -643,9 +654,15 @@ export function deriveNetworkNoticeState({
     : Math.max(0, generatedAtMs - latestRecoveryAtMs);
   const hasUnrecoveredFailure = latestFailureAtMs != null
     && (latestRecoveryAtMs == null || latestRecoveryAtMs < latestFailureAtMs);
-  const constrainedHint = ["slow-2g", "2g"].includes(effectiveType)
+  const poorHint = ["slow-2g", "2g"].includes(effectiveType)
     || (downlinkMbps != null && downlinkMbps <= 0.75)
     || (roundTripTimeMs != null && roundTripTimeMs >= 1000);
+  const mediumHint = !poorHint && (
+    effectiveType === "3g"
+    || (downlinkMbps != null && downlinkMbps < 3)
+    || (roundTripTimeMs != null && roundTripTimeMs >= 400)
+  );
+  const qualityTone = poorHint ? "alert" : mediumHint ? "caution" : "good";
 
   let status = "unavailable";
   let tone = "quiet";
@@ -660,7 +677,7 @@ export function deriveNetworkNoticeState({
     evidence = "instrumented-application-request";
   } else if (activeTransfers > 0) {
     status = "transferring";
-    tone = "active";
+    tone = qualityTone;
     evidence = "instrumented-application-request";
   } else if (latestRecoveryAtMs != null
     && latestRecoveryAtMs >= (latestFailureAtMs ?? Number.NEGATIVE_INFINITY)
@@ -668,13 +685,13 @@ export function deriveNetworkNoticeState({
     status = "recovered";
     tone = "good";
     evidence = "browser-or-instrumented-application-event";
-  } else if (constrainedHint) {
+  } else if (poorHint || mediumHint) {
     status = "limited";
-    tone = "caution";
+    tone = qualityTone;
     evidence = "browser-network-information-estimate";
   } else if (onlineHint === true) {
     status = "online";
-    tone = "quiet";
+    tone = "good";
     evidence = "browser-online-hint";
   }
 
@@ -690,6 +707,7 @@ export function deriveNetworkNoticeState({
     downlinkMbps: rounded(downlinkMbps, 2),
     roundTripTimeMs: rounded(roundTripTimeMs, 2),
     currentDownloadBytesPerSecond: rounded(traffic?.currentDownloadBytesPerSecond, 2) ?? 0,
+    lastObservedDownloadBytesPerSecond: rounded(traffic?.lastObservedDownloadBytesPerSecond, 2) ?? 0,
     currentUploadBytesPerSecond: rounded(traffic?.currentUploadBytesPerSecond, 2) ?? 0,
     failureAgeMs: rounded(failureAgeMs, 2),
     recoveryAgeMs: rounded(recoveryAgeMs, 2),

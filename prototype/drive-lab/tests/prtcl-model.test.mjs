@@ -203,7 +203,7 @@ test("the product feeds authored audio macros into the shared PRTCL field", () =
   assert.match(appSource, /<PrtclField[\s\S]*?macroSnapshot=\{audioMacros\}/);
 });
 
-test("PRTCL uses one small text-only TYPE cycle separate from the shared palette", () => {
+test("PRTCL uses the shared text-only TYPE cycle separate from the palette", () => {
   const start = appSource.indexOf("function PrtclCycleControl");
   const end = appSource.indexOf("function ScoreLibraryContent", start);
   const controlSource = appSource.slice(start, end);
@@ -212,8 +212,10 @@ test("PRTCL uses one small text-only TYPE cycle separate from the shared palette
   assert.match(controlSource, /nextPrtclTypeId\(current\.id\)/);
   assert.doesNotMatch(controlSource, /<select|aria-haspopup|Dialog|range|input/);
   assert.match(appSource, /<PaletteControl themeId=\{themeId\} onChange=\{setThemeId\}/);
-  assert.match(stylesSource, /\.prtcl-cycle-rail \{[\s\S]*?grid-template-columns: 94px;/);
-  assert.match(stylesSource, /\.visual-cycle-button[\s\S]*?min-height: 34px;/);
+  assert.match(controlSource, /className="visual-cycle-control prtcl-cycle-control"/);
+  assert.match(controlSource, /className="visual-cycle-rail prtcl-cycle-rail"/);
+  assert.match(stylesSource, /\.visual-cycle-rail \{[\s\S]*?grid-auto-columns: 112px/);
+  assert.match(stylesSource, /\.visual-cycle-button \{[\s\S]*?min-height: var\(--touch-target\)/);
 });
 
 test("the reproducible QA harness can hold every PRTCL type, macro, palette, and signal", () => {

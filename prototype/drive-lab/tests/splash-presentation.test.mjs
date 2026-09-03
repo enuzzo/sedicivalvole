@@ -545,7 +545,8 @@ test("Space Grotesk remains the UI face while Orbitron is isolated to project wo
   assert.ok(brandFont.length > 10_000, "the packaged brand font should not be an empty placeholder");
 });
 
-test("Space Grotesk telemetry units sit below and align to the value edge", () => {
+test("Space Grotesk speed and unit share one compact centered axis", () => {
+  const app = read("App.jsx");
   const styles = read("styles.css");
   const groups = styles.slice(
     styles.indexOf(".readout-group {"),
@@ -553,10 +554,10 @@ test("Space Grotesk telemetry units sit below and align to the value edge", () =
   );
 
   assert.match(groups, /\.readout-group \{[\s\S]*?flex-direction: column/);
-  assert.match(groups, /\.readout-group \{[\s\S]*?align-items: flex-end/);
-  assert.match(groups, /\.readout-labels \{[\s\S]*?flex-direction: row-reverse/);
-  assert.match(groups, /\.readout-labels \{[\s\S]*?justify-content: flex-start/);
-  assert.match(groups, /white-space: nowrap/);
+  assert.match(groups, /\.readout-group \{[\s\S]*?align-items: center/);
+  assert.match(groups, /text-align: center/);
+  assert.match(app, /<span className="readout-unit">km\/h<\/span>/);
+  assert.doesNotMatch(app, /<small>\{source\}<\/small>/);
 });
 
 test("safe product state persists locally and can be reset without storing GPS", () => {
@@ -622,28 +623,30 @@ test("the vehicle gets persistent Now Playing, stable Media Session actions, and
   assert.match(styles, /\.drawer-panel\.is-dragging/);
 });
 
-test("compact viewports keep mode, appearance, telemetry, and the resting marker distinct", () => {
+test("compact viewports recover speed width for persistent network evidence", () => {
   const app = read("App.jsx");
   const styles = read("styles.css");
 
-  assert.match(app, /className="active-mode-marker"[^>]*>FLUX<\/span>/);
-  assert.match(styles, /\.controls-resting \.active-mode-marker \{ opacity: \.82; \}/);
-  assert.match(styles, /grid-template-columns: 164px 156px 60px 86px 84px 116px minmax\(107px, 1fr\)/);
+  assert.doesNotMatch(app, /className="active-mode-marker"/);
+  assert.match(styles, /grid-template-columns: 164px 104px 112px 86px 84px 116px minmax\(107px, 1fr\)/);
   assert.match(styles, /\.appearance-control \{ grid-column: 4; \}[\s\S]*?\.gps-state \{ grid-column: 5; \}/);
-  assert.match(styles, /@media \(min-width: 651px\) and \(max-width: 772px\) \{[\s\S]*?grid-template-columns: 21\.216% 20\.181% 7\.762% 11\.125% 10\.867% 15\.006% 13\.843%/);
-  assert.match(styles, /@media \(max-width: 650px\) \{[\s\S]*?grid-template-columns: 116px minmax\(0, 1fr\) 220px 72px 52px/);
+  assert.match(styles, /@media \(min-width: 651px\) and \(max-width: 772px\) \{[\s\S]*?grid-template-columns: 21\.216% 13\.454% 14\.489% 11\.125% 10\.867% 15\.006% 13\.843%/);
+  assert.match(styles, /@media \(max-width: 650px\) \{[\s\S]*?grid-template-columns: 116px minmax\(0, 1fr\) 104px 72px 52px/);
   assert.match(styles, /@media \(max-width: 480px\) \{[\s\S]*?\.topbar-mark \{ display: none; \}[\s\S]*?\.mode-selector \{ grid-column: 1; \}/);
 });
 
-test("the source module is speed-only and network text appears only when actionable", () => {
+test("the source module is compact and network speed remains visible", () => {
   const app = read("App.jsx");
   const styles = read("styles.css");
 
-  assert.match(app, /musicMode !== "soundtrack" \? <span className="active-mode-marker"/);
+  assert.match(app, /<span className="readout-unit">km\/h<\/span>/);
+  assert.doesNotMatch(app, /<small>\{source\}<\/small>|className="active-mode-marker"/);
   assert.doesNotMatch(app, /<span>bpm<\/span>|<span>%<\/span>/);
-  assert.match(app, /networkUiDetail\(networkNotice\) \? <strong>\{networkUiDetail\(networkNotice\)\}<\/strong> : null/);
+  assert.match(app, /<strong>\{networkUiDetail\(networkNotice\)\}<\/strong>/);
   assert.match(app, /className="network-state-dot" aria-hidden="true"/);
-  assert.match(app, /Browser connection quality is an estimate/);
-  assert.match(styles, /\.source-readout\.is-soundtrack \{[\s\S]*?width: 190px/);
+  assert.match(app, /Browser-observed application transfer or connection estimate/);
+  assert.match(app, /Mb\/s OBS/);
+  assert.match(app, /Mb\/s EST/);
+  assert.match(styles, /left: 164px; width: 104px/);
   assert.match(styles, /\.network-state\.is-caution \{ color: #f3a84c; \}/);
 });

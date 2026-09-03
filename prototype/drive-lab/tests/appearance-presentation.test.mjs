@@ -90,8 +90,8 @@ test("Road Sheet appearance tokens preserve Tesla geometry and visual colour own
 
   assert.match(styles, /\.app\[data-appearance="light"\] \{[\s\S]*?--ui-surface: var\(--road-sheet-light-surface\);[\s\S]*?--ui-text: var\(--road-sheet-light-ink\)/);
   assert.match(styles, /\.app\[data-appearance="dark"\] \{[\s\S]*?--ui-surface: var\(--road-sheet-dark-surface\);[\s\S]*?--ui-text: var\(--road-sheet-dark-ink\)/);
-  assert.match(styles, /@media \(max-width: 900px\) \{[\s\S]*?grid-template-columns: 164px 156px 60px 86px 84px 116px minmax\(107px, 1fr\)/);
-  assert.match(styles, /@media \(min-width: 651px\) and \(max-width: 772px\) \{[\s\S]*?grid-template-columns: 21\.216% 20\.181% 7\.762% 11\.125% 10\.867% 15\.006% 13\.843%/);
+  assert.match(styles, /@media \(max-width: 900px\) \{[\s\S]*?grid-template-columns: 164px 104px 112px 86px 84px 116px minmax\(107px, 1fr\)/);
+  assert.match(styles, /@media \(min-width: 651px\) and \(max-width: 772px\) \{[\s\S]*?grid-template-columns: 21\.216% 13\.454% 14\.489% 11\.125% 10\.867% 15\.006% 13\.843%/);
   assert.match(styles, /@media \(min-width: 651px\) and \(max-width: 772px\) \{[\s\S]*?grid-template-columns: 11\.384% 11\.384% 23\.933% 27\.167% 10\.349% 15\.783%/);
   assert.match(styles, /\.appearance-option \{[\s\S]*?min-height: var\(--touch-target\)/);
   assert.match(styles, /\.app\[data-appearance\] :is\(\.stop-button > span, \.stop-button::after, \.effects-button::after, \.mix-button small\) \{ color: var\(--ui-muted\); \}/);

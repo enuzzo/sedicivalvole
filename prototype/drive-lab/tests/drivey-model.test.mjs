@@ -464,7 +464,8 @@ test("the bridge embeds the original runtime and excludes unneeded image and leg
   assert.match(appSource, /aria-pressed=\{wireframe\}/);
   assert.match(appSource, /nextDriveyCameraId\(camera\.id\)/);
   assert.match(appSource, /nextDriveyRenderModeId\(renderMode\.id\)/);
-  assert.match(stylesSource, /grid-template-columns: repeat\(2, 94px\)/);
+  assert.match(stylesSource, /\.visual-cycle-rail \{[\s\S]*?grid-auto-columns: 112px/);
+  assert.match(stylesSource, /\.visual-cycle-button \{[\s\S]*?min-height: var\(--touch-target\)/);
   assert.doesNotMatch(appSource, /id="drivey-tune-panel"/);
   assert.doesNotMatch(stylesSource, /\.visual-tune-panel|\.visual-render-icon/);
   assert.match(harnessSource, /renderMode: parameters\.get\("render"\) \?\? "normal"/);

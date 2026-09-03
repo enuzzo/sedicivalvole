@@ -302,6 +302,7 @@ test("network telemetry reports only browser-observed and app-known bytes", () =
   assert.equal(summary.unobservableResourceEntries, 1);
   assert.equal(summary.observedUploadBytes, 20_000);
   assert.equal(summary.currentDownloadBytesPerSecond, 24_000);
+  assert.equal(summary.lastObservedDownloadBytesPerSecond, 120_000);
   assert.equal(summary.currentUploadBytesPerSecond, 4_000);
   assert.equal(summary.peakDownloadBytesPerSecond, 120_000);
   assert.equal(summary.peakUploadBytesPerSecond, 20_000);
@@ -336,7 +337,7 @@ test("network notice state keeps browser hints separate from observed app activi
     }),
     {
       status: "transferring",
-      tone: "active",
+      tone: "good",
       evidence: "instrumented-application-request",
       onlineHint: true,
       activeTransfers: 2,
@@ -346,6 +347,7 @@ test("network notice state keeps browser hints separate from observed app activi
       downlinkMbps: 8,
       roundTripTimeMs: 80,
       currentDownloadBytesPerSecond: 0,
+      lastObservedDownloadBytesPerSecond: 0,
       currentUploadBytesPerSecond: 0,
       failureAgeMs: null,
       recoveryAgeMs: null,
@@ -366,11 +368,23 @@ test("network notice state keeps browser hints separate from observed app activi
   recordNetworkOnlineState(telemetry, { online: true, capturedAtMs: 2600 });
   traffic = summarizeNetworkTelemetry(telemetry, 2700);
   assert.equal(deriveNetworkNoticeState({ connection: { online: true }, traffic, generatedAtMs: 2700 }).status, "recovered");
-  assert.equal(deriveNetworkNoticeState({
+  const poor = deriveNetworkNoticeState({
     connection: { online: true, effectiveType: "2g", downlinkMbps: 0.5, roundTripTimeMs: 1200 },
     traffic,
     generatedAtMs: 12_000,
-  }).status, "limited");
+  });
+  assert.equal(poor.status, "limited");
+  assert.equal(poor.tone, "alert");
+  assert.equal(deriveNetworkNoticeState({
+    connection: { online: true, effectiveType: "3g", downlinkMbps: 2, roundTripTimeMs: 450 },
+    traffic,
+    generatedAtMs: 12_000,
+  }).tone, "caution");
+  assert.equal(deriveNetworkNoticeState({
+    connection: { online: true, effectiveType: "4g", downlinkMbps: 10, roundTripTimeMs: 50 },
+    traffic,
+    generatedAtMs: 12_000,
+  }).tone, "good");
   assert.equal(deriveNetworkNoticeState({
     connection: { online: false, effectiveType: "4g" },
     traffic,
