@@ -930,7 +930,8 @@ authenticated target-Tesla rendering and control reach remain `R11A-01`.
 
 ### 2026-09-03 Automotive Glance and Soundtrack stability checkpoint
 
-Implementation checkpoint `d38c333` responds to the physical-Tesla report from
+Implementation checkpoint `d38c333`, with exact-live copy follow-up `68b1830`,
+responds to the physical-Tesla report from
 canonical build `20260903-0843` without claiming that office evidence closes
 vehicle listening. The selected **Automotive Glance** system establishes a
 tested universal `20 px` visible-type floor across the public App, owner LAB,
@@ -964,7 +965,8 @@ The complete suite passes `501/501` plus `9/9` Sites checks; production App,
 protected LAB, and Sites builds pass. Exact local Browser QA at `773 × 601`
 and `1280 × 720` finds no visible text below `20 px`, no selector/chrome
 overflow, a non-overlapping persistent player, real Jamendo PREVIOUS and NEXT
-changes, and no console warning/error. `R10C-02`, `R10C-03`, `R10C-06`, and
+changes, and no console warning/error. The constrained-network START status was
+shortened after the first live target-viewport pass found it wrapping. `R10C-02`, `R10C-03`, `R10C-06`, and
 `R10C-07` retain their earlier canonical code/model evidence, but none is
 physically concluded: weak-network Tesla playback, native Tesla Media Session,
 phone/car QR receipt, and moving-Tesla APERTURE seams remain the decisive gates.

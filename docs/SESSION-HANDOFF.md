@@ -12,7 +12,7 @@ a new session can continue without reviving superseded prototypes.
 - semantic version: `VERSION` = `0.0.0`; no release exists;
 - canonical development URL: <https://sedicivalvole.app/>;
 - latest verified publication evidence: first entry in [`DEPLOY.md`](DEPLOY.md);
-- latest product checkpoint: `d38c333`; published source checkpoint: `bbc7bb9`;
+- latest product checkpoint: `68b1830`; published source checkpoint: `bbc7bb9`;
   canonical build: `20260903-0843`. The new Automotive Glance/Soundtrack
   checkpoint passes local tests, build, and Browser QA but is not canonical yet;
 - repository code, comments, documentation, interface copy, and logs are English;
@@ -638,8 +638,9 @@ receipt of the explicitly sent fresh attachment remain open under `R10C-03`.
 
 ### Latest local checkpoint: Automotive Glance and stable Soundtrack
 
-Checkpoint `d38c333`, pushed to `origin/main`, implements the owner-selected
-Direction 3 / **Automotive Glance** and every 2026-09-03 Soundtrack note. It
+Checkpoint `d38c333`, plus target-viewport copy follow-up `68b1830`, both pushed
+to `origin/main`, implement the owner-selected Direction 3 / **Automotive Glance**
+and every 2026-09-03 Soundtrack note. They
 starts from the clean `6e13898` / live-build-`20260903-0843` baseline.
 
 - A test rejects any visible CSS type below `20 px` in the public App, owner
@@ -670,7 +671,9 @@ QA at `773 × 601` and `1280 × 720`. The target view shows no visible copy belo
 `20 px`, no selector/chrome collision, exact `100 px` header/footer geometry,
 the overlay immediately above the footer, and real Jamendo PREVIOUS/NEXT track
 changes with an empty warning/error log. The in-app Browser does not expose
-Media Session, so native handler invocation remains a physical-Tesla gate.
+Media Session, so native handler invocation remains a physical-Tesla gate. The
+first exact live target-viewport pass found only the pending-network START
+sentence wrapping; `68b1830` shortens it without changing behavior.
 
 Do not mark `R10C-02`, `R10C-03`, `R10C-06`, or `R10C-07` complete from these
 office results. Their code/model/canonical prerequisites pass, but weak-network
