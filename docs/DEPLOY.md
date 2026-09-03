@@ -17,6 +17,36 @@ URL import remain outside the public surface. Exact
 dependency and local run instructions are recorded in
 `LOCAL-SHADERGRADIENT-LAB.md`.
 
+## Compact telemetry and visual controls candidate — 2026-09-03 21:41
+
+- candidate build stamp: **`20260903-2137`**; version: **`0.0.0`**; UI
+  implementation checkpoint: **`0ec5d4e`**; built source/documentation
+  checkpoint: **`4ffd707`**;
+- tests/build: **PASS**. The aggregate product gate passes `504/504`, Sites
+  passes `9/9`, and production processes `234` App modules and `154`
+  protected-LAB modules;
+- local rendered QA: **PASS**. Isolated headless Chrome at exact `773 × 601`
+  measures Gradient, Drivey, and PRTCL's first contextual button at the same
+  `x=16`, `y=82`, and `112 × 55 px`; each cycles state. Speed is `104 × 72 px`
+  with visible value plus `KM/H` only. Network is `112 × 72 px`; ring and
+  persistent rate share green, orange, or red;
+- protected publication attempt: **PARTIAL, NOT CANONICAL**. Read-only preflight
+  passed. The first normal publication request was rejected before execution by
+  the safety reviewer because it permits the publisher's hash-gated static-entry
+  and legacy cleanup. The materially safer `--preserve-existing` publication
+  uploaded the new fingerprinted build while retaining existing root entries;
+  read-only postflight passed;
+- server evidence: new JavaScript `index-gDT2Y9_b.js` is HTTP/2 200 at `738,526`
+  bytes, proving the conservative upload occurred. Cache-busted `/` and direct
+  `/index.php` still reference prior `index-DIQ9Ukep.js` and
+  `index-Cm37CQc1.css`, so canonical build remains **`20260903-2103`**. Upload
+  presence is not treated as deployment success;
+- remaining action: explicit owner approval is required before running the
+  normal publisher, which may delete only the existing static entry and
+  legacy/cache-overlap material admitted by the script's exact identity gates.
+  Canonical HTTP/asset identity, live rendered QA, and all physical-Tesla gates
+  remain open for this candidate.
+
 ## Diagnostic-driven Soundtrack admission — 2026-09-03 21:14
 
 - build stamp: **`20260903-2103`**; version: **`0.0.0`**; implementation

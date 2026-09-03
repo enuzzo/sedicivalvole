@@ -1117,6 +1117,12 @@ The same pass measures a `104 × 72 px` speed cell containing only value plus
 are green, orange, or red together. Browser QA, `504/504` product checks,
 `9/9` Sites checks, and production builds pass; canonical publication and
 physical-Tesla distance, glare, touch, and network interpretation remain open.
+Candidate build `20260903-2137` from clean source/documentation checkpoint
+`4ffd707` passed the same production build and was uploaded only in conservative
+`--preserve-existing` mode. Its fingerprinted JavaScript is present remotely,
+but retained static-root precedence means canonical `/` still serves build
+`20260903-2103`. This is a partial upload, not a successful deployment; normal
+hash-gated static-entry/legacy cleanup requires explicit owner approval.
 
 ## Open work
 

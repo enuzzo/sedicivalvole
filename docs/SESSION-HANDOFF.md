@@ -11,13 +11,20 @@ a new session can continue without reviving superseded prototypes.
 - branch: `main`, with a configured `origin`;
 - semantic version: `VERSION` = `0.0.0`; no release exists;
 - canonical development URL: <https://sedicivalvole.app/>;
-- latest verified publication evidence: first entry in [`DEPLOY.md`](DEPLOY.md);
+- latest deployment attempt and verified publication evidence: first entries in
+  [`DEPLOY.md`](DEPLOY.md); each entry states whether the candidate became canonical;
 - latest working product checkpoints: `26c4043` for diagnostic-driven
   Soundtrack admission, `1d43158` for Underwater-only vehicle response, and
   `0d5bb05` for the compact Tesla layout; published source/documentation
   checkpoint: `1795f0b`; canonical build: `20260903-2103`. Road Sheet
   LIGHT/DARK/AUTO, Swiss Compact, hardened native/on-screen media transport,
   buffer-first Soundtrack, and always-above-drawers Now Playing are canonical;
+- compact telemetry/contextual-control candidate: implementation `0ec5d4e`,
+  built source/docs `4ffd707`, build `20260903-2137`. The conservative
+  `--preserve-existing` upload placed its fingerprinted assets on the server but
+  deliberately retained the old static root; canonical `/` therefore remains
+  build `20260903-2103`. Normal hash-gated root/legacy cleanup needs explicit
+  owner approval before this candidate can become canonical;
 - repository code, comments, documentation, interface copy, and logs are English;
 - `.env` and local variants must never be read, printed, diffed, logged, or committed;
 - `_references/` is local and ignored; never copy its external material into Git.
