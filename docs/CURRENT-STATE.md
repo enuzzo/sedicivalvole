@@ -1092,8 +1092,8 @@ the Jamendo three-cover stack no longer enters its copy column. Headless local
 Chrome proves the exact viewport, paired columns and zero horizontal overflow;
 the aggregate suite passes `617/617` and both production builds pass. No office
 test can close the continuous Tesla listening gate. The original correction was
-canonical build `20260903-1953`; current build `20260903-2103` from
-source/documentation checkpoint `1795f0b` carries it forward while removing
+canonical build `20260903-1953`; current build `20260903-2137` from
+source/documentation checkpoint `4ffd707` carries it forward while removing
 OPEN/BLOOM and adding diagnostic-driven admission. Protected publication, independent postflight, canonical HTML/JS/CSS
 byte identity, cache `MISS`, trusted-input exact-viewport layout and zero
 inactive score-worklet requests during Soundtrack startup pass. Retest with
@@ -1115,19 +1115,18 @@ proves `MIST → ORCHARD`, `REAR → AERIAL`, and `AXIOM → FRACTAL` interactio
 The same pass measures a `104 × 72 px` speed cell containing only value plus
 `KM/H`, and a `112 × 72 px` network cell whose hollow ring and persistent rate
 are green, orange, or red together. Browser QA, `504/504` product checks,
-`9/9` Sites checks, and production builds pass; canonical publication and
-physical-Tesla distance, glare, touch, and network interpretation remain open.
-Candidate build `20260903-2137` from clean source/documentation checkpoint
-`4ffd707` passed the same production build and was uploaded only in conservative
-`--preserve-existing` mode. Its fingerprinted JavaScript is present remotely,
-but retained static-root precedence means canonical `/` still serves build
-`20260903-2103`. This is a partial upload, not a successful deployment; normal
-hash-gated static-entry/legacy cleanup requires explicit owner approval.
+`9/9` Sites checks, and production builds pass. Build `20260903-2137` from clean
+source/documentation checkpoint `4ffd707` is canonical after the owner-approved
+normal publisher switched the dynamic root through its exact hash-gated cleanup.
+Independent read-only postflight passes; canonical HTML/JavaScript/CSS are
+byte-identical to the local candidate, and the public JavaScript embeds the
+expected build and commit. Physical-Tesla distance, glare, touch, network
+interpretation, and continuous audio listening remain open.
 
 ## Open work
 
 1. Execute live Tesla `R4-07`–`R4-09`, `R7-15`, the canonical `10A` / `10B` /
-   `10C` codes, and row 11 on final build `20260903-2103`. Execute Tesla tests
+   `10C` codes, and row 11 on final build `20260903-2137`. Execute Tesla tests
    `R1-01`–`R1-03`, `R4-01`–`R4-09`,
    `R5-01`–`R5-07`, `R7-01`–`R7-14`, `R8-01`–`R8-03`, `R9-01`–`R9-07`,
    `R10-00A`–`R10-06`, `R10C-01`–`R10C-08`, `R11-01`–`R11-06`, `R11A-01`, and

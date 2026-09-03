@@ -14,17 +14,17 @@ a new session can continue without reviving superseded prototypes.
 - latest deployment attempt and verified publication evidence: first entries in
   [`DEPLOY.md`](DEPLOY.md); each entry states whether the candidate became canonical;
 - latest working product checkpoints: `26c4043` for diagnostic-driven
-  Soundtrack admission, `1d43158` for Underwater-only vehicle response, and
-  `0d5bb05` for the compact Tesla layout; published source/documentation
-  checkpoint: `1795f0b`; canonical build: `20260903-2103`. Road Sheet
+  Soundtrack admission, `1d43158` for Underwater-only vehicle response,
+  `0d5bb05` for the compact Tesla layout, and `0ec5d4e` for compact telemetry
+  plus normalized contextual controls; published source/documentation
+  checkpoint: `4ffd707`; canonical build: `20260903-2137`. Road Sheet
   LIGHT/DARK/AUTO, Swiss Compact, hardened native/on-screen media transport,
   buffer-first Soundtrack, and always-above-drawers Now Playing are canonical;
-- compact telemetry/contextual-control candidate: implementation `0ec5d4e`,
-  built source/docs `4ffd707`, build `20260903-2137`. The conservative
-  `--preserve-existing` upload placed its fingerprinted assets on the server but
-  deliberately retained the old static root; canonical `/` therefore remains
-  build `20260903-2103`. Normal hash-gated root/legacy cleanup needs explicit
-  owner approval before this candidate can become canonical;
+- compact telemetry/contextual-control publication: implementation `0ec5d4e`,
+  built source/docs `4ffd707`, build `20260903-2137`. After a conservative staged
+  upload, the explicitly owner-approved normal publisher switched the canonical
+  dynamic root through its exact hash-gated cleanup. Independent read-only
+  postflight and local/live HTML, JavaScript, and CSS identity pass;
 - repository code, comments, documentation, interface copy, and logs are English;
 - `.env` and local variants must never be read, printed, diffed, logged, or committed;
 - `_references/` is local and ignored; never copy its external material into Git.
@@ -791,10 +791,10 @@ six-second audible floor, delays NEXT preload until the current deck owns
 `30 s`, and attributes every lifecycle event to the exact deck key/role,
 headroom, readiness/network state, and playback intent. The same policy covers
 Jamendo. Its aggregate gate passes `599/599`; the correction is canonical in
-build `20260903-2103`, while physical listening remains pending.
+build `20260903-2137`, while physical listening remains pending.
 
 The clean build processes 234 App modules and 154 protected-LAB modules.
-Canonical build `20260903-2103` reports checkpoint `1795f0b`. Protected
+Canonical build `20260903-2137` reports checkpoint `4ffd707`. Protected
 publication and independent postflight pass; cache-busted HTML, JavaScript and
 CSS are byte-identical. Trusted-input live Chrome at exact `773 × 601` starts
 Soundtrack on dry Aperture, records no warning/error or inactive score-worklet
