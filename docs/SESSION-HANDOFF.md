@@ -613,6 +613,23 @@ edge, restored PALETTE state, and empty Browser warning/error logs. Physical
 Tesla colour, glare, legibility, and touch acceptance remains open under
 `R9A-01`.
 
+Debug flight-recorder checkpoint `c869f1d` prepares the next physical Tesla
+media-control run. Every semantic UI activation and non-text control change now
+has an exact sequence/time/source record; Soundtrack Play, Pause, Previous,
+Next, library and track choices add correlated request/outcome events with
+before/after three-deck state, latency, buffer/readiness, error and playback
+confirmation. Browser media lifecycle and Media Session metadata/state/action
+registration are recorded independently, so a visible-but-inert Tesla control
+can be distinguished from an unsupported handler, a handler never invoked, a
+rejected play, a stalled target, or a successful queue change. Retention is
+1,200 protected interactions, 800 significant events, 1,200 samples and 1,800
+two-second drive samples; transport fitting removes non-interaction evidence
+first. Text, pointer coordinates, GPS coordinates, media URLs, persistence and
+automatic transmission remain excluded. Focused `73/73`, complete `498/498`,
+production build and exact local Play/Next/Previous/raw-REPORT QA pass with an
+empty warning/error log. Canonical publication and received Tesla evidence are
+still open.
+
 ## Verification
 
 ```bash

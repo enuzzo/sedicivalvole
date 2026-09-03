@@ -844,6 +844,19 @@ surrounding launch/vehicle experience.
 - The three transient previous/current/next media roles remain the audio
   prefetch boundary. Safe previous/current/next metadata now also drives browser
   artwork prefetch; supported Media Session previous/next remain wired.
+- Debug checkpoint `c869f1d` adds an exact coordinate-free interaction and
+  media flight recorder for the next Tesla run. A dedicated 1,200-entry channel
+  preserves sequenced safe control activations and correlated Soundtrack
+  request/completion/failure events with launch/on-screen/Media-Session source,
+  before/after three-deck state, timing, buffer/readiness, error and playback
+  confirmation. Browser media lifecycle plus Media Session metadata,
+  playback-state and per-action registration outcomes are recorded separately.
+  Significant and ordinary sample channels retain 800 and 1,200 events; the
+  two-second drive trace retains one hour. Transport fitting removes
+  non-interaction evidence first. Pointer coordinates, typed text, GPS
+  coordinates, media URLs, persistence and automatic transmission remain
+  excluded. Complete `498/498`, build and exact local raw-REPORT QA pass;
+  canonical publication and received physical-Tesla evidence remain open.
 - Soundtrack's black source readout is a `116 px` speed-only module. FLUX, BPM
   and energy are absent in this mode. The on-screen transport shares the chrome
   lifecycle and becomes hidden/non-interactive after idle. Follow-up checkpoint
