@@ -415,7 +415,19 @@ function networkUiCopy(notice) {
   if (notice?.status === "offline") return "OFFLINE";
   if (["limited", "request-failed"].includes(notice?.status)) return "LIMITED";
   if (notice?.status === "recovered") return "RECOVERED";
-  return "ONLINE";
+  if (notice?.status === "transferring") return "LOADING";
+  return "CONNECTED";
+}
+
+function networkUiDetail(notice) {
+  if (notice?.status === "limited" && Number.isFinite(notice.downlinkMbps)) {
+    return `${notice.downlinkMbps} Mb/s`;
+  }
+  if (notice?.status === "request-failed") return "REQUEST FAILED";
+  if (notice?.status === "offline") return "OFFLINE";
+  if (notice?.status === "recovered") return "RESTORED";
+  if (notice?.status === "transferring") return "LOADING";
+  return null;
 }
 
 function mediaArtworkType(url) {
@@ -2010,7 +2022,7 @@ function LaunchSelector({
   const networkConstrained = ["offline", "limited", "request-failed"].includes(networkNotice?.status);
   const musicWaiting = musicId !== "mute" && (!musicReady || networkConstrained);
   const startDetail = musicWaiting && networkConstrained
-    ? `NETWORK ${networkUiCopy(networkNotice)} · START NOW · MUSIC WILL JOIN WHEN READY`
+    ? `${networkUiDetail(networkNotice) || networkUiCopy(networkNotice)} EST. · MUSIC JOINS WHEN READY`
     : musicWaiting
       ? "MUSIC DATA PENDING · START NOW · AUDIO WILL JOIN WHEN READY"
       : networkConstrained ? `NETWORK ${networkUiCopy(networkNotice)} · VISUALS REMAIN AVAILABLE` : null;
@@ -2148,7 +2160,6 @@ export function App() {
   const [soundtrackManualEffects, setSoundtrackManualEffects] = useState(initialPreferences.manualEffects);
   const [networkNotice, setNetworkNotice] = useState(() => readNetworkUiNotice("app-start"));
   const [controlNotice, setControlNotice] = useState(null);
-  const [trackNotice, setTrackNotice] = useState(null);
   const [playRoadPaused, setPlayRoadPaused] = useState(false);
   const [supportOpen, setSupportOpen] = useState(false);
   const [rawReportOpen, setRawReportOpen] = useState(false);
@@ -2195,8 +2206,8 @@ export function App() {
   const performanceSamplerTimerRef = useRef(null);
   const viewportCaptureTimerRef = useRef(null);
   const controlNoticeTimerRef = useRef(null);
-  const trackNoticeTimerRef = useRef(null);
-  const announcedTrackRef = useRef("");
+  const transportActionQueueRef = useRef(Promise.resolve());
+  const mediaSessionActionsRef = useRef({ move: null, toggle: null });
   const gpsTelemetryRef = useRef(createGpsTelemetry(performance.now()));
   const driveTelemetryRef = useRef(createDriveTelemetry(performance.now()));
   const frameTelemetryRef = useRef(createFrameTelemetry(performance.now()));
@@ -3324,6 +3335,13 @@ export function App() {
   }, [logDiagnosticEvent, showControlNotice, soundtrackController]);
 
   const moveTransport = useCallback(async (direction, source = "on-screen-transport") => {
+    const waitForTurn = transportActionQueueRef.current.catch(() => {});
+    let releaseTurn;
+    transportActionQueueRef.current = waitForTurn.then(() => new Promise((resolve) => {
+      releaseTurn = resolve;
+    }));
+    await waitForTurn;
+    try {
     const actionId = `transport-${++mediaActionSequenceRef.current}`;
     const startedAtMs = performance.now();
     const before = sessionMusicModeRef.current === "soundtrack"
@@ -3385,6 +3403,9 @@ export function App() {
       after: { status: "playing", currentScore: scores[nextIndex].id },
     });
     return scores[nextIndex].id;
+    } finally {
+      releaseTurn?.();
+    }
   }, [logDiagnosticEvent, playRoadPaused, selectScore]);
 
   const toggleTransport = useCallback(async (forcePlaying = null, source = "on-screen-transport") => {
@@ -3488,32 +3509,53 @@ export function App() {
   }, [genreId, musicMode, soundtrackSnapshot?.current?.key, soundtrackSnapshot?.library?.selection?.kind]);
 
   const transportPlaying = !muted && (musicMode === "soundtrack"
-    ? soundtrackSnapshot?.status === "playing"
+    ? Boolean(soundtrackSnapshot?.media?.audibleKeys?.length)
     : !playRoadPaused);
 
-  useEffect(() => {
-    if (phase !== "running" || !currentTrack || announcedTrackRef.current === currentTrack.key) return;
-    announcedTrackRef.current = currentTrack.key;
-    window.clearTimeout(trackNoticeTimerRef.current);
-    setTrackNotice(currentTrack);
-    trackNoticeTimerRef.current = window.setTimeout(() => {
-      setTrackNotice(null);
-      trackNoticeTimerRef.current = null;
-    }, 3200);
-  }, [currentTrack, phase]);
+  mediaSessionActionsRef.current = { move: moveTransport, toggle: toggleTransport };
 
   useEffect(() => {
-    if (phase !== "running" || !currentTrack) return undefined;
+    if (phase !== "running") return undefined;
     const mediaSessionAvailable = "mediaSession" in navigator;
-    const mediaMetadataAvailable = "MediaMetadata" in window;
-    if (!mediaSessionAvailable || !mediaMetadataAvailable) {
+    if (!mediaSessionAvailable) {
       logDiagnosticEvent("media-session.capabilities", {
         mediaSessionAvailable,
-        mediaMetadataAvailable,
+        mediaMetadataAvailable: "MediaMetadata" in window,
         actions: {},
       });
       return undefined;
     }
+    const handlers = {
+      play: () => void mediaSessionActionsRef.current.toggle?.(true, "media-session"),
+      pause: () => void mediaSessionActionsRef.current.toggle?.(false, "media-session"),
+      previoustrack: () => void mediaSessionActionsRef.current.move?.("previous", "media-session"),
+      nexttrack: () => void mediaSessionActionsRef.current.move?.("next", "media-session"),
+    };
+    const actionRegistration = {};
+    for (const [action, handler] of Object.entries(handlers)) {
+      try {
+        navigator.mediaSession.setActionHandler(action, handler);
+        actionRegistration[action] = { registered: true, error: null };
+      } catch (error) {
+        actionRegistration[action] = {
+          registered: false,
+          error: boundedDiagnosticText(String(error?.name || error?.message || error || "unsupported"), 120),
+        };
+      }
+    }
+    logDiagnosticEvent("media-session.actions.registered", { actionRegistration });
+    return () => {
+      for (const action of Object.keys(handlers)) {
+        try { navigator.mediaSession.setActionHandler(action, null); } catch { /* unsupported action */ }
+      }
+    };
+  }, [logDiagnosticEvent, phase]);
+
+  useEffect(() => {
+    if (phase !== "running" || !currentTrack) return;
+    const mediaSessionAvailable = "mediaSession" in navigator;
+    const mediaMetadataAvailable = "MediaMetadata" in window;
+    if (!mediaSessionAvailable || !mediaMetadataAvailable) return;
     const artwork = currentTrack.artwork ? [{
       src: new URL(currentTrack.artwork, window.location.href).href,
       sizes: "512x512",
@@ -3544,24 +3586,6 @@ export function App() {
         reason: boundedDiagnosticText(String(error?.name || error?.message || error || "unknown"), 120),
       });
     }
-    const handlers = {
-      play: () => void toggleTransport(true, "media-session"),
-      pause: () => void toggleTransport(false, "media-session"),
-      previoustrack: () => void moveTransport("previous", "media-session"),
-      nexttrack: () => void moveTransport("next", "media-session"),
-    };
-    const actionRegistration = {};
-    for (const [action, handler] of Object.entries(handlers)) {
-      try {
-        navigator.mediaSession.setActionHandler(action, handler);
-        actionRegistration[action] = { registered: true, error: null };
-      } catch (error) {
-        actionRegistration[action] = {
-          registered: false,
-          error: boundedDiagnosticText(String(error?.name || error?.message || error || "unsupported"), 120),
-        };
-      }
-    }
     logDiagnosticEvent("media-session.published", {
       key: currentTrack.key,
       title: boundedDiagnosticText(currentTrack.title, 120),
@@ -3572,14 +3596,9 @@ export function App() {
       requestedPlaybackState: transportPlaying ? "playing" : "paused",
       metadataPublished,
       playbackStatePublished,
-      actionRegistration,
+      actionRegistration: "stable-session-handlers",
     });
-    return () => {
-      for (const action of Object.keys(handlers)) {
-        try { navigator.mediaSession.setActionHandler(action, null); } catch { /* unsupported action */ }
-      }
-    };
-  }, [currentTrack, logDiagnosticEvent, moveTransport, phase, toggleTransport, transportPlaying]);
+  }, [currentTrack, logDiagnosticEvent, phase, transportPlaying]);
 
   useEffect(() => {
     const artworkUrls = [
@@ -4022,7 +4041,6 @@ export function App() {
     window.clearTimeout(keyboardLeaseTimerRef.current);
     window.clearTimeout(brakeFlashTimerRef.current);
     window.clearTimeout(controlNoticeTimerRef.current);
-    window.clearTimeout(trackNoticeTimerRef.current);
     window.clearInterval(audioMeterTimerRef.current);
     window.clearInterval(flightRecorderTimerRef.current);
     window.clearInterval(performanceSamplerTimerRef.current);
@@ -4530,13 +4548,13 @@ export function App() {
           <ModeSelector />
           <span className="speed-spacer" aria-hidden="true" />
           <div
-            className={`network-state is-${networkNotice.tone}`}
+            className={`network-state is-${networkNotice.tone}${networkUiDetail(networkNotice) ? " has-copy" : ""}`}
             role="status"
             aria-label={`Network ${networkUiCopy(networkNotice)}. Browser connection quality is an estimate.`}
             title="Browser connection estimate · not cellular signal strength"
           >
-            <span>NET</span>
-            <small>{networkUiCopy(networkNotice)}</small>
+            <span className="network-state-dot" aria-hidden="true" />
+            {networkUiDetail(networkNotice) ? <strong>{networkUiDetail(networkNotice)}</strong> : null}
           </div>
           <button
             className={`gps-state is-${gpsPresentation.tone}`}
@@ -4590,18 +4608,6 @@ export function App() {
             <strong>{Math.round(speed)}</strong>
             <div className="readout-labels"><span>km/h</span><small>{source}</small></div>
           </div>
-          {musicMode !== "soundtrack" ? <>
-            <div className="readout-divider" />
-            <div className="readout-group">
-              <strong>{bpm == null ? "—" : Math.round(bpm)}</strong>
-              <div className="readout-labels"><span>bpm</span><small>tempo</small></div>
-            </div>
-            <div className="readout-divider" />
-            <div className="readout-group">
-              <strong>{Math.round(energy * 100)}</strong>
-              <div className="readout-labels"><span>%</span><small>energy</small></div>
-            </div>
-          </> : null}
           {activeEffect && <div className="effect-badge">{activeEffect}</div>}
         </button>
 
@@ -4611,18 +4617,23 @@ export function App() {
           </div>
         ) : null}
 
-        {trackNotice ? (
-          <div className="track-change-notice" role="status" aria-live="polite" aria-atomic="true">
-            {trackNotice.artwork ? <img src={trackNotice.artwork} alt="" width="64" height="64" /> : null}
-            <span><small>NOW PLAYING</small><strong>{trackNotice.title}</strong><em>{trackNotice.artist} · {trackNotice.album}</em></span>
+        {currentTrack ? (
+          <div className="now-playing-dock persistent-transport control-layer" aria-label="Now playing and music transport">
+            <div className="now-playing-summary" role="status" aria-live="polite" aria-atomic="true">
+              {currentTrack.artwork ? <img src={currentTrack.artwork} alt="" width="72" height="72" /> : <span className="now-playing-artwork" aria-hidden="true">16</span>}
+              <span className="now-playing-copy">
+                <small>{soundtrackSnapshot?.status === "buffering" ? `LOADING ${String(soundtrackSnapshot?.pending?.direction || "TRACK").toUpperCase()}` : "NOW PLAYING"}</small>
+                <strong>{currentTrack.title}</strong>
+                <em>{currentTrack.artist} · {currentTrack.album}</em>
+              </span>
+            </div>
+            <div className="now-playing-transport" aria-label="Music transport">
+              <button type="button" onClick={() => void moveTransport("previous", "persistent-transport")} aria-label="Previous track"><MediaGlyph name="previous" /></button>
+              <button type="button" onClick={() => void toggleTransport(null, "persistent-transport")} aria-label={transportPlaying ? "Pause" : "Play"}><MediaGlyph name={transportPlaying ? "pause" : "play"} /></button>
+              <button type="button" onClick={() => void moveTransport("next", "persistent-transport")} aria-label="Next track"><MediaGlyph name="next" /></button>
+            </div>
           </div>
         ) : null}
-
-        <div className="persistent-transport control-layer" aria-label="Music transport">
-          <button type="button" onClick={() => void moveTransport("previous", "persistent-transport")} aria-label="Previous track"><MediaGlyph name="previous" /></button>
-          <button type="button" onClick={() => void toggleTransport(null, "persistent-transport")} aria-label={transportPlaying ? "Pause" : "Play"}><MediaGlyph name={transportPlaying ? "pause" : "play"} /></button>
-          <button type="button" onClick={() => void moveTransport("next", "persistent-transport")} aria-label="Next track"><MediaGlyph name="next" /></button>
-        </div>
 
         {manualEffectsDeckOpen ? (
           <ManualEffectsDeck

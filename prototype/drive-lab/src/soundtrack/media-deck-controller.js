@@ -2,6 +2,8 @@ import { SOUNDTRACK_QUEUE_SCHEMA } from "./rotation-model.js";
 
 const MEDIA_ROLES = Object.freeze(["previous", "current", "next"]);
 const HAVE_FUTURE_DATA = 3;
+const HAVE_ENOUGH_DATA = 4;
+export const SOUNDTRACK_STABLE_BUFFER_SECONDS = 6;
 
 const asFinite = (value) => Number.isFinite(value) ? value : null;
 
@@ -75,6 +77,12 @@ export function createSoundtrackMediaDeckController({
   let destroyed = false;
   let controllerError = null;
 
+  const hasStableBuffer = (media, minimumSeconds = SOUNDTRACK_STABLE_BUFFER_SECONDS) => {
+    const ahead = bufferedAheadSeconds(media);
+    return Number(media?.readyState) >= HAVE_ENOUGH_DATA
+      || (Number.isFinite(ahead) && ahead >= minimumSeconds);
+  };
+
   const mediaSnapshot = (key) => {
     if (!key) return null;
     const record = records.get(key);
@@ -104,6 +112,7 @@ export function createSoundtrackMediaDeckController({
       durationSeconds: rounded(asFinite(media.duration), 2),
       errorCode: safeErrorCode(media),
       lastEvent: record.lastEvent,
+      preload: media.preload || "none",
     });
   };
 
@@ -130,7 +139,7 @@ export function createSoundtrackMediaDeckController({
         ? current.key
         : null,
       audibleKeys: Object.freeze(audibleKeys),
-      browserPreloadHint: "auto",
+      browserPreloadHint: "current-first-staged-adjacent",
       browserBufferOwnership: "browser-owned-observation-only",
       offlineAudioAvailable: false,
       persistentAudioStorage: false,
@@ -168,6 +177,15 @@ export function createSoundtrackMediaDeckController({
     disposeMedia(record.media, record.listeners);
   };
 
+  const applyPreloadPolicy = () => {
+    const currentRecord = roles.current ? records.get(roles.current) : null;
+    const adjacentMayLoad = hasStableBuffer(currentRecord?.media);
+    for (const [key, record] of records) {
+      const desired = key === roles.current || adjacentMayLoad ? "auto" : "metadata";
+      if (record.media.preload !== desired) record.media.preload = desired;
+    }
+  };
+
   const createRecord = (entry) => {
     const media = mediaFactory(entry);
     if (!media
@@ -200,6 +218,7 @@ export function createSoundtrackMediaDeckController({
             // End observers cannot mutate controller ownership synchronously.
           }
         }
+        applyPreloadPolicy();
         emit(`media:${eventName}`);
       };
       record.listeners.push([eventName, listener]);
@@ -222,7 +241,7 @@ export function createSoundtrackMediaDeckController({
 
     try {
       records.set(entry.key, record);
-      media.preload = "auto";
+      media.preload = "metadata";
       if (crossOrigin) media.crossOrigin = crossOrigin;
       media.src = playbackUrl(entry);
       media.load?.();
@@ -260,12 +279,18 @@ export function createSoundtrackMediaDeckController({
     for (const key of new Set(restartKeys)) {
       const record = records.get(key);
       if (!record || record.media.paused === false) continue;
+      if (safeErrorCode(record.media) != null) {
+        disposeRecord(key);
+        continue;
+      }
       const position = asFinite(record.media.currentTime) ?? 0;
-      const needsFreshMedia = position > 0.05
-        || record.media.ended === true
-        || safeErrorCode(record.media) != null;
-      if (!needsFreshMedia) continue;
-      disposeRecord(key);
+      if (position <= 0.05 && record.media.ended !== true) continue;
+      try {
+        record.media.currentTime = 0;
+        record.lastEvent = "rewound-for-replay";
+      } catch {
+        disposeRecord(key);
+      }
     }
     const desired = new Map();
     const nextRoles = { previous: null, current: null, next: null };
@@ -309,6 +334,7 @@ export function createSoundtrackMediaDeckController({
       }
     }
     roles = nextRoles;
+    applyPreloadPolicy();
     const audibleSet = new Set(audibleKeys);
     for (const [key, record] of records) {
       if (key === roles.current || audibleSet.has(key) || record.media.paused !== false) continue;
@@ -319,6 +345,68 @@ export function createSoundtrackMediaDeckController({
       }
     }
     return emit("queue:synced");
+  };
+
+  const waitForStableBuffer = (key, { minimumSeconds = SOUNDTRACK_STABLE_BUFFER_SECONDS } = {}) => {
+    const record = records.get(key);
+    if (!record) {
+      return Object.freeze({
+        promise: Promise.reject(new Error("transition-media-unavailable")),
+        cancel: () => {},
+      });
+    }
+    let settled = false;
+    const observedEvents = ["progress", "canplay", "canplaythrough", "playing", "timeupdate", "error"];
+    let resolvePromise;
+    let rejectPromise;
+    const cleanup = () => {
+      for (const eventName of observedEvents) record.media.removeEventListener?.(eventName, inspect);
+    };
+    const finish = (callback, value) => {
+      if (settled) return;
+      settled = true;
+      cleanup();
+      callback(value);
+    };
+    const inspect = () => {
+      if (destroyed || records.get(key) !== record) {
+        finish(rejectPromise, new Error("stale-buffer-request"));
+        return;
+      }
+      if (safeErrorCode(record.media) != null) {
+        finish(rejectPromise, new Error("media-error"));
+        return;
+      }
+      if (hasStableBuffer(record.media, minimumSeconds)) {
+        record.lastEvent = "stable-buffer-ready";
+        applyPreloadPolicy();
+        finish(resolvePromise, getSnapshot());
+      }
+    };
+    const promise = new Promise((resolve, reject) => {
+      resolvePromise = resolve;
+      rejectPromise = reject;
+      for (const eventName of observedEvents) record.media.addEventListener?.(eventName, inspect);
+      inspect();
+    });
+    return Object.freeze({
+      promise,
+      cancel: () => finish(rejectPromise, new Error("buffer-wait-cancelled")),
+    });
+  };
+
+  const rewindKeys = (keys = []) => {
+    for (const key of new Set(keys)) {
+      const record = records.get(key);
+      if (!record || safeErrorCode(record.media) != null) continue;
+      try {
+        record.media.currentTime = 0;
+        record.lastEvent = "rewound-before-audible-start";
+      } catch {
+        controllerError = "media-rewind-failed";
+      }
+    }
+    return emit("media:rewound");
   };
 
   const playCurrent = async () => {
@@ -414,6 +502,8 @@ export function createSoundtrackMediaDeckController({
     syncQueue,
     playCurrent,
     playKeys,
+    waitForStableBuffer,
+    rewindKeys,
     pauseExcept,
     discardKeys,
     pauseCurrent,

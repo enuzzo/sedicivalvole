@@ -20,6 +20,7 @@ export {
 } from "./effects-model.js";
 
 export const SOUNDTRACK_EFFECTS_SCHEMA = "sedicivalvole.soundtrack-effects.v1";
+export const SOUNDTRACK_AUDIO_LATENCY_HINT = "playback";
 
 const setParam = (param, value, context, seconds = 0.045) => {
   if (!param) return;
@@ -109,7 +110,10 @@ export function createSoundtrackEffectsController({
   let context;
   const ownsContext = !audioContext;
   try {
-    context = audioContext ?? new AudioContextClass({ latencyHint: "interactive" });
+    // Soundtrack is continuous programme audio, not a live instrument. A
+    // playback-sized output buffer gives vehicle Chromium more underrun margin
+    // while WebGL is rendering and the mobile connection varies.
+    context = audioContext ?? new AudioContextClass({ latencyHint: SOUNDTRACK_AUDIO_LATENCY_HINT });
   } catch (error) {
     return createUnavailableController(String(error?.message || "audio-context-failed").slice(0, 80));
   }

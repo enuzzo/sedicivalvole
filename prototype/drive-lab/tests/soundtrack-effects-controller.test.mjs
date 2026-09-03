@@ -60,6 +60,8 @@ test("Soundtrack and the vehicle macro engine are wired to share one AudioContex
   assert.match(effectsSource, /if \(ownsContext\) void context\.close/);
   assert.match(appSource, /audioContext: audioRef\.current\?\.context \?\? null/);
   assert.match(appSource, /soundtrackRef\.current\?\.getAudioContext\?\.\(\) \?\? null/);
+  assert.match(effectsSource, /SOUNDTRACK_AUDIO_LATENCY_HINT = "playback"/);
+  assert.match(effectsSource, /latencyHint: SOUNDTRACK_AUDIO_LATENCY_HINT/);
 });
 
 test("UNDERWATER is already audible at the visual engage threshold", () => {

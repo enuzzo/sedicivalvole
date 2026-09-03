@@ -123,28 +123,28 @@ const createFixture = (count = 6, mediaOptions = () => ({})) => {
   return { policies, catalog, queue, mediaByKey, controller };
 };
 
-test("sync creates exactly three transient browser media roles with honest readiness", () => {
+test("sync creates exactly three transient roles and gives the current track first bandwidth", () => {
   const fixture = createFixture();
   const snapshot = fixture.controller.syncQueue(fixture.queue);
 
   assert.equal(snapshot.status, "prepared");
   assert.equal(snapshot.preparedMediaElements, 3);
   assert.equal(snapshot.playableMediaElements, 0);
-  assert.equal(snapshot.browserPreloadHint, "auto");
+  assert.equal(snapshot.browserPreloadHint, "current-first-staged-adjacent");
   assert.equal(snapshot.browserBufferOwnership, "browser-owned-observation-only");
   assert.equal(snapshot.offlineAudioAvailable, false);
   assert.equal(snapshot.persistentAudioStorage, false);
   assert.equal(snapshot.automaticModeFallback, false);
   for (const role of ["previous", "current", "next"]) {
     const media = fixture.controller.getMediaForRole(role);
-    assert.equal(media.preload, "auto");
+    assert.equal(media.preload, role === "current" ? "auto" : "metadata");
     assert.equal(media.crossOrigin, "anonymous");
     assert.equal(media.src, fixture.queue.slots[role].policy.item.streamUrl);
     assert.equal(media.loadCalls, 1);
   }
 });
 
-test("an explicit playlist restart recreates a prepared target at zero", () => {
+test("an explicit playlist restart rewinds a healthy prepared target without discarding its buffer", () => {
   const fixture = createFixture();
   fixture.controller.syncQueue(fixture.queue);
   const key = fixture.queue.slots.current.key;
@@ -154,9 +154,25 @@ test("an explicit playlist restart recreates a prepared target at zero", () => {
   fixture.controller.syncQueue(fixture.queue, { restartKeys: [key] });
   const restartedMedia = fixture.controller.getMediaForRole("current");
 
-  assert.notEqual(restartedMedia, previousMedia);
-  assert.equal(previousMedia.removedSource, true);
+  assert.equal(restartedMedia, previousMedia);
+  assert.equal(previousMedia.removedSource, false);
   assert.equal(restartedMedia.currentTime, 0);
+});
+
+test("adjacent audio preloading starts only after the current track has stable headroom", () => {
+  const fixture = createFixture();
+  fixture.controller.syncQueue(fixture.queue);
+  const current = fixture.controller.getMediaForRole("current");
+
+  assert.equal(fixture.controller.getMediaForRole("previous").preload, "metadata");
+  assert.equal(fixture.controller.getMediaForRole("next").preload, "metadata");
+
+  current.readyState = 3;
+  current.buffered = new FakeTimeRanges([[0, 6.25]]);
+  current.emit("progress");
+
+  assert.equal(fixture.controller.getMediaForRole("previous").preload, "auto");
+  assert.equal(fixture.controller.getMediaForRole("next").preload, "auto");
 });
 
 test("a raw direct-source preview may omit CORS mode without changing production default", () => {

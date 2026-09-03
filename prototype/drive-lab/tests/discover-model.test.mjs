@@ -166,7 +166,7 @@ test("Discover renders a self-contained split index with language and search con
   assert.match(styles, /\.discover-reader \{ display: grid/);
   assert.match(styles, /\.discover-article-frame \{[\s\S]*?transform: scale\(1\.2\)/);
   assert.match(styles, /\.discover-view-tabs button \{[\s\S]*?min-height: 38px/);
-  assert.match(styles, /\.discover-results > button em \{[^\n]*font-size: 11\.5px/);
+  assert.match(styles, /\.discover-results > button em \{[^\n]*font-size: 20px/);
   assert.match(styles, /\.discover-navigation-card > div \{ display: grid; grid-template-columns: 176px minmax\(0, 1fr\)/);
 });
 

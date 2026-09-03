@@ -98,7 +98,7 @@ test("the selected Instrument Deck resolves Music and Visual before START", () =
   assert.match(app, /Independent Jamendo artist recordings/);
   assert.match(app, /Visuals only\. No music\./);
   assert.doesNotMatch(selector, /ILLOBO FEATURED/i);
-  assert.match(styles, /\.launch-selector \{[\s\S]*?--sheet-surface: var\(--road-sheet-light-surface\)[\s\S]*?grid-template-rows: 72px minmax\(0, 1fr\) 58px[\s\S]*?width: min\(724px, calc\(100vw - 48px\)\)[\s\S]*?height: min\(552px, calc\(100dvh - 48px\)\)/);
+  assert.match(styles, /\.launch-selector \{[\s\S]*?--sheet-surface: var\(--road-sheet-light-surface\)[\s\S]*?grid-template-rows: 72px minmax\(0, 1fr\) 68px[\s\S]*?width: min\(724px, calc\(100vw - 48px\)\)[\s\S]*?height: min\(620px, calc\(100dvh - 48px\)\)/);
   assert.match(styles, /\.launch-selector-heading \{[\s\S]*?grid-template-columns: 54px max-content minmax\(0, 1fr\) 68px[\s\S]*?column-gap: 10px/);
   assert.match(styles, /\.launch-selector-mark \{[\s\S]*?grid-column: 1[\s\S]*?width: 52px;[\s\S]*?height: 52px/);
   assert.match(styles, /\.launch-selector-heading h1 \{[\s\S]*?grid-column: 2[\s\S]*?justify-self: start[\s\S]*?font-size: clamp\(27px, 4\.2vw, 32px\)[\s\S]*?text-align: left/);
@@ -113,9 +113,9 @@ test("the selected Instrument Deck resolves Music and Visual before START", () =
   assert.match(styles, /\.launch-choice-button \{[\s\S]*?gap: 3px;[\s\S]*?padding: 10px/);
   assert.match(styles, /\.launch-choice-button::before \{[\s\S]*?top: 7px;[\s\S]*?left: 10px;[\s\S]*?height: 3px/);
   assert.doesNotMatch(styles, /\.launch-choice-button\[aria-pressed="true"\] strong \{[^}]*padding-top/);
-  assert.match(styles, /\.launch-choice-button strong \{ font-size: 15px/);
-  assert.match(styles, /\.launch-choice-button small \{ color: var\(--sheet-muted\); font-size: 12\.5px/);
-  assert.match(styles, /\.launch-selector legend \{[\s\S]*?font-size: 19px/);
+  assert.match(styles, /\.launch-choice-button strong \{ font-size: 20px/);
+  assert.match(styles, /\.launch-choice-button small \{ color: var\(--sheet-muted\); font-size: 20px/);
+  assert.match(styles, /\.launch-selector legend \{[\s\S]*?font-size: 20px/);
   assert.match(styles, /--ui-radius: 6px/);
   for (const selectorName of [
     ".launch-selector",
@@ -138,7 +138,7 @@ test("the running Visual library uses a complete two-column Tesla catalogue", ()
   assert.match(app, /onSelectGradient=\{\(\) => setLaunchEnvironmentId\(lastGradientVariantRef\.current\)\}/);
   assert.match(styles, /\.environment-drawer \.score-list \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\); gap: 8px; margin-top: 12px; \}/);
   assert.match(styles, /\.environment-drawer \.score-entry \{[\s\S]*?min-height: 86px;[\s\S]*?padding: 11px 13px;/);
-  assert.match(styles, /\.environment-drawer \.score-entry-number,[\s\S]*?font-size: 17px/);
+  assert.match(styles, /\.environment-drawer \.score-entry-number,[\s\S]*?font-size: 20px/);
 });
 
 test("SOUNDTRACK stays visible while START remains independent from remote audio readiness", () => {
@@ -151,7 +151,7 @@ test("SOUNDTRACK stays visible while START remains independent from remote audio
   assert.match(app, /musicReady=\{launchMusicId !== "soundtrack"/);
   assert.match(app, /\["prepared", "paused", "playing"\]\.includes\(soundtrackSnapshot\?\.status\)/);
   assert.match(app, /const ready = Boolean\(musicId && environmentId\)/);
-  assert.match(app, /START NOW · MUSIC WILL JOIN WHEN READY/);
+  assert.match(app, /MUSIC JOINS WHEN READY/);
   assert.match(app, /MUSIC DATA PENDING · START NOW · AUDIO WILL JOIN WHEN READY/);
   assert.match(app, /audio\.start-deferred/);
   assert.match(app, /audio\.start-recovered/);
@@ -187,9 +187,10 @@ test("splash metadata is legible and the complete group sits higher", () => {
 
   assert.match(styles, /\.splash-action \{[\s\S]*?bottom: 24px/);
   assert.match(styles, /\.splash-action > small \{[\s\S]*?text-shadow: 0 1px 2px #000, 0 0 8px #000/);
-  assert.match(styles, /\.splash-credit \{[\s\S]*?font-size: 12\.5px/);
-  assert.match(styles, /\.splash-repository \{[\s\S]*?font-size: 11\.5px/);
-  assert.match(styles, /\.splash-privacy \{[\s\S]*?font-size: 10\.5px/);
+  assert.match(styles, /\.splash-credit \{[\s\S]*?font-size: 20px/);
+  assert.match(styles, /\.splash-repository \{[\s\S]*?font-size: 20px/);
+  assert.match(styles, /\.splash-privacy \{[\s\S]*?font-size: 20px/);
+  assert.match(styles, /\.splash-privacy,[\s\S]*?\.splash-safety small \{ display: none; \}/);
 });
 
 test("Buy Me a Coffee opens a real, accessible support panel", () => {
@@ -360,7 +361,7 @@ test("Soundtrack path cards round-trip between Illobo and Jamendo without losing
   assert.doesNotMatch(styles, /\.soundtrack-choice-card\.is-library \{ display: none; \}/);
 });
 
-test("the Tesla Music drawer uses whole-surface one-tap controls and a no-scroll compact composition", () => {
+test("the Tesla Music drawer uses whole-surface controls and scrolls instead of shrinking type", () => {
   const app = read("App.jsx");
   const styles = read("styles.css");
   const scoreLibrary = app.slice(
@@ -401,19 +402,17 @@ test("the Tesla Music drawer uses whole-surface one-tap controls and a no-scroll
   assert.match(styles, /\.soundtrack-now-label \{[^}]*white-space: nowrap/);
   assert.match(styles, /\.soundtrack-now-label img \{[^}]*filter: brightness\(0\) invert\(1\)/);
   assert.match(styles, /@media \(min-width: 651px\) and \(max-height: 650px\)/);
-  assert.match(styles, /\.music-drawer-workspace \{ grid-template-rows: 38px minmax\(0, 1fr\);/);
+  assert.match(styles, /\.music-drawer-workspace \{ grid-template-rows: 64px minmax\(0, 1fr\);/);
   assert.match(styles, /\.music-source-switch \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\); \}/);
   assert.match(styles, /\.play-road-library \.score-list \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\);/);
   assert.match(styles, /\.play-road-library \.score-list-item\.is-generative \{ grid-column: 1 \/ -1; \}/);
   assert.match(soundtrack, /className=\{`music-library-section-heading\$\{featuredSelected \? "" : " is-jamendo-browser"\}`\}/);
   assert.match(soundtrack, /Jamendo soundtrack browser/);
   assert.doesNotMatch(soundtrack, />JAMENDO LIBRARY<\/small><h3 id="soundtrack-library-title">Browse and play<\/h3>/);
-  assert.match(styles, /\.soundtrack-track-list \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\); gap: 3px; \}/);
-  assert.match(styles, /\.soundtrack-filter-layout \{ grid-template-columns: 96px minmax\(0, 1fr\); gap: 5px; \}/);
-  assert.match(styles, /\.soundtrack-genre-board \{ padding-left: 7px; border-left-width: 2px; \}/);
-  assert.match(styles, /\.soundtrack-filter-row > button \{ min-height: 34px; padding: 0 6px; \}/);
-  assert.match(styles, /\.soundtrack-filter-row strong \{ overflow: visible; font-size: 10\.5px/);
-  assert.match(styles, /\.soundtrack-now-playing \{ grid-template-columns: 48px minmax\(0, 1fr\) 126px;/);
+  assert.match(styles, /\.music-drawer-content \{ overflow-y: auto !important; \}/);
+  assert.match(styles, /\.soundtrack-track-list > button \{ min-height: 72px; \}/);
+  assert.match(styles, /\.soundtrack-filter-row > button \{ min-height: 58px; \}/);
+  assert.match(styles, /\.soundtrack-choice-copy > strong,[\s\S]*?font-size: 24px/);
   assert.match(styles, /\.soundtrack-panel-body > \.privacy-note \{ display: none; \}/);
 });
 
@@ -427,9 +426,9 @@ test("catalog names use readable display labels and align their numbers on one b
   assert.match(app, /className="control-catalog-number" title=\{scoreSource\(selected\.id\)\.note\}/);
   assert.match(app, /<strong>\{displayLabel\(entry\)\}<\/strong>/);
   assert.match(app, /\{displayLabel\(genre\)\}/);
-  assert.match(styles, /\.control-value \{[\s\S]*?display: flex;[\s\S]*?align-items: baseline;[\s\S]*?font-size: 17px/);
+  assert.match(styles, /\.control-value \{[\s\S]*?display: flex;[\s\S]*?align-items: baseline;[\s\S]*?font-size: 24px/);
   assert.match(styles, /\.control-catalog-number \{[^}]*font: inherit/);
-  assert.match(styles, /\.score-entry-number \{[^}]*font-size: 19px/);
+  assert.match(styles, /\.score-entry-number \{[^}]*font-size: 20px/);
 });
 
 test("launch copy has a continuous white-to-red travelling wave", () => {
@@ -534,30 +533,30 @@ test("safe product state persists locally and can be reset without storing GPS",
   assert.match(styles, /\.splash-reset-state \{/);
 });
 
-test("the vehicle gets persistent transport, Media Session actions, track notices, and directional dismissal", () => {
+test("the vehicle gets persistent Now Playing, stable Media Session actions, and directional dismissal", () => {
   const app = read("App.jsx");
   const styles = read("styles.css");
 
-  assert.match(app, /className="persistent-transport control-layer" aria-label="Music transport"/);
+  assert.match(app, /className="now-playing-dock persistent-transport control-layer" aria-label="Now playing and music transport"/);
   assert.match(app, /navigator\.mediaSession\.setActionHandler\(action, handler\)/);
-  assert.match(app, /previoustrack: \(\) => void moveTransport\("previous", "media-session"\)/);
-  assert.match(app, /nexttrack: \(\) => void moveTransport\("next", "media-session"\)/);
+  assert.match(app, /previoustrack: \(\) => void mediaSessionActionsRef\.current\.move\?\.\("previous", "media-session"\)/);
+  assert.match(app, /nexttrack: \(\) => void mediaSessionActionsRef\.current\.move\?\.\("next", "media-session"\)/);
   assert.match(app, /media\.action\.requested/);
   assert.match(app, /media\.action\.completed/);
   assert.match(app, /soundtrackPlaybackConfirmed/);
   assert.match(app, /onClickCapture=\{handleControlActivation\}/);
   assert.match(app, /onChangeCapture=\{handleControlChange\}/);
-  assert.match(app, /className="track-change-notice" role="status" aria-live="polite"/);
+  assert.match(app, /className="now-playing-summary" role="status" aria-live="polite"/);
   assert.match(app, /data-dismiss-direction=\{dismissDirection\}/);
   assert.match(app, /velocity >= 0\.62/);
   assert.match(app, /className=\{backdropClass\}[\s\S]*?onClick=\{onClose\}/);
   assert.match(app, /className="manual-effects-backdrop"[\s\S]*?onClick=\{onClose\}/);
   assert.match(styles, /\.drawer-panel \{[\s\S]*?touch-action: pan-y/);
-  assert.match(styles, /\.persistent-transport \{[\s\S]*?bottom: 72px/);
+  assert.match(styles, /\.persistent-transport\.now-playing-dock \{[\s\S]*?bottom: 100px/);
   assert.match(styles, /\.controls-resting \.persistent-transport \{[\s\S]*?opacity: 0;[\s\S]*?pointer-events: none/);
   assert.match(app, /soundtrackSnapshot\?\.previous\?\.imageUrl/);
   assert.match(app, /soundtrackSnapshot\?\.next\?\.imageUrl/);
-  assert.match(styles, /\.track-change-notice \{[\s\S]*?width: min\(390px/);
+  assert.match(styles, /\.now-playing-copy strong \{[^}]*font-size: 24px/);
   assert.match(styles, /\.drawer-panel\.is-dragging/);
 });
 
@@ -571,14 +570,15 @@ test("compact viewports keep the mode switch separate and preserve a resting mod
   assert.match(styles, /@media \(max-width: 480px\) \{[\s\S]*?\.topbar-mark \{ display: none; \}[\s\S]*?\.mode-selector \{ grid-column: 1; \}/);
 });
 
-test("Soundtrack reduces the source module to speed and exposes an honest browser network estimate", () => {
+test("the source module is speed-only and network text appears only when actionable", () => {
   const app = read("App.jsx");
   const styles = read("styles.css");
 
   assert.match(app, /musicMode !== "soundtrack" \? <span className="active-mode-marker"/);
-  assert.match(app, /musicMode !== "soundtrack" \? <>[\s\S]*?<span>bpm<\/span>[\s\S]*?<span>%<\/span>/);
-  assert.match(app, /className=\{`network-state is-\$\{networkNotice\.tone\}`\}/);
+  assert.doesNotMatch(app, /<span>bpm<\/span>|<span>%<\/span>/);
+  assert.match(app, /networkUiDetail\(networkNotice\) \? <strong>\{networkUiDetail\(networkNotice\)\}<\/strong> : null/);
+  assert.match(app, /className="network-state-dot" aria-hidden="true"/);
   assert.match(app, /Browser connection quality is an estimate/);
-  assert.match(styles, /\.source-readout\.is-soundtrack \{[\s\S]*?width: 116px/);
+  assert.match(styles, /\.source-readout\.is-soundtrack \{[\s\S]*?width: 190px/);
   assert.match(styles, /\.network-state\.is-caution \{ color: #f3a84c; \}/);
 });

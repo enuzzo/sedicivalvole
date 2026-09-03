@@ -803,5 +803,5 @@ test("Atlas owns a minimal palette-driven OpenFreeMap style with mandatory attri
   assert.ok(style.layers.some((layer) => layer.id === "atlas-vehicle-dot"));
   assert.equal(style.layers.some((layer) => layer.type === "raster"), false);
   assert.match(atlasSource, /AttributionControl\(\{ compact: false \}\)/);
-  assert.match(styles, /\.atlas-field \.maplibregl-ctrl-attrib \{[\s\S]*?font-size: 7px;[\s\S]*?opacity: \.46;/);
+  assert.match(styles, /\.atlas-field \.maplibregl-ctrl-attrib \{[\s\S]*?font-size: 20px;[\s\S]*?opacity: \.46;/);
 });

@@ -112,7 +112,7 @@ test("raw JSON uses the drawer's single scroll context at readable size", () => 
 
   assert.match(rawStyles, /overflow: visible/);
   assert.match(rawStyles, /max-height: none/);
-  assert.match(rawStyles, /font-size: 12px/);
+  assert.match(rawStyles, /font-size: 20px/);
   assert.doesNotMatch(rawStyles, /overflow: auto/);
 });
 

@@ -348,6 +348,41 @@ test("manual next and previous keep reversible identities and playback ownership
   );
 });
 
+test("a manual skip keeps committed metadata and outgoing playback until the target buffer is stable", async () => {
+  const mediaByKey = new Map();
+  const controller = createSoundtrackPreviewController({
+    fetchImpl: catalogFetch,
+    mediaFactory: (entry) => {
+      const media = new FakeMedia();
+      mediaByKey.set(entry.key, media);
+      return media;
+    },
+  });
+  await controller.load({ autoplay: true, nowMs: 0 });
+  const before = controller.getSnapshot();
+  const incoming = mediaByKey.get(before.next.key);
+  incoming.readyState = 3;
+  incoming.buffered = { length: 1, start: () => 0, end: () => 2 };
+
+  const moving = controller.move("next");
+  const buffering = controller.getSnapshot();
+  assert.equal(buffering.status, "buffering");
+  assert.equal(buffering.current.key, before.current.key);
+  assert.equal(buffering.pending.direction, "next");
+  assert.equal(buffering.pending.track.key, before.next.key);
+  assert.ok(buffering.media.audibleKeys.includes(before.current.key));
+
+  incoming.buffered = { length: 1, start: () => 0, end: () => 8 };
+  incoming.emit("progress");
+  const moved = await moving;
+
+  assert.equal(moved.status, "playing");
+  assert.equal(moved.current.key, before.next.key);
+  assert.equal(moved.pending, null);
+  assert.equal(incoming.playPositions.at(-1), 0);
+  assert.equal(incoming.currentTime, 0);
+});
+
 test("natural track end advances once to a fresh target without replaying the ended deck", async () => {
   const mediaByKey = new Map();
   const controller = createSoundtrackPreviewController({
