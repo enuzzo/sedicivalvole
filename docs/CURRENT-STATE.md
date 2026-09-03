@@ -613,10 +613,10 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The canonical live product is version `0.0.0`, audio implementation
-  checkpoint `89d3f15`, compact-layout checkpoint `0d5bb05`, deployed
-  source/documentation checkpoint `edde367`, build `20260903-1953`. It
-  publishes Road Sheet LIGHT/DARK/AUTO and Swiss Compact
+- The canonical live product is version `0.0.0`, Underwater-only implementation
+  checkpoint `1d43158`, deployed source/documentation checkpoint `7c93db9`,
+  build `20260903-2035`. It retains audio checkpoint `89d3f15` and compact-layout
+  checkpoint `0d5bb05`, and publishes Road Sheet LIGHT/DARK/AUTO and Swiss Compact
   across the public product, diagnostics, Discover, ATLAS, owner LAB package,
   and ShaderGradient workbench. It also hardens the shared Media Session and
   on-screen transport while preserving the audio-source, renderer,
@@ -956,10 +956,10 @@ drawers reserve its lower space instead of hiding content behind it.
 
 The three-deck loader now gives bandwidth to the audible programme first.
 Current owns automatic preload; adjacent roles start metadata-only and promote
-after current has at least six seconds buffered ahead or equivalent browser
-readiness. PREVIOUS rewinds and reuses a healthy retained deck instead of
+only NEXT after current has at least `30 s` of observed contiguous headroom.
+PREVIOUS rewinds and reuses a healthy retained deck instead of
 destroying its buffer. Every initial, manual, or automatic target starts silent,
-waits for the same buffer floor within the existing ten-second transaction,
+waits for a six-second observed contiguous floor within the existing ten-second transaction,
 rewinds, and only then becomes audible; the prior track and metadata remain
 committed through pending or failed work. Soundtrack creates the shared context
 with a playback latency hint.
@@ -1067,11 +1067,16 @@ Audio checkpoint `89d3f15` preserves the one playback-oriented shared
 AudioContext but does not create silent Play the Road worklets during a
 Soundtrack launch. Braking macro detection and speed-only visual
 response continue; an explicit Play the Road switch initializes the processors
-lazily. After the current fixed recording proves six seconds of forward
-headroom, only the next deck promotes to audio preload. The previous role keeps
+lazily. Diagnostic-driven checkpoint `26c4043` supersedes the optimistic
+readiness detail: when the browser exposes `TimeRanges`, audible admission
+requires six real contiguous seconds and never accepts `readyState=4` alone.
+Only after the current fixed recording proves `30 s` of forward headroom may
+the next deck promote to audio preload. The previous role keeps
 any browser-owned data and remains reusable without requesting a second
-speculative audio stream. Invariant checkpoint `a2545c4` updates the complete
-startup/fallback source gate.
+speculative audio stream. Each media lifecycle record now carries the emitting
+deck key/role, exact forward headroom, readiness/network state, and playback
+intent. Invariant checkpoint `a2545c4` updates the complete startup/fallback
+source gate.
 
 Layout checkpoint `0d5bb05` restores the accepted Tesla composition without
 changing Swiss Compact type sizes: horizontal Play the Road/Soundtrack tabs,
@@ -1080,19 +1085,27 @@ all 15 genres at exact `773 × 601`. Splash card titles share their row top, and
 the Jamendo three-cover stack no longer enters its copy column. Headless local
 Chrome proves the exact viewport, paired columns and zero horizontal overflow;
 the aggregate suite passes `617/617` and both production builds pass. No office
-test can close the continuous Tesla listening gate. The clean superseding
-canonical build is `20260903-1953` from source/documentation checkpoint
-`edde367`; protected publication, independent postflight, canonical HTML/JS/CSS
+test can close the continuous Tesla listening gate. The original correction was
+canonical build `20260903-1953`; current build `20260903-2035` from
+source/documentation checkpoint `7c93db9` carries it forward while removing
+OPEN/BLOOM. Protected publication, independent postflight, canonical HTML/JS/CSS
 byte identity, cache `MISS`, trusted-input exact-viewport layout and zero
 inactive score-worklet requests during Soundtrack startup pass. Retest with
 Gradient and a lighter visual, and send the existing diagnostic if any stutter
-remains.
+remains. The supplied failed-drive diagnostic records `11` waiting and `16`
+stalled events, audio requests open for `42–87 s`, and some Illobo starts with
+only `1.83–2.27 s` of contiguous buffer despite browser-ready states. Aperture,
+Japanese Mist, and overall frame evidence remain near `59–60 FPS`; the report
+does not support attributing the dropout to Aperture styling. The new
+`26c4043` correction is tested locally but is not canonical until the next
+published build, and only a physical Tesla listen can accept it.
 
 ## Open work
 
-1. Execute live Tesla `R4-07`–`R4-08`, `R7-15`, the canonical `10A` / `10B` / `10C`
-   codes, and row 11 on final build `20260903-1953`. Execute Tesla tests
-   `R1-01`–`R1-03`, `R4-01`–`R4-08`,
+1. Publish checkpoint `26c4043`, then execute live Tesla `R4-07`–`R4-09`,
+   `R7-15`, the canonical `10A` / `10B` / `10C` codes, and row 11 on that final
+   build. Execute Tesla tests
+   `R1-01`–`R1-03`, `R4-01`–`R4-09`,
    `R5-01`–`R5-07`, `R7-01`–`R7-14`, `R8-01`–`R8-03`, `R9-01`–`R9-07`,
    `R10-00A`–`R10-06`, `R10C-01`–`R10C-08`, `R11-01`–`R11-06`, `R11A-01`, and
    the now canonical `R13-00`–`R13-03` from

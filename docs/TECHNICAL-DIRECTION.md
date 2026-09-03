@@ -173,11 +173,11 @@ metadata-slot depth, not browser-buffer bytes or offline duration, and never
 changes back to PLAY THE ROAD when exhausted. A detached controller now maps the
 three roles onto at most three direct-source media elements. The current deck
 alone begins with `preload=auto`; adjacent decks start metadata-only. After the
-current deck reports enough data or at least six seconds of forward buffer, only
-the next role may promote to audio preload. The previous role keeps any
+current deck exposes at least `30 s` of contiguous forward buffer, only the next
+role may promote to audio preload. The previous role keeps any
 browser-owned buffer under its metadata hint and is rewound in place rather than
 recreated. Every initial, manual, or natural-end target begins silently,
-must satisfy that same buffer floor inside the ten-second transport transaction,
+must satisfy a six-second contiguous floor inside the ten-second transport transaction,
 is rewound, and becomes audible only then. The prior audible deck and committed
 metadata survive a failed or pending target. The controller requires explicit
 activation, rejects stale play/event completion, reuses retained roles, and

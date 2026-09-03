@@ -583,6 +583,16 @@ latency, so aggregate transfer capacity was not a sufficient explanation. The
 product's own `navigator.connection.downlink` estimate was also much lower;
 that coarse browser hint must never be treated as a throughput measurement.
 
+The explicitly sent diagnostic resolved the next layer. It records `11`
+`waiting` and `16` `stalled` media events, several audio transfers remaining
+open for `42–87 s`, and Illobo starts admitted with only `1.83–2.27 s` of
+contiguous forward buffer even though embedded Chromium already reported ready
+state `3/4`. Visual frame evidence stayed near `59–60 FPS`; this does not prove
+the GPU is irrelevant, but it does refute using a generic visual slowdown as
+the primary explanation. A browser's `HAVE_ENOUGH_DATA` is a prediction, not a
+measured safety margin, and can be dangerously optimistic in an embedded
+vehicle runtime.
+
 The regression followed the shared-AudioContext repair. Soundtrack correctly
 owned one playback-oriented context for fixed-recording effects and vehicle
 macro detection, but the muted Play the Road engine still constructed and ran
@@ -1588,12 +1598,15 @@ downloads to compete with the only audio the listener could hear on the weak
 vehicle connection.
 
 The corrected policy is current-first. The current deck owns `preload=auto`;
-previous and next start metadata-only and promote only when the current deck has
-at least six seconds buffered ahead or the browser reports enough data. A
+previous and next start metadata-only; only NEXT promotes after the current deck
+has at least `30 s` of observed contiguous buffer. A
 healthy retained previous element is rewound and reused, never discarded merely
 because it has played. Every initial, manual, or automatic target starts muted,
-waits for the same six-second floor inside the existing ten-second transaction,
-rewinds, and only then enters the equal-power transition. Until that commit the
+waits for a six-second observed contiguous floor inside the existing ten-second
+transaction, rewinds, and only then enters the equal-power transition. When
+`TimeRanges` is observable, `readyState=4` can never override a short buffer;
+ready state is a fallback only when the browser exposes no range data. Until
+that commit the
 outgoing track and its metadata stay authoritative. Soundtrack creates its
 shared AudioContext with the playback latency hint because continuous programme
 audio benefits more from underrun margin than instrument-like response.
@@ -1601,7 +1614,11 @@ audio benefits more from underrun margin than instrument-like response.
 The perceived rule is simple: **protect the sound already playing before
 preparing what might play next**. Preloading three identities is not useful when
 it starves the current programme, and a resolved `play()` promise is not proof
-that enough audio exists for a clean start. Tests therefore assert staged
+that enough audio exists for a clean start. Attribute every `waiting`,
+`stalled`, `progress`, and readiness event to the emitting deck and record its
+role, buffer, readiness, network state, and playback intent; aggregate
+lifecycle counts without deck identity cannot distinguish an audible underrun
+from harmless adjacent preload. Tests therefore assert staged
 preload promotion, buffer-preserving PREVIOUS, silent buffer admission, rollback,
 natural-end advancement, and stable committed metadata. Final proof remains a
 low-bandwidth target-Tesla listening run; desktop buffer state alone cannot

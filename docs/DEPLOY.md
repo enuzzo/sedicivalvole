@@ -17,6 +17,38 @@ URL import remain outside the public surface. Exact
 dependency and local run instructions are recorded in
 `LOCAL-SHADERGRADIENT-LAB.md`.
 
+## Underwater-only vehicle response — 2026-09-03 20:48
+
+- build stamp: **`20260903-2035`**; version: **`0.0.0`**; implementation
+  checkpoint: **`1d43158`**; built source/documentation checkpoint:
+  **`7c93db9`**;
+- product behavior: firm braking UNDERWATER is the sole automatic
+  vehicle-reactive effect. OPEN and BLOOM detection, automatic DSP, visual
+  branches, LAB controls, and the BLOOM worklet are absent; all eight explicit
+  passenger Performance FX remain available;
+- tests/build: **PASS**. Focused checks pass `182/182`, unit passes `502/502`,
+  aggregate passes `597/597`, and production processes `234` App modules and
+  `154` protected-LAB modules. Main JavaScript is `737,364` bytes;
+- protected publication: **PASS**. The upload transferred `182` files /
+  `215,928,711` bytes, fully reverified all `29` Illobo recordings, retained one
+  prior fingerprinted asset, preserved the dynamic root, and removed exactly
+  the two byte-admitted retired LAB worklets. Preflight/postflight are read-only
+  and report `remote_writes=NONE`;
+- canonical response: cache-busted HTML is HTTP 200 with `no-store/no-cache`,
+  `nosniff`, Nginx/PHP evidence, and cache diagnostic `DT:1`;
+- byte identity: HTML SHA-256 is
+  `2e17a1e0bc060971a8540edce3eeb7ce9c4cd904de824ad4edd76b3682e61a49`;
+  JavaScript SHA-256 is
+  `447d53546df1a6320ced4d3c7f0532c1483134792b8d781edcebb38aea816947`;
+  CSS SHA-256 is
+  `506f00bf141258bcdcc03cf347665f5edf6def4c44861fa5ebcee0a55b6dc421`;
+- rendered QA: **PASS** at exact live `773 × 601`. Trusted keyboard input
+  produces no acceleration badge, firm braking produces UNDERWATER, no retired
+  resource is requested, and no warning/error is recorded. The retired
+  `/lab/bloom-processor.js` is 404 while `/lab/score-processor.js` remains 200;
+- remaining acceptance: physical cabin `R4-09` and continuous Soundtrack
+  listening `R7-15` remain open. Browser proof does not close either gate.
+
 ## Tesla Soundtrack contention correction — 2026-09-03 20:02
 
 - build stamp: **`20260903-1953`**; version: **`0.0.0`**; audio

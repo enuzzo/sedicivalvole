@@ -12,9 +12,10 @@ a new session can continue without reviving superseded prototypes.
 - semantic version: `VERSION` = `0.0.0`; no release exists;
 - canonical development URL: <https://sedicivalvole.app/>;
 - latest verified publication evidence: first entry in [`DEPLOY.md`](DEPLOY.md);
-- latest working product checkpoints: `89d3f15` for Soundtrack contention and
+- latest working product checkpoints: `26c4043` for diagnostic-driven
+  Soundtrack admission, `1d43158` for Underwater-only vehicle response, and
   `0d5bb05` for the compact Tesla layout; published source/documentation
-  checkpoint: `edde367`; canonical build: `20260903-1953`. Road Sheet
+  checkpoint: `7c93db9`; canonical build: `20260903-2035`. Road Sheet
   LIGHT/DARK/AUTO, Swiss Compact, hardened native/on-screen media transport,
   buffer-first Soundtrack, and always-above-drawers Now Playing are canonical;
 - repository code, comments, documentation, interface copy, and logs are English;
@@ -662,9 +663,9 @@ start from the clean `6e13898` / live-build-`20260903-0843` baseline.
   including natural end and drawer selection.
 - Soundtrack now preserves a healthy previous media element and rewinds it
   instead of discarding its buffer. Current loads first; adjacent roles remain
-  metadata-only until at least six seconds of current forward buffer or enough
-  browser data exists. Initial/manual/automatic targets begin silent, wait for
-  the same buffer admission inside the ten-second transport deadline, rewind,
+  metadata-only, and only NEXT promotes after `30 s` of observed current
+  headroom. Initial/manual/automatic targets begin silent, wait for six
+  contiguous observed seconds inside the ten-second transport deadline, rewind,
   then crossfade. The outgoing identity remains audible and authoritative on a
   pending or failed target.
 - Media Session action handlers remain registered for the running session and
@@ -751,7 +752,7 @@ empty console. Local `702 × 546` and `1280 × 720` responsive QA passes.
 Physical-Tesla native-control, listening, glare, distance, and touch acceptance
 remain open.
 
-### Latest canonical checkpoint: Tesla Soundtrack stutter and compact Music layout
+### Latest working checkpoint: diagnostic-driven Soundtrack admission
 
 Canonical build `20260903-1752` failed physical-Tesla playback even with a
 same-browser `54.3 Mbps` down / `30.6 Mbps` up / `25 ms` speed test: both
@@ -763,10 +764,21 @@ Checkpoint `89d3f15` removes two sources of embedded-browser contention while
 preserving the repaired shared AudioContext. Soundtrack startup runs vehicle
 macro detection but defers both silent Play the Road AudioWorklets until an
 explicit switch; the three-deck preload policy admits only the next audio role
-after the current recording has six seconds of verified headroom. Checkpoint
+after the current recording has verified headroom. Checkpoint
 `a2545c4` updates the source-order invariant. Checkpoint `0d5bb05` restores the
 accepted two-column Soundtrack composition and top-aligns launch titles without
 changing Swiss Compact type sizes.
+
+The supplied failed-drive diagnostic adds direct evidence: `11` waiting and
+`16` stalled lifecycle events, audio transfers open for `42–87 s`, and Illobo
+starts admitted with only `1.83–2.27 s` of contiguous forward buffer while
+embedded Chromium already reported ready state `3/4`. Checkpoint `26c4043`
+therefore requires the real `TimeRanges` value whenever observable, retains the
+six-second audible floor, delays NEXT preload until the current deck owns
+`30 s`, and attributes every lifecycle event to the exact deck key/role,
+headroom, readiness/network state, and playback intent. The same policy covers
+Jamendo. Its local aggregate gate passes `599/599`; canonical publication and
+physical listening remain pending.
 
 The complete gate passes `617/617`; the 239-module App and 159-module protected
 LAB build pass. Canonical build `20260903-1953` reports clean checkpoint
@@ -776,7 +788,11 @@ HTML, JavaScript and CSS are byte-identical. Trusted-input live Chrome at exact
 Pace/Genre columns, all 15 genres and zero horizontal overflow. It records no
 warning/error and no inactive score-worklet request during Soundtrack startup.
 Continuous physical-Tesla listening with Gradient plus a lighter visual remains
-the separate `R7-15` gate.
+the separate `R7-15` gate. Aperture dry geometry, palette, depth, thresholds and
+motion are source-identical to the prior dry path: the Underwater-only change
+removed only OPEN/BLOOM terms that previously evaluated to zero when inactive.
+Nine focused Aperture tests pass; rendered browser comparison remains separate
+from target-Tesla visual acceptance.
 
 ## Verification
 
