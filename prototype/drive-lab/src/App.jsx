@@ -430,6 +430,105 @@ function mediaArtworkType(url) {
   return "image/png";
 }
 
+function boundedDiagnosticText(value, limit = 96) {
+  return typeof value === "string" ? value.replace(/\s+/g, " ").trim().slice(0, limit) : "";
+}
+
+function diagnosticControlDetail(target, event) {
+  const control = target instanceof Element
+    ? target.closest("button, a, input, select, textarea, [role='button'], [role='slider'], [role='switch']")
+    : null;
+  if (!control) return null;
+  const tag = control.tagName.toLowerCase();
+  const type = boundedDiagnosticText(control.getAttribute("type") || control.getAttribute("role") || tag, 32);
+  const label = boundedDiagnosticText(
+    control.getAttribute("aria-label")
+      || control.getAttribute("title")
+      || control.textContent
+      || control.getAttribute("name")
+      || control.id
+      || tag,
+  );
+  return {
+    tag,
+    type,
+    label,
+    disabled: control.matches(":disabled, [aria-disabled='true']"),
+    expanded: control.hasAttribute("aria-expanded") ? control.getAttribute("aria-expanded") === "true" : null,
+    pressed: control.hasAttribute("aria-pressed") ? control.getAttribute("aria-pressed") === "true" : null,
+    activation: event?.detail === 0 ? "keyboard-or-assistive" : "pointer",
+    pointerType: boundedDiagnosticText(event?.nativeEvent?.pointerType, 16) || null,
+    trusted: event?.nativeEvent?.isTrusted === true,
+  };
+}
+
+function diagnosticControlChangeDetail(target) {
+  const control = target instanceof Element
+    ? target.closest("input, select, textarea, [role='slider'], [role='switch']")
+    : null;
+  if (!control) return null;
+  const type = boundedDiagnosticText(control.getAttribute("type") || control.tagName.toLowerCase(), 32);
+  const isTextEntry = ["text", "search", "email", "url", "tel", "password"].includes(type)
+    || control.tagName === "TEXTAREA";
+  return {
+    tag: control.tagName.toLowerCase(),
+    type,
+    label: boundedDiagnosticText(control.getAttribute("aria-label") || control.getAttribute("name") || control.id || type),
+    value: isTextEntry ? null : boundedDiagnosticText(control.value, 64),
+    textLength: isTextEntry ? String(control.value || "").length : null,
+    checked: typeof control.checked === "boolean" ? control.checked : null,
+  };
+}
+
+function soundtrackDiagnosticSnapshot(snapshot) {
+  const media = snapshot?.media;
+  const summarizeRole = (role) => role ? {
+    key: role.key ?? null,
+    state: role.state ?? null,
+    readyState: role.readyState ?? null,
+    networkState: role.networkState ?? null,
+    bufferedAheadSeconds: role.bufferedAheadSeconds ?? null,
+    paused: role.paused ?? null,
+    ended: role.ended ?? null,
+    currentTimeSeconds: role.currentTimeSeconds ?? null,
+    durationSeconds: role.durationSeconds ?? null,
+    errorCode: role.errorCode ?? null,
+    lastEvent: role.lastEvent ?? null,
+  } : null;
+  return {
+    status: snapshot?.status ?? "unavailable",
+    error: boundedDiagnosticText(snapshot?.error, 120) || null,
+    current: snapshot?.current ? {
+      key: snapshot.current.key,
+      title: boundedDiagnosticText(snapshot.current.title, 120),
+      artist: boundedDiagnosticText(snapshot.current.artistName, 120),
+    } : null,
+    previousKey: snapshot?.previous?.key ?? null,
+    nextKey: snapshot?.next?.key ?? null,
+    transition: snapshot?.transition ? {
+      phase: snapshot.transition.phase ?? null,
+      targetKey: snapshot.transition.targetKey ?? null,
+      progress: roundMetric(snapshot.transition.progress),
+    } : null,
+    media: media ? {
+      currentAudibleKey: media.currentAudibleKey ?? null,
+      audibleKeys: media.audibleKeys ?? [],
+      preparedMediaElements: media.preparedMediaElements ?? 0,
+      playableMediaElements: media.playableMediaElements ?? 0,
+      controllerError: media.controllerError ?? null,
+      previous: summarizeRole(media.roles?.previous),
+      current: summarizeRole(media.roles?.current),
+      next: summarizeRole(media.roles?.next),
+    } : null,
+  };
+}
+
+function soundtrackPlaybackConfirmed(snapshot) {
+  return snapshot?.status === "playing"
+    && Boolean(snapshot?.current?.key)
+    && snapshot.media?.currentAudibleKey === snapshot.current.key;
+}
+
 function readNetworkDiagnosticReport(telemetry, history, generatedAtMs = performance.now()) {
   const current = readConnectionSnapshot("report-generated");
   const observedSessionTraffic = summarizeNetworkTelemetry(telemetry, generatedAtMs);
@@ -2109,6 +2208,8 @@ export function App() {
   const audioLatencyTelemetryRef = useRef(createAudioLatencyTelemetry());
   const networkTelemetryRef = useRef(createNetworkTelemetry(performance.now()));
   const diagnosticEventsRef = useRef(createDiagnosticEventLedger());
+  const diagnosticEventSequenceRef = useRef(0);
+  const mediaActionSequenceRef = useRef(0);
   const runtimeIssuesRef = useRef([]);
   const latestGpsObservationRef = useRef({ capturedAtMs: null, speedKmh: null });
   const atlasPositionSamplesRef = useRef([]);
@@ -2155,6 +2256,18 @@ export function App() {
   const controlsPinnedRef = useRef(controlsPinned);
   const previousControlsPinnedRef = useRef(controlsPinned);
   controlsPinnedRef.current = controlsPinned;
+  const logDiagnosticEvent = useCallback((type, detail = {}) => {
+    const interaction = type.startsWith("ui.")
+      || type.startsWith("media.action.")
+      || type.startsWith("media-session.action.");
+    recordDiagnosticEvent(diagnosticEventsRef.current, {
+      at: new Date().toISOString(),
+      elapsedMs: Math.round((performance.now() - sessionStartedAtRef.current) * 10) / 10,
+      sequence: ++diagnosticEventSequenceRef.current,
+      type,
+      detail,
+    }, { sample: type === "gps.sample", interaction });
+  }, []);
   const closeVoicePreview = useCallback(() => {
     setPreviewOpen(false);
     setDrawerOpen(true);
@@ -2173,13 +2286,14 @@ export function App() {
         audioContext: audioRef.current?.context ?? null,
       }),
       onState: updateSoundtrackSnapshot,
+      onTelemetry: logDiagnosticEvent,
     });
     controller.setVehicleMaster(vehicleEffectsEnabled);
     controller.setManualEffects(soundtrackManualEffects);
     soundtrackRef.current = controller;
     updateSoundtrackSnapshot(controller.getSnapshot());
     return controller;
-  }, [soundtrackManualEffects, updateSoundtrackSnapshot, vehicleEffectsEnabled]);
+  }, [logDiagnosticEvent, soundtrackManualEffects, updateSoundtrackSnapshot, vehicleEffectsEnabled]);
 
   const selectLaunchMusic = useCallback((nextMusicId) => {
     setLaunchMusicId(nextMusicId);
@@ -2216,15 +2330,6 @@ export function App() {
     ? `drive:${environmentId}:${genreId}:${drawerOpen ? "diagnostics" : "visual"}`
       + (environmentId === "aperture" && speed <= 40 ? ":wall-retreat" : "")
     : `splash:${phase}`;
-
-  const logDiagnosticEvent = useCallback((type, detail = {}) => {
-    recordDiagnosticEvent(diagnosticEventsRef.current, {
-      at: new Date().toISOString(),
-      elapsedMs: Math.round((performance.now() - sessionStartedAtRef.current) * 10) / 10,
-      type,
-      detail,
-    }, { sample: type === "gps.sample" });
-  }, []);
 
   const showControlNotice = useCallback((label, enabled) => {
     window.clearTimeout(controlNoticeTimerRef.current);
@@ -2298,8 +2403,18 @@ export function App() {
   }, [phase, wakeControls]);
 
   const handleControlActivation = useCallback((event) => {
+    if (diagnosticsActiveRef.current) {
+      const detail = diagnosticControlDetail(event.target, event);
+      if (detail) logDiagnosticEvent("ui.control.activated", detail);
+    }
     queueExperienceFocus(event.target);
-  }, [queueExperienceFocus]);
+  }, [logDiagnosticEvent, queueExperienceFocus]);
+
+  const handleControlChange = useCallback((event) => {
+    if (!diagnosticsActiveRef.current) return;
+    const detail = diagnosticControlChangeDetail(event.target);
+    if (detail) logDiagnosticEvent("ui.control.changed", detail);
+  }, [logDiagnosticEvent]);
 
   useEffect(() => {
     const wasPinned = previousControlsPinnedRef.current;
@@ -2742,20 +2857,11 @@ export function App() {
     const runtimeEnvironmentId = launchDiscover
       ? DEFAULT_FLUX_ENVIRONMENT_ID
       : selectedEnvironmentId;
-    sessionMusicModeRef.current = musicId;
-    setMusicMode(musicId === "soundtrack" ? "soundtrack" : "play-road");
-    soundtrackRef.current?.setVehicleMaster(launchVehicleEffects);
-    const soundtrackStart = musicId === "soundtrack"
-      ? soundtrackRef.current?.resume()
-      : null;
-    setSupportOpen(false);
-    setMuted(launchMuted);
-    setVehicleEffectsEnabled(launchVehicleEffects);
-    setDiscoverOpen(false);
-    setEnvironmentId(runtimeEnvironmentId);
     sessionStartedAtRef.current = performance.now();
     diagnosticsActiveRef.current = true;
     diagnosticEventsRef.current = createDiagnosticEventLedger();
+    diagnosticEventSequenceRef.current = 0;
+    mediaActionSequenceRef.current = 0;
     runtimeIssuesRef.current = [];
     frameTelemetryRef.current = createFrameTelemetry(performance.now());
     driveTelemetryRef.current = createDriveTelemetry(performance.now());
@@ -2769,6 +2875,40 @@ export function App() {
     setFlightRecorderRevision((revision) => revision + 1);
     connectionHistoryRef.current = [readConnectionSnapshot("harness-start")];
     longTaskTelemetryRef.current = createLongTaskTelemetry(longTaskTelemetryRef.current.supported);
+    logDiagnosticEvent("harness.launch.requested", {
+      musicMode: musicId,
+      environment: runtimeEnvironmentId,
+      muted: launchMuted,
+      vehicleEffectsEnabled: launchVehicleEffects,
+      online: navigator.onLine,
+      visibility: document.visibilityState,
+    });
+    sessionMusicModeRef.current = musicId;
+    setMusicMode(musicId === "soundtrack" ? "soundtrack" : "play-road");
+    soundtrackRef.current?.setVehicleMaster(launchVehicleEffects);
+    const launchMediaActionId = musicId === "soundtrack"
+      ? `transport-${++mediaActionSequenceRef.current}`
+      : null;
+    if (launchMediaActionId) {
+      logDiagnosticEvent("media.action.requested", {
+        actionId: launchMediaActionId,
+        action: "play",
+        source: "launch-start",
+        musicMode: "soundtrack",
+        muted: launchMuted,
+        online: navigator.onLine,
+        visibility: document.visibilityState,
+        before: soundtrackDiagnosticSnapshot(soundtrackRef.current?.getSnapshot?.()),
+      });
+    }
+    const soundtrackStart = musicId === "soundtrack"
+      ? soundtrackRef.current?.resume()
+      : null;
+    setSupportOpen(false);
+    setMuted(launchMuted);
+    setVehicleEffectsEnabled(launchVehicleEffects);
+    setDiscoverOpen(false);
+    setEnvironmentId(runtimeEnvironmentId);
     logDiagnosticEvent("harness.started", {
       musicMode: musicId,
       environment: runtimeEnvironmentId,
@@ -2829,6 +2969,14 @@ export function App() {
         audioRef.current.startCue();
       } else if (musicId === "soundtrack") {
         const started = await soundtrackStart;
+        logDiagnosticEvent("media.action.completed", {
+          actionId: launchMediaActionId,
+          action: "play",
+          source: "launch-start",
+          durationMs: roundMetric(performance.now() - sessionStartedAtRef.current),
+          playbackConfirmed: soundtrackPlaybackConfirmed(started),
+          after: soundtrackDiagnosticSnapshot(started),
+        });
         if (started?.status !== "playing") {
           const message = started?.error || "Soundtrack will start when the connection is ready";
           setScoreSelection({ status: "waiting", requestedScoreId: null, message });
@@ -2859,6 +3007,16 @@ export function App() {
       const message = String(error?.message || "Audio engine unavailable").slice(0, 160);
       setScoreSelection({ status: "unavailable", requestedScoreId: null, message });
       logDiagnosticEvent("audio.start-failed", { message });
+      if (launchMediaActionId) {
+        logDiagnosticEvent("media.action.failed", {
+          actionId: launchMediaActionId,
+          action: "play",
+          source: "launch-start",
+          durationMs: roundMetric(performance.now() - sessionStartedAtRef.current),
+          reason: message,
+          after: soundtrackDiagnosticSnapshot(soundtrackRef.current?.getSnapshot?.()),
+        });
+      }
     }
     startGps();
     const display = readDisplaySnapshot("harness-start");
@@ -2884,6 +3042,8 @@ export function App() {
         cacheStorage: "caches" in window,
         indexedDb: "indexedDB" in window,
         localStorage: storage,
+        mediaSession: "mediaSession" in navigator,
+        mediaMetadata: "MediaMetadata" in window,
         offscreenCanvas: typeof OffscreenCanvas !== "undefined",
         webCodecs: "VideoEncoder" in window || "AudioEncoder" in window,
         touchPoints: navigator.maxTouchPoints || 0,
@@ -3093,7 +3253,19 @@ export function App() {
     logDiagnosticEvent("preferences.reset", { scope: "local-product-state" });
   }, [logDiagnosticEvent, phase, showControlNotice, switchMusicMode]);
 
-  const playSoundtrackSelection = useCallback(async (selection) => {
+  const playSoundtrackSelection = useCallback(async (selection, source = "music-library") => {
+    const actionId = `soundtrack-${++mediaActionSequenceRef.current}`;
+    const startedAtMs = performance.now();
+    const before = soundtrackDiagnosticSnapshot(soundtrackRef.current?.getSnapshot?.());
+    logDiagnosticEvent("media.action.requested", {
+      actionId,
+      action: "select-library",
+      source,
+      selection: { kind: selection?.kind ?? "library", id: selection?.id ?? "all" },
+      online: navigator.onLine,
+      visibility: document.visibilityState,
+      before,
+    });
     if (mutedRef.current) {
       setMuted(false);
       showControlNotice("VOLUME", true);
@@ -3107,9 +3279,29 @@ export function App() {
       id: selection?.id ?? "all",
       status: result?.status ?? "unknown",
     });
+    logDiagnosticEvent("media.action.completed", {
+      actionId,
+      action: "select-library",
+      source,
+      durationMs: roundMetric(performance.now() - startedAtMs),
+      playbackConfirmed: soundtrackPlaybackConfirmed(result),
+      after: soundtrackDiagnosticSnapshot(result),
+    });
+    return result;
   }, [logDiagnosticEvent, showControlNotice, soundtrackController]);
 
-  const playSoundtrackTrack = useCallback(async (key) => {
+  const playSoundtrackTrack = useCallback(async (key, source = "music-library") => {
+    const actionId = `soundtrack-${++mediaActionSequenceRef.current}`;
+    const startedAtMs = performance.now();
+    logDiagnosticEvent("media.action.requested", {
+      actionId,
+      action: "select-track",
+      source,
+      requestedKey: key,
+      online: navigator.onLine,
+      visibility: document.visibilityState,
+      before: soundtrackDiagnosticSnapshot(soundtrackRef.current?.getSnapshot?.()),
+    });
     if (mutedRef.current) {
       setMuted(false);
       showControlNotice("VOLUME", true);
@@ -3119,42 +3311,142 @@ export function App() {
     setMusicMode("soundtrack");
     const result = await soundtrackController().select(key);
     logDiagnosticEvent("soundtrack.track.played", { key, status: result?.status ?? "unknown" });
+    logDiagnosticEvent("media.action.completed", {
+      actionId,
+      action: "select-track",
+      source,
+      requestedKey: key,
+      durationMs: roundMetric(performance.now() - startedAtMs),
+      playbackConfirmed: soundtrackPlaybackConfirmed(result),
+      after: soundtrackDiagnosticSnapshot(result),
+    });
+    return result;
   }, [logDiagnosticEvent, showControlNotice, soundtrackController]);
 
-  const moveTransport = useCallback(async (direction) => {
+  const moveTransport = useCallback(async (direction, source = "on-screen-transport") => {
+    const actionId = `transport-${++mediaActionSequenceRef.current}`;
+    const startedAtMs = performance.now();
+    const before = sessionMusicModeRef.current === "soundtrack"
+      ? soundtrackDiagnosticSnapshot(soundtrackRef.current?.getSnapshot?.())
+      : { status: playRoadPaused ? "paused" : "playing", currentScore: genreIdRef.current };
+    logDiagnosticEvent("media.action.requested", {
+      actionId,
+      action: direction === "previous" ? "previous" : "next",
+      source,
+      musicMode: sessionMusicModeRef.current,
+      muted: mutedRef.current,
+      online: navigator.onLine,
+      visibility: document.visibilityState,
+      before,
+    });
     if (sessionMusicModeRef.current === "soundtrack") {
-      const result = await soundtrackRef.current?.move(direction);
-      logDiagnosticEvent("soundtrack.transport.moved", {
-        direction,
-        status: result?.status ?? "unavailable",
-        error: result?.error ?? null,
-        currentKey: result?.current?.key ?? null,
-      });
-      return;
+      try {
+        const result = await soundtrackRef.current?.move(direction);
+        logDiagnosticEvent("soundtrack.transport.moved", {
+          direction,
+          source,
+          status: result?.status ?? "unavailable",
+          error: result?.error ?? null,
+          currentKey: result?.current?.key ?? null,
+        });
+        logDiagnosticEvent("media.action.completed", {
+          actionId,
+          action: direction,
+          source,
+          durationMs: roundMetric(performance.now() - startedAtMs),
+          playbackConfirmed: soundtrackPlaybackConfirmed(result),
+          currentChanged: before.current?.key !== result?.current?.key,
+          after: soundtrackDiagnosticSnapshot(result),
+        });
+        return result;
+      } catch (error) {
+        logDiagnosticEvent("media.action.failed", {
+          actionId,
+          action: direction,
+          source,
+          durationMs: roundMetric(performance.now() - startedAtMs),
+          reason: boundedDiagnosticText(String(error?.message || error || "unknown"), 160),
+          after: soundtrackDiagnosticSnapshot(soundtrackRef.current?.getSnapshot?.()),
+        });
+        return null;
+      }
     }
     const scores = readyScoreGenres();
     const currentIndex = Math.max(0, scores.findIndex((entry) => entry.id === genreIdRef.current));
     const offset = direction === "previous" ? -1 : 1;
     const nextIndex = (currentIndex + offset + scores.length) % scores.length;
     await selectScore(scores[nextIndex].id);
-  }, [logDiagnosticEvent, selectScore]);
+    logDiagnosticEvent("media.action.completed", {
+      actionId,
+      action: direction,
+      source,
+      durationMs: roundMetric(performance.now() - startedAtMs),
+      playbackConfirmed: true,
+      after: { status: "playing", currentScore: scores[nextIndex].id },
+    });
+    return scores[nextIndex].id;
+  }, [logDiagnosticEvent, playRoadPaused, selectScore]);
 
-  const toggleTransport = useCallback(async (forcePlaying = null) => {
+  const toggleTransport = useCallback(async (forcePlaying = null, source = "on-screen-transport") => {
+    const actionId = `transport-${++mediaActionSequenceRef.current}`;
+    const startedAtMs = performance.now();
+    const soundtrackBefore = soundtrackRef.current?.getSnapshot?.();
+    const beforePlaying = sessionMusicModeRef.current === "soundtrack"
+      ? soundtrackBefore?.status === "playing"
+      : audioRef.current?.context?.state === "running" && !playRoadPaused;
+    const shouldPlay = forcePlaying == null ? !beforePlaying : forcePlaying;
+    logDiagnosticEvent("media.action.requested", {
+      actionId,
+      action: shouldPlay ? "play" : "pause",
+      source,
+      musicMode: sessionMusicModeRef.current,
+      muted: mutedRef.current,
+      online: navigator.onLine,
+      visibility: document.visibilityState,
+      before: sessionMusicModeRef.current === "soundtrack"
+        ? soundtrackDiagnosticSnapshot(soundtrackBefore)
+        : { status: beforePlaying ? "playing" : "paused", audioContextState: audioRef.current?.context?.state ?? "unavailable" },
+    });
     if (sessionMusicModeRef.current === "soundtrack") {
-      const playing = soundtrackRef.current?.getSnapshot?.().status === "playing";
-      const shouldPlay = forcePlaying == null ? !playing : forcePlaying;
-      if (shouldPlay) {
-        if (mutedRef.current) setMuted(false);
-        await soundtrackRef.current?.resume();
-      } else {
-        soundtrackRef.current?.pause();
+      try {
+        let result;
+        if (shouldPlay) {
+          if (mutedRef.current) setMuted(false);
+          result = await soundtrackRef.current?.resume();
+        } else {
+          result = soundtrackRef.current?.pause();
+        }
+        logDiagnosticEvent("media.action.completed", {
+          actionId,
+          action: shouldPlay ? "play" : "pause",
+          source,
+          durationMs: roundMetric(performance.now() - startedAtMs),
+          playbackConfirmed: shouldPlay ? soundtrackPlaybackConfirmed(result) : result?.status === "paused",
+          after: soundtrackDiagnosticSnapshot(result),
+        });
+        return result;
+      } catch (error) {
+        logDiagnosticEvent("media.action.failed", {
+          actionId,
+          action: shouldPlay ? "play" : "pause",
+          source,
+          durationMs: roundMetric(performance.now() - startedAtMs),
+          reason: boundedDiagnosticText(String(error?.message || error || "unknown"), 160),
+          after: soundtrackDiagnosticSnapshot(soundtrackRef.current?.getSnapshot?.()),
+        });
+        return null;
       }
-      return;
     }
     const context = audioRef.current?.context;
-    if (!context) return;
-    const playing = context.state === "running" && !playRoadPaused;
-    const shouldPlay = forcePlaying == null ? !playing : forcePlaying;
+    if (!context) {
+      logDiagnosticEvent("media.action.failed", {
+        actionId,
+        action: shouldPlay ? "play" : "pause",
+        source,
+        reason: "audio-context-unavailable",
+      });
+      return null;
+    }
     if (shouldPlay) {
       if (mutedRef.current) setMuted(false);
       await context.resume();
@@ -3163,7 +3455,16 @@ export function App() {
       await context.suspend();
       setPlayRoadPaused(true);
     }
-  }, [playRoadPaused]);
+    logDiagnosticEvent("media.action.completed", {
+      actionId,
+      action: shouldPlay ? "play" : "pause",
+      source,
+      durationMs: roundMetric(performance.now() - startedAtMs),
+      playbackConfirmed: shouldPlay ? context.state === "running" : context.state === "suspended",
+      after: { status: shouldPlay ? "playing" : "paused", audioContextState: context.state },
+    });
+    return context.state;
+  }, [logDiagnosticEvent, playRoadPaused]);
 
   const currentTrack = useMemo(() => {
     if (musicMode === "soundtrack") {
@@ -3202,34 +3503,83 @@ export function App() {
   }, [currentTrack, phase]);
 
   useEffect(() => {
-    if (!("mediaSession" in navigator) || !("MediaMetadata" in window) || !currentTrack) return undefined;
+    if (phase !== "running" || !currentTrack) return undefined;
+    const mediaSessionAvailable = "mediaSession" in navigator;
+    const mediaMetadataAvailable = "MediaMetadata" in window;
+    if (!mediaSessionAvailable || !mediaMetadataAvailable) {
+      logDiagnosticEvent("media-session.capabilities", {
+        mediaSessionAvailable,
+        mediaMetadataAvailable,
+        actions: {},
+      });
+      return undefined;
+    }
     const artwork = currentTrack.artwork ? [{
       src: new URL(currentTrack.artwork, window.location.href).href,
       sizes: "512x512",
       type: mediaArtworkType(currentTrack.artwork),
     }] : [];
-    navigator.mediaSession.metadata = new MediaMetadata({
-      title: currentTrack.title,
-      artist: currentTrack.artist,
-      album: currentTrack.album,
-      artwork,
-    });
-    navigator.mediaSession.playbackState = transportPlaying ? "playing" : "paused";
-    const handlers = {
-      play: () => void toggleTransport(true),
-      pause: () => void toggleTransport(false),
-      previoustrack: () => void moveTransport("previous"),
-      nexttrack: () => void moveTransport("next"),
-    };
-    for (const [action, handler] of Object.entries(handlers)) {
-      try { navigator.mediaSession.setActionHandler(action, handler); } catch { /* unsupported action */ }
+    let metadataPublished = false;
+    let playbackStatePublished = false;
+    try {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: currentTrack.title,
+        artist: currentTrack.artist,
+        album: currentTrack.album,
+        artwork,
+      });
+      metadataPublished = true;
+    } catch (error) {
+      logDiagnosticEvent("media-session.metadata.failed", {
+        key: currentTrack.key,
+        reason: boundedDiagnosticText(String(error?.name || error?.message || error || "unknown"), 120),
+      });
     }
+    try {
+      navigator.mediaSession.playbackState = transportPlaying ? "playing" : "paused";
+      playbackStatePublished = true;
+    } catch (error) {
+      logDiagnosticEvent("media-session.playback-state.failed", {
+        key: currentTrack.key,
+        reason: boundedDiagnosticText(String(error?.name || error?.message || error || "unknown"), 120),
+      });
+    }
+    const handlers = {
+      play: () => void toggleTransport(true, "media-session"),
+      pause: () => void toggleTransport(false, "media-session"),
+      previoustrack: () => void moveTransport("previous", "media-session"),
+      nexttrack: () => void moveTransport("next", "media-session"),
+    };
+    const actionRegistration = {};
+    for (const [action, handler] of Object.entries(handlers)) {
+      try {
+        navigator.mediaSession.setActionHandler(action, handler);
+        actionRegistration[action] = { registered: true, error: null };
+      } catch (error) {
+        actionRegistration[action] = {
+          registered: false,
+          error: boundedDiagnosticText(String(error?.name || error?.message || error || "unsupported"), 120),
+        };
+      }
+    }
+    logDiagnosticEvent("media-session.published", {
+      key: currentTrack.key,
+      title: boundedDiagnosticText(currentTrack.title, 120),
+      artist: boundedDiagnosticText(currentTrack.artist, 120),
+      album: boundedDiagnosticText(currentTrack.album, 120),
+      hasArtwork: artwork.length > 0,
+      artworkType: artwork[0]?.type ?? null,
+      requestedPlaybackState: transportPlaying ? "playing" : "paused",
+      metadataPublished,
+      playbackStatePublished,
+      actionRegistration,
+    });
     return () => {
       for (const action of Object.keys(handlers)) {
         try { navigator.mediaSession.setActionHandler(action, null); } catch { /* unsupported action */ }
       }
     };
-  }, [currentTrack, moveTransport, toggleTransport, transportPlaying]);
+  }, [currentTrack, logDiagnosticEvent, moveTransport, phase, toggleTransport, transportPlaying]);
 
   useEffect(() => {
     const artworkUrls = [
@@ -3916,6 +4266,7 @@ export function App() {
       data-environment={environmentId}
       onPointerDown={handleSurfacePointerDown}
       onClickCapture={handleControlActivation}
+      onChangeCapture={handleControlChange}
       onFocusCapture={wakeControls}
     >
       {phase === "running" ? (
@@ -4268,9 +4619,9 @@ export function App() {
         ) : null}
 
         <div className="persistent-transport control-layer" aria-label="Music transport">
-          <button type="button" onClick={() => void moveTransport("previous")} aria-label="Previous track"><MediaGlyph name="previous" /></button>
-          <button type="button" onClick={() => void toggleTransport()} aria-label={transportPlaying ? "Pause" : "Play"}><MediaGlyph name={transportPlaying ? "pause" : "play"} /></button>
-          <button type="button" onClick={() => void moveTransport("next")} aria-label="Next track"><MediaGlyph name="next" /></button>
+          <button type="button" onClick={() => void moveTransport("previous", "persistent-transport")} aria-label="Previous track"><MediaGlyph name="previous" /></button>
+          <button type="button" onClick={() => void toggleTransport(null, "persistent-transport")} aria-label={transportPlaying ? "Pause" : "Play"}><MediaGlyph name={transportPlaying ? "pause" : "play"} /></button>
+          <button type="button" onClick={() => void moveTransport("next", "persistent-transport")} aria-label="Next track"><MediaGlyph name="next" /></button>
         </div>
 
         {manualEffectsDeckOpen ? (
@@ -4570,9 +4921,9 @@ export function App() {
           onFeatured={() => void playSoundtrackSelection({ kind: "featured", id: "signal-border" })}
           onBrowseSelection={(selection) => void playSoundtrackSelection(selection)}
           onTrack={(key) => void playSoundtrackTrack(key)}
-          onPrevious={() => void moveTransport("previous")}
-          onPlayPause={() => void toggleTransport()}
-          onNext={() => void moveTransport("next")}
+          onPrevious={() => void moveTransport("previous", "music-library")}
+          onPlayPause={() => void toggleTransport(null, "music-library")}
+          onNext={() => void moveTransport("next", "music-library")}
           onClose={() => setSoundtrackPanelOpen(false)}
         />
       ) : null}

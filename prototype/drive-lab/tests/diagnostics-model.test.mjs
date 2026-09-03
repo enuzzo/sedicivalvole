@@ -202,8 +202,35 @@ test("high-rate GPS samples cannot evict significant diagnostic events", () => {
 
   assert.equal(report.events.find((event) => event.type === "harness.started")?.priority, "significant");
   assert.equal(report.retention.retainedSignificant, 1);
-  assert.equal(report.retention.retainedSamples, 120);
-  assert.equal(report.retention.discardedSamples, 280);
+  assert.equal(report.retention.retainedSamples, 400);
+  assert.equal(report.retention.discardedSamples, 0);
+});
+
+test("interaction events have their own long-lived channel and exact sequence order", () => {
+  const ledger = createDiagnosticEventLedger();
+  recordDiagnosticEvent(ledger, {
+    elapsedMs: 10,
+    sequence: 2,
+    type: "media.action.completed",
+  }, { interaction: true });
+  recordDiagnosticEvent(ledger, {
+    elapsedMs: 10,
+    sequence: 1,
+    type: "media.action.requested",
+  }, { interaction: true });
+  for (let index = 0; index < 1000; index += 1) {
+    recordDiagnosticEvent(ledger, { elapsedMs: index, type: "runtime.state" });
+  }
+  const report = createDiagnosticEventReport(ledger);
+
+  assert.deepEqual(
+    report.events.filter((event) => event.priority === "interaction").map((event) => event.type),
+    ["media.action.requested", "media.action.completed"],
+  );
+  assert.equal(report.retention.retainedInteractions, 2);
+  assert.equal(report.retention.discardedInteractions, 0);
+  assert.equal(report.retention.retainedSignificant, 800);
+  assert.equal(report.retention.discardedSignificant, 200);
 });
 
 test("long tasks retain bounded phase and runtime context without coordinates", () => {

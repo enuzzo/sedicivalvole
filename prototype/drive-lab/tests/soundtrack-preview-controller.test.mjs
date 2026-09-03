@@ -100,6 +100,29 @@ test("the preview loads and prepares three media roles before explicit playback"
   assert.equal(controller.getSnapshot().media.currentAudibleKey, loaded.current.key);
 });
 
+test("debug telemetry observes browser media lifecycle without changing playback", async () => {
+  const telemetry = [];
+  const controller = createSoundtrackPreviewController({
+    fetchImpl: catalogFetch,
+    mediaFactory: () => new FakeMedia(),
+    onTelemetry: (type, detail) => telemetry.push({ type, detail }),
+  });
+  const loaded = await controller.load({ nowMs: 0 });
+  const currentMedia = controller.getSnapshot().media.roles.current;
+
+  assert.ok(telemetry.some((event) => (
+    event.type === "soundtrack.media.lifecycle"
+      && event.detail.reason === "queue:synced"
+      && event.detail.preparedMediaElements === 3
+  )));
+  assert.equal(currentMedia.key, loaded.current.key);
+  assert.equal((await controller.resume()).status, "playing");
+  assert.ok(telemetry.some((event) => (
+    event.type === "soundtrack.media.lifecycle"
+      && event.detail.currentAudibleKey === loaded.current.key
+  )));
+});
+
 test("pace, genre, and exact track choices start playback immediately", async () => {
   const requests = [];
   const controller = createSoundtrackPreviewController({

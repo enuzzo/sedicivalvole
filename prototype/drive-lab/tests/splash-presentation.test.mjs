@@ -540,8 +540,13 @@ test("the vehicle gets persistent transport, Media Session actions, track notice
 
   assert.match(app, /className="persistent-transport control-layer" aria-label="Music transport"/);
   assert.match(app, /navigator\.mediaSession\.setActionHandler\(action, handler\)/);
-  assert.match(app, /previoustrack: \(\) => void moveTransport\("previous"\)/);
-  assert.match(app, /nexttrack: \(\) => void moveTransport\("next"\)/);
+  assert.match(app, /previoustrack: \(\) => void moveTransport\("previous", "media-session"\)/);
+  assert.match(app, /nexttrack: \(\) => void moveTransport\("next", "media-session"\)/);
+  assert.match(app, /media\.action\.requested/);
+  assert.match(app, /media\.action\.completed/);
+  assert.match(app, /soundtrackPlaybackConfirmed/);
+  assert.match(app, /onClickCapture=\{handleControlActivation\}/);
+  assert.match(app, /onChangeCapture=\{handleControlChange\}/);
   assert.match(app, /className="track-change-notice" role="status" aria-live="polite"/);
   assert.match(app, /data-dismiss-direction=\{dismissDirection\}/);
   assert.match(app, /velocity >= 0\.62/);

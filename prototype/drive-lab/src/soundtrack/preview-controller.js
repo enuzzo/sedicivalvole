@@ -56,6 +56,7 @@ export function createSoundtrackPreviewController({
   setTimer = globalThis.setTimeout?.bind(globalThis),
   clearTimer = globalThis.clearTimeout?.bind(globalThis),
   transportStartTimeoutMs = SOUNDTRACK_TRANSPORT_START_TIMEOUT_MS,
+  onTelemetry = null,
 } = {}) {
   let destroyed = false;
   let requestRevision = 0;
@@ -180,19 +181,40 @@ export function createSoundtrackPreviewController({
     return state;
   };
 
+  const emitTelemetry = (type, detail = {}) => {
+    if (typeof onTelemetry !== "function") return;
+    try {
+      onTelemetry(type, Object.freeze(detail));
+    } catch {
+      // Debug observers can never affect playback ownership.
+    }
+  };
+
   const deck = createSoundtrackMediaDeckController({
     mediaFactory,
     crossOrigin,
     onMediaCreate: (key, media) => effects.attachMedia(key, media),
     onMediaDispose: (key) => effects.detachMedia(key),
-    onSnapshot(nextSnapshot) {
+    onSnapshot(nextSnapshot, reason) {
       mediaSnapshot = nextSnapshot;
+      emitTelemetry("soundtrack.media.lifecycle", {
+        reason,
+        status: nextSnapshot.status,
+        currentAudibleKey: nextSnapshot.currentAudibleKey,
+        audibleKeys: nextSnapshot.audibleKeys,
+        preparedMediaElements: nextSnapshot.preparedMediaElements,
+        playableMediaElements: nextSnapshot.playableMediaElements,
+        controllerError: nextSnapshot.controllerError,
+        roles: nextSnapshot.roles,
+      });
       emit();
     },
     onEnded(entry) {
+      emitTelemetry("soundtrack.media.ended", { key: entry?.key ?? null });
       if (!destroyed) void advanceAfterEnded(entry);
     },
     onError(detail) {
+      emitTelemetry("soundtrack.media.error", detail);
       const currentKey = queueState?.slots?.current?.key;
       const audibleKeys = new Set(mediaSnapshot?.audibleKeys ?? []);
       if (detail?.key && detail.key !== currentKey && !audibleKeys.has(detail.key)) {

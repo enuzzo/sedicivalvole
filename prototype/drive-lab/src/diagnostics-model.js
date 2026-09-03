@@ -285,27 +285,33 @@ export function appendConnectionHistory(history, snapshot, limit = 60) {
   return [...history, snapshot].slice(-limit);
 }
 
-export const DIAGNOSTIC_SIGNIFICANT_EVENT_LIMIT = 120;
-export const DIAGNOSTIC_SAMPLE_EVENT_LIMIT = 120;
+export const DIAGNOSTIC_INTERACTION_EVENT_LIMIT = 1200;
+export const DIAGNOSTIC_SIGNIFICANT_EVENT_LIMIT = 800;
+export const DIAGNOSTIC_SAMPLE_EVENT_LIMIT = 1200;
 
 export function createDiagnosticEventLedger() {
   return {
+    interactions: [],
     significant: [],
     samples: [],
+    totalInteractions: 0,
     totalSignificant: 0,
     totalSamples: 0,
+    discardedInteractions: 0,
     discardedSignificant: 0,
     discardedSamples: 0,
   };
 }
 
-export function recordDiagnosticEvent(ledger, event, { sample = false } = {}) {
-  const channel = sample ? "samples" : "significant";
-  const totalKey = sample ? "totalSamples" : "totalSignificant";
-  const discardedKey = sample ? "discardedSamples" : "discardedSignificant";
-  const limit = sample ? DIAGNOSTIC_SAMPLE_EVENT_LIMIT : DIAGNOSTIC_SIGNIFICANT_EVENT_LIMIT;
+export function recordDiagnosticEvent(ledger, event, { sample = false, interaction = false } = {}) {
+  const channel = interaction ? "interactions" : sample ? "samples" : "significant";
+  const totalKey = interaction ? "totalInteractions" : sample ? "totalSamples" : "totalSignificant";
+  const discardedKey = interaction ? "discardedInteractions" : sample ? "discardedSamples" : "discardedSignificant";
+  const limit = interaction
+    ? DIAGNOSTIC_INTERACTION_EVENT_LIMIT
+    : sample ? DIAGNOSTIC_SAMPLE_EVENT_LIMIT : DIAGNOSTIC_SIGNIFICANT_EVENT_LIMIT;
   ledger[totalKey] += 1;
-  ledger[channel].push({ ...event, priority: sample ? "sample" : "significant" });
+  ledger[channel].push({ ...event, priority: interaction ? "interaction" : sample ? "sample" : "significant" });
   if (ledger[channel].length > limit) {
     const overflow = ledger[channel].length - limit;
     ledger[channel].splice(0, overflow);
@@ -315,13 +321,20 @@ export function recordDiagnosticEvent(ledger, event, { sample = false } = {}) {
 }
 
 export function createDiagnosticEventReport(ledger) {
-  const events = [...ledger.significant, ...ledger.samples]
-    .sort((left, right) => (left.elapsedMs ?? 0) - (right.elapsedMs ?? 0));
+  const events = [...ledger.interactions, ...ledger.significant, ...ledger.samples]
+    .sort((left, right) => {
+      const elapsedDifference = (left.elapsedMs ?? 0) - (right.elapsedMs ?? 0);
+      return elapsedDifference || (left.sequence ?? 0) - (right.sequence ?? 0);
+    });
   return {
     events,
     retention: {
+      interactionLimit: DIAGNOSTIC_INTERACTION_EVENT_LIMIT,
       significantLimit: DIAGNOSTIC_SIGNIFICANT_EVENT_LIMIT,
       sampleLimit: DIAGNOSTIC_SAMPLE_EVENT_LIMIT,
+      totalInteractions: ledger.totalInteractions,
+      retainedInteractions: ledger.interactions.length,
+      discardedInteractions: ledger.discardedInteractions,
       totalSignificant: ledger.totalSignificant,
       retainedSignificant: ledger.significant.length,
       discardedSignificant: ledger.discardedSignificant,
@@ -685,7 +698,7 @@ export function deriveNetworkNoticeState({
 }
 
 export const DRIVE_TRACE_INTERVAL_MS = 2000;
-export const DRIVE_TRACE_SAMPLE_LIMIT = 300;
+export const DRIVE_TRACE_SAMPLE_LIMIT = 1800;
 export const DIAGNOSTIC_MAX_REQUEST_BODY_BYTES = 1966080;
 export const DRIVE_TRACE_FIELDS = [
   "t", "speed", "gps", "gpsAge", "gpsState", "accuracy", "rate", "source", "input", "energy",
@@ -943,8 +956,21 @@ export function fitDiagnosticReportForTransport(report, maximumBytes = DIAGNOSTI
     && fitted.events.some((event) => event?.priority === "sample")) {
     trimSampleEvents(20);
   }
-  while (serializedRequestUtf8Bytes(fitted) > trimmingTargetBytes && fitted.events.length > 40) {
-    fitted.events.splice(0, Math.min(20, fitted.events.length - 40));
+  const trimOldestNonInteractionEvents = (count) => {
+    let remaining = count;
+    for (let index = 0; index < fitted.events.length && remaining > 0 && fitted.events.length > 40;) {
+      if (fitted.events[index]?.priority !== "interaction") {
+        fitted.events.splice(index, 1);
+        remaining -= 1;
+      } else {
+        index += 1;
+      }
+    }
+  };
+  while (serializedRequestUtf8Bytes(fitted) > trimmingTargetBytes
+    && fitted.events.length > 40
+    && fitted.events.some((event) => event?.priority !== "interaction")) {
+    trimOldestNonInteractionEvents(20);
   }
   while (serializedRequestUtf8Bytes(fitted) > trimmingTargetBytes && fitted.runtimeIssues.length > 4) {
     fitted.runtimeIssues.splice(0, Math.min(4, fitted.runtimeIssues.length - 4));
@@ -952,14 +978,14 @@ export function fitDiagnosticReportForTransport(report, maximumBytes = DIAGNOSTI
   while (serializedRequestUtf8Bytes(fitted) > trimmingTargetBytes && fitted.flightRecorder?.samples.length > 60) {
     fitted.flightRecorder.samples.splice(0, Math.min(20, fitted.flightRecorder.samples.length - 60));
   }
-  while (serializedRequestUtf8Bytes(fitted) > trimmingTargetBytes && fitted.events.length > 0) {
-    fitted.events.splice(0, Math.min(10, fitted.events.length));
-  }
   while (serializedRequestUtf8Bytes(fitted) > trimmingTargetBytes && fitted.runtimeIssues.length > 0) {
     fitted.runtimeIssues.splice(0, Math.min(2, fitted.runtimeIssues.length));
   }
   while (serializedRequestUtf8Bytes(fitted) > trimmingTargetBytes && fitted.flightRecorder?.samples.length > 1) {
     fitted.flightRecorder.samples.splice(0, Math.min(10, fitted.flightRecorder.samples.length - 1));
+  }
+  while (serializedRequestUtf8Bytes(fitted) > trimmingTargetBytes && fitted.events.length > 0) {
+    fitted.events.splice(0, Math.min(10, fitted.events.length));
   }
 
   fitted.transport.transmittedSamples = fitted.flightRecorder?.samples.length ?? 0;
