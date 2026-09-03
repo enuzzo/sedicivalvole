@@ -42,6 +42,29 @@ import {
   startAppNetworkTransfer,
 } from "./diagnostics-model.js";
 import { runStorageDiagnostics } from "./storage-diagnostics.js";
+import { AppearanceControl } from "./appearance-control.jsx";
+import {
+  DEFAULT_APPEARANCE_MODE,
+  normalizeAppearanceMode,
+  readAppearancePreference,
+  resetAppearancePreference,
+  solarAppearancePhase,
+  writeAppearancePreference,
+} from "./appearance-model.js";
+import {
+  readSystemAppearanceSnapshot,
+  resolveAppearanceState,
+  subscribeSystemAppearance,
+} from "./appearance-runtime.js";
+import {
+  clearMediaSessionPresentation,
+  createMediaTransportIntentQueue,
+  installMediaSessionTransport,
+  mediaSessionArtwork,
+  playRoadMediaObservation,
+  soundtrackMediaIsPlaying,
+  soundtrackMediaPositionState,
+} from "./media-session.js";
 import { createAudioMacroSnapshot } from "./response-mapping.js";
 import { createSoundtrackPreviewController } from "./soundtrack/preview-controller.js";
 import { createSoundtrackEffectsController } from "./soundtrack/effects-controller.js";
@@ -430,20 +453,16 @@ function networkUiDetail(notice) {
   return null;
 }
 
-function mediaArtworkType(url) {
-  try {
-    const pathname = new URL(url, window.location.href).pathname.toLowerCase();
-    if (pathname.endsWith(".webp")) return "image/webp";
-    if (pathname.endsWith(".jpg") || pathname.endsWith(".jpeg")) return "image/jpeg";
-    if (pathname.endsWith(".avif")) return "image/avif";
-  } catch {
-    // A missing or malformed artwork URL simply falls back to PNG metadata.
-  }
-  return "image/png";
-}
-
 function boundedDiagnosticText(value, limit = 96) {
   return typeof value === "string" ? value.replace(/\s+/g, " ").trim().slice(0, limit) : "";
+}
+
+function mediaSessionInvocationDiagnostic(invocation) {
+  return invocation ? {
+    nativeInvocationId: invocation.id ?? null,
+    nativeInvocationSequence: invocation.sequence ?? null,
+    nativeInvokedAtMs: invocation.invokedAtMs ?? null,
+  } : {};
 }
 
 function diagnosticControlDetail(target, event) {
@@ -2010,6 +2029,7 @@ function GpsHelpPopover({ open, status, accuracy, onClose, onRetry, onDemo }) {
 function LaunchSelector({
   musicId,
   environmentId,
+  appearance,
   onMusicChange,
   onEnvironmentChange,
   onSelectGradient,
@@ -2031,7 +2051,7 @@ function LaunchSelector({
       <header className="launch-selector-heading">
         <img
           className="launch-selector-mark"
-          src={BRAND_MARK_URL}
+          src={appearance === "dark" ? TOPBAR_MARK_URL : BRAND_MARK_URL}
           alt=""
           aria-hidden="true"
         />
@@ -2106,6 +2126,8 @@ function LaunchSelector({
 
 export function App() {
   const initialPreferences = useMemo(readPreferences, []);
+  const initialAppearanceMode = useMemo(readAppearancePreference, []);
+  const initialSystemAppearance = useMemo(readSystemAppearanceSnapshot, []);
   const [phase, setPhase] = useState("idle");
   const [launchMusicId, setLaunchMusicId] = useState(initialPreferences.musicMode);
   const [launchEnvironmentId, setLaunchEnvironmentId] = useState(initialPreferences.environmentId);
@@ -2166,6 +2188,23 @@ export function App() {
   const [diagnosticReadmeOpen, setDiagnosticReadmeOpen] = useState(false);
   const [mapPosition, setMapPosition] = useState(null);
   const [gpsHelpOpen, setGpsHelpOpen] = useState(false);
+  const [appearanceMode, setAppearanceMode] = useState(initialAppearanceMode);
+  const [appearanceResolution, setAppearanceResolution] = useState(() => ({
+    appearance: initialAppearanceMode === "auto"
+      ? initialSystemAppearance.colorScheme ?? DEFAULT_APPEARANCE_MODE
+      : initialAppearanceMode,
+    source: initialAppearanceMode === "auto" && initialSystemAppearance.supported
+      ? "system"
+      : initialAppearanceMode === "auto" ? "fallback" : "manual",
+    holdReason: null,
+  }));
+  const [appearanceMenuOpen, setAppearanceMenuOpen] = useState(false);
+  const [appearanceInteractionActive, setAppearanceInteractionActive] = useState(false);
+  const [systemAppearance, setSystemAppearance] = useState(initialSystemAppearance.colorScheme);
+  const [systemAppearanceSupported, setSystemAppearanceSupported] = useState(
+    initialSystemAppearance.supported,
+  );
+  const [solarAppearancePhase, setSolarAppearancePhase] = useState(null);
   const [atlasDemoRequest, setAtlasDemoRequest] = useState(QA_ATLAS_DEMO ? 1 : 0);
   const [atlasDemoActive, setAtlasDemoActive] = useState(QA_ATLAS_DEMO);
   const reducedMotion = useMemo(
@@ -2206,7 +2245,10 @@ export function App() {
   const performanceSamplerTimerRef = useRef(null);
   const viewportCaptureTimerRef = useRef(null);
   const controlNoticeTimerRef = useRef(null);
-  const transportActionQueueRef = useRef(Promise.resolve());
+  const transportActionQueueRef = useRef(null);
+  if (!transportActionQueueRef.current) {
+    transportActionQueueRef.current = createMediaTransportIntentQueue();
+  }
   const mediaSessionActionsRef = useRef({ move: null, toggle: null });
   const gpsTelemetryRef = useRef(createGpsTelemetry(performance.now()));
   const driveTelemetryRef = useRef(createDriveTelemetry(performance.now()));
@@ -2248,10 +2290,14 @@ export function App() {
   const drawerOpenRef = useRef(drawerOpen);
   const themeIdRef = useRef(themeId);
   const mutedRef = useRef(muted);
+  const playRoadPausedRef = useRef(playRoadPaused);
   const vehicleEffectsEnabledRef = useRef(vehicleEffectsEnabled);
   const bpmRef = useRef(null);
   const transportBpmRef = useRef(scoreTransportTempo);
   const mapPositionRef = useRef(mapPosition);
+  const appearanceModeRef = useRef(appearanceMode);
+  const appearanceResolutionRef = useRef(appearanceResolution);
+  const previousAppearanceDiagnosticRef = useRef(null);
 
   const theme = getFluxTheme(themeId);
   const environment = getFluxEnvironment(environmentId);
@@ -2263,10 +2309,11 @@ export function App() {
     || soundtrackPanelOpen
     || discoverOpen
     || supportOpen;
-  const controlsPinned = modalOpen || manualEffectsDeckOpen || gpsHelpOpen;
+  const controlsPinned = modalOpen || manualEffectsDeckOpen || gpsHelpOpen || appearanceMenuOpen;
   const controlsPinnedRef = useRef(controlsPinned);
   const previousControlsPinnedRef = useRef(controlsPinned);
   controlsPinnedRef.current = controlsPinned;
+  playRoadPausedRef.current = playRoadPaused;
   const logDiagnosticEvent = useCallback((type, detail = {}) => {
     const interaction = type.startsWith("ui.")
       || type.startsWith("media.action.")
@@ -2279,6 +2326,123 @@ export function App() {
       detail,
     }, { sample: type === "gps.sample", interaction });
   }, []);
+
+  useEffect(() => {
+    const subscription = subscribeSystemAppearance(setSystemAppearance);
+    setSystemAppearance(subscription.supported ? subscription.initialColorScheme : null);
+    setSystemAppearanceSupported(subscription.supported);
+    return subscription.dispose;
+  }, []);
+
+  useEffect(() => {
+    if (appearanceMode !== "auto" || systemAppearanceSupported !== false) {
+      setSolarAppearancePhase(null);
+      return undefined;
+    }
+    if (!mapPosition) {
+      setSolarAppearancePhase(null);
+      return undefined;
+    }
+    const sample = () => {
+      setSolarAppearancePhase(solarAppearancePhase({
+        latitude: mapPosition.latitude,
+        longitude: mapPosition.longitude,
+      }, Date.now()));
+    };
+    sample();
+    const timer = window.setInterval(sample, 5 * 60 * 1000);
+    return () => {
+      window.clearInterval(timer);
+    };
+  }, [appearanceMode, mapPosition, systemAppearanceSupported]);
+
+  useEffect(() => {
+    setAppearanceResolution((current) => {
+      const next = resolveAppearanceState({
+        mode: appearanceMode,
+        systemColorScheme: systemAppearance,
+        solarPhase: solarAppearancePhase,
+        currentAppearance: current.appearance,
+        interactionActive: appearanceInteractionActive || appearanceMenuOpen,
+      });
+      return next.appearance === current.appearance
+        && next.source === current.source
+        && next.holdReason === current.holdReason
+        ? current
+        : next;
+    });
+  }, [
+    appearanceInteractionActive,
+    appearanceMenuOpen,
+    appearanceMode,
+    solarAppearancePhase,
+    systemAppearance,
+  ]);
+
+  useEffect(() => {
+    const resolutionMatchesPreference = appearanceMode === "auto"
+      ? appearanceResolution.source !== "manual"
+      : appearanceResolution.source === "manual"
+        && appearanceResolution.appearance === appearanceMode;
+    if (!resolutionMatchesPreference) return;
+    const detail = {
+      preference: appearanceMode,
+      effective: appearanceResolution.appearance,
+      source: appearanceResolution.source,
+      holdReason: appearanceResolution.holdReason,
+      systemSignalSupported: systemAppearanceSupported === true,
+    };
+    const signature = JSON.stringify(detail);
+    if (previousAppearanceDiagnosticRef.current === signature) return;
+    previousAppearanceDiagnosticRef.current = signature;
+    logDiagnosticEvent("appearance.resolved", detail);
+  }, [appearanceMode, appearanceResolution, logDiagnosticEvent, systemAppearanceSupported]);
+
+  useEffect(() => {
+    const effectiveAppearance = appearanceResolution.appearance;
+    document.documentElement.style.colorScheme = effectiveAppearance;
+    document.documentElement.dataset.appearance = effectiveAppearance;
+    const themeColor = document.querySelector('meta[name="theme-color"]');
+    themeColor?.setAttribute("content", effectiveAppearance === "dark" ? "#090b0b" : "#eee9de");
+  }, [appearanceResolution.appearance]);
+
+  useEffect(() => {
+    if (appearanceMode !== "auto") {
+      setAppearanceInteractionActive(false);
+      return undefined;
+    }
+    const releaseAppearanceHold = () => setAppearanceInteractionActive(false);
+    window.addEventListener("pointerup", releaseAppearanceHold, true);
+    window.addEventListener("pointercancel", releaseAppearanceHold, true);
+    window.addEventListener("blur", releaseAppearanceHold);
+    return () => {
+      window.removeEventListener("pointerup", releaseAppearanceHold, true);
+      window.removeEventListener("pointercancel", releaseAppearanceHold, true);
+      window.removeEventListener("blur", releaseAppearanceHold);
+    };
+  }, [appearanceMode]);
+
+  const holdAppearanceDuringPointer = useCallback(() => {
+    if (appearanceModeRef.current === "auto") setAppearanceInteractionActive(true);
+  }, []);
+
+  const changeAppearance = useCallback((nextMode) => {
+    const preference = normalizeAppearanceMode(nextMode);
+    const persisted = writeAppearancePreference(preference);
+    setAppearanceMode(preference);
+    logDiagnosticEvent("appearance.preference.changed", { preference, persisted });
+  }, [logDiagnosticEvent]);
+
+  const changeAppearanceMenuOpen = useCallback((open) => {
+    setAppearanceMenuOpen(open);
+    if (open) setGpsHelpOpen(false);
+  }, []);
+
+  const toggleGpsHelp = useCallback(() => {
+    setAppearanceMenuOpen(false);
+    setGpsHelpOpen((current) => !current);
+  }, []);
+
   const closeVoicePreview = useCallback(() => {
     setPreviewOpen(false);
     setDrawerOpen(true);
@@ -2337,6 +2501,8 @@ export function App() {
   bpmRef.current = bpm;
   transportBpmRef.current = transportBpm;
   mapPositionRef.current = mapPosition;
+  appearanceModeRef.current = appearanceMode;
+  appearanceResolutionRef.current = appearanceResolution;
   performancePhaseRef.current = phase === "running"
     ? `drive:${environmentId}:${genreId}:${drawerOpen ? "diagnostics" : "visual"}`
       + (environmentId === "aperture" && speed <= 40 ? ":wall-retreat" : "")
@@ -2408,6 +2574,12 @@ export function App() {
     window.requestAnimationFrame(() => {
       if (phase !== "running" || controlsPinnedRef.current) return;
       if (activationTarget && !shouldReleaseControlFocus(activationTarget, false)) return;
+      const activeElement = document.activeElement;
+      if (!activationTarget
+        && activeElement
+        && activeElement !== document.body
+        && activeElement !== document.documentElement
+        && activeElement !== appRef.current) return;
       appRef.current?.focus({ preventScroll: true });
       wakeControls();
     });
@@ -2430,7 +2602,11 @@ export function App() {
   useEffect(() => {
     const wasPinned = previousControlsPinnedRef.current;
     previousControlsPinnedRef.current = controlsPinned;
-    if (wasPinned && !controlsPinned) queueExperienceFocus();
+    const activeElement = document.activeElement;
+    const focusNeedsRecovery = !activeElement
+      || activeElement === document.body
+      || activeElement === document.documentElement;
+    if (wasPinned && !controlsPinned && focusNeedsRecovery) queueExperienceFocus();
   }, [controlsPinned, queueExperienceFocus]);
 
   const handleSurfacePointerDown = useCallback((event) => {
@@ -2644,6 +2820,7 @@ export function App() {
 
   useEffect(() => {
     if (phase === "running" && environmentId === "atlas" && !mapPosition && !atlasDemoActive
+      && !appearanceMenuOpen
       && atlasGpsPresentation(gpsState, accuracy, source).requiresHelp) {
       setGpsHelpOpen(true);
     }
@@ -2651,7 +2828,7 @@ export function App() {
       setAtlasDemoActive(false);
       setGpsHelpOpen(false);
     }
-  }, [accuracy, atlasDemoActive, environmentId, gpsState, mapPosition, phase, source]);
+  }, [accuracy, appearanceMenuOpen, atlasDemoActive, environmentId, gpsState, mapPosition, phase, source]);
 
   useEffect(() => {
     if (!gpsHelpOpen) return undefined;
@@ -2873,6 +3050,7 @@ export function App() {
     diagnosticEventsRef.current = createDiagnosticEventLedger();
     diagnosticEventSequenceRef.current = 0;
     mediaActionSequenceRef.current = 0;
+    transportActionQueueRef.current.invalidate();
     runtimeIssuesRef.current = [];
     frameTelemetryRef.current = createFrameTelemetry(performance.now());
     driveTelemetryRef.current = createDriveTelemetry(performance.now());
@@ -3090,7 +3268,8 @@ export function App() {
     });
   }, [genreId, handleScoreRecovery, logDiagnosticEvent, reducedMotion, soundtrackManualEffects, startGps, triggerPulse, wakeControls]);
 
-  const selectScore = useCallback(async (requestedScoreId) => {
+  const selectScore = useCallback(async (requestedScoreId, { preserveQueuedNavigation = false } = {}) => {
+    if (!preserveQueuedNavigation) transportActionQueueRef.current.invalidate();
     const revision = ++scoreSelectionRevisionRef.current;
     const engine = audioRef.current;
     if (!engine) {
@@ -3100,12 +3279,14 @@ export function App() {
         requested: requestedScoreId,
         reason: "engine-unavailable",
       });
-      return;
+      return Object.freeze({ ok: false, requestedScoreId, activeScoreId: null, reason: "engine-unavailable" });
     }
     setScoreSelection({ status: "loading", requestedScoreId, message: null });
     try {
       const activeScoreId = await engine.setScore(requestedScoreId);
-      if (revision !== scoreSelectionRevisionRef.current) return;
+      if (revision !== scoreSelectionRevisionRef.current) {
+        return Object.freeze({ ok: false, requestedScoreId, activeScoreId: null, reason: "stale-selection" });
+      }
       const fallback = activeScoreId !== requestedScoreId;
       setGenreId(activeScoreId);
       setScoreSelection(fallback ? {
@@ -3118,19 +3299,25 @@ export function App() {
         active: activeScoreId,
         fallback,
       });
+      return Object.freeze({ ok: true, requestedScoreId, activeScoreId, fallback, reason: null });
     } catch (error) {
-      if (revision !== scoreSelectionRevisionRef.current) return;
+      if (revision !== scoreSelectionRevisionRef.current) {
+        return Object.freeze({ ok: false, requestedScoreId, activeScoreId: null, reason: "stale-selection" });
+      }
+      const reason = String(error?.message || "Music selection failed").slice(0, 160);
       setScoreSelection({
         status: "unavailable",
         requestedScoreId: null,
-        message: String(error?.message || "Music selection failed").slice(0, 160),
+        message: reason,
       });
       logDiagnosticEvent("score.change-failed", { requested: requestedScoreId });
+      return Object.freeze({ ok: false, requestedScoreId, activeScoreId: null, reason });
     }
   }, [logDiagnosticEvent]);
 
   const switchMusicMode = useCallback(async (nextMode) => {
     if (!["play-road", "soundtrack"].includes(nextMode)) return;
+    transportActionQueueRef.current.invalidate();
     const revision = ++musicModeRevisionRef.current;
     const scoreRevision = ++scoreSelectionRevisionRef.current;
     sessionMusicModeRef.current = nextMode;
@@ -3235,13 +3422,18 @@ export function App() {
   }, [logDiagnosticEvent, musicMode, muted, networkNotice.status, phase, soundtrackController, soundtrackSnapshot?.status]);
 
   const resetSavedState = useCallback(() => {
+    transportActionQueueRef.current.invalidate();
+    musicModeRevisionRef.current += 1;
+    scoreSelectionRevisionRef.current += 1;
     try {
       localStorage.removeItem(PREFERENCES_KEY);
       localStorage.removeItem(LEGACY_PREFERENCES_KEY);
-      localStorage.removeItem("sedicivalvole.appearance.v1");
     } catch {
       // Reset remains useful even when storage access is unavailable.
     }
+    resetAppearancePreference();
+    setAppearanceMode(DEFAULT_APPEARANCE_MODE);
+    setAppearanceMenuOpen(false);
     preferredSoundtrackSelectionRef.current = normalizeSoundtrackSelection();
     setLaunchMusicId("play-road");
     setLaunchEnvironmentId(DEFAULT_FLUX_ENVIRONMENT_ID);
@@ -3265,6 +3457,9 @@ export function App() {
   }, [logDiagnosticEvent, phase, showControlNotice, switchMusicMode]);
 
   const playSoundtrackSelection = useCallback(async (selection, source = "music-library") => {
+    transportActionQueueRef.current.invalidate();
+    musicModeRevisionRef.current += 1;
+    scoreSelectionRevisionRef.current += 1;
     const actionId = `soundtrack-${++mediaActionSequenceRef.current}`;
     const startedAtMs = performance.now();
     const before = soundtrackDiagnosticSnapshot(soundtrackRef.current?.getSnapshot?.());
@@ -3302,6 +3497,9 @@ export function App() {
   }, [logDiagnosticEvent, showControlNotice, soundtrackController]);
 
   const playSoundtrackTrack = useCallback(async (key, source = "music-library") => {
+    transportActionQueueRef.current.invalidate();
+    musicModeRevisionRef.current += 1;
+    scoreSelectionRevisionRef.current += 1;
     const actionId = `soundtrack-${++mediaActionSequenceRef.current}`;
     const startedAtMs = performance.now();
     logDiagnosticEvent("media.action.requested", {
@@ -3334,87 +3532,125 @@ export function App() {
     return result;
   }, [logDiagnosticEvent, showControlNotice, soundtrackController]);
 
-  const moveTransport = useCallback(async (direction, source = "on-screen-transport") => {
-    const waitForTurn = transportActionQueueRef.current.catch(() => {});
-    let releaseTurn;
-    transportActionQueueRef.current = waitForTurn.then(() => new Promise((resolve) => {
-      releaseTurn = resolve;
-    }));
-    await waitForTurn;
-    try {
+  const moveTransport = useCallback(async (direction, source = "on-screen-transport", invocation = null) => {
     const actionId = `transport-${++mediaActionSequenceRef.current}`;
-    const startedAtMs = performance.now();
-    const before = sessionMusicModeRef.current === "soundtrack"
-      ? soundtrackDiagnosticSnapshot(soundtrackRef.current?.getSnapshot?.())
-      : { status: playRoadPaused ? "paused" : "playing", currentScore: genreIdRef.current };
-    logDiagnosticEvent("media.action.requested", {
+    const queuedAtMs = performance.now();
+    logDiagnosticEvent("media.action.queued", {
       actionId,
       action: direction === "previous" ? "previous" : "next",
       source,
-      musicMode: sessionMusicModeRef.current,
-      muted: mutedRef.current,
-      online: navigator.onLine,
-      visibility: document.visibilityState,
-      before,
+      ...mediaSessionInvocationDiagnostic(invocation),
     });
-    if (sessionMusicModeRef.current === "soundtrack") {
-      try {
-        const result = await soundtrackRef.current?.move(direction);
-        logDiagnosticEvent("soundtrack.transport.moved", {
-          direction,
-          source,
-          status: result?.status ?? "unavailable",
-          error: result?.error ?? null,
-          currentKey: result?.current?.key ?? null,
-        });
-        logDiagnosticEvent("media.action.completed", {
-          actionId,
-          action: direction,
-          source,
-          durationMs: roundMetric(performance.now() - startedAtMs),
-          playbackConfirmed: soundtrackPlaybackConfirmed(result),
-          currentChanged: before.current?.key !== result?.current?.key,
-          after: soundtrackDiagnosticSnapshot(result),
-        });
-        return result;
-      } catch (error) {
+    return transportActionQueueRef.current.run(async () => {
+      const startedAtMs = performance.now();
+      const before = sessionMusicModeRef.current === "soundtrack"
+        ? soundtrackDiagnosticSnapshot(soundtrackRef.current?.getSnapshot?.())
+        : { status: playRoadPausedRef.current ? "paused" : "playing", currentScore: genreIdRef.current };
+      logDiagnosticEvent("media.action.requested", {
+        actionId,
+        action: direction === "previous" ? "previous" : "next",
+        source,
+        musicMode: sessionMusicModeRef.current,
+        muted: mutedRef.current,
+        online: navigator.onLine,
+        visibility: document.visibilityState,
+        queuedForMs: roundMetric(startedAtMs - queuedAtMs),
+        ...mediaSessionInvocationDiagnostic(invocation),
+        before,
+      });
+      if (sessionMusicModeRef.current === "soundtrack") {
+        try {
+          const result = await soundtrackRef.current?.move(direction);
+          logDiagnosticEvent("soundtrack.transport.moved", {
+            direction,
+            source,
+            status: result?.status ?? "unavailable",
+            error: result?.error ?? null,
+            currentKey: result?.current?.key ?? null,
+          });
+          logDiagnosticEvent("media.action.completed", {
+            actionId,
+            action: direction,
+            source,
+            durationMs: roundMetric(performance.now() - startedAtMs),
+            playbackConfirmed: soundtrackPlaybackConfirmed(result),
+            currentChanged: before.current?.key !== result?.current?.key,
+            after: soundtrackDiagnosticSnapshot(result),
+          });
+          return result;
+        } catch (error) {
+          logDiagnosticEvent("media.action.failed", {
+            actionId,
+            action: direction,
+            source,
+            durationMs: roundMetric(performance.now() - startedAtMs),
+            reason: boundedDiagnosticText(String(error?.message || error || "unknown"), 160),
+            after: soundtrackDiagnosticSnapshot(soundtrackRef.current?.getSnapshot?.()),
+          });
+          return null;
+        }
+      }
+      const scores = readyScoreGenres();
+      const currentIndex = Math.max(0, scores.findIndex((entry) => entry.id === genreIdRef.current));
+      const offset = direction === "previous" ? -1 : 1;
+      const nextIndex = (currentIndex + offset + scores.length) % scores.length;
+      const result = await selectScore(scores[nextIndex].id, { preserveQueuedNavigation: true });
+      const contextState = audioRef.current?.context?.state ?? "unavailable";
+      const observation = playRoadMediaObservation({
+        selectionResult: result,
+        previousScoreId: before.currentScore,
+        audioContextState: contextState,
+        paused: playRoadPausedRef.current,
+        muted: mutedRef.current,
+      });
+      if (!result?.ok) {
         logDiagnosticEvent("media.action.failed", {
           actionId,
           action: direction,
           source,
           durationMs: roundMetric(performance.now() - startedAtMs),
-          reason: boundedDiagnosticText(String(error?.message || error || "unknown"), 160),
-          after: soundtrackDiagnosticSnapshot(soundtrackRef.current?.getSnapshot?.()),
+          reason: result?.reason ?? "score-selection-failed",
+          after: observation.after,
         });
-        return null;
+        return result;
       }
-    }
-    const scores = readyScoreGenres();
-    const currentIndex = Math.max(0, scores.findIndex((entry) => entry.id === genreIdRef.current));
-    const offset = direction === "previous" ? -1 : 1;
-    const nextIndex = (currentIndex + offset + scores.length) % scores.length;
-    await selectScore(scores[nextIndex].id);
-    logDiagnosticEvent("media.action.completed", {
-      actionId,
-      action: direction,
-      source,
-      durationMs: roundMetric(performance.now() - startedAtMs),
-      playbackConfirmed: true,
-      after: { status: "playing", currentScore: scores[nextIndex].id },
+      logDiagnosticEvent("media.action.completed", {
+        actionId,
+        action: direction,
+        source,
+        durationMs: roundMetric(performance.now() - startedAtMs),
+        playbackConfirmed: observation.playbackConfirmed,
+        currentChanged: observation.currentChanged,
+        after: observation.after,
+      });
+      return result;
+    }, {
+      onCancelled: ({ queuedGeneration, currentGeneration }) => {
+        logDiagnosticEvent("media.action.cancelled", {
+          actionId,
+          action: direction === "previous" ? "previous" : "next",
+          source,
+          reason: "superseded-by-newer-intent",
+          queuedGeneration,
+          currentGeneration,
+          queuedForMs: roundMetric(performance.now() - queuedAtMs),
+          ...mediaSessionInvocationDiagnostic(invocation),
+        });
+        return sessionMusicModeRef.current === "soundtrack"
+          ? soundtrackRef.current?.getSnapshot?.() ?? null
+          : null;
+      },
     });
-    return scores[nextIndex].id;
-    } finally {
-      releaseTurn?.();
-    }
-  }, [logDiagnosticEvent, playRoadPaused, selectScore]);
+  }, [logDiagnosticEvent, selectScore]);
 
-  const toggleTransport = useCallback(async (forcePlaying = null, source = "on-screen-transport") => {
+  const toggleTransport = useCallback(async (forcePlaying = null, source = "on-screen-transport", invocation = null) => {
+    transportActionQueueRef.current.invalidate();
     const actionId = `transport-${++mediaActionSequenceRef.current}`;
     const startedAtMs = performance.now();
     const soundtrackBefore = soundtrackRef.current?.getSnapshot?.();
     const beforePlaying = sessionMusicModeRef.current === "soundtrack"
-      ? soundtrackBefore?.status === "playing"
-      : audioRef.current?.context?.state === "running" && !playRoadPaused;
+      ? soundtrackMediaIsPlaying(soundtrackBefore, { muted: mutedRef.current })
+      : audioRef.current?.context?.state === "running" && !playRoadPausedRef.current;
     const shouldPlay = forcePlaying == null ? !beforePlaying : forcePlaying;
     logDiagnosticEvent("media.action.requested", {
       actionId,
@@ -3424,6 +3660,7 @@ export function App() {
       muted: mutedRef.current,
       online: navigator.onLine,
       visibility: document.visibilityState,
+      ...mediaSessionInvocationDiagnostic(invocation),
       before: sessionMusicModeRef.current === "soundtrack"
         ? soundtrackDiagnosticSnapshot(soundtrackBefore)
         : { status: beforePlaying ? "playing" : "paused", audioContextState: audioRef.current?.context?.state ?? "unavailable" },
@@ -3485,7 +3722,7 @@ export function App() {
       after: { status: shouldPlay ? "playing" : "paused", audioContextState: context.state },
     });
     return context.state;
-  }, [logDiagnosticEvent, playRoadPaused]);
+  }, [logDiagnosticEvent]);
 
   const currentTrack = useMemo(() => {
     if (musicMode === "soundtrack") {
@@ -3506,10 +3743,19 @@ export function App() {
       artist: "16 Road",
       artwork: current.coverUrl,
     };
-  }, [genreId, musicMode, soundtrackSnapshot?.current?.key, soundtrackSnapshot?.library?.selection?.kind]);
+  }, [
+    genreId,
+    musicMode,
+    soundtrackSnapshot?.current?.albumName,
+    soundtrackSnapshot?.current?.artistName,
+    soundtrackSnapshot?.current?.imageUrl,
+    soundtrackSnapshot?.current?.key,
+    soundtrackSnapshot?.current?.title,
+    soundtrackSnapshot?.library?.selection?.kind,
+  ]);
 
   const transportPlaying = !muted && (musicMode === "soundtrack"
-    ? Boolean(soundtrackSnapshot?.media?.audibleKeys?.length)
+    ? soundtrackMediaIsPlaying(soundtrackSnapshot)
     : !playRoadPaused);
 
   mediaSessionActionsRef.current = { move: moveTransport, toggle: toggleTransport };
@@ -3525,44 +3771,76 @@ export function App() {
       });
       return undefined;
     }
-    const handlers = {
-      play: () => void mediaSessionActionsRef.current.toggle?.(true, "media-session"),
-      pause: () => void mediaSessionActionsRef.current.toggle?.(false, "media-session"),
-      previoustrack: () => void mediaSessionActionsRef.current.move?.("previous", "media-session"),
-      nexttrack: () => void mediaSessionActionsRef.current.move?.("next", "media-session"),
-    };
-    const actionRegistration = {};
-    for (const [action, handler] of Object.entries(handlers)) {
-      try {
-        navigator.mediaSession.setActionHandler(action, handler);
-        actionRegistration[action] = { registered: true, error: null };
-      } catch (error) {
-        actionRegistration[action] = {
-          registered: false,
-          error: boundedDiagnosticText(String(error?.name || error?.message || error || "unsupported"), 120),
-        };
-      }
-    }
-    logDiagnosticEvent("media-session.actions.registered", { actionRegistration });
+    const runtime = installMediaSessionTransport({
+      mediaSession: navigator.mediaSession,
+      handlers: {
+        play: (invocation) => mediaSessionActionsRef.current.toggle?.(true, "media-session", invocation),
+        pause: (invocation) => mediaSessionActionsRef.current.toggle?.(false, "media-session", invocation),
+        previoustrack: (invocation) => mediaSessionActionsRef.current.move?.("previous", "media-session", invocation),
+        nexttrack: (invocation) => mediaSessionActionsRef.current.move?.("next", "media-session", invocation),
+      },
+      onInvocation: (invocation) => {
+        logDiagnosticEvent("media-session.action.invoked", {
+          invocationId: invocation.id,
+          invocationSequence: invocation.sequence,
+          action: invocation.action,
+          invokedAtMs: invocation.invokedAtMs,
+          musicMode: sessionMusicModeRef.current,
+          muted: mutedRef.current,
+          online: navigator.onLine,
+          visibility: document.visibilityState,
+          before: sessionMusicModeRef.current === "soundtrack"
+            ? soundtrackDiagnosticSnapshot(soundtrackRef.current?.getSnapshot?.())
+            : {
+                status: playRoadPausedRef.current ? "paused" : "playing",
+                audioContextState: audioRef.current?.context?.state ?? "unavailable",
+              },
+        });
+      },
+      onHandlerError: (action, invocation, error) => {
+        logDiagnosticEvent("media-session.action.handler-failed", {
+          invocationId: invocation.id,
+          invocationSequence: invocation.sequence,
+          action,
+          reason: boundedDiagnosticText(String(error?.name || error?.message || error || "unknown"), 120),
+        });
+      },
+    });
+    logDiagnosticEvent("media-session.actions.registered", {
+      actionRegistration: runtime.actionRegistration,
+    });
     return () => {
-      for (const action of Object.keys(handlers)) {
-        try { navigator.mediaSession.setActionHandler(action, null); } catch { /* unsupported action */ }
-      }
+      runtime.cleanup();
+      clearMediaSessionPresentation(navigator.mediaSession);
+      logDiagnosticEvent("media-session.actions.cleared", {
+        actions: Object.keys(runtime.actionRegistration)
+          .filter((action) => runtime.actionRegistration[action].registered),
+      });
     };
   }, [logDiagnosticEvent, phase]);
 
   useEffect(() => {
-    if (phase !== "running" || !currentTrack) return;
     const mediaSessionAvailable = "mediaSession" in navigator;
     const mediaMetadataAvailable = "MediaMetadata" in window;
-    if (!mediaSessionAvailable || !mediaMetadataAvailable) return;
-    const artwork = currentTrack.artwork ? [{
-      src: new URL(currentTrack.artwork, window.location.href).href,
-      sizes: "512x512",
-      type: mediaArtworkType(currentTrack.artwork),
-    }] : [];
+    if (!mediaSessionAvailable) return;
+    if (phase !== "running" || !currentTrack || !mediaMetadataAvailable) {
+      const cleared = clearMediaSessionPresentation(navigator.mediaSession);
+      logDiagnosticEvent("media-session.presentation.cleared", {
+        reason: phase !== "running"
+          ? "experience-not-running"
+          : !currentTrack ? "current-track-unavailable" : "metadata-constructor-unavailable",
+        ...cleared,
+      });
+      return;
+    }
+    const artworkDescriptor = mediaSessionArtwork(currentTrack.artwork, {
+      baseUrl: window.location.href,
+    });
+    const artwork = artworkDescriptor ? [artworkDescriptor] : [];
     let metadataPublished = false;
     let playbackStatePublished = false;
+    let positionStatePublished = false;
+    let positionStateCleared = false;
     try {
       navigator.mediaSession.metadata = new MediaMetadata({
         title: currentTrack.title,
@@ -3586,6 +3864,26 @@ export function App() {
         reason: boundedDiagnosticText(String(error?.name || error?.message || error || "unknown"), 120),
       });
     }
+    if (typeof navigator.mediaSession.setPositionState === "function") {
+      const positionState = musicMode === "soundtrack"
+        ? soundtrackMediaPositionState(soundtrackSnapshot)
+        : null;
+      try {
+        if (positionState) {
+          navigator.mediaSession.setPositionState(positionState);
+          positionStatePublished = true;
+        } else {
+          navigator.mediaSession.setPositionState();
+          positionStateCleared = true;
+        }
+      } catch (error) {
+        logDiagnosticEvent("media-session.position-state.failed", {
+          key: currentTrack.key,
+          musicMode,
+          reason: boundedDiagnosticText(String(error?.name || error?.message || error || "unknown"), 120),
+        });
+      }
+    }
     logDiagnosticEvent("media-session.published", {
       key: currentTrack.key,
       title: boundedDiagnosticText(currentTrack.title, 120),
@@ -3593,12 +3891,24 @@ export function App() {
       album: boundedDiagnosticText(currentTrack.album, 120),
       hasArtwork: artwork.length > 0,
       artworkType: artwork[0]?.type ?? null,
+      artworkSizes: artwork[0]?.sizes ?? null,
       requestedPlaybackState: transportPlaying ? "playing" : "paused",
       metadataPublished,
       playbackStatePublished,
+      positionStatePublished,
+      positionStateCleared,
       actionRegistration: "stable-session-handlers",
     });
-  }, [currentTrack, logDiagnosticEvent, phase, transportPlaying]);
+  }, [
+    currentTrack,
+    logDiagnosticEvent,
+    musicMode,
+    phase,
+    soundtrackSnapshot?.media?.roles?.current?.currentTimeSeconds,
+    soundtrackSnapshot?.media?.roles?.current?.durationSeconds,
+    soundtrackSnapshot?.playbackRate,
+    transportPlaying,
+  ]);
 
   useEffect(() => {
     const artworkUrls = [
@@ -4081,6 +4391,10 @@ export function App() {
       energy: Math.round(speedToEnergy(speedRef.current) * 1000) / 1000,
       energyCeilingKmh: ROAD_SPEED_CEILING_KMH,
       paletteTheme: themeIdRef.current,
+      appearancePreference: appearanceModeRef.current,
+      appearance: appearanceResolutionRef.current.appearance,
+      appearanceSource: appearanceResolutionRef.current.source,
+      appearanceHoldReason: appearanceResolutionRef.current.holdReason,
       particleType: environmentIdRef.current === "prtcl"
         ? normalizePrtclSettings(prtclSettingsRef.current).type
         : null,
@@ -4281,7 +4595,10 @@ export function App() {
       tabIndex={-1}
       className={`app phase-${phase} ${controlsAwake || controlsPinned ? "controls-awake" : "controls-resting"}${modalOpen ? " modal-open" : ""}${currentTrack ? " has-now-playing" : ""}`}
       data-palette={themeId}
+      data-appearance={appearanceResolution.appearance}
+      data-appearance-mode={appearanceMode}
       data-environment={environmentId}
+      onPointerDownCapture={holdAppearanceDuringPointer}
       onPointerDown={handleSurfacePointerDown}
       onClickCapture={handleControlActivation}
       onChangeCapture={handleControlChange}
@@ -4458,7 +4775,11 @@ export function App() {
             }}
           >
             <span className="launch-brand">
-              <img src={BRAND_MARK_URL} alt="" aria-hidden="true" />
+              <img
+                src={appearanceResolution.appearance === "dark" ? TOPBAR_MARK_URL : BRAND_MARK_URL}
+                alt=""
+                aria-hidden="true"
+              />
               <span>sedicivalvole</span>
             </span>
             <span className="launch-command">
@@ -4515,6 +4836,7 @@ export function App() {
           <LaunchSelector
             musicId={launchMusicId}
             environmentId={launchEnvironmentId}
+            appearance={appearanceResolution.appearance}
             musicReady={launchMusicId !== "soundtrack" || ["prepared", "paused", "playing"].includes(soundtrackSnapshot?.status)}
             networkNotice={networkNotice}
             onMusicChange={selectLaunchMusic}
@@ -4543,7 +4865,11 @@ export function App() {
             aria-label="Open session report"
             aria-haspopup="dialog"
           >
-            <img src={TOPBAR_MARK_URL} alt="" aria-hidden="true" />
+            <img
+              src={appearanceResolution.appearance === "light" ? BRAND_MARK_URL : TOPBAR_MARK_URL}
+              alt=""
+              aria-hidden="true"
+            />
           </button>
           <ModeSelector />
           <span className="speed-spacer" aria-hidden="true" />
@@ -4556,13 +4882,20 @@ export function App() {
             <span className="network-state-dot" aria-hidden="true" />
             {networkUiDetail(networkNotice) ? <strong>{networkUiDetail(networkNotice)}</strong> : null}
           </div>
+          <AppearanceControl
+            mode={appearanceMode}
+            effectiveAppearance={appearanceResolution.appearance}
+            open={appearanceMenuOpen}
+            onOpenChange={changeAppearanceMenuOpen}
+            onChange={changeAppearance}
+          />
           <button
             className={`gps-state is-${gpsPresentation.tone}`}
             type="button"
             aria-controls="gps-help-popover"
             aria-expanded={gpsHelpOpen}
             aria-label={`GPS ${gpsPresentation.status}, accuracy ${gpsPresentation.accuracy}`}
-            onClick={() => setGpsHelpOpen((current) => !current)}
+            onClick={toggleGpsHelp}
           >
             <span>GPS</span>
             <small>{gpsPresentation.accuracy}</small>

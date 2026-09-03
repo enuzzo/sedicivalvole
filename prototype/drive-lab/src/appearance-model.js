@@ -14,29 +14,42 @@ export function normalizeAppearanceMode(value, fallback = DEFAULT_APPEARANCE_MOD
   return APPEARANCE_MODES.includes(value) ? value : fallback;
 }
 
-export function readAppearancePreference(storage = globalThis.localStorage) {
+function resolveAppearanceStorage(storage) {
+  if (storage !== undefined) return storage;
   try {
-    return normalizeAppearanceMode(storage?.getItem(APPEARANCE_PREFERENCE_KEY));
+    return globalThis.localStorage;
+  } catch {
+    return null;
+  }
+}
+
+export function readAppearancePreference(storage) {
+  try {
+    const target = resolveAppearanceStorage(storage);
+    return normalizeAppearanceMode(target?.getItem(APPEARANCE_PREFERENCE_KEY));
   } catch {
     return DEFAULT_APPEARANCE_MODE;
   }
 }
 
-export function writeAppearancePreference(mode, storage = globalThis.localStorage) {
+export function writeAppearancePreference(mode, storage) {
   const normalized = normalizeAppearanceMode(mode, null);
-  if (!normalized || typeof storage?.setItem !== "function") return false;
+  if (!normalized) return false;
   try {
-    storage.setItem(APPEARANCE_PREFERENCE_KEY, normalized);
+    const target = resolveAppearanceStorage(storage);
+    if (typeof target?.setItem !== "function") return false;
+    target.setItem(APPEARANCE_PREFERENCE_KEY, normalized);
     return true;
   } catch {
     return false;
   }
 }
 
-export function resetAppearancePreference(storage = globalThis.localStorage) {
-  if (typeof storage?.removeItem !== "function") return false;
+export function resetAppearancePreference(storage) {
   try {
-    storage.removeItem(APPEARANCE_PREFERENCE_KEY);
+    const target = resolveAppearanceStorage(storage);
+    if (typeof target?.removeItem !== "function") return false;
+    target.removeItem(APPEARANCE_PREFERENCE_KEY);
     return true;
   } catch {
     return false;

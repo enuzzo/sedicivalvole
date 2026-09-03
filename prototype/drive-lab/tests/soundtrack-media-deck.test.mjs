@@ -401,6 +401,34 @@ test("a pending play promise cannot make an old role audible after rapid navigat
   assert.equal(fixture.controller.getSnapshot().currentAudibleKey, null);
 });
 
+test("an explicit pause invalidates a pending play before it can publish audibility", async () => {
+  let resolvePlay;
+  const deferredPlay = {
+    promise: new Promise((resolve) => { resolvePlay = resolve; }),
+  };
+  const fixture = createFixture();
+  fixture.controller.syncQueue(fixture.queue);
+  const current = fixture.controller.getMediaForRole("current");
+  current.deferredPlay = deferredPlay;
+  const publishedAudibleKeys = [];
+  const originalEmit = current.emit.bind(current);
+  current.emit = (eventName) => {
+    originalEmit(eventName);
+    publishedAudibleKeys.push(...fixture.controller.getSnapshot().audibleKeys);
+  };
+
+  const pending = fixture.controller.playCurrent();
+  fixture.controller.pauseExcept([]);
+  resolvePlay();
+  const result = await pending;
+
+  assert.equal(result.ok, false);
+  assert.equal(result.reason, "stale-play-request");
+  assert.equal(current.paused, true);
+  assert.deepEqual(fixture.controller.getSnapshot().audibleKeys, []);
+  assert.deepEqual(publishedAudibleKeys, []);
+});
+
 test("destroy is idempotent, releases every source, and ignores late events", () => {
   const snapshots = [];
   const fixture = createFixture();

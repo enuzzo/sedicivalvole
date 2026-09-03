@@ -100,6 +100,61 @@ test("the preview loads and prepares three media roles before explicit playback"
   assert.equal(controller.getSnapshot().media.currentAudibleKey, loaded.current.key);
 });
 
+test("pause and native play resume from the observed position without restarting", async () => {
+  const mediaByKey = new Map();
+  const controller = createSoundtrackPreviewController({
+    fetchImpl: catalogFetch,
+    mediaFactory: (entry) => {
+      const media = new FakeMedia();
+      mediaByKey.set(entry.key, media);
+      return media;
+    },
+  });
+  const playing = await controller.load({ autoplay: true, nowMs: 0 });
+  const currentMedia = mediaByKey.get(playing.current.key);
+  currentMedia.currentTime = 42;
+
+  controller.pause();
+  const resumed = await controller.resume();
+  assert.equal(resumed.status, "playing");
+  assert.equal(currentMedia.currentTime, 42);
+  assert.equal(currentMedia.playPositions.at(-1), 42);
+
+  const playRequestCount = currentMedia.playPositions.length;
+  const duplicatePlay = await controller.resume();
+  assert.equal(duplicatePlay.status, "playing");
+  assert.equal(currentMedia.currentTime, 42);
+  assert.equal(currentMedia.playPositions.length, playRequestCount);
+});
+
+test("a slow explicit resume is marked buffering so automatic recovery cannot duplicate it", async () => {
+  const mediaByKey = new Map();
+  const controller = createSoundtrackPreviewController({
+    fetchImpl: catalogFetch,
+    mediaFactory: (entry) => {
+      const media = new FakeMedia();
+      mediaByKey.set(entry.key, media);
+      return media;
+    },
+  });
+  const prepared = await controller.load({ nowMs: 0 });
+  const currentMedia = mediaByKey.get(prepared.current.key);
+  let releasePlay;
+  currentMedia.pendingPlay = new Promise((resolve) => { releasePlay = resolve; });
+
+  const resuming = controller.resume();
+  const duplicateResume = controller.resume();
+  assert.equal(duplicateResume, resuming);
+  assert.equal(controller.getSnapshot().status, "buffering");
+  assert.equal(currentMedia.playPositions.length, 1);
+
+  releasePlay();
+  const [playing, duplicateResult] = await Promise.all([resuming, duplicateResume]);
+  assert.equal(playing.status, "playing");
+  assert.equal(duplicateResult.status, "playing");
+  assert.equal(currentMedia.playPositions.length, 1);
+});
+
 test("debug telemetry observes browser media lifecycle without changing playback", async () => {
   const telemetry = [];
   const controller = createSoundtrackPreviewController({
@@ -346,6 +401,74 @@ test("manual next and previous keep reversible identities and playback ownership
     0,
     "returning to a settled previous track must restart it from the beginning",
   );
+});
+
+test("pause remains authoritative when a weak-network next resolves late", async () => {
+  const mediaByKey = new Map();
+  const statesAfterPause = [];
+  let pauseIssued = false;
+  const controller = createSoundtrackPreviewController({
+    fetchImpl: catalogFetch,
+    mediaFactory: (entry) => {
+      const media = new FakeMedia();
+      mediaByKey.set(entry.key, media);
+      return media;
+    },
+    onState: (state) => {
+      if (pauseIssued) statesAfterPause.push(state);
+    },
+  });
+  const playing = await controller.load({ autoplay: true, nowMs: 0 });
+  const originalKey = playing.current.key;
+  const incoming = mediaByKey.get(playing.next.key);
+  let releaseIncoming;
+  incoming.pendingPlay = new Promise((resolve) => { releaseIncoming = resolve; });
+
+  const moving = controller.move("next");
+  assert.equal(controller.getSnapshot().status, "buffering");
+  pauseIssued = true;
+  const paused = controller.pause();
+  assert.equal(paused.status, "paused");
+  assert.deepEqual(paused.media.audibleKeys, []);
+
+  releaseIncoming();
+  const settled = await moving;
+  assert.equal(settled.status, "paused");
+  assert.equal(settled.current.key, originalKey);
+  assert.deepEqual(settled.media.audibleKeys, []);
+  assert.equal(incoming.paused, true, "the late play promise must be silenced again");
+  assert.ok(statesAfterPause.every((state) => state.media.audibleKeys.length === 0));
+});
+
+test("a newer play intent owns the current deck while a cancelled next resolves", async () => {
+  const mediaByKey = new Map();
+  const controller = createSoundtrackPreviewController({
+    fetchImpl: catalogFetch,
+    mediaFactory: (entry) => {
+      const media = new FakeMedia();
+      mediaByKey.set(entry.key, media);
+      return media;
+    },
+  });
+  const playing = await controller.load({ autoplay: true, nowMs: 0 });
+  const originalKey = playing.current.key;
+  const incoming = mediaByKey.get(playing.next.key);
+  let releaseIncoming;
+  incoming.pendingPlay = new Promise((resolve) => { releaseIncoming = resolve; });
+
+  const moving = controller.move("next");
+  controller.pause();
+  const resumed = await controller.resume();
+  assert.equal(resumed.status, "playing");
+  assert.deepEqual(resumed.media.audibleKeys, [originalKey]);
+
+  releaseIncoming();
+  await moving;
+  const settled = controller.getSnapshot();
+  assert.equal(settled.status, "playing");
+  assert.equal(settled.current.key, originalKey);
+  assert.deepEqual(settled.media.audibleKeys, [originalKey]);
+  assert.equal(incoming.paused, true, "the cancelled NEXT target must not join the newer PLAY");
 });
 
 test("a manual skip keeps committed metadata and outgoing playback until the target buffer is stable", async () => {

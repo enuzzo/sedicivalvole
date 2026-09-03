@@ -76,6 +76,17 @@ export function createSoundtrackMediaDeckController({
   let roles = { previous: null, current: null, next: null };
   let destroyed = false;
   let controllerError = null;
+  let playbackIntentSequence = 0;
+
+  const claimPlaybackIntent = (recordsToClaim, wanted) => {
+    const intentId = ++playbackIntentSequence;
+    for (const record of recordsToClaim) {
+      if (!record) continue;
+      record.playbackIntentId = intentId;
+      record.playbackWanted = wanted === true;
+    }
+    return intentId;
+  };
 
   const hasStableBuffer = (media, minimumSeconds = SOUNDTRACK_STABLE_BUFFER_SECONDS) => {
     const ahead = bufferedAheadSeconds(media);
@@ -199,10 +210,23 @@ export function createSoundtrackMediaDeckController({
       media,
       listeners: [],
       lastEvent: "created",
+      playbackIntentId: 0,
+      playbackWanted: false,
     };
     const observe = (eventName) => {
       const listener = () => {
         if (destroyed || records.get(entry.key) !== record) return;
+        if (eventName === "playing" && record.playbackWanted !== true) {
+          try {
+            media.pause?.();
+          } catch {
+            controllerError = "stale-media-pause-failed";
+          }
+          record.lastEvent = "stale-playing-silenced";
+          applyPreloadPolicy();
+          emit("media:stale-playing-silenced");
+          return;
+        }
         record.lastEvent = eventName;
         if (eventName === "error") {
           reportError({
@@ -336,8 +360,12 @@ export function createSoundtrackMediaDeckController({
     roles = nextRoles;
     applyPreloadPolicy();
     const audibleSet = new Set(audibleKeys);
-    for (const [key, record] of records) {
-      if (key === roles.current || audibleSet.has(key) || record.media.paused !== false) continue;
+    const recordsToPause = [...records]
+      .filter(([key]) => key !== roles.current && !audibleSet.has(key))
+      .map(([, record]) => record);
+    claimPlaybackIntent(recordsToPause, false);
+    for (const record of recordsToPause) {
+      if (record.media.paused !== false) continue;
       try {
         record.media.pause?.();
       } catch {
@@ -415,19 +443,38 @@ export function createSoundtrackMediaDeckController({
     if (!record) {
       return Object.freeze({ ok: false, reason: "current-media-unavailable", snapshot: getSnapshot() });
     }
-    for (const [key, candidate] of records) {
-      if (key === roles.current || candidate.media.paused !== false) continue;
+    const otherRecords = [...records]
+      .filter(([key]) => key !== roles.current)
+      .map(([, candidate]) => candidate);
+    claimPlaybackIntent(otherRecords, false);
+    for (const candidate of otherRecords) {
+      if (candidate.media.paused !== false) continue;
       candidate.media.pause?.();
     }
+    const playbackIntentId = claimPlaybackIntent([record], true);
     try {
       await record.media.play?.();
-      if (destroyed || records.get(record.entry.key) !== record || roles.current !== record.entry.key) {
-        record.media.pause?.();
+      if (destroyed
+        || records.get(record.entry.key) !== record
+        || roles.current !== record.entry.key
+        || record.playbackIntentId !== playbackIntentId) {
+        if (records.get(record.entry.key) !== record || record.playbackWanted !== true) {
+          record.media.pause?.();
+        }
         return Object.freeze({ ok: false, reason: "stale-play-request", snapshot: getSnapshot() });
       }
       record.lastEvent = "play-resolved";
       return Object.freeze({ ok: true, reason: null, snapshot: emit("current:playing") });
     } catch (error) {
+      if (destroyed
+        || records.get(record.entry.key) !== record
+        || roles.current !== record.entry.key
+        || record.playbackIntentId !== playbackIntentId) {
+        if (records.get(record.entry.key) !== record || record.playbackWanted !== true) {
+          try { record.media.pause?.(); } catch { /* stale playback must still be silenced */ }
+        }
+        return Object.freeze({ ok: false, reason: "stale-play-request", snapshot: getSnapshot() });
+      }
       if (records.get(record.entry.key) === record) record.lastEvent = "play-rejected";
       reportError({
         code: "play-rejected",
@@ -446,10 +493,15 @@ export function createSoundtrackMediaDeckController({
       return Object.freeze({ ok: false, reason: "transition-media-unavailable", snapshot: getSnapshot() });
     }
     const requestedRecords = new Map(requested.map((key) => [key, records.get(key)]));
+    const playbackIntentId = claimPlaybackIntent(requestedRecords.values(), true);
     try {
       await Promise.all(requested.map((key) => requestedRecords.get(key).media.play?.()));
-      if (destroyed || requested.some((key) => records.get(key) !== requestedRecords.get(key))) {
-        for (const record of requestedRecords.values()) {
+      if (destroyed || requested.some((key) => (
+        records.get(key) !== requestedRecords.get(key)
+          || requestedRecords.get(key).playbackIntentId !== playbackIntentId
+      ))) {
+        for (const [key, record] of requestedRecords) {
+          if (records.get(key) === record && record.playbackWanted === true) continue;
           try { record.media.pause?.(); } catch { /* stale playback must still be silenced */ }
         }
         return Object.freeze({ ok: false, reason: "stale-play-request", snapshot: getSnapshot() });
@@ -457,6 +509,16 @@ export function createSoundtrackMediaDeckController({
       for (const key of requested) records.get(key).lastEvent = "transition-play-resolved";
       return Object.freeze({ ok: true, reason: null, snapshot: emit("transition:playing") });
     } catch (error) {
+      if (destroyed || requested.some((key) => (
+        records.get(key) !== requestedRecords.get(key)
+          || requestedRecords.get(key).playbackIntentId !== playbackIntentId
+      ))) {
+        for (const [key, record] of requestedRecords) {
+          if (records.get(key) === record && record.playbackWanted === true) continue;
+          try { record.media.pause?.(); } catch { /* stale playback must still be silenced */ }
+        }
+        return Object.freeze({ ok: false, reason: "stale-play-request", snapshot: getSnapshot() });
+      }
       reportError({
         code: "play-rejected",
         key: roles.current,
@@ -469,9 +531,14 @@ export function createSoundtrackMediaDeckController({
 
   const pauseExcept = (keys = []) => {
     const keep = new Set(keys);
-    for (const [key, record] of records) {
-      if (keep.has(key) || record.media.paused !== false) continue;
-      try { record.media.pause?.(); } catch { controllerError = "media-pause-failed"; }
+    const recordsToPause = [...records]
+      .filter(([key]) => !keep.has(key))
+      .map(([, record]) => record);
+    claimPlaybackIntent(recordsToPause, false);
+    for (const record of recordsToPause) {
+      if (record.media.paused === false) {
+        try { record.media.pause?.(); } catch { controllerError = "media-pause-failed"; }
+      }
       record.lastEvent = "transition-pause-requested";
     }
     return emit("transition:paused-outgoing");
@@ -485,6 +552,7 @@ export function createSoundtrackMediaDeckController({
   const pauseCurrent = () => {
     const record = roles.current ? records.get(roles.current) : null;
     if (!record) return getSnapshot();
+    claimPlaybackIntent([record], false);
     record.media.pause?.();
     record.lastEvent = "pause-requested";
     return emit("current:paused");

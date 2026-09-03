@@ -116,3 +116,22 @@ test("music controls use the licensed Tabler media icon set", () => {
     assert.doesNotMatch(icon, /<text\b/);
   }
 });
+
+test("appearance controls package the pinned byte-identical Tabler icons", () => {
+  const iconRoot = resolve(DRIVE_LAB_ROOT, "public/third-party/tabler-icons");
+  const notices = readFileSync(resolve(REPOSITORY_ROOT, "THIRD_PARTY_NOTICES.md"), "utf8");
+  const expected = [
+    ["sun.svg", "1.0", "6d4dc625a54dea6c696e8320c35fcf7e235dc039f512ef2c30af9b0663a7ab3f"],
+    ["moon.svg", "1.0", "921d27bb214f2ec714ff4deeffa8a5efc4bb989e367df47f9f58351d2effee00"],
+    ["sun-moon.svg", "1.96", "20eefd8c98102c0d0731a44ab7a45593dab2e9b76b37b879094d47a2cbb40ef1"],
+  ];
+
+  for (const [name, metadataVersion, digest] of expected) {
+    const icon = readFileSync(resolve(iconRoot, name));
+    assert.equal(createHash("sha256").update(icon).digest("hex"), digest);
+    assert.match(icon.toString("utf8"), new RegExp(`version: "${metadataVersion.replace(".", "\\.")}"`));
+  }
+
+  assert.match(notices, /tabler-icons\/tree\/v3\.46\.0\/icons/);
+  assert.match(notices, /media, appearance, search/);
+});

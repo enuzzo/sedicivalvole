@@ -30,7 +30,7 @@ test("the top bar exposes the selected REPORT control with the pinned Tabler ico
   assert.ok(markStart >= 0);
   assert.match(app, /const TOPBAR_MARK_URL = `\/brand\/product-icon-512\.png\?build=\$\{encodeURIComponent\(APP_BUILD\)\}`/);
   assert.match(markMarkup, /aria-label="Open session report"/);
-  assert.match(markMarkup, /src=\{TOPBAR_MARK_URL\}/);
+  assert.match(markMarkup, /src=\{appearanceResolution\.appearance === "light" \? BRAND_MARK_URL : TOPBAR_MARK_URL\}/);
   assert.match(markMarkup, /alt=""/);
   assert.match(markMarkup, /aria-hidden="true"/);
   assert.doesNotMatch(markMarkup, />\s*sedicivalvole\s*</);
@@ -43,7 +43,7 @@ test("the top bar exposes the selected REPORT control with the pinned Tabler ico
   assert.doesNotMatch(app.slice(topbarStart, topbarEnd), />DIAG</);
   assert.match(styles, /\.report-button \{[^}]*grid-template-rows: 22px auto;[^}]*gap: 4px/);
   assert.match(styles, /\.report-button img \{[^}]*width: 21px;[^}]*height: 21px/);
-  assert.match(styles, /\.topbar \{[^}]*grid-template-columns: 72px 184px minmax\(260px, 1fr\) 72px 80px 112px 108px/);
+  assert.match(styles, /\.topbar \{[^}]*grid-template-columns: 72px 184px minmax\(260px, 1fr\) 72px 86px 80px 112px 108px/);
   assert.match(styles, /\.topbar-mark img \{[\s\S]*?width: 46px;[\s\S]*?height: 46px/);
   assert.equal(icon.length, 618);
   assert.equal(createHash("sha256").update(icon).digest("hex"), "d58847492f890b8beedc7eff543860219e0f382e46d2c2695107d64ae434b9ba");

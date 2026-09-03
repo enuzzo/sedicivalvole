@@ -53,8 +53,11 @@ test("completed control actions and closed surfaces return focus to the experien
   assert.equal(shouldReleaseControlFocus({ closest: () => null }, false), false);
   assert.equal(shouldReleaseControlFocus(null, false), false);
   assert.match(app, /const controlsPinned = modalOpen \|\| manualEffectsDeckOpen \|\| gpsHelpOpen/);
-  assert.match(app, /if \(wasPinned && !controlsPinned\) queueExperienceFocus\(\)/);
+  assert.match(app, /const focusNeedsRecovery = !activeElement[\s\S]*?activeElement === document\.body[\s\S]*?activeElement === document\.documentElement/);
+  assert.match(app, /if \(wasPinned && !controlsPinned && focusNeedsRecovery\) queueExperienceFocus\(\)/);
+  assert.doesNotMatch(app, /appearanceRetainedFocus/);
   assert.match(app, /if \(phase !== "running" \|\| controlsPinnedRef\.current\) return/);
+  assert.match(app, /if \(!activationTarget[\s\S]*?activeElement !== document\.body[\s\S]*?activeElement !== document\.documentElement[\s\S]*?activeElement !== appRef\.current\) return/);
   assert.match(app, /appRef\.current\?\.focus\(\{ preventScroll: true \}\)/);
   assert.match(app, /onClickCapture=\{handleControlActivation\}/);
 });
@@ -66,8 +69,8 @@ test("launch surface contains only product and action copy", () => {
     app.indexOf("</button>", app.indexOf('className="launch-button"')),
   );
 
-  assert.match(launchMarkup, /launch-brand">[\s\S]*?BRAND_MARK_URL[\s\S]*?<span>sedicivalvole<\/span>/);
-  assert.match(launchMarkup, /alt="" aria-hidden="true"/);
+  assert.match(launchMarkup, /launch-brand">[\s\S]*?appearanceResolution\.appearance === "dark" \? TOPBAR_MARK_URL : BRAND_MARK_URL[\s\S]*?<span>sedicivalvole<\/span>/);
+  assert.match(launchMarkup, /alt=""[\s\S]*?aria-hidden="true"/);
   assert.match(launchMarkup, /PLAY THE ROAD/);
   assert.doesNotMatch(launchMarkup, /launch-(?:index|vent|safety|latch)/);
 });
@@ -81,7 +84,7 @@ test("the selected Instrument Deck resolves Music and Visual before START", () =
   assert.match(selector, /<legend>MUSIC<\/legend>/);
   assert.match(selector, /<legend>VISUAL<\/legend>/);
   assert.match(app, /const BRAND_MARK_URL = `\/brand\/sedicivalvole-mark\.svg\?build=\$\{encodeURIComponent\(APP_BUILD\)\}`/);
-  assert.match(selector, /className="launch-selector-mark"[\s\S]*?src=\{BRAND_MARK_URL\}[\s\S]*?alt=""[\s\S]*?aria-hidden="true"/);
+  assert.match(selector, /className="launch-selector-mark"[\s\S]*?src=\{appearance === "dark" \? TOPBAR_MARK_URL : BRAND_MARK_URL\}[\s\S]*?alt=""[\s\S]*?aria-hidden="true"/);
   assert.match(selector, /FLUX_VISUAL_CHOICES\.map/);
   assert.match(selector, /isShaderGradientEnvironmentId\(environmentId\)/);
   assert.match(selector, /if \(family\) onSelectGradient\(\)/);
@@ -337,11 +340,36 @@ test("music source tabs switch immediately and ignore stale asynchronous loads",
   assert.ok(switcher.indexOf("setMusicMode(nextMode)") < switcher.indexOf("await controller.load()"));
   assert.ok(switcher.indexOf("setMusicModeLoading(nextMode)") < switcher.indexOf("await controller.load()"));
   assert.match(switcher, /const revision = \+\+musicModeRevisionRef\.current/);
+  assert.ok(switcher.indexOf("transportActionQueueRef.current.invalidate()") < switcher.indexOf("const revision = ++musicModeRevisionRef.current"));
   assert.match(switcher, /revision !== musicModeRevisionRef\.current \|\| sessionMusicModeRef\.current !== nextMode/);
   assert.match(switcher, /scoreRevision !== scoreSelectionRevisionRef\.current/);
   assert.match(app, /Loading \{musicMode === "soundtrack" \? "Soundtrack" : "Play the Road"\}…/);
   assert.match(styles, /\.music-mode-loading \{/);
   assert.match(styles, /@media \(prefers-reduced-motion: reduce\) \{[\s\S]*?\.music-mode-loading span \{ animation: none; \}/);
+});
+
+test("newer media selections cancel queued navigation without cancelling deliberate skip chains", () => {
+  const app = read("App.jsx");
+  const selectScore = app.slice(
+    app.indexOf("const selectScore = useCallback"),
+    app.indexOf("const switchMusicMode = useCallback"),
+  );
+  const selectSoundtrack = app.slice(
+    app.indexOf("const playSoundtrackSelection = useCallback"),
+    app.indexOf("const moveTransport = useCallback"),
+  );
+  const moveTransport = app.slice(
+    app.indexOf("const moveTransport = useCallback"),
+    app.indexOf("const toggleTransport = useCallback"),
+  );
+
+  assert.match(selectScore, /\{ preserveQueuedNavigation = false \} = \{\}/);
+  assert.match(selectScore, /if \(!preserveQueuedNavigation\) transportActionQueueRef\.current\.invalidate\(\)/);
+  assert.equal((selectSoundtrack.match(/transportActionQueueRef\.current\.invalidate\(\)/g) ?? []).length, 2);
+  assert.equal((selectSoundtrack.match(/musicModeRevisionRef\.current \+= 1/g) ?? []).length, 2);
+  assert.equal((selectSoundtrack.match(/scoreSelectionRevisionRef\.current \+= 1/g) ?? []).length, 2);
+  assert.match(moveTransport, /selectScore\(scores\[nextIndex\]\.id, \{ preserveQueuedNavigation: true \}\)/);
+  assert.match(moveTransport, /reason: "superseded-by-newer-intent"/);
 });
 
 test("Soundtrack path cards round-trip between Illobo and Jamendo without losing covers", () => {
@@ -441,7 +469,9 @@ test("launch copy has a continuous white-to-red travelling wave", () => {
   assert.match(styles, /from \{ background-position: 0 50%; \}/);
   assert.match(styles, /to \{ background-position: -360px 50%; \}/);
   assert.match(styles, /#f2eee5/);
-  assert.match(styles, /#bd111d/);
+  assert.match(styles, /--ui-command-wave-soft: #ff9b9e/);
+  assert.match(styles, /--ui-command-wave-soft: #b51f20/);
+  assert.match(styles, /var\(--ui-command-wave-deep\) 204px/);
 });
 
 test("the launch lockup uses the 16 Road mark and isolated Orbitron wordmark", () => {
@@ -538,9 +568,19 @@ test("the vehicle gets persistent Now Playing, stable Media Session actions, and
   const styles = read("styles.css");
 
   assert.match(app, /className="now-playing-dock persistent-transport control-layer" aria-label="Now playing and music transport"/);
-  assert.match(app, /navigator\.mediaSession\.setActionHandler\(action, handler\)/);
-  assert.match(app, /previoustrack: \(\) => void mediaSessionActionsRef\.current\.move\?\.\("previous", "media-session"\)/);
-  assert.match(app, /nexttrack: \(\) => void mediaSessionActionsRef\.current\.move\?\.\("next", "media-session"\)/);
+  assert.match(app, /installMediaSessionTransport\(\{/);
+  assert.match(app, /createMediaTransportIntentQueue\(\)/);
+  assert.match(app, /transportActionQueueRef\.current\.invalidate\(\)/);
+  assert.match(app, /media\.action\.cancelled/);
+  assert.match(app, /previoustrack: \(invocation\) => mediaSessionActionsRef\.current\.move\?\.\("previous", "media-session", invocation\)/);
+  assert.match(app, /nexttrack: \(invocation\) => mediaSessionActionsRef\.current\.move\?\.\("next", "media-session", invocation\)/);
+  assert.match(app, /media-session\.action\.invoked/);
+  assert.match(app, /nativeInvocationId: invocation\.id/);
+  assert.match(app, /queuedForMs: roundMetric\(startedAtMs - queuedAtMs\)/);
+  assert.match(app, /soundtrackMediaPositionState\(soundtrackSnapshot\)/);
+  assert.match(app, /clearMediaSessionPresentation\(navigator\.mediaSession\)/);
+  assert.match(app, /playRoadMediaObservation\(\{/);
+  assert.doesNotMatch(app, /seekto:|seekbackward:|seekforward:/);
   assert.match(app, /media\.action\.requested/);
   assert.match(app, /media\.action\.completed/);
   assert.match(app, /soundtrackPlaybackConfirmed/);
@@ -564,13 +604,16 @@ test("the vehicle gets persistent Now Playing, stable Media Session actions, and
   assert.match(styles, /\.drawer-panel\.is-dragging/);
 });
 
-test("compact viewports keep the mode switch separate and preserve a resting mode marker", () => {
+test("compact viewports keep mode, appearance, telemetry, and the resting marker distinct", () => {
   const app = read("App.jsx");
   const styles = read("styles.css");
 
   assert.match(app, /className="active-mode-marker"[^>]*>FLUX<\/span>/);
   assert.match(styles, /\.controls-resting \.active-mode-marker \{ opacity: \.82; \}/);
-  assert.match(styles, /@media \(max-width: 650px\) \{[\s\S]*?grid-template-columns: 58px 116px minmax\(220px, 1fr\) 52px/);
+  assert.match(styles, /grid-template-columns: 164px 156px 60px 86px 84px 116px minmax\(107px, 1fr\)/);
+  assert.match(styles, /\.appearance-control \{ grid-column: 4; \}[\s\S]*?\.gps-state \{ grid-column: 5; \}/);
+  assert.match(styles, /@media \(min-width: 651px\) and \(max-width: 772px\) \{[\s\S]*?grid-template-columns: 21\.216% 20\.181% 7\.762% 11\.125% 10\.867% 15\.006% 13\.843%/);
+  assert.match(styles, /@media \(max-width: 650px\) \{[\s\S]*?grid-template-columns: 116px minmax\(0, 1fr\) 220px 72px 52px/);
   assert.match(styles, /@media \(max-width: 480px\) \{[\s\S]*?\.topbar-mark \{ display: none; \}[\s\S]*?\.mode-selector \{ grid-column: 1; \}/);
 });
 

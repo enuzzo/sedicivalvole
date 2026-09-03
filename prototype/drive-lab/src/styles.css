@@ -58,7 +58,7 @@
   --road-sheet-light-line: rgba(7, 9, 9, .72);
   --road-sheet-light-line-soft: rgba(7, 9, 9, .55);
   --road-sheet-light-muted: rgba(7, 9, 9, .72);
-  --road-sheet-light-subtle: rgba(7, 9, 9, .58);
+  --road-sheet-light-subtle: rgba(7, 9, 9, .62);
   --road-sheet-light-disabled: rgba(7, 9, 9, .43);
   --road-sheet-dark-surface: #090b0b;
   --road-sheet-dark-control: #171a1a;
@@ -108,6 +108,58 @@ button { -webkit-tap-highlight-color: transparent; }
 .app[data-palette="acid"] { --accent: #ff2ca8; }
 .app[data-palette="signal"] { --accent: #e4362a; }
 .app[data-palette="sulphur"] { --accent: #e6d02a; }
+
+/* Road Sheet appearance only remaps product chrome. Visual palettes keep
+   owning --accent and the renderer surfaces below keep their authored colour. */
+.app[data-appearance="dark"] {
+  --ui-surface: var(--road-sheet-dark-surface);
+  --ui-surface-strong: #050707;
+  --ui-control: var(--road-sheet-dark-control);
+  --ui-control-hover: var(--road-sheet-dark-control-hover);
+  --ui-text: var(--road-sheet-dark-ink);
+  --ui-muted: var(--road-sheet-dark-muted);
+  --ui-subtle: var(--road-sheet-dark-subtle);
+  --ui-disabled: var(--road-sheet-dark-disabled);
+  --ui-line: var(--road-sheet-dark-line);
+  --ui-line-soft: rgba(238, 233, 222, .22);
+  --ui-selected-surface: var(--road-sheet-dark-ink);
+  --ui-selected-text: var(--road-sheet-dark-surface);
+  --ui-accent-text: #ff7770;
+  --ui-command-wave-soft: #b51f20;
+  --ui-command-wave-mid: #9c1b1d;
+  --ui-command-wave-deep: #7d1719;
+  --ui-success: #55d991;
+  --ui-caution: #f3a84c;
+  --ui-alert: #ff7770;
+  --ui-icon-filter: brightness(0) invert(1);
+  --ui-selected-icon-filter: none;
+  --ui-backdrop: rgba(0, 0, 0, .7);
+}
+
+.app[data-appearance="light"] {
+  --ui-surface: var(--road-sheet-light-surface);
+  --ui-surface-strong: var(--road-sheet-light-surface);
+  --ui-control: var(--road-sheet-light-control);
+  --ui-control-hover: var(--road-sheet-light-control-hover);
+  --ui-text: var(--road-sheet-light-ink);
+  --ui-muted: var(--road-sheet-light-muted);
+  --ui-subtle: var(--road-sheet-light-subtle);
+  --ui-disabled: var(--road-sheet-light-disabled);
+  --ui-line: var(--road-sheet-light-line);
+  --ui-line-soft: rgba(7, 9, 9, .24);
+  --ui-selected-surface: var(--road-sheet-light-ink);
+  --ui-selected-text: var(--road-sheet-light-surface);
+  --ui-accent-text: #a61c16;
+  --ui-command-wave-soft: #ff9b9e;
+  --ui-command-wave-mid: #e22a32;
+  --ui-command-wave-deep: #bd111d;
+  --ui-success: #12663f;
+  --ui-caution: #855100;
+  --ui-alert: #9b201a;
+  --ui-icon-filter: none;
+  --ui-selected-icon-filter: brightness(0) invert(1);
+  --ui-backdrop: rgba(7, 9, 9, .58);
+}
 .field-canvas { position: absolute; inset: 0; z-index: 0; display: block; width: 100%; height: 100%; }
 .shadergradient-field { overflow: hidden; background: #050507; }
 .shadergradient-field .shadergradient-canvas,
@@ -408,13 +460,13 @@ button { -webkit-tap-highlight-color: transparent; }
   color: transparent;
   background-image: repeating-linear-gradient(
     90deg,
-    #f2eee5 0,
-    #f2eee5 96px,
-    #ff9b9e 132px,
-    #e22a32 168px,
-    #bd111d 204px,
-    #f2eee5 264px,
-    #f2eee5 360px
+    var(--ui-selected-text) 0,
+    var(--ui-selected-text) 96px,
+    var(--ui-command-wave-soft) 132px,
+    var(--ui-command-wave-mid) 168px,
+    var(--ui-command-wave-deep) 204px,
+    var(--ui-selected-text) 264px,
+    var(--ui-selected-text) 360px
   );
   background-position: 0 50%;
   background-size: 360px 100%;
@@ -709,7 +761,7 @@ button { -webkit-tap-highlight-color: transparent; }
   right: 0;
   min-height: 72px;
   display: grid;
-  grid-template-columns: 72px auto minmax(320px, 1fr) 48px 54px 72px 58px;
+  grid-template-columns: 72px auto minmax(320px, 1fr) 48px 86px 54px 72px 58px;
   align-items: stretch;
   border-bottom: 1px solid var(--line);
   border-radius: 0 0 var(--ui-radius) var(--ui-radius);
@@ -758,14 +810,14 @@ button { -webkit-tap-highlight-color: transparent; }
   height: 3px;
   background: var(--accent);
 }
-/* The flexible lane keeps telemetry right-aligned while preserving room for
-   future low-priority appearance or status controls beside the mode switch. */
+/* The flexible lane keeps telemetry right-aligned while the appearance cell
+   stays a stable, glanceable control beside network state. */
 .speed-spacer { min-width: 320px; }
 .source-readout {
   position: absolute;
   z-index: 7;
   top: 0;
-  right: 232px;
+  right: 318px;
   width: 320px;
   min-height: 72px;
   padding: 8px 16px;
@@ -871,6 +923,91 @@ button { -webkit-tap-highlight-color: transparent; }
 .network-state.is-active { color: #55d991; }
 .network-state.is-caution { color: #f3a84c; }
 .network-state.is-alert { color: #ff6b64; }
+.appearance-control {
+  position: relative;
+  z-index: 10;
+  min-width: 0;
+  border-left: 1px solid var(--line);
+}
+.appearance-trigger {
+  width: 100%;
+  min-width: 0;
+  min-height: 100%;
+  display: grid;
+  grid-template-columns: 22px minmax(0, auto);
+  place-content: center;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 8px;
+  border: 0;
+  border-radius: 0;
+  color: var(--paper);
+  background: transparent;
+  font-size: var(--type-label);
+  font-weight: var(--font-weight-label);
+  line-height: 1;
+  letter-spacing: .045em;
+  cursor: pointer;
+}
+.appearance-trigger:hover,
+.appearance-trigger:focus-visible,
+.appearance-trigger[aria-expanded="true"] { background: rgba(238, 234, 224, .07); }
+.appearance-trigger:focus-visible,
+.appearance-option:focus-visible { outline: 2px solid var(--road-sheet-signal); outline-offset: -3px; }
+.appearance-icon {
+  display: block;
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+.appearance-menu {
+  position: absolute;
+  top: 100%;
+  left: -1px;
+  z-index: 12;
+  width: 134px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 0 0 var(--ui-radius) var(--ui-radius);
+  color: var(--paper);
+  background: #090b0b;
+}
+.appearance-menu[hidden] { display: none; }
+.appearance-option {
+  position: relative;
+  width: 100%;
+  min-height: var(--touch-target);
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  color: var(--paper);
+  background: transparent;
+  font-size: var(--type-label);
+  font-weight: var(--font-weight-label);
+  letter-spacing: .07em;
+  text-align: left;
+  cursor: pointer;
+}
+.appearance-option:last-child { border-bottom: 0; }
+.appearance-option:hover { background: rgba(238, 234, 224, .07); }
+.appearance-option[aria-checked="true"],
+.appearance-option.is-selected { background: rgba(238, 234, 224, .04); }
+.appearance-option[aria-checked="true"]::before,
+.appearance-option.is-selected::before {
+  position: absolute;
+  top: 7px;
+  bottom: 7px;
+  left: 0;
+  width: 3px;
+  background: var(--road-sheet-signal);
+  content: "";
+}
 .gps-help-popover {
   position: absolute;
   top: 78px;
@@ -1642,11 +1779,11 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
   /* Reserve the telemetry module's real width in the grid. The previous 100px
      track contained a 280px spacer, so Grid let that child overflow backwards
      underneath ENGINE / FLUX at the verified 773px Tesla viewport. */
-  .topbar { min-height: 68px; grid-template-columns: 68px auto minmax(280px, 1fr) 48px 48px 70px 54px; }
+  .topbar { min-height: 68px; grid-template-columns: 68px auto minmax(280px, 1fr) 48px 86px 48px 70px 54px; }
   .topbar-mark { padding: 8px; }
   .topbar-mark img { width: 44px; height: 44px; }
   .mode-selector button { min-width: 63px; padding: 0 8px; font-size: var(--type-body); }
-  .source-readout { right: 220px; width: 280px; min-height: 68px; gap: 10px; }
+  .source-readout { right: 306px; width: 280px; min-height: 68px; gap: 10px; }
   .source-readout.is-soundtrack { width: 116px; }
   .speed-spacer { min-width: 280px; }
   .source-readout strong { font-size: 27px; }
@@ -1668,7 +1805,7 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
   .app { min-height: 0; }
   .splash-status { top: 62px; left: 27px; right: auto; }
   .splash-action { bottom: 16px; }
-  .topbar { grid-template-columns: 58px 116px minmax(220px, 1fr) 52px; }
+  .topbar { grid-template-columns: 58px 116px minmax(220px, 1fr) 72px 52px; }
   .topbar-mark { grid-column: 1; padding: 8px; }
   .topbar-mark img { width: 38px; height: 38px; }
   .mode-selector { grid-column: 2; }
@@ -1678,7 +1815,10 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
   .gps-state { display: none; }
   .network-state { display: none; }
   .discover-button { display: none; }
-  .report-button { grid-column: 4; }
+  .appearance-control { grid-column: 4; }
+  .appearance-menu { right: 0; left: auto; }
+  .report-button { grid-column: 5; }
+  .source-readout { right: 124px; }
   .control-slab,
   .control-slab.is-soundtrack { min-height: 224px; grid-template-columns: 69px 69px 1fr 1.2fr; grid-template-rows: 106px 118px; }
   .control-slab .stop-button { grid-column: 1; grid-row: 1 / 3; }
@@ -1699,14 +1839,14 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
 }
 
 @media (max-width: 480px) {
-  .topbar { grid-template-columns: 116px minmax(0, 1fr) 220px 52px; }
+  .topbar { grid-template-columns: 116px minmax(0, 1fr) 220px 72px 52px; }
   .topbar-mark { display: none; }
   .mode-selector { grid-column: 1; }
   .diagnostic-grid-device { grid-template-columns: 1fr 1fr; }
 }
 
 @media (max-width: 380px) {
-  .topbar { grid-template-columns: 104px minmax(0, 1fr) 204px 52px; }
+  .topbar { grid-template-columns: 104px minmax(0, 1fr) 204px 72px 52px; }
   .mode-selector button { min-width: 52px; padding: 0 3px; }
   .speed-spacer { min-width: 204px; }
   .source-readout { width: 204px; gap: 4px; padding-right: 4px; padding-left: 4px; }
@@ -3190,7 +3330,7 @@ html { font-size: var(--font-size-floor); }
 /* Primary running chrome: the selected 72 px anatomy. */
 .topbar {
   min-height: var(--chrome-size);
-  grid-template-columns: 72px 184px minmax(260px, 1fr) 72px 80px 112px 108px;
+  grid-template-columns: 72px 184px minmax(260px, 1fr) 72px 86px 80px 112px 108px;
 }
 .topbar-mark { padding: 10px; }
 .topbar-mark img { width: 46px; height: 46px; }
@@ -3205,7 +3345,7 @@ html { font-size: var(--font-size-floor); }
 .source-readout,
 .source-readout.is-soundtrack {
   top: 0;
-  right: 372px;
+  right: 458px;
   width: 260px;
   min-height: var(--chrome-size);
   padding: 6px 14px;
@@ -3220,6 +3360,7 @@ html { font-size: var(--font-size-floor); }
 .network-state { min-width: 0; padding: 6px; }
 .network-state-dot { display: block; width: 20px; height: 20px; border: 3px solid currentColor; border-radius: 50%; }
 .network-state strong { max-width: 100%; font-size: var(--type-body); line-height: 1.05; overflow-wrap: anywhere; }
+.appearance-trigger { min-height: var(--chrome-size); }
 .discover-button,
 .report-button { grid-template-rows: 22px auto; gap: 4px; padding: 7px 5px; }
 .discover-button img,
@@ -3531,19 +3672,20 @@ html { font-size: var(--font-size-floor); }
   .launch-selector legend,
   .launch-choice-button strong { line-height: 1.12; }
   .topbar {
-    grid-template-columns: 184px 174px 90px 94px 120px minmax(111px, 1fr);
+    grid-template-columns: 164px 156px 60px 86px 84px 116px minmax(107px, 1fr);
     min-height: var(--chrome-size);
   }
   .topbar-mark { display: none; }
   .mode-selector { grid-column: 1; }
   .speed-spacer { grid-column: 2; min-width: 0; }
   .network-state { grid-column: 3; }
-  .gps-state { grid-column: 4; }
-  .discover-button { grid-column: 5; }
-  .report-button { grid-column: 6; }
+  .appearance-control { grid-column: 4; }
+  .gps-state { grid-column: 5; }
+  .discover-button { grid-column: 6; }
+  .report-button { grid-column: 7; }
   .mode-selector button { flex: 1 1 0; min-width: 0; }
   .source-readout,
-  .source-readout.is-soundtrack { right: auto; left: 184px; width: 174px; }
+  .source-readout.is-soundtrack { right: auto; left: 164px; width: 156px; }
   .soundtrack-drawer .drawer-panel { width: 100vw; padding: 0 12px 20px; }
   .soundtrack-choice-grid,
   .soundtrack-track-list { grid-template-columns: 1fr; }
@@ -3627,4 +3769,461 @@ html { font-size: var(--font-size-floor); }
   .now-playing-transport button,
   .now-playing-transport button:nth-child(2) { min-height: var(--touch-target); }
   .atlas-panel { bottom: 224px; }
+}
+
+/* Road Sheet appearance mapping
+   These selectors stop at product chrome. Canvas, iframe and authored visual
+   surfaces deliberately continue to use their own palette and runtime colour. */
+.app[data-appearance] :is(
+  .keyboard-hint,
+  .visual-cycle-button,
+  .launch-selector,
+  .topbar,
+  .source-readout,
+  .gps-help-popover,
+  .control-slab,
+  .control-status-notice,
+  .track-change-notice,
+  .persistent-transport,
+  .drawer-panel,
+  .manual-effects-deck,
+  .discover-navigation-card,
+  .atlas-demo-hint,
+  .atlas-navigation-plaque,
+  .atlas-map-appearance,
+  .atlas-panel,
+  .atlas-panel-toggle
+) {
+  --paper: var(--ui-text);
+  --ink: var(--ui-selected-text);
+  --panel: var(--ui-control);
+  --line: var(--ui-line-soft);
+}
+
+/* Launch selector. */
+.app[data-appearance] .launch-selector {
+  --sheet-surface: var(--ui-surface);
+  --sheet-control: var(--ui-control);
+  --sheet-control-hover: var(--ui-control-hover);
+  --sheet-ink: var(--ui-text);
+  --sheet-line: var(--ui-line);
+  --sheet-line-soft: var(--ui-line-soft);
+  --sheet-muted: var(--ui-muted);
+  --sheet-subtle: var(--ui-subtle);
+  --sheet-disabled: var(--ui-disabled);
+}
+.app[data-appearance] .launch-start-button {
+  border-color: var(--ui-line);
+  color: var(--ui-selected-text);
+  background: var(--ui-selected-surface);
+}
+.app[data-appearance] .launch-start-button small { color: color-mix(in srgb, var(--ui-selected-text) 68%, transparent); }
+.app[data-appearance] .launch-start-button:disabled { color: color-mix(in srgb, var(--ui-selected-text) 42%, transparent); }
+.app[data-appearance] .launch-start-button:focus-visible {
+  color: var(--ui-selected-text);
+  box-shadow: inset 0 0 0 2px var(--ui-accent-text);
+}
+
+/* Splash CTA and support panel use the same appearance contract while the
+   authored signal field behind them remains intentionally unchanged. */
+.app[data-appearance] .launch-button {
+  border-color: var(--ui-line);
+  color: var(--ui-text);
+  background: var(--ui-surface);
+}
+.app[data-appearance] .launch-brand { border-color: var(--ui-line); background: var(--ui-control); }
+.app[data-appearance] .launch-command { border-color: var(--ui-line); background: var(--ui-selected-surface); }
+.app[data-appearance] .launch-button:hover,
+.app[data-appearance] .launch-button:focus-visible { border-color: var(--ui-text); background: var(--ui-control-hover); }
+.app[data-appearance] .launch-button:focus-visible { outline-color: var(--ui-accent-text); }
+.app[data-appearance] .launch-button:active { background: var(--ui-control); }
+.app[data-appearance] .support-panel {
+  border-color: var(--ui-line);
+  color: var(--ui-text);
+  background: var(--ui-surface);
+  box-shadow: none;
+}
+.app[data-appearance] .support-heading { border-color: var(--ui-line-soft); }
+.app[data-appearance] .support-heading button { border-color: var(--ui-line); color: var(--ui-text); }
+.app[data-appearance] .support-heading button:hover,
+.app[data-appearance] .support-heading button:focus-visible { color: var(--ui-selected-text); background: var(--ui-selected-surface); }
+.app[data-appearance] :is(.support-momentum, .support-suggestions) { border-color: var(--ui-line-soft); }
+.app[data-appearance] .support-suggestions :is(a:hover, a:focus-visible) { color: var(--ui-accent-text); outline-color: var(--ui-accent-text); }
+
+/* Running top chrome and appearance menu. */
+.app[data-appearance] .topbar,
+.app[data-appearance] .source-readout { border-color: var(--ui-line-soft); color: var(--ui-text); background: var(--ui-surface-strong); }
+.app[data-appearance] .mode-selector { border-color: var(--ui-line-soft); }
+.app[data-appearance] .topbar :is(button, .network-state, .gps-state, .appearance-control) { border-color: var(--ui-line-soft); }
+.app[data-appearance] .topbar :is(.topbar-mark, .mode-selector button, .discover-button, .report-button) { color: var(--ui-text); }
+.app[data-appearance] .mode-selector button.is-active::after { background: var(--ui-accent-text); }
+.app[data-appearance] .source-readout span { color: var(--ui-muted); }
+.app[data-appearance] .source-readout small { color: var(--ui-subtle); }
+.app[data-appearance] .active-mode-marker { color: var(--ui-accent-text); }
+.app[data-appearance] .readout-divider { background: var(--ui-line); }
+.app[data-appearance] .controls-resting .source-readout:focus-visible { outline-color: var(--ui-text); }
+.app[data-appearance] .network-state { color: var(--ui-muted); }
+.app[data-appearance] :is(.gps-state.is-precise, .network-state.is-good, .network-state.is-active) { color: var(--ui-success); }
+.app[data-appearance] :is(.gps-state.is-imprecise, .network-state.is-caution) { color: var(--ui-caution); }
+.app[data-appearance] :is(.gps-state.is-offline, .network-state.is-alert) { color: var(--ui-alert); }
+.app[data-appearance] :is(.discover-button img, .report-button img, .appearance-icon) { filter: var(--ui-icon-filter); }
+.app[data-appearance] .appearance-trigger { color: var(--ui-text); }
+.app[data-appearance] .appearance-trigger:hover,
+.app[data-appearance] .appearance-trigger:focus-visible,
+.app[data-appearance] .appearance-trigger[aria-expanded="true"] { background: var(--ui-control); }
+.app[data-appearance] .appearance-menu { border-color: var(--ui-line); color: var(--ui-text); background: var(--ui-surface); box-shadow: none; }
+.app[data-appearance] .appearance-option { border-color: var(--ui-line-soft); color: var(--ui-text); }
+.app[data-appearance] .appearance-option:hover { background: var(--ui-control-hover); }
+.app[data-appearance] .appearance-option[aria-checked="true"],
+.app[data-appearance] .appearance-option.is-selected { background: var(--ui-control); }
+
+/* GPS assistance and transient driver feedback. */
+.app[data-appearance] .gps-help-popover {
+  border-color: var(--ui-line);
+  color: var(--ui-text);
+  background: var(--ui-surface);
+}
+.app[data-appearance] :is(.gps-help-heading small, .gps-help-privacy) { color: var(--ui-accent-text); }
+.app[data-appearance] .gps-help-heading button { color: var(--ui-muted); }
+.app[data-appearance] .gps-help-popover dl div { background: var(--ui-control); }
+.app[data-appearance] .gps-help-popover dt { color: var(--ui-subtle); }
+.app[data-appearance] .gps-help-popover p { color: var(--ui-muted); }
+.app[data-appearance] .gps-help-actions button { border-color: var(--ui-line-soft); color: var(--ui-text); background: var(--ui-control); }
+.app[data-appearance] .gps-help-actions button:first-child { border-color: var(--road-sheet-signal); }
+.app[data-appearance] .keyboard-hint,
+.app[data-appearance] .visual-cycle-button { border-color: var(--ui-line-soft); color: var(--ui-text); background: var(--ui-surface); backdrop-filter: none; }
+.app[data-appearance] .visual-cycle-button small { color: var(--ui-subtle); }
+.app[data-appearance] .visual-cycle-button:hover,
+.app[data-appearance] .visual-cycle-button:focus-visible { background: var(--ui-control-hover); }
+.app[data-appearance] .visual-render-toggle[aria-pressed="true"] {
+  border-color: var(--ui-text);
+  color: var(--ui-selected-text);
+  background: var(--ui-selected-surface);
+}
+.app[data-appearance] .visual-render-toggle[aria-pressed="true"] small { color: var(--ui-selected-text); }
+.app[data-appearance] .energy-readout { color: var(--ui-subtle); }
+.app[data-appearance] :is(.control-status-notice, .track-change-notice) {
+  border-color: var(--ui-line);
+  color: var(--ui-text);
+  background: var(--ui-surface);
+}
+.app[data-appearance] .track-change-notice { box-shadow: 0 14px 38px rgba(0, 0, 0, .34), inset 0 3px var(--ui-accent-text); }
+.app[data-appearance] .track-change-notice small { color: var(--ui-accent-text); }
+.app[data-appearance] .track-change-notice em { color: var(--ui-muted); }
+
+/* Footer, palette housing and the persistent native-style transport. */
+.app[data-appearance] .control-slab { border-color: var(--ui-line-soft); color: var(--ui-text); background: var(--ui-surface-strong); }
+.app[data-appearance] .control-slab > *,
+.app[data-appearance] :is(.stop-button, .effects-button, .mix-button, .environment-control, .score-control, .palette-control) { border-color: var(--ui-line-soft); }
+.app[data-appearance] :is(.control-label, .palette-control legend, .palette-control::before) { color: var(--ui-muted); }
+.app[data-appearance] :is(.stop-button, .effects-button, .mix-button) { color: var(--ui-subtle); }
+.app[data-appearance] :is(.stop-button > span, .stop-button::after, .effects-button::after, .mix-button small) { color: var(--ui-muted); }
+.app[data-appearance] :is(.environment-control, .score-control) { color: var(--ui-text); }
+.app[data-appearance] :is(.control-catalog-number, .control-disclosure) { color: var(--ui-accent-text); }
+.app[data-appearance] :is(.environment-control, .score-control):active,
+.app[data-appearance] .mix-button.is-active { background: var(--ui-control); }
+.app[data-appearance] :is(.effects-button.is-active, .mix-button.is-active) { box-shadow: inset 0 3px var(--ui-accent-text); }
+.app[data-appearance] :is(.stop-button.is-active, .effects-button.is-active, .mix-button.is-open) {
+  color: var(--ui-text);
+  background: color-mix(in srgb, var(--road-sheet-signal) 13%, var(--ui-control));
+}
+.app[data-appearance] .palette-control > strong { color: var(--ui-accent-text); }
+.app[data-appearance] .swatch-housing button.is-selected span { box-shadow: 0 0 0 1px var(--ui-surface), 0 0 0 2px var(--ui-text); }
+.app[data-appearance] .persistent-transport {
+  border-color: var(--ui-line);
+  color: var(--ui-text);
+  background: var(--ui-surface);
+  backdrop-filter: none;
+}
+.app[data-appearance] .persistent-transport button { color: var(--ui-text); background: var(--ui-control); }
+.app[data-appearance] .persistent-transport button:nth-child(2) { color: var(--ui-selected-text); background: var(--ui-selected-surface); }
+.app[data-appearance] .persistent-transport.now-playing-dock { border-color: var(--ui-line); background: var(--ui-surface); }
+.app[data-appearance] .now-playing-copy small { color: var(--ui-accent-text); }
+.app[data-appearance] .now-playing-copy em { color: var(--ui-muted); }
+.app[data-appearance] .now-playing-artwork { color: #070909; }
+.app[data-appearance] .now-playing-transport button { border-color: var(--ui-line-soft); color: var(--ui-text); background: var(--ui-control); }
+.app[data-appearance] .now-playing-transport button:nth-child(2) { color: var(--ui-selected-text); background: var(--ui-selected-surface); }
+
+/* Shared drawer grammar and diagnostics. */
+.app[data-appearance] .drawer-backdrop { background: var(--ui-backdrop); }
+.app[data-appearance] .drawer-panel { color: var(--ui-text); background: var(--ui-surface); scrollbar-color: var(--ui-line) transparent; }
+.app[data-appearance] .drawer-heading { border-color: var(--ui-line-soft); }
+.app[data-appearance] .drawer-heading small { color: var(--ui-accent-text); }
+.app[data-appearance] :is(.drawer-heading button, .drawer-inline-actions button, .drawer-actions button) {
+  border-color: var(--ui-line);
+  color: var(--ui-text);
+  background: transparent;
+}
+.app[data-appearance] .drawer-actions { border-color: var(--ui-line-soft); background: var(--ui-surface); }
+.app[data-appearance] .drawer-actions .send-diagnostic-button { color: var(--ui-selected-text); background: var(--ui-selected-surface); }
+.app[data-appearance] :is(.diagnostic-group, .privacy-note, .send-state) { color: var(--ui-subtle); }
+.app[data-appearance] :is(.score-entry, .diagnostic-grid article, .preview-btn) { color: var(--ui-text); background: var(--ui-control); }
+.app[data-appearance] .diagnostic-grid small { color: var(--ui-muted); }
+.app[data-appearance] .diagnostic-grid span { color: var(--ui-subtle); }
+.app[data-appearance] :is(.score-entry-number, .score-entry-title b, .score-entry-state) { color: var(--ui-accent-text); }
+.app[data-appearance] .score-source.is-sampled { color: var(--ui-selected-text); background: var(--ui-accent-text); }
+.app[data-appearance] .score-entry-body span { color: var(--ui-subtle); }
+.app[data-appearance] .score-entry-body .score-entry-family { color: var(--ui-muted); }
+.app[data-appearance] .score-entry.is-active { color: var(--ui-selected-text); background: var(--ui-selected-surface); }
+.app[data-appearance] .score-entry.is-active :is(.score-entry-number, .score-entry-body span, .score-entry-title b) { color: color-mix(in srgb, var(--ui-selected-text) 68%, transparent); }
+.app[data-appearance] .score-entry.is-preparing { color: var(--ui-disabled); background: color-mix(in srgb, var(--ui-control) 48%, transparent); }
+.app[data-appearance] .score-entry.is-preparing .score-entry-number { color: var(--ui-disabled); }
+.app[data-appearance] .score-entry:not(:disabled):not(.is-active):active { background: var(--ui-control-hover); }
+.app[data-appearance] .play-road-library .score-entry { border-color: var(--ui-line-soft); background: var(--ui-control); }
+.app[data-appearance] .play-road-library .score-entry.is-active {
+  color: var(--ui-text);
+  border-color: var(--ui-accent-text);
+  background: color-mix(in srgb, var(--ui-accent-text) 9%, var(--ui-surface));
+}
+.app[data-appearance] .play-road-library .score-entry.is-active .score-entry-body span { color: var(--ui-muted); }
+.app[data-appearance] .play-road-library .score-entry.is-active .score-entry-title b { color: var(--ui-accent-text); }
+.app[data-appearance] .play-road-library .score-entry.is-active .score-entry-state { color: var(--ui-text); }
+.app[data-appearance] .drawer-panel pre { border-color: var(--ui-line-soft); color: var(--ui-muted); background: var(--ui-surface-strong); }
+.app[data-appearance] .send-state-error { color: var(--ui-alert); }
+.app[data-appearance] .send-state-sent { color: var(--ui-success); }
+
+.app[data-appearance] .diagnostic-report-drawer .drawer-panel { background: var(--ui-surface); scrollbar-color: var(--ui-line) transparent; }
+.app[data-appearance] .diagnostic-report-drawer .drawer-heading { background: color-mix(in srgb, var(--ui-surface) 96%, transparent); }
+.app[data-appearance] :is(.diagnostic-report-drawer .drawer-heading small, .diagnostic-readme > header small) { color: var(--ui-accent-text); }
+.app[data-appearance] .diagnostic-health { border-color: var(--ui-line-soft); background: var(--ui-surface-strong); }
+.app[data-appearance] .diagnostic-health > div { border-color: var(--ui-line-soft); }
+.app[data-appearance] .diagnostic-health span { color: var(--ui-muted); }
+.app[data-appearance] :is(.diagnostic-health strong, .instrument-section > h3, .instrument-section-heading h3, .instrument-metric strong, .diagnostic-submit h3, .raw-report h3, .diagnostic-readme h3, .diagnostic-readme h4) { color: var(--ui-text); }
+.app[data-appearance] :is(.diagnostic-health small, .instrument-metric span, .raw-report > header span, .diagnostic-readme, .diagnostic-readme footer) { color: var(--ui-muted); }
+.app[data-appearance] :is(.diagnostic-health .is-good strong, .instrument-metric.is-good strong) { color: var(--ui-success); }
+.app[data-appearance] :is(.diagnostic-health .is-caution strong, .instrument-metric.is-caution strong) { color: var(--ui-caution); }
+.app[data-appearance] .diagnostic-health .is-alert strong { color: var(--ui-alert); }
+.app[data-appearance] .diagnostic-health .is-primary { box-shadow: inset 0 2px var(--ui-accent-text); }
+.app[data-appearance] .instrument-section { border-color: var(--ui-line-soft); background: var(--ui-control); }
+.app[data-appearance] :is(.instrument-section > h3, .instrument-section-heading, .instrument-metric) { border-color: var(--ui-line-soft); }
+.app[data-appearance] .instrument-action { border-color: var(--ui-line); color: var(--ui-text); }
+.app[data-appearance] .instrument-metric dt { color: var(--ui-muted); }
+.app[data-appearance] :is(.diagnostic-submit, .raw-report) { border-color: var(--ui-line-soft); background: var(--ui-surface-strong); }
+.app[data-appearance] .diagnostic-submit > p:not(.send-state) { color: var(--ui-muted); }
+.app[data-appearance] :is(.diagnostic-readme > header, .diagnostic-readme > section) { border-color: var(--ui-line-soft); }
+.app[data-appearance] .diagnostic-readme a { border-color: var(--ui-line); color: var(--ui-text); }
+
+/* Music, Soundtrack and the manual FX deck. */
+.app[data-appearance] .music-library-heading { background: color-mix(in srgb, var(--ui-surface) 97%, transparent); }
+.app[data-appearance] :is(.music-drawer-content, .soundtrack-drawer .drawer-panel) { scrollbar-color: var(--ui-line) transparent; }
+.app[data-appearance] .music-source-switch { border-color: var(--ui-line-soft); background: var(--ui-surface); }
+.app[data-appearance] .music-source-switch button { border-color: var(--ui-line-soft); color: var(--ui-muted); background: var(--ui-control); }
+.app[data-appearance] .music-source-switch button.is-active { color: var(--ui-text); background: var(--ui-control-hover); box-shadow: inset 0 -4px var(--ui-accent-text); }
+.app[data-appearance] .music-source-switch button:focus-visible { outline-color: var(--ui-accent-text); }
+.app[data-appearance] .music-mode-loading { color: var(--ui-muted); }
+.app[data-appearance] .music-mode-loading span { background: var(--ui-accent-text); }
+.app[data-appearance] :is(.play-road-intro, .soundtrack-choice-card, .jamendo-library, .soundtrack-now-playing, .soundtrack-credit-card) {
+  border-color: var(--ui-line-soft);
+  color: var(--ui-text);
+  background: var(--ui-control);
+}
+.app[data-appearance] .play-road-intro p,
+.app[data-appearance] :is(.music-library-section-heading > span, .soundtrack-choice-heading strong, .soundtrack-choice-copy > span, .soundtrack-filter-group > span) { color: var(--ui-subtle); }
+.app[data-appearance] :is(.music-library-section-heading small, .soundtrack-choice-card small, .soundtrack-choice-heading span, .soundtrack-library-status strong, .soundtrack-now-playing small, .soundtrack-credit-copy > small) { color: var(--ui-accent-text); }
+.app[data-appearance] .soundtrack-choice-card small.is-featured-artist { color: var(--ui-alert); }
+.app[data-appearance] .soundtrack-choice-card.is-selected { box-shadow: inset 0 3px var(--ui-accent-text); }
+.app[data-appearance] .soundtrack-library-status span { color: var(--ui-text); }
+.app[data-appearance] :is(.soundtrack-choice-action, .soundtrack-filter-row button) { border-color: var(--ui-accent-text); color: var(--ui-text); background: color-mix(in srgb, var(--road-sheet-signal) 12%, var(--ui-control)); }
+.app[data-appearance] .soundtrack-cover-stack img { border-color: var(--ui-surface); }
+.app[data-appearance] :is(.soundtrack-cover-placeholder, .soundtrack-artwork-placeholder) { color: #070909; }
+.app[data-appearance] .soundtrack-filter-row > button { border-color: var(--ui-line-soft); color: var(--ui-text); background: var(--ui-control); }
+.app[data-appearance] .soundtrack-filter-row > button.is-selected,
+.app[data-appearance] .soundtrack-track-list > button.is-current { color: var(--ui-selected-text); background: var(--ui-selected-surface); }
+.app[data-appearance] .soundtrack-filter-row > button.is-selected { box-shadow: inset 0 3px var(--ui-accent-text); }
+.app[data-appearance] .soundtrack-genre-board { border-color: color-mix(in srgb, var(--ui-accent-text) 72%, transparent); }
+.app[data-appearance] .soundtrack-filter-row > button.is-selected .media-glyph,
+.app[data-appearance] .soundtrack-track-list button.is-current em { color: var(--ui-selected-text); }
+.app[data-appearance] .soundtrack-filter-row > button:not(.is-selected) .media-glyph,
+.app[data-appearance] .soundtrack-track-list button:not(.is-current) em { color: var(--ui-accent-text); }
+.app[data-appearance] .soundtrack-track-list > button { border-color: var(--ui-line-soft); color: var(--ui-text); background: var(--ui-control); }
+.app[data-appearance] .soundtrack-track-list button small { color: var(--ui-subtle); }
+.app[data-appearance] .soundtrack-track-list button.is-current small { color: color-mix(in srgb, var(--ui-selected-text) 64%, transparent); }
+.app[data-appearance] .soundtrack-track-list > p { color: var(--ui-muted); }
+.app[data-appearance] .soundtrack-now-label img { filter: var(--ui-icon-filter); }
+.app[data-appearance] .soundtrack-now-playing span { color: var(--ui-muted); }
+.app[data-appearance] .soundtrack-now-playing a { color: var(--ui-text); }
+.app[data-appearance] .soundtrack-transport button { border-color: var(--ui-line-soft); color: var(--ui-text); background: var(--ui-control-hover); }
+.app[data-appearance] .soundtrack-credit-copy > div { border-color: var(--ui-line-soft); }
+.app[data-appearance] .soundtrack-credit-copy > div > span { color: var(--ui-subtle); }
+.app[data-appearance] .soundtrack-credit-copy > div.is-target > span { color: var(--ui-accent-text); }
+.app[data-appearance] .soundtrack-credit-copy a { color: var(--ui-muted); }
+/* QR artwork stays black on paper in either product appearance. */
+.app[data-appearance] .soundtrack-qr-handoff { color: #070909; background: #f1eee5; }
+.app[data-appearance] .soundtrack-qr-handoff > span { border-color: rgba(7, 9, 9, .22); }
+
+.app[data-appearance] .manual-effects-deck {
+  border-color: var(--ui-line);
+  color: var(--ui-text);
+  background: var(--ui-surface);
+  box-shadow: 0 20px 54px rgba(0, 0, 0, .52), inset 0 3px var(--ui-accent-text);
+}
+.app[data-appearance] .manual-effects-deck > header { border-color: var(--ui-line-soft); }
+.app[data-appearance] .manual-effects-deck > header small { color: var(--ui-accent-text); }
+.app[data-appearance] .manual-effects-deck > header > span,
+.app[data-appearance] :is(.manual-effect-hit small, .manual-effect-hit em, .manual-effects-grid label span) { color: var(--ui-subtle); }
+.app[data-appearance] .manual-effects-deck > header > button { border-color: var(--ui-line-soft); color: var(--ui-text); background: var(--ui-control); }
+.app[data-appearance] .manual-effects-grid { background: var(--ui-line-soft); }
+.app[data-appearance] .manual-effects-grid article { background: var(--ui-surface); }
+.app[data-appearance] .manual-effects-grid article.is-active { background: color-mix(in srgb, var(--ui-accent-text) 9%, var(--ui-surface)); box-shadow: inset 0 3px var(--ui-accent-text); }
+.app[data-appearance] .manual-effect-hit { color: var(--ui-text); }
+.app[data-appearance] .manual-effects-grid output { color: var(--ui-accent-text); }
+.app[data-appearance] .manual-effect-hit em { border-color: var(--ui-line-soft); }
+.app[data-appearance] .is-active .manual-effect-hit em { color: var(--ui-text); background: color-mix(in srgb, var(--road-sheet-signal) 14%, var(--ui-control)); }
+
+/* Discover themes its own controls and fallback reader; the Minerva iframe is
+   intentionally excluded so switching appearance never reloads its document. */
+.app[data-appearance] .discover-drawer .drawer-panel { border-color: var(--ui-line-soft); }
+.app[data-appearance] .discover-heading,
+.app[data-appearance] .discover-index,
+.app[data-appearance] :is(.discover-tools, .discover-view-tabs, .discover-results > button, .discover-reader > header, .discover-reader-source) { border-color: var(--ui-line-soft); }
+.app[data-appearance] .discover-heading small { color: var(--ui-muted); }
+.app[data-appearance] :is(.discover-heading h2, .discover-reader > header small, .discover-article-fallback small, .discover-navigation-card header small) { color: var(--ui-accent-text); }
+.app[data-appearance] .discover-heading-actions button { border-color: var(--ui-line-soft); color: var(--ui-text); background: var(--ui-control); }
+.app[data-appearance] :is(.discover-heading-actions img, .discover-search img, .discover-results > button > img.is-placeholder, .discover-navigation-trigger img, .discover-reader-source img, .discover-reader-placeholder img) { filter: var(--ui-icon-filter); }
+.app[data-appearance] .discover-index { background: var(--ui-surface-strong); }
+.app[data-appearance] .discover-tools label > span:not(.visually-hidden) { color: var(--ui-subtle); }
+.app[data-appearance] :is(.discover-tools select, .discover-tools input) { border-color: var(--ui-line-soft); color: var(--ui-text); background: var(--ui-control); }
+.app[data-appearance] .discover-tools input::placeholder { color: var(--ui-subtle); }
+.app[data-appearance] .discover-view-tabs button { border-color: var(--ui-line-soft); color: var(--ui-subtle); }
+.app[data-appearance] .discover-view-tabs button.is-active { color: var(--ui-text); background: var(--ui-control); }
+.app[data-appearance] .discover-view-tabs button.is-active::after { background: var(--ui-accent-text); }
+.app[data-appearance] .discover-results { scrollbar-color: var(--ui-line) transparent; }
+.app[data-appearance] .discover-results > button { color: var(--ui-text); }
+.app[data-appearance] .discover-results > button:hover { background: var(--ui-control); }
+.app[data-appearance] .discover-results > button > small { color: var(--ui-subtle); }
+.app[data-appearance] .discover-results > button em { color: var(--ui-muted); }
+.app[data-appearance] .discover-results > button.is-selected { color: var(--ui-selected-text); background: var(--ui-selected-surface); box-shadow: inset 4px 0 var(--ui-accent-text); }
+.app[data-appearance] .discover-results > button.is-selected :is(small, em) { color: color-mix(in srgb, var(--ui-selected-text) 64%, transparent); }
+.app[data-appearance] .discover-results > .discover-more { border-color: var(--ui-line-soft); color: var(--ui-accent-text); background: var(--ui-control); }
+.app[data-appearance] :is(.discover-privacy, .discover-status) { color: var(--ui-subtle); }
+.app[data-appearance] .discover-status span { background: var(--ui-accent-text); }
+.app[data-appearance] .discover-empty-state p { color: var(--ui-muted); }
+.app[data-appearance] .discover-empty-state button { border-color: var(--ui-line-soft); color: var(--ui-text); background: var(--ui-control); }
+.app[data-appearance] :is(.discover-reader, .discover-reader-body) { background: var(--ui-surface); }
+.app[data-appearance] .discover-reader-meta { color: var(--ui-muted); }
+.app[data-appearance] .discover-navigation-trigger { color: var(--ui-text); background: color-mix(in srgb, var(--road-sheet-signal) 12%, var(--ui-control)); }
+.app[data-appearance] .discover-navigation-trigger[aria-expanded="true"] { color: var(--ui-selected-text); background: var(--ui-accent-text); }
+.app[data-appearance] .discover-navigation-trigger[aria-expanded="true"] img { filter: var(--ui-selected-icon-filter); }
+.app[data-appearance] .discover-article-fallback > img.is-placeholder { background: var(--ui-control); filter: var(--ui-icon-filter); }
+.app[data-appearance] .discover-article-fallback strong { color: var(--ui-text); }
+.app[data-appearance] .discover-article-fallback p { color: var(--ui-muted); }
+.app[data-appearance] :is(.discover-reader-source span, .discover-reader-source a) { color: var(--ui-muted); }
+.app[data-appearance] .discover-reader-source a { color: var(--ui-text); }
+.app[data-appearance] .discover-navigation-handoff { background: color-mix(in srgb, var(--ui-surface-strong) 82%, transparent); }
+.app[data-appearance] .discover-navigation-card { border-color: var(--ui-line); color: var(--ui-text); background: var(--ui-surface); }
+.app[data-appearance] .discover-navigation-card > header { border-color: var(--ui-line-soft); }
+.app[data-appearance] .discover-navigation-card header button { border-color: var(--ui-line); color: var(--ui-text); }
+.app[data-appearance] .discover-navigation-card ol { color: var(--ui-text); }
+.app[data-appearance] .discover-navigation-card p,
+.app[data-appearance] .discover-reader-placeholder { color: var(--ui-subtle); }
+.app[data-appearance] .discover-reader-placeholder strong { color: var(--ui-text); }
+.app[data-appearance] :is(.discover-navigation-card > div > img, .discover-navigation-qr-placeholder) { color: #070909; background: #f1eee5; }
+.app[data-appearance] .preview-content p,
+.app[data-appearance] .preview-btn span { color: var(--ui-muted); }
+.app[data-appearance] .preview-content h3 { color: var(--ui-accent-text); }
+.app[data-appearance] .preview-btn { border-color: var(--ui-line-soft); }
+.app[data-appearance] .preview-btn:hover { border-color: var(--ui-accent-text); background: var(--ui-control-hover); }
+.app[data-appearance] .preview-btn:active { color: var(--ui-selected-text); background: var(--ui-accent-text); }
+.app[data-appearance] .effect-badge { color: var(--ui-selected-text); background: var(--ui-accent-text); }
+
+/* ATLAS map pixels remain unchanged; only its app-owned plaques, passenger
+   panel, attribution strip and MapLibre control housing follow Road Sheet. */
+.app[data-appearance] .atlas-demo-hint { color: var(--ui-accent-text); background: var(--ui-surface); }
+.app[data-appearance] :is(.atlas-navigation-plaque, .atlas-map-appearance) {
+  border-color: var(--ui-line-soft);
+  color: var(--ui-text);
+  background: color-mix(in srgb, var(--ui-surface) 92%, transparent);
+  backdrop-filter: none;
+}
+.app[data-appearance] .atlas-heading-degrees,
+.app[data-appearance] .atlas-map-appearance small { color: var(--ui-muted); }
+.app[data-appearance] .atlas-road-name,
+.app[data-appearance] .atlas-panel small { color: var(--ui-accent-text); }
+.app[data-appearance] .atlas-map-appearance[aria-pressed="true"] { background: var(--ui-control); }
+.app[data-appearance] .atlas-map-appearance:hover,
+.app[data-appearance] .atlas-map-appearance:focus-visible { color: var(--ui-text); background: var(--ui-control-hover); }
+.app[data-appearance] .atlas-map-appearance:focus-visible { outline-color: var(--ui-text); }
+.app[data-appearance] .atlas-panel { color: var(--ui-text); background: color-mix(in srgb, var(--ui-surface) 94%, transparent); }
+.app[data-appearance] .atlas-panel-toggle { color: var(--ui-accent-text); background: var(--ui-surface); }
+.app[data-appearance] .atlas-panel-toggle::before { background: var(--ui-surface); box-shadow: none; }
+.app[data-appearance] .atlas-panel-toggle:hover,
+.app[data-appearance] .atlas-panel-toggle:focus-visible { color: var(--ui-text); background: var(--ui-control-hover); }
+.app[data-appearance] .atlas-panel-section-heading > div strong,
+.app[data-appearance] :is(.atlas-drive-summary dd, .atlas-speed-readout strong, .atlas-motion-readouts dd, .atlas-selected-context > div > strong, .atlas-qr) { color: var(--ui-text); }
+.app[data-appearance] .atlas-history-range { color: var(--ui-accent-text); background: var(--ui-control); }
+.app[data-appearance] :is(.atlas-drive-summary > div, .atlas-speed-readout, .atlas-motion-readouts dl div, .atlas-selected-context) { border-color: var(--ui-line-soft); }
+.app[data-appearance] :is(.atlas-drive-summary dt, .atlas-drive-summary dd span, .atlas-speed-readout span, .atlas-motion-readouts dt, .atlas-journey-chart-label > span, .atlas-terrain-source, .atlas-place-context > header > span, .atlas-selected-context p, .atlas-places button) { color: var(--ui-muted); }
+.app[data-appearance] .atlas-terrain-source.is-live a { color: var(--ui-success); }
+.app[data-appearance] :is(.atlas-terrain-source.is-loading a, .atlas-terrain-source.is-stale a) { color: var(--ui-caution); }
+.app[data-appearance] .atlas-terrain-source.is-unavailable a { color: var(--ui-alert); }
+.app[data-appearance] .atlas-places button.active { color: var(--ui-text); background: var(--ui-control); }
+.app[data-appearance] .atlas-places button span { color: var(--ui-accent-text); }
+.app[data-appearance] .atlas-field .maplibregl-ctrl.maplibregl-ctrl-attrib {
+  color: var(--ui-text);
+  background: color-mix(in srgb, var(--ui-surface) 88%, transparent);
+  opacity: 1;
+}
+.app[data-appearance] .atlas-field .maplibregl-ctrl-group { background: color-mix(in srgb, var(--ui-surface) 88%, transparent); }
+
+@media (max-width: 650px) {
+  .topbar {
+    grid-template-columns: 116px minmax(0, 1fr) 220px 72px 52px;
+  }
+  .topbar-mark { display: none; }
+  .mode-selector { grid-column: 1; }
+  .speed-spacer { grid-column: 3; min-width: 220px; }
+  .appearance-control { grid-column: 4; }
+  .appearance-menu { right: 0; left: auto; }
+  .report-button { grid-column: 5; }
+  .source-readout,
+  .source-readout.is-soundtrack { right: 124px; left: auto; width: 220px; }
+}
+
+@media (min-width: 651px) and (max-width: 772px) {
+  .topbar {
+    grid-template-columns: 21.216% 20.181% 7.762% 11.125% 10.867% 15.006% 13.843%;
+  }
+  .mode-selector { grid-column: 1; }
+  .speed-spacer { grid-column: 2; min-width: 124px; }
+  .network-state { grid-column: 3; }
+  .appearance-control { grid-column: 4; }
+  .gps-state { grid-column: 5; }
+  .discover-button { grid-column: 6; }
+  .report-button { grid-column: 7; }
+  .source-readout,
+  .source-readout.is-soundtrack {
+    right: auto;
+    left: 21.216%;
+    width: 20.181%;
+  }
+  .appearance-trigger { grid-template-columns: 20px minmax(0, auto); gap: 4px; padding-inline: 4px; }
+  .appearance-icon { width: 20px; height: 20px; }
+  .discover-button,
+  .report-button { padding-inline: 3px; }
+  .control-slab,
+  .control-slab.is-soundtrack {
+    grid-template-columns: 11.384% 11.384% 23.933% 27.167% 10.349% 15.783%;
+  }
+  .environment-control,
+  .score-control { padding-inline: 8px; }
+  .palette-control { padding-inline: 5px; }
+}
+
+@media (max-width: 480px) {
+  .topbar { grid-template-columns: 104px minmax(0, 1fr) 156px 72px 52px; }
+  .speed-spacer { min-width: 156px; }
+  .source-readout,
+  .source-readout.is-soundtrack { width: 156px; }
+}
+
+@media (max-width: 380px) {
+  .topbar { grid-template-columns: 96px minmax(0, 1fr) 144px 68px 48px; }
+  .mode-selector button { padding-inline: 2px; }
+  .speed-spacer { min-width: 144px; }
+  .appearance-trigger { grid-template-columns: 20px; padding-inline: 4px; }
+  .appearance-trigger span { display: none; }
+  .appearance-icon { width: 20px; height: 20px; }
+  .report-button { padding-inline: 2px; }
+  .source-readout,
+  .source-readout.is-soundtrack { right: 116px; width: 144px; }
 }

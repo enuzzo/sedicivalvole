@@ -69,6 +69,7 @@ export function createSoundtrackPreviewController({
   let mediaSnapshot = null;
   let transitionState = null;
   let pendingTrack = null;
+  let preparedCurrentPromise = null;
   const transitionTimers = new Set();
   const effects = effectsFactory();
 
@@ -233,6 +234,16 @@ export function createSoundtrackPreviewController({
     },
   });
 
+  const staleTransportSnapshot = (revision) => {
+    // A pending play() may resolve after PAUSE (notably while a weak-network
+    // NEXT is buffering). Reassert silence only when pause is the newer owner;
+    // a later play or track request must remain in control.
+    if (!destroyed && revision !== requestRevision && status === "paused") {
+      mediaSnapshot = deck.pauseExcept([]);
+    }
+    return snapshot();
+  };
+
   async function advanceAfterEnded(endedEntry) {
     if (destroyed || !catalogResult || !queueState) return snapshot();
     if (endedEntry?.key !== queueState.slots.current?.key) return snapshot();
@@ -270,14 +281,14 @@ export function createSoundtrackPreviewController({
         },
       );
     } catch (caught) {
-      if (destroyed || revision !== requestRevision) return snapshot();
+      if (destroyed || revision !== requestRevision) return staleTransportSnapshot(revision);
       mediaSnapshot = deck.pauseExcept([]);
       status = "error";
       error = transportError(caught);
       pendingTrack = null;
       return emit();
     }
-    if (destroyed || revision !== requestRevision) return snapshot();
+    if (destroyed || revision !== requestRevision) return staleTransportSnapshot(revision);
     if (!started.ok) {
       status = "error";
       error = error || started.reason;
@@ -292,7 +303,7 @@ export function createSoundtrackPreviewController({
     return emit();
   }
 
-  const playPreparedCurrent = async (revision) => {
+  const runPreparedCurrent = async (revision, { restartCurrent = true } = {}) => {
     const currentKey = queueState?.slots?.current?.key;
     if (currentKey) {
       transitionState = createSoundtrackTransitionState(currentKey, clockTime());
@@ -301,6 +312,9 @@ export function createSoundtrackPreviewController({
     }
     let result;
     const bufferWait = currentKey ? deck.waitForStableBuffer(currentKey) : null;
+    status = "buffering";
+    error = null;
+    emit();
     try {
       [result] = await awaitTransportStart(
         Promise.all([deck.playCurrent(), effects.resume(), bufferWait?.promise ?? Promise.resolve()]),
@@ -314,25 +328,37 @@ export function createSoundtrackPreviewController({
         },
       );
     } catch (caught) {
-      if (destroyed || revision !== requestRevision) return snapshot();
+      if (destroyed || revision !== requestRevision) return staleTransportSnapshot(revision);
       mediaSnapshot = deck.pauseExcept([]);
       status = "error";
       error = transportError(caught);
       pendingTrack = null;
       return emit();
     }
-    if (destroyed || revision !== requestRevision) return snapshot();
+    if (destroyed || revision !== requestRevision) return staleTransportSnapshot(revision);
     if (!result.ok) {
       status = "error";
       error = error || result.reason;
     } else {
-      mediaSnapshot = deck.rewindKeys(currentKey ? [currentKey] : []);
+      mediaSnapshot = restartCurrent
+        ? deck.rewindKeys(currentKey ? [currentKey] : [])
+        : result.snapshot;
       effects.setImmediateTrackGains?.(currentKey ? { [currentKey]: 1 } : {});
       status = "playing";
       error = null;
     }
     pendingTrack = null;
     return emit();
+  };
+
+  const playPreparedCurrent = (revision, options) => {
+    if (preparedCurrentPromise) return preparedCurrentPromise;
+    const operation = runPreparedCurrent(revision, options);
+    const shared = operation.finally(() => {
+      if (preparedCurrentPromise === shared) preparedCurrentPromise = null;
+    });
+    preparedCurrentPromise = shared;
+    return shared;
   };
 
   const scheduleWithTrackLimit = (targetKey, at) => {
@@ -352,7 +378,7 @@ export function createSoundtrackPreviewController({
 
   const transitionToQueue = async (nextQueueState, revision, { restartTarget = false } = {}) => {
     clearTransitionTimers();
-    if (destroyed || revision !== requestRevision) return snapshot();
+    if (destroyed || revision !== requestRevision) return staleTransportSnapshot(revision);
     const previousQueueState = queueState;
     const restorePreviousQueue = ({ discardTarget = false } = {}) => {
       const previousKey = previousQueueState?.slots?.current?.key;
@@ -410,14 +436,14 @@ export function createSoundtrackPreviewController({
         },
       );
     } catch (caught) {
-      if (destroyed || revision !== requestRevision) return snapshot();
+      if (destroyed || revision !== requestRevision) return staleTransportSnapshot(revision);
       restorePreviousQueue();
       status = "error";
       error = transportError(caught);
       pendingTrack = null;
       return emit();
     }
-    if (destroyed || revision !== requestRevision) return snapshot();
+    if (destroyed || revision !== requestRevision) return staleTransportSnapshot(revision);
     if (!started.ok) {
       restorePreviousQueue();
       status = "error";
@@ -483,6 +509,7 @@ export function createSoundtrackPreviewController({
     nowMs = Date.now(),
   } = {}) => {
     if (destroyed) return snapshot();
+    preparedCurrentPromise = null;
     const audibleBeforeLoad = queueState?.slots?.current?.key
       && mediaSnapshot?.audibleKeys?.includes(queueState.slots.current.key);
     const revision = ++requestRevision;
@@ -518,7 +545,7 @@ export function createSoundtrackPreviewController({
         selection: normalizedSelection,
         nowMs,
       });
-      if (destroyed || revision !== requestRevision) return snapshot();
+      if (destroyed || revision !== requestRevision) return staleTransportSnapshot(revision);
       libraryRotation = rotateLibrary(nextCatalogResult.catalog.entries, normalizedSelection, nowMs);
       pendingLibraryRotation = null;
       const rotatedCatalog = Object.freeze({
@@ -539,7 +566,7 @@ export function createSoundtrackPreviewController({
       mediaSnapshot = deck.syncQueue(queueState, { restartKeys: [queueState.slots.current.key] });
       return playPreparedCurrent(revision);
     } catch (caught) {
-      if (destroyed || revision !== requestRevision) return snapshot();
+      if (destroyed || revision !== requestRevision) return staleTransportSnapshot(revision);
       pendingLibraryRotation = null;
       status = audibleBeforeLoad ? "playing" : "error";
       error = String(caught?.message || caught || "catalog-unavailable").slice(0, 80);
@@ -549,6 +576,7 @@ export function createSoundtrackPreviewController({
 
   const select = async (key) => {
     if (destroyed || !catalogResult || !queueState) return snapshot();
+    preparedCurrentPromise = null;
     const revision = ++requestRevision;
     const queue = createSoundtrackQueue(catalogResult.catalog, {
       preferredKey: key,
@@ -570,6 +598,7 @@ export function createSoundtrackPreviewController({
 
   const move = async (direction) => {
     if (destroyed || !catalogResult || !queueState) return snapshot();
+    preparedCurrentPromise = null;
     const revision = ++requestRevision;
     const movement = moveSoundtrackQueue(queueState, catalogResult.catalog, direction);
     if (!movement.activated) {
@@ -586,27 +615,33 @@ export function createSoundtrackPreviewController({
 
   const pause = () => {
     if (destroyed) return snapshot();
+    preparedCurrentPromise = null;
+    requestRevision += 1;
     clearTransitionTimers();
     const currentKey = queueState?.slots?.current?.key;
     effects.setImmediateTrackGains?.(currentKey ? { [currentKey]: 1 } : {});
     mediaSnapshot = deck.pauseExcept([]);
+    if (queueState) mediaSnapshot = deck.syncQueue(queueState);
     if (currentKey) transitionState = createSoundtrackTransitionState(currentKey, clockTime());
     status = "paused";
     error = null;
+    pendingLibraryRotation = null;
     pendingTrack = null;
     return emit();
   };
 
-  const resume = async () => {
-    if (destroyed || !queueState?.slots?.current) return snapshot();
+  const resume = () => {
+    if (destroyed || !queueState?.slots?.current) return Promise.resolve(snapshot());
+    if (preparedCurrentPromise) return preparedCurrentPromise;
+    const currentKey = queueState.slots.current.key;
+    if (mediaSnapshot?.audibleKeys?.includes(currentKey)) return Promise.resolve(snapshot());
     const revision = ++requestRevision;
-    status = "prepared";
-    emit();
-    return playPreparedCurrent(revision);
+    return playPreparedCurrent(revision, { restartCurrent: false });
   };
 
   const destroy = () => {
     if (destroyed) return snapshot();
+    preparedCurrentPromise = null;
     destroyed = true;
     requestRevision += 1;
     clearTransitionTimers();
