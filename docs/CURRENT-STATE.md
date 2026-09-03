@@ -855,8 +855,12 @@ surrounding launch/vehicle experience.
   two-second drive trace retains one hour. Transport fitting removes
   non-interaction evidence first. Pointer coordinates, typed text, GPS
   coordinates, media URLs, persistence and automatic transmission remain
-  excluded. Complete `498/498`, build and exact local raw-REPORT QA pass;
-  canonical publication and received physical-Tesla evidence remain open.
+  excluded. Complete `498/498`, build and exact local raw-REPORT QA pass.
+  Source/documentation checkpoint `bbc7bb9` is canonical as protected build
+  `20260903-0843`; HTML, main JavaScript and CSS are byte-identical to the local
+  candidate and final read-only postflight reports `remote_writes=NONE`.
+  Physical-Tesla Media Session behavior and receipt of its explicitly sent
+  diagnostic remain open.
 - Soundtrack's black source readout is a `116 px` speed-only module. FLUX, BPM
   and energy are absent in this mode. The on-screen transport shares the chrome
   lifecycle and becomes hidden/non-interactive after idle. Follow-up checkpoint

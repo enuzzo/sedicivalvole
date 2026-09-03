@@ -17,6 +17,44 @@ URL import remain outside the public surface. Exact
 dependency and local run instructions are recorded in
 `LOCAL-SHADERGRADIENT-LAB.md`.
 
+## Exhaustive media flight recorder — 2026-09-03 08:56
+
+- build stamp: **`20260903-0843`**; implementation checkpoint:
+  **`c869f1d`**; built source/documentation checkpoint: **`bbc7bb9`**;
+- behavior: every safe semantic UI activation and non-text value change during
+  the running session is sequenced and timestamped. Soundtrack actions add
+  correlated request/completion/failure records with launch, on-screen,
+  library, or Media Session provenance; before/after three-deck state; timing;
+  readiness/buffer/network evidence; public track identity; and explicit
+  playback confirmation. Browser media lifecycle plus Media Session metadata,
+  playback-state, and handler-registration outcomes are recorded independently;
+- privacy and retention: the trace is memory-only and explicitly sent only
+  through `SEND DIAGNOSTIC`. It excludes GPS and pointer coordinates, typed
+  text, media URLs, persistence, and automatic transmission. Dedicated bounds
+  retain 1,200 interactions, 800 significant events, 1,200 samples, and 1,800
+  two-second drive samples; payload fitting removes non-interaction evidence
+  first;
+- tests/build: **PASS**. Focused checks pass `73/73`, the complete unit group
+  passes `498/498`, every feature/Sites suite passes, and production builds
+  process `235` App modules and `159` protected-LAB modules. Exact rendered
+  local Play → Next → Previous → raw-REPORT QA contains every new event family
+  and no Browser warning/error;
+- protected publication: **PASS**. It uploaded `181` files / `215,876,803`
+  bytes, fully reverified all `29` Illobo recordings, preserved the dynamic
+  root, retained one prior fingerprinted asset for cache overlap, and ended
+  with read-only `remote_writes=NONE`;
+- canonical response: cache-busted root returns HTTP/2 200 with
+  `no-store/no-cache`, `nosniff`, Nginx/PHP evidence, and cache `MISS`;
+- byte identity: local/live HTML SHA-256 is
+  `a88f3b3a80b4221a95d126dcfc2568a3391893053b067be934eb23e8b2e88457`,
+  main JavaScript `index-n8F-cPXN.js` is
+  `33c997539d7248b1cf232fab664593028cd5cfcc9e53da29a5db827953345d32`,
+  and main CSS `index-BIFkZ_G0.css` is
+  `4aa6585911c09780ca448bb04737d9bc467bf3a2627409f3a510913818ae8e59`;
+- remaining acceptance: exercise native Play/Pause/Previous/Next on the physical
+  Tesla, explicitly send the resulting report before reload/close, and verify
+  receipt of the complete attachment under `R10C-03`.
+
 ## ATLAS semantic map colours — 2026-09-03 01:30
 
 - build stamp: **`20260903-0118`**; implementation checkpoint:

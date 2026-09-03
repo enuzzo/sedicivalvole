@@ -627,8 +627,14 @@ two-second drive samples; transport fitting removes non-interaction evidence
 first. Text, pointer coordinates, GPS coordinates, media URLs, persistence and
 automatic transmission remain excluded. Focused `73/73`, complete `498/498`,
 production build and exact local Play/Next/Previous/raw-REPORT QA pass with an
-empty warning/error log. Canonical publication and received Tesla evidence are
-still open.
+empty warning/error log. Protected build `20260903-0843` is now canonical from
+source/documentation checkpoint `bbc7bb9`: publication uploaded `181` files /
+`215,876,803` bytes, fully reverified `29` tracks, retained one cache-overlap
+asset, and final read-only postflight reports `remote_writes=NONE`. Cache-busted
+HTML, JavaScript `index-n8F-cPXN.js`, and CSS `index-BIFkZ_G0.css` are
+byte-identical to the locally verified candidate; the canonical splash exposes
+the correct build identity. Only physical Tesla Media Session behavior and
+receipt of the explicitly sent fresh attachment remain open under `R10C-03`.
 
 ## Verification
 

@@ -25,6 +25,18 @@ The first real Tesla session produced the following photographed values:
 
 The compact viewport is the relevant driving layout because Tesla retains vehicle/navigation content on the left and the browser on the right. `1254 × 784` is not the browser viewport in that state. DPR explains why fine graphic detail and small text remain visually crisp, but physical touch targets must still be large.
 
+## Exhaustive interaction/media flight recorder — 2026-09-03
+
+Checkpoint `c869f1d` is canonical in build `20260903-0843`, built from
+source/documentation checkpoint `bbc7bb9`. Focused checks pass `73/73`, the
+complete unit group passes `498/498`, all feature/Sites suites and the
+production build pass. Exact local Play → Next → Previous → raw-REPORT QA
+contains sequenced UI, correlated media request/outcome, browser lifecycle, and
+Media Session publication event families with no Browser warning/error.
+Canonical HTML, main JavaScript, and CSS are byte-identical to that candidate;
+the physical Tesla Media Session result and received fresh attachment remain
+open under `R10C-03`.
+
 ## In-app report v3
 
 The main product exposes diagnostics through an always-visible top-bar `REPORT` control, including at `773 × 601`. Its official Tabler report-analytics icon sits above the explicit label in the existing compact navigation cell; the control opens the scrollable session report.
