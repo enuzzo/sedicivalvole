@@ -15,7 +15,7 @@ a new session can continue without reviving superseded prototypes.
 - latest working product checkpoints: `26c4043` for diagnostic-driven
   Soundtrack admission, `1d43158` for Underwater-only vehicle response, and
   `0d5bb05` for the compact Tesla layout; published source/documentation
-  checkpoint: `7c93db9`; canonical build: `20260903-2035`. Road Sheet
+  checkpoint: `1795f0b`; canonical build: `20260903-2103`. Road Sheet
   LIGHT/DARK/AUTO, Swiss Compact, hardened native/on-screen media transport,
   buffer-first Soundtrack, and always-above-drawers Now Playing are canonical;
 - repository code, comments, documentation, interface copy, and logs are English;
@@ -752,7 +752,7 @@ empty console. Local `702 × 546` and `1280 × 720` responsive QA passes.
 Physical-Tesla native-control, listening, glare, distance, and touch acceptance
 remain open.
 
-### Latest working checkpoint: diagnostic-driven Soundtrack admission
+### Latest canonical checkpoint: diagnostic-driven Soundtrack admission
 
 Canonical build `20260903-1752` failed physical-Tesla playback even with a
 same-browser `54.3 Mbps` down / `30.6 Mbps` up / `25 ms` speed test: both
@@ -777,16 +777,15 @@ therefore requires the real `TimeRanges` value whenever observable, retains the
 six-second audible floor, delays NEXT preload until the current deck owns
 `30 s`, and attributes every lifecycle event to the exact deck key/role,
 headroom, readiness/network state, and playback intent. The same policy covers
-Jamendo. Its local aggregate gate passes `599/599`; canonical publication and
-physical listening remain pending.
+Jamendo. Its aggregate gate passes `599/599`; the correction is canonical in
+build `20260903-2103`, while physical listening remains pending.
 
-The complete gate passes `617/617`; the 239-module App and 159-module protected
-LAB build pass. Canonical build `20260903-1953` reports clean checkpoint
-`edde367`. Protected publication and independent postflight pass; cache-busted
-HTML, JavaScript and CSS are byte-identical. Trusted-input live Chrome at exact
-`773 × 601` measures `372 + 372 px` Soundtrack path cards, `96 / 634 px`
-Pace/Genre columns, all 15 genres and zero horizontal overflow. It records no
-warning/error and no inactive score-worklet request during Soundtrack startup.
+The clean build processes 234 App modules and 154 protected-LAB modules.
+Canonical build `20260903-2103` reports checkpoint `1795f0b`. Protected
+publication and independent postflight pass; cache-busted HTML, JavaScript and
+CSS are byte-identical. Trusted-input live Chrome at exact `773 × 601` starts
+Soundtrack on dry Aperture, records no warning/error or inactive score-worklet
+request, and keeps exact canvas/document bounds.
 Continuous physical-Tesla listening with Gradient plus a lighter visual remains
 the separate `R7-15` gate. Aperture dry geometry, palette, depth, thresholds and
 motion are source-identical to the prior dry path: the Underwater-only change

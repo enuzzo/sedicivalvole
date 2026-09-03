@@ -613,9 +613,10 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The canonical live product is version `0.0.0`, Underwater-only implementation
-  checkpoint `1d43158`, deployed source/documentation checkpoint `7c93db9`,
-  build `20260903-2035`. It retains audio checkpoint `89d3f15` and compact-layout
+- The canonical live product is version `0.0.0`, diagnostic audio implementation
+  checkpoint `26c4043`, deployed source/documentation checkpoint `1795f0b`,
+  build `20260903-2103`. It retains Underwater-only checkpoint `1d43158`,
+  audio-contention checkpoint `89d3f15`, and compact-layout
   checkpoint `0d5bb05`, and publishes Road Sheet LIGHT/DARK/AUTO and Swiss Compact
   across the public product, diagnostics, Discover, ATLAS, owner LAB package,
   and ShaderGradient workbench. It also hardens the shared Media Session and
@@ -1086,9 +1087,9 @@ the Jamendo three-cover stack no longer enters its copy column. Headless local
 Chrome proves the exact viewport, paired columns and zero horizontal overflow;
 the aggregate suite passes `617/617` and both production builds pass. No office
 test can close the continuous Tesla listening gate. The original correction was
-canonical build `20260903-1953`; current build `20260903-2035` from
-source/documentation checkpoint `7c93db9` carries it forward while removing
-OPEN/BLOOM. Protected publication, independent postflight, canonical HTML/JS/CSS
+canonical build `20260903-1953`; current build `20260903-2103` from
+source/documentation checkpoint `1795f0b` carries it forward while removing
+OPEN/BLOOM and adding diagnostic-driven admission. Protected publication, independent postflight, canonical HTML/JS/CSS
 byte identity, cache `MISS`, trusted-input exact-viewport layout and zero
 inactive score-worklet requests during Soundtrack startup pass. Retest with
 Gradient and a lighter visual, and send the existing diagnostic if any stutter
@@ -1097,14 +1098,15 @@ stalled events, audio requests open for `42–87 s`, and some Illobo starts with
 only `1.83–2.27 s` of contiguous buffer despite browser-ready states. Aperture,
 Japanese Mist, and overall frame evidence remain near `59–60 FPS`; the report
 does not support attributing the dropout to Aperture styling. The new
-`26c4043` correction is tested locally but is not canonical until the next
-published build, and only a physical Tesla listen can accept it.
+`26c4043` correction is canonical. Exact live headless Chrome at `773 × 601`
+starts Soundtrack on dry Aperture, requests no inactive score processor, records
+no console event, and retains exact canvas/document bounds. Only a physical
+Tesla listen can accept continuous playback.
 
 ## Open work
 
-1. Publish checkpoint `26c4043`, then execute live Tesla `R4-07`–`R4-09`,
-   `R7-15`, the canonical `10A` / `10B` / `10C` codes, and row 11 on that final
-   build. Execute Tesla tests
+1. Execute live Tesla `R4-07`–`R4-09`, `R7-15`, the canonical `10A` / `10B` /
+   `10C` codes, and row 11 on final build `20260903-2103`. Execute Tesla tests
    `R1-01`–`R1-03`, `R4-01`–`R4-09`,
    `R5-01`–`R5-07`, `R7-01`–`R7-14`, `R8-01`–`R8-03`, `R9-01`–`R9-07`,
    `R10-00A`–`R10-06`, `R10C-01`–`R10C-08`, `R11-01`–`R11-06`, `R11A-01`, and

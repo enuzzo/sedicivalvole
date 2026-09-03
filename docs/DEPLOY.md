@@ -17,6 +17,42 @@ URL import remain outside the public surface. Exact
 dependency and local run instructions are recorded in
 `LOCAL-SHADERGRADIENT-LAB.md`.
 
+## Diagnostic-driven Soundtrack admission — 2026-09-03 21:14
+
+- build stamp: **`20260903-2103`**; version: **`0.0.0`**; implementation
+  checkpoint: **`26c4043`**; built source/documentation checkpoint:
+  **`1795f0b`**;
+- product behavior: observable contiguous `TimeRanges` now overrides optimistic
+  `HAVE_ENOUGH_DATA`; every audible target needs six real seconds, NEXT preload
+  waits for `30 s` on the current deck, and each lifecycle event identifies its
+  exact deck/role, headroom, readiness/network state, and playback intent. The
+  policy serves both Jamendo and Illobo;
+- tests/build: **PASS**. Focused Soundtrack/Aperture checks pass `53/53`, the
+  aggregate gate passes `599/599`, and production processes `234` App modules
+  and `154` protected-LAB modules. Main JavaScript is `737,659` bytes;
+- protected publication: **PASS**. The upload transferred `182` files /
+  `215,929,294` bytes, fully reverified all `29` Illobo recordings, retained one
+  prior fingerprinted asset, preserved the dynamic root, and removed no retired
+  worklet. Preflight/postflight are read-only with nine root entries and
+  `remote_writes=NONE`;
+- canonical response: cache-busted HTML is HTTP/2 200 with `no-store/no-cache`,
+  `nosniff`, Nginx/PHP evidence, and cache `MISS`;
+- byte identity: HTML is `1,206` bytes at SHA-256
+  `353c252a06058a132ceb6cfb1b6bc93c13dc53321385fa3a8c41279fcb0fcd04`;
+  JavaScript `index-DIQ9Ukep.js` is `737,659` bytes at SHA-256
+  `b8a3d9fc02dee26ba59b0f194f187cfa31d1ac4f467110e858f697b99e4d4d9f`;
+  CSS `index-Cm37CQc1.css` is `164,698` bytes at SHA-256
+  `506f00bf141258bcdcc03cf347665f5edf6def4c44861fa5ebcee0a55b6dc421`;
+- rendered QA: **PASS**. Exact live headless Chrome at `773 × 601` starts
+  Soundtrack on dry Aperture, requests current/eligible-next relay audio without
+  loading an inactive score processor, records no console event, and keeps the
+  canvas/document at exact `773 × 601` with zero overflow. Local dry Aperture
+  capture plus source comparison and `9/9` focused tests protect unchanged
+  geometry, palette, depth, speed thresholds, and motion;
+- remaining acceptance: continuous Jamendo/Illobo cabin listening under
+  Gradient and Aperture remains `R7-15`; Underwater-only cabin perception
+  remains `R4-09`. Browser evidence closes neither physical gate.
+
 ## Underwater-only vehicle response — 2026-09-03 20:48
 
 - build stamp: **`20260903-2035`**; version: **`0.0.0`**; implementation
