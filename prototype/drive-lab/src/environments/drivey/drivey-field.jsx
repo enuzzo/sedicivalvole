@@ -168,9 +168,7 @@ function applyBridgeState(bridge, values, state) {
     settings.renderMode,
     values.effect ?? "none",
     Math.round(profile.colourEnergy * 100),
-    Math.round(profile.macros.open * 100),
     Math.round(profile.macros.underwater * 100),
-    Math.round(profile.macros.bloom * 100),
   ].join(":");
   if (state.palette !== paletteSignature) {
     applyPalette(bridge, themeToDriveyPalette(values.theme, profile));

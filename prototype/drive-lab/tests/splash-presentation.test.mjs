@@ -329,11 +329,10 @@ test("the selected FX Deck is a global footer overlay with eight strong tap stat
   assert.match(styles, /\.mix-button \{ grid-column: 5/);
 });
 
-test("vehicle macros and manual effects reach both audible engines", () => {
+test("braking UNDERWATER and manual effects reach both audible engines", () => {
   const app = read("App.jsx");
-  assert.match(app, /open: audioMacros\.values\.open/);
   assert.match(app, /underwater: audioMacros\.values\.underwater/);
-  assert.match(app, /bloom: audioMacros\.values\.bloom/);
+  assert.doesNotMatch(app, /audioMacros\.values\.(?:open|bloom)/);
   assert.doesNotMatch(app, /underwater: audioMacros\.underwater/);
   assert.match(app, /soundtrackRef\.current\?\.setManualEffects\(soundtrackManualEffects\)/);
   assert.match(app, /audioRef\.current\?\.setManualEffects\(soundtrackManualEffects\)/);

@@ -51,9 +51,7 @@ const CONTROL_DEFINITIONS = Object.freeze({
 });
 
 const MACROS = Object.freeze([
-  Object.freeze({ id: "macros.open", label: "OPEN" }),
   Object.freeze({ id: "macros.underwater", label: "UNDERWATER" }),
-  Object.freeze({ id: "macros.bloom", label: "BLOOM" }),
 ]);
 
 const MUSIC = Object.freeze([
@@ -307,9 +305,7 @@ function LabApp() {
     });
     soundtrackRef.current.setVehicleMaster(soundtrackDriveFx);
     soundtrackRef.current.setVehicleEffects({
-      open: valuesRef.current["macros.open"] ? 1 : 0,
       underwater: valuesRef.current["macros.underwater"] ? 1 : 0,
-      bloom: valuesRef.current["macros.bloom"] ? 1 : 0,
     });
     soundtrackRef.current.setManualEffects(soundtrackManualEffects);
     return soundtrackRef.current;
@@ -378,9 +374,7 @@ function LabApp() {
     if (!controller) return;
     controller.setVehicleMaster(soundtrackDriveFx);
     controller.setVehicleEffects({
-      open: values["macros.open"] ? 1 : 0,
       underwater: values["macros.underwater"] ? 1 : 0,
-      bloom: values["macros.bloom"] ? 1 : 0,
     });
   }, [soundtrackDriveFx, values]);
 

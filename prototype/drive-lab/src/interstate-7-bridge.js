@@ -50,25 +50,11 @@ export function speedToInterstate7Targets(speedKmh) {
 
 export function interstate7EffectTargets(speedKmh, effect) {
   const targets = speedToInterstate7Targets(speedKmh);
-  if (effect === "OPEN") {
-    return {
-      ...targets,
-      speedUpTarget: Math.min(0, targets.speedUpTarget + 0.07),
-      fovTarget: targets.fovTarget + 3,
-    };
-  }
   if (effect === "UNDERWATER") {
     return {
       ...targets,
       speedUpTarget: Math.max(-1, targets.speedUpTarget - 0.1),
       fovTarget: targets.fovTarget - 4,
-    };
-  }
-  if (effect === "BLOOM") {
-    return {
-      ...targets,
-      speedUpTarget: Math.min(0, targets.speedUpTarget + 0.12),
-      fovTarget: targets.fovTarget + 7,
     };
   }
   return targets;
@@ -102,21 +88,6 @@ export function themeToInterstate7Palette(theme, effect = null) {
       leftCars: palette.leftCars.map((color) => mixRgb(color, mid, 0.34)),
       rightCars: palette.rightCars.map((color) => mixRgb(color, mid, 0.34)),
       sticks: palette.sticks.map((color) => mixRgb(color, mid, 0.42)),
-    };
-  }
-  if (effect === "OPEN") {
-    return {
-      ...palette,
-      leftCars: palette.leftCars.map((color) => mixRgb(color, light, 0.14)),
-      sticks: palette.sticks.map((color) => mixRgb(color, light, 0.18)),
-    };
-  }
-  if (effect === "BLOOM") {
-    return {
-      ...palette,
-      leftCars: palette.leftCars.map((color) => mixRgb(color, light, 0.28)),
-      rightCars: palette.rightCars.map((color) => mixRgb(color, light, 0.22)),
-      sticks: palette.sticks.map((color) => mixRgb(color, light, 0.36)),
     };
   }
   return palette;

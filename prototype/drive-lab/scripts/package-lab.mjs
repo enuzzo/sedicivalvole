@@ -29,7 +29,6 @@ await writeFile(new URL("bootstrap.php", outputDirectory), await readFile(new UR
 await writeFile(new URL("send.php", outputDirectory), await readFile(new URL("../server/lab-send.php", import.meta.url)));
 
 const runtimeAssets = Object.freeze([
-  "bloom-processor.js",
   "score-processor.js",
 ]);
 for (const asset of runtimeAssets) {

@@ -333,7 +333,10 @@ test("destroy invalidates a pending score load without constructing a late fallb
 
 test("Soundtrack can lend its AudioContext to vehicle macro detection without losing ownership", async () => {
   await withFakeAudioEnvironment({}, async ({ createAudioEngine, context }) => {
-    const engine = createAudioEngine(null, null, null, { audioContext: context });
+    const engine = createAudioEngine(null, null, null, {
+      audioContext: context,
+      deferScoreWorklets: true,
+    });
     assert.equal(engine.context, context);
     engine.destroy();
     assert.equal(context.state, "running", "the macro engine closed Soundtrack's shared AudioContext");
@@ -349,12 +352,11 @@ test("Soundtrack defers silent score worklets until Play the Road is selected", 
     await Promise.resolve();
     assert.equal(context.worklets.length, 0, "Soundtrack started a silent Play the Road processor");
     assert.equal(engine.getState().scoreWorklets, "deferred");
-    assert.equal(engine.getState().bloomWorklet, "deferred");
 
     assert.equal(await engine.setScore("fracture"), "fracture");
     assert.ok(context.worklets.some((worklet) => worklet.processorName === "score-processor"));
+    assert.equal(context.worklets.some((worklet) => worklet.processorName === "bloom-processor"), false);
     assert.equal(engine.getState().scoreWorklets, "requested");
-    assert.equal(engine.getState().bloomWorklet, "requested");
     engine.destroy();
   });
 });
@@ -371,8 +373,8 @@ test("a hung FRACTURE module reaches the JUNCTION safety bed at the bounded dead
     assert.equal(await selection, "junction");
     assert.equal(junction.calls[0].active, true);
     assert.equal(engine.getState().scoreStatus, "error");
-    assert.equal(context.gains[7].gain.value, 0);
-    assert.equal(context.gains[8].gain.value, 1, "safety bed faded up from an already silent renderer");
+    assert.equal(context.gains[2].gain.value, 0);
+    assert.equal(context.gains[3].gain.value, 1, "safety bed faded up from an already silent renderer");
     assert.equal(engine.getState().scoreStatus, "error", "fallback degradation was hidden after its crossfade");
     engine.destroy();
   });
@@ -389,8 +391,8 @@ test("JUNCTION keeps its harmonic safety bed when both authored renderers fail",
     const selection = engine.setScore("junction");
     score.reject(new Error("AudioWorklet module unavailable"));
     assert.equal(await selection, "junction");
-    assert.equal(context.gains[7].gain.value, 0);
-    assert.equal(context.gains[8].gain.value, 1);
+    assert.equal(context.gains[2].gain.value, 0);
+    assert.equal(context.gains[3].gain.value, 1);
     assert.equal(engine.getState().scoreStatus, "error");
     assert.match(engine.getState().scoreError, /native bank unavailable/);
     assert.equal(junction.calls.filter((call) => call.active === false).length, 0);
@@ -411,8 +413,8 @@ test("a failed JUNCTION bank exposes its safety bed while FRACTURE is still load
     await Promise.resolve();
 
     assert.equal(await selection, "junction");
-    assert.equal(context.gains[7].gain.value, 0);
-    assert.equal(context.gains[8].gain.value, 1, "safety bed waited for the FRACTURE timeout");
+    assert.equal(context.gains[2].gain.value, 0);
+    assert.equal(context.gains[3].gain.value, 1, "safety bed waited for the FRACTURE timeout");
     assert.equal(context.worklets.length, 0, "the FRACTURE renderer was still pending");
     assert.equal(engine.getState().scoreStatus, "error");
     assert.match(engine.getState().scoreError, /FRACTURE is not yet audible/);
@@ -434,8 +436,8 @@ test("FRACTURE failure still preserves JUNCTION's bed when native readiness reje
     const selection = engine.setScore("fracture");
     score.reject(new Error("AudioWorklet module unavailable"));
     assert.equal(await selection, "junction");
-    assert.equal(context.gains[7].gain.value, 0);
-    assert.equal(context.gains[8].gain.value, 1);
+    assert.equal(context.gains[2].gain.value, 0);
+    assert.equal(context.gains[3].gain.value, 1);
     assert.equal(engine.getState().scoreStatus, "error");
     assert.match(engine.getState().scoreError, /JUNCTION native unavailable/);
     assert.equal(junction.calls.filter((call) => call.active === false).length, 0);
@@ -484,8 +486,8 @@ test("a FRACTURE processor error immediately restores JUNCTION instead of fading
     await Promise.resolve();
     assert.equal(engine.getState().requestedScoreId, "junction");
     assert.equal(engine.getState().scoreStatus, "error");
-    assert.equal(context.gains[7].gain.value, 0);
-    assert.equal(context.gains[8].gain.value, 1);
+    assert.equal(context.gains[2].gain.value, 0);
+    assert.equal(context.gains[3].gain.value, 1);
     assert.equal(pulses.at(-1).motionLane, "PARK");
     assert.deepEqual(recoveries, [{
       failedScoreId: "fracture",
@@ -496,67 +498,20 @@ test("a FRACTURE processor error immediately restores JUNCTION instead of fading
   });
 });
 
-test("a confirmed OPEN trajectory drives the parallel rising focus sweep", async () => {
+test("the vehicle-effects master gates audio without suppressing braking telemetry", async () => {
   const effects = [];
-  await withFakeAudioEnvironment({}, async ({ createAudioEngine, context, timers, setClock }) => {
-    const engine = createAudioEngine(undefined, (effect) => effects.push(effect));
-    const accelerationAir = context.filters[1];
-    const accelerationFocus = context.filters[2];
-    const accelerationFocusLimiter = context.shapers[0];
-    const accelerationFocusGain = context.gains[10];
-    assert.equal(accelerationFocus.type, "bandpass");
-    assert.equal(accelerationFocusGain.gain.value, 0);
-    assert.equal(accelerationAir.connections.has(accelerationFocus), true);
-    assert.equal(accelerationFocus.connections.has(accelerationFocusLimiter), true);
-    assert.equal(accelerationFocusLimiter.connections.has(accelerationFocusGain), true);
-    assert.equal(accelerationFocusLimiter.oversample, "2x");
-    assert.equal(accelerationFocusLimiter.curve.length, 2049);
-    assert.equal(accelerationFocusGain.connections.has(context.gains[6]), true);
-
-    setClock(1);
-    engine.setSpeed(10);
-    setClock(801);
-    engine.setSpeed(27);
-    setClock(1601);
-    engine.setSpeed(44);
-    for (let tick = 0; tick < 6; tick += 1) timers.runIntervals(40);
-
-    assert.ok(accelerationFocus.frequency.value > 1600);
-    assert.ok(accelerationFocusGain.gain.value > 0.2);
-    assert.equal(effects.includes("OPEN"), true);
-    const macros = engine.getMacroSnapshot();
-    assert.equal(macros.schema, "sedicivalvole.audio-macros.v1");
-    assert.ok(macros.values.open > 0.2);
-    assert.equal(macros.values.underwater, 0);
-    assert.equal(engine.getState().macros.values.open, macros.values.open);
-    engine.destroy();
-  });
-});
-
-test("the vehicle-effects master silences audio processing without suppressing visual macros", async () => {
-  const effects = [];
-  await withFakeAudioEnvironment({}, async ({ createAudioEngine, context, timers, setClock }) => {
+  await withFakeAudioEnvironment({}, async ({ createAudioEngine, context, timers }) => {
     const engine = createAudioEngine(undefined, (effect) => effects.push(effect));
     await engine.setScore("fracture");
     const fractureNode = context.worklets.find((node) => node.processorName === "score-processor");
-    const accelerationFocusGain = context.gains[10];
 
     engine.setVehicleEffectsEnabled(false);
-    setClock(1);
-    engine.setSpeed(10);
-    setClock(801);
-    engine.setSpeed(27);
-    setClock(1601);
-    engine.setSpeed(44);
-    for (let tick = 0; tick < 6; tick += 1) timers.runIntervals(40);
-
-    assert.ok(engine.getMacroSnapshot().values.open > 0.2, "the visual OPEN macro stopped");
-    assert.equal(accelerationFocusGain.gain.value, 0, "OPEN remained audible with effects off");
-    assert.equal(effects.includes("OPEN"), true, "the shared road gesture was no longer reported");
 
     engine.brake();
     for (let tick = 0; tick < 8; tick += 1) timers.runIntervals(40);
-    assert.ok(engine.getMacroSnapshot().values.underwater > 0.4, "the visual UNDERWATER macro stopped");
+    assert.deepEqual(Object.keys(engine.getMacroSnapshot().values), ["underwater"]);
+    assert.ok(engine.getMacroSnapshot().values.underwater > 0.4, "UNDERWATER telemetry stopped");
+    assert.equal(effects.includes("UNDERWATER"), true);
     assert.equal(
       fractureNode.port.messages.filter((message) => message.type === "BRAKE").at(-1).payload.brake,
       0,
@@ -564,7 +519,6 @@ test("the vehicle-effects master silences audio processing without suppressing v
     );
 
     engine.setVehicleEffectsEnabled(true);
-    assert.ok(accelerationFocusGain.gain.value > 0.2, "OPEN did not return when effects were enabled");
     assert.ok(
       fractureNode.port.messages.filter((message) => message.type === "BRAKE").at(-1).payload.brake > 0.4,
       "UNDERWATER did not return when effects were enabled",
@@ -596,61 +550,19 @@ test("the shared manual chain is audible on every Play the Road score", async ()
     assert.ok(result.parameters.bassDriveShelfDb >= 16);
     assert.ok(result.parameters.radioCutLowpassHz <= 3_300);
     assert.ok(result.parameters.highCutCutoffHz <= 1_200);
-    assert.equal(context.gains[6].connections.has(context.gains[11]), true);
+    assert.equal(context.gains[1].connections.has(context.gains[5]), true);
     assert.equal(context.gains.at(-1).connections.has(context.gains[0]), true);
     engine.destroy();
   });
 });
 
-test("a BLOOM processor error reconnects the direct score bus before removing the failed node", async () => {
-  await withFakeAudioEnvironment({ bloomModule: Promise.resolve() }, async ({ createAudioEngine, context }) => {
+test("Play the Road constructs no OPEN graph or BLOOM worklet", async () => {
+  await withFakeAudioEnvironment({}, async ({ createAudioEngine, context }) => {
     const engine = createAudioEngine();
     await engine.setScore("fracture");
-    await Promise.resolve();
-    const bloomNode = context.worklets.find((node) => node.processorName === "bloom-processor");
-    const performanceBus = context.gains[1];
-    const accelerationScoop = context.filters[0];
-    assert.equal(performanceBus.connections.has(bloomNode), true);
-    assert.equal(performanceBus.connections.has(accelerationScoop), false);
-    bloomNode.onprocessorerror(new Event("processorerror"));
-    assert.equal(performanceBus.connections.has(accelerationScoop), true);
-    assert.equal(performanceBus.connections.has(bloomNode), false);
-    const reconnectAt = context.graphEvents.lastIndexOf("gain-1:connect:filter-0");
-    const disconnectAt = context.graphEvents.lastIndexOf("gain-1:disconnect:worklet-bloom-processor");
-    assert.ok(reconnectAt >= 0 && reconnectAt < disconnectAt);
-    engine.destroy();
-  });
-});
-
-test("a sustained brake releases an active BLOOM worklet only once", async () => {
-  await withFakeAudioEnvironment({ bloomModule: Promise.resolve() }, async ({
-    createAudioEngine, context, timers, setClock,
-  }) => {
-    const engine = createAudioEngine();
-    await engine.setScore("fracture");
-    await Promise.resolve();
-    await Promise.resolve();
-    const bloomNode = context.worklets.find((node) => node.processorName === "bloom-processor");
-    assert.ok(bloomNode);
-
-    setClock(1);
-    engine.setSpeed(10);
-    setClock(801);
-    engine.setSpeed(27);
-    setClock(1601);
-    engine.setSpeed(44);
-    assert.equal(bloomNode.port.messages.filter((message) => message.type === "TRIGGER").length, 1);
-    setClock(1616);
-    assert.ok(engine.getMacroSnapshot().values.bloom > 0.45);
-
-    engine.brake();
-    for (let index = 0; index < 8; index += 1) timers.runIntervals(40);
-    assert.equal(
-      bloomNode.port.messages.filter((message) => message.type === "RELEASE").length,
-      1,
-      "held braking spammed redundant BLOOM release messages",
-    );
-    assert.ok(engine.getMacroSnapshot().values.underwater > 0.4);
+    assert.deepEqual(context.worklets.map((node) => node.processorName), ["score-processor"]);
+    assert.equal(context.gains[1].connections.has(context.gains[5]), true);
+    assert.deepEqual(Object.keys(engine.getMacroSnapshot().values), ["underwater"]);
     engine.destroy();
   });
 });

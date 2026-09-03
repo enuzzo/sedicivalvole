@@ -35,21 +35,25 @@ function lowPassMagnitude(frequencyHz, cutoffHz, q, sampleRate = 48_000) {
     / Math.hypot(denominator.real, denominator.imaginary);
 }
 
-test("vehicle effects remain silent until the fresh-session master is enabled", () => {
+test("braking UNDERWATER remains silent until the fresh-session master is enabled", () => {
   const off = soundtrackEffectParameters({
     vehicleMaster: false,
-    vehicleMacros: { open: 1, underwater: 1, bloom: 1 },
+    vehicleMacros: { underwater: 1 },
   });
   const on = soundtrackEffectParameters({
     vehicleMaster: true,
-    vehicleMacros: { open: 1, underwater: 1, bloom: 1 },
+    vehicleMacros: { underwater: 1 },
   });
-  assert.equal(off.openAirDb, 0);
   assert.equal(off.underwaterCutoffHz, 18_000);
-  assert.equal(off.bloom, 0);
-  assert.equal(on.openAirDb, 6.5);
   assert.equal(on.underwaterCutoffHz, 460);
-  assert.equal(on.bloom, 1);
+  assert.equal("openAirDb" in on, false);
+  assert.equal("bloom" in on, false);
+});
+
+test("the Soundtrack graph uses no acceleration filters or reactive worklet", () => {
+  const source = readFileSync(new URL("../src/soundtrack/effects-controller.js", import.meta.url), "utf8");
+  assert.doesNotMatch(source, /bloom-processor|AudioWorkletNode|openScoop|openAir|openFocus/);
+  assert.match(source, /input\.connect\(underwaterOne\)/);
 });
 
 test("Soundtrack and the vehicle macro engine are wired to share one AudioContext", () => {

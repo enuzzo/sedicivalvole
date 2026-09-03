@@ -29,17 +29,16 @@ test("keeps the corridor alive at rest and reaches the reference rate at the roa
   assert.equal(speedToTimeRate(-40), MERIDIAN_IDLE_RATE);
 });
 
-test("OPEN, UNDERWATER, and BLOOM remain distinct corridor-native gestures", () => {
+test("only UNDERWATER remains a corridor-native gesture", () => {
   const idle = meridianEffectProfile(null);
   const open = meridianEffectProfile("OPEN");
   const underwater = meridianEffectProfile("UNDERWATER");
   const bloom = meridianEffectProfile("BLOOM");
   assert.equal(idle.rateScale, 1);
-  assert.ok(open.fovDelta > 0 && open.railGlowScale > 1);
+  assert.deepEqual(open, idle);
   assert.ok(underwater.rateScale <= 0.58 && underwater.fogScale >= 1.75);
   assert.ok(underwater.fovDelta <= -10 && underwater.railGlowScale <= 0.5);
-  assert.ok(bloom.fovDelta > open.fovDelta);
-  assert.ok(bloom.railGlowScale > open.railGlowScale);
+  assert.deepEqual(bloom, idle);
 });
 
 test("makes the first metres of movement clearly legible", () => {
@@ -181,9 +180,9 @@ test("keeps the visual response effectively frame-rate independent", () => {
     return response;
   };
 
-  const at30 = simulate(30, 1.2, 130, "BLOOM");
-  const at60 = simulate(60, 1.2, 130, "BLOOM");
-  const at120 = simulate(120, 1.2, 130, "BLOOM");
+  const at30 = simulate(30, 1.2, 130, "UNDERWATER");
+  const at60 = simulate(60, 1.2, 130, "UNDERWATER");
+  const at120 = simulate(120, 1.2, 130, "UNDERWATER");
   for (const response of [at30, at120]) {
     assert.ok(Math.abs(response.speedKmh - at60.speedKmh) < 1e-9);
     assert.ok(Math.abs(response.effectProfile.fovDelta - at60.effectProfile.fovDelta) < 1e-9);

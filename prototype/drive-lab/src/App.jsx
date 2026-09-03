@@ -260,7 +260,7 @@ const QA_SPEED = import.meta.env.DEV
 // running state without sending Web Audio to the user's speakers.
 const QA_MUTED = import.meta.env.DEV && QA_PARAMS.get("qaMute") === "1";
 const QA_EFFECT = import.meta.env.DEV
-  && ["OPEN", "UNDERWATER", "BLOOM"].includes(QA_PARAMS.get("qaEffect"))
+  && ["UNDERWATER"].includes(QA_PARAMS.get("qaEffect"))
   ? QA_PARAMS.get("qaEffect")
   : null;
 const QA_NETWORK = import.meta.env.DEV
@@ -2696,7 +2696,6 @@ export function App() {
       (position) => {
         const capturedAtMs = performance.now();
         const accuracyM = Number.isFinite(position.coords.accuracy) ? position.coords.accuracy : null;
-        audioRef.current?.setGpsAccuracy(accuracyM);
         setAccuracy(Number.isFinite(accuracyM) ? Math.round(accuracyM) : null);
         const kmh = normalizeGpsSpeed(position.coords.speed);
         latestGpsObservationRef.current = { capturedAtMs, speedKmh: kmh };
@@ -2779,7 +2778,6 @@ export function App() {
           ? smoothGpsSpeed(smoothedSpeedRef.current, kmh, elapsedSeconds)
           : kmh;
         if (!unreliable) {
-          audioRef.current?.setAccelerationSample(kmh, { capturedAtMs, accuracyM });
         }
         if (unreliable && gpsSpeedLockedRef.current) {
           if (shouldLogSample) {
@@ -3186,9 +3184,7 @@ export function App() {
         });
         setAudioMacros(QA_EFFECT ? createAudioMacroSnapshot({
           capturedAtMs: snapshot.capturedAtMs,
-          open: QA_EFFECT === "OPEN" ? 1 : 0,
           underwater: QA_EFFECT === "UNDERWATER" ? 1 : 0,
-          bloom: QA_EFFECT === "BLOOM" ? 1 : 0,
         }) : snapshot);
       }, 180);
     } catch (error) {
@@ -4156,9 +4152,6 @@ export function App() {
 
   useEffect(() => { audioRef.current?.setSpeed(speed); }, [speed]);
   useEffect(() => {
-    audioRef.current?.setGpsAccuracy(source === "GPS" ? accuracy : null);
-  }, [accuracy, source]);
-  useEffect(() => {
     audioRef.current?.setMuted(muted || sessionMusicModeRef.current === "soundtrack");
   }, [muted]);
   useEffect(() => {
@@ -4167,9 +4160,7 @@ export function App() {
   }, [vehicleEffectsEnabled]);
   useEffect(() => {
     soundtrackRef.current?.setVehicleEffects({
-      open: audioMacros.values.open,
       underwater: audioMacros.values.underwater,
-      bloom: audioMacros.values.bloom,
     });
   }, [audioMacros]);
   useEffect(() => {
@@ -4700,7 +4691,6 @@ export function App() {
               speed={speed}
               theme={theme}
               reducedMotion={reducedMotion}
-              pulse={activeEffect === "OPEN" ? 1 : 0}
               brake={activeEffect === "UNDERWATER" ? 1 : brakeFlash}
               effect={activeEffect}
               onRenderer={setRenderer}
@@ -4975,7 +4965,7 @@ export function App() {
             type="button"
             aria-pressed={vehicleEffectsEnabled}
             aria-label={`${vehicleEffectsEnabled ? "Disable" : "Enable"} vehicle-reactive audio effects`}
-            title="Global OPEN, UNDERWATER, and BLOOM audio processing"
+            title="Braking UNDERWATER audio processing"
             onClick={() => updateVehicleEffects(!vehicleEffectsEnabled)}
           >
             <span>FX</span>

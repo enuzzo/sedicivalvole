@@ -169,24 +169,12 @@ export function speedToLayerDensity(speedKmh) {
   };
 }
 
-/** Renderer-native reactions for the three audio macros. */
+/** Renderer-native reaction for braking UNDERWATER. */
 export function meridianEffectProfile(effect) {
-  if (effect === "OPEN") {
-    return {
-      rateScale: 1.08, fovDelta: 6, swayScale: 1.16,
-      railGlowScale: 1.22, fogScale: 0.88, atmosphereDelta: 0.06,
-    };
-  }
   if (effect === "UNDERWATER") {
     return {
       rateScale: 0.58, fovDelta: -11, swayScale: 0.54,
       railGlowScale: 0.46, fogScale: 1.78, atmosphereDelta: 0.16,
-    };
-  }
-  if (effect === "BLOOM") {
-    return {
-      rateScale: 1.16, fovDelta: 10, swayScale: 1.28,
-      railGlowScale: 1.45, fogScale: 0.76, atmosphereDelta: 0.16,
     };
   }
   return {
@@ -216,7 +204,7 @@ export function advanceMeridianVisualResponse(
   effect,
   deltaSeconds,
 ) {
-  const normalizedEffect = ["OPEN", "UNDERWATER", "BLOOM"].includes(effect)
+  const normalizedEffect = effect === "UNDERWATER"
     ? effect
     : null;
   const targetSpeed = clamp(

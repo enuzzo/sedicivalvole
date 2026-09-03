@@ -29,16 +29,12 @@ export function soundtrackEffectParameters({
 } = {}) {
   const vehicle = normalizeSoundtrackVehicleMacros(vehicleMacros);
   const manual = normalizeSoundtrackManualEffects(manualEffects);
-  const open = vehicleMaster ? vehicle.open : 0;
   const underwater = vehicleMaster ? vehicle.underwater : 0;
   const underwaterParameters = underwaterEffectParameters(underwater);
   const manualParameters = manualEffectParameters(manual);
   return Object.freeze({
     vehicle,
     manual,
-    openScoopDb: -7.5 * open,
-    openAirDb: 6.5 * open,
-    openFocusGain: 0.32 * open,
     underwaterDepth: underwaterParameters.depth,
     underwaterCutoffHz: underwaterParameters.cutoffHz,
     underwaterSecondCutoffHz: underwaterParameters.secondCutoffHz,
@@ -48,6 +44,5 @@ export function soundtrackEffectParameters({
     underwaterPressureGainDb: underwaterParameters.pressureGainDb,
     underwaterMakeupGain: underwaterParameters.makeupGain,
     ...manualParameters,
-    bloom: vehicleMaster ? vehicle.bloom : 0,
   });
 }

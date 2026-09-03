@@ -38,14 +38,14 @@ test("fixed recordings remain authored while only their effects path may react",
   });
 });
 
-test("the footer master may enable the existing vehicle-reactive macros", () => {
+test("the footer master may enable braking UNDERWATER only", () => {
   const result = deriveSoundtrackPlaybackBoundary({
     policy: makePolicy("by-nc-sa"),
     vehicleEffectsRequested: true,
     controlSource: "main-ui",
   });
 
-  assert.deepEqual(SOUNDTRACK_VEHICLE_MACROS, ["open", "underwater", "bloom"]);
+  assert.deepEqual(SOUNDTRACK_VEHICLE_MACROS, ["underwater"]);
   assert.deepEqual(result.vehicleEffects, {
     requested: true,
     enabled: true,

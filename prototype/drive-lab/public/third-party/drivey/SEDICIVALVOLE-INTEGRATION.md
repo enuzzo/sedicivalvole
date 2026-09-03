@@ -12,7 +12,7 @@ listed upstream commit. Sedici Valvole does not replace or redraw them. The
 project-authored shell removes the original control bar from the embedded
 presentation and exposes the already-created runtime to a same-origin parent
 bridge. That bridge maps bounded road speed, music level, body-colour theme,
-camera, traffic, reduced motion and OPEN / UNDERWATER / BLOOM onto controls or
+camera, traffic, reduced motion and braking UNDERWATER onto controls or
 materials the original runtime already owns. The shell exposes the upstream
 `Input` constructor so the product car remains under Drivey's automatic
 road/curve steering; the parent bridge suppresses manual steering and clamps

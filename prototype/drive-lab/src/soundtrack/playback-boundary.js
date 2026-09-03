@@ -11,7 +11,7 @@ export const SOUNDTRACK_PLAYBACK_INVARIANTS = Object.freeze({
 });
 
 const CONTROL_SOURCES = new Set(["main-ui", "authorized-passenger"]);
-export const SOUNDTRACK_VEHICLE_MACROS = Object.freeze(["open", "underwater", "bloom"]);
+export const SOUNDTRACK_VEHICLE_MACROS = Object.freeze(["underwater"]);
 export const SOUNDTRACK_MANUAL_EFFECT_IDS = MANUAL_EFFECT_IDS;
 
 const zeroManualEffects = () => Object.freeze(Object.fromEntries(

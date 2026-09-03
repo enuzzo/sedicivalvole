@@ -102,10 +102,10 @@ LAB_AUTH_CONFIG_MARKERS = (
 LAB_PAGE_MARKERS = (b"sedicivalvole / LAB", b"SEDICIVALVOLE_LAB_BOOT", b"labLoadConfig")
 LAB_BOOTSTRAP_MARKERS = (b"LAB_EXPECTED_ORIGIN", b"labRequireAuthenticatedJson", b"auth.local.php")
 LAB_SEND_MARKERS = (b"sedicivalvole.lab-mail.v1", b"labRequireCsrf", b"buildLabPresetMail")
-LAB_BLOOM_PROCESSOR_MARKERS = (b"AudioWorkletProcessor", b'registerProcessor("bloom-processor"')
 LAB_SCORE_PROCESSOR_MARKERS = (b"AudioWorkletProcessor", b'registerProcessor("score-processor"')
 RETIRED_LAB_HASHES = {
     "soundtrack-repeat-processor.js": "4394837a3bebf6e065cd1dabc6b43e73f302bbead98bf43af830f9df15620aad",
+    "bloom-processor.js": "6561b35a7ee7c753ee858e4682894adacc7010001f073210844b93bb102f222a",
 }
 PRIVATE_STATIC_NAME_TOKEN = re.compile(
     r"(^|[._-])(secret|secrets|credential|credentials|private|key|keys|cert|certs|certificate|certificates)([._-]|$)",
@@ -994,7 +994,6 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
                 "index.php",
                 "bootstrap.php",
                 "send.php",
-                "bloom-processor.js",
                 "score-processor.js",
                 LAB_AUTH_CONFIG,
             } | RETIRED_LAB_HASHES.keys()
@@ -1005,7 +1004,6 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
                 "index.php": LAB_PAGE_MARKERS,
                 "bootstrap.php": LAB_BOOTSTRAP_MARKERS,
                 "send.php": LAB_SEND_MARKERS,
-                "bloom-processor.js": LAB_BLOOM_PROCESSOR_MARKERS,
                 "score-processor.js": LAB_SCORE_PROCESSOR_MARKERS,
                 LAB_AUTH_CONFIG: LAB_AUTH_CONFIG_MARKERS,
             }
@@ -1235,6 +1233,25 @@ def remove_retired_illobo_artwork(ftp: ftplib.FTP) -> int:
         ftp.cwd("..")
 
 
+def remove_retired_lab_assets(ftp: ftplib.FTP) -> int:
+    """Delete only exact retired LAB worklets admitted by the read-only audit."""
+    if LAB_DIRECTORY not in safe_names(ftp):
+        return 0
+    ftp.cwd(LAB_DIRECTORY)
+    try:
+        deleted = 0
+        for name, expected_hash in RETIRED_LAB_HASHES.items():
+            if name not in safe_names(ftp):
+                continue
+            if sha256_bytes(remote_bytes(ftp, name)) != expected_hash:
+                raise ValueError("retired LAB entry identity mismatch")
+            ftp.delete(name)
+            deleted += 1
+        return deleted
+    finally:
+        ftp.cwd("..")
+
+
 def argument_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description=(
@@ -1444,6 +1461,7 @@ def main() -> int:
         uploaded_bytes += len(illobo_catalog) + sum(int(track["bytes"]) for track in illobo_tracks)
 
         retired_illobo_artwork = remove_retired_illobo_artwork(ftp)
+        retired_lab_assets = remove_retired_lab_assets(ftp)
         removed_macos_metadata = remove_recognized_macos_metadata(ftp)
 
         verify_completed_upload(ftp, recipient_config, lab_auth_config, jamendo_config)
@@ -1470,6 +1488,7 @@ def main() -> int:
         print(f"upload=PASS files={len(files) + 5 + len(illobo_tracks)} bytes={uploaded_bytes}")
         print(f"illobo_playlist=PASS tracks={len(illobo_tracks)} full_hash_verification=true")
         print(f"illobo_artwork_migration=PASS retired_png_files={retired_illobo_artwork}")
+        print(f"lab_runtime_migration=PASS retired_worklets={retired_lab_assets}")
         print(f"root_metadata_cleanup=PASS removed={str(removed_macos_metadata).lower()}")
         print(f"dynamic_root=PASS staged={str(stage_php_entry).lower()} static_entry_removed={str(switched_entry).lower()}")
         if preserve_existing:

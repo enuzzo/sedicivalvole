@@ -28,7 +28,7 @@ export const PRTCL_TYPES = Object.freeze({
 export const DEFAULT_PRTCL_SETTINGS = Object.freeze({ type: "frequency" });
 
 const TYPE_IDS = Object.freeze(Object.keys(PRTCL_TYPES));
-const PRTCL_MACRO_IDS = Object.freeze(["open", "underwater", "bloom"]);
+const PRTCL_MACRO_IDS = Object.freeze(["underwater"]);
 export const PRTCL_MACRO_ATTACK_SECONDS = 0.12;
 export const PRTCL_MACRO_RELEASE_SECONDS = 0.28;
 
@@ -73,8 +73,8 @@ export function prtclMacroTargets({ effect = null, macroSnapshot = null } = {}) 
 
 export function createPrtclMacroTransitionState(capturedAtMs = 0) {
   return Object.freeze({
-    value: Object.freeze([0, 0, 0]),
-    target: Object.freeze([0, 0, 0]),
+    value: Object.freeze([0]),
+    target: Object.freeze([0]),
     capturedAtMs,
   });
 }
@@ -88,11 +88,8 @@ export function advancePrtclMacroTransition(
   const safeTargets = Array.from(targets ?? [], (value) => clamp(value));
   const target = safeTargets.length === PRTCL_MACRO_IDS.length
     ? safeTargets
-    : [0, 0, 0];
-  // The shared response mapper accepts one scalar input, while PRTCL needs
-  // three independent macro targets. Advance each dimension against the same
-  // attack/release mechanics and retain one compact vector state.
-  const current = Array.from(previousState?.value ?? [0, 0, 0]);
+    : [0];
+  const current = Array.from(previousState?.value ?? [0]);
   const previousAt = Number(previousState?.capturedAtMs) || 0;
   const now = Math.max(previousAt, Number(capturedAtMs) || 0);
   const values = current.map((value, index) => {
@@ -128,10 +125,10 @@ export function prtclMotionProfile({
   const pointScaleEnergy = clamp(speedKmh, 0, PRTCL_POINT_SCALE_CEILING_KMH)
     / PRTCL_POINT_SCALE_CEILING_KMH;
   const colourEnergy = reducedMotion ? 0 : clamp(audioLevel);
-  const [open, underwater, bloom] = macroAmounts == null
+  const [underwater] = macroAmounts == null
     ? prtclMacroTargets({ effect, macroSnapshot })
     : Array.from(macroAmounts, (value) => clamp(value));
-  const motionScale = 1 + open * 0.08 - underwater * 0.54;
+  const motionScale = 1 - underwater * 0.54;
   const naturalPointScale = 0.82 + pointScaleEnergy * 0.66;
   const naturalFormScale = 0.68 + pointScaleEnergy * 0.47;
   const collapse = 1 - underwater;
@@ -141,12 +138,11 @@ export function prtclMotionProfile({
     colourEnergy,
     pointScale: naturalPointScale * (0.275 + collapse * 0.725),
     formScale: naturalFormScale * (0.225 + collapse * 0.775),
-    depthScale: (0.86 + roadEnergy * 0.36) * (1 + open * 0.08) * (0.38 + collapse * 0.62),
+    depthScale: (0.86 + roadEnergy * 0.36) * (0.38 + collapse * 0.62),
     travelRate: reducedMotion ? 0 : (0.42 + roadEnergy * 1.34) * motionScale,
-    pulse: reducedMotion ? 0 : colourEnergy * (1 + bloom * 0.28 - underwater * 0.42),
-    brightness: 1 + bloom * 0.34 - underwater * 0.28 + open * 0.08,
-    spreadScale: (1 + open * 0.1) * (0.34 + collapse * 0.66),
-    bloom,
+    pulse: reducedMotion ? 0 : colourEnergy * (1 - underwater * 0.42),
+    brightness: 1 - underwater * 0.28,
+    spreadScale: 0.34 + collapse * 0.66,
     underwater,
   };
 }

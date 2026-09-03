@@ -125,7 +125,7 @@ test("DRIVEY road response is bounded, smooth, reversible, and stable across fra
   assert.ok(release[0] >= 0 && release[0] < rise[0]);
 });
 
-test("DRIVEY consumes the timestamped shared macro amounts instead of badge-only booleans", () => {
+test("DRIVEY consumes the timestamped UNDERWATER amount", () => {
   const partial = driveyMotionProfile({
     speedKmh: 70,
     audioLevel: 0.8,
@@ -137,8 +137,8 @@ test("DRIVEY consumes the timestamped shared macro amounts instead of badge-only
       bloom: 0.4,
     }),
   });
-  assert.deepEqual(partial.macros, { open: 0.25, underwater: 0.5, bloom: 0.4 });
-  assert.ok(partial.lightGain > 0.9 && partial.lightGain < 1.2);
+  assert.deepEqual(partial.macros, { underwater: 0.5 });
+  assert.ok(partial.lightGain > 0.85 && partial.lightGain < 1);
   assert.ok(partial.cruiseSpeed > 0);
 });
 
@@ -328,7 +328,7 @@ test("traffic is opposing-only when road direction is provable and otherwise fai
   assert.deepEqual(unreliableCounts, [0]);
 });
 
-test("OPEN, UNDERWATER, BLOOM and reduced motion use distinct bounded mappings", () => {
+test("only UNDERWATER changes the bounded driving-effect mapping", () => {
   const normal = driveyMotionProfile({ speedKmh: 70, audioLevel: 0.4 });
   const open = driveyMotionProfile({ speedKmh: 70, audioLevel: 0.4, effect: "OPEN" });
   const underwater = driveyMotionProfile({ speedKmh: 70, audioLevel: 0.4, effect: "UNDERWATER" });
@@ -336,13 +336,13 @@ test("OPEN, UNDERWATER, BLOOM and reduced motion use distinct bounded mappings",
   const reduced = driveyMotionProfile({
     speedKmh: 130,
     audioLevel: 1,
-    effect: "BLOOM",
+    effect: "UNDERWATER",
     reducedMotion: true,
   });
-  assert.ok(open.fov > normal.fov);
+  assert.deepEqual(open, { ...normal, effect: "OPEN" });
   assert.ok(underwater.fov < normal.fov);
   assert.ok(underwater.cruiseSpeed < normal.cruiseSpeed);
-  assert.ok(bloom.lightGain > open.lightGain);
+  assert.deepEqual(bloom, { ...normal, effect: "BLOOM" });
   assert.equal(reduced.cruiseSpeed, 0);
   assert.equal(reduced.npcSpeedScale, 0);
   assert.equal(reduced.colourEnergy, 0);

@@ -100,41 +100,38 @@ test("macro targets morph continuously and remain frame-rate invariant", () => {
     }
     return advancePrtclMacroTransition(state, targets, durationMs, response);
   };
-  const openTargets = prtclMacroTargets({ effect: "OPEN" });
+  const underwaterTargets = prtclMacroTargets({ effect: "UNDERWATER" });
   const firstFrame = advancePrtclMacroTransition(
     createPrtclMacroTransitionState(),
-    openTargets,
+    underwaterTargets,
     1000 / 60,
     response,
   );
-  assert.ok(firstFrame.value[0] > 0 && firstFrame.value[0] < 1, "OPEN snapped instead of morphing");
-  const open60 = run(60, openTargets, 600);
-  const open30 = run(30, openTargets, 600);
-  const open120 = run(120, openTargets, 600);
-  assert.ok(Math.abs(open60.value[0] - open30.value[0]) < 1e-9);
-  assert.ok(Math.abs(open60.value[0] - open120.value[0]) < 1e-9);
+  assert.ok(firstFrame.value[0] > 0 && firstFrame.value[0] < 1, "UNDERWATER snapped instead of morphing");
+  const underwater60 = run(60, underwaterTargets, 600);
+  const underwater30 = run(30, underwaterTargets, 600);
+  const underwater120 = run(120, underwaterTargets, 600);
+  assert.ok(Math.abs(underwater60.value[0] - underwater30.value[0]) < 1e-9);
+  assert.ok(Math.abs(underwater60.value[0] - underwater120.value[0]) < 1e-9);
 
-  const bloomTargets = prtclMacroTargets({ effect: "BLOOM" });
-  const switched = advancePrtclMacroTransition(open60, bloomTargets, 616, response);
-  assert.ok(switched.value[0] > 0 && switched.value[0] < open60.value[0]);
-  assert.ok(switched.value[2] > 0 && switched.value[2] < 1);
+  const released = advancePrtclMacroTransition(underwater60, prtclMacroTargets(), 616, response);
+  assert.ok(released.value[0] > 0 && released.value[0] < underwater60.value[0]);
 });
 
-test("OPEN, UNDERWATER, BLOOM, and reduced motion have bounded native responses", () => {
+test("only UNDERWATER and reduced motion change bounded native responses", () => {
   const normal = prtclMotionProfile({ speedKmh: 70, audioLevel: 0.5 });
   const open = prtclMotionProfile({ speedKmh: 70, audioLevel: 0.5, effect: "OPEN" });
   const underwater = prtclMotionProfile({ speedKmh: 70, audioLevel: 0.5, effect: "UNDERWATER" });
   const bloom = prtclMotionProfile({ speedKmh: 70, audioLevel: 0.5, effect: "BLOOM" });
-  const reduced = prtclMotionProfile({ speedKmh: 130, audioLevel: 1, effect: "BLOOM", reducedMotion: true });
-  assert.ok(open.spreadScale > normal.spreadScale);
+  const reduced = prtclMotionProfile({ speedKmh: 130, audioLevel: 1, effect: "UNDERWATER", reducedMotion: true });
+  assert.deepEqual(open, normal);
   assert.ok(underwater.travelRate < normal.travelRate);
   assert.ok(underwater.brightness < normal.brightness);
   assert.ok(underwater.pointScale < normal.pointScale * 0.28);
   assert.ok(underwater.formScale < normal.formScale * 0.23);
   assert.ok(underwater.depthScale < normal.depthScale * 0.4);
   assert.ok(underwater.spreadScale < normal.spreadScale * 0.35);
-  assert.ok(bloom.brightness > normal.brightness);
-  assert.equal(bloom.bloom, 1);
+  assert.deepEqual(bloom, normal);
   assert.equal(reduced.travelRate, 0);
   assert.equal(reduced.colourEnergy, 0);
   assert.equal(reduced.pulse, 0);
@@ -148,7 +145,7 @@ test("UNDERWATER keeps the Fractal minimum 25% larger and returns exactly to its
   for (const speedKmh of [0, 40, 100, 130]) {
     const natural = prtclMotionProfile({ speedKmh, audioLevel: 0.5 });
     const submerged = prtclMotionProfile({ speedKmh, audioLevel: 0.5, effect: "UNDERWATER" });
-    const surfaced = prtclMotionProfile({ speedKmh, audioLevel: 0.5, macroAmounts: [0, 0, 0] });
+    const surfaced = prtclMotionProfile({ speedKmh, audioLevel: 0.5, macroAmounts: [0] });
     assert.ok(Math.abs(submerged.pointScale / natural.pointScale - 0.275) < 1e-12);
     assert.ok(Math.abs(submerged.formScale / natural.formScale - 0.225) < 1e-12);
     assert.ok(Math.abs(0.275 / 0.22 - 1.25) < 1e-12);

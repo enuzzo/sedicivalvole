@@ -37,9 +37,7 @@ const FRAGMENT_SHADER = `#version 300 es
   uniform float u_speedPulseMask;
   uniform float u_voidActive;
   uniform float u_flow;
-  uniform float u_pulse;
   uniform float u_brake;
-  uniform float u_bloom;
   uniform float u_restRecolour;
   uniform vec3 u_base;
   uniform vec3 u_mid;
@@ -82,7 +80,6 @@ const FRAGMENT_SHADER = `#version 300 es
     streakColor = mix(streakColor, u_mid, step(0.85, streakHash));
     panel = mix(panel, streakColor, u_terminalVelocity);
     vec3 color = mix(u_base, panel, tileMask);
-    color = mix(color, u_accent, u_pulse * tileMask * step(0.75, tone) * 0.22 * u_speedPulseMask);
     return mix(color, u_light, u_brake * tileMask * 0.08);
   }
 
@@ -110,9 +107,7 @@ const FRAGMENT_SHADER = `#version 300 es
 
   void main() {
     vec2 uv_norm = v_uv * 2.0 - 1.0;
-    // OPEN widens the tiled aperture in its own perspective language, while
     // UNDERWATER presses the corridor inward instead of adding an overlay.
-    uv_norm.x *= 1.0 - u_pulse * 0.045;
     uv_norm *= 1.0 + u_brake * 0.035;
 
     bool insideWall = max(abs(uv_norm.x), abs(uv_norm.y)) <= u_wallSize;
@@ -127,8 +122,6 @@ const FRAGMENT_SHADER = `#version 300 es
       color = mix(color, shadeGrid(wallGrid, false), u_wallOpacity);
     }
     float radius = length(vec2(uv_norm.x * 0.72, uv_norm.y));
-    float bloomRing = exp(-abs(radius - 0.46) * 20.0) * u_bloom;
-    color = mix(color, u_light, bloomRing * 0.34);
     color = mix(color, u_base, u_brake * 0.16);
     outColor = vec4(color, 1.0);
   }
@@ -227,13 +220,6 @@ function drawCanvasFallback(context, canvas, energy, visualVelocity, speedKmh, p
   if (effect === "UNDERWATER") {
     context.fillStyle = cssColor(palette.base, 0.16);
     context.fillRect(0, 0, width, height);
-  } else if (effect === "BLOOM") {
-    const radius = Math.min(width, height) * 0.23;
-    context.beginPath();
-    context.arc(width / 2, height / 2, radius, 0, Math.PI * 2);
-    context.strokeStyle = cssColor(palette.light, 0.36);
-    context.lineWidth = Math.max(2, height * 0.01);
-    context.stroke();
   }
 }
 
@@ -323,7 +309,6 @@ export function FluxField({
   speed,
   theme,
   reducedMotion,
-  pulse,
   brake,
   effect,
   onRenderer,
@@ -331,8 +316,8 @@ export function FluxField({
   onRuntimeError,
 }) {
   const canvasRef = useRef(null);
-  const valuesRef = useRef({ energy, speed, theme, pulse, brake, effect });
-  valuesRef.current = { energy, speed, theme, pulse, brake, effect };
+  const valuesRef = useRef({ energy, speed, theme, brake, effect });
+  valuesRef.current = { energy, speed, theme, brake, effect };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -396,9 +381,7 @@ export function FluxField({
       speedPulseMask: gl.getUniformLocation(program, "u_speedPulseMask"),
       voidActive: gl.getUniformLocation(program, "u_voidActive"),
       flow: gl.getUniformLocation(program, "u_flow"),
-      pulse: gl.getUniformLocation(program, "u_pulse"),
       brake: gl.getUniformLocation(program, "u_brake"),
-      bloom: gl.getUniformLocation(program, "u_bloom"),
       restRecolour: gl.getUniformLocation(program, "u_restRecolour"),
       base: gl.getUniformLocation(program, "u_base"),
       mid: gl.getUniformLocation(program, "u_mid"),
@@ -490,9 +473,7 @@ export function FluxField({
         gl.uniform1f(uniforms.speedPulseMask, shaderControls.speedPulseMask);
         gl.uniform1f(uniforms.voidActive, shaderControls.voidActive);
         gl.uniform1f(uniforms.flow, flow);
-        gl.uniform1f(uniforms.pulse, valuesRef.current.pulse);
         gl.uniform1f(uniforms.brake, valuesRef.current.brake);
-        gl.uniform1f(uniforms.bloom, valuesRef.current.effect === "BLOOM" ? 1 : 0);
         gl.uniform1f(uniforms.restRecolour, restSeconds);
         gl.uniform3fv(uniforms.base, palette.base);
         gl.uniform3fv(uniforms.mid, palette.mid);

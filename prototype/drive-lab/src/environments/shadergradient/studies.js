@@ -192,18 +192,16 @@ export function shaderGradientResponse(settings, {
   const underwater = underwaterAmount == null
     ? effect === "UNDERWATER" ? 1 : 0
     : clamp(underwaterAmount);
-  const open = effect === "OPEN";
-  const bloom = effect === "BLOOM";
 
   return Object.freeze({
     uSpeed: reducedMotion
       ? 0
       : settings.uSpeed * (motionScale + audio * 0.45) * (1 - underwater * 0.58),
-    uStrength: settings.uStrength + road * 2.8 + audio * 1.25 + (open ? 0.65 : 0)
+    uStrength: settings.uStrength + road * 2.8 + audio * 1.25
       + underwater * (settings.type === "sphere" ? 2.8 : 3.6),
     uDensity: settings.uDensity + road * 0.55 + audio * 0.18 + underwater * 1.15,
     uFrequency: settings.uFrequency + road * 1.6,
-    brightness: settings.brightness + road * 0.2 + audio * 0.22 + (bloom ? 0.42 : 0),
+    brightness: settings.brightness + road * 0.2 + audio * 0.22,
     rotationZ: settings.rotationZ + road * 32,
     underwater,
   });

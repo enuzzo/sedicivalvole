@@ -82,7 +82,7 @@ test("every Gradient variant carries the shared theme colours plus one in-mood d
   });
 });
 
-test("reduced motion and vehicle macros remain bounded and recognizable", () => {
+test("reduced motion and braking UNDERWATER remain bounded and recognizable", () => {
   const study = getShaderGradientStudy("acid-orchard");
   const plain = shaderGradientResponse(study, { speedKmh: 80, responseMode: "road" });
   const reduced = shaderGradientResponse(study, { speedKmh: 80, responseMode: "road", reducedMotion: true });
@@ -91,8 +91,8 @@ test("reduced motion and vehicle macros remain bounded and recognizable", () => 
   const bloom = shaderGradientResponse(study, { speedKmh: 80, responseMode: "road", effect: "BLOOM" });
   assert.equal(reduced.uSpeed, 0);
   assert.ok(underwater.uSpeed < plain.uSpeed * 0.5);
-  assert.ok(open.uStrength > plain.uStrength);
-  assert.ok(bloom.brightness > plain.brightness);
+  assert.deepEqual(open, plain);
+  assert.deepEqual(bloom, plain);
 });
 
 test("braking folds and densifies Gradient continuously, then restores the exact road state", () => {

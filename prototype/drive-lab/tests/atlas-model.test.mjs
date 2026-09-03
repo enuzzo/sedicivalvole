@@ -119,16 +119,16 @@ test("Atlas camera widens with speed while retaining a strongly dimensional city
   assert.ok(road.buildingScale > rest.buildingScale);
 });
 
-test("Atlas expresses all three effects through map-native camera and layer properties", () => {
+test("Atlas expresses only UNDERWATER through map-native camera and layer properties", () => {
   const idle = atlasEffectProfile(null);
   const open = atlasEffectProfile("OPEN");
   const underwater = atlasEffectProfile("UNDERWATER");
   const bloom = atlasEffectProfile("BLOOM");
-  assert.ok(open.roadWidthScale > idle.roadWidthScale);
+  assert.deepEqual(open, idle);
   assert.ok(underwater.waterOpacity > idle.waterOpacity);
   assert.ok(underwater.buildingOpacity < idle.buildingOpacity);
-  assert.ok(bloom.roadOpacity > open.roadOpacity);
-  assert.ok(speedToAtlasEffectCamera(60, "BLOOM").zoom < speedToAtlasCamera(60).zoom);
+  assert.deepEqual(bloom, idle);
+  assert.deepEqual(speedToAtlasEffectCamera(60, "BLOOM"), speedToAtlasCamera(60));
 });
 
 test("Atlas telemetry samples real render events at no more than 30 FPS", () => {

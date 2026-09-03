@@ -1,6 +1,6 @@
 const RESPONSE_SCHEMA = "sedicivalvole.response.v1";
-export const AUDIO_MACRO_SCHEMA = "sedicivalvole.audio-macros.v1";
-export const AUDIO_MACRO_IDS = Object.freeze(["open", "underwater", "bloom"]);
+export const AUDIO_MACRO_SCHEMA = "sedicivalvole.audio-macros.v2";
+export const AUDIO_MACRO_IDS = Object.freeze(["underwater"]);
 
 const clamp = (value, minimum, maximum) => Math.min(maximum, Math.max(minimum, value));
 
@@ -164,7 +164,7 @@ export function advanceResponse(definition, previousState, inputValue, capturedA
 }
 
 /**
- * Shared normalized attack/release shape for short audio gestures such as BLOOM.
+ * Shared normalized attack/release shape for short authored gestures.
  * `releaseElapsedSeconds` is null until an explicit release begins.
  */
 export function sampleTimedGestureEnvelope({
@@ -188,17 +188,13 @@ export function sampleTimedGestureEnvelope({
 
 export function createAudioMacroSnapshot({
   capturedAtMs = 0,
-  open = 0,
   underwater = 0,
-  bloom = 0,
 } = {}) {
   return Object.freeze({
     schema: AUDIO_MACRO_SCHEMA,
     capturedAtMs: finite(capturedAtMs, 0),
     values: Object.freeze({
-      open: clamp(finite(open, 0), 0, 1),
       underwater: clamp(finite(underwater, 0), 0, 1),
-      bloom: clamp(finite(bloom, 0), 0, 1),
     }),
   });
 }

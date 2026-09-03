@@ -205,7 +205,6 @@ const VERTEX_SHADER = `#version 300 es
 
 const FRAGMENT_SHADER = `#version 300 es
   precision highp float;
-  uniform float u_bloom;
   uniform float u_underwater;
   in vec3 v_colour;
   in float v_luminance;
@@ -219,10 +218,10 @@ const FRAGMENT_SHADER = `#version 300 es
     float core = 1.0 - smoothstep(0.06, 0.5, distanceFromCentre);
     float halo = 1.0 - smoothstep(0.2, 0.5, distanceFromCentre);
     float nativeGlow = mix(0.14, 0.27, v_nativeBloom);
-    float glow = mix(nativeGlow, 0.44, u_bloom) + v_agent * 0.18;
+    float glow = nativeGlow + v_agent * 0.18;
     float alpha = mix(core, halo, glow) * mix(0.9, 0.62, u_underwater);
     vec3 colour = v_colour * v_luminance
-      * (1.0 + v_nativeBloom * 0.18 + u_bloom * core * 0.42 + v_agent * 0.18);
+      * (1.0 + v_nativeBloom * 0.18 + v_agent * 0.18);
     outColour = vec4(max(colour, vec3(0.0)), alpha);
   }
 `;
@@ -356,7 +355,6 @@ export function createPrtclRenderer(canvas, initialPalette, initialTypeId = "fre
     pulse: uniform("u_pulse"),
     brightness: uniform("u_brightness"),
     spreadScale: uniform("u_spreadScale"),
-    bloom: uniform("u_bloom"),
     underwater: uniform("u_underwater"),
     type: uniform("u_type"),
     mid: uniform("u_mid"),
@@ -461,7 +459,6 @@ export function createPrtclRenderer(canvas, initialPalette, initialTypeId = "fre
       gl.uniform1f(uniforms.pulse, profile.pulse);
       gl.uniform1f(uniforms.brightness, profile.brightness);
       gl.uniform1f(uniforms.spreadScale, profile.spreadScale);
-      gl.uniform1f(uniforms.bloom, profile.bloom);
       gl.uniform1f(uniforms.underwater, profile.underwater);
       gl.uniform1i(uniforms.type, TYPE_INDEX[typeId]);
       gl.uniform3fv(uniforms.mid, palette.mid);

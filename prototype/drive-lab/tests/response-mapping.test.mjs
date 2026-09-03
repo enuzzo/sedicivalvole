@@ -92,15 +92,13 @@ test("slew ceilings prevent overshoot on abrupt scalar and vector changes", () =
 test("shared audio macro snapshots are typed, clamped, and timestamped", () => {
   const snapshot = createAudioMacroSnapshot({
     capturedAtMs: 1250,
-    open: 1.5,
     underwater: -1,
-    bloom: 0.4,
   });
-  assert.equal(snapshot.schema, "sedicivalvole.audio-macros.v1");
+  assert.equal(snapshot.schema, "sedicivalvole.audio-macros.v2");
   assert.equal(snapshot.capturedAtMs, 1250);
-  assert.equal(audioMacroAmount(snapshot, "open"), 1);
   assert.equal(audioMacroAmount(snapshot, "underwater"), 0);
-  assert.equal(audioMacroAmount(snapshot, "bloom"), 0.4);
+  assert.equal(audioMacroAmount(snapshot, "open"), 0);
+  assert.equal(audioMacroAmount(snapshot, "bloom"), 0);
   assert.equal(audioMacroAmount(snapshot, "unknown"), 0);
 });
 

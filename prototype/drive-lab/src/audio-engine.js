@@ -10,29 +10,7 @@ import {
   ROAD_SPEED_CEILING_KMH,
   speedToEnergy,
 } from "./signal-model.js";
-import {
-  advanceAccelerationMacroAmount,
-  accelerationMacroParameters,
-  accelerationMacroTargetAmount,
-  createAccelerationFocusCurve,
-} from "./acceleration-macro.js";
-import {
-  BLOOM_ATTACK_SECONDS,
-  BLOOM_GESTURE_MS,
-  BLOOM_RELEASE_SECONDS,
-  BLOOM_REFRACTORY_MS,
-  BLOOM_SWEEP_SECONDS,
-} from "./bloom-macro.js";
-import {
-  createAudioMacroSnapshot,
-  sampleTimedGestureEnvelope,
-} from "./response-mapping.js";
-import {
-  accelerationTrajectoryIsBloom,
-  advanceAccelerationDetectorClock,
-  createAccelerationDetectorState,
-  observeAccelerationDetector,
-} from "./acceleration-detector.js";
+import { createAudioMacroSnapshot } from "./response-mapping.js";
 import { createJunctionPlayer } from "./junction-player.js";
 import { createNightshiftPlayer } from "./nightshift-player.js";
 import {
@@ -43,9 +21,7 @@ import {
   SCORE_SWITCH_CROSSFADE_SECONDS,
 } from "./score-crossfade.js";
 import { nextVehicleRate, VEHICLE_RATE_STALE_MS } from "./vehicle-rate.js";
-import { installBypassableSerialProcessor } from "./audio-runtime-guard.js";
 import { withReadinessTimeout } from "./promise-timeout.js";
-import bloomProcessorUrl from "./score/worklet/bloom-processor.js?audio-worklet";
 import processorUrl from "./score/worklet/score-processor.js?audio-worklet";
 import { createManualEffectsGraph } from "./manual-effects-graph.js";
 
@@ -79,9 +55,6 @@ const BRAKE_RELEASE_SECONDS = 0.55;
  * traffic, is what makes a brake let go.
  */
 const BRAKE_TICK_MS = 40;
-const ACCELERATION_TICK_MS = 40;
-const ACCELERATION_BADGE_AT = 0.22;
-const ACCELERATION_PARAM_SMOOTH_SECONDS = 0.015;
 
 /** Deceleration is only meaningful for a moment; a stale reading must expire. */
 const RATE_STALE_MS = VEHICLE_RATE_STALE_MS;
@@ -98,57 +71,16 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
   const context = audioContext ?? new AudioContext({ latencyHint: "interactive" });
   const masterGain = context.createGain();
   const performanceBus = context.createGain();
-  const accelerationScoop = context.createBiquadFilter();
-  const accelerationAir = context.createBiquadFilter();
-  const accelerationFocus = context.createBiquadFilter();
-  const accelerationFocusLimiter = context.createWaveShaper();
-  const accelerationSplitter = context.createChannelSplitter(2);
-  const accelerationMerger = context.createChannelMerger(2);
-  const leftToLeft = context.createGain();
-  const rightToLeft = context.createGain();
-  const leftToRight = context.createGain();
-  const rightToRight = context.createGain();
-  const accelerationTrim = context.createGain();
   const fractureGain = context.createGain();
   const junctionGain = context.createGain();
   const nightshiftGain = context.createGain();
-  const accelerationFocusGain = context.createGain();
   const manualEffectsGraph = createManualEffectsGraph(context);
   const meter = context.createAnalyser();
   meter.fftSize = 256;
   meter.smoothingTimeConstant = 0.55;
   const meterBuffer = new Float32Array(meter.fftSize);
   let meterState = { level: 0, rms: 0, peak: 0 };
-  accelerationScoop.type = "peaking";
-  accelerationScoop.frequency.value = 320;
-  accelerationScoop.Q.value = 0.8;
-  accelerationAir.type = "highshelf";
-  accelerationAir.frequency.value = 6000;
-  accelerationFocus.type = "bandpass";
-  accelerationFocus.frequency.value = 480;
-  accelerationFocus.Q.value = 0.9;
-  accelerationFocusLimiter.curve = createAccelerationFocusCurve();
-  accelerationFocusLimiter.oversample = "2x";
-  accelerationFocusGain.gain.value = 0;
-  leftToLeft.gain.value = 1;
-  rightToLeft.gain.value = 0;
-  leftToRight.gain.value = 0;
-  rightToRight.gain.value = 1;
-  performanceBus.connect(accelerationScoop).connect(accelerationAir).connect(accelerationSplitter);
-  accelerationAir
-    .connect(accelerationFocus)
-    .connect(accelerationFocusLimiter)
-    .connect(accelerationFocusGain)
-    .connect(accelerationTrim);
-  accelerationSplitter.connect(leftToLeft, 0);
-  accelerationSplitter.connect(leftToRight, 0);
-  accelerationSplitter.connect(rightToLeft, 1);
-  accelerationSplitter.connect(rightToRight, 1);
-  leftToLeft.connect(accelerationMerger, 0, 0);
-  rightToLeft.connect(accelerationMerger, 0, 0);
-  leftToRight.connect(accelerationMerger, 0, 1);
-  rightToRight.connect(accelerationMerger, 0, 1);
-  accelerationMerger.connect(accelerationTrim).connect(manualEffectsGraph.input);
+  performanceBus.connect(manualEffectsGraph.input);
   manualEffectsGraph.output.connect(masterGain);
   masterGain.connect(meter).connect(context.destination);
   fractureGain.gain.value = 1;
@@ -159,8 +91,6 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
   nightshiftGain.connect(performanceBus);
 
   let node = null;
-  let bloomNode = null;
-  let bloomSerialLink = null;
   let running = true;
   let muted = false;
   let vehicleEffectsEnabled = true;
@@ -181,19 +111,7 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
   let smoothedRateMps2 = 0;
   let lastSpeedAt = 0;
   let brakeTimer = null;
-  let accelerationTimer = null;
-  let accelerationAmount = 0;
-  let accelerationActive = false;
-  let accelerationReported = false;
-  let accelerationDetector = createAccelerationDetectorState();
   let reportedEffect = null;
-  let gpsAccuracyM = null;
-  let bloomActiveUntil = 0;
-  let bloomTriggeredAtMs = null;
-  let bloomReleasedAtMs = null;
-  let bloomRefractoryUntil = 0;
-  let bloomSuppressedByBrake = false;
-  let bloomAudioActive = false;
 
   // Last arrangement snapshot posted by the worklet. Read, never written, by
   // the interface and the diagnostics.
@@ -414,53 +332,12 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
     return fractureReady;
   }
 
-  let bloomReady = null;
-  function prepareBloom() {
-    if (bloomReady) return bloomReady;
-    if (typeof context.audioWorklet?.addModule !== "function") {
-      bloomReady = Promise.resolve(false);
-      return bloomReady;
-    }
-    bloomReady = withReadinessTimeout(context.audioWorklet.addModule(bloomProcessorUrl), {
-      label: "BLOOM AudioWorklet",
-      timeoutMs: AUDIO_WORKLET_READY_TIMEOUT_MS,
-      schedule: window.setTimeout ?? globalThis.setTimeout,
-      cancel: window.clearTimeout ?? globalThis.clearTimeout,
-    }).then(() => {
-      if (!running) return false;
-      bloomNode = new AudioWorkletNode(context, "bloom-processor", { outputChannelCount: [2] });
-      bloomSerialLink = installBypassableSerialProcessor({
-        source: performanceBus,
-        processor: bloomNode,
-        destination: accelerationScoop,
-        onProcessorError: (event) => {
-          if (!running) return;
-          bloomNode = null;
-          bloomSerialLink = null;
-          bloomActiveUntil = 0;
-          bloomTriggeredAtMs = null;
-          bloomReleasedAtMs = null;
-          bloomSuppressedByBrake = false;
-          bloomAudioActive = false;
-          reportActiveEffect();
-          console.error("[flux] BLOOM processor failed; direct score bus restored", event);
-        },
-      });
-      return true;
-    }).catch((error) => {
-      console.error("[flux] the BLOOM worklet did not load", error);
-      return false;
-    });
-    return bloomReady;
-  }
-
   // Soundtrack borrows this engine only for vehicle-macro detection. Starting
-  // silent Play the Road processors in that mode wastes real-time audio-thread
+  // a silent Play the Road processor in that mode wastes real-time audio-thread
   // budget on embedded vehicle Chromium. Lazily promote the same engine if the
   // listener switches to Play the Road later in the session.
   if (!deferScoreWorklets) {
     void prepareFracture();
-    void prepareBloom();
   }
 
   function post(type, payload) {
@@ -468,34 +345,16 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
   }
 
   function reportActiveEffect() {
-    const bloomReported = performance.now() < bloomActiveUntil;
-    const nextEffect = brakeReported
-      ? "UNDERWATER"
-      : bloomReported ? "BLOOM" : accelerationReported ? "OPEN" : null;
+    const nextEffect = brakeReported ? "UNDERWATER" : null;
     if (nextEffect === reportedEffect) return;
     reportedEffect = nextEffect;
     onEffectChange?.(nextEffect);
   }
 
-  function bloomMacroAmount(capturedAtMs) {
-    if (bloomTriggeredAtMs == null || capturedAtMs >= bloomActiveUntil) return 0;
-    return sampleTimedGestureEnvelope({
-      elapsedSeconds: (capturedAtMs - bloomTriggeredAtMs) / 1000,
-      releaseElapsedSeconds: bloomReleasedAtMs == null
-        ? null
-        : (capturedAtMs - bloomReleasedAtMs) / 1000,
-      attackSeconds: BLOOM_ATTACK_SECONDS,
-      automaticReleaseAtSeconds: BLOOM_SWEEP_SECONDS,
-      releaseSeconds: BLOOM_RELEASE_SECONDS,
-    });
-  }
-
   function macroSnapshot(capturedAtMs = performance.now()) {
     return createAudioMacroSnapshot({
       capturedAtMs,
-      open: accelerationAmount,
       underwater: brakeAmount,
-      bloom: bloomMacroAmount(capturedAtMs),
     });
   }
 
@@ -503,8 +362,6 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
   function reviewEffectBadges() {
     if (!brakeReported && brakeAmount >= BRAKE_ENGAGE_AT) brakeReported = true;
     else if (brakeReported && brakeAmount <= BRAKE_RELEASE_AT) brakeReported = false;
-    if (!accelerationReported && accelerationAmount >= ACCELERATION_BADGE_AT) accelerationReported = true;
-    else if (accelerationReported && accelerationAmount <= 0.08) accelerationReported = false;
     reportActiveEffect();
   }
 
@@ -523,24 +380,16 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
   }
 
   function tickBrake() {
+    if (performance.now() - lastSpeedAt > RATE_STALE_MS && smoothedRateMps2 !== 0) {
+      smoothedRateMps2 = 0;
+      publishArrangement(arrangement);
+    }
     const seconds = BRAKE_TICK_MS / 1000;
     const target = isBraking() ? 1 : 0;
-    if (target > 0 && performance.now() < bloomActiveUntil && !bloomSuppressedByBrake) {
-      const releasedAtMs = performance.now();
-      if (bloomAudioActive) bloomNode?.port.postMessage({ type: "RELEASE" });
-      bloomAudioActive = false;
-      bloomReleasedAtMs = releasedAtMs;
-      bloomActiveUntil = releasedAtMs + BLOOM_RELEASE_SECONDS * 1000;
-      bloomSuppressedByBrake = true;
-    }
     const constant = target > brakeAmount ? BRAKE_ATTACK_SECONDS : BRAKE_RELEASE_SECONDS;
     brakeAmount += (target - brakeAmount) * Math.min(1, seconds / constant);
     if (brakeAmount < 0.001) brakeAmount = 0;
     reviewEffectBadges();
-    if (target === 0 && bloomSuppressedByBrake && brakeAmount <= BRAKE_RELEASE_AT) {
-      bloomSuppressedByBrake = false;
-      bloomRefractoryUntil = performance.now() + BLOOM_REFRACTORY_MS;
-    }
     const audibleBrake = vehicleEffectsEnabled ? brakeAmount : 0;
     post("BRAKE", { brake: audibleBrake });
     junction?.setBrake(audibleBrake);
@@ -548,80 +397,6 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
   }
 
   brakeTimer = window.setInterval(tickBrake, BRAKE_TICK_MS);
-
-  function applyAccelerationMacro(time = context.currentTime) {
-    const parameters = accelerationMacroParameters(vehicleEffectsEnabled ? accelerationAmount : 0);
-    accelerationScoop.gain.setTargetAtTime(parameters.midScoopDb, time, ACCELERATION_PARAM_SMOOTH_SECONDS);
-    accelerationAir.frequency.setTargetAtTime(parameters.airShelfFrequencyHz, time, ACCELERATION_PARAM_SMOOTH_SECONDS);
-    accelerationAir.gain.setTargetAtTime(parameters.airShelfDb, time, ACCELERATION_PARAM_SMOOTH_SECONDS);
-    accelerationFocus.frequency.setTargetAtTime(parameters.focusFrequencyHz, time, ACCELERATION_PARAM_SMOOTH_SECONDS);
-    accelerationFocus.Q.setTargetAtTime(parameters.focusQ, time, ACCELERATION_PARAM_SMOOTH_SECONDS);
-    accelerationFocusGain.gain.setTargetAtTime(parameters.focusGain, time, ACCELERATION_PARAM_SMOOTH_SECONDS);
-    accelerationTrim.gain.setTargetAtTime(parameters.trimGain, time, ACCELERATION_PARAM_SMOOTH_SECONDS);
-    const direct = (1 + parameters.width) * 0.5;
-    const cross = (1 - parameters.width) * 0.5;
-    leftToLeft.gain.setTargetAtTime(direct, time, ACCELERATION_PARAM_SMOOTH_SECONDS);
-    rightToRight.gain.setTargetAtTime(direct, time, ACCELERATION_PARAM_SMOOTH_SECONDS);
-    leftToRight.gain.setTargetAtTime(cross, time, ACCELERATION_PARAM_SMOOTH_SECONDS);
-    rightToLeft.gain.setTargetAtTime(cross, time, ACCELERATION_PARAM_SMOOTH_SECONDS);
-  }
-
-  function tickAcceleration() {
-    const now = performance.now();
-    const stale = now - lastSpeedAt > RATE_STALE_MS;
-    if (stale && smoothedRateMps2 !== 0) {
-      smoothedRateMps2 = 0;
-      publishArrangement(arrangement);
-    }
-    accelerationDetector = advanceAccelerationDetectorClock(accelerationDetector, {
-      nowMs: now,
-      braking: isBraking(),
-    });
-    accelerationActive = accelerationDetector.active;
-    const target = accelerationMacroTargetAmount({
-      active: accelerationActive,
-      intensity: accelerationDetector.intensity,
-      averageMps2: accelerationDetector.averageMps2,
-    });
-    accelerationAmount = advanceAccelerationMacroAmount(
-      accelerationAmount,
-      target,
-      ACCELERATION_TICK_MS / 1000,
-    );
-    if (accelerationAmount < 0.001) accelerationAmount = 0;
-    applyAccelerationMacro();
-    reviewEffectBadges();
-  }
-
-  function observeAccelerationSample(nextSpeed, capturedAtMs, accuracyM) {
-    const observation = observeAccelerationDetector(accelerationDetector, {
-      speedKmh: nextSpeed,
-      capturedAtMs,
-      accuracyM,
-      braking: isBraking(),
-    });
-    accelerationDetector = observation.state;
-    accelerationActive = accelerationDetector.active;
-    if (observation.triggered
-      && bloomNode
-      && accelerationTrajectoryIsBloom(accelerationDetector)
-      && !isBraking()
-      && capturedAtMs >= bloomRefractoryUntil) {
-      bloomTriggeredAtMs = capturedAtMs;
-      bloomReleasedAtMs = null;
-      bloomActiveUntil = capturedAtMs + BLOOM_GESTURE_MS;
-      bloomRefractoryUntil = capturedAtMs + BLOOM_REFRACTORY_MS;
-      if (vehicleEffectsEnabled && bloomNode) {
-        bloomNode.port.postMessage({ type: "TRIGGER" });
-        bloomAudioActive = true;
-      }
-    }
-    if (observation.triggered || observation.released) publishArrangement(arrangement);
-    reviewEffectBadges();
-    return observation;
-  }
-
-  accelerationTimer = window.setInterval(tickAcceleration, ACCELERATION_TICK_MS);
 
   function measureOutput() {
     meter.getFloatTimeDomainData(meterBuffer);
@@ -654,28 +429,13 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
       post("MUTE", { muted });
     },
 
-    /**
-     * Gates only the vehicle-reactive audio processing. Detection and macro
-     * snapshots keep running so every visual retains the same road response.
-     */
+    /** Gates the sole vehicle-reactive effect: braking UNDERWATER. */
     setVehicleEffectsEnabled(nextEnabled) {
       vehicleEffectsEnabled = nextEnabled === true;
       const audibleBrake = vehicleEffectsEnabled ? brakeAmount : 0;
-      applyAccelerationMacro();
       post("BRAKE", { brake: audibleBrake });
       junction?.setBrake(audibleBrake);
       nightshift?.setBrake(audibleBrake);
-      if (!vehicleEffectsEnabled && bloomAudioActive) {
-        bloomNode?.port.postMessage({ type: "RELEASE" });
-        bloomAudioActive = false;
-      } else if (vehicleEffectsEnabled
-        && bloomNode
-        && !bloomAudioActive
-        && !bloomSuppressedByBrake
-        && performance.now() < bloomActiveUntil) {
-        bloomNode.port.postMessage({ type: "TRIGGER" });
-        bloomAudioActive = true;
-      }
       return vehicleEffectsEnabled;
     },
 
@@ -686,7 +446,6 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
 
     setScore(nextScoreId) {
       if (!running) return Promise.reject(new Error("Audio engine is closed"));
-      void prepareBloom();
       requestedScoreId = nextScoreId === "junction"
         ? "junction"
         : nextScoreId === "nightshift" ? "nightshift" : "fracture";
@@ -814,21 +573,6 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
       post("SPEED", { speed, energy });
       junction?.setSpeed(speed, energy, elapsedMs / 1000);
       nightshift?.setSpeed(speed, energy, elapsedMs / 1000);
-      // Demo and QA speed feeds have no GPS accuracy and are observed here.
-      // Real GPS feeds provide their unsmoothed trusted sample through
-      // setAccelerationSample so UI smoothing cannot hide the launch.
-      if (gpsAccuracyM == null) observeAccelerationSample(speed, now, null);
-    },
-
-    setAccelerationSample(nextSpeed, {
-      capturedAtMs = performance.now(),
-      accuracyM = gpsAccuracyM,
-    } = {}) {
-      return observeAccelerationSample(nextSpeed, capturedAtMs, accuracyM);
-    },
-
-    setGpsAccuracy(accuracyM) {
-      gpsAccuracyM = Number.isFinite(accuracyM) ? accuracyM : null;
     },
 
     /**
@@ -872,7 +616,6 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
         return {
           ...sampledState,
           scoreWorklets: fractureReady ? "requested" : "deferred",
-          bloomWorklet: bloomReady ? "requested" : "deferred",
           requestedScoreId,
           scoreStatus,
           scoreError,
@@ -881,20 +624,12 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
           brake: Math.round(brakeAmount * 100) / 100,
           macros: macroSnapshot(),
           accelerationMps2: Math.round(smoothedRateMps2 * 1000) / 1000,
-          accelerationMacro: Math.round(accelerationAmount * 1000) / 1000,
-          accelerationTrajectory: {
-            active: accelerationDetector.active,
-            riseKmh: Math.round(accelerationDetector.riseKmh * 10) / 10,
-            averageMps2: Math.round(accelerationDetector.averageMps2 * 1000) / 1000,
-            intensity: Math.round(accelerationDetector.intensity * 1000) / 1000,
-          },
         };
       }
       return {
         score: arrangement.scoreId ?? "fracture",
         scoreLabel: arrangement.scoreLabel ?? "FRACTURE",
         scoreWorklets: fractureReady ? "requested" : "deferred",
-        bloomWorklet: bloomReady ? "requested" : "deferred",
         requestedScoreId,
         scoreStatus,
         scoreError,
@@ -914,13 +649,6 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
         brake: Math.round(brakeAmount * 100) / 100,
         macros: macroSnapshot(),
         accelerationMps2: Math.round(smoothedRateMps2 * 1000) / 1000,
-        accelerationMacro: Math.round(accelerationAmount * 1000) / 1000,
-        accelerationTrajectory: {
-          active: accelerationDetector.active,
-          riseKmh: Math.round(accelerationDetector.riseKmh * 10) / 10,
-          averageMps2: Math.round(accelerationDetector.averageMps2 * 1000) / 1000,
-          intensity: Math.round(accelerationDetector.intensity * 1000) / 1000,
-        },
       };
     },
 
@@ -929,29 +657,17 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
       running = false;
       scoreSwitchRevision += 1;
       window.clearInterval(brakeTimer);
-      window.clearInterval(accelerationTimer);
       if (node) {
         node.port.onmessage = null;
         node.onprocessorerror = null;
         node.disconnect();
       }
-      bloomSerialLink?.destroy();
-      bloomNode?.disconnect();
       junction?.destroy();
       nightshift?.destroy();
       junctionGain.disconnect();
       nightshiftGain.disconnect();
       fractureGain.disconnect();
       performanceBus.disconnect();
-      accelerationScoop.disconnect();
-      accelerationAir.disconnect();
-      accelerationSplitter.disconnect();
-      leftToLeft.disconnect();
-      rightToLeft.disconnect();
-      leftToRight.disconnect();
-      rightToRight.disconnect();
-      accelerationMerger.disconnect();
-      accelerationTrim.disconnect();
       manualEffectsGraph.destroy();
       masterGain.disconnect();
       meter.disconnect();

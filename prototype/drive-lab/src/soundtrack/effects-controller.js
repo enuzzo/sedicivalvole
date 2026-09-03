@@ -1,7 +1,7 @@
-import bloomProcessorUrl from "../score/worklet/bloom-processor.js?audio-worklet";
 import { createManualEffectsGraph } from "../manual-effects-graph.js";
 import {
   SOUNDTRACK_PLAYBACK_INVARIANTS,
+  SOUNDTRACK_VEHICLE_MACROS,
 } from "./playback-boundary.js";
 import {
   applySoundtrackTransitionGains,
@@ -47,6 +47,7 @@ function createUnavailableController(reason = "web-audio-unavailable") {
     reason,
     vehicleMaster,
     vehicleMacros,
+    reactiveEffects: SOUNDTRACK_VEHICLE_MACROS,
     manualEffects,
     attachedMediaElements: mediaElements.size,
     playbackRate: SOUNDTRACK_PLAYBACK_INVARIANTS.playbackRate,
@@ -119,11 +120,6 @@ export function createSoundtrackEffectsController({
   }
 
   const input = context.createGain();
-  const openScoop = context.createBiquadFilter();
-  const openAir = context.createBiquadFilter();
-  const openFocus = context.createBiquadFilter();
-  const openFocusGain = context.createGain();
-  const openSum = context.createGain();
   const underwaterOne = context.createBiquadFilter();
   const underwaterTwo = context.createBiquadFilter();
   const underwaterPressure = context.createBiquadFilter();
@@ -134,14 +130,6 @@ export function createSoundtrackEffectsController({
   const analyser = context.createAnalyser();
   const master = context.createGain();
 
-  openScoop.type = "peaking";
-  openScoop.frequency.value = 320;
-  openScoop.Q.value = 0.78;
-  openAir.type = "highshelf";
-  openAir.frequency.value = 5_800;
-  openFocus.type = "bandpass";
-  openFocus.frequency.value = 520;
-  openFocus.Q.value = 0.82;
   underwaterOne.type = "lowpass";
   underwaterTwo.type = "lowpass";
   underwaterPressure.type = "lowshelf";
@@ -154,13 +142,7 @@ export function createSoundtrackEffectsController({
   analyser.smoothingTimeConstant = 0.58;
   master.gain.value = 0.92;
 
-  input.connect(openScoop);
-  openScoop.connect(openAir);
-  openAir.connect(openSum);
-  openAir.connect(openFocus);
-  openFocus.connect(openFocusGain);
-  openFocusGain.connect(openSum);
-  openSum.connect(underwaterOne);
+  input.connect(underwaterOne);
   underwaterOne.connect(underwaterTwo);
   underwaterTwo.connect(underwaterPressure);
   underwaterPressure.connect(postVehicle);
@@ -177,16 +159,10 @@ export function createSoundtrackEffectsController({
   let vehicleMacros = normalizeSoundtrackVehicleMacros();
   let manualEffects = normalizeSoundtrackManualEffects();
   let destroyed = false;
-  let bloomNode = null;
-  let bloomActive = false;
-  let workletStatus = typeof context.audioWorklet?.addModule === "function" ? "loading" : "unavailable";
-  let workletError = null;
+  let graphError = null;
 
   const apply = () => {
     const values = soundtrackEffectParameters({ vehicleMaster, vehicleMacros, manualEffects });
-    setParam(openScoop.gain, values.openScoopDb, context);
-    setParam(openAir.gain, values.openAirDb, context);
-    setParam(openFocusGain.gain, values.openFocusGain, context);
     setParam(underwaterOne.frequency, values.underwaterCutoffHz, context, 0.08);
     setParam(underwaterTwo.frequency, values.underwaterSecondCutoffHz, context, 0.08);
     setParam(underwaterOne.Q, values.underwaterResonance, context);
@@ -195,40 +171,10 @@ export function createSoundtrackEffectsController({
     setParam(underwaterPressure.gain, values.underwaterPressureGainDb, context);
     setParam(postVehicle.gain, values.underwaterMakeupGain, context);
     manualGraph.set(manualEffects);
-    const shouldBloom = values.bloom > 0.06;
-    if (bloomNode && shouldBloom !== bloomActive) {
-      bloomNode.port.postMessage({ type: shouldBloom ? "TRIGGER" : "RELEASE" });
-      bloomActive = shouldBloom;
-    }
   };
   apply();
 
-  const ready = (async () => {
-    if (workletStatus === "unavailable") return;
-    try {
-      await context.audioWorklet.addModule(bloomProcessorUrl);
-      if (destroyed) return;
-      bloomNode = new AudioWorkletNode(context, "bloom-processor", { outputChannelCount: [2] });
-      postVehicle.disconnect();
-      postVehicle.connect(bloomNode);
-      bloomNode.connect(manualGraph.input);
-      const bypass = (node, upstream, downstreams) => {
-        node.onprocessorerror = () => {
-          try { upstream.disconnect(); } catch { /* already disconnected */ }
-          try { node.disconnect(); } catch { /* already disconnected */ }
-          for (const downstream of downstreams) upstream.connect(downstream);
-          workletStatus = "degraded";
-          workletError = "processor-error";
-        };
-      };
-      bypass(bloomNode, postVehicle, [manualGraph.input]);
-      workletStatus = "ready";
-      apply();
-    } catch (error) {
-      workletStatus = "degraded";
-      workletError = String(error?.message || "worklet-load-failed").slice(0, 80);
-    }
-  })();
+  const ready = Promise.resolve();
 
   const getLevel = () => {
     if (destroyed) return 0;
@@ -240,10 +186,10 @@ export function createSoundtrackEffectsController({
   const getSnapshot = () => Object.freeze({
     schema: SOUNDTRACK_EFFECTS_SCHEMA,
     status: destroyed ? "destroyed" : context.state,
-    workletStatus,
-    workletError,
+    graphError,
     vehicleMaster,
     vehicleMacros,
+    reactiveEffects: SOUNDTRACK_VEHICLE_MACROS,
     manualEffects,
     attachedMediaElements: mediaSources.size,
     playbackRate: SOUNDTRACK_PLAYBACK_INVARIANTS.playbackRate,
@@ -263,7 +209,7 @@ export function createSoundtrackEffectsController({
         transitionGain.connect(input);
         mediaSources.set(key, { media, source, transitionGain });
       } catch (error) {
-        workletError = String(error?.message || "media-source-failed").slice(0, 80);
+        graphError = String(error?.message || "media-source-failed").slice(0, 80);
       }
       return getSnapshot();
     },
@@ -313,6 +259,15 @@ export function createSoundtrackEffectsController({
       destroyed = true;
       for (const key of [...mediaSources.keys()]) controller.detachMedia(key);
       manualGraph.destroy();
+      input.disconnect();
+      underwaterOne.disconnect();
+      underwaterTwo.disconnect();
+      underwaterPressure.disconnect();
+      postVehicle.disconnect();
+      output.disconnect();
+      limiter.disconnect();
+      analyser.disconnect();
+      master.disconnect();
       if (ownsContext) void context.close?.();
       return getSnapshot();
     },

@@ -170,10 +170,9 @@ export function driveyMotionProfile({
     ? clamp(roadResponse, 0, 1)
     : mapResponseValue(DRIVEY_ROAD_RESPONSE, speed);
   const musicLevel = clamp(Number(audioLevel) || 0, 0, 1);
-  const hasMacroSnapshot = macroSnapshot != null;
-  const open = hasMacroSnapshot ? audioMacroAmount(macroSnapshot, "open") : effect === "OPEN" ? 1 : 0;
-  const underwater = hasMacroSnapshot ? audioMacroAmount(macroSnapshot, "underwater") : effect === "UNDERWATER" ? 1 : 0;
-  const bloom = hasMacroSnapshot ? audioMacroAmount(macroSnapshot, "bloom") : effect === "BLOOM" ? 1 : 0;
+  const underwater = macroSnapshot != null
+    ? audioMacroAmount(macroSnapshot, "underwater")
+    : effect === "UNDERWATER" ? 1 : 0;
   const effectSpeedScale = 1 - underwater * 0.28;
   const targetSpeedMps = reducedMotion
     ? 0
@@ -186,10 +185,10 @@ export function driveyMotionProfile({
     targetSpeedMps,
     cruiseSpeed,
     npcSpeedScale: cruiseSpeed,
-    fov: clamp(90 + normalizedSpeed * 8 + open * 8 - underwater * 6 + bloom * 4, 78, 112),
-    colourEnergy: reducedMotion ? 0 : musicLevel * (0.68 + bloom * 0.32),
-    lightGain: clamp(1 + bloom * 0.24 + open * 0.1 - underwater * 0.22, 0.7, 1.34),
-    macros: Object.freeze({ open, underwater, bloom }),
+    fov: clamp(90 + normalizedSpeed * 8 - underwater * 6, 78, 112),
+    colourEnergy: reducedMotion ? 0 : musicLevel * 0.68,
+    lightGain: clamp(1 - underwater * 0.22, 0.7, 1.34),
+    macros: Object.freeze({ underwater }),
     effect,
     reducedMotion,
   });
@@ -343,9 +342,7 @@ function gainRgb(color, gain) {
 
 export function themeToDriveyPalette(theme, profile) {
   const { base, mid, light, accent, secondary } = theme.palette;
-  const open = clamp(Number(profile.macros?.open) || 0, 0, 1);
   const underwater = clamp(Number(profile.macros?.underwater) || 0, 0, 1);
-  const bloom = clamp(Number(profile.macros?.bloom) || 0, 0, 1);
   let dark = mixRgb(base, mid, 0.06);
   const full = [...accent];
   const partner = [...secondary];
@@ -353,13 +350,11 @@ export function themeToDriveyPalette(theme, profile) {
   let bright = mixRgb(
     light,
     secondary,
-    0.04 + bloom * 0.14 + colourLift,
+    0.04 + colourLift,
   );
 
   dark = mixRgb(dark, mixRgb(base, secondary, 0.12), underwater);
   bright = mixRgb(bright, secondary, underwater * 0.22);
-  bright = mixRgb(bright, light, open * 0.12);
-
   bright = gainRgb(bright, profile.lightGain);
   return Object.freeze({
     background: gainRgb(dark, 0.9 - underwater * 0.16),

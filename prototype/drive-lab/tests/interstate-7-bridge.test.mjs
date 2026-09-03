@@ -50,15 +50,14 @@ test("maps road speed to the original Interstate 7 time and FOV controls", () =>
   assert.deepEqual(speedToInterstate7Targets(260), speedToInterstate7Targets(130));
 });
 
-test("maps effects only through the original time, FOV, and colour controls", () => {
+test("maps only UNDERWATER through the original time, FOV, and colour controls", () => {
   const idle = interstate7EffectTargets(65, null);
   const open = interstate7EffectTargets(65, "OPEN");
   const underwater = interstate7EffectTargets(65, "UNDERWATER");
   const bloom = interstate7EffectTargets(65, "BLOOM");
-  assert.ok(open.fovTarget > idle.fovTarget);
+  assert.deepEqual(open, idle);
   assert.ok(underwater.fovTarget < idle.fovTarget);
-  assert.ok(bloom.fovTarget > open.fovTarget);
-  assert.ok(bloom.speedUpTarget > open.speedUpTarget);
+  assert.deepEqual(bloom, idle);
 });
 
 test("keeps urban motion grounded and enters on the composed road phase", () => {
