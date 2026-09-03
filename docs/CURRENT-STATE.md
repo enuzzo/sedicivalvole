@@ -122,8 +122,9 @@ dated study documents.
   the route head pulses once per second with a restrained expanding ripple. The
   Drive Lab collapses behind a persistent icon-only `36 × 30 px` midpoint tab
   with an accessible action name, giving the complete map width back without a
-  full-height rail. Mandatory attribution remains a tiny translucent strip
-  above the footer. Exact local and canonical `773 × 601` QA at checkpoint
+  full-height rail. Mandatory attribution remains a low translucent strip
+  above the footer and now respects the universal `20 px` legibility floor.
+  Exact local and canonical `773 × 601` QA at checkpoint
   `7c9df06`, build `20260901-2012`, proves the corrected vertical no-scroll
   hierarchy, explicit empty-state axes/legends, three-range cycle, full-map
   collapse/reopen, no header/footer collision and canonical byte identity;
@@ -554,11 +555,11 @@ dated study documents.
   Deterministic pending-promise coverage and exact local/canonical `773 × 601`
   transport QA pass; physical braking audibility and degraded-network recovery
   remain Tesla tests `R4-08` and `R7-14`.
-- **The running footer has its compact control geometry.** MUTE and FX are
-  adjacent equal-width controls with one shared `LABEL / ON–OFF / GLOBAL`
-  hierarchy, both announce a 1.5-second centred status, and the two-row palette is
-  fixed to `138 px` at `773 × 601` / `160 px` on desktop at the far-right edge.
-  The released centre span is intentionally empty rather than stretched.
+- **The running footer follows Automotive Glance geometry.** MUTE and FX are
+  adjacent equal-width controls with one direct `LABEL / ON–OFF` hierarchy,
+  both announce a 1.5-second centred status, and the two-row palette remains at
+  the far-right edge. The footer is `100 px` at `773 × 601`; obsolete `GLOBAL`
+  and active-count microcopy is hidden before any label may shrink below `20 px`.
   After a direct footer action or the final Music, Visual, diagnostics, GPS-help,
   or Performance-FX surface closes, focus returns to the neutral running
   experience instead of its trigger. Open surfaces and keyboard navigation keep
@@ -861,8 +862,9 @@ surrounding launch/vehicle experience.
   candidate and final read-only postflight reports `remote_writes=NONE`.
   Physical-Tesla Media Session behavior and receipt of its explicitly sent
   diagnostic remain open.
-- Soundtrack's black source readout is a `116 px` speed-only module. FLUX, BPM
-  and energy are absent in this mode. The on-screen transport shares the chrome
+- Soundtrack's black source readout is a `180 px` speed-only module at the
+  current `773 × 601` Automotive Glance breakpoint. FLUX, BPM and energy are
+  absent in this mode. The persistent lower transport shares the chrome
   lifecycle and becomes hidden/non-interactive after idle. Follow-up checkpoint
   `92e581b` prevents GPS/demo motion, acceleration, braking, regeneration and
   passive pointer movement from waking resting chrome; a deliberate pointer
@@ -925,6 +927,47 @@ plumbing are not misrepresented as creative controls.
 Checkpoint `1a79cea` is canonical as protected build `20260902-1341`.
 Preflight/postflight, protected packaging and the unauthenticated live gate pass;
 authenticated target-Tesla rendering and control reach remain `R11A-01`.
+
+### 2026-09-03 Automotive Glance and Soundtrack stability checkpoint
+
+Implementation checkpoint `d38c333` responds to the physical-Tesla report from
+canonical build `20260903-0843` without claiming that office evidence closes
+vehicle listening. The selected **Automotive Glance** system establishes a
+tested universal `20 px` visible-type floor across the public App, owner LAB,
+ShaderGradient workbench, diagnostics, Discover, ATLAS attribution, and every
+responsive rule. Body/control copy uses `20–24 px`, important values `24–28 px`,
+headings `28–36 px`, and the exact `773 × 601` navbar/footer are `100 px`.
+Secondary copy is removed or content becomes deliberately scrollable before any
+text may shrink. Healthy network state is an accessible outlined dot; limited
+and offline states use large actionable copy and expose the browser downlink
+estimate when available.
+
+The lower Soundtrack surface is no longer a transient notice. Whenever chrome
+is awake, one persistent overlay immediately above the footer presents current
+artwork, title, artist/source, and `72 px` previous/play-pause/next controls.
+It follows the committed identity for Jamendo and Illobo, natural track end,
+explicit drawer selection, and on-screen or native transport. Handler
+registration is stable for the whole running session and every previous/next
+request enters one serialized queue.
+
+The three-deck loader now gives bandwidth to the audible programme first.
+Current owns automatic preload; adjacent roles start metadata-only and promote
+after current has at least six seconds buffered ahead or equivalent browser
+readiness. PREVIOUS rewinds and reuses a healthy retained deck instead of
+destroying its buffer. Every initial, manual, or automatic target starts silent,
+waits for the same buffer floor within the existing ten-second transaction,
+rewinds, and only then becomes audible; the prior track and metadata remain
+committed through pending or failed work. Soundtrack creates the shared context
+with a playback latency hint.
+
+The complete suite passes `501/501` plus `9/9` Sites checks; production App,
+protected LAB, and Sites builds pass. Exact local Browser QA at `773 × 601`
+and `1280 × 720` finds no visible text below `20 px`, no selector/chrome
+overflow, a non-overlapping persistent player, real Jamendo PREVIOUS and NEXT
+changes, and no console warning/error. `R10C-02`, `R10C-03`, `R10C-06`, and
+`R10C-07` retain their earlier canonical code/model evidence, but none is
+physically concluded: weak-network Tesla playback, native Tesla Media Session,
+phone/car QR receipt, and moving-Tesla APERTURE seams remain the decisive gates.
 
 ## Open work
 

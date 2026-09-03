@@ -12,9 +12,9 @@ a new session can continue without reviving superseded prototypes.
 - semantic version: `VERSION` = `0.0.0`; no release exists;
 - canonical development URL: <https://sedicivalvole.app/>;
 - latest verified publication evidence: first entry in [`DEPLOY.md`](DEPLOY.md);
-- latest product checkpoint: `fa122b4`; published source checkpoint: `01d3deb`;
-  canonical build: `20260903-0015`, with protected publication, byte identity,
-  exact `773 × 601` catalogue/Gradient QA and an empty warning/error log passing;
+- latest product checkpoint: `d38c333`; published source checkpoint: `bbc7bb9`;
+  canonical build: `20260903-0843`. The new Automotive Glance/Soundtrack
+  checkpoint passes local tests, build, and Browser QA but is not canonical yet;
 - repository code, comments, documentation, interface copy, and logs are English;
 - `.env` and local variants must never be read, printed, diffed, logged, or committed;
 - `_references/` is local and ignored; never copy its external material into Git.
@@ -635,6 +635,47 @@ HTML, JavaScript `index-n8F-cPXN.js`, and CSS `index-BIFkZ_G0.css` are
 byte-identical to the locally verified candidate; the canonical splash exposes
 the correct build identity. Only physical Tesla Media Session behavior and
 receipt of the explicitly sent fresh attachment remain open under `R10C-03`.
+
+### Latest local checkpoint: Automotive Glance and stable Soundtrack
+
+Checkpoint `d38c333`, pushed to `origin/main`, implements the owner-selected
+Direction 3 / **Automotive Glance** and every 2026-09-03 Soundtrack note. It
+starts from the clean `6e13898` / live-build-`20260903-0843` baseline.
+
+- A test rejects any visible CSS type below `20 px` in the public App, owner
+  LAB, or ShaderGradient workbench. Ordinary copy is `20–24 px`, important
+  values `24–28 px`, headings `28–36 px`, and the Tesla navbar/footer are
+  exactly `100 px`. Secondary content is hidden, reflowed, or scrolled first.
+- Healthy network status is one accessible outlined dot. Limited/offline states
+  use readable actionable copy and include the browser-estimated downlink when
+  present; the meaningless `NET ONLINE` string is gone.
+- One persistent lower Now Playing overlay sits directly above the footer while
+  chrome is awake. It carries artwork, current title, artist/source, and three
+  `72 px` transport targets for every committed Illobo or Jamendo track,
+  including natural end and drawer selection.
+- Soundtrack now preserves a healthy previous media element and rewinds it
+  instead of discarding its buffer. Current loads first; adjacent roles remain
+  metadata-only until at least six seconds of current forward buffer or enough
+  browser data exists. Initial/manual/automatic targets begin silent, wait for
+  the same buffer admission inside the ten-second transport deadline, rewind,
+  then crossfade. The outgoing identity remains audible and authoritative on a
+  pending or failed target.
+- Media Session action handlers remain registered for the running session and
+  dispatch into a serialized command queue. Soundtrack requests a
+  playback-oriented shared AudioContext.
+
+Verification is `501/501` product/unit checks plus `9/9` Sites checks, the
+235-module App / 159-module protected-LAB production build, and direct Browser
+QA at `773 × 601` and `1280 × 720`. The target view shows no visible copy below
+`20 px`, no selector/chrome collision, exact `100 px` header/footer geometry,
+the overlay immediately above the footer, and real Jamendo PREVIOUS/NEXT track
+changes with an empty warning/error log. The in-app Browser does not expose
+Media Session, so native handler invocation remains a physical-Tesla gate.
+
+Do not mark `R10C-02`, `R10C-03`, `R10C-06`, or `R10C-07` complete from these
+office results. Their code/model/canonical prerequisites pass, but weak-network
+Tesla playback, native mini-player controls and sent report receipt, phone/car
+QR handoff, and moving APERTURE seams respectively remain physical evidence.
 
 ## Verification
 

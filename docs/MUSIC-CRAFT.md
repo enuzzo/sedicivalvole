@@ -1546,6 +1546,39 @@ promise that never settles, then resolves it late and proves that it cannot
 resurrect the abandoned track. Every future asynchronous media start needs an
 owned deadline and rollback; rejection-only coverage is incomplete.
 
+### 6.15 Do not trade the audible programme for speculative prefetch
+
+Build `20260903-0843` still stuttered severely in the target Tesla and made
+PREVIOUS appear less reliable than NEXT. The three-deck implementation had two
+audible consequences. First, `syncQueue()` treated a healthy retained paused
+recording with non-zero `currentTime` as stale and recreated it, so PREVIOUS
+discarded the one browser buffer most likely to be reusable. NEXT usually
+promoted an already-prepared adjacent element, which explains the asymmetric
+listener report. Second, all three elements requested `preload=auto` before the
+current recording had secured playback headroom, allowing two speculative
+downloads to compete with the only audio the listener could hear on the weak
+vehicle connection.
+
+The corrected policy is current-first. The current deck owns `preload=auto`;
+previous and next start metadata-only and promote only when the current deck has
+at least six seconds buffered ahead or the browser reports enough data. A
+healthy retained previous element is rewound and reused, never discarded merely
+because it has played. Every initial, manual, or automatic target starts muted,
+waits for the same six-second floor inside the existing ten-second transaction,
+rewinds, and only then enters the equal-power transition. Until that commit the
+outgoing track and its metadata stay authoritative. Soundtrack creates its
+shared AudioContext with the playback latency hint because continuous programme
+audio benefits more from underrun margin than instrument-like response.
+
+The perceived rule is simple: **protect the sound already playing before
+preparing what might play next**. Preloading three identities is not useful when
+it starves the current programme, and a resolved `play()` promise is not proof
+that enough audio exists for a clean start. Tests therefore assert staged
+preload promotion, buffer-preserving PREVIOUS, silent buffer admission, rollback,
+natural-end advancement, and stable committed metadata. Final proof remains a
+low-bandwidth target-Tesla listening run; desktop buffer state alone cannot
+close a stutter report.
+
 Sources: [Web Audio API 1.1](https://www.w3.org/TR/webaudio-1.1/),
 [MDN `BiquadFilterNode.type`](https://developer.mozilla.org/en-US/docs/Web/API/BiquadFilterNode/type),
 [MDN `WaveShaperNode.oversample`](https://developer.mozilla.org/en-US/docs/Web/API/WaveShaperNode/oversample),

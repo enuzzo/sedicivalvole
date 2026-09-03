@@ -171,11 +171,17 @@ displaced entries for later media disposal, and refills missing roles after
 recovery without replacing the audible current item. It explicitly reports
 metadata-slot depth, not browser-buffer bytes or offline duration, and never
 changes back to PLAY THE ROAD when exhausted. A detached controller now maps the
-three roles onto at most three direct-source media elements, prepares only with
-native `preload=auto`, requires explicit activation, rejects stale play/event
-completion, reuses retained roles, and removes listeners and `src` before a
-displaced element is released. Its readiness and buffered-time values are
-observations, never availability promises. A separate transition state now
+three roles onto at most three direct-source media elements. The current deck
+alone begins with `preload=auto`; adjacent decks start metadata-only and promote
+to audio only after the current deck reports enough data or at least six seconds
+of forward buffer. A retained healthy previous deck is rewound in place rather
+than recreated. Every initial, manual, or natural-end target begins silently,
+must satisfy that same buffer floor inside the ten-second transport transaction,
+is rewound, and becomes audible only then. The prior audible deck and committed
+metadata survive a failed or pending target. The controller requires explicit
+activation, rejects stale play/event completion, reuses retained roles, and
+removes listeners and `src` before a displaced element is released. Readiness
+and buffered-time values remain observations, never availability promises. A separate transition state now
 models the nominal 450 ms equal-power skip on the audio clock. It preserves unit
 squared gain through reversal or a third prepared target, rejects a fourth
 simultaneous identity, validates all AudioParams before scheduling, and guards
@@ -495,7 +501,7 @@ current ephemeral position and UTC time, classifies day/twilight/night, and
 holds the current family through twilight or active interaction. No coordinate
 or solar result is persisted. DOM tokens and the visible control remain gated.
 
-The Flux chrome uses a shared 6 px UI radius for framed controls and diagnostic surfaces. At `773 x 601` the retracting footer is 64 px high, keeps Audio on one row, and exposes explicit Visual and Music libraries with disclosure carets. MUTE and FX occupy equal `69 px` tracks and share one `LABEL / ON–OFF / GLOBAL` anatomy while retaining independent state and accessible names. Structural rails remain aligned to the underlying grid. Functional micro-labels stay uppercase, while editorial Visual, Music, mode, and effect names use separate Title Case display labels in the launcher, footer, and pickers. Stable identifiers and canonical registry labels remain unchanged. A footer catalogue name and number form one baseline-aligned value at one type size; the disclosure caret remains an independent target at the far edge. The absolute speed readout uses the same column dimensions and `--line` stroke as the top bar, so hiding the surrounding control layer does not move or restyle it as a separate overlay.
+The Flux chrome uses a shared 6 px UI radius for framed controls and diagnostic surfaces. The owner-selected Automotive Glance system sets a universal visible-type floor of `20 px`; ordinary controls/body copy use `20–24 px`, important values `24–28 px`, and headings `28–36 px`. At `773 x 601` the retracting navbar and footer are each `100 px`. Content must be removed, reflowed, or made deliberately scrollable before type is reduced. MUTE and FX keep equal tracks and direct `LABEL / ON–OFF` anatomy while obsolete `GLOBAL` and active-count microcopy is hidden. Structural rails remain aligned to the underlying grid. Functional labels stay uppercase, while editorial Visual, Music, mode, and effect names use separate Title Case display labels in the launcher, footer, and pickers. Stable identifiers and canonical registry labels remain unchanged. A persistent lower Now Playing overlay occupies its own band immediately above the footer whenever chrome is awake, follows every committed fixed-recording identity including automatic changes, and owns large previous/play-pause/next controls. Stable Media Session handlers live for the session and dispatch into one serialized transport queue. The absolute speed readout uses the same column dimensions and `--line` stroke as the top bar, so hiding the surrounding control layer does not move or restyle it as a separate overlay.
 
 The Codrops/Tympanus Infinite Lights reference is useful for coordinated instancing, depth cues, distortion, FOV response, eased speed offset, and the matched distortion/look-at relationship. Vertigo intentionally vendors the byte-identical Interstate 7 runtime as separately licensed third-party material. Meridian studies its mechanical grammar without copying that runtime's source or visual skin. See [`REFERENCE-STUDY-INFINITE-LIGHTS.md`](REFERENCE-STUDY-INFINITE-LIGHTS.md).
 
