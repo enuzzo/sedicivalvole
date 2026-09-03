@@ -12,7 +12,8 @@ a new session can continue without reviving superseded prototypes.
 - semantic version: `VERSION` = `0.0.0`; no release exists;
 - canonical development URL: <https://sedicivalvole.app/>;
 - latest verified publication evidence: first entry in [`DEPLOY.md`](DEPLOY.md);
-- latest product checkpoint: `6cda7ee`; published source/documentation
+- latest working product checkpoints: `89d3f15` for Soundtrack contention and
+  `0d5bb05` for the compact Tesla layout; published source/documentation
   checkpoint: `bd572b2`; canonical build: `20260903-1752`. Road Sheet
   LIGHT/DARK/AUTO, Swiss Compact, hardened native/on-screen media transport,
   buffer-first Soundtrack, and always-above-drawers Now Playing are canonical;
@@ -749,6 +750,30 @@ Pause/Play, and `Junction 01 → Fracture 02 → Junction 01` Next/Previous with
 empty console. Local `702 × 546` and `1280 × 720` responsive QA passes.
 Physical-Tesla native-control, listening, glare, distance, and touch acceptance
 remain open.
+
+### Current unpublished checkpoint: Tesla Soundtrack stutter and compact Music layout
+
+Canonical build `20260903-1752` failed physical-Tesla playback even with a
+same-browser `54.3 Mbps` down / `30.6 Mbps` up / `25 ms` speed test: both
+Jamendo and Illobo stuttered continuously after several minutes. The in-product
+`navigator.connection` estimate was much lower and remains a coarse hint, not
+contradictory throughput evidence.
+
+Checkpoint `89d3f15` removes two sources of embedded-browser contention while
+preserving the repaired shared AudioContext. Soundtrack startup runs vehicle
+macro detection but defers both silent Play the Road AudioWorklets until an
+explicit switch; the three-deck preload policy admits only the next audio role
+after the current recording has six seconds of verified headroom. Checkpoint
+`a2545c4` updates the source-order invariant. Checkpoint `0d5bb05` restores the
+accepted two-column Soundtrack composition and top-aligns launch titles without
+changing Swiss Compact type sizes.
+
+The complete gate passes `617/617`; the 239-module App and 159-module protected
+LAB build pass. Headless local Chrome at exact `773 × 601` measures `372 + 372
+px` Soundtrack path cards, `96 / 634 px` Pace/Genre columns, all 15 genres and
+zero horizontal overflow. Browser rendering is accepted locally. Publication,
+canonical identity/cache validation, and continuous physical-Tesla listening
+with Gradient plus a lighter visual remain separate gates.
 
 ## Verification
 

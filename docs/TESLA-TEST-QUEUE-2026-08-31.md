@@ -8,7 +8,7 @@ behavior.
 
 Do not begin the run until the final canonical build stamp is recorded below.
 
-- **Final test build:** `20260903-1155` from built source/documentation checkpoint `cc6afd0`. It retains the global DISCOVER, GPS-calibrated DRIVEY, and mandatory `10C` baseline, then adds Automotive Glance's tested `20 px` type floor, buffer-first three-deck Soundtrack playback, serialized/stable transport, and a persistent Now Playing dock that remains visible above in-page drawers.
+- **Last physically tested build:** `20260903-1752` from published source/documentation checkpoint `bd572b2`. Its Jamendo and Illobo playback failed with continuous stuttering despite a same-browser `54.3 Mbps` down / `30.6 Mbps` up / `25 ms` speed test. Corrective checkpoints `89d3f15`, `a2545c4`, and `0d5bb05` are locally verified but not yet canonical; record the new build stamp here before the next drive.
 - **Target viewport:** Tesla split view, nominal CSS `773 × 601`
 - **Result states:** `PASS`, `FAIL`, `NOT RUN`, `BLOCKED`
 - **Safety:** a passenger operates controls and records evidence; the driver
@@ -70,7 +70,9 @@ Do not begin the run until the final canonical build stamp is recorded below.
 
 Tests `R7-01`–`R7-09` are runnable on the canonical build recorded above.
 `R7-10`–`R7-13` are canonical in build `20260901-2232`; regression test
-`R7-14` is canonical in build `20260902-1954`.
+`R7-14` is canonical in build `20260902-1954`. `R7-15` records the later
+continuous-playback regression on build `20260903-1752` and must be rerun only
+after its corrective checkpoint is canonical.
 Office/live Browser tests cannot
 substitute for the audible physical-cabin verdict.
 
@@ -90,6 +92,7 @@ substitute for the audible physical-cabin verdict.
 | `R7-12` | CANONICAL PASS `20260901-2232` · TESLA PENDING | Change tracks by row tap, persistent transport, automatic end, Illobo Featured and Tesla Media Session. Include a failed/stale replacement. | Every committed identity shows one `3.2 s` notice with title, album/source and artist; failed, stale or preloaded targets show none; the overlay is glance-readable and does not pin chrome. | The notice subscribes to committed current identity and exact local/live viewport QA passes. |
 | `R7-13` | CANONICAL PASS `20260901-2232` · TESLA PENDING | Open Music → Soundtrack → Jamendo at `773 × 601`; compare Pace, 15 genres, six tracks and Now Playing while stopped/loading/playing/paused. | Redundant library/authored headings are absent; Pace/Genre are vertically separated; fresh mix stays right-aligned; filters/titles/artists are larger; the compact activity mark follows real playback; no page scroll appears. | Exact local/live no-scroll Browser QA passes with all 15 genres, six tracks, player and credit visible. |
 | `R7-14` | REGRESSION FIX LIVE `20260902-1954` · TESLA RETEST | On a cold or weak connection, start Jamendo, use NEXT to request another track, then exercise PREVIOUS/NEXT again. If one requested track stalls, wait at least ten seconds; repeat once after recovery and let one track end naturally if practical. | A healthy target starts normally. A stalled start never blocks transport indefinitely: within about ten seconds the prior audible identity is restored with a recoverable error, later controls work, and a delayed stale track never starts by itself. Natural end advances once from the new track's beginning. | `1ef48be` adds an owned wall-clock deadline, atomic rollback, incomplete-record disposal and exact-record stale guard. Deterministic never-settling and late-resolution tests plus canonical `NEXT → PREVIOUS → NEXT` pass; weak-network Tesla behavior remains this test. |
+| `R7-15` | FAIL `20260903-1752` · FIX LOCAL · PUBLICATION/RETEST PENDING | On the corrective build, start Jamendo with Gradient and listen continuously for at least three minutes after playback begins. Repeat with Illobo, then repeat one source with Aperture or another light visual. Do not infer bandwidth from the in-product browser estimate; optionally note a same-browser speed test. If any skip occurs, open REPORT and explicitly SEND DIAGNOSTIC before reload. | The committed track remains continuously audible without repeated skips, clicks, or short dropouts in both sources. Gradient does not degrade playback relative to the light visual. Switching to Play the Road still initializes and plays its score normally. | Build `20260903-1752` failed both sources despite `54.3 Mbps` down and `25 ms` latency. `89d3f15` defers inactive FRACTURE/BLOOM AudioWorklets during Soundtrack and permits only next-role audio preload after current headroom; `a2545c4` protects lazy promotion/fallback. `0d5bb05` restores the accepted Music layout. Local tests and Browser rendering cannot close cabin listening. |
 
 ## Illobo identity and Tesla media title — milestone row 8
 

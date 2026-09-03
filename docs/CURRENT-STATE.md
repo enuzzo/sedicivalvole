@@ -1061,6 +1061,37 @@ JavaScript, and CSS are byte-identical to the candidate. Exact live
 Local `702 × 546` and `1280 × 720` responsive QA also passes. Physical-Tesla
 native-control, listening, distance, glare, and touch evidence remains open.
 
+### 2026-09-03 Tesla Soundtrack stutter correction awaiting publication
+
+The first physical-Tesla pass on canonical build `20260903-1752` failed
+continuous playback: both Jamendo and Illobo stuttered repeatedly after two or
+three minutes on one recording. A speed test in the same browser measured
+`54.3 Mbps` down, `30.6 Mbps` up and `25 ms` latency, separating the failure
+from a simple lack of aggregate bandwidth. The product's simultaneous
+`navigator.connection` estimate is only a coarse browser hint and is not
+accepted as a speed measurement.
+
+Audio checkpoint `89d3f15` preserves the one playback-oriented shared
+AudioContext but does not create silent Play the Road FRACTURE/BLOOM
+AudioWorklets during a Soundtrack launch. Macro detection and speed-only visual
+response continue; an explicit Play the Road switch initializes the processors
+lazily. After the current fixed recording proves six seconds of forward
+headroom, only the next deck promotes to audio preload. The previous role keeps
+any browser-owned data and remains reusable without requesting a second
+speculative audio stream. Invariant checkpoint `a2545c4` updates the complete
+startup/fallback source gate.
+
+Layout checkpoint `0d5bb05` restores the accepted Tesla composition without
+changing Swiss Compact type sizes: horizontal Play the Road/Soundtrack tabs,
+two `372 px` Lobo/Jamendo cards, and a `96 / 634 px` Pace/Genre split containing
+all 15 genres at exact `773 × 601`. Splash card titles share their row top, and
+the Jamendo three-cover stack no longer enters its copy column. Headless local
+Chrome proves the exact viewport, paired columns and zero horizontal overflow;
+the aggregate suite passes `617/617` and both production builds pass. No office
+test can close the continuous Tesla listening gate. Retest with Gradient and a
+lighter visual after publication, and send the existing diagnostic if any
+stutter remains.
+
 ## Open work
 
 1. Execute live Tesla `R4-07`–`R4-08`, the canonical `10A` / `10B` / `10C`

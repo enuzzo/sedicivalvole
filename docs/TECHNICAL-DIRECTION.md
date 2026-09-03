@@ -172,10 +172,11 @@ recovery without replacing the audible current item. It explicitly reports
 metadata-slot depth, not browser-buffer bytes or offline duration, and never
 changes back to PLAY THE ROAD when exhausted. A detached controller now maps the
 three roles onto at most three direct-source media elements. The current deck
-alone begins with `preload=auto`; adjacent decks start metadata-only and promote
-to audio only after the current deck reports enough data or at least six seconds
-of forward buffer. A retained healthy previous deck is rewound in place rather
-than recreated. Every initial, manual, or natural-end target begins silently,
+alone begins with `preload=auto`; adjacent decks start metadata-only. After the
+current deck reports enough data or at least six seconds of forward buffer, only
+the next role may promote to audio preload. The previous role keeps any
+browser-owned buffer under its metadata hint and is rewound in place rather than
+recreated. Every initial, manual, or natural-end target begins silently,
 must satisfy that same buffer floor inside the ten-second transport transaction,
 is rewound, and becomes audible only then. The prior audible deck and committed
 metadata survive a failed or pending target. The controller requires explicit
@@ -210,7 +211,12 @@ in a three-item vertical rail beside the readable `5 × 3` genre grid, uses a
 stable half-hour shuffle, and treats pace, genre, and exact-track gestures as
 explicit immediate play requests. Now Playing animation follows real playback,
 and credits reserve a separate QR column. The main App master affects only audio processing: macro detection
-and visual response continue independently. Jamendo metadata remains short-lived
+and visual response continue independently. When Soundtrack owns the shared
+playback-oriented AudioContext, the macro detector runs without constructing
+the FRACTURE or BLOOM AudioWorklets; an explicit Play the Road switch promotes
+those processors lazily. A muted inactive score renderer is still real-time DSP
+and must not compete with the fixed-recording graph on the Tesla browser.
+Jamendo metadata remains short-lived
 and its audio remains non-persistent; owner-authorized Illobo web masters are
 hosted deliberately without creating a browser offline store. The unqualified
 controller load normalizes to Jamendo `library:all`; the Illobo button requests

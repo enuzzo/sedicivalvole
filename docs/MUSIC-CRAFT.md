@@ -574,6 +574,34 @@ truthful without one. Before either enters production, assert short-term level,
 true peak, stereo width, spectral change, maximum duty cycle and the opposite
 direction of the braking response.
 
+### 5.13 Network headroom is not real-time audio headroom
+
+A physical-Tesla run on build `20260903-1752` heard continuous stuttering in
+both Jamendo and Illobo after two or three minutes on one track. A speed test in
+the same embedded browser measured `54.3 Mbps` down, `30.6 Mbps` up and `25 ms`
+latency, so aggregate transfer capacity was not a sufficient explanation. The
+product's own `navigator.connection.downlink` estimate was also much lower;
+that coarse browser hint must never be treated as a throughput measurement.
+
+The regression followed the shared-AudioContext repair. Soundtrack correctly
+owned one playback-oriented context for fixed-recording effects and vehicle
+macro detection, but the muted Play the Road engine still constructed and ran
+its FRACTURE and BLOOM AudioWorklets. On an embedded vehicle browser, silent
+real-time DSP can still miss the same audio-render deadlines as the audible
+MediaElementSource graph, especially while a GPU-heavy visual competes for CPU
+and memory bandwidth. Muting a processor does not make it free.
+
+When Soundtrack launches, keep the shared context and lightweight macro
+detection but defer score AudioWorklets until an explicit switch to Play the
+Road. Preserve switchability by promoting those processors lazily. Protect the
+current fixed recording first: after it has verified forward headroom, allow
+only the next deck to request audio preload; the previous role may retain a
+browser-owned buffer without starting a second speculative audio transfer.
+Assert zero score worklets during Soundtrack startup, successful lazy promotion,
+and the single-next preload policy. These are causal safeguards and office
+evidence, not proof that the target Tesla no longer stutters; that verdict
+requires continuous cabin listening with both a heavy and a light visual.
+
 ---
 
 ## 6. Testing music
