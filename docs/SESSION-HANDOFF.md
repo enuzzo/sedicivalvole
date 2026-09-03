@@ -707,6 +707,14 @@ a `320 px` panel with a `340 px` canvas and a `48 × 48 px` collapse target
 around the existing `36 × 30 px` visual tab. DISCOVER uses a `52 px` heading
 band, `48 px` tools, and `64 px` result rows.
 
+Implementation checkpoint `bcec32e` is pushed. Focused Swiss Compact checks
+pass `92/92`, the complete unit group passes `505/505`, Sites passes `9/9`, and
+the 235-module App / 159-module protected-LAB build passes. Exact local in-app
+Browser QA covers the joined `773 × 601` source/implementation comparison, the
+complete product matrix at `773 × 601` and `1280 × 720`, constrained/offline
+states, owner LAB, and the ShaderGradient workbench with empty warning/error
+logs.
+
 Before replacing the canonical checkpoint above, record the final test/build
 totals, source commit, build stamp, cache identity, exact local/live
 `773 × 601` and `1280 × 720` comparison, and empty Browser warning/error state.

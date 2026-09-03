@@ -1007,6 +1007,16 @@ identity, renderer ownership, remote-source, or licensing boundaries.
   to the established project wordmarks. Editorial names remain Title Case,
   functional micro-labels remain uppercase, and changing values remain tabular.
 
+Exact local Browser QA from checkpoint `bcec32e` passes at `773 × 601` and
+`1280 × 720`. One joined `1546 × 601` comparison places the selected source and
+the controls-awake implementation at the same `773 × 601` viewport. Splash,
+launch, running/resting chrome, Music and Visual drawers, Discover, REPORT,
+ATLAS open/collapsed, constrained/offline network states, owner LAB, and the
+ShaderGradient workbench remain readable and operable with empty warning/error
+logs. Focused checks pass `92/92`, the complete unit group passes `505/505`,
+Sites passes `9/9`, and the 235-module App / 159-module protected-LAB production
+build passes.
+
 The canonical evidence immediately above remains the last published state until
 the new exact-source build, cache identity, and local/live viewport matrix are
 recorded. Physical-Tesla legibility, touch, motion, Media Session, and listening

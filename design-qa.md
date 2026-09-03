@@ -1354,3 +1354,89 @@ Date: 2026-08-31
 - Browser warning and error logs are empty.
 
 final result: passed
+
+---
+
+# Swiss Compact Product-wide Design QA — 2026-09-03
+
+## Selected visual contract
+
+- The owner selected Direction 1, **Swiss Compact**, including its restrained
+  editorial character, for the complete product typography calibration.
+- The exact source of truth is
+  `/Users/enuzzo/.codex/visualizations/2026/09/03/01a066e4-3cb6-7b22-bb96-503aeb7e838e/automotive-glance-audit/17-direction-swiss-compact.jpg`
+  at `773 × 601`.
+- Review used Codex's in-app Browser only. A locally served `1546 × 601`
+  comparison canvas placed the source at exact `773 × 601` on the left and the
+  live implementation, in the same running/controls-awake state and exact
+  viewport, on the right. The comparison was inspected as one input rather
+  than as unrelated screenshots.
+
+## Five-point visible comparison
+
+1. The implementation matches the selected six-track top-bar structure at the
+   Tesla viewport: `184 / 174 / 90 / 94 / 120 / minmax(111, 1fr) px`.
+2. The `72 px` top bar and `72 px` footer retain the reference's clear central
+   visual field from `y=72` through `y=456`, or `384 px` of uninterrupted
+   depth.
+3. The lower transport is centred at approximately `x=120.5`, `y=456.5` and
+   measures `532 × 72 px`, with `56 px` artwork and independent
+   `48 / 56 / 48 px` previous, play/pause, and next targets.
+4. The footer follows the selected `88 / 88 / 185 / 210 / 80 / 122 px`
+   control tracks. Touch geometry remains larger than the visible type and no
+   label crosses its assigned track.
+5. The visible hierarchy follows the selected compact/editorial rhythm:
+   `14 px` metadata, `15 px` labels, `16 px` body/actions, `18 px` active
+   names, `24 px` titles, and `34 px` primary values, with tabular numerals and
+   deliberate Title Case versus functional uppercase.
+
+## Copy, content, and intentional deviations
+
+- Calibration annotations printed on the source image are design evidence, not
+  product copy, and are intentionally absent from the running interface.
+- The source mock shows a fixed `Tropico / Illobo` example and `MUTE OFF`; the
+  comparison build truthfully showed the selected runtime score/visual and its
+  current mute state. Those content differences do not change geometry.
+- Dynamic Aperture/map frames and palette colours remain live product state
+  rather than being frozen to the reference frame.
+- The packaged Space Grotesk interface face and Orbitron product wordmark are
+  retained. MapLibre's remote map glyph rendering remains separately owned by
+  the map style; the surrounding ATLAS interface follows Swiss Compact.
+
+## Iteration history
+
+- The first product-wide pass established the semantic scale and compact
+  chrome. The final review then corrected a desktop source/network collision,
+  a one-pixel mode-switch overflow, ATLAS time-axis and terrain compression,
+  demo-hint/attribution placement, Music's nested scrollbar, Discover's
+  two-pixel workspace clip, and its result-row rhythm.
+- ATLAS now keeps its `320 px` panel and `340 px` instrument readable, uses
+  compact narrow-axis labels, ellipsizes the terrain provider safely, and
+  renders mandatory attribution as a dark subordinate strip clear of the hint,
+  transport, and footer.
+- Music exposes one internal scrolling surface only. Discover's drawer is a
+  two-row grid with a non-clipping workspace and exact `64 px` result rows.
+
+## Runtime and responsive evidence
+
+- Exact local Browser QA covers splash, Instrument Deck, running/resting
+  chrome, Music and Visual drawers, REPORT, Discover, ATLAS open/collapsed,
+  limited and offline network states at `773 × 601`, plus the product at
+  `1280 × 720`.
+- Owner LAB and ShaderGradient workbench pass at both target sizes without
+  relevant horizontal overflow; the workbench preserves editorial display type
+  above its compact controls.
+- Document dimensions remain exact at both product viewports. Music's outer
+  panel is `overflow: hidden` with one bounded inner scroll; Discover's drawer,
+  heading, workspace, and result rail fit their grid. Browser warning/error
+  logs are empty.
+- Focused checks pass `92/92`; the complete unit group passes `505/505`, Sites
+  passes `9/9`, and production builds process `235` App modules and `159`
+  protected-LAB modules.
+- Real-Tesla cabin distance, glare, glance, touch, and motion acceptance remain
+  an explicit physical gate and are not inferred from office/browser QA.
+
+Local self-review severity: P0 none, P1 none, P2 none after the final geometry
+and scroll corrections.
+
+final result: passed
