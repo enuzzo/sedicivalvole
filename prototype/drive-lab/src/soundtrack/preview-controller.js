@@ -198,7 +198,7 @@ export function createSoundtrackPreviewController({
     crossOrigin,
     onMediaCreate: (key, media) => effects.attachMedia(key, media),
     onMediaDispose: (key) => effects.detachMedia(key),
-    onSnapshot(nextSnapshot, reason) {
+    onSnapshot(nextSnapshot, reason, event) {
       mediaSnapshot = nextSnapshot;
       emitTelemetry("soundtrack.media.lifecycle", {
         reason,
@@ -209,6 +209,7 @@ export function createSoundtrackPreviewController({
         playableMediaElements: nextSnapshot.playableMediaElements,
         controllerError: nextSnapshot.controllerError,
         roles: nextSnapshot.roles,
+        event,
       });
       emit();
     },

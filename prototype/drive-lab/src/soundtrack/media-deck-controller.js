@@ -4,6 +4,7 @@ const MEDIA_ROLES = Object.freeze(["previous", "current", "next"]);
 const HAVE_FUTURE_DATA = 3;
 const HAVE_ENOUGH_DATA = 4;
 export const SOUNDTRACK_STABLE_BUFFER_SECONDS = 6;
+export const SOUNDTRACK_ADJACENT_PRELOAD_BUFFER_SECONDS = 30;
 
 const asFinite = (value) => Number.isFinite(value) ? value : null;
 
@@ -90,8 +91,12 @@ export function createSoundtrackMediaDeckController({
 
   const hasStableBuffer = (media, minimumSeconds = SOUNDTRACK_STABLE_BUFFER_SECONDS) => {
     const ahead = bufferedAheadSeconds(media);
-    return Number(media?.readyState) >= HAVE_ENOUGH_DATA
-      || (Number.isFinite(ahead) && ahead >= minimumSeconds);
+    // Embedded Chromium can report HAVE_ENOUGH_DATA while exposing only a
+    // couple of contiguous seconds. Prefer the observable TimeRanges value;
+    // readyState remains a fallback only when the browser hides that data.
+    return Number.isFinite(ahead)
+      ? ahead >= minimumSeconds
+      : Number(media?.readyState) >= HAVE_ENOUGH_DATA;
   };
 
   const mediaSnapshot = (key) => {
@@ -150,7 +155,7 @@ export function createSoundtrackMediaDeckController({
         ? current.key
         : null,
       audibleKeys: Object.freeze(audibleKeys),
-      browserPreloadHint: "current-first-next-only",
+      browserPreloadHint: "current-first-next-at-30s",
       browserBufferOwnership: "browser-owned-observation-only",
       offlineAudioAvailable: false,
       persistentAudioStorage: false,
@@ -159,11 +164,11 @@ export function createSoundtrackMediaDeckController({
     });
   };
 
-  const emit = (reason) => {
+  const emit = (reason, event = null) => {
     const snapshot = getSnapshot();
     if (typeof onSnapshot === "function") {
       try {
-        onSnapshot(snapshot, reason);
+        onSnapshot(snapshot, reason, event);
       } catch {
         // Observers cannot break playback ownership.
       }
@@ -190,7 +195,10 @@ export function createSoundtrackMediaDeckController({
 
   const applyPreloadPolicy = () => {
     const currentRecord = roles.current ? records.get(roles.current) : null;
-    const nextMayLoad = hasStableBuffer(currentRecord?.media);
+    const nextMayLoad = hasStableBuffer(
+      currentRecord?.media,
+      SOUNDTRACK_ADJACENT_PRELOAD_BUFFER_SECONDS,
+    );
     for (const [key, record] of records) {
       // Protect the current decoder on constrained embedded browsers. Once it
       // has real headroom, only the next track may compete for audio data; the
@@ -218,6 +226,14 @@ export function createSoundtrackMediaDeckController({
       playbackIntentId: 0,
       playbackWanted: false,
     };
+    const lifecycleEvent = () => Object.freeze({
+      key: entry.key,
+      role: MEDIA_ROLES.find((role) => roles[role] === entry.key) ?? null,
+      playbackWanted: record.playbackWanted === true,
+      bufferedAheadSeconds: bufferedAheadSeconds(media),
+      readyState: Number.isFinite(media.readyState) ? media.readyState : null,
+      networkState: Number.isFinite(media.networkState) ? media.networkState : null,
+    });
     const observe = (eventName) => {
       const listener = () => {
         if (destroyed || records.get(entry.key) !== record) return;
@@ -229,7 +245,7 @@ export function createSoundtrackMediaDeckController({
           }
           record.lastEvent = "stale-playing-silenced";
           applyPreloadPolicy();
-          emit("media:stale-playing-silenced");
+          emit("media:stale-playing-silenced", lifecycleEvent());
           return;
         }
         record.lastEvent = eventName;
@@ -248,7 +264,7 @@ export function createSoundtrackMediaDeckController({
           }
         }
         applyPreloadPolicy();
-        emit(`media:${eventName}`);
+        emit(`media:${eventName}`, lifecycleEvent());
       };
       record.listeners.push([eventName, listener]);
       media.addEventListener?.(eventName, listener);

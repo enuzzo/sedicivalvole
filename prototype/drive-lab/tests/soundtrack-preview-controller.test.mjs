@@ -113,6 +113,7 @@ test("pause and native play resume from the observed position without restarting
   const playing = await controller.load({ autoplay: true, nowMs: 0 });
   const currentMedia = mediaByKey.get(playing.current.key);
   currentMedia.currentTime = 42;
+  currentMedia.buffered = { length: 1, start: () => 0, end: () => 72 };
 
   controller.pause();
   const resumed = await controller.resume();
@@ -175,6 +176,29 @@ test("debug telemetry observes browser media lifecycle without changing playback
   assert.ok(telemetry.some((event) => (
     event.type === "soundtrack.media.lifecycle"
       && event.detail.currentAudibleKey === loaded.current.key
+  )));
+  const mediaByKey = new Map();
+  const attributedTelemetry = [];
+  const attributedController = createSoundtrackPreviewController({
+    fetchImpl: catalogFetch,
+    mediaFactory: (entry) => {
+      const media = new FakeMedia();
+      mediaByKey.set(entry.key, media);
+      return media;
+    },
+    onTelemetry: (type, detail) => attributedTelemetry.push({ type, detail }),
+  });
+  const attributed = await attributedController.load({ nowMs: 0 });
+  const attributedMedia = mediaByKey.get(attributed.current.key);
+  attributedMedia.currentTime = 10;
+  attributedMedia.buffered = { length: 1, start: () => 0, end: () => 12.5 };
+  attributedMedia.emit("stalled");
+  assert.ok(attributedTelemetry.some((event) => (
+    event.type === "soundtrack.media.lifecycle"
+      && event.detail.reason === "media:stalled"
+      && event.detail.event?.key === attributed.current.key
+      && event.detail.event?.role === "current"
+      && event.detail.event?.bufferedAheadSeconds === 2.5
   )));
 });
 

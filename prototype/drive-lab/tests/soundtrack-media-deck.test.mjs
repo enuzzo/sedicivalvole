@@ -4,7 +4,11 @@ import {
   createSoundtrackCatalogSnapshot,
   readSoundtrackCatalog,
 } from "../src/soundtrack/catalog-store.js";
-import { createSoundtrackMediaDeckController } from "../src/soundtrack/media-deck-controller.js";
+import {
+  createSoundtrackMediaDeckController,
+  SOUNDTRACK_ADJACENT_PRELOAD_BUFFER_SECONDS,
+  SOUNDTRACK_STABLE_BUFFER_SECONDS,
+} from "../src/soundtrack/media-deck-controller.js";
 import {
   createSoundtrackQueue,
   moveSoundtrackQueue,
@@ -130,7 +134,7 @@ test("sync creates exactly three transient roles and gives the current track fir
   assert.equal(snapshot.status, "prepared");
   assert.equal(snapshot.preparedMediaElements, 3);
   assert.equal(snapshot.playableMediaElements, 0);
-  assert.equal(snapshot.browserPreloadHint, "current-first-next-only");
+  assert.equal(snapshot.browserPreloadHint, "current-first-next-at-30s");
   assert.equal(snapshot.browserBufferOwnership, "browser-owned-observation-only");
   assert.equal(snapshot.offlineAudioAvailable, false);
   assert.equal(snapshot.persistentAudioStorage, false);
@@ -159,7 +163,7 @@ test("an explicit playlist restart rewinds a healthy prepared target without dis
   assert.equal(restartedMedia.currentTime, 0);
 });
 
-test("only the next track preloads after the current track has stable headroom", () => {
+test("only the next track preloads after the current track has 30 seconds of headroom", () => {
   const fixture = createFixture();
   fixture.controller.syncQueue(fixture.queue);
   const current = fixture.controller.getMediaForRole("current");
@@ -171,8 +175,63 @@ test("only the next track preloads after the current track has stable headroom",
   current.buffered = new FakeTimeRanges([[0, 6.25]]);
   current.emit("progress");
 
+  assert.equal(fixture.controller.getMediaForRole("next").preload, "metadata");
+
+  current.buffered = new FakeTimeRanges([[0, 30.25]]);
+  current.emit("progress");
+
   assert.equal(fixture.controller.getMediaForRole("previous").preload, "metadata");
   assert.equal(fixture.controller.getMediaForRole("next").preload, "auto");
+  assert.equal(SOUNDTRACK_ADJACENT_PRELOAD_BUFFER_SECONDS, 30);
+});
+
+test("observable buffer headroom overrides optimistic HAVE_ENOUGH_DATA", async () => {
+  const fixture = createFixture();
+  fixture.controller.syncQueue(fixture.queue);
+  const current = fixture.controller.getMediaForRole("current");
+  current.readyState = 4;
+  current.buffered = new FakeTimeRanges([[0, 2.25]]);
+  const wait = fixture.controller.waitForStableBuffer(fixture.queue.slots.current.key);
+  let settled = false;
+  wait.promise.finally(() => { settled = true; });
+
+  current.emit("canplaythrough");
+  await Promise.resolve();
+  assert.equal(settled, false);
+
+  current.buffered = new FakeTimeRanges([[0, 6.25]]);
+  current.emit("progress");
+  await wait.promise;
+  assert.equal(settled, true);
+  assert.equal(SOUNDTRACK_STABLE_BUFFER_SECONDS, 6);
+});
+
+test("lifecycle telemetry attributes the emitting deck and its exact headroom", () => {
+  const events = [];
+  const policies = [makePolicy(1, 10), makePolicy(2, 20), makePolicy(3, 30)];
+  const queue = createSoundtrackQueue(makeCatalog(policies)).state;
+  const controller = createSoundtrackMediaDeckController({
+    mediaFactory: (entry) => new FakeMedia(entry),
+    onSnapshot: (_snapshot, reason, event) => events.push({ reason, event }),
+  });
+  controller.syncQueue(queue);
+  const current = controller.getMediaForRole("current");
+  current.currentTime = 10;
+  current.readyState = 4;
+  current.buffered = new FakeTimeRanges([[0, 12.25]]);
+  current.emit("waiting");
+
+  assert.deepEqual(events.at(-1), {
+    reason: "media:waiting",
+    event: {
+      key: queue.slots.current.key,
+      role: "current",
+      playbackWanted: false,
+      bufferedAheadSeconds: 2.25,
+      readyState: 4,
+      networkState: 2,
+    },
+  });
 });
 
 test("a raw direct-source preview may omit CORS mode without changing production default", () => {
