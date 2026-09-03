@@ -2024,7 +2024,7 @@ function LaunchSelector({
   const startDetail = musicWaiting && networkConstrained
     ? `${networkUiDetail(networkNotice) || networkUiCopy(networkNotice)} EST. · MUSIC JOINS WHEN READY`
     : musicWaiting
-      ? "MUSIC DATA PENDING · START NOW · AUDIO WILL JOIN WHEN READY"
+      ? "MUSIC PENDING · JOINS WHEN READY"
       : networkConstrained ? `NETWORK ${networkUiCopy(networkNotice)} · VISUALS REMAIN AVAILABLE` : null;
   return (
     <section className="launch-selector" aria-labelledby="launch-selector-title">

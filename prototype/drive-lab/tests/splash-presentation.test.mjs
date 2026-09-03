@@ -152,7 +152,7 @@ test("SOUNDTRACK stays visible while START remains independent from remote audio
   assert.match(app, /\["prepared", "paused", "playing"\]\.includes\(soundtrackSnapshot\?\.status\)/);
   assert.match(app, /const ready = Boolean\(musicId && environmentId\)/);
   assert.match(app, /MUSIC JOINS WHEN READY/);
-  assert.match(app, /MUSIC DATA PENDING · START NOW · AUDIO WILL JOIN WHEN READY/);
+  assert.match(app, /MUSIC PENDING · JOINS WHEN READY/);
   assert.match(app, /audio\.start-deferred/);
   assert.match(app, /audio\.start-recovered/);
   assert.match(app, /soundtrackStatus === "prepared"[\s\S]*?await controller\.resume\(\)/);
