@@ -113,7 +113,8 @@ test("the selected Instrument Deck resolves Music and Visual before START", () =
   assert.match(styles, /\.launch-music-grid \{[^}]*grid-template-rows: repeat\(3, minmax\(0, 1fr\)\)[^}]*gap: 8px/);
   assert.match(styles, /\.launch-visual-grid \{[\s\S]*?grid-template-columns: repeat\(3, minmax\(0, 1fr\)\)[\s\S]*?grid-template-rows: repeat\(var\(--launch-visual-row-count, 2\), minmax\(0, 1fr\)\)[\s\S]*?gap: 8px/);
   assert.match(selector, /--launch-visual-row-count[\s\S]*?Math\.max\(2, Math\.ceil\(FLUX_VISUAL_CHOICES\.length \/ 3\)\)/);
-  assert.match(styles, /\.launch-choice-button \{[^}]*min-height: var\(--touch-target\);[^}]*padding: 8px 10px/);
+  assert.match(styles, /\.launch-choice-button \{[^}]*justify-content: flex-start/);
+  assert.match(styles, /\.launch-choice-button \{[^}]*min-height: var\(--touch-target\);[^}]*padding: 17px 10px 8px/);
   assert.match(styles, /\.launch-choice-button::before \{[\s\S]*?top: 7px;[\s\S]*?left: 10px;[\s\S]*?height: 3px/);
   assert.doesNotMatch(styles, /\.launch-choice-button\[aria-pressed="true"\] strong \{[^}]*padding-top/);
   assert.match(styles, /\.launch-choice-button strong \{ font-size: 17px/);
@@ -129,6 +130,24 @@ test("the selected Instrument Deck resolves Music and Visual before START", () =
     const escapedSelector = selectorName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     assert.match(styles, new RegExp(`${escapedSelector} \\{[\\s\\S]*?border-radius: var\\(--ui-radius\\)`));
   }
+});
+
+test("the Tesla Music drawer keeps the accepted paired Soundtrack layout", () => {
+  const app = read("App.jsx");
+  const styles = read("styles.css");
+  const tabletRules = styles.slice(
+    styles.lastIndexOf("@media (max-width: 900px)"),
+    styles.indexOf("@media (min-width: 651px) and (max-height: 650px)", styles.lastIndexOf("@media (max-width: 900px)")),
+  );
+
+  assert.match(app, /deferScoreWorklets: musicId === "soundtrack"/);
+  assert.match(styles, /\.soundtrack-choice-grid \{ display: grid; grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
+  assert.match(styles, /\.soundtrack-filter-layout \{ display: grid; grid-template-columns: 112px minmax\(0, 1fr\)/);
+  assert.match(styles, /\.soundtrack-choice-card\.is-library \{ grid-template-columns: 64px minmax\(0, 1fr\) 48px/);
+  assert.match(styles, /\.soundtrack-cover-stack img \{ margin-left: -40px; \}/);
+  assert.doesNotMatch(tabletRules, /soundtrack-choice-grid/);
+  assert.doesNotMatch(tabletRules, /soundtrack-filter-layout/);
+  assert.doesNotMatch(tabletRules, /soundtrack-genre-board/);
 });
 
 test("the running Visual library uses a complete two-column Tesla catalogue", () => {
