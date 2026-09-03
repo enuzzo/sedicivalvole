@@ -64,7 +64,7 @@ See [`MODES.md`](MODES.md) for the boundary model, recommendations, and open dec
 - progressive degradation when GPU, shaders, or frame budget are unreliable;
 - reduced motion that preserves atmosphere and information without aggressive tunnel movement.
 
-Exactly three revised Product Design directions were shown after the luminous-axis rejection. The user selected **Modular Aperture**: an ordered rectangular field with a low black control plane, flat monochrome geometry, and a restrained palette accent. The interface is Braun-influenced, Swiss, minimal, and slightly brutalist, with rectilinear actions softened by the shared `6 px` radius, a locally hosted Space Grotesk variable type system, no circular buttons, and no glassmorphism. The later owner-selected **Road Sheet** direction defines the shared interface anatomy and the LIGHT surface family: warm ivory, quiet control gray, near-black type and actions, vermilion state rails, and hairline structure. DARK must preserve that exact layout, grouping, spacing, typography, and interaction hierarchy while mapping it to near-black, charcoal, dark-gray, warm-light, and vermilion tokens. Space Grotesk uses `400` for reading text, `500` for primary values, `600` for controls and `700` for operational labels. Orbitron is the sole textual exception: exact `sedicivalvole` project wordmarks use weight `750` and restrained `-0.02em` tracking in the Signal Gate, Instrument Deck and owner LAB. The running top bar uses the 16 Road product mark without a textual wordmark. `PLAY THE ROAD` remains Space Grotesk `600` with zero added tracking. The active visual palette also drives the interface accent and persists locally across reloads and later visits; the future product-wide `LIGHT`/`DARK`/`AUTO` appearance remains a separate preference with an explicit reset path. AUTO chooses between the shared LIGHT and DARK grammars without recolouring or replacing the active visual palette.
+Exactly three revised Product Design directions were shown after the luminous-axis rejection. The user selected **Modular Aperture**: an ordered rectangular field with a low black control plane, flat monochrome geometry, and a restrained palette accent. The interface is Braun-influenced, Swiss, minimal, and slightly brutalist, with rectilinear actions softened by the shared `6 px` radius, a locally hosted Space Grotesk variable type system, no circular buttons, and no glassmorphism. The later owner-selected **Road Sheet** direction defines the shared interface anatomy and the LIGHT surface family: warm ivory, quiet control gray, near-black type and actions, vermilion state rails, and hairline structure. The owner-selected **Swiss Compact** calibration defines the operational hierarchy across public, diagnostic, owner-LAB, and ShaderGradient surfaces: `14 px` metadata, `15 px` labels, `16 px` body/action copy, `18 px` active names, `24 px` titles, and `34 px` primary values; `48 px` actions and `56 px` primary actions remain independent touch geometry. DARK must preserve that exact layout, grouping, spacing, typography, and interaction hierarchy while mapping it to near-black, charcoal, dark-gray, warm-light, and vermilion tokens. Space Grotesk uses `400` for reading text, `500` for primary values, `600` for controls and `700` for operational labels. Orbitron is the sole textual exception: exact `sedicivalvole` project wordmarks use weight `750` and restrained `-0.02em` tracking in the Signal Gate, Instrument Deck and owner LAB. The running top bar uses the 16 Road product mark without a textual wordmark when its wide-layout cell is present. `PLAY THE ROAD` remains Space Grotesk `600` with zero added tracking. The active visual palette also drives the interface accent and persists locally across reloads and later visits; the future product-wide `LIGHT`/`DARK`/`AUTO` appearance remains a separate preference with an explicit reset path. AUTO chooses between the shared LIGHT and DARK grammars without recolouring or replacing the active visual palette.
 
 The separate X10 `LIGHT`/`DARK`/`AUTO` preference and explicit reset model are
 implemented. AUTO can prioritize a verified browser scheme or derive
@@ -73,7 +73,7 @@ request or coordinate persistence. Product-wide token application and the
 visible control remain gated. Appearance never recolours or replaces the active
 visual palette.
 
-Framed controls, cards, panels, and standalone buttons use one restrained `6 px` corner radius rather than completely sharp corners. This is a system token, not a per-component styling choice. The speed readout occupies an exact header-grid cell with the same divider stroke while the chrome is awake; when the header retires, the readout remains fixed in place and gains only the exposed lower corner treatment so it reads as a detached module rather than an unrelated overlay. At Tesla width, the running top bar begins with a fixed `68 px` product-mark report trigger and keeps the telemetry lane flexible: the speed module stays pinned to the right while the lane's leading `195 px` at `773 × 601` and `124 px` at `702 × 546` remain available for future low-priority appearance or status controls. X10 must select a contrast-safe mark variant when LIGHT top-bar tokens are implemented.
+Framed controls, cards, panels, and standalone buttons use one restrained `6 px` corner radius rather than completely sharp corners. This is a system token, not a per-component styling choice. The speed readout occupies an exact header-grid cell with the same divider stroke while the chrome is awake; when the header retires, the readout remains fixed in place and gains only the exposed lower corner treatment so it reads as a detached module rather than an unrelated overlay. At `773 × 601`, the running top bar is exactly `72 px` tall and uses the selected compact six-column anatomy: `184 px` mode, `174 px` speed, `90 px` network, `94 px` GPS, `120 px` Discover, and the remaining `111 px` Report cell. The separate 16 Road mark cell is omitted at this breakpoint and returns in the wide layout. X10 must select a contrast-safe mark variant when LIGHT top-bar tokens are implemented.
 
 The selected product identity is **16 Road**: a large path-outlined Orbitron
 weight-750 `16` framed by mirrored three-line roads using the Signal Gate's
@@ -111,7 +111,8 @@ Conventional buildings, stacked towers,
 balconies, cheap wireframe grids and excessive particles are excluded.
 
 `ATLAS 04` is the passenger-oriented bird's-eye city Drive Lab. It presents a
-palette-driven 3D OpenFreeMap field and a `300 px` journey dashboard loaded only
+palette-driven 3D OpenFreeMap field and a `320 px` journey dashboard with a
+`340 px` Canvas2D instrument, loaded only
 when ATLAS is selected. The first line contains Speed, Distance, Moving time and
 Average speed. The corrected vertical instrument contains a full-width
 Accel/Braking history, one proportional five-band Speed distribution, an
@@ -152,12 +153,13 @@ road name. Arrow rotation follows a continuously unwrapped heading so a north
 crossing takes the short visual path. The road is sampled from an invisible
 rendered `transportation_name` probe layer; no reverse-geocoding endpoint,
 coordinate persistence or diagnostic field is introduced.
-The Drive Lab collapses behind an icon-only `36 × 30 px` right-midpoint tab
-whose accessible label names the current action. Collapsing returns the full
+The Drive Lab collapses behind a `48 × 48 px` right-midpoint target containing
+an icon-only `36 × 30 px` tab whose accessible label names the current action. Collapsing returns the full
 map width; reopening restores the same dashboard and selected history range.
 
 `DISCOVER` is the separate passenger reading companion. Its owner-selected
-split surface keeps a `272 px` image-led place index at left and one selected
+split surface keeps a `246 px` image-led place index at left, a `52 px` heading
+band with a `24 px` title, `48 px` tools, `64 px` result rows, and one selected
 Wikipedia reader permanently open at right. The first supported browser
 language is used automatically, while an internal selector and search field
 remain available. Nearby, Ahead, and Region reuse only the ephemeral session
@@ -200,7 +202,7 @@ authorized Fractal Frequency and Axiom formulas from PRTCL commit
 importing the PRTCL runtime, UI, dependencies, brand, or assets. Murmuration is
 temporarily parked outside the active renderer and remains recoverable through
 Git history and the dated source-admission record. Fractal Frequency is the
-default. One compact `94 × 34 px` text-only `TYPE` button cycles Fractal and
+default. One compact `94 × 48 px` text-only `TYPE` button cycles Fractal and
 Axiom directly; it opens no dropdown or panel and remains separate from the
 shared `PALETTE` control. Road speed owns
 complete-form scale, point size, depth, and travel; both scale responses saturate
@@ -349,7 +351,7 @@ acceptance in the vehicle.
 | LIGHT/DARK/AUTO interface appearance | model foundation | independent versioned preference/reset, safe storage failure, browser-scheme priority, offline solar phase, twilight/interaction hold; visible control, DARK tokens and product application remain gated |
 | Network activity notice | model foundation | raw REPORT state separates browser hints from instrumented app activity/failure/recovery and active download/upload direction; quiet navbar presentation remains gated |
 | SOUNDTRACK fixed recordings | production prototype | server-side Jamendo catalogue and exact-ID no-store audio relays; fail-closed effect-compatible non-ND admission; three transient previous/current/next browser media elements; authored `1×` playback with no driving-derived selection or retiming; App/LAB playback and audio-clock attribution card; global footer FX for OPEN/UNDERWATER/BLOOM plus manual flanger, reverb, chorus, and bounded echo. Two horizontal top selectors switch Play the Road and Soundtrack without hiding the return route; Pace is a narrow vertical rail and all 15 genres use a readable `5 × 3` grid. The Lobo card states original artist authorship, Now Playing has a playback-bound activity mark, and Track Credit keeps its QR separate. Manual changes use the nominal `450 ms` equal-power model through normal skips and rapid retargeting, keep every genuinely audible credit visible, preserve a strict three-element bound, and expose a compact QR for the current public track page without exposing its stream URL. Target-vehicle tuning and physical listening remain pending; persistent/offline audio is prohibited. |
-| DISCOVER passenger index | production prototype | independent split passenger surface with a measured-height `272 px` rail, up to 15 image-led sources in one scroll, exact inline `+N MORE`, internal search, automatic browser language plus 14-language override, Nearby/Ahead/Region ordering, session-only coarse location, local distance/ETA, destination-only Google Maps directions and a complete localized Wikipedia article in a scriptless reader; no ATLAS handoff. Tesla acceptance pending. |
+| DISCOVER passenger index | production prototype | independent split passenger surface with a `246 px` rail, `52 px` heading band, `48 px` tools and `64 px` result rows, up to 15 image-led sources in one scroll, exact inline `+N MORE`, internal search, automatic browser language plus 14-language override, Nearby/Ahead/Region ordering, session-only coarse location, local distance/ETA, destination-only Google Maps directions and a complete localized Wikipedia article in a scriptless reader; no ATLAS handoff. Tesla acceptance pending. |
 | WAV-to-parameter editor | future research | source lab not validated on real audio |
 | Trip postcard | not confirmed | privacy conflict requires review |
 

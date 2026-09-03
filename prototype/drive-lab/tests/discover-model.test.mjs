@@ -160,13 +160,15 @@ test("Discover renders a self-contained split index with language and search con
   assert.match(appSource, /Tesla app → Locations → Navigate → Send to Car\./);
   assert.doesNotMatch(appSource, /href=\{mapsUrl\} target="_blank"/);
   assert.doesNotMatch(appSource, /onOpenAtlas/);
-  assert.match(styles, /\.discover-heading \{[\s\S]*?min-height: 38px/);
-  assert.match(styles, /\.discover-workspace \{ display: grid; grid-template-columns: 246px minmax\(0, 1fr\); height: calc\(100% - 38px\)/);
+  assert.match(styles, /\.discover-heading \{[\s\S]*?min-height: 52px/);
+  assert.match(styles, /\.discover-drawer \.drawer-panel \{[\s\S]*?display: grid;[\s\S]*?grid-template-rows: auto minmax\(0, 1fr\)/);
+  assert.match(styles, /\.discover-workspace \{[\s\S]*?height: auto;[\s\S]*?min-height: 0/);
   assert.match(styles, /\.discover-results > button \{[\s\S]*?grid-template-columns: 16px 44px minmax\(0, 1fr\)/);
   assert.match(styles, /\.discover-reader \{ display: grid/);
   assert.match(styles, /\.discover-article-frame \{[\s\S]*?transform: scale\(1\.2\)/);
-  assert.match(styles, /\.discover-view-tabs button \{[\s\S]*?min-height: 38px/);
-  assert.match(styles, /\.discover-results > button em \{[^\n]*font-size: 20px/);
+  assert.match(styles, /\.discover-view-tabs button \{[\s\S]*?min-height: var\(--touch-target\)/);
+  assert.match(styles, /\.discover-results > button \{ min-height: 64px/);
+  assert.match(styles, /\.discover-results > button em \{[^}]*font-size: var\(--type-meta\)/);
   assert.match(styles, /\.discover-navigation-card > div \{ display: grid; grid-template-columns: 176px minmax\(0, 1fr\)/);
 });
 

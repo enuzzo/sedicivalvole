@@ -521,10 +521,10 @@ test("Atlas interpolates cyclic values by the short route and never cuts across 
 });
 
 test("Atlas Drive Lab fits its selected telemetry hierarchy at the Tesla viewport", () => {
-  assert.match(styles, /\.atlas-field \{[\s\S]*?--atlas-panel-width: 300px;/);
+  assert.match(styles, /\.atlas-field \{[\s\S]*?--atlas-panel-width: 320px;/);
   assert.match(styles, /\.atlas-panel \{[\s\S]*?width: var\(--atlas-panel-width\);[\s\S]*?padding: 0;/);
   assert.match(styles, /\.atlas-drive-summary \{[\s\S]*?grid-template-columns: 1\.15fr 1fr 1fr 1\.15fr;/);
-  assert.match(styles, /\.atlas-drive-lab-canvas \{[\s\S]*?width: 100%;[\s\S]*?height: 358px;/);
+  assert.match(styles, /\.atlas-drive-lab-canvas \{[\s\S]*?width: 100%;[\s\S]*?height: 340px;/);
   assert.match(atlasSource, /appendAtlasJourneySample/);
   assert.match(atlasSource, /atlasJourneyDistanceMetres\(travelPointsRef\.current\)/);
   for (const label of ["ACCEL / BRAKING BALANCE", "SPEED BAND DISTRIBUTION", "DIRECTION HISTORY", "MOVING VS STOPPED", "ELEVATION"]) {
@@ -534,8 +534,19 @@ test("Atlas Drive Lab fits its selected telemetry hierarchy at the Tesla viewpor
   assert.match(atlasSource, /headingDistribution\.sectors\.forEach/);
   assert.match(atlasSource, /context\.arc\(roseCentre\.x/);
   assert.match(atlasSource, /° SECTORS/);
-  assert.match(atlasSource, /SHARE OF SELECTED RANGE/);
+  assert.match(atlasSource, /RANGE SHARE/);
+  assert.match(atlasSource, /ATLAS_CHART_FONT_FAMILY = '\"Space Grotesk\", ui-sans-serif, system-ui, sans-serif'/);
+  assert.match(atlasSource, /ATLAS_CHART_TYPE = Object\.freeze\(\{[\s\S]*?meta: 14,[\s\S]*?label: 14,[\s\S]*?data: 15,[\s\S]*?value: 16,/);
+  assert.match(atlasSource, /right - left < 200[\s\S]*?\["−15", "−10", "−5", "NOW"\]/);
+  assert.match(atlasSource, /aria-label="Distance">DIST\.<\/dt>/);
+  assert.match(atlasSource, /aria-label="Moving time">TIME<\/dt>/);
+  assert.match(atlasSource, /aria-label="Average speed">AVG SPD<\/dt>/);
+  assert.match(atlasSource, /fontVariantNumeric = "tabular-nums"/);
+  assert.match(atlasSource, /tabularDigitWidth = Math\.max\([\s\S]*?context\.measureText\(digit\)\.width/);
+  assert.doesNotMatch(atlasSource, /ui-monospace|\b(?:[0-9]|1[0-3])(?:\.[0-9]+)?px\b/);
   assert.doesNotMatch(atlasSource, /aria-live="polite"/);
+  assert.match(styles, /\.atlas-terrain-source \{[\s\S]*?min-width: 0;[\s\S]*?gap: 6px;/);
+  assert.match(styles, /\.atlas-terrain-source > span,[\s\S]*?\.atlas-terrain-source > a \{[\s\S]*?overflow: hidden;[\s\S]*?text-overflow: ellipsis;/);
 });
 
 test("Atlas Direction History preserves weighted moving headings as radial tiles", () => {
@@ -801,7 +812,9 @@ test("Atlas owns a minimal palette-driven OpenFreeMap style with mandatory attri
   assert.ok(style.layers.some((layer) => layer.id === "atlas-travel-route"));
   assert.ok(style.layers.some((layer) => layer.id === "atlas-vehicle-ripple"));
   assert.ok(style.layers.some((layer) => layer.id === "atlas-vehicle-dot"));
+  const placeLabels = style.layers.find((layer) => layer.id === "atlas-place-labels");
+  assert.deepEqual(placeLabels.layout["text-size"], ["interpolate", ["linear"], ["zoom"], 8, 14, 16, 16]);
   assert.equal(style.layers.some((layer) => layer.type === "raster"), false);
   assert.match(atlasSource, /AttributionControl\(\{ compact: false \}\)/);
-  assert.match(styles, /\.atlas-field \.maplibregl-ctrl-attrib \{[\s\S]*?font-size: 20px;[\s\S]*?opacity: \.46;/);
+  assert.match(styles, /\.atlas-field \.maplibregl-ctrl-attrib \{[^}]*font-size: var\(--type-meta\);[^}]*opacity: \.68;/);
 });

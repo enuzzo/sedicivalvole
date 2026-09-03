@@ -41,9 +41,9 @@ test("the top bar exposes the selected REPORT control with the pinned Tabler ico
   assert.match(reportMarkup, /aria-hidden="true"/);
   assert.match(reportMarkup, /<span>REPORT<\/span>/);
   assert.doesNotMatch(app.slice(topbarStart, topbarEnd), />DIAG</);
-  assert.match(styles, /\.report-button \{[\s\S]*?grid-template-rows: 19px auto[\s\S]*?gap: 4px/);
-  assert.match(styles, /\.report-button img \{[\s\S]*?width: 19px[\s\S]*?height: 19px/);
-  assert.match(styles, /\.topbar \{[\s\S]*?grid-template-columns: 72px auto minmax\(320px, 1fr\) 48px 54px 72px 58px/);
+  assert.match(styles, /\.report-button \{[^}]*grid-template-rows: 22px auto;[^}]*gap: 4px/);
+  assert.match(styles, /\.report-button img \{[^}]*width: 21px;[^}]*height: 21px/);
+  assert.match(styles, /\.topbar \{[^}]*grid-template-columns: 72px 184px minmax\(260px, 1fr\) 72px 80px 112px 108px/);
   assert.match(styles, /\.topbar-mark img \{[\s\S]*?width: 46px;[\s\S]*?height: 46px/);
   assert.equal(icon.length, 618);
   assert.equal(createHash("sha256").update(icon).digest("hex"), "d58847492f890b8beedc7eff543860219e0f382e46d2c2695107d64ae434b9ba");
@@ -112,7 +112,7 @@ test("raw JSON uses the drawer's single scroll context at readable size", () => 
 
   assert.match(rawStyles, /overflow: visible/);
   assert.match(rawStyles, /max-height: none/);
-  assert.match(rawStyles, /font-size: 20px/);
+  assert.match(rawStyles, /font-size: var\(--type-body\)/);
   assert.doesNotMatch(rawStyles, /overflow: auto/);
 });
 

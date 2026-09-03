@@ -98,11 +98,11 @@ test("the selected Instrument Deck resolves Music and Visual before START", () =
   assert.match(app, /Independent Jamendo artist recordings/);
   assert.match(app, /Visuals only\. No music\./);
   assert.doesNotMatch(selector, /ILLOBO FEATURED/i);
-  assert.match(styles, /\.launch-selector \{[\s\S]*?--sheet-surface: var\(--road-sheet-light-surface\)[\s\S]*?grid-template-rows: 72px minmax\(0, 1fr\) 68px[\s\S]*?width: min\(724px, calc\(100vw - 48px\)\)[\s\S]*?height: min\(620px, calc\(100dvh - 48px\)\)/);
-  assert.match(styles, /\.launch-selector-heading \{[\s\S]*?grid-template-columns: 54px max-content minmax\(0, 1fr\) 68px[\s\S]*?column-gap: 10px/);
-  assert.match(styles, /\.launch-selector-mark \{[\s\S]*?grid-column: 1[\s\S]*?width: 52px;[\s\S]*?height: 52px/);
-  assert.match(styles, /\.launch-selector-heading h1 \{[\s\S]*?grid-column: 2[\s\S]*?justify-self: start[\s\S]*?font-size: clamp\(27px, 4\.2vw, 32px\)[\s\S]*?text-align: left/);
-  assert.match(styles, /\.launch-selector-heading button \{[\s\S]*?grid-column: 4[\s\S]*?width: 68px[\s\S]*?min-height: 42px/);
+  assert.match(styles, /\.launch-selector \{[^}]*grid-template-rows: 64px minmax\(0, 1fr\) 64px;[^}]*height: min\(552px, calc\(100dvh - 24px\)\)/);
+  assert.match(styles, /\.launch-selector-heading \{[^}]*grid-template-columns: 52px max-content minmax\(0, 1fr\) 64px/);
+  assert.match(styles, /\.launch-selector-mark \{[^}]*width: 48px;[^}]*height: 48px/);
+  assert.match(styles, /\.launch-selector-heading h1 \{[^}]*font-size: clamp\(24px, 4vw, 28px\)/);
+  assert.match(styles, /\.launch-selector-heading button \{[^}]*width: 64px;[^}]*min-height: var\(--touch-target\)/);
   assert.match(styles, /\.launch-selector-body \{[\s\S]*?grid-template-columns: minmax\(0, \.8fr\) minmax\(0, 1\.2fr\)/);
   assert.match(styles, /\.launch-selector fieldset \{[\s\S]*?display: flex[\s\S]*?min-height: 0[\s\S]*?padding: 0 10px 8px[\s\S]*?overflow: hidden/);
   assert.match(selector, /className="launch-music-grid"/);
@@ -110,12 +110,12 @@ test("the selected Instrument Deck resolves Music and Visual before START", () =
   assert.match(styles, /\.launch-music-grid \{[^}]*grid-template-rows: repeat\(3, minmax\(0, 1fr\)\)[^}]*gap: 8px/);
   assert.match(styles, /\.launch-visual-grid \{[\s\S]*?grid-template-columns: repeat\(3, minmax\(0, 1fr\)\)[\s\S]*?grid-template-rows: repeat\(var\(--launch-visual-row-count, 2\), minmax\(0, 1fr\)\)[\s\S]*?gap: 8px/);
   assert.match(selector, /--launch-visual-row-count[\s\S]*?Math\.max\(2, Math\.ceil\(FLUX_VISUAL_CHOICES\.length \/ 3\)\)/);
-  assert.match(styles, /\.launch-choice-button \{[\s\S]*?gap: 3px;[\s\S]*?padding: 10px/);
+  assert.match(styles, /\.launch-choice-button \{[^}]*min-height: var\(--touch-target\);[^}]*padding: 8px 10px/);
   assert.match(styles, /\.launch-choice-button::before \{[\s\S]*?top: 7px;[\s\S]*?left: 10px;[\s\S]*?height: 3px/);
   assert.doesNotMatch(styles, /\.launch-choice-button\[aria-pressed="true"\] strong \{[^}]*padding-top/);
-  assert.match(styles, /\.launch-choice-button strong \{ font-size: 20px/);
-  assert.match(styles, /\.launch-choice-button small \{ color: var\(--sheet-muted\); font-size: 20px/);
-  assert.match(styles, /\.launch-selector legend \{[\s\S]*?font-size: 20px/);
+  assert.match(styles, /\.launch-choice-button strong \{ font-size: 17px/);
+  assert.match(styles, /\.launch-choice-button small \{ font-size: var\(--type-body\)/);
+  assert.match(styles, /\.launch-selector legend \{ font-size: var\(--type-label\)/);
   assert.match(styles, /--ui-radius: 6px/);
   for (const selectorName of [
     ".launch-selector",
@@ -137,8 +137,8 @@ test("the running Visual library uses a complete two-column Tesla catalogue", ()
   assert.match(app, /environment\.renderer === "shadergradient"[\s\S]*?<ShaderGradientCycleControl/);
   assert.match(app, /onSelectGradient=\{\(\) => setLaunchEnvironmentId\(lastGradientVariantRef\.current\)\}/);
   assert.match(styles, /\.environment-drawer \.score-list \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\); gap: 8px; margin-top: 12px; \}/);
-  assert.match(styles, /\.environment-drawer \.score-entry \{[\s\S]*?min-height: 86px;[\s\S]*?padding: 11px 13px;/);
-  assert.match(styles, /\.environment-drawer \.score-entry-number,[\s\S]*?font-size: 20px/);
+  assert.match(styles, /\.environment-drawer \.score-entry \{ min-height: 68px/);
+  assert.match(styles, /\.environment-drawer \.score-entry-number \{ font-size: var\(--type-meta\)/);
 });
 
 test("SOUNDTRACK stays visible while START remains independent from remote audio readiness", () => {
@@ -187,9 +187,9 @@ test("splash metadata is legible and the complete group sits higher", () => {
 
   assert.match(styles, /\.splash-action \{[\s\S]*?bottom: 24px/);
   assert.match(styles, /\.splash-action > small \{[\s\S]*?text-shadow: 0 1px 2px #000, 0 0 8px #000/);
-  assert.match(styles, /\.splash-credit \{[\s\S]*?font-size: 20px/);
-  assert.match(styles, /\.splash-repository \{[\s\S]*?font-size: 20px/);
-  assert.match(styles, /\.splash-privacy \{[\s\S]*?font-size: 20px/);
+  assert.match(styles, /\.splash-action > \.splash-credit,[\s\S]*?font-size: var\(--type-meta\)/);
+  assert.match(styles, /\.splash-repository,[\s\S]*?font-size: var\(--type-meta\)/);
+  assert.match(styles, /\.splash-privacy \{ font-size: var\(--type-meta\)/);
   assert.match(styles, /\.splash-privacy,[\s\S]*?\.splash-safety small \{ display: none; \}/);
 });
 
@@ -402,7 +402,7 @@ test("the Tesla Music drawer uses whole-surface controls and scrolls instead of 
   assert.match(styles, /\.soundtrack-now-label \{[^}]*white-space: nowrap/);
   assert.match(styles, /\.soundtrack-now-label img \{[^}]*filter: brightness\(0\) invert\(1\)/);
   assert.match(styles, /@media \(min-width: 651px\) and \(max-height: 650px\)/);
-  assert.match(styles, /\.music-drawer-workspace \{ grid-template-rows: 64px minmax\(0, 1fr\);/);
+  assert.match(styles, /\.music-drawer-workspace \{ grid-template-rows: 52px minmax\(0, 1fr\);/);
   assert.match(styles, /\.music-source-switch \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\); \}/);
   assert.match(styles, /\.play-road-library \.score-list \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\);/);
   assert.match(styles, /\.play-road-library \.score-list-item\.is-generative \{ grid-column: 1 \/ -1; \}/);
@@ -410,9 +410,9 @@ test("the Tesla Music drawer uses whole-surface controls and scrolls instead of 
   assert.match(soundtrack, /Jamendo soundtrack browser/);
   assert.doesNotMatch(soundtrack, />JAMENDO LIBRARY<\/small><h3 id="soundtrack-library-title">Browse and play<\/h3>/);
   assert.match(styles, /\.music-drawer-content \{ overflow-y: auto !important; \}/);
-  assert.match(styles, /\.soundtrack-track-list > button \{ min-height: 72px; \}/);
-  assert.match(styles, /\.soundtrack-filter-row > button \{ min-height: 58px; \}/);
-  assert.match(styles, /\.soundtrack-choice-copy > strong,[\s\S]*?font-size: 24px/);
+  assert.match(styles, /\.soundtrack-track-list > button \{ min-height: 60px; \}/);
+  assert.match(styles, /\.soundtrack-filter-row > button \{ min-height: var\(--touch-target\); \}/);
+  assert.match(styles, /\.soundtrack-choice-copy > strong,[\s\S]*?font-size: var\(--type-active\)/);
   assert.match(styles, /\.soundtrack-panel-body > \.privacy-note \{ display: none; \}/);
 });
 
@@ -426,9 +426,9 @@ test("catalog names use readable display labels and align their numbers on one b
   assert.match(app, /className="control-catalog-number" title=\{scoreSource\(selected\.id\)\.note\}/);
   assert.match(app, /<strong>\{displayLabel\(entry\)\}<\/strong>/);
   assert.match(app, /\{displayLabel\(genre\)\}/);
-  assert.match(styles, /\.control-value \{[\s\S]*?display: flex;[\s\S]*?align-items: baseline;[\s\S]*?font-size: 24px/);
+  assert.match(styles, /\.control-value \{[^}]*font-size: var\(--type-active\)/);
   assert.match(styles, /\.control-catalog-number \{[^}]*font: inherit/);
-  assert.match(styles, /\.score-entry-number \{[^}]*font-size: 20px/);
+  assert.match(styles, /\.score-entry-number,[\s\S]*?font-size: var\(--type-meta\)/);
 });
 
 test("launch copy has a continuous white-to-red travelling wave", () => {
@@ -552,15 +552,15 @@ test("the vehicle gets persistent Now Playing, stable Media Session actions, and
   assert.match(app, /className=\{backdropClass\}[\s\S]*?onClick=\{onClose\}/);
   assert.match(app, /className="manual-effects-backdrop"[\s\S]*?onClick=\{onClose\}/);
   assert.match(styles, /\.drawer-panel \{[\s\S]*?touch-action: pan-y/);
-  assert.match(styles, /\.persistent-transport\.now-playing-dock \{[\s\S]*?bottom: 100px/);
+  assert.match(styles, /\.persistent-transport\.now-playing-dock \{[^}]*bottom: var\(--chrome-size\)/);
   assert.match(styles, /\.persistent-transport\.now-playing-dock \{[\s\S]*?z-index: 35/);
   assert.match(styles, /\.app\.modal-open \.persistent-transport\.now-playing-dock \{ bottom: 12px; \}/);
-  assert.match(styles, /\.app\.modal-open\.has-now-playing \.drawer-panel \{ padding-bottom: 124px; \}/);
+  assert.match(styles, /\.app\.modal-open\.has-now-playing \.drawer-panel \{ padding-bottom: 104px; \}/);
   assert.match(app, /phase === "running" && currentTrack \? \([\s\S]*?className="now-playing-dock persistent-transport control-layer"/);
   assert.match(styles, /\.controls-resting \.persistent-transport \{[\s\S]*?opacity: 0;[\s\S]*?pointer-events: none/);
   assert.match(app, /soundtrackSnapshot\?\.previous\?\.imageUrl/);
   assert.match(app, /soundtrackSnapshot\?\.next\?\.imageUrl/);
-  assert.match(styles, /\.now-playing-copy strong \{[^}]*font-size: 24px/);
+  assert.match(styles, /\.now-playing-copy strong \{[^}]*font-size: var\(--type-active\)/);
   assert.match(styles, /\.drawer-panel\.is-dragging/);
 });
 

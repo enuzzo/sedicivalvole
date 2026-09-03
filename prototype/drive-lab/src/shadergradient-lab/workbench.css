@@ -3,7 +3,18 @@
   box-sizing: border-box;
 }
 
-.shadergradient-lab { --font-size-floor: 20px; font-size: var(--font-size-floor); }
+.shadergradient-lab {
+  --type-meta: 14px;
+  --type-label: 15px;
+  --type-body: 16px;
+  --type-action: 16px;
+  --type-active: 18px;
+  --type-title: 24px;
+  --type-value: 34px;
+  --touch-target: 48px;
+  --touch-primary: 56px;
+  font-size: var(--type-body);
+}
 
 .shadergradient-lab button,
 .shadergradient-lab select,
@@ -16,6 +27,11 @@
 .shadergradient-lab select,
 .shadergradient-lab a {
   -webkit-tap-highlight-color: transparent;
+}
+
+.shadergradient-lab button,
+.shadergradient-lab select {
+  min-height: var(--touch-target);
 }
 
 .shadergradient-lab {
@@ -74,7 +90,7 @@
 .sg-kicker {
   display: block;
   margin-bottom: 5px;
-  font: 650 20px/1.2 'Orbitron', sans-serif;
+  font: 650 var(--type-label)/1.2 'Orbitron', sans-serif;
   letter-spacing: 0.15em;
 }
 
@@ -86,7 +102,7 @@
 }
 
 .sg-brand h1 {
-  font-size: clamp(27px, 3vw, 48px);
+  font-size: clamp(var(--type-title), 3vw, 28px);
   line-height: 0.98;
   letter-spacing: -0.045em;
 }
@@ -94,7 +110,7 @@
 .sg-license {
   padding: 8px 10px;
   border: 1px solid rgb(255 255 255 / 0.65);
-  font: 650 20px/1 'Orbitron', sans-serif;
+  font: 650 var(--type-meta)/1 'Orbitron', sans-serif;
   letter-spacing: 0.1em;
   white-space: nowrap;
   backdrop-filter: blur(8px);
@@ -111,18 +127,18 @@
 }
 
 .sg-readout > span {
-  font: 650 20px/1.4 'Orbitron', sans-serif;
+  font: 650 var(--type-label)/1.4 'Orbitron', sans-serif;
   letter-spacing: 0.14em;
 }
 
 .sg-readout strong {
-  font-size: clamp(76px, 12vw, 176px);
-  line-height: 0.82;
-  letter-spacing: -0.08em;
+  font-size: clamp(var(--type-value), 6vw, 38px);
+  line-height: 0.9;
+  letter-spacing: -0.045em;
 }
 
 .sg-readout small {
-  font: 650 20px/1 'Orbitron', sans-serif;
+  font: 650 var(--type-active)/1 'Orbitron', sans-serif;
   letter-spacing: 0.08em;
 }
 
@@ -130,7 +146,7 @@
   right: 30px;
   bottom: 26px;
   left: 30px;
-  font-size: 20px;
+  font-size: var(--type-body);
   font-weight: 580;
   color: rgb(255 255 255 / 0.9);
   text-align: right;
@@ -169,7 +185,7 @@
 }
 
 .sg-inspector h2 {
-  font-size: 28px;
+  font-size: var(--type-title);
   line-height: 1;
   letter-spacing: -0.035em;
 }
@@ -185,7 +201,7 @@
 
 .sg-section h3 {
   margin-bottom: 13px;
-  font: 650 20px/1.25 'Orbitron', sans-serif;
+  font: 650 var(--type-label)/1.25 'Orbitron', sans-serif;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -210,18 +226,19 @@
 .sg-presets button {
   display: grid;
   gap: 3px;
+  min-height: 60px;
   padding: 12px 13px;
   text-align: left;
 }
 
 .sg-presets button span {
-  font-size: 20px;
+  font-size: var(--type-active);
   font-weight: 680;
 }
 
 .sg-presets button small {
   color: #a9a69b;
-  font-size: 20px;
+  font-size: var(--type-meta);
   line-height: 1.35;
 }
 
@@ -250,7 +267,7 @@
 .sg-color,
 .sg-text-control,
 .sg-url-control {
-  font-size: 20px;
+  font-size: var(--type-label);
   font-weight: 620;
 }
 
@@ -271,8 +288,9 @@
 .sg-text-control input,
 .sg-url-control textarea {
   width: 100%;
-  min-height: 42px;
+  min-height: var(--touch-target);
   padding: 0 10px;
+  font-size: var(--type-action);
   border: 1px solid #45433b;
   border-radius: 0;
   color: #f4f0e8;
@@ -300,9 +318,9 @@
 
 .sg-segmented button,
 .sg-toggle-row button {
-  min-height: 39px;
+  min-height: var(--touch-target);
   padding: 8px 7px;
-  font-size: 20px;
+  font-size: var(--type-action);
   font-weight: 680;
 }
 
@@ -333,7 +351,7 @@
 .sg-range input {
   grid-column: 1 / -1;
   width: 100%;
-  height: 18px;
+  height: var(--touch-target);
   margin: 0;
   accent-color: #ff6f61;
   cursor: ew-resize;
@@ -352,7 +370,7 @@
 
 .sg-color input {
   width: 100%;
-  height: 44px;
+  height: var(--touch-target);
   padding: 2px;
   border: 1px solid #45433b;
   border-radius: 0;
@@ -362,7 +380,7 @@
 
 .sg-color code {
   color: #d3d0c7;
-  font: 20px/1 'Orbitron', monospace;
+  font: var(--type-meta)/1 'Orbitron', monospace;
 }
 
 .sg-toggle-row {
@@ -380,9 +398,9 @@
 
 .sg-toggle-grid button,
 .sg-toggle-column button {
-  min-height: 42px;
+  min-height: var(--touch-target);
   padding: 8px 10px;
-  font-size: 20px;
+  font-size: var(--type-action);
   font-weight: 680;
 }
 
@@ -405,7 +423,7 @@
 
 .sg-subgroup h4 {
   color: #d3d0c7;
-  font: 650 20px/1.2 'Orbitron', sans-serif;
+  font: 650 var(--type-label)/1.2 'Orbitron', sans-serif;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
@@ -425,7 +443,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  min-height: 54px;
+  min-height: var(--touch-target);
   padding: 17px 0;
   cursor: pointer;
   list-style: none;
@@ -438,7 +456,7 @@
 .sg-details > summary::after {
   content: '+';
   color: #ff6f61;
-  font: 650 20px/1 'Orbitron', sans-serif;
+  font: 650 var(--type-active)/1 'Orbitron', sans-serif;
 }
 
 .sg-details[open] > summary::after {
@@ -451,7 +469,7 @@
 
 .sg-details > summary span {
   color: #ff6f61;
-  font-size: 20px;
+  font-size: var(--type-meta);
   font-weight: 650;
   white-space: nowrap;
 }
@@ -463,7 +481,7 @@
 .sg-note {
   margin: 12px 0 0;
   color: #858278;
-  font-size: 20px;
+  font-size: var(--type-body);
   line-height: 1.45;
 }
 
@@ -481,7 +499,7 @@
 
 .sg-import-row small {
   color: #858278;
-  font-size: 20px;
+  font-size: var(--type-meta);
   line-height: 1.35;
 }
 
@@ -496,22 +514,26 @@
 }
 
 .sg-button {
-  min-height: 42px;
+  min-height: var(--touch-target);
   padding: 0 15px;
-  font: 650 20px/1 'Orbitron', sans-serif;
+  font: 650 var(--type-action)/1 'Orbitron', sans-serif;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .sg-button.is-primary {
+  min-height: var(--touch-primary);
   border-color: #f4f0e8;
   color: #111;
   background: #f4f0e8;
 }
 
 .sg-actions a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-target);
   color: #f4f0e8;
-  font-size: 20px;
+  font-size: var(--type-action);
   font-weight: 650;
   text-underline-offset: 4px;
 }
@@ -519,7 +541,7 @@
 .sg-legal {
   margin: 18px 0 0;
   color: #827f75;
-  font-size: 20px;
+  font-size: var(--type-meta);
   line-height: 1.5;
 }
 
@@ -571,7 +593,7 @@
   }
 
   .shadergradient-lab.is-embedded .sg-brand h1 {
-    font-size: 28px;
+    font-size: var(--type-title);
   }
 
   .shadergradient-lab.is-embedded .sg-readout {
@@ -579,14 +601,14 @@
   }
 
   .shadergradient-lab.is-embedded .sg-readout strong {
-    font-size: clamp(64px, 12vw, 92px);
+    font-size: clamp(var(--type-value), 6vw, 38px);
   }
 
   .shadergradient-lab.is-embedded .sg-stage-note {
     right: 18px;
     bottom: 16px;
     left: 18px;
-    font-size: 20px;
+    font-size: var(--type-body);
   }
 
   .shadergradient-lab.is-embedded .sg-inspector {
@@ -598,7 +620,7 @@
   }
 
   .shadergradient-lab.is-embedded .sg-inspector h2 {
-    font-size: 22px;
+    font-size: var(--type-title);
   }
 
   .shadergradient-lab.is-embedded .sg-inspector-header + .sg-section {
@@ -610,7 +632,7 @@
   }
 
   .shadergradient-lab.is-embedded .sg-details > summary {
-    min-height: 44px;
+    min-height: var(--touch-target);
     padding: 12px 0;
   }
 
@@ -619,7 +641,7 @@
   }
 
   .shadergradient-lab.is-embedded .sg-presets button {
-    min-height: 48px;
+    min-height: var(--touch-target);
     padding: 8px 10px;
   }
 
@@ -636,17 +658,5 @@
   }
 }
 
-/* The protected workbench shares the public product's readable type floor.
-   Inspector density is handled with scrolling and width, never tiny copy. */
-.shadergradient-lab { grid-template-columns: minmax(0, 1fr) minmax(500px, 36vw); }
-.sg-inspector { overflow-y: auto; }
-.sg-inspector button,
-.sg-inspector select,
-.sg-inspector input,
-.sg-inspector textarea { font-size: 20px; }
-.sg-inspector h1,
-.sg-inspector h2 { font-size: clamp(28px, 3vw, 42px); }
-
-@media (max-width: 900px) {
-  .shadergradient-lab { grid-template-columns: minmax(0, 1fr) 460px; overflow-x: auto; }
-}
+/* Swiss Compact keeps the protected inspector editorial and dense while every
+   interactive control retains a 48 px hit area (56 px for the primary action). */

@@ -76,7 +76,8 @@ dated study documents.
   stacked towers, high cloud slabs and scene-wide particles are absent.
 - ATLAS dynamically loads MapLibre only when selected, draws a minimal
   palette-owned OpenFreeMap vector style with 3D buildings, and pairs it with
-  the owner-selected Drive Lab. Its `300 px` dashboard keeps Speed, Distance,
+  the owner-selected Drive Lab. Its Swiss Compact `320 px` dashboard and
+  `340 px` Canvas2D instrument keep Speed, Distance,
   Moving time and Average speed in one first line; Accel/Braking balance,
   proportional five-band speed distribution, an eight-sector Direction History
   rose, compact Open-Meteo/Copernicus GLO-90 Elevation and Moving/Stopped follow
@@ -120,10 +121,11 @@ dated study documents.
   trip and remains legible while zooming out; a `4096`-point ceiling compacts
   older detail instead of deleting the trip origin. One interpolated point at
   the route head pulses once per second with a restrained expanding ripple. The
-  Drive Lab collapses behind a persistent icon-only `36 × 30 px` midpoint tab
-  with an accessible action name, giving the complete map width back without a
-  full-height rail. Mandatory attribution remains a low translucent strip
-  above the footer and now respects the universal `20 px` legibility floor.
+  Drive Lab collapses behind a persistent `48 × 48 px` target containing an
+  icon-only `36 × 30 px` midpoint tab with an accessible action name, giving
+  the complete map width back without a full-height rail. Mandatory attribution
+  remains a low translucent strip above the footer and uses the high-contrast
+  `14 px` metadata role.
   Exact local and canonical `773 × 601` QA at checkpoint
   `7c9df06`, build `20260901-2012`, proves the corrected vertical no-scroll
   hierarchy, explicit empty-state axes/legends, three-range cycle, full-map
@@ -274,7 +276,8 @@ dated study documents.
   is `130 km/h`, with Aperture visibly forming a tunnel near `40 km/h`.
 - The main experience retains an icon-only Mute control, GPS/Demo source
   selection, vertically ordered Music and Visual libraries, a shared `PALETTE`
-  control, and coordinate-free diagnostics in a measured 64 px footer.
+  control, and coordinate-free diagnostics in the measured `72 px` Swiss
+  Compact footer.
 - Signal Gate launches through the approved compact `360 × 160 px` flat surface
   at the Tesla split viewport. Its `42 px` 16 Road mark, textual wordmark and full-width
   `PLAY THE ROAD` field form one semantic gesture with no simulated controls.
@@ -337,12 +340,12 @@ dated study documents.
   OFL-1.1. Its deliberate `400–700` hierarchy and tabular numerals remain intact.
   Orbitron is restored only for exact textual `sedicivalvole` wordmarks in the
   launch surface, Instrument Deck and owner LAB.
-- The running top bar now uses the existing transparent 16 Road product mark
-  alone as its report trigger. Its fixed `68 px` cell and centered `44 px` mark
-  replace the former `263 px` textual wordmark at `773 × 601`, leaving a measured
-  `195 px` lane before telemetry; the annotated `702 × 546` viewport retains
-  `124 px`. GPS, telemetry and REPORT keep their exact prior positions. Future
-  X10 appearance controls may use this lane but are not silently implemented.
+- The running top bar uses the existing transparent 16 Road product mark alone
+  in the wide layout. At `773 × 601`, Swiss Compact hides that separate mark
+  cell and uses an exact `184 / 174 / 90 / 94 / 120 / 111 px` grid for mode,
+  speed, network, GPS, Discover, and Report. The speed readout remains in its
+  exact grid cell when the surrounding chrome retracts. Future X10 appearance
+  controls must preserve this anatomy and are not silently implemented.
 - The launch wordmark uses Orbitron `750`, responsive `26–32 px` sizing and
   restrained `-0.02em` tracking beside the `42 px` 16 Road mark. `PLAY THE ROAD`
   remains Space Grotesk `600` with zero added tracking. The product band is
@@ -555,11 +558,12 @@ dated study documents.
   Deterministic pending-promise coverage and exact local/canonical `773 × 601`
   transport QA pass; physical braking audibility and degraded-network recovery
   remain Tesla tests `R4-08` and `R7-14`.
-- **The running footer follows Automotive Glance geometry.** MUTE and FX are
+- **The running footer follows Swiss Compact geometry.** MUTE and FX are
   adjacent equal-width controls with one direct `LABEL / ON–OFF` hierarchy,
   both announce a 1.5-second centred status, and the two-row palette remains at
-  the far-right edge. The footer is `100 px` at `773 × 601`; obsolete `GLOBAL`
-  and active-count microcopy is hidden before any label may shrink below `20 px`.
+  the far-right edge. The footer is `72 px` at `773 × 601`; obsolete `GLOBAL`
+  and active-count microcopy stays hidden while `15 px` labels and `18 px`
+  active names preserve their distinct roles.
   After a direct footer action or the final Music, Visual, diagnostics, GPS-help,
   or Performance-FX surface closes, focus returns to the neutral running
   experience instead of its trigger. Open surfaces and keyboard navigation keep
@@ -862,8 +866,8 @@ surrounding launch/vehicle experience.
   candidate and final read-only postflight reports `remote_writes=NONE`.
   Physical-Tesla Media Session behavior and receipt of its explicitly sent
   diagnostic remain open.
-- Soundtrack's black source readout is a `180 px` speed-only module at the
-  current `773 × 601` Automotive Glance breakpoint. FLUX, BPM and energy are
+- Soundtrack's black source readout is a `174 px` speed-only module at the
+  current `773 × 601` Swiss Compact breakpoint. FLUX, BPM and energy are
   absent in this mode. The persistent lower transport shares the chrome
   lifecycle and becomes hidden/non-interactive after idle. Follow-up checkpoint
   `92e581b` prevents GPS/demo motion, acceleration, braking, regeneration and
@@ -879,8 +883,8 @@ surrounding launch/vehicle experience.
 - The navbar adds a compact `NET` state derived from browser hints. It is
   explicitly an estimate, not cellular signal strength, and it does not create
   a continuous ping service.
-- Discover uses a measured `38 px` header, `246 px` left rail and `16 px`
-  result-number track at `773 × 601`. Navigation QR URLs use Google Maps search
+- Discover uses a `52 px` header band with a `24 px` title, `48 px` tools,
+  `64 px` result rows and a `246 px` left rail at `773 × 601`. Navigation QR URLs use Google Maps search
   without `dir_action`, origin or automatic route start.
 - APERTURE's four perspective planes share one longitudinal grid origin so
   depth cuts align at the corners. Splash and running Visual catalogues omit
@@ -979,6 +983,34 @@ single-line pending-network START status, a top-hit-tested Now Playing dock abov
 the Music drawer, and real Jamendo `Make It New → I Want You → Make It New`
 Back/Forward navigation without warning/error. This is strong browser evidence,
 not a substitute for the remaining physical-Tesla listening and integration gates.
+
+### 2026-09-03 Swiss Compact working checkpoint
+
+The owner selected Direction 1 / **Swiss Compact** as the replacement for the
+Automotive Glance typography calibration. The current working source applies it
+across the public App, diagnostics, Discover, ATLAS, owner LAB, and the
+ShaderGradient workbench without changing audio, Media Session, Now Playing
+identity, renderer ownership, remote-source, or licensing boundaries.
+
+- Semantic roles are `14 px` metadata, `15 px` labels, `16 px` body/actions,
+  `18 px` active names, `24 px` titles, and `34 px` primary values. The
+  typography contract asserts those roles rather than a universal minimum.
+- Important actions use `48 px` targets and primary actions use `56 px`, so
+  interaction geometry remains independent from typography.
+- At `773 × 601`, the top bar, Now Playing band, and footer are each `72 px`.
+  Now Playing is `532 px` wide with `56 px` artwork and `48 / 56 / 48 px`
+  previous/play-pause/next targets.
+- ATLAS uses a `320 px` panel, `340 px` canvas, tabular Canvas2D metrics, and
+  `14–16 px` map/place labeling. DISCOVER uses a `52 px` heading band,
+  `48 px` tools, and `64 px` result rows.
+- Space Grotesk remains the reading and control face; Orbitron remains isolated
+  to the established project wordmarks. Editorial names remain Title Case,
+  functional micro-labels remain uppercase, and changing values remain tabular.
+
+The canonical evidence immediately above remains the last published state until
+the new exact-source build, cache identity, and local/live viewport matrix are
+recorded. Physical-Tesla legibility, touch, motion, Media Session, and listening
+acceptance remain open even after browser QA passes.
 
 ## Open work
 

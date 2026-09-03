@@ -15,6 +15,9 @@ a new session can continue without reviving superseded prototypes.
 - latest product checkpoint: `be74aa6`; published source/documentation
   checkpoint: `cc6afd0`; canonical build: `20260903-1155`. Automotive Glance,
   buffer-first Soundtrack, and always-above-drawers Now Playing are canonical;
+- current working candidate: owner-selected Direction 1 / **Swiss Compact**;
+  it supersedes Automotive Glance in source but is not canonical until its
+  exact-source build and deployment evidence are recorded;
 - repository code, comments, documentation, interface copy, and logs are English;
 - `.env` and local variants must never be read, printed, diffed, logged, or committed;
 - `_references/` is local and ignored; never copy its external material into Git.
@@ -29,6 +32,10 @@ a new session can continue without reviving superseded prototypes.
 - Never imply access to real RPM, throttle, gear, CAN, motor load, or coordinates.
 - The verified Tesla split viewport is `773 × 601` CSS pixels. Product-visible
   validation must include that size and the target vehicle.
+- Swiss Compact uses semantic `14 / 15 / 16 / 18 / 24 / 34 px` typography,
+  `48 px` action targets, `56 px` primary targets, and `72 px` top, Now Playing,
+  and bottom bands at that viewport. Do not restore the retired universal
+  `20 px` type floor or its `100 px` chrome.
 - Functional micro-labels remain uppercase, but editorial Music and Visual names
   use dedicated Title Case display labels in the launcher, footer, and pickers.
   Footer names and catalogue numbers share one baseline and type size; canonical
@@ -684,6 +691,27 @@ Do not mark `R10C-02`, `R10C-03`, `R10C-06`, or `R10C-07` complete from these
 office results. Their code/model/canonical prerequisites pass, but weak-network
 Tesla playback, native mini-player controls and sent report receipt, phone/car
 QR handoff, and moving APERTURE seams respectively remain physical evidence.
+
+### Current working candidate: Swiss Compact
+
+The selected Direction 1 calibration is applied across the public App,
+diagnostics, Discover, ATLAS, owner LAB, and ShaderGradient workbench. It keeps
+Space Grotesk and tabular numerals, restores editorial scale through explicit
+roles instead of one minimum, and leaves all audio, Media Session, Now Playing
+identity, renderer, third-party, and licensing boundaries unchanged.
+
+At `773 × 601`, the top grid is `184 / 174 / 90 / 94 / 120 / 111 px`; the
+top bar, `532 px`-wide Now Playing dock, and footer are each `72 px`. The dock
+uses `56 px` artwork and `48 / 56 / 48 px` transport targets. ATLAS expands to
+a `320 px` panel with a `340 px` canvas and a `48 × 48 px` collapse target
+around the existing `36 × 30 px` visual tab. DISCOVER uses a `52 px` heading
+band, `48 px` tools, and `64 px` result rows.
+
+Before replacing the canonical checkpoint above, record the final test/build
+totals, source commit, build stamp, cache identity, exact local/live
+`773 × 601` and `1280 × 720` comparison, and empty Browser warning/error state.
+Physical-Tesla legibility, touch, motion, Media Session, and listening remain
+separate gates.
 
 ## Verification
 

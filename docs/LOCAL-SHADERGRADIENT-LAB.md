@@ -36,6 +36,10 @@ first header selector. Choose any `PRTCL / …` option in the same selector to
 return to the calibration surface. The embedded layout keeps a full-height
 side inspector on desktop and at the agreed `773 × 601` Tesla viewport; the
 inspector scrolls independently without moving or shrinking the shader stage.
+Both standalone and embedded layouts share Swiss Compact's semantic
+`14 / 15 / 16 / 18 / 24 / 34 px` hierarchy, `48 px` action targets, and
+`56 px` primary targets, so dense parameter evidence remains subordinate to
+the editorial speed and section readouts without weakening touch geometry.
 
 ## Complete control inventory
 

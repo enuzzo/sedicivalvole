@@ -1175,8 +1175,8 @@ export function createAtlasStyle(palette, appearance = "palette") {
         layout: {
           "text-field": ["coalesce", ["get", "name:it"], ["get", "name"]],
           "text-font": ["Noto Sans Regular"],
-          "text-size": ["interpolate", ["linear"], ["zoom"], 8, 10, 16, 14],
-          "text-letter-spacing": 0.08,
+          "text-size": ["interpolate", ["linear"], ["zoom"], 8, 14, 16, 16],
+          "text-letter-spacing": 0.04,
         },
         paint: {
           "text-color": colors.label,
