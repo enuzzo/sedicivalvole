@@ -27,12 +27,13 @@ Public development repository: [github.com/enuzzo/sedicivalvole](https://github.
 `sedicivalvole` turns speed, sound, and light into an atmospheric, useful, and memorable in-car experience. It is not a generic dashboard. Two equal primary modes share one motion signal and safety model while offering deliberately different audio and visual identities.
 
 The canonical development build is available at [sedicivalvole.app](https://sedicivalvole.app/).
-The current canonical identity is version `0.0.0`, commit `bd572b2`, build
-`20260903-1752`; exact live `773 × 601` QA passes Road Sheet
-LIGHT/DARK/AUTO, palette isolation, focus, and on-screen transport. Native Tesla
-Media Session remains open, and physical listening on that build failed with
-continuous Jamendo/Illobo stuttering despite measured network headroom. Local
-corrective checkpoints `89d3f15` and `0d5bb05` are not yet canonical.
+The current canonical identity is version `0.0.0`, commit `edde367`, build
+`20260903-1953`; exact live `773 × 601` QA passes Road Sheet
+LIGHT/DARK/AUTO, the restored compact Music layout, deferred inactive score
+worklets, palette isolation, focus, and on-screen transport. Native Tesla Media
+Session remains open, and the Jamendo/Illobo stutter correction now requires
+continuous physical listening after build `20260903-1752` failed despite
+measured network headroom.
 
 ## What exists today
 

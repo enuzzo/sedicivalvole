@@ -622,9 +622,10 @@ dated study documents.
   [`EIGHTIES-SAMPLE-AUDIT-2026-08-29.md`](EIGHTIES-SAMPLE-AUDIT-2026-08-29.md).
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
-- The canonical live product is version `0.0.0`, implementation checkpoint
-  `6cda7ee`, deployed source/documentation checkpoint `bd572b2`, build
-  `20260903-1752`. It publishes Road Sheet LIGHT/DARK/AUTO and Swiss Compact
+- The canonical live product is version `0.0.0`, audio implementation
+  checkpoint `89d3f15`, compact-layout checkpoint `0d5bb05`, deployed
+  source/documentation checkpoint `edde367`, build `20260903-1953`. It
+  publishes Road Sheet LIGHT/DARK/AUTO and Swiss Compact
   across the public product, diagnostics, Discover, ATLAS, owner LAB package,
   and ShaderGradient workbench. It also hardens the shared Media Session and
   on-screen transport while preserving the audio-source, renderer,
@@ -1061,7 +1062,7 @@ JavaScript, and CSS are byte-identical to the candidate. Exact live
 Local `702 × 546` and `1280 × 720` responsive QA also passes. Physical-Tesla
 native-control, listening, distance, glare, and touch evidence remains open.
 
-### 2026-09-03 Tesla Soundtrack stutter correction awaiting publication
+### 2026-09-03 Tesla Soundtrack stutter correction published
 
 The first physical-Tesla pass on canonical build `20260903-1752` failed
 continuous playback: both Jamendo and Illobo stuttered repeatedly after two or
@@ -1088,14 +1089,18 @@ all 15 genres at exact `773 × 601`. Splash card titles share their row top, and
 the Jamendo three-cover stack no longer enters its copy column. Headless local
 Chrome proves the exact viewport, paired columns and zero horizontal overflow;
 the aggregate suite passes `617/617` and both production builds pass. No office
-test can close the continuous Tesla listening gate. Retest with Gradient and a
-lighter visual after publication, and send the existing diagnostic if any
-stutter remains.
+test can close the continuous Tesla listening gate. The clean superseding
+canonical build is `20260903-1953` from source/documentation checkpoint
+`edde367`; protected publication, independent postflight, canonical HTML/JS/CSS
+byte identity, cache `MISS`, trusted-input exact-viewport layout and zero
+FRACTURE/BLOOM worklet requests during Soundtrack startup pass. Retest with
+Gradient and a lighter visual, and send the existing diagnostic if any stutter
+remains.
 
 ## Open work
 
-1. Execute live Tesla `R4-07`–`R4-08`, the canonical `10A` / `10B` / `10C`
-   codes, and row 11 on final build `20260903-1752`. Execute Tesla tests
+1. Execute live Tesla `R4-07`–`R4-08`, `R7-15`, the canonical `10A` / `10B` / `10C`
+   codes, and row 11 on final build `20260903-1953`. Execute Tesla tests
    `R1-01`–`R1-03`, `R4-01`–`R4-08`,
    `R5-01`–`R5-07`, `R7-01`–`R7-14`, `R8-01`–`R8-03`, `R9-01`–`R9-07`,
    `R10-00A`–`R10-06`, `R10C-01`–`R10C-08`, `R11-01`–`R11-06`, `R11A-01`, and

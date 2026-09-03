@@ -14,7 +14,7 @@ a new session can continue without reviving superseded prototypes.
 - latest verified publication evidence: first entry in [`DEPLOY.md`](DEPLOY.md);
 - latest working product checkpoints: `89d3f15` for Soundtrack contention and
   `0d5bb05` for the compact Tesla layout; published source/documentation
-  checkpoint: `bd572b2`; canonical build: `20260903-1752`. Road Sheet
+  checkpoint: `edde367`; canonical build: `20260903-1953`. Road Sheet
   LIGHT/DARK/AUTO, Swiss Compact, hardened native/on-screen media transport,
   buffer-first Soundtrack, and always-above-drawers Now Playing are canonical;
 - repository code, comments, documentation, interface copy, and logs are English;
@@ -751,7 +751,7 @@ empty console. Local `702 × 546` and `1280 × 720` responsive QA passes.
 Physical-Tesla native-control, listening, glare, distance, and touch acceptance
 remain open.
 
-### Current unpublished checkpoint: Tesla Soundtrack stutter and compact Music layout
+### Latest canonical checkpoint: Tesla Soundtrack stutter and compact Music layout
 
 Canonical build `20260903-1752` failed physical-Tesla playback even with a
 same-browser `54.3 Mbps` down / `30.6 Mbps` up / `25 ms` speed test: both
@@ -769,11 +769,14 @@ accepted two-column Soundtrack composition and top-aligns launch titles without
 changing Swiss Compact type sizes.
 
 The complete gate passes `617/617`; the 239-module App and 159-module protected
-LAB build pass. Headless local Chrome at exact `773 × 601` measures `372 + 372
-px` Soundtrack path cards, `96 / 634 px` Pace/Genre columns, all 15 genres and
-zero horizontal overflow. Browser rendering is accepted locally. Publication,
-canonical identity/cache validation, and continuous physical-Tesla listening
-with Gradient plus a lighter visual remain separate gates.
+LAB build pass. Canonical build `20260903-1953` reports clean checkpoint
+`edde367`. Protected publication and independent postflight pass; cache-busted
+HTML, JavaScript and CSS are byte-identical. Trusted-input live Chrome at exact
+`773 × 601` measures `372 + 372 px` Soundtrack path cards, `96 / 634 px`
+Pace/Genre columns, all 15 genres and zero horizontal overflow. It records no
+warning/error and no FRACTURE/BLOOM processor request during Soundtrack startup.
+Continuous physical-Tesla listening with Gradient plus a lighter visual remains
+the separate `R7-15` gate.
 
 ## Verification
 

@@ -17,6 +17,49 @@ URL import remain outside the public surface. Exact
 dependency and local run instructions are recorded in
 `LOCAL-SHADERGRADIENT-LAB.md`.
 
+## Tesla Soundtrack contention correction — 2026-09-03 20:02
+
+- build stamp: **`20260903-1953`**; version: **`0.0.0`**; audio
+  implementation checkpoint: **`89d3f15`**; lazy-worklet invariant:
+  **`a2545c4`**; compact-layout checkpoint: **`0d5bb05`**; built
+  source/documentation checkpoint: **`edde367`**;
+- product behavior: Soundtrack retains the one playback-oriented shared
+  AudioContext and vehicle-macro detector but defers the silent FRACTURE and
+  BLOOM Play the Road AudioWorklets until an explicit mode switch. After the
+  current recording proves six seconds of forward headroom, only the next deck
+  may request audio preload. The accepted Tesla Music composition is restored:
+  horizontal source tabs, paired Lobo/Jamendo paths, Pace beside the full Genre
+  board, top-aligned launch titles, and a non-overlapping Jamendo cover stack;
+- tests/build: **PASS**. The aggregate gate passes `617/617`; production builds
+  process `239` App modules and `159` protected-LAB modules;
+- traceability correction: an initial complete upload stamped
+  `20260903-1932` was superseded before closeout because the package was built
+  while later clean checkpoints were not yet reflected in its Git label. The
+  final candidate was rebuilt from clean `edde367` and reports that identity;
+- protected publication: **PASS**. The final upload transferred `184` files /
+  `215,967,825` bytes, fully reverified all `29` Illobo recordings, retained two
+  prior fingerprinted assets for cache overlap, preserved the dynamic root,
+  and removed no legacy content. Independent postflight reports nine root
+  entries and `remote_writes=NONE`;
+- canonical response: cache-busted HTML is HTTP/2 200 with
+  `no-store/no-cache`, `nosniff`, Nginx/PHP evidence, cache `MISS`, and exposes
+  build `20260903-1953` / commit `edde367` through the byte-identical App;
+- byte identity: HTML is `1206` bytes at SHA-256
+  `341aa5f282521ff6444aa1e4e053a111fd795c36df14f237c54a4f7f2941297f`;
+  JavaScript `index-BG03LrAZ.js` is `749652` bytes at SHA-256
+  `8486a6d825dbcfb0c431fdfdf2ef7a93fe70d6a350c47377367ac30ad72ad1cd`;
+  CSS `index-Cm37CQc1.css` is `164698` bytes at SHA-256
+  `506f00bf141258bcdcc03cf347665f5edf6def4c44861fa5ebcee0a55b6dc421`;
+- rendered QA: **PASS**. Trusted-input headless Chrome at exact `773 × 601`
+  measures `372 + 372 px` Soundtrack path cards and `96 / 634 px` Pace/Genre
+  columns, retains all 15 genres, has zero horizontal overflow, and records no
+  warning/error. A Soundtrack-first Gradient launch requests neither the
+  FRACTURE nor BLOOM worklet asset;
+- remaining acceptance: office structure/rendering and canonical identity pass.
+  Continuous physical-Tesla listening with Jamendo and Illobo under Gradient
+  and a lighter visual remains `R7-15`; send the explicit diagnostic before
+  reload if any stutter remains.
+
 ## Road Sheet appearance and native media controls — 2026-09-03 18:07
 
 - build stamp: **`20260903-1752`**; version: **`0.0.0`**; implementation
