@@ -720,6 +720,29 @@ covers the shell, Music, Discover, REPORT, and ATLAS open/collapsed at
 logs. Physical-Tesla legibility, glare, touch, motion, native Media Session, and
 listening remain separate gates.
 
+### Latest source checkpoint: Road Sheet appearance and native media controls
+
+Implementation checkpoint `6cda7ee` is pushed but is not yet canonical. The
+owner selected Direction 2 / **Road Sheet** in LIGHT. LIGHT is the default; the
+top rail exposes persisted LIGHT/DARK/AUTO through official Tabler sun, moon,
+and sun-moon icons. AUTO accepts a system scheme only when it is genuinely
+observable, then uses solar phase only from an already-consented session
+position, and otherwise falls back safely. It prompts for no new permission,
+persists no coordinate, and never couples appearance to the Flux palette.
+
+Stable Media Session Play, Pause, Previous, and Next handlers now serve both
+Play the Road and Soundtrack and publish truthful committed metadata, artwork,
+playback state, and valid position state. The serialized intent queue cancels
+stale work after newer playback/source/track/score/reset intent; duplicate Play
+while buffering shares one activation, and Pause then Play preserves position.
+The flight recorder retains native invocation IDs, ordering, and outcomes.
+
+The aggregate gate passes `615/615`, including unit `521/521` and Sites `9/9`;
+the production build passes. Exact local in-app Browser QA passes at
+`773 × 601` LIGHT, `702 × 546` DARK, and `1280 × 720` DARK with a clean fresh
+console. Canonical deployment and physical-Tesla native-control, listening,
+glare, distance, and touch acceptance remain open.
+
 ## Verification
 
 ```bash

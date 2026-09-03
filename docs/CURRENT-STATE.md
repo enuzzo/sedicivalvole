@@ -327,14 +327,17 @@ dated study documents.
   selected `3 px` rail sits independently above content instead of moving or
   crossing its title. The shared `6 px` radius and complete
   MUTE + APERTURE start flow pass interaction, geometry, and console QA.
-- Road Sheet now records the invariant interface anatomy for X10. LIGHT uses
-  warm ivory, quiet gray, near-black, and vermilion; DARK will retain the same
-  layout and hierarchy with near-black, charcoal, dark-gray, warm-light, and
-  vermilion tokens. A non-visual X10 model now owns the independent versioned
-  LIGHT/DARK/AUTO preference, explicit reset, safe storage failure, browser-
-  scheme priority, offline solar fallback, twilight hold and no-mid-gesture
-  rule. Product-wide tokens, capability adapter and visible control remain
-  planned rather than silently active in this checkpoint.
+- Road Sheet now supplies the invariant interface anatomy and implemented
+  LIGHT/DARK/AUTO appearance. LIGHT is the default and uses warm ivory, quiet
+  gray, near-black, and vermilion; DARK keeps the same layout and hierarchy with
+  near-black, charcoal, dark-gray, warm-light, and vermilion tokens. The direct
+  top-rail menu uses official Tabler sun, moon, and sun-moon icons, and manual
+  choices persist independently from the selected Flux palette. AUTO follows a
+  genuinely observable browser scheme first, then solar phase from an existing
+  consented session position, and otherwise a safe fallback. It triggers no new
+  permission request and stores no coordinate or solar result. Semantic tokens
+  cover shared chrome while renderer, iframe, map, and authored visual pixels
+  retain their independent palette.
 - Space Grotesk remains the locally packaged face for all reading text, values,
   controls, operational labels, LAB controls and session-report content under
   OFL-1.1. Its deliberate `400–700` hierarchy and tabular numerals remain intact.
@@ -342,10 +345,9 @@ dated study documents.
   launch surface, Instrument Deck and owner LAB.
 - The running top bar uses the existing transparent 16 Road product mark alone
   in the wide layout. At `773 × 601`, Swiss Compact hides that separate mark
-  cell and uses an exact `184 / 174 / 90 / 94 / 120 / 111 px` grid for mode,
-  speed, network, GPS, Discover, and Report. The speed readout remains in its
-  exact grid cell when the surrounding chrome retracts. Future X10 appearance
-  controls must preserve this anatomy and are not silently implemented.
+  cell and uses an exact `164 / 156 / 60 / 86 / 84 / 116 / 107 px` grid for
+  mode, speed, network, appearance, GPS, Discover, and Report. The speed readout
+  remains in its exact grid cell when the surrounding chrome retracts.
 - The launch wordmark uses Orbitron `750`, responsive `26–32 px` sizing and
   restrained `-0.02em` tracking beside the `42 px` 16 Road mark. `PLAY THE ROAD`
   remains Space Grotesk `600` with zero added tracking. The product band is
@@ -797,9 +799,10 @@ and checkpoint `d45f8dd` closes the remaining `10A` office implementation:
 - 29 measured public Illobo WebP derivatives total about `380 KB`; the matching
   512 px HD PNG masters remain local under `artwork-masters` and are not shipped;
 - the Tesla footer palette now measures `226 px` wide at `773 × 601`, with larger
-  colour targets. The separate promoted X10
-  `LIGHT / DARK / AUTO` appearance switch remains milestone 13, uses the
-  measured free top-rail lane and never recolours the active visual palette.
+  colour targets. The separate X10 `LIGHT / DARK / AUTO` appearance switch is
+  implemented locally at checkpoint `6cda7ee`, uses the measured top-rail lane,
+  and never recolours the active visual palette; canonical and Tesla acceptance
+  remain milestone 13 gates.
 
 Mandatory inserts `10A` and `10B` have office and canonical PASS in build
 `20260901-2232`; target-Tesla gates remain open.
@@ -1026,14 +1029,39 @@ package passed the local build and typography matrix; its live authenticated
 boundary remains intact. Physical-Tesla legibility, glare, touch, motion,
 native Media Session, and listening remain open.
 
+### 2026-09-03 Road Sheet appearance and media-control source checkpoint
+
+Implementation checkpoint `6cda7ee` is pushed source ahead of the canonical
+build. It makes LIGHT the default and adds the direct persisted
+LIGHT/DARK/AUTO sun/moon/sun-moon menu. AUTO uses an observable system scheme
+first, then an already-consented session position for solar phase, and finally
+a safe fallback; it neither requests GPS nor stores coordinates. Appearance
+tokens cover shared chrome without changing the active visual palette.
+
+The same checkpoint makes browser-native and on-screen Play, Pause, Previous,
+and Next share stable handlers for Play the Road and Soundtrack. Media Session
+publishes only truthful committed metadata, artwork, playback state, and valid
+position. Its serialized intent queue cancels stale work after newer playback,
+source, track, score, or reset intent; duplicate Play during buffering shares
+one activation, and Pause then Play preserves the observed position. Native
+invocation IDs, order, and correlated outcomes enter the coordinate-free flight
+recorder.
+
+The aggregate local gate passes `615/615`: unit `521/521`, Sites `9/9`, and all
+feature suites. The production build passes. Exact Browser QA passes at
+`773 × 601` LIGHT, `702 × 546` DARK, and `1280 × 720` DARK, with persistence,
+AUTO/palette separation, keyboard focus, bounded chrome, and an empty fresh
+console. Canonical publication and physical-Tesla native-control, listening,
+distance, glare, and touch evidence remain open.
+
 ## Open work
 
 1. Execute live Tesla `R4-07`–`R4-08`, the canonical `10A` / `10B` / `10C`
    codes, and row 11 on final build `20260903-1448`. Execute Tesla tests
    `R1-01`–`R1-03`, `R4-01`–`R4-08`,
    `R5-01`–`R5-07`, `R7-01`–`R7-14`, `R8-01`–`R8-03`, `R9-01`–`R9-07`,
-   `R10-00A`–`R10-06`, `R10C-01`–`R10C-08`, `R11-01`–`R11-06`, `R11A-01`, and later
-   `R13-00`–`R13-03` from
+   `R10-00A`–`R10-06`, `R10C-01`–`R10C-08`, `R11-01`–`R11-06`, `R11A-01`, and
+   the now locally runnable `R13-00`–`R13-03` from
    [`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md), including
    the live audio transport evidence and MERIDIAN
    `0 → brake/UNDERWATER → renewed acceleration → 130` motion that the available

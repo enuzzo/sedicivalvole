@@ -1446,3 +1446,69 @@ Publication update, 2026-09-03 15:00 CEST: built source/documentation checkpoint
 preflight/postflight, local/live HTML/JavaScript/CSS byte identity, and exact
 canonical `773 × 601` plus `1280 × 720` Browser QA pass with no warning/error.
 Physical-Tesla cabin acceptance remains open.
+
+# Road Sheet Appearance and Media Controls QA — 2026-09-03
+
+## Selected visual contract
+
+- The owner selected Direction 2, **Road Sheet**, with LIGHT as the preferred
+  default and sun, moon, and combined sun-moon iconography for LIGHT, DARK, and
+  AUTO.
+- The generated Direction 2 image remains a design reference only. It is not a
+  current-build screenshot and is not used as product evidence.
+- Both appearance families retain Swiss Compact geometry, typography,
+  functional-uppercase/editorial-Title-Case hierarchy, and the independent
+  visual-palette boundary. DARK is a token mapping, not a separate layout.
+
+## Same-input comparison
+
+- One review input placed the Direction 2 reference and the running
+  implementation together at the same exact `773 × 601` viewport.
+- The implementation preserves the selected warm open LIGHT sheet, quiet gray
+  structure, near-black controls, vermilion state cues, low uninterrupted
+  visual field, and compact top/footer control planes.
+- Dynamic track identity, Aperture pixels, and current palette remain truthful
+  runtime content rather than being frozen to the reference mock.
+
+## Interaction, responsive, and accessibility evidence
+
+- The direct top-rail control exposes official Tabler sun, moon, and sun-moon
+  icons with `menu` / `menuitemradio` semantics, selected state, arrow/Home/End
+  traversal, Escape and outside dismissal, and focus return. Tabbing out closes
+  the menu and advances to GPS without focus being stolen by the visual field.
+- LIGHT is the fresh-install default. Persisted DARK survives a fresh tab. AUTO
+  follows a genuinely observable system scheme first, then solar phase from an
+  already-consented session position, then a safe fallback. It causes no GPS
+  permission prompt and stores no coordinate.
+- DOM inspection in AUTO proves appearance and `data-palette` remain separate.
+  Canvases, embedded visuals, map pixels, and authored palettes are unchanged.
+- Exact Browser QA passes `773 × 601` LIGHT, `702 × 546` DARK, and
+  `1280 × 720` DARK. The complete top rail, Now Playing band, six-track footer,
+  attribution, and drawers remain within document bounds; action targets retain
+  their Swiss Compact geometry.
+- Appearance-specific text, focus, active-control, CTA-animation, Discover, and
+  ATLAS-attribution contrast checks pass. A fresh Browser surface records no
+  warning or error.
+
+## Media-control evidence
+
+- Stable Play, Pause, Previous, and Next handlers serve browser-native and
+  on-screen controls across Play the Road and Soundtrack.
+- Publication is limited to truthful committed metadata, artwork, playback
+  state, and valid position state. Duplicate Play during buffering shares one
+  activation, and Pause then Play preserves the observed position.
+- A serialized intent queue preserves consecutive skips but invalidates stale
+  queued work after newer playback, source, track, score, or reset intent.
+- Native invocations receive monotonic IDs and correlated ordered outcomes in
+  the coordinate-free flight recorder.
+
+## Verification and remaining gate
+
+- Source checkpoint `6cda7ee` passes `615/615` aggregate checks, including
+  `521/521` unit and `9/9` Sites checks. The production build passes.
+- Local self-review leaves P0 none, P1 none, and P2 none.
+- Canonical publication is not claimed by this record. Physical-Tesla viewing
+  distance, glare, touch, native Media Session behavior, and listening remain
+  explicit acceptance gates.
+
+final result: passed

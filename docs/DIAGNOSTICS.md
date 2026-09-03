@@ -37,6 +37,15 @@ Canonical HTML, main JavaScript, and CSS are byte-identical to that candidate;
 the physical Tesla Media Session result and received fresh attachment remain
 open under `R10C-03`.
 
+Local source checkpoint `6cda7ee` extends that evidence without changing the
+privacy boundary. Every native Play, Pause, Previous, and Next invocation now
+receives a monotonic action ID and records synchronous receipt plus its ordered,
+correlated completion or failure. The same stable handlers serve Play the Road
+and Soundtrack. The report distinguishes committed audible state from pending
+buffer work, and its Media Session publication remains truthful for metadata,
+artwork, playback state, and valid position state. Physical-Tesla native-control
+receipt and listening remain open; office tests do not close `R10C-03`.
+
 ## In-app report v3
 
 The main product exposes diagnostics through an always-visible top-bar `REPORT` control, including at `773 × 601`. Its official Tabler report-analytics icon sits above the explicit label in the existing compact navigation cell; the control opens the scrollable session report.
@@ -87,7 +96,7 @@ At the Tesla split viewport, four compact health cells lead a two-column instrum
 
 High-frequency frame observations and the flight recorder accumulate outside React state. Phase records retain aggregate counters and at most 300 recent frame intervals per phase; memory is sampled every two seconds, never per frame. A phase that disappears and later returns starts a new continuity segment, so the intervening time is not misreported as a dropped frame or low FPS. Debug interaction events have their own 1,200-entry channel; significant state/failure/recovery events retain 800 entries and ordinary GPS samples retain 1,200. Every event carries a monotonic sequence number in addition to its wall-clock and elapsed timestamps, so equal-time actions remain exactly ordered. The recorder samples every two seconds and retains at most 1,800 compact tabular samples, or approximately one hour, while its small aggregate and exposure counters cover the complete open session. The trace exists only in memory and is cleared by a reload or closed page. It does not retain every frame, resource URL, route, pointer coordinate, typed search string, or GPS coordinate. Runtime issue messages and stacks are truncated and bounded.
 
-The interaction channel records each semantic button/link/control activation and each non-text value change. Soundtrack actions use correlated IDs across requested/completed/failed events and distinguish launch, persistent on-screen transport, Music drawer, and native Media Session sources. Their before/after snapshots include current/previous/next track keys, public title/artist identity, transition state, current audible key, prepared/playable deck counts, `readyState`, `networkState`, buffered-ahead seconds, pause/end state, media error, duration and explicit playback confirmation. Browser lifecycle observations retain `loadstart`, metadata, progress, readiness, playing, waiting, stalled, suspend, pause, ended and error transitions. Media Session publication records API availability, metadata and playback-state success, artwork type, and the registration result for Play, Pause, Previous and Next. Text inputs record length only; typed content is deliberately excluded.
+The interaction channel records each semantic button/link/control activation and each non-text value change. Soundtrack actions use correlated IDs across requested/completed/failed events and distinguish launch, persistent on-screen transport, Music drawer, and native Media Session sources. Their before/after snapshots include current/previous/next track keys, public title/artist identity, transition state, current audible key, prepared/playable deck counts, `readyState`, `networkState`, buffered-ahead seconds, pause/end state, media error, duration and explicit playback confirmation. Browser lifecycle observations retain `loadstart`, metadata, progress, readiness, playing, waiting, stalled, suspend, pause, ended and error transitions. Media Session publication records API availability, metadata, artwork, playback-state and valid-position success, plus the registration result and monotonic invocation ID/order/outcome for Play, Pause, Previous and Next. Text inputs record length only; typed content is deliberately excluded.
 
 Network totals are deliberately narrower than a device or carrier meter. They
 include exact application payload bytes only where the application owns the

@@ -13,6 +13,8 @@ plan, specification, tests, and evidence instead of silently deleting it.
 - `CAPTURED`: worth preserving, but not scheduled or designed;
 - `RESEARCH`: evidence or feasibility work is approved, not implementation;
 - `PROMOTED`: accepted into the active plan under the linked stable ID;
+- `IMPLEMENTED`: present in source; linked publication or physical acceptance
+  gates may still remain open;
 - `REJECTED`: deliberately closed, with the reason retained;
 - `OWNER`: explicitly requested or approved by the product owner;
 - `AGENT PROPOSAL`: a separate suggestion that is not owner-approved.
@@ -28,7 +30,7 @@ presented as an owner decision or enter the product without explicit approval.
 | `FI-002` | Smoothly raise DRIVEY's Aerial camera as speed increases | OWNER | 2026-08-30 | CAPTURED | [`PIANO.md`](../PIANO.md) `D4` |
 | `FI-003` | DISCOVER image-led nearby-place companion | OWNER | 2026-08-30 | PROMOTED | [`PIANO.md`](../PIANO.md) `A5` |
 | `FI-004` | Grouped, direct-selection Visual Library | OWNER | 2026-08-30 | PROMOTED | [`PIANO.md`](../PIANO.md) `X9` |
-| `FI-005` | Shared LIGHT/DARK/AUTO interface appearance | OWNER | 2026-08-30 | PROMOTED | [`MILESTONE-CHECKLIST-2026-08-31.md`](MILESTONE-CHECKLIST-2026-08-31.md) row 13; [`PIANO.md`](../PIANO.md) `X10` |
+| `FI-005` | Shared LIGHT/DARK/AUTO interface appearance | OWNER | 2026-08-30 | IMPLEMENTED · local checkpoint `6cda7ee`; canonical/Tesla pending | [`MILESTONE-CHECKLIST-2026-08-31.md`](MILESTONE-CHECKLIST-2026-08-31.md) row 13; [`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md) `R13-01`–`R13-03` |
 | `FI-006` | Exception-led local CONDITIONS and weather context | OWNER | 2026-08-30 | PROMOTED | [`PIANO.md`](../PIANO.md) `X11` |
 | `FI-007` | Original speed-responsive Gradient Field | OWNER | 2026-08-30 | RETIRED · renderer replaced by one ShaderGradient family with three variants | [`MILESTONE-CHECKLIST-2026-08-31.md`](MILESTONE-CHECKLIST-2026-08-31.md) row 11 |
 | `FI-008` | Landscape-first iPhone presentation with an inert portrait rotation notice | OWNER | 2026-08-30 | PROMOTED | [`PIANO.md`](../PIANO.md) `X2`; [`ROADMAP.md`](ROADMAP.md) Phase 6 |
