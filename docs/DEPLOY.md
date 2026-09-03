@@ -17,6 +17,36 @@ URL import remain outside the public surface. Exact
 dependency and local run instructions are recorded in
 `LOCAL-SHADERGRADIENT-LAB.md`.
 
+## Automotive Glance and stable Soundtrack — 2026-09-03 12:03
+
+- build stamp: **`20260903-1155`**; implementation checkpoints: **`d38c333`**,
+  **`68b1830`**, and **`be74aa6`**; built source/documentation checkpoint:
+  **`cc6afd0`**;
+- verification: the complete product/unit suite passes `501/501`, Sites passes
+  `9/9`, and production builds process `235` App modules and `159` protected-LAB
+  modules. Exact local Browser QA covers `773 × 601` and `1280 × 720`;
+- protected publication: read-only preflight and postflight pass with nine root
+  entries and `remote_writes=NONE`. Publication uploaded `181` files /
+  `215,891,039` bytes, fully reverified all `29` Illobo recordings, retained two
+  prior fingerprinted assets for cache overlap, preserved the dynamic root, and
+  removed no unmatched content;
+- canonical HTTP: cache-busted HTML is HTTP/2 200 with `no-store/no-cache`,
+  `nosniff`, Nginx/PHP evidence, and exposes `v0.0.0`, commit `cc6afd0`, build
+  `20260903-1155`;
+- byte identity: HTML, JavaScript `index-DEvQKdWV.js`, and CSS
+  `index-DC0A6-xu.css` match local SHA-256
+  `7ae0390d708e6723369acb0130d1eba4f316c5229e3efadf5debb839c1e0c7d6`,
+  `0a7e3285e4d228ecfa8221648cc8462466ce08a9bb4b146bf7b2ecfa8cddaee8`,
+  and `0ae822306627fd50bec4a6fcdbeb2ee14d1664e89f3f89da5deb38b43b878f2e`;
+- exact live `773 × 601` Browser QA: zero visible type below `20 px`; no launcher
+  overflow; pending-network START remains one line; Jamendo reaches enabled
+  playback; Now Playing remains visible and hit-testable above the Music drawer
+  with `124 px` reserved scroll space; Back/Forward performs
+  `Make It New → I Want You → Make It New`; canonical warning/error log is empty;
+- physical gates: target-Tesla weak-network playback/listening, native Media
+  Session artwork/actions, phone-to-car QR receipt, and moving APERTURE seams/frame
+  pacing remain open under `R10C-02`, `R10C-03`, `R10C-06`, and `R10C-07`.
+
 ## Exhaustive media flight recorder — 2026-09-03 08:56
 
 - build stamp: **`20260903-0843`**; implementation checkpoint:

@@ -1,6 +1,6 @@
 # Current Project State
 
-Status: **authoritative working overview**. Updated on 2026-09-02.
+Status: **authoritative working overview**. Updated on 2026-09-03.
 
 This page is the shortest reliable answer to “what exists now?”. Product
 requirements remain in [`PRODUCT-SPEC.md`](PRODUCT-SPEC.md), architecture in
@@ -973,10 +973,17 @@ shortened after the first live target-viewport pass found it wrapping. `R10C-02`
 physically concluded: weak-network Tesla playback, native Tesla Media Session,
 phone/car QR receipt, and moving-Tesla APERTURE seams remain the decisive gates.
 
+Canonical build `20260903-1155` publishes built source/documentation checkpoint
+`cc6afd0`. Live target-viewport QA confirms zero visible type below `20 px`, the
+single-line pending-network START status, a top-hit-tested Now Playing dock above
+the Music drawer, and real Jamendo `Make It New → I Want You → Make It New`
+Back/Forward navigation without warning/error. This is strong browser evidence,
+not a substitute for the remaining physical-Tesla listening and integration gates.
+
 ## Open work
 
 1. Execute live Tesla `R4-07`–`R4-08`, the canonical `10A` / `10B` / `10C`
-   codes, and row 11 on final build `20260902-2322`. Execute Tesla tests
+   codes, and row 11 on final build `20260903-1155`. Execute Tesla tests
    `R1-01`–`R1-03`, `R4-01`–`R4-08`,
    `R5-01`–`R5-07`, `R7-01`–`R7-14`, `R8-01`–`R8-03`, `R9-01`–`R9-07`,
    `R10-00A`–`R10-06`, `R10C-01`–`R10C-08`, `R11-01`–`R11-06`, `R11A-01`, and later
