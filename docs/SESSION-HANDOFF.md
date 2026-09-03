@@ -38,6 +38,12 @@ a new session can continue without reviving superseded prototypes.
   `20 px` type floor or its `100 px` chrome.
 - Functional micro-labels remain uppercase, but editorial Music and Visual names
   use dedicated Title Case display labels in the launcher, footer, and pickers.
+- Gradient, Drivey, and PRTCL contextual switches share the same top-left origin,
+  `112 px` button column, `48 px` minimum target, padding, and label/value order.
+  At `773 × 601`, top chrome is `164 / 104 / 112 / 86 / 84 / 116 / 107 px`:
+  mode, speed, network, appearance, GPS, Discover, and Report. Speed visibly
+  shows only value plus `KM/H`; network always shows a same-tone hollow ring and
+  browser-observed (`OBS`) or explicitly estimated (`EST`) download rate.
   Footer names and catalogue numbers share one baseline and type size; canonical
   uppercase registry labels remain stable identity and diagnostic data.
 
@@ -805,9 +811,10 @@ Rendered QA flow:
 
 1. load the splash;
 2. activate `PLAY THE ROAD`;
-3. confirm speed, BPM, and energy remain distinct at `773 × 601`;
+3. confirm compact speed, network, GPS, Discover, and Report remain distinct at
+   `773 × 601`;
 4. exercise Demo acceleration/deceleration, visual selection, score library,
-   body themes, Stop/Mute, and diagnostics;
+   the Gradient/Drivey/PRTCL cycle controls, body themes, Stop/Mute, and diagnostics;
 5. check console warnings/errors and capture only real current-build evidence.
 
 The development-only `qa-field.html` may hold an exact environment/speed for

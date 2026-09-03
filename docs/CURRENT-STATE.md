@@ -347,9 +347,11 @@ dated study documents.
   launch surface, Instrument Deck and owner LAB.
 - The running top bar uses the existing transparent 16 Road product mark alone
   in the wide layout. At `773 × 601`, Swiss Compact hides that separate mark
-  cell and uses an exact `164 / 156 / 60 / 86 / 84 / 116 / 107 px` grid for
+  cell and uses an exact `164 / 104 / 112 / 86 / 84 / 116 / 107 px` grid for
   mode, speed, network, appearance, GPS, Discover, and Report. The speed readout
-  remains in its exact grid cell when the surrounding chrome retracts.
+  remains in its exact grid cell when the surrounding chrome retracts, shows
+  only the centered value and `KM/H`, and keeps its GPS/Demo source available
+  through the accessible control label rather than visible duplicate copy.
 - The launch wordmark uses Orbitron `750`, responsive `26–32 px` sizing and
   restrained `-0.02em` tracking beside the `42 px` 16 Road mark. `PLAY THE ROAD`
   remains Space Grotesk `600` with zero added tracking. The product band is
@@ -372,8 +374,11 @@ dated study documents.
   separated evidence classes: browser connectivity estimates and observed,
   instrumented application transfers. Offline, recent request failure, active
   download/upload, recovery, estimated constrained service, healthy hint and
-  unavailable states are deterministic. The visible navbar treatment is not yet
-  rendered and remains part of the X2 interface selection.
+  unavailable states are deterministic. The visible navbar uses one hollow ring
+  plus an always-visible rate in the same green/good, orange/medium, or red/poor
+  tone. It prefers browser-observed application bytes, retains the last measurable
+  download sample, and labels the Network Information fallback as an estimate;
+  neither path claims device-wide or cellular throughput.
 - An explicit diagnostic send keeps the email body concise and attaches the
   complete accepted report as gzip-compressed JSON, named by build and server
   timestamp with uncompressed and compressed SHA-256 evidence.
@@ -1102,6 +1107,16 @@ does not support attributing the dropout to Aperture styling. The new
 starts Soundtrack on dry Aperture, requests no inactive score processor, records
 no console event, and retains exact canvas/document bounds. Only a physical
 Tesla listen can accept continuous playback.
+
+UI normalization checkpoint `0ec5d4e` gives Gradient, Drivey, and PRTCL one
+shared contextual-control origin and geometry. Exact local headless Chrome at
+`773 × 601` measures `x=16`, `y=82`, `112 × 55 px` for each first switch and
+proves `MIST → ORCHARD`, `REAR → AERIAL`, and `AXIOM → FRACTAL` interaction.
+The same pass measures a `104 × 72 px` speed cell containing only value plus
+`KM/H`, and a `112 × 72 px` network cell whose hollow ring and persistent rate
+are green, orange, or red together. Browser QA, `504/504` product checks,
+`9/9` Sites checks, and production builds pass; canonical publication and
+physical-Tesla distance, glare, touch, and network interpretation remain open.
 
 ## Open work
 
