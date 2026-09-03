@@ -17,6 +17,44 @@ URL import remain outside the public surface. Exact
 dependency and local run instructions are recorded in
 `LOCAL-SHADERGRADIENT-LAB.md`.
 
+## Swiss Compact product-wide calibration — 2026-09-03 15:00
+
+- build stamp: **`20260903-1448`**; implementation checkpoint:
+  **`bcec32e`**; built source/documentation checkpoint: **`5303fdf`**;
+- presentation: the owner-selected Swiss Compact system replaces the blanket
+  type floor with semantic `14 / 15 / 16 / 18 / 24 / 34 px` roles and separate
+  `48 / 56 px` interaction targets across the public App, diagnostics,
+  Discover, ATLAS, owner LAB, and ShaderGradient workbench. Exact Tesla chrome
+  uses `72 px` top, Now Playing, and footer bands; Now Playing remains
+  `532 px` wide, ATLAS uses a `320 px` Drive Lab, and Discover uses `64 px`
+  result rows;
+- tests/build: **PASS**. Focused checks pass `92/92`, the complete unit group
+  passes `505/505`, Sites passes `9/9`, and production builds process `235` App
+  modules and `159` protected-LAB modules;
+- protected publication: **PASS**. Read-only preflight and postflight each
+  report nine root entries and `remote_writes=NONE`. Publication uploaded `181`
+  files / `215,912,972` bytes, fully reverified all `29` Illobo recordings,
+  retained two prior fingerprinted assets for cache overlap, preserved the
+  dynamic root, and removed no unmatched content;
+- canonical response: cache-busted and bare roots return HTTP/2 200 with
+  `no-store/no-cache`, `nosniff`, Nginx/PHP evidence, provider diagnostic
+  `0 NC:000000 UP:`, and expose `v0.0.0`, commit `5303fdf`, build
+  `20260903-1448`;
+- byte identity: HTML, JavaScript `index-BhO2Obku.js`, and CSS
+  `index-B4jHpz1L.css` match local SHA-256
+  `cb85c725fa7a29c4b7598827ff68148b92a07659dbf82fb16f5e5ac7f75322fc`,
+  `a107269f3daaeea6d5f49137682fd2ee6043ae340a89b1b0f5e3e2ff05e5607d`,
+  and `ad438b00451a9885e34ef35f92d6360a8b4f30cf26f3517f93dee6d3ac95fc9e`;
+- rendered QA: **PASS**. Exact live `773 × 601` Browser QA covers launch,
+  running/resting chrome, Music, Discover, REPORT, ATLAS open/collapsed,
+  persistent Now Playing, and mandatory attribution. Exact live `1280 × 720`
+  covers the wide shell. All inspected canonical warning/error logs are empty;
+- protected boundary: `/lab/` returns the expected no-store, HttpOnly
+  SameSite-Strict, DENY/CSP gate; development-only
+  `/shadergradient-lab.html` remains absent from the public root;
+- remaining acceptance: physical-Tesla cabin legibility, glare, touch, motion,
+  native Media Session, and listening remain open.
+
 ## Automotive Glance and stable Soundtrack — 2026-09-03 12:03
 
 - build stamp: **`20260903-1155`**; implementation checkpoints: **`d38c333`**,

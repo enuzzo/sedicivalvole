@@ -1440,3 +1440,9 @@ Local self-review severity: P0 none, P1 none, P2 none after the final geometry
 and scroll corrections.
 
 final result: passed
+
+Publication update, 2026-09-03 15:00 CEST: built source/documentation checkpoint
+`5303fdf`, build `20260903-1448`, is live at the canonical root. Protected
+preflight/postflight, local/live HTML/JavaScript/CSS byte identity, and exact
+canonical `773 × 601` plus `1280 × 720` Browser QA pass with no warning/error.
+Physical-Tesla cabin acceptance remains open.

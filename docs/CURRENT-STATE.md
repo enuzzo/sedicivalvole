@@ -621,13 +621,14 @@ dated study documents.
   NIGHTSHIFT is now implemented and published from that evidence; raw sources
   remain ignored, uncommitted and unpublished.
 - The canonical live product is version `0.0.0`, implementation checkpoint
-  `febbba3`, built source/documentation checkpoint `9df530d`, build
-  `20260903-0118`. It adds the ATLAS-local persisted
+  `bcec32e`, built source/documentation checkpoint `5303fdf`, build
+  `20260903-1448`. It publishes Swiss Compact across the public product,
+  diagnostics, Discover, ATLAS, owner LAB package, and ShaderGradient
+  workbench without changing audio, Media Session, renderer, remote-source, or
+  licensing boundaries. It retains the ATLAS-local persisted
   `MAP COLOR / PALETTE|STANDARD` switch and dark semantic cartography while
   retaining product-palette route, marker, Navigator Plaque, Drive Lab and UI
-  accents. Exact local/canonical `773 × 601` interaction QA, protected
-  publication, read-only postflight and byte identity pass; physical-Tesla
-  colour/glare/touch acceptance remains `R9A-01`. The same build
+  accents. The same build
   publishes mandatory insert `10C` while retaining the single three-variant
   GRADIENT 08 family, shared Soundtrack/adaptive AudioContext and bounded
   recoverable media starts from `1ef48be`, together with the stronger PRTCL
@@ -658,18 +659,17 @@ dated study documents.
   correction `1171157`, transition correction `dcb6801`, and Tesla Soundtrack
   relay/activation/effect correction `4b36069`, Featured random-start
   `61471e8`, true Illobo catalogue `1a47e23`, and track-head guarantee
-  `236f2c9`. Its guarded
-  publication, read-only pre/postflight and HTML/main-JavaScript/main-CSS/ATLAS-
-  JavaScript/ATLAS-CSS byte identity pass. Current exact live `773 × 601`
-  Browser QA proves the ATLAS `300 px` vertical no-scroll dashboard with direct
-  legends, labelled axes and smoothed curves, shared three-range cycle and
-  full-map collapse/reopen, plus DISCOVER's `272 px` rail, five-row fold plus `+10 MORE`,
-  continuous 15-result scroll, complete `486 × 523 px` Wikipedia reader and
-  absence of an ATLAS action. The live ATLAS dashboard retains terrain elevation
-  and three-range cycling without Wikipedia/place duplication. It also retains the
-  complete Jamendo → Illobo → Jamendo round trip, persistent Jamendo covers,
-  restored Jamendo browsing, and a rapid reversal that cannot be reclaimed by
-  obsolete Illobo work.
+  `236f2c9`. Its guarded publication, read-only pre/postflight, and
+  HTML/main-JavaScript/main-CSS byte identity pass. Exact live `773 × 601`
+  Browser QA proves Swiss Compact's `72 / 384 / 72 / 72 px` vertical
+  composition, six-track top/footer grids, persistent `532 px` Now Playing,
+  Music's single scroll, Discover's non-clipping `246 px` rail and `64 px`
+  result rhythm, REPORT, and the `320 px` ATLAS Drive Lab with full-map
+  collapse/reopen and mandatory attribution clear of hint and transport. Exact
+  live `1280 × 720` QA proves the wide shell without source/network collision.
+  All inspected canonical warning/error logs are empty. The authenticated LAB
+  gate retains its no-store/CSP boundary; physical-Tesla cabin/glare/touch,
+  motion, native Media Session, and listening acceptance remain open.
 - Owner checkpoint `8450109` supersedes the temporary Music Navigator Rail with
   two horizontal top selectors and the selected Play the Road hierarchy:
   sampled JUNCTION/NIGHTSHIFT side by side and responsive-generative FRACTURE
@@ -984,10 +984,10 @@ the Music drawer, and real Jamendo `Make It New → I Want You → Make It New`
 Back/Forward navigation without warning/error. This is strong browser evidence,
 not a substitute for the remaining physical-Tesla listening and integration gates.
 
-### 2026-09-03 Swiss Compact working checkpoint
+### 2026-09-03 Swiss Compact published checkpoint
 
 The owner selected Direction 1 / **Swiss Compact** as the replacement for the
-Automotive Glance typography calibration. The current working source applies it
+Automotive Glance typography calibration. The published source applies it
 across the public App, diagnostics, Discover, ATLAS, owner LAB, and the
 ShaderGradient workbench without changing audio, Media Session, Now Playing
 identity, renderer ownership, remote-source, or licensing boundaries.
@@ -1017,15 +1017,19 @@ logs. Focused checks pass `92/92`, the complete unit group passes `505/505`,
 Sites passes `9/9`, and the 235-module App / 159-module protected-LAB production
 build passes.
 
-The canonical evidence immediately above remains the last published state until
-the new exact-source build, cache identity, and local/live viewport matrix are
-recorded. Physical-Tesla legibility, touch, motion, Media Session, and listening
-acceptance remain open even after browser QA passes.
+Canonical build `20260903-1448` publishes built source/documentation checkpoint
+`5303fdf`. Protected preflight/postflight, complete-tree publication, and
+canonical HTML/JavaScript/CSS byte identity pass. Exact live Browser QA covers
+the shell, Music, Discover, REPORT, and ATLAS open/collapsed at `773 × 601`,
+plus the wide shell at `1280 × 720`, with empty warning/error logs. The owner-LAB
+package passed the local build and typography matrix; its live authenticated
+boundary remains intact. Physical-Tesla legibility, glare, touch, motion,
+native Media Session, and listening remain open.
 
 ## Open work
 
 1. Execute live Tesla `R4-07`–`R4-08`, the canonical `10A` / `10B` / `10C`
-   codes, and row 11 on final build `20260903-1155`. Execute Tesla tests
+   codes, and row 11 on final build `20260903-1448`. Execute Tesla tests
    `R1-01`–`R1-03`, `R4-01`–`R4-08`,
    `R5-01`–`R5-07`, `R7-01`–`R7-14`, `R8-01`–`R8-03`, `R9-01`–`R9-07`,
    `R10-00A`–`R10-06`, `R10C-01`–`R10C-08`, `R11-01`–`R11-06`, `R11A-01`, and later

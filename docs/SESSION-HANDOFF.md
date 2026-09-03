@@ -12,12 +12,9 @@ a new session can continue without reviving superseded prototypes.
 - semantic version: `VERSION` = `0.0.0`; no release exists;
 - canonical development URL: <https://sedicivalvole.app/>;
 - latest verified publication evidence: first entry in [`DEPLOY.md`](DEPLOY.md);
-- latest product checkpoint: `be74aa6`; published source/documentation
-  checkpoint: `cc6afd0`; canonical build: `20260903-1155`. Automotive Glance,
+- latest product checkpoint: `bcec32e`; published source/documentation
+  checkpoint: `5303fdf`; canonical build: `20260903-1448`. Swiss Compact,
   buffer-first Soundtrack, and always-above-drawers Now Playing are canonical;
-- current working candidate: owner-selected Direction 1 / **Swiss Compact**;
-  it supersedes Automotive Glance in source but is not canonical until its
-  exact-source build and deployment evidence are recorded;
 - repository code, comments, documentation, interface copy, and logs are English;
 - `.env` and local variants must never be read, printed, diffed, logged, or committed;
 - `_references/` is local and ignored; never copy its external material into Git.
@@ -643,7 +640,7 @@ byte-identical to the locally verified candidate; the canonical splash exposes
 the correct build identity. Only physical Tesla Media Session behavior and
 receipt of the explicitly sent fresh attachment remain open under `R10C-03`.
 
-### Latest canonical checkpoint: Automotive Glance and stable Soundtrack
+### Previous canonical checkpoint: Automotive Glance and stable Soundtrack
 
 Checkpoint `d38c333`, target-viewport copy follow-up `68b1830`, and overlay
 correction `be74aa6`, all pushed to `origin/main`, implement the owner-selected
@@ -692,7 +689,7 @@ office results. Their code/model/canonical prerequisites pass, but weak-network
 Tesla playback, native mini-player controls and sent report receipt, phone/car
 QR handoff, and moving APERTURE seams respectively remain physical evidence.
 
-### Current working candidate: Swiss Compact
+### Latest canonical checkpoint: Swiss Compact
 
 The selected Direction 1 calibration is applied across the public App,
 diagnostics, Discover, ATLAS, owner LAB, and ShaderGradient workbench. It keeps
@@ -715,11 +712,13 @@ complete product matrix at `773 × 601` and `1280 × 720`, constrained/offline
 states, owner LAB, and the ShaderGradient workbench with empty warning/error
 logs.
 
-Before replacing the canonical checkpoint above, record the final test/build
-totals, source commit, build stamp, cache identity, exact local/live
-`773 × 601` and `1280 × 720` comparison, and empty Browser warning/error state.
-Physical-Tesla legibility, touch, motion, Media Session, and listening remain
-separate gates.
+Canonical build `20260903-1448` publishes built source/documentation checkpoint
+`5303fdf`. Protected preflight/postflight, complete-tree publication, and
+canonical HTML/JavaScript/CSS byte identity pass. Exact live in-app Browser QA
+covers the shell, Music, Discover, REPORT, and ATLAS open/collapsed at
+`773 × 601`, plus the wide shell at `1280 × 720`, with empty warning/error
+logs. Physical-Tesla legibility, glare, touch, motion, native Media Session, and
+listening remain separate gates.
 
 ## Verification
 
