@@ -198,8 +198,8 @@ origin exact-ID relay validates admission again and streams byte ranges with
 onto transient media elements and a MediaElementSource graph. A separate playback
 boundary fixes every recording at authored `1×`, prevents driving from selecting
 or retiming it, and divides processing into two explicit families:
-the footer-gated OPEN/UNDERWATER/BLOOM vehicle-reactive audio path and four manual
-flanger/reverb/chorus/echo controls. Playback, current-track attribution,
+the footer-gated braking UNDERWATER path and eight manual performance effects.
+Playback, current-track attribution,
 direct source navigation, transport, and both effect families are visible in the
 App and LAB. The running Music drawer owns two persistent horizontal top
 selectors for Play the Road / Soundtrack. Play the Road follows the owner-
@@ -212,9 +212,9 @@ stable half-hour shuffle, and treats pace, genre, and exact-track gestures as
 explicit immediate play requests. Now Playing animation follows real playback,
 and credits reserve a separate QR column. The main App master affects only audio processing: macro detection
 and visual response continue independently. When Soundtrack owns the shared
-playback-oriented AudioContext, the macro detector runs without constructing
-the FRACTURE or BLOOM AudioWorklets; an explicit Play the Road switch promotes
-those processors lazily. A muted inactive score renderer is still real-time DSP
+playback-oriented AudioContext, braking detection runs without constructing
+the Play the Road score worklet; an explicit Play the Road switch promotes
+that processor lazily. A muted inactive score renderer is still real-time DSP
 and must not compete with the fixed-recording graph on the Tesla browser.
 Jamendo metadata remains short-lived
 and its audio remains non-persistent; owner-authorized Illobo web masters are
@@ -285,22 +285,12 @@ decision layer requires explicit abstention plus independent stereo and phase
 evidence. Reports and the Python environment live under ignored development
 paths and cannot enter the production resource.
 
-Both ready scores feed one post-score performance bus. UNDERWATER remains the
-braking gesture. OPEN is its acceleration counterpart: two consecutive readings
-above `3 m/s²` and `15 km/h` arm a bounded `320 Hz` scoop, `9 kHz` shelf, stereo
-side expansion and feed-forward trim. It attacks over `350 ms`, holds for at
-most four seconds, releases over one second, and observes a six-second
-refractory interval. Braking owns effect priority. GPS jerk does not modulate a
-continuous parameter.
-
-BLOOM is nested inside OPEN as a rare hard-launch event. A `1.5 → 4.0 m/s²`
-crossing within at most three readings / 300 ms triggers a separate common
-AudioWorklet before the OPEN tone/width stage. It replaces only the
-`300 Hz–8 kHz` band with a four-point-Hermite delayed copy swept from `8` to
-`0.8 ms` over 400 ms. The band-replacement topology preserves sub energy and
-keeps measured in-band peak growth under 0.5 dB without feedback, makeup gain,
-clipper, or lookahead. BLOOM observes a 25-second refractory period;
-UNDERWATER interrupts it over 250 ms and restarts that period.
+All ready scores feed one post-score performance bus. UNDERWATER is the sole
+vehicle-reactive gesture: firm braking drives one bounded two-stage perceptual
+low-pass/pressure envelope shared with Soundtrack and with every visual. The
+audio graph retains no acceleration filter chain or reactive launch worklet,
+and no acceleration detector/timer runs. OPEN and BLOOM remain historical Git
+evidence only.
 
 ### Flux sequencer direction
 
@@ -470,8 +460,8 @@ each theme's native `accent` and `secondary` colours onto separate material
 channels. A project-owned response mapper turns bounded scalar input into
 scalar/vector scene output with authored endpoints, curve exponent, asymmetric
 attack/release and hard per-second slew limits. Drivey is its first visual
-consumer; it also receives timestamped values for the exact OPEN, UNDERWATER
-and BLOOM envelopes used by audio. At commanded zero the bridge projects the
+consumer; it also receives the timestamped UNDERWATER envelope used by audio.
+At commanded zero the bridge projects the
 player to the current lane centre, aligns it to the road tangent and clears
 velocity, steering and physics state. It asks upstream for 16 generated NPCs,
 then retains them only if all can be placed and verified opposite the player's
@@ -488,10 +478,9 @@ renderer uses `gl_VertexID` rather than CPU buffer rewrites, draws exactly
 deletes its vertex array, shaders, and program on cleanup. The renderer imports
 no Three.js/R3F dependency or PRTCL runtime/UI/asset. Road speed alone controls
 complete-form scale, point scale, depth, and the frame-rate-independent travel
-clock; score level controls palette interpolation and pulse. OPEN changes
-spread/depth, UNDERWATER attenuates and slows, and BLOOM increases native point
-glow through continuous frame-rate-independent envelopes rather than state
-snaps. Reduced motion freezes both travel and musical pulse. A single `94 × 48 px` text-only
+clock; score level controls palette interpolation and pulse. UNDERWATER
+attenuates and slows through a continuous frame-rate-independent envelope rather
+than a state snap. Reduced motion freezes both travel and musical pulse. A single `94 × 48 px` text-only
 TYPE button cycles the two active families; shared Palette remains independent and
 no contextual panel is created.
 
@@ -535,8 +524,8 @@ the other visuals. The primary catalogues expose one family entry and a
 persistent in-visual control cycles the three variants. Idle animation runs at half each starting point's base rate;
 road response reaches the previous endpoint at `130 km/h`. Play the Road admits
 bounded audio energy, Soundtrack passes zero audio response, and reduced motion
-sets motion to zero. OPEN, UNDERWATER, and BLOOM alter the registered native
-parameters without adding a shared overlay. A project-owned Canvas2D fallback,
+sets motion to zero. UNDERWATER alters the registered native parameters without
+adding a shared overlay. A project-owned Canvas2D fallback,
 error boundary, explicit frame telemetry, and no remote HDR dependency bound the
 runtime. The truthful speed readout remains independent above the response
 ceiling.

@@ -1,5 +1,8 @@
 # Reference Study: Gradient Authoring Tools
 
+Current amendment, 2026-09-03: OPEN and BLOOM are retired. The current product
+keeps only braking UNDERWATER as a timestamped reactive envelope.
+
 ## Provenance and scope
 
 This companion study compares two live gradient-authoring products with the
@@ -118,7 +121,7 @@ Speed must act through T1's smoothed `0–130 km/h` state:
 - positive acceleration briefly tightens one flow seam;
 - deceleration releases asymmetrically without reversing the field;
 - audio energy changes breadth and palette emphasis, not raw animation speed;
-- OPEN, UNDERWATER, and BLOOM retain distinct timestamped envelopes;
+- braking UNDERWATER retains its timestamped envelope;
 - touch interaction may perturb the field while parked or passenger-operated,
   but speed response must not masquerade as a cursor effect.
 

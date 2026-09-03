@@ -2,6 +2,10 @@
 
 Status: **implementation contract**.
 
+Current amendment, 2026-09-03: OPEN and BLOOM are retired. Wherever this dated
+study names the former three-macro set, the current product admits only the
+timestamped braking UNDERWATER envelope.
+
 This document turns the admitted Drivey, PRTCL, InfiniteTubes, and Primordial
 studies into one Sedici Valvole interaction and renderer architecture. Source
 and licence boundaries are defined in
@@ -80,8 +84,8 @@ Road speed and music enter every renderer through different model inputs:
   and PRTCL particle size;
 - musical output level and transport phase own colour motion, pulse, flock
   breath, highlight timing, and local agitation;
-- OPEN, UNDERWATER, and BLOOM are named performance macros with native geometry
-  or material responses rather than one shared post-effect;
+- braking UNDERWATER is the sole named performance macro and has native
+  geometry or material responses rather than one shared post-effect;
 - at rest, transport pulse is suppressed and only slow harmonic/timbral life is
   retained; muted QA may render a deterministic zero-level musical input;
 - reduced motion freezes road travel and periodic agitation while preserving a

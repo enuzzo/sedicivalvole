@@ -125,8 +125,8 @@ asserted.
   audio store;
 - every fixed recording remains at authored `1×`; driving never selects or
   retimes it;
-- the footer `EFFECTS` master separately gates audible OPEN/UNDERWATER/BLOOM;
-  the shared vehicle macros continue to drive visuals, PLAY THE ROAD starts on,
+- the footer `EFFECTS` master separately gates audible braking UNDERWATER;
+  the same Underwater envelope continues to drive visuals, PLAY THE ROAD starts on,
   and SOUNDTRACK requires fresh-session opt-in;
 - manual flanger, reverb, chorus, and beat repeat remain passenger-operated;
 - App and protected LAB expose transport plus audio-clock-derived
@@ -774,7 +774,7 @@ LAB build pass. Canonical build `20260903-1953` reports clean checkpoint
 HTML, JavaScript and CSS are byte-identical. Trusted-input live Chrome at exact
 `773 × 601` measures `372 + 372 px` Soundtrack path cards, `96 / 634 px`
 Pace/Genre columns, all 15 genres and zero horizontal overflow. It records no
-warning/error and no FRACTURE/BLOOM processor request during Soundtrack startup.
+warning/error and no inactive score-worklet request during Soundtrack startup.
 Continuous physical-Tesla listening with Gradient plus a lighter visual remains
 the separate `R7-15` gate.
 

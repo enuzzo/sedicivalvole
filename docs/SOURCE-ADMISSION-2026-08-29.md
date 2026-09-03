@@ -56,7 +56,8 @@ records provenance and does not infer or relicense a broader upstream grant.
    motion, frame accounting, and failure boundary.
 2. PRTCL and InfiniteTubes are one catalog environment each, with contextual
    variants rather than unrelated demo entries.
-3. OPEN, UNDERWATER, and BLOOM receive native per-renderer responses. Road speed
+3. Braking UNDERWATER receives a native per-renderer response. OPEN and BLOOM
+   are retired. Road speed
    and music remain separate inputs; no generic intensity control is introduced.
 4. PRTCL contains only the authorized formula adaptations and project-authored
    renderer/bridge code. InfiniteTubes and Primordial use only project-authored

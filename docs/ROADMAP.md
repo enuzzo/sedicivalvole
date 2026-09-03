@@ -66,7 +66,7 @@ Implemented:
 - continuous energy separated from discrete layer/Brake events;
 - sample-accurate AudioWorklet transport, bar/phrase-quantized arrangement, hysteresis, asymmetric dwell, crossfades, and limiter;
 - FRACTURE: ambience-only launch, ten four-bar sections, production atmosphere/harmony/low-end/rhythm lanes with the recurring riff and response retired, three authored half-time rhythm families before the `88 km/h` full-break gate, offline rendering, development-only voice audition, and measured brake processing;
-- the shared OPEN hard-acceleration gesture, with bounded low-mid scoop, air, stereo width, feed-forward trim, four-second hold and braking priority;
+- one shared braking UNDERWATER gesture; OPEN and BLOOM are retired and ordinary acceleration adds no reactive effect;
 - fixed `130 km/h` road-energy ceiling, early tunnel visibility near `40 km/h`, and curated `APERTURE 01` environment;
 - filtered acceleration/deceleration envelopes with single direction-change cues and steady-state decay;
 - deterministic desktop signal tests.
@@ -88,8 +88,8 @@ Completed in the current working line:
 - SOUNDTRACK now uses server-side Jamendo catalogue and exact-ID audio relays,
   short-lived metadata, and three transient previous/current/next media elements
   in both the App and owner LAB. MediaElementSource routing preserves authored
-  `1×` playback while a shared footer EFFECTS master applies the existing
-  OPEN/UNDERWATER/BLOOM processing without suppressing visual macros; PLAY THE
+  `1×` playback while a shared footer EFFECTS master applies braking
+  UNDERWATER without suppressing its visual envelope; PLAY THE
   ROAD starts enabled and SOUNDTRACK requires fresh-session opt-in. Four independent manual controls apply
   flanger, reverb, chorus, and beat repeat. The visible active-track card carries
   artwork, artist, title, licence, provider credit, and direct source link.
@@ -160,7 +160,7 @@ Implemented:
   directly authorized Fractal Frequency, Murmuration, and Axiom formulas;
   `24,000` / `16,000` / `37,000` fixed draw counts; a direct `94 × 34 px`
   text-only TYPE cycle separate from Palette; and native speed, music,
-  OPEN/UNDERWATER/BLOOM, reduced-motion, failure, and cleanup behavior;
+  UNDERWATER, reduced-motion, failure, and cleanup behavior;
 - owner-selected `GRADIENT 08` family with Japanese Mist, Acid Orchard, and
   Chromatic Silk variants, using their exact registered ShaderGradient settings in
   one separate lazy product chunk. Each begins at half its LAB base rate at

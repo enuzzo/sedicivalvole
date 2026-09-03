@@ -23,12 +23,12 @@ track or alter its transport. The listener noticed this boundary as a product
 identity issue, not merely a DSP implementation detail.
 
 Vehicle response is allowed only as bounded parallel processing behind the
-explicit footer `EFFECTS` master. OPEN changes focus and upper tone,
-UNDERWATER applies the braking low-pass gesture, and BLOOM keeps its short
-feed-forward event, but none controls the media element clock. Some drivers do
-not enjoy braking or launch processing during an otherwise calm listen, so the
-master now gates the audible graph without stopping detection or visual macro
-snapshots. PLAY THE ROAD retains its authored default with effects on;
+explicit footer `EFFECTS` master. UNDERWATER applies the sole braking low-pass
+gesture and never controls the media element clock. OPEN and BLOOM were retired
+after the owner found them imperceptible in the car; retaining their detectors,
+filters, timer and worklet would add runtime work without audible value. The
+master gates the audible graph without stopping the shared Underwater visual
+envelope. PLAY THE ROAD retains its authored default with effects on;
 SOUNDTRACK retains its fresh-session opt-in. The shared post-source Performance
 FX graph has eight passenger-controlled processors: Flanger, Reverb,
 Underwater, Phaser, Bitcrush, Bass Drive, Radio Cut, and High Cut. Chorus and
@@ -1606,6 +1606,27 @@ preload promotion, buffer-preserving PREVIOUS, silent buffer admission, rollback
 natural-end advancement, and stable committed metadata. Final proof remains a
 low-bandwidth target-Tesla listening run; desktop buffer state alone cannot
 close a stutter report.
+
+### 6.16 A reactive effect must earn its runtime cost in the cabin
+
+The target-vehicle owner could not meaningfully perceive OPEN or BLOOM during
+normal driving. This is decisive product evidence: an effect that exists in
+code and measurements but does not register at the real listening position is
+not adding musical expression. Keeping it still costs detector updates, audio
+nodes, automation, worklet code, visual branches, telemetry and cognitive load.
+
+OPEN and BLOOM are therefore removed rather than left running at zero depth.
+The acceleration detector/timer, OPEN filters, BLOOM DSP and AudioWorklet, LAB
+controls, packaged worklet, visual mappings and their current tests are gone.
+Git retains the experiment if a future authored use justifies revisiting it.
+Firm braking UNDERWATER remains the only vehicle-reactive effect because the
+owner has heard and recognized it in the cabin. Passenger-operated Performance
+FX remain separate: they are explicit gestures, not automatic driving response.
+
+The practical rule is: **automatic DSP must be perceptible, musically useful,
+and worth its continuous runtime cost on the target device**. Browser graph and
+render tests can prove correct routing and bounded behavior, but only physical
+listening can prove that the effect deserves to remain.
 
 Sources: [Web Audio API 1.1](https://www.w3.org/TR/webaudio-1.1/),
 [MDN `BiquadFilterNode.type`](https://developer.mozilla.org/en-US/docs/Web/API/BiquadFilterNode/type),

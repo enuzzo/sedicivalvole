@@ -38,8 +38,10 @@ dated study documents.
 - The six themed source environments use the shared catalog of **10 themes**. Vertigo keeps
   the upstream Interstate 7 files byte-identical while an external runtime
   bridge maps the selected theme onto its existing colour channels.
-- OPEN, UNDERWATER and BLOOM are visible in all nine checkout environments without
-  a shared overlay. Aperture performs its tiled projection and centre light;
+- Braking UNDERWATER is the only vehicle-reactive effect and is visible in all
+  checkout environments without a shared overlay. OPEN and BLOOM are retired
+  from detection, audio, visual mapping, public packaging, and the protected
+  LAB. Aperture performs its tiled projection and centre light;
   Vertigo changes only the original runtime's externally bridged time, FOV and
   colour controls; Meridian changes corridor projection, flow, fog and rail
   energy; Atlas changes MapLibre camera and layer paint properties; Drivey
@@ -52,8 +54,8 @@ dated study documents.
   half-speed idle motion, bounded road response, optional Play the Road audio
   energy, and speed-only Soundtrack behavior.
 - The selected **Focus Canvas** owner LAB is implemented and canonically
-  published behind a server-side `/lab/` session gate. Its first manifest controls all
-  three PRTCL families through 18 bounded Form, Response, Macro, Scene and
+  published behind a server-side `/lab/` session gate. Its first manifest controls the
+  active PRTCL families through 16 bounded Form, Response, Macro, Scene and
   runtime-context options. Its separate test-audio selector can run MUTE,
   FRACTURE, JUNCTION, or NIGHTSHIFT without writing a music association into
   the visual state or preset. Import, clipboard copy and explicit authenticated
@@ -231,12 +233,12 @@ dated study documents.
   complete-form scale, point scale, depth, and travel; music owns colour phase
   and pulse. Both scale responses reach their maximum at `100 km/h` and hold
   above it, while depth and travel continue through the global `130 km/h` road
-  ceiling. OPEN, UNDERWATER, and BLOOM morph continuously instead of switching
-  discrete geometry state. UNDERWATER now holds Fractal at `22.5%` of natural
+  ceiling. Braking UNDERWATER morphs continuously instead of switching a
+  discrete geometry state. It holds Fractal at `22.5%` of natural
   form scale and `27.5%` of natural point scale—25% larger than the previous
   minima—and returns rapidly to the exact
   scale on surfacing. Exact muted
-  `773 × 601` and `390 × 844` QA, every type, OPEN / UNDERWATER / BLOOM, zero
+  `773 × 601` and `390 × 844` QA, every type, UNDERWATER, zero
   warning/error state, deterministic reduced motion, 339 tests, and the
   128-module build pass. Human visual approval was recorded on 2026-08-29;
   source commit `b88070c`, build `20260829-2337`, is verified on the canonical
@@ -456,23 +458,12 @@ dated study documents.
   crossfade. Rapid reversals continue from the audible point, cancel overlapping
   Web Audio automation safely and retain revision-guarded cleanup. A score-local
   rhythm fade is not stacked onto the same native entrance.
-- The shared post-score **OPEN** macro responds to a supported hard-acceleration
-  trajectory: at least `+30 km/h` inside `2.2 s`, at least three coherent
-  samples and `3.8 m/s²` average acceleration. It rejects inaccurate and stale
-  fixes and makes the gesture independent of stereo separation by sweeping a
-  soft-limited score-derived focus band from `480` to `3200 Hz` over `350 ms`.
-  Restrained low-mid, air and width changes support that rising intake without
-  adding an oscillator, noise or replacement phrase. It releases when the
-  curve normalizes and always yields to UNDERWATER braking. Local build
-  `20260830-0031` at `ca5ffe9` passes objective mono/level/peak evidence, but
-  human headphone, cabin and real-Tesla listening remain open.
-- **BLOOM** is the rarer upper tier nested inside OPEN. A supported trajectory
-  above `34 km/h`, `5.2 m/s²` and `0.7` normalized intensity sweeps a
-  Hermite-interpolated feed-forward delay
-  from `8` to `0.8 ms` over `400 ms` in the `300 Hz–8 kHz` band. It replaces
-  only that band, preserving the sub; it observes a 25-second refractory period
-  and yields immediately to UNDERWATER. The common 6.6 kB AudioWorklet sits
-  after either score and before OPEN's shared tone/width stage.
+- **UNDERWATER is the sole vehicle-reactive macro.** Firm braking drives the
+  shared two-stage perceptual low-pass/pressure envelope in both Play the Road
+  and Soundtrack and the same timestamped envelope reaches every visual.
+  Ordinary acceleration has no separate effect. The former OPEN detector,
+  filters and timer plus the BLOOM detector, DSP, AudioWorklet and packaged
+  asset are deleted; their prior experiments remain recoverable from Git.
 - **CUTWATER 04**, **LOWTIDE 05**, **NIGHTCAST 06**, and
   **STILLWATER 07** are declared honestly as `IN PREPARATION` and are disabled.
 - **SOUNDTRACK is connected to the App and owner LAB as a production prototype.**
@@ -487,8 +478,8 @@ dated study documents.
   gesture, has no automatic PLAY THE ROAD fallback, and remains at authored
   `1×`: driving never chooses or retimes a recording. MediaElementSource
   routing feeds a bounded Web Audio graph. The shared footer `FX` master
-  gates only audible OPEN/UNDERWATER/BLOOM processing while the same vehicle
-  macros remain available to every visual; PLAY THE ROAD starts enabled and
+  gates only audible braking UNDERWATER while its vehicle envelope remains
+  available to every visual; PLAY THE ROAD starts enabled and
   SOUNDTRACK remains a fresh-session opt-in. The office implementation now
   exposes eight manual post-source processors: Flanger, Reverb, Underwater,
   Phaser, Bitcrush, Bass Drive, Radio Cut, and High Cut; Chorus and Echo are
@@ -1073,8 +1064,8 @@ from a simple lack of aggregate bandwidth. The product's simultaneous
 accepted as a speed measurement.
 
 Audio checkpoint `89d3f15` preserves the one playback-oriented shared
-AudioContext but does not create silent Play the Road FRACTURE/BLOOM
-AudioWorklets during a Soundtrack launch. Macro detection and speed-only visual
+AudioContext but does not create silent Play the Road worklets during a
+Soundtrack launch. Braking macro detection and speed-only visual
 response continue; an explicit Play the Road switch initializes the processors
 lazily. After the current fixed recording proves six seconds of forward
 headroom, only the next deck promotes to audio preload. The previous role keeps
@@ -1093,7 +1084,7 @@ test can close the continuous Tesla listening gate. The clean superseding
 canonical build is `20260903-1953` from source/documentation checkpoint
 `edde367`; protected publication, independent postflight, canonical HTML/JS/CSS
 byte identity, cache `MISS`, trusted-input exact-viewport layout and zero
-FRACTURE/BLOOM worklet requests during Soundtrack startup pass. Retest with
+inactive score-worklet requests during Soundtrack startup pass. Retest with
 Gradient and a lighter visual, and send the existing diagnostic if any stutter
 remains.
 
@@ -1120,7 +1111,7 @@ remains.
 4. Perform low-volume listening and a real-Tesla drive across FRACTURE's full
    ascent/descent and boundary reversals, JUNCTION's long PARK holds and later
    transition, NIGHTSHIFT's PARK form and complete `85–140 BPM` ascent/descent,
-   and the OPEN/BLOOM gain changes. Automated visual, structural and
+   and braking UNDERWATER. Automated visual, structural and
    loudness evidence is not perceptual acceptance.
 5. Audition NIGHTSHIFT at low volume, verify perceived phrasing and loudness
    against both existing scores, then validate acceleration/reversal behavior in
@@ -1132,8 +1123,7 @@ remains.
 7. Validate PRTCL's stronger UNDERWATER collapse/recovery and each of Japanese
    Mist 08, Acid Orchard 09, and Chromatic Silk 10 across rest-to-130 motion,
    Play-the-Road audio response, Soundtrack speed-only behavior, sustained frame
-   pacing, and thermal behavior on the target Tesla. Validate the revised OPEN
-   intake at real playback level.
+   pacing, and thermal behavior on the target Tesla.
 8. Design Engine only after exactly three Engine-specific directions are shown
    and one is selected. Keep `VERSION` at `0.0.0` until an explicit release is
    approved.

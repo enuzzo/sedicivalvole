@@ -105,8 +105,8 @@ Commons licence URL.
   executable: fixed recordings remain at authored `1×` playback, and driving
   cannot select or retime them. The shared manually operated footer `EFFECTS`
   master may enable
-  the existing OPEN/UNDERWATER/BLOOM vehicle-reactive effects, independently of
-  four normalized manual controls for flanger, reverb, chorus, and beat repeat.
+  the braking UNDERWATER vehicle-reactive effect, independently of the eight
+  normalized passenger-operated Performance FX controls.
   The same source capability gate applies to both effects paths.
 - `src/soundtrack/catalog-client.js` keeps two source adapters distinct. Jamendo
   requests use the same-origin API/audio relays and explicit passenger

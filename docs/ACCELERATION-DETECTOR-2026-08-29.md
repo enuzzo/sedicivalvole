@@ -1,5 +1,10 @@
 # Rolling-window acceleration detector — 2026-08-29
 
+> Historical study. OPEN and BLOOM were retired on 2026-09-03 after physical
+> vehicle listening found no useful perceptual contribution. The detector,
+> audio paths, worklet, visual mappings and LAB controls described below are no
+> longer part of the current product; Git retains this evidence.
+
 ## Vehicle evidence
 
 The detector is calibrated against current first-party Tesla specifications,

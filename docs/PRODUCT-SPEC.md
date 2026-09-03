@@ -183,11 +183,11 @@ coordinate, or preference enters persistence or diagnostics.
 rendering runtime pinned at commit
 `5104cdade2a3158786b05b9b0680a50e942830cf`. The 51 upstream files remain
 byte-identical under a checked SHA-256 manifest. A separate project-authored
-iframe shell and bridge map the existing speed, music, performance-effect and
+iframe shell and bridge map the existing speed, music, braking-effect and
 ten-palette state onto controls and material buffers already owned by the
 runtime. The bridge uses the upstream automatic `Input`, removes only the
 player car's random weaving, and applies the shared frame-rate-independent road
-response plus the actual timestamped OPEN, UNDERWATER and BLOOM envelopes. At
+response plus the actual timestamped UNDERWATER envelope. At
 commanded zero it holds the player motionless on the current lane centre; motion
 resumes from the same road location. Sixteen NPCs are retained only when every
 generated car can be deterministically placed and verified in the direction
@@ -210,7 +210,7 @@ Axiom directly; it opens no dropdown or panel and remains separate from the
 shared `PALETTE` control. Road speed owns
 complete-form scale, point size, depth, and travel; both scale responses saturate
 at `100 km/h`, while depth and travel continue to `130 km/h`. Musical level owns
-colour and luminous pulse. OPEN, UNDERWATER, BLOOM, and reduced motion are
+colour and luminous pulse. UNDERWATER and reduced motion are
 implemented in this native particle grammar, with frame-rate-independent macro
 morphs rather than discrete state jumps. Human visual approval and canonical
 publication are complete; target-Tesla acceptance remains an explicit gate.
@@ -322,10 +322,9 @@ acceptance in the vehicle.
 - Use hysteresis/dwell, bar or beat quantization, and crossfades to avoid nervous switching.
 - Acceleration/deceleration may prepare a transition rather than changing everything immediately.
 - Sustained acceleration and deceleration must not retrigger transition effects on a timer. A direction change produces one bounded musical gesture, while continuous motion envelopes shape rhythm, low end, timbre, dynamics, and space.
-- OPEN is the shared acceleration macro; BLOOM is a rarer event inside it. BLOOM
-  may arm only on a rapid hard launch, affects only the `300 Hz–8 kHz` band,
-  preserves the sub, observes a long refractory period, and must release before
-  the higher-priority UNDERWATER braking gesture proceeds.
+- UNDERWATER is the sole vehicle-reactive effect. It follows firm braking with
+  one bounded perceptual envelope shared by audio and visuals. Acceleration does
+  not arm another effect; the former OPEN and BLOOM paths are retired.
 - A continuous restrained energy wave remains underneath the mix; its frequency and gain rise smoothly with acceleration.
 - Beat rate and rhythmic density must also increase perceptibly with speed while retaining the tempo knee and musical ceiling.
 - Flux must behave like a curated adaptive arrangement: kick, low end, percussion, rhythmic detail, harmony, timbre, effects, and spatial depth enter and evolve coherently.
@@ -354,7 +353,7 @@ acceptance in the vehicle.
 | ATLAS OpenFreeMap Drive Lab | implemented prototype | ephemeral GPS or explicit Milan demo; bounded high-cadence position interpolation; complete-view route plus pulsing endpoint; selected Navigator Plaque; shared-range Speed/Distance/Moving/Average, Accel/Braking, speed bands, Heading, Moving/Stopped and full-width Elevation dashboard; no Discover/Wikipedia duplication or reverse geocoding; Tesla network, motion and legibility acceptance pending |
 | LIGHT/DARK/AUTO interface appearance | implemented prototype | Road Sheet LIGHT default and DARK token family; persisted independent preference/reset; direct official-icon top-rail menu; observable browser-scheme priority; existing-position solar phase and safe no-prompt fallback; palette isolation, storage failure, twilight, interaction-hold, focus, and responsive checks; canonical and target-Tesla acceptance pending |
 | Network activity notice | model foundation | raw REPORT state separates browser hints from instrumented app activity/failure/recovery and active download/upload direction; quiet navbar presentation remains gated |
-| SOUNDTRACK fixed recordings | production prototype | server-side Jamendo catalogue and exact-ID no-store audio relays; fail-closed effect-compatible non-ND admission; three transient previous/current/next browser media elements; authored `1×` playback with no driving-derived selection or retiming; App/LAB playback and audio-clock attribution card; global footer FX for OPEN/UNDERWATER/BLOOM plus manual flanger, reverb, chorus, and bounded echo. Two horizontal top selectors switch Play the Road and Soundtrack without hiding the return route; Pace is a narrow vertical rail and all 15 genres use a readable `5 × 3` grid. The Lobo card states original artist authorship, Now Playing has a playback-bound activity mark, and Track Credit keeps its QR separate. Manual changes use the nominal `450 ms` equal-power model through normal skips and rapid retargeting, keep every genuinely audible credit visible, preserve a strict three-element bound, and expose a compact QR for the current public track page without exposing its stream URL. Target-vehicle tuning and physical listening remain pending; persistent/offline audio is prohibited. |
+| SOUNDTRACK fixed recordings | production prototype | server-side Jamendo catalogue and exact-ID no-store audio relays; fail-closed effect-compatible non-ND admission; three transient previous/current/next browser media elements; authored `1×` playback with no driving-derived selection or retiming; App/LAB playback and audio-clock attribution card; global footer FX for braking UNDERWATER plus the eight manual Flanger, Reverb, Underwater, Phaser, Bitcrush, Bass Drive, Radio Cut, and High Cut controls. Two horizontal top selectors switch Play the Road and Soundtrack without hiding the return route; Pace is a narrow vertical rail and all 15 genres use a readable `5 × 3` grid. The Lobo card states original artist authorship, Now Playing has a playback-bound activity mark, and Track Credit keeps its QR separate. Manual changes use the nominal `450 ms` equal-power model through normal skips and rapid retargeting, keep every genuinely audible credit visible, preserve a strict three-element bound, and expose a compact QR for the current public track page without exposing its stream URL. Target-vehicle tuning and physical listening remain pending; persistent/offline audio is prohibited. |
 | DISCOVER passenger index | production prototype | independent split passenger surface with a `246 px` rail, `52 px` heading band, `48 px` tools and `64 px` result rows, up to 15 image-led sources in one scroll, exact inline `+N MORE`, internal search, automatic browser language plus 14-language override, Nearby/Ahead/Region ordering, session-only coarse location, local distance/ETA, destination-only Google Maps directions and a complete localized Wikipedia article in a scriptless reader; no ATLAS handoff. Tesla acceptance pending. |
 | WAV-to-parameter editor | future research | source lab not validated on real audio |
 | Trip postcard | not confirmed | privacy conflict requires review |
