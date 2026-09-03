@@ -408,12 +408,12 @@ test("FRACTURE-only startup does not construct the JUNCTION oscillator graph", a
 test("FRACTURE selection waits for a connected worklet and has an audible fallback", async () => {
   const source = await readFile(new URL("../src/audio-engine.js", import.meta.url), "utf8");
   const app = await readFile(new URL("../src/App.jsx", import.meta.url), "utf8");
-  const readinessAt = source.indexOf("const fractureReady = (async () =>");
+  const readinessAt = source.indexOf("function prepareFracture()");
   const connectedAt = source.indexOf("node.connect(fractureGain)", readinessAt);
   const readyAt = source.indexOf('fractureReadyState = "ready"', readinessAt);
   assert.ok(readinessAt >= 0 && connectedAt > readinessAt && readyAt > connectedAt);
   assert.match(source, /typeof context\.audioWorklet\?\.addModule !== "function"/);
-  assert.match(source, /return fractureReady\.then\(async \(ready\) =>/);
+  assert.match(source, /return prepareFracture\(\)\.then\(async \(ready\) =>/);
   assert.match(source, /await ensureJunction\(\)\.setActive\(true, \{ externalEntranceFade: true \}\)/);
   assert.match(source, /if \(fractureReadyState !== "ready"\) \{/);
   assert.match(source, /FRACTURE is not yet audible/);
