@@ -945,3 +945,26 @@ publication section and morning checklist in
 Curated experiences, travel ATLAS and the separate statistics visual remain
 approved drafts. Engine intake is partial; no complete review or integration
 is claimed. Preserve allowance for incoming Tesla evidence.
+
+
+## Moving-control accessibility correction — 2026-09-05 00:26
+
+Real Tesla feedback exposed a mistaken interpretation of speed-only resting chrome:
+`wakeControls`, rendered visibility, footer inert state and the per-speed effect
+collectively prevented deliberate access above 0.8 km/h. The owner could use controls
+again after stopping. Fix: explicit wake is speed-independent, departure retracts
+only on the stationary-to-moving transition, and later speed samples do not revoke
+user intent. Inactivity, action/close retraction and genuine open-surface pinning
+remain intact. The committed browser matrix now holds acceleration during moving
+interaction tests instead of asserting that touches must be ignored.
+
+The supplied diagnostic was received in Gmail (build 20260904-2351) and its gzip
+attachment was inspected locally through the raw MIME message. It reports no runtime
+issues and a final speed below the old threshold, consistent with the report. Its
+short retained recording is not proof of every touch or the entire journey. No
+private report, mail content or attachment is committed.
+
+629 native checks and 69 browser matrix checks pass with zero browser warnings/errors.
+Publication identity and the focused live Vertigo regression will be appended after
+deployment. This correction supersedes earlier claims that ignoring moving taps
+was desirable; previous recorded tests remain historical evidence of the wrong rule.

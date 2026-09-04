@@ -155,3 +155,12 @@ rules above where they differ:
   Verified Git checkpoints may be pushed. Canonical deployment still requires an
   explicit owner request and the applicable gates; browser proof is not Tesla
   cabin, native-media, network or sustained-GPU acceptance.
+
+
+## Owner correction — 2026-09-05 moving controls must remain reachable
+
+Supersedes the earlier instruction to ignore ambient taps while moving. A deliberate
+pointer/touch or keyboard wake must reveal usable navbar/footer at any speed.
+Departure may retract once; subsequent speed samples must not cancel that wake.
+Keep the six-second inactivity deadline, immediate completed-action/close retraction,
+open-surface pinning and speed-only resting state. Never make motion a control lock.

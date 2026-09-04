@@ -2736,7 +2736,7 @@ export function App() {
   const wakeControls = useCallback(() => {
     window.cancelAnimationFrame(dismissFrameRef.current);
     window.clearTimeout(wakeTimerRef.current);
-    setControlsAwake(speedRef.current < 0.8);
+    setControlsAwake(true);
     wakeTimerRef.current = window.setTimeout(restControls, 6000);
   }, [restControls]);
 
@@ -2770,9 +2770,12 @@ export function App() {
     if (wasPinned && !controlsPinned) queueExperienceFocus();
   }, [controlsPinned, queueExperienceFocus]);
 
+  const vehicleMoving = speed >= 0.8;
   useEffect(() => {
-    if (speed >= 0.8 && !controlsPinned) restControls();
-  }, [speed, controlsPinned, restControls]);
+    // Departure retracts chrome once. Subsequent speed samples must not cancel
+    // an explicit pointer/keyboard wake while the vehicle remains in motion.
+    if (vehicleMoving) restControls();
+  }, [vehicleMoving, restControls]);
 
   const handleSurfacePointerDown = useCallback((event) => {
     controlsHiddenAtPointerDownRef.current = !(controlsAwake || modalOpen);
@@ -4776,7 +4779,7 @@ export function App() {
     <main
       ref={appRef}
       tabIndex={-1}
-      className={`app phase-${phase} ${(controlsAwake && speed < 0.8) || controlsPinned ? "controls-awake" : "controls-resting"}${modalOpen ? " modal-open" : ""}${showNowPlaying ? " has-now-playing" : ""}`}
+      className={`app phase-${phase} ${controlsAwake || controlsPinned ? "controls-awake" : "controls-resting"}${modalOpen ? " modal-open" : ""}${showNowPlaying ? " has-now-playing" : ""}`}
       style={semanticTheme.css}
       data-moving={speed >= 0.8}
       data-palette={themeId}
@@ -5137,7 +5140,7 @@ export function App() {
           />
         ) : null}
 
-        <div className="footer-stack control-layer" inert={!((controlsAwake && speed < 0.8) || controlsPinned) ? true : undefined}>
+        <div className="footer-stack control-layer" inert={!(controlsAwake || controlsPinned) ? true : undefined}>
       {showNowPlaying ? (
         <div className="now-playing-dock persistent-transport" aria-label="Now playing and music transport">
           <div className="now-playing-summary" role="status" aria-live="polite" aria-atomic="true">
