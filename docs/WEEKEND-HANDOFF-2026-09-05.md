@@ -87,3 +87,44 @@ second AudioContext/GPS owner. The full candidate and source review remain open.
 5. Recommend the next bounded task using actual evidence. Curated experiences,
    ATLAS/statistics separation and Engine stay explicitly distinguishable from
    shipped features. Do not trigger any usage reset; none was authorized.
+
+
+## Long-trip diagnostics published — 2026-09-05 00:20
+
+Verified canonical version **0.0.0**, build **20260905-0012**, clean built source
+**41721eb**. This supersedes build 20260904-2351 for newly loaded pages. Already
+open sessions retain their own build and memory; inspect incoming report identity
+before comparing them. The following documentation commit does not alter the
+artifact's source identity.
+
+- **629/629 native checks**, including Sites **9/9**, the actual PHP gzip fixture
+  and the new 24-hour complete-report attachment test, passed on this ARM64 host.
+- Clean production build passed: App **242** modules, LAB **154**, Sites package.
+  The known large-chunk advisory remains. Post-build identity/Sites checks 10/10.
+- Synthetic 24-hour run: **43,201 observations**, **1,800** detailed rows,
+  **181** adaptive windows at target **480 seconds**, **32,374 bytes** for the
+  journey JSON and **299,172 bytes** for that representative fitted request.
+  Early offline/FPS degradation evidence survives. Simulation execution took
+  176 ms on this host; this is not wall-clock endurance or Tesla performance.
+- Preflight and independent postflight passed with `remote_writes=NONE`.
+  Publisher verified **183 files / 215,959,583 bytes**, all **29** Illobo tracks
+  and retained **one** previous fingerprinted asset. No legacy removal occurred.
+- **12 canonical HTTP checks** passed. Bare root, cache-busted root and explicit
+  PHP entry return the current byte-identical HTML with no-store/no-cache and
+  cache MISS. All emitted JavaScript and main CSS match local bytes; unchanged
+  CSS may legitimately return HIT. Main asset is `index-_4Y6QalF.js`.
+- Current production Chrome **773 × 601** passed three focused integration
+  checks: rendered raw report contains actual journey observations; the existing
+  manual-send payload includes them and matches its exact byte budget; closing
+  REPORT retracts chrome. Console warnings/errors/page errors: **0**. SEND was
+  intercepted inside Playwright and answered locally, so **no email was sent**.
+  The captured SENT state is a test response, not a claim of inbox delivery.
+- Inbox delivery, real multi-hour driving, native playback, network recovery and
+  sustained vehicle CPU/GPU/thermal behavior still need owner evidence. No new
+  visual, experience preset, source dependency or Engine runtime was introduced.
+
+Evidence: [native suite](qa/2026-09-05-long-trip/native-tests.txt),
+[simulation](qa/2026-09-05-long-trip/simulation.json),
+[canonical hashes](qa/2026-09-05-long-trip/canonical-evidence.json),
+[publication](qa/2026-09-05-long-trip/publication.txt), and
+[live browser integration](qa/2026-09-05-long-trip/live-browser-evidence.json).

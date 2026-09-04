@@ -316,3 +316,13 @@ at [sedicivalvole.app](https://sedicivalvole.app/). Native checks pass 626/626
 (including actual PHP and Sites 9/9); canonical HTML/assets/cache and 64 live
 browser lifecycle checks pass. Physical Tesla acceptance remains separate.
 See the [publication evidence](docs/ASTRA-UI-VERIFICATION-2026-09-04.md).
+
+
+### Long-trip diagnostic publication — 2026-09-05 00:20
+
+Canonical build **20260905-0012** (source **41721eb**, VERSION **0.0.0**) adds
+bounded whole-journey diagnostic context. It retains early-trip observations
+without coordinates or automatic transmission. Native tests pass 629/629 with
+actual PHP; canonical identity and live report integration pass.
+See the [weekend handoff](docs/WEEKEND-HANDOFF-2026-09-05.md) for evidence,
+owner-approved drafts, study limitations and the real-vehicle acceptance queue.

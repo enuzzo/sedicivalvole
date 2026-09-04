@@ -1,0 +1,95 @@
+{
+  "url": "https://sedicivalvole.app/",
+  "viewport": {
+    "width": 773,
+    "height": 601
+  },
+  "console": [],
+  "checks": [
+    "rendered raw report includes bounded live journey observations",
+    "existing manual send includes journey and exact body budget through intercepted response",
+    "closing Report retracts chrome"
+  ],
+  "send": "INTERCEPTED_LOCALLY_NO_EMAIL",
+  "build": {
+    "version": "0.0.0",
+    "build": "20260905-0012",
+    "commit": "41721eb",
+    "mode": "flux",
+    "environment": "aperture",
+    "pageUrl": "https://sedicivalvole.app/",
+    "source": "GPS",
+    "displayedSpeedKmh": 0,
+    "bpm": null,
+    "transportBpm": 162,
+    "responseCeilingKmh": 130,
+    "paletteTheme": "red",
+    "appearancePreference": "light",
+    "appearance": "light",
+    "appearanceSource": "manual",
+    "appearanceHoldReason": null,
+    "particleType": null,
+    "muted": true,
+    "vehicleAudioEffectsEnabled": true,
+    "arrangement": {
+      "score": "fracture",
+      "scoreLabel": "FRACTURE",
+      "scoreWorklets": "requested",
+      "requestedScoreId": "fracture",
+      "scoreStatus": "loading",
+      "scoreError": null,
+      "scene": 0,
+      "sceneId": "park",
+      "halfTime": true,
+      "tempo": 162,
+      "transportTempo": 162,
+      "perceivedTempo": null,
+      "motionLane": "PARK",
+      "activeLanes": [
+        "atmosphere"
+      ],
+      "responseCeilingKmh": 130,
+      "motionPhase": "cruise",
+      "brake": 0,
+      "macros": {
+        "schema": "sedicivalvole.audio-macros.v2",
+        "capturedAtMs": 7629.699999928474,
+        "values": {
+          "underwater": 0
+        }
+      },
+      "accelerationMps2": 0
+    }
+  },
+  "journey": {
+    "windowLimit": 240,
+    "targetWindowSeconds": 60,
+    "coverage": "Observed samples only; gaps are not interpolated. FPS and p95 values are running session metrics, not window-local frame distributions.",
+    "windows": [
+      {
+        "fromS": 0.6,
+        "toS": 6.6,
+        "samples": 4,
+        "speedMin": 0,
+        "speedMax": 0,
+        "fpsMin": 60,
+        "p95FrameMax": 16.7,
+        "staleGpsSamples": 0,
+        "offlineSamples": 0,
+        "hiddenSamples": 0,
+        "maximumSampleGapS": 2
+      }
+    ]
+  },
+  "transport": {
+    "maximumRequestBodyBytes": 1966080,
+    "trimmingTargetBytes": 1957888,
+    "originalSamples": 4,
+    "originalEvents": 76,
+    "originalRuntimeIssues": 0,
+    "requestBodyBytes": 95283,
+    "transmittedSamples": 4,
+    "transmittedEvents": 76,
+    "transmittedRuntimeIssues": 0
+  }
+}

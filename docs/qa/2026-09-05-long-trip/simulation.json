@@ -1,0 +1,13 @@
+{
+  "syntheticDurationHours": 24,
+  "observations": 43201,
+  "retainedDetailed": 1800,
+  "journeyWindows": 181,
+  "targetWindowSeconds": 480,
+  "journeyJsonBytes": 32374,
+  "requestBodyBytes": 299172,
+  "simulationWallMs": 176,
+  "earlyOfflineCount": 1,
+  "minimumEarlyFps": 8,
+  "limits": "Accelerated model test; not wall-clock, vehicle, inbox delivery or thermal acceptance."
+}

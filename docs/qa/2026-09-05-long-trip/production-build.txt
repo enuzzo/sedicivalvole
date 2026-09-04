@@ -1,0 +1,168 @@
+vite v6.4.3 building for production...
+transforming...
+✓ 242 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/client/third-party/infinite-lights/.gitignore                             0.01 kB
+dist/client/third-party/drivey/js/isTouchDevice.js                             0.12 kB
+dist/client/third-party/drivey/js/worker.js                                    0.15 kB
+dist/client/third-party/tabler-icons/player-play-filled.svg                    0.26 kB │ gzip:   0.20 kB
+dist/client/third-party/tabler-icons/player-pause-filled.svg                   0.35 kB │ gzip:   0.20 kB
+dist/client/third-party/tabler-icons/player-skip-forward-filled.svg            0.37 kB │ gzip:   0.24 kB
+dist/client/third-party/tabler-icons/player-skip-back-filled.svg               0.38 kB │ gzip:   0.25 kB
+dist/client/third-party/tabler-icons/chevron-left.svg                          0.38 kB │ gzip:   0.27 kB
+dist/client/third-party/tabler-icons/chevron-right.svg                         0.38 kB │ gzip:   0.27 kB
+dist/client/third-party/tabler-icons/search.svg                                0.42 kB │ gzip:   0.29 kB
+dist/client/third-party/tabler-icons/navigation-filled.svg                     0.42 kB │ gzip:   0.30 kB
+dist/client/third-party/tabler-icons/moon.svg                                  0.45 kB │ gzip:   0.32 kB
+dist/client/third-party/tabler-icons/external-link.svg                         0.49 kB │ gzip:   0.32 kB
+dist/client/third-party/drivey/index.html                                      0.50 kB │ gzip:   0.32 kB
+dist/client/third-party/drivey/levels/DeepDarkNight.html                       0.50 kB │ gzip:   0.27 kB
+dist/client/third-party/drivey/levels/TestLevel.html                           0.51 kB │ gzip:   0.27 kB
+dist/client/third-party/tabler-icons/sun.svg                                   0.53 kB │ gzip:   0.34 kB
+dist/client/third-party/tabler-icons/map-search.svg                            0.53 kB │ gzip:   0.33 kB
+dist/client/third-party/tabler-icons/navigation.svg                            0.54 kB │ gzip:   0.36 kB
+dist/client/third-party/tabler-icons/brand-wikipedia.svg                       0.58 kB │ gzip:   0.34 kB
+dist/client/third-party/tabler-icons/sun-moon.svg                              0.59 kB │ gzip:   0.37 kB
+dist/client/third-party/drivey/levels/WarpGate.html                            0.61 kB │ gzip:   0.29 kB
+dist/client/third-party/drivey/js/parseFunctions.js                            0.61 kB
+dist/client/third-party/tabler-icons/report-analytics.svg                      0.62 kB │ gzip:   0.33 kB
+dist/client/third-party/drivey/lib/three/shaders/CopyShader.js                 0.65 kB
+dist/client/third-party/tabler-icons/chart-bar.svg                             0.67 kB │ gzip:   0.33 kB
+dist/client/brand/favicon.ico                                                  0.68 kB
+dist/client/third-party/drivey/levels/Spectre.html                             0.87 kB │ gzip:   0.39 kB
+dist/client/third-party/drivey/TODO.txt                                        0.90 kB │ gzip:   0.57 kB
+dist/client/third-party/drivey/levels/Tunnel.html                              1.02 kB │ gzip:   0.40 kB
+dist/client/third-party/tabler-icons/LICENSE                                   1.07 kB
+dist/client/index.html                                                         1.21 kB │ gzip:   0.55 kB
+dist/client/third-party/drivey/levels/Reference.html                           1.23 kB │ gzip:   0.47 kB
+dist/client/third-party/drivey/levels/CliffsideBeach.html                      1.23 kB │ gzip:   0.40 kB
+dist/client/third-party/drivey/levels/City.html                                1.33 kB │ gzip:   0.46 kB
+dist/client/third-party/drivey/levels/TrainTracks.html                         1.35 kB │ gzip:   0.46 kB
+dist/client/third-party/drivey/levels/Overpass.html                            1.45 kB │ gzip:   0.47 kB
+dist/client/third-party/infinite-lights/README.md                              1.46 kB
+dist/client/third-party/drivey/lib/three/postprocessing/Pass.js                1.57 kB
+dist/client/third-party/drivey/lib/three/postprocessing/ShaderPass.js          1.60 kB
+dist/client/third-party/drivey/js/lineModelers.js                              1.71 kB
+dist/client/third-party/drivey/levels/CurveTestLevel.html                      1.72 kB │ gzip:   0.40 kB
+dist/client/third-party/drivey/lib/three/postprocessing/RenderPass.js          1.85 kB
+dist/client/brand/favicon-32.png                                               1.88 kB
+dist/client/third-party/drivey/js/buildLevel.js                                1.92 kB
+dist/client/brand/illobo-featured-outline.svg                                  1.98 kB │ gzip:   0.96 kB
+dist/client/third-party/drivey/js/math.js                                      2.14 kB
+dist/client/brand/illobo-featured-solid.svg                                    2.23 kB │ gzip:   1.04 kB
+dist/client/third-party/drivey/SEDICIVALVOLE-INTEGRATION.md                    2.26 kB
+dist/client/brand/sedicivalvole-mark.svg                                       2.31 kB │ gzip:   0.97 kB
+dist/client/third-party/drivey/lib/three/postprocessing/MaskPass.js            2.39 kB
+dist/client/third-party/drivey/lib/three/shaders/SobelOperatorShader.js        2.49 kB
+dist/client/third-party/drivey/js/renderLevel.js                               2.62 kB
+dist/client/third-party/drivey/js/geometry.js                                  2.88 kB
+dist/client/third-party/drivey/js/roads.js                                     3.27 kB
+dist/client/third-party/drivey/js/materials.js                                 3.36 kB
+dist/client/artwork/illobo/chasing-fades-nubass.webp                           3.37 kB
+dist/client/third-party/drivey/js/paths.js                                     3.60 kB
+dist/client/artwork/illobo/floating-stars.webp                                 3.63 kB
+dist/client/third-party/drivey/THIRD_PARTY_LICENSES.md                         3.73 kB
+dist/client/third-party/drivey/sedicivalvole.html                              4.28 kB │ gzip:   1.56 kB
+dist/client/artwork/illobo/backyard-conversation.webp                          4.42 kB
+dist/client/fonts/OFL-Orbitron.txt                                             4.43 kB │ gzip:   1.97 kB
+dist/client/fonts/OFL-Space-Grotesk.txt                                        4.50 kB │ gzip:   2.02 kB
+dist/client/third-party/infinite-lights/index3.html                            4.58 kB │ gzip:   1.91 kB
+dist/client/third-party/infinite-lights/index4.html                            4.58 kB │ gzip:   1.92 kB
+dist/client/third-party/infinite-lights/index7.html                            4.59 kB │ gzip:   1.91 kB
+dist/client/third-party/infinite-lights/index2.html                            4.59 kB │ gzip:   1.91 kB
+dist/client/third-party/infinite-lights/index6.html                            4.59 kB │ gzip:   1.91 kB
+dist/client/third-party/infinite-lights/index.html                             4.60 kB │ gzip:   1.91 kB
+dist/client/third-party/infinite-lights/index5.html                            4.60 kB │ gzip:   1.92 kB
+dist/client/artwork/illobo/cartesian-traveller.webp                            4.64 kB
+dist/client/third-party/drivey/UPSTREAM-SHA256SUMS.txt                         4.66 kB │ gzip:   2.70 kB
+dist/client/third-party/drivey/lib/theme.js                                    4.71 kB
+dist/client/artwork/illobo/acid-evening-shifted.webp                           4.72 kB
+dist/client/third-party/drivey/js/Input.js                                     5.30 kB
+dist/client/third-party/drivey/js/levelSchemas.js                              5.37 kB
+dist/client/api/soundtrack-catalog.php                                         5.66 kB
+dist/client/artwork/illobo/schranz-1.webp                                      5.66 kB
+dist/client/third-party/drivey/js/Car.js                                       5.81 kB
+dist/client/third-party/drivey/js/Screen.js                                    6.10 kB
+dist/client/third-party/drivey/js/Dashboard.js                                 6.25 kB
+dist/client/third-party/drivey/js/modelLevel.js                                6.35 kB
+dist/client/third-party/drivey/lib/three/postprocessing/EffectComposer.js      6.39 kB
+dist/client/third-party/drivey/levels/IndustrialZone.html                      6.48 kB │ gzip:   1.36 kB
+dist/client/third-party/drivey/js/Buttons.js                                   6.87 kB
+dist/client/artwork/illobo/treotre-due.webp                                    6.88 kB
+dist/client/api/soundtrack-audio.php                                           6.89 kB
+dist/client/third-party/drivey/README.md                                       6.89 kB
+dist/client/artwork/illobo/pre-judice-0.webp                                   7.60 kB
+dist/client/api/send-diagnostic.php                                            7.80 kB
+dist/client/artwork/illobo/this-point.webp                                     8.22 kB
+dist/client/artwork/illobo/sleepy-morning.webp                                 8.73 kB
+dist/client/artwork/illobo/pre-judice-robot-2.webp                             9.13 kB
+dist/client/artwork/illobo/treotre.webp                                        9.44 kB
+dist/client/artwork/illobo/wandering-nose.webp                                10.16 kB
+dist/client/artwork/illobo/sliced-zucchini-edit.webp                          10.37 kB
+dist/client/artwork/illobo/treotre-vox.webp                                   10.59 kB
+dist/client/third-party/drivey/MY_OTHER_CAR_IS_A_BEZIER.md                    10.93 kB
+dist/client/artwork/illobo/wave-creaser.webp                                  11.31 kB
+dist/client/brand/product-icon-192.png                                        11.33 kB
+dist/client/artwork/illobo/oblique-ascension-2021.webp                        11.65 kB
+dist/client/third-party/infinite-lights/js/Distortions.js                     11.65 kB
+dist/client/fonts/orbitron-latin-variable.woff2                               11.80 kB
+dist/client/artwork/illobo/magnetic-shades.webp                               11.83 kB
+dist/client/artwork/illobo/lots-of-bells.webp                                 12.02 kB
+dist/client/brand/apple-touch-icon.png                                        12.94 kB
+dist/client/artwork/illobo/tropico.webp                                       13.09 kB
+dist/client/artwork/illobo/sliced-zucchini.webp                               13.92 kB
+dist/client/third-party/infinite-lights/favicon.ico                           15.09 kB
+dist/client/third-party/drivey/lib/three/shaders/SMAAShader.js                15.21 kB
+dist/client/artwork/illobo/sliced-zucchini-final.webp                         15.26 kB
+dist/client/artwork/illobo/plastic-cans.webp                                  15.65 kB
+dist/client/third-party/drivey/js/buildCar.js                                 15.76 kB
+dist/client/artwork/illobo/space-train.webp                                   16.50 kB
+dist/client/artwork/illobo/sassate-nimmuso.webp                               17.13 kB
+dist/client/artwork/illobo/restless-tabla.webp                                18.93 kB
+dist/client/third-party/drivey/js/Drivey.js                                   19.02 kB
+dist/client/artwork/illobo/club-porchetta.webp                                19.05 kB
+dist/client/brand/product-icon-512.png                                        19.86 kB
+dist/client/artwork/illobo/icebreaker-d3.webp                                 20.14 kB
+dist/client/third-party/drivey/lib/three/utils/BufferGeometryUtils.js         20.70 kB
+dist/client/third-party/infinite-lights/js/InfiniteLights.js                  22.47 kB
+dist/client/artwork/illobo/sy-challenge.webp                                  28.33 kB
+dist/client/third-party/drivey/LICENSE                                        35.15 kB
+dist/client/third-party/drivey/lib/expr-eval.js                               47.69 kB
+dist/client/third-party/drivey/lib/three/postprocessing/SMAAPass.js           49.65 kB
+dist/client/assets/score-processor-Dly9Ky60.js                               117.01 kB
+dist/client/fonts/space-grotesk-variable.ttf                                 136.68 kB
+dist/client/third-party/infinite-lights/js/postprocessing.min.js             194.92 kB
+dist/client/artwork/play-road/junction.png                                   268.86 kB
+dist/client/artwork/play-road/nightshift.png                                 287.33 kB
+dist/client/artwork/play-road/fracture.png                                   346.21 kB
+dist/client/third-party/infinite-lights/js/three.min.js                      592.59 kB
+dist/client/third-party/drivey/lib/three/three.module.js                   1,172.73 kB
+dist/client/audio/nightshift.svb                                           5,504.60 kB
+dist/client/audio/junction.svb                                             5,812.36 kB
+dist/client/third-party/drivey/css/drivey.css                                  3.50 kB │ gzip:   1.03 kB
+dist/client/third-party/infinite-lights/css/base.css                           4.15 kB │ gzip:   1.35 kB
+dist/client/assets/atlas-field-DIYHhGHm.css                                   69.35 kB │ gzip:  10.02 kB
+dist/client/assets/index-BIK79MB3.css                                        178.86 kB │ gzip:  28.34 kB
+dist/client/assets/atlas-field-Bdqr_4Qo.js                                    25.52 kB │ gzip:   9.18 kB
+dist/client/assets/browser-Cp22h3tM.js                                        25.78 kB │ gzip:  10.01 kB
+dist/client/assets/index-_4Y6QalF.js                                         752.10 kB │ gzip: 277.29 kB
+dist/client/assets/maplibre-gl-Glfe1xVs.js                                   941.21 kB │ gzip: 254.71 kB
+dist/client/assets/shadergradient-field-D4oznOYm.js                        1,085.83 kB │ gzip: 272.79 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 2.08s
+vite v6.4.3 building for production...
+transforming...
+✓ 154 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/lab-build/score-processor.js    117.01 kB
+dist/lab-build/lab.css                23.11 kB │ gzip:   5.14 kB
+dist/lab-build/lab.js              1,465.19 kB │ gzip: 389.25 kB
+✓ built in 1.04s
+Packaged protected inline LAB with 1 audio runtime assets
+Prepared Sites build: dist/server/index.js and dist/.openai/hosting.json

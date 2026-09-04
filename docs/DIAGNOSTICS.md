@@ -273,3 +273,17 @@ The manual send/recipient/body limit/gzip contract remains unchanged. Tests cove
 24 hours, early failures, suspension, bounded payload fitting and real PHP gzip
 restoration. Full details and acceptance limits are in the
 [weekend handoff](WEEKEND-HANDOFF-2026-09-05.md).
+
+
+## Long-trip canonical checkpoint — 2026-09-05 00:20
+
+Build **20260905-0012**, source **41721eb**, is verified at the canonical root.
+Whole-session diagnostic windows now complement the rolling detailed trace.
+Passed 629 native checks including actual PHP/Sites 9/9, ARM64 production build,
+12 canonical HTTP/asset checks and three live diagnostic integration checks.
+The browser SEND test was intercepted locally; no email was sent. See the final
+publication section and morning checklist in
+[WEEKEND-HANDOFF-2026-09-05.md](WEEKEND-HANDOFF-2026-09-05.md).
+Curated experiences, travel ATLAS and the separate statistics visual remain
+approved drafts. Engine intake is partial; no complete review or integration
+is claimed. Preserve allowance for incoming Tesla evidence.
