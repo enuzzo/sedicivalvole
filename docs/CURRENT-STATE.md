@@ -1278,3 +1278,12 @@ exact hashes, current captures and the config-use authorization. Next: owner
 Tesla acceptance of chrome/player retraction, palette/ATLAS readability,
 UNDERWATER, GPS, continuous audio/native media and sustained GPU behaviour.
 Browser evidence does not close these physical gates; no diagnostic was sent.
+
+
+## Weekend continuation — 2026-09-05 00:11
+
+Long-trip diagnostic work, approved curated-experience and travel-ATLAS/statistics
+directions, Engine study intake limitations and the morning recovery checklist
+are recorded in [WEEKEND-HANDOFF-2026-09-05.md](WEEKEND-HANDOFF-2026-09-05.md).
+The active short-drive baseline is build 20260904-2351; the later publication
+identity will be appended to the weekend handoff after verification.

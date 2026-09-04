@@ -260,3 +260,16 @@ Eight long tasks total `881 ms` with a `354 ms` maximum; no prior 12-second
 pause recurs. Local mitigation therefore reduces only the MapLibre framebuffer
 and repeated marker/style work. A new target-vehicle report must prove stable
 30 FPS before ATLAS performance acceptance can close.
+
+
+## Whole-journey overview — 2026-09-05 00:11
+
+The additive v4 `flightRecorder.journey` keeps at most 240 adaptive windows across
+the entire observed session, alongside the 1800-sample detailed rolling trace.
+One-minute windows merge pairwise with doubled target duration on overflow.
+Counts and extrema survive compaction; missing time remains a recorded sampling
+gap. Running FPS/p95 snapshots are explicitly not window-local distributions.
+The manual send/recipient/body limit/gzip contract remains unchanged. Tests cover
+24 hours, early failures, suspension, bounded payload fitting and real PHP gzip
+restoration. Full details and acceptance limits are in the
+[weekend handoff](WEEKEND-HANDOFF-2026-09-05.md).

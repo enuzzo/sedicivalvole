@@ -717,6 +717,7 @@ export function deriveNetworkNoticeState({
 
 export const DRIVE_TRACE_INTERVAL_MS = 2000;
 export const DRIVE_TRACE_SAMPLE_LIMIT = 1800;
+export const DRIVE_JOURNEY_WINDOW_LIMIT = 240;
 export const DIAGNOSTIC_MAX_REQUEST_BODY_BYTES = 1966080;
 export const DRIVE_TRACE_FIELDS = [
   "t", "speed", "gps", "gpsAge", "gpsState", "accuracy", "rate", "source", "input",
@@ -760,8 +761,52 @@ export function createDriveTelemetry(startedAtMs = 0) {
       takePairs: new Set(),
       rhythmPairs: new Set(),
     },
+    journeyWindowSeconds: 60,
+    journeyWindows: [],
     samples: [],
   };
+}
+
+// Keep whole-session context while the detailed rolling trace expires. Windows
+// summarize observations, not continuous coverage; missing intervals stay explicit.
+function recordJourneyWindow(telemetry, sample, intervalMs) {
+  const finiteMin = (a, b) => a == null ? b : b == null ? a : Math.min(a, b);
+  const finiteMax = (a, b) => a == null ? b : b == null ? a : Math.max(a, b);
+  const merge = (a, b) => ({
+    fromS: a.fromS, toS: b.toS, samples: a.samples + b.samples,
+    speedMin: finiteMin(a.speedMin, b.speedMin),
+    speedMax: finiteMax(a.speedMax, b.speedMax),
+    fpsMin: finiteMin(a.fpsMin, b.fpsMin),
+    p95FrameMax: finiteMax(a.p95FrameMax, b.p95FrameMax),
+    staleGpsSamples: a.staleGpsSamples + b.staleGpsSamples,
+    offlineSamples: a.offlineSamples + b.offlineSamples,
+    hiddenSamples: a.hiddenSamples + b.hiddenSamples,
+    maximumSampleGapS: Math.max(a.maximumSampleGapS, b.maximumSampleGapS),
+  });
+  const observation = {
+    fromS: sample.t, toS: sample.t, samples: 1,
+    speedMin: sample.speed, speedMax: sample.speed,
+    fpsMin: sample.fps, p95FrameMax: sample.p95Frame,
+    staleGpsSamples: sample.gpsAge > 3000 ? 1 : 0,
+    offlineSamples: sample.online === false ? 1 : 0,
+    hiddenSamples: sample.visibility === "hidden" ? 1 : 0,
+    maximumSampleGapS: rounded(intervalMs / 1000, 1),
+  };
+  const windows = telemetry.journeyWindows;
+  const last = windows.at(-1);
+  if (last && sample.t - last.fromS < telemetry.journeyWindowSeconds) {
+    windows[windows.length - 1] = merge(last, observation);
+  } else {
+    windows.push(observation);
+  }
+  if (windows.length > DRIVE_JOURNEY_WINDOW_LIMIT) {
+    const compacted = [];
+    for (let index = 0; index < windows.length; index += 2) {
+      compacted.push(windows[index + 1] ? merge(windows[index], windows[index + 1]) : windows[index]);
+    }
+    telemetry.journeyWindows = compacted;
+    telemetry.journeyWindowSeconds *= 2;
+  }
 }
 
 export function recordDriveTelemetrySample(telemetry, sample, limit = DRIVE_TRACE_SAMPLE_LIMIT) {
@@ -845,6 +890,7 @@ export function recordDriveTelemetrySample(telemetry, sample, limit = DRIVE_TRAC
     rtt: rounded(sample.roundTripTimeMs, 0),
     visibility: sample.visibility ?? null,
   };
+  recordJourneyWindow(telemetry, retainedSample, intervalMs);
   telemetry.samples.push(retainedSample);
   if (telemetry.samples.length > limit) {
     const overflow = telemetry.samples.length - limit;
@@ -896,6 +942,12 @@ export function summarizeDriveTelemetry(telemetry, generatedAtMs = telemetry.las
 export function createDriveTelemetryReport(telemetry, generatedAtMs = telemetry.lastCapturedAtMs) {
   return {
     summary: summarizeDriveTelemetry(telemetry, generatedAtMs),
+    journey: {
+      windowLimit: DRIVE_JOURNEY_WINDOW_LIMIT,
+      targetWindowSeconds: telemetry.journeyWindowSeconds,
+      coverage: "Observed samples only; gaps are not interpolated. FPS and p95 values are running session metrics, not window-local frame distributions.",
+      windows: telemetry.journeyWindows.map(window => ({ ...window })),
+    },
     sampleFields: DRIVE_TRACE_FIELDS,
     fieldLegend: {
       t: "seconds since recorder start",

@@ -515,3 +515,48 @@ test("diagnostic transport fitting rotates oldest evidence from an oversized dri
   assert.equal(fitted.flightRecorder.summary.totalSamples, 300);
   assert.equal(fitted.flightRecorder.summary.discardedSamples, 900);
 });
+
+test("24-hour journeys retain early failures and exact observation counts with bounded detail", () => {
+  const telemetry = createDriveTelemetry(0);
+  const hours = 24;
+  for (let second = 0; second <= hours * 3600; second += 2) {
+    recordDriveTelemetrySample(telemetry, {
+      capturedAtMs: second * 1000, speedKmh: 80,
+      averageFps: second === 20 ? 8 : 60, p95FrameMs: second === 20 ? 125 : 17,
+      gpsAgeMs: second === 20 ? 9000 : 0,
+      online: second !== 20, visibility: second === 20 ? "hidden" : "visible",
+      latitude: 45, longitude: 9,
+    });
+  }
+  const report = createDriveTelemetryReport(telemetry);
+  const windows = report.journey.windows;
+  assert.ok(windows.length <= 240);
+  assert.equal(windows[0].fromS, 0);
+  assert.equal(windows.at(-1).toS, hours * 3600);
+  assert.equal(windows.reduce((n, w) => n + w.samples, 0), hours * 1800 + 1);
+  assert.equal(windows.reduce((n, w) => n + w.offlineSamples, 0), 1);
+  assert.equal(windows.reduce((n, w) => n + w.staleGpsSamples, 0), 1);
+  assert.equal(windows.reduce((n, w) => n + w.hiddenSamples, 0), 1);
+  assert.equal(windows[0].fpsMin, 8);
+  assert.equal(windows[0].p95FrameMax, 125);
+  assert.equal(report.samples.length, 1800);
+  assert.ok(report.summary.discardedSamples > 40000);
+  assert.ok(JSON.stringify(report.journey).length < 100000);
+  assert.doesNotMatch(JSON.stringify(report), /latitude|longitude/);
+  const fitted = fitDiagnosticReportForTransport({ schema: "sedicivalvole.tesla-diagnostic.v4", flightRecorder: report });
+  assert.deepEqual(fitted.flightRecorder.journey, report.journey);
+  assert.ok(fitted.transport.requestBodyBytes <= DIAGNOSTIC_MAX_REQUEST_BODY_BYTES);
+  assert.equal(fitted.transport.requestBodyBytes, new TextEncoder().encode(JSON.stringify({schema: fitted.schema, report: fitted})).byteLength);
+});
+
+test("journey windows expose a suspended sampling gap without manufacturing observations", () => {
+  const telemetry = createDriveTelemetry(0);
+  for (const second of [0, 2, 7202]) recordDriveTelemetrySample(telemetry, { capturedAtMs: second * 1000 });
+  const report = createDriveTelemetryReport(telemetry);
+  assert.equal(report.journey.windows.length, 2);
+  assert.equal(report.journey.windows.at(-1).maximumSampleGapS, 7200);
+  assert.equal(report.journey.windows.reduce((n, w) => n + w.samples, 0), 3);
+  assert.equal(report.journey.windows[0].fpsMin, null);
+  recordDriveTelemetrySample(telemetry, { capturedAtMs: 7204000, averageFps: 40 });
+  assert.equal(report.journey.windows.at(-1).samples, 1, "reports remain stable after capture");
+});

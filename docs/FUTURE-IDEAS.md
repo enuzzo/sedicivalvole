@@ -140,3 +140,16 @@ When capturing another idea:
 3. link existing roadmap/specification detail instead of copying it in full;
 4. never promote, implement, reject, or merge an owner idea silently;
 5. retain rejected entries so the same dead end is not rediscovered later.
+
+
+## Owner decisions — 2026-09-05 00:11
+
+- FI-009: Curated audiovisual experiences — OWNER APPROVED DIRECTION, draft only.
+- FI-010: Travel-oriented ATLAS plus a separate statistics visual (owner wording:
+  ninth view) — OWNER APPROVED DIRECTION, draft only; no catalogue slot/name fixed.
+- FI-011: Multi-hour Sunday Milan drive — OWNER TEST PLAN; collect real evidence
+  with manual diagnostics. Accelerated model tests do not close vehicle endurance.
+
+See [the experience drafts](WEEKEND-EXPERIENCE-DRAFTS-2026-09-05.md) and
+[weekend handoff](WEEKEND-HANDOFF-2026-09-05.md). Agent candidate names and preset
+combinations remain proposals and are not represented as owner selections.

@@ -86,3 +86,29 @@ test("diagnostic mail carries the complete accepted report as verified JSON gzip
   assert.match(rawMail, new RegExp(`GZIP SHA-256: ${createHash("sha256").update(gzip).digest("hex")}`));
   assert.ok(gzip.byteLength < Buffer.byteLength(attachmentJson));
 });
+
+test("a 24-hour fitted journey round-trips through the real PHP gzip attachment", async () => {
+  const { createDriveTelemetry, recordDriveTelemetrySample, createDriveTelemetryReport,
+    fitDiagnosticReportForTransport, DIAGNOSTIC_MAX_REQUEST_BODY_BYTES } = await import("../src/diagnostics-model.js");
+  const telemetry = createDriveTelemetry(0);
+  for (let second = 0; second <= 86400; second += 2) {
+    recordDriveTelemetrySample(telemetry, { capturedAtMs: second * 1000, speedKmh: 80,
+      averageFps: second === 10 ? 10 : 60, online: second !== 10 });
+  }
+  const report = fitDiagnosticReportForTransport({
+    schema: "sedicivalvole.tesla-diagnostic.v4",
+    generatedAt: "2026-09-05T00:00:00Z", app: { build: "20260905-0000" },
+    flightRecorder: createDriveTelemetryReport(telemetry),
+    events: Array.from({ length: 800 }, (_, sequence) => ({ sequence, priority: "significant", detail: "x".repeat(3000) })),
+  });
+  assert.ok(report.transport.requestBodyBytes <= DIAGNOSTIC_MAX_REQUEST_BODY_BYTES);
+  assert.ok(report.transport.transmittedEvents < 800);
+  const result = await buildMailWithPhp(report);
+  const mail = Buffer.from(result.message, "base64").toString("utf8").replaceAll("\r\n", "\n");
+  const part = mail.split("--=_test_boundary").find(value => /Content-Type: application\/gzip/i.test(value));
+  const encoded = part.split("\n\n").slice(1).join("\n\n").replace(/\s/g, "");
+  const restored = JSON.parse(gunzipSync(Buffer.from(encoded, "base64")));
+  assert.deepEqual(restored.report, report);
+  assert.equal(restored.report.flightRecorder.journey.windows[0].offlineSamples, 1);
+  assert.equal(restored.report.flightRecorder.journey.windows.at(-1).toS, 86400);
+});
