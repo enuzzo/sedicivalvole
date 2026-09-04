@@ -9,9 +9,10 @@ does not authorize another task, deployment, or concurrent writer by itself.
 - Read the root `AGENTS.md`, then [`CURRENT-STATE.md`](CURRENT-STATE.md),
   [`SESSION-HANDOFF.md`](SESSION-HANDOFF.md), and this file completely before
   editing.
-- Re-audit the live checkout before relying on this handoff. At the time this
-  document was written, `main`, `origin/main`, and `HEAD` were clean and equal
-  at `fc61033`.
+- Re-audit the live checkout before relying on this handoff. The product
+  implementation baseline is `fc61033`; clean, pushed handoff-only descendants
+  are expected. Verify that current `main`, `origin/main`, and `HEAD` agree
+  before editing instead of treating a later documentation hash as product drift.
 - Use one active writer. Confirm Dropbox/Git synchronization and stop if another
   task or machine is changing the checkout.
 - Never read, print, diff, log, or version `.env` or local variants. Never copy
@@ -285,7 +286,7 @@ attachment supersedes any temporary clipboard path recorded by the old session.
 Continue sedicivalvole in the existing Dropbox checkout at:
 /Users/enuzzo/Library/CloudStorage/Dropbox/Mitnick/sedicivalvole
 
-Use GPT-6 Astra. Do not create another task or worktree. Work directly in the saved project, with one active writer only. First read the root AGENTS.md, then docs/CURRENT-STATE.md, docs/SESSION-HANDOFF.md, and docs/ASTRA-UI-HANDOFF-2026-09-04.md completely. Re-audit live Git/Dropbox state before editing; the handoff was written from clean main == origin/main == fc61033, but verify rather than assuming. Never read or expose .env files and never copy or version _references/.
+Use GPT-6 Astra. Do not create another task or worktree. Work directly in the saved project, with one active writer only. First read the root AGENTS.md, then docs/CURRENT-STATE.md, docs/SESSION-HANDOFF.md, and docs/ASTRA-UI-HANDOFF-2026-09-04.md completely. Re-audit live Git/Dropbox state before editing. The product implementation baseline is fc61033 and later handoff-only commits are expected; verify that current main, origin/main, and HEAD agree rather than assuming or treating a later documentation hash as product drift. Never read or expose .env files and never copy or version _references/.
 
 The owner is attaching a navbar annotation image to this prompt; inspect it as primary evidence. Use the Product Design audit workflow first and frontend testing/debugging for the rendered app, explicitly not the frontend application builder. Inspect and capture the current build at the exact 773 × 601 Tesla viewport before changing it.
 
