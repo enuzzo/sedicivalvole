@@ -1,0 +1,6 @@
+network=PASS
+login=PASS
+directory=PASS target=canonical_root
+read_only_identity=PASS root_and_legacy_targets_verified
+remote_listing=PASS entries=9
+remote_writes=NONE

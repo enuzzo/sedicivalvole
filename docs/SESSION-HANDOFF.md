@@ -978,3 +978,26 @@ cancel deliberate control access. The old moving-touch lock is superseded.
 629 native, 69 local browser and four focused live moving-interaction checks
 pass. Full publication, console-policy caveat and the next Tesla confirmation
 are recorded at the end of [WEEKEND-HANDOFF-2026-09-05.md](WEEKEND-HANDOFF-2026-09-05.md).
+
+
+## Palette and Music refinement — 2026-09-05 00:57
+
+Canonical **build 20260905-0051**, source **ade6c84**, replaces duplicated footer
+swatches with a Tabler icon and `Palette` label, gives popup names readable Title
+Case, compacts Music typography and aligns Now Playing artwork/copy/transport and
+credit columns. Moving-touch access and whole-journey diagnostics remain included.
+Passed: 629 native checks (actual PHP, Sites 9/9), 69 local browser lifecycle
+checks, 20 targeted checks locally and live, four live moving-interaction checks,
+ARM64 production build, 10 post-build checks, 13 canonical HTTP/asset checks and
+independent publication postflight. Publication verified 184 files and all 29
+Illobo recordings. Zero warnings/errors in the established user-gesture Chrome
+profile; the earlier default-policy startup warning remains a separate follow-up.
+
+[Verification and before/after comparisons](PALETTE-MUSIC-VERIFICATION-2026-09-05.md)
+record contrast (Music minimum 4.95:1 LIGHT / 6.98:1 DARK), 48/56 px geometry and
+exact publication identity. The newly attached gzip is the same earlier 2351
+report already inspected in Gmail; it does not validate either later fix.
+Next: reload for 0051, confirm deliberate moving touch and Music readability on
+the target Tesla, then gather a new diagnostic if needed. Multi-hour vehicle
+acceptance remains open; approved experience/Atlas/statistics drafts and Engine
+review limits remain as recorded in the weekend handoff.

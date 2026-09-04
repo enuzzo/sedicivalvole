@@ -1,0 +1,14 @@
+network=PASS
+login=PASS
+directory=PASS target=canonical_root
+read_only_identity=PASS root_and_legacy_targets_verified
+upload=PASS files=184 bytes=215962935
+illobo_playlist=PASS tracks=29 full_hash_verification=true
+illobo_artwork_migration=PASS retired_png_files=0
+lab_runtime_migration=PASS retired_worklets=0
+root_metadata_cleanup=PASS removed=false
+dynamic_root=PASS staged=false static_entry_removed=false
+legacy_cleanup=PASS files=0 directories=0
+previous_assets_retained=PASS files=2 cache_overlap=true
+remote_listing=PASS entries=9
+remote_writes=ROOT_UPLOAD_AND_EXACT_LEGACY_CLEANUP

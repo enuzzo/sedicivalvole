@@ -334,3 +334,13 @@ Canonical build **20260905-0028**, source **8dab1b3**, restores deliberate
 navbar/footer wake while moving and retains automatic retraction. Live browser
 verification passes; target-Tesla confirmation remains separate. See the
 [weekend handoff](docs/WEEKEND-HANDOFF-2026-09-05.md) for current evidence.
+
+
+### Palette disclosure and Music alignment — 2026-09-05 00:57
+
+Canonical build **20260905-0051**, source **ade6c84**, uses one labelled Palette
+icon, readable popup names, compact Music typography and aligned Now Playing
+artwork, credits and transport. Moving controls remain deliberately accessible.
+629 native checks, 69 local lifecycle checks, 20 targeted live checks, four live
+moving checks and canonical byte verification pass; real Tesla acceptance remains
+open. [Measurements and comparisons](docs/PALETTE-MUSIC-VERIFICATION-2026-09-05.md).
