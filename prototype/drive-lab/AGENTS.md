@@ -164,3 +164,13 @@ pointer/touch or keyboard wake must reveal usable navbar/footer at any speed.
 Departure may retract once; subsequent speed samples must not cancel that wake.
 Keep the six-second inactivity deadline, immediate completed-action/close retraction,
 open-surface pinning and speed-only resting state. Never make motion a control lock.
+
+
+## Owner refinement — 2026-09-05 Palette disclosure and Music density
+
+Use a recognizable palette-library icon with the visible label `Palette` in the
+footer. Keep the colour swatches inside its popup, without repeating the full
+collection in the footer. Palette names use Title Case and high-contrast 13 px
+metadata. Preserve 48/56 px targets as Music headings and supporting copy become
+more compact. Align Now Playing artwork, track copy and transport on a common
+centre; size credit role columns from their content so labels never overlap titles.

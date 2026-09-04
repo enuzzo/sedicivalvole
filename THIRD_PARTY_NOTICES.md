@@ -212,3 +212,13 @@ the project's source or the external sample packs.
 ### 2026-09-04 rail icon addition
 
 `navigation.svg` is the unmodified outline navigation icon from Tabler Icons v3.46.0, under the existing Paweł Kuna MIT notice. The rail uses official SVG markup with project-owned optical sizing and a common 2 px non-scaling stroke; the upstream files remain unchanged.
+
+
+## Palette control icon — 2026-09-05
+
+`palette.svg` is retained byte-identically from Tabler Icons v3.46.0 (icon metadata
+1.1), under the existing Paweł Kuna MIT notice. Source:
+https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/palette.svg
+SHA-256: `27a5a19ae4b0f73ff4089b7f5a6c8fdf17f19ecc853e19fa04494f083943e778`.
+Project CSS supplies size and semantic foreground through a mask; no upstream
+geometry was edited.

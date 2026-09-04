@@ -1817,13 +1817,13 @@ function SoundtrackLibraryContent({
       </section>
 
       <div className="soundtrack-playback-grid">
-        <section className="soundtrack-now-playing" aria-live="polite">
+        <section className={`soundtrack-now-playing${snapshot?.attribution?.transitioning ? " is-transitioning" : ""}`} aria-live="polite">
           {current?.imageUrl ? <img src={current.imageUrl} alt="" width="80" height="80" /> : <span className="soundtrack-artwork-placeholder">{featuredSelected ? "LO" : "JM"}</span>}
           <div>
             <small className={`soundtrack-now-label${playing ? " is-playing" : ""}`}><img src="/third-party/tabler-icons/chart-bar.svg" alt="" aria-hidden="true" />NOW PLAYING</small>
             <strong>{current?.title ?? `Preparing ${featuredSelected ? "Illobo playlist" : "Jamendo catalog"}`}</strong>
             <span>{current?.artistName ?? snapshot?.status ?? "idle"}</span>
-            <span>{snapshot?.attribution?.transitioning ? "EQUAL-POWER TRANSITION · 450 MS" : "AUTHORED RECORDING · 1×"}</span>
+            {snapshot?.attribution?.transitioning ? <span className="soundtrack-transition-status">Crossfading</span> : null}
           </div>
           <div className="soundtrack-transport" aria-label="Soundtrack transport">
             <button type="button" disabled={!snapshot?.hasPrevious} onClick={onPrevious} aria-label="Previous track"><MediaGlyph name="previous" /></button>
@@ -1837,14 +1837,14 @@ function SoundtrackLibraryContent({
             <small>{snapshot?.attribution?.transitioning ? "AUDIBLE CREDITS" : "TRACK CREDIT"}</small>
             {attributionItems.length ? attributionItems.map((item) => (
               <div key={item.key} className={item.isTarget ? "is-target" : ""}>
-                <span>{item.isTarget ? "CURRENT" : "FADING"}</span>
+                <span>{item.isTarget ? "Current" : "Fading"}</span>
                 <strong>{item.credit.title} — {item.credit.artistName}</strong>
                 <a href={item.credit.directContentUrl} target="_blank" rel="noreferrer">{item.credit.providerCredit} ↗</a>
                 {item.credit.licence.url ? <a href={item.credit.licence.url} target="_blank" rel="noreferrer">{item.credit.licence.label} ↗</a> : <span>{item.credit.licence.label}</span>}
               </div>
             )) : (
               <div className="is-target">
-                <span>CURRENT</span>
+                <span>Current</span>
                 <strong>{current.title} — {current.artistName}</strong>
                 <a href={current.shareUrl} target="_blank" rel="noreferrer">{current.providerCredit} ↗</a>
                 {current.licenceUrl ? <a href={current.licenceUrl} target="_blank" rel="noreferrer">{current.licenceLabel} ↗</a> : <span>{current.licenceLabel}</span>}
@@ -2010,13 +2010,13 @@ function PaletteControl({ themeId, onChange, open, onOpenChange }) {
     }}>
       <button className="palette-trigger" type="button" aria-label={`Palette ${selected.label}. Choose palette`}
         aria-expanded={open} aria-controls="palette-menu" onClick={() => onOpenChange(!open)}>
-        <span className="swatch-housing" aria-hidden="true">{FLUX_THEMES.map((theme) => <span key={theme.id} style={swatch(theme)} />)}</span>
-        <span className="visually-hidden">Palette {selected.label}</span>
+        <span className="palette-glyph" aria-hidden="true" />
+        <span>Palette</span>
       </button>
       {open ? <div className="palette-menu" id="palette-menu" role="group" aria-label="Colour palettes">
         {FLUX_THEMES.map((theme) => <button key={theme.id} type="button" aria-pressed={theme.id === themeId}
           aria-label={`Use the ${theme.label.toLowerCase()} palette`} onClick={() => { onChange(theme.id); onOpenChange(false); }}>
-          <span style={swatch(theme)} aria-hidden="true" /><strong>{theme.label.replace(/\s+\d+$/, "")}</strong>
+          <span style={swatch(theme)} aria-hidden="true" /><strong>{theme.label.replace(/\s+\d+$/, "").toLowerCase().replace(/^./, character => character.toUpperCase())}</strong>
         </button>)}
       </div> : null}
     </div>
