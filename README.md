@@ -307,3 +307,12 @@ The [completed office verification](docs/ASTRA-UI-VERIFICATION-2026-09-04.md)
 supersedes the earlier integration-pending foundation checkpoint. It includes
 real before/after captures, 625 native tests, 70 browser checks and explicit
 physical-Tesla gates. This checkpoint has not been canonically deployed.
+
+
+### Canonical verification — 2026-09-04 23:59
+
+Build **20260904-2351**, VERSION **0.0.0**, source **6c362ac** is verified live
+at [sedicivalvole.app](https://sedicivalvole.app/). Native checks pass 626/626
+(including actual PHP and Sites 9/9); canonical HTML/assets/cache and 64 live
+browser lifecycle checks pass. Physical Tesla acceptance remains separate.
+See the [publication evidence](docs/ASTRA-UI-VERIFICATION-2026-09-04.md).

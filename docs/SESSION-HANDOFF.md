@@ -901,3 +901,24 @@ must still report that fixture unavailable rather than borrowing this host's pas
 Verified product checkpoint: `0696283`, pushed cleanly to origin/main. The local
 ARM64 production artifact is build `20260904-2333` (VERSION remains `0.0.0`).
 The subsequent traceability commit changes documentation only. No deployment.
+
+
+## Canonical publication confirmed — 2026-09-04 23:59
+
+The owner-authorized build **20260904-2351** (VERSION **0.0.0**, clean source
+**6c362ac**) is now verified at https://sedicivalvole.app/. This supersedes the
+earlier local-only/no-deployment status without changing its historical record.
+The final documentation checkpoint is a descendant of that built source.
+
+Passed: **626** native tests including actual PHP and Sites **9/9**, clean ARM64
+App/LAB/Sites build, protected 183-file publication with 29 full audio hashes,
+read-only postflight, **12** canonical HTTP/asset identity checks and **64** live
+browser lifecycle checks at **773 × 601**, with zero warning/errors or overflow.
+The deployment gate now retains the verified v3 diagnostic predecessor during
+the transition to v4. The existing build chunk-size advisory remains.
+
+[Deployment and browser evidence](ASTRA-UI-VERIFICATION-2026-09-04.md) records
+exact hashes, current captures and the config-use authorization. Next: owner
+Tesla acceptance of chrome/player retraction, palette/ATLAS readability,
+UNDERWATER, GPS, continuous audio/native media and sustained GPU behaviour.
+Browser evidence does not close these physical gates; no diagnostic was sent.

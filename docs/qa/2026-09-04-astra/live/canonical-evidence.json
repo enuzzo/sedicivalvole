@@ -1,0 +1,171 @@
+{
+  "build": "20260904-2351",
+  "commit": "6c362ac",
+  "verified_at": "2026-09-04 23:55:31 +0200",
+  "checks": [
+    {
+      "path": "/",
+      "status": 200,
+      "bytes": 1206,
+      "sha256": "265efab8e8234ef06ae9615c9fcc629a9721202125c951baedb9881aa41971ed",
+      "headers": {
+        "server": "nginx",
+        "content-type": "text/html; charset=UTF-8",
+        "cache-control": "no-store, no-cache, must-revalidate, max-age=0",
+        "x-content-type-options": "nosniff",
+        "x-proxy-cache": "MISS",
+        "x-proxy-cache-info": "0 NC:000000 UP:"
+      },
+      "local_byte_identity": true
+    },
+    {
+      "path": "/?verify=20260904-2351",
+      "status": 200,
+      "bytes": 1206,
+      "sha256": "265efab8e8234ef06ae9615c9fcc629a9721202125c951baedb9881aa41971ed",
+      "headers": {
+        "server": "nginx",
+        "content-type": "text/html; charset=UTF-8",
+        "cache-control": "no-store, no-cache, must-revalidate, max-age=0",
+        "x-content-type-options": "nosniff",
+        "x-proxy-cache": "MISS",
+        "x-proxy-cache-info": "0 NC:000000 UP:"
+      },
+      "local_byte_identity": true
+    },
+    {
+      "path": "/index.php?verify=20260904-2351",
+      "status": 200,
+      "bytes": 1206,
+      "sha256": "265efab8e8234ef06ae9615c9fcc629a9721202125c951baedb9881aa41971ed",
+      "headers": {
+        "server": "nginx",
+        "content-type": "text/html; charset=UTF-8",
+        "cache-control": "no-store, no-cache, must-revalidate, max-age=0",
+        "x-content-type-options": "nosniff",
+        "x-proxy-cache": "MISS",
+        "x-proxy-cache-info": "0 NC:000000 UP:"
+      },
+      "local_byte_identity": true
+    },
+    {
+      "path": "/assets/index-Q1Grf6wK.js",
+      "status": 200,
+      "bytes": 750779,
+      "sha256": "0a7d2fa66cfd40274e6c78c96896ae955084770e06bb2db498d3e4f4f841c6cc",
+      "headers": {
+        "server": "nginx",
+        "content-type": "application/javascript",
+        "x-proxy-cache": "MISS",
+        "x-proxy-cache-info": "0 NC:000000 UP:"
+      },
+      "local_byte_identity": true
+    },
+    {
+      "path": "/assets/index-BIK79MB3.css",
+      "status": 200,
+      "bytes": 178864,
+      "sha256": "c011bbd8477615425c090099ea6704619007b37d5ab030fc51fc1529d9bb88d0",
+      "headers": {
+        "server": "nginx",
+        "content-type": "text/css",
+        "x-proxy-cache": "MISS",
+        "x-proxy-cache-info": "0 NC:000000 UP:"
+      },
+      "local_byte_identity": true
+    },
+    {
+      "path": "/assets/atlas-field-vdnWDF2D.js",
+      "status": 200,
+      "bytes": 25515,
+      "sha256": "c426985775ce2813fb2c1b215449fa9ac00e7f2a3fa5eabf542f3a50373a0a2b",
+      "headers": {
+        "server": "nginx",
+        "content-type": "application/javascript",
+        "x-proxy-cache": "MISS",
+        "x-proxy-cache-info": "0 NC:000000 UP:"
+      },
+      "local_byte_identity": true
+    },
+    {
+      "path": "/assets/browser-BB_N1izd.js",
+      "status": 200,
+      "bytes": 25776,
+      "sha256": "caeb638501d9363742cfd1d15a9b912b23e8acc37e53f9d6ecb07aa13f2758e0",
+      "headers": {
+        "server": "nginx",
+        "content-type": "application/javascript",
+        "x-proxy-cache": "MISS",
+        "x-proxy-cache-info": "0 NC:000000 UP:"
+      },
+      "local_byte_identity": true
+    },
+    {
+      "path": "/assets/maplibre-gl-BTNBRTIO.js",
+      "status": 200,
+      "bytes": 941210,
+      "sha256": "264c280362da2d248269f30bbf933205cabbce9fe2b0acf021547c0fe0786545",
+      "headers": {
+        "server": "nginx",
+        "content-type": "application/javascript",
+        "x-proxy-cache": "MISS",
+        "x-proxy-cache-info": "0 NC:000000 UP:"
+      },
+      "local_byte_identity": true
+    },
+    {
+      "path": "/assets/score-processor-Dly9Ky60.js",
+      "status": 200,
+      "bytes": 117006,
+      "sha256": "1e4928616b90722e2be5b1ab777d01866084ed54690283ce0c82ebe00d1a8ebf",
+      "headers": {
+        "server": "nginx",
+        "content-type": "application/javascript",
+        "x-proxy-cache": "MISS",
+        "x-proxy-cache-info": "0 NC:000000 UP:"
+      },
+      "local_byte_identity": true
+    },
+    {
+      "path": "/assets/shadergradient-field-b6Gw2Xwm.js",
+      "status": 200,
+      "bytes": 1085825,
+      "sha256": "659fa279a0d794877c72662042b8e47c15474118c0516709530b942c6f5a0d23",
+      "headers": {
+        "server": "nginx",
+        "content-type": "application/javascript",
+        "x-proxy-cache": "MISS",
+        "x-proxy-cache-info": "0 NC:000000 UP:"
+      },
+      "local_byte_identity": true
+    },
+    {
+      "path": "/api/send-diagnostic.php",
+      "status": 405,
+      "bytes": 42,
+      "sha256": "52919f82f5062ec723377330766bba9b9d45c6a4353bd942e10357620b11d9ff",
+      "headers": {
+        "server": "nginx",
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": "no-store, no-cache, must-revalidate, max-age=0",
+        "x-content-type-options": "nosniff",
+        "x-proxy-cache": "MISS",
+        "x-proxy-cache-info": "0 NC:000000 UP:"
+      }
+    },
+    {
+      "path": "/lab/",
+      "status": 200,
+      "bytes": 223063,
+      "sha256": "90e757e551ca3e26c84b3e424de9c280f6094c7956733a548645a0ceab39abe0",
+      "headers": {
+        "server": "nginx",
+        "content-type": "text/html; charset=UTF-8",
+        "cache-control": "no-store, no-cache, must-revalidate",
+        "x-content-type-options": "nosniff",
+        "x-proxy-cache": "MISS",
+        "x-proxy-cache-info": "0 NC:000000 UP:SKIP_CACHE_SET_COOKIE"
+      }
+    }
+  ]
+}

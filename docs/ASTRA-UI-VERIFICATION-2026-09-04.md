@@ -152,3 +152,66 @@ and local build stamp `20260904-2333`. App asset `index-BTAEg_KJ.js` has SHA-256
 `4e420aff118ecd8b42ec0255216243b969836e5d969273e56328760edcdcaef3`. App 242 modules, LAB 154 modules and Sites packaging passed.
 This is a local production artifact, not a deployment. The following documentation
 checkpoint records this identity without changing product code.
+
+
+## Authorized canonical publication — 2026-09-04 23:59
+
+The owner explicitly requested canonical publication and then authorized the
+official publisher to load local configuration internally, without exposing or
+logging credentials. The publisher uses the existing licensed audio archive;
+no `_references/` material or local configuration was added to Git.
+
+- Published version **0.0.0**, build **20260904-2351**, clean source **6c362ac**.
+  The product UI remains the verified `0696283` implementation; `6c362ac` adds
+  the deployment-predecessor regression fix, tests and its changelog evidence.
+- Preflight initially stopped without remote writes because the v4 migration
+  had dropped the still-published v3 diagnostic endpoint from the identity gate.
+  Read-only comparison proved the endpoint byte-identical to Git `3057796` and
+  `4ffd707`, SHA-256 `40c97c4b7e97dd21eaae02d2466191490786c1cee09c68d2af0eeae56c42eecb`.
+  Commit `6c362ac` restores v3 admission alongside v4/v2 and tests that missing
+  origin, recipient or schema markers still fail. Corrected preflight passed.
+- The full native suite passed **626/626**, including **Sites 9/9** and the
+  actual PHP gzip round-trip fixture on this host. Deployment-focused tests
+  passed **20/20**. A fresh clean ARM64 build processed App **242** and LAB
+  **154** modules and packaged Sites. The existing large-chunk advisory remains.
+- The protected publisher transferred **183 files / 215,958,262 bytes**, fully
+  hash-verified all **29 Illobo recordings**, retained **2** previous assets
+  for cache overlap, and replaced the PHP entry only after upload verification.
+  No legacy files, worklets, artwork or metadata needed removal. Independent
+  postflight passed with **9** recognized root entries and `remote_writes=NONE`.
+- **12 public HTTP checks** passed: bare `/`, a cache-busted root and explicit
+  PHP entry returned identical current HTML, status 200, `no-store/no-cache`,
+  `nosniff` and cache `MISS`; main CSS and every emitted JavaScript asset matched
+  local bytes. Embedded build/source identity matched. The diagnostic GET
+  returned the expected 405; the protected LAB login responded 200. No report
+  was sent and no authenticated LAB acceptance is claimed from that response.
+- Fresh production Chrome at **773 × 601** passed **64 lifecycle checks**,
+  including all seven Visual families, all twenty palette/appearance pairs,
+  **180** measured text/background contrast pairs, ATLAS, DISCOVER, optical
+  rail geometry, popup/menu closure, stale focus, inactivity and motion.
+  No document overflow, framework overlay, warning, console error or page error
+  was observed. The untouched live splash made one catalogue request and visibly
+  displayed this build stamp. The production run uses the public Milan Demo
+  control; development-only QA URL flags are intentionally absent. An initial
+  harness ordering timeout waited for the Atlas chart before selecting this
+  demo; selecting the public demo first resolved the harness setup, with no
+  product change. Browser plugin not available; owner-authorized Playwright
+  and headless Chrome were used.
+- Real Tesla viewing distance/glare/touch, GPS, native Media Session, weak-network
+  continuous audio and sustained Gradient GPU/thermal acceptance remain open.
+  The six additional local preload/braking/badge checks remain local evidence.
+
+| Public file | Bytes | Local/live SHA-256 |
+|---|---:|---|
+| `/` | 1206 | `265efab8e8234ef06ae9615c9fcc629a9721202125c951baedb9881aa41971ed` |
+| `/assets/index-Q1Grf6wK.js` | 750779 | `0a7d2fa66cfd40274e6c78c96896ae955084770e06bb2db498d3e4f4f841c6cc` |
+| `/assets/index-BIK79MB3.css` | 178864 | `c011bbd8477615425c090099ea6704619007b37d5ab030fc51fc1529d9bb88d0` |
+
+Evidence: [HTTP identity](qa/2026-09-04-astra/live/canonical-evidence.json),
+[live browser matrix](qa/2026-09-04-astra/live/browser-evidence.json),
+[publication/postflight](qa/2026-09-04-astra/live/publication.txt),
+[native tests](qa/2026-09-04-astra/live/native-tests.txt), and real
+[LIGHT](qa/2026-09-04-astra/live/after-atlas-light-awake.png),
+[DARK](qa/2026-09-04-astra/live/after-atlas-dark-awake.png),
+[DISCOVER](qa/2026-09-04-astra/live/after-discover-light.png) and
+[moving speed-only](qa/2026-09-04-astra/live/after-moving-speed-only.png) captures.
