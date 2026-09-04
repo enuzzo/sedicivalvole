@@ -700,3 +700,7 @@ cancel deliberate control access. The old moving-touch lock is superseded.
 629 native, 69 local browser and four focused live moving-interaction checks
 pass. Full publication, console-policy caveat and the next Tesla confirmation
 are recorded at the end of [WEEKEND-HANDOFF-2026-09-05.md](WEEKEND-HANDOFF-2026-09-05.md).
+
+## 2026-09-05 — Curated selection composition
+
+`src/curated-experiences.js` defines immutable Night Glass and Neon Groove settings. The shared card selects existing environment, theme, appearance and soundtrack owners atomically; it does not create a transport, audio graph, renderer or preference schema. Launch preparation remains silent and cancellable; START owns playback. Runtime selection closes the Visual drawer through the existing chrome lifecycle. Selected state is derived from actual matching settings, including the committed soundtrack selection, so a failed music request cannot claim a fully selected experience. Real renderer captures supply the previews. Existing recursive deployment byte-identity validation now also protects the experiences directory.

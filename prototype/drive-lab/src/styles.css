@@ -4591,4 +4591,4 @@ html { font-size: var(--font-size-floor); }
   .experience-list .experience-card > img { height: 62px; }
 }
 
-@media (max-width: 650px) { .launch-choice-button strong { font-size: 14px; overflow-wrap: normal; } }
+@media (max-width: 650px) { .launch-selector .launch-choice-button strong { font-size: 14px; overflow-wrap: normal; } }

@@ -344,3 +344,7 @@ artwork, credits and transport. Moving controls remain deliberately accessible.
 629 native checks, 69 local lifecycle checks, 20 targeted live checks, four live
 moving checks and canonical byte verification pass; real Tesla acceptance remains
 open. [Measurements and comparisons](docs/PALETTE-MUSIC-VERIFICATION-2026-09-05.md).
+
+### 2026-09-05 — Curated entry points
+
+Night Glass combines Vertigo, Graphite, DARK and the Lounge catalogue; Neon Groove combines Aperture, Neon, DARK and Funk. Choose either in the launch selector before START or from the running Visual library. Selection composes the existing visual, palette and soundtrack controls; recordings retain their native tempo and the catalogue may vary. The Lobo playlist now uses the owner's round light/dark marks. See [implementation and evidence](docs/NIGHT-GLASS-2026-09-05.md) and the appended current-state/handoff records for publication status and vehicle acceptance.
