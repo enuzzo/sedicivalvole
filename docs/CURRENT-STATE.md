@@ -1,6 +1,10 @@
 # Current Project State
 
-Status: **authoritative working overview**. Updated on 2026-09-03.
+Status: **authoritative working overview**. Updated on 2026-09-04.
+
+The owner-directed office continuation for the ATLAS/UI audit, including the
+complete pending regression ledger and pasteable Astra prompt, is recorded in
+[`ASTRA-UI-HANDOFF-2026-09-04.md`](ASTRA-UI-HANDOFF-2026-09-04.md).
 
 This page is the shortest reliable answer to “what exists now?”. Product
 requirements remain in [`PRODUCT-SPEC.md`](PRODUCT-SPEC.md), architecture in
@@ -1210,7 +1214,7 @@ published and driven.
 
 | Kind | Documents | How to use them |
 |---|---|---|
-| Current | this page, `README.md`, `PRODUCT-SPEC.md`, `TECHNICAL-DIRECTION.md`, `ROADMAP.md`, `MODES.md`, `SESSION-HANDOFF.md` | Must describe the current repository and verified product state |
+| Current | this page, `README.md`, `PRODUCT-SPEC.md`, `TECHNICAL-DIRECTION.md`, `ROADMAP.md`, `MODES.md`, `SESSION-HANDOFF.md`, `ASTRA-UI-HANDOFF-2026-09-04.md` | Must describe the current repository, verified product state, and explicitly queued office continuation |
 | Evidence | `DEPLOY.md`, `DIAGNOSTICS.md`, `AUDIO-QA-2026-08-28.md`, `CHANGELOG.md` | Append-only chronology; older failures remain true historical evidence |
 | Knowledge | `MUSIC-CRAFT.md`, `LOCAL-SHADERGRADIENT-LAB.md`, licensing and reference studies | Durable technique, provenance, local comparison instructions, and decision records |
 | Future ideas | `FUTURE-IDEAS.md` | Canonical long-horizon owner-idea register; agent proposals remain explicitly separate and unapproved |

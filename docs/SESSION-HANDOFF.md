@@ -1,6 +1,6 @@
 # Session Handoff
 
-Status: **live working record**. Updated on 2026-09-03.
+Status: **live working record**. Updated on 2026-09-04.
 
 Start with [`CURRENT-STATE.md`](CURRENT-STATE.md) for the product overview. This
 file records implementation boundaries, verification commands, and next work so
@@ -13,13 +13,12 @@ a new session can continue without reviving superseded prototypes.
 - canonical development URL: <https://sedicivalvole.app/>;
 - latest deployment attempt and verified publication evidence: first entries in
   [`DEPLOY.md`](DEPLOY.md); each entry states whether the candidate became canonical;
-- latest working product checkpoints: `26c4043` for diagnostic-driven
-  Soundtrack admission, `1d43158` for Underwater-only vehicle response,
-  `0d5bb05` for the compact Tesla layout, and `0ec5d4e` for compact telemetry
-  plus normalized contextual controls; published source/documentation
-  checkpoint: `4ffd707`; canonical build: `20260903-2137`. Road Sheet
-  LIGHT/DARK/AUTO, Swiss Compact, hardened native/on-screen media transport,
-  buffer-first Soundtrack, and always-above-drawers Now Playing are canonical;
+- latest clean pushed checkpoints: `bf2ec24` for Tesla Compact and immersive
+  surfaces, `a6e0cc8` for the Tesla Balanced Rail, `12af607` for the domain-led
+  retirement of generic Energy, and `fc61033` for their documentation record;
+  the latest canonical source/documentation checkpoint remains `12877db` for
+  build `20260903-2137`. The 2026-09-04 checkpoints are not published or
+  target-Tesla accepted;
 - compact telemetry/contextual-control publication: implementation `0ec5d4e`,
   built source/docs `4ffd707`, build `20260903-2137`. After a conservative staged
   upload, the explicitly owner-approved normal publisher switched the canonical
@@ -39,18 +38,22 @@ a new session can continue without reviving superseded prototypes.
 - Never imply access to real RPM, throttle, gear, CAN, motor load, or coordinates.
 - The verified Tesla split viewport is `773 × 601` CSS pixels. Product-visible
   validation must include that size and the target vehicle.
-- Swiss Compact uses semantic `14 / 15 / 16 / 18 / 24 / 34 px` typography,
-  `48 px` action targets, `56 px` primary targets, and `72 px` top, Now Playing,
-  and bottom bands at that viewport. Do not restore the retired universal
+- Tesla Compact uses semantic `13 / 14 / 15 / 15 / 17 / 22 / 32 px`
+  typography, `48 px` action targets, and `56 px` primary targets. At
+  `773 × 601`, top and bottom chrome retract from a compact `64 px` height and
+  Now Playing is suppressed in ATLAS and modal passenger surfaces. Do not
+  restore the retired universal
   `20 px` type floor or its `100 px` chrome.
 - Functional micro-labels remain uppercase, but editorial Music and Visual names
   use dedicated Title Case display labels in the launcher, footer, and pickers.
-- Gradient, Drivey, and PRTCL contextual switches share the same top-left origin,
-  `112 px` button column, `48 px` minimum target, padding, and label/value order.
-  At `773 × 601`, top chrome is `164 / 104 / 112 / 86 / 84 / 116 / 107 px`:
-  mode, speed, network, appearance, GPS, Discover, and Report. Speed visibly
-  shows only value plus `KM/H`; network always shows a same-tone hollow ring and
-  browser-observed (`OBS`) or explicitly estimated (`EST`) download rate.
+- Gradient, Drivey, and PRTCL contextual switches retain `48 px` minimum
+  targets, retract with the shared chrome, and use the common `6 px` radius. At
+  `773 × 601`, the Tesla Balanced Rail keeps the compact 16 Road mark first and
+  persistent with speed while secondary chrome rests. Speed alone owns the
+  two-line value/unit hierarchy; Network, appearance, GPS, Discover, and Report
+  are centred icon peers on one baseline. Network keeps only its three-state
+  ring/loading motion in the rail and discloses app-only rate, latency,
+  connection detail, and a bounded 15-minute graph on interaction.
   Footer names and catalogue numbers share one baseline and type size; canonical
   uppercase registry labels remain stable identity and diagnostic data.
 
@@ -71,9 +74,10 @@ All rendered visuals use the ten curated palettes. Each Gradient variant keeps
 both exact theme colour channels and derives one light-tinted third colour.
 Vertigo is recoloured without
 editing its vendor tree. Aperture is the fresh-session and invalid-preference fallback;
-PLUMB and every other retired identifier resolve to it. The fixed
-visual/music energy ceiling is `130 km/h`; Aperture must already read as a
-tunnel near `40 km/h`.
+PLUMB and every other retired identifier resolve to it. The fixed legal-road
+response ceiling is `130 km/h`; domain-specific visual and musical response
+curves normalize against it, and no generic product Energy metric is exposed.
+Aperture must already read as a tunnel near `40 km/h`.
 
 The driver-facing Visual catalogue adds **DISCOVER 07** beside those seven
 rendered families. It is a destination, not a render environment: the launch selector
@@ -184,8 +188,10 @@ asserted.
 
 ## Diagnostics and privacy
 
-- v3 reports are coordinate-free and transmitted only through the explicit
+- v4 reports are coordinate-free and transmitted only through the explicit
   `SEND DIAGNOSTIC` gesture;
+- v4 replaces the retired generic Road Energy value with truthful Motion State
+  and reports audible output as level; v3 remains historical evidence only;
 - the in-memory flight recorder is bounded and disappears on reload;
 - the owner-supplied complete attachment from build `20260831-0853` closes the
   `GPS → SENT → received` path. Its coordinate-free v3 payload has 3,928 numeric
@@ -819,6 +825,23 @@ Signal Gate. Gradient lowers framebuffer density to `0.8` only during the
 Underwater brake envelope and returns to the normal quality path afterward.
 Office Browser checks are complete; canonical publication and physical-Tesla
 first-load audio/frame-pacing acceptance remain pending.
+
+The clean pushed continuation also includes the owner-approved **Tesla Balanced
+Rail** at `a6e0cc8`: the 16 Road mark is first and persists with speed, speed is
+the sole exceptional numeric hierarchy, peer controls share one icon baseline,
+Network details move into an interactive disclosure with a 15-minute graph, and
+the palette selector fills its footer cell. Checkpoint `12af607` retires generic
+Energy from the shared domain, UI, Report, and diagnostics without changing the
+established response curves; documentation checkpoint `fc61033` records both.
+
+### Next office continuation: Astra UI audit
+
+The owner will start the next task personally from the office and attach the
+annotated navbar image. The complete, paste-ready scope, current evidence,
+ATLAS contrast/spacing task, broad aesthetic review, regression ledger, local
+reference paths, and publication boundaries are in
+[`ASTRA-UI-HANDOFF-2026-09-04.md`](ASTRA-UI-HANDOFF-2026-09-04.md). No task is
+authorized or running merely because that handoff exists.
 
 ## Verification
 
