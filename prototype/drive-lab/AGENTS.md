@@ -174,3 +174,14 @@ collection in the footer. Palette names use Title Case and high-contrast 13 px
 metadata. Preserve 48/56 px targets as Music headings and supporting copy become
 more compact. Align Now Playing artwork, track copy and transport on a common
 centre; size credit role columns from their content so labels never overlap titles.
+
+## Owner delegation — 2026-09-05 curated surprise
+
+The owner explicitly delegated selection, creative direction and implementation
+of the first curated experience, superseding the three-direction approval gate
+for this work. Night Glass pairs the unchanged Vertigo integration, Graphite,
+DARK and the existing Jamendo Ambient selection. Keep one shared registry/card
+in launch and Visual. Preparation is silent; START or an explicit running Play
+owns playback. Individual controls, diagnostics, motion wake and automatic chrome
+retraction remain available. Recognize an experience from actual settings, never
+from a stale saved label, and never claim a failed music request is playing.

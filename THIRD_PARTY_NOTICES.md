@@ -222,3 +222,13 @@ https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/pale
 SHA-256: `27a5a19ae4b0f73ff4089b7f5a6c8fdf17f19ecc853e19fa04494f083943e778`.
 Project CSS supplies size and semantic foreground through a mask; no upstream
 geometry was edited.
+
+## Night Glass experience preview — 2026-09-05
+
+`prototype/drive-lab/public/experiences/night-glass.png` is a real browser capture
+of the existing Vertigo/Infinite Lights integration with the Graphite palette.
+Its underlying Codrops/Tympanus runtime retains the MIT attribution and exact
+source inventory recorded above; no upstream source or dependency was changed.
+The project-owned experience composition and product screenshot follow the
+existing original-code and screenshot exclusions in LICENSE-SCOPE.md. Capture:
+773 × 601 browser, field-only region x=0, y=140, width=773, height=420.

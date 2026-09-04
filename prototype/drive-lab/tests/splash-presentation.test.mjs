@@ -155,7 +155,7 @@ test("the running Visual library uses a complete two-column Tesla catalogue", ()
   assert.match(app, /function ShaderGradientCycleControl/);
   assert.match(app, /nextShaderGradientEnvironmentId\(environment\.id\)/);
   assert.match(app, /environment\.renderer === "shadergradient"[\s\S]*?<ShaderGradientCycleControl/);
-  assert.match(app, /onSelectGradient=\{\(\) => setLaunchEnvironmentId\(lastGradientVariantRef\.current\)\}/);
+  assert.match(app, /onSelectGradient=\{\(\) => \{[^}]*setLaunchEnvironmentId\(lastGradientVariantRef\.current\);? \}\}/);
   assert.match(styles, /\.environment-drawer \.score-list \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\); gap: 8px; margin-top: 12px; \}/);
   assert.match(styles, /\.environment-drawer \.score-entry \{ min-height: 68px/);
   assert.match(styles, /\.environment-drawer \.score-entry-number \{ font-size: var\(--type-meta\)/);

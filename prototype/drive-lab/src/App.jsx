@@ -1,3 +1,5 @@
+import { ExperienceCard } from "./experience-card.jsx";
+import { applyExperienceSettings, matchingExperience } from "./curated-experiences.js";
 import { resolveSemanticTheme } from "./semantic-theme.js";
 import { RailIcon } from "./rail-icon.jsx";
 import { Component, lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -1487,7 +1489,7 @@ function MusicControl({ genreId, selection, onOpen, musicMode, soundtrackSnapsho
   );
 }
 
-function VisualPicker({ environmentId, onChange, onOpenDiscover, onSelectGradient, onClose }) {
+function VisualPicker({ environmentId, onChange, onOpenDiscover, onSelectGradient, onClose, onExperience, experienceId }) {
   return (
     <DialogSurface
       className="diagnostic-drawer score-drawer environment-drawer"
@@ -1498,6 +1500,7 @@ function VisualPicker({ environmentId, onChange, onOpenDiscover, onSelectGradien
         <div><small>FLUX VISUAL LIBRARY</small><h2 id="visual-picker-title">Visual</h2></div>
         <button data-dialog-initial-focus type="button" onClick={onClose} aria-label="Close visual library">CLOSE</button>
       </div>
+      <ExperienceCard selected={experienceId === "night-glass"} onSelect={onExperience} />
       <ul className="score-list">
         {FLUX_VISUAL_CHOICES.map((entry) => {
           const destination = entry.kind === "destination";
@@ -2147,6 +2150,8 @@ function GpsHelpPopover({ open, status, accuracy, onClose, onRetry, onDemo }) {
 }
 
 function LaunchSelector({
+  experienceId,
+  onExperience,
   musicId,
   environmentId,
   appearance,
@@ -2178,6 +2183,7 @@ function LaunchSelector({
         <h1 id="launch-selector-title">sedicivalvole</h1>
         <button type="button" onClick={onBack}>BACK</button>
       </header>
+      <ExperienceCard launch selected={experienceId === "night-glass"} onSelect={onExperience} />
       <div className="launch-selector-body">
         <fieldset className="launch-music-choices">
           <legend>MUSIC</legend>
@@ -2249,6 +2255,9 @@ export function App() {
   const initialAppearanceMode = useMemo(readAppearancePreference, []);
   const initialSystemAppearance = useMemo(readSystemAppearanceSnapshot, []);
   const [phase, setPhase] = useState("idle");
+  const [launchExperienceId, setLaunchExperienceId] = useState(() => matchingExperience({
+    ...initialPreferences, appearanceMode: initialAppearanceMode,
+  })?.id ?? null);
   const [launchMusicId, setLaunchMusicId] = useState(initialPreferences.musicMode);
   const [launchEnvironmentId, setLaunchEnvironmentId] = useState(initialPreferences.environmentId);
   const [speed, setSpeed] = useState(QA_SPEED);
@@ -3204,7 +3213,7 @@ export function App() {
     startKeyboardRegeneration("accelerator-release");
   }, [startKeyboardRegeneration]);
 
-  const runHarness = useCallback(async ({ musicId, selectedEnvironmentId }) => {
+  const runHarness = useCallback(async ({ musicId, selectedEnvironmentId, experienceId = null }) => {
     const launchMuted = QA_MUTED || mutedRef.current || musicId === "mute";
     const launchVehicleEffects = vehicleEffectsEnabledRef.current;
     const launchDiscover = selectedEnvironmentId === DISCOVER_VISUAL_CHOICE.id;
@@ -3231,6 +3240,7 @@ export function App() {
     connectionHistoryRef.current = [readConnectionSnapshot("harness-start")];
     longTaskTelemetryRef.current = createLongTaskTelemetry(longTaskTelemetryRef.current.supported);
     logDiagnosticEvent("harness.launch.requested", {
+      experienceId,
       musicMode: musicId,
       environment: runtimeEnvironmentId,
       muted: launchMuted,
@@ -3584,6 +3594,7 @@ export function App() {
   }, [logDiagnosticEvent, musicMode, muted, networkNotice.status, phase, soundtrackController, soundtrackSnapshot?.status]);
 
   const resetSavedState = useCallback(() => {
+    setLaunchExperienceId(null);
     transportActionQueueRef.current.invalidate();
     musicModeRevisionRef.current += 1;
     scoreSelectionRevisionRef.current += 1;
@@ -3657,6 +3668,31 @@ export function App() {
     });
     return result;
   }, [logDiagnosticEvent, showControlNotice, soundtrackController]);
+
+  const chooseExperience = useCallback((id, { launch = false } = {}) => {
+    const settings = applyExperienceSettings({}, id);
+    if (!settings) return;
+    setThemeId(settings.themeId);
+    changeAppearance(settings.appearanceMode);
+    if (launch) {
+      setLaunchExperienceId(id);
+      setLaunchMusicId(settings.musicMode);
+      setLaunchEnvironmentId(settings.environmentId);
+      // Silent preparation stays cancellable by the controller's existing request
+      // revision. START remains the only launch playback gesture.
+      const request = soundtrackController().load({ selection: settings.soundtrackSelection });
+      soundtrackWarmupPromiseRef.current = request;
+      void request.finally(() => {
+        if (soundtrackWarmupPromiseRef.current === request) soundtrackWarmupPromiseRef.current = null;
+      });
+    } else {
+      setEnvironmentId(settings.environmentId);
+      setEnvironmentPickerOpen(false);
+      void playSoundtrackSelection(settings.soundtrackSelection, "curated-experience");
+    }
+    preferredSoundtrackSelectionRef.current = settings.soundtrackSelection;
+    logDiagnosticEvent("experience.selected", { id, source: launch ? "launch-selector" : "visual-library" });
+  }, [changeAppearance, logDiagnosticEvent, playSoundtrackSelection, soundtrackController]);
 
   const playSoundtrackTrack = useCallback(async (key, source = "music-library") => {
     transportActionQueueRef.current.invalidate();
@@ -5025,18 +5061,21 @@ export function App() {
         </div> : null}
         {phase === "choosing" ? (
           <LaunchSelector
+            experienceId={launchExperienceId}
+            onExperience={(id) => chooseExperience(id, { launch: true })}
             musicId={launchMusicId}
             environmentId={launchEnvironmentId}
             appearance={appearanceResolution.appearance}
             musicReady={launchMusicId !== "soundtrack" || ["prepared", "paused", "playing"].includes(soundtrackSnapshot?.status)}
             networkNotice={networkNotice}
-            onMusicChange={selectLaunchMusic}
-            onEnvironmentChange={setLaunchEnvironmentId}
-            onSelectGradient={() => setLaunchEnvironmentId(lastGradientVariantRef.current)}
+            onMusicChange={(id) => { setLaunchExperienceId(null); selectLaunchMusic(id); }}
+            onEnvironmentChange={(id) => { setLaunchExperienceId(null); setLaunchEnvironmentId(id); }}
+            onSelectGradient={() => { setLaunchExperienceId(null); setLaunchEnvironmentId(lastGradientVariantRef.current); }}
             onBack={() => setPhase("idle")}
             onStart={() => runHarness({
               musicId: launchMusicId,
               selectedEnvironmentId: launchEnvironmentId,
+              experienceId: launchExperienceId,
             })}
           />
         ) : null}
@@ -5407,6 +5446,9 @@ export function App() {
 
       {environmentPickerOpen ? (
         <VisualPicker
+          onExperience={chooseExperience}
+          experienceId={matchingExperience({ environmentId, themeId, appearanceMode, musicMode,
+            soundtrackSelection: soundtrackSnapshot?.library?.selection })?.id}
           environmentId={environmentId}
           onChange={(nextEnvironmentId) => {
             setEnvironmentId(nextEnvironmentId);
