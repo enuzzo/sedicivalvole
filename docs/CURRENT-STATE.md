@@ -1223,3 +1223,7 @@ published and driven.
 
 `SESSION_HANDOFF.md` is a retained legacy filename and points to the canonical
 hyphenated [`SESSION-HANDOFF.md`](SESSION-HANDOFF.md).
+
+## 2026-09-04 Astra semantic foundation (UI integration pending)
+
+The office audit and full remaining ledger are in [ASTRA-UI-AUDIT-2026-09-04.md](ASTRA-UI-AUDIT-2026-09-04.md). A cached semantic colour resolver now covers all ten palettes, both appearances and fifteen critical roles, with a reproducible raw/resolved contrast matrix. It is not yet connected to product components: no corrected UI or complete browser regression is claimed. The foundation passes 625 automated checks including Sites 9/9 and the real PHP fixture, plus the exact-toolchain ARM64 production build. The shared Dropbox dependencies contained stale Vite/PostCSS; the verified build used an isolated temporary dependency cache without rewriting that tree. Direction selection and the requested headless-browser fallback answer are pending in this same task; canonical deployment remains withheld.

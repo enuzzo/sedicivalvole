@@ -291,3 +291,7 @@ brand, screenshots, audio, and standalone media remain reserved unless a file
 says otherwise. See [LICENSE-SCOPE.md](LICENSE-SCOPE.md), [NOTICE](NOTICE),
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md), and
 [`docs/LICENSING.md`](docs/LICENSING.md).
+
+### Astra UI audit foundation — 2026-09-04
+
+The [office audit](docs/ASTRA-UI-AUDIT-2026-09-04.md) records the tested semantic colour resolver and the full outstanding UI/regression ledger. Its 300 palette/appearance/role variants have reproducible contrast evidence. Component integration and visual acceptance are still pending; this foundation is not a canonical deployment.

@@ -200,3 +200,11 @@ SciPy, Resampy, Pretty MIDI, mir_eval, SoundFile, and their declared Python
 dependencies. Their installed licence files remain in the ignored virtual
 environment. They are development tools only and do not alter the licensing of
 the project's source or the external sample packs.
+
+## Oklab conversion matrices — 2026-09-04
+
+- Author: Björn Ottosson.
+- Source: https://bottosson.github.io/posts/oklab/ (2021-01-25 sRGB matrix revision).
+- The author explicitly dedicates the reference conversion implementation to the public domain (MIT is also offered as an alternative). This project uses the public-domain grant.
+- Scope: forward/inverse numeric matrices in `prototype/drive-lab/src/semantic-theme.js`, translated into JavaScript.
+- Project-owned additions: contrast calculation, hue-preserving gamut reduction, bounded lightness search, semantic role resolution, caching, and evidence export. No new package or renderer dependency.
