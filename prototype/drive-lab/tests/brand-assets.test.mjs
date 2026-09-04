@@ -52,8 +52,8 @@ test("both owner-supplied Illobo marks remain byte-identical in a slow continuou
   const app = readFileSync(resolve(DRIVE_LAB_ROOT, "src/App.jsx"), "utf8");
   const styles = readFileSync(resolve(DRIVE_LAB_ROOT, "src/styles.css"), "utf8");
   const expected = [
-    ["illobo-featured-solid.svg", "e2fec599ff690cc78d599c8941cfacb43f49d39054379e0ab9f5257b1c887ad4"],
-    ["illobo-featured-outline.svg", "d713938e350118727752e7b190b3cad946452dd104f8fcab7d5716b231d3b7cd"],
+    ["illobo-featured-solid.svg", "9973b53c96144d2971188d9ab71207163337e856ead11ff040008e40783626a0"],
+    ["illobo-featured-outline.svg", "5e56d9476aff3f9f079650b2c409b1e4f9080313b27ed3f1ea14993f16bd4e3e"],
   ];
 
   for (const [filename, digest] of expected) {

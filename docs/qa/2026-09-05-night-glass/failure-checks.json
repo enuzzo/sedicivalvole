@@ -1,0 +1,7 @@
+{
+  "checks": [
+    "late Ambient preparation never starts playback after choosing Mute",
+    "failed Ambient catalogue leaves the visual running and Music reachable"
+  ],
+  "fixture": "delayed public response and explicit 503; no email sent"
+}

@@ -1,5 +1,5 @@
 import { ExperienceCard } from "./experience-card.jsx";
-import { applyExperienceSettings, matchingExperience } from "./curated-experiences.js";
+import { CURATED_EXPERIENCES, applyExperienceSettings, matchingExperience } from "./curated-experiences.js";
 import { resolveSemanticTheme } from "./semantic-theme.js";
 import { RailIcon } from "./rail-icon.jsx";
 import { Component, lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -1500,7 +1500,7 @@ function VisualPicker({ environmentId, onChange, onOpenDiscover, onSelectGradien
         <div><small>FLUX VISUAL LIBRARY</small><h2 id="visual-picker-title">Visual</h2></div>
         <button data-dialog-initial-focus type="button" onClick={onClose} aria-label="Close visual library">CLOSE</button>
       </div>
-      <ExperienceCard selected={experienceId === "night-glass"} onSelect={onExperience} />
+      <div className="experience-list">{CURATED_EXPERIENCES.map(({ id }) => <ExperienceCard key={id} id={id} selected={experienceId === id} onSelect={onExperience} />)}</div>
       <ul className="score-list">
         {FLUX_VISUAL_CHOICES.map((entry) => {
           const destination = entry.kind === "destination";
@@ -2183,7 +2183,7 @@ function LaunchSelector({
         <h1 id="launch-selector-title">sedicivalvole</h1>
         <button type="button" onClick={onBack}>BACK</button>
       </header>
-      <ExperienceCard launch selected={experienceId === "night-glass"} onSelect={onExperience} />
+      <div className="experience-list">{CURATED_EXPERIENCES.map(({ id }) => <ExperienceCard key={id} id={id} launch selected={experienceId === id} onSelect={onExperience} />)}</div>
       <div className="launch-selector-body">
         <fieldset className="launch-music-choices">
           <legend>MUSIC</legend>

@@ -1,0 +1,206 @@
+{
+  "url": "http://127.0.0.1:5173/",
+  "checks": [
+    "launch controls fit and retain touch targets",
+    "experience selection is silent before START",
+    "launch choice is explicit and visible",
+    "one start applies Vertigo, Graphite and Ambient coherently",
+    "Night Glass selects DARK",
+    "actual media time advances after START",
+    "launch chrome retracts after inactivity",
+    "same experience is reachable and recognised in Visual",
+    "independent visual choice removes experience selection",
+    "running experience closes the drawer and retracts chrome",
+    "Ambient music stays editable in existing Music drawer",
+    "experience permits moving wake",
+    "matching experience is recognised after reload",
+    "individual preferences survive reload",
+    "narrow launch has no horizontal overflow",
+    "no runtime or console warnings/errors"
+  ],
+  "console": [],
+  "geometry": [
+    {
+      "name": "CURATED EXPERIENCE\nNight Glass\nVertigo · Graphite · Ambient\nChoose",
+      "rect": {
+        "x": 37.5,
+        "y": 97,
+        "width": 698,
+        "height": 82,
+        "top": 97,
+        "right": 735.5,
+        "bottom": 179,
+        "left": 37.5
+      },
+      "overflow": false
+    },
+    {
+      "name": "Play the Road\nAdaptive music shaped by your drive",
+      "rect": {
+        "x": 47.5,
+        "y": 210.671875,
+        "width": 259.1875,
+        "height": 89.109375,
+        "top": 210.671875,
+        "right": 306.6875,
+        "bottom": 299.78125,
+        "left": 47.5
+      },
+      "overflow": false
+    },
+    {
+      "name": "Soundtrack\nIndependent Jamendo artist recordings",
+      "rect": {
+        "x": 47.5,
+        "y": 307.78125,
+        "width": 259.1875,
+        "height": 89.109375,
+        "top": 307.78125,
+        "right": 306.6875,
+        "bottom": 396.890625,
+        "left": 47.5
+      },
+      "overflow": false
+    },
+    {
+      "name": "Mute\nVisuals only. No music.",
+      "rect": {
+        "x": 47.5,
+        "y": 404.890625,
+        "width": 259.1875,
+        "height": 89.109375,
+        "top": 404.890625,
+        "right": 306.6875,
+        "bottom": 494,
+        "left": 47.5
+      },
+      "overflow": false
+    },
+    {
+      "name": "Aperture\nLayered light tunnel",
+      "rect": {
+        "x": 327.6875,
+        "y": 210.671875,
+        "width": 127.265625,
+        "height": 89.109375,
+        "top": 210.671875,
+        "right": 454.953125,
+        "bottom": 299.78125,
+        "left": 327.6875
+      },
+      "overflow": false
+    },
+    {
+      "name": "Vertigo\nInfinite night highway",
+      "rect": {
+        "x": 462.953125,
+        "y": 210.671875,
+        "width": 127.265625,
+        "height": 89.109375,
+        "top": 210.671875,
+        "right": 590.21875,
+        "bottom": 299.78125,
+        "left": 462.953125
+      },
+      "overflow": false
+    },
+    {
+      "name": "Meridian\nLow moving corridor",
+      "rect": {
+        "x": 598.21875,
+        "y": 210.671875,
+        "width": 127.28125,
+        "height": 89.109375,
+        "top": 210.671875,
+        "right": 725.5,
+        "bottom": 299.78125,
+        "left": 598.21875
+      },
+      "overflow": false
+    },
+    {
+      "name": "Atlas\nLive map and drive telemetry",
+      "rect": {
+        "x": 327.6875,
+        "y": 307.78125,
+        "width": 127.265625,
+        "height": 89.109375,
+        "top": 307.78125,
+        "right": 454.953125,
+        "bottom": 396.890625,
+        "left": 327.6875
+      },
+      "overflow": false
+    },
+    {
+      "name": "Drivey\nGenerative open road",
+      "rect": {
+        "x": 462.953125,
+        "y": 307.78125,
+        "width": 127.265625,
+        "height": 89.109375,
+        "top": 307.78125,
+        "right": 590.21875,
+        "bottom": 396.890625,
+        "left": 462.953125
+      },
+      "overflow": false
+    },
+    {
+      "name": "Prtcl\nReactive particle field",
+      "rect": {
+        "x": 598.21875,
+        "y": 307.78125,
+        "width": 127.28125,
+        "height": 89.109375,
+        "top": 307.78125,
+        "right": 725.5,
+        "bottom": 396.890625,
+        "left": 598.21875
+      },
+      "overflow": false
+    },
+    {
+      "name": "Discover\nPlaces, stories, and routes",
+      "rect": {
+        "x": 327.6875,
+        "y": 404.890625,
+        "width": 127.265625,
+        "height": 89.109375,
+        "top": 404.890625,
+        "right": 454.953125,
+        "bottom": 494,
+        "left": 327.6875
+      },
+      "overflow": false
+    },
+    {
+      "name": "Gradient\nReactive gradient field",
+      "rect": {
+        "x": 462.953125,
+        "y": 404.890625,
+        "width": 127.265625,
+        "height": 89.109375,
+        "top": 404.890625,
+        "right": 590.21875,
+        "bottom": 494,
+        "left": 462.953125
+      },
+      "overflow": false
+    },
+    {
+      "name": "START\n5.73 Mb/s OBS EST. · MUSIC JOINS WHEN READY",
+      "rect": {
+        "x": 37.5,
+        "y": 512,
+        "width": 698,
+        "height": 64,
+        "top": 512,
+        "right": 735.5,
+        "bottom": 576,
+        "left": 37.5
+      },
+      "overflow": false
+    }
+  ]
+}

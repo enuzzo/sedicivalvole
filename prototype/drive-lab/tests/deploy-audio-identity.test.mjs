@@ -787,3 +787,38 @@ assert not admitted(predecessor.replace(b"sedicivalvole.tesla-diagnostic.v3", b"
     env: { ...process.env, PYTHONDONTWRITEBYTECODE: "1" },
   });
 });
+
+test("curated preview identity admits exact bytes and rejects unknown or altered files", () => {
+  const source = readFileSync(deployScript, "utf8");
+  assert.match(source, /if "experiences" in root_names:/);
+  assert.match(source, /BUILD \/ "experiences",\n\s+tree_name="experiences"/);
+  const program = String.raw`
+import importlib.util
+from pathlib import Path
+import sys
+import tempfile
+spec = importlib.util.spec_from_file_location("sedicivalvole_deploy", sys.argv[1])
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+class ReadOnlyFTP:
+    def __init__(self, files): self.files = files
+    def nlst(self): return list(self.files)
+    def retrbinary(self, command, callback): callback(self.files[command.removeprefix("RETR ")])
+with tempfile.TemporaryDirectory() as temporary:
+    module.BUILD = Path(temporary)
+    root = module.BUILD / "experiences"
+    root.mkdir()
+    (root / "night-glass.png").write_bytes(b"reviewed-preview")
+    module.verify_remote_static_tree(ReadOnlyFTP({"night-glass.png": b"reviewed-preview"}), root, tree_name="experiences")
+    for files in [{"night-glass.png": b"altered"}, {"unknown.png": b"reviewed-preview"}]:
+        try:
+            module.verify_remote_static_tree(ReadOnlyFTP(files), root, tree_name="experiences")
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("Unrecognized preview accepted")
+`;
+  execFileSync("python3", ["-c", program, deployScript.pathname], {
+    env: { ...process.env, PYTHONDONTWRITEBYTECODE: "1" },
+  });
+});

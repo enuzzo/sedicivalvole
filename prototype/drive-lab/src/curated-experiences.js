@@ -3,15 +3,29 @@ export const CURATED_EXPERIENCES = Object.freeze([
   Object.freeze({
     id: "night-glass",
     title: "Night Glass",
-    description: "A quiet soundtrack. An endless night road.",
-    detail: "Vertigo · Graphite · Ambient",
+    description: "Soft grooves. An endless night road.",
+    detail: "Vertigo · Graphite · Lounge",
     image: "/experiences/night-glass.png",
     settings: Object.freeze({
       environmentId: "vertigo",
       themeId: "graphite",
       appearanceMode: "dark",
       musicMode: "soundtrack",
-      soundtrackSelection: Object.freeze({ kind: "genre", id: "ambient" }),
+      soundtrackSelection: Object.freeze({ kind: "genre", id: "lounge" }),
+    }),
+  }),
+  Object.freeze({
+    id: "neon-groove",
+    title: "Neon Groove",
+    description: "A little funk. A tunnel full of colour.",
+    detail: "Aperture · Neon · Funk",
+    image: "/experiences/neon-groove.png",
+    settings: Object.freeze({
+      environmentId: "aperture",
+      themeId: "neon",
+      appearanceMode: "dark",
+      musicMode: "soundtrack",
+      soundtrackSelection: Object.freeze({ kind: "genre", id: "funk" }),
     }),
   }),
 ]);

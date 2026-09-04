@@ -1,0 +1,122 @@
+[
+  {
+    "mode": "LIGHT",
+    "badge": {
+      "badge": {
+        "x": 200,
+        "y": 64,
+        "width": 96,
+        "height": 32,
+        "top": 64,
+        "right": 296,
+        "bottom": 96,
+        "left": 200
+      },
+      "parent": {
+        "x": 200,
+        "y": 0,
+        "width": 96,
+        "height": 64,
+        "top": 0,
+        "right": 296,
+        "bottom": 64,
+        "left": 200
+      },
+      "color": "rgb(244, 244, 244)",
+      "background": "rgb(10, 51, 184)"
+    }
+  },
+  {
+    "mode": "LIGHT",
+    "logos": [
+      {
+        "loaded": true,
+        "opacity": "0",
+        "rect": {
+          "x": 19,
+          "y": 173.75,
+          "width": 56,
+          "height": 56,
+          "top": 173.75,
+          "right": 75,
+          "bottom": 229.75,
+          "left": 19
+        }
+      },
+      {
+        "loaded": true,
+        "opacity": "1",
+        "rect": {
+          "x": 19,
+          "y": 173.75,
+          "width": 56,
+          "height": 56,
+          "top": 173.75,
+          "right": 75,
+          "bottom": 229.75,
+          "left": 19
+        }
+      }
+    ]
+  },
+  {
+    "mode": "DARK",
+    "badge": {
+      "badge": {
+        "x": 200,
+        "y": 64,
+        "width": 96,
+        "height": 32,
+        "top": 64,
+        "right": 296,
+        "bottom": 96,
+        "left": 200
+      },
+      "parent": {
+        "x": 200,
+        "y": 0,
+        "width": 96,
+        "height": 64,
+        "top": 0,
+        "right": 296,
+        "bottom": 64,
+        "left": 200
+      },
+      "color": "rgb(15, 17, 23)",
+      "background": "rgb(60, 115, 250)"
+    }
+  },
+  {
+    "mode": "DARK",
+    "logos": [
+      {
+        "loaded": true,
+        "opacity": "0",
+        "rect": {
+          "x": 19,
+          "y": 173.75,
+          "width": 56,
+          "height": 56,
+          "top": 173.75,
+          "right": 75,
+          "bottom": 229.75,
+          "left": 19
+        }
+      },
+      {
+        "loaded": true,
+        "opacity": "1",
+        "rect": {
+          "x": 19,
+          "y": 173.75,
+          "width": 56,
+          "height": 56,
+          "top": 173.75,
+          "right": 75,
+          "bottom": 229.75,
+          "left": 19
+        }
+      }
+    ]
+  }
+]

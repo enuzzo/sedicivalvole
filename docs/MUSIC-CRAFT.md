@@ -1715,3 +1715,16 @@ runtime boundary. Exact inventory and admission evidence live in
   not permission to guess harmony.
 - Web Audio API 1.1, `AudioParam.cancelAndHoldAtTime()` automation semantics:
   <https://webaudio.github.io/web-audio-api/#dom-audioparam-cancelandholdattime>.
+
+## 2026-09-05 — Night Glass curation
+
+The first curated experience pairs Vertigo/Graphite/DARK with the existing Jamendo
+Ambient selection. Keeping Soundtrack continuous at its native tempo gives this
+night-road composition continuity while parked as well as moving; no new score,
+loop, tempo mapping or audio graph was introduced. Genre rotation is not a fixed,
+hand-auditioned programme. Browser media time advances after explicit START, but
+musical fit and uninterrupted real-car listening still require owner acceptance.
+
+## 2026-09-05 — Curated experiences need songs, not a genre-shaped sound test
+
+The owner liked Night Glass visually but heard the Ambient selection as isolated synth experiments. A soft mood is not evidence of a complete arrangement. Night Glass now uses the existing Lounge catalogue for a more song-oriented, understated groove; Neon Groove pairs Funk with Aperture/Neon for a livelier alternative. These are audiovisual presets over existing licensed recordings, not individually auditioned playlists or newly composed adaptive scores. Genre metadata cannot guarantee every recording will satisfy this listening brief. Keep actual Tesla listening as the acceptance gate; do not claim that a transport/time-advance test validates musical taste.

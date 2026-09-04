@@ -232,3 +232,11 @@ source inventory recorded above; no upstream source or dependency was changed.
 The project-owned experience composition and product screenshot follow the
 existing original-code and screenshot exclusions in LICENSE-SCOPE.md. Capture:
 773 × 601 browser, field-only region x=0, y=140, width=773, height=420.
+
+## 2026-09-05 — Owner-supplied Lobo round playlist marks
+
+The owner supplied `lobo-round-bgb.svg` and `lobo-round-bgw.svg` directly for the Lobo playlist. Their exact bytes replace the two featured playlist marks, with the existing eight-second crossfade retained. These artist marks are excluded from the original-code license; no broader rights are asserted. Previous marks are retained only as reviewed deployment identities.
+
+## 2026-09-05 — Neon Groove experience preview
+
+`public/experiences/neon-groove.png` is a real capture of the existing project-owned Aperture renderer with the Neon palette at the agreed Tesla viewport. It is a product screenshot, excluded from the original-code license. No new renderer, recording or dependency is introduced.

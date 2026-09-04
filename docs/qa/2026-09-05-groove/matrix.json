@@ -1,0 +1,5932 @@
+{
+  "viewport": {
+    "width": 773,
+    "height": 601
+  },
+  "checks": [
+    "appearance light retracts",
+    "palette pearl/light retracts",
+    "palette graphite/light retracts",
+    "palette red/light retracts",
+    "palette blue/light retracts",
+    "palette silver/light retracts",
+    "palette neon/light retracts",
+    "palette mint/light retracts",
+    "palette acid/light retracts",
+    "palette signal/light retracts",
+    "palette sulphur/light retracts",
+    "ACID selection before Atlas",
+    "visual Atlas retracts",
+    "rail geometry light",
+    "Atlas collapse light",
+    "Discover real names wrap, no numbers or player light",
+    "Discover close light",
+    "appearance dark retracts",
+    "palette pearl/dark retracts",
+    "palette graphite/dark retracts",
+    "palette red/dark retracts",
+    "palette blue/dark retracts",
+    "palette silver/dark retracts",
+    "palette neon/dark retracts",
+    "palette mint/dark retracts",
+    "palette acid/dark retracts",
+    "palette signal/dark retracts",
+    "palette sulphur/dark retracts",
+    "ACID selection before Atlas",
+    "visual Atlas retracts",
+    "rail geometry dark",
+    "Atlas collapse dark",
+    "Discover real names wrap, no numbers or player dark",
+    "Discover close dark",
+    "visual Aperture retracts",
+    "drawer close on Aperture",
+    "visual Vertigo retracts",
+    "drawer close on Vertigo",
+    "visual Meridian retracts",
+    "drawer close on Meridian",
+    "visual Atlas retracts",
+    "drawer close on Atlas",
+    "visual Drivey retracts",
+    "drawer close on Drivey",
+    "context action on Drivey",
+    "visual PRTCL retracts",
+    "drawer close on PRTCL",
+    "context action on PRTCL",
+    "visual Gradient retracts",
+    "drawer close on Gradient",
+    "context action on Gradient",
+    "visual Aperture retracts",
+    "Report close",
+    "Music close",
+    "FX close",
+    "Network close",
+    "GPS close",
+    "open menu survives inactivity",
+    "menu Escape retracts",
+    "stale focus cannot pin chrome",
+    "completed action retracts",
+    "no document overflow",
+    "motion retracts",
+    "explicit touch wakes usable chrome during changing speed",
+    "Music stays reachable and open while moving",
+    "moving Music close retracts",
+    "moving wake expires after inactivity",
+    "moving visual selection retracts",
+    "controls can wake again after moving visual selection"
+  ],
+  "palettes": [
+    {
+      "palette": "pearl",
+      "appearance": "light",
+      "roles": {
+        "text": {
+          "raw": "#171a20",
+          "resolved": "#171a20",
+          "rawRatio": 12.708116803963408,
+          "ratio": 12.708116803963408,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "metadata": {
+          "raw": "#60636a",
+          "resolved": "#5f6168",
+          "rawRatio": 4.387655719455812,
+          "ratio": 4.508917037715986,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "accentText": {
+          "raw": "#eee9dc",
+          "resolved": "#656156",
+          "rawRatio": 1.0296266353989296,
+          "ratio": 4.507267490965663,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "selectedAccent": {
+          "raw": "#eee9dc",
+          "resolved": "#eee9dc",
+          "rawRatio": 14.376588155124885,
+          "ratio": 14.376588155124885,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#171a20"
+          ]
+        },
+        "selectedText": {
+          "raw": "#f4f4f4",
+          "resolved": "#f4f4f4",
+          "rawRatio": 15.844389046461451,
+          "ratio": 15.844389046461451,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#171a20"
+          ]
+        },
+        "focus": {
+          "raw": "#eee9dc",
+          "resolved": "#817c71",
+          "rawRatio": 1.0296266353989296,
+          "ratio": 3.0294878410189194,
+          "minimum": 3,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "boundary": {
+          "raw": "#60636a",
+          "resolved": "#60636a",
+          "rawRatio": 4.387655719455812,
+          "ratio": 4.387655719455812,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "chartPrimary": {
+          "raw": "#c7c2b3",
+          "resolved": "#666154",
+          "rawRatio": 1.298217740384916,
+          "ratio": 4.500303866564055,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "chartSecondary": {
+          "raw": "#6b8cab",
+          "resolved": "#456482",
+          "rawRatio": 2.5675250207493048,
+          "ratio": 4.506396847897385,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "indicator": {
+          "raw": "#eee9dc",
+          "resolved": "#817c71",
+          "rawRatio": 1.0296266353989296,
+          "ratio": 3.0294878410189194,
+          "minimum": 3,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "effectSurface": {
+          "raw": "#6b8cab",
+          "resolved": "#60809f",
+          "rawRatio": 2.5675250207493048,
+          "ratio": 3.0111813066159265,
+          "minimum": 3,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "success": {
+          "raw": "#167442",
+          "resolved": "#0e6f3e",
+          "rawRatio": 4.240964257377112,
+          "ratio": 4.554976846008056,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "caution": {
+          "raw": "#975800",
+          "resolved": "#8e5300",
+          "rawRatio": 4.125780226744792,
+          "ratio": 4.520754061385441,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "alert": {
+          "raw": "#bb282d",
+          "resolved": "#ba262c",
+          "rawRatio": 4.433189912739206,
+          "ratio": 4.502178211116576,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "accentFillText": {
+          "raw": "#f4f4f4",
+          "resolved": "#f4f4f4",
+          "rawRatio": 5.619628837614655,
+          "ratio": 5.619628837614655,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#656156"
+          ]
+        },
+        "effectText": {
+          "raw": "#171a20",
+          "resolved": "#101319",
+          "rawRatio": 4.220309410144833,
+          "ratio": 4.503707573498105,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#60809f"
+          ]
+        }
+      },
+      "computed": {
+        "--ui-accent-text": "#656156",
+        "--ui-chart-primary": "#666154",
+        "--ui-chart-secondary": "#456482",
+        "--ui-effect-surface": "#60809f",
+        "--ui-effect-text": "#101319",
+        "--ui-selected-accent": "#eee9dc"
+      },
+      "textPairs": [
+        {
+          "text": "Speed",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "Dist.",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "Moving",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "Average",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "Demo · GPS altitude —",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "MUTE",
+          "foreground": "#5f6168",
+          "background": "#e6e6e6",
+          "ratio": 4.954126702723732
+        },
+        {
+          "text": "FX",
+          "foreground": "#171a20",
+          "background": "#e6e6e6",
+          "ratio": 13.962913993143413
+        },
+        {
+          "text": "VISUAL",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "MUSIC",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        }
+      ]
+    },
+    {
+      "palette": "graphite",
+      "appearance": "light",
+      "roles": {
+        "text": {
+          "raw": "#171a20",
+          "resolved": "#171a20",
+          "rawRatio": 12.708116803963408,
+          "ratio": 12.708116803963408,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "metadata": {
+          "raw": "#60636a",
+          "resolved": "#5f6168",
+          "rawRatio": 4.387655719455812,
+          "ratio": 4.508917037715986,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "accentText": {
+          "raw": "#454646",
+          "resolved": "#454646",
+          "rawRatio": 6.9057775377194375,
+          "ratio": 6.9057775377194375,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "selectedAccent": {
+          "raw": "#454646",
+          "resolved": "#808281",
+          "rawRatio": 1.8402152016266853,
+          "ratio": 4.504297527839665,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#171a20"
+          ]
+        },
+        "selectedText": {
+          "raw": "#f4f4f4",
+          "resolved": "#f4f4f4",
+          "rawRatio": 15.844389046461451,
+          "ratio": 15.844389046461451,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#171a20"
+          ]
+        },
+        "focus": {
+          "raw": "#454646",
+          "resolved": "#454646",
+          "rawRatio": 6.9057775377194375,
+          "ratio": 6.9057775377194375,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "boundary": {
+          "raw": "#60636a",
+          "resolved": "#60636a",
+          "rawRatio": 4.387655719455812,
+          "ratio": 4.387655719455812,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "chartPrimary": {
+          "raw": "#7a807d",
+          "resolved": "#5d6260",
+          "rawRatio": 2.9385794640316654,
+          "ratio": 4.528841740825584,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "chartSecondary": {
+          "raw": "#305273",
+          "resolved": "#305273",
+          "rawRatio": 5.935254395557566,
+          "ratio": 5.935254395557566,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "indicator": {
+          "raw": "#454646",
+          "resolved": "#454646",
+          "rawRatio": 6.9057775377194375,
+          "ratio": 6.9057775377194375,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "effectSurface": {
+          "raw": "#305273",
+          "resolved": "#305273",
+          "rawRatio": 5.935254395557566,
+          "ratio": 5.935254395557566,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "success": {
+          "raw": "#167442",
+          "resolved": "#0e6f3e",
+          "rawRatio": 4.240964257377112,
+          "ratio": 4.554976846008056,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "caution": {
+          "raw": "#975800",
+          "resolved": "#8e5300",
+          "rawRatio": 4.125780226744792,
+          "ratio": 4.520754061385441,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "alert": {
+          "raw": "#bb282d",
+          "resolved": "#ba262c",
+          "rawRatio": 4.433189912739206,
+          "ratio": 4.502178211116576,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "accentFillText": {
+          "raw": "#f4f4f4",
+          "resolved": "#f4f4f4",
+          "rawRatio": 8.610073991593794,
+          "ratio": 8.610073991593794,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#454646"
+          ]
+        },
+        "effectText": {
+          "raw": "#f4f4f4",
+          "resolved": "#f4f4f4",
+          "rawRatio": 7.400032686479962,
+          "ratio": 7.400032686479962,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#305273"
+          ]
+        }
+      },
+      "computed": {
+        "--ui-accent-text": "#454646",
+        "--ui-chart-primary": "#5d6260",
+        "--ui-chart-secondary": "#305273",
+        "--ui-effect-surface": "#305273",
+        "--ui-effect-text": "#f4f4f4",
+        "--ui-selected-accent": "#808281"
+      },
+      "textPairs": [
+        {
+          "text": "Speed",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "Dist.",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "Moving",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "Average",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "Demo · GPS altitude —",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "MUTE",
+          "foreground": "#5f6168",
+          "background": "#e6e6e6",
+          "ratio": 4.954126702723732
+        },
+        {
+          "text": "FX",
+          "foreground": "#171a20",
+          "background": "#e6e6e6",
+          "ratio": 13.962913993143413
+        },
+        {
+          "text": "VISUAL",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "MUSIC",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        }
+      ]
+    },
+    {
+      "palette": "red",
+      "appearance": "light",
+      "roles": {
+        "text": {
+          "raw": "#171a20",
+          "resolved": "#171a20",
+          "rawRatio": 12.708116803963408,
+          "ratio": 12.708116803963408,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "metadata": {
+          "raw": "#60636a",
+          "resolved": "#5f6168",
+          "rawRatio": 4.387655719455812,
+          "ratio": 4.508917037715986,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "accentText": {
+          "raw": "#ed2d24",
+          "resolved": "#c50005",
+          "rawRatio": 3.0617119549879694,
+          "ratio": 4.5357566031795775,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "selectedAccent": {
+          "raw": "#ed2d24",
+          "resolved": "#f5362c",
+          "rawRatio": 4.150657210995978,
+          "ratio": 4.519769638617395,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#171a20"
+          ]
+        },
+        "selectedText": {
+          "raw": "#f4f4f4",
+          "resolved": "#f4f4f4",
+          "rawRatio": 15.844389046461451,
+          "ratio": 15.844389046461451,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#171a20"
+          ]
+        },
+        "focus": {
+          "raw": "#ed2d24",
+          "resolved": "#ed2d24",
+          "rawRatio": 3.0617119549879694,
+          "ratio": 3.0617119549879694,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "boundary": {
+          "raw": "#60636a",
+          "resolved": "#60636a",
+          "rawRatio": 4.387655719455812,
+          "ratio": 4.387655719455812,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "chartPrimary": {
+          "raw": "#ed1209",
+          "resolved": "#c50200",
+          "rawRatio": 3.264262480857797,
+          "ratio": 4.527052024565299,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "chartSecondary": {
+          "raw": "#0a33b8",
+          "resolved": "#0a33b8",
+          "rawRatio": 7.029306204237157,
+          "ratio": 7.029306204237157,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "indicator": {
+          "raw": "#ed2d24",
+          "resolved": "#ed2d24",
+          "rawRatio": 3.0617119549879694,
+          "ratio": 3.0617119549879694,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "effectSurface": {
+          "raw": "#0a33b8",
+          "resolved": "#0a33b8",
+          "rawRatio": 7.029306204237157,
+          "ratio": 7.029306204237157,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "success": {
+          "raw": "#167442",
+          "resolved": "#0e6f3e",
+          "rawRatio": 4.240964257377112,
+          "ratio": 4.554976846008056,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "caution": {
+          "raw": "#975800",
+          "resolved": "#8e5300",
+          "rawRatio": 4.125780226744792,
+          "ratio": 4.520754061385441,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "alert": {
+          "raw": "#bb282d",
+          "resolved": "#ba262c",
+          "rawRatio": 4.433189912739206,
+          "ratio": 4.502178211116576,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "accentFillText": {
+          "raw": "#f4f4f4",
+          "resolved": "#f4f4f4",
+          "rawRatio": 5.655148858753017,
+          "ratio": 5.655148858753017,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#c50005"
+          ]
+        },
+        "effectText": {
+          "raw": "#f4f4f4",
+          "resolved": "#f4f4f4",
+          "rawRatio": 8.764088648595289,
+          "ratio": 8.764088648595289,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#0a33b8"
+          ]
+        }
+      },
+      "computed": {
+        "--ui-accent-text": "#c50005",
+        "--ui-chart-primary": "#c50200",
+        "--ui-chart-secondary": "#0a33b8",
+        "--ui-effect-surface": "#0a33b8",
+        "--ui-effect-text": "#f4f4f4",
+        "--ui-selected-accent": "#f5362c"
+      },
+      "textPairs": [
+        {
+          "text": "Speed",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "Dist.",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "Moving",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "Average",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "Demo · GPS altitude —",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "MUTE",
+          "foreground": "#5f6168",
+          "background": "#e6e6e6",
+          "ratio": 4.954126702723732
+        },
+        {
+          "text": "FX",
+          "foreground": "#171a20",
+          "background": "#e6e6e6",
+          "ratio": 13.962913993143413
+        },
+        {
+          "text": "VISUAL",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "MUSIC",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        }
+      ]
+    },
+    {
+      "palette": "blue",
+      "appearance": "light",
+      "roles": {
+        "text": {
+          "raw": "#171a20",
+          "resolved": "#171a20",
+          "rawRatio": 12.708116803963408,
+          "ratio": 12.708116803963408,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "metadata": {
+          "raw": "#60636a",
+          "resolved": "#5f6168",
+          "rawRatio": 4.387655719455812,
+          "ratio": 4.508917037715986,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "accentText": {
+          "raw": "#203c6e",
+          "resolved": "#203c6e",
+          "rawRatio": 7.922675385960705,
+          "ratio": 7.922675385960705,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "selectedAccent": {
+          "raw": "#203c6e",
+          "resolved": "#6283ba",
+          "rawRatio": 1.6040183631002596,
+          "ratio": 4.543300708338878,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#171a20"
+          ]
+        },
+        "selectedText": {
+          "raw": "#f4f4f4",
+          "resolved": "#f4f4f4",
+          "rawRatio": 15.844389046461451,
+          "ratio": 15.844389046461451,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#171a20"
+          ]
+        },
+        "focus": {
+          "raw": "#203c6e",
+          "resolved": "#203c6e",
+          "rawRatio": 7.922675385960705,
+          "ratio": 7.922675385960705,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "boundary": {
+          "raw": "#60636a",
+          "resolved": "#60636a",
+          "rawRatio": 4.387655719455812,
+          "ratio": 4.387655719455812,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "chartPrimary": {
+          "raw": "#0e3b8f",
+          "resolved": "#0e3b8f",
+          "rawRatio": 7.503516939734694,
+          "ratio": 7.503516939734694,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "chartSecondary": {
+          "raw": "#c2d1e6",
+          "resolved": "#556275",
+          "rawRatio": 1.129617461142901,
+          "ratio": 4.517095523003769,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "indicator": {
+          "raw": "#203c6e",
+          "resolved": "#203c6e",
+          "rawRatio": 7.922675385960705,
+          "ratio": 7.922675385960705,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "effectSurface": {
+          "raw": "#c2d1e6",
+          "resolved": "#717e92",
+          "rawRatio": 1.129617461142901,
+          "ratio": 3.0018082071449994,
+          "minimum": 3,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "success": {
+          "raw": "#167442",
+          "resolved": "#0e6f3e",
+          "rawRatio": 4.240964257377112,
+          "ratio": 4.554976846008056,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "caution": {
+          "raw": "#975800",
+          "resolved": "#8e5300",
+          "rawRatio": 4.125780226744792,
+          "ratio": 4.520754061385441,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "alert": {
+          "raw": "#bb282d",
+          "resolved": "#ba262c",
+          "rawRatio": 4.433189912739206,
+          "ratio": 4.502178211116576,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "accentFillText": {
+          "raw": "#f4f4f4",
+          "resolved": "#f4f4f4",
+          "rawRatio": 9.877934948224214,
+          "ratio": 9.877934948224214,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#203c6e"
+          ]
+        },
+        "effectText": {
+          "raw": "#171a20",
+          "resolved": "#111319",
+          "rawRatio": 4.233487260683459,
+          "ratio": 4.51057112362853,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#717e92"
+          ]
+        }
+      },
+      "computed": {
+        "--ui-accent-text": "#203c6e",
+        "--ui-chart-primary": "#0e3b8f",
+        "--ui-chart-secondary": "#556275",
+        "--ui-effect-surface": "#717e92",
+        "--ui-effect-text": "#111319",
+        "--ui-selected-accent": "#6283ba"
+      },
+      "textPairs": [
+        {
+          "text": "Speed",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "Dist.",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "Moving",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "Average",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "Demo · GPS altitude —",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "MUTE",
+          "foreground": "#5f6168",
+          "background": "#e6e6e6",
+          "ratio": 4.954126702723732
+        },
+        {
+          "text": "FX",
+          "foreground": "#171a20",
+          "background": "#e6e6e6",
+          "ratio": 13.962913993143413
+        },
+        {
+          "text": "VISUAL",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "MUSIC",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        }
+      ]
+    },
+    {
+      "palette": "silver",
+      "appearance": "light",
+      "roles": {
+        "text": {
+          "raw": "#171a20",
+          "resolved": "#171a20",
+          "rawRatio": 12.708116803963408,
+          "ratio": 12.708116803963408,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "metadata": {
+          "raw": "#60636a",
+          "resolved": "#5f6168",
+          "rawRatio": 4.387655719455812,
+          "ratio": 4.508917037715986,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "accentText": {
+          "raw": "#a6a7a3",
+          "resolved": "#61615e",
+          "rawRatio": 1.7647274594052769,
+          "ratio": 4.5310183235890715,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "selectedAccent": {
+          "raw": "#a6a7a3",
+          "resolved": "#a6a7a3",
+          "rawRatio": 7.201178140133953,
+          "ratio": 7.201178140133953,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#171a20"
+          ]
+        },
+        "selectedText": {
+          "raw": "#f4f4f4",
+          "resolved": "#f4f4f4",
+          "rawRatio": 15.844389046461451,
+          "ratio": 15.844389046461451,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#171a20"
+          ]
+        },
+        "focus": {
+          "raw": "#a6a7a3",
+          "resolved": "#7d7d7a",
+          "rawRatio": 1.7647274594052769,
+          "ratio": 3.0107073235592976,
+          "minimum": 3,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "boundary": {
+          "raw": "#60636a",
+          "resolved": "#60636a",
+          "rawRatio": 4.387655719455812,
+          "ratio": 4.387655719455812,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "chartPrimary": {
+          "raw": "#a8aba6",
+          "resolved": "#5f625e",
+          "rawRatio": 1.6938688411742664,
+          "ratio": 4.510337330984183,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "chartSecondary": {
+          "raw": "#476b8f",
+          "resolved": "#406488",
+          "rawRatio": 4.064588973247973,
+          "ratio": 4.508878673526903,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "indicator": {
+          "raw": "#a6a7a3",
+          "resolved": "#7d7d7a",
+          "rawRatio": 1.7647274594052769,
+          "ratio": 3.0107073235592976,
+          "minimum": 3,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "effectSurface": {
+          "raw": "#476b8f",
+          "resolved": "#476b8f",
+          "rawRatio": 4.064588973247973,
+          "ratio": 4.064588973247973,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "success": {
+          "raw": "#167442",
+          "resolved": "#0e6f3e",
+          "rawRatio": 4.240964257377112,
+          "ratio": 4.554976846008056,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "caution": {
+          "raw": "#975800",
+          "resolved": "#8e5300",
+          "rawRatio": 4.125780226744792,
+          "ratio": 4.520754061385441,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "alert": {
+          "raw": "#bb282d",
+          "resolved": "#ba262c",
+          "rawRatio": 4.433189912739206,
+          "ratio": 4.502178211116576,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "accentFillText": {
+          "raw": "#f4f4f4",
+          "resolved": "#f4f4f4",
+          "rawRatio": 5.649241205683643,
+          "ratio": 5.649241205683643,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#61615e"
+          ]
+        },
+        "effectText": {
+          "raw": "#f4f4f4",
+          "resolved": "#f4f4f4",
+          "rawRatio": 5.067700431114453,
+          "ratio": 5.067700431114453,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#476b8f"
+          ]
+        }
+      },
+      "computed": {
+        "--ui-accent-text": "#61615e",
+        "--ui-chart-primary": "#5f625e",
+        "--ui-chart-secondary": "#406488",
+        "--ui-effect-surface": "#476b8f",
+        "--ui-effect-text": "#f4f4f4",
+        "--ui-selected-accent": "#a6a7a3"
+      },
+      "textPairs": [
+        {
+          "text": "Speed",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "Dist.",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "Moving",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "Average",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "Demo · GPS altitude —",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "MUTE",
+          "foreground": "#5f6168",
+          "background": "#e6e6e6",
+          "ratio": 4.954126702723732
+        },
+        {
+          "text": "FX",
+          "foreground": "#171a20",
+          "background": "#e6e6e6",
+          "ratio": 13.962913993143413
+        },
+        {
+          "text": "VISUAL",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "MUSIC",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        }
+      ]
+    },
+    {
+      "palette": "neon",
+      "appearance": "light",
+      "roles": {
+        "text": {
+          "raw": "#171a20",
+          "resolved": "#171a20",
+          "rawRatio": 12.708116803963408,
+          "ratio": 12.708116803963408,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "metadata": {
+          "raw": "#60636a",
+          "resolved": "#5f6168",
+          "rawRatio": 4.387655719455812,
+          "ratio": 4.508917037715986,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "accentText": {
+          "raw": "#ff2d95",
+          "resolved": "#be006b",
+          "rawRatio": 2.5264827292116205,
+          "ratio": 4.501779156532394,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "selectedAccent": {
+          "raw": "#ff2d95",
+          "resolved": "#ff2d95",
+          "rawRatio": 5.029963853316713,
+          "ratio": 5.029963853316713,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#171a20"
+          ]
+        },
+        "selectedText": {
+          "raw": "#f4f4f4",
+          "resolved": "#f4f4f4",
+          "rawRatio": 15.844389046461451,
+          "ratio": 15.844389046461451,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#171a20"
+          ]
+        },
+        "focus": {
+          "raw": "#ff2d95",
+          "resolved": "#ef1088",
+          "rawRatio": 2.5264827292116205,
+          "ratio": 3.002851733961292,
+          "minimum": 3,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "boundary": {
+          "raw": "#60636a",
+          "resolved": "#60636a",
+          "rawRatio": 4.387655719455812,
+          "ratio": 4.387655719455812,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "chartPrimary": {
+          "raw": "#ff1a85",
+          "resolved": "#bf0061",
+          "rawRatio": 2.668642775388197,
+          "ratio": 4.520183676162971,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "chartSecondary": {
+          "raw": "#2eff5c",
+          "resolved": "#007120",
+          "rawRatio": 1.0170329107957565,
+          "ratio": 4.526836326492246,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "indicator": {
+          "raw": "#ff2d95",
+          "resolved": "#ef1088",
+          "rawRatio": 2.5264827292116205,
+          "ratio": 3.002851733961292,
+          "minimum": 3,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "effectSurface": {
+          "raw": "#2eff5c",
+          "resolved": "#00912b",
+          "rawRatio": 1.0170329107957565,
+          "ratio": 3.011551602350288,
+          "minimum": 3,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "success": {
+          "raw": "#167442",
+          "resolved": "#0e6f3e",
+          "rawRatio": 4.240964257377112,
+          "ratio": 4.554976846008056,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "caution": {
+          "raw": "#975800",
+          "resolved": "#8e5300",
+          "rawRatio": 4.125780226744792,
+          "ratio": 4.520754061385441,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "alert": {
+          "raw": "#bb282d",
+          "resolved": "#ba262c",
+          "rawRatio": 4.433189912739206,
+          "ratio": 4.502178211116576,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "accentFillText": {
+          "raw": "#f4f4f4",
+          "resolved": "#f4f4f4",
+          "rawRatio": 5.612786021537398,
+          "ratio": 5.612786021537398,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#be006b"
+          ]
+        },
+        "effectText": {
+          "raw": "#171a20",
+          "resolved": "#101319",
+          "rawRatio": 4.21979048741708,
+          "ratio": 4.5031538045698305,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#00912b"
+          ]
+        }
+      },
+      "computed": {
+        "--ui-accent-text": "#be006b",
+        "--ui-chart-primary": "#bf0061",
+        "--ui-chart-secondary": "#007120",
+        "--ui-effect-surface": "#00912b",
+        "--ui-effect-text": "#101319",
+        "--ui-selected-accent": "#ff2d95"
+      },
+      "textPairs": [
+        {
+          "text": "Speed",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "Dist.",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "Moving",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "Average",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "Demo · GPS altitude —",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "MUTE",
+          "foreground": "#5f6168",
+          "background": "#e6e6e6",
+          "ratio": 4.954126702723732
+        },
+        {
+          "text": "FX",
+          "foreground": "#171a20",
+          "background": "#e6e6e6",
+          "ratio": 13.962913993143413
+        },
+        {
+          "text": "VISUAL",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "MUSIC",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        }
+      ]
+    },
+    {
+      "palette": "mint",
+      "appearance": "light",
+      "roles": {
+        "text": {
+          "raw": "#171a20",
+          "resolved": "#171a20",
+          "rawRatio": 12.708116803963408,
+          "ratio": 12.708116803963408,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "metadata": {
+          "raw": "#60636a",
+          "resolved": "#5f6168",
+          "rawRatio": 4.387655719455812,
+          "ratio": 4.508917037715986,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "accentText": {
+          "raw": "#a8e6cf",
+          "resolved": "#2f6b58",
+          "rawRatio": 1.0288336048581186,
+          "ratio": 4.551114285077435,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "selectedAccent": {
+          "raw": "#a8e6cf",
+          "resolved": "#a8e6cf",
+          "rawRatio": 12.351965122402785,
+          "ratio": 12.351965122402785,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#171a20"
+          ]
+        },
+        "selectedText": {
+          "raw": "#f4f4f4",
+          "resolved": "#f4f4f4",
+          "rawRatio": 15.844389046461451,
+          "ratio": 15.844389046461451,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#171a20"
+          ]
+        },
+        "focus": {
+          "raw": "#a8e6cf",
+          "resolved": "#4d8874",
+          "rawRatio": 1.0288336048581186,
+          "ratio": 3.008967216452534,
+          "minimum": 3,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "boundary": {
+          "raw": "#60636a",
+          "resolved": "#60636a",
+          "rawRatio": 4.387655719455812,
+          "ratio": 4.387655719455812,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "chartPrimary": {
+          "raw": "#99e6c9",
+          "resolved": "#1b6d55",
+          "rawRatio": 1.0549215630495856,
+          "ratio": 4.5506115204351065,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "chartSecondary": {
+          "raw": "#db3899",
+          "resolved": "#ba047d",
+          "rawRatio": 3.0398747995823188,
+          "ratio": 4.5023301948530845,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "indicator": {
+          "raw": "#a8e6cf",
+          "resolved": "#4d8874",
+          "rawRatio": 1.0288336048581186,
+          "ratio": 3.008967216452534,
+          "minimum": 3,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "effectSurface": {
+          "raw": "#db3899",
+          "resolved": "#db3899",
+          "rawRatio": 3.0398747995823188,
+          "ratio": 3.0398747995823188,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "success": {
+          "raw": "#167442",
+          "resolved": "#0e6f3e",
+          "rawRatio": 4.240964257377112,
+          "ratio": 4.554976846008056,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "caution": {
+          "raw": "#975800",
+          "resolved": "#8e5300",
+          "rawRatio": 4.125780226744792,
+          "ratio": 4.520754061385441,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "alert": {
+          "raw": "#bb282d",
+          "resolved": "#ba262c",
+          "rawRatio": 4.433189912739206,
+          "ratio": 4.502178211116576,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "accentFillText": {
+          "raw": "#f4f4f4",
+          "resolved": "#f4f4f4",
+          "rawRatio": 5.674296706588784,
+          "ratio": 5.674296706588784,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#2f6b58"
+          ]
+        },
+        "effectText": {
+          "raw": "#171a20",
+          "resolved": "#0f1217",
+          "rawRatio": 4.180473750336532,
+          "ratio": 4.501103925811353,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#db3899"
+          ]
+        }
+      },
+      "computed": {
+        "--ui-accent-text": "#2f6b58",
+        "--ui-chart-primary": "#1b6d55",
+        "--ui-chart-secondary": "#ba047d",
+        "--ui-effect-surface": "#db3899",
+        "--ui-effect-text": "#0f1217",
+        "--ui-selected-accent": "#a8e6cf"
+      },
+      "textPairs": [
+        {
+          "text": "Speed",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "Dist.",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "Moving",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "Average",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "Demo · GPS altitude —",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "MUTE",
+          "foreground": "#5f6168",
+          "background": "#e6e6e6",
+          "ratio": 4.954126702723732
+        },
+        {
+          "text": "FX",
+          "foreground": "#171a20",
+          "background": "#e6e6e6",
+          "ratio": 13.962913993143413
+        },
+        {
+          "text": "VISUAL",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "MUSIC",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        }
+      ]
+    },
+    {
+      "palette": "acid",
+      "appearance": "light",
+      "roles": {
+        "text": {
+          "raw": "#171a20",
+          "resolved": "#171a20",
+          "rawRatio": 12.708116803963408,
+          "ratio": 12.708116803963408,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "metadata": {
+          "raw": "#60636a",
+          "resolved": "#5f6168",
+          "rawRatio": 4.387655719455812,
+          "ratio": 4.508917037715986,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "accentText": {
+          "raw": "#ff2ca8",
+          "resolved": "#bb0078",
+          "rawRatio": 2.4788936560545576,
+          "ratio": 4.525144908984543,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "selectedAccent": {
+          "raw": "#ff2ca8",
+          "resolved": "#ff2ca8",
+          "rawRatio": 5.1265276236939625,
+          "ratio": 5.1265276236939625,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#171a20"
+          ]
+        },
+        "selectedText": {
+          "raw": "#f4f4f4",
+          "resolved": "#f4f4f4",
+          "rawRatio": 15.844389046461451,
+          "ratio": 15.844389046461451,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#171a20"
+          ]
+        },
+        "focus": {
+          "raw": "#ff2ca8",
+          "resolved": "#ed0799",
+          "rawRatio": 2.4788936560545576,
+          "ratio": 3.0078636004778825,
+          "minimum": 3,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "boundary": {
+          "raw": "#60636a",
+          "resolved": "#60636a",
+          "rawRatio": 4.387655719455812,
+          "ratio": 4.387655719455812,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "chartPrimary": {
+          "raw": "#ff0e94",
+          "resolved": "#bd006c",
+          "rawRatio": 2.6667885214486136,
+          "ratio": 4.530321551818123,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "chartSecondary": {
+          "raw": "#54ff29",
+          "resolved": "#1a7000",
+          "rawRatio": 1.0260621666590575,
+          "ratio": 4.55554285085392,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "indicator": {
+          "raw": "#ff2ca8",
+          "resolved": "#ed0799",
+          "rawRatio": 2.4788936560545576,
+          "ratio": 3.0078636004778825,
+          "minimum": 3,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "effectSurface": {
+          "raw": "#54ff29",
+          "resolved": "#249000",
+          "rawRatio": 1.0260621666590575,
+          "ratio": 3.023876586147634,
+          "minimum": 3,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "success": {
+          "raw": "#167442",
+          "resolved": "#0e6f3e",
+          "rawRatio": 4.240964257377112,
+          "ratio": 4.554976846008056,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "caution": {
+          "raw": "#975800",
+          "resolved": "#8e5300",
+          "rawRatio": 4.125780226744792,
+          "ratio": 4.520754061385441,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "alert": {
+          "raw": "#bb282d",
+          "resolved": "#ba262c",
+          "rawRatio": 4.433189912739206,
+          "ratio": 4.502178211116576,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "accentFillText": {
+          "raw": "#f4f4f4",
+          "resolved": "#f4f4f4",
+          "rawRatio": 5.641918274405872,
+          "ratio": 5.641918274405872,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#bb0078"
+          ]
+        },
+        "effectText": {
+          "raw": "#171a20",
+          "resolved": "#101218",
+          "rawRatio": 4.202591091904755,
+          "ratio": 4.514682136672261,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#249000"
+          ]
+        }
+      },
+      "computed": {
+        "--ui-accent-text": "#bb0078",
+        "--ui-chart-primary": "#bd006c",
+        "--ui-chart-secondary": "#1a7000",
+        "--ui-effect-surface": "#249000",
+        "--ui-effect-text": "#101218",
+        "--ui-selected-accent": "#ff2ca8"
+      },
+      "textPairs": [
+        {
+          "text": "Speed",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "Dist.",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "Moving",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "Average",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "Demo · GPS altitude —",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "MUTE",
+          "foreground": "#5f6168",
+          "background": "#e6e6e6",
+          "ratio": 4.954126702723732
+        },
+        {
+          "text": "FX",
+          "foreground": "#171a20",
+          "background": "#e6e6e6",
+          "ratio": 13.962913993143413
+        },
+        {
+          "text": "VISUAL",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "MUSIC",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        }
+      ]
+    },
+    {
+      "palette": "signal",
+      "appearance": "light",
+      "roles": {
+        "text": {
+          "raw": "#171a20",
+          "resolved": "#171a20",
+          "rawRatio": 12.708116803963408,
+          "ratio": 12.708116803963408,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "metadata": {
+          "raw": "#60636a",
+          "resolved": "#5f6168",
+          "rawRatio": 4.387655719455812,
+          "ratio": 4.508917037715986,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "accentText": {
+          "raw": "#e4362a",
+          "resolved": "#c50304",
+          "rawRatio": 3.151069339836018,
+          "ratio": 4.518910134234573,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "selectedAccent": {
+          "raw": "#e4362a",
+          "resolved": "#ee4133",
+          "rawRatio": 4.032953716158064,
+          "ratio": 4.513810163730741,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#171a20"
+          ]
+        },
+        "selectedText": {
+          "raw": "#f4f4f4",
+          "resolved": "#f4f4f4",
+          "rawRatio": 15.844389046461451,
+          "ratio": 15.844389046461451,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#171a20"
+          ]
+        },
+        "focus": {
+          "raw": "#e4362a",
+          "resolved": "#e4362a",
+          "rawRatio": 3.151069339836018,
+          "ratio": 3.151069339836018,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "boundary": {
+          "raw": "#60636a",
+          "resolved": "#60636a",
+          "rawRatio": 4.387655719455812,
+          "ratio": 4.387655719455812,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "chartPrimary": {
+          "raw": "#e33024",
+          "resolved": "#c60000",
+          "rawRatio": 3.2482940678807792,
+          "ratio": 4.502552093113444,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "chartSecondary": {
+          "raw": "#8cccff",
+          "resolved": "#256693",
+          "rawRatio": 1.255622631961221,
+          "ratio": 4.503379767241866,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "indicator": {
+          "raw": "#e4362a",
+          "resolved": "#e4362a",
+          "rawRatio": 3.151069339836018,
+          "ratio": 3.151069339836018,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "effectSurface": {
+          "raw": "#8cccff",
+          "resolved": "#4482b2",
+          "rawRatio": 1.255622631961221,
+          "ratio": 3.0135258087691557,
+          "minimum": 3,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "success": {
+          "raw": "#167442",
+          "resolved": "#0e6f3e",
+          "rawRatio": 4.240964257377112,
+          "ratio": 4.554976846008056,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "caution": {
+          "raw": "#975800",
+          "resolved": "#8e5300",
+          "rawRatio": 4.125780226744792,
+          "ratio": 4.520754061385441,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "alert": {
+          "raw": "#bb282d",
+          "resolved": "#ba262c",
+          "rawRatio": 4.433189912739206,
+          "ratio": 4.502178211116576,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "accentFillText": {
+          "raw": "#f4f4f4",
+          "resolved": "#f4f4f4",
+          "rawRatio": 5.634144801885949,
+          "ratio": 5.634144801885949,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#c50304"
+          ]
+        },
+        "effectText": {
+          "raw": "#171a20",
+          "resolved": "#101319",
+          "rawRatio": 4.217026038729667,
+          "ratio": 4.500203720279774,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#4482b2"
+          ]
+        }
+      },
+      "computed": {
+        "--ui-accent-text": "#c50304",
+        "--ui-chart-primary": "#c60000",
+        "--ui-chart-secondary": "#256693",
+        "--ui-effect-surface": "#4482b2",
+        "--ui-effect-text": "#101319",
+        "--ui-selected-accent": "#ee4133"
+      },
+      "textPairs": [
+        {
+          "text": "Speed",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "Dist.",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "Moving",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "Average",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "Demo · GPS altitude —",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "MUTE",
+          "foreground": "#5f6168",
+          "background": "#e6e6e6",
+          "ratio": 4.954126702723732
+        },
+        {
+          "text": "FX",
+          "foreground": "#171a20",
+          "background": "#e6e6e6",
+          "ratio": 13.962913993143413
+        },
+        {
+          "text": "VISUAL",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "MUSIC",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        }
+      ]
+    },
+    {
+      "palette": "sulphur",
+      "appearance": "light",
+      "roles": {
+        "text": {
+          "raw": "#171a20",
+          "resolved": "#171a20",
+          "rawRatio": 12.708116803963408,
+          "ratio": 12.708116803963408,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "metadata": {
+          "raw": "#60636a",
+          "resolved": "#5f6168",
+          "rawRatio": 4.387655719455812,
+          "ratio": 4.508917037715986,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "accentText": {
+          "raw": "#e6d02a",
+          "resolved": "#6d6200",
+          "rawRatio": 1.1410904380347624,
+          "ratio": 4.507639128838166,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "selectedAccent": {
+          "raw": "#e6d02a",
+          "resolved": "#e6d02a",
+          "rawRatio": 11.136818240147472,
+          "ratio": 11.136818240147472,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#171a20"
+          ]
+        },
+        "selectedText": {
+          "raw": "#f4f4f4",
+          "resolved": "#f4f4f4",
+          "rawRatio": 15.844389046461451,
+          "ratio": 15.844389046461451,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#171a20"
+          ]
+        },
+        "focus": {
+          "raw": "#e6d02a",
+          "resolved": "#8c7e00",
+          "rawRatio": 1.1410904380347624,
+          "ratio": 3.0030543111999415,
+          "minimum": 3,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "boundary": {
+          "raw": "#60636a",
+          "resolved": "#60636a",
+          "rawRatio": 4.387655719455812,
+          "ratio": 4.387655719455812,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "chartPrimary": {
+          "raw": "#e6d129",
+          "resolved": "#6d6200",
+          "rawRatio": 1.1329505438882121,
+          "ratio": 4.507639128838166,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "chartSecondary": {
+          "raw": "#663dd1",
+          "resolved": "#663dd1",
+          "rawRatio": 4.856699535640808,
+          "ratio": 4.856699535640808,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "indicator": {
+          "raw": "#e6d02a",
+          "resolved": "#8c7e00",
+          "rawRatio": 1.1410904380347624,
+          "ratio": 3.0030543111999415,
+          "minimum": 3,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "effectSurface": {
+          "raw": "#663dd1",
+          "resolved": "#663dd1",
+          "rawRatio": 4.856699535640808,
+          "ratio": 4.856699535640808,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "success": {
+          "raw": "#167442",
+          "resolved": "#0e6f3e",
+          "rawRatio": 4.240964257377112,
+          "ratio": 4.554976846008056,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "caution": {
+          "raw": "#975800",
+          "resolved": "#8e5300",
+          "rawRatio": 4.125780226744792,
+          "ratio": 4.520754061385441,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "alert": {
+          "raw": "#bb282d",
+          "resolved": "#ba262c",
+          "rawRatio": 4.433189912739206,
+          "ratio": 4.502178211116576,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4",
+            "#f4f4f4",
+            "#e6e6e6",
+            "#dcdcdc"
+          ]
+        },
+        "accentFillText": {
+          "raw": "#f4f4f4",
+          "resolved": "#f4f4f4",
+          "rawRatio": 5.620092193053322,
+          "ratio": 5.620092193053322,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#6d6200"
+          ]
+        },
+        "effectText": {
+          "raw": "#f4f4f4",
+          "resolved": "#f4f4f4",
+          "rawRatio": 6.055298209130563,
+          "ratio": 6.055298209130563,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#663dd1"
+          ]
+        }
+      },
+      "computed": {
+        "--ui-accent-text": "#6d6200",
+        "--ui-chart-primary": "#6d6200",
+        "--ui-chart-secondary": "#663dd1",
+        "--ui-effect-surface": "#663dd1",
+        "--ui-effect-text": "#f4f4f4",
+        "--ui-selected-accent": "#e6d02a"
+      },
+      "textPairs": [
+        {
+          "text": "Speed",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "Dist.",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "Moving",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "Average",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "Demo · GPS altitude —",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "MUTE",
+          "foreground": "#5f6168",
+          "background": "#e6e6e6",
+          "ratio": 4.954126702723732
+        },
+        {
+          "text": "FX",
+          "foreground": "#171a20",
+          "background": "#e6e6e6",
+          "ratio": 13.962913993143413
+        },
+        {
+          "text": "VISUAL",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        },
+        {
+          "text": "MUSIC",
+          "foreground": "#5f6168",
+          "background": "#f4f4f4",
+          "ratio": 5.621685480692903
+        }
+      ]
+    },
+    {
+      "palette": "pearl",
+      "appearance": "dark",
+      "roles": {
+        "text": {
+          "raw": "#f4f4f4",
+          "resolved": "#f4f4f4",
+          "rawRatio": 11.487441861434766,
+          "ratio": 11.487441861434766,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "metadata": {
+          "raw": "#b0b0b0",
+          "resolved": "#b0b0b0",
+          "rawRatio": 5.82582270731469,
+          "ratio": 5.82582270731469,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "accentText": {
+          "raw": "#eee9dc",
+          "resolved": "#eee9dc",
+          "rawRatio": 10.423262147471192,
+          "ratio": 10.423262147471192,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "selectedAccent": {
+          "raw": "#eee9dc",
+          "resolved": "#746f64",
+          "rawRatio": 1.102096608423281,
+          "ratio": 4.545576408101768,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4"
+          ]
+        },
+        "selectedText": {
+          "raw": "#171a20",
+          "resolved": "#171a20",
+          "rawRatio": 15.844389046461451,
+          "ratio": 15.844389046461451,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4"
+          ]
+        },
+        "focus": {
+          "raw": "#eee9dc",
+          "resolved": "#eee9dc",
+          "rawRatio": 10.423262147471192,
+          "ratio": 10.423262147471192,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "boundary": {
+          "raw": "#b0b0b0",
+          "resolved": "#b0b0b0",
+          "rawRatio": 5.82582270731469,
+          "ratio": 5.82582270731469,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "chartPrimary": {
+          "raw": "#c7c2b3",
+          "resolved": "#c7c2b3",
+          "rawRatio": 7.097109192930971,
+          "ratio": 7.097109192930971,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "chartSecondary": {
+          "raw": "#6b8cab",
+          "resolved": "#7c9ebd",
+          "rawRatio": 3.5885114985259117,
+          "ratio": 4.501899265885934,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "indicator": {
+          "raw": "#eee9dc",
+          "resolved": "#eee9dc",
+          "rawRatio": 10.423262147471192,
+          "ratio": 10.423262147471192,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "effectSurface": {
+          "raw": "#6b8cab",
+          "resolved": "#6b8cab",
+          "rawRatio": 3.5885114985259117,
+          "ratio": 3.5885114985259117,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "success": {
+          "raw": "#55d991",
+          "resolved": "#55d991",
+          "rawRatio": 7.051501312296245,
+          "ratio": 7.051501312296245,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "caution": {
+          "raw": "#f3a84c",
+          "resolved": "#f3a84c",
+          "rawRatio": 6.327164492842093,
+          "ratio": 6.327164492842093,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "alert": {
+          "raw": "#ff7770",
+          "resolved": "#ff7770",
+          "rawRatio": 4.888227880904483,
+          "ratio": 4.888227880904483,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "accentFillText": {
+          "raw": "#171a20",
+          "resolved": "#171a20",
+          "rawRatio": 14.376588155124885,
+          "ratio": 14.376588155124885,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#eee9dc"
+          ]
+        },
+        "effectText": {
+          "raw": "#171a20",
+          "resolved": "#171a20",
+          "rawRatio": 4.949559089498057,
+          "ratio": 4.949559089498057,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#6b8cab"
+          ]
+        }
+      },
+      "computed": {
+        "--ui-accent-text": "#eee9dc",
+        "--ui-chart-primary": "#c7c2b3",
+        "--ui-chart-secondary": "#7c9ebd",
+        "--ui-effect-surface": "#6b8cab",
+        "--ui-effect-text": "#171a20",
+        "--ui-selected-accent": "#746f64"
+      },
+      "textPairs": [
+        {
+          "text": "Speed",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "Dist.",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "Moving",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "Average",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "Demo · GPS altitude —",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "MUTE",
+          "foreground": "#b0b0b0",
+          "background": "#262626",
+          "ratio": 6.978050753782415
+        },
+        {
+          "text": "FX",
+          "foreground": "#f4f4f4",
+          "background": "#262626",
+          "ratio": 13.759421864927443
+        },
+        {
+          "text": "VISUAL",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "MUSIC",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        }
+      ]
+    },
+    {
+      "palette": "graphite",
+      "appearance": "dark",
+      "roles": {
+        "text": {
+          "raw": "#f4f4f4",
+          "resolved": "#f4f4f4",
+          "rawRatio": 11.487441861434766,
+          "ratio": 11.487441861434766,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "metadata": {
+          "raw": "#b0b0b0",
+          "resolved": "#b0b0b0",
+          "rawRatio": 5.82582270731469,
+          "ratio": 5.82582270731469,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "accentText": {
+          "raw": "#454646",
+          "resolved": "#999b9a",
+          "rawRatio": 1.3341861954554874,
+          "ratio": 4.518162988125575,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "selectedAccent": {
+          "raw": "#454646",
+          "resolved": "#454646",
+          "rawRatio": 8.610073991593794,
+          "ratio": 8.610073991593794,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4"
+          ]
+        },
+        "selectedText": {
+          "raw": "#171a20",
+          "resolved": "#171a20",
+          "rawRatio": 15.844389046461451,
+          "ratio": 15.844389046461451,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4"
+          ]
+        },
+        "focus": {
+          "raw": "#454646",
+          "resolved": "#7a7c7b",
+          "rawRatio": 1.3341861954554874,
+          "ratio": 3.006198063558311,
+          "minimum": 3,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "boundary": {
+          "raw": "#b0b0b0",
+          "resolved": "#b0b0b0",
+          "rawRatio": 5.82582270731469,
+          "ratio": 5.82582270731469,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "chartPrimary": {
+          "raw": "#7a807d",
+          "resolved": "#959c98",
+          "rawRatio": 3.135390134072133,
+          "ratio": 4.504373816801658,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "chartSecondary": {
+          "raw": "#305273",
+          "resolved": "#799ec2",
+          "rawRatio": 1.5523501514287363,
+          "ratio": 4.5019931947335,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "indicator": {
+          "raw": "#454646",
+          "resolved": "#7a7c7b",
+          "rawRatio": 1.3341861954554874,
+          "ratio": 3.006198063558311,
+          "minimum": 3,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "effectSurface": {
+          "raw": "#305273",
+          "resolved": "#5b7fa2",
+          "rawRatio": 1.5523501514287363,
+          "ratio": 3.00963785882645,
+          "minimum": 3,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "success": {
+          "raw": "#55d991",
+          "resolved": "#55d991",
+          "rawRatio": 7.051501312296245,
+          "ratio": 7.051501312296245,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "caution": {
+          "raw": "#f3a84c",
+          "resolved": "#f3a84c",
+          "rawRatio": 6.327164492842093,
+          "ratio": 6.327164492842093,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "alert": {
+          "raw": "#ff7770",
+          "resolved": "#ff7770",
+          "rawRatio": 4.888227880904483,
+          "ratio": 4.888227880904483,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "accentFillText": {
+          "raw": "#171a20",
+          "resolved": "#171a20",
+          "rawRatio": 6.231808005881235,
+          "ratio": 6.231808005881235,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#999b9a"
+          ]
+        },
+        "effectText": {
+          "raw": "#171a20",
+          "resolved": "#0e1117",
+          "rawRatio": 4.151130747768555,
+          "ratio": 4.501615924099061,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#5b7fa2"
+          ]
+        }
+      },
+      "computed": {
+        "--ui-accent-text": "#999b9a",
+        "--ui-chart-primary": "#959c98",
+        "--ui-chart-secondary": "#799ec2",
+        "--ui-effect-surface": "#5b7fa2",
+        "--ui-effect-text": "#0e1117",
+        "--ui-selected-accent": "#454646"
+      },
+      "textPairs": [
+        {
+          "text": "Speed",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "Dist.",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "Moving",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "Average",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "Demo · GPS altitude —",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "MUTE",
+          "foreground": "#b0b0b0",
+          "background": "#262626",
+          "ratio": 6.978050753782415
+        },
+        {
+          "text": "FX",
+          "foreground": "#f4f4f4",
+          "background": "#262626",
+          "ratio": 13.759421864927443
+        },
+        {
+          "text": "VISUAL",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "MUSIC",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        }
+      ]
+    },
+    {
+      "palette": "red",
+      "appearance": "dark",
+      "roles": {
+        "text": {
+          "raw": "#f4f4f4",
+          "resolved": "#f4f4f4",
+          "rawRatio": 11.487441861434766,
+          "ratio": 11.487441861434766,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "metadata": {
+          "raw": "#b0b0b0",
+          "resolved": "#b0b0b0",
+          "rawRatio": 5.82582270731469,
+          "ratio": 5.82582270731469,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "accentText": {
+          "raw": "#ed2d24",
+          "resolved": "#ff6b5a",
+          "rawRatio": 3.00929453690168,
+          "ratio": 4.514010081576548,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "selectedAccent": {
+          "raw": "#ed2d24",
+          "resolved": "#de1613",
+          "rawRatio": 3.817320544921484,
+          "ratio": 4.513672353487331,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4"
+          ]
+        },
+        "selectedText": {
+          "raw": "#171a20",
+          "resolved": "#171a20",
+          "rawRatio": 15.844389046461451,
+          "ratio": 15.844389046461451,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4"
+          ]
+        },
+        "focus": {
+          "raw": "#ed2d24",
+          "resolved": "#ed2d24",
+          "rawRatio": 3.00929453690168,
+          "ratio": 3.00929453690168,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "boundary": {
+          "raw": "#b0b0b0",
+          "resolved": "#b0b0b0",
+          "rawRatio": 5.82582270731469,
+          "ratio": 5.82582270731469,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "chartPrimary": {
+          "raw": "#ed1209",
+          "resolved": "#ff6b59",
+          "rawRatio": 2.822565009322005,
+          "ratio": 4.5119745190390494,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "chartSecondary": {
+          "raw": "#0a33b8",
+          "resolved": "#6998ff",
+          "rawRatio": 1.3107400349351759,
+          "ratio": 4.5340035120770334,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "indicator": {
+          "raw": "#ed2d24",
+          "resolved": "#ed2d24",
+          "rawRatio": 3.00929453690168,
+          "ratio": 3.00929453690168,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "effectSurface": {
+          "raw": "#0a33b8",
+          "resolved": "#3c73fa",
+          "rawRatio": 1.3107400349351759,
+          "ratio": 3.02320250411639,
+          "minimum": 3,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "success": {
+          "raw": "#55d991",
+          "resolved": "#55d991",
+          "rawRatio": 7.051501312296245,
+          "ratio": 7.051501312296245,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "caution": {
+          "raw": "#f3a84c",
+          "resolved": "#f3a84c",
+          "rawRatio": 6.327164492842093,
+          "ratio": 6.327164492842093,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "alert": {
+          "raw": "#ff7770",
+          "resolved": "#ff7770",
+          "rawRatio": 4.888227880904483,
+          "ratio": 4.888227880904483,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "accentFillText": {
+          "raw": "#171a20",
+          "resolved": "#171a20",
+          "rawRatio": 6.22607998846621,
+          "ratio": 6.22607998846621,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#ff6b5a"
+          ]
+        },
+        "effectText": {
+          "raw": "#171a20",
+          "resolved": "#0f1117",
+          "rawRatio": 4.169840180194289,
+          "ratio": 4.515244467779339,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#3c73fa"
+          ]
+        }
+      },
+      "computed": {
+        "--ui-accent-text": "#ff6b5a",
+        "--ui-chart-primary": "#ff6b59",
+        "--ui-chart-secondary": "#6998ff",
+        "--ui-effect-surface": "#3c73fa",
+        "--ui-effect-text": "#0f1117",
+        "--ui-selected-accent": "#de1613"
+      },
+      "textPairs": [
+        {
+          "text": "Speed",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "Dist.",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "Moving",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "Average",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "Demo · GPS altitude —",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "MUTE",
+          "foreground": "#b0b0b0",
+          "background": "#262626",
+          "ratio": 6.978050753782415
+        },
+        {
+          "text": "FX",
+          "foreground": "#f4f4f4",
+          "background": "#262626",
+          "ratio": 13.759421864927443
+        },
+        {
+          "text": "VISUAL",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "MUSIC",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        }
+      ]
+    },
+    {
+      "palette": "blue",
+      "appearance": "dark",
+      "roles": {
+        "text": {
+          "raw": "#f4f4f4",
+          "resolved": "#f4f4f4",
+          "rawRatio": 11.487441861434766,
+          "ratio": 11.487441861434766,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "metadata": {
+          "raw": "#b0b0b0",
+          "resolved": "#b0b0b0",
+          "rawRatio": 5.82582270731469,
+          "ratio": 5.82582270731469,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "accentText": {
+          "raw": "#203c6e",
+          "resolved": "#7a9cd5",
+          "rawRatio": 1.1629396145699358,
+          "ratio": 4.538681330160789,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "selectedAccent": {
+          "raw": "#203c6e",
+          "resolved": "#203c6e",
+          "rawRatio": 9.877934948224214,
+          "ratio": 9.877934948224214,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4"
+          ]
+        },
+        "selectedText": {
+          "raw": "#171a20",
+          "resolved": "#171a20",
+          "rawRatio": 15.844389046461451,
+          "ratio": 15.844389046461451,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4"
+          ]
+        },
+        "focus": {
+          "raw": "#203c6e",
+          "resolved": "#5c7cb3",
+          "rawRatio": 1.1629396145699358,
+          "ratio": 3.0016675122368444,
+          "minimum": 3,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "boundary": {
+          "raw": "#b0b0b0",
+          "resolved": "#b0b0b0",
+          "rawRatio": 5.82582270731469,
+          "ratio": 5.82582270731469,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "chartPrimary": {
+          "raw": "#0e3b8f",
+          "resolved": "#679af6",
+          "rawRatio": 1.2279032797169418,
+          "ratio": 4.53025614053524,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "chartSecondary": {
+          "raw": "#c2d1e6",
+          "resolved": "#c2d1e6",
+          "rawRatio": 8.156383356884305,
+          "ratio": 8.156383356884305,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "indicator": {
+          "raw": "#203c6e",
+          "resolved": "#5c7cb3",
+          "rawRatio": 1.1629396145699358,
+          "ratio": 3.0016675122368444,
+          "minimum": 3,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "effectSurface": {
+          "raw": "#c2d1e6",
+          "resolved": "#c2d1e6",
+          "rawRatio": 8.156383356884305,
+          "ratio": 8.156383356884305,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "success": {
+          "raw": "#55d991",
+          "resolved": "#55d991",
+          "rawRatio": 7.051501312296245,
+          "ratio": 7.051501312296245,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "caution": {
+          "raw": "#f3a84c",
+          "resolved": "#f3a84c",
+          "rawRatio": 6.327164492842093,
+          "ratio": 6.327164492842093,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "alert": {
+          "raw": "#ff7770",
+          "resolved": "#ff7770",
+          "rawRatio": 4.888227880904483,
+          "ratio": 4.888227880904483,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "accentFillText": {
+          "raw": "#171a20",
+          "resolved": "#171a20",
+          "rawRatio": 6.260108527243236,
+          "ratio": 6.260108527243236,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#7a9cd5"
+          ]
+        },
+        "effectText": {
+          "raw": "#171a20",
+          "resolved": "#171a20",
+          "rawRatio": 11.24992950366211,
+          "ratio": 11.24992950366211,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#c2d1e6"
+          ]
+        }
+      },
+      "computed": {
+        "--ui-accent-text": "#7a9cd5",
+        "--ui-chart-primary": "#679af6",
+        "--ui-chart-secondary": "#c2d1e6",
+        "--ui-effect-surface": "#c2d1e6",
+        "--ui-effect-text": "#171a20",
+        "--ui-selected-accent": "#203c6e"
+      },
+      "textPairs": [
+        {
+          "text": "Speed",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "Dist.",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "Moving",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "Average",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "Demo · GPS altitude —",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "MUTE",
+          "foreground": "#b0b0b0",
+          "background": "#262626",
+          "ratio": 6.978050753782415
+        },
+        {
+          "text": "FX",
+          "foreground": "#f4f4f4",
+          "background": "#262626",
+          "ratio": 13.759421864927443
+        },
+        {
+          "text": "VISUAL",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "MUSIC",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        }
+      ]
+    },
+    {
+      "palette": "silver",
+      "appearance": "dark",
+      "roles": {
+        "text": {
+          "raw": "#f4f4f4",
+          "resolved": "#f4f4f4",
+          "rawRatio": 11.487441861434766,
+          "ratio": 11.487441861434766,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "metadata": {
+          "raw": "#b0b0b0",
+          "resolved": "#b0b0b0",
+          "rawRatio": 5.82582270731469,
+          "ratio": 5.82582270731469,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "accentText": {
+          "raw": "#a6a7a3",
+          "resolved": "#a6a7a3",
+          "rawRatio": 5.220972230361788,
+          "ratio": 5.220972230361788,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "selectedAccent": {
+          "raw": "#a6a7a3",
+          "resolved": "#70706d",
+          "rawRatio": 2.200249561687238,
+          "ratio": 4.516495180769548,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4"
+          ]
+        },
+        "selectedText": {
+          "raw": "#171a20",
+          "resolved": "#171a20",
+          "rawRatio": 15.844389046461451,
+          "ratio": 15.844389046461451,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4"
+          ]
+        },
+        "focus": {
+          "raw": "#a6a7a3",
+          "resolved": "#a6a7a3",
+          "rawRatio": 5.220972230361788,
+          "ratio": 5.220972230361788,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "boundary": {
+          "raw": "#b0b0b0",
+          "resolved": "#b0b0b0",
+          "rawRatio": 5.82582270731469,
+          "ratio": 5.82582270731469,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "chartPrimary": {
+          "raw": "#a8aba6",
+          "resolved": "#a8aba6",
+          "rawRatio": 5.439378088639131,
+          "ratio": 5.439378088639131,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "chartSecondary": {
+          "raw": "#476b8f",
+          "resolved": "#789ec4",
+          "rawRatio": 2.266795762216854,
+          "ratio": 4.50423160452153,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "indicator": {
+          "raw": "#a6a7a3",
+          "resolved": "#a6a7a3",
+          "rawRatio": 5.220972230361788,
+          "ratio": 5.220972230361788,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "effectSurface": {
+          "raw": "#476b8f",
+          "resolved": "#5a7fa4",
+          "rawRatio": 2.266795762216854,
+          "ratio": 3.0121905278895995,
+          "minimum": 3,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "success": {
+          "raw": "#55d991",
+          "resolved": "#55d991",
+          "rawRatio": 7.051501312296245,
+          "ratio": 7.051501312296245,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "caution": {
+          "raw": "#f3a84c",
+          "resolved": "#f3a84c",
+          "rawRatio": 6.327164492842093,
+          "ratio": 6.327164492842093,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "alert": {
+          "raw": "#ff7770",
+          "resolved": "#ff7770",
+          "rawRatio": 4.888227880904483,
+          "ratio": 4.888227880904483,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "accentFillText": {
+          "raw": "#171a20",
+          "resolved": "#171a20",
+          "rawRatio": 7.201178140133953,
+          "ratio": 7.201178140133953,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#a6a7a3"
+          ]
+        },
+        "effectText": {
+          "raw": "#171a20",
+          "resolved": "#0e1117",
+          "rawRatio": 4.15465159098424,
+          "ratio": 4.505434036524092,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#5a7fa4"
+          ]
+        }
+      },
+      "computed": {
+        "--ui-accent-text": "#a6a7a3",
+        "--ui-chart-primary": "#a8aba6",
+        "--ui-chart-secondary": "#789ec4",
+        "--ui-effect-surface": "#5a7fa4",
+        "--ui-effect-text": "#0e1117",
+        "--ui-selected-accent": "#70706d"
+      },
+      "textPairs": [
+        {
+          "text": "Speed",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "Dist.",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "Moving",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "Average",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "Demo · GPS altitude —",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "MUTE",
+          "foreground": "#b0b0b0",
+          "background": "#262626",
+          "ratio": 6.978050753782415
+        },
+        {
+          "text": "FX",
+          "foreground": "#f4f4f4",
+          "background": "#262626",
+          "ratio": 13.759421864927443
+        },
+        {
+          "text": "VISUAL",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "MUSIC",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        }
+      ]
+    },
+    {
+      "palette": "neon",
+      "appearance": "dark",
+      "roles": {
+        "text": {
+          "raw": "#f4f4f4",
+          "resolved": "#f4f4f4",
+          "rawRatio": 11.487441861434766,
+          "ratio": 11.487441861434766,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "metadata": {
+          "raw": "#b0b0b0",
+          "resolved": "#b0b0b0",
+          "rawRatio": 5.82582270731469,
+          "ratio": 5.82582270731469,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "accentText": {
+          "raw": "#ff2d95",
+          "resolved": "#ff61a3",
+          "rawRatio": 3.6468062707030366,
+          "ratio": 4.506809134468064,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "selectedAccent": {
+          "raw": "#ff2d95",
+          "resolved": "#d9007a",
+          "rawRatio": 3.1500005782375164,
+          "ratio": 4.512302052118816,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4"
+          ]
+        },
+        "selectedText": {
+          "raw": "#171a20",
+          "resolved": "#171a20",
+          "rawRatio": 15.844389046461451,
+          "ratio": 15.844389046461451,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4"
+          ]
+        },
+        "focus": {
+          "raw": "#ff2d95",
+          "resolved": "#ff2d95",
+          "rawRatio": 3.6468062707030366,
+          "ratio": 3.6468062707030366,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "boundary": {
+          "raw": "#b0b0b0",
+          "resolved": "#b0b0b0",
+          "rawRatio": 5.82582270731469,
+          "ratio": 5.82582270731469,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "chartPrimary": {
+          "raw": "#ff1a85",
+          "resolved": "#ff639a",
+          "rawRatio": 3.452538925286317,
+          "ratio": 4.514395011236132,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "chartSecondary": {
+          "raw": "#2eff5c",
+          "resolved": "#2eff5c",
+          "rawRatio": 9.370527368406334,
+          "ratio": 9.370527368406334,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "indicator": {
+          "raw": "#ff2d95",
+          "resolved": "#ff2d95",
+          "rawRatio": 3.6468062707030366,
+          "ratio": 3.6468062707030366,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "effectSurface": {
+          "raw": "#2eff5c",
+          "resolved": "#2eff5c",
+          "rawRatio": 9.370527368406334,
+          "ratio": 9.370527368406334,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "success": {
+          "raw": "#55d991",
+          "resolved": "#55d991",
+          "rawRatio": 7.051501312296245,
+          "ratio": 7.051501312296245,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "caution": {
+          "raw": "#f3a84c",
+          "resolved": "#f3a84c",
+          "rawRatio": 6.327164492842093,
+          "ratio": 6.327164492842093,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "alert": {
+          "raw": "#ff7770",
+          "resolved": "#ff7770",
+          "rawRatio": 4.888227880904483,
+          "ratio": 4.888227880904483,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "accentFillText": {
+          "raw": "#171a20",
+          "resolved": "#171a20",
+          "rawRatio": 6.216147872259132,
+          "ratio": 6.216147872259132,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#ff61a3"
+          ]
+        },
+        "effectText": {
+          "raw": "#171a20",
+          "resolved": "#171a20",
+          "rawRatio": 12.92457302386737,
+          "ratio": 12.92457302386737,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#2eff5c"
+          ]
+        }
+      },
+      "computed": {
+        "--ui-accent-text": "#ff61a3",
+        "--ui-chart-primary": "#ff639a",
+        "--ui-chart-secondary": "#2eff5c",
+        "--ui-effect-surface": "#2eff5c",
+        "--ui-effect-text": "#171a20",
+        "--ui-selected-accent": "#d9007a"
+      },
+      "textPairs": [
+        {
+          "text": "Speed",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "Dist.",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "Moving",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "Average",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "Demo · GPS altitude —",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "MUTE",
+          "foreground": "#b0b0b0",
+          "background": "#262626",
+          "ratio": 6.978050753782415
+        },
+        {
+          "text": "FX",
+          "foreground": "#f4f4f4",
+          "background": "#262626",
+          "ratio": 13.759421864927443
+        },
+        {
+          "text": "VISUAL",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "MUSIC",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        }
+      ]
+    },
+    {
+      "palette": "mint",
+      "appearance": "dark",
+      "roles": {
+        "text": {
+          "raw": "#f4f4f4",
+          "resolved": "#f4f4f4",
+          "rawRatio": 11.487441861434766,
+          "ratio": 11.487441861434766,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "metadata": {
+          "raw": "#b0b0b0",
+          "resolved": "#b0b0b0",
+          "rawRatio": 5.82582270731469,
+          "ratio": 5.82582270731469,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "accentText": {
+          "raw": "#a8e6cf",
+          "resolved": "#a8e6cf",
+          "rawRatio": 8.955377250709518,
+          "ratio": 8.955377250709518,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "selectedAccent": {
+          "raw": "#a8e6cf",
+          "resolved": "#3f7b67",
+          "rawRatio": 1.2827423725253604,
+          "ratio": 4.50270416534425,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4"
+          ]
+        },
+        "selectedText": {
+          "raw": "#171a20",
+          "resolved": "#171a20",
+          "rawRatio": 15.844389046461451,
+          "ratio": 15.844389046461451,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4"
+          ]
+        },
+        "focus": {
+          "raw": "#a8e6cf",
+          "resolved": "#a8e6cf",
+          "rawRatio": 8.955377250709518,
+          "ratio": 8.955377250709518,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "boundary": {
+          "raw": "#b0b0b0",
+          "resolved": "#b0b0b0",
+          "rawRatio": 5.82582270731469,
+          "ratio": 5.82582270731469,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "chartPrimary": {
+          "raw": "#99e6c9",
+          "resolved": "#99e6c9",
+          "rawRatio": 8.733912911095537,
+          "ratio": 8.733912911095537,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "chartSecondary": {
+          "raw": "#db3899",
+          "resolved": "#ff5db8",
+          "rawRatio": 3.0309120168297117,
+          "ratio": 4.518320046639419,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "indicator": {
+          "raw": "#a8e6cf",
+          "resolved": "#a8e6cf",
+          "rawRatio": 8.955377250709518,
+          "ratio": 8.955377250709518,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "effectSurface": {
+          "raw": "#db3899",
+          "resolved": "#db3899",
+          "rawRatio": 3.0309120168297117,
+          "ratio": 3.0309120168297117,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "success": {
+          "raw": "#55d991",
+          "resolved": "#55d991",
+          "rawRatio": 7.051501312296245,
+          "ratio": 7.051501312296245,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "caution": {
+          "raw": "#f3a84c",
+          "resolved": "#f3a84c",
+          "rawRatio": 6.327164492842093,
+          "ratio": 6.327164492842093,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "alert": {
+          "raw": "#ff7770",
+          "resolved": "#ff7770",
+          "rawRatio": 4.888227880904483,
+          "ratio": 4.888227880904483,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "accentFillText": {
+          "raw": "#171a20",
+          "resolved": "#171a20",
+          "rawRatio": 12.351965122402785,
+          "ratio": 12.351965122402785,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#a8e6cf"
+          ]
+        },
+        "effectText": {
+          "raw": "#171a20",
+          "resolved": "#0f1217",
+          "rawRatio": 4.180473750336532,
+          "ratio": 4.501103925811353,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#db3899"
+          ]
+        }
+      },
+      "computed": {
+        "--ui-accent-text": "#a8e6cf",
+        "--ui-chart-primary": "#99e6c9",
+        "--ui-chart-secondary": "#ff5db8",
+        "--ui-effect-surface": "#db3899",
+        "--ui-effect-text": "#0f1217",
+        "--ui-selected-accent": "#3f7b67"
+      },
+      "textPairs": [
+        {
+          "text": "Speed",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "Dist.",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "Moving",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "Average",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "Demo · GPS altitude —",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "MUTE",
+          "foreground": "#b0b0b0",
+          "background": "#262626",
+          "ratio": 6.978050753782415
+        },
+        {
+          "text": "FX",
+          "foreground": "#f4f4f4",
+          "background": "#262626",
+          "ratio": 13.759421864927443
+        },
+        {
+          "text": "VISUAL",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "MUSIC",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        }
+      ]
+    },
+    {
+      "palette": "acid",
+      "appearance": "dark",
+      "roles": {
+        "text": {
+          "raw": "#f4f4f4",
+          "resolved": "#f4f4f4",
+          "rawRatio": 11.487441861434766,
+          "ratio": 11.487441861434766,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "metadata": {
+          "raw": "#b0b0b0",
+          "resolved": "#b0b0b0",
+          "rawRatio": 5.82582270731469,
+          "ratio": 5.82582270731469,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "accentText": {
+          "raw": "#ff2ca8",
+          "resolved": "#ff5eb2",
+          "rawRatio": 3.716816587596721,
+          "ratio": 4.509941055105895,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "selectedAccent": {
+          "raw": "#ff2ca8",
+          "resolved": "#d6008a",
+          "rawRatio": 3.090666862542846,
+          "ratio": 4.517797403763136,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4"
+          ]
+        },
+        "selectedText": {
+          "raw": "#171a20",
+          "resolved": "#171a20",
+          "rawRatio": 15.844389046461451,
+          "ratio": 15.844389046461451,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4"
+          ]
+        },
+        "focus": {
+          "raw": "#ff2ca8",
+          "resolved": "#ff2ca8",
+          "rawRatio": 3.716816587596721,
+          "ratio": 3.716816587596721,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "boundary": {
+          "raw": "#b0b0b0",
+          "resolved": "#b0b0b0",
+          "rawRatio": 5.82582270731469,
+          "ratio": 5.82582270731469,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "chartPrimary": {
+          "raw": "#ff0e94",
+          "resolved": "#ff61a6",
+          "rawRatio": 3.4549395220536603,
+          "ratio": 4.519904660369869,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "chartSecondary": {
+          "raw": "#54ff29",
+          "resolved": "#54ff29",
+          "rawRatio": 9.453719257562806,
+          "ratio": 9.453719257562806,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "indicator": {
+          "raw": "#ff2ca8",
+          "resolved": "#ff2ca8",
+          "rawRatio": 3.716816587596721,
+          "ratio": 3.716816587596721,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "effectSurface": {
+          "raw": "#54ff29",
+          "resolved": "#54ff29",
+          "rawRatio": 9.453719257562806,
+          "ratio": 9.453719257562806,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "success": {
+          "raw": "#55d991",
+          "resolved": "#55d991",
+          "rawRatio": 7.051501312296245,
+          "ratio": 7.051501312296245,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "caution": {
+          "raw": "#f3a84c",
+          "resolved": "#f3a84c",
+          "rawRatio": 6.327164492842093,
+          "ratio": 6.327164492842093,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "alert": {
+          "raw": "#ff7770",
+          "resolved": "#ff7770",
+          "rawRatio": 4.888227880904483,
+          "ratio": 4.888227880904483,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "accentFillText": {
+          "raw": "#171a20",
+          "resolved": "#171a20",
+          "rawRatio": 6.220467665094389,
+          "ratio": 6.220467665094389,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#ff5eb2"
+          ]
+        },
+        "effectText": {
+          "raw": "#171a20",
+          "resolved": "#171a20",
+          "rawRatio": 13.039317862031073,
+          "ratio": 13.039317862031073,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#54ff29"
+          ]
+        }
+      },
+      "computed": {
+        "--ui-accent-text": "#ff5eb2",
+        "--ui-chart-primary": "#ff61a6",
+        "--ui-chart-secondary": "#54ff29",
+        "--ui-effect-surface": "#54ff29",
+        "--ui-effect-text": "#171a20",
+        "--ui-selected-accent": "#d6008a"
+      },
+      "textPairs": [
+        {
+          "text": "Speed",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "Dist.",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "Moving",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "Average",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "Demo · GPS altitude —",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "MUTE",
+          "foreground": "#b0b0b0",
+          "background": "#262626",
+          "ratio": 6.978050753782415
+        },
+        {
+          "text": "FX",
+          "foreground": "#f4f4f4",
+          "background": "#262626",
+          "ratio": 13.759421864927443
+        },
+        {
+          "text": "VISUAL",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "MUSIC",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        }
+      ]
+    },
+    {
+      "palette": "signal",
+      "appearance": "dark",
+      "roles": {
+        "text": {
+          "raw": "#f4f4f4",
+          "resolved": "#f4f4f4",
+          "rawRatio": 11.487441861434766,
+          "ratio": 11.487441861434766,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "metadata": {
+          "raw": "#b0b0b0",
+          "resolved": "#b0b0b0",
+          "rawRatio": 5.82582270731469,
+          "ratio": 5.82582270731469,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "accentText": {
+          "raw": "#e4362a",
+          "resolved": "#ff6b5a",
+          "rawRatio": 2.92395757314288,
+          "ratio": 4.514010081576548,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "selectedAccent": {
+          "raw": "#e4362a",
+          "resolved": "#d8281e",
+          "rawRatio": 3.928730692589099,
+          "ratio": 4.500942401782617,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4"
+          ]
+        },
+        "selectedText": {
+          "raw": "#171a20",
+          "resolved": "#171a20",
+          "rawRatio": 15.844389046461451,
+          "ratio": 15.844389046461451,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4"
+          ]
+        },
+        "focus": {
+          "raw": "#e4362a",
+          "resolved": "#e7392c",
+          "rawRatio": 2.92395757314288,
+          "ratio": 3.0199264440586884,
+          "minimum": 3,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "boundary": {
+          "raw": "#b0b0b0",
+          "resolved": "#b0b0b0",
+          "rawRatio": 5.82582270731469,
+          "ratio": 5.82582270731469,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "chartPrimary": {
+          "raw": "#e33024",
+          "resolved": "#ff6b59",
+          "rawRatio": 2.8364405645462094,
+          "ratio": 4.5119745190390494,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "chartSecondary": {
+          "raw": "#8cccff",
+          "resolved": "#8cccff",
+          "rawRatio": 7.337867943110168,
+          "ratio": 7.337867943110168,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "indicator": {
+          "raw": "#e4362a",
+          "resolved": "#e7392c",
+          "rawRatio": 2.92395757314288,
+          "ratio": 3.0199264440586884,
+          "minimum": 3,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "effectSurface": {
+          "raw": "#8cccff",
+          "resolved": "#8cccff",
+          "rawRatio": 7.337867943110168,
+          "ratio": 7.337867943110168,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "success": {
+          "raw": "#55d991",
+          "resolved": "#55d991",
+          "rawRatio": 7.051501312296245,
+          "ratio": 7.051501312296245,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "caution": {
+          "raw": "#f3a84c",
+          "resolved": "#f3a84c",
+          "rawRatio": 6.327164492842093,
+          "ratio": 6.327164492842093,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "alert": {
+          "raw": "#ff7770",
+          "resolved": "#ff7770",
+          "rawRatio": 4.888227880904483,
+          "ratio": 4.888227880904483,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "accentFillText": {
+          "raw": "#171a20",
+          "resolved": "#171a20",
+          "rawRatio": 6.22607998846621,
+          "ratio": 6.22607998846621,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#ff6b5a"
+          ]
+        },
+        "effectText": {
+          "raw": "#171a20",
+          "resolved": "#171a20",
+          "rawRatio": 10.120968259479325,
+          "ratio": 10.120968259479325,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#8cccff"
+          ]
+        }
+      },
+      "computed": {
+        "--ui-accent-text": "#ff6b5a",
+        "--ui-chart-primary": "#ff6b59",
+        "--ui-chart-secondary": "#8cccff",
+        "--ui-effect-surface": "#8cccff",
+        "--ui-effect-text": "#171a20",
+        "--ui-selected-accent": "#d8281e"
+      },
+      "textPairs": [
+        {
+          "text": "Speed",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "Dist.",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "Moving",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "Average",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "Demo · GPS altitude —",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "MUTE",
+          "foreground": "#b0b0b0",
+          "background": "#262626",
+          "ratio": 6.978050753782415
+        },
+        {
+          "text": "FX",
+          "foreground": "#f4f4f4",
+          "background": "#262626",
+          "ratio": 13.759421864927443
+        },
+        {
+          "text": "VISUAL",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "MUSIC",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        }
+      ]
+    },
+    {
+      "palette": "sulphur",
+      "appearance": "dark",
+      "roles": {
+        "text": {
+          "raw": "#f4f4f4",
+          "resolved": "#f4f4f4",
+          "rawRatio": 11.487441861434766,
+          "ratio": 11.487441861434766,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "metadata": {
+          "raw": "#b0b0b0",
+          "resolved": "#b0b0b0",
+          "rawRatio": 5.82582270731469,
+          "ratio": 5.82582270731469,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "accentText": {
+          "raw": "#e6d02a",
+          "resolved": "#e6d02a",
+          "rawRatio": 8.074375836134363,
+          "ratio": 8.074375836134363,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "selectedAccent": {
+          "raw": "#e6d02a",
+          "resolved": "#7e7000",
+          "rawRatio": 1.4227033884187414,
+          "ratio": 4.54082455368842,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#f4f4f4"
+          ]
+        },
+        "selectedText": {
+          "raw": "#171a20",
+          "resolved": "#171a20",
+          "rawRatio": 15.844389046461451,
+          "ratio": 15.844389046461451,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#f4f4f4"
+          ]
+        },
+        "focus": {
+          "raw": "#e6d02a",
+          "resolved": "#e6d02a",
+          "rawRatio": 8.074375836134363,
+          "ratio": 8.074375836134363,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "boundary": {
+          "raw": "#b0b0b0",
+          "resolved": "#b0b0b0",
+          "rawRatio": 5.82582270731469,
+          "ratio": 5.82582270731469,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "chartPrimary": {
+          "raw": "#e6d129",
+          "resolved": "#e6d129",
+          "rawRatio": 8.1323876928391,
+          "ratio": 8.1323876928391,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "chartSecondary": {
+          "raw": "#663dd1",
+          "resolved": "#9d8aff",
+          "rawRatio": 1.8970893694571924,
+          "ratio": 4.520204771940095,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "indicator": {
+          "raw": "#e6d02a",
+          "resolved": "#e6d02a",
+          "rawRatio": 8.074375836134363,
+          "ratio": 8.074375836134363,
+          "minimum": 3,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "effectSurface": {
+          "raw": "#663dd1",
+          "resolved": "#8361f6",
+          "rawRatio": 1.8970893694571924,
+          "ratio": 3.011680902987065,
+          "minimum": 3,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "success": {
+          "raw": "#55d991",
+          "resolved": "#55d991",
+          "rawRatio": 7.051501312296245,
+          "ratio": 7.051501312296245,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "caution": {
+          "raw": "#f3a84c",
+          "resolved": "#f3a84c",
+          "rawRatio": 6.327164492842093,
+          "ratio": 6.327164492842093,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "alert": {
+          "raw": "#ff7770",
+          "resolved": "#ff7770",
+          "rawRatio": 4.888227880904483,
+          "ratio": 4.888227880904483,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#1a1a1a",
+            "#0f0f0f",
+            "#262626",
+            "#333333"
+          ]
+        },
+        "accentFillText": {
+          "raw": "#171a20",
+          "resolved": "#171a20",
+          "rawRatio": 11.136818240147472,
+          "ratio": 11.136818240147472,
+          "minimum": 4.5,
+          "variant": "authored",
+          "backgrounds": [
+            "#e6d02a"
+          ]
+        },
+        "effectText": {
+          "raw": "#171a20",
+          "resolved": "#0e1117",
+          "rawRatio": 4.153948675981846,
+          "ratio": 4.50467177352629,
+          "minimum": 4.5,
+          "variant": "contrast-enhanced",
+          "backgrounds": [
+            "#8361f6"
+          ]
+        }
+      },
+      "computed": {
+        "--ui-accent-text": "#e6d02a",
+        "--ui-chart-primary": "#e6d129",
+        "--ui-chart-secondary": "#9d8aff",
+        "--ui-effect-surface": "#8361f6",
+        "--ui-effect-text": "#0e1117",
+        "--ui-selected-accent": "#7e7000"
+      },
+      "textPairs": [
+        {
+          "text": "Speed",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "Dist.",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "Moving",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "Average",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "Demo · GPS altitude —",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "MUTE",
+          "foreground": "#b0b0b0",
+          "background": "#262626",
+          "ratio": 6.978050753782415
+        },
+        {
+          "text": "FX",
+          "foreground": "#f4f4f4",
+          "background": "#262626",
+          "ratio": 13.759421864927443
+        },
+        {
+          "text": "VISUAL",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        },
+        {
+          "text": "MUSIC",
+          "foreground": "#b0b0b0",
+          "background": "#0f0f0f",
+          "ratio": 8.83863751833862
+        }
+      ]
+    }
+  ],
+  "geometry": [
+    {
+      "appearance": "light",
+      "geometry": [
+        {
+          "icon": "sun",
+          "frame": {
+            "x": 423.59375,
+            "y": 16,
+            "width": 32,
+            "height": 32,
+            "top": 16,
+            "right": 455.59375,
+            "bottom": 48,
+            "left": 423.59375
+          },
+          "stroke": "2px",
+          "cell": {
+            "x": 391.390625,
+            "y": 0,
+            "width": 95.40625,
+            "height": 64,
+            "top": 0,
+            "right": 486.796875,
+            "bottom": 64,
+            "left": 391.390625
+          }
+        },
+        {
+          "icon": "navigation",
+          "frame": {
+            "x": 518.984375,
+            "y": 16,
+            "width": 32,
+            "height": 32,
+            "top": 16,
+            "right": 550.984375,
+            "bottom": 48,
+            "left": 518.984375
+          },
+          "stroke": "2px",
+          "cell": {
+            "x": 486.796875,
+            "y": 0,
+            "width": 95.390625,
+            "height": 64,
+            "top": 0,
+            "right": 582.1875,
+            "bottom": 64,
+            "left": 486.796875
+          }
+        },
+        {
+          "icon": "map-search",
+          "frame": {
+            "x": 614.390625,
+            "y": 16,
+            "width": 32,
+            "height": 32,
+            "top": 16,
+            "right": 646.390625,
+            "bottom": 48,
+            "left": 614.390625
+          },
+          "stroke": "2px",
+          "cell": {
+            "x": 582.1875,
+            "y": 0,
+            "width": 95.40625,
+            "height": 64,
+            "top": 0,
+            "right": 677.59375,
+            "bottom": 64,
+            "left": 582.1875
+          }
+        },
+        {
+          "icon": "report-analytics",
+          "frame": {
+            "x": 709.796875,
+            "y": 16,
+            "width": 32,
+            "height": 32,
+            "top": 16,
+            "right": 741.796875,
+            "bottom": 48,
+            "left": 709.796875
+          },
+          "stroke": "2px",
+          "cell": {
+            "x": 677.59375,
+            "y": 0,
+            "width": 95.40625,
+            "height": 64,
+            "top": 0,
+            "right": 773,
+            "bottom": 64,
+            "left": 677.59375
+          }
+        }
+      ]
+    },
+    {
+      "appearance": "dark",
+      "geometry": [
+        {
+          "icon": "moon",
+          "frame": {
+            "x": 423.59375,
+            "y": 16,
+            "width": 32,
+            "height": 32,
+            "top": 16,
+            "right": 455.59375,
+            "bottom": 48,
+            "left": 423.59375
+          },
+          "stroke": "2px",
+          "cell": {
+            "x": 391.390625,
+            "y": 0,
+            "width": 95.40625,
+            "height": 64,
+            "top": 0,
+            "right": 486.796875,
+            "bottom": 64,
+            "left": 391.390625
+          }
+        },
+        {
+          "icon": "navigation",
+          "frame": {
+            "x": 518.984375,
+            "y": 16,
+            "width": 32,
+            "height": 32,
+            "top": 16,
+            "right": 550.984375,
+            "bottom": 48,
+            "left": 518.984375
+          },
+          "stroke": "2px",
+          "cell": {
+            "x": 486.796875,
+            "y": 0,
+            "width": 95.390625,
+            "height": 64,
+            "top": 0,
+            "right": 582.1875,
+            "bottom": 64,
+            "left": 486.796875
+          }
+        },
+        {
+          "icon": "map-search",
+          "frame": {
+            "x": 614.390625,
+            "y": 16,
+            "width": 32,
+            "height": 32,
+            "top": 16,
+            "right": 646.390625,
+            "bottom": 48,
+            "left": 614.390625
+          },
+          "stroke": "2px",
+          "cell": {
+            "x": 582.1875,
+            "y": 0,
+            "width": 95.40625,
+            "height": 64,
+            "top": 0,
+            "right": 677.59375,
+            "bottom": 64,
+            "left": 582.1875
+          }
+        },
+        {
+          "icon": "report-analytics",
+          "frame": {
+            "x": 709.796875,
+            "y": 16,
+            "width": 32,
+            "height": 32,
+            "top": 16,
+            "right": 741.796875,
+            "bottom": 48,
+            "left": 709.796875
+          },
+          "stroke": "2px",
+          "cell": {
+            "x": 677.59375,
+            "y": 0,
+            "width": 95.40625,
+            "height": 64,
+            "top": 0,
+            "right": 773,
+            "bottom": 64,
+            "left": 677.59375
+          }
+        }
+      ]
+    }
+  ],
+  "console": [],
+  "overflow": {
+    "width": 773,
+    "height": 601,
+    "viewport": [
+      773,
+      601
+    ]
+  }
+}

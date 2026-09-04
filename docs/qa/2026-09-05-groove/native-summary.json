@@ -1,0 +1,8 @@
+{
+  "tests": 634,
+  "passed": 634,
+  "failed": 0,
+  "sites": "9/9",
+  "php": "actual PHP gzip 24-hour attachment round-trip passed",
+  "architecture": "darwin-arm64"
+}

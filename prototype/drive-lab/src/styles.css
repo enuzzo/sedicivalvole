@@ -4446,8 +4446,8 @@ html { font-size: var(--font-size-floor); }
 .palette-menu button strong { font-size: 13px; font-weight: 600; }
 .palette-menu button[aria-pressed="true"] { color: var(--ui-selected-text); background: var(--ui-selected-surface); }
 
-.app[data-appearance] .effect-badge { display: flex; align-items: center; justify-content: center; box-sizing: border-box; left: 0; top: 0; bottom: auto; width: 100%; height: 64px; padding: 0 3px; border-radius: 0 0 6px 6px; background: var(--ui-effect-surface); color: var(--ui-effect-text); font-size: 13px; font-weight: 650; letter-spacing: 0; transform: translateY(0); opacity: 0; pointer-events: none; transition: transform 260ms ease, opacity 180ms ease; z-index: -1; }
-.app[data-appearance] .effect-badge.is-active { transform: translateY(100%); opacity: 1; }
+.app[data-appearance] .effect-badge { display: flex; align-items: center; justify-content: center; box-sizing: border-box; left: 0; top: 0; bottom: auto; width: 100%; height: 32px; padding: 0 3px; border-radius: 0 0 6px 6px; background: var(--ui-effect-surface); color: var(--ui-effect-text); font-size: 13px; font-weight: 650; letter-spacing: 0; transform: translateY(0); opacity: 0; pointer-events: none; transition: transform 260ms ease, opacity 180ms ease; z-index: -1; }
+.app[data-appearance] .effect-badge.is-active { transform: translateY(64px); opacity: 1; }
 
 /* Atlas data marks are opaque, resolved semantic colours on an opaque surface. */
 .app[data-appearance] .atlas-panel { background: var(--ui-surface-strong); }
@@ -4576,3 +4576,19 @@ html { font-size: var(--font-size-floor); }
   .launch-selector .experience-card > img { width: 64px; height: 96px; }
   .launch-selector .launch-choice-button strong { font-size: 15px; overflow-wrap: anywhere; }
 }
+
+/* Two authored selections share one row without shrinking action targets. */
+.experience-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; min-width: 0; flex-shrink: 0; }
+.experience-list .experience-card { grid-template-columns: 64px minmax(0, 1fr) 56px; gap: 8px; padding-right: 8px; min-height: 82px; margin: 0; }
+.experience-list .experience-card > img { width: 64px; height: 80px; }
+.experience-list .experience-card-copy strong { font-size: 17px; line-height: 22px; }
+.experience-list .experience-card-copy small, .experience-list .experience-card-description { display: none; }
+.experience-list .experience-card-action .media-glyph { width: 20px; height: 20px; }
+.environment-drawer .experience-list { margin: 8px 0 12px; }
+@media (max-width: 650px) {
+  .experience-list { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .experience-list .experience-card { min-height: 64px; }
+  .experience-list .experience-card > img { height: 62px; }
+}
+
+@media (max-width: 650px) { .launch-choice-button strong { font-size: 14px; overflow-wrap: normal; } }

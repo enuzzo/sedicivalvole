@@ -156,6 +156,8 @@ PROJECT_OWNED_THIRD_PARTY_MARKERS = {
     ),
 }
 PROJECT_OWNED_BRAND_HASHES = {
+    "illobo-featured-outline.svg": frozenset({"d713938e350118727752e7b190b3cad946452dd104f8fcab7d5716b231d3b7cd", "5e56d9476aff3f9f079650b2c409b1e4f9080313b27ed3f1ea14993f16bd4e3e"}),
+    "illobo-featured-solid.svg": frozenset({"e2fec599ff690cc78d599c8941cfacb43f49d39054379e0ab9f5257b1c887ad4", "9973b53c96144d2971188d9ab71207163337e856ead11ff040008e40783626a0"}),
     "sedicivalvole-mark.svg": frozenset({
         # Previously published dark master and the selected Road Sheet light master.
         "e47522c4166f6c4f7e8e978b09b9fd2e2835f438732cf67004aede57ff0d8ace",
@@ -884,6 +886,7 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
         "audio",
         "api",
         "artwork",
+        "experiences",
         "brand",
         "fonts",
         "third-party",
@@ -1047,6 +1050,17 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
                 ftp,
                 BUILD / "fonts",
                 tree_name="fonts",
+            )
+        finally:
+            ftp.cwd("..")
+
+    if "experiences" in root_names:
+        ftp.cwd("experiences")
+        try:
+            verify_remote_static_tree(
+                ftp,
+                BUILD / "experiences",
+                tree_name="experiences",
             )
         finally:
             ftp.cwd("..")

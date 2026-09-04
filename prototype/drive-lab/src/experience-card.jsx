@@ -1,7 +1,7 @@
 import { curatedExperience } from "./curated-experiences.js";
 
-export function ExperienceCard({ selected = false, onSelect, launch = false }) {
-  const experience = curatedExperience("night-glass");
+export function ExperienceCard({ id, selected = false, onSelect, launch = false }) {
+  const experience = curatedExperience(id);
   return (
     <button
       className={`experience-card${selected ? " is-selected" : ""}`}

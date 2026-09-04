@@ -32,3 +32,12 @@ test("an independently changed choice or a failed music request cannot claim a c
   }
   assert.equal(matchingExperience({ ...complete, soundtrackSelection: null }), null);
 });
+
+ test("curated music responds to the owner's song-oriented brief and each experience remains distinguishable", () => {
+  assert.equal(CURATED_EXPERIENCES.length, 2);
+  assert.equal(applyExperienceSettings({}, "night-glass").soundtrackSelection.id, "lounge");
+  const lively = applyExperienceSettings({}, "neon-groove");
+  assert.equal(lively.soundtrackSelection.id, "funk");
+  assert.equal(matchingExperience(lively)?.id, "neon-groove");
+  assert.equal(matchingExperience({ ...lively, soundtrackSelection: { kind: "genre", id: "lounge" } }), null);
+});
