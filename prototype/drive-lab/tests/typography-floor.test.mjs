@@ -135,8 +135,6 @@ test("the driving surface assigns product roles instead of applying one universa
     [".source-readout strong", "--type-value"],
     [".source-readout span", "--type-meta"],
     [".mode-selector button", "--type-label"],
-    [".discover-button span", "--type-label"],
-    [".report-button span", "--type-label"],
     [".now-playing-copy small", "--type-meta"],
     [".now-playing-copy strong", "--type-active"],
     [".now-playing-copy em", "--type-meta"],
@@ -184,6 +182,9 @@ test("the driving surface keeps chrome and touch targets larger than its type", 
   );
 
   assert.match(source, /\.mode-selector button \{[\s\S]*?flex: 1 1 0;[\s\S]*?min-width: 0;/);
+  assert.match(source, /\.appearance-trigger > span \{ display: none; \}/);
+  assert.match(source, /Tesla Balanced Rail[\s\S]*?\.network-state,[\s\S]*?\.report-button \{[\s\S]*?place-items: center/);
+  assert.match(source, /\.appearance-icon,[\s\S]*?\.gps-state img,[\s\S]*?\.discover-button img,[\s\S]*?\.report-button img \{ width: 24px; height: 24px;/);
   assert.match(source, /\.discover-results > button \{ min-height: 64px; padding: 5px 8px; \}/);
   assert.match(source, /\.discover-drawer \.drawer-panel \{[\s\S]*?display: grid;[\s\S]*?grid-template-rows: auto minmax\(0, 1fr\);/);
   assert.match(source, /\.discover-workspace \{ height: auto; min-height: 0; \}/);

@@ -727,7 +727,7 @@ button { -webkit-tap-highlight-color: transparent; }
     transform 520ms cubic-bezier(.72, 0, .24, 1),
     visibility 0s linear 0s;
 }
-.controls-resting .topbar {
+.app.controls-resting .topbar {
   opacity: 0;
   visibility: hidden;
   transform: translateY(calc(-100% - 2px));
@@ -928,6 +928,50 @@ button { -webkit-tap-highlight-color: transparent; }
 .network-state.is-active { color: #55d991; }
 .network-state.is-caution { color: #f3a84c; }
 .network-state.is-alert { color: #ff6b64; }
+.network-control {
+  position: relative;
+  z-index: 10;
+  min-width: 0;
+  border-left: 1px solid var(--line);
+}
+.network-state {
+  width: 100%;
+  height: 100%;
+  min-height: var(--chrome-size);
+  border: 0;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+}
+.network-state.is-loading .network-state-dot { animation: network-loading 1s linear infinite; border-top-color: transparent; }
+@keyframes network-loading { to { transform: rotate(1turn); } }
+.network-popover {
+  position: absolute;
+  top: 100%;
+  left: -1px;
+  z-index: 14;
+  width: min(284px, calc(100vw - 24px));
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 0 0 var(--ui-radius) var(--ui-radius);
+  color: var(--paper);
+  background: #090b0b;
+}
+.network-popover header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.network-popover header > div { display: grid; gap: 3px; }
+.network-popover header small,
+.network-popover dt,
+.network-popover figcaption { color: rgba(238, 234, 224, .6); font-size: var(--type-meta); font-weight: var(--font-weight-label); letter-spacing: .08em; }
+.network-popover header strong { font-size: var(--type-active); }
+.network-popover header button { min-width: var(--touch-target); min-height: var(--touch-target); padding: 0 8px; border: 1px solid var(--line); border-radius: var(--ui-radius); color: inherit; background: transparent; font: var(--font-weight-label) var(--type-action)/1 var(--font-ui); }
+.network-popover dl { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 10px 0; }
+.network-popover dl div { display: grid; gap: 3px; padding: 7px; background: rgba(238, 234, 224, .05); }
+.network-popover dd { margin: 0; font-size: var(--type-body); font-weight: var(--font-weight-control); }
+.network-popover figure { display: grid; gap: 5px; margin: 0; }
+.network-popover svg { display: block; width: 100%; height: 54px; overflow: visible; }
+.network-popover svg line { stroke: rgba(238, 234, 224, .16); stroke-width: 1; }
+.network-popover svg polyline { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2.5; vector-effect: non-scaling-stroke; }
+.network-popover p { margin: 8px 0 0; color: rgba(238, 234, 224, .56); font-size: var(--type-meta); line-height: 1.25; }
 .appearance-control {
   position: relative;
   z-index: 10;
@@ -954,6 +998,7 @@ button { -webkit-tap-highlight-color: transparent; }
   letter-spacing: .045em;
   cursor: pointer;
 }
+.appearance-trigger > span { display: none; }
 .appearance-trigger:hover,
 .appearance-trigger:focus-visible,
 .appearance-trigger[aria-expanded="true"] { background: rgba(238, 234, 224, .07); }
@@ -1060,6 +1105,13 @@ button { -webkit-tap-highlight-color: transparent; }
   margin: 0 auto;
   filter: brightness(0) invert(1);
   opacity: .92;
+}
+.gps-state img {
+  display: block;
+  width: 22px;
+  height: 22px;
+  margin: auto;
+  filter: brightness(0) invert(1);
 }
 .discover-button span,
 .report-button span {
@@ -4228,4 +4280,150 @@ html { font-size: var(--font-size-floor); }
   .report-button { padding-inline: 2px; }
   .source-readout,
   .source-readout.is-soundtrack { right: 116px; width: 88px; }
+}
+
+/* Tesla Balanced Rail
+   One shared 64 px control grammar. Speed alone keeps a numeric hierarchy;
+   every status or destination beside it is a centred icon with disclosure. */
+.topbar {
+  grid-template-columns: 64px 168px 104px repeat(5, minmax(64px, 1fr));
+  min-height: var(--chrome-size);
+}
+.topbar-mark { grid-column: 1; padding: 8px; }
+.topbar-mark img { width: 44px; height: 44px; }
+.mode-selector { grid-column: 2; }
+.speed-spacer { grid-column: 3; min-width: 104px; }
+.network-control { grid-column: 4; }
+.appearance-control { grid-column: 5; }
+.gps-state { grid-column: 6; }
+.discover-button { grid-column: 7; }
+.report-button { grid-column: 8; }
+.source-readout,
+.source-readout.is-soundtrack {
+  right: auto;
+  left: 232px;
+  width: 104px;
+  min-height: var(--chrome-size);
+  padding: 5px 7px;
+}
+.mode-selector button { padding: 0 8px; font-size: var(--type-label); letter-spacing: .07em; }
+.mode-selector button.is-active::after { right: 14px; bottom: 8px; left: 14px; height: 3px; }
+.network-state,
+.appearance-trigger,
+.gps-state,
+.discover-button,
+.report-button {
+  display: grid;
+  min-width: 0;
+  min-height: var(--chrome-size);
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.appearance-trigger { grid-template-columns: 24px; }
+.appearance-icon,
+.gps-state img,
+.discover-button img,
+.report-button img { width: 24px; height: 24px; margin: 0; }
+.discover-button,
+.report-button { grid-template-rows: 24px; gap: 0; }
+.network-state-dot { width: 22px; height: 22px; border-width: 3px; }
+.controls-resting .topbar {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  border-color: transparent;
+  background: transparent;
+  pointer-events: none;
+  transition-delay: 0s;
+}
+.app.controls-resting .topbar > :not(.topbar-mark) {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.app.controls-resting .topbar-mark {
+  border-right: 1px solid var(--ui-line-soft);
+  border-bottom: 1px solid var(--ui-line-soft);
+  border-radius: 0 0 var(--ui-radius) 0;
+  background: var(--ui-surface-strong);
+  pointer-events: auto;
+}
+
+/* The palette is a control surface, not a postage stamp. The ten existing
+   finishes fill its complete cell while retaining the established 5 x 2 map. */
+.palette-control { display: grid; min-height: var(--chrome-size); padding: 5px 6px; }
+.palette-control legend,
+.palette-control > strong,
+.palette-control::before {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+.swatch-housing {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+}
+.swatch-housing button { width: 100%; min-width: 0; min-height: 0; padding: 2px; }
+.swatch-housing button span { width: 100%; height: 100%; min-height: 18px; border-radius: 4px; }
+
+.app[data-appearance] .network-popover {
+  border-color: var(--ui-line);
+  color: var(--ui-text);
+  background: var(--ui-surface);
+}
+.app[data-appearance] .network-popover header small,
+.app[data-appearance] .network-popover dt,
+.app[data-appearance] .network-popover figcaption,
+.app[data-appearance] .network-popover p { color: var(--ui-muted); }
+.app[data-appearance] .network-popover header button { border-color: var(--ui-line); color: var(--ui-text); }
+.app[data-appearance] .network-popover dl div { background: var(--ui-control); }
+.app[data-appearance] .network-popover svg line { stroke: var(--ui-line-soft); }
+.app[data-appearance] .gps-state img { filter: var(--ui-icon-filter); }
+
+@media (max-width: 900px) {
+  .topbar { grid-template-columns: 56px 144px 96px repeat(5, minmax(0, 1fr)); }
+  .topbar-mark { display: grid; }
+  .topbar-mark img { width: 40px; height: 40px; }
+  .mode-selector { grid-column: 2; }
+  .speed-spacer { grid-column: 3; min-width: 96px; }
+  .network-control { grid-column: 4; }
+  .appearance-control { grid-column: 5; }
+  .gps-state { grid-column: 6; }
+  .discover-button { grid-column: 7; }
+  .report-button { grid-column: 8; }
+  .source-readout,
+  .source-readout.is-soundtrack { right: auto; left: 200px; width: 96px; }
+}
+
+@media (max-width: 650px) {
+  .topbar { grid-template-columns: 52px 116px minmax(96px, 1fr) 72px 52px; }
+  .topbar-mark { display: grid; grid-column: 1; }
+  .mode-selector { grid-column: 2; }
+  .speed-spacer { grid-column: 3; min-width: 96px; }
+  .network-control,
+  .gps-state,
+  .discover-button { display: none; }
+  .appearance-control { grid-column: 4; }
+  .report-button { grid-column: 5; }
+  .source-readout,
+  .source-readout.is-soundtrack { right: 124px; left: auto; width: 96px; }
+}
+
+@media (max-width: 380px) {
+  .topbar { grid-template-columns: 48px 104px minmax(84px, 1fr) 68px 48px; }
+  .topbar-mark img { width: 36px; height: 36px; }
+  .speed-spacer { min-width: 84px; }
+  .source-readout,
+  .source-readout.is-soundtrack { right: 116px; width: 84px; }
 }

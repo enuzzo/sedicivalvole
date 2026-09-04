@@ -469,6 +469,107 @@ function networkUiDetail(notice) {
   return "— Mb/s";
 }
 
+const NETWORK_HISTORY_WINDOW_MS = 15 * 60 * 1000;
+const NETWORK_HISTORY_SAMPLE_LIMIT = NETWORK_HISTORY_WINDOW_MS / DRIVE_TRACE_INTERVAL_MS;
+
+function networkRateCopy(bytesPerSecond) {
+  const value = Math.max(0, Number(bytesPerSecond) || 0);
+  if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(1)} MB/s`;
+  if (value >= 1_000) return `${Math.round(value / 1_000)} KB/s`;
+  return `${Math.round(value)} B/s`;
+}
+
+function networkQualityScore(notice) {
+  if (notice?.status === "offline" || notice?.status === "request-failed") return 0;
+  if (notice?.tone === "alert") return 0.18;
+  if (notice?.tone === "caution") return 0.52;
+  if (notice?.status === "transferring") return 0.86;
+  if (notice?.tone === "good") return 1;
+  return 0.7;
+}
+
+function appendNetworkQualitySample(samples, notice, capturedAtMs = performance.now()) {
+  const cutoff = capturedAtMs - NETWORK_HISTORY_WINDOW_MS;
+  const retained = samples.filter((sample) => sample.capturedAtMs >= cutoff);
+  retained.push({
+    capturedAtMs,
+    score: networkQualityScore(notice),
+    tone: notice?.tone ?? "quiet",
+  });
+  return retained.slice(-NETWORK_HISTORY_SAMPLE_LIMIT);
+}
+
+function NetworkControl({ notice, history, open, onOpenChange }) {
+  const containerRef = useRef(null);
+  const triggerRef = useRef(null);
+  const width = 248;
+  const height = 48;
+  const graphPoints = history.length > 1
+    ? history.map((sample, index) => {
+      const x = index / (history.length - 1) * width;
+      const y = height - sample.score * height;
+      return `${x.toFixed(1)},${y.toFixed(1)}`;
+    }).join(" ")
+    : `0,${(height * 0.3).toFixed(1)} ${width},${(height * 0.3).toFixed(1)}`;
+
+  useEffect(() => {
+    if (!open) return undefined;
+    const closeOnOutsidePointer = (event) => {
+      if (!containerRef.current?.contains(event.target)) onOpenChange(false);
+    };
+    const closeOnEscape = (event) => {
+      if (event.key !== "Escape") return;
+      onOpenChange(false);
+      triggerRef.current?.focus({ preventScroll: true });
+    };
+    document.addEventListener("pointerdown", closeOnOutsidePointer, true);
+    window.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.removeEventListener("pointerdown", closeOnOutsidePointer, true);
+      window.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [onOpenChange, open]);
+
+  return (
+    <div className={`network-control${open ? " is-open" : ""}`} ref={containerRef}>
+      <button
+        ref={triggerRef}
+        className={`network-state is-${notice.tone}${notice.status === "transferring" ? " is-loading" : ""}`}
+        type="button"
+        aria-controls="network-popover"
+        aria-expanded={open}
+        aria-label={`Network ${networkUiCopy(notice)}. Open 15 minute connection detail.`}
+        title={`Network ${networkUiCopy(notice)}`}
+        onClick={() => onOpenChange(!open)}
+      >
+        <span className="network-state-dot" aria-hidden="true" />
+      </button>
+      {open ? (
+        <aside id="network-popover" className="network-popover" role="dialog" aria-modal="false" aria-labelledby="network-popover-title">
+          <header>
+            <div><small>APPLICATION NETWORK</small><strong id="network-popover-title">{networkUiCopy(notice)}</strong></div>
+            <button type="button" onClick={() => onOpenChange(false)}>CLOSE</button>
+          </header>
+          <dl>
+            <div><dt>DOWNLOAD</dt><dd>{networkRateCopy(notice.currentDownloadBytesPerSecond)}</dd></div>
+            <div><dt>UPLOAD</dt><dd>{networkRateCopy(notice.currentUploadBytesPerSecond)}</dd></div>
+            <div><dt>CONNECTION</dt><dd>{notice.effectiveType?.toUpperCase() || "UNAVAILABLE"}</dd></div>
+            <div><dt>LATENCY</dt><dd>{notice.roundTripTimeMs == null ? "UNAVAILABLE" : `${Math.round(notice.roundTripTimeMs)} ms`}</dd></div>
+          </dl>
+          <figure>
+            <figcaption>QUALITY · LAST 15 MIN</figcaption>
+            <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label={`Network quality history with ${history.length} retained samples`}>
+              <line x1="0" y1={height / 2} x2={width} y2={height / 2} />
+              <polyline points={graphPoints} />
+            </svg>
+          </figure>
+          <p>Browser connection hints and traffic observed by this app only.</p>
+        </aside>
+      ) : null}
+    </div>
+  );
+}
+
 function boundedDiagnosticText(value, limit = 96) {
   return typeof value === "string" ? value.replace(/\s+/g, " ").trim().slice(0, limit) : "";
 }
@@ -2197,6 +2298,7 @@ export function App() {
   const [vehicleEffectsEnabled, setVehicleEffectsEnabled] = useState(initialPreferences.vehicleEffectsEnabled);
   const [soundtrackManualEffects, setSoundtrackManualEffects] = useState(initialPreferences.manualEffects);
   const [networkNotice, setNetworkNotice] = useState(() => readNetworkUiNotice("app-start"));
+  const [networkPopoverOpen, setNetworkPopoverOpen] = useState(false);
   const [controlNotice, setControlNotice] = useState(null);
   const [playRoadPaused, setPlayRoadPaused] = useState(false);
   const [supportOpen, setSupportOpen] = useState(false);
@@ -2278,6 +2380,7 @@ export function App() {
   const longTaskTelemetryRef = useRef(createLongTaskTelemetry(false));
   const audioLatencyTelemetryRef = useRef(createAudioLatencyTelemetry());
   const networkTelemetryRef = useRef(createNetworkTelemetry(performance.now()));
+  const networkQualityHistoryRef = useRef([]);
   const diagnosticEventsRef = useRef(createDiagnosticEventLedger());
   const diagnosticEventSequenceRef = useRef(0);
   const mediaActionSequenceRef = useRef(0);
@@ -2327,7 +2430,11 @@ export function App() {
     || soundtrackPanelOpen
     || discoverOpen
     || supportOpen;
-  const controlsPinned = modalOpen || manualEffectsDeckOpen || gpsHelpOpen || appearanceMenuOpen;
+  const controlsPinned = modalOpen
+    || manualEffectsDeckOpen
+    || gpsHelpOpen
+    || appearanceMenuOpen
+    || networkPopoverOpen;
   const controlsPinnedRef = useRef(controlsPinned);
   const previousControlsPinnedRef = useRef(controlsPinned);
   controlsPinnedRef.current = controlsPinned;
@@ -2453,11 +2560,23 @@ export function App() {
 
   const changeAppearanceMenuOpen = useCallback((open) => {
     setAppearanceMenuOpen(open);
-    if (open) setGpsHelpOpen(false);
+    if (open) {
+      setGpsHelpOpen(false);
+      setNetworkPopoverOpen(false);
+    }
+  }, []);
+
+  const changeNetworkPopoverOpen = useCallback((open) => {
+    setNetworkPopoverOpen(open);
+    if (open) {
+      setAppearanceMenuOpen(false);
+      setGpsHelpOpen(false);
+    }
   }, []);
 
   const toggleGpsHelp = useCallback(() => {
     setAppearanceMenuOpen(false);
+    setNetworkPopoverOpen(false);
     setGpsHelpOpen((current) => !current);
   }, []);
 
@@ -4090,7 +4209,13 @@ export function App() {
     const refresh = () => {
       const generatedAtMs = performance.now();
       const traffic = summarizeNetworkTelemetry(networkTelemetryRef.current, generatedAtMs);
-      setNetworkNotice(readNetworkUiNotice("ui-sample", traffic, generatedAtMs));
+      const notice = readNetworkUiNotice("ui-sample", traffic, generatedAtMs);
+      networkQualityHistoryRef.current = appendNetworkQualitySample(
+        networkQualityHistoryRef.current,
+        notice,
+        generatedAtMs,
+      );
+      setNetworkNotice(notice);
     };
     refresh();
     const timer = window.setInterval(refresh, DRIVE_TRACE_INTERVAL_MS);
@@ -4926,15 +5051,12 @@ export function App() {
           </button>
           <ModeSelector />
           <span className="speed-spacer" aria-hidden="true" />
-          <div
-            className={`network-state is-${networkNotice.tone} has-copy`}
-            role="status"
-            aria-label={`Network ${networkUiCopy(networkNotice)}, ${networkUiDetail(networkNotice)}. Browser-observed application transfer or connection estimate; not cellular signal strength.`}
-            title="Browser-observed app transfer or connection estimate · not cellular signal strength"
-          >
-            <span className="network-state-dot" aria-hidden="true" />
-            <strong>{networkUiDetail(networkNotice)}</strong>
-          </div>
+          <NetworkControl
+            notice={networkNotice}
+            history={networkQualityHistoryRef.current}
+            open={networkPopoverOpen}
+            onOpenChange={changeNetworkPopoverOpen}
+          />
           <AppearanceControl
             mode={appearanceMode}
             effectiveAppearance={appearanceResolution.appearance}
@@ -4950,8 +5072,9 @@ export function App() {
             aria-label={`GPS ${gpsPresentation.status}, accuracy ${gpsPresentation.accuracy}`}
             onClick={toggleGpsHelp}
           >
-            <span>GPS</span>
-            <small>{gpsPresentation.accuracy}</small>
+            <img src="/third-party/tabler-icons/navigation-filled.svg" alt="" aria-hidden="true" />
+            <span className="visually-hidden">GPS</span>
+            <small className="visually-hidden">{gpsPresentation.accuracy}</small>
           </button>
           <button
             className="discover-button"
@@ -4961,7 +5084,6 @@ export function App() {
             aria-haspopup="dialog"
           >
             <img src="/third-party/tabler-icons/map-search.svg" alt="" aria-hidden="true" />
-            <span>DISCOVER</span>
           </button>
           <button
             className="report-button"
@@ -4975,7 +5097,6 @@ export function App() {
               alt=""
               aria-hidden="true"
             />
-            <span>REPORT</span>
           </button>
         </header>
 

@@ -52,7 +52,7 @@ test("completed control actions and closed surfaces return focus to the experien
   assert.equal(shouldReleaseControlFocus(controlAction, true), false);
   assert.equal(shouldReleaseControlFocus({ closest: () => null }, false), false);
   assert.equal(shouldReleaseControlFocus(null, false), false);
-  assert.match(app, /const controlsPinned = modalOpen \|\| manualEffectsDeckOpen \|\| gpsHelpOpen/);
+  assert.match(app, /const controlsPinned = modalOpen[\s\S]*?\|\| manualEffectsDeckOpen[\s\S]*?\|\| gpsHelpOpen[\s\S]*?\|\| appearanceMenuOpen[\s\S]*?\|\| networkPopoverOpen/);
   assert.match(app, /const restoredControlFocus = isControlLayerFocused\(activeElement\)/);
   assert.match(app, /const focusNeedsRecovery = restoredControlFocus[\s\S]*?activeElement === document\.body[\s\S]*?activeElement === document\.documentElement/);
   assert.match(app, /queueExperienceFocus\(restoredControlFocus \? activeElement : null\)/);
@@ -298,7 +298,9 @@ test("the footer keeps a compact right palette and exposes one audio-effects mas
   assert.match(styles, /@media \(max-width: 820px\) \{[\s\S]*?grid-template-columns: 69px 69px 160px 180px 69px minmax\(158px, 1fr\)/);
   assert.match(styles, /\.stop-button,[\s\S]*?\.effects-button,[\s\S]*?\.mix-button \{[\s\S]*?place-content: center/);
   assert.match(styles, /\.stop-button::after,[\s\S]*?\.effects-button::after \{[\s\S]*?content: "GLOBAL"/);
-  assert.match(styles, /\.swatch-housing button \{[^}]*min-height: 15px/);
+  assert.match(styles, /\.palette-control \{[^}]*display: grid;[^}]*min-height: var\(--chrome-size\)/);
+  assert.match(styles, /\.swatch-housing \{[\s\S]*?grid-template-columns: repeat\(5, minmax\(0, 1fr\)\);[\s\S]*?grid-template-rows: repeat\(2, minmax\(0, 1fr\)\)/);
+  assert.match(styles, /\.swatch-housing button \{[^}]*width: 100%;[^}]*min-height: 0/);
   assert.match(styles, /\.control-status-notice \{[\s\S]*?top: 50%;[\s\S]*?left: 50%;[\s\S]*?border-radius: var\(--ui-radius\)/);
 });
 
@@ -308,7 +310,7 @@ test("the selected FX Deck is a global footer overlay with eight strong tap stat
   assert.match(app, /id="manual-effects-deck"/);
   assert.match(app, /GLOBAL · PLAY THE ROAD \+ SOUNDTRACK/);
   assert.match(app, /aria-controls="manual-effects-deck"/);
-  assert.match(app, /const controlsPinned = modalOpen \|\| manualEffectsDeckOpen/);
+  assert.match(app, /const controlsPinned = modalOpen[\s\S]*?\|\| manualEffectsDeckOpen/);
   assert.doesNotMatch(app, /const modalOpen =[^;]*manualEffectsDeckOpen/);
   assert.match(app, /<span>FX<\/span>[\s\S]*?<strong aria-hidden="true">↑<\/strong>/);
   assert.match(app, /active \? 0 : effect\.performanceAmount/);
@@ -635,30 +637,31 @@ test("Soundtrack begins its one-shot warmup at the Signal Gate", () => {
   assert.match(app, /void prepareSoundtrack\(\{ force: true \}\)/);
 });
 
-test("compact viewports recover speed width for persistent network evidence", () => {
+test("compact viewports preserve the 16 mark and Balanced Rail hierarchy", () => {
   const app = read("App.jsx");
   const styles = read("styles.css");
 
   assert.doesNotMatch(app, /className="active-mode-marker"/);
-  assert.match(styles, /grid-template-columns: 164px 104px 112px 86px 84px 116px minmax\(107px, 1fr\)/);
-  assert.match(styles, /\.appearance-control \{ grid-column: 4; \}[\s\S]*?\.gps-state \{ grid-column: 5; \}/);
-  assert.match(styles, /@media \(min-width: 651px\) and \(max-width: 772px\) \{[\s\S]*?grid-template-columns: 21\.216% 13\.454% 14\.489% 11\.125% 10\.867% 15\.006% 13\.843%/);
-  assert.match(styles, /@media \(max-width: 650px\) \{[\s\S]*?grid-template-columns: 116px minmax\(0, 1fr\) 104px 72px 52px/);
-  assert.match(styles, /@media \(max-width: 480px\) \{[\s\S]*?\.topbar-mark \{ display: none; \}[\s\S]*?\.mode-selector \{ grid-column: 1; \}/);
+  assert.match(styles, /Tesla Balanced Rail[\s\S]*?grid-template-columns: 64px 168px 104px repeat\(5, minmax\(64px, 1fr\)\)/);
+  assert.match(styles, /@media \(max-width: 900px\) \{[\s\S]*?\.topbar \{ grid-template-columns: 56px 144px 96px repeat\(5, minmax\(0, 1fr\)\); \}[\s\S]*?\.topbar-mark \{ display: grid; \}/);
+  assert.match(styles, /@media \(max-width: 650px\) \{[\s\S]*?grid-template-columns: 52px 116px minmax\(96px, 1fr\) 72px 52px/);
+  assert.match(styles, /\.app\.controls-resting \.topbar > :not\(\.topbar-mark\) \{[\s\S]*?visibility: hidden/);
+  assert.match(styles, /\.app\.controls-resting \.topbar-mark \{[\s\S]*?background: var\(--ui-surface-strong\)/);
 });
 
-test("the source module is compact and network speed remains visible", () => {
+test("the source module stays compact and network detail moves behind one status icon", () => {
   const app = read("App.jsx");
   const styles = read("styles.css");
 
   assert.match(app, /<span className="readout-unit">km\/h<\/span>/);
   assert.doesNotMatch(app, /<small>\{source\}<\/small>|className="active-mode-marker"/);
   assert.doesNotMatch(app, /<span>bpm<\/span>|<span>%<\/span>/);
-  assert.match(app, /<strong>\{networkUiDetail\(networkNotice\)\}<\/strong>/);
+  assert.match(app, /function NetworkControl\(\{ notice, history, open, onOpenChange \}\)/);
   assert.match(app, /className="network-state-dot" aria-hidden="true"/);
-  assert.match(app, /Browser-observed application transfer or connection estimate/);
-  assert.match(app, /Mb\/s OBS/);
-  assert.match(app, /Mb\/s EST/);
-  assert.match(styles, /left: 164px; width: 104px/);
+  assert.match(app, /APPLICATION NETWORK/);
+  assert.match(app, /QUALITY · LAST 15 MIN/);
+  assert.match(app, /DOWNLOAD[\s\S]*?UPLOAD[\s\S]*?CONNECTION[\s\S]*?LATENCY/);
+  assert.match(app, /notice\.status === "transferring" \? " is-loading"/);
+  assert.match(styles, /left: 232px;[\s\S]*?width: 104px/);
   assert.match(styles, /\.network-state\.is-caution \{ color: #f3a84c; \}/);
 });

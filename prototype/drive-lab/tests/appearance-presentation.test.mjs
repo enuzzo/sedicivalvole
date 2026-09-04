@@ -40,7 +40,7 @@ test("the top rail exposes the selected icon-and-label appearance menu", () => {
   const control = read("appearance-control.jsx");
   const topbar = app.slice(app.indexOf('<header className={`topbar'), app.indexOf("</header>", app.indexOf('<header className={`topbar')));
 
-  assert.ok(topbar.indexOf('className={`network-state') < topbar.indexOf("<AppearanceControl"));
+  assert.ok(topbar.indexOf("<NetworkControl") < topbar.indexOf("<AppearanceControl"));
   assert.ok(topbar.indexOf("<AppearanceControl") < topbar.indexOf('className={`gps-state'));
   assert.match(control, /id: "light", label: "LIGHT", icon: "\/third-party\/tabler-icons\/sun\.svg"/);
   assert.match(control, /id: "dark", label: "DARK", icon: "\/third-party\/tabler-icons\/moon\.svg"/);
@@ -76,8 +76,9 @@ test("appearance persistence, runtime resolution and diagnostics remain palette-
   assert.match(app, /if \(appearanceMode !== "auto"\) \{[\s\S]*?setAppearanceInteractionActive\(false\);[\s\S]*?return undefined/);
   assert.match(app, /const focusNeedsRecovery = restoredControlFocus[\s\S]*?activeElement === document\.body[\s\S]*?activeElement === document\.documentElement/);
   assert.doesNotMatch(app, /appearanceRetainedFocus/);
-  assert.match(app, /const changeAppearanceMenuOpen = useCallback\(\(open\) => \{[\s\S]*?if \(open\) setGpsHelpOpen\(false\)/);
-  assert.match(app, /const toggleGpsHelp = useCallback\(\(\) => \{[\s\S]*?setAppearanceMenuOpen\(false\);[\s\S]*?setGpsHelpOpen\(\(current\) => !current\)/);
+  assert.match(app, /const changeAppearanceMenuOpen = useCallback\(\(open\) => \{[\s\S]*?setGpsHelpOpen\(false\);[\s\S]*?setNetworkPopoverOpen\(false\)/);
+  assert.match(app, /const changeNetworkPopoverOpen = useCallback\(\(open\) => \{[\s\S]*?setAppearanceMenuOpen\(false\);[\s\S]*?setGpsHelpOpen\(false\)/);
+  assert.match(app, /const toggleGpsHelp = useCallback\(\(\) => \{[\s\S]*?setAppearanceMenuOpen\(false\);[\s\S]*?setNetworkPopoverOpen\(false\);[\s\S]*?setGpsHelpOpen\(\(current\) => !current\)/);
   assert.match(app, /!appearanceMenuOpen[\s\S]*?atlasGpsPresentation\(gpsState, accuracy, source\)\.requiresHelp\) \{[\s\S]*?setGpsHelpOpen\(true\)/);
   assert.match(app, /appearancePreference: appearanceModeRef\.current/);
   assert.match(app, /appearanceSource: appearanceResolutionRef\.current\.source/);
@@ -90,7 +91,8 @@ test("Road Sheet appearance tokens preserve Tesla geometry and visual colour own
 
   assert.match(styles, /\.app\[data-appearance="light"\] \{[\s\S]*?--ui-surface: var\(--road-sheet-light-surface\);[\s\S]*?--ui-text: var\(--road-sheet-light-ink\)/);
   assert.match(styles, /\.app\[data-appearance="dark"\] \{[\s\S]*?--ui-surface: var\(--road-sheet-dark-surface\);[\s\S]*?--ui-text: var\(--road-sheet-dark-ink\)/);
-  assert.match(styles, /@media \(max-width: 900px\) \{[\s\S]*?grid-template-columns: 164px 104px 112px 86px 84px 116px minmax\(107px, 1fr\)/);
+  assert.match(styles, /Tesla Balanced Rail[\s\S]*?grid-template-columns: 64px 168px 104px repeat\(5, minmax\(64px, 1fr\)\)/);
+  assert.match(styles, /@media \(max-width: 900px\) \{[\s\S]*?grid-template-columns: 56px 144px 96px repeat\(5, minmax\(0, 1fr\)\)/);
   assert.match(styles, /@media \(min-width: 651px\) and \(max-width: 772px\) \{[\s\S]*?grid-template-columns: 21\.216% 13\.454% 14\.489% 11\.125% 10\.867% 15\.006% 13\.843%/);
   assert.match(styles, /@media \(min-width: 651px\) and \(max-width: 772px\) \{[\s\S]*?grid-template-columns: 11\.384% 11\.384% 23\.933% 27\.167% 10\.349% 15\.783%/);
   assert.match(styles, /\.appearance-option \{[\s\S]*?min-height: var\(--touch-target\)/);
