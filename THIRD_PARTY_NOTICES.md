@@ -208,3 +208,7 @@ the project's source or the external sample packs.
 - The author explicitly dedicates the reference conversion implementation to the public domain (MIT is also offered as an alternative). This project uses the public-domain grant.
 - Scope: forward/inverse numeric matrices in `prototype/drive-lab/src/semantic-theme.js`, translated into JavaScript.
 - Project-owned additions: contrast calculation, hue-preserving gamut reduction, bounded lightness search, semantic role resolution, caching, and evidence export. No new package or renderer dependency.
+
+### 2026-09-04 rail icon addition
+
+`navigation.svg` is the unmodified outline navigation icon from Tabler Icons v3.46.0, under the existing Paweł Kuna MIT notice. The rail uses official SVG markup with project-owned optical sizing and a common 2 px non-scaling stroke; the upstream files remain unchanged.

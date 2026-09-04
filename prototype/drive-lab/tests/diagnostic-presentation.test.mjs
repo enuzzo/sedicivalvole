@@ -37,8 +37,8 @@ test("the top bar exposes the selected REPORT control with the pinned Tabler ico
   assert.ok(reportStart >= 0);
   assert.match(reportMarkup, /aria-label="Open session report"/);
   assert.match(reportMarkup, /aria-haspopup="dialog"/);
-  assert.match(reportMarkup, /src="\/third-party\/tabler-icons\/report-analytics\.svg"/);
-  assert.match(reportMarkup, /aria-hidden="true"/);
+  assert.match(reportMarkup, /<RailIcon name="report-analytics"/);
+  assert.match(read("rail-icon.jsx"), /aria-hidden="true"/);
   assert.doesNotMatch(reportMarkup, /<span>REPORT<\/span>/);
   assert.doesNotMatch(app.slice(topbarStart, topbarEnd), />DIAG</);
   assert.match(styles, /Tesla Balanced Rail[\s\S]*?\.discover-button,[\s\S]*?\.report-button \{ grid-template-rows: 24px; gap: 0; \}/);

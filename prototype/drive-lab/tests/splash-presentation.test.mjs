@@ -16,14 +16,14 @@ function read(relativePath) {
   return readFileSync(resolve(SOURCE_ROOT, relativePath), "utf8");
 }
 
-test("keyboard focus keeps the retracting control planes awake", () => {
+test("keyboard focus cannot defeat the six-second inactivity deadline", () => {
   const app = read("App.jsx");
   assert.equal(isControlLayerFocused({ closest: (selector) => selector === ".control-layer" }), true);
   assert.equal(isControlLayerFocused({ closest: () => null }), false);
   assert.equal(isControlLayerFocused(null), false);
   assert.match(app, /if \(isControlLayerFocused\(document\.activeElement\)\)/);
-  assert.match(app, /window\.setTimeout\(restWhenIdle, 800\)/);
-  assert.match(app, /onFocusCapture=\{wakeControls\}/);
+  assert.match(app, /window\.setTimeout\(restControls, 6000\)/);
+  assert.doesNotMatch(app, /onFocusCapture=\{wakeControls\}/);
 });
 
 test("vehicle motion and pointer hover never wake resting controls", () => {
@@ -53,12 +53,9 @@ test("completed control actions and closed surfaces return focus to the experien
   assert.equal(shouldReleaseControlFocus({ closest: () => null }, false), false);
   assert.equal(shouldReleaseControlFocus(null, false), false);
   assert.match(app, /const controlsPinned = modalOpen[\s\S]*?\|\| manualEffectsDeckOpen[\s\S]*?\|\| gpsHelpOpen[\s\S]*?\|\| appearanceMenuOpen[\s\S]*?\|\| networkPopoverOpen/);
-  assert.match(app, /const restoredControlFocus = isControlLayerFocused\(activeElement\)/);
-  assert.match(app, /const focusNeedsRecovery = restoredControlFocus[\s\S]*?activeElement === document\.body[\s\S]*?activeElement === document\.documentElement/);
-  assert.match(app, /queueExperienceFocus\(restoredControlFocus \? activeElement : null\)/);
   assert.doesNotMatch(app, /appearanceRetainedFocus/);
+  assert.match(app, /wasPinned && !controlsPinned\) queueExperienceFocus\(\)/);
   assert.match(app, /if \(phase !== "running" \|\| controlsPinnedRef\.current\) return/);
-  assert.match(app, /if \(!activationTarget[\s\S]*?activeElement !== document\.body[\s\S]*?activeElement !== document\.documentElement[\s\S]*?activeElement !== appRef\.current\) return/);
   assert.match(app, /appRef\.current\?\.focus\(\{ preventScroll: true \}\)/);
   assert.match(app, /onClickCapture=\{handleControlActivation\}/);
 });
@@ -358,8 +355,8 @@ test("music source tabs switch immediately and ignore stale asynchronous loads",
     app.indexOf("const playSoundtrackSelection = useCallback"),
   );
 
-  assert.ok(switcher.indexOf("setMusicMode(nextMode)") < switcher.indexOf("await controller.load()"));
-  assert.ok(switcher.indexOf("setMusicModeLoading(nextMode)") < switcher.indexOf("await controller.load()"));
+  assert.ok(switcher.indexOf("setMusicMode(nextMode)") < switcher.indexOf("await prepareSoundtrack({ force: true })"));
+  assert.ok(switcher.indexOf("setMusicModeLoading(nextMode)") < switcher.indexOf("await prepareSoundtrack({ force: true })"));
   assert.match(switcher, /const revision = \+\+musicModeRevisionRef\.current/);
   assert.ok(switcher.indexOf("transportActionQueueRef.current.invalidate()") < switcher.indexOf("const revision = ++musicModeRevisionRef.current"));
   assert.match(switcher, /revision !== musicModeRevisionRef\.current \|\| sessionMusicModeRef\.current !== nextMode/);
@@ -585,11 +582,11 @@ test("safe product state persists locally and can be reset without storing GPS",
   assert.match(styles, /\.splash-reset-state \{/);
 });
 
-test("the vehicle gets persistent Now Playing, stable Media Session actions, and directional dismissal", () => {
+test("Now Playing shares the footer lifecycle with stable Media Session actions and directional dismissal", () => {
   const app = read("App.jsx");
   const styles = read("styles.css");
 
-  assert.match(app, /className="now-playing-dock persistent-transport control-layer" aria-label="Now playing and music transport"/);
+  assert.match(app, /className="now-playing-dock persistent-transport" aria-label="Now playing and music transport"/);
   assert.match(app, /installMediaSessionTransport\(\{/);
   assert.match(app, /createMediaTransportIntentQueue\(\)/);
   assert.match(app, /transportActionQueueRef\.current\.invalidate\(\)/);
@@ -619,7 +616,7 @@ test("the vehicle gets persistent Now Playing, stable Media Session actions, and
   assert.doesNotMatch(styles, /\.app\.modal-open \.persistent-transport\.now-playing-dock/);
   assert.doesNotMatch(styles, /\.app\.modal-open\.has-now-playing \.drawer-panel/);
   assert.match(app, /const showNowPlaying = phase === "running" && Boolean\(currentTrack\) && !modalOpen && !immersiveEnvironment/);
-  assert.match(app, /\{showNowPlaying \? \([\s\S]*?className="now-playing-dock persistent-transport control-layer"/);
+  assert.match(app, /\{showNowPlaying \? \([\s\S]*?className="now-playing-dock persistent-transport"/);
   assert.match(styles, /\.modal-open \.experience \.control-layer,[\s\S]*?visibility: hidden;[\s\S]*?pointer-events: none/);
   assert.match(styles, /\.controls-resting \.persistent-transport \{[\s\S]*?opacity: 0;[\s\S]*?pointer-events: none/);
   assert.match(app, /soundtrackSnapshot\?\.previous\?\.imageUrl/);

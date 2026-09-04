@@ -1,6 +1,6 @@
 export const DISCOVER_RESULT_LIMIT = 15;
 export const DISCOVER_INITIAL_VISIBLE_RESULTS = 5;
-export const DISCOVER_RESULT_ROW_HEIGHT = 64;
+export const DISCOVER_RESULT_ROW_HEIGHT = 88;
 export const DISCOVER_MORE_ROW_HEIGHT = 48;
 
 export const DISCOVER_LANGUAGE_OPTIONS = Object.freeze([

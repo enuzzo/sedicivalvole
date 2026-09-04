@@ -120,14 +120,17 @@ export function resolveSemanticTheme(theme, appearance = "light") {
     caution: role(appearance === "light" ? "#975800" : "#f3a84c"),
     alert: role(appearance === "light" ? "#bb282d" : "#ff7770"),
   };
-  const effectInk = contrastRatio(neutrals.text, roles.effectSurface.resolved) >= 4.5 ? neutrals.text : neutrals.onSelected;
+  const strongestNeutral = (background) => contrastRatio(neutrals.text, background) >= contrastRatio(neutrals.onSelected, background) ? neutrals.text : neutrals.onSelected;
+  const accentInk = strongestNeutral(roles.accentText.resolved);
+  roles.accentFillText = role(accentInk, 4.5, roles.accentText.resolved);
+  const effectInk = strongestNeutral(roles.effectSurface.resolved);
   roles.effectText = role(effectInk, 4.5, roles.effectSurface.resolved);
   const css = {
     "--ui-surface": neutrals.surface, "--ui-surface-strong": neutrals.strong,
     "--ui-control": neutrals.control, "--ui-control-hover": neutrals.hover,
     "--ui-selected-surface": neutrals.selected,
   };
-  for (const [name, cssName] of Object.entries({text:"text", metadata:"muted", accentText:"accent-text", selectedAccent:"selected-accent", selectedText:"selected-text", focus:"focus", boundary:"line", chartPrimary:"chart-primary", chartSecondary:"chart-secondary", indicator:"indicator", effectSurface:"effect-surface", effectText:"effect-text", success:"success", caution:"caution", alert:"alert"})) {
+  for (const [name, cssName] of Object.entries({text:"text", metadata:"muted", accentText:"accent-text", selectedAccent:"selected-accent", selectedText:"selected-text", focus:"focus", boundary:"line", chartPrimary:"chart-primary", chartSecondary:"chart-secondary", indicator:"indicator", effectSurface:"effect-surface", effectText:"effect-text", accentFillText:"accent-fill-text", success:"success", caution:"caution", alert:"alert"})) {
     css[`--ui-${cssName}`] = roles[name].resolved;
   }
   css["--ui-subtle"] = roles.metadata.resolved;

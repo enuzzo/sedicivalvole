@@ -1,0 +1,105 @@
+{
+  "requests": [
+    {
+      "at": 1788556942457,
+      "path": "/api/soundtrack-catalog.php?limit=50&offset=0"
+    },
+    {
+      "at": 1788556952744,
+      "path": "/api/soundtrack-catalog.php?limit=50&offset=0"
+    },
+    {
+      "at": 1788556965834,
+      "path": "/api/soundtrack-catalog.php?limit=50&offset=0"
+    }
+  ],
+  "console": [],
+  "checks": [
+    "catalogue request starts on untouched splash",
+    "Soundtrack reuses prepared catalogue",
+    "Gradient density falls to 0.8 during brake and returns to 1",
+    "Underwater badge matches speed footprint",
+    "all three Gradient variants cycle and retract",
+    "reduced motion removes badge transition"
+  ],
+  "fetchTrace": [
+    {
+      "stack": "Error\n    at window.fetch (<anonymous>:2:181)\n    at fetchSoundtrackCatalog (http://127.0.0.1:5173/src/soundtrack/catalog-client.js:45:26)\n    at Object.load (http://127.0.0.1:5173/src/soundtrack/preview-controller.js:541:39)\n    at http://127.0.0.1:5173/src/App.jsx?t=1788556851915:4525:32\n    at http://127.0.0.1:5173/src/App.jsx?t=1788556851915:4533:10\n    at Object.react_stack_bottom_frame (http://127.0.0.1:5173/node_modules/.vite/deps/react-dom_client.js?v=9fabf9c2:18299:20)\n    at runWithFiberInDEV (http://127.0.0.1:5173/node_modules/.vite/deps/react-dom_client.js?v=9fabf9c2:729:72)\n    at commitHookEffectListMount (http://127.0.0.1:5173/node_modules/.vite/deps/react-dom_client.js?v=9fabf9c2:9143:163)\n    at commitHookPassiveMountEffects (http://127.0.0.1:5173/node_modules/.vite/deps/react-dom_client.js?v=9fabf9c2:9197:60)\n    at commitPassiveMountOnFiber (http://127.0.0.1:5173/node_modules/.vite/deps/react-dom_client.js?v=9fabf9c2:10772:29)",
+      "phase": "app phase-idle controls-awake"
+    }
+  ],
+  "warmup": {
+    "splashCount": 1,
+    "afterSelection": 1
+  },
+  "baseline": {
+    "frames": 180,
+    "median": 16.699999999999818,
+    "p95": 16.700000000000728,
+    "over50ms": 0,
+    "canvas": {
+      "width": 773,
+      "height": 601
+    },
+    "speed": "80"
+  },
+  "braking": {
+    "frames": 108,
+    "median": 16.699999999999818,
+    "p95": 16.700000000000728,
+    "over50ms": 0,
+    "canvas": {
+      "width": 618,
+      "height": 480
+    },
+    "speed": "61"
+  },
+  "badge": [
+    {
+      "class": "source-readout",
+      "rect": {
+        "x": 200,
+        "y": 0,
+        "width": 96,
+        "height": 64,
+        "top": 0,
+        "right": 296,
+        "bottom": 64,
+        "left": 200
+      },
+      "background": "rgb(15, 15, 15)",
+      "color": "rgb(244, 244, 244)"
+    },
+    {
+      "class": "effect-badge is-active",
+      "rect": {
+        "x": 200,
+        "y": 64,
+        "width": 96,
+        "height": 64,
+        "top": 64,
+        "right": 296,
+        "bottom": 128,
+        "left": 200
+      },
+      "background": "rgb(60, 115, 250)",
+      "color": "rgb(15, 17, 23)"
+    }
+  ],
+  "recovered": {
+    "frames": 180,
+    "median": 16.69999999999891,
+    "p95": 16.799999999999272,
+    "over50ms": 0,
+    "canvas": {
+      "width": 773,
+      "height": 601
+    },
+    "speed": "60"
+  },
+  "variants": [
+    "japanese-mist",
+    "acid-orchard",
+    "chromatic-silk"
+  ]
+}

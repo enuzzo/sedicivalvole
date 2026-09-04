@@ -1,3 +1,4 @@
+import { RailIcon } from "./rail-icon.jsx";
 import { useEffect, useRef } from "react";
 
 const APPEARANCE_OPTIONS = Object.freeze([
@@ -82,7 +83,7 @@ export function AppearanceControl({
         aria-label={`Appearance ${activeOption.label}. Effective ${effectiveAppearance}. Tap to change.`}
         onClick={() => onOpenChange(!open)}
       >
-        <img className="appearance-icon" src={activeOption.icon} alt="" aria-hidden="true" />
+        <RailIcon name={activeOption.icon.split("/").at(-1).replace(".svg", "")} />
         <span>{activeOption.label}</span>
       </button>
       {open ? (

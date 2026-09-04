@@ -1,3 +1,4 @@
+import { resolveSemanticTheme } from "../../semantic-theme.js";
 import { useEffect, useMemo, useRef, useState } from "react";
 import "maplibre-gl/dist/maplibre-gl.css";
 import {
@@ -89,12 +90,12 @@ function AtlasDriveLabCanvas({ samples, metrics, statistics, colors, terrain, ra
       canvas.style.fontVariantNumeric = "tabular-nums";
       context.setTransform(ratio, 0, 0, ratio, 0, 0);
       context.clearRect(0, 0, bounds.width, bounds.height);
-      const light = appearance === "light";
-      const paper = light ? "rgba(23, 26, 32, .94)" : "rgba(244, 244, 244, .94)";
-      const muted = light ? "rgba(23, 26, 32, .68)" : "rgba(244, 244, 244, .68)";
-      const line = light ? "rgba(23, 26, 32, .18)" : "rgba(244, 244, 244, .16)";
+      const paper = colors.text;
+      const muted = colors.metadata;
+      const line = colors.boundary;
       const accent = colors.accent;
       const secondary = colors.secondary;
+      const alpha = (hex, opacity) => `${hex}${Math.round(opacity * 255).toString(16).padStart(2, "0")}`;
       const text = (value, x, y, font, color = paper, align = "left", maximumWidth = null) => {
         context.fillStyle = color;
         context.font = font;
@@ -150,17 +151,17 @@ function AtlasDriveLabCanvas({ samples, metrics, statistics, colors, terrain, ra
         text(value, x + 14, y, atlasChartFont(650, ATLAS_CHART_TYPE.data), muted);
       };
       const timeLabels = rangeLabel === "1 H"
-        ? ["−1 H", "−40", "−20", "NOW"]
+        ? ["−1 H", "−40", "−20", "Now"]
         : rangeLabel === "SESSION"
-          ? ["START", "⅓", "⅔", "NOW"]
-          : ["−15 MIN", "−10", "−5", "NOW"];
+          ? ["Start", "⅓", "⅔", "Now"]
+          : ["−15 min", "−10", "−5", "Now"];
       const timeAxis = (y, left, right) => {
         const axisLabels = right - left < 200
           ? rangeLabel === "1 H"
-            ? ["−1H", "−40", "−20", "NOW"]
+            ? ["−1H", "−40", "−20", "Now"]
             : rangeLabel === "SESSION"
-              ? ["START", "⅓", "⅔", "NOW"]
-              : ["−15", "−10", "−5", "NOW"]
+              ? ["Start", "⅓", "⅔", "Now"]
+              : ["−15", "−10", "−5", "Now"]
           : timeLabels;
         axisLabels.forEach((value, index) => {
           const x = left + index / (axisLabels.length - 1) * (right - left);
@@ -185,18 +186,19 @@ function AtlasDriveLabCanvas({ samples, metrics, statistics, colors, terrain, ra
         if (points.length > 1) context.lineTo(points.at(-1).x, points.at(-1).y);
       };
 
-      const acceleration = { top: 0, height: 88 };
-      const speedBands = { top: 88, height: 70 };
-      const instruments = { top: 158, height: 126 };
-      const motion = { top: 284, height: Math.max(56, bounds.height - 284) };
+      const breathing = Math.max(0, bounds.height - 340) / 3;
+      const acceleration = { top: 0, height: 88 + breathing };
+      const speedBands = { top: acceleration.height, height: 70 + breathing };
+      const instruments = { top: speedBands.top + speedBands.height, height: 126 + breathing };
+      const motion = { top: instruments.top + instruments.height, height: 56 };
       const plotLeft = 36;
       const plotRight = bounds.width - 8;
 
       rule(acceleration.top);
-      label("ACCEL / BRAKING BALANCE", 0, acceleration.top + 15, bounds.width - 66);
-      text("KM/H/S", bounds.width, acceleration.top + 15, atlasChartFont(600), muted, "right");
-      dotLegend(`ACCEL ${percent(metrics.accelerationShare)}`, 0, acceleration.top + 31, accent);
-      dotLegend(`BRAKE ${percent(metrics.brakingShare)}`, 150, acceleration.top + 31, secondary);
+      label("Accel / braking", 0, acceleration.top + 15, bounds.width - 66);
+      text("km/h/s", bounds.width, acceleration.top + 15, atlasChartFont(600), muted, "right");
+      dotLegend(`Accel ${percent(metrics.accelerationShare)}`, 0, acceleration.top + 31, accent);
+      dotLegend(`Brake ${percent(metrics.brakingShare)}`, 150, acceleration.top + 31, secondary);
       const accelerationSamples = samples.filter((sample) => (
         Number.isFinite(sample.accelerationGainKmh) || Number.isFinite(sample.brakingLossKmh)
       ));
@@ -233,8 +235,8 @@ function AtlasDriveLabCanvas({ samples, metrics, statistics, colors, terrain, ra
           context.lineTo(points[0].x, accelerationMidline);
           context.closePath();
           const gradient = context.createLinearGradient(0, accelerationMidline, 0, accelerationMidline + direction * 17);
-          gradient.addColorStop(0, color.replace(")", " / .08)"));
-          gradient.addColorStop(1, color.replace(")", " / .62)"));
+          gradient.addColorStop(0, alpha(color, .08));
+          gradient.addColorStop(1, alpha(color, .62));
           context.fillStyle = gradient;
           context.fill();
           context.strokeStyle = color;
@@ -244,12 +246,12 @@ function AtlasDriveLabCanvas({ samples, metrics, statistics, colors, terrain, ra
           context.stroke();
         }
       } else {
-        text("NO CHANGE", (plotLeft + plotRight) / 2, accelerationMidline - 5, atlasChartFont(700), muted, "center");
+        text("No change", (plotLeft + plotRight) / 2, accelerationMidline - 5, atlasChartFont(700), muted, "center");
       }
       timeAxis(acceleration.top + acceleration.height - 4, plotLeft, plotRight);
 
       rule(speedBands.top);
-      label("SPEED BAND DISTRIBUTION", 0, speedBands.top + 15);
+      label("Speed bands", 0, speedBands.top + 15);
       const bandY = speedBands.top + 23;
       context.fillStyle = line;
       context.fillRect(0, bandY, bounds.width, 11);
@@ -257,7 +259,7 @@ function AtlasDriveLabCanvas({ samples, metrics, statistics, colors, terrain, ra
       metrics.speedBands.forEach((band, index) => {
         const segmentWidth = bounds.width * band.share;
         context.fillStyle = index === 4 ? secondary : accent;
-        context.globalAlpha = .44 + index * .09;
+        context.globalAlpha = 1;
         context.fillRect(bandOffset, bandY, segmentWidth, 11);
         context.globalAlpha = 1;
         bandOffset += segmentWidth;
@@ -275,8 +277,8 @@ function AtlasDriveLabCanvas({ samples, metrics, statistics, colors, terrain, ra
       context.lineTo(splitX + .5, instruments.top + instruments.height - 8);
       context.stroke();
 
-      label("DIRECTION HISTORY", 0, instruments.top + 15, splitX - 6);
-      text(`${headingDistribution.sectorSizeDegrees}° SECTORS`, 0, instruments.top + 31, atlasChartFont(600), muted, "left", splitX - 6);
+      label("Direction", 0, instruments.top + 15, splitX - 6);
+      text(`${headingDistribution.sectorSizeDegrees}° sectors`, 0, instruments.top + 31, atlasChartFont(600), muted, "left", splitX - 6);
       const roseCentre = { x: 63, y: instruments.top + 81 };
       const roseInnerRadius = 10;
       const roseRingStep = 4.4;
@@ -300,7 +302,7 @@ function AtlasDriveLabCanvas({ samples, metrics, statistics, colors, terrain, ra
           context.arc(roseCentre.x, roseCentre.y, inner, end - .035, start + .035, true);
           context.closePath();
           context.fillStyle = accent;
-          context.globalAlpha = .4 + tile / Math.max(1, headingDistribution.tileLimit - 1) * .5;
+          context.globalAlpha = 1;
           context.fill();
           context.globalAlpha = 1;
         }
@@ -344,13 +346,13 @@ function AtlasDriveLabCanvas({ samples, metrics, statistics, colors, terrain, ra
 
       const elevationLeft = splitX + 10;
       const elevationRight = bounds.width;
-      label("ELEVATION", elevationLeft, instruments.top + 15);
+      label("Elevation", elevationLeft, instruments.top + 15);
       const elevationValues = samples.filter((sample) => Number.isFinite(sample.groundElevationM));
       const elevationMinimum = statistics.minimumGroundElevationM;
       const elevationMaximum = statistics.maximumGroundElevationM;
       const elevationSummary = Number.isFinite(elevationMinimum) && Number.isFinite(elevationMaximum)
-        ? `${Math.round(elevationMinimum)}–${Math.round(elevationMaximum)} M`
-        : terrain.status === "loading" ? "LOADING" : "UNAVAILABLE";
+        ? `${Math.round(elevationMinimum)}–${Math.round(elevationMaximum)} m`
+        : terrain.status === "loading" ? "Loading" : "Unavailable";
       text(elevationSummary, elevationRight, instruments.top + 32, atlasChartFont(700, ATLAS_CHART_TYPE.value), terrain.status === "live" ? secondary : muted, "right");
       if (elevationValues.length >= 2) {
         const minimum = Math.min(...elevationValues.map((sample) => sample.groundElevationM));
@@ -364,8 +366,8 @@ function AtlasDriveLabCanvas({ samples, metrics, statistics, colors, terrain, ra
           x: elevationLeft + (sample.capturedAtMs - timeMinimum) / (timeMaximum - timeMinimum) * (elevationRight - elevationLeft),
           y: elevationBottomY - (sample.groundElevationM - minimum) / span * (elevationBottomY - elevationTopY),
         }));
-        text(`${Math.round(maximum)} M`, elevationLeft, elevationTopY + 3, atlasChartFont(600, ATLAS_CHART_TYPE.data), muted);
-        text(`${Math.round(minimum)} M`, elevationLeft, elevationBottomY - 3, atlasChartFont(600, ATLAS_CHART_TYPE.data), muted);
+        text(`${Math.round(maximum)} m`, elevationLeft, elevationTopY + 3, atlasChartFont(600, ATLAS_CHART_TYPE.data), muted);
+        text(`${Math.round(minimum)} m`, elevationLeft, elevationBottomY - 3, atlasChartFont(600, ATLAS_CHART_TYPE.data), muted);
         context.beginPath();
         smoothPath(elevationPoints);
         context.lineTo(elevationPoints.at(-1).x, elevationBottomY);
@@ -382,16 +384,15 @@ function AtlasDriveLabCanvas({ samples, metrics, statistics, colors, terrain, ra
         smoothPath(elevationPoints);
         context.stroke();
       } else {
-        text("COLLECTING", elevationLeft, instruments.top + 76, atlasChartFont(700, ATLAS_CHART_TYPE.value), muted);
-        text("TERRAIN SAMPLES", elevationLeft, instruments.top + 94, atlasChartFont(600), muted);
+        text("Collecting", elevationLeft, instruments.top + 76, atlasChartFont(700, ATLAS_CHART_TYPE.value), muted);
+        text("terrain samples", elevationLeft, instruments.top + 94, atlasChartFont(600), muted);
       }
       timeAxis(instruments.top + instruments.height - 5, elevationLeft, elevationRight);
 
       rule(motion.top);
-      label("MOVING VS STOPPED", 0, motion.top + 15, bounds.width * .52);
-      text("RANGE SHARE", bounds.width, motion.top + 15, atlasChartFont(600), muted, "right", bounds.width * .4);
-      text(`MOVING ${percent(metrics.movingShare)}`, 0, motion.top + 33, atlasChartFont(750, ATLAS_CHART_TYPE.value), accent);
-      text(`STOPPED ${percent(metrics.stoppedShare)}`, bounds.width, motion.top + 33, atlasChartFont(750, ATLAS_CHART_TYPE.value), muted, "right");
+      label("Moving / stopped", 0, motion.top + 15, bounds.width * .52);
+      text(`Moving ${percent(metrics.movingShare)}`, 0, motion.top + 33, atlasChartFont(750, ATLAS_CHART_TYPE.value), accent);
+      text(`Stopped ${percent(metrics.stoppedShare)}`, bounds.width, motion.top + 33, atlasChartFont(750, ATLAS_CHART_TYPE.value), muted, "right");
       const motionY = motion.top + 36;
       context.fillStyle = line;
       context.fillRect(0, motionY, bounds.width, 11);
@@ -486,7 +487,7 @@ function AtlasDriveLabPanel({
     >
       <section className="atlas-drive-lab" aria-label="Atlas Drive Lab journey telemetry">
         <header className="atlas-panel-section-heading">
-          <div><small>ATLAS</small><strong>DRIVE LAB</strong></div>
+          <div><small>ATLAS</small><strong>Drive Lab</strong></div>
           <button
             type="button"
             className="atlas-history-range"
@@ -498,10 +499,10 @@ function AtlasDriveLabPanel({
           </button>
         </header>
         <dl className="atlas-drive-summary">
-          <div><dt>SPEED</dt><dd>{Math.round(Math.max(0, Number(speed) || 0))}<span>KM/H</span></dd></div>
-          <div><dt aria-label="Distance">DIST.</dt><dd>{formatAtlasDistance(journey.distanceM)}</dd></div>
-          <div><dt aria-label="Moving time">TIME</dt><dd>{formatAtlasDuration(movingTimeMs)}</dd></div>
-          <div><dt aria-label="Average speed">AVG SPD</dt><dd>{Number.isFinite(journey.statistics.averageSpeedKmh) ? Math.round(journey.statistics.averageSpeedKmh) : "—"}<span>KM/H</span></dd></div>
+          <div><dt>Speed</dt><dd>{Math.round(Math.max(0, Number(speed) || 0))}<span>km/h</span></dd></div>
+          <div><dt aria-label="Distance">Dist.</dt><dd>{formatAtlasDistance(journey.distanceM)}</dd></div>
+          <div><dt aria-label="Moving time">Moving</dt><dd>{formatAtlasDuration(movingTimeMs)}</dd></div>
+          <div><dt aria-label="Average speed">Average</dt><dd>{Number.isFinite(journey.statistics.averageSpeedKmh) ? Math.round(journey.statistics.averageSpeedKmh) : "—"}<span>km/h</span></dd></div>
         </dl>
         <AtlasDriveLabCanvas
           samples={journey.samples}
@@ -513,14 +514,14 @@ function AtlasDriveLabPanel({
           appearance={appearance}
         />
         <div className={`atlas-terrain-source is-${terrain.status}`}>
-          <span>{demo ? "DEMO · " : ""}GPS ALT {Number.isFinite(journey.gpsAltitudeM) ? `${Math.round(journey.gpsAltitudeM)} M` : "—"}</span>
+          <span>{demo ? "Demo · " : ""}GPS altitude {Number.isFinite(journey.gpsAltitudeM) ? `${Math.round(journey.gpsAltitudeM)} m` : "—"}</span>
           <a
             href="https://open-meteo.com/en/docs/elevation-api"
             target="_blank"
             rel="noreferrer"
             title="Terrain elevation: Open-Meteo / Copernicus DEM GLO-90"
           >
-            {terrain.status.toUpperCase()} · OPEN-METEO / COPERNICUS
+            {terrain.status} · Open-Meteo / Copernicus
           </a>
         </div>
       </section>
@@ -1131,7 +1132,10 @@ export default function AtlasField({
         onCycleHistoryRange={() => setHistoryRangeId((current) => cycleAtlasHistoryRange(current).id)}
         terrain={terrain}
         appearance={appearance}
-        colors={paletteToAtlasCss(theme.palette)}
+        colors={(() => {
+          const { roles } = resolveSemanticTheme(theme, appearance);
+          return { accent: roles.chartPrimary.resolved, secondary: roles.chartSecondary.resolved, text: roles.text.resolved, metadata: roles.metadata.resolved, boundary: roles.boundary.resolved };
+        })()}
       />
     </section>
   );

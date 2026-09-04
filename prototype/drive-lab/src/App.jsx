@@ -1,3 +1,5 @@
+import { resolveSemanticTheme } from "./semantic-theme.js";
+import { RailIcon } from "./rail-icon.jsx";
 import { Component, lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 // Keep the support QR inside the already-loaded application bundle so opening
 // the panel does not depend on a later image request over a weak connection.
@@ -1104,7 +1106,6 @@ function DiscoverPanel({ position, onClose, onRetryLocation, onDemoLocation }) {
       aria-pressed={selected?.id === page.id}
       onClick={() => setSelectedId(page.id)}
     >
-      <small>{String(index + 1).padStart(2, "0")}</small>
       {page.thumbnail ? <img src={page.thumbnail} alt="" /> : <img className="is-placeholder" src="/third-party/tabler-icons/brand-wikipedia.svg" alt="" aria-hidden="true" />}
       <span>
         <strong>{page.title}</strong>
@@ -1209,7 +1210,7 @@ function DiscoverPanel({ position, onClose, onRetryLocation, onDemoLocation }) {
                     onClick={() => setNavigationOpen((open) => !open)}
                   >
                     <span>SEND TO NAVIGATION</span>
-                    <img src="/third-party/tabler-icons/navigation-filled.svg" alt="" aria-hidden="true" />
+                    <RailIcon name="navigation" />
                   </button>
                 ) : null}
               </header>
@@ -1983,40 +1984,42 @@ function ManualEffectsDeck({ values, onChange, onClose }) {
   );
 }
 
-/**
- * Palette.
- *
- * Ten finishes in the cell that held five: the vehicle's own colours on the top
- * row, the five no car is painted in below. The housing keeps its single
- * border; the swatches inside no longer carry one of their own, which was two
- * lines doing one line's work and dulled every colour it framed. A theme that
- * genuinely uses two colours shows both, because showing one and hiding the
- * other misrepresents what selecting it does.
- */
-function PaletteControl({ themeId, onChange }) {
+/** A full-cell palette preview opens ten independently reachable touch targets. */
+function PaletteControl({ themeId, onChange, open, onOpenChange }) {
+  const containerRef = useRef(null);
   const selected = getFluxTheme(themeId);
+  useEffect(() => {
+    if (!open) return undefined;
+    const dismiss = (event) => {
+      if (event.type === "keydown" ? event.key === "Escape" : !containerRef.current?.contains(event.target)) onOpenChange(false);
+    };
+    document.addEventListener("pointerdown", dismiss, true);
+    document.addEventListener("keydown", dismiss);
+    containerRef.current?.querySelector('[aria-pressed="true"]')?.focus({ preventScroll: true });
+    return () => {
+      document.removeEventListener("pointerdown", dismiss, true);
+      document.removeEventListener("keydown", dismiss);
+    };
+  }, [open, onOpenChange]);
+  const swatch = (theme) => ({ background: theme.swatchSecondary
+    ? `linear-gradient(105deg, ${theme.swatch} 0 52%, ${theme.swatchSecondary} 52% 100%)`
+    : theme.swatch });
   return (
-    <fieldset className="palette-control">
-      <legend>PALETTE</legend>
-      <strong>{selected.label}</strong>
-      <div className="swatch-housing">
-        {FLUX_THEMES.map((theme) => (
-          <button
-            key={theme.id}
-            className={theme.id === themeId ? "is-selected" : ""}
-            type="button"
-            aria-label={`Use the ${theme.label.toLowerCase()} palette`}
-            aria-pressed={theme.id === themeId}
-            onClick={() => onChange(theme.id)}
-          >
-            <span style={theme.swatchSecondary
-              ? { background: `linear-gradient(105deg, ${theme.swatch} 0 52%, ${theme.swatchSecondary} 52% 100%)` }
-              : { background: theme.swatch }}
-            />
-          </button>
-        ))}
-      </div>
-    </fieldset>
+    <div className="palette-control" ref={containerRef} onBlurCapture={(event) => {
+      if (open && !event.currentTarget.contains(event.relatedTarget)) onOpenChange(false);
+    }}>
+      <button className="palette-trigger" type="button" aria-label={`Palette ${selected.label}. Choose palette`}
+        aria-expanded={open} aria-controls="palette-menu" onClick={() => onOpenChange(!open)}>
+        <span className="swatch-housing" aria-hidden="true">{FLUX_THEMES.map((theme) => <span key={theme.id} style={swatch(theme)} />)}</span>
+        <span className="visually-hidden">Palette {selected.label}</span>
+      </button>
+      {open ? <div className="palette-menu" id="palette-menu" role="group" aria-label="Colour palettes">
+        {FLUX_THEMES.map((theme) => <button key={theme.id} type="button" aria-pressed={theme.id === themeId}
+          aria-label={`Use the ${theme.label.toLowerCase()} palette`} onClick={() => { onChange(theme.id); onOpenChange(false); }}>
+          <span style={swatch(theme)} aria-hidden="true" /><strong>{theme.label.replace(/\s+\d+$/, "")}</strong>
+        </button>)}
+      </div> : null}
+    </div>
   );
 }
 
@@ -2257,6 +2260,7 @@ export function App() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [controlsAwake, setControlsAwake] = useState(true);
+  const [paletteMenuOpen, setPaletteMenuOpen] = useState(false);
   const [brakeFlash, setBrakeFlash] = useState(0);
   const [diagnostics, setDiagnostics] = useState(null);
   const [sendState, setSendState] = useState("idle");
@@ -2339,6 +2343,8 @@ export function App() {
   const preferredSoundtrackSelectionRef = useRef(initialPreferences.soundtrackSelection);
   const appRef = useRef(null);
   const watchRef = useRef(null);
+  const lifetimeEpochRef = useRef(0);
+  const dismissFrameRef = useRef(0);
   const wakeTimerRef = useRef(null);
   const controlsHiddenAtPointerDownRef = useRef(false);
   const smoothedSpeedRef = useRef(0);
@@ -2421,6 +2427,7 @@ export function App() {
   const previousAppearanceDiagnosticRef = useRef(null);
 
   const theme = getFluxTheme(themeId);
+  const semanticTheme = resolveSemanticTheme(theme, appearanceResolution.appearance);
   const environment = getFluxEnvironment(environmentId);
   const aperturePressure = speedToAperturePressure(speed);
   const gpsPresentation = atlasGpsPresentation(gpsState, accuracy, source);
@@ -2434,7 +2441,8 @@ export function App() {
     || manualEffectsDeckOpen
     || gpsHelpOpen
     || appearanceMenuOpen
-    || networkPopoverOpen;
+    || networkPopoverOpen
+    || paletteMenuOpen;
   const controlsPinnedRef = useRef(controlsPinned);
   const previousControlsPinnedRef = useRef(controlsPinned);
   controlsPinnedRef.current = controlsPinned;
@@ -2636,7 +2644,8 @@ export function App() {
   const selectLaunchMusic = useCallback((nextMusicId) => {
     setLaunchMusicId(nextMusicId);
     if (nextMusicId !== "soundtrack") {
-      soundtrackRef.current?.pause();
+      // Silent catalogue preparation must survive choosing another launch source.
+      if (soundtrackRef.current?.getSnapshot().current) soundtrackRef.current.pause();
       return;
     }
     void prepareSoundtrack({ force: true });
@@ -2716,33 +2725,30 @@ export function App() {
     frameTelemetryRef.current = recordFrameSample(frameTelemetryRef.current, sample);
   }, []);
 
-  const wakeControls = useCallback(() => {
-    setControlsAwake(true);
+  // Only an open surface can pin chrome. DOM focus never extends its lifetime.
+  const restControls = useCallback(() => {
+    if (controlsPinnedRef.current) return;
     window.clearTimeout(wakeTimerRef.current);
-    const restWhenIdle = () => {
-      if (isControlLayerFocused(document.activeElement)) {
-        wakeTimerRef.current = window.setTimeout(restWhenIdle, 800);
-        return;
-      }
-      setControlsAwake(false);
-    };
-    wakeTimerRef.current = window.setTimeout(restWhenIdle, 4200);
+    if (isControlLayerFocused(document.activeElement)) appRef.current?.focus({ preventScroll: true });
+    setControlsAwake(false);
   }, []);
 
+  const wakeControls = useCallback(() => {
+    window.cancelAnimationFrame(dismissFrameRef.current);
+    window.clearTimeout(wakeTimerRef.current);
+    setControlsAwake(speedRef.current < 0.8);
+    wakeTimerRef.current = window.setTimeout(restControls, 6000);
+  }, [restControls]);
+
   const queueExperienceFocus = useCallback((activationTarget = null) => {
-    window.requestAnimationFrame(() => {
+    window.cancelAnimationFrame(dismissFrameRef.current);
+    dismissFrameRef.current = window.requestAnimationFrame(() => {
       if (phase !== "running" || controlsPinnedRef.current) return;
       if (activationTarget && !shouldReleaseControlFocus(activationTarget, false)) return;
-      const activeElement = document.activeElement;
-      if (!activationTarget
-        && activeElement
-        && activeElement !== document.body
-        && activeElement !== document.documentElement
-        && activeElement !== appRef.current) return;
       appRef.current?.focus({ preventScroll: true });
-      wakeControls();
+      restControls();
     });
-  }, [phase, wakeControls]);
+  }, [phase, restControls]);
 
   const handleControlActivation = useCallback((event) => {
     if (diagnosticsActiveRef.current) {
@@ -2761,16 +2767,12 @@ export function App() {
   useEffect(() => {
     const wasPinned = previousControlsPinnedRef.current;
     previousControlsPinnedRef.current = controlsPinned;
-    const activeElement = document.activeElement;
-    const restoredControlFocus = isControlLayerFocused(activeElement);
-    const focusNeedsRecovery = restoredControlFocus
-      || !activeElement
-      || activeElement === document.body
-      || activeElement === document.documentElement;
-    if (wasPinned && !controlsPinned && focusNeedsRecovery) {
-      queueExperienceFocus(restoredControlFocus ? activeElement : null);
-    }
+    if (wasPinned && !controlsPinned) queueExperienceFocus();
   }, [controlsPinned, queueExperienceFocus]);
+
+  useEffect(() => {
+    if (speed >= 0.8 && !controlsPinned) restControls();
+  }, [speed, controlsPinned, restControls]);
 
   const handleSurfacePointerDown = useCallback((event) => {
     controlsHiddenAtPointerDownRef.current = !(controlsAwake || modalOpen);
@@ -3490,10 +3492,7 @@ export function App() {
         audioRef.current?.setMuted(true);
         soundtrackRef.current?.setVehicleMaster(vehicleEffectsEnabledRef.current);
         const controller = soundtrackController();
-        const state = controller.getSnapshot();
-        if (!["prepared", "paused", "playing"].includes(state.status)) {
-          await controller.load();
-        }
+        await prepareSoundtrack({ force: true });
         if (revision !== musicModeRevisionRef.current || sessionMusicModeRef.current !== nextMode) return;
         if (!mutedRef.current) {
           await controller.resume();
@@ -3542,7 +3541,7 @@ export function App() {
     if (revision !== musicModeRevisionRef.current || sessionMusicModeRef.current !== nextMode) return;
     setMusicModeLoading(null);
     logDiagnosticEvent("music.mode.ready", { musicMode: nextMode });
-  }, [logDiagnosticEvent, soundtrackController]);
+  }, [logDiagnosticEvent, prepareSoundtrack, soundtrackController]);
 
   useEffect(() => {
     const soundtrackStatus = soundtrackSnapshot?.status;
@@ -3914,7 +3913,7 @@ export function App() {
     soundtrackSnapshot?.library?.selection?.kind,
   ]);
   const immersiveEnvironment = environment.renderer === "atlas";
-  const showNowPlaying = phase === "running" && Boolean(currentTrack) && !modalOpen && !immersiveEnvironment;
+  const showNowPlaying = phase === "running" && Boolean(currentTrack) && !modalOpen && !immersiveEnvironment && !controlsPinned;
 
   const transportPlaying = !muted && (musicMode === "soundtrack"
     ? soundtrackMediaIsPlaying(soundtrackSnapshot)
@@ -4369,7 +4368,8 @@ export function App() {
     if (!soundtrackPanelOpen || musicMode !== "soundtrack") return undefined;
     const rotationWindow = soundtrackSnapshot?.library?.rotationWindow;
     const selection = soundtrackSnapshot?.library?.selection ?? { kind: "library", id: "all" };
-    const refreshAtMs = rotationWindow?.endsAtMs ?? Date.now();
+    const refreshAtMs = rotationWindow?.endsAtMs;
+    if (!Number.isFinite(refreshAtMs)) return undefined;
     const refresh = () => {
       const autoplay = soundtrackRef.current?.getSnapshot().status === "playing";
       void soundtrackController().load({ selection, autoplay });
@@ -4521,34 +4521,41 @@ export function App() {
     startKeyboardRegeneration,
   ]);
 
-  useEffect(() => () => {
-    diagnosticsActiveRef.current = false;
-    window.clearTimeout(wakeTimerRef.current);
-    window.clearTimeout(keyboardHintTimerRef.current);
-    window.clearTimeout(keyboardLeaseTimerRef.current);
-    window.clearTimeout(brakeFlashTimerRef.current);
-    window.clearTimeout(controlNoticeTimerRef.current);
-    window.clearInterval(audioMeterTimerRef.current);
-    window.clearInterval(flightRecorderTimerRef.current);
-    window.clearInterval(performanceSamplerTimerRef.current);
-    window.clearTimeout(viewportCaptureTimerRef.current);
-    brakeHeldRef.current = false;
-    acceleratorHeldRef.current = false;
-    keyboardReturnToGpsRef.current = false;
-    demoDriveInputRef.current = "auto";
-    stopDemo();
-    if (watchRef.current != null) navigator.geolocation?.clearWatch(watchRef.current);
-    atlasPositionSamplesRef.current = [];
-    atlasSessionJourneyRef.current = {
-      recentSamples: [],
-      sessionSamples: [],
-      travelPoints: [],
-      startedAtMs: null,
-      updatedAtMs: null,
-    };
-    audioRef.current?.destroy();
-    soundtrackRef.current?.destroy();
-    soundtrackRef.current = null;
+  useEffect(() => {
+    const epoch = ++lifetimeEpochRef.current;
+    return () => queueMicrotask(() => {
+      // React Strict Mode immediately retains the same session after its trial
+      // cleanup. Dispose only a final unmount, preserving the in-flight warmup.
+      if (lifetimeEpochRef.current !== epoch) return;
+      diagnosticsActiveRef.current = false;
+      window.cancelAnimationFrame(dismissFrameRef.current);
+      window.clearTimeout(wakeTimerRef.current);
+      window.clearTimeout(keyboardHintTimerRef.current);
+      window.clearTimeout(keyboardLeaseTimerRef.current);
+      window.clearTimeout(brakeFlashTimerRef.current);
+      window.clearTimeout(controlNoticeTimerRef.current);
+      window.clearInterval(audioMeterTimerRef.current);
+      window.clearInterval(flightRecorderTimerRef.current);
+      window.clearInterval(performanceSamplerTimerRef.current);
+      window.clearTimeout(viewportCaptureTimerRef.current);
+      brakeHeldRef.current = false;
+      acceleratorHeldRef.current = false;
+      keyboardReturnToGpsRef.current = false;
+      demoDriveInputRef.current = "auto";
+      stopDemo();
+      if (watchRef.current != null) navigator.geolocation?.clearWatch(watchRef.current);
+      atlasPositionSamplesRef.current = [];
+      atlasSessionJourneyRef.current = {
+        recentSamples: [],
+        sessionSamples: [],
+        travelPoints: [],
+        startedAtMs: null,
+        updatedAtMs: null,
+      };
+      audioRef.current?.destroy();
+      soundtrackRef.current?.destroy();
+      soundtrackRef.current = null;
+    });
   }, [stopDemo]);
 
   const buildDiagnosticReport = useCallback(() => diagnostics ? {
@@ -4769,7 +4776,9 @@ export function App() {
     <main
       ref={appRef}
       tabIndex={-1}
-      className={`app phase-${phase} ${controlsAwake || controlsPinned ? "controls-awake" : "controls-resting"}${modalOpen ? " modal-open" : ""}${showNowPlaying ? " has-now-playing" : ""}`}
+      className={`app phase-${phase} ${(controlsAwake && speed < 0.8) || controlsPinned ? "controls-awake" : "controls-resting"}${modalOpen ? " modal-open" : ""}${showNowPlaying ? " has-now-playing" : ""}`}
+      style={semanticTheme.css}
+      data-moving={speed >= 0.8}
       data-palette={themeId}
       data-appearance={appearanceResolution.appearance}
       data-appearance-mode={appearanceMode}
@@ -4778,7 +4787,10 @@ export function App() {
       onPointerDown={handleSurfacePointerDown}
       onClickCapture={handleControlActivation}
       onChangeCapture={handleControlChange}
-      onFocusCapture={wakeControls}
+      onKeyDownCapture={(event) => {
+        if (event.key === "Tab") wakeControls();
+        if (event.key === "Escape" && !controlsPinned) restControls();
+      }}
     >
       {phase === "running" ? (
         <EnvironmentErrorBoundary
@@ -5070,7 +5082,7 @@ export function App() {
             aria-label={`GPS ${gpsPresentation.status}, accuracy ${gpsPresentation.accuracy}`}
             onClick={toggleGpsHelp}
           >
-            <img src="/third-party/tabler-icons/navigation-filled.svg" alt="" aria-hidden="true" />
+            <RailIcon name="navigation" />
             <span className="visually-hidden">GPS</span>
             <small className="visually-hidden">{gpsPresentation.accuracy}</small>
           </button>
@@ -5081,7 +5093,7 @@ export function App() {
             aria-label="Open Discover passenger index"
             aria-haspopup="dialog"
           >
-            <img src="/third-party/tabler-icons/map-search.svg" alt="" aria-hidden="true" />
+            <RailIcon name="map-search" />
           </button>
           <button
             className="report-button"
@@ -5090,11 +5102,7 @@ export function App() {
             aria-label="Open session report"
             aria-haspopup="dialog"
           >
-            <img
-              src="/third-party/tabler-icons/report-analytics.svg"
-              alt=""
-              aria-hidden="true"
-            />
+            <RailIcon name="report-analytics" />
           </button>
         </header>
 
@@ -5112,7 +5120,7 @@ export function App() {
             <strong>{Math.round(speed)}</strong>
             <span className="readout-unit">km/h</span>
           </div>
-          {activeEffect && <div className="effect-badge">{activeEffect}</div>}
+          <div className={`effect-badge${activeEffect ? " is-active" : ""}`} aria-hidden={!activeEffect}>{activeEffect || "UNDERWATER"}</div>
         </button>
 
         {controlNotice ? (
@@ -5129,7 +5137,26 @@ export function App() {
           />
         ) : null}
 
-        <footer className={`control-slab control-layer${musicMode === "soundtrack" ? " is-soundtrack" : ""}`} aria-label="Flux performance controls">
+        <div className="footer-stack control-layer" inert={!((controlsAwake && speed < 0.8) || controlsPinned) ? true : undefined}>
+      {showNowPlaying ? (
+        <div className="now-playing-dock persistent-transport" aria-label="Now playing and music transport">
+          <div className="now-playing-summary" role="status" aria-live="polite" aria-atomic="true">
+            {currentTrack.artwork ? <img src={currentTrack.artwork} alt="" width="72" height="72" /> : <span className="now-playing-artwork" aria-hidden="true">16</span>}
+            <span className="now-playing-copy">
+              <small>{soundtrackSnapshot?.status === "buffering" ? `LOADING ${String(soundtrackSnapshot?.pending?.direction || "TRACK").toUpperCase()}` : "NOW PLAYING"}</small>
+              <strong>{currentTrack.title}</strong>
+              <em>{currentTrack.artist} · {currentTrack.album}</em>
+            </span>
+          </div>
+          <div className="now-playing-transport" aria-label="Music transport">
+            <button type="button" onClick={() => void moveTransport("previous", "persistent-transport")} aria-label="Previous track"><MediaGlyph name="previous" /></button>
+            <button type="button" onClick={() => void toggleTransport(null, "persistent-transport")} aria-label={transportPlaying ? "Pause" : "Play"}><MediaGlyph name={transportPlaying ? "pause" : "play"} /></button>
+            <button type="button" onClick={() => void moveTransport("next", "persistent-transport")} aria-label="Next track"><MediaGlyph name="next" /></button>
+          </div>
+        </div>
+      ) : null}
+
+        <footer className={`control-slab${musicMode === "soundtrack" ? " is-soundtrack" : ""}`} aria-label="Flux performance controls">
           <button
             className={`stop-button${muted ? " is-active" : ""}`}
             type="button"
@@ -5173,27 +5200,10 @@ export function App() {
             <strong aria-hidden="true">↑</strong>
             <small>{SOUNDTRACK_MANUAL_CONTROLS.filter(({ id }) => soundtrackManualEffects[id] > 0.01).length}/8 ACTIVE</small>
           </button>
-          <PaletteControl themeId={themeId} onChange={setThemeId} />
+          <PaletteControl themeId={themeId} onChange={setThemeId} open={paletteMenuOpen} onOpenChange={setPaletteMenuOpen} />
         </footer>
-      </section>
-
-      {showNowPlaying ? (
-        <div className="now-playing-dock persistent-transport control-layer" aria-label="Now playing and music transport">
-          <div className="now-playing-summary" role="status" aria-live="polite" aria-atomic="true">
-            {currentTrack.artwork ? <img src={currentTrack.artwork} alt="" width="72" height="72" /> : <span className="now-playing-artwork" aria-hidden="true">16</span>}
-            <span className="now-playing-copy">
-              <small>{soundtrackSnapshot?.status === "buffering" ? `LOADING ${String(soundtrackSnapshot?.pending?.direction || "TRACK").toUpperCase()}` : "NOW PLAYING"}</small>
-              <strong>{currentTrack.title}</strong>
-              <em>{currentTrack.artist} · {currentTrack.album}</em>
-            </span>
-          </div>
-          <div className="now-playing-transport" aria-label="Music transport">
-            <button type="button" onClick={() => void moveTransport("previous", "persistent-transport")} aria-label="Previous track"><MediaGlyph name="previous" /></button>
-            <button type="button" onClick={() => void toggleTransport(null, "persistent-transport")} aria-label={transportPlaying ? "Pause" : "Play"}><MediaGlyph name={transportPlaying ? "pause" : "play"} /></button>
-            <button type="button" onClick={() => void moveTransport("next", "persistent-transport")} aria-label="Next track"><MediaGlyph name="next" /></button>
-          </div>
         </div>
-      ) : null}
+      </section>
 
       {supportOpen ? (
         <SupportPanel

@@ -74,7 +74,7 @@ test("appearance persistence, runtime resolution and diagnostics remain palette-
   assert.match(app, /const holdAppearanceDuringPointer = useCallback\(\(\) => \{[\s\S]*?appearanceModeRef\.current === "auto"[\s\S]*?setAppearanceInteractionActive\(true\)/);
   assert.match(app, /onPointerDownCapture=\{holdAppearanceDuringPointer\}/);
   assert.match(app, /if \(appearanceMode !== "auto"\) \{[\s\S]*?setAppearanceInteractionActive\(false\);[\s\S]*?return undefined/);
-  assert.match(app, /const focusNeedsRecovery = restoredControlFocus[\s\S]*?activeElement === document\.body[\s\S]*?activeElement === document\.documentElement/);
+  assert.match(app, /wasPinned && !controlsPinned/);
   assert.doesNotMatch(app, /appearanceRetainedFocus/);
   assert.match(app, /const changeAppearanceMenuOpen = useCallback\(\(open\) => \{[\s\S]*?setGpsHelpOpen\(false\);[\s\S]*?setNetworkPopoverOpen\(false\)/);
   assert.match(app, /const changeNetworkPopoverOpen = useCallback\(\(open\) => \{[\s\S]*?setAppearanceMenuOpen\(false\);[\s\S]*?setGpsHelpOpen\(false\)/);

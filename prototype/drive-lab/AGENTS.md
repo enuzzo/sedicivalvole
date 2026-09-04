@@ -118,3 +118,40 @@ When implementing from a selected generated mock, treat that image as the source
 - Keep `CHANGELOG.md` strictly progressive and append-only: never rewrite, alter, or remove past entries under any circumstances. Every changelog entry must state the date, local time (`YYYY-MM-DD HH:MM`), commit hash (`[commit]`), and build stamp when deploying (`build YYYYMMDD-HHMM`).
 
 Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts/prepare-sites-build.mjs`, and `tests/sites-worker.test.mjs` intact so the same local prototype can be handed to Sites. Before a Sites handoff, run `npm run build` and `npm run test:sites`; the build must leave `dist/client/index.html`, `dist/server/index.js`, and `dist/.openai/hosting.json`.
+
+## Owner update — 2026-09-04 refined Balanced Rail
+
+These newer owner decisions supersede the earlier presentation and focus-retention
+rules above where they differ:
+
+- Use the refined Balanced Rail direction. Keep 16 first while stationary; speed
+  alone has exceptional numerical hierarchy. Four right-side icons share optical
+  frames, stroke and central alignment within equal finger-sized cells.
+- Now Playing belongs to the footer's single animated/inert container. Suppress it
+  in ATLAS and while any real menu, popup or passenger panel is open. Never leave
+  an independent miniplayer overlay over a visual or Discover.
+- Completed unpinned actions and closed drawers retract chrome immediately. The
+  inactivity deadline is six seconds. Stale keyboard focus must never extend it,
+  but an actually open surface must retain its controls and focus. At movement of
+  at least 0.8 km/h, unpinned chrome stays closed even after ambient taps; only the
+  speed/effect module remains. Motion itself never wakes controls.
+- Preserve 48/56 px action targets and the semantic type ladder. Treat footer
+  cells, baselines, state styling, spacing and icons with the same rules as navbar.
+- Resolve every palette's critical LIGHT/DARK UI roles centrally. Preserve passing
+  colours; adjust lightness/chroma minimally at fixed hue when necessary. Record
+  original/resolved values and measured ratios, and test both the palette matrix
+  and actual rendered backgrounds. Renderer artwork remains palette-owned.
+- ATLAS uses readable case and deliberate vertical spacing. DISCOVER real names
+  get at least two lines; remove decorative result numbers. Native article and
+  third-party renderer boundaries remain unchanged.
+- UNDERWATER extends the complete speed badge footprint, descends/returns from
+  that badge, uses a contrast-safe palette-derived background and respects reduced
+  motion. It must not read as an alarm-red warning.
+- Keep the splash preparation request reusable across launch choices and Music
+  selection, including React Strict Mode's development lifecycle.
+- Use Product Design audit and real-render frontend testing, not the frontend
+  application builder. The owner authorized Playwright/Chrome for this work.
+- Keep one writer in the saved Dropbox checkout; no new task/worktree/checkout.
+  Verified Git checkpoints may be pushed. Canonical deployment still requires an
+  explicit owner request and the applicable gates; browser proof is not Tesla
+  cabin, native-media, network or sustained-GPU acceptance.

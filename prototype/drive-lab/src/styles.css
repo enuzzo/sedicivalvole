@@ -4407,3 +4407,98 @@ html { font-size: var(--font-size-floor); }
   .source-readout,
   .source-readout.is-soundtrack { right: 116px; width: 84px; }
 }
+
+/* Balanced Rail refinement: semantic UI colours do not alter renderer palettes. */
+.app.phase-running { --road-sheet-signal: var(--ui-accent-text); }
+.app[data-appearance] :is(button, input, select, a):focus-visible { outline: 2px solid var(--ui-focus); outline-offset: -3px; }
+.app[data-appearance] .topbar :is(.appearance-trigger, .gps-state, .discover-button, .report-button, .network-state) {
+  display: flex; align-items: center; justify-content: center; flex-direction: row;
+  width: 100%; height: 64px; min-height: 64px; padding: 0; gap: 0;
+  border: 0; border-left: 1px solid var(--ui-line-soft); color: var(--ui-text);
+}
+.app .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+.rail-icon { display: flex; flex: 0 0 32px; width: 32px; height: 32px; align-items: center; justify-content: center; }
+.rail-icon svg { display: block; width: 28px; height: 28px; fill: none; stroke: currentColor; }
+.rail-icon svg * { vector-effect: non-scaling-stroke; stroke-width: 2px; }
+.rail-icon[data-icon="report-analytics"] svg { width: 32px; height: 32px; }
+.rail-icon[data-icon="navigation"] svg { width: 29px; height: 29px; }
+.app.controls-resting .topbar { opacity: 1; visibility: visible; transform: none; border-color: transparent; background: transparent; pointer-events: none; }
+.app.controls-resting .topbar > :not(.topbar-mark) { visibility: hidden; opacity: 0; pointer-events: none; }
+.app[data-moving="true"].controls-resting .topbar-mark { visibility: hidden; pointer-events: none; }
+.app.modal-open .experience .topbar { visibility: hidden; opacity: 0; pointer-events: none; }
+
+/* One animation owner for footer and transport; no independent floating player. */
+.footer-stack { position: absolute; z-index: 35; left: 0; right: 0; bottom: 0; transition: transform 260ms ease, visibility 0s; }
+.app .footer-stack .control-slab { position: relative; inset: auto; transform: none; visibility: inherit; opacity: 1; }
+.app .footer-stack .persistent-transport { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); visibility: inherit; opacity: 1; }
+.app.controls-resting .footer-stack { transform: translateY(calc(100% + 100px)); visibility: hidden; pointer-events: none; transition: transform 260ms ease, visibility 0s 260ms; }
+.app .control-slab > :is(button, .environment-control, .score-control) { min-height: 64px; align-content: center; }
+.app .control-slab :is(.control-value, strong) { line-height: 1.15; }
+.app[data-appearance] .now-playing-copy em { color: var(--ui-muted); }
+.app[data-appearance] .now-playing-artwork { background: var(--ui-selected-surface); color: var(--ui-selected-text); }
+.palette-control { position: relative; padding: 0; display: block; }
+.palette-trigger { display: block; width: 100%; height: 64px; padding: 8px; border: 0; background: var(--ui-control); }
+.palette-trigger .swatch-housing { gap: 4px; }
+.palette-trigger .swatch-housing > span { border-radius: 3px; }
+.palette-menu { position: absolute; right: 8px; bottom: 76px; width: 380px; max-width: calc(100vw - 24px); padding: 8px; display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 8px; border: 1px solid var(--ui-line); border-radius: 6px; background: var(--ui-surface); }
+.palette-menu button { display: grid; justify-items: stretch; gap: 5px; min-width: 48px; min-height: 64px; padding: 6px; border: 1px solid var(--ui-line); border-radius: 6px; color: var(--ui-text); background: var(--ui-control); }
+.palette-menu button > span { height: 24px; border-radius: 3px; }
+.palette-menu button strong { font-size: 13px; font-weight: 600; }
+.palette-menu button[aria-pressed="true"] { color: var(--ui-selected-text); background: var(--ui-selected-surface); }
+
+.app[data-appearance] .effect-badge { display: flex; align-items: center; justify-content: center; box-sizing: border-box; left: 0; top: 0; bottom: auto; width: 100%; height: 64px; padding: 0 3px; border-radius: 0 0 6px 6px; background: var(--ui-effect-surface); color: var(--ui-effect-text); font-size: 13px; font-weight: 650; letter-spacing: 0; transform: translateY(0); opacity: 0; pointer-events: none; transition: transform 260ms ease, opacity 180ms ease; z-index: -1; }
+.app[data-appearance] .effect-badge.is-active { transform: translateY(100%); opacity: 1; }
+
+/* Atlas data marks are opaque, resolved semantic colours on an opaque surface. */
+.app[data-appearance] .atlas-panel { background: var(--ui-surface-strong); }
+.atlas-drive-lab { padding: 14px 14px 18px; }
+.atlas-panel-section-heading { margin-bottom: 12px; }
+.atlas-panel-section-heading strong { text-transform: none; font-size: 17px; letter-spacing: 0; }
+.atlas-drive-summary { margin: 12px 0 16px; }
+.atlas-drive-summary dt { text-transform: none; letter-spacing: 0; font-size: 13px; line-height: 1.4; }
+.atlas-drive-summary dd { line-height: 1.5; }
+.atlas-drive-lab-canvas { height: 400px; }
+.app[data-appearance] .atlas-terrain-source { display: grid; gap: 5px; margin-top: 14px; padding-top: 10px; color: var(--ui-muted); }
+.app[data-appearance] .atlas-terrain-source :is(span,a) { white-space: normal; overflow: visible; text-overflow: clip; text-transform: none; color: var(--ui-muted); letter-spacing: 0; line-height: 1.4; }
+
+/* Real place names get two complete lines; the index has no decorative numbers. */
+.discover-results > button { grid-template-columns: 44px minmax(0,1fr); min-height: 88px; height: 88px; padding: 8px; gap: 9px; }
+.discover-results > button > img { width: 44px; height: 56px; }
+.discover-results > button strong { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; white-space: normal; overflow: hidden; text-overflow: clip; font-size: 17px; font-weight: 600; line-height: 1.22; letter-spacing: -.015em; text-transform: none; }
+.discover-results > button em { margin-top: 3px; line-height: 1.3; }
+.app[data-appearance] .discover-results > button.is-selected { box-shadow: inset 3px 0 var(--ui-selected-accent); }
+.app[data-appearance] .discover-results > button.is-selected :is(small,em) { color: var(--ui-selected-text); }
+.discover-reader > header h3 { white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-height: 1.2; font-size: 22px; font-weight: 600; }
+.discover-heading h2 { text-transform: none; letter-spacing: -.015em; }
+@media (prefers-reduced-motion: reduce) { .footer-stack, .app[data-appearance] .effect-badge { transition: none; } }
+.app .appearance-trigger > .rail-icon { display: flex; }
+.app[data-appearance] .topbar .network-state:is(.is-good,.is-active) { color: var(--ui-success); }
+.app[data-appearance] .topbar .network-state.is-caution { color: var(--ui-caution); }
+.app[data-appearance] .topbar .network-state.is-alert { color: var(--ui-alert); }
+.app[data-appearance] .atlas-field.is-panel-collapsed .atlas-panel-toggle { right: 0; }
+.app[data-appearance] .atlas-field .maplibregl-ctrl.maplibregl-ctrl-attrib { color: #fff; background: #101010e6; opacity: 1; font-size: 13px; line-height: 1.15; }
+.app[data-appearance] .atlas-panel section { padding: 14px; }
+.app[data-appearance] .atlas-history-range { color: var(--ui-accent-text); background: var(--ui-control); border-color: var(--ui-line); }
+.atlas-drive-lab-canvas { height: 380px; }
+.app.controls-resting :is(.atlas-navigation-plaque,.atlas-map-appearance,.atlas-demo-hint) { visibility: hidden; pointer-events: none; }
+/* Filled accents and inverse selections have their own foreground contexts. */
+.app[data-appearance] :is(.score-source.is-sampled,.discover-navigation-trigger[aria-expanded="true"],.preview-btn:active) { color: var(--ui-accent-fill-text); }
+.app[data-appearance] .score-entry.is-active :is(.score-entry-number,.score-entry-body span,.score-entry-title b),
+.app[data-appearance] .soundtrack-track-list button.is-current small { color: var(--ui-selected-text); }
+.app[data-appearance] .play-road-library .score-entry.is-active .score-entry-title b { color: var(--ui-selected-accent); }
+.app[data-appearance] :is(.palette-menu button[aria-pressed="true"],.discover-results > button.is-selected,.score-entry.is-active,.soundtrack-track-list > button.is-current,.now-playing-transport button:nth-child(2),.visual-render-toggle[aria-pressed="true"]):focus-visible { outline-color: var(--ui-selected-accent); }
+.app[data-appearance] :is(input,select,textarea) { border-color: var(--ui-line); }
+.app[data-appearance] .topbar :is(.appearance-control,.network-control) { border: 0; padding: 0; }
+.app .footer-stack .persistent-transport, .app .footer-stack .control-slab { transition: none; }
+.app[data-appearance] .persistent-transport.now-playing-dock { min-height: 64px; padding: 3px 8px; }
+.app .topbar { border-bottom: 0; box-shadow: inset 0 -1px var(--ui-line-soft); }
+.app.controls-resting .topbar { box-shadow: none; }
+.app .footer-stack .control-slab { border-top: 0; box-shadow: inset 0 1px var(--ui-line-soft); }
+.discover-results > button.discover-more { height: 48px; min-height: 48px; grid-template-columns: auto auto; justify-content: center; }
+.app[data-appearance] .effect-badge { left: -1px; top: -1px; width: calc(100% + 2px); }
+.app[data-appearance] .effect-badge { top: 0; }
+.app[data-moving="true"].controls-resting :is(.keyboard-hint,.control-status-notice,.track-change-notice) { visibility: hidden; }
+
+@media (prefers-reduced-motion: reduce) { .app[data-appearance] .effect-badge, .app .footer-stack { transition: none !important; } }
+.app .rail-icon:is([data-icon="sun"],[data-icon="moon"],[data-icon="sun-moon"]) svg { width: 32px; height: 32px; }
+.app[data-appearance] :is(.stop-button.is-active,.effects-button.is-active,.mix-button.is-open) { background: var(--ui-control); }

@@ -302,3 +302,13 @@ Regression-check the whole owner queue: Now Playing suppression in ATLAS/modals;
 
 Capture real before/after screenshots, record exact contrast ratios, run focused and complete relevant tests, Sites 9/9, the architecture-specific production build, git diff --check, console/overflow/focus/touch checks, and update documentation plus CHANGELOG append-only. The PHP mail fixture may only be claimed on a host with php. Make small verified commits and push clean checkpoints. Do not deploy unless I explicitly request publication and all applicable gates are green; if deployment is later authorized, record the build stamp and verify the canonical URL, HTML, assets, version, cache, and local/live byte identity. End with a concise Italian report separating implemented work, verified evidence, unavailable/vehicle-only gates, deployment status, and the recommended next step.
 ```
+
+## Office execution completed
+
+The owner selected refined Balanced Rail and explicitly authorized browser tools.
+All local implementation and regression work above is accounted for in
+[ASTRA-UI-VERIFICATION-2026-09-04.md](ASTRA-UI-VERIFICATION-2026-09-04.md).
+The newer owner requirement supersedes persistent moving chrome: only speed and
+its effect extension remain when moving without an open surface. The miniplayer
+shares the footer lifecycle and is suppressed while any menu/panel is open.
+No canonical deployment or physical-Tesla acceptance is implied by this completion.

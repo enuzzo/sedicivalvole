@@ -877,3 +877,22 @@ profiling. It must remain absent from production builds and the canonical site.
 ## 2026-09-04 Astra semantic foundation (UI integration pending)
 
 The office audit and full remaining ledger are in [ASTRA-UI-AUDIT-2026-09-04.md](ASTRA-UI-AUDIT-2026-09-04.md). A cached semantic colour resolver now covers all ten palettes, both appearances and fifteen critical roles, with a reproducible raw/resolved contrast matrix. It is not yet connected to product components: no corrected UI or complete browser regression is claimed. The foundation passes 625 automated checks including Sites 9/9 and the real PHP fixture, plus the exact-toolchain ARM64 production build. The shared Dropbox dependencies contained stale Vite/PostCSS; the verified build used an isolated temporary dependency cache without rewriting that tree. Direction selection and the requested headless-browser fallback answer are pending in this same task; canonical deployment remains withheld.
+
+## 2026-09-04 office completion — owner-selected refined Balanced Rail
+
+The current implementation and evidence are in
+[ASTRA-UI-VERIFICATION-2026-09-04.md](ASTRA-UI-VERIFICATION-2026-09-04.md), with a
+portable [773 × 601 comparison gallery](qa/2026-09-04-astra/index.html).
+The UI/handoff implementation ledger is complete locally: all seven Visual
+families, three Gradient variants, modal/popover closure, timer/focus/motion,
+semantic contrast, palette targets, ATLAS, DISCOVER, footer/transport and badge
+geometry have been exercised. The new browser runners are `qa:chrome` and
+`qa:splash-gradient`; supply Playwright and Chrome externally. No new product
+runtime dependency was introduced.
+
+There is one writer in the saved project, no new checkout/task, and no deployment.
+The next step is owner review of these comparisons, followed by explicitly
+requested publication and the separate real-Tesla acceptance queue. Do not claim
+native media controls, real GPS/touch/glare, first Jamendo audio on the vehicle,
+or sustained GPU/thermal acceptance from desktop evidence. A host without PHP
+must still report that fixture unavailable rather than borrowing this host's pass.

@@ -1227,3 +1227,28 @@ hyphenated [`SESSION-HANDOFF.md`](SESSION-HANDOFF.md).
 ## 2026-09-04 Astra semantic foundation (UI integration pending)
 
 The office audit and full remaining ledger are in [ASTRA-UI-AUDIT-2026-09-04.md](ASTRA-UI-AUDIT-2026-09-04.md). A cached semantic colour resolver now covers all ten palettes, both appearances and fifteen critical roles, with a reproducible raw/resolved contrast matrix. It is not yet connected to product components: no corrected UI or complete browser regression is claimed. The foundation passes 625 automated checks including Sites 9/9 and the real PHP fixture, plus the exact-toolchain ARM64 production build. The shared Dropbox dependencies contained stale Vite/PostCSS; the verified build used an isolated temporary dependency cache without rewriting that tree. Direction selection and the requested headless-browser fallback answer are pending in this same task; canonical deployment remains withheld.
+
+## 2026-09-04 office completion — refined Balanced Rail
+
+The owner selected direction 1, authorized Playwright/Chrome and requested a
+strict chrome lifecycle. The earlier semantic-foundation pending status is now
+superseded by [the completed verification](ASTRA-UI-VERIFICATION-2026-09-04.md).
+
+Implemented: unified footer/Now Playing animation and inert boundary; suppression
+while any surface is open or ATLAS is active; immediate action/close retraction;
+6-second inactivity independent of stale focus; genuine open surfaces retain
+chrome; motion at or above 0.8 km/h keeps unpinned controls and the mark hidden.
+The stationary 16 mark remains first. Rail glyphs share 32 px optical frames and
+2 px stroke; touch targets retain 48/56 px minima. UNDERWATER matches the 96 × 64
+speed badge and uses palette-derived contrast-safe colour. ATLAS gains case,
+spacing and chart contrast; DISCOVER gains two-line names and loses numbering.
+The full-cell palette opens ten large targets. Semantic integration covers 320
+role variants and 180 measured rendered text/background pairs. Splash preparation
+survives React trial cleanup and is reused by Soundtrack selection.
+
+Passed: 625 native checks including actual PHP gzip fixture and Sites 9/9;
+64 rendered lifecycle checks plus 6 preload/Gradient/badge checks; zero browser
+warnings/errors; native ARM64 App 242/LAB 154/Sites production build; diff whitespace
+check. The pre-existing build chunk-size advisory remains. Real Tesla acceptance
+and canonical deployment remain unperformed. No `_references/` or secret files
+were accessed or added. Source/runtime licensing boundaries are unchanged.

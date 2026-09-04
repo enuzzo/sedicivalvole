@@ -99,7 +99,7 @@ test("Atlas GPS presentation covers denial, timeout, inaccurate fixes and recove
   assert.equal(atlasGpsPresentation("live", 4.1).tone, "imprecise");
   assert.equal(atlasGpsPresentation("permission denied", null, "DEMO").tone, "offline");
   assert.match(appSource, /className=\{`gps-state is-\$\{gpsPresentation\.tone\}`\}/);
-  assert.match(appSource, /navigation-filled\.svg[\s\S]*?<span className="visually-hidden">GPS<\/span>[\s\S]*?<small className="visually-hidden">\{gpsPresentation\.accuracy\}<\/small>/);
+  assert.match(appSource, /<RailIcon name="navigation"[\s\S]*?<span className="visually-hidden">GPS<\/span>[\s\S]*?<small className="visually-hidden">\{gpsPresentation\.accuracy\}<\/small>/);
   assert.doesNotMatch(appSource, /<strong>\{gpsPresentation\.status\}<\/strong>/);
   assert.match(styles, /\.gps-state\.is-precise \{ color: #55d991; \}/);
   assert.match(styles, /\.gps-state\.is-imprecise \{ color: #f3a84c; \}/);
@@ -417,8 +417,8 @@ test("Atlas obtains coarse terrain elevation separately from browser GPS altitud
   assert.equal(normalizeOpenMeteoElevation({ elevation: [122] }), 122);
   assert.equal(normalizeOpenMeteoElevation({ elevation: [12000] }), null);
   assert.equal(normalizeOpenMeteoElevation({}), null);
-  assert.match(atlasSource, /GPS ALT/);
-  assert.match(atlasSource, /OPEN-METEO \/ COPERNICUS/);
+  assert.match(atlasSource, /GPS altitude/);
+  assert.match(atlasSource, /Open-Meteo \/ Copernicus/);
   assert.match(atlasSource, /window\.setInterval\(updateJourney, ATLAS_JOURNEY_SAMPLE_INTERVAL_MS\)/);
   assert.match(styles, /\.atlas-history-range/);
 });
@@ -527,20 +527,20 @@ test("Atlas Drive Lab fits its selected telemetry hierarchy at the Tesla viewpor
   assert.match(styles, /\.atlas-drive-lab-canvas \{[\s\S]*?width: 100%;[\s\S]*?height: 340px;/);
   assert.match(atlasSource, /appendAtlasJourneySample/);
   assert.match(atlasSource, /atlasJourneyDistanceMetres\(travelPointsRef\.current\)/);
-  for (const label of ["ACCEL / BRAKING BALANCE", "SPEED BAND DISTRIBUTION", "DIRECTION HISTORY", "MOVING VS STOPPED", "ELEVATION"]) {
+  for (const label of ["Accel / braking", "Speed bands", "Direction", "Moving / stopped", "Elevation"]) {
     assert.match(atlasSource, new RegExp(label.replace("/", "\\/")));
   }
   assert.match(atlasSource, /quadraticCurveTo/);
   assert.match(atlasSource, /headingDistribution\.sectors\.forEach/);
   assert.match(atlasSource, /context\.arc\(roseCentre\.x/);
-  assert.match(atlasSource, /° SECTORS/);
-  assert.match(atlasSource, /RANGE SHARE/);
+  assert.match(atlasSource, /° sectors/);
+  assert.doesNotMatch(atlasSource, /RANGE SHARE/);
   assert.match(atlasSource, /ATLAS_CHART_FONT_FAMILY = '\"Space Grotesk\", ui-sans-serif, system-ui, sans-serif'/);
   assert.match(atlasSource, /ATLAS_CHART_TYPE = Object\.freeze\(\{[\s\S]*?meta: 14,[\s\S]*?label: 14,[\s\S]*?data: 15,[\s\S]*?value: 16,/);
-  assert.match(atlasSource, /right - left < 200[\s\S]*?\["−15", "−10", "−5", "NOW"\]/);
-  assert.match(atlasSource, /aria-label="Distance">DIST\.<\/dt>/);
-  assert.match(atlasSource, /aria-label="Moving time">TIME<\/dt>/);
-  assert.match(atlasSource, /aria-label="Average speed">AVG SPD<\/dt>/);
+  assert.match(atlasSource, /right - left < 200[\s\S]*?\["−15", "−10", "−5", "Now"\]/);
+  assert.match(atlasSource, /aria-label="Distance">Dist\.<\/dt>/);
+  assert.match(atlasSource, /aria-label="Moving time">Moving<\/dt>/);
+  assert.match(atlasSource, /aria-label="Average speed">Average<\/dt>/);
   assert.match(atlasSource, /fontVariantNumeric = "tabular-nums"/);
   assert.match(atlasSource, /tabularDigitWidth = Math\.max\([\s\S]*?context\.measureText\(digit\)\.width/);
   assert.doesNotMatch(atlasSource, /ui-monospace|\b(?:[0-9]|1[0-3])(?:\.[0-9]+)?px\b/);
@@ -820,8 +820,8 @@ test("Atlas owns a minimal palette-driven OpenFreeMap style with mandatory attri
 });
 
 test("Atlas Drive Lab charts follow the product appearance with readable light contrast", () => {
-  assert.match(atlasSource, /const light = appearance === "light"/);
-  assert.match(atlasSource, /const paper = light \? "rgba\(23, 26, 32, \.94\)"/);
+  assert.match(atlasSource, /resolveSemanticTheme\(theme, appearance\)/);
+  assert.match(atlasSource, /const paper = colors.text/);
   assert.match(atlasSource, /appearance = "dark"/);
   assert.match(atlasSource, /appearance=\{appearance\}/);
   assert.match(styles, /\.app\[data-appearance\] \.atlas-panel \{ color: var\(--ui-text\);/);

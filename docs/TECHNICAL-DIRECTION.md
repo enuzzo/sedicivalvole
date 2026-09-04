@@ -666,3 +666,27 @@ Build output is static. During the current private development phase, user-appro
 ## 2026-09-04 Astra semantic foundation (UI integration pending)
 
 The office audit and full remaining ledger are in [ASTRA-UI-AUDIT-2026-09-04.md](ASTRA-UI-AUDIT-2026-09-04.md). A cached semantic colour resolver now covers all ten palettes, both appearances and fifteen critical roles, with a reproducible raw/resolved contrast matrix. It is not yet connected to product components: no corrected UI or complete browser regression is claimed. The foundation passes 625 automated checks including Sites 9/9 and the real PHP fixture, plus the exact-toolchain ARM64 production build. The shared Dropbox dependencies contained stale Vite/PostCSS; the verified build used an isolated temporary dependency cache without rewriting that tree. Direction selection and the requested headless-browser fallback answer are pending in this same task; canonical deployment remains withheld.
+
+## 2026-09-04 semantic integration and chrome lifecycle
+
+The integration-pending foundation above is superseded by
+[the verified refinement](ASTRA-UI-VERIFICATION-2026-09-04.md). `semantic-theme.js`
+now provides cached CSS variables to the app and opaque chart colours to ATLAS.
+Sixteen roles separate neutral text, accent text/fill ink, inverse selection ink,
+focus/boundary, chart series, indicators, effect fill/ink and status colours.
+Raw renderer palettes remain separate. The integrated CSV contains 320 variants;
+rendered browser checks also composite actual backgrounds for 180 text pairs.
+
+`footer-stack` owns the sole footer/transport transform and inert state. Open
+surface state, not focus, pins chrome. Unpinned activation/closure retracts on the
+next animation frame; a deliberate new wake cancels obsolete queued dismissal.
+The idle deadline is six seconds. Motion suppresses unpinned chrome even on taps.
+Menu closure returns focus to the main experience; idle expiry cannot steal focus
+from an open surface. Source readout and its same-size effect extension remain
+independent of the retracting controls.
+
+App resource disposal is deferred one microtask and guarded by a retained lifetime
+epoch. React Strict Mode's synchronous trial cleanup therefore cannot destroy the
+new splash media controller; a real final unmount still releases it. Source choice
+awaits the shared preparation promise, and rotation refresh requires a real finite
+deadline. Browser tests verify actual request reuse, not only source-code shape.

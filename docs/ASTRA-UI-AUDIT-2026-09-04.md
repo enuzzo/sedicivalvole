@@ -139,3 +139,12 @@ The following work is **pending**, not inferred complete from static tests:
     all applicable gates pass. Cabin/glare/touch, GPS, native Media Session,
     real-network first load, sustained GPU/frame/thermal and listening gates
     remain for the target Tesla.
+
+## Completed integration following owner selection and browser authorization
+
+The owner selected refined Balanced Rail and authorized Playwright/Chrome. The
+foundation-only status and pending questions above describe the earlier checkpoint.
+Implementation and all local gates are now recorded in
+[ASTRA-UI-VERIFICATION-2026-09-04.md](ASTRA-UI-VERIFICATION-2026-09-04.md), including
+70 rendered checks, the complete integrated colour matrix and portable before/after
+captures. Canonical deployment and target-Tesla acceptance remain separate and open.

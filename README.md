@@ -295,3 +295,15 @@ says otherwise. See [LICENSE-SCOPE.md](LICENSE-SCOPE.md), [NOTICE](NOTICE),
 ### Astra UI audit foundation — 2026-09-04
 
 The [office audit](docs/ASTRA-UI-AUDIT-2026-09-04.md) records the tested semantic colour resolver and the full outstanding UI/regression ledger. Its 300 palette/appearance/role variants have reproducible contrast evidence. Component integration and visual acceptance are still pending; this foundation is not a canonical deployment.
+
+## Refined Balanced Rail and semantic palettes — 2026-09-04
+
+The shared interface now couples Now Playing to the retracting footer, closes
+unpinned chrome after completed actions or six seconds of inactivity, and leaves
+only speed/effect readout visible while moving. Real open menus and drawers retain
+control access. ATLAS uses readable case and resolved chart ink; DISCOVER wraps
+real place names. Ten palettes share sixteen contrast-tested LIGHT/DARK roles.
+The [completed office verification](docs/ASTRA-UI-VERIFICATION-2026-09-04.md)
+supersedes the earlier integration-pending foundation checkpoint. It includes
+real before/after captures, 625 native tests, 70 browser checks and explicit
+physical-Tesla gates. This checkpoint has not been canonically deployed.
