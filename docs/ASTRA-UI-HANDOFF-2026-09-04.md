@@ -115,6 +115,52 @@ over-compressed, uppercase-heavy, and the lime Elevation/live series is weak on
 the near-white surface. Chrome resting already expands ATLAS correctly; retain
 that behavior.
 
+## Cross-product theming and contrast system
+
+The ACID correction must not become an ATLAS-only hard-coded exception. Design
+and implement a coherent semantic theming system that remains easy to inspect,
+swap, and refine:
+
+- Every customer palette remains the pure source of product identity. Derive
+  semantic UI roles from the selected palette instead of scattering literal
+  colors across components.
+- Give every palette appearance-aware LIGHT and DARK role variants. When a raw
+  palette color fails in a specific foreground, background, chart, focus, or UI
+  boundary context, provide a named contrast-enhanced variant of that same hue
+  family rather than silently substituting an unrelated color.
+- Define a deterministic fallback policy for insufficient contrast. Prefer a
+  small lightness/chroma adjustment that preserves hue and palette identity;
+  record the raw and resolved colors plus their measured ratio so corrections
+  remain reviewable.
+- Apply the policy to all palettes and semantic roles, not only ACID green. Add
+  systematic tests for every palette × LIGHT/DARK × critical role combination,
+  including ordinary text, metadata, selected state, focus, charts, and
+  meaningful non-text indicators.
+- Keep renderer/artwork colors distinct from readable interface-role variants:
+  a visual may retain its authored color while adjacent labels or chart strokes
+  use the closest contrast-safe derivative.
+- Centralize tokens and resolution logic so a palette or appearance can be
+  changed rapidly without per-component repair. Components should consume
+  semantic roles, not decide contrast ad hoc.
+- Calibrate LIGHT and DARK chrome/background neutrals as closely as evidence
+  permits to the supplied Tesla references. Do not label a value “official
+  Tesla” unless its provenance is authoritative and verifiable; otherwise
+  record it as an evidence-calibrated product token.
+
+## DISCOVER readability correction
+
+- Place titles must be allowed to occupy at least two lines at the exact Tesla
+  viewport. Do not ellipsize every destination into an unreadable fragment.
+- Remove the visible `01`, `02`, and similar ordering prefixes unless current
+  interaction or accessibility evidence proves that they convey useful meaning.
+  The expected direction is to remove them and return that width to the place
+  name.
+- Re-evaluate title size, weight, line-height, card padding, and title/body
+  separation as one hierarchy. The target is readable passenger content with
+  air, not oversized display typography or cramped metadata.
+- Verify long real place names, two-line wrapping, card-grid stability, keyboard
+  focus, touch targets, and no collision or overflow in LIGHT and DARK.
+
 ## Secondary task: freely re-review the recent aesthetic work
 
 The owner explicitly authorizes a serious aesthetic review of `bf2ec24` and
@@ -124,6 +170,10 @@ evidence justifies them.
 - Check Tesla Balanced Rail proportions, common baseline, icon size/weight,
   separators, active-mode treatment, and the persistent 16 mark against the
   attached navbar annotation.
+- Inspect the four right-side rail icons together. Their current shapes, optical
+  sizes, vertical alignment, stroke weights, and occupied boxes appear visibly
+  inconsistent; normalize them as one icon system rather than centring four
+  unrelated assets mathematically.
 - Keep every peer either icon-only or icon plus one consistent label treatment.
   Speed is the sole control allowed to use a large number/small unit hierarchy.
 - Reassess the Tesla Compact hierarchy, line heights, uppercase use, padding,
@@ -134,7 +184,18 @@ evidence justifies them.
   an accent from the selected palette where it improves hierarchy or state,
   without compromising contrast.
 - Review Footer, Now Playing, the full-cell palette swatch board, Visual/Music
-  selectors, and the contextual Gradient/Drivey/PRTCL controls.
+  selectors, and the contextual Gradient/Drivey/PRTCL controls. Footer text,
+  icons, values, baselines, spacing, states, and cell geometry must follow the
+  same explicit design-system rules as the top rail; no one-off placement merely
+  because it fits.
+- Redesign the transient UNDERWATER notice as a familiar extension of the speed
+  module: match the speed module's complete outer footprint and visible scale,
+  let the label visually descend from and return into that badge, and keep the
+  motion coherent with chrome timing.
+  Its background must derive from the active customer palette through a
+  contrast-safe semantic variant, not default to an alarm-like red. Preserve a
+  readable foreground, reduced-motion behavior, and the fact that UNDERWATER is
+  a braking effect rather than an error alert.
 - Make awake/resting transitions feel composed rather than merely hidden.
 - Prefer functional restraint over decorative show. Preserve content truth,
   accessibility semantics, touch targets, the persistent mark and speed,
@@ -155,9 +216,13 @@ Treat these as explicit checks even where the implementation already exists:
 - Tesla typography, colors, hierarchy, sidebar widths, padding, and menu rhythm
   should be familiar at `773 × 601` without claiming proprietary or official
   values unless an authoritative source proves them.
+- Every palette must resolve contrast-safe semantic variants in LIGHT and DARK;
+  ACID green is the first known failure case, not the only palette to test.
 - ATLAS LIGHT must have adequate contrast and both appearances must have
   deliberate vertical spacing.
-- DISCOVER must remain a complete passenger surface without global chrome.
+- DISCOVER must remain a complete passenger surface without global chrome;
+  place titles wrap to at least two lines, visible ordering numbers are removed
+  unless proven useful, and title hierarchy remains cabin-readable.
 - Gradient/Drivey/PRTCL tags must disappear with resting chrome, return on touch,
   and use a `6 px` corner radius.
 - Gradient braking must avoid measurable frame loss and restore normal pixel
@@ -169,6 +234,10 @@ Treat these as explicit checks even where the implementation already exists:
   shared domain model.
 - The 16 mark must remain first, and textual/numeric rail peers must be visually
   homogeneous around the unique speed control.
+- The four right-side rail icons must share optical size, stroke weight,
+  alignment, and interaction geometry.
+- UNDERWATER must read as a palette-derived extension of the speed badge, not a
+  red alarm, and the footer must pass the same baseline/system audit as the rail.
 
 ## Reference evidence
 
@@ -196,6 +265,8 @@ attachment supersedes any temporary clipboard path recorded by the old session.
 - Capture real current-build before/after screenshots at `773 × 601` in the
   required LIGHT/DARK and awake/resting states. Do not reuse archived mocks.
 - Record exact contrast ratios for every context-specific color correction.
+- Add automated palette-matrix coverage for all contrast-critical semantic roles
+  in LIGHT and DARK, including the raw-to-resolved fallback decision.
 - Verify no console warning/error, no viewport/document overflow, working
   keyboard focus, and all required touch geometry.
 - Run the PHP diagnostic fixture only on a host where `php` exists; do not turn
@@ -218,9 +289,15 @@ Use GPT-6 Astra. Do not create another task or worktree. Work directly in the sa
 
 The owner is attaching a navbar annotation image to this prompt; inspect it as primary evidence. Use the Product Design audit workflow first and frontend testing/debugging for the rendered app, explicitly not the frontend application builder. Inspect and capture the current build at the exact 773 × 601 Tesla viewport before changing it.
 
-Execute every task and regression check in docs/ASTRA-UI-HANDOFF-2026-09-04.md. The primary implementation task is a serious ATLAS UI/UX re-evaluation in LIGHT and DARK: reduce indiscriminate stamped uppercase, restore vertical breathing room, and numerically fix context-specific contrast—especially the ACID lime/green chart series on the near-white LIGHT panel—without globally distorting the selected palette. Preserve chart truth, attribution, panel collapse/reopen, full-field resting behavior, touch targets, and accessibility. Then freely re-review and improve the recent Tesla Compact and Tesla Balanced Rail aesthetics, especially shared baseline, consistent peer controls, icon sizing, spacing, accents, awake/resting composition, full-cell palette selector, and the persistent first-position 16 mark. Speed remains the only exceptional large numeric hierarchy.
+Execute every task and regression check in docs/ASTRA-UI-HANDOFF-2026-09-04.md. The primary implementation task is a serious ATLAS UI/UX re-evaluation in LIGHT and DARK: reduce indiscriminate stamped uppercase, restore vertical breathing room, and numerically fix context-specific contrast—especially the ACID lime/green chart series on the near-white LIGHT panel—without globally distorting the selected palette. Preserve chart truth, attribution, panel collapse/reopen, full-field resting behavior, touch targets, and accessibility.
 
-Regression-check the whole owner queue: Now Playing suppression in ATLAS/modals; DISCOVER full surface; header/footer retraction after drawer close; splash-time Jamendo warm-up and reuse; contextual Gradient/Drivey/PRTCL controls hiding and returning with 6 px corners; Gradient braking frame pacing and quality restoration; compact Network disclosure and 15-minute graph; no generic Energy anywhere in UI/Report/diagnostics/shared model; LIGHT/DARK palette-derived accents with passing contrast; and physical Tesla acceptance kept separate from local browser evidence.
+Treat ACID as the first known example of a product-wide theming requirement, not an isolated patch. Build a centralized semantic palette system with appearance-aware LIGHT/DARK variants and named contrast-enhanced fallbacks for every palette and critical role. Resolve a failing color through the smallest hue-preserving lightness/chroma adjustment, retain raw and resolved values with measured contrast, and add automated palette-matrix coverage. Components must consume semantic roles rather than scattered literal colors. Keep authored renderer colors separate from readable UI derivatives. Calibrate LIGHT/DARK backgrounds closely to verified Tesla evidence, but do not claim unofficial values as official.
+
+In DISCOVER, allow real place titles to wrap to at least two lines, remove visible 01/02 ordering prefixes unless evidence proves they are useful, and re-evaluate title size, weight, line-height, padding, and card stability in LIGHT and DARK.
+
+Then freely re-review and improve the recent Tesla Compact and Tesla Balanced Rail aesthetics. In particular, normalize the four right-side icons as one optical system; review shared baseline, stroke weight, icon boxes, spacing, accents, awake/resting composition, full-cell palette selector, and the persistent first-position 16 mark. Speed remains the only exceptional large numeric hierarchy. Redesign UNDERWATER as a palette-derived, contrast-safe label matching the speed module's complete outer footprint and visible scale, which visually descends from and returns into that badge; it must not resemble a permanent red alarm. Audit the footer with the same explicit type, baseline, geometry, state, and spacing rules as the top rail.
+
+Regression-check the whole owner queue: Now Playing suppression in ATLAS/modals; DISCOVER full surface and two-line place names; header/footer retraction after drawer close; splash-time Jamendo warm-up and reuse; contextual Gradient/Drivey/PRTCL controls hiding and returning with 6 px corners; Gradient braking frame pacing and quality restoration; compact Network disclosure and 15-minute graph; no generic Energy anywhere in UI/Report/diagnostics/shared model; LIGHT/DARK palette-derived accents and contrast variants across every palette; coherent UNDERWATER/speed motion; systematic footer geometry; and physical Tesla acceptance kept separate from local browser evidence.
 
 Capture real before/after screenshots, record exact contrast ratios, run focused and complete relevant tests, Sites 9/9, the architecture-specific production build, git diff --check, console/overflow/focus/touch checks, and update documentation plus CHANGELOG append-only. The PHP mail fixture may only be claimed on a host with php. Make small verified commits and push clean checkpoints. Do not deploy unless I explicitly request publication and all applicable gates are green; if deployment is later authorized, record the build stamp and verify the canonical URL, HTML, assets, version, cache, and local/live byte identity. End with a concise Italian report separating implemented work, verified evidence, unavailable/vehicle-only gates, deployment status, and the recommended next step.
 ```
