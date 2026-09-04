@@ -4252,3 +4252,48 @@ Evidence: [native suite](qa/2026-09-05-long-trip/native-tests.txt),
 [canonical hashes](qa/2026-09-05-long-trip/canonical-evidence.json),
 [publication](qa/2026-09-05-long-trip/publication.txt), and
 [live browser integration](qa/2026-09-05-long-trip/live-browser-evidence.json).
+
+
+## Moving-touch correction verified live — 2026-09-05 00:35
+
+Canonical **build 20260905-0028**, VERSION **0.0.0**, source **8dab1b3**,
+restores deliberate touch/keyboard access to navbar/footer while moving. Departure
+retracts once, further speed updates preserve an explicit wake, open surfaces pin
+controls, and action completion/closure or six-second inactivity retracts them.
+The source fix removes three speed-dependent wake/visibility/inert gates and
+changes the departure effect from every speed sample to a motion-state transition.
+This corrects our earlier overly strict interpretation and the regression test
+that incorrectly accepted it. Whole-journey diagnostics remain included.
+
+Passed: **629 native checks** (actual PHP, Sites 9/9), **69** local browser
+matrix checks with continuously held acceleration, clean ARM64 App 242/LAB 154
+build, 10 post-build identity/Sites checks, and **four focused live Vertigo
+checks** at 773 × 601: deliberate wake survives changing speed, Music remains
+reachable/open, closing/selecting a visual retracts and can wake again, and
+six-second inactivity retracts while still moving. Current-profile console
+warnings/errors: **0**. The profile uses `--autoplay-policy=user-gesture-required`.
+An initial run with Chrome's default policy passed all four interactions but
+emitted two AudioContext user-gesture warnings during startup; they are recorded
+as a separate audio-startup follow-up, not silently described as absent.
+No audio policy/source code changed in this correction.
+
+Protected publication verified **183 files / 215,959,567 bytes**, all 29 Illobo
+recordings, retained one previous asset and deleted no legacy content. Read-only
+preflight/postflight passed. **12 HTTP checks** confirm byte-identical bare and
+cache-busted HTML, main CSS and all JavaScript; HTML is no-store/no-cache with
+cache MISS. Fingerprinted assets may return HIT with matching bytes. Main JS is
+`index-DBA5kQZR.js`, SHA-256
+`1baa09aa08fdecd3fb4984146e115aebcfc3dba07e1f8b11a218aed7356d0459`.
+HTML SHA-256 is
+`143496a253a4ed5a09044e9c3985268251e3336ebc1812857ccb53dcd0e9a4c3`.
+
+The owner's actual 2351 report was received and inspected; no private report was
+committed and no message was sent. Browser motion is synthetic, so confirmation
+on the target Tesla remains the next acceptance step. Reload to obtain 0028;
+already-open pages keep their prior source and in-memory diagnostic session.
+
+Evidence: [moving browser checks](qa/2026-09-05-moving-touch/live-moving-evidence.json),
+[69-check matrix](qa/2026-09-05-moving-touch/local-matrix.json),
+[canonical identity](qa/2026-09-05-moving-touch/canonical-evidence.json),
+[publication](qa/2026-09-05-moving-touch/publication.txt), and
+[controls awake at simulated 80 km/h](qa/2026-09-05-moving-touch/moving-awake.png).

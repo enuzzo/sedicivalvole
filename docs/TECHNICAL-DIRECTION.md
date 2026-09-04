@@ -690,3 +690,13 @@ epoch. React Strict Mode's synchronous trial cleanup therefore cannot destroy th
 new splash media controller; a real final unmount still releases it. Source choice
 awaits the shared preparation promise, and rotation refresh requires a real finite
 deadline. Browser tests verify actual request reuse, not only source-code shape.
+
+
+## Moving-touch publication — 2026-09-05 00:35
+
+Build **20260905-0028** (source **8dab1b3**) is verified live. Explicit wake is
+speed-independent; departure retracts once and subsequent speed samples cannot
+cancel deliberate control access. The old moving-touch lock is superseded.
+629 native, 69 local browser and four focused live moving-interaction checks
+pass. Full publication, console-policy caveat and the next Tesla confirmation
+are recorded at the end of [WEEKEND-HANDOFF-2026-09-05.md](WEEKEND-HANDOFF-2026-09-05.md).

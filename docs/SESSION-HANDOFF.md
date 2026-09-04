@@ -968,3 +968,13 @@ private report, mail content or attachment is committed.
 Publication identity and the focused live Vertigo regression will be appended after
 deployment. This correction supersedes earlier claims that ignoring moving taps
 was desirable; previous recorded tests remain historical evidence of the wrong rule.
+
+
+## Moving-touch publication — 2026-09-05 00:35
+
+Build **20260905-0028** (source **8dab1b3**) is verified live. Explicit wake is
+speed-independent; departure retracts once and subsequent speed samples cannot
+cancel deliberate control access. The old moving-touch lock is superseded.
+629 native, 69 local browser and four focused live moving-interaction checks
+pass. Full publication, console-policy caveat and the next Tesla confirmation
+are recorded at the end of [WEEKEND-HANDOFF-2026-09-05.md](WEEKEND-HANDOFF-2026-09-05.md).

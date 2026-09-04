@@ -1,0 +1,10 @@
+{
+  "url": "https://sedicivalvole.app/",
+  "console": [],
+  "checks": [
+    "Vertigo touch wakes interactive chrome across subsequent speed updates",
+    "Music accessible while moving, stays open, close retracts",
+    "moving Visual selection retracts and can be woken again",
+    "six-second inactivity retracts while still moving"
+  ]
+}

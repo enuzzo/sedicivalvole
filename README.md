@@ -326,3 +326,11 @@ without coordinates or automatic transmission. Native tests pass 629/629 with
 actual PHP; canonical identity and live report integration pass.
 See the [weekend handoff](docs/WEEKEND-HANDOFF-2026-09-05.md) for evidence,
 owner-approved drafts, study limitations and the real-vehicle acceptance queue.
+
+
+### Moving-touch correction — 2026-09-05 00:35
+
+Canonical build **20260905-0028**, source **8dab1b3**, restores deliberate
+navbar/footer wake while moving and retains automatic retraction. Live browser
+verification passes; target-Tesla confirmation remains separate. See the
+[weekend handoff](docs/WEEKEND-HANDOFF-2026-09-05.md) for current evidence.
