@@ -896,3 +896,8 @@ requested publication and the separate real-Tesla acceptance queue. Do not claim
 native media controls, real GPS/touch/glare, first Jamendo audio on the vehicle,
 or sustained GPU/thermal acceptance from desktop evidence. A host without PHP
 must still report that fixture unavailable rather than borrowing this host's pass.
+
+
+Verified product checkpoint: `0696283`, pushed cleanly to origin/main. The local
+ARM64 production artifact is build `20260904-2333` (VERSION remains `0.0.0`).
+The subsequent traceability commit changes documentation only. No deployment.

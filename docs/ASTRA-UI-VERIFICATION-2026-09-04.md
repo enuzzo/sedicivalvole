@@ -142,3 +142,13 @@ distance, glare, touch, GPS motion, native Media Session, weak-network listening
 fresh-session Jamendo audio, and sustained Gradient GPU/thermal behaviour.
 The screenshots and Chrome timings do not close those gates. The next authorized
 publication must still run the canonical HTML/assets/version/cache identity checks.
+
+
+## Verified source checkpoint — 2026-09-04 23:34
+
+Product commit `0696283` was pushed to origin/main with a clean working tree.
+The subsequent native ARM64 build identifies VERSION `0.0.0`, source `0696283`
+and local build stamp `20260904-2333`. App asset `index-BTAEg_KJ.js` has SHA-256
+`4e420aff118ecd8b42ec0255216243b969836e5d969273e56328760edcdcaef3`. App 242 modules, LAB 154 modules and Sites packaging passed.
+This is a local production artifact, not a deployment. The following documentation
+checkpoint records this identity without changing product code.
