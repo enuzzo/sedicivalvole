@@ -806,6 +806,20 @@ removed only OPEN/BLOOM terms that previously evaluated to zero when inactive.
 Nine focused Aperture tests pass; rendered browser comparison remains separate
 from target-Tesla visual acceptance.
 
+### Current local checkpoint: Tesla Compact and immersive passenger surfaces
+
+The 2026-09-04 working tree supersedes the `72 px` chrome baseline with `64 px`
+chrome and a `13 / 14 / 15 / 15 / 17 / 22 / 32 px` type ladder while preserving
+`48 / 56 px` touch geometry. Shared drawers and DISCOVER suppress global chrome
+and Now Playing; ATLAS suppresses Now Playing, uses high-contrast light chart
+ink, and expands Drive Lab to full viewport height when chrome rests. Drawer
+focus restoration no longer keeps the idle timer latched. Contextual visual
+controls retract with chrome. Soundtrack starts a deduplicated warm-up in the
+Signal Gate. Gradient lowers framebuffer density to `0.8` only during the
+Underwater brake envelope and returns to the normal quality path afterward.
+Office Browser checks are complete; canonical publication and physical-Tesla
+first-load audio/frame-pacing acceptance remain pending.
+
 ## Verification
 
 ```bash

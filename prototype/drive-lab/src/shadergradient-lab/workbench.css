@@ -4,13 +4,13 @@
 }
 
 .shadergradient-lab {
-  --type-meta: 14px;
-  --type-label: 15px;
-  --type-body: 16px;
-  --type-action: 16px;
-  --type-active: 18px;
-  --type-title: 24px;
-  --type-value: 34px;
+  --type-meta: 13px;
+  --type-label: 14px;
+  --type-body: 15px;
+  --type-action: 15px;
+  --type-active: 17px;
+  --type-title: 22px;
+  --type-value: 32px;
   --touch-target: 48px;
   --touch-primary: 56px;
   font-size: var(--type-body);

@@ -2230,6 +2230,8 @@ export function App() {
 
   const audioRef = useRef(null);
   const soundtrackRef = useRef(null);
+  const soundtrackWarmupPromiseRef = useRef(null);
+  const soundtrackWarmupAttemptedRef = useRef(false);
   const sessionMusicModeRef = useRef(null);
   const musicModeRevisionRef = useRef(0);
   const preferredSoundtrackSelectionRef = useRef(initialPreferences.soundtrackSelection);
@@ -2486,18 +2488,40 @@ export function App() {
     return controller;
   }, [logDiagnosticEvent, soundtrackManualEffects, updateSoundtrackSnapshot, vehicleEffectsEnabled]);
 
+  const prepareSoundtrack = useCallback(({ force = false } = {}) => {
+    const controller = soundtrackController();
+    const snapshot = controller.getSnapshot();
+    if (["loading", "prepared", "paused", "playing", "buffering"].includes(snapshot.status)) {
+      return soundtrackWarmupPromiseRef.current ?? Promise.resolve(snapshot);
+    }
+    if (!force && soundtrackWarmupAttemptedRef.current) return Promise.resolve(snapshot);
+    if (soundtrackWarmupPromiseRef.current) return soundtrackWarmupPromiseRef.current;
+    soundtrackWarmupAttemptedRef.current = true;
+    logDiagnosticEvent("soundtrack.warmup.requested", {
+      source: phase === "idle" ? "signal-gate" : "launch-selector",
+      selection: preferredSoundtrackSelectionRef.current,
+    });
+    const request = controller.load({ selection: preferredSoundtrackSelectionRef.current })
+      .finally(() => {
+        if (soundtrackWarmupPromiseRef.current === request) soundtrackWarmupPromiseRef.current = null;
+      });
+    soundtrackWarmupPromiseRef.current = request;
+    return request;
+  }, [logDiagnosticEvent, phase, soundtrackController]);
+
+  useEffect(() => {
+    if (phase !== "idle" || networkNotice.status === "offline" || !navigator.onLine) return;
+    void prepareSoundtrack();
+  }, [networkNotice.status, phase, prepareSoundtrack]);
+
   const selectLaunchMusic = useCallback((nextMusicId) => {
     setLaunchMusicId(nextMusicId);
     if (nextMusicId !== "soundtrack") {
       soundtrackRef.current?.pause();
       return;
     }
-    const controller = soundtrackController();
-    const status = controller.getSnapshot().status;
-    if (!["loading", "prepared", "paused", "playing"].includes(status)) {
-      void controller.load({ selection: preferredSoundtrackSelectionRef.current });
-    }
-  }, [soundtrackController]);
+    void prepareSoundtrack({ force: true });
+  }, [prepareSoundtrack]);
   // The driver-facing number describes the pulse they hear. PARK deliberately
   // has no pulse, while diagnostics retain the score's true transport clock.
   const bpm = speed < 0.8 ? null : scorePerceivedTempo;
@@ -2619,10 +2643,14 @@ export function App() {
     const wasPinned = previousControlsPinnedRef.current;
     previousControlsPinnedRef.current = controlsPinned;
     const activeElement = document.activeElement;
-    const focusNeedsRecovery = !activeElement
+    const restoredControlFocus = isControlLayerFocused(activeElement);
+    const focusNeedsRecovery = restoredControlFocus
+      || !activeElement
       || activeElement === document.body
       || activeElement === document.documentElement;
-    if (wasPinned && !controlsPinned && focusNeedsRecovery) queueExperienceFocus();
+    if (wasPinned && !controlsPinned && focusNeedsRecovery) {
+      queueExperienceFocus(restoredControlFocus ? activeElement : null);
+    }
   }, [controlsPinned, queueExperienceFocus]);
 
   const handleSurfacePointerDown = useCallback((event) => {
@@ -3766,6 +3794,8 @@ export function App() {
     soundtrackSnapshot?.current?.title,
     soundtrackSnapshot?.library?.selection?.kind,
   ]);
+  const immersiveEnvironment = environment.renderer === "atlas";
+  const showNowPlaying = phase === "running" && Boolean(currentTrack) && !modalOpen && !immersiveEnvironment;
 
   const transportPlaying = !muted && (musicMode === "soundtrack"
     ? soundtrackMediaIsPlaying(soundtrackSnapshot)
@@ -4616,7 +4646,7 @@ export function App() {
     <main
       ref={appRef}
       tabIndex={-1}
-      className={`app phase-${phase} ${controlsAwake || controlsPinned ? "controls-awake" : "controls-resting"}${modalOpen ? " modal-open" : ""}${currentTrack ? " has-now-playing" : ""}`}
+      className={`app phase-${phase} ${controlsAwake || controlsPinned ? "controls-awake" : "controls-resting"}${modalOpen ? " modal-open" : ""}${showNowPlaying ? " has-now-playing" : ""}`}
       data-palette={themeId}
       data-appearance={appearanceResolution.appearance}
       data-appearance-mode={appearanceMode}
@@ -4668,6 +4698,7 @@ export function App() {
                 keyboardShortcutsEnabled={!modalOpen}
                 demoRequestToken={atlasDemoRequest}
                 mapAppearance={atlasMapAppearance}
+                appearance={appearanceResolution.appearance}
                 onMapAppearanceChange={(value) => setAtlasMapAppearance(normalizeAtlasMapAppearance(value))}
                 onRenderer={setRenderer}
                 onFrame={recordRenderedFrame}
@@ -5027,7 +5058,7 @@ export function App() {
         </footer>
       </section>
 
-      {phase === "running" && currentTrack ? (
+      {showNowPlaying ? (
         <div className="now-playing-dock persistent-transport control-layer" aria-label="Now playing and music transport">
           <div className="now-playing-summary" role="status" aria-live="polite" aria-atomic="true">
             {currentTrack.artwork ? <img src={currentTrack.artwork} alt="" width="72" height="72" /> : <span className="now-playing-artwork" aria-hidden="true">16</span>}

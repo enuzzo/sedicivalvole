@@ -206,3 +206,8 @@ export function shaderGradientResponse(settings, {
     underwater,
   });
 }
+
+export function shaderGradientPixelDensity(underwaterAmount = 0, reducedMotion = false) {
+  if (reducedMotion) return 1;
+  return clamp(underwaterAmount) >= 0.08 ? 0.8 : 1;
+}

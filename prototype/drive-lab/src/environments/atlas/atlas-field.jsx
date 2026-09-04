@@ -70,7 +70,7 @@ function formatAtlasDistance(distanceM) {
   return metres < 1000 ? `${Math.round(metres)} m` : `${(metres / 1000).toFixed(1)} km`;
 }
 
-function AtlasDriveLabCanvas({ samples, metrics, statistics, colors, terrain, rangeLabel }) {
+function AtlasDriveLabCanvas({ samples, metrics, statistics, colors, terrain, rangeLabel, appearance }) {
   const canvasRef = useRef(null);
   const headingDistribution = useMemo(() => atlasHeadingDistribution(samples), [samples]);
 
@@ -89,9 +89,10 @@ function AtlasDriveLabCanvas({ samples, metrics, statistics, colors, terrain, ra
       canvas.style.fontVariantNumeric = "tabular-nums";
       context.setTransform(ratio, 0, 0, ratio, 0, 0);
       context.clearRect(0, 0, bounds.width, bounds.height);
-      const paper = "rgba(238, 234, 224, .92)";
-      const muted = "rgba(238, 234, 224, .68)";
-      const line = "rgba(238, 234, 224, .13)";
+      const light = appearance === "light";
+      const paper = light ? "rgba(23, 26, 32, .94)" : "rgba(244, 244, 244, .94)";
+      const muted = light ? "rgba(23, 26, 32, .68)" : "rgba(244, 244, 244, .68)";
+      const line = light ? "rgba(23, 26, 32, .18)" : "rgba(244, 244, 244, .16)";
       const accent = colors.accent;
       const secondary = colors.secondary;
       const text = (value, x, y, font, color = paper, align = "left", maximumWidth = null) => {
@@ -207,7 +208,7 @@ function AtlasDriveLabCanvas({ samples, metrics, statistics, colors, terrain, ra
       const accelerationMidline = acceleration.top + 53;
       text(`+${accelerationMaximum.toFixed(1)}`, 0, acceleration.top + 50, atlasChartFont(600, ATLAS_CHART_TYPE.data), muted);
       text(`−${accelerationMaximum.toFixed(1)}`, 0, acceleration.top + 70, atlasChartFont(600, ATLAS_CHART_TYPE.data), muted);
-      context.strokeStyle = "rgba(238,234,224,.2)";
+      context.strokeStyle = line;
       context.beginPath();
       context.moveTo(plotLeft, accelerationMidline + .5);
       context.lineTo(plotRight, accelerationMidline + .5);
@@ -250,7 +251,7 @@ function AtlasDriveLabCanvas({ samples, metrics, statistics, colors, terrain, ra
       rule(speedBands.top);
       label("SPEED BAND DISTRIBUTION", 0, speedBands.top + 15);
       const bandY = speedBands.top + 23;
-      context.fillStyle = "rgba(238,234,224,.14)";
+      context.fillStyle = line;
       context.fillRect(0, bandY, bounds.width, 11);
       let bandOffset = 0;
       metrics.speedBands.forEach((band, index) => {
@@ -280,7 +281,7 @@ function AtlasDriveLabCanvas({ samples, metrics, statistics, colors, terrain, ra
       const roseInnerRadius = 10;
       const roseRingStep = 4.4;
       const roseOuterRadius = roseInnerRadius + headingDistribution.tileLimit * roseRingStep;
-      context.strokeStyle = "rgba(238,234,224,.14)";
+      context.strokeStyle = line;
       context.lineWidth = 1;
       for (let ring = 1; ring <= headingDistribution.tileLimit; ring += 1) {
         context.beginPath();
@@ -392,7 +393,7 @@ function AtlasDriveLabCanvas({ samples, metrics, statistics, colors, terrain, ra
       text(`MOVING ${percent(metrics.movingShare)}`, 0, motion.top + 33, atlasChartFont(750, ATLAS_CHART_TYPE.value), accent);
       text(`STOPPED ${percent(metrics.stoppedShare)}`, bounds.width, motion.top + 33, atlasChartFont(750, ATLAS_CHART_TYPE.value), muted, "right");
       const motionY = motion.top + 36;
-      context.fillStyle = "rgba(238,234,224,.18)";
+      context.fillStyle = line;
       context.fillRect(0, motionY, bounds.width, 11);
       context.fillStyle = accent;
       context.fillRect(0, motionY, bounds.width * metrics.movingShare, 11);
@@ -411,7 +412,7 @@ function AtlasDriveLabCanvas({ samples, metrics, statistics, colors, terrain, ra
       disposed = true;
       observer.disconnect();
     };
-  }, [colors, headingDistribution, metrics, rangeLabel, samples, statistics, terrain.status]);
+  }, [appearance, colors, headingDistribution, metrics, rangeLabel, samples, statistics, terrain.status]);
 
   const dominantSpeedBand = metrics.speedBands.reduce(
     (best, band) => (band.share > best.share ? band : best),
@@ -472,6 +473,7 @@ function AtlasDriveLabPanel({
   historyRange,
   onCycleHistoryRange,
   terrain,
+  appearance,
 }) {
   const metrics = useMemo(() => atlasDriveLabMetrics(journey.samples), [journey.samples]);
   const movingTimeMs = journey.elapsedMs * metrics.movingShare;
@@ -508,6 +510,7 @@ function AtlasDriveLabPanel({
           colors={colors}
           terrain={terrain}
           rangeLabel={historyRange.label}
+          appearance={appearance}
         />
         <div className={`atlas-terrain-source is-${terrain.status}`}>
           <span>{demo ? "DEMO · " : ""}GPS ALT {Number.isFinite(journey.gpsAltitudeM) ? `${Math.round(journey.gpsAltitudeM)} M` : "—"}</span>
@@ -539,6 +542,7 @@ export default function AtlasField({
   keyboardShortcutsEnabled = true,
   demoRequestToken = 0,
   mapAppearance = "palette",
+  appearance = "dark",
   onMapAppearanceChange,
 }) {
   const hostRef = useRef(null);
@@ -1126,6 +1130,7 @@ export default function AtlasField({
         historyRange={historyRange}
         onCycleHistoryRange={() => setHistoryRangeId((current) => cycleAtlasHistoryRange(current).id)}
         terrain={terrain}
+        appearance={appearance}
         colors={paletteToAtlasCss(theme.palette)}
       />
     </section>

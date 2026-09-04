@@ -74,7 +74,7 @@ test("appearance persistence, runtime resolution and diagnostics remain palette-
   assert.match(app, /const holdAppearanceDuringPointer = useCallback\(\(\) => \{[\s\S]*?appearanceModeRef\.current === "auto"[\s\S]*?setAppearanceInteractionActive\(true\)/);
   assert.match(app, /onPointerDownCapture=\{holdAppearanceDuringPointer\}/);
   assert.match(app, /if \(appearanceMode !== "auto"\) \{[\s\S]*?setAppearanceInteractionActive\(false\);[\s\S]*?return undefined/);
-  assert.match(app, /const focusNeedsRecovery = !activeElement[\s\S]*?activeElement === document\.body[\s\S]*?activeElement === document\.documentElement/);
+  assert.match(app, /const focusNeedsRecovery = restoredControlFocus[\s\S]*?activeElement === document\.body[\s\S]*?activeElement === document\.documentElement/);
   assert.doesNotMatch(app, /appearanceRetainedFocus/);
   assert.match(app, /const changeAppearanceMenuOpen = useCallback\(\(open\) => \{[\s\S]*?if \(open\) setGpsHelpOpen\(false\)/);
   assert.match(app, /const toggleGpsHelp = useCallback\(\(\) => \{[\s\S]*?setAppearanceMenuOpen\(false\);[\s\S]*?setGpsHelpOpen\(\(current\) => !current\)/);
@@ -108,7 +108,7 @@ test("Road Sheet appearance tokens preserve Tesla geometry and visual colour own
   assert.match(styles, /\.app\[data-appearance\] \.discover-navigation-trigger\[aria-expanded="true"\] \{ color: var\(--ui-selected-text\); background: var\(--ui-accent-text\); \}/);
   assert.doesNotMatch(styles, /\.app\[data-appearance="(?:light|dark)"\][^{]*\{[^}]*--accent\s*:/);
   assert.match(styles, /Canvas, iframe and authored visual[\s\S]*?continue to use their own palette/);
-  assert.match(styles, /--road-sheet-light-subtle: rgba\(7, 9, 9, \.62\)/);
+  assert.match(styles, /--road-sheet-light-subtle: rgba\(23, 26, 32, \.6\)/);
 });
 
 test("appearance-owned signal tokens remain contrast-safe across the colour cycle", () => {

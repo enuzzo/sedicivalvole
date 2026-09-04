@@ -1123,6 +1123,36 @@ byte-identical to the local candidate, and the public JavaScript embeds the
 expected build and commit. Physical-Tesla distance, glare, touch, network
 interpretation, and continuous audio listening remain open.
 
+## 2026-09-04 Tesla Compact interaction correction
+
+The current local product uses a modest Tesla-reference calibration rather than
+shrinking touch geometry: semantic type is `13 / 14 / 15 / 15 / 17 / 22 / 32
+px`, primary chrome is `64 px`, actions remain `48 px`, and primary actions
+remain `56 px`. LIGHT and DARK surfaces use neutral gray/near-black families
+with signal red while retaining the existing Space Grotesk product identity.
+The values are product tokens calibrated against the current community Tesla UI
+reference; they are not represented as an official Tesla in-vehicle design
+specification.
+
+Passenger surfaces are now immersive. Opening any shared drawer, including
+DISCOVER, suppresses top chrome, footer, contextual controls and Now Playing.
+ATLAS never mounts Now Playing; when chrome rests, its `320 px` Drive Lab panel
+expands from `64 px` insets to the full `601 px` viewport height. The Canvas2D
+chart changes between dark and high-contrast light ink with the product
+appearance. Closing a drawer releases focus restored to the former trigger, so
+the idle timer can retract chrome instead of polling a focused control forever.
+Drivey, PRTCL and Gradient contextual controls now disappear with chrome and
+return on the next screen touch, with the shared `6 px` radius.
+
+Soundtrack begins one deduplicated catalogue/current-role warm-up during the
+Signal Gate and reuses it from the launch selector. Gradient preserves its
+continuous Underwater response while reducing active-brake framebuffer density
+from `1` to `0.8`, a 36% pixel-count reduction at fixed CSS size, and avoids
+Soundtrack-only audio subscriptions in its response calculation. Static and
+local rendered checks pass; physical Tesla frame pacing, glare and first-load
+Jamendo playback remain acceptance gates until the canonical candidate is
+published and driven.
+
 ## Open work
 
 1. Execute live Tesla `R4-07`–`R4-09`, `R7-15`, the canonical `10A` / `10B` /

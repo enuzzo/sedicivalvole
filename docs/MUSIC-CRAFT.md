@@ -1651,6 +1651,23 @@ Sources: [Web Audio API 1.1](https://www.w3.org/TR/webaudio-1.1/),
 [MDN `DynamicsCompressorNode`](https://developer.mozilla.org/en-US/docs/Web/API/DynamicsCompressorNode),
 and [MDN `AudioNode.connect()` feedback cycles](https://developer.mozilla.org/en-US/docs/Web/API/AudioNode/connect).
 
+### 6.17 Remote programme must begin preparing before the listener asks for it
+
+The owner heard the launch visual begin while Soundtrack remained silent until
+the Music panel was opened. The panel was accidentally acting as the first
+reliable catalogue trigger, too late for a user gesture to start a prepared
+media element. A non-blocking `START` policy is still correct, but it only feels
+immediate when catalogue selection and the current media role have already
+started warming during the Signal Gate.
+
+The product therefore issues one deduplicated Soundtrack warm-up as soon as the
+idle splash is online. Selecting Soundtrack reuses an in-flight or prepared
+controller and may explicitly retry a failed warm-up; it does not create a
+second catalogue waterfall. Playback still starts only after a user gesture,
+and the experience still opens if the remote catalogue is unavailable. The
+listener-facing rule is: **prepare remote programme early, but never make a
+network service the gate to the visual experience**.
+
 ---
 
 ## 7. Sources and material

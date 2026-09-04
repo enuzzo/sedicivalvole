@@ -27,17 +27,17 @@
   --font-brand: "Orbitron", sans-serif;
   /* Swiss Compact keeps glance-critical hierarchy explicit instead of using
      one oversized floor for every word. Type and touch geometry are separate. */
-  --font-size-floor: 14px;
-  --type-meta: 14px;
-  --type-label: 15px;
-  --type-body: 16px;
-  --type-action: 16px;
-  --type-active: 18px;
-  --type-title: 24px;
-  --type-value: 34px;
+  --font-size-floor: 13px;
+  --type-meta: 13px;
+  --type-label: 14px;
+  --type-body: 15px;
+  --type-action: 15px;
+  --type-active: 17px;
+  --type-title: 22px;
+  --type-value: 32px;
   --touch-target: 48px;
   --touch-primary: 56px;
-  --chrome-size: 72px;
+  --chrome-size: 64px;
   --font-weight-text: 400;
   --font-weight-value: 500;
   --font-weight-control: 600;
@@ -51,27 +51,27 @@
   --ui-radius: 6px;
   /* Road Sheet separates invariant layout from appearance. X10 will map the
      same component grammar onto these light and dark surface families. */
-  --road-sheet-light-surface: #eee9de;
-  --road-sheet-light-control: #dcd7ce;
-  --road-sheet-light-control-hover: #e4dfd6;
-  --road-sheet-light-ink: #070909;
-  --road-sheet-light-line: rgba(7, 9, 9, .72);
-  --road-sheet-light-line-soft: rgba(7, 9, 9, .55);
-  --road-sheet-light-muted: rgba(7, 9, 9, .72);
-  --road-sheet-light-subtle: rgba(7, 9, 9, .62);
-  --road-sheet-light-disabled: rgba(7, 9, 9, .43);
-  --road-sheet-dark-surface: #090b0b;
-  --road-sheet-dark-control: #171a1a;
-  --road-sheet-dark-control-hover: #202424;
-  --road-sheet-dark-ink: #eee9de;
-  --road-sheet-dark-line: rgba(238, 233, 222, .58);
-  --road-sheet-dark-line-soft: rgba(238, 233, 222, .42);
-  --road-sheet-dark-muted: rgba(238, 233, 222, .66);
-  --road-sheet-dark-subtle: rgba(238, 233, 222, .52);
-  --road-sheet-dark-disabled: rgba(238, 233, 222, .38);
-  --road-sheet-signal: #e32219;
-  --road-sheet-signal-focus: rgba(227, 34, 25, .24);
-  --road-sheet-signal-trace: rgba(227, 34, 25, .08);
+  --road-sheet-light-surface: #f4f4f4;
+  --road-sheet-light-control: #e6e6e6;
+  --road-sheet-light-control-hover: #dcdcdc;
+  --road-sheet-light-ink: #171a20;
+  --road-sheet-light-line: rgba(23, 26, 32, .62);
+  --road-sheet-light-line-soft: rgba(23, 26, 32, .34);
+  --road-sheet-light-muted: rgba(23, 26, 32, .72);
+  --road-sheet-light-subtle: rgba(23, 26, 32, .6);
+  --road-sheet-light-disabled: rgba(23, 26, 32, .42);
+  --road-sheet-dark-surface: #0f0f0f;
+  --road-sheet-dark-control: #1f1f1f;
+  --road-sheet-dark-control-hover: #2b2b2b;
+  --road-sheet-dark-ink: #f4f4f4;
+  --road-sheet-dark-line: rgba(244, 244, 244, .5);
+  --road-sheet-dark-line-soft: rgba(244, 244, 244, .28);
+  --road-sheet-dark-muted: rgba(244, 244, 244, .68);
+  --road-sheet-dark-subtle: rgba(244, 244, 244, .54);
+  --road-sheet-dark-disabled: rgba(244, 244, 244, .38);
+  --road-sheet-signal: #e82127;
+  --road-sheet-signal-focus: rgba(232, 33, 39, .24);
+  --road-sheet-signal-trace: rgba(232, 33, 39, .08);
 }
 
 * { box-sizing: border-box; }
@@ -121,7 +121,7 @@ button { -webkit-tap-highlight-color: transparent; }
   --ui-subtle: var(--road-sheet-dark-subtle);
   --ui-disabled: var(--road-sheet-dark-disabled);
   --ui-line: var(--road-sheet-dark-line);
-  --ui-line-soft: rgba(238, 233, 222, .22);
+  --ui-line-soft: var(--road-sheet-dark-line-soft);
   --ui-selected-surface: var(--road-sheet-dark-ink);
   --ui-selected-text: var(--road-sheet-dark-surface);
   --ui-accent-text: #ff7770;
@@ -146,13 +146,13 @@ button { -webkit-tap-highlight-color: transparent; }
   --ui-subtle: var(--road-sheet-light-subtle);
   --ui-disabled: var(--road-sheet-light-disabled);
   --ui-line: var(--road-sheet-light-line);
-  --ui-line-soft: rgba(7, 9, 9, .24);
+  --ui-line-soft: var(--road-sheet-light-line-soft);
   --ui-selected-surface: var(--road-sheet-light-ink);
   --ui-selected-text: var(--road-sheet-light-surface);
   --ui-accent-text: #a61c16;
   --ui-command-wave-soft: #ff9b9e;
   --ui-command-wave-mid: #e22a32;
-  --ui-command-wave-deep: #bd111d;
+  --ui-command-wave-deep: #cb242b;
   --ui-success: #12663f;
   --ui-caution: #855100;
   --ui-alert: #9b201a;
@@ -219,7 +219,13 @@ button { -webkit-tap-highlight-color: transparent; }
   color: var(--paper);
   transition: opacity 240ms ease;
 }
-.controls-resting .visual-cycle-control { opacity: .58; }
+.controls-resting .visual-cycle-control,
+.modal-open .visual-cycle-control {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  pointer-events: none;
+}
 .visual-cycle-rail {
   display: grid;
   grid-auto-flow: column;
@@ -238,7 +244,7 @@ button { -webkit-tap-highlight-color: transparent; }
   color: var(--paper);
   background: rgba(5, 7, 7, .76);
   border: 1px solid color-mix(in srgb, var(--accent) 42%, rgba(238, 234, 224, .28));
-  border-radius: 2px;
+  border-radius: var(--ui-radius);
   font-family: var(--font-ui);
   cursor: pointer;
   backdrop-filter: blur(10px);
@@ -741,6 +747,12 @@ button { -webkit-tap-highlight-color: transparent; }
   transform: translate(-50%, calc(100% + 72px));
   pointer-events: none;
   transition-delay: 0s, 0s, 520ms;
+}
+.modal-open .experience .control-layer,
+.modal-open .experience .source-readout {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .topbar {
@@ -3322,7 +3334,7 @@ html { font-size: var(--font-size-floor); }
   min-height: var(--touch-target);
 }
 
-/* Primary running chrome: the selected 72 px anatomy. */
+/* Primary running chrome: Tesla-calibrated density with full touch targets. */
 .topbar {
   min-height: var(--chrome-size);
   grid-template-columns: 72px 184px minmax(112px, 1fr) 112px 86px 80px 112px 108px;
@@ -3409,8 +3421,6 @@ html { font-size: var(--font-size-floor); }
   border: 1px solid rgba(238, 234, 224, .42);
   background: rgba(7, 9, 9, .96);
 }
-.app.modal-open .persistent-transport.now-playing-dock { bottom: 12px; }
-.app.modal-open.has-now-playing .drawer-panel { padding-bottom: 104px; }
 .now-playing-summary { display: grid; grid-template-columns: 56px minmax(0, 1fr); align-items: center; gap: 10px; min-width: 0; }
 .now-playing-summary > img,
 .now-playing-artwork { width: 56px; height: 56px; border-radius: var(--ui-radius); object-fit: cover; }
@@ -3612,6 +3622,10 @@ html { font-size: var(--font-size-floor); }
 .atlas-map-appearance small { font-size: var(--type-meta); }
 .atlas-map-appearance { width: 112px; height: var(--touch-target); }
 .atlas-panel { top: var(--chrome-size); bottom: var(--chrome-size); overflow-y: auto; }
+.app[data-environment="atlas"].controls-resting .atlas-panel { top: 0; bottom: 0; }
+.app[data-environment="atlas"].controls-resting :is(.atlas-navigation-plaque, .atlas-map-appearance) { top: 12px; }
+.app[data-environment="atlas"].controls-resting .atlas-field .maplibregl-ctrl-top-left { top: 10px; }
+.app[data-environment="atlas"].controls-resting .atlas-field .maplibregl-ctrl-bottom-left { bottom: 10px; }
 .atlas-panel-toggle {
   right: calc(var(--atlas-panel-width) - 6px);
   width: var(--touch-target);
@@ -3634,7 +3648,7 @@ html { font-size: var(--font-size-floor); }
 }
 .atlas-panel-toggle-icon { position: relative; z-index: 1; }
 .atlas-field.is-panel-collapsed .atlas-panel-toggle { right: -6px; }
-.atlas-panel section { padding: 7px 12px; }
+.atlas-panel section { padding: 10px 14px; }
 .atlas-panel small,
 .atlas-drive-summary dt,
 .atlas-drive-summary dd span,
@@ -3681,8 +3695,6 @@ html { font-size: var(--font-size-floor); }
   .source-readout,
   .source-readout.is-soundtrack { right: auto; left: 164px; width: 104px; }
   .soundtrack-drawer .drawer-panel { width: 100vw; padding: 0 12px 20px; }
-  .app.controls-awake.has-now-playing .atlas-demo-hint { bottom: calc(var(--chrome-size) + 116px); }
-  .app.controls-awake.has-now-playing .atlas-field .maplibregl-ctrl-bottom-left { bottom: calc(var(--chrome-size) + 76px); }
 }
 
 @media (min-width: 651px) and (max-height: 650px) {

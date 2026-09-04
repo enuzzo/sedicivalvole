@@ -818,3 +818,11 @@ test("Atlas owns a minimal palette-driven OpenFreeMap style with mandatory attri
   assert.match(atlasSource, /AttributionControl\(\{ compact: false \}\)/);
   assert.match(styles, /\.atlas-field \.maplibregl-ctrl-attrib \{[^}]*font-size: var\(--type-meta\);[^}]*opacity: \.68;/);
 });
+
+test("Atlas Drive Lab charts follow the product appearance with readable light contrast", () => {
+  assert.match(atlasSource, /const light = appearance === "light"/);
+  assert.match(atlasSource, /const paper = light \? "rgba\(23, 26, 32, \.94\)"/);
+  assert.match(atlasSource, /appearance = "dark"/);
+  assert.match(atlasSource, /appearance=\{appearance\}/);
+  assert.match(styles, /\.app\[data-appearance\] \.atlas-panel \{ color: var\(--ui-text\);/);
+});

@@ -13,13 +13,13 @@ const stylesheets = Object.fromEntries(
 );
 
 const semanticTypeTokens = {
-  "--type-meta": 14,
-  "--type-label": 15,
-  "--type-body": 16,
-  "--type-action": 16,
-  "--type-active": 18,
-  "--type-title": 24,
-  "--type-value": 34,
+  "--type-meta": 13,
+  "--type-label": 14,
+  "--type-body": 15,
+  "--type-action": 15,
+  "--type-active": 17,
+  "--type-title": 22,
+  "--type-value": 32,
 };
 
 const touchTokens = {
@@ -118,7 +118,7 @@ test("Swiss Compact defines a semantic type scale independently from touch geome
     assertSemanticTokens(source, name);
   }
 
-  assert.equal(cssVariablePixels(stylesheets.product, "--chrome-size"), 72);
+  assert.equal(cssVariablePixels(stylesheets.product, "--chrome-size"), 64);
   assert.ok(semanticTypeTokens["--type-meta"] < semanticTypeTokens["--type-label"]);
   assert.equal(semanticTypeTokens["--type-body"], semanticTypeTokens["--type-action"]);
   assert.ok(semanticTypeTokens["--type-action"] < semanticTypeTokens["--type-active"]);
@@ -188,8 +188,8 @@ test("the driving surface keeps chrome and touch targets larger than its type", 
   assert.match(source, /\.discover-drawer \.drawer-panel \{[\s\S]*?display: grid;[\s\S]*?grid-template-rows: auto minmax\(0, 1fr\);/);
   assert.match(source, /\.discover-workspace \{ height: auto; min-height: 0; \}/);
   assert.match(source, /\.soundtrack-drawer \.drawer-panel \{ overflow-y: hidden; \}/);
-  assert.match(source, /\.app\.controls-awake\.has-now-playing \.atlas-demo-hint \{ bottom: calc\(var\(--chrome-size\) \+ 116px\); \}/);
-  assert.match(source, /\.app\.controls-awake\.has-now-playing \.atlas-field \.maplibregl-ctrl-bottom-left \{ bottom: calc\(var\(--chrome-size\) \+ 76px\); \}/);
+  assert.match(source, /\.app\[data-environment="atlas"\]\.controls-resting \.atlas-panel \{ top: 0; bottom: 0; \}/);
+  assert.doesNotMatch(source, /controls-awake\.has-now-playing \.atlas/);
 });
 
 test("Owner LAB uses the same compact hierarchy and independent touch targets", () => {

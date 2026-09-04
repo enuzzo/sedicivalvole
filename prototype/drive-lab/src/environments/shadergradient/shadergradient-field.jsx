@@ -3,6 +3,7 @@ import { ShaderGradient, ShaderGradientCanvas } from "@shadergradient/react";
 import {
   getShaderGradientStudy,
   shaderGradientPalette,
+  shaderGradientPixelDensity,
   shaderGradientResponse,
 } from "./studies.js";
 import { audioMacroAmount } from "../../response-mapping.js";
@@ -104,6 +105,7 @@ export default function ShaderGradientField({
   callbacksRef.current = { onRenderer, onFrame, onRuntimeError };
   const study = getShaderGradientStudy(studyId);
   const responseMode = musicMode === "play-road" ? "road-audio" : "road";
+  const responsiveAudioLevel = responseMode === "road-audio" ? audioLevel : 0;
   const underwaterAmount = macroSnapshot == null
     ? null
     : audioMacroAmount(macroSnapshot, "underwater");
@@ -113,12 +115,13 @@ export default function ShaderGradientField({
   );
   const effective = useMemo(() => shaderGradientResponse(study, {
     speedKmh: speed,
-    audioLevel,
+    audioLevel: responsiveAudioLevel,
     responseMode,
     effect,
     underwaterAmount,
     reducedMotion,
-  }), [audioLevel, effect, reducedMotion, responseMode, speed, study, underwaterAmount]);
+  }), [effect, reducedMotion, responseMode, responsiveAudioLevel, speed, study, underwaterAmount]);
+  const pixelDensity = shaderGradientPixelDensity(effective.underwater, reducedMotion);
 
   useEffect(() => {
     callbacksRef.current.onRenderer?.(`ShaderGradient · ${study.label}`);
@@ -163,7 +166,7 @@ export default function ShaderGradientField({
         <ShaderGradientCanvas
           className="shadergradient-canvas"
           style={{ position: "absolute", inset: 0 }}
-          pixelDensity={1}
+          pixelDensity={pixelDensity}
           fov={study.fov}
           pointerEvents="none"
           lazyLoad={false}

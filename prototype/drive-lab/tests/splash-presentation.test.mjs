@@ -53,8 +53,9 @@ test("completed control actions and closed surfaces return focus to the experien
   assert.equal(shouldReleaseControlFocus({ closest: () => null }, false), false);
   assert.equal(shouldReleaseControlFocus(null, false), false);
   assert.match(app, /const controlsPinned = modalOpen \|\| manualEffectsDeckOpen \|\| gpsHelpOpen/);
-  assert.match(app, /const focusNeedsRecovery = !activeElement[\s\S]*?activeElement === document\.body[\s\S]*?activeElement === document\.documentElement/);
-  assert.match(app, /if \(wasPinned && !controlsPinned && focusNeedsRecovery\) queueExperienceFocus\(\)/);
+  assert.match(app, /const restoredControlFocus = isControlLayerFocused\(activeElement\)/);
+  assert.match(app, /const focusNeedsRecovery = restoredControlFocus[\s\S]*?activeElement === document\.body[\s\S]*?activeElement === document\.documentElement/);
+  assert.match(app, /queueExperienceFocus\(restoredControlFocus \? activeElement : null\)/);
   assert.doesNotMatch(app, /appearanceRetainedFocus/);
   assert.match(app, /if \(phase !== "running" \|\| controlsPinnedRef\.current\) return/);
   assert.match(app, /if \(!activationTarget[\s\S]*?activeElement !== document\.body[\s\S]*?activeElement !== document\.documentElement[\s\S]*?activeElement !== appRef\.current\) return/);
@@ -613,14 +614,25 @@ test("the vehicle gets persistent Now Playing, stable Media Session actions, and
   assert.match(styles, /\.drawer-panel \{[\s\S]*?touch-action: pan-y/);
   assert.match(styles, /\.persistent-transport\.now-playing-dock \{[^}]*bottom: var\(--chrome-size\)/);
   assert.match(styles, /\.persistent-transport\.now-playing-dock \{[\s\S]*?z-index: 35/);
-  assert.match(styles, /\.app\.modal-open \.persistent-transport\.now-playing-dock \{ bottom: 12px; \}/);
-  assert.match(styles, /\.app\.modal-open\.has-now-playing \.drawer-panel \{ padding-bottom: 104px; \}/);
-  assert.match(app, /phase === "running" && currentTrack \? \([\s\S]*?className="now-playing-dock persistent-transport control-layer"/);
+  assert.doesNotMatch(styles, /\.app\.modal-open \.persistent-transport\.now-playing-dock/);
+  assert.doesNotMatch(styles, /\.app\.modal-open\.has-now-playing \.drawer-panel/);
+  assert.match(app, /const showNowPlaying = phase === "running" && Boolean\(currentTrack\) && !modalOpen && !immersiveEnvironment/);
+  assert.match(app, /\{showNowPlaying \? \([\s\S]*?className="now-playing-dock persistent-transport control-layer"/);
+  assert.match(styles, /\.modal-open \.experience \.control-layer,[\s\S]*?visibility: hidden;[\s\S]*?pointer-events: none/);
   assert.match(styles, /\.controls-resting \.persistent-transport \{[\s\S]*?opacity: 0;[\s\S]*?pointer-events: none/);
   assert.match(app, /soundtrackSnapshot\?\.previous\?\.imageUrl/);
   assert.match(app, /soundtrackSnapshot\?\.next\?\.imageUrl/);
   assert.match(styles, /\.now-playing-copy strong \{[^}]*font-size: var\(--type-active\)/);
   assert.match(styles, /\.drawer-panel\.is-dragging/);
+});
+
+test("Soundtrack begins its one-shot warmup at the Signal Gate", () => {
+  const app = read("App.jsx");
+  assert.match(app, /const prepareSoundtrack = useCallback/);
+  assert.match(app, /if \(phase !== "idle" \|\| networkNotice\.status === "offline" \|\| !navigator\.onLine\) return/);
+  assert.match(app, /void prepareSoundtrack\(\)/);
+  assert.match(app, /soundtrack\.warmup\.requested/);
+  assert.match(app, /void prepareSoundtrack\(\{ force: true \}\)/);
 });
 
 test("compact viewports recover speed width for persistent network evidence", () => {

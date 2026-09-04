@@ -4,6 +4,7 @@ import test from "node:test";
 import {
   getShaderGradientStudy,
   shaderGradientPalette,
+  shaderGradientPixelDensity,
   shaderGradientResponse,
   SHADERGRADIENT_STUDY_IDS,
 } from "../src/environments/shadergradient/studies.js";
@@ -113,12 +114,21 @@ test("braking folds and densifies Gradient continuously, then restores the exact
   assert.match(fieldSource, /audioMacroAmount\(macroSnapshot, "underwater"\)/);
 });
 
+test("braking temporarily lowers Gradient fill cost without changing its authored response", () => {
+  assert.equal(shaderGradientPixelDensity(0), 1);
+  assert.equal(shaderGradientPixelDensity(0.079), 1);
+  assert.equal(shaderGradientPixelDensity(0.08), 0.8);
+  assert.equal(shaderGradientPixelDensity(1), 0.8);
+  assert.equal(shaderGradientPixelDensity(1, true), 1);
+});
+
 test("the public visual lazily loads the exact renderer and owns a Canvas2D fallback", () => {
   assert.match(fieldSource, /from "@shadergradient\/react"/);
   assert.match(fieldSource, /ShaderGradientCanvas/);
   assert.match(fieldSource, /ShaderGradientFallback/);
   assert.match(fieldSource, /getContext\("2d"/);
-  assert.match(fieldSource, /pixelDensity=\{1\}/);
+  assert.match(fieldSource, /pixelDensity=\{pixelDensity\}/);
+  assert.match(fieldSource, /const responsiveAudioLevel = responseMode === "road-audio" \? audioLevel : 0/);
   assert.match(appSource, /lazy\(\(\) => import\("\.\/environments\/shadergradient\/shadergradient-field\.jsx"\)\)/);
   assert.match(appSource, /environment\.renderer === "shadergradient"/);
   assert.match(appSource, /studyId=\{environment\.studyId\}/);
