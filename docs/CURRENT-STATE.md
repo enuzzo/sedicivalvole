@@ -44,7 +44,7 @@ dated study documents.
   LAB. Aperture performs its tiled projection and centre light;
   Vertigo changes only the original runtime's externally bridged time, FOV and
   colour controls; Meridian changes corridor projection, flow, fog and rail
-  energy; Atlas changes MapLibre camera and layer paint properties; Drivey
+  response; Atlas changes MapLibre camera and layer paint properties; Drivey
   receives smoothed bounded road response, timestamped audio-macro envelopes,
   camera and two-channel material updates through its external bridge without
   editing the vendor files; PRTCL changes complete-form and point scale,
@@ -52,7 +52,7 @@ dated study documents.
   frame-rate-independent macro envelopes within its own particle grammar; the
   three ShaderGradient variants use their exact registered starting points with
   half-speed idle motion, bounded road response, optional Play the Road audio
-  energy, and speed-only Soundtrack behavior.
+  level response, and speed-only Soundtrack behavior.
 - The selected **Focus Canvas** owner LAB is implemented and canonically
   published behind a server-side `/lab/` session gate. Its first manifest controls the
   active PRTCL families through 16 bounded Form, Response, Macro, Scene and
@@ -274,12 +274,15 @@ dated study documents.
   exact-viewport local review and was rejected before publication; its renderer,
   QA path and active tests have been removed as well. PLUMB, REGISTER,
   LATITUDES, WAKE and any other retired identifier now resolve to Aperture.
-- Speed, BPM, and energy remain visible together. The fixed road-energy ceiling
-  is `130 km/h`, with Aperture visibly forming a tunnel near `40 km/h`.
+- The driving rail exposes speed as its sole numeric hierarchy. Arrangement and
+  visual response stay internal, use separate domain names, and saturate at the
+  fixed `130 km/h` road-response ceiling; Aperture visibly forms a tunnel near
+  `40 km/h`.
 - The main experience retains an icon-only Mute control, GPS/Demo source
   selection, vertically ordered Music and Visual libraries, a shared `PALETTE`
-  control, and coordinate-free diagnostics in the measured `72 px` Swiss
-  Compact footer.
+  control, and coordinate-free diagnostics in the measured Tesla Compact
+  footer. The palette's ten swatches fill their complete assigned cell as a
+  `5 × 2` board instead of clustering in one corner.
 - Signal Gate launches through the approved compact `360 × 160 px` flat surface
   at the Tesla split viewport. Its `42 px` 16 Road mark, textual wordmark and full-width
   `PLAY THE ROAD` field form one semantic gesture with no simulated controls.
@@ -298,8 +301,10 @@ dated study documents.
   compact left-aligned 16 Road and Orbitron wordmark lockup, hairline structure,
   quiet-gray direct controls, short vermilion state rails, and one black START
   field. `MUSIC` and `VISUAL` keep concise descriptions; START remains disabled
-  until both axes are selected, and MUTE still requires a Visual. SOUNDTRACK
-  prepares three transient eligible Jamendo roles before START can unlock. The
+  until both axes are selected, and MUTE still requires a Visual. Instrument
+  Deck starts one Jamendo catalogue warm-up as soon as it appears; selecting
+  SOUNDTRACK promotes the same request, while START may open the visual and
+  state that music will join when ready. The
   running Music drawer now presents two horizontal top source selectors plus
   compact equal-weight **Lobo Playlist** and **Jamendo Library** paths. The
   Lobo card says **FEATURED ARTIST** and identifies original music written and
@@ -345,13 +350,17 @@ dated study documents.
   OFL-1.1. Its deliberate `400–700` hierarchy and tabular numerals remain intact.
   Orbitron is restored only for exact textual `sedicivalvole` wordmarks in the
   launch surface, Instrument Deck and owner LAB.
-- The running top bar uses the existing transparent 16 Road product mark alone
-  in the wide layout. At `773 × 601`, Swiss Compact hides that separate mark
-  cell and uses an exact `164 / 104 / 112 / 86 / 84 / 116 / 107 px` grid for
-  mode, speed, network, appearance, GPS, Discover, and Report. The speed readout
-  remains in its exact grid cell when the surrounding chrome retracts, shows
-  only the centered value and `KM/H`, and keeps its GPS/Demo source available
-  through the accessible control label rather than visible duplicate copy.
+- The running top bar uses the owner-approved **Tesla Balanced Rail** at the
+  `773 × 601` viewport: compact 16 Road mark, mode, speed, network, appearance,
+  GPS, Discover, and Report. The mark stays first and remains visible with speed
+  while the secondary chrome rests. Speed is the only two-line numeric module;
+  every other actionable cell is a centered icon-only or icon-plus-name peer on
+  one baseline. Network keeps a colour-coded status ring and genuine loading
+  motion in the rail, then discloses current app-only transfer values plus a
+  bounded 15-minute quality graph. The speed readout remains in its exact grid
+  cell when the surrounding chrome retracts, shows only the centered value and
+  `KM/H`, and keeps its GPS/Demo source available through the accessible control
+  label rather than visible duplicate copy.
 - The launch wordmark uses Orbitron `750`, responsive `26–32 px` sizing and
   restrained `-0.02em` tracking beside the `42 px` 16 Road mark. `PLAY THE ROAD`
   remains Space Grotesk `600` with zero added tracking. The product band is
@@ -398,7 +407,7 @@ dated study documents.
   live arranger now builds only atmosphere, harmony, sub/reese and rhythm: the
   recurring `riff` and `response` lanes are retired from normal playback and
   remain reachable only through the parked development audition path.
-- **JUNCTION 01** is selectable sampled Jungle music. Its eight energy states
+- **JUNCTION 01** is selectable sampled Jungle music. Its eight performance states
   each have three complete authored clips: 24 rendered sections built from 76
   distinct recordings in one 5.8 MB segmented Opus bank. Every section shares
   the exact `Emin9 – Cmaj7 – Amin7 – Bmin9` grammar and contains its own vertical
@@ -407,13 +416,13 @@ dated study documents.
   harmony and atmosphere without a break or bassline. Native playback begins at
   `21 km/h` with the quiet `127 BPM` OPEN family, advances to `135 BPM` near
   `30 km/h`, `158 BPM` near `40 km/h`, `164 BPM` near `50 km/h`, and reaches
-  `168 BPM` only at high energy. The browser
+  `168 BPM` only at high road demand. The browser
   lazily retains at most six individual clips, finishes the current eight-bar
   phrase, then starts one different self-contained performance on the
   sample-accurate boundary. The primary take does not immediately repeat.
   A rhythm entrance from the zero-beat bed rises for four seconds when JUNCTION
   is already active; a decision to return toward low-speed ambience is
-  cancellable if road energy returns.
+  cancellable if road demand returns.
   Source sounds are never exposed or shuffled mid-phrase.
 - JUNCTION PARK is no longer a perpetual first-chord hold. Six root-light
   voicings move through the score's existing `Emin9 – Cmaj7 – Amin7 – Bmin9`
@@ -869,9 +878,8 @@ surrounding launch/vehicle experience.
   candidate and final read-only postflight reports `remote_writes=NONE`.
   Physical-Tesla Media Session behavior and receipt of its explicitly sent
   diagnostic remain open.
-- Soundtrack's black source readout is a `174 px` speed-only module at the
-  current `773 × 601` Swiss Compact breakpoint. FLUX, BPM and energy are
-  absent in this mode. The persistent lower transport shares the chrome
+- Soundtrack's source readout is a speed-only module at the current `773 × 601`
+  Swiss Compact breakpoint. The persistent lower transport shares the chrome
   lifecycle and becomes hidden/non-interactive after idle. Follow-up checkpoint
   `92e581b` prevents GPS/demo motion, acceleration, braking, regeneration and
   passive pointer movement from waking resting chrome; a deliberate pointer

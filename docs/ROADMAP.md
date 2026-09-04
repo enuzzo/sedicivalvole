@@ -63,11 +63,11 @@ Implemented:
 
 - nullable GPS normalization, deadband, smoothing, and bounded Demo input;
 - tempo knee with asymptotic ceiling;
-- continuous energy separated from discrete layer/Brake events;
+- continuous domain response separated from discrete layer/Brake events;
 - sample-accurate AudioWorklet transport, bar/phrase-quantized arrangement, hysteresis, asymmetric dwell, crossfades, and limiter;
 - FRACTURE: ambience-only launch, ten four-bar sections, production atmosphere/harmony/low-end/rhythm lanes with the recurring riff and response retired, three authored half-time rhythm families before the `88 km/h` full-break gate, offline rendering, development-only voice audition, and measured brake processing;
 - one shared braking UNDERWATER gesture; OPEN and BLOOM are retired and ordinary acceleration adds no reactive effect;
-- fixed `130 km/h` road-energy ceiling, early tunnel visibility near `40 km/h`, and curated `APERTURE 01` environment;
+- fixed `130 km/h` road-response ceiling, early tunnel visibility near `40 km/h`, and curated `APERTURE 01` environment;
 - filtered acceleration/deceleration envelopes with single direction-change cues and steady-state decay;
 - deterministic desktop signal tests.
 
@@ -78,7 +78,7 @@ requires a real Tesla listening session.
 
 Completed in the current working line:
 
-- JUNCTION's 24-clip browser runtime uses one 5.8 MB segmented Opus music bank built from 76 distinct recordings. Its eight energy states each own three interchangeable complete performances under one fixed E-minor harmonic grammar. Only one tonal performance plays at a time, changes stay on complete eight-bar boundaries, recent memory prevents an immediate repeat, 40 km/h remains at 127 BPM, 60 km/h remains at 135 BPM, and rest has no break or bassline;
+- JUNCTION's 24-clip browser runtime uses one 5.8 MB segmented Opus music bank built from 76 distinct recordings. Its eight performance states each own three interchangeable complete performances under one fixed E-minor harmonic grammar. Only one tonal performance plays at a time, changes stay on complete eight-bar boundaries, recent memory prevents an immediate repeat, 40 km/h remains at 127 BPM, 60 km/h remains at 135 BPM, and rest has no break or bassline;
 - JUNCTION and NIGHTSHIFT share one `0.72` sampled-performance entry gain. A
   reproducible FFmpeg/EBU R128 audit measures every encoded asset in both tracked
   banks; the common gain closes NIGHTSHIFT's runtime calibration gap, while
@@ -125,7 +125,7 @@ Queued next:
 
 - keep every later score disabled and marked `IN PREPARATION` until it has an authored runtime;
 - profile simultaneous AudioWorklet and WebGL rendering on the target Tesla;
-- preserve the shared speed, energy, brake, safety, and diagnostic contracts when the runtime can switch more than one authored score.
+- preserve shared speed, per-domain response, brake, safety, and diagnostic contracts when the runtime can switch more than one authored score.
 
 Gate: FRACTURE and JUNCTION accepted during a real drive, no audible jitter or
 stop/start phrasing at JUNCTION section changes, all
@@ -138,7 +138,7 @@ Status: **NINE SOURCE ENVIRONMENTS IMPLEMENTED; THREE SHADERGRADIENT VISUALS AWA
 Implemented:
 
 - procedural WebGL2 Modular Aperture field with no texture asset;
-- bounded speed energy, palette, aggregate pulse, Brake, and asymmetric deceleration response;
+- bounded road response, palette, aggregate pulse, Brake, and asymmetric deceleration response;
 - reduced-motion behavior and continuously redrawn Canvas2D fallback;
 - flat Braun/Swiss interface, compact diagnostics, icon-only audio state, vertically ordered Visual/Music controls, and shared `PALETTE` selection at `773 × 601`.
 - dark tunnel terminus plus off-canvas resting chrome with a persistent speed readout and wake-first interaction.
@@ -186,7 +186,7 @@ Queued next:
   place for tuning and export; any upstream source modification still requires
   a fresh explicit owner decision and retained MIT inventory;
 - profile the unmodified Interstate 7 renderer on the target Tesla; any later travel, projection, curvature, density, palette, or geometry changes require a new explicit product decision and must not be folded into the upstream-integrity checkpoint;
-- verify each environment at rest, intermediate speed, full energy, and sustained deceleration at `773 × 601` on the target vehicle.
+- verify each environment at rest, intermediate speed, full road response, and sustained deceleration at `773 × 601` on the target vehicle.
 
 Gate: stable frame budget on the slowest target vehicle, graceful degradation, and no audio degradation while the renderer runs.
 

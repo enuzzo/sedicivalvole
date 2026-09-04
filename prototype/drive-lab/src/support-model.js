@@ -6,7 +6,7 @@ const SUGGESTION_ADDRESS_CODE_POINTS = Object.freeze([
 ]);
 
 /**
- * A deliberately playful project-energy signal, not a donation total.
+ * A deliberately playful project-momentum signal, not a donation total.
  *
  * It starts at 15 and advances by two points per UTC day, with one occasional
  * extra point. The interface labels this honestly so it cannot be mistaken for

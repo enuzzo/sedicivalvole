@@ -79,7 +79,7 @@ test("diagnostic mail carries the complete accepted report as verified JSON gzip
   const attachmentJson = gunzipSync(gzip).toString("utf8");
   const attachment = JSON.parse(attachmentJson);
 
-  assert.equal(attachment.schema, "sedicivalvole.tesla-diagnostic.v3");
+  assert.equal(attachment.schema, "sedicivalvole.tesla-diagnostic.v4");
   assert.equal(attachment.serverAcceptedAt, "2026-08-28T06:51:35+00:00");
   assert.deepEqual(attachment.report, report);
   assert.match(rawMail, new RegExp(`JSON SHA-256: ${createHash("sha256").update(attachmentJson).digest("hex")}`));

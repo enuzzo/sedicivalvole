@@ -46,7 +46,7 @@ function buildDiagnosticMail(array $report, string $receivedAt, string $recipien
         throw new RuntimeException('compression_unavailable');
     }
     $attachmentJson = json_encode([
-        'schema' => 'sedicivalvole.tesla-diagnostic.v3',
+        'schema' => 'sedicivalvole.tesla-diagnostic.v4',
         'serverAcceptedAt' => $receivedAt,
         'report' => $report,
     ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE);
@@ -71,7 +71,7 @@ function buildDiagnosticMail(array $report, string $receivedAt, string $recipien
     $summary = implode("\r\n", [
         'sedicivalvole Tesla diagnostic',
         'Server accepted at: ' . $receivedAt,
-        'Schema: sedicivalvole.tesla-diagnostic.v3',
+        'Schema: sedicivalvole.tesla-diagnostic.v4',
         'Privacy: the endpoint rejects coordinate fields and stores no report.',
         'Complete report: attached as gzip-compressed JSON.',
         'Attachment: ' . $attachmentName,
@@ -156,7 +156,7 @@ if (!is_array($payload) || json_last_error() !== JSON_ERROR_NONE) {
     respond(400, 'invalid_json');
 }
 
-if (($payload['schema'] ?? '') !== 'sedicivalvole.tesla-diagnostic.v3' || !is_array($payload['report'] ?? null)) {
+if (($payload['schema'] ?? '') !== 'sedicivalvole.tesla-diagnostic.v4' || !is_array($payload['report'] ?? null)) {
     respond(422, 'schema_rejected');
 }
 

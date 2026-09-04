@@ -13,9 +13,19 @@ export const MODEL_3_AWD_REFERENCE = Object.freeze({
   vehicleHoldCaptureKmh: 0.8,
 });
 
-export function speedToEnergy(speedKmh) {
+function speedToResponseCurve(speedKmh) {
   const normalized = clamp(Math.max(0, speedKmh) / ROAD_SPEED_CEILING_KMH, 0, 1);
   return 1 - (1 - normalized) ** 2.2;
+}
+
+/** Musical arrangement demand derived from road speed. */
+export function speedToArrangementDrive(speedKmh) {
+  return speedToResponseCurve(speedKmh);
+}
+
+/** Aperture depth pressure derived from road speed. */
+export function speedToAperturePressure(speedKmh) {
+  return speedToResponseCurve(speedKmh);
 }
 
 export function speedToBpm(speedKmh) {
@@ -24,10 +34,10 @@ export function speedToBpm(speedKmh) {
 }
 
 export function speedToWave(speedKmh) {
-  const energy = speedToEnergy(speedKmh);
+  const arrangementDrive = speedToArrangementDrive(speedKmh);
   return {
-    frequencyHz: 38 + energy * 76,
-    gain: 0.012 + energy * 0.068,
+    frequencyHz: 38 + arrangementDrive * 76,
+    gain: 0.012 + arrangementDrive * 0.068,
   };
 }
 
@@ -45,12 +55,12 @@ export function visualVelocityToMorphWarp(visualVelocity) {
   return smoothCurve(0.02, 0.92, clamp(visualVelocity, 0, 1)) ** 1.05;
 }
 
-export function energyToFlowRate(energy, speedKmh = 0) {
-  const safeEnergy = clamp(energy, 0, 1);
+export function aperturePressureToFlowRate(pressure, speedKmh = 0) {
+  const safePressure = clamp(pressure, 0, 1);
   const safeSpeed = clamp(Math.max(0, speedKmh) / ROAD_SPEED_CEILING_KMH, 0, 1);
   const baseFlow = (safeSpeed ** 1.6) * 14.5;
-  const energyFlow = (safeEnergy ** 2.2) * 1.8;
-  return 0.02 + baseFlow + energyFlow;
+  const pressureFlow = (safePressure ** 2.2) * 1.8;
+  return 0.02 + baseFlow + pressureFlow;
 }
 
 export function speedToMotion(previousSpeedKmh, nextSpeedKmh, elapsedSeconds) {
@@ -66,11 +76,11 @@ export function speedToMotion(previousSpeedKmh, nextSpeedKmh, elapsedSeconds) {
 const SECTION_ENTER = [0.16, 0.4, 0.68];
 const SECTION_EXIT = [0.1, 0.31, 0.56];
 
-export function energyToSection(energy, currentSection = 0) {
-  const safeEnergy = clamp(energy, 0, 1);
+export function arrangementDriveToSection(arrangementDrive, currentSection = 0) {
+  const safeDrive = clamp(arrangementDrive, 0, 1);
   const safeSection = Math.round(clamp(currentSection, 0, 3));
-  if (safeSection < 3 && safeEnergy >= SECTION_ENTER[safeSection]) return safeSection + 1;
-  if (safeSection > 0 && safeEnergy < SECTION_EXIT[safeSection - 1]) return safeSection - 1;
+  if (safeSection < 3 && safeDrive >= SECTION_ENTER[safeSection]) return safeSection + 1;
+  if (safeSection > 0 && safeDrive < SECTION_EXIT[safeSection - 1]) return safeSection - 1;
   return safeSection;
 }
 

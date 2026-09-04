@@ -413,7 +413,6 @@ test("drive telemetry retains a bounded trace while preserving full-session aggr
     accuracyM: null,
     source: "DEMO",
     driveInput: "auto",
-    energy: 0,
     bpm: 72,
     averageFps: 45,
     p95FrameMs: 22,
@@ -459,6 +458,8 @@ test("drive telemetry retains a bounded trace while preserving full-session aggr
     report.samples[1][DRIVE_TRACE_FIELDS.indexOf("rhythms")],
     ["open-2-1", "open-2-1"],
   );
+  assert.equal(DRIVE_TRACE_FIELDS.includes("energy"), false);
+  assert.equal(JSON.stringify(report).includes('"energy"'), false);
   assert.equal(JSON.stringify(report).includes("latitude"), false);
   assert.equal(JSON.stringify(report).includes("longitude"), false);
 });
@@ -466,7 +467,7 @@ test("drive telemetry retains a bounded trace while preserving full-session aggr
 test("diagnostic transport fitting preserves recent evidence within the request limit", () => {
   const noisyValue = "x".repeat(1200);
   const report = {
-    schema: "sedicivalvole.tesla-diagnostic.v3",
+    schema: "sedicivalvole.tesla-diagnostic.v4",
     flightRecorder: {
       summary: { totalSamples: 300 },
       samples: Array.from({ length: 300 }, (_, index) => [index, noisyValue]),
@@ -490,7 +491,7 @@ test("diagnostic transport fitting preserves recent evidence within the request 
 test("diagnostic transport fitting rotates oldest evidence from an oversized drive", () => {
   const noisyValue = "telemetry".repeat(1000);
   const report = {
-    schema: "sedicivalvole.tesla-diagnostic.v3",
+    schema: "sedicivalvole.tesla-diagnostic.v4",
     flightRecorder: {
       summary: { totalSamples: 300, discardedSamples: 900 },
       samples: Array.from({ length: 300 }, (_, index) => [index, noisyValue]),

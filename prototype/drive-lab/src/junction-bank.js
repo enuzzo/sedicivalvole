@@ -84,8 +84,8 @@ export function chooseJunctionPerformance(
   return pool[Math.floor(value * pool.length)];
 }
 
-export function junctionPerformanceParameters(energy, bpm) {
-  const value = Math.min(1, Math.max(0, Number(energy) || 0));
+export function junctionPerformanceParameters(performanceDrive, bpm) {
+  const value = Math.min(1, Math.max(0, Number(performanceDrive) || 0));
   const tempo = Math.max(1, Number(bpm) || 127);
   return {
     delaySeconds: Math.min(0.5, Math.max(0.12, (60 / tempo) * 0.5)),
@@ -95,8 +95,8 @@ export function junctionPerformanceParameters(energy, bpm) {
   };
 }
 
-export function junctionSectionForEnergy(energy, braking = false) {
-  const value = Math.min(1, Math.max(0, Number(energy) || 0));
+export function junctionSectionForDrive(performanceDrive, braking = false) {
+  const value = Math.min(1, Math.max(0, Number(performanceDrive) || 0));
   if (braking) return value > 0.6 ? "turn" : value > 0.1 ? "ease" : "rest";
   if (value < 0.1) return "rest";
   if (value < 0.34) return "open";
@@ -106,9 +106,9 @@ export function junctionSectionForEnergy(energy, braking = false) {
   return "full";
 }
 
-/** Inverse of the shared 130 km/h energy curve, used only for compatibility. */
-export function junctionSpeedForEnergy(energy) {
-  const value = Math.min(1, Math.max(0, Number(energy) || 0));
+/** Inverse of the shared 130 km/h response curve, used only by test controls. */
+export function junctionSpeedForDrive(performanceDrive) {
+  const value = Math.min(1, Math.max(0, Number(performanceDrive) || 0));
   return 130 * (1 - (1 - value) ** (1 / 2.2));
 }
 
@@ -117,11 +117,11 @@ export function junctionSpeedForEnergy(energy) {
  * harmony is synthesized separately, so the 127 BPM recording is never slowed,
  * relabelled or exposed early.
  */
-export function junctionSectionForSpeed(speedKmh, energy, braking = false) {
+export function junctionSectionForSpeed(speedKmh, performanceDrive, braking = false) {
   const speed = Math.max(0, Number(speedKmh) || 0);
   if (speed < NATIVE_GROOVE_SPEED_KMH) return "rest";
   if (!braking && speed < 30) return "open";
-  return junctionSectionForEnergy(energy, braking);
+  return junctionSectionForDrive(performanceDrive, braking);
 }
 
 export const JUNCTION_BANK_MAGIC = MAGIC;

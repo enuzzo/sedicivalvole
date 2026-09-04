@@ -719,7 +719,7 @@ export const DRIVE_TRACE_INTERVAL_MS = 2000;
 export const DRIVE_TRACE_SAMPLE_LIMIT = 1800;
 export const DIAGNOSTIC_MAX_REQUEST_BODY_BYTES = 1966080;
 export const DRIVE_TRACE_FIELDS = [
-  "t", "speed", "gps", "gpsAge", "gpsState", "accuracy", "rate", "source", "input", "energy",
+  "t", "speed", "gps", "gpsAge", "gpsState", "accuracy", "rate", "source", "input",
   "bpm", "fps", "p95Frame", "audio", "audioPeak", "visual", "music", "section", "family", "rhythm", "rhythmTransition", "takes", "rhythms",
   "bank", "gpsConfidence", "motion", "online", "net", "rtt", "visibility",
 ];
@@ -818,7 +818,6 @@ export function recordDriveTelemetrySample(telemetry, sample, limit = DRIVE_TRAC
     rate: rounded(rateKmhPerSecond, 2),
     source: sample.source ?? "unknown",
     input: sample.driveInput ?? "unknown",
-    energy: rounded(sample.energy, 3),
     bpm: rounded(sample.bpm, 1),
     fps: rounded(sample.averageFps, 1),
     p95Frame: rounded(sample.p95FrameMs, 1),

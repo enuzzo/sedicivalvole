@@ -1,7 +1,7 @@
 // Authored Flux environments.
 //
 // This registry is data only. Each entry names a renderer that App resolves to
-// a field component, so adding an environment never changes the speed, energy,
+// a field component, so adding an environment never changes the speed, motion,
 // palette, safety, persistence, or diagnostic contracts that every environment
 // shares.
 //

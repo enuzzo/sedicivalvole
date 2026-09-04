@@ -784,15 +784,15 @@ export function atlasGpsPresentation(gpsState, accuracyM, source = "GPS") {
 
 export function speedToAtlasCamera(speedKmh) {
   const speed = Math.min(130, Math.max(0, Number(speedKmh) || 0));
-  const energy = speed / 130;
+  const roadProgress = speed / 130;
   // Keep the early pull-back legible, then compress the upper end so motorway
   // speed reveals more city without ever flattening the extruded city field.
-  const flight = 0.35 * energy + 0.65 * Math.sqrt(energy);
+  const flight = 0.35 * roadProgress + 0.65 * Math.sqrt(roadProgress);
   return {
     zoom: 16.2 - flight * 1.55,
     pitch: 62 - flight * 6.5,
-    durationMs: Math.round(2200 - energy * 1050),
-    buildingScale: 0.82 + energy * 0.38,
+    durationMs: Math.round(2200 - roadProgress * 1050),
+    buildingScale: 0.82 + roadProgress * 0.38,
   };
 }
 

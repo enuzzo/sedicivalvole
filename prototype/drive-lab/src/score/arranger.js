@@ -15,13 +15,14 @@
 // standstill sounds slow without the tempo being slow.
 //
 // Second, continuous and structural changes are strictly separated. Brightness,
-// filter pressure, drive, spatial depth and dynamics follow smoothed energy
+// filter pressure, drive, spatial depth and dynamics follow smoothed
+// arrangement demand
 // every block. Lane entries and exits, scene changes and fills only ever happen
 // on a bar or phrase boundary, behind hysteresis, asymmetric dwell, a minimum
 // scene tenure, and a cancellable exit queue. GPS jitter can move the first set
 // and cannot move the second.
 
-import { clamp, ROAD_SPEED_CEILING_KMH, speedToEnergy } from "../signal-model.js";
+import { clamp, ROAD_SPEED_CEILING_KMH, speedToArrangementDrive } from "../signal-model.js";
 import { lowSpeedPolicy, perceivedFractureBpm } from "../low-speed-score.js";
 
 export const TEMPO_REST_BPM = 162;
@@ -43,7 +44,7 @@ const SCENE_EXIT = [0.05, 0.22, 0.45, 0.68];
 /** Bars a scene must hold before it may change again. */
 export const MINIMUM_SCENE_BARS = 4;
 
-/** Seconds the energy must support a higher scene before the piece climbs. */
+/** Seconds the road must support a higher scene before the piece climbs. */
 export const RISING_DWELL_SECONDS = 0.8;
 
 /**
@@ -101,23 +102,24 @@ export const LANES = Object.freeze([
 export const RETIRED_LIVE_LANES = Object.freeze(["riff", "response"]);
 
 /** Tempo with a knee: nearly all of the small range is spent by urban speed. */
-export function energyToTempo(energy) {
-  const safeEnergy = clamp(energy, 0, 1);
-  const shaped = (1 - Math.exp(-safeEnergy / TEMPO_KNEE)) / (1 - Math.exp(-1 / TEMPO_KNEE));
+export function arrangementDriveToTempo(arrangementDrive) {
+  const safeDrive = clamp(arrangementDrive, 0, 1);
+  const shaped = (1 - Math.exp(-safeDrive / TEMPO_KNEE)) / (1 - Math.exp(-1 / TEMPO_KNEE));
   return TEMPO_REST_BPM + (TEMPO_CEILING_BPM - TEMPO_REST_BPM) * shaped;
 }
 
-/** Scene index for an energy, with separate enter and exit thresholds. */
-export function energyToScene(energy, currentScene) {
-  const safeEnergy = clamp(energy, 0, 1);
+/** Scene index for arrangement demand, with separate enter and exit thresholds. */
+export function arrangementDriveToScene(arrangementDrive, currentScene) {
+  const safeDrive = clamp(arrangementDrive, 0, 1);
   const scene = Math.round(clamp(currentScene, 0, SCENES.length - 1));
-  if (scene < SCENES.length - 1 && safeEnergy >= SCENE_ENTER[scene]) return scene + 1;
-  if (scene > 0 && safeEnergy < SCENE_EXIT[scene - 1]) return scene - 1;
+  if (scene < SCENES.length - 1 && safeDrive >= SCENE_ENTER[scene]) return scene + 1;
+  if (scene > 0 && safeDrive < SCENE_EXIT[scene - 1]) return scene - 1;
   return scene;
 }
 
 /**
- * The scene an energy fully supports, resolving `energyToScene` to a fixed
+ * The scene an arrangement demand fully supports, resolving
+ * `arrangementDriveToScene` to a fixed
  * point rather than a single step.
  *
  * Stepping one scene per phrase was audibly wrong in both directions. Pulling
@@ -126,10 +128,10 @@ export function energyToScene(energy, currentScene) {
  * after the vehicle had. Hysteresis is preserved exactly — this only asks the
  * same thresholds where they finally settle, instead of stopping after one.
  */
-export function energyToSupportedScene(energy, currentScene) {
+export function arrangementDriveToSupportedScene(arrangementDrive, currentScene) {
   let scene = Math.round(clamp(currentScene, 0, SCENES.length - 1));
   for (let guard = 0; guard < SCENES.length; guard += 1) {
-    const next = energyToScene(energy, scene);
+    const next = arrangementDriveToScene(arrangementDrive, scene);
     if (next === scene) break;
     scene = next;
   }
@@ -140,8 +142,8 @@ export function createArrangerState() {
   return {
     observedSpeedKmh: 0,
     smoothedSpeedKmh: 0,
-    energy: 0,
-    peakEnergy: 0,
+    arrangementDrive: 0,
+    peakArrangementDrive: 0,
     scene: 0,
     pendingScene: 0,
     risingSeconds: 0,
@@ -180,17 +182,17 @@ export function observeSpeed(state, speedKmh, deltaSeconds) {
     state.smoothedSpeedKmh += difference * Math.min(1, rate * delta);
   }
 
-  const previousEnergy = state.energy;
-  state.energy = speedToEnergy(state.smoothedSpeedKmh);
+  const previousDrive = state.arrangementDrive;
+  state.arrangementDrive = speedToArrangementDrive(state.smoothedSpeedKmh);
 
   // Retained intensity: the arrangement remembers how hard it was working and
   // lets that go slowly, so a dip does not erase the performance.
-  state.peakEnergy = Math.max(
-    state.energy,
-    state.peakEnergy - PEAK_MEMORY_DECAY_PER_SECOND * delta,
+  state.peakArrangementDrive = Math.max(
+    state.arrangementDrive,
+    state.peakArrangementDrive - PEAK_MEMORY_DECAY_PER_SECOND * delta,
   );
 
-  const rising = state.energy > previousEnergy + 1e-6;
+  const rising = state.arrangementDrive > previousDrive + 1e-6;
   state.risingSeconds = rising ? state.risingSeconds + delta : 0;
 
   advanceDecelerationState(state, rising, delta);
@@ -212,7 +214,7 @@ function advanceDecelerationState(state, rising, delta) {
   // been, and for how long. Testing "is speed still dropping" would be wrong:
   // braking and then holding a lower speed must still release eventually, and
   // speed stops falling the moment the driver settles.
-  const belowPeak = state.peakEnergy - state.energy > BELOW_PEAK_MARGIN;
+  const belowPeak = state.peakArrangementDrive - state.arrangementDrive > BELOW_PEAK_MARGIN;
 
   // Only a real return of speed cancels queued removals. The retained peak also
   // decays on its own toward a settled lower speed, and that must not be
@@ -252,10 +254,10 @@ function advanceDecelerationState(state, rising, delta) {
   }
 }
 
-/** True when the arrangement matches what the current energy asks for. */
+/** True when the arrangement matches what the current road demand asks for. */
 function arrangementSettled(state) {
   if (state.queuedExits.length > 0) return false;
-  if (energyToSupportedScene(state.energy, state.scene) !== state.scene) return false;
+  if (arrangementDriveToSupportedScene(state.arrangementDrive, state.scene) !== state.scene) return false;
   return LANES.every(
     (lane) => state.laneGoals[lane.id] === (state.scene >= lane.minScene ? 1 : 0),
   );
@@ -269,7 +271,7 @@ function cancelQueuedExits(state) {
 
 /** Queues a scene change once dwell, hysteresis and tenure all agree. */
 function reviewScene(state, delta) {
-  const supported = energyToSupportedScene(state.energy, state.scene);
+  const supported = arrangementDriveToSupportedScene(state.arrangementDrive, state.scene);
   // Climbing is capped so the arrangement builds; thinning is not, because a
   // vehicle that has genuinely stopped should not keep playing a full break.
   const proposed = supported > state.scene
@@ -277,7 +279,7 @@ function reviewScene(state, delta) {
     : supported;
 
   if (proposed > state.scene) {
-    // The dwell measures how long the energy has *supported* the higher scene,
+    // The dwell measures how long road demand has *supported* the higher scene,
     // not whether it is still increasing. Gating on "still rising" would freeze
     // the arrangement the moment the driver settled at a constant speed.
     state.climbSeconds += delta;
@@ -324,33 +326,33 @@ function reviewLanes(state) {
 }
 
 /**
- * Continuous controls. These follow smoothed energy every block and are the only
+ * Continuous controls. These follow smoothed road demand every block and are the only
  * things allowed to move between musical boundaries.
  */
 export function continuousControls(state) {
-  const { energy } = state;
-  const retained = Math.max(energy, state.peakEnergy);
+  const { arrangementDrive } = state;
+  const retained = Math.max(arrangementDrive, state.peakArrangementDrive);
   const inCatch = state.decelerationState === "catch";
   const releasing = state.decelerationState === "sustained_release";
 
   return {
-    energy,
-    retainedEnergy: retained,
-    // Brightness follows current energy, so a lift darkens the mix immediately
+    arrangementDrive,
+    retainedDrive: retained,
+    // Brightness follows current road demand, so a lift darkens the mix immediately
     // even though the notes do not change.
-    brightness: 0.24 + 0.66 * energy ** 0.85,
-    // Filter pressure leans on retained energy, which is what keeps a brief
+    brightness: 0.24 + 0.66 * arrangementDrive ** 0.85,
+    // Filter pressure leans on retained demand, which is what keeps a brief
     // brake sounding like the same performance under load.
     filterPressure: 0.2 + 0.75 * retained ** 0.9,
-    drive: 0.06 + 0.5 * energy ** 1.05,
+    drive: 0.06 + 0.5 * arrangementDrive ** 1.05,
     // Space opens as the arrangement releases: the classic lift-off wash.
-    spatialDepth: 0.18 + 0.3 * energy + (inCatch ? 0.22 : 0) + (releasing ? 0.3 : 0),
-    delayFeedback: 0.22 + 0.24 * energy + (releasing ? 0.16 : 0),
+    spatialDepth: 0.18 + 0.3 * arrangementDrive + (inCatch ? 0.22 : 0) + (releasing ? 0.3 : 0),
+    delayFeedback: 0.22 + 0.24 * arrangementDrive + (releasing ? 0.16 : 0),
     // Dynamics compress toward the top so the loud state has weight, not level.
-    dynamics: 0.55 + 0.35 * energy ** 0.7,
+    dynamics: 0.55 + 0.35 * arrangementDrive ** 0.7,
     // Ducking deep enough to breathe, not so deep that the full arrangement
     // measures quieter than the half-time one it grew out of.
-    duckDepth: 0.34 + 0.2 * energy,
+    duckDepth: 0.34 + 0.2 * arrangementDrive,
     subDrive: 0.3 + 0.55 * retained,
     // Ghost weight and hat subdivision are continuous articulation, not
     // structure, so they may move between boundaries.
@@ -359,14 +361,14 @@ export function continuousControls(state) {
     // quarter-note hats and no ghost field at all, which is not a light texture
     // — it is an empty one. Eighths and a trace of ghost give the low band
     // something to be without making it busy.
-    ghostWeight: clamp((energy - 0.1) / 0.5, 0, 1),
-    hatSubdivision: energy < 0.2 ? 1 : energy < 0.6 ? 2 : 3,
+    ghostWeight: clamp((arrangementDrive - 0.1) / 0.5, 0, 1),
+    hatSubdivision: arrangementDrive < 0.2 ? 1 : arrangementDrive < 0.6 ? 2 : 3,
   };
 }
 
 /** Tempo target. Structural, so the transport only reads it at a boundary. */
 export function tempoTarget(state) {
-  return energyToTempo(state.energy);
+  return arrangementDriveToTempo(state.arrangementDrive);
 }
 
 /**
@@ -435,7 +437,7 @@ export function commitAtBoundary(state, boundary) {
 
 /** Everything a renderer or a test needs to describe the current arrangement. */
 export function arrangementSnapshot(state, rhythm = {}) {
-  // Arrangement energy remains smoothed, but the motion lane is the audible
+  // Arrangement demand remains smoothed, but the motion lane is the audible
   // policy the renderer applies to the latest observation. Using smoothed speed
   // here made the UI claim ROLL while the renderer had already opened DRIVE.
   const policySpeed = state.observedSpeedKmh ?? state.smoothedSpeedKmh;

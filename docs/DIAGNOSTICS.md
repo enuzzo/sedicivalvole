@@ -90,7 +90,7 @@ At the Tesla split viewport, four compact health cells lead a two-column instrum
   transfer, recent recovery, constrained Network Information estimate, quiet
   online hint, and unavailable evidence without presenting any of them as a
   device-wide traffic measurement;
-- a two-second coordinate-free driving trace containing displayed/raw GPS speed, GPS age/accuracy/confidence, input mode, energy/BPM, active Visual/Music, JUNCTION section/harmonic identity/single take/bank state, frame pacing, real output RMS/peak, network state, and visibility;
+- a two-second coordinate-free driving trace containing displayed/raw GPS speed, GPS age/accuracy/confidence, input mode, BPM, active Visual/Music, JUNCTION section/harmonic identity/single take/bank state, frame pacing, real output RMS/peak, network state, and visibility; private arrangement and renderer response scalars are intentionally excluded;
 - session exposure counts for unique visuals, scores, JUNCTION sections, harmonic identities, and performances;
 - full-session duration, estimated distance, moving/stationary time, source/input durations, speed/rate extrema, and GPS-accuracy aggregates even after old trace samples rotate;
 - bounded runtime errors, unhandled promise rejections, and WebGL context loss/restoration evidence;
@@ -163,7 +163,7 @@ Sanitized endpoint failures are shown in the drawer. The page keeps the recorder
 
 - Live build and asset identity: **PASS** for deployed commit `d415db8` and JavaScript `index-I8IcCozA.js`.
 - Split-view diagnostics at `773 × 601`: **PASS** with four dynamic samples, a 7-second session summary, a 12 KiB pretty-printed report, and zero captured runtime issues.
-- Motion evidence: **PASS** for `0 → 36.8 → 81.4 → 116.2 km/h`, including displayed-speed rate, source, input, energy, BPM, score section, audio level, frame pacing, network, and visibility.
+- Motion evidence: **PASS** for `0 → 36.8 → 81.4 → 116.2 km/h`, including displayed-speed rate, source, input, BPM, score section, audio level, frame pacing, network, and visibility. This historical v3 evidence predates removal of the redundant response scalar.
 - One explicit live `SEND DIAGNOSTIC` gesture at approximately `2026-08-27 08:46 UTC`: **PASS** with UI state `SENT` and `accepted_by_mail_transport` semantics.
 - Final delivery to the configured Gmail inbox: **pending user confirmation**.
 

@@ -59,6 +59,19 @@ instance of its random target, creates a fresh media element, and starts at
 `0:00`. The regression fixture deliberately leaves a target at `1:27` and proves
 that a new playlist gesture still begins at the track head.
 
+### 6.8 One global energy number hides musical decisions
+
+The former normalized `energy` value was useful while the prototype had one
+score and one visual, but it became a misleading product metric once different
+renderers and authored scores needed different timing, hysteresis, and memory.
+It also duplicated speed in REPORT without explaining what the listener should
+hear. The driving UI and coordinate-free diagnostics therefore expose facts:
+speed, motion phase, BPM, arrangement identity, output level, and frame pacing.
+Internally the score owns `arrangementDrive`, Aperture owns
+`aperturePressure`, and other renderers derive their own bounded response from
+the shared motion contract. The first refactor deliberately preserves the
+existing numeric curve; perceptual retuning is a separate listening decision.
+
 ---
 
 ## 1. The mistakes this project has made

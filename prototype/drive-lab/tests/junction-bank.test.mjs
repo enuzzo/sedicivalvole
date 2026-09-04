@@ -6,7 +6,7 @@ import {
   chooseJunctionPerformance,
   junctionDecodedLimit,
   junctionPerformanceParameters,
-  junctionSectionForEnergy,
+  junctionSectionForDrive,
   parseJunctionBank,
 } from "../src/junction-bank.js";
 import {
@@ -20,12 +20,12 @@ import { noteVariation } from "../src/score/dsp/instrument-channel.js";
 test("JUNCTION maps the representative road sequence onto authored native-tempo states", () => {
   const sequence = [0, 15, 40, 60, 90, 130, 90, 60, 40, 15, 0];
   assert.deepEqual(
-    sequence.map((speed) => junctionSectionForEnergy(speed / 130)),
+    sequence.map((speed) => junctionSectionForDrive(speed / 130)),
     ["rest", "open", "open", "enter", "break", "full", "break", "enter", "open", "open", "rest"],
   );
-  assert.equal(junctionSectionForEnergy(0.8, true), "turn");
-  assert.equal(junctionSectionForEnergy(0.4, true), "ease");
-  assert.equal(junctionSectionForEnergy(0.08, true), "rest");
+  assert.equal(junctionSectionForDrive(0.8, true), "turn");
+  assert.equal(junctionSectionForDrive(0.4, true), "ease");
+  assert.equal(junctionSectionForDrive(0.08, true), "rest");
 });
 
 test("JUNCTION enforces the six-clip decoded-memory ceiling against bank metadata", async () => {
@@ -109,7 +109,7 @@ test("JUNCTION chooses one complete performance and avoids immediate primary rep
   );
 });
 
-test("JUNCTION live processing is deterministic, bounded and grows with energy", () => {
+test("JUNCTION live processing is deterministic, bounded and grows with performance drive", () => {
   const calm = junctionPerformanceParameters(0, 127);
   const fast = junctionPerformanceParameters(1, 168);
   assert.ok(calm.delaySeconds >= 0.12 && calm.delaySeconds <= 0.5);

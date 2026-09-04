@@ -2,7 +2,7 @@
 //
 // Data only, in the same shape as `flux-environments.js`: one entry per musical
 // direction, naming the score module that performs it. Adding a score never
-// touches the speed, energy, safety, persistence or diagnostic contracts every
+// touches the speed, motion, safety, persistence or diagnostic contracts every
 // score shares.
 //
 // `status` is the honest part of this file. `ready` means an authored score
@@ -80,7 +80,7 @@ export const SCORE_GENRES = [
     status: SCORE_STATUS.ready,
     score: "nightshift",
     coverUrl: "/artwork/play-road/nightshift.png",
-    description: "Synth-pop recordings move through six authored states, following the energy of the drive.",
+    description: "Synth-pop recordings move through six authored states, following the motion of the drive.",
     note: "18 complete performances · native 85–140 BPM drum families.",
   },
   {

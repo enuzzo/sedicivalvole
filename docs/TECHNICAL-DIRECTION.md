@@ -43,7 +43,7 @@ The mode coordinator owns selection and lifecycle, not signal acquisition. Both 
 They remain separate audio and rendering modules:
 
 - **Engine** maps speed and derived acceleration into an explicitly synthetic RPM/load/gear-state model, then renders selectable engine timbres and an instrument-inspired visual system.
-- **Flux** maps speed and motion into tempo, energy, arrangement, harmony, timbre, space, and generative field parameters.
+- **Flux** maps speed and motion into tempo, arrangement, harmony, timbre, space, and renderer-specific field parameters.
 
 Switching should use a bounded equal-power crossfade or an equivalent click-free transition. The incoming mode may prewarm minimal assets, but inactive full DSP/rendering must not consume an unbounded CPU or memory budget. A switch must not recreate Geolocation, request permission again, or start a second independent AudioContext.
 
@@ -108,16 +108,17 @@ Do not hide unavailable GPS behind a false zero. Surface `unknown`, `stale`, or 
 
 ## Multi-lane musical mapping
 
-Never drive the entire experience from one “intensity” variable.
+Never drive the entire experience from one “intensity” or “energy” variable.
 
 - `tempo`: monotonic, knee-shaped, and saturating;
-- `energy`: continuous arrangement/dynamics control;
-- `visualFlow`: separately filtered movement/depth response that continues to scale with speed after arrangement energy saturates;
+- `arrangementDrive`: private continuous orchestration/dynamics demand;
+- `aperturePressure`: private renderer-specific depth response;
+- `visualFlow`: separately filtered movement/depth response that continues to scale with speed after arrangement drive saturates;
 - `confidence`: reduces risky reactions to low-quality input;
 - structural state: bar-quantized layer/harmony/section decisions;
 - transients: bounded acceleration, deceleration, and Brake envelopes.
 
-A suitable family for tempo/energy is a monotonic saturating curve such as:
+A suitable family for bounded domain responses is a monotonic saturating curve such as:
 
 ```text
 y(v) = y0 + (ymax - y0) × (1 - exp(-v / k))
@@ -152,7 +153,7 @@ lanes; the former recurring theme (`riff`) and response lanes are hard-retired
 from live arrangement goals and remain available only to the parked audition
 harness. Its ambience-only launch, harmony, low-end/rhythm growth, voice output,
 and brake level are checked rather than inferred. Continuous speed maps
-to bounded energy, dynamics, timbre, and space; structural changes remain on
+to bounded arrangement drive, dynamics, timbre, and space; structural changes remain on
 musical boundaries behind hysteresis, dwell, deceleration memory, and
 crossfades. Tempo stays within `162–176 BPM`; high-speed power comes primarily
 from interpretation and arrangement rather than playback-rate escalation.
@@ -242,7 +243,7 @@ Soundtrack document title from admitted artist/title metadata only while status
 is `playing`; all other states restore the fixed product title. Canonical
 publication and target-Tesla tuning remain later boundaries.
 
-JUNCTION is a 192-bar rendered production: eight adaptive energy states each
+JUNCTION is a 192-bar rendered production: eight adaptive performance states each
 have three complete takes, giving 24 clips from 76 distinct recordings in one
 5.8 MB segmented Opus resource. Every clip uses one stable
 `Emin9 – Cmaj7 – Amin7 – Bmin9` identity and prints its compatible atmosphere,
@@ -250,7 +251,7 @@ harmony, bass and break layers offline. Automatic rave lead/melody and a tonal
 second deck are absent. Each
 section carries its own native tempo and duration: ambient rest at 127 BPM has
 no rhythm or bassline; a quiet 127 BPM break enters near 13 km/h, followed by
-135, 158, 164 and finally 168 BPM recordings as road energy rises. The urban
+135, 158, 164 and finally 168 BPM recordings as arrangement demand rises. The urban
 mapping deliberately holds 127 BPM at 40 km/h, 135 BPM at 60 km/h, and does not
 enter 158 BPM until above approximately 65 km/h. The browser
 lazily retains no more than six individual clips and schedules one complete,
@@ -307,7 +308,7 @@ that preserves the same contracts:
 - no time-stretching of break loops: select material recorded at the active
   native tempo instead.
 
-Deceleration uses a three-stage state machine: `catch`, `recovery`, and `sustained_release`. The catch window preserves tempo and principal groove through brief braking. Recovery cancels queued exits when speed returns. Sustained release removes detail lanes on musical boundaries and only then eases tempo downward. State changes use asymmetric dwell, retained peak-energy memory, hysteresis, minimum scene tenure, cancellable queues, and crossfades. See [`REFERENCE-STUDY-TEXTSTEP.md`](REFERENCE-STUDY-TEXTSTEP.md).
+Deceleration uses a three-stage state machine: `catch`, `recovery`, and `sustained_release`. The catch window preserves tempo and principal groove through brief braking. Recovery cancels queued exits when speed returns. Sustained release removes detail lanes on musical boundaries and only then eases tempo downward. State changes use asymmetric dwell, retained peak-demand memory, hysteresis, minimum scene tenure, cancellable queues, and crossfades. See [`REFERENCE-STUDY-TEXTSTEP.md`](REFERENCE-STUDY-TEXTSTEP.md).
 
 ### Shared production direction
 
@@ -328,15 +329,15 @@ The Flux renderer exposes six selectable environments, not static backgrounds.
 **Modular Aperture** was selected from exactly three revised minimal alternatives:
 
 - central-axis depth and flow;
-- outward vanishing-point travel at speed, with a non-linear flow ceiling and a near-planar zero-energy state;
+- outward vanishing-point travel at speed, with a non-linear flow ceiling and a near-planar zero-motion state;
 - one shared procedural cell field whose coordinates interpolate geometrically from a flat square mosaic into tunnel space, with no scene-opacity crossfade;
 - a complete seam-free zero-speed tiling of large squares with deterministic, even four-color distribution and no disabled cells;
-- energy-driven module compaction separated from speed-driven coordinate warping, with renderer-side velocity smoothing for continuous acceleration and deceleration;
+- pressure-driven module compaction separated from speed-driven coordinate warping, with renderer-side velocity smoothing for continuous acceleration and deceleration;
 - aspect-correct square insets at rest, an eased low-speed warp, a bounded central perspective singularity, and a continuous blend between adjoining tunnel walls so intermediate geometry cannot tear into diagonal fragments;
 - a central aperture whose radius opens geometrically with tunnel formation instead of appearing through opacity;
 - speed-driven radial panel elongation and reduced depth frequency in the 150 km/h velocity band;
 - ten curated palettes for all six renderers; Vertigo's external bridge updates only existing runtime colour channels;
-- energy-driven pressure, luminance, distortion, and rectangular panel density;
+- road-response-driven pressure, luminance, distortion, and rectangular panel density;
 - aggregate pulses rather than one flash per audio event;
 - renderer quality levels controlling resolution scale, shader complexity, passes, and frame rate;
 - context-loss recovery;
@@ -505,7 +506,7 @@ retain independent visual ownership. The direct top-rail menu uses the pinned
 official Tabler sun, moon, and sun-moon assets and follows menu-radio keyboard,
 Escape, outside-dismissal, and focus-return behavior.
 
-The Flux chrome uses a shared 6 px UI radius for framed controls and diagnostic surfaces. The owner-selected **Tesla Compact** refinement separates type from interaction geometry through one semantic scale: `13 px` metadata, `14 px` labels, `15 px` body/action copy, `17 px` active names, `22 px` titles, and `32 px` primary values. Metadata remains high contrast, live values use tabular numerals, discrete action targets use at least `48 px`, and primary actions use `56 px`; no universal type floor may flatten this hierarchy. At `773 x 601` the retracting navbar, lower Now Playing band, and footer are each `64 px`. MUTE and FX keep equal tracks and direct `LABEL / ON–OFF` anatomy while obsolete `GLOBAL` and active-count microcopy stays hidden. Structural rails remain aligned to the underlying grid. Functional labels stay uppercase, while editorial Visual, Music, mode, and effect names use separate Title Case display labels in the launcher, footer, and pickers. Stable identifiers and canonical registry labels remain unchanged. The lower Now Playing overlay follows every committed fixed-recording identity on unobstructed visual surfaces and combines artwork with `48 / 56 / 48 px` previous/play-pause/next targets; it is not mounted while a passenger drawer or DISCOVER is open, nor in ATLAS. ATLAS therefore expands its Drive Lab panel from the chrome insets to the complete `601 px` field as chrome rests. Stable Media Session handlers live for the session and dispatch into one serialized, cancellable transport queue. Closing a drawer releases restored trigger focus to the experience, allowing the idle timer to retract top and bottom chrome. Contextual Drivey, PRTCL, and Gradient controls use the same `6 px` radius and retract with chrome until the next screen touch.
+The Flux chrome uses a shared 6 px UI radius for framed controls and diagnostic surfaces. The owner-selected **Tesla Compact** refinement separates type from interaction geometry through one semantic scale: `13 px` metadata, `14 px` labels, `15 px` body/action copy, `17 px` active names, `22 px` titles, and `32 px` primary values. Metadata remains high contrast, live values use tabular numerals, discrete action targets use at least `48 px`, and primary actions use `56 px`; no universal type floor may flatten this hierarchy. At `773 x 601` the retracting navbar, lower Now Playing band, and footer are each `64 px`. The owner-approved **Tesla Balanced Rail** keeps the 16 Road mark first, uses speed as its sole two-line numeric hierarchy, and aligns all remaining icon-only or icon-plus-name controls as equal peers on one central baseline. Network exposes only a three-state ring and genuine loading motion until opened; its popover owns current app-only transfer values and a bounded 15-minute quality history. MUTE and FX keep equal tracks and direct `LABEL / ON–OFF` anatomy while obsolete `GLOBAL` and active-count microcopy stays hidden. The palette's `5 × 2` swatch board fills its assigned footer cell. Structural rails remain aligned to the underlying grid. Functional labels stay uppercase, while editorial Visual, Music, mode, and effect names use separate Title Case display labels in the launcher, footer, and pickers. Stable identifiers and canonical registry labels remain unchanged. The lower Now Playing overlay follows every committed fixed-recording identity on unobstructed visual surfaces and combines artwork with `48 / 56 / 48 px` previous/play-pause/next targets; it is not mounted while a passenger drawer or DISCOVER is open, nor in ATLAS. ATLAS therefore expands its Drive Lab panel from the chrome insets to the complete `601 px` field as chrome rests. Stable Media Session handlers live for the session and dispatch into one serialized, cancellable transport queue. Closing a drawer releases restored trigger focus to the experience, allowing the idle timer to retract top and bottom chrome. Contextual Drivey, PRTCL, and Gradient controls use the same `6 px` radius and retract with chrome until the next screen touch.
 
 The Codrops/Tympanus Infinite Lights reference is useful for coordinated instancing, depth cues, distortion, FOV response, eased speed offset, and the matched distortion/look-at relationship. Vertigo intentionally vendors the byte-identical Interstate 7 runtime as separately licensed third-party material. Meridian studies its mechanical grammar without copying that runtime's source or visual skin. See [`REFERENCE-STUDY-INFINITE-LIGHTS.md`](REFERENCE-STUDY-INFINITE-LIGHTS.md).
 
@@ -523,7 +524,7 @@ selected. The main entry therefore does not parse or execute that renderer for
 the other visuals. The primary catalogues expose one family entry and a
 persistent in-visual control cycles the three variants. Idle animation runs at half each starting point's base rate;
 road response reaches the previous endpoint at `130 km/h`. Play the Road admits
-bounded audio energy, Soundtrack passes zero audio response, and reduced motion
+bounded Play the Road audio-level response, Soundtrack passes zero audio response, and reduced motion
 sets motion to zero. UNDERWATER alters the registered native parameters without
 adding a shared overlay. A project-owned Canvas2D fallback,
 error boundary, explicit frame telemetry, and no remote HDR dependency bound the
@@ -543,7 +544,7 @@ Flux may incorporate procedural road-like flow only as abstract WebGL geometry o
 
 ## Control-state model
 
-Controls have explicit states: `awake`, `resting`, `parked_configuration`, and `reduced`. In `resting`, the header and footer translate fully outside the viewport, the secondary energy readout disappears, and only speed plus its unit remain visible in an opaque, padded, high-contrast rectangular readout. The first interaction reveals the layer without mutating a value. Stop/Mute remains immediate once the layer is awake. Sliders use large physical targets, clear active/focus states, and accessible names.
+Controls have explicit states: `awake`, `resting`, `parked_configuration`, and `reduced`. In `resting`, the footer and secondary header controls retract while the compact 16 Road mark and speed readout remain visible. No synthetic response percentage is shown. The first interaction reveals the layer without mutating a value. Stop/Mute remains immediate once the layer is awake. Sliders use large physical targets, clear active/focus states, and accessible names.
 
 ## Splash as bootstrap
 
@@ -582,7 +583,7 @@ A future pack needs:
 
 - speed normalization, null/negative/outlier handling;
 - smoothing, deadband, stale state, and source lease;
-- tempo/energy saturation;
+- tempo/road-response saturation;
 - hysteresis/dwell and bar-quantized structural transitions;
 - Brake envelope/cooldown;
 - audio unlock/resume and safe failure;
@@ -601,7 +602,7 @@ A future pack needs:
 
 ## Diagnostic harness and data handling
 
-The first vehicle evidence confirms a `773 × 601` split-view CSS viewport on a `1254 × 784` logical screen at DPR `1.53`. The integrated v3 report records viewport history, runtime/GPU/audio details, bounded GPS statistics, aggregate canvas frame pacing, long tasks, page/resource timing, memory/storage hints, connection changes, and a chronological event log. Phase telemetry separates the Signal Gate, active Visual/Music combinations, the Aperture `0–40 km/h` wall-retreat band and the session-report-open state; a returning phase begins a new continuity segment so time spent elsewhere is never counted as one slow frame. Each phase owns bounded frame distributions and two-second memory samples for browser-exposed JavaScript heap, JUNCTION's compressed bank and decoded PCM. A coordinate-free flight recorder adds a two-second trace of displayed and raw GPS speed, GPS confidence, input, energy/BPM, active Visual/Music, JUNCTION section/harmonic identity/single take/rhythm transition/bank readiness, real output RMS/peak, frame pacing, network state, and document visibility. It also summarizes the unique musical and visual exposure across the session. The event stream samples ordinary GPS evidence at two-second cadence while retaining null or low-confidence anomalies immediately, which prevents ten-hertz GPS traffic from evicting meaningful transitions. An isolated accuracy collapse above 250 m is recorded but does not command the smoothed experience. The recorder keeps 300 trace samples (approximately ten minutes) in session memory while full-session time, distance, motion, source, and input aggregates continue beyond rotation. Runtime errors, unhandled rejections, and WebGL context loss/restoration are separately bounded. High-frequency metrics accumulate outside React state so diagnostics do not add a per-frame render cost. The report contains no coordinates and disappears when the page closes or reloads.
+The first vehicle evidence confirms a `773 × 601` split-view CSS viewport on a `1254 × 784` logical screen at DPR `1.53`. The integrated v4 report records viewport history, runtime/GPU/audio details, bounded GPS statistics, aggregate canvas frame pacing, long tasks, page/resource timing, memory/storage hints, connection changes, and a chronological event log. Phase telemetry separates the Signal Gate, active Visual/Music combinations, the Aperture `0–40 km/h` wall-retreat band and the session-report-open state; a returning phase begins a new continuity segment so time spent elsewhere is never counted as one slow frame. Each phase owns bounded frame distributions and two-second memory samples for browser-exposed JavaScript heap, JUNCTION's compressed bank and decoded PCM. A coordinate-free flight recorder adds a two-second trace of displayed and raw GPS speed, GPS confidence, input, BPM, active Visual/Music, JUNCTION section/harmonic identity/single take/rhythm transition/bank readiness, real output RMS/peak, frame pacing, network state, and document visibility. It intentionally excludes renderer and arrangement response scalars. It also summarizes the unique musical and visual exposure across the session. The event stream samples ordinary GPS evidence at two-second cadence while retaining null or low-confidence anomalies immediately, which prevents ten-hertz GPS traffic from evicting meaningful transitions. An isolated accuracy collapse above 250 m is recorded but does not command the smoothed experience. The recorder keeps 300 trace samples (approximately ten minutes) in session memory while full-session time, distance, motion, source, and input aggregates continue beyond rotation. Runtime errors, unhandled rejections, and WebGL context loss/restoration are separately bounded. High-frequency metrics accumulate outside React state so diagnostics do not add a per-frame render cost. The report contains no coordinates and disappears when the page closes or reloads.
 
 Network observability keeps browser hints and application evidence structurally
 separate. `navigator.onLine`, effective type, downlink and RTT remain estimates;

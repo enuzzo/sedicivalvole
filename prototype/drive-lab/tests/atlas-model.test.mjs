@@ -99,7 +99,7 @@ test("Atlas GPS presentation covers denial, timeout, inaccurate fixes and recove
   assert.equal(atlasGpsPresentation("live", 4.1).tone, "imprecise");
   assert.equal(atlasGpsPresentation("permission denied", null, "DEMO").tone, "offline");
   assert.match(appSource, /className=\{`gps-state is-\$\{gpsPresentation\.tone\}`\}/);
-  assert.match(appSource, /<span>GPS<\/span>\s*<small>\{gpsPresentation\.accuracy\}<\/small>/);
+  assert.match(appSource, /navigation-filled\.svg[\s\S]*?<span className="visually-hidden">GPS<\/span>[\s\S]*?<small className="visually-hidden">\{gpsPresentation\.accuracy\}<\/small>/);
   assert.doesNotMatch(appSource, /<strong>\{gpsPresentation\.status\}<\/strong>/);
   assert.match(styles, /\.gps-state\.is-precise \{ color: #55d991; \}/);
   assert.match(styles, /\.gps-state\.is-imprecise \{ color: #f3a84c; \}/);

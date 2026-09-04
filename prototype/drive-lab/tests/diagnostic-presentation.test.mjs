@@ -39,12 +39,12 @@ test("the top bar exposes the selected REPORT control with the pinned Tabler ico
   assert.match(reportMarkup, /aria-haspopup="dialog"/);
   assert.match(reportMarkup, /src="\/third-party\/tabler-icons\/report-analytics\.svg"/);
   assert.match(reportMarkup, /aria-hidden="true"/);
-  assert.match(reportMarkup, /<span>REPORT<\/span>/);
+  assert.doesNotMatch(reportMarkup, /<span>REPORT<\/span>/);
   assert.doesNotMatch(app.slice(topbarStart, topbarEnd), />DIAG</);
-  assert.match(styles, /\.report-button \{[^}]*grid-template-rows: 22px auto;[^}]*gap: 4px/);
-  assert.match(styles, /\.report-button img \{[^}]*width: 21px;[^}]*height: 21px/);
-  assert.match(styles, /\.topbar \{[^}]*grid-template-columns: 72px 184px minmax\(112px, 1fr\) 112px 86px 80px 112px 108px/);
-  assert.match(styles, /\.topbar-mark img \{[\s\S]*?width: 46px;[\s\S]*?height: 46px/);
+  assert.match(styles, /Tesla Balanced Rail[\s\S]*?\.discover-button,[\s\S]*?\.report-button \{ grid-template-rows: 24px; gap: 0; \}/);
+  assert.match(styles, /\.appearance-icon,[\s\S]*?\.report-button img \{ width: 24px; height: 24px;/);
+  assert.match(styles, /Tesla Balanced Rail[\s\S]*?\.topbar \{[\s\S]*?grid-template-columns: 64px 168px 104px repeat\(5, minmax\(64px, 1fr\)\)/);
+  assert.match(styles, /Tesla Balanced Rail[\s\S]*?\.topbar-mark img \{ width: 44px; height: 44px; \}/);
   assert.equal(icon.length, 618);
   assert.equal(createHash("sha256").update(icon).digest("hex"), "d58847492f890b8beedc7eff543860219e0f382e46d2c2695107d64ae434b9ba");
   assert.match(license, /Copyright \(c\) 2020-2026 Paweł Kuna/);
@@ -85,6 +85,9 @@ test("the operational surface is an aligned Space Grotesk instrument", () => {
   assert.match(app, /Runtime and rendering/);
   assert.match(app, /Audio and resources/);
   assert.match(app, /Session and transport/);
+  assert.match(app, /label="MOTION STATE"/);
+  assert.doesNotMatch(app, /ROAD ENERGY/);
+  assert.doesNotMatch(app, /energy \$\{Math\.round/);
   assert.match(styles, /--font-data: "Space Grotesk"/);
   assert.match(styles, /\.instrument-grid \{[\s\S]*?grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
   assert.match(styles, /\.instrument-metric \{[\s\S]*?grid-template-columns: minmax\(94px, \.72fr\) minmax\(0, 1\.28fr\)/);

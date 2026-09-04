@@ -1122,20 +1122,6 @@ button { -webkit-tap-highlight-color: transparent; }
 }
 .discover-button { border-left: 1px solid var(--line); }
 .discover-button img { filter: brightness(0) invert(1); }
-.energy-readout {
-  position: absolute;
-  left: 50%;
-  bottom: 150px;
-  transform: translateX(-50%);
-  color: rgba(238, 234, 224, .54);
-  font-size: var(--type-body);
-  font-weight: var(--font-weight-label);
-  letter-spacing: .14em;
-  white-space: nowrap;
-  transition: opacity 360ms ease, transform 420ms ease;
-}
-.controls-resting .energy-readout { opacity: 0; transform: translate(-50%, 18px); }
-
 .control-slab {
   position: absolute;
   left: 0;
@@ -1853,7 +1839,6 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
   .score-control .control-value { font-size: var(--type-body); }
   .control-disclosure { gap: 5px; }
   .palette-control { gap: 2px 4px; padding: 5px 6px; }
-  .energy-readout { bottom: 68px; }
   .swatch-housing { gap: 3px; }
   .swatch-housing button { min-width: 0; min-height: 18px; }
 }
@@ -1892,7 +1877,6 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
   }
   .environment-control .control-value,
   .score-control .control-value { font-size: var(--type-body); }
-  .energy-readout { bottom: 234px; }
 }
 
 @media (max-width: 480px) {
@@ -3143,7 +3127,6 @@ input:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
   .control-slab .palette-control { justify-self: stretch; width: auto; border-top: 0; }
   .manual-effects-deck { bottom: 72px; width: calc(100% - 16px); }
   .manual-effects-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .energy-readout { bottom: 68px; }
   .atlas-panel { bottom: 73px; }
 }
 
@@ -3210,7 +3193,6 @@ html { font-size: var(--font-size-floor); }
 .gps-help-heading small,
 .gps-help-privacy,
 .gps-help-popover dt,
-.energy-readout,
 .mix-button small,
 .stop-button::after,
 .effects-button::after,
@@ -3486,7 +3468,6 @@ html { font-size: var(--font-size-floor); }
 .now-playing-transport button:nth-child(2) { min-height: var(--touch-primary); color: var(--ink); background: var(--paper); }
 .now-playing-transport .media-glyph { width: 20px; height: 20px; }
 .controls-resting .persistent-transport { transform: translate(-50%, calc(100% + 82px)); }
-.energy-readout { bottom: 158px; font-size: var(--type-meta); }
 .manual-effects-deck { bottom: 76px; max-height: calc(100dvh - 88px); overflow-y: auto; }
 
 /* Launch and Instrument Deck: editorial title, compact evidence, full actions. */
@@ -3955,7 +3936,6 @@ html { font-size: var(--font-size-floor); }
   background: var(--ui-selected-surface);
 }
 .app[data-appearance] .visual-render-toggle[aria-pressed="true"] small { color: var(--ui-selected-text); }
-.app[data-appearance] .energy-readout { color: var(--ui-subtle); }
 .app[data-appearance] :is(.control-status-notice, .track-change-notice) {
   border-color: var(--ui-line);
   color: var(--ui-text);

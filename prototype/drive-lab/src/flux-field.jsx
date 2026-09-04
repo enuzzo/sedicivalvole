@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { energyToFlowRate, speedToVisualVelocity } from "./signal-model.js";
+import { aperturePressureToFlowRate, speedToVisualVelocity } from "./signal-model.js";
 import {
   APERTURE_TUNING,
   WALL_APPROACH_SPEED_KMH,
@@ -158,7 +158,7 @@ function mixColor(from, to, amount) {
   return from.map((value, index) => value + (to[index] - value) * amount);
 }
 
-function drawCanvasFallback(context, canvas, energy, visualVelocity, speedKmh, palette, flow, effect) {
+function drawCanvasFallback(context, canvas, pressure, visualVelocity, speedKmh, palette, flow, effect) {
   const ratio = aperturePixelRatio(window.devicePixelRatio, speedKmh);
   const width = Math.max(1, Math.floor(canvas.clientWidth * ratio));
   const height = Math.max(1, Math.floor(canvas.clientHeight * ratio));
@@ -240,7 +240,7 @@ function startCanvasFallback(
   let animationFrame = 0;
   let stopped = false;
   let flow = 0;
-  let visualEnergy = reducedMotion ? Math.min(valuesRef.current.energy, 0.28) : valuesRef.current.energy;
+  let visualPressure = reducedMotion ? Math.min(valuesRef.current.pressure, 0.28) : valuesRef.current.pressure;
   let visualVelocity = speedToVisualVelocity(
     reducedMotion ? Math.min(valuesRef.current.speed, 20) : valuesRef.current.speed,
   );
@@ -266,8 +266,8 @@ function startCanvasFallback(
         const deltaSeconds = Math.min(0.05, Math.max(0, (now - lastFrameAt) / 1000));
         lastFrameAt = now;
         lastDrawAt = now;
-        const nextEnergy = reducedMotion ? Math.min(valuesRef.current.energy, 0.28) : valuesRef.current.energy;
-        visualEnergy += (nextEnergy - visualEnergy) * (nextEnergy >= visualEnergy ? 0.12 : 0.065);
+        const nextPressure = reducedMotion ? Math.min(valuesRef.current.pressure, 0.28) : valuesRef.current.pressure;
+        visualPressure += (nextPressure - visualPressure) * (nextPressure >= visualPressure ? 0.12 : 0.065);
         const nextVelocity = speedToVisualVelocity(
           reducedMotion ? Math.min(valuesRef.current.speed, 20) : valuesRef.current.speed,
         );
@@ -279,11 +279,11 @@ function startCanvasFallback(
           nextWallSpeed >= visualWallSpeed ? 0.22 : 0.16,
           deltaSeconds,
         );
-        if (!reducedMotion) flow += deltaSeconds * energyToFlowRate(visualEnergy, valuesRef.current.speed);
+        if (!reducedMotion) flow += deltaSeconds * aperturePressureToFlowRate(visualPressure, valuesRef.current.speed);
         drawCanvasFallback(
           context,
           canvas,
-          visualEnergy,
+          visualPressure,
           visualVelocity,
           visualWallSpeed,
           valuesRef.current.theme.palette,
@@ -305,7 +305,7 @@ function startCanvasFallback(
 }
 
 export function FluxField({
-  energy,
+  pressure,
   speed,
   theme,
   reducedMotion,
@@ -316,8 +316,8 @@ export function FluxField({
   onRuntimeError,
 }) {
   const canvasRef = useRef(null);
-  const valuesRef = useRef({ energy, speed, theme, brake, effect });
-  valuesRef.current = { energy, speed, theme, brake, effect };
+  const valuesRef = useRef({ pressure, speed, theme, brake, effect });
+  valuesRef.current = { pressure, speed, theme, brake, effect };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -397,7 +397,7 @@ export function FluxField({
     // every tile's colour is fixed for as long as it stays in the scene.
     let restSeconds = 0;
     let restRecolour = 0;
-    let visualEnergy = reducedMotion ? Math.min(energy, 0.28) : energy;
+    let visualPressure = reducedMotion ? Math.min(pressure, 0.28) : pressure;
     let visualVelocity = speedToVisualVelocity(reducedMotion ? Math.min(speed, 20) : speed);
     let visualWallSpeed = reducedMotion ? Math.min(speed, 20) : speed;
     let lastFrameAt = performance.now();
@@ -429,9 +429,9 @@ export function FluxField({
         lastFrameAt = now;
 
         const currentSpeed = valuesRef.current.speed;
-        const nextEnergy = reducedMotion ? Math.min(valuesRef.current.energy, 0.28) : valuesRef.current.energy;
-        const smoothing = apertureSmoothing(nextEnergy >= visualEnergy ? 0.12 : 0.065, deltaSeconds);
-        visualEnergy += (nextEnergy - visualEnergy) * smoothing;
+        const nextPressure = reducedMotion ? Math.min(valuesRef.current.pressure, 0.28) : valuesRef.current.pressure;
+        const smoothing = apertureSmoothing(nextPressure >= visualPressure ? 0.12 : 0.065, deltaSeconds);
+        visualPressure += (nextPressure - visualPressure) * smoothing;
         const nextVelocity = speedToVisualVelocity(
           reducedMotion ? Math.min(currentSpeed, 20) : currentSpeed,
         );
@@ -446,7 +446,7 @@ export function FluxField({
           deltaSeconds,
         );
         visualWallSpeed += (nextWallSpeed - visualWallSpeed) * wallSmoothing;
-        if (!reducedMotion) flow += deltaSeconds * energyToFlowRate(visualEnergy, currentSpeed);
+        if (!reducedMotion) flow += deltaSeconds * aperturePressureToFlowRate(visualPressure, currentSpeed);
 
         if (currentSpeed < REST_RECOLOUR_SPEED_KMH) restSeconds += deltaSeconds;
 

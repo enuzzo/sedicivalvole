@@ -22,7 +22,6 @@ export function createNightshiftPlayer(context, destination, onSnapshot, onBankS
   let destroyed = false;
   let active = false;
   let speed = 0;
-  let energy = 0;
   let brake = 0;
   let bank = null;
   let loading = null;
@@ -326,7 +325,6 @@ export function createNightshiftPlayer(context, destination, onSnapshot, onBankS
       perceivedTempo: section?.bpm ?? null,
       halfTime: false,
       motionLane: section?.id?.toUpperCase() ?? "PARK",
-      energy,
       decelerationState: brake > 0.2 ? "release" : "cruise",
       activeLanes: section?.activeLanes ?? ["harmony", "atmosphere"],
       source: section ? "sampled-production" : "code-synthesized",
@@ -370,9 +368,8 @@ export function createNightshiftPlayer(context, destination, onSnapshot, onBankS
       }
       return snapshot();
     },
-    setSpeed(nextSpeed, nextEnergy) {
+    setSpeed(nextSpeed) {
       speed = Math.max(0, Number(nextSpeed) || 0);
-      energy = Math.min(1, Math.max(0, Number(nextEnergy) || 0));
       const state = nightshiftStateForSpeed(speed, targetStateId);
       targetStateId = state?.id ?? null;
       if (active && state) prepare(state.id).catch((error) => report("error", error));

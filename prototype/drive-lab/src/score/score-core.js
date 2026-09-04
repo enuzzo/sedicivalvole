@@ -72,7 +72,7 @@ const RESTING_MASTER_GAIN = 0.552;
 /**
  * Working gain reached by the densest moving arrangement.
  *
- * The original energy curve added another 4.4 dB on top of the six-lane
+ * The original road-response curve added another 4.4 dB on top of the six-lane
  * orchestral build. Once the limiter's release was corrected, that make-up held
  * the entire moving score against the ceiling and erased its dynamics. The
  * arrangement already earns its weight through parts, articulation and drive,
@@ -102,11 +102,11 @@ const PAD_VOICES = 4;
 /**
  * Below this the vehicle is stopped rather than moving slowly.
  *
- * `speedToEnergy` puts roughly four km/h here, which is walking pace: below it
+ * `speedToArrangementDrive` puts roughly four km/h here, which is walking pace: below it
  * the piece may leave silence between phrases, and above it there is a driver
  * to play to.
  */
-const STANDSTILL_ENERGY = 0.07;
+const STANDSTILL_DRIVE = 0.07;
 
 /**
  * Static placement of each element across the stereo field, -1 left to 1 right.
@@ -325,7 +325,7 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
     // A small density trim lets the authored orchestral build create the
     // dynamics without turning the limiter into a permanent compressor.
     masterGain = RESTING_MASTER_GAIN
-      + (MOVING_MASTER_GAIN - RESTING_MASTER_GAIN) * controls.energy ** 0.5;
+      + (MOVING_MASTER_GAIN - RESTING_MASTER_GAIN) * controls.arrangementDrive ** 0.5;
 
     drumSaturator.setDrive(drive);
     delay.setFeedback(controls.delayFeedback * 0.7);
@@ -385,7 +385,7 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
       // resting arrangement continuously is the version that is unbearable at a
       // red light. Moving slowly is not a standstill, and gating the whole
       // half-time band this way emptied out everything below thirty.
-      restingVoiced = controls.energy < STANDSTILL_ENERGY
+      restingVoiced = controls.arrangementDrive < STANDSTILL_DRIVE
         ? sectionIndex % 2 === 0
         : true;
     } else if (currentLowSpeedPolicy.id !== "native") {
@@ -528,8 +528,8 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
       for (const note of section.theme) {
         if (note.at !== patternStep) continue;
         if (halfTime && note.at % 2 !== 0) continue;
-        // Register rises with energy: the same theme, played higher and harder.
-        const octave = controls.energy > 0.62 ? 12 : 0;
+        // Register rises with road demand: the same theme, played higher and harder.
+        const octave = controls.arrangementDrive > 0.62 ? 12 : 0;
         triggerSynth("riff", note.midi + octave, note.steps * lengthScale, stepsElapsed);
       }
     }
@@ -542,13 +542,13 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
     }
 
     // The pad re-voices once per bar and holds the whole chord. Which voices
-    // sound is continuous articulation: at low energy it states the chord
+    // sound is continuous articulation: at low road demand it states the chord
     // plainly, and the upper extension arrives with the arrangement.
     if (currentLowSpeedPolicy.id !== "park"
       && arranger.laneGoals.atmosphere > 0
       && restingVoiced
       && patternStep % STEPS_PER_BAR === 0) {
-      const voiced = controls.energy > 0.5 ? PAD_VOICES : PAD_VOICES - 1;
+      const voiced = controls.arrangementDrive > 0.5 ? PAD_VOICES : PAD_VOICES - 1;
       for (let index = 0; index < padVoices.length; index += 1) {
         if (index >= voiced) {
           padVoices[index].release();
@@ -747,7 +747,7 @@ export function createScoreCore({ sampleRate, score = SCORE, swing = 0.54 } = {}
           + melodicHighPassRight.tick(percussionRight - drumCentre + melodicRight)
           + bassBus + delayRight + reverbRight;
 
-        // 6. Width opens with energy, and never below the crossover.
+        // 6. Width opens with road demand, and never below the crossover.
         const [wideLeft, wideRight] = width.tickStereo(
           busLeft, busRight, 1 + controls.spatialDepth * 0.5,
         );

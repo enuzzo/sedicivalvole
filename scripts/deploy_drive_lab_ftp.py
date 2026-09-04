@@ -76,7 +76,7 @@ DIAGNOSTIC_RECIPIENT_SOURCE = (
     ROOT / "prototype" / "drive-lab" / "config" / "diagnostic-recipient.local.php"
 )
 DIAGNOSTIC_ENDPOINT_MARKER_SETS = (
-    (b"sedicivalvole.tesla-diagnostic.v3", b"EXPECTED_ORIGIN", b"recipient.local.php"),
+    (b"sedicivalvole.tesla-diagnostic.v4", b"EXPECTED_ORIGIN", b"recipient.local.php"),
     (b"sedicivalvole.tesla-diagnostic.v2", b"EXPECTED_ORIGIN", b"recipient.local.php"),
     (b"sedicivalvole.tesla-diagnostic.v2", b"EXPECTED_ORIGIN", b"DIAGNOSTIC_RECIPIENT"),
 )

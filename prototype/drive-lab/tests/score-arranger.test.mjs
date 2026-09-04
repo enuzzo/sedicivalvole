@@ -6,8 +6,8 @@ import {
   commitAtBoundary,
   continuousControls,
   createArrangerState,
-  energyToScene,
-  energyToTempo,
+  arrangementDriveToScene,
+  arrangementDriveToTempo,
   FALLING_DWELL_SECONDS,
   LANES,
   MINIMUM_SCENE_BARS,
@@ -123,20 +123,20 @@ function createRig() {
 // ── mapping ────────────────────────────────────────────────────────────────
 
 test("keeps tempo inside a narrow, musically credible band with a knee", () => {
-  assert.equal(energyToTempo(0), TEMPO_REST_BPM);
-  assert.ok(Math.abs(energyToTempo(1) - TEMPO_CEILING_BPM) < 1e-9);
+  assert.equal(arrangementDriveToTempo(0), TEMPO_REST_BPM);
+  assert.ok(Math.abs(arrangementDriveToTempo(1) - TEMPO_CEILING_BPM) < 1e-9);
 
   // The whole range is 14 BPM: speed can never read as a record being sped up.
   assert.ok(TEMPO_CEILING_BPM - TEMPO_REST_BPM <= 16);
 
   // A knee, not a line: most of the small rise is spent early.
-  const halfway = energyToTempo(0.5);
+  const halfway = arrangementDriveToTempo(0.5);
   const linearHalfway = (TEMPO_REST_BPM + TEMPO_CEILING_BPM) / 2;
   assert.ok(halfway > linearHalfway + 2, `expected a knee, got ${halfway}`);
 
   let previous = -Infinity;
-  for (let energy = 0; energy <= 1; energy += 0.01) {
-    const tempo = energyToTempo(energy);
+  for (let drive = 0; drive <= 1; drive += 0.01) {
+    const tempo = arrangementDriveToTempo(drive);
     assert.ok(tempo >= previous, "tempo must be monotonic");
     assert.ok(tempo >= TEMPO_REST_BPM && tempo <= TEMPO_CEILING_BPM);
     previous = tempo;
@@ -146,15 +146,15 @@ test("keeps tempo inside a narrow, musically credible band with a knee", () => {
 test("scene selection uses hysteresis rather than following a threshold", () => {
   // Rising through a threshold enters; falling back to the same value does not
   // immediately leave.
-  assert.equal(energyToScene(0.31, 0), 1);
-  assert.equal(energyToScene(0.24, 1), 1, "a small dip must not drop the scene");
-  assert.equal(energyToScene(0.06, 1), 1, "hysteresis holds well below the entry point");
-  assert.equal(energyToScene(0.04, 1), 0, "a real drop does leave the scene");
-  assert.equal(energyToScene(0.99, 4), 4, "the top scene is stable");
-  assert.equal(energyToScene(0, 0), 0);
+  assert.equal(arrangementDriveToScene(0.31, 0), 1);
+  assert.equal(arrangementDriveToScene(0.24, 1), 1, "a small dip must not drop the scene");
+  assert.equal(arrangementDriveToScene(0.06, 1), 1, "hysteresis holds well below the entry point");
+  assert.equal(arrangementDriveToScene(0.04, 1), 0, "a real drop does leave the scene");
+  assert.equal(arrangementDriveToScene(0.99, 4), 4, "the top scene is stable");
+  assert.equal(arrangementDriveToScene(0, 0), 0);
 });
 
-test("continuous controls stay bounded and separate current from retained energy", () => {
+test("continuous controls stay bounded and separate current from retained drive", () => {
   const state = createArrangerState();
   for (let index = 0; index < 60 * 30; index += 1) observeSpeed(state, 120, TICK);
   const loaded = continuousControls(state);
@@ -165,10 +165,10 @@ test("continuous controls stay bounded and separate current from retained energy
   // A brief lift darkens the mix immediately while pressure is still retained.
   for (let index = 0; index < 60 * 1.5; index += 1) observeSpeed(state, 40, TICK);
   const lifted = continuousControls(state);
-  assert.ok(lifted.brightness < loaded.brightness, "brightness follows current energy");
+  assert.ok(lifted.brightness < loaded.brightness, "brightness follows current drive");
   assert.ok(
     lifted.filterPressure > loaded.filterPressure * 0.85,
-    "pressure leans on retained energy, so the performance still sounds loaded",
+    "pressure leans on retained drive, so the performance still sounds loaded",
   );
   assert.ok(lifted.spatialDepth > loaded.spatialDepth, "lift-off opens space");
 });
@@ -212,7 +212,7 @@ test("0 -> 40 -> 80 -> 115 -> 60 -> 115 -> 0 km/h behaves as one performance", (
   speed = rig.hold(0, 40);
   marks.stopped = arrangementSnapshot(rig.state);
 
-  // 1. Energy climbs with speed and the piece reaches its full arrangement.
+  // 1. Road demand climbs with speed and the piece reaches its full arrangement.
   assert.ok(marks.cruise.scene >= 3, `cruise should be a full arrangement, got ${marks.cruise.scene}`);
   assert.ok(marks.urban.scene >= 1, "urban speed must already carry a groove");
   assert.ok(marks.cruise.scene > marks.urban.scene);
@@ -266,7 +266,7 @@ test("0 -> 40 -> 80 -> 115 -> 60 -> 115 -> 0 km/h behaves as one performance", (
     "a short brake must not thin the arrangement",
   );
 
-  // 7. A dip to 60 km/h is still a lot of energy: the arrangement must survive
+  // 7. A dip to 60 km/h still asks for substantial drive: the arrangement must survive
   //    it completely, with nothing removed and nothing to restore.
   assert.deepEqual(
     marks.recovered.activeLanes, marks.cruise.activeLanes,
@@ -442,7 +442,7 @@ test("FRACTURE never activates the retired riff or response in live playback", (
   }
 });
 
-test("the tempo target follows energy and is only ever committed on a boundary", () => {
+test("the tempo target follows arrangement drive and is only ever committed on a boundary", () => {
   const state = createArrangerState();
   assert.equal(state.committedTempo, TEMPO_REST_BPM);
 

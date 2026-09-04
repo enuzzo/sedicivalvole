@@ -147,7 +147,7 @@ import {
   normalizeGpsSpeed,
   ROAD_SPEED_CEILING_KMH,
   smoothGpsSpeed,
-  speedToEnergy,
+  speedToAperturePressure,
 } from "./signal-model.js";
 import { perceivedTempoFromSnapshot } from "./low-speed-score.js";
 import {
@@ -2422,7 +2422,7 @@ export function App() {
 
   const theme = getFluxTheme(themeId);
   const environment = getFluxEnvironment(environmentId);
-  const energy = speedToEnergy(speed);
+  const aperturePressure = speedToAperturePressure(speed);
   const gpsPresentation = atlasGpsPresentation(gpsState, accuracy, source);
   const modalOpen = drawerOpen
     || previewOpen
@@ -4300,7 +4300,6 @@ export function App() {
         accuracyM: accuracyRef.current,
         source: sourceRef.current,
         driveInput: brakeHeldRef.current ? "service-brake" : demoDriveInputRef.current,
-        energy: speedToEnergy(speedRef.current),
         bpm: scoreStateRef.current?.tempo ?? null,
         averageFps: frame.averageFps,
         p95FrameMs: frame.p95FrameMs,
@@ -4553,7 +4552,7 @@ export function App() {
   }, [stopDemo]);
 
   const buildDiagnosticReport = useCallback(() => diagnostics ? {
-    schema: "sedicivalvole.tesla-diagnostic.v3",
+    schema: "sedicivalvole.tesla-diagnostic.v4",
     generatedAt: new Date().toISOString(),
     app: {
       version: APP_VERSION,
@@ -4566,8 +4565,7 @@ export function App() {
       displayedSpeedKmh: Math.round(speedRef.current * 10) / 10,
       bpm: bpmRef.current == null ? null : Math.round(bpmRef.current * 10) / 10,
       transportBpm: Math.round(transportBpmRef.current * 10) / 10,
-      energy: Math.round(speedToEnergy(speedRef.current) * 1000) / 1000,
-      energyCeilingKmh: ROAD_SPEED_CEILING_KMH,
+      responseCeilingKmh: ROAD_SPEED_CEILING_KMH,
       paletteTheme: themeIdRef.current,
       appearancePreference: appearanceModeRef.current,
       appearance: appearanceResolutionRef.current.appearance,
@@ -4874,7 +4872,7 @@ export function App() {
             </Suspense>
           ) : (
             <FluxField
-              energy={energy}
+              pressure={aperturePressure}
               speed={speed}
               theme={theme}
               reducedMotion={reducedMotion}
@@ -5257,7 +5255,7 @@ export function App() {
                   <div className={diagnostics?.audio.state === "running" ? "is-good" : "is-caution"}>
                     <span>AUDIO</span>
                     <strong>{diagnostics?.audio.state || "—"}</strong>
-                    <small>{muted ? "output muted" : `energy ${Math.round(energy * 100)}%`}</small>
+                    <small>{muted ? "output muted" : `level ${Math.round(audioLevel * 100)}%`}</small>
                   </div>
                   <div className={(diagnosticReport?.runtimeIssues.length ?? 0) === 0 ? "is-good" : "is-alert"}>
                     <span>ISSUES</span>
@@ -5272,7 +5270,7 @@ export function App() {
                     <dl>
                       <InstrumentMetric label="SPEED SOURCE" value={source} detail={`${Math.round(speed)} km/h current`} />
                       <InstrumentMetric label="GPS STATUS" value={gpsState} detail={accuracy == null ? "accuracy unavailable" : `accuracy ±${accuracy} m`} tone={gpsState === "live" ? "good" : "caution"} />
-                      <InstrumentMetric label="ROAD ENERGY" value={`${Math.round(energy * 100)}%`} detail="normalized to 130 km/h" />
+                      <InstrumentMetric label="MOTION STATE" value={scoreStateRef.current?.decelerationState ?? "cruise"} detail={`${Math.round(speed)} km/h · ${demoDriveInputRef.current}`} />
                       <InstrumentMetric label="RECORDED POSITION" value="NONE" detail="coordinates excluded" tone="good" />
                     </dl>
                   </section>

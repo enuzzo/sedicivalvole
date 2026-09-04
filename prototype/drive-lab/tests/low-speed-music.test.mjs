@@ -14,7 +14,7 @@ import {
 import {
   junctionSectionForSpeed,
 } from "../src/junction-bank.js";
-import { speedToEnergy } from "../src/signal-model.js";
+import { speedToArrangementDrive } from "../src/signal-model.js";
 import { junctionStepFrame } from "../scripts/junction-form.mjs";
 import { createScoreCore } from "../src/score/score-core.js";
 import { arrangementSnapshot, createArrangerState } from "../src/score/arranger.js";
@@ -447,16 +447,16 @@ test("music selection never reports a silent missing engine as ready", async () 
 
 test("JUNCTION keeps displayed 20 sub-100 and begins OPEN at unity-rate territory", () => {
   for (const speed of [0, 0.5, 1.2, 4, 10, 19.9, 20]) {
-    assert.equal(junctionSectionForSpeed(speed, speedToEnergy(speed)), "rest");
+    assert.equal(junctionSectionForSpeed(speed, speedToArrangementDrive(speed)), "rest");
   }
   assert.equal(
     junctionSectionForSpeed(
       NATIVE_GROOVE_SPEED_KMH,
-      speedToEnergy(NATIVE_GROOVE_SPEED_KMH),
+      speedToArrangementDrive(NATIVE_GROOVE_SPEED_KMH),
     ),
     "open",
   );
-  assert.equal(junctionSectionForSpeed(30, speedToEnergy(30)), "enter");
+  assert.equal(junctionSectionForSpeed(30, speedToArrangementDrive(30)), "enter");
 });
 
 test("every JUNCTION chord boundary closes within one rendered frame", () => {

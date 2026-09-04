@@ -104,7 +104,7 @@ for (const fixture of [
     exportName: "createJunctionPlayer",
     retryExport: "JUNCTION_NATIVE_RETRY_SECONDS",
     speed: 21,
-    energy: 0.3,
+    performanceDrive: 0.3,
     expectedFailure: /JUNCTION bank transfer timed out after 45000 ms/,
   },
   {
@@ -114,7 +114,7 @@ for (const fixture of [
     exportName: "createNightshiftPlayer",
     retryExport: "NIGHTSHIFT_NATIVE_RETRY_SECONDS",
     speed: 3,
-    energy: 0.03,
+    performanceDrive: 0.03,
     expectedFailure: /NIGHTSHIFT bank transfer timed out after 45000 ms/,
   },
 ]) {
@@ -153,7 +153,7 @@ for (const fixture of [
       const module = await import(`${fixture.moduleUrl.href}?cold-cache=${fixture.id}-${Date.now()}`);
       const rig = fakeContext();
       player = module[fixture.exportName](rig.context, new FakeNode());
-      player.setSpeed(fixture.speed, fixture.energy, 0.1);
+      player.setSpeed(fixture.speed, fixture.performanceDrive, 0.1);
       const firstActivation = player.setActive(true);
       await settle();
       assert.equal(attempts, 1);

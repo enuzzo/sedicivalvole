@@ -65,7 +65,7 @@ The future design must therefore choose honestly between:
    vibration, and stop/start confidence without displaying invented `km/h`;
 2. **Sensor fusion:** use motion data for fast transients and GPS for a bounded
    long-term speed reference when both are available;
-3. **Calibrated relative drive:** derive a temporary session-energy envelope
+3. **Calibrated relative drive:** derive a temporary session-response envelope
    after a parked calibration, again without claiming absolute vehicle speed.
 
 ⭐ The preferred first spike is motion-reactive mode. It delivers the distinctive
@@ -88,7 +88,7 @@ Sensor fusion can follow only after measured iPhone traces justify it.
   project's manual-send privacy boundary;
 - measure Bluetooth audio latency separately. It must not be confused with
   sensor latency, and any compensation must stay bounded and reversible;
-- preserve GPS, Demo, keyboard simulation, the `130 km/h` energy contract, and
+- preserve GPS, Demo, keyboard simulation, the `130 km/h` response contract, and
   every existing renderer/audio safety bound.
 
 ### Feasibility and acceptance gate
@@ -121,7 +121,7 @@ accelerometer, a future `MOTION` experience could treat movement itself as the
 instrument:
 
 - longitudinal force shapes OPEN and UNDERWATER;
-- turn energy bends or rotates the visual field;
+- turn demand bends or rotates the visual field;
 - road texture introduces restrained material detail;
 - stopping lets the score settle without pretending the inferred speed reached
   an exact number;

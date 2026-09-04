@@ -503,7 +503,7 @@ test("JUNCTION finishes one complete phrase before the next single coherent perf
     const { createJunctionPlayer } = await import(`../src/junction-player.js?test=${Date.now()}`);
     const { context, sources } = fakeContext();
     const player = createJunctionPlayer(context, new FakeNode());
-    player.setEnergy(0.93);
+    player.setPerformanceDrive(0.93);
     await player.setActive(true);
 
     const first = player.getState();
@@ -568,11 +568,11 @@ test("a scheduled phrase cannot recolour the active JUNCTION brake filter before
     const player = createJunctionPlayer(rig.context, new FakeNode());
     const activeEnergy = 0.93;
     const pendingEnergy = 0.7;
-    player.setEnergy(activeEnergy);
+    player.setPerformanceDrive(activeEnergy);
     await player.setActive(true);
     const activeCutoff = junctionPerformanceParameters(activeEnergy, player.getState().tempo).cutoff;
 
-    player.setEnergy(pendingEnergy);
+    player.setPerformanceDrive(pendingEnergy);
     await new Promise((resolve) => setImmediate(resolve));
     await new Promise((resolve) => setImmediate(resolve));
     const boundary = rig.sources[0].startAt + rig.sources[0].duration;
@@ -645,7 +645,7 @@ test("JUNCTION waits for a distinct decoded companion before native playback beg
       },
     });
     const player = createJunctionPlayer(rig.context, new FakeNode());
-    player.setEnergy(0.93);
+    player.setPerformanceDrive(0.93);
     const activation = player.setActive(true, { externalEntranceFade: true });
     await new Promise((resolve) => setImmediate(resolve));
     await new Promise((resolve) => setImmediate(resolve));
@@ -951,7 +951,7 @@ test("JUNCTION continues an already decoded phrase on the exact boundary while t
       },
     });
     const player = createJunctionPlayer(rig.context, new FakeNode());
-    player.setEnergy(0.93);
+    player.setPerformanceDrive(0.93);
     await player.setActive(true);
     assert.equal(rig.sources.length, 1);
     assert.ok(player.getState().decodedSlots <= 6);
@@ -960,7 +960,7 @@ test("JUNCTION continues an already decoded phrase on the exact boundary while t
     // Ask for a different eight-bar section whose two candidate takes are
     // deliberately still decoding. The boundary must use the decoded FULL
     // companion, never repeat the currently playing take or open a gap.
-    player.setEnergy(0.7);
+    player.setPerformanceDrive(0.7);
 
     const boundary = rig.sources[0].startAt + rig.sources[0].duration;
     rig.context.currentTime = boundary - 0.5;

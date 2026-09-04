@@ -8,7 +8,7 @@
 import {
   model3AwdLiftOffDecelerationMps2,
   ROAD_SPEED_CEILING_KMH,
-  speedToEnergy,
+  speedToArrangementDrive,
 } from "./signal-model.js";
 import { createAudioMacroSnapshot } from "./response-mapping.js";
 import { createJunctionPlayer } from "./junction-player.js";
@@ -95,7 +95,7 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
   let muted = false;
   let vehicleEffectsEnabled = true;
   let speed = 0;
-  let energy = 0;
+  let arrangementDrive = 0;
   let scoreId = "fracture";
   let requestedScoreId = "fracture";
   let scoreStatus = "loading";
@@ -123,7 +123,7 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
     transportTempo: 162,
     perceivedTempo: null,
     motionLane: "PARK",
-    energy: 0,
+    arrangementDrive: 0,
     decelerationState: "cruise",
     activeLanes: [],
   };
@@ -149,7 +149,7 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
       scoreStatus = status;
       scoreError = error;
     });
-    junction.setSpeed(speed, energy, 0);
+    junction.setSpeed(speed, arrangementDrive, 0);
     junction.setBrake(vehicleEffectsEnabled ? brakeAmount : 0);
     return junction;
   }
@@ -166,7 +166,7 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
       scoreStatus = status;
       scoreError = error;
     });
-    nightshift.setSpeed(speed, energy, 0);
+    nightshift.setSpeed(speed, arrangementDrive, 0);
     nightshift.setBrake(vehicleEffectsEnabled ? brakeAmount : 0);
     return nightshift;
   }
@@ -318,7 +318,7 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
       };
       node.connect(fractureGain);
       post("MUTE", { muted });
-      post("SPEED", { speed, energy });
+      post("SPEED", { speed });
       post("BRAKE", { brake: vehicleEffectsEnabled ? brakeAmount : 0 });
       fractureReadyState = "ready";
       return true;
@@ -569,10 +569,10 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
       smoothedRateMps2 = rate.rateMps2;
       lastSpeedAt = now;
       speed = nextSpeed;
-      energy = speedToEnergy(speed);
-      post("SPEED", { speed, energy });
-      junction?.setSpeed(speed, energy, elapsedMs / 1000);
-      nightshift?.setSpeed(speed, energy, elapsedMs / 1000);
+      arrangementDrive = speedToArrangementDrive(speed);
+      post("SPEED", { speed });
+      junction?.setSpeed(speed, arrangementDrive, elapsedMs / 1000);
+      nightshift?.setSpeed(speed, arrangementDrive, elapsedMs / 1000);
     },
 
     /**
@@ -619,8 +619,7 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
           requestedScoreId,
           scoreStatus,
           scoreError,
-          energy,
-          energyCeilingKmh: ROAD_SPEED_CEILING_KMH,
+          responseCeilingKmh: ROAD_SPEED_CEILING_KMH,
           brake: Math.round(brakeAmount * 100) / 100,
           macros: macroSnapshot(),
           accelerationMps2: Math.round(smoothedRateMps2 * 1000) / 1000,
@@ -633,7 +632,6 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
         requestedScoreId,
         scoreStatus,
         scoreError,
-        energy,
         scene: arrangement.scene,
         sceneId: arrangement.sceneId,
         halfTime: arrangement.halfTime,
@@ -644,7 +642,7 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
           : Math.round(arrangement.perceivedTempo * 10) / 10,
         motionLane: arrangement.motionLane ?? "DRIVE",
         activeLanes: arrangement.activeLanes,
-        energyCeilingKmh: ROAD_SPEED_CEILING_KMH,
+        responseCeilingKmh: ROAD_SPEED_CEILING_KMH,
         motionPhase: arrangement.decelerationState,
         brake: Math.round(brakeAmount * 100) / 100,
         macros: macroSnapshot(),

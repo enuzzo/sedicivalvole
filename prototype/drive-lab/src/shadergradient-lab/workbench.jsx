@@ -405,7 +405,7 @@ export function ShaderGradientLab({ embedded = false }) {
             ))}
           </div>
           <RangeControl label="Road speed" value={settings.speed} min={0} max={130} step={1} unit=" km/h" onChange={(value) => set('speed', value)} />
-          <RangeControl label="Audio energy" value={settings.audioEnergy} min={0} max={1} step={0.01} onChange={(value) => set('audioEnergy', value)} />
+          <RangeControl label="Audio response" value={settings.audioEnergy} min={0} max={1} step={0.01} onChange={(value) => set('audioEnergy', value)} />
         </DetailSection>
 
         <DetailSection title="Palette" open>

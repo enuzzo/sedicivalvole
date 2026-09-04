@@ -3,7 +3,7 @@ import {
   junctionDecodedLimit,
   junctionPerformanceParameters,
   junctionSectionForSpeed,
-  junctionSpeedForEnergy,
+  junctionSpeedForDrive,
   parseJunctionBank,
 } from "./junction-bank.js";
 import { createJunctionLowSpeedBed } from "./junction-low-speed-bed.js";
@@ -42,7 +42,7 @@ export const JUNCTION_READINESS_TIMEOUT_MS = 56000;
 export function createJunctionPlayer(context, destination, onSnapshot, onBankStatus) {
   let destroyed = false;
   let active = false;
-  let energy = 0;
+  let performanceDrive = 0;
   let speed = 0;
   let brake = 0;
   let bank = null;
@@ -158,7 +158,7 @@ export function createJunctionPlayer(context, destination, onSnapshot, onBankSta
     const nativeAudible = nativePolicy && Boolean(currentPerformance);
     const activePerformance = nativeAudible ? currentPerformance ?? pendingPerformance : null;
     const sectionId = nativeAudible
-      ? activePerformance?.id ?? junctionSectionForSpeed(speed, energy, brake > 0.2)
+      ? activePerformance?.id ?? junctionSectionForSpeed(speed, performanceDrive, brake > 0.2)
       : nativePolicy ? "native" : lowSpeed.lowSpeedState;
     const selected = nativeAudible ? activePerformance?.section ?? null : null;
     const sceneIndex = selected && bank ? bank.manifest.sections.indexOf(selected) : -1;
@@ -186,7 +186,6 @@ export function createJunctionPlayer(context, destination, onSnapshot, onBankSta
       perceivedTempo: nativeAudible ? selected?.bpm ?? 127 : lowSpeed.perceivedTempo,
       transportTempo: nativeAudible ? selected?.bpm ?? null : lowSpeed.transportTempo,
       motionLane: nativePolicy ? "DRIVE" : lowSpeed.lowSpeedState.toUpperCase(),
-      energy,
       decelerationState: brake > 0.2 ? "release" : "cruise",
       activeLanes: nativeAudible
         ? selected?.activeLanes ?? ["breaks", "harmony"]
@@ -260,7 +259,7 @@ export function createJunctionPlayer(context, destination, onSnapshot, onBankSta
 
   function applyRhythmDirection(time = context.currentTime) {
     if (!currentPerformance) return;
-    const desiredId = junctionSectionForSpeed(speed, energy, brake > 0.2);
+    const desiredId = junctionSectionForSpeed(speed, performanceDrive, brake > 0.2);
     const transition = rhythmTransitionAt(currentPerformance, time);
     if (desiredId === "rest" && currentPerformance.id !== "rest" && transition !== "fade-out" && transition !== "quiet") {
       setRhythmEnvelope(
@@ -422,7 +421,7 @@ export function createJunctionPlayer(context, destination, onSnapshot, onBankSta
 
   function prewarmTarget() {
     if (!active || !bank || !nativeEnabled || !currentPerformance) return;
-    const id = junctionSectionForSpeed(speed, energy, brake > 0.2);
+    const id = junctionSectionForSpeed(speed, performanceDrive, brake > 0.2);
     if (preparedPerformance?.id === id || preparingId === id) return;
     const section = chooseJunctionPerformance(
       bank.manifest.sections,
@@ -445,7 +444,7 @@ export function createJunctionPlayer(context, destination, onSnapshot, onBankSta
       ensureDecoded(section.assetId),
       ensureDecoded(companion.assetId),
     ]).then(() => {
-      if (active && nativeEnabled && junctionSectionForSpeed(speed, energy, brake > 0.2) === id) {
+      if (active && nativeEnabled && junctionSectionForSpeed(speed, performanceDrive, brake > 0.2) === id) {
         preparedPerformance = { id, section, companionSection: companion };
       }
     }).catch((error) => {
@@ -507,7 +506,7 @@ export function createJunctionPlayer(context, destination, onSnapshot, onBankSta
       : Math.max(requestedTime, context.currentTime + 0.035);
     const duration = section.durationSeconds;
     const endAt = startAt + duration;
-    const effects = junctionPerformanceParameters(energy, section.bpm);
+    const effects = junctionPerformanceParameters(performanceDrive, section.bpm);
     delay.delayTime.setTargetAtTime(effects.delaySeconds, startAt, 0.04);
     feedback.gain.setTargetAtTime(effects.feedback, startAt, 0.06);
     wet.gain.setTargetAtTime(effects.wet, startAt, 0.08);
@@ -600,7 +599,7 @@ export function createJunctionPlayer(context, destination, onSnapshot, onBankSta
     if (scheduling || !active || !nativeEnabled || !bank || !currentPerformance || pendingPerformance) return;
     scheduling = true;
     try {
-      const id = junctionSectionForSpeed(speed, energy, brake > 0.2);
+      const id = junctionSectionForSpeed(speed, performanceDrive, brake > 0.2);
       const selection = selectPerformance(id, currentPerformance.section);
       const selected = selection?.section ?? null;
       const selectedCompanion = selection?.companionSection
@@ -636,7 +635,7 @@ export function createJunctionPlayer(context, destination, onSnapshot, onBankSta
             ensureDecoded(selected.assetId),
             ensureDecoded(futureCompanion.assetId),
           ]).then(() => {
-            if (active && junctionSectionForSpeed(speed, energy, brake > 0.2) === id) {
+            if (active && junctionSectionForSpeed(speed, performanceDrive, brake > 0.2) === id) {
               preparedPerformance = {
                 id,
                 section: selected,
@@ -713,7 +712,7 @@ export function createJunctionPlayer(context, destination, onSnapshot, onBankSta
     nativeStartPromise = (async () => {
       await load();
       if (!active || !nativeEnabled || revision !== nativeRevision) return null;
-      const id = junctionSectionForSpeed(speed, energy, brake > 0.2);
+      const id = junctionSectionForSpeed(speed, performanceDrive, brake > 0.2);
       const selection = selectPerformance(id);
       const section = selection?.section;
       if (!section) throw new Error(`JUNCTION has no complete performance for: ${id}`);
@@ -859,9 +858,9 @@ export function createJunctionPlayer(context, destination, onSnapshot, onBankSta
       onSnapshot?.(snapshot());
       prewarmTarget();
     },
-    setEnergy(nextEnergy) {
-      energy = Math.min(1, Math.max(0, Number(nextEnergy) || 0));
-      speed = junctionSpeedForEnergy(energy);
+    setPerformanceDrive(nextDrive) {
+      performanceDrive = Math.min(1, Math.max(0, Number(nextDrive) || 0));
+      speed = junctionSpeedForDrive(performanceDrive);
       updateNativeRequest();
       lowSpeedBed.setSpeed(speed, 0, nativeRequested);
       applyMovementGate();
@@ -869,10 +868,10 @@ export function createJunctionPlayer(context, destination, onSnapshot, onBankSta
       reviewNativeMode();
       prewarmTarget();
     },
-    setSpeed(nextSpeed, nextEnergy = null, deltaSeconds = 0) {
+    setSpeed(nextSpeed, nextDrive = null, deltaSeconds = 0) {
       speed = Math.max(0, Number(nextSpeed) || 0);
-      if (Number.isFinite(nextEnergy)) {
-        energy = Math.min(1, Math.max(0, Number(nextEnergy) || 0));
+      if (Number.isFinite(nextDrive)) {
+        performanceDrive = Math.min(1, Math.max(0, Number(nextDrive) || 0));
       }
       updateNativeRequest();
       lowSpeedBed.setSpeed(speed, deltaSeconds, nativeRequested);

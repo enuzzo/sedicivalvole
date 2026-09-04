@@ -2,8 +2,8 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   advanceDemoMotion,
-  energyToFlowRate,
-  energyToSection,
+  aperturePressureToFlowRate,
+  arrangementDriveToSection,
   gpsSpeedTolerance,
   MODEL_3_AWD_REFERENCE,
   model3AwdAccelerationMps2,
@@ -14,7 +14,8 @@ import {
   smoothGpsSpeed,
   smoothSpeed,
   speedToBpm,
-  speedToEnergy,
+  speedToAperturePressure,
+  speedToArrangementDrive,
   speedToMotion,
   speedToVisualVelocity,
   speedToWave,
@@ -175,23 +176,24 @@ test("tempo has a knee and approaches a musical ceiling", () => {
   assert.equal(speedToBpm(260), speedToBpm(130));
 });
 
-test("energy uses the fixed legal-road ceiling", () => {
-  assert.equal(speedToEnergy(0), 0);
-  assert.ok(speedToEnergy(40) > 0.5);
-  assert.equal(speedToEnergy(ROAD_SPEED_CEILING_KMH), 1);
-  assert.equal(speedToEnergy(260), 1);
+test("domain response curves share the fixed legal-road ceiling without a global metric", () => {
+  assert.equal(speedToArrangementDrive(0), 0);
+  assert.ok(speedToArrangementDrive(40) > 0.5);
+  assert.equal(speedToArrangementDrive(ROAD_SPEED_CEILING_KMH), 1);
+  assert.equal(speedToArrangementDrive(260), 1);
+  assert.equal(speedToAperturePressure(40), speedToArrangementDrive(40));
 });
 
 test("structural sections use hysteresis instead of following jitter", () => {
-  assert.equal(energyToSection(0.2, 0), 1);
-  assert.equal(energyToSection(0.13, 1), 1);
-  assert.equal(energyToSection(0.09, 1), 0);
-  assert.equal(energyToSection(0.7, 2), 3);
-  assert.equal(energyToSection(0.6, 3), 3);
-  assert.equal(energyToSection(0.55, 3), 2);
+  assert.equal(arrangementDriveToSection(0.2, 0), 1);
+  assert.equal(arrangementDriveToSection(0.13, 1), 1);
+  assert.equal(arrangementDriveToSection(0.09, 1), 0);
+  assert.equal(arrangementDriveToSection(0.7, 2), 3);
+  assert.equal(arrangementDriveToSection(0.6, 3), 3);
+  assert.equal(arrangementDriveToSection(0.55, 3), 2);
 });
 
-test("the continuous energy wave rises smoothly but stays bounded", () => {
+test("the continuous motion wave rises smoothly but stays bounded", () => {
   const idle = speedToWave(0);
   const city = speedToWave(50);
   const motorway = speedToWave(130);
@@ -205,13 +207,13 @@ test("the continuous energy wave rises smoothly but stays bounded", () => {
   assert.ok(extreme.gain <= 0.08);
 });
 
-test("visual travel stays calm at rest and becomes emphatic only near full energy", () => {
-  assert.equal(energyToFlowRate(0, 0), 0.02);
-  assert.ok(energyToFlowRate(0.25, 20) < 0.9);
-  assert.ok(energyToFlowRate(0.75, 80) > 2);
-  assert.ok(energyToFlowRate(1, ROAD_SPEED_CEILING_KMH) > 14);
-  assert.ok(energyToFlowRate(1, ROAD_SPEED_CEILING_KMH) > energyToFlowRate(1, 100));
-  assert.equal(energyToFlowRate(1, 150), energyToFlowRate(1, ROAD_SPEED_CEILING_KMH));
+test("visual travel stays calm at rest and becomes emphatic only near full pressure", () => {
+  assert.equal(aperturePressureToFlowRate(0, 0), 0.02);
+  assert.ok(aperturePressureToFlowRate(0.25, 20) < 0.9);
+  assert.ok(aperturePressureToFlowRate(0.75, 80) > 2);
+  assert.ok(aperturePressureToFlowRate(1, ROAD_SPEED_CEILING_KMH) > 14);
+  assert.ok(aperturePressureToFlowRate(1, ROAD_SPEED_CEILING_KMH) > aperturePressureToFlowRate(1, 100));
+  assert.equal(aperturePressureToFlowRate(1, 150), aperturePressureToFlowRate(1, ROAD_SPEED_CEILING_KMH));
   assert.equal(speedToVisualVelocity(0), 0);
   assert.equal(speedToVisualVelocity(ROAD_SPEED_CEILING_KMH), 1);
   assert.equal(speedToVisualVelocity(160), 1);
