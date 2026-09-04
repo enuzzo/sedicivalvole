@@ -762,3 +762,28 @@ test("invalid deployment CLI invocations stop before configuration is loaded", (
   assert.match(help.stdout, /--publish/);
   assert.doesNotMatch(help.stdout + help.stderr, /configuration=(?:PASS|FAIL)/);
 });
+
+test("diagnostic deployment admits the published v3 predecessor while retaining identity markers", () => {
+  const program = String.raw`
+import importlib.util
+import pathlib
+import sys
+spec = importlib.util.spec_from_file_location("deploy", sys.argv[1])
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+def admitted(payload):
+    return any(all(marker in payload for marker in markers)
+               for markers in module.DIAGNOSTIC_ENDPOINT_MARKER_SETS)
+current = pathlib.Path(sys.argv[2]).read_bytes()
+assert admitted(current)
+predecessor = current.replace(b"sedicivalvole.tesla-diagnostic.v4", b"sedicivalvole.tesla-diagnostic.v3")
+assert admitted(predecessor)
+assert not admitted(predecessor.replace(b"EXPECTED_ORIGIN", b"UNKNOWN_ORIGIN"))
+assert not admitted(predecessor.replace(b"recipient.local.php", b"unknown.php"))
+assert not admitted(predecessor.replace(b"sedicivalvole.tesla-diagnostic.v3", b"unrelated.schema.v3"))
+`;
+  execFileSync("python3", ["-c", program, deployScript.pathname,
+    new URL("../public/api/send-diagnostic.php", import.meta.url).pathname], {
+    env: { ...process.env, PYTHONDONTWRITEBYTECODE: "1" },
+  });
+});
