@@ -1,0 +1,161 @@
+{
+  "console": [],
+  "states": [],
+  "checks": [
+    "LIGHT new card text contrast >=4.5",
+    "LIGHT cards fit and retain target geometry",
+    "LIGHT focus is visible",
+    "DARK new card text contrast >=4.5",
+    "DARK cards fit and retain target geometry",
+    "DARK focus is visible",
+    "no warning or error"
+  ],
+  "measurements": [
+    {
+      "mode": "LIGHT",
+      "pairs": [
+        {
+          "text": "Night Glass",
+          "foreground": "#171a20",
+          "background": "#e6e6e6",
+          "ratio": 13.962913993143413
+        },
+        {
+          "text": "Vertigo · Graphite · Lounge",
+          "foreground": "#5f6168",
+          "background": "#e6e6e6",
+          "ratio": 4.954126702723732
+        },
+        {
+          "text": "Play",
+          "foreground": "#171a20",
+          "background": "#e6e6e6",
+          "ratio": 13.962913993143413
+        },
+        {
+          "text": "Neon Groove",
+          "foreground": "#171a20",
+          "background": "#e6e6e6",
+          "ratio": 13.962913993143413
+        },
+        {
+          "text": "Aperture · Neon · Funk",
+          "foreground": "#5f6168",
+          "background": "#e6e6e6",
+          "ratio": 4.954126702723732
+        },
+        {
+          "text": "Play",
+          "foreground": "#171a20",
+          "background": "#e6e6e6",
+          "ratio": 13.962913993143413
+        }
+      ],
+      "rects": [
+        {
+          "rect": {
+            "x": 37,
+            "y": 74,
+            "width": 357,
+            "height": 82,
+            "top": 74,
+            "right": 394,
+            "bottom": 156,
+            "left": 37
+          },
+          "overflow": false
+        },
+        {
+          "rect": {
+            "x": 404,
+            "y": 74,
+            "width": 357,
+            "height": 82,
+            "top": 74,
+            "right": 761,
+            "bottom": 156,
+            "left": 404
+          },
+          "overflow": false
+        }
+      ],
+      "focus": {
+        "focused": true,
+        "width": "3px"
+      }
+    },
+    {
+      "mode": "DARK",
+      "pairs": [
+        {
+          "text": "Night Glass",
+          "foreground": "#f4f4f4",
+          "background": "#262626",
+          "ratio": 13.759421864927443
+        },
+        {
+          "text": "Vertigo · Graphite · Lounge",
+          "foreground": "#b0b0b0",
+          "background": "#262626",
+          "ratio": 6.978050753782415
+        },
+        {
+          "text": "Play",
+          "foreground": "#f4f4f4",
+          "background": "#262626",
+          "ratio": 13.759421864927443
+        },
+        {
+          "text": "Neon Groove",
+          "foreground": "#f4f4f4",
+          "background": "#262626",
+          "ratio": 13.759421864927443
+        },
+        {
+          "text": "Aperture · Neon · Funk",
+          "foreground": "#b0b0b0",
+          "background": "#262626",
+          "ratio": 6.978050753782415
+        },
+        {
+          "text": "Play",
+          "foreground": "#f4f4f4",
+          "background": "#262626",
+          "ratio": 13.759421864927443
+        }
+      ],
+      "rects": [
+        {
+          "rect": {
+            "x": 37,
+            "y": 74,
+            "width": 357,
+            "height": 82,
+            "top": 74,
+            "right": 394,
+            "bottom": 156,
+            "left": 37
+          },
+          "overflow": false
+        },
+        {
+          "rect": {
+            "x": 404,
+            "y": 74,
+            "width": 357,
+            "height": 82,
+            "top": 74,
+            "right": 761,
+            "bottom": 156,
+            "left": 404
+          },
+          "overflow": false
+        }
+      ],
+      "focus": {
+        "focused": true,
+        "width": "3px"
+      }
+    }
+  ]
+}

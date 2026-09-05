@@ -107,3 +107,11 @@ The earlier Ambient musical acceptance note is superseded by this owner feedback
 ### Refinement validation before publication
 
 634 native checks pass, including Sites 9/9 and the actual PHP 24-hour gzip round-trip. The local browser matrix passes 69 checks with zero warnings/errors; Night Glass and Neon Groove each pass 16 end-to-end checks, including actual advancing media time, silent preparation, persistence, moving wake and retraction. Slow catalogue/Mute and catalogue-failure fixtures pass. LIGHT/DARK geometry proves a 32 px UNDERWATER badge immediately below a 64 px speed control. Both supplied SVGs load and crossfade at the unchanged 0/4/8-second keyframes. Evidence is under `docs/qa/2026-09-05-groove/`.
+
+### 2026-09-05 01:59 — Canonical publication verified
+
+Live at **https://sedicivalvole.app/**: build **20260905-0152**, source **202e100**. Official publication verified **186 files / 216,249,308 bytes**, all **29 Illobo tracks** by full hash, and retained two prior assets for cache overlap. Preflight and independent read-only postflight pass. Seventeen public HTTP checks prove bare/cache-busted canonical HTML, all JS/CSS bytes, both round SVGs, both experience previews, LAB availability and diagnostic method boundary. HTML remains no-store. Night Glass and Neon Groove each pass 16 live browser checks with zero warning/error output. Live capture scripts await image decoding to avoid treating a pending request as missing artwork.
+
+The automatic review initially rejected the official script's internal configuration access despite recovered earlier consent. The owner directly renewed the narrow exception for official preflight/publication/postflight without displaying or logging configuration; the official flow then completed. No alternative credential route was used. No diagnostic email was sent.
+
+Changed card text measures at least **4.95:1 LIGHT / 6.98:1 DARK**, with 357 × 82 px targets and a visible 3 px focus outline at 773 × 601. The build has a pre-existing large-chunk advisory; real Tesla GPU, listening quality and multi-hour journey acceptance remain open.

@@ -1357,3 +1357,27 @@ Next: reload for 0051, confirm deliberate moving touch and Music readability on
 the target Tesla, then gather a new diagnostic if needed. Multi-hour vehicle
 acceptance remains open; approved experience/Atlas/statistics drafts and Engine
 review limits remain as recorded in the weekend handoff.
+
+## 2026-09-05 — Round Lobo marks and two curated grooves
+
+Product source: **202e100**, including main refinement **f487b7b**. Build: **20260905-0152**, VERSION **0.0.0**. Both source checkpoints were pushed to `origin/main` from the saved Dropbox checkout; only one writer was used.
+
+- **Night Glass**: Vertigo / Graphite / DARK / Lounge. The owner found Ambient too experimental and synth-test-like; Lounge replaces it. This is an existing genre catalogue, not an individually auditioned playlist.
+- **Neon Groove**: Aperture / Neon / DARK / Funk. Both presets are available before START and in the running Visual library. They use the existing music/visual owners, preserve independent controls, prepare silently, and close the picker after a runtime choice.
+- **Lobo Playlist**: the two supplied root SVGs were relocated into the existing public featured-mark paths, byte-identical. Existing eight-second light/dark crossfade and reduced-motion behavior remain. Reviewed old/new hashes protect publication.
+- **UNDERWATER**: 32 px tall, attached immediately below the unchanged 64 px speed control. Palette-safe background and down/up motion remain. The tested palette measures 8.76:1 LIGHT / 4.52:1 DARK.
+- **Compact layout**: equal experience cards share one Tesla-width row and stack on narrow screens; final narrow typography keeps Soundtrack whole. Touch targets remain unchanged.
+
+Validation: 634 native checks (including actual PHP 24-hour gzip round-trip and Sites 9/9), 35 focused splash checks after the final selector fix, 69 browser lifecycle checks, 16 checks per experience, two delayed/failing-catalogue fixtures, 10 post-build checks, clean ARM64 build and `git diff --check`. Browser checks prove actual advancing media time and moving wake/retraction, not musical quality or target-GPU acceptance. Main JS is 755,416 bytes, +465 bytes from build 0116; the new real Aperture preview is 82,311 bytes. No new dependency, renderer loop or audio graph. Vite retains its existing large-bundle advisory.
+
+Evidence: `docs/qa/2026-09-05-groove/` and `docs/NIGHT-GLASS-2026-09-05.md`. Historical Ambient screenshots and build 0116 evidence remain labeled as earlier states; current production/live captures supersede them.
+
+Morning recovery: read AGENTS, CURRENT-STATE, SESSION-HANDOFF, this weekend handoff and NIGHT-GLASS before resuming. Verify Git/Dropbox and canonical build first. Try Neon Groove, then Night Glass; assess musical fit and switching in the Tesla, and send an explicit diagnostic only through the existing in-app flow. Do not infer musical listening or real multi-hour acceptance from automated playback. Sunday endurance, travel-focused ATLAS, a separate statistics view and the Engine study/prototype remain pending drafts. No Engine runtime was added here.
+
+### 2026-09-05 01:59 — Canonical publication verified
+
+Live at **https://sedicivalvole.app/**: build **20260905-0152**, source **202e100**. Official publication verified **186 files / 216,249,308 bytes**, all **29 Illobo tracks** by full hash, and retained two prior assets for cache overlap. Preflight and independent read-only postflight pass. Seventeen public HTTP checks prove bare/cache-busted canonical HTML, all JS/CSS bytes, both round SVGs, both experience previews, LAB availability and diagnostic method boundary. HTML remains no-store. Night Glass and Neon Groove each pass 16 live browser checks with zero warning/error output. Live capture scripts await image decoding to avoid treating a pending request as missing artwork.
+
+The automatic review initially rejected the official script's internal configuration access despite recovered earlier consent. The owner directly renewed the narrow exception for official preflight/publication/postflight without displaying or logging configuration; the official flow then completed. No alternative credential route was used. No diagnostic email was sent.
+
+Changed card text measures at least **4.95:1 LIGHT / 6.98:1 DARK**, with 357 × 82 px targets and a visible 3 px focus outline at 773 × 601. The build has a pre-existing large-chunk advisory; real Tesla GPU, listening quality and multi-hour journey acceptance remain open.
