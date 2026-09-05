@@ -72,3 +72,7 @@ The owner's explicit configuration exception also permits the official `scripts/
 ## Community acknowledgements — 2026-09-05
 
 Maintain the README community credits and `docs/COMMUNITY-THANKS.md` when sources are added, replaced or retired. Record the real author/project, exact code or material used, public contact routes and a warm, personalized unsent release thank-you draft. Separate shipped integrations from services, development tools and studies. Never describe the current PolyForm Noncommercial project as MIT/open source, infer private contact details, or send a message without explicit sending authorization.
+
+### Complete README footer — owner's standing instruction, 2026-09-05
+
+Keep every community credit in the final README section, including minor/transitive dependencies and sources without Git repositories: named authors, original repositories, articles/demos, exact code/material/service use and shipped/development/study status. Precede each entry with a restrained relevant emoji. Insert later product updates above `COMMUNITY-CREDITS:START`, never below the credits. Update README, THIRD_PARTY_NOTICES and COMMUNITY-THANKS together whenever provenance changes. Refresh the complete npm inventory with `python3 scripts/readme_dependency_credits.py --refresh` when the lockfile changes; run `--check` before publishing. The automated check does not replace review of authorship or non-npm sources. This is a persistent owner preference, not a one-time cleanup.

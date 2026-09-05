@@ -679,3 +679,149 @@ The local installed qrcode 1.5.4 LICENSE and author metadata identify Ryan Day; 
 ### Public-link verification — 2026-09-05
 
 All 52 unique public source/contact URLs in the 29 personalized entries responded successfully. GitHub routes were checked through the public API; other routes through ordinary HTTPS. The historical facebook/react URL resolves to the current react/react repository. The checked URLs and canonical redirects are recorded in `qa/2026-09-05-community/public-links.json`. Mailto destinations are published contacts, not mail-delivery tests.
+
+## 2026-09-05 02:40 — Complete README footer and development contacts
+
+The README footer now credits every previously named analysis tool individually, plus libsndfile and the Playwright verification tool. All four SampleRadar original pack pages are linked. Infinite Lights additionally links Daniel Velasquez’s [author profile](https://tympanus.net/codrops/author/anemolito/), [original article](https://tympanus.net/codrops/2019/11/13/high-speed-light-trails-in-three-js/) and [demo](https://tympanus.net/Tutorials/InfiniteLights/). Existing personalized drafts remain unchanged.
+
+The [complete npm inventory](community-npm-credits.json) records every one of the 196 exact lockfile entries, with public author/repository/homepage metadata. The repository or project page is a public contact route, not permission to post unsolicited issues. Missing author fields are explicit; registry maintainers are not assumed to be original authors. Refresh and check through `scripts/readme_dependency_credits.py`. Transitive packages use the development-team draft only when they are development tools; for application dependencies, describe their actual role from the README and omit the claim that they are not shipped.
+
+### 🔢 NumPy contributors — NumPy
+
+- Source and public contact route: [Repository](https://github.com/numpy/numpy); use a published community contact channel before considering a message. No private email inferred.
+- Use: Numerical arrays for offline music analysis.
+- Status: **DRAFT — not sent; development tool, not browser runtime code.**
+
+**Subject:** Thank you for NumPy — a little road-music project
+
+> Hi NumPy team! I’m enuzzo, making sedicivalvole, an experimental audiovisual app for the car browser. Your work helped our development and verification, and it is lovely to build on tools that people have shared with such care. We use NumPy as a development tool and have credited your project and original repository in our README. Our original code is source-visible under PolyForm Noncommercial; your work keeps its own terms. Thank you — I hope seeing this little project makes you smile! If our use or credit misses anything you expected, please let me know so we can put it right. — enuzzo
+
+### ⚙️ Numba contributors — Numba
+
+- Source and public contact route: [Repository](https://github.com/numba/numba); use a published community contact channel before considering a message. No private email inferred.
+- Use: Accelerates the offline numerical analysis stack.
+- Status: **DRAFT — not sent; development tool, not browser runtime code.**
+
+**Subject:** Thank you for Numba — a little road-music project
+
+> Hi Numba team! I’m enuzzo, making sedicivalvole, an experimental audiovisual app for the car browser. Your work helped our development and verification, and it is lovely to build on tools that people have shared with such care. We use Numba as a development tool and have credited your project and original repository in our README. Our original code is source-visible under PolyForm Noncommercial; your work keeps its own terms. Thank you — I hope seeing this little project makes you smile! If our use or credit misses anything you expected, please let me know so we can put it right. — enuzzo
+
+### ⚙️ Numba / llvmlite contributors — llvmlite
+
+- Source and public contact route: [Repository](https://github.com/numba/llvmlite); use a published community contact channel before considering a message. No private email inferred.
+- Use: LLVM interface used by Numba; no native compiler enters the app.
+- Status: **DRAFT — not sent; development tool, not browser runtime code.**
+
+**Subject:** Thank you for llvmlite — a little road-music project
+
+> Hi llvmlite team! I’m enuzzo, making sedicivalvole, an experimental audiovisual app for the car browser. Your work helped our development and verification, and it is lovely to build on tools that people have shared with such care. We use llvmlite as a development tool and have credited your project and original repository in our README. Our original code is source-visible under PolyForm Noncommercial; your work keeps its own terms. Thank you — I hope seeing this little project makes you smile! If our use or credit misses anything you expected, please let me know so we can put it right. — enuzzo
+
+### 📊 scikit-learn contributors — scikit-learn
+
+- Source and public contact route: [Repository](https://github.com/scikit-learn/scikit-learn); use a published community contact channel before considering a message. No private email inferred.
+- Use: Analysis and model-conversion dependency; version bounded in the analysis requirements.
+- Status: **DRAFT — not sent; development tool, not browser runtime code.**
+
+**Subject:** Thank you for scikit-learn — a little road-music project
+
+> Hi scikit-learn team! I’m enuzzo, making sedicivalvole, an experimental audiovisual app for the car browser. Your work helped our development and verification, and it is lovely to build on tools that people have shared with such care. We use scikit-learn as a development tool and have credited your project and original repository in our README. Our original code is source-visible under PolyForm Noncommercial; your work keeps its own terms. Thank you — I hope seeing this little project makes you smile! If our use or credit misses anything you expected, please let me know so we can put it right. — enuzzo
+
+### 📦 Python Packaging Authority and contributors — setuptools
+
+- Source and public contact route: [Repository](https://github.com/pypa/setuptools); use a published community contact channel before considering a message. No private email inferred.
+- Use: Python environment packaging and legacy pkg_resources compatibility.
+- Status: **DRAFT — not sent; development tool, not browser runtime code.**
+
+**Subject:** Thank you for setuptools — a little road-music project
+
+> Hi setuptools team! I’m enuzzo, making sedicivalvole, an experimental audiovisual app for the car browser. Your work helped our development and verification, and it is lovely to build on tools that people have shared with such care. We use setuptools as a development tool and have credited your project and original repository in our README. Our original code is source-visible under PolyForm Noncommercial; your work keeps its own terms. Thank you — I hope seeing this little project makes you smile! If our use or credit misses anything you expected, please let me know so we can put it right. — enuzzo
+
+### 🧠 Apple and Core ML Tools contributors — Core ML Tools
+
+- Source and public contact route: [Repository](https://github.com/apple/coremltools); use a published community contact channel before considering a message. No private email inferred.
+- Use: Model inference/conversion support in the macOS Basic Pitch stack.
+- Status: **DRAFT — not sent; development tool, not browser runtime code.**
+
+**Subject:** Thank you for Core ML Tools — a little road-music project
+
+> Hi Core ML Tools team! I’m enuzzo, making sedicivalvole, an experimental audiovisual app for the car browser. Your work helped our development and verification, and it is lovely to build on tools that people have shared with such care. We use Core ML Tools as a development tool and have credited your project and original repository in our README. Our original code is source-visible under PolyForm Noncommercial; your work keeps its own terms. Thank you — I hope seeing this little project makes you smile! If our use or credit misses anything you expected, please let me know so we can put it right. — enuzzo
+
+### 🎼 librosa development team and contributors — librosa
+
+- Source and public contact route: [Repository](https://github.com/librosa/librosa); use a published community contact channel before considering a message. No private email inferred.
+- Use: Audio features, loading and preprocessing for analysis.
+- Status: **DRAFT — not sent; development tool, not browser runtime code.**
+
+**Subject:** Thank you for librosa — a little road-music project
+
+> Hi librosa team! I’m enuzzo, making sedicivalvole, an experimental audiovisual app for the car browser. Your work helped our development and verification, and it is lovely to build on tools that people have shared with such care. We use librosa as a development tool and have credited your project and original repository in our README. Our original code is source-visible under PolyForm Noncommercial; your work keeps its own terms. Thank you — I hope seeing this little project makes you smile! If our use or credit misses anything you expected, please let me know so we can put it right. — enuzzo
+
+### 🔬 SciPy contributors — SciPy
+
+- Source and public contact route: [Repository](https://github.com/scipy/scipy); use a published community contact channel before considering a message. No private email inferred.
+- Use: Scientific and signal-processing routines used by the analysis stack.
+- Status: **DRAFT — not sent; development tool, not browser runtime code.**
+
+**Subject:** Thank you for SciPy — a little road-music project
+
+> Hi SciPy team! I’m enuzzo, making sedicivalvole, an experimental audiovisual app for the car browser. Your work helped our development and verification, and it is lovely to build on tools that people have shared with such care. We use SciPy as a development tool and have credited your project and original repository in our README. Our original code is source-visible under PolyForm Noncommercial; your work keeps its own terms. Thank you — I hope seeing this little project makes you smile! If our use or credit misses anything you expected, please let me know so we can put it right. — enuzzo
+
+### 🎚️ Brian McFee and contributors — Resampy
+
+- Source and public contact route: [Repository](https://github.com/bmcfee/resampy); use a published community contact channel before considering a message. No private email inferred.
+- Use: Audio sample-rate conversion during analysis.
+- Status: **DRAFT — not sent; development tool, not browser runtime code.**
+
+**Subject:** Thank you for Resampy — a little road-music project
+
+> Hi Resampy team! I’m enuzzo, making sedicivalvole, an experimental audiovisual app for the car browser. Your work helped our development and verification, and it is lovely to build on tools that people have shared with such care. We use Resampy as a development tool and have credited your project and original repository in our README. Our original code is source-visible under PolyForm Noncommercial; your work keeps its own terms. Thank you — I hope seeing this little project makes you smile! If our use or credit misses anything you expected, please let me know so we can put it right. — enuzzo
+
+### 🎹 Colin Raffel and contributors — Pretty MIDI
+
+- Source and public contact route: [Repository](https://github.com/craffel/pretty-midi); use a published community contact channel before considering a message. No private email inferred.
+- Use: MIDI/note representation in the transcription toolchain.
+- Status: **DRAFT — not sent; development tool, not browser runtime code.**
+
+**Subject:** Thank you for Pretty MIDI — a little road-music project
+
+> Hi Pretty MIDI team! I’m enuzzo, making sedicivalvole, an experimental audiovisual app for the car browser. Your work helped our development and verification, and it is lovely to build on tools that people have shared with such care. We use Pretty MIDI as a development tool and have credited your project and original repository in our README. Our original code is source-visible under PolyForm Noncommercial; your work keeps its own terms. Thank you — I hope seeing this little project makes you smile! If our use or credit misses anything you expected, please let me know so we can put it right. — enuzzo
+
+### 📏 Colin Raffel, Daniel P. W. Ellis and contributors — mir_eval
+
+- Source and public contact route: [Repository](https://github.com/craffel/mir_eval); use a published community contact channel before considering a message. No private email inferred.
+- Use: Music-information-retrieval evaluation dependency of Basic Pitch.
+- Status: **DRAFT — not sent; development tool, not browser runtime code.**
+
+**Subject:** Thank you for mir_eval — a little road-music project
+
+> Hi mir_eval team! I’m enuzzo, making sedicivalvole, an experimental audiovisual app for the car browser. Your work helped our development and verification, and it is lovely to build on tools that people have shared with such care. We use mir_eval as a development tool and have credited your project and original repository in our README. Our original code is source-visible under PolyForm Noncommercial; your work keeps its own terms. Thank you — I hope seeing this little project makes you smile! If our use or credit misses anything you expected, please let me know so we can put it right. — enuzzo
+
+### 🔊 Bastian Bechtold and contributors — SoundFile
+
+- Source and public contact route: [Repository](https://github.com/bastibe/python-soundfile); use a published community contact channel before considering a message. No private email inferred.
+- Use: Audio file I/O through libsndfile in the offline analysis stack.
+- Status: **DRAFT — not sent; development tool, not browser runtime code.**
+
+**Subject:** Thank you for SoundFile — a little road-music project
+
+> Hi SoundFile team! I’m enuzzo, making sedicivalvole, an experimental audiovisual app for the car browser. Your work helped our development and verification, and it is lovely to build on tools that people have shared with such care. We use SoundFile as a development tool and have credited your project and original repository in our README. Our original code is source-visible under PolyForm Noncommercial; your work keeps its own terms. Thank you — I hope seeing this little project makes you smile! If our use or credit misses anything you expected, please let me know so we can put it right. — enuzzo
+
+### 🔊 Erik de Castro Lopo and libsndfile contributors — libsndfile
+
+- Source and public contact route: [Repository](https://github.com/libsndfile/libsndfile); use a published community contact channel before considering a message. No private email inferred.
+- Use: Native audio file decoding behind SoundFile; development only.
+- Status: **DRAFT — not sent; development tool, not browser runtime code.**
+
+**Subject:** Thank you for libsndfile — a little road-music project
+
+> Hi libsndfile team! I’m enuzzo, making sedicivalvole, an experimental audiovisual app for the car browser. Your work helped our development and verification, and it is lovely to build on tools that people have shared with such care. We use libsndfile as a development tool and have credited your project and original repository in our README. Our original code is source-visible under PolyForm Noncommercial; your work keeps its own terms. Thank you — I hope seeing this little project makes you smile! If our use or credit misses anything you expected, please let me know so we can put it right. — enuzzo
+
+### 🧪 Microsoft and contributors — Playwright
+
+- Source and public contact route: [Repository](https://github.com/microsoft/playwright); use a published community contact channel before considering a message. No private email inferred.
+- Use: Browser automation used for real-render visual and interaction regression checks; not an application dependency.
+- Status: **DRAFT — not sent; development tool, not browser runtime code.**
+
+**Subject:** Thank you for Playwright — a little road-music project
+
+> Hi Playwright team! I’m enuzzo, making sedicivalvole, an experimental audiovisual app for the car browser. Your work helped our development and verification, and it is lovely to build on tools that people have shared with such care. We use Playwright as a development tool and have credited your project and original repository in our README. Our original code is source-visible under PolyForm Noncommercial; your work keeps its own terms. Thank you — I hope seeing this little project makes you smile! If our use or credit misses anything you expected, please let me know so we can put it right. — enuzzo
