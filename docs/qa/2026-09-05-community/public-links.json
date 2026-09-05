@@ -1,0 +1,305 @@
+{
+  "checked_on": "2026-09-05",
+  "scope": "public source and contact routes only; no email sent",
+  "results": [
+    {
+      "url": "https://bottosson.github.io/posts/oklab/",
+      "checked_via": "https://bottosson.github.io/posts/oklab/",
+      "status": 200
+    },
+    {
+      "url": "https://codepen.io/shubniggurath",
+      "checked_via": "https://codepen.io/shubniggurath",
+      "status": 200
+    },
+    {
+      "url": "https://codepen.io/shubniggurath/pen/NXGbBo",
+      "checked_via": "https://codepen.io/shubniggurath/pen/NXGbBo",
+      "status": 200
+    },
+    {
+      "url": "https://developer.jamendo.com/v3.0",
+      "checked_via": "https://developer.jamendo.com/v3.0",
+      "status": 200
+    },
+    {
+      "url": "https://github.com/Anemolo",
+      "checked_via": "https://api.github.com/users/Anemolo",
+      "status": 200,
+      "canonical_url": "https://github.com/Anemolo"
+    },
+    {
+      "url": "https://github.com/Anemolo/Infinite-Lights",
+      "checked_via": "https://api.github.com/repos/Anemolo/Infinite-Lights",
+      "status": 200,
+      "canonical_url": "https://github.com/Anemolo/Infinite-Lights"
+    },
+    {
+      "url": "https://github.com/Mamboleoo",
+      "checked_via": "https://api.github.com/users/Mamboleoo",
+      "status": 200,
+      "canonical_url": "https://github.com/Mamboleoo"
+    },
+    {
+      "url": "https://github.com/Mamboleoo/InfiniteTubes",
+      "checked_via": "https://api.github.com/repos/Mamboleoo/InfiniteTubes",
+      "status": 200,
+      "canonical_url": "https://github.com/Mamboleoo/InfiniteTubes"
+    },
+    {
+      "url": "https://github.com/Rezmason",
+      "checked_via": "https://api.github.com/users/Rezmason",
+      "status": 200,
+      "canonical_url": "https://github.com/Rezmason"
+    },
+    {
+      "url": "https://github.com/Rezmason/drivey",
+      "checked_via": "https://api.github.com/repos/Rezmason/drivey",
+      "status": 200,
+      "canonical_url": "https://github.com/Rezmason/drivey"
+    },
+    {
+      "url": "https://github.com/bottosson",
+      "checked_via": "https://api.github.com/users/bottosson",
+      "status": 200,
+      "canonical_url": "https://github.com/bottosson"
+    },
+    {
+      "url": "https://github.com/codecalm",
+      "checked_via": "https://api.github.com/users/codecalm",
+      "status": 200,
+      "canonical_url": "https://github.com/codecalm"
+    },
+    {
+      "url": "https://github.com/facebook/react",
+      "checked_via": "https://api.github.com/repos/facebook/react",
+      "status": 200,
+      "canonical_url": "https://github.com/react/react"
+    },
+    {
+      "url": "https://github.com/floriankarsten/space-grotesk",
+      "checked_via": "https://api.github.com/repos/floriankarsten/space-grotesk",
+      "status": 200,
+      "canonical_url": "https://github.com/floriankarsten/space-grotesk"
+    },
+    {
+      "url": "https://github.com/hundredrabbits",
+      "checked_via": "https://api.github.com/users/hundredrabbits",
+      "status": 200,
+      "canonical_url": "https://github.com/hundredrabbits"
+    },
+    {
+      "url": "https://github.com/hundredrabbits/Themes",
+      "checked_via": "https://api.github.com/repos/hundredrabbits/Themes",
+      "status": 200,
+      "canonical_url": "https://github.com/hundredrabbits/Themes"
+    },
+    {
+      "url": "https://github.com/hyperknot/openfreemap",
+      "checked_via": "https://api.github.com/repos/hyperknot/openfreemap",
+      "status": 200,
+      "canonical_url": "https://github.com/hyperknot/openfreemap"
+    },
+    {
+      "url": "https://github.com/illobo",
+      "checked_via": "https://api.github.com/users/illobo",
+      "status": 200,
+      "canonical_url": "https://github.com/illobo"
+    },
+    {
+      "url": "https://github.com/illobo/textStep",
+      "checked_via": "https://api.github.com/repos/illobo/textStep",
+      "status": 200,
+      "canonical_url": "https://github.com/illobo/textStep"
+    },
+    {
+      "url": "https://github.com/maplibre",
+      "checked_via": "https://api.github.com/users/maplibre",
+      "status": 200,
+      "canonical_url": "https://github.com/maplibre"
+    },
+    {
+      "url": "https://github.com/maplibre/maplibre-gl-js",
+      "checked_via": "https://api.github.com/repos/maplibre/maplibre-gl-js",
+      "status": 200,
+      "canonical_url": "https://github.com/maplibre/maplibre-gl-js"
+    },
+    {
+      "url": "https://github.com/mrdoob",
+      "checked_via": "https://api.github.com/users/mrdoob",
+      "status": 200,
+      "canonical_url": "https://github.com/mrdoob"
+    },
+    {
+      "url": "https://github.com/mrdoob/three.js",
+      "checked_via": "https://api.github.com/repos/mrdoob/three.js",
+      "status": 200,
+      "canonical_url": "https://github.com/mrdoob/three.js"
+    },
+    {
+      "url": "https://github.com/open-meteo/open-meteo",
+      "checked_via": "https://api.github.com/repos/open-meteo/open-meteo",
+      "status": 200,
+      "canonical_url": "https://github.com/open-meteo/open-meteo"
+    },
+    {
+      "url": "https://github.com/openmaptiles/openmaptiles",
+      "checked_via": "https://api.github.com/repos/openmaptiles/openmaptiles",
+      "status": 200,
+      "canonical_url": "https://github.com/openmaptiles/openmaptiles"
+    },
+    {
+      "url": "https://github.com/pmndrs",
+      "checked_via": "https://api.github.com/users/pmndrs",
+      "status": 200,
+      "canonical_url": "https://github.com/pmndrs"
+    },
+    {
+      "url": "https://github.com/pmndrs/postprocessing",
+      "checked_via": "https://api.github.com/repos/pmndrs/postprocessing",
+      "status": 200,
+      "canonical_url": "https://github.com/pmndrs/postprocessing"
+    },
+    {
+      "url": "https://github.com/pmndrs/react-three-fiber",
+      "checked_via": "https://api.github.com/repos/pmndrs/react-three-fiber",
+      "status": 200,
+      "canonical_url": "https://github.com/pmndrs/react-three-fiber"
+    },
+    {
+      "url": "https://github.com/ruucm",
+      "checked_via": "https://api.github.com/users/ruucm",
+      "status": 200,
+      "canonical_url": "https://github.com/ruucm"
+    },
+    {
+      "url": "https://github.com/ruucm/shadergradient",
+      "checked_via": "https://api.github.com/repos/ruucm/shadergradient",
+      "status": 200,
+      "canonical_url": "https://github.com/ruucm/shadergradient"
+    },
+    {
+      "url": "https://github.com/silentmatt",
+      "checked_via": "https://api.github.com/users/silentmatt",
+      "status": 200,
+      "canonical_url": "https://github.com/silentmatt"
+    },
+    {
+      "url": "https://github.com/silentmatt/expr-eval",
+      "checked_via": "https://api.github.com/repos/silentmatt/expr-eval",
+      "status": 200,
+      "canonical_url": "https://github.com/silentmatt/expr-eval"
+    },
+    {
+      "url": "https://github.com/simple-icons",
+      "checked_via": "https://api.github.com/users/simple-icons",
+      "status": 200,
+      "canonical_url": "https://github.com/simple-icons"
+    },
+    {
+      "url": "https://github.com/simple-icons/simple-icons",
+      "checked_via": "https://api.github.com/repos/simple-icons/simple-icons",
+      "status": 200,
+      "canonical_url": "https://github.com/simple-icons/simple-icons"
+    },
+    {
+      "url": "https://github.com/soldair/node-qrcode",
+      "checked_via": "https://api.github.com/repos/soldair/node-qrcode",
+      "status": 200,
+      "canonical_url": "https://github.com/soldair/node-qrcode"
+    },
+    {
+      "url": "https://github.com/spotify/basic-pitch",
+      "checked_via": "https://api.github.com/repos/spotify/basic-pitch",
+      "status": 200,
+      "canonical_url": "https://github.com/spotify/basic-pitch"
+    },
+    {
+      "url": "https://github.com/tabler/tabler-icons",
+      "checked_via": "https://api.github.com/repos/tabler/tabler-icons",
+      "status": 200,
+      "canonical_url": "https://github.com/tabler/tabler-icons"
+    },
+    {
+      "url": "https://github.com/theleagueof/orbitron",
+      "checked_via": "https://api.github.com/repos/theleagueof/orbitron",
+      "status": 200,
+      "canonical_url": "https://github.com/theleagueof/orbitron"
+    },
+    {
+      "url": "https://github.com/vanruesc",
+      "checked_via": "https://api.github.com/users/vanruesc",
+      "status": 200,
+      "canonical_url": "https://github.com/vanruesc"
+    },
+    {
+      "url": "https://github.com/vitejs",
+      "checked_via": "https://api.github.com/users/vitejs",
+      "status": 200,
+      "canonical_url": "https://github.com/vitejs"
+    },
+    {
+      "url": "https://github.com/vitejs/vite",
+      "checked_via": "https://api.github.com/repos/vitejs/vite",
+      "status": 200,
+      "canonical_url": "https://github.com/vitejs/vite"
+    },
+    {
+      "url": "https://github.com/yomotsu",
+      "checked_via": "https://api.github.com/users/yomotsu",
+      "status": 200,
+      "canonical_url": "https://github.com/yomotsu"
+    },
+    {
+      "url": "https://github.com/yomotsu/camera-controls",
+      "checked_via": "https://api.github.com/repos/yomotsu/camera-controls",
+      "status": 200,
+      "canonical_url": "https://github.com/yomotsu/camera-controls"
+    },
+    {
+      "url": "https://open-meteo.com/en/docs/elevation-api",
+      "checked_via": "https://open-meteo.com/en/docs/elevation-api",
+      "status": 200
+    },
+    {
+      "url": "https://react.dev/community",
+      "checked_via": "https://react.dev/community",
+      "status": 200
+    },
+    {
+      "url": "https://www.buymeacoffee.com",
+      "checked_via": "https://www.buymeacoffee.com",
+      "status": 200
+    },
+    {
+      "url": "https://www.jamendo.com",
+      "checked_via": "https://www.jamendo.com",
+      "status": 200
+    },
+    {
+      "url": "https://www.mediawiki.org/wiki/API:Main_page",
+      "checked_via": "https://www.mediawiki.org/wiki/API:Main_page",
+      "status": 200
+    },
+    {
+      "url": "https://www.mediawiki.org/wiki/Communication",
+      "checked_via": "https://www.mediawiki.org/wiki/Communication",
+      "status": 200
+    },
+    {
+      "url": "https://www.musicradar.com",
+      "checked_via": "https://www.musicradar.com",
+      "status": 200
+    },
+    {
+      "url": "https://www.musicradar.com/news/sampleradar-free-90s-jungle-samples",
+      "checked_via": "https://www.musicradar.com/news/sampleradar-free-90s-jungle-samples",
+      "status": 200
+    },
+    {
+      "url": "https://www.openstreetmap.org",
+      "checked_via": "https://www.openstreetmap.org",
+      "status": 200
+    }
+  ]
+}

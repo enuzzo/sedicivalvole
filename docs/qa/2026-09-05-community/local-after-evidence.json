@@ -1,0 +1,41 @@
+{
+  "url": "http://127.0.0.1:5173/",
+  "checks": [
+    "773 single safety line, contained and no overflow",
+    "773 launch still opens",
+    "390 single safety line, contained and no overflow",
+    "390 launch still opens",
+    "no warnings/errors"
+  ],
+  "console": [],
+  "states": [
+    {
+      "text": "DRIVE RESPONSIBLY",
+      "rect": {
+        "x": 206.5,
+        "y": 491,
+        "width": 360,
+        "height": 32,
+        "top": 491,
+        "right": 566.5,
+        "bottom": 523,
+        "left": 206.5
+      },
+      "overflow": false
+    },
+    {
+      "text": "DRIVE RESPONSIBLY",
+      "rect": {
+        "x": 20,
+        "y": 742,
+        "width": 350,
+        "height": 32,
+        "top": 742,
+        "right": 370,
+        "bottom": 774,
+        "left": 20
+      },
+      "overflow": false
+    }
+  ]
+}

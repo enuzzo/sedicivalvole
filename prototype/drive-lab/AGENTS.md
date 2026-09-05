@@ -185,3 +185,7 @@ in launch and Visual. Preparation is silent; START or an explicit running Play
 owns playback. Individual controls, diagnostics, motion wake and automatic chrome
 retraction remain available. Recognize an experience from actual settings, never
 from a stale saved label, and never claim a failed music request is playing.
+
+## Owner copy decision — 2026-09-05
+
+The splash safety aside contains only `DRIVE RESPONSIBLY`. Do not restore the subordinate driving instructions or the speed-ceiling explanatory text there. This copy simplification does not change the fixed energy ceiling or control behavior.

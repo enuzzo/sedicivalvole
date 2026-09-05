@@ -240,3 +240,13 @@ The owner supplied `lobo-round-bgb.svg` and `lobo-round-bgw.svg` directly for th
 ## 2026-09-05 — Neon Groove experience preview
 
 `public/experiences/neon-groove.png` is a real capture of the existing project-owned Aperture renderer with the Neon palette at the agreed Tesla viewport. It is a product screenshot, excluded from the original-code license. No new renderer, recording or dependency is introduced.
+
+## 2026-09-05 — Community credit reconciliation
+
+The Night Glass preview paragraph above incorrectly called the Infinite Lights runtime MIT. Its actual governing upstream README carries the custom Codrops integrated-use notice already recorded in this file and LICENSE-SCOPE.md. The pinned source and bundled-library licenses are unchanged. No general MIT grant is claimed for that runtime.
+
+The installed `qrcode@1.5.4` LICENSE states Copyright (c) 2012 Ryan Day, and its package metadata names Ryan Day (soldair) as author. Credit Ryan Day and contributors for node-qrcode, retaining Kazuhiko Arase's separate QR algorithm lineage rather than naming it as the sole package authorship.
+
+SOUNDTRACK also uses Jamendo's runtime catalogue and eligible artist recordings through the existing server-side relay. Recording title, artist, source page and actual recording-specific Creative Commons terms are evaluated in `src/soundtrack/source-policy.js` and remain attached to playback; no universal music license or bundled Jamendo catalogue is claimed. Illobo's 29 recordings and supplied artwork are separately artist-authorized material, linked to https://soundcloud.com/illobo, not PolyForm-covered software. Existing in-product credit and source links remain required.
+
+The README now contains a consolidated community credits table. `docs/COMMUNITY-THANKS.md` records public contact routes and unsent thank-you drafts, separating integrated code/assets, services/data, development tools and historical studies. These outreach drafts create no additional license or endorsement.

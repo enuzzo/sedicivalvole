@@ -5054,8 +5054,6 @@ export function App() {
           <small className="splash-privacy">Audio, display, motion, and GPS are checked locally.</small>
           <aside className="splash-safety" aria-label="Road safety">
             <strong>DRIVE RESPONSIBLY</strong>
-            <span>Passenger controls only while moving. Drivers: set up while parked and keep eyes on the road.</span>
-            <small>Visual and audio response reaches 100% at 130 km/h. Higher indicated speeds add no new effects.</small>
           </aside>
           <button className="splash-reset-state" type="button" onClick={resetSavedState}>RESET SAVED STATE</button>
         </div> : null}
