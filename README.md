@@ -388,3 +388,7 @@ A heartfelt thank-you to the people who share the code, type, music, data and ex
 Thanks also to the development-only analysis foundations: [NumPy](https://github.com/numpy/numpy), [Numba](https://github.com/numba/numba), [llvmlite](https://github.com/numba/llvmlite), [scikit-learn](https://github.com/scikit-learn/scikit-learn), [setuptools](https://github.com/pypa/setuptools) and the transitive tools named in the notices. PRTCL's authorized formulas are enuzzo's own prior work. Per-recording Jamendo and per-article Wikipedia credits remain attached to the actual content in the product.
 
 Public contacts, precise usage boundaries and unsent personalized release messages are maintained in [COMMUNITY-THANKS.md](docs/COMMUNITY-THANKS.md). Full terms, pinned source versions and exclusions remain in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and [LICENSE-SCOPE.md](LICENSE-SCOPE.md). Original sedicivalvole code remains PolyForm Noncommercial; thanking open-source contributors does not relicense their work or our project.
+
+### Contextual control alignment — 2026-09-05
+
+Prtcl, Drivey and Gradient now align both the functional label and current value to one left edge. Their shared 112 × 52 px controls retain the existing cycle actions and automatic chrome visibility. [Measured before/after verification](docs/CONTEXT-CONTROL-ALIGNMENT-2026-09-05.md).
