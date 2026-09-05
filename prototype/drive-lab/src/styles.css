@@ -234,6 +234,7 @@ button { -webkit-tap-highlight-color: transparent; }
 }
 .visual-cycle-button {
   display: grid;
+  text-align: left;
   grid-template-rows: auto auto;
   align-content: center;
   justify-items: start;

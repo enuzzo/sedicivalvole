@@ -189,3 +189,7 @@ from a stale saved label, and never claim a failed music request is playing.
 ## Owner copy decision — 2026-09-05
 
 The splash safety aside contains only `DRIVE RESPONSIBLY`. Do not restore the subordinate driving instructions or the speed-ceiling explanatory text there. This copy simplification does not change the fixed energy ceiling or control behavior.
+
+## Owner refinement — 2026-09-05 contextual visual controls
+
+Align both the functional label and current value to the same left edge in the shared Prtcl, Drivey and Gradient cycle buttons. Keep their existing dimensions, touch targets, colour roles and chrome-owned visibility; do not mix a left label with a centered value.
