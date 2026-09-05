@@ -62,3 +62,9 @@ These rules apply to every change in the `sedicivalvole` project.
   credits remain exactly as recorded in `THIRD_PARTY_NOTICES.md`.
 - Record every third-party dependency or asset in `THIRD_PARTY_NOTICES.md` before it enters the product or repository.
 - Do not use Creative Commons licenses for software.
+
+## Standing deployment authorization — 2026-09-05
+
+The owner explicitly authorizes deployment to `https://sedicivalvole.app/` now and in future sessions: deploy promptly within the agreed project work, without asking for another deployment confirmation. The owner accepts iterative fixes backed by Git, backups and session history. This supersedes earlier requirements to obtain fresh deployment approval for each change. Keep the existing relevant checks, traceable commits/build stamps and canonical post-deployment verification; use rollback or a focused fix when needed.
+
+The owner's explicit configuration exception also permits the official `scripts/deploy_drive_lab_ftp.py` script to load `.env` internally for preflight, publication and postflight. This is the sole exception to the blanket `.env` reading prohibition above: agents must not inspect, print, diff, log, copy or version secret contents or place credentials in command lines. Do not ask again for that same internal-loading permission during ordinary authorized deployment.

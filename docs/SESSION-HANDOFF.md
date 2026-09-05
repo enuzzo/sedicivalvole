@@ -1025,3 +1025,7 @@ Live at **https://sedicivalvole.app/**: build **20260905-0152**, source **202e10
 The automatic review initially rejected the official script's internal configuration access despite recovered earlier consent. The owner directly renewed the narrow exception for official preflight/publication/postflight without displaying or logging configuration; the official flow then completed. No alternative credential route was used. No diagnostic email was sent.
 
 Changed card text measures at least **4.95:1 LIGHT / 6.98:1 DARK**, with 357 × 82 px targets and a visible 3 px focus outline at 773 × 601. The build has a pre-existing large-chunk advisory; real Tesla GPU, listening quality and multi-hour journey acceptance remain open.
+
+## 2026-09-05 02:01 — Standing owner authorization
+
+The owner explicitly grants ongoing deployment authorization for sedicivalvole.app in current and future sessions: proceed promptly without another deployment confirmation. Carry forward the directly approved official-script-only internal configuration exception for preflight/publication/postflight; never expose or inspect secrets. The governing AGENTS.md now records this scoped exception and standing permission. Relevant validation, Git/build traceability and canonical postflight remain part of normal execution. This is an instruction-only checkpoint; live product build remains 20260905-0152 (source 202e100).
