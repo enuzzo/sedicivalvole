@@ -1,0 +1,229 @@
+{
+  "build": "20260905-0213",
+  "commit": "427ab29",
+  "verified_at": "2026-09-05 02:17:42 +0200",
+  "checks": [
+    {
+      "path": "/",
+      "status": 200,
+      "bytes": 1206,
+      "sha256": "283acda237d2406d88e40937c61096e428c22c1c07d8075f33ff0129ec98dde3",
+      "headers": {
+        "server": "nginx",
+        "content-type": "text/html; charset=UTF-8",
+        "cache-control": "no-store, no-cache, must-revalidate, max-age=0",
+        "x-content-type-options": "nosniff",
+        "x-proxy-cache": "MISS",
+        "x-proxy-cache-info": "0 NC:000000 UP:"
+      },
+      "local_byte_identity": true
+    },
+    {
+      "path": "/?verify=20260905-0213",
+      "status": 200,
+      "bytes": 1206,
+      "sha256": "283acda237d2406d88e40937c61096e428c22c1c07d8075f33ff0129ec98dde3",
+      "headers": {
+        "server": "nginx",
+        "content-type": "text/html; charset=UTF-8",
+        "cache-control": "no-store, no-cache, must-revalidate, max-age=0",
+        "x-content-type-options": "nosniff",
+        "x-proxy-cache": "MISS",
+        "x-proxy-cache-info": "0 NC:000000 UP:"
+      },
+      "local_byte_identity": true
+    },
+    {
+      "path": "/index.php?verify=20260905-0213",
+      "status": 200,
+      "bytes": 1206,
+      "sha256": "283acda237d2406d88e40937c61096e428c22c1c07d8075f33ff0129ec98dde3",
+      "headers": {
+        "server": "nginx",
+        "content-type": "text/html; charset=UTF-8",
+        "cache-control": "no-store, no-cache, must-revalidate, max-age=0",
+        "x-content-type-options": "nosniff",
+        "x-proxy-cache": "MISS",
+        "x-proxy-cache-info": "0 NC:000000 UP:"
+      },
+      "local_byte_identity": true
+    },
+    {
+      "path": "/assets/index-DD3KPCOX.js",
+      "status": 200,
+      "bytes": 755168,
+      "sha256": "b56c13b4657c87926e6bbc0e14c459ef6802742528e5801c8677563ab7a1a4a7",
+      "headers": {
+        "server": "nginx",
+        "content-type": "application/javascript",
+        "x-proxy-cache": "MISS",
+        "x-proxy-cache-info": "0 NC:000000 UP:"
+      },
+      "local_byte_identity": true
+    },
+    {
+      "path": "/assets/index-CnlcU64G.css",
+      "status": 200,
+      "bytes": 184567,
+      "sha256": "373685963147be9f325f411621c95c9db4d11f90aee9d74666cdce11d6cda5df",
+      "headers": {
+        "server": "nginx",
+        "content-type": "text/css",
+        "x-proxy-cache": "HIT"
+      },
+      "local_byte_identity": true
+    },
+    {
+      "path": "/assets/atlas-field-B5gvW_r4.js",
+      "status": 200,
+      "bytes": 25515,
+      "sha256": "508b50e8e3cb08bbf187b7fc297f0a6604d2f8f326828d69971eb6c15d74928e",
+      "headers": {
+        "server": "nginx",
+        "content-type": "application/javascript",
+        "x-proxy-cache": "MISS",
+        "x-proxy-cache-info": "0 NC:000000 UP:"
+      },
+      "local_byte_identity": true
+    },
+    {
+      "path": "/assets/browser-C-Jmcfgr.js",
+      "status": 200,
+      "bytes": 25776,
+      "sha256": "ec750ea9e52e3cfb0ef852e9362d2a2f3ce996ecd1f194f5b2aadeb78332eb5a",
+      "headers": {
+        "server": "nginx",
+        "content-type": "application/javascript",
+        "x-proxy-cache": "MISS",
+        "x-proxy-cache-info": "0 NC:000000 UP:"
+      },
+      "local_byte_identity": true
+    },
+    {
+      "path": "/assets/maplibre-gl-CcxclvHn.js",
+      "status": 200,
+      "bytes": 941210,
+      "sha256": "92011ad34fcd021f9cc7a66470b6a5188068c104a4b2821f96394c811ccb356d",
+      "headers": {
+        "server": "nginx",
+        "content-type": "application/javascript",
+        "x-proxy-cache": "MISS",
+        "x-proxy-cache-info": "0 NC:000000 UP:"
+      },
+      "local_byte_identity": true
+    },
+    {
+      "path": "/assets/score-processor-Dly9Ky60.js",
+      "status": 200,
+      "bytes": 117006,
+      "sha256": "1e4928616b90722e2be5b1ab777d01866084ed54690283ce0c82ebe00d1a8ebf",
+      "headers": {
+        "server": "nginx",
+        "content-type": "application/javascript",
+        "x-proxy-cache": "HIT"
+      },
+      "local_byte_identity": true
+    },
+    {
+      "path": "/assets/shadergradient-field-Dx4wOfZt.js",
+      "status": 200,
+      "bytes": 1085825,
+      "sha256": "2aeca19e537496e9486c02a10d4e97639730f18533e799848582da3f087d20e1",
+      "headers": {
+        "server": "nginx",
+        "content-type": "application/javascript",
+        "x-proxy-cache": "MISS",
+        "x-proxy-cache-info": "0 NC:000000 UP:"
+      },
+      "local_byte_identity": true
+    },
+    {
+      "path": "/third-party/tabler-icons/palette.svg",
+      "status": 200,
+      "bytes": 689,
+      "sha256": "27a5a19ae4b0f73ff4089b7f5a6c8fdf17f19ecc853e19fa04494f083943e778",
+      "headers": {
+        "server": "nginx",
+        "content-type": "image/svg+xml",
+        "x-proxy-cache": "HIT"
+      },
+      "local_byte_identity": true
+    },
+    {
+      "path": "/experiences/night-glass.png",
+      "status": 200,
+      "bytes": 194784,
+      "sha256": "0c56e85e8a20d5f69724fece2f796c6c700991e439e841e9181510497da0536d",
+      "headers": {
+        "server": "nginx",
+        "content-type": "image/png",
+        "x-proxy-cache": "HIT"
+      },
+      "local_byte_identity": true
+    },
+    {
+      "path": "/experiences/neon-groove.png",
+      "status": 200,
+      "bytes": 82311,
+      "sha256": "1bb7bb5a1075153d34ada33827d732f36737d17427fa56bdd45832df7f80e6a4",
+      "headers": {
+        "server": "nginx",
+        "content-type": "image/png",
+        "x-proxy-cache": "HIT"
+      },
+      "local_byte_identity": true
+    },
+    {
+      "path": "/brand/illobo-featured-solid.svg",
+      "status": 200,
+      "bytes": 3531,
+      "sha256": "9973b53c96144d2971188d9ab71207163337e856ead11ff040008e40783626a0",
+      "headers": {
+        "server": "nginx",
+        "content-type": "image/svg+xml",
+        "x-proxy-cache": "HIT"
+      },
+      "local_byte_identity": true
+    },
+    {
+      "path": "/brand/illobo-featured-outline.svg",
+      "status": 200,
+      "bytes": 3604,
+      "sha256": "5e56d9476aff3f9f079650b2c409b1e4f9080313b27ed3f1ea14993f16bd4e3e",
+      "headers": {
+        "server": "nginx",
+        "content-type": "image/svg+xml",
+        "x-proxy-cache": "HIT"
+      },
+      "local_byte_identity": true
+    },
+    {
+      "path": "/api/send-diagnostic.php",
+      "status": 405,
+      "bytes": 42,
+      "sha256": "52919f82f5062ec723377330766bba9b9d45c6a4353bd942e10357620b11d9ff",
+      "headers": {
+        "server": "nginx",
+        "content-type": "application/json; charset=utf-8",
+        "cache-control": "no-store, no-cache, must-revalidate, max-age=0",
+        "x-content-type-options": "nosniff",
+        "x-proxy-cache": "MISS",
+        "x-proxy-cache-info": "0 NC:000000 UP:"
+      }
+    },
+    {
+      "path": "/lab/",
+      "status": 200,
+      "bytes": 223063,
+      "sha256": "6c6efed7296bb84cd4ff9579f1029db7261b7f8ba52190cce52aea9a6a707eef",
+      "headers": {
+        "server": "nginx",
+        "content-type": "text/html; charset=UTF-8",
+        "cache-control": "no-store, no-cache, must-revalidate",
+        "x-content-type-options": "nosniff",
+        "x-proxy-cache": "MISS",
+        "x-proxy-cache-info": "0 NC:000000 UP:SKIP_CACHE_SET_COOKIE"
+      }
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "native": {
+    "passed": 634,
+    "failed": 0,
+    "sites": "9/9",
+    "php": "actual PHP fixture passed"
+  },
+  "focused_documentation_and_splash": 43,
+  "postbuild": 10,
+  "browser": {
+    "engine": "headless Chrome through Playwright",
+    "reason": "Browser plugin not available; owner-authorized fallback",
+    "viewports": [
+      [
+        773,
+        601
+      ],
+      [
+        390,
+        844
+      ]
+    ],
+    "flow": "home -> PLAY THE ROAD -> launch selector",
+    "checks_per_run": 5,
+    "console": []
+  },
+  "public_source_and_contact_urls": {
+    "checked": 52,
+    "reachable": 52,
+    "private_contacts_accessed": false
+  },
+  "outreach": {
+    "personalized_drafts": 29,
+    "sent": 0
+  },
+  "architecture": "darwin-arm64",
+  "build": "20260905-0213",
+  "source": "427ab29"
+}
