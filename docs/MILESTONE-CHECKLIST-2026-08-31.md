@@ -15,6 +15,13 @@ sources is not a second active queue.
 
 ### Operational reconciliation — 2026-09-07
 
+Owner follow-up: **Flux, Soundtrack, FX, interface and Discover accepted**;
+endurance acceptable so far. This closes their broad owner-acceptance boundary,
+not unperformed technical tests. See [decisions](OWNER-DECISIONS-2026-09-07.md).
+Sequence is reliability fixes → Engine → iPhone. ATLAS/statistics separation
+remains approved future work; Dev-only periodic diagnostics is queued. The table
+below records the preceding technical evidence and still-open measurements.
+
 Older rows below retain their evidence and stable IDs; their historical product
 descriptions must not restore superseded behavior. See the
 [four-report review](DIAGNOSTIC-REVIEW-2026-09-07.md) and

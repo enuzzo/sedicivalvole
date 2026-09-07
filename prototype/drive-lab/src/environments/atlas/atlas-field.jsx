@@ -42,7 +42,6 @@ import {
 } from "./atlas-model.js";
 import {
   canvasFramebufferSize,
-  frameTelemetryIsDue,
   THIRTY_FPS_FRAME_INTERVAL_MS,
 } from "../../render-telemetry.js";
 
@@ -876,19 +875,15 @@ export default function AtlasField({
         const error = event?.error instanceof Error ? event.error : new Error("Atlas map runtime error");
         if (!mapReady || /webgl|context\s*lost|initiali[sz]/i.test(error.message)) fail(error);
       });
-      let lastTelemetryFrameAt = null;
       map.on("render", () => {
         if (failed) return;
         try {
           const canvas = map.getCanvas();
           const framebuffer = canvasFramebufferSize(canvas);
           const capturedAt = performance.now();
-          if (!framebuffer || !frameTelemetryIsDue(
-            lastTelemetryFrameAt,
-            capturedAt,
-            THIRTY_FPS_FRAME_INTERVAL_MS,
-          )) return;
-          lastTelemetryFrameAt = capturedAt;
+          // Count every actual MapLibre render; throttling here aliases 30 FPS
+          // callbacks into 15 FPS. UI publication is already sampled separately.
+          if (!framebuffer) return;
           onFrame(
             capturedAt,
             THIRTY_FPS_FRAME_INTERVAL_MS,

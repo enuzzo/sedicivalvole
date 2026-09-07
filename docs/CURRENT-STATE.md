@@ -1,5 +1,10 @@
 # Current Project State
 
+Visual recovery and diagnostic accounting fixes are implemented; publication evidence is recorded in [DEPLOY.md](DEPLOY.md). Future diagnostics automation is not yet implemented.
+
+September 7 owner follow-up: [accepted surfaces, recovery, Engine-first sequence,
+travel ATLAS/statistics and future Standard/Dev diagnostics](OWNER-DECISIONS-2026-09-07.md).
+
 Status: **authoritative working overview**. Updated on 2026-09-04.
 
 September 7 reconciliation: [current milestone closeout](MILESTONE-CHECKLIST-2026-08-31.md#operational-reconciliation--2026-09-07),

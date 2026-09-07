@@ -131,21 +131,10 @@ test("Atlas expresses only UNDERWATER through map-native camera and layer proper
   assert.deepEqual(speedToAtlasEffectCamera(60, "BLOOM"), speedToAtlasCamera(60));
 });
 
-test("Atlas telemetry samples real render events at no more than 30 FPS", () => {
-  assert.equal(THIRTY_FPS_FRAME_INTERVAL_MS, 1000 / 30);
-  assert.equal(frameTelemetryIsDue(0, THIRTY_FPS_FRAME_INTERVAL_MS - 0.001, THIRTY_FPS_FRAME_INTERVAL_MS), false);
-  let lastFrameAt = null;
-  const captured = [0, 1000 / 60, 1000 / 30, 1000 / 20, 2000 / 30];
-  const reported = captured.filter((capturedAt) => {
-    if (!frameTelemetryIsDue(lastFrameAt, capturedAt, THIRTY_FPS_FRAME_INTERVAL_MS)) return false;
-    lastFrameAt = capturedAt;
-    return true;
-  });
-  assert.deepEqual(reported, [0, 1000 / 30, 2000 / 30]);
+test("Atlas reports every actual render without threshold aliasing", () => {
   assert.deepEqual(canvasFramebufferSize({ width: 1546, height: 1202 }), { width: 1546, height: 1202 });
   assert.match(atlasSource, /map\.on\("render"/);
-  assert.match(atlasSource, /frameTelemetryIsDue\([\s\S]*?THIRTY_FPS_FRAME_INTERVAL_MS/);
-  assert.doesNotMatch(atlasSource, /onFrame\(performance\.now\(\), 1000 \/ 30/);
+  assert.doesNotMatch(atlasSource, /frameTelemetryIsDue/);
 });
 
 test("an abandoned Atlas import cannot fail the newly selected environment", () => {

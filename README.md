@@ -1,5 +1,7 @@
 # sedicivalvole
 
+September 7 reliability update: bounded automatic visual-load recovery, honest observation-gap accounting and active music attribution. See [diagnostics](docs/DIAGNOSTICS.md) and [owner decisions / next work](docs/OWNER-DECISIONS-2026-09-07.md).
+
 `sedicivalvole` is created and maintained solely by
 [enuzzo](https://github.com/enuzzo). No studio or company identity is claimed;
 third-party work retains the credits and licences recorded below.

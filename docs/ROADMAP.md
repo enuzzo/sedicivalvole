@@ -1,5 +1,10 @@
 # Roadmap
 
+Visual recovery and diagnostic accounting fixes are implemented; publication evidence is recorded in [DEPLOY.md](DEPLOY.md). Future diagnostics automation is not yet implemented.
+
+September 7 owner follow-up: [accepted surfaces, recovery, Engine-first sequence,
+travel ATLAS/statistics and future Standard/Dev diagnostics](OWNER-DECISIONS-2026-09-07.md).
+
 For September 7 operational status, use the
 [reconciled checklist](MILESTONE-CHECKLIST-2026-08-31.md#operational-reconciliation--2026-09-07)
 and [owner answers](OWNER-ANSWERS-2026-09-07.md). Newer Tesla Compact,

@@ -1,5 +1,8 @@
 # Future Ideas Register
 
+September 7 owner follow-up: [accepted surfaces, recovery, Engine-first sequence,
+travel ATLAS/statistics and future Standard/Dev diagnostics](OWNER-DECISIONS-2026-09-07.md).
+
 This is the canonical long-horizon register for owner ideas, deliberately
 divergent concepts, and useful work that should survive beyond the active
 roadmap. Check this file first whenever the owner asks to recover future ideas.

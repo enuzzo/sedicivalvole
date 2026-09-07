@@ -193,3 +193,23 @@ The splash safety aside contains only `DRIVE RESPONSIBLY`. Do not restore the su
 ## Owner refinement — 2026-09-05 contextual visual controls
 
 Align both the functional label and current value to the same left edge in the shared Prtcl, Drivey and Gradient cycle buttons. Keep their existing dimensions, touch targets, colour roles and chrome-owned visibility; do not mix a left label with a centered value.
+
+
+## Owner acceptance and reliability direction — 2026-09-07
+
+Flux, Soundtrack, FX, interface and Discover are owner-accepted, subject to later
+small refinements. Prioritize reliability fixes, then Engine, then iPhone.
+Travel ATLAS becomes an informative map; move and expand the existing statistics
+into a separate full-screen visual only after replacement parity is verified.
+The owner delegates information design; exact-coordinate Discover POIs are a
+candidate to research. Keep the three-direction visual gate before construction.
+Transient failed loads must retry automatically with bounded backoff for several
+minutes, online/foreground recovery, no overlapping attempts and cancellation on
+selection change. Do not repeatedly reload hidden/offline renderers.
+Future diagnostics have Standard and Dev levels. The owner explicitly authorizes
+coordinate-free packets to the existing diagnostic destination every ten minutes
+only in Dev, with automatic send default ON within Dev and a visible OFF switch.
+This supersedes manual-only transmission for that future feature only; implement
+matching disclosure, scheduling, server validation and tests before enabling it.
+Do not promise background timer execution or infer default Dev mode. Record
+minimized-browser gaps honestly. See ../../docs/OWNER-DECISIONS-2026-09-07.md.

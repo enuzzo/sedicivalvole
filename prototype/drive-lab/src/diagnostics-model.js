@@ -91,11 +91,18 @@ export function summarizeGpsTelemetry(telemetry) {
   };
 }
 
+// Longer intervals are observation gaps, not assumed rendering work. Keep them
+// visible separately; this classification does not assert browser suspension.
+export const FRAME_OBSERVATION_GAP_MS = 2000;
+
 export function createFrameTelemetry(startedAtMs = 0) {
   return {
     startedAtMs,
     firstCapturedAtMs: null,
     lastCapturedAtMs: null,
+    observationGapCount: 0,
+    observationGapMs: 0,
+    maximumObservationGapMs: 0,
     sampledFrames: 0,
     intervalCount: 0,
     totalIntervalMs: 0,
@@ -123,6 +130,7 @@ export function recordFrameSample(telemetry, {
   const interval = Number.isFinite(telemetry.lastCapturedAtMs)
     ? Math.max(0, capturedAtMs - telemetry.lastCapturedAtMs)
     : null;
+  const rendererChanged = telemetry.renderer != null && renderer != null && telemetry.renderer !== renderer;
   const validTarget = Number.isFinite(targetFrameMs) && targetFrameMs > 0 ? targetFrameMs : null;
 
   telemetry.firstCapturedAtMs ??= capturedAtMs;
@@ -133,7 +141,11 @@ export function recordFrameSample(telemetry, {
   telemetry.canvasWidth = Number.isFinite(canvasWidth) ? canvasWidth : telemetry.canvasWidth;
   telemetry.canvasHeight = Number.isFinite(canvasHeight) ? canvasHeight : telemetry.canvasHeight;
 
-  if (interval != null) {
+  if (interval > FRAME_OBSERVATION_GAP_MS) {
+    telemetry.observationGapCount += 1;
+    telemetry.observationGapMs += interval;
+    telemetry.maximumObservationGapMs = Math.max(telemetry.maximumObservationGapMs, interval);
+  } else if (interval != null && !rendererChanged) {
     telemetry.intervalCount += 1;
     telemetry.totalIntervalMs += interval;
     telemetry.maximumFrameMs = Math.max(telemetry.maximumFrameMs ?? interval, interval);
@@ -159,6 +171,9 @@ export function summarizeFrameTelemetry(telemetry) {
     renderer: telemetry.renderer,
     canvasWidth: telemetry.canvasWidth,
     canvasHeight: telemetry.canvasHeight,
+    observationGapCount: telemetry.observationGapCount,
+    observationGapMs: round(telemetry.observationGapMs),
+    maximumObservationGapMs: round(telemetry.maximumObservationGapMs),
     sampledFrames: telemetry.sampledFrames,
     sampledDurationMs: round(telemetry.totalIntervalMs) ?? 0,
     targetFps: telemetry.targetFrameMs ? round(1000 / telemetry.targetFrameMs) : null,
@@ -717,6 +732,12 @@ export function deriveNetworkNoticeState({
 
 export const DRIVE_TRACE_INTERVAL_MS = 2000;
 export const DRIVE_TRACE_SAMPLE_LIMIT = 1800;
+export const DRIVE_OBSERVATION_GAP_MS = DRIVE_TRACE_INTERVAL_MS * 3;
+
+export function diagnosticMusicIdentity({ mode, muted, scoreId }) {
+  if (muted || mode === "mute") return "mute";
+  return mode === "soundtrack" ? "soundtrack" : scoreId || "unknown";
+}
 export const DRIVE_JOURNEY_WINDOW_LIMIT = 240;
 export const DIAGNOSTIC_MAX_REQUEST_BODY_BYTES = 1966080;
 export const DRIVE_TRACE_FIELDS = [
@@ -745,6 +766,8 @@ export function createDriveTelemetry(startedAtMs = 0) {
     sampleLimit: DRIVE_TRACE_SAMPLE_LIMIT,
     discardedSamples: 0,
     totalDistanceKm: 0,
+    observedDurationMs: 0,
+    unobservedDurationMs: 0,
     movingDurationMs: 0,
     stationaryDurationMs: 0,
     sourceDurationsMs: {},
@@ -815,7 +838,8 @@ export function recordDriveTelemetrySample(telemetry, sample, limit = DRIVE_TRAC
   const intervalMs = Number.isFinite(telemetry.lastCapturedAtMs)
     ? Math.max(0, sample.capturedAtMs - telemetry.lastCapturedAtMs)
     : 0;
-  const rateKmhPerSecond = intervalMs > 0 && Number.isFinite(telemetry.lastSpeedKmh)
+  const observedIntervalMs = intervalMs <= DRIVE_OBSERVATION_GAP_MS ? intervalMs : 0;
+  const rateKmhPerSecond = observedIntervalMs > 0 && Number.isFinite(telemetry.lastSpeedKmh)
     ? (speedKmh - telemetry.lastSpeedKmh) / (intervalMs / 1000)
     : 0;
   const averageSpeedKmh = Number.isFinite(telemetry.lastSpeedKmh)
@@ -824,11 +848,13 @@ export function recordDriveTelemetrySample(telemetry, sample, limit = DRIVE_TRAC
 
   telemetry.totalSamples += 1;
   telemetry.sampleLimit = limit;
-  telemetry.totalDistanceKm += averageSpeedKmh * intervalMs / 3600000;
-  telemetry.movingDurationMs += averageSpeedKmh >= 1 ? intervalMs : 0;
-  telemetry.stationaryDurationMs += averageSpeedKmh < 1 ? intervalMs : 0;
-  addDuration(telemetry.sourceDurationsMs, sample.source, intervalMs);
-  addDuration(telemetry.inputDurationsMs, sample.driveInput, intervalMs);
+  telemetry.observedDurationMs += observedIntervalMs;
+  telemetry.unobservedDurationMs += intervalMs - observedIntervalMs;
+  telemetry.totalDistanceKm += averageSpeedKmh * observedIntervalMs / 3600000;
+  telemetry.movingDurationMs += averageSpeedKmh >= 1 ? observedIntervalMs : 0;
+  telemetry.stationaryDurationMs += averageSpeedKmh < 1 ? observedIntervalMs : 0;
+  addDuration(telemetry.sourceDurationsMs, sample.source, observedIntervalMs);
+  addDuration(telemetry.inputDurationsMs, sample.driveInput, observedIntervalMs);
   telemetry.maximumSpeedKmh = Math.max(telemetry.maximumSpeedKmh ?? speedKmh, speedKmh);
   telemetry.peakAccelerationKmhPerSecond = Math.max(
     telemetry.peakAccelerationKmhPerSecond ?? rateKmhPerSecond,
@@ -923,6 +949,10 @@ export function summarizeDriveTelemetry(telemetry, generatedAtMs = telemetry.las
     discardedSamples: telemetry.discardedSamples,
     sessionDurationMs: Math.round(durationMs),
     retainedDurationMs: Math.round(retainedDurationSeconds * 1000),
+    observedDurationMs: Math.round(telemetry.observedDurationMs),
+    unobservedDurationMs: Math.round(telemetry.unobservedDurationMs),
+    maximumObservedIntervalMs: DRIVE_OBSERVATION_GAP_MS,
+    distanceCoverage: "Estimate across observed adjacent samples only; longer gaps excluded",
     estimatedDistanceKm: rounded(telemetry.totalDistanceKm, 3),
     movingDurationMs: Math.round(telemetry.movingDurationMs),
     stationaryDurationMs: Math.round(telemetry.stationaryDurationMs),
@@ -961,7 +991,7 @@ export function createDriveTelemetryReport(telemetry, generatedAtMs = telemetry.
       audio: "normalized output level",
       audioPeak: "normalized output peak",
       visual: "active visual environment",
-      music: "active score",
+      music: "active music branch/score, or mute; Soundtrack identity is recorded in media events",
       family: "active JUNCTION musical family",
       rhythm: "active JUNCTION rhythmic identity",
       takes: "active JUNCTION take pair",

@@ -1,5 +1,35 @@
 # Tesla Diagnostics
 
+## Reliability follow-up — 2026-09-07
+
+The owner accepts Flux, Soundtrack, FX, interface and Discover, and reports that
+endurance holds so far. See [owner decisions](OWNER-DECISIONS-2026-09-07.md) for
+the Engine-first sequence and the future ATLAS/statistics and Standard/Dev split.
+
+The current recovery controller owns one selected visual. A handled runtime or
+load failure retries after 5, 10, 20, then at most 30 seconds, within a five-minute
+window from the first failure. It waits while offline or hidden, wakes on an
+online/visible event, cancels when the selection/session changes and resets after
+an actual rendered frame. Lazy renderer owners are recreated on a retry so a
+cached React rejection does not permanently lock the fallback. The shared shell
+and playback remain available. This release covers visual loads, including
+Drivey; it does not replace unrelated network clients with an unlimited loop.
+Pinned third-party runtimes are unchanged.
+
+ATLAS records every actual map render callback, removing the approximately
+30 Hz sampling threshold that aliased ordinary render cadence. Frame intervals
+over two seconds are retained as observation gaps, excluded from FPS summaries;
+this is a classification, not proof of suspension. Driving intervals over six
+seconds are excluded from estimated distance/moving/source totals and reported
+as unobserved time. Elapsed session duration remains separate. Muted and
+Soundtrack sessions carry their active identity, with inactive score arrangement,
+BPM and score metadata absent. These fixes do not make the September 6 reports
+continuous endurance evidence or prove improved physical rendering speed.
+
+Standard/Dev diagnostics and ten-minute automatic delivery are recorded future
+work. This build continues to send only through the explicit manual action.
+
+
 Latest received-report review: [September 6–7 evidence](DIAGNOSTIC-REVIEW-2026-09-07.md).
 It distinguishes ATLAS sampling aliasing, long observation gaps, inactive-score
 attribution, a recovered Drivey timeout and successful native Pause invocations.

@@ -1,3 +1,4 @@
+import { createLoadRecovery } from "./load-recovery.js";
 import { ExperienceCard } from "./experience-card.jsx";
 import { CURATED_EXPERIENCES, applyExperienceSettings, matchingExperience } from "./curated-experiences.js";
 import { resolveSemanticTheme } from "./semantic-theme.js";
@@ -22,6 +23,7 @@ import {
   createNetworkTelemetry,
   createPhasePerformanceTelemetry,
   deriveNetworkNoticeState,
+  diagnosticMusicIdentity,
   DRIVE_TRACE_INTERVAL_MS,
   fitDiagnosticReportForTransport,
   inferViewportMode,
@@ -164,9 +166,6 @@ import {
   supportMomentumCount,
   supportMomentumFrame,
 } from "./support-model.js";
-
-const AtlasField = lazy(() => import("./environments/atlas/atlas-field.jsx"));
-const ShaderGradientField = lazy(() => import("./environments/shadergradient/shadergradient-field.jsx"));
 
 /**
  * The lanes the voice preview can audition.
@@ -1355,11 +1354,14 @@ function DiagnosticReadme() {
   );
 }
 
-function FieldFailure({ label }) {
+function FieldFailure({ label, recovery }) {
   return (
     <div className="field-failure" role="status">
       <strong>{label}</strong>
-      <span>Visual unavailable · controls remain active</span>
+      <span>{recovery === "waiting" ? "Waiting for connection · retrying automatically"
+        : recovery === "retrying" || recovery === "loading" ? "Retrying visual · controls remain active"
+          : recovery === "exhausted" ? "Retry paused · switch away and back to retry"
+            : "Visual unavailable · controls remain active"}</span>
     </div>
   );
 }
@@ -1377,7 +1379,7 @@ class EnvironmentErrorBoundary extends Component {
 
   render() {
     if (this.state.failed) {
-      return <FieldFailure label={this.props.label} />;
+      return <FieldFailure label={this.props.label} recovery={this.props.recovery} />;
     }
     return this.props.children;
   }
@@ -2299,6 +2301,12 @@ export function App() {
     QA_ATLAS_MAP_APPEARANCE ?? initialPreferences.atlasMapAppearance,
   );
   const [environmentRuntimeError, setEnvironmentRuntimeError] = useState(null);
+  const [environmentAttempt, setEnvironmentAttempt] = useState(0);
+  const [environmentRecovery, setEnvironmentRecovery] = useState("idle");
+  // React.lazy caches rejected promises: a new attempt needs a fresh lazy owner.
+  const AtlasField = useMemo(() => lazy(() => import("./environments/atlas/atlas-field.jsx")), [environmentAttempt]);
+  const ShaderGradientField = useMemo(() => lazy(() => import("./environments/shadergradient/shadergradient-field.jsx")), [environmentAttempt]);
+  const environmentRecoveryRef = useRef(null);
   const [genreId, setGenreId] = useState(initialPreferences.genreId);
   const [environmentPickerOpen, setEnvironmentPickerOpen] = useState(false);
   const [soundtrackPanelOpen, setSoundtrackPanelOpen] = useState(false);
@@ -2681,7 +2689,7 @@ export function App() {
   appearanceModeRef.current = appearanceMode;
   appearanceResolutionRef.current = appearanceResolution;
   performancePhaseRef.current = phase === "running"
-    ? `drive:${environmentId}:${genreId}:${drawerOpen ? "diagnostics" : "visual"}`
+    ? `drive:${environmentId}:${diagnosticMusicIdentity({ mode: musicMode, muted, scoreId: genreId })}:${drawerOpen ? "diagnostics" : "visual"}`
       + (environmentId === "aperture" && speed <= 40 ? ":wall-retreat" : "")
     : `splash:${phase}`;
 
@@ -2729,6 +2737,7 @@ export function App() {
       canvasWidth,
       canvasHeight,
     };
+    environmentRecoveryRef.current?.succeed();
     recordPhaseFrame(phasePerformanceTelemetryRef.current, sample);
     if (!diagnosticsActiveRef.current) return;
     frameTelemetryRef.current = recordFrameSample(frameTelemetryRef.current, sample);
@@ -4324,7 +4333,8 @@ export function App() {
       const latestGps = latestGpsObservationRef.current;
       const frame = summarizeFrameTelemetry(frameTelemetryRef.current);
       const connection = readConnectionSnapshot("flight-recorder");
-      const audioState = audioRef.current?.getState() ?? null;
+      const scoreActive = sessionMusicModeRef.current === "play-road" && !mutedRef.current;
+      const audioState = scoreActive ? audioRef.current?.getState() ?? null : null;
       const meterState = audioRef.current?.getMeterState?.() ?? null;
       const gpsAgeMs = Number.isFinite(latestGps.capturedAtMs)
         ? Math.max(0, capturedAtMs - latestGps.capturedAtMs)
@@ -4338,13 +4348,13 @@ export function App() {
         accuracyM: accuracyRef.current,
         source: sourceRef.current,
         driveInput: brakeHeldRef.current ? "service-brake" : demoDriveInputRef.current,
-        bpm: scoreStateRef.current?.tempo ?? null,
+        bpm: scoreActive ? scoreStateRef.current?.tempo ?? null : null,
         averageFps: frame.averageFps,
         p95FrameMs: frame.p95FrameMs,
         audioLevel: audioLevelRef.current,
         audioPeak: meterState?.peak,
         visualId: environmentIdRef.current,
-        musicId: genreIdRef.current,
+        musicId: diagnosticMusicIdentity({ mode: sessionMusicModeRef.current, muted: mutedRef.current, scoreId: genreIdRef.current }),
         audioSection: audioState?.section,
         audioFamily: audioState?.musicalFamily,
         audioRhythm: audioState?.rhythmId,
@@ -4605,6 +4615,8 @@ export function App() {
       build: APP_BUILD,
       commit: APP_COMMIT,
       mode: "flux",
+      musicMode: sessionMusicModeRef.current,
+      rememberedScoreId: genreIdRef.current,
       environment: environmentIdRef.current,
       pageUrl: window.location.href,
       source: sourceRef.current,
@@ -4622,7 +4634,8 @@ export function App() {
         : null,
       muted: mutedRef.current,
       vehicleAudioEffectsEnabled: vehicleEffectsEnabledRef.current,
-      arrangement: audioRef.current?.getState() ?? null,
+      arrangement: sessionMusicModeRef.current === "play-road" && !mutedRef.current
+        ? audioRef.current?.getState() ?? null : null,
     },
     simulation: {
       referenceVehicle: MODEL_3_AWD_REFERENCE.label,
@@ -4792,6 +4805,7 @@ export function App() {
   const handleEnvironmentError = useCallback((error) => {
     const message = String(error?.message || "Unknown visual runtime error").slice(0, 500);
     setEnvironmentRuntimeError(message);
+    environmentRecoveryRef.current?.fail();
     setRenderer(`${environment.label} unavailable`);
     if (diagnosticsActiveRef.current) {
       runtimeIssuesRef.current = [...runtimeIssuesRef.current, {
@@ -4803,6 +4817,37 @@ export function App() {
     }
     logDiagnosticEvent("visual.runtime.error", { environment: environment.id, message });
   }, [environment.id, environment.label, logDiagnosticEvent]);
+
+  useEffect(() => {
+    if (phase !== "running") return undefined;
+    const recovery = createLoadRecovery({
+      now: () => performance.now(),
+      schedule: (callback, delay) => window.setTimeout(callback, delay),
+      cancel: (timer) => window.clearTimeout(timer),
+      canRetry: () => navigator.onLine !== false && document.visibilityState !== "hidden",
+      onState: setEnvironmentRecovery,
+      retry: (attempt) => {
+        logDiagnosticEvent("visual.recovery.retry", { environment: environmentId, attempt });
+        setEnvironmentRuntimeError(null);
+        setEnvironmentAttempt(value => value + 1);
+      },
+    });
+    environmentRecoveryRef.current = recovery;
+    setEnvironmentRecovery("idle");
+    const wake = () => recovery.wake();
+    window.addEventListener("online", wake);
+    document.addEventListener("visibilitychange", wake);
+    return () => {
+      recovery.dispose();
+      environmentRecoveryRef.current = null;
+      window.removeEventListener("online", wake);
+      document.removeEventListener("visibilitychange", wake);
+    };
+  }, [environmentId, phase, logDiagnosticEvent]);
+
+  useEffect(() => {
+    if (environmentRuntimeError) environmentRecoveryRef.current?.fail();
+  }, [environmentRuntimeError]);
 
   useEffect(() => {
     setEnvironmentRuntimeError(null);
@@ -4833,12 +4878,13 @@ export function App() {
     >
       {phase === "running" ? (
         <EnvironmentErrorBoundary
-          key={environmentId}
+          key={`${environmentId}:${environmentAttempt}`}
           label={environment.label}
+          recovery={environmentRecovery}
           onError={handleEnvironmentError}
         >
           {environmentRuntimeError ? (
-            <FieldFailure label={environment.label} />
+            <FieldFailure label={environment.label} recovery={environmentRecovery} />
           ) : environment.renderer === "vertigo" ? (
             <Interstate7Field
               speed={speed}

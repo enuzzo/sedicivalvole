@@ -1,5 +1,7 @@
 # Owner answers — September 7 closeout
 
+Owner follow-up received: see [accepted decisions and sequence](OWNER-DECISIONS-2026-09-07.md). Broad acceptance questions are resolved; only native Pause intent remains a current clarification. The original questionnaire is retained below for traceability.
+
 Fill each `Answer:` line. `Not tested` is a useful answer: it preserves the gate without inventing a pass. The historical decisions and answers in `PIANO.md` remain valid; this file collects only current acceptance and next-scope questions. Technical fixes and evidence collection remain the implementer's responsibility.
 
 ## Immediate diagnostic interpretation

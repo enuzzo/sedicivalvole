@@ -40,6 +40,88 @@ import {
   startAppNetworkTransfer,
 } from "../src/diagnostics-model.js";
 import { nextStorageCanary, summarizeStorageCanary } from "../src/storage-diagnostics.js";
+import { diagnosticMusicIdentity } from "../src/diagnostics-model.js";
+import { createLoadRecovery } from "../src/load-recovery.js";
+
+test("render counts preserve 30 FPS threshold jitter and expose suspension separately", () => {
+  for (const interval of [1000 / 60, 33.3, 33.4, 50]) {
+    const telemetry = createFrameTelemetry();
+    for (let i = 0; i < 300; i += 1) recordFrameSample(telemetry, {
+      capturedAtMs: i * interval, renderer: "MapLibre", targetFrameMs: 1000 / 30,
+    });
+    const before = summarizeFrameTelemetry(telemetry);
+    assert.ok(Math.abs(before.averageFps - 1000 / interval) < 0.01);
+    recordFrameSample(telemetry, { capturedAtMs: 299 * interval + 1800000, renderer: "MapLibre" });
+    const after = summarizeFrameTelemetry(telemetry);
+    assert.equal(after.averageFps, before.averageFps);
+    assert.equal(after.observationGapMs, 1800000);
+    assert.equal(after.observationGapCount, 1);
+    assert.equal(after.maximumFrameMs, before.maximumFrameMs);
+  }
+});
+
+test("trip estimates exclude unknown intervals while retaining elapsed and observed time", () => {
+  const telemetry = createDriveTelemetry();
+  for (const capturedAtMs of [0, 2000, 1802000, 1804000]) recordDriveTelemetrySample(telemetry, {
+    capturedAtMs, speedKmh: 36, source: "GPS",
+  });
+  const { summary } = createDriveTelemetryReport(telemetry);
+  assert.equal(summary.sessionDurationMs, 1804000);
+  assert.equal(summary.observedDurationMs, 4000);
+  assert.equal(summary.unobservedDurationMs, 1800000);
+  assert.equal(summary.estimatedDistanceKm, 0.04);
+  assert.equal(summary.movingDurationMs, 4000);
+});
+
+test("music attribution follows MUTE, Soundtrack and the selected adaptive score", () => {
+  assert.equal(diagnosticMusicIdentity({ mode: "soundtrack", muted: false, scoreId: "nightshift" }), "soundtrack");
+  assert.equal(diagnosticMusicIdentity({ mode: "soundtrack", muted: true, scoreId: "nightshift" }), "mute");
+  assert.equal(diagnosticMusicIdentity({ mode: "play-road", scoreId: "junction" }), "junction");
+});
+
+test("recovery waits offline, wakes on connectivity, cancels on success and bounds repeated failure", () => {
+  let time = 0;
+  let online = false;
+  let timer = null;
+  const states = [];
+  const attempts = [];
+  const recovery = createLoadRecovery({
+    now: () => time, canRetry: () => online,
+    schedule: (callback, delay) => (timer = { callback, delay }),
+    cancel: () => { timer = null; },
+    retry: attempt => attempts.push(attempt), onState: state => states.push(state),
+  });
+  recovery.fail();
+  assert.equal(states.at(-1), "waiting");
+  time = 5000; timer.callback();
+  assert.equal(attempts.length, 0);
+  online = true; recovery.wake();
+  assert.deepEqual(attempts, [1]);
+  recovery.fail();
+  assert.equal(timer.delay, 10000);
+  recovery.succeed();
+  assert.equal(timer, null);
+  recovery.fail();
+  assert.equal(timer.delay, 5000);
+  time += 300000; timer.callback();
+  assert.equal(states.at(-1), "exhausted");
+  recovery.wake();
+  assert.equal(attempts.length, 1);
+  recovery.dispose(); recovery.fail();
+  assert.equal(timer, null);
+});
+
+test("disposed recovery cannot retry after a stale timer or reconnect", () => {
+  let callback;
+  let attempts = 0;
+  const recovery = createLoadRecovery({
+    now: () => 0, canRetry: () => true,
+    schedule: fn => { callback = fn; return 1; }, cancel: () => {},
+    retry: () => { attempts += 1; },
+  });
+  recovery.fail(); recovery.dispose(); callback(); recovery.wake();
+  assert.equal(attempts, 0);
+});
 
 test("identifies the photographed Tesla viewport as split view", () => {
   assert.equal(inferViewportMode({ innerWidth: 773, innerHeight: 601, screenWidth: 1254, screenHeight: 784 }), "split");
