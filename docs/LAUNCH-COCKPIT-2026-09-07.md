@@ -115,3 +115,14 @@ Validation of this refinement: 655 native tests and 16 browser checks pass at
 startup and Engine regression. All effect thumbnails together occupy less than
 280 KiB after proportional 192 px export. See [design QA](../design-qa.md) and
 [interaction evidence](qa/2026-09-07-round-launch/browser-evidence.json).
+
+Production candidate 20260907-1400, source 7ab630b, implementation 74ea688:
+17 post-build package tests and the same 16 actual-browser scenarios pass.
+
+Build **20260907-1400**, source **7ab630b**, implementation **74ea688** is
+canonical. All 22 checked HTML/compiled/new-image/icon resources are byte-identical
+to the build; root and cache-busted HTML carry no-store/no-cache. Live Chrome
+verifies loaded 64 px circles with actual Jazz cover art, immediate Change,
+precise visual selection, real Jazz and Lobo playback and Rosso startup. Zero
+page exceptions or diagnostic sends; six inherited pre-gesture audio warnings.
+See [canonical evidence](qa/2026-09-07-round-launch/canonical-browser.json).

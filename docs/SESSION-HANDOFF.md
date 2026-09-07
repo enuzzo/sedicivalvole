@@ -1,5 +1,19 @@
 # Session Handoff
 
+## 2026-09-07 14:09 — Compact Round Instruments published
+
+Canonical build **20260907-1400**, source **7ab630b**, implementation **74ea688**.
+Owner chose the second splash study with half-size circular previews (64 px),
+fresh genre/visual each visit and additional randomization through buttons.
+Implemented and live; Choose remains precise. Static previews, native colours,
+48/56 px targets, source/creator credits and existing audio lifecycle remain.
+655 native, 17 packaging, 16 production-browser, 22 public byte/cache checks pass.
+Real public Jazz/Lobo/Engine launch verified; no page exception or diagnostic send.
+Official upload: 215 files / 254,651,403 bytes; postflight writes NONE.
+Physical Tesla remains owner validation. Detailed evidence and source inventory:
+[Launch Cockpit](LAUNCH-COCKPIT-2026-09-07.md), [DEPLOY](DEPLOY.md).
+
+
 September 7 Engine handoff: source `7608873` / build `20260907-1119` is published
 and canonical Engine startup is verified. Implementation is `69230fd`; read
 [CURRENT-STATE](CURRENT-STATE.md), [Engine integration](ENGINE-INTEGRATION-2026-09-07.md)

@@ -29,4 +29,6 @@
 
 Physical Tesla touch/readability, GPU and listening acceptance are not repeated by desktop QA. Previews are static images, not animation.
 
+Canonical follow-up: build 20260907-1400/source 7ab630b verified at https://sedicivalvole.app/. `docs/qa/2026-09-07-round-launch/08-canonical-music.png` shows actual ready Jazz cover and Aperture, 773 × 601. Twenty-two byte/cache checks and real Jazz/Lobo/Engine startup pass; zero page exceptions or diagnostic sends, six inherited pre-gesture audio warnings. Exact production candidate also passes the same 16 UI scenarios and 17 packaging checks.
+
 final result: passed

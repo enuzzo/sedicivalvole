@@ -1,5 +1,36 @@
 # Deployment
 
+## Compact Round Instruments — 2026-09-07 14:09
+
+Build **20260907-1400**, source **7ab630b**, implementation **74ea688**, version
+**0.0.0** is verified at the canonical root. The owner-selected second splash
+study uses 64 px circular music/visual previews, small mode icons, equal columns
+and retained 48/56 px targets. Fresh visits roll genre and visual; Feeling lucky
+and Change avoid immediate repeats, while Choose retains precise selection.
+Atlas/Discover remain deliberate choices; Gradient has one family weight.
+
+Validation: 655 native tests, 17 post-build package tests, 16 browser scenarios
+on both development and the exact production candidate, 196 dependency credits,
+and 22 canonical HTML/asset/thumbnail/icon byte and cache checks. Viewports:
+773 × 601, 390 × 844 and 1280 × 800. Real public Jazz and 29-track Lobo playback,
+shared AudioContext, direct Rosso launch, idle blip and dry Engine pass. Loaded
+covers and direct visual reroll pass. Zero page exceptions or diagnostic sends;
+six inherited pre-gesture audio warnings. Physical Tesla acceptance remains open.
+
+Official preflight and independent postflight report remote_writes=NONE.
+Publication uploaded 215 files / 254,651,403 bytes, reverified all 29 Illobo
+recordings by full hash, retained two prior cache-overlap assets, and preserved
+the dynamic root with 11 entries. Root/cache-busted HTML is byte-identical and
+no-store/no-cache. Eight static effect screenshots total less than 280 KiB;
+no additional renderer is started by the previews.
+
+Evidence: [canonical identity](qa/2026-09-07-round-launch/canonical-identity.json),
+[live browser](qa/2026-09-07-round-launch/canonical-browser.json),
+[publication](qa/2026-09-07-round-launch/publish.txt),
+[postflight](qa/2026-09-07-round-launch/postflight.txt),
+[live splash](qa/2026-09-07-round-launch/08-canonical-music.png).
+
+
 ## Everyday-road Engine gearing — 2026-09-07 13:26
 
 - Build **20260907-1316**, source **9087bda**, implementation **efeaaf6**, version

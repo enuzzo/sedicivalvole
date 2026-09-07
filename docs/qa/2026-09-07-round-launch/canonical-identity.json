@@ -1,0 +1,118 @@
+{
+  "build": "20260907-1400",
+  "commit": "7ab630b",
+  "checks": [
+    {
+      "path": "/",
+      "sha256": "7091ea9983a18e0845f35e57e9e8fadc587d58c44394c828e3c6834c78df7091",
+      "bytes": 1186,
+      "cacheControlled": true
+    },
+    {
+      "path": "/?verify=20260907-1400",
+      "sha256": "7091ea9983a18e0845f35e57e9e8fadc587d58c44394c828e3c6834c78df7091",
+      "bytes": 1186,
+      "cacheControlled": true
+    },
+    {
+      "path": "/artwork/visuals/acid-orchard.png",
+      "sha256": "897c63cb6de40700b50fdcb0b6ccb19ee84a245e838044e208068684f0dabb58",
+      "bytes": 45102
+    },
+    {
+      "path": "/artwork/visuals/aperture.png",
+      "sha256": "03e9681ed12a00ebb62d53a4e27dd70de0013a9b10a4ee299156343c7bdb58a3",
+      "bytes": 43030
+    },
+    {
+      "path": "/artwork/visuals/chromatic-silk.png",
+      "sha256": "305efd443700c52bcc5534c13092914e26a6ddcb09a36bc19df4550ead679c40",
+      "bytes": 53007
+    },
+    {
+      "path": "/artwork/visuals/drivey.png",
+      "sha256": "c63a94f19dfd2b6376847c40108048d611ccae6deeb2a3c537b3b881eb250ba9",
+      "bytes": 20414
+    },
+    {
+      "path": "/artwork/visuals/japanese-mist.png",
+      "sha256": "1d22a5dc867c3cb1091f4652defd6d2a3cbe44090b9cd520ea15e753626b0352",
+      "bytes": 43960
+    },
+    {
+      "path": "/artwork/visuals/meridian.png",
+      "sha256": "88994a14ea02871e802786d41a04122a10d0fcc34a0b53e3a764f004c627c59b",
+      "bytes": 20556
+    },
+    {
+      "path": "/artwork/visuals/prtcl.png",
+      "sha256": "42c192a08c279a820d9492400704a3e874feb3bec544bc78a7f29dfd82d0a027",
+      "bytes": 22559
+    },
+    {
+      "path": "/artwork/visuals/vertigo.png",
+      "sha256": "e0fe15c98ed06382328267446b10ff777f92e75f4ba4bf19562e3ef7ac385a65",
+      "bytes": 23808
+    },
+    {
+      "path": "/assets/atlas-field-Bjblhc8A.js",
+      "sha256": "2bf9b5894544789aa6d1595f54177d28eae12b7db9262525f9e0266a5094036e",
+      "bytes": 25471
+    },
+    {
+      "path": "/assets/atlas-field-DIYHhGHm.css",
+      "sha256": "715dbf736f7fdc9671a7ab3ec3b2fc5e3cdb252f3cc59758d52914bd2c9e57a3",
+      "bytes": 69347
+    },
+    {
+      "path": "/assets/browser-C6Q9wH9C.js",
+      "sha256": "5d743d4b0e12a0daf33a821cef66b9c4b624dd300f6508979c5e7d52e0965722",
+      "bytes": 25776
+    },
+    {
+      "path": "/assets/index-CgNRDYtA.js",
+      "sha256": "af57d14cb053fe1afa474a5172d84a1a328fb8ee6d7199bc0bf2b5ac6acbc716",
+      "bytes": 775992
+    },
+    {
+      "path": "/assets/index-DTxh4Yvz.css",
+      "sha256": "4eb3f4b63ee41e40c213645e9eda47a143edffd6abd165815d880681c15b177b",
+      "bytes": 202616
+    },
+    {
+      "path": "/assets/launch/soundtrack.png",
+      "sha256": "f37af576733e4bfc4cc6e0de364a8375ef6aedb57dd36c2a5b4f9f268427059a",
+      "bytes": 105836
+    },
+    {
+      "path": "/assets/maplibre-gl-zaYs1La7.js",
+      "sha256": "114ce4b34461eb1a1607bed0df113ee5856a1c261cb743d6fea8194f5b6539bc",
+      "bytes": 941210
+    },
+    {
+      "path": "/assets/runtime-allPuUoT.js",
+      "sha256": "fd35eb1a914b727204b490d925d28f573d89351dca18c435b9d9ae312e1f1aa0",
+      "bytes": 21244
+    },
+    {
+      "path": "/assets/score-processor-Dly9Ky60.js",
+      "sha256": "1e4928616b90722e2be5b1ab777d01866084ed54690283ce0c82ebe00d1a8ebf",
+      "bytes": 117006
+    },
+    {
+      "path": "/assets/shadergradient-field-D9K2tNu7.js",
+      "sha256": "bc64561dfaf906cd93f049fb3026722b470cdc2ad95d0b97975b0ceac308d329",
+      "bytes": 1085825
+    },
+    {
+      "path": "/third-party/tabler-icons/engine.svg",
+      "sha256": "37f5bafee6840a1c1e2faa26955284b90ef8ef829290202bef79a5ab6d940ac4",
+      "bytes": 664
+    },
+    {
+      "path": "/third-party/tabler-icons/music.svg",
+      "sha256": "8b69aafb5497fc9773078aab151dda57434e89011e712bb24c10c9b66f80ab68",
+      "bytes": 517
+    }
+  ]
+}

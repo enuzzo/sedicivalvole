@@ -1,12 +1,16 @@
 # Current Project State
 
-Latest verified canonical publication: **`20260907-1316`**, source **`9087bda`**,
-everyday-road gearing implementation **`efeaaf6`**, version `0.0.0`.
-**655 regression tests**, ten post-build checks and 28 HTTPS identity checks pass.
-Actual public Chrome verifies second by 40 and third by 70 km/h of rising GPS
-input in every profile, and idle-blip behavior with missing/confirmed speed.
-Official preflight, publication and independent no-write postflight pass.
-See [DEPLOY](DEPLOY.md) and [Engine integration](ENGINE-INTEGRATION-2026-09-07.md).
+Latest verified canonical publication: **`20260907-1400`**, source **`7ab630b`**,
+compact Round Instruments implementation **`74ea688`**, version `0.0.0`.
+655 native tests, 17 package checks, 16 production-browser scenarios and 22
+canonical byte/cache checks pass. The splash has 64 px circular previews, fresh
+genre/visual choices on each visit, immediate nonrepeating Feeling lucky/Change,
+and precise Choose controls. Real Jazz/Lobo playback and direct Rosso startup
+pass. Official publication and independent no-write postflight pass.
+See [launch behavior](LAUNCH-COCKPIT-2026-09-07.md) and [DEPLOY](DEPLOY.md).
+
+Earlier everyday-road gearing build 20260907-1316/source 9087bda verified second
+by 40 and third by 70 km/h in every profile; that implementation is unchanged.
 
 Engine is implemented and live: Telemetry direction 2, Mono/Rosso/Touring, AUTO,
 protected LAB MANUAL, shared audio, GPS evidence, rev protection and retry. The

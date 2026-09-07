@@ -1,0 +1,207 @@
+{
+  "build": "20260907-1400",
+  "commit": "7ab630b",
+  "url": "https://sedicivalvole.app/",
+  "checks": [
+    "real loaded 64 px previews, direct nonrepeating Change and precise visual picker",
+    "canonical immediate cockpit, actual Jazz catalogue, silent preparation, playing soundtrack and shared context",
+    "actual 29-track Lobo catalogue and playback",
+    "direct public Rosso startup, dry Engine, dual stationary controls and idle blip"
+  ],
+  "errors": [],
+  "warnings": [
+    "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+    "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+    "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+    "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+    "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+    "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+  ],
+  "sends": 0,
+  "thumbnails": [
+    {
+      "width": 64,
+      "height": 64,
+      "src": "https://usercontent.jamendo.com/?type=album&id=90132&width=300&trackid=769150"
+    },
+    {
+      "width": 64,
+      "height": 64,
+      "src": "/artwork/visuals/aperture.png"
+    }
+  ],
+  "music": {
+    "app": {
+      "version": "0.0.0",
+      "build": "20260907-1400",
+      "commit": "7ab630b",
+      "mode": "flux",
+      "engine": null,
+      "musicMode": "soundtrack",
+      "rememberedScoreId": "fracture",
+      "environment": "aperture",
+      "pageUrl": "https://sedicivalvole.app/",
+      "source": "GPS",
+      "displayedSpeedKmh": 0,
+      "bpm": null,
+      "transportBpm": 162,
+      "responseCeilingKmh": 130,
+      "paletteTheme": "red",
+      "appearancePreference": "light",
+      "appearance": "light",
+      "appearanceSource": "manual",
+      "appearanceHoldReason": null,
+      "particleType": null,
+      "muted": false,
+      "vehicleAudioEffectsEnabled": true,
+      "arrangement": null
+    },
+    "audio": {
+      "status": "playing",
+      "error": null,
+      "currentKey": "jamendo:769150",
+      "contextTopology": "shared",
+      "media": {
+        "status": "prepared",
+        "roles": {
+          "previous": {
+            "key": "jamendo:541422",
+            "state": "playable",
+            "readyState": 4,
+            "networkState": 1,
+            "bufferedAheadSeconds": 68.55,
+            "paused": true,
+            "ended": false,
+            "currentTimeSeconds": 0,
+            "durationSeconds": 334.77,
+            "errorCode": null,
+            "lastEvent": "suspend",
+            "preload": "metadata"
+          },
+          "current": {
+            "key": "jamendo:769150",
+            "state": "playable",
+            "readyState": 4,
+            "networkState": 1,
+            "bufferedAheadSeconds": 194.71,
+            "paused": false,
+            "ended": false,
+            "currentTimeSeconds": 0.28,
+            "durationSeconds": 222.31,
+            "errorCode": null,
+            "lastEvent": "suspend",
+            "preload": "auto"
+          },
+          "next": {
+            "key": "jamendo:868822",
+            "state": "playable",
+            "readyState": 4,
+            "networkState": 2,
+            "bufferedAheadSeconds": 148.6,
+            "paused": true,
+            "ended": false,
+            "currentTimeSeconds": 0,
+            "durationSeconds": 227.89,
+            "errorCode": null,
+            "lastEvent": "progress",
+            "preload": "auto"
+          }
+        },
+        "preparedMediaElements": 3,
+        "playableMediaElements": 3,
+        "currentAudibleKey": "jamendo:769150",
+        "audibleKeys": [
+          "jamendo:769150"
+        ],
+        "browserPreloadHint": "current-first-next-at-30s",
+        "browserBufferOwnership": "browser-owned-observation-only",
+        "offlineAudioAvailable": false,
+        "persistentAudioStorage": false,
+        "automaticModeFallback": false,
+        "controllerError": null
+      },
+      "effects": {
+        "schema": "sedicivalvole.soundtrack-effects.v1",
+        "status": "running",
+        "graphError": null,
+        "vehicleMaster": true,
+        "vehicleMacros": {
+          "underwater": 0
+        },
+        "reactiveEffects": [
+          "underwater"
+        ],
+        "manualEffects": {
+          "flanger": 0,
+          "reverb": 0,
+          "underwater": 0,
+          "phaser": 0,
+          "bitcrush": 0,
+          "bassDrive": 0,
+          "radioCut": 0,
+          "highCut": 0
+        },
+        "attachedMediaElements": 3,
+        "playbackRate": 1,
+        "level": 0.3223565973912915
+      }
+    },
+    "catalogEntries": 49,
+    "metadata": {
+      "title": "aime-la",
+      "artist": "nadi"
+    }
+  },
+  "lobo": {
+    "tracks": 29,
+    "metadata": {
+      "title": "Chasing Fades — Nubass",
+      "artist": "Illobo"
+    }
+  },
+  "engine": {
+    "version": "0.0.0",
+    "build": "20260907-1400",
+    "commit": "7ab630b",
+    "mode": "engine",
+    "engine": {
+      "status": "ready",
+      "profileId": "rosso",
+      "rpm": 1076,
+      "gear": 1,
+      "shift": null,
+      "drive": 0.15,
+      "deceleration": 0,
+      "motion": "fresh",
+      "trustedStationary": true,
+      "revving": false,
+      "decodedBytes": 43201080,
+      "error": null,
+      "showOffPhase": null,
+      "idleBlip": true,
+      "bankBytes": 24988884,
+      "enabled": true,
+      "source": "sample",
+      "transmissionMode": "AUTO",
+      "version": "geaps.v1"
+    },
+    "musicMode": "engine",
+    "rememberedScoreId": "fracture",
+    "environment": "engine-telemetry",
+    "pageUrl": "https://sedicivalvole.app/",
+    "source": "GPS",
+    "displayedSpeedKmh": 0,
+    "bpm": null,
+    "transportBpm": null,
+    "responseCeilingKmh": 130,
+    "paletteTheme": "red",
+    "appearancePreference": "light",
+    "appearance": "light",
+    "appearanceSource": "manual",
+    "appearanceHoldReason": null,
+    "particleType": "frequency",
+    "muted": false,
+    "vehicleAudioEffectsEnabled": true,
+    "arrangement": null
+  }
+}

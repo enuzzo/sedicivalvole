@@ -10,18 +10,22 @@ async function setup(){
  const context=await browser.newContext({viewport:{width:773,height:601},colorScheme:'light'});const page=await context.newPage();
  page.on('pageerror',e=>evidence.errors.push(e.message));page.on('console',m=>{if(['error','warning'].includes(m.type()))evidence.warnings.push(m.text().slice(0,250));});
  await page.route('**/api/send-diagnostic.php',r=>{evidence.sends++;return r.abort();});
- await page.addInitScript(()=>{const fix=()=>({timestamp:Date.now(),coords:{speed:0,accuracy:5,latitude:0,longitude:0}});Object.defineProperty(navigator,'geolocation',{value:{watchPosition(cb){setTimeout(()=>cb(fix()),100);setTimeout(()=>cb(fix()),600);return 1;},clearWatch(){},getCurrentPosition(cb){cb(fix());}}});
+ await page.addInitScript(()=>{localStorage.setItem('sedicivalvole.preferences.v2',JSON.stringify({musicMode:'soundtrack',soundtrackSelection:{kind:'genre',id:'jazz'}}));const fix=()=>({timestamp:Date.now(),coords:{speed:0,accuracy:5,latitude:0,longitude:0}});Object.defineProperty(navigator,'geolocation',{value:{watchPosition(cb){setTimeout(()=>cb(fix()),100);setTimeout(()=>cb(fix()),600);return 1;},clearWatch(){},getCurrentPosition(cb){cb(fix());}}});
  const play=HTMLMediaElement.prototype.play;window.__played=[];window.__media=[];HTMLMediaElement.prototype.play=function(){window.__played.push(this.currentSrc||this.src);if(!window.__media.includes(this))window.__media.push(this);return play.call(this);};});
  await page.goto(evidence.url);await page.getByRole('button',{name:'Music',exact:true}).waitFor();assert.equal(await page.locator('.cockpit-build').innerText(),evidence.build);return {page,context};
 }
 async function report(page){await page.locator('.app').click({position:{x:300,y:220}});await page.locator('.topbar-mark').click();await page.getByRole('button',{name:'SHOW RAW',exact:true}).click();const r=JSON.parse(await page.locator('pre').innerText());assert.equal(r.app.build,evidence.build);assert.equal(r.app.commit,evidence.commit);await page.getByRole('button',{name:'Close session report',exact:true}).click();return r;}
 try{
  const {page,context}=await setup();await page.getByRole('button',{name:'Soundtrack',exact:true}).click();
+ const firstVisual=await page.locator('.cockpit-visual .cockpit-value').innerText();await page.getByRole('button',{name:'Change visual',exact:true}).click();assert.notEqual(await page.locator('.cockpit-visual .cockpit-value').innerText(),firstVisual);assert.equal(await page.locator('.cockpit-dialog').count(),0);
+ await page.getByRole('button',{name:'Choose visual',exact:true}).click();await page.locator('.cockpit-picker-options>button').filter({hasText:'Aperture'}).click();
  await page.getByRole('button',{name:'Choose soundtrack',exact:true}).click();
  const catalogResponse=page.waitForResponse(r=>r.url().includes('soundtrack-catalog.php')&&new URL(r.url()).searchParams.get('genre')==='jazz'&&r.status()===200,{timeout:60000});
  await page.getByRole('button',{name:'Jazz',exact:true}).click();const catalog=await (await catalogResponse).json();assert.ok(catalog.tracks.length>0);
  await page.waitForFunction(()=>!document.querySelector('.cockpit-start')?.innerText.includes('Music joins when ready'),{},{timeout:60000});
  assert.equal(await page.evaluate(()=>window.__played.length),0);
+ await page.waitForFunction(()=>[...document.querySelectorAll('.cockpit-thumb')].every(e=>e.complete&&e.naturalWidth>0));
+ const thumbs=await page.locator('.cockpit-thumb').evaluateAll(es=>es.map(e=>({width:e.getBoundingClientRect().width,height:e.getBoundingClientRect().height,src:e.getAttribute('src')})));assert.ok(thumbs.every(e=>e.width===64&&e.height===64));evidence.thumbnails=thumbs;evidence.checks.push('real loaded 64 px previews, direct nonrepeating Change and precise visual picker');
  await page.screenshot({path:out+'/08-canonical-music.png'});
  await page.getByRole('button',{name:'START MUSIC',exact:true}).click();
  await page.waitForFunction(()=>window.__media.some(a=>!a.paused&&a.currentTime>0.3&&a.playbackRate===1),{},{timeout:60000});
