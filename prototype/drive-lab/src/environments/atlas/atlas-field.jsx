@@ -86,7 +86,6 @@ export default function AtlasField({
   mapAppearance = "palette",
   appearance = "dark",
   onMapAppearanceChange,
-  onOpenStats,
   onReadPlace,
 }) {
   const hostRef = useRef(null);
@@ -542,7 +541,7 @@ export default function AtlasField({
       }}
     >
       <div className="atlas-map" ref={hostRef} />
-      <nav onPointerDown={event => event.stopPropagation()} className="atlas-view-switch" aria-label="Passenger views"><button aria-current="page">Map</button><button onClick={onOpenStats}>Stats</button></nav>
+
       <nav onPointerDown={event => event.stopPropagation()} className="atlas-framing" aria-label="Map framing">{["follow", "area", "trip"].map(mode => <button key={mode} aria-pressed={framing === mode} onClick={() => {
         framingRef.current = mode; setFraming(mode);
         const map = mapRef.current; if (!map) return;

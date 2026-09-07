@@ -1,4 +1,4 @@
-export const NIGHTSHIFT_PARK_LEVEL = 0.021;
+export const NIGHTSHIFT_PARK_LEVEL = 0.08;
 export const NIGHTSHIFT_PARK_HOLD_SECONDS = Object.freeze([12.7, 15.1, 10.9, 13.8, 16.4, 11.6]);
 export const NIGHTSHIFT_PARK_VOICINGS = Object.freeze([
   { id: "Amin9/E", frequencies: [329.628, 391.995, 440, 493.883] },

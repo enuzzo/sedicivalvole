@@ -1763,3 +1763,14 @@ bring the same profile RPM range into a 35/65 km/h first-two-upshift ladder.
 Separated downshift/kickdown boundaries prevent repeated gear flipping around a
 threshold. Preserve the dry sound and steady master gain; cadence and RPM drops
 supply the contrast. No change to the music score follows from this Engine tuning.
+
+## 2026-09-07 — NIGHTSHIFT standstill audibility
+
+The owner heard no NIGHTSHIFT background at 0 km/h in Play the Road. Its PARK
+form existed, but a 0.021 master multiplied already quiet per-voice gains, the
+expression envelope and the shared output path. Increase its master to 0.08
+(about +11.6 dB), retaining the six long consonant voicings, no beat or bassline,
+and the movement crossfade. Measure RMS/peak at the final audio facade for all
+three scores, including after returning from a moving state. An active flag or
+nonzero gain alone does not establish audible output; headless meter evidence
+does not establish comfortable loudness inside the target Tesla.

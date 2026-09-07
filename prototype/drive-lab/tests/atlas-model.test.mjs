@@ -693,8 +693,9 @@ test("Atlas exposes a persistent map-only color control without rebuilding MapLi
   assert.match(styles, /\.atlas-field\.is-panel-collapsed \.atlas-map-appearance \{ right: 12px; \}/);
 });
 
-test("Atlas opens Stats as an independent passenger surface", () => {
-  assert.match(atlasSource, /onOpenStats/);
+test("Atlas and Stats have independent catalogue entry points", () => {
+  assert.doesNotMatch(atlasSource, /onOpenStats|atlas-view-switch/);
+  assert.match(appSource, /onOpenStats=\{\(\) => setStatsOpen\(true\)\}/);
   assert.doesNotMatch(atlasSource, /<AtlasDriveLabPanel/);
   assert.match(appSource, /statsOpen \|\| passengerAtlasOpen \? null : experienceMode/);
 });
@@ -770,4 +771,15 @@ test("Atlas Drive Lab charts follow the product appearance with readable light c
   assert.match(appSource, /<StatsPanel journeyRef=\{atlasSessionJourneyRef\}/);
   assert.match(atlasSource, /appearance = "dark"/);
   assert.match(styles, /\.app\[data-appearance\] \.atlas-panel \{ color: var\(--ui-text\);/);
+});
+
+test('OSM POIs retain exact point geometry and deduplicate nearby Wikipedia identities', async () => {
+  const { normalizeOsmPlaces, combineAtlasPlaces } = await import('../src/environments/atlas/osm-places.js');
+  const point={geometry:{type:'Point',coordinates:[9.19,45.46]},properties:{name:'Museum',class:'attraction',subclass:'museum'}};
+  const origin={longitude:9.19,latitude:45.46};
+  const places=normalizeOsmPlaces([point,point,{...point,geometry:{type:'Polygon',coordinates:[]}}, {...point,properties:{}}, {...point,geometry:{type:'Point',coordinates:[Infinity,45]}}],origin);
+  assert.equal(places.length,1);assert.equal(places[0].longitude,9.19);assert.equal(places[0].latitude,45.46);
+  assert.equal(places[0].source,'OpenStreetMap');assert.match(places[0].mapUrl,/^https:\/\/www.openstreetmap.org\//);
+  assert.equal(combineAtlasPlaces([{id:1,title:'Museum',...origin}],places).length,1);
+  assert.equal(combineAtlasPlaces([],places).length,1);
 });

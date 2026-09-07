@@ -1,3 +1,4 @@
+import { normalizeOsmPlaces, combineAtlasPlaces } from './osm-places.js';
 import { useEffect, useRef, useState } from 'react';
 import { discoverDistanceMetres, formatDiscoverDistance, discoverPreferredLanguage, discoverWikipediaUrl, normalizeDiscoverPages } from '../../discover/discover-model.js';
 
@@ -6,6 +7,7 @@ export default function AtlasPlaces({ map, position, onReadMore, demo = false })
   const latest = useRef(position); latest.current = position;
   const [language] = useState(() => discoverPreferredLanguage(navigator.languages ?? [navigator.language]));
   const [places, setPlaces] = useState([]);
+  const [osmPlaces, setOsmPlaces] = useState([]);
   const [status, setStatus] = useState('loading');
   const [selected, setSelected] = useState(null);
   const [projected, setProjected] = useState([]);
@@ -38,29 +40,41 @@ export default function AtlasPlaces({ map, position, onReadMore, demo = false })
   }, [language]);
   useEffect(() => {
     if (!map) return;
+    let timer = null;
+    const read = () => {
+      timer = null;
+      if (document.visibilityState === 'hidden' || !map.isStyleLoaded()) return;
+      setOsmPlaces(normalizeOsmPlaces(map.querySourceFeatures('openfreemap', { sourceLayer: 'poi' }), latest.current, language));
+    };
+    const schedule = () => { if (timer == null) timer = setTimeout(read, 500); };
+    schedule();map.on('sourcedata', schedule);map.on('moveend', schedule);
+    return () => { clearTimeout(timer);map.off('sourcedata', schedule);map.off('moveend', schedule); };
+  }, [map, language]);
+  useEffect(() => {
+    if (!map) return;
     let projectedAt = -Infinity;
     const project = () => {
       if (performance.now() - projectedAt < 125) return;
       projectedAt = performance.now();
       const bounds = map.getContainer().getBoundingClientRect();
       const visible = [];
-      for (const [i, place] of places.entries()) {
+      for (const [i, place] of combineAtlasPlaces(places, osmPlaces).entries()) {
         const p = map.project([place.longitude, place.latitude]);
         if (p.x < 26 || p.y < 26 || p.x > bounds.width - 26 || p.y > bounds.height - 26) continue;
         if (visible.some(v => Math.hypot(v.x - p.x, v.y - p.y) < 52)) continue;
         visible.push({ ...place, x: p.x, y: p.y, number: i + 1 });
       }
-      setProjected(visible.slice(0, 8));
+      setProjected(visible.slice(0, 14));
     };
     project();map.on('move', project);map.on('resize', project);
     return () => { map.off('move', project);map.off('resize', project); };
-  }, [map, places]);
+  }, [map, places, osmPlaces]);
   return <>
     <div onPointerDown={event => event.stopPropagation()} className="atlas-pois" aria-label="Discover places on the map">{projected.map(p => <button key={p.id} className="atlas-poi" style={{ left:p.x,top:p.y }} aria-label={`Discover ${p.title}`} aria-pressed={selected?.id === p.id} onClick={() => setSelected(p)}>{p.number}</button>)}</div>
-    {selected ? <article onPointerDown={event => event.stopPropagation()} className="atlas-place-card">
-      <img src={selected.thumbnail || '/third-party/tabler-icons/brand-wikipedia.svg'} alt="" onError={event => { if (!event.currentTarget.src.endsWith('/brand-wikipedia.svg')) event.currentTarget.src = '/third-party/tabler-icons/brand-wikipedia.svg'; }} />
-      <div><small>{demo ? "DEMO · " : ""}DISCOVER · WIKIPEDIA · {formatDiscoverDistance(discoverDistanceMetres(position, selected))}</small><h3>{selected.title}</h3><p>{selected.summary || 'Read the complete Wikipedia article for this place.'}</p><button onClick={() => onReadMore({ ...selected, language })}>Read more</button></div>
+    {selected ? <article onPointerDown={event => event.stopPropagation()} className={`atlas-place-card${selected.thumbnail ? "" : " is-text-only"}`}>
+      {selected.thumbnail ? <img src={selected.thumbnail} alt="" onError={event => { event.currentTarget.style.visibility = "hidden"; }} /> : null}
+      <div><small>{demo ? "DEMO · " : ""}{selected.source.toUpperCase()} · {formatDiscoverDistance(discoverDistanceMetres(position, selected))}</small><h3>{selected.title}</h3><p>{selected.summary || 'Read the complete Wikipedia article for this place.'}</p>{selected.source === 'OpenStreetMap' ? <a href={selected.mapUrl} target="_blank" rel="noreferrer">OpenStreetMap ↗</a> : <button onClick={() => onReadMore({ ...selected, language })}>Read more</button>}</div>
       <button className="atlas-place-close" onClick={() => setSelected(null)} aria-label="Close place card">Close</button>
-    </article> : <div className="atlas-places-hint">{demo ? "DEMO · " : ""}{status === 'ready' ? `${places.length} nearby places · tap a numbered point` : status === 'empty' ? 'No Wikipedia places found nearby' : status === 'retrying' ? 'Places unavailable · retrying automatically' : 'Finding nearby places…'}</div>}
+    </article> : <div className="atlas-places-hint">{demo ? "DEMO · " : ""}{places.length + osmPlaces.length > 0 ? `${combineAtlasPlaces(places, osmPlaces).length} places · Wikipedia + OpenStreetMap` : status === 'empty' ? 'No nearby places yet · zoom in for map POIs' : status === 'retrying' ? 'Places unavailable · retrying automatically' : 'Finding nearby places…'}</div>}
   </>;
 }

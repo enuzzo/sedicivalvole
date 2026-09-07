@@ -1485,7 +1485,7 @@ function MusicControl({ genreId, selection, onOpen, musicMode, soundtrackSnapsho
   );
 }
 
-function VisualPicker({ environmentId, onChange, onOpenDiscover, onSelectGradient, onClose, onExperience, experienceId }) {
+function VisualPicker({ environmentId, onChange, onOpenDiscover, onOpenStats, onSelectGradient, onClose, onExperience, experienceId }) {
   return (
     <DialogSurface
       className="diagnostic-drawer score-drawer environment-drawer"
@@ -1511,7 +1511,8 @@ function VisualPicker({ environmentId, onChange, onOpenDiscover, onSelectGradien
                 className={`score-entry${active ? " is-active" : ""}${destination ? " is-destination" : ""}`}
                 aria-pressed={destination ? undefined : active}
                 onClick={() => {
-                  if (destination) onOpenDiscover();
+                  if (entry.id === "stats") onOpenStats();
+                  else if (destination) onOpenDiscover();
                   else if (family) onSelectGradient();
                   else onChange(entry.id);
                   onClose();
@@ -2793,7 +2794,7 @@ export function App() {
       eligible: () => sourceRef.current === "GPS" && watchRef.current != null
         && latestGpsObservationRef.current.speedKmh === 0 && document.visibilityState !== "hidden"
         && (engineMotionRef.current.snapshot(performance.now()).ageMs ?? Infinity) >= 750,
-      onPosition: position => gpsPositionRef.current?.(position),
+      onPosition: position => gpsPositionRef.current?.(position, false),
     });
   }, [phase, experienceMode, muted]);
 
@@ -2819,13 +2820,13 @@ export function App() {
     if (watchRef.current != null) navigator.geolocation.clearWatch(watchRef.current);
     setGpsState("permission requested");
     logDiagnosticEvent("gps.requested", { highAccuracy: true });
-    gpsPositionRef.current = (position) => {
+    gpsPositionRef.current = (position, liveWatch = true) => {
         const capturedAtMs = performance.now();
         const accuracyM = Number.isFinite(position.coords.accuracy) ? position.coords.accuracy : null;
         setAccuracy(Number.isFinite(accuracyM) ? Math.round(accuracyM) : null);
         const kmh = normalizeGpsSpeed(position.coords.speed);
         if (sourceRef.current === "GPS") engineMotionRef.current.observe({ source: "GPS", rawSpeedKmh: kmh,
-          sourceTimestampMs: position.timestamp, receivedMs: capturedAtMs, epochNowMs: Date.now(), accuracyM });
+          sourceTimestampMs: position.timestamp, receivedMs: capturedAtMs, epochNowMs: Date.now(), accuracyM, liveWatch });
         latestGpsObservationRef.current = { capturedAtMs, speedKmh: kmh };
         gpsTelemetryRef.current = recordGpsSample(gpsTelemetryRef.current, {
           capturedAtMs,
@@ -3177,7 +3178,8 @@ export function App() {
     const launchVehicleEffects = vehicleEffectsEnabledRef.current;
     const selectedDiscover = selectedEnvironmentId === DISCOVER_VISUAL_CHOICE.id;
     const launchDiscover = !launchEngine && selectedDiscover;
-    const runtimeEnvironmentId = selectedDiscover
+    const launchStats = selectedEnvironmentId === "stats";
+    const runtimeEnvironmentId = selectedDiscover || launchStats
       ? DEFAULT_FLUX_ENVIRONMENT_ID
       : selectedEnvironmentId;
     sessionStartedAtRef.current = performance.now();
@@ -3237,12 +3239,13 @@ export function App() {
     logDiagnosticEvent("harness.started", {
       musicMode: musicId,
       environment: runtimeEnvironmentId,
-      launchDestination: launchDiscover ? DISCOVER_VISUAL_CHOICE.id : null,
+      launchDestination: launchStats ? "stats" : launchDiscover ? DISCOVER_VISUAL_CHOICE.id : null,
     });
     setPhase("testing");
     wakeControls();
     window.setTimeout(() => {
       setPhase("running");
+      if (launchStats) setStatsOpen(true);
       if (launchDiscover) {
         setDiscoverOpen(true);
         logDiagnosticEvent("discover.opened", { source: "launch-selector" });
@@ -4951,7 +4954,6 @@ export function App() {
                 demoRequestToken={atlasDemoRequest}
                 mapAppearance={atlasMapAppearance}
                 appearance={appearanceResolution.appearance}
-                onOpenStats={() => setStatsOpen(true)}
                 onReadPlace={setAtlasPlace}
                 onMapAppearanceChange={(value) => setAtlasMapAppearance(normalizeAtlasMapAppearance(value))}
                 onRenderer={setRenderer}
@@ -5045,6 +5047,7 @@ export function App() {
 
       {phase !== "running" ? (
       <section className="splash" aria-hidden="false" inert={supportOpen ? true : undefined}>
+        <small className="intro-build">BUILD {APP_BUILD}</small>
         <SplashSignalGate
           active={phase !== "running"}
           reducedMotion={reducedMotion}
@@ -5068,7 +5071,7 @@ export function App() {
           ready={Boolean(launchMusicId && launchEnvironmentId)}
           pending={launchMusicId === "soundtrack" && !soundtrackLaunchReady(soundtrackSnapshot, launchSoundtrackSelection)}
           onStart={() => runHarness({ musicId: launchMusicId, selectedEnvironmentId: launchEnvironmentId, experienceId: launchExperienceId })}
-        /> : <p className="cockpit-starting" role="status">Starting your drive…</p>}
+        /> : <p className="cockpit-starting" role="status">Starting {experienceMode === "engine" ? "Engine" : FLUX_VISUAL_CHOICES.find(entry => entry.id === launchEnvironmentId)?.displayLabel || environment.displayLabel}…</p>}
       </section>
       ) : null}
 
@@ -5448,6 +5451,7 @@ export function App() {
             setEnvironmentId(nextEnvironmentId);
             logDiagnosticEvent("environment.changed", { environment: nextEnvironmentId });
           }}
+          onOpenStats={() => setStatsOpen(true)}
           onOpenDiscover={() => {
             setDiscoverOpen(true);
             logDiagnosticEvent("discover.opened", { source: "visual-library" });
@@ -5466,7 +5470,7 @@ export function App() {
 
       {statsOpen ? <DialogSurface className="stats-dialog" labelledBy="stats-title" onClose={() => setStatsOpen(false)}>
         <Suspense fallback={<p>Loading session statistics…</p>}><StatsPanel journeyRef={atlasSessionJourneyRef} networkHistoryRef={networkQualityHistoryRef}
-          readSystem={readStatsSystem} onClose={() => setStatsOpen(false)} onMap={() => { setStatsOpen(false); setEnvironmentId("atlas"); if (experienceMode === "engine") setPassengerAtlasOpen(true); }} /></Suspense>
+          readSystem={readStatsSystem} onClose={() => setStatsOpen(false)} /></Suspense>
       </DialogSurface> : null}
       {atlasPlace ? <DialogSurface className="atlas-article-dialog" labelledBy="atlas-article-title" onClose={() => setAtlasPlace(null)}>
         <header className="stats-heading"><div><small>DISCOVER · WIKIPEDIA</small><h2 id="atlas-article-title">{atlasPlace.title}</h2></div><button data-dialog-initial-focus onClick={() => setAtlasPlace(null)}>Back to Atlas</button></header>
@@ -5475,7 +5479,7 @@ export function App() {
 
       {passengerAtlasOpen && !statsOpen ? <DialogSurface className="passenger-atlas-dialog" inert={Boolean(atlasPlace)} labelledBy="passenger-atlas-title" onClose={() => setPassengerAtlasOpen(false)}>
         <h2 id="passenger-atlas-title" className="visually-hidden">Atlas passenger map</h2><button className="passenger-atlas-close" data-dialog-initial-focus onClick={() => setPassengerAtlasOpen(false)}>Back to Engine</button>
-        <Suspense fallback={<p>Loading Atlas…</p>}><AtlasField speed={speed} theme={theme} position={mapPosition} positionSamplesRef={atlasPositionSamplesRef} sessionJourneyRef={atlasSessionJourneyRef} reducedMotion={reducedMotion} effect={null} demoRequestToken={atlasDemoRequest} mapAppearance={atlasMapAppearance} appearance={appearanceResolution.appearance} onMapAppearanceChange={setAtlasMapAppearance} onOpenStats={() => setStatsOpen(true)} onReadPlace={setAtlasPlace} onRenderer={setRenderer} onFrame={recordRenderedFrame} onRuntimeError={handleEnvironmentError} /></Suspense>
+        <Suspense fallback={<p>Loading Atlas…</p>}><AtlasField speed={speed} theme={theme} position={mapPosition} positionSamplesRef={atlasPositionSamplesRef} sessionJourneyRef={atlasSessionJourneyRef} reducedMotion={reducedMotion} effect={null} demoRequestToken={atlasDemoRequest} mapAppearance={atlasMapAppearance} appearance={appearanceResolution.appearance} onMapAppearanceChange={setAtlasMapAppearance} onReadPlace={setAtlasPlace} onRenderer={setRenderer} onFrame={recordRenderedFrame} onRuntimeError={handleEnvironmentError} /></Suspense>
       </DialogSurface> : null}
       {discoverOpen ? (
         <DiscoverPanel

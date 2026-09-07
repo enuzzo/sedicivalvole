@@ -28,6 +28,10 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
   let state = { status: "idle", profileId: "mono", rpm: 1000, gear: 1, shift: null, drive: 0, deceleration: 0, motion: "lost", trustedStationary: false, revving: false, decodedBytes: 0, error: null };
   let previousTime = context.currentTime, selectedAt = context.currentTime, shift = null;
   let quietStop = false;
+  let lastMotionKey = null;
+  const manualAvailable = evidence => enabled && nodes.length > 0 && context.state === "running"
+    && globalThis.document?.visibilityState !== "hidden"
+    && !(Number.isFinite(evidence.speedKmh) && Math.round(evidence.speedKmh) > 0);
   let heldSince = null, retryTimer = null, retryStarted = null, retryCount = 0;
   let lastRequested = "mono", requestedRevision = 0, loadingTask = Promise.resolve();
   let timer = null, transmissionMode = "AUTO", manualGear = null;
@@ -41,7 +45,7 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
   const setEnabled = (value) => {
     enabled = Boolean(value) && !disposed;
     if (!enabled) {
-      releaseGestures(); state.trustedStationary = false; abort?.abort(); clearRetry(); generation++; requestedRevision++;
+      releaseGestures(); state.trustedStationary = false; state.canRev = false; abort?.abort(); clearRetry(); generation++; requestedRevision++;
       clearInterval(timer); timer = null; state.status = nodes.length ? "ready" : "idle";
     } else if (!timer) timer = setInterval(tick, 25);
     const at = context.currentTime;
@@ -100,11 +104,19 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
   function tick() {
     if (disposed) return;
     const evidence = motion.snapshot(now());
+    state.canRev = Boolean(manualAvailable(evidence));
+    state.motionReason = evidence.reason; state.motionSpeedKmh = evidence.speedKmh; state.motionAgeMs = evidence.ageMs;
+    const motionKey = `${evidence.freshness}/${evidence.reason}`;
+    if (motionKey !== lastMotionKey) {
+      lastMotionKey = motionKey;
+      onEvent("engine.motion.changed", { freshness: evidence.freshness, reason: evidence.reason, ageMs: evidence.ageMs,
+        speedKmh: evidence.speedKmh, timestampPolicy: evidence.timestampPolicy });
+    }
     state.motion = evidence.freshness; state.drive = evidence.drive; state.deceleration = evidence.deceleration;
     state.trustedStationary = enabled && nodes.length > 0 && evidence.trustedStationary && context.state === "running" && globalThis.document?.visibilityState !== "hidden";
     if (state.trustedStationary) quietStop = true;
     else if (evidence.freshness === "fresh" && evidence.rawSpeedKmh >= 1) quietStop = false;
-    if (!state.trustedStationary || (heldSince != null && now() - heldSince >= 8000)) releaseRev();
+    if (!state.canRev || (heldSince != null && now() - heldSince >= 8000)) releaseRev();
     if (!enabled || !engine || context.state !== "running") { previousTime = context.currentTime; return; }
     const at = context.currentTime;
     const elapsed = at - previousTime; previousTime = at;
@@ -124,7 +136,7 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
       shift = null; state.shift = null;
     }
     const activeEvidence = elapsed > 0.5 ? motion.snapshot(now()) : evidence;
-    const gesture = heldSince != null && state.trustedStationary ? showOff.sample(at) : null;
+    const gesture = heldSince != null && state.canRev ? showOff.sample(at) : null;
     if (heldSince != null && !gesture) releaseRev();
     const revving = Boolean(gesture);
     state.showOffPhase = gesture?.phase ?? null;
@@ -256,7 +268,7 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
     },
     setRevHeld(held) {
       if (!held) releaseRev();
-      else if (enabled && nodes.length && context.state === "running" && globalThis.document?.visibilityState !== "hidden" && motion.snapshot(now()).trustedStationary && heldSince == null) {
+      else if (manualAvailable(motion.snapshot(now())) && heldSince == null) {
         heldSince = now();
         showOff.start(context.currentTime, engine.rpm, profile.configuration.engine.limiter);
       }

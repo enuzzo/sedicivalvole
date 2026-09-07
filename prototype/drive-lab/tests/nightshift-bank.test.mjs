@@ -137,7 +137,8 @@ test("NIGHTSHIFT PARK is a polite clockless consonant form, not a perpetual note
   assert.ok(NIGHTSHIFT_PARK_HOLD_SECONDS.every((seconds) => seconds >= 10));
   assert.equal(new Set(NIGHTSHIFT_PARK_HOLD_SECONDS).size, 6);
   assert.ok(NIGHTSHIFT_PARK_HOLD_SECONDS.reduce((sum, seconds) => sum + seconds, 0) > 75);
-  assert.ok(NIGHTSHIFT_PARK_LEVEL <= 0.025);
+  // The old 0.021 master compounded the per-voice levels into near silence.
+  assert.ok(NIGHTSHIFT_PARK_LEVEL >= 0.06 && NIGHTSHIFT_PARK_LEVEL <= 0.1);
   assert.ok(NIGHTSHIFT_PARK_VOICINGS.every(({ frequencies }) => frequencies.length === 4));
 });
 

@@ -81,14 +81,20 @@ function HeadingRose({ headings }) {
     headings.forEach((n, i) => {
       const angle = i * Math.PI / 4 - Math.PI / 2;
       ctx.strokeStyle = ink;ctx.globalAlpha = .15;ctx.beginPath();ctx.moveTo(80,65);ctx.lineTo(80+Math.cos(angle)*42,65+Math.sin(angle)*42);ctx.stroke();
-      ctx.globalAlpha = .85;ctx.strokeStyle = getComputedStyle(ref.current).getPropertyValue('--stats-red').trim();ctx.lineWidth = 9;ctx.beginPath();ctx.moveTo(80,65);ctx.lineTo(80+Math.cos(angle)*42*n/max,65+Math.sin(angle)*42*n/max);ctx.stroke();ctx.lineWidth = 1;
+      const bands = n > 0 ? Math.max(1, Math.ceil(6 * n / max)) : 0;
+      for (let band = 0; band < 6; band++) {
+        ctx.globalAlpha = band < bands ? .9 : .08;
+        ctx.strokeStyle = band < bands ? getComputedStyle(ref.current).getPropertyValue('--stats-red').trim() : ink;
+        ctx.lineWidth = 4;ctx.beginPath();ctx.arc(80,65,9+band*6.5,angle-Math.PI/8+.055,angle+Math.PI/8-.055);ctx.stroke();
+      }
+      ctx.lineWidth = 1;
       ctx.globalAlpha = 1;ctx.fillStyle = ink;ctx.fillText(['N','NE','E','SE','S','SW','W','NW'][i],80+Math.cos(angle)*58,65+Math.sin(angle)*56);
     });
   }, [headings]);
   return <canvas className="stats-heading-rose" ref={ref} width="160" height="130" role="img" aria-label="Time spent moving in each compass direction" />;
 }
 
-export default function StatsPanel({ journeyRef, networkHistoryRef, readSystem, onClose, onMap }) {
+export default function StatsPanel({ journeyRef, networkHistoryRef, readSystem, onClose }) {
   const [snapshot, setSnapshot] = useState(null);
   const [range, setRange] = useState("recent");
   useEffect(() => {
@@ -99,7 +105,7 @@ export default function StatsPanel({ journeyRef, networkHistoryRef, readSystem, 
   if (!snapshot) return null;
   const { stats: s, samples, network, system, terrain } = snapshot;
   return <>
-    <header className="stats-heading"><div><small>SESSION OBSERVATORY</small><h2 id="stats-title">Stats for Nerds</h2></div><nav aria-label="Passenger views"><button onClick={onMap}>Map</button><button aria-current="page">Stats</button><button data-dialog-initial-focus onClick={onClose}>Close</button></nav></header>
+    <header className="stats-heading"><div><small>SESSION OBSERVATORY</small><h2 id="stats-title">Stats for Nerds</h2></div><nav aria-label="Stats controls"><button data-dialog-initial-focus onClick={onClose}>Close</button></nav></header>
     <div className="stats-scroll">
       <div className="stats-headlines">
         {[[s.observedMs ? (s.distanceM / 1000).toFixed(1) : '—','km','GPS distance'],[duration(s.elapsedMs),'','Duration'],[value(s.averageKmh),'km/h','Avg speed'],[s.observedMs ? Math.round(s.movingMs/s.observedMs*100) : '—','%','Moving']].map(([n,u,label]) => <div key={label}><strong>{n}<small>{u}</small></strong><span>{label}</span></div>)}

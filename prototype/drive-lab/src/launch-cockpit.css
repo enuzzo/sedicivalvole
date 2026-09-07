@@ -81,3 +81,6 @@
  .cockpit-heading .coffee-support-button span{display:none}
  .launch-cockpit{max-height:calc(100dvh - 96px)}
 }
+
+/* Shared build identity on the first Intro screen and its loading Splash. */
+.intro-build { position: absolute; right: 16px; bottom: 14px; z-index: 3; color: #e5e4df; font-size: 13px; font-variant-numeric: tabular-nums; pointer-events: none; }

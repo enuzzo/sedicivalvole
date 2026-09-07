@@ -20,7 +20,7 @@ test('visual roulette reaches all effects, treats Gradient as one family and nev
   for(const id of ['aperture','vertigo','meridian','drivey','prtcl','japanese-mist','acid-orchard','chromatic-silk']) assert.ok(ids.has(id),id);
   for(const previous of ids) for(let i=0;i<60;i++) {
     const next=luckyLaunchVisual(previous,()=>i/60);
-    assert.notEqual(next,previous);assert.ok(!['atlas','discover'].includes(next));
+    assert.notEqual(next,previous);assert.ok(!['atlas','discover','stats'].includes(next));
     if(['japanese-mist','acid-orchard','chromatic-silk'].includes(previous)) assert.ok(!['japanese-mist','acid-orchard','chromatic-silk'].includes(next));
   }
 });

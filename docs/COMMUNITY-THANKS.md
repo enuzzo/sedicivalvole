@@ -487,7 +487,7 @@ enuzzo
 - **Credit:** Zsolt Ero (hyperknot) and contributors.
 - **Source:** [OpenFreeMap](https://github.com/hyperknot/openfreemap).
 - **Public contact route:** [Contact / profile](mailto:zsolt@openfreemap.org).
-- **Use:** Runtime map service. ATLAS uses the public vector-tile instance; no OpenFreeMap server is vendored. Public email is listed on https://openfreemap.org/.
+- **Use:** Runtime map service. ATLAS uses the public vector-tile instance, including named point features from its OpenMapTiles poi layer; no OpenFreeMap server is vendored. Public email is listed on https://openfreemap.org/.
 - **License / permission boundary:** Service/data terms and mandatory upstream map attribution.
 - **Source evidence:** linked upstream project plus the current local [notices](../THIRD_PARTY_NOTICES.md), package metadata or vendored notices; public routes checked 2026-09-05 where recorded in the verification evidence.
 - **Status:** DRAFT — not sent. Sent on: —; Channel: —; Reply: —; Follow-up: —.
@@ -509,7 +509,7 @@ enuzzo
 - **Credit:** OpenMapTiles and OpenStreetMap contributors.
 - **Source:** [OpenMapTiles / OpenStreetMap](https://github.com/openmaptiles/openmaptiles).
 - **Public contact route:** [Contact / profile](https://www.openstreetmap.org).
-- **Use:** Runtime data lineage. OpenFreeMap-delivered map schema/data and in-map attribution; https://www.openmaptiles.org/ and https://www.openstreetmap.org/copyright.
+- **Use:** Runtime data lineage. OpenFreeMap-delivered map schema/data, selectable named OSM POIs and in-map attribution; https://www.openmaptiles.org/ and https://www.openstreetmap.org/copyright.
 - **License / permission boundary:** Schema/data-specific terms; OpenStreetMap ODbL attribution is retained.
 - **Source evidence:** linked upstream project plus the current local [notices](../THIRD_PARTY_NOTICES.md), package metadata or vendored notices; public routes checked 2026-09-05 where recorded in the verification evidence.
 - **Status:** DRAFT — not sent. Sent on: —; Channel: —; Reply: —; Follow-up: —.

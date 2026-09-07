@@ -1240,3 +1240,11 @@ README now includes 43 curated credit rows and a collapsible 196-entry exact npm
 This is documentation/tooling only: no app source, package lock or media changed, and no product rebuild/deploy is needed. Canonical product remains source 6e2abff, build 20260905-0225; previously recorded vehicle acceptance remains open. No thank-you messages were sent.
 
 Verification for the credit checkpoint: 8/8 documentation consistency checks, 196/196 exact npm metadata identities and roles, 43 curated rows, all four sample-pack source pages, original Codrops author/article/demo links, final-footer placement and `git diff --check` pass. The 196 npm metadata requests succeeded. Curated public-link outcomes are recorded separately in `docs/qa/2026-09-05-community/complete-footer-links.json`; provider rate limits or bot protection are not product regressions.
+
+
+## 2026-09-07 evening corrections
+
+See [road feedback](ROAD-FEEDBACK-2026-09-07.md) for the received Tesla report,
+Engine clock/manual-control correction, audible NIGHTSHIFT PARK, standalone
+Stats catalogue, curved heading bands and loaded-tile OSM POIs. Automatic
+diagnostic sending remains unimplemented; target-Tesla validation remains open.

@@ -146,3 +146,11 @@ ShaderGradient/Three/R3F stack is isolated in one lazy product chunk and remains
 available in the standalone and authenticated LAB workbenches. Project-owned
 adapters register the exact selected settings, bounded response, telemetry,
 reduced motion, and Canvas2D fallback. No upstream source is copied or modified.
+
+
+## 2026-09-07 evening corrections
+
+See [road feedback](ROAD-FEEDBACK-2026-09-07.md) for the received Tesla report,
+Engine clock/manual-control correction, audible NIGHTSHIFT PARK, standalone
+Stats catalogue, curved heading bands and loaded-tile OSM POIs. Automatic
+diagnostic sending remains unimplemented; target-Tesla validation remains open.

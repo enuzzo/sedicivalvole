@@ -52,7 +52,7 @@ test("exposes the authored environments in a stable order", () => {
 test("keeps Discover seventh and exposes one Gradient 08 family", () => {
   assert.deepEqual(
     FLUX_VISUAL_CHOICES.map(({ id }) => id),
-    ["aperture", "vertigo", "meridian", "atlas", "drivey", "prtcl", "discover", "shadergradient"],
+    ["aperture", "vertigo", "meridian", "atlas", "drivey", "prtcl", "discover", "shadergradient", "stats"],
   );
   assert.equal(DISCOVER_VISUAL_CHOICE.number, "07");
   assert.equal(DISCOVER_VISUAL_CHOICE.kind, "destination");
@@ -64,7 +64,7 @@ test("keeps Discover seventh and exposes one Gradient 08 family", () => {
   assert.equal(FLUX_VISUAL_CHOICES.some(({ choiceBadge }) => choiceBadge), false);
   assert.equal(FLUX_ENVIRONMENTS.filter(({ renderer }) => renderer === "shadergradient").every(({ themed }) => themed), true);
   assert.doesNotMatch(appSource, /choiceBadge|launch-choice-badge|launch-choice-number/);
-  assert.equal(FLUX_VISUAL_CHOICES.at(-1), SHADERGRADIENT_VISUAL_CHOICE);
+  assert.equal(FLUX_VISUAL_CHOICES.at(-2), SHADERGRADIENT_VISUAL_CHOICE);
   assert.deepEqual(SHADERGRADIENT_ENVIRONMENTS.map(({ id }) => id), [
     "japanese-mist",
     "acid-orchard",

@@ -95,7 +95,7 @@ test("scheduled upshift commits exactly once using audio time with bounded detun
 test("show-off revalidates evidence, ends before eight seconds and releases on movement", async () => {
   const f=fixture(); f.runtime.setEnabled(true); await f.runtime.load(); f.evidence.trustedStationary=true; f.tick(); assert.equal(f.runtime.setRevHeld(true),true);
   for(let i=0;i<325;i++) f.tick(); assert.equal(f.runtime.getState().revving,false);
-  f.runtime.setRevHeld(true); f.evidence.trustedStationary=false; f.tick(); assert.equal(f.runtime.getState().revving,false); assert.equal(f.runtime.setRevHeld(true),false); f.runtime.destroy();
+  f.runtime.setRevHeld(true); f.evidence.trustedStationary=false; f.evidence.speedKmh=2; f.tick(); assert.equal(f.runtime.getState().revving,false); assert.equal(f.runtime.setRevHeld(true),false); f.runtime.destroy();
 });
 test("LAB manual gear requests use the same scheduled path and reject unsafe ratios", async () => {
   const f=fixture({manual:true}); f.runtime.setEnabled(true); await f.runtime.load(); f.runtime.setTransmissionMode("MANUAL");
@@ -241,4 +241,26 @@ test("automatic idle gestures last 1.2 seconds and peak 1200 RPM above idle", as
  assert.equal(blip.sample(0,true),0);assert.ok(blip.sample(5.6,true)>1199);
  assert.ok(blip.sample(6.1,true)>0);assert.equal(blip.sample(6.21,true),0);
  assert.equal(blip.sample(6.3,false),0);
+});
+
+
+test("manual TAMARRO needs ready audio but no GPS fix", async () => {
+  const f=fixture(); f.evidence.freshness="lost"; f.evidence.speedKmh=null;
+  assert.equal(f.runtime.setRevHeld(true),false);
+  f.runtime.setEnabled(true); await f.runtime.load(); f.tick();
+  assert.equal(f.runtime.getState().canRev,true); assert.equal(f.runtime.setRevHeld(true),true);
+  let peak=0;for(let i=0;i<120;i++){f.tick();peak=Math.max(peak,f.runtime.getState().rpm);}
+  assert.ok(peak>4000);f.runtime.setEnabled(false);assert.equal(f.runtime.setRevHeld(true),false);f.runtime.destroy();
+});
+test("live watch receipts share one monotonic clock despite stale provider timestamps", () => {
+  const m=createEngineMotion();
+  const watch=(t,speed)=>gps(m,t,speed,{sourceTimestampMs:90000,liveWatch:true});
+  watch(0,0);gps(m,1000,0,{sourceTimestampMs:90001});
+  assert.equal(m.snapshot(6000).trustedStationary,true);
+  assert.equal(m.snapshot(12001).trustedStationary,false);
+  watch(13000,1);watch(13100,2);watch(13200,3);
+  assert.equal(m.snapshot(13200).freshness,"fresh");assert.ok(m.snapshot(13200).speedKmh>1);
+  gps(m,13300,3);watch(13400,4);
+  assert.equal(m.snapshot(13400).freshness,"fresh");assert.ok(m.snapshot(13400).speedKmh>2);
+  watch(13500,4);m.reset("hidden");assert.equal(m.snapshot(13500).trustedStationary,false);
 });

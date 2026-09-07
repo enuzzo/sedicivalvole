@@ -50,7 +50,7 @@ export const FLUX_ENVIRONMENTS = [
     displayLabel: "Atlas",
     number: "04",
     rendererLabel: "Atlas",
-    launchDescription: "Live map and drive telemetry",
+    launchDescription: "Places and live travel map",
     renderer: "atlas",
     themed: true,
   },
@@ -162,6 +162,7 @@ export const FLUX_VISUAL_CHOICES = [
   ...FLUX_ENVIRONMENTS.filter(({ renderer }) => renderer !== "shadergradient"),
   DISCOVER_VISUAL_CHOICE,
   SHADERGRADIENT_VISUAL_CHOICE,
+  { id: "stats", label: "STATS FOR NERDS", displayLabel: "Stats for Nerds", number: "09", rendererLabel: "Session observatory", launchDescription: "Journey, direction and system statistics", kind: "destination" },
 ];
 
 export function getFluxEnvironment(environmentId) {

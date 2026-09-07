@@ -118,3 +118,19 @@ and right TAMARRO controls visible at displayed zero independently of chrome
 retraction; stale evidence disables rather than removes them. Small periodic idle
 blips require fresh exact standstill and stop on movement, mute or lifecycle loss.
 This is a direct refinement of the selected Telemetry direction.
+
+## Owner road feedback — 2026-09-07 evening
+
+Manual TAMARRO must work as soon as Engine audio is ready, including before the
+first GPS fix. This supersedes the earlier fresh-standstill gate for manual revs.
+Movement still cancels manual revs. Automatic idle gestures require an actual
+exact-zero watch observation; a bounded 12-second stationary watch hold bridges
+the approximately 10-second stationary cadence observed in the owner's report.
+Hidden state, missing/invalid live speed and renewed movement cancel that hold.
+Live watch events use the shared receiver's monotonic time; one-shot renewals
+retain acquisition/replay checks. Do not claim the old report proves a specific
+provider-clock defect: it did not record acquisition timestamps or Engine reasons.
+Stats for Nerds is Visual 09 in both launch and running catalogues, separate from
+Atlas; remove their shared Map/Stats tabs. Retain the approved remix, with outward
+curved heading bands. Intro means the initial chooser; Splash means its loading
+transition. Both show the existing build identity, with Intro bottom right.

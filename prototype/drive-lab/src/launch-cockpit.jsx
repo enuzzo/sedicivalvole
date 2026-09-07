@@ -67,7 +67,7 @@ export function LaunchCockpit({ mode, onMode, musicId, onMusic, selection, lucky
           </div>
           <div className="cockpit-selection cockpit-visual">
             <div className="cockpit-selection-heading">
-              <Thumbnail src={['atlas', 'discover'].includes(environmentId) ? '/third-party/tabler-icons/map-search.svg' : `/artwork/visuals/${visual.id}.png`} fallback="/third-party/tabler-icons/palette.svg" />
+              <Thumbnail src={environmentId === 'stats' ? '/third-party/tabler-icons/chart-bar.svg' : ['atlas', 'discover'].includes(environmentId) ? '/third-party/tabler-icons/map-search.svg' : `/artwork/visuals/${visual.id}.png`} fallback="/third-party/tabler-icons/palette.svg" />
               <div className="cockpit-value"><small>VISUAL</small><strong>{visualLabel}</strong></div>
             </div>
             <div className="cockpit-choice-actions">

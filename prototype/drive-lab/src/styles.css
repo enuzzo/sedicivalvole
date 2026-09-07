@@ -4694,3 +4694,6 @@ html { font-size: var(--font-size-floor); }
 .stats-dialog .stats-heading button[aria-current] { color: var(--stats-red); border-bottom: 3px solid var(--stats-red); background: var(--ui-surface); }
 .stats-main-chart header strong { color: var(--stats-red); }
 .stats-main-chart header .stats-blue { color: var(--stats-blue); }
+
+.atlas-place-card.is-text-only { grid-template-columns: 1fr; }
+.atlas-place-card a { display: inline-flex; align-items: center; min-height: 48px; box-sizing: border-box; padding: 8px 12px; color: var(--ui-text); background: var(--ui-control); border: 1px solid var(--ui-line); border-radius: 6px; }
