@@ -1,0 +1,157 @@
+{
+  "url": "https://sedicivalvole.app/",
+  "checks": [
+    {
+      "width": 1280,
+      "height": 1200,
+      "panel": {
+        "height": 502,
+        "top": 349,
+        "bottom": 851,
+        "width": 940
+      },
+      "choices": {
+        "height": 138,
+        "top": 562,
+        "bottom": 700,
+        "width": 906
+      },
+      "footer": {
+        "height": 48,
+        "top": 1152,
+        "bottom": 1200,
+        "width": 1244
+      },
+      "preset": {
+        "height": 36,
+        "top": 721,
+        "bottom": 757,
+        "width": 36
+      },
+      "safetyCenter": 640,
+      "scroll": 1200
+    },
+    {
+      "width": 1280,
+      "height": 800,
+      "panel": {
+        "height": 502,
+        "top": 149,
+        "bottom": 651,
+        "width": 940
+      },
+      "choices": {
+        "height": 138,
+        "top": 362,
+        "bottom": 500,
+        "width": 906
+      },
+      "footer": {
+        "height": 48,
+        "top": 752,
+        "bottom": 800,
+        "width": 1244
+      },
+      "preset": {
+        "height": 36,
+        "top": 521,
+        "bottom": 557,
+        "width": 36
+      },
+      "safetyCenter": 640,
+      "scroll": 800
+    },
+    {
+      "width": 773,
+      "height": 601,
+      "panel": {
+        "height": 502,
+        "top": 49.5,
+        "bottom": 551.5,
+        "width": 737
+      },
+      "choices": {
+        "height": 138,
+        "top": 262.5,
+        "bottom": 400.5,
+        "width": 703
+      },
+      "footer": {
+        "height": 48,
+        "top": 553,
+        "bottom": 601,
+        "width": 737
+      },
+      "preset": {
+        "height": 36,
+        "top": 421.5,
+        "bottom": 457.5,
+        "width": 36
+      },
+      "safetyCenter": 386.5,
+      "scroll": 601
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "panel": {
+        "height": 638,
+        "top": 103,
+        "bottom": 741,
+        "width": 366
+      },
+      "choices": {
+        "height": 276,
+        "top": 304,
+        "bottom": 580,
+        "width": 340
+      },
+      "footer": {
+        "height": 76,
+        "top": 768,
+        "bottom": 844,
+        "width": 350
+      },
+      "preset": {
+        "height": 36,
+        "top": 606,
+        "bottom": 642,
+        "width": 36
+      },
+      "safetyCenter": 195,
+      "scroll": 844
+    },
+    {
+      "width": 773,
+      "height": 420,
+      "panel": {
+        "height": 324,
+        "top": 48,
+        "bottom": 372,
+        "width": 737
+      },
+      "choices": {
+        "height": 138,
+        "top": 261,
+        "bottom": 399,
+        "width": 703
+      },
+      "footer": {
+        "height": 48,
+        "top": 372,
+        "bottom": 420,
+        "width": 737
+      },
+      "preset": {
+        "height": 36,
+        "top": 420,
+        "bottom": 456,
+        "width": 36
+      },
+      "safetyCenter": 386.5,
+      "scroll": 420
+    }
+  ],
+  "errors": [],
+  "build": "20260907-1534"
+}

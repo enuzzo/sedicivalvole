@@ -163,3 +163,9 @@ the footer remains outside its scroll area and always reachable. Content sizes
 and audio/selection behavior are unchanged. Five viewport measurements prove
 zero center offset and fixed footer bounds; 17 launch scenarios and 655 native
 tests pass. [Evidence](qa/2026-09-07-centered-launch/evidence.json).
+
+Production candidate **20260907-1534**, source **e092752**, implementation
+**f8e97fa** passes the five-viewport centering/footer matrix and 17 packaging
+checks. Main controls and intrinsic sheet dimensions remain unchanged.
+
+Canonical verification: build **20260907-1534**, source **e092752**. All five live viewport cases and 22 byte/cache checks pass; official independent postflight reports `remote_writes=NONE`. Fresh live screenshots and evidence are recorded in `docs/qa/2026-09-07-centered-launch/`. Physical Tesla acceptance remains separate.

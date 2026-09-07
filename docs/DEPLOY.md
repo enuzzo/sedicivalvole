@@ -1,5 +1,23 @@
 # Deployment
 
+## Centered launch and viewport footer — 2026-09-07 15:45
+
+Canonical **20260907-1534**, source **e092752**, implementation **f8e97fa**.
+The compact sheet is vertically centered in the viewport; bottom-left credits,
+bottom-right Support and the independently centered safety caption remain at the
+viewport edge. Short windows scroll inside the sheet with START reachable.
+
+Five live viewport checks (1280 × 1200, 1280 × 800, 773 × 601, 390 × 844 and
+773 × 420) pass with zero centering error and no page exceptions. All 655 native
+tests, 17 launch-browser scenarios, 17 packaging checks, 196 dependency credits
+and 22 canonical byte/cache checks pass. Official publication uploaded 215 files /
+254,652,658 bytes, fully reverified 29 Illobo recordings and retained two previous
+assets for cache overlap. Independent postflight passes with remote_writes=NONE.
+Physical Tesla acceptance remains separate.
+
+Evidence: [current captures and checks](qa/2026-09-07-centered-launch/).
+
+
 ## Intrinsic launch height — 2026-09-07 15:27
 
 Canonical **20260907-1520**, source **05bcf45**, implementation **9f1f77b**.

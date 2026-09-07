@@ -1,14 +1,14 @@
 # Current Project State
 
-Latest verified canonical publication: **`20260907-1520`**, source **`05bcf45`**,
-intrinsic launch sizing implementation **`9f1f77b`**, version `0.0.0`.
+Latest verified canonical publication: **`20260907-1534`**, source **`e092752`**,
+centered launch implementation **`f8e97fa`**, version `0.0.0`.
 655 native tests, 17 package checks, 17 launch-browser scenarios and 22
 canonical byte/cache checks pass. The splash has 64 px circular previews, fresh
 genre/visual choices on each visit, immediate nonrepeating Feeling lucky/Change,
 and precise Choose controls. Real Jazz/Lobo playback and direct Rosso startup
 pass. Official publication and independent no-write postflight pass.
-The owner-reported tall-window expansion is fixed: content-sized rows, a following
-footer and 36 px preset art. Five viewport checks pass locally and live.
+The owner-reported tall-window expansion is fixed: content-sized rows, viewport-centered sheet, independent
+viewport-bottom footer and 36 px preset art. Five viewport checks pass locally and live.
 See [launch behavior](LAUNCH-COCKPIT-2026-09-07.md) and [DEPLOY](DEPLOY.md).
 
 Earlier everyday-road gearing build 20260907-1316/source 9087bda verified second

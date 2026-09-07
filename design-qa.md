@@ -69,3 +69,5 @@ scenarios and 655 native tests pass; no page exceptions. Browser plugin absent,
 established headless Chrome fallback. Physical Tesla acceptance remains separate.
 
 final result: passed
+
+Canonical verification: build **20260907-1534**, source **e092752**. All five live viewport cases and 22 byte/cache checks pass; official independent postflight reports `remote_writes=NONE`. Fresh live screenshots and evidence are recorded in `docs/qa/2026-09-07-centered-launch/`. Physical Tesla acceptance remains separate.
