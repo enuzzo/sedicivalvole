@@ -1,7 +1,7 @@
 # Engine / GEAPS integration — September 7, 2026
 
 Status: refined after owner listening and canonically published as build
-`20260907-1151`, source `65a4a22` (refinement `acfbd21`; initial integration `69230fd`). Publication and independent postflight
+`20260907-1316`, source `9087bda` (everyday-road gearing `efeaaf6`; Show-off `cd99d06`; initial integration `69230fd`). Publication and independent postflight
 passed; 28 HTTPS identity checks and public Engine startup are verified in DEPLOY.md. Target-Tesla listening and sustained operation remain owner trials.
 This is an informed integration after explicit owner authorization, not a blind
 Phase A review or a claim that the earlier candidate passed independent review.
@@ -223,3 +223,11 @@ The displayed speed is separately smoothed. All profiles hold third at 70 with
 unclipped output. A missing speed field retains steady idle and disabled revs;
 fresh exact zeros enable and visibly trigger the existing small blip.
 [Browser evidence](qa/2026-09-07-road-gears/browser-evidence.json).
+
+
+Everyday-road gearing is canonically published as **20260907-1316**, source
+**9087bda**, implementation **efeaaf6**. Public browser sweeps confirm all profiles
+reach second by 40 and third by 70 km/h of the rising fixture input, with the
+filtered display separately visible. Missing speed retains idle; fresh exact zeros
+trigger the small blip. Official publication/postflight, 28 hashes and zero browser
+exceptions/diagnostic sends are recorded in [the evidence folder](qa/2026-09-07-road-gears/README.md).

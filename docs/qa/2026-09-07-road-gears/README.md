@@ -17,3 +17,17 @@ of the rising input, including filtering and audio transition completion.
 Run `scripts/qa-engine-road-gears.mjs` with QA_URL, QA_OUTPUT and optional
 EXPECT_BUILD. Installed tools may be selected with PLAYWRIGHT_MODULE and
 CHROME_EXECUTABLE, without changing application dependencies.
+
+
+## Canonical publication
+
+Build **20260907-1316**, source **9087bda**, implementation **efeaaf6**, version **0.0.0**.
+
+- [Public browser evidence](live/browser-evidence.json): second by 40 and third
+  by 70 in every profile, explicit missing-speed and confirmed-stop blip checks.
+- [Public third gear](live/third-at-70.png), [no speed](live/no-speed-signal.png)
+  and [actual idle blip](live/idle-blip.png), all inspected at 773 × 601.
+- [28 canonical hashes](canonical-hashes.json), [preflight](preflight.txt),
+  [publication](publish.txt) and [independent postflight](postflight.txt).
+- Real WAVs with controlled GPS; zero page exceptions and diagnostic sends.
+  Target-vehicle listening and GPS behavior remain unverified by this fixture.

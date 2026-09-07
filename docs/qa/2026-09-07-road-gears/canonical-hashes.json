@@ -1,0 +1,203 @@
+{
+  "build": "20260907-1316",
+  "commit": "9087bda",
+  "version": "0.0.0",
+  "checks": [
+    {
+      "path": "/",
+      "bytes": 1186,
+      "sha256": "a3291918663084ce3bd4558ac499bd8e3fc31bf969a51f0dce67abb280197142",
+      "cacheControl": "no-store, no-cache, must-revalidate, max-age=0",
+      "contentType": "text/html; charset=UTF-8"
+    },
+    {
+      "path": "?launch-check=20260907-1316",
+      "bytes": 1186,
+      "sha256": "a3291918663084ce3bd4558ac499bd8e3fc31bf969a51f0dce67abb280197142",
+      "cacheControl": "no-store, no-cache, must-revalidate, max-age=0",
+      "contentType": "text/html; charset=UTF-8"
+    },
+    {
+      "path": "assets/shadergradient-field-B5eT_plR.js",
+      "bytes": 1085825,
+      "sha256": "3d41373f5748f63b786a0b8afc29ca3153163ee8ccf9d2dc5a9081db0245a719",
+      "cacheControl": null,
+      "contentType": "application/javascript"
+    },
+    {
+      "path": "assets/maplibre-gl-D28IiCNF.js",
+      "bytes": 941210,
+      "sha256": "d86f5d4776b30341351ee755969e244242aa0514379f99a84a9fd939c375f985",
+      "cacheControl": null,
+      "contentType": "application/javascript"
+    },
+    {
+      "path": "assets/runtime-allPuUoT.js",
+      "bytes": 21244,
+      "sha256": "fd35eb1a914b727204b490d925d28f573d89351dca18c435b9d9ae312e1f1aa0",
+      "cacheControl": null,
+      "contentType": "application/javascript"
+    },
+    {
+      "path": "assets/atlas-field-DIYHhGHm.css",
+      "bytes": 69347,
+      "sha256": "715dbf736f7fdc9671a7ab3ec3b2fc5e3cdb252f3cc59758d52914bd2c9e57a3",
+      "cacheControl": null,
+      "contentType": "text/css"
+    },
+    {
+      "path": "assets/score-processor-Dly9Ky60.js",
+      "bytes": 117006,
+      "sha256": "1e4928616b90722e2be5b1ab777d01866084ed54690283ce0c82ebe00d1a8ebf",
+      "cacheControl": null,
+      "contentType": "application/javascript"
+    },
+    {
+      "path": "assets/atlas-field-bekV18YD.js",
+      "bytes": 25471,
+      "sha256": "7744bfeaaf3b0caea9ba9e4ef97dc4769cce8266fc9909430d7f723facbd0dbf",
+      "cacheControl": null,
+      "contentType": "application/javascript"
+    },
+    {
+      "path": "assets/index-DBwdenka.css",
+      "bytes": 200068,
+      "sha256": "3d3543c220ba69c6ada82b15ec038d325467b317af9fac41dedb641c741c2622",
+      "cacheControl": null,
+      "contentType": "text/css"
+    },
+    {
+      "path": "assets/browser-DDecXPYe.js",
+      "bytes": 25776,
+      "sha256": "6c6994e3d93911f9d350cdf3a8f98a7337a8764be2968737e75475f3ed9b06c2",
+      "cacheControl": null,
+      "contentType": "application/javascript"
+    },
+    {
+      "path": "assets/index-Dw8LIutW.js",
+      "bytes": 774429,
+      "sha256": "4f1cc408c404e537a71c4ae81abdecfec392f9e8ac0bf5dee57a5765eacecd18",
+      "cacheControl": null,
+      "contentType": "application/javascript"
+    },
+    {
+      "path": "engine-audio/ac288f6d22b0bad1.wav",
+      "bytes": 1108652,
+      "sha256": "ac288f6d22b0bad1fc0c6c1bed4deb138750d7dfca4d14d4d6ab339047987168",
+      "cacheControl": null,
+      "contentType": "audio/x-wav"
+    },
+    {
+      "path": "engine-audio/97d45c525723ea02.wav",
+      "bytes": 1144012,
+      "sha256": "97d45c525723ea02f72ba0d553a368baedcc189833162275db10c2f9eec467ae",
+      "cacheControl": null,
+      "contentType": "audio/x-wav"
+    },
+    {
+      "path": "engine-audio/7703265ff1b1e7e2.wav",
+      "bytes": 14302212,
+      "sha256": "7703265ff1b1e7e2223057e30e19a1007c844ccf3f870b659d5a393f811e40b0",
+      "cacheControl": null,
+      "contentType": "audio/x-wav"
+    },
+    {
+      "path": "engine-audio/LICENSE",
+      "bytes": 1082,
+      "sha256": "c9f66fcef33030cf13186dffa4e0484f12fce2d61af34f7cb1c66224f088be99",
+      "cacheControl": null,
+      "contentType": null
+    },
+    {
+      "path": "engine-audio/f068c7b8b8424a98.wav",
+      "bytes": 1664150,
+      "sha256": "f068c7b8b8424a98fd4773f247338b0674ab25fc9993fc7f68de078e519c572d",
+      "cacheControl": null,
+      "contentType": "audio/x-wav"
+    },
+    {
+      "path": "engine-audio/a9d844fcb1c04646.wav",
+      "bytes": 887302,
+      "sha256": "a9d844fcb1c046463cc876ad53f58a56bb52da37000d46e8c4a44b89a3399015",
+      "cacheControl": null,
+      "contentType": "audio/x-wav"
+    },
+    {
+      "path": "engine-audio/3c1633f155e42a10.wav",
+      "bytes": 1480472,
+      "sha256": "3c1633f155e42a105743a5a31d1b80d678fb3a49426605c9e09d9f0a80b2c466",
+      "cacheControl": null,
+      "contentType": "audio/x-wav"
+    },
+    {
+      "path": "engine-audio/2b6aac5dafa945ce.wav",
+      "bytes": 3847772,
+      "sha256": "2b6aac5dafa945ce0d6b3b20add3844d703dfec1409b7ecebcb8367dc6fdfe45",
+      "cacheControl": null,
+      "contentType": "audio/x-wav"
+    },
+    {
+      "path": "engine-audio/98d9a4f823c8dc66.wav",
+      "bytes": 1826496,
+      "sha256": "98d9a4f823c8dc6603cb657af90cbe680454bac06d2707b36e405118057e1ccc",
+      "cacheControl": null,
+      "contentType": "audio/x-wav"
+    },
+    {
+      "path": "engine-audio/d84df781799f715a.wav",
+      "bytes": 37016,
+      "sha256": "d84df781799f715ab256e74917ed777a43ae8cd9f2f7b823fe959734ee926d34",
+      "cacheControl": null,
+      "contentType": "audio/x-wav"
+    },
+    {
+      "path": "engine-audio/49d3ac22096eaee1.wav",
+      "bytes": 1896068,
+      "sha256": "49d3ac22096eaee138d672017446c30416c614f717674128bac73746e66547f0",
+      "cacheControl": null,
+      "contentType": "audio/x-wav"
+    },
+    {
+      "path": "engine-audio/f4e5a7f8e96fa64a.wav",
+      "bytes": 267398,
+      "sha256": "f4e5a7f8e96fa64a715ba8ac1c9c9378f0f431cf2775a53c51e9afd652905835",
+      "cacheControl": null,
+      "contentType": "audio/x-wav"
+    },
+    {
+      "path": "engine-audio/13a46ee6f4cad43b.wav",
+      "bytes": 1489668,
+      "sha256": "13a46ee6f4cad43be7aa646e6c185b97a4a17a32d4226543fcffbfa0de943935",
+      "cacheControl": null,
+      "contentType": "audio/x-wav"
+    },
+    {
+      "path": "engine-audio/505b4d611f65af03.wav",
+      "bytes": 401388,
+      "sha256": "505b4d611f65af0362135126985994f987ffbd1dccc56e0ddcfa1cf86673bb81",
+      "cacheControl": null,
+      "contentType": "audio/x-wav"
+    },
+    {
+      "path": "engine-audio/b75b9041be696ed6.wav",
+      "bytes": 2144712,
+      "sha256": "b75b9041be696ed651253b1f034285144337f85c909dfaec675548da9be7c296",
+      "cacheControl": null,
+      "contentType": "audio/x-wav"
+    },
+    {
+      "path": "engine-audio/8d178cd745397cc3.wav",
+      "bytes": 1805772,
+      "sha256": "8d178cd745397cc333815b5a3980c4c195a3d4ab21005e3f2500e03fcaab2f8c",
+      "cacheControl": null,
+      "contentType": "audio/x-wav"
+    },
+    {
+      "path": "engine-audio/78f9483d1f436303.wav",
+      "bytes": 3618662,
+      "sha256": "78f9483d1f436303f037a1d00ece0feb6be989c9bf9f11281a8ec8e3e987584e",
+      "cacheControl": null,
+      "contentType": "audio/x-wav"
+    }
+  ]
+}

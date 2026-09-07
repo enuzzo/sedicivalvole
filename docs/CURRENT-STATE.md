@@ -1,9 +1,10 @@
 # Current Project State
 
-Latest verified canonical publication: **`20260907-1256`**, source **`cb88e2a`**,
-Show-off implementation **`cd99d06`**, version `0.0.0`. **652 regression tests**,
-10 post-build checks and 28 HTTPS identity checks pass. Actual public Chrome
-verifies the complete Show-off phrase and cancellation in all three Engine profiles.
+Latest verified canonical publication: **`20260907-1316`**, source **`9087bda`**,
+everyday-road gearing implementation **`efeaaf6`**, version `0.0.0`.
+**655 regression tests**, ten post-build checks and 28 HTTPS identity checks pass.
+Actual public Chrome verifies second by 40 and third by 70 km/h of rising GPS
+input in every profile, and idle-blip behavior with missing/confirmed speed.
 Official preflight, publication and independent no-write postflight pass.
 See [DEPLOY](DEPLOY.md) and [Engine integration](ENGINE-INTEGRATION-2026-09-07.md).
 
@@ -46,7 +47,7 @@ dated study documents.
 ## Product surface
 
 - Shorter everyday-road Engine ratios and explicit idle-blip eligibility are
-  implemented and locally verified; publication pending. Second targets 35 km/h,
+  implemented, canonically published and browser-verified. Second targets 35 km/h,
   third 65 km/h, with separate downshift boundaries and unchanged dry audio.
 
 - TAMARRO / SHOW-OFF now implements tap-triggered, varied neutral rev phrases;

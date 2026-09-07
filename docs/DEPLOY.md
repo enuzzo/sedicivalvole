@@ -1,5 +1,28 @@
 # Deployment
 
+## Everyday-road Engine gearing — 2026-09-07 13:26
+
+- Build **20260907-1316**, source **9087bda**, implementation **efeaaf6**, version
+  **0.0.0**. Shorter host acoustic ratios target 35/65 km/h first-two upshifts;
+  separated downshift/kickdown boundaries prevent gear hunting. Idle labels make
+  speed-evidence requirements explicit. Samples, gain and upstream files unchanged.
+- **655 native tests**, **10 post-build checks**, **196 credits**, actual-WAV local
+  and public browser checks pass.
+- Official preflight, publication and independent no-write postflight pass:
+  **204 files / 254,267,839 bytes**, all **29 Illobo tracks** by complete hash,
+  11 root entries, one retained cache-overlap asset, no legacy/metadata removals.
+- **28 HTTPS identity checks** match local HTML/assets/Engine audio files; bare
+  and cache-busted HTML retain no-store/no-cache behavior.
+- Public 773 × 601 Chrome verifies the exact build and all three profiles in
+  second by 40 and third by 70 km/h of a rising GPS fixture, including filtering
+  and shift completion. The displayed speed is independently smoothed. Audio is
+  non-silent and below clipping. Missing speed retains 1000 RPM and disabled
+  revs; fresh exact zeros enable and trigger the small automatic blip.
+- No page exception or diagnostic transmission. GPS is synthetic; physical
+  vehicle shift feel, small-blip audibility and native behavior remain owner tests.
+- [Evidence and current captures](qa/2026-09-07-road-gears/README.md).
+
+
 ## TAMARRO / Show-off — 2026-09-07 13:06
 
 - Canonical build **20260907-1256**, built source **cb88e2a**, implementation
