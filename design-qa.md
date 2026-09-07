@@ -32,3 +32,21 @@ Physical Tesla touch/readability, GPU and listening acceptance are not repeated 
 Canonical follow-up: build 20260907-1400/source 7ab630b verified at https://sedicivalvole.app/. `docs/qa/2026-09-07-round-launch/08-canonical-music.png` shows actual ready Jazz cover and Aperture, 773 × 601. Twenty-two byte/cache checks and real Jazz/Lobo/Engine startup pass; zero page exceptions or diagnostic sends, six inherited pre-gesture audio warnings. Exact production candidate also passes the same 16 UI scenarios and 17 packaging checks.
 
 final result: passed
+
+## Owner-reported tall-window correction — 2026-09-07
+
+The supplied Mac screenshot showed viewport-filling empty selection panels.
+Fixed the absolute sheet constraints and nested elastic rows: content now owns
+height and the footer follows the sheet. Preset thumbnails are 36 px (was 16).
+Actual matching Play the Road / Fracture / Drivey captures are in
+`docs/qa/2026-09-07-launch-sizing/1280x1200.png` and `773x601.png`.
+Reviewed both: existing fonts, colour tokens, content and main 64 px imagery
+are preserved; oversized vertical spacing is removed and preset art is legible.
+Sheet height is 502 px and choices 138 px at both 1280 × 800 and 1280 × 1200.
+Tesla 773 × 601 has the same geometry. Phone 390 × 844 fits; a 773 × 420 window
+scrolls the complete flow to reach the footer. No overlapping footer or clipped
+controls. Seventeen interaction scenarios, 655 native tests and 196 credits pass.
+Browser plugin absent; established headless Chrome fallback. Physical Tesla
+acceptance remains separate. No new visual direction or asset generation.
+
+final result: passed

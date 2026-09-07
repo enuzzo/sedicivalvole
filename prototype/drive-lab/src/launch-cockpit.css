@@ -47,3 +47,20 @@
  .launch-cockpit .cockpit-choice-actions button{font-size:15px;padding:8px 10px;min-width:70px}
  .cockpit-value strong{font-size:24px}
 }
+
+/* The launch sheet follows its contents, never the window's spare height. */
+.splash:has(.launch-cockpit){display:flex;flex-direction:column;align-items:center;gap:4px;padding:36px 18px 4px;overflow:auto}
+.launch-cockpit{position:relative;inset:auto;width:100%;height:auto;flex:none;margin:0;grid-template-rows:48px 56px auto 56px}
+.cockpit-music-body{grid-template-rows:56px auto 54px}
+.cockpit-engine-body{grid-template-rows:56px auto 54px}
+.cockpit-engine-profiles{min-height:132px}
+.cockpit-preset-thumb{width:36px;height:36px}
+.cockpit-footer{position:relative;inset:auto;width:calc(100% - 32px);flex:none;margin:0}
+@media(max-width:650px){
+ .splash:has(.launch-cockpit){padding:14px 12px 4px}
+ .launch-cockpit{inset:auto;width:100%;height:auto;grid-template-rows:48px 56px auto 64px;gap:8px}
+ .cockpit-music-body{grid-template-rows:56px auto 64px}
+ .cockpit-choices .cockpit-selection{padding:8px 12px}
+ .cockpit-engine-profiles{min-height:0}
+ .cockpit-footer{inset:auto;width:calc(100% - 16px)}
+}

@@ -126,3 +126,18 @@ verifies loaded 64 px circles with actual Jazz cover art, immediate Change,
 precise visual selection, real Jazz and Lobo playback and Rosso startup. Zero
 page exceptions or diagnostic sends; six inherited pre-gesture audio warnings.
 See [canonical evidence](qa/2026-09-07-round-launch/canonical-browser.json).
+
+## Intrinsic height correction — 2026-09-07
+
+The owner reported excessive empty vertical space on a tall Mac window. The
+absolute top/bottom constraints and nested `1fr` tracks had stretched the sheet
+and both choices with the viewport. The splash now lays out the sheet and footer
+in normal flow; sheet/body rows use content height. Tall screens do not enlarge
+selection groups. Short windows scroll the complete flow, including the footer.
+Preset artwork grows from 16 to 36 px without growing the desktop preset row.
+The existing 64 px main previews, 48/56 px targets, selectors and audio are intact.
+
+Seventeen actual-browser scenarios pass, including an explicit 1280 × 800 versus
+1280 × 1200 height-invariance assertion, 36 px preset geometry, Tesla 773 × 601
+and phone 390 × 844 hit testing. See [tall Mac](qa/2026-09-07-launch-sizing/10-tall-mac.png)
+and [browser evidence](qa/2026-09-07-launch-sizing/browser-evidence.json).
