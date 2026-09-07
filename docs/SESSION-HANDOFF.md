@@ -1,5 +1,13 @@
 # Session Handoff
 
+Latest verified canonical publication: **`20260907-0930`**, source **`f590f51`**
+(reliability implementation `9b57fc3`), version `0.0.0`. See
+[deployment evidence](DEPLOY.md) and [reliability QA](RELIABILITY-QA-2026-09-07.md).
+This supersedes older live-build references below. Next substantive work is
+Engine review/integration; iPhone follows. Broad owner acceptance is recorded in
+[owner decisions](OWNER-DECISIONS-2026-09-07.md); only native Pause intent is a
+current clarification in answer A02. No new automatic diagnostic sender exists.
+
 ## Reliability follow-up — 2026-09-07
 
 The owner accepts Flux, Soundtrack, FX, interface and Discover, and reports that

@@ -1,5 +1,14 @@
 # Visual Source Architecture — 2026-08-29
 
+## September 7 shared recovery boundary
+
+The App shell now owns bounded recovery for the selected visual. Renderers still
+report errors and actual frames through their existing callbacks; the shell
+cancels/unmounts a failed renderer and recreates its error boundary/lazy owner on
+an eligible retry. Success requires a frame. Selection/session changes dispose
+the controller and timers. No pinned third-party source changes or new runtime
+dependencies are introduced. See [reliability QA](RELIABILITY-QA-2026-09-07.md).
+
 Status: **implementation contract**.
 
 Current amendment, 2026-09-03: OPEN and BLOOM are retired. Wherever this dated

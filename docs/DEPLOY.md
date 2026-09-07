@@ -1,5 +1,44 @@
 # Deployment
 
+## Reliability recovery and honest diagnostics — 2026-09-07 09:37
+
+- Canonical build **`20260907-0930`**, version **`0.0.0`**, built source/docs
+  **`f590f51`**, implementation **`9b57fc3`**.
+- Passed 639 native checks, 10 post-build identity/package checks and 196/196
+  README dependency credits. Production App/LAB build passed.
+- Official preflight passed without remote writes. Publication verified 186
+  files / 216,251,764 bytes and all 29 Illobo tracks by complete hash; the
+  dynamic root and one previous asset were retained. No legacy files removed.
+- Independent official postflight passed: network, login, directory and root/legacy
+  identity verified; ten root entries; `remote_writes=NONE`.
+- Canonical and cache-busted HTML plus all eight emitted assets match the local
+  candidate byte-for-byte (10 checks). Both HTML responses retain no-store and
+  no-cache. Runtime REPORT independently shows the expected build and commit.
+- Headless Chrome on the public root at 773×601: first Drivey iframe intentionally
+  withheld its ready signal; the failure displayed, automatic retry remounted
+  the actual renderer, and the ready road became visible without reselection.
+  Exactly two iframe requests, no warning/error, mute attribution and inactive
+  arrangement checks passed. The diagnostic endpoint was blocked and no mail
+  was sent. Local offline/reconnect QA also passed; induced disconnected-resource
+  console errors are documented in [reliability QA](RELIABILITY-QA-2026-09-07.md).
+- Target-Tesla foreground/background recovery, listening and new diagnostic
+  measurements remain vehicle checks. Future Standard/Dev automatic delivery
+  is not part of this build.
+
+| Canonical path | Bytes | SHA-256 |
+|---|---:|---|
+| `/` | 1,206 | `6923e919c215fa9933cc1198ee897807d69595277004ea1a02470d590e030c29` |
+| `/?verify=20260907-0930` | 1,206 | `6923e919c215fa9933cc1198ee897807d69595277004ea1a02470d590e030c29` |
+| `/assets/atlas-field-0xMStgCK.js` | 25,471 | `0d9d69ba8a79b28235443d9500d6cb6381da3a286eb887654450be97fcbd07ab` |
+| `/assets/atlas-field-DIYHhGHm.css` | 69,347 | `715dbf736f7fdc9671a7ab3ec3b2fc5e3cdb252f3cc59758d52914bd2c9e57a3` |
+| `/assets/browser-DDueozWC.js` | 25,776 | `ec7f091379c14cef2c34db61aa9ce23e5ab6aac7a8abdf59506d2cd2cc713b6b` |
+| `/assets/index-BDEnolyH.css` | 184,583 | `843e2b28d1ed4977f30a42be35891163ad9230f6651af30bf9755d569bffa64c` |
+| `/assets/index-Dt0XYIQB.js` | 757,900 | `5c82a4fb102a61fb4f756c6b90c156172e2e6de79abf26d4c0bc03412e211bd5` |
+| `/assets/maplibre-gl-BFR9L0DB.js` | 941,210 | `e9ba5d1af6d211fa451db5f6697550ee5a532d74d03c869a6e108cc33cf50a43` |
+| `/assets/score-processor-Dly9Ky60.js` | 117,006 | `1e4928616b90722e2be5b1ab777d01866084ed54690283ce0c82ebe00d1a8ebf` |
+| `/assets/shadergradient-field-DZqJPhVS.js` | 1,085,825 | `c8ed5089180e687e47a76f944f8b2fdbca7f26f6ba6c3977e11c6c03076575a7` |
+
+
 ## Build identification
 
 Every build carries a stamp in the form `20260826-1543` (`YYYYMMDD-HHMM`),

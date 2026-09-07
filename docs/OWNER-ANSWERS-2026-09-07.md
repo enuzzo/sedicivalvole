@@ -48,7 +48,7 @@ Answer: Discover accepted. ATLAS will become a more informative travel map, pote
 
 Which visuals felt smooth and comfortable, including Drivey at walking pace and Meridian braking/recovery? For Japanese Mist, Acid Orchard, Chromatic Silk and both PRTCL types, note actual use, braking response, switching and any prolonged degradation. LAB acceptance can remain `Not tested` separately.
 
-Answer: Existing experience broadly accepted apart from future refinements and the ATLAS/statistics separation. Unreported per-renderer GPU/LAB tests remain separate evidence gates.
+Answer: The owner confirmed the ATLAS/statistics separation. No renderer-by-renderer smoothness verdict or GPU/LAB test result was supplied; keep those technical evidence gates separate from broad Flux acceptance.
 
 ### A08 — iPhone test device (milestones 14, 16)
 
