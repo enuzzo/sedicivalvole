@@ -45,6 +45,8 @@ delays adjacent audio preload until the current track owns `30 s` of headroom,
 and attributes every media lifecycle event to its emitting deck. The correction
 is canonical and browser-verified; physical listening remains a separate gate.
 
+The launch header places the yellow Buy Me a Coffee button after About, with the safety caption below the transparent brand mark/wordmark group. The same support control remains available in Session report, opening a centered dialog.
+
 ## What exists today
 
 - ✅ a single ignored local reference library under `_references/`;
@@ -428,7 +430,7 @@ A heartfelt thank-you to the people who share the code, type, music, data and ex
 | 🌍 OpenMapTiles and OpenStreetMap contributors — OpenMapTiles / OpenStreetMap | [Project](https://github.com/openmaptiles/openmaptiles) | **Runtime data lineage.** OpenFreeMap-delivered map schema/data and in-map attribution; https://www.openmaptiles.org/ and https://www.openstreetmap.org/copyright. |
 | ⛰️ Open-Meteo and the European Union Copernicus programme — Open-Meteo / Copernicus elevation | [Project](https://github.com/open-meteo/open-meteo) | **Runtime elevation data.** ATLAS requests session-only GLO-90 terrain elevation for a rounded location cell; no API implementation is copied. |
 | 📚 Wikimedia communities and individual article/media authors — Wikipedia / Wikimedia | [Project](https://www.mediawiki.org/wiki/API:Main_page) | **Runtime content service.** DISCOVER uses localized search, abstracts, PageImages and native articles; no encyclopedia content is bundled. |
-| ☕ Buy Me a Coffee / Coffee Inc. — Buy Me a Coffee | [Project](https://www.buymeacoffee.com) | **Service identity.** User-supplied QR and cup identity in the support entry; no service code copied. |
+| ☕ Buy Me a Coffee / Coffee Inc. — Buy Me a Coffee | [Project](https://www.buymeacoffee.com) | **Service identity.** User-supplied QR and redrawn cup identity in the shared yellow splash/diagnostic support entry; no service code copied. |
 | 🌀 Louis Hoebregts (Mamboleoo), Codrops/Tympanus — InfiniteTubes | [Project](https://github.com/Mamboleoo/InfiniteTubes) | **Study only — no copied code.** Particles, Star Wars and Triangle mechanics were studied; project-owned implementation only, upstream assets excluded. |
 | 🧪 Liam Egan; embedded noise credited upstream to Inigo Quilez — GLSL: Primordial Soup | [Project](https://codepen.io/shubniggurath/pen/NXGbBo) | **Retired study — no copied code.** Fluid mechanics were studied; the independent experiment was retired. No Pen or attributed noise source is shipped. |
 | 🎹 Spotify and Basic Pitch contributors — Spotify Basic Pitch | [Project](https://github.com/spotify/basic-pitch) | **Development only.** Machine-local harmony-analysis note proposals; no package, model or generated report enters the product bundle. |

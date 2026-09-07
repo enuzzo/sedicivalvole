@@ -290,3 +290,22 @@ Keep the compact launch sheet centered on the viewport on both axes. Credits
 remain at the viewport's bottom left, Support bottom right and safety copy bottom
 center, independently of the sheet. In short windows, scroll inside the centered
 sheet and reserve space for the fixed footer instead of clipping controls.
+
+
+## Owner support placement — 2026-09-07
+
+Supersedes the earlier viewport-footer placement for Support and safety copy.
+Keep the transparent 16 Road mark beside the wordmark, with Drive responsibly
+immediately below the wordmark. Put the yellow Buy Me a Coffee cup button directly
+after About at the same 48 px height. Keep credits at bottom left. Share that
+support button with the diagnostic panel. Its dialog is centered on the viewport,
+with bounded internal scrolling and focus restored to the originating control.
+
+## Owner next priority — 2026-09-07 ATLAS and Stats for Nerds
+
+After support, prioritize an informative wider ATLAS map and a separate full-screen
+Stats for Nerds surface. Include natural pastel cartography alongside product
+palettes. Preserve metrics while separating surfaces. Plan a branded session PDF
+with optional user-requested email delivery to a remembered recipient cleared by
+Reset Saved State. The three-direction selection is pending; see
+../../docs/ATLAS-STATS-REPORT-PLAN-2026-09-07.md.

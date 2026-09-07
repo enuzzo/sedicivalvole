@@ -4593,3 +4593,12 @@ html { font-size: var(--font-size-floor); }
 }
 
 @media (max-width: 650px) { .launch-selector .launch-choice-button strong { font-size: 14px; overflow-wrap: normal; } }
+
+/* One shared support entry and viewport-centered modal, including diagnostics. */
+.app[data-appearance] button.coffee-support-button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;min-width:48px;padding:8px 12px;border:1px solid #c5aa00;border-radius:6px;background:#ffdd00;color:#0d0c22;font:600 15px var(--font-ui);cursor:pointer;white-space:nowrap}
+.app[data-appearance] button.coffee-support-button:hover{background:#ffe733;color:#0d0c22}
+.app[data-appearance] button.coffee-support-button:focus-visible{outline:3px solid var(--ui-accent-text);outline-offset:3px}
+.coffee-support-button .support-cup-mark{flex:none;width:24px;height:24px}
+.app .support-overlay{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:18px}
+.app .support-panel{position:relative;inset:auto;width:min(440px,100%);max-height:calc(100dvh - 36px);margin:0}
+@media(max-width:650px){.drawer-heading-actions .coffee-support-button span{display:none}}

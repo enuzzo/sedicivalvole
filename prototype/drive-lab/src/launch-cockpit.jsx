@@ -1,3 +1,4 @@
+import { SupportButton } from "./support-button.jsx";
 import { useState } from 'react';
 import { SOUNDTRACK_GENRE_OPTIONS, SOUNDTRACK_PACE_OPTIONS } from './soundtrack/library-model.js';
 import { FLUX_VISUAL_CHOICES, SHADERGRADIENT_ENVIRONMENTS, getFluxEnvironment, isShaderGradientEnvironmentId } from './flux-environments.js';
@@ -36,8 +37,9 @@ export function LaunchCockpit({ mode, onMode, musicId, onMusic, selection, lucky
     <section className="launch-cockpit" aria-label="Choose your drive" inert={picker ? true : undefined}>
       <header className="cockpit-heading">
         <img src={markUrl} alt="" aria-hidden="true" />
-        <h1>sedicivalvole</h1><small className="cockpit-build">{build}</small>
+        <div className="cockpit-wordmark"><h1>sedicivalvole</h1><small>Drive responsibly</small></div><small className="cockpit-build">{build}</small>
         <button type="button" onClick={() => setPicker('about')} aria-haspopup="dialog">About</button>
+        <SupportButton onClick={onSupport} />
       </header>
       <nav className="cockpit-modes" aria-label="Experience mode">
         {button('music', <><ModeIcon name="music" />Music</>, !engine, () => onMode('flux'))}
@@ -85,7 +87,6 @@ export function LaunchCockpit({ mode, onMode, musicId, onMusic, selection, lucky
     </section>
     <footer className="cockpit-footer" inert={picker ? true : undefined}>
       <span>by <a href="https://github.com/enuzzo" target="_blank" rel="noreferrer">enuzzo</a> · with <a href="https://github.com/illobo" target="_blank" rel="noreferrer">Illobo</a></span>
-      <small>Drive responsibly</small><button type="button" onClick={onSupport} aria-label="Open Buy Me a Coffee support panel" aria-haspopup="dialog">Support</button>
     </footer>
     {picker ? <Dialog className="cockpit-dialog" labelledBy="cockpit-picker-title" onClose={close} panelClass="cockpit-picker" backdropClass="cockpit-backdrop">
       <header><h2 id="cockpit-picker-title">{({ mix: 'Choose your soundtrack', score: 'Choose your score', visual: 'Choose your visual', gradient: 'Gradient variants', about: 'About sedicivalvole' })[picker]}</h2><button type="button" data-dialog-initial-focus onClick={close}>DONE</button></header>

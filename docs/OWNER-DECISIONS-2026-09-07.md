@@ -80,3 +80,12 @@ Cockpit was selected from three presented directions. Public labels are Music /
 Engine; internal Flux stays. Genre/pace/Lobo choices persist, while lucky selects
 a different genre on the next visit. Implementation and browser proof are in
 [the launch record](LAUNCH-COCKPIT-2026-09-07.md); physical acceptance remains open.
+
+## Latest priority — support, then ATLAS / Stats for Nerds
+
+The owner now puts ATLAS / Stats for Nerds immediately after the support header
+refinement, ahead of the earlier iPhone slot. Natural pastel cartography, wider
+map context and a separate visual stats page are requested. A branded session
+PDF with user-chosen email delivery and a resettable remembered recipient is
+planned in [the implementation brief](ATLAS-STATS-REPORT-PLAN-2026-09-07.md).
+Direction selection is pending; PDF/email is planned, not shipped.

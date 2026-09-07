@@ -575,7 +575,7 @@ enuzzo
 - **Credit:** Buy Me a Coffee / Coffee Inc..
 - **Source:** [Buy Me a Coffee](https://www.buymeacoffee.com).
 - **Public contact route:** [Contact / profile](https://www.buymeacoffee.com).
-- **Use:** Service identity. User-supplied QR and cup identity in the support entry; no service code copied.
+- **Use:** Service identity. User-supplied QR and redrawn cup identity in the shared yellow splash/diagnostic support entry; no service code copied.
 - **License / permission boundary:** Service-generated brand material; trademark rights retained.
 - **Source evidence:** linked upstream project plus the current local [notices](../THIRD_PARTY_NOTICES.md), package metadata or vendored notices; public routes checked 2026-09-05 where recorded in the verification evidence.
 - **Status:** DRAFT — not sent. Sent on: —; Channel: —; Reply: —; Follow-up: —.

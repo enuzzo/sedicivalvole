@@ -169,3 +169,18 @@ Production candidate **20260907-1534**, source **e092752**, implementation
 checks. Main controls and intrinsic sheet dimensions remain unchanged.
 
 Canonical verification: build **20260907-1534**, source **e092752**. All five live viewport cases and 22 byte/cache checks pass; official independent postflight reports `remote_writes=NONE`. Fresh live screenshots and evidence are recorded in `docs/qa/2026-09-07-centered-launch/`. Physical Tesla acceptance remains separate.
+
+
+## Support header refinement — 2026-09-07
+
+The owner moved Support from the viewport footer to immediately after About,
+with the shared yellow Buy Me a Coffee cup button at the same 48 px height.
+The transparent light/dark 16 marks retain the existing source paths without
+the square background; Drive responsibly sits directly below the wordmark.
+Credits stay at the viewport bottom left and the compact sheet stays centered.
+On narrow phones the support entry retains the cup and accessible full name.
+The same shared button appears in Session report. The centered support dialog
+makes the underlying diagnostic panel inert and restores focus to its origin.
+Four viewport geometry/interaction checks and the diagnostic open/close path
+pass with zero page exceptions. Browser plugin unavailable; isolated headless
+Chrome is the established fallback. Local screenshots: /tmp/sv-support-qa/.

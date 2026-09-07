@@ -1,3 +1,4 @@
+import { SupportButton } from "./support-button.jsx";
 import { LaunchCockpit } from "./launch-cockpit.jsx";
 import { initialLaunchSoundtrack, luckySoundtrackGenre, luckyLaunchVisual, soundtrackLaunchReady, prepareExactSoundtrackStart } from "./launch-model.js";
 import { startStationaryRefresh } from "./engine/stationary-refresh.js";
@@ -792,6 +793,7 @@ const DIALOG_FOCUSABLE_SELECTOR = [
 
 function DialogSurface({
   className,
+  inert,
   labelledBy,
   onClose,
   backdropClass = "drawer-backdrop",
@@ -911,6 +913,7 @@ function DialogSurface({
   return (
     <section
       className={className}
+      inert={inert}
       role="dialog"
       aria-modal="true"
       aria-labelledby={labelledBy}
@@ -2012,16 +2015,6 @@ function PaletteControl({ themeId, onChange, open, onOpenChange }) {
         </button>)}
       </div> : null}
     </div>
-  );
-}
-
-function SupportCupMark() {
-  return (
-    <svg className="support-cup-mark" viewBox="0 0 32 32" aria-hidden="true">
-      <path d="M8 8.5h15l-1.6 14.2c-.2 2-1.9 3.5-3.9 3.5h-4c-2 0-3.7-1.5-3.9-3.5L8 8.5Z" />
-      <path d="M22.7 11h2.1a3.7 3.7 0 0 1 0 7.4h-2.9" />
-      <path d="M10.3 5.3c3.7-1.4 7.6-1.4 11.4 0" />
-    </svg>
   );
 }
 
@@ -5050,7 +5043,7 @@ export function App() {
           scoreId={genreId} onScore={(id) => { setLaunchExperienceId(null); setGenreId(id); }}
           engineProfileId={engineProfileId} onEngineProfile={chooseEngineProfile}
           experienceId={launchExperienceId} onExperience={(id) => chooseExperience(id, { launch: true })}
-          markUrl={appearanceResolution.appearance === "dark" ? TOPBAR_MARK_URL : BRAND_MARK_URL}
+          markUrl={`/brand/sedicivalvole-mark-transparent${appearanceResolution.appearance === "dark" ? "-dark" : ""}.svg?build=${APP_BUILD}`}
           build={APP_BUILD} onSupport={() => setSupportOpen(true)} onReset={resetSavedState}
           muted={muted} onUnmute={() => setMuted(false)} Dialog={DialogSurface}
           ready={Boolean(launchMusicId && launchEnvironmentId)}
@@ -5236,6 +5229,7 @@ export function App() {
       {drawerOpen ? (
         <DialogSurface
           className="diagnostic-drawer diagnostic-report-drawer"
+          inert={supportOpen ? true : undefined}
           labelledBy="diagnostic-title"
           onClose={() => {
             setDrawerOpen(false);
@@ -5248,6 +5242,7 @@ export function App() {
                 <h2 id="diagnostic-title">{diagnosticReadmeOpen ? "Technical README" : "Session report"}</h2>
               </div>
               <div className="drawer-heading-actions">
+                <SupportButton onClick={() => setSupportOpen(true)} />
                 <button
                   type="button"
                   aria-controls="diagnostic-readme"

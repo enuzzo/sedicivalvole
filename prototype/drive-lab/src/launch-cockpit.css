@@ -66,3 +66,18 @@
 }
 .cockpit-footer>small{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);width:auto;white-space:nowrap}
 @media(max-width:650px){.cockpit-footer{min-height:76px;align-items:flex-start}.cockpit-footer>small{bottom:4px}}
+
+/* Owner refinement: support joins About; safety copy belongs to the wordmark. */
+.cockpit-wordmark{min-width:0;display:flex;flex-direction:column;gap:3px}
+.cockpit-wordmark>small{font-size:13px;line-height:1.2}
+.cockpit-heading{gap:12px}
+.cockpit-heading>button{flex:none;height:48px}
+.cockpit-footer{min-height:48px;align-items:center}
+@media(max-width:950px){.cockpit-build{display:none}.cockpit-wordmark{margin-right:auto}}
+@media(max-width:650px){
+ .cockpit-heading{display:grid;grid-template-columns:36px minmax(0,1fr) 48px 48px;gap:6px}
+ .cockpit-heading h1{font-size:19px}
+ .cockpit-heading>button{margin:0;padding:4px;font-size:13px;min-width:48px}
+ .cockpit-heading .coffee-support-button span{display:none}
+ .launch-cockpit{max-height:calc(100dvh - 96px)}
+}

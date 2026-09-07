@@ -102,7 +102,7 @@ test("Buy Me a Coffee opens a real, accessible support panel", () => {
   assert.match(app, /url\.protocol === "https:"/);
   assert.match(app, /buymeacoffee\\\.com/);
   assert.match(read("launch-cockpit.jsx"), /onClick=\{onSupport\}/);
-  assert.match(read("launch-cockpit.jsx"), /aria-label="Open Buy Me a Coffee support panel"/);
+  assert.match(read("support-button.jsx"), /aria-label="Open Buy Me a Coffee support panel"/);
   assert.match(app, /function DialogSurface\(/);
   assert.match(app, /role="dialog"/);
   assert.match(app, /aria-modal="true"/);
