@@ -1,0 +1,1712 @@
+{
+  "schema": "sedicivalvole.engine-loop-audit.v1",
+  "purpose": "read-only review evidence; no RPM or audibility verdict",
+  "analyzer_sha256": "1a9ef381d358bc6decf352a72691cd1aa6df89039dab191c6c737aa23dfde057",
+  "inventory_sha256": "78bf044d121279f670c0d9e26db5b010d93601d264e2ee831f9fe40f28d4cb00",
+  "configuration_sha256": "65179084f655e5dcb8a7495391a3dd128ab320747e7ca4f5404ffb4ad7b69ded",
+  "numpy": "2.3.5",
+  "node": "v26.8.1",
+  "self_test": "pass",
+  "method": {
+    "audio_preprocessing": "None for edge measurements; per-window channel means removed only for spectral/period analysis",
+    "unusual_boundary_flag": "abs(first-last) > max(0.08 FS, 3.5 * interior abs-step p99.9), uncalibrated review cue only; runtime uses a conservative histogram upper bound instead of exact quantile",
+    "periods": "Nine evenly placed one-second windows (may overlap; not independent evidence); overlap-energy-normalized autocorrelation, 20\u2013800 Hz lag search; top three positive peaks per window, clustered within 0.04 octave",
+    "spectrum": "Average channel-power Hann periodograms over the same windows; strongest 20\u20134000 Hz local peaks, at least 5 Hz apart; zero padding interpolates but does not improve 1 Hz physical resolution",
+    "scope": "Native file wrap only; runtime resampling, sample gains, crossfades, limiter and perceived Tesla audio are not measured"
+  },
+  "assets": [
+    {
+      "profile": "mono",
+      "role": "on_high",
+      "url": "/engine-audio/b75b9041be696ed6.wav",
+      "source": "public/audio/BAC_Mono_onhigh.wav",
+      "sha256": "b75b9041be696ed651253b1f034285144337f85c909dfaec675548da9be7c296",
+      "encoded_bytes": 2144712,
+      "declared_reference_rpm_unverified": 1000,
+      "native_sample_rate": 48000,
+      "channels": 2,
+      "frames": 535154,
+      "duration_s": 11.14904167,
+      "wave_format": {
+        "encoding": "PCM",
+        "bits": 16,
+        "chunks": [
+          "fmt ",
+          "PAD ",
+          "data"
+        ],
+        "sampler_loops": [],
+        "cue_frames": []
+      },
+      "channels_analysis": [
+        {
+          "channel": 0,
+          "rms": 0.5867181,
+          "rms_dbfs": -4.6314103,
+          "peak": 1.0,
+          "dc": -0.00619467,
+          "wrap_step": 0.68341064,
+          "wrap_step_dbfs": -3.30636522,
+          "interior_abs_step_p99": 0.13259888,
+          "interior_abs_step_p999": 0.17318726,
+          "wrap_to_interior_p99": 5.15397008,
+          "interior_step_percentile_of_wrap": 100.0,
+          "first_10ms_rms": 0.69643697,
+          "last_10ms_rms": 0.5959588,
+          "unusual_boundary_flag": true
+        },
+        {
+          "channel": 1,
+          "rms": 0.60195969,
+          "rms_dbfs": -4.40865176,
+          "peak": 1.0,
+          "dc": 0.02707285,
+          "wrap_step": 0.08099365,
+          "wrap_step_dbfs": -21.83098033,
+          "interior_abs_step_p99": 0.12014771,
+          "interior_abs_step_p999": 0.15617969,
+          "wrap_to_interior_p99": 0.67411735,
+          "interior_step_percentile_of_wrap": 92.88091443,
+          "first_10ms_rms": 0.72559039,
+          "last_10ms_rms": 0.56663917,
+          "unusual_boundary_flag": false
+        }
+      ],
+      "period_analysis": {
+        "windows": 9,
+        "window_duration_s": 1.0,
+        "frequency_resolution_hz": 1.0,
+        "autocorrelation_period_candidates": [
+          {
+            "frequency_hz": 28.38747613,
+            "period_ms": 35.22680196,
+            "frequency_p10_hz": 28.32847509,
+            "frequency_p90_hz": 28.41549451,
+            "median_correlation": 0.83447684,
+            "windows_supporting": 9
+          },
+          {
+            "frequency_hz": 37.94696189,
+            "period_ms": 26.3525708,
+            "frequency_p10_hz": 37.79148362,
+            "frequency_p90_hz": 37.97092337,
+            "median_correlation": 0.72905049,
+            "windows_supporting": 7
+          },
+          {
+            "frequency_hz": 113.59812126,
+            "period_ms": 8.80296249,
+            "frequency_p10_hz": 113.21438012,
+            "frequency_p90_hz": 113.91681805,
+            "median_correlation": 0.6378045,
+            "windows_supporting": 6
+          },
+          {
+            "frequency_hz": 56.82177293,
+            "period_ms": 17.59888769,
+            "frequency_p10_hz": 56.80911483,
+            "frequency_p90_hz": 56.84542392,
+            "median_correlation": 0.78219823,
+            "windows_supporting": 3
+          },
+          {
+            "frequency_hz": 22.76764214,
+            "period_ms": 43.92198339,
+            "frequency_p10_hz": 22.76205604,
+            "frequency_p90_hz": 22.77322824,
+            "median_correlation": 0.61905905,
+            "windows_supporting": 2
+          }
+        ],
+        "averaged_spectrum_peaks": [
+          {
+            "frequency_hz": 113.38571787,
+            "relative_peak_db": 0.0
+          },
+          {
+            "frequency_hz": 227.70316884,
+            "relative_peak_db": -0.20260549
+          },
+          {
+            "frequency_hz": 341.33787854,
+            "relative_peak_db": -8.27788278
+          },
+          {
+            "frequency_hz": 85.1090462,
+            "relative_peak_db": -10.25811179
+          },
+          {
+            "frequency_hz": 455.31499848,
+            "relative_peak_db": -12.66263619
+          }
+        ],
+        "inferred_rpm": null,
+        "uncertainty": "Candidates may be harmonics, subharmonics, firing, shaft, exhaust, or transmission components; cylinder/order metadata and listening are required."
+      },
+      "seam_candidate": {
+        "status": "analysis_only_not_applied_to_audio_files",
+        "method": "Complementary raised-cosine tail/head blend in the decoded tail; loop starts after the head; coefficients sum to one",
+        "blend_frames": 480,
+        "duration_removed_ms": 10.0,
+        "loop_start_s": 0.01,
+        "loop_end_s": 11.14904167,
+        "steady_loop_rms_change_db": -0.00195854,
+        "peak_cannot_increase": true,
+        "channels_analysis": [
+          {
+            "channel": 0,
+            "rms": 0.58658441,
+            "rms_dbfs": -4.6333897,
+            "peak": 1.0,
+            "dc": -0.00618035,
+            "wrap_step": -0.0085144,
+            "wrap_step_dbfs": -41.39691463,
+            "interior_abs_step_p99": 0.13259888,
+            "interior_abs_step_p999": 0.17316675,
+            "wrap_to_interior_p99": 0.06421174,
+            "interior_step_percentile_of_wrap": 24.75494368,
+            "first_10ms_rms": 0.68976711,
+            "last_10ms_rms": 0.56676882,
+            "unusual_boundary_flag": false
+          },
+          {
+            "channel": 1,
+            "rms": 0.60182535,
+            "rms_dbfs": -4.41059047,
+            "peak": 1.0,
+            "dc": 0.02711105,
+            "wrap_step": 0.0,
+            "wrap_step_dbfs": null,
+            "interior_abs_step_p99": 0.12014771,
+            "interior_abs_step_p999": 0.15606641,
+            "wrap_to_interior_p99": 0.0,
+            "interior_step_percentile_of_wrap": 13.23369611,
+            "first_10ms_rms": 0.62307281,
+            "last_10ms_rms": 0.55232579,
+            "unusual_boundary_flag": false
+          }
+        ],
+        "transition_max_abs_step": 0.13344279,
+        "limitations": "Changes loop duration and phase; can cause short local cancellation; no repeat-listening or resampled runtime render yet."
+      }
+    },
+    {
+      "profile": "mono",
+      "role": "on_low",
+      "url": "/engine-audio/8d178cd745397cc3.wav",
+      "source": "public/audio/BAC_Mono_onlow.wav",
+      "sha256": "8d178cd745397cc333815b5a3980c4c195a3d4ab21005e3f2500e03fcaab2f8c",
+      "encoded_bytes": 1805772,
+      "declared_reference_rpm_unverified": 1000,
+      "native_sample_rate": 48000,
+      "channels": 2,
+      "frames": 450419,
+      "duration_s": 9.38372917,
+      "wave_format": {
+        "encoding": "PCM",
+        "bits": 16,
+        "chunks": [
+          "fmt ",
+          "PAD ",
+          "data"
+        ],
+        "sampler_loops": [],
+        "cue_frames": []
+      },
+      "channels_analysis": [
+        {
+          "channel": 0,
+          "rms": 0.44300582,
+          "rms_dbfs": -7.07181134,
+          "peak": 1.0,
+          "dc": 0.00677295,
+          "wrap_step": 0.19372559,
+          "wrap_step_dbfs": -14.25626034,
+          "interior_abs_step_p99": 0.07788086,
+          "interior_abs_step_p999": 0.10040283,
+          "wrap_to_interior_p99": 2.48746082,
+          "interior_step_percentile_of_wrap": 100.0,
+          "first_10ms_rms": 0.50540255,
+          "last_10ms_rms": 0.42352183,
+          "unusual_boundary_flag": false
+        },
+        {
+          "channel": 1,
+          "rms": 0.5048652,
+          "rms_dbfs": -5.93649134,
+          "peak": 1.0,
+          "dc": 0.01538978,
+          "wrap_step": 0.03259277,
+          "wrap_step_dbfs": -29.73757365,
+          "interior_abs_step_p99": 0.08270264,
+          "interior_abs_step_p999": 0.10617572,
+          "wrap_to_interior_p99": 0.39409594,
+          "interior_step_percentile_of_wrap": 71.93251602,
+          "first_10ms_rms": 0.3843484,
+          "last_10ms_rms": 0.48856374,
+          "unusual_boundary_flag": false
+        }
+      ],
+      "period_analysis": {
+        "windows": 9,
+        "window_duration_s": 1.0,
+        "frequency_resolution_hz": 1.0,
+        "autocorrelation_period_candidates": [
+          {
+            "frequency_hz": 28.53401894,
+            "period_ms": 35.04588688,
+            "frequency_p10_hz": 28.41380156,
+            "frequency_p90_hz": 28.60813779,
+            "median_correlation": 0.82661652,
+            "windows_supporting": 9
+          },
+          {
+            "frequency_hz": 114.12143274,
+            "period_ms": 8.76259591,
+            "frequency_p10_hz": 113.64642313,
+            "frequency_p90_hz": 114.62134306,
+            "median_correlation": 0.78581046,
+            "windows_supporting": 9
+          },
+          {
+            "frequency_hz": 57.10984739,
+            "period_ms": 17.51011508,
+            "frequency_p10_hz": 56.83468948,
+            "frequency_p90_hz": 57.18488848,
+            "median_correlation": 0.80066008,
+            "windows_supporting": 5
+          },
+          {
+            "frequency_hz": 38.06084686,
+            "period_ms": 26.27371912,
+            "frequency_p10_hz": 38.01709346,
+            "frequency_p90_hz": 38.09800619,
+            "median_correlation": 0.75398276,
+            "windows_supporting": 4
+          }
+        ],
+        "averaged_spectrum_peaks": [
+          {
+            "frequency_hz": 114.12909253,
+            "relative_peak_db": 0.0
+          },
+          {
+            "frequency_hz": 229.28943573,
+            "relative_peak_db": -3.06345785
+          },
+          {
+            "frequency_hz": 343.9113607,
+            "relative_peak_db": -11.02271314
+          },
+          {
+            "frequency_hz": 452.56268321,
+            "relative_peak_db": -13.93375464
+          },
+          {
+            "frequency_hz": 458.82955241,
+            "relative_peak_db": -14.94680583
+          }
+        ],
+        "inferred_rpm": null,
+        "uncertainty": "Candidates may be harmonics, subharmonics, firing, shaft, exhaust, or transmission components; cylinder/order metadata and listening are required."
+      },
+      "seam_candidate": {
+        "status": "analysis_only_not_applied_to_audio_files",
+        "method": "Complementary raised-cosine tail/head blend in the decoded tail; loop starts after the head; coefficients sum to one",
+        "blend_frames": 480,
+        "duration_removed_ms": 10.0,
+        "loop_start_s": 0.01,
+        "loop_end_s": 9.38372917,
+        "steady_loop_rms_change_db": 0.00034909,
+        "peak_cannot_increase": true,
+        "channels_analysis": [
+          {
+            "channel": 0,
+            "rms": 0.44298139,
+            "rms_dbfs": -7.07229033,
+            "peak": 1.0,
+            "dc": 0.00675221,
+            "wrap_step": -0.04263306,
+            "wrap_step_dbfs": -27.40507058,
+            "interior_abs_step_p99": 0.07790009,
+            "interior_abs_step_p999": 0.10037424,
+            "wrap_to_interior_p99": 0.54727869,
+            "interior_step_percentile_of_wrap": 85.16840098,
+            "first_10ms_rms": 0.47178317,
+            "last_10ms_rms": 0.46718283,
+            "unusual_boundary_flag": false
+          },
+          {
+            "channel": 1,
+            "rms": 0.50492254,
+            "rms_dbfs": -5.93550477,
+            "peak": 1.0,
+            "dc": 0.01533603,
+            "wrap_step": -0.0239563,
+            "wrap_step_dbfs": -32.41160556,
+            "interior_abs_step_p99": 0.08270264,
+            "interior_abs_step_p999": 0.10620117,
+            "wrap_to_interior_p99": 0.2896679,
+            "interior_step_percentile_of_wrap": 58.94567696,
+            "first_10ms_rms": 0.3066173,
+            "last_10ms_rms": 0.43105861,
+            "unusual_boundary_flag": false
+          }
+        ],
+        "transition_max_abs_step": 0.08389383,
+        "limitations": "Changes loop duration and phase; can cause short local cancellation; no repeat-listening or resampled runtime render yet."
+      }
+    },
+    {
+      "profile": "mono",
+      "role": "off_high",
+      "url": "/engine-audio/98d9a4f823c8dc66.wav",
+      "source": "public/audio/BAC_Mono_offveryhigh.wav",
+      "sha256": "98d9a4f823c8dc6603cb657af90cbe680454bac06d2707b36e405118057e1ccc",
+      "encoded_bytes": 1826496,
+      "declared_reference_rpm_unverified": 1000,
+      "native_sample_rate": 48000,
+      "channels": 2,
+      "frames": 455600,
+      "duration_s": 9.49166667,
+      "wave_format": {
+        "encoding": "PCM",
+        "bits": 16,
+        "chunks": [
+          "fmt ",
+          "PAD ",
+          "data"
+        ],
+        "sampler_loops": [],
+        "cue_frames": []
+      },
+      "channels_analysis": [
+        {
+          "channel": 0,
+          "rms": 0.49581105,
+          "rms_dbfs": -6.09367597,
+          "peak": 1.0,
+          "dc": -0.00078116,
+          "wrap_step": -0.70541382,
+          "wrap_step_dbfs": -3.03112074,
+          "interior_abs_step_p99": 0.10919189,
+          "interior_abs_step_p999": 0.14269421,
+          "wrap_to_interior_p99": 6.46031302,
+          "interior_step_percentile_of_wrap": 100.0,
+          "first_10ms_rms": 0.40828268,
+          "last_10ms_rms": 0.43857438,
+          "unusual_boundary_flag": true
+        },
+        {
+          "channel": 1,
+          "rms": 0.45986303,
+          "rms_dbfs": -6.74743002,
+          "peak": 1.0,
+          "dc": 0.00040929,
+          "wrap_step": 0.03808594,
+          "wrap_step_dbfs": -28.38470699,
+          "interior_abs_step_p99": 0.09259033,
+          "interior_abs_step_p999": 0.12293707,
+          "wrap_to_interior_p99": 0.41133817,
+          "interior_step_percentile_of_wrap": 73.70121532,
+          "first_10ms_rms": 0.42852094,
+          "last_10ms_rms": 0.49563777,
+          "unusual_boundary_flag": false
+        }
+      ],
+      "period_analysis": {
+        "windows": 9,
+        "window_duration_s": 1.0,
+        "frequency_resolution_hz": 1.0,
+        "autocorrelation_period_candidates": [
+          {
+            "frequency_hz": 56.66028386,
+            "period_ms": 17.64904677,
+            "frequency_p10_hz": 56.53477502,
+            "frequency_p90_hz": 57.01063977,
+            "median_correlation": 0.70567522,
+            "windows_supporting": 9
+          },
+          {
+            "frequency_hz": 28.41929576,
+            "period_ms": 35.18736033,
+            "frequency_p10_hz": 28.16437606,
+            "frequency_p90_hz": 28.55818125,
+            "median_correlation": 0.62000572,
+            "windows_supporting": 9
+          },
+          {
+            "frequency_hz": 112.91143973,
+            "period_ms": 8.85649853,
+            "frequency_p10_hz": 111.0634179,
+            "frequency_p90_hz": 113.45244056,
+            "median_correlation": 0.63319994,
+            "windows_supporting": 7
+          },
+          {
+            "frequency_hz": 117.01968757,
+            "period_ms": 8.54557059,
+            "frequency_p10_hz": 116.98762996,
+            "frequency_p90_hz": 117.05174518,
+            "median_correlation": 0.55046145,
+            "windows_supporting": 2
+          }
+        ],
+        "averaged_spectrum_peaks": [
+          {
+            "frequency_hz": 113.82339724,
+            "relative_peak_db": 0.0
+          },
+          {
+            "frequency_hz": 56.62988185,
+            "relative_peak_db": -13.22983545
+          },
+          {
+            "frequency_hz": 118.87279458,
+            "relative_peak_db": -16.10808215
+          },
+          {
+            "frequency_hz": 170.58087369,
+            "relative_peak_db": -16.50554832
+          },
+          {
+            "frequency_hz": 84.9487368,
+            "relative_peak_db": -16.87574378
+          }
+        ],
+        "inferred_rpm": null,
+        "uncertainty": "Candidates may be harmonics, subharmonics, firing, shaft, exhaust, or transmission components; cylinder/order metadata and listening are required."
+      },
+      "seam_candidate": {
+        "status": "analysis_only_not_applied_to_audio_files",
+        "method": "Complementary raised-cosine tail/head blend in the decoded tail; loop starts after the head; coefficients sum to one",
+        "blend_frames": 480,
+        "duration_removed_ms": 10.0,
+        "loop_start_s": 0.01,
+        "loop_end_s": 9.49166667,
+        "steady_loop_rms_change_db": -0.00124101,
+        "peak_cannot_increase": true,
+        "channels_analysis": [
+          {
+            "channel": 0,
+            "rms": 0.495802,
+            "rms_dbfs": -6.09383454,
+            "peak": 1.0,
+            "dc": -0.0008055,
+            "wrap_step": 0.05551147,
+            "wrap_step_dbfs": -25.11234472,
+            "interior_abs_step_p99": 0.1091864,
+            "interior_abs_step_p999": 0.14266968,
+            "wrap_to_interior_p99": 0.50841015,
+            "interior_step_percentile_of_wrap": 83.4950859,
+            "first_10ms_rms": 0.4722783,
+            "last_10ms_rms": 0.32357901,
+            "unusual_boundary_flag": false
+          },
+          {
+            "channel": 1,
+            "rms": 0.45973071,
+            "rms_dbfs": -6.74992965,
+            "peak": 1.0,
+            "dc": 0.000406,
+            "wrap_step": -0.00308228,
+            "wrap_step_dbfs": -50.22257122,
+            "interior_abs_step_p99": 0.0925293,
+            "interior_abs_step_p999": 0.12285657,
+            "wrap_to_interior_p99": 0.03331135,
+            "interior_step_percentile_of_wrap": 8.96578697,
+            "first_10ms_rms": 0.49417853,
+            "last_10ms_rms": 0.32006089,
+            "unusual_boundary_flag": false
+          }
+        ],
+        "transition_max_abs_step": 0.10471665,
+        "limitations": "Changes loop duration and phase; can cause short local cancellation; no repeat-listening or resampled runtime render yet."
+      }
+    },
+    {
+      "profile": "mono",
+      "role": "off_low",
+      "url": "/engine-audio/97d45c525723ea02.wav",
+      "source": "public/audio/BAC_Mono_offlow.wav",
+      "sha256": "97d45c525723ea02f72ba0d553a368baedcc189833162275db10c2f9eec467ae",
+      "encoded_bytes": 1144012,
+      "declared_reference_rpm_unverified": 1000,
+      "native_sample_rate": 48000,
+      "channels": 2,
+      "frames": 284979,
+      "duration_s": 5.9370625,
+      "wave_format": {
+        "encoding": "PCM",
+        "bits": 16,
+        "chunks": [
+          "fmt ",
+          "PAD ",
+          "data"
+        ],
+        "sampler_loops": [],
+        "cue_frames": []
+      },
+      "channels_analysis": [
+        {
+          "channel": 0,
+          "rms": 0.36162132,
+          "rms_dbfs": -8.83491957,
+          "peak": 1.0,
+          "dc": 0.00476469,
+          "wrap_step": 0.12969971,
+          "wrap_step_dbfs": -17.7412201,
+          "interior_abs_step_p99": 0.0697702,
+          "interior_abs_step_p999": 0.09280396,
+          "wrap_to_interior_p99": 1.85895557,
+          "interior_step_percentile_of_wrap": 99.99824548,
+          "first_10ms_rms": 0.46066023,
+          "last_10ms_rms": 0.4985225,
+          "unusual_boundary_flag": false
+        },
+        {
+          "channel": 1,
+          "rms": 0.43527655,
+          "rms_dbfs": -7.22469461,
+          "peak": 1.0,
+          "dc": 0.02521157,
+          "wrap_step": 0.65820312,
+          "wrap_step_dbfs": -3.6328012,
+          "interior_abs_step_p99": 0.07403564,
+          "interior_abs_step_p999": 0.09744263,
+          "wrap_to_interior_p99": 8.89035449,
+          "interior_step_percentile_of_wrap": 100.0,
+          "first_10ms_rms": 0.34753532,
+          "last_10ms_rms": 0.47238396,
+          "unusual_boundary_flag": true
+        }
+      ],
+      "period_analysis": {
+        "windows": 9,
+        "window_duration_s": 1.0,
+        "frequency_resolution_hz": 1.0,
+        "autocorrelation_period_candidates": [
+          {
+            "frequency_hz": 56.83164457,
+            "period_ms": 17.59583077,
+            "frequency_p10_hz": 56.4820017,
+            "frequency_p90_hz": 56.95249813,
+            "median_correlation": 0.7047736,
+            "windows_supporting": 9
+          },
+          {
+            "frequency_hz": 113.74775388,
+            "period_ms": 8.79138239,
+            "frequency_p10_hz": 112.95736893,
+            "frequency_p90_hz": 114.64692836,
+            "median_correlation": 0.7012256,
+            "windows_supporting": 9
+          },
+          {
+            "frequency_hz": 37.96509257,
+            "period_ms": 26.33998582,
+            "frequency_p10_hz": 37.59264085,
+            "frequency_p90_hz": 38.14058781,
+            "median_correlation": 0.56756383,
+            "windows_supporting": 9
+          }
+        ],
+        "averaged_spectrum_peaks": [
+          {
+            "frequency_hz": 114.4680327,
+            "relative_peak_db": 0.0
+          },
+          {
+            "frequency_hz": 108.32181611,
+            "relative_peak_db": -7.87616439
+          },
+          {
+            "frequency_hz": 229.08865768,
+            "relative_peak_db": -13.31853075
+          },
+          {
+            "frequency_hz": 96.30483307,
+            "relative_peak_db": -13.92364155
+          },
+          {
+            "frequency_hz": 47.05448125,
+            "relative_peak_db": -15.06176915
+          }
+        ],
+        "inferred_rpm": null,
+        "uncertainty": "Candidates may be harmonics, subharmonics, firing, shaft, exhaust, or transmission components; cylinder/order metadata and listening are required."
+      },
+      "seam_candidate": {
+        "status": "analysis_only_not_applied_to_audio_files",
+        "method": "Complementary raised-cosine tail/head blend in the decoded tail; loop starts after the head; coefficients sum to one",
+        "blend_frames": 480,
+        "duration_removed_ms": 10.0,
+        "loop_start_s": 0.01,
+        "loop_end_s": 5.9370625,
+        "steady_loop_rms_change_db": -0.00455599,
+        "peak_cannot_increase": true,
+        "channels_analysis": [
+          {
+            "channel": 0,
+            "rms": 0.36111743,
+            "rms_dbfs": -8.84703105,
+            "peak": 1.0,
+            "dc": 0.00463208,
+            "wrap_step": 0.02038574,
+            "wrap_step_dbfs": -33.81346945,
+            "interior_abs_step_p99": 0.0697937,
+            "interior_abs_step_p999": 0.09280396,
+            "wrap_to_interior_p99": 0.2920857,
+            "interior_step_percentile_of_wrap": 57.61376178,
+            "first_10ms_rms": 0.46056864,
+            "last_10ms_rms": 0.33780326,
+            "unusual_boundary_flag": false
+          },
+          {
+            "channel": 1,
+            "rms": 0.43530918,
+            "rms_dbfs": -7.22404342,
+            "peak": 1.0,
+            "dc": 0.02501528,
+            "wrap_step": 0.06973267,
+            "wrap_step_dbfs": -23.13127461,
+            "interior_abs_step_p99": 0.07394409,
+            "interior_abs_step_p999": 0.09739694,
+            "wrap_to_interior_p99": 0.94304581,
+            "interior_step_percentile_of_wrap": 98.53179987,
+            "first_10ms_rms": 0.38205704,
+            "last_10ms_rms": 0.4138854,
+            "unusual_boundary_flag": false
+          }
+        ],
+        "transition_max_abs_step": 0.08098101,
+        "limitations": "Changes loop duration and phase; can cause short local cancellation; no repeat-listening or resampled runtime render yet."
+      }
+    },
+    {
+      "profile": "rosso",
+      "role": "on_high",
+      "url": "/engine-audio/2b6aac5dafa945ce.wav",
+      "source": "public/audio/458/power_2 {1d0b3340-525d-418d-b809-a61f94a1d76a}.wav",
+      "sha256": "2b6aac5dafa945ce0d6b3b20add3844d703dfec1409b7ecebcb8367dc6fdfe45",
+      "encoded_bytes": 3847772,
+      "declared_reference_rpm_unverified": 7700,
+      "native_sample_rate": 44100,
+      "channels": 2,
+      "frames": 480925,
+      "duration_s": 10.9053288,
+      "wave_format": {
+        "encoding": "IEEE_FLOAT",
+        "bits": 32,
+        "chunks": [
+          "fmt ",
+          "fact",
+          "data",
+          "smpl",
+          "inst",
+          "acid",
+          "strc",
+          "cue ",
+          "LIST",
+          "LIST"
+        ],
+        "sampler_loops": [],
+        "cue_frames": [
+          0
+        ]
+      },
+      "channels_analysis": [
+        {
+          "channel": 0,
+          "rms": 0.14467794,
+          "rms_dbfs": -16.79195356,
+          "peak": 0.53120297,
+          "dc": 0.00738683,
+          "wrap_step": 0.00954602,
+          "wrap_step_dbfs": -40.40355144,
+          "interior_abs_step_p99": 0.05270615,
+          "interior_abs_step_p999": 0.06833146,
+          "wrap_to_interior_p99": 0.18111779,
+          "interior_step_percentile_of_wrap": 36.82619291,
+          "first_10ms_rms": 0.14203512,
+          "last_10ms_rms": 0.14616575,
+          "unusual_boundary_flag": false
+        },
+        {
+          "channel": 1,
+          "rms": 0.13341904,
+          "rms_dbfs": -17.4956437,
+          "peak": 0.58282197,
+          "dc": 0.00487603,
+          "wrap_step": -0.01145047,
+          "wrap_step_dbfs": -38.82353553,
+          "interior_abs_step_p99": 0.05081123,
+          "interior_abs_step_p999": 0.07021372,
+          "wrap_to_interior_p99": 0.22535309,
+          "interior_step_percentile_of_wrap": 47.33991234,
+          "first_10ms_rms": 0.08621444,
+          "last_10ms_rms": 0.11187985,
+          "unusual_boundary_flag": false
+        }
+      ],
+      "period_analysis": {
+        "windows": 9,
+        "window_duration_s": 1.0,
+        "frequency_resolution_hz": 1.0,
+        "autocorrelation_period_candidates": [
+          {
+            "frequency_hz": 63.99554274,
+            "period_ms": 15.62608827,
+            "frequency_p10_hz": 63.89839987,
+            "frequency_p90_hz": 64.03621308,
+            "median_correlation": 0.8723181,
+            "windows_supporting": 9
+          },
+          {
+            "frequency_hz": 31.99758246,
+            "period_ms": 31.25236106,
+            "frequency_p10_hz": 31.95478899,
+            "frequency_p90_hz": 32.01687507,
+            "median_correlation": 0.84147124,
+            "windows_supporting": 9
+          },
+          {
+            "frequency_hz": 21.33107517,
+            "period_ms": 46.87996232,
+            "frequency_p10_hz": 21.30251606,
+            "frequency_p90_hz": 21.34246945,
+            "median_correlation": 0.79961005,
+            "windows_supporting": 9
+          }
+        ],
+        "averaged_spectrum_peaks": [
+          {
+            "frequency_hz": 256.09589301,
+            "relative_peak_db": 0.0
+          },
+          {
+            "frequency_hz": 511.78394077,
+            "relative_peak_db": -4.20858122
+          },
+          {
+            "frequency_hz": 384.37825953,
+            "relative_peak_db": -8.97441979
+          },
+          {
+            "frequency_hz": 320.16368417,
+            "relative_peak_db": -12.23867081
+          },
+          {
+            "frequency_hz": 576.72441871,
+            "relative_peak_db": -12.67923082
+          }
+        ],
+        "inferred_rpm": null,
+        "uncertainty": "Candidates may be harmonics, subharmonics, firing, shaft, exhaust, or transmission components; cylinder/order metadata and listening are required."
+      }
+    },
+    {
+      "profile": "rosso",
+      "role": "on_low",
+      "url": "/engine-audio/f068c7b8b8424a98.wav",
+      "source": "public/audio/458/mid_res_2 {a777a51b-a829-4637-ac37-ccdaca0a3e9b}.wav",
+      "sha256": "f068c7b8b8424a98fd4773f247338b0674ab25fc9993fc7f68de078e519c572d",
+      "encoded_bytes": 1664150,
+      "declared_reference_rpm_unverified": 5300,
+      "native_sample_rate": 44100,
+      "channels": 2,
+      "frames": 207990,
+      "duration_s": 4.71632653,
+      "wave_format": {
+        "encoding": "IEEE_FLOAT",
+        "bits": 32,
+        "chunks": [
+          "fmt ",
+          "fact",
+          "data",
+          "smpl",
+          "inst",
+          "acid",
+          "LIST",
+          "LIST"
+        ],
+        "sampler_loops": [],
+        "cue_frames": []
+      },
+      "channels_analysis": [
+        {
+          "channel": 0,
+          "rms": 0.16702894,
+          "rms_dbfs": -15.5441656,
+          "peak": 0.60552073,
+          "dc": 0.01193281,
+          "wrap_step": 0.09194029,
+          "wrap_step_dbfs": -20.72988254,
+          "interior_abs_step_p99": 0.06099159,
+          "interior_abs_step_p999": 0.0777975,
+          "wrap_to_interior_p99": 1.50742583,
+          "interior_step_percentile_of_wrap": 99.98894172,
+          "first_10ms_rms": 0.13200149,
+          "last_10ms_rms": 0.16230368,
+          "unusual_boundary_flag": false
+        },
+        {
+          "channel": 1,
+          "rms": 0.13007462,
+          "rms_dbfs": -17.71614846,
+          "peak": 0.65284187,
+          "dc": 0.00771148,
+          "wrap_step": 0.06354325,
+          "wrap_step_dbfs": -23.93861203,
+          "interior_abs_step_p99": 0.05491469,
+          "interior_abs_step_p999": 0.07200236,
+          "wrap_to_interior_p99": 1.15712655,
+          "interior_step_percentile_of_wrap": 99.72017751,
+          "first_10ms_rms": 0.13378941,
+          "last_10ms_rms": 0.11649451,
+          "unusual_boundary_flag": false
+        }
+      ],
+      "period_analysis": {
+        "windows": 9,
+        "window_duration_s": 1.0,
+        "frequency_resolution_hz": 1.0,
+        "autocorrelation_period_candidates": [
+          {
+            "frequency_hz": 48.91916905,
+            "period_ms": 20.44188443,
+            "frequency_p10_hz": 48.67120408,
+            "frequency_p90_hz": 49.11799339,
+            "median_correlation": 0.76789898,
+            "windows_supporting": 9
+          },
+          {
+            "frequency_hz": 97.78624063,
+            "period_ms": 10.22638761,
+            "frequency_p10_hz": 97.41105458,
+            "frequency_p90_hz": 98.17465389,
+            "median_correlation": 0.72758239,
+            "windows_supporting": 9
+          },
+          {
+            "frequency_hz": 195.52515548,
+            "period_ms": 5.11443143,
+            "frequency_p10_hz": 195.08245831,
+            "frequency_p90_hz": 195.76595181,
+            "median_correlation": 0.63519289,
+            "windows_supporting": 5
+          },
+          {
+            "frequency_hz": 24.54097254,
+            "period_ms": 40.74818136,
+            "frequency_p10_hz": 24.51367169,
+            "frequency_p90_hz": 24.56568422,
+            "median_correlation": 0.69797938,
+            "windows_supporting": 4
+          }
+        ],
+        "averaged_spectrum_peaks": [
+          {
+            "frequency_hz": 196.43588058,
+            "relative_peak_db": 0.0
+          },
+          {
+            "frequency_hz": 392.80886522,
+            "relative_peak_db": -5.59973031
+          },
+          {
+            "frequency_hz": 97.62293952,
+            "relative_peak_db": -8.84850238
+          },
+          {
+            "frequency_hz": 589.69476838,
+            "relative_peak_db": -10.34951883
+          },
+          {
+            "frequency_hz": 582.28705674,
+            "relative_peak_db": -11.76138431
+          }
+        ],
+        "inferred_rpm": null,
+        "uncertainty": "Candidates may be harmonics, subharmonics, firing, shaft, exhaust, or transmission components; cylinder/order metadata and listening are required."
+      }
+    },
+    {
+      "profile": "rosso",
+      "role": "off_high",
+      "url": "/engine-audio/78f9483d1f436303.wav",
+      "source": "public/audio/458/off_higher {b1e2e686-3bd7-43df-9cf9-3b8c1afcffc1}.wav",
+      "sha256": "78f9483d1f436303f037a1d00ece0feb6be989c9bf9f11281a8ec8e3e987584e",
+      "encoded_bytes": 3618662,
+      "declared_reference_rpm_unverified": 7900,
+      "native_sample_rate": 44100,
+      "channels": 2,
+      "frames": 452304,
+      "duration_s": 10.25632653,
+      "wave_format": {
+        "encoding": "IEEE_FLOAT",
+        "bits": 32,
+        "chunks": [
+          "fmt ",
+          "fact",
+          "data",
+          "smpl",
+          "inst",
+          "acid",
+          "LIST",
+          "LIST"
+        ],
+        "sampler_loops": [],
+        "cue_frames": []
+      },
+      "channels_analysis": [
+        {
+          "channel": 0,
+          "rms": 0.15022834,
+          "rms_dbfs": -16.46496262,
+          "peak": 0.71997434,
+          "dc": 0.00998376,
+          "wrap_step": 0.11645256,
+          "wrap_step_dbfs": -18.67701938,
+          "interior_abs_step_p99": 0.0571049,
+          "interior_abs_step_p999": 0.07628744,
+          "wrap_to_interior_p99": 2.03927419,
+          "interior_step_percentile_of_wrap": 99.99889455,
+          "first_10ms_rms": 0.10611055,
+          "last_10ms_rms": 0.1248425,
+          "unusual_boundary_flag": false
+        },
+        {
+          "channel": 1,
+          "rms": 0.13098876,
+          "rms_dbfs": -17.65531929,
+          "peak": 0.67989808,
+          "dc": 0.00754436,
+          "wrap_step": 0.14710035,
+          "wrap_step_dbfs": -16.647726,
+          "interior_abs_step_p99": 0.06438693,
+          "interior_abs_step_p999": 0.08495336,
+          "wrap_to_interior_p99": 2.28463047,
+          "interior_step_percentile_of_wrap": 100.0,
+          "first_10ms_rms": 0.14346352,
+          "last_10ms_rms": 0.11319602,
+          "unusual_boundary_flag": false
+        }
+      ],
+      "period_analysis": {
+        "windows": 9,
+        "window_duration_s": 1.0,
+        "frequency_resolution_hz": 1.0,
+        "autocorrelation_period_candidates": [
+          {
+            "frequency_hz": 65.82537744,
+            "period_ms": 15.19170932,
+            "frequency_p10_hz": 65.41149904,
+            "frequency_p90_hz": 66.13050733,
+            "median_correlation": 0.70459908,
+            "windows_supporting": 9
+          },
+          {
+            "frequency_hz": 131.66525793,
+            "period_ms": 7.59501797,
+            "frequency_p10_hz": 130.66039567,
+            "frequency_p90_hz": 132.28907133,
+            "median_correlation": 0.6988081,
+            "windows_supporting": 9
+          },
+          {
+            "frequency_hz": 32.91898502,
+            "period_ms": 30.37760731,
+            "frequency_p10_hz": 32.91229068,
+            "frequency_p90_hz": 33.01586975,
+            "median_correlation": 0.66557035,
+            "windows_supporting": 5
+          },
+          {
+            "frequency_hz": 43.58673836,
+            "period_ms": 22.94275822,
+            "frequency_p10_hz": 43.58247088,
+            "frequency_p90_hz": 43.59100585,
+            "median_correlation": 0.66669224,
+            "windows_supporting": 2
+          },
+          {
+            "frequency_hz": 264.48318825,
+            "period_ms": 3.78095866,
+            "frequency_p10_hz": 264.17816183,
+            "frequency_p90_hz": 264.78821468,
+            "median_correlation": 0.65657424,
+            "windows_supporting": 2
+          }
+        ],
+        "averaged_spectrum_peaks": [
+          {
+            "frequency_hz": 263.34192921,
+            "relative_peak_db": 0.0
+          },
+          {
+            "frequency_hz": 526.18102347,
+            "relative_peak_db": -4.73581359
+          },
+          {
+            "frequency_hz": 131.30407101,
+            "relative_peak_db": -11.09638809
+          },
+          {
+            "frequency_hz": 1058.87687379,
+            "relative_peak_db": -11.46012091
+          },
+          {
+            "frequency_hz": 391.55390252,
+            "relative_peak_db": -12.52856116
+          }
+        ],
+        "inferred_rpm": null,
+        "uncertainty": "Candidates may be harmonics, subharmonics, firing, shaft, exhaust, or transmission components; cylinder/order metadata and listening are required."
+      }
+    },
+    {
+      "profile": "rosso",
+      "role": "off_low",
+      "url": "/engine-audio/a9d844fcb1c04646.wav",
+      "source": "public/audio/458/off_midhigh {94a99615-de6b-4b18-a977-a3b5e9b10641}.wav",
+      "sha256": "a9d844fcb1c046463cc876ad53f58a56bb52da37000d46e8c4a44b89a3399015",
+      "encoded_bytes": 887302,
+      "declared_reference_rpm_unverified": 6900,
+      "native_sample_rate": 44100,
+      "channels": 2,
+      "frames": 110884,
+      "duration_s": 2.51437642,
+      "wave_format": {
+        "encoding": "IEEE_FLOAT",
+        "bits": 32,
+        "chunks": [
+          "fmt ",
+          "fact",
+          "data",
+          "smpl",
+          "inst",
+          "acid",
+          "LIST",
+          "LIST"
+        ],
+        "sampler_loops": [],
+        "cue_frames": []
+      },
+      "channels_analysis": [
+        {
+          "channel": 0,
+          "rms": 0.17261342,
+          "rms_dbfs": -15.25850897,
+          "peak": 0.71954387,
+          "dc": 0.01269378,
+          "wrap_step": 0.0,
+          "wrap_step_dbfs": null,
+          "interior_abs_step_p99": 0.05169009,
+          "interior_abs_step_p999": 0.06666925,
+          "wrap_to_interior_p99": 0.0,
+          "interior_step_percentile_of_wrap": 0.00090185,
+          "first_10ms_rms": 0.12433473,
+          "last_10ms_rms": 0.12433473,
+          "unusual_boundary_flag": false
+        },
+        {
+          "channel": 1,
+          "rms": 0.160518,
+          "rms_dbfs": -15.88952539,
+          "peak": 0.5311138,
+          "dc": 0.00725589,
+          "wrap_step": 0.0,
+          "wrap_step_dbfs": null,
+          "interior_abs_step_p99": 0.05650774,
+          "interior_abs_step_p999": 0.07380329,
+          "wrap_to_interior_p99": 0.0,
+          "interior_step_percentile_of_wrap": 0.00090185,
+          "first_10ms_rms": 0.11888645,
+          "last_10ms_rms": 0.11888645,
+          "unusual_boundary_flag": false
+        }
+      ],
+      "period_analysis": {
+        "windows": 9,
+        "window_duration_s": 1.0,
+        "frequency_resolution_hz": 1.0,
+        "autocorrelation_period_candidates": [
+          {
+            "frequency_hz": 116.40271048,
+            "period_ms": 8.59086525,
+            "frequency_p10_hz": 116.2999923,
+            "frequency_p90_hz": 116.71029513,
+            "median_correlation": 0.77204655,
+            "windows_supporting": 9
+          },
+          {
+            "frequency_hz": 58.22748803,
+            "period_ms": 17.17401925,
+            "frequency_p10_hz": 58.15894029,
+            "frequency_p90_hz": 58.40802307,
+            "median_correlation": 0.76151368,
+            "windows_supporting": 9
+          },
+          {
+            "frequency_hz": 38.83487488,
+            "period_ms": 25.75005078,
+            "frequency_p10_hz": 38.77399573,
+            "frequency_p90_hz": 38.93733387,
+            "median_correlation": 0.70093923,
+            "windows_supporting": 7
+          },
+          {
+            "frequency_hz": 29.17902038,
+            "period_ms": 34.27119851,
+            "frequency_p10_hz": 29.17902038,
+            "frequency_p90_hz": 29.17902038,
+            "median_correlation": 0.72457197,
+            "windows_supporting": 2
+          }
+        ],
+        "averaged_spectrum_peaks": [
+          {
+            "frequency_hz": 232.99787085,
+            "relative_peak_db": 0.0
+          },
+          {
+            "frequency_hz": 465.32627127,
+            "relative_peak_db": -6.58367268
+          },
+          {
+            "frequency_hz": 116.83949004,
+            "relative_peak_db": -9.44891868
+          },
+          {
+            "frequency_hz": 348.64367269,
+            "relative_peak_db": -12.80964325
+          },
+          {
+            "frequency_hz": 697.1527212,
+            "relative_peak_db": -16.8296134
+          }
+        ],
+        "inferred_rpm": null,
+        "uncertainty": "Candidates may be harmonics, subharmonics, firing, shaft, exhaust, or transmission components; cylinder/order metadata and listening are required."
+      }
+    },
+    {
+      "profile": "touring",
+      "role": "on_high",
+      "url": "/engine-audio/ac288f6d22b0bad1.wav",
+      "source": "public/audio/procar/on_midhigh {eed64b99-c102-43cf-834e-4e4cafa68fdc}.wav",
+      "sha256": "ac288f6d22b0bad1fc0c6c1bed4deb138750d7dfca4d14d4d6ab339047987168",
+      "encoded_bytes": 1108652,
+      "declared_reference_rpm_unverified": 8000,
+      "native_sample_rate": 44100,
+      "channels": 2,
+      "frames": 138553,
+      "duration_s": 3.14179138,
+      "wave_format": {
+        "encoding": "IEEE_FLOAT",
+        "bits": 32,
+        "chunks": [
+          "fmt ",
+          "fact",
+          "data",
+          "smpl",
+          "inst",
+          "acid",
+          "LIST",
+          "LIST"
+        ],
+        "sampler_loops": [],
+        "cue_frames": []
+      },
+      "channels_analysis": [
+        {
+          "channel": 0,
+          "rms": 0.24049504,
+          "rms_dbfs": -12.37787768,
+          "peak": 0.86832064,
+          "dc": -8.492e-05,
+          "wrap_step": -0.04818988,
+          "wrap_step_dbfs": -26.3408833,
+          "interior_abs_step_p99": 0.16061108,
+          "interior_abs_step_p999": 0.21473279,
+          "wrap_to_interior_p99": 0.30004082,
+          "interior_step_percentile_of_wrap": 60.55488192,
+          "first_10ms_rms": 0.20877329,
+          "last_10ms_rms": 0.20908012,
+          "unusual_boundary_flag": false
+        },
+        {
+          "channel": 1,
+          "rms": 0.28081508,
+          "rms_dbfs": -11.03159161,
+          "peak": 0.85024107,
+          "dc": 6.355e-05,
+          "wrap_step": -0.04751748,
+          "wrap_step_dbfs": -26.46293133,
+          "interior_abs_step_p99": 0.13641437,
+          "interior_abs_step_p999": 0.17769492,
+          "wrap_to_interior_p99": 0.34833195,
+          "interior_step_percentile_of_wrap": 69.22455107,
+          "first_10ms_rms": 0.24967545,
+          "last_10ms_rms": 0.24967903,
+          "unusual_boundary_flag": false
+        }
+      ],
+      "period_analysis": {
+        "windows": 9,
+        "window_duration_s": 1.0,
+        "frequency_resolution_hz": 1.0,
+        "autocorrelation_period_candidates": [
+          {
+            "frequency_hz": 60.06649791,
+            "period_ms": 16.64821547,
+            "frequency_p10_hz": 59.78804013,
+            "frequency_p90_hz": 60.16516514,
+            "median_correlation": 0.8740434,
+            "windows_supporting": 9
+          },
+          {
+            "frequency_hz": 30.04231571,
+            "period_ms": 33.28638211,
+            "frequency_p10_hz": 29.89833385,
+            "frequency_p90_hz": 30.08432026,
+            "median_correlation": 0.79473503,
+            "windows_supporting": 9
+          },
+          {
+            "frequency_hz": 20.05695458,
+            "period_ms": 49.85801789,
+            "frequency_p10_hz": 20.03443762,
+            "frequency_p90_hz": 20.06038165,
+            "median_correlation": 0.78443567,
+            "windows_supporting": 5
+          },
+          {
+            "frequency_hz": 180.97969384,
+            "period_ms": 5.52548178,
+            "frequency_p10_hz": 180.85516813,
+            "frequency_p90_hz": 181.10360469,
+            "median_correlation": 0.32476127,
+            "windows_supporting": 4
+          }
+        ],
+        "averaged_spectrum_peaks": [
+          {
+            "frequency_hz": 360.77116932,
+            "relative_peak_db": 0.0
+          },
+          {
+            "frequency_hz": 541.56515541,
+            "relative_peak_db": -2.03519439
+          },
+          {
+            "frequency_hz": 601.20607236,
+            "relative_peak_db": -6.62328689
+          },
+          {
+            "frequency_hz": 301.08625946,
+            "relative_peak_db": -8.50953537
+          },
+          {
+            "frequency_hz": 180.09224767,
+            "relative_peak_db": -8.66707853
+          }
+        ],
+        "inferred_rpm": null,
+        "uncertainty": "Candidates may be harmonics, subharmonics, firing, shaft, exhaust, or transmission components; cylinder/order metadata and listening are required."
+      }
+    },
+    {
+      "profile": "touring",
+      "role": "on_low",
+      "url": "/engine-audio/3c1633f155e42a10.wav",
+      "source": "public/audio/procar/on_low {0477930f-2954-45ee-8ac4-db4867fe1749}.wav",
+      "sha256": "3c1633f155e42a105743a5a31d1b80d678fb3a49426605c9e09d9f0a80b2c466",
+      "encoded_bytes": 1480472,
+      "declared_reference_rpm_unverified": 3200,
+      "native_sample_rate": 44100,
+      "channels": 2,
+      "frames": 185004,
+      "duration_s": 4.19510204,
+      "wave_format": {
+        "encoding": "IEEE_FLOAT",
+        "bits": 32,
+        "chunks": [
+          "fmt ",
+          "fact",
+          "data",
+          "smpl",
+          "inst",
+          "acid",
+          "strc",
+          "cue ",
+          "LIST",
+          "LIST"
+        ],
+        "sampler_loops": [],
+        "cue_frames": [
+          0,
+          185003
+        ]
+      },
+      "channels_analysis": [
+        {
+          "channel": 0,
+          "rms": 0.14782983,
+          "rms_dbfs": -16.60475873,
+          "peak": 0.54576457,
+          "dc": -0.0002688,
+          "wrap_step": 0.0,
+          "wrap_step_dbfs": null,
+          "interior_abs_step_p99": 0.02513357,
+          "interior_abs_step_p999": 0.03356485,
+          "wrap_to_interior_p99": 0.0,
+          "interior_step_percentile_of_wrap": 0.09405253,
+          "first_10ms_rms": 0.09067584,
+          "last_10ms_rms": 0.09067584,
+          "unusual_boundary_flag": false
+        },
+        {
+          "channel": 1,
+          "rms": 0.15269346,
+          "rms_dbfs": -16.32359132,
+          "peak": 0.54216146,
+          "dc": -0.00028283,
+          "wrap_step": 0.0,
+          "wrap_step_dbfs": null,
+          "interior_abs_step_p99": 0.02502508,
+          "interior_abs_step_p999": 0.03321178,
+          "wrap_to_interior_p99": 0.0,
+          "interior_step_percentile_of_wrap": 0.09405253,
+          "first_10ms_rms": 0.09092057,
+          "last_10ms_rms": 0.09092057,
+          "unusual_boundary_flag": false
+        }
+      ],
+      "period_analysis": {
+        "windows": 9,
+        "window_duration_s": 1.0,
+        "frequency_resolution_hz": 1.0,
+        "autocorrelation_period_candidates": [
+          {
+            "frequency_hz": 35.10689437,
+            "period_ms": 28.48443356,
+            "frequency_p10_hz": 34.84005278,
+            "frequency_p90_hz": 35.31580709,
+            "median_correlation": 0.92351858,
+            "windows_supporting": 9
+          },
+          {
+            "frequency_hz": 105.18213964,
+            "period_ms": 9.50731753,
+            "frequency_p10_hz": 104.59735802,
+            "frequency_p90_hz": 105.92858146,
+            "median_correlation": 0.90020672,
+            "windows_supporting": 9
+          },
+          {
+            "frequency_hz": 52.68554474,
+            "period_ms": 18.9805383,
+            "frequency_p10_hz": 52.26637709,
+            "frequency_p90_hz": 52.99248608,
+            "median_correlation": 0.88077871,
+            "windows_supporting": 9
+          }
+        ],
+        "averaged_spectrum_peaks": [
+          {
+            "frequency_hz": 210.28688904,
+            "relative_peak_db": 0.0
+          },
+          {
+            "frequency_hz": 420.13334334,
+            "relative_peak_db": -10.50049785
+          },
+          {
+            "frequency_hz": 637.30159166,
+            "relative_peak_db": -15.09269934
+          },
+          {
+            "frequency_hz": 490.61390779,
+            "relative_peak_db": -16.36017858
+          },
+          {
+            "frequency_hz": 426.27371765,
+            "relative_peak_db": -16.40119277
+          }
+        ],
+        "inferred_rpm": null,
+        "uncertainty": "Candidates may be harmonics, subharmonics, firing, shaft, exhaust, or transmission components; cylinder/order metadata and listening are required."
+      }
+    },
+    {
+      "profile": "touring",
+      "role": "off_high",
+      "url": "/engine-audio/49d3ac22096eaee1.wav",
+      "source": "public/audio/procar/off_midhigh {092a60f7-c729-4d2c-979e-2e766ba42c6c}.wav",
+      "sha256": "49d3ac22096eaee138d672017446c30416c614f717674128bac73746e66547f0",
+      "encoded_bytes": 1896068,
+      "declared_reference_rpm_unverified": 8430,
+      "native_sample_rate": 44100,
+      "channels": 2,
+      "frames": 236980,
+      "duration_s": 5.37369615,
+      "wave_format": {
+        "encoding": "IEEE_FLOAT",
+        "bits": 32,
+        "chunks": [
+          "fmt ",
+          "fact",
+          "data",
+          "smpl",
+          "inst",
+          "acid",
+          "LIST",
+          "LIST"
+        ],
+        "sampler_loops": [],
+        "cue_frames": []
+      },
+      "channels_analysis": [
+        {
+          "channel": 0,
+          "rms": 0.11720641,
+          "rms_dbfs": -18.62097265,
+          "peak": 0.55267078,
+          "dc": -0.00105949,
+          "wrap_step": 0.0,
+          "wrap_step_dbfs": null,
+          "interior_abs_step_p99": 0.04536042,
+          "interior_abs_step_p999": 0.06023904,
+          "wrap_to_interior_p99": 0.0,
+          "interior_step_percentile_of_wrap": 0.00042198,
+          "first_10ms_rms": 0.09163332,
+          "last_10ms_rms": 0.09163332,
+          "unusual_boundary_flag": false
+        },
+        {
+          "channel": 1,
+          "rms": 0.12987207,
+          "rms_dbfs": -17.72968505,
+          "peak": 0.57174623,
+          "dc": -0.00105187,
+          "wrap_step": 0.0,
+          "wrap_step_dbfs": null,
+          "interior_abs_step_p99": 0.04235503,
+          "interior_abs_step_p999": 0.0551127,
+          "wrap_to_interior_p99": 0.0,
+          "interior_step_percentile_of_wrap": 0.00042198,
+          "first_10ms_rms": 0.10066003,
+          "last_10ms_rms": 0.10066003,
+          "unusual_boundary_flag": false
+        }
+      ],
+      "period_analysis": {
+        "windows": 9,
+        "window_duration_s": 1.0,
+        "frequency_resolution_hz": 1.0,
+        "autocorrelation_period_candidates": [
+          {
+            "frequency_hz": 63.15934674,
+            "period_ms": 15.83296933,
+            "frequency_p10_hz": 63.08647997,
+            "frequency_p90_hz": 63.26615847,
+            "median_correlation": 0.5691741,
+            "windows_supporting": 9
+          },
+          {
+            "frequency_hz": 126.27352903,
+            "period_ms": 7.91931617,
+            "frequency_p10_hz": 126.19802293,
+            "frequency_p90_hz": 126.40085375,
+            "median_correlation": 0.55386755,
+            "windows_supporting": 8
+          },
+          {
+            "frequency_hz": 31.57024767,
+            "period_ms": 31.67539294,
+            "frequency_p10_hz": 31.55747715,
+            "frequency_p90_hz": 31.66340193,
+            "median_correlation": 0.4781291,
+            "windows_supporting": 7
+          },
+          {
+            "frequency_hz": 382.53879294,
+            "period_ms": 2.61411396,
+            "frequency_p10_hz": 382.53879294,
+            "frequency_p90_hz": 382.53879294,
+            "median_correlation": 0.56286247,
+            "windows_supporting": 2
+          },
+          {
+            "frequency_hz": 21.12378794,
+            "period_ms": 47.33999427,
+            "frequency_p10_hz": 21.12378794,
+            "frequency_p90_hz": 21.12378794,
+            "median_correlation": 0.49372736,
+            "windows_supporting": 1
+          }
+        ],
+        "averaged_spectrum_peaks": [
+          {
+            "frequency_hz": 378.93563806,
+            "relative_peak_db": 0.0
+          },
+          {
+            "frequency_hz": 126.22690287,
+            "relative_peak_db": -4.18035548
+          },
+          {
+            "frequency_hz": 505.86548664,
+            "relative_peak_db": -8.93275231
+          },
+          {
+            "frequency_hz": 1137.89523296,
+            "relative_peak_db": -10.34889864
+          },
+          {
+            "frequency_hz": 36.24495044,
+            "relative_peak_db": -12.10195173
+          }
+        ],
+        "inferred_rpm": null,
+        "uncertainty": "Candidates may be harmonics, subharmonics, firing, shaft, exhaust, or transmission components; cylinder/order metadata and listening are required."
+      }
+    },
+    {
+      "profile": "touring",
+      "role": "off_low",
+      "url": "/engine-audio/13a46ee6f4cad43b.wav",
+      "source": "public/audio/procar/off_lower {05f28dcf-8251-4e6a-bc40-8099139ef81e}.wav",
+      "sha256": "13a46ee6f4cad43be7aa646e6c185b97a4a17a32d4226543fcffbfa0de943935",
+      "encoded_bytes": 1489668,
+      "declared_reference_rpm_unverified": 3400,
+      "native_sample_rate": 44100,
+      "channels": 2,
+      "frames": 186180,
+      "duration_s": 4.22176871,
+      "wave_format": {
+        "encoding": "IEEE_FLOAT",
+        "bits": 32,
+        "chunks": [
+          "fmt ",
+          "fact",
+          "data",
+          "smpl",
+          "inst",
+          "acid",
+          "LIST",
+          "LIST"
+        ],
+        "sampler_loops": [],
+        "cue_frames": []
+      },
+      "channels_analysis": [
+        {
+          "channel": 0,
+          "rms": 0.04888033,
+          "rms_dbfs": -26.2173183,
+          "peak": 0.159963,
+          "dc": -8.34e-06,
+          "wrap_step": 0.0,
+          "wrap_step_dbfs": null,
+          "interior_abs_step_p99": 0.01049157,
+          "interior_abs_step_p999": 0.01390749,
+          "wrap_to_interior_p99": 0.0,
+          "interior_step_percentile_of_wrap": 0.00053712,
+          "first_10ms_rms": 0.03752692,
+          "last_10ms_rms": 0.03752692,
+          "unusual_boundary_flag": false
+        },
+        {
+          "channel": 1,
+          "rms": 0.05031241,
+          "rms_dbfs": -25.96649681,
+          "peak": 0.16537108,
+          "dc": 1.717e-05,
+          "wrap_step": 0.0,
+          "wrap_step_dbfs": null,
+          "interior_abs_step_p99": 0.00875025,
+          "interior_abs_step_p999": 0.01139426,
+          "wrap_to_interior_p99": 0.0,
+          "interior_step_percentile_of_wrap": 0.00053712,
+          "first_10ms_rms": 0.03728687,
+          "last_10ms_rms": 0.03728687,
+          "unusual_boundary_flag": false
+        }
+      ],
+      "period_analysis": {
+        "windows": 9,
+        "window_duration_s": 1.0,
+        "frequency_resolution_hz": 1.0,
+        "autocorrelation_period_candidates": [
+          {
+            "frequency_hz": 35.17555006,
+            "period_ms": 28.42883759,
+            "frequency_p10_hz": 35.14733894,
+            "frequency_p90_hz": 35.24944125,
+            "median_correlation": 0.7999058,
+            "windows_supporting": 9
+          },
+          {
+            "frequency_hz": 70.38435298,
+            "period_ms": 14.20770324,
+            "frequency_p10_hz": 70.28724542,
+            "frequency_p90_hz": 70.50500362,
+            "median_correlation": 0.78706263,
+            "windows_supporting": 9
+          },
+          {
+            "frequency_hz": 23.44645077,
+            "period_ms": 42.6503785,
+            "frequency_p10_hz": 23.43695219,
+            "frequency_p90_hz": 23.45594936,
+            "median_correlation": 0.81399441,
+            "windows_supporting": 4
+          },
+          {
+            "frequency_hz": 212.21237689,
+            "period_ms": 4.71226049,
+            "frequency_p10_hz": 212.0580388,
+            "frequency_p90_hz": 212.36671498,
+            "median_correlation": 0.68016326,
+            "windows_supporting": 4
+          },
+          {
+            "frequency_hz": 53.13398735,
+            "period_ms": 18.8203455,
+            "frequency_p10_hz": 53.13398735,
+            "frequency_p90_hz": 53.13398735,
+            "median_correlation": 0.53496836,
+            "windows_supporting": 1
+          }
+        ],
+        "averaged_spectrum_peaks": [
+          {
+            "frequency_hz": 211.01475195,
+            "relative_peak_db": 0.0
+          },
+          {
+            "frequency_hz": 70.72067601,
+            "relative_peak_db": -12.80911896
+          },
+          {
+            "frequency_hz": 35.30845136,
+            "relative_peak_db": -14.70977638
+          },
+          {
+            "frequency_hz": 351.67530124,
+            "relative_peak_db": -17.81318125
+          },
+          {
+            "frequency_hz": 422.78413538,
+            "relative_peak_db": -18.21980391
+          }
+        ],
+        "inferred_rpm": null,
+        "uncertainty": "Candidates may be harmonics, subharmonics, firing, shaft, exhaust, or transmission components; cylinder/order metadata and listening are required."
+      }
+    }
+  ]
+}

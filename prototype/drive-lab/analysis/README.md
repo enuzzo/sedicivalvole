@@ -176,3 +176,22 @@ energy above 2 kHz after the first 500 ms and processed sample peak. It fails if
 the bank hash, DSP parameters, clip identities or any recorded metric drifts by
 more than `0.025 dB` or LU. This is a reproducibility gate, not listening
 authority.
+
+## Admitted Engine loop audit
+
+`engine_loop_audit.py` verifies the 12 current core WAVs against the admitted
+inventory, then measures native format, level, loop wrap discontinuity and
+uncertain spectral/autocorrelation period candidates. It uses NumPy and the
+existing Node runtime; no SciPy or new dependency is required. Run from the
+repository root with a Python environment containing NumPy:
+
+```sh
+python3 prototype/drive-lab/analysis/engine_loop_audit.py
+node --test prototype/drive-lab/tests/engine-loop-seam.test.mjs
+```
+
+The script regenerates `engine-loop-measurements.json` and its Markdown summary.
+It never writes audio, infers RPM or claims listening acceptance. A synthetic
+periodic/stereo-antiphase and damaged-seam fixture runs before real measurements.
+The separate original runtime helper treats exceptional decoded seams; its
+production integration and real-browser output require their own verification.

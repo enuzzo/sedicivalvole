@@ -642,3 +642,24 @@ test("journey windows expose a suspended sampling gap without manufacturing obse
   recordDriveTelemetrySample(telemetry, { capturedAtMs: 7204000, averageFps: 40 });
   assert.equal(report.journey.windows.at(-1).samples, 1, "reports remain stable after capture");
 });
+
+
+test("Engine samples retain simulated response and GPS rejection reasons without arbitrary fields", () => {
+  const telemetry = createDriveTelemetry(0);
+  recordDriveTelemetrySample(telemetry, { capturedAtMs: 0, engine: { rpm: 3400.6, gear: 2, drive: .6478,
+    profileId: "rosso", status: "loading", motion: "degraded", motionReason: "poor-accuracy-hold",
+    revving: false, idleBlip: false, latitude: 45, longitude: 9 } });
+  recordDriveTelemetrySample(telemetry, { capturedAtMs: 2000, engine: null });
+  const report = createDriveTelemetryReport(telemetry);
+  const samples = report.samples.map(row => Object.fromEntries(report.sampleFields.map((key, index) => [key, row[index]])));
+  assert.equal(samples[0].engineRpm, 3401);
+  assert.equal(samples[0].engineGear, 2);
+  assert.equal(samples[0].engineLoad, .648);
+  assert.equal(samples[0].engineStatus, "loading");
+  assert.equal(samples[0].engineReason, "poor-accuracy-hold");
+  assert.equal(samples[0].engineRev, false);
+  assert.equal(samples[1].engineRpm, null);
+  assert.equal(samples[1].engineRev, null);
+  assert.match(report.fieldLegend.engineRpm, /simulated/);
+  assert.doesNotMatch(JSON.stringify(report), /latitude|longitude/);
+});

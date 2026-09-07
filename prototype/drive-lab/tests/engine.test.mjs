@@ -264,3 +264,125 @@ test("live watch receipts share one monotonic clock despite stale provider times
   assert.equal(m.snapshot(13400).freshness,"fresh");assert.ok(m.snapshot(13400).speedKmh>2);
   watch(13500,4);m.reset("hidden");assert.equal(m.snapshot(13500).trustedStationary,false);
 });
+
+test("the observed three-second accuracy collapse holds moving RPM evidence without inventing motion", () => {
+  const m = createEngineMotion();
+  const watch = (time, speed, accuracyM = 6) => gps(m, time, speed, { liveWatch: true, accuracyM });
+  watch(125212.9, 21);
+  // Coordinate-free observations from the owner's build 20260907-1936 report.
+  const poorAccuracyTrace = [
+    [125362.7, 22], [125463.2, 22], [125515.9, 22], [125562.9, 22],
+    [125662.9, 22], [125762.5, 23], [125864.9, 23], [125962.7, 23],
+    [126063, 24], [126162.2, 24], [126262.7, 24], [126362.5, 24],
+    [126462.7, 25], [126562.8, 25], [126663, 25], [126763.8, 26],
+    [126880, 26], [126929.7, 27], [127030.4, 27], [127129.6, 27],
+    [127229.6, 28], [127331.3, 28], [127414.7, 28], [127479.7, 29],
+    [127530.1, 29], [127629.9, 30], [127730, 30], [127830.5, 31],
+    [127930, 32], [128031.9, 33], [128130, 34], [128230.5, 35],
+  ];
+  for (const [time, speed] of poorAccuracyTrace) {
+    assert.equal(watch(time, speed, 10000), false);
+    const evidence = m.snapshot(time);
+    assert.equal(evidence.freshness, "degraded");
+    assert.equal(evidence.reason, "position-accuracy-hold");
+    assert.equal(evidence.speedKmh, 21);
+    assert.equal(evidence.drive, 0);
+    assert.equal(evidence.canShift, false);
+    assert.equal(evidence.trustedStationary, false);
+    assert.equal(evidence.ageMs, time - 125212.9);
+  }
+  assert.equal(watch(128331.3, 36), true);
+  const recovered = m.snapshot(128333.5);
+  assert.equal(recovered.freshness, "fresh");
+  assert.equal(recovered.speedKmh, 36);
+  assert.equal(recovered.accelerationMps2, 0);
+  assert.equal(recovered.canShift, false);
+});
+
+test("poor accuracy cannot renew a moving hold or create standstill, and invalid data revokes it", () => {
+  const watch = (m, time, speed, overrides = {}) => gps(m, time, speed, { liveWatch: true, ...overrides });
+  const m = createEngineMotion();
+  watch(m, 0, 20);
+  for (let time = 100; time <= 6000; time += 100) {
+    watch(m, time, 0, { accuracyM: 10000 });
+    assert.equal(m.snapshot(time).freshness, time <= 5000 ? "degraded" : "lost");
+    assert.equal(m.snapshot(time).trustedStationary, false);
+  }
+  for (const invalid of [{ rawSpeedKmh: null }, { rawSpeedKmh: -1 }, { rawSpeedKmh: 300 }, { accuracyM: -1 }, { accuracyM: null }]) {
+    const model = createEngineMotion();
+    watch(model, 0, 20); watch(model, 100, 21, { accuracyM: 10000 });
+    watch(model, 200, 21, invalid);
+    assert.equal(model.snapshot(200).freshness, "lost");
+  }
+  for (const initialSpeed of [null, 0]) {
+    const model = createEngineMotion();
+    if (initialSpeed !== null) watch(model, 0, initialSpeed);
+    watch(model, 500, 0, { accuracyM: 10000 });
+    assert.equal(model.snapshot(500).freshness, "lost");
+    assert.equal(model.snapshot(500).trustedStationary, false);
+  }
+  const reset = createEngineMotion();
+  watch(reset, 0, 20); watch(reset, 100, 21, { accuracyM: 10000 }); reset.reset("hidden");
+  assert.equal(reset.snapshot(200).freshness, "lost");
+  assert.equal(reset.snapshot(200).speedKmh, null);
+});
+
+test("degraded moving evidence preserves coupled Engine RPM until the bounded hold expires", async () => {
+  const f = fixture();
+  f.runtime.setEnabled(true); await f.runtime.load();
+  const m = createEngineMotion();
+  const step = (time, accuracyM) => {
+    gps(m, time, 21, { liveWatch: true, accuracyM });
+    Object.assign(f.evidence, m.snapshot(time));
+    f.tick(.1);
+    return f.runtime.getState();
+  };
+  for (let time = 0; time < 1000; time += 100) step(time, 6);
+  const movingRpm = f.runtime.getState().rpm;
+  assert.ok(movingRpm > 2000);
+  for (let time = 1000; time <= 5900; time += 100) {
+    const held = step(time, 10000);
+    assert.equal(held.motion, "degraded");
+    assert.ok(held.rpm >= movingRpm * .95);
+    assert.equal(held.drive, 0);
+    assert.equal(held.idleBlip, false);
+    assert.equal(held.shift, null);
+    assert.equal(held.canRev, false);
+  }
+  for (let time = 6000; time <= 7000; time += 100) step(time, 10000);
+  assert.equal(f.runtime.getState().motion, "lost");
+  assert.equal(f.runtime.getState().rpm, 1000);
+  f.runtime.destroy();
+});
+
+test("an existing Engine bank keeps playing while a replacement retries and mute remains authoritative", async () => {
+  const f = fixture(); f.runtime.setEnabled(true); await f.runtime.load("mono"); f.tick();
+  const firstNodes = [...f.context.sources];
+  f.setFailure(true); assert.equal(await f.runtime.load("rosso"), false);
+  assert.equal(f.runtime.getState().status, "retrying");
+  assert.equal(f.runtime.getState().profileId, "mono");
+  assert.equal(f.runtime.getState().requestedProfileId, "rosso");
+  assert.equal(f.runtime.getState().playing, true);
+  assert.ok(firstNodes.every(source => source.stopped == null));
+  f.runtime.setEnabled(false); assert.equal(f.runtime.getState().playing, false);
+  f.runtime.setEnabled(true); f.setFailure(false); await f.runtime.load("rosso");
+  assert.equal(f.runtime.getState().profileId, "rosso");
+  assert.equal(f.runtime.getState().playing, true);
+  assert.ok(firstNodes.every(source => Number.isFinite(source.stopped)));
+  f.runtime.destroy();
+});
+
+test("only transmission loops fall silent at zero and Neutral while core loops remain active", async () => {
+  const f = fixture(); f.runtime.setEnabled(true); await f.runtime.load("mono"); f.tick();
+  const levels = () => Object.fromEntries(f.profiles[0].assets.map((asset, index) => [asset.role, f.context.gains[index + 1].gain.value]));
+  assert.equal(levels().tranny_on + levels().tranny_off, 0);
+  assert.ok(levels().off_low > 0);
+  f.evidence.speedKmh = 20; f.evidence.rawSpeedKmh = 20; f.tick();
+  assert.ok(levels().tranny_off > 0);
+  f.evidence.speedKmh = 0; f.evidence.rawSpeedKmh = 0; f.evidence.trustedStationary = true; f.tick();
+  assert.equal(f.runtime.setRevHeld(true), true); f.tick(.1);
+  assert.equal(levels().tranny_on + levels().tranny_off, 0);
+  assert.ok(levels().on_low + levels().off_low > 0);
+  assert.equal(f.runtime.getState().outputLevel, 1);
+  f.runtime.destroy();
+});

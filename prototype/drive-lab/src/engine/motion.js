@@ -41,7 +41,13 @@ export function createEngineMotion() {
         // A failed one-shot renewal cannot invalidate a still-bounded live watch.
         if (!liveWatch && last?.liveWatch) return false;
         zeroSince = null; zeros = 0;
-        invalidated = true; reason = "untrusted-measurement";
+        const poorAccuracy = gps && Number.isFinite(accuracyM) && accuracyM > ENGINE_MOTION_POLICY.positionAccuracyM
+          && Number.isFinite(rawSpeedKmh) && rawSpeedKmh >= 0 && rawSpeedKmh <= 260
+          && acquisitionAgeMs >= -250 && acquisitionAgeMs <= ENGINE_MOTION_POLICY.freshMs;
+        // A position-accuracy collapse does not prove the moving car reached idle.
+        // Retain only the prior speed, without renewing its age or permitting shifts.
+        invalidated = true;
+        reason = poorAccuracy && raw > 0 ? "position-accuracy-hold" : "untrusted-measurement";
         return false;
       }
       const measuredMs = receivedMs - Math.max(0, acquisitionAgeMs);
@@ -66,7 +72,10 @@ export function createEngineMotion() {
       const ageMs = last ? Math.max(0, nowMs - last.measuredMs) : Infinity;
       const stationaryWatch = last?.liveWatch && raw === 0;
       const freshMs = stationaryWatch ? ENGINE_MOTION_POLICY.stationaryWatchHoldMs : ENGINE_MOTION_POLICY.freshMs;
-      const freshness = invalidated || ageMs > Math.max(freshMs, ENGINE_MOTION_POLICY.lostMs) ? "lost"
+      const holdingMovingSpeed = invalidated && reason === "position-accuracy-hold"
+        && ageMs <= ENGINE_MOTION_POLICY.lostMs;
+      const freshness = holdingMovingSpeed ? "degraded"
+        : invalidated || ageMs > Math.max(freshMs, ENGINE_MOTION_POLICY.lostMs) ? "lost"
         : ageMs > freshMs ? "degraded" : "fresh";
       const trusted = freshness === "fresh";
       const brake = last?.brakeHeld === true;

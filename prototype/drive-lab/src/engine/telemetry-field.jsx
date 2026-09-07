@@ -38,6 +38,6 @@ export function EngineTelemetry({ state, profileId, onProfile, onRev, onRelease,
     {Math.round(speed) === 0 ? ["left", "right"].map(side => <button key={side} className={`engine-rev is-${side}`} type="button" aria-label={`TAMARRO ${side}`} disabled={!state.canRev}
       aria-pressed={Boolean(state.revving)}
       onClick={() => state.revving ? onRelease?.() : onRev?.()}><strong>TAMARRO</strong><small>{state.canRev ? state.revving ? "SHOW-OFF · STOP" : "SHOW-OFF" : state.enabled === false ? "AUDIO PAUSED" : "PREPARING AUDIO"}</small></button>) : null}
-    {state.status === "loading" || state.status === "retrying" || state.status === "error" ? <p className="engine-load-state" role="status">{state.status === "loading" ? "Preparing engine audio…" : state.status === "retrying" ? "Waiting for audio · retrying automatically" : state.error || "Engine audio unavailable"}</p> : null}
+    {state.status === "loading" || state.status === "retrying" || state.status === "error" ? <p className="engine-load-state" role="status">{state.status === "loading" ? `Preparing ${profileId} audio…` : state.status === "retrying" ? "Waiting for audio · retrying automatically" : state.error || "Engine audio unavailable"}{state.playing ? ` · ${state.profileId} continues` : ""}</p> : null}
   </section>;
 }

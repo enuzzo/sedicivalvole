@@ -744,6 +744,7 @@ export const DRIVE_TRACE_FIELDS = [
   "t", "speed", "gps", "gpsAge", "gpsState", "accuracy", "rate", "source", "input",
   "bpm", "fps", "p95Frame", "audio", "audioPeak", "visual", "music", "section", "family", "rhythm", "rhythmTransition", "takes", "rhythms",
   "bank", "gpsConfidence", "motion", "online", "net", "rtt", "visibility",
+  "engineRpm", "engineGear", "engineLoad", "engineProfile", "engineStatus", "engineMotion", "engineReason", "engineRev", "engineIdleBlip",
 ];
 
 const rounded = (value, precision = 2) => {
@@ -915,6 +916,15 @@ export function recordDriveTelemetrySample(telemetry, sample, limit = DRIVE_TRAC
     net: sample.effectiveType ?? null,
     rtt: rounded(sample.roundTripTimeMs, 0),
     visibility: sample.visibility ?? null,
+    engineRpm: rounded(sample.engine?.rpm, 0),
+    engineGear: rounded(sample.engine?.gear, 0),
+    engineLoad: rounded(sample.engine?.drive, 3),
+    engineProfile: typeof sample.engine?.profileId === "string" ? sample.engine.profileId.slice(0, 24) : null,
+    engineStatus: typeof sample.engine?.status === "string" ? sample.engine.status.slice(0, 24) : null,
+    engineMotion: typeof sample.engine?.motion === "string" ? sample.engine.motion.slice(0, 24) : null,
+    engineReason: typeof sample.engine?.motionReason === "string" ? sample.engine.motionReason.slice(0, 48) : null,
+    engineRev: typeof sample.engine?.revving === "boolean" ? sample.engine.revving : null,
+    engineIdleBlip: typeof sample.engine?.idleBlip === "boolean" ? sample.engine.idleBlip : null,
   };
   recordJourneyWindow(telemetry, retainedSample, intervalMs);
   telemetry.samples.push(retainedSample);
@@ -999,6 +1009,15 @@ export function createDriveTelemetryReport(telemetry, generatedAtMs = telemetry.
       bank: "whether the sampled bank was ready",
       gpsConfidence: "coordinate-free GPS confidence class",
       rtt: "network round-trip estimate in milliseconds",
+      engineRpm: "simulated acoustic engine RPM, not vehicle telemetry",
+      engineGear: "simulated acoustic gear; engineRev identifies a neutral show-off gesture",
+      engineLoad: "normalized simulated drive demand, not measured engine load",
+      engineProfile: "loaded Engine profile, including while a replacement loads; music identifies mute",
+      engineStatus: "Engine bank loading/recovery status",
+      engineMotion: "Engine motion evidence freshness",
+      engineReason: "Engine motion evidence acceptance/rejection reason",
+      engineRev: "manual neutral show-off gesture active",
+      engineIdleBlip: "automatic confirmed-standstill blip active",
     },
     samples: telemetry.samples.map((sample) => DRIVE_TRACE_FIELDS.map((field) => sample[field])),
   };

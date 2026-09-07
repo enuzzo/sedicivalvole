@@ -1774,3 +1774,41 @@ and the movement crossfade. Measure RMS/peak at the final audio facade for all
 three scores, including after returning from a moving state. An active flag or
 nonzero gain alone does not establish audible output; headless meter evidence
 does not establish comfortable loudness inside the target Tesla.
+
+
+## 2026-09-07 — Engine loop continuity and driveline ownership
+
+A stationary rev should articulate the engine core; the road transmission should
+not whine with TAMARRO in Neutral. Gate only admitted transmission layers with
+fresh moving speed, using a smooth 0–5 km/h entry and the existing audio-clock
+parameter ramps. Keep core, limiter, dry path and full manual master unchanged.
+This is a host-model correction, not an owner claim about a particular recording.
+
+Native-file measurements also exposed three exceptional Mono wrap boundaries
+(on_high, off_high, off_low). A large waveform discontinuity at a loop boundary
+can become a periodic click; this diagnosis is measured, not a report that the
+owner heard that exact click. A 10 ms complementary cosine tail/head blend in
+decoded memory reconnects ordinary neighbouring samples, without increasing
+source peak or fading the entire loop to silence. Repeat starts 10 ms later;
+original WAVs remain byte-identical. Native steady-loop RMS changes below
+0.02 dB per channel. Rosso, Touring and Mono on_low are below the conservative
+measured gate and stay untouched. See the reproducible
+[loop audit](../prototype/drive-lab/analysis/engine-loop-measurements.md).
+
+Do not infer RPM from the strongest spectral peak: a firing order can produce
+several harmonically related periodicities. The current labels, particularly
+Mono's four identical 1,000-RPM references, do not justify applying proportional
+pitch blindly. The [source study](ENGINE-ACOUSTICS-STUDY-2026-09-07.md) records
+promising offline and browser waveguide methods without admitting new recordings.
+
+### Browser resampling and the decoded loop seam — September 7 night
+
+A full-scale source can decode slightly above 1 FS after browser resampling.
+Mono's 48-to-44.1 kHz peaks reached roughly 1.016 FS, so treating every decoded
+value above 1 as invalid silently skipped the seam repair. The helper now admits
+finite bounded overshoot up to 2 FS and uses a matching 4 FS difference histogram;
+the complementary blend preserves the decoded peak instead of clipping it.
+An empirical 3.25-times interior-outlier gate is verified against all twelve
+core loops at both 48 and 44.1 kHz: exactly three Mono roles are prepared, with
+Rosso/Touring and Mono on_low unchanged. This is a measured tuning threshold,
+not a physical constant. Browser signal checks are not cabin listening approval.

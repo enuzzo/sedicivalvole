@@ -4,6 +4,8 @@ import { AudioManager } from "./upstream/AudioManager.ts";
 import { matchEngineLoopLevels } from "./sample-levels.js";
 import { createShowOff } from "./show-off.js";
 import { createIdleBlip } from "./idle-blip.js";
+import { drivelineAudibility } from "./driveline-audio.js";
+import { prepareEngineLoopSeam } from "./loop-seam.js";
 import { engineProfile } from "./profiles.js";
 import { boundedRpm, decideAutomaticGear, virtualRpm } from "./gearbox.js";
 
@@ -57,7 +59,7 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
     const { gain1: on, gain2: off } = AudioManager.crossFade(drive, 0, 1);
     return { on_low: on * low, off_low: off * low, on_high: on * high, off_high: off * high,
       limiter: clamp((rpm - profile.configuration.engine.soft_limiter * 0.93) / (profile.configuration.engine.limiter * 0.07), 0, 1) * 0.4,
-      tranny_on: on * 0.25, tranny_off: off * 0.25 };
+      tranny_on: on * 0.25 * (state.drivelineLevel ?? 0), tranny_off: off * 0.25 * (state.drivelineLevel ?? 0) };
   }
   function targets(rpm, drive) {
     const gains = gainsFor(rpm, drive);
@@ -113,6 +115,8 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
         speedKmh: evidence.speedKmh, timestampPolicy: evidence.timestampPolicy });
     }
     state.motion = evidence.freshness; state.drive = evidence.drive; state.deceleration = evidence.deceleration;
+    state.drivelineLevel = drivelineAudibility({ ...evidence,
+      rawSpeedKmh: evidence.rawSpeedKmh ?? evidence.speedKmh, gear: state.gear, neutral: heldSince != null });
     state.trustedStationary = enabled && nodes.length > 0 && evidence.trustedStationary && context.state === "running" && globalThis.document?.visibilityState !== "hidden";
     if (state.trustedStationary) quietStop = true;
     else if (evidence.freshness === "fresh" && evidence.rawSpeedKmh >= 1) quietStop = false;
@@ -174,7 +178,9 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
   }
   async function performLoad(profileId, { retry = false } = {}) {
     if (disposed) return false;
+    const loadStartedAt = now();
     lastRequested = profileId;
+    if (retry) onEvent("engine.bank.retry", { profileId, attempt: retryCount });
     if (!retry) { clearRetry(); retryStarted = null; retryCount = 0; }
     const revision = ++generation;
     abort?.abort(); abort = new AbortController();
@@ -199,10 +205,14 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
       const assets = results.map(result => result.value);
       const decodedBytes = assets.reduce((sum, { buffer }) => sum + buffer.length * buffer.numberOfChannels * 4, 0);
       if (decodedBytes > MAX_DECODED_BYTES) throw new Error("Engine bank exceeds decoded memory budget");
+      for (const entry of assets) {
+        if (/^(on|off)_(low|high)$/.test(entry.asset.role)) entry.seam = prepareEngineLoopSeam(entry.buffer);
+      }
       const levelGains = matchEngineLoopLevels(assets);
       const at = context.currentTime + 0.025;
-      for (const { asset, buffer } of assets) {
+      for (const { asset, buffer, seam } of assets) {
         const source = context.createBufferSource(); source.buffer = buffer; source.loop = true;
+        if (seam?.applied) { source.loopStart = seam.loopStart; source.loopEnd = seam.loopEnd; }
         const gain = context.createGain(); gain.gain.value = 0;
         source.connect(gain).connect(master); source.start(at);
         freshNodes.push({ source, gain, asset, levelGain: levelGains.get(asset.role) });
@@ -221,7 +231,8 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
       shift = null; selectedAt = context.currentTime; previousTime = context.currentTime;
       releaseGestures(); state = { ...state, status: "ready", profileId, decodedBytes, bankBytes: next.assets.reduce((sum, asset) => sum + asset.bytes, 0), gear: 1, shift: null, error: null };
       retryStarted = null; retryCount = 0;
-      onEvent("engine.bank.ready", { profileId, decodedBytes, clips: nodes.length });
+      onEvent("engine.bank.ready", { profileId, decodedBytes, clips: nodes.length, loadMs: Math.round(now() - loadStartedAt),
+        preparedLoopRoles: assets.filter(entry => entry.seam?.applied).map(entry => entry.asset.role) });
       return true;
     } catch (error) {
       stopNodes(freshNodes);
@@ -284,7 +295,8 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
       if (virtualRpm(motion.snapshot(now()).speedKmh ?? 0, gear, drivetrain) > profile.configuration.engine.limiter * 0.95) return false;
       manualGear = gear; return true;
     },
-    getState: () => ({ ...state, enabled, source: "sample", transmissionMode, version: "geaps.v1" }),
+    getState: () => ({ ...state, enabled, playing: enabled && nodes.length > 0 && context.state === "running",
+      requestedProfileId: lastRequested, source: "sample", transmissionMode, version: "geaps.v1" }),
     destroy() {
       if (disposed) return;
       setEnabled(false); disposed = true; clearInterval(timer); clearRetry(); abort?.abort(); stopNodes(nodes); stopNodes([...retiringNodes]); retiringNodes.clear(); nodes = [];
