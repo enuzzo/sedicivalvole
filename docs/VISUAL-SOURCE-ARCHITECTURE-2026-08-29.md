@@ -154,3 +154,12 @@ See [road feedback](ROAD-FEEDBACK-2026-09-07.md) for the received Tesla report,
 Engine clock/manual-control correction, audible NIGHTSHIFT PARK, standalone
 Stats catalogue, curved heading bands and loaded-tile OSM POIs. Automatic
 diagnostic sending remains unimplemented; target-Tesla validation remains open.
+
+## Development automatic diagnostics — 2026-09-07
+
+The App owns one transfer lock shared by manual and automatic report delivery.
+`automatic-diagnostics.js` counts only observed GPS driving, excludes lifecycle
+gaps and bounds retry. The existing PHP endpoint validates delivery metadata,
+coordinate exclusion and successful automatic rate limits. Dev/AUTO ON is the
+owner-approved development default; Standard and saved OFF remain manual-only.
+See [delivery contract](AUTOMATIC-DIAGNOSTICS-2026-09-07.md).

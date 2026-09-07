@@ -40,6 +40,21 @@ function containsForbiddenCoordinateKey($value): bool
     return false;
 }
 
+function validDiagnosticDelivery(array $report): bool
+{
+    if (!array_key_exists('diagnosticDelivery', $report)) return true; // Earlier manual clients.
+    $delivery = $report['diagnosticDelivery'];
+    if (!is_array($delivery) || !in_array($delivery['mode'] ?? null, ['standard', 'dev'], true)
+        || !in_array($delivery['trigger'] ?? null, ['manual', 'automatic'], true)
+        || !is_bool($delivery['automaticEnabled'] ?? null)) return false;
+    if ($delivery['trigger'] === 'manual') return true;
+    return $delivery['mode'] === 'dev' && $delivery['automaticEnabled'] === true
+        && ($delivery['intervalDrivingMs'] ?? null) === 900000
+        && is_numeric($delivery['drivingMs'] ?? null) && $delivery['drivingMs'] >= 900000
+        && ($report['privacy']['automaticRemoteTelemetry'] ?? null) === true
+        && ($report['privacy']['transmissionRequiresExplicitGesture'] ?? null) === false;
+}
+
 function buildDiagnosticMail(array $report, string $receivedAt, string $recipient, ?string $fixedBoundary = null): array
 {
     if (!function_exists('gzencode') || !defined('FORCE_GZIP')) {
@@ -72,6 +87,7 @@ function buildDiagnosticMail(array $report, string $receivedAt, string $recipien
         'sedicivalvole Tesla diagnostic',
         'Server accepted at: ' . $receivedAt,
         'Schema: sedicivalvole.tesla-diagnostic.v4',
+        'Delivery: ' . ($report['diagnosticDelivery']['trigger'] ?? 'manual') . ' / ' . ($report['diagnosticDelivery']['mode'] ?? 'legacy'),
         'Privacy: the endpoint rejects coordinate fields and stores no report.',
         'Complete report: attached as gzip-compressed JSON.',
         'Attachment: ' . $attachmentName,
@@ -160,6 +176,10 @@ if (($payload['schema'] ?? '') !== 'sedicivalvole.tesla-diagnostic.v4' || !is_ar
     respond(422, 'schema_rejected');
 }
 
+if (!validDiagnosticDelivery($payload['report'])) {
+    respond(422, 'delivery_rejected');
+}
+
 if (containsForbiddenCoordinateKey($payload['report'])) {
     respond(422, 'coordinates_rejected');
 }
@@ -205,6 +225,16 @@ fflush($rateHandle);
 flock($rateHandle, LOCK_UN);
 fclose($rateHandle);
 
+// Successful automatic packets have a separate fifteen-minute server floor.
+// Failed mail attempts never consume this floor; the shared 20-second limit remains.
+$autoRateHandle = null;
+if (($payload['report']['diagnosticDelivery']['trigger'] ?? 'manual') === 'automatic') {
+    $autoRateHandle = @fopen($ratePath . '-auto', 'c+');
+    if ($autoRateHandle === false || !flock($autoRateHandle, LOCK_EX)) respond(503, 'rate_limit_unavailable');
+    $lastAutomatic = (int) trim((string) stream_get_contents($autoRateHandle));
+    if ($lastAutomatic > 0 && $currentTimestamp - $lastAutomatic < 900) respond(429, 'rate_limited');
+}
+
 $receivedAt = gmdate('c');
 $subject = '[sedicivalvole] Tesla diagnostic ' . gmdate('Y-m-d H:i:s') . ' UTC';
 try {
@@ -217,6 +247,11 @@ try {
 
 if (!mail($diagnosticRecipient, $subject, $mailContent['message'], $mailContent['headers'])) {
     respond(502, 'mail_transport_rejected');
+}
+
+if (is_resource($autoRateHandle)) {
+    rewind($autoRateHandle); ftruncate($autoRateHandle, 0); fwrite($autoRateHandle, (string) time());
+    fflush($autoRateHandle); flock($autoRateHandle, LOCK_UN); fclose($autoRateHandle);
 }
 
 respond(202, 'accepted_by_mail_transport', true);

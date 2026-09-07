@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
@@ -111,4 +111,16 @@ test("a 24-hour fitted journey round-trips through the real PHP gzip attachment"
   assert.deepEqual(restored.report, report);
   assert.equal(restored.report.flightRecorder.journey.windows[0].offlineSamples, 1);
   assert.equal(restored.report.flightRecorder.journey.windows.at(-1).toS, 86400);
+});
+
+
+test("automatic delivery requires Dev, explicit flags and a full driving interval", () => {
+  const report={diagnosticDelivery:{mode:"dev",trigger:"automatic",automaticEnabled:true,intervalDrivingMs:900000,drivingMs:900001},privacy:{automaticRemoteTelemetry:true,transmissionRequiresExplicitGesture:false}};
+  const validate=value=>{
+    const result=spawnSync("php",["-r",`define('SEDICIVALVOLE_DIAGNOSTIC_LIBRARY_ONLY', true); require ${JSON.stringify(ENDPOINT)}; $r=json_decode(stream_get_contents(STDIN),true); echo validDiagnosticDelivery($r) ? 'yes' : 'no';`],{input:JSON.stringify(value),encoding:"utf8"});
+    assert.equal(result.status,0,result.stderr);return result.stdout==="yes";
+  };
+  assert.equal(validate(report),true);assert.equal(validate({}),true);
+  for(const patch of [{mode:"standard"},{automaticEnabled:false},{intervalDrivingMs:600000},{drivingMs:1000},{trigger:"unknown"}]) assert.equal(validate({...report,diagnosticDelivery:{...report.diagnosticDelivery,...patch}}),false);
+  assert.equal(validate({...report,privacy:{automaticRemoteTelemetry:false,transmissionRequiresExplicitGesture:true}}),false);
 });

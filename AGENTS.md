@@ -134,3 +134,16 @@ Stats for Nerds is Visual 09 in both launch and running catalogues, separate fro
 Atlas; remove their shared Map/Stats tabs. Retain the approved remix, with outward
 curved heading bands. Intro means the initial chooser; Splash means its loading
 transition. Both show the existing build identity, with Intro bottom right.
+
+## Owner automatic diagnostics activation — 2026-09-07 evening
+
+The owner explicitly requests implementing and publishing automatic diagnostic
+mail now, enabled by default because the product is in active development.
+This supersedes the future-only hold and proposed Standard default. Use Dev and
+AUTO ON for fresh preferences, preserving an explicit saved OFF/Standard choice.
+The current interval is 15 minutes of observed GPS driving (superseding ten
+minutes); stops, simulated speed and hidden/unobserved time do not count.
+Keep visible OFF in Intro and Session report, bounded coordinate-free packets to
+the existing destination, one in-flight send, bounded retry, server validation,
+and at most one pending packet on online/foreground recovery. Do not send
+synthetic QA packets to the real mailbox. Do not promise timers while minimized.

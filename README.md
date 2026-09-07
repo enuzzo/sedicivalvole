@@ -233,7 +233,7 @@ See [`docs/TECHNICAL-DIRECTION.md`](docs/TECHNICAL-DIRECTION.md).
 
 - Use and configure the experience only while parked; do not adjust the touchscreen while driving.
 - Speed and diagnostic processing never persist coordinates. ATLAS and DISCOVER keep the latest reliable point only in session memory; OpenFreeMap receives only the tile area needed to draw the city, ATLAS POIs and DISCOVER send localized Wikipedia a coarse `0.05°` cell only for empty-query nearby scopes, and its global free-text search sends no position. ATLAS sends Open-Meteo an approximately `0.01°` rounded cell only to return 90 m-resolution Copernicus ground elevation while selected. Neither the diagnostic report nor local storage contains the position or journey history.
-- No analytics or automatic remote telemetry is enabled. Extensive local diagnostics are aggregated with bounded overhead and transmitted only after the user explicitly taps **SEND DIAGNOSTIC**.
+- No third-party analytics are enabled. During this owner-approved development phase, **Dev / AUTO REPORT ON is the default**: coordinate-free technical packets go to the existing project diagnostic mailbox every **15 minutes of observed GPS driving**. Intro and Session report expose OFF; it persists across reloads. Standard requires **SEND DIAGNOSTIC**. Hidden/gap time is excluded, network recovery never sends a backlog burst, and retries are bounded. Existing bounded local collection is retained in both levels.
 - FTP deployment is functional but unencrypted; credentials and content travel in clear text.
 - An upload is not considered successful until the canonical URL, HTML, assets, and cache behavior are verified.
 

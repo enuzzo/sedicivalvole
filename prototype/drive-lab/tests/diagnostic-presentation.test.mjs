@@ -59,7 +59,7 @@ test("diagnostic submission keeps essential consent beside the action", () => {
 
   assert.ok(submitStart >= 0);
   assert.match(submitMarkup, /Coordinate-free technical report/);
-  assert.match(submitMarkup, /Nothing is transmitted until SEND DIAGNOSTIC/);
+  assert.match(submitMarkup, /Standard and AUTO OFF require SEND DIAGNOSTIC/);
   assert.match(submitMarkup, /className=\{`send-state send-state-\$\{sendState\}`\}/);
   assert.match(submitMarkup, /SEND DIAGNOSTIC/);
   assert.match(submitMarkup, /COPY REPORT/);
@@ -98,7 +98,7 @@ test("README carries privacy, provenance, licensing, and source details", () => 
   const app = read("App.jsx");
 
   assert.match(app, /aria-controls="diagnostic-readme"/);
-  assert.match(app, /No analytics or automatic remote telemetry is enabled/);
+  assert.match(app, /No third-party analytics are enabled/);
   assert.match(app, /Coordinates are not collected, stored, copied, or included/);
   assert.match(app, /76 royalty-free MusicRadar source recordings/);
   assert.match(app, /source packs are not[\s\S]*?redistributed/);

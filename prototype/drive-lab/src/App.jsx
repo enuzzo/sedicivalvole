@@ -1,3 +1,4 @@
+import { createAutomaticDiagnosticClock, readDiagnosticPreferences, DIAGNOSTIC_PREFERENCES_KEY } from "./automatic-diagnostics.js";
 import { observeSessionStats } from "./environments/atlas/session-stats.js";
 import { SupportButton } from "./support-button.jsx";
 import { LaunchCockpit } from "./launch-cockpit.jsx";
@@ -1295,10 +1296,10 @@ function DiagnosticReadme() {
       <section>
         <h4>Telemetry and privacy</h4>
         <ul>
-          <li>No analytics or automatic remote telemetry is enabled.</li>
+          <li>No third-party analytics are enabled. Dev automatic reports are ON by default during this development phase; the visible switch turns them OFF.</li>
           <li>Coordinates are not collected, stored, copied, or included in a diagnostic.</li>
           <li>GPS evidence is limited to status, speed confidence, accuracy, and bounded counts.</li>
-          <li>A report leaves the browser only after the explicit SEND DIAGNOSTIC action.</li>
+          <li>Dev can automatically send coordinate-free reports every 15 minutes of observed GPS driving. Standard sends only with SEND DIAGNOSTIC. Automatic sending has a visible OFF switch.</li>
           <li>The accepted report is attached as compressed JSON; server acceptance is not inbox delivery.</li>
         </ul>
       </section>
@@ -2166,6 +2167,22 @@ export function App() {
   const [brakeFlash, setBrakeFlash] = useState(0);
   const [diagnostics, setDiagnostics] = useState(null);
   const [sendState, setSendState] = useState("idle");
+  const [diagnosticPreferences, setDiagnosticPreferences] = useState(() => {
+    try { return readDiagnosticPreferences(localStorage); } catch { return { mode: "dev", automatic: true }; }
+  });
+  const diagnosticPreferencesRef = useRef(diagnosticPreferences);
+  diagnosticPreferencesRef.current = diagnosticPreferences;
+  const automaticClockRef = useRef(null);
+  automaticClockRef.current ??= createAutomaticDiagnosticClock();
+  const [automaticSnapshot, setAutomaticSnapshot] = useState(() => automaticClockRef.current.snapshot());
+  const diagnosticTransferRef = useRef(null);
+  const sendDiagnosticRef = useRef(null);
+  useEffect(() => {
+    try { localStorage.setItem(DIAGNOSTIC_PREFERENCES_KEY, JSON.stringify(diagnosticPreferences)); } catch {}
+    if (diagnosticPreferences.mode !== "dev" || !diagnosticPreferences.automatic) {
+      if (diagnosticTransferRef.current?.trigger === "automatic") diagnosticTransferRef.current.controller.abort();
+    }
+  }, [diagnosticPreferences]);
   const [sendErrorCode, setSendErrorCode] = useState(null);
   const [activeEffect, setActiveEffect] = useState(QA_EFFECT);
   const [scoreTransportTempo, setScoreTransportTempo] = useState(162);
@@ -3588,6 +3605,7 @@ export function App() {
   }, [experienceMode, logDiagnosticEvent, musicMode, muted, networkNotice.status, phase, soundtrackController, soundtrackSnapshot?.status]);
 
   const resetSavedState = useCallback(() => {
+    setDiagnosticPreferences({ mode: "dev", automatic: true });
     setLaunchExperienceId(null);
     transportActionQueueRef.current.invalidate();
     musicModeRevisionRef.current += 1;
@@ -3595,6 +3613,7 @@ export function App() {
     try {
       localStorage.removeItem(PREFERENCES_KEY);
       localStorage.removeItem(LEGACY_PREFERENCES_KEY);
+      localStorage.removeItem(DIAGNOSTIC_PREFERENCES_KEY);
     } catch {
       // Reset remains useful even when storage access is unavailable.
     }
@@ -4736,6 +4755,7 @@ export function App() {
     runtimeIssues: runtimeIssuesRef.current,
     events: createDiagnosticEventReport(diagnosticEventsRef.current).events,
     eventRetention: createDiagnosticEventReport(diagnosticEventsRef.current).retention,
+    diagnosticDelivery: { mode: diagnosticPreferencesRef.current.mode, automaticEnabled: diagnosticPreferencesRef.current.mode === "dev" && diagnosticPreferencesRef.current.automatic, ...automaticClockRef.current.snapshot() },
     privacy: {
       // These three legacy fields describe the diagnostic payload itself. ATLAS
       // location use is disclosed separately without ever serializing a point.
@@ -4745,8 +4765,8 @@ export function App() {
       atlasLocationFeatureActive: environmentIdRef.current === "atlas",
       atlasLocationHeldInMemory: Boolean(mapPositionRef.current),
       atlasThirdPartyRequestsActive: environmentIdRef.current === "atlas" && Boolean(mapPositionRef.current),
-      automaticRemoteTelemetry: false,
-      transmissionRequiresExplicitGesture: true,
+      automaticRemoteTelemetry: diagnosticPreferencesRef.current.mode === "dev" && diagnosticPreferencesRef.current.automatic,
+      transmissionRequiresExplicitGesture: !(diagnosticPreferencesRef.current.mode === "dev" && diagnosticPreferencesRef.current.automatic),
       recorderStorage: "bounded-session-memory-only",
     },
   } : null, [diagnostics]);
@@ -4775,17 +4795,23 @@ export function App() {
     [diagnosticReport],
   );
 
-  const sendDiagnostic = useCallback(async () => {
+  const sendDiagnostic = useCallback(async (requestedTrigger = "manual") => {
+    const trigger = requestedTrigger === "automatic" ? "automatic" : "manual";
     const freshReport = buildDiagnosticReport();
-    if (!freshReport || sendState === "sending") return;
+    if (!freshReport || diagnosticTransferRef.current) return { ok: false, retryable: true };
+    if (trigger === "automatic" && (diagnosticPreferencesRef.current.mode !== "dev" || !diagnosticPreferencesRef.current.automatic)) return { ok: false, retryable: false };
+    const controller = new AbortController();
+    diagnosticTransferRef.current = { controller, trigger };
+    const timeout = window.setTimeout(() => controller.abort(), 25000);
     const transferId = `diagnostic-${Date.now()}`;
     setSendState("sending");
     setSendErrorCode(null);
-    logDiagnosticEvent("diagnostic-send.requested");
+    logDiagnosticEvent("diagnostic-send.requested", { trigger });
     const eventReport = createDiagnosticEventReport(diagnosticEventsRef.current);
     try {
       const reportToSend = fitDiagnosticReportForTransport({
         ...freshReport,
+        diagnosticDelivery: { ...freshReport.diagnosticDelivery, trigger },
         generatedAt: new Date().toISOString(),
         flightRecorder: createDriveTelemetryReport(driveTelemetryRef.current, performance.now()),
         runtimeIssues: runtimeIssuesRef.current,
@@ -4802,6 +4828,7 @@ export function App() {
       });
       const response = await fetch(`${import.meta.env.BASE_URL}api/send-diagnostic.php`, {
         method: "POST",
+        signal: controller.signal,
         credentials: "same-origin",
         cache: "no-store",
         headers: { "Content-Type": "application/json" },
@@ -4810,6 +4837,7 @@ export function App() {
       const result = await response.json().catch(() => null);
       if (!response.ok || result?.ok !== true) {
         const error = new Error("diagnostic_send_failed");
+        error.retryable = response.status === 429 || response.status >= 500;
         error.code = typeof result?.status === "string" ? result.status : "network_error";
         throw error;
       }
@@ -4819,7 +4847,8 @@ export function App() {
         success: true,
       });
       setSendState("sent");
-      logDiagnosticEvent("diagnostic-send.accepted", { status: result.status });
+      logDiagnosticEvent("diagnostic-send.accepted", { status: result.status, trigger });
+      return { ok: true };
     } catch (error) {
       if (networkTelemetryRef.current.activeTransfers[transferId]) {
         finishAppNetworkTransfer(networkTelemetryRef.current, {
@@ -4831,9 +4860,41 @@ export function App() {
       const errorCode = typeof error?.code === "string" ? error.code : "network_error";
       setSendState("error");
       setSendErrorCode(errorCode);
-      logDiagnosticEvent("diagnostic-send.failed", { code: errorCode });
+      logDiagnosticEvent("diagnostic-send.failed", { code: errorCode, trigger });
+      return { ok: false, retryable: error?.retryable !== false };
+    } finally {
+      window.clearTimeout(timeout);
+      if (diagnosticTransferRef.current?.controller === controller) diagnosticTransferRef.current = null;
     }
-  }, [buildDiagnosticReport, logDiagnosticEvent, sendState]);
+  }, [buildDiagnosticReport, logDiagnosticEvent]);
+  sendDiagnosticRef.current = sendDiagnostic;
+  useEffect(() => {
+    if (phase !== "running") return;
+    const clock = automaticClockRef.current;
+    let disposed = false, lastPaint = 0;
+    const tick = async () => {
+      if (disposed) return;
+      const now = performance.now();
+      const prefs = diagnosticPreferencesRef.current;
+      const gps = latestGpsObservationRef.current;
+      const due = clock.update({ running: true, enabled: prefs.mode === "dev" && prefs.automatic,
+        visible: document.visibilityState !== "hidden", online: navigator.onLine !== false,
+        moving: sourceRef.current === "GPS" && Number.isFinite(gps.speedKmh) && gps.speedKmh >= 1
+          && Number.isFinite(gps.capturedAtMs) && now - gps.capturedAtMs <= 3000
+          && Number.isFinite(accuracyRef.current) && accuracyRef.current <= 250,
+      }, now);
+      if (due && !diagnosticTransferRef.current) {
+        clock.begin(); setAutomaticSnapshot(clock.snapshot());
+        const result = await sendDiagnosticRef.current?.("automatic");
+        clock.complete(result?.ok === true, performance.now(), result?.retryable !== false);
+      }
+      if (!disposed && (due || now - lastPaint >= 5000)) { lastPaint = now; setAutomaticSnapshot(clock.snapshot()); }
+    };
+    void tick();
+    const timer = window.setInterval(tick, 1000);
+    window.addEventListener("online", tick); document.addEventListener("visibilitychange", tick);
+    return () => { disposed = true; window.clearInterval(timer); window.removeEventListener("online", tick); document.removeEventListener("visibilitychange", tick); if (diagnosticTransferRef.current?.trigger === "automatic") diagnosticTransferRef.current.controller.abort(); };
+  }, [phase]);
 
   const handleEnvironmentError = useCallback((error) => {
     const message = String(error?.message || "Unknown visual runtime error").slice(0, 500);
@@ -5047,6 +5108,9 @@ export function App() {
 
       {phase !== "running" ? (
       <section className="splash" aria-hidden="false" inert={supportOpen ? true : undefined}>
+        <button className="intro-diagnostics" type="button" aria-label={`Automatic diagnostics ${diagnosticPreferences.mode === "dev" && diagnosticPreferences.automatic ? "ON. Turn off" : "OFF. Turn on"}`} onClick={() => setDiagnosticPreferences(p => ({ mode: "dev", automatic: !(p.mode === "dev" && p.automatic) }))}>
+          <strong>{diagnosticPreferences.mode.toUpperCase()} · AUTO REPORT {diagnosticPreferences.mode === "dev" && diagnosticPreferences.automatic ? "ON" : "OFF"}</strong><small>Coordinate-free · every 15 driving min</small>
+        </button>
         <small className="intro-build">BUILD {APP_BUILD}</small>
         <SplashSignalGate
           active={phase !== "running"}
@@ -5287,6 +5351,13 @@ export function App() {
               </div>
             </div>
 
+            <section className="diagnostic-auto-controls" aria-label="Diagnostic delivery settings">
+              <div><button type="button" aria-pressed={diagnosticPreferences.mode === "standard"} onClick={() => setDiagnosticPreferences(p => ({ ...p, mode: "standard" }))}>Standard</button>
+              <button type="button" aria-pressed={diagnosticPreferences.mode === "dev"} onClick={() => setDiagnosticPreferences(p => ({ ...p, mode: "dev" }))}>Dev</button>
+              <button type="button" disabled={diagnosticPreferences.mode !== "dev"} aria-pressed={diagnosticPreferences.automatic && diagnosticPreferences.mode === "dev"} onClick={() => setDiagnosticPreferences(p => ({ ...p, automatic: !p.automatic }))}>AUTO SEND {diagnosticPreferences.automatic && diagnosticPreferences.mode === "dev" ? "ON" : "OFF"}</button></div>
+              <p>Dev sends coordinate-free reports to the project mailbox every 15 minutes of observed GPS driving. OFF stops future automatic sends. Standard keeps manual reports.</p>
+              <small>{Math.floor(automaticSnapshot.drivingMs / 60000)} / 15 driving min · {automaticSnapshot.accepted} accepted · {automaticSnapshot.status.toUpperCase()} · hidden gaps excluded</small>
+            </section>
             <button className="stats-report-entry" onClick={() => { setDrawerOpen(false); setStatsOpen(true); }}>Open Stats for Nerds · journey, motion and network</button>
             {diagnosticReadmeOpen ? <DiagnosticReadme /> : (
               <div className="diagnostic-instrument">
@@ -5407,7 +5478,7 @@ export function App() {
                 <section className="diagnostic-submit" aria-labelledby="diagnostic-submit-title">
                   <h3 id="diagnostic-submit-title">Submit evidence</h3>
                   <p>
-                    Coordinate-free technical report. Nothing is transmitted until SEND DIAGNOSTIC.
+                    Coordinate-free technical reports go to the project diagnostic mailbox. Dev with AUTO ON sends every 15 minutes of observed GPS driving; Standard and AUTO OFF require SEND DIAGNOSTIC.
                     Keep this session open until the server responds; README explains the complete boundary.
                   </p>
                   <p className={`send-state send-state-${sendState}`} role="status" aria-live="polite">

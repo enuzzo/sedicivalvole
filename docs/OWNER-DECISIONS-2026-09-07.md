@@ -100,3 +100,11 @@ heading/network instruments and speed/elevation summaries. See A13 in the
 owner-answer ledger and the implementation/report plan. No visual-choice
 question remains open for this work. Physical Tesla acceptance and future
 PDF/email implementation remain separate gates.
+
+## Automatic diagnostics activated by owner — evening follow-up
+
+The owner now explicitly requests implementation, default activation and
+publication. Dev/AUTO ON is the fresh default for this development phase;
+saved OFF/Standard remains respected. Fifteen observed GPS driving minutes is
+the current interval, superseding the earlier ten-minute future plan. See
+[AUTOMATIC-DIAGNOSTICS-2026-09-07.md](AUTOMATIC-DIAGNOSTICS-2026-09-07.md).
