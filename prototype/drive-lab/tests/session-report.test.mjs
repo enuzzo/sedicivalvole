@@ -27,6 +27,11 @@ function php(source, input = {}) {
   assert.equal(result.stderr,'');
   return result.stdout;
 }
+function pdfStreams(pdf) {
+  return [...pdf.toString('latin1').matchAll(/stream\r?\n([\s\S]*?)\r?\nendstream/g)].flatMap(([,bytes])=>{
+    try{return [inflateSync(Buffer.from(bytes,'latin1')).toString('latin1')];}catch{return [];}
+  });
+}
 
 test('FPDF source and font metrics retain their exact admitted bytes', async()=>{
   const inventory=JSON.parse(await readFile(new URL('fpdf/source-inventory.json',root),'utf8'));
@@ -66,6 +71,69 @@ test('an explicit route adds one bounded plate; an empty session remains exporta
   empty.samples=[];empty.headingMs=Array(8).fill(0);empty.speedBandsMs=Array(5).fill(0);
   for(const key of Object.keys(empty.system)) empty.system[key]=key==='audio'?'unavailable':null;
   assert.match(php(`echo reportBuildPdf(reportNormalize($input));`,empty),/^%PDF-1\./);
+});
+
+test('optional terrain evidence preserves legacy snapshots, prefers GPS, and rejects coordinates or unbounded heights',()=>{
+  const legacy=JSON.parse(php(`echo json_encode(reportNormalize($input));`,fixture()));
+  assert.ok(legacy.samples.every(sample=>sample.groundElevationM===null));
+  const dual=fixture();dual.samples[0].groundElevationM=777;
+  const preferred=JSON.parse(php(`echo json_encode(reportNormalize($input));`,dual));
+  assert.equal(preferred.samples[0].altitudeM,dual.samples[0].altitudeM);
+  assert.equal(preferred.samples[0].groundElevationM,null);
+  const cases=[];
+  for(const change of [s=>s.samples[0].groundElevationM=-501,s=>s.samples[0].groundElevationM=10001,s=>s.samples[0].groundElevationM='123',s=>s.samples[0].latitude=45,s=>s.samples[0].longitude=9,s=>s.samples[0].elevationSourceUrl='https://example.test/']){
+    const snapshot=fixture();snapshot.samples[0].altitudeM=null;change(snapshot);cases.push(snapshot);
+  }
+  const rejected=JSON.parse(php(`$out=[];foreach($input as $row){try{reportNormalize($row);$out[]='accepted';}catch(SessionReportProblem $e){$out[]=$e->getMessage();}}echo json_encode($out);`,cases));
+  assert.ok(rejected.every(value=>value!=='accepted'));
+  assert.equal(php(`$input['samples'][0]['groundElevationM']=INF;try{reportNormalize($input);echo 'accepted';}catch(SessionReportProblem $e){echo $e->getMessage();}`,fixture()),'value_rejected');
+});
+
+test('PDF altitude paths break at source changes and gaps, while dense map paths retain a continuous dash pattern',()=>{
+  const samples=Array.from({length:9},(_,i)=>({t:i,speedKmh:30,altitudeM:[0,1,7,8].includes(i)?120+i:null,groundElevationM:[2,3,5,6].includes(i)?120+i:null,gap:i===4}));
+  const buildTrace=rows=>Buffer.from(php(`$pdf=new TravelReportPdf(1788811200);$pdf->AddPage();reportTrace($pdf,$input,'altitudeM',16,50,178,48,[46,102,139],false);echo base64_encode($pdf->Output('S'));`,rows),'base64');
+  const content=pdfStreams(buildTrace(samples)).join('\n');
+  const segments=[...content.matchAll(/(\[[\d. ]*\] 0 d)\n([\d. ]+m(?: [\d. ]+l)+ S)\n\[\] 0 d/g)];
+  assert.equal(segments.length,4);
+  assert.deepEqual(segments.map(([,dash])=>dash!=='[] 0 d'),[false,true,true,false]);
+  assert.ok(segments.every(([, ,path])=>(path.match(/ l/g)||[]).length===1));
+  const dense=Array.from({length:720},(_,i)=>({t:i,speedKmh:30,altitudeM:null,groundElevationM:120+i/10,gap:false}));
+  const dashed=[...pdfStreams(buildTrace(dense)).join('\n').matchAll(/\[[\d. ]+\] 0 d\n([\d. ]+m(?: [\d. ]+l)+ S)\n\[\] 0 d/g)];
+  assert.equal(dashed.length,1);
+  assert.equal((dashed[0][1].match(/ l/g)||[]).length,719);
+});
+
+test('map fallback PDFs retain A4 page counts, distinct source labels and only the fixed elevation attribution link',async()=>{
+  for(const includeRoute of [false,true]){
+    const snapshot=fixture(includeRoute);
+    snapshot.samples=snapshot.samples.map((sample,i)=>i>=18&&i<38||i>=50?{...sample,altitudeM:null,groundElevationM:150+18*Math.sin(i/11)}:sample);
+    const pdf=Buffer.from(php(`echo base64_encode(reportBuildPdf(reportNormalize($input)));`,snapshot),'base64');
+    const raw=pdf.toString('latin1'),text=pdfStreams(pdf).join('\n');
+    assert.equal((raw.match(/\/Type \/Page\b/g)||[]).length,includeRoute?3:2);
+    assert.match(raw,/\/MediaBox \[0 0 595\.28 841\.89\]/);
+    assert.deepEqual([...raw.matchAll(/\/URI \(([^)]*)\)/g)].map(([,uri])=>uri),['https://open-meteo.com/en/docs/elevation-api']);
+    for(const label of ['GPS altitude','map elevation estimate','GPS elevation gain / loss','Open-Meteo / EU Copernicus GLO-90','CC BY 4.0','90 m DEM']) assert.ok(text.includes(label),label);
+    assert.match(text,/GPS altitude \\\(solid\\\)/);
+    assert.match(text,/map elevation estimate \\\(dashed\\\)/);
+    assert.doesNotMatch(raw,/\/(?:JavaScript|OpenAction|EmbeddedFile)\b/);
+    await writeFile(`/tmp/sv-travel-report-map${includeRoute?'-route':''}.pdf`,pdf);
+  }
+});
+
+test('JavaScript terrain-only snapshots remain coordinate-free and never fabricate GPS elevation gain or loss',async()=>{
+  const observations=Array.from({length:8},(_,i)=>({capturedAtMs:i*1000,speedKmh:36,accuracyM:3,heading:90,altitudeM:null,altitudeAccuracyM:null,groundElevationM:120+i*60}));
+  const snapshot=createSessionReportSnapshot({journey:{totals:observations.reduce(observeSessionStats,createSessionStats()),sessionSamples:observations,travelPoints:[{latitude:45.464,longitude:9.19}]},system:{},app:fixture().app,nowMs:8000,createdAt:fixture().createdAt});
+  assert.deepEqual(snapshot.samples.map(sample=>sample.groundElevationM),observations.map(sample=>sample.groundElevationM));
+  assert.ok(snapshot.samples.every(sample=>sample.altitudeM===null));
+  assert.equal(snapshot.summary.elevationGainM,0);assert.equal(snapshot.summary.elevationLossM,0);assert.equal(snapshot.summary.elevationObservedMs,0);
+  assert.doesNotMatch(JSON.stringify(snapshot),/latitude|longitude/);
+  const output=JSON.parse(php(`$s=reportNormalize($input);echo json_encode(['snapshot'=>$s,'pdf'=>base64_encode(reportBuildPdf($s))]);`,snapshot));
+  assert.deepEqual(output.snapshot,snapshot);
+  const pdf=Buffer.from(output.pdf,'base64'),text=pdfStreams(pdf).join('\n');
+  assert.match(text,/Map elevation estimate/);
+  assert.doesNotMatch(text,/\(GPS altitude \d/);
+  assert.match(text,/GPS elevation gain \/ loss[\s\S]*?Unavailable/);
+  await writeFile('/tmp/sv-travel-report-map-only.pdf',pdf);
 });
 
 test('the actual JavaScript immutable snapshot passes PHP validation and renders both route choices',()=>{

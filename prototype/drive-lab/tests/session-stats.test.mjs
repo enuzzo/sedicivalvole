@@ -1,7 +1,32 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { observeSessionStats, sessionRuntimeSnapshot, sessionStatsSnapshot } from '../src/environments/atlas/session-stats.js';
+import { altitudeTraceRange, chartAltitudeSource, chartAltitudeValue, observeSessionStats, sessionRuntimeSnapshot, sessionStatsSnapshot } from '../src/environments/atlas/session-stats.js';
+import { appendAtlasJourneySample, appendAtlasSessionJourneySample } from '../src/environments/atlas/atlas-model.js';
 const point = (t,speed=36,extra={}) => ({ capturedAtMs:t,speedKmh:speed,accuracyM:5,heading:90,altitudeM:100,altitudeAccuracyM:3,...extra });
+
+test('reported height survives both chart histories while uncertain accuracy cannot accumulate ascent', () => {
+ for (const altitudeAccuracyM of [null, 25, -1]) {
+  let totals, recent=[], session=[];
+  [120,125,130,135].forEach((altitudeM,index)=>{
+   const sample=point(index*2100,36,{altitudeM,altitudeAccuracyM});
+   totals=observeSessionStats(totals,sample);
+   recent=appendAtlasJourneySample(recent,sample);
+   session=appendAtlasSessionJourneySample(session,recent.at(-1));
+  });
+  assert.deepEqual(recent.map(s=>s.altitudeM),[120,125,130,135]);
+  assert.deepEqual(session.map(s=>s.altitudeM),[120,125,130,135]);
+  assert.equal(totals.elevationObservedMs,0);assert.equal(totals.elevationGainM,0);
+ }
+});
+
+test('altitude bounds preserve visible variation, flat zero, negative height and absent data', () => {
+ const extent=values=>altitudeTraceRange(values.map(altitudeM=>({altitudeM})));
+ assert.deepEqual(extent([120,125,135]),{minimum:115,maximum:140});
+ assert.deepEqual(extent([0,0]),{minimum:-5,maximum:5});
+ assert.deepEqual(extent([-15,-15]),{minimum:-20,maximum:-10});
+ assert.deepEqual(extent([null,NaN,Infinity]),{minimum:-5,maximum:5});
+ const high=extent([2500,2501]);assert.ok(high.minimum<2500 && high.minimum>2400);assert.ok(high.maximum>2501);
+});
 test('streamed totals survive long sessions and exclude GPS gaps', () => {
  let s;
  for(let t=0;t<=7200000;t+=1000) s=observeSessionStats(s,point(t));
@@ -100,4 +125,16 @@ test('runtime evidence admits measured zero counts and ready simulated engine va
  assert.equal(invalid.engine.rpm,null);
  assert.equal(invalid.engine.gear,null);
  assert.equal(invalid.engine.load,null);
+});
+
+test('map fallback never replaces available GPS or turns a mixed compacted bin into a GPS fix', () => {
+ const map={altitudeM:null,groundElevationM:123};
+ assert.equal(chartAltitudeValue(map),123);assert.equal(chartAltitudeSource(map),'map');
+ assert.equal(chartAltitudeValue({...map,altitudeM:0}),0);assert.equal(chartAltitudeSource({...map,altitudeM:0}),'gps');
+ assert.equal(chartAltitudeValue({...map,heightContainsGap:true}),null);
+ let session=[];
+ for(let i=0;i<5;i++) session=appendAtlasSessionJourneySample(session,{capturedAtMs:i*2100,speedKmh:36,
+   altitudeM:i===0?150:null,groundElevationM:i===0?null:123,terrainCell:i===0?null:'45.46,9.19'},4);
+ assert.equal(session[0].heightContainsGap,true);assert.equal(chartAltitudeValue(session[0]),null);
+ assert.equal(session[0].speedKmh,36);assert.equal(chartAltitudeSource(session[1]),'map');
 });

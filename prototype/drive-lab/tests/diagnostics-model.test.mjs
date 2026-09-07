@@ -152,6 +152,44 @@ test("GPS telemetry counts numeric and null speed without coordinates", () => {
   assert.equal("longitude" in summary, false);
 });
 
+test("GPS altitude counters distinguish omitted instrumentation from explicit unavailable observations", () => {
+  const fields = ["altitudeObservedSamples", "altitudeMissingSamples", "altitudeAccuracyKnownSamples", "altitudeGainEligibleSamples"];
+  const counts = telemetry => fields.map(field => summarizeGpsTelemetry(telemetry)[field]);
+  let telemetry = createGpsTelemetry();
+  assert.deepEqual(counts(telemetry), [null, null, null, null]);
+  telemetry = recordGpsSample(telemetry, { capturedAtMs: 1000, speedKmh: 25, accuracyM: 3 });
+  assert.deepEqual(counts(telemetry), [null, null, null, null]);
+  for (const field of fields) delete telemetry[field];
+  assert.deepEqual(counts(telemetry), [null, null, null, null]);
+  telemetry = recordGpsSample(telemetry, { capturedAtMs: 2000, speedKmh: 25, accuracyM: 3, altitudeAvailable: true });
+  assert.deepEqual(counts(telemetry), [1, 0, null, null]);
+  telemetry = recordGpsSample(telemetry, { capturedAtMs: 3000, speedKmh: 25, accuracyM: 3,
+    altitudeAvailable: false, altitudeAccuracyKnown: false, altitudeGainEligible: false });
+  assert.deepEqual(counts(telemetry), [1, 1, 0, 0]);
+  telemetry = recordGpsSample(telemetry, { capturedAtMs: 4000, speedKmh: 25, accuracyM: 3,
+    altitudeAvailable: true, altitudeAccuracyKnown: true, altitudeGainEligible: true });
+  assert.deepEqual(counts(telemetry), [2, 1, 1, 1]);
+  telemetry = recordGpsSample(telemetry, { capturedAtMs: 5000, speedKmh: 25, accuracyM: 3,
+    altitudeAvailable: null, altitudeAccuracyKnown: 1, altitudeGainEligible: "true" });
+  assert.deepEqual(counts(telemetry), [2, 1, 1, 1]);
+});
+
+test("GPS altitude evidence retains only bounded counters, never heights, vertical accuracy or position", () => {
+  const fields = ["altitudeObservedSamples", "altitudeMissingSamples", "altitudeAccuracyKnownSamples", "altitudeGainEligibleSamples"];
+  let telemetry = recordGpsSample(createGpsTelemetry(), { capturedAtMs: 1000, speedKmh: 25, accuracyM: 3,
+    altitudeAvailable: true, altitudeAccuracyKnown: true, altitudeGainEligible: false,
+    altitudeM: 12345.6789, altitudeAccuracyM: 9876.543, latitude: 45.123456, longitude: 9.987654 });
+  for (const result of [telemetry, summarizeGpsTelemetry(telemetry)]) {
+    assert.deepEqual(Object.keys(result).filter(key => key.startsWith("altitude")), fields);
+    assert.doesNotMatch(JSON.stringify(result), /"(?:altitudeM|altitudeAccuracyM|latitude|longitude)"|12345\.6789|9876\.543/);
+  }
+  for (const field of fields) telemetry[field] = Number.MAX_SAFE_INTEGER;
+  telemetry = recordGpsSample(telemetry, { capturedAtMs: 2000, speedKmh: 25, accuracyM: 3,
+    altitudeAvailable: true, altitudeAccuracyKnown: true, altitudeGainEligible: true });
+  telemetry = recordGpsSample(telemetry, { capturedAtMs: 3000, speedKmh: 25, accuracyM: 3, altitudeAvailable: false });
+  for (const field of fields) assert.equal(summarizeGpsTelemetry(telemetry)[field], Number.MAX_SAFE_INTEGER);
+});
+
 test("frame telemetry aggregates pacing without retaining every frame", () => {
   const telemetry = createFrameTelemetry(0);
   const frameTimes = [100, 123, 146, 180, 234, 257];

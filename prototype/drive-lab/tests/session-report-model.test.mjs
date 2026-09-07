@@ -63,3 +63,17 @@ test('recipient proof identity matches the server without lowercasing the local 
   assert.equal(normalizeReportRecipient('driver@EXAMPLE.COM'), normalizeReportRecipient('driver@example.com'));
   assert.equal(normalizeReportRecipient(null), '');
 });
+
+test('map fallback remains separate from GPS and never exports its location-cell cache key', () => {
+  const input=base();
+  input.journey.sessionSamples=[
+    {capturedAtMs:0,speedKmh:36,altitudeM:null,groundElevationM:123,terrainCell:'45.46,9.19'},
+    {capturedAtMs:2100,speedKmh:36,altitudeM:150,groundElevationM:123,terrainCell:'45.46,9.19'},
+    {capturedAtMs:4200,speedKmh:36,altitudeM:150,groundElevationM:123,heightContainsGap:true},
+  ];
+  const report=createSessionReportSnapshot(input);
+  assert.equal(report.samples[0].altitudeM,null);assert.equal(report.samples[0].groundElevationM,123);
+  assert.equal(report.samples[1].altitudeM,150);assert.equal(report.samples[1].groundElevationM,null);
+  assert.equal(report.samples[2].altitudeM,null);assert.equal(report.samples[2].groundElevationM,null);
+  assert.doesNotMatch(JSON.stringify(report),/terrainCell|45\.46|9\.19/);
+});

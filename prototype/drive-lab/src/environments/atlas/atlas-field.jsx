@@ -18,9 +18,6 @@ import {
   atlasRoadNameFromFeatures,
   atlasTravelFeature,
   atlasVehicleFeature,
-  createLatestAtlasRequestGate,
-  normalizeOpenMeteoElevation,
-  openMeteoElevationUrl,
   createAtlasStyle,
   interpolateAtlasPosition,
   paletteToAtlasCss,
@@ -98,11 +95,7 @@ export default function AtlasField({
   const framingRef = useRef("follow");
   const [displayCamera, setDisplayCamera] = useState(null);
   const [roadName, setRoadName] = useState(null);
-  const [terrain, setTerrain] = useState({ elevationM: null, status: "unavailable" });
-  const elevationRequestGateRef = useRef(null);
   const travelPointsRef = useRef([]);
-  const terrainRef = useRef({ elevationM: null, status: "unavailable" });
-  if (!elevationRequestGateRef.current) elevationRequestGateRef.current = createLatestAtlasRequestGate();
   valuesRef.current = {
     speed, theme, position, positionSamplesRef, sessionJourneyRef, reducedMotion, effect, mapAppearance, demoPosition,
   };
@@ -112,64 +105,11 @@ export default function AtlasField({
     return demoPosition;
   }, [position, demoPosition]);
   const canStart = Boolean(effectivePosition);
-  const elevationPosition = useMemo(() => effectivePosition ? {
-    latitude: Math.round(effectivePosition.latitude * 100) / 100,
-    longitude: Math.round(effectivePosition.longitude * 100) / 100,
-  } : null, [effectivePosition?.latitude, effectivePosition?.longitude]);
   const demo = !validAtlasPosition(position) && Boolean(effectivePosition);
   useEffect(() => {
     const seededJourney = valuesRef.current.sessionJourneyRef?.current;
     travelPointsRef.current = [...(seededJourney?.travelPoints ?? [])];
   }, [canStart]);
-
-  useEffect(() => {
-    const request = elevationRequestGateRef.current.begin();
-    const url = openMeteoElevationUrl(elevationPosition);
-    if (!url) {
-      request.commit(() => {
-        const next = { elevationM: null, status: "unavailable" };
-        terrainRef.current = next;
-        setTerrain(next);
-        if (sessionJourneyRef?.current) sessionJourneyRef.current.terrain = next;
-      });
-      return () => request.cancel();
-    }
-    request.commit(() => {
-      const next = { ...terrainRef.current, status: "loading" };
-      terrainRef.current = next;
-      setTerrain(next);
-        if (sessionJourneyRef?.current) sessionJourneyRef.current.terrain = next;
-    });
-    const controller = new AbortController();
-    fetch(url, { signal: controller.signal })
-      .then((response) => response.ok ? response.json() : Promise.reject(new Error("elevation unavailable")))
-      .then((payload) => {
-        const elevationM = normalizeOpenMeteoElevation(payload);
-        if (!Number.isFinite(elevationM)) throw new Error("invalid elevation");
-        request.commit(() => {
-          const next = { elevationM, status: "live" };
-          terrainRef.current = next;
-          setTerrain(next);
-        if (sessionJourneyRef?.current) sessionJourneyRef.current.terrain = next;
-        });
-      })
-      .catch((error) => {
-        if (error.name === "AbortError") return;
-        request.commit(() => {
-          const next = {
-            elevationM: terrainRef.current.elevationM,
-            status: Number.isFinite(terrainRef.current.elevationM) ? "stale" : "unavailable",
-          };
-          terrainRef.current = next;
-          setTerrain(next);
-        if (sessionJourneyRef?.current) sessionJourneyRef.current.terrain = next;
-        });
-      });
-    return () => {
-      request.cancel();
-      controller.abort();
-    };
-  }, [elevationPosition?.latitude, elevationPosition?.longitude]);
 
   useEffect(() => {
     if (!demoRequestToken || validAtlasPosition(position)) return;

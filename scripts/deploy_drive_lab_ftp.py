@@ -73,6 +73,12 @@ RETIRED_BRAND_HASHES = {
 DIAGNOSTIC_ENDPOINT = "send-diagnostic.php"
 SESSION_REPORT_ENDPOINT = "session-report.php"
 SESSION_REPORT_MARKERS = (b"sedicivalvole.session-report-api.v1", b"REPORT_EXPECTED_ORIGIN")
+PROJECT_OWNED_REPORT_HASHES = {
+    "report.php": {
+        "5e302d127453a1ea6edaef88ce5403a9afc79f48356d35351904ef96cdffd31c",
+        "40e42d550e3405d76381b3c5401e8a4aea1fe5a7b4374b39b14d3b3a7dec5862",
+    },
+}
 DIAGNOSTIC_RECIPIENT_CONFIG = "recipient.local.php"
 DIAGNOSTIC_RECIPIENT_SOURCE = (
     ROOT / "prototype" / "drive-lab" / "config" / "diagnostic-recipient.local.php"
@@ -373,6 +379,13 @@ def verify_remote_static_tree(
         local_payload = static_build_bytes(local_path)
         if sha256_bytes(remote_payload) != hashlib.sha256(local_payload).hexdigest():
             project_owned_update = (
+                (
+                    not require_complete
+                    and tree_name == "report-support"
+                    and sha256_bytes(remote_payload) in PROJECT_OWNED_REPORT_HASHES.get(relative_path.as_posix(), set())
+                    and sha256_bytes(local_payload) in PROJECT_OWNED_REPORT_HASHES.get(relative_path.as_posix(), set())
+                )
+                or
                 (
                     tree_name == "third-party"
                     and is_recognized_project_owned_third_party_entry(

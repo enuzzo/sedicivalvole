@@ -1,6 +1,21 @@
 import { ATLAS_MOTION_DELTA_THRESHOLD_KMH, ATLAS_MOVING_SPEED_THRESHOLD_KMH, ATLAS_SPEED_BANDS } from './atlas-model.js';
 
 export const SESSION_GAP_MS = 5000;
+
+export const chartAltitudeSource = sample => sample?.heightContainsGap ? null : Number.isFinite(sample?.altitudeM) ? 'gps'
+  : Number.isFinite(sample?.groundElevationM) ? 'map' : null;
+export const chartAltitudeValue = sample => sample?.heightContainsGap ? null : Number.isFinite(sample?.altitudeM) ? sample.altitudeM
+  : Number.isFinite(sample?.groundElevationM) ? sample.groundElevationM : null;
+
+// A height trace needs local headroom, including at zero or below sea level.
+export function altitudeTraceRange(samples) {
+  const heights = samples.map(chartAltitudeValue).filter(Number.isFinite);
+  if (!heights.length) return { minimum: -5, maximum: 5 };
+  const low = Math.min(...heights), high = Math.max(...heights);
+  const padding = Math.max(5, (high - low) * .1);
+  return { minimum: Math.floor((low - padding) / 5) * 5,
+    maximum: Math.ceil((high + padding) / 5) * 5 };
+}
 export function createSessionStats() {
   return { firstAtMs: null, last: null, observedMs: 0, movingMs: 0, stoppedMs: 0,
     distanceM: 0, peakKmh: null, stops: 0, speedBandsMs: ATLAS_SPEED_BANDS.map(() => 0),
@@ -46,7 +61,7 @@ export function observeSessionStats(previous, sample) {
     if (moving && Number.isFinite(sample.heading)) next.headingMs[Math.floor(((sample.heading % 360 + 382.5) % 360) / 45)] += dt;
   }
   const altitudeValid = Number.isFinite(sample.altitudeM) && Number.isFinite(sample.altitudeAccuracyM)
-    && sample.altitudeAccuracyM <= 15;
+    && sample.altitudeAccuracyM >= 0 && sample.altitudeAccuracyM <= 15;
   if (!altitudeValid || !connected) next.altitudeAnchor = altitudeValid ? sample.altitudeM : null;
   else if (state.altitudeAnchor == null) next.altitudeAnchor = sample.altitudeM;
   else {

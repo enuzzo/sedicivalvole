@@ -1,5 +1,12 @@
 # Independent Technical Direction
 
+## September 7 altitude fallback
+
+The running App owns one bounded terrain controller independently of Atlas. Stats
+plots reported GPS heights without applying the stricter gain/loss gate; optional
+map estimates retain their source in the chart and frozen PDF. Coarse query cells
+stay only in session memory. [Behavior and validation](ALTITUDE-FALLBACK-2026-09-07.md).
+
 ## September 7 night implementation
 
 The [night implementation record](NIGHT-IMPLEMENTATION-2026-09-07.md) supersedes

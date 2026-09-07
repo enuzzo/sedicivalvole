@@ -165,3 +165,13 @@ The owner also selects report direction 1, Travel Report: compact cover, journey
 summary, graphs and a technical appendix. Precise route inclusion remains an
 explicit export option. Preserve immutable preview/download identity and
 chosen-recipient verification; technical diagnostics remain coordinate-free.
+
+## Owner altitude fallback — September 7 late evening
+
+The owner explicitly requests a practical map/terrain height fallback when GPS
+does not provide altitude. Keep reported GPS altitude visible independently of
+the strict ascent/descent accuracy filter. Prefer GPS when present; label the
+terrain estimate separately in Stats and PDF. Reuse the existing Open-Meteo /
+Copernicus service with rounded request cells, bounded session cache, request
+spacing and lifecycle recovery. Do not substitute terrain for a GPS reading or
+add height/position values to automatic technical diagnostics.

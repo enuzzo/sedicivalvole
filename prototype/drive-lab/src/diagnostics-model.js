@@ -27,12 +27,32 @@ export function createGpsTelemetry(startedAtMs = 0) {
     latestSpeedKmh: null,
     minimumSpeedKmh: null,
     maximumSpeedKmh: null,
+    altitudeObservedSamples: null,
+    altitudeMissingSamples: null,
+    altitudeAccuracyKnownSamples: null,
+    altitudeGainEligibleSamples: null,
     intervalsMs: [],
     accuraciesM: [],
   };
 }
 
-export function recordGpsSample(telemetry, { capturedAtMs, speedKmh, accuracyM }) {
+function gpsEvidenceCount(value) {
+  return Number.isFinite(value) && value >= 0
+    ? Math.min(Number.MAX_SAFE_INTEGER, Math.floor(value))
+    : null;
+}
+
+function recordGpsEvidenceCount(previous, observed, expected = true) {
+  const count = gpsEvidenceCount(previous);
+  // Omitted instrumentation is unknown, not a missing GPS measurement.
+  if (typeof observed !== "boolean") return count;
+  return Math.min(Number.MAX_SAFE_INTEGER, (count ?? 0) + (observed === expected ? 1 : 0));
+}
+
+export function recordGpsSample(telemetry, {
+  capturedAtMs, speedKmh, accuracyM,
+  altitudeAvailable, altitudeAccuracyKnown, altitudeGainEligible,
+}) {
   const numeric = Number.isFinite(speedKmh) && speedKmh >= 0;
   const interval = Number.isFinite(telemetry.lastCapturedAtMs)
     ? Math.max(0, capturedAtMs - telemetry.lastCapturedAtMs)
@@ -57,6 +77,10 @@ export function recordGpsSample(telemetry, { capturedAtMs, speedKmh, accuracyM }
     maximumSpeedKmh: numeric
       ? Math.max(telemetry.maximumSpeedKmh ?? speedKmh, speedKmh)
       : telemetry.maximumSpeedKmh,
+    altitudeObservedSamples: recordGpsEvidenceCount(telemetry.altitudeObservedSamples, altitudeAvailable),
+    altitudeMissingSamples: recordGpsEvidenceCount(telemetry.altitudeMissingSamples, altitudeAvailable, false),
+    altitudeAccuracyKnownSamples: recordGpsEvidenceCount(telemetry.altitudeAccuracyKnownSamples, altitudeAccuracyKnown),
+    altitudeGainEligibleSamples: recordGpsEvidenceCount(telemetry.altitudeGainEligibleSamples, altitudeGainEligible),
     intervalsMs,
     accuraciesM,
   };
@@ -84,6 +108,10 @@ export function summarizeGpsTelemetry(telemetry) {
     latestSpeedKmh: telemetry.latestSpeedKmh,
     minimumSpeedKmh: telemetry.minimumSpeedKmh,
     maximumSpeedKmh: telemetry.maximumSpeedKmh,
+    altitudeObservedSamples: gpsEvidenceCount(telemetry.altitudeObservedSamples),
+    altitudeMissingSamples: gpsEvidenceCount(telemetry.altitudeMissingSamples),
+    altitudeAccuracyKnownSamples: gpsEvidenceCount(telemetry.altitudeAccuracyKnownSamples),
+    altitudeGainEligibleSamples: gpsEvidenceCount(telemetry.altitudeGainEligibleSamples),
     medianIntervalMs: median(telemetry.intervalsMs),
     minimumAccuracyM: telemetry.accuraciesM.length ? Math.min(...telemetry.accuraciesM) : null,
     medianAccuracyM: median(telemetry.accuraciesM),

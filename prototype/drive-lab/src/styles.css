@@ -4671,6 +4671,7 @@ html { font-size: var(--font-size-floor); }
 .stats-system header small { font-weight: 400; }
 .stats-footnote { font-size: 13px; color: var(--ui-muted); line-height: 1.45; padding-top: 10px; }
 .stats-empty { padding: 12px; background: var(--ui-control); font-size: 14px; }
+.stats-trace-note { margin: 2px 0 6px; color: var(--ui-muted); font-size: 13px; line-height: 1.35; }
 .stats-report-entry { min-height: 48px; margin: 10px 16px; padding: 8px 14px; }
 .atlas-article-dialog { z-index: 46; }
 .atlas-article-dialog .discover-article-frame { flex: 1; min-height: 0; width: 100%; border: 0; }

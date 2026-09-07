@@ -45,6 +45,24 @@ with tempfile.TemporaryDirectory() as temporary:
         try: module.verify_remote_root(ReadOnlyFTP(invalid))
         except ValueError: pass
         else: raise AssertionError('Unrecognized report bytes accepted')
+    module.PROJECT_OWNED_REPORT_HASHES = {'report.php': {
+        module.sha256_bytes(b'reviewed renderer'), module.sha256_bytes(b'previous reviewed renderer'),
+    }}
+    prior = {**files, 'report-support/report.php': b'previous reviewed renderer'}
+    module.verify_remote_root(ReadOnlyFTP(prior))
+    ftp = ReadOnlyFTP(prior)
+    ftp.cwd('report-support')
+    try: module.verify_remote_static_tree(ftp, module.BUILD / 'report-support', tree_name='report-support', require_complete=True)
+    except ValueError: pass
+    else: raise AssertionError('Previous renderer accepted as a completed upload')
+    for changed in ['report-support/report.php', 'report-support/fpdf/font/helvetica.json']:
+        try: module.verify_remote_root(ReadOnlyFTP({**prior, changed: b'unreviewed bytes'}))
+        except ValueError: pass
+        else: raise AssertionError('Unreviewed report revision accepted')
+    (module.BUILD / 'report-support/report.php').write_bytes(b'unreviewed local renderer')
+    try: module.verify_remote_root(ReadOnlyFTP(prior))
+    except ValueError: pass
+    else: raise AssertionError('Unreviewed local renderer admitted for publication')
 `;
   execFileSync("python3", ["-c", program, deployScript.pathname], {
     env: { ...process.env, PYTHONDONTWRITEBYTECODE: "1" },

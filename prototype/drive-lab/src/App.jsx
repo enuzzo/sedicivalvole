@@ -1,6 +1,7 @@
 import { createAutomaticDiagnosticClock, readDiagnosticPreferences, DIAGNOSTIC_PREFERENCES_KEY } from "./automatic-diagnostics.js";
 import { PhoneRotationNotice, usePhoneLayout } from "./phone-cockpit.jsx";
 import { observeSessionStats } from "./environments/atlas/session-stats.js";
+import { createTerrainElevation, terrainElevationCell } from "./environments/atlas/terrain-elevation.js";
 import { SupportButton } from "./support-button.jsx";
 import { LaunchCockpit } from "./launch-cockpit.jsx";
 import { initialLaunchSoundtrack, luckySoundtrackGenre, luckyLaunchVisual, soundtrackLaunchReady, prepareExactSoundtrackStart } from "./launch-model.js";
@@ -2347,6 +2348,7 @@ export function App() {
     };
   }, []);
   const mapPositionUpdatedAtRef = useRef(Number.NEGATIVE_INFINITY);
+  const terrainElevationRef = useRef(null);
   const sessionStartedAtRef = useRef(performance.now());
   const gpsStateRef = useRef(gpsState);
   const accuracyRef = useRef(accuracy);
@@ -2827,6 +2829,44 @@ export function App() {
     });
   }, [phase, experienceMode, muted]);
 
+  useEffect(() => {
+    if (phase !== "running") return;
+    const terrain = createTerrainElevation({
+      now: () => performance.now(),
+      canRequest: () => sourceRef.current === "GPS" && document.visibilityState !== "hidden"
+        && navigator.onLine !== false && performance.now() - (latestGpsObservationRef.current.capturedAtMs ?? -Infinity) <= 15000,
+      onResult: result => {
+        const journey = atlasSessionJourneyRef.current;
+        const backfill = samples => samples.map(sample => sample.terrainCell === result.cell
+          && !Number.isFinite(sample.altitudeM) ? { ...sample, groundElevationM: result.elevationM } : sample);
+        atlasSessionJourneyRef.current = { ...journey,
+          recentSamples: backfill(journey.recentSamples), sessionSamples: backfill(journey.sessionSamples),
+          terrain: result };
+      },
+    });
+    terrainElevationRef.current = terrain;
+    const position = atlasPositionSamplesRef.current.at(-1);
+    if (position && Number.isFinite(position.accuracyM) && position.accuracyM >= 0 && position.accuracyM <= 250
+      && position.capturedAtMs === latestGpsObservationRef.current.capturedAtMs
+      && performance.now() - position.capturedAtMs <= 15000) {
+      terrain.observe(position, { needed: position.altitudeM == null });
+    }
+    const recover = () => document.visibilityState === "hidden" || navigator.onLine === false
+      ? terrain.pause() : terrain.recover();
+    window.addEventListener("online", recover); window.addEventListener("offline", recover);
+    document.addEventListener("visibilitychange", recover);
+    return () => {
+      window.removeEventListener("online", recover); window.removeEventListener("offline", recover);
+      document.removeEventListener("visibilitychange", recover);
+      terrain.destroy(); terrainElevationRef.current = null;
+    };
+  }, [phase]);
+
+  useEffect(() => {
+    if (source === "GPS") terrainElevationRef.current?.recover();
+    else terrainElevationRef.current?.pause();
+  }, [source]);
+
   const startGps = useCallback(() => {
     gpsTelemetryRef.current = createGpsTelemetry(performance.now());
     lastGpsSampleAtRef.current = null;
@@ -2852,15 +2892,28 @@ export function App() {
     gpsPositionRef.current = (position, liveWatch = true) => {
         const capturedAtMs = performance.now();
         const accuracyM = Number.isFinite(position.coords.accuracy) ? position.coords.accuracy : null;
+        const altitudeM = Number.isFinite(position.coords.altitude) && position.coords.altitude >= -500
+          && position.coords.altitude <= 10000 ? position.coords.altitude : null;
+        const altitudeAccuracyM = Number.isFinite(position.coords.altitudeAccuracy) && position.coords.altitudeAccuracy >= 0
+          ? position.coords.altitudeAccuracy : null;
         setAccuracy(Number.isFinite(accuracyM) ? Math.round(accuracyM) : null);
         const kmh = normalizeGpsSpeed(position.coords.speed);
         if (sourceRef.current === "GPS") engineMotionRef.current.observe({ source: "GPS", rawSpeedKmh: kmh,
           sourceTimestampMs: position.timestamp, receivedMs: capturedAtMs, epochNowMs: Date.now(), accuracyM, liveWatch });
         latestGpsObservationRef.current = { capturedAtMs, speedKmh: kmh };
+        const terrainPosition = accuracyM != null && accuracyM >= 0 && accuracyM <= 250
+          && Number.isFinite(position.coords.latitude) && Number.isFinite(position.coords.longitude)
+          ? { latitude: position.coords.latitude, longitude: position.coords.longitude } : null;
+        const terrain = terrainElevationRef.current?.observe(terrainPosition,
+          { needed: sourceRef.current === "GPS" && altitudeM == null });
         gpsTelemetryRef.current = recordGpsSample(gpsTelemetryRef.current, {
           capturedAtMs,
           speedKmh: kmh,
           accuracyM,
+          altitudeAvailable: altitudeM != null,
+          altitudeAccuracyKnown: altitudeM != null && altitudeAccuracyM != null,
+          altitudeGainEligible: altitudeM != null && altitudeAccuracyM != null && altitudeAccuracyM <= 15
+            && accuracyM != null && accuracyM >= 0 && accuracyM <= 50 && kmh != null && kmh <= 250,
         });
         const shouldLogSample = lastGpsEventAtRef.current == null
           || capturedAtMs - lastGpsEventAtRef.current >= 2000
@@ -2880,10 +2933,8 @@ export function App() {
             longitude: position.coords.longitude,
             heading: resolveAtlasHeading(previousPosition, position.coords, position.coords.heading),
             speedKmh: kmh,
-            altitudeM: Number.isFinite(position.coords.altitude) ? position.coords.altitude : null,
-            altitudeAccuracyM: Number.isFinite(position.coords.altitudeAccuracy)
-              ? position.coords.altitudeAccuracy
-              : null,
+            altitudeM,
+            altitudeAccuracyM,
             accuracyM,
             capturedAtMs,
           };
@@ -2896,8 +2947,10 @@ export function App() {
           const recentSamples = appendAtlasJourneySample(previousJourney.recentSamples, {
             capturedAtMs,
             speedKmh: Number.isFinite(accuracyM) && accuracyM <= 50 ? kmh : null,
-            altitudeM: Number.isFinite(nextMapPosition.altitudeAccuracyM) && nextMapPosition.altitudeAccuracyM <= 15 ? nextMapPosition.altitudeM : null,
-            groundElevationM: null,
+            // Plot reported height independently of the stricter ascent/descent filter.
+            altitudeM: nextMapPosition.altitudeM,
+            groundElevationM: altitudeM == null ? terrain?.elevationM ?? null : null,
+            terrainCell: altitudeM == null ? terrainElevationCell(terrainPosition) : null,
             headingDegrees: nextMapPosition.heading,
           });
           const latestJourneySample = recentSamples.at(-1);
@@ -2912,6 +2965,7 @@ export function App() {
             travelPoints: appendAtlasTravelPoint(previousJourney.travelPoints, nextMapPosition),
             startedAtMs: previousJourney.startedAtMs ?? capturedAtMs,
             updatedAtMs: capturedAtMs,
+            terrain: terrain ?? previousJourney.terrain,
           };
           if (capturedAtMs - mapPositionUpdatedAtRef.current >= 2500) {
             mapPositionUpdatedAtRef.current = capturedAtMs;
@@ -4784,6 +4838,8 @@ export function App() {
       atlasLocationFeatureActive: environmentIdRef.current === "atlas",
       atlasLocationHeldInMemory: Boolean(mapPositionRef.current),
       atlasThirdPartyRequestsActive: environmentIdRef.current === "atlas" && Boolean(mapPositionRef.current),
+      terrainElevationFallbackUsesRoundedArea: true,
+      terrainElevationFallbackProvider: "Open-Meteo / Copernicus",
       automaticRemoteTelemetry: diagnosticPreferencesRef.current.mode === "dev" && diagnosticPreferencesRef.current.automatic,
       transmissionRequiresExplicitGesture: !(diagnosticPreferencesRef.current.mode === "dev" && diagnosticPreferencesRef.current.automatic),
       recorderStorage: "bounded-session-memory-only",

@@ -531,7 +531,7 @@ enuzzo
 - **Credit:** Open-Meteo and the European Union Copernicus programme.
 - **Source:** [Open-Meteo / Copernicus elevation](https://github.com/open-meteo/open-meteo).
 - **Public contact route:** [Contact / profile](https://open-meteo.com/en/docs/elevation-api).
-- **Use:** Runtime elevation data. ATLAS requests session-only GLO-90 terrain elevation for an approximately 1 km rounded location cell; Stats labels it separately from GPS altitude; no API implementation is copied.
+- **Use:** Runtime elevation data. A bounded shared running-session cache requests GLO-90 terrain elevation for an approximately 1 km rounded location cell when GPS height is absent. Stats and explicit PDF exports distinguish map estimates from GPS fixes and retain linked CC BY 4.0 / Copernicus credit. No API implementation is copied.
 - **License / permission boundary:** Recorded CC BY 4.0 API data terms and Copernicus acknowledgement.
 - **Source evidence:** linked upstream project plus the current local [notices](../THIRD_PARTY_NOTICES.md), package metadata or vendored notices; public routes checked 2026-09-05 where recorded in the verification evidence.
 - **Status:** DRAFT — not sent. Sent on: —; Channel: —; Reply: —; Follow-up: —.
@@ -540,7 +540,7 @@ enuzzo
 
 Hi Open-Meteo team!
 
-I'm enuzzo, building [sedicivalvole](https://sedicivalvole.app/), an experimental music-and-visuals app for the car browser. I'm really excited to share that your elevation API adds useful terrain context to Atlas; the Copernicus origin is acknowledged and the data stays within the active session.
+I'm enuzzo, building [sedicivalvole](https://sedicivalvole.app/), an experimental music-and-visuals app for the car browser. I'm really excited to share that your elevation API now keeps the journey height trace useful when a car browser omits GPS altitude. Stats and the optional Travel Report mark the terrain estimate clearly, with linked Open-Meteo / Copernicus attribution and a small session-only cache.
 
 Your name and project link are in our [README credits](https://github.com/enuzzo/sedicivalvole#community-thanks--2026-09-05). Our own code is currently source-visible under PolyForm Noncommercial; your work keeps its own terms. I hope seeing this makes you smile! If anything about our use or credit feels off or differs from what you expected, please tell me — I'd love to put it right.
 

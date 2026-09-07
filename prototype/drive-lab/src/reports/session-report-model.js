@@ -32,7 +32,8 @@ export function createSessionReportSnapshot({ journey, system, app, nowMs, creat
   const first = sourceSamples[0]?.capturedAtMs ?? nowMs;
   const samples = select(sourceSamples, 720).map((sample, index, all) => ({
     t: Math.max(0, (sample.capturedAtMs - first) / 1000),
-    speedKmh: finite(sample.speedKmh, 0, 250), altitudeM: finite(sample.altitudeM, -500, 10000),
+    speedKmh: finite(sample.speedKmh, 0, 250), altitudeM: sample.heightContainsGap ? null : finite(sample.altitudeM, -500, 10000),
+    groundElevationM: !sample.heightContainsGap && finite(sample.altitudeM, -500, 10000) == null ? finite(sample.groundElevationM, -500, 9000) : null,
     gap: Boolean(sample.containsGap || (index && (sample.firstCapturedAtMs ?? sample.capturedAtMs)
       - (all[index - 1].lastCapturedAtMs ?? all[index - 1].capturedAtMs) > SESSION_GAP_MS)),
   }));

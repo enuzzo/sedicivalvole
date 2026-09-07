@@ -147,6 +147,7 @@ export function appendAtlasJourneySample(
     speedKmh: Number.isFinite(speedKmh) ? Math.max(0, speedKmh) : null,
     altitudeM: Number.isFinite(altitudeM) ? altitudeM : null,
     groundElevationM: Number.isFinite(groundElevationM) ? groundElevationM : null,
+    terrainCell: typeof sample?.terrainCell === "string" ? sample.terrainCell : null,
     headingDegrees,
     accelerationGainKmh: speedDeltaKmh >= ATLAS_MOTION_DELTA_THRESHOLD_KMH ? speedDeltaKmh : 0,
     brakingLossKmh: speedDeltaKmh <= -ATLAS_MOTION_DELTA_THRESHOLD_KMH ? Math.abs(speedDeltaKmh) : 0,
@@ -185,9 +186,11 @@ function atlasSessionSample(sample) {
     firstCapturedAtMs: capturedAtMs,
     lastCapturedAtMs: capturedAtMs,
     containsGap: false,
+    heightContainsGap: false,
     speedKmh,
     altitudeM,
     groundElevationM,
+    terrainCell: typeof sample?.terrainCell === "string" ? sample.terrainCell : null,
     headingDegrees,
     sampleCount: 1,
     speedSampleCount: Number.isFinite(speedKmh) ? 1 : 0,
@@ -211,6 +214,10 @@ function atlasSessionSample(sample) {
 
 function mergeAtlasSessionSamples(first, second) {
   const sampleCount = first.sampleCount + second.sampleCount;
+  const heightSource = sample => sample.heightContainsGap ? null : Number.isFinite(sample.altitudeM) ? "gps"
+    : Number.isFinite(sample.groundElevationM) ? "map" : null;
+  const firstHeightSource = heightSource(first), secondHeightSource = heightSource(second);
+  const heightContainsGap = Boolean(first.heightContainsGap || second.heightContainsGap || firstHeightSource !== secondHeightSource);
   const average = (field) => {
     const firstFinite = Number.isFinite(first[field]);
     const secondFinite = Number.isFinite(second[field]);
@@ -242,8 +249,10 @@ function mergeAtlasSessionSamples(first, second) {
     lastCapturedAtMs: second.lastCapturedAtMs ?? second.capturedAtMs,
     containsGap: first.containsGap || second.containsGap || (second.firstCapturedAtMs ?? second.capturedAtMs) - (first.lastCapturedAtMs ?? first.capturedAtMs) > 5000,
     speedKmh: average("speedKmh"),
-    altitudeM: average("altitudeM"),
-    groundElevationM: average("groundElevationM"),
+    heightContainsGap,
+    altitudeM: heightContainsGap ? null : average("altitudeM"),
+    groundElevationM: heightContainsGap ? null : average("groundElevationM"),
+    terrainCell: first.terrainCell === second.terrainCell ? first.terrainCell : null,
     headingDegrees,
     sampleCount,
     speedSampleCount: first.speedSampleCount + second.speedSampleCount,
@@ -489,7 +498,7 @@ export function openMeteoElevationUrl(position) {
 }
 
 export function normalizeOpenMeteoElevation(payload) {
-  const value = Array.isArray(payload?.elevation) ? Number(payload.elevation[0]) : Number.NaN;
+  const value = Array.isArray(payload?.elevation) ? payload.elevation[0] : null;
   return Number.isFinite(value) && value >= -500 && value <= 9000 ? value : null;
 }
 

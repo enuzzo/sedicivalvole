@@ -296,6 +296,7 @@ test("Atlas keeps a bounded, truthful live journey history", () => {
   });
   assert.deepEqual(samples, [{
     capturedAtMs: 1000, speedKmh: 42, altitudeM: 121.4, groundElevationM: null,
+    terrainCell: null,
     headingDegrees: null, accelerationGainKmh: 0, brakingLossKmh: 0,
   }]);
   assert.equal(appendAtlasJourneySample(samples, {
@@ -310,6 +311,7 @@ test("Atlas keeps a bounded, truthful live journey history", () => {
   });
   assert.deepEqual(samples.at(-1), {
     capturedAtMs: 3000, speedKmh: 50, altitudeM: null, groundElevationM: null,
+    terrainCell: null,
     headingDegrees: null, accelerationGainKmh: 8, brakingLossKmh: 0,
   });
   assert.equal(appendAtlasJourneySample(samples, { capturedAtMs: Number.NaN }), samples);
