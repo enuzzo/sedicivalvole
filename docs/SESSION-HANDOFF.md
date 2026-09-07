@@ -1,5 +1,12 @@
 # Session Handoff
 
+## Active Engine quality campaign
+
+The owner now authorizes a major Engine quality/versatility implementation in a
+fresh Ultra task, directly in this local Dropbox checkout. Read
+[the concrete campaign handoff](ENGINE-QUALITY-CAMPAIGN-2026-09-07.md) first.
+All earlier runtime changes are committed, documented, pushed and deployed.
+
 ## September 7 night work
 
 Read [current state](CURRENT-STATE.md), [execution queue](NIGHT-WORK-2026-09-07.md)

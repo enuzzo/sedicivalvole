@@ -1812,3 +1812,20 @@ An empirical 3.25-times interior-outlier gate is verified against all twelve
 core loops at both 48 and 44.1 kHz: exactly three Mono roles are prepared, with
 Rosso/Touring and Mono on_low unchanged. This is a measured tuning threshold,
 not a physical constant. Browser signal checks are not cabin listening approval.
+
+## Engine quality campaign intake — 2026-09-07
+
+The owner wants stronger audible engine character and versatility. Existing GPS
+evidence already proves the gearbox executes; matching that with convincing
+pitch, load articulation and shift events is the next listener-facing problem.
+The current linear-cent pitch mapping is not calibrated crankshaft pitch.
+Preserve the documented uncertainty of the recordings rather than interpreting
+an FFT peak as known RPM.
+
+The fresh source comparison includes browser waveguide synthesis, offline engine
+rendering, public simulator explanations and embedded load/layer architectures.
+An audio-time event contract can keep shift release/synchronization/load return
+and turbo spool coherent. This is a hypothesis to test with repeatable audio A/B
+and measured cost, not a claim that extra layers automatically sound better.
+See [the campaign handoff](ENGINE-QUALITY-CAMPAIGN-2026-09-07.md) for verified
+sources, existing defects, first experiment and source-admission boundaries.

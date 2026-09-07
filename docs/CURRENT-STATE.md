@@ -32,6 +32,13 @@ See [altitude correction and map fallback](ALTITUDE-FALLBACK-2026-09-07.md),
 [publication evidence](DEPLOY.md) and [earlier night checkpoint captures](qa/2026-09-07-night/).
 No synthetic email was sent. Browser QA does not replace physical acceptance.
 
+## Active development priority
+
+The owner requests a substantive Engine quality and versatility campaign,
+including deeper simulator research, powertrain/audio refactoring and additional
+engine characters. This is new authorized work, not a claim of new shipped audio.
+See [the campaign handoff](ENGINE-QUALITY-CAMPAIGN-2026-09-07.md).
+
 ## Historical implementation inventory
 
 The following accumulated implementation notes preserve earlier decisions and

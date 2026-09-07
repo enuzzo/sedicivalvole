@@ -949,3 +949,21 @@ Research only. No new source or recordings from these projects are shipped.
 **Subject: Thank you for helping our journeys become readable reports**
 
 > Hi Olivier — I am enuzzo, making sedicivalvole, an experimental source-visible music and visual app for the car browser. FPDF's small, direct PHP drawing model helped me turn an observed journey into a clear Travel Report without screenshots, uploaded PDFs or a second application server. I appreciate how long you have kept the project approachable and useful. We retain your original files, exact version and license, and credit your work beside the report integration. Thank you for giving this little project a dependable way to put its journeys on paper. — enuzzo
+
+## Engine quality campaign acknowledgements — 2026-09-07
+
+### Engine Sim Game / Real Engine Simulator
+
+- Original project and public discovery route: [official site](https://realenginesimulator.com/), [authored architecture](https://realenginesimulator.com/about) and [changelog](https://realenginesimulator.com/changelog). No private creator identity inferred.
+- Exact use: public explanatory material about firing synthesis, boost and automatic transmission; no proprietary code, assets or constants imported.
+- Status: study only; this release acknowledgement draft is **unsent**.
+
+> Hello — I am enuzzo, creating sedicivalvole, a source-visible experimental project under PolyForm Noncommercial. Your public explanations of converter lockup, turbo response and engine character help make these otherwise hidden relationships understandable. Thank you for documenting the thinking behind the experience. We credit that educational work as a reference while building our own implementation. — enuzzo
+
+### TheDIYGuy999 — Rc_Engine_Sound_ESP32
+
+- Original project: [repository](https://github.com/TheDIYGuy999/Rc_Engine_Sound_ESP32); public discovery/contact route: [TheDIYGuy999](https://github.com/TheDIYGuy999).
+- Exact use: README and transmission/sound entry-point study; automatic/DCT and load/RPM-dependent layer architecture. Exact pin and reuse licence remain to be verified; no code/audio imported.
+- Status: study only; this release acknowledgement draft is **unsent**.
+
+> Hi — I am enuzzo, building sedicivalvole, an experimental source-visible project under PolyForm Noncommercial. The care you put into making tiny RC vehicles sound and shift convincingly is a useful lesson in keeping engine behavior coherent on constrained hardware. Thank you for making the design accessible. We are studying the architecture and crediting it as research, without shipping your code or recordings. — enuzzo

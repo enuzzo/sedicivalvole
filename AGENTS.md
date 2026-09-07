@@ -175,3 +175,19 @@ terrain estimate separately in Stats and PDF. Reuse the existing Open-Meteo /
 Copernicus service with rounded request cells, bounded session cache, request
 spacing and lifecycle recovery. Do not substitute terrain for a GPS reading or
 add height/position values to automatic technical diagnostics.
+
+## Owner Engine quality campaign — September 7 late evening
+
+After the altitude release, Engine is the owner's primary development priority:
+maximum audible quality and versatility, new engine types, coherent automatic
+shifting, load response, turbo/turbine sounds and event timing. Study the local
+analysis/reference folders and the fuller simulator sources before choosing
+reuse, procedural synthesis or refactoring. The owner authorizes substantive
+implementation and refactoring within this scope, followed by verified deployment.
+A fresh task at Ultra reasoning is explicitly allowed, but work must run directly
+in this saved Dropbox project on this Mac. Close commit/documentation/push/deploy
+for prior changes first. Preserve the current reliable GPS/lifecycle and dry-audio
+contracts, and do not treat a historical study's blind-review or AWAITING_APPROVAL
+workflow as the active task. Current work is an informed implementation campaign.
+Maintain source/asset provenance, existing licensing and the selected visual; a
+new visual design still requires its separate three-direction selection.

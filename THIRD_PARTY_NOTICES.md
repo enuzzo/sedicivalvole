@@ -326,3 +326,8 @@ boundaries remain separate. The loop audit used the existing bundled NumPy
 2.3.5, under its existing BSD-3-Clause notice, without changing the older music
 analysis environment or its requirements. Host loop repair and driveline gates
 are original project code; admitted Engine source/WAV hashes remain unchanged.
+
+## Engine quality campaign source intake — 2026-09-07
+
+- **Engine Sim Game / Real Engine Simulator**: [authored architecture](https://realenginesimulator.com/about), [changelog](https://realenginesimulator.com/changelog) and [terms](https://realenginesimulator.com/terms). Public documentation/behavior research on firing synthesis, automatic transmission and boost. Proprietary runtime, assets and constants are not imported. Publisher descriptions are not independent physical validation.
+- **TheDIYGuy999 — Rc_Engine_Sound_ESP32**: [source](https://github.com/TheDIYGuy999/Rc_Engine_Sound_ESP32). README and transmission/sound configuration entry-point study of automatic/DCT behavior and load/RPM layers. Exact revision and reuse licence require further verification. No source or audio enters the product in this intake.
