@@ -72,3 +72,41 @@ remain separate. Publication evidence will be appended after canonical validatio
   source, input/output and CC BY 4.0 attribution.
 - [Terms](https://open-meteo.com/en/terms) and [privacy](https://open-meteo.com/en/privacy):
   noncommercial public service limits and provider-side request handling.
+
+## Compiled checkpoint
+
+Source **c6c16c4**, build **20260907-2328**, version from VERSION (0.0.0).
+Source is pushed. All 18 built-package checks pass. Repeated production-browser
+fixtures at 667×375 pass all nine cases in both time ranges with zero exceptions.
+Exact 773×601 Tesla QA retains the 48 px Export/Close targets and readable chart
+caption; the lower footer shows linked terrain attribution and query disclosure.
+Evidence: /tmp/sv-altitude-compiled.json and /tmp/sv-altitude-compiled-tesla.json.
+
+## Altitude correction publication — 2026-09-07 23:40 Europe/Rome
+
+Canonical **20260907-2328**, source **c6c16c4**, version from VERSION (0.0.0).
+[Behavior, source semantics and privacy](ALTITUDE-FALLBACK-2026-09-07.md).
+
+- Official publication verifies **229 files / 254,829,937 bytes**, all **29 Illobo
+  recordings**, and two retained cache-overlap assets. Independent official
+  postflight passes with **remote_writes=NONE**; root has twelve expected entries.
+- **733 native tests**, **18 built-package checks**, **196 dependency credits**
+  and **27 canonical HTML/asset/cache checks** pass.
+- Nine browser fixtures in both time ranges pass on the compiled and canonical
+  build at 667×375; exact 773×601 header, chart, caption and attribution pass.
+  Four additional compiled integration cases verify eligibility/backfill,
+  invalid-position and restored-height cancellation, and a 6.104-second response.
+  No page exceptions or synthetic email. The final browser harness uses native
+  keyboard activation to avoid a synthetic-clock pointer/chrome timing race.
+- Exactly two fresh real PHP preview requests return the same **27,056-byte**
+  mixed GPS/map PDF, SHA-256
+  `2df6eafcc1c0a077bac3986283ebbadf21a27f54c07db521eb83a348968165e4`.
+  Decoded streams, metadata, resources, annotations and both rendered pages match
+  local output. Cross-host compressed bytes differ; repeated canonical bytes do
+  not. Fixed attribution, no-store and cookie flags pass. No route or mail action.
+
+Evidence: /tmp/sv-altitude-{preflight,publish,postflight}.log,
+/tmp/sv-altitude-canonical/identity.json, /tmp/sv-altitude-live.json,
+/tmp/sv-altitude-live-tesla.json, /tmp/sv-terrain-integration.json and
+/tmp/sv-altitude-report-live/evidence.json. Physical Tesla/iPhone altitude and
+legibility, plus actual automatic diagnostic inbox receipt, remain separate.

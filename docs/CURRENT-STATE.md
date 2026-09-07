@@ -1,6 +1,6 @@
 # Current Project State
 
-Latest verified canonical publication: **20260907-2243**, source **0ab8ebe**,
+Latest verified canonical publication: **20260907-2328**, source **c6c16c4**,
 version from `VERSION` (`0.0.0`). This summary takes precedence over the dated
 historical paragraphs below.
 
@@ -8,26 +8,28 @@ historical paragraphs below.
 |---|---|---|
 | Diagnostics | Dev/AUTO ON by default, saved OFF/Standard respected; fifteen observed GPS-driving minutes; coordinate-free; sampled simulated Engine RPM/reasons | First real automatic inbox receipt |
 | Engine | Three profiles, dry output, no-GPS manual TAMARRO, confirmed-zero idle blips, bounded poor-accuracy hold, truthful bank preparation, movement-owned transmission and three repaired Mono loop seams | Physical listening/native media and long drive |
-| Atlas / Stats | Separate Visual destinations; Natural/Palette map, Wikipedia and loaded OSM POIs; curved heading bands plus completed motion/runtime parity | Physical moving-data legibility and GPS coverage |
+| Atlas / Stats | Separate Visual destinations; Natural/Palette map, Wikipedia and loaded OSM POIs; curved heading bands, motion/runtime parity and solid GPS/dashed terrain altitude | Physical moving-data legibility and GPS coverage |
 | Flux / Soundtrack / FX / Discover | Broad owner acceptance, later small refinements allowed | Preserve the remaining specific device/endurance cases |
 | iPhone | Selected Compact Cockpit for iPhone 17 Pro/Pro Max; safe areas, inert portrait notice, state-preserving rotation; 667×375 through 956×440 browser matrix | Actual Safari/device software and native audio |
-| Travel Report | Selected two-page A4 PDF, optional third route page, immutable preview/download, explicit verified-recipient email and proof reuse | Actual chosen-recipient inbox delivery |
+| Travel Report | Selected two-page A4 PDF, optional third route page, immutable preview/download, explicit verified-recipient email, proof reuse and distinct GPS/map elevation | Actual chosen-recipient inbox delivery |
 | Release | Experimental canonical build | Physical acceptance matrix, then separate production release decision |
 
-**712 native tests, 18 package checks, 196 dependency credits and 27 canonical
+**733 native tests, 18 package checks, 196 dependency credits and 27 canonical
 HTML/asset/cache checks pass.** Official publication verifies 229 files and all
 29 Illobo recordings; independent postflight is read-only. Real PHP PDF preview
-and live Engine/phone/export/automatic-diagnostic browser checks pass.
+and live altitude chart/phone layout checks pass. Earlier night Engine/export/
+automatic-diagnostic browser evidence remains recorded separately.
 
 The latest actual Tesla message found at 20:04 local is build 1936, before
 automatic build 2004. Thirty Engine shifts and GPS up to 115 km/h were recorded
 without runtime issues. Its brief 10,000-m accuracy reading motivated the bounded
 hold; profile preparation delays did not prove silence because audio continued.
 
-See [night implementation](NIGHT-IMPLEMENTATION-2026-09-07.md),
+See [altitude correction and map fallback](ALTITUDE-FALLBACK-2026-09-07.md),
+[night implementation](NIGHT-IMPLEMENTATION-2026-09-07.md),
 [the complete queue](NIGHT-WORK-2026-09-07.md),
 [acoustic research](ENGINE-ACOUSTICS-STUDY-2026-09-07.md),
-[publication evidence](DEPLOY.md) and [current captures](qa/2026-09-07-night/).
+[publication evidence](DEPLOY.md) and [earlier night checkpoint captures](qa/2026-09-07-night/).
 No synthetic email was sent. Browser QA does not replace physical acceptance.
 
 ## Historical implementation inventory

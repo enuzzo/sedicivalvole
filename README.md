@@ -31,8 +31,8 @@ Public development repository: [github.com/enuzzo/sedicivalvole](https://github.
 `sedicivalvole` turns speed, sound, and light into an atmospheric, useful, and memorable in-car experience. It is not a generic dashboard. Two equal primary modes share one motion signal and safety model while offering deliberately different audio and visual identities.
 
 The canonical development build is available at [sedicivalvole.app](https://sedicivalvole.app/).
-The current canonical identity is version `0.0.0`, source commit `0ab8ebe`, build
-`20260907-2243`. See [current state](docs/CURRENT-STATE.md) and the
+The current canonical identity is version `0.0.0`, source commit `c6c16c4`, build
+`20260907-2328`. See [current state](docs/CURRENT-STATE.md) and the
 [reconciled work queue](docs/NIGHT-WORK-2026-09-07.md) for current verification
 and pending physical-device gates. Earlier launch evidence: compact previews and fresh choices pass
 658 native tests, 17 package checks, 17 launch-browser scenarios and live

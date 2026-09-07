@@ -4,8 +4,12 @@
 
 Read [current state](CURRENT-STATE.md), [execution queue](NIGHT-WORK-2026-09-07.md)
 and [night implementation](NIGHT-IMPLEMENTATION-2026-09-07.md) before historical
-entries below. Current live build: **20260907-2243/source 0ab8ebe**; 712 native
+entries below. Current live build: **20260907-2328/source c6c16c4**; 733 native
 tests, 18 package checks, 27 canonical checks and live browser/PHP QA pass.
+
+The later [altitude correction](ALTITUDE-FALLBACK-2026-09-07.md) fixes the missing
+blue GPS line and adds bounded, coarse terrain fallback in Stats and PDF. New
+diagnostics contain altitude availability counts, never raw height/cell values.
 
 Owner selections received in this task: Compact Cockpit direction 1 for iPhone
 17 Pro/Pro Max, and Travel Report direction 1. These visual gates are answered.
