@@ -8,19 +8,19 @@ Fill each `Answer:` line. `Not tested` is a useful answer: it preserves the gate
 
 During Sunday's session, were the approximately 10-minute and 30-minute gaps caused by leaving/closing the browser, another Tesla screen/app, or did the app remain visible and freeze? Did music continue?
 
-Answer: 
+Answer:
 
 ### A02 — Native pauses (D07-05; milestones 7 and 10C)
 
 Were the final music pauses on Sunday and Monday intentional, for example using Tesla's media control or switching audio source? Monday's pause follows a track ending. If unwanted, describe what you saw/heard and which control you last touched.
 
-Answer: 
+Answer:
 
 ### A03 — Visible faults (D07-01/04; milestone 5)
 
 Was ATLAS visibly jerky or delayed? Did Drivey show a blank/error screen on its first load and work after reselecting it? Describe either symptom separately from the diagnostic FPS figure.
 
-Answer: 
+Answer:
 
 ## Existing-product acceptance
 
@@ -28,31 +28,31 @@ Answer:
 
 For FRACTURE, JUNCTION, NIGHTSHIFT, Jamendo and Illobo separately: which did you actually listen to, were low-speed/transition/volume behavior acceptable, and were braking UNDERWATER and the manual effects audible and useful? List any untested sources/effects. These reports mainly establish MUTE/Jamendo exposure.
 
-Answer: 
+Answer:
 
 ### A05 — Touch, media controls and readability (milestones 7, 8, 10A–10C, 13)
 
 Do controls now open while moving, remain usable and retract after closing or about six seconds of inactivity? Are Music, Palette, Now Playing and LIGHT/DARK readable? Which native Play/Pause/Previous/Next controls actually worked, and did returning to the browser resume correctly?
 
-Answer: 
+Answer:
 
 ### A06 — ATLAS and Discover (milestones 2, 9, 9A, 10)
 
 Does ATLAS retain the route origin and one marker, collapse/reopen correctly and show readable PALETTE/STANDARD maps and statistics? Does Discover search/read articles correctly and does scanning its QR open the intended destination on your phone? Mark each untested part.
 
-Answer: 
+Answer:
 
 ### A07 — Visual acceptance (milestones 5, 11, 11A, 11B)
 
 Which visuals felt smooth and comfortable, including Drivey at walking pace and Meridian braking/recovery? For Japanese Mist, Acid Orchard, Chromatic Silk and both PRTCL types, note actual use, braking response, switching and any prolonged degradation. LAB acceptance can remain `Not tested` separately.
 
-Answer: 
+Answer:
 
 ### A08 — iPhone test device (milestones 14, 16)
 
 Which iPhone model/iOS/Safari version can you test, and is landscape use with state-preserving rotation required before the first release? The responsive implementation and test preparation are ours; only physical device observations require you.
 
-Answer: 
+Answer:
 
 ## Product choices
 
@@ -60,19 +60,19 @@ Answer:
 
 Are the shipped Night Glass (Vertigo / Graphite / DARK / Lounge) and Neon Groove (Aperture / Neon / DARK / Funk) acceptable as the first completed pair? Name any mismatch. Recommendation: accept or refine these two before expanding the catalogue.
 
-Answer: 
+Answer:
 
 ### A10 — Priority and first release scope (milestones 15–17)
 
 Recommendation: close the diagnostic/reliability checkpoint first, then conduct the Engine review and incremental integration before the dual-mode release. Do you prefer that sequence, or an explicitly Flux-only first release with Engine following? This is a scope decision, not a deployment permission request.
 
-Answer: 
+Answer:
 
 ### A11 — Future statistics surface (approved draft, not today's reliability blocker)
 
 Should the separate statistics visual be useful during the journey or mainly for passenger/stationary review? The travel-ATLAS direction is already approved; no need to approve it again. Recommendation: keep this expansion after the reliability checkpoint. Three concrete visual directions will be prepared before design selection.
 
-Answer: 
+Answer:
 
 ## Questions deliberately not asked again
 
