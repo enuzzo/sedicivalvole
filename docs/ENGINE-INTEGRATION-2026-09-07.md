@@ -185,3 +185,10 @@ near each limiter, finite non-silent output below clipping, tap release, opposit
 button cancellation, keyboard and mute. No page exception or diagnostic send.
 [Browser evidence](qa/2026-09-07-show-off/browser-evidence.json).
 Physical listening remains the owner's acceptance gate.
+
+
+Show-off publication: **20260907-1256**, source **cb88e2a**, implementation **cd99d06**.
+Official deployment and 28 byte-identity checks pass. Public Chrome confirms five
+measured rev peaks in each profile and cancellation/idle behavior; no page
+exceptions or diagnostic sends. The public test waits for real bank readiness
+before each gesture. [Deployment evidence](qa/2026-09-07-show-off/README.md).

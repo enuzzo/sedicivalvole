@@ -1,10 +1,11 @@
 # Current Project State
 
-Latest verified canonical publication: **`20260907-1238`**, source **`4e8ee1f`**,
-Launch Cockpit implementation **`4612da6`**, version `0.0.0`. **650 regression tests**,
-10 post-build checks, 28 HTTPS identity checks and public Jazz/Lobo/Engine startup
-pass. Official preflight, publication and independent no-write postflight pass.
-See [DEPLOY](DEPLOY.md) and [Launch Cockpit](LAUNCH-COCKPIT-2026-09-07.md).
+Latest verified canonical publication: **`20260907-1256`**, source **`cb88e2a`**,
+Show-off implementation **`cd99d06`**, version `0.0.0`. **652 regression tests**,
+10 post-build checks and 28 HTTPS identity checks pass. Actual public Chrome
+verifies the complete Show-off phrase and cancellation in all three Engine profiles.
+Official preflight, publication and independent no-write postflight pass.
+See [DEPLOY](DEPLOY.md) and [Engine integration](ENGINE-INTEGRATION-2026-09-07.md).
 
 Engine is implemented and live: Telemetry direction 2, Mono/Rosso/Touring, AUTO,
 protected LAB MANUAL, shared audio, GPS evidence, rev protection and retry. The
@@ -45,7 +46,7 @@ dated study documents.
 ## Product surface
 
 - TAMARRO / SHOW-OFF now implements tap-triggered, varied neutral rev phrases;
-  locally verified, canonical publication pending. [Behavior and evidence](ENGINE-INTEGRATION-2026-09-07.md#show-off-gesture--2026-09-07).
+  canonically published and browser-verified. [Behavior and evidence](ENGINE-INTEGRATION-2026-09-07.md#show-off-gesture--2026-09-07).
 
 - Launch Cockpit is implemented, canonically published and browser-verified.
   Immediate Music/Engine selection, precise genre/pace/Lobo and lucky genre mode

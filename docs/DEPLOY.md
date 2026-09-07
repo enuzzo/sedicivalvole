@@ -1,5 +1,29 @@
 # Deployment
 
+## TAMARRO / Show-off — 2026-09-07 13:06
+
+- Canonical build **20260907-1256**, built source **cb88e2a**, implementation
+  **cd99d06**, version **0.0.0**. One tap plays a varied neutral rev phrase;
+  another tap stops it. Master level, dry path and original WAVs are unchanged.
+- **652 regression tests**, **10 post-build checks**, **196 dependency credits**,
+  actual-WAV local and public browser checks pass.
+- Official preflight, publication and independent no-write postflight pass.
+  **204 files / 254,266,949 bytes**, all **29 Illobo tracks** by full hash, 11 root
+  entries, one retained cache-overlap asset, no legacy/root metadata removals.
+- **28 HTTPS identity checks** match local bytes, including canonical and
+  cache-busted HTML with no-store/no-cache and all Engine audio-directory files.
+- Actual public 773 × 601 Chrome verifies the exact build, five measured RPM
+  peaks per profile, near-limiter RPM, neutral, original-sample audio below clipping,
+  idle return, opposite-button cancellation, keyboard and mute. No page exceptions
+  or diagnostic sends. GPS is synthetic; physical listening remains open.
+- The first public profile-switch probe used a local-only 700 ms wait and failed
+  the gesture-duration assertion. Inferred cause: the new bank could finish after
+  gesture startup and reset it.
+  The corrected test waits for SAMPLE ENGINE readiness and passes all profiles.
+  This is a QA synchronization correction, not an additional runtime change.
+- [Evidence and current screenshot](qa/2026-09-07-show-off/README.md).
+
+
 ## Launch Cockpit — 2026-09-07 12:49
 
 - Canonical build **`20260907-1238`**, version **`0.0.0`**, built source **`4e8ee1f`**;
