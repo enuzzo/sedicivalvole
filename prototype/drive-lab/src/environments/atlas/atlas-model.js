@@ -182,6 +182,9 @@ function atlasSessionSample(sample) {
   ));
   return {
     capturedAtMs,
+    firstCapturedAtMs: capturedAtMs,
+    lastCapturedAtMs: capturedAtMs,
+    containsGap: false,
     speedKmh,
     altitudeM,
     groundElevationM,
@@ -235,6 +238,9 @@ function mergeAtlasSessionSamples(first, second) {
     : null;
   return {
     capturedAtMs: average("capturedAtMs"),
+    firstCapturedAtMs: first.firstCapturedAtMs ?? first.capturedAtMs,
+    lastCapturedAtMs: second.lastCapturedAtMs ?? second.capturedAtMs,
+    containsGap: first.containsGap || second.containsGap || (second.firstCapturedAtMs ?? second.capturedAtMs) - (first.lastCapturedAtMs ?? first.capturedAtMs) > 5000,
     speedKmh: average("speedKmh"),
     altitudeM: average("altitudeM"),
     groundElevationM: average("groundElevationM"),
@@ -789,8 +795,8 @@ export function speedToAtlasCamera(speedKmh) {
   // speed reveals more city without ever flattening the extruded city field.
   const flight = 0.35 * roadProgress + 0.65 * Math.sqrt(roadProgress);
   return {
-    zoom: 16.2 - flight * 1.55,
-    pitch: 62 - flight * 6.5,
+    zoom: 13.4 - flight * 1.5,
+    pitch: 15 + flight * 10,
     durationMs: Math.round(2200 - roadProgress * 1050),
     buildingScale: 0.82 + roadProgress * 0.38,
   };
@@ -981,23 +987,23 @@ export function normalizeAtlasMapAppearance(value) {
 }
 
 const ATLAS_STANDARD_MAP_COLORS = Object.freeze({
-  background: "#171c1e",
-  land: "#292f2d",
-  park: "#3f674a",
-  forest: "#28513a",
-  grass: "#5e744e",
-  sand: "#756443",
-  hospital: "#754b52",
-  water: "#246f93",
-  roadCasing: "#151819",
-  road: "#d3d0c7",
-  majorRoad: "#dfb855",
-  motorway: "#dc775b",
-  buildingLow: "#715e50",
-  buildingMid: "#a17a60",
-  buildingHigh: "#d0b09a",
-  label: "#f0eee7",
-  labelHalo: "#171b1c",
+  background: "#f3f1eb",
+  land: "#eeece5",
+  park: "#d2e4c7",
+  forest: "#b9d5b2",
+  grass: "#deead1",
+  sand: "#ede5ce",
+  hospital: "#ead9db",
+  water: "#aacfe0",
+  roadCasing: "#d9d6cb",
+  road: "#ffffff",
+  majorRoad: "#f3d69c",
+  motorway: "#e9be8a",
+  buildingLow: "#dedbd3",
+  buildingMid: "#d2cec5",
+  buildingHigh: "#c3beb5",
+  label: "#303b3d",
+  labelHalo: "#faf9f4",
 });
 
 /** Keeps live trip state in the product palette while optionally making the basemap semantic. */

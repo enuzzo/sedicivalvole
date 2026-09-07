@@ -327,3 +327,15 @@ Validation: 657 native tests, real browser master-gain targets at 0.112/0.16,
 GPS jitter/movement transitions, automatic blip trace and three-profile TAMARRO
 rise/fall/limiter/return checks pass. Browser audio is measured under headless mute;
 perceived loudness and target-Tesla listening remain owner acceptance.
+
+## ATLAS / Stats approved remix — 2026-09-07
+
+ATLAS and Stats for Nerds are separate passenger views, not a map plus statistics
+sidebar. The owner selected Travel Observatory's pastel map/POIs and summary
+bands, Mission Control's heading/network instruments, and Journey Magazine's
+photo place card plus speed/altitude timeline. POIs use actual Discover source
+coordinates; Read more opens the full Wikipedia article over Atlas and returns
+to the selected place. Natural and Palette remain distinct. Manual/Area/Trip
+framing persists until Follow. Preserve audio mode while changing passenger
+views. The former midpoint chart handle/320 px sidebar is superseded by this
+explicit selection. PDF/email remains the separate documented design scope.

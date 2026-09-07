@@ -106,15 +106,14 @@ test("Atlas GPS presentation covers denial, timeout, inaccurate fixes and recove
   assert.match(styles, /\.gps-state\.is-offline \{ color: #ff6b64; \}/);
 });
 
-test("Atlas camera widens with speed while retaining a strongly dimensional city", () => {
+test("Atlas camera widens with speed for travel context", () => {
   const rest = speedToAtlasCamera(0);
   const urban = speedToAtlasCamera(40);
   const road = speedToAtlasCamera(130);
   assert.ok(road.zoom < rest.zoom);
-  assert.ok(road.pitch < rest.pitch, "the faster camera should rise toward bird's-eye");
+  assert.ok(rest.pitch <= 25 && road.pitch <= 25, "travel framing stays flat enough to read places");
   assert.ok(urban.zoom > road.zoom);
-  assert.ok(road.zoom >= 14.6, "motorway view must keep extruded buildings materially visible");
-  assert.ok(road.pitch >= 55, "motorway view must retain an oblique 3D perspective");
+  assert.ok(road.zoom >= 11.5 && rest.zoom <= 13.5, "framing shows a useful surrounding area");
   assert.ok(road.durationMs < rest.durationMs);
   assert.ok(road.buildingScale > rest.buildingScale);
 });
@@ -406,9 +405,6 @@ test("Atlas obtains coarse terrain elevation separately from browser GPS altitud
   assert.equal(normalizeOpenMeteoElevation({ elevation: [122] }), 122);
   assert.equal(normalizeOpenMeteoElevation({ elevation: [12000] }), null);
   assert.equal(normalizeOpenMeteoElevation({}), null);
-  assert.match(atlasSource, /GPS altitude/);
-  assert.match(atlasSource, /Open-Meteo \/ Copernicus/);
-  assert.match(atlasSource, /window\.setInterval\(updateJourney, ATLAS_JOURNEY_SAMPLE_INTERVAL_MS\)/);
   assert.match(styles, /\.atlas-history-range/);
 });
 
@@ -432,7 +428,6 @@ test("Atlas feeds position samples at GPS cadence without driving React camera s
     /atlasPositionSamplesRef\.current = \[\];[\s\S]*?atlasSessionJourneyRef\.current = \{[\s\S]*?mapPositionUpdatedAtRef\.current = Number\.NEGATIVE_INFINITY;[\s\S]*?if \(!navigator\.geolocation\)/,
   );
   assert.match(atlasSource, /const seededJourney = valuesRef\.current\.sessionJourneyRef\?\.current/);
-  assert.match(atlasSource, /const externalJourney = valuesRef\.current\.sessionJourneyRef\?\.current/);
 
   const reportStart = appSource.indexOf("const buildDiagnosticReport");
   const reportEnd = appSource.indexOf("const sendDiagnostic", reportStart);
@@ -509,34 +504,6 @@ test("Atlas interpolates cyclic values by the short route and never cuts across 
   assert.equal(recovered.interpolating, false);
 });
 
-test("Atlas Drive Lab fits its selected telemetry hierarchy at the Tesla viewport", () => {
-  assert.match(styles, /\.atlas-field \{[\s\S]*?--atlas-panel-width: 320px;/);
-  assert.match(styles, /\.atlas-panel \{[\s\S]*?width: var\(--atlas-panel-width\);[\s\S]*?padding: 0;/);
-  assert.match(styles, /\.atlas-drive-summary \{[\s\S]*?grid-template-columns: 1\.15fr 1fr 1fr 1\.15fr;/);
-  assert.match(styles, /\.atlas-drive-lab-canvas \{[\s\S]*?width: 100%;[\s\S]*?height: 340px;/);
-  assert.match(atlasSource, /appendAtlasJourneySample/);
-  assert.match(atlasSource, /atlasJourneyDistanceMetres\(travelPointsRef\.current\)/);
-  for (const label of ["Accel / braking", "Speed bands", "Direction", "Moving / stopped", "Elevation"]) {
-    assert.match(atlasSource, new RegExp(label.replace("/", "\\/")));
-  }
-  assert.match(atlasSource, /quadraticCurveTo/);
-  assert.match(atlasSource, /headingDistribution\.sectors\.forEach/);
-  assert.match(atlasSource, /context\.arc\(roseCentre\.x/);
-  assert.match(atlasSource, /° sectors/);
-  assert.doesNotMatch(atlasSource, /RANGE SHARE/);
-  assert.match(atlasSource, /ATLAS_CHART_FONT_FAMILY = '\"Space Grotesk\", ui-sans-serif, system-ui, sans-serif'/);
-  assert.match(atlasSource, /ATLAS_CHART_TYPE = Object\.freeze\(\{[\s\S]*?meta: 14,[\s\S]*?label: 14,[\s\S]*?data: 15,[\s\S]*?value: 16,/);
-  assert.match(atlasSource, /right - left < 200[\s\S]*?\["−15", "−10", "−5", "Now"\]/);
-  assert.match(atlasSource, /aria-label="Distance">Dist\.<\/dt>/);
-  assert.match(atlasSource, /aria-label="Moving time">Moving<\/dt>/);
-  assert.match(atlasSource, /aria-label="Average speed">Average<\/dt>/);
-  assert.match(atlasSource, /fontVariantNumeric = "tabular-nums"/);
-  assert.match(atlasSource, /tabularDigitWidth = Math\.max\([\s\S]*?context\.measureText\(digit\)\.width/);
-  assert.doesNotMatch(atlasSource, /ui-monospace|\b(?:[0-9]|1[0-3])(?:\.[0-9]+)?px\b/);
-  assert.doesNotMatch(atlasSource, /aria-live="polite"/);
-  assert.match(styles, /\.atlas-terrain-source \{[\s\S]*?min-width: 0;[\s\S]*?gap: 6px;/);
-  assert.match(styles, /\.atlas-terrain-source > span,[\s\S]*?\.atlas-terrain-source > a \{[\s\S]*?overflow: hidden;[\s\S]*?text-overflow: ellipsis;/);
-});
 
 test("Atlas Direction History preserves weighted moving headings as radial tiles", () => {
   assert.equal(ATLAS_HEADING_SECTOR_COUNT, 8);
@@ -714,31 +681,22 @@ test("Atlas standard map colors are semantic, reversible and keep trip state in 
 });
 
 test("Atlas exposes a persistent map-only color control without rebuilding MapLibre", () => {
-  assert.match(appSource, /atlasMapAppearance: normalizeAtlasMapAppearance\(value\?\.atlasMapAppearance\)/);
-  assert.match(appSource, /setAtlasMapAppearance\("palette"\)/);
+  assert.match(appSource, /atlasMapAppearance: normalizeAtlasMapAppearance\(value\?\.atlasMapAppearance \?\? "standard"\)/);
+  assert.match(appSource, /setAtlasMapAppearance\("standard"\)/);
   assert.match(appSource, /mapAppearance=\{atlasMapAppearance\}/);
   assert.match(atlasSource, /className="atlas-map-appearance"/);
   assert.match(atlasSource, /aria-pressed=\{mapAppearance === "standard"\}/);
   assert.match(atlasSource, /MAP COLOR/);
-  assert.match(atlasSource, /STANDARD/);
+  assert.match(atlasSource, /NATURAL/);
   assert.doesNotMatch(atlasSource, /setStyle\(/);
   assert.match(styles, /\.atlas-map-appearance \{[\s\S]*?top: 82px;[\s\S]*?right: calc\(var\(--atlas-panel-width\) \+ 12px\);/);
   assert.match(styles, /\.atlas-field\.is-panel-collapsed \.atlas-map-appearance \{ right: 12px; \}/);
 });
 
-test("Atlas Drive Lab collapses behind a persistent icon-only midpoint handle", () => {
-  assert.match(atlasSource, /const \[panelCollapsed, setPanelCollapsed\] = useState\(false\)/);
-  assert.match(atlasSource, /aria-controls="atlas-passenger-panel"/);
-  assert.match(atlasSource, /aria-expanded=\{!panelCollapsed\}/);
-  assert.match(atlasSource, /aria-hidden=\{collapsed\}/);
-  assert.match(atlasSource, /inert=\{collapsed \? true : undefined\}/);
-  assert.match(atlasSource, /setPanelCollapsed\(\(current\) => !current\)/);
-  assert.match(styles, /\.atlas-panel-toggle \{[\s\S]*?top: 50%;[\s\S]*?right: var\(--atlas-panel-width\);/);
-  assert.match(styles, /\.atlas-panel-toggle \{[\s\S]*?width: 36px;[\s\S]*?height: 30px;/);
-  assert.match(styles, /\.atlas-panel-toggle-icon\.is-collapse \{ mask-image: url\("\/third-party\/tabler-icons\/chevron-right\.svg"\); \}/);
-  assert.doesNotMatch(atlasSource, /SHOW INFO|HIDE INFO/);
-  assert.match(styles, /\.atlas-field\.is-panel-collapsed \.atlas-panel-toggle \{ right: 0; \}/);
-  assert.match(styles, /\.atlas-field\.is-panel-collapsed \.atlas-map \{ right: 0; \}/);
+test("Atlas opens Stats as an independent passenger surface", () => {
+  assert.match(atlasSource, /onOpenStats/);
+  assert.doesNotMatch(atlasSource, /<AtlasDriveLabPanel/);
+  assert.match(appSource, /statsOpen \|\| passengerAtlasOpen \? null : experienceMode/);
 });
 
 test("Atlas Milan demo travels by speed and heading without accepting malformed coordinates", () => {
@@ -809,9 +767,7 @@ test("Atlas owns a minimal palette-driven OpenFreeMap style with mandatory attri
 });
 
 test("Atlas Drive Lab charts follow the product appearance with readable light contrast", () => {
-  assert.match(atlasSource, /resolveSemanticTheme\(theme, appearance\)/);
-  assert.match(atlasSource, /const paper = colors.text/);
+  assert.match(appSource, /<StatsPanel journeyRef=\{atlasSessionJourneyRef\}/);
   assert.match(atlasSource, /appearance = "dark"/);
-  assert.match(atlasSource, /appearance=\{appearance\}/);
   assert.match(styles, /\.app\[data-appearance\] \.atlas-panel \{ color: var\(--ui-text\);/);
 });

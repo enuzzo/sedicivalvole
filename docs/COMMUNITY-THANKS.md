@@ -531,7 +531,7 @@ enuzzo
 - **Credit:** Open-Meteo and the European Union Copernicus programme.
 - **Source:** [Open-Meteo / Copernicus elevation](https://github.com/open-meteo/open-meteo).
 - **Public contact route:** [Contact / profile](https://open-meteo.com/en/docs/elevation-api).
-- **Use:** Runtime elevation data. ATLAS requests session-only GLO-90 terrain elevation for a rounded location cell; no API implementation is copied.
+- **Use:** Runtime elevation data. ATLAS requests session-only GLO-90 terrain elevation for an approximately 1 km rounded location cell; Stats labels it separately from GPS altitude; no API implementation is copied.
 - **License / permission boundary:** Recorded CC BY 4.0 API data terms and Copernicus acknowledgement.
 - **Source evidence:** linked upstream project plus the current local [notices](../THIRD_PARTY_NOTICES.md), package metadata or vendored notices; public routes checked 2026-09-05 where recorded in the verification evidence.
 - **Status:** DRAFT — not sent. Sent on: —; Channel: —; Reply: —; Follow-up: —.
@@ -553,7 +553,7 @@ enuzzo
 - **Credit:** Wikimedia communities and individual article/media authors.
 - **Source:** [Wikipedia / Wikimedia](https://www.mediawiki.org/wiki/API:Main_page).
 - **Public contact route:** [Contact / profile](https://www.mediawiki.org/wiki/Communication).
-- **Use:** Runtime content service. DISCOVER uses localized search, abstracts, PageImages and native articles; no encyclopedia content is bundled.
+- **Use:** Runtime content service. DISCOVER uses localized search, abstracts, PageImages and native articles; ATLAS reuses the same provider for correctly positioned POIs, photo cards and an in-page article reader; no encyclopedia content is bundled.
 - **License / permission boundary:** Page/media-specific terms; source and individual credits stay attached.
 - **Source evidence:** linked upstream project plus the current local [notices](../THIRD_PARTY_NOTICES.md), package metadata or vendored notices; public routes checked 2026-09-05 where recorded in the verification evidence.
 - **Status:** DRAFT — not sent. Sent on: —; Channel: —; Reply: —; Follow-up: —.

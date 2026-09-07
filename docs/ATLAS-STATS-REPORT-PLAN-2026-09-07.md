@@ -1,12 +1,9 @@
 # ATLAS, Stats for Nerds and session reports
 
-Status: researched implementation plan; visual direction selection pending.
-Owner priority on 2026-09-07: immediately after the support-header refinement.
-This advances ATLAS/Stats ahead of the previously queued iPhone work. No map,
-statistics surface, PDF generator or recipient-email endpoint is shipped by this
-planning checkpoint.
+Status: owner-selected remix implemented; browser/release verification in progress.
+PDF generation and recipient-email delivery remain design work, not shipped features.
 
-## Three compositions awaiting selection
+## Three compositions presented
 
 1. **Travel Observatory — recommended.** A generous natural map with a compact
    location/nearby-place strip. A separate full-screen stats page with a dominant
@@ -19,7 +16,13 @@ planning checkpoint.
    large distance/time values and editorial chart plates translate directly into
    report pages. Less emphasis on simultaneous live instruments than option 1.
 
-Owner response: ____________________
+Owner response — 2026-09-07: **approved remix; proceed**. ATLAS and Stats are
+separate views. Use Travel Observatory's map and POIs; Journey Magazine's compact
+photo/place card opens a full Wikipedia reader over the same map. Stats combines
+Travel Observatory's headline values, speed bands and elevation totals with
+Mission Control's heading/network instruments and Journey Magazine's synchronized
+speed/altitude chart. The owner's incidental "Discover" in the graph paragraph
+is interpreted as Stats; Discover remains the independent place library.
 
 All three retain natural pastel and product-palette map modes, deliberate access
 from either Engine or Music, verified Discover coordinates, a separate stats
@@ -150,8 +153,7 @@ new GPS samples arrive while the report is being built.
 
 ## Acceptance and handoff
 
-Direction selection above is the only immediate owner decision. Implement map
-and stats after that selection, with real browser captures at Tesla 773 × 601,
+The remix is selected. Verify map and stats with real browser captures at Tesla 773 × 601,
 wide Mac and short-window sizes. Physical Tesla frame pacing/readability and real
 mail receipt remain separate acceptance layers. No three-direction gate is waived
 by this architecture plan, and no pending feature is described as live.
@@ -167,3 +169,35 @@ brown/charcoal despite the surrounding light shell. The camera is close and
 pitched, emphasizing nearby extruded buildings over travel context. This supports
 moving charts out, widening the frame and introducing genuinely light land/water
 colors. Demo capture is reference evidence, not a new design or real journey.
+
+## Implemented architecture — selected remix
+
+- `atlas-field.jsx` owns only the active map, map framing, place overlays and
+  coarse terrain lookup. The old 320 px chart sidebar and Canvas instrument
+  are removed. Natural (existing stored `standard` key) is first-use/reset;
+  explicit saved Palette remains respected. Follow uses zoom 13.4–11.9 and
+  pitch 15–25; Area and Trip retain their framing until Follow is requested.
+- `atlas-places.jsx` reuses Discover's Wikipedia query builder and normalizer.
+  Up to 12 source-coordinate places are retained, at most eight non-overlapping
+  48 px markers are drawn. Screen collisions are suppressed rather than
+  inventing cluster coordinates. Queries are separated by at least a minute,
+  refreshed after meaningful travel or expiry, aborted on unmount, timed out
+  at 15 seconds and retried with capped backoff. The card links the complete
+  localized Wikipedia article through the same sandbox/URL builder as Discover.
+- `stats-panel.jsx` is lazy, full-screen and independently reachable from Atlas
+  and Session report in Music/Engine. Opening it unmounts the visual renderer;
+  audio/session ownership stays in App. The map can also open over Engine without
+  changing its audio mode. Recent-hour and averaged whole-session traces are
+  separate from full-session scalar totals. Gaps remain explicit.
+- `session-stats.js` streams distance estimated from accepted GPS speeds, duration,
+  movement/stops, speed-band time, heading time, peak and filtered elevation
+  before chart compaction. Only fixes with horizontal accuracy at most 50 m enter
+  totals; altitude requires accuracy at most 15 m and hysteresis of at least 4 m.
+  Unknown time is excluded from moving/stopped shares. Session storage/reset and
+  diagnostics keep the existing privacy boundary: no journey is added to mail.
+- Network traces show observed application download/upload KB/s; opaque and cache
+  traffic is excluded. Frame rate/p95 and audio state reuse existing diagnostics.
+  Terrain is explicitly the last coarse Open-Meteo/Copernicus observation, not GPS
+  altitude. Source coverage and stale/unavailable values stay visible.
+- No new dependency, generated geographic image, external message, PDF endpoint
+  or arbitrary-recipient mail capability is introduced in this checkpoint.

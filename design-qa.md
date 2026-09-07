@@ -1,133 +1,52 @@
-# Compact Round Instruments design QA — 2026-09-07
-
-- Source visual truth: `/Users/enuzzo/.codex/generated_images/01a07aa2-df2e-7de0-8f88-418daa91baa4/exec-18024c95-7324-4f68-b7d3-09fba9465291.png`.
-- Implementation: `docs/qa/2026-09-07-round-launch/final-jazz-aperture.png`.
-- Viewport: 773 × 601 CSS px, DPR 1. Source generated 1422 × 1106 normalized proportionally into 773 × 601; implementation 773 × 601 pixels.
-- State: Music / Soundtrack / precise Jazz / Aperture. Local catalogue intentionally unavailable for the final capture; START correctly says music joins when ready.
-- Full-view comparison: `/tmp/sv-round-qa/comparison.png`, source and implementation side by side; reviewed at original size. It also includes all eight actual effect previews.
-- Focused evidence: the middle selection region and all typography are legible at the native full-view scale; a separate crop is unnecessary.
-- Browser plugin not available; use the established headless regular Chrome/Playwright path, without controlling user windows.
-
-## Findings and comparison history
-
-1. Fixed: source captures initially retained the speed button background. Recaptured all effects with the complete host speed control hidden; no renderer source edited.
-2. Fixed: slow external cover left a blank circle. The local generated music image now remains underneath the requested image during loading and after failure.
-3. Accepted constraint: generated mock depicts smaller action targets than permitted. Implementation retains 48 px actions and original 56 px START; columns are 137 px tall rather than expanding the sheet.
-4. Accepted asset choices: generic amber music illustration replaces invented artist art until exact queue cover is ready; actual existing preset images supply small colour markers. Pinned Tabler engine glyph replaces the mock's gear symbol.
-
-## Required fidelity surfaces
-
-- Typography: existing Orbitron brand and Space Grotesk content; 13 px high-contrast metadata, 17 px actions, 24 px selection names. Long names wrap inside their column. No clipped labels.
-- Spacing: equal columns, common dividers, 64 × 64 px circles, 6 px control radius, original panel/chrome rhythm. 48/56 px hit targets verified.
-- Colour: native LIGHT/DARK tokens; amber Music and active-accent Engine; no new full-surface gradient.
-- Images: eight real effect screenshots, proportionally exported to 192 × 149 px; circular cover crop is intentional. No simulated renderer assets or modified third-party runtime. Genuine score/preset/Illobo identities preserved.
-- Copy: source/mode names and precise selectors remain; Feeling lucky and Change act immediately, while Choose opens the respective catalogue.
-
-## Verification
-
-655 native tests pass. Sixteen browser interaction checks cover exact genres/pace/Lobo, fresh visit defaults, nonrepeating random visual selection, eight catalogue entries/three Gradient variants, focus/Escape, muted and delayed startup, presets, Engine, one AudioContext and silent prelaunch. Geometry/hit tests cover 773 × 601, 390 × 844 and 1280 × 800. Zero page exceptions, unexpected resource failures or diagnostic sends. Existing browser pre-gesture AudioContext warnings remain documented.
-
-Physical Tesla touch/readability, GPU and listening acceptance are not repeated by desktop QA. Previews are static images, not animation.
-
-Canonical follow-up: build 20260907-1400/source 7ab630b verified at https://sedicivalvole.app/. `docs/qa/2026-09-07-round-launch/08-canonical-music.png` shows actual ready Jazz cover and Aperture, 773 × 601. Twenty-two byte/cache checks and real Jazz/Lobo/Engine startup pass; zero page exceptions or diagnostic sends, six inherited pre-gesture audio warnings. Exact production candidate also passes the same 16 UI scenarios and 17 packaging checks.
+# ATLAS / Stats approved remix — design QA, 2026-09-07
 
 final result: passed
 
-## Owner-reported tall-window correction — 2026-09-07
+## Selected reference and scope
 
-The supplied Mac screenshot showed viewport-filling empty selection panels.
-Fixed the absolute sheet constraints and nested elastic rows: content now owns
-height and the footer follows the sheet. Preset thumbnails are 36 px (was 16).
-Actual matching Play the Road / Fracture / Drivey captures are in
-`docs/qa/2026-09-07-launch-sizing/1280x1200.png` and `773x601.png`.
-Reviewed both: existing fonts, colour tokens, content and main 64 px imagery
-are preserved; oversized vertical spacing is removed and preset art is legible.
-Sheet height is 502 px and choices 138 px at both 1280 × 800 and 1280 × 1200.
-Tesla 773 × 601 has the same geometry. Phone 390 × 844 fits; a 773 × 420 window
-scrolls the complete flow to reach the footer. No overlapping footer or clipped
-controls. Seventeen interaction scenarios, 655 native tests and 196 credits pass.
-Browser plugin absent; established headless Chrome fallback. Physical Tesla
-acceptance remains separate. No new visual direction or asset generation.
+Owner explicitly selected a remix of Travel Observatory (natural map/POIs and
+summary bands), Mission Control (heading/network instruments), and Journey
+Magazine (photo place card and synchronized speed/altitude). These are two
+separate views. The existing product shell, English UI, 48 px controls and real
+provider data remain authoritative. PDF/email is a separate planned capability.
+Reference boards are the generated images ending `08be0b93`, `d4dee68a` and
+`d817d301` in the current task's generated_images directory.
 
-final result: passed
+The Travel Observatory board and current 773 × 601 map/stats/place captures were
+opened together in one comparison input. The generated board contains two
+stacked screens; comparison uses their respective content regions, not the full
+board as a single viewport. Mock route/distance/altitude/POI positions are not
+production facts; the browser evidence uses explicitly simulated GPS and real
+Wikipedia place responses. No claim of identical geographic content is made.
 
-The sizing correction is now canonically verified at build 20260907-1520/source
-05bcf45. Live five-viewport evidence matches the measured local/production
-geometry exactly, with zero page exceptions and 22 successful byte/cache checks.
-See docs/qa/2026-09-07-launch-sizing/live-evidence.json.
+## Iterations and fixes
 
-## Centered-sheet owner follow-up — 2026-09-07
+- P2: initial map remained too close. Follow now starts at zoom 13.4 and widens
+  to 11.9; Area gives a wider overview and manual framing stays selected.
+- P2: waking chrome moved persistent controls between pointer down/up. Persistent
+  map controls now keep their geometry and execute on the first tap.
+- P2: old map/sidebar wasted the field. The sidebar renderer is removed; Stats
+  owns the entire passenger sheet and unmounts MapLibre while active.
+- P2: lower summary consumed extra rows. Moving-average/terrain detail no longer
+  expands the primary grid; network follows the speed bands/elevation/heading row.
+- P2: place photo needed an actual load check. Final card capture waits for a
+  decoded image; failed thumbnails have the existing Wikipedia icon fallback.
 
-The owner requested viewport centering and independent edge credits. Current
-evidence: docs/qa/2026-09-07-centered-launch/1280x1200.png, 773x601.png,
-390x844.png and 773x420.png. Reviewed all dimensions: exact vertical centering,
-unchanged type/colour/64 px images/36 px presets, fixed viewport-bottom footer,
-and independently centered safety caption. Short viewport fix uses 100dvh for
-the splash and internal sheet scrolling instead of the running shell's 480 px
-minimum height. START remains reachable. Five geometry cases, 17 interaction
-scenarios and 655 native tests pass; no page exceptions. Browser plugin absent,
-established headless Chrome fallback. Physical Tesla acceptance remains separate.
+## Final visual and interaction evidence
 
-final result: passed
+`/tmp/sv-atlas-interaction/`: map.png, place.png, reader.png, stats-773.png,
+stats-system-773.png, stats-1440x900.png, stats-773x440.png, stats-390x844.png,
+map-return.png and evidence.json. Final comparison confirms full-width pastel
+cartography, source-coordinate markers, compact image-led card, large summary
+numbers, paired red/blue timeline, speed bands/elevation/heading and network.
+The sheet scrolls vertically on short screens; no horizontal overflow or clipped
+primary controls at tested sizes. The source's unimplemented Export PDF button
+is deliberately absent, rather than represented as a working capability.
 
-Canonical verification: build **20260907-1534**, source **e092752**. All five live viewport cases and 22 byte/cache checks pass; official independent postflight reports `remote_writes=NONE`. Fresh live screenshots and evidence are recorded in `docs/qa/2026-09-07-centered-launch/`. Physical Tesla acceptance remains separate.
+POI → complete Wikipedia iframe → same selected place passes. Area persists
+beyond six seconds; Stats unmounts the map and Close restores it. Engine →
+report → Stats → Atlas → Engine retains the same running AudioContext; evidence
+is in `/tmp/sv-atlas-engine/evidence.json`. No diagnostic email was sent.
 
-
-## Support-header owner refinement — 2026-09-07
-
-Production candidate 20260907-1557/source 7ea0712, implementation ec0f459.
-Four viewports (773 × 601, 1280 × 1200, 390 × 844, 773 × 420) preserve exact
-sheet centering, fixed bottom-left credits and 48 px About/coffee actions.
-Drive responsibly is below the wordmark; light/dark marks have no square fill.
-The same yellow trigger exists in diagnostics. Both entry paths open a centered
-bounded dialog; Escape/Close restore focus and the underlying report is inert.
-Local, production Light and explicitly selected production Dark checks pass,
-with zero page exceptions. All 17 launch interaction scenarios, 655 native
-checks, 17 package checks and 196 credits pass. Existing pre-gesture AudioContext
-warnings remain in the broader launch suite. Browser plugin unavailable;
-headless Chrome/Playwright fallback does not touch the owner's mouse/browser.
-Evidence and fresh screenshots: /tmp/sv-support-qa/, /tmp/sv-support-production/,
-/tmp/sv-support-dark/. Physical Tesla acceptance remains separate.
-
-Canonical 20260907-1557 live validation passes: four viewport cases and diagnostic
-support/focus, 24 byte/cache checks, independent postflight `remote_writes=NONE`.
-Fresh evidence: `/tmp/sv-support-live/`. Result: passed; physical Tesla remains separate.
-
-
-## Engine idle tuning — 2026-09-07
-
-Candidate build 20260907-1612/source ffd5e41, implementation c004b00.
-No composition change. Real headless Chrome AudioContext target measurements
-confirm 0.112 at confirmed stop and automatic idle blips, 0.16 throughout TAMARRO
-and after fresh 2 km/h GPS evidence. A 0.2 km/h jitter sample retains quiet level.
-Tachometer starts/returns at 600 RPM; the automatic gesture reaches about 1800.
-Three profiles retain varied show-off phrases, limiter peaks without clipping,
-neutral gear, pointer/keyboard cancellation and mute behavior. Zero page errors;
-no diagnostic messages sent. 657 native and 17 packaging checks pass. Production
-repeats the idle/GPS/master-level path. Evidence: /tmp/sv-idle-qa/,
-/tmp/sv-idle-production/, /tmp/sv-idle-showoff/. Measurements under headless mute
-are not physical listening acceptance. Browser plugin absent; existing Playwright
-fallback does not touch the owner's foreground browser.
-
-
-The canonical 1612 stop capture exposed a pre-existing GPS deadband residual:
-Engine correctly idled while the shared speed readout stayed near 1 km/h. The
-follow-up e696a18 lets an exact zero finish low-speed decay without bypassing
-large-drop bounds. Candidate 20260907-1624/source 2ace25b passes 658 native and
-17 packaging checks plus the complete production cycle, including displayed
-0 km/h and both stationary TAMARRO controls. Fresh production evidence:
-/tmp/sv-idle-zero-production/evidence.json and idle.png. The earlier incomplete
-live screenshot attempt is not presented as full stop acceptance.
-
-
-Canonical 20260907-1624/source 2ace25b passes the complete idle/rev/move/stop
-browser path with zero page exceptions: 600 RPM at 70%, automatic blip near 1800,
-TAMARRO at 100%, 0.2 km/h jitter quiet, valid 2 km/h full level, then displayed
-zero with both stationary controls. Fresh screenshot and measured trace:
-/tmp/sv-idle-zero-live/idle.png and evidence.json. All 24 byte/cache checks pass
-(/tmp/sv-idle-zero-canonical/identity.json). Result: passed in browser; real-car
-listening remains owner acceptance.
-
-Final canonical 20260907-1624 verification complete: 24 byte/cache checks,
-full live idle/rev/move/stop path and official no-write postflight pass.
-See DEPLOY.md for publication counts and evidence paths.
+P3: physical Tesla readability, touch and GPU acceptance remain a separate
+owner check. A short synthetic trace is not an endurance or real-drive test.

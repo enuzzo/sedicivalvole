@@ -31,12 +31,11 @@ persistent stationary TAMARRO controls and tiny idle blips. All four refinements
 are implemented, verified and canonically published.
 Latest owner priority: ATLAS / Stats for Nerds after the support-header fix,
 ahead of iPhone. [Three directions and PDF/email plan](ATLAS-STATS-REPORT-PLAN-2026-09-07.md)
-await the visual selection. Map/stats separation and report delivery are not shipped.
+now records the approved remix. Map/stats separation is implemented and under release verification; PDF/email remains planned.
 
 Owner refinement listening remains in
 [A12](OWNER-ANSWERS-2026-09-07.md#a12--engine-first-listen), then iPhone. The phone
-control shell remains unfinished. ATLAS/full-screen statistics and Standard/Dev
-diagnostics are queued. Broad Flux/Soundtrack/FX/interface/Discover acceptance
+control shell remains unfinished. ATLAS/full-screen statistics is in release verification; Standard/Dev diagnostics remain queued. Broad Flux/Soundtrack/FX/interface/Discover acceptance
 remains recorded; no new automatic diagnostic sender exists.
 
 Visual recovery and diagnostic accounting fixes are implemented; publication evidence is recorded in [DEPLOY.md](DEPLOY.md). Future diagnostics automation is not yet implemented.
@@ -142,63 +141,22 @@ dated study documents.
   bounded vertical motion; FOV, depth compression, peripheral stretch,
   parallax and flow rise monotonically with speed. Conventional buildings,
   stacked towers, high cloud slabs and scene-wide particles are absent.
-- ATLAS dynamically loads MapLibre only when selected, draws a minimal
-  palette-owned OpenFreeMap vector style with 3D buildings, and pairs it with
-  the owner-selected Drive Lab. Its Swiss Compact `320 px` dashboard and
-  `340 px` Canvas2D instrument keep Speed, Distance,
-  Moving time and Average speed in one first line; Accel/Braking balance,
-  proportional five-band speed distribution, an eight-sector Direction History
-  rose, compact Open-Meteo/Copernicus GLO-90 Elevation and Moving/Stopped follow
-  as one vertical instrument. Accel/Braking owns a centered `km/h/s` timeline;
-  Speed bands and Moving/Stopped are low horizontal strips rather than square
-  cards. Direction tiles grow outward in five discrete levels from moving-only
-  time share, with an explicit dominant direction and a separate current-bearing
-  needle; bounded session rollups retain exact sector counts. Direct labels,
-  axes and source copy are larger and higher contrast at the Tesla viewport.
-  One tap cycles every chart through `15 MIN / 1 H / SESSION`. Missing GPS or
-  terrain data remains explicit; weighted bounded
-  all-session rollups preserve exact motion, speed, direction-sector and terrain
-  aggregates. Journey samples and coordinates remain session-only and absent
-  from storage and diagnostics. ATLAS contains no Wikipedia, nearby-place, QR
-  or DISCOVER action; DISCOVER owns that separate passenger task. All ten theme
-  profiles own explicit label, road, chart and route contrast. An ATLAS-local
-  `MAP COLOR` control switches the live style in place between product
-  `PALETTE` and dark semantic `STANDARD` cartography. STANDARD distinguishes
-  blue water, green vegetation/parks, warm buildings, neutral local roads and
-  major-road classes while keeping the route, marker, Navigator Plaque, Drive
-  Lab and interface accent in the selected product palette. The state persists
-  with safe browser preferences and RESET SAVED STATE returns it to PALETTE;
-  no MapLibre renderer, route, position or camera is recreated.
-  Without reliable GPS, ATLAS keeps the normal control plane instead of a
-  blocking waiting splash. The top navigation shows only `GPS` and metre
-  accuracy: green means a connected fix at `4 m` or better, orange means a
-  connected but less accurate fix, and red means GPS is disconnected. A
-  non-modal accessible panel offers an honest retry path and a
-  fixed Milan demo without entering coordinates into diagnostics. The camera
-  remains oblique and building-rich at `130 km/h`, centers on trusted fixes and
-  follows reported or inferred heading. One pointer or a primary-button mouse
-  drag rotates and pitches through a hard-clamped `0–85°` range with no elastic
-  overshoot; wheel/trackpad scroll and two pointers zoom beyond the automatic
-  range. ATLAS passes map hits through the otherwise transparent
-  product chrome while keeping its real controls and GPS popup interactive.
-  After six idle seconds it eases to the current automatic point, bearing,
-  pitch and zoom. The separate MapLibre compass is replaced by the selected
-  compact Navigator Plaque: a filled arrow rotates continuously with heading,
-  while an English cardinal, rounded degrees and the local rendered-tile road
-  name share one readable surface. A bright route retains the complete current ATLAS-view
-  trip and remains legible while zooming out; a `4096`-point ceiling compacts
-  older detail instead of deleting the trip origin. One interpolated point at
-  the route head pulses once per second with a restrained expanding ripple. The
-  Drive Lab collapses behind a persistent `48 × 48 px` target containing an
-  icon-only `36 × 30 px` midpoint tab with an accessible action name, giving
-  the complete map width back without a full-height rail. Mandatory attribution
-  remains a low translucent strip above the footer and uses the high-contrast
-  `14 px` metadata role.
-  Exact local and canonical `773 × 601` QA at checkpoint
-  `7c9df06`, build `20260901-2012`, proves the corrected vertical no-scroll
-  hierarchy, explicit empty-state axes/legends, three-range cycle, full-map
-  collapse/reopen, no header/footer collision and canonical byte identity;
-  real moving traces and cabin legibility remain a separate Tesla gate.
+- ATLAS and Stats for Nerds are independent views, following the owner's
+  approved three-proposal remix. MapLibre fills the map; Natural is pastel and
+  first-use/reset, while existing saved Palette remains selected. Follow starts
+  wider/flatter; Area/Trip/manual framing does not snap back after six seconds.
+  Source-coordinate Wikipedia POIs open a photo/title/summary card and full
+  article reader without leaving Atlas. Persistent Map/Stats controls remain
+  usable on the first tap when chrome sleeps.
+  Stats is a lazy full-screen sheet with GPS speed/altitude timelines, exact
+  streamed duration/speed-band/heading totals, filtered elevation, observed
+  network traces and system readouts. GPS distance is a speed-integrated estimate;
+  gaps are unknown and demo is not a real trip. Session and recent-hour chart
+  history are bounded. Session report provides access from both audio modes;
+  changing passenger views preserves audio and unmounts the hidden renderer.
+  Terrain remains a separately named coarse Open-Meteo/Copernicus observation.
+  PDF and chosen-recipient email remain planned. See the
+  [implementation/report plan](ATLAS-STATS-REPORT-PLAN-2026-09-07.md).
   A bounded session-only A3 foundation now retains eight monotonic timestamped
   fixes and can interpolate the same path at 30 or 60 FPS with a `100 ms` delay,
   no extrapolation, a `1500 ms` stale freeze and no animation across long gaps.

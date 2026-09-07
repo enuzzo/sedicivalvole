@@ -1,3 +1,4 @@
+import { observeSessionStats } from "./environments/atlas/session-stats.js";
 import { SupportButton } from "./support-button.jsx";
 import { LaunchCockpit } from "./launch-cockpit.jsx";
 import { initialLaunchSoundtrack, luckySoundtrackGenre, luckyLaunchVisual, soundtrackLaunchReady, prepareExactSoundtrackStart } from "./launch-model.js";
@@ -181,6 +182,7 @@ import {
  * the arrangement plays. The previous list named voices the engine does not
  * have and described a synth it no longer runs.
  */
+const StatsPanel = lazy(() => import("./environments/atlas/stats-panel.jsx"));
 const SCORE_VOICES = [
   { id: "kick", label: "KICK", note: "909-style body, click and subharmonic" },
   { id: "snare", label: "SNARE", note: "Tuned shell, comb resonance, impact" },
@@ -290,7 +292,7 @@ function readPreferences() {
       )) ? value.genreId : DEFAULT_GENRE_ID,
       driveySettings: normalizeDriveySettings(value?.driveySettings),
       prtclSettings: normalizePrtclSettings(value?.prtclSettings),
-      atlasMapAppearance: normalizeAtlasMapAppearance(value?.atlasMapAppearance),
+      atlasMapAppearance: normalizeAtlasMapAppearance(value?.atlasMapAppearance ?? "standard"),
       musicMode: value?.musicMode === "soundtrack" ? "soundtrack" : "play-road",
       soundtrackSelection: normalizeSoundtrackSelection(value?.soundtrackSelection),
       lastLaunchVisualId: value?.lastLaunchVisualId,
@@ -307,7 +309,7 @@ function readPreferences() {
       genreId: DEFAULT_GENRE_ID,
       driveySettings: DEFAULT_DRIVEY_SETTINGS,
       prtclSettings: DEFAULT_PRTCL_SETTINGS,
-      atlasMapAppearance: "palette",
+      atlasMapAppearance: "standard",
       musicMode: "play-road",
       soundtrackSelection: normalizeSoundtrackSelection(),
       launchSoundtrackMode: "lucky",
@@ -484,6 +486,8 @@ function appendNetworkQualitySample(samples, notice, capturedAtMs = performance.
   const retained = samples.filter((sample) => sample.capturedAtMs >= cutoff);
   retained.push({
     capturedAtMs,
+    downloadRate: (notice?.currentDownloadBytesPerSecond ?? 0) / 1000,
+    uploadRate: (notice?.currentUploadBytesPerSecond ?? 0) / 1000,
     score: networkQualityScore(notice),
     tone: notice?.tone ?? "quiet",
   });
@@ -2205,6 +2209,9 @@ export function App() {
   const [vehicleEffectsEnabled, setVehicleEffectsEnabled] = useState(initialPreferences.vehicleEffectsEnabled);
   const [soundtrackManualEffects, setSoundtrackManualEffects] = useState(initialPreferences.manualEffects);
   const [networkNotice, setNetworkNotice] = useState(() => readNetworkUiNotice("app-start"));
+  const [passengerAtlasOpen, setPassengerAtlasOpen] = useState(false);
+  const [statsOpen, setStatsOpen] = useState(false);
+  const [atlasPlace, setAtlasPlace] = useState(null);
   const [networkPopoverOpen, setNetworkPopoverOpen] = useState(false);
   const [controlNotice, setControlNotice] = useState(null);
   const [playRoadPaused, setPlayRoadPaused] = useState(false);
@@ -2304,6 +2311,11 @@ export function App() {
     startedAtMs: null,
     updatedAtMs: null,
   });
+  const readStatsSystem = useCallback(() => ({
+    network: summarizeNetworkTelemetry(networkTelemetryRef.current, performance.now()),
+    frame: readPerformanceSnapshot(frameTelemetryRef.current, phasePerformanceTelemetryRef.current, longTaskTelemetryRef.current, sessionStartedAtRef.current).frame,
+    audio: audioRef.current?.context?.state ?? "unavailable",
+  }), []);
   const mapPositionUpdatedAtRef = useRef(Number.NEGATIVE_INFINITY);
   const sessionStartedAtRef = useRef(performance.now());
   const gpsStateRef = useRef(gpsState);
@@ -2340,7 +2352,10 @@ export function App() {
     || environmentPickerOpen
     || soundtrackPanelOpen
     || discoverOpen
-    || supportOpen;
+    || supportOpen
+    || passengerAtlasOpen
+    || statsOpen
+    || Boolean(atlasPlace);
   const controlsPinned = modalOpen
     || manualEffectsDeckOpen
     || gpsHelpOpen
@@ -2850,8 +2865,8 @@ export function App() {
           const previousJourney = atlasSessionJourneyRef.current;
           const recentSamples = appendAtlasJourneySample(previousJourney.recentSamples, {
             capturedAtMs,
-            speedKmh: kmh,
-            altitudeM: nextMapPosition.altitudeM,
+            speedKmh: Number.isFinite(accuracyM) && accuracyM <= 50 ? kmh : null,
+            altitudeM: Number.isFinite(nextMapPosition.altitudeAccuracyM) && nextMapPosition.altitudeAccuracyM <= 15 ? nextMapPosition.altitudeM : null,
             groundElevationM: null,
             headingDegrees: nextMapPosition.heading,
           });
@@ -2860,6 +2875,8 @@ export function App() {
             ? appendAtlasSessionJourneySample(previousJourney.sessionSamples, latestJourneySample)
             : previousJourney.sessionSamples;
           atlasSessionJourneyRef.current = {
+            ...previousJourney,
+            totals: observeSessionStats(previousJourney.totals, nextMapPosition),
             recentSamples,
             sessionSamples,
             travelPoints: appendAtlasTravelPoint(previousJourney.travelPoints, nextMapPosition),
@@ -3592,7 +3609,7 @@ export function App() {
     setGenreId(DEFAULT_GENRE_ID);
     setDriveySettings(DEFAULT_DRIVEY_SETTINGS);
     setPrtclSettings(DEFAULT_PRTCL_SETTINGS);
-    setAtlasMapAppearance("palette");
+    setAtlasMapAppearance("standard");
     setSoundtrackManualEffects(EMPTY_SOUNDTRACK_MANUAL_EFFECTS);
     setVehicleEffectsEnabled(true);
     setMuted(QA_MUTED);
@@ -4896,7 +4913,7 @@ export function App() {
           recovery={environmentRecovery}
           onError={handleEnvironmentError}
         >
-          {experienceMode === "engine" ? (
+          {statsOpen || passengerAtlasOpen ? null : experienceMode === "engine" ? (
             <EngineTelemetry state={geaps.snapshot} profileId={engineProfileId} onProfile={chooseEngineProfile} onRev={holdEngineRev} onRelease={releaseEngineRev} speed={speed} onFrame={recordRenderedFrame} />
           ) : environmentRuntimeError ? (
             <FieldFailure label={environment.label} recovery={environmentRecovery} />
@@ -4934,6 +4951,8 @@ export function App() {
                 demoRequestToken={atlasDemoRequest}
                 mapAppearance={atlasMapAppearance}
                 appearance={appearanceResolution.appearance}
+                onOpenStats={() => setStatsOpen(true)}
+                onReadPlace={setAtlasPlace}
                 onMapAppearanceChange={(value) => setAtlasMapAppearance(normalizeAtlasMapAppearance(value))}
                 onRenderer={setRenderer}
                 onFrame={recordRenderedFrame}
@@ -5265,6 +5284,7 @@ export function App() {
               </div>
             </div>
 
+            <button className="stats-report-entry" onClick={() => { setDrawerOpen(false); setStatsOpen(true); }}>Open Stats for Nerds · journey, motion and network</button>
             {diagnosticReadmeOpen ? <DiagnosticReadme /> : (
               <div className="diagnostic-instrument">
                 <section className="diagnostic-health" aria-label="Current system health">
@@ -5444,6 +5464,19 @@ export function App() {
         />
       ) : null}
 
+      {statsOpen ? <DialogSurface className="stats-dialog" labelledBy="stats-title" onClose={() => setStatsOpen(false)}>
+        <Suspense fallback={<p>Loading session statistics…</p>}><StatsPanel journeyRef={atlasSessionJourneyRef} networkHistoryRef={networkQualityHistoryRef}
+          readSystem={readStatsSystem} onClose={() => setStatsOpen(false)} onMap={() => { setStatsOpen(false); setEnvironmentId("atlas"); if (experienceMode === "engine") setPassengerAtlasOpen(true); }} /></Suspense>
+      </DialogSurface> : null}
+      {atlasPlace ? <DialogSurface className="atlas-article-dialog" labelledBy="atlas-article-title" onClose={() => setAtlasPlace(null)}>
+        <header className="stats-heading"><div><small>DISCOVER · WIKIPEDIA</small><h2 id="atlas-article-title">{atlasPlace.title}</h2></div><button data-dialog-initial-focus onClick={() => setAtlasPlace(null)}>Back to Atlas</button></header>
+        <iframe className="discover-article-frame" title={`${atlasPlace.title} — complete Wikipedia article`} sandbox="allow-same-origin allow-scripts allow-popups allow-popups-to-escape-sandbox" referrerPolicy="origin" src={discoverWikipediaArticleUrl(atlasPlace.title, {language:atlasPlace.language})} />
+      </DialogSurface> : null}
+
+      {passengerAtlasOpen && !statsOpen ? <DialogSurface className="passenger-atlas-dialog" inert={Boolean(atlasPlace)} labelledBy="passenger-atlas-title" onClose={() => setPassengerAtlasOpen(false)}>
+        <h2 id="passenger-atlas-title" className="visually-hidden">Atlas passenger map</h2><button className="passenger-atlas-close" data-dialog-initial-focus onClick={() => setPassengerAtlasOpen(false)}>Back to Engine</button>
+        <Suspense fallback={<p>Loading Atlas…</p>}><AtlasField speed={speed} theme={theme} position={mapPosition} positionSamplesRef={atlasPositionSamplesRef} sessionJourneyRef={atlasSessionJourneyRef} reducedMotion={reducedMotion} effect={null} demoRequestToken={atlasDemoRequest} mapAppearance={atlasMapAppearance} appearance={appearanceResolution.appearance} onMapAppearanceChange={setAtlasMapAppearance} onOpenStats={() => setStatsOpen(true)} onReadPlace={setAtlasPlace} onRenderer={setRenderer} onFrame={recordRenderedFrame} onRuntimeError={handleEnvironmentError} /></Suspense>
+      </DialogSurface> : null}
       {discoverOpen ? (
         <DiscoverPanel
           position={mapPosition ?? (atlasDemoActive ? ATLAS_DEMO_POSITION : null)}
