@@ -288,3 +288,12 @@ test("the demo manual mode stays at ceiling and stays at standstill without auto
   assert.equal(standstill.direction, 0);
   assert.equal(standstill.holdSeconds, 0);
 });
+
+
+test("repeated GPS zeros settle to zero without treating a high-speed zero as an instant stop", () => {
+  assert.ok(smoothGpsSpeed(100, 0, .2) > 90);
+  let speed=2;
+  for(let i=0;i<30;i++) speed=smoothGpsSpeed(speed,0,.2);
+  assert.equal(speed,0);
+  assert.equal(smoothGpsSpeed(0,.2,.2),0);
+});

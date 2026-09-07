@@ -158,6 +158,8 @@ export function smoothGpsSpeed(previousKmh, nextKmh, elapsedSeconds = 1) {
   const next = clamp(Math.max(0, nextKmh), 0, 260);
   const tolerance = gpsSpeedTolerance(previous, elapsedSeconds);
   const difference = next - previous;
+  // A real zero must finish the decay rather than stick inside the jitter band.
+  if (next === 0 && previous <= tolerance.sensorAllowanceKmh) return 0;
   if (Math.abs(difference) <= tolerance.sensorAllowanceKmh) return previous;
 
   const boundedDifference = clamp(difference, -tolerance.fallKmh, tolerance.riseKmh);
