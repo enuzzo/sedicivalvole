@@ -25,7 +25,7 @@ export function EngineTelemetry({ state, profileId, onProfile, onRev, onRelease,
       <i style={{ width: `${Math.min(100, rpm / 90)}%` }} />
     </div>
     <div className="engine-primary">
-      <div><small>VIRTUAL RPM</small><strong>{Math.round(rpm).toLocaleString("en-US")}</strong><span>{state.revving ? "REVVING" : state.shift ? state.shift.toUpperCase() : "ENGINE SPEED"}</span></div>
+      <div><small>VIRTUAL RPM</small><strong>{Math.round(rpm).toLocaleString("en-US")}</strong><span>{state.revving ? "REVVING" : state.idleBlip ? "IDLE BLIP" : state.shift ? state.shift.toUpperCase() : "ENGINE SPEED"}</span></div>
       <div><small>GEAR / {state.transmissionMode || "AUTO"}</small><strong>{state.revving ? "N" : state.gear ?? 1}</strong><span>ACOUSTIC GEARBOX</span></div>
     </div>
     <div className="engine-graphs">
@@ -35,11 +35,11 @@ export function EngineTelemetry({ state, profileId, onProfile, onRev, onRelease,
     <div className="engine-bottom"><div className="engine-profiles" aria-label="Engine profile">
       {[['mono', 'Mono'], ['rosso', 'Rosso'], ['touring', 'Touring']].map(([id, label]) => <button key={id} type="button" aria-pressed={profileId === id} onClick={() => onProfile(id)}>{label}</button>)}
     </div><span>{Math.round(speed)} KM/H · {state.motion === "fresh" ? "LIVE MOTION" : state.motion === "degraded" ? "SIGNAL AGING" : "AWAITING MOTION"}</span></div>
-    {state.trustedStationary ? <button className="engine-rev" type="button"
+    {Math.round(speed) === 0 ? ["left", "right"].map(side => <button key={side} className={`engine-rev is-${side}`} type="button" aria-label={`TAMARRO ${side}`} disabled={!state.trustedStationary}
       onPointerDown={event => { event.currentTarget.setPointerCapture(event.pointerId); onRev?.(); }}
       onPointerUp={onRelease} onPointerCancel={onRelease} onLostPointerCapture={onRelease}
       onKeyDown={event => { if ([' ', 'Enter'].includes(event.key) && !event.repeat) { event.preventDefault(); onRev?.(); } }}
-      onKeyUp={onRelease} onBlur={onRelease}>{state.revving ? "REVVING" : "TAMARRO"}</button> : null}
+      onKeyUp={onRelease} onBlur={onRelease}><strong>{state.revving ? "REVVING" : "TAMARRO"}</strong><small>{state.trustedStationary ? "HOLD TO REV" : state.enabled === false ? "AUDIO PAUSED" : "WAITING FOR GPS"}</small></button>) : null}
     {state.status === "loading" || state.status === "retrying" || state.status === "error" ? <p className="engine-load-state" role="status">{state.status === "loading" ? "Preparing engine audio…" : state.status === "retrying" ? "Waiting for audio · retrying automatically" : state.error || "Engine audio unavailable"}</p> : null}
   </section>;
 }

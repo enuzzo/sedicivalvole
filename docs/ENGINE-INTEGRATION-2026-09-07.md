@@ -35,7 +35,10 @@ LAB has an explicit MANUAL diagnostic selection with redline protection.
 ## Architecture and parameter meaning
 
 One existing AudioContext supplies both modes. Engine loops route through its own
-bounded gain/compressor, then the existing shared manual FX, master mute and meter.
+bounded safety gain/compressor directly to the shared master mute and meter.
+Engine bypasses every Flux/manual effect; the outgoing Flux effect output is gated
+too, so reverb tails cannot leak into Engine. UNDERWATER cannot engage or appear
+in Engine, and Engine exposes no FX controls. Flux preferences remain retained.
 Switching silences the outgoing source, cancels pending selections and stops its
 active score scheduling. Engine runtime is lazy-loaded; only one bank load owns
 decoding at a time. All clips in a bank start at the same audio-clock time, use
@@ -46,7 +49,7 @@ smoothed gain/detune and retain the donor's equal-power sample blending.
 | PHYS / virtual | 0.25 m wheel radius, six donor ratios, donor final drive, engine torque/inertia/braking | Consistent virtual mechanics from upstream; not calibrated Tesla internals |
 | Unit correction | `60 * omega / (2 * PI)` | Correct rad/s → RPM; coupled sample and shift tuning is now independent of the donor's erroneous expression |
 | TUNING | 1,000 RPM floor, profile up/down/kick thresholds, 1.1 s minimum gear dwell | Authored driving feel; deterministic and adjustable in source |
-| TUNING | 0.20 / 0.24 / 0.30 s shift envelope | Gain dip, pitch transition and recovery scheduled against AudioContext time; ratio commits once at the pitch transition boundary |
+| TUNING | 0.20 / 0.24 / 0.30 s shift envelope | Continuous sample-gain/pitch transition, without an artificial gain dip, scheduled against AudioContext time; ratio commits once at the pitch transition boundary |
 | TUNING | ±2,400 cents, 35 ms continuous smoothing, 0.16 nominal Engine gain | Bounded first-listen mix, not an acoustic realism certification |
 | CAL / evidence | 1,800 ms fresh, 5,000 ms lost, accuracy at most 250 m | Conservative quality gates; position accuracy is not speed accuracy or a probability |
 | CAL / filtering | 0.22 s time-based response, 12 m/s² outlier rejection | Cadence-aware speed/acceleration smoothing; the accepted Flux pipeline is retained |
@@ -57,8 +60,21 @@ adapter. Degraded evidence forbids shifts and drive demand; lost evidence eases
 to idle. Reacquisition starts with zero acceleration and requires another accepted
 sample before a shift. Demo uses the existing accelerator/lift/brake intent.
 TAMARRO is a held stationary rev, released by movement, source/lifecycle change,
-blur, hide, mute, stop, pointer/key release, or the eight-second cap. UI and runtime
-consume the same stationary decision; the runtime revalidates at activation.
+blur, hide, mute, stop, pointer/key release, or the eight-second cap. Two prominent 60 px left/right controls remain visible at displayed zero even
+when global chrome retracts. Stale evidence disables them with WAITING FOR GPS
+instead of removing them; the runtime revalidates at activation. The existing GPS
+owner requests one fresh fix per second only while foreground Engine is unmuted,
+its last raw speed is zero and evidence is aging. Requests never overlap; cached,
+missing, replayed or inaccurate speed still cannot authorize revving.
+A valid stopped engine makes a 700 ms, 450 RPM idle blip after five seconds, then
+rests another five seconds. Movement, stale evidence, mute, lifecycle changes and
+manual rev revoke the gesture and reset its clock.
+
+Four engine-core loops receive static RMS matching once at bank decode, using
+the powered loops' authored mean energy as the profile reference. The WAVs and
+upstream files remain byte-identical. Equal-power load/RPM blending retains its
+timbres; lift and downshift have no artificial volume duck. Signal loss eases RPM
+to idle without halving the master level. Master mute and the stall watchdog remain.
 A control-thread stall already has a five-second audio fade scheduled; this does
 not promise uninterrupted Tesla background execution.
 
@@ -122,3 +138,20 @@ frames are 01–04 and 06; frame 05 records the known phone-shell limitation.
 
 The selected Telemetry composition was checked from saved current screenshots.
 These checks do not certify physical cabin legibility or full accessibility.
+
+
+## Owner refinement — September 7, 2026
+
+The first listening response was broadly positive, with four requested fixes:
+Engine must bypass UNDERWATER/all creative FX; deceleration must change RPM
+without ducking volume; TAMARRO must remain prominent on both sides at zero;
+and a stopped engine should receive occasional tiny revs. These corrections are
+implemented. All 655 native regression checks and 196 dependency credits pass.
+Real Chrome WAV renders cover all three profiles at 1,000/3,500/6,500
+RPM: lift versus acceleration differs by -0.531 to +0.292 dB, all finite/non-silent
+and below clipping. Browser evidence verifies both buttons after chrome rests,
+quiet-watch GPS renewal, stale-disabled/fresh-restored controls, automatic idle
+blips, manual rev, mute, mode switching and no Engine FX badge/controls. Exact
+773 × 601 captures and JSON evidence: `docs/qa/2026-09-07-engine-refinement/`.
+Canonical publication is recorded separately in DEPLOY.md. Tesla listening to
+this refinement remains the next acceptance step.

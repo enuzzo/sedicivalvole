@@ -85,8 +85,9 @@ The UI must not label a derived value as real Tesla RPM, throttle, gear, CAN, mo
 ## Implemented first integration and remaining decisions
 
 The first integration selects sample-loop Engine (Mono/Rosso/Touring), public
-AUTO, protected LAB-only MANUAL, the shared FX/mute path and short audio gain
-ramps. The owner selected Telemetry and explicitly admitted the source/WAVs;
+AUTO, protected LAB-only MANUAL, a dry Engine path to shared mute/meter and smooth pitch/sample
+transitions without shift ducking. Engine bypasses all Flux effects; stationary
+TAMARRO controls remain visible on both sides and trusted idle gets small blips. The owner selected Telemetry and explicitly admitted the source/WAVs;
 these are resolved decisions, not another permission gate. See the exact
 [parameter and source record](ENGINE-INTEGRATION-2026-09-07.md).
 

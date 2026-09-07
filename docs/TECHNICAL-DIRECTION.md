@@ -713,3 +713,19 @@ are recorded at the end of [WEEKEND-HANDOFF-2026-09-05.md](WEEKEND-HANDOFF-2026-
 ## 2026-09-05 — Curated selection composition
 
 `src/curated-experiences.js` defines immutable Night Glass and Neon Groove settings. The shared card selects existing environment, theme, appearance and soundtrack owners atomically; it does not create a transport, audio graph, renderer or preference schema. Launch preparation remains silent and cancellable; START owns playback. Runtime selection closes the Visual drawer through the existing chrome lifecycle. Selected state is derived from actual matching settings, including the committed soundtrack selection, so a failed music request cannot claim a fully selected experience. Real renderer captures supply the previews. Existing recursive deployment byte-identity validation now also protects the experiences directory.
+
+
+## 2026-09-07 — Engine output and stationary gestures
+
+Engine shares AudioContext, master mute and meter with Flux but bypasses its
+creative effects entirely; the Flux effect output also closes in Engine mode.
+UNDERWATER is Flux-only. Per-bank static loop RMS matching preserves the original
+WAVs while removing powered/overrun level disparity; shifts interpolate pitch
+and sample gains without an attenuation notch. Engine output stays at nominal
+level on deceleration and lost-signal idle. The existing watchdog still handles
+a frozen control thread. Two 60 px TAMARRO controls stay visible at displayed zero,
+with activation requiring fresh exact standstill. The existing GPS callback owner
+renews quiet stationary watches without concurrent requests. A 700 ms, +450 RPM
+audio-clock gesture runs after each five-second trusted idle interval, cancelled
+by movement, stale evidence, mute, manual rev or lifecycle change. See the current
+[Engine technical record](ENGINE-INTEGRATION-2026-09-07.md) for measured evidence.

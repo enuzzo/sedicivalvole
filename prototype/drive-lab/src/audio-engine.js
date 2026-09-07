@@ -78,14 +78,17 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
   const junctionGain = context.createGain();
   const nightshiftGain = context.createGain();
   const manualEffectsGraph = createManualEffectsGraph(context);
+  const fluxOutput = context.createGain();
+  fluxOutput.gain.value = 1;
   const meter = context.createAnalyser();
   meter.fftSize = 256;
   meter.smoothingTimeConstant = 0.55;
   const meterBuffer = new Float32Array(meter.fftSize);
   let meterState = { level: 0, rms: 0, peak: 0 };
   performanceBus.connect(manualEffectsGraph.input);
-  engineInput.connect(manualEffectsGraph.input);
-  manualEffectsGraph.output.connect(masterGain);
+  // Engine preserves the native sample timbre and bypasses every Flux effect.
+  engineInput.connect(masterGain);
+  manualEffectsGraph.output.connect(fluxOutput).connect(masterGain);
   masterGain.connect(meter).connect(context.destination);
   fractureGain.gain.value = 1;
   junctionGain.gain.value = 0;
@@ -349,7 +352,7 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
   }
 
   function reportActiveEffect() {
-    const nextEffect = brakeReported ? "UNDERWATER" : null;
+    const nextEffect = sourceMode === "flux" && brakeReported ? "UNDERWATER" : null;
     if (nextEffect === reportedEffect) return;
     reportedEffect = nextEffect;
     onEffectChange?.(nextEffect);
@@ -358,7 +361,7 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
   function macroSnapshot(capturedAtMs = performance.now()) {
     return createAudioMacroSnapshot({
       capturedAtMs,
-      underwater: brakeAmount,
+      underwater: sourceMode === "flux" ? brakeAmount : 0,
     });
   }
 
@@ -389,12 +392,12 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
       publishArrangement(arrangement);
     }
     const seconds = BRAKE_TICK_MS / 1000;
-    const target = isBraking() ? 1 : 0;
+    const target = sourceMode === "flux" && isBraking() ? 1 : 0;
     const constant = target > brakeAmount ? BRAKE_ATTACK_SECONDS : BRAKE_RELEASE_SECONDS;
     brakeAmount += (target - brakeAmount) * Math.min(1, seconds / constant);
     if (brakeAmount < 0.001) brakeAmount = 0;
     reviewEffectBadges();
-    const audibleBrake = vehicleEffectsEnabled ? brakeAmount : 0;
+    const audibleBrake = sourceMode === "flux" && vehicleEffectsEnabled ? brakeAmount : 0;
     post("BRAKE", { brake: audibleBrake });
     junction?.setBrake(audibleBrake);
     nightshift?.setBrake(audibleBrake);
@@ -427,10 +430,15 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
       sourceMode = mode === "engine" ? "engine" : "flux";
       if (sourceMode === "engine") {
         scoreSwitchRevision++;
+        brakeAmount = 0; brakeReported = false;
+        reportActiveEffect();
+        post("BRAKE", { brake: 0 });
+        junction?.setBrake(0); nightshift?.setBrake(0);
         void junction?.setActive(false).catch(() => {});
         void nightshift?.setActive(false).catch(() => {});
       }
       const at = context.currentTime;
+      fluxOutput.gain.setTargetAtTime(sourceMode === "flux" ? 1 : 0, at, 0.025);
       performanceBus.gain.setTargetAtTime(sourceMode === "flux" ? 1 : 0, at, 0.025);
       engineInput.gain.setTargetAtTime(sourceMode === "engine" ? 1 : 0, at, 0.025);
       post("MUTE", { muted: muted || sourceMode === "engine" });
@@ -449,7 +457,7 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
     /** Gates the sole vehicle-reactive effect: braking UNDERWATER. */
     setVehicleEffectsEnabled(nextEnabled) {
       vehicleEffectsEnabled = nextEnabled === true;
-      const audibleBrake = vehicleEffectsEnabled ? brakeAmount : 0;
+      const audibleBrake = sourceMode === "flux" && vehicleEffectsEnabled ? brakeAmount : 0;
       post("BRAKE", { brake: audibleBrake });
       junction?.setBrake(audibleBrake);
       nightshift?.setBrake(audibleBrake);
@@ -685,6 +693,7 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
       performanceBus.disconnect();
       engineInput.disconnect();
       manualEffectsGraph.destroy();
+      fluxOutput.disconnect();
       masterGain.disconnect();
       meter.disconnect();
       if (ownsContext && context.state !== "closed") context.close().catch(() => {});

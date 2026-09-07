@@ -8,7 +8,7 @@ const context=await browser.newContext({viewport:{width:773,height:601}}); const
 page.on('pageerror',e=>errors.push(e.message));page.on('response',r=>{if(r.url().includes('/engine-audio/')) responses.push({status:r.status(),name:r.url().split('/').at(-1)});});
 await page.route('**/api/send-diagnostic.php',r=>{sends++;return r.abort();});
 await page.route('**/engine-audio/*.wav',r=>failBank?r.abort():r.continue());
-await page.addInitScript(()=>{const listeners=[];let stamp=0;Object.defineProperty(navigator,'geolocation',{value:{watchPosition(cb){listeners.push(cb);return listeners.length;},clearWatch(){}}});window.__engineQaGps=()=>listeners.forEach(cb=>cb({timestamp:Math.max(Date.now(),++stamp),coords:{speed:0,accuracy:5,latitude:0,longitude:0}}));const AC=window.AudioContext;window.__engineQaContexts=[];window.__engineQaMeters=[];window.AudioContext=class extends AC{constructor(...args){super(...args);window.__engineQaContexts.push(this);}createAnalyser(){const a=super.createAnalyser();window.__engineQaMeters.push(a);return a;}};});
+await page.addInitScript(()=>{const listeners=[];let stamp=0;window.__engineQaRefresh=true;const fix=()=>({timestamp:Math.max(Date.now(),++stamp),coords:{speed:0,accuracy:5,latitude:0,longitude:0}});Object.defineProperty(navigator,'geolocation',{value:{watchPosition(cb){listeners.push(cb);return listeners.length;},clearWatch(){},getCurrentPosition(cb,fail){if(window.__engineQaRefresh)cb(fix());else fail({code:2});}}});window.__engineQaGps=()=>listeners.forEach(cb=>cb({timestamp:Math.max(Date.now(),++stamp),coords:{speed:0,accuracy:5,latitude:0,longitude:0}}));const AC=window.AudioContext;window.__engineQaContexts=[];window.__engineQaMeters=[];window.AudioContext=class extends AC{constructor(...args){super(...args);window.__engineQaContexts.push(this);}createAnalyser(){const a=super.createAnalyser();window.__engineQaMeters.push(a);return a;}};});
 await page.goto('http://127.0.0.1:5173/');
 await page.getByRole('button',{name:'sedicivalvole PLAY THE ROAD',exact:true}).click();
 await page.getByRole('button',{name:'ENGINE',exact:true}).click();await page.screenshot({path:`${out}/01-launch.png`});
@@ -23,12 +23,24 @@ const moving=await page.locator('.engine-telemetry').innerText();console.log('MO
 const meter=await page.evaluate(async()=>{const a=window.__engineQaMeters.at(-1), readings=[];for(let j=0;j<10;j++){const buf=new Float32Array(a.fftSize);a.getFloatTimeDomainData(buf);readings.push({peak:Math.max(...buf.map(Math.abs)),rms:Math.sqrt(buf.reduce((s,v)=>s+v*v,0)/buf.length)});await new Promise(r=>setTimeout(r,40));}return{contexts:window.__engineQaContexts.filter(c=>c.state!=="closed").length,contextStates:window.__engineQaContexts.map(c=>c.state),readings,metadata:navigator.mediaSession.metadata?.title};});
 console.log("METER",meter);assert.equal(meter.contexts,1);assert.ok(meter.readings.some(r=>r.rms>0.0001));assert.ok(meter.readings.every(r=>r.peak<1));assert.match(meter.metadata,/Engine/);
 for(const name of ['Rosso','Touring','Mono']) {await page.getByRole('button',{name,exact:true}).click();await page.waitForTimeout(300);await page.getByText('SAMPLE ENGINE',{exact:true}).waitFor({timeout:25000});}
-await page.locator('.engine-telemetry').click({position:{x:300,y:200}});await page.locator('.app').focus();await page.keyboard.down('Space');await page.waitForTimeout(14000);await page.keyboard.up('Space');await page.waitForTimeout(600);
+await page.locator('.engine-telemetry').click({position:{x:300,y:200}});await page.locator('.app').focus();await page.keyboard.down('Space');await page.waitForTimeout(14000);await page.keyboard.up('Space');await page.waitForTimeout(600);assert.equal(await page.locator('.effect-badge.is-active').count(),0);
 await page.evaluate(()=>window.__engineQaGps());await page.waitForTimeout(500);await page.evaluate(()=>window.__engineQaGps());await page.waitForTimeout(200);console.log('STOPPED',await page.locator('.engine-telemetry').innerText());
-await page.getByRole('button',{name:'TAMARRO',exact:true}).waitFor({timeout:10000});await page.screenshot({path:`${out}/04-standstill.png`});
-const tam=page.getByRole('button',{name:'TAMARRO',exact:true});await tam.focus();await page.keyboard.down('Enter');await page.waitForTimeout(1200);await page.keyboard.up('Enter');
+await page.getByRole('button',{name:'TAMARRO left',exact:true}).waitFor({timeout:10000});await page.screenshot({path:`${out}/04-standstill.png`});
+assert.equal(await page.locator('.engine-rev').count(),2);
+assert.equal(await page.getByRole('button',{name:'Open Performance FX',exact:true}).count(),0);
+await page.getByText('IDLE BLIP',{exact:true}).waitFor({timeout:12000});
+await page.waitForTimeout(4000);
+assert.equal(await page.locator('.engine-rev:enabled').count(),2);
+await page.screenshot({path:`${out}/04b-resting-controls.png`});
+const boxes=await page.evaluate(()=>({profiles:document.querySelector('.engine-profiles').getBoundingClientRect().toJSON(),buttons:[...document.querySelectorAll('.engine-rev')].map(b=>b.getBoundingClientRect().toJSON())}));
+assert.ok(boxes.buttons.every(b=>b.y>=boxes.profiles.bottom+6 && b.height>=56));
+await page.evaluate(()=>window.__engineQaRefresh=false);await page.waitForTimeout(2200);
+assert.equal(await page.locator('.engine-rev:disabled').count(),2);
+await page.evaluate(()=>window.__engineQaRefresh=true);await page.waitForTimeout(1500);
+assert.equal(await page.locator('.engine-rev:enabled').count(),2);
+const tam=page.getByRole('button',{name:'TAMARRO left',exact:true});await tam.focus();await page.keyboard.down('Enter');await page.waitForTimeout(1200);await page.keyboard.up('Enter');
 await page.locator('.engine-telemetry').click({position:{x:300,y:200}});
-await page.getByRole('button',{name:'Mute audio',exact:true}).click();await page.getByRole('button',{name:'TAMARRO',exact:true}).waitFor({state:'hidden'});
+await page.getByRole('button',{name:'Mute audio',exact:true}).click();await page.waitForTimeout(200);assert.equal(await page.locator('.engine-rev:disabled').count(),2);
 await page.locator('.engine-telemetry').click({position:{x:300,y:200}});await page.getByRole('button',{name:'Unmute audio',exact:true}).click();await page.waitForTimeout(500);
 await page.locator('.engine-telemetry').click({position:{x:300,y:200}});await page.getByRole('button',{name:'FLUX',exact:true}).click();await page.waitForTimeout(1000);
 assert.equal(await page.locator('.engine-telemetry').count(),0);await page.locator('.app').click({position:{x:300,y:250}});await page.getByRole('button',{name:'ENGINE',exact:true}).click();await page.getByText('SAMPLE ENGINE',{exact:true}).waitFor();
@@ -38,5 +50,5 @@ const report=JSON.parse(await page.locator('pre').innerText());assert.equal(repo
 await page.setViewportSize({width:390,height:844});await page.screenshot({path:`${out}/05-phone-layout.png`});
 assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth),false);
 assert.equal(sends,0);assert.deepEqual(errors,[]);
-await fs.writeFile(`${out}/browser-evidence.json`,JSON.stringify({meter,responses,moving,sends,errors,checks:['network failure then automatic bank retry','three profiles decode','Demo acceleration and braking','TAMARRO after trusted standstill','mute rev release','Engine/Flux single context','390x844 no horizontal page overflow']},null,2));console.log('QA PASS',meter);
+await fs.writeFile(`${out}/browser-evidence.json`,JSON.stringify({meter,responses,moving,sends,errors,checks:['network failure then automatic bank retry','three profiles decode','Demo acceleration and braking','two persistent TAMARRO controls after chrome retraction, no profile overlap', 'automatic idle blip with quiet GPS watch renewal', 'stale signal disables visible controls and fresh fixes restore them', 'Engine has no FX controls or UNDERWATER badge','mute rev release','Engine/Flux single context','390x844 no horizontal page overflow']},null,2));console.log('QA PASS',meter);
 }finally{await browser.close();}

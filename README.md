@@ -357,7 +357,7 @@ Night Glass combines Vertigo, Graphite, DARK and the Lounge catalogue; Neon Groo
 
 Prtcl, Drivey and Gradient now align both the functional label and current value to one left edge. Their shared 112 × 52 px controls retain the existing cycle actions and automatic chrome visibility. [Measured before/after verification](docs/CONTEXT-CONTROL-ALIGNMENT-2026-09-05.md).
 
-Engine uses the existing AudioContext and shared FX/mute path. GPS acquisition-age gates, exact standstill rev protection and five-minute asset recovery are implemented. Vehicle listening remains open. [Engine technical record](docs/ENGINE-INTEGRATION-2026-09-07.md).
+Engine uses the existing AudioContext and shared mute, bypassing all Flux effects. Deceleration lowers RPM without artificial volume ducking. Two prominent TAMARRO controls stay visible at zero; fresh stationary GPS enables held revs and tiny periodic idle blips. Acquisition-age gates, stopped GPS renewal and five-minute asset recovery are implemented. The first listening response is positive; the requested refinement awaits vehicle listening. [Engine technical record](docs/ENGINE-INTEGRATION-2026-09-07.md).
 
 <!-- COMMUNITY-CREDITS:START -->
 ## Community thanks — 2026-09-05

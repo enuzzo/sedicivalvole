@@ -91,4 +91,6 @@ upshift, lift/downshift and stopped TAMARRO feel coherent, and does Engine ↔ F
 retain correct mute/native media behavior? A short journey with REPORT afterward
 can separate listening preference from measurable timing/network issues.
 
-Answer: [Ready for your first-listen notes; “Not tested yet” is valid.]
+Answer: First listen broadly positive. Requested corrections: no UNDERWATER or other creative FX in Engine; no volume duck on deceleration; larger persistent TAMARRO controls on both sides at zero; occasional tiny stationary revs. Implemented in the September 7 refinement. Profile preference and sustained vehicle acceptance are not yet specified.
+
+Refinement listening response: [Ready for your notes on sound level during lift/downshift, stationary controls and tiny idle blips.]

@@ -1728,3 +1728,16 @@ musical fit and uninterrupted real-car listening still require owner acceptance.
 ## 2026-09-05 — Curated experiences need songs, not a genre-shaped sound test
 
 The owner liked Night Glass visually but heard the Ambient selection as isolated synth experiments. A soft mood is not evidence of a complete arrangement. Night Glass now uses the existing Lounge catalogue for a more song-oriented, understated groove; Neon Groove pairs Funk with Aperture/Neon for a livelier alternative. These are audiovisual presets over existing licensed recordings, not individually auditioned playlists or newly composed adaptive scores. Genre metadata cannot guarantee every recording will satisfy this listening brief. Keep actual Tesla listening as the acceptance gate; do not claim that a transport/time-advance test validates musical taste.
+
+
+## 2026-09-07 — Preserve Engine dynamics separately from musical effects
+
+The owner heard an unwanted underwater/volume-fade character during Engine
+deceleration. Engine must bypass Flux creative processing and its effect tails;
+only master mute and output safety remain shared. Sampled overrun loops have
+different recorded energy from powered loops, especially Touring. Static decoded
+RMS matching keeps their timbres and original WAV bytes while removing the level
+disparity. A gear change must not insert an artificial 85% gain notch. Verify real
+WAV renders at matched RPM/load endpoints as well as the graph routing; gain
+constants alone cannot prove the audible result. This is an Engine-specific
+lesson and does not remove intentional dynamics or effects from Flux music.

@@ -1,6 +1,8 @@
 import { Engine } from "./upstream/Engine.ts";
 import { Drivetrain } from "./upstream/Drivetrain.ts";
 import { AudioManager } from "./upstream/AudioManager.ts";
+import { matchEngineLoopLevels } from "./sample-levels.js";
+import { createIdleBlip } from "./idle-blip.js";
 import { engineProfile } from "./profiles.js";
 import { boundedRpm, decideAutomaticGear, virtualRpm } from "./gearbox.js";
 
@@ -30,11 +32,13 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
   const retiringNodes = new Set();
   const stopNodes = (entries) => entries.forEach(({ source, gain }) => { try { source.stop(); } catch {} source.disconnect(); gain.disconnect(); });
   const clearRetry = () => { clearTimeout(retryTimer); retryTimer = null; };
+  const idleBlip = createIdleBlip();
   const releaseRev = () => { heldSince = null; state.revving = false; };
+  const releaseGestures = () => { releaseRev(); idleBlip.reset(); state.idleBlip = false; };
   const setEnabled = (value) => {
     enabled = Boolean(value) && !disposed;
     if (!enabled) {
-      releaseRev(); state.trustedStationary = false; abort?.abort(); clearRetry(); generation++; requestedRevision++;
+      releaseGestures(); state.trustedStationary = false; abort?.abort(); clearRetry(); generation++; requestedRevision++;
       clearInterval(timer); timer = null; state.status = nodes.length ? "ready" : "idle";
     } else if (!timer) timer = setInterval(tick, 25);
     const at = context.currentTime;
@@ -51,7 +55,7 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
   function targets(rpm, drive) {
     const gains = gainsFor(rpm, drive);
     return nodes.map(node => ({ node,
-      gain: (gains[node.asset.role] ?? 0) * (node.asset.volume ?? 1),
+      gain: (gains[node.asset.role] ?? 0) * (node.levelGain ?? node.asset.volume ?? 1),
       cents: node.asset.role === "limiter" ? 0 : node.asset.role.startsWith("tranny")
         ? clamp(rpm * 0.035 - 800, -2400, 2400)
         : clamp(engine.getRPMPitch(node.asset.rpm, 0.2), -2400, 2400),
@@ -75,7 +79,6 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
     engine.rpm = previousRpm;
     for (const { node, gain, cents } of nextTargets) {
       hold(node.gain.gain, effective); hold(node.source.detune, effective);
-      node.gain.gain.linearRampToValueAtTime(gain * 0.15, effective + duration * 0.2);
       node.source.detune.linearRampToValueAtTime(cents, effective + duration * 0.65);
       node.gain.gain.linearRampToValueAtTime(gain, effective + duration);
     }
@@ -96,7 +99,7 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
     if (elapsed <= 0) return;
     if (elapsed > 0.5) {
       shift = null; state.shift = null; drivetrain.pendingGear = null; drivetrain.gear = state.gear;
-      releaseRev(); motion.reset("audio-clock-gap"); selectedAt = at;
+      releaseGestures(); state.trustedStationary = false; motion.reset("audio-clock-gap"); selectedAt = at;
     }
     if (shift) {
       if (!shift.committed && at >= shift.commitAt) {
@@ -111,6 +114,8 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
     const activeEvidence = elapsed > 0.5 ? motion.snapshot(now()) : evidence;
     const revving = heldSince != null && state.trustedStationary;
     state.revving = revving;
+    const blipRpm = idleBlip.sample(at, state.trustedStationary && !revving && !shift);
+    state.idleBlip = blipRpm > 0;
     const dt = Math.min(0.08, elapsed);
     const demand = revving ? 1 : activeEvidence.drive;
     engine.throttle = demand;
@@ -121,6 +126,7 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
       drivetrain.omega = coupledRpm * 2 * Math.PI / 60;
       engine.solveVel(drivetrain, dt);
     }
+    if (state.trustedStationary && !revving) engine.omega = (1000 + blipRpm) * 2 * Math.PI / 60;
     engine.rpm = boundedRpm(engine.omega * 60 / (2 * Math.PI), profile);
     engine.omega = engine.rpm * 2 * Math.PI / 60;
     state.rpm = Math.round(engine.rpm);
@@ -131,7 +137,7 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
     else applyContinuous(engine.rpm, demand, at);
     // If the control thread freezes, the audio graph already has a bounded fade.
     hold(master.gain, at);
-    master.gain.setTargetAtTime(activeEvidence.freshness === "lost" ? 0.08 : 0.16, at, 0.12);
+    master.gain.setTargetAtTime(0.16, at, 0.12);
     master.gain.setTargetAtTime(0, at + 5, 0.35);
   }
   function load(profileId = "mono", options = {}) {
@@ -167,12 +173,13 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
       const assets = results.map(result => result.value);
       const decodedBytes = assets.reduce((sum, { buffer }) => sum + buffer.length * buffer.numberOfChannels * 4, 0);
       if (decodedBytes > MAX_DECODED_BYTES) throw new Error("Engine bank exceeds decoded memory budget");
+      const levelGains = matchEngineLoopLevels(assets);
       const at = context.currentTime + 0.025;
       for (const { asset, buffer } of assets) {
         const source = context.createBufferSource(); source.buffer = buffer; source.loop = true;
         const gain = context.createGain(); gain.gain.value = 0;
         source.connect(gain).connect(master); source.start(at);
-        freshNodes.push({ source, gain, asset });
+        freshNodes.push({ source, gain, asset, levelGain: levelGains.get(asset.role) });
       }
       for (const old of nodes) {
         retiringNodes.add(old);
@@ -186,7 +193,7 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
       engine.rpm = 1000; engine.omega = 1000 * 2 * Math.PI / 60;
       drivetrain = new Drivetrain(); drivetrain.init(next.configuration.drivetrain); drivetrain.gear = 1;
       shift = null; selectedAt = context.currentTime; previousTime = context.currentTime;
-      releaseRev(); state = { ...state, status: "ready", profileId, decodedBytes, bankBytes: next.assets.reduce((sum, asset) => sum + asset.bytes, 0), gear: 1, shift: null, error: null };
+      releaseGestures(); state = { ...state, status: "ready", profileId, decodedBytes, bankBytes: next.assets.reduce((sum, asset) => sum + asset.bytes, 0), gear: 1, shift: null, error: null };
       retryStarted = null; retryCount = 0;
       onEvent("engine.bank.ready", { profileId, decodedBytes, clips: nodes.length });
       return true;
@@ -220,10 +227,10 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
       else { clearRetry(); void load(lastRequested, { retry: true }); }
     }
   }
-  const lifecycle = () => { releaseRev(); motion.reset("visibility-change"); wake(); };
-  const contextChange = () => { releaseRev(); motion.reset("audio-context-change"); };
+  const lifecycle = () => { releaseGestures(); motion.reset("visibility-change"); wake(); };
+  const contextChange = () => { releaseGestures(); motion.reset("audio-context-change"); };
   globalThis.window?.addEventListener("online", wake);
-  globalThis.window?.addEventListener("blur", releaseRev);
+  globalThis.window?.addEventListener("blur", releaseGestures);
   globalThis.document?.addEventListener("visibilitychange", lifecycle);
   context.addEventListener?.("statechange", contextChange);
   return {
@@ -254,7 +261,7 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
       setEnabled(false); disposed = true; clearInterval(timer); clearRetry(); abort?.abort(); stopNodes(nodes); stopNodes([...retiringNodes]); retiringNodes.clear(); nodes = [];
       master.disconnect(); limiter.disconnect();
       globalThis.window?.removeEventListener("online", wake);
-      globalThis.window?.removeEventListener("blur", releaseRev);
+      globalThis.window?.removeEventListener("blur", releaseGestures);
       globalThis.document?.removeEventListener("visibilitychange", lifecycle);
       context.removeEventListener?.("statechange", contextChange);
     },

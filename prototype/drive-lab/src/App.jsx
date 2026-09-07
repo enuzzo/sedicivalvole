@@ -1,3 +1,4 @@
+import { startStationaryRefresh } from "./engine/stationary-refresh.js";
 import { createEngineMotion } from "./engine/motion.js";
 import { useEngine } from "./engine/use-engine.js";
 import { EngineTelemetry } from "./engine/telemetry-field.jsx";
@@ -2369,6 +2370,7 @@ export function App() {
   const preferredSoundtrackSelectionRef = useRef(initialPreferences.soundtrackSelection);
   const appRef = useRef(null);
   const watchRef = useRef(null);
+  const gpsPositionRef = useRef(null);
   const lifetimeEpochRef = useRef(0);
   const dismissFrameRef = useRef(0);
   const wakeTimerRef = useRef(null);
@@ -2875,6 +2877,17 @@ export function App() {
     logDiagnosticEvent("brake.triggered", { source: sourceRef.current });
   }, [logDiagnosticEvent]);
 
+  useEffect(() => {
+    if (phase !== "running" || experienceMode !== "engine" || muted) return;
+    return startStationaryRefresh({
+      geolocation: navigator.geolocation,
+      eligible: () => sourceRef.current === "GPS" && watchRef.current != null
+        && latestGpsObservationRef.current.speedKmh === 0 && document.visibilityState !== "hidden"
+        && (engineMotionRef.current.snapshot(performance.now()).ageMs ?? Infinity) >= 750,
+      onPosition: position => gpsPositionRef.current?.(position),
+    });
+  }, [phase, experienceMode, muted]);
+
   const startGps = useCallback(() => {
     gpsTelemetryRef.current = createGpsTelemetry(performance.now());
     lastGpsSampleAtRef.current = null;
@@ -2897,8 +2910,7 @@ export function App() {
     if (watchRef.current != null) navigator.geolocation.clearWatch(watchRef.current);
     setGpsState("permission requested");
     logDiagnosticEvent("gps.requested", { highAccuracy: true });
-    watchRef.current = navigator.geolocation.watchPosition(
-      (position) => {
+    gpsPositionRef.current = (position) => {
         const capturedAtMs = performance.now();
         const accuracyM = Number.isFinite(position.coords.accuracy) ? position.coords.accuracy : null;
         setAccuracy(Number.isFinite(accuracyM) ? Math.round(accuracyM) : null);
@@ -3013,7 +3025,9 @@ export function App() {
         }
         if (sourceRef.current === "GPS") setSpeed(next);
         setGpsState("live");
-      },
+      };
+    watchRef.current = navigator.geolocation.watchPosition(
+      gpsPositionRef.current,
       (error) => {
         const states = { 1: "permission denied", 2: "signal unavailable", 3: "timeout" };
         setGpsState(states[error.code] || "sanitized error");
@@ -5303,7 +5317,7 @@ export function App() {
             <strong>{Math.round(speed)}</strong>
             <span className="readout-unit">km/h</span>
           </div>
-          <div className={`effect-badge${activeEffect ? " is-active" : ""}`} aria-hidden={!activeEffect}>{activeEffect || "UNDERWATER"}</div>
+          <div className={`effect-badge${experienceMode === "flux" && activeEffect ? " is-active" : ""}`} aria-hidden={experienceMode !== "flux" || !activeEffect}>{experienceMode === "flux" ? activeEffect || "UNDERWATER" : ""}</div>
         </button>
 
         {controlNotice ? (
@@ -5312,7 +5326,7 @@ export function App() {
           </div>
         ) : null}
 
-        {manualEffectsDeckOpen ? (
+        {experienceMode === "flux" && manualEffectsDeckOpen ? (
           <ManualEffectsDeck
             values={soundtrackManualEffects}
             onChange={updateManualEffect}
@@ -5350,7 +5364,7 @@ export function App() {
             <span>MUTE</span>
             <strong>{muted ? "ON" : "OFF"}</strong>
           </button>
-          <button
+          {experienceMode === "flux" ? <button
             className={`effects-button${vehicleEffectsEnabled ? " is-active" : ""}`}
             type="button"
             aria-pressed={vehicleEffectsEnabled}
@@ -5360,7 +5374,7 @@ export function App() {
           >
             <span>FX</span>
             <strong>{vehicleEffectsEnabled ? "ON" : "OFF"}</strong>
-          </button>
+          </button> : null}
           {experienceMode === "engine" ? <><button type="button" className="engine-return-flux" onClick={() => { chooseExperienceMode("flux"); setEnvironmentPickerOpen(true); }}><span>FLUX</span><strong>Visuals</strong></button><button type="button" className="engine-return-flux" onClick={() => { chooseExperienceMode("flux"); setSoundtrackPanelOpen(true); }}><span>FLUX</span><strong>Music</strong></button></> : <><VisualControl environment={environment} onOpen={() => {
             if (experienceMode === "engine") chooseExperienceMode("flux");
             setEnvironmentPickerOpen(true);
@@ -5372,7 +5386,7 @@ export function App() {
             soundtrackSnapshot={soundtrackSnapshot}
             onOpen={() => { if (experienceMode === "engine") chooseExperienceMode("flux"); setSoundtrackPanelOpen(true); }}
           /></>}
-          <button
+          {experienceMode === "flux" ? <button
             className={`mix-button${manualEffectsDeckOpen ? " is-open" : ""}${SOUNDTRACK_MANUAL_CONTROLS.some(({ id }) => soundtrackManualEffects[id] > 0.01) ? " is-active" : ""}`}
             type="button"
             aria-label="Open Performance FX"
@@ -5383,7 +5397,7 @@ export function App() {
             <span>FX</span>
             <strong aria-hidden="true">↑</strong>
             <small>{SOUNDTRACK_MANUAL_CONTROLS.filter(({ id }) => soundtrackManualEffects[id] > 0.01).length}/8 ACTIVE</small>
-          </button>
+          </button> : null}
           <PaletteControl themeId={themeId} onChange={setThemeId} open={paletteMenuOpen} onOpenChange={setPaletteMenuOpen} />
         </footer>
         </div>

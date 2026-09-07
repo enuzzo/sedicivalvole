@@ -18,11 +18,11 @@ class Param {
 }
 function fixture({ fail = false, manual = false } = {}) {
   const timers = new Map(); let serial = 0, time = 0, failures = fail, requests = 0;
-  const context = { currentTime: 0, state: "running", sources: [],
-    createGain: () => ({ gain: new Param(), connect(to) { return to; }, disconnect() {} }),
+  const context = { currentTime: 0, state: "running", sources: [], gains: [],
+    createGain() { const node = { gain: new Param(), connect(to) { return to; }, disconnect() {} }; this.gains.push(node); return node; },
     createDynamicsCompressor: () => ({ threshold: new Param(), knee: new Param(), ratio: new Param(), attack: new Param(), release: new Param(), connect(to) { return to; }, disconnect() {} }),
     createBufferSource() { const source = { detune: new Param(), connect(to) { return to; }, start(at) { this.started = at; }, stop(at) { this.stopped = at ?? 0; }, disconnect() {} }; this.sources.push(source); return source; },
-    decodeAudioData: async () => ({ length: 48000, numberOfChannels: 2 }),
+    decodeAudioData: async () => ({ length: 48000, numberOfChannels: 2, getChannelData: () => new Float32Array(48000).fill(0.1) }),
   };
   const exports = {};
   const sandbox = { exports, module: { exports }, console, crypto: webcrypto, AbortController, performance: { now: () => time },
@@ -107,4 +107,54 @@ test("leaving Engine frees the decoded bank and all sample loops", async () => {
   const f=fixture(); f.runtime.setEnabled(true); await f.runtime.load(); f.runtime.unload();
   assert.equal(f.runtime.getState().decodedBytes,0); assert.equal(f.timers.size,0);
   assert.ok(f.context.sources.every(source=>source.stopped!==undefined)); f.runtime.destroy();
+});
+
+
+test("small periodic idle blips stop on movement, manual rev and disable", async () => {
+  const f = fixture(); f.runtime.setEnabled(true); await f.runtime.load();
+  f.evidence.trustedStationary = true;
+  let maximum = 0, blips = 0, previous = false;
+  for (let i = 0; i < 480; i++) {
+    f.tick(); const s = f.runtime.getState(); maximum = Math.max(maximum, s.rpm);
+    if (s.idleBlip && !previous) blips++; previous = s.idleBlip;
+  }
+  assert.equal(blips, 2); assert.ok(maximum >= 1400 && maximum <= 1450);
+  f.runtime.setRevHeld(true); f.tick();
+  assert.equal(f.runtime.getState().idleBlip, false);
+  f.runtime.releaseRev(); f.evidence.trustedStationary = false;
+  for (let i = 0; i < 240; i++) { f.tick(); assert.equal(f.runtime.getState().idleBlip, false); }
+  f.runtime.setEnabled(false); assert.equal(f.runtime.getState().idleBlip, false);
+  f.runtime.destroy();
+});
+
+test("stationary GPS renewal never overlaps and ignores late callbacks after cancellation", async () => {
+  const { startStationaryRefresh } = await import('../src/engine/stationary-refresh.js');
+  let tick, allowed = true, calls = 0, success, failure, received = 0, cleared = false;
+  const stop = startStationaryRefresh({
+    geolocation: { getCurrentPosition(ok, fail, options) { calls++; success = ok; failure = fail; assert.equal(options.maximumAge, 0); assert.equal(options.timeout, 3000); } },
+    eligible: () => allowed, onPosition: () => received++, interval: fn => { tick = fn; return 7; }, clear: id => { assert.equal(id, 7); cleared = true; },
+  });
+  tick(); tick(); assert.equal(calls, 1);
+  success({ timestamp: 100 }); assert.equal(received, 1);
+  tick(); failure(); tick(); assert.equal(calls, 3);
+  allowed = false; success({ timestamp: 200 }); tick(); assert.equal(received, 1); assert.equal(calls, 3);
+  allowed = true; tick(); stop(); success({ timestamp: 300 }); tick();
+  assert.equal(received, 1); assert.equal(cleared, true); assert.equal(calls, 4);
+});
+
+
+test("Engine level stays constant on lift, downshift and lost-signal idle", async () => {
+  const f = fixture({ manual: true }); f.runtime.setEnabled(true); await f.runtime.load();
+  f.evidence.speedKmh = 35; f.evidence.drive = 1;
+  f.runtime.setTransmissionMode("MANUAL"); f.runtime.requestGear(3);
+  for (let i = 0; i < 24; i++) f.tick();
+  f.evidence.drive = 0; f.evidence.deceleration = 1; f.runtime.requestGear(2);
+  for (let i = 0; i < 24; i++) f.tick();
+  assert.equal(f.runtime.getState().gear, 2);
+  f.evidence.freshness = "lost"; f.evidence.canShift = false; f.tick();
+  const levels = f.context.gains[0].gain.events.filter(e => e[0] === "target" && e[1] !== 0);
+  assert.ok(levels.length > 20); assert.ok(levels.every(e => e[1] === .16));
+  // A shift has one continuous destination ramp, no intermediate attenuation notch.
+  for (const gain of f.context.gains.slice(1)) assert.equal(gain.gain.events.filter(e => e[0] === "ramp").length, 2);
+  f.runtime.destroy();
 });

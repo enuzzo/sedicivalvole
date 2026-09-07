@@ -8,7 +8,11 @@ See [DEPLOY](DEPLOY.md) and [Engine integration](ENGINE-INTEGRATION-2026-09-07.m
 
 Engine is implemented and live: Telemetry direction 2, Mono/Rosso/Touring, AUTO,
 protected LAB MANUAL, shared audio, GPS evidence, rev protection and retry. The
-source/WAV authorization is settled. Next: owner first listen in
+source/WAV authorization is settled. The first listening response was broadly
+positive; the owner requested dry Engine audio, steady deceleration level, dual
+persistent stationary TAMARRO controls and tiny idle blips. All four refinements
+are implemented and locally verified; publication follows below when confirmed.
+Next: owner refinement listening in
 [A12](OWNER-ANSWERS-2026-09-07.md#a12--engine-first-listen), then iPhone. The phone
 control shell remains unfinished. ATLAS/full-screen statistics and Standard/Dev
 diagnostics are queued. Broad Flux/Soundtrack/FX/interface/Discover acceptance

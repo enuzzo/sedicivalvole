@@ -586,20 +586,46 @@ test("a stale vehicle-rate sample is published as zero to score consumers", asyn
   });
 });
 
-test("Engine uses the shared FX/master path and deactivates sampled Flux audio", async () => {
+test("Engine bypasses all Flux effects and retains shared mute", async () => {
   await withFakeAudioEnvironment({}, async ({ createAudioEngine, context, junction }) => {
     const engine = createAudioEngine();
     await engine.setScore("junction");
     engine.setSourceMode("engine");
     assert.equal(context.gains[1].gain.value, 0);
     assert.equal(engine.engineInput.gain.value, 1);
-    assert.equal(engine.engineInput.connections.has(context.gains[6]), true);
+    assert.equal(engine.engineInput.connections.has(context.gains[0]), true);
+    assert.equal(engine.engineInput.connections.has(context.gains[6]), false);
+    const fluxOutput = context.gains.find(gain => gain !== engine.engineInput && gain.connections.has(context.gains[0]));
+    assert.equal(fluxOutput.gain.value, 0, "Flux effect tails must not leak into Engine");
     assert.equal(junction.calls.at(-1).active, false);
     engine.setMuted(true);
     assert.equal(context.gains[0].gain.value, 0);
     engine.setSourceMode("flux");
     assert.equal(engine.engineInput.gain.value, 0);
     assert.equal(context.gains[1].gain.value, 1);
+    assert.equal(fluxOutput.gain.value, 1);
+    engine.destroy();
+  });
+});
+
+
+test("Engine clears active UNDERWATER and cannot retrigger it while braking", async () => {
+  await withFakeAudioEnvironment({}, async ({ createAudioEngine, timers }) => {
+    const effects = [];
+    const engine = createAudioEngine(undefined, effect => effects.push(effect));
+    engine.brake();
+    for (let i = 0; i < 8; i++) timers.runIntervals(40);
+    assert.equal(effects.at(-1), "UNDERWATER");
+    engine.setSourceMode("engine");
+    assert.equal(effects.at(-1), null);
+    engine.setVehicleEffectsEnabled(true);
+    engine.brake();
+    for (let i = 0; i < 20; i++) timers.runIntervals(40);
+    assert.equal(engine.getMacroSnapshot().values.underwater, 0);
+    assert.equal(effects.at(-1), null);
+    engine.setSourceMode("flux");
+    for (let i = 0; i < 8; i++) timers.runIntervals(40);
+    assert.equal(effects.at(-1), "UNDERWATER");
     engine.destroy();
   });
 });

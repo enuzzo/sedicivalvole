@@ -1,0 +1,200 @@
+{
+  "meter": {
+    "contexts": 1,
+    "contextStates": [
+      "running"
+    ],
+    "readings": [
+      {
+        "peak": 0.14116868376731873,
+        "rms": 0.09048614681068787
+      },
+      {
+        "peak": 0.13838708400726318,
+        "rms": 0.05990369134254776
+      },
+      {
+        "peak": 0.141733318567276,
+        "rms": 0.06013628494829763
+      },
+      {
+        "peak": 0.1388949751853943,
+        "rms": 0.05573751518357742
+      },
+      {
+        "peak": 0.13959825038909912,
+        "rms": 0.06056881202792618
+      },
+      {
+        "peak": 0.14002956449985504,
+        "rms": 0.07189380557256385
+      },
+      {
+        "peak": 0.13723206520080566,
+        "rms": 0.07584338081982395
+      },
+      {
+        "peak": 0.11836204677820206,
+        "rms": 0.06019110356253665
+      },
+      {
+        "peak": 0.11008608341217041,
+        "rms": 0.05132273637800241
+      },
+      {
+        "peak": 0.13976076245307922,
+        "rms": 0.08486027272996316
+      }
+    ],
+    "metadata": "Engine / Mono"
+  },
+  "responses": [
+    {
+      "status": 200,
+      "name": "7703265ff1b1e7e2.wav"
+    },
+    {
+      "status": 200,
+      "name": "505b4d611f65af03.wav"
+    },
+    {
+      "status": 200,
+      "name": "b75b9041be696ed6.wav"
+    },
+    {
+      "status": 200,
+      "name": "8d178cd745397cc3.wav"
+    },
+    {
+      "status": 200,
+      "name": "98d9a4f823c8dc66.wav"
+    },
+    {
+      "status": 200,
+      "name": "97d45c525723ea02.wav"
+    },
+    {
+      "status": 200,
+      "name": "d84df781799f715a.wav"
+    },
+    {
+      "status": 200,
+      "name": "7703265ff1b1e7e2.wav"
+    },
+    {
+      "status": 200,
+      "name": "505b4d611f65af03.wav"
+    },
+    {
+      "status": 200,
+      "name": "2b6aac5dafa945ce.wav"
+    },
+    {
+      "status": 200,
+      "name": "f068c7b8b8424a98.wav"
+    },
+    {
+      "status": 200,
+      "name": "78f9483d1f436303.wav"
+    },
+    {
+      "status": 200,
+      "name": "a9d844fcb1c04646.wav"
+    },
+    {
+      "status": 200,
+      "name": "f4e5a7f8e96fa64a.wav"
+    },
+    {
+      "status": 200,
+      "name": "49d3ac22096eaee1.wav"
+    },
+    {
+      "status": 200,
+      "name": "13a46ee6f4cad43b.wav"
+    },
+    {
+      "status": 200,
+      "name": "d84df781799f715a.wav"
+    },
+    {
+      "status": 200,
+      "name": "ac288f6d22b0bad1.wav"
+    },
+    {
+      "status": 200,
+      "name": "3c1633f155e42a10.wav"
+    },
+    {
+      "status": 200,
+      "name": "7703265ff1b1e7e2.wav"
+    },
+    {
+      "status": 200,
+      "name": "505b4d611f65af03.wav"
+    },
+    {
+      "status": 200,
+      "name": "b75b9041be696ed6.wav"
+    },
+    {
+      "status": 200,
+      "name": "8d178cd745397cc3.wav"
+    },
+    {
+      "status": 200,
+      "name": "98d9a4f823c8dc66.wav"
+    },
+    {
+      "status": 200,
+      "name": "97d45c525723ea02.wav"
+    },
+    {
+      "status": 200,
+      "name": "d84df781799f715a.wav"
+    },
+    {
+      "status": 200,
+      "name": "7703265ff1b1e7e2.wav"
+    },
+    {
+      "status": 200,
+      "name": "505b4d611f65af03.wav"
+    },
+    {
+      "status": 200,
+      "name": "b75b9041be696ed6.wav"
+    },
+    {
+      "status": 200,
+      "name": "8d178cd745397cc3.wav"
+    },
+    {
+      "status": 200,
+      "name": "98d9a4f823c8dc66.wav"
+    },
+    {
+      "status": 200,
+      "name": "97d45c525723ea02.wav"
+    },
+    {
+      "status": 200,
+      "name": "d84df781799f715a.wav"
+    }
+  ],
+  "moving": "ENGINE / TELEMETRY\nSAMPLE ENGINE\n0\n1\n2\n3\n4\n5\n6\n7\n8\n9\nVIRTUAL RPM\n6,819\nENGINE SPEED\nGEAR / AUTO\n4\nACOUSTIC GEARBOX\nDRIVE RESPONSE\n0%\nDECELERATION\n20%\nMono\nRosso\nTouring\n128 KM/H · LIVE MOTION",
+  "sends": 0,
+  "errors": [],
+  "checks": [
+    "network failure then automatic bank retry",
+    "three profiles decode",
+    "Demo acceleration and braking",
+    "two persistent TAMARRO controls after chrome retraction, no profile overlap",
+    "automatic idle blip with quiet GPS watch renewal",
+    "stale signal disables visible controls and fresh fixes restore them",
+    "Engine has no FX controls or UNDERWATER badge",
+    "mute rev release",
+    "Engine/Flux single context",
+    "390x844 no horizontal page overflow"
+  ]
+}

@@ -108,3 +108,13 @@ follow-up truthfully; do not claim ownership independently verified or liability
 transferred. Preserve upstream attribution and the existing deployment authority.
 The prior sealed candidate may be inspected and adapted progressively for this
 integration; no independent blind-review claim is made.
+
+
+## Engine listening refinement — 2026-09-07
+
+The owner requires Engine to bypass UNDERWATER and all Flux creative effects.
+Deceleration changes RPM without artificial gain ducking. Keep prominent left
+and right TAMARRO controls visible at displayed zero independently of chrome
+retraction; stale evidence disables rather than removes them. Small periodic idle
+blips require fresh exact standstill and stop on movement, mute or lifecycle loss.
+This is a direct refinement of the selected Telemetry direction.
