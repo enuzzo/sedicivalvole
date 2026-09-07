@@ -11,6 +11,25 @@ An entry here is **not** an implemented feature or a delivery promise. When an
 idea becomes scheduled work, keep the entry and link it to the authoritative
 plan, specification, tests, and evidence instead of silently deleting it.
 
+## Current precedence — 2026-09-07 22:40 CEST
+
+The September 5 draft-only notes at the end are preserved as decision history.
+Their current status is the index below: the first curated experiences and
+separate ATLAS/Stats are already live; this night's Stats parity, selected
+**Compact Cockpit** iPhone surface and selected **Travel Report** PDF/email flow
+are **implemented and locally verified, with publication pending**. The starting
+canonical identity is build **20260907-2004**, source **b27975d**; the new identity
+will be recorded in [DEPLOY](DEPLOY.md) after publication verification.
+
+See the [night implementation record](NIGHT-IMPLEMENTATION-2026-09-07.md) and
+[current milestone precedence](MILESTONE-CHECKLIST-2026-08-31.md#current-precedence--2026-09-07-2240-cest).
+Local Chrome/PHP checks do not establish physical iPhone Safari, Tesla listening,
+native controls, uninterrupted endurance or inbox receipt. The older manual-only
+diagnostic wording describes its dated boundary: automatic coordinate-free
+Dev diagnostics now default ON every fifteen observed GPS driving minutes,
+preserving saved OFF/Standard. This does not authorize future motion samples or
+route data to enter diagnostics.
+
 ## Status and provenance
 
 - `CAPTURED`: worth preserving, but not scheduled or designed;
@@ -36,8 +55,29 @@ presented as an owner decision or enter the product without explicit approval.
 | `FI-005` | Shared LIGHT/DARK/AUTO interface appearance | OWNER | 2026-08-30 | IMPLEMENTED · canonical build `20260903-1752`; Tesla pending | [`MILESTONE-CHECKLIST-2026-08-31.md`](MILESTONE-CHECKLIST-2026-08-31.md) row 13; [`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md) `R13-01`–`R13-03` |
 | `FI-006` | Exception-led local CONDITIONS and weather context | OWNER | 2026-08-30 | PROMOTED | [`PIANO.md`](../PIANO.md) `X11` |
 | `FI-007` | Original speed-responsive Gradient Field | OWNER | 2026-08-30 | RETIRED · renderer replaced by one ShaderGradient family with three variants | [`MILESTONE-CHECKLIST-2026-08-31.md`](MILESTONE-CHECKLIST-2026-08-31.md) row 11 |
-| `FI-008` | Landscape-first iPhone presentation with an inert portrait rotation notice | OWNER | 2026-08-30 | PROMOTED | [`PIANO.md`](../PIANO.md) `X2`; [`ROADMAP.md`](ROADMAP.md) Phase 6 |
+| `FI-008` | Landscape-first iPhone presentation with an inert portrait rotation notice | OWNER | 2026-08-30 | IMPLEMENTED · locally verified; publication and physical Safari pending | Compact Cockpit direction 1 selected for iPhone 17 Pro/Pro Max; [`NIGHT-IMPLEMENTATION-2026-09-07.md`](NIGHT-IMPLEMENTATION-2026-09-07.md); milestone row 14 / A08 |
+| `FI-009` | Curated audiovisual experiences | OWNER | 2026-09-05 | IMPLEMENTED · Night Glass and Neon Groove live; broader authorship remains open | [`NIGHT-WORK-2026-09-07.md`](NIGHT-WORK-2026-09-07.md); milestone row 12 / A09 |
+| `FI-010` | Travel-oriented ATLAS and a separate Stats for Nerds visual | OWNER | 2026-09-05 | IMPLEMENTED · separate Visual 09 live; added Stats parity locally verified, publication pending | [`ATLAS-STATS-REPORT-PLAN-2026-09-07.md`](ATLAS-STATS-REPORT-PLAN-2026-09-07.md), superseded where stated by [`NIGHT-IMPLEMENTATION-2026-09-07.md`](NIGHT-IMPLEMENTATION-2026-09-07.md) |
+| `FI-011` | Multi-hour Milan drive evidence | OWNER | 2026-09-05 | OWNER TEST PLAN · interrupted reports do not close endurance | [`OWNER-DECISIONS-2026-09-07.md`](OWNER-DECISIONS-2026-09-07.md); milestone row 16 / A01 |
+| `FI-012` | Branded session PDF with chosen-recipient email and resettable remembered address | OWNER | 2026-09-07 | IMPLEMENTED · locally verified; publication and actual inbox receipt pending | Travel Report direction 1; [`NIGHT-IMPLEMENTATION-2026-09-07.md`](NIGHT-IMPLEMENTATION-2026-09-07.md) |
 | `DI-001` | A GPS-free `MOTION` interpretation driven by the character of movement rather than a fabricated speedometer | AGENT PROPOSAL | 2026-08-30 | CAPTURED · not approved | This document |
+
+### Current implementation boundaries for FI-008, FI-010 and FI-012
+
+- **FI-008:** safe-area offsets, compact landscape chrome and the inert portrait
+  notice preserve running audio, selection and renderer state. Local coverage
+  includes 667×375 through 956×440 with simulated safe areas. Real Safari and
+  rotation evidence is still required; this does not implement FI-001 sensors.
+- **FI-010:** the selected Stats composition now includes moving average,
+  cumulative GPS speed-gain/loss shares, simulated Engine RPM/gear/load and
+  truthful long-task/retry/audio-mode evidence. These are GPS/runtime estimates,
+  not pedal or CAN telemetry; the existing outward curved heading bands remain.
+- **FI-012:** one immutable, fixed-schema snapshot produces a two-page A4 report;
+  explicit route inclusion adds a third page. The first preview requires the
+  server, then the retained PDF remains downloadable without another request.
+  Email requires a verified recipient, uses the reviewed PDF bytes and bounded
+  duplicate-safe delivery, and preserves a resettable address preference. Tests
+  use fake transport: no real inbox delivery or server trip archive is claimed.
 
 ## FI-001 — Optional iPhone motion input
 

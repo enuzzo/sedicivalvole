@@ -147,3 +147,21 @@ Keep visible OFF in Intro and Session report, bounded coordinate-free packets to
 the existing destination, one in-flight send, bounded retry, server validation,
 and at most one pending packet on online/foreground recovery. Do not send
 synthetic QA packets to the real mailbox. Do not promise timers while minimized.
+
+
+## Owner night-work direction — 2026-09-07
+
+The owner requests progressing all executable open work and welcomes deeper
+Engine source/acoustic research. Current-state reconciliation distinguishes
+shipped work, implementation, optional studies and physical acceptance gates.
+For iPhone, the owner selects direction 1, Compact Cockpit: the existing Tesla
+organization with thin retracting top/bottom bars, full touch targets and safe
+areas. Named test devices are iPhone 17 Pro and iPhone 17 Pro Max; iOS versions
+remain unspecified. Preserve audio, selection and renderer across rotation.
+Use an accessible inert portrait notice only on phones, without treating desktop
+portrait windows or the Tesla viewport as a phone.
+
+The owner also selects report direction 1, Travel Report: compact cover, journey
+summary, graphs and a technical appendix. Precise route inclusion remains an
+explicit export option. Preserve immutable preview/download identity and
+chosen-recipient verification; technical diagnostics remain coordinate-free.

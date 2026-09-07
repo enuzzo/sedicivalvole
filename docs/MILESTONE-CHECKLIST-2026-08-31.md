@@ -11,6 +11,32 @@ the current factual overview in [`CURRENT-STATE.md`](CURRENT-STATE.md), and the
 phase dependencies in [`ROADMAP.md`](ROADMAP.md). A historical row in those
 sources is not a second active queue.
 
+## Current precedence — 2026-09-07 22:40 CEST
+
+This update governs the current queue. The dated checkpoints and stable rows
+below retain their historical evidence; statements there that Engine, separate
+ATLAS/Stats, automatic diagnostics or the iPhone implementation are future work
+must not reopen completed implementation. The live starting point for this night
+is **build 20260907-2004**, source **b27975d**, with version supplied by `VERSION`.
+The new checkpoint is **implemented and locally verified; publication pending**.
+Its final build identity belongs in [DEPLOY](DEPLOY.md) after canonical proof.
+
+| Scope / stable reference | Current implementation status | Remaining boundary |
+|---|---|---|
+| Reliability and diagnostics / rows 3, 5, 16 | Bounded visual recovery, honest observation gaps and default Dev/AUTO ON diagnostics every fifteen observed GPS driving minutes are already live. This night also corrects brief poor-accuracy Engine transitions and replacement-bank playback reporting. | Publish the new fixes; real automatic inbox receipt and uninterrupted vehicle evidence remain separate. Preserve a saved OFF/Standard choice; no synthetic diagnostic mail. |
+| ATLAS and Stats parity / row 9, FI-010 | ATLAS and Stats for Nerds are independent launch/running visuals; outward curved heading bands are live. Moving average, cumulative GPS acceleration/braking shares, simulated Engine RPM/gear/load, long tasks and retained retry/mode events are now implemented and locally verified in the selected composition. Missing data and observation gaps stay explicit. | Publish the added parity fields; physical moving-data legibility and acceptance remain open under A06. The retired shared Map/Stats tabs and sidebar charts are not an active design target. |
+| iPhone Compact Cockpit / row 14, FI-008 | Owner selected direction 1 for iPhone 17 Pro and 17 Pro Max. Safe-area-aware landscape chrome, reachable actions and an accessible inert portrait notice are implemented and locally verified; rotation keeps audio, selection and renderer mounted. Isolated Chrome coverage includes 667×375, 874×402, 932×430 and 956×440. | Publish the selected shell, then run real iPhone Safari safe-area, rotation, native-media and audio checks. Simulated viewport checks do not close A08 or the full device matrix. |
+| Travel Report PDF and chosen-recipient email / FI-012 | Owner selected direction 1. Stats freezes one report revision; the default two-page A4 PDF excludes coordinates, and explicit route inclusion adds a third page. Preview/download and verified-recipient delivery use identical report bytes. Resettable recipient storage, reusable session verification, bounded requests and duplicate-send protection are implemented and locally verified with fake mail transport. | Publish and verify the canonical preview endpoint. Actual inbox delivery is untested; no synthetic email was sent. First preview needs a connection; an already prepared PDF remains downloadable after network/mail failure. |
+| Vehicle acceptance and production release / rows 15–17 | Engine and the selected phone/report work are implemented. Flux, Soundtrack, FX, interface and Discover retain the owner's existing broad acceptance. | Keep unperformed physical listening, native media, lifecycle, GPU/thermal and endurance cases open. A production SemVer release remains a separate owner decision. |
+
+The [night implementation record](NIGHT-IMPLEMENTATION-2026-09-07.md) contains
+behavior, test and privacy details; [night work](NIGHT-WORK-2026-09-07.md) is the
+current execution order. Earlier `03:00` cutoffs and pre-integration sequencing
+below describe their own work windows, not a new hold on this authorized night.
+The optional queue at the end remains optional; no further concrete approved
+implementation gap was found in this reconciliation beyond publication and the
+explicit evidence gates above.
+
 ## Launch update — 2026-09-07
 
 Launch Cockpit is live as **20260907-1238**: immediate Music/Engine selection,

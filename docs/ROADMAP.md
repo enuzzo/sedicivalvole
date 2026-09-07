@@ -1,6 +1,6 @@
 # Roadmap
 
-Visual recovery and diagnostic accounting fixes are implemented; publication evidence is recorded in [DEPLOY.md](DEPLOY.md). Future diagnostics automation is not yet implemented.
+Current executable status is reconciled in [NIGHT-WORK-2026-09-07.md](NIGHT-WORK-2026-09-07.md). Visual recovery, Engine, separate Atlas/Stats and 15-minute default-Dev automatic diagnostics are already published; [DEPLOY.md](DEPLOY.md) records proof. The older phase narrative below preserves decision history, not an instruction to rebuild shipped features.
 
 September 7 owner follow-up: [accepted surfaces, recovery, Engine-first sequence,
 travel ATLAS/statistics and future Standard/Dev diagnostics](OWNER-DECISIONS-2026-09-07.md).

@@ -1,5 +1,34 @@
 # Independent Technical Direction
 
+## September 7 night implementation
+
+The [night implementation record](NIGHT-IMPLEMENTATION-2026-09-07.md) supersedes
+earlier pending labels for phone layout, session export and Stats parity.
+
+- Engine separates requested bank readiness from actual graph playback. A
+  replacement can load while the current graph stays audible and Media Session
+  remains playing. Brief poor-accuracy moving evidence holds the last trusted
+  speed only until its original five-second expiry; no new shift, drive attack
+  or stationary gesture is inferred. Actual loss retains the conservative idle.
+- Transmission gain belongs to fresh movement in gear, independently of the core
+  engine/limiter/master path. A bounded seam analyzer prepares only decoded core
+  buffers with exceptional wrap discontinuities; sources loop over the prepared
+  region and upstream WAV bytes remain untouched.
+- Stats derives cumulative motion shares and runtime metrics from the existing
+  bounded journey and diagnostic owners. The flight recorder appends simulated
+  Engine RPM/gear/load/profile/status/motion/reason/gesture fields.
+- Phone classification uses coarse input and bounded short/long viewport edges.
+  CSS safe areas and retracting chrome adapt the existing tree. Portrait applies
+  an accessible inert overlay to the app and newly mounted portal surfaces; it
+  never remounts or suspends the audio/renderer owners.
+- Travel Report is a lazy Stats child. A frozen whitelisted snapshot defaults to
+  no coordinates. A fixed-schema PHP endpoint renders deterministic A4 PDF bytes
+  with FPDF 1.9; the reviewed SHA-256 and immutable snapshot govern optional mail.
+  The server accepts no uploaded PDF, HTML, image URL or file path. Session-bound
+  recipient proof, bounded rate limits and atomic delivery keys protect the mail
+  action. The prepared Blob stays downloadable after network or mail failure.
+
+
 This recommendation does not automatically adopt the bootstrap stack. It optimizes for a Tesla browser, deterministic audio, graceful degradation, and maintainability.
 
 ## September 7 implemented Engine architecture

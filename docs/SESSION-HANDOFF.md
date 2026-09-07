@@ -1,5 +1,20 @@
 # Session Handoff
 
+## September 7 night work
+
+Read [current state](CURRENT-STATE.md), [execution queue](NIGHT-WORK-2026-09-07.md)
+and [night implementation](NIGHT-IMPLEMENTATION-2026-09-07.md) before historical
+entries below. The starting live build is 20260907-2004/source b27975d.
+
+Owner selections received in this task: Compact Cockpit direction 1 for iPhone
+17 Pro/Pro Max, and Travel Report direction 1. These visual gates are answered.
+Phone, PDF/email, Stats parity and Engine reliability/acoustic improvements are
+implemented in the night checkpoint. Publication identity is recorded in the
+night implementation and DEPLOY after verification. No synthetic QA mail may
+reach the real diagnostic/report destinations. Physical listening/Safari/GPU
+and first real automatic diagnostic receipt remain separate evidence.
+
+
 ## ATLAS and Stats approved remix — 2026-09-07 18:41
 
 Canonical **20260907-1833**, source **aecd44e**, version `0.0.0`.

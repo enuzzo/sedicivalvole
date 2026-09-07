@@ -1,0 +1,85 @@
+/* Owner-selected compact phone cockpit. Desktop and Tesla keep their own shell. */
+.app[data-phone-layout] {
+  --phone-left: max(12px, env(safe-area-inset-left, 0px));
+  --phone-right: max(12px, env(safe-area-inset-right, 0px));
+  --phone-top: env(safe-area-inset-top, 0px);
+  --phone-bottom: env(safe-area-inset-bottom, 0px);
+  min-height: 0;
+}
+.app[data-phone-layout] .splash:has(.launch-cockpit) { padding: calc(var(--phone-top) + 56px) var(--phone-right) calc(var(--phone-bottom) + 44px) var(--phone-left); }
+.app[data-phone-layout] .launch-cockpit { max-height: 100%; }
+.app[data-phone-layout] .intro-diagnostics { top: calc(var(--phone-top) + 4px); right: var(--phone-right); }
+.app[data-phone-layout] .intro-build { right: var(--phone-right); bottom: calc(var(--phone-bottom) + 12px); }
+.app[data-phone-layout] .cockpit-footer { left: var(--phone-left); right: var(--phone-right); bottom: var(--phone-bottom); }
+.app[data-phone-layout="landscape"] { --chrome-size: 56px; }
+.app[data-phone-layout="landscape"] .topbar {
+  grid-template-columns: 48px 112px 88px repeat(5, minmax(48px, 1fr));
+  padding: var(--phone-top) var(--phone-right) 0 var(--phone-left);
+  min-height: calc(56px + var(--phone-top));
+}
+.app[data-phone-layout="landscape"] .topbar-mark { display: grid; grid-column: 1; padding: 4px; }
+.app[data-phone-layout="landscape"] .topbar-mark img { width: 36px; height: 36px; }
+.app[data-phone-layout="landscape"] .mode-selector { grid-column: 2; }
+.app[data-phone-layout="landscape"] .mode-selector button { padding: 0 4px; min-height: 56px; min-width: 48px; font-size: 13px; letter-spacing: 0; }
+.app[data-phone-layout="landscape"] .mode-selector button.is-active::after { left: 6px; right: 6px; bottom: 5px; }
+.app[data-phone-layout="landscape"] .speed-spacer { grid-column: 3; min-width: 88px; }
+.app[data-phone-layout="landscape"] .network-control { display: block; grid-column: 4; }
+.app[data-phone-layout="landscape"] .appearance-control { grid-column: 5; }
+.app[data-phone-layout="landscape"] .gps-state { grid-column: 6; }
+.app[data-phone-layout="landscape"] .discover-button { grid-column: 7; }
+.app[data-phone-layout="landscape"] .report-button { grid-column: 8; }
+.app[data-phone-layout="landscape"] .topbar :is(.appearance-trigger,.gps-state,.discover-button,.report-button,.network-state) { display: flex; height: 56px; min-height: 56px; }
+.app[data-phone-layout="landscape"] :is(.source-readout,.source-readout.is-soundtrack) { top: var(--phone-top); left: calc(var(--phone-left) + 160px); right: auto; width: 88px; min-height: 56px; height: 56px; padding: 2px 4px; }
+.app[data-phone-layout="landscape"] .source-readout strong { font-size: 28px; }
+.app[data-phone-layout="landscape"] .effect-badge.is-active { transform: translateY(56px); }
+.app[data-phone-layout="landscape"].controls-resting .topbar { transform: translateY(-100%); visibility: hidden; }
+.app[data-phone-layout="landscape"] .footer-stack { padding: 0 var(--phone-right) var(--phone-bottom) var(--phone-left); background: var(--ui-surface-strong); }
+.app[data-phone-layout="landscape"] :is(.control-slab,.control-slab.is-soundtrack) { grid-template-columns: 56px 56px minmax(104px,1fr) minmax(112px,1fr) 56px 72px; min-height: 56px; }
+.app[data-phone-layout="landscape"][data-environment="engine"] .control-slab { grid-template-columns: 56px minmax(104px,1fr) minmax(112px,1fr) 72px; }
+.app[data-phone-layout="landscape"] .control-slab > * { grid-column: auto; grid-row: auto; }
+.app[data-phone-layout="landscape"] .control-slab > :is(button,.environment-control,.score-control,.palette-control),
+.app[data-phone-layout="landscape"] .palette-trigger { height: 56px; min-height: 56px; }
+.app[data-phone-layout="landscape"] :is(.environment-control,.score-control,.engine-return-flux) { padding-inline: 8px; }
+.app[data-phone-layout="landscape"] .mix-button small { display: none; }
+.app[data-phone-layout="landscape"] .palette-menu { bottom: 64px; max-height: calc(100dvh - 88px - var(--phone-bottom) - var(--phone-top)); overflow-y: auto; }
+.app[data-phone-layout="landscape"] .persistent-transport.now-playing-dock { width: min(532px,calc(100% - var(--phone-left) - var(--phone-right))); min-height: 56px; padding: 0 6px; grid-template-columns: minmax(0,1fr) 156px; }
+.app[data-phone-layout="landscape"] .now-playing-summary { grid-template-columns: 40px minmax(0,1fr); gap: 8px; }
+.app[data-phone-layout="landscape"] .now-playing-summary > img,
+.app[data-phone-layout="landscape"] .now-playing-artwork { width: 40px; height: 40px; }
+.app[data-phone-layout="landscape"] .now-playing-copy small { display: none; }
+.app[data-phone-layout="landscape"] :is(.drivey-cycle-control,.prtcl-cycle-control,.gradient-cycle-control) { left: var(--phone-left); top: calc(64px + var(--phone-top)); }
+.app[data-phone-layout="landscape"] :is(.network-popover,.appearance-menu,.gps-help-popover) { top: calc(60px + var(--phone-top)); max-height: calc(100dvh - 76px - var(--phone-top) - var(--phone-bottom)); overflow-y: auto; }
+.app[data-phone-layout="landscape"] .gps-help-popover { right: var(--phone-right); }
+.app[data-phone-layout="landscape"] :is(.gps-help-popover,.manual-effects-deck) button { min-height: 48px; min-width: 48px; }
+.app[data-phone-layout="landscape"] .manual-effects-deck { bottom: calc(64px + var(--phone-bottom)); width: calc(100% - var(--phone-left) - var(--phone-right)); max-height: calc(100dvh - 80px - var(--phone-top) - var(--phone-bottom)); }
+.app[data-phone-layout="landscape"] .drawer-panel { position: absolute; top: var(--phone-top); right: var(--phone-right); bottom: var(--phone-bottom); width: calc(100vw - var(--phone-left) - var(--phone-right)); max-width: calc(100vw - var(--phone-left) - var(--phone-right)); height: auto; max-height: calc(100dvh - var(--phone-top) - var(--phone-bottom)); margin: 0; padding-top: 8px; padding-bottom: 8px; }
+.app[data-phone-layout] :is(.cockpit-picker,.support-panel) { max-width: calc(100vw - var(--phone-left) - var(--phone-right)); max-height: calc(100dvh - var(--phone-top) - var(--phone-bottom) - 16px); }
+.app[data-phone-layout="landscape"] :is(.stats-dialog,.atlas-article-dialog,.passenger-atlas-dialog) .drawer-panel { inset: var(--phone-top) var(--phone-right) var(--phone-bottom) var(--phone-left); width: auto; height: auto; max-width: none; margin: 0; padding: 0; }
+.app[data-phone-layout="landscape"] .engine-telemetry { padding: calc(64px + var(--phone-top)) calc(var(--phone-right) + 8px) calc(128px + var(--phone-bottom)) calc(var(--phone-left) + 8px); gap: 4px; justify-content: center; }
+.app[data-phone-layout="landscape"] .engine-telemetry > header { display: none; }
+.app[data-phone-layout="landscape"] .engine-tach-labels { margin: 0; line-height: 13px; }
+.app[data-phone-layout="landscape"] .engine-tach { height: 12px; padding: 2px; }
+.app[data-phone-layout="landscape"] .engine-primary { padding: 0 0 3px; gap: 20px; }
+.app[data-phone-layout="landscape"] .engine-primary > div { gap: 1px; }
+.app[data-phone-layout="landscape"] .engine-primary > div + div { padding-left: 20px; }
+.app[data-phone-layout="landscape"] .engine-primary strong { font-size: 54px; line-height: 1; }
+.app[data-phone-layout="landscape"] .engine-primary :is(small,span) { font-size: 13px; line-height: 15px; letter-spacing: 0; }
+.app[data-phone-layout="landscape"] .engine-graphs { gap: 20px; }
+.app[data-phone-layout="landscape"] .engine-graphs small { font-size: 13px; letter-spacing: 0; line-height: 15px; }
+.app[data-phone-layout="landscape"] .engine-graphs svg { display: block; height: 20px; }
+.app[data-phone-layout="landscape"] .engine-bottom { position: absolute; left: 50%; bottom: calc(64px + var(--phone-bottom)); transform: translateX(-50%); }
+.app[data-phone-layout="landscape"] .engine-bottom > span { display: none; }
+.app[data-phone-layout="landscape"] .engine-profiles { gap: 4px; }
+.app[data-phone-layout="landscape"] .engine-profiles button { min-width: 48px; min-height: 56px; padding: 0 6px; font-size: 13px; }
+.app[data-phone-layout="landscape"] .engine-rev { bottom: calc(64px + var(--phone-bottom)); min-height: 56px; height: 56px; min-width: 128px; max-width: 30%; padding: 0 8px; gap: 2px; }
+.app[data-phone-layout="landscape"] .engine-rev strong { font-size: 17px; }
+.app[data-phone-layout="landscape"] .engine-rev small { font-size: 13px; letter-spacing: 0; }
+.app[data-phone-layout="landscape"] .engine-rev.is-left { left: calc(var(--phone-left) + 8px); }
+.app[data-phone-layout="landscape"] .engine-rev.is-right { right: calc(var(--phone-right) + 8px); }
+.app[data-phone-layout="landscape"] .engine-load-state { left: var(--phone-left); bottom: calc(121px + var(--phone-bottom)); font-size: 13px; }
+.phone-rotation-notice { position: fixed; inset: 0; z-index: 10000; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 16px; padding: max(24px,env(safe-area-inset-top)) max(24px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(24px,env(safe-area-inset-left)); background: #0f0f0f; color: #f4f4f4; text-align: center; outline: none; }
+.phone-rotation-notice small { font-size: 13px; letter-spacing: .06em; }
+.phone-rotation-notice h1 { max-width: 320px; margin: 0; font-size: 32px; line-height: 1.15; font-weight: 500; }
+.phone-rotation-notice p { max-width: 320px; margin: 0; font-size: 15px; line-height: 1.6; }
+.phone-rotation-symbol { width: 78px; height: 48px; border: 2px solid #f4f4f4; border-radius: 6px; display: grid; place-items: end center; padding: 4px; }
+.phone-rotation-symbol span { width: 22px; height: 3px; background: #f4f4f4; }

@@ -1,0 +1,17 @@
+.report-scroll { min-height: 0; overflow: auto; padding: 16px 24px 24px; display: grid; gap: 14px; align-content: start; }
+.report-scroll p { margin: 0; line-height: 1.5; max-width: 80ch; }
+.report-scroll button, .report-downloads a { min-height: 48px; padding: 10px 16px; width: fit-content; color: inherit; border: 1px solid currentColor; background: transparent; border-radius: 6px; font: inherit; }
+.report-route { display: flex; align-items: center; gap: 12px; min-height: 48px; cursor: pointer; }
+.report-route input { width: 22px; height: 22px; }
+.report-disclosure, .report-email p, .report-downloads span { font-size: 13px; }
+.report-downloads { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+.report-downloads a { display: inline-flex; align-items: center; text-decoration: none; }
+.report-preview { width: 100%; height: min(60vh, 650px); min-height: 220px; border: 1px solid currentColor; border-radius: 6px; }
+.report-email { display: grid; gap: 12px; max-width: 640px; }
+.report-email h3 { margin: 10px 0 0; }
+.report-email label { display: grid; gap: 8px; }
+.report-email input { min-height: 48px; min-width: 0; padding: 8px 12px; border-radius: 6px; border: 1px solid currentColor; color: inherit; background: transparent; font: inherit; }
+.report-code { display: flex; gap: 12px; align-items: end; flex-wrap: wrap; }
+.report-scroll :focus-visible { outline: 3px solid var(--stats-red, #d52120); outline-offset: 3px; }
+.report-scroll button:disabled { opacity: .55; cursor: default; }
+@media (max-width: 700px) { .report-scroll { padding: 12px; } }

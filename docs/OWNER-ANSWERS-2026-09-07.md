@@ -1,5 +1,10 @@
 # Owner answers — September 7 closeout
 
+September 7 night precedence: the owner selected Travel Report direction 1.
+PDF preview/download and verified-recipient email are now implemented and
+locally verified; see [implementation and publication status](NIGHT-IMPLEMENTATION-2026-09-07.md).
+Earlier design-only labels below preserve the preceding checkpoint.
+
 Owner follow-up received: see [accepted decisions and sequence](OWNER-DECISIONS-2026-09-07.md). All current owner clarification lines are answered, including A02. The owner recalls intentional interruptions and no sudden uncommanded music stop.
 
 A12 is prepared for the first Engine listening result after implementation. No implementation approval is awaiting the owner. `Not tested` is a useful answer: it preserves the gate without inventing a pass. The historical decisions and answers in `PIANO.md` remain valid; this file collects only current acceptance and next-scope questions. Technical fixes and evidence collection remain the implementer's responsibility.

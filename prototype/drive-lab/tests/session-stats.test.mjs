@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { observeSessionStats, sessionStatsSnapshot } from '../src/environments/atlas/session-stats.js';
+import { observeSessionStats, sessionRuntimeSnapshot, sessionStatsSnapshot } from '../src/environments/atlas/session-stats.js';
 const point = (t,speed=36,extra={}) => ({ capturedAtMs:t,speedKmh:speed,accuracyM:5,heading:90,altitudeM:100,altitudeAccuracyM:3,...extra });
 test('streamed totals survive long sessions and exclude GPS gaps', () => {
  let s;
@@ -24,3 +24,80 @@ test('altitude hysteresis removes noise and resets on a gap', () => {
  s=observeSessionStats(s,point(60000,20,{altitudeM:500}));assert.equal(s.elevationGainM,5);
 });
 test('empty session remains unavailable',()=>{const s=sessionStatsSnapshot(null,999);assert.equal(s.averageKmh,null);assert.equal(s.elapsedMs,0);assert.equal(s.peakKmh,null);});
+
+test('acceleration and braking shares retain cumulative speed changes independently of chart compaction', () => {
+ let s;
+ [0,10,20,30,20,10,0].forEach((speed,i)=>s=observeSessionStats(s,point(i*1000,speed)));
+ const snapshot=sessionStatsSnapshot(s,6000);
+ assert.equal(snapshot.accelerationGainKmh,30);
+ assert.equal(snapshot.brakingLossKmh,30);
+ assert.equal(snapshot.accelerationShare,0.5);
+ assert.equal(snapshot.brakingShare,0.5);
+ assert.equal(snapshot.motionObservedMs,6000);
+ assert.ok(snapshot.movingAverageKmh > 0);
+});
+
+test('motion shares reject standstill jitter, GPS gaps and implausible speed jumps', () => {
+ let s;
+ [0,0.4,1.3,0.7,0].forEach((speed,i)=>s=observeSessionStats(s,point(i*1000,speed)));
+ assert.equal(sessionStatsSnapshot(s,4000).accelerationShare,null);
+ s=observeSessionStats(s,point(20000,50));
+ assert.equal(s.accelerationGainKmh,0);
+ s=observeSessionStats(s,point(20100,200));
+ assert.equal(s.accelerationGainKmh,0);
+ s=observeSessionStats(s,point(20200,50));
+ assert.equal(s.brakingLossKmh,0);
+ s=observeSessionStats(s,point(21200,40));
+ assert.equal(s.brakingLossKmh,10);
+ assert.equal(sessionStatsSnapshot(s,21200).brakingShare,1);
+});
+
+test('slow acceleration survives dense GPS callbacks without accumulating sub-threshold jitter', () => {
+ const ramp=step=>{
+  let s;
+  for(let t=0;t<=10000;t+=step) s=observeSessionStats(s,point(t,20+t/1000));
+  return s.accelerationGainKmh;
+ };
+ assert.ok(Math.abs(ramp(100)-ramp(1000)) < 1);
+ assert.ok(ramp(100) >= 9);
+ let s;
+ [20,20.4,20.1,20.5,20.2].forEach((speed,i)=>s=observeSessionStats(s,point(i*1000,speed)));
+ assert.equal(s.accelerationGainKmh,0);
+ assert.equal(s.brakingLossKmh,0);
+});
+
+test('runtime evidence preserves unsupported and inactive states instead of displaying false zeros', () => {
+ const empty=sessionRuntimeSnapshot();
+ assert.equal(empty.longTasks.count,null);
+ assert.equal(empty.events.retryCount,null);
+ assert.equal(empty.engine.rpm,null);
+ const unavailable=sessionRuntimeSnapshot({
+  longTasks:{supported:false,count:0,maximumDurationMs:0},
+  engine:{active:false,status:'ready',rpm:600,gear:1,load:0},
+ });
+ assert.equal(unavailable.longTasks.count,null);
+ assert.equal(unavailable.engine.rpm,null);
+ assert.equal(unavailable.engine.load,null);
+});
+
+test('runtime evidence admits measured zero counts and ready simulated engine values', () => {
+ const snapshot=sessionRuntimeSnapshot({
+  longTasks:{supported:true,count:0,maximumDurationMs:null},
+  events:{scope:'session',retryCount:0,audioModeChanges:3},
+  engine:{active:true,status:'ready',rpm:600,gear:1,load:0},
+ });
+ assert.equal(snapshot.longTasks.count,0);
+ assert.equal(snapshot.longTasks.maximumDurationMs,null);
+ assert.equal(snapshot.events.retryCount,0);
+ assert.equal(snapshot.events.scope,'session');
+ assert.deepEqual(snapshot.engine,{active:true,rpm:600,gear:1,load:0});
+ const loading=sessionRuntimeSnapshot({engine:{active:true,status:'loading',rpm:600,gear:1,load:0.5},events:{retryCount:4}});
+ assert.equal(loading.engine.rpm,null);
+ assert.equal(loading.events.scope,'retained');
+ const invalid=sessionRuntimeSnapshot({longTasks:{supported:true,count:-1},events:{retryCount:Infinity},engine:{active:true,status:'ready',rpm:NaN,gear:1.5,load:2}});
+ assert.equal(invalid.longTasks.count,null);
+ assert.equal(invalid.events.retryCount,null);
+ assert.equal(invalid.engine.rpm,null);
+ assert.equal(invalid.engine.gear,null);
+ assert.equal(invalid.engine.load,null);
+});

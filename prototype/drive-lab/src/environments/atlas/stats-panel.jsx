@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { ATLAS_SPEED_BANDS } from './atlas-model.js';
-import { sessionStatsSnapshot, SESSION_GAP_MS } from './session-stats.js';
+import { sessionStatsSnapshot, sessionRuntimeSnapshot, SESSION_GAP_MS } from './session-stats.js';
 
 const duration = ms => `${Math.floor(ms / 60000)}:${String(Math.floor(ms / 1000) % 60).padStart(2, '0')}`;
 const value = (n, suffix = '') => Number.isFinite(n) ? `${Math.round(n)}${suffix}` : '—';
+const SessionReportPanel = lazy(() => import('../../reports/session-report-panel.jsx'));
 
 function Trace({ samples, kind = 'journey' }) {
   const ref = useRef(null);
@@ -97,15 +98,20 @@ function HeadingRose({ headings }) {
 export default function StatsPanel({ journeyRef, networkHistoryRef, readSystem, onClose }) {
   const [snapshot, setSnapshot] = useState(null);
   const [range, setRange] = useState("recent");
+  const [reportSource, setReportSource] = useState(null);
+  const exportRef = useRef(null);
+  useEffect(() => { if (!reportSource) exportRef.current?.focus({ preventScroll: true }); }, [reportSource]);
   useEffect(() => {
     const refresh = () => setSnapshot({ stats: sessionStatsSnapshot(journeyRef.current.totals, performance.now()),
       samples: [...(range === "session" ? journeyRef.current.sessionSamples : journeyRef.current.recentSamples)], terrain: journeyRef.current.terrain, network: [...networkHistoryRef.current], system: readSystem() });
     refresh();const timer = setInterval(refresh, 2000);return () => clearInterval(timer);
   }, [journeyRef, networkHistoryRef, readSystem, range]);
   if (!snapshot) return null;
+  if (reportSource) return <Suspense fallback={<p>Loading session export…</p>}><SessionReportPanel source={reportSource} onClose={() => setReportSource(null)} /></Suspense>;
   const { stats: s, samples, network, system, terrain } = snapshot;
+  const runtime = sessionRuntimeSnapshot(system);
   return <>
-    <header className="stats-heading"><div><small>SESSION OBSERVATORY</small><h2 id="stats-title">Stats for Nerds</h2></div><nav aria-label="Stats controls"><button data-dialog-initial-focus onClick={onClose}>Close</button></nav></header>
+    <header className="stats-heading"><div><small>SESSION OBSERVATORY</small><h2 id="stats-title">Stats for Nerds</h2></div><nav aria-label="Stats controls"><button ref={exportRef} onClick={() => setReportSource({ journey: structuredClone(journeyRef.current), system: readSystem(), nowMs: performance.now(), createdAt: new Date().toISOString(), app: { version: __APP_VERSION__, build: __APP_BUILD__, commit: __APP_COMMIT__ } })}>Export session</button><button data-dialog-initial-focus onClick={onClose}>Close</button></nav></header>
     <div className="stats-scroll">
       <div className="stats-headlines">
         {[[s.observedMs ? (s.distanceM / 1000).toFixed(1) : '—','km','GPS distance'],[duration(s.elapsedMs),'','Duration'],[value(s.averageKmh),'km/h','Avg speed'],[s.observedMs ? Math.round(s.movingMs/s.observedMs*100) : '—','%','Moving']].map(([n,u,label]) => <div key={label}><strong>{n}<small>{u}</small></strong><span>{label}</span></div>)}
@@ -114,11 +120,12 @@ export default function StatsPanel({ journeyRef, networkHistoryRef, readSystem, 
       <section className="stats-main-chart"><header><strong>Speed <small>km/h</small></strong><button className="stats-range" onClick={() => setRange(r => r === "recent" ? "session" : "recent")}>{range === "recent" ? "Recent hour" : "Whole session · averaged"}</button><strong className="stats-blue">GPS altitude <small>m</small></strong></header><Trace samples={samples} /></section>
       <div className="stats-lower">
         <section><h3>Speed bands</h3>{ATLAS_SPEED_BANDS.map((b,i) => <div className="stats-band" key={b.label}><span>{b.label}</span><meter min="0" max={Math.max(1,s.observedMs)} value={s.speedBandsMs[i]} /><strong>{duration(s.speedBandsMs[i])}</strong></div>)}</section>
-        <section className="stats-terrain"><h3>Journey / GPS estimates</h3><dl>{[['Elevation gain',s.elevationObservedMs ? value(s.elevationGainM,' m') : '—'],['Elevation loss',s.elevationObservedMs ? value(s.elevationLossM,' m') : '—'],['Stopped',`${duration(s.stoppedMs)} · ${s.stops} stops`],['Peak speed',value(s.peakKmh,' km/h')]].map(([k,v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}</dl></section>
+        <section className="stats-terrain"><h3>Journey / GPS estimates</h3><dl>{[['Elevation gain',s.elevationObservedMs ? value(s.elevationGainM,' m') : '—'],['Elevation loss',s.elevationObservedMs ? value(s.elevationLossM,' m') : '—'],['Stopped',`${duration(s.stoppedMs)} · ${s.stops} stops`],['Peak speed',value(s.peakKmh,' km/h')],['Moving average',value(s.movingAverageKmh,' km/h')],['Acceleration share',s.accelerationShare == null ? '—' : value(s.accelerationShare * 100,'%')],['Braking share',s.brakingShare == null ? '—' : value(s.brakingShare * 100,'%')]].map(([k,v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}</dl></section>
         <section className="stats-direction"><h3>Heading</h3><HeadingRose headings={s.headingMs}/></section>
       </div>
-      <div className="stats-system"><section><header><h3>Network <small>KB/s ↓ / ↑</small></h3><span>{((system.network.observedDownloadBytes ?? 0)/1048576).toFixed(1)} MB observed ↓</span></header><Trace samples={network} kind="network" /></section><section className="stats-health"><h3>System</h3><dl><div><dt>Frame rate</dt><dd>{value(system.frame.averageFps,' FPS')}</dd></div><div><dt>Frame p95</dt><dd>{value(system.frame.p95FrameMs,' ms')}</dd></div><div><dt>Audio</dt><dd>{system.audio}</dd></div><div><dt>GPS coverage</dt><dd>{Math.round(s.coverage*100)}%</dd></div></dl></section></div>
-      <footer className="stats-footnote">{duration(s.unknownMs)} unobserved · Elevation filtered by accuracy and hysteresis. Network excludes opaque/cache traffic. Session statistics stay on this device. Terrain: {value(terrain?.elevationM, " m")} ({terrain?.status ?? "unavailable"}), last observed Open-Meteo / Copernicus area estimate.</footer>
+      <div className="stats-system"><section><header><h3>Network <small>KB/s ↓ / ↑</small></h3><span>{((system.network.observedDownloadBytes ?? 0)/1048576).toFixed(1)} MB observed ↓</span></header><Trace samples={network} kind="network" /></section><section className="stats-health"><h3>System</h3><dl><div><dt>Frame rate</dt><dd>{value(system.frame.averageFps,' FPS')}</dd></div><div><dt>Frame p95</dt><dd>{value(system.frame.p95FrameMs,' ms')}</dd></div><div><dt>Audio</dt><dd>{system.audio}</dd></div><div><dt>GPS coverage</dt><dd>{Math.round(s.coverage*100)}%</dd></div><div><dt>Long tasks</dt><dd>{value(runtime.longTasks.count)}</dd></div><div><dt>Longest task</dt><dd>{value(runtime.longTasks.maximumDurationMs,' ms')}</dd></div><div><dt>Retries · {runtime.events.scope}</dt><dd>{value(runtime.events.retryCount)}</dd></div><div><dt>Mode changes · {runtime.events.scope}</dt><dd>{value(runtime.events.audioModeChanges)}</dd></div></dl></section></div>
+      {runtime.engine.active ? <section className="stats-terrain"><h3>Engine · simulated</h3><dl>{[['RPM',value(runtime.engine.rpm)],['Gear',runtime.engine.gear === 0 ? 'N' : value(runtime.engine.gear)],['Load',runtime.engine.load == null ? '—' : value(runtime.engine.load * 100,'%')]].map(([k,v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}</dl></section> : null}
+      <footer className="stats-footnote">{duration(s.unknownMs)} unobserved · Acceleration/braking shares compare cumulative GPS speed gained/lost, with jitter and gap rejection; they are not measured pedal use. Elevation filtered by accuracy and hysteresis. Network excludes opaque/cache traffic. Retained events cover the bounded diagnostic log. Session statistics stay on this device until you explicitly prepare an export. Terrain: {value(terrain?.elevationM, " m")} ({terrain?.status ?? "unavailable"}), last observed Open-Meteo / Copernicus area estimate.</footer>
     </div>
   </>;
 }

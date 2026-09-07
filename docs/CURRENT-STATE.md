@@ -1,69 +1,45 @@
 # Current Project State
 
-Latest verified canonical publication: **`20260907-1833`**, source **`aecd44e`**,
-version `0.0.0`. The approved ATLAS / Stats remix is implemented and live:
-full-width Natural/Palette map, wider persistent framing, source-coordinate
-Wikipedia POIs and an in-page reader; an independent lazy Stats sheet with
-GPS speed/altitude, speed bands, elevation, heading, network and system metrics.
-Engine audio survives passenger-view transitions. **661 native tests**, 17 package
-checks, 196 credits and **25 canonical byte/cache checks** pass. Canonical browser
-QA covers 773×601, 1440×900, 773×440 and 390×844; light/dark contrast is verified.
-Physical Tesla acceptance is still separate. PDF/email remains designed, not shipped.
+Latest verified canonical publication: **20260907-2004**, source **b27975d**,
+version from `VERSION` (`0.0.0`). The previous summary at the top of this file had
+fallen behind later checkpoints; this summary and the dated work ledger now take
+precedence over historical paragraphs below.
 
-The owner-reported tall-window expansion is fixed: content-sized rows, viewport-centered sheet, independent
-viewport-bottom credits and 36 px preset art. Support now sits after About and
-in Session report; its dialog is centered. Safety copy sits below the wordmark,
-beside the transparent 16 mark. Four viewport cases plus diagnostic support
-interaction pass locally and live.
-See [launch behavior](LAUNCH-COCKPIT-2026-09-07.md) and [DEPLOY](DEPLOY.md).
+| Area | Current verified state | Next concrete work |
+|---|---|---|
+| Diagnostics | Dev/AUTO ON by default, saved OFF/Standard respected; 15 observed GPS-driving minutes; no coordinates; visible switch | Confirm first real automatic inbox receipt; sampled Engine RPM/reasons implemented and locally verified tonight |
+| Engine | Three admitted sample profiles, dry audio, no-GPS manual TAMARRO, confirmed-zero idle blips | Bounded poor-accuracy hold, truthful bank-preparation playback, transmission gate and Mono seam repair implemented and locally verified |
+| Atlas / Stats | Separate Visual catalogue destinations; Natural/Palette map, Wikipedia and loaded OSM POIs, curved heading bands | Approved runtime and motion-statistic parity implemented and locally verified |
+| Flux / Soundtrack / FX / Discover | Broad owner acceptance, later small refinements allowed | Retain targeted vehicle evidence rather than requesting blanket acceptance again |
+| iPhone | Compact Cockpit direction 1 selected tonight; iPhone 17 Pro and Pro Max named | Landscape safe areas, inert portrait notice and state-preserving rotation implemented and locally verified |
+| Session PDF/email | Travel Report direction 1 selected; implemented and locally verified | Final canonical publication; actual chosen-recipient inbox delivery remains separate |
+| Release | Experimental canonical build, not a versioned production release | Physical device/long-drive matrix, then explicit release decision |
 
-Confirmed Engine standstill now uses 600 RPM / 70% master level, with automatic
-blips near 1800 RPM over 1.2 seconds. TAMARRO stays at 100%; fresh accepted speed
-at least 1 km/h restores normal level. GPS jitter/loss cannot restore it after a
-stop; moving deceleration remains full level. Exact zero now finishes the GPS smoothing decay, restoring 0 km/h and both
-stationary controls after moving. Physical listening remains open.
+The starting live build passed 669 native tests, 18 package checks, 196 dependency
+credits and 25 canonical HTML/asset/cache checks. Browser QA does not substitute
+for physical Tesla/iPhone listening, GPU/thermal, touch or Safari acceptance.
 
-Earlier everyday-road gearing build 20260907-1316/source 9087bda verified second
-by 40 and third by 70 km/h in every profile; that implementation is unchanged.
+The complete prepared night implementation now passes **712 native tests** and
+196 dependency credits. See [night implementation](NIGHT-IMPLEMENTATION-2026-09-07.md)
+for phone, PDF, Engine, privacy and verification details.
 
-Engine is implemented and live: Telemetry direction 2, Mono/Rosso/Touring, AUTO,
-protected LAB MANUAL, shared audio, GPS evidence, rev protection and retry. The
-source/WAV authorization is settled. The first listening response was broadly
-positive; the owner requested dry Engine audio, steady deceleration level, dual
-persistent stationary TAMARRO controls and tiny idle blips. All four refinements
-are implemented, verified and canonically published.
-Latest owner priority: ATLAS / Stats for Nerds after the support-header fix,
-ahead of iPhone. [Three directions and PDF/email plan](ATLAS-STATS-REPORT-PLAN-2026-09-07.md)
-now records the approved and published remix. PDF/email remains planned.
+The additional real Tesla report received at 20:04 local is from build 1936,
+not automatic build 2004. It has 30 scheduled/committed Engine shifts, numeric
+GPS up to 115 km/h, no captured JavaScript exceptions and a final confirmed
+600-RPM stop. A temporary 10,000-m GPS accuracy report explains an Engine loss;
+profile readiness delays do not imply silence because audio samples continue.
 
-Owner refinement listening remains in
-[A12](OWNER-ANSWERS-2026-09-07.md#a12--engine-first-listen), then iPhone. The phone
-control shell remains unfinished. ATLAS/full-screen statistics is published; Standard/Dev diagnostics remain queued. Broad Flux/Soundtrack/FX/interface/Discover acceptance
-remains recorded; no new automatic diagnostic sender exists.
+Use [tonight's complete executable queue](NIGHT-WORK-2026-09-07.md),
+[Engine study](ENGINE-ACOUSTICS-STUDY-2026-09-07.md),
+[automatic diagnostics](AUTOMATIC-DIAGNOSTICS-2026-09-07.md),
+and [deployment evidence](DEPLOY.md). Optional research ideas remain separate
+from mandatory release work.
 
-Visual recovery and diagnostic accounting fixes are implemented; publication evidence is recorded in [DEPLOY.md](DEPLOY.md). Future diagnostics automation is not yet implemented.
+## Historical implementation inventory
 
-September 7 owner follow-up: [accepted surfaces, recovery, Engine-first sequence,
-travel ATLAS/statistics and future Standard/Dev diagnostics](OWNER-DECISIONS-2026-09-07.md).
-
-Status: **authoritative working overview**. Updated on 2026-09-04.
-
-September 7 reconciliation: [current milestone closeout](MILESTONE-CHECKLIST-2026-08-31.md#operational-reconciliation--2026-09-07),
-[four-report review](DIAGNOSTIC-REVIEW-2026-09-07.md), and
-[owner answer lines](OWNER-ANSWERS-2026-09-07.md). Public identity was rechecked at
-build `20260905-0225`, source `6e2abff`. ATLAS sampling can undercount frames,
-long gaps distort global FPS/trip estimates, and inactive score labels cannot
-prove listening acceptance. No runtime correction is claimed by this checkpoint.
-
-The owner-directed office continuation for the ATLAS/UI audit, including the
-complete pending regression ledger and pasteable Astra prompt, is recorded in
-[`ASTRA-UI-HANDOFF-2026-09-04.md`](ASTRA-UI-HANDOFF-2026-09-04.md).
-
-This page is the shortest reliable answer to “what exists now?”. Product
-requirements remain in [`PRODUCT-SPEC.md`](PRODUCT-SPEC.md), architecture in
-[`TECHNICAL-DIRECTION.md`](TECHNICAL-DIRECTION.md), deployment evidence in
-[`DEPLOY.md`](DEPLOY.md), and historical decisions in `CHANGELOG.md` and the
-dated study documents.
+The following accumulated implementation notes preserve earlier decisions and
+evidence. Later dated decisions and the current summary above supersede their
+old pending/publication labels; they are not a second current task list.
 
 ## Product surface
 
@@ -1188,7 +1164,7 @@ local rendered checks pass; physical Tesla frame pacing, glare and first-load
 Jamendo playback remain acceptance gates until the canonical candidate is
 published and driven.
 
-## Open work
+## Historical open work — superseded by the current queue above
 
 1. Execute live Tesla `R4-07`–`R4-09`, `R7-15`, the canonical `10A` / `10B` /
    `10C` codes, and row 11 on final build `20260903-2137`. Execute Tesla tests

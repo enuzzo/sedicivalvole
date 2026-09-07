@@ -1,4 +1,5 @@
 import { createAutomaticDiagnosticClock, readDiagnosticPreferences, DIAGNOSTIC_PREFERENCES_KEY } from "./automatic-diagnostics.js";
+import { PhoneRotationNotice, usePhoneLayout } from "./phone-cockpit.jsx";
 import { observeSessionStats } from "./environments/atlas/session-stats.js";
 import { SupportButton } from "./support-button.jsx";
 import { LaunchCockpit } from "./launch-cockpit.jsx";
@@ -2148,6 +2149,8 @@ export function App() {
   const initialAppearanceMode = useMemo(readAppearancePreference, []);
   const initialSystemAppearance = useMemo(readSystemAppearanceSnapshot, []);
   const [phase, setPhase] = useState("idle");
+  const phoneLayout = usePhoneLayout();
+  const phonePortrait = phase === "running" && phoneLayout === "portrait";
   const launchStartedRef = useRef(false);
   const [launchSoundtrackSelection, setLaunchSoundtrackSelection] = useState(() => initialLaunchSoundtrack(initialPreferences.soundtrackSelection));
   const [launchLucky, setLaunchLucky] = useState(true);
@@ -2329,11 +2332,20 @@ export function App() {
     startedAtMs: null,
     updatedAtMs: null,
   });
-  const readStatsSystem = useCallback(() => ({
-    network: summarizeNetworkTelemetry(networkTelemetryRef.current, performance.now()),
-    frame: readPerformanceSnapshot(frameTelemetryRef.current, phasePerformanceTelemetryRef.current, longTaskTelemetryRef.current, sessionStartedAtRef.current).frame,
-    audio: audioRef.current?.context?.state ?? "unavailable",
-  }), []);
+  const readStatsSystem = useCallback(() => {
+    const performanceSnapshot = readPerformanceSnapshot(frameTelemetryRef.current, phasePerformanceTelemetryRef.current, longTaskTelemetryRef.current, sessionStartedAtRef.current);
+    const engine = geaps.runtimeRef.current?.getState();
+    const events = diagnosticEventsRef.current.significant;
+    return {
+      network: summarizeNetworkTelemetry(networkTelemetryRef.current, performance.now()),
+      frame: performanceSnapshot.frame,
+      longTasks: performanceSnapshot.longTasks,
+      audio: audioRef.current?.context?.state ?? "unavailable",
+      engine: { active: experienceModeRef.current === "engine", status: engine?.status ?? "unavailable", playing: engine?.playing, rpm: engine?.rpm, gear: engine?.revving ? 0 : engine?.gear, load: engine?.drive },
+      events: { retryCount: events.filter(event => /retry/.test(event.type)).length,
+        audioModeChanges: events.filter(event => ["experience.mode.changed", "music.mode.changed"].includes(event.type)).length, scope: "retained" },
+    };
+  }, []);
   const mapPositionUpdatedAtRef = useRef(Number.NEGATIVE_INFINITY);
   const sessionStartedAtRef = useRef(performance.now());
   const gpsStateRef = useRef(gpsState);
@@ -2365,7 +2377,7 @@ export function App() {
   const environment = getFluxEnvironment(environmentId);
   const aperturePressure = speedToAperturePressure(speed);
   const gpsPresentation = atlasGpsPresentation(gpsState, accuracy, source);
-  const modalOpen = drawerOpen
+  const modalOpen = phonePortrait || drawerOpen
     || previewOpen
     || environmentPickerOpen
     || soundtrackPanelOpen
@@ -3614,9 +3626,15 @@ export function App() {
       localStorage.removeItem(PREFERENCES_KEY);
       localStorage.removeItem(LEGACY_PREFERENCES_KEY);
       localStorage.removeItem(DIAGNOSTIC_PREFERENCES_KEY);
+      localStorage.removeItem("sedicivalvole.session-report-recipient.v1");
     } catch {
       // Reset remains useful even when storage access is unavailable.
     }
+    const forgetController = new AbortController();
+    const forgetTimeout = window.setTimeout(() => forgetController.abort(), 5000);
+    void fetch("/api/session-report.php", { method: "POST", credentials: "same-origin",
+      headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "forget" }), signal: forgetController.signal })
+      .catch(() => {}).finally(() => window.clearTimeout(forgetTimeout));
     resetAppearancePreference();
     setAppearanceMode(DEFAULT_APPEARANCE_MODE);
     setAppearanceMenuOpen(false);
@@ -3997,7 +4015,7 @@ export function App() {
   const immersiveEnvironment = environment.renderer === "atlas";
   const showNowPlaying = experienceMode === "flux" && phase === "running" && Boolean(currentTrack) && !modalOpen && !immersiveEnvironment && !controlsPinned;
 
-  const transportPlaying = !muted && (experienceMode === "engine" ? geaps.snapshot.status === "ready" : musicMode === "soundtrack"
+  const transportPlaying = !muted && (experienceMode === "engine" ? geaps.snapshot.playing === true : musicMode === "soundtrack"
     ? soundtrackMediaIsPlaying(soundtrackSnapshot)
     : !playRoadPaused);
 
@@ -4407,6 +4425,7 @@ export function App() {
         effectiveType: connection.effectiveType,
         roundTripTimeMs: connection.roundTripTimeMs,
         visibility: document.visibilityState,
+        engine: experienceModeRef.current === "engine" ? geaps.runtimeRef.current?.getState() ?? null : null,
       });
       if (drawerOpenRef.current) setFlightRecorderRevision((revision) => revision + 1);
     };
@@ -4951,9 +4970,12 @@ export function App() {
   }, [environmentId]);
 
   return (
-    <main
+    <><main
       ref={appRef}
       tabIndex={-1}
+      inert={phonePortrait ? true : undefined}
+      aria-hidden={phonePortrait ? true : undefined}
+      data-phone-layout={phoneLayout ?? undefined}
       className={`app phase-${phase} ${controlsAwake || controlsPinned ? "controls-awake" : "controls-resting"}${modalOpen ? " modal-open" : ""}${showNowPlaying ? " has-now-playing" : ""}`}
       style={semanticTheme.css}
       data-moving={speed >= 0.8}
@@ -5079,19 +5101,19 @@ export function App() {
           )}
         </EnvironmentErrorBoundary>
       ) : null}
-      {phase === "running" && environment.renderer === "drivey" ? (
+      {phase === "running" && experienceMode === "flux" && environment.renderer === "drivey" ? (
         <DriveyCycleControl
           settings={driveySettings}
           onChange={(value) => setDriveySettings(normalizeDriveySettings(value))}
         />
       ) : null}
-      {phase === "running" && environment.renderer === "prtcl" ? (
+      {phase === "running" && experienceMode === "flux" && environment.renderer === "prtcl" ? (
         <PrtclCycleControl
           settings={prtclSettings}
           onChange={(value) => setPrtclSettings(normalizePrtclSettings(value))}
         />
       ) : null}
-      {phase === "running" && environment.renderer === "shadergradient" ? (
+      {phase === "running" && experienceMode === "flux" && environment.renderer === "shadergradient" ? (
         <ShaderGradientCycleControl
           environment={environment}
           onChange={(nextEnvironmentId) => {
@@ -5616,6 +5638,6 @@ export function App() {
         </DialogSurface>
       ) : null}
 
-    </main>
+    </main><PhoneRotationNotice active={phonePortrait} /></>
   );
 }

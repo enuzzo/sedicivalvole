@@ -1,5 +1,10 @@
 # ATLAS, Stats for Nerds and session reports
 
+September 7 night precedence: the owner selected Travel Report direction 1.
+PDF preview/download and verified-recipient email are now implemented and
+locally verified; see [implementation and publication status](NIGHT-IMPLEMENTATION-2026-09-07.md).
+Earlier design-only labels below preserve the preceding checkpoint.
+
 Status: owner-selected remix implemented and canonically verified, build 20260907-1833 / source aecd44e.
 PDF generation and recipient-email delivery remain design work, not shipped features.
 

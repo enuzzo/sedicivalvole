@@ -1,11 +1,12 @@
-import { ATLAS_SPEED_BANDS } from './atlas-model.js';
+import { ATLAS_MOTION_DELTA_THRESHOLD_KMH, ATLAS_MOVING_SPEED_THRESHOLD_KMH, ATLAS_SPEED_BANDS } from './atlas-model.js';
 
 export const SESSION_GAP_MS = 5000;
 export function createSessionStats() {
   return { firstAtMs: null, last: null, observedMs: 0, movingMs: 0, stoppedMs: 0,
     distanceM: 0, peakKmh: null, stops: 0, speedBandsMs: ATLAS_SPEED_BANDS.map(() => 0),
     headingMs: Array(8).fill(0), elevationGainM: 0, elevationLossM: 0,
-    elevationObservedMs: 0, altitudeAnchor: null };
+    elevationObservedMs: 0, altitudeAnchor: null, motionAnchorKmh: null,
+    accelerationGainKmh: 0, brakingLossKmh: 0, motionObservedMs: 0 };
 }
 
 // Accumulate before chart compaction. Long GPS gaps are unknown, never a stop.
@@ -20,6 +21,19 @@ export function observeSessionStats(previous, sample) {
     speedBandsMs: [...state.speedBandsMs], headingMs: [...state.headingMs] };
   const dt = state.last ? sample.capturedAtMs - state.last.capturedAtMs : 0;
   const connected = dt > 0 && dt <= SESSION_GAP_MS;
+  const motionSpeed = sample.speedKmh < ATLAS_MOVING_SPEED_THRESHOLD_KMH ? 0 : sample.speedKmh;
+  const plausibleMotion = connected && Math.abs(sample.speedKmh - state.last.speedKmh) / (3.6 * dt / 1000) <= 12;
+  if (!plausibleMotion) next.motionAnchorKmh = motionSpeed;
+  else {
+    next.motionObservedMs += dt;
+    const anchor = state.motionAnchorKmh ?? (state.last.speedKmh < ATLAS_MOVING_SPEED_THRESHOLD_KMH ? 0 : state.last.speedKmh);
+    const delta = motionSpeed - anchor;
+    // Accumulate slow ramps across callbacks; suppress sub-threshold speed jitter.
+    if (Math.abs(delta) >= ATLAS_MOTION_DELTA_THRESHOLD_KMH) {
+      next[delta > 0 ? 'accelerationGainKmh' : 'brakingLossKmh'] += Math.abs(delta);
+      next.motionAnchorKmh = motionSpeed;
+    }
+  }
   if (connected) {
     const speed = (state.last.speedKmh + sample.speedKmh) / 2;
     next.observedMs += dt;
@@ -53,8 +67,38 @@ export function observeSessionStats(previous, sample) {
 export function sessionStatsSnapshot(state, nowMs) {
   const data = state ?? createSessionStats();
   const elapsedMs = data.firstAtMs == null ? 0 : Math.max(0, nowMs - data.firstAtMs);
+  const speedChangeKmh = data.accelerationGainKmh + data.brakingLossKmh;
   return { ...data, elapsedMs, unknownMs: Math.max(0, elapsedMs - data.observedMs),
     coverage: elapsedMs ? Math.min(1, data.observedMs / elapsedMs) : 0,
     averageKmh: data.observedMs ? data.distanceM * 3600 / data.observedMs : null,
-    movingAverageKmh: data.movingMs ? data.distanceM * 3600 / data.movingMs : null };
+    movingAverageKmh: data.movingMs ? data.distanceM * 3600 / data.movingMs : null,
+    accelerationShare: speedChangeKmh ? data.accelerationGainKmh / speedChangeKmh : null,
+    brakingShare: speedChangeKmh ? data.brakingLossKmh / speedChangeKmh : null };
+}
+
+// Optional runtime evidence never substitutes zero for an unsupported observation.
+export function sessionRuntimeSnapshot(source = {}) {
+  const count = n => Number.isInteger(n) && n >= 0 ? n : null;
+  const nonnegative = n => Number.isFinite(n) && n >= 0 ? n : null;
+  const longTasks = source.longTasks ?? {};
+  const events = source.events ?? {};
+  const engine = source.engine ?? {};
+  const ready = engine.active === true && (engine.status === 'ready' || engine.playing === true);
+  return {
+    longTasks: {
+      count: longTasks.supported === true ? count(longTasks.count) : null,
+      maximumDurationMs: longTasks.supported === true ? nonnegative(longTasks.maximumDurationMs) : null,
+    },
+    events: {
+      scope: events.scope === 'session' ? 'session' : 'retained',
+      retryCount: count(events.retryCount),
+      audioModeChanges: count(events.audioModeChanges),
+    },
+    engine: {
+      active: engine.active === true,
+      rpm: ready ? nonnegative(engine.rpm) : null,
+      gear: ready && Number.isInteger(engine.gear) && engine.gear >= 0 ? engine.gear : null,
+      load: ready && Number.isFinite(engine.load) && engine.load >= 0 && engine.load <= 1 ? engine.load : null,
+    },
+  };
 }
