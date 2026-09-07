@@ -1,7 +1,7 @@
 # Engine / GEAPS integration — September 7, 2026
 
-Status: implemented and canonically published as build `20260907-1119`, source
-`7608873` (implementation `69230fd`). Publication and independent postflight
+Status: refined after owner listening and canonically published as build
+`20260907-1151`, source `65a4a22` (refinement `acfbd21`; initial integration `69230fd`). Publication and independent postflight
 passed; 28 HTTPS identity checks and public Engine startup are verified in DEPLOY.md. Target-Tesla listening and sustained operation remain owner trials.
 This is an informed integration after explicit owner authorization, not a blind
 Phase A review or a claim that the earlier candidate passed independent review.
@@ -93,7 +93,7 @@ Engine separately from an inactive remembered Flux score. Telemetry's 10 Hz SVG
 update cadence is identified as `Engine SVG telemetry`, not a 60 FPS WebGL claim.
 Manual sending remains unchanged; future Dev ten-minute packets are still queued.
 
-## Verification
+## Initial integration verification
 
 See `docs/qa/2026-09-07-engine/` and the deployment entry for current evidence.
 Automated checks cover exact asset identity, GPS age/replay/outliers/standstill,

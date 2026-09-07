@@ -1,17 +1,18 @@
 # Current Project State
 
-Latest verified canonical publication: **`20260907-1119`**, source **`7608873`**,
-Engine implementation **`69230fd`**, version `0.0.0`. **651 regression tests**,
-10 post-build checks, 28 HTTPS identity checks and actual public Engine startup
-passed. Official preflight, publication and independent no-write postflight pass.
-See [DEPLOY](DEPLOY.md) and [Engine integration](ENGINE-INTEGRATION-2026-09-07.md).
+Latest verified canonical publication: **`20260907-1151`**, source **`65a4a22`**,
+Engine refinement **`acfbd21`**, version `0.0.0`. **655 regression tests**,
+10 post-build checks, 28 HTTPS identity checks and actual public Engine startup,
+stationary controls and idle blip passed. Official preflight, publication and
+independent no-write postflight pass. See [DEPLOY](DEPLOY.md) and
+[Engine integration](ENGINE-INTEGRATION-2026-09-07.md).
 
 Engine is implemented and live: Telemetry direction 2, Mono/Rosso/Touring, AUTO,
 protected LAB MANUAL, shared audio, GPS evidence, rev protection and retry. The
 source/WAV authorization is settled. The first listening response was broadly
 positive; the owner requested dry Engine audio, steady deceleration level, dual
 persistent stationary TAMARRO controls and tiny idle blips. All four refinements
-are implemented and locally verified; publication follows below when confirmed.
+are implemented, verified and canonically published.
 Next: owner refinement listening in
 [A12](OWNER-ANSWERS-2026-09-07.md#a12--engine-first-listen), then iPhone. The phone
 control shell remains unfinished. ATLAS/full-screen statistics and Standard/Dev

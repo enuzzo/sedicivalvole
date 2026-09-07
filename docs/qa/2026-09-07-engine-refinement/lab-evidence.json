@@ -1,0 +1,58 @@
+{
+  "data": {
+    "status": "ready",
+    "profileId": "mono",
+    "rpm": 1000,
+    "gear": 3,
+    "shift": null,
+    "drive": 0.15,
+    "deceleration": 0,
+    "motion": "fresh",
+    "trustedStationary": true,
+    "revving": false,
+    "decodedBytes": 45888512,
+    "error": null,
+    "idleBlip": false,
+    "bankBytes": 21661608,
+    "enabled": true,
+    "source": "sample",
+    "transmissionMode": "MANUAL",
+    "version": "geaps.v1",
+    "evidence": {
+      "generation": 1,
+      "source": "Lab",
+      "freshness": "fresh",
+      "reason": "accepted",
+      "ageMs": 85.29999999701977,
+      "rawSpeedKmh": 0,
+      "speedKmh": 0,
+      "accelerationMps2": 0,
+      "drive": 0.15,
+      "deceleration": 0,
+      "trustedStationary": true,
+      "canShift": true
+    },
+    "events": [
+      {
+        "type": "engine.bank.ready",
+        "profileId": "mono",
+        "decodedBytes": 45888512,
+        "clips": 7
+      },
+      {
+        "type": "engine.shift.scheduled",
+        "fromGear": 1,
+        "toGear": 3,
+        "reason": "manual",
+        "effectiveContextTime": 0.367,
+        "duration": 0.24
+      },
+      {
+        "type": "engine.shift.committed",
+        "gear": 3,
+        "reason": "manual"
+      }
+    ]
+  },
+  "errors": []
+}

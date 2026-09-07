@@ -1,5 +1,16 @@
 # Deployment
 
+## Engine listening refinement — 2026-09-07 12:01
+
+- Canonical build **`20260907-1151`**, version **`0.0.0`**, built source **`65a4a22`**; implementation **`acfbd21`**.
+- Engine bypasses all Flux effects and their tails. Deceleration and shifts have no artificial volume duck. Two 60 px TAMARRO controls stay visible at zero, with fresh GPS renewal and small periodic idle blips.
+- **655 native regression checks**, **10 post-build checks**, **196/196 dependency credits** pass. Production build: 262 App modules and 171 protected LAB modules.
+- Official preflight, publication and independent no-write postflight pass. Publication verifies **204 files / 254,253,952 bytes**, all **29 Illobo tracks** by full hash, **11 root entries** and two retained assets for cache overlap. No retired assets, root metadata or legacy files removed.
+- **28 public HTTPS identity checks** match local HTML, emitted assets and every Engine WAV/licence file. Canonical and cache-busted HTML retain no-store/no-cache behavior.
+- Actual public Chrome at **773 × 601** confirms REPORT build/source identity, Engine ready, two enabled stationary controls after chrome rests, the automatic idle blip and absent Engine FX controls/badge. Controlled GPS fixtures were used; no diagnostic sent and no page exception.
+- **27 real-WAV offline renders** cover three profiles, three RPM values and three drive demands. Matched-RPM lift versus acceleration differs by **-0.531 to +0.292 dB**, with finite non-silent output below clipping. No WAV or upstream source changed.
+- [Evidence and current screenshots](qa/2026-09-07-engine-refinement/README.md). Tesla listening to the refinement remains open; the inherited phone shell is still unfinished. Existing Vite public-SVG import and large-chunk warnings are not a new Engine runtime failure.
+
 ## Engine / Telemetry — 2026-09-07 11:30
 
 - Canonical build **`20260907-1119`**, version **`0.0.0`**, built source/docs
