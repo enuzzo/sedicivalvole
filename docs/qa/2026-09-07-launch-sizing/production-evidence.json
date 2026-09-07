@@ -1,0 +1,152 @@
+{
+  "url": "http://127.0.0.1:4173/",
+  "checks": [
+    {
+      "width": 1280,
+      "height": 1200,
+      "panel": {
+        "height": 502,
+        "top": 36,
+        "bottom": 538,
+        "width": 940
+      },
+      "choices": {
+        "height": 138,
+        "top": 249,
+        "bottom": 387,
+        "width": 906
+      },
+      "footer": {
+        "height": 48,
+        "top": 542,
+        "bottom": 590,
+        "width": 908
+      },
+      "preset": {
+        "height": 36,
+        "top": 408,
+        "bottom": 444,
+        "width": 36
+      },
+      "scroll": 1200
+    },
+    {
+      "width": 1280,
+      "height": 800,
+      "panel": {
+        "height": 502,
+        "top": 36,
+        "bottom": 538,
+        "width": 940
+      },
+      "choices": {
+        "height": 138,
+        "top": 249,
+        "bottom": 387,
+        "width": 906
+      },
+      "footer": {
+        "height": 48,
+        "top": 542,
+        "bottom": 590,
+        "width": 908
+      },
+      "preset": {
+        "height": 36,
+        "top": 408,
+        "bottom": 444,
+        "width": 36
+      },
+      "scroll": 800
+    },
+    {
+      "width": 773,
+      "height": 601,
+      "panel": {
+        "height": 502,
+        "top": 36,
+        "bottom": 538,
+        "width": 737
+      },
+      "choices": {
+        "height": 138,
+        "top": 249,
+        "bottom": 387,
+        "width": 703
+      },
+      "footer": {
+        "height": 48,
+        "top": 542,
+        "bottom": 590,
+        "width": 705
+      },
+      "preset": {
+        "height": 36,
+        "top": 408,
+        "bottom": 444,
+        "width": 36
+      },
+      "scroll": 601
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "panel": {
+        "height": 638,
+        "top": 14,
+        "bottom": 652,
+        "width": 366
+      },
+      "choices": {
+        "height": 276,
+        "top": 215,
+        "bottom": 491,
+        "width": 340
+      },
+      "footer": {
+        "height": 76,
+        "top": 656,
+        "bottom": 732,
+        "width": 350
+      },
+      "preset": {
+        "height": 36,
+        "top": 517,
+        "bottom": 553,
+        "width": 36
+      },
+      "scroll": 844
+    },
+    {
+      "width": 773,
+      "height": 420,
+      "panel": {
+        "height": 502,
+        "top": 36,
+        "bottom": 538,
+        "width": 737
+      },
+      "choices": {
+        "height": 138,
+        "top": 249,
+        "bottom": 387,
+        "width": 703
+      },
+      "footer": {
+        "height": 48,
+        "top": 542,
+        "bottom": 590,
+        "width": 705
+      },
+      "preset": {
+        "height": 36,
+        "top": 408,
+        "bottom": 444,
+        "width": 36
+      },
+      "scroll": 594
+    }
+  ],
+  "errors": [],
+  "build": "20260907-1520"
+}

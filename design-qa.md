@@ -50,3 +50,8 @@ Browser plugin absent; established headless Chrome fallback. Physical Tesla
 acceptance remains separate. No new visual direction or asset generation.
 
 final result: passed
+
+The sizing correction is now canonically verified at build 20260907-1520/source
+05bcf45. Live five-viewport evidence matches the measured local/production
+geometry exactly, with zero page exceptions and 22 successful byte/cache checks.
+See docs/qa/2026-09-07-launch-sizing/live-evidence.json.

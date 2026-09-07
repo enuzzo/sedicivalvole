@@ -1,5 +1,14 @@
 # Session Handoff
 
+## 2026-09-07 15:27 — Tall-window launch fix published
+
+Canonical build 20260907-1520/source 05bcf45, implementation 9f1f77b fixes the
+owner-reported empty vertical expansion. Sheet height follows content, footer
+follows the sheet, preset images are 36 px. Five live viewport checks, 655 native
+tests, 17 browser scenarios, 17 package checks and 22 byte/cache checks pass.
+Official postflight writes NONE. See [deployment evidence](DEPLOY.md).
+
+
 ## 2026-09-07 14:09 — Compact Round Instruments published
 
 Canonical build **20260907-1400**, source **7ab630b**, implementation **74ea688**.

@@ -141,3 +141,13 @@ Seventeen actual-browser scenarios pass, including an explicit 1280 × 800 versu
 1280 × 1200 height-invariance assertion, 36 px preset geometry, Tesla 773 × 601
 and phone 390 × 844 hit testing. See [tall Mac](qa/2026-09-07-launch-sizing/10-tall-mac.png)
 and [browser evidence](qa/2026-09-07-launch-sizing/browser-evidence.json).
+
+Production candidate **20260907-1520**, source **05bcf45**, implementation
+**9f1f77b** passes the same five-viewport sizing matrix and 17 package checks.
+Measured desktop/Tesla sheet: 502 px; choices: 138 px; preset images: 36 px.
+
+Canonical **20260907-1520** / **05bcf45** passes all 22 HTTP byte/cache checks
+and the exact five-viewport sizing matrix on the public site. The published
+sheet remains 502 px and choices 138 px on tall Mac and Tesla screens; footer
+follows the sheet, preset art is 36 px, and short windows scroll. Zero page
+exceptions. [Live evidence](qa/2026-09-07-launch-sizing/live-evidence.json).

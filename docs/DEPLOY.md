@@ -1,5 +1,31 @@
 # Deployment
 
+## Intrinsic launch height — 2026-09-07 15:27
+
+Canonical **20260907-1520**, source **05bcf45**, implementation **9f1f77b**.
+Fixed owner-reported vertical expansion on tall Mac windows: content-sized sheet
+and selection tracks, footer in normal flow, 36 px preset thumbnails (was 16).
+No audio, random-selection, renderer or asset change.
+
+655 native tests, 17 package tests, 17 launch-browser scenarios and 196 dependency
+credits pass. Exact production and live matrices cover 1280 × 1200, 1280 × 800,
+773 × 601, 390 × 844 and 773 × 420. Desktop/Tesla panel remains 502 px, choices
+138 px; short windows scroll to the footer. Zero live page exceptions. Existing
+pre-gesture AudioContext warnings remain in broader local launch tests.
+
+Official preflight/publication/independent postflight pass. Upload: 215 files /
+254,652,275 bytes; all 29 Illobo recordings reverified, two previous assets kept,
+11 root entries, no legacy deletion. Postflight remote_writes=NONE. All 22 checked
+canonical HTML/assets/images/icons are byte-identical; bare/cache-busted roots
+retain no-store/no-cache. Physical Tesla acceptance remains separate.
+
+Evidence: [live matrix](qa/2026-09-07-launch-sizing/live-evidence.json),
+[tall Mac](qa/2026-09-07-launch-sizing/live-1280x1200.png),
+[canonical identity](qa/2026-09-07-launch-sizing/canonical-identity.json),
+[publication](qa/2026-09-07-launch-sizing/publish.txt),
+[postflight](qa/2026-09-07-launch-sizing/postflight.txt).
+
+
 ## Compact Round Instruments — 2026-09-07 14:09
 
 Build **20260907-1400**, source **7ab630b**, implementation **74ea688**, version
