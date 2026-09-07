@@ -670,7 +670,7 @@ For a release, expand this section from the exact package locks and the developm
 
 ## Owner material and work not adopted
 
-PRTCL formula adaptations come from enuzzo's own project under the recorded direct permission; no third-party outreach draft is needed for oneself. The sibling Engine study and any MIT engine-sound prototype remain study/future work, not shipped code. Identify and review actual adopted sources before adding a future integration claim or thank-you draft. No `_references/` material is copied into this register or the repository.
+PRTCL formula adaptations come from enuzzo's own project under the recorded direct permission; no third-party outreach draft is needed for oneself. The sibling Engine study remains external research. The explicitly admitted Mark Oosting integration is recorded below. No `_references/` material is copied into this register or the repository.
 
 ## Verification notes
 
@@ -825,3 +825,28 @@ The [complete npm inventory](community-npm-credits.json) records every one of th
 **Subject:** Thank you for Playwright — a little road-music project
 
 > Hi Playwright team! I’m enuzzo, making sedicivalvole, an experimental audiovisual app for the car browser. Your work helped our development and verification, and it is lovely to build on tools that people have shared with such care. We use Playwright as a development tool and have credited your project and original repository in our README. Our original code is source-visible under PolyForm Noncommercial; your work keeps its own terms. Thank you — I hope seeing this little project makes you smile! If our use or credit misses anything you expected, please let me know so we can put it right. — enuzzo
+
+
+## Mark Oosting — engine-audio — 2026-09-07
+
+Status: integrated under the repository-declared MIT licence. Source and bundled
+WAV use were explicitly authorized by the owner. Adapted engine/drivetrain/mixer
+primitives, three configurations, two helpers and 16 unchanged active WAVs at
+`b8cf9887c914f17c2f006d68427080e39d02d0b0`; exact source/change/asset hashes are in
+`prototype/drive-lab/src/engine/source-inventory.json`. Independent recording
+provenance remains an upstream follow-up. No claim that the original project is MIT.
+
+Public contact: [GitHub profile](https://github.com/markeasting) and
+[repository issues](https://github.com/markeasting/engine-audio/issues).
+
+Unsent release thank-you draft:
+
+> Hi Mark — thank you for publishing engine-audio. Your engine/drivetrain model,
+> equal-power sample blends and three configurations gave sedicivalvole's new
+> Engine experience a concrete foundation. I adapted them to GPS-driven virtual
+> motion and an audio-clock automatic gearbox, keeping your MIT credit and exact
+> source/asset inventory. The rest of sedicivalvole is source-visible under
+> PolyForm Noncommercial. I'd love to share the first vehicle listening results
+> when ready. Could you also point me to the original provenance/credit notes for
+> the bundled recordings, so I can keep their acknowledgements accurate? Thanks
+> for making the implementation available and understandable. — enuzzo

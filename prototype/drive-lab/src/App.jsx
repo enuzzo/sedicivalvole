@@ -1,3 +1,6 @@
+import { createEngineMotion } from "./engine/motion.js";
+import { useEngine } from "./engine/use-engine.js";
+import { EngineTelemetry } from "./engine/telemetry-field.jsx";
 import { createLoadRecovery } from "./load-recovery.js";
 import { ExperienceCard } from "./experience-card.jsx";
 import { CURATED_EXPERIENCES, applyExperienceSettings, matchingExperience } from "./curated-experiences.js";
@@ -1385,11 +1388,11 @@ class EnvironmentErrorBoundary extends Component {
   }
 }
 
-function ModeSelector() {
+function ModeSelector({ mode = "flux", onChange }) {
   return (
     <nav className="mode-selector" aria-label="Experience mode">
-      <button type="button" disabled title="Engine design is pending">ENGINE</button>
-      <button className="is-active" type="button" aria-current="page">FLUX</button>
+      <button type="button" className={mode === "engine" ? "is-active" : ""} aria-pressed={mode === "engine"} onClick={() => onChange?.("engine")}>ENGINE</button>
+      <button className={mode === "flux" ? "is-active" : ""} type="button" aria-pressed={mode === "flux"} onClick={() => onChange?.("flux")}>FLUX</button>
     </nav>
   );
 }
@@ -2253,6 +2256,12 @@ function LaunchSelector({
 }
 
 export function App() {
+  const [experienceMode, setExperienceMode] = useState("flux");
+  const experienceModeRef = useRef("flux");
+  experienceModeRef.current = experienceMode;
+  const [engineProfileId, setEngineProfileId] = useState("mono");
+  const engineMotionRef = useRef(null);
+  engineMotionRef.current ??= createEngineMotion();
   const initialPreferences = useMemo(readPreferences, []);
   const initialAppearanceMode = useMemo(readAppearancePreference, []);
   const initialSystemAppearance = useMemo(readSystemAppearanceSnapshot, []);
@@ -2616,6 +2625,16 @@ export function App() {
     }
     setJamendoPreviewEntries((current) => retainJamendoPreviewEntries(current, nextSnapshot));
   }, []);
+  const geaps = useEngine({ active: phase === "running" && experienceMode === "engine", muted, profileId: engineProfileId,
+    audioRef, motion: engineMotionRef.current, onEvent: logDiagnosticEvent });
+  const releaseEngineRev = useCallback(() => geaps.runtimeRef.current?.releaseRev(), [geaps.runtimeRef]);
+  const holdEngineRev = useCallback(() => geaps.runtimeRef.current?.setRevHeld(true), [geaps.runtimeRef]);
+  const chooseEngineProfile = useCallback((id) => {
+    if (!["mono", "rosso", "touring"].includes(id)) return;
+    setEngineProfileId(id);
+    logDiagnosticEvent("engine.profile.selected", { profileId: id });
+  }, [logDiagnosticEvent]);
+
   const soundtrackController = useCallback(() => {
     if (soundtrackRef.current) return soundtrackRef.current;
     const controller = createSoundtrackPreviewController({
@@ -2689,7 +2708,7 @@ export function App() {
   appearanceModeRef.current = appearanceMode;
   appearanceResolutionRef.current = appearanceResolution;
   performancePhaseRef.current = phase === "running"
-    ? `drive:${environmentId}:${diagnosticMusicIdentity({ mode: musicMode, muted, scoreId: genreId })}:${drawerOpen ? "diagnostics" : "visual"}`
+    ? `drive:${experienceMode === "engine" ? "engine" : environmentId}:${experienceMode === "engine" ? (muted ? "mute" : "engine") : diagnosticMusicIdentity({ mode: musicMode, muted, scoreId: genreId })}:${drawerOpen ? "diagnostics" : "visual"}`
       + (environmentId === "aperture" && speed <= 40 ? ":wall-retreat" : "")
     : `splash:${phase}`;
 
@@ -2717,7 +2736,7 @@ export function App() {
 
   const toggleMuted = useCallback(async () => {
     const nextMuted = !muted;
-    if (sessionMusicModeRef.current === "soundtrack") {
+    if (experienceModeRef.current === "flux" && sessionMusicModeRef.current === "soundtrack") {
       if (nextMuted) soundtrackRef.current?.pause();
       else await soundtrackRef.current?.resume();
     } else if (!nextMuted) {
@@ -2884,6 +2903,8 @@ export function App() {
         const accuracyM = Number.isFinite(position.coords.accuracy) ? position.coords.accuracy : null;
         setAccuracy(Number.isFinite(accuracyM) ? Math.round(accuracyM) : null);
         const kmh = normalizeGpsSpeed(position.coords.speed);
+        if (sourceRef.current === "GPS") engineMotionRef.current.observe({ source: "GPS", rawSpeedKmh: kmh,
+          sourceTimestampMs: position.timestamp, receivedMs: capturedAtMs, epochNowMs: Date.now(), accuracyM });
         latestGpsObservationRef.current = { capturedAtMs, speedKmh: kmh };
         gpsTelemetryRef.current = recordGpsSample(gpsTelemetryRef.current, {
           capturedAtMs,
@@ -3223,7 +3244,9 @@ export function App() {
   }, [startKeyboardRegeneration]);
 
   const runHarness = useCallback(async ({ musicId, selectedEnvironmentId, experienceId = null }) => {
-    const launchMuted = QA_MUTED || mutedRef.current || musicId === "mute";
+    const launchEngine = experienceModeRef.current === "engine";
+    if (launchEngine) musicId = "play-road";
+    const launchMuted = QA_MUTED || mutedRef.current || (!launchEngine && musicId === "mute");
     const launchVehicleEffects = vehicleEffectsEnabledRef.current;
     const launchDiscover = selectedEnvironmentId === DISCOVER_VISUAL_CHOICE.id;
     const runtimeEnvironmentId = launchDiscover
@@ -3315,13 +3338,14 @@ export function App() {
         (nextEffect) => setActiveEffect(QA_EFFECT ?? nextEffect),
         handleScoreRecovery,
         {
-          audioContext: musicId === "soundtrack"
+          audioContext: launchEngine || musicId === "soundtrack"
             ? soundtrackRef.current?.getAudioContext?.() ?? null
             : null,
-          deferScoreWorklets: musicId === "soundtrack",
+          deferScoreWorklets: launchEngine || musicId === "soundtrack",
         },
       );
       if (!audioRef.current) throw new Error("Web Audio is unavailable");
+      audioRef.current.setSourceMode(launchEngine ? "engine" : "flux");
       await audioRef.current.resume();
       audioRef.current.setMuted(launchMuted || musicId === "soundtrack");
       audioRef.current.setVehicleEffectsEnabled(launchVehicleEffects);
@@ -3330,7 +3354,7 @@ export function App() {
       // for an exact qaSpeed launch). Seed the engine from the current signal
       // before choosing a score so its first complete section is the right one.
       audioRef.current.setSpeed(speedRef.current);
-      if (musicId === "play-road") {
+      if (musicId === "play-road" && !launchEngine) {
         const activeScoreId = await audioRef.current.setScore(genreId);
         if (typeof activeScoreId === "string" && activeScoreId !== genreId) {
           setGenreId(activeScoreId);
@@ -3362,7 +3386,7 @@ export function App() {
       audioMeterTimerRef.current = window.setInterval(() => {
         const engine = audioRef.current;
         setAudioLevel(
-          sessionMusicModeRef.current === "soundtrack"
+          experienceModeRef.current === "flux" && sessionMusicModeRef.current === "soundtrack"
             ? soundtrackRef.current?.getLevel() ?? 0
             : engine?.getLevel() ?? 0,
         );
@@ -3498,6 +3522,35 @@ export function App() {
       return Object.freeze({ ok: false, requestedScoreId, activeScoreId: null, reason });
     }
   }, [logDiagnosticEvent]);
+
+  const chooseExperienceMode = useCallback((nextMode) => {
+    if (!["engine", "flux"].includes(nextMode) || nextMode === experienceModeRef.current) return;
+    transportActionQueueRef.current.invalidate();
+    musicModeRevisionRef.current++;
+    scoreSelectionRevisionRef.current++;
+    experienceModeRef.current = nextMode;
+    engineMotionRef.current.reset("experience-changed");
+    geaps.runtimeRef.current?.setEnabled(false);
+    setExperienceMode(nextMode);
+    setEnvironmentPickerOpen(false); setSoundtrackPanelOpen(false); setManualEffectsDeckOpen(false);
+    audioRef.current?.setSourceMode(nextMode);
+    audioRef.current?.resume().catch(() => {});
+    soundtrackRef.current?.pause();
+    if (nextMode === "engine") {
+      audioRef.current?.setMuted(mutedRef.current);
+    } else if (phase === "running") {
+      if (sessionMusicModeRef.current === "soundtrack") {
+        audioRef.current?.setMuted(true);
+        if (!mutedRef.current) void soundtrackRef.current?.resume();
+      } else {
+        void audioRef.current?.setScore(genreIdRef.current).then(() => {
+          if (experienceModeRef.current === "flux") audioRef.current?.setMuted(mutedRef.current);
+        }).catch(error => logDiagnosticEvent("audio.mode.failed", { reason: String(error?.message || error).slice(0, 120) }));
+      }
+    }
+    logDiagnosticEvent("experience.mode.changed", { mode: nextMode });
+    wakeControls();
+  }, [geaps.runtimeRef, logDiagnosticEvent, phase, wakeControls]);
 
   const switchMusicMode = useCallback(async (nextMode) => {
     if (!["play-road", "soundtrack"].includes(nextMode)) return;
@@ -3740,6 +3793,14 @@ export function App() {
   }, [logDiagnosticEvent, showControlNotice, soundtrackController]);
 
   const moveTransport = useCallback(async (direction, source = "on-screen-transport", invocation = null) => {
+    if (experienceModeRef.current === "engine") {
+      setEngineProfileId(current => {
+        const profiles = ["mono", "rosso", "touring"];
+        return profiles[(profiles.indexOf(current) + (direction === "previous" ? 2 : 1)) % profiles.length];
+      });
+      logDiagnosticEvent("engine.transport.profile", { direction, source });
+      return;
+    }
     const actionId = `transport-${++mediaActionSequenceRef.current}`;
     const queuedAtMs = performance.now();
     logDiagnosticEvent("media.action.queued", {
@@ -3851,6 +3912,15 @@ export function App() {
   }, [logDiagnosticEvent, selectScore]);
 
   const toggleTransport = useCallback(async (forcePlaying = null, source = "on-screen-transport", invocation = null) => {
+    if (experienceModeRef.current === "engine") {
+      const play = forcePlaying == null ? mutedRef.current : forcePlaying;
+      if (play) await audioRef.current?.resume();
+      setMuted(!play);
+      geaps.runtimeRef.current?.setEnabled(play);
+      logDiagnosticEvent("engine.transport", { action: play ? "play" : "pause", source, ...mediaSessionInvocationDiagnostic(invocation), audioContextState: audioRef.current?.context.state, muted: !play });
+      return;
+    }
+
     transportActionQueueRef.current.invalidate();
     const actionId = `transport-${++mediaActionSequenceRef.current}`;
     const startedAtMs = performance.now();
@@ -3932,6 +4002,11 @@ export function App() {
   }, [logDiagnosticEvent]);
 
   const currentTrack = useMemo(() => {
+    if (experienceMode === "engine") return {
+      key: `engine:${geaps.snapshot.profileId || engineProfileId}`,
+      title: `Engine / ${(geaps.snapshot.profileId || engineProfileId).replace(/^./, c => c.toUpperCase())}`,
+      album: "Telemetry", artist: "sedicivalvole", artwork: null,
+    };
     if (musicMode === "soundtrack") {
       const current = soundtrackSnapshot?.current;
       return current ? {
@@ -3951,6 +4026,7 @@ export function App() {
       artwork: current.coverUrl,
     };
   }, [
+    experienceMode, engineProfileId, geaps.snapshot.profileId,
     genreId,
     musicMode,
     soundtrackSnapshot?.current?.albumName,
@@ -3961,9 +4037,9 @@ export function App() {
     soundtrackSnapshot?.library?.selection?.kind,
   ]);
   const immersiveEnvironment = environment.renderer === "atlas";
-  const showNowPlaying = phase === "running" && Boolean(currentTrack) && !modalOpen && !immersiveEnvironment && !controlsPinned;
+  const showNowPlaying = experienceMode === "flux" && phase === "running" && Boolean(currentTrack) && !modalOpen && !immersiveEnvironment && !controlsPinned;
 
-  const transportPlaying = !muted && (musicMode === "soundtrack"
+  const transportPlaying = !muted && (experienceMode === "engine" ? geaps.snapshot.status === "ready" : musicMode === "soundtrack"
     ? soundtrackMediaIsPlaying(soundtrackSnapshot)
     : !playRoadPaused);
 
@@ -4074,7 +4150,7 @@ export function App() {
       });
     }
     if (typeof navigator.mediaSession.setPositionState === "function") {
-      const positionState = musicMode === "soundtrack"
+      const positionState = experienceMode === "flux" && musicMode === "soundtrack"
         ? soundtrackMediaPositionState(soundtrackSnapshot)
         : null;
       try {
@@ -4110,6 +4186,7 @@ export function App() {
     });
   }, [
     currentTrack,
+    experienceMode,
     logDiagnosticEvent,
     musicMode,
     phase,
@@ -4183,8 +4260,8 @@ export function App() {
         usedJsHeapBytes: memory?.usedJSHeapSize,
         totalJsHeapBytes: memory?.totalJSHeapSize,
         jsHeapLimitBytes: memory?.jsHeapSizeLimit,
-        audioDecodedPcmBytes: audioState?.decodedPcmBytes,
-        audioBankBytes: audioState?.bankBytes,
+        audioDecodedPcmBytes: experienceModeRef.current === "engine" ? geaps.runtimeRef.current?.getState().decodedBytes : audioState?.decodedPcmBytes,
+        audioBankBytes: experienceModeRef.current === "engine" ? geaps.runtimeRef.current?.getState().bankBytes : audioState?.bankBytes,
       });
       recordAudioLatencySample(
         audioLatencyTelemetryRef.current,
@@ -4333,7 +4410,7 @@ export function App() {
       const latestGps = latestGpsObservationRef.current;
       const frame = summarizeFrameTelemetry(frameTelemetryRef.current);
       const connection = readConnectionSnapshot("flight-recorder");
-      const scoreActive = sessionMusicModeRef.current === "play-road" && !mutedRef.current;
+      const scoreActive = experienceModeRef.current === "flux" && sessionMusicModeRef.current === "play-road" && !mutedRef.current;
       const audioState = scoreActive ? audioRef.current?.getState() ?? null : null;
       const meterState = audioRef.current?.getMeterState?.() ?? null;
       const gpsAgeMs = Number.isFinite(latestGps.capturedAtMs)
@@ -4353,8 +4430,8 @@ export function App() {
         p95FrameMs: frame.p95FrameMs,
         audioLevel: audioLevelRef.current,
         audioPeak: meterState?.peak,
-        visualId: environmentIdRef.current,
-        musicId: diagnosticMusicIdentity({ mode: sessionMusicModeRef.current, muted: mutedRef.current, scoreId: genreIdRef.current }),
+        visualId: experienceModeRef.current === "engine" ? "engine-telemetry" : environmentIdRef.current,
+        musicId: experienceModeRef.current === "engine" ? (mutedRef.current ? "mute" : "engine") : diagnosticMusicIdentity({ mode: sessionMusicModeRef.current, muted: mutedRef.current, scoreId: genreIdRef.current }),
         audioSection: audioState?.section,
         audioFamily: audioState?.musicalFamily,
         audioRhythm: audioState?.rhythmId,
@@ -4383,9 +4460,20 @@ export function App() {
     };
   }, [phase]);
 
+  useEffect(() => { engineMotionRef.current.reset("speed-source-changed"); }, [source]);
   useEffect(() => { audioRef.current?.setSpeed(speed); }, [speed]);
   useEffect(() => {
-    audioRef.current?.setMuted(muted || sessionMusicModeRef.current === "soundtrack");
+    if (phase !== "running") return;
+    const sample = () => {
+      if (sourceRef.current !== "GPS") engineMotionRef.current.observe({ source: "Demo", rawSpeedKmh: speedRef.current,
+        receivedMs: performance.now(), driveInput: demoDriveInputRef.current, brakeHeld: brakeHeldRef.current });
+    };
+    sample(); const timer = window.setInterval(sample, 100);
+    return () => window.clearInterval(timer);
+  }, [phase]);
+
+  useEffect(() => {
+    audioRef.current?.setMuted(muted || (experienceModeRef.current === "flux" && sessionMusicModeRef.current === "soundtrack"));
   }, [muted]);
   useEffect(() => {
     audioRef.current?.setVehicleEffectsEnabled(vehicleEffectsEnabled);
@@ -4401,14 +4489,14 @@ export function App() {
     audioRef.current?.setManualEffects(soundtrackManualEffects);
   }, [soundtrackManualEffects]);
   useEffect(() => {
-    document.title = musicMode === "soundtrack"
+    document.title = experienceMode === "engine" ? "Engine / sedicivalvole" : musicMode === "soundtrack"
       ? soundtrackPageTitle(soundtrackSnapshot)
       : DEFAULT_PAGE_TITLE;
     return () => {
       document.title = DEFAULT_PAGE_TITLE;
     };
   }, [
-    musicMode,
+    experienceMode, musicMode,
     soundtrackSnapshot?.current?.artistName,
     soundtrackSnapshot?.current?.title,
     soundtrackSnapshot?.status,
@@ -4614,15 +4702,16 @@ export function App() {
       version: APP_VERSION,
       build: APP_BUILD,
       commit: APP_COMMIT,
-      mode: "flux",
-      musicMode: sessionMusicModeRef.current,
+      mode: experienceModeRef.current,
+      engine: experienceModeRef.current === "engine" ? geaps.runtimeRef.current?.getState() ?? null : null,
+      musicMode: experienceModeRef.current === "engine" ? "engine" : sessionMusicModeRef.current,
       rememberedScoreId: genreIdRef.current,
-      environment: environmentIdRef.current,
+      environment: experienceModeRef.current === "engine" ? "engine-telemetry" : environmentIdRef.current,
       pageUrl: window.location.href,
       source: sourceRef.current,
       displayedSpeedKmh: Math.round(speedRef.current * 10) / 10,
-      bpm: bpmRef.current == null ? null : Math.round(bpmRef.current * 10) / 10,
-      transportBpm: Math.round(transportBpmRef.current * 10) / 10,
+      bpm: experienceModeRef.current === "engine" || bpmRef.current == null ? null : Math.round(bpmRef.current * 10) / 10,
+      transportBpm: experienceModeRef.current === "engine" ? null : Math.round(transportBpmRef.current * 10) / 10,
       responseCeilingKmh: ROAD_SPEED_CEILING_KMH,
       paletteTheme: themeIdRef.current,
       appearancePreference: appearanceModeRef.current,
@@ -4634,7 +4723,7 @@ export function App() {
         : null,
       muted: mutedRef.current,
       vehicleAudioEffectsEnabled: vehicleEffectsEnabledRef.current,
-      arrangement: sessionMusicModeRef.current === "play-road" && !mutedRef.current
+      arrangement: experienceModeRef.current === "flux" && sessionMusicModeRef.current === "play-road" && !mutedRef.current
         ? audioRef.current?.getState() ?? null : null,
     },
     simulation: {
@@ -4819,7 +4908,7 @@ export function App() {
   }, [environment.id, environment.label, logDiagnosticEvent]);
 
   useEffect(() => {
-    if (phase !== "running") return undefined;
+    if (phase !== "running" || experienceMode !== "flux") return undefined;
     const recovery = createLoadRecovery({
       now: () => performance.now(),
       schedule: (callback, delay) => window.setTimeout(callback, delay),
@@ -4843,7 +4932,7 @@ export function App() {
       window.removeEventListener("online", wake);
       document.removeEventListener("visibilitychange", wake);
     };
-  }, [environmentId, phase, logDiagnosticEvent]);
+  }, [experienceMode, environmentId, phase, logDiagnosticEvent]);
 
   useEffect(() => {
     if (environmentRuntimeError) environmentRecoveryRef.current?.fail();
@@ -4866,7 +4955,7 @@ export function App() {
       data-palette={themeId}
       data-appearance={appearanceResolution.appearance}
       data-appearance-mode={appearanceMode}
-      data-environment={environmentId}
+      data-environment={experienceMode === "engine" ? "engine" : environmentId}
       onPointerDownCapture={holdAppearanceDuringPointer}
       onPointerDown={handleSurfacePointerDown}
       onClickCapture={handleControlActivation}
@@ -4878,12 +4967,14 @@ export function App() {
     >
       {phase === "running" ? (
         <EnvironmentErrorBoundary
-          key={`${environmentId}:${environmentAttempt}`}
+          key={`${experienceMode}:${environmentId}:${environmentAttempt}`}
           label={environment.label}
           recovery={environmentRecovery}
           onError={handleEnvironmentError}
         >
-          {environmentRuntimeError ? (
+          {experienceMode === "engine" ? (
+            <EngineTelemetry state={geaps.snapshot} profileId={engineProfileId} onProfile={chooseEngineProfile} onRev={holdEngineRev} onRelease={releaseEngineRev} speed={speed} onFrame={recordRenderedFrame} />
+          ) : environmentRuntimeError ? (
             <FieldFailure label={environment.label} recovery={environmentRecovery} />
           ) : environment.renderer === "vertigo" ? (
             <Interstate7Field
@@ -5103,8 +5194,14 @@ export function App() {
           </aside>
           <button className="splash-reset-state" type="button" onClick={resetSavedState}>RESET SAVED STATE</button>
         </div> : null}
-        {phase === "choosing" ? (
-          <LaunchSelector
+        {phase === "choosing" ? (<>
+          <ModeSelector mode={experienceMode} onChange={chooseExperienceMode} />
+          {experienceMode === "engine" ? <div className="engine-launch">
+            <h1>Engine / Telemetry</h1><p>Three sample engines. Automatic gears. Driven by your motion.</p>
+            <div className="engine-profiles">{[["mono", "Mono"], ["rosso", "Rosso"], ["touring", "Touring"]].map(([id, label]) => <button type="button" key={id} aria-pressed={engineProfileId === id} onClick={() => chooseEngineProfile(id)}>{label}</button>)}</div>
+            <p>Virtual RPM and gears · GPS or Demo</p>
+            <div><button type="button" onClick={() => setPhase("idle")}>BACK</button><button type="button" onClick={() => runHarness({ musicId: "play-road", selectedEnvironmentId: launchEnvironmentId })}>START ENGINE</button></div>
+          </div> : <LaunchSelector
             experienceId={launchExperienceId}
             onExperience={(id) => chooseExperience(id, { launch: true })}
             musicId={launchMusicId}
@@ -5121,8 +5218,8 @@ export function App() {
               selectedEnvironmentId: launchEnvironmentId,
               experienceId: launchExperienceId,
             })}
-          />
-        ) : null}
+          />}
+        </>) : null}
       </section>
       ) : null}
 
@@ -5145,7 +5242,7 @@ export function App() {
               aria-hidden="true"
             />
           </button>
-          <ModeSelector />
+          <ModeSelector mode={experienceMode} onChange={chooseExperienceMode} />
           <span className="speed-spacer" aria-hidden="true" />
           <NetworkControl
             notice={networkNotice}
@@ -5242,7 +5339,7 @@ export function App() {
         </div>
       ) : null}
 
-        <footer className={`control-slab${musicMode === "soundtrack" ? " is-soundtrack" : ""}`} aria-label="Flux performance controls">
+        <footer className={`control-slab${experienceMode === "flux" && musicMode === "soundtrack" ? " is-soundtrack" : ""}`} aria-label={`${experienceMode === "engine" ? "Engine" : "Flux"} performance controls`}>
           <button
             className={`stop-button${muted ? " is-active" : ""}`}
             type="button"
@@ -5264,7 +5361,8 @@ export function App() {
             <span>FX</span>
             <strong>{vehicleEffectsEnabled ? "ON" : "OFF"}</strong>
           </button>
-          <VisualControl environment={environment} onOpen={() => {
+          {experienceMode === "engine" ? <><button type="button" className="engine-return-flux" onClick={() => { chooseExperienceMode("flux"); setEnvironmentPickerOpen(true); }}><span>FLUX</span><strong>Visuals</strong></button><button type="button" className="engine-return-flux" onClick={() => { chooseExperienceMode("flux"); setSoundtrackPanelOpen(true); }}><span>FLUX</span><strong>Music</strong></button></> : <><VisualControl environment={environment} onOpen={() => {
+            if (experienceMode === "engine") chooseExperienceMode("flux");
             setEnvironmentPickerOpen(true);
           }} />
           <MusicControl
@@ -5272,8 +5370,8 @@ export function App() {
             selection={scoreSelection}
             musicMode={musicMode}
             soundtrackSnapshot={soundtrackSnapshot}
-            onOpen={() => setSoundtrackPanelOpen(true)}
-          />
+            onOpen={() => { if (experienceMode === "engine") chooseExperienceMode("flux"); setSoundtrackPanelOpen(true); }}
+          /></>}
           <button
             className={`mix-button${manualEffectsDeckOpen ? " is-open" : ""}${SOUNDTRACK_MANUAL_CONTROLS.some(({ id }) => soundtrackManualEffects[id] > 0.01) ? " is-active" : ""}`}
             type="button"

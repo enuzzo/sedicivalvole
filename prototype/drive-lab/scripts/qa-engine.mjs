@@ -1,0 +1,42 @@
+const {chromium} = await import(process.env.PLAYWRIGHT_MODULE || 'playwright');
+import fs from 'node:fs/promises';
+import assert from 'node:assert/strict';
+const out=process.env.QA_OUTPUT || '/tmp/sedicivalvole-engine-qa';await fs.mkdir(out,{recursive:true});
+const browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_EXECUTABLE || undefined,args:['--mute-audio']});
+try{
+const context=await browser.newContext({viewport:{width:773,height:601}}); const page=await context.newPage(); const errors=[],responses=[];let sends=0,failBank=true;
+page.on('pageerror',e=>errors.push(e.message));page.on('response',r=>{if(r.url().includes('/engine-audio/')) responses.push({status:r.status(),name:r.url().split('/').at(-1)});});
+await page.route('**/api/send-diagnostic.php',r=>{sends++;return r.abort();});
+await page.route('**/engine-audio/*.wav',r=>failBank?r.abort():r.continue());
+await page.addInitScript(()=>{const listeners=[];let stamp=0;Object.defineProperty(navigator,'geolocation',{value:{watchPosition(cb){listeners.push(cb);return listeners.length;},clearWatch(){}}});window.__engineQaGps=()=>listeners.forEach(cb=>cb({timestamp:Math.max(Date.now(),++stamp),coords:{speed:0,accuracy:5,latitude:0,longitude:0}}));const AC=window.AudioContext;window.__engineQaContexts=[];window.__engineQaMeters=[];window.AudioContext=class extends AC{constructor(...args){super(...args);window.__engineQaContexts.push(this);}createAnalyser(){const a=super.createAnalyser();window.__engineQaMeters.push(a);return a;}};});
+await page.goto('http://127.0.0.1:5173/');
+await page.getByRole('button',{name:'sedicivalvole PLAY THE ROAD',exact:true}).click();
+await page.getByRole('button',{name:'ENGINE',exact:true}).click();await page.screenshot({path:`${out}/01-launch.png`});
+await page.getByRole('button',{name:'START ENGINE',exact:true}).click();
+await page.getByText('Waiting for audio · retrying automatically',{exact:true}).waitFor();
+failBank=false;
+await page.getByText('SAMPLE ENGINE',{exact:true}).waitFor({timeout:20000});
+await page.screenshot({path:`${out}/02-telemetry.png`});
+await page.locator('.engine-telemetry').click({position:{x:300,y:200}});await page.keyboard.down('ArrowUp');await page.waitForTimeout(9500);await page.keyboard.up('ArrowUp');
+await page.waitForTimeout(500);await page.screenshot({path:`${out}/03-moving.png`});
+const moving=await page.locator('.engine-telemetry').innerText();console.log('MOVING',moving);
+const meter=await page.evaluate(async()=>{const a=window.__engineQaMeters.at(-1), readings=[];for(let j=0;j<10;j++){const buf=new Float32Array(a.fftSize);a.getFloatTimeDomainData(buf);readings.push({peak:Math.max(...buf.map(Math.abs)),rms:Math.sqrt(buf.reduce((s,v)=>s+v*v,0)/buf.length)});await new Promise(r=>setTimeout(r,40));}return{contexts:window.__engineQaContexts.filter(c=>c.state!=="closed").length,contextStates:window.__engineQaContexts.map(c=>c.state),readings,metadata:navigator.mediaSession.metadata?.title};});
+console.log("METER",meter);assert.equal(meter.contexts,1);assert.ok(meter.readings.some(r=>r.rms>0.0001));assert.ok(meter.readings.every(r=>r.peak<1));assert.match(meter.metadata,/Engine/);
+for(const name of ['Rosso','Touring','Mono']) {await page.getByRole('button',{name,exact:true}).click();await page.waitForTimeout(300);await page.getByText('SAMPLE ENGINE',{exact:true}).waitFor({timeout:25000});}
+await page.locator('.engine-telemetry').click({position:{x:300,y:200}});await page.locator('.app').focus();await page.keyboard.down('Space');await page.waitForTimeout(14000);await page.keyboard.up('Space');await page.waitForTimeout(600);
+await page.evaluate(()=>window.__engineQaGps());await page.waitForTimeout(500);await page.evaluate(()=>window.__engineQaGps());await page.waitForTimeout(200);console.log('STOPPED',await page.locator('.engine-telemetry').innerText());
+await page.getByRole('button',{name:'TAMARRO',exact:true}).waitFor({timeout:10000});await page.screenshot({path:`${out}/04-standstill.png`});
+const tam=page.getByRole('button',{name:'TAMARRO',exact:true});await tam.focus();await page.keyboard.down('Enter');await page.waitForTimeout(1200);await page.keyboard.up('Enter');
+await page.locator('.engine-telemetry').click({position:{x:300,y:200}});
+await page.getByRole('button',{name:'Mute audio',exact:true}).click();await page.getByRole('button',{name:'TAMARRO',exact:true}).waitFor({state:'hidden'});
+await page.locator('.engine-telemetry').click({position:{x:300,y:200}});await page.getByRole('button',{name:'Unmute audio',exact:true}).click();await page.waitForTimeout(500);
+await page.locator('.engine-telemetry').click({position:{x:300,y:200}});await page.getByRole('button',{name:'FLUX',exact:true}).click();await page.waitForTimeout(1000);
+assert.equal(await page.locator('.engine-telemetry').count(),0);await page.locator('.app').click({position:{x:300,y:250}});await page.getByRole('button',{name:'ENGINE',exact:true}).click();await page.getByText('SAMPLE ENGINE',{exact:true}).waitFor();
+assert.equal(await page.evaluate(()=>window.__engineQaContexts.filter(c=>c.state!=="closed").length),1);
+await page.locator('.engine-telemetry').click({position:{x:300,y:200}});await page.locator('.topbar-mark').click();await page.getByRole('button',{name:'SHOW RAW',exact:true}).click();
+const report=JSON.parse(await page.locator('pre').innerText());assert.equal(report.app.mode,'engine');assert.equal(report.app.engine.status,'ready');assert.ok(report.app.engine.decodedBytes>0);assert.equal(report.app.arrangement,null);await fs.writeFile(`${out}/engine-report.json`,JSON.stringify({schema:report.schema,generatedAt:report.generatedAt,app:report.app,performance:report.performance,sent:false},null,2));await page.getByRole('button',{name:'Close session report',exact:true}).click();
+await page.setViewportSize({width:390,height:844});await page.screenshot({path:`${out}/05-phone-layout.png`});
+assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth),false);
+assert.equal(sends,0);assert.deepEqual(errors,[]);
+await fs.writeFile(`${out}/browser-evidence.json`,JSON.stringify({meter,responses,moving,sends,errors,checks:['network failure then automatic bank retry','three profiles decode','Demo acceleration and braking','TAMARRO after trusted standstill','mute rev release','Engine/Flux single context','390x844 no horizontal page overflow']},null,2));console.log('QA PASS',meter);
+}finally{await browser.close();}

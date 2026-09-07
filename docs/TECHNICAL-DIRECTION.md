@@ -2,6 +2,15 @@
 
 This recommendation does not automatically adopt the bootstrap stack. It optimizes for a Tesla browser, deterministic audio, graceful degradation, and maintainability.
 
+## September 7 implemented Engine architecture
+
+GEAPS now adapts the pinned MIT engine-audio primitives and bundled samples over
+the existing shared AudioContext, with original GPS evidence, audio-time AUTO
+gearbox and the selected Telemetry surface. Protected LAB adds manual diagnostic
+gears. Exact parameters, changes and validation boundaries are in
+[the Engine integration record](ENGINE-INTEGRATION-2026-09-07.md). The recommendations
+below retain their historical scope; they are not an inventory of unimplemented Engine work.
+
 ## Recommended stack
 
 | Layer | Recommendation | Reason |

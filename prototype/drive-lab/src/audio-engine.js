@@ -71,6 +71,9 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
   const context = audioContext ?? new AudioContext({ latencyHint: "interactive" });
   const masterGain = context.createGain();
   const performanceBus = context.createGain();
+  const engineInput = context.createGain();
+  engineInput.gain.value = 0;
+  let sourceMode = "flux";
   const fractureGain = context.createGain();
   const junctionGain = context.createGain();
   const nightshiftGain = context.createGain();
@@ -81,6 +84,7 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
   const meterBuffer = new Float32Array(meter.fftSize);
   let meterState = { level: 0, rms: 0, peak: 0 };
   performanceBus.connect(manualEffectsGraph.input);
+  engineInput.connect(manualEffectsGraph.input);
   manualEffectsGraph.output.connect(masterGain);
   masterGain.connect(meter).connect(context.destination);
   fractureGain.gain.value = 1;
@@ -317,7 +321,7 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
         publishArrangement(arrangement);
       };
       node.connect(fractureGain);
-      post("MUTE", { muted });
+      post("MUTE", { muted: muted || sourceMode === "engine" });
       post("SPEED", { speed });
       post("BRAKE", { brake: vehicleEffectsEnabled ? brakeAmount : 0 });
       fractureReadyState = "ready";
@@ -418,6 +422,19 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
 
   return {
     context,
+    engineInput,
+    setSourceMode(mode) {
+      sourceMode = mode === "engine" ? "engine" : "flux";
+      if (sourceMode === "engine") {
+        scoreSwitchRevision++;
+        void junction?.setActive(false).catch(() => {});
+        void nightshift?.setActive(false).catch(() => {});
+      }
+      const at = context.currentTime;
+      performanceBus.gain.setTargetAtTime(sourceMode === "flux" ? 1 : 0, at, 0.025);
+      engineInput.gain.setTargetAtTime(sourceMode === "engine" ? 1 : 0, at, 0.025);
+      post("MUTE", { muted: muted || sourceMode === "engine" });
+    },
 
     async resume() {
       await context.resume();
@@ -426,7 +443,7 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
     setMuted(nextMuted) {
       muted = nextMuted;
       masterGain.gain.setTargetAtTime(muted ? 0 : 1, context.currentTime, 0.015);
-      post("MUTE", { muted });
+      post("MUTE", { muted: muted || sourceMode === "engine" });
     },
 
     /** Gates the sole vehicle-reactive effect: braking UNDERWATER. */
@@ -666,6 +683,7 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
       nightshiftGain.disconnect();
       fractureGain.disconnect();
       performanceBus.disconnect();
+      engineInput.disconnect();
       manualEffectsGraph.destroy();
       masterGain.disconnect();
       meter.disconnect();

@@ -1,0 +1,149 @@
+{
+  "repository": "https://github.com/markeasting/engine-audio",
+  "commit": "b8cf9887c914f17c2f006d68427080e39d02d0b0",
+  "declaredLicense": "MIT",
+  "ownerDecision": "2026-09-07 explicit source and WAV integration",
+  "recordingProvenance": "upstream declaration relied upon; independent recording ownership not established",
+  "code": [
+    {
+      "source": "src/Engine.ts",
+      "local": "src/engine/upstream/Engine.ts",
+      "upstreamSha256": "059d0c05f9da21f1e7fcf30b1ff71f2ef09993add19faa0dd031f7899145299c",
+      "localSha256": "803a585087745e80c5b597b5bc6cce43976d08ae9f19222780974c23004e4f40",
+      "changes": "Type-only/explicit imports; corrected rad/s-to-RPM relation; bounded omega; smoothed bounded ordinary sample parameters; removed init logging; formatting."
+    },
+    {
+      "source": "src/Drivetrain.ts",
+      "local": "src/engine/upstream/Drivetrain.ts",
+      "upstreamSha256": "ab36b9d9691570b32cd8890cc7e1db54716b4865afcbb0017785c537ec937ff2",
+      "localSha256": "c990d6371e48a7a60f31e4fc196e6cfbab52185afd1ab7c73d95c73e9f151063",
+      "changes": "Type-only/explicit imports; replace timer/logging with pendingGear and host-owned commitGear; formatting."
+    },
+    {
+      "source": "src/AudioManager.ts",
+      "local": "src/engine/upstream/AudioManager.ts",
+      "upstreamSha256": "1cbe5555f840cf68d67bc28780276528b21ed1e9edb40ffa3c64ebfeab873312",
+      "localSha256": "f24318e025fe05f4eaed2e788588de1d91dec92c5d2c70eb6770fcc3e5e87981",
+      "changes": "Keep equal-power mixer and data classes; remove standalone context/loader/UI ownership; erase parameter-property syntax; explicit imports; formatting."
+    },
+    {
+      "source": "src/configurations.ts",
+      "local": "src/engine/upstream/configurations.ts",
+      "upstreamSha256": "32b44e9abef74b1b134203315a42899d10c9c56c934a513db5b094d549e0ed1f",
+      "localSha256": "65179084f655e5dcb8a7495391a3dd128ab320747e7ca4f5404ffb4ad7b69ded",
+      "changes": "Type-only explicit imports; preserve configuration values; formatting."
+    },
+    {
+      "source": "src/util/clamp.ts",
+      "local": "src/engine/upstream/util/clamp.ts",
+      "upstreamSha256": "5191d2d5c16fcafc2e2b33efb06610ddc772d7fe25f7579c2efeef8644c860b1",
+      "localSha256": "5191d2d5c16fcafc2e2b33efb06610ddc772d7fe25f7579c2efeef8644c860b1",
+      "changes": "Formatting only."
+    },
+    {
+      "source": "src/util/ratio.ts",
+      "local": "src/engine/upstream/util/ratio.ts",
+      "upstreamSha256": "86bba659f1b3b346a895ecd6930264aa0c4579bf31c55c108edbccf2e3f1edae",
+      "localSha256": "e2e2556922214cd65d147715041afc477a0e6f0f5e1cc06b0dd1333c7abed7bc",
+      "changes": "Explicit local import and formatting."
+    }
+  ],
+  "audio": [
+    {
+      "source": "public/audio/458/limiter.wav",
+      "url": "/engine-audio/f4e5a7f8e96fa64a.wav",
+      "sha256": "f4e5a7f8e96fa64a715ba8ac1c9c9378f0f431cf2775a53c51e9afd652905835",
+      "bytes": 267398
+    },
+    {
+      "source": "public/audio/458/mid_res_2 {a777a51b-a829-4637-ac37-ccdaca0a3e9b}.wav",
+      "url": "/engine-audio/f068c7b8b8424a98.wav",
+      "sha256": "f068c7b8b8424a98fd4773f247338b0674ab25fc9993fc7f68de078e519c572d",
+      "bytes": 1664150
+    },
+    {
+      "source": "public/audio/458/off_higher {b1e2e686-3bd7-43df-9cf9-3b8c1afcffc1}.wav",
+      "url": "/engine-audio/78f9483d1f436303.wav",
+      "sha256": "78f9483d1f436303f037a1d00ece0feb6be989c9bf9f11281a8ec8e3e987584e",
+      "bytes": 3618662
+    },
+    {
+      "source": "public/audio/458/off_midhigh {94a99615-de6b-4b18-a977-a3b5e9b10641}.wav",
+      "url": "/engine-audio/a9d844fcb1c04646.wav",
+      "sha256": "a9d844fcb1c046463cc876ad53f58a56bb52da37000d46e8c4a44b89a3399015",
+      "bytes": 887302
+    },
+    {
+      "source": "public/audio/458/power_2 {1d0b3340-525d-418d-b809-a61f94a1d76a}.wav",
+      "url": "/engine-audio/2b6aac5dafa945ce.wav",
+      "sha256": "2b6aac5dafa945ce0d6b3b20add3844d703dfec1409b7ecebcb8367dc6fdfe45",
+      "bytes": 3847772
+    },
+    {
+      "source": "public/audio/BAC_Mono_offlow.wav",
+      "url": "/engine-audio/97d45c525723ea02.wav",
+      "sha256": "97d45c525723ea02f72ba0d553a368baedcc189833162275db10c2f9eec467ae",
+      "bytes": 1144012
+    },
+    {
+      "source": "public/audio/BAC_Mono_offveryhigh.wav",
+      "url": "/engine-audio/98d9a4f823c8dc66.wav",
+      "sha256": "98d9a4f823c8dc6603cb657af90cbe680454bac06d2707b36e405118057e1ccc",
+      "bytes": 1826496
+    },
+    {
+      "source": "public/audio/BAC_Mono_onhigh.wav",
+      "url": "/engine-audio/b75b9041be696ed6.wav",
+      "sha256": "b75b9041be696ed651253b1f034285144337f85c909dfaec675548da9be7c296",
+      "bytes": 2144712
+    },
+    {
+      "source": "public/audio/BAC_Mono_onlow.wav",
+      "url": "/engine-audio/8d178cd745397cc3.wav",
+      "sha256": "8d178cd745397cc333815b5a3980c4c195a3d4ab21005e3f2500e03fcaab2f8c",
+      "bytes": 1805772
+    },
+    {
+      "source": "public/audio/limiter.wav",
+      "url": "/engine-audio/d84df781799f715a.wav",
+      "sha256": "d84df781799f715ab256e74917ed777a43ae8cd9f2f7b823fe959734ee926d34",
+      "bytes": 37016
+    },
+    {
+      "source": "public/audio/procar/off_lower {05f28dcf-8251-4e6a-bc40-8099139ef81e}.wav",
+      "url": "/engine-audio/13a46ee6f4cad43b.wav",
+      "sha256": "13a46ee6f4cad43be7aa646e6c185b97a4a17a32d4226543fcffbfa0de943935",
+      "bytes": 1489668
+    },
+    {
+      "source": "public/audio/procar/off_midhigh {092a60f7-c729-4d2c-979e-2e766ba42c6c}.wav",
+      "url": "/engine-audio/49d3ac22096eaee1.wav",
+      "sha256": "49d3ac22096eaee138d672017446c30416c614f717674128bac73746e66547f0",
+      "bytes": 1896068
+    },
+    {
+      "source": "public/audio/procar/on_low {0477930f-2954-45ee-8ac4-db4867fe1749}.wav",
+      "url": "/engine-audio/3c1633f155e42a10.wav",
+      "sha256": "3c1633f155e42a105743a5a31d1b80d678fb3a49426605c9e09d9f0a80b2c466",
+      "bytes": 1480472
+    },
+    {
+      "source": "public/audio/procar/on_midhigh {eed64b99-c102-43cf-834e-4e4cafa68fdc}.wav",
+      "url": "/engine-audio/ac288f6d22b0bad1.wav",
+      "sha256": "ac288f6d22b0bad1fc0c6c1bed4deb138750d7dfca4d14d4d6ab339047987168",
+      "bytes": 1108652
+    },
+    {
+      "source": "public/audio/trany_power_high.wav",
+      "url": "/engine-audio/7703265ff1b1e7e2.wav",
+      "sha256": "7703265ff1b1e7e2223057e30e19a1007c844ccf3f870b659d5a393f811e40b0",
+      "bytes": 14302212
+    },
+    {
+      "source": "public/audio/tw_offlow_4 {0da7d8b9-9064-4108-998b-801699d71790}.wav",
+      "url": "/engine-audio/505b4d611f65af03.wav",
+      "sha256": "505b4d611f65af0362135126985994f987ffbd1dccc56e0ddcfa1cf86673bb81",
+      "bytes": 401388
+    }
+  ]
+}

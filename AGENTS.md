@@ -96,3 +96,15 @@ This supersedes manual-only transmission for that future feature only; implement
 matching disclosure, scheduling, server validation and tests before enabling it.
 Do not promise background timer execution or infer default Dev mode. Record
 minimized-browser gaps honestly. See docs/OWNER-DECISIONS-2026-09-07.md.
+
+## Engine source decision — 2026-09-07
+
+The owner explicitly directs implementation using pinned MIT
+`markeasting/engine-audio`, including its bundled active WAVs, relying on the
+repository's declared MIT licence. This supersedes older project/study holds and
+additional owner-approval gates for that exact integration. Record the declared
+licence, exact source/hash/change inventory and outstanding recording-provenance
+follow-up truthfully; do not claim ownership independently verified or liability
+transferred. Preserve upstream attribution and the existing deployment authority.
+The prior sealed candidate may be inspected and adapted progressively for this
+integration; no independent blind-review claim is made.

@@ -138,7 +138,7 @@ test("the Tesla Music drawer keeps the accepted paired Soundtrack layout", () =>
     styles.indexOf("@media (min-width: 651px) and (max-height: 650px)", styles.lastIndexOf("@media (max-width: 900px)")),
   );
 
-  assert.match(app, /deferScoreWorklets: musicId === "soundtrack"/);
+  assert.match(app, /deferScoreWorklets: launchEngine \|\| musicId === "soundtrack"/);
   assert.match(styles, /\.soundtrack-choice-grid \{ display: grid; grid-template-columns: repeat\(2, minmax\(0, 1fr\)\)/);
   assert.match(styles, /\.soundtrack-filter-layout \{ display: grid; grid-template-columns: 112px minmax\(0, 1fr\)/);
   assert.match(styles, /\.soundtrack-choice-card\.is-library \{ grid-template-columns: 64px minmax\(0, 1fr\) 48px/);
@@ -268,7 +268,7 @@ test("local exact-viewport QA can keep the Web Audio graph inaudible", () => {
   const app = read("App.jsx");
   assert.match(app, /const QA_MUTED = import\.meta\.env\.DEV && QA_PARAMS\.get\("qaMute"\) === "1"/);
   assert.match(app, /const \[muted, setMuted\] = useState\(QA_MUTED \|\| initialPreferences\.muted\)/);
-  assert.match(app, /const launchMuted = QA_MUTED \|\| mutedRef\.current \|\| musicId === "mute"/);
+  assert.match(app, /const launchMuted = QA_MUTED \|\| mutedRef\.current \|\| \(!launchEngine && musicId === "mute"\)/);
   assert.match(app, /audioRef\.current\.setMuted\(launchMuted \|\| musicId === "soundtrack"\)/);
 });
 
@@ -615,7 +615,7 @@ test("Now Playing shares the footer lifecycle with stable Media Session actions 
   assert.match(styles, /\.persistent-transport\.now-playing-dock \{[\s\S]*?z-index: 35/);
   assert.doesNotMatch(styles, /\.app\.modal-open \.persistent-transport\.now-playing-dock/);
   assert.doesNotMatch(styles, /\.app\.modal-open\.has-now-playing \.drawer-panel/);
-  assert.match(app, /const showNowPlaying = phase === "running" && Boolean\(currentTrack\) && !modalOpen && !immersiveEnvironment/);
+  assert.match(app, /const showNowPlaying = experienceMode === "flux" && phase === "running" && Boolean\(currentTrack\) && !modalOpen && !immersiveEnvironment/);
   assert.match(app, /\{showNowPlaying \? \([\s\S]*?className="now-playing-dock persistent-transport"/);
   assert.match(styles, /\.modal-open \.experience \.control-layer,[\s\S]*?visibility: hidden;[\s\S]*?pointer-events: none/);
   assert.match(styles, /\.controls-resting \.persistent-transport \{[\s\S]*?opacity: 0;[\s\S]*?pointer-events: none/);

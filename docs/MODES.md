@@ -1,6 +1,6 @@
 # Primary Experience Modes
 
-Status: **confirmed product architecture; Engine design and implementation pending**.
+Status: **both modes implemented; Engine vehicle acceptance pending**. See [Engine integration](ENGINE-INTEGRATION-2026-09-07.md).
 
 ## Confirmed requirements
 
@@ -8,7 +8,7 @@ Status: **confirmed product architecture; Engine design and implementation pendi
 
 | Mode | Audio purpose | Visual purpose | Current status |
 |---|---|---|---|
-| **Engine** | Reproduce selectable engine characters through synthesis, licensed samples, or a measured hybrid | Instrument-inspired generative system: abstract tachometer, throttle/load field, acceleration trace, mechanical light, or a selected alternative | Confirmed; not yet designed or implemented |
+| **Engine** | Reproduce selectable engine characters through synthesis, licensed samples, or a measured hybrid | Instrument-inspired generative system: abstract tachometer, throttle/load field, acceleration trace, mechanical light, or a selected alternative | Implemented: Telemetry, three sample profiles, AUTO gearbox; vehicle acceptance open |
 | **Flux** | Compose and reshape selectable music from speed, acceleration, deceleration, and discrete motion events | Four selectable environments: Aperture, Vertigo, Meridian, and Atlas; ten curated themes apply to every renderer | Current Drive Lab implementation; FRACTURE and JUNCTION ready, five later directions preparing |
 
 ## Naming decision
@@ -47,7 +47,7 @@ On switch:
 5. retain master mute, diagnostics, hue/accessibility preferences where semantically shared;
 6. announce the new active mode accessibly without a blocking confirmation dialog.
 
-The current Flux build places the flat ENGINE / FLUX selector in the top rail at `773 × 601`. Flux is active; Engine remains visibly present but disabled until its own direction and audio model are implemented. Final dual-mode switching still requires vehicle validation.
+The flat ENGINE / FLUX selector is enabled in the top rail and launch surface. Telemetry retains the Engine identity when chrome rests. Public Engine is AUTO; the protected LAB exposes MANUAL diagnostics. Final dual-mode switching still requires vehicle validation.
 
 ## Engine signal truthfulness
 

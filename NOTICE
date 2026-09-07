@@ -38,6 +38,12 @@ boundaries are recorded in THIRD_PARTY_NOTICES.md. In particular:
   camera-controls as pinned MIT rendering peers. The retained ShaderGradient
   permission notice is in `licenses/ShaderGradient-MIT.txt`.
 
+- Engine includes adapted engine-audio primitives/configurations and 16 unchanged
+  bundled WAVs by Mark Oosting, pinned at b8cf9887, under the repository-declared
+  MIT terms. Notices ship in src/engine/upstream/LICENSE and public/engine-audio/LICENSE;
+  recording provenance follow-up and exact hashes are in THIRD_PARTY_NOTICES.md
+  and src/engine/source-inventory.json.
+
 Public versions previously distributed under AGPL-3.0-or-later retain those
 rights. The current policy does not revoke or rewrite historical grants.
 

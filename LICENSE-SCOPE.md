@@ -54,6 +54,11 @@ are never relicensed by this project. See
 
 The following boundaries are load-bearing:
 
+- `prototype/drive-lab/src/engine/upstream/` and the unchanged WAVs in
+  `prototype/drive-lab/public/engine-audio/` retain Mark Oosting engine-audio
+  repository-declared MIT terms. The original host adapter remains PolyForm
+  Noncommercial; exact hashes and adaptations are in the Engine source inventory.
+
 - `prototype/drive-lab/public/third-party/infinite-lights/` remains the
   byte-identical Codrops/Tympanus Interstate 7 vendor snapshot under its custom
   upstream notice and bundled-library licences. The external sedicivalvole

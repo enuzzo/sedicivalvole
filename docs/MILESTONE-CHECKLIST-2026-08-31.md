@@ -11,6 +11,14 @@ the current factual overview in [`CURRENT-STATE.md`](CURRENT-STATE.md), and the
 phase dependencies in [`ROADMAP.md`](ROADMAP.md). A historical row in those
 sources is not a second active queue.
 
+## Engine implementation update — 2026-09-07
+
+GEAPS, declared-MIT banks, AUTO and the selected Telemetry direction are
+implemented; protected LAB includes MANUAL diagnostic gears. Do not mark the
+release or physical-vehicle gates complete from browser tests. Next: Engine
+listening (A12), then iPhone; informative ATLAS/full-screen statistics and
+Standard/Dev diagnostics remain queued. [Integration](ENGINE-INTEGRATION-2026-09-07.md).
+
 ## Consolidated completed work
 
 ### Operational reconciliation — 2026-09-07

@@ -1,0 +1,197 @@
+{
+  "meter": {
+    "contexts": 1,
+    "contextStates": [
+      "running"
+    ],
+    "readings": [
+      {
+        "peak": 0.12267494201660156,
+        "rms": 0.049643706324376424
+      },
+      {
+        "peak": 0.09367285668849945,
+        "rms": 0.04866325325483302
+      },
+      {
+        "peak": 0.12356223165988922,
+        "rms": 0.07580365580928257
+      },
+      {
+        "peak": 0.11331689357757568,
+        "rms": 0.05085127475233261
+      },
+      {
+        "peak": 0.1097034364938736,
+        "rms": 0.051377025607330706
+      },
+      {
+        "peak": 0.12236805260181427,
+        "rms": 0.055778868351082964
+      },
+      {
+        "peak": 0.12153614312410355,
+        "rms": 0.046622782472731446
+      },
+      {
+        "peak": 0.09832105040550232,
+        "rms": 0.04904828105436601
+      },
+      {
+        "peak": 0.11744195222854614,
+        "rms": 0.0636542737897071
+      },
+      {
+        "peak": 0.11874915659427643,
+        "rms": 0.06610384151308728
+      }
+    ],
+    "metadata": "Engine / Mono"
+  },
+  "responses": [
+    {
+      "status": 200,
+      "name": "7703265ff1b1e7e2.wav"
+    },
+    {
+      "status": 200,
+      "name": "505b4d611f65af03.wav"
+    },
+    {
+      "status": 200,
+      "name": "b75b9041be696ed6.wav"
+    },
+    {
+      "status": 200,
+      "name": "8d178cd745397cc3.wav"
+    },
+    {
+      "status": 200,
+      "name": "98d9a4f823c8dc66.wav"
+    },
+    {
+      "status": 200,
+      "name": "97d45c525723ea02.wav"
+    },
+    {
+      "status": 200,
+      "name": "d84df781799f715a.wav"
+    },
+    {
+      "status": 200,
+      "name": "7703265ff1b1e7e2.wav"
+    },
+    {
+      "status": 200,
+      "name": "505b4d611f65af03.wav"
+    },
+    {
+      "status": 200,
+      "name": "2b6aac5dafa945ce.wav"
+    },
+    {
+      "status": 200,
+      "name": "f068c7b8b8424a98.wav"
+    },
+    {
+      "status": 200,
+      "name": "78f9483d1f436303.wav"
+    },
+    {
+      "status": 200,
+      "name": "a9d844fcb1c04646.wav"
+    },
+    {
+      "status": 200,
+      "name": "f4e5a7f8e96fa64a.wav"
+    },
+    {
+      "status": 200,
+      "name": "ac288f6d22b0bad1.wav"
+    },
+    {
+      "status": 200,
+      "name": "3c1633f155e42a10.wav"
+    },
+    {
+      "status": 200,
+      "name": "49d3ac22096eaee1.wav"
+    },
+    {
+      "status": 200,
+      "name": "13a46ee6f4cad43b.wav"
+    },
+    {
+      "status": 200,
+      "name": "d84df781799f715a.wav"
+    },
+    {
+      "status": 200,
+      "name": "7703265ff1b1e7e2.wav"
+    },
+    {
+      "status": 200,
+      "name": "505b4d611f65af03.wav"
+    },
+    {
+      "status": 200,
+      "name": "b75b9041be696ed6.wav"
+    },
+    {
+      "status": 200,
+      "name": "8d178cd745397cc3.wav"
+    },
+    {
+      "status": 200,
+      "name": "98d9a4f823c8dc66.wav"
+    },
+    {
+      "status": 200,
+      "name": "97d45c525723ea02.wav"
+    },
+    {
+      "status": 200,
+      "name": "d84df781799f715a.wav"
+    },
+    {
+      "status": 200,
+      "name": "7703265ff1b1e7e2.wav"
+    },
+    {
+      "status": 200,
+      "name": "505b4d611f65af03.wav"
+    },
+    {
+      "status": 200,
+      "name": "b75b9041be696ed6.wav"
+    },
+    {
+      "status": 200,
+      "name": "8d178cd745397cc3.wav"
+    },
+    {
+      "status": 200,
+      "name": "98d9a4f823c8dc66.wav"
+    },
+    {
+      "status": 200,
+      "name": "97d45c525723ea02.wav"
+    },
+    {
+      "status": 200,
+      "name": "d84df781799f715a.wav"
+    }
+  ],
+  "moving": "ENGINE / TELEMETRY\nSAMPLE ENGINE\n0\n1\n2\n3\n4\n5\n6\n7\n8\n9\nVIRTUAL RPM\n6,802\nENGINE SPEED\nGEAR / AUTO\n4\nACOUSTIC GEARBOX\nDRIVE RESPONSE\n0%\nDECELERATION\n33%\nMono\nRosso\nTouring\n128 KM/H · LIVE MOTION",
+  "sends": 0,
+  "errors": [],
+  "checks": [
+    "network failure then automatic bank retry",
+    "three profiles decode",
+    "Demo acceleration and braking",
+    "TAMARRO after trusted standstill",
+    "mute rev release",
+    "Engine/Flux single context",
+    "390x844 no horizontal page overflow"
+  ]
+}

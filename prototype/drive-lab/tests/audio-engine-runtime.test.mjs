@@ -373,8 +373,8 @@ test("a hung FRACTURE module reaches the JUNCTION safety bed at the bounded dead
     assert.equal(await selection, "junction");
     assert.equal(junction.calls[0].active, true);
     assert.equal(engine.getState().scoreStatus, "error");
-    assert.equal(context.gains[2].gain.value, 0);
-    assert.equal(context.gains[3].gain.value, 1, "safety bed faded up from an already silent renderer");
+    assert.equal(context.gains[3].gain.value, 0);
+    assert.equal(context.gains[4].gain.value, 1, "safety bed faded up from an already silent renderer");
     assert.equal(engine.getState().scoreStatus, "error", "fallback degradation was hidden after its crossfade");
     engine.destroy();
   });
@@ -391,8 +391,8 @@ test("JUNCTION keeps its harmonic safety bed when both authored renderers fail",
     const selection = engine.setScore("junction");
     score.reject(new Error("AudioWorklet module unavailable"));
     assert.equal(await selection, "junction");
-    assert.equal(context.gains[2].gain.value, 0);
-    assert.equal(context.gains[3].gain.value, 1);
+    assert.equal(context.gains[3].gain.value, 0);
+    assert.equal(context.gains[4].gain.value, 1);
     assert.equal(engine.getState().scoreStatus, "error");
     assert.match(engine.getState().scoreError, /native bank unavailable/);
     assert.equal(junction.calls.filter((call) => call.active === false).length, 0);
@@ -413,8 +413,8 @@ test("a failed JUNCTION bank exposes its safety bed while FRACTURE is still load
     await Promise.resolve();
 
     assert.equal(await selection, "junction");
-    assert.equal(context.gains[2].gain.value, 0);
-    assert.equal(context.gains[3].gain.value, 1, "safety bed waited for the FRACTURE timeout");
+    assert.equal(context.gains[3].gain.value, 0);
+    assert.equal(context.gains[4].gain.value, 1, "safety bed waited for the FRACTURE timeout");
     assert.equal(context.worklets.length, 0, "the FRACTURE renderer was still pending");
     assert.equal(engine.getState().scoreStatus, "error");
     assert.match(engine.getState().scoreError, /FRACTURE is not yet audible/);
@@ -436,8 +436,8 @@ test("FRACTURE failure still preserves JUNCTION's bed when native readiness reje
     const selection = engine.setScore("fracture");
     score.reject(new Error("AudioWorklet module unavailable"));
     assert.equal(await selection, "junction");
-    assert.equal(context.gains[2].gain.value, 0);
-    assert.equal(context.gains[3].gain.value, 1);
+    assert.equal(context.gains[3].gain.value, 0);
+    assert.equal(context.gains[4].gain.value, 1);
     assert.equal(engine.getState().scoreStatus, "error");
     assert.match(engine.getState().scoreError, /JUNCTION native unavailable/);
     assert.equal(junction.calls.filter((call) => call.active === false).length, 0);
@@ -486,8 +486,8 @@ test("a FRACTURE processor error immediately restores JUNCTION instead of fading
     await Promise.resolve();
     assert.equal(engine.getState().requestedScoreId, "junction");
     assert.equal(engine.getState().scoreStatus, "error");
-    assert.equal(context.gains[2].gain.value, 0);
-    assert.equal(context.gains[3].gain.value, 1);
+    assert.equal(context.gains[3].gain.value, 0);
+    assert.equal(context.gains[4].gain.value, 1);
     assert.equal(pulses.at(-1).motionLane, "PARK");
     assert.deepEqual(recoveries, [{
       failedScoreId: "fracture",
@@ -550,7 +550,7 @@ test("the shared manual chain is audible on every Play the Road score", async ()
     assert.ok(result.parameters.bassDriveShelfDb >= 16);
     assert.ok(result.parameters.radioCutLowpassHz <= 3_300);
     assert.ok(result.parameters.highCutCutoffHz <= 1_200);
-    assert.equal(context.gains[1].connections.has(context.gains[5]), true);
+    assert.equal(context.gains[1].connections.has(context.gains[6]), true);
     assert.equal(context.gains.at(-1).connections.has(context.gains[0]), true);
     engine.destroy();
   });
@@ -561,7 +561,7 @@ test("Play the Road constructs no OPEN graph or BLOOM worklet", async () => {
     const engine = createAudioEngine();
     await engine.setScore("fracture");
     assert.deepEqual(context.worklets.map((node) => node.processorName), ["score-processor"]);
-    assert.equal(context.gains[1].connections.has(context.gains[5]), true);
+    assert.equal(context.gains[1].connections.has(context.gains[6]), true);
     assert.deepEqual(Object.keys(engine.getMacroSnapshot().values), ["underwater"]);
     engine.destroy();
   });
@@ -582,6 +582,24 @@ test("a stale vehicle-rate sample is published as zero to score consumers", asyn
     setClock(5000);
     timers.runIntervals(40);
     assert.equal(pulses.at(-1).accelerationMps2, 0);
+    engine.destroy();
+  });
+});
+
+test("Engine uses the shared FX/master path and deactivates sampled Flux audio", async () => {
+  await withFakeAudioEnvironment({}, async ({ createAudioEngine, context, junction }) => {
+    const engine = createAudioEngine();
+    await engine.setScore("junction");
+    engine.setSourceMode("engine");
+    assert.equal(context.gains[1].gain.value, 0);
+    assert.equal(engine.engineInput.gain.value, 1);
+    assert.equal(engine.engineInput.connections.has(context.gains[6]), true);
+    assert.equal(junction.calls.at(-1).active, false);
+    engine.setMuted(true);
+    assert.equal(context.gains[0].gain.value, 0);
+    engine.setSourceMode("flux");
+    assert.equal(engine.engineInput.gain.value, 0);
+    assert.equal(context.gains[1].gain.value, 1);
     engine.destroy();
   });
 });

@@ -1,5 +1,10 @@
 # Engine selection and sanitized study review — 2026-09-07
 
+Superseded implementation status: the owner subsequently authorized the exact
+source and WAV integration and chose Telemetry (direction 2). See
+[the implementation record](ENGINE-INTEGRATION-2026-09-07.md). The intake below is
+a historical review, not a current source-admission hold.
+
 Baseline inspected: `5ed280d723f96a47633b3d7229f1bde92a419f27` on `main`, initially
 clean. Published runtime remains `f590f51` / build `20260907-0930`.
 This is an informed intake and code-seam review, not a completed independent

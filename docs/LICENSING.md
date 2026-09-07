@@ -260,3 +260,14 @@ Primary references: [PolyForm Noncommercial 1.0.0](https://polyformproject.org/l
 [SPDX licence identifier](https://spdx.org/licenses/PolyForm-Noncommercial-1.0.0.html),
 [GNU licenses](https://www.gnu.org/licenses/), and
 [Creative Commons software guidance](https://creativecommons.org/faq/#can-i-apply-a-creative-commons-license-to-software).
+
+
+## 2026-09-07 — Engine source and bundled WAV admission
+
+The owner explicitly directs implementing pinned `markeasting/engine-audio`,
+including active bundled WAVs, relying on its declared MIT grant. Six adapted
+source files and 16 unchanged audio assets retain MIT notices and exact source
+and change hashes. The separate recording-provenance follow-up is not described
+as independently cleared ownership or transferred responsibility. Original
+sedicivalvole code remains PolyForm Noncommercial. See THIRD_PARTY_NOTICES and
+[Engine integration](ENGINE-INTEGRATION-2026-09-07.md).

@@ -204,6 +204,11 @@ Gate: stable frame budget on the slowest target vehicle, graceful degradation, a
 
 ## Phase 5 — Engine mode discovery
 
+September 7 update: the owner selected Telemetry (direction 2) and explicitly
+admitted the pinned MIT source and WAVs. GEAPS with three profiles, AUTO and
+protected LAB MANUAL is implemented; [verification and vehicle gates](ENGINE-INTEGRATION-2026-09-07.md).
+The original discovery checklist below is historical; first listening is A12.
+
 Status: **CONFIRMED MODE, DESIGN AND AUDIO SPIKE PENDING**.
 
 - define the synthetic speed/acceleration → RPM/load/shift model without claiming vehicle telemetry;

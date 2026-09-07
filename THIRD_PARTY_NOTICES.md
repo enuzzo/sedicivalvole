@@ -256,3 +256,21 @@ The README now contains a consolidated community credits table. `docs/COMMUNITY-
 The final README section now includes individual acknowledgements for all named offline analysis dependencies above, the libsndfile audio-I/O backend ([upstream](https://github.com/libsndfile/libsndfile)), and Microsoft's Playwright verification tooling ([upstream](https://github.com/microsoft/playwright)). These are development acknowledgements, not new product integrations or redistributed copies. Their installed notices continue to govern their respective tools. No source, audio, model, dependency version or upstream licensing scope changed in this documentation checkpoint.
 
 `docs/community-npm-credits.json` and the generated README appendix cover all 196 npm lockfile entries, including nested versions, transitive utilities and optional platform packages. This is an authorship/source inventory, not a replacement for license texts or a declaration that every locked dependency ships in the browser. Exact-version public registry metadata is retained for reproducibility. The maintainer script rejects missing/stale lockfile credits and a README whose community section is no longer last. Non-npm material still requires manual provenance review.
+
+## Engine audio — Mark Oosting — admitted 2026-09-07
+
+Source: https://github.com/markeasting/engine-audio at
+`b8cf9887c914f17c2f006d68427080e39d02d0b0`, MIT, copyright 2025 Mark Oosting.
+The owner explicitly authorizes integration of the source and bundled WAVs on
+the basis of the repository's declared MIT licence. This supersedes the prior
+project-level hold on those files; it does not assert independently verified
+recording ownership or transfer responsibility to the upstream author. Preserve
+original notices and exact per-file source/hash inventory in
+`prototype/drive-lab/src/engine/source-inventory.json`. Upstream recording
+provenance remains a follow-up; replace affected assets if contradictory rights
+evidence appears. No competitor code or audio is included.
+
+Reuse: engine/drivetrain/mixer primitives, three configurations, ratio/clamp
+helpers and active WAVs. Adaptations: shared context/output injection, explicit
+imports, corrected RPM units, bounded audio scheduling and original GPS/automatic
+gearbox/lifecycle integration. Native upstream keyboard/demo UI is not shipped.

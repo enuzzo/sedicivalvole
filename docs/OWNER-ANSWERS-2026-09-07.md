@@ -2,7 +2,7 @@
 
 Owner follow-up received: see [accepted decisions and sequence](OWNER-DECISIONS-2026-09-07.md). All current owner clarification lines are answered, including A02. The owner recalls intentional interruptions and no sudden uncommanded music stop.
 
-No current `Answer:` is awaiting the owner. `Not tested` is a useful answer: it preserves the gate without inventing a pass. The historical decisions and answers in `PIANO.md` remain valid; this file collects only current acceptance and next-scope questions. Technical fixes and evidence collection remain the implementer's responsibility.
+A12 is prepared for the first Engine listening result after implementation. No implementation approval is awaiting the owner. `Not tested` is a useful answer: it preserves the gate without inventing a pass. The historical decisions and answers in `PIANO.md` remain valid; this file collects only current acceptance and next-scope questions. Technical fixes and evidence collection remain the implementer's responsibility.
 
 ## Immediate diagnostic interpretation
 
@@ -80,4 +80,15 @@ Answer: Create a distinct full-screen enhanced statistics experience from the ex
 
 Illobo authorization, PolyForm licensing, Jamendo versus the rejected sources, the fixed 130 km/h ceiling, Engine/Flux identity, and standing deployment authorization are settled. `PIANO.md` Q3 concerns a retired visual path; Q16/Q22/Q24 describe technical evidence/revalidation, not unanswered product permission. Old statements such as “no Jamendo adapter” are historical, not current blockers.
 
-Engine's actual visual choice and exact candidate/source admission belong after its concrete review. This questionnaire does not reopen sealed archives or claim Phase A completion. Production release approval belongs after acceptance, not in a speculative blanket question now.
+Engine's direction 2 (Telemetry), pinned MIT source and bundled WAV admission are now explicitly approved. This questionnaire does not reopen sealed archives or claim Phase A completion. Production release approval belongs after acceptance, not in a speculative blanket question now.
+
+
+### A12 — Engine first listen
+
+Source/WAV admission and Telemetry direction 2 are settled. After trying the
+implemented build, which profile do you prefer (Mono/Rosso/Touring)? Do acceleration,
+upshift, lift/downshift and stopped TAMARRO feel coherent, and does Engine ↔ Flux
+retain correct mute/native media behavior? A short journey with REPORT afterward
+can separate listening preference from measurable timing/network issues.
+
+Answer: [Ready for your first-listen notes; “Not tested yet” is valid.]

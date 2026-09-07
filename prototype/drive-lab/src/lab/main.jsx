@@ -1,3 +1,4 @@
+import { EngineLab } from "../engine/lab.jsx";
 import { StrictMode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { createAudioEngine } from "../audio-engine.js";
@@ -63,6 +64,7 @@ const MUSIC = Object.freeze([
 ]);
 
 const LAB_SURFACES = Object.freeze([
+  Object.freeze({ id: "engine", label: "ENGINE / TELEMETRY" }),
   ...Object.values(PRTCL_TYPES).map((entry) => Object.freeze({ id: `prtcl:${entry.id}`, label: `PRTCL / ${entry.label}` })),
   Object.freeze({ id: "shadergradient", label: "SHADERGRADIENT / LAB" }),
 ]);
@@ -581,7 +583,20 @@ function LabApp() {
   const controls = activeGroup === "macros" ? null : CONTROL_DEFINITIONS[activeGroup];
   const selectedType = PRTCL_TYPES[values["context.prtclType"]];
 
+  const prepareEngineAudio = useCallback(async () => {
+    soundtrackRef.current?.pause();
+    if (!audioRef.current) audioRef.current = createAudioEngine(undefined, undefined, undefined, { deferScoreWorklets: true, audioContext: soundtrackRef.current?.getAudioContext?.() ?? null });
+    if (!audioRef.current) throw new Error("Web Audio is unavailable");
+    audioRef.current.setSourceMode("engine");
+    await audioRef.current.resume();
+    audioRef.current.setMuted(false);
+    setTestMusic("mute");
+  }, []);
+
   const selectLabSurface = useCallback((value) => {
+    if (value === "engine") {
+      selectMusic("mute"); setLabSurface("engine"); setNotice("Engine / protected tuning surface"); return;
+    }
     if (value === "shadergradient") {
       setLabSurface("shadergradient");
       setNotice("ShaderGradient experiment · protected LAB only");
@@ -590,7 +605,7 @@ function LabApp() {
     const [, prtclType] = value.split(":");
     setLabSurface("prtcl");
     setParam("context.prtclType", prtclType);
-  }, [setParam]);
+  }, [setParam, selectMusic]);
 
   useEffect(() => {
     window.__SEDICIVALVOLE_LAB__ = {
@@ -603,21 +618,21 @@ function LabApp() {
   }, [preset, renderer, soundtrackPreview, summary, values]);
 
   return (
-    <main className={`lab-shell${drawerOpen ? " is-drawer-open" : ""}${labSurface === "shadergradient" ? " is-shadergradient" : ""}`}>
+    <main className={`lab-shell${drawerOpen ? " is-drawer-open" : ""}${labSurface !== "prtcl" ? " is-shadergradient" : ""}`}>
       <header className="lab-header">
         <div className="lab-wordmark"><strong className="lab-brand-name">sedicivalvole</strong><span>/ LAB</span></div>
         <SelectControl
           label="LAB visual tool"
-          value={labSurface === "shadergradient" ? "shadergradient" : `prtcl:${values["context.prtclType"]}`}
+          value={labSurface !== "prtcl" ? labSurface : `prtcl:${values["context.prtclType"]}`}
           options={LAB_SURFACES}
           onChange={selectLabSurface}
         />
-        <SelectControl
+        {labSurface !== "engine" && <SelectControl
           label="Independent test audio"
           value={testMusic}
           options={MUSIC}
           onChange={selectMusic}
-        />
+        />}
         <div className="lab-build">{APP.version} · {APP.build}</div>
         <div className="lab-connected">
           <span className="lab-connected-dot" aria-hidden="true" />
@@ -629,7 +644,7 @@ function LabApp() {
         <a className="lab-logout" href={boot.logoutPath}>LOG OUT</a>
       </header>
 
-      {labSurface === "shadergradient" ? (
+      {labSurface === "engine" ? <EngineLab audioRef={audioRef} prepareAudio={prepareEngineAudio} /> : labSurface === "shadergradient" ? (
         <ShaderGradientLab embedded />
       ) : (
         <>

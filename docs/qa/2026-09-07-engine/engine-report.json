@@ -1,0 +1,396 @@
+{
+  "schema": "sedicivalvole.tesla-diagnostic.v4",
+  "generatedAt": "2026-09-07T09:15:58.815Z",
+  "app": {
+    "version": "0.0.0",
+    "build": "20260907-1055",
+    "commit": "44cc031",
+    "mode": "engine",
+    "engine": {
+      "status": "ready",
+      "profileId": "mono",
+      "rpm": 1000,
+      "gear": 1,
+      "shift": null,
+      "drive": 0,
+      "deceleration": 0,
+      "motion": "lost",
+      "trustedStationary": false,
+      "revving": false,
+      "decodedBytes": 45888512,
+      "error": null,
+      "bankBytes": 21661608,
+      "enabled": true,
+      "source": "sample",
+      "transmissionMode": "AUTO",
+      "version": "geaps.v1"
+    },
+    "musicMode": "engine",
+    "rememberedScoreId": "fracture",
+    "environment": "engine-telemetry",
+    "pageUrl": "http://127.0.0.1:5173/",
+    "source": "GPS",
+    "displayedSpeedKmh": 0,
+    "bpm": null,
+    "transportBpm": null,
+    "responseCeilingKmh": 130,
+    "paletteTheme": "red",
+    "appearancePreference": "light",
+    "appearance": "light",
+    "appearanceSource": "manual",
+    "appearanceHoldReason": null,
+    "particleType": null,
+    "muted": false,
+    "vehicleAudioEffectsEnabled": true,
+    "arrangement": null
+  },
+  "performance": {
+    "timeOrigin": "2026-09-07T09:15:25.844Z",
+    "pageElapsedMs": 32970.5,
+    "harnessElapsedMs": 32263.7,
+    "navigation": {
+      "type": "navigate",
+      "durationMs": 248.5,
+      "redirectCount": 0,
+      "responseStartMs": 3.2,
+      "responseEndMs": 3.4,
+      "domInteractiveMs": 6.9,
+      "domContentLoadedMs": 247.6,
+      "loadEventMs": 248.5,
+      "transferBytes": 1679,
+      "encodedBodyBytes": 1379,
+      "decodedBodyBytes": 1379
+    },
+    "paints": {
+      "first-paint": 252,
+      "first-contentful-paint": 308
+    },
+    "resources": {
+      "count": 160,
+      "byInitiatorType": {
+        "script": {
+          "count": 103,
+          "durationMs": 1352.6,
+          "transferBytes": 7349215,
+          "encodedBodyBytes": 7318315,
+          "decodedBodyBytes": 7318315
+        },
+        "link": {
+          "count": 2,
+          "durationMs": 289.1,
+          "transferBytes": 149076,
+          "encodedBodyBytes": 148476,
+          "decodedBodyBytes": 148476
+        },
+        "img": {
+          "count": 4,
+          "durationMs": 11.8,
+          "transferBytes": 626814,
+          "encodedBodyBytes": 625614,
+          "decodedBodyBytes": 625614
+        },
+        "css": {
+          "count": 5,
+          "durationMs": 50.3,
+          "transferBytes": 3545,
+          "encodedBodyBytes": 2045,
+          "decodedBodyBytes": 2045
+        },
+        "fetch": {
+          "count": 41,
+          "durationMs": 1156.6,
+          "transferBytes": 96022926,
+          "encodedBodyBytes": 96012726,
+          "decodedBodyBytes": 96012726
+        },
+        "other": {
+          "count": 5,
+          "durationMs": 17.8,
+          "transferBytes": 708864,
+          "encodedBodyBytes": 707664,
+          "decodedBodyBytes": 707664
+        }
+      }
+    },
+    "memory": {
+      "jsHeapSizeLimitBytes": 4395630592,
+      "totalJsHeapSizeBytes": 54026519,
+      "usedJsHeapSizeBytes": 24247439
+    },
+    "frame": {
+      "renderer": "Engine SVG telemetry",
+      "canvasWidth": 773,
+      "canvasHeight": 601,
+      "observationGapCount": 0,
+      "observationGapMs": 0,
+      "maximumObservationGapMs": 0,
+      "sampledFrames": 420,
+      "sampledDurationMs": 32138.73,
+      "targetFps": 10,
+      "averageFps": 12.94,
+      "medianFrameMs": 99.7,
+      "p95FrameMs": 103.9,
+      "maximumFrameMs": 180.4,
+      "slowFramesOver34Ms": 303,
+      "verySlowFramesOver50Ms": 303,
+      "estimatedMissedTargetFrames": 2,
+      "retainedIntervalSamples": 300
+    },
+    "phases": {
+      "splash:idle": {
+        "sampledDurationMs": 200,
+        "continuitySegments": 1,
+        "frame": {
+          "renderer": "Splash WebGL2",
+          "canvasWidth": 773,
+          "canvasHeight": 601,
+          "observationGapCount": 0,
+          "observationGapMs": 0,
+          "maximumObservationGapMs": 0,
+          "sampledFrames": 5,
+          "sampledDurationMs": 199.9,
+          "targetFps": 60,
+          "averageFps": 20.01,
+          "medianFrameMs": 16.65,
+          "p95FrameMs": 130.01,
+          "maximumFrameMs": 150,
+          "slowFramesOver34Ms": 1,
+          "verySlowFramesOver50Ms": 1,
+          "estimatedMissedTargetFrames": 8,
+          "retainedIntervalSamples": 4
+        },
+        "memory": {
+          "samples": 2,
+          "jsHeapSupported": true,
+          "latestUsedJsHeapBytes": 18195580,
+          "minimumUsedJsHeapBytes": 18195580,
+          "maximumUsedJsHeapBytes": 18195580,
+          "latestTotalJsHeapBytes": 21956092,
+          "jsHeapLimitBytes": 4395630592,
+          "latestAudioDecodedPcmBytes": null,
+          "maximumAudioDecodedPcmBytes": null,
+          "latestAudioBankBytes": null
+        }
+      },
+      "splash:choosing": {
+        "sampledDurationMs": 183,
+        "continuitySegments": 1,
+        "frame": {
+          "renderer": "Splash WebGL2",
+          "canvasWidth": 773,
+          "canvasHeight": 601,
+          "observationGapCount": 0,
+          "observationGapMs": 0,
+          "maximumObservationGapMs": 0,
+          "sampledFrames": 12,
+          "sampledDurationMs": 183.2,
+          "targetFps": 60,
+          "averageFps": 60.04,
+          "medianFrameMs": 16.7,
+          "p95FrameMs": 16.7,
+          "maximumFrameMs": 16.7,
+          "slowFramesOver34Ms": 0,
+          "verySlowFramesOver50Ms": 0,
+          "estimatedMissedTargetFrames": 0,
+          "retainedIntervalSamples": 11
+        },
+        "memory": {
+          "samples": 0,
+          "jsHeapSupported": false,
+          "latestUsedJsHeapBytes": null,
+          "minimumUsedJsHeapBytes": null,
+          "maximumUsedJsHeapBytes": null,
+          "latestTotalJsHeapBytes": null,
+          "jsHeapLimitBytes": null,
+          "latestAudioDecodedPcmBytes": null,
+          "maximumAudioDecodedPcmBytes": null,
+          "latestAudioBankBytes": null
+        }
+      },
+      "splash:testing": {
+        "sampledDurationMs": 600,
+        "continuitySegments": 1,
+        "frame": {
+          "renderer": "Splash WebGL2",
+          "canvasWidth": 773,
+          "canvasHeight": 601,
+          "observationGapCount": 0,
+          "observationGapMs": 0,
+          "maximumObservationGapMs": 0,
+          "sampledFrames": 37,
+          "sampledDurationMs": 600.1,
+          "targetFps": 60,
+          "averageFps": 59.99,
+          "medianFrameMs": 16.7,
+          "p95FrameMs": 16.73,
+          "maximumFrameMs": 16.8,
+          "slowFramesOver34Ms": 0,
+          "verySlowFramesOver50Ms": 0,
+          "estimatedMissedTargetFrames": 0,
+          "retainedIntervalSamples": 36
+        },
+        "memory": {
+          "samples": 0,
+          "jsHeapSupported": false,
+          "latestUsedJsHeapBytes": null,
+          "minimumUsedJsHeapBytes": null,
+          "maximumUsedJsHeapBytes": null,
+          "latestTotalJsHeapBytes": null,
+          "jsHeapLimitBytes": null,
+          "latestAudioDecodedPcmBytes": null,
+          "maximumAudioDecodedPcmBytes": null,
+          "latestAudioBankBytes": null
+        }
+      },
+      "drive:engine:engine:visual:wall-retreat": {
+        "sampledDurationMs": 13156,
+        "continuitySegments": 3,
+        "frame": {
+          "renderer": "Engine SVG telemetry",
+          "canvasWidth": 773,
+          "canvasHeight": 601,
+          "observationGapCount": 0,
+          "observationGapMs": 0,
+          "maximumObservationGapMs": 0,
+          "sampledFrames": 142,
+          "sampledDurationMs": 13145,
+          "targetFps": 10,
+          "averageFps": 10.5,
+          "medianFrameMs": 100,
+          "p95FrameMs": 104.12,
+          "maximumFrameMs": 108.8,
+          "slowFramesOver34Ms": 131,
+          "verySlowFramesOver50Ms": 131,
+          "estimatedMissedTargetFrames": 0,
+          "retainedIntervalSamples": 138
+        },
+        "memory": {
+          "samples": 6,
+          "jsHeapSupported": true,
+          "latestUsedJsHeapBytes": 30528968,
+          "minimumUsedJsHeapBytes": 24097592,
+          "maximumUsedJsHeapBytes": 30873545,
+          "latestTotalJsHeapBytes": 54806504,
+          "jsHeapLimitBytes": 4395630592,
+          "latestAudioDecodedPcmBytes": 45888512,
+          "maximumAudioDecodedPcmBytes": 45888512,
+          "latestAudioBankBytes": 21661608
+        }
+      },
+      "drive:engine:engine:visual": {
+        "sampledDurationMs": 17078,
+        "continuitySegments": 1,
+        "frame": {
+          "renderer": "Engine SVG telemetry",
+          "canvasWidth": 773,
+          "canvasHeight": 601,
+          "observationGapCount": 0,
+          "observationGapMs": 0,
+          "maximumObservationGapMs": 0,
+          "sampledFrames": 173,
+          "sampledDurationMs": 17077.7,
+          "targetFps": 10,
+          "averageFps": 10.07,
+          "medianFrameMs": 99.95,
+          "p95FrameMs": 103.9,
+          "maximumFrameMs": 180.4,
+          "slowFramesOver34Ms": 170,
+          "verySlowFramesOver50Ms": 170,
+          "estimatedMissedTargetFrames": 2,
+          "retainedIntervalSamples": 172
+        },
+        "memory": {
+          "samples": 9,
+          "jsHeapSupported": true,
+          "latestUsedJsHeapBytes": 28876833,
+          "minimumUsedJsHeapBytes": 23939284,
+          "maximumUsedJsHeapBytes": 28922605,
+          "latestTotalJsHeapBytes": 55791241,
+          "jsHeapLimitBytes": 4395630592,
+          "latestAudioDecodedPcmBytes": 45888512,
+          "maximumAudioDecodedPcmBytes": 45888512,
+          "latestAudioBankBytes": 21661608
+        }
+      },
+      "drive:engine:mute:visual:wall-retreat": {
+        "sampledDurationMs": 0,
+        "continuitySegments": 1,
+        "frame": {
+          "renderer": "Engine SVG telemetry",
+          "canvasWidth": 773,
+          "canvasHeight": 601,
+          "observationGapCount": 0,
+          "observationGapMs": 0,
+          "maximumObservationGapMs": 0,
+          "sampledFrames": 1,
+          "sampledDurationMs": 0,
+          "targetFps": 10,
+          "averageFps": null,
+          "medianFrameMs": null,
+          "p95FrameMs": null,
+          "maximumFrameMs": null,
+          "slowFramesOver34Ms": 0,
+          "verySlowFramesOver50Ms": 0,
+          "estimatedMissedTargetFrames": 0,
+          "retainedIntervalSamples": 0
+        },
+        "memory": {
+          "samples": 0,
+          "jsHeapSupported": false,
+          "latestUsedJsHeapBytes": null,
+          "minimumUsedJsHeapBytes": null,
+          "maximumUsedJsHeapBytes": null,
+          "latestTotalJsHeapBytes": null,
+          "jsHeapLimitBytes": null,
+          "latestAudioDecodedPcmBytes": null,
+          "maximumAudioDecodedPcmBytes": null,
+          "latestAudioBankBytes": null
+        }
+      },
+      "drive:aperture:fracture:visual:wall-retreat": {
+        "sampledDurationMs": 1100,
+        "continuitySegments": 1,
+        "frame": {
+          "renderer": "WebGL2",
+          "canvasWidth": 773,
+          "canvasHeight": 601,
+          "observationGapCount": 0,
+          "observationGapMs": 0,
+          "maximumObservationGapMs": 0,
+          "sampledFrames": 67,
+          "sampledDurationMs": 1099.93,
+          "targetFps": 60,
+          "averageFps": 60,
+          "medianFrameMs": 16.7,
+          "p95FrameMs": 16.7,
+          "maximumFrameMs": 16.8,
+          "slowFramesOver34Ms": 0,
+          "verySlowFramesOver50Ms": 0,
+          "estimatedMissedTargetFrames": 0,
+          "retainedIntervalSamples": 66
+        },
+        "memory": {
+          "samples": 1,
+          "jsHeapSupported": true,
+          "latestUsedJsHeapBytes": 24916566,
+          "minimumUsedJsHeapBytes": 24916566,
+          "maximumUsedJsHeapBytes": 24916566,
+          "latestTotalJsHeapBytes": 53827878,
+          "jsHeapLimitBytes": 4395630592,
+          "latestAudioDecodedPcmBytes": null,
+          "maximumAudioDecodedPcmBytes": null,
+          "latestAudioBankBytes": null
+        }
+      }
+    },
+    "longTasks": {
+      "supported": true,
+      "count": 0,
+      "totalDurationMs": 0,
+      "maximumDurationMs": null,
+      "retainedTasks": 0,
+      "recentTasks": []
+    }
+  },
+  "sent": false
+}

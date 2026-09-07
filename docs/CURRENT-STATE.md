@@ -3,8 +3,7 @@
 Latest verified canonical publication: **`20260907-0930`**, source **`f590f51`**
 (reliability implementation `9b57fc3`), version `0.0.0`. See
 [deployment evidence](DEPLOY.md) and [reliability QA](RELIABILITY-QA-2026-09-07.md).
-This supersedes older live-build references below. Next substantive work is
-Engine review/integration; iPhone follows. Read [updated Engine intake](ENGINE-INTAKE-2026-09-07.md). Broad owner acceptance is recorded in
+This supersedes older live-build references below. Engine is now implemented locally; publication evidence will supersede this baseline after postflight. iPhone follows Engine vehicle trial. Read [updated Engine intake](ENGINE-INTAKE-2026-09-07.md). Broad owner acceptance is recorded in
 [owner decisions](OWNER-DECISIONS-2026-09-07.md); A02 is now answered: no spontaneous music stop was reported. No new automatic diagnostic sender exists.
 
 Visual recovery and diagnostic accounting fixes are implemented; publication evidence is recorded in [DEPLOY.md](DEPLOY.md). Future diagnostics automation is not yet implemented.
@@ -33,9 +32,9 @@ dated study documents.
 
 ## Product surface
 
-- `Flux` is the implemented primary mode. `Engine` remains an equal confirmed
-  mode, visible but disabled until its own audio model and one of exactly three
-  Engine-specific visual directions are selected.
+- `Flux` and `Engine` are enabled primary modes. Engine has the owner-selected
+  Telemetry surface, three declared-MIT sample banks and automatic virtual gears.
+  [Integration/evidence](ENGINE-INTEGRATION-2026-09-07.md); Tesla listening is open.
 - The selected **16 Road** product mark is implemented as path-only SVG rather
   than live text: a large Orbitron weight-750 `16` sits between mirrored
   vermilion and warm-white three-line roads. Dark, warm-light, and true-alpha
