@@ -1,12 +1,15 @@
 # Current Project State
 
-Latest verified canonical publication: **`20260907-1624`**, source **`2ace25b`**,
-Engine idle **`c004b00`** and GPS zero **`e696a18`**, version `0.0.0`.
-658 native tests, 17 package checks, Engine browser checks and 24
-canonical byte/cache checks pass. The splash has 64 px circular previews, fresh
-genre/visual choices on each visit, immediate nonrepeating Feeling lucky/Change,
-and precise Choose controls. Real Jazz/Lobo playback and direct Rosso startup
-pass. Official publication and independent no-write postflight pass.
+Latest verified canonical publication: **`20260907-1833`**, source **`aecd44e`**,
+version `0.0.0`. The approved ATLAS / Stats remix is implemented and live:
+full-width Natural/Palette map, wider persistent framing, source-coordinate
+Wikipedia POIs and an in-page reader; an independent lazy Stats sheet with
+GPS speed/altitude, speed bands, elevation, heading, network and system metrics.
+Engine audio survives passenger-view transitions. **661 native tests**, 17 package
+checks, 196 credits and **25 canonical byte/cache checks** pass. Canonical browser
+QA covers 773×601, 1440×900, 773×440 and 390×844; light/dark contrast is verified.
+Physical Tesla acceptance is still separate. PDF/email remains designed, not shipped.
+
 The owner-reported tall-window expansion is fixed: content-sized rows, viewport-centered sheet, independent
 viewport-bottom credits and 36 px preset art. Support now sits after About and
 in Session report; its dialog is centered. Safety copy sits below the wordmark,
@@ -31,11 +34,11 @@ persistent stationary TAMARRO controls and tiny idle blips. All four refinements
 are implemented, verified and canonically published.
 Latest owner priority: ATLAS / Stats for Nerds after the support-header fix,
 ahead of iPhone. [Three directions and PDF/email plan](ATLAS-STATS-REPORT-PLAN-2026-09-07.md)
-now records the approved remix. Map/stats separation is implemented and under release verification; PDF/email remains planned.
+now records the approved and published remix. PDF/email remains planned.
 
 Owner refinement listening remains in
 [A12](OWNER-ANSWERS-2026-09-07.md#a12--engine-first-listen), then iPhone. The phone
-control shell remains unfinished. ATLAS/full-screen statistics is in release verification; Standard/Dev diagnostics remain queued. Broad Flux/Soundtrack/FX/interface/Discover acceptance
+control shell remains unfinished. ATLAS/full-screen statistics is published; Standard/Dev diagnostics remain queued. Broad Flux/Soundtrack/FX/interface/Discover acceptance
 remains recorded; no new automatic diagnostic sender exists.
 
 Visual recovery and diagnostic accounting fixes are implemented; publication evidence is recorded in [DEPLOY.md](DEPLOY.md). Future diagnostics automation is not yet implemented.

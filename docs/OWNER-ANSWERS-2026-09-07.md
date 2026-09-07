@@ -94,3 +94,14 @@ can separate listening preference from measurable timing/network issues.
 Answer: First listen broadly positive. Requested corrections: no UNDERWATER or other creative FX in Engine; no volume duck on deceleration; larger persistent TAMARRO controls on both sides at zero; occasional tiny stationary revs. Implemented in the September 7 refinement. Profile preference and sustained vehicle acceptance are not yet specified.
 
 Refinement listening response: [Ready for your notes on sound level during lift/downshift, stationary controls and tiny idle blips.]
+
+### A13 — ATLAS / Stats visual remix (answered 2026-09-07)
+
+Answer: ATLAS and Stats must be separate. Select Travel Observatory's map and
+POIs; clicking a point opens a compact photo/title/description card and Read more
+opens the full Wikipedia article while remaining over Atlas. Stats takes the
+first proposal's speed bands/elevation gain/loss, the second's heading/network
+instruments and red speed trace, and the third's speed/altitude chart. The
+Journey Magazine photo card is the selected place-card reference. The owner
+explicitly authorizes implementation of this remix; no further composition
+selection is pending. PDF/email remains the separate documented design scope.

@@ -1,0 +1,7 @@
+{
+  "errors": [],
+  "checks": [
+    "Engine → report → Stats preserves running audio context",
+    "Stats → passenger Atlas → Engine preserves audio mode and context"
+  ]
+}

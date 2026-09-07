@@ -50,3 +50,17 @@ is in `/tmp/sv-atlas-engine/evidence.json`. No diagnostic email was sent.
 
 P3: physical Tesla readability, touch and GPU acceptance remain a separate
 owner check. A short synthetic trace is not an endurance or real-drive test.
+
+## Canonical closeout — 2026-09-07 18:41
+
+Final production **20260907-1833 / aecd44e**. The final map and Stats captures
+were opened after the canonical checks. Persistent controls, natural map,
+separate statistics hierarchy, source data and no horizontal overflow all pass.
+A final P2 dark-appearance contrast issue was fixed with distinct light/dark
+red/blue chart inks and themed controls; the corrected dark capture is verified.
+Durable current-build map/stats captures and identity/browser JSON are in
+`docs/qa/2026-09-07-atlas-stats/`. Full place/photo/reader captures remain in
+`/tmp/sv-atlas-live/`; no third-party article photography was bundled as a new
+repository asset. 25 canonical byte/cache checks and independent no-write
+postflight pass. Final result remains **passed** with physical Tesla P3 acceptance
+separate from this browser/release gate.

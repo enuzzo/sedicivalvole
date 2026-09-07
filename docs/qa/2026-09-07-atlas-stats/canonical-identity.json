@@ -1,0 +1,133 @@
+{
+  "build": "20260907-1833",
+  "commit": "aecd44e",
+  "checks": [
+    {
+      "path": "/",
+      "sha256": "d0d886ac9e6cc711b211ddab78c51860535c04a456148df89f77b049be0fa4ec",
+      "bytes": 1186,
+      "cacheControlled": true
+    },
+    {
+      "path": "/?verify=20260907-1833",
+      "sha256": "d0d886ac9e6cc711b211ddab78c51860535c04a456148df89f77b049be0fa4ec",
+      "bytes": 1186,
+      "cacheControlled": true
+    },
+    {
+      "path": "/artwork/visuals/acid-orchard.png",
+      "sha256": "897c63cb6de40700b50fdcb0b6ccb19ee84a245e838044e208068684f0dabb58",
+      "bytes": 45102
+    },
+    {
+      "path": "/artwork/visuals/aperture.png",
+      "sha256": "03e9681ed12a00ebb62d53a4e27dd70de0013a9b10a4ee299156343c7bdb58a3",
+      "bytes": 43030
+    },
+    {
+      "path": "/artwork/visuals/chromatic-silk.png",
+      "sha256": "305efd443700c52bcc5534c13092914e26a6ddcb09a36bc19df4550ead679c40",
+      "bytes": 53007
+    },
+    {
+      "path": "/artwork/visuals/drivey.png",
+      "sha256": "c63a94f19dfd2b6376847c40108048d611ccae6deeb2a3c537b3b881eb250ba9",
+      "bytes": 20414
+    },
+    {
+      "path": "/artwork/visuals/japanese-mist.png",
+      "sha256": "1d22a5dc867c3cb1091f4652defd6d2a3cbe44090b9cd520ea15e753626b0352",
+      "bytes": 43960
+    },
+    {
+      "path": "/artwork/visuals/meridian.png",
+      "sha256": "88994a14ea02871e802786d41a04122a10d0fcc34a0b53e3a764f004c627c59b",
+      "bytes": 20556
+    },
+    {
+      "path": "/artwork/visuals/prtcl.png",
+      "sha256": "42c192a08c279a820d9492400704a3e874feb3bec544bc78a7f29dfd82d0a027",
+      "bytes": 22559
+    },
+    {
+      "path": "/artwork/visuals/vertigo.png",
+      "sha256": "e0fe15c98ed06382328267446b10ff777f92e75f4ba4bf19562e3ef7ac385a65",
+      "bytes": 23808
+    },
+    {
+      "path": "/assets/atlas-field-DIYHhGHm.css",
+      "sha256": "715dbf736f7fdc9671a7ab3ec3b2fc5e3cdb252f3cc59758d52914bd2c9e57a3",
+      "bytes": 69347
+    },
+    {
+      "path": "/assets/atlas-field-Dxo1_xea.js",
+      "sha256": "9f0828ea797cf51aa91b40bdb727fdaa381ba6d9cc02a7ec671560562eaf1170",
+      "bytes": 17099
+    },
+    {
+      "path": "/assets/browser-B309ppEj.js",
+      "sha256": "ebc5c7e3792aabf6b7ed4fb1db09065a36f1c769e49a0318739b9d1f285c1729",
+      "bytes": 25776
+    },
+    {
+      "path": "/assets/index-BwhB52GT.css",
+      "sha256": "19f23ce80e177cb1f7c01e8e8ddbc4bcf0e6736295c36ab005ac99736b128ab8",
+      "bytes": 214068
+    },
+    {
+      "path": "/assets/index-ZY-Wh5T9.js",
+      "sha256": "56dfb650c2a52113e38316235e57f8bcc4224b60679d6284deb685e49f3ca751",
+      "bytes": 777331
+    },
+    {
+      "path": "/assets/launch/soundtrack.png",
+      "sha256": "f37af576733e4bfc4cc6e0de364a8375ef6aedb57dd36c2a5b4f9f268427059a",
+      "bytes": 105836
+    },
+    {
+      "path": "/assets/maplibre-gl-CQxi7gCJ.js",
+      "sha256": "978fe18086694bb109ef78b764f67ddb448f8da302a0d5dc5534dfbe9e5839d2",
+      "bytes": 941210
+    },
+    {
+      "path": "/assets/runtime-B_bXGPFq.js",
+      "sha256": "bf65e0e0e72fd7070560376dd80954bd8b9c9fce1eed776a7109b6ad58a30abf",
+      "bytes": 21440
+    },
+    {
+      "path": "/assets/score-processor-Dly9Ky60.js",
+      "sha256": "1e4928616b90722e2be5b1ab777d01866084ed54690283ce0c82ebe00d1a8ebf",
+      "bytes": 117006
+    },
+    {
+      "path": "/assets/shadergradient-field-k2Aq_tP2.js",
+      "sha256": "abf4cf0237616d1d9539ade77be74c7672fbfd5daa433c49b438fe3aaac14e9f",
+      "bytes": 1085825
+    },
+    {
+      "path": "/assets/stats-panel-XBQtgoOf.js",
+      "sha256": "e4ab233f9f3b14bf77ee1dbcc13d31a2423ff41eb7128ac497666b08f501079b",
+      "bytes": 8575
+    },
+    {
+      "path": "/brand/sedicivalvole-mark-transparent-dark.svg",
+      "sha256": "247993b474efadfbe794cbdfc06b65dfb5301119aa34af6d94fc111a2c4c9b6a",
+      "bytes": 2265
+    },
+    {
+      "path": "/brand/sedicivalvole-mark-transparent.svg",
+      "sha256": "f682560229919421138bd5b97b5cefb99b83f7852922695e9e673a356c4a8f12",
+      "bytes": 2266
+    },
+    {
+      "path": "/third-party/tabler-icons/engine.svg",
+      "sha256": "37f5bafee6840a1c1e2faa26955284b90ef8ef829290202bef79a5ab6d940ac4",
+      "bytes": 664
+    },
+    {
+      "path": "/third-party/tabler-icons/music.svg",
+      "sha256": "8b69aafb5497fc9773078aab151dda57434e89011e712bb24c10c9b66f80ab68",
+      "bytes": 517
+    }
+  ]
+}

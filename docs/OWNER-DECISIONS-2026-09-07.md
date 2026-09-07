@@ -89,3 +89,14 @@ map context and a separate visual stats page are requested. A branded session
 PDF with user-chosen email delivery and a resettable remembered recipient is
 planned in [the implementation brief](ATLAS-STATS-REPORT-PLAN-2026-09-07.md).
 Direction selection is pending; PDF/email is planned, not shipped.
+
+## ATLAS / Stats selection — 2026-09-07
+
+The owner selected the Travel Observatory / Mission Control / Journey Magazine
+remix and explicitly requested implementation. ATLAS is the independent natural
+map with real-coordinate Wikipedia POIs and an in-page article reader; Stats
+is a separate full-screen session sheet combining the selected timelines,
+heading/network instruments and speed/elevation summaries. See A13 in the
+owner-answer ledger and the implementation/report plan. No visual-choice
+question remains open for this work. Physical Tesla acceptance and future
+PDF/email implementation remain separate gates.

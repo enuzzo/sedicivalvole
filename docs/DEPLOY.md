@@ -1,5 +1,35 @@
 # Deployment
 
+## ATLAS and Stats approved remix — 2026-09-07 18:41
+
+Canonical **20260907-1833**, source **aecd44e**, version `0.0.0`.
+Implementation **cf953b0**, live POI distance **889f912**, final appearance
+contrast **aecd44e**. ATLAS now fills the map with Natural pastel or saved Palette
+colors, wider Follow/Area/Trip framing and real-coordinate Wikipedia POIs.
+Photo cards open the complete localized article over the same map. Stats for
+Nerds is a separate lazy sheet: GPS speed/altitude traces, streamed session
+totals, speed bands, filtered elevation, heading and observed network/system
+metrics. Session report exposes it from both audio modes; switching passenger
+views retains the same running Engine AudioContext and unmounts hidden visuals.
+
+661 native tests, 17 package checks and 196 dependency credits pass. Canonical
+Chrome verified the exact build, photo/article/back flow, persistent Area,
+MapLibre unmount/return and four viewport sizes; no page exception or diagnostic
+email. Light/dark contrast was reviewed on the final production build. Engine
+context/mode continuity passed locally. All **25 canonical HTML/asset byte/cache
+checks** pass. Official publication verified **218 files / 254,669,280 bytes**,
+all 29 Illobo tracks by full hash, and retained two cache-overlap assets.
+Independent official postflight reports **remote_writes=NONE**.
+
+Evidence: [current captures and JSON](qa/2026-09-07-atlas-stats/),
+`/tmp/sv-atlas-live/` (including place and full reader),
+`/tmp/sv-atlas-{publish,postflight}.log`, `/tmp/sv-atlas-canonical/identity.json`.
+Browser GPS in QA is explicitly simulated; these figures are not a real journey
+or endurance test. Physical Tesla legibility/GPU/listening remains owner
+acceptance. PDF generation and chosen-recipient email are designed in the
+[report plan](ATLAS-STATS-REPORT-PLAN-2026-09-07.md), not shipped.
+
+
 ## Quiet Engine idle and GPS zero — 2026-09-07 16:32
 
 Canonical **20260907-1624**, source **2ace25b**. Idle tuning **c004b00**;

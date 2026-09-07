@@ -1,0 +1,13 @@
+{
+  "errors": [],
+  "checks": [
+    "POI card → full Wikipedia reader → same selected place",
+    "Area survives former six-second auto-return",
+    "Stats unmounts MapLibre",
+    "Stats 1440×900: no horizontal overflow",
+    "Stats 773×440: no horizontal overflow",
+    "Stats 390×844: no horizontal overflow",
+    "Close Stats restores map"
+  ],
+  "build": "20260907-1833"
+}

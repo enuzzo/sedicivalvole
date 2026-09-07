@@ -1,6 +1,6 @@
 # ATLAS, Stats for Nerds and session reports
 
-Status: owner-selected remix implemented; browser/release verification in progress.
+Status: owner-selected remix implemented and canonically verified, build 20260907-1833 / source aecd44e.
 PDF generation and recipient-email delivery remain design work, not shipped features.
 
 ## Three compositions presented
@@ -201,3 +201,12 @@ colors. Demo capture is reference evidence, not a new design or real journey.
   altitude. Source coverage and stale/unavailable values stay visible.
 - No new dependency, generated geographic image, external message, PDF endpoint
   or arbitrary-recipient mail capability is introduced in this checkpoint.
+
+## Publication evidence — 2026-09-07 18:41
+
+661 native tests, 17 package checks, 196 dependency credits and 25 canonical
+byte/cache checks pass. Full reader/card/back and separate Stats navigation pass
+in canonical Chrome at 773×601, 1440×900, 773×440 and 390×844. Engine retains the
+same running AudioContext through Stats/Atlas; light/dark colors are verified.
+See [DEPLOY](DEPLOY.md) and [current evidence](qa/2026-09-07-atlas-stats/).
+This does not close physical Tesla, long real-drive or future PDF/email gates.
