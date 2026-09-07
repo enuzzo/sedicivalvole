@@ -1,5 +1,19 @@
 # Session Handoff
 
+## September 7 diagnostic and milestone reconciliation
+
+Read [DIAGNOSTIC-REVIEW-2026-09-07.md](DIAGNOSTIC-REVIEW-2026-09-07.md) and
+[OWNER-ANSWERS-2026-09-07.md](OWNER-ANSWERS-2026-09-07.md) before resuming older
+work queues. Documentation checkpoint `b799a4e` reviews four intact inbox
+attachments; public identity remains `6e2abff` / `20260905-0225` / `0.0.0`.
+Prioritize ATLAS frame-counter aliasing, gap-aware diagnostic totals and active
+music attribution, then Drivey load recovery and actual ATLAS profiling. No
+runtime fix was made. Two native Pause commands succeed, but their intent needs
+owner clarification; recorded gaps do not prove continuous endurance. The
+milestone checklist now contains a dated reconciliation; most open rows already
+have published implementations. Engine intake was reviewed for sequencing only;
+sealed archives remain unopened and no full Phase A completion is claimed.
+
 Status: **live working record**. Updated on 2026-09-04.
 
 Start with [`CURRENT-STATE.md`](CURRENT-STATE.md) for the product overview. This
