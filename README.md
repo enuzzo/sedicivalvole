@@ -15,12 +15,12 @@ third-party work retains the credits and licences recorded below.
 > layers. The exact derived files, modifications, license, and direct reuse
 > authorization are recorded in `THIRD_PARTY_NOTICES.md`.
 
-> Current state: **Flux Drive Lab runs the authored FRACTURE, JUNCTION and
-> NIGHTSHIFT music with six selectable visual environments plus the DISCOVER 07
-> passenger destination in one Visual catalogue and is under vehicle validation**. PRTCL 06 and braking
-> UNDERWATER are published on the canonical root. The rejected PRIMORDIAL field has
-> been removed from the product; its history remains in Git. This is a
-> development build, not a release.
+> Current state: **Engine and Flux are equal primary modes.** Engine has three
+> sample profiles; Flux has three adaptive scores, Soundtrack and a Visual
+> catalogue with independent Atlas, Discover and Stats for Nerds destinations.
+> Development diagnostics default to Dev/AUTO ON and send coordinate-free
+> reports every 15 observed GPS-driving minutes, with a persistent OFF switch.
+> This is an experimental development build, not a production release.
 
 Public development repository: [github.com/enuzzo/sedicivalvole](https://github.com/enuzzo/sedicivalvole).
 
@@ -29,8 +29,10 @@ Public development repository: [github.com/enuzzo/sedicivalvole](https://github.
 `sedicivalvole` turns speed, sound, and light into an atmospheric, useful, and memorable in-car experience. It is not a generic dashboard. Two equal primary modes share one motion signal and safety model while offering deliberately different audio and visual identities.
 
 The canonical development build is available at [sedicivalvole.app](https://sedicivalvole.app/).
-The current canonical identity is version `0.0.0`, source commit `2ace25b`, build
-`20260907-1624`. Compact round launch previews and fresh genre/visual choices pass
+The current canonical identity is version `0.0.0`, source commit `b27975d`, build
+`20260907-2004`. See [current state](docs/CURRENT-STATE.md) and the
+[reconciled work queue](docs/NIGHT-WORK-2026-09-07.md) for current verification
+and pending physical-device gates. Earlier launch evidence: compact previews and fresh choices pass
 658 native tests, 17 package checks, 17 launch-browser scenarios and live
 Jazz/Lobo/Engine startup at `773 × 601`. Earlier browser QA verified Road Sheet
 LIGHT/DARK/AUTO, the restored compact Music layout, deferred inactive score
@@ -53,6 +55,14 @@ at full level; fresh movement restores it. Automatic idle blips reach about
 
 ## What exists today
 
+The September 7 night implementation adds the selected iPhone Compact Cockpit,
+Stats motion/runtime parity and a branded Travel Report with preview, download
+and explicit verified-recipient email. Engine preserves motion through brief
+poor-accuracy readings, keeps playback truthful while preparing a replacement
+bank, gates transmission sound to movement and repairs three measured Mono loop
+seams in decoded memory. Publication status and acceptance evidence are recorded
+in [the night implementation](docs/NIGHT-IMPLEMENTATION-2026-09-07.md).
+
 - ✅ a single ignored local reference library under `_references/`;
 - ✅ source audit, product requirements, adversarial review, technical direction, and roadmap;
 - ✅ the exact MIT `@shadergradient/react@2.4.20` stack now powers one public `GRADIENT 08` family with the owner-selected Japanese Mist, Acid Orchard, and Chromatic Silk variants through one separate lazy product chunk. The standalone `/shadergradient-lab.html` and authenticated `/lab` workbenches remain available with the same three registered studies, all ten official presets, all geometries and registered shader families, and the complete useful public control surface;
@@ -60,9 +70,8 @@ at full level; fresh movement restores it. Automatic idle blips reach about
 - ✅ nine choices in the shared Flux Visual catalogue: seven rendered environment families—procedural Aperture, byte-identical upstream Interstate 7 Vertigo, the original architectural Meridian environment, lazy-loaded OpenFreeMap ATLAS, source-faithful Rezmason Drivey, PRTCL, and the lazy `GRADIENT 08` family—plus the separate DISCOVER 07 Passenger Index and STATS FOR NERDS 09 destinations. A persistent in-visual `VARIANT` control cycles Gradient through Japanese Mist, Acid Orchard, and Chromatic Silk. The catalogues state Drivey's three views/two renders, PRTCL's three types, and Gradient's three variants without fabricating counts for single-state visuals. Aperture uses one longitudinal grid origin across all four tunnel planes so their depth cuts meet at the corners. The initial Instrument Deck and running Visual library fit the complete catalogue at `773 × 601` without pretending that Discover is a renderer;
 - 🛑 PRIMORDIAL and WAKE were rejected after visual review and have been removed from the catalog, runtime, tests, and current QA surface. PLUMB remains retired, SLIP remains proposal-only, and Aperture remains the accepted fresh-session fallback;
 - ✅ GPS/Demo speed source, icon-only Mute, a fixed `130 km/h` audiovisual response ceiling with truthful higher-speed display, 10 curated palettes, and an integrated capability report;
-- ✅ local-only speed processing and a coordinate-free session report; while selected, ATLAS keeps the complete driven route in bounded session memory, compacts older detail without deleting the trip origin, and never copies the route into the report. It discloses its OpenFreeMap tile and rounded-cell Open-Meteo/Copernicus terrain-elevation requests; Wikimedia reading belongs only to the separate DISCOVER surface;
-- ✅ ATLAS now fills the map with Natural pastel or Palette colors, wider Follow/Area/Trip framing and real Wikipedia POIs. A compact photo card opens the full localized article over the same map. Stats for Nerds is an independent lazy passenger sheet with speed/altitude traces, speed bands, elevation estimates, heading, observed network traffic and system metrics; Session report makes it reachable from Music and Engine. GPS gaps and missing data remain explicit. [Architecture and PDF/email design](docs/ATLAS-STATS-REPORT-PLAN-2026-09-07.md).
-- ✅ ATLAS now fills the map with Natural pastel or Palette colors, wider Follow/Area/Trip framing and real Wikipedia POIs. A compact photo card opens the full localized article over the same map. Stats for Nerds is an independent lazy passenger sheet with speed/altitude traces, speed bands, elevation estimates, heading, observed network traffic and system metrics; Session report makes it reachable from Music and Engine. GPS gaps and missing data remain explicit. [Architecture and PDF/email design](docs/ATLAS-STATS-REPORT-PLAN-2026-09-07.md).
+- ✅ local-only speed processing and a coordinate-free session report; while selected, ATLAS keeps the complete driven route in bounded session memory, compacts older detail without deleting the trip origin, and never copies the route into technical diagnostics. The separate Travel Report includes it only after an explicit export selection. It discloses its OpenFreeMap tile and rounded-cell Open-Meteo/Copernicus terrain-elevation requests; Wikimedia reading is available in Discover and Atlas place cards;
+- ✅ ATLAS now fills the map with Natural pastel or Palette colors, wider Follow/Area/Trip framing and real Wikipedia POIs. A compact photo card opens the full localized article over the same map. Stats for Nerds is an independent lazy passenger sheet with speed/altitude traces, speed bands, elevation estimates, heading, observed network traffic and system metrics; Session report makes it reachable from Music and Engine. GPS gaps and missing data remain explicit. [Architecture and original report design](docs/ATLAS-STATS-REPORT-PLAN-2026-09-07.md).
 - ✅ FRACTURE, a production AudioWorklet score with an ambience-only launch, ten four-bar harmonic sections, a narrow tempo knee, quantized transitions, hysteresis, dwell, crossfades, and three authored half-time rhythm families that grow from sparse velvet pulse to weave before the full break is permitted at `88 km/h`; no automatic riff or response lane plays in normal playback;
 - ✅ JUNCTION, a sampled production built as one synchronous performance at a time: 24 complete eight-bar clips from 76 distinct recordings, one stable E-minor harmonic grammar, native 127–168 BPM pacing, six slowly evolving clockless PARK voicings without beat or bass, four-second rhythm entrances/releases, one 5.8 MB segmented Opus bank, recent-take avoidance, and no rave lead, tonal second deck, or loose source samples;
 - ✅ NIGHTSHIFT, the third adaptive score: 18 complete eight-bar synth-pop
@@ -413,6 +422,12 @@ A heartfelt thank-you to the people who share the code, type, music, data and ex
 | 🎵 Lobo (illobo) — textStep / Lobo recordings and marks | [Project](https://github.com/illobo/textStep) | **Integrated code and artist-authorized media.** Transport clock, hex patterns and drum/synth/bus DSP translated into src/score/; 29 separately authorized recordings and the supplied playlist marks. |
 | 🌌 Daniel Velasquez (Anemolo), Codrops/Tympanus — Infinite Lights / Interstate 7 | [Repository](https://github.com/Anemolo/Infinite-Lights) · [Daniel Velasquez](https://tympanus.net/codrops/author/anemolito/) · [Original Codrops article](https://tympanus.net/codrops/2019/11/13/high-speed-light-trails-in-three-js/) · [Original demo](https://tympanus.net/Tutorials/InfiniteLights/) | **Integrated vendor runtime.** Byte-identical e58d585 Interstate 7 snapshot in public/third-party/infinite-lights/, with an external speed/FOV/palette bridge for Vertigo. |
 | 🏎️ Mark Oosting — engine-audio | [Pinned repository](https://github.com/markeasting/engine-audio/tree/b8cf9887c914f17c2f006d68427080e39d02d0b0) · [Author](https://github.com/markeasting) | **Integrated, declared MIT.** Adapted Engine/Drivetrain/equal-power mixer, three configurations and helpers; 16 byte-identical bundled WAVs. [Exact inventory](prototype/drive-lab/src/engine/source-inventory.json). Recording provenance follow-up remains recorded. |
+| 🔧 DasEtwas — enginesound | [Source](https://github.com/DasEtwas/enginesound/tree/e5fcca587397c0c8ba9c9d24874b951fed74d260) · [Public route](https://github.com/DasEtwas) | **Study only.** MIT procedural cylinder/intake/exhaust and headless loop-export architecture; source study only, no code or example audio shipped. |
+| 🔊 Antonio-R1 — engine-sound-generator | [Source](https://github.com/Antonio-R1/engine-sound-generator/tree/c76c5adb9e63f5a54fb0def3b97e8e0ac1a7dea1) · [Public route](https://github.com/Antonio-R1) | **Study only.** MIT AudioWorklet/C++/WASM waveguide implementation study; no code or assets shipped. |
+| ⚙️ ATG / Dan — VehicleNoiseSynthesizer | [Source](https://github.com/ATG-Simulator/VehicleNoiseSynthesizer/tree/4241caca5a18be0d47f0b8586df93b1b42d7020d) · [Public route](https://github.com/ATG-Simulator) | **Study only.** MIT code study of RPM regions and discrete acoustic events; no Unity code or demo recordings shipped. |
+| 🔬 Ange Yaghi — engine-sim | [Source](https://github.com/ange-yaghi/engine-sim/tree/85f7c3b959a908ed5232ede4f1a4ac7eafe6b630) · [Public route](https://github.com/ange-yaghi) | **Study only.** Physical engine/firing/path-length research; no code or bundled impulse responses shipped. |
+| 📖 Baldan, Lachambre, Delle Monache and Boussard — engine sound synthesis (2015) | [Source](https://air.iuav.it/handle/11578/264484) · [Public route](https://air.iuav.it/handle/11578/264484) | **Study only.** Institutional abstract and cited implementation study; full-paper equation audit not claimed; no paper text redistributed. |
+| 📊 Robin Doerfler and Lonce Wyse — Pulse-Train-Resonator / Procedural Engine Sounds | [Source](https://arxiv.org/abs/2603.09391) · [Public route](https://github.com/rdoerfler/ptr-model) | **Study only.** 2026 paper and RPM/torque-annotated dataset study; no code/audio imported. CC BY-NC code is not admitted as project software. |
 | 🛣️ Rezmason; original Drivey by Mark Pursey — Drivey.js | [Project](https://github.com/Rezmason/drivey) | **Integrated vendor runtime.** 51 unchanged runtime files at 5104cda in public/third-party/drivey/, behind a separate integration shell and bridge. |
 | 🎨 ruucm and stone-skipper — ShaderGradient | [Project](https://github.com/ruucm/shadergradient) | **Production dependency.** Unmodified @shadergradient/react 2.4.20 in the lazy Gradient family and protected LAB; project-owned starting points, response and fallback. |
 | ✒️ Paweł Kuna and contributors — Tabler Icons | [Project](https://github.com/tabler/tabler-icons) | **Integrated assets.** Unchanged v3.46.0 SVGs in public/third-party/tabler-icons/; project CSS supplies optical sizing, masks and semantic colour, including the launch Music and Engine accents. |
@@ -425,6 +440,7 @@ A heartfelt thank-you to the people who share the code, type, music, data and ex
 | 🔳 Ryan Day (soldair) and contributors; QR algorithm lineage includes Kazuhiko Arase — node-qrcode | [Project](https://github.com/soldair/node-qrcode) | **Production dependency.** qrcode 1.5.4 generates local passenger handoff links. Public email is from the installed package author metadata. |
 | ✒️ Simple Icons contributors — Simple Icons | [Project](https://github.com/simple-icons/simple-icons) | **Integrated icon.** GitHub source-link mark in App.jsx. |
 | 🔤 Florian Karsten and project authors — Space Grotesk | [Project](https://github.com/floriankarsten/space-grotesk) | **Bundled font.** Unmodified variable font in public/fonts/, used for reading text, values and controls. Public email is published in the upstream README. |
+| 📄 Olivier Plathey — FPDF | [Official project](https://www.fpdf.org/en/home.php) · [Pinned 1.9 release](https://www.fpdf.org/en/download.php) | **Integrated PHP renderer.** Unmodified FPDF 1.9 and Helvetica/Helvetica Bold metrics generate the fixed Travel Report snapshot. The exact file/hash inventory and original permissive license are retained in public/report-support/fpdf/; no tFPDF or arbitrary PDF/HTML uploads. |
 | 🔤 Matt McInerney and project authors — Orbitron | [Project](https://github.com/theleagueof/orbitron) | **Bundled font.** Unmodified font for the exact sedicivalvole wordmark; selected 16 mark includes outlined glyphs. |
 | ✨ Raoul van Rüschen and contributors — postprocessing | [Project](https://github.com/pmndrs/postprocessing) | **Upstream-bundled dependency.** Unmodified 6.8.5 inside the Infinite Lights snapshot; not a newly installed current release. |
 | 🧮 Matthew Crumley — expr-eval | [Project](https://github.com/silentmatt/expr-eval) | **Upstream-bundled dependency.** Unchanged 2.0.2 expression evaluator included with the Drivey snapshot. |

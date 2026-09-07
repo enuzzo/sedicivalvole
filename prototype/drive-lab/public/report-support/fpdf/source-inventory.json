@@ -1,0 +1,29 @@
+{
+  "source": "https://www.fpdf.org/en/dl.php?f=zip&v=19",
+  "version": "1.9",
+  "archiveSha256": "7d1ff963a434e05796db4bdbab7f542908fe20c57b225a55173191aea6444f16",
+  "license": "FPDF permissive license (license.txt)",
+  "changes": "None; upstream files are byte-identical.",
+  "files": [
+    {
+      "path": "fpdf.php",
+      "bytes": 52962,
+      "sha256": "69851ce91e809cfd990b36215b2c54c5cbb507c6195fb23a6771fdc8e185ef24"
+    },
+    {
+      "path": "license.txt",
+      "bytes": 331,
+      "sha256": "44b085ba3e622633e3dfc75e06fd8f03b173fff64055390218b88e6e6809953d"
+    },
+    {
+      "path": "font/helvetica.json",
+      "bytes": 1398,
+      "sha256": "37aa6cfae54ae28bb51b06d20d0679123a36d46644e2a739e1eb3965efb62d17"
+    },
+    {
+      "path": "font/helveticab.json",
+      "bytes": 1402,
+      "sha256": "236895e431b512d2aad39a40517d71fc6d93d1c34fe7465d09681a70a7ad249f"
+    }
+  ]
+}

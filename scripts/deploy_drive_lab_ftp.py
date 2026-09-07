@@ -71,6 +71,8 @@ RETIRED_BRAND_HASHES = {
     "illobo-featured-provisional.png": "da6d5086f06dc8a38ea580f3a5c4289363c214cb8736c9e84ffa39a462946e2b",
 }
 DIAGNOSTIC_ENDPOINT = "send-diagnostic.php"
+SESSION_REPORT_ENDPOINT = "session-report.php"
+SESSION_REPORT_MARKERS = (b"sedicivalvole.session-report-api.v1", b"REPORT_EXPECTED_ORIGIN")
 DIAGNOSTIC_RECIPIENT_CONFIG = "recipient.local.php"
 DIAGNOSTIC_RECIPIENT_SOURCE = (
     ROOT / "prototype" / "drive-lab" / "config" / "diagnostic-recipient.local.php"
@@ -888,6 +890,7 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
         "artwork",
         "experiences",
         "engine-audio",
+        "report-support",
         "brand",
         "fonts",
         "third-party",
@@ -968,6 +971,7 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
                 JAMENDO_CONFIG,
                 SOUNDTRACK_CATALOG_ENDPOINT,
                 SOUNDTRACK_AUDIO_ENDPOINT,
+                SESSION_REPORT_ENDPOINT,
             }):
                 raise ValueError("unexpected API entry")
             if DIAGNOSTIC_ENDPOINT in api_names:
@@ -988,6 +992,10 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
             for name, markers in SOUNDTRACK_API_MARKERS.items():
                 if name in api_names and not all(marker in remote_bytes(ftp, name) for marker in markers):
                     raise ValueError("Soundtrack API identity mismatch")
+            if SESSION_REPORT_ENDPOINT in api_names and not all(
+                marker in remote_bytes(ftp, SESSION_REPORT_ENDPOINT) for marker in SESSION_REPORT_MARKERS
+            ):
+                raise ValueError("session report API identity mismatch")
         finally:
             ftp.cwd("..")
 
@@ -1074,6 +1082,13 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
                 BUILD / "engine-audio",
                 tree_name="engine-audio",
             )
+        finally:
+            ftp.cwd("..")
+
+    if "report-support" in root_names:
+        ftp.cwd("report-support")
+        try:
+            verify_remote_static_tree(ftp, BUILD / "report-support", tree_name="report-support")
         finally:
             ftp.cwd("..")
 

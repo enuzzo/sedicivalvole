@@ -288,3 +288,41 @@ acknowledgements do not change the project's PolyForm Noncommercial licence.
 ## Launch Cockpit icon extension — 2026-09-07
 
 The unmodified `music.svg` and `engine.svg` outline icons from Tabler Icons v3.46.0 join the existing Paweł Kuna MIT inventory. Project CSS supplies amber/red masks; upstream SVG bytes remain unchanged. Sources: https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/music.svg and https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/engine.svg.
+
+## FPDF session report renderer — 2026-09-07
+
+Olivier Plathey's **FPDF 1.9**, released 2026-05-31, supplies the unmodified
+PHP PDF writer and Helvetica/Helvetica Bold metrics for on-demand session reports.
+Source: [official download](https://www.fpdf.org/en/download.php), archive
+`https://www.fpdf.org/en/dl.php?f=zip&v=19`, SHA-256
+`7d1ff963a434e05796db4bdbab7f542908fe20c57b225a55173191aea6444f16`.
+
+FPDF uses its own permissive license, **not a claim of MIT licensing**. Its
+original `license.txt` is retained beside the exact file/hash inventory under
+`prototype/drive-lab/public/report-support/fpdf/`. Original report validation,
+layout, verification and delivery orchestration remain sedicivalvole code under
+the project's existing PolyForm Noncommercial scope. No FPDF tutorial, unrelated
+extension, tFPDF/LGPL code or third-party document is copied into the product.
+The renderer uses fixed local font metrics and the existing project-owned mark;
+it never accepts user-supplied fonts, images, paths, PDF bytes or HTML.
+
+
+## Engine acoustics source studies — 2026-09-07
+
+These sources informed the original host analysis and improvement plan. No new
+third-party source or recording from this list is included in the runtime.
+
+- **DasEtwas — enginesound**: [https://github.com/DasEtwas/enginesound/tree/e5fcca587397c0c8ba9c9d24874b951fed74d260](https://github.com/DasEtwas/enginesound/tree/e5fcca587397c0c8ba9c9d24874b951fed74d260). MIT procedural cylinder/intake/exhaust and headless loop-export architecture; source study only, no code or example audio shipped.
+- **Antonio-R1 — engine-sound-generator**: [https://github.com/Antonio-R1/engine-sound-generator/tree/c76c5adb9e63f5a54fb0def3b97e8e0ac1a7dea1](https://github.com/Antonio-R1/engine-sound-generator/tree/c76c5adb9e63f5a54fb0def3b97e8e0ac1a7dea1). MIT AudioWorklet/C++/WASM waveguide implementation study; no code or assets shipped.
+- **ATG / Dan — VehicleNoiseSynthesizer**: [https://github.com/ATG-Simulator/VehicleNoiseSynthesizer/tree/4241caca5a18be0d47f0b8586df93b1b42d7020d](https://github.com/ATG-Simulator/VehicleNoiseSynthesizer/tree/4241caca5a18be0d47f0b8586df93b1b42d7020d). MIT code study of RPM regions and discrete acoustic events; no Unity code or demo recordings shipped.
+- **Ange Yaghi — engine-sim**: [https://github.com/ange-yaghi/engine-sim/tree/85f7c3b959a908ed5232ede4f1a4ac7eafe6b630](https://github.com/ange-yaghi/engine-sim/tree/85f7c3b959a908ed5232ede4f1a4ac7eafe6b630). Physical engine/firing/path-length research; no code or bundled impulse responses shipped.
+- **Baldan, Lachambre, Delle Monache and Boussard — engine sound synthesis (2015)**: [https://air.iuav.it/handle/11578/264484](https://air.iuav.it/handle/11578/264484). Institutional abstract and cited implementation study; full-paper equation audit not claimed; no paper text redistributed.
+- **Robin Doerfler and Lonce Wyse — Pulse-Train-Resonator / Procedural Engine Sounds**: [https://arxiv.org/abs/2603.09391](https://arxiv.org/abs/2603.09391). 2026 paper and RPM/torque-annotated dataset study; no code/audio imported. CC BY-NC code is not admitted as project software.
+
+Dataset: https://huggingface.co/datasets/rdoerfler/procedural-engine-sounds,
+CC BY-NC 4.0 audio; no download or distribution in this checkpoint. Its RPM and
+torque control channels are not playable audio. The software and audio licence
+boundaries remain separate. The loop audit used the existing bundled NumPy
+2.3.5, under its existing BSD-3-Clause notice, without changing the older music
+analysis environment or its requirements. Host loop repair and driveline gates
+are original project code; admitted Engine source/WAV hashes remain unchanged.

@@ -878,3 +878,74 @@ Unsent release thank-you draft:
 > guidance helped me preserve silent preparation and a clear START gesture while
 > bringing Music and Engine together in sedicivalvole. The guides are credited
 > as development studies; no MDN content is redistributed. — enuzzo
+
+
+## Additional Engine studies — 2026-09-07
+
+Research only. No new source or recordings from these projects are shipped.
+
+### DasEtwas — enginesound
+
+- Source: [DasEtwas — enginesound](https://github.com/DasEtwas/enginesound/tree/e5fcca587397c0c8ba9c9d24874b951fed74d260).
+- Public contact/discovery route: [https://github.com/DasEtwas](https://github.com/DasEtwas); no private address inferred.
+- Exact use: MIT procedural cylinder/intake/exhaust and headless loop-export architecture; source study only, no code or example audio shipped.
+- Status: DRAFT, not sent.
+
+> Hello — Your explicit waveguides and headless export path give us a practical way to investigate authored engine loops without borrowing unidentified recordings. Thank you for making this work available. I am enuzzo, building sedicivalvole, an experimental source-visible project under PolyForm Noncommercial. For now we credit your work as research, with no copied code or audio; I would be glad to share a future experiment when it has useful results.
+
+### Antonio-R1 — engine-sound-generator
+
+- Source: [Antonio-R1 — engine-sound-generator](https://github.com/Antonio-R1/engine-sound-generator/tree/c76c5adb9e63f5a54fb0def3b97e8e0ac1a7dea1).
+- Public contact/discovery route: [https://github.com/Antonio-R1](https://github.com/Antonio-R1); no private address inferred.
+- Exact use: MIT AudioWorklet/C++/WASM waveguide implementation study; no code or assets shipped.
+- Status: DRAFT, not sent.
+
+> Hello — Your browser work makes the step from an engine acoustics paper to a bounded AudioWorklet much easier to reason about. Thank you for making this work available. I am enuzzo, building sedicivalvole, an experimental source-visible project under PolyForm Noncommercial. For now we credit your work as research, with no copied code or audio; I would be glad to share a future experiment when it has useful results.
+
+### ATG / Dan — VehicleNoiseSynthesizer
+
+- Source: [ATG / Dan — VehicleNoiseSynthesizer](https://github.com/ATG-Simulator/VehicleNoiseSynthesizer/tree/4241caca5a18be0d47f0b8586df93b1b42d7020d).
+- Public contact/discovery route: [https://github.com/ATG-Simulator](https://github.com/ATG-Simulator); no private address inferred.
+- Exact use: MIT code study of RPM regions and discrete acoustic events; no Unity code or demo recordings shipped.
+- Status: DRAFT, not sent.
+
+> Hello — The separation between continuous RPM regions and tip-in, tip-out and shift events helped sharpen our own engine-audio review. Thank you for making this work available. I am enuzzo, building sedicivalvole, an experimental source-visible project under PolyForm Noncommercial. For now we credit your work as research, with no copied code or audio; I would be glad to share a future experiment when it has useful results.
+
+### Ange Yaghi — engine-sim
+
+- Source: [Ange Yaghi — engine-sim](https://github.com/ange-yaghi/engine-sim/tree/85f7c3b959a908ed5232ede4f1a4ac7eafe6b630).
+- Public contact/discovery route: [https://github.com/ange-yaghi](https://github.com/ange-yaghi); no private address inferred.
+- Exact use: Physical engine/firing/path-length research; no code or bundled impulse responses shipped.
+- Status: DRAFT, not sent.
+
+> Hello — Your detailed treatment of engine excitation and acoustic paths is an inspiring reference for studying why an engine has its particular voice. Thank you for making this work available. I am enuzzo, building sedicivalvole, an experimental source-visible project under PolyForm Noncommercial. For now we credit your work as research, with no copied code or audio; I would be glad to share a future experiment when it has useful results.
+
+### Baldan, Lachambre, Delle Monache and Boussard — engine sound synthesis (2015)
+
+- Source: [Baldan, Lachambre, Delle Monache and Boussard — engine sound synthesis (2015)](https://air.iuav.it/handle/11578/264484).
+- Public contact/discovery route: [https://air.iuav.it/handle/11578/264484](https://air.iuav.it/handle/11578/264484); no private address inferred.
+- Exact use: Institutional abstract and cited implementation study; full-paper equation audit not claimed; no paper text redistributed.
+- Status: DRAFT, not sent.
+
+> Hello — Your physically informed approach provides a useful foundation for distinguishing excitation from resonance in our engine-sound experiments. Thank you for making this work available. I am enuzzo, building sedicivalvole, an experimental source-visible project under PolyForm Noncommercial. For now we credit your work as research, with no copied code or audio; I would be glad to share a future experiment when it has useful results.
+
+### Robin Doerfler and Lonce Wyse — Pulse-Train-Resonator / Procedural Engine Sounds
+
+- Source: [Robin Doerfler and Lonce Wyse — Pulse-Train-Resonator / Procedural Engine Sounds](https://arxiv.org/abs/2603.09391).
+- Public contact/discovery route: [https://github.com/rdoerfler/ptr-model](https://github.com/rdoerfler/ptr-model); no private address inferred.
+- Exact use: 2026 paper and RPM/torque-annotated dataset study; no code/audio imported. CC BY-NC code is not admitted as project software.
+- Status: DRAFT, not sent.
+
+> Hello — The explicit firing-pulse model and sample-aligned RPM/torque channels are unusually useful for studying calibration without guessing what a recording represents. Thank you for making this work available. I am enuzzo, building sedicivalvole, an experimental source-visible project under PolyForm Noncommercial. For now we credit your work as research, with no copied code or audio; I would be glad to share a future experiment when it has useful results.
+
+## Olivier Plathey — FPDF / Travel Report — 2026-09-07
+
+- Original project and public contact route: [FPDF official site](https://www.fpdf.org/en/home.php), which links the project's support forum.
+- Exact source: [FPDF 1.9, released 2026-05-31](https://www.fpdf.org/en/download.php). The original PHP writer, `license.txt` and Helvetica/Helvetica Bold JSON metrics are shipped byte-identically under `public/report-support/fpdf/`; the source inventory pins every hash.
+- Use: server-side generation of the owner-selected Travel Report from a fixed, validated session snapshot. The original app owns the report layout, verification and mail flow. No tutorial, tFPDF extension, external PDF or arbitrary upload support is included.
+- License: FPDF's retained permissive license; this is not described as MIT. Original sedicivalvole code and documents remain PolyForm Noncommercial.
+- Status: integrated source; release acknowledgement draft below remains **unsent**.
+
+**Subject: Thank you for helping our journeys become readable reports**
+
+> Hi Olivier — I am enuzzo, making sedicivalvole, an experimental source-visible music and visual app for the car browser. FPDF's small, direct PHP drawing model helped me turn an observed journey into a clear Travel Report without screenshots, uploaded PDFs or a second application server. I appreciate how long you have kept the project approachable and useful. We retain your original files, exact version and license, and credit your work beside the report integration. Thank you for giving this little project a dependable way to put its journeys on paper. — enuzzo

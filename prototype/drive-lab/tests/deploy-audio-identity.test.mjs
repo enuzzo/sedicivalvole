@@ -7,6 +7,50 @@ const deployScript = new URL("../../../scripts/deploy_drive_lab_ftp.py", import.
 const junctionBank = new URL("../public/audio/junction.svb", import.meta.url);
 const nightshiftBank = new URL("../public/audio/nightshift.svb", import.meta.url);
 
+test("the deploy gate admits the report endpoint and verifies every nested renderer byte", () => {
+  const program = String.raw`
+import importlib.util
+from pathlib import Path
+import sys
+import tempfile
+spec = importlib.util.spec_from_file_location("sedicivalvole_deploy", sys.argv[1])
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+class ReadOnlyFTP:
+    def __init__(self, files): self.files, self.path = files, Path()
+    def nlst(self):
+        prefix = '' if str(self.path) == '.' else self.path.as_posix() + '/'
+        return sorted({name[len(prefix):].split('/')[0] for name in self.files if name.startswith(prefix)})
+    def cwd(self, name): self.path = self.path.parent if name == '..' else self.path / name
+    def retrbinary(self, command, callback): callback(self.files[(self.path / command.removeprefix('RETR ')).as_posix()])
+with tempfile.TemporaryDirectory() as temporary:
+    module.BUILD = Path(temporary)
+    module.static_build_files = lambda: []
+    files = {
+        'api/session-report.php': b' '.join(module.SESSION_REPORT_MARKERS),
+        'report-support/report.php': b'reviewed renderer',
+        'report-support/fpdf/font/helvetica.json': b'reviewed font',
+    }
+    for name, payload in files.items():
+        target = module.BUILD / name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(payload)
+    assert module.verify_remote_root(ReadOnlyFTP(files)) == set()
+    for invalid in [
+        {**files, 'api/session-report.php': b'unrecognized endpoint'},
+        {**files, 'report-support/report.php': b'altered renderer'},
+        {**files, 'report-support/fpdf/font/helvetica.json': b'altered nested font'},
+        {**files, 'report-support/unknown.php': b'unreviewed code'},
+    ]:
+        try: module.verify_remote_root(ReadOnlyFTP(invalid))
+        except ValueError: pass
+        else: raise AssertionError('Unrecognized report bytes accepted')
+`;
+  execFileSync("python3", ["-c", program, deployScript.pathname], {
+    env: { ...process.env, PYTHONDONTWRITEBYTECODE: "1" },
+  });
+});
+
 test("the deploy gate recognizes an owned JUNCTION bank without accepting arbitrary audio", () => {
   const program = String.raw`
 import importlib.util
