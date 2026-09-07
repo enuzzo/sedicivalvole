@@ -4,13 +4,14 @@
 
 Read [current state](CURRENT-STATE.md), [execution queue](NIGHT-WORK-2026-09-07.md)
 and [night implementation](NIGHT-IMPLEMENTATION-2026-09-07.md) before historical
-entries below. The starting live build is 20260907-2004/source b27975d.
+entries below. Current live build: **20260907-2243/source 0ab8ebe**; 712 native
+tests, 18 package checks, 27 canonical checks and live browser/PHP QA pass.
 
 Owner selections received in this task: Compact Cockpit direction 1 for iPhone
 17 Pro/Pro Max, and Travel Report direction 1. These visual gates are answered.
 Phone, PDF/email, Stats parity and Engine reliability/acoustic improvements are
-implemented in the night checkpoint. Publication identity is recorded in the
-night implementation and DEPLOY after verification. No synthetic QA mail may
+implemented, published and canonically verified in the night checkpoint.
+Publication identity and evidence are recorded in the night implementation and DEPLOY. No synthetic QA mail may
 reach the real diagnostic/report destinations. Physical listening/Safari/GPU
 and first real automatic diagnostic receipt remain separate evidence.
 

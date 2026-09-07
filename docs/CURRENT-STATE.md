@@ -1,39 +1,34 @@
 # Current Project State
 
-Latest verified canonical publication: **20260907-2004**, source **b27975d**,
-version from `VERSION` (`0.0.0`). The previous summary at the top of this file had
-fallen behind later checkpoints; this summary and the dated work ledger now take
-precedence over historical paragraphs below.
+Latest verified canonical publication: **20260907-2243**, source **0ab8ebe**,
+version from `VERSION` (`0.0.0`). This summary takes precedence over the dated
+historical paragraphs below.
 
-| Area | Current verified state | Next concrete work |
+| Area | Implemented, tested and live | Remaining evidence |
 |---|---|---|
-| Diagnostics | Dev/AUTO ON by default, saved OFF/Standard respected; 15 observed GPS-driving minutes; no coordinates; visible switch | Confirm first real automatic inbox receipt; sampled Engine RPM/reasons implemented and locally verified tonight |
-| Engine | Three admitted sample profiles, dry audio, no-GPS manual TAMARRO, confirmed-zero idle blips | Bounded poor-accuracy hold, truthful bank-preparation playback, transmission gate and Mono seam repair implemented and locally verified |
-| Atlas / Stats | Separate Visual catalogue destinations; Natural/Palette map, Wikipedia and loaded OSM POIs, curved heading bands | Approved runtime and motion-statistic parity implemented and locally verified |
-| Flux / Soundtrack / FX / Discover | Broad owner acceptance, later small refinements allowed | Retain targeted vehicle evidence rather than requesting blanket acceptance again |
-| iPhone | Compact Cockpit direction 1 selected tonight; iPhone 17 Pro and Pro Max named | Landscape safe areas, inert portrait notice and state-preserving rotation implemented and locally verified |
-| Session PDF/email | Travel Report direction 1 selected; implemented and locally verified | Final canonical publication; actual chosen-recipient inbox delivery remains separate |
-| Release | Experimental canonical build, not a versioned production release | Physical device/long-drive matrix, then explicit release decision |
+| Diagnostics | Dev/AUTO ON by default, saved OFF/Standard respected; fifteen observed GPS-driving minutes; coordinate-free; sampled simulated Engine RPM/reasons | First real automatic inbox receipt |
+| Engine | Three profiles, dry output, no-GPS manual TAMARRO, confirmed-zero idle blips, bounded poor-accuracy hold, truthful bank preparation, movement-owned transmission and three repaired Mono loop seams | Physical listening/native media and long drive |
+| Atlas / Stats | Separate Visual destinations; Natural/Palette map, Wikipedia and loaded OSM POIs; curved heading bands plus completed motion/runtime parity | Physical moving-data legibility and GPS coverage |
+| Flux / Soundtrack / FX / Discover | Broad owner acceptance, later small refinements allowed | Preserve the remaining specific device/endurance cases |
+| iPhone | Selected Compact Cockpit for iPhone 17 Pro/Pro Max; safe areas, inert portrait notice, state-preserving rotation; 667×375 through 956×440 browser matrix | Actual Safari/device software and native audio |
+| Travel Report | Selected two-page A4 PDF, optional third route page, immutable preview/download, explicit verified-recipient email and proof reuse | Actual chosen-recipient inbox delivery |
+| Release | Experimental canonical build | Physical acceptance matrix, then separate production release decision |
 
-The starting live build passed 669 native tests, 18 package checks, 196 dependency
-credits and 25 canonical HTML/asset/cache checks. Browser QA does not substitute
-for physical Tesla/iPhone listening, GPU/thermal, touch or Safari acceptance.
+**712 native tests, 18 package checks, 196 dependency credits and 27 canonical
+HTML/asset/cache checks pass.** Official publication verifies 229 files and all
+29 Illobo recordings; independent postflight is read-only. Real PHP PDF preview
+and live Engine/phone/export/automatic-diagnostic browser checks pass.
 
-The complete prepared night implementation now passes **712 native tests** and
-196 dependency credits. See [night implementation](NIGHT-IMPLEMENTATION-2026-09-07.md)
-for phone, PDF, Engine, privacy and verification details.
+The latest actual Tesla message found at 20:04 local is build 1936, before
+automatic build 2004. Thirty Engine shifts and GPS up to 115 km/h were recorded
+without runtime issues. Its brief 10,000-m accuracy reading motivated the bounded
+hold; profile preparation delays did not prove silence because audio continued.
 
-The additional real Tesla report received at 20:04 local is from build 1936,
-not automatic build 2004. It has 30 scheduled/committed Engine shifts, numeric
-GPS up to 115 km/h, no captured JavaScript exceptions and a final confirmed
-600-RPM stop. A temporary 10,000-m GPS accuracy report explains an Engine loss;
-profile readiness delays do not imply silence because audio samples continue.
-
-Use [tonight's complete executable queue](NIGHT-WORK-2026-09-07.md),
-[Engine study](ENGINE-ACOUSTICS-STUDY-2026-09-07.md),
-[automatic diagnostics](AUTOMATIC-DIAGNOSTICS-2026-09-07.md),
-and [deployment evidence](DEPLOY.md). Optional research ideas remain separate
-from mandatory release work.
+See [night implementation](NIGHT-IMPLEMENTATION-2026-09-07.md),
+[the complete queue](NIGHT-WORK-2026-09-07.md),
+[acoustic research](ENGINE-ACOUSTICS-STUDY-2026-09-07.md),
+[publication evidence](DEPLOY.md) and [current captures](qa/2026-09-07-night/).
+No synthetic email was sent. Browser QA does not replace physical acceptance.
 
 ## Historical implementation inventory
 

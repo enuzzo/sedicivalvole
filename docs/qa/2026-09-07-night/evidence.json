@@ -1,0 +1,334 @@
+{
+  "build": "20260907-2243",
+  "source": "0ab8ebe",
+  "versionSource": "VERSION",
+  "canonicalUrl": "https://sedicivalvole.app/",
+  "nativeTests": 712,
+  "packageChecks": 18,
+  "dependencyCredits": 196,
+  "canonicalIdentityChecks": [
+    {
+      "path": "/",
+      "sha256": "27dd7847e834b6035929ded201ce7a546181d4d1ab1360bd26b5af028e06304c",
+      "bytes": 1206,
+      "cacheControlled": true
+    },
+    {
+      "path": "/?verify=20260907-2243",
+      "sha256": "27dd7847e834b6035929ded201ce7a546181d4d1ab1360bd26b5af028e06304c",
+      "bytes": 1206,
+      "cacheControlled": true
+    },
+    {
+      "path": "/artwork/visuals/acid-orchard.png",
+      "sha256": "897c63cb6de40700b50fdcb0b6ccb19ee84a245e838044e208068684f0dabb58",
+      "bytes": 45102
+    },
+    {
+      "path": "/artwork/visuals/aperture.png",
+      "sha256": "03e9681ed12a00ebb62d53a4e27dd70de0013a9b10a4ee299156343c7bdb58a3",
+      "bytes": 43030
+    },
+    {
+      "path": "/artwork/visuals/chromatic-silk.png",
+      "sha256": "305efd443700c52bcc5534c13092914e26a6ddcb09a36bc19df4550ead679c40",
+      "bytes": 53007
+    },
+    {
+      "path": "/artwork/visuals/drivey.png",
+      "sha256": "c63a94f19dfd2b6376847c40108048d611ccae6deeb2a3c537b3b881eb250ba9",
+      "bytes": 20414
+    },
+    {
+      "path": "/artwork/visuals/japanese-mist.png",
+      "sha256": "1d22a5dc867c3cb1091f4652defd6d2a3cbe44090b9cd520ea15e753626b0352",
+      "bytes": 43960
+    },
+    {
+      "path": "/artwork/visuals/meridian.png",
+      "sha256": "88994a14ea02871e802786d41a04122a10d0fcc34a0b53e3a764f004c627c59b",
+      "bytes": 20556
+    },
+    {
+      "path": "/artwork/visuals/prtcl.png",
+      "sha256": "42c192a08c279a820d9492400704a3e874feb3bec544bc78a7f29dfd82d0a027",
+      "bytes": 22559
+    },
+    {
+      "path": "/artwork/visuals/vertigo.png",
+      "sha256": "e0fe15c98ed06382328267446b10ff777f92e75f4ba4bf19562e3ef7ac385a65",
+      "bytes": 23808
+    },
+    {
+      "path": "/assets/atlas-field-BS6WbYem.js",
+      "sha256": "96e77ee52891011668ef25353d6c68393f78ac1702c1860d5c7d4c0bac1b3a22",
+      "bytes": 18229
+    },
+    {
+      "path": "/assets/atlas-field-DIYHhGHm.css",
+      "sha256": "715dbf736f7fdc9671a7ab3ec3b2fc5e3cdb252f3cc59758d52914bd2c9e57a3",
+      "bytes": 69347
+    },
+    {
+      "path": "/assets/browser-CAtn3mSK.js",
+      "sha256": "ac8ac899aabc54ebab5e9558b17095b9580db20a93a1727f82500ca8ffa75538",
+      "bytes": 25776
+    },
+    {
+      "path": "/assets/index-D7ux5MrW.css",
+      "sha256": "15b8ebeee9111228db840387b59aac301b3e05ef933d6c9c89affccb7a2ba285",
+      "bytes": 224025
+    },
+    {
+      "path": "/assets/index-Dfd4k5DH.js",
+      "sha256": "5aca5d3cf53462851668f72dcb03ac16849a1e26599b96939e13d1824d28b53f",
+      "bytes": 789403
+    },
+    {
+      "path": "/assets/launch/soundtrack.png",
+      "sha256": "f37af576733e4bfc4cc6e0de364a8375ef6aedb57dd36c2a5b4f9f268427059a",
+      "bytes": 105836
+    },
+    {
+      "path": "/assets/maplibre-gl-2Y-Fw1ss.js",
+      "sha256": "03e810d41aad8e38eda0138de4875b8d5a7eab8e798fd3ae638553527f3d351b",
+      "bytes": 941210
+    },
+    {
+      "path": "/assets/runtime-C2OctB7S.js",
+      "sha256": "60640f0f2e6b9965ffd86491a9c5c973733d412ace0282fe972bee0358703864",
+      "bytes": 24274
+    },
+    {
+      "path": "/assets/score-processor-Dly9Ky60.js",
+      "sha256": "1e4928616b90722e2be5b1ab777d01866084ed54690283ce0c82ebe00d1a8ebf",
+      "bytes": 117006
+    },
+    {
+      "path": "/assets/session-report-panel-BNJuwITd.css",
+      "sha256": "da06f554c070f0231e2be1cb3db6eaa0db57c4976586bde7083213f7c5f5c50f",
+      "bytes": 1387
+    },
+    {
+      "path": "/assets/session-report-panel-EwQ47TxS.js",
+      "sha256": "57d7738f78c5d218e886a431ddeaa3318509017c79f13a6376649d5f495de7a5",
+      "bytes": 10149
+    },
+    {
+      "path": "/assets/shadergradient-field-BplWXA4-.js",
+      "sha256": "e7fe4b99c19acc684764ab0fcb5d0e758fae844699bd40a2a8dda5c18c2779e1",
+      "bytes": 1085825
+    },
+    {
+      "path": "/assets/stats-panel-ChnLU2Xs.js",
+      "sha256": "ffc7640d9b7f4e51f6cacad8215faf335da2300939c64db03c5a2a8439988ecb",
+      "bytes": 10658
+    },
+    {
+      "path": "/brand/sedicivalvole-mark-transparent-dark.svg",
+      "sha256": "247993b474efadfbe794cbdfc06b65dfb5301119aa34af6d94fc111a2c4c9b6a",
+      "bytes": 2265
+    },
+    {
+      "path": "/brand/sedicivalvole-mark-transparent.svg",
+      "sha256": "f682560229919421138bd5b97b5cefb99b83f7852922695e9e673a356c4a8f12",
+      "bytes": 2266
+    },
+    {
+      "path": "/third-party/tabler-icons/engine.svg",
+      "sha256": "37f5bafee6840a1c1e2faa26955284b90ef8ef829290202bef79a5ab6d940ac4",
+      "bytes": 664
+    },
+    {
+      "path": "/third-party/tabler-icons/music.svg",
+      "sha256": "8b69aafb5497fc9773078aab151dda57434e89011e712bb24c10c9b66f80ab68",
+      "bytes": 517
+    }
+  ],
+  "publication": {
+    "files": 229,
+    "bytes": 254821469,
+    "illoboFullHashTracks": 29,
+    "cacheOverlapAssets": 2,
+    "independentPostflight": "PASS remote_writes=NONE"
+  },
+  "browser": {
+    "engineChecks": 8,
+    "engineSampleRatesHz": [
+      48000,
+      44100
+    ],
+    "phoneViewports": [
+      [
+        667,
+        375
+      ],
+      [
+        874,
+        402
+      ],
+      [
+        932,
+        430
+      ],
+      [
+        956,
+        440
+      ]
+    ],
+    "reportChecks": [
+      [
+        "build identity",
+        {
+          "url": "https://sedicivalvole.app/",
+          "build": "BUILD 20260907-2243"
+        }
+      ],
+      [
+        "phone export header bounds",
+        {
+          "header": {
+            "x": 59,
+            "y": 0,
+            "width": 549,
+            "height": 70,
+            "top": 0,
+            "right": 608,
+            "bottom": 70,
+            "left": 59
+          },
+          "controls": [
+            {
+              "x": 464,
+              "y": 10.5,
+              "width": 124,
+              "height": 48,
+              "top": 10.5,
+              "right": 588,
+              "bottom": 58.5,
+              "left": 464
+            }
+          ]
+        }
+      ],
+      [
+        "default coordinate-free",
+        true
+      ],
+      [
+        "offline prepared download succeeds with reviewed hash",
+        true
+      ],
+      [
+        "immutable preview/hash and same-key 503 retry",
+        true
+      ],
+      [
+        "explicit route and preview invalidation",
+        2
+      ],
+      [
+        "timeout retry keeps reviewed snapshot/hash/delivery key",
+        true
+      ],
+      [
+        "three exports reuse server proof without another OTP",
+        true
+      ],
+      [
+        "restored proof expires while panel stays open",
+        true
+      ],
+      [
+        "editing recipient never transfers proof to a different local part",
+        true
+      ],
+      [
+        "expired verification recovers",
+        true
+      ],
+      [
+        "closed verification-status cannot reopen or update report",
+        true
+      ],
+      [
+        "late digest after close creates no blob",
+        true,
+        {
+          "created": 6,
+          "leaked": 0
+        }
+      ],
+      [
+        "reset clears remembered recipient",
+        true
+      ],
+      [
+        "reset forgets server proof",
+        true
+      ]
+    ],
+    "engineControlChecks": [
+      {
+        "url": "https://sedicivalvole.app/",
+        "build": "BUILD 20260907-2243",
+        "underlyingVisual": "Drivey",
+        "cycles": 0,
+        "rect": {
+          "x": 67,
+          "y": 97,
+          "width": 533,
+          "height": 90
+        }
+      },
+      {
+        "url": "https://sedicivalvole.app/",
+        "build": "BUILD 20260907-2243",
+        "underlyingVisual": "Prtcl",
+        "cycles": 0,
+        "rect": {
+          "x": 67,
+          "y": 97,
+          "width": 533,
+          "height": 90
+        }
+      },
+      {
+        "url": "https://sedicivalvole.app/",
+        "build": "BUILD 20260907-2243",
+        "underlyingVisual": "Gradient",
+        "cycles": 0,
+        "rect": {
+          "x": 67,
+          "y": 97,
+          "width": 533,
+          "height": 90
+        }
+      }
+    ],
+    "pageExceptions": 0,
+    "syntheticMailSent": 0
+  },
+  "limits": [
+    "GPS fixtures are simulated",
+    "Physical Tesla and iPhone Safari acceptance remains separate",
+    "First real automatic diagnostic inbox receipt is not confirmed",
+    "Report mail transport tests use a fake mailer; no real recipient message was sent"
+  ],
+  "pdfEndpoint": {
+    "build": "20260907-2243",
+    "source": "0ab8ebe",
+    "pdfBytes": 26956,
+    "pdfSha256": "4488e928f6d89ded7081c6664424e59028ea7e4f0219369ec24702f4c2ae7a65",
+    "identicalToLocal": false,
+    "decodedContentAndMetadataIdentical": true,
+    "canonicalBytesStable": true,
+    "compressionDifferenceOnly": true,
+    "noStore": true,
+    "cookieFlagsVerified": true,
+    "emptySessionProof": true,
+    "invalidCoordinateRejected": true,
+    "mailActions": 0,
+    "renderedPixelsMatchLocal": true
+  }
+}

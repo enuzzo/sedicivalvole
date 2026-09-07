@@ -4,9 +4,10 @@ Implementation reconciled on **2026-09-07, Europe/Rome**. This is the current ex
 queue for the owner's request to work through the open tasks. Historical unchecked
 milestone rows are evidence gates, not a second implementation backlog.
 
-Latest verified canonical product at this checkpoint: **build 20260907-2004**,
-source **b27975d**, version supplied by `VERSION` (**0.0.0**). New work below is
-not live until a later publication entry records its identity and canonical proof.
+Latest verified canonical product: **build 20260907-2243**, source **0ab8ebe**,
+version supplied by `VERSION` (**0.0.0**). All concrete implementation rows below
+are now published and verified; device/inbox acceptance and explicitly optional
+studies remain separate. [Canonical evidence](DEPLOY.md).
 
 ## Execution queue
 

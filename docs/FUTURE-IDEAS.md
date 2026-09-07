@@ -1,5 +1,10 @@
 # Future Ideas Register
 
+Canonical closeout — 2026-09-07 22:58 Europe/Rome: **build 20260907-2243**, source
+**0ab8ebe**, is verified live. All implementation/publication rows in the
+22:40 checkpoint below are now complete. Physical-device and actual inbox gates
+remain open. [Evidence and current state](NIGHT-IMPLEMENTATION-2026-09-07.md).
+
 September 7 owner follow-up: [accepted surfaces, recovery, Engine-first sequence,
 travel ATLAS/statistics and future Standard/Dev diagnostics](OWNER-DECISIONS-2026-09-07.md).
 

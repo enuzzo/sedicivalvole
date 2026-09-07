@@ -1,8 +1,10 @@
 # September 7 night implementation
 
-Status: implementation and local verification complete; final publication
-identity will be appended after canonical verification. The starting live build
-was **20260907-2004**, source **b27975d**, version read from `VERSION`.
+Status: **canonically verified build 20260907-2243, source 0ab8ebe**.
+712 native tests, 18 package checks, 196 dependency credits and 27 canonical
+HTML/asset/cache checks pass. Publication verifies 229 files / 254,821,469 bytes
+and all 29 Illobo recordings. Version is read from `VERSION`. The starting
+live build was 20260907-2004/source b27975d.
 
 ## Decisions and delivered behavior
 
@@ -79,8 +81,9 @@ Synthetic tests use a fake mailer or intercept the endpoint; they send no mail.
   leads. No new external recording or procedural implementation enters the
   product. See [the acoustic study](ENGINE-ACOUSTICS-STUDY-2026-09-07.md).
 
-The canonical publication, actual automatic diagnostic inbox receipt and a
-physical Tesla/iPhone run remain distinct gates. Chrome dimensions and injected
+Canonical publication and actual PHP preview verification are complete.
+Automatic diagnostic inbox receipt and a physical Tesla/iPhone run remain
+separate gates. Chrome dimensions and injected
 GPS do not establish Safari audio, native media controls, cabin listening,
 background execution, GPU temperature or endurance. This remains an experimental
 development build; a SemVer production release is a separate owner decision.
@@ -90,3 +93,11 @@ Temporary local evidence: `/tmp/sv-night-engine-qa/`,
 `/tmp/sv-phone-engine-visual-qa.json`, `/tmp/sv-session-report-qa.json` and
 `/tmp/sv-travel-report{,-route}.pdf`. Synthetic fixture plots are never presented
 as a real journey or published product screenshot.
+
+## Canonical closeout
+
+[Deployment evidence](DEPLOY.md) and [current captures](qa/2026-09-07-night/)
+record the verified build. Live browser tests reproduce all new paths without
+real email. Real PHP preview is deterministic on the canonical host; its
+compression differs from local PHP, while decoded objects and rendered pixels
+are identical. The first real automatic diagnostic receipt is still unconfirmed.

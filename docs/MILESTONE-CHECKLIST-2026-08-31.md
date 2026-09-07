@@ -1,5 +1,10 @@
 # Milestone Checklist — 2026-08-31
 
+Canonical closeout — 2026-09-07 22:58 Europe/Rome: **build 20260907-2243**, source
+**0ab8ebe**, is verified live. All implementation/publication rows in the
+22:40 checkpoint below are now complete. Physical-device and actual inbox gates
+remain open. [Evidence and current state](NIGHT-IMPLEMENTATION-2026-09-07.md).
+
 This is the recoverable closeout for the autonomous pre-03:00 work window. It
 separates completed code, objective gates, publication evidence, and work that
 still needs a human or target vehicle.

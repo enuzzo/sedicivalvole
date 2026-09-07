@@ -1,5 +1,48 @@
 # Deployment
 
+## Night checkpoint — 2026-09-07 22:58 Europe/Rome
+
+Canonical **20260907-2243**, source **0ab8ebe**, version read from `VERSION`
+(`0.0.0`). Engine checkpoint **aaa762f**, PDF backend **0420672**, phone/Stats/
+export integration **0ab8ebe** are pushed to the configured origin.
+
+The selected iPhone Compact Cockpit and Travel Report are live, together with
+Stats parity and measured Engine reliability/audio corrections.
+[Behavior and boundaries](NIGHT-IMPLEMENTATION-2026-09-07.md).
+
+- **712 native tests**, **18 package checks**, **196 dependency credits** pass.
+- Official preflight/postflight are read-only; publication verifies **229 files /
+  254,821,469 bytes**, all **29 Illobo tracks** by full hash and two retained
+  cache-overlap assets. The canonical root has twelve expected entries.
+- **27 canonical HTML/asset/cache checks** pass for root and cache-busted identity.
+- Actual canonical Engine, phone, export UI and automatic diagnostic behavior
+  pass in isolated Chrome with both mail endpoints intercepted. Engine uses
+  real decoded WAVs; compiled 44.1 kHz and canonical 48 kHz runs agree on exactly
+  three repaired Mono loops. No page exception or synthetic email was recorded.
+- The real PHP preview returns the same **26,956-byte** fixture PDF across
+  repeated requests, SHA-256
+  `4488e928f6d89ded7081c6664424e59028ea7e4f0219369ec24702f4c2ae7a65`.
+  Advertised hash, no-store, cookie flags, empty-session proof and strict 422
+  schema rejection pass. Local/server compression differs; decoded content,
+  metadata, resources and both rendered page pixels are identical. The preview
+  API was tested without requesting a code or sending a report.
+
+[Current screenshots and durable evidence](qa/2026-09-07-night/). Temporary logs:
+`/tmp/sv-night-{preflight,publish,postflight}.log`, `/tmp/sv-night-canonical/`,
+`/tmp/sv-night-report-live/`, `/tmp/sv-night-engine-live/`,
+`/tmp/sv-night-live-{phone,report,control}.json`.
+
+No application source changed after this build. Documentation/evidence commits
+follow it without changing the canonical product identity. A Dropbox-dataless
+optional Git reverse index caused a push timeout; the per-command
+`git -c pack.readReverseIndex=false push origin main` succeeded without editing
+repository objects or persistent configuration.
+
+First real automatic diagnostic inbox receipt and physical Tesla/iPhone Safari
+listening, controls, lifecycle/GPU/thermal/endurance remain open. The last
+actual diagnostic message found was build 1936, before auto-enabled build 2004.
+This is an experimental publication, not a SemVer production release.
+
 ## ATLAS and Stats approved remix — 2026-09-07 18:41
 
 Canonical **20260907-1833**, source **aecd44e**, version `0.0.0`.

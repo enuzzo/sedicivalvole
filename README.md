@@ -29,8 +29,8 @@ Public development repository: [github.com/enuzzo/sedicivalvole](https://github.
 `sedicivalvole` turns speed, sound, and light into an atmospheric, useful, and memorable in-car experience. It is not a generic dashboard. Two equal primary modes share one motion signal and safety model while offering deliberately different audio and visual identities.
 
 The canonical development build is available at [sedicivalvole.app](https://sedicivalvole.app/).
-The current canonical identity is version `0.0.0`, source commit `b27975d`, build
-`20260907-2004`. See [current state](docs/CURRENT-STATE.md) and the
+The current canonical identity is version `0.0.0`, source commit `0ab8ebe`, build
+`20260907-2243`. See [current state](docs/CURRENT-STATE.md) and the
 [reconciled work queue](docs/NIGHT-WORK-2026-09-07.md) for current verification
 and pending physical-device gates. Earlier launch evidence: compact previews and fresh choices pass
 658 native tests, 17 package checks, 17 launch-browser scenarios and live
@@ -55,7 +55,7 @@ at full level; fresh movement restores it. Automatic idle blips reach about
 
 ## What exists today
 
-The September 7 night implementation adds the selected iPhone Compact Cockpit,
+The canonically verified September 7 night build **20260907-2243** adds the selected iPhone Compact Cockpit,
 Stats motion/runtime parity and a branded Travel Report with preview, download
 and explicit verified-recipient email. Engine preserves motion through brief
 poor-accuracy readings, keeps playback truthful while preparing a replacement
