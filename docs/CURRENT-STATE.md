@@ -1,14 +1,17 @@
 # Current Project State
 
-Latest verified canonical publication: **`20260907-1534`**, source **`e092752`**,
-centered launch implementation **`f8e97fa`**, version `0.0.0`.
-655 native tests, 17 package checks, 17 launch-browser scenarios and 22
+Latest verified canonical publication: **`20260907-1557`**, source **`7ea0712`**,
+support-header implementation **`ec0f459`**, version `0.0.0`.
+655 native tests, 17 package checks, 17 launch-browser scenarios and 24
 canonical byte/cache checks pass. The splash has 64 px circular previews, fresh
 genre/visual choices on each visit, immediate nonrepeating Feeling lucky/Change,
 and precise Choose controls. Real Jazz/Lobo playback and direct Rosso startup
 pass. Official publication and independent no-write postflight pass.
 The owner-reported tall-window expansion is fixed: content-sized rows, viewport-centered sheet, independent
-viewport-bottom footer and 36 px preset art. Five viewport checks pass locally and live.
+viewport-bottom credits and 36 px preset art. Support now sits after About and
+in Session report; its dialog is centered. Safety copy sits below the wordmark,
+beside the transparent 16 mark. Four viewport cases plus diagnostic support
+interaction pass locally and live.
 See [launch behavior](LAUNCH-COCKPIT-2026-09-07.md) and [DEPLOY](DEPLOY.md).
 
 Earlier everyday-road gearing build 20260907-1316/source 9087bda verified second
@@ -20,7 +23,11 @@ source/WAV authorization is settled. The first listening response was broadly
 positive; the owner requested dry Engine audio, steady deceleration level, dual
 persistent stationary TAMARRO controls and tiny idle blips. All four refinements
 are implemented, verified and canonically published.
-Next: owner refinement listening in
+Latest owner priority: ATLAS / Stats for Nerds after the support-header fix,
+ahead of iPhone. [Three directions and PDF/email plan](ATLAS-STATS-REPORT-PLAN-2026-09-07.md)
+await the visual selection. Map/stats separation and report delivery are not shipped.
+
+Owner refinement listening remains in
 [A12](OWNER-ANSWERS-2026-09-07.md#a12--engine-first-listen), then iPhone. The phone
 control shell remains unfinished. ATLAS/full-screen statistics and Standard/Dev
 diagnostics are queued. Broad Flux/Soundtrack/FX/interface/Discover acceptance

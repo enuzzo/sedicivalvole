@@ -1,5 +1,30 @@
 # Deployment
 
+## Support header published — 2026-09-07 16:05
+
+Canonical build **20260907-1557**, source **7ea0712**, implementation **ec0f459**.
+Buy Me a Coffee is a shared yellow 48 px trigger after About and in Session report.
+The support dialog centers on the viewport, makes diagnostics inert while open
+and restores focus. Safety copy is under the wordmark; light/dark 16 marks are
+transparent. Bottom-left credits and compact centered sheet remain intact.
+
+655 native tests, 17 launch-browser scenarios, 17 package tests, 196 dependency
+credits and 24 canonical byte/cache checks pass. Four live viewport cases
+(773 × 601, 1280 × 1200, 390 × 844, 773 × 420) plus the diagnostic open/close/focus
+path pass with zero page exceptions. Explicit production Light/Dark checks pass.
+Official publication uploaded 217 files / 254,659,450 bytes, fully reverified all
+29 Illobo recordings and kept two previous assets. Independent postflight passes
+with remote_writes=NONE. Physical Tesla acceptance remains separate.
+
+Evidence: `/tmp/sv-support-live/evidence.json`, `/tmp/sv-support-canonical/identity.json`,
+`/tmp/sv-support-{preflight,publish,postflight}.log`; current screenshots are in
+`/tmp/sv-support-live/` and `/tmp/sv-support-dark/`. No email was sent during QA.
+
+Next owner priority: [ATLAS / Stats / PDF plan](ATLAS-STATS-REPORT-PLAN-2026-09-07.md).
+Three compositions are presented; owner selection is pending. Natural map,
+separate Stats for Nerds and PDF/email are planned, not part of this release.
+
+
 ## Centered launch and viewport footer — 2026-09-07 15:45
 
 Canonical **20260907-1534**, source **e092752**, implementation **f8e97fa**.

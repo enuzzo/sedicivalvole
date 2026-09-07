@@ -71,3 +71,24 @@ established headless Chrome fallback. Physical Tesla acceptance remains separate
 final result: passed
 
 Canonical verification: build **20260907-1534**, source **e092752**. All five live viewport cases and 22 byte/cache checks pass; official independent postflight reports `remote_writes=NONE`. Fresh live screenshots and evidence are recorded in `docs/qa/2026-09-07-centered-launch/`. Physical Tesla acceptance remains separate.
+
+
+## Support-header owner refinement — 2026-09-07
+
+Production candidate 20260907-1557/source 7ea0712, implementation ec0f459.
+Four viewports (773 × 601, 1280 × 1200, 390 × 844, 773 × 420) preserve exact
+sheet centering, fixed bottom-left credits and 48 px About/coffee actions.
+Drive responsibly is below the wordmark; light/dark marks have no square fill.
+The same yellow trigger exists in diagnostics. Both entry paths open a centered
+bounded dialog; Escape/Close restore focus and the underlying report is inert.
+Local, production Light and explicitly selected production Dark checks pass,
+with zero page exceptions. All 17 launch interaction scenarios, 655 native
+checks, 17 package checks and 196 credits pass. Existing pre-gesture AudioContext
+warnings remain in the broader launch suite. Browser plugin unavailable;
+headless Chrome/Playwright fallback does not touch the owner's mouse/browser.
+Evidence and fresh screenshots: /tmp/sv-support-qa/, /tmp/sv-support-production/,
+/tmp/sv-support-dark/. Physical Tesla acceptance remains separate.
+
+Canonical 20260907-1557 live validation passes: four viewport cases and diagnostic
+support/focus, 24 byte/cache checks, independent postflight `remote_writes=NONE`.
+Fresh evidence: `/tmp/sv-support-live/`. Result: passed; physical Tesla remains separate.

@@ -184,3 +184,13 @@ makes the underlying diagnostic panel inert and restores focus to its origin.
 Four viewport geometry/interaction checks and the diagnostic open/close path
 pass with zero page exceptions. Browser plugin unavailable; isolated headless
 Chrome is the established fallback. Local screenshots: /tmp/sv-support-qa/.
+
+Canonical build **20260907-1557**, source **7ea0712**, implementation **ec0f459**
+passes all four live viewport cases plus diagnostic support/focus behavior.
+All 24 HTTP asset/HTML/cache identity checks pass, including both new transparent
+marks. Live screenshots and JSON: `/tmp/sv-support-live/`; byte evidence:
+`/tmp/sv-support-canonical/identity.json`.
+
+Canonical 20260907-1557 live validation passes: four viewport cases and diagnostic
+support/focus, 24 byte/cache checks, independent postflight `remote_writes=NONE`.
+Fresh evidence: `/tmp/sv-support-live/`. Result: passed; physical Tesla remains separate.

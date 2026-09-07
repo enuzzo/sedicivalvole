@@ -155,3 +155,15 @@ and stats after that selection, with real browser captures at Tesla 773 × 601,
 wide Mac and short-window sizes. Physical Tesla frame pacing/readability and real
 mail receipt remain separate acceptance layers. No three-direction gate is waived
 by this architecture plan, and no pending feature is described as live.
+
+
+## Rendered starting point
+
+Current build captured at 773 × 601 with explicit Milan demo, zero speed and
+standard map appearance: `/tmp/sv-atlas-baseline/current-standard.png`.
+The map occupies about 59% of the field while the statistics panel occupies the
+remaining 41%; the chart stack needs vertical scrolling. Standard colors are
+brown/charcoal despite the surrounding light shell. The camera is close and
+pitched, emphasizing nearby extruded buildings over travel context. This supports
+moving charts out, widening the frame and introducing genuinely light land/water
+colors. Demo capture is reference evidence, not a new design or real journey.
