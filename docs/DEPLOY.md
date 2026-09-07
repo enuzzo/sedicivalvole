@@ -1,5 +1,32 @@
 # Deployment
 
+## Quiet Engine idle and GPS zero — 2026-09-07 16:32
+
+Canonical **20260907-1624**, source **2ace25b**. Idle tuning **c004b00**;
+GPS zero correction **e696a18**. Confirmed stop: 600 RPM and 70% Engine level.
+Automatic blips reach about 1800 RPM over 1.2 seconds. TAMARRO stays at full level;
+fresh accepted motion at least 1 km/h restores full level. Low positive jitter
+and stale evidence cannot restore it after a stop. Exact GPS zero now completes
+the final speed decay so the tachometer reads zero and both TAMARRO controls return.
+
+658 native tests, 17 package checks and 196 dependency credits pass. Three-profile
+show-off browser checks preserve varied neutral revs/limiter, no clipping,
+keyboard/pointer cancellation and mute. Local and final production idle/GPS checks
+pass. Canonical Chrome confirms the complete stop/rev/move/stop path, real master
+AudioParam targets 0.112/0.16, zero page exceptions and build identity. All 24
+canonical HTML/asset/cache checks pass. Official upload verified 217 files /
+254,659,845 bytes, all 29 Illobo recordings and retained one cache-overlap asset.
+Independent official postflight reports remote_writes=NONE. No email was sent.
+Upstream engine files/WAVs are unchanged. Perceived loudness and physical Tesla
+listening remain owner acceptance.
+
+Evidence: `/tmp/sv-idle-zero-live/evidence.json`, `idle.png`,
+`/tmp/sv-idle-zero-canonical/identity.json`, `/tmp/sv-idle-zero-publish.log`,
+`/tmp/sv-idle-zero-postflight.log`; three-profile traces: `/tmp/sv-idle-showoff/`.
+The interim 1612 release is superseded. ATLAS/Stats direction selection remains
+pending in [the separate plan](ATLAS-STATS-REPORT-PLAN-2026-09-07.md).
+
+
 ## Support header published — 2026-09-07 16:05
 
 Canonical build **20260907-1557**, source **7ea0712**, implementation **ec0f459**.

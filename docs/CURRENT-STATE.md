@@ -1,8 +1,8 @@
 # Current Project State
 
-Latest verified canonical publication: **`20260907-1557`**, source **`7ea0712`**,
-support-header implementation **`ec0f459`**, version `0.0.0`.
-655 native tests, 17 package checks, 17 launch-browser scenarios and 24
+Latest verified canonical publication: **`20260907-1624`**, source **`2ace25b`**,
+Engine idle **`c004b00`** and GPS zero **`e696a18`**, version `0.0.0`.
+658 native tests, 17 package checks, Engine browser checks and 24
 canonical byte/cache checks pass. The splash has 64 px circular previews, fresh
 genre/visual choices on each visit, immediate nonrepeating Feeling lucky/Change,
 and precise Choose controls. Real Jazz/Lobo playback and direct Rosso startup
@@ -13,6 +13,12 @@ in Session report; its dialog is centered. Safety copy sits below the wordmark,
 beside the transparent 16 mark. Four viewport cases plus diagnostic support
 interaction pass locally and live.
 See [launch behavior](LAUNCH-COCKPIT-2026-09-07.md) and [DEPLOY](DEPLOY.md).
+
+Confirmed Engine standstill now uses 600 RPM / 70% master level, with automatic
+blips near 1800 RPM over 1.2 seconds. TAMARRO stays at 100%; fresh accepted speed
+at least 1 km/h restores normal level. GPS jitter/loss cannot restore it after a
+stop; moving deceleration remains full level. Exact zero now finishes the GPS smoothing decay, restoring 0 km/h and both
+stationary controls after moving. Physical listening remains open.
 
 Earlier everyday-road gearing build 20260907-1316/source 9087bda verified second
 by 40 and third by 70 km/h in every profile; that implementation is unchanged.

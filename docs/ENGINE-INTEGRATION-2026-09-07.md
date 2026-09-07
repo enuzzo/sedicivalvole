@@ -1,8 +1,8 @@
 # Engine / GEAPS integration — September 7, 2026
 
 Status: refined after owner listening and canonically published as build
-`20260907-1316`, source `9087bda` (everyday-road gearing `efeaaf6`; Show-off `cd99d06`; initial integration `69230fd`). Publication and independent postflight
-passed; 28 HTTPS identity checks and public Engine startup are verified in DEPLOY.md. Target-Tesla listening and sustained operation remain owner trials.
+`20260907-1624`, source `2ace25b` (GPS zero `e696a18`; quiet idle `c004b00`; everyday-road gearing `efeaaf6`; Show-off `cd99d06`; initial integration `69230fd`). Publication and independent postflight
+passed; 24 HTTPS identity checks and public Engine startup are verified in DEPLOY.md. Target-Tesla listening and sustained operation remain owner trials.
 This is an informed integration after explicit owner authorization, not a blind
 Phase A review or a claim that the earlier candidate passed independent review.
 
@@ -249,3 +249,20 @@ Validation: 657 native tests, real browser master-gain targets at 0.112/0.16,
 GPS jitter/movement transitions, automatic blip trace and three-profile TAMARRO
 rise/fall/limiter/return checks pass. Browser audio is measured under headless mute;
 perceived loudness and target-Tesla listening remain owner acceptance.
+
+
+## GPS zero follow-up discovered during live idle QA
+
+The shared speed filter held its previous value whenever the next GPS sample
+fell inside the jitter allowance. During the 2 → 0 km/h check this could leave
+about 1 km/h displayed forever, even though Engine independently trusted the
+raw zero and correctly reached 600 RPM. The stationary buttons then remained
+hidden. Host correction e696a18 lets an exact GPS zero finish the final low-speed
+decay; a high-speed zero still follows the bounded fall and small positive jitter
+remains suppressed. The complete browser move/stop cycle and 658 native checks
+pass. Candidate build 20260907-1624/source 2ace25b includes both this correction
+and c004b00 idle tuning.
+
+Final canonical 20260907-1624 verification complete: 24 byte/cache checks,
+full live idle/rev/move/stop path and official no-write postflight pass.
+See DEPLOY.md for publication counts and evidence paths.

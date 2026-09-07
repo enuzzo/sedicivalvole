@@ -92,3 +92,42 @@ Evidence and fresh screenshots: /tmp/sv-support-qa/, /tmp/sv-support-production/
 Canonical 20260907-1557 live validation passes: four viewport cases and diagnostic
 support/focus, 24 byte/cache checks, independent postflight `remote_writes=NONE`.
 Fresh evidence: `/tmp/sv-support-live/`. Result: passed; physical Tesla remains separate.
+
+
+## Engine idle tuning — 2026-09-07
+
+Candidate build 20260907-1612/source ffd5e41, implementation c004b00.
+No composition change. Real headless Chrome AudioContext target measurements
+confirm 0.112 at confirmed stop and automatic idle blips, 0.16 throughout TAMARRO
+and after fresh 2 km/h GPS evidence. A 0.2 km/h jitter sample retains quiet level.
+Tachometer starts/returns at 600 RPM; the automatic gesture reaches about 1800.
+Three profiles retain varied show-off phrases, limiter peaks without clipping,
+neutral gear, pointer/keyboard cancellation and mute behavior. Zero page errors;
+no diagnostic messages sent. 657 native and 17 packaging checks pass. Production
+repeats the idle/GPS/master-level path. Evidence: /tmp/sv-idle-qa/,
+/tmp/sv-idle-production/, /tmp/sv-idle-showoff/. Measurements under headless mute
+are not physical listening acceptance. Browser plugin absent; existing Playwright
+fallback does not touch the owner's foreground browser.
+
+
+The canonical 1612 stop capture exposed a pre-existing GPS deadband residual:
+Engine correctly idled while the shared speed readout stayed near 1 km/h. The
+follow-up e696a18 lets an exact zero finish low-speed decay without bypassing
+large-drop bounds. Candidate 20260907-1624/source 2ace25b passes 658 native and
+17 packaging checks plus the complete production cycle, including displayed
+0 km/h and both stationary TAMARRO controls. Fresh production evidence:
+/tmp/sv-idle-zero-production/evidence.json and idle.png. The earlier incomplete
+live screenshot attempt is not presented as full stop acceptance.
+
+
+Canonical 20260907-1624/source 2ace25b passes the complete idle/rev/move/stop
+browser path with zero page exceptions: 600 RPM at 70%, automatic blip near 1800,
+TAMARRO at 100%, 0.2 km/h jitter quiet, valid 2 km/h full level, then displayed
+zero with both stationary controls. Fresh screenshot and measured trace:
+/tmp/sv-idle-zero-live/idle.png and evidence.json. All 24 byte/cache checks pass
+(/tmp/sv-idle-zero-canonical/identity.json). Result: passed in browser; real-car
+listening remains owner acceptance.
+
+Final canonical 20260907-1624 verification complete: 24 byte/cache checks,
+full live idle/rev/move/stop path and official no-write postflight pass.
+See DEPLOY.md for publication counts and evidence paths.
