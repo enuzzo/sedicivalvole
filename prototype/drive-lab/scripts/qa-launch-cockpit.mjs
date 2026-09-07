@@ -29,8 +29,8 @@ async function setup({delayJazz=0, muted=false}={}) {
   await page.route('**/api/soundtrack-audio.php?*',r=>r.fulfill({contentType:'audio/wav',body:fixture}));
   await page.addInitScript(({muted})=>{
     if(!sessionStorage.getItem('qa-initialized')){localStorage.setItem('sedicivalvole.preferences.v2',JSON.stringify({musicMode:'soundtrack',soundtrackSelection:{kind:'genre',id:'rock'},launchSoundtrackMode:'precise',muted}));sessionStorage.setItem('qa-initialized','1');}
-    const originalPlay=HTMLMediaElement.prototype.play;window.__qaPlayed=[];
-    HTMLMediaElement.prototype.play=function(){window.__qaPlayed.push(this.currentSrc||this.src);return originalPlay.call(this);};
+    const originalPlay=HTMLMediaElement.prototype.play;window.__qaPlayed=[];window.__qaMedia=[];
+    HTMLMediaElement.prototype.play=function(){window.__qaPlayed.push(this.currentSrc||this.src);if(!window.__qaMedia.includes(this))window.__qaMedia.push(this);return originalPlay.call(this);};
     const AC=window.AudioContext;window.__qaContexts=[];window.AudioContext=class extends AC{constructor(...args){super(...args);window.__qaContexts.push(this);}};
     const fix=()=>({timestamp:Date.now(),coords:{speed:0,accuracy:5,latitude:0,longitude:0}});Object.defineProperty(navigator,'geolocation',{value:{watchPosition(cb){setTimeout(()=>cb(fix()),100);setTimeout(()=>cb(fix()),600);return 1;},clearWatch(){},getCurrentPosition(cb){cb(fix());}}});
   },{muted});
@@ -80,7 +80,7 @@ try {
   await race.page.getByRole('button',{name:'Choose soundtrack',exact:true}).click();await race.page.getByRole('button',{name:'Jazz',exact:true}).click();
   await race.page.getByRole('button',{name:'START MUSIC',exact:true}).click();await race.page.waitForTimeout(3500);
   const played=await race.page.evaluate(()=>window.__qaPlayed);assert.ok(played.length>0);assert.ok(played.every(url=>/track=200[123]/.test(url)),JSON.stringify(played));
-  const rates=await race.page.evaluate(()=>[...document.querySelectorAll('audio')].map(el=>el.playbackRate));assert.ok(rates.every(rate=>rate===1));check('START during delayed new genre never plays old queue; new selection plays at 1x');await race.context.close();
+  const rates=await race.page.evaluate(()=>window.__qaMedia.map(el=>el.playbackRate));assert.ok(rates.length>0&&rates.every(rate=>rate===1));check('START during delayed new genre never plays old queue; new selection plays at 1x');await race.context.close();
   const engineRun=await setup();await engineRun.page.getByRole('button',{name:'Engine',exact:true}).click();await engineRun.page.getByRole('button',{name:'START ENGINE',exact:true}).dblclick();await engineRun.page.getByText('SAMPLE ENGINE',{exact:true}).waitFor({timeout:25000});
   assert.equal(await engineRun.page.evaluate(()=>window.__qaContexts.filter(ctx=>ctx.state!=='closed').length),1);assert.equal(await engineRun.page.evaluate(()=>window.__qaPlayed.length),0);check('direct Engine start, repeated click, one context and no soundtrack');await engineRun.context.close();
   const silent=await setup({muted:true});await silent.page.waitForTimeout(400);await silent.page.getByRole('button',{name:'START MUSIC',exact:true}).click();await silent.page.waitForTimeout(1200);assert.equal(await silent.page.evaluate(()=>window.__qaPlayed.length),0);check('saved mute survives soundtrack launch');await silent.context.close();

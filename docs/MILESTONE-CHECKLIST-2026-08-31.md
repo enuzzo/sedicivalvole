@@ -11,6 +11,16 @@ the current factual overview in [`CURRENT-STATE.md`](CURRENT-STATE.md), and the
 phase dependencies in [`ROADMAP.md`](ROADMAP.md). A historical row in those
 sources is not a second active queue.
 
+## Launch update — 2026-09-07
+
+Launch Cockpit is live as **20260907-1238**: immediate Music/Engine selection,
+precise genre/pace/Lobo or lucky Soundtrack, retained curated presets and one START.
+650 regression checks, 15 launch browser flows and real public Jazz/Lobo/Engine
+startup pass. This replaces the earlier Signal Gate brand-first/Instrument Deck
+entry flow. Physical Tesla launch usability remains open; no iPhone running-shell,
+ATLAS/statistics or diagnostics milestone is closed by this change.
+[Evidence](LAUNCH-COCKPIT-2026-09-07.md).
+
 ## Engine implementation update — 2026-09-07
 
 GEAPS, declared-MIT banks, AUTO and the selected Telemetry direction are

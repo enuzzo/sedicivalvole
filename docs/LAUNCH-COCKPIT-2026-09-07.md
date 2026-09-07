@@ -72,3 +72,14 @@ informed retaining the explicit START gesture. These are studies, not copied cod
 Evidence: [browser checks](qa/2026-09-07-launch-cockpit/browser-evidence.json),
 [Music](qa/2026-09-07-launch-cockpit/01-music.png),
 [Engine](qa/2026-09-07-launch-cockpit/05-engine.png).
+
+
+## Canonical publication
+
+Build **20260907-1238**, source **4e8ee1f**, implementation **4612da6**, is live.
+Official preflight/publication/postflight and 28 public byte-identity checks pass.
+Public Chrome verifies actual Jazz and Lobo playback, shared context and direct
+Rosso Engine startup; no page exception or diagnostic transmission. Six inherited
+pre-gesture AudioContext warnings remain recorded. The browser test explicitly
+observes detached media elements and non-empty playback-rate evidence.
+[Publication details](DEPLOY.md#launch-cockpit--2026-09-07-1249).

@@ -1,0 +1,193 @@
+{
+  "build": "20260907-1238",
+  "commit": "4e8ee1f",
+  "url": "https://sedicivalvole.app/",
+  "checks": [
+    "canonical immediate cockpit, actual Jazz catalogue, silent preparation, playing soundtrack and shared context",
+    "actual 29-track Lobo catalogue and playback",
+    "direct public Rosso startup, dry Engine, dual stationary controls and idle blip"
+  ],
+  "errors": [],
+  "warnings": [
+    "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+    "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+    "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+    "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+    "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+    "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+  ],
+  "sends": 0,
+  "music": {
+    "app": {
+      "version": "0.0.0",
+      "build": "20260907-1238",
+      "commit": "4e8ee1f",
+      "mode": "flux",
+      "engine": null,
+      "musicMode": "soundtrack",
+      "rememberedScoreId": "fracture",
+      "environment": "aperture",
+      "pageUrl": "https://sedicivalvole.app/",
+      "source": "GPS",
+      "displayedSpeedKmh": 0,
+      "bpm": null,
+      "transportBpm": 162,
+      "responseCeilingKmh": 130,
+      "paletteTheme": "red",
+      "appearancePreference": "light",
+      "appearance": "light",
+      "appearanceSource": "manual",
+      "appearanceHoldReason": null,
+      "particleType": null,
+      "muted": false,
+      "vehicleAudioEffectsEnabled": true,
+      "arrangement": null
+    },
+    "audio": {
+      "status": "playing",
+      "error": null,
+      "currentKey": "jamendo:159014",
+      "contextTopology": "shared",
+      "media": {
+        "status": "prepared",
+        "roles": {
+          "previous": {
+            "key": "jamendo:889602",
+            "state": "playable",
+            "readyState": 4,
+            "networkState": 1,
+            "bufferedAheadSeconds": 57.22,
+            "paused": true,
+            "ended": false,
+            "currentTimeSeconds": 0,
+            "durationSeconds": 241.25,
+            "errorCode": null,
+            "lastEvent": "suspend",
+            "preload": "metadata"
+          },
+          "current": {
+            "key": "jamendo:159014",
+            "state": "playable",
+            "readyState": 4,
+            "networkState": 1,
+            "bufferedAheadSeconds": 312.31,
+            "paused": false,
+            "ended": false,
+            "currentTimeSeconds": 0.26,
+            "durationSeconds": 312.57,
+            "errorCode": null,
+            "lastEvent": "suspend",
+            "preload": "auto"
+          },
+          "next": {
+            "key": "jamendo:324614",
+            "state": "loading",
+            "readyState": 0,
+            "networkState": 2,
+            "bufferedAheadSeconds": 0,
+            "paused": true,
+            "ended": false,
+            "currentTimeSeconds": 0,
+            "durationSeconds": null,
+            "errorCode": null,
+            "lastEvent": "loadstart",
+            "preload": "auto"
+          }
+        },
+        "preparedMediaElements": 3,
+        "playableMediaElements": 2,
+        "currentAudibleKey": "jamendo:159014",
+        "audibleKeys": [
+          "jamendo:159014"
+        ],
+        "browserPreloadHint": "current-first-next-at-30s",
+        "browserBufferOwnership": "browser-owned-observation-only",
+        "offlineAudioAvailable": false,
+        "persistentAudioStorage": false,
+        "automaticModeFallback": false,
+        "controllerError": null
+      },
+      "effects": {
+        "schema": "sedicivalvole.soundtrack-effects.v1",
+        "status": "running",
+        "graphError": null,
+        "vehicleMaster": true,
+        "vehicleMacros": {
+          "underwater": 0
+        },
+        "reactiveEffects": [
+          "underwater"
+        ],
+        "manualEffects": {
+          "flanger": 0,
+          "reverb": 0,
+          "underwater": 0,
+          "phaser": 0,
+          "bitcrush": 0,
+          "bassDrive": 0,
+          "radioCut": 0,
+          "highCut": 0
+        },
+        "attachedMediaElements": 3,
+        "playbackRate": 1,
+        "level": 0.14240501484973597
+      }
+    },
+    "catalogEntries": 48,
+    "metadata": {
+      "title": "Captain Hugo",
+      "artist": "Hugo 'Droopy' Contini"
+    }
+  },
+  "lobo": {
+    "tracks": 29,
+    "metadata": {
+      "title": "Lots of Bells",
+      "artist": "Illobo"
+    }
+  },
+  "engine": {
+    "version": "0.0.0",
+    "build": "20260907-1238",
+    "commit": "4e8ee1f",
+    "mode": "engine",
+    "engine": {
+      "status": "ready",
+      "profileId": "rosso",
+      "rpm": 1380,
+      "gear": 1,
+      "shift": null,
+      "drive": 0.15,
+      "deceleration": 0,
+      "motion": "fresh",
+      "trustedStationary": true,
+      "revving": false,
+      "decodedBytes": 43201080,
+      "error": null,
+      "idleBlip": true,
+      "bankBytes": 24988884,
+      "enabled": true,
+      "source": "sample",
+      "transmissionMode": "AUTO",
+      "version": "geaps.v1"
+    },
+    "musicMode": "engine",
+    "rememberedScoreId": "fracture",
+    "environment": "engine-telemetry",
+    "pageUrl": "https://sedicivalvole.app/",
+    "source": "GPS",
+    "displayedSpeedKmh": 0,
+    "bpm": null,
+    "transportBpm": null,
+    "responseCeilingKmh": 130,
+    "paletteTheme": "red",
+    "appearancePreference": "light",
+    "appearance": "light",
+    "appearanceSource": "manual",
+    "appearanceHoldReason": null,
+    "particleType": null,
+    "muted": false,
+    "vehicleAudioEffectsEnabled": true,
+    "arrangement": null
+  }
+}

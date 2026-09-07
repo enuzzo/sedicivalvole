@@ -404,7 +404,6 @@ A heartfelt thank-you to the people who share the code, type, music, data and ex
 | 🌀 Louis Hoebregts (Mamboleoo), Codrops/Tympanus — InfiniteTubes | [Project](https://github.com/Mamboleoo/InfiniteTubes) | **Study only — no copied code.** Particles, Star Wars and Triangle mechanics were studied; project-owned implementation only, upstream assets excluded. |
 | 🧪 Liam Egan; embedded noise credited upstream to Inigo Quilez — GLSL: Primordial Soup | [Project](https://codepen.io/shubniggurath/pen/NXGbBo) | **Retired study — no copied code.** Fluid mechanics were studied; the independent experiment was retired. No Pen or attributed noise source is shipped. |
 | 🎹 Spotify and Basic Pitch contributors — Spotify Basic Pitch | [Project](https://github.com/spotify/basic-pitch) | **Development only.** Machine-local harmony-analysis note proposals; no package, model or generated report enters the product bundle. |
-
 | 🧭 Jakob Nielsen / Nielsen Norman Group — Progressive Disclosure | [Article](https://www.nngroup.com/articles/progressive-disclosure/) | **Study only.** Informed contextual launch choices; no article text, code or artwork copied. |
 | 🌐 MDN contributors / Mozilla — Web Audio and Autoplay guides | [Web Audio](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Best_practices) · [Autoplay](https://developer.mozilla.org/en-US/docs/Web/Media/Guides/Autoplay) | **Study only.** Informed silent preparation and explicit START; no documentation or code redistributed. |
 

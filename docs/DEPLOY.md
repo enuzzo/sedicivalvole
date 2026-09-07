@@ -1,5 +1,34 @@
 # Deployment
 
+## Launch Cockpit — 2026-09-07 12:49
+
+- Canonical build **`20260907-1238`**, version **`0.0.0`**, built source **`4e8ee1f`**;
+  implementation **`4612da6`**. Immediate Music/Engine selection and one START.
+- **650 native regression tests**, **10 post-build checks**, **196/196 credits**
+  pass. Production build: 265 App modules and 171 protected LAB modules.
+- Official preflight, publication and independent no-write postflight pass.
+  Publication verifies **204 files / 254,265,195 bytes**, all **29 Illobo tracks**
+  by full hash, 11 recognized root entries and two retained cache-overlap assets.
+  No legacy content, root metadata or retired assets removed.
+- **28 public HTTPS identity checks** match local HTML, all emitted assets and
+  Engine WAV/licence files. Bare/cache-busted HTML retain no-store/no-cache.
+- Actual public Chrome at **773 × 601** verifies the immediate splash and exact
+  REPORT build/source. Real Jazz catalogue playback and all 29 Lobo catalogue
+  entries load; Jazz and Lobo playback advance at their original rate. Music uses
+  one shared AudioContext. Direct Rosso launch retains dry output, two enabled
+  stationary TAMARRO controls and an automatic idle blip with controlled GPS.
+- Local browser coverage: 15 launch flows, five viewport/state checks and the
+  full prior Engine regression. Delayed catalogue selection never plays the old
+  queue; saved mute and repeated START are covered. The rate assertion observes
+  actual media elements, including detached elements, rather than empty DOM lists.
+- No page exceptions or diagnostic transmissions. Six inherited AudioContext
+  pre-gesture warnings were recorded in public QA; actual post-START playback
+  passes. Existing build chunk/public-SVG warnings remain documented limitations.
+- [Evidence and current captures](qa/2026-09-07-launch-cockpit/README.md).
+  Physical Tesla usability/listening and the separate running iPhone shell remain
+  open. Later documentation/test-only commits do not change the published runtime.
+
+
 ## Engine listening refinement — 2026-09-07 12:01
 
 - Canonical build **`20260907-1151`**, version **`0.0.0`**, built source **`65a4a22`**; implementation **`acfbd21`**.

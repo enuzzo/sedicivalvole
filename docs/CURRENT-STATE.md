@@ -1,11 +1,10 @@
 # Current Project State
 
-Latest verified canonical publication: **`20260907-1151`**, source **`65a4a22`**,
-Engine refinement **`acfbd21`**, version `0.0.0`. **655 regression tests**,
-10 post-build checks, 28 HTTPS identity checks and actual public Engine startup,
-stationary controls and idle blip passed. Official preflight, publication and
-independent no-write postflight pass. See [DEPLOY](DEPLOY.md) and
-[Engine integration](ENGINE-INTEGRATION-2026-09-07.md).
+Latest verified canonical publication: **`20260907-1238`**, source **`4e8ee1f`**,
+Launch Cockpit implementation **`4612da6`**, version `0.0.0`. **650 regression tests**,
+10 post-build checks, 28 HTTPS identity checks and public Jazz/Lobo/Engine startup
+pass. Official preflight, publication and independent no-write postflight pass.
+See [DEPLOY](DEPLOY.md) and [Launch Cockpit](LAUNCH-COCKPIT-2026-09-07.md).
 
 Engine is implemented and live: Telemetry direction 2, Mono/Rosso/Touring, AUTO,
 protected LAB MANUAL, shared audio, GPS evidence, rev protection and retry. The
@@ -45,7 +44,7 @@ dated study documents.
 
 ## Product surface
 
-- Launch Cockpit is implemented and locally verified; publication is pending.
+- Launch Cockpit is implemented, canonically published and browser-verified.
   Immediate Music/Engine selection, precise genre/pace/Lobo and lucky genre mode
   replace the brand-first gate. [Behavior and evidence](LAUNCH-COCKPIT-2026-09-07.md).
 
