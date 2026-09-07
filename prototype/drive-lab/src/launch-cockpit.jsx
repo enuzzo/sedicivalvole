@@ -51,7 +51,7 @@ export function LaunchCockpit({ mode, onMode, musicId, onMusic, selection, lucky
         <div className="cockpit-engine-profiles" role="group" aria-label="Engine profile">
           {ENGINES.map(([id, name, detail]) => button(id, name, engineProfileId === id, () => onEngineProfile(id), detail))}
         </div>
-        <div className="cockpit-engine-note"><span>Automatic gears</span><span>Stationary revs</span><span>Pure engine sound</span></div>
+        <div className="cockpit-engine-note"><span>{engineProfileId === 'turbine' ? 'Continuous shaft' : 'Automatic gears'}</span><span>Stationary revs</span><span>Pure engine sound</span></div>
       </div> : <div className="cockpit-music-body">
         <nav className="cockpit-sources" aria-label="Music source">{SOURCES.map(([id, name]) => button(id, name, musicId === id, () => onMusic(id)))}</nav>
         <div className="cockpit-choices">
@@ -82,7 +82,7 @@ export function LaunchCockpit({ mode, onMode, musicId, onMusic, selection, lucky
       <div className="cockpit-start-row">
         {muted && (engine || musicId !== 'mute') ? <button className="cockpit-unmute" type="button" onClick={onUnmute}>UNMUTE</button> : null}
         <button className="cockpit-start" type="button" aria-label={startLabel} disabled={!ready} onClick={onStart}>
-          <strong>{startLabel}</strong><span>{muted && (engine || musicId !== 'mute') ? 'Audio muted' : pending && !engine && musicId === 'soundtrack' ? 'Music joins when ready' : engine ? `${profile[1]} · automatic` : `${mixLabel} · ${visualLabel}`}</span>
+          <strong>{startLabel}</strong><span>{muted && (engine || musicId !== 'mute') ? 'Audio muted' : pending && !engine && musicId === 'soundtrack' ? 'Music joins when ready' : engine ? `${profile[1]} · ${engineProfileId === 'turbine' ? 'continuous' : 'automatic'}` : `${mixLabel} · ${visualLabel}`}</span>
         </button>
       </div>
     </section>

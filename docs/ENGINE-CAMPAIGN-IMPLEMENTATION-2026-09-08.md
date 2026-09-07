@@ -1,7 +1,8 @@
 # Engine acoustic campaign — 2026-09-08
 
-Implemented and verified locally; canonical publication evidence is recorded
-below when complete. This is an original acoustic model for entertainment, not
+Source **7d04dcc**, compiled build **20260908-0022**, version read from VERSION
+(**0.0.0**). Implemented and verified locally; canonical publication evidence is
+recorded below when complete. This is an original acoustic model for entertainment, not
 measured vehicle telemetry or a full thermodynamic simulator.
 
 ## What changes for a listener
@@ -113,3 +114,27 @@ balance between engines, watch long-session temperature/audio continuity, and
 check native media/lifecycle recovery. iPhone Safari/device acceptance and the
 first real automatic diagnostic inbox receipt remain separate existing tasks.
 No synthetic diagnostic mail was sent.
+
+
+## Compiled checks and operational evidence
+
+The complete native suite passes **768/768**, and the rebuilt package passes
+**18/18** identity, protected-LAB and Sites packaging checks. All **196** dependency
+credits pass. Both public and protected LAB contain the self-contained 8,698-byte
+Engine processor. The existing large-chunk advisory remains; no new dependency
+was introduced. Audio replay snapshot differs from the committed Engine tree only
+in shortened catalogue descriptions, which do not enter audio generation.
+
+Actual 48 kHz development and 44.1 kHz compiled-browser checks pass real WAV
+decoding, exact Mono seam selection, standstill/TAMARRO transmission silence,
+fresh motion, three-second poor-accuracy hold, lost-GPS idle/recovery, 5.4-second
+preparation with old audio continuing, profile replacement, master mute and
+Session report. Both runs have no page exception or synthetic email; two
+pre-gesture autoplay warnings precede successful deliberate activation.
+
+The new voices also pass actual browser selection and no-GPS revs with one shared
+context. A 120-second scripted 48 kHz road run (60 seconds each Otto/Cinque) and
+a focused 40-second 44.1 kHz run report finite nonzero audio and no processor/page
+errors. Observed frame p99 is 16.8 ms on this Mac, with no frame over 50 ms; this
+does not establish Tesla endurance. The compiled replay verifies final packaging
+and viewport behavior separately.
