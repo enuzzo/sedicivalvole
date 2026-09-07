@@ -1,5 +1,14 @@
 # Session Handoff
 
+September 7 Engine handoff: source `7608873` / build `20260907-1119` is published
+and canonical Engine startup is verified. Implementation is `69230fd`; read
+[CURRENT-STATE](CURRENT-STATE.md), [Engine integration](ENGINE-INTEGRATION-2026-09-07.md)
+and [A12](OWNER-ANSWERS-2026-09-07.md#a12--engine-first-listen) before older queues.
+Telemetry direction 2, declared-MIT source/WAV admission and deployment are
+settled owner decisions. Next is vehicle listening, then the deferred iPhone shell;
+ATLAS/statistics separation and Standard/Dev diagnostics remain future work.
+
+
 Latest verified canonical publication: **`20260907-0930`**, source **`f590f51`**
 (reliability implementation `9b57fc3`), version `0.0.0`. See
 [deployment evidence](DEPLOY.md) and [reliability QA](RELIABILITY-QA-2026-09-07.md).

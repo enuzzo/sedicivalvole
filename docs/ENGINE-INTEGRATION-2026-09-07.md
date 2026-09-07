@@ -1,7 +1,8 @@
 # Engine / GEAPS integration — September 7, 2026
 
-Status: implemented; verification and publication evidence are recorded below and
-in DEPLOY.md. Target-Tesla listening and sustained operation remain owner trials.
+Status: implemented and canonically published as build `20260907-1119`, source
+`7608873` (implementation `69230fd`). Publication and independent postflight
+passed; 28 HTTPS identity checks and public Engine startup are verified in DEPLOY.md. Target-Tesla listening and sustained operation remain owner trials.
 This is an informed integration after explicit owner authorization, not a blind
 Phase A review or a claim that the earlier candidate passed independent review.
 
@@ -109,3 +110,15 @@ Visual audit corrections: launch panel stacking and mode access; pointer-through
 of global chrome to Engine controls; LAB full-width placement; fixed-height tach
 bar under standstill controls; contrast-safe held-rev text. Accepted desktop
 frames are 01–04 and 06; frame 05 records the known phone-shell limitation.
+
+### Captured flow audit
+
+1. Launch / profile selection — PASS (01).
+2. Ready Telemetry / public control shell — PASS at 773 × 601 (02, 07).
+3. Moving / automatic gears / retracting chrome — PASS in Demo (03).
+4. Trusted standstill / held rev / mute — PASS with GPS API fixtures (04).
+5. Phone shell — OPEN, inherited clipped controls; iPhone milestone deferred (05).
+6. Protected LAB / manual diagnostic gear — PASS locally (06); production auth preserved.
+
+The selected Telemetry composition was checked from saved current screenshots.
+These checks do not certify physical cabin legibility or full accessibility.

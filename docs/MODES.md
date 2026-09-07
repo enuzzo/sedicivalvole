@@ -82,13 +82,15 @@ The UI must not label a derived value as real Tesla RPM, throttle, gear, CAN, mo
 - no illustrated landscapes, environmental scenes, characters, narrative objects, or old Flash-like decoration;
 - visuals remain subordinate to safe driving and the musical experience.
 
-## Open decisions
+## Implemented first integration and remaining decisions
 
-- final enabled selector behavior after Engine is implemented;
-- whether the last selected mode persists locally and which mode opens on first use;
-- crossfade duration and behavior while muted or during Brake;
-- Engine synthesis, sample-loop, or hybrid strategy;
-- first engine-model catalog and licensing/provenance requirements;
-- synthetic ratio/gear behavior, manual overrides, and EV-context framing;
-- whether a future hybrid mode is desirable; it is not part of the confirmed two-mode requirement;
-- per-mode control sets and which preferences are shared.
+The first integration selects sample-loop Engine (Mono/Rosso/Touring), public
+AUTO, protected LAB-only MANUAL, the shared FX/mute path and short audio gain
+ramps. The owner selected Telemetry and explicitly admitted the source/WAVs;
+these are resolved decisions, not another permission gate. See the exact
+[parameter and source record](ENGINE-INTEGRATION-2026-09-07.md).
+
+The launch defaults to Flux and does not yet persist the selected primary mode.
+Remembered-mode startup and any future procedural/hybrid generator are later
+product refinements. A blended Engine-plus-Flux mode is not part of this scope.
+Vehicle acceptance remains open; A12 holds the first listening response.

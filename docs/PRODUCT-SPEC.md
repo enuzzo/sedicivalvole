@@ -341,7 +341,7 @@ acceptance in the vehicle.
 
 | Feature | Status | Note |
 |---|---|---|
-| Engine mode with synthesized/sampled models | confirmed primary mode | mapping, catalog, quality, and latency require dedicated spike |
+| Engine mode with synthesized/sampled models | implemented: GEAPS / Telemetry / three sample profiles | AUTO, shared audio and browser tests passed; vehicle timbre, shift feel and native/background acceptance remain open |
 | Adaptive synth + sequencer | implemented prototype | FRACTURE runs in the AudioWorklet; real Tesla musical acceptance pending |
 | Modular Aperture generative visual | implemented prototype | WebGL2 plus Canvas2D fallback; Tesla performance pending |
 | PLUMB inertial-suspension visual | rejected and retired before publication | Exact-viewport review triggered its strings/bars retirement criterion; no active renderer |

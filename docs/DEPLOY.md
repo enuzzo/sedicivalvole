@@ -1,5 +1,37 @@
 # Deployment
 
+## Engine / Telemetry — 2026-09-07 11:30
+
+- Canonical build **`20260907-1119`**, version **`0.0.0`**, built source/docs
+  **`7608873`**; implementation **`69230fd`**.
+- Passed **651 native regression tests**, **10 post-build identity/package checks**
+  and **196/196 README dependency credits**. Production build: 259 App modules,
+  169 inline protected LAB modules, retained Sites-compatible packaging.
+- Official read-only preflight passed. Official publication verified **204 files /
+  254,248,512 bytes**, including all 29 Illobo tracks by full hash. No retired
+  artwork, legacy files or root metadata removed; two prior assets retained for
+  cache overlap. Dynamic root preserved; 11 recognized root entries.
+- Independent official postflight passed; `remote_writes=NONE`.
+- **28 public HTTPS identity checks** match local bytes: canonical and cache-busted
+  HTML, nine emitted assets and all 17 Engine audio-directory files (16 WAVs plus
+  MIT licence). HTML retains `no-store, no-cache, must-revalidate, max-age=0`.
+  WAV identity is encoded in filenames; no additional Cache-Control header was
+  observed for those responses.
+- Public Chrome at **773 × 601** launches ENGINE → START ENGINE → Telemetry,
+  decodes Mono and reports the exact build/source and ready Engine state. No page
+  exceptions; zero diagnostic transmissions. Screenshot inspected after capture.
+- Local actual-WAV tests cover automatic retry after induced network failure,
+  all profiles, Demo acceleration to fourth, braking, GPS-confirmed standstill
+  rev, mute, Engine/Flux and the shared context; protected LAB manual gear verified.
+- Evidence: [canonical hashes](qa/2026-09-07-engine/canonical-hashes.json),
+  [canonical browser](qa/2026-09-07-engine/canonical-browser.json),
+  [current public screen](qa/2026-09-07-engine/07-canonical.png) and
+  [integration/acceptance record](ENGINE-INTEGRATION-2026-09-07.md).
+- Vehicle timbre, alerts, native controls, GPS cadence, background behavior and
+  endurance remain open. The inherited iPhone control shell is still unfinished;
+  its screenshot is a known limitation, not responsive acceptance.
+
+
 ## Reliability recovery and honest diagnostics — 2026-09-07 09:37
 
 - Canonical build **`20260907-0930`**, version **`0.0.0`**, built source/docs

@@ -1,10 +1,18 @@
 # Current Project State
 
-Latest verified canonical publication: **`20260907-0930`**, source **`f590f51`**
-(reliability implementation `9b57fc3`), version `0.0.0`. See
-[deployment evidence](DEPLOY.md) and [reliability QA](RELIABILITY-QA-2026-09-07.md).
-This supersedes older live-build references below. Engine is now implemented locally; publication evidence will supersede this baseline after postflight. iPhone follows Engine vehicle trial. Read [updated Engine intake](ENGINE-INTAKE-2026-09-07.md). Broad owner acceptance is recorded in
-[owner decisions](OWNER-DECISIONS-2026-09-07.md); A02 is now answered: no spontaneous music stop was reported. No new automatic diagnostic sender exists.
+Latest verified canonical publication: **`20260907-1119`**, source **`7608873`**,
+Engine implementation **`69230fd`**, version `0.0.0`. **651 regression tests**,
+10 post-build checks, 28 HTTPS identity checks and actual public Engine startup
+passed. Official preflight, publication and independent no-write postflight pass.
+See [DEPLOY](DEPLOY.md) and [Engine integration](ENGINE-INTEGRATION-2026-09-07.md).
+
+Engine is implemented and live: Telemetry direction 2, Mono/Rosso/Touring, AUTO,
+protected LAB MANUAL, shared audio, GPS evidence, rev protection and retry. The
+source/WAV authorization is settled. Next: owner first listen in
+[A12](OWNER-ANSWERS-2026-09-07.md#a12--engine-first-listen), then iPhone. The phone
+control shell remains unfinished. ATLAS/full-screen statistics and Standard/Dev
+diagnostics are queued. Broad Flux/Soundtrack/FX/interface/Discover acceptance
+remains recorded; no new automatic diagnostic sender exists.
 
 Visual recovery and diagnostic accounting fixes are implemented; publication evidence is recorded in [DEPLOY.md](DEPLOY.md). Future diagnostics automation is not yet implemented.
 

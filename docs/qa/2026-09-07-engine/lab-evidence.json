@@ -22,7 +22,7 @@
       "source": "Lab",
       "freshness": "fresh",
       "reason": "accepted",
-      "ageMs": 75.5,
+      "ageMs": 90.69999999552965,
       "rawSpeedKmh": 0,
       "speedKmh": 0,
       "accelerationMps2": 0,
@@ -43,7 +43,7 @@
         "fromGear": 1,
         "toGear": 3,
         "reason": "manual",
-        "effectiveContextTime": 0.255,
+        "effectiveContextTime": 0.24966666666666665,
         "duration": 0.24
       },
       {
