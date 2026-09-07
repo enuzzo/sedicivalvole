@@ -1,5 +1,41 @@
 # Deployment
 
+## Engine acoustic campaign publication — 2026-09-08 00:36 Europe/Rome
+
+Canonical **20260908-0026**, source **7c249ca**, version from VERSION (**0.0.0**).
+Acoustic implementation **7d04dcc**; the final source also clarifies continuous
+Turbine launch copy. Both checkpoints are pushed to the configured origin.
+[Engine behavior, source decisions and A/B audio](ENGINE-CAMPAIGN-IMPLEMENTATION-2026-09-08.md).
+
+- Official publication verifies **232 files / 254,867,785 bytes**, all **29 Illobo
+  recordings**, two retained cache-overlap assets and twelve expected root entries.
+- Independent official postflight passes with **remote_writes=NONE**.
+- **29 canonical HTML/asset/cache checks** pass for both root and cache-busted
+  HTML, including the new self-contained Engine processor and lazy voice module.
+- **768 native tests**, **18 final package checks** and **196 dependency credits**
+  pass. Public and protected LAB both include the 8,698-byte Engine processor.
+- Twelve actual Chromium audio renders cover six profiles at 44.1/48 kHz; 48
+  steady DSP cases and four 60-second continuous cases are finite/unclipped.
+  Real browser GPS/lifecycle/loading/mute checks pass; Mac 120-second live
+  rendering and a 40-second 44.1 kHz pass are not Tesla endurance.
+- The actual canonical browser verifies final identity, all six voice selections,
+  no-GPS procedural TAMARRO, one context and 773×601 / 956×440 / 667×375 controls.
+  Both mail endpoints are intercepted; zero synthetic requests, page exceptions
+  or processor errors. Pre-gesture autoplay warnings precede successful START.
+
+[Canonical identity](qa/2026-09-08-engine/canonical-identity.json),
+[canonical browser evidence](qa/2026-09-08-engine/browser-canonical.json) and
+[current screenshots](qa/2026-09-08-engine/). Temporary operational logs are
+/tmp/sv-campaign-{preflight,publish,postflight}.log and
+/tmp/sv-campaign-canonical/. Audio/source/trace exports persist locally in the
+ignored _references/audio/engine/campaign-20260908/ directory.
+
+No recording, proprietary simulator implementation or new dependency was added.
+The earlier admitted recording-provenance follow-up remains open. Physical
+Tesla/iPhone listening, native media and long-drive acceptance, plus the first
+real automatic diagnostic inbox receipt, remain unverified.
+
+
 ## Altitude correction publication — 2026-09-07 23:40 Europe/Rome
 
 Canonical **20260907-2328**, source **c6c16c4**, version from VERSION (0.0.0).

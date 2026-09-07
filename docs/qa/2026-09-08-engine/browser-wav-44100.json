@@ -1,0 +1,3018 @@
+{
+  "url": "http://127.0.0.1:5184/",
+  "expectedBuild": "20260908-0022",
+  "viewport": {
+    "width": 773,
+    "height": 601
+  },
+  "browserPath": "Browser plugin not available; isolated headless Chrome via existing Playwright",
+  "serviceWorkersBlocked": true,
+  "checks": [
+    "Mono decodes real WAVs; exactly three source loops use 10 ms repaired start; audible core and zero transmission at stop",
+    "Actual TAMARRO RPM gesture exceeds 5,000 RPM while transmission loops remain silent and core output remains audible",
+    "Fresh 30 km/h GPS drives actual RPM and audible transmission",
+    "Poor positional accuracy preserves bounded moving RPM for 3 s, inhibits transmission/shift confidence, and recovers on fresh GPS",
+    "Long missing GPS returns the engine to idle and fresh GPS restores moving RPM",
+    "Injected 5.4 s bank loading keeps old Mono audible with truthful loading label and Media Session playing; Rosso replaces it when ready",
+    "All three profiles decode, Touring remains unmodified, and master mute is authoritative with paused Media Session",
+    "Session report includes current Engine state and flight recorder data"
+  ],
+  "errors": [],
+  "warnings": [
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    },
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    }
+  ],
+  "interceptedSends": 0,
+  "interceptedEndpoints": [],
+  "snapshots": {
+    "mono-standstill": {
+      "rms": 0.033789842641246765,
+      "peak": 0.06324216723442078,
+      "playbackState": "playing",
+      "contextStates": [
+        "running"
+      ],
+      "sources": [
+        {
+          "hash": "7703265ff1b1e7e2223057e30e19a1007c844ccf3f870b659d5a393f811e40b0",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": -2400,
+          "role": "tranny_on"
+        },
+        {
+          "hash": "505b4d611f65af0362135126985994f987ffbd1dccc56e0ddcfa1cf86673bb81",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": -2400,
+          "role": "tranny_off"
+        },
+        {
+          "hash": "b75b9041be696ed651253b1f034285144337f85c909dfaec675548da9be7c296",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 11.149024943310657,
+          "gain": 3.472861553522233e-18,
+          "detune": -80,
+          "role": "public/audio/BAC_Mono_onhigh.wav"
+        },
+        {
+          "hash": "8d178cd745397cc333815b5a3980c4c195a3d4ab21005e3f2500e03fcaab2f8c",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.07097829878330231,
+          "detune": -80,
+          "role": "public/audio/BAC_Mono_onlow.wav"
+        },
+        {
+          "hash": "98d9a4f823c8dc6603cb657af90cbe680454bac06d2707b36e405118057e1ccc",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 9.491655328798187,
+          "gain": 3.418030728566298e-17,
+          "detune": -80,
+          "role": "public/audio/BAC_Mono_offveryhigh.wav"
+        },
+        {
+          "hash": "97d45c525723ea02f72ba0d553a368baedcc189833162275db10c2f9eec467ae",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 5.937052154195011,
+          "gain": 0.6672104597091675,
+          "detune": -80,
+          "role": "public/audio/BAC_Mono_offlow.wav"
+        },
+        {
+          "hash": "d84df781799f715ab256e74917ed777a43ae8cd9f2f7b823fe959734ee926d34",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": 0,
+          "role": "public/audio/limiter.wav"
+        }
+      ],
+      "rpm": 600
+    },
+    "gesture-0": {
+      "rms": 0.05519200682944119,
+      "peak": 0.10390663146972656,
+      "playbackState": "playing",
+      "contextStates": [
+        "running"
+      ],
+      "sources": [
+        {
+          "hash": "7703265ff1b1e7e2223057e30e19a1007c844ccf3f870b659d5a393f811e40b0",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": -2400,
+          "role": "tranny_on"
+        },
+        {
+          "hash": "505b4d611f65af0362135126985994f987ffbd1dccc56e0ddcfa1cf86673bb81",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": -2400,
+          "role": "tranny_off"
+        },
+        {
+          "hash": "b75b9041be696ed651253b1f034285144337f85c909dfaec675548da9be7c296",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 11.149024943310657,
+          "gain": 0.030679168179631233,
+          "detune": 281.4129333496094,
+          "role": "public/audio/BAC_Mono_onhigh.wav"
+        },
+        {
+          "hash": "8d178cd745397cc333815b5a3980c4c195a3d4ab21005e3f2500e03fcaab2f8c",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.5519737601280212,
+          "detune": 281.4129333496094,
+          "role": "public/audio/BAC_Mono_onlow.wav"
+        },
+        {
+          "hash": "98d9a4f823c8dc6603cb657af90cbe680454bac06d2707b36e405118057e1ccc",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 9.491655328798187,
+          "gain": 0.0060414583422243595,
+          "detune": 281.4129333496094,
+          "role": "public/audio/BAC_Mono_offveryhigh.wav"
+        },
+        {
+          "hash": "97d45c525723ea02f72ba0d553a368baedcc189833162275db10c2f9eec467ae",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 5.937052154195011,
+          "gain": 0.11008608341217041,
+          "detune": 281.4129333496094,
+          "role": "public/audio/BAC_Mono_offlow.wav"
+        },
+        {
+          "hash": "d84df781799f715ab256e74917ed777a43ae8cd9f2f7b823fe959734ee926d34",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": 0,
+          "role": "public/audio/limiter.wav"
+        }
+      ],
+      "rpm": 2399
+    },
+    "gesture-1": {
+      "rms": 0.03691780641430978,
+      "peak": 0.09561126679182053,
+      "playbackState": "playing",
+      "contextStates": [
+        "running"
+      ],
+      "sources": [
+        {
+          "hash": "7703265ff1b1e7e2223057e30e19a1007c844ccf3f870b659d5a393f811e40b0",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": -2400,
+          "role": "tranny_on"
+        },
+        {
+          "hash": "505b4d611f65af0362135126985994f987ffbd1dccc56e0ddcfa1cf86673bb81",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": -2400,
+          "role": "tranny_off"
+        },
+        {
+          "hash": "b75b9041be696ed651253b1f034285144337f85c909dfaec675548da9be7c296",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 11.149024943310657,
+          "gain": 0.21588243544101715,
+          "detune": 895.60009765625,
+          "role": "public/audio/BAC_Mono_onhigh.wav"
+        },
+        {
+          "hash": "8d178cd745397cc333815b5a3980c4c195a3d4ab21005e3f2500e03fcaab2f8c",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.07634719461202621,
+          "detune": 895.60009765625,
+          "role": "public/audio/BAC_Mono_onlow.wav"
+        },
+        {
+          "hash": "98d9a4f823c8dc6603cb657af90cbe680454bac06d2707b36e405118057e1ccc",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 9.491655328798187,
+          "gain": 0.3129640817642212,
+          "detune": 895.60009765625,
+          "role": "public/audio/BAC_Mono_offveryhigh.wav"
+        },
+        {
+          "hash": "97d45c525723ea02f72ba0d553a368baedcc189833162275db10c2f9eec467ae",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 5.937052154195011,
+          "gain": 0.05585967376828194,
+          "detune": 895.60009765625,
+          "role": "public/audio/BAC_Mono_offlow.wav"
+        },
+        {
+          "hash": "d84df781799f715ab256e74917ed777a43ae8cd9f2f7b823fe959734ee926d34",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": 0,
+          "role": "public/audio/limiter.wav"
+        }
+      ],
+      "rpm": 5632
+    },
+    "gesture-2": {
+      "rms": 0.05385954822573478,
+      "peak": 0.11575698852539062,
+      "playbackState": "playing",
+      "contextStates": [
+        "running"
+      ],
+      "sources": [
+        {
+          "hash": "7703265ff1b1e7e2223057e30e19a1007c844ccf3f870b659d5a393f811e40b0",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": -2400,
+          "role": "tranny_on"
+        },
+        {
+          "hash": "505b4d611f65af0362135126985994f987ffbd1dccc56e0ddcfa1cf86673bb81",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": -2400,
+          "role": "tranny_off"
+        },
+        {
+          "hash": "b75b9041be696ed651253b1f034285144337f85c909dfaec675548da9be7c296",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 11.149024943310657,
+          "gain": 0.002068566856905818,
+          "detune": 828.2882080078125,
+          "role": "public/audio/BAC_Mono_onhigh.wav"
+        },
+        {
+          "hash": "8d178cd745397cc333815b5a3980c4c195a3d4ab21005e3f2500e03fcaab2f8c",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.0007315526599995792,
+          "detune": 828.2882080078125,
+          "role": "public/audio/BAC_Mono_onlow.wav"
+        },
+        {
+          "hash": "98d9a4f823c8dc6603cb657af90cbe680454bac06d2707b36e405118057e1ccc",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 9.491655328798187,
+          "gain": 0.5226386785507202,
+          "detune": 828.2882080078125,
+          "role": "public/audio/BAC_Mono_offveryhigh.wav"
+        },
+        {
+          "hash": "97d45c525723ea02f72ba0d553a368baedcc189833162275db10c2f9eec467ae",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 5.937052154195011,
+          "gain": 0.23742824792861938,
+          "detune": 828.2882080078125,
+          "role": "public/audio/BAC_Mono_offlow.wav"
+        },
+        {
+          "hash": "d84df781799f715ab256e74917ed777a43ae8cd9f2f7b823fe959734ee926d34",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": 0,
+          "role": "public/audio/limiter.wav"
+        }
+      ],
+      "rpm": 4730
+    },
+    "gesture-3": {
+      "rms": 0.05340106533526687,
+      "peak": 0.09029187262058258,
+      "playbackState": "playing",
+      "contextStates": [
+        "running"
+      ],
+      "sources": [
+        {
+          "hash": "7703265ff1b1e7e2223057e30e19a1007c844ccf3f870b659d5a393f811e40b0",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": -2400,
+          "role": "tranny_on"
+        },
+        {
+          "hash": "505b4d611f65af0362135126985994f987ffbd1dccc56e0ddcfa1cf86673bb81",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": -2400,
+          "role": "tranny_off"
+        },
+        {
+          "hash": "b75b9041be696ed651253b1f034285144337f85c909dfaec675548da9be7c296",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 11.149024943310657,
+          "gain": 1.0196162293141242e-05,
+          "detune": 508.8187255859375,
+          "role": "public/audio/BAC_Mono_onhigh.wav"
+        },
+        {
+          "hash": "8d178cd745397cc333815b5a3980c4c195a3d4ab21005e3f2500e03fcaab2f8c",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 3.605887286539655e-06,
+          "detune": 508.8187255859375,
+          "role": "public/audio/BAC_Mono_onlow.wav"
+        },
+        {
+          "hash": "98d9a4f823c8dc6603cb657af90cbe680454bac06d2707b36e405118057e1ccc",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 9.491655328798187,
+          "gain": 0.24161338806152344,
+          "detune": 508.8187255859375,
+          "role": "public/audio/BAC_Mono_offveryhigh.wav"
+        },
+        {
+          "hash": "97d45c525723ea02f72ba0d553a368baedcc189833162275db10c2f9eec467ae",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 5.937052154195011,
+          "gain": 0.6002192497253418,
+          "detune": 508.8187255859375,
+          "role": "public/audio/BAC_Mono_offlow.wav"
+        },
+        {
+          "hash": "d84df781799f715ab256e74917ed777a43ae8cd9f2f7b823fe959734ee926d34",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": 0,
+          "role": "public/audio/limiter.wav"
+        }
+      ],
+      "rpm": 3929
+    },
+    "gesture-4": {
+      "rms": 0.04797942939311311,
+      "peak": 0.11092184484004974,
+      "playbackState": "playing",
+      "contextStates": [
+        "running"
+      ],
+      "sources": [
+        {
+          "hash": "7703265ff1b1e7e2223057e30e19a1007c844ccf3f870b659d5a393f811e40b0",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": -2400,
+          "role": "tranny_on"
+        },
+        {
+          "hash": "505b4d611f65af0362135126985994f987ffbd1dccc56e0ddcfa1cf86673bb81",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": -2400,
+          "role": "tranny_off"
+        },
+        {
+          "hash": "b75b9041be696ed651253b1f034285144337f85c909dfaec675548da9be7c296",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 11.149024943310657,
+          "gain": 9.807916967474739e-08,
+          "detune": 316.6089172363281,
+          "role": "public/audio/BAC_Mono_onhigh.wav"
+        },
+        {
+          "hash": "8d178cd745397cc333815b5a3980c4c195a3d4ab21005e3f2500e03fcaab2f8c",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 3.4685839978010335e-08,
+          "detune": 316.6089172363281,
+          "role": "public/audio/BAC_Mono_onlow.wav"
+        },
+        {
+          "hash": "98d9a4f823c8dc6603cb657af90cbe680454bac06d2707b36e405118057e1ccc",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 9.491655328798187,
+          "gain": 0.010937129147350788,
+          "detune": 316.6089172363281,
+          "role": "public/audio/BAC_Mono_offveryhigh.wav"
+        },
+        {
+          "hash": "97d45c525723ea02f72ba0d553a368baedcc189833162275db10c2f9eec467ae",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 5.937052154195011,
+          "gain": 0.6711874604225159,
+          "detune": 316.6089172363281,
+          "role": "public/audio/BAC_Mono_offlow.wav"
+        },
+        {
+          "hash": "d84df781799f715ab256e74917ed777a43ae8cd9f2f7b823fe959734ee926d34",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": 0,
+          "role": "public/audio/limiter.wav"
+        }
+      ],
+      "rpm": 2578
+    },
+    "gesture-5": {
+      "rms": 0.02974588516785749,
+      "peak": 0.08626287430524826,
+      "playbackState": "playing",
+      "contextStates": [
+        "running"
+      ],
+      "sources": [
+        {
+          "hash": "7703265ff1b1e7e2223057e30e19a1007c844ccf3f870b659d5a393f811e40b0",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": -2400,
+          "role": "tranny_on"
+        },
+        {
+          "hash": "505b4d611f65af0362135126985994f987ffbd1dccc56e0ddcfa1cf86673bb81",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": -2400,
+          "role": "tranny_off"
+        },
+        {
+          "hash": "b75b9041be696ed651253b1f034285144337f85c909dfaec675548da9be7c296",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 11.149024943310657,
+          "gain": 0.23515723645687103,
+          "detune": 549.7575073242188,
+          "role": "public/audio/BAC_Mono_onhigh.wav"
+        },
+        {
+          "hash": "8d178cd745397cc333815b5a3980c4c195a3d4ab21005e3f2500e03fcaab2f8c",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.4672088623046875,
+          "detune": 549.7575073242188,
+          "role": "public/audio/BAC_Mono_onlow.wav"
+        },
+        {
+          "hash": "98d9a4f823c8dc6603cb657af90cbe680454bac06d2707b36e405118057e1ccc",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 9.491655328798187,
+          "gain": 5.394514664658345e-05,
+          "detune": 549.7575073242188,
+          "role": "public/audio/BAC_Mono_offveryhigh.wav"
+        },
+        {
+          "hash": "97d45c525723ea02f72ba0d553a368baedcc189833162275db10c2f9eec467ae",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 5.937052154195011,
+          "gain": 0.0033147791400551796,
+          "detune": 549.7575073242188,
+          "role": "public/audio/BAC_Mono_offlow.wav"
+        },
+        {
+          "hash": "d84df781799f715ab256e74917ed777a43ae8cd9f2f7b823fe959734ee926d34",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": 0,
+          "role": "public/audio/limiter.wav"
+        }
+      ],
+      "rpm": 3749
+    },
+    "gesture-6": {
+      "rms": 0.05690842371293751,
+      "peak": 0.1192154586315155,
+      "playbackState": "playing",
+      "contextStates": [
+        "running"
+      ],
+      "sources": [
+        {
+          "hash": "7703265ff1b1e7e2223057e30e19a1007c844ccf3f870b659d5a393f811e40b0",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": -2400,
+          "role": "tranny_on"
+        },
+        {
+          "hash": "505b4d611f65af0362135126985994f987ffbd1dccc56e0ddcfa1cf86673bb81",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": -2400,
+          "role": "tranny_off"
+        },
+        {
+          "hash": "b75b9041be696ed651253b1f034285144337f85c909dfaec675548da9be7c296",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 11.149024943310657,
+          "gain": 0.4502076506614685,
+          "detune": 1136.955322265625,
+          "role": "public/audio/BAC_Mono_onhigh.wav"
+        },
+        {
+          "hash": "8d178cd745397cc333815b5a3980c4c195a3d4ab21005e3f2500e03fcaab2f8c",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.011633474379777908,
+          "detune": 1136.955322265625,
+          "role": "public/audio/BAC_Mono_onlow.wav"
+        },
+        {
+          "hash": "98d9a4f823c8dc6603cb657af90cbe680454bac06d2707b36e405118057e1ccc",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 9.491655328798187,
+          "gain": 2.665904048626544e-07,
+          "detune": 1136.955322265625,
+          "role": "public/audio/BAC_Mono_offveryhigh.wav"
+        },
+        {
+          "hash": "97d45c525723ea02f72ba0d553a368baedcc189833162275db10c2f9eec467ae",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 5.937052154195011,
+          "gain": 1.6381245586671866e-05,
+          "detune": 1136.955322265625,
+          "role": "public/audio/BAC_Mono_offlow.wav"
+        },
+        {
+          "hash": "d84df781799f715ab256e74917ed777a43ae8cd9f2f7b823fe959734ee926d34",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": 0,
+          "role": "public/audio/limiter.wav"
+        }
+      ],
+      "rpm": 7018
+    },
+    "gesture-7": {
+      "rms": 0.04090205893452086,
+      "peak": 0.09249815344810486,
+      "playbackState": "playing",
+      "contextStates": [
+        "running"
+      ],
+      "sources": [
+        {
+          "hash": "7703265ff1b1e7e2223057e30e19a1007c844ccf3f870b659d5a393f811e40b0",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": -2400,
+          "role": "tranny_on"
+        },
+        {
+          "hash": "505b4d611f65af0362135126985994f987ffbd1dccc56e0ddcfa1cf86673bb81",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": -2400,
+          "role": "tranny_off"
+        },
+        {
+          "hash": "b75b9041be696ed651253b1f034285144337f85c909dfaec675548da9be7c296",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 11.149024943310657,
+          "gain": 0.016407394781708717,
+          "detune": 1154.92236328125,
+          "role": "public/audio/BAC_Mono_onhigh.wav"
+        },
+        {
+          "hash": "8d178cd745397cc333815b5a3980c4c195a3d4ab21005e3f2500e03fcaab2f8c",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 5.749132833443582e-05,
+          "detune": 1154.92236328125,
+          "role": "public/audio/BAC_Mono_onlow.wav"
+        },
+        {
+          "hash": "98d9a4f823c8dc6603cb657af90cbe680454bac06d2707b36e405118057e1ccc",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 9.491655328798187,
+          "gain": 0.5422709584236145,
+          "detune": 1154.92236328125,
+          "role": "public/audio/BAC_Mono_offveryhigh.wav"
+        },
+        {
+          "hash": "97d45c525723ea02f72ba0d553a368baedcc189833162275db10c2f9eec467ae",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 5.937052154195011,
+          "gain": 8.095432235677436e-08,
+          "detune": 1154.92236328125,
+          "role": "public/audio/BAC_Mono_offlow.wav"
+        },
+        {
+          "hash": "d84df781799f715ab256e74917ed777a43ae8cd9f2f7b823fe959734ee926d34",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": 0,
+          "role": "public/audio/limiter.wav"
+        }
+      ],
+      "rpm": 6493
+    },
+    "gesture-8": {
+      "rms": 0.04515822204906314,
+      "peak": 0.12982125580310822,
+      "playbackState": "playing",
+      "contextStates": [
+        "running"
+      ],
+      "sources": [
+        {
+          "hash": "7703265ff1b1e7e2223057e30e19a1007c844ccf3f870b659d5a393f811e40b0",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": -2400,
+          "role": "tranny_on"
+        },
+        {
+          "hash": "505b4d611f65af0362135126985994f987ffbd1dccc56e0ddcfa1cf86673bb81",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": -2400,
+          "role": "tranny_off"
+        },
+        {
+          "hash": "b75b9041be696ed651253b1f034285144337f85c909dfaec675548da9be7c296",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 11.149024943310657,
+          "gain": 8.103088475763798e-05,
+          "detune": 595.8756713867188,
+          "role": "public/audio/BAC_Mono_onhigh.wav"
+        },
+        {
+          "hash": "8d178cd745397cc333815b5a3980c4c195a3d4ab21005e3f2500e03fcaab2f8c",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 2.839315129676834e-07,
+          "detune": 595.8756713867188,
+          "role": "public/audio/BAC_Mono_onlow.wav"
+        },
+        {
+          "hash": "98d9a4f823c8dc6603cb657af90cbe680454bac06d2707b36e405118057e1ccc",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 9.491655328798187,
+          "gain": 0.3311896324157715,
+          "detune": 595.8756713867188,
+          "role": "public/audio/BAC_Mono_offveryhigh.wav"
+        },
+        {
+          "hash": "97d45c525723ea02f72ba0d553a368baedcc189833162275db10c2f9eec467ae",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 5.937052154195011,
+          "gain": 0.5208956003189087,
+          "detune": 595.8756713867188,
+          "role": "public/audio/BAC_Mono_offlow.wav"
+        },
+        {
+          "hash": "d84df781799f715ab256e74917ed777a43ae8cd9f2f7b823fe959734ee926d34",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": 0,
+          "role": "public/audio/limiter.wav"
+        }
+      ],
+      "rpm": 3358
+    },
+    "gesture-9": {
+      "rms": 0.06510336028415985,
+      "peak": 0.13918456435203552,
+      "playbackState": "playing",
+      "contextStates": [
+        "running"
+      ],
+      "sources": [
+        {
+          "hash": "7703265ff1b1e7e2223057e30e19a1007c844ccf3f870b659d5a393f811e40b0",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": -2400,
+          "role": "tranny_on"
+        },
+        {
+          "hash": "505b4d611f65af0362135126985994f987ffbd1dccc56e0ddcfa1cf86673bb81",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": -2400,
+          "role": "tranny_off"
+        },
+        {
+          "hash": "b75b9041be696ed651253b1f034285144337f85c909dfaec675548da9be7c296",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 11.149024943310657,
+          "gain": 0.1392156481742859,
+          "detune": 456.11663818359375,
+          "role": "public/audio/BAC_Mono_onhigh.wav"
+        },
+        {
+          "hash": "8d178cd745397cc333815b5a3980c4c195a3d4ab21005e3f2500e03fcaab2f8c",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.4946320652961731,
+          "detune": 456.11663818359375,
+          "role": "public/audio/BAC_Mono_onlow.wav"
+        },
+        {
+          "hash": "98d9a4f823c8dc6603cb657af90cbe680454bac06d2707b36e405118057e1ccc",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 9.491655328798187,
+          "gain": 0.008870797231793404,
+          "detune": 456.11663818359375,
+          "role": "public/audio/BAC_Mono_offveryhigh.wav"
+        },
+        {
+          "hash": "97d45c525723ea02f72ba0d553a368baedcc189833162275db10c2f9eec467ae",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 5.937052154195011,
+          "gain": 0.04560283571481705,
+          "detune": 456.11663818359375,
+          "role": "public/audio/BAC_Mono_offlow.wav"
+        },
+        {
+          "hash": "d84df781799f715ab256e74917ed777a43ae8cd9f2f7b823fe959734ee926d34",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": 0,
+          "role": "public/audio/limiter.wav"
+        }
+      ],
+      "rpm": 2959
+    },
+    "gesture-10": {
+      "rms": 0.06636064346708181,
+      "peak": 0.12726277112960815,
+      "playbackState": "playing",
+      "contextStates": [
+        "running"
+      ],
+      "sources": [
+        {
+          "hash": "7703265ff1b1e7e2223057e30e19a1007c844ccf3f870b659d5a393f811e40b0",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": -2400,
+          "role": "tranny_on"
+        },
+        {
+          "hash": "505b4d611f65af0362135126985994f987ffbd1dccc56e0ddcfa1cf86673bb81",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": -2400,
+          "role": "tranny_off"
+        },
+        {
+          "hash": "b75b9041be696ed651253b1f034285144337f85c909dfaec675548da9be7c296",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 11.149024943310657,
+          "gain": 0.44316697120666504,
+          "detune": 1026.7593994140625,
+          "role": "public/audio/BAC_Mono_onhigh.wav"
+        },
+        {
+          "hash": "8d178cd745397cc333815b5a3980c4c195a3d4ab21005e3f2500e03fcaab2f8c",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.04146242514252663,
+          "detune": 1026.7593994140625,
+          "role": "public/audio/BAC_Mono_onlow.wav"
+        },
+        {
+          "hash": "98d9a4f823c8dc6603cb657af90cbe680454bac06d2707b36e405118057e1ccc",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 9.491655328798187,
+          "gain": 4.3753236241173e-05,
+          "detune": 1026.7593994140625,
+          "role": "public/audio/BAC_Mono_offveryhigh.wav"
+        },
+        {
+          "hash": "97d45c525723ea02f72ba0d553a368baedcc189833162275db10c2f9eec467ae",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 5.937052154195011,
+          "gain": 0.0002249255048809573,
+          "detune": 1026.7593994140625,
+          "role": "public/audio/BAC_Mono_offlow.wav"
+        },
+        {
+          "hash": "d84df781799f715ab256e74917ed777a43ae8cd9f2f7b823fe959734ee926d34",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": 0,
+          "role": "public/audio/limiter.wav"
+        }
+      ],
+      "rpm": 5718
+    },
+    "gesture-11": {
+      "rms": 0.05293346599924797,
+      "peak": 0.1428702026605606,
+      "playbackState": "playing",
+      "contextStates": [
+        "running"
+      ],
+      "sources": [
+        {
+          "hash": "7703265ff1b1e7e2223057e30e19a1007c844ccf3f870b659d5a393f811e40b0",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": -2400,
+          "role": "tranny_on"
+        },
+        {
+          "hash": "505b4d611f65af0362135126985994f987ffbd1dccc56e0ddcfa1cf86673bb81",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": -2400,
+          "role": "tranny_off"
+        },
+        {
+          "hash": "b75b9041be696ed651253b1f034285144337f85c909dfaec675548da9be7c296",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 11.149024943310657,
+          "gain": 0.4525144398212433,
+          "detune": 1549.7716064453125,
+          "role": "public/audio/BAC_Mono_onhigh.wav"
+        },
+        {
+          "hash": "8d178cd745397cc333815b5a3980c4c195a3d4ab21005e3f2500e03fcaab2f8c",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.00020450465672183782,
+          "detune": 1549.7716064453125,
+          "role": "public/audio/BAC_Mono_onlow.wav"
+        },
+        {
+          "hash": "98d9a4f823c8dc6603cb657af90cbe680454bac06d2707b36e405118057e1ccc",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 9.491655328798187,
+          "gain": 2.1580328279924288e-07,
+          "detune": 1549.7716064453125,
+          "role": "public/audio/BAC_Mono_offveryhigh.wav"
+        },
+        {
+          "hash": "97d45c525723ea02f72ba0d553a368baedcc189833162275db10c2f9eec467ae",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 5.937052154195011,
+          "gain": 1.109394247578166e-06,
+          "detune": 1549.7716064453125,
+          "role": "public/audio/BAC_Mono_offlow.wav"
+        },
+        {
+          "hash": "d84df781799f715ab256e74917ed777a43ae8cd9f2f7b823fe959734ee926d34",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.11674241721630096,
+          "detune": 0,
+          "role": "public/audio/limiter.wav"
+        }
+      ],
+      "rpm": 8756
+    },
+    "gesture-12": {
+      "rms": 0.0545494728125508,
+      "peak": 0.12311643362045288,
+      "playbackState": "playing",
+      "contextStates": [
+        "running"
+      ],
+      "sources": [
+        {
+          "hash": "7703265ff1b1e7e2223057e30e19a1007c844ccf3f870b659d5a393f811e40b0",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": -2400,
+          "role": "tranny_on"
+        },
+        {
+          "hash": "505b4d611f65af0362135126985994f987ffbd1dccc56e0ddcfa1cf86673bb81",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": -2400,
+          "role": "tranny_off"
+        },
+        {
+          "hash": "b75b9041be696ed651253b1f034285144337f85c909dfaec675548da9be7c296",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 11.149024943310657,
+          "gain": 0.4525413513183594,
+          "detune": 1574.75146484375,
+          "role": "public/audio/BAC_Mono_onhigh.wav"
+        },
+        {
+          "hash": "8d178cd745397cc333815b5a3980c4c195a3d4ab21005e3f2500e03fcaab2f8c",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 1.5259747669915669e-06,
+          "detune": 1574.75146484375,
+          "role": "public/audio/BAC_Mono_onlow.wav"
+        },
+        {
+          "hash": "98d9a4f823c8dc6603cb657af90cbe680454bac06d2707b36e405118057e1ccc",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 9.491655328798187,
+          "gain": 1.6102826849717644e-09,
+          "detune": 1574.75146484375,
+          "role": "public/audio/BAC_Mono_offveryhigh.wav"
+        },
+        {
+          "hash": "97d45c525723ea02f72ba0d553a368baedcc189833162275db10c2f9eec467ae",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 5.937052154195011,
+          "gain": 8.278077778811621e-09,
+          "detune": 1574.75146484375,
+          "role": "public/audio/BAC_Mono_offlow.wav"
+        },
+        {
+          "hash": "d84df781799f715ab256e74917ed777a43ae8cd9f2f7b823fe959734ee926d34",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.13298459351062775,
+          "detune": 0,
+          "role": "public/audio/limiter.wav"
+        }
+      ],
+      "rpm": 8927
+    },
+    "gesture-13": {
+      "rms": 0.046988504456625196,
+      "peak": 0.12327179312705994,
+      "playbackState": "playing",
+      "contextStates": [
+        "running"
+      ],
+      "sources": [
+        {
+          "hash": "7703265ff1b1e7e2223057e30e19a1007c844ccf3f870b659d5a393f811e40b0",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": -2400,
+          "role": "tranny_on"
+        },
+        {
+          "hash": "505b4d611f65af0362135126985994f987ffbd1dccc56e0ddcfa1cf86673bb81",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": -2400,
+          "role": "tranny_off"
+        },
+        {
+          "hash": "b75b9041be696ed651253b1f034285144337f85c909dfaec675548da9be7c296",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 11.149024943310657,
+          "gain": 0.4525413513183594,
+          "detune": 1543.7154541015625,
+          "role": "public/audio/BAC_Mono_onhigh.wav"
+        },
+        {
+          "hash": "8d178cd745397cc333815b5a3980c4c195a3d4ab21005e3f2500e03fcaab2f8c",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 9.658801758405389e-09,
+          "detune": 1543.7154541015625,
+          "role": "public/audio/BAC_Mono_onlow.wav"
+        },
+        {
+          "hash": "98d9a4f823c8dc6603cb657af90cbe680454bac06d2707b36e405118057e1ccc",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 9.491655328798187,
+          "gain": 1.0192472733872027e-11,
+          "detune": 1543.7154541015625,
+          "role": "public/audio/BAC_Mono_offveryhigh.wav"
+        },
+        {
+          "hash": "97d45c525723ea02f72ba0d553a368baedcc189833162275db10c2f9eec467ae",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 5.937052154195011,
+          "gain": 5.2396940952714743e-11,
+          "detune": 1543.7154541015625,
+          "role": "public/audio/BAC_Mono_offlow.wav"
+        },
+        {
+          "hash": "d84df781799f715ab256e74917ed777a43ae8cd9f2f7b823fe959734ee926d34",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.09915409237146378,
+          "detune": 0,
+          "role": "public/audio/limiter.wav"
+        }
+      ],
+      "rpm": 8874
+    },
+    "fresh-moving": {
+      "rms": 0.05797317474178102,
+      "peak": 0.1297617405653,
+      "playbackState": "playing",
+      "contextStates": [
+        "running"
+      ],
+      "sources": [
+        {
+          "hash": "7703265ff1b1e7e2223057e30e19a1007c844ccf3f870b659d5a393f811e40b0",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.05396723002195358,
+          "detune": -1495.07080078125,
+          "role": "tranny_on"
+        },
+        {
+          "hash": "505b4d611f65af0362135126985994f987ffbd1dccc56e0ddcfa1cf86673bb81",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.04204998165369034,
+          "detune": -1495.07080078125,
+          "role": "tranny_off"
+        },
+        {
+          "hash": "b75b9041be696ed651253b1f034285144337f85c909dfaec675548da9be7c296",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 11.149024943310657,
+          "gain": 0.2442159652709961,
+          "detune": 1183.9263916015625,
+          "role": "public/audio/BAC_Mono_onhigh.wav"
+        },
+        {
+          "hash": "8d178cd745397cc333815b5a3980c4c195a3d4ab21005e3f2500e03fcaab2f8c",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 7.229811774213044e-14,
+          "detune": 1183.9256591796875,
+          "role": "public/audio/BAC_Mono_onlow.wav"
+        },
+        {
+          "hash": "98d9a4f823c8dc6603cb657af90cbe680454bac06d2707b36e405118057e1ccc",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 9.491655328798187,
+          "gain": 0.47321802377700806,
+          "detune": 1183.9256591796875,
+          "role": "public/audio/BAC_Mono_offveryhigh.wav"
+        },
+        {
+          "hash": "97d45c525723ea02f72ba0d553a368baedcc189833162275db10c2f9eec467ae",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 5.937052154195011,
+          "gain": 3.463605402467765e-17,
+          "detune": 1183.9256591796875,
+          "role": "public/audio/BAC_Mono_offlow.wav"
+        },
+        {
+          "hash": "d84df781799f715ab256e74917ed777a43ae8cd9f2f7b823fe959734ee926d34",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": 0,
+          "role": "public/audio/limiter.wav"
+        }
+      ],
+      "rpm": 6921
+    },
+    "poor-accuracy-hold": {
+      "rms": 0.04451408353583728,
+      "peak": 0.10152775049209595,
+      "playbackState": "playing",
+      "contextStates": [
+        "running"
+      ],
+      "sources": [
+        {
+          "hash": "7703265ff1b1e7e2223057e30e19a1007c844ccf3f870b659d5a393f811e40b0",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": -1493.689208984375,
+          "role": "tranny_on"
+        },
+        {
+          "hash": "505b4d611f65af0362135126985994f987ffbd1dccc56e0ddcfa1cf86673bb81",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": -1493.689208984375,
+          "role": "tranny_off"
+        },
+        {
+          "hash": "b75b9041be696ed651253b1f034285144337f85c909dfaec675548da9be7c296",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 11.149024943310657,
+          "gain": 0.05672422796487808,
+          "detune": 1168.4129638671875,
+          "role": "public/audio/BAC_Mono_onhigh.wav"
+        },
+        {
+          "hash": "8d178cd745397cc333815b5a3980c4c195a3d4ab21005e3f2500e03fcaab2f8c",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 4.346838254869223e-18,
+          "detune": 1168.4129638671875,
+          "role": "public/audio/BAC_Mono_onlow.wav"
+        },
+        {
+          "hash": "98d9a4f823c8dc6603cb657af90cbe680454bac06d2707b36e405118057e1ccc",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 9.491655328798187,
+          "gain": 0.5582025051116943,
+          "detune": 1168.4129638671875,
+          "role": "public/audio/BAC_Mono_offveryhigh.wav"
+        },
+        {
+          "hash": "97d45c525723ea02f72ba0d553a368baedcc189833162275db10c2f9eec467ae",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 5.937052154195011,
+          "gain": 4.085512543337388e-17,
+          "detune": 1168.4129638671875,
+          "role": "public/audio/BAC_Mono_offlow.wav"
+        },
+        {
+          "hash": "d84df781799f715ab256e74917ed777a43ae8cd9f2f7b823fe959734ee926d34",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": 0,
+          "role": "public/audio/limiter.wav"
+        }
+      ],
+      "rpm": 6842
+    },
+    "accuracy-recovered": {
+      "rms": 0.08502529666121594,
+      "peak": 0.17796778678894043,
+      "playbackState": "playing",
+      "contextStates": [
+        "running"
+      ],
+      "sources": [
+        {
+          "hash": "7703265ff1b1e7e2223057e30e19a1007c844ccf3f870b659d5a393f811e40b0",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.03228442370891571,
+          "detune": -1488.5726318359375,
+          "role": "tranny_on"
+        },
+        {
+          "hash": "505b4d611f65af0362135126985994f987ffbd1dccc56e0ddcfa1cf86673bb81",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.047323159873485565,
+          "detune": -1488.5726318359375,
+          "role": "tranny_off"
+        },
+        {
+          "hash": "b75b9041be696ed651253b1f034285144337f85c909dfaec675548da9be7c296",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 11.149024943310657,
+          "gain": 0.1461082547903061,
+          "detune": 1179.915283203125,
+          "role": "public/audio/BAC_Mono_onhigh.wav"
+        },
+        {
+          "hash": "8d178cd745397cc333815b5a3980c4c195a3d4ab21005e3f2500e03fcaab2f8c",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 1.1196179104119623e-17,
+          "detune": 1179.915283203125,
+          "role": "public/audio/BAC_Mono_onlow.wav"
+        },
+        {
+          "hash": "98d9a4f823c8dc6603cb657af90cbe680454bac06d2707b36e405118057e1ccc",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 9.491655328798187,
+          "gain": 0.5325501561164856,
+          "detune": 1179.915283203125,
+          "role": "public/audio/BAC_Mono_offveryhigh.wav"
+        },
+        {
+          "hash": "97d45c525723ea02f72ba0d553a368baedcc189833162275db10c2f9eec467ae",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 5.937052154195011,
+          "gain": 3.8977713301731676e-17,
+          "detune": 1179.915283203125,
+          "role": "public/audio/BAC_Mono_offlow.wav"
+        },
+        {
+          "hash": "d84df781799f715ab256e74917ed777a43ae8cd9f2f7b823fe959734ee926d34",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": 0,
+          "role": "public/audio/limiter.wav"
+        }
+      ],
+      "rpm": 6899
+    },
+    "long-signal-loss": {
+      "rms": 0.04640694777833677,
+      "peak": 0.08367292582988739,
+      "playbackState": "playing",
+      "contextStates": [
+        "running"
+      ],
+      "sources": [
+        {
+          "hash": "7703265ff1b1e7e2223057e30e19a1007c844ccf3f870b659d5a393f811e40b0",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": -1488.5726318359375,
+          "role": "tranny_on"
+        },
+        {
+          "hash": "505b4d611f65af0362135126985994f987ffbd1dccc56e0ddcfa1cf86673bb81",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": -1488.5726318359375,
+          "role": "tranny_off"
+        },
+        {
+          "hash": "b75b9041be696ed651253b1f034285144337f85c909dfaec675548da9be7c296",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 11.149024943310657,
+          "gain": 3.1797182735540967e-15,
+          "detune": 0,
+          "role": "public/audio/BAC_Mono_onhigh.wav"
+        },
+        {
+          "hash": "8d178cd745397cc333815b5a3980c4c195a3d4ab21005e3f2500e03fcaab2f8c",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.07097829878330231,
+          "detune": 0,
+          "role": "public/audio/BAC_Mono_onlow.wav"
+        },
+        {
+          "hash": "98d9a4f823c8dc6603cb657af90cbe680454bac06d2707b36e405118057e1ccc",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 9.491655328798187,
+          "gain": 3.129251754095154e-14,
+          "detune": 0,
+          "role": "public/audio/BAC_Mono_offveryhigh.wav"
+        },
+        {
+          "hash": "97d45c525723ea02f72ba0d553a368baedcc189833162275db10c2f9eec467ae",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 5.937052154195011,
+          "gain": 0.6672104597091675,
+          "detune": 0,
+          "role": "public/audio/BAC_Mono_offlow.wav"
+        },
+        {
+          "hash": "d84df781799f715ab256e74917ed777a43ae8cd9f2f7b823fe959734ee926d34",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": 0,
+          "role": "public/audio/limiter.wav"
+        }
+      ],
+      "rpm": 1000
+    },
+    "signal-recovered": {
+      "rms": 0.04696679525384701,
+      "peak": 0.1192668080329895,
+      "playbackState": "playing",
+      "contextStates": [
+        "running"
+      ],
+      "sources": [
+        {
+          "hash": "7703265ff1b1e7e2223057e30e19a1007c844ccf3f870b659d5a393f811e40b0",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.03235430270433426,
+          "detune": -1488.5726318359375,
+          "role": "tranny_on"
+        },
+        {
+          "hash": "505b4d611f65af0362135126985994f987ffbd1dccc56e0ddcfa1cf86673bb81",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.04731196165084839,
+          "detune": -1488.5726318359375,
+          "role": "tranny_off"
+        },
+        {
+          "hash": "b75b9041be696ed651253b1f034285144337f85c909dfaec675548da9be7c296",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 11.149024943310657,
+          "gain": 0.1464228630065918,
+          "detune": 1179.66015625,
+          "role": "public/audio/BAC_Mono_onhigh.wav"
+        },
+        {
+          "hash": "8d178cd745397cc333815b5a3980c4c195a3d4ab21005e3f2500e03fcaab2f8c",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 1.5795881269653478e-09,
+          "detune": 1179.66015625,
+          "role": "public/audio/BAC_Mono_onlow.wav"
+        },
+        {
+          "hash": "98d9a4f823c8dc6603cb657af90cbe680454bac06d2707b36e405118057e1ccc",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 9.491655328798187,
+          "gain": 0.5324486494064331,
+          "detune": 1179.66015625,
+          "role": "public/audio/BAC_Mono_offveryhigh.wav"
+        },
+        {
+          "hash": "97d45c525723ea02f72ba0d553a368baedcc189833162275db10c2f9eec467ae",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 5.937052154195011,
+          "gain": 8.570336440527626e-09,
+          "detune": 1179.66015625,
+          "role": "public/audio/BAC_Mono_offlow.wav"
+        },
+        {
+          "hash": "d84df781799f715ab256e74917ed777a43ae8cd9f2f7b823fe959734ee926d34",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": 0,
+          "role": "public/audio/limiter.wav"
+        }
+      ],
+      "rpm": 6898
+    },
+    "preparation-0": {
+      "rms": 0.04803384375474742,
+      "peak": 0.12053678184747696,
+      "playbackState": "playing",
+      "contextStates": [
+        "running"
+      ],
+      "sources": [
+        {
+          "hash": "7703265ff1b1e7e2223057e30e19a1007c844ccf3f870b659d5a393f811e40b0",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.03238842636346817,
+          "detune": -1488.5726318359375,
+          "role": "tranny_on"
+        },
+        {
+          "hash": "505b4d611f65af0362135126985994f987ffbd1dccc56e0ddcfa1cf86673bb81",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.04730721563100815,
+          "detune": -1488.5726318359375,
+          "role": "tranny_off"
+        },
+        {
+          "hash": "b75b9041be696ed651253b1f034285144337f85c909dfaec675548da9be7c296",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 11.149024943310657,
+          "gain": 0.14657995104789734,
+          "detune": 1180.197021484375,
+          "role": "public/audio/BAC_Mono_onhigh.wav"
+        },
+        {
+          "hash": "8d178cd745397cc333815b5a3980c4c195a3d4ab21005e3f2500e03fcaab2f8c",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 2.4643856154463657e-17,
+          "detune": 1180.197021484375,
+          "role": "public/audio/BAC_Mono_onlow.wav"
+        },
+        {
+          "hash": "98d9a4f823c8dc6603cb657af90cbe680454bac06d2707b36e405118057e1ccc",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 9.491655328798187,
+          "gain": 0.5323952436447144,
+          "detune": 1180.197021484375,
+          "role": "public/audio/BAC_Mono_offveryhigh.wav"
+        },
+        {
+          "hash": "97d45c525723ea02f72ba0d553a368baedcc189833162275db10c2f9eec467ae",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 5.937052154195011,
+          "gain": 1.117235663335034e-16,
+          "detune": 1180.197021484375,
+          "role": "public/audio/BAC_Mono_offlow.wav"
+        },
+        {
+          "hash": "d84df781799f715ab256e74917ed777a43ae8cd9f2f7b823fe959734ee926d34",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": 0,
+          "role": "public/audio/limiter.wav"
+        }
+      ],
+      "rpm": 6900
+    },
+    "preparation-1": {
+      "rms": 0.0641551910950255,
+      "peak": 0.16013003885746002,
+      "playbackState": "playing",
+      "contextStates": [
+        "running"
+      ],
+      "sources": [
+        {
+          "hash": "7703265ff1b1e7e2223057e30e19a1007c844ccf3f870b659d5a393f811e40b0",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.03238851577043533,
+          "detune": -1488.5726318359375,
+          "role": "tranny_on"
+        },
+        {
+          "hash": "505b4d611f65af0362135126985994f987ffbd1dccc56e0ddcfa1cf86673bb81",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.047307200729846954,
+          "detune": -1488.5726318359375,
+          "role": "tranny_off"
+        },
+        {
+          "hash": "b75b9041be696ed651253b1f034285144337f85c909dfaec675548da9be7c296",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 11.149024943310657,
+          "gain": 0.14658036828041077,
+          "detune": 1179.7001953125,
+          "role": "public/audio/BAC_Mono_onhigh.wav"
+        },
+        {
+          "hash": "8d178cd745397cc333815b5a3980c4c195a3d4ab21005e3f2500e03fcaab2f8c",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 1.123387537899489e-17,
+          "detune": 1179.7001953125,
+          "role": "public/audio/BAC_Mono_onlow.wav"
+        },
+        {
+          "hash": "98d9a4f823c8dc6603cb657af90cbe680454bac06d2707b36e405118057e1ccc",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 9.491655328798187,
+          "gain": 0.5323951244354248,
+          "detune": 1179.7001953125,
+          "role": "public/audio/BAC_Mono_offveryhigh.wav"
+        },
+        {
+          "hash": "97d45c525723ea02f72ba0d553a368baedcc189833162275db10c2f9eec467ae",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 5.937052154195011,
+          "gain": 3.896468024400029e-17,
+          "detune": 1179.7001953125,
+          "role": "public/audio/BAC_Mono_offlow.wav"
+        },
+        {
+          "hash": "d84df781799f715ab256e74917ed777a43ae8cd9f2f7b823fe959734ee926d34",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": 0,
+          "role": "public/audio/limiter.wav"
+        }
+      ],
+      "rpm": 6899
+    },
+    "preparation-2": {
+      "rms": 0.05875039073981455,
+      "peak": 0.13907021284103394,
+      "playbackState": "playing",
+      "contextStates": [
+        "running"
+      ],
+      "sources": [
+        {
+          "hash": "7703265ff1b1e7e2223057e30e19a1007c844ccf3f870b659d5a393f811e40b0",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.03238851577043533,
+          "detune": -1488.5726318359375,
+          "role": "tranny_on"
+        },
+        {
+          "hash": "505b4d611f65af0362135126985994f987ffbd1dccc56e0ddcfa1cf86673bb81",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.047307200729846954,
+          "detune": -1488.5726318359375,
+          "role": "tranny_off"
+        },
+        {
+          "hash": "b75b9041be696ed651253b1f034285144337f85c909dfaec675548da9be7c296",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 11.149024943310657,
+          "gain": 0.14658036828041077,
+          "detune": 1180.603759765625,
+          "role": "public/audio/BAC_Mono_onhigh.wav"
+        },
+        {
+          "hash": "8d178cd745397cc333815b5a3980c4c195a3d4ab21005e3f2500e03fcaab2f8c",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 1.123387537899489e-17,
+          "detune": 1180.603759765625,
+          "role": "public/audio/BAC_Mono_onlow.wav"
+        },
+        {
+          "hash": "98d9a4f823c8dc6603cb657af90cbe680454bac06d2707b36e405118057e1ccc",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 9.491655328798187,
+          "gain": 0.5323951244354248,
+          "detune": 1180.603759765625,
+          "role": "public/audio/BAC_Mono_offveryhigh.wav"
+        },
+        {
+          "hash": "97d45c525723ea02f72ba0d553a368baedcc189833162275db10c2f9eec467ae",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 5.937052154195011,
+          "gain": 3.896468024400029e-17,
+          "detune": 1180.603759765625,
+          "role": "public/audio/BAC_Mono_offlow.wav"
+        },
+        {
+          "hash": "d84df781799f715ab256e74917ed777a43ae8cd9f2f7b823fe959734ee926d34",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": 0,
+          "role": "public/audio/limiter.wav"
+        }
+      ],
+      "rpm": 6902
+    },
+    "preparation-3": {
+      "rms": 0.06480046152162783,
+      "peak": 0.14010629057884216,
+      "playbackState": "playing",
+      "contextStates": [
+        "running"
+      ],
+      "sources": [
+        {
+          "hash": "7703265ff1b1e7e2223057e30e19a1007c844ccf3f870b659d5a393f811e40b0",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.03238851577043533,
+          "detune": -1488.5726318359375,
+          "role": "tranny_on"
+        },
+        {
+          "hash": "505b4d611f65af0362135126985994f987ffbd1dccc56e0ddcfa1cf86673bb81",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.047307200729846954,
+          "detune": -1488.5726318359375,
+          "role": "tranny_off"
+        },
+        {
+          "hash": "b75b9041be696ed651253b1f034285144337f85c909dfaec675548da9be7c296",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 11.149024943310657,
+          "gain": 0.14658036828041077,
+          "detune": 1179.7474365234375,
+          "role": "public/audio/BAC_Mono_onhigh.wav"
+        },
+        {
+          "hash": "8d178cd745397cc333815b5a3980c4c195a3d4ab21005e3f2500e03fcaab2f8c",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 1.123387537899489e-17,
+          "detune": 1179.7474365234375,
+          "role": "public/audio/BAC_Mono_onlow.wav"
+        },
+        {
+          "hash": "98d9a4f823c8dc6603cb657af90cbe680454bac06d2707b36e405118057e1ccc",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 9.491655328798187,
+          "gain": 0.5323951244354248,
+          "detune": 1179.7474365234375,
+          "role": "public/audio/BAC_Mono_offveryhigh.wav"
+        },
+        {
+          "hash": "97d45c525723ea02f72ba0d553a368baedcc189833162275db10c2f9eec467ae",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 5.937052154195011,
+          "gain": 3.896468024400029e-17,
+          "detune": 1179.7474365234375,
+          "role": "public/audio/BAC_Mono_offlow.wav"
+        },
+        {
+          "hash": "d84df781799f715ab256e74917ed777a43ae8cd9f2f7b823fe959734ee926d34",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": 0,
+          "role": "public/audio/limiter.wav"
+        }
+      ],
+      "rpm": 6899
+    },
+    "preparation-4": {
+      "rms": 0.0478423105164013,
+      "peak": 0.10760384798049927,
+      "playbackState": "playing",
+      "contextStates": [
+        "running"
+      ],
+      "sources": [
+        {
+          "hash": "7703265ff1b1e7e2223057e30e19a1007c844ccf3f870b659d5a393f811e40b0",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.03238851577043533,
+          "detune": -1488.5726318359375,
+          "role": "tranny_on"
+        },
+        {
+          "hash": "505b4d611f65af0362135126985994f987ffbd1dccc56e0ddcfa1cf86673bb81",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.047307200729846954,
+          "detune": -1488.5726318359375,
+          "role": "tranny_off"
+        },
+        {
+          "hash": "b75b9041be696ed651253b1f034285144337f85c909dfaec675548da9be7c296",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 11.149024943310657,
+          "gain": 0.14658036828041077,
+          "detune": 1180.703369140625,
+          "role": "public/audio/BAC_Mono_onhigh.wav"
+        },
+        {
+          "hash": "8d178cd745397cc333815b5a3980c4c195a3d4ab21005e3f2500e03fcaab2f8c",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 1.123387537899489e-17,
+          "detune": 1180.703369140625,
+          "role": "public/audio/BAC_Mono_onlow.wav"
+        },
+        {
+          "hash": "98d9a4f823c8dc6603cb657af90cbe680454bac06d2707b36e405118057e1ccc",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 9.491655328798187,
+          "gain": 0.5323951244354248,
+          "detune": 1180.703369140625,
+          "role": "public/audio/BAC_Mono_offveryhigh.wav"
+        },
+        {
+          "hash": "97d45c525723ea02f72ba0d553a368baedcc189833162275db10c2f9eec467ae",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 5.937052154195011,
+          "gain": 3.896468024400029e-17,
+          "detune": 1180.703369140625,
+          "role": "public/audio/BAC_Mono_offlow.wav"
+        },
+        {
+          "hash": "d84df781799f715ab256e74917ed777a43ae8cd9f2f7b823fe959734ee926d34",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": 0,
+          "role": "public/audio/limiter.wav"
+        }
+      ],
+      "rpm": 6902
+    },
+    "preparation-5": {
+      "rms": 0.0688904561600701,
+      "peak": 0.14348189532756805,
+      "playbackState": "playing",
+      "contextStates": [
+        "running"
+      ],
+      "sources": [
+        {
+          "hash": "7703265ff1b1e7e2223057e30e19a1007c844ccf3f870b659d5a393f811e40b0",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.03238851577043533,
+          "detune": -1488.5726318359375,
+          "role": "tranny_on"
+        },
+        {
+          "hash": "505b4d611f65af0362135126985994f987ffbd1dccc56e0ddcfa1cf86673bb81",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.047307200729846954,
+          "detune": -1488.5726318359375,
+          "role": "tranny_off"
+        },
+        {
+          "hash": "b75b9041be696ed651253b1f034285144337f85c909dfaec675548da9be7c296",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 11.149024943310657,
+          "gain": 0.14658036828041077,
+          "detune": 1180.0799560546875,
+          "role": "public/audio/BAC_Mono_onhigh.wav"
+        },
+        {
+          "hash": "8d178cd745397cc333815b5a3980c4c195a3d4ab21005e3f2500e03fcaab2f8c",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 1.123387537899489e-17,
+          "detune": 1180.0799560546875,
+          "role": "public/audio/BAC_Mono_onlow.wav"
+        },
+        {
+          "hash": "98d9a4f823c8dc6603cb657af90cbe680454bac06d2707b36e405118057e1ccc",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 9.491655328798187,
+          "gain": 0.5323951244354248,
+          "detune": 1180.0799560546875,
+          "role": "public/audio/BAC_Mono_offveryhigh.wav"
+        },
+        {
+          "hash": "97d45c525723ea02f72ba0d553a368baedcc189833162275db10c2f9eec467ae",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 5.937052154195011,
+          "gain": 3.896468024400029e-17,
+          "detune": 1180.0799560546875,
+          "role": "public/audio/BAC_Mono_offlow.wav"
+        },
+        {
+          "hash": "d84df781799f715ab256e74917ed777a43ae8cd9f2f7b823fe959734ee926d34",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": 0,
+          "role": "public/audio/limiter.wav"
+        }
+      ],
+      "rpm": 6899
+    },
+    "preparation-6": {
+      "rms": 0.0551263611458388,
+      "peak": 0.10638099908828735,
+      "playbackState": "playing",
+      "contextStates": [
+        "running"
+      ],
+      "sources": [
+        {
+          "hash": "7703265ff1b1e7e2223057e30e19a1007c844ccf3f870b659d5a393f811e40b0",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.03238851577043533,
+          "detune": -1488.5726318359375,
+          "role": "tranny_on"
+        },
+        {
+          "hash": "505b4d611f65af0362135126985994f987ffbd1dccc56e0ddcfa1cf86673bb81",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.047307200729846954,
+          "detune": -1488.5726318359375,
+          "role": "tranny_off"
+        },
+        {
+          "hash": "b75b9041be696ed651253b1f034285144337f85c909dfaec675548da9be7c296",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 11.149024943310657,
+          "gain": 0.14658036828041077,
+          "detune": 1179.7509765625,
+          "role": "public/audio/BAC_Mono_onhigh.wav"
+        },
+        {
+          "hash": "8d178cd745397cc333815b5a3980c4c195a3d4ab21005e3f2500e03fcaab2f8c",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 1.123387537899489e-17,
+          "detune": 1179.7509765625,
+          "role": "public/audio/BAC_Mono_onlow.wav"
+        },
+        {
+          "hash": "98d9a4f823c8dc6603cb657af90cbe680454bac06d2707b36e405118057e1ccc",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 9.491655328798187,
+          "gain": 0.5323951244354248,
+          "detune": 1179.7509765625,
+          "role": "public/audio/BAC_Mono_offveryhigh.wav"
+        },
+        {
+          "hash": "97d45c525723ea02f72ba0d553a368baedcc189833162275db10c2f9eec467ae",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 5.937052154195011,
+          "gain": 3.896468024400029e-17,
+          "detune": 1179.7509765625,
+          "role": "public/audio/BAC_Mono_offlow.wav"
+        },
+        {
+          "hash": "d84df781799f715ab256e74917ed777a43ae8cd9f2f7b823fe959734ee926d34",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": 0,
+          "role": "public/audio/limiter.wav"
+        }
+      ],
+      "rpm": 6899
+    },
+    "preparation-7": {
+      "rms": 0.0720802019123317,
+      "peak": 0.1439073234796524,
+      "playbackState": "playing",
+      "contextStates": [
+        "running"
+      ],
+      "sources": [
+        {
+          "hash": "7703265ff1b1e7e2223057e30e19a1007c844ccf3f870b659d5a393f811e40b0",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.03238851577043533,
+          "detune": -1488.5726318359375,
+          "role": "tranny_on"
+        },
+        {
+          "hash": "505b4d611f65af0362135126985994f987ffbd1dccc56e0ddcfa1cf86673bb81",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.047307200729846954,
+          "detune": -1488.5726318359375,
+          "role": "tranny_off"
+        },
+        {
+          "hash": "b75b9041be696ed651253b1f034285144337f85c909dfaec675548da9be7c296",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 11.149024943310657,
+          "gain": 0.14658036828041077,
+          "detune": 1180.3984375,
+          "role": "public/audio/BAC_Mono_onhigh.wav"
+        },
+        {
+          "hash": "8d178cd745397cc333815b5a3980c4c195a3d4ab21005e3f2500e03fcaab2f8c",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 1.123387537899489e-17,
+          "detune": 1180.3984375,
+          "role": "public/audio/BAC_Mono_onlow.wav"
+        },
+        {
+          "hash": "98d9a4f823c8dc6603cb657af90cbe680454bac06d2707b36e405118057e1ccc",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 9.491655328798187,
+          "gain": 0.5323951244354248,
+          "detune": 1180.3984375,
+          "role": "public/audio/BAC_Mono_offveryhigh.wav"
+        },
+        {
+          "hash": "97d45c525723ea02f72ba0d553a368baedcc189833162275db10c2f9eec467ae",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 5.937052154195011,
+          "gain": 3.896468024400029e-17,
+          "detune": 1180.3984375,
+          "role": "public/audio/BAC_Mono_offlow.wav"
+        },
+        {
+          "hash": "d84df781799f715ab256e74917ed777a43ae8cd9f2f7b823fe959734ee926d34",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": 0,
+          "role": "public/audio/limiter.wav"
+        }
+      ],
+      "rpm": 6901
+    },
+    "preparation-8": {
+      "rms": 0.0544323736960611,
+      "peak": 0.12523482739925385,
+      "playbackState": "playing",
+      "contextStates": [
+        "running"
+      ],
+      "sources": [
+        {
+          "hash": "7703265ff1b1e7e2223057e30e19a1007c844ccf3f870b659d5a393f811e40b0",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.03238851577043533,
+          "detune": -1488.5726318359375,
+          "role": "tranny_on"
+        },
+        {
+          "hash": "505b4d611f65af0362135126985994f987ffbd1dccc56e0ddcfa1cf86673bb81",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.047307200729846954,
+          "detune": -1488.5726318359375,
+          "role": "tranny_off"
+        },
+        {
+          "hash": "b75b9041be696ed651253b1f034285144337f85c909dfaec675548da9be7c296",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 11.149024943310657,
+          "gain": 0.14658036828041077,
+          "detune": 1179.741455078125,
+          "role": "public/audio/BAC_Mono_onhigh.wav"
+        },
+        {
+          "hash": "8d178cd745397cc333815b5a3980c4c195a3d4ab21005e3f2500e03fcaab2f8c",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 1.123387537899489e-17,
+          "detune": 1179.741455078125,
+          "role": "public/audio/BAC_Mono_onlow.wav"
+        },
+        {
+          "hash": "98d9a4f823c8dc6603cb657af90cbe680454bac06d2707b36e405118057e1ccc",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 9.491655328798187,
+          "gain": 0.5323951244354248,
+          "detune": 1179.741455078125,
+          "role": "public/audio/BAC_Mono_offveryhigh.wav"
+        },
+        {
+          "hash": "97d45c525723ea02f72ba0d553a368baedcc189833162275db10c2f9eec467ae",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 5.937052154195011,
+          "gain": 3.896468024400029e-17,
+          "detune": 1179.741455078125,
+          "role": "public/audio/BAC_Mono_offlow.wav"
+        },
+        {
+          "hash": "d84df781799f715ab256e74917ed777a43ae8cd9f2f7b823fe959734ee926d34",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": 0,
+          "role": "public/audio/limiter.wav"
+        }
+      ],
+      "rpm": 6899
+    },
+    "preparation-9": {
+      "rms": 0.042310486443719875,
+      "peak": 0.11030799895524979,
+      "playbackState": "playing",
+      "contextStates": [
+        "running"
+      ],
+      "sources": [
+        {
+          "hash": "7703265ff1b1e7e2223057e30e19a1007c844ccf3f870b659d5a393f811e40b0",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.03238851577043533,
+          "detune": -1488.5726318359375,
+          "role": "tranny_on"
+        },
+        {
+          "hash": "505b4d611f65af0362135126985994f987ffbd1dccc56e0ddcfa1cf86673bb81",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.047307200729846954,
+          "detune": -1488.5726318359375,
+          "role": "tranny_off"
+        },
+        {
+          "hash": "b75b9041be696ed651253b1f034285144337f85c909dfaec675548da9be7c296",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 11.149024943310657,
+          "gain": 0.14658036828041077,
+          "detune": 1180.4625244140625,
+          "role": "public/audio/BAC_Mono_onhigh.wav"
+        },
+        {
+          "hash": "8d178cd745397cc333815b5a3980c4c195a3d4ab21005e3f2500e03fcaab2f8c",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 1.123387537899489e-17,
+          "detune": 1180.4625244140625,
+          "role": "public/audio/BAC_Mono_onlow.wav"
+        },
+        {
+          "hash": "98d9a4f823c8dc6603cb657af90cbe680454bac06d2707b36e405118057e1ccc",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 9.491655328798187,
+          "gain": 0.5323951244354248,
+          "detune": 1180.4625244140625,
+          "role": "public/audio/BAC_Mono_offveryhigh.wav"
+        },
+        {
+          "hash": "97d45c525723ea02f72ba0d553a368baedcc189833162275db10c2f9eec467ae",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 5.937052154195011,
+          "gain": 3.896468024400029e-17,
+          "detune": 1180.4625244140625,
+          "role": "public/audio/BAC_Mono_offlow.wav"
+        },
+        {
+          "hash": "d84df781799f715ab256e74917ed777a43ae8cd9f2f7b823fe959734ee926d34",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": 0,
+          "role": "public/audio/limiter.wav"
+        }
+      ],
+      "rpm": 6902
+    },
+    "preparation-10": {
+      "rms": 0.06451034775627887,
+      "peak": 0.1265442669391632,
+      "playbackState": "playing",
+      "contextStates": [
+        "running"
+      ],
+      "sources": [
+        {
+          "hash": "7703265ff1b1e7e2223057e30e19a1007c844ccf3f870b659d5a393f811e40b0",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.03238851577043533,
+          "detune": -1488.5726318359375,
+          "role": "tranny_on"
+        },
+        {
+          "hash": "505b4d611f65af0362135126985994f987ffbd1dccc56e0ddcfa1cf86673bb81",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.047307200729846954,
+          "detune": -1488.5726318359375,
+          "role": "tranny_off"
+        },
+        {
+          "hash": "b75b9041be696ed651253b1f034285144337f85c909dfaec675548da9be7c296",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 11.149024943310657,
+          "gain": 0.14658036828041077,
+          "detune": 1179.9979248046875,
+          "role": "public/audio/BAC_Mono_onhigh.wav"
+        },
+        {
+          "hash": "8d178cd745397cc333815b5a3980c4c195a3d4ab21005e3f2500e03fcaab2f8c",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 1.123387537899489e-17,
+          "detune": 1179.9979248046875,
+          "role": "public/audio/BAC_Mono_onlow.wav"
+        },
+        {
+          "hash": "98d9a4f823c8dc6603cb657af90cbe680454bac06d2707b36e405118057e1ccc",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 9.491655328798187,
+          "gain": 0.5323951244354248,
+          "detune": 1179.9979248046875,
+          "role": "public/audio/BAC_Mono_offveryhigh.wav"
+        },
+        {
+          "hash": "97d45c525723ea02f72ba0d553a368baedcc189833162275db10c2f9eec467ae",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 5.937052154195011,
+          "gain": 3.896468024400029e-17,
+          "detune": 1179.9979248046875,
+          "role": "public/audio/BAC_Mono_offlow.wav"
+        },
+        {
+          "hash": "d84df781799f715ab256e74917ed777a43ae8cd9f2f7b823fe959734ee926d34",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": 0,
+          "role": "public/audio/limiter.wav"
+        }
+      ],
+      "rpm": 6900
+    },
+    "preparation-11": {
+      "rms": 0.07785255879331004,
+      "peak": 0.16710758209228516,
+      "playbackState": "playing",
+      "contextStates": [
+        "running"
+      ],
+      "sources": [
+        {
+          "hash": "7703265ff1b1e7e2223057e30e19a1007c844ccf3f870b659d5a393f811e40b0",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.03238851577043533,
+          "detune": -1488.5726318359375,
+          "role": "tranny_on"
+        },
+        {
+          "hash": "505b4d611f65af0362135126985994f987ffbd1dccc56e0ddcfa1cf86673bb81",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.047307200729846954,
+          "detune": -1488.5726318359375,
+          "role": "tranny_off"
+        },
+        {
+          "hash": "b75b9041be696ed651253b1f034285144337f85c909dfaec675548da9be7c296",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 11.149024943310657,
+          "gain": 0.14658036828041077,
+          "detune": 1179.69677734375,
+          "role": "public/audio/BAC_Mono_onhigh.wav"
+        },
+        {
+          "hash": "8d178cd745397cc333815b5a3980c4c195a3d4ab21005e3f2500e03fcaab2f8c",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 1.123387537899489e-17,
+          "detune": 1179.69677734375,
+          "role": "public/audio/BAC_Mono_onlow.wav"
+        },
+        {
+          "hash": "98d9a4f823c8dc6603cb657af90cbe680454bac06d2707b36e405118057e1ccc",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 9.491655328798187,
+          "gain": 0.5323951244354248,
+          "detune": 1179.69677734375,
+          "role": "public/audio/BAC_Mono_offveryhigh.wav"
+        },
+        {
+          "hash": "97d45c525723ea02f72ba0d553a368baedcc189833162275db10c2f9eec467ae",
+          "sampleRate": 44100,
+          "loopStart": 0.01,
+          "loopEnd": 5.937052154195011,
+          "gain": 3.896468024400029e-17,
+          "detune": 1179.69677734375,
+          "role": "public/audio/BAC_Mono_offlow.wav"
+        },
+        {
+          "hash": "d84df781799f715ab256e74917ed777a43ae8cd9f2f7b823fe959734ee926d34",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": 0,
+          "role": "public/audio/limiter.wav"
+        }
+      ],
+      "rpm": 6899
+    },
+    "rosso-ready": {
+      "rms": 0.07009440355993478,
+      "peak": 0.17115938663482666,
+      "playbackState": "playing",
+      "contextStates": [
+        "running"
+      ],
+      "sources": [
+        {
+          "hash": "7703265ff1b1e7e2223057e30e19a1007c844ccf3f870b659d5a393f811e40b0",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.032366640865802765,
+          "detune": -1488.5726318359375,
+          "role": "tranny_on"
+        },
+        {
+          "hash": "505b4d611f65af0362135126985994f987ffbd1dccc56e0ddcfa1cf86673bb81",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.047310322523117065,
+          "detune": -1488.5726318359375,
+          "role": "tranny_off"
+        },
+        {
+          "hash": "2b6aac5dafa945ce0d6b3b20add3844d703dfec1409b7ecebcb8367dc6fdfe45",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.6711841821670532,
+          "detune": -153.57273864746094,
+          "role": "public/audio/458/power_2 {1d0b3340-525d-418d-b809-a61f94a1d76a}.wav"
+        },
+        {
+          "hash": "f068c7b8b8424a98fd4773f247338b0674ab25fc9993fc7f68de078e519c572d",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.10707360506057739,
+          "detune": 326.42730712890625,
+          "role": "public/audio/458/mid_res_2 {a777a51b-a829-4637-ac37-ccdaca0a3e9b}.wav"
+        },
+        {
+          "hash": "78f9483d1f436303f037a1d00ece0feb6be989c9bf9f11281a8ec8e3e987584e",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 1.937366247177124,
+          "detune": -193.57273864746094,
+          "role": "public/audio/458/off_higher {b1e2e686-3bd7-43df-9cf9-3b8c1afcffc1}.wav"
+        },
+        {
+          "hash": "a9d844fcb1c046463cc876ad53f58a56bb52da37000d46e8c4a44b89a3399015",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.28111836314201355,
+          "detune": 6.427271842956543,
+          "role": "public/audio/458/off_midhigh {94a99615-de6b-4b18-a977-a3b5e9b10641}.wav"
+        },
+        {
+          "hash": "f4e5a7f8e96fa64a715ba8ac1c9c9378f0f431cf2775a53c51e9afd652905835",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": 0,
+          "role": "public/audio/458/limiter.wav"
+        }
+      ],
+      "rpm": 6932
+    },
+    "touring-ready": {
+      "rms": 0.054057404441319346,
+      "peak": 0.11159726977348328,
+      "playbackState": "playing",
+      "contextStates": [
+        "running"
+      ],
+      "sources": [
+        {
+          "hash": "ac288f6d22b0bad1fc0c6c1bed4deb138750d7dfca4d14d4d6ab339047987168",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.2634761929512024,
+          "detune": -202.99864196777344,
+          "role": "public/audio/procar/on_midhigh {eed64b99-c102-43cf-834e-4e4cafa68fdc}.wav"
+        },
+        {
+          "hash": "3c1633f155e42a105743a5a31d1b80d678fb3a49426605c9e09d9f0a80b2c466",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 2.568781098943873e-08,
+          "detune": 757.0012817382812,
+          "role": "public/audio/procar/on_low {0477930f-2954-45ee-8ac4-db4867fe1749}.wav"
+        },
+        {
+          "hash": "49d3ac22096eaee138d672017446c30416c614f717674128bac73746e66547f0",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 1.631324291229248,
+          "detune": -288.9986267089844,
+          "role": "public/audio/procar/off_midhigh {092a60f7-c729-4d2c-979e-2e766ba42c6c}.wav"
+        },
+        {
+          "hash": "13a46ee6f4cad43be7aa646e6c185b97a4a17a32d4226543fcffbfa0de943935",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 3.6677536741080985e-07,
+          "detune": 717.0012817382812,
+          "role": "public/audio/procar/off_lower {05f28dcf-8251-4e6a-bc40-8099139ef81e}.wav"
+        },
+        {
+          "hash": "d84df781799f715ab256e74917ed777a43ae8cd9f2f7b823fe959734ee926d34",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": 0,
+          "role": "public/audio/limiter.wav"
+        }
+      ],
+      "rpm": 6985
+    },
+    "muted": {
+      "rms": 0,
+      "peak": 0,
+      "playbackState": "paused",
+      "contextStates": [
+        "running"
+      ],
+      "sources": [
+        {
+          "hash": "ac288f6d22b0bad1fc0c6c1bed4deb138750d7dfca4d14d4d6ab339047987168",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.2639603316783905,
+          "detune": -201.24888610839844,
+          "role": "public/audio/procar/on_midhigh {eed64b99-c102-43cf-834e-4e4cafa68fdc}.wav"
+        },
+        {
+          "hash": "3c1633f155e42a105743a5a31d1b80d678fb3a49426605c9e09d9f0a80b2c466",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 2.811744066384126e-17,
+          "detune": 758.7510986328125,
+          "role": "public/audio/procar/on_low {0477930f-2954-45ee-8ac4-db4867fe1749}.wav"
+        },
+        {
+          "hash": "49d3ac22096eaee138d672017446c30416c614f717674128bac73746e66547f0",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 1.6309590339660645,
+          "detune": -287.2489013671875,
+          "role": "public/audio/procar/off_midhigh {092a60f7-c729-4d2c-979e-2e766ba42c6c}.wav"
+        },
+        {
+          "hash": "13a46ee6f4cad43be7aa646e6c185b97a4a17a32d4226543fcffbfa0de943935",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 2.4905974139586195e-16,
+          "detune": 718.7510986328125,
+          "role": "public/audio/procar/off_lower {05f28dcf-8251-4e6a-bc40-8099139ef81e}.wav"
+        },
+        {
+          "hash": "d84df781799f715ab256e74917ed777a43ae8cd9f2f7b823fe959734ee926d34",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": 0,
+          "role": "public/audio/limiter.wav"
+        }
+      ],
+      "rpm": 6994
+    },
+    "unmuted": {
+      "rms": 0.030685308316316023,
+      "peak": 0.07489947229623795,
+      "playbackState": "playing",
+      "contextStates": [
+        "running"
+      ],
+      "sources": [
+        {
+          "hash": "ac288f6d22b0bad1fc0c6c1bed4deb138750d7dfca4d14d4d6ab339047987168",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0.264163613319397,
+          "detune": -202.60679626464844,
+          "role": "public/audio/procar/on_midhigh {eed64b99-c102-43cf-834e-4e4cafa68fdc}.wav"
+        },
+        {
+          "hash": "3c1633f155e42a105743a5a31d1b80d678fb3a49426605c9e09d9f0a80b2c466",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 2.813899037315949e-17,
+          "detune": 757.39306640625,
+          "role": "public/audio/procar/on_low {0477930f-2954-45ee-8ac4-db4867fe1749}.wav"
+        },
+        {
+          "hash": "49d3ac22096eaee138d672017446c30416c614f717674128bac73746e66547f0",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 1.6307953596115112,
+          "detune": -288.6069030761719,
+          "role": "public/audio/procar/off_midhigh {092a60f7-c729-4d2c-979e-2e766ba42c6c}.wav"
+        },
+        {
+          "hash": "13a46ee6f4cad43be7aa646e6c185b97a4a17a32d4226543fcffbfa0de943935",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 2.4903475392391795e-16,
+          "detune": 717.39306640625,
+          "role": "public/audio/procar/off_lower {05f28dcf-8251-4e6a-bc40-8099139ef81e}.wav"
+        },
+        {
+          "hash": "d84df781799f715ab256e74917ed777a43ae8cd9f2f7b823fe959734ee926d34",
+          "sampleRate": 44100,
+          "loopStart": 0,
+          "loopEnd": 0,
+          "gain": 0,
+          "detune": 0,
+          "role": "public/audio/limiter.wav"
+        }
+      ],
+      "rpm": 6985
+    }
+  },
+  "documentStatus": 200,
+  "title": "sedicivalvole \u2014 Music & Engine for the Road",
+  "introBuild": "BUILD 20260908-0022",
+  "decodedEdges": [
+    {
+      "hash": "7703265ff1b1e7e2223057e30e19a1007c844ccf3f870b659d5a393f811e40b0",
+      "sampleRate": 44100,
+      "channels": [
+        {
+          "peak": 1,
+          "wrap": 0.2163114920258522,
+          "p999Upper": 0.091796875
+        },
+        {
+          "peak": 1,
+          "wrap": 0.2980969361960888,
+          "p999Upper": 0.09765625
+        }
+      ]
+    },
+    {
+      "hash": "505b4d611f65af0362135126985994f987ffbd1dccc56e0ddcfa1cf86673bb81",
+      "sampleRate": 44100,
+      "channels": [
+        {
+          "peak": 1,
+          "wrap": 0.02044677734375,
+          "p999Upper": 0.4150390625
+        },
+        {
+          "peak": 1,
+          "wrap": 0.026795251294970512,
+          "p999Upper": 0.4208984375
+        }
+      ]
+    },
+    {
+      "hash": "b75b9041be696ed651253b1f034285144337f85c909dfaec675548da9be7c296",
+      "sampleRate": 44100,
+      "channels": [
+        {
+          "peak": 1.0156478881835938,
+          "wrap": 0.3084351420402527,
+          "p999Upper": 0.189453125
+        },
+        {
+          "peak": 1.0131103992462158,
+          "wrap": 0.9119644686579704,
+          "p999Upper": 0.1708984375
+        }
+      ]
+    },
+    {
+      "hash": "8d178cd745397cc333815b5a3980c4c195a3d4ab21005e3f2500e03fcaab2f8c",
+      "sampleRate": 44100,
+      "channels": [
+        {
+          "peak": 1.0070141553878784,
+          "wrap": 0.18613691325299442,
+          "p999Upper": 0.1103515625
+        },
+        {
+          "peak": 1.006847858428955,
+          "wrap": 0.035658568143844604,
+          "p999Upper": 0.1162109375
+        }
+      ]
+    },
+    {
+      "hash": "98d9a4f823c8dc6603cb657af90cbe680454bac06d2707b36e405118057e1ccc",
+      "sampleRate": 44100,
+      "channels": [
+        {
+          "peak": 1.0017049312591553,
+          "wrap": 0.8907739818096161,
+          "p999Upper": 0.1552734375
+        },
+        {
+          "peak": 1.0009561777114868,
+          "wrap": 0.48190781474113464,
+          "p999Upper": 0.1337890625
+        }
+      ]
+    },
+    {
+      "hash": "97d45c525723ea02f72ba0d553a368baedcc189833162275db10c2f9eec467ae",
+      "sampleRate": 44100,
+      "channels": [
+        {
+          "peak": 1.0048351287841797,
+          "wrap": 0.34663301706314087,
+          "p999Upper": 0.1015625
+        },
+        {
+          "peak": 1.005009412765503,
+          "wrap": 0.3405689001083374,
+          "p999Upper": 0.1064453125
+        }
+      ]
+    },
+    {
+      "hash": "d84df781799f715ab256e74917ed777a43ae8cd9f2f7b823fe959734ee926d34",
+      "sampleRate": 44100,
+      "channels": [
+        {
+          "peak": 1,
+          "wrap": 0.17657470703125,
+          "p999Upper": 0.3857421875
+        },
+        {
+          "peak": 1,
+          "wrap": 0.17657470703125,
+          "p999Upper": 0.3857421875
+        }
+      ]
+    }
+  ],
+  "preparedRoles": {
+    "mono": [
+      "public/audio/BAC_Mono_offlow.wav",
+      "public/audio/BAC_Mono_offveryhigh.wav",
+      "public/audio/BAC_Mono_onhigh.wav"
+    ],
+    "rosso": [],
+    "touring": []
+  },
+  "loadingText": "Preparing rosso audio\u2026 \u00b7 mono continues",
+  "identity": {
+    "version": "0.0.0",
+    "build": "20260908-0022",
+    "commit": "7d04dcc"
+  },
+  "finalEngine": {
+    "status": "ready",
+    "profileId": "touring",
+    "rpm": 6989,
+    "gear": 1,
+    "shift": null,
+    "drive": 0.20999745665125016,
+    "deceleration": 0,
+    "motion": "fresh",
+    "trustedStationary": false,
+    "revving": false,
+    "decodedBytes": 6039576,
+    "error": null,
+    "canRev": false,
+    "motionReason": "accepted",
+    "motionSpeedKmh": 30.000000000000004,
+    "motionAgeMs": 16.099999994039536,
+    "drivelineLevel": 1,
+    "showOffPhase": null,
+    "idleBlip": false,
+    "peakUnionBytes": 47154420,
+    "transferMs": 32,
+    "decodeMs": 7,
+    "bankBytes": 6011876,
+    "shiftPhase": null,
+    "singleSpeed": false,
+    "throttle": 0.14130158331657622,
+    "roadLoad": 0.14130158331657622,
+    "coast": 0.8586970590829792,
+    "outputLevel": 1,
+    "enabled": true,
+    "prepared": true,
+    "playing": true,
+    "requestedProfileId": "touring",
+    "source": "sample",
+    "transmissionMode": "AUTO",
+    "version": "geaps.v2"
+  },
+  "sampledEngine": [
+    {
+      "t": 18.6,
+      "speed": 29.4,
+      "gps": 30,
+      "gpsAge": 76,
+      "gpsState": "live",
+      "accuracy": 5,
+      "rate": 0,
+      "source": "GPS",
+      "input": "auto",
+      "bpm": null,
+      "fps": 11.7,
+      "p95Frame": 101.3,
+      "audio": 0.139,
+      "audioPeak": 0.099,
+      "visual": "engine-telemetry",
+      "music": "engine",
+      "section": null,
+      "family": null,
+      "rhythm": null,
+      "rhythmTransition": null,
+      "takes": [],
+      "rhythms": [],
+      "bank": null,
+      "gpsConfidence": "precise",
+      "motion": null,
+      "online": true,
+      "net": "4g",
+      "rtt": 50,
+      "visibility": "visible",
+      "engineRpm": 6526,
+      "engineGear": 1,
+      "engineLoad": 0.186,
+      "engineProfile": "mono",
+      "engineStatus": "ready",
+      "engineMotion": "fresh",
+      "engineReason": "accepted",
+      "engineRev": false,
+      "engineIdleBlip": false
+    },
+    {
+      "t": 20.6,
+      "speed": 29.4,
+      "gps": 30,
+      "gpsAge": 72,
+      "gpsState": "live",
+      "accuracy": 5,
+      "rate": 0,
+      "source": "GPS",
+      "input": "auto",
+      "bpm": null,
+      "fps": 11.5,
+      "p95Frame": 101.4,
+      "audio": 0.303,
+      "audioPeak": 0.146,
+      "visual": "engine-telemetry",
+      "music": "engine",
+      "section": null,
+      "family": null,
+      "rhythm": null,
+      "rhythmTransition": null,
+      "takes": [],
+      "rhythms": [],
+      "bank": null,
+      "gpsConfidence": "precise",
+      "motion": null,
+      "online": true,
+      "net": "4g",
+      "rtt": 50,
+      "visibility": "visible",
+      "engineRpm": 6899,
+      "engineGear": 1,
+      "engineLoad": 0.21,
+      "engineProfile": "mono",
+      "engineStatus": "loading",
+      "engineMotion": "fresh",
+      "engineReason": "accepted",
+      "engineRev": false,
+      "engineIdleBlip": false
+    },
+    {
+      "t": 22.6,
+      "speed": 29.4,
+      "gps": 30,
+      "gpsAge": 73,
+      "gpsState": "live",
+      "accuracy": 5,
+      "rate": 0,
+      "source": "GPS",
+      "input": "auto",
+      "bpm": null,
+      "fps": 11.4,
+      "p95Frame": 101.4,
+      "audio": 0.222,
+      "audioPeak": 0.126,
+      "visual": "engine-telemetry",
+      "music": "engine",
+      "section": null,
+      "family": null,
+      "rhythm": null,
+      "rhythmTransition": null,
+      "takes": [],
+      "rhythms": [],
+      "bank": null,
+      "gpsConfidence": "precise",
+      "motion": null,
+      "online": true,
+      "net": "4g",
+      "rtt": 50,
+      "visibility": "visible",
+      "engineRpm": 6902,
+      "engineGear": 1,
+      "engineLoad": 0.21,
+      "engineProfile": "mono",
+      "engineStatus": "loading",
+      "engineMotion": "fresh",
+      "engineReason": "accepted",
+      "engineRev": false,
+      "engineIdleBlip": false
+    },
+    {
+      "t": 24.6,
+      "speed": 29.4,
+      "gps": 30,
+      "gpsAge": 73,
+      "gpsState": "live",
+      "accuracy": 5,
+      "rate": 0,
+      "source": "GPS",
+      "input": "auto",
+      "bpm": null,
+      "fps": 11.3,
+      "p95Frame": 101.4,
+      "audio": 0.135,
+      "audioPeak": 0.099,
+      "visual": "engine-telemetry",
+      "music": "engine",
+      "section": null,
+      "family": null,
+      "rhythm": null,
+      "rhythmTransition": null,
+      "takes": [],
+      "rhythms": [],
+      "bank": null,
+      "gpsConfidence": "precise",
+      "motion": null,
+      "online": true,
+      "net": "4g",
+      "rtt": 50,
+      "visibility": "visible",
+      "engineRpm": 6902,
+      "engineGear": 1,
+      "engineLoad": 0.21,
+      "engineProfile": "mono",
+      "engineStatus": "loading",
+      "engineMotion": "fresh",
+      "engineReason": "accepted",
+      "engineRev": false,
+      "engineIdleBlip": false
+    },
+    {
+      "t": 26.6,
+      "speed": 29.4,
+      "gps": 30,
+      "gpsAge": 61,
+      "gpsState": "live",
+      "accuracy": 5,
+      "rate": 0,
+      "source": "GPS",
+      "input": "auto",
+      "bpm": null,
+      "fps": 11.2,
+      "p95Frame": 101.6,
+      "audio": 0.254,
+      "audioPeak": 0.139,
+      "visual": "engine-telemetry",
+      "music": "mute",
+      "section": null,
+      "family": null,
+      "rhythm": null,
+      "rhythmTransition": null,
+      "takes": [],
+      "rhythms": [],
+      "bank": null,
+      "gpsConfidence": "precise",
+      "motion": null,
+      "online": true,
+      "net": "4g",
+      "rtt": 50,
+      "visibility": "visible",
+      "engineRpm": 6994,
+      "engineGear": 1,
+      "engineLoad": 0.21,
+      "engineProfile": "touring",
+      "engineStatus": "ready",
+      "engineMotion": "fresh",
+      "engineReason": "accepted",
+      "engineRev": false,
+      "engineIdleBlip": false
+    }
+  ],
+  "status": "PASS"
+}

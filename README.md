@@ -1,5 +1,7 @@
 # sedicivalvole
 
+September 8 Engine campaign is live: six distinct voices, original cycle-timed synthesis, phased automatic shifts and causal turbo/continuous turbine behavior. Build `20260908-0026`; [implementation, audio comparison and acceptance](docs/ENGINE-CAMPAIGN-IMPLEMENTATION-2026-09-08.md).
+
 September 7 altitude correction: Stats now preserves reported GPS height and uses a visibly distinct terrain estimate when it is missing, including in Travel Report. See [behavior and validation](docs/ALTITUDE-FALLBACK-2026-09-07.md).
 
 September 7 reliability update: bounded automatic visual-load recovery, honest observation-gap accounting and active music attribution. See [diagnostics](docs/DIAGNOSTICS.md) and [owner decisions / next work](docs/OWNER-DECISIONS-2026-09-07.md).

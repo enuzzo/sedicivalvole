@@ -1,24 +1,27 @@
 # Current Project State
 
-Latest verified canonical publication: **20260907-2328**, source **c6c16c4**,
+Latest verified canonical publication: **20260908-0026**, source **7c249ca**,
 version from `VERSION` (`0.0.0`). This summary takes precedence over the dated
 historical paragraphs below.
 
 | Area | Implemented, tested and live | Remaining evidence |
 |---|---|---|
 | Diagnostics | Dev/AUTO ON by default, saved OFF/Standard respected; fifteen observed GPS-driving minutes; coordinate-free; sampled simulated Engine RPM/reasons | First real automatic inbox receipt |
-| Engine | Three profiles, dry output, no-GPS manual TAMARRO, confirmed-zero idle blips, bounded poor-accuracy hold, truthful bank preparation, movement-owned transmission and three repaired Mono loop seams | Physical listening/native media and long drive |
+| Engine | Six voices: Mono hybrid, Rosso/Touring sampled, original Otto V8, Cinque turbo five and continuous Turbine; phased automatic shifts, wheel-owned whine, original sample-clock DSP, no-GPS TAMARRO, exact-zero idle, dry output and cancellable recovery | Physical character preference, cabin balance, native media and long drive |
 | Atlas / Stats | Separate Visual destinations; Natural/Palette map, Wikipedia and loaded OSM POIs; curved heading bands, motion/runtime parity and solid GPS/dashed terrain altitude | Physical moving-data legibility and GPS coverage |
 | Flux / Soundtrack / FX / Discover | Broad owner acceptance, later small refinements allowed | Preserve the remaining specific device/endurance cases |
 | iPhone | Selected Compact Cockpit for iPhone 17 Pro/Pro Max; safe areas, inert portrait notice, state-preserving rotation; 667×375 through 956×440 browser matrix | Actual Safari/device software and native audio |
 | Travel Report | Selected two-page A4 PDF, optional third route page, immutable preview/download, explicit verified-recipient email, proof reuse and distinct GPS/map elevation | Actual chosen-recipient inbox delivery |
 | Release | Experimental canonical build | Physical acceptance matrix, then separate production release decision |
 
-**733 native tests, 18 package checks, 196 dependency credits and 27 canonical
-HTML/asset/cache checks pass.** Official publication verifies 229 files and all
-29 Illobo recordings; independent postflight is read-only. Real PHP PDF preview
-and live altitude chart/phone layout checks pass. Earlier night Engine/export/
-automatic-diagnostic browser evidence remains recorded separately.
+**768 native tests, 18 package checks, 196 dependency credits and 29 canonical
+HTML/asset/cache checks pass.** Official publication verifies 232 files and all
+29 Illobo recordings; independent postflight reports remote_writes=NONE.
+Twelve real Chromium audio renders cover six profiles at
+44.1/48 kHz; 52 DSP cases and actual dev/compiled/canonical browser checks pass.
+The 120-second Mac browser road run has no processor/page errors; this is not
+Tesla endurance. Source 7d04dcc owns the acoustic implementation; 7c249ca adds
+accurate continuous-turbine launch copy and records the audio evidence.
 
 The latest actual Tesla message found at 20:04 local is build 1936, before
 automatic build 2004. Thirty Engine shifts and GPS up to 115 km/h were recorded
@@ -28,19 +31,20 @@ hold; profile preparation delays did not prove silence because audio continued.
 See [altitude correction and map fallback](ALTITUDE-FALLBACK-2026-09-07.md),
 [night implementation](NIGHT-IMPLEMENTATION-2026-09-07.md),
 [the complete queue](NIGHT-WORK-2026-09-07.md),
+[current Engine implementation and audio evidence](ENGINE-CAMPAIGN-IMPLEMENTATION-2026-09-08.md),
 [acoustic research](ENGINE-ACOUSTICS-STUDY-2026-09-07.md),
 [publication evidence](DEPLOY.md) and [earlier night checkpoint captures](qa/2026-09-07-night/).
 No synthetic email was sent. Browser QA does not replace physical acceptance.
 
 ## Active Engine campaign — 2026-09-08
 
-The six-voice campaign is implemented and locally verified: Mono hybrid,
+The six-voice campaign is implemented, verified and canonically published: Mono hybrid,
 Rosso/Touring sampled, original Otto V8, Cinque turbo five and continuous
 Turbine. Accepted motion, powertrain load/shift plans and sample-clock synthesis
 are separate. No new source recordings/dependencies were admitted. Existing
 dry/lifecycle/GPS contracts are preserved and extended by regression tests.
-Canonical publication is the next checkpoint; the latest live identity above
-still describes the preceding altitude build until postflight completes.
+Canonical 0026 serves the verified six-voice catalogue and the new worklet;
+physical listening remains the next acceptance layer.
 
 [Implementation and reproducible audio](ENGINE-CAMPAIGN-IMPLEMENTATION-2026-09-08.md)
 and [verified source study](ENGINE-SOURCE-COMPARISON-2026-09-08.md).

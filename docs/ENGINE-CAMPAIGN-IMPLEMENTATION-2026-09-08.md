@@ -1,8 +1,9 @@
 # Engine acoustic campaign — 2026-09-08
 
-Source **7d04dcc**, compiled build **20260908-0022**, version read from VERSION
-(**0.0.0**). Implemented and verified locally; canonical publication evidence is
-recorded below when complete. This is an original acoustic model for entertainment, not
+Acoustic implementation **7d04dcc**; final publication source **7c249ca**, build
+**20260908-0026**, version read from VERSION (**0.0.0**). The final source adds
+accurate continuous-shaft Intro copy for Turbine. Canonical publication and independent postflight are verified; see
+[deployment evidence](DEPLOY.md). This is an original acoustic model for entertainment, not
 measured vehicle telemetry or a full thermodynamic simulator.
 
 ## What changes for a listener
@@ -138,3 +139,27 @@ a focused 40-second 44.1 kHz run report finite nonzero audio and no processor/pa
 errors. Observed frame p99 is 16.8 ms on this Mac, with no frame over 50 ms; this
 does not establish Tesla endurance. The compiled replay verifies final packaging
 and viewport behavior separately.
+
+
+The final compiled 0026 replay passes at 773 × 601 and true coarse-pointer phone
+viewports 956 × 440 / 667 × 375. All six selections load actual audio, including
+three procedural worklets and no-GPS rev phrases. START is visible on the Tesla
+Intro; all six phone choices and START are reachable through the existing
+internal scroll. Six 56 px phone profile buttons fit between the stationary
+TAMARRO controls. There are no page/processor errors, overlaps or synthetic
+mail requests. Screenshot and machine evidence: [compiled browser](qa/2026-09-08-engine/browser-compiled.json),
+[44.1 kHz real-WAV lifecycle](qa/2026-09-08-engine/browser-wav-44100.json),
+[Tesla Intro](qa/2026-09-08-engine/intro-773x601.png),
+[Tesla Telemetry](qa/2026-09-08-engine/running-773x601.png),
+[phone Telemetry](qa/2026-09-08-engine/running-667x375.png) and
+[phone scrolled launch](qa/2026-09-08-engine/intro-start-667x375.png).
+
+
+## Canonical publication
+
+Build **20260908-0026**, source **7c249ca** is live. Official publication verifies
+232 files / 254,867,785 bytes and all 29 Illobo tracks; independent postflight
+performs no writes. All 29 HTTP identity/cache/asset checks and the canonical
+six-profile browser path pass. The screenshots above are fresh canonical captures
+from this build. [Exact identity](qa/2026-09-08-engine/canonical-identity.json) and
+[canonical browser proof](qa/2026-09-08-engine/browser-canonical.json).
