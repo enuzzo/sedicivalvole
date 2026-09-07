@@ -4612,3 +4612,16 @@ Evidence: [moving browser checks](qa/2026-09-05-moving-touch/live-moving-evidenc
 [canonical identity](qa/2026-09-05-moving-touch/canonical-evidence.json),
 [publication](qa/2026-09-05-moving-touch/publication.txt), and
 [controls awake at simulated 80 km/h](qa/2026-09-05-moving-touch/moving-awake.png).
+
+
+## Canonical road-feedback publication — 2026-09-07 19:45
+
+**Live build 20260907-1936**, source **7285ecb**. Publication and independent
+read-only postflight pass: 218 files / 254,672,544 bytes; 29 Illobo recordings
+fully verified; two prior assets retained. All 25 canonical HTML/asset/cache
+checks, 664 native tests and 18 compiled-package checks pass. Live Chrome verifies
+Engine no-GPS TAMARRO, idle gestures and injected GPS response; both Stats
+catalogue entry points and real OpenStreetMap POIs pass at 773×601/390×844.
+Two existing autoplay warnings occur in the Visuals-only fixture; no page
+exceptions. Target-Tesla listening remains open. Automatic diagnostic mail is
+**not enabled**. [Full evidence and limits](ROAD-FEEDBACK-2026-09-07.md).

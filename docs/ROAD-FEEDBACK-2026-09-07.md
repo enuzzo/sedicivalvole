@@ -80,3 +80,26 @@ At the final audio facade, unmuted zero-speed RMS measured approximately
 0.00360 Fracture, 0.00221 Junction and 0.00731 Nightshift; Nightshift after
 45→0 km/h measured 0.01046, with peak below 0.020. These are signal measurements
 from the browser, not a calibrated loudness rating or in-car listening test.
+
+## Canonical publication — 2026-09-07 19:45
+
+Live source `7285ecb`, build `20260907-1936`, VERSION unchanged at `0.0.0`.
+Official publication verified 218 files / 254,672,544 bytes, all 29 Illobo
+recordings by full hash, and retained two preceding assets for cache overlap.
+Independent official postflight passes with `remote_writes=NONE`. All 25
+canonical bare/cache-busted HTML, asset byte and cache checks pass.
+
+664 native tests and 18 compiled-package checks pass. Both development and
+compiled bundles pass the Engine and catalogue/POI interaction fixtures. Live
+Chrome at 773×601/390×844 confirms page identity/title, nonblank content, no
+framework overlay, no page exceptions, screenshots and interaction paths. The
+Visuals-only fixture records two existing AudioContext-before-gesture warnings;
+they do not block the muted visual path and are not reported as a clean console.
+Live Engine reaches 6,726 RPM during a random manual phrase without GPS, 1,777
+RPM on an automatic idle blip, and 7,420 RPM with injected 60 km/h GPS.
+
+Evidence remains local: `/tmp/sv-fixes-canonical/identity.json`,
+`/tmp/sv-engine-report.json`, `/tmp/sv-stats-qa.json`, `/tmp/sv-audio-rest.json`,
+`/tmp/sv-fixes-{tests,package,build,preflight,publish,postflight}.log`, and
+`/tmp/sv-{intro,engine,stats,stats-mobile,osm}.png`. No email was sent.
+Reload the target browser and verify build 1936 before the owner's next drive.

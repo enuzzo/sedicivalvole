@@ -1438,3 +1438,16 @@ at bottom right. See [road evidence and remaining gates](ROAD-FEEDBACK-2026-09-0
 664 native tests, 18 post-build checks, 196 dependency credits and focused browser
 checks pass. Automatic diagnostics remain unimplemented (future Dev plan: ten
 minutes; owner now recalls fifteen minutes of driving). No mail sent during QA.
+
+
+## Canonical road-feedback publication — 2026-09-07 19:45
+
+**Live build 20260907-1936**, source **7285ecb**. Publication and independent
+read-only postflight pass: 218 files / 254,672,544 bytes; 29 Illobo recordings
+fully verified; two prior assets retained. All 25 canonical HTML/asset/cache
+checks, 664 native tests and 18 compiled-package checks pass. Live Chrome verifies
+Engine no-GPS TAMARRO, idle gestures and injected GPS response; both Stats
+catalogue entry points and real OpenStreetMap POIs pass at 773×601/390×844.
+Two existing autoplay warnings occur in the Visuals-only fixture; no page
+exceptions. Target-Tesla listening remains open. Automatic diagnostic mail is
+**not enabled**. [Full evidence and limits](ROAD-FEEDBACK-2026-09-07.md).
