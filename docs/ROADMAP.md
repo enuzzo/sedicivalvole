@@ -1,5 +1,12 @@
 # Roadmap
 
+For September 7 operational status, use the
+[reconciled checklist](MILESTONE-CHECKLIST-2026-08-31.md#operational-reconciliation--2026-09-07)
+and [owner answers](OWNER-ANSWERS-2026-09-07.md). Newer Tesla Compact,
+Gradient-family and curated-experience decisions supersede older phase wording.
+Engine follows the focused reliability checkpoint, not completion of the release
+milestone that itself requires Engine in the current dual-mode scope.
+
 The original brief accumulated features before validating the two hardest risks: the real Tesla browser and perceived audio quality. This roadmap gates those risks first.
 
 ## Phase 0 — Source safety and direction baseline

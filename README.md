@@ -262,6 +262,8 @@ there are not implementation promises; promoted work links back to the roadmap.
 ## Documentation
 
 - [`docs/CURRENT-STATE.md`](docs/CURRENT-STATE.md) — authoritative working overview and documentation map;
+- [`docs/DIAGNOSTIC-REVIEW-2026-09-07.md`](docs/DIAGNOSTIC-REVIEW-2026-09-07.md) — received-report findings and prioritized reliability work;
+- [`docs/OWNER-ANSWERS-2026-09-07.md`](docs/OWNER-ANSWERS-2026-09-07.md) — current milestone acceptance questions with answer lines;
 - [`docs/FUTURE-IDEAS.md`](docs/FUTURE-IDEAS.md) — canonical recoverable register for owner ideas and clearly separated agent proposals;
 - [`docs/PRODUCT-SPEC.md`](docs/PRODUCT-SPEC.md) — confirmed requirements, assumptions, and open questions;
 - [`docs/ADVERSARIAL-REVIEW.md`](docs/ADVERSARIAL-REVIEW.md) — independent critique of the bootstrap proposals;

@@ -1,5 +1,10 @@
 # Tesla Diagnostics
 
+Latest received-report review: [September 6–7 evidence](DIAGNOSTIC-REVIEW-2026-09-07.md).
+It distinguishes ATLAS sampling aliasing, long observation gaps, inactive-score
+attribution, a recovered Drivey timeout and successful native Pause invocations.
+Raw mail/report data remains outside the repository.
+
 ## Verified vehicle evidence — 2026-08-26
 
 The first real Tesla session produced the following photographed values:

@@ -2,6 +2,13 @@
 
 Status: **authoritative working overview**. Updated on 2026-09-04.
 
+September 7 reconciliation: [current milestone closeout](MILESTONE-CHECKLIST-2026-08-31.md#operational-reconciliation--2026-09-07),
+[four-report review](DIAGNOSTIC-REVIEW-2026-09-07.md), and
+[owner answer lines](OWNER-ANSWERS-2026-09-07.md). Public identity was rechecked at
+build `20260905-0225`, source `6e2abff`. ATLAS sampling can undercount frames,
+long gaps distort global FPS/trip estimates, and inactive score labels cannot
+prove listening acceptance. No runtime correction is claimed by this checkpoint.
+
 The owner-directed office continuation for the ATLAS/UI audit, including the
 complete pending regression ledger and pasteable Astra prompt, is recorded in
 [`ASTRA-UI-HANDOFF-2026-09-04.md`](ASTRA-UI-HANDOFF-2026-09-04.md).

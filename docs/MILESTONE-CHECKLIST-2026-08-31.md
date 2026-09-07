@@ -13,6 +13,34 @@ sources is not a second active queue.
 
 ## Consolidated completed work
 
+### Operational reconciliation — 2026-09-07
+
+Older rows below retain their evidence and stable IDs; their historical product
+descriptions must not restore superseded behavior. See the
+[four-report review](DIAGNOSTIC-REVIEW-2026-09-07.md) and
+[owner answer lines](OWNER-ANSWERS-2026-09-07.md).
+
+| Stable rows | Current closeout state | Next evidence or work |
+|---|---|---|
+| 1, 3, 6 | Completed checkpoints | Four intact v4 attachments reinforce delivery. |
+| 2, 4 | Implemented; listening/route acceptance open | A04/A06; inactive score labels do not prove adaptive-score listening. |
+| 5 | Partial vehicle evidence; investigation required | Correct ATLAS measurement aliasing before profiling; investigate one recovered Drivey timeout. Other visuals have encouraging short observations. |
+| 7, 8, 10A, 10B, 10C | Implemented; physical acceptance open | Two native Pause traces pass; Play/Previous/Next and recovery remain. A02/A05. Current Tesla Compact uses 13–32px hierarchy, 64px chrome and six-second idle retraction, not the retired 20px floor/100px chrome. Round Lobo marks supersede older geometry. |
+| 9, 9A, 10 | Implemented; physical acceptance open | ATLAS route/colour/reach and Discover reader/QR; A06. Future statistics separation is additional approved direction. |
+| 11, 11A, 11B | Implemented; brief vehicle evidence | Mist/Orchard observed briefly; Silk, thermal and LAB acceptance remain. A07. Gradient is one family. |
+| 12 | First two experiences implemented and live | Night Glass and Neon Groove need A09; broader authorship remains open. |
+| 13 | Implemented; physical acceptance open | A05 and real network recovery evidence. |
+| 14 | Dedicated iPhone implementation/physical matrix not closed | Narrow browser checks do not prove Safari landscape/safe-area/rotation acceptance. A08. |
+| 15 | Engine intake exists; review/integration pending | GEAPS is prior research, not admitted runtime. A10 sets sequencing. |
+| 16 | Partial vehicle evidence; open | Approximately 40 minutes of observation gaps prevent an endurance pass. A01 plus remaining lifecycle/network/thermal cases. |
+| 17 | Unreleased, VERSION 0.0.0 | Build 20260905-0225 remains live; release follows accepted scope and vehicle matrix. |
+
+The legacy table has 23 stable rows, only three fully closed. This is not a
+percentage of code completed: most open rows contain published code awaiting
+physical evidence. Prioritize D07-01/02/03 diagnostic corrections, Drivey/ATLAS
+investigation and a focused Flux acceptance checkpoint before Engine integration.
+Owner answers close only cases actually tested, not missing technical proof.
+
 | Workstream | Status | What is complete | Remaining acceptance boundary |
 |---|---|---|---|
 | Recovery and scope | [x] RECONCILED | The conflicting-session inventory, complete user-requirement ledger, single-writer boundary, rejected directions, superseded interpretations, and current main checkout were recovered without reconstructing decisions from memory. | Keep this checklist and the current-state documents synchronized. |
