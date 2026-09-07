@@ -62,6 +62,11 @@ Approved future direction, not implemented by the current reliability fix:
 
 ## Remaining interpretation
 
-The owner has not yet said whether the two native Pause invocations were
-intentional. Keep that narrow question open; do not reopen accepted surfaces or
-infer that every native control combination has been individually tested.
+The owner now considers the pauses probably intentional, reports no sudden
+uncommanded stop, and confirms interruptions to view Tesla navigation. A02 is
+answered; no spontaneous-pause fault is reported. This is not event-by-event
+certainty or proof of every native control combination.
+
+The owner also explicitly requested the sanitized competitor/Engine study
+review. See [Engine intake](ENGINE-INTAKE-2026-09-07.md) for the exact reading
+scope, informed-review boundary, donor recommendation and GPS findings.

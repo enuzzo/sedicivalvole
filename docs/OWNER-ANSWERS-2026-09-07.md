@@ -1,8 +1,8 @@
 # Owner answers — September 7 closeout
 
-Owner follow-up received: see [accepted decisions and sequence](OWNER-DECISIONS-2026-09-07.md). Broad acceptance questions are resolved; only native Pause intent remains a current clarification. Received answers are recorded below; A02 retains a blank answer line.
+Owner follow-up received: see [accepted decisions and sequence](OWNER-DECISIONS-2026-09-07.md). All current owner clarification lines are answered, including A02. The owner recalls intentional interruptions and no sudden uncommanded music stop.
 
-Only A02 currently needs an `Answer:`. `Not tested` is a useful answer: it preserves the gate without inventing a pass. The historical decisions and answers in `PIANO.md` remain valid; this file collects only current acceptance and next-scope questions. Technical fixes and evidence collection remain the implementer's responsibility.
+No current `Answer:` is awaiting the owner. `Not tested` is a useful answer: it preserves the gate without inventing a pass. The historical decisions and answers in `PIANO.md` remain valid; this file collects only current acceptance and next-scope questions. Technical fixes and evidence collection remain the implementer's responsibility.
 
 ## Immediate diagnostic interpretation
 
@@ -16,7 +16,7 @@ Answer: The browser was minimized while Tesla navigation was in use. This is con
 
 Were the final music pauses on Sunday and Monday intentional, for example using Tesla's media control or switching audio source? Monday's pause follows a track ending. If unwanted, describe what you saw/heard and which control you last touched.
 
-Answer:
+Answer: Probably intentional. The owner does not recall sudden uncommanded interruption and confirms deliberately interrupting at times to view Tesla navigation. This resolves the question as no reported spontaneous fault, not event-by-event certainty.
 
 ### A03 — Visible faults (D07-01/04; milestone 5)
 

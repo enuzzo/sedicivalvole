@@ -4,9 +4,8 @@ Latest verified canonical publication: **`20260907-0930`**, source **`f590f51`**
 (reliability implementation `9b57fc3`), version `0.0.0`. See
 [deployment evidence](DEPLOY.md) and [reliability QA](RELIABILITY-QA-2026-09-07.md).
 This supersedes older live-build references below. Next substantive work is
-Engine review/integration; iPhone follows. Broad owner acceptance is recorded in
-[owner decisions](OWNER-DECISIONS-2026-09-07.md); only native Pause intent is a
-current clarification in answer A02. No new automatic diagnostic sender exists.
+Engine review/integration; iPhone follows. Read [updated Engine intake](ENGINE-INTAKE-2026-09-07.md). Broad owner acceptance is recorded in
+[owner decisions](OWNER-DECISIONS-2026-09-07.md); A02 is now answered: no spontaneous music stop was reported. No new automatic diagnostic sender exists.
 
 Visual recovery and diagnostic accounting fixes are implemented; publication evidence is recorded in [DEPLOY.md](DEPLOY.md). Future diagnostics automation is not yet implemented.
 
