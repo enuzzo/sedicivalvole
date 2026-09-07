@@ -4687,3 +4687,10 @@ html { font-size: var(--font-size-floor); }
 .stats-headlines { padding: 12px 0; }
 .stats-range { min-height: 48px; padding: 5px 10px; font-size: 13px; }
 .stats-main-chart { padding-top: 4px; }
+
+.stats-dialog { --stats-red: #b92422; --stats-blue: #28678b; }
+.app[data-appearance="dark"] .stats-dialog { --stats-red: #ff8072; --stats-blue: #79bee7; }
+.stats-heading button, .stats-range, .atlas-place-card button { color: var(--ui-text); background: var(--ui-control); border: 1px solid var(--ui-line); border-radius: 6px; }
+.stats-dialog .stats-heading button[aria-current] { color: var(--stats-red); border-bottom: 3px solid var(--stats-red); background: var(--ui-surface); }
+.stats-main-chart header strong { color: var(--stats-red); }
+.stats-main-chart header .stats-blue { color: var(--stats-blue); }

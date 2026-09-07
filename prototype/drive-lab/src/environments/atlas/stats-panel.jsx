@@ -27,7 +27,7 @@ function Trace({ samples, kind = 'journey' }) {
         const minimum = field === 'altitudeM' ? Math.floor(Math.min(...numbers, 0) / 50) * 50 : 0;
         const maximum = Math.max(field === 'speedKmh' ? 30 : 1, ...numbers);
         const y = v => bottom - (v - minimum) / Math.max(1, maximum - minimum) * (bottom - top);
-        const color = index ? '#438bb5' : '#d52120';
+        const color = getComputedStyle(canvas).getPropertyValue(index ? '--stats-blue' : '--stats-red').trim();
         if (!index) {
           ctx.globalAlpha = .15; ctx.strokeStyle = ink;
           for (let i = 0; i < 4; i++) { const yy = top + (bottom - top) * i / 3; ctx.beginPath();ctx.moveTo(left, yy);ctx.lineTo(right, yy);ctx.stroke(); }
@@ -81,7 +81,7 @@ function HeadingRose({ headings }) {
     headings.forEach((n, i) => {
       const angle = i * Math.PI / 4 - Math.PI / 2;
       ctx.strokeStyle = ink;ctx.globalAlpha = .15;ctx.beginPath();ctx.moveTo(80,65);ctx.lineTo(80+Math.cos(angle)*42,65+Math.sin(angle)*42);ctx.stroke();
-      ctx.globalAlpha = .85;ctx.strokeStyle = '#d52120';ctx.lineWidth = 9;ctx.beginPath();ctx.moveTo(80,65);ctx.lineTo(80+Math.cos(angle)*42*n/max,65+Math.sin(angle)*42*n/max);ctx.stroke();ctx.lineWidth = 1;
+      ctx.globalAlpha = .85;ctx.strokeStyle = getComputedStyle(ref.current).getPropertyValue('--stats-red').trim();ctx.lineWidth = 9;ctx.beginPath();ctx.moveTo(80,65);ctx.lineTo(80+Math.cos(angle)*42*n/max,65+Math.sin(angle)*42*n/max);ctx.stroke();ctx.lineWidth = 1;
       ctx.globalAlpha = 1;ctx.fillStyle = ink;ctx.fillText(['N','NE','E','SE','S','SW','W','NW'][i],80+Math.cos(angle)*58,65+Math.sin(angle)*56);
     });
   }, [headings]);
