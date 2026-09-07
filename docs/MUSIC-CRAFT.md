@@ -1741,3 +1741,15 @@ disparity. A gear change must not insert an artificial 85% gain notch. Verify re
 WAV renders at matched RPM/load endpoints as well as the graph routing; gain
 constants alone cannot prove the audible result. This is an Engine-specific
 lesson and does not remove intentional dynamics or effects from Flux music.
+
+
+### Engine performance gestures need phrasing — 2026-09-07
+
+The owner heard TAMARRO as a held throttle rather than show-off revving. A gesture
+needs contrasting attacks and releases: varied mid/high rises, clear intervening
+falls, a brief limiter flutter and a final decay to idle. Engine now uses a bounded
+original RPM/throttle envelope through the existing dry sample mixer. Do not
+substitute volume boosts or Flux effects for those RPM movements. Regression
+checks count multiple peaks and throttle-off high-RPM intervals; actual-WAV
+browser probes confirm non-silent unclipped output. This Engine observation does
+not impose a compositional rule on the music score.

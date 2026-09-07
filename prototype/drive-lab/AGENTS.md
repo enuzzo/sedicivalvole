@@ -248,3 +248,11 @@ existing curated presets. No sound before START; no old queue while a newly chos
 catalogue is loading. Preserve mute, keyboard dialogs and Tesla 48/56 px targets.
 This supersedes the older brand-first splash and frontend-builder prohibition for
 this owner-requested redesign. See ../../docs/LAUNCH-COCKPIT-2026-09-07.md.
+
+
+## Owner clarification — 2026-09-07 TAMARRO / Show-off
+
+TAMARRO means varied powerful neutral throttle blips at a stop: up, release, up,
+brief limiter flutter and down. It is not a maximum-throttle hold. Keep TAMARRO
+with the English SHOW-OFF subtitle. One tap plays a bounded phrase; another stops.
+Keep the unchanged dry audio/gain path, trusted standstill and lifecycle gates.

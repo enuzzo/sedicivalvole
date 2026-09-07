@@ -357,7 +357,7 @@ Night Glass combines Vertigo, Graphite, DARK and the Lounge catalogue; Neon Groo
 
 Prtcl, Drivey and Gradient now align both the functional label and current value to one left edge. Their shared 112 × 52 px controls retain the existing cycle actions and automatic chrome visibility. [Measured before/after verification](docs/CONTEXT-CONTROL-ALIGNMENT-2026-09-05.md).
 
-Engine uses the existing AudioContext and shared mute, bypassing all Flux effects. Deceleration lowers RPM without artificial volume ducking. Two prominent TAMARRO controls stay visible at zero; fresh stationary GPS enables held revs and tiny periodic idle blips. Acquisition-age gates, stopped GPS renewal and five-minute asset recovery are implemented. The first listening response is positive; the requested refinement awaits vehicle listening. [Engine technical record](docs/ENGINE-INTEGRATION-2026-09-07.md).
+Engine uses the existing AudioContext and shared mute, bypassing all Flux effects. Deceleration lowers RPM without artificial volume ducking. Two prominent TAMARRO controls stay visible at zero; fresh stationary GPS enables tap-triggered Show-off rev phrases and tiny periodic idle blips. Acquisition-age gates, stopped GPS renewal and five-minute asset recovery are implemented. The first listening response is positive; the requested refinement awaits vehicle listening. [Engine technical record](docs/ENGINE-INTEGRATION-2026-09-07.md).
 
 ### Launch Cockpit — 2026-09-07
 
@@ -366,6 +366,13 @@ Visuals only, with precise genre/pace/Lobo selection or **Feeling lucky**. Expli
 choices persist; lucky mode proposes a new genre on the next visit. One START
 respects mute and waits for the exact selected music while opening the visual.
 [Design, behavior and browser evidence](docs/LAUNCH-COCKPIT-2026-09-07.md).
+
+### TAMARRO / Show-off — 2026-09-07
+
+Tap either stationary TAMARRO control for a varied 3–5 second neutral rev phrase:
+several throttle blips, releases, a brief limiter flutter and return to idle.
+Tap again to stop. Trusted GPS, mute and lifecycle cancellation remain enforced;
+Engine uses its unchanged dry sample path and master level.
 
 <!-- COMMUNITY-CREDITS:START -->
 ## Community thanks — 2026-09-05

@@ -13,8 +13,8 @@ export function EngineTelemetry({ state, profileId, onProfile, onRev, onRelease,
   }, [state]);
   useEffect(() => {
     const release = () => onRelease?.();
-    window.addEventListener("blur", release); window.addEventListener("pointerup", release); window.addEventListener("keyup", release);
-    return () => { release(); window.removeEventListener("blur", release); window.removeEventListener("pointerup", release); window.removeEventListener("keyup", release); };
+    window.addEventListener("blur", release);
+    return () => { release(); window.removeEventListener("blur", release); };
   }, [onRelease]);
   const trace = key => historyRef.current.map((value, index) => `${index * 3},${48 - value[key] * 44}`).join(" ");
   const rpm = state.rpm ?? 1000;
@@ -36,10 +36,8 @@ export function EngineTelemetry({ state, profileId, onProfile, onRev, onRelease,
       {[['mono', 'Mono'], ['rosso', 'Rosso'], ['touring', 'Touring']].map(([id, label]) => <button key={id} type="button" aria-pressed={profileId === id} onClick={() => onProfile(id)}>{label}</button>)}
     </div><span>{Math.round(speed)} KM/H · {state.motion === "fresh" ? "LIVE MOTION" : state.motion === "degraded" ? "SIGNAL AGING" : "AWAITING MOTION"}</span></div>
     {Math.round(speed) === 0 ? ["left", "right"].map(side => <button key={side} className={`engine-rev is-${side}`} type="button" aria-label={`TAMARRO ${side}`} disabled={!state.trustedStationary}
-      onPointerDown={event => { event.currentTarget.setPointerCapture(event.pointerId); onRev?.(); }}
-      onPointerUp={onRelease} onPointerCancel={onRelease} onLostPointerCapture={onRelease}
-      onKeyDown={event => { if ([' ', 'Enter'].includes(event.key) && !event.repeat) { event.preventDefault(); onRev?.(); } }}
-      onKeyUp={onRelease} onBlur={onRelease}><strong>{state.revving ? "REVVING" : "TAMARRO"}</strong><small>{state.trustedStationary ? "HOLD TO REV" : state.enabled === false ? "AUDIO PAUSED" : "WAITING FOR GPS"}</small></button>) : null}
+      aria-pressed={Boolean(state.revving)}
+      onClick={() => state.revving ? onRelease?.() : onRev?.()}><strong>TAMARRO</strong><small>{state.trustedStationary ? state.revving ? "SHOW-OFF · STOP" : "SHOW-OFF" : state.enabled === false ? "AUDIO PAUSED" : "WAITING FOR GPS"}</small></button>) : null}
     {state.status === "loading" || state.status === "retrying" || state.status === "error" ? <p className="engine-load-state" role="status">{state.status === "loading" ? "Preparing engine audio…" : state.status === "retrying" ? "Waiting for audio · retrying automatically" : state.error || "Engine audio unavailable"}</p> : null}
   </section>;
 }

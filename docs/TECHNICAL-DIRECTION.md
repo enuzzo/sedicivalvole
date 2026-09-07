@@ -737,3 +737,13 @@ renews quiet stationary watches without concurrent requests. A 700 ms, +450 RPM
 audio-clock gesture runs after each five-second trusted idle interval, cancelled
 by movement, stale evidence, mute, manual rev or lifecycle change. See the current
 [Engine technical record](ENGINE-INTEGRATION-2026-09-07.md) for measured evidence.
+
+
+## Engine Show-off host envelope — 2026-09-07
+
+`engine/show-off.js` generates bounded audio-clock RPM/throttle phrases with
+injected random timing/peak choices for deterministic tests. The existing runtime
+applies this only during trusted standstill, suppresses shifts and small idle
+blips, and retains all cancellation and gain boundaries. The UI uses native
+click semantics, with an explicit second-tap stop. Upstream primitives and WAVs
+are unchanged. See the Engine integration record for acoustic tuning limits.

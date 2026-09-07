@@ -92,7 +92,7 @@ test("scheduled upshift commits exactly once using audio time with bounded detun
   for(const source of f.context.sources) for(const event of source.detune.events) if(event[0]!=="hold") assert.ok(Math.abs(event[1])<=2400);
   f.tick(2); assert.equal(f.evidence.freshness,"lost"); assert.equal(f.runtime.getState().shift,null); f.runtime.destroy();
 });
-test("rev hold revalidates evidence, expires at eight seconds and releases on movement", async () => {
+test("show-off revalidates evidence, ends before eight seconds and releases on movement", async () => {
   const f=fixture(); f.runtime.setEnabled(true); await f.runtime.load(); f.evidence.trustedStationary=true; f.tick(); assert.equal(f.runtime.setRevHeld(true),true);
   for(let i=0;i<325;i++) f.tick(); assert.equal(f.runtime.getState().revving,false);
   f.runtime.setRevHeld(true); f.evidence.trustedStationary=false; f.tick(); assert.equal(f.runtime.getState().revving,false); assert.equal(f.runtime.setRevHeld(true),false); f.runtime.destroy();
@@ -157,4 +157,33 @@ test("Engine level stays constant on lift, downshift and lost-signal idle", asyn
   // A shift has one continuous destination ramp, no intermediate attenuation notch.
   for (const gain of f.context.gains.slice(1)) assert.equal(gain.gain.events.filter(e => e[0] === "ramp").length, 2);
   f.runtime.destroy();
+});
+
+
+test("show-off repeatedly rises and falls in neutral, reaches the limiter and returns to idle", async () => {
+  const f=fixture(); f.runtime.setEnabled(true); await f.runtime.load();
+  f.evidence.trustedStationary=true; f.evidence.speedKmh=0; f.tick();
+  f.runtime.setRevHeld(true); const states=[];
+  for(let i=0;i<260;i++) { f.tick(); states.push(f.runtime.getState()); }
+  const active=states.filter(s=>s.revving);
+  assert.ok(active.length>100 && active.length<230);
+  assert.ok(Math.max(...active.map(s=>s.rpm))>8500);
+  assert.ok(active.some(s=>s.showOffPhase==='limiter'));
+  assert.ok(active.some(s=>s.drive===0 && s.rpm>4000));
+  let peaks=0; for(let i=1;i<active.length-1;i++) if(active[i].rpm>active[i-1].rpm && active[i].rpm>active[i+1].rpm) peaks++;
+  assert.ok(peaks>=4, `Expected several revs and limiter pulses, got ${peaks}`);
+  assert.ok(active.every(s=>s.gear===1 && s.shift==null && !s.idleBlip));
+  assert.equal(states.at(-1).rpm,1000); assert.equal(states.at(-1).revving,false);
+  f.runtime.destroy();
+});
+test("show-off timing and peaks vary but stay bounded for every profile limit", async () => {
+  const { createShowOff }=await import('../src/engine/show-off.js');
+  const traces=[];
+  for(const random of [()=>0,()=>.5,()=>1]) for(const limit of [8900,9000]) {
+    const gesture=createShowOff(random);gesture.start(10,1000,limit);const trace=[];
+    for(let i=0;i<300;i++){const s=gesture.sample(10+i*.025);if(s){assert.ok(s.rpm>=1000 && s.rpm<=limit);trace.push(Math.round(s.rpm));}}
+    assert.ok(trace.length>100 && trace.length<230);assert.equal(gesture.sample(18),null);traces.push(trace);
+    gesture.start(20,2000,limit);gesture.reset();assert.equal(gesture.sample(20.1),null);
+  }
+  assert.notDeepEqual(traces[0],traces[2]);
 });

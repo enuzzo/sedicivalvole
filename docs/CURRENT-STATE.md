@@ -44,6 +44,9 @@ dated study documents.
 
 ## Product surface
 
+- TAMARRO / SHOW-OFF now implements tap-triggered, varied neutral rev phrases;
+  locally verified, canonical publication pending. [Behavior and evidence](ENGINE-INTEGRATION-2026-09-07.md#show-off-gesture--2026-09-07).
+
 - Launch Cockpit is implemented, canonically published and browser-verified.
   Immediate Music/Engine selection, precise genre/pace/Lobo and lucky genre mode
   replace the brand-first gate. [Behavior and evidence](LAUNCH-COCKPIT-2026-09-07.md).

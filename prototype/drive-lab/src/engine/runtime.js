@@ -2,6 +2,7 @@ import { Engine } from "./upstream/Engine.ts";
 import { Drivetrain } from "./upstream/Drivetrain.ts";
 import { AudioManager } from "./upstream/AudioManager.ts";
 import { matchEngineLoopLevels } from "./sample-levels.js";
+import { createShowOff } from "./show-off.js";
 import { createIdleBlip } from "./idle-blip.js";
 import { engineProfile } from "./profiles.js";
 import { boundedRpm, decideAutomaticGear, virtualRpm } from "./gearbox.js";
@@ -33,7 +34,8 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
   const stopNodes = (entries) => entries.forEach(({ source, gain }) => { try { source.stop(); } catch {} source.disconnect(); gain.disconnect(); });
   const clearRetry = () => { clearTimeout(retryTimer); retryTimer = null; };
   const idleBlip = createIdleBlip();
-  const releaseRev = () => { heldSince = null; state.revving = false; };
+  const showOff = createShowOff();
+  const releaseRev = () => { heldSince = null; showOff.reset(); state.revving = false; state.showOffPhase = null; };
   const releaseGestures = () => { releaseRev(); idleBlip.reset(); state.idleBlip = false; };
   const setEnabled = (value) => {
     enabled = Boolean(value) && !disposed;
@@ -112,12 +114,16 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
       shift = null; state.shift = null;
     }
     const activeEvidence = elapsed > 0.5 ? motion.snapshot(now()) : evidence;
-    const revving = heldSince != null && state.trustedStationary;
+    const gesture = heldSince != null && state.trustedStationary ? showOff.sample(at) : null;
+    if (heldSince != null && !gesture) releaseRev();
+    const revving = Boolean(gesture);
+    state.showOffPhase = gesture?.phase ?? null;
     state.revving = revving;
     const blipRpm = idleBlip.sample(at, state.trustedStationary && !revving && !shift);
     state.idleBlip = blipRpm > 0;
     const dt = Math.min(0.08, elapsed);
-    const demand = revving ? 1 : activeEvidence.drive;
+    const demand = gesture ? gesture.throttle : activeEvidence.drive;
+    if (gesture) state.drive = demand;
     engine.throttle = demand;
     engine.integrate(drivetrain.inertia, at * 1000, dt);
     const coupledRpm = activeEvidence.freshness === "lost" ? 1000
@@ -126,6 +132,7 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
       drivetrain.omega = coupledRpm * 2 * Math.PI / 60;
       engine.solveVel(drivetrain, dt);
     }
+    if (gesture) engine.omega = gesture.rpm * 2 * Math.PI / 60;
     if (state.trustedStationary && !revving) engine.omega = (1000 + blipRpm) * 2 * Math.PI / 60;
     engine.rpm = boundedRpm(engine.omega * 60 / (2 * Math.PI), profile);
     engine.omega = engine.rpm * 2 * Math.PI / 60;
@@ -242,7 +249,10 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
     },
     setRevHeld(held) {
       if (!held) releaseRev();
-      else if (enabled && nodes.length && context.state === "running" && globalThis.document?.visibilityState !== "hidden" && motion.snapshot(now()).trustedStationary) heldSince ??= now();
+      else if (enabled && nodes.length && context.state === "running" && globalThis.document?.visibilityState !== "hidden" && motion.snapshot(now()).trustedStationary && heldSince == null) {
+        heldSince = now();
+        showOff.start(context.currentTime, engine.rpm, profile.configuration.engine.limiter);
+      }
       return heldSince != null;
     },
     setTransmissionMode(mode) {

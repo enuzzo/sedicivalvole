@@ -155,3 +155,33 @@ blips, manual rev, mute, mode switching and no Engine FX badge/controls. Exact
 773 × 601 captures and JSON evidence: `docs/qa/2026-09-07-engine-refinement/`.
 Canonical publication is recorded separately in DEPLOY.md. Tesla listening to
 this refinement remains the next acceptance step.
+
+
+## Show-off gesture — 2026-09-07
+
+The owner's intended TAMARRO behavior is a vain driver blipping the throttle in
+neutral at a stop, not a sustained full-throttle hold. The original hold only
+integrated maximum throttle and snapped back to idle when released.
+
+One tap now starts a bounded 3.26–4.75 second authored RPM phrase: medium rev,
+release, higher rev, release, redline approach, brief limiter flutter, release,
+one final rev and a smooth return to 1000 RPM. Timings and intermediate peaks vary
+per activation. The limiter flutter is an 8 Hz RPM envelope within 4.5% of each
+profile's existing limiter, using the existing samples and mixer. This is original
+acoustic choreography, not measured engine physics or simulated engine damage.
+
+TAMARRO retains its two persistent controls and gains the English SHOW-OFF subtitle.
+A second tap on either control stops the phrase. Native click/Enter/Space activate
+it; pointer release no longer cancels it. Neutral remains visible during releases
+inside the phrase. Movement, stale GPS, mute, blur, lifecycle loss, profile change
+and clock gaps still cancel the gesture; no gesture survives the eight-second
+wall-clock bound. Automatic small idle blips wait until the gesture finishes.
+No upstream source, WAV, master gain, Flux effect or driving gearbox changed.
+
+Validation: 652 regression tests pass, including varied phrase bounds, multiple
+peaks, throttle releases, neutral/no shifts, limiter and idle return. Real-WAV
+Chrome at 773 × 601 confirms all three profiles, four/five detected peaks, RPM
+near each limiter, finite non-silent output below clipping, tap release, opposite
+button cancellation, keyboard and mute. No page exception or diagnostic send.
+[Browser evidence](qa/2026-09-07-show-off/browser-evidence.json).
+Physical listening remains the owner's acceptance gate.
