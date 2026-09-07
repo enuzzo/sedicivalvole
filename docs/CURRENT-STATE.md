@@ -1426,3 +1426,15 @@ Publication verified **186 files / 216,249,076 bytes**, all **29 Illobo tracks**
 ## 2026-09-05 02:43 — Complete README community footer
 
 Documentation checkpoint `017f242` is pushed to origin/main. The README ends with 43 curated acknowledgements and a collapsible 196-entry exact npm inventory, including transitive and optional platform dependencies. Original author/article/demo links and named offline tools are explicit. Maintain this footer, notices and outreach register together; refresh/check through `scripts/readme_dependency_credits.py`. The permanent rule is recorded in AGENTS.md and the owner-requested memory note. Verification: 8 documentation checks and 196 inventory identities pass, 50/51 curated public links respond; CodePen returns HTTP 403 to automated access. No product files, locks or media changed. Canonical source remains `6e2abff`, build `20260905-0225`; no new deployment or vehicle-acceptance claim.
+
+## 2026-09-07 19:37 — Evening road corrections
+
+Prepared source `7285ecb`, build `20260907-1936`; publication is pending.
+Engine manual TAMARRO no longer waits for GPS; live watch motion uses a monotonic
+receiver clock and bounded stationary hold, with new rejection evidence.
+NIGHTSHIFT PARK is more audible. Stats for Nerds 09 has its own catalogue entries
+and curved heading bands; Atlas adds OSM POIs from loaded tiles. Intro shows build
+at bottom right. See [road evidence and remaining gates](ROAD-FEEDBACK-2026-09-07.md).
+664 native tests, 18 post-build checks, 196 dependency credits and focused browser
+checks pass. Automatic diagnostics remain unimplemented (future Dev plan: ten
+minutes; owner now recalls fifteen minutes of driving). No mail sent during QA.
