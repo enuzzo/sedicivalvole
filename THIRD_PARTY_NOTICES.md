@@ -274,3 +274,13 @@ Reuse: engine/drivetrain/mixer primitives, three configurations, ratio/clamp
 helpers and active WAVs. Adaptations: shared context/output injection, explicit
 imports, corrected RPM units, bounded audio scheduling and original GPS/automatic
 gearbox/lifecycle integration. Native upstream keyboard/demo UI is not shipped.
+
+
+## Launch usability and audio-lifecycle studies — 2026-09-07
+
+Jakob Nielsen / Nielsen Norman Group, [Progressive Disclosure](https://www.nngroup.com/articles/progressive-disclosure/),
+and MDN contributors / Mozilla, [Web Audio best practices](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Best_practices)
+and [autoplay guide](https://developer.mozilla.org/en-US/docs/Web/Media/Guides/Autoplay),
+were consulted for contextual controls and explicit audio startup. Study only:
+no source, prose excerpt, artwork or documentation is redistributed. These
+acknowledgements do not change the project's PolyForm Noncommercial licence.

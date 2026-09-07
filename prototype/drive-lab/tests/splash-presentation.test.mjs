@@ -1,3 +1,4 @@
+// Current splash geometry, credits, warmup and START are exercised in scripts/qa-launch-cockpit.mjs.
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
@@ -60,76 +61,6 @@ test("completed control actions and closed surfaces return focus to the experien
   assert.match(app, /onClickCapture=\{handleControlActivation\}/);
 });
 
-test("launch surface contains only product and action copy", () => {
-  const app = read("App.jsx");
-  const launchMarkup = app.slice(
-    app.indexOf('className="launch-button"'),
-    app.indexOf("</button>", app.indexOf('className="launch-button"')),
-  );
-
-  assert.match(launchMarkup, /launch-brand">[\s\S]*?appearanceResolution\.appearance === "dark" \? TOPBAR_MARK_URL : BRAND_MARK_URL[\s\S]*?<span>sedicivalvole<\/span>/);
-  assert.match(launchMarkup, /alt=""[\s\S]*?aria-hidden="true"/);
-  assert.match(launchMarkup, /PLAY THE ROAD/);
-  assert.doesNotMatch(launchMarkup, /launch-(?:index|vent|safety|latch)/);
-});
-
-test("the selected Instrument Deck resolves Music and Visual before START", () => {
-  const app = read("App.jsx");
-  const styles = read("styles.css");
-  const selector = app.slice(app.indexOf("function LaunchSelector"), app.indexOf("export function App"));
-
-  assert.match(app, /setPhase\("choosing"\)/);
-  assert.match(selector, /<legend>MUSIC<\/legend>/);
-  assert.match(selector, /<legend>VISUAL<\/legend>/);
-  assert.match(app, /const BRAND_MARK_URL = `\/brand\/sedicivalvole-mark\.svg\?build=\$\{encodeURIComponent\(APP_BUILD\)\}`/);
-  assert.match(selector, /className="launch-selector-mark"[\s\S]*?src=\{appearance === "dark" \? TOPBAR_MARK_URL : BRAND_MARK_URL\}[\s\S]*?alt=""[\s\S]*?aria-hidden="true"/);
-  assert.match(selector, /FLUX_VISUAL_CHOICES\.map/);
-  assert.match(selector, /isShaderGradientEnvironmentId\(environmentId\)/);
-  assert.match(selector, /if \(family\) onSelectGradient\(\)/);
-  assert.match(selector, /disabled=\{!ready\}/);
-  assert.match(selector, /musicId && environmentId/);
-  assert.match(selector, /choice\.launchDescription/);
-  assert.match(selector, /<strong>\{choice\.displayLabel\}<\/strong>/);
-  assert.match(selector, /<strong>\{displayLabel\(choice\)\}<\/strong>/);
-  assert.doesNotMatch(selector, /choiceBadge|launch-choice-badge|launch-choice-number/);
-  assert.match(app, /displayLabel: "Play the Road"/);
-  assert.match(app, /displayLabel: "Soundtrack"/);
-  assert.match(app, /displayLabel: "Mute"/);
-  assert.match(app, /Adaptive music shaped by your drive/);
-  assert.match(app, /Independent Jamendo artist recordings/);
-  assert.match(app, /Visuals only\. No music\./);
-  assert.doesNotMatch(selector, /ILLOBO FEATURED/i);
-  assert.match(styles, /\.launch-selector \{[^}]*grid-template-rows: 64px minmax\(0, 1fr\) 64px;[^}]*height: min\(552px, calc\(100dvh - 24px\)\)/);
-  assert.match(styles, /\.launch-selector-heading \{[^}]*grid-template-columns: 52px max-content minmax\(0, 1fr\) 64px/);
-  assert.match(styles, /\.launch-selector-mark \{[^}]*width: 48px;[^}]*height: 48px/);
-  assert.match(styles, /\.launch-selector-heading h1 \{[^}]*font-size: clamp\(24px, 4vw, 28px\)/);
-  assert.match(styles, /\.launch-selector-heading button \{[^}]*width: 64px;[^}]*min-height: var\(--touch-target\)/);
-  assert.match(styles, /\.launch-selector-body \{[\s\S]*?grid-template-columns: minmax\(0, \.8fr\) minmax\(0, 1\.2fr\)/);
-  assert.match(styles, /\.launch-selector fieldset \{[\s\S]*?display: flex[\s\S]*?min-height: 0[\s\S]*?padding: 0 10px 8px[\s\S]*?overflow: hidden/);
-  assert.match(selector, /className="launch-music-grid"/);
-  assert.match(styles, /\.launch-music-grid,[\s\S]*?\.launch-visual-grid \{[\s\S]*?flex: 1 1 auto[\s\S]*?margin-top: 6px/);
-  assert.match(styles, /\.launch-music-grid \{[^}]*grid-template-rows: repeat\(3, minmax\(0, 1fr\)\)[^}]*gap: 8px/);
-  assert.match(styles, /\.launch-visual-grid \{[\s\S]*?grid-template-columns: repeat\(3, minmax\(0, 1fr\)\)[\s\S]*?grid-template-rows: repeat\(var\(--launch-visual-row-count, 2\), minmax\(0, 1fr\)\)[\s\S]*?gap: 8px/);
-  assert.match(selector, /--launch-visual-row-count[\s\S]*?Math\.max\(2, Math\.ceil\(FLUX_VISUAL_CHOICES\.length \/ 3\)\)/);
-  assert.match(styles, /\.launch-choice-button \{[^}]*justify-content: flex-start/);
-  assert.match(styles, /\.launch-choice-button \{[^}]*min-height: var\(--touch-target\);[^}]*padding: 17px 10px 8px/);
-  assert.match(styles, /\.launch-choice-button::before \{[\s\S]*?top: 7px;[\s\S]*?left: 10px;[\s\S]*?height: 3px/);
-  assert.doesNotMatch(styles, /\.launch-choice-button\[aria-pressed="true"\] strong \{[^}]*padding-top/);
-  assert.match(styles, /\.launch-choice-button strong \{ font-size: 17px/);
-  assert.match(styles, /\.launch-choice-button small \{ font-size: var\(--type-body\)/);
-  assert.match(styles, /\.launch-selector legend \{ font-size: var\(--type-label\)/);
-  assert.match(styles, /--ui-radius: 6px/);
-  for (const selectorName of [
-    ".launch-selector",
-    ".launch-selector-heading button",
-    ".launch-choice-button",
-    ".launch-start-button",
-  ]) {
-    const escapedSelector = selectorName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    assert.match(styles, new RegExp(`${escapedSelector} \\{[\\s\\S]*?border-radius: var\\(--ui-radius\\)`));
-  }
-});
-
 test("the Tesla Music drawer keeps the accepted paired Soundtrack layout", () => {
   const app = read("App.jsx");
   const styles = read("styles.css");
@@ -155,62 +86,10 @@ test("the running Visual library uses a complete two-column Tesla catalogue", ()
   assert.match(app, /function ShaderGradientCycleControl/);
   assert.match(app, /nextShaderGradientEnvironmentId\(environment\.id\)/);
   assert.match(app, /environment\.renderer === "shadergradient"[\s\S]*?<ShaderGradientCycleControl/);
-  assert.match(app, /onSelectGradient=\{\(\) => \{[^}]*setLaunchEnvironmentId\(lastGradientVariantRef\.current\);? \}\}/);
+  assert.match(read("launch-cockpit.jsx"), /SHADERGRADIENT_ENVIRONMENTS\.map/);
   assert.match(styles, /\.environment-drawer \.score-list \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\); gap: 8px; margin-top: 12px; \}/);
   assert.match(styles, /\.environment-drawer \.score-entry \{ min-height: 68px/);
   assert.match(styles, /\.environment-drawer \.score-entry-number \{ font-size: var\(--type-meta\)/);
-});
-
-test("SOUNDTRACK stays visible while START remains independent from remote audio readiness", () => {
-  const app = read("App.jsx");
-  const soundtrack = app.slice(app.indexOf('id: "soundtrack"'), app.indexOf('id: "mute"'));
-
-  assert.match(soundtrack, /label: "SOUNDTRACK"/);
-  assert.match(soundtrack, /available: true/);
-  assert.match(app, /disabled=\{!choice\.available\}/);
-  assert.match(app, /musicReady=\{launchMusicId !== "soundtrack"/);
-  assert.match(app, /\["prepared", "paused", "playing"\]\.includes\(soundtrackSnapshot\?\.status\)/);
-  assert.match(app, /const ready = Boolean\(musicId && environmentId\)/);
-  assert.match(app, /MUSIC JOINS WHEN READY/);
-  assert.match(app, /MUSIC PENDING · JOINS WHEN READY/);
-  assert.match(app, /audio\.start-deferred/);
-  assert.match(app, /audio\.start-recovered/);
-  assert.match(app, /soundtrackStatus === "prepared"[\s\S]*?await controller\.resume\(\)/);
-});
-
-test("splash credits the collaborator and links the public source", () => {
-  const app = read("App.jsx");
-
-  assert.match(app, /A project by\{" "\}/);
-  assert.match(app, /href="https:\/\/github\.com\/enuzzo"/);
-  assert.match(app, /aria-label="enuzzo on GitHub"/);
-  assert.match(app, />\s*enuzzo\s*<\/a>/);
-  assert.doesNotMatch(app, new RegExp(["net", "milk"].join(""), "i"));
-  assert.match(app, /href="https:\/\/github\.com\/illobo"/);
-  assert.match(app, /with Illobo/);
-  assert.match(app, /href="https:\/\/github\.com\/enuzzo\/sedicivalvole"/);
-  assert.match(app, /github\.com\/enuzzo\/sedicivalvole/);
-  assert.match(app, /className="splash-github-mark"/);
-  assert.match(app, /target="_blank"[\s\S]*?rel="noreferrer"/);
-});
-
-test("splash links keep light hover contrast and the GitHub mark follows text colour", () => {
-  const styles = read("styles.css");
-
-  assert.match(styles, /\.splash-action a:hover \{ color: var\(--paper\)/);
-  assert.doesNotMatch(styles, /\.splash-action a:hover \{ color: var\(--ink\)/);
-  assert.match(styles, /\.splash-github-mark \{[\s\S]*?fill: currentColor/);
-});
-
-test("splash metadata is legible and the complete group sits higher", () => {
-  const styles = read("styles.css");
-
-  assert.match(styles, /\.splash-action \{[\s\S]*?bottom: 24px/);
-  assert.match(styles, /\.splash-action > small \{[\s\S]*?text-shadow: 0 1px 2px #000, 0 0 8px #000/);
-  assert.match(styles, /\.splash-action > \.splash-credit,[\s\S]*?font-size: var\(--type-meta\)/);
-  assert.match(styles, /\.splash-repository,[\s\S]*?font-size: var\(--type-meta\)/);
-  assert.match(styles, /\.splash-privacy \{ font-size: var\(--type-meta\)/);
-  assert.match(styles, /\.splash-privacy,[\s\S]*?\.splash-safety small \{ display: none; \}/);
 });
 
 test("Buy Me a Coffee opens a real, accessible support panel", () => {
@@ -222,8 +101,8 @@ test("Buy Me a Coffee opens a real, accessible support panel", () => {
   assert.match(app, /parseSupportUrl\(import\.meta\.env\.VITE_SUPPORT_URL\) \|\| DEFAULT_SUPPORT_URL/);
   assert.match(app, /url\.protocol === "https:"/);
   assert.match(app, /buymeacoffee\\\.com/);
-  assert.match(app, /className="splash-support-trigger"/);
-  assert.match(app, /aria-label="Open Buy Me a Coffee support panel"/);
+  assert.match(read("launch-cockpit.jsx"), /onClick=\{onSupport\}/);
+  assert.match(read("launch-cockpit.jsx"), /aria-label="Open Buy Me a Coffee support panel"/);
   assert.match(app, /function DialogSurface\(/);
   assert.match(app, /role="dialog"/);
   assert.match(app, /aria-modal="true"/);
@@ -231,7 +110,6 @@ test("Buy Me a Coffee opens a real, accessible support panel", () => {
   assert.match(app, /src=\{buyMeCoffeeQr\}/);
   assert.match(app, /href=\{SUPPORT_URL\}/);
   assert.doesNotMatch(app.slice(app.indexOf('className="support-primary-link"'), app.indexOf("</a>", app.indexOf('className="support-primary-link"'))), /target="_blank"/);
-  assert.match(app, /onPointerUp=\{\(event\) => \{[\s\S]*?event\.pointerType !== "mouse"[\s\S]*?setSupportOpen\(true\)/);
   assert.match(app, /PROJECT SPARKS/);
   assert.match(app, /PLAYFUL SIGNAL · NOT PURCHASES/);
   assert.match(app, /decodeSuggestionAddress\(\)/);
@@ -244,14 +122,6 @@ test("closing the voice audition returns to diagnostics instead of losing focus"
   assert.match(app, /const closeVoicePreview = useCallback\(\(\) => \{\s*setPreviewOpen\(false\);\s*setDrawerOpen\(true\);/);
   assert.match(app, /labelledBy="preview-title"[\s\S]*?onClose=\{closeVoicePreview\}/);
   assert.match(app, /onClick=\{closeVoicePreview\} aria-label="Close voice preview"/);
-});
-
-test("the support control is top-left and its panel stays compact", () => {
-  const styles = read("styles.css");
-
-  assert.match(styles, /\.splash-support-trigger \{[\s\S]*?position: absolute;[\s\S]*?left: clamp\(22px, 4vw, 42px\)/);
-  assert.match(styles, /\.support-panel \{[\s\S]*?width: min\(390px, calc\(100vw - 44px\)\)/);
-  assert.match(styles, /\.support-overlay \{[\s\S]*?z-index: 30/);
 });
 
 test("launch surface stays above every preloaded experience overlay", () => {
@@ -477,42 +347,6 @@ test("catalog names use readable display labels and align their numbers on one b
   assert.match(styles, /\.score-entry-number,[\s\S]*?font-size: var\(--type-meta\)/);
 });
 
-test("launch copy has a continuous white-to-red travelling wave", () => {
-  const styles = read("styles.css");
-
-  assert.match(styles, /@keyframes launch-text-wave/);
-  assert.match(styles, /animation: launch-text-wave 4\.2s linear infinite/);
-  assert.match(styles, /background-image: repeating-linear-gradient\(/);
-  assert.match(styles, /background-size: 360px 100%/);
-  assert.match(styles, /from \{ background-position: 0 50%; \}/);
-  assert.match(styles, /to \{ background-position: -360px 50%; \}/);
-  assert.match(styles, /#f2eee5/);
-  assert.match(styles, /--ui-command-wave-soft: #ff9b9e/);
-  assert.match(styles, /--ui-command-wave-soft: #b51f20/);
-  assert.match(styles, /var\(--ui-command-wave-deep\) 204px/);
-});
-
-test("the launch lockup uses the 16 Road mark and isolated Orbitron wordmark", () => {
-  const styles = read("styles.css");
-  const brand = styles.slice(styles.indexOf(".launch-brand {"), styles.indexOf(".launch-command {"));
-  const command = styles.slice(styles.indexOf(".launch-command > span:last-child {"), styles.indexOf("@keyframes launch-text-wave"));
-
-  assert.match(brand, /justify-content: center/);
-  assert.match(brand, /font-family: var\(--font-brand\)/);
-  assert.match(brand, /font-size: clamp\(26px, 4\.15vw, 32px\)/);
-  assert.match(brand, /font-weight: 750/);
-  assert.match(brand, /letter-spacing: -\.02em/);
-  assert.match(brand, /text-align: center/);
-  assert.match(styles, /\.splash-action \{[\s\S]*?width: min\(360px, calc\(100vw - 40px\)\)/);
-  assert.match(styles, /\.launch-button \{[\s\S]*?height: 160px/);
-  assert.match(styles, /\.launch-brand img \{[\s\S]*?width: 42px;[\s\S]*?height: 42px/);
-  assert.match(command, /font-weight: 600/);
-  assert.match(command, /letter-spacing: 0/);
-  assert.doesNotMatch(command, /text-indent/);
-  assert.match(styles, /grid-template-rows: 64px 1fr/);
-  assert.match(styles, /min-height: 74px/);
-});
-
 test("Signal Gate phases every travelling gap independently", () => {
   const field = read("splash-signal-gate.jsx");
 
@@ -572,7 +406,7 @@ test("safe product state persists locally and can be reset without storing GPS",
   assert.match(app, /const \[launchEnvironmentId, setLaunchEnvironmentId\] = useState\(initialPreferences\.environmentId\)/);
   assert.match(app, /const resetSavedState = useCallback/);
   assert.match(app, /localStorage\.removeItem\(PREFERENCES_KEY\)/);
-  assert.match(app, /className="splash-reset-state"[\s\S]*?RESET SAVED STATE/);
+  assert.match(read("launch-cockpit.jsx"), /onClick=\{\(\)=>choose\(onReset\)\}>RESET SAVED STATE/);
   assert.match(app, /className="drawer-actions"[\s\S]*?onClick=\{resetSavedState\}>RESET SAVED STATE/);
   const preferenceWrite = app.slice(app.indexOf("localStorage.setItem(PREFERENCES_KEY"), app.indexOf("const captureViewport"));
   assert.doesNotMatch(preferenceWrite, /latitude|longitude|mapPosition|atlasPositionSamplesRef/);
@@ -623,15 +457,6 @@ test("Now Playing shares the footer lifecycle with stable Media Session actions 
   assert.match(app, /soundtrackSnapshot\?\.next\?\.imageUrl/);
   assert.match(styles, /\.now-playing-copy strong \{[^}]*font-size: var\(--type-active\)/);
   assert.match(styles, /\.drawer-panel\.is-dragging/);
-});
-
-test("Soundtrack begins its one-shot warmup at the Signal Gate", () => {
-  const app = read("App.jsx");
-  assert.match(app, /const prepareSoundtrack = useCallback/);
-  assert.match(app, /if \(phase !== "idle" \|\| networkNotice\.status === "offline" \|\| !navigator\.onLine\) return/);
-  assert.match(app, /void prepareSoundtrack\(\)/);
-  assert.match(app, /soundtrack\.warmup\.requested/);
-  assert.match(app, /void prepareSoundtrack\(\{ force: true \}\)/);
 });
 
 test("compact viewports preserve the 16 mark and Balanced Rail hierarchy", () => {

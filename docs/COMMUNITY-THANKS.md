@@ -850,3 +850,31 @@ Unsent release thank-you draft:
 > when ready. Could you also point me to the original provenance/credit notes for
 > the bundled recordings, so I can keep their acknowledgements accurate? Thanks
 > for making the implementation available and understandable. — enuzzo
+
+
+## Launch Cockpit studies — 2026-09-07
+
+### Jakob Nielsen / Nielsen Norman Group
+
+- Source and public route: [Progressive Disclosure](https://www.nngroup.com/articles/progressive-disclosure/),
+  [NN/g public website](https://www.nngroup.com/).
+- Study only: contextual genre/pace controls, no copied article text or artwork.
+- Unsent release thank-you draft:
+
+> Thank you for making progressive disclosure concrete. Your explanation helped
+> me keep sedicivalvole's first screen focused on choosing Music or Engine while
+> leaving detailed soundtrack choices close at hand. Your work is credited as a
+> design study, with no copied content or implied endorsement. — enuzzo
+
+### MDN contributors / Mozilla
+
+- Sources: [Web Audio practices](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Best_practices)
+  and [autoplay](https://developer.mozilla.org/en-US/docs/Web/Media/Guides/Autoplay).
+- Public contribution/contact route: [MDN content repository](https://github.com/mdn/content).
+- Study only: silent preparation and gesture-owned audio startup, no copied code.
+- Unsent release thank-you draft:
+
+> Thank you for documenting the practical boundaries of browser audio. Your
+> guidance helped me preserve silent preparation and a clear START gesture while
+> bringing Music and Engine together in sedicivalvole. The guides are credited
+> as development studies; no MDN content is redistributed. — enuzzo

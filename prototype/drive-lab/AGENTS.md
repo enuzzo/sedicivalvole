@@ -235,3 +235,16 @@ and right TAMARRO controls visible at displayed zero independently of chrome
 retraction; stale evidence disables rather than removes them. Small periodic idle
 blips require fresh exact standstill and stop on movement, mute or lifecycle loss.
 This is a direct refinement of the selected Telemetry direction.
+
+
+## Owner delegation — 2026-09-07 Launch Cockpit
+
+The owner requested immediate Engine/Music selection and delegated the splash
+redesign decision and frontend design/debug work. Three directions were presented;
+Cockpit was selected under that delegation, superseding the selection gate for
+this specific change. Use Music publicly and retain flux internally. Keep one
+START, precise genre/pace/Lobo choices, non-repeating lucky genre selection and
+existing curated presets. No sound before START; no old queue while a newly chosen
+catalogue is loading. Preserve mute, keyboard dialogs and Tesla 48/56 px targets.
+This supersedes the older brand-first splash and frontend-builder prohibition for
+this owner-requested redesign. See ../../docs/LAUNCH-COCKPIT-2026-09-07.md.

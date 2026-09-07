@@ -10,8 +10,7 @@ await page.route('**/api/send-diagnostic.php',r=>{sends++;return r.abort();});
 await page.route('**/engine-audio/*.wav',r=>failBank?r.abort():r.continue());
 await page.addInitScript(()=>{const listeners=[];let stamp=0;window.__engineQaRefresh=true;const fix=()=>({timestamp:Math.max(Date.now(),++stamp),coords:{speed:0,accuracy:5,latitude:0,longitude:0}});Object.defineProperty(navigator,'geolocation',{value:{watchPosition(cb){listeners.push(cb);return listeners.length;},clearWatch(){},getCurrentPosition(cb,fail){if(window.__engineQaRefresh)cb(fix());else fail({code:2});}}});window.__engineQaGps=()=>listeners.forEach(cb=>cb({timestamp:Math.max(Date.now(),++stamp),coords:{speed:0,accuracy:5,latitude:0,longitude:0}}));const AC=window.AudioContext;window.__engineQaContexts=[];window.__engineQaMeters=[];window.AudioContext=class extends AC{constructor(...args){super(...args);window.__engineQaContexts.push(this);}createAnalyser(){const a=super.createAnalyser();window.__engineQaMeters.push(a);return a;}};});
 await page.goto('http://127.0.0.1:5173/');
-await page.getByRole('button',{name:'sedicivalvole PLAY THE ROAD',exact:true}).click();
-await page.getByRole('button',{name:'ENGINE',exact:true}).click();await page.screenshot({path:`${out}/01-launch.png`});
+await page.getByRole('button',{name:'Engine',exact:true}).click();await page.screenshot({path:`${out}/01-launch.png`});
 await page.getByRole('button',{name:'START ENGINE',exact:true}).click();
 await page.getByText('Waiting for audio · retrying automatically',{exact:true}).waitFor();
 failBank=false;
@@ -42,7 +41,7 @@ const tam=page.getByRole('button',{name:'TAMARRO left',exact:true});await tam.fo
 await page.locator('.engine-telemetry').click({position:{x:300,y:200}});
 await page.getByRole('button',{name:'Mute audio',exact:true}).click();await page.waitForTimeout(200);assert.equal(await page.locator('.engine-rev:disabled').count(),2);
 await page.locator('.engine-telemetry').click({position:{x:300,y:200}});await page.getByRole('button',{name:'Unmute audio',exact:true}).click();await page.waitForTimeout(500);
-await page.locator('.engine-telemetry').click({position:{x:300,y:200}});await page.getByRole('button',{name:'FLUX',exact:true}).click();await page.waitForTimeout(1000);
+await page.locator('.engine-telemetry').click({position:{x:300,y:200}});await page.getByRole('button',{name:'MUSIC',exact:true}).click();await page.waitForTimeout(1000);
 assert.equal(await page.locator('.engine-telemetry').count(),0);await page.locator('.app').click({position:{x:300,y:250}});await page.getByRole('button',{name:'ENGINE',exact:true}).click();await page.getByText('SAMPLE ENGINE',{exact:true}).waitFor();
 assert.equal(await page.evaluate(()=>window.__engineQaContexts.filter(c=>c.state!=="closed").length),1);
 await page.locator('.engine-telemetry').click({position:{x:300,y:200}});await page.locator('.topbar-mark').click();await page.getByRole('button',{name:'SHOW RAW',exact:true}).click();

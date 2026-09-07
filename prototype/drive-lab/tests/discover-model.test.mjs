@@ -174,7 +174,7 @@ test("Discover renders a self-contained split index with language and search con
 
 test("Discover is reachable from both Visual catalogue entry points", () => {
   assert.match(appSource, /FLUX_VISUAL_CHOICES\.map/);
-  assert.match(appSource, /launchDiscover = selectedEnvironmentId === DISCOVER_VISUAL_CHOICE\.id/);
+  assert.match(appSource, /selectedDiscover = selectedEnvironmentId === DISCOVER_VISUAL_CHOICE\.id/);
   assert.match(appSource, /setDiscoverOpen\(true\);[\s\S]*?source: "launch-selector"/);
   assert.match(appSource, /onOpenDiscover=\{\(\) => \{[\s\S]*?setDiscoverOpen\(true\);[\s\S]*?source: "visual-library"/);
   assert.match(appSource, /destination \? "OPEN" : family \? \(active \? "ACTIVE" : "SELECT"\) : active \? "ACTIVE" : "SELECT"/);

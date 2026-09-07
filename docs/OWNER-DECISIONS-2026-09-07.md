@@ -70,3 +70,13 @@ certainty or proof of every native control combination.
 The owner also explicitly requested the sanitized competitor/Engine study
 review. See [Engine intake](ENGINE-INTAKE-2026-09-07.md) for the exact reading
 scope, informed-review boundary, donor recommendation and GPS findings.
+
+
+## Launch Cockpit and public Music naming
+
+The owner requested first-screen Engine selection, precise or lucky Soundtrack
+selection and a simpler Tesla splash, and explicitly delegated design choice.
+Cockpit was selected from three presented directions. Public labels are Music /
+Engine; internal Flux stays. Genre/pace/Lobo choices persist, while lucky selects
+a different genre on the next visit. Implementation and browser proof are in
+[the launch record](LAUNCH-COCKPIT-2026-09-07.md); physical acceptance remains open.

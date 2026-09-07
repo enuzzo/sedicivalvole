@@ -45,7 +45,11 @@ dated study documents.
 
 ## Product surface
 
-- `Flux` and `Engine` are enabled primary modes. Engine has the owner-selected
+- Launch Cockpit is implemented and locally verified; publication is pending.
+  Immediate Music/Engine selection, precise genre/pace/Lobo and lucky genre mode
+  replace the brand-first gate. [Behavior and evidence](LAUNCH-COCKPIT-2026-09-07.md).
+
+- `Music` (internal `Flux`) and `Engine` are enabled primary modes. Engine has the owner-selected
   Telemetry surface, three declared-MIT sample banks and automatic virtual gears.
   [Integration/evidence](ENGINE-INTEGRATION-2026-09-07.md); Tesla listening is open.
 - The selected **16 Road** product mark is implemented as path-only SVG rather

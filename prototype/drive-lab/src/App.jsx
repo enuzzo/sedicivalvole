@@ -1,3 +1,5 @@
+import { LaunchCockpit } from "./launch-cockpit.jsx";
+import { initialLaunchSoundtrack, luckySoundtrackGenre, soundtrackLaunchReady, prepareExactSoundtrackStart } from "./launch-model.js";
 import { startStationaryRefresh } from "./engine/stationary-refresh.js";
 import { createEngineMotion } from "./engine/motion.js";
 import { useEngine } from "./engine/use-engine.js";
@@ -203,29 +205,6 @@ const ILLOBO_FEATURED_MARK_URLS = Object.freeze([
 ]);
 const PREFERENCES_KEY = "sedicivalvole.preferences.v2";
 const LEGACY_PREFERENCES_KEY = "sedicivalvole.preferences.v1";
-const LAUNCH_MUSIC_CHOICES = Object.freeze([
-  {
-    id: "play-road",
-    label: "PLAY THE ROAD",
-    displayLabel: "Play the Road",
-    description: "Adaptive music shaped by your drive",
-    available: true,
-  },
-  {
-    id: "soundtrack",
-    label: "SOUNDTRACK",
-    displayLabel: "Soundtrack",
-    description: "Independent Jamendo artist recordings",
-    available: true,
-  },
-  {
-    id: "mute",
-    label: "MUTE",
-    displayLabel: "Mute",
-    description: "Visuals only. No music.",
-    available: true,
-  },
-]);
 const SOUNDTRACK_MANUAL_CONTROLS = Object.freeze([
   Object.freeze({ id: "flanger", label: "FLANGER", displayLabel: "Flanger", note: "Jet comb sweep", performanceAmount: 0.78 }),
   Object.freeze({ id: "reverb", label: "REVERB", displayLabel: "Reverb", note: "Long pressure chamber", performanceAmount: 0.72 }),
@@ -313,6 +292,8 @@ function readPreferences() {
       atlasMapAppearance: normalizeAtlasMapAppearance(value?.atlasMapAppearance),
       musicMode: value?.musicMode === "soundtrack" ? "soundtrack" : "play-road",
       soundtrackSelection: normalizeSoundtrackSelection(value?.soundtrackSelection),
+      launchSoundtrackMode: ["lucky", "precise"].includes(value?.launchSoundtrackMode) ? value.launchSoundtrackMode
+        : normalizeSoundtrackSelection(value?.soundtrackSelection).kind === "library" ? "lucky" : "precise",
       manualEffects: normalizeManualEffectPreferences(value?.manualEffects),
       vehicleEffectsEnabled: value?.vehicleEffectsEnabled !== false,
       muted: value?.muted === true,
@@ -327,6 +308,7 @@ function readPreferences() {
       atlasMapAppearance: "palette",
       musicMode: "play-road",
       soundtrackSelection: normalizeSoundtrackSelection(),
+      launchSoundtrackMode: "lucky",
       manualEffects: EMPTY_SOUNDTRACK_MANUAL_EFFECTS,
       vehicleEffectsEnabled: true,
       muted: false,
@@ -1393,7 +1375,7 @@ function ModeSelector({ mode = "flux", onChange }) {
   return (
     <nav className="mode-selector" aria-label="Experience mode">
       <button type="button" className={mode === "engine" ? "is-active" : ""} aria-pressed={mode === "engine"} onClick={() => onChange?.("engine")}>ENGINE</button>
-      <button className={mode === "flux" ? "is-active" : ""} type="button" aria-pressed={mode === "flux"} onClick={() => onChange?.("flux")}>FLUX</button>
+      <button className={mode === "flux" ? "is-active" : ""} type="button" aria-pressed={mode === "flux"} onClick={() => onChange?.("flux")}>MUSIC</button>
     </nav>
   );
 }
@@ -1503,7 +1485,7 @@ function VisualPicker({ environmentId, onChange, onOpenDiscover, onSelectGradien
       onClose={onClose}
     >
       <div className="drawer-heading">
-        <div><small>FLUX VISUAL LIBRARY</small><h2 id="visual-picker-title">Visual</h2></div>
+        <div><small>MUSIC VISUAL LIBRARY</small><h2 id="visual-picker-title">Visual</h2></div>
         <button data-dialog-initial-focus type="button" onClick={onClose} aria-label="Close visual library">CLOSE</button>
       </div>
       <div className="experience-list">{CURATED_EXPERIENCES.map(({ id }) => <ExperienceCard key={id} id={id} selected={experienceId === id} onSelect={onExperience} />)}</div>
@@ -1891,7 +1873,7 @@ function MusicLibraryPanel({
   return (
     <DialogSurface className="diagnostic-drawer soundtrack-drawer" labelledBy="music-library-title" onClose={onClose}>
       <div className="drawer-heading music-library-heading">
-        <div><small>FLUX MUSIC LIBRARY</small><h2 id="music-library-title">Music</h2></div>
+        <div><small>MUSIC LIBRARY</small><h2 id="music-library-title">Music</h2></div>
         <button data-dialog-initial-focus type="button" onClick={onClose}>CLOSE</button>
       </div>
       <div className="music-drawer-workspace">
@@ -2155,107 +2137,6 @@ function GpsHelpPopover({ open, status, accuracy, onClose, onRetry, onDemo }) {
   );
 }
 
-function LaunchSelector({
-  experienceId,
-  onExperience,
-  musicId,
-  environmentId,
-  appearance,
-  onMusicChange,
-  onEnvironmentChange,
-  onSelectGradient,
-  onBack,
-  onStart,
-  musicReady = true,
-  networkNotice,
-}) {
-  const ready = Boolean(musicId && environmentId);
-  const networkConstrained = ["offline", "limited", "request-failed"].includes(networkNotice?.status);
-  const musicWaiting = musicId !== "mute" && (!musicReady || networkConstrained);
-  const startDetail = musicWaiting && networkConstrained
-    ? `${networkUiDetail(networkNotice) || networkUiCopy(networkNotice)} EST. · MUSIC JOINS WHEN READY`
-    : musicWaiting
-      ? "MUSIC PENDING · JOINS WHEN READY"
-      : networkConstrained ? `NETWORK ${networkUiCopy(networkNotice)} · VISUALS REMAIN AVAILABLE` : null;
-  return (
-    <section className="launch-selector" aria-labelledby="launch-selector-title">
-      <header className="launch-selector-heading">
-        <img
-          className="launch-selector-mark"
-          src={appearance === "dark" ? TOPBAR_MARK_URL : BRAND_MARK_URL}
-          alt=""
-          aria-hidden="true"
-        />
-        <h1 id="launch-selector-title">sedicivalvole</h1>
-        <button type="button" onClick={onBack}>BACK</button>
-      </header>
-      <div className="experience-list">{CURATED_EXPERIENCES.map(({ id }) => <ExperienceCard key={id} id={id} launch selected={experienceId === id} onSelect={onExperience} />)}</div>
-      <div className="launch-selector-body">
-        <fieldset className="launch-music-choices">
-          <legend>MUSIC</legend>
-          <div className="launch-music-grid">
-            {LAUNCH_MUSIC_CHOICES.map((choice) => (
-              <button
-                key={choice.id}
-                className="launch-choice-button"
-                type="button"
-                aria-pressed={musicId === choice.id}
-                disabled={!choice.available}
-                onClick={() => onMusicChange(choice.id)}
-              >
-                <strong>{choice.displayLabel}</strong>
-                <small>{choice.description}</small>
-                {!choice.available ? <em>COMING NEXT</em> : null}
-              </button>
-            ))}
-          </div>
-        </fieldset>
-        <fieldset className="launch-visual-choices">
-          <legend>VISUAL</legend>
-          <div
-            className="launch-visual-grid"
-            style={{ "--launch-visual-row-count": Math.max(2, Math.ceil(FLUX_VISUAL_CHOICES.length / 3)) }}
-          >
-            {FLUX_VISUAL_CHOICES.map((choice) => {
-              const family = choice.kind === "family";
-              const active = family
-                ? isShaderGradientEnvironmentId(environmentId)
-                : environmentId === choice.id;
-              const description = family && active
-                ? `${displayLabel(getFluxEnvironment(environmentId))} selected`
-                : choice.launchDescription;
-              return (
-                <button
-                  key={choice.id}
-                  className="launch-choice-button launch-visual-button"
-                  type="button"
-                  aria-pressed={active}
-                  onClick={() => {
-                    if (family) onSelectGradient();
-                    else onEnvironmentChange(choice.id);
-                  }}
-                >
-                  <strong>{displayLabel(choice)}</strong>
-                  <small>{description}</small>
-                </button>
-              );
-            })}
-          </div>
-        </fieldset>
-      </div>
-      <button
-        className="launch-start-button"
-        type="button"
-        disabled={!ready}
-        onClick={onStart}
-      >
-        <strong>START</strong>
-        {startDetail ? <small>{startDetail}</small> : null}
-      </button>
-    </section>
-  );
-}
-
 export function App() {
   const [experienceMode, setExperienceMode] = useState("flux");
   const experienceModeRef = useRef("flux");
@@ -2267,6 +2148,9 @@ export function App() {
   const initialAppearanceMode = useMemo(readAppearancePreference, []);
   const initialSystemAppearance = useMemo(readSystemAppearanceSnapshot, []);
   const [phase, setPhase] = useState("idle");
+  const launchStartedRef = useRef(false);
+  const [launchSoundtrackSelection, setLaunchSoundtrackSelection] = useState(() => initialLaunchSoundtrack(initialPreferences.soundtrackSelection, Math.random, initialPreferences.launchSoundtrackMode));
+  const [launchLucky, setLaunchLucky] = useState(initialPreferences.launchSoundtrackMode === "lucky");
   const [launchExperienceId, setLaunchExperienceId] = useState(() => matchingExperience({
     ...initialPreferences, appearanceMode: initialAppearanceMode,
   })?.id ?? null);
@@ -2367,7 +2251,7 @@ export function App() {
   const soundtrackWarmupAttemptedRef = useRef(false);
   const sessionMusicModeRef = useRef(null);
   const musicModeRevisionRef = useRef(0);
-  const preferredSoundtrackSelectionRef = useRef(initialPreferences.soundtrackSelection);
+  const preferredSoundtrackSelectionRef = useRef(launchSoundtrackSelection);
   const appRef = useRef(null);
   const watchRef = useRef(null);
   const gpsPositionRef = useRef(null);
@@ -2622,7 +2506,7 @@ export function App() {
   }, []);
   const updateSoundtrackSnapshot = useCallback((nextSnapshot) => {
     setSoundtrackSnapshot(nextSnapshot);
-    if (nextSnapshot?.library?.selection) {
+    if (nextSnapshot?.library?.selection && launchStartedRef.current) {
       preferredSoundtrackSelectionRef.current = normalizeSoundtrackSelection(nextSnapshot.library.selection);
     }
     setJamendoPreviewEntries((current) => retainJamendoPreviewEntries(current, nextSnapshot));
@@ -2674,20 +2558,38 @@ export function App() {
     return request;
   }, [logDiagnosticEvent, phase, soundtrackController]);
 
+  const chooseLaunchSoundtrack = useCallback((selection, lucky = false) => {
+    const next = normalizeSoundtrackSelection(selection);
+    setLaunchExperienceId(null);
+    setLaunchLucky(lucky);
+    setLaunchSoundtrackSelection(next);
+    preferredSoundtrackSelectionRef.current = next;
+  }, []);
+  const prepareLaunchSoundtrack = useCallback((selection) => {
+    preferredSoundtrackSelectionRef.current = selection;
+    const controller = soundtrackController();
+    const snapshot = controller.getSnapshot();
+    if (soundtrackLaunchReady(snapshot, selection)
+      || (snapshot.status === "loading" && snapshot.library?.selection?.kind === selection.kind && snapshot.library?.selection?.id === selection.id)) return;
+    const request = controller.load({ selection });
+    soundtrackWarmupPromiseRef.current = request;
+    void request.finally(() => {
+      if (soundtrackWarmupPromiseRef.current === request) soundtrackWarmupPromiseRef.current = null;
+    });
+  }, [soundtrackController]);
   useEffect(() => {
-    if (phase !== "idle" || networkNotice.status === "offline" || !navigator.onLine) return;
-    void prepareSoundtrack();
-  }, [networkNotice.status, phase, prepareSoundtrack]);
+    if (phase !== "idle" || experienceMode !== "flux" || networkNotice.status === "offline" || !navigator.onLine) return;
+    prepareLaunchSoundtrack(launchSoundtrackSelection);
+  }, [networkNotice.status, phase, experienceMode, launchMusicId, launchSoundtrackSelection, prepareLaunchSoundtrack]);
 
   const selectLaunchMusic = useCallback((nextMusicId) => {
     setLaunchMusicId(nextMusicId);
     if (nextMusicId !== "soundtrack") {
-      // Silent catalogue preparation must survive choosing another launch source.
       if (soundtrackRef.current?.getSnapshot().current) soundtrackRef.current.pause();
       return;
     }
-    void prepareSoundtrack({ force: true });
-  }, [prepareSoundtrack]);
+    prepareLaunchSoundtrack(launchSoundtrackSelection);
+  }, [launchSoundtrackSelection, prepareLaunchSoundtrack]);
   // The driver-facing number describes the pulse they hear. PARK deliberately
   // has no pulse, while diagnostics retain the score's true transport clock.
   const bpm = speed < 0.8 ? null : scorePerceivedTempo;
@@ -3258,12 +3160,15 @@ export function App() {
   }, [startKeyboardRegeneration]);
 
   const runHarness = useCallback(async ({ musicId, selectedEnvironmentId, experienceId = null }) => {
+    if (launchStartedRef.current) return;
+    launchStartedRef.current = true;
     const launchEngine = experienceModeRef.current === "engine";
     if (launchEngine) musicId = "play-road";
     const launchMuted = QA_MUTED || mutedRef.current || (!launchEngine && musicId === "mute");
     const launchVehicleEffects = vehicleEffectsEnabledRef.current;
-    const launchDiscover = selectedEnvironmentId === DISCOVER_VISUAL_CHOICE.id;
-    const runtimeEnvironmentId = launchDiscover
+    const selectedDiscover = selectedEnvironmentId === DISCOVER_VISUAL_CHOICE.id;
+    const launchDiscover = !launchEngine && selectedDiscover;
+    const runtimeEnvironmentId = selectedDiscover
       ? DEFAULT_FLUX_ENVIRONMENT_ID
       : selectedEnvironmentId;
     sessionStartedAtRef.current = performance.now();
@@ -3312,8 +3217,8 @@ export function App() {
         before: soundtrackDiagnosticSnapshot(soundtrackRef.current?.getSnapshot?.()),
       });
     }
-    const soundtrackStart = musicId === "soundtrack"
-      ? soundtrackRef.current?.resume()
+    const soundtrackStart = musicId === "soundtrack" && !launchMuted
+      ? prepareExactSoundtrackStart(soundtrackController(), preferredSoundtrackSelectionRef.current)
       : null;
     setSupportOpen(false);
     setMuted(launchMuted);
@@ -3390,7 +3295,7 @@ export function App() {
           playbackConfirmed: soundtrackPlaybackConfirmed(started),
           after: soundtrackDiagnosticSnapshot(started),
         });
-        if (started?.status !== "playing") {
+        if (!launchMuted && started?.status !== "playing") {
           const message = started?.error || "Soundtrack will start when the connection is ready";
           setScoreSelection({ status: "waiting", requestedScoreId: null, message });
           logDiagnosticEvent("audio.start-deferred", { message });
@@ -3488,7 +3393,7 @@ export function App() {
         capabilities: { ...current.capabilities, ...extendedCapabilities, storageDiagnostics },
       } : current);
     });
-  }, [genreId, handleScoreRecovery, logDiagnosticEvent, reducedMotion, soundtrackManualEffects, startGps, triggerPulse, wakeControls]);
+  }, [genreId, handleScoreRecovery, logDiagnosticEvent, reducedMotion, soundtrackManualEffects, soundtrackController, startGps, triggerPulse, wakeControls]);
 
   const selectScore = useCallback(async (requestedScoreId, { preserveQueuedNavigation = false } = {}) => {
     if (!preserveQueuedNavigation) transportActionQueueRef.current.invalidate();
@@ -3635,6 +3540,7 @@ export function App() {
   useEffect(() => {
     const soundtrackStatus = soundtrackSnapshot?.status;
     if (phase !== "running"
+      || experienceMode !== "flux"
       || musicMode !== "soundtrack"
       || muted
       || !["idle", "error", "prepared"].includes(soundtrackStatus)) return undefined;
@@ -3667,7 +3573,7 @@ export function App() {
       window.clearTimeout(timer);
       window.removeEventListener("online", retry);
     };
-  }, [logDiagnosticEvent, musicMode, muted, networkNotice.status, phase, soundtrackController, soundtrackSnapshot?.status]);
+  }, [experienceMode, logDiagnosticEvent, musicMode, muted, networkNotice.status, phase, soundtrackController, soundtrackSnapshot?.status]);
 
   const resetSavedState = useCallback(() => {
     setLaunchExperienceId(null);
@@ -3683,7 +3589,10 @@ export function App() {
     resetAppearancePreference();
     setAppearanceMode(DEFAULT_APPEARANCE_MODE);
     setAppearanceMenuOpen(false);
-    preferredSoundtrackSelectionRef.current = normalizeSoundtrackSelection();
+    const resetSelection = initialLaunchSoundtrack();
+    preferredSoundtrackSelectionRef.current = resetSelection;
+    setLaunchSoundtrackSelection(resetSelection);
+    setLaunchLucky(true);
     setLaunchMusicId("play-road");
     setLaunchEnvironmentId(DEFAULT_FLUX_ENVIRONMENT_ID);
     setThemeId("red");
@@ -3706,6 +3615,7 @@ export function App() {
   }, [logDiagnosticEvent, phase, showControlNotice, switchMusicMode]);
 
   const playSoundtrackSelection = useCallback(async (selection, source = "music-library") => {
+    setLaunchLucky(false);
     transportActionQueueRef.current.invalidate();
     musicModeRevisionRef.current += 1;
     scoreSelectionRevisionRef.current += 1;
@@ -3748,11 +3658,14 @@ export function App() {
   const chooseExperience = useCallback((id, { launch = false } = {}) => {
     const settings = applyExperienceSettings({}, id);
     if (!settings) return;
+    setLaunchLucky(false);
     setThemeId(settings.themeId);
     changeAppearance(settings.appearanceMode);
     if (launch) {
       setLaunchExperienceId(id);
       setLaunchMusicId(settings.musicMode);
+      setLaunchSoundtrackSelection(normalizeSoundtrackSelection(settings.soundtrackSelection));
+      setLaunchLucky(false);
       setLaunchEnvironmentId(settings.environmentId);
       // Silent preparation stays cancellable by the controller's existing request
       // revision. START remains the only launch playback gesture.
@@ -4549,6 +4462,7 @@ export function App() {
         prtclSettings: normalizePrtclSettings(prtclSettings),
         atlasMapAppearance: normalizeAtlasMapAppearance(atlasMapAppearance),
         musicMode,
+        launchSoundtrackMode: launchLucky ? "lucky" : "precise",
         soundtrackSelection: {
           kind: preferredSoundtrackSelectionRef.current.kind,
           id: preferredSoundtrackSelectionRef.current.id,
@@ -4571,6 +4485,8 @@ export function App() {
     soundtrackManualEffects,
     soundtrackSnapshot?.library?.selection?.id,
     soundtrackSnapshot?.library?.selection?.kind,
+    launchLucky,
+    launchSoundtrackSelection,
     themeId,
     vehicleEffectsEnabled,
   ]);
@@ -5121,119 +5037,23 @@ export function App() {
           reducedMotion={reducedMotion}
           onFrame={recordRenderedFrame}
         />
-        {/* The build stamp, and nothing else. It is generated at build time as
-            YYYYMMDD-HHMM and is the identifier quoted whenever a build is
-            published. VERSION stays the only SemVer source of truth and is
-            reported separately in the diagnostics. The active environment is
-            still named in the live header. */}
-        <small className="splash-status">BUILD {APP_BUILD}</small>
-        {phase === "idle" ? (
-          <button
-            className="splash-support-trigger"
-            type="button"
-            aria-label="Open Buy Me a Coffee support panel"
-            aria-haspopup="dialog"
-            aria-expanded={supportOpen}
-            onPointerUp={(event) => {
-              if (event.pointerType !== "mouse") setSupportOpen(true);
-            }}
-            onClick={() => setSupportOpen(true)}
-          >
-            <span className="support-logo"><SupportCupMark /></span>
-            <span>BUY ME A COFFEE</span>
-          </button>
-        ) : null}
-        {phase === "idle" ? <div className="splash-action">
-          <button
-            className="launch-button"
-            type="button"
-            onClick={() => {
-              setSupportOpen(false);
-              setPhase("choosing");
-            }}
-          >
-            <span className="launch-brand">
-              <img
-                src={appearanceResolution.appearance === "dark" ? TOPBAR_MARK_URL : BRAND_MARK_URL}
-                alt=""
-                aria-hidden="true"
-              />
-              <span>sedicivalvole</span>
-            </span>
-            <span className="launch-command">
-              <span>PLAY THE ROAD</span>
-            </span>
-          </button>
-          <small className="splash-credit">
-            A project by{" "}
-            <a
-              href="https://github.com/enuzzo"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="enuzzo on GitHub"
-            >
-              enuzzo
-            </a>{" "}
-            <span aria-hidden="true">·</span>{" "}
-            <a
-              href="https://github.com/illobo"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Illobo on GitHub (@illobo)"
-            >
-              with Illobo
-            </a>
-          </small>
-          <small className="splash-repository">
-            Source <span aria-hidden="true">·</span>{" "}
-            <a
-              href="https://github.com/enuzzo/sedicivalvole"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="sedicivalvole source repository on GitHub"
-            >
-              <svg
-                className="splash-github-mark"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path d="M12 .3a12 12 0 0 0-3.79 23.4c.6.11.82-.26.82-.58v-2.24c-3.34.73-4.04-1.42-4.04-1.42-.55-1.39-1.33-1.76-1.33-1.76-1.09-.75.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.81 1.3 3.5.99.11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.11-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.3-1.23 3.3-1.23.65 1.66.24 2.88.12 3.18a4.65 4.65 0 0 1 1.23 3.22c0 4.61-2.81 5.62-5.48 5.92.43.37.81 1.1.81 2.22v3.3c0 .32.22.7.82.58A12 12 0 0 0 12 .3Z" />
-              </svg>
-              github.com/enuzzo/sedicivalvole
-            </a>
-          </small>
-          <small className="splash-privacy">Audio, display, motion, and GPS are checked locally.</small>
-          <aside className="splash-safety" aria-label="Road safety">
-            <strong>DRIVE RESPONSIBLY</strong>
-          </aside>
-          <button className="splash-reset-state" type="button" onClick={resetSavedState}>RESET SAVED STATE</button>
-        </div> : null}
-        {phase === "choosing" ? (<>
-          <ModeSelector mode={experienceMode} onChange={chooseExperienceMode} />
-          {experienceMode === "engine" ? <div className="engine-launch">
-            <h1>Engine / Telemetry</h1><p>Three sample engines. Automatic gears. Driven by your motion.</p>
-            <div className="engine-profiles">{[["mono", "Mono"], ["rosso", "Rosso"], ["touring", "Touring"]].map(([id, label]) => <button type="button" key={id} aria-pressed={engineProfileId === id} onClick={() => chooseEngineProfile(id)}>{label}</button>)}</div>
-            <p>Virtual RPM and gears · GPS or Demo</p>
-            <div><button type="button" onClick={() => setPhase("idle")}>BACK</button><button type="button" onClick={() => runHarness({ musicId: "play-road", selectedEnvironmentId: launchEnvironmentId })}>START ENGINE</button></div>
-          </div> : <LaunchSelector
-            experienceId={launchExperienceId}
-            onExperience={(id) => chooseExperience(id, { launch: true })}
-            musicId={launchMusicId}
-            environmentId={launchEnvironmentId}
-            appearance={appearanceResolution.appearance}
-            musicReady={launchMusicId !== "soundtrack" || ["prepared", "paused", "playing"].includes(soundtrackSnapshot?.status)}
-            networkNotice={networkNotice}
-            onMusicChange={(id) => { setLaunchExperienceId(null); selectLaunchMusic(id); }}
-            onEnvironmentChange={(id) => { setLaunchExperienceId(null); setLaunchEnvironmentId(id); }}
-            onSelectGradient={() => { setLaunchExperienceId(null); setLaunchEnvironmentId(lastGradientVariantRef.current); }}
-            onBack={() => setPhase("idle")}
-            onStart={() => runHarness({
-              musicId: launchMusicId,
-              selectedEnvironmentId: launchEnvironmentId,
-              experienceId: launchExperienceId,
-            })}
-          />}
-        </>) : null}
+        {phase === "idle" || phase === "choosing" ? <LaunchCockpit
+          mode={experienceMode} onMode={chooseExperienceMode}
+          musicId={launchMusicId} onMusic={(id) => { setLaunchExperienceId(null); selectLaunchMusic(id); }}
+          selection={launchSoundtrackSelection} lucky={launchLucky}
+          onSelection={chooseLaunchSoundtrack}
+          onLucky={() => chooseLaunchSoundtrack(luckySoundtrackGenre(launchSoundtrackSelection.id), true)}
+          environmentId={launchEnvironmentId} onVisual={(id) => { setLaunchExperienceId(null); setLaunchEnvironmentId(id); }}
+          scoreId={genreId} onScore={(id) => { setLaunchExperienceId(null); setGenreId(id); }}
+          engineProfileId={engineProfileId} onEngineProfile={chooseEngineProfile}
+          experienceId={launchExperienceId} onExperience={(id) => chooseExperience(id, { launch: true })}
+          markUrl={appearanceResolution.appearance === "dark" ? TOPBAR_MARK_URL : BRAND_MARK_URL}
+          build={APP_BUILD} onSupport={() => setSupportOpen(true)} onReset={resetSavedState}
+          muted={muted} onUnmute={() => setMuted(false)} Dialog={DialogSurface}
+          ready={Boolean(launchMusicId && launchEnvironmentId)}
+          pending={launchMusicId === "soundtrack" && !soundtrackLaunchReady(soundtrackSnapshot, launchSoundtrackSelection)}
+          onStart={() => runHarness({ musicId: launchMusicId, selectedEnvironmentId: launchEnvironmentId, experienceId: launchExperienceId })}
+        /> : <p className="cockpit-starting" role="status">Starting your drive…</p>}
       </section>
       ) : null}
 
@@ -5353,7 +5173,7 @@ export function App() {
         </div>
       ) : null}
 
-        <footer className={`control-slab${experienceMode === "flux" && musicMode === "soundtrack" ? " is-soundtrack" : ""}`} aria-label={`${experienceMode === "engine" ? "Engine" : "Flux"} performance controls`}>
+        <footer className={`control-slab${experienceMode === "flux" && musicMode === "soundtrack" ? " is-soundtrack" : ""}`} aria-label={`${experienceMode === "engine" ? "Engine" : "Music"} performance controls`}>
           <button
             className={`stop-button${muted ? " is-active" : ""}`}
             type="button"
@@ -5375,7 +5195,7 @@ export function App() {
             <span>FX</span>
             <strong>{vehicleEffectsEnabled ? "ON" : "OFF"}</strong>
           </button> : null}
-          {experienceMode === "engine" ? <><button type="button" className="engine-return-flux" onClick={() => { chooseExperienceMode("flux"); setEnvironmentPickerOpen(true); }}><span>FLUX</span><strong>Visuals</strong></button><button type="button" className="engine-return-flux" onClick={() => { chooseExperienceMode("flux"); setSoundtrackPanelOpen(true); }}><span>FLUX</span><strong>Music</strong></button></> : <><VisualControl environment={environment} onOpen={() => {
+          {experienceMode === "engine" ? <><button type="button" className="engine-return-flux" onClick={() => { chooseExperienceMode("flux"); setEnvironmentPickerOpen(true); }}><span>MUSIC</span><strong>Visuals</strong></button><button type="button" className="engine-return-flux" onClick={() => { chooseExperienceMode("flux"); setSoundtrackPanelOpen(true); }}><span>MUSIC</span><strong>Music</strong></button></> : <><VisualControl environment={environment} onOpen={() => {
             if (experienceMode === "engine") chooseExperienceMode("flux");
             setEnvironmentPickerOpen(true);
           }} />

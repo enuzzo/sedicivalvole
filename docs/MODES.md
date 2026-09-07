@@ -9,11 +9,16 @@ Status: **both modes implemented; Engine vehicle acceptance pending**. See [Engi
 | Mode | Audio purpose | Visual purpose | Current status |
 |---|---|---|---|
 | **Engine** | Reproduce selectable engine characters through synthesis, licensed samples, or a measured hybrid | Instrument-inspired generative system: abstract tachometer, throttle/load field, acceleration trace, mechanical light, or a selected alternative | Implemented: Telemetry, three sample profiles, AUTO gearbox; vehicle acceptance open |
-| **Flux** | Compose and reshape selectable music from speed, acceleration, deceleration, and discrete motion events | Four selectable environments: Aperture, Vertigo, Meridian, and Atlas; ten curated themes apply to every renderer | Current Drive Lab implementation; FRACTURE and JUNCTION ready, five later directions preparing |
+| **Music** (internal Flux) | Compose and reshape selectable music from speed, acceleration, deceleration, and discrete motion events | Four selectable environments: Aperture, Vertigo, Meridian, and Atlas; ten curated themes apply to every renderer | Current Drive Lab implementation; FRACTURE and JUNCTION ready, five later directions preparing |
 
 ## Naming decision
 
-The adaptive music mode is named **Flux** and the primary selector labels are **ENGINE / FLUX**.
+September 7 owner-delegated revision: public selectors use **Music / Engine**,
+including the first screen. Flux remains the internal and historical creative
+name. Music describes both recorded Soundtrack and adaptive Play the Road more
+clearly. [Launch decision](LAUNCH-COCKPIT-2026-09-07.md).
+
+The earlier naming rationale below is historical:
 
 `Flux` communicates continuous transformation, energy, motion, and generative visual flow without tying the mode to one music genre or literal road setting. `Feel the Beat` may be explored later as campaign or onboarding copy, but it is too long and slogan-like for persistent navigation. `Street` is intentionally rejected because it is generic and narrows the mode to an urban/road identity.
 

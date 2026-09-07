@@ -11,6 +11,14 @@ gears. Exact parameters, changes and validation boundaries are in
 [the Engine integration record](ENGINE-INTEGRATION-2026-09-07.md). The recommendations
 below retain their historical scope; they are not an inventory of unimplemented Engine work.
 
+## September 7 launch architecture
+
+The public selector is Music / Engine; the internal flux identifier stays stable.
+LaunchCockpit presents one contextual start screen. App retains the audio/GPS and
+preference owners; launch-model prevents an old Soundtrack queue from resuming
+while the exact requested genre is loading. Lucky mode and explicit genre/pace
+selection have distinct persistence semantics. [Design and verification](LAUNCH-COCKPIT-2026-09-07.md).
+
 ## Recommended stack
 
 | Layer | Recommendation | Reason |

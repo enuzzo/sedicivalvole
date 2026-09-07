@@ -1,4 +1,4 @@
-export const DEFAULT_PAGE_TITLE = "sedicivalvole — Adaptive Music for the Road";
+export const DEFAULT_PAGE_TITLE = "sedicivalvole — Music & Engine for the Road";
 
 function cleanTitlePart(value) {
   return String(value ?? "")
