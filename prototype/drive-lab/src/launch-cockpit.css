@@ -49,18 +49,20 @@
 }
 
 /* The launch sheet follows its contents, never the window's spare height. */
-.splash:has(.launch-cockpit){display:flex;flex-direction:column;align-items:center;gap:4px;padding:36px 18px 4px;overflow:auto}
-.launch-cockpit{position:relative;inset:auto;width:100%;height:auto;flex:none;margin:0;grid-template-rows:48px 56px auto 56px}
+.splash:has(.launch-cockpit){display:flex;flex-direction:column;align-items:center;justify-content:center;height:100dvh;bottom:auto;padding:0 18px;min-height:0;overflow:hidden}
+.launch-cockpit{position:relative;inset:auto;width:100%;height:auto;flex:none;margin:0;grid-template-rows:48px 56px max-content 56px;max-height:calc(100dvh - 96px);overflow-y:auto;overscroll-behavior:contain}
 .cockpit-music-body{grid-template-rows:56px auto 54px}
 .cockpit-engine-body{grid-template-rows:56px auto 54px}
 .cockpit-engine-profiles{min-height:132px}
 .cockpit-preset-thumb{width:36px;height:36px}
-.cockpit-footer{position:relative;inset:auto;width:calc(100% - 32px);flex:none;margin:0}
+.cockpit-footer{position:fixed;inset:auto 18px 0;max-width:none;width:auto;margin:0}
 @media(max-width:650px){
- .splash:has(.launch-cockpit){padding:14px 12px 4px}
- .launch-cockpit{inset:auto;width:100%;height:auto;grid-template-rows:48px 56px auto 64px;gap:8px}
+ .splash:has(.launch-cockpit){padding:0 12px}
+ .launch-cockpit{inset:auto;width:100%;height:auto;grid-template-rows:48px 56px max-content 64px;gap:8px;max-height:calc(100dvh - 152px)}
  .cockpit-music-body{grid-template-rows:56px auto 64px}
  .cockpit-choices .cockpit-selection{padding:8px 12px}
  .cockpit-engine-profiles{min-height:0}
- .cockpit-footer{inset:auto;width:calc(100% - 16px)}
+ .cockpit-footer{inset:auto 20px 0;width:auto}
 }
+.cockpit-footer>small{position:absolute;left:50%;bottom:16px;transform:translateX(-50%);width:auto;white-space:nowrap}
+@media(max-width:650px){.cockpit-footer{min-height:76px;align-items:flex-start}.cockpit-footer>small{bottom:4px}}

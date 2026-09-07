@@ -283,3 +283,10 @@ Launch rows and sheet height must follow content, never expand to consume a tall
 Mac window. Keep compact selection groups, 64 px circles, 36 px preset artwork,
 48/56 px actions and a footer directly after the sheet. Short windows scroll the
 complete launch flow. Verify tall desktop geometry as well as Tesla and phone.
+
+## Owner positioning correction — 2026-09-07
+
+Keep the compact launch sheet centered on the viewport on both axes. Credits
+remain at the viewport's bottom left, Support bottom right and safety copy bottom
+center, independently of the sheet. In short windows, scroll inside the centered
+sheet and reserve space for the fixed footer instead of clipping controls.

@@ -389,7 +389,8 @@ small idle blips are enabled. No missing GPS reading is treated as a real stop.
 
 The launch cockpit now pairs two 64 px circular thumbnails with equal Music and
 Visual columns. The sheet follows content height even on tall desktop windows;
-36 px preset artwork remains readable. Every visit rolls a new soundtrack genre and visual effect;
+36 px preset artwork remains readable. The compact sheet stays centered on the
+viewport; credits and Support stay at the bottom edges independently. Every visit rolls a new soundtrack genre and visual effect;
 Feeling lucky and Change reroll without immediate repeats. Choose preserves
 precise selection. Static effect captures and ready-queue cover art keep previews
 lightweight, with no extra live renderer. See [launch behavior and architecture](docs/LAUNCH-COCKPIT-2026-09-07.md).

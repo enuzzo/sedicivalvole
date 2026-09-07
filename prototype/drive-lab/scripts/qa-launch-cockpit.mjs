@@ -44,7 +44,7 @@ async function geometry(page,name){
     const items=[...panel.querySelectorAll('button')].filter(el=>el.getBoundingClientRect().width&&el.getBoundingClientRect().height).map(el=>{const r=el.getBoundingClientRect();return {name:el.getAttribute('aria-label')||el.innerText,height:r.height,bottom:r.bottom,right:r.right,hit:el.contains(document.elementFromPoint(r.x+r.width/2,r.y+r.height/2))};});
     return {width:innerWidth,height:innerHeight,panel:{x:rect.x,y:rect.y,right:rect.right,bottom:rect.bottom},items,overflow:document.documentElement.scrollWidth>innerWidth};
   });
-  assert.equal(result.overflow,false);assert.ok(result.panel.x>=0&&result.panel.right<=result.width&&result.panel.bottom<=result.height);
+  assert.equal(result.overflow,false);assert.ok(result.panel.x>=0&&result.panel.right<=result.width&&result.panel.bottom<=result.height);assert.ok(Math.abs((result.panel.y+result.panel.bottom)/2-result.height/2)<1,'sheet must be vertically centered');
   for(const item of result.items){assert.ok(item.height>=48,JSON.stringify(item));assert.ok(item.hit,JSON.stringify(item));assert.ok(item.bottom<=result.height&&item.right<=result.width,JSON.stringify(item));}
   evidence.viewports.push({name,...result});
 }

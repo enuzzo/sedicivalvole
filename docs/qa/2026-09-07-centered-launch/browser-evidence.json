@@ -1,0 +1,605 @@
+{
+  "url": "http://127.0.0.1:5173/",
+  "viewports": [
+    {
+      "name": "Tesla 773x601",
+      "width": 773,
+      "height": 601,
+      "panel": {
+        "x": 18,
+        "y": 49.5,
+        "right": 755,
+        "bottom": 551.5
+      },
+      "items": [
+        {
+          "name": "About",
+          "height": 48,
+          "bottom": 114.5,
+          "right": 738,
+          "hit": true
+        },
+        {
+          "name": "Music",
+          "height": 56,
+          "bottom": 183.5,
+          "right": 386.5,
+          "hit": true
+        },
+        {
+          "name": "Engine",
+          "height": 56,
+          "bottom": 183.5,
+          "right": 737,
+          "hit": true
+        },
+        {
+          "name": "Soundtrack",
+          "height": 56,
+          "bottom": 251.5,
+          "right": 269.65625,
+          "hit": true
+        },
+        {
+          "name": "Play the Road",
+          "height": 56,
+          "bottom": 251.5,
+          "right": 503.328125,
+          "hit": true
+        },
+        {
+          "name": "Visuals only",
+          "height": 56,
+          "bottom": 251.5,
+          "right": 737,
+          "hit": true
+        },
+        {
+          "name": "Choose soundtrack",
+          "height": 48,
+          "bottom": 391.5,
+          "right": 232.375,
+          "hit": true
+        },
+        {
+          "name": "Feeling lucky",
+          "height": 48,
+          "bottom": 391.5,
+          "right": 370.5,
+          "hit": true
+        },
+        {
+          "name": "Choose visual",
+          "height": 48,
+          "bottom": 391.5,
+          "right": 628.46875,
+          "hit": true
+        },
+        {
+          "name": "Change visual",
+          "height": 48,
+          "bottom": 391.5,
+          "right": 721,
+          "hit": true
+        },
+        {
+          "name": "Night Glass",
+          "height": 52,
+          "bottom": 465.5,
+          "right": 418.5,
+          "hit": true
+        },
+        {
+          "name": "Neon Groove",
+          "height": 52,
+          "bottom": 465.5,
+          "right": 721,
+          "hit": true
+        },
+        {
+          "name": "START MUSIC",
+          "height": 56,
+          "bottom": 534.5,
+          "right": 738,
+          "hit": true
+        }
+      ],
+      "overflow": false
+    },
+    {
+      "name": "Engine Tesla",
+      "width": 773,
+      "height": 601,
+      "panel": {
+        "x": 18,
+        "y": 52.5,
+        "right": 755,
+        "bottom": 548.5
+      },
+      "items": [
+        {
+          "name": "About",
+          "height": 48,
+          "bottom": 117.5,
+          "right": 738,
+          "hit": true
+        },
+        {
+          "name": "Music",
+          "height": 56,
+          "bottom": 186.5,
+          "right": 386.5,
+          "hit": true
+        },
+        {
+          "name": "Engine",
+          "height": 56,
+          "bottom": 186.5,
+          "right": 737,
+          "hit": true
+        },
+        {
+          "name": "Mono\nAgile and raw",
+          "height": 132,
+          "bottom": 397.5,
+          "right": 261.328125,
+          "hit": true
+        },
+        {
+          "name": "Rosso\nBright and expressive",
+          "height": 132,
+          "bottom": 397.5,
+          "right": 499.65625,
+          "hit": true
+        },
+        {
+          "name": "Touring\nDeep and relaxed",
+          "height": 132,
+          "bottom": 397.5,
+          "right": 737.984375,
+          "hit": true
+        },
+        {
+          "name": "START ENGINE",
+          "height": 56,
+          "bottom": 531.5,
+          "right": 738,
+          "hit": true
+        }
+      ],
+      "overflow": false
+    },
+    {
+      "name": "390x844 Engine",
+      "width": 390,
+      "height": 844,
+      "panel": {
+        "x": 12,
+        "y": 151.5,
+        "right": 378,
+        "bottom": 692.5
+      },
+      "items": [
+        {
+          "name": "About",
+          "height": 48,
+          "bottom": 212.5,
+          "right": 365,
+          "hit": true
+        },
+        {
+          "name": "Music",
+          "height": 56,
+          "bottom": 277.5,
+          "right": 195,
+          "hit": true
+        },
+        {
+          "name": "Engine",
+          "height": 56,
+          "bottom": 277.5,
+          "right": 364,
+          "hit": true
+        },
+        {
+          "name": "Mono\nAgile and raw",
+          "height": 57,
+          "bottom": 409.5,
+          "right": 365,
+          "hit": true
+        },
+        {
+          "name": "Rosso\nBright and expressive",
+          "height": 59,
+          "bottom": 476.5,
+          "right": 365,
+          "hit": true
+        },
+        {
+          "name": "Touring\nDeep and relaxed",
+          "height": 57,
+          "bottom": 541.5,
+          "right": 365,
+          "hit": true
+        },
+        {
+          "name": "START ENGINE",
+          "height": 64,
+          "bottom": 679.5,
+          "right": 365,
+          "hit": true
+        }
+      ],
+      "overflow": false
+    },
+    {
+      "name": "390x844 Music",
+      "width": 390,
+      "height": 844,
+      "panel": {
+        "x": 12,
+        "y": 103,
+        "right": 378,
+        "bottom": 741
+      },
+      "items": [
+        {
+          "name": "About",
+          "height": 48,
+          "bottom": 164,
+          "right": 365,
+          "hit": true
+        },
+        {
+          "name": "Music",
+          "height": 56,
+          "bottom": 229,
+          "right": 195,
+          "hit": true
+        },
+        {
+          "name": "Engine",
+          "height": 56,
+          "bottom": 229,
+          "right": 364,
+          "hit": true
+        },
+        {
+          "name": "Soundtrack",
+          "height": 56,
+          "bottom": 293,
+          "right": 138.65625,
+          "hit": true
+        },
+        {
+          "name": "Play the Road",
+          "height": 56,
+          "bottom": 293,
+          "right": 251.328125,
+          "hit": true
+        },
+        {
+          "name": "Visuals only",
+          "height": 56,
+          "bottom": 293,
+          "right": 363.984375,
+          "hit": true
+        },
+        {
+          "name": "Choose soundtrack",
+          "height": 48,
+          "bottom": 433.5,
+          "right": 194.140625,
+          "hit": true
+        },
+        {
+          "name": "Feeling lucky",
+          "height": 48,
+          "bottom": 433.5,
+          "right": 319.546875,
+          "hit": true
+        },
+        {
+          "name": "Choose visual",
+          "height": 48,
+          "bottom": 571,
+          "right": 194.140625,
+          "hit": true
+        },
+        {
+          "name": "Change visual",
+          "height": 48,
+          "bottom": 571,
+          "right": 279.3125,
+          "hit": true
+        },
+        {
+          "name": "Night Glass",
+          "height": 54,
+          "bottom": 651,
+          "right": 189,
+          "hit": true
+        },
+        {
+          "name": "Neon Groove",
+          "height": 54,
+          "bottom": 651,
+          "right": 356,
+          "hit": true
+        },
+        {
+          "name": "START MUSIC",
+          "height": 64,
+          "bottom": 728,
+          "right": 365,
+          "hit": true
+        }
+      ],
+      "overflow": false
+    },
+    {
+      "name": "1280x800",
+      "width": 1280,
+      "height": 800,
+      "panel": {
+        "x": 170,
+        "y": 149,
+        "right": 1110,
+        "bottom": 651
+      },
+      "items": [
+        {
+          "name": "About",
+          "height": 48,
+          "bottom": 214,
+          "right": 1093,
+          "hit": true
+        },
+        {
+          "name": "Music",
+          "height": 56,
+          "bottom": 283,
+          "right": 640,
+          "hit": true
+        },
+        {
+          "name": "Engine",
+          "height": 56,
+          "bottom": 283,
+          "right": 1092,
+          "hit": true
+        },
+        {
+          "name": "Soundtrack",
+          "height": 56,
+          "bottom": 351,
+          "right": 489.328125,
+          "hit": true
+        },
+        {
+          "name": "Play the Road",
+          "height": 56,
+          "bottom": 351,
+          "right": 790.65625,
+          "hit": true
+        },
+        {
+          "name": "Visuals only",
+          "height": 56,
+          "bottom": 351,
+          "right": 1092,
+          "hit": true
+        },
+        {
+          "name": "Choose soundtrack",
+          "height": 48,
+          "bottom": 491,
+          "right": 366.28125,
+          "hit": true
+        },
+        {
+          "name": "Feeling lucky",
+          "height": 48,
+          "bottom": 491,
+          "right": 500.65625,
+          "hit": true
+        },
+        {
+          "name": "Choose visual",
+          "height": 48,
+          "bottom": 491,
+          "right": 819.28125,
+          "hit": true
+        },
+        {
+          "name": "Change visual",
+          "height": 48,
+          "bottom": 491,
+          "right": 908.234375,
+          "hit": true
+        },
+        {
+          "name": "Night Glass",
+          "height": 52,
+          "bottom": 565,
+          "right": 672,
+          "hit": true
+        },
+        {
+          "name": "Neon Groove",
+          "height": 52,
+          "bottom": 565,
+          "right": 1076,
+          "hit": true
+        },
+        {
+          "name": "START MUSIC",
+          "height": 56,
+          "bottom": 634,
+          "right": 1093,
+          "hit": true
+        }
+      ],
+      "overflow": false
+    },
+    {
+      "name": "Tall Mac 1280x1200",
+      "width": 1280,
+      "height": 1200,
+      "panel": {
+        "x": 170,
+        "y": 349,
+        "right": 1110,
+        "bottom": 851
+      },
+      "items": [
+        {
+          "name": "About",
+          "height": 48,
+          "bottom": 414,
+          "right": 1093,
+          "hit": true
+        },
+        {
+          "name": "Music",
+          "height": 56,
+          "bottom": 483,
+          "right": 640,
+          "hit": true
+        },
+        {
+          "name": "Engine",
+          "height": 56,
+          "bottom": 483,
+          "right": 1092,
+          "hit": true
+        },
+        {
+          "name": "Soundtrack",
+          "height": 56,
+          "bottom": 551,
+          "right": 489.328125,
+          "hit": true
+        },
+        {
+          "name": "Play the Road",
+          "height": 56,
+          "bottom": 551,
+          "right": 790.65625,
+          "hit": true
+        },
+        {
+          "name": "Visuals only",
+          "height": 56,
+          "bottom": 551,
+          "right": 1092,
+          "hit": true
+        },
+        {
+          "name": "Choose soundtrack",
+          "height": 48,
+          "bottom": 691,
+          "right": 369.359375,
+          "hit": true
+        },
+        {
+          "name": "Feeling lucky",
+          "height": 48,
+          "bottom": 691,
+          "right": 507.484375,
+          "hit": true
+        },
+        {
+          "name": "Choose visual",
+          "height": 48,
+          "bottom": 691,
+          "right": 822.359375,
+          "hit": true
+        },
+        {
+          "name": "Change visual",
+          "height": 48,
+          "bottom": 691,
+          "right": 914.890625,
+          "hit": true
+        },
+        {
+          "name": "Night Glass",
+          "height": 52,
+          "bottom": 765,
+          "right": 672,
+          "hit": true
+        },
+        {
+          "name": "Neon Groove",
+          "height": 52,
+          "bottom": 765,
+          "right": 1076,
+          "hit": true
+        },
+        {
+          "name": "START MUSIC",
+          "height": 56,
+          "bottom": 834,
+          "right": 1093,
+          "hit": true
+        }
+      ],
+      "overflow": false
+    }
+  ],
+  "checks": [
+    "first screen exposes Music and Engine without introductory click; silent preparation",
+    "15 exact genres; Escape restores focus",
+    "pace selection uses catalogue energy filters",
+    "every visit rolls a genre after a precise pace choice",
+    "lucky excludes immediate repeats and rolls again on reload",
+    "Lobo playlist remains selectable",
+    "curated presets select music, visual and appearance together",
+    "all eight visual families and exact Gradient variants",
+    "Change rerolls without a dialog; reload excludes previous visual family",
+    "only three implemented adaptive scores selectable",
+    "Engine exposes profiles without irrelevant music controls",
+    "tall windows do not grow selection rows; preset art is 36 px",
+    "source, credits and accessible support remain available",
+    "all prelaunch choices remain silent",
+    "START during delayed new genre never plays old queue; new selection plays at 1x",
+    "direct Engine start, repeated click, one context and no soundtrack",
+    "saved mute survives soundtrack launch"
+  ],
+  "errors": [],
+  "warnings": [
+    "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+    "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+    "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+    "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+    "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+    "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+    "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+    "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+    "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+    "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+    "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+    "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+    "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio",
+    "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+  ],
+  "failedResponses": [],
+  "requests": [
+    "songwriter",
+    "jazz",
+    "verylow low",
+    "rock",
+    "pop",
+    "reggae",
+    "metal",
+    "lounge",
+    "funk",
+    "soundtrack",
+    "electronic",
+    "jazz",
+    "classical",
+    "songwriter"
+  ],
+  "sends": 0
+}

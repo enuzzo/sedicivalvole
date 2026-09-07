@@ -151,3 +151,15 @@ and the exact five-viewport sizing matrix on the public site. The published
 sheet remains 502 px and choices 138 px on tall Mac and Tesla screens; footer
 follows the sheet, preset art is 36 px, and short windows scroll. Zero page
 exceptions. [Live evidence](qa/2026-09-07-launch-sizing/live-evidence.json).
+
+## Centered sheet and viewport footer — 2026-09-07
+
+Owner follow-up supersedes the flowing footer placement: keep the compact sheet
+centered on both viewport axes, independently anchor credits at bottom left and
+Support at bottom right, and center Drive responsibly on the viewport. The
+splash uses the visible viewport height, independently of the running shell's
+legacy minimum height. On short screens the centered sheet scrolls internally;
+the footer remains outside its scroll area and always reachable. Content sizes
+and audio/selection behavior are unchanged. Five viewport measurements prove
+zero center offset and fixed footer bounds; 17 launch scenarios and 655 native
+tests pass. [Evidence](qa/2026-09-07-centered-launch/evidence.json).

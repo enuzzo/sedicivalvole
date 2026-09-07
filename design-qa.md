@@ -55,3 +55,17 @@ The sizing correction is now canonically verified at build 20260907-1520/source
 05bcf45. Live five-viewport evidence matches the measured local/production
 geometry exactly, with zero page exceptions and 22 successful byte/cache checks.
 See docs/qa/2026-09-07-launch-sizing/live-evidence.json.
+
+## Centered-sheet owner follow-up — 2026-09-07
+
+The owner requested viewport centering and independent edge credits. Current
+evidence: docs/qa/2026-09-07-centered-launch/1280x1200.png, 773x601.png,
+390x844.png and 773x420.png. Reviewed all dimensions: exact vertical centering,
+unchanged type/colour/64 px images/36 px presets, fixed viewport-bottom footer,
+and independently centered safety caption. Short viewport fix uses 100dvh for
+the splash and internal sheet scrolling instead of the running shell's 480 px
+minimum height. START remains reachable. Five geometry cases, 17 interaction
+scenarios and 655 native tests pass; no page exceptions. Browser plugin absent,
+established headless Chrome fallback. Physical Tesla acceptance remains separate.
+
+final result: passed
