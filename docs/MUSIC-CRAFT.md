@@ -1829,3 +1829,42 @@ and turbo spool coherent. This is a hypothesis to test with repeatable audio A/B
 and measured cost, not a claim that extra layers automatically sound better.
 See [the campaign handoff](ENGINE-QUALITY-CAMPAIGN-2026-09-07.md) for verified
 sources, existing defects, first experiment and source-admission boundaries.
+
+
+## 2026-09-08 — Engine pitch, load and causal acoustic events
+
+The owner wanted Engine to feel more mechanical, varied and responsive. A
+nominal RPM label on an ambiguous loop cannot prove shaft pitch. The admitted
+WAV bytes and their bounded texture-pitch mapping remain intact; Mono now adds
+an original sample-clock combustion voice. Every four-stroke cylinder fires
+once per 720 crank degrees. Otto's globally even V8 sequence feeds uneven left
+and right banks before separate exhaust paths; Cinque's five pulses per cycle
+and turbo give it another spectral identity. These are fictional instruments,
+not measured replicas of donor cars. Turbine has a continuous spool/airflow
+voice with no piston firings or artificial stepped gears.
+
+A steady acceleration-only proxy flattened every cruise into the same demand.
+An explicitly authored rolling/drag proxy now gives faster cruise more load;
+attack/release smoothing preserves motion trust and does not fabricate a pedal
+sensor. The master remains constant during moving lift and downshift. Shifts
+articulate drive/coast timbre through release, synchronization and engagement,
+with a short downshift rev match, all scheduled once on AudioContext time.
+Transmission loop pitch follows wheel speed, so crank rev matching cannot
+unphysically bend its pitch.
+
+Turbo spool persists through short lift, and a pressure release needs previously
+armed load. A naive falling-load trigger also vents on lost GPS: the worklet
+therefore has a separate event-permission parameter, revoked on stale evidence,
+hidden state and clock gaps. Intentional no-GPS TAMARRO is still allowed. BOV
+air uses a 4 ms envelope and bounded bandwidth; the first experiment's large
+sample steps justified that refinement. Pulse tails reach zero smoothly, and
+filter coefficients derive from Hz/sample rate. Turbine also needs DC rejection
+to avoid wasting output headroom on infrasonic airflow.
+
+These contracts are tested in engine-powertrain, engine-procedural and runtime
+tests, including firing count/orders, bank character, finite 44.1/48 kHz output,
+false-event cancellation, one shift and mute recovery. The campaign exports
+actual dry runtime audio and loudness-matched listening excerpts separately;
+RMS/peak/continuity checks do not decide preference or Tesla cabin quality.
+See [source evidence](ENGINE-SOURCE-COMPARISON-2026-09-08.md). No simulator code,
+recordings, presets or impulse responses were imported for the new synthesis.

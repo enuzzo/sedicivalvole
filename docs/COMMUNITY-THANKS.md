@@ -835,6 +835,9 @@ primitives, three configurations, two helpers and 16 unchanged active WAVs at
 `b8cf9887c914f17c2f006d68427080e39d02d0b0`; exact source/change/asset hashes are in
 `prototype/drive-lab/src/engine/source-inventory.json`. Independent recording
 provenance remains an upstream follow-up. No claim that the original project is MIT.
+The September 8 original acoustic voices retain this admitted control foundation;
+the existing source and WAV inventory hashes are unchanged. No additional donor
+code or audio was admitted for that work.
 
 Public contact: [GitHub profile](https://github.com/markeasting) and
 [repository issues](https://github.com/markeasting/engine-audio/issues).
@@ -845,7 +848,9 @@ Unsent release thank-you draft:
 > equal-power sample blends and three configurations gave sedicivalvole's new
 > Engine experience a concrete foundation. I adapted them to GPS-driven virtual
 > motion and an audio-clock automatic gearbox, keeping your MIT credit and exact
-> source/asset inventory. The rest of sedicivalvole is source-visible under
+> source/asset inventory. That foundation now also supports our own cycle-timed
+> acoustic voices alongside your sampled configurations. The rest of sedicivalvole
+> is source-visible under
 > PolyForm Noncommercial. I'd love to share the first vehicle listening results
 > when ready. Could you also point me to the original provenance/credit notes for
 > the bundled recordings, so I can keep their acknowledgements accurate? Thanks
@@ -897,10 +902,10 @@ Research only. No new source or recordings from these projects are shipped.
 
 - Source: [Antonio-R1 — engine-sound-generator](https://github.com/Antonio-R1/engine-sound-generator/tree/c76c5adb9e63f5a54fb0def3b97e8e0ac1a7dea1).
 - Public contact/discovery route: [https://github.com/Antonio-R1](https://github.com/Antonio-R1); no private address inferred.
-- Exact use: MIT AudioWorklet/C++/WASM waveguide implementation study; no code or assets shipped.
+- Exact use: MIT AudioWorklet/C++/WASM waveguide implementation study; no code or assets shipped. The inspected throttle parameter is read but unused in excitation; JavaScript filter coefficients assume 44.1 kHz, while the C++ path uses its actual sample rate. These distinctions informed independent load response and rate-derived filters; see the [source comparison](ENGINE-SOURCE-COMPARISON-2026-09-08.md).
 - Status: DRAFT, not sent.
 
-> Hello — Your browser work makes the step from an engine acoustics paper to a bounded AudioWorklet much easier to reason about. Thank you for making this work available. I am enuzzo, building sedicivalvole, an experimental source-visible project under PolyForm Noncommercial. For now we credit your work as research, with no copied code or audio; I would be glad to share a future experiment when it has useful results.
+> Hello — Your browser work makes the step from engine acoustics to an AudioWorklet much easier to reason about. Being able to inspect both the JavaScript and C++ paths helped me understand the timing and filtering choices while developing sedicivalvole's own cycle-timed voices. Thank you for making that work accessible. I am enuzzo, building an experimental source-visible project under PolyForm Noncommercial. We credit your work as research, with no copied code or audio, and I would be glad to share listening results when ready. — enuzzo
 
 ### ATG / Dan — VehicleNoiseSynthesizer
 
@@ -952,18 +957,18 @@ Research only. No new source or recordings from these projects are shipped.
 
 ## Engine quality campaign acknowledgements — 2026-09-07
 
-### Engine Sim Game / Real Engine Simulator
+### February Solutions, MB — Engine Sim Game / Real Engine Simulator
 
-- Original project and public discovery route: [official site](https://realenginesimulator.com/), [authored architecture](https://realenginesimulator.com/about) and [changelog](https://realenginesimulator.com/changelog). No private creator identity inferred.
-- Exact use: public explanatory material about firing synthesis, boost and automatic transmission; no proprietary code, assets or constants imported.
+- Original project and public discovery route: [official site](https://realenginesimulator.com/), [authored architecture and named operator](https://realenginesimulator.com/about), [changelog](https://realenginesimulator.com/changelog) and [terms/pricing](https://realenginesimulator.com/terms). No private contact details inferred.
+- Exact use: owner-confirmed simulator reference; public articles and ordinary UI inspection of its 45 free presets, paid Pro custom builder, engine-specific controls and automatic gear/slip/lockup displays. These observations establish visible publisher behavior, not physical or listening validation. No proprietary runtime, assets, presets or tuning constants imported.
 - Status: study only; this release acknowledgement draft is **unsent**.
 
-> Hello — I am enuzzo, creating sedicivalvole, a source-visible experimental project under PolyForm Noncommercial. Your public explanations of converter lockup, turbo response and engine character help make these otherwise hidden relationships understandable. Thank you for documenting the thinking behind the experience. We credit that educational work as a reference while building our own implementation. — enuzzo
+> Hello — I am enuzzo, creating sedicivalvole, a source-visible experimental project under PolyForm Noncommercial. Your public articles and interactive engine comparisons make firing character, turbo response and converter lockup easier to understand. The explanation of why separate exhaust banks matter was especially useful while designing our own acoustic voices. Thank you for making those relationships tangible and for documenting the thinking behind the experience. We credit your simulator as an educational reference, with no copied runtime, presets or assets. — enuzzo
 
 ### TheDIYGuy999 — Rc_Engine_Sound_ESP32
 
-- Original project: [repository](https://github.com/TheDIYGuy999/Rc_Engine_Sound_ESP32); public discovery/contact route: [TheDIYGuy999](https://github.com/TheDIYGuy999).
-- Exact use: README and transmission/sound entry-point study; automatic/DCT and load/RPM-dependent layer architecture. Exact pin and reuse licence remain to be verified; no code/audio imported.
+- Original project: [repository pinned at 5520d721ef41b50f39dfe9a7081ac4620138702a](https://github.com/TheDIYGuy999/Rc_Engine_Sound_ESP32/tree/5520d721ef41b50f39dfe9a7081ac4620138702a); public discovery/contact route: [TheDIYGuy999](https://github.com/TheDIYGuy999).
+- Exact use: README and transmission/sound entry-point study; automatic/DCT and load/RPM-dependent layer architecture. The pinned recursive tree contains no licence-like file and inspected files establish no reuse grant; recording provenance is also unestablished. No code or audio imported.
 - Status: study only; this release acknowledgement draft is **unsent**.
 
-> Hi — I am enuzzo, building sedicivalvole, an experimental source-visible project under PolyForm Noncommercial. The care you put into making tiny RC vehicles sound and shift convincingly is a useful lesson in keeping engine behavior coherent on constrained hardware. Thank you for making the design accessible. We are studying the architecture and crediting it as research, without shipping your code or recordings. — enuzzo
+> Hi — I am enuzzo, building sedicivalvole, an experimental source-visible project under PolyForm Noncommercial. Your separation of RPM, load and individual sound layers is a useful lesson in keeping engine behavior coherent on constrained hardware. Thank you for making the design of your RC vehicle sound system accessible. We are studying the architecture and crediting it as research, without shipping your code or recordings. If you have a preferred licence and recording-credit note, I would be glad to link it accurately. — enuzzo

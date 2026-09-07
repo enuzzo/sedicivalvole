@@ -17,8 +17,9 @@ third-party work retains the credits and licences recorded below.
 > layers. The exact derived files, modifications, license, and direct reuse
 > authorization are recorded in `THIRD_PARTY_NOTICES.md`.
 
-> Current state: **Engine and Flux are equal primary modes.** Engine has three
-> sample profiles; Flux has three adaptive scores, Soundtrack and a Visual
+> Current implementation: **Engine and Flux are equal primary modes.** Engine has
+> six characters: hybrid Mono, sampled Rosso/Touring, and original procedural
+> Otto/Cinque/Turbine; Flux has three adaptive scores, Soundtrack and a Visual
 > catalogue with independent Atlas, Discover and Stats for Nerds destinations.
 > Development diagnostics default to Dev/AUTO ON and send coordinate-free
 > reports every 15 observed GPS-driving minutes, with a persistent OFF switch.
@@ -195,7 +196,7 @@ The speed source is an explicit abstraction. GPS and the desktop simulator produ
 
 Confirmed product modes:
 
-- **Engine** — selectable engine-sound emulation with a dedicated instrument-inspired visual language. Implemented as GEAPS with Mono/Rosso/Touring sample profiles, automatic acoustic gears and the owner-selected Telemetry surface. See [integration and acceptance limits](docs/ENGINE-INTEGRATION-2026-09-07.md).
+- **Engine** — selectable engine-sound emulation on the owner-selected Telemetry surface. GEAPS combines hybrid Mono, sampled Rosso/Touring and original procedural Otto/Cinque/Turbine. Piston profiles have automatic acoustic gears; Turbine uses continuous virtual shaft response. These are authored instruments, not measured vehicle replicas. See [integration and acceptance limits](docs/ENGINE-INTEGRATION-2026-09-07.md) and [source comparison](docs/ENGINE-SOURCE-COMPARISON-2026-09-08.md).
 - **Music** (internally Flux) — adaptive music driven by speed and motion, currently with nine driver-facing Visual choices: seven selectable rendered environment families plus the DISCOVER 07 Passenger Index and STATS FOR NERDS 09 destinations. Aperture is the accepted default and begins as a rigid square wall that recedes and disappears at the existing tunnel terminus by `40 km/h`. Vertigo embeds the original Codrops/Tympanus Interstate 7 runtime unchanged behind an external speed/FOV and palette bridge. Meridian is a low, stable corridor of sparse oblique palette-lit blades and longitudinal shoulder planes. ATLAS follows the trusted position and travel bearing above an OpenFreeMap city. DRIVEY embeds the original Rezmason road, levels, traffic, cameras and rendering pipeline behind a narrow bridge that retains upstream automatic curve following, uses VERTIGO's quadratic road response to compensate Drivey's nonlinear cruise physics, holds the player lane-centred at zero, keeps only deterministically opposing GPS-speed-matched NPC traffic, and renders every theme's native accent/secondary pair; compact text-only controls cycle Hood, Rear and Aerial views and Normal/Wire rendering without a menu. PRTCL adapts the authorized Fractal Frequency and Axiom formulas into one bounded WebGL2 field; Murmuration is temporarily outside the active product. Road speed changes both its complete form and point scale, while braking UNDERWATER moves through one continuous envelope instead of snapping; Fractal's deepest brake state is 25% larger than the previous minimum. A compact text-only `TYPE` button cycles the two active families while the existing `PALETTE` control remains separate. `GRADIENT 08` is one ShaderGradient family whose persistent in-visual `VARIANT` control cycles Japanese Mist, Acid Orchard, and Chromatic Silk. Gradient, Drivey, and PRTCL share one top-left `112 px` switch column, `48 px` minimum touch geometry, padding, and label/value hierarchy so the control location remains learned across visuals; Drivey adds its second Render column beside View. Each Gradient variant retains its selected geometry and motion, adopts the active product palette with one derived third colour, and visibly folds and densifies during braking before restoring on release. Splash and running Visual catalogues omit internal-choice counts; the running drawer alone keeps stable `01–08` catalogue numbering. Selecting Discover opens its passenger surface over Aperture and closing it returns to that real field. This is the mode currently implemented as Drive Lab.
 
 Shared foundations include the GPS/Demo speed source, integrated diagnostics, master Stop/Mute, reduced motion, renderer fallback, and touch-first safety behavior. The mode switch will remain clearly identifiable and reachable from both experiences.
@@ -414,6 +415,24 @@ Feeling lucky and Change reroll without immediate repeats. Choose preserves
 precise selection. Static effect captures and ready-queue cover art keep previews
 lightweight, with no extra live renderer. See [launch behavior and architecture](docs/LAUNCH-COCKPIT-2026-09-07.md).
 
+### Engine acoustic campaign — 2026-09-08
+
+The implementation adds a cycle-timed four-cylinder voice to Mono and three
+original synthesized characters: **Otto**, a two-bank crossplane eight;
+**Cinque**, a turbo five with retained spool and pressure release; and
+**Turbine**, a continuous shaft/airflow voice without stepped shifts. Rosso and
+Touring retain the admitted sample banks. Virtual road demand, explicit shift
+phases and road-speed transmission pitch now have separate control paths.
+
+The new DSP and acoustic profiles use no newly admitted third-party code,
+recordings or impulse responses. The existing Mark Oosting engine/drivetrain
+foundation and exact WAV inventory retain their MIT attribution and recorded
+provenance limits. All characters share the dry Engine output, existing GPS
+contract and mute; no-GPS TAMARRO remains available. See the
+[implementation basis and source boundaries](docs/ENGINE-SOURCE-COMPARISON-2026-09-08.md).
+Canonical publication evidence and real-vehicle listening acceptance are recorded
+separately in [current state](docs/CURRENT-STATE.md) and [deployment](docs/DEPLOY.md).
+
 <!-- COMMUNITY-CREDITS:START -->
 ## Community thanks — 2026-09-05
 
@@ -424,10 +443,10 @@ A heartfelt thank-you to the people who share the code, type, music, data and ex
 | 🎵 Lobo (illobo) — textStep / Lobo recordings and marks | [Project](https://github.com/illobo/textStep) | **Integrated code and artist-authorized media.** Transport clock, hex patterns and drum/synth/bus DSP translated into src/score/; 29 separately authorized recordings and the supplied playlist marks. |
 | 🌌 Daniel Velasquez (Anemolo), Codrops/Tympanus — Infinite Lights / Interstate 7 | [Repository](https://github.com/Anemolo/Infinite-Lights) · [Daniel Velasquez](https://tympanus.net/codrops/author/anemolito/) · [Original Codrops article](https://tympanus.net/codrops/2019/11/13/high-speed-light-trails-in-three-js/) · [Original demo](https://tympanus.net/Tutorials/InfiniteLights/) | **Integrated vendor runtime.** Byte-identical e58d585 Interstate 7 snapshot in public/third-party/infinite-lights/, with an external speed/FOV/palette bridge for Vertigo. |
 | 🏎️ Mark Oosting — engine-audio | [Pinned repository](https://github.com/markeasting/engine-audio/tree/b8cf9887c914f17c2f006d68427080e39d02d0b0) · [Author](https://github.com/markeasting) | **Integrated, declared MIT.** Adapted Engine/Drivetrain/equal-power mixer, three configurations and helpers; 16 byte-identical bundled WAVs. [Exact inventory](prototype/drive-lab/src/engine/source-inventory.json). Recording provenance follow-up remains recorded. |
-| 🏎️ Engine Sim Game / Real Engine Simulator | [Public architecture](https://realenginesimulator.com/about) · [Changelog](https://realenginesimulator.com/changelog) · [Public route](https://realenginesimulator.com/) | **Study only.** Published automatic-transmission, firing synthesis and boost behavior; proprietary runtime and assets are not imported. |
-| 🚚 TheDIYGuy999 — Rc_Engine_Sound_ESP32 | [Source and features](https://github.com/TheDIYGuy999/Rc_Engine_Sound_ESP32) · [Public route](https://github.com/TheDIYGuy999) | **Study only.** Embedded automatic shifting and load/RPM-dependent sound layering. No code/audio admitted; exact pin and reuse licence remain unverified. |
+| 🏎️ February Solutions, MB — Engine Sim Game / Real Engine Simulator | [Public architecture](https://realenginesimulator.com/about) · [Changelog](https://realenginesimulator.com/changelog) · [Terms and pricing](https://realenginesimulator.com/terms) | **Study only.** Owner-confirmed reference: 45 public presets, paid Pro custom builder; ordinary public clicks show engine-specific controls, automatic gears and lockup. Publisher descriptions and UI observations are not listening/physics validation; no proprietary runtime, assets or constants imported. |
+| 🚚 TheDIYGuy999 — Rc_Engine_Sound_ESP32 | [Pinned source](https://github.com/TheDIYGuy999/Rc_Engine_Sound_ESP32/tree/5520d721ef41b50f39dfe9a7081ac4620138702a) · [Public route](https://github.com/TheDIYGuy999) | **Study only.** Embedded automatic shifting and load/RPM-dependent sound layers. Revision verified; no licence file found in its tree, so reuse permission remains unestablished. No code/audio admitted. |
 | 🔧 DasEtwas — enginesound | [Source](https://github.com/DasEtwas/enginesound/tree/e5fcca587397c0c8ba9c9d24874b951fed74d260) · [Public route](https://github.com/DasEtwas) | **Study only.** MIT procedural cylinder/intake/exhaust and headless loop-export architecture; source study only, no code or example audio shipped. |
-| 🔊 Antonio-R1 — engine-sound-generator | [Source](https://github.com/Antonio-R1/engine-sound-generator/tree/c76c5adb9e63f5a54fb0def3b97e8e0ac1a7dea1) · [Public route](https://github.com/Antonio-R1) | **Study only.** MIT AudioWorklet/C++/WASM waveguide implementation study; no code or assets shipped. |
+| 🔊 Antonio-R1 — engine-sound-generator | [Source](https://github.com/Antonio-R1/engine-sound-generator/tree/c76c5adb9e63f5a54fb0def3b97e8e0ac1a7dea1) · [Public route](https://github.com/Antonio-R1) | **Study only.** MIT AudioWorklet/C++/WASM waveguide study. Reviewed the unused throttle input and JS filter-rate assumption; C++ filters use the actual rate. No code or assets shipped. |
 | ⚙️ ATG / Dan — VehicleNoiseSynthesizer | [Source](https://github.com/ATG-Simulator/VehicleNoiseSynthesizer/tree/4241caca5a18be0d47f0b8586df93b1b42d7020d) · [Public route](https://github.com/ATG-Simulator) | **Study only.** MIT code study of RPM regions and discrete acoustic events; no Unity code or demo recordings shipped. |
 | 🔬 Ange Yaghi — engine-sim | [Source](https://github.com/ange-yaghi/engine-sim/tree/85f7c3b959a908ed5232ede4f1a4ac7eafe6b630) · [Public route](https://github.com/ange-yaghi) | **Study only.** Physical engine/firing/path-length research; no code or bundled impulse responses shipped. |
 | 📖 Baldan, Lachambre, Delle Monache and Boussard — engine sound synthesis (2015) | [Source](https://air.iuav.it/handle/11578/264484) · [Public route](https://air.iuav.it/handle/11578/264484) | **Study only.** Institutional abstract and cited implementation study; full-paper equation audit not claimed; no paper text redistributed. |

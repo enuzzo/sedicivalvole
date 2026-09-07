@@ -112,6 +112,7 @@ LAB_PAGE_MARKERS = (b"sedicivalvole / LAB", b"SEDICIVALVOLE_LAB_BOOT", b"labLoad
 LAB_BOOTSTRAP_MARKERS = (b"LAB_EXPECTED_ORIGIN", b"labRequireAuthenticatedJson", b"auth.local.php")
 LAB_SEND_MARKERS = (b"sedicivalvole.lab-mail.v1", b"labRequireCsrf", b"buildLabPresetMail")
 LAB_SCORE_PROCESSOR_MARKERS = (b"AudioWorkletProcessor", b'registerProcessor("score-processor"')
+LAB_ENGINE_PROCESSOR_MARKERS = (b"AudioWorkletProcessor", b'registerProcessor("sedicivalvole-engine"')
 RETIRED_LAB_HASHES = {
     "soundtrack-repeat-processor.js": "4394837a3bebf6e065cd1dabc6b43e73f302bbead98bf43af830f9df15620aad",
     "bloom-processor.js": "6561b35a7ee7c753ee858e4682894adacc7010001f073210844b93bb102f222a",
@@ -1021,6 +1022,7 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
                 "bootstrap.php",
                 "send.php",
                 "score-processor.js",
+                "procedural-processor.js",
                 LAB_AUTH_CONFIG,
             } | RETIRED_LAB_HASHES.keys()
             unexpected_lab_names = sorted(lab_names - admitted_lab_names)
@@ -1031,6 +1033,7 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
                 "bootstrap.php": LAB_BOOTSTRAP_MARKERS,
                 "send.php": LAB_SEND_MARKERS,
                 "score-processor.js": LAB_SCORE_PROCESSOR_MARKERS,
+                "procedural-processor.js": LAB_ENGINE_PROCESSOR_MARKERS,
                 LAB_AUTH_CONFIG: LAB_AUTH_CONFIG_MARKERS,
             }
             for name in lab_names:

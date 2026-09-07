@@ -1,5 +1,37 @@
 # Independent Technical Direction
 
+## Engine acoustic architecture — 2026-09-08
+
+The current Engine runtime separates accepted motion (`motion.js`), original
+virtual load/shift plans (`powertrain.js`), declarative profiles (`profiles.js`),
+sample preparation/orchestration (`runtime.js`) and sample-clock synthesis
+(`procedural-dsp.js`, `procedural-processor.js`, `procedural-voice.js`).
+The public React boundary and shared dry AudioContext remain unchanged.
+
+Mono is a sample/procedural hybrid, Rosso and Touring keep their admitted sample
+banks, and Otto, Cinque and Turbine are original procedural instruments. One
+lightweight catalogue drives launch, Telemetry and media transport. The extra
+worklet is bundled as a self-contained lazy asset; no new dependency or WAV
+enters the product. The turbine uses continuous virtual shaft speed and no
+stepped transmission. The label remains simulated; no CAN, throttle or boost
+measurement is implied.
+
+The 25 ms controller schedules complete shift parameter timelines, never firing
+pulses. A-rate RPM/load/boost feed the worklet; a separate event gate prevents
+loss of observations from becoming a blow-off gesture. Hidden/suspended/muted
+state cancels pending shift automation. A short worklet fade avoids hard-zero
+mute clicks; the existing master watchdog still bounds control-thread freezes.
+
+Bank preparation retains audible outgoing material, validates hashes, reserves
+WAV-derived decode memory before decode and records transfer/decode time. The
+per-bank bound remains 64 MiB; accounted outgoing/incoming/encoded transition
+buffers are capped at 128 MiB. Native decoder and browser heap overhead are
+not claimed to fit inside that accounting. Worklet import/readiness is
+cancellable and deadline-bound; processor failure enters bounded recovery.
+
+[Implementation and evidence](ENGINE-CAMPAIGN-IMPLEMENTATION-2026-09-08.md).
+
+
 ## September 7 altitude fallback
 
 The running App owns one bounded terrain controller independently of Atlas. Stats

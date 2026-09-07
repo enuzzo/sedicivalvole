@@ -9,23 +9,52 @@ import { decideAutomaticGear, virtualRpm } from "../src/engine/gearbox.js";
 
 const root = new URL("../", import.meta.url);
 const inventory = JSON.parse(readFileSync(new URL("src/engine/source-inventory.json", root)));
-const bundled = await build({ stdin: { contents: 'export {createGeapsRuntime} from "./src/engine/runtime.js"; export {ENGINE_PROFILES} from "./src/engine/profiles.js";', resolveDir: root.pathname }, bundle: true, format: "cjs", platform: "node", write: false });
+const bundled = await build({ stdin: { contents: 'export {createGeapsRuntime} from "./src/engine/runtime.js"; export {ENGINE_PROFILES} from "./src/engine/profiles.js";', resolveDir: root.pathname }, bundle: true, format: "cjs", platform: "node", write: false,
+  plugins: [{ name: "test-audio-worklet-url", setup(plugin) {
+    plugin.onResolve({ filter: /\?audio-worklet$/ }, args => ({ path: args.path, namespace: "test-audio-worklet" }));
+    plugin.onLoad({ filter: /.*/, namespace: "test-audio-worklet" }, () => ({ contents: 'export default "/assets/test-engine-worklet.js";', loader: "js" }));
+  } }],
+});
 class Param {
   value = 0; events = [];
   cancelAndHoldAtTime(t) { this.events.push(["hold", t]); }
   setTargetAtTime(v, t, tau) { assert.ok(Number.isFinite(v) && Number.isFinite(t) && tau > 0); this.value = v; this.events.push(["target",v,t,tau]); }
   linearRampToValueAtTime(v,t) { assert.ok(Number.isFinite(v) && Number.isFinite(t)); this.value = v; this.events.push(["ramp",v,t]); }
+  setValueAtTime(v,t) { assert.ok(Number.isFinite(v) && Number.isFinite(t)); this.value = v; this.events.push(["set",v,t]); }
 }
-function fixture({ fail = false, manual = false } = {}) {
+const eventSurface = () => {
+  const listeners = new Map();
+  return { addEventListener(type, fn) { if (!listeners.has(type)) listeners.set(type, new Set()); listeners.get(type).add(fn); },
+    removeEventListener(type, fn) { listeners.get(type)?.delete(fn); },
+    dispatch(type) { for (const fn of listeners.get(type) ?? []) fn(); },
+  };
+};
+function fixture({ fail = false, manual = false, worklet = false, workletFailure = false, pendingWorklet = false } = {}) {
   const timers = new Map(); let serial = 0, time = 0, failures = fail, requests = 0;
-  const context = { currentTime: 0, state: "running", sources: [], gains: [],
+  let releaseModule;
+  const moduleGate = pendingWorklet ? new Promise(resolve => { releaseModule = resolve; }) : Promise.resolve();
+  const context = { ...eventSurface(), currentTime: 0, sampleRate: 48000, state: "running", sources: [], gains: [], voices: [], moduleUrls: [],
     createGain() { const node = { gain: new Param(), connect(to) { return to; }, disconnect() {} }; this.gains.push(node); return node; },
     createDynamicsCompressor: () => ({ threshold: new Param(), knee: new Param(), ratio: new Param(), attack: new Param(), release: new Param(), connect(to) { return to; }, disconnect() {} }),
     createBufferSource() { const source = { detune: new Param(), connect(to) { return to; }, start(at) { this.started = at; }, stop(at) { this.stopped = at ?? 0; }, disconnect() {} }; this.sources.push(source); return source; },
     decodeAudioData: async () => ({ length: 48000, numberOfChannels: 2, getChannelData: () => new Float32Array(48000).fill(0.1) }),
   };
+  if (worklet) context.audioWorklet = { async addModule(url) { context.moduleUrls.push(url); await moduleGate; if (workletFailure) throw new Error("Worklet module unavailable"); } };
+  class MockAudioWorkletNode {
+    parameters = new Map(["rpm", "load", "boost", "active", "events"].map(key => [key, new Param()]));
+    messages = []; disconnected = false; closed = false;
+    constructor(audioContext, name, options) {
+      assert.equal(name, "sedicivalvole-engine"); assert.equal(options.numberOfInputs, 0);
+      this.options = options; audioContext.voices.push(this);
+      this.port = { postMessage: message => this.messages.push(message), close: () => { this.closed = true; } };
+    }
+    connect(target) { return target; }
+    disconnect() { this.disconnected = true; }
+  }
+  const document = { ...eventSurface(), visibilityState: "visible" }, window = eventSurface();
   const exports = {};
   const sandbox = { exports, module: { exports }, console, crypto: webcrypto, AbortController, performance: { now: () => time },
+    document, window, navigator: { onLine: true }, AudioWorkletNode: MockAudioWorkletNode,
     setInterval: fn => { const id = ++serial; timers.set(id,{fn,interval:true}); return id; },
     clearInterval: id => timers.delete(id), setTimeout: (fn, delay) => { const id = ++serial; timers.set(id,{fn,delay}); return id; }, clearTimeout: id => timers.delete(id),
     fetch: async url => { requests++; if (failures) throw new Error("offline"); const bytes = readFileSync(new URL(`public${url}`,root)); return { ok:true, arrayBuffer:async () => bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength) }; },
@@ -35,7 +64,8 @@ function fixture({ fail = false, manual = false } = {}) {
   const motion = { snapshot:() => ({...evidence}), reset:() => Object.assign(evidence,{freshness:"lost",canShift:false,trustedStationary:false}) };
   const events = [];
   const runtime = sandbox.module.exports.createGeapsRuntime({context,destination:{},motion,now:()=>time,allowManual:manual,onEvent:(type,detail)=>events.push({type,...detail})});
-  return { runtime, context, evidence, events, profiles: sandbox.module.exports.ENGINE_PROFILES, timers,
+  return { runtime, context, evidence, events, profiles: sandbox.module.exports.ENGINE_PROFILES, timers, document, window,
+    releaseWorklet() { releaseModule?.(); },
     setFailure(value) { failures=value; }, get requests() { return requests; },
     async retry() { const entry = [...timers].find(([,t])=>!t.interval && [5000,10000,20000,30000].includes(t.delay)); assert.ok(entry); timers.delete(entry[0]); entry[1].fn(); await new Promise(resolve=>setTimeout(resolve,80)); },
     tick(seconds=.025) { time+=seconds*1000; context.currentTime+=seconds; for(const t of [...timers.values()]) if(t.interval)t.fn(); },
@@ -154,8 +184,15 @@ test("Engine level stays constant on lift, downshift and lost-signal idle", asyn
   f.evidence.freshness = "lost"; f.evidence.canShift = false; f.tick();
   const levels = f.context.gains[0].gain.events.filter(e => e[0] === "target" && e[1] !== 0);
   assert.ok(levels.length > 20); assert.ok(levels.every(e => e[1] === .16));
-  // A shift has one continuous destination ramp, no intermediate attenuation notch.
-  for (const gain of f.context.gains.slice(1)) assert.equal(gain.gain.events.filter(e => e[0] === "ramp").length, 2);
+  const shifts = f.events.filter(event => event.type === "engine.shift.scheduled");
+  assert.equal(shifts.length, 2);
+  for (const event of shifts) {
+    assert.ok(event.effectiveContextTime < event.releaseAt && event.releaseAt < event.syncAt && event.syncAt < event.endAt);
+    // Every sample renderer reaches the same release, synchronization and return boundaries.
+    for (const gain of f.context.gains.slice(1)) for (const boundary of [event.releaseAt, event.syncAt, event.endAt]) {
+      assert.ok(gain.gain.events.some(ramp => ramp[0] === "ramp" && ramp[2] === boundary));
+    }
+  }
   f.runtime.destroy();
 });
 
@@ -340,15 +377,20 @@ test("degraded moving evidence preserves coupled Engine RPM until the bounded ho
   for (let time = 0; time < 1000; time += 100) step(time, 6);
   const movingRpm = f.runtime.getState().rpm;
   assert.ok(movingRpm > 2000);
+  let previousLoad = f.runtime.getState().drive;
   for (let time = 1000; time <= 5900; time += 100) {
     const held = step(time, 10000);
     assert.equal(held.motion, "degraded");
     assert.ok(held.rpm >= movingRpm * .95);
-    assert.equal(held.drive, 0);
+    // drive now reports the acoustic load, which decays to the continuous idle texture.
+    // It does not represent a measured throttle or permission to initiate a shift.
+    assert.ok(held.drive >= .08 && held.drive <= previousLoad + 1e-12);
+    previousLoad = held.drive;
     assert.equal(held.idleBlip, false);
     assert.equal(held.shift, null);
     assert.equal(held.canRev, false);
   }
+  assert.ok(Math.abs(previousLoad - .08) < 1e-8);
   for (let time = 6000; time <= 7000; time += 100) step(time, 10000);
   assert.equal(f.runtime.getState().motion, "lost");
   assert.equal(f.runtime.getState().rpm, 1000);
@@ -385,4 +427,211 @@ test("only transmission loops fall silent at zero and Neutral while core loops r
   assert.ok(levels().on_low + levels().off_low > 0);
   assert.equal(f.runtime.getState().outputLevel, 1);
   f.runtime.destroy();
+});
+
+test("hybrid shifts schedule shared sample/worklet phases once and retain a constant master", async () => {
+  const f = fixture({ worklet: true, manual: true });
+  f.runtime.setEnabled(true); assert.equal(await f.runtime.load("mono"), true);
+  assert.equal(f.runtime.getState().source, "hybrid");
+  assert.equal(f.context.moduleUrls.length, 1); assert.equal(f.context.voices.length, 1);
+  f.evidence.speedKmh = 25; f.evidence.rawSpeedKmh = 25; f.evidence.drive = 1;
+  f.runtime.setTransmissionMode("MANUAL");
+  for (let i = 0; i < 20; i++) f.tick();
+  assert.equal(f.runtime.requestGear(2), true); f.tick();
+  const scheduled = f.events.find(event => event.type === "engine.shift.scheduled");
+  assert.ok(scheduled); assert.equal(f.runtime.requestGear(3), false);
+  const voice = f.context.voices[0];
+  for (const name of ["rpm", "load", "boost"]) for (const at of [scheduled.releaseAt, scheduled.syncAt, scheduled.endAt]) {
+    assert.ok(voice.parameters.get(name).events.some(event => event[0] === "ramp" && event[2] === at));
+  }
+  const loadRamps = voice.parameters.get("load").events.filter(event => event[0] === "ramp");
+  const releaseLoad = loadRamps.find(event => event[2] === scheduled.releaseAt)[1];
+  const finalLoad = loadRamps.find(event => event[2] === scheduled.endAt)[1];
+  assert.ok(releaseLoad < .1 && finalLoad > .7);
+  const phases = new Set();
+  for (let i = 0; i < 20; i++) { f.tick(); if (f.runtime.getState().shiftPhase) phases.add(f.runtime.getState().shiftPhase); }
+  assert.ok(phases.has("release") && phases.has("synchronize") && phases.has("engage"));
+  assert.equal(f.events.filter(event => event.type === "engine.shift.scheduled").length, 1);
+  assert.equal(f.events.filter(event => event.type === "engine.shift.committed").length, 1);
+  assert.equal(f.runtime.getState().gear, 2); assert.equal(f.runtime.getState().shiftPhase, null);
+  assert.ok(f.context.gains[0].gain.events.filter(event => event[0] === "target" && event[1] !== 0).every(event => event[1] === .16));
+  f.runtime.destroy();
+  assert.equal(voice.disconnected, true); assert.equal(voice.closed, true);
+});
+
+test("clock gaps and disable cancel a pending acoustic shift before it can commit", async () => {
+  for (const cancel of ["clock-gap", "disable"]) {
+    const f = fixture({ worklet: true, manual: true });
+    f.runtime.setEnabled(true); await f.runtime.load("otto");
+    f.evidence.speedKmh = 22; f.evidence.rawSpeedKmh = 22;
+    f.runtime.setTransmissionMode("MANUAL"); f.runtime.requestGear(2); f.tick();
+    assert.equal(f.runtime.getState().shift, "manual");
+    f.tick(); assert.ok(f.runtime.getState().shiftPhase);
+    if (cancel === "clock-gap") f.tick(1);
+    else { f.runtime.setEnabled(false); f.tick(1); }
+    assert.equal(f.runtime.getState().shift, null); assert.equal(f.runtime.getState().shiftPhase, null);
+    assert.equal(f.runtime.getState().gear, 1);
+    assert.equal(f.events.filter(event => event.type === "engine.shift.committed").length, 0);
+    if (cancel === "clock-gap") assert.equal(f.evidence.freshness, "lost");
+    else {
+      assert.equal(f.context.voices[0].parameters.get("active").value, 0);
+      assert.equal(f.runtime.getState().playing, false);
+    }
+    f.runtime.destroy();
+  }
+});
+
+test("every procedural profile prepares without sample requests and supports bounded no-GPS TAMARRO", async () => {
+  for (const id of ["otto", "cinque", "turbine"]) {
+    const f = fixture({ worklet: true });
+    f.evidence.freshness = "lost"; f.evidence.speedKmh = null; f.evidence.canShift = false;
+    f.runtime.setEnabled(true); assert.equal(await f.runtime.load(id), true);
+    assert.equal(f.runtime.getState().prepared, true); assert.equal(f.runtime.getState().source, "procedural");
+    assert.equal(f.requests, 0); assert.equal(f.context.sources.length, 0); assert.equal(f.runtime.getState().decodedBytes, 0);
+    f.tick(); assert.equal(f.runtime.getState().canRev, true); assert.equal(f.runtime.setRevHeld(true), true);
+    let peak = 0;
+    for (let i = 0; i < 180; i++) { f.tick(); peak = Math.max(peak, f.runtime.getState().rpm); }
+    assert.ok(peak > 4000 && peak <= f.profiles.find(profile => profile.id === id).configuration.engine.limiter);
+    assert.equal(f.events.filter(event => event.type === "engine.shift.scheduled").length, 0);
+    f.runtime.setEnabled(false);
+    assert.equal(f.runtime.getState().playing, false); assert.equal(f.runtime.getState().revving, false);
+    assert.equal(f.context.voices[0].parameters.get("active").value, 0);
+    f.runtime.unload(); assert.equal(f.runtime.getState().prepared, false);
+    assert.equal(f.context.voices[0].messages.filter(message => message === "dispose").length, 1);
+    f.runtime.destroy();
+  }
+});
+
+test("Turbine is single-speed in AUTO and rejects LAB gear requests", async () => {
+  const f = fixture({ worklet: true, manual: true }); f.runtime.setEnabled(true); await f.runtime.load("turbine");
+  f.runtime.setTransmissionMode("MANUAL"); assert.equal(f.runtime.requestGear(2), false);
+  f.runtime.setTransmissionMode("AUTO");
+  for (let speed = 0; speed <= 130; speed += 2) {
+    f.evidence.speedKmh = speed; f.evidence.rawSpeedKmh = speed; f.evidence.drive = .8;
+    f.tick(.1);
+  }
+  assert.equal(f.runtime.getState().singleSpeed, true); assert.equal(f.runtime.getState().gear, 1);
+  assert.ok(f.runtime.getState().rpm > 7000 && f.runtime.getState().rpm <= 9000);
+  assert.equal(f.events.filter(event => event.type === "engine.shift.scheduled").length, 0);
+  f.runtime.destroy();
+});
+
+test("late procedural preparation cannot replace the latest selected profile or interrupt its predecessor", async () => {
+  const f = fixture({ worklet: true, pendingWorklet: true });
+  f.runtime.setEnabled(true); await f.runtime.load("rosso"); f.tick();
+  const outgoing = [...f.context.sources];
+  const first = f.runtime.load("otto");
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(f.context.moduleUrls.length, 1);
+  assert.equal(f.runtime.getState().profileId, "rosso"); assert.equal(f.runtime.getState().playing, true);
+  assert.ok(outgoing.every(source => source.stopped == null));
+  const latest = f.runtime.load("cinque");
+  f.releaseWorklet();
+  assert.equal(await first, false); assert.equal(await latest, true);
+  assert.equal(f.runtime.getState().profileId, "cinque"); assert.equal(f.runtime.getState().source, "procedural");
+  assert.equal(f.context.moduleUrls.length, 1);
+  // Cancellation is checked before constructing a native processor for the superseded selection.
+  assert.equal(f.context.voices.length, 1);
+  assert.equal(f.context.voices.at(-1).disconnected, false);
+  assert.ok(outgoing.every(source => Number.isFinite(source.stopped)));
+  assert.deepEqual(f.events.filter(event => event.type === "engine.bank.ready").map(event => event.profileId), ["rosso", "cinque"]);
+  f.runtime.destroy();
+});
+
+test("failed worklet preparation retains a playing sample bank and reports a truthful failure", async () => {
+  const f = fixture({ worklet: true, workletFailure: true });
+  f.runtime.setEnabled(true); await f.runtime.load("rosso");
+  const outgoing = [...f.context.sources];
+  assert.equal(await f.runtime.load("cinque"), false);
+  assert.equal(f.runtime.getState().profileId, "rosso"); assert.equal(f.runtime.getState().playing, true);
+  assert.equal(f.runtime.getState().status, "retrying");
+  assert.match(f.runtime.getState().error, /Worklet module unavailable/);
+  assert.ok(outgoing.every(source => source.stopped == null));
+  f.runtime.destroy();
+});
+
+test("stale evidence and the first clock-gap frame suppress turbo events without muting the dry engine", async () => {
+  const f = fixture({ worklet: true }); f.runtime.setEnabled(true); await f.runtime.load("cinque");
+  f.evidence.speedKmh = 25; f.evidence.rawSpeedKmh = 25; f.evidence.drive = 1;
+  for (let i = 0; i < 30; i++) f.tick();
+  const voice = f.context.voices[0];
+  assert.equal(voice.parameters.get("events").value, 1);
+  f.evidence.freshness = "degraded"; f.evidence.canShift = false; f.evidence.drive = 0; f.tick();
+  assert.equal(voice.parameters.get("events").value, 0); assert.equal(voice.parameters.get("active").value, 1);
+  f.evidence.freshness = "fresh"; f.evidence.drive = 1; f.tick();
+  assert.equal(voice.parameters.get("events").value, 1);
+  f.tick(1);
+  assert.equal(f.evidence.freshness, "lost");
+  assert.equal(voice.parameters.get("events").value, 0);
+  assert.equal(voice.parameters.get("active").value, 1);
+  f.runtime.destroy();
+});
+
+test("visibility and context suspension discard pending shifts and prevent late commits", async () => {
+  for (const reason of ["hidden", "suspended"]) {
+    const f = fixture({ worklet: true, manual: true });
+    f.runtime.setEnabled(true); await f.runtime.load("cinque");
+    f.evidence.speedKmh = 20; f.evidence.rawSpeedKmh = 20;
+    f.runtime.setTransmissionMode("MANUAL"); f.runtime.requestGear(2); f.tick();
+    assert.equal(f.runtime.getState().shift, "manual");
+    if (reason === "hidden") { f.document.visibilityState = "hidden"; f.document.dispatch("visibilitychange"); }
+    else { f.context.state = "suspended"; f.context.dispatch("statechange"); }
+    assert.equal(f.runtime.getState().shift, null); assert.equal(f.runtime.getState().shiftPhase, null);
+    assert.equal(f.context.voices[0].parameters.get("events").value, 0);
+    assert.equal(f.context.voices[0].parameters.get("active").value, 0);
+    f.tick(.4);
+    if (reason === "hidden") { f.document.visibilityState = "visible"; f.document.dispatch("visibilitychange"); }
+    else { f.context.state = "running"; f.context.dispatch("statechange"); }
+    f.tick();
+    assert.equal(f.events.filter(event => event.type === "engine.shift.committed").length, 0);
+    assert.equal(f.runtime.getState().gear, 1); assert.equal(f.runtime.getState().idleBlip, false);
+    f.runtime.destroy();
+  }
+});
+
+test("an unresolved worklet module times out without blocking a later sample-profile selection", async () => {
+  const f = fixture({ worklet: true, pendingWorklet: true });
+  f.runtime.setEnabled(true); await f.runtime.load("rosso");
+  const pending = f.runtime.load("otto"); await new Promise(resolve => setImmediate(resolve));
+  assert.equal(f.context.moduleUrls.length, 1);
+  const timeout = [...f.timers].find(([, timer]) => !timer.interval && timer.delay === 20000);
+  assert.ok(timeout); f.timers.delete(timeout[0]); timeout[1].fn();
+  assert.equal(await pending, false); assert.equal(f.runtime.getState().status, "retrying");
+  assert.equal(f.runtime.getState().profileId, "rosso"); assert.equal(f.runtime.getState().playing, true);
+  assert.equal(await f.runtime.load("touring"), true);
+  f.releaseWorklet(); await new Promise(resolve => setImmediate(resolve));
+  assert.equal(f.runtime.getState().profileId, "touring"); assert.equal(f.context.voices.length, 0);
+  f.runtime.destroy();
+});
+
+test("disable interrupts an unsettled module immediately and late readiness creates no processor", async () => {
+  const f = fixture({ worklet: true, pendingWorklet: true });
+  f.runtime.setEnabled(true); const pending = f.runtime.load("cinque");
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(f.context.moduleUrls.length, 1);
+  f.runtime.setEnabled(false); assert.equal(await pending, false);
+  assert.equal(f.timers.size, 0); assert.equal(f.runtime.getState().prepared, false);
+  f.releaseWorklet(); await new Promise(resolve => setImmediate(resolve));
+  assert.equal(f.context.voices.length, 0); assert.equal(f.runtime.getState().playing, false);
+  f.runtime.destroy();
+});
+
+test("processor failure removes false availability and retries one fresh procedural voice", async () => {
+  const f = fixture({ worklet: true });
+  f.runtime.setEnabled(true); await f.runtime.load("cinque"); f.tick();
+  const failed = f.context.voices[0], reportFailure = failed.onprocessorerror;
+  assert.equal(f.runtime.getState().prepared, true);
+  reportFailure();
+  assert.equal(f.runtime.getState().prepared, false); assert.equal(f.runtime.getState().playing, false);
+  assert.equal(f.runtime.setRevHeld(true), false);
+  assert.equal(f.runtime.getState().status, "retrying"); assert.match(f.runtime.getState().error, /synthesis interrupted/);
+  assert.equal(f.events.filter(event => event.type === "engine.renderer.failed").length, 1);
+  await f.retry();
+  assert.equal(f.runtime.getState().status, "ready"); assert.equal(f.runtime.getState().playing, true);
+  assert.equal(f.context.voices.length, 2); assert.equal(f.context.moduleUrls.length, 1);
+  reportFailure();
+  assert.equal(f.runtime.getState().status, "ready");
+  assert.equal(f.events.filter(event => event.type === "engine.renderer.failed").length, 1);
+  f.runtime.destroy();
+  assert.ok(f.context.voices.every(source => source.disconnected && source.closed));
 });

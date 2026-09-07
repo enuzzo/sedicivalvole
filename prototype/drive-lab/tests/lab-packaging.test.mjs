@@ -45,6 +45,8 @@ test("the LAB bundle is inlined behind the gate and leaves no directly fetchable
   assert.match(stylesSource, /\.lab-brand-name \{ font-family: var\(--font-brand\); font-weight: 750; letter-spacing: -\.02em; \}/);
   assert.match(deploySource, /LAB_SCORE_PROCESSOR_MARKERS/);
   assert.match(deploySource, /"score-processor\.js"/);
+  assert.match(packageSource, /"procedural-processor\.js"/);
+  assert.match(deploySource, /LAB_ENGINE_PROCESSOR_MARKERS/);
   assert.doesNotMatch(packageSource, /bloom-processor/);
   assert.doesNotMatch(packageSource, /soundtrack-repeat-processor/);
   assert.match(deploySource, /RETIRED_LAB_HASHES/);

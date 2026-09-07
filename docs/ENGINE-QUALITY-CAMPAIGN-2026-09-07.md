@@ -1,5 +1,18 @@
 # Engine quality and versatility campaign — 2026-09-07
 
+## Campaign follow-through — 2026-09-08
+
+The owner confirmed both Ange Yaghi / engine-sim and Real Engine Simulator as
+central references; Real Engine Simulator is exactly the fuller simulator
+previously recalled. The optional identity question is closed. Public engine
+controls and automatic shifts were exercised without an account or purchase,
+with browser audio muted; this is behavior evidence, not physical or listening
+validation. Its public presets are free; Pro concerns the custom builder.
+
+See [verified source comparison](ENGINE-SOURCE-COMPARISON-2026-09-08.md) and
+[implementation, reproducible audio and acceptance](ENGINE-CAMPAIGN-IMPLEMENTATION-2026-09-08.md).
+The original starting checkpoint below remains historical evidence.
+
 ## Owner objective and continuation
 
 Engine is now the primary priority. The owner requests maximum audible quality
@@ -153,7 +166,7 @@ selection cancellation, Mono seam repair and 44.1/48 kHz real-WAV checks.
 
 ## Verified source shortlist for the new task
 
-The exact simulator identity remains an optional owner clarification. Several
+The exact simulator identity was confirmed by the owner on September 8; see the follow-through above. Several
 references fit different parts of the request; keep all of these distinct:
 
 | Source | Verified contribution | Use boundary now |

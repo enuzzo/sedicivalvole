@@ -8,6 +8,7 @@ import { initialLaunchSoundtrack, luckySoundtrackGenre, luckyLaunchVisual, sound
 import { startStationaryRefresh } from "./engine/stationary-refresh.js";
 import { createEngineMotion } from "./engine/motion.js";
 import { useEngine } from "./engine/use-engine.js";
+import { ENGINE_CATALOGUE, isEngineProfile } from "./engine/catalogue.js";
 import { EngineTelemetry } from "./engine/telemetry-field.jsx";
 import { createLoadRecovery } from "./load-recovery.js";
 import { ExperienceCard } from "./experience-card.jsx";
@@ -2555,7 +2556,7 @@ export function App() {
   const releaseEngineRev = useCallback(() => geaps.runtimeRef.current?.releaseRev(), [geaps.runtimeRef]);
   const holdEngineRev = useCallback(() => geaps.runtimeRef.current?.setRevHeld(true), [geaps.runtimeRef]);
   const chooseEngineProfile = useCallback((id) => {
-    if (!["mono", "rosso", "touring"].includes(id)) return;
+    if (!isEngineProfile(id)) return;
     setEngineProfileId(id);
     logDiagnosticEvent("engine.profile.selected", { profileId: id });
   }, [logDiagnosticEvent]);
@@ -3825,8 +3826,8 @@ export function App() {
   const moveTransport = useCallback(async (direction, source = "on-screen-transport", invocation = null) => {
     if (experienceModeRef.current === "engine") {
       setEngineProfileId(current => {
-        const profiles = ["mono", "rosso", "touring"];
-        return profiles[(profiles.indexOf(current) + (direction === "previous" ? 2 : 1)) % profiles.length];
+        const profiles = ENGINE_CATALOGUE.map(profile => profile.id);
+        return profiles[(profiles.indexOf(current) + (direction === "previous" ? profiles.length - 1 : 1)) % profiles.length];
       });
       logDiagnosticEvent("engine.transport.profile", { direction, source });
       return;

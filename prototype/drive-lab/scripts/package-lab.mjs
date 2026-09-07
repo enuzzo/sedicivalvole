@@ -30,6 +30,7 @@ await writeFile(new URL("send.php", outputDirectory), await readFile(new URL("..
 
 const runtimeAssets = Object.freeze([
   "score-processor.js",
+  "procedural-processor.js",
 ]);
 for (const asset of runtimeAssets) {
   await copyFile(new URL(asset, buildDirectory), new URL(asset, outputDirectory));

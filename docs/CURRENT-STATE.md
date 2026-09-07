@@ -32,12 +32,20 @@ See [altitude correction and map fallback](ALTITUDE-FALLBACK-2026-09-07.md),
 [publication evidence](DEPLOY.md) and [earlier night checkpoint captures](qa/2026-09-07-night/).
 No synthetic email was sent. Browser QA does not replace physical acceptance.
 
-## Active development priority
+## Active Engine campaign — 2026-09-08
 
-The owner requests a substantive Engine quality and versatility campaign,
-including deeper simulator research, powertrain/audio refactoring and additional
-engine characters. This is new authorized work, not a claim of new shipped audio.
-See [the campaign handoff](ENGINE-QUALITY-CAMPAIGN-2026-09-07.md).
+The six-voice campaign is implemented and locally verified: Mono hybrid,
+Rosso/Touring sampled, original Otto V8, Cinque turbo five and continuous
+Turbine. Accepted motion, powertrain load/shift plans and sample-clock synthesis
+are separate. No new source recordings/dependencies were admitted. Existing
+dry/lifecycle/GPS contracts are preserved and extended by regression tests.
+Canonical publication is the next checkpoint; the latest live identity above
+still describes the preceding altitude build until postflight completes.
+
+[Implementation and reproducible audio](ENGINE-CAMPAIGN-IMPLEMENTATION-2026-09-08.md)
+and [verified source study](ENGINE-SOURCE-COMPARISON-2026-09-08.md).
+The exact fuller simulator question is closed: the owner confirmed
+Real Engine Simulator, alongside Ange Yaghi's engine-sim.
 
 ## Historical implementation inventory
 

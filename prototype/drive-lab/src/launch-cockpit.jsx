@@ -1,4 +1,5 @@
 import { SupportButton } from "./support-button.jsx";
+import { ENGINE_CATALOGUE } from "./engine/catalogue.js";
 import { useState } from 'react';
 import { SOUNDTRACK_GENRE_OPTIONS, SOUNDTRACK_PACE_OPTIONS } from './soundtrack/library-model.js';
 import { FLUX_VISUAL_CHOICES, SHADERGRADIENT_ENVIRONMENTS, getFluxEnvironment, isShaderGradientEnvironmentId } from './flux-environments.js';
@@ -9,7 +10,7 @@ import './launch-cockpit.css';
 const SOURCES = [
   ['soundtrack', 'Soundtrack'], ['play-road', 'Play the Road'], ['mute', 'Visuals only'],
 ];
-const ENGINES = [['mono', 'Mono', 'Agile and raw'], ['rosso', 'Rosso', 'Bright and expressive'], ['touring', 'Touring', 'Deep and relaxed']];
+const ENGINES = ENGINE_CATALOGUE.map(({ id, label, description }) => [id, label, description]);
 const label = value => value.displayLabel || value.label;
 const MUSIC_ARTWORK = '/assets/launch/soundtrack.png';
 function Thumbnail({ src, fallback = MUSIC_ARTWORK }) {

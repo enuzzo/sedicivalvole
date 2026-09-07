@@ -4,6 +4,13 @@
   "declaredLicense": "MIT",
   "ownerDecision": "2026-09-07 explicit source and WAV integration",
   "recordingProvenance": "upstream declaration relied upon; independent recording ownership not established",
+  "hostAcousticCampaign": {
+    "date": "2026-09-08",
+    "scope": "Original cycle-timed DSP and acoustic profiles add hybrid Mono and procedural Otto, Cinque and Turbine. No additional third-party code, presets, recordings or impulse responses admitted.",
+    "controlLineage": "The host continues to use the admitted Engine/Drivetrain primitives and configuration scaffold with original overrides; new acoustic synthesis is not an independent physical powertrain model.",
+    "unchangedInventory": "Existing code and audio entries, hashes and declared licensing remain unchanged.",
+    "researchRecord": "docs/ENGINE-SOURCE-COMPARISON-2026-09-08.md"
+  },
   "code": [
     {
       "source": "src/Engine.ts",

@@ -191,3 +191,15 @@ contracts, and do not treat a historical study's blind-review or AWAITING_APPROV
 workflow as the active task. Current work is an informed implementation campaign.
 Maintain source/asset provenance, existing licensing and the selected visual; a
 new visual design still requires its separate three-direction selection.
+
+
+## Owner simulator clarification — 2026-09-08
+
+The owner confirms Ange Yaghi's engine-sim and Real Engine Simulator
+(https://realenginesimulator.com/) as central Engine research references. The
+latter is the fuller simulator previously recalled. Explore its publicly
+accessible engines, interface and explanations; no purchase or access bypass is
+requested. Its public presets are free; Pro concerns the custom engine builder.
+Study behavior and concepts without importing its proprietary runtime, audio,
+parameters or presets. Continue the authorized original Engine implementation
+inside the saved local project; preserve the selected Telemetry visual.

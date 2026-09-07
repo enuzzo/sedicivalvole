@@ -339,3 +339,15 @@ to the selected place. Natural and Palette remain distinct. Manual/Area/Trip
 framing persists until Follow. Preserve audio mode while changing passenger
 views. The former midpoint chart handle/320 px sidebar is superseded by this
 explicit selection. PDF/email remains the separate documented design scope.
+
+
+## Owner simulator clarification — 2026-09-08
+
+The owner confirms Ange Yaghi's engine-sim and Real Engine Simulator
+(https://realenginesimulator.com/) as central Engine research references. The
+latter is the fuller simulator previously recalled. Explore its publicly
+accessible engines, interface and explanations; no purchase or access bypass is
+requested. Its public presets are free; Pro concerns the custom engine builder.
+Study behavior and concepts without importing its proprietary runtime, audio,
+parameters or presets. Continue the authorized original Engine implementation
+inside the saved local project; preserve the selected Telemetry visual.

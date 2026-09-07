@@ -21,7 +21,7 @@ export function useEngine({ active, muted, profileId, audioRef, motion, onEvent,
         const runtime = runtimeRef.current;
         runtime.setEnabled(!muted);
         const state = runtime.getState();
-        if (!muted && (state.profileId !== profileId || !state.decodedBytes)) await runtime.load(profileId);
+        if (!muted && (state.profileId !== profileId || !state.prepared)) await runtime.load(profileId);
         if (!cancelled) setSnapshot(runtime.getState());
       } catch (error) {
         if (!cancelled) {

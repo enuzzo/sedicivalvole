@@ -84,3 +84,10 @@
 
 /* Shared build identity on the first Intro screen and its loading Splash. */
 .intro-build { position: absolute; right: 16px; bottom: 14px; z-index: 3; color: #e5e4df; font-size: 13px; font-variant-numeric: tabular-nums; pointer-events: none; }
+
+/* The six Engine choices retain a visible Tesla launch action and full targets. */
+.cockpit-engine-body{grid-template-rows:32px auto 30px;gap:8px}
+.cockpit-engine-profiles{gap:8px;min-height:0}
+.cockpit-engine-profiles button{min-height:80px;padding:8px 12px;gap:4px}
+.cockpit-engine-profiles strong{font-size:22px;line-height:1.15}
+.cockpit-engine-profiles small{line-height:1.2}

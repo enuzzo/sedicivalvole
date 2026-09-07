@@ -313,7 +313,7 @@ These sources informed the original host analysis and improvement plan. No new
 third-party source or recording from this list is included in the runtime.
 
 - **DasEtwas — enginesound**: [https://github.com/DasEtwas/enginesound/tree/e5fcca587397c0c8ba9c9d24874b951fed74d260](https://github.com/DasEtwas/enginesound/tree/e5fcca587397c0c8ba9c9d24874b951fed74d260). MIT procedural cylinder/intake/exhaust and headless loop-export architecture; source study only, no code or example audio shipped.
-- **Antonio-R1 — engine-sound-generator**: [https://github.com/Antonio-R1/engine-sound-generator/tree/c76c5adb9e63f5a54fb0def3b97e8e0ac1a7dea1](https://github.com/Antonio-R1/engine-sound-generator/tree/c76c5adb9e63f5a54fb0def3b97e8e0ac1a7dea1). MIT AudioWorklet/C++/WASM waveguide implementation study; no code or assets shipped.
+- **Antonio-R1 — engine-sound-generator**: [https://github.com/Antonio-R1/engine-sound-generator/tree/c76c5adb9e63f5a54fb0def3b97e8e0ac1a7dea1](https://github.com/Antonio-R1/engine-sound-generator/tree/c76c5adb9e63f5a54fb0def3b97e8e0ac1a7dea1). MIT AudioWorklet/C++/WASM waveguide study; no code or assets shipped. The pinned JS/C++ generators read throttle without applying it to excitation. JS filter coefficients assume 44.1 kHz; C++ filters receive the actual rate. These findings informed original load articulation and rate-aware filters, not a donor import.
 - **ATG / Dan — VehicleNoiseSynthesizer**: [https://github.com/ATG-Simulator/VehicleNoiseSynthesizer/tree/4241caca5a18be0d47f0b8586df93b1b42d7020d](https://github.com/ATG-Simulator/VehicleNoiseSynthesizer/tree/4241caca5a18be0d47f0b8586df93b1b42d7020d). MIT code study of RPM regions and discrete acoustic events; no Unity code or demo recordings shipped.
 - **Ange Yaghi — engine-sim**: [https://github.com/ange-yaghi/engine-sim/tree/85f7c3b959a908ed5232ede4f1a4ac7eafe6b630](https://github.com/ange-yaghi/engine-sim/tree/85f7c3b959a908ed5232ede4f1a4ac7eafe6b630). Physical engine/firing/path-length research; no code or bundled impulse responses shipped.
 - **Baldan, Lachambre, Delle Monache and Boussard — engine sound synthesis (2015)**: [https://air.iuav.it/handle/11578/264484](https://air.iuav.it/handle/11578/264484). Institutional abstract and cited implementation study; full-paper equation audit not claimed; no paper text redistributed.
@@ -329,5 +329,23 @@ are original project code; admitted Engine source/WAV hashes remain unchanged.
 
 ## Engine quality campaign source intake — 2026-09-07
 
-- **Engine Sim Game / Real Engine Simulator**: [authored architecture](https://realenginesimulator.com/about), [changelog](https://realenginesimulator.com/changelog) and [terms](https://realenginesimulator.com/terms). Public documentation/behavior research on firing synthesis, automatic transmission and boost. Proprietary runtime, assets and constants are not imported. Publisher descriptions are not independent physical validation.
-- **TheDIYGuy999 — Rc_Engine_Sound_ESP32**: [source](https://github.com/TheDIYGuy999/Rc_Engine_Sound_ESP32). README and transmission/sound configuration entry-point study of automatic/DCT behavior and load/RPM layers. Exact revision and reuse licence require further verification. No source or audio enters the product in this intake.
+- **February Solutions, MB — Engine Sim Game / Real Engine Simulator**: [authored architecture](https://realenginesimulator.com/about), [changelog](https://realenginesimulator.com/changelog) and [terms/pricing](https://realenginesimulator.com/terms). Owner-confirmed reference; public documentation and ordinary UI clicks were reviewed. The public selector contains 45 presets, and the publisher reserves the custom builder for paid Pro. Observed controls distinguish piston, rotary and turbojet models; automatic driving shows gear changes, converter slip and lockup. These observations and publisher descriptions are not listening or physical validation. Proprietary runtime, assets, configurations and constants are not imported.
+- **TheDIYGuy999 — Rc_Engine_Sound_ESP32**: [pinned source](https://github.com/TheDIYGuy999/Rc_Engine_Sound_ESP32/tree/5520d721ef41b50f39dfe9a7081ac4620138702a). Exact revision verified September 7–8, 2026. README and transmission/sound entry-point study of automatic/DCT behavior and load/RPM layers; no licence-like file was found in the recursive tree, and the inspected files do not establish reuse permission. No code, encoded sound library or recording is imported.
+
+## Original Engine acoustic implementation — 2026-09-08
+
+`prototype/drive-lab/src/engine/procedural-dsp.js`, `procedural-processor.js`,
+`procedural-voice.js`, `powertrain.js` and the new acoustic profile data are
+original sedicivalvole work under the existing PolyForm Noncommercial scope.
+They add a cycle-timed layer to Mono and the procedural Otto, Cinque and Turbine
+voices. Public physics concepts and the credited studies above informed the
+design; no new third-party implementation, preset, recording or IR is admitted.
+
+The virtual control foundation still uses the previously admitted Mark Oosting
+Engine/Drivetrain primitives. New profiles reuse that configuration scaffold
+with project-authored overrides; it is not presented as wholly independent
+powertrain physics. The existing donor source files and WAV bytes retain their
+exact recorded hashes. Original acoustic synthesis does not settle or replace
+the recorded provenance follow-up for the retained sample banks. See
+[the source comparison](docs/ENGINE-SOURCE-COMPARISON-2026-09-08.md) and
+[the exact admitted inventory](prototype/drive-lab/src/engine/source-inventory.json).
