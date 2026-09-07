@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { discoverDistanceMetres, discoverPreferredLanguage, discoverWikipediaUrl, normalizeDiscoverPages } from '../../discover/discover-model.js';
+import { discoverDistanceMetres, formatDiscoverDistance, discoverPreferredLanguage, discoverWikipediaUrl, normalizeDiscoverPages } from '../../discover/discover-model.js';
 
 // Shared provider/normalizer with Discover; requests are bounded by time and travel.
 export default function AtlasPlaces({ map, position, onReadMore, demo = false }) {
@@ -59,7 +59,7 @@ export default function AtlasPlaces({ map, position, onReadMore, demo = false })
     <div onPointerDown={event => event.stopPropagation()} className="atlas-pois" aria-label="Discover places on the map">{projected.map(p => <button key={p.id} className="atlas-poi" style={{ left:p.x,top:p.y }} aria-label={`Discover ${p.title}`} aria-pressed={selected?.id === p.id} onClick={() => setSelected(p)}>{p.number}</button>)}</div>
     {selected ? <article onPointerDown={event => event.stopPropagation()} className="atlas-place-card">
       <img src={selected.thumbnail || '/third-party/tabler-icons/brand-wikipedia.svg'} alt="" onError={event => { if (!event.currentTarget.src.endsWith('/brand-wikipedia.svg')) event.currentTarget.src = '/third-party/tabler-icons/brand-wikipedia.svg'; }} />
-      <div><small>{demo ? "DEMO · " : ""}DISCOVER · WIKIPEDIA · {selected.distanceLabel}</small><h3>{selected.title}</h3><p>{selected.summary || 'Read the complete Wikipedia article for this place.'}</p><button onClick={() => onReadMore({ ...selected, language })}>Read more</button></div>
+      <div><small>{demo ? "DEMO · " : ""}DISCOVER · WIKIPEDIA · {formatDiscoverDistance(discoverDistanceMetres(position, selected))}</small><h3>{selected.title}</h3><p>{selected.summary || 'Read the complete Wikipedia article for this place.'}</p><button onClick={() => onReadMore({ ...selected, language })}>Read more</button></div>
       <button className="atlas-place-close" onClick={() => setSelected(null)} aria-label="Close place card">Close</button>
     </article> : <div className="atlas-places-hint">{demo ? "DEMO · " : ""}{status === 'ready' ? `${places.length} nearby places · tap a numbered point` : status === 'empty' ? 'No Wikipedia places found nearby' : status === 'retrying' ? 'Places unavailable · retrying automatically' : 'Finding nearby places…'}</div>}
   </>;
