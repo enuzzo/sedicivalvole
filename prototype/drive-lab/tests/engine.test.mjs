@@ -72,7 +72,7 @@ test("automatic gearbox covers upshift, downshift, kickdown, stale freeze and re
   const f=fixture(); const profile=f.profiles[0], drive={gears:[3.4,2.36,1.85,1.47,1.24,1.07],final_drive:3.44};
   const choose=overrides=>decideAutomaticGear({gear:1,speedKmh:75,drive:.3,canShift:true,heldSeconds:2,...overrides},profile,drive);
   assert.equal(choose({}).reason,"upshift"); assert.equal(choose({gear:3,speedKmh:20}).reason,"downshift");
-  assert.equal(choose({gear:3,speedKmh:60,drive:1}).reason,"kickdown");
+  assert.equal(choose({gear:3,speedKmh:54,drive:1}).reason,"kickdown");
   assert.equal(choose({canShift:false}),null); assert.equal(choose({heldSeconds:.2}),null);
   assert.equal(choose({gear:2,speedKmh:130,drive:1}).reason,"upshift"); assert.ok(virtualRpm(130,1,drive)>9000); f.runtime.destroy();
 });
@@ -186,4 +186,35 @@ test("show-off timing and peaks vary but stay bounded for every profile limit", 
     gesture.start(20,2000,limit);gesture.reset();assert.equal(gesture.sample(20.1),null);
   }
   assert.notDeepEqual(traces[0],traces[2]);
+});
+
+
+test("entertainment gearing reaches second at 35 and third at 65 in every profile", async () => {
+  for(const id of ['mono','rosso','touring']) {
+    const f=fixture(); f.runtime.setEnabled(true); await f.runtime.load(id);
+    const profile=f.profiles.find(p=>p.id===id), drivetrain=profile.configuration.drivetrain;
+    assert.ok(Math.abs(virtualRpm(35,1,drivetrain)-profile.up)<.001);
+    assert.ok(Math.abs(virtualRpm(65,2,drivetrain)-profile.up)<.001);
+    const shifts=[];
+    for(let speed=0;speed<=70;speed+=.25){f.evidence.speedKmh=speed;for(let i=0;i<4;i++)f.tick();const gear=f.runtime.getState().gear;if(shifts.at(-1)?.gear!==gear)shifts.push({gear,speed});}
+    assert.equal(f.runtime.getState().gear,3);
+    assert.ok(shifts[1].speed>=35 && shifts[1].speed<37,JSON.stringify(shifts));
+    assert.ok(shifts[2].speed>=65 && shifts[2].speed<67,JSON.stringify(shifts));
+    f.evidence.drive=1;for(let i=0;i<240;i++){f.evidence.speedKmh=i%2?64:66;f.tick();assert.equal(f.runtime.getState().gear,3);}
+    f.runtime.destroy();
+  }
+});
+test("road shift ladder retains separate downshift and kickdown margins", () => {
+  const f=fixture();for(const profile of f.profiles){const d=profile.configuration.drivetrain;
+    for(let gear=2;gear<=6;gear++){
+      const threshold=profile.upshiftKmh[gear-2];
+      for(const delta of [-1,0,1])assert.equal(decideAutomaticGear({gear,speedKmh:threshold+delta,drive:1,canShift:true,heldSeconds:2},profile,d),null);
+      assert.equal(decideAutomaticGear({gear,speedKmh:profile.downshiftKmh[gear-2],drive:0,canShift:true,heldSeconds:2},profile,d)?.reason,'downshift');
+    }
+  }f.runtime.destroy();
+});
+test("no speed evidence never produces an automatic idle blip", async () => {
+  const f=fixture();f.runtime.setEnabled(true);await f.runtime.load();f.evidence.freshness='lost';f.evidence.trustedStationary=false;
+  for(let i=0;i<500;i++){f.tick();assert.equal(f.runtime.getState().idleBlip,false);assert.equal(f.runtime.getState().rpm,1000);}
+  f.runtime.destroy();
 });

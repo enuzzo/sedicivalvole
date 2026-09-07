@@ -747,3 +747,13 @@ applies this only during trusted standstill, suppresses shifts and small idle
 blips, and retains all cancellation and gain boundaries. The UI uses native
 click semantics, with an explicit second-tap stop. Upstream primitives and WAVs
 are unchanged. See the Engine integration record for acoustic tuning limits.
+
+
+## Everyday-road acoustic gearbox — 2026-09-07
+
+Profiles clone the donor configuration at the host boundary and derive six ratios
+from existing upshift RPM with nominal road thresholds 35/65/90/112/132 km/h and a
+165 km/h sixth calibration. Up/down decisions use explicit separated speed
+boundaries, with kickdown restricted below 85% of the previous upshift boundary.
+Upstream files, timing, GPS evidence and sample routing remain unchanged. Idle
+status copy discloses missing speed evidence without relaxing standstill gates.

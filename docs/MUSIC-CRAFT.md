@@ -1753,3 +1753,13 @@ substitute volume boosts or Flux effects for those RPM movements. Regression
 checks count multiple peaks and throttle-off high-RPM intervals; actual-WAV
 browser probes confirm non-silent unclipped output. This Engine observation does
 not impose a compositional rule on the music score.
+
+
+### Engine entertainment needs audible shifts at ordinary speeds — 2026-09-07
+
+The owner found the first gear too long: a second gear above 70 km/h hid much of
+Engine's entertainment during ordinary driving. Shorter host acoustic ratios now
+bring the same profile RPM range into a 35/65 km/h first-two-upshift ladder.
+Separated downshift/kickdown boundaries prevent repeated gear flipping around a
+threshold. Preserve the dry sound and steady master gain; cadence and RPM drops
+supply the contrast. No change to the music score follows from this Engine tuning.

@@ -374,6 +374,14 @@ several throttle blips, releases, a brief limiter flutter and return to idle.
 Tap again to stop. Trusted GPS, mute and lifecycle cancellation remain enforced;
 Engine uses its unchanged dry sample path and master level.
 
+### Everyday-road Engine gearing — 2026-09-07
+
+Shorter acoustic ratios bring second around 35 km/h and third around 65 km/h,
+with filtering/shift completion placing third by about 70 in the browser sweep.
+Separate downshift thresholds prevent hunting. The idle RPM label now explains
+whether speed evidence is missing, stop confirmation is pending, or automatic
+small idle blips are enabled. No missing GPS reading is treated as a real stop.
+
 <!-- COMMUNITY-CREDITS:START -->
 ## Community thanks — 2026-09-05
 

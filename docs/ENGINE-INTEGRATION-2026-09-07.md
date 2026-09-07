@@ -46,9 +46,9 @@ smoothed gain/detune and retain the donor's equal-power sample blending.
 
 | Category | Parameter | Meaning |
 |---|---|---|
-| PHYS / virtual | 0.25 m wheel radius, six donor ratios, donor final drive, engine torque/inertia/braking | Consistent virtual mechanics from upstream; not calibrated Tesla internals |
+| PHYS / virtual | 0.25 m virtual wheel radius, six host-calibrated acoustic ratios, donor final drive and engine model | Original entertainment gearing around upstream primitives; not Tesla internals |
 | Unit correction | `60 * omega / (2 * PI)` | Correct rad/s → RPM; coupled sample and shift tuning is now independent of the donor's erroneous expression |
-| TUNING | 1,000 RPM floor, profile up/down/kick thresholds, 1.1 s minimum gear dwell | Authored driving feel; deterministic and adjustable in source |
+| TUNING | 1,000 RPM floor, road-speed shift ladder, bounded kickdown, 1.1 s minimum gear dwell | Authored driving feel; deterministic and adjustable in source |
 | TUNING | 0.20 / 0.24 / 0.30 s shift envelope | Continuous sample-gain/pitch transition, without an artificial gain dip, scheduled against AudioContext time; ratio commits once at the pitch transition boundary |
 | TUNING | ±2,400 cents, 35 ms continuous smoothing, 0.16 nominal Engine gain | Bounded first-listen mix, not an acoustic realism certification |
 | CAL / evidence | 1,800 ms fresh, 5,000 ms lost, accuracy at most 250 m | Conservative quality gates; position accuracy is not speed accuracy or a probability |
@@ -192,3 +192,34 @@ Official deployment and 28 byte-identity checks pass. Public Chrome confirms fiv
 measured rev peaks in each profile and cancellation/idle behavior; no page
 exceptions or diagnostic sends. The public test waits for real bank readiness
 before each gesture. [Deployment evidence](qa/2026-09-07-show-off/README.md).
+
+
+## Everyday-road gearing and idle evidence — 2026-09-07
+
+The owner wants entertainment at everyday road speeds: second around 30–40 km/h
+and third by 70, instead of first lasting beyond 70. The host now derives six
+acoustic ratios from the profile's existing upshift RPM and a 35 / 65 / 90 / 112 /
+132 km/h upshift ladder; sixth is calibrated against 165 km/h. This raises RPM
+within each shorter gear instead of merely shifting the old long ratios at low
+RPM. Original upstream configuration files and samples remain unchanged.
+
+Downshifts use 26 / 50 / 73 / 94 / 112 km/h boundaries. Kickdown also requires speed
+below 85% of the preceding upshift boundary, preserving the existing RPM/redline
+checks. The 1.1-second gear dwell and 0.20–0.30-second audio transitions remain.
+These are virtual entertainment settings, not donor-car or Tesla gearing claims.
+
+The idle blip was already implemented: 1000→1450→1000 RPM over 0.7 seconds after
+five eligible audio-clock seconds, then another five-second wait. Missing GPS
+speed, stale data or a rounded display zero cannot enable it. Valid stationary
+GPS or explicit Demo evidence can; a static browser without speed evidence cannot.
+The meter now distinguishes IDLE · NO SPEED SIGNAL, IDLE · CONFIRMING STOP and
+IDLE · AUTO BLIPS ON. Existing IDLE BLIP marks the actual small gesture.
+
+Validation: 655 regressions pass. Deterministic road sweeps verify every profile's
+35/65 shift calibration, third at 70 and no gear hunting near the boundaries.
+Actual-WAV Chrome at 773 × 601 verifies second by 39–40 and third by 69–70 km/h
+of the injected rising GPS signal, including filtering and shift completion delay.
+The displayed speed is separately smoothed. All profiles hold third at 70 with
+unclipped output. A missing speed field retains steady idle and disabled revs;
+fresh exact zeros enable and visibly trigger the existing small blip.
+[Browser evidence](qa/2026-09-07-road-gears/browser-evidence.json).

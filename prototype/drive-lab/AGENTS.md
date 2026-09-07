@@ -256,3 +256,12 @@ TAMARRO means varied powerful neutral throttle blips at a stop: up, release, up,
 brief limiter flutter and down. It is not a maximum-throttle hold. Keep TAMARRO
 with the English SHOW-OFF subtitle. One tap plays a bounded phrase; another stops.
 Keep the unchanged dry audio/gain path, trusted standstill and lifecycle gates.
+
+
+## Owner tuning — 2026-09-07 everyday-road gears
+
+Engine serves entertainment: second should enter around 30–40 km/h and third by
+70. Host acoustic ratios target nominal 35/65 km/h upshifts, with separated lower
+boundaries and dwell preventing gear hunting. Preserve upstream files and the dry
+audio path. A static browser with missing GPS speed does not prove standstill;
+explain idle-blip eligibility in the RPM label rather than bypassing evidence.

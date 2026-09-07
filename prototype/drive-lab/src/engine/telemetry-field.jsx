@@ -25,7 +25,7 @@ export function EngineTelemetry({ state, profileId, onProfile, onRev, onRelease,
       <i style={{ width: `${Math.min(100, rpm / 90)}%` }} />
     </div>
     <div className="engine-primary">
-      <div><small>VIRTUAL RPM</small><strong>{Math.round(rpm).toLocaleString("en-US")}</strong><span>{state.revving ? "REVVING" : state.idleBlip ? "IDLE BLIP" : state.shift ? state.shift.toUpperCase() : "ENGINE SPEED"}</span></div>
+      <div><small>VIRTUAL RPM</small><strong>{Math.round(rpm).toLocaleString("en-US")}</strong><span>{state.revving ? "REVVING" : state.idleBlip ? "IDLE BLIP" : state.shift ? state.shift.toUpperCase() : Math.round(speed) === 0 ? state.enabled === false ? "AUDIO PAUSED" : state.trustedStationary ? "IDLE · AUTO BLIPS ON" : state.motion === "lost" ? "IDLE · NO SPEED SIGNAL" : "IDLE · CONFIRMING STOP" : "ENGINE SPEED"}</span></div>
       <div><small>GEAR / {state.transmissionMode || "AUTO"}</small><strong>{state.revving ? "N" : state.gear ?? 1}</strong><span>ACOUSTIC GEARBOX</span></div>
     </div>
     <div className="engine-graphs">

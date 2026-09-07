@@ -45,6 +45,10 @@ dated study documents.
 
 ## Product surface
 
+- Shorter everyday-road Engine ratios and explicit idle-blip eligibility are
+  implemented and locally verified; publication pending. Second targets 35 km/h,
+  third 65 km/h, with separate downshift boundaries and unchanged dry audio.
+
 - TAMARRO / SHOW-OFF now implements tap-triggered, varied neutral rev phrases;
   canonically published and browser-verified. [Behavior and evidence](ENGINE-INTEGRATION-2026-09-07.md#show-off-gesture--2026-09-07).
 
