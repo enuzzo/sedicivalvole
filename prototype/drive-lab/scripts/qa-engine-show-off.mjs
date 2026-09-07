@@ -13,7 +13,7 @@ try {
   Object.defineProperty(navigator,'geolocation',{value:{watchPosition(cb){setTimeout(()=>cb(fix()),100);setTimeout(()=>cb(fix()),600);return 1;},clearWatch(){},getCurrentPosition(cb){cb(fix());}}});
   const AC=window.AudioContext;window.__meters=[];window.AudioContext=class extends AC{createAnalyser(){const a=super.createAnalyser();window.__meters.push(a);return a;}};
  });
- await page.goto(evidence.url);await page.locator('.cockpit-build').waitFor();evidence.build=await page.locator('.cockpit-build').innerText();if(process.env.EXPECT_BUILD)assert.equal(evidence.build,process.env.EXPECT_BUILD);await page.getByRole('button',{name:'Engine',exact:true}).click();await page.getByRole('button',{name:'START ENGINE',exact:true}).click();
+ await page.goto(evidence.url);await page.locator('.cockpit-build').waitFor({state:'attached'});evidence.build=await page.locator('.cockpit-build').innerText();if(process.env.EXPECT_BUILD)assert.equal(evidence.build,process.env.EXPECT_BUILD);await page.getByRole('button',{name:'Engine',exact:true}).click();await page.getByRole('button',{name:'START ENGINE',exact:true}).click();
  await page.getByText('SAMPLE ENGINE',{exact:true}).waitFor({timeout:30000});
  const left=page.getByRole('button',{name:'TAMARRO left',exact:true}),right=page.getByRole('button',{name:'TAMARRO right',exact:true});
  for(const name of ['Mono','Rosso','Touring']) {
@@ -22,7 +22,7 @@ try {
   const trace=await page.evaluate(()=>new Promise(resolve=>{const rows=[],start=performance.now();const t=setInterval(()=>{const meter=document.querySelector('.engine-tach'),a=window.__meters.at(-1),buf=new Float32Array(a.fftSize);a.getFloatTimeDomainData(buf);rows.push({ms:Math.round(performance.now()-start),rpm:Number(meter.getAttribute('aria-valuenow')),neutral:document.querySelectorAll('.engine-primary strong')[1].textContent==='N',active:document.querySelector('.engine-rev').getAttribute('aria-pressed')==='true',peak:Math.max(...buf.map(Math.abs)),rms:Math.sqrt(buf.reduce((s,v)=>s+v*v,0)/buf.length)});if(performance.now()-start>5700){clearInterval(t);resolve(rows);}},50);}));
   const active=trace.filter(r=>r.active);console.log('PROFILE',name,'samples',active.length,'maximum',Math.max(...active.map(r=>r.rpm)));await fs.writeFile(out+'/'+name.toLowerCase()+'-trace.json',JSON.stringify(trace));assert.ok(active.length>45);assert.ok(active.every(r=>r.neutral));assert.ok(Math.max(...active.map(r=>r.rpm))>8400);assert.ok(active.every(r=>r.peak<1));assert.ok(active.some(r=>r.rms>.001));
   let rising=false,peaks=0;for(let i=1;i<active.length;i++){const d=active[i].rpm-active[i-1].rpm;if(d>100)rising=true;else if(d< -100&&rising){peaks++;rising=false;}}assert.ok(peaks>=3,`${name}: ${peaks} peaks`);
-  assert.equal(trace.at(-1).active,false);assert.equal(trace.at(-1).rpm,1000);assert.equal(await page.locator('.effect-badge.is-active').count(),0);
+  assert.equal(trace.at(-1).active,false);assert.equal(trace.at(-1).rpm,600);assert.equal(await page.locator('.effect-badge.is-active').count(),0);
   evidence.profiles.push({name,peaks,trace});
  }
  await right.click();await page.waitForTimeout(650);await page.screenshot({path:out+'/show-off.png'});await left.click();await page.waitForTimeout(180);assert.equal(await right.getAttribute('aria-pressed'),'false');

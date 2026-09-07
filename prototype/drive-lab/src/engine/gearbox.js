@@ -17,4 +17,4 @@ export function decideAutomaticGear({ gear, speedKmh, drive, canShift, heldSecon
   }
   return null;
 }
-export function boundedRpm(rpm, profile) { return clamp(rpm, 1000, profile.configuration.engine.limiter); }
+export function boundedRpm(rpm, profile) { return clamp(rpm, 600, profile.configuration.engine.limiter); }

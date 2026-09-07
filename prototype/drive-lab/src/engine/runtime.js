@@ -27,6 +27,7 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
   let generation = 0, abort = null, disposed = false, enabled = false;
   let state = { status: "idle", profileId: "mono", rpm: 1000, gear: 1, shift: null, drive: 0, deceleration: 0, motion: "lost", trustedStationary: false, revving: false, decodedBytes: 0, error: null };
   let previousTime = context.currentTime, selectedAt = context.currentTime, shift = null;
+  let quietStop = false;
   let heldSince = null, retryTimer = null, retryStarted = null, retryCount = 0;
   let lastRequested = "mono", requestedRevision = 0, loadingTask = Promise.resolve();
   let timer = null, transmissionMode = "AUTO", manualGear = null;
@@ -44,7 +45,7 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
       clearInterval(timer); timer = null; state.status = nodes.length ? "ready" : "idle";
     } else if (!timer) timer = setInterval(tick, 25);
     const at = context.currentTime;
-    hold(master.gain, at); master.gain.setTargetAtTime(enabled && nodes.length ? 0.16 : 0, at, 0.04);
+    hold(master.gain, at); master.gain.setTargetAtTime(enabled && nodes.length ? 0.16 * (quietStop ? 0.7 : 1) : 0, at, 0.04);
     previousTime = at;
   };
   function gainsFor(rpm, drive) {
@@ -89,11 +90,20 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
     state.shift = decision.reason;
     onEvent("engine.shift.scheduled", { fromGear, toGear: decision.gear, reason: decision.reason, effectiveContextTime: effective, duration });
   }
+  function updateMaster(at, revving = false) {
+    state.outputLevel = quietStop && !revving ? 0.7 : 1;
+    hold(master.gain, at);
+    master.gain.setTargetAtTime(0.16 * state.outputLevel, at, 0.12);
+    // Bound audio if the control thread freezes.
+    master.gain.setTargetAtTime(0, at + 5, 0.35);
+  }
   function tick() {
     if (disposed) return;
     const evidence = motion.snapshot(now());
     state.motion = evidence.freshness; state.drive = evidence.drive; state.deceleration = evidence.deceleration;
     state.trustedStationary = enabled && nodes.length > 0 && evidence.trustedStationary && context.state === "running" && globalThis.document?.visibilityState !== "hidden";
+    if (state.trustedStationary) quietStop = true;
+    else if (evidence.freshness === "fresh" && evidence.rawSpeedKmh >= 1) quietStop = false;
     if (!state.trustedStationary || (heldSince != null && now() - heldSince >= 8000)) releaseRev();
     if (!enabled || !engine || context.state !== "running") { previousTime = context.currentTime; return; }
     const at = context.currentTime;
@@ -110,7 +120,7 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
         shift.committed = true; selectedAt = at;
         onEvent("engine.shift.committed", { gear: state.gear, reason: shift.reason });
       }
-      if (at < shift.endAt) { state.rpm = Math.round(engine.rpm); return; }
+      if (at < shift.endAt) { state.rpm = Math.round(engine.rpm); updateMaster(at); return; }
       shift = null; state.shift = null;
     }
     const activeEvidence = elapsed > 0.5 ? motion.snapshot(now()) : evidence;
@@ -126,15 +136,15 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
     if (gesture) state.drive = demand;
     engine.throttle = demand;
     engine.integrate(drivetrain.inertia, at * 1000, dt);
-    const coupledRpm = activeEvidence.freshness === "lost" ? 1000
+    const coupledRpm = activeEvidence.freshness === "lost" ? (quietStop ? 600 : 1000)
       : boundedRpm(virtualRpm(activeEvidence.speedKmh ?? 0, state.gear, drivetrain), profile);
     if (!revving) {
       drivetrain.omega = coupledRpm * 2 * Math.PI / 60;
       engine.solveVel(drivetrain, dt);
     }
     if (gesture) engine.omega = gesture.rpm * 2 * Math.PI / 60;
-    if (state.trustedStationary && !revving) engine.omega = (1000 + blipRpm) * 2 * Math.PI / 60;
-    engine.rpm = boundedRpm(engine.omega * 60 / (2 * Math.PI), profile);
+    if (state.trustedStationary && !revving) engine.omega = (600 + blipRpm) * 2 * Math.PI / 60;
+    engine.rpm = boundedRpm(Math.max(quietStop || revving ? 600 : 1000, engine.omega * 60 / (2 * Math.PI)), profile);
     engine.omega = engine.rpm * 2 * Math.PI / 60;
     state.rpm = Math.round(engine.rpm);
     const decision = !revving && transmissionMode === "MANUAL" && manualGear != null && activeEvidence.canShift && !shift
@@ -142,10 +152,7 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
       drive: demand, canShift: activeEvidence.canShift, heldSeconds: at - selectedAt }, profile, drivetrain) : null;
     if (decision) { manualGear = null; scheduleShift(decision, activeEvidence, at); }
     else applyContinuous(engine.rpm, demand, at);
-    // If the control thread freezes, the audio graph already has a bounded fade.
-    hold(master.gain, at);
-    master.gain.setTargetAtTime(0.16, at, 0.12);
-    master.gain.setTargetAtTime(0, at + 5, 0.35);
+    updateMaster(at, revving);
   }
   function load(profileId = "mono", options = {}) {
     abort?.abort();

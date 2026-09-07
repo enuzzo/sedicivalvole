@@ -1,4 +1,4 @@
-const idle = 1000;
+const idle = 600;
 const smooth = value => value * value * (3 - 2 * value);
 
 /** Authored neutral rev phrases: variation in timing and peaks, not audio effects. */

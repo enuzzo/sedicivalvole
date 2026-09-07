@@ -7,9 +7,9 @@ export function createIdleBlip() {
       if (!eligible) { nextAt = null; return 0; }
       nextAt ??= at + 5;
       if (at < nextAt) return 0;
-      const phase = (at - nextAt) / 0.7;
+      const phase = (at - nextAt) / 1.2;
       if (phase >= 1) { nextAt = at + 5; return 0; }
-      return 450 * Math.sin(Math.PI * phase) ** 2;
+      return 1200 * Math.sin(Math.PI * phase) ** 2;
     },
   };
 }

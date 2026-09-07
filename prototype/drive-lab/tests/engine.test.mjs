@@ -118,7 +118,7 @@ test("small periodic idle blips stop on movement, manual rev and disable", async
     f.tick(); const s = f.runtime.getState(); maximum = Math.max(maximum, s.rpm);
     if (s.idleBlip && !previous) blips++; previous = s.idleBlip;
   }
-  assert.equal(blips, 2); assert.ok(maximum >= 1400 && maximum <= 1450);
+  assert.equal(blips, 2); assert.ok(maximum >= 1750 && maximum <= 1800);
   f.runtime.setRevHeld(true); f.tick();
   assert.equal(f.runtime.getState().idleBlip, false);
   f.runtime.releaseRev(); f.evidence.trustedStationary = false;
@@ -173,7 +173,7 @@ test("show-off repeatedly rises and falls in neutral, reaches the limiter and re
   let peaks=0; for(let i=1;i<active.length-1;i++) if(active[i].rpm>active[i-1].rpm && active[i].rpm>active[i+1].rpm) peaks++;
   assert.ok(peaks>=4, `Expected several revs and limiter pulses, got ${peaks}`);
   assert.ok(active.every(s=>s.gear===1 && s.shift==null && !s.idleBlip));
-  assert.equal(states.at(-1).rpm,1000); assert.equal(states.at(-1).revving,false);
+  assert.equal(states.at(-1).rpm,600); assert.equal(states.at(-1).revving,false);
   f.runtime.destroy();
 });
 test("show-off timing and peaks vary but stay bounded for every profile limit", async () => {
@@ -181,7 +181,7 @@ test("show-off timing and peaks vary but stay bounded for every profile limit", 
   const traces=[];
   for(const random of [()=>0,()=>.5,()=>1]) for(const limit of [8900,9000]) {
     const gesture=createShowOff(random);gesture.start(10,1000,limit);const trace=[];
-    for(let i=0;i<300;i++){const s=gesture.sample(10+i*.025);if(s){assert.ok(s.rpm>=1000 && s.rpm<=limit);trace.push(Math.round(s.rpm));}}
+    for(let i=0;i<300;i++){const s=gesture.sample(10+i*.025);if(s){assert.ok(s.rpm>=600 && s.rpm<=limit);trace.push(Math.round(s.rpm));}}
     assert.ok(trace.length>100 && trace.length<230);assert.equal(gesture.sample(18),null);traces.push(trace);
     gesture.start(20,2000,limit);gesture.reset();assert.equal(gesture.sample(20.1),null);
   }
@@ -217,4 +217,28 @@ test("no speed evidence never produces an automatic idle blip", async () => {
   const f=fixture();f.runtime.setEnabled(true);await f.runtime.load();f.evidence.freshness='lost';f.evidence.trustedStationary=false;
   for(let i=0;i<500;i++){f.tick();assert.equal(f.runtime.getState().idleBlip,false);assert.equal(f.runtime.getState().rpm,1000);}
   f.runtime.destroy();
+});
+
+
+test("confirmed idle is 600 RPM at 70 percent; show-off and real motion restore full level", async () => {
+  const f=fixture(); f.runtime.setEnabled(true); await f.runtime.load();
+  f.evidence.trustedStationary=true; f.evidence.rawSpeedKmh=0; f.tick();
+  assert.equal(f.runtime.getState().rpm,600); assert.equal(f.runtime.getState().outputLevel,.7);
+  f.runtime.setRevHeld(true); f.tick(); assert.equal(f.runtime.getState().outputLevel,1);
+  f.runtime.releaseRev(); f.tick(); assert.equal(f.runtime.getState().outputLevel,.7);
+  f.evidence.trustedStationary=false; f.evidence.rawSpeedKmh=.2; f.tick();
+  assert.equal(f.runtime.getState().outputLevel,.7);
+  f.evidence.freshness="lost"; f.evidence.rawSpeedKmh=5; f.tick();
+  assert.equal(f.runtime.getState().outputLevel,.7);
+  f.evidence.freshness="fresh"; f.evidence.rawSpeedKmh=2; f.evidence.speedKmh=2; f.tick();
+  assert.equal(f.runtime.getState().outputLevel,1);
+  f.evidence.drive=0; f.evidence.deceleration=1; f.tick();
+  assert.equal(f.runtime.getState().outputLevel,1); f.runtime.destroy();
+});
+
+test("automatic idle gestures last 1.2 seconds and peak 1200 RPM above idle", async () => {
+ const {createIdleBlip}=await import('../src/engine/idle-blip.js');const blip=createIdleBlip();
+ assert.equal(blip.sample(0,true),0);assert.ok(blip.sample(5.6,true)>1199);
+ assert.ok(blip.sample(6.1,true)>0);assert.equal(blip.sample(6.21,true),0);
+ assert.equal(blip.sample(6.3,false),0);
 });

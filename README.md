@@ -47,6 +47,10 @@ is canonical and browser-verified; physical listening remains a separate gate.
 
 The launch header places the yellow Buy Me a Coffee button after About, with the safety caption below the transparent brand mark/wordmark group. The same support control remains available in Session report, opening a centered dialog.
 
+Engine now idles at 600 RPM and 70% level after a confirmed stop. TAMARRO stays
+at full level; fresh movement restores it. Automatic idle blips reach about
+1800 RPM over 1.2 seconds.
+
 ## What exists today
 
 - ✅ a single ignored local reference library under `_references/`;

@@ -309,3 +309,21 @@ palettes. Preserve metrics while separating surfaces. Plan a branded session PDF
 with optional user-requested email delivery to a remembered recipient cleared by
 Reset Saved State. The three-direction selection is pending; see
 ../../docs/ATLAS-STATS-REPORT-PLAN-2026-09-07.md.
+
+
+## Owner idle tuning — 2026-09-07
+
+Confirmed standstill now uses 600 RPM and 70% of the normal Engine master level.
+TAMARRO overrides the quiet level for its entire phrase and releases to 600 RPM.
+Fresh accepted speed of at least 1 km/h restores full level; sub-threshold jitter,
+invalid/stale evidence and GPS loss cannot falsely restore it after a stop.
+Moving lift/downshifts retain full level. Automatic standstill blips reach about
+1800 RPM (1200 above idle) over 1.2 seconds, with five seconds between gestures.
+Their level remains 70%; manual rev, motion and lifecycle cancellation still apply.
+The initial no-speed fallback remains 1000 RPM and never fabricates standstill.
+Only host orchestration changed; upstream code/WAV files and dry audio stay intact.
+
+Validation: 657 native tests, real browser master-gain targets at 0.112/0.16,
+GPS jitter/movement transitions, automatic blip trace and three-profile TAMARRO
+rise/fall/limiter/return checks pass. Browser audio is measured under headless mute;
+perceived loudness and target-Tesla listening remain owner acceptance.
