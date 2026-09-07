@@ -1460,3 +1460,13 @@ coordinate-free report to the existing destination; OFF/Standard is saved.
 This supersedes the earlier unimplemented status. 669 native tests, 18 package
 checks and intercepted browser delivery fixtures pass. Publication is pending.
 See [automatic diagnostics](AUTOMATIC-DIAGNOSTICS-2026-09-07.md).
+
+
+## Automatic diagnostics live — 2026-09-07 20:13
+
+**Build 20260907-2004**, source **b27975d** is canonical. Dev/AUTO ON defaults
+are active; fifteen observed GPS driving minutes trigger coordinate-free delivery
+to the existing mailbox. OFF/Standard preferences persist. Official publication,
+independent read-only postflight, 25 canonical checks, 669 native tests, 18 package
+checks and intercepted live timer/retry/OFF QA pass. Real driving-mail receipt
+remains separate. [Full delivery evidence](AUTOMATIC-DIAGNOSTICS-2026-09-07.md).

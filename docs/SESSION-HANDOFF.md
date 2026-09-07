@@ -1261,3 +1261,13 @@ catalogue entry points and real OpenStreetMap POIs pass at 773×601/390×844.
 Two existing autoplay warnings occur in the Visuals-only fixture; no page
 exceptions. Target-Tesla listening remains open. Automatic diagnostic mail is
 **not enabled**. [Full evidence and limits](ROAD-FEEDBACK-2026-09-07.md).
+
+
+## Automatic diagnostics live — 2026-09-07 20:13
+
+**Build 20260907-2004**, source **b27975d** is canonical. Dev/AUTO ON defaults
+are active; fifteen observed GPS driving minutes trigger coordinate-free delivery
+to the existing mailbox. OFF/Standard preferences persist. Official publication,
+independent read-only postflight, 25 canonical checks, 669 native tests, 18 package
+checks and intercepted live timer/retry/OFF QA pass. Real driving-mail receipt
+remains separate. [Full delivery evidence](AUTOMATIC-DIAGNOSTICS-2026-09-07.md).

@@ -48,3 +48,24 @@ intercepts every HTTP request, simulates a 503 then 202, and verifies exactly tw
 attempts, no backlog, OFF suppression and OFF persistence. No synthetic diagnostic
 is sent to the real mailbox. Screenshots use 773×601 and 390×844. Vehicle receipt
 will be verified separately from a real drive.
+
+
+## Canonical activation — 2026-09-07 20:13
+
+Live **build 20260907-2004**, source **b27975d**, VERSION 0.0.0 unchanged.
+Official publication and independent read-only postflight pass: 218 files /
+254,680,450 bytes, 29 Illobo full hashes and two retained cache-overlap assets.
+All 25 canonical HTML/asset/cache checks, 669 native tests and 18 compiled-package
+checks pass. Dev/AUTO ON, fifteen observed driving minutes, one retry after a
+503, accepted completion, OFF suppression and saved OFF pass in the live browser
+with intercepted requests. Viewports: 773×601, 390×844 and 773×440. No page
+exceptions or synthetic mail. Live PHP rejects Standard automatic delivery
+and forbidden coordinate keys with HTTP 422 before mail; this verifies the
+new server path without dispatching an artificial packet.
+
+Fresh launches show DEV / AUTO REPORT ON; previously saved OFF/Standard remains
+respected. Reload is required for an already-open older build. A real fifteen-
+minute driving packet and inbox receipt remain vehicle acceptance, not simulated
+QA evidence. Local evidence: `/tmp/sv-auto-qa.json`, `/tmp/sv-auto-canonical/identity.json`,
+`/tmp/sv-auto-{tests,package,build,preflight,publish,postflight}.log` and
+`/tmp/sv-auto-{intro,off,mobile,short}.png`.
