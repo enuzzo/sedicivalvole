@@ -113,7 +113,7 @@ enuzzo
 - **Credit:** Paweł Kuna and contributors.
 - **Source:** [Tabler Icons](https://github.com/tabler/tabler-icons).
 - **Public contact route:** [Contact / profile](https://github.com/codecalm).
-- **Use:** Integrated assets. Unchanged v3.46.0 SVGs in public/third-party/tabler-icons/; project CSS supplies optical sizing, masks and semantic colour.
+- **Use:** Integrated assets. Unchanged v3.46.0 SVGs in public/third-party/tabler-icons/; project CSS supplies optical sizing, masks and semantic colour, including the launch Music and Engine accents.
 - **License / permission boundary:** MIT.
 - **Source evidence:** linked upstream project plus the current local [notices](../THIRD_PARTY_NOTICES.md), package metadata or vendored notices; public routes checked 2026-09-05 where recorded in the verification evidence.
 - **Status:** DRAFT — not sent. Sent on: —; Channel: —; Reply: —; Follow-up: —.

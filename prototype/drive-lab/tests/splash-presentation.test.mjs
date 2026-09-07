@@ -403,7 +403,7 @@ test("safe product state persists locally and can be reset without storing GPS",
   assert.match(app, /manualEffects: normalizeManualEffectPreferences\(soundtrackManualEffects\)/);
   assert.match(app, /vehicleEffectsEnabled,[\s\S]*?muted/);
   assert.match(app, /const \[launchMusicId, setLaunchMusicId\] = useState\(initialPreferences\.musicMode\)/);
-  assert.match(app, /const \[launchEnvironmentId, setLaunchEnvironmentId\] = useState\(initialPreferences\.environmentId\)/);
+  assert.match(app, /const \[launchEnvironmentId, setLaunchEnvironmentId\] = useState\(\(\) => luckyLaunchVisual\(initialPreferences\.lastLaunchVisualId \?\? initialPreferences\.environmentId\)\)/);
   assert.match(app, /const resetSavedState = useCallback/);
   assert.match(app, /localStorage\.removeItem\(PREFERENCES_KEY\)/);
   assert.match(read("launch-cockpit.jsx"), /onClick=\{\(\)=>choose\(onReset\)\}>RESET SAVED STATE/);

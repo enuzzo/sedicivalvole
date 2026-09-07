@@ -17,9 +17,8 @@ Engine is an equal first-screen choice with Mono, Rosso and Touring profiles.
 - One immediate screen and one contextual START action. Preserve the Signal Gate
   artwork, real brand mark, palette tokens, source/creator links and support dialog.
 - Soundtrack: choose one of 15 genres, one of three pace filters, or Lobo Playlist.
-  Feeling lucky selects a genre, excluding the immediately previous genre. New
-  installations use lucky mode; explicit genre/pace/playlist choices persist.
-  Lucky mode rolls again on the next visit. Genre and pace are alternative filters,
+  Feeling lucky selects a genre, excluding the immediately previous genre. Every visit rolls a fresh genre, including after an explicit genre/pace/playlist
+  choice. Exact choices remain in force for the current visit. Genre and pace are alternative filters,
   not simultaneous criteria. Pace never changes a recording's playback rate.
 - Night Glass and Neon Groove still bind existing music, visual and appearance.
   All eight visual choices and three exact Gradient variants remain reachable.
@@ -83,3 +82,36 @@ Rosso Engine startup; no page exception or diagnostic transmission. Six inherite
 pre-gesture AudioContext warnings remain recorded. The browser test explicitly
 observes detached media elements and non-empty playback-rate evidence.
 [Publication details](DEPLOY.md#launch-cockpit--2026-09-07-1249).
+
+## Compact Round Instruments refinement — 2026-09-07
+
+The owner chose the second visual study, reduced both circular thumbnails to
+64 px, and requested fresh genre/visual choices on every visit. The launcher
+keeps two equal music/visual columns at 773 × 601 and stacks them on phones.
+Feeling lucky rerolls the genre; Change rerolls the visual without opening a
+dialog. Both sides retain Choose for precise selection. Random effects exclude
+the previous family, Atlas and Discover; the latter remain deliberate passenger
+choices. Gradient has one equal family probability, then selects one of its
+three exact variants. Only the last visual identifier is stored for repeat
+avoidance; no position is added to preferences.
+
+Preview images are static, so the launcher never boots extra visual renderers.
+Eight real visual captures use unchanged build 20260907-1316 at 773 × 601, with
+only host controls hidden; their scene renderers match the current build. Music
+uses the selected queue's actual cover only when the exact selection is ready,
+with a 256 px generated generic music illustration during loading or image failure.
+Existing score covers and the Illobo mark retain their established identities.
+Atlas/Discover use the existing map icon. Preview failure never blocks START.
+The generated generic illustration has no claimed artist/recording identity and
+remains excluded original media under LICENSE-SCOPE. Tabler's two pinned MIT
+Music/Engine icons extend the synchronized community inventory.
+
+Presentation remains in launch-cockpit.jsx/css; launch-model.js now also owns
+family-weighted visual roulette. App owns visit initialization, repeat memory,
+exact-queue artwork and the unchanged startup/audio lifecycle.
+
+Validation of this refinement: 655 native tests and 16 browser checks pass at
+773 × 601, 390 × 844 and 1280 × 800, including reroll/reload, delayed queue
+startup and Engine regression. All effect thumbnails together occupy less than
+280 KiB after proportional 192 px export. See [design QA](../design-qa.md) and
+[interaction evidence](qa/2026-09-07-round-launch/browser-evidence.json).

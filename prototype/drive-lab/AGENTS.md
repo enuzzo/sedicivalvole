@@ -265,3 +265,14 @@ Engine serves entertainment: second should enter around 30–40 km/h and third b
 boundaries and dwell preventing gear hunting. Preserve upstream files and the dry
 audio path. A static browser with missing GPS speed does not prove standstill;
 explain idle-blip eligibility in the RPM label rather than bypassing evidence.
+
+
+## Owner selection — 2026-09-07 compact Round Instruments
+
+The owner selected the second splash study with circular thumbnails at half their
+original diameter: 64 px. Keep two equal music/visual columns at Tesla size, the
+existing light/dark shell, small amber Music and accent Engine icons, and all
+48/56 px targets. Each visit starts with a fresh soundtrack genre and visual
+effect; Feeling lucky and Change reroll without immediate repeats. Choose keeps
+precise genre/pace/Lobo/score and all visual choices reachable. Atlas and Discover
+remain deliberate passenger choices. Gradient has one equal roulette weight.

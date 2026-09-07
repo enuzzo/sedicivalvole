@@ -1,5 +1,5 @@
 import { LaunchCockpit } from "./launch-cockpit.jsx";
-import { initialLaunchSoundtrack, luckySoundtrackGenre, soundtrackLaunchReady, prepareExactSoundtrackStart } from "./launch-model.js";
+import { initialLaunchSoundtrack, luckySoundtrackGenre, luckyLaunchVisual, soundtrackLaunchReady, prepareExactSoundtrackStart } from "./launch-model.js";
 import { startStationaryRefresh } from "./engine/stationary-refresh.js";
 import { createEngineMotion } from "./engine/motion.js";
 import { useEngine } from "./engine/use-engine.js";
@@ -292,6 +292,7 @@ function readPreferences() {
       atlasMapAppearance: normalizeAtlasMapAppearance(value?.atlasMapAppearance),
       musicMode: value?.musicMode === "soundtrack" ? "soundtrack" : "play-road",
       soundtrackSelection: normalizeSoundtrackSelection(value?.soundtrackSelection),
+      lastLaunchVisualId: value?.lastLaunchVisualId,
       launchSoundtrackMode: ["lucky", "precise"].includes(value?.launchSoundtrackMode) ? value.launchSoundtrackMode
         : normalizeSoundtrackSelection(value?.soundtrackSelection).kind === "library" ? "lucky" : "precise",
       manualEffects: normalizeManualEffectPreferences(value?.manualEffects),
@@ -2149,13 +2150,11 @@ export function App() {
   const initialSystemAppearance = useMemo(readSystemAppearanceSnapshot, []);
   const [phase, setPhase] = useState("idle");
   const launchStartedRef = useRef(false);
-  const [launchSoundtrackSelection, setLaunchSoundtrackSelection] = useState(() => initialLaunchSoundtrack(initialPreferences.soundtrackSelection, Math.random, initialPreferences.launchSoundtrackMode));
-  const [launchLucky, setLaunchLucky] = useState(initialPreferences.launchSoundtrackMode === "lucky");
-  const [launchExperienceId, setLaunchExperienceId] = useState(() => matchingExperience({
-    ...initialPreferences, appearanceMode: initialAppearanceMode,
-  })?.id ?? null);
+  const [launchSoundtrackSelection, setLaunchSoundtrackSelection] = useState(() => initialLaunchSoundtrack(initialPreferences.soundtrackSelection));
+  const [launchLucky, setLaunchLucky] = useState(true);
+  const [launchExperienceId, setLaunchExperienceId] = useState(null);
   const [launchMusicId, setLaunchMusicId] = useState(initialPreferences.musicMode);
-  const [launchEnvironmentId, setLaunchEnvironmentId] = useState(initialPreferences.environmentId);
+  const [launchEnvironmentId, setLaunchEnvironmentId] = useState(() => luckyLaunchVisual(initialPreferences.lastLaunchVisualId ?? initialPreferences.environmentId));
   const [speed, setSpeed] = useState(QA_SPEED);
   const [source, setSource] = useState(QA_SPEED > 0 ? "QA" : "GPS");
   const [gpsState, setGpsState] = useState("not tested");
@@ -4462,6 +4461,7 @@ export function App() {
         prtclSettings: normalizePrtclSettings(prtclSettings),
         atlasMapAppearance: normalizeAtlasMapAppearance(atlasMapAppearance),
         musicMode,
+        lastLaunchVisualId: launchEnvironmentId,
         launchSoundtrackMode: launchLucky ? "lucky" : "precise",
         soundtrackSelection: {
           kind: preferredSoundtrackSelectionRef.current.kind,
@@ -4486,6 +4486,7 @@ export function App() {
     soundtrackSnapshot?.library?.selection?.id,
     soundtrackSnapshot?.library?.selection?.kind,
     launchLucky,
+    launchEnvironmentId,
     launchSoundtrackSelection,
     themeId,
     vehicleEffectsEnabled,
@@ -5041,8 +5042,10 @@ export function App() {
           mode={experienceMode} onMode={chooseExperienceMode}
           musicId={launchMusicId} onMusic={(id) => { setLaunchExperienceId(null); selectLaunchMusic(id); }}
           selection={launchSoundtrackSelection} lucky={launchLucky}
+          soundtrackArtworkUrl={soundtrackLaunchReady(soundtrackSnapshot, launchSoundtrackSelection) ? soundtrackSnapshot.current?.imageUrl : null}
           onSelection={chooseLaunchSoundtrack}
           onLucky={() => chooseLaunchSoundtrack(luckySoundtrackGenre(launchSoundtrackSelection.id), true)}
+          onRandomVisual={() => { setLaunchExperienceId(null); setLaunchEnvironmentId(luckyLaunchVisual(launchEnvironmentId)); }}
           environmentId={launchEnvironmentId} onVisual={(id) => { setLaunchExperienceId(null); setLaunchEnvironmentId(id); }}
           scoreId={genreId} onScore={(id) => { setLaunchExperienceId(null); setGenreId(id); }}
           engineProfileId={engineProfileId} onEngineProfile={chooseEngineProfile}

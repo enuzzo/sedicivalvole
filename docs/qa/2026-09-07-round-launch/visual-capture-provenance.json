@@ -1,0 +1,58 @@
+[
+  {
+    "id": "aperture",
+    "label": "Aperture",
+    "source": "https://sedicivalvole.app/",
+    "build": "20260907-1316",
+    "viewport": "773x601"
+  },
+  {
+    "id": "vertigo",
+    "label": "Vertigo",
+    "source": "https://sedicivalvole.app/",
+    "build": "20260907-1316",
+    "viewport": "773x601"
+  },
+  {
+    "id": "meridian",
+    "label": "Meridian",
+    "source": "https://sedicivalvole.app/",
+    "build": "20260907-1316",
+    "viewport": "773x601"
+  },
+  {
+    "id": "drivey",
+    "label": "Drivey",
+    "source": "https://sedicivalvole.app/",
+    "build": "20260907-1316",
+    "viewport": "773x601"
+  },
+  {
+    "id": "prtcl",
+    "label": "Prtcl",
+    "source": "https://sedicivalvole.app/",
+    "build": "20260907-1316",
+    "viewport": "773x601"
+  },
+  {
+    "id": "japanese-mist",
+    "label": "Japanese Mist",
+    "source": "https://sedicivalvole.app/",
+    "build": "20260907-1316",
+    "viewport": "773x601"
+  },
+  {
+    "id": "acid-orchard",
+    "label": "Acid Orchard",
+    "source": "https://sedicivalvole.app/",
+    "build": "20260907-1316",
+    "viewport": "773x601"
+  },
+  {
+    "id": "chromatic-silk",
+    "label": "Chromatic Silk",
+    "source": "https://sedicivalvole.app/",
+    "build": "20260907-1316",
+    "viewport": "773x601"
+  }
+]

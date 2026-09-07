@@ -382,6 +382,15 @@ Separate downshift thresholds prevent hunting. The idle RPM label now explains
 whether speed evidence is missing, stop confirmation is pending, or automatic
 small idle blips are enabled. No missing GPS reading is treated as a real stop.
 
+
+### Compact launch previews — 2026-09-07
+
+The launch cockpit now pairs two 64 px circular thumbnails with equal Music and
+Visual columns. Every visit rolls a new soundtrack genre and visual effect;
+Feeling lucky and Change reroll without immediate repeats. Choose preserves
+precise selection. Static effect captures and ready-queue cover art keep previews
+lightweight, with no extra live renderer. See [launch behavior and architecture](docs/LAUNCH-COCKPIT-2026-09-07.md).
+
 <!-- COMMUNITY-CREDITS:START -->
 ## Community thanks — 2026-09-05
 
@@ -394,7 +403,7 @@ A heartfelt thank-you to the people who share the code, type, music, data and ex
 | 🏎️ Mark Oosting — engine-audio | [Pinned repository](https://github.com/markeasting/engine-audio/tree/b8cf9887c914f17c2f006d68427080e39d02d0b0) · [Author](https://github.com/markeasting) | **Integrated, declared MIT.** Adapted Engine/Drivetrain/equal-power mixer, three configurations and helpers; 16 byte-identical bundled WAVs. [Exact inventory](prototype/drive-lab/src/engine/source-inventory.json). Recording provenance follow-up remains recorded. |
 | 🛣️ Rezmason; original Drivey by Mark Pursey — Drivey.js | [Project](https://github.com/Rezmason/drivey) | **Integrated vendor runtime.** 51 unchanged runtime files at 5104cda in public/third-party/drivey/, behind a separate integration shell and bridge. |
 | 🎨 ruucm and stone-skipper — ShaderGradient | [Project](https://github.com/ruucm/shadergradient) | **Production dependency.** Unmodified @shadergradient/react 2.4.20 in the lazy Gradient family and protected LAB; project-owned starting points, response and fallback. |
-| ✒️ Paweł Kuna and contributors — Tabler Icons | [Project](https://github.com/tabler/tabler-icons) | **Integrated assets.** Unchanged v3.46.0 SVGs in public/third-party/tabler-icons/; project CSS supplies optical sizing, masks and semantic colour. |
+| ✒️ Paweł Kuna and contributors — Tabler Icons | [Project](https://github.com/tabler/tabler-icons) | **Integrated assets.** Unchanged v3.46.0 SVGs in public/third-party/tabler-icons/; project CSS supplies optical sizing, masks and semantic colour, including the launch Music and Engine accents. |
 | 🌈 Björn Ottosson — Oklab reference conversion | [Project](https://bottosson.github.io/posts/oklab/) | **Adapted numeric implementation.** Forward/inverse conversion matrices translated into src/semantic-theme.js; contrast search and role resolution are project-owned. |
 | ⚛️ Meta and React contributors — React / React DOM | [Project](https://github.com/facebook/react) | **Production dependencies.** React 19.2.0 and React DOM power the interface and component lifecycle in src/. |
 | 🧊 Ricardo Cabello (mrdoob) and contributors — Three.js | [Project](https://github.com/mrdoob/three.js) | **Production and upstream-bundled dependency.** 0.169.0 for ShaderGradient, r109 inside Infinite Lights and r115 inside Drivey; upstream copies remain separate. |

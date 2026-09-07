@@ -16,3 +16,34 @@
 @media(max-width:650px){.launch-cockpit{inset:14px 12px 90px;padding:12px;grid-template-rows:48px 56px minmax(0,1fr) 64px;gap:12px}.cockpit-heading{gap:8px}.cockpit-heading h1{font-size:21px}.cockpit-heading img{width:36px;height:36px}.cockpit-build{display:none}.cockpit-heading>button{margin-left:auto;min-width:48px;padding:4px;font-size:15px}.cockpit-music-body{grid-template-rows:64px minmax(128px,1fr) 76px 64px}.cockpit-sources button{font-size:15px;padding:8px 6px}.cockpit-selection{flex-wrap:wrap;gap:4px;padding:8px 12px}.cockpit-selection:not(.cockpit-visual) .cockpit-value{width:100%;flex-basis:100%}.cockpit-value strong{font-size:24px}.cockpit-value small{font-size:13px}.cockpit-visual .cockpit-value{max-width:calc(100% - 70px)}.cockpit-presets{padding:0 8px;grid-template-columns:1fr}.cockpit-presets>small{display:none}.cockpit-presets button{font-size:15px;padding:8px}.cockpit-start strong{font-size:20px}.cockpit-start span{max-width:45%}.cockpit-footer{left:20px;right:20px;bottom:0;flex-wrap:wrap;gap:0;justify-content:space-between}.cockpit-footer>span{order:0}.cockpit-footer>small{order:2;width:100%;text-align:center;min-height:28px}.cockpit-engine-profiles{grid-template-columns:1fr;gap:8px}.cockpit-engine-profiles button{padding:12px;flex-direction:row;align-items:center;justify-content:space-between}.cockpit-engine-profiles strong{font-size:24px}.cockpit-engine-note{flex-wrap:wrap;justify-content:flex-start}.cockpit-picker{padding:14px}.cockpit-picker-options{grid-template-columns:repeat(2,minmax(0,1fr))}.cockpit-picker-options button{padding:8px}.cockpit-picker h2{font-size:20px}.cockpit-picker-tabs button{font-size:13px;padding:6px}}
 @media(max-height:520px){.splash:has(.launch-cockpit){overflow:auto}.launch-cockpit{position:relative;inset:auto;margin:12px auto 0;width:calc(100% - 24px);height:500px}.cockpit-footer{position:relative;inset:auto;width:calc(100% - 48px);margin:0 auto}}
 .cockpit-starting{position:absolute;top:50%;left:0;right:0;text-align:center;color:#fff;font-size:22px;z-index:3}
+
+/* Small circular previews preserve the owner-selected Round Instruments hierarchy. */
+.cockpit-modes strong{display:flex;align-items:center;justify-content:center;gap:12px}
+.cockpit-mode-icon{display:inline-block;width:24px;height:24px;flex:none;mask:center/contain no-repeat;-webkit-mask:center/contain no-repeat}
+.cockpit-mode-icon.is-music{background:#bc7900;mask-image:url('/third-party/tabler-icons/music.svg');-webkit-mask-image:url('/third-party/tabler-icons/music.svg')}
+.cockpit-mode-icon.is-engine{background:var(--ui-accent-text);mask-image:url('/third-party/tabler-icons/engine.svg');-webkit-mask-image:url('/third-party/tabler-icons/engine.svg')}
+.cockpit-music-body{grid-template-rows:56px minmax(132px,1fr) 54px}
+.cockpit-choices{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--ui-line);border-radius:6px;min-width:0}
+.cockpit-choices .cockpit-selection{display:flex;flex-direction:column;justify-content:center;align-items:stretch;border:0;border-radius:0;gap:8px;padding:8px 16px;min-width:0}
+.cockpit-choices .cockpit-selection+.cockpit-selection{border-left:1px solid var(--ui-line)}
+.cockpit-selection-heading{display:flex;align-items:center;gap:18px;min-width:0}
+.cockpit-thumb{width:64px;height:64px;flex:none;object-fit:cover;border-radius:50%;background:#f1e9db}
+.cockpit-value{gap:6px;margin:0}.cockpit-value strong{font-size:24px;overflow-wrap:anywhere}
+.cockpit-choice-actions{display:flex;align-items:center;gap:8px;min-height:48px;padding-left:82px}
+.launch-cockpit .cockpit-choice-actions button{font-size:17px;padding:8px 10px;white-space:nowrap;min-width:76px}
+.launch-cockpit .cockpit-choice-actions .cockpit-text-action{border-color:var(--ui-line)}
+.cockpit-preset-thumb{height:16px;width:16px;border-radius:50%;object-fit:cover;flex:none}
+.cockpit-presets button strong{display:flex;align-items:center;gap:12px}
+@media(min-width:651px) and (max-width:850px){.cockpit-choice-actions{padding-left:0;justify-content:flex-end}}
+@media(max-width:650px){
+ .cockpit-music-body{grid-template-rows:64px minmax(290px,1fr) 64px}
+ .cockpit-choices{grid-template-columns:1fr;grid-template-rows:1fr 1fr}
+ .cockpit-choices .cockpit-selection{padding:10px 12px;gap:8px;flex-wrap:nowrap}
+ .cockpit-choices .cockpit-selection+.cockpit-selection{border-left:0;border-top:1px solid var(--ui-line)}
+ .cockpit-selection-heading{gap:16px}
+ .cockpit-selection:not(.cockpit-visual) .cockpit-value{width:auto;flex-basis:auto}
+ .cockpit-visual .cockpit-value{max-width:none}
+ .cockpit-choice-actions{padding-left:80px}
+ .launch-cockpit .cockpit-choice-actions button{font-size:15px;padding:8px 10px;min-width:70px}
+ .cockpit-value strong{font-size:24px}
+}

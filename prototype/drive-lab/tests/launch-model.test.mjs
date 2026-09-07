@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { luckySoundtrackGenre, initialLaunchSoundtrack, soundtrackLaunchReady, prepareExactSoundtrackStart } from '../src/launch-model.js';
+import { luckySoundtrackGenre, luckyLaunchVisual, initialLaunchSoundtrack, soundtrackLaunchReady, prepareExactSoundtrackStart } from '../src/launch-model.js';
 import { SOUNDTRACK_GENRE_OPTIONS } from '../src/soundtrack/library-model.js';
 
 test('Feeling lucky reaches every supported genre and never immediately repeats', () => {
@@ -8,12 +8,21 @@ test('Feeling lucky reaches every supported genre and never immediately repeats'
   assert.equal(ids.size,SOUNDTRACK_GENRE_OPTIONS.length);
   for(const previous of ids) for(let i=0;i<15;i++) assert.notEqual(luckySoundtrackGenre(previous,()=>i/15).id,previous);
 });
-test('saved precise genre, pace and Lobo choices survive startup; an unspecified mix gets a genre', () => {
+test('every visit rolls a genre even after an exact genre, pace or playlist choice', () => {
   for(const selection of [{kind:'genre',id:'jazz'},{kind:'pace',id:'slow'},{kind:'featured',id:'signal-border'}]) {
-    const actual=initialLaunchSoundtrack(selection,()=>0);assert.equal(actual.kind,selection.kind);assert.equal(actual.id,selection.id);
+    const actual=initialLaunchSoundtrack(selection,()=>0);assert.equal(actual.kind,'genre');assert.notEqual(actual.id,selection.id);
   }
-  assert.equal(initialLaunchSoundtrack(undefined,()=>0).kind,'genre');
   for(const random of [()=>NaN,()=>Infinity,()=>-1,()=>2,()=>{throw Error('unavailable');}]) assert.equal(luckySoundtrackGenre(null,random).kind,'genre');
+});
+test('visual roulette reaches all effects, treats Gradient as one family and never opens passenger tools', () => {
+  const ids=new Set();
+  for(let family=0;family<6;family++) for(let variant=0;variant<3;variant++){let call=0;ids.add(luckyLaunchVisual(null,()=>call++ === 0 ? family/6 : variant/3));}
+  for(const id of ['aperture','vertigo','meridian','drivey','prtcl','japanese-mist','acid-orchard','chromatic-silk']) assert.ok(ids.has(id),id);
+  for(const previous of ids) for(let i=0;i<60;i++) {
+    const next=luckyLaunchVisual(previous,()=>i/60);
+    assert.notEqual(next,previous);assert.ok(!['atlas','discover'].includes(next));
+    if(['japanese-mist','acid-orchard','chromatic-silk'].includes(previous)) assert.ok(!['japanese-mist','acid-orchard','chromatic-silk'].includes(next));
+  }
 });
 test('START never plays the old queue while a different genre loads, then resumes the ready selection', async () => {
   const selection={kind:'genre',id:'jazz'};let resumes=0,loads=0;
@@ -30,11 +39,4 @@ test('START recovers a cancelled or failed selection without substituting a reme
   const controller={getSnapshot:()=>snapshot,resume:async()=>{resumes++;},load:async args=>{requested=args;}};
   await prepareExactSoundtrackStart(controller,selection);assert.equal(resumes,0);assert.deepEqual(requested,{selection});
   assert.equal(soundtrackLaunchReady({...snapshot,status:'prepared',current:null},snapshot.library.selection),false);
-});
-
-
-test('lucky startup rolls again, while precise all-genres remains an explicit choice', () => {
-  const jazz={kind:'genre',id:'jazz'};
-  assert.notEqual(initialLaunchSoundtrack(jazz,()=>0,'lucky').id,'jazz');
-  assert.equal(initialLaunchSoundtrack({kind:'library',id:'all'},()=>0,'precise').kind,'library');
 });
