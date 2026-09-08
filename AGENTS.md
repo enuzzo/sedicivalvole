@@ -226,3 +226,13 @@ while retaining full, deep body. Preserve dry output, GPS/lifecycle and TAMARRO.
 A protected LAB comparison/annotation surface is proposed; present three
 directions and retain the visual selection gate before constructing it. See
 docs/ENGINE-LISTENING-REFINEMENT-2026-09-08.md.
+
+## Owner listening LAB selection — 2026-09-08
+
+The owner selects A/B listening: the same route, two calibrations, locally saved
+preference and notes. Implement in the existing protected LAB, one take at a
+time, explicit original levels, bounded local history and export. Preserve the
+public refined default and existing dry/GPS/lifecycle contracts.
+
+Keep A/B calibration labels and source identifiers synchronized whenever their
+parameters change; an earlier calibration must not silently become a new sound.

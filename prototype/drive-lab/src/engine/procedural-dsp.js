@@ -22,6 +22,11 @@ class Pipe {
 export class EngineSynth {
   constructor(rate, configuration = {}) {
     this.rate = rate; this.config = configuration; this.phase = 0;
+    // Protected listening bench can reproduce an earlier original calibration.
+    this.acoustics = { pipeFeedback: .24, pipeFeedbackStep: .04, intakeFeedback: .22,
+      direct: .55, returns: [.34, .18, .1], intakeReturn: .2,
+      bladeBase: .01, bladeRange: .016, bladeDrift: .035, bladeAmplitudeDrift: .3,
+      compressor: .018, ...configuration.acoustics };
     this.seed = 0x6d2b79f5; this.frames = 0; this.firings = 0;
     this.spool = 0; this.blade = 0; this.blowOff = 0; this.releaseArmed = false;
     this.previousLoad = 0; this.noiseLow = 0; this.airLow = 0;
@@ -43,8 +48,8 @@ export class EngineSynth {
     }
     this.pending = [new Float32Array(this.pulse.length + 4), new Float32Array(this.pulse.length + 4)];
     this.cursor = 0;
-    this.pipes = [0, 1].map(bank => (configuration.pipeSeconds ?? [.0041, .0067, .0113]).map((seconds, i) => new Pipe(rate, seconds * (bank ? 1.037 : 1), .24 - i * .04)));
-    this.intake = new Pipe(rate, configuration.intakeSeconds ?? .0028, .22);
+    this.pipes = [0, 1].map(bank => (configuration.pipeSeconds ?? [.0041, .0067, .0113]).map((seconds, i) => new Pipe(rate, seconds * (bank ? 1.037 : 1), this.acoustics.pipeFeedback - i * this.acoustics.pipeFeedbackStep)));
+    this.intake = new Pipe(rate, configuration.intakeSeconds ?? .0028, this.acoustics.intakeFeedback);
     this.dcPole = Math.exp(-TAU * 24 / rate);
     this.noiseCoefficient = 1 - Math.exp(-TAU * 980 / rate);
     this.airCoefficient = 1 - Math.exp(-TAU * 352 / rate);
@@ -81,14 +86,14 @@ export class EngineSynth {
     this.valveLow += this.valveCoefficient * (highNoise - this.valveLow);
     this.valveEnvelope += (1 - Math.exp(-1 / (this.rate * .004))) * (this.blowOff - this.valveEnvelope);
     this.flowDrift += (1 - Math.exp(-TAU * 7 / this.rate)) * (noise - this.flowDrift);
-    this.blade = (this.blade + (this.config.turbine ? (420 + this.spool * 2700) * (1 + this.flowDrift * .035) : 1700 + this.spool * 2700) / this.rate) % 1;
+    this.blade = (this.blade + (this.config.turbine ? (420 + this.spool * 2700) * (1 + this.flowDrift * this.acoustics.bladeDrift) : 1700 + this.spool * 2700) / this.rate) % 1;
     this.airLow += this.airCoefficient * (noise - this.airLow);
     if (this.config.turbine) {
       // Airflow owns the body; a quiet, gently irregular blade tone adds shaft detail.
       // No fictional piston firings or transmission gears.
       const whine = Math.sin(TAU * this.blade) + .22 * Math.sin(TAU * this.blade * 2);
       const air = this.airLow * (1.2 + 3 * this.spool) + highNoise * .045;
-      const raw = (whine * (.01 + .016 * this.spool) * (1 + this.flowDrift * .3) + air) * .8;
+      const raw = (whine * (this.acoustics.bladeBase + this.acoustics.bladeRange * this.spool) * (1 + this.flowDrift * this.acoustics.bladeAmplitudeDrift) + air) * .8;
       this.dc[0] = raw - this.last[0] + this.dcPole * this.dc[0]; this.last[0] = raw;
       this.outputs[0] = this.dc[0]; this.outputs[1] = this.dc[0] * .98;
     } else {
@@ -107,14 +112,14 @@ export class EngineSynth {
       for (let bank = 0; bank < 2; bank++) {
         const pressure = this.pending[bank][this.cursor]; this.pending[bank][this.cursor] = 0;
         const pipes = this.pipes[bank];
-        const exhaust = pressure * .55 + pipes[0].step(pressure) * .34 + pipes[1].step(pressure) * .18 + pipes[2].step(pressure) * .1;
-        const raw = exhaust + intake * .2;
+        const exhaust = pressure * this.acoustics.direct + pipes[0].step(pressure) * this.acoustics.returns[0] + pipes[1].step(pressure) * this.acoustics.returns[1] + pipes[2].step(pressure) * this.acoustics.returns[2];
+        const raw = exhaust + intake * this.acoustics.intakeReturn;
         this.dc[bank] = raw - this.last[bank] + this.dcPole * this.dc[bank]; this.last[bank] = raw;
         const cutoff = (this.config.cutoffHz ?? 1900) * (.45 + .55 * load);
         this.low[bank] += (1 - Math.exp(-TAU * cutoff / this.rate)) * (this.dc[bank] - this.low[bank]);
       }
       this.cursor = (this.cursor + 1) % this.pending[0].length;
-      const compressor = this.config.turbo ? Math.sin(TAU * this.blade) * this.spool * .018 + this.valveLow * (this.spool * .035 + this.valveEnvelope * .18) : 0;
+      const compressor = this.config.turbo ? Math.sin(TAU * this.blade) * this.spool * this.acoustics.compressor + this.valveLow * (this.spool * .035 + this.valveEnvelope * .18) : 0;
       const body = this.config.level ?? .85;
       this.outputs[0] = ((this.low[0] * .82 + this.low[1] * .58) * body + compressor);
       this.outputs[1] = ((this.low[1] * .82 + this.low[0] * .58) * body + compressor);

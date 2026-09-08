@@ -40,3 +40,6 @@
 .app[data-environment="engine"] .control-slab{grid-template-columns:88px minmax(0,1fr) minmax(0,1fr) 88px}
 @media(max-width:620px){.engine-rev{min-width:148px}.engine-rev.is-left{left:18px}.engine-rev.is-right{right:18px}}
 .engine-telemetry:has(.engine-rev){padding-bottom:148px}.engine-telemetry:has(.engine-rev) .engine-graphs svg{height:32px}
+.engine-comparison-buttons{display:flex;gap:8px}.engine-comparison-buttons button{flex:1;min-height:64px;padding:8px}.engine-comparison-buttons button[aria-pressed="true"]{border-color:#f04b32;background:#471d16}.engine-comparison-buttons small{display:block;font-size:13px;margin-top:4px}.engine-lab-controls summary{min-height:48px;display:flex;align-items:center;cursor:pointer}.engine-lab-controls textarea{min-height:96px;width:100%;box-sizing:border-box;font:inherit;padding:8px}.engine-listening-notes label,.engine-manual-bench label{margin:8px 0}.engine-listening-notes button{margin:4px 4px 4px 0}.engine-lab-controls button:disabled{opacity:.5}.engine-lab-controls h2{margin:0;font-size:22px}
+@media(max-width:1000px){.lab-shell>.engine-lab{display:block}.engine-lab-controls{overflow:visible}.engine-lab-stage{min-height:640px}}
+.engine-lab-controls summary::before{content:"▸";margin-right:8px}.engine-lab-controls details[open]>summary::before{content:"▾"}

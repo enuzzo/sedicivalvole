@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-export function useEngine({ active, muted, profileId, audioRef, motion, onEvent, allowManual = false }) {
+export function useEngine({ active, muted, profileId, audioRef, motion, onEvent, allowManual = false, resolveProfile }) {
   const runtimeRef = useRef(null);
   const [snapshot, setSnapshot] = useState({ status: "idle", rpm: 1000, gear: 1, drive: 0, deceleration: 0, motion: "lost", trustedStationary: false });
   useEffect(() => {
@@ -16,7 +16,7 @@ export function useEngine({ active, muted, profileId, audioRef, motion, onEvent,
         if (!runtimeRef.current) {
           const { createGeapsRuntime } = await import("./runtime.js");
           if (cancelled) return;
-          runtimeRef.current = createGeapsRuntime({ context: audio.context, destination: audio.engineInput, motion, onEvent, allowManual });
+          runtimeRef.current = createGeapsRuntime({ context: audio.context, destination: audio.engineInput, motion, onEvent, allowManual, resolveProfile });
         }
         const runtime = runtimeRef.current;
         runtime.setEnabled(!muted);
@@ -44,7 +44,7 @@ export function useEngine({ active, muted, profileId, audioRef, motion, onEvent,
       if (runtimeRef.current) setSnapshot(runtimeRef.current.getState());
     }, 100);
     return () => { cancelled = true; clearInterval(timer); clearTimeout(moduleRetry); window.removeEventListener("online", wake); document.removeEventListener("visibilitychange", wake); runtimeRef.current?.setEnabled(false); };
-  }, [active, muted, profileId, audioRef, motion, onEvent, allowManual]);
+  }, [active, muted, profileId, audioRef, motion, onEvent, allowManual, resolveProfile]);
   useEffect(() => () => runtimeRef.current?.destroy(), []);
   return { snapshot, runtimeRef };
 }

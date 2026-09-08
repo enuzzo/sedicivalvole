@@ -20,6 +20,12 @@
         "lab.jsx: corrected virtual calibration description"
       ],
       "thirdPartyChanges": "None; admitted code and audio hash entries unchanged."
+    },
+    "listeningLab": {
+      "record": "docs/ENGINE-LISTENING-LAB-2026-09-08.md",
+      "referenceSource": "d1beea3",
+      "refinedSource": "b524cd4",
+      "scope": "Original protected A/B controls, route, reference parameter overrides, bounded local notes and export. Public refined DSP defaults remain signal-identical; no third-party code or media changes."
     }
   },
   "code": [

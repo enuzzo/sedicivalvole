@@ -1,5 +1,8 @@
 # Engine listening refinement — September 8, 2026
 
+The owner subsequently selected the [A/B listening LAB](ENGINE-LISTENING-LAB-2026-09-08.md).
+The pending-selection statements below describe the first audio-publication checkpoint.
+
 ## Owner evidence and scope
 
 The owner listened inside Tesla to build **20260908-0807** and reported markedly

@@ -1,5 +1,10 @@
 # Roadmap
 
+The owner-selected [Engine A/B listening LAB](ENGINE-LISTENING-LAB-2026-09-08.md)
+compares the 0834 reference and 1102 refinement on one 68-second route, with
+local preference/notes and JSON export. The public default retains the 1102
+audio calibration. This supersedes the earlier pending-direction proposal.
+
 ## September 8 Tesla listening refinement
 
 The owner accepted the improved road behavior of build 0807 and praised the first

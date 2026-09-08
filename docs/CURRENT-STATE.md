@@ -1,5 +1,10 @@
 # Current Project State
 
+The owner-selected [Engine A/B listening LAB](ENGINE-LISTENING-LAB-2026-09-08.md)
+compares the 0834 reference and 1102 refinement on one 68-second route, with
+local preference/notes and JSON export. The public default retains the 1102
+audio calibration. This supersedes the earlier pending-direction proposal.
+
 Latest verified canonical publication: **20260908-1102**, source **b524cd4**,
 version from VERSION (**0.0.0**). This summary takes precedence over dated
 historical paragraphs below.

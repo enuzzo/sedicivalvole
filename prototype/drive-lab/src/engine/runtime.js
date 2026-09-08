@@ -1,4 +1,4 @@
-import { focusedCrossfade } from "./sample-mix.js";
+import { focusedCrossfade, referenceCrossfade } from "./sample-mix.js";
 import { Engine } from "./upstream/Engine.ts";
 import { Drivetrain } from "./upstream/Drivetrain.ts";
 import { matchEngineLoopLevels } from "./sample-levels.js";
@@ -35,7 +35,7 @@ const hold = (param, when) => {
 };
 
 /** Original host orchestration around declared MIT engine-audio primitives. */
-export function createGeapsRuntime({ context, destination, motion, now = () => performance.now(), onEvent = () => {}, fetcher = fetch, allowManual = false }) {
+export function createGeapsRuntime({ context, destination, motion, now = () => performance.now(), onEvent = () => {}, fetcher = fetch, allowManual = false, resolveProfile = engineProfile }) {
   const master = context.createGain();
   const limiter = context.createDynamicsCompressor();
   limiter.threshold.value = -8; limiter.knee.value = 4; limiter.ratio.value = 20;
@@ -88,8 +88,9 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
     previousTime = at;
   };
   function gainsFor(rpm, drive) {
-    const { gain1: high, gain2: low } = focusedCrossfade(rpm, ...profile.crossover);
-    const { gain1: on, gain2: off } = focusedCrossfade(drive, 0, 1);
+    const crossfade = profile.sampleBlend === "reference" ? referenceCrossfade : focusedCrossfade;
+    const { gain1: high, gain2: low } = crossfade(rpm, ...profile.crossover);
+    const { gain1: on, gain2: off } = crossfade(drive, 0, 1);
     return { on_low: on * low, off_low: off * low, on_high: on * high, off_high: off * high,
       limiter: clamp((rpm - profile.configuration.engine.soft_limiter * 0.93) / (profile.configuration.engine.limiter * 0.07), 0, 1) * 0.4,
       tranny_on: on * 0.25 * (state.drivelineLevel ?? 0), tranny_off: off * 0.25 * (state.drivelineLevel ?? 0) };
@@ -255,7 +256,7 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
     const controller = abort;
     const timeout = setTimeout(() => controller.abort(), 20000);
     state.status = "loading"; state.error = null;
-    const next = engineProfile(profileId);
+    const next = allowManual ? resolveProfile(profileId) : engineProfile(profileId);
     const freshNodes = [];
     let freshVoice = null;
     try {

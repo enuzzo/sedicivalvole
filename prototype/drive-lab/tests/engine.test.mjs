@@ -29,7 +29,7 @@ const eventSurface = () => {
     dispatch(type) { for (const fn of listeners.get(type) ?? []) fn(); },
   };
 };
-function fixture({ fail = false, manual = false, worklet = false, workletFailure = false, pendingWorklet = false } = {}) {
+function fixture({ fail = false, manual = false, worklet = false, workletFailure = false, pendingWorklet = false, resolveProfile } = {}) {
   const timers = new Map(); let serial = 0, time = 0, failures = fail, requests = 0;
   let releaseModule;
   const moduleGate = pendingWorklet ? new Promise(resolve => { releaseModule = resolve; }) : Promise.resolve();
@@ -63,7 +63,7 @@ function fixture({ fail = false, manual = false, worklet = false, workletFailure
   const evidence = { speedKmh:0, drive:0, deceleration:0, freshness:"fresh", canShift:true, trustedStationary:false };
   const motion = { snapshot:() => ({...evidence}), reset:() => Object.assign(evidence,{freshness:"lost",canShift:false,trustedStationary:false}) };
   const events = [];
-  const runtime = sandbox.module.exports.createGeapsRuntime({context,destination:{},motion,now:()=>time,allowManual:manual,onEvent:(type,detail)=>events.push({type,...detail})});
+  const runtime = sandbox.module.exports.createGeapsRuntime({context,destination:{},motion,now:()=>time,allowManual:manual,resolveProfile,onEvent:(type,detail)=>events.push({type,...detail})});
   return { runtime, context, evidence, events, profiles: sandbox.module.exports.ENGINE_PROFILES, timers, document, window,
     releaseWorklet() { releaseModule?.(); },
     setFailure(value) { failures=value; }, get requests() { return requests; },
@@ -694,4 +694,12 @@ test("processor failure removes false availability and retries one fresh procedu
   assert.equal(f.events.filter(event => event.type === "engine.renderer.failed").length, 1);
   f.runtime.destroy();
   assert.ok(f.context.voices.every(source => source.disconnected && source.closed));
+});
+
+
+test("public Engine ignores a bench-only profile resolver", async () => {
+  const f = fixture({ resolveProfile: () => { throw new Error("Bench profile escaped"); } });
+  assert.equal(await f.runtime.load("mono"), true);
+  assert.equal(f.runtime.getState().profileId, "mono");
+  f.runtime.destroy();
 });

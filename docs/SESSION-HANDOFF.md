@@ -1,5 +1,10 @@
 # Session Handoff
 
+The owner-selected [Engine A/B listening LAB](ENGINE-LISTENING-LAB-2026-09-08.md)
+compares the 0834 reference and 1102 refinement on one 68-second route, with
+local preference/notes and JSON export. The public default retains the 1102
+audio calibration. This supersedes the earlier pending-direction proposal.
+
 Latest verified live build: **20260908-1102 / b524cd4**. All executable listening
 refinements are implemented, tested and published. Remaining: owner listening
 and optional LAB direction selection; dated entries below are historical.

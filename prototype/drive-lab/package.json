@@ -25,7 +25,7 @@
     "test:native": "node scripts/native-toolchain.mjs -- npm test",
     "build:native": "node scripts/native-toolchain.mjs -- npm run build",
     "test": "npm run test:discover && npm run test:drivey && npm run test:prtcl && npm run test:gradient && npm run test:nightshift && npm run test:soundtrack-fx && npm run test:appearance-presentation && npm run test:media-session && npm run test:engine-road && npm run test:unit && npm run test:sites",
-    "test:engine-road": "node --test tests/engine-road-gearing.test.mjs",
+    "test:engine-road": "node --test tests/engine-road-gearing.test.mjs tests/engine-comparison.test.mjs",
     "test:discover": "node --test tests/discover-model.test.mjs",
     "test:soundtrack-fx": "node --test tests/soundtrack-effects-controller.test.mjs",
     "test:appearance-presentation": "node --test tests/appearance-presentation.test.mjs",

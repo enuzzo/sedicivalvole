@@ -10,3 +10,9 @@ export function focusedCrossfade(value, start, end) {
   const energy = Math.hypot(high, low);
   return { gain1: high / energy, gain2: low / energy };
 }
+
+// Exact earlier host weights, available only through a protected LAB profile.
+export function referenceCrossfade(value, start, end) {
+  const position = Math.max(0, Math.min(1, (value - start) / (end - start)));
+  return { gain1: Math.cos((1 - position) * .5 * Math.PI), gain2: Math.cos(position * .5 * Math.PI) };
+}

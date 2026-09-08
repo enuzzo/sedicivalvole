@@ -1,0 +1,109 @@
+{
+  "errors": [],
+  "mail": [],
+  "takes": [
+    {
+      "key": "A",
+      "at16": {
+        "gear": 3,
+        "rpm": 1945
+      },
+      "voice": {
+        "cylinders": 4,
+        "banks": [
+          0,
+          1,
+          0,
+          1
+        ],
+        "pressureHz": 112,
+        "pipeSeconds": [
+          0.0037,
+          0.0061,
+          0.0091
+        ],
+        "level": 0.72,
+        "mix": 0.78,
+        "acoustics": {
+          "pipeFeedback": 0.54,
+          "pipeFeedbackStep": 0.09,
+          "intakeFeedback": 0.43,
+          "direct": 0.2,
+          "returns": [
+            0.55,
+            0.3,
+            0.2
+          ],
+          "intakeReturn": 0.32,
+          "bladeBase": 0.07,
+          "bladeRange": 0.08,
+          "bladeDrift": 0,
+          "bladeAmplitudeDrift": 0,
+          "compressor": 0.065
+        },
+        "limiter": 9000
+      }
+    },
+    {
+      "key": "B",
+      "at16": {
+        "gear": 2,
+        "rpm": 2659
+      },
+      "voice": {
+        "cylinders": 4,
+        "banks": [
+          0,
+          1,
+          0,
+          1
+        ],
+        "pressureHz": 112,
+        "pipeSeconds": [
+          0.0037,
+          0.0061,
+          0.0091
+        ],
+        "level": 0.72,
+        "mix": 0.48,
+        "limiter": 9000
+      }
+    }
+  ],
+  "screens": [
+    {
+      "width": 773,
+      "height": 601
+    },
+    {
+      "width": 956,
+      "height": 440
+    }
+  ],
+  "saved": {
+    "schema": "engine-listening-export.v1",
+    "notes": [
+      {
+        "schema": "engine-listening.v1",
+        "id": "2026-09-08T09:21:42.706Z",
+        "profile": "mono",
+        "preference": "B",
+        "note": "Clearer body; <test> remains text.",
+        "route": "urban-road-return-v1",
+        "calibrations": {
+          "A": "Reference · 08:34",
+          "B": "Refined · 11:02"
+        },
+        "listenedSeconds": {
+          "A": 68,
+          "B": 68
+        },
+        "build": "20260908-0659",
+        "sampleRate": 48000,
+        "levels": "Original calibration levels; not loudness matched",
+        "coordinates": "Not collected"
+      }
+    ]
+  },
+  "pass": true
+}
