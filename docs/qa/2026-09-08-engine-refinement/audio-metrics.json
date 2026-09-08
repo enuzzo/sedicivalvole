@@ -1,0 +1,2227 @@
+{
+  "methodology": "Production runtime and motion receiver, actual dry graph, unnormalized full-run and segmented PCM. Steady cruise probes follow four seconds of settling. Acceleration probes cross each target at 9 km/h/s (2.5 m/s2) using the actual motion reducer. Held-demand probes explicitly exercise the receiver accelerator input at constant speed; they are acoustic bench fixtures, not observed GPS throttle. Offline rendering is suspended at audio quantum boundaries for each 25 ms control tick; the context facade reports running while rendering is paused for scheduling. All sample decoding and AudioWorklet DSP use the browser. Cost is measured wall-clock control and offline render work, not target-vehicle CPU utilization.",
+  "browser": "152.0.7977.76",
+  "sources": [
+    {
+      "path": "catalogue.js",
+      "sha256": "50e79efad38826bf51fa4834f859e299850aaf1381af2a1a2acbbd6f9f9d5625"
+    },
+    {
+      "path": "driveline-audio.js",
+      "sha256": "f9ffacd207bdbe78a0ca5ad070774b506c150c4f0ef08dfe9fac90e47c05d7db"
+    },
+    {
+      "path": "gearbox.js",
+      "sha256": "7506bf949d61502f115517fbad776e9ea551123633dbe2d5b86a262a39a4e39d"
+    },
+    {
+      "path": "idle-blip.js",
+      "sha256": "e7f16e431075bb57a278c7f75b8183be64d2cb120d1d524e77ad79e81448bf70"
+    },
+    {
+      "path": "lab.jsx",
+      "sha256": "38cebe9e55985713a2e5993444ed263001931eeeacf44858ba0e1c231247e4f7"
+    },
+    {
+      "path": "loop-seam.js",
+      "sha256": "02a326b2e600013fae9fbb8c4ae517730a9bfad503a4da5c44bba2fa0a4a134e"
+    },
+    {
+      "path": "motion.js",
+      "sha256": "e3bb4e8aad1e5538666c8c3d0c775f8af02f31299769e9ee428bde5c6f4cdb3e"
+    },
+    {
+      "path": "powertrain.js",
+      "sha256": "c0c48d43d66bf95b11ea77a0cadb8d1c3f87de2d4efa6f4d0c2609043d804aa3"
+    },
+    {
+      "path": "procedural-dsp.js",
+      "sha256": "f401880959adcb1467da32be14fcf1fb9a147d4929fd82fe899b10c3000de8fe"
+    },
+    {
+      "path": "procedural-processor.js",
+      "sha256": "f07f7f17618dbe168026234ecd08ac608614537e98bf13d9497934593e0697be"
+    },
+    {
+      "path": "procedural-voice.js",
+      "sha256": "ba8c4e4535bddb1e1e264ce572738e8dd4c47503b40f30cb4da9943afcfc7fb8"
+    },
+    {
+      "path": "profiles.js",
+      "sha256": "0dc518a77f153ae0fe727b80892328c77b9ba422ec851e75caa8d266b6f5f57e"
+    },
+    {
+      "path": "runtime.js",
+      "sha256": "e5879301d934e5553da1b51e308b1bb3eeb2515f668a51505063b08414e00a01"
+    },
+    {
+      "path": "sample-levels.js",
+      "sha256": "4575026269b89f70a08581803bcc5176e643115aa36ec9075270e033b96a921b"
+    },
+    {
+      "path": "sample-mix.js",
+      "sha256": "e6cece7287878766abf90cf2d8eb9cd782704e254da62901391f9b9117efc457"
+    },
+    {
+      "path": "sample-pitch.js",
+      "sha256": "87d4f678dd115d09ae0aa855d663f2d05dab705f232a69e2f479f97e53dbf8d8"
+    },
+    {
+      "path": "show-off.js",
+      "sha256": "5833b1113c8c68fe9799c9cf5d014f6b8f8b5c6688385af58d16ed6d431554b5"
+    },
+    {
+      "path": "source-inventory.json",
+      "sha256": "8e3e86dc7bbd80b93e4f7e933eb2186283d8e5d824e75062395d268ecc56321d"
+    },
+    {
+      "path": "stationary-refresh.js",
+      "sha256": "c370737cb86d2fd932437a097e893427fcbb84954af98488af8473413b78adc7"
+    },
+    {
+      "path": "telemetry-field.css",
+      "sha256": "d3163e8ab57e455e2052935d8e3646fa132d10261c25f40ccaea75e0ae99483b"
+    },
+    {
+      "path": "telemetry-field.jsx",
+      "sha256": "1a7d2665d589d2ba38fcda87a2a924879ccc8d832c056f70222448647a1e6ce6"
+    },
+    {
+      "path": "upstream/AudioManager.ts",
+      "sha256": "f24318e025fe05f4eaed2e788588de1d91dec92c5d2c70eb6770fcc3e5e87981"
+    },
+    {
+      "path": "upstream/configurations.ts",
+      "sha256": "65179084f655e5dcb8a7495391a3dd128ab320747e7ca4f5404ffb4ad7b69ded"
+    },
+    {
+      "path": "upstream/Drivetrain.ts",
+      "sha256": "c990d6371e48a7a60f31e4fc196e6cfbab52185afd1ab7c73d95c73e9f151063"
+    },
+    {
+      "path": "upstream/Engine.ts",
+      "sha256": "803a585087745e80c5b597b5bc6cce43976d08ae9f19222780974c23004e4f40"
+    },
+    {
+      "path": "upstream/LICENSE",
+      "sha256": "c9f66fcef33030cf13186dffa4e0484f12fce2d61af34f7cb1c66224f088be99"
+    },
+    {
+      "path": "upstream/util/clamp.ts",
+      "sha256": "5191d2d5c16fcafc2e2b33efb06610ddc772d7fe25f7579c2efeef8644c860b1"
+    },
+    {
+      "path": "upstream/util/ratio.ts",
+      "sha256": "e2e2556922214cd65d147715041afc477a0e6f0f5e1cc06b0dd1333c7abed7bc"
+    },
+    {
+      "path": "use-engine.js",
+      "sha256": "135bb0dede140edfeb7fdd60c1f9c40d1c9e9ac4bd166a4bf53a32c38dc0db04"
+    }
+  ],
+  "errors": [],
+  "emailIntercepted": [],
+  "baseline": "d1beea3 / build 20260908-0834; same audible tuning as owner-tested 0807",
+  "renders": [
+    {
+      "profile": "mono",
+      "sampleRate": 44100,
+      "metrics": {
+        "start": 0.1,
+        "end": 132,
+        "rms": 0.06676857635898117,
+        "rmsDbfs": -23.508557674081324,
+        "peak": 0.240578755736351,
+        "peakDbfs": -12.37485451197874,
+        "dc": 0.0018691913268809124,
+        "maximumSampleStep": 0.053046148270368576,
+        "sampledStepP99": 0.02006862312555313,
+        "rms10msP05": 0.03441652251803245,
+        "rms10msP50": 0.05816941773767547,
+        "rms10msP95": 0.0802634948677137,
+        "lowBandEnergyRatio": 0.6176562325980447,
+        "clippedSamples": 0,
+        "nonFiniteSamples": 0
+      },
+      "capParity": [
+        {
+          "kind": "cruise",
+          "raw130": 130,
+          "raw160": 160,
+          "rpmDelta": 0,
+          "loadDelta": -4.725142499495405e-11,
+          "gear130": 6,
+          "gear160": 6
+        },
+        {
+          "kind": "held-demand",
+          "raw130": 130,
+          "raw160": 160,
+          "rpmDelta": 0.004820936638679996,
+          "loadDelta": 0,
+          "gear130": 6,
+          "gear160": 6
+        }
+      ],
+      "audioSha256": "74f2da2eb97efec5f934f1ef2b9a3726377a8b5c9ecad2c7e1b89f0be560ed8c",
+      "rmsDeltaDb": {
+        "30": 0.572,
+        "80": 0.336,
+        "130": -0.033
+      },
+      "roadTable": [
+        {
+          "name": "cruise-20",
+          "speedKmh": 20,
+          "gear": 2,
+          "rpm": 1755,
+          "load": 0.19911006213483948
+        },
+        {
+          "name": "cruise-30",
+          "speedKmh": 30,
+          "gear": 2,
+          "rpm": 2658.8333333333335,
+          "load": 0.2099976361551425
+        },
+        {
+          "name": "cruise-40",
+          "speedKmh": 40,
+          "gear": 3,
+          "rpm": 2612,
+          "load": 0.2252402396371155
+        },
+        {
+          "name": "cruise-60",
+          "speedKmh": 60,
+          "gear": 4,
+          "rpm": 2958.616666666667,
+          "load": 0.26879053550811144
+        },
+        {
+          "name": "cruise-80",
+          "speedKmh": 80,
+          "gear": 4,
+          "rpm": 3984,
+          "load": 0.3297609496909966
+        },
+        {
+          "name": "cruise-100",
+          "speedKmh": 100,
+          "gear": 5,
+          "rpm": 4507.708333333333,
+          "load": 0.4081514822433647
+        },
+        {
+          "name": "cruise-130",
+          "speedKmh": 130,
+          "gear": 6,
+          "rpm": 5125.025,
+          "load": 0.5584000030092432
+        },
+        {
+          "name": "cruise-160",
+          "speedKmh": 160,
+          "gear": 6,
+          "rpm": 5125.025,
+          "load": 0.5584000029619918
+        },
+        {
+          "name": "held-demand-130",
+          "speedKmh": 130,
+          "gear": 6,
+          "rpm": 5322.416666666667,
+          "load": 0.9999999999999999
+        },
+        {
+          "name": "held-demand-160",
+          "speedKmh": 160,
+          "gear": 6,
+          "rpm": 5322.421487603306,
+          "load": 0.9999999999999999
+        },
+        {
+          "name": "acceleration-20",
+          "speedKmh": 20,
+          "gear": 1,
+          "rpm": 2446,
+          "load": 0.9999999763680459
+        },
+        {
+          "name": "acceleration-30",
+          "speedKmh": 30,
+          "gear": 2,
+          "rpm": 2676,
+          "load": 0.9999999999896275
+        },
+        {
+          "name": "acceleration-40",
+          "speedKmh": 40,
+          "gear": 2,
+          "rpm": 3584,
+          "load": 0.9999999999999997
+        },
+        {
+          "name": "acceleration-60",
+          "speedKmh": 60,
+          "gear": 3,
+          "rpm": 4010,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-80",
+          "speedKmh": 80,
+          "gear": 4,
+          "rpm": 4155,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-100",
+          "speedKmh": 100,
+          "gear": 4,
+          "rpm": 5145,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-130",
+          "speedKmh": 130,
+          "gear": 5,
+          "rpm": 5966,
+          "load": 0.8390258881330735
+        },
+        {
+          "name": "acceleration-160",
+          "speedKmh": 160,
+          "gear": 6,
+          "rpm": 5323,
+          "load": 0.9999999999999579
+        }
+      ]
+    },
+    {
+      "profile": "mono",
+      "sampleRate": 48000,
+      "metrics": {
+        "start": 0.1,
+        "end": 132,
+        "rms": 0.06663897324419339,
+        "rmsDbfs": -23.525434060901823,
+        "peak": 0.23584476113319397,
+        "peakDbfs": -12.547475327624857,
+        "dc": 0.00186795391426837,
+        "maximumSampleStep": 0.047184985131025314,
+        "sampledStepP99": 0.01852724328637123,
+        "rms10msP05": 0.03449234478385958,
+        "rms10msP50": 0.05805007025451083,
+        "rms10msP95": 0.08003153691110455,
+        "lowBandEnergyRatio": 0.6172337492552145,
+        "clippedSamples": 0,
+        "nonFiniteSamples": 0
+      },
+      "capParity": [
+        {
+          "kind": "cruise",
+          "raw130": 130,
+          "raw160": 160,
+          "rpmDelta": 0,
+          "loadDelta": -4.704081568718266e-11,
+          "gear130": 6,
+          "gear160": 6
+        },
+        {
+          "kind": "held-demand",
+          "raw130": 130,
+          "raw160": 160,
+          "rpmDelta": 0,
+          "loadDelta": 0,
+          "gear130": 6,
+          "gear160": 6
+        }
+      ],
+      "audioSha256": "9bcd074ba1881b87d4b61557b168ffde9dbf4c033a8f220e60c9e95764f4f24f",
+      "rmsDeltaDb": {
+        "30": 0.512,
+        "80": 0.472,
+        "130": -0.219
+      },
+      "roadTable": [
+        {
+          "name": "cruise-20",
+          "speedKmh": 20,
+          "gear": 2,
+          "rpm": 1755,
+          "load": 0.1991100621546214
+        },
+        {
+          "name": "cruise-30",
+          "speedKmh": 30,
+          "gear": 2,
+          "rpm": 2658.75,
+          "load": 0.20999763617136885
+        },
+        {
+          "name": "cruise-40",
+          "speedKmh": 40,
+          "gear": 3,
+          "rpm": 2612,
+          "load": 0.2252402396478921
+        },
+        {
+          "name": "cruise-60",
+          "speedKmh": 60,
+          "gear": 4,
+          "rpm": 2958.5,
+          "load": 0.2687905355235243
+        },
+        {
+          "name": "cruise-80",
+          "speedKmh": 80,
+          "gear": 4,
+          "rpm": 3984,
+          "load": 0.3297609497030589
+        },
+        {
+          "name": "cruise-100",
+          "speedKmh": 100,
+          "gear": 5,
+          "rpm": 4507.625,
+          "load": 0.4081514822617391
+        },
+        {
+          "name": "cruise-130",
+          "speedKmh": 130,
+          "gear": 6,
+          "rpm": 5125,
+          "load": 0.5584000030240138
+        },
+        {
+          "name": "cruise-160",
+          "speedKmh": 160,
+          "gear": 6,
+          "rpm": 5125,
+          "load": 0.558400002976973
+        },
+        {
+          "name": "held-demand-130",
+          "speedKmh": 130,
+          "gear": 6,
+          "rpm": 5322.625,
+          "load": 0.9999999999999999
+        },
+        {
+          "name": "held-demand-160",
+          "speedKmh": 160,
+          "gear": 6,
+          "rpm": 5322.625,
+          "load": 0.9999999999999999
+        },
+        {
+          "name": "acceleration-20",
+          "speedKmh": 20,
+          "gear": 1,
+          "rpm": 2444,
+          "load": 0.9999999762677506
+        },
+        {
+          "name": "acceleration-30",
+          "speedKmh": 30,
+          "gear": 2,
+          "rpm": 2674,
+          "load": 0.9999999999893507
+        },
+        {
+          "name": "acceleration-40",
+          "speedKmh": 40,
+          "gear": 2,
+          "rpm": 3583,
+          "load": 0.9999999999999996
+        },
+        {
+          "name": "acceleration-60",
+          "speedKmh": 60,
+          "gear": 3,
+          "rpm": 4007,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-80",
+          "speedKmh": 80,
+          "gear": 4,
+          "rpm": 4138,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-100",
+          "speedKmh": 100,
+          "gear": 4,
+          "rpm": 5144,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-130",
+          "speedKmh": 130,
+          "gear": 5,
+          "rpm": 5959,
+          "load": 0.7715277777779941
+        },
+        {
+          "name": "acceleration-160",
+          "speedKmh": 160,
+          "gear": 6,
+          "rpm": 5323,
+          "load": 0.9999999999999584
+        }
+      ]
+    },
+    {
+      "profile": "rosso",
+      "sampleRate": 44100,
+      "metrics": {
+        "start": 0.1,
+        "end": 132,
+        "rms": 0.072324427116363,
+        "rmsDbfs": -22.81429995448108,
+        "peak": 0.3602519929409027,
+        "peakDbfs": -8.867872159157034,
+        "dc": 0.005565654519690827,
+        "maximumSampleStep": 0.05297338031232357,
+        "sampledStepP99": 0.020974040031433105,
+        "rms10msP05": 0.03234630283275351,
+        "rms10msP50": 0.04712773406551344,
+        "rms10msP95": 0.06296132911743757,
+        "lowBandEnergyRatio": 0.5005160905028803,
+        "clippedSamples": 0,
+        "nonFiniteSamples": 0
+      },
+      "capParity": [
+        {
+          "kind": "cruise",
+          "raw130": 130,
+          "raw160": 160,
+          "rpmDelta": 0.008333333333212067,
+          "loadDelta": -4.720146495884592e-11,
+          "gear130": 6,
+          "gear160": 6
+        },
+        {
+          "kind": "held-demand",
+          "raw130": 130,
+          "raw160": 160,
+          "rpmDelta": 0.006129476583737414,
+          "loadDelta": 0,
+          "gear130": 6,
+          "gear160": 6
+        }
+      ],
+      "audioSha256": "aaf00ba7b862bf38baf4c3f51cab41bd54e4d6fa7f425938314bafee06699357",
+      "rmsDeltaDb": {
+        "30": 1.262,
+        "80": 0.771,
+        "130": -0.028
+      },
+      "roadTable": [
+        {
+          "name": "cruise-20",
+          "speedKmh": 20,
+          "gear": 2,
+          "rpm": 1762,
+          "load": 0.19911006213232
+        },
+        {
+          "name": "cruise-30",
+          "speedKmh": 30,
+          "gear": 2,
+          "rpm": 2674.608333333333,
+          "load": 0.2099976361551425
+        },
+        {
+          "name": "cruise-40",
+          "speedKmh": 40,
+          "gear": 3,
+          "rpm": 2690.4583333333335,
+          "load": 0.22524023963540826
+        },
+        {
+          "name": "cruise-60",
+          "speedKmh": 60,
+          "gear": 4,
+          "rpm": 3118,
+          "load": 0.26879053550243376
+        },
+        {
+          "name": "cruise-80",
+          "speedKmh": 80,
+          "gear": 4,
+          "rpm": 4205,
+          "load": 0.3297609496909966
+        },
+        {
+          "name": "cruise-100",
+          "speedKmh": 100,
+          "gear": 5,
+          "rpm": 4659.866666666667,
+          "load": 0.4081514822376247
+        },
+        {
+          "name": "cruise-130",
+          "speedKmh": 130,
+          "gear": 6,
+          "rpm": 5389.383333333333,
+          "load": 0.5584000030091932
+        },
+        {
+          "name": "cruise-160",
+          "speedKmh": 160,
+          "gear": 6,
+          "rpm": 5389.391666666666,
+          "load": 0.5584000029619918
+        },
+        {
+          "name": "held-demand-130",
+          "speedKmh": 130,
+          "gear": 6,
+          "rpm": 5628.258333333333,
+          "load": 0.9999999999999999
+        },
+        {
+          "name": "held-demand-160",
+          "speedKmh": 160,
+          "gear": 6,
+          "rpm": 5628.264462809917,
+          "load": 0.9999999999999999
+        },
+        {
+          "name": "acceleration-20",
+          "speedKmh": 20,
+          "gear": 1,
+          "rpm": 2502,
+          "load": 0.9999999763680459
+        },
+        {
+          "name": "acceleration-30",
+          "speedKmh": 30,
+          "gear": 2,
+          "rpm": 2740,
+          "load": 0.9999999999933766
+        },
+        {
+          "name": "acceleration-40",
+          "speedKmh": 40,
+          "gear": 2,
+          "rpm": 3656,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-60",
+          "speedKmh": 60,
+          "gear": 3,
+          "rpm": 4176,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-80",
+          "speedKmh": 80,
+          "gear": 4,
+          "rpm": 4432,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-100",
+          "speedKmh": 100,
+          "gear": 4,
+          "rpm": 5476,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-130",
+          "speedKmh": 130,
+          "gear": 5,
+          "rpm": 6209,
+          "load": 0.8068310657597111
+        },
+        {
+          "name": "acceleration-160",
+          "speedKmh": 160,
+          "gear": 6,
+          "rpm": 5629,
+          "load": 0.9999999999999579
+        }
+      ]
+    },
+    {
+      "profile": "rosso",
+      "sampleRate": 48000,
+      "metrics": {
+        "start": 0.1,
+        "end": 132,
+        "rms": 0.07233908900393198,
+        "rmsDbfs": -22.812539295800008,
+        "peak": 0.3560236096382141,
+        "peakDbfs": -8.97042401831733,
+        "dc": 0.005565570152583487,
+        "maximumSampleStep": 0.05373382568359375,
+        "sampledStepP99": 0.01949279010295868,
+        "rms10msP05": 0.0321509687569382,
+        "rms10msP50": 0.04729827477430094,
+        "rms10msP95": 0.06304306121087586,
+        "lowBandEnergyRatio": 0.4994575822234171,
+        "clippedSamples": 0,
+        "nonFiniteSamples": 0
+      },
+      "capParity": [
+        {
+          "kind": "cruise",
+          "raw130": 130,
+          "raw160": 160,
+          "rpmDelta": 0,
+          "loadDelta": -4.699052258416714e-11,
+          "gear130": 6,
+          "gear160": 6
+        },
+        {
+          "kind": "held-demand",
+          "raw130": 130,
+          "raw160": 160,
+          "rpmDelta": 0,
+          "loadDelta": 0,
+          "gear130": 6,
+          "gear160": 6
+        }
+      ],
+      "audioSha256": "5cdde3a20c1469286f74b61c6f42a1d27500ba8b273962ccb47a0ec49ef5bd4b",
+      "rmsDeltaDb": {
+        "30": 1.26,
+        "80": 0.774,
+        "130": -0.048
+      },
+      "roadTable": [
+        {
+          "name": "cruise-20",
+          "speedKmh": 20,
+          "gear": 2,
+          "rpm": 1762,
+          "load": 0.19911006215202612
+        },
+        {
+          "name": "cruise-30",
+          "speedKmh": 30,
+          "gear": 2,
+          "rpm": 2674.375,
+          "load": 0.20999763617136885
+        },
+        {
+          "name": "cruise-40",
+          "speedKmh": 40,
+          "gear": 3,
+          "rpm": 2690.375,
+          "load": 0.22524023964621892
+        },
+        {
+          "name": "cruise-60",
+          "speedKmh": 60,
+          "gear": 4,
+          "rpm": 3118,
+          "load": 0.26879053551764354
+        },
+        {
+          "name": "cruise-80",
+          "speedKmh": 80,
+          "gear": 4,
+          "rpm": 4205,
+          "load": 0.3297609497030589
+        },
+        {
+          "name": "cruise-100",
+          "speedKmh": 100,
+          "gear": 5,
+          "rpm": 4659.875,
+          "load": 0.40815148225615344
+        },
+        {
+          "name": "cruise-130",
+          "speedKmh": 130,
+          "gear": 6,
+          "rpm": 5389.625,
+          "load": 0.5584000030239635
+        },
+        {
+          "name": "cruise-160",
+          "speedKmh": 160,
+          "gear": 6,
+          "rpm": 5389.625,
+          "load": 0.558400002976973
+        },
+        {
+          "name": "held-demand-130",
+          "speedKmh": 130,
+          "gear": 6,
+          "rpm": 5628.5,
+          "load": 0.9999999999999999
+        },
+        {
+          "name": "held-demand-160",
+          "speedKmh": 160,
+          "gear": 6,
+          "rpm": 5628.5,
+          "load": 0.9999999999999999
+        },
+        {
+          "name": "acceleration-20",
+          "speedKmh": 20,
+          "gear": 1,
+          "rpm": 2500,
+          "load": 0.9999999762677506
+        },
+        {
+          "name": "acceleration-30",
+          "speedKmh": 30,
+          "gear": 2,
+          "rpm": 2738,
+          "load": 0.9999999999932814
+        },
+        {
+          "name": "acceleration-40",
+          "speedKmh": 40,
+          "gear": 2,
+          "rpm": 3655,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-60",
+          "speedKmh": 60,
+          "gear": 3,
+          "rpm": 4172,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-80",
+          "speedKmh": 80,
+          "gear": 4,
+          "rpm": 4414,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-100",
+          "speedKmh": 100,
+          "gear": 4,
+          "rpm": 5476,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-130",
+          "speedKmh": 130,
+          "gear": 5,
+          "rpm": 6202,
+          "load": 0.7258333333336253
+        },
+        {
+          "name": "acceleration-160",
+          "speedKmh": 160,
+          "gear": 6,
+          "rpm": 5629,
+          "load": 0.9999999999999584
+        }
+      ]
+    },
+    {
+      "profile": "touring",
+      "sampleRate": 44100,
+      "metrics": {
+        "start": 0.1,
+        "end": 132,
+        "rms": 0.05278380927755064,
+        "rmsDbfs": -25.54998542043089,
+        "peak": 0.256414532661438,
+        "peakDbfs": -11.821147283859169,
+        "dc": -0.00010497169810619307,
+        "maximumSampleStep": 0.03637918084859848,
+        "sampledStepP99": 0.01342497393488884,
+        "rms10msP05": 0.03174294663905018,
+        "rms10msP50": 0.04759478631790223,
+        "rms10msP95": 0.0697218858287876,
+        "lowBandEnergyRatio": 0.59951776824814,
+        "clippedSamples": 0,
+        "nonFiniteSamples": 0
+      },
+      "capParity": [
+        {
+          "kind": "cruise",
+          "raw130": 130,
+          "raw160": 160,
+          "rpmDelta": 0.008333333333212067,
+          "loadDelta": -4.740419168314247e-11,
+          "gear130": 6,
+          "gear160": 6
+        },
+        {
+          "kind": "held-demand",
+          "raw130": 130,
+          "raw160": 160,
+          "rpmDelta": -0.0013774104681942845,
+          "loadDelta": 0,
+          "gear130": 6,
+          "gear160": 6
+        }
+      ],
+      "audioSha256": "5eccbad910c7da6a15828eba302668443018790ecb5f70b8a6194f3865543dc5",
+      "rmsDeltaDb": {
+        "30": -0.275,
+        "80": 0.02,
+        "130": -0.101
+      },
+      "roadTable": [
+        {
+          "name": "cruise-20",
+          "speedKmh": 20,
+          "gear": 2,
+          "rpm": 1570.0666666666666,
+          "load": 0.19911006213615098
+        },
+        {
+          "name": "cruise-30",
+          "speedKmh": 30,
+          "gear": 2,
+          "rpm": 2381.516666666667,
+          "load": 0.2099976361551425
+        },
+        {
+          "name": "cruise-40",
+          "speedKmh": 40,
+          "gear": 3,
+          "rpm": 2323.616666666667,
+          "load": 0.22524023963687204
+        },
+        {
+          "name": "cruise-60",
+          "speedKmh": 60,
+          "gear": 4,
+          "rpm": 2665,
+          "load": 0.2687905355073488
+        },
+        {
+          "name": "cruise-80",
+          "speedKmh": 80,
+          "gear": 4,
+          "rpm": 3593,
+          "load": 0.3297609496909966
+        },
+        {
+          "name": "cruise-100",
+          "speedKmh": 100,
+          "gear": 5,
+          "rpm": 3938,
+          "load": 0.4081514822514226
+        },
+        {
+          "name": "cruise-130",
+          "speedKmh": 130,
+          "gear": 6,
+          "rpm": 4452.766666666666,
+          "load": 0.558400003009396
+        },
+        {
+          "name": "cruise-160",
+          "speedKmh": 160,
+          "gear": 6,
+          "rpm": 4452.775,
+          "load": 0.5584000029619918
+        },
+        {
+          "name": "held-demand-130",
+          "speedKmh": 130,
+          "gear": 6,
+          "rpm": 4650.166666666667,
+          "load": 0.9999999999999999
+        },
+        {
+          "name": "held-demand-160",
+          "speedKmh": 160,
+          "gear": 6,
+          "rpm": 4650.165289256199,
+          "load": 0.9999999999999999
+        },
+        {
+          "name": "acceleration-20",
+          "speedKmh": 20,
+          "gear": 1,
+          "rpm": 2226,
+          "load": 0.9999999763680459
+        },
+        {
+          "name": "acceleration-30",
+          "speedKmh": 30,
+          "gear": 2,
+          "rpm": 2421,
+          "load": 0.9999999999833216
+        },
+        {
+          "name": "acceleration-40",
+          "speedKmh": 40,
+          "gear": 2,
+          "rpm": 3236,
+          "load": 0.9999999999999993
+        },
+        {
+          "name": "acceleration-60",
+          "speedKmh": 60,
+          "gear": 3,
+          "rpm": 3595,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-80",
+          "speedKmh": 80,
+          "gear": 4,
+          "rpm": 3777,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-100",
+          "speedKmh": 100,
+          "gear": 4,
+          "rpm": 4669,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-130",
+          "speedKmh": 130,
+          "gear": 5,
+          "rpm": 5247,
+          "load": 0.8712207105064588
+        },
+        {
+          "name": "acceleration-160",
+          "speedKmh": 160,
+          "gear": 6,
+          "rpm": 4651,
+          "load": 0.9999999999999579
+        }
+      ]
+    },
+    {
+      "profile": "touring",
+      "sampleRate": 48000,
+      "metrics": {
+        "start": 0.1,
+        "end": 132,
+        "rms": 0.05283024831399275,
+        "rmsDbfs": -25.542346960539692,
+        "peak": 0.24274170398712158,
+        "peakDbfs": -12.297112074881646,
+        "dc": -0.00010409354775544367,
+        "maximumSampleStep": 0.03517548367381096,
+        "sampledStepP99": 0.012397870421409607,
+        "rms10msP05": 0.03152394105273372,
+        "rms10msP50": 0.047595442187729264,
+        "rms10msP95": 0.06965901642372946,
+        "lowBandEnergyRatio": 0.5987265584139552,
+        "clippedSamples": 0,
+        "nonFiniteSamples": 0
+      },
+      "capParity": [
+        {
+          "kind": "cruise",
+          "raw130": 130,
+          "raw160": 160,
+          "rpmDelta": 0,
+          "loadDelta": -4.718347934584699e-11,
+          "gear130": 6,
+          "gear160": 6
+        },
+        {
+          "kind": "held-demand",
+          "raw130": 130,
+          "raw160": 160,
+          "rpmDelta": 0,
+          "loadDelta": 0,
+          "gear130": 6,
+          "gear160": 6
+        }
+      ],
+      "audioSha256": "1a28d0b0f6547571a0a2f4d4f6ee4d57bc3400eecf178f927fb40d22061c7a9e",
+      "rmsDeltaDb": {
+        "30": -0.274,
+        "80": 0.11,
+        "130": -0.143
+      },
+      "roadTable": [
+        {
+          "name": "cruise-20",
+          "speedKmh": 20,
+          "gear": 2,
+          "rpm": 1570.125,
+          "load": 0.19911006215589772
+        },
+        {
+          "name": "cruise-30",
+          "speedKmh": 30,
+          "gear": 2,
+          "rpm": 2381.375,
+          "load": 0.20999763617136885
+        },
+        {
+          "name": "cruise-40",
+          "speedKmh": 40,
+          "gear": 3,
+          "rpm": 2323.625,
+          "load": 0.2252402396476566
+        },
+        {
+          "name": "cruise-60",
+          "speedKmh": 60,
+          "gear": 4,
+          "rpm": 2665,
+          "load": 0.2687905355226095
+        },
+        {
+          "name": "cruise-80",
+          "speedKmh": 80,
+          "gear": 4,
+          "rpm": 3593,
+          "load": 0.3297609497030589
+        },
+        {
+          "name": "cruise-100",
+          "speedKmh": 100,
+          "gear": 5,
+          "rpm": 3938,
+          "load": 0.4081514822700283
+        },
+        {
+          "name": "cruise-130",
+          "speedKmh": 130,
+          "gear": 6,
+          "rpm": 4452.875,
+          "load": 0.5584000030241565
+        },
+        {
+          "name": "cruise-160",
+          "speedKmh": 160,
+          "gear": 6,
+          "rpm": 4452.875,
+          "load": 0.558400002976973
+        },
+        {
+          "name": "held-demand-130",
+          "speedKmh": 130,
+          "gear": 6,
+          "rpm": 4650,
+          "load": 0.9999999999999999
+        },
+        {
+          "name": "held-demand-160",
+          "speedKmh": 160,
+          "gear": 6,
+          "rpm": 4650,
+          "load": 0.9999999999999999
+        },
+        {
+          "name": "acceleration-20",
+          "speedKmh": 20,
+          "gear": 1,
+          "rpm": 2224,
+          "load": 0.9999999762677506
+        },
+        {
+          "name": "acceleration-30",
+          "speedKmh": 30,
+          "gear": 2,
+          "rpm": 2420,
+          "load": 0.9999999999831205
+        },
+        {
+          "name": "acceleration-40",
+          "speedKmh": 40,
+          "gear": 2,
+          "rpm": 3235,
+          "load": 0.9999999999999993
+        },
+        {
+          "name": "acceleration-60",
+          "speedKmh": 60,
+          "gear": 3,
+          "rpm": 3592,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-80",
+          "speedKmh": 80,
+          "gear": 4,
+          "rpm": 3762,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-100",
+          "speedKmh": 100,
+          "gear": 4,
+          "rpm": 4669,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-130",
+          "speedKmh": 130,
+          "gear": 5,
+          "rpm": 5243,
+          "load": 0.8172222222223953
+        },
+        {
+          "name": "acceleration-160",
+          "speedKmh": 160,
+          "gear": 6,
+          "rpm": 4650,
+          "load": 0.9999999999999584
+        }
+      ]
+    },
+    {
+      "profile": "otto",
+      "sampleRate": 44100,
+      "metrics": {
+        "start": 0.1,
+        "end": 132,
+        "rms": 0.038182311680665576,
+        "rmsDbfs": -28.362755631070627,
+        "peak": 0.17712968587875366,
+        "peakDbfs": -15.034172950910303,
+        "dc": 2.33426375170018e-06,
+        "maximumSampleStep": 0.015322649851441383,
+        "sampledStepP99": 0.006857100874185562,
+        "rms10msP05": 0.012194619443375389,
+        "rms10msP50": 0.0291637198758604,
+        "rms10msP95": 0.0600067433119051,
+        "lowBandEnergyRatio": 0.4873856102537362,
+        "clippedSamples": 0,
+        "nonFiniteSamples": 0
+      },
+      "capParity": [
+        {
+          "kind": "cruise",
+          "raw130": 130,
+          "raw160": 160,
+          "rpmDelta": 0,
+          "loadDelta": -4.785871698942401e-11,
+          "gear130": 6,
+          "gear160": 6
+        },
+        {
+          "kind": "held-demand",
+          "raw130": 130,
+          "raw160": 160,
+          "rpmDelta": 0.011776859504152526,
+          "loadDelta": 0,
+          "gear130": 6,
+          "gear160": 6
+        }
+      ],
+      "audioSha256": "b60427100617deb369ee23c0029c085214329077ad1112e58f45e8a2056aa48d",
+      "rmsDeltaDb": {
+        "30": 1.079,
+        "80": -1.525,
+        "130": 0.674
+      },
+      "roadTable": [
+        {
+          "name": "cruise-20",
+          "speedKmh": 20,
+          "gear": 2,
+          "rpm": 1372.6166666666666,
+          "load": 0.1991100621394376
+        },
+        {
+          "name": "cruise-30",
+          "speedKmh": 30,
+          "gear": 2,
+          "rpm": 2079.608333333333,
+          "load": 0.2099976361551425
+        },
+        {
+          "name": "cruise-40",
+          "speedKmh": 40,
+          "gear": 3,
+          "rpm": 2021,
+          "load": 0.2252402396364701
+        },
+        {
+          "name": "cruise-60",
+          "speedKmh": 60,
+          "gear": 4,
+          "rpm": 2303,
+          "load": 0.26879053551359927
+        },
+        {
+          "name": "cruise-80",
+          "speedKmh": 80,
+          "gear": 4,
+          "rpm": 3101,
+          "load": 0.3297609496909966
+        },
+        {
+          "name": "cruise-100",
+          "speedKmh": 100,
+          "gear": 5,
+          "rpm": 3399,
+          "load": 0.4081514822563021
+        },
+        {
+          "name": "cruise-130",
+          "speedKmh": 130,
+          "gear": 6,
+          "rpm": 3917,
+          "load": 0.5584000030098505
+        },
+        {
+          "name": "cruise-160",
+          "speedKmh": 160,
+          "gear": 6,
+          "rpm": 3917,
+          "load": 0.5584000029619918
+        },
+        {
+          "name": "held-demand-130",
+          "speedKmh": 130,
+          "gear": 6,
+          "rpm": 4073.575,
+          "load": 0.9999999999999999
+        },
+        {
+          "name": "held-demand-160",
+          "speedKmh": 160,
+          "gear": 6,
+          "rpm": 4073.586776859504,
+          "load": 0.9999999999999999
+        },
+        {
+          "name": "acceleration-20",
+          "speedKmh": 20,
+          "gear": 1,
+          "rpm": 1947,
+          "load": 0.9999999763680459
+        },
+        {
+          "name": "acceleration-30",
+          "speedKmh": 30,
+          "gear": 2,
+          "rpm": 2096,
+          "load": 0.9999999999738804
+        },
+        {
+          "name": "acceleration-40",
+          "speedKmh": 40,
+          "gear": 2,
+          "rpm": 2761,
+          "load": 0.6413126732174641
+        },
+        {
+          "name": "acceleration-60",
+          "speedKmh": 60,
+          "gear": 3,
+          "rpm": 3108,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-80",
+          "speedKmh": 80,
+          "gear": 4,
+          "rpm": 3239,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-100",
+          "speedKmh": 100,
+          "gear": 4,
+          "rpm": 4009,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-130",
+          "speedKmh": 130,
+          "gear": 5,
+          "rpm": 4514,
+          "load": 0.9141471403376391
+        },
+        {
+          "name": "acceleration-160",
+          "speedKmh": 160,
+          "gear": 6,
+          "rpm": 4074,
+          "load": 0.9999999999999579
+        }
+      ]
+    },
+    {
+      "profile": "otto",
+      "sampleRate": 48000,
+      "metrics": {
+        "start": 0.1,
+        "end": 132,
+        "rms": 0.03816085690435239,
+        "rmsDbfs": -28.36763763499123,
+        "peak": 0.17429091036319733,
+        "peakDbfs": -15.174505233364266,
+        "dc": 2.231008822805815e-06,
+        "maximumSampleStep": 0.013926215004175901,
+        "sampledStepP99": 0.006306455936282873,
+        "rms10msP05": 0.01213270361978898,
+        "rms10msP50": 0.029084238361637704,
+        "rms10msP95": 0.05999943514885071,
+        "lowBandEnergyRatio": 0.48674379419560954,
+        "clippedSamples": 0,
+        "nonFiniteSamples": 0
+      },
+      "capParity": [
+        {
+          "kind": "cruise",
+          "raw130": 130,
+          "raw160": 160,
+          "rpmDelta": 0,
+          "loadDelta": -4.7475356979020944e-11,
+          "gear130": 6,
+          "gear160": 6
+        },
+        {
+          "kind": "held-demand",
+          "raw130": 130,
+          "raw160": 160,
+          "rpmDelta": 0,
+          "loadDelta": 0,
+          "gear130": 6,
+          "gear160": 6
+        }
+      ],
+      "audioSha256": "449cfce3a3c7662db58356401bbcf05948dd9f52dabb7516e7127c3328aa9a20",
+      "rmsDeltaDb": {
+        "30": 1.088,
+        "80": -1.54,
+        "130": 0.693
+      },
+      "roadTable": [
+        {
+          "name": "cruise-20",
+          "speedKmh": 20,
+          "gear": 2,
+          "rpm": 1372.5,
+          "load": 0.1991100621591391
+        },
+        {
+          "name": "cruise-30",
+          "speedKmh": 30,
+          "gear": 2,
+          "rpm": 2079.5,
+          "load": 0.20999763617136885
+        },
+        {
+          "name": "cruise-40",
+          "speedKmh": 40,
+          "gear": 3,
+          "rpm": 2021,
+          "load": 0.22524023964650994
+        },
+        {
+          "name": "cruise-60",
+          "speedKmh": 60,
+          "gear": 4,
+          "rpm": 2303,
+          "load": 0.26879053552868615
+        },
+        {
+          "name": "cruise-80",
+          "speedKmh": 80,
+          "gear": 4,
+          "rpm": 3101,
+          "load": 0.3297609497030589
+        },
+        {
+          "name": "cruise-100",
+          "speedKmh": 100,
+          "gear": 5,
+          "rpm": 3399,
+          "load": 0.4081514822704376
+        },
+        {
+          "name": "cruise-130",
+          "speedKmh": 130,
+          "gear": 6,
+          "rpm": 3917,
+          "load": 0.5584000030244484
+        },
+        {
+          "name": "cruise-160",
+          "speedKmh": 160,
+          "gear": 6,
+          "rpm": 3917,
+          "load": 0.558400002976973
+        },
+        {
+          "name": "held-demand-130",
+          "speedKmh": 130,
+          "gear": 6,
+          "rpm": 4073.625,
+          "load": 0.9999999999999999
+        },
+        {
+          "name": "held-demand-160",
+          "speedKmh": 160,
+          "gear": 6,
+          "rpm": 4073.625,
+          "load": 0.9999999999999999
+        },
+        {
+          "name": "acceleration-20",
+          "speedKmh": 20,
+          "gear": 1,
+          "rpm": 1945,
+          "load": 0.9999999762677506
+        },
+        {
+          "name": "acceleration-30",
+          "speedKmh": 30,
+          "gear": 2,
+          "rpm": 2095,
+          "load": 0.9999999999732453
+        },
+        {
+          "name": "acceleration-40",
+          "speedKmh": 40,
+          "gear": 2,
+          "rpm": 2759,
+          "load": 0.6274814814815961
+        },
+        {
+          "name": "acceleration-60",
+          "speedKmh": 60,
+          "gear": 3,
+          "rpm": 3105,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-80",
+          "speedKmh": 80,
+          "gear": 4,
+          "rpm": 3226,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-100",
+          "speedKmh": 100,
+          "gear": 4,
+          "rpm": 4009,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-130",
+          "speedKmh": 130,
+          "gear": 5,
+          "rpm": 4512,
+          "load": 0.8781481481482634
+        },
+        {
+          "name": "acceleration-160",
+          "speedKmh": 160,
+          "gear": 6,
+          "rpm": 4074,
+          "load": 0.9999999999999584
+        }
+      ]
+    },
+    {
+      "profile": "cinque",
+      "sampleRate": 44100,
+      "metrics": {
+        "start": 0.1,
+        "end": 132,
+        "rms": 0.03564453004750885,
+        "rmsDbfs": -28.960142136690813,
+        "peak": 0.2219124138355255,
+        "peakDbfs": -13.076368050946048,
+        "dc": 4.319009651306265e-07,
+        "maximumSampleStep": 0.04213825985789299,
+        "sampledStepP99": 0.012058151405653916,
+        "rms10msP05": 0.010494579170208292,
+        "rms10msP50": 0.035490236803058385,
+        "rms10msP95": 0.05498639662031598,
+        "lowBandEnergyRatio": 0.37254027984095167,
+        "clippedSamples": 0,
+        "nonFiniteSamples": 0
+      },
+      "capParity": [
+        {
+          "kind": "cruise",
+          "raw130": 130,
+          "raw160": 160,
+          "rpmDelta": 0,
+          "loadDelta": -4.7226000887690134e-11,
+          "gear130": 6,
+          "gear160": 6
+        },
+        {
+          "kind": "held-demand",
+          "raw130": 130,
+          "raw160": 160,
+          "rpmDelta": -0.00027548209436645266,
+          "loadDelta": 0,
+          "gear130": 6,
+          "gear160": 6
+        }
+      ],
+      "audioSha256": "472541fe88524125303a8c9732b7aa4164fde93dab0f1b61fb2aaa06ff046a25",
+      "rmsDeltaDb": {
+        "30": 0.025,
+        "80": -0.241,
+        "130": -0.276
+      },
+      "roadTable": [
+        {
+          "name": "cruise-20",
+          "speedKmh": 20,
+          "gear": 2,
+          "rpm": 1630.525,
+          "load": 0.19911006213221114
+        },
+        {
+          "name": "cruise-30",
+          "speedKmh": 30,
+          "gear": 2,
+          "rpm": 2474.225,
+          "load": 0.2099976361551425
+        },
+        {
+          "name": "cruise-40",
+          "speedKmh": 40,
+          "gear": 3,
+          "rpm": 2440.133333333333,
+          "load": 0.22524023963619236
+        },
+        {
+          "name": "cruise-60",
+          "speedKmh": 60,
+          "gear": 4,
+          "rpm": 2789,
+          "load": 0.2687905355026126
+        },
+        {
+          "name": "cruise-80",
+          "speedKmh": 80,
+          "gear": 4,
+          "rpm": 3762,
+          "load": 0.3297609496909966
+        },
+        {
+          "name": "cruise-100",
+          "speedKmh": 100,
+          "gear": 5,
+          "rpm": 4194,
+          "load": 0.40815148224000436
+        },
+        {
+          "name": "cruise-130",
+          "speedKmh": 130,
+          "gear": 6,
+          "rpm": 4761.933333333333,
+          "load": 0.5584000030092178
+        },
+        {
+          "name": "cruise-160",
+          "speedKmh": 160,
+          "gear": 6,
+          "rpm": 4761.933333333333,
+          "load": 0.5584000029619918
+        },
+        {
+          "name": "held-demand-130",
+          "speedKmh": 130,
+          "gear": 6,
+          "rpm": 4978.033333333334,
+          "load": 0.9999999999999999
+        },
+        {
+          "name": "held-demand-160",
+          "speedKmh": 160,
+          "gear": 6,
+          "rpm": 4978.033057851239,
+          "load": 0.9999999999999999
+        },
+        {
+          "name": "acceleration-20",
+          "speedKmh": 20,
+          "gear": 1,
+          "rpm": 2326,
+          "load": 0.9999999763680459
+        },
+        {
+          "name": "acceleration-30",
+          "speedKmh": 30,
+          "gear": 2,
+          "rpm": 2530,
+          "load": 0.9999999999916013
+        },
+        {
+          "name": "acceleration-40",
+          "speedKmh": 40,
+          "gear": 2,
+          "rpm": 3376,
+          "load": 0.9999999999999997
+        },
+        {
+          "name": "acceleration-60",
+          "speedKmh": 60,
+          "gear": 3,
+          "rpm": 3787,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-80",
+          "speedKmh": 80,
+          "gear": 4,
+          "rpm": 3969,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-100",
+          "speedKmh": 100,
+          "gear": 4,
+          "rpm": 4903,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-130",
+          "speedKmh": 130,
+          "gear": 5,
+          "rpm": 5592,
+          "load": 0.832027013704094
+        },
+        {
+          "name": "acceleration-160",
+          "speedKmh": 160,
+          "gear": 6,
+          "rpm": 4979,
+          "load": 0.9999999999999579
+        }
+      ]
+    },
+    {
+      "profile": "cinque",
+      "sampleRate": 48000,
+      "metrics": {
+        "start": 0.1,
+        "end": 132,
+        "rms": 0.03558951746071423,
+        "rmsDbfs": -28.973558006469744,
+        "peak": 0.2202451229095459,
+        "peakDbfs": -13.141873995836857,
+        "dc": 6.59239264264186e-07,
+        "maximumSampleStep": 0.03821064066141844,
+        "sampledStepP99": 0.011229243129491806,
+        "rms10msP05": 0.011233227466821481,
+        "rms10msP50": 0.03524880706640011,
+        "rms10msP95": 0.05505794969598253,
+        "lowBandEnergyRatio": 0.37105857701047024,
+        "clippedSamples": 0,
+        "nonFiniteSamples": 0
+      },
+      "capParity": [
+        {
+          "kind": "cruise",
+          "raw130": 130,
+          "raw160": 160,
+          "rpmDelta": 0,
+          "loadDelta": -4.7015058513011354e-11,
+          "gear130": 6,
+          "gear160": 6
+        },
+        {
+          "kind": "held-demand",
+          "raw130": 130,
+          "raw160": 160,
+          "rpmDelta": 0,
+          "loadDelta": 0,
+          "gear130": 6,
+          "gear160": 6
+        }
+      ],
+      "audioSha256": "a85c31b014cdf1a9fa6b3a98ed37dfef338c3e07410a59fd031e51b4ac4e47e2",
+      "rmsDeltaDb": {
+        "30": 0.028,
+        "80": -0.197,
+        "130": -0.372
+      },
+      "roadTable": [
+        {
+          "name": "cruise-20",
+          "speedKmh": 20,
+          "gear": 2,
+          "rpm": 1630.375,
+          "load": 0.19911006215185606
+        },
+        {
+          "name": "cruise-30",
+          "speedKmh": 30,
+          "gear": 2,
+          "rpm": 2474.375,
+          "load": 0.20999763617136885
+        },
+        {
+          "name": "cruise-40",
+          "speedKmh": 40,
+          "gear": 3,
+          "rpm": 2440.125,
+          "load": 0.22524023964703352
+        },
+        {
+          "name": "cruise-60",
+          "speedKmh": 60,
+          "gear": 4,
+          "rpm": 2789,
+          "load": 0.2687905355178597
+        },
+        {
+          "name": "cruise-80",
+          "speedKmh": 80,
+          "gear": 4,
+          "rpm": 3762,
+          "load": 0.3297609497030589
+        },
+        {
+          "name": "cruise-100",
+          "speedKmh": 100,
+          "gear": 5,
+          "rpm": 4194,
+          "load": 0.40815148225863973
+        },
+        {
+          "name": "cruise-130",
+          "speedKmh": 130,
+          "gear": 6,
+          "rpm": 4761.875,
+          "load": 0.5584000030239881
+        },
+        {
+          "name": "cruise-160",
+          "speedKmh": 160,
+          "gear": 6,
+          "rpm": 4761.875,
+          "load": 0.558400002976973
+        },
+        {
+          "name": "held-demand-130",
+          "speedKmh": 130,
+          "gear": 6,
+          "rpm": 4977.875,
+          "load": 0.9999999999999999
+        },
+        {
+          "name": "held-demand-160",
+          "speedKmh": 160,
+          "gear": 6,
+          "rpm": 4977.875,
+          "load": 0.9999999999999999
+        },
+        {
+          "name": "acceleration-20",
+          "speedKmh": 20,
+          "gear": 1,
+          "rpm": 2324,
+          "load": 0.9999999762677506
+        },
+        {
+          "name": "acceleration-30",
+          "speedKmh": 30,
+          "gear": 2,
+          "rpm": 2528,
+          "load": 0.9999999999914382
+        },
+        {
+          "name": "acceleration-40",
+          "speedKmh": 40,
+          "gear": 2,
+          "rpm": 3375,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-60",
+          "speedKmh": 60,
+          "gear": 3,
+          "rpm": 3783,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-80",
+          "speedKmh": 80,
+          "gear": 4,
+          "rpm": 3953,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-100",
+          "speedKmh": 100,
+          "gear": 4,
+          "rpm": 4903,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-130",
+          "speedKmh": 130,
+          "gear": 5,
+          "rpm": 5586,
+          "load": 0.761594202898801
+        },
+        {
+          "name": "acceleration-160",
+          "speedKmh": 160,
+          "gear": 6,
+          "rpm": 4978,
+          "load": 0.9999999999999584
+        }
+      ]
+    },
+    {
+      "profile": "turbine",
+      "sampleRate": 44100,
+      "metrics": {
+        "start": 0.1,
+        "end": 132,
+        "rms": 0.07690766385344255,
+        "rmsDbfs": -22.28060761140477,
+        "peak": 0.6450618505477905,
+        "peakDbfs": -3.8079728370995514,
+        "dc": -9.052104358521092e-08,
+        "maximumSampleStep": 0.12810319662094116,
+        "sampledStepP99": 0.08630241453647614,
+        "rms10msP05": 0.03314339526277343,
+        "rms10msP50": 0.0552852267457955,
+        "rms10msP95": 0.13648983722840471,
+        "lowBandEnergyRatio": 0.3729429099758336,
+        "clippedSamples": 0,
+        "nonFiniteSamples": 0
+      },
+      "capParity": [
+        {
+          "kind": "cruise",
+          "raw130": 130,
+          "raw160": 160,
+          "rpmDelta": 0,
+          "loadDelta": -4.718270218972975e-11,
+          "gear130": 1,
+          "gear160": 1
+        },
+        {
+          "kind": "held-demand",
+          "raw130": 130,
+          "raw160": 160,
+          "rpmDelta": 0.005578512396823498,
+          "loadDelta": 0,
+          "gear130": 1,
+          "gear160": 1
+        }
+      ],
+      "audioSha256": "e9bdc0026c9609e5dda7cb7ca462ef0b9c80667a1be3c2a73442af7ba3cd86f6",
+      "rmsDeltaDb": {
+        "30": -0.743,
+        "80": -0.699,
+        "130": -0.462
+      },
+      "roadTable": [
+        {
+          "name": "cruise-20",
+          "speedKmh": 20,
+          "gear": 1,
+          "rpm": 2030.75,
+          "load": 0.19911006212789867
+        },
+        {
+          "name": "cruise-30",
+          "speedKmh": 30,
+          "gear": 1,
+          "rpm": 2572.0666666666666,
+          "load": 0.2099976361551425
+        },
+        {
+          "name": "cruise-40",
+          "speedKmh": 40,
+          "gear": 1,
+          "rpm": 3115,
+          "load": 0.22524023963281387
+        },
+        {
+          "name": "cruise-60",
+          "speedKmh": 60,
+          "gear": 1,
+          "rpm": 4204.066666666667,
+          "load": 0.26879053549523585
+        },
+        {
+          "name": "cruise-80",
+          "speedKmh": 80,
+          "gear": 1,
+          "rpm": 5299,
+          "load": 0.3297609496909966
+        },
+        {
+          "name": "cruise-100",
+          "speedKmh": 100,
+          "gear": 1,
+          "rpm": 6399,
+          "load": 0.4081514822274664
+        },
+        {
+          "name": "cruise-130",
+          "speedKmh": 130,
+          "gear": 1,
+          "rpm": 8059.891666666666,
+          "load": 0.5584000030091745
+        },
+        {
+          "name": "cruise-160",
+          "speedKmh": 160,
+          "gear": 1,
+          "rpm": 8059.891666666666,
+          "load": 0.5584000029619918
+        },
+        {
+          "name": "held-demand-130",
+          "speedKmh": 130,
+          "gear": 1,
+          "rpm": 8193.325,
+          "load": 0.9999999999999999
+        },
+        {
+          "name": "held-demand-160",
+          "speedKmh": 160,
+          "gear": 1,
+          "rpm": 8193.330578512398,
+          "load": 0.9999999999999999
+        },
+        {
+          "name": "acceleration-20",
+          "speedKmh": 20,
+          "gear": 1,
+          "rpm": 2146,
+          "load": 0.9999999763680459
+        },
+        {
+          "name": "acceleration-30",
+          "speedKmh": 30,
+          "gear": 1,
+          "rpm": 2679,
+          "load": 0.9999999999989275
+        },
+        {
+          "name": "acceleration-40",
+          "speedKmh": 40,
+          "gear": 1,
+          "rpm": 3221,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-60",
+          "speedKmh": 60,
+          "gear": 1,
+          "rpm": 4295,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-80",
+          "speedKmh": 80,
+          "gear": 1,
+          "rpm": 5378,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-100",
+          "speedKmh": 100,
+          "gear": 1,
+          "rpm": 6444,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-130",
+          "speedKmh": 130,
+          "gear": 1,
+          "rpm": 8058,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-160",
+          "speedKmh": 160,
+          "gear": 1,
+          "rpm": 8195,
+          "load": 0.9999999999999579
+        }
+      ]
+    },
+    {
+      "profile": "turbine",
+      "sampleRate": 48000,
+      "metrics": {
+        "start": 0.1,
+        "end": 132,
+        "rms": 0.07380216523453231,
+        "rmsDbfs": -22.638617930039135,
+        "peak": 0.6198059320449829,
+        "peakDbfs": -4.154885430535103,
+        "dc": 4.2023971038432835e-07,
+        "maximumSampleStep": 0.12124833464622498,
+        "sampledStepP99": 0.08124671131372452,
+        "rms10msP05": 0.031832959773382165,
+        "rms10msP50": 0.0529366120529194,
+        "rms10msP95": 0.13123917828830897,
+        "lowBandEnergyRatio": 0.3720067847147272,
+        "clippedSamples": 0,
+        "nonFiniteSamples": 0
+      },
+      "capParity": [
+        {
+          "kind": "cruise",
+          "raw130": 130,
+          "raw160": 160,
+          "rpmDelta": 0,
+          "loadDelta": -4.697153777044605e-11,
+          "gear130": 1,
+          "gear160": 1
+        },
+        {
+          "kind": "held-demand",
+          "raw130": 130,
+          "raw160": 160,
+          "rpmDelta": 0,
+          "loadDelta": 0,
+          "gear130": 1,
+          "gear160": 1
+        }
+      ],
+      "audioSha256": "397bb5c552dda989489a3e2c43c6e794f37c3a4c67e0868add6cca8544881a57",
+      "rmsDeltaDb": {
+        "30": -0.854,
+        "80": -0.712,
+        "130": -0.474
+      },
+      "roadTable": [
+        {
+          "name": "cruise-20",
+          "speedKmh": 20,
+          "gear": 1,
+          "rpm": 2030.75,
+          "load": 0.19911006214761437
+        },
+        {
+          "name": "cruise-30",
+          "speedKmh": 30,
+          "gear": 1,
+          "rpm": 2572.125,
+          "load": 0.20999763617136885
+        },
+        {
+          "name": "cruise-40",
+          "speedKmh": 40,
+          "gear": 1,
+          "rpm": 3115,
+          "load": 0.22524023964357065
+        },
+        {
+          "name": "cruise-60",
+          "speedKmh": 60,
+          "gear": 1,
+          "rpm": 4204.125,
+          "load": 0.26879053551043014
+        },
+        {
+          "name": "cruise-80",
+          "speedKmh": 80,
+          "gear": 1,
+          "rpm": 5299,
+          "load": 0.3297609497030589
+        },
+        {
+          "name": "cruise-100",
+          "speedKmh": 100,
+          "gear": 1,
+          "rpm": 6399,
+          "load": 0.40815148224593795
+        },
+        {
+          "name": "cruise-130",
+          "speedKmh": 130,
+          "gear": 1,
+          "rpm": 8059.875,
+          "load": 0.5584000030239445
+        },
+        {
+          "name": "cruise-160",
+          "speedKmh": 160,
+          "gear": 1,
+          "rpm": 8059.875,
+          "load": 0.558400002976973
+        },
+        {
+          "name": "held-demand-130",
+          "speedKmh": 130,
+          "gear": 1,
+          "rpm": 8193.75,
+          "load": 0.9999999999999999
+        },
+        {
+          "name": "held-demand-160",
+          "speedKmh": 160,
+          "gear": 1,
+          "rpm": 8193.75,
+          "load": 0.9999999999999999
+        },
+        {
+          "name": "acceleration-20",
+          "speedKmh": 20,
+          "gear": 1,
+          "rpm": 2144,
+          "load": 0.9999999762677506
+        },
+        {
+          "name": "acceleration-30",
+          "speedKmh": 30,
+          "gear": 1,
+          "rpm": 2678,
+          "load": 0.9999999999989095
+        },
+        {
+          "name": "acceleration-40",
+          "speedKmh": 40,
+          "gear": 1,
+          "rpm": 3220,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-60",
+          "speedKmh": 60,
+          "gear": 1,
+          "rpm": 4291,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-80",
+          "speedKmh": 80,
+          "gear": 1,
+          "rpm": 5358,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-100",
+          "speedKmh": 100,
+          "gear": 1,
+          "rpm": 6444,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-130",
+          "speedKmh": 130,
+          "gear": 1,
+          "rpm": 8056,
+          "load": 0.9999999999999998
+        },
+        {
+          "name": "acceleration-160",
+          "speedKmh": 160,
+          "gear": 1,
+          "rpm": 8194,
+          "load": 0.9999999999999584
+        }
+      ]
+    }
+  ]
+}

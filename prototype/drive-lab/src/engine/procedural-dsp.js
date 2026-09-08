@@ -25,7 +25,7 @@ export class EngineSynth {
     this.seed = 0x6d2b79f5; this.frames = 0; this.firings = 0;
     this.spool = 0; this.blade = 0; this.blowOff = 0; this.releaseArmed = false;
     this.previousLoad = 0; this.noiseLow = 0; this.airLow = 0;
-    this.valveLow = 0; this.valveEnvelope = 0;
+    this.valveLow = 0; this.valveEnvelope = 0; this.flowDrift = 0;
     this.dc = [0, 0]; this.last = [0, 0]; this.low = [0, 0];
     this.outputs = [0, 0];
     this.cylinders = configuration.cylinders ?? 4;
@@ -43,8 +43,8 @@ export class EngineSynth {
     }
     this.pending = [new Float32Array(this.pulse.length + 4), new Float32Array(this.pulse.length + 4)];
     this.cursor = 0;
-    this.pipes = [0, 1].map(bank => (configuration.pipeSeconds ?? [.0041, .0067, .0113]).map((seconds, i) => new Pipe(rate, seconds * (bank ? 1.037 : 1), .54 - i * .09)));
-    this.intake = new Pipe(rate, configuration.intakeSeconds ?? .0028, .43);
+    this.pipes = [0, 1].map(bank => (configuration.pipeSeconds ?? [.0041, .0067, .0113]).map((seconds, i) => new Pipe(rate, seconds * (bank ? 1.037 : 1), .24 - i * .04)));
+    this.intake = new Pipe(rate, configuration.intakeSeconds ?? .0028, .22);
     this.dcPole = Math.exp(-TAU * 24 / rate);
     this.noiseCoefficient = 1 - Math.exp(-TAU * 980 / rate);
     this.airCoefficient = 1 - Math.exp(-TAU * 352 / rate);
@@ -80,13 +80,15 @@ export class EngineSynth {
     const highNoise = noise - this.noiseLow;
     this.valveLow += this.valveCoefficient * (highNoise - this.valveLow);
     this.valveEnvelope += (1 - Math.exp(-1 / (this.rate * .004))) * (this.blowOff - this.valveEnvelope);
-    this.blade = (this.blade + (this.config.turbine ? 420 + this.spool * 2700 : 1700 + this.spool * 2700) / this.rate) % 1;
+    this.flowDrift += (1 - Math.exp(-TAU * 7 / this.rate)) * (noise - this.flowDrift);
+    this.blade = (this.blade + (this.config.turbine ? (420 + this.spool * 2700) * (1 + this.flowDrift * .035) : 1700 + this.spool * 2700) / this.rate) % 1;
     this.airLow += this.airCoefficient * (noise - this.airLow);
     if (this.config.turbine) {
-      // Shaft/airflow voice: no fictional piston firings or transmission gears.
+      // Airflow owns the body; a quiet, gently irregular blade tone adds shaft detail.
+      // No fictional piston firings or transmission gears.
       const whine = Math.sin(TAU * this.blade) + .22 * Math.sin(TAU * this.blade * 2);
       const air = this.airLow * (1.2 + 3 * this.spool) + highNoise * .045;
-      const raw = (whine * (.07 + .08 * this.spool) + air) * .8;
+      const raw = (whine * (.01 + .016 * this.spool) * (1 + this.flowDrift * .3) + air) * .8;
       this.dc[0] = raw - this.last[0] + this.dcPole * this.dc[0]; this.last[0] = raw;
       this.outputs[0] = this.dc[0]; this.outputs[1] = this.dc[0] * .98;
     } else {
@@ -105,14 +107,14 @@ export class EngineSynth {
       for (let bank = 0; bank < 2; bank++) {
         const pressure = this.pending[bank][this.cursor]; this.pending[bank][this.cursor] = 0;
         const pipes = this.pipes[bank];
-        const exhaust = pressure * .2 + pipes[0].step(pressure) * .55 + pipes[1].step(pressure) * .3 + pipes[2].step(pressure) * .2;
-        const raw = exhaust + intake * .32;
+        const exhaust = pressure * .55 + pipes[0].step(pressure) * .34 + pipes[1].step(pressure) * .18 + pipes[2].step(pressure) * .1;
+        const raw = exhaust + intake * .2;
         this.dc[bank] = raw - this.last[bank] + this.dcPole * this.dc[bank]; this.last[bank] = raw;
         const cutoff = (this.config.cutoffHz ?? 1900) * (.45 + .55 * load);
         this.low[bank] += (1 - Math.exp(-TAU * cutoff / this.rate)) * (this.dc[bank] - this.low[bank]);
       }
       this.cursor = (this.cursor + 1) % this.pending[0].length;
-      const compressor = this.config.turbo ? Math.sin(TAU * this.blade) * this.spool * .065 + this.valveLow * (this.spool * .035 + this.valveEnvelope * .18) : 0;
+      const compressor = this.config.turbo ? Math.sin(TAU * this.blade) * this.spool * .018 + this.valveLow * (this.spool * .035 + this.valveEnvelope * .18) : 0;
       const body = this.config.level ?? .85;
       this.outputs[0] = ((this.low[0] * .82 + this.low[1] * .58) * body + compressor);
       this.outputs[1] = ((this.low[1] * .82 + this.low[0] * .58) * body + compressor);

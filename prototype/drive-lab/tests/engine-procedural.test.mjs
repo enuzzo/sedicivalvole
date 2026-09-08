@@ -139,3 +139,28 @@ test('worklet applies per-sample RPM automation and stops permanently after disp
   const frames = varied.node.synth.frames;
   assert.equal(varied.process(), false); assert.equal(varied.node.synth.frames, frames);
 });
+
+
+test('turbine blade detail remains subordinate to airflow at settled full spool', () => {
+  for (const rate of [44100, 48000]) {
+    const { samples } = render(profiles.find(profile => profile.singleSpeed), { rate, seconds: 20 });
+    const tail = samples.subarray(samples.length - rate);
+    const rms = Math.sqrt(tail.reduce((sum, value) => sum + value * value, 0) / rate);
+    const tone = amplitude(samples, rate, 3120);
+    assert.ok(tone < rms * .4, `blade ${tone} vs airflow RMS ${rms}`);
+    assert.ok(rms > .15 && rms < .5, `body retained: ${rms}`);
+  }
+});
+
+test('pressure paths decay promptly after combustion stops', () => {
+  for (const profile of profiles.filter(profile => !profile.singleSpeed)) {
+    // Isolate pressure paths from the deliberately continuing turbo spool.
+    const { synth, rms } = render(profile, { overrides: { turbo: false } });
+    let late = 0;
+    for (let i = 0; i < 4800; i++) {
+      const output = synth.sample(0, 0, 0, 1, 0);
+      if (i >= 2400) late += ((output[0] + output[1]) * .5) ** 2;
+    }
+    assert.ok(Math.sqrt(late / 2400) < rms * .015, `${profile.id}: no sustained resonator tail`);
+  }
+});

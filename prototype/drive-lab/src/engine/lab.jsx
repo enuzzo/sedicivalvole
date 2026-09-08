@@ -35,7 +35,7 @@ export function EngineLab({ audioRef, prepareAudio }) {
       <label>Drive input <select aria-label="Drive input" value={input} onChange={event => setInput(event.target.value)}><option value="auto">Inferred</option><option value="accelerator">Accelerator</option><option value="regen">Lift / regen</option><option value="brake">Brake</option></select></label>
       <label>Transmission <select aria-label="Transmission" value={transmission} onChange={event => setTransmission(event.target.value)}><option>AUTO</option><option>MANUAL</option></select></label>
       {transmission === "MANUAL" ? <div>{[1,2,3,4,5,6].map(gear => <button type="button" key={gear} onClick={() => setNotice(geaps.runtimeRef.current?.requestGear(gear) ? "Gear requested" : "Gear rejected: check speed, signal and shift state")}>{gear}</button>)}</div> : null}
-      <p>PHYS: 0.25 m wheel radius · donor gear and final-drive ratios. TUNING: RPM thresholds, shift duration and mix. CAL: GPS age ≤ 1.8 s; exact standstill requires two observations and 350 ms. Drive response is an inference, not a pedal sensor.</p>
+      <p>Virtual 0.32 m wheel radius · original road ratios · 130 km/h acoustic ceiling. Speed and drive input here are simulated. Public drive response is inferred, not measured pedal or Tesla gearbox data.</p>
       {notice ? <p role="status">{notice}</p> : null}
       <details><summary>Engine diagnostics / latest 100 events</summary><pre>{JSON.stringify({ ...geaps.snapshot, evidence: motion.current.snapshot(performance.now()), events: events.current }, null, 2)}</pre></details>
     </div>

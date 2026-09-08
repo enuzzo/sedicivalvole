@@ -1,5 +1,16 @@
 # Session Handoff
 
+## September 8 Tesla listening refinement
+
+The owner accepted the improved road behavior of build 0807 and praised the first
+three voices at high volume, while requesting drier definition and less synthetic
+Otto/Cinque/Turbine. [Current research, acoustic changes and acceptance](ENGINE-LISTENING-REFINEMENT-2026-09-08.md)
+record later second-to-third shifts, focused sample mixing, shorter pressure
+resonance and subdued blade tones. No added reverb or upstream media edits.
+A new A/B annotation LAB remains proposed, pending the three-direction selection.
+This note supersedes older claims that all physical Engine listening is untested.
+
+
 ## Active Engine quality campaign
 
 The owner now authorizes a major Engine quality/versatility implementation in a

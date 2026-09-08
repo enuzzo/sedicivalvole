@@ -1,5 +1,9 @@
 # Engine road progression — 2026-09-08
 
+Historical 0834 calibration below. The owner subsequently tested 0807 in Tesla;
+see [the listening refinement](ENGINE-LISTENING-REFINEMENT-2026-09-08.md) for
+physical feedback and the superseding urban shift schedule.
+
 The owner wants restrained city driving at 20–40 km/h, with power already
 present at 80 and further progression to 130. The former ratios made Mono
 approach 7,000 RPM at 30 km/h. That falsely suggested hard acceleration while

@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { focusedCrossfade } from "../src/engine/sample-mix.js";
 import { build } from "esbuild";
 import { ENGINE_ROAD_SPEED_CEILING_KMH, VIRTUAL_WHEEL_RADIUS_M, engineRoadSpeed,
   virtualRpm, roadUpshiftSpeed, selectRoadGear, decideAutomaticGear } from "../src/engine/gearbox.js";
@@ -8,6 +9,19 @@ const compiled = await build({ entryPoints: [new URL("../src/engine/profiles.js"
   bundle: true, format: "esm", platform: "node", write: false });
 const { ENGINE_PROFILES } = await import(`data:text/javascript;base64,${Buffer.from(compiled.outputFiles[0].text).toString("base64")}`);
 const roads = ENGINE_PROFILES.filter(profile => !profile.singleSpeed);
+
+test("recording selection reduces competing layers without losing expected mix energy", () => {
+  let previous = 0;
+  for (let i = 0; i <= 1000; i++) {
+    const { gain1, gain2 } = focusedCrossfade(i / 1000, 0, 1);
+    assert.ok(Math.abs(gain1 ** 2 + gain2 ** 2 - 1) < 1e-12);
+    assert.ok(gain1 >= previous && gain1 - previous < .004);
+    previous = gain1;
+  }
+  assert.ok(focusedCrossfade(.2, 0, 1).gain1 < .11);
+  assert.ok(focusedCrossfade(.8, 0, 1).gain2 < .11);
+  assert.deepEqual(focusedCrossfade(-1, 0, 1), { gain1: 0, gain2: 1 });
+});
 const rpmAt = (speed, load, profile) => virtualRpm(speed, selectRoadGear(speed, load, profile), profile.configuration.drivetrain);
 const choose = (profile, input) => decideAutomaticGear({ canShift: true, heldSeconds: 2, drive: .2, ...input }, profile, profile.configuration.drivetrain);
 
@@ -52,7 +66,7 @@ test("load holds a road gear longer without raising the city shift points to red
       assert.equal(choose(profile, { gear, speedKmh: between, drive: 1 }), null);
     }
     assert.ok(roadUpshiftSpeed(1, 1, profile) <= 22);
-    assert.ok(roadUpshiftSpeed(2, 1, profile) <= 34);
+    assert.ok(roadUpshiftSpeed(2, 1, profile) <= 40);
   }
 });
 
@@ -79,7 +93,7 @@ test("ascending and descending road journeys retain coherent sequential gears wi
       }
       const rpm = virtualRpm(speedKmh, gear, profile.configuration.drivetrain);
       assert.ok(rpm < profile.configuration.engine.limiter * .9, `${profile.id} ${speedKmh} km/h in ${gear}: ${rpm}`);
-      if (speedKmh <= 40) assert.ok(rpm <= 3200);
+      if (speedKmh <= 40) assert.ok(rpm <= 3700);
     };
     for (let tick = 0; tick <= 1000; tick++) step(tick * .13);
     assert.equal(gear, 6);
@@ -146,5 +160,17 @@ test("stale evidence, insufficient dwell and single-speed Turbine cannot produce
   for (const speed of [0, 20, 80, 130, 260]) {
     assert.equal(selectRoadGear(speed, 1, turbine), 1);
     assert.equal(choose(turbine, { gear: 1, speedKmh: speed, drive: 1 }), null);
+  }
+});
+
+
+test("city arrival and return use second gear at 30 without high RPM", () => {
+  for (const profile of roads) {
+    for (const load of [0, .2, .55, 1]) assert.equal(selectRoadGear(30, load, profile), 2);
+    assert.ok(virtualRpm(30, 2, profile.configuration.drivetrain) <= 2800);
+    assert.ok(roadUpshiftSpeed(2, 0, profile) >= 36);
+    // Otto may retain third at exactly 30 on coast; its next downshift is 29.
+    const decision = choose(profile, { gear: 3, speedKmh: 28, drive: 0 });
+    assert.equal(decision?.gear, 2);
   }
 });

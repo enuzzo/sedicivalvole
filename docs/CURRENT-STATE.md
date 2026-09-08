@@ -1,5 +1,11 @@
 # Current Project State
 
+September 8 owner Tesla listening: build 0807 improved progression/braking;
+Mono/Rosso/Touring praised at high volume. [Refinement and measured evidence](ENGINE-LISTENING-REFINEMENT-2026-09-08.md)
+now implement later urban shifts, focused recording layers and reduced tonal
+ringing. The following live identity remains the previous publication until the
+verified refinement deployment closes.
+
 Latest verified canonical publication: **20260908-0834**, source **d1beea3**,
 version from VERSION (**0.0.0**). This summary takes precedence over dated
 historical paragraphs below.

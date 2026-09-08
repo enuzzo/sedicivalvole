@@ -993,3 +993,37 @@ Research only. No new source or recordings from these projects are shipped.
 - Status: DRAFT, not sent.
 
 > Thank you for explaining how the simulator sound-library responses can be explored. The distinction between those acoustic filters and complete engine recordings helped clarify our research. I am enuzzo, building sedicivalvole under PolyForm Noncommercial. Your work is credited as research; no source or assets from this study are shipped.
+
+## September 8 cabin-listening studies
+
+### Porsche AG — 911 GT3 PDK
+
+- [Source](https://newsroom.porsche.com/dam/jcr:ca1882c7-1588-4a2e-995c-fe19ef1281fc/pag-911-gt3-pdk-en.pdf.PDF); [public discovery/contact route](https://newsroom.porsche.com/en/press-kits/911-GT3.html). No private contact inferred.
+- Exact use: Official 10/2024 ratios, final drive and driven-tyre dimensions used for explicitly calculated RPM examples; no OEM shift schedule, code or media imported.
+- Status: study only. **Unsent draft**:
+
+> Hello — I am enuzzo, creating sedicivalvole, an experimental source-visible project under PolyForm Noncommercial. Thank you for publishing complete transmission and tyre specifications. They helped us separate physically possible engine speed from a guessed automatic shift schedule. Your work is credited as research; this acknowledgement has not been sent. — enuzzo
+
+### Toyota GAZOO Racing — GR Yaris / Rally2
+
+- [Source](https://toyotagazooracing.com/gr/yaris/); [public discovery/contact route](https://toyotagazooracing.com/jp/rally2/cars/). No private contact inferred.
+- Exact use: Official road GR-DAT ratios, tyre dimensions and pedal-aware automatic explanation; official Rally2 sequential-transmission distinction. Calculated examples only; no presets, code or media imported.
+- Status: study only. **Unsent draft**:
+
+> Hello — I am enuzzo, creating sedicivalvole, an experimental source-visible project under PolyForm Noncommercial. Thank you for explaining both the sporting automatic strategy and the distinct Rally2 drivetrain. That distinction helped us avoid treating a rally transmission as a universal urban gearbox. Your work is credited as research; this acknowledgement has not been sent. — enuzzo
+
+### iZotope — modulation education
+
+- [Source](https://www.izotope.com/community/blog/understanding-chorus-flangers-and-phasers-in-audio-production); [public discovery/contact route](https://www.izotope.com/). No private contact inferred.
+- Exact use: Phase/comb-filter and modulation concepts informed a hypothesis about perceived layered-loop smear. Study only; no algorithm, code or media copied.
+- Status: study only. **Unsent draft**:
+
+> Hello — I am enuzzo, creating sedicivalvole, an experimental source-visible project under PolyForm Noncommercial. Thank you for making the audible differences between chorus, flanging and phasing understandable. Your explanation helped us investigate a listener report without inventing an effect in our audio graph. Your work is credited as research; this acknowledgement has not been sent. — enuzzo
+
+### Matthew P. Allen, Stephen A. Rizzi, Ricardo Burdisso and Selen Okcu — NASA/NTRS 20120010346
+
+- [Source](https://ntrs.nasa.gov/citations/20120010346); [public discovery/contact route](https://ntrs.nasa.gov/citations/20120010346). No private contact inferred.
+- Exact use: Study of time-varying tonal/broadband turbofan synthesis, informing subdued irregular shaft detail. No measured data, model constants, code or media imported.
+- Status: study only. **Unsent draft**:
+
+> Hello — I am enuzzo, creating sedicivalvole, an experimental source-visible project under PolyForm Noncommercial. Thank you for documenting how short-term tonal fluctuations affect perceived realism. The distinction between a steady tone and a changing source helped guide our original fictional turbine refinement. Your work is credited as research; this acknowledgement has not been sent. — enuzzo

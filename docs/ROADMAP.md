@@ -1,5 +1,16 @@
 # Roadmap
 
+## September 8 Tesla listening refinement
+
+The owner accepted the improved road behavior of build 0807 and praised the first
+three voices at high volume, while requesting drier definition and less synthetic
+Otto/Cinque/Turbine. [Current research, acoustic changes and acceptance](ENGINE-LISTENING-REFINEMENT-2026-09-08.md)
+record later second-to-third shifts, focused sample mixing, shorter pressure
+resonance and subdued blade tones. No added reverb or upstream media edits.
+A new A/B annotation LAB remains proposed, pending the three-direction selection.
+This note supersedes older claims that all physical Engine listening is untested.
+
+
 Current executable status is reconciled in [NIGHT-WORK-2026-09-07.md](NIGHT-WORK-2026-09-07.md). Visual recovery, Engine, separate Atlas/Stats and 15-minute default-Dev automatic diagnostics are already published; [DEPLOY.md](DEPLOY.md) records proof. The older phase narrative below preserves decision history, not an instruction to rebuild shipped features.
 
 September 7 owner follow-up: [accepted surfaces, recovery, Engine-first sequence,

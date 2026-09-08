@@ -737,4 +737,12 @@ These are exact lockfile entries, not a claim that every package ships in the br
 </details>
 <!-- NPM-CREDITS:END -->
 
+
+### September 8 cabin-listening studies
+
+- 🏁 **Porsche AG — 911 GT3 PDK** — [source](https://newsroom.porsche.com/dam/jcr:ca1882c7-1588-4a2e-995c-fe19ef1281fc/pag-911-gt3-pdk-en.pdf.PDF); [public discovery/contact route](https://newsroom.porsche.com/en/press-kits/911-GT3.html). Study only. Official 10/2024 ratios, final drive and driven-tyre dimensions used for explicitly calculated RPM examples; no OEM shift schedule, code or media imported.
+- 🚗 **Toyota GAZOO Racing — GR Yaris / Rally2** — [source](https://toyotagazooracing.com/gr/yaris/); [public discovery/contact route](https://toyotagazooracing.com/jp/rally2/cars/). Study only. Official road GR-DAT ratios, tyre dimensions and pedal-aware automatic explanation; official Rally2 sequential-transmission distinction. Calculated examples only; no presets, code or media imported.
+- 🎚️ **iZotope — modulation education** — [source](https://www.izotope.com/community/blog/understanding-chorus-flangers-and-phasers-in-audio-production); [public discovery/contact route](https://www.izotope.com/). Study only. Phase/comb-filter and modulation concepts informed a hypothesis about perceived layered-loop smear. Study only; no algorithm, code or media copied.
+- ✈️ **Matthew P. Allen, Stephen A. Rizzi, Ricardo Burdisso and Selen Okcu — NASA/NTRS 20120010346** — [source](https://ntrs.nasa.gov/citations/20120010346); [public discovery/contact route](https://ntrs.nasa.gov/citations/20120010346). Study only. Study of time-varying tonal/broadband turbofan synthesis, informing subdued irregular shaft detail. No measured data, model constants, code or media imported.
+
 <!-- COMMUNITY-CREDITS:END -->

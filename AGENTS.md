@@ -215,3 +215,14 @@ requested. Its public presets are free; Pro concerns the custom engine builder.
 Study behavior and concepts without importing its proprietary runtime, audio,
 parameters or presets. Continue the authorized original Engine implementation
 inside the saved local project; preserve the selected Telemetry visual.
+
+## Owner Tesla refinement — September 8, 2026
+
+The owner physically tested build 0807: motion/progression/braking improved and
+high-volume Mono/Rosso/Touring were good, with refinement requested. Research
+real sports/rally gearing; favor second at 30 without restoring excessive city
+RPM. Reduce perceived echo/phase smear and artificial Otto/Cinque/Turbine tones
+while retaining full, deep body. Preserve dry output, GPS/lifecycle and TAMARRO.
+A protected LAB comparison/annotation surface is proposed; present three
+directions and retain the visual selection gate before constructing it. See
+docs/ENGINE-LISTENING-REFINEMENT-2026-09-08.md.

@@ -356,3 +356,12 @@ the recorded provenance follow-up for the retained sample banks. See
 - **Carles Onielfa — Open Engine Simulator**: [source](https://github.com/carlesonielfa/open-engine-sim/tree/1e226ee7bfbeb1d5012c7696aee82a57355df281). Study only. Independent MIT fork inspected for macOS/browser generation and manual transmission paths; six text files retained only in ignored references. No build, code, audio or constants shipped.
 - **pilot01 — Better Impulse Response Library**: [source](https://catalog.engine-sim.parts/parts/1563). Study only. Public description of exposing existing impulse responses; no explicit reuse licence found on that page and no files downloaded or shipped.
 - **MDN contributors / Mozilla**: [AudioBufferSourceNode detune](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/detune). Documentation study informing proportional playback pitch; no text or code redistributed.
+
+### September 8 cabin-listening studies
+
+These are credited factual/conceptual studies, not shipped third-party implementations or media. Existing licensing and recording provenance remain unchanged.
+
+- **Porsche AG — 911 GT3 PDK** — [source](https://newsroom.porsche.com/dam/jcr:ca1882c7-1588-4a2e-995c-fe19ef1281fc/pag-911-gt3-pdk-en.pdf.PDF). Official 10/2024 ratios, final drive and driven-tyre dimensions used for explicitly calculated RPM examples; no OEM shift schedule, code or media imported.
+- **Toyota GAZOO Racing — GR Yaris / Rally2** — [source](https://toyotagazooracing.com/gr/yaris/). Official road GR-DAT ratios, tyre dimensions and pedal-aware automatic explanation; official Rally2 sequential-transmission distinction. Calculated examples only; no presets, code or media imported.
+- **iZotope — modulation education** — [source](https://www.izotope.com/community/blog/understanding-chorus-flangers-and-phasers-in-audio-production). Phase/comb-filter and modulation concepts informed a hypothesis about perceived layered-loop smear. Study only; no algorithm, code or media copied.
+- **Matthew P. Allen, Stephen A. Rizzi, Ricardo Burdisso and Selen Okcu — NASA/NTRS 20120010346** — [source](https://ntrs.nasa.gov/citations/20120010346). Study of time-varying tonal/broadband turbofan synthesis, informing subdued irregular shaft detail. No measured data, model constants, code or media imported.
