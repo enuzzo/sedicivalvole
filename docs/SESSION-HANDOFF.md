@@ -1,5 +1,9 @@
 # Session Handoff
 
+Latest verified live build: **20260908-1102 / b524cd4**. All executable listening
+refinements are implemented, tested and published. Remaining: owner listening
+and optional LAB direction selection; dated entries below are historical.
+
 ## September 8 Tesla listening refinement
 
 The owner accepted the improved road behavior of build 0807 and praised the first

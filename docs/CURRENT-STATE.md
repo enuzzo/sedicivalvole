@@ -1,36 +1,32 @@
 # Current Project State
 
-September 8 owner Tesla listening: build 0807 improved progression/braking;
-Mono/Rosso/Touring praised at high volume. [Refinement and measured evidence](ENGINE-LISTENING-REFINEMENT-2026-09-08.md)
-now implement later urban shifts, focused recording layers and reduced tonal
-ringing. The following live identity remains the previous publication until the
-verified refinement deployment closes.
-
-Latest verified canonical publication: **20260908-0834**, source **d1beea3**,
+Latest verified canonical publication: **20260908-1102**, source **b524cd4**,
 version from VERSION (**0.0.0**). This summary takes precedence over dated
 historical paragraphs below.
 
 | Area | Implemented, tested and live | Remaining evidence |
 |---|---|---|
 | Diagnostics | Dev/AUTO ON by default, saved OFF/Standard respected; fifteen observed GPS-driving minutes; coordinate-free; sampled simulated Engine RPM/reasons | First real automatic inbox receipt |
-| Engine | Six voices: Mono hybrid, Rosso/Touring sampled, original Otto V8, Cinque turbo five and continuous Turbine; restrained city ratios, power by 80, 130 km/h acoustic cap, phased load-sensitive shifts, proportional sample pitch, wheel-owned whine, original sample-clock DSP, no-GPS TAMARRO, exact-zero idle, dry output and cancellable recovery | Physical character preference, cabin balance, native media and long drive |
+| Engine | Six voices: Mono hybrid, Rosso/Touring sampled, original Otto V8, Cinque turbo five and continuous Turbine; second at 30, later urban third, focused layers and shorter resonance, power by 80, 130 km/h acoustic cap, phased load-sensitive shifts, proportional sample pitch, wheel-owned whine, original sample-clock DSP, no-GPS TAMARRO, exact-zero idle, dry output and cancellable recovery | Owner praises 0807 road behavior and first three voices; new refinement preference, native media and long drive |
 | Atlas / Stats | Separate Visual destinations; Natural/Palette map, Wikipedia and loaded OSM POIs; curved heading bands, motion/runtime parity and solid GPS/dashed terrain altitude | Physical moving-data legibility and GPS coverage |
 | Flux / Soundtrack / FX / Discover | Broad owner acceptance, later small refinements allowed | Preserve the remaining specific device/endurance cases |
 | iPhone | Selected Compact Cockpit for iPhone 17 Pro/Pro Max; safe areas, inert portrait notice, state-preserving rotation; 667×375 through 956×440 browser matrix | Actual Safari/device software and native audio |
 | Travel Report | Selected two-page A4 PDF, optional third route page, immutable preview/download, explicit verified-recipient email, proof reuse and distinct GPS/map elevation | Actual chosen-recipient inbox delivery |
 | Release | Experimental canonical build | Physical acceptance matrix, then separate production release decision |
 
-**784 native tests, 18 package checks, 8 documentation checks, 196 dependency
+**788 native tests, 18 package checks, 8 documentation checks, 196 dependency
 credits and 29 canonical HTML/asset/cache checks pass.** Official publication
 verifies 232 files and all 29 Illobo recordings; independent postflight reports
 remote_writes=NONE. Twelve final 132-second Chromium audio renders cover all six
 voices at 44.1/48 kHz, alongside twelve baseline comparisons. Steady and full-demand
 130/160 RPM/load/gear parity passes. Final compiled/canonical Tesla/phone browser
 checks pass with one AudioContext and no page/processor errors or synthetic mail.
-[Road parameters, source findings and audio evidence](ENGINE-ROAD-PROGRESSION-2026-09-08.md).
-Physical cabin listening, native media behavior and long-drive acceptance remain open.
+[Current refinement, real-car feedback, source findings and audio evidence](ENGINE-LISTENING-REFINEMENT-2026-09-08.md).
+The owner physically tested 0807 and praised the improved progression and first
+three voices at high volume. This new tuning still needs cabin listening.
+A proposed A/B annotation LAB awaits direction selection.
 
-The latest actual Tesla message found at 20:04 local is build 1936, before
+Historical September 7 evidence at 20:04 local concerned build 1936, before
 automatic build 2004. Thirty Engine shifts and GPS up to 115 km/h were recorded
 without runtime issues. Its brief 10,000-m accuracy reading motivated the bounded
 hold; profile preparation delays did not prove silence because audio continued.

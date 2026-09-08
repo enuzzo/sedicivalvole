@@ -1,6 +1,6 @@
 # sedicivalvole
 
-Engine road progression is live: restrained 20–40 km/h, strong character by 80 and a 130 km/h acoustic ceiling, with coherent automatic gears and proportional sample pitch. Build `20260908-0834`; [parameters, audio comparison and acceptance](docs/ENGINE-ROAD-PROGRESSION-2026-09-08.md).
+Engine listening refinement is live: second at 30 km/h, later urban third, focused recording layers, shorter pressure resonance and quieter turbo/turbine tones. Build `20260908-1102`; [real Tesla feedback, research and measured comparison](docs/ENGINE-LISTENING-REFINEMENT-2026-09-08.md).
 
 September 7 altitude correction: Stats now preserves reported GPS height and uses a visibly distinct terrain estimate when it is missing, including in Travel Report. See [behavior and validation](docs/ALTITUDE-FALLBACK-2026-09-07.md).
 

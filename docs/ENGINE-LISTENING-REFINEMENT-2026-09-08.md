@@ -127,3 +127,23 @@ These are level measurements, not loudness-matched preference scores. All twelve
 Local source snapshots, 48 kHz full renders and short 30/80/130 clips are retained
 in ignored `_references/audio/engine/listening-refinement-20260908/`; the accepted
 baseline remains in `road-progression-20260908/after`.
+
+## Verified publication — 2026-09-08 11:11 Europe/Rome
+
+Canonical **20260908-1102**, source **b524cd4**, version from VERSION (**0.0.0**).
+All 788 native tests, 18 final package checks, eight documentation checks and
+196 dependency credits pass. Twelve exact-source 132-second Chromium audio
+renders at 44.1/48 kHz pass, including finite/unclipped output and 130/160 cap
+parity. All 29 canonical HTML/asset/cache checks pass. Compiled and
+canonical six-voice checks cover Tesla 773×601 and phone 956×440/667×375,
+actual sample/worklet playback, no-GPS TAMARRO and one AudioContext, with no
+page/processor errors or synthetic mail. Two pre-gesture autoplay warnings are
+expected; START successfully activates audio. The existing local LAB starts
+Engine with corrected calibration copy; protected LAB packaging passes.
+Independent official preflight/postflight report `remote_writes=NONE`.
+
+The owner's 0807 physical feedback is recorded as improved road behavior and
+positive first-three-voice high-volume listening. Cabin preference for **this**
+refinement, the remaining synthetic voices and device endurance need a new
+physical listening pass. The optional A/B annotation LAB is still a proposal
+selected by the owner; implementation follows this audio checkpoint.

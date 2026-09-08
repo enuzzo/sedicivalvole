@@ -1,5 +1,47 @@
 # Deployment
 
+## Verified publication — 2026-09-08 11:11 Europe/Rome
+
+Canonical **20260908-1102**, source **b524cd4**, version from VERSION (**0.0.0**).
+All 788 native tests, 18 final package checks, eight documentation checks and
+196 dependency credits pass. Twelve exact-source 132-second Chromium audio
+renders at 44.1/48 kHz pass, including finite/unclipped output and 130/160 cap
+parity. All 29 canonical HTML/asset/cache checks pass. Compiled and
+canonical six-voice checks cover Tesla 773×601 and phone 956×440/667×375,
+actual sample/worklet playback, no-GPS TAMARRO and one AudioContext, with no
+page/processor errors or synthetic mail. Two pre-gesture autoplay warnings are
+expected; START successfully activates audio. The existing local LAB starts
+Engine with corrected calibration copy; protected LAB packaging passes.
+Independent official preflight/postflight report `remote_writes=NONE`.
+
+The owner's 0807 physical feedback is recorded as improved road behavior and
+positive first-three-voice high-volume listening. Cabin preference for **this**
+refinement, the remaining synthetic voices and device endurance need a new
+physical listening pass. The optional A/B annotation LAB is still a proposal
+selected by the owner; implementation follows this audio checkpoint.
+
+Official publication evidence:
+
+```text
+network=PASS
+login=PASS
+directory=PASS target=canonical_root
+read_only_identity=PASS root_and_legacy_targets_verified
+upload=PASS files=232 bytes=254872112
+illobo_playlist=PASS tracks=29 full_hash_verification=true
+illobo_artwork_migration=PASS retired_png_files=0
+lab_runtime_migration=PASS retired_worklets=0
+root_metadata_cleanup=PASS removed=false
+dynamic_root=PASS staged=false static_entry_removed=false
+legacy_cleanup=PASS files=0 directories=0
+previous_assets_retained=PASS files=1 cache_overlap=true
+remote_listing=PASS entries=12
+remote_writes=ROOT_UPLOAD_AND_EXACT_LEGACY_CLEANUP
+```
+
+[Canonical evidence](qa/2026-09-08-engine-refinement/live/canonical-evidence.json) · [browser evidence](qa/2026-09-08-engine-refinement/live/browser-evidence.json).
+
+
 ## Engine road progression publication — 2026-09-08 09:14 Europe/Rome
 
 Canonical **20260908-0834**, source **d1beea3**, version read from VERSION (**0.0.0**).
