@@ -91,3 +91,24 @@ clients. Preserve the fifteen-minute server floor and bounded transport retries.
 Log `diagnostic-send.due` at the threshold, including offline state, then
 `requested`, `accepted` or `failed` with automatic/manual attribution. Acceptance
 means server mail-transport acceptance, not verified inbox delivery.
+
+### September 8 active-session release evidence
+
+Published build **20260908-2008**, source **e249423**. All 801 native tests and
+196 exact dependency credits pass. Actual Chrome (Browser plugin unavailable;
+regular Playwright fallback), local source, compiled and canonical app at
+773 x 601 / 844 x 390 verifies: no GPS fix, fifteen offline active minutes with
+zero requests, exactly one due event, reconnect, simulated 503 then bounded
+retry/202, manual request and seven correctly attributed log events. No page
+exceptions or horizontal document overflow; real mail requests are intercepted.
+The generated active-clock packet passes PHP delivery/coordinate validation and
+mail packaging without transmission.
+
+Official publication verifies 232 files / 254,891,091 bytes, 29 unchanged Illobo
+tracks by full hash, and one retained cache-overlap asset. Seventeen independent
+canonical HTTPS checks verify bare/cache-busted root HTML, all 14 fingerprinted
+JS/CSS assets, build/source identity and protected LAB. HTML remains no-store.
+Physical Tesla acceptance and first real automatic inbox receipt remain open.
+
+Independent official postflight passes with 12 canonical root entries and
+`remote_writes=NONE`. Eight final documentation consistency checks pass.

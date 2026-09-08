@@ -1,7 +1,7 @@
 # Session Handoff
 
-September 8 active-session diagnostic timer is implemented; publication pending
-verification. Fifteen active minutes include stops, missing GPS and offline time;
+September 8 active-session diagnostic timer is published and canonically verified
+in build **20260908-2008**, source **e249423**. Fifteen active minutes include stops, missing GPS and offline time;
 only one report waits for reconnection. See the final correction in
 [AUTOMATIC-DIAGNOSTICS-2026-09-07.md](AUTOMATIC-DIAGNOSTICS-2026-09-07.md).
 

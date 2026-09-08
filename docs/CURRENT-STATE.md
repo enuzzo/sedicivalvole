@@ -1,7 +1,7 @@
 # Current Project State
 
-September 8 active-session diagnostic timer is implemented; publication pending
-verification. Fifteen active minutes include stops, missing GPS and offline time;
+September 8 active-session diagnostic timer is published and canonically verified
+in build **20260908-2008**, source **e249423**. Fifteen active minutes include stops, missing GPS and offline time;
 only one report waits for reconnection. See the final correction in
 [AUTOMATIC-DIAGNOSTICS-2026-09-07.md](AUTOMATIC-DIAGNOSTICS-2026-09-07.md).
 
@@ -16,13 +16,13 @@ compares the 0834 reference and 1102 refinement on one 68-second route, with
 local preference/notes and JSON export. The public default retains the 1102
 audio calibration. This supersedes the earlier pending-direction proposal.
 
-Latest verified canonical publication: **20260908-1934**, source **4f049ed**,
+Latest verified canonical publication: **20260908-2008**, source **e249423**,
 version from VERSION (**0.0.0**). This summary takes precedence over dated
 historical paragraphs below.
 
 | Area | Implemented, tested and live | Remaining evidence |
 |---|---|---|
-| Diagnostics | Dev/AUTO ON by default, saved OFF/Standard respected; fifteen observed GPS-driving minutes; coordinate-free; sampled simulated Engine RPM/reasons | First real automatic inbox receipt |
+| Diagnostics | Dev/AUTO ON by default, saved OFF/Standard respected; fifteen active session minutes, including offline/no-GPS/stopped time; coordinate-free; sampled simulated Engine RPM/reasons | First real automatic inbox receipt |
 | Engine | Six voices: Mono hybrid, Rosso/Touring sampled, original Otto V8, Cinque turbo five and continuous Turbine; second at 30, later urban third, focused layers and shorter resonance, power by 80, 130 km/h acoustic cap, phased load-sensitive shifts, proportional sample pitch, wheel-owned whine, original sample-clock DSP, no-GPS TAMARRO, exact-zero idle, dry output and cancellable recovery | Owner praises 0807 road behavior and first three voices; new refinement preference, native media and long drive |
 | Atlas / Stats | Separate Visual destinations; Natural/Palette map, independent nearby OSM nodes plus loaded tiles/Wikipedia, recoverable loading, Maps/article links; palette-derived estimated gap connections, richer axes and session continuity | Physical moving-data legibility and GPS coverage |
 | Flux / Soundtrack / FX / Discover | Broad owner acceptance, later small refinements allowed | Preserve the remaining specific device/endurance cases |
