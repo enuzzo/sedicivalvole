@@ -370,3 +370,21 @@ series and a visible Estimated legend below. Connections never change totals
 or exported observations. Add useful observed session continuity below Network.
 Atlas must recover after network/location restoration and expose nearby OSM
 places independently of map zoom, with Maps/Wikipedia links where supported.
+
+## Active-session clock — owner correction, 2026-09-08
+
+This supersedes the September 7 driving-only trigger: count fifteen minutes of
+observable active session time, including stops, absent GPS, simulated input and
+offline operation. Keep Dev/AUTO ON defaults and saved OFF/Standard. Hidden time
+and execution gaps over five seconds remain unobserved; reload starts a fresh
+session clock. At most one due report waits in memory for online/foreground
+recovery; construct a fresh bounded coordinate-free snapshot when sending.
+There is no persistent outbox or background execution promise.
+
+Use `timeBasis: active-visible-session`, `intervalActiveMs`, `activeMs` and
+`totalActiveMs` in new diagnostic delivery metadata. The server validates the new
+clock explicitly and still accepts the older driving clock for already-open
+clients. Preserve the fifteen-minute server floor and bounded transport retries.
+Log `diagnostic-send.due` at the threshold, including offline state, then
+`requested`, `accepted` or `failed` with automatic/manual attribution. Acceptance
+means server mail-transport acceptance, not verified inbox delivery.

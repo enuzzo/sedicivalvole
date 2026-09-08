@@ -1,5 +1,11 @@
 # Current Project State
 
+September 8 active-session diagnostic timer is implemented; publication pending
+verification. Fifteen active minutes include stops, missing GPS and offline time;
+only one report waits for reconnection. See the final correction in
+[AUTOMATIC-DIAGNOSTICS-2026-09-07.md](AUTOMATIC-DIAGNOSTICS-2026-09-07.md).
+
+
 Atlas/Stats road-note refinement is implemented and canonically verified in
 build **20260908-1934**, source **4f049ed**. [Scope, research and evidence](ATLAS-STATS-REFINEMENT-2026-09-08.md).
 First real automatic diagnostic receipt remains unverified after September 8

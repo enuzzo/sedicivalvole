@@ -1302,7 +1302,7 @@ function DiagnosticReadme() {
           <li>No third-party analytics are enabled. Dev automatic reports are ON by default during this development phase; the visible switch turns them OFF.</li>
           <li>Coordinates are not collected, stored, copied, or included in a diagnostic.</li>
           <li>GPS evidence is limited to status, speed confidence, accuracy, and bounded counts.</li>
-          <li>Dev can automatically send coordinate-free reports every 15 minutes of observed GPS driving. Standard sends only with SEND DIAGNOSTIC. Automatic sending has a visible OFF switch.</li>
+          <li>Dev can automatically send coordinate-free reports every 15 minutes of active session time. Standard sends only with SEND DIAGNOSTIC. Automatic sending has a visible OFF switch.</li>
           <li>The accepted report is attached as compressed JSON; server acceptance is not inbox delivery.</li>
         </ul>
       </section>
@@ -4951,18 +4951,20 @@ export function App() {
   useEffect(() => {
     if (phase !== "running") return;
     const clock = automaticClockRef.current;
-    let disposed = false, lastPaint = 0;
+    let disposed = false, lastPaint = 0, dueLogged = false;
     const tick = async () => {
       if (disposed) return;
       const now = performance.now();
       const prefs = diagnosticPreferencesRef.current;
-      const gps = latestGpsObservationRef.current;
       const due = clock.update({ running: true, enabled: prefs.mode === "dev" && prefs.automatic,
         visible: document.visibilityState !== "hidden", online: navigator.onLine !== false,
-        moving: sourceRef.current === "GPS" && Number.isFinite(gps.speedKmh) && gps.speedKmh >= 1
-          && Number.isFinite(gps.capturedAtMs) && now - gps.capturedAtMs <= 3000
-          && Number.isFinite(accuracyRef.current) && accuracyRef.current <= 250,
       }, now);
+      const snapshot = clock.snapshot();
+      const pending = snapshot.activeMs >= snapshot.intervalActiveMs;
+      if (pending && !dueLogged) {
+        logDiagnosticEvent("diagnostic-send.due", { trigger: "automatic", timeBasis: snapshot.timeBasis, activeMs: snapshot.activeMs, online: navigator.onLine !== false });
+      }
+      dueLogged = pending;
       if (due && !diagnosticTransferRef.current) {
         clock.begin(); setAutomaticSnapshot(clock.snapshot());
         const result = await sendDiagnosticRef.current?.("automatic");
@@ -4974,7 +4976,7 @@ export function App() {
     const timer = window.setInterval(tick, 1000);
     window.addEventListener("online", tick); document.addEventListener("visibilitychange", tick);
     return () => { disposed = true; window.clearInterval(timer); window.removeEventListener("online", tick); document.removeEventListener("visibilitychange", tick); if (diagnosticTransferRef.current?.trigger === "automatic") diagnosticTransferRef.current.controller.abort(); };
-  }, [phase]);
+  }, [phase, logDiagnosticEvent]);
 
   const handleEnvironmentError = useCallback((error) => {
     const message = String(error?.message || "Unknown visual runtime error").slice(0, 500);
@@ -5197,7 +5199,7 @@ export function App() {
       {phase !== "running" ? (
       <section className="splash" aria-hidden="false" inert={supportOpen ? true : undefined}>
         <button className="intro-diagnostics" type="button" aria-label={`Automatic diagnostics ${diagnosticPreferences.mode === "dev" && diagnosticPreferences.automatic ? "ON. Turn off" : "OFF. Turn on"}`} onClick={() => setDiagnosticPreferences(p => ({ mode: "dev", automatic: !(p.mode === "dev" && p.automatic) }))}>
-          <strong>{diagnosticPreferences.mode.toUpperCase()} · AUTO REPORT {diagnosticPreferences.mode === "dev" && diagnosticPreferences.automatic ? "ON" : "OFF"}</strong><small>Coordinate-free · every 15 driving min</small>
+          <strong>{diagnosticPreferences.mode.toUpperCase()} · AUTO REPORT {diagnosticPreferences.mode === "dev" && diagnosticPreferences.automatic ? "ON" : "OFF"}</strong><small>Coordinate-free · every 15 active min</small>
         </button>
         <small className="intro-build">BUILD {APP_BUILD}</small>
         <SplashSignalGate
@@ -5443,8 +5445,8 @@ export function App() {
               <div><button type="button" aria-pressed={diagnosticPreferences.mode === "standard"} onClick={() => setDiagnosticPreferences(p => ({ ...p, mode: "standard" }))}>Standard</button>
               <button type="button" aria-pressed={diagnosticPreferences.mode === "dev"} onClick={() => setDiagnosticPreferences(p => ({ ...p, mode: "dev" }))}>Dev</button>
               <button type="button" disabled={diagnosticPreferences.mode !== "dev"} aria-pressed={diagnosticPreferences.automatic && diagnosticPreferences.mode === "dev"} onClick={() => setDiagnosticPreferences(p => ({ ...p, automatic: !p.automatic }))}>AUTO SEND {diagnosticPreferences.automatic && diagnosticPreferences.mode === "dev" ? "ON" : "OFF"}</button></div>
-              <p>Dev sends coordinate-free reports to the project mailbox every 15 minutes of observed GPS driving. OFF stops future automatic sends. Standard keeps manual reports.</p>
-              <small>{Math.floor(automaticSnapshot.drivingMs / 60000)} / 15 driving min · {automaticSnapshot.accepted} accepted · {automaticSnapshot.status.toUpperCase()} · hidden gaps excluded</small>
+              <p>Dev sends coordinate-free reports to the project mailbox every 15 minutes of active session time. Stops, GPS loss and offline time count while the app stays active. Offline reports wait for reconnection. OFF stops future automatic sends. Standard keeps manual reports.</p>
+              <small>{Math.floor(automaticSnapshot.activeMs / 60000)} / 15 active min · {automaticSnapshot.accepted} accepted · {automaticSnapshot.status.toUpperCase()} · hidden gaps excluded</small>
             </section>
             <button className="stats-report-entry" onClick={() => { setDrawerOpen(false); setStatsOpen(true); }}>Open Stats for Nerds · journey, motion and network</button>
             {diagnosticReadmeOpen ? <DiagnosticReadme /> : (
@@ -5566,7 +5568,7 @@ export function App() {
                 <section className="diagnostic-submit" aria-labelledby="diagnostic-submit-title">
                   <h3 id="diagnostic-submit-title">Submit evidence</h3>
                   <p>
-                    Coordinate-free technical reports go to the project diagnostic mailbox. Dev with AUTO ON sends every 15 minutes of observed GPS driving; Standard and AUTO OFF require SEND DIAGNOSTIC.
+                    Coordinate-free technical reports go to the project diagnostic mailbox. Dev with AUTO ON sends every 15 minutes of active session time; Standard and AUTO OFF require SEND DIAGNOSTIC.
                     Keep this session open until the server responds; README explains the complete boundary.
                   </p>
                   <p className={`send-state send-state-${sendState}`} role="status" aria-live="polite">

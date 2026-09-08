@@ -158,7 +158,7 @@ diagnostic sending remains unimplemented; target-Tesla validation remains open.
 ## Development automatic diagnostics — 2026-09-07
 
 The App owns one transfer lock shared by manual and automatic report delivery.
-`automatic-diagnostics.js` counts only observed GPS driving, excludes lifecycle
+`automatic-diagnostics.js` counts observable active session time independently of GPS, stops and network, excludes lifecycle
 gaps and bounds retry. The existing PHP endpoint validates delivery metadata,
 coordinate exclusion and successful automatic rate limits. Dev/AUTO ON is the
 owner-approved development default; Standard and saved OFF remain manual-only.
@@ -172,3 +172,8 @@ loaded OpenFreeMap tiles independently of zoom. No provider changes diagnostic
 privacy. `chartTraceSegments` separates observed runs from display-only estimated
 connections without mutating retained samples or accumulated statistics.
 [Implementation and boundaries](ATLAS-STATS-REFINEMENT-2026-09-08.md).
+
+September 8 correction: new delivery metadata uses `active-visible-session` and
+explicit active-time fields. PHP retains the old driving-clock validator for
+already-open clients. A due event records threshold/offline state before the
+shared requested/accepted/failed event trail. See the automatic diagnostics document.

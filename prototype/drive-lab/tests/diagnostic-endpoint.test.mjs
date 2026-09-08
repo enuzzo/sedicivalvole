@@ -124,3 +124,15 @@ test("automatic delivery requires Dev, explicit flags and a full driving interva
   for(const patch of [{mode:"standard"},{automaticEnabled:false},{intervalDrivingMs:600000},{drivingMs:1000},{trigger:"unknown"}]) assert.equal(validate({...report,diagnosticDelivery:{...report.diagnosticDelivery,...patch}}),false);
   assert.equal(validate({...report,privacy:{automaticRemoteTelemetry:false,transmissionRequiresExplicitGesture:true}}),false);
 });
+
+
+test("active-session automatic delivery validates its own time basis and keeps older clients compatible", () => {
+  const report={diagnosticDelivery:{mode:"dev",trigger:"automatic",automaticEnabled:true,timeBasis:"active-visible-session",intervalActiveMs:900000,activeMs:900001},privacy:{automaticRemoteTelemetry:true,transmissionRequiresExplicitGesture:false}};
+  const validate=value=>{
+    const result=spawnSync("php",["-r",`define('SEDICIVALVOLE_DIAGNOSTIC_LIBRARY_ONLY', true); require ${JSON.stringify(ENDPOINT)}; $r=json_decode(stream_get_contents(STDIN),true); echo validDiagnosticDelivery($r) ? 'yes' : 'no';`],{input:JSON.stringify(value),encoding:"utf8"});
+    assert.equal(result.status,0,result.stderr);return result.stdout==="yes";
+  };
+  assert.equal(validate(report),true);
+  for(const patch of [{timeBasis:"wall-clock"},{intervalActiveMs:600000},{activeMs:899999},{activeMs:null},{mode:"standard"},{automaticEnabled:false}]) assert.equal(validate({...report,diagnosticDelivery:{...report.diagnosticDelivery,...patch}}),false);
+  assert.equal(validate({...report,diagnosticDelivery:{...report.diagnosticDelivery,timeBasis:"unknown",intervalDrivingMs:900000,drivingMs:900001}}),false);
+});

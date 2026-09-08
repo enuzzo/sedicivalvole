@@ -48,9 +48,16 @@ function validDiagnosticDelivery(array $report): bool
         || !in_array($delivery['trigger'] ?? null, ['manual', 'automatic'], true)
         || !is_bool($delivery['automaticEnabled'] ?? null)) return false;
     if ($delivery['trigger'] === 'manual') return true;
+    // Keep already-open driving-clock clients compatible without mislabelling new packets.
+    $activeClock = array_key_exists('timeBasis', $delivery);
+    $validInterval = $activeClock
+        ? ($delivery['timeBasis'] === 'active-visible-session'
+            && ($delivery['intervalActiveMs'] ?? null) === 900000
+            && is_numeric($delivery['activeMs'] ?? null) && $delivery['activeMs'] >= 900000)
+        : (($delivery['intervalDrivingMs'] ?? null) === 900000
+            && is_numeric($delivery['drivingMs'] ?? null) && $delivery['drivingMs'] >= 900000);
     return $delivery['mode'] === 'dev' && $delivery['automaticEnabled'] === true
-        && ($delivery['intervalDrivingMs'] ?? null) === 900000
-        && is_numeric($delivery['drivingMs'] ?? null) && $delivery['drivingMs'] >= 900000
+        && $validInterval
         && ($report['privacy']['automaticRemoteTelemetry'] ?? null) === true
         && ($report['privacy']['transmissionRequiresExplicitGesture'] ?? null) === false;
 }

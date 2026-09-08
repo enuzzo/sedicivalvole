@@ -1,5 +1,9 @@
 # Automatic development diagnostics
 
+Current contract: the September 8 active-session correction at the end of this
+document supersedes the historical driving-only implementation below.
+
+
 ## Owner decision
 
 2026-09-07 evening: implement now, Dev with automatic delivery ON by default,
@@ -69,3 +73,21 @@ minute driving packet and inbox receipt remain vehicle acceptance, not simulated
 QA evidence. Local evidence: `/tmp/sv-auto-qa.json`, `/tmp/sv-auto-canonical/identity.json`,
 `/tmp/sv-auto-{tests,package,build,preflight,publish,postflight}.log` and
 `/tmp/sv-auto-{intro,off,mobile,short}.png`.
+
+## Active-session clock — owner correction, 2026-09-08
+
+This supersedes the September 7 driving-only trigger: count fifteen minutes of
+observable active session time, including stops, absent GPS, simulated input and
+offline operation. Keep Dev/AUTO ON defaults and saved OFF/Standard. Hidden time
+and execution gaps over five seconds remain unobserved; reload starts a fresh
+session clock. At most one due report waits in memory for online/foreground
+recovery; construct a fresh bounded coordinate-free snapshot when sending.
+There is no persistent outbox or background execution promise.
+
+Use `timeBasis: active-visible-session`, `intervalActiveMs`, `activeMs` and
+`totalActiveMs` in new diagnostic delivery metadata. The server validates the new
+clock explicitly and still accepts the older driving clock for already-open
+clients. Preserve the fifteen-minute server floor and bounded transport retries.
+Log `diagnostic-send.due` at the threshold, including offline state, then
+`requested`, `accepted` or `failed` with automatic/manual attribution. Acceptance
+means server mail-transport acceptance, not verified inbox delivery.
