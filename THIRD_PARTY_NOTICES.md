@@ -376,3 +376,18 @@ every five minutes after success, with bounded output and backoff. Loaded
 OpenFreeMap POIs remain a fallback. Google Maps URLs are outbound links only
 ([Google documentation](https://developers.google.com/maps/documentation/urls/get-started));
 no Google imagery, runtime or place data is imported.
+
+## Immediate music controls — 2026-09-08
+
+`src/media-glyph.jsx` imports the existing byte-identical Tabler
+`player-play-filled.svg`, `player-pause-filled.svg`, `player-skip-back-filled.svg`,
+`player-skip-forward-filled.svg` and `chart-bar.svg` as raw markup into the
+initial application chunk. This changes delivery, not authorship, upstream SVG
+bytes or the retained Paweł Kuna MIT notice. No new asset or dependency enters.
+
+Media Session compatibility was studied against the W3C Media Session
+specification (https://www.w3.org/TR/mediasession/) and Tesla's Model 3 media
+manual (https://www.tesla.com/ownersmanual/model3/en_gb/GUID-7A85FB6B-9DF6-4C55-A2F9-793207E48E9D.html).
+These are documentation references, not imported software/assets. W3C Media
+Working Group and Tesla retain their respective material; no rights to their
+code, brand or documentation are claimed.

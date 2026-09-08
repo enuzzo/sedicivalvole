@@ -1,6 +1,7 @@
 export const MEDIA_SESSION_TRANSPORT_ACTIONS = Object.freeze([
   "play",
   "pause",
+  "stop",
   "previoustrack",
   "nexttrack",
 ]);

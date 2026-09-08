@@ -1,5 +1,12 @@
 # Current Project State
 
+Weak-network music refinement is implemented, pending final validation and
+publication: immediate inline glyphs, retained loading transport, recoverable
+artwork/native metadata and verified native action routing. The proposed
+persistent fifteen-minute telemetry packet queue remains a separate unimplemented
+proposal; the published diagnostic clock currently retains one in-memory due send.
+
+
 September 8 active-session diagnostic timer is published and canonically verified
 in build **20260908-2008**, source **e249423**. Fifteen active minutes include stops, missing GPS and offline time;
 only one report waits for reconnection. See the final correction in

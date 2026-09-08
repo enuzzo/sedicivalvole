@@ -1,3 +1,4 @@
+import { MediaGlyph } from "./media-glyph.jsx";
 import { curatedExperience } from "./curated-experiences.js";
 
 export function ExperienceCard({ id, selected = false, onSelect, launch = false }) {
@@ -18,7 +19,7 @@ export function ExperienceCard({ id, selected = false, onSelect, launch = false 
         <span className="experience-card-detail">{experience.detail}</span>
       </span>
       <span className="experience-card-action">
-        <span className="media-glyph is-play" aria-hidden="true" />
+        <MediaGlyph name="play" />
         <span>{selected ? "Selected" : launch ? "Choose" : "Play"}</span>
       </span>
     </button>

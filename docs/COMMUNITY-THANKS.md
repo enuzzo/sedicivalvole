@@ -113,7 +113,7 @@ enuzzo
 - **Credit:** Paweł Kuna and contributors.
 - **Source:** [Tabler Icons](https://github.com/tabler/tabler-icons).
 - **Public contact route:** [Contact / profile](https://github.com/codecalm).
-- **Use:** Integrated assets. Unchanged v3.46.0 SVGs in public/third-party/tabler-icons/; project CSS supplies optical sizing, masks and semantic colour, including the launch Music and Engine accents.
+- **Use:** Integrated assets. Unchanged v3.46.0 SVGs in public/third-party/tabler-icons/; project CSS supplies optical sizing, masks and semantic colour, including the launch Music and Engine accents. Play/pause/previous/next and the Now Playing level icon are bundled inline from the same unchanged SVG files so controls do not wait for image requests.
 - **License / permission boundary:** MIT.
 - **Source evidence:** linked upstream project plus the current local [notices](../THIRD_PARTY_NOTICES.md), package metadata or vendored notices; public routes checked 2026-09-05 where recorded in the verification evidence.
 - **Status:** DRAFT — not sent. Sent on: —; Channel: —; Reply: —; Follow-up: —.
@@ -1041,3 +1041,20 @@ Google Maps: outbound user-initiated search URLs only; public documentation
 https://developers.google.com/maps/documentation/urls/get-started.
 Unsent draft: Thank you for the documented Maps URL interface, which lets our
 place cards hand a selected location to Maps without embedding another runtime.
+
+## Native media documentation — 2026-09-08
+
+- W3C Media Working Group: https://www.w3.org/TR/mediasession/ ; public contact
+  https://github.com/w3c/mediasession/issues . Documentation study only; action
+  dispatch/metadata contracts, no imported specification code.
+- Tesla, Inc.: https://www.tesla.com/ownersmanual/model3/en_gb/GUID-7A85FB6B-9DF6-4C55-A2F9-793207E48E9D.html ;
+  public contact https://www.tesla.com/support . Documentation study only of
+  browser audio/Miniplayer play-pause. No code/audio/UI assets imported.
+
+Unsent W3C thank-you draft: Thank you for documenting native media actions and
+metadata so carefully. Your specification helped me separate a working browser
+handler from what an individual vehicle chooses to display in sedicivalvole.
+
+Unsent Tesla thank-you draft: Thank you for documenting browser audio in the
+Model 3 Miniplayer. That precise play/pause description helped me keep my
+experimental sedicivalvole compatibility claims grounded in what is documented.

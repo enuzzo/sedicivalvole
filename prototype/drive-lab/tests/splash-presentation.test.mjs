@@ -314,7 +314,7 @@ test("the Tesla Music drawer uses whole-surface controls and scrolls instead of 
   assert.match(soundtrack, /Original music written and performed by Illobo\./);
   assert.doesNotMatch(soundtrack, /curated by Illobo/);
   assert.match(soundtrack, /soundtrack-now-label/);
-  assert.match(soundtrack, /third-party\/tabler-icons\/chart-bar\.svg/);
+  assert.match(soundtrack, /MediaGlyph name="levels"/);
   assert.match(styles, /\.soundtrack-now-label \{[^}]*white-space: nowrap/);
   assert.match(styles, /\.soundtrack-now-label img \{[^}]*filter: brightness\(0\) invert\(1\)/);
   assert.match(styles, /@media \(min-width: 651px\) and \(max-height: 650px\)/);
@@ -449,7 +449,7 @@ test("Now Playing shares the footer lifecycle with stable Media Session actions 
   assert.match(styles, /\.persistent-transport\.now-playing-dock \{[\s\S]*?z-index: 35/);
   assert.doesNotMatch(styles, /\.app\.modal-open \.persistent-transport\.now-playing-dock/);
   assert.doesNotMatch(styles, /\.app\.modal-open\.has-now-playing \.drawer-panel/);
-  assert.match(app, /const showNowPlaying = experienceMode === "flux" && phase === "running" && Boolean\(currentTrack\) && !modalOpen && !immersiveEnvironment/);
+  assert.match(app, /const showNowPlaying = experienceMode === "flux" && phase === "running" && !modalOpen && !immersiveEnvironment/);
   assert.match(app, /\{showNowPlaying \? \([\s\S]*?className="now-playing-dock persistent-transport"/);
   assert.match(styles, /\.modal-open \.experience \.control-layer,[\s\S]*?visibility: hidden;[\s\S]*?pointer-events: none/);
   assert.match(styles, /\.controls-resting \.persistent-transport \{[\s\S]*?opacity: 0;[\s\S]*?pointer-events: none/);

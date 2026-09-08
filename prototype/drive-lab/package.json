@@ -29,7 +29,7 @@
     "test:discover": "node --test tests/discover-model.test.mjs",
     "test:soundtrack-fx": "node --test tests/soundtrack-effects-controller.test.mjs",
     "test:appearance-presentation": "node --test tests/appearance-presentation.test.mjs",
-    "test:media-session": "node --test tests/media-session.test.mjs",
+    "test:media-session": "node --test tests/media-session.test.mjs tests/artwork-recovery.test.mjs",
     "test:drivey": "node --test tests/drivey-model.test.mjs",
     "test:prtcl": "node --test tests/prtcl-model.test.mjs",
     "test:gradient": "node --test tests/gradient-model.test.mjs tests/shadergradient-lab.test.mjs",

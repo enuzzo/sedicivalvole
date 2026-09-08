@@ -254,3 +254,12 @@ clients. Preserve the fifteen-minute server floor and bounded transport retries.
 Log `diagnostic-send.due` at the threshold, including offline state, then
 `requested`, `accepted` or `failed` with automatic/manual attribution. Acceptance
 means server mail-transport acceptance, not verified inbox delivery.
+
+## Owner weak-network music feedback — 2026-09-08
+
+Ship music control glyphs in the initial application payload, with visible
+loading/retrying feedback instead of blank controls. Retain transport while
+waiting for the catalogue. Recover artwork on network/foreground return and
+republish native metadata. Verify native play/pause/previous/next through the
+actual app handlers; do not equate API registration with Tesla button visibility.
+Preserve the native invocation/outcome log and fixed recordings at 1x.

@@ -1,3 +1,5 @@
+import { MediaGlyph } from "./media-glyph.jsx";
+import { RecoveringArtwork, useRecoveringArtwork } from "./recovering-artwork.jsx";
 import { createAutomaticDiagnosticClock, readDiagnosticPreferences, DIAGNOSTIC_PREFERENCES_KEY } from "./automatic-diagnostics.js";
 import { PhoneRotationNotice, usePhoneLayout } from "./phone-cockpit.jsx";
 import { observeSessionStats } from "./environments/atlas/session-stats.js";
@@ -1621,10 +1623,6 @@ function ShaderGradientCycleControl({ environment, onChange }) {
   );
 }
 
-function MediaGlyph({ name }) {
-  return <span className={`media-glyph is-${name}`} aria-hidden="true" />;
-}
-
 /** The driving surface lists only scores that can play now. */
 function ScoreLibraryContent({ genreId, onChange }) {
   const readyScores = readyScoreGenres();
@@ -1677,6 +1675,7 @@ function ScoreLibraryContent({ genreId, onChange }) {
 
 function SoundtrackLibraryContent({
   snapshot,
+  retrying = false,
   jamendoPreviewEntries,
   onFeatured,
   onBrowseSelection,
@@ -1807,7 +1806,7 @@ function SoundtrackLibraryContent({
         <div className="soundtrack-track-list" aria-live="polite">
           {entries.slice(0, 6).map((entry) => (
             <button key={entry.key} type="button" className={entry.key === current?.key ? "is-current" : ""} onClick={() => onTrack(entry.key)}>
-              {entry.imageUrl ? <img src={entry.imageUrl} alt="" width="48" height="48" /> : <span className="soundtrack-track-placeholder" />}
+              <RecoveringArtwork src={entry.imageUrl} width={48} height={48} />
               <span><strong>{entry.title}</strong><small>{entry.artistName}</small></span>
               <em>
                 <MediaGlyph name={entry.key === current?.key && playing ? "pause" : "play"} />
@@ -1821,9 +1820,9 @@ function SoundtrackLibraryContent({
 
       <div className="soundtrack-playback-grid">
         <section className={`soundtrack-now-playing${snapshot?.attribution?.transitioning ? " is-transitioning" : ""}`} aria-live="polite">
-          {current?.imageUrl ? <img src={current.imageUrl} alt="" width="80" height="80" /> : <span className="soundtrack-artwork-placeholder">{featuredSelected ? "LO" : "JM"}</span>}
+          <RecoveringArtwork src={current?.imageUrl} width={80} height={80} fallback={featuredSelected ? "LO" : "JM"} />
           <div>
-            <small className={`soundtrack-now-label${playing ? " is-playing" : ""}`}><img src="/third-party/tabler-icons/chart-bar.svg" alt="" aria-hidden="true" />NOW PLAYING</small>
+            <small className={`soundtrack-now-label${playing ? " is-playing" : ""}`}><MediaGlyph name="levels" />{snapshot?.status === "error" ? (retrying ? "RETRYING" : "LOAD FAILED") : ["loading", "buffering", "prepared"].includes(snapshot?.status) ? "LOADING" : playing ? "NOW PLAYING" : "PAUSED"}</small>
             <strong>{current?.title ?? `Preparing ${featuredSelected ? "Illobo playlist" : "Jamendo catalog"}`}</strong>
             <span>{current?.artistName ?? snapshot?.status ?? "idle"}</span>
             {snapshot?.attribution?.transitioning ? <span className="soundtrack-transition-status">Crossfading</span> : null}
@@ -1867,6 +1866,7 @@ function SoundtrackLibraryContent({
 }
 
 function MusicLibraryPanel({
+  retrying = false,
   musicMode,
   loadingMode,
   genreId,
@@ -1903,6 +1903,7 @@ function MusicLibraryPanel({
           {musicMode === "soundtrack" ? (
             <SoundtrackLibraryContent
               snapshot={snapshot}
+              retrying={retrying}
               jamendoPreviewEntries={jamendoPreviewEntries}
               onFeatured={onFeatured}
               onBrowseSelection={onBrowseSelection}
@@ -3647,7 +3648,7 @@ export function App() {
     let cancelled = false;
     let retrying = false;
     const retry = async () => {
-      if (cancelled || retrying) return;
+      if (cancelled || retrying || document.visibilityState === "hidden") return;
       if (soundtrackStatus !== "prepared"
         && (networkNotice.status === "offline" || !navigator.onLine)) return;
       retrying = true;
@@ -3668,10 +3669,12 @@ export function App() {
       ? window.setTimeout(() => void retry(), 0)
       : window.setTimeout(() => void retry(), 8000);
     window.addEventListener("online", retry);
+    document.addEventListener("visibilitychange", retry);
     return () => {
       cancelled = true;
       window.clearTimeout(timer);
       window.removeEventListener("online", retry);
+      document.removeEventListener("visibilitychange", retry);
     };
   }, [experienceMode, logDiagnosticEvent, musicMode, muted, networkNotice.status, phase, soundtrackController, soundtrackSnapshot?.status]);
 
@@ -4071,8 +4074,20 @@ export function App() {
     soundtrackSnapshot?.current?.title,
     soundtrackSnapshot?.library?.selection?.kind,
   ]);
+  const currentArtwork = useRecoveringArtwork(currentTrack?.artwork);
+  useRecoveringArtwork(soundtrackSnapshot?.previous?.imageUrl);
+  useRecoveringArtwork(soundtrackSnapshot?.next?.imageUrl);
+  const transportTrack = currentTrack ?? { title: "Preparing Soundtrack", artist: "Loading library", album: "Soundtrack" };
+  const transportLabel = musicMode === "soundtrack"
+    ? soundtrackSnapshot?.status === "error" ? (muted ? "LOAD FAILED" : "RETRYING")
+      : ["idle", "loading", "buffering", "prepared"].includes(soundtrackSnapshot?.status) || !currentTrack ? "LOADING"
+        : soundtrackMediaIsPlaying(soundtrackSnapshot) ? "NOW PLAYING" : "PAUSED"
+    : playRoadPaused ? "PAUSED" : "NOW PLAYING";
+  useEffect(() => {
+    if (phase === "running" && currentTrack?.artwork) logDiagnosticEvent("media-session.artwork.state", { key: currentTrack.key, status: currentArtwork.status });
+  }, [currentTrack?.key, currentTrack?.artwork, currentArtwork.status, phase, logDiagnosticEvent]);
   const immersiveEnvironment = environment.renderer === "atlas";
-  const showNowPlaying = experienceMode === "flux" && phase === "running" && Boolean(currentTrack) && !modalOpen && !immersiveEnvironment && !controlsPinned;
+  const showNowPlaying = experienceMode === "flux" && phase === "running" && !modalOpen && !immersiveEnvironment && !controlsPinned;
 
   const transportPlaying = !muted && (experienceMode === "engine" ? geaps.snapshot.playing === true : musicMode === "soundtrack"
     ? soundtrackMediaIsPlaying(soundtrackSnapshot)
@@ -4096,6 +4111,7 @@ export function App() {
       handlers: {
         play: (invocation) => mediaSessionActionsRef.current.toggle?.(true, "media-session", invocation),
         pause: (invocation) => mediaSessionActionsRef.current.toggle?.(false, "media-session", invocation),
+        stop: (invocation) => mediaSessionActionsRef.current.toggle?.(false, "media-session", invocation),
         previoustrack: (invocation) => mediaSessionActionsRef.current.move?.("previous", "media-session", invocation),
         nexttrack: (invocation) => mediaSessionActionsRef.current.move?.("next", "media-session", invocation),
       },
@@ -4153,7 +4169,7 @@ export function App() {
       });
       return;
     }
-    const artworkDescriptor = mediaSessionArtwork(currentTrack.artwork, {
+    const artworkDescriptor = mediaSessionArtwork(currentArtwork.src, {
       baseUrl: window.location.href,
     });
     const artwork = artworkDescriptor ? [artworkDescriptor] : [];
@@ -4221,6 +4237,8 @@ export function App() {
     });
   }, [
     currentTrack,
+    currentArtwork.src,
+    currentArtwork.revision,
     experienceMode,
     logDiagnosticEvent,
     musicMode,
@@ -4231,26 +4249,6 @@ export function App() {
     transportPlaying,
   ]);
 
-  useEffect(() => {
-    const artworkUrls = [
-      soundtrackSnapshot?.previous?.imageUrl,
-      soundtrackSnapshot?.current?.imageUrl,
-      soundtrackSnapshot?.next?.imageUrl,
-    ].filter(Boolean);
-    const preloadedArtwork = artworkUrls.map((url) => {
-      const image = new Image();
-      image.decoding = "async";
-      image.src = url;
-      return image;
-    });
-    return () => {
-      for (const image of preloadedArtwork) image.onload = null;
-    };
-  }, [
-    soundtrackSnapshot?.current?.key,
-    soundtrackSnapshot?.next?.key,
-    soundtrackSnapshot?.previous?.key,
-  ]);
 
   useEffect(() => {
     const supported = typeof PerformanceObserver !== "undefined"
@@ -5330,17 +5328,17 @@ export function App() {
       {showNowPlaying ? (
         <div className="now-playing-dock persistent-transport" aria-label="Now playing and music transport">
           <div className="now-playing-summary" role="status" aria-live="polite" aria-atomic="true">
-            {currentTrack.artwork ? <img src={currentTrack.artwork} alt="" width="72" height="72" /> : <span className="now-playing-artwork" aria-hidden="true">16</span>}
+            {currentArtwork.src ? <img src={currentArtwork.src} alt="" width="72" height="72" /> : <span className="now-playing-artwork" aria-hidden="true">16</span>}
             <span className="now-playing-copy">
-              <small>{soundtrackSnapshot?.status === "buffering" ? `LOADING ${String(soundtrackSnapshot?.pending?.direction || "TRACK").toUpperCase()}` : "NOW PLAYING"}</small>
-              <strong>{currentTrack.title}</strong>
-              <em>{currentTrack.artist} · {currentTrack.album}</em>
+              <small>{transportLabel}</small>
+              <strong>{transportTrack.title}</strong>
+              <em>{transportTrack.artist} · {transportTrack.album}</em>
             </span>
           </div>
           <div className="now-playing-transport" aria-label="Music transport">
-            <button type="button" onClick={() => void moveTransport("previous", "persistent-transport")} aria-label="Previous track"><MediaGlyph name="previous" /></button>
-            <button type="button" onClick={() => void toggleTransport(null, "persistent-transport")} aria-label={transportPlaying ? "Pause" : "Play"}><MediaGlyph name={transportPlaying ? "pause" : "play"} /></button>
-            <button type="button" onClick={() => void moveTransport("next", "persistent-transport")} aria-label="Next track"><MediaGlyph name="next" /></button>
+            <button type="button" disabled={musicMode === "soundtrack" && !soundtrackSnapshot?.hasPrevious} onClick={() => void moveTransport("previous", "persistent-transport")} aria-label="Previous track"><MediaGlyph name="previous" /></button>
+            <button type="button" disabled={musicMode === "soundtrack" && !currentTrack} onClick={() => void toggleTransport(null, "persistent-transport")} aria-label={transportPlaying ? "Pause" : "Play"}><MediaGlyph name={transportPlaying ? "pause" : "play"} /></button>
+            <button type="button" disabled={musicMode === "soundtrack" && !soundtrackSnapshot?.hasNext} onClick={() => void moveTransport("next", "persistent-transport")} aria-label="Next track"><MediaGlyph name="next" /></button>
           </div>
         </div>
       ) : null}
@@ -5657,6 +5655,7 @@ export function App() {
           loadingMode={musicModeLoading}
           genreId={genreId}
           snapshot={soundtrackSnapshot}
+          retrying={!muted && soundtrackSnapshot?.status === "error"}
           jamendoPreviewEntries={jamendoPreviewEntries}
           onModeChange={switchMusicMode}
           onScoreChange={selectScore}

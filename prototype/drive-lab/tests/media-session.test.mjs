@@ -232,3 +232,11 @@ test("Play the Road navigation reports only observed audible playback", () => {
     },
   });
 });
+
+
+test("native stop is registered, dispatched and removed without bypassing invocation logs", () => {
+  const mediaSession=new FakeMediaSession();const actions=[];
+  const runtime=installMediaSessionTransport({mediaSession,handlers:{stop:()=>actions.push("stop")},onInvocation:invocation=>actions.push(invocation.action+"-invoked")});
+  mediaSession.invoke("stop");assert.deepEqual(actions,["stop-invoked","stop"]);
+  assert.equal(runtime.actionRegistration.stop.registered,true);runtime.cleanup();assert.equal(mediaSession.handlers.size,0);
+});

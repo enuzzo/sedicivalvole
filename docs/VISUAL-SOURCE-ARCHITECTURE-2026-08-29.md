@@ -177,3 +177,21 @@ September 8 correction: new delivery metadata uses `active-visible-session` and
 explicit active-time fields. PHP retains the old driving-clock validator for
 already-open clients. A due event records threshold/offline state before the
 shared requested/accepted/failed event trail. See the automatic diagnostics document.
+
+## Music control and artwork reliability — 2026-09-08
+
+`media-glyph.jsx` embeds the existing trusted Tabler SVGs in the initial app chunk;
+CSS no longer fetches transport masks on demand. Both music surfaces retain
+controls before catalogue readiness, with explicit loading/retrying/paused copy.
+`artwork-recovery.js` owns one image request with a 15-second deadline and shared
+five-minute bounded backoff; `recovering-artwork.jsx` cancels stale/lifecycle-lost
+requests and resumes on online/foreground events. Metadata advertises only
+successfully loaded artwork, then republishes after recovery (including when
+the OS failed to fetch an already-loaded image). Native Stop joins the existing
+logged transport handlers and safely pauses while preserving the selection.
+Tesla native button visibility remains vehicle-controlled.
+
+Primary evidence: [W3C Media Session](https://www.w3.org/TR/mediasession/)
+defines action/metadata APIs; [Tesla Model 3 Media](https://www.tesla.com/ownersmanual/model3/en_gb/GUID-7A85FB6B-9DF6-4C55-A2F9-793207E48E9D.html)
+explicitly documents browser Miniplayer play/pause. The latter does not promise
+next/previous for browser audio; API success is not physical vehicle acceptance.
