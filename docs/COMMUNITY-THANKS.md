@@ -1295,3 +1295,88 @@ Unsent draft: Thank you for explaining how these effects were made; that candor 
 - Terms: Installed 9.0.1 build: GPL-3.0-or-later; binaries not redistributed.
 
 Unsent draft: Thank you for providing inspectable decoding and metadata tools; they let us prepare repeatable audio evidence without hiding conversions. This is research for sedicivalvole; no candidate recording has been shipped. — enuzzo
+
+## Game-oriented Engine audio studies — September 8, 2026
+
+All drafts below are unsent. No new source is shipped.
+
+### Attila Szlacki / Skril Studio
+
+- Material: Free Rotary X8 and I6 German game engine packs; official product/manual study. No package acquired.
+- Source: https://skrilstudio.com/asset-products/
+- Public contact: https://skrilstudio.com/contact/
+- Terms: Unity Asset Store EULA; not a raw redistribution grant
+
+Unsent draft: Thank you, Attila, for making two engine packs available free. Their game-oriented organization gives our Engine research a much more useful comparison than isolated field recordings.
+
+### Unity
+
+- Material: Asset Store listings and embedded-product/Extension Asset terms study only.
+- Source: https://unity.com/legal/as-terms
+- Public contact: https://unity.com/legal/as-terms
+- Terms: Terms documentation; no software imported
+
+Unsent draft: Thank you for documenting the distinction between embedded product use and standalone asset redistribution; it helps us keep a public research repository separate from licensed audio.
+
+### SFXMint / Stable Audio 3
+
+- Material: Three unchanged generated WAVs, mechanical-engine-01/02/03, local ignored audition only; API metadata and SHA-256 tracked.
+- Source: https://sfxmint.com/license
+- Public contact: https://sfxmint.com/contact
+- Terms: CC0 declared by SFXMint; AI origin disclosed; independent ownership not verified
+
+Unsent draft: Thank you for exposing both downloadable sounds and generation/loop metadata. We are comparing three engine effects locally and keeping their AI origin visible.
+
+### Alex Cassells / CrunchySFX
+
+- Material: Procedural browser generator and WAV export controls study; no code or output imported.
+- Source: https://crunchysfx.com/
+- Public contact: https://crunchysfx.com/
+- Terms: Generated outputs CC0; application reserved; imported clips retain their rights
+
+Unsent draft: Thank you, Alex, for separating generated-sound rights from application rights. The export and loop controls are useful references for a practical listening workflow.
+
+### Cradlefall / omgaudio
+
+- Material: Procedural vehicle/spaceship presets and WAV/MP3 export interface study; no code/audio imported.
+- Source: https://omgaudio.vercel.app/
+- Public contact: https://www.cradlefallgame.com/
+- Terms: Generated outputs CC0 declared
+
+Unsent draft: Thank you for sharing a free procedural sound tool with editable presets. We are studying how such outputs could complement engine recordings without assuming that generic effects form an RPM bank.
+
+### SoundsFree
+
+- Material: Web Audio/WAV generator interface study only; author identity not established.
+- Source: https://www.soundsfree.art/
+- Public contact: https://www.soundsfree.art/
+- Terms: Free commercial outputs claimed; exact MIT scope unresolved
+
+Unsent draft: Thank you for providing a browser-based sound generator. We are studying the export workflow while keeping the distinction between generic effects and continuous engine control explicit.
+
+### Aleksandr Khilko / AK Audio
+
+- Material: RPM by throttle wavetable architecture study only; no binary, preset or runtime imported.
+- Source: https://akaudio.com/en/portfolio/akenginesynth.html
+- Public contact: https://akaudio.com/en/portfolio/akenginesynth.html
+- Terms: Proprietary in-house R&D; no free download established
+
+Unsent draft: Thank you, Aleksandr, for explaining the two-dimensional engine wavetable approach. The RPM and throttle distinction is a concrete reference for our load-response research.
+
+### Andy Farnell / Applied Scientific Press
+
+- Material: Pure Data combustion, jitter and exhaust model explanations studied; no patches/audio imported.
+- Source: https://aspress.co.uk/sd/practical22.html
+- Public contact: https://aspress.co.uk/sd/
+- Terms: Exact patch reuse license unresolved on inspected pages
+
+Unsent draft: Thank you, Andy, for making the engine-model explanations accessible. Connecting combustion pulses with exhaust behavior is valuable when investigating why a synthetic engine sounds artificial.
+
+### Flowlab / Nightloop
+
+- Material: Browser sound/music generator and WAV/MP3/MIDI export study only.
+- Source: https://flowlab.io/nightloop/
+- Public contact: https://flowlab.io/nightloop/
+- Terms: Site grants commercial use of outputs; no runtime imported
+
+Unsent draft: Thank you for providing a no-sign-up sound workspace. Its direct export workflow is a useful reference for reducing friction when auditioning ideas.

@@ -463,6 +463,8 @@ bars. Estimated lines do not alter observations or totals.
 
 Recorded Engine source research is available in [the candidate report](docs/ENGINE-RECORDING-RESEARCH-2026-09-08.md): exact licenses, signal screening and local auditions. This is research only; no candidate replaces a public Engine voice.
 
+The local [Engine Listening Room](tools/engine-listening-room/README.md) provides 111 hash-identified auditions, filters, one-at-a-time playback and locally saved/exportable notes. [Game-oriented source research](docs/ENGINE-GAME-AUDIO-RESEARCH-2026-09-08.md) expands the earlier recording study. This development tool is not deployed.
+
 <!-- COMMUNITY-CREDITS:START -->
 ## Community thanks — 2026-09-05
 
@@ -808,5 +810,20 @@ All sources below are studies or local development tools. No candidate audio is 
 - 🎧 **Creative Commons** — [CC0, BY, BY-SA and BY-NC deeds](https://creativecommons.org/licenses/); [public contact route](https://creativecommons.org/). **Study only.** Exact audio-license versions linked in research report.
 - 🎧 **rockittt / Cell31_Sound_Productions** — [Explicitly simulated jet effects](https://freesound.org/people/rockittt/sounds/622406/); [public contact route](https://freesound.org/people/Cell31_Sound_Productions/sounds/661160/). **Study only.** Descriptions of whistle/rumble and gas-heater substitutes.
 - 🛠️ **FFmpeg developers** — [FFmpeg / ffprobe](https://ffmpeg.org/); [public contact route](https://ffmpeg.org/contact.html). **Development only.** Local decoding, metadata extraction and audition preparation.
+
+
+### Game-oriented Engine audio research — September 8, 2026
+
+Study only; no new audio or runtime shipped. See the [research report](docs/ENGINE-GAME-AUDIO-RESEARCH-2026-09-08.md).
+
+- 🎛️ **Attila Szlacki / Skril Studio** — [Source](https://skrilstudio.com/asset-products/); [public contact route](https://skrilstudio.com/contact/). **Study only.** Free Rotary X8 and I6 German game engine packs; official product/manual study. No package acquired. Unity Asset Store EULA; not a raw redistribution grant.
+- 🎛️ **Unity** — [Source](https://unity.com/legal/as-terms); [public contact route](https://unity.com/legal/as-terms). **Study only.** Asset Store listings and embedded-product/Extension Asset terms study only. Terms documentation; no software imported.
+- 🎛️ **SFXMint / Stable Audio 3** — [Source](https://sfxmint.com/license); [public contact route](https://sfxmint.com/contact). **Study only.** Three unchanged generated WAVs, mechanical-engine-01/02/03, local ignored audition only; API metadata and SHA-256 tracked. CC0 declared by SFXMint; AI origin disclosed; independent ownership not verified.
+- 🎛️ **Alex Cassells / CrunchySFX** — [Source](https://crunchysfx.com/); [public contact route](https://crunchysfx.com/). **Study only.** Procedural browser generator and WAV export controls study; no code or output imported. Generated outputs CC0; application reserved; imported clips retain their rights.
+- 🎛️ **Cradlefall / omgaudio** — [Source](https://omgaudio.vercel.app/); [public contact route](https://www.cradlefallgame.com/). **Study only.** Procedural vehicle/spaceship presets and WAV/MP3 export interface study; no code/audio imported. Generated outputs CC0 declared.
+- 🎛️ **SoundsFree** — [Source](https://www.soundsfree.art/); [public contact route](https://www.soundsfree.art/). **Study only.** Web Audio/WAV generator interface study only; author identity not established. Free commercial outputs claimed; exact MIT scope unresolved.
+- 🎛️ **Aleksandr Khilko / AK Audio** — [Source](https://akaudio.com/en/portfolio/akenginesynth.html); [public contact route](https://akaudio.com/en/portfolio/akenginesynth.html). **Study only.** RPM by throttle wavetable architecture study only; no binary, preset or runtime imported. Proprietary in-house R&D; no free download established.
+- 🎛️ **Andy Farnell / Applied Scientific Press** — [Source](https://aspress.co.uk/sd/practical22.html); [public contact route](https://aspress.co.uk/sd/). **Study only.** Pure Data combustion, jitter and exhaust model explanations studied; no patches/audio imported. Exact patch reuse license unresolved on inspected pages.
+- 🎛️ **Flowlab / Nightloop** — [Source](https://flowlab.io/nightloop/); [public contact route](https://flowlab.io/nightloop/). **Study only.** Browser sound/music generator and WAV/MP3/MIDI export study only. Site grants commercial use of outputs; no runtime imported.
 
 <!-- COMMUNITY-CREDITS:END -->

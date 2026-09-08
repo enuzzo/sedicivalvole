@@ -1980,3 +1980,7 @@ Future candidate checks should assert source hashes, claimed distinct states,
 channel/gain decisions and loop-boundary behavior. Audible body, fatigue and
 vehicle-speaker translation still require listening; no numerical proxy is
 reported as having passed those gates.
+
+## Engine source organization — September 8, 2026
+
+The owner found the recording-only search too narrow. A game-ready bank may still originate in recordings: its useful distinction is coherent steady RPM regions, separate load states, transitions and reliable seams. WAV/OGG/MP3 describe encoding, not these behaviors. Procedural patches and RPM-by-throttle wavetables are additional approaches; a free effect generator is not automatically a continuous combustion model. Do not infer audible quality or a clean loop from origin, filename or license. The local listening catalogue makes source identity and preparation explicit before any integration choice. See ENGINE-GAME-AUDIO-RESEARCH-2026-09-08.md.

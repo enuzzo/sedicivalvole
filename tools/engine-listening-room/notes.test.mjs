@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import {readNotes, exportNotes} from './notes.js';
+const catalog = [{code:'TEST-1',sha256:'new',sourceUrl:'https://example.test/source',note:'Unchanged'}];
+const storage = value => ({getItem:()=>JSON.stringify(value)});
+assert.deepEqual(readNotes(storage({'TEST-1':{sha256:'old',rating:'Keep',comment:'old sound'}}),catalog),{});
+assert.deepEqual(readNotes(storage({'TEST-1':{sha256:'new',rating:'invalid',comment:'text'}}),catalog),{});
+const notes=readNotes(storage({'TEST-1':{sha256:'new',rating:'Maybe',comment:'a'.repeat(3000)}}),catalog);
+assert.equal(notes['TEST-1'].comment.length,2000);
+assert.equal(exportNotes(catalog,notes).notes[0].sourceSha256,'new');
+assert.equal(exportNotes(catalog,{}).notes.length,0);
+console.log('5 note identity, bounds and export assertions passed');

@@ -430,3 +430,19 @@ No candidate source audio, third-party code or binary enters the tracked reposit
 | FFmpeg developers | [FFmpeg / ffprobe](https://ffmpeg.org/) | Installed 9.0.1 build: GPL-3.0-or-later; binaries not redistributed | Development only: Local decoding, metadata extraction and audition preparation |
 
 See [the recording report](docs/ENGINE-RECORDING-RESEARCH-2026-09-08.md) for individual assets, alternate license versions and candidate limitations. This study notice is not approval to import or relicense any candidate.
+
+## Game-oriented Engine audio studies — September 8, 2026
+
+No new shipped integration. Original listening-tool code remains under the repository license; third-party audio retains its own terms and stays outside Git.
+
+| Author | Source | Terms | Material used |
+|---|---|---|---|
+| Attila Szlacki / Skril Studio | [Source](https://skrilstudio.com/asset-products/) | Unity Asset Store EULA; not a raw redistribution grant | Free Rotary X8 and I6 German game engine packs; official product/manual study. No package acquired. |
+| Unity | [Source](https://unity.com/legal/as-terms) | Terms documentation; no software imported | Asset Store listings and embedded-product/Extension Asset terms study only. |
+| SFXMint / Stable Audio 3 | [Source](https://sfxmint.com/license) | CC0 declared by SFXMint; AI origin disclosed; independent ownership not verified | Three unchanged generated WAVs, mechanical-engine-01/02/03, local ignored audition only; API metadata and SHA-256 tracked. |
+| Alex Cassells / CrunchySFX | [Source](https://crunchysfx.com/) | Generated outputs CC0; application reserved; imported clips retain their rights | Procedural browser generator and WAV export controls study; no code or output imported. |
+| Cradlefall / omgaudio | [Source](https://omgaudio.vercel.app/) | Generated outputs CC0 declared | Procedural vehicle/spaceship presets and WAV/MP3 export interface study; no code/audio imported. |
+| SoundsFree | [Source](https://www.soundsfree.art/) | Free commercial outputs claimed; exact MIT scope unresolved | Web Audio/WAV generator interface study only; author identity not established. |
+| Aleksandr Khilko / AK Audio | [Source](https://akaudio.com/en/portfolio/akenginesynth.html) | Proprietary in-house R&D; no free download established | RPM by throttle wavetable architecture study only; no binary, preset or runtime imported. |
+| Andy Farnell / Applied Scientific Press | [Source](https://aspress.co.uk/sd/practical22.html) | Exact patch reuse license unresolved on inspected pages | Pure Data combustion, jitter and exhaust model explanations studied; no patches/audio imported. |
+| Flowlab / Nightloop | [Source](https://flowlab.io/nightloop/) | Site grants commercial use of outputs; no runtime imported | Browser sound/music generator and WAV/MP3/MIDI export study only. |

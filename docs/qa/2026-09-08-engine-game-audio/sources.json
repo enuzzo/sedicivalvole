@@ -1,0 +1,74 @@
+[
+  {
+    "author": "Attila Szlacki / Skril Studio",
+    "url": "https://skrilstudio.com/asset-products/",
+    "contact": "https://skrilstudio.com/contact/",
+    "use": "Free Rotary X8 and I6 German game engine packs; official product/manual study. No package acquired.",
+    "terms": "Unity Asset Store EULA; not a raw redistribution grant",
+    "status": "Study only"
+  },
+  {
+    "author": "Unity",
+    "url": "https://unity.com/legal/as-terms",
+    "contact": "https://unity.com/legal/as-terms",
+    "use": "Asset Store listings and embedded-product/Extension Asset terms study only.",
+    "terms": "Terms documentation; no software imported",
+    "status": "Study only"
+  },
+  {
+    "author": "SFXMint / Stable Audio 3",
+    "url": "https://sfxmint.com/license",
+    "contact": "https://sfxmint.com/contact",
+    "use": "Three unchanged generated WAVs, mechanical-engine-01/02/03, local ignored audition only; API metadata and SHA-256 tracked.",
+    "terms": "CC0 declared by SFXMint; AI origin disclosed; independent ownership not verified",
+    "status": "Study only"
+  },
+  {
+    "author": "Alex Cassells / CrunchySFX",
+    "url": "https://crunchysfx.com/",
+    "contact": "https://crunchysfx.com/",
+    "use": "Procedural browser generator and WAV export controls study; no code or output imported.",
+    "terms": "Generated outputs CC0; application reserved; imported clips retain their rights",
+    "status": "Study only"
+  },
+  {
+    "author": "Cradlefall / omgaudio",
+    "url": "https://omgaudio.vercel.app/",
+    "contact": "https://www.cradlefallgame.com/",
+    "use": "Procedural vehicle/spaceship presets and WAV/MP3 export interface study; no code/audio imported.",
+    "terms": "Generated outputs CC0 declared",
+    "status": "Study only"
+  },
+  {
+    "author": "SoundsFree",
+    "url": "https://www.soundsfree.art/",
+    "contact": "https://www.soundsfree.art/",
+    "use": "Web Audio/WAV generator interface study only; author identity not established.",
+    "terms": "Free commercial outputs claimed; exact MIT scope unresolved",
+    "status": "Study only"
+  },
+  {
+    "author": "Aleksandr Khilko / AK Audio",
+    "url": "https://akaudio.com/en/portfolio/akenginesynth.html",
+    "contact": "https://akaudio.com/en/portfolio/akenginesynth.html",
+    "use": "RPM by throttle wavetable architecture study only; no binary, preset or runtime imported.",
+    "terms": "Proprietary in-house R&D; no free download established",
+    "status": "Study only"
+  },
+  {
+    "author": "Andy Farnell / Applied Scientific Press",
+    "url": "https://aspress.co.uk/sd/practical22.html",
+    "contact": "https://aspress.co.uk/sd/",
+    "use": "Pure Data combustion, jitter and exhaust model explanations studied; no patches/audio imported.",
+    "terms": "Exact patch reuse license unresolved on inspected pages",
+    "status": "Study only"
+  },
+  {
+    "author": "Flowlab / Nightloop",
+    "url": "https://flowlab.io/nightloop/",
+    "contact": "https://flowlab.io/nightloop/",
+    "use": "Browser sound/music generator and WAV/MP3/MIDI export study only.",
+    "terms": "Site grants commercial use of outputs; no runtime imported",
+    "status": "Study only"
+  }
+]

@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Engine Listening Room</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <header>
+    <div><h1>Engine Listening Room</h1><p id="summary">Loading sounds…</p></div>
+    <button id="export" class="primary">Export notes</button>
+  </header>
+  <section class="filters" aria-label="Filter sounds">
+    <input id="search" type="search" placeholder="Search code, engine or creator" aria-label="Search code, engine or creator">
+    <select id="family" aria-label="Family"><option value="">All families</option></select>
+    <select id="kind" aria-label="Format"><option value="">All formats</option></select>
+    <label class="check"><input id="noted" type="checkbox">With notes</label>
+  </section>
+  <div class="disclosure">
+    <p>Notes stay in this browser. Export them to share. Playback starts at 35% volume.</p>
+    <label class="volume">Volume <input id="volume" type="range" min="0" max="100" value="35" aria-label="Playback volume"><output id="level">35%</output></label>
+  </div>
+  <p id="status" role="status" aria-live="polite"></p>
+  <div class="table-head" aria-hidden="true"><span>Code</span><span>Source</span><span>Listen</span><span>Your notes</span></div>
+  <section id="catalog" aria-label="Listening catalog"></section>
+  <p id="empty" hidden>No sounds match these filters. Try a code or choose All families.</p>
+  <footer><span id="count"></span><span>Research only · Source levels vary · X = prepared excerpt</span></footer>
+  <details class="help"><summary>About this listening room</summary><p>100 previously screened files, eight prepared excerpts and three new AI-generated effects. A public MP3 preview is not an original master. Loop repeats the available file; it does not certify a seamless join. Nothing is sent automatically. Notes remain on this browser and address; export a copy before clearing browser data or changing devices.</p><p>To comment in chat, quote a code such as V8-001 or TUR-002. Source details show authors, license declarations and changes. The product's public Engine presets are unchanged.</p><a href="SOURCE-NOTICES.md">All source notices</a></details>
+</main>
+<script type="module" src="app.js"></script>
+</body>
+</html>
