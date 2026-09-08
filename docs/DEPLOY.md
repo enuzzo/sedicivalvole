@@ -1,5 +1,14 @@
 # Deployment
 
+## Verified Engine catalogue retirement — 2026-09-09 00:08 Europe/Rome
+
+Canonical build **20260908-2356**, source **de16389**, version read from VERSION (**0.0.0**). Intro, running Telemetry and protected LAB now admit only Mono, Rosso and Touring. Their audio source/configuration/runtime files are unchanged. Rejected Otto/Cinque/Turbine definitions remain internal historical material, unavailable through the selectors. No FMOD runtime or example media is shipped.
+
+807 native tests, ten final packaging/build checks and 196 dependency credits pass. The native suite uses Python 3.11 and the architecture-specific toolchain. Local real controls prepared all three retained engines without browser errors. Canonical Intro at 773x601 shows exactly those three profiles and the new build stamp. Source-level and package tests cover the shared LAB catalogue; no authenticated canonical LAB session is claimed. Target-vehicle retesting remains physical acceptance.
+
+Official publication uploaded 232 files / 254,894,396 bytes and reverified all 29 Illobo tracks. Existing assets were preserved; remote_writes=ROOT_UPLOAD_ONLY. Independent official preflight/postflight both report remote_writes=NONE. Cache-busted canonical HTML, main JavaScript and CSS match the local build byte for byte; the bare root matches and retains no-store/no-cache. Exact hashes and HTTP headers are in [canonical evidence](qa/2026-09-08-engine-retirement/canonical.json). [Complete scope](ENGINE-RETAINED-VOICES-2026-09-08.md).
+
+
 ## Verified final A/B LAB publication — 2026-09-08 11:53 Europe/Rome
 
 Canonical **20260908-1143**, source **e56a0cd**, version read from VERSION

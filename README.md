@@ -1,5 +1,7 @@
 # sedicivalvole
 
+Engine now offers only **Mono, Rosso and Touring**, with their accepted audio calibration unchanged. Otto, Cinque and Turbine are retired from Intro, running selectors and LAB. Canonically verified build `20260908-2356`; [decision and validation](docs/ENGINE-RETAINED-VOICES-2026-09-08.md).
+
 The owner-selected [Engine A/B listening LAB](docs/ENGINE-LISTENING-LAB-2026-09-08.md)
 compares the 0834 reference and 1102 refinement on one 68-second route, with
 local preference/notes and JSON export. The public default retains the 1102

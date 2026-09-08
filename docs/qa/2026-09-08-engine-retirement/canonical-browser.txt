@@ -1,0 +1,40 @@
+- main:
+  - button "Automatic diagnostics ON. Turn off":
+    - strong: DEV · AUTO REPORT ON
+    - generic: Coordinate-free · every 15 active min
+  - generic: BUILD 20260908-2356
+  - region "Choose your drive":
+    - heading "sedicivalvole" [level=1]
+    - generic: Drive responsibly
+    - button "About"
+    - button "Open Buy Me a Coffee support panel":
+      - generic: Buy Me a Coffee
+    - navigation "Experience mode":
+      - button "Music":
+        - strong: Music
+      - button "Engine" [active] [pressed]:
+        - strong: Engine
+    - paragraph: Sound that follows your drive.
+    - group "Engine profile":
+      - button "Mono Raw four-cylinder" [pressed]:
+        - strong: Mono
+        - generic: Raw four-cylinder
+      - button "Rosso Bright and expressive":
+        - strong: Rosso
+        - generic: Bright and expressive
+      - button "Touring Deep and relaxed":
+        - strong: Touring
+        - generic: Deep and relaxed
+    - generic: Automatic gears
+    - generic: Stationary revs
+    - generic: Pure engine sound
+    - button "START ENGINE":
+      - strong: START ENGINE
+      - generic: Mono · automatic
+  - text: by
+  - link "enuzzo":
+    - /url: https://github.com/enuzzo
+  - text: · with
+  - link "Illobo":
+    - /url: https://github.com/illobo
+  - button:

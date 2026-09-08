@@ -1988,3 +1988,7 @@ The owner found the recording-only search too narrow. A game-ready bank may stil
 ## Owner selection after source auditions — September 8, 2026
 
 Keep Mono, Rosso and Touring unchanged: the owner explicitly praises these voices. Retire Otto, Cinque and Turbine from selectable experiences because their digital/artificial character is rejected. Future source acquisition must provide coherent files separated by RPM and load/release state. Many short isolated effects and neutral rev recordings did not supply the desired driving dynamics. Do not infer that the accepted Mono hybrid layer is also rejected.
+
+## Rejected FMOD example timbre — September 9, 2026
+
+The owner describes the official granular truck demo as flute-like and rejects it. A technically interactive demonstration is not evidence of a convincing combustion timbre. Do not promote a middleware example as an Engine source merely because it supports continuous playback. This candidate and its planned acquisition are retired; Mono/Rosso/Touring remain the accepted listening reference.

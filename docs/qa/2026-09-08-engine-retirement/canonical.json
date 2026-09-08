@@ -1,0 +1,44 @@
+{
+  "build": "20260908-2356",
+  "source": "de16389",
+  "checks": [
+    {
+      "path": "/",
+      "status": 200,
+      "sha256": "cc6d5d95b8c228df44e845577bb77e0a7062ce92fd6e87bee9b81e040e953d36",
+      "headers": {
+        "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+        "Content-Type": "text/html; charset=UTF-8",
+        "ETag": null,
+        "Last-Modified": null
+      }
+    },
+    {
+      "path": "/assets/index-CDk3zmoZ.js",
+      "status": 200,
+      "sha256": "0968729893b5dec2dc459d8152db7b21036a07028f609227b1b49279ddf1d1e3",
+      "headers": {
+        "Cache-Control": null,
+        "Content-Type": "application/javascript",
+        "ETag": "\"c3a18-65affdcfc4ff7\"",
+        "Last-Modified": "Tue, 08 Sep 2026 22:00:30 GMT"
+      }
+    },
+    {
+      "path": "/assets/index-BTqZtHRR.css",
+      "status": 200,
+      "sha256": "f771c7860c0114643a90f6ba78b1401cc12c5e933631e048bc0ce2ce0ea46a19",
+      "headers": {
+        "Cache-Control": null,
+        "Content-Type": "text/css",
+        "ETag": "\"37580-65affdcf2ab2b\"",
+        "Last-Modified": "Tue, 08 Sep 2026 22:00:30 GMT"
+      }
+    },
+    {
+      "path": "bare /",
+      "status": 200,
+      "cacheControl": "no-store, no-cache, must-revalidate, max-age=0"
+    }
+  ]
+}

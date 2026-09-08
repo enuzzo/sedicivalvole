@@ -1,6 +1,6 @@
 # Current Project State
 
-September 8 late-evening owner decision: retain Mono, Rosso and Touring; retire Otto, Cinque and Turbine from Intro, running selectors and LAB. Existing accepted voice calibrations remain unchanged. Archived procedural definitions/tests remain for traceability and Mono still uses its existing hybrid layer. Publication evidence follows in DEPLOY.md.
+September 8 late-evening owner decision: retain Mono, Rosso and Touring; retire Otto, Cinque and Turbine from Intro, running selectors and LAB. Existing accepted voice calibrations remain unchanged. Archived procedural definitions/tests remain for traceability and Mono still uses its existing hybrid layer. Canonical build **20260908-2356**, source **de16389**, is verified; publication evidence is in DEPLOY.md.
 
 Weak-network music refinement is published and canonically verified in build
 **20260908-2040**, source **e9dd39c**: immediate inline glyphs, retained loading transport, recoverable
@@ -25,7 +25,7 @@ compares the 0834 reference and 1102 refinement on one 68-second route, with
 local preference/notes and JSON export. The public default retains the 1102
 audio calibration. This supersedes the earlier pending-direction proposal.
 
-Latest verified canonical publication: **20260908-2040**, source **e9dd39c**,
+Latest verified canonical publication: **20260908-2356**, source **de16389**,
 version from VERSION (**0.0.0**). This summary takes precedence over dated
 historical paragraphs below.
 

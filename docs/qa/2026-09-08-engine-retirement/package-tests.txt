@@ -1,0 +1,18 @@
+✔ the diagnostic report carries version, build stamp, and commit identity (1.291395ms)
+✔ the canonical LAB gate keeps authentication and secrets on the PHP boundary (1.100701ms)
+✔ the LAB bundle is inlined behind the gate and leaves no directly fetchable client bundle (0.426156ms)
+✔ LAB audio is a disposable test source and never enters the visual preset (0.191923ms)
+✔ the live macro strip stays inside the preview column at the Tesla viewport (0.24065ms)
+✔ the LAB keyboard drives the shared vehicle motion model without stealing control focus (0.193781ms)
+✔ SEND JSON requires an authenticated session and preserves the preset privacy contract (0.154327ms)
+✔ deployment derives an upload-only PBKDF2 verifier without logging the access code (220.084075ms)
+✔ deployment derives an upload-only Jamendo read configuration without logging it (60.842914ms)
+✔ worklet URLs change with bundled dependency bytes, even when the LAB filename stays fixed (39.615793ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 458.183453
