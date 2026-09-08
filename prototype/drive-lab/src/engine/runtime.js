@@ -200,7 +200,7 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
     const activeEvidence = elapsed > 0.5 ? motion.snapshot(now()) : evidence;
     // Acquire the road ratio without replaying imaginary first-to-sixth shifts.
     // This is initialization after load/loss, never a pedal or real-gear reading.
-    if (!roadCoupled && activeEvidence.freshness === "fresh") {
+    if (!roadCoupled && ["fresh", "degraded"].includes(activeEvidence.freshness) && Number.isFinite(activeEvidence.speedKmh)) {
       if (transmissionMode === "AUTO") {
         state.gear = selectRoadGear(activeEvidence.speedKmh, activeEvidence.drive, profile);
         drivetrain.gear = state.gear; selectedAt = at;

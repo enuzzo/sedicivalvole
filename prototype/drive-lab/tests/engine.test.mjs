@@ -283,6 +283,18 @@ test("full-demand top gear engages below the asymptotic GPS ceiling", () => {
   f.runtime.destroy();
 });
 
+test("a newly selected bank uses bounded held road speed during a degraded GPS interval without shifting", async () => {
+  const f=fixture({worklet:true});f.runtime.setEnabled(true);await f.runtime.load('mono');f.tick();
+  Object.assign(f.evidence,{speedKmh:80,rawSpeedKmh:80,drive:0,freshness:'degraded',canShift:false});
+  await f.runtime.load('otto');
+  for(let i=0;i<160;i++){f.tick();assert.ok(f.runtime.getState().rpm<3500);}
+  assert.equal(f.runtime.getState().gear,4);assert.equal(f.runtime.getState().motion,'degraded');
+  assert.equal(f.events.filter(e=>e.type==='engine.shift.scheduled').length,0);
+  f.evidence.freshness='lost';f.evidence.speedKmh=null;
+  for(let i=0;i<120;i++)f.tick();
+  assert.equal(f.runtime.getState().rpm,1000);f.runtime.destroy();
+});
+
 test("foreground and context recovery acquire the current road gear even when fresh GPS beats the next tick", async () => {
   for (const recovery of ['visibilitychange','statechange','source-generation']) {
     const f=fixture({worklet:true});f.evidence.generation=1;f.runtime.setEnabled(true);await f.runtime.load('mono');f.tick();
