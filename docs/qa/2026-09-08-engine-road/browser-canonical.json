@@ -1,0 +1,2450 @@
+{
+  "url": "https://sedicivalvole.app/?verify=20260908-0834",
+  "rate": 48000,
+  "browser": "Isolated headless Google Chrome; Browser plugin not available",
+  "flow": "Intro Engine catalogue -> selected running Engine -> no-GPS TAMARRO -> observed GPS driving",
+  "viewports": [
+    {
+      "width": 773,
+      "height": 601,
+      "stage": "intro",
+      "geometry": {
+        "group": {
+          "x": 35,
+          "y": 245.84375,
+          "width": 703,
+          "height": 171.296875,
+          "right": 738,
+          "bottom": 417.140625
+        },
+        "scrollable": false,
+        "scrollWidth": 773,
+        "width": 773,
+        "height": 601,
+        "phoneLayout": null,
+        "coarsePointer": false,
+        "buttons": [
+          {
+            "name": "MonoRaw four-cylinder",
+            "x": 35,
+            "y": 245.84375,
+            "width": 229,
+            "height": 80,
+            "right": 264,
+            "bottom": 325.84375
+          },
+          {
+            "name": "RossoBright and expressive",
+            "x": 272,
+            "y": 245.84375,
+            "width": 229,
+            "height": 80,
+            "right": 501,
+            "bottom": 325.84375
+          },
+          {
+            "name": "TouringDeep and relaxed",
+            "x": 509,
+            "y": 245.84375,
+            "width": 229,
+            "height": 80,
+            "right": 738,
+            "bottom": 325.84375
+          },
+          {
+            "name": "OttoCrossplane V8 · pulsing exhaust",
+            "x": 35,
+            "y": 333.84375,
+            "width": 229,
+            "height": 83.296875,
+            "right": 264,
+            "bottom": 417.140625
+          },
+          {
+            "name": "CinqueTurbo five · spool and release",
+            "x": 272,
+            "y": 333.84375,
+            "width": 229,
+            "height": 83.296875,
+            "right": 501,
+            "bottom": 417.140625
+          },
+          {
+            "name": "TurbineSpooling shaft · continuous thrust",
+            "x": 509,
+            "y": 333.84375,
+            "width": 229,
+            "height": 83.296875,
+            "right": 738,
+            "bottom": 417.140625
+          }
+        ]
+      }
+    },
+    {
+      "width": 956,
+      "height": 440,
+      "stage": "intro",
+      "geometry": {
+        "group": {
+          "x": 29,
+          "y": 241,
+          "width": 898,
+          "height": 168,
+          "right": 927,
+          "bottom": 409
+        },
+        "scrollable": true,
+        "scrollWidth": 956,
+        "width": 956,
+        "height": 440,
+        "phoneLayout": "landscape",
+        "coarsePointer": true,
+        "buttons": [
+          {
+            "name": "MonoRaw four-cylinder",
+            "x": 29,
+            "y": 241,
+            "width": 294,
+            "height": 80,
+            "right": 323,
+            "bottom": 321
+          },
+          {
+            "name": "RossoBright and expressive",
+            "x": 331,
+            "y": 241,
+            "width": 294,
+            "height": 80,
+            "right": 625,
+            "bottom": 321
+          },
+          {
+            "name": "TouringDeep and relaxed",
+            "x": 633,
+            "y": 241,
+            "width": 294,
+            "height": 80,
+            "right": 927,
+            "bottom": 321
+          },
+          {
+            "name": "OttoCrossplane V8 · pulsing exhaust",
+            "x": 29,
+            "y": 329,
+            "width": 294,
+            "height": 80,
+            "right": 323,
+            "bottom": 409
+          },
+          {
+            "name": "CinqueTurbo five · spool and release",
+            "x": 331,
+            "y": 329,
+            "width": 294,
+            "height": 80,
+            "right": 625,
+            "bottom": 409
+          },
+          {
+            "name": "TurbineSpooling shaft · continuous thrust",
+            "x": 633,
+            "y": 329,
+            "width": 294,
+            "height": 80,
+            "right": 927,
+            "bottom": 409
+          }
+        ]
+      }
+    },
+    {
+      "width": 667,
+      "height": 375,
+      "stage": "intro",
+      "geometry": {
+        "group": {
+          "x": 29,
+          "y": 241,
+          "width": 609,
+          "height": 173.296875,
+          "right": 638,
+          "bottom": 414.296875
+        },
+        "scrollable": true,
+        "scrollWidth": 667,
+        "width": 667,
+        "height": 375,
+        "phoneLayout": "landscape",
+        "coarsePointer": true,
+        "buttons": [
+          {
+            "name": "MonoRaw four-cylinder",
+            "x": 29,
+            "y": 241,
+            "width": 197.65625,
+            "height": 80,
+            "right": 226.65625,
+            "bottom": 321
+          },
+          {
+            "name": "RossoBright and expressive",
+            "x": 234.65625,
+            "y": 241,
+            "width": 197.671875,
+            "height": 80,
+            "right": 432.328125,
+            "bottom": 321
+          },
+          {
+            "name": "TouringDeep and relaxed",
+            "x": 440.328125,
+            "y": 241,
+            "width": 197.671875,
+            "height": 80,
+            "right": 638,
+            "bottom": 321
+          },
+          {
+            "name": "OttoCrossplane V8 · pulsing exhaust",
+            "x": 29,
+            "y": 329,
+            "width": 197.65625,
+            "height": 85.296875,
+            "right": 226.65625,
+            "bottom": 414.296875
+          },
+          {
+            "name": "CinqueTurbo five · spool and release",
+            "x": 234.65625,
+            "y": 329,
+            "width": 197.671875,
+            "height": 85.296875,
+            "right": 432.328125,
+            "bottom": 414.296875
+          },
+          {
+            "name": "TurbineSpooling shaft · continuous thrust",
+            "x": 440.328125,
+            "y": 329,
+            "width": 197.671875,
+            "height": 85.296875,
+            "right": 638,
+            "bottom": 414.296875
+          }
+        ]
+      }
+    },
+    {
+      "width": 773,
+      "height": 601,
+      "stage": "running",
+      "geometry": {
+        "group": {
+          "x": 32,
+          "y": 405.09375,
+          "width": 447.890625,
+          "height": 48,
+          "right": 479.890625,
+          "bottom": 453.09375
+        },
+        "scrollable": false,
+        "scrollWidth": 773,
+        "width": 773,
+        "height": 601,
+        "phoneLayout": null,
+        "coarsePointer": false,
+        "buttons": [
+          {
+            "name": "Mono",
+            "x": 32,
+            "y": 405.09375,
+            "width": 65.359375,
+            "height": 48,
+            "right": 97.359375,
+            "bottom": 453.09375
+          },
+          {
+            "name": "Rosso",
+            "x": 103.359375,
+            "y": 405.09375,
+            "width": 67.8125,
+            "height": 48,
+            "right": 171.171875,
+            "bottom": 453.09375
+          },
+          {
+            "name": "Touring",
+            "x": 177.171875,
+            "y": 405.09375,
+            "width": 77.15625,
+            "height": 48,
+            "right": 254.328125,
+            "bottom": 453.09375
+          },
+          {
+            "name": "Otto",
+            "x": 260.328125,
+            "y": 405.09375,
+            "width": 56.90625,
+            "height": 48,
+            "right": 317.234375,
+            "bottom": 453.09375
+          },
+          {
+            "name": "Cinque",
+            "x": 323.234375,
+            "y": 405.09375,
+            "width": 73.625,
+            "height": 48,
+            "right": 396.859375,
+            "bottom": 453.09375
+          },
+          {
+            "name": "Turbine",
+            "x": 402.859375,
+            "y": 405.09375,
+            "width": 77.03125,
+            "height": 48,
+            "right": 479.890625,
+            "bottom": 453.09375
+          }
+        ]
+      }
+    },
+    {
+      "width": 956,
+      "height": 440,
+      "stage": "running",
+      "geometry": {
+        "group": {
+          "x": 303.5078125,
+          "y": 320,
+          "width": 348.984375,
+          "height": 56,
+          "right": 652.4921875,
+          "bottom": 376
+        },
+        "scrollable": false,
+        "scrollWidth": 956,
+        "width": 956,
+        "height": 440,
+        "phoneLayout": "landscape",
+        "coarsePointer": true,
+        "buttons": [
+          {
+            "name": "Mono",
+            "x": 303.5078125,
+            "y": 320,
+            "width": 49.359375,
+            "height": 56,
+            "right": 352.8671875,
+            "bottom": 376
+          },
+          {
+            "name": "Rosso",
+            "x": 356.8671875,
+            "y": 320,
+            "width": 51.8125,
+            "height": 56,
+            "right": 408.6796875,
+            "bottom": 376
+          },
+          {
+            "name": "Touring",
+            "x": 412.6796875,
+            "y": 320,
+            "width": 61.15625,
+            "height": 56,
+            "right": 473.8359375,
+            "bottom": 376
+          },
+          {
+            "name": "Otto",
+            "x": 477.8359375,
+            "y": 320,
+            "width": 48,
+            "height": 56,
+            "right": 525.8359375,
+            "bottom": 376
+          },
+          {
+            "name": "Cinque",
+            "x": 529.8359375,
+            "y": 320,
+            "width": 57.625,
+            "height": 56,
+            "right": 587.4609375,
+            "bottom": 376
+          },
+          {
+            "name": "Turbine",
+            "x": 591.4609375,
+            "y": 320,
+            "width": 61.03125,
+            "height": 56,
+            "right": 652.4921875,
+            "bottom": 376
+          }
+        ]
+      }
+    },
+    {
+      "width": 667,
+      "height": 375,
+      "stage": "running",
+      "geometry": {
+        "group": {
+          "x": 159.0078125,
+          "y": 255,
+          "width": 348.984375,
+          "height": 56,
+          "right": 507.9921875,
+          "bottom": 311
+        },
+        "scrollable": false,
+        "scrollWidth": 667,
+        "width": 667,
+        "height": 375,
+        "phoneLayout": "landscape",
+        "coarsePointer": true,
+        "buttons": [
+          {
+            "name": "Mono",
+            "x": 159.0078125,
+            "y": 255,
+            "width": 49.359375,
+            "height": 56,
+            "right": 208.3671875,
+            "bottom": 311
+          },
+          {
+            "name": "Rosso",
+            "x": 212.3671875,
+            "y": 255,
+            "width": 51.8125,
+            "height": 56,
+            "right": 264.1796875,
+            "bottom": 311
+          },
+          {
+            "name": "Touring",
+            "x": 268.1796875,
+            "y": 255,
+            "width": 61.15625,
+            "height": 56,
+            "right": 329.3359375,
+            "bottom": 311
+          },
+          {
+            "name": "Otto",
+            "x": 333.3359375,
+            "y": 255,
+            "width": 48,
+            "height": 56,
+            "right": 381.3359375,
+            "bottom": 311
+          },
+          {
+            "name": "Cinque",
+            "x": 385.3359375,
+            "y": 255,
+            "width": 57.625,
+            "height": 56,
+            "right": 442.9609375,
+            "bottom": 311
+          },
+          {
+            "name": "Turbine",
+            "x": 446.9609375,
+            "y": 255,
+            "width": 61.03125,
+            "height": 56,
+            "right": 507.9921875,
+            "bottom": 311
+          }
+        ]
+      }
+    }
+  ],
+  "samples": [
+    {
+      "at": 3360.7000000029802,
+      "speed": 0,
+      "rms": 0.001800000483950439,
+      "peak": 0.00364630576223135,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "cylinders": 8,
+            "banks": [
+              0,
+              1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              1
+            ],
+            "pressureHz": 76,
+            "pulseSeconds": 0.0048,
+            "pipeSeconds": [
+              0.0063,
+              0.0107,
+              0.0159
+            ],
+            "cutoffHz": 1450,
+            "level": 0.86,
+            "mix": 1.6,
+            "limiter": 6800
+          },
+          "params": {
+            "events": 0,
+            "rpm": 1000,
+            "active": 1,
+            "boost": 0,
+            "load": 0.06716383248567581
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "ready-Mono",
+      "rpm": 1000,
+      "selected": "Mono",
+      "gearText": "GEAR / AUTO\n1\nACOUSTIC GEARBOX"
+    },
+    {
+      "at": 5805.4000000059605,
+      "speed": 0,
+      "rms": 0.059088203135512475,
+      "peak": 0.09999343752861023,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [],
+      "processorErrors": 0,
+      "label": "ready-Rosso",
+      "rpm": 1000,
+      "selected": "Rosso",
+      "gearText": "GEAR / AUTO\n1\nACOUSTIC GEARBOX"
+    },
+    {
+      "at": 6239.29999999702,
+      "speed": 0,
+      "rms": 0.05754695465354038,
+      "peak": 0.08954603224992752,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [],
+      "processorErrors": 0,
+      "label": "ready-Touring",
+      "rpm": 1000,
+      "selected": "Touring",
+      "gearText": "GEAR / AUTO\n1\nACOUSTIC GEARBOX"
+    },
+    {
+      "at": 6704.600000008941,
+      "speed": 0,
+      "rms": 0.013340438374153808,
+      "peak": 0.026535818353295326,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "cylinders": 8,
+            "banks": [
+              0,
+              1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              1
+            ],
+            "pressureHz": 76,
+            "pulseSeconds": 0.0048,
+            "pipeSeconds": [
+              0.0063,
+              0.0107,
+              0.0159
+            ],
+            "cutoffHz": 1450,
+            "level": 0.86,
+            "mix": 1.6,
+            "limiter": 6800
+          },
+          "params": {
+            "events": 0,
+            "rpm": 1000,
+            "active": 1,
+            "boost": 0,
+            "load": 0.07999373972415924
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "ready-Otto",
+      "rpm": 1000,
+      "selected": "Otto",
+      "gearText": "GEAR / AUTO\n1\nACOUSTIC GEARBOX"
+    },
+    {
+      "at": 6940.4000000059605,
+      "speed": 0,
+      "rms": 0.058182822158062676,
+      "peak": 0.1345950961112976,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "cylinders": 8,
+            "banks": [
+              0,
+              1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              1
+            ],
+            "pressureHz": 76,
+            "pulseSeconds": 0.0048,
+            "pipeSeconds": [
+              0.0063,
+              0.0107,
+              0.0159
+            ],
+            "cutoffHz": 1450,
+            "level": 0.86,
+            "mix": 1.6,
+            "limiter": 6800
+          },
+          "params": {
+            "events": 1,
+            "rpm": 2621.739990234375,
+            "active": 1,
+            "boost": 0,
+            "load": 0.8966125249862671
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "no-gps-Otto-0",
+      "rpm": 2396,
+      "selected": "Otto",
+      "gearText": "GEAR / AUTO\nN\nACOUSTIC GEARBOX"
+    },
+    {
+      "at": 7145.4000000059605,
+      "speed": 0,
+      "rms": 0.013989906720872776,
+      "peak": 0.031139587983489037,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "cylinders": 8,
+            "banks": [
+              0,
+              1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              1
+            ],
+            "pressureHz": 76,
+            "pulseSeconds": 0.0048,
+            "pipeSeconds": [
+              0.0063,
+              0.0107,
+              0.0159
+            ],
+            "cutoffHz": 1450,
+            "level": 0.86,
+            "mix": 1.6,
+            "limiter": 6800
+          },
+          "params": {
+            "events": 1,
+            "rpm": 3566.8095703125,
+            "active": 1,
+            "boost": 0,
+            "load": 0.03665195778012276
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "no-gps-Otto-1",
+      "rpm": 3616,
+      "selected": "Otto",
+      "gearText": "GEAR / AUTO\nN\nACOUSTIC GEARBOX"
+    },
+    {
+      "at": 7351.9000000059605,
+      "speed": 0,
+      "rms": 0.01766261344139701,
+      "peak": 0.02851930446922779,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "cylinders": 8,
+            "banks": [
+              0,
+              1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              1
+            ],
+            "pressureHz": 76,
+            "pulseSeconds": 0.0048,
+            "pipeSeconds": [
+              0.0063,
+              0.0107,
+              0.0159
+            ],
+            "cutoffHz": 1450,
+            "level": 0.86,
+            "mix": 1.6,
+            "limiter": 6800
+          },
+          "params": {
+            "events": 1,
+            "rpm": 2989.758544921875,
+            "active": 1,
+            "boost": 0,
+            "load": 0.00009607943502487615
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "no-gps-Otto-2",
+      "rpm": 3111,
+      "selected": "Otto",
+      "gearText": "GEAR / AUTO\nN\nACOUSTIC GEARBOX"
+    },
+    {
+      "at": 7559.70000000298,
+      "speed": 0,
+      "rms": 0.018728506889907043,
+      "peak": 0.038101356476545334,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "cylinders": 8,
+            "banks": [
+              0,
+              1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              1
+            ],
+            "pressureHz": 76,
+            "pulseSeconds": 0.0048,
+            "pipeSeconds": [
+              0.0063,
+              0.0107,
+              0.0159
+            ],
+            "cutoffHz": 1450,
+            "level": 0.86,
+            "mix": 1.6,
+            "limiter": 6800
+          },
+          "params": {
+            "events": 1,
+            "rpm": 2488.302490234375,
+            "active": 1,
+            "boost": 0,
+            "load": 0.45606672763824463
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "no-gps-Otto-3",
+      "rpm": 2514,
+      "selected": "Otto",
+      "gearText": "GEAR / AUTO\nN\nACOUSTIC GEARBOX"
+    },
+    {
+      "at": 7765.100000008941,
+      "speed": 0,
+      "rms": 0.055766846380528215,
+      "peak": 0.10423865914344788,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "cylinders": 8,
+            "banks": [
+              0,
+              1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              1
+            ],
+            "pressureHz": 76,
+            "pulseSeconds": 0.0048,
+            "pipeSeconds": [
+              0.0063,
+              0.0107,
+              0.0159
+            ],
+            "cutoffHz": 1450,
+            "level": 0.86,
+            "mix": 1.6,
+            "limiter": 6800
+          },
+          "params": {
+            "events": 1,
+            "rpm": 3660.00341796875,
+            "active": 1,
+            "boost": 0,
+            "load": 0.9982107877731323
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "no-gps-Otto-4",
+      "rpm": 3189,
+      "selected": "Otto",
+      "gearText": "GEAR / AUTO\nN\nACOUSTIC GEARBOX"
+    },
+    {
+      "at": 7973.70000000298,
+      "speed": 0,
+      "rms": 0.03773867347546639,
+      "peak": 0.06783027946949005,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "cylinders": 8,
+            "banks": [
+              0,
+              1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              1
+            ],
+            "pressureHz": 76,
+            "pulseSeconds": 0.0048,
+            "pipeSeconds": [
+              0.0063,
+              0.0107,
+              0.0159
+            ],
+            "cutoffHz": 1450,
+            "level": 0.86,
+            "mix": 1.6,
+            "limiter": 6800
+          },
+          "params": {
+            "events": 1,
+            "rpm": 5611.6279296875,
+            "active": 1,
+            "boost": 0,
+            "load": 0.9999499320983887
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "no-gps-Otto-5",
+      "rpm": 5778,
+      "selected": "Otto",
+      "gearText": "GEAR / AUTO\nN\nACOUSTIC GEARBOX"
+    },
+    {
+      "at": 8181.70000000298,
+      "speed": 0,
+      "rms": 0.007661022035601267,
+      "peak": 0.013845838606357574,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "cylinders": 8,
+            "banks": [
+              0,
+              1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              1
+            ],
+            "pressureHz": 76,
+            "pulseSeconds": 0.0048,
+            "pipeSeconds": [
+              0.0063,
+              0.0107,
+              0.0159
+            ],
+            "cutoffHz": 1450,
+            "level": 0.86,
+            "mix": 1.6,
+            "limiter": 6800
+          },
+          "params": {
+            "events": 1,
+            "rpm": 5003.189453125,
+            "active": 1,
+            "boost": 0,
+            "load": 0.0048162066377699375
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "no-gps-Otto-6",
+      "rpm": 4627,
+      "selected": "Otto",
+      "gearText": "GEAR / AUTO\nN\nACOUSTIC GEARBOX"
+    },
+    {
+      "at": 8388.90000000596,
+      "speed": 0,
+      "rms": 0.020904863981900022,
+      "peak": 0.035273272544145584,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "cylinders": 8,
+            "banks": [
+              0,
+              1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              1
+            ],
+            "pressureHz": 76,
+            "pulseSeconds": 0.0048,
+            "pipeSeconds": [
+              0.0063,
+              0.0107,
+              0.0159
+            ],
+            "cutoffHz": 1450,
+            "level": 0.86,
+            "mix": 1.6,
+            "limiter": 6800
+          },
+          "params": {
+            "events": 1,
+            "rpm": 3201.628173828125,
+            "active": 1,
+            "boost": 0,
+            "load": 0
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "no-gps-Otto-7",
+      "rpm": 3021,
+      "selected": "Otto",
+      "gearText": "GEAR / AUTO\nN\nACOUSTIC GEARBOX"
+    },
+    {
+      "at": 8594.40000000596,
+      "speed": 0,
+      "rms": 0.049201706816862055,
+      "peak": 0.08779352903366089,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "cylinders": 8,
+            "banks": [
+              0,
+              1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              1
+            ],
+            "pressureHz": 76,
+            "pulseSeconds": 0.0048,
+            "pipeSeconds": [
+              0.0063,
+              0.0107,
+              0.0159
+            ],
+            "cutoffHz": 1450,
+            "level": 0.86,
+            "mix": 1.6,
+            "limiter": 6800
+          },
+          "params": {
+            "events": 1,
+            "rpm": 3375.36279296875,
+            "active": 1,
+            "boost": 0,
+            "load": 0.9526127576828003
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "no-gps-Otto-8",
+      "rpm": 3640,
+      "selected": "Otto",
+      "gearText": "GEAR / AUTO\nN\nACOUSTIC GEARBOX"
+    },
+    {
+      "at": 8800.40000000596,
+      "speed": 0,
+      "rms": 0.03764892887449746,
+      "peak": 0.07812090218067169,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "cylinders": 8,
+            "banks": [
+              0,
+              1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              1
+            ],
+            "pressureHz": 76,
+            "pulseSeconds": 0.0048,
+            "pipeSeconds": [
+              0.0063,
+              0.0107,
+              0.0159
+            ],
+            "cutoffHz": 1450,
+            "level": 0.86,
+            "mix": 1.6,
+            "limiter": 6800
+          },
+          "params": {
+            "events": 1,
+            "rpm": 6397.02099609375,
+            "active": 1,
+            "boost": 0,
+            "load": 0.9998862147331238
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "no-gps-Otto-9",
+      "rpm": 6690,
+      "selected": "Otto",
+      "gearText": "GEAR / AUTO\nN\nACOUSTIC GEARBOX"
+    },
+    {
+      "at": 9007.70000000298,
+      "speed": 0,
+      "rms": 0.051029211553415076,
+      "peak": 0.09044189751148224,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "cylinders": 8,
+            "banks": [
+              0,
+              1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              1
+            ],
+            "pressureHz": 76,
+            "pulseSeconds": 0.0048,
+            "pipeSeconds": [
+              0.0063,
+              0.0107,
+              0.0159
+            ],
+            "cutoffHz": 1450,
+            "level": 0.86,
+            "mix": 1.6,
+            "limiter": 6800
+          },
+          "params": {
+            "events": 1,
+            "rpm": 6606.62744140625,
+            "active": 1,
+            "boost": 0,
+            "load": 0.9999499320983887
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "no-gps-Otto-10",
+      "rpm": 6642,
+      "selected": "Otto",
+      "gearText": "GEAR / AUTO\nN\nACOUSTIC GEARBOX"
+    },
+    {
+      "at": 9217.10000000894,
+      "speed": 0,
+      "rms": 0.045472959657957245,
+      "peak": 0.08423115313053131,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "cylinders": 8,
+            "banks": [
+              0,
+              1,
+              0,
+              0,
+              1,
+              0,
+              1,
+              1
+            ],
+            "pressureHz": 76,
+            "pulseSeconds": 0.0048,
+            "pipeSeconds": [
+              0.0063,
+              0.0107,
+              0.0159
+            ],
+            "cutoffHz": 1450,
+            "level": 0.86,
+            "mix": 1.6,
+            "limiter": 6800
+          },
+          "params": {
+            "events": 1,
+            "rpm": 6680.935546875,
+            "active": 1,
+            "boost": 0,
+            "load": 0.9999499320983887
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "no-gps-Otto-11",
+      "rpm": 6706,
+      "selected": "Otto",
+      "gearText": "GEAR / AUTO\nN\nACOUSTIC GEARBOX"
+    },
+    {
+      "at": 9692.29999999702,
+      "speed": 0,
+      "rms": 0.0036235236827983322,
+      "peak": 0.007634435780346394,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "cylinders": 5,
+            "banks": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "pressureHz": 135,
+            "pulseSeconds": 0.0032,
+            "pipeSeconds": [
+              0.0031,
+              0.0057,
+              0.0083
+            ],
+            "cutoffHz": 2400,
+            "turbo": true,
+            "spoolSeconds": 0.82,
+            "level": 1.05,
+            "mix": 1.7,
+            "limiter": 7400
+          },
+          "params": {
+            "events": 0,
+            "rpm": 1000,
+            "active": 1,
+            "boost": 0,
+            "load": 0.07999373972415924
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "ready-Cinque",
+      "rpm": 1000,
+      "selected": "Cinque",
+      "gearText": "GEAR / AUTO\n1\nACOUSTIC GEARBOX"
+    },
+    {
+      "at": 9925.29999999702,
+      "speed": 0,
+      "rms": 0.026635731470746334,
+      "peak": 0.060871340334415436,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "cylinders": 5,
+            "banks": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "pressureHz": 135,
+            "pulseSeconds": 0.0032,
+            "pipeSeconds": [
+              0.0031,
+              0.0057,
+              0.0083
+            ],
+            "cutoffHz": 2400,
+            "turbo": true,
+            "spoolSeconds": 0.82,
+            "level": 1.05,
+            "mix": 1.7,
+            "limiter": 7400
+          },
+          "params": {
+            "events": 1,
+            "rpm": 2499.457763671875,
+            "active": 1,
+            "boost": 0.22532685101032257,
+            "load": 0.8966125249862671
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "no-gps-Cinque-0",
+      "rpm": 2541,
+      "selected": "Cinque",
+      "gearText": "GEAR / AUTO\nN\nACOUSTIC GEARBOX"
+    },
+    {
+      "at": 10132.29999999702,
+      "speed": 0,
+      "rms": 0.042282806294411,
+      "peak": 0.07467199116945267,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "cylinders": 5,
+            "banks": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "pressureHz": 135,
+            "pulseSeconds": 0.0032,
+            "pipeSeconds": [
+              0.0031,
+              0.0057,
+              0.0083
+            ],
+            "cutoffHz": 2400,
+            "turbo": true,
+            "spoolSeconds": 0.82,
+            "level": 1.05,
+            "mix": 1.7,
+            "limiter": 7400
+          },
+          "params": {
+            "events": 1,
+            "rpm": 4306.30029296875,
+            "active": 1,
+            "boost": 0.187284454703331,
+            "load": 0.2116045355796814
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "no-gps-Cinque-1",
+      "rpm": 4371,
+      "selected": "Cinque",
+      "gearText": "GEAR / AUTO\nN\nACOUSTIC GEARBOX"
+    },
+    {
+      "at": 10340,
+      "speed": 0,
+      "rms": 0.007641123272589004,
+      "peak": 0.01612362265586853,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "cylinders": 5,
+            "banks": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "pressureHz": 135,
+            "pulseSeconds": 0.0032,
+            "pipeSeconds": [
+              0.0031,
+              0.0057,
+              0.0083
+            ],
+            "cutoffHz": 2400,
+            "turbo": true,
+            "spoolSeconds": 0.82,
+            "level": 1.05,
+            "mix": 1.7,
+            "limiter": 7400
+          },
+          "params": {
+            "events": 1,
+            "rpm": 3149.99267578125,
+            "active": 1,
+            "boost": 0.0005279257311485708,
+            "load": 0.0005964799202047288
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "no-gps-Cinque-2",
+      "rpm": 3109,
+      "selected": "Cinque",
+      "gearText": "GEAR / AUTO\nN\nACOUSTIC GEARBOX"
+    },
+    {
+      "at": 10546.10000000894,
+      "speed": 0,
+      "rms": 0.02149587674744613,
+      "peak": 0.045570846647024155,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "cylinders": 5,
+            "banks": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "pressureHz": 135,
+            "pulseSeconds": 0.0032,
+            "pipeSeconds": [
+              0.0031,
+              0.0057,
+              0.0083
+            ],
+            "cutoffHz": 2400,
+            "turbo": true,
+            "spoolSeconds": 0.82,
+            "level": 1.05,
+            "mix": 1.7,
+            "limiter": 7400
+          },
+          "params": {
+            "events": 1,
+            "rpm": 1944.120361328125,
+            "active": 1,
+            "boost": 0.007244796957820654,
+            "load": 0.7044885754585266
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "no-gps-Cinque-3",
+      "rpm": 1903,
+      "selected": "Cinque",
+      "gearText": "GEAR / AUTO\nN\nACOUSTIC GEARBOX"
+    },
+    {
+      "at": 10751.79999999702,
+      "speed": 0,
+      "rms": 0.03753462600803031,
+      "peak": 0.12620694935321808,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "cylinders": 5,
+            "banks": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "pressureHz": 135,
+            "pulseSeconds": 0.0032,
+            "pipeSeconds": [
+              0.0031,
+              0.0057,
+              0.0083
+            ],
+            "cutoffHz": 2400,
+            "turbo": true,
+            "spoolSeconds": 0.82,
+            "level": 1.05,
+            "mix": 1.7,
+            "limiter": 7400
+          },
+          "params": {
+            "events": 1,
+            "rpm": 3651.413818359375,
+            "active": 1,
+            "boost": 0.7005316019058228,
+            "load": 0.9990295171737671
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "no-gps-Cinque-4",
+      "rpm": 3481,
+      "selected": "Cinque",
+      "gearText": "GEAR / AUTO\nN\nACOUSTIC GEARBOX"
+    },
+    {
+      "at": 10961,
+      "speed": 0,
+      "rms": 0.029692922212365067,
+      "peak": 0.07034650444984436,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "cylinders": 5,
+            "banks": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "pressureHz": 135,
+            "pulseSeconds": 0.0032,
+            "pipeSeconds": [
+              0.0031,
+              0.0057,
+              0.0083
+            ],
+            "cutoffHz": 2400,
+            "turbo": true,
+            "spoolSeconds": 0.82,
+            "level": 1.05,
+            "mix": 1.7,
+            "limiter": 7400
+          },
+          "params": {
+            "events": 1,
+            "rpm": 6000.919921875,
+            "active": 1,
+            "boost": 0.9990472197532654,
+            "load": 0.9999499320983887
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "no-gps-Cinque-5",
+      "rpm": 5941,
+      "selected": "Cinque",
+      "gearText": "GEAR / AUTO\nN\nACOUSTIC GEARBOX"
+    },
+    {
+      "at": 11169.79999999702,
+      "speed": 0,
+      "rms": 0.01568519002768376,
+      "peak": 0.045194536447525024,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "cylinders": 5,
+            "banks": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "pressureHz": 135,
+            "pulseSeconds": 0.0032,
+            "pipeSeconds": [
+              0.0031,
+              0.0057,
+              0.0083
+            ],
+            "cutoffHz": 2400,
+            "turbo": true,
+            "spoolSeconds": 0.82,
+            "level": 1.05,
+            "mix": 1.7,
+            "limiter": 7400
+          },
+          "params": {
+            "events": 1,
+            "rpm": 4552.21435546875,
+            "active": 1,
+            "boost": 0.0076057324185967445,
+            "load": 0.007607458624988794
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "no-gps-Cinque-6",
+      "rpm": 5101,
+      "selected": "Cinque",
+      "gearText": "GEAR / AUTO\nN\nACOUSTIC GEARBOX"
+    },
+    {
+      "at": 11376.70000000298,
+      "speed": 0,
+      "rms": 0.02566014486863013,
+      "peak": 0.05950804054737091,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "cylinders": 5,
+            "banks": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "pressureHz": 135,
+            "pulseSeconds": 0.0032,
+            "pipeSeconds": [
+              0.0031,
+              0.0057,
+              0.0083
+            ],
+            "cutoffHz": 2400,
+            "turbo": true,
+            "spoolSeconds": 0.82,
+            "level": 1.05,
+            "mix": 1.7,
+            "limiter": 7400
+          },
+          "params": {
+            "events": 1,
+            "rpm": 3342.393310546875,
+            "active": 1,
+            "boost": 0.5354780554771423,
+            "load": 0.9126904010772705
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "no-gps-Cinque-7",
+      "rpm": 2977,
+      "selected": "Cinque",
+      "gearText": "GEAR / AUTO\nN\nACOUSTIC GEARBOX"
+    },
+    {
+      "at": 11584.40000000596,
+      "speed": 0,
+      "rms": 0.030974786869729404,
+      "peak": 0.06529965251684189,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "cylinders": 5,
+            "banks": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "pressureHz": 135,
+            "pulseSeconds": 0.0032,
+            "pipeSeconds": [
+              0.0031,
+              0.0057,
+              0.0083
+            ],
+            "cutoffHz": 2400,
+            "turbo": true,
+            "spoolSeconds": 0.82,
+            "level": 1.05,
+            "mix": 1.7,
+            "limiter": 7400
+          },
+          "params": {
+            "events": 1,
+            "rpm": 6387.78369140625,
+            "active": 1,
+            "boost": 0.9969714879989624,
+            "load": 0.9997331500053406
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "no-gps-Cinque-8",
+      "rpm": 5698,
+      "selected": "Cinque",
+      "gearText": "GEAR / AUTO\nN\nACOUSTIC GEARBOX"
+    },
+    {
+      "at": 11792.90000000596,
+      "speed": 0,
+      "rms": 0.07657866647369782,
+      "peak": 0.15934136509895325,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "cylinders": 5,
+            "banks": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "pressureHz": 135,
+            "pulseSeconds": 0.0032,
+            "pipeSeconds": [
+              0.0031,
+              0.0057,
+              0.0083
+            ],
+            "cutoffHz": 2400,
+            "turbo": true,
+            "spoolSeconds": 0.82,
+            "level": 1.05,
+            "mix": 1.7,
+            "limiter": 7400
+          },
+          "params": {
+            "events": 1,
+            "rpm": 7305.68603515625,
+            "active": 1,
+            "boost": 0.9999499320983887,
+            "load": 0.9999499320983887
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "no-gps-Cinque-9",
+      "rpm": 7332,
+      "selected": "Cinque",
+      "gearText": "GEAR / AUTO\nN\nACOUSTIC GEARBOX"
+    },
+    {
+      "at": 12000.79999999702,
+      "speed": 0,
+      "rms": 0.06882528146034607,
+      "peak": 0.13972434401512146,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "cylinders": 5,
+            "banks": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "pressureHz": 135,
+            "pulseSeconds": 0.0032,
+            "pipeSeconds": [
+              0.0031,
+              0.0057,
+              0.0083
+            ],
+            "cutoffHz": 2400,
+            "turbo": true,
+            "spoolSeconds": 0.82,
+            "level": 1.05,
+            "mix": 1.7,
+            "limiter": 7400
+          },
+          "params": {
+            "events": 1,
+            "rpm": 7225.380859375,
+            "active": 1,
+            "boost": 0.6334353685379028,
+            "load": 0.6334353685379028
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "no-gps-Cinque-10",
+      "rpm": 7368,
+      "selected": "Cinque",
+      "gearText": "GEAR / AUTO\nN\nACOUSTIC GEARBOX"
+    },
+    {
+      "at": 12208.79999999702,
+      "speed": 0,
+      "rms": 0.012509120664304405,
+      "peak": 0.031840644776821136,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "cylinders": 5,
+            "banks": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "pressureHz": 135,
+            "pulseSeconds": 0.0032,
+            "pipeSeconds": [
+              0.0031,
+              0.0057,
+              0.0083
+            ],
+            "cutoffHz": 2400,
+            "turbo": true,
+            "spoolSeconds": 0.82,
+            "level": 1.05,
+            "mix": 1.7,
+            "limiter": 7400
+          },
+          "params": {
+            "events": 1,
+            "rpm": 5497.935546875,
+            "active": 1,
+            "boost": 0.0014240940799936652,
+            "load": 0.0014240940799936652
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "no-gps-Cinque-11",
+      "rpm": 5108,
+      "selected": "Cinque",
+      "gearText": "GEAR / AUTO\nN\nACOUSTIC GEARBOX"
+    },
+    {
+      "at": 12675.10000000894,
+      "speed": 0,
+      "rms": 0.045528618852534605,
+      "peak": 0.09519622474908829,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "turbine": true,
+            "spoolSeconds": 1.8,
+            "mix": 1.8,
+            "limiter": 9000
+          },
+          "params": {
+            "events": 0,
+            "rpm": 1000,
+            "active": 1,
+            "boost": 0,
+            "load": 0.07999373972415924
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "ready-Turbine",
+      "rpm": 1000,
+      "selected": "Turbine",
+      "gearText": "SHAFT / CONTINUOUS\n—\nVIRTUAL TURBINE"
+    },
+    {
+      "at": 12908.29999999702,
+      "speed": 0,
+      "rms": 0.037031124682043094,
+      "peak": 0.09372557699680328,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "turbine": true,
+            "spoolSeconds": 1.8,
+            "mix": 1.8,
+            "limiter": 9000
+          },
+          "params": {
+            "events": 1,
+            "rpm": 2723.6845703125,
+            "active": 1,
+            "boost": 0.25260689854621887,
+            "load": 0.8963358402252197
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "no-gps-Turbine-0",
+      "rpm": 2813,
+      "selected": "Turbine",
+      "gearText": "SHAFT / CONTINUOUS\n—\nVIRTUAL TURBINE"
+    },
+    {
+      "at": 13113.90000000596,
+      "speed": 0,
+      "rms": 0.060195066554365795,
+      "peak": 0.14010336995124817,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "turbine": true,
+            "spoolSeconds": 1.8,
+            "mix": 1.8,
+            "limiter": 9000
+          },
+          "params": {
+            "events": 1,
+            "rpm": 4880.45361328125,
+            "active": 1,
+            "boost": 0.1446433812379837,
+            "load": 0.2661032974720001
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "no-gps-Turbine-1",
+      "rpm": 4952,
+      "selected": "Turbine",
+      "gearText": "SHAFT / CONTINUOUS\n—\nVIRTUAL TURBINE"
+    },
+    {
+      "at": 13319.90000000596,
+      "speed": 0,
+      "rms": 0.037954668501456616,
+      "peak": 0.08188990503549576,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "turbine": true,
+            "spoolSeconds": 1.8,
+            "mix": 1.8,
+            "limiter": 9000
+          },
+          "params": {
+            "events": 1,
+            "rpm": 3319.218505859375,
+            "active": 1,
+            "boost": 0.0003248018037993461,
+            "load": 0.000597545993514359
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "no-gps-Turbine-2",
+      "rpm": 3259,
+      "selected": "Turbine",
+      "gearText": "SHAFT / CONTINUOUS\n—\nVIRTUAL TURBINE"
+    },
+    {
+      "at": 13524.29999999702,
+      "speed": 0,
+      "rms": 0.04236928404963436,
+      "peak": 0.10437294840812683,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "turbine": true,
+            "spoolSeconds": 1.8,
+            "mix": 1.8,
+            "limiter": 9000
+          },
+          "params": {
+            "events": 1,
+            "rpm": 2186.20849609375,
+            "active": 1,
+            "boost": 0.1657557487487793,
+            "load": 0.7650102376937866
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "no-gps-Turbine-3",
+      "rpm": 2059,
+      "selected": "Turbine",
+      "gearText": "SHAFT / CONTINUOUS\n—\nVIRTUAL TURBINE"
+    },
+    {
+      "at": 13729.40000000596,
+      "speed": 0,
+      "rms": 0.04468790082137794,
+      "peak": 0.15119217336177826,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "turbine": true,
+            "spoolSeconds": 1.8,
+            "mix": 1.8,
+            "limiter": 9000
+          },
+          "params": {
+            "events": 1,
+            "rpm": 5252.94775390625,
+            "active": 1,
+            "boost": 0.6286391019821167,
+            "load": 0.9993358254432678
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "no-gps-Turbine-4",
+      "rpm": 5027,
+      "selected": "Turbine",
+      "gearText": "SHAFT / CONTINUOUS\n—\nVIRTUAL TURBINE"
+    },
+    {
+      "at": 13935.29999999702,
+      "speed": 0,
+      "rms": 0.05683724090433027,
+      "peak": 0.14630666375160217,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "turbine": true,
+            "spoolSeconds": 1.8,
+            "mix": 1.8,
+            "limiter": 9000
+          },
+          "params": {
+            "events": 1,
+            "rpm": 6652.478515625,
+            "active": 1,
+            "boost": 0.07523912191390991,
+            "load": 0.08727049827575684
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "no-gps-Turbine-5",
+      "rpm": 6919,
+      "selected": "Turbine",
+      "gearText": "SHAFT / CONTINUOUS\n—\nVIRTUAL TURBINE"
+    },
+    {
+      "at": 14141.29999999702,
+      "speed": 0,
+      "rms": 0.051679081334018495,
+      "peak": 0.14525239169597626,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "turbine": true,
+            "spoolSeconds": 1.8,
+            "mix": 1.8,
+            "limiter": 9000
+          },
+          "params": {
+            "events": 1,
+            "rpm": 3845.744384765625,
+            "active": 1,
+            "boost": 0.0003104273637291044,
+            "load": 0.00036006775917485356
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "no-gps-Turbine-6",
+      "rpm": 3992,
+      "selected": "Turbine",
+      "gearText": "SHAFT / CONTINUOUS\n—\nVIRTUAL TURBINE"
+    },
+    {
+      "at": 14349.10000000894,
+      "speed": 0,
+      "rms": 0.042943297675447946,
+      "peak": 0.12042691558599472,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "turbine": true,
+            "spoolSeconds": 1.8,
+            "mix": 1.8,
+            "limiter": 9000
+          },
+          "params": {
+            "events": 1,
+            "rpm": 5595.4052734375,
+            "active": 1,
+            "boost": 0.6733298301696777,
+            "load": 0.9958698749542236
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "no-gps-Turbine-7",
+      "rpm": 5184,
+      "selected": "Turbine",
+      "gearText": "SHAFT / CONTINUOUS\n—\nVIRTUAL TURBINE"
+    },
+    {
+      "at": 14555,
+      "speed": 0,
+      "rms": 0.06848753024657395,
+      "peak": 0.17996513843536377,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "turbine": true,
+            "spoolSeconds": 1.8,
+            "mix": 1.8,
+            "limiter": 9000
+          },
+          "params": {
+            "events": 1,
+            "rpm": 8788.53515625,
+            "active": 1,
+            "boost": 0.997946560382843,
+            "load": 0.9999499320983887
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "no-gps-Turbine-8",
+      "rpm": 8908,
+      "selected": "Turbine",
+      "gearText": "SHAFT / CONTINUOUS\n—\nVIRTUAL TURBINE"
+    },
+    {
+      "at": 14762,
+      "speed": 0,
+      "rms": 0.061987509971348456,
+      "peak": 0.15694810450077057,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "turbine": true,
+            "spoolSeconds": 1.8,
+            "mix": 1.8,
+            "limiter": 9000
+          },
+          "params": {
+            "events": 1,
+            "rpm": 8850.73828125,
+            "active": 1,
+            "boost": 0.9999499320983887,
+            "load": 0.9999499320983887
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "no-gps-Turbine-9",
+      "rpm": 8708,
+      "selected": "Turbine",
+      "gearText": "SHAFT / CONTINUOUS\n—\nVIRTUAL TURBINE"
+    },
+    {
+      "at": 14967.5,
+      "speed": 0,
+      "rms": 0.08956708276462468,
+      "peak": 0.2013690024614334,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "turbine": true,
+            "spoolSeconds": 1.8,
+            "mix": 1.8,
+            "limiter": 9000
+          },
+          "params": {
+            "events": 1,
+            "rpm": 8867.76171875,
+            "active": 1,
+            "boost": 0.5439065098762512,
+            "load": 0.5439065098762512
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "no-gps-Turbine-10",
+      "rpm": 9000,
+      "selected": "Turbine",
+      "gearText": "SHAFT / CONTINUOUS\n—\nVIRTUAL TURBINE"
+    },
+    {
+      "at": 15176.70000000298,
+      "speed": 0,
+      "rms": 0.06367929111117214,
+      "peak": 0.15763604640960693,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "turbine": true,
+            "spoolSeconds": 1.8,
+            "mix": 1.8,
+            "limiter": 9000
+          },
+          "params": {
+            "events": 1,
+            "rpm": 7184.97265625,
+            "active": 1,
+            "boost": 0.001219906727783382,
+            "load": 0.001219906727783382
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "no-gps-Turbine-11",
+      "rpm": 6379,
+      "selected": "Turbine",
+      "gearText": "SHAFT / CONTINUOUS\n—\nVIRTUAL TURBINE"
+    },
+    {
+      "at": 22778.90000000596,
+      "speed": 60,
+      "rms": 0.06092335876137558,
+      "peak": 0.17150026559829712,
+      "finite": true,
+      "contexts": [
+        {
+          "state": "running",
+          "sampleRate": 48000
+        }
+      ],
+      "voices": [
+        {
+          "options": {
+            "turbine": true,
+            "spoolSeconds": 1.8,
+            "mix": 1.8,
+            "limiter": 9000
+          },
+          "params": {
+            "events": 1,
+            "rpm": 4292.650390625,
+            "active": 1,
+            "boost": 0.4990062713623047,
+            "load": 0.9999499320983887
+          }
+        }
+      ],
+      "processorErrors": 0,
+      "label": "turbine-moving",
+      "rpm": 4324,
+      "selected": "Turbine",
+      "gearText": "SHAFT / CONTINUOUS\n—\nVIRTUAL TURBINE"
+    }
+  ],
+  "errors": [],
+  "warnings": [
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    },
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    }
+  ],
+  "interceptedEndpoints": [],
+  "findings": [],
+  "engineEvents": {
+    "engine.motion.changed": 2,
+    "engine.bank.ready": 5,
+    "engine.profile.selected": 7
+  },
+  "identity": {
+    "version": "0.0.0",
+    "build": "20260908-0834",
+    "commit": "d1beea3"
+  },
+  "frames": {
+    "count": 418,
+    "medianMs": 16.69999999999891,
+    "p95Ms": 16.799999999999272,
+    "p99Ms": 16.80000000000291,
+    "over50Ms": 0,
+    "maxMs": 16.80000000000291
+  },
+  "status": "PASS"
+}

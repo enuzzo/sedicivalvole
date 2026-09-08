@@ -1,5 +1,44 @@
 # Deployment
 
+## Engine road progression publication — 2026-09-08 09:14 Europe/Rome
+
+Canonical **20260908-0834**, source **d1beea3**, version read from VERSION (**0.0.0**).
+The owner requested restrained 20–40 km/h, power already at 80, and a 130 km/h
+acoustic road ceiling. Fixed profile ratios, proportional sample texture pitch,
+load-sensitive shifts, a pre-ceiling final upshift and coherent bank/lifecycle
+ratio acquisition implement that request. [Parameters and audio evidence](ENGINE-ROAD-PROGRESSION-2026-09-08.md).
+
+- Official publication verifies **232 files / 254,871,524 bytes**, all **29 Illobo
+  recordings**, **1** retained cache-overlap assets and twelve root entries.
+- Independent official postflight passes with **remote_writes=NONE**.
+- **29 canonical HTML/asset/cache checks**, **784 native tests**, **18 final package
+  checks**, **8 documentation checks** and **196 dependency credits** pass.
+- Twelve final real Chromium audio renders (six voices, 44.1/48 kHz, 132 seconds
+  each) are finite/unclipped and preserve 130/160 RPM/load/gear parity. Twelve
+  baseline renders provide original-level comparison; final source hashes match.
+- Exact final compiled and canonical browser checks pass for all six voices,
+  no-GPS TAMARRO, one AudioContext, Tesla 773×601 and phone 956×440 / 667×375.
+  No page/processor errors or synthetic email; pre-gesture autoplay warnings
+  precede successful START. Physical listening and long-drive acceptance remain open.
+
+The intermediate **20260908-0807 / e5d3787** publication also passed all 29
+canonical checks before the final bounded held-GPS bank correction. Its first
+read-only preflight failed generically; one bounded retry and the publication
+identity check passed. The first final-build transfer also failed generically;
+its official retry passed root identity again before resuming publication.
+No guard was bypassed or deployment script changed.
+
+[Canonical identity](qa/2026-09-08-engine-road/canonical-identity.json),
+[browser evidence](qa/2026-09-08-engine-road/browser-canonical.json),
+[audio evidence](qa/2026-09-08-engine-road/audio-evidence.json) and
+[measured table](qa/2026-09-08-engine-road/audio-measurements.md).
+Operational logs: /tmp/sv-road-final-publish-retry.log and
+/tmp/sv-road-final-postflight.log; interrupted attempt: /tmp/sv-road-final-publish.log.
+Canonical files:
+/tmp/sv-road-final-canonical/. Raw source/audio and original-level comparisons:
+ignored _references/audio/engine/road-progression-20260908/.
+No new third-party code, recording, impulse response or dependency is shipped.
+
 ## Engine acoustic campaign publication — 2026-09-08 00:36 Europe/Rome
 
 Canonical **20260908-0026**, source **7c249ca**, version from VERSION (**0.0.0**).

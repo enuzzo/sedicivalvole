@@ -876,7 +876,7 @@ Unsent release thank-you draft:
 - Sources: [Web Audio practices](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Best_practices)
   and [autoplay](https://developer.mozilla.org/en-US/docs/Web/Media/Guides/Autoplay).
 - Public contribution/contact route: [MDN content repository](https://github.com/mdn/content).
-- Study only: silent preparation and gesture-owned audio startup, no copied code.
+- Study only: silent preparation, gesture-owned audio startup and [proportional sample detune](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/detune), no copied code.
 - Unsent release thank-you draft:
 
 > Thank you for documenting the practical boundaries of browser audio. Your
@@ -920,7 +920,7 @@ Research only. No new source or recordings from these projects are shipped.
 
 - Source: [Ange Yaghi — engine-sim](https://github.com/ange-yaghi/engine-sim/tree/85f7c3b959a908ed5232ede4f1a4ac7eafe6b630).
 - Public contact/discovery route: [https://github.com/ange-yaghi](https://github.com/ange-yaghi); no private address inferred.
-- Exact use: Physical engine/firing/path-length research; no code or bundled impulse responses shipped.
+- Exact use: Physical firing/acoustic paths, wheel/gear kinematics and manual clutch control. Ten declared-MIT repository impulse responses and licence downloaded with hashes into ignored references only; no code or IR shipped. Newer Community Edition rights are distinct.
 - Status: DRAFT, not sent.
 
 > Hello — Your detailed treatment of engine excitation and acoustic paths is an inspiring reference for studying why an engine has its particular voice. Thank you for making this work available. I am enuzzo, building sedicivalvole, an experimental source-visible project under PolyForm Noncommercial. For now we credit your work as research, with no copied code or audio; I would be glad to share a future experiment when it has useful results.
@@ -972,3 +972,24 @@ Research only. No new source or recordings from these projects are shipped.
 - Status: study only; this release acknowledgement draft is **unsent**.
 
 > Hi — I am enuzzo, building sedicivalvole, an experimental source-visible project under PolyForm Noncommercial. Your separation of RPM, load and individual sound layers is a useful lesson in keeping engine behavior coherent on constrained hardware. Thank you for making the design of your RC vehicle sound system accessible. We are studying the architecture and crediting it as research, without shipping your code or recordings. If you have a preferred licence and recording-credit note, I would be glad to link it accurately. — enuzzo
+
+
+## Additional September 8 road-audio studies
+
+### Carles Onielfa — Open Engine Simulator
+
+- Source: [source](https://github.com/carlesonielfa/open-engine-sim/tree/1e226ee7bfbeb1d5012c7696aee82a57355df281).
+- Public contact/discovery route: [public route](https://github.com/carlesonielfa); no private address inferred.
+- Exact use: Study only. Independent MIT fork inspected for macOS/browser generation and manual transmission paths; six text files retained only in ignored references. No build, code, audio or constants shipped.
+- Status: DRAFT, not sent.
+
+> Thank you for making the older simulator easier to explore on current platforms. Your documented macOS and browser paths give our future controlled engine-audio studies a useful starting point. I am enuzzo, building sedicivalvole under PolyForm Noncommercial. Your work is credited as research; no source or assets from this study are shipped.
+
+### pilot01 — Better Impulse Response Library
+
+- Source: [source](https://catalog.engine-sim.parts/parts/1563).
+- Public contact/discovery route: [public route](https://catalog.engine-sim.parts/parts/1563); no private address inferred.
+- Exact use: Study only. Public description of exposing existing impulse responses; no explicit reuse licence found on that page and no files downloaded or shipped.
+- Status: DRAFT, not sent.
+
+> Thank you for explaining how the simulator sound-library responses can be explored. The distinction between those acoustic filters and complete engine recordings helped clarify our research. I am enuzzo, building sedicivalvole under PolyForm Noncommercial. Your work is credited as research; no source or assets from this study are shipped.

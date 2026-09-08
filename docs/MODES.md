@@ -1,6 +1,6 @@
 # Primary Experience Modes
 
-Status: **both modes implemented; Engine vehicle acceptance pending**. See [Engine integration](ENGINE-INTEGRATION-2026-09-07.md).
+Status: **both modes implemented; Engine vehicle acceptance pending**. See [Engine integration](ENGINE-INTEGRATION-2026-09-07.md) and [current road progression](ENGINE-ROAD-PROGRESSION-2026-09-08.md).
 
 ## Confirmed requirements
 
@@ -8,7 +8,7 @@ Status: **both modes implemented; Engine vehicle acceptance pending**. See [Engi
 
 | Mode | Audio purpose | Visual purpose | Current status |
 |---|---|---|---|
-| **Engine** | Reproduce selectable engine characters through synthesis, licensed samples, or a measured hybrid | Instrument-inspired generative system: abstract tachometer, throttle/load field, acceleration trace, mechanical light, or a selected alternative | Implemented: Telemetry, three sample profiles, AUTO gearbox; vehicle acceptance open |
+| **Engine** | Reproduce selectable engine characters through synthesis, licensed samples, or a measured hybrid | Instrument-inspired generative system: abstract tachometer, throttle/load field, acceleration trace, mechanical light, or a selected alternative | Implemented: Telemetry, six hybrid/sample/procedural voices; load-sensitive road AUTO with calm city ratios, power by 80 and a 130 km/h acoustic ceiling; vehicle acceptance open |
 | **Music** (internal Flux) | Compose and reshape selectable music from speed, acceleration, deceleration, and discrete motion events | Four selectable environments: Aperture, Vertigo, Meridian, and Atlas; ten curated themes apply to every renderer | Current Drive Lab implementation; FRACTURE and JUNCTION ready, five later directions preparing |
 
 ## Naming decision

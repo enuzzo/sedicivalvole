@@ -1,6 +1,6 @@
 # sedicivalvole
 
-September 8 Engine campaign is live: six distinct voices, original cycle-timed synthesis, phased automatic shifts and causal turbo/continuous turbine behavior. Build `20260908-0026`; [implementation, audio comparison and acceptance](docs/ENGINE-CAMPAIGN-IMPLEMENTATION-2026-09-08.md).
+Engine road progression is live: restrained 20–40 km/h, strong character by 80 and a 130 km/h acoustic ceiling, with coherent automatic gears and proportional sample pitch. Build `20260908-0834`; [parameters, audio comparison and acceptance](docs/ENGINE-ROAD-PROGRESSION-2026-09-08.md).
 
 September 7 altitude correction: Stats now preserves reported GPS height and uses a visibly distinct terrain estimate when it is missing, including in Travel Report. See [behavior and validation](docs/ALTITUDE-FALLBACK-2026-09-07.md).
 
@@ -400,9 +400,10 @@ Engine uses its unchanged dry sample path and master level.
 
 ### Everyday-road Engine gearing — 2026-09-07
 
-Shorter acoustic ratios bring second around 35 km/h and third around 65 km/h,
-with filtering/shift completion placing third by about 70 in the browser sweep.
-Separate downshift thresholds prevent hunting. The idle RPM label now explains
+This historical 35/65 km/h shift ladder is superseded by the September 8
+[road progression correction](docs/ENGINE-ROAD-PROGRESSION-2026-09-08.md): fixed
+profile ratios, restrained 20–40 km/h, strong character by 80 and a 130 km/h
+acoustic ceiling. Separate load-aware thresholds and dwell prevent hunting. The idle RPM label now explains
 whether speed evidence is missing, stop confirmation is pending, or automatic
 small idle blips are enabled. No missing GPS reading is treated as a real stop.
 
@@ -435,6 +436,16 @@ contract and mute; no-GPS TAMARRO remains available. See the
 Canonical publication evidence and real-vehicle listening acceptance are recorded
 separately in [current state](docs/CURRENT-STATE.md) and [deployment](docs/DEPLOY.md).
 
+### Engine road progression — 2026-09-08
+
+Fixed virtual wheel/gear/final-drive ratios now keep 20–40 km/h restrained and
+build strong character by 80, with the complete road response capped at 130.
+Load-sensitive automatic shifts retain their audible phases; bank loading and
+GPS/lifecycle recovery select a coherent ratio immediately. Core sample pitch
+follows RPM ratios with explicit source-calibration limits. No-GPS TAMARRO and
+dry master behavior remain unchanged. See the [parameter table, source study
+and verification](docs/ENGINE-ROAD-PROGRESSION-2026-09-08.md).
+
 <!-- COMMUNITY-CREDITS:START -->
 ## Community thanks — 2026-09-05
 
@@ -450,7 +461,9 @@ A heartfelt thank-you to the people who share the code, type, music, data and ex
 | 🔧 DasEtwas — enginesound | [Source](https://github.com/DasEtwas/enginesound/tree/e5fcca587397c0c8ba9c9d24874b951fed74d260) · [Public route](https://github.com/DasEtwas) | **Study only.** MIT procedural cylinder/intake/exhaust and headless loop-export architecture; source study only, no code or example audio shipped. |
 | 🔊 Antonio-R1 — engine-sound-generator | [Source](https://github.com/Antonio-R1/engine-sound-generator/tree/c76c5adb9e63f5a54fb0def3b97e8e0ac1a7dea1) · [Public route](https://github.com/Antonio-R1) | **Study only.** MIT AudioWorklet/C++/WASM waveguide study. Reviewed the unused throttle input and JS filter-rate assumption; C++ filters use the actual rate. No code or assets shipped. |
 | ⚙️ ATG / Dan — VehicleNoiseSynthesizer | [Source](https://github.com/ATG-Simulator/VehicleNoiseSynthesizer/tree/4241caca5a18be0d47f0b8586df93b1b42d7020d) · [Public route](https://github.com/ATG-Simulator) | **Study only.** MIT code study of RPM regions and discrete acoustic events; no Unity code or demo recordings shipped. |
-| 🔬 Ange Yaghi — engine-sim | [Source](https://github.com/ange-yaghi/engine-sim/tree/85f7c3b959a908ed5232ede4f1a4ac7eafe6b630) · [Public route](https://github.com/ange-yaghi) | **Study only.** Physical engine/firing/path-length research; no code or bundled impulse responses shipped. |
+| 🔬 Ange Yaghi — engine-sim | [Source](https://github.com/ange-yaghi/engine-sim/tree/85f7c3b959a908ed5232ede4f1a4ac7eafe6b630) · [Public route](https://github.com/ange-yaghi) | **Study only.** Physical firing/acoustic paths, wheel/gear kinematics and manual clutch control. Ten declared-MIT repository impulse responses downloaded with hashes into ignored references; these are filters, not engine loops. No code or IR shipped; newer Community Edition rights are distinct. |
+| 🧪 Carles Onielfa — Open Engine Simulator | [Source](https://github.com/carlesonielfa/open-engine-sim/tree/1e226ee7bfbeb1d5012c7696aee82a57355df281) · [Public route](https://github.com/carlesonielfa) | **Study only.** Independent MIT fork inspected for macOS/browser generation and manual transmission paths; six text files retained only in ignored references. No build, code, audio or constants shipped. |
+| 🔊 pilot01 — Better Impulse Response Library | [Source](https://catalog.engine-sim.parts/parts/1563) · [Public route](https://catalog.engine-sim.parts/parts/1563) | **Study only.** Public description of exposing existing impulse responses; no explicit reuse licence found on that page and no files downloaded or shipped. |
 | 📖 Baldan, Lachambre, Delle Monache and Boussard — engine sound synthesis (2015) | [Source](https://air.iuav.it/handle/11578/264484) · [Public route](https://air.iuav.it/handle/11578/264484) | **Study only.** Institutional abstract and cited implementation study; full-paper equation audit not claimed; no paper text redistributed. |
 | 📊 Robin Doerfler and Lonce Wyse — Pulse-Train-Resonator / Procedural Engine Sounds | [Source](https://arxiv.org/abs/2603.09391) · [Public route](https://github.com/rdoerfler/ptr-model) | **Study only.** 2026 paper and RPM/torque-annotated dataset study; no code/audio imported. CC BY-NC code is not admitted as project software. |
 | 🛣️ Rezmason; original Drivey by Mark Pursey — Drivey.js | [Project](https://github.com/Rezmason/drivey) | **Integrated vendor runtime.** 51 unchanged runtime files at 5104cda in public/third-party/drivey/, behind a separate integration shell and bridge. |
@@ -482,7 +495,7 @@ A heartfelt thank-you to the people who share the code, type, music, data and ex
 | 🧪 Liam Egan; embedded noise credited upstream to Inigo Quilez — GLSL: Primordial Soup | [Project](https://codepen.io/shubniggurath/pen/NXGbBo) | **Retired study — no copied code.** Fluid mechanics were studied; the independent experiment was retired. No Pen or attributed noise source is shipped. |
 | 🎹 Spotify and Basic Pitch contributors — Spotify Basic Pitch | [Project](https://github.com/spotify/basic-pitch) | **Development only.** Machine-local harmony-analysis note proposals; no package, model or generated report enters the product bundle. |
 | 🧭 Jakob Nielsen / Nielsen Norman Group — Progressive Disclosure | [Article](https://www.nngroup.com/articles/progressive-disclosure/) | **Study only.** Informed contextual launch choices; no article text, code or artwork copied. |
-| 🌐 MDN contributors / Mozilla — Web Audio and Autoplay guides | [Web Audio](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Best_practices) · [Autoplay](https://developer.mozilla.org/en-US/docs/Web/Media/Guides/Autoplay) | **Study only.** Informed silent preparation and explicit START; no documentation or code redistributed. |
+| 🌐 MDN contributors / Mozilla — Web Audio and Autoplay guides | [Web Audio](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Best_practices) · [Autoplay](https://developer.mozilla.org/en-US/docs/Web/Media/Guides/Autoplay) | **Study only.** Informed silent preparation, explicit START and [proportional sample detune](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/detune); no documentation or code redistributed. |
 
 ### 🛠️ Offline analysis and verification tools
 

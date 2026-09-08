@@ -1868,3 +1868,29 @@ actual dry runtime audio and loudness-matched listening excerpts separately;
 RMS/peak/continuity checks do not decide preference or Tesla cabin quality.
 See [source evidence](ENGINE-SOURCE-COMPARISON-2026-09-08.md). No simulator code,
 recordings, presets or impulse responses were imported for the new synthesis.
+
+
+## Urban Engine pitch and progressive road character — 2026-09-08
+
+The owner heard racing intensity at city speeds and asked for restraint at
+20–40 km/h, with power already present at 80. The old redline-derived first
+ratio produced nearly 7,000 RPM at 30; lowering a gain would conceal the wrong
+motion rather than correct it. Fixed profile ratios and load-aware early shifts
+now give calm city crank timing, sporting middle gears and a 130 km/h road cap.
+Dry master gain remains unchanged during moving acceleration/lift/downshifts.
+
+A second mismatch was linear cents-per-RPM sample detune: lower displayed RPM
+did not proportionally lower source pitch. The host now uses bounded logarithmic
+RPM ratios. Nominal donor references and Mono's authored common 3400 texture
+anchor remain uncalibrated; do not infer crank RPM from one spectral peak. The
+±2-octave bound also limits reachable low pitch, so use low/high role crossfades
+without bringing a high layer into unsupported city ranges. Engine synthesis
+resonances can make loudness non-monotonic with RPM; compare the rendered output
+and actual listening, not just the tachometer or an increasing gain envelope.
+
+Ange's downloaded MIT-repository WAVs are convolution responses, not idle/rev
+loops. Their filter kernel and gain conventions must be considered before a
+future convolution experiment. No impulse response is shipped by this correction.
+Tests assert urban/high-demand RPM, 80 character, 130 cap across road parameters,
+proportional sample pitch, no gear hunting and lifecycle ratio reacquisition.
+See [road progression and evidence](ENGINE-ROAD-PROGRESSION-2026-09-08.md).

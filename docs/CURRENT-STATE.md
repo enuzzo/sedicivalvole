@@ -1,27 +1,28 @@
 # Current Project State
 
-Latest verified canonical publication: **20260908-0026**, source **7c249ca**,
-version from `VERSION` (`0.0.0`). This summary takes precedence over the dated
+Latest verified canonical publication: **20260908-0834**, source **d1beea3**,
+version from VERSION (**0.0.0**). This summary takes precedence over dated
 historical paragraphs below.
 
 | Area | Implemented, tested and live | Remaining evidence |
 |---|---|---|
 | Diagnostics | Dev/AUTO ON by default, saved OFF/Standard respected; fifteen observed GPS-driving minutes; coordinate-free; sampled simulated Engine RPM/reasons | First real automatic inbox receipt |
-| Engine | Six voices: Mono hybrid, Rosso/Touring sampled, original Otto V8, Cinque turbo five and continuous Turbine; phased automatic shifts, wheel-owned whine, original sample-clock DSP, no-GPS TAMARRO, exact-zero idle, dry output and cancellable recovery | Physical character preference, cabin balance, native media and long drive |
+| Engine | Six voices: Mono hybrid, Rosso/Touring sampled, original Otto V8, Cinque turbo five and continuous Turbine; restrained city ratios, power by 80, 130 km/h acoustic cap, phased load-sensitive shifts, proportional sample pitch, wheel-owned whine, original sample-clock DSP, no-GPS TAMARRO, exact-zero idle, dry output and cancellable recovery | Physical character preference, cabin balance, native media and long drive |
 | Atlas / Stats | Separate Visual destinations; Natural/Palette map, Wikipedia and loaded OSM POIs; curved heading bands, motion/runtime parity and solid GPS/dashed terrain altitude | Physical moving-data legibility and GPS coverage |
 | Flux / Soundtrack / FX / Discover | Broad owner acceptance, later small refinements allowed | Preserve the remaining specific device/endurance cases |
 | iPhone | Selected Compact Cockpit for iPhone 17 Pro/Pro Max; safe areas, inert portrait notice, state-preserving rotation; 667×375 through 956×440 browser matrix | Actual Safari/device software and native audio |
 | Travel Report | Selected two-page A4 PDF, optional third route page, immutable preview/download, explicit verified-recipient email, proof reuse and distinct GPS/map elevation | Actual chosen-recipient inbox delivery |
 | Release | Experimental canonical build | Physical acceptance matrix, then separate production release decision |
 
-**768 native tests, 18 package checks, 196 dependency credits and 29 canonical
-HTML/asset/cache checks pass.** Official publication verifies 232 files and all
-29 Illobo recordings; independent postflight reports remote_writes=NONE.
-Twelve real Chromium audio renders cover six profiles at
-44.1/48 kHz; 52 DSP cases and actual dev/compiled/canonical browser checks pass.
-The 120-second Mac browser road run has no processor/page errors; this is not
-Tesla endurance. Source 7d04dcc owns the acoustic implementation; 7c249ca adds
-accurate continuous-turbine launch copy and records the audio evidence.
+**784 native tests, 18 package checks, 8 documentation checks, 196 dependency
+credits and 29 canonical HTML/asset/cache checks pass.** Official publication
+verifies 232 files and all 29 Illobo recordings; independent postflight reports
+remote_writes=NONE. Twelve final 132-second Chromium audio renders cover all six
+voices at 44.1/48 kHz, alongside twelve baseline comparisons. Steady and full-demand
+130/160 RPM/load/gear parity passes. Final compiled/canonical Tesla/phone browser
+checks pass with one AudioContext and no page/processor errors or synthetic mail.
+[Road parameters, source findings and audio evidence](ENGINE-ROAD-PROGRESSION-2026-09-08.md).
+Physical cabin listening, native media behavior and long-drive acceptance remain open.
 
 The latest actual Tesla message found at 20:04 local is build 1936, before
 automatic build 2004. Thirty Engine shifts and GPS up to 115 km/h were recorded

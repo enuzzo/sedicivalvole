@@ -3,7 +3,7 @@
 Research status: primary source inspection completed across September 7–8, local
 time CEST. This note recommends implementation; it does not claim an audition,
 benchmark, product integration or vehicle acceptance. No third-party source,
-preset, recording, impulse response or proprietary runtime was imported.
+preset, recording, impulse response or proprietary runtime was imported into the product.
 
 The owner has now identified both Ange Yaghi's `engine-sim` and
 `realenginesimulator.com` as the intended central references. The latter is the
@@ -191,3 +191,143 @@ focused native probes then produced no release after evidence loss and zero
 excitation endpoints at both rates. These checks do not replace production
 AudioWorklet, complete-graph, listener or vehicle acceptance. No external engine
 runtime, preset, recording or impulse response was used in those probes.
+
+## Follow-up: Ange audio assets and road gearing — 2026-09-08
+
+The owner asked specifically whether Ange's available samples and transmission
+could improve calm driving at 20/30/40 km/h and motorway cruise at 100–130 km/h.
+This follow-up is source and file inspection, not listening or simulator output.
+
+### Public versions and reuse boundaries
+
+- **Original Ange source:** current `master` still resolves to
+  `85f7c3b959a908ed5232ede4f1a4ac7eafe6b630` (January 22, 2023).
+  Its [MIT notice](https://github.com/ange-yaghi/engine-sim/blob/85f7c3b959a908ed5232ede4f1a4ac7eafe6b630/LICENSE)
+  names Copyright 2022 AngeTheGreat (Ange Yaghi). It permits source reuse with
+  the notice retained. The pinned repository also distributes WAVs without a
+  separate sound-library licence or recording-origin ledger found in the
+  inspected tree. Describe these as **bundled under the repository's declared
+  MIT licence**, not independently cleared recordings. No WAV enters the product.
+- **Community Edition:** current revision
+  `4e5c20da3e2c8b373ec795931b081f4e614048c3` (September 11, 2025)
+  is a distribution/documentation repository. Its [own explanation](https://github.com/Engine-Simulator/engine-sim-community-edition/blob/4e5c20da3e2c8b373ec795931b081f4e614048c3/README.md)
+  says application source is absent and distinguishes the older MIT version
+  from later closed development. A free Windows download does not establish
+  permission to redistribute its newer code or assets; it was not downloaded.
+- **Carles Onielfa's Open Engine Simulator:** independent fork
+  `1e226ee7bfbeb1d5012c7696aee82a57355df281` (August 14, 2026)
+  [retains Ange's MIT notice and documents macOS/browser builds](https://github.com/carlesonielfa/open-engine-sim/blob/1e226ee7bfbeb1d5012c7696aee82a57355df281/README.md).
+  This is a possible future route to offline reference generation on this Mac;
+  no build, compatibility, performance or generated-audio rights audit is claimed.
+- **Community catalog:** pilot01's [Better Impulse Response Library](https://catalog.engine-sim.parts/parts/1563)
+  explains exposing more existing sound-library responses by changing a script
+  and copying the distributed smooth responses. The inspected public page gives
+  no explicit reuse licence. It is not evidence of a newly licensed RPM/load
+  recording collection; no download was made.
+
+Licensed-repository study downloads are confined to ignored
+`_references/engine-source-study-2026-09-08/`: 79 original source/configuration/
+licence/audio files (942,457 bytes) and six fork source/licence files. Each folder
+has a local `study-download-inventory.json` with the exact pin, file sizes and
+SHA-256 values. These local reference copies are not repository or product
+imports, and are not to be committed.
+
+### What the downloadable WAVs actually do
+
+The original [standard-library definition](https://github.com/ange-yaghi/engine-sim/blob/85f7c3b959a908ed5232ede4f1a4ac7eafe6b630/es/sound-library/impulse_responses.mr)
+exports ten impulse responses. All ten downloaded files are mono 16-bit PCM at
+44.1 kHz. Their decoded duration is 0.212–0.962 seconds. There are nine distinct
+SHA-256 values: `sharp_01.wav` and `minimal_muffling_03.wav` are byte-identical.
+
+| Exports | Relative files in `es/sound-library/` | Intended role |
+|---|---|---|
+| `default_0` | `smooth/smooth_39.wav` | Default convolution colour |
+| `real_engine_0/1/2` | `archive/test_engine_14/15/16_eq_adjusted_16.wav` | Alternative convolution colours; the names do not prove measured engine/RPM metadata |
+| `sharp_0` | `sharp/sharp_01.wav` | Sharp response |
+| `mild_exhaust_0`, `mild_exhaust_0_reverb` | `new/mild_exhaust.wav`, `new/mild_exhaust_reverb.wav` | Exhaust response variants |
+| `minimal_muffling_01/02/03` | Corresponding WAVs under `new/` | Reduced muffling variants |
+
+The [application loader](https://github.com/ange-yaghi/engine-sim/blob/85f7c3b959a908ed5232ede4f1a4ac7eafe6b630/src/engine_sim_application.cpp#L490)
+loads an impulse for each exhaust system, then sends PCM to the synthesizer.
+The [synthesizer](https://github.com/ange-yaghi/engine-sim/blob/85f7c3b959a908ed5232ede4f1a4ac7eafe6b630/src/synthesizer.cpp#L86)
+finds the last sample above an absolute PCM threshold of 100, caps the usable
+kernel at 10,000 samples (about 227 ms at 44.1 kHz), and scales it by the library
+volume before convolution. Thus WAV duration alone is not its effective filter
+length. The library's 0.001/0.01 levels belong to that simulator's gain chain;
+they are not ready-made gains for a Web Audio ConvolverNode.
+
+These are filters applied to continuously generated excitation. They cannot
+replace an idle/drive/coast loop bank or repair incorrect RPM tracking merely
+by being played on repeat. An experiment could convolve our original firing
+voice with an explicitly admitted response, then compare it with our current
+original resonators at equal loudness. Keep per-bank paths separate until after
+their distinct filtering/delays, and measure browser cost. Another route is
+offline generation from the MIT simulator with known RPM, load, engine script
+and IR provenance, but no such calibrated loops were generated in this study.
+
+### Manual gearbox, useful physical relationships
+
+In the original [input controller](https://github.com/ange-yaghi/engine-sim/blob/85f7c3b959a908ed5232ede4f1a4ac7eafe6b630/src/engine_sim_application.cpp#L884),
+Up/Down directly request gears; Shift/Y/T/U and Space govern clutch pressure.
+`Transmission::update` limits clutch torque; it contains no RPM/load upshift
+schedule. [`changeGear`](https://github.com/ange-yaghi/engine-sim/blob/85f7c3b959a908ed5232ede4f1a4ac7eafe6b630/src/transmission.cpp#L59)
+changes reflected vehicle inertia while conserving its rotational energy.
+The Community Edition documents the same manual controls. The inspected
+[fork controller](https://github.com/carlesonielfa/open-engine-sim/blob/1e226ee7bfbeb1d5012c7696aee82a57355df281/src/desktop_application.cpp#L413)
+also uses Up/Down and a manual clutch. None of these inspected paths supplies
+an automatic gearbox controller to transplant.
+
+The useful lesson is explicit kinematics. For an engaged, non-slipping gear:
+
+```text
+wheel_rpm = (speed_kmh / 3.6) × 60 / (2π × rolling_radius_m)
+engine_rpm = wheel_rpm × final_drive × selected_gear_ratio
+```
+
+This follows the pinned transmission's `radius / (finalDrive × gearRatio)`
+relation and [vehicle energy/speed calculation](https://github.com/ange-yaghi/engine-sim/blob/85f7c3b959a908ed5232ede4f1a4ac7eafe6b630/src/vehicle.cpp).
+Its [road resistance model](https://github.com/ange-yaghi/engine-sim/blob/85f7c3b959a908ed5232ede4f1a4ac7eafe6b630/src/vehicle_drag_constraint.cpp)
+also separates constant rolling force from speed-squared aerodynamic force.
+Neither relation requires importing C++ into the browser.
+
+For a concrete arithmetic check, the simulator's [GM LS example](https://github.com/ange-yaghi/engine-sim/blob/85f7c3b959a908ed5232ede4f1a4ac7eafe6b630/assets/engines/atg-video-2/07_gm_ls.mr#L438)
+uses ratios `2.97, 2.07, 1.43, 1.00, 0.71, 0.57`, final drive `3.42` and tire
+radius `10 inches`. Calculating selected combinations gives:
+
+| Road speed | Illustrative selected gear | Calculated engaged RPM |
+|---:|---:|---:|
+| 20 km/h | 2 | 1,479 |
+| 30 km/h | 3 | 1,532 |
+| 40 km/h | 3 / 4 | 2,043 / 1,429 |
+| 100 km/h | 6 | 2,036 |
+| 130 km/h | 6 | 2,647 |
+
+The gear choices in this table are ours for illustration, not an upstream
+automatic schedule or measured Corvette behavior. Even the named examples
+are authored simulator configurations. For comparison, its [Subaru example](https://github.com/ange-yaghi/engine-sim/blob/85f7c3b959a908ed5232ede4f1a4ac7eafe6b630/assets/engines/atg-video-2/01_subaru_ej25_eh.mr#L362)
+has a sixth ratio of `0.756`, final drive `3.9` and the same radius: about
+3,079 RPM at 100 km/h and 4,003 at 130. A single motorway RPM target for every
+character would erase this gearing difference. Do not copy the simulator's
+fallback 2,000 N rolling resistance or 10-inch tire radius as calibrated
+real-car values.
+
+### Applicable original implementation decision
+
+Use explicit profile-specific ratios and a cruise-capable top gear. Select a
+gear by prospective coupled RPM and inferred demand: light, steady driving can
+shift early, while acceleration retains a lower ratio. Require a usable RPM
+after each proposed upshift, enforce a redline guard before downshifts, and use
+hysteresis/dwell to prevent GPS noise causing gear hunting. Low-speed launch
+needs bounded clutch/slip behavior; idle is not the coupled wheel RPM at zero.
+These are recommendations for our own automatic controller, not Ange code.
+
+The audio must follow the same RPM. A sample with a valid reference RPM needs
+`1200 × log2(target_rpm / reference_rpm)` cents for proportional playback pitch;
+a linear cents-per-RPM rule cannot provide that relationship. A ±2,400-cent
+bound permits only quarter-to-four-times playback: a nominal 5,300 RPM layer
+cannot represent 800 RPM under that bound, so layer selection must also avoid
+unsupported ranges. Donor nominal RPM and Mono's authored texture anchors must
+remain explicitly uncalibrated until measured. Compare steady 800/1,800/3,000
+RPM excerpts and 20/30/40/100/130 km/h road traces at matched loudness; confirm
+the sound becomes calm together with the tachometer, without artificial master
+ducking. No new samples or production code were added by this follow-up.

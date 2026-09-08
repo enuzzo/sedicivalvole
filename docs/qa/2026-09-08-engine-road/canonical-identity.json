@@ -1,0 +1,153 @@
+{
+  "build": "20260908-0834",
+  "commit": "d1beea3",
+  "checks": [
+    {
+      "path": "/",
+      "sha256": "37420b6c819a451444b89cddabe97e909db91124e20d4e61343f52f5643b43d5",
+      "bytes": 1206,
+      "cacheControlled": true
+    },
+    {
+      "path": "/?verify=20260908-0834",
+      "sha256": "37420b6c819a451444b89cddabe97e909db91124e20d4e61343f52f5643b43d5",
+      "bytes": 1206,
+      "cacheControlled": true
+    },
+    {
+      "path": "/artwork/visuals/acid-orchard.png",
+      "sha256": "897c63cb6de40700b50fdcb0b6ccb19ee84a245e838044e208068684f0dabb58",
+      "bytes": 45102
+    },
+    {
+      "path": "/artwork/visuals/aperture.png",
+      "sha256": "03e9681ed12a00ebb62d53a4e27dd70de0013a9b10a4ee299156343c7bdb58a3",
+      "bytes": 43030
+    },
+    {
+      "path": "/artwork/visuals/chromatic-silk.png",
+      "sha256": "305efd443700c52bcc5534c13092914e26a6ddcb09a36bc19df4550ead679c40",
+      "bytes": 53007
+    },
+    {
+      "path": "/artwork/visuals/drivey.png",
+      "sha256": "c63a94f19dfd2b6376847c40108048d611ccae6deeb2a3c537b3b881eb250ba9",
+      "bytes": 20414
+    },
+    {
+      "path": "/artwork/visuals/japanese-mist.png",
+      "sha256": "1d22a5dc867c3cb1091f4652defd6d2a3cbe44090b9cd520ea15e753626b0352",
+      "bytes": 43960
+    },
+    {
+      "path": "/artwork/visuals/meridian.png",
+      "sha256": "88994a14ea02871e802786d41a04122a10d0fcc34a0b53e3a764f004c627c59b",
+      "bytes": 20556
+    },
+    {
+      "path": "/artwork/visuals/prtcl.png",
+      "sha256": "42c192a08c279a820d9492400704a3e874feb3bec544bc78a7f29dfd82d0a027",
+      "bytes": 22559
+    },
+    {
+      "path": "/artwork/visuals/vertigo.png",
+      "sha256": "e0fe15c98ed06382328267446b10ff777f92e75f4ba4bf19562e3ef7ac385a65",
+      "bytes": 23808
+    },
+    {
+      "path": "/assets/atlas-field-DGiFn_Lq.js",
+      "sha256": "67e7f06607b0bf6935a0c23f5539bb358eced0a6193a3479de639a69c080612e",
+      "bytes": 16917
+    },
+    {
+      "path": "/assets/atlas-field-DIYHhGHm.css",
+      "sha256": "715dbf736f7fdc9671a7ab3ec3b2fc5e3cdb252f3cc59758d52914bd2c9e57a3",
+      "bytes": 69347
+    },
+    {
+      "path": "/assets/browser-C27G8DX0.js",
+      "sha256": "4c9e1b09f41bbee9c8536e12bd886e3f29c84e2977c1f4b933435f642a5ee915",
+      "bytes": 25776
+    },
+    {
+      "path": "/assets/index-Cd9ZOe3o.js",
+      "sha256": "b36fcb2c364786e4a0fcf9085152fb69996736058463dd13a903c746b5db5d62",
+      "bytes": 796204
+    },
+    {
+      "path": "/assets/index-DFVU2Ri9.css",
+      "sha256": "dd26977106af7e7f8c6bef64e27e8c6158aa4f8024590b5d49b15c3bb6a8356b",
+      "bytes": 224407
+    },
+    {
+      "path": "/assets/launch/soundtrack.png",
+      "sha256": "f37af576733e4bfc4cc6e0de364a8375ef6aedb57dd36c2a5b4f9f268427059a",
+      "bytes": 105836
+    },
+    {
+      "path": "/assets/maplibre-gl-BM8ztOyI.js",
+      "sha256": "4c90a129e0f7fc50d0dcf9e7dbc722d43f80e85af1fedc968acc5e10e6625b8b",
+      "bytes": 941210
+    },
+    {
+      "path": "/assets/procedural-processor-upkJ05Le.js",
+      "sha256": "07aceb2303a814452e7c02332e41e60d7aab253e090c582d63b66d4c99e75402",
+      "bytes": 8698
+    },
+    {
+      "path": "/assets/procedural-voice-Dot2xJ3T.js",
+      "sha256": "8aa8a244c5ea565bec5624b6e49ba8ba17c856e66891e72621a4290ce8263e70",
+      "bytes": 983
+    },
+    {
+      "path": "/assets/runtime-CpSLPIBn.js",
+      "sha256": "7cbb3ff4b9738aa06473d924556f9d82e06c2c4ca6e72852b5d6d50546e5d78f",
+      "bytes": 34514
+    },
+    {
+      "path": "/assets/score-processor-Dly9Ky60.js",
+      "sha256": "1e4928616b90722e2be5b1ab777d01866084ed54690283ce0c82ebe00d1a8ebf",
+      "bytes": 117006
+    },
+    {
+      "path": "/assets/session-report-panel-BNJuwITd.css",
+      "sha256": "da06f554c070f0231e2be1cb3db6eaa0db57c4976586bde7083213f7c5f5c50f",
+      "bytes": 1387
+    },
+    {
+      "path": "/assets/session-report-panel-CNNz5aqG.js",
+      "sha256": "64948baf2931cd14bf33f6cbf2362d907a2842875c764104e473a461d8b98caa",
+      "bytes": 10279
+    },
+    {
+      "path": "/assets/shadergradient-field-DVsR2DOJ.js",
+      "sha256": "965d7f310f6ab58d48d58a9b95134508c36b0e46375b22d26501a5fa42298ae8",
+      "bytes": 1085825
+    },
+    {
+      "path": "/assets/stats-panel-BSA-QcC9.js",
+      "sha256": "fb312232b49b733be0c8f977dca84e1af6ead475bd28096f590387ac6df56ec2",
+      "bytes": 11433
+    },
+    {
+      "path": "/brand/sedicivalvole-mark-transparent-dark.svg",
+      "sha256": "247993b474efadfbe794cbdfc06b65dfb5301119aa34af6d94fc111a2c4c9b6a",
+      "bytes": 2265
+    },
+    {
+      "path": "/brand/sedicivalvole-mark-transparent.svg",
+      "sha256": "f682560229919421138bd5b97b5cefb99b83f7852922695e9e673a356c4a8f12",
+      "bytes": 2266
+    },
+    {
+      "path": "/third-party/tabler-icons/engine.svg",
+      "sha256": "37f5bafee6840a1c1e2faa26955284b90ef8ef829290202bef79a5ab6d940ac4",
+      "bytes": 664
+    },
+    {
+      "path": "/third-party/tabler-icons/music.svg",
+      "sha256": "8b69aafb5497fc9773078aab151dda57434e89011e712bb24c10c9b66f80ab68",
+      "bytes": 517
+    }
+  ]
+}
