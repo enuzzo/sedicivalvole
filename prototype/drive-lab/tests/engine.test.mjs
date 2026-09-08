@@ -274,6 +274,15 @@ test("loading and reacquiring at road speed avoid a first-gear flare and keep tr
   }
 });
 
+test("full-demand top gear engages below the asymptotic GPS ceiling", () => {
+  const f=fixture();
+  for(const profile of f.profiles.filter(p=>!p.singleSpeed)) {
+    const decision=decideAutomaticGear({gear:5,speedKmh:129.999999,drive:1,canShift:true,heldSeconds:2},profile,profile.configuration.drivetrain);
+    assert.equal(decision?.gear,6,profile.id);
+  }
+  f.runtime.destroy();
+});
+
 test("foreground and context recovery acquire the current road gear even when fresh GPS beats the next tick", async () => {
   for (const recovery of ['visibilitychange','statechange','source-generation']) {
     const f=fixture({worklet:true});f.evidence.generation=1;f.runtime.setEnabled(true);await f.runtime.load('mono');f.tick();

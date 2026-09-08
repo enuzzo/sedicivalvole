@@ -16,7 +16,9 @@ export function roadUpshiftSpeed(gear, drive, profile) {
   const base = profile.upshiftKmh?.[gear - 1];
   if (!Number.isFinite(base)) return Infinity;
   const load = clamp(((Number.isFinite(drive) ? drive : 0) - 0.35) / 0.65, 0, 1);
-  return engineRoadSpeed(base + load * (profile.loadHoldKmh?.[gear - 1] ?? 0));
+  // Enter the final ratio before the ceiling: filtered GPS approaches a held
+  // 130 asymptotically and must not need 130.000... to complete an upshift.
+  return Math.min(ENGINE_ROAD_SPEED_CEILING_KMH - 2, engineRoadSpeed(base + load * (profile.loadHoldKmh?.[gear - 1] ?? 0)));
 }
 
 /** Pick a coherent initial ratio when a bank becomes ready or GPS is reacquired. */
