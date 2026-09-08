@@ -195,3 +195,30 @@ Primary evidence: [W3C Media Session](https://www.w3.org/TR/mediasession/)
 defines action/metadata APIs; [Tesla Model 3 Media](https://www.tesla.com/ownersmanual/model3/en_gb/GUID-7A85FB6B-9DF6-4C55-A2F9-793207E48E9D.html)
 explicitly documents browser Miniplayer play/pause. The latter does not promise
 next/previous for browser audio; API success is not physical vehicle acceptance.
+
+Vehicle acceptance sequence: start a real Soundtrack track, inspect the Tesla
+Miniplayer while the browser is minimized, and check play/pause plus whichever
+previous/next buttons it exposes. Restore the browser, inspect the logged native
+invocations/outcomes, then test weak-network controls and cover recovery. Tesla
+documents that pausing/ending browser audio may resume the previous media source;
+do not diagnose that documented handoff as an app transport failure.
+
+Release evidence: build **20260908-2040**, source **e9dd39c**. All 805 native
+tests, 196 dependency credits and eight documentation checks pass. Actual
+Chrome with regular Playwright (Browser plugin unavailable), compiled and
+canonical app at 773 x 601 / 844 x 390 proves zero transport-icon requests when
+those external files are blocked, controls before catalogue readiness, cover
+failure/recovery and native metadata refresh. Native pause/play/next/previous/stop
+produce five correlated successful app outcomes, including actual track changes
+and paused/playing states. Catalogue/audio/artwork fixtures are intercepted;
+the test serves valid synthetic WAV through the app's real audio relay route.
+No page exceptions or real mail sends.
+
+Seventeen independent HTTPS checks verify root HTML, all 14 fingerprinted JS/CSS
+assets, build/source identity and protected LAB. Official upload verifies
+232 files / 254,894,817 bytes and all 29 unchanged Illobo recordings by full hash;
+two cache-overlap assets remain. Physical Tesla native button visibility and
+subjective listening remain separate acceptance, not implied by browser QA.
+
+Independent official postflight passes with 12 root entries and
+`remote_writes=NONE`; final documentation consistency passes 8/8.

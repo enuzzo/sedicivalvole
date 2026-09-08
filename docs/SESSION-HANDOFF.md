@@ -1,7 +1,7 @@
 # Session Handoff
 
-Weak-network music refinement is implemented, pending final validation and
-publication: immediate inline glyphs, retained loading transport, recoverable
+Weak-network music refinement is published and canonically verified in build
+**20260908-2040**, source **e9dd39c**: immediate inline glyphs, retained loading transport, recoverable
 artwork/native metadata and verified native action routing. The proposed
 persistent fifteen-minute telemetry packet queue remains a separate unimplemented
 proposal; the published diagnostic clock currently retains one in-memory due send.

@@ -1,7 +1,7 @@
 # Current Project State
 
-Weak-network music refinement is implemented, pending final validation and
-publication: immediate inline glyphs, retained loading transport, recoverable
+Weak-network music refinement is published and canonically verified in build
+**20260908-2040**, source **e9dd39c**: immediate inline glyphs, retained loading transport, recoverable
 artwork/native metadata and verified native action routing. The proposed
 persistent fifteen-minute telemetry packet queue remains a separate unimplemented
 proposal; the published diagnostic clock currently retains one in-memory due send.
@@ -23,7 +23,7 @@ compares the 0834 reference and 1102 refinement on one 68-second route, with
 local preference/notes and JSON export. The public default retains the 1102
 audio calibration. This supersedes the earlier pending-direction proposal.
 
-Latest verified canonical publication: **20260908-2008**, source **e249423**,
+Latest verified canonical publication: **20260908-2040**, source **e9dd39c**,
 version from VERSION (**0.0.0**). This summary takes precedence over dated
 historical paragraphs below.
 
