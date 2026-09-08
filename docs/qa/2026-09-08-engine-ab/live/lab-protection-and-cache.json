@@ -1,0 +1,25 @@
+{
+  "build": "20260908-1143",
+  "source": "e56a0cd",
+  "checks": [
+    {
+      "path": "/lab/score-processor.js?v=1e4928616b90722e",
+      "sha256": "1e4928616b90722e2be5b1ab777d01866084ed54690283ce0c82ebe00d1a8ebf",
+      "bytes": 117006,
+      "cacheIdentity": "1e4928616b90722e"
+    },
+    {
+      "path": "/lab/procedural-processor.js?v=51039c683c12d94d",
+      "sha256": "51039c683c12d94dc0aad8d260d5686dd173ea7cf2c70f15267cc1da873eae38",
+      "bytes": 9520,
+      "cacheIdentity": "51039c683c12d94d"
+    },
+    {
+      "path": "/lab/",
+      "ownerAccessRequired": true,
+      "comparisonNotExposedUnauthenticated": true,
+      "noStore": true
+    }
+  ],
+  "limitation": "Compiled authenticated LAB tested locally; no canonical owner login or synthetic message performed."
+}

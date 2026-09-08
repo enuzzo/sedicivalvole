@@ -1,5 +1,54 @@
 # Deployment
 
+## Verified final A/B LAB publication — 2026-09-08 11:53 Europe/Rome
+
+Canonical **20260908-1143**, source **e56a0cd**, version read from VERSION
+(**0.0.0**). The public sound remains the 1102 refinement;
+LAB A restores the 0834 calibration and B uses that refinement. Both share one
+68-second city/road/return input sequence, with saved local feedback and export.
+
+- 793 native tests, 19 final package checks, eight documentation checks and
+  196 dependency credits pass.
+- Full compiled 68-second A/B routes pass; final compiled 18-second partial
+  routes additionally verify the final cache-bearing processor URL, both urban
+  gear states, one context/worklet, note persistence/export, profile drafts,
+  quota failure and hidden cancellation. These are local authenticated-page
+  fixtures, not a canonical owner-login claim.
+- 16 direct six-second A/B synthesis comparisons exactly match their preserved
+  source versions. Twelve full 132-second browser renders retain the public
+  calibration: procedural WAVs match exactly; sampled/hybrid 16-bit exports
+  differ by at most one PCM step in fewer than 0.01% of samples.
+- All 29 canonical public HTML/asset/cache checks and three additional LAB
+  protection/content-versioned-worklet checks pass. Canonical six-voice
+  Tesla/phone QA passes with one AudioContext, no page/processor errors and no
+  synthetic mail. Initial autoplay warnings precede successful START activation.
+- Official publication verifies the complete upload; independent postflight
+  reports `remote_writes=NONE`. The protected LAB still requires owner access.
+
+New cabin listening preference, native Tesla file download and device endurance
+remain physical acceptance. The owner's positive 0807 road/first-three-voice
+feedback is recorded separately from acceptance of this refinement.
+
+Official publication:
+
+```text
+network=PASS
+login=PASS
+directory=PASS target=canonical_root
+read_only_identity=PASS root_and_legacy_targets_verified
+upload=PASS files=232 bytes=254884684
+illobo_playlist=PASS tracks=29 full_hash_verification=true
+illobo_artwork_migration=PASS retired_png_files=0
+lab_runtime_migration=PASS retired_worklets=0
+root_metadata_cleanup=PASS removed=false
+dynamic_root=PASS staged=false static_entry_removed=false
+legacy_cleanup=PASS files=0 directories=0
+previous_assets_retained=PASS files=1 cache_overlap=true
+remote_listing=PASS entries=12
+remote_writes=ROOT_UPLOAD_AND_EXACT_LEGACY_CLEANUP
+```
+
+
 ## Verified publication — 2026-09-08 11:11 Europe/Rome
 
 Canonical **20260908-1102**, source **b524cd4**, version from VERSION (**0.0.0**).

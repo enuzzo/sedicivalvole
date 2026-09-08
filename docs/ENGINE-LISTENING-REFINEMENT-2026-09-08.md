@@ -7,7 +7,7 @@ The pending-selection statements below describe the first audio-publication chec
 
 The owner listened inside Tesla to build **20260908-0807** and reported markedly
 better motion, progression and braking. A second, louder listening pass described
-the first three voices (Mono, Rosso, Touring) as genuinely good and requested
+the first three voices (Mono, Rosso, Touring) as good and requested
 refinement. This is physical owner feedback, not a full acceptance of all six
 voices. Otto/Cinque sounded artificial, Turbine resembled a sustained whistle,
 and the first three had perceived echo/flanging. Preserve their full, deep body.

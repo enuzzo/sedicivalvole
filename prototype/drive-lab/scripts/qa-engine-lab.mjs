@@ -1,6 +1,8 @@
 const { chromium } = await import(process.env.PLAYWRIGHT_MODULE || 'playwright');
 import fs from 'node:fs/promises';
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
+import { dirname, join } from 'node:path';
 // Local QA only: the compiled option substitutes an authenticated-page fixture,
 // never a real owner's login or credentials. All sending endpoints are blocked.
 const url = process.env.QA_URL || 'http://127.0.0.1:5173/lab.html';
@@ -23,7 +25,7 @@ try{
   await page.route('**/lab/',r=>r.fulfill({contentType:'text/html',body:html}));
  }
 
- await page.addInitScript(()=>{window.qaContexts=[];const Native=AudioContext;window.AudioContext=class extends Native{constructor(opts){super(opts);window.qaContexts.push(this);}};window.qaVoices=[];const Voice=AudioWorkletNode;window.AudioWorkletNode=class extends Voice{constructor(...args){super(...args);this.qaOptions=args[2];this.qaDisposed=false;const send=this.port.postMessage.bind(this.port);this.port.postMessage=v=>{if(v==='dispose')this.qaDisposed=true;send(v);};this.addEventListener('processorerror',()=>window.qaProcessorError=true);window.qaVoices.push(this);}};});
+ await page.addInitScript(()=>{window.qaContexts=[];window.qaModuleURLs=[];const Native=AudioContext;window.AudioContext=class extends Native{constructor(opts){super(opts);window.qaContexts.push(this);const load=this.audioWorklet.addModule.bind(this.audioWorklet);this.audioWorklet.addModule=url=>{window.qaModuleURLs.push(String(url));return load(url);};}};window.qaVoices=[];const Voice=AudioWorkletNode;window.AudioWorkletNode=class extends Voice{constructor(...args){super(...args);this.qaOptions=args[2];this.qaDisposed=false;const send=this.port.postMessage.bind(this.port);this.port.postMessage=v=>{if(v==='dispose')this.qaDisposed=true;send(v);};this.addEventListener('processorerror',()=>window.qaProcessorError=true);window.qaVoices.push(this);}};});
  await page.goto(url);
  await page.getByLabel('LAB visual tool').selectOption('engine');
  await page.getByRole('heading',{name:'Engine A/B Listening'}).waitFor();
@@ -47,6 +49,12 @@ try{
  await page.getByText('Preference saved on this device.',{exact:true}).waitFor();
  const download=page.waitForEvent('download');await page.getByRole('button',{name:'EXPORT NOTES (1)',exact:true}).click();const d=await download;await d.saveAs(out+'/notes.json');
  const saved=JSON.parse(await fs.readFile(out+'/notes.json','utf8'));assert.deepEqual(saved.notes[0].listenedSeconds,{A:endSecond,B:endSecond});assert.equal(saved.notes[0].preference,'B');
+ result.moduleURLs = await page.evaluate(()=>window.qaModuleURLs);
+ if (process.env.QA_INLINE) {
+  const bytes = await fs.readFile(join(dirname(process.env.QA_INLINE), 'procedural-processor.js'));
+  const identity = createHash('sha256').update(bytes).digest('hex').slice(0,16);
+  assert.ok(result.moduleURLs.some(url => new URL(url).pathname.endsWith('/procedural-processor.js') && new URL(url).searchParams.get('v') === identity));
+ }
  await page.reload();await page.getByLabel('LAB visual tool').selectOption('engine');await page.getByText('Preference & notes · 1 saved',{exact:true}).click();assert.ok((await page.locator('.engine-listening-notes').textContent()).includes('Clearer body'));
  await page.getByLabel('Listening note').fill('Keep this draft');await page.getByLabel('Comparison engine').selectOption('otto');await page.getByLabel('Comparison engine').selectOption('mono');
  await page.getByText('Preference & notes · 1 saved',{exact:true}).click();assert.equal(await page.getByLabel('Listening note').inputValue(),'Keep this draft');

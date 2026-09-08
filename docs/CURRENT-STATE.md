@@ -5,7 +5,7 @@ compares the 0834 reference and 1102 refinement on one 68-second route, with
 local preference/notes and JSON export. The public default retains the 1102
 audio calibration. This supersedes the earlier pending-direction proposal.
 
-Latest verified canonical publication: **20260908-1102**, source **b524cd4**,
+Latest verified canonical publication: **20260908-1143**, source **e56a0cd**,
 version from VERSION (**0.0.0**). This summary takes precedence over dated
 historical paragraphs below.
 
@@ -19,8 +19,8 @@ historical paragraphs below.
 | Travel Report | Selected two-page A4 PDF, optional third route page, immutable preview/download, explicit verified-recipient email, proof reuse and distinct GPS/map elevation | Actual chosen-recipient inbox delivery |
 | Release | Experimental canonical build | Physical acceptance matrix, then separate production release decision |
 
-**788 native tests, 18 package checks, 8 documentation checks, 196 dependency
-credits and 29 canonical HTML/asset/cache checks pass.** Official publication
+**793 native tests, 19 package checks, 8 documentation checks, 196 dependency
+credits, 29 canonical HTML/asset/cache checks and three LAB protection/cache checks pass.** Official publication
 verifies 232 files and all 29 Illobo recordings; independent postflight reports
 remote_writes=NONE. Twelve final 132-second Chromium audio renders cover all six
 voices at 44.1/48 kHz, alongside twelve baseline comparisons. Steady and full-demand
@@ -29,7 +29,10 @@ checks pass with one AudioContext and no page/processor errors or synthetic mail
 [Current refinement, real-car feedback, source findings and audio evidence](ENGINE-LISTENING-REFINEMENT-2026-09-08.md).
 The owner physically tested 0807 and praised the improved progression and first
 three voices at high volume. This new tuning still needs cabin listening.
-The selected A/B annotation LAB provides local preferences and JSON export.
+The selected protected A/B LAB is live, with 0834/reference and 1102/refined
+calibrations, a shared 68-second route, local preferences, JSON export and
+content-versioned processor URLs. Its authenticated flow is verified on the
+compiled local artifact; canonical owner-access protection is verified separately.
 
 Historical September 7 evidence at 20:04 local concerned build 1936, before
 automatic build 2004. Thirty Engine shifts and GPS up to 115 km/h were recorded

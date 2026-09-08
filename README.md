@@ -5,7 +5,7 @@ compares the 0834 reference and 1102 refinement on one 68-second route, with
 local preference/notes and JSON export. The public default retains the 1102
 audio calibration. This supersedes the earlier pending-direction proposal.
 
-Engine listening refinement is live: second at 30 km/h, later urban third, focused recording layers, shorter pressure resonance and quieter turbo/turbine tones. Build `20260908-1102`; [real Tesla feedback, research and measured comparison](docs/ENGINE-LISTENING-REFINEMENT-2026-09-08.md).
+Engine listening refinement is live: second at 30 km/h, later urban third, focused recording layers, shorter pressure resonance and quieter turbo/turbine tones. Build `20260908-1143`; protected [A/B listening and saved notes](docs/ENGINE-LISTENING-LAB-2026-09-08.md); [real Tesla feedback, research and measured comparison](docs/ENGINE-LISTENING-REFINEMENT-2026-09-08.md).
 
 September 7 altitude correction: Stats now preserves reported GPS height and uses a visibly distinct terrain estimate when it is missing, including in Travel Report. See [behavior and validation](docs/ALTITUDE-FALLBACK-2026-09-07.md).
 
