@@ -68,3 +68,9 @@ which driving-time, saved preference, connectivity or delivery condition applied
 
 Physical Tesla map recovery, chart legibility and first actual automatic mail
 remain owner acceptance. Publication evidence is appended after canonical checks.
+
+Focused final checks: 129/129; Engine: 44/44. Real Overpass verification with
+the documented project identity returned HTTP 200, 80 normalized Milan nodes,
+80 Maps links and 23 explicit Wikipedia tags. A first unidentified Node request
+was rejected with 406, confirming the provider's identification requirement.
+The product browser supplies its origin Referer; no provider bypass is used.
