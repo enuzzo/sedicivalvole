@@ -1910,3 +1910,12 @@ future convolution experiment. No impulse response is shipped by this correction
 Tests assert urban/high-demand RPM, 80 character, 130 cap across road parameters,
 proportional sample pitch, no gear hunting and lifecycle ratio reacquisition.
 See [road progression and evidence](ENGINE-ROAD-PROGRESSION-2026-09-08.md).
+
+
+### Listening comparisons require processor cache identity — September 8
+
+A fresh comparison page is insufficient if an older processor stays cached at a
+fixed LAB URL. This can make two named calibrations use the wrong synthesis
+coefficients. Build worklet URLs from bundled-byte identity, including imported
+DSP dependencies, and verify the query-bearing asset on the canonical host.
+This fixes delivery identity; it does not change the acoustic calibration.

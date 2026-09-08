@@ -14,6 +14,7 @@
 
 import { build } from "esbuild";
 import { resolve } from "node:path";
+import { createHash } from "node:crypto";
 
 const SUFFIX = "?audio-worklet";
 const DEV_ROUTE = "/@audio-worklet/";
@@ -68,7 +69,10 @@ export function audioWorklet() {
         name: `${absolute.split("/").pop()}`,
         source: code,
       });
-      return `export default import.meta.ROLLUP_FILE_URL_${referenceId};`;
+      // LAB keeps fixed filenames behind its PHP entry. Bind the request URL to
+      // bundled bytes so a fresh page cannot reuse an older cached processor.
+      const identity = createHash("sha256").update(code).digest("hex").slice(0, 16);
+      return `export default import.meta.ROLLUP_FILE_URL_${referenceId} + ${JSON.stringify(`?v=${identity}`)};`;
     },
 
     configureServer(server) {

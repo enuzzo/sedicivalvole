@@ -1,6 +1,10 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { readFile } from "node:fs/promises";
+import { readFile, mkdtemp, writeFile, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { createHash } from "node:crypto";
+import { audioWorklet } from "../scripts/vite-audio-worklet.mjs";
 import test from "node:test";
 
 const read = (path) => readFile(new URL(path, import.meta.url), "utf8");
@@ -150,4 +154,24 @@ for invalid in ["", "has space", "a"]:
   execFileSync("python3", ["-c", program, new URL("../../../scripts/deploy_drive_lab_ftp.py", import.meta.url).pathname], {
     env: { ...process.env, PYTHONDONTWRITEBYTECODE: "1" },
   });
+});
+
+
+test("worklet URLs change with bundled dependency bytes, even when the LAB filename stays fixed", async () => {
+  const folder = await mkdtemp(join(tmpdir(), "engine-worklet-cache-"));
+  try {
+    const entry = join(folder, "processor.js"), dependency = join(folder, "voice.js");
+    await writeFile(entry, 'import { value } from "./voice.js"; console.log(value);');
+    const plugin = audioWorklet(); plugin.configResolved({ command: "build" });
+    let emitted;
+    const build = async value => {
+      await writeFile(dependency, `export const value = ${value};`);
+      const result = await plugin.load.call({ emitFile(asset) { emitted = asset; return "fixture"; } }, `${entry}?audio-worklet`);
+      const hash = createHash("sha256").update(emitted.source).digest("hex").slice(0,16);
+      assert.ok(result.includes(`?v=${hash}`)); assert.equal(emitted.name, "processor.js");
+      return result;
+    };
+    const first = await build(1), same = await build(1), changed = await build(2);
+    assert.equal(first, same); assert.notEqual(changed, first);
+  } finally { await rm(folder, { recursive: true, force: true }); }
 });

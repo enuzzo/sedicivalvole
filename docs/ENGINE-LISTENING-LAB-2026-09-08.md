@@ -73,3 +73,30 @@ to the 1102 source. Otto/Cinque/Turbine WAVs are byte-identical. Mono/Rosso/Tour
 whole-file identity is not claimed for these resampled recordings. All cap,
 finite-output and clipping checks pass. [Public audio comparison](qa/2026-09-08-engine-ab/public-audio-identity.json)
 and [direct A/B calibration identity](qa/2026-09-08-engine-ab/calibration-identity.json).
+
+
+## Repeating the browser check
+
+Run `scripts/qa-engine-lab.mjs` through the existing native-toolchain wrapper.
+Set `PLAYWRIGHT_MODULE` and `CHROME_EXECUTABLE` to the available local browser
+runtime. Default `QA_URL` is `http://127.0.0.1:5173/lab.html`. For compiled QA,
+serve the final `dist/client` locally, use `QA_URL=http://127.0.0.1:5184/lab/`
+and set `QA_INLINE` to the absolute built `dist/client/lab/index.php` path.
+This extracts only the authenticated app branch and substitutes harmless local
+bootstrap values; it does not exercise or bypass canonical owner authentication.
+The script refuses a non-loopback URL. `QA_SHORT=1` exercises 18-second partial
+takes after a full route run has already passed. `QA_OUTPUT` selects evidence
+location. All diagnostic/report and existing LAB send endpoints are intercepted.
+
+
+## Worklet cache identity
+
+Live inspection of `/lab/procedural-processor.js` found Last-Modified/ETag but no
+explicit Cache-Control directive. Because LAB uses fixed processor filenames,
+a recently cached older file could outlive its page. The shared build plugin
+now appends `?v=<bundled-content SHA-256 prefix>` to each worklet URL. Public
+fingerprinted assets retain their names and gain the same identity suffix;
+fixed LAB filenames remain compatible with existing deployment guards.
+A regression test proves stable bytes keep their URL and a dependency edit
+changes the URL even when the entry filename is unchanged. Canonical postflight
+checks both query-bearing worklet responses against their packaged hashes.
