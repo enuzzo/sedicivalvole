@@ -1,18 +1,47 @@
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+export const ENGINE_ROAD_SPEED_CEILING_KMH = 130;
+export const VIRTUAL_WHEEL_RADIUS_M = 0.32;
+export const engineRoadSpeed = speedKmh => clamp(Number.isFinite(speedKmh) ? speedKmh : 0, 0, ENGINE_ROAD_SPEED_CEILING_KMH);
+
 export function virtualRpm(speedKmh, gear, drivetrain) {
-  // Road km/h -> virtual wheel RPM -> acoustic crank RPM; virtual radius: 0.25 m.
-  return Math.max(1000, Math.max(0, speedKmh) * 1000 / (60 * 2 * Math.PI * 0.25)
-    * drivetrain.gears[gear - 1] * drivetrain.final_drive);
+  // km/h -> virtual wheel RPM -> acoustic crank RPM through fixed gear/final ratios.
+  // The 0.32 m rolling radius is authored; no wheel, RPM or CAN data is measured.
+  const radius = Number.isFinite(drivetrain?.wheelRadiusM) && drivetrain.wheelRadiusM > 0 ? drivetrain.wheelRadiusM : VIRTUAL_WHEEL_RADIUS_M;
+  const ratio = drivetrain?.gears?.[gear - 1] * drivetrain?.final_drive;
+  if (!Number.isFinite(ratio) || ratio <= 0) return 1000;
+  return Math.max(1000, engineRoadSpeed(speedKmh) * 1000 / (60 * 2 * Math.PI * radius) * ratio);
 }
+
+export function roadUpshiftSpeed(gear, drive, profile) {
+  const base = profile.upshiftKmh?.[gear - 1];
+  if (!Number.isFinite(base)) return Infinity;
+  const load = clamp(((Number.isFinite(drive) ? drive : 0) - 0.35) / 0.65, 0, 1);
+  return engineRoadSpeed(base + load * (profile.loadHoldKmh?.[gear - 1] ?? 0));
+}
+
+/** Pick a coherent initial ratio when a bank becomes ready or GPS is reacquired. */
+export function selectRoadGear(speedKmh, drive, profile) {
+  if (profile.singleSpeed) return 1;
+  const speed = engineRoadSpeed(speedKmh), count = profile.configuration.drivetrain.gears.length;
+  let gear = 1;
+  while (gear < count && speed >= roadUpshiftSpeed(gear, drive, profile)) gear++;
+  return gear;
+}
+
 export function decideAutomaticGear({ gear, speedKmh, drive, canShift, heldSeconds }, profile, drivetrain) {
-  if (!canShift || heldSeconds < 1.1) return null;
-  const rpm = virtualRpm(speedKmh, gear, drivetrain);
-  if (gear < drivetrain.gears.length && speedKmh >= profile.upshiftKmh[gear - 1]) return { gear: gear + 1, reason: "upshift" };
+  if (!canShift || profile.singleSpeed || !Number.isFinite(speedKmh) || speedKmh < 0 || !Number.isFinite(heldSeconds) || heldSeconds < 1.1
+    || !Number.isInteger(gear) || gear < 1 || gear > drivetrain.gears.length) return null;
+  const speed = engineRoadSpeed(speedKmh), rpm = virtualRpm(speed, gear, drivetrain);
+  const demand = clamp(Number.isFinite(drive) ? drive : 0, 0, 1);
+  if (gear < drivetrain.gears.length && speed >= roadUpshiftSpeed(gear, demand, profile)) return { gear: gear + 1, reason: "upshift" };
   if (gear > 1) {
-    const lower = virtualRpm(speedKmh, gear - 1, drivetrain);
+    const lower = virtualRpm(speed, gear - 1, drivetrain);
     if (lower < profile.configuration.engine.limiter * 0.95) {
-      if (speedKmh <= profile.downshiftKmh[gear - 2]) return { gear: gear - 1, reason: "downshift" };
-      if (speedKmh <= profile.upshiftKmh[gear - 2] * .85 && drive >= 0.85 && rpm < profile.kickdown && lower < profile.up * 0.94) return { gear: gear - 1, reason: "kickdown" };
+      if (speed <= profile.downshiftKmh[gear - 2]) return { gear: gear - 1, reason: "downshift" };
+      // A lower ratio must also remain below the earliest next upshift, even if
+      // inferred demand falls immediately. That prevents a load-jitter gear loop.
+      if (speed >= 48 && speed <= profile.upshiftKmh[gear - 2] - 5 && demand >= 0.86
+        && rpm < profile.kickdown && lower < profile.configuration.engine.limiter * 0.8) return { gear: gear - 1, reason: "kickdown" };
     }
   }
   return null;

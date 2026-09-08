@@ -102,7 +102,7 @@ test("automatic gearbox covers upshift, downshift, kickdown, stale freeze and re
   const f=fixture(); const profile=f.profiles[0], drive={gears:[3.4,2.36,1.85,1.47,1.24,1.07],final_drive:3.44};
   const choose=overrides=>decideAutomaticGear({gear:1,speedKmh:75,drive:.3,canShift:true,heldSeconds:2,...overrides},profile,drive);
   assert.equal(choose({}).reason,"upshift"); assert.equal(choose({gear:3,speedKmh:20}).reason,"downshift");
-  assert.equal(choose({gear:3,speedKmh:54,drive:1}).reason,"kickdown");
+  assert.equal(choose({gear:4,speedKmh:52,drive:1}).reason,"kickdown");
   assert.equal(choose({canShift:false}),null); assert.equal(choose({heldSeconds:.2}),null);
   assert.equal(choose({gear:2,speedKmh:130,drive:1}).reason,"upshift"); assert.ok(virtualRpm(130,1,drive)>9000); f.runtime.destroy();
 });
@@ -116,7 +116,7 @@ test("disable cancels retries and rev; public runtime refuses MANUAL", async () 
   assert.equal(f.runtime.setTransmissionMode("MANUAL"),false); assert.equal(f.runtime.requestGear(2),false); assert.equal(f.runtime.setRevHeld(true),false); f.runtime.destroy();
 });
 test("scheduled upshift commits exactly once using audio time with bounded detune", async () => {
-  const f=fixture(); f.runtime.setEnabled(true); await f.runtime.load(); f.evidence.speedKmh=75;
+  const f=fixture(); f.runtime.setEnabled(true); await f.runtime.load(); f.tick(); f.evidence.speedKmh=25;
   for(let i=0;i<65;i++)f.tick();
   assert.equal(f.events.filter(e=>e.type==="engine.shift.scheduled").length,1); assert.equal(f.events.filter(e=>e.type==="engine.shift.committed").length,1); assert.equal(f.runtime.getState().gear,2);
   for(const source of f.context.sources) for(const event of source.detune.events) if(event[0]!=="hold") assert.ok(Math.abs(event[1])<=2400);
@@ -226,29 +226,68 @@ test("show-off timing and peaks vary but stay bounded for every profile limit", 
 });
 
 
-test("entertainment gearing reaches second at 35 and third at 65 in every profile", async () => {
-  for(const id of ['mono','rosso','touring']) {
-    const f=fixture(); f.runtime.setEnabled(true); await f.runtime.load(id);
-    const profile=f.profiles.find(p=>p.id===id), drivetrain=profile.configuration.drivetrain;
-    assert.ok(Math.abs(virtualRpm(35,1,drivetrain)-profile.up)<.001);
-    assert.ok(Math.abs(virtualRpm(65,2,drivetrain)-profile.up)<.001);
-    const shifts=[];
-    for(let speed=0;speed<=70;speed+=.25){f.evidence.speedKmh=speed;for(let i=0;i<4;i++)f.tick();const gear=f.runtime.getState().gear;if(shifts.at(-1)?.gear!==gear)shifts.push({gear,speed});}
-    assert.equal(f.runtime.getState().gear,3);
-    assert.ok(shifts[1].speed>=35 && shifts[1].speed<37,JSON.stringify(shifts));
-    assert.ok(shifts[2].speed>=65 && shifts[2].speed<67,JSON.stringify(shifts));
-    f.evidence.drive=1;for(let i=0;i<240;i++){f.evidence.speedKmh=i%2?64:66;f.tick();assert.equal(f.runtime.getState().gear,3);}
+test("runtime keeps city cruise restrained and has sustained power by 80 across piston voices", async () => {
+  for(const id of ['mono','rosso','touring','otto','cinque']) {
+    const f=fixture({worklet:true}); f.runtime.setEnabled(true); await f.runtime.load(id);
+    f.evidence.drive=.15; f.evidence.accelerationMps2=0; f.tick();
+    for(const speed of [20,30,40,80]) {
+      f.evidence.speedKmh=speed; f.evidence.rawSpeedKmh=speed;
+      for(let i=0;i<240;i++)f.tick();
+      const state=f.runtime.getState();
+      assert.equal(state.shift,null);
+      assert.ok(state.rpm>1000 && state.rpm<(speed<=40?3100:4600),`${id} at ${speed}: ${state.rpm}`);
+      if(speed===80)assert.ok(state.rpm>3000,`${id} power at 80: ${state.rpm}`);
+    }
     f.runtime.destroy();
   }
 });
 test("road shift ladder retains separate downshift and kickdown margins", () => {
-  const f=fixture();for(const profile of f.profiles){const d=profile.configuration.drivetrain;
+  const f=fixture();for(const profile of f.profiles.filter(p=>!p.singleSpeed)){const d=profile.configuration.drivetrain;
     for(let gear=2;gear<=6;gear++){
       const threshold=profile.upshiftKmh[gear-2];
-      for(const delta of [-1,0,1])assert.equal(decideAutomaticGear({gear,speedKmh:threshold+delta,drive:1,canShift:true,heldSeconds:2},profile,d),null);
+      for(const delta of [-1,0,1])assert.equal(decideAutomaticGear({gear,speedKmh:threshold+delta,drive:.2,canShift:true,heldSeconds:2},profile,d),null);
       assert.equal(decideAutomaticGear({gear,speedKmh:profile.downshiftKmh[gear-2],drive:0,canShift:true,heldSeconds:2},profile,d)?.reason,'downshift');
     }
   }f.runtime.destroy();
+});
+
+test("loading and reacquiring at road speed avoid a first-gear flare and keep true speed above the acoustic cap", async () => {
+  for (const id of ['mono','rosso','touring','otto','cinque','turbine']) {
+    const f=fixture({worklet:true});
+    f.evidence.speedKmh=80; f.evidence.rawSpeedKmh=80; f.evidence.drive=.15; f.evidence.accelerationMps2=0;
+    f.runtime.setEnabled(true); await f.runtime.load(id);
+    const initial=[]; for(let i=0;i<160;i++){f.tick();initial.push(f.runtime.getState());}
+    assert.ok(initial.every(s=>s.rpm<6000 && !s.shift),id);
+    assert.equal(f.events.filter(e=>e.type==='engine.shift.scheduled').length,0);
+    if(id!=='turbine')assert.ok(f.runtime.getState().gear>=4);
+    f.evidence.freshness='lost';f.evidence.canShift=false;for(let i=0;i<80;i++)f.tick();
+    f.evidence.speedKmh=130;f.evidence.rawSpeedKmh=130;f.evidence.freshness='fresh';f.evidence.canShift=true;
+    for(let i=0;i<240;i++)f.tick();
+    const ceiling=f.runtime.getState();
+    f.evidence.speedKmh=160;f.evidence.rawSpeedKmh=160;for(let i=0;i<240;i++)f.tick();
+    const above=f.runtime.getState();
+    assert.equal(above.motionSpeedKmh,160);assert.equal(above.gear,ceiling.gear);
+    assert.ok(Math.abs(above.rpm-ceiling.rpm)<=1,`${id}: ${above.rpm}/${ceiling.rpm}`);
+    assert.ok(Math.abs(above.drive-ceiling.drive)<1e-8);
+    assert.equal(f.events.filter(e=>e.type==='engine.shift.scheduled').length,0);
+    f.runtime.destroy();
+  }
+});
+
+test("foreground and context recovery acquire the current road gear even when fresh GPS beats the next tick", async () => {
+  for (const recovery of ['visibilitychange','statechange','source-generation']) {
+    const f=fixture({worklet:true});f.evidence.generation=1;f.runtime.setEnabled(true);await f.runtime.load('mono');f.tick();
+    assert.equal(f.runtime.getState().gear,1);
+    if(recovery==='visibilitychange')f.document.dispatch(recovery);
+    else if(recovery==='statechange')f.context.dispatch(recovery);
+    else f.evidence.generation++;
+    Object.assign(f.evidence,{speedKmh:100,rawSpeedKmh:100,drive:.15,accelerationMps2:0,freshness:'fresh',canShift:false});
+    f.tick();assert.equal(f.runtime.getState().gear,5);
+    for(let i=0;i<80;i++)f.tick();
+    assert.ok(f.runtime.getState().rpm<5000);assert.equal(f.runtime.getState().shift,null);
+    assert.equal(f.events.filter(e=>e.type==='engine.shift.scheduled').length,0);
+    f.runtime.destroy();
+  }
 });
 test("no speed evidence never produces an automatic idle blip", async () => {
   const f=fixture();f.runtime.setEnabled(true);await f.runtime.load();f.evidence.freshness='lost';f.evidence.trustedStationary=false;
@@ -376,7 +415,7 @@ test("degraded moving evidence preserves coupled Engine RPM until the bounded ho
   };
   for (let time = 0; time < 1000; time += 100) step(time, 6);
   const movingRpm = f.runtime.getState().rpm;
-  assert.ok(movingRpm > 2000);
+  assert.ok(movingRpm > 1500);
   let previousLoad = f.runtime.getState().drive;
   for (let time = 1000; time <= 5900; time += 100) {
     const held = step(time, 10000);

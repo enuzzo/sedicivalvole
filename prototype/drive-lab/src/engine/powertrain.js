@@ -1,3 +1,5 @@
+import { engineRoadSpeed } from "./gearbox.js";
+
 const clamp = (value, low = 0, high = 1) => Math.max(low, Math.min(high, value));
 const finite = (value, fallback) => Number.isFinite(value) ? value : fallback;
 const lerp = (from, to, progress) => from + (to - from) * progress;
@@ -9,7 +11,7 @@ export function estimateEngineDemand(evidence = {}, profile = {}, { throttleOver
   const options = tuning(profile);
   const override = Number.isFinite(throttleOverride) ? clamp(throttleOverride) : null;
   const trusted = evidence.freshness === "fresh";
-  const speed = clamp(finite(evidence.speedKmh, 0), 0, 260);
+  const speed = engineRoadSpeed(evidence.speedKmh);
   const acceleration = clamp(finite(evidence.accelerationMps2, 0), -10, 6);
   const rolling = clamp(finite(options.rollingLoad, 0.12), 0, 0.4);
   const drag = clamp(finite(options.dragLoad, 0.4), 0, 0.8);
@@ -47,7 +49,7 @@ export function transmissionCents(speedKmh, profile = {}) {
   const config = tuning(profile);
   const reference = clamp(finite(config.transmissionReferenceKmh, 65), 10, 200);
   const base = clamp(finite(config.transmissionBaseCents, -150), -1200, 1200);
-  const speed = clamp(finite(speedKmh, 0), 0.01, 260);
+  const speed = Math.max(0.01, engineRoadSpeed(speedKmh));
   return clamp(base + 1200 * Math.log2(speed / reference), -2400, 2400);
 }
 

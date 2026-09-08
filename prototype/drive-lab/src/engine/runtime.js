@@ -7,7 +7,8 @@ import { createIdleBlip } from "./idle-blip.js";
 import { drivelineAudibility } from "./driveline-audio.js";
 import { prepareEngineLoopSeam } from "./loop-seam.js";
 import { engineProfile } from "./profiles.js";
-import { boundedRpm, decideAutomaticGear, virtualRpm } from "./gearbox.js";
+import { boundedRpm, decideAutomaticGear, virtualRpm, engineRoadSpeed, selectRoadGear } from "./gearbox.js";
+import { engineSampleCents } from "./sample-pitch.js";
 import { advanceEngineDemand, planEngineShift, sampleEngineShift, transmissionCents, boostDemand } from "./powertrain.js";
 
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -42,7 +43,7 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
   master.gain.value = 0;
   master.connect(limiter).connect(destination);
   let nodes = [], voice = null, engine = null, drivetrain = null, profile = null;
-  let demandState = null;
+  let demandState = null, roadCoupled = false, motionGeneration = null;
   const retiringVoices = new Set();
   const prepared = () => nodes.length > 0 || (voice != null && !voice.failed);
   let generation = 0, abort = null, disposed = false, enabled = false;
@@ -79,6 +80,7 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
       releaseGestures(); state.trustedStationary = false; state.canRev = false; abort?.abort(); clearRetry(); generation++; requestedRevision++;
       clearInterval(timer); timer = null; state.status = prepared() ? "ready" : "idle";
       cancelShift();
+      roadCoupled = false;
     } else if (!timer) timer = setInterval(tick, 25);
     const at = context.currentTime;
     hold(master.gain, at); master.gain.setTargetAtTime(enabled && prepared() ? 0.16 * (quietStop ? 0.7 : 1) : 0, at, 0.04);
@@ -98,9 +100,7 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
       gain: (gains[node.asset.role] ?? 0) * (node.levelGain ?? node.asset.volume ?? 1) * (voice && !voice.failed && /^(on|off)_/.test(node.asset.role) ? profile.textureLevel : 1),
       cents: node.asset.role === "limiter" ? 0 : node.asset.role.startsWith("tranny")
         ? transmissionCents(state.motionSpeedKmh ?? 0, profile)
-        // Donor reference RPMs remain unmeasured: a bounded texture mapping.
-        // The separate firing voice supplies exact crank-relative pitch.
-        : clamp((rpm - node.asset.rpm) * .2, -2400, 2400),
+        : engineSampleCents(rpm, node.asset, profile),
     }));
   }
   function applyContinuous(rpm, drive, at) {
@@ -177,6 +177,12 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
       releaseGestures(); state.trustedStationary = false; motion.reset("audio-clock-gap"); selectedAt = at;
       if (voice) voice.params.get("events").setValueAtTime(0, at);
     }
+    const sourceChanged = Number.isInteger(evidence.generation) && motionGeneration != null && evidence.generation !== motionGeneration;
+    if (Number.isInteger(evidence.generation)) motionGeneration = evidence.generation;
+    if (evidence.freshness === "lost" || elapsed > 0.5 || sourceChanged) {
+      roadCoupled = false;
+      cancelShift(at);
+    }
     if (shift) {
       if (!shift.committed && at >= shift.commitAt) {
         drivetrain.commitGear(); state.gear = shift.toGear;
@@ -192,6 +198,15 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
       shift = null; state.shift = null; state.shiftPhase = null;
     }
     const activeEvidence = elapsed > 0.5 ? motion.snapshot(now()) : evidence;
+    // Acquire the road ratio without replaying imaginary first-to-sixth shifts.
+    // This is initialization after load/loss, never a pedal or real-gear reading.
+    if (!roadCoupled && activeEvidence.freshness === "fresh") {
+      if (transmissionMode === "AUTO") {
+        state.gear = selectRoadGear(activeEvidence.speedKmh, activeEvidence.drive, profile);
+        drivetrain.gear = state.gear; selectedAt = at;
+      }
+      roadCoupled = true;
+    }
     const gesture = heldSince != null && state.canRev ? showOff.sample(at) : null;
     if (heldSince != null && !gesture) releaseRev();
     const revving = Boolean(gesture);
@@ -206,7 +221,7 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
     engine.throttle = demand;
     engine.integrate(drivetrain.inertia, at * 1000, dt);
     const coupledRpm = activeEvidence.freshness === "lost" ? (quietStop ? 600 : 1000)
-      : boundedRpm(profile.singleSpeed ? 1000 + Math.min(130, activeEvidence.speedKmh ?? 0) / 130 * 7000 : virtualRpm(activeEvidence.speedKmh ?? 0, state.gear, drivetrain), profile);
+      : boundedRpm(profile.singleSpeed ? 1000 + engineRoadSpeed(activeEvidence.speedKmh) / 130 * 7000 : virtualRpm(activeEvidence.speedKmh ?? 0, state.gear, drivetrain), profile);
     if (!revving) {
       drivetrain.omega = coupledRpm * 2 * Math.PI / 60;
       engine.solveVel(drivetrain, dt);
@@ -324,7 +339,7 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
       profile = next; engine = new Engine(); engine.init(next.configuration.engine);
       engine.rpm = 1000; engine.omega = 1000 * 2 * Math.PI / 60;
       drivetrain = new Drivetrain(); drivetrain.init(next.configuration.drivetrain); drivetrain.gear = 1;
-      shift = null; demandState = null; selectedAt = context.currentTime; previousTime = context.currentTime;
+      shift = null; demandState = null; roadCoupled = false; motionGeneration = null; selectedAt = context.currentTime; previousTime = context.currentTime;
       releaseGestures(); state = { ...state, status: "ready", profileId, decodedBytes, peakUnionBytes, transferMs: Math.round(transferMs), decodeMs: Math.round(decodeMs), bankBytes: next.assets.reduce((sum, asset) => sum + asset.bytes, 0), gear: 1, shift: null, shiftPhase: null, singleSpeed: Boolean(profile.singleSpeed), error: null };
       retryStarted = null; retryCount = 0;
       onEvent("engine.bank.ready", { profileId, decodedBytes, peakUnionBytes, transferMs: state.transferMs, decodeMs: state.decodeMs, clips: nodes.length, renderer: voice ? nodes.length ? "hybrid" : "procedural" : "sample", loadMs: Math.round(now() - loadStartedAt),
@@ -362,6 +377,7 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
     }
   }
   const cancelAcousticEvents = () => {
+    roadCoupled = false;
     cancelShift();
     if (voice) {
       const at = context.currentTime;

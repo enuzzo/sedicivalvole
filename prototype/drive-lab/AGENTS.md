@@ -351,3 +351,12 @@ requested. Its public presets are free; Pro concerns the custom engine builder.
 Study behavior and concepts without importing its proprietary runtime, audio,
 parameters or presets. Continue the authorized original Engine implementation
 inside the saved local project; preserve the selected Telemetry visual.
+
+## Owner road progression clarification — 2026-09-08
+
+Supersedes the earlier 35/65 km/h entertainment ladder: keep urban 20–40 km/h
+restrained, with strong character already at 80 and progression through 100–130.
+Use fixed virtual mechanical ratios, load-sensitive automatic shifts and a
+130 km/h acoustic road ceiling. Preserve the dry level, no-GPS stationary
+TAMARRO and trusted idle/lifecycle contracts. Virtual gears/RPM are authored
+acoustic state, never measured Tesla telemetry. See ../../AGENTS.md.

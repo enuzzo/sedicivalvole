@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { engineSampleCents } from "../src/engine/sample-pitch.js";
 import { estimateEngineDemand, advanceEngineDemand, transmissionCents, planEngineShift,
   sampleEngineShift, createEngineShiftController, boostDemand, createEngineBoost } from "../src/engine/powertrain.js";
 
@@ -69,6 +70,31 @@ test("wheel-owned transmission pitch survives a gear/RPM change at constant road
   assert.equal(before, 0); assert.equal(after, before);
   near(transmissionCents(100) - transmissionCents(50), 1200);
   for (const speed of [0, -1, 1, 260, NaN, Infinity]) assert.ok(Math.abs(transmissionCents(speed)) <= 2400);
+});
+
+test("road load and transmission pitch stop growing at 130 without mutating GPS evidence", () => {
+  const ceiling = estimateEngineDemand(fresh(130));
+  for (const speed of [131, 160, 260]) {
+    const evidence = fresh(speed);
+    assert.deepEqual(estimateEngineDemand(evidence), ceiling);
+    assert.equal(transmissionCents(speed), transmissionCents(130));
+    assert.equal(evidence.speedKmh, speed);
+  }
+  assert.ok(estimateEngineDemand(fresh(80, 2)).load > 0.9);
+  assert.ok(estimateEngineDemand(fresh(30)).load < 0.25);
+});
+
+test("core texture pitch doubles with RPM instead of retaining a high urban pitch", () => {
+  const asset = { rpm: 5300 };
+  const at1800 = engineSampleCents(1800, asset, { id: "rosso" });
+  near(engineSampleCents(3600, asset, { id: "rosso" }) - at1800, 1200);
+  near(asset.rpm * 2 ** (at1800 / 1200), 1800);
+  assert.ok(at1800 < -1800);
+  near(engineSampleCents(3400, { rpm: 1000 }, { id: "mono" }), 0);
+  near(engineSampleCents(1700, { rpm: 1000 }, { id: "mono" }), -1200);
+  for (const rpm of [0, 600, 1000, 9000, 99999, NaN, Infinity]) {
+    assert.ok(Math.abs(engineSampleCents(rpm, asset, {})) <= 2400);
+  }
 });
 
 test("shift has distinct release, synchronized commit and re-engagement on exact audio time", () => {

@@ -1,18 +1,30 @@
 import { bac_mono, ferr_458, procar } from "./upstream/configurations.ts";
 import inventory from "./source-inventory.json" with { type: "json" };
+import { VIRTUAL_WHEEL_RADIUS_M } from "./gearbox.js";
 
 const sources = new Map(inventory.audio.map(asset => [asset.source.replace(/^public\//, ""), asset]));
-// Entertainment gearing, calibrated to road speeds rather than donor-car ratios.
-const UPSHIFT_KMH = Object.freeze([35, 65, 90, 112, 132]);
-const DOWNSHIFT_KMH = Object.freeze([26, 50, 73, 94, 112]);
+const road = (gears, finalDrive, upshiftKmh, downshiftKmh, loadHoldKmh) => Object.freeze({
+  gears: Object.freeze(gears), finalDrive, upshiftKmh: Object.freeze(upshiftKmh),
+  downshiftKmh: Object.freeze(downshiftKmh), loadHoldKmh: Object.freeze(loadHoldKmh),
+});
+// Original sporting road transmissions. Ratios stay fixed as speed/load change;
+// unlike the retired map, first gear is not forced to reach redline at 35 km/h.
+// These are acoustic instruments, not measured or replicated donor-car gearboxes.
+const ROAD_TRANSMISSIONS = Object.freeze({
+  mono: road([3.75, 2.65, 1.95, 1.47, 1.32, 1.14], 4.1, [18, 29, 58, 96, 124], [12, 22, 47, 83, 108], [4, 5, 12, 14, 6]),
+  rosso: road([3.6, 2.55, 1.92, 1.48, 1.3, 1.14], 4.3, [18, 28, 57, 96, 124], [12, 21, 46, 83, 108], [4, 5, 12, 14, 6]),
+  touring: road([3.7, 2.6, 1.9, 1.45, 1.26, 1.08], 3.75, [17, 28, 55, 96, 123], [11, 21, 45, 83, 108], [4, 5, 12, 14, 7]),
+  otto: road([3.6, 2.5, 1.82, 1.38, 1.2, 1.05], 3.4, [16, 27, 54, 94, 121], [10, 20, 43, 81, 105], [4, 5, 12, 14, 9]),
+  cinque: road([3.7, 2.6, 1.92, 1.46, 1.29, 1.11], 3.9, [17, 29, 56, 96, 123], [11, 22, 45, 83, 107], [4, 5, 12, 14, 7]),
+});
 const make = (id, label, configuration, shifts, voice = null) => {
-  const finalDrive = configuration.drivetrain.final_drive ?? 3.44;
-  const gears = [...UPSHIFT_KMH, 165].map(speed => shifts.up * 60 * 2 * Math.PI * .25 / (speed * 1000 * finalDrive));
+  const transmission = ROAD_TRANSMISSIONS[id] ?? ROAD_TRANSMISSIONS.mono;
   return Object.freeze({
     id, label, ...shifts, voice, textureLevel: 1,
     crossover: id === "touring" ? [2600, 5700] : id === "rosso" ? [3900, 7300] : [2600, 5900],
-    upshiftKmh: UPSHIFT_KMH, downshiftKmh: DOWNSHIFT_KMH,
-    configuration: { ...configuration, drivetrain: { ...configuration.drivetrain, final_drive: finalDrive, gears } },
+    upshiftKmh: transmission.upshiftKmh, downshiftKmh: transmission.downshiftKmh, loadHoldKmh: transmission.loadHoldKmh,
+    configuration: { ...configuration, drivetrain: { ...configuration.drivetrain,
+      final_drive: transmission.finalDrive, gears: transmission.gears, wheelRadiusM: VIRTUAL_WHEEL_RADIUS_M } },
     assets: Object.entries(configuration.sounds).map(([role, sound]) => ({ ...sound, role, ...sources.get(sound.source) })),
   });
 };

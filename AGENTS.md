@@ -192,6 +192,18 @@ workflow as the active task. Current work is an informed implementation campaign
 Maintain source/asset provenance, existing licensing and the selected visual; a
 new visual design still requires its separate three-direction selection.
 
+## Owner road progression clarification — 2026-09-08
+
+Engine must be restrained at urban 20–40 km/h and already feel powerful at
+80 km/h, then progress through 100–130. Use coherent virtual wheel/gear/final
+drive ratios and load-sensitive automatic shifts, with a 130 km/h acoustic
+road ceiling. This supersedes the earlier redline-derived 35/65 km/h ladder.
+Preserve genuine acceleration character, dry output and stationary TAMARRO;
+the ceiling limits road response, not the explicit neutral rev gesture.
+Study Ange Yaghi's public code and licensed material, distinguishing its
+impulse responses, authored example ratios and manual controls from engine
+recordings or an automatic gearbox. Do not present virtual state as Tesla data.
+
 
 ## Owner simulator clarification — 2026-09-08
 
