@@ -1,16 +1,16 @@
 # Session Handoff
 
-Atlas/Stats road-note refinement is implemented and under final validation;
-publication is pending. [Scope, research and evidence](ATLAS-STATS-REFINEMENT-2026-09-08.md).
+Atlas/Stats road-note refinement is implemented and canonically verified in
+build **20260908-1934**, source **4f049ed**. [Scope, research and evidence](ATLAS-STATS-REFINEMENT-2026-09-08.md).
 First real automatic diagnostic receipt remains unverified after September 8
-mailbox inspection. The build identity below is the preceding live release.
+mailbox inspection. Dated entries below retain earlier release evidence.
 
 The owner-selected [Engine A/B listening LAB](ENGINE-LISTENING-LAB-2026-09-08.md)
 compares the 0834 reference and 1102 refinement on one 68-second route, with
 local preference/notes and JSON export. The public default retains the 1102
 audio calibration. This supersedes the earlier pending-direction proposal.
 
-Latest verified live build: **20260908-1143 / e56a0cd**. All executable listening
+Latest verified live build: **20260908-1934 / 4f049ed**. All executable listening
 refinements are implemented, tested and published. Remaining: owner listening
 and device listening/download acceptance; dated entries below are historical.
 

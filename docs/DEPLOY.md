@@ -4873,3 +4873,23 @@ to the existing mailbox. OFF/Standard preferences persist. Official publication,
 independent read-only postflight, 25 canonical checks, 669 native tests, 18 package
 checks and intercepted live timer/retry/OFF QA pass. Real driving-mail receipt
 remains separate. [Full delivery evidence](AUTOMATIC-DIAGNOSTICS-2026-09-07.md).
+
+## 2026-09-08 19:48 — Atlas / Stats road-note refinement
+
+Canonical build **20260908-1934**, source **4f049ed**, VERSION **0.0.0**.
+
+- 798 native tests, 17 focused package/documentation checks and 196 credits pass.
+- Official Python 3.11 preflight/publication/postflight pass; 232 files / 254,890,462 bytes; 29 Illobo tracks fully hashed; two previous assets retained; no retired files removed.
+- 21 independent HTTPS checks pass, including bare/cache-busted root, fourteen fingerprinted JS/CSS assets, protected LAB and conditional main assets. Root/LAB no-store; fingerprinted asset Cache-Control absent, validators present.
+- Canonical Chrome 773 x 601 / 844 x 390: simulated GPS/tile-failure recovery, actual map tiles, OSM fixture links, Visual/Stats flows and zero page exceptions or diagnostic sends.
+- Final postflight: twelve root entries, `remote_writes=NONE`.
+
+| Asset | Verified SHA-256 |
+|---|---|
+| / | `dd4520aa9c7060beaecc7d5c01979b29f373f736bc53781f740ab71c6507dfd1` |
+| /assets/atlas-field-8osmWnvd.js | `f8c10741951631f2b4b02c7b42902ba3ccb485ced83a020886cb2c38aeb204bb` |
+| /assets/index-C78N6n8w.js | `de5fb784edfe16c6dfdfc4f34ea61b7fe25641968d806328b0a15e0c05f05a64` |
+| /assets/index-XXW0U8hc.css | `dc8c48165627d003d4f8ac57d845de2657580e3aeb9d3f8aab004ddee67dc4c5` |
+| /assets/stats-panel-CW9X_yMd.js | `8036be28e13cf27e6a728b10ff27ccd807c0420dc72523f8a66582cd64bfee7b` |
+
+[Scope, mailbox outcome and remaining physical acceptance](ATLAS-STATS-REFINEMENT-2026-09-08.md).

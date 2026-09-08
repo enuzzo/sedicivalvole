@@ -1,16 +1,16 @@
 # Current Project State
 
-Atlas/Stats road-note refinement is implemented and under final validation;
-publication is pending. [Scope, research and evidence](ATLAS-STATS-REFINEMENT-2026-09-08.md).
+Atlas/Stats road-note refinement is implemented and canonically verified in
+build **20260908-1934**, source **4f049ed**. [Scope, research and evidence](ATLAS-STATS-REFINEMENT-2026-09-08.md).
 First real automatic diagnostic receipt remains unverified after September 8
-mailbox inspection. The build identity below is the preceding live release.
+mailbox inspection. Dated entries below retain earlier release evidence.
 
 The owner-selected [Engine A/B listening LAB](ENGINE-LISTENING-LAB-2026-09-08.md)
 compares the 0834 reference and 1102 refinement on one 68-second route, with
 local preference/notes and JSON export. The public default retains the 1102
 audio calibration. This supersedes the earlier pending-direction proposal.
 
-Latest verified canonical publication: **20260908-1143**, source **e56a0cd**,
+Latest verified canonical publication: **20260908-1934**, source **4f049ed**,
 version from VERSION (**0.0.0**). This summary takes precedence over dated
 historical paragraphs below.
 
@@ -18,16 +18,16 @@ historical paragraphs below.
 |---|---|---|
 | Diagnostics | Dev/AUTO ON by default, saved OFF/Standard respected; fifteen observed GPS-driving minutes; coordinate-free; sampled simulated Engine RPM/reasons | First real automatic inbox receipt |
 | Engine | Six voices: Mono hybrid, Rosso/Touring sampled, original Otto V8, Cinque turbo five and continuous Turbine; second at 30, later urban third, focused layers and shorter resonance, power by 80, 130 km/h acoustic cap, phased load-sensitive shifts, proportional sample pitch, wheel-owned whine, original sample-clock DSP, no-GPS TAMARRO, exact-zero idle, dry output and cancellable recovery | Owner praises 0807 road behavior and first three voices; new refinement preference, native media and long drive |
-| Atlas / Stats | Separate Visual destinations; Natural/Palette map, Wikipedia and loaded OSM POIs; curved heading bands, motion/runtime parity and solid GPS/dashed terrain altitude | Physical moving-data legibility and GPS coverage |
+| Atlas / Stats | Separate Visual destinations; Natural/Palette map, independent nearby OSM nodes plus loaded tiles/Wikipedia, recoverable loading, Maps/article links; palette-derived estimated gap connections, richer axes and session continuity | Physical moving-data legibility and GPS coverage |
 | Flux / Soundtrack / FX / Discover | Broad owner acceptance, later small refinements allowed | Preserve the remaining specific device/endurance cases |
 | iPhone | Selected Compact Cockpit for iPhone 17 Pro/Pro Max; safe areas, inert portrait notice, state-preserving rotation; 667×375 through 956×440 browser matrix | Actual Safari/device software and native audio |
 | Travel Report | Selected two-page A4 PDF, optional third route page, immutable preview/download, explicit verified-recipient email, proof reuse and distinct GPS/map elevation | Actual chosen-recipient inbox delivery |
 | Release | Experimental canonical build | Physical acceptance matrix, then separate production release decision |
 
-**793 native tests, 19 package checks, 8 documentation checks, 196 dependency
-credits, 29 canonical HTML/asset/cache checks and three LAB protection/cache checks pass.** Official publication
+**798 native tests, 17 focused package/documentation checks, 196 dependency
+credits and 21 canonical HTML/asset/cache/protection checks pass.** Official publication
 verifies 232 files and all 29 Illobo recordings; independent postflight reports
-remote_writes=NONE. Twelve final 132-second Chromium audio renders cover all six
+remote_writes=NONE. Earlier Engine evidence includes twelve 132-second Chromium audio renders cover all six
 voices at 44.1/48 kHz, alongside twelve baseline comparisons. Steady and full-demand
 130/160 RPM/load/gear parity passes. Final compiled/canonical Tesla/phone browser
 checks pass with one AudioContext and no page/processor errors or synthetic mail.

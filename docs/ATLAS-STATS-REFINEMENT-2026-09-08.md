@@ -79,5 +79,34 @@ Host validation setup: the deployment script needs Python 3.11+ for
 `hashlib.file_digest`; the system `python3` was 3.9. The guarded entry now rejects
 unsupported Python before reading configuration and reports only the class of
 unexpected exceptions. Use the existing `python3.11` executable on this Mac.
-All 23 deployment-script tests pass under that runtime. PHP was absent and is
-being installed for the real report/email fixtures; no mail service is started.
+All 23 deployment-script tests pass under that runtime. PHP was absent; PHP 8.5.10 CLI and its post-install configuration now work.
+The complete suite uses real PHP with fake mailers; no background service was started.
+
+## Canonical publication — 2026-09-08 19:48 local
+
+Build **20260908-1934**, source **4f049ed**, VERSION **0.0.0**. All **798 native
+tests**, **17 focused package/documentation checks** and **196 dependency credits**
+pass. Official publication verifies **232 files / 254,890,462 bytes**, all **29
+Illobo recordings**, two retained overlap assets, and no retired file removals.
+Independent postflight reports `remote_writes=NONE` and twelve root entries.
+
+All **21 HTTPS checks** pass: exact bare/cache-busted HTML, all fourteen top-level
+fingerprinted JS/CSS assets, protected LAB, and bare/conditional main JS/CSS.
+Root and LAB are no-store; fingerprinted assets have validators without explicit
+Cache-Control. This is observed behavior, not a claimed immutable cache policy.
+
+Final compiled and canonical Chrome flows pass at 773 x 601 and 844 x 390:
+late GPS acquisition, blocked first tile request then online recovery with real
+OpenFreeMap tiles, OSM fixture card links, drawer without numbers/SELECT, ACTIVE
+retained, Stats legend and continuity, and no horizontal overflow. No page
+exceptions or diagnostic sends. Actual component fixtures additionally cover
+short/long chart gaps and light/dark palettes. The isolated source fixture had
+a local Vite HMR WebSocket warning; compiled/canonical checks use no Vite runtime.
+Browser plugin was unavailable; existing Chrome/Playwright provided validation.
+
+A real browser request from the canonical origin to Overpass returns HTTP 200,
+100 bounded source nodes and no partial-response remark, verifying CORS and
+normal browser identification. The normalized subset is capped at 80.
+Mailbox recheck still finds no September 8 diagnostic. Next owner acceptance:
+ATLAS recovery on the Tesla's connection, gap legibility in the cabin, and a
+15-observed-driving-minute Dev/AUTO ON session followed by real inbox receipt.
