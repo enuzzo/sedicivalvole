@@ -1942,3 +1942,41 @@ is not sufficient evidence of improvement. Turbine needs a convincing reference
 and a rebuilt source balance or replacement; a gain reduction alone is not a
 realism fix. These are recommendations, not implemented changes. Preserve the
 current testing build until an audible candidate is ready for comparison.
+
+## Recorded engine foundations — 2026-09-08
+
+The owner rejected Otto/Cinque's artificial character and Turbine's breath-like
+noise while appreciating Mono/Rosso/Touring. The listening build is unknown.
+The [recording study](ENGINE-RECORDING-RESEARCH-2026-09-08.md) separates declared
+source facts, numerical screening and still-unperformed listening acceptance.
+These lessons concern timbre and adaptive arrangement; they do not replace the
+existing dry-output, road-progression or lifecycle contracts.
+
+- Multiple filenames do not prove multiple recorded operating states. A pack of
+  six pitch-shifted copies still has one recorded timbre. Require a source/state
+  inventory before claiming an authored RPM bank.
+- Known RPM and load are different dimensions. Low/medium/high labels, a steady
+  neutral rev and an accelerating uphill pass are not interchangeable. Never
+  infer RPM from the strongest spectral peak alone: it may be a harmonic.
+- Microphone perspectives matter when a listener reports phase smear. Compare
+  channels separately before summing; roughly 3 dB mono loss alone does not
+  prove comb filtering. R8 source documentation makes this a concrete check.
+- Louder is not fuller by definition. The two downloaded Opel loop versions
+  differ by about 20.24 dB RMS. Preserve original-level identity and label any
+  separate level-matched audition so gain does not decide the preference.
+- A 96 kHz stereo container does not establish quality or spatial information.
+  All 68 muted.io files have correlation rounded to 1 in the screening decode.
+  Assess useful bandwidth, contamination and channel content on actual audio.
+- Numeric level stability locates inspection spans; it does not accept seams,
+  mechanical identity or listening quality. Compressed-preview overshoots do
+  not prove original-recording clipping. Two motorcycle MP3 decoder warnings
+  remain explicit in the evidence rather than being treated as clean files.
+- For Turbine, a broad noise layer may reproduce the rejected breath impression.
+  Start from an identifiable mechanical recording and assess tonal/air balance
+  before deciding which supporting synthesis is useful. This is an audition
+  criterion, not a ban on noise or procedural sound where they serve the voice.
+
+Future candidate checks should assert source hashes, claimed distinct states,
+channel/gain decisions and loop-boundary behavior. Audible body, fatigue and
+vehicle-speaker translation still require listening; no numerical proxy is
+reported as having passed those gates.

@@ -1058,3 +1058,240 @@ handler from what an individual vehicle chooses to display in sedicivalvole.
 Unsent Tesla thank-you draft: Thank you for documenting browser audio in the
 Model 3 Miniplayer. That precise play/pause description helped me keep my
 experimental sedicivalvole compatibility claims grounded in what is documented.
+
+
+## Recorded Engine research — 2026-09-08
+
+These personalized drafts are **unsent**. Public contact routes are provided without inferring private addresses. Candidate recordings are study material only, not released integrations. Full asset/source details are in [the research report](ENGINE-RECORDING-RESEARCH-2026-09-08.md).
+
+### snafic — Ford Galaxy V8 takes
+
+- Source: [Ford Galaxy V8 takes](https://freesound.org/people/snafic/packs/28791/); [public contact route](https://freesound.org/people/snafic/).
+- Status: Study only. Two public previews and source metadata.
+- Terms: CC BY 4.0.
+
+Unsent draft: Thank you for sharing both Ford takes; they give our recorded-V8 study a concrete starting point. This is research for sedicivalvole; no candidate recording has been shipped. — enuzzo
+
+### cr4sht3st — Corvette med.wav
+
+- Source: [Corvette med.wav](https://freesound.org/people/cr4sht3st/sounds/157144/); [public contact route](https://freesound.org/people/cr4sht3st/).
+- Status: Study only. Asset metadata and nominal RPM.
+- Terms: CC0 1.0.
+
+Unsent draft: Thank you for including an RPM value with your Corvette recording; that detail makes careful calibration possible. This is research for sedicivalvole; no candidate recording has been shipped. — enuzzo
+
+### Jonas Jocys — Audi R8 recording
+
+- Source: [Audi R8 recording](https://freesound.org/people/Jonas_Jocys/sounds/457733/); [public contact route](https://freesound.org/people/Jonas_Jocys/).
+- Status: Study only. Public preview and microphone-placement description.
+- Terms: CC BY 4.0.
+
+Unsent draft: Thank you for documenting the two microphone perspectives; it helps us evaluate channels without guessing how they were recorded. This is research for sedicivalvole; no candidate recording has been shipped. — enuzzo
+
+### lmartins — Maserati GranTurismo S Exhaust
+
+- Source: [Maserati GranTurismo S Exhaust](https://freesound.org/people/lmartins/sounds/465453/); [public contact route](https://freesound.org/people/lmartins/).
+- Status: Study only. Public preview and original-format metadata.
+- Terms: CC BY 4.0.
+
+Unsent draft: Thank you for sharing the Maserati performance; it is a useful character reference for our listening comparison. This is research for sedicivalvole; no candidate recording has been shipped. — enuzzo
+
+### GiocoSound — BMW 120d state recordings
+
+- Source: [BMW 120d state recordings](https://freesound.org/people/GiocoSound/packs/22622/); [public contact route](https://freesound.org/people/GiocoSound/).
+- Status: Study only. Five individual steady-state asset pages and pack organization.
+- Terms: Checked steady-state assets: CC0 1.0.
+
+Unsent draft: Thank you for separating engine states and microphone perspectives; that organization is especially useful for adaptive audio research. This is research for sedicivalvole; no candidate recording has been shipped. — enuzzo
+
+### Arto Koivisto / el-bee — Volvo S60 Engine Ramp Test
+
+- Source: [Volvo S60 Engine Ramp Test](https://freesound.org/people/el-bee/packs/35809/); [public contact route](https://freesound.org/people/el-bee/).
+- Status: Study only. Four asset pages; marker and recording-limit documentation.
+- Terms: CC BY-NC 4.0.
+
+Unsent draft: Thank you for documenting RPM markers and recording limitations so openly; those details make your inline-five material particularly informative. This is research for sedicivalvole; no candidate recording has been shipped. — enuzzo
+
+### C-V — Jet Engine Start Cart
+
+- Source: [Jet Engine Start Cart](https://freesound.org/people/C-V/sounds/704945/); [public contact route](https://freesound.org/people/C-V/).
+- Status: Study only. Field-recording metadata only.
+- Terms: CC0 1.0.
+
+Unsent draft: Thank you for documenting a real start-cart recording; it is a promising reference for our turbine study. This is research for sedicivalvole; no candidate recording has been shipped. — enuzzo
+
+### imagefilm.berlin — Cessna turbine start
+
+- Source: [Cessna turbine start](https://freesound.org/people/imagefilm.berlin/sounds/761480/); [public contact route](https://www.imagefilm.berlin/).
+- Status: Study only. Airfield-recording metadata only.
+- Terms: CC BY 4.0.
+
+Unsent draft: Thank you for sharing the Cessna start and its recording context; it helps us distinguish machinery from environmental sound. This is research for sedicivalvole; no candidate recording has been shipped. — enuzzo
+
+### qubodup — Opel engine loop and Jet Turbine Noise
+
+- Source: [Opel engine loop and Jet Turbine Noise](https://opengameart.org/content/car-engine-loop-96khz-4s); [public contact route](https://freesound.org/people/qubodup/).
+- Status: Study only. Opel original loop bytes; Opel and jet public previews; linked sources in research report.
+- Terms: Opel loop CC BY 3.0; source BY 4.0 option; jet CC0 declared, provenance unresolved.
+
+Unsent draft: Thank you for preserving both source recordings and prepared loops; comparing them helps us keep level changes separate from sound quality. This is research for sedicivalvole; no candidate recording has been shipped. — enuzzo
+
+### kyles — Industrial turbine spinning
+
+- Source: [Industrial turbine spinning](https://freesound.org/people/kyles/sounds/453477/); [public contact route](https://freesound.org/people/kyles/).
+- Status: Study only. Public preview and asset description.
+- Terms: CC0 1.0.
+
+Unsent draft: Thank you for sharing the industrial turbine texture; we have kept its mechanical identity explicit in our study. This is research for sedicivalvole; no candidate recording has been shipped. — enuzzo
+
+### US Department of Defense / Wikimedia Commons contributors — T-9 Jet Engine Test Cell
+
+- Source: [T-9 Jet Engine Test Cell](https://commons.wikimedia.org/wiki/File:T-9_Jet_Engine_Test_Cell.webm); [public contact route](https://commons.wikimedia.org/wiki/File_talk:T-9_Jet_Engine_Test_Cell.webm).
+- Status: Study only. Source-chain documentation only; no video imported.
+- Terms: US public-domain claim; international applicability not cleared.
+
+Unsent draft: Thank you for preserving the source and rights history alongside this engine-test record; that context is essential to responsible reuse research. This is research for sedicivalvole; no candidate recording has been shipped. — enuzzo
+
+### dklon — Engines - Startup, Idle & Rev
+
+- Source: [Engines - Startup, Idle & Rev](https://opengameart.org/content/engines-startup-idle-rev); [public contact route](https://opengameart.org/content/engines-startup-idle-rev).
+- Status: Study only. Downloaded motorcycle archive, numeric screening only.
+- Terms: CC BY-SA 3.0.
+
+Unsent draft: Thank you for sharing recordings from your motorcycle library; we have retained your attribution and separate audio license in our research notes. This is research for sedicivalvole; no candidate recording has been shipped. — enuzzo
+
+### muted.io / Seb; individual recordists unspecified — Performance Cars
+
+- Source: [Performance Cars](https://muted.io/performance-cars/); [public contact route](https://muted.io/about/).
+- Status: Study only. 68 original WAVs inventoried and numerically screened.
+- Terms: Distributor declares CC0 1.0; per-recording provenance incomplete.
+
+Unsent draft: Thank you for making the performance-car collection available; our study records its file-level evidence while leaving unidentified recording credits open. This is research for sedicivalvole; no candidate recording has been shipped. — enuzzo
+
+### domasx2 — Racing car engine sound loops
+
+- Source: [Racing car engine sound loops](https://opengameart.org/content/racing-car-engine-sound-loops); [public contact route](https://opengameart.org/content/racing-car-engine-sound-loops).
+- Status: Study only. Description of six pitch variants and source replacement.
+- Terms: CC0 declared; original chain follow-up remains.
+
+Unsent draft: Thank you for explaining how the six versions were made and recording the source replacement; that transparency helps avoid treating pitch variants as separate recordings. This is research for sedicivalvole; no candidate recording has been shipped. — enuzzo
+
+### DerMeehdrescher / Meehdrescher Studios — Generic V8 Engine Sound
+
+- Source: [Generic V8 Engine Sound](https://opengameart.org/content/generic-v8-engine-sound); [public contact route](https://opengameart.org/content/generic-v8-engine-sound).
+- Status: Study only. Two original WAVs inventoried.
+- Terms: CC BY-SA 4.0; recording mechanism unspecified.
+
+Unsent draft: Thank you for publishing the acceleration and deceleration loops with explicit credit and license terms; both remain identified separately in our study. This is research for sedicivalvole; no candidate recording has been shipped. — enuzzo
+
+### pauliuw — Engine sounds2
+
+- Source: [Engine sounds2](https://opengameart.org/content/engine-sounds2); [public contact route](https://opengameart.org/content/engine-sounds2).
+- Status: Study only. Two original MP3s inventoried.
+- Terms: CC0 declared; origin unspecified.
+
+Unsent draft: Thank you for sharing the engine effects; we have retained their source identity without guessing their recording method. This is research for sedicivalvole; no candidate recording has been shipped. — enuzzo
+
+### NOX Sound Design — Essentials Series SFX
+
+- Source: [Essentials Series SFX](https://nox-sound-design.itch.io/essentials-series-sfx-nox-sound); [public contact route](https://linktr.ee/Nox_Sound).
+- Status: Study only. Vehicle-pack listing only.
+- Terms: Advertised CC0; individual files not audited.
+
+Unsent draft: Thank you for making a vehicle-focused collection available with clear public terms; it is a useful follow-up lead for our recording research. This is research for sedicivalvole; no candidate recording has been shipped. — enuzzo
+
+### Speed Dreams contributors / June Ravenmoon; credited recordists cr4sht3st, Ears68, Heigh-hoo, kevp888, cheesepuff, Buildinup6 and Vitmin — Engine sound credit inventory
+
+- Source: [Engine sound credit inventory](https://forge.a-lec.org/speed-dreams/speed-dreams-data/raw/commit/5ee49962064902d70cb702952d567ffccebf752c/data/data/sound/SoundCredits.txt); [public contact route](https://forge.a-lec.org/speed-dreams/speed-dreams-data).
+- Status: Study only. Pinned credit mapping and sound-directory inventory; no audio obtained.
+- Terms: Per-entry terms; no blanket asset clearance.
+
+Unsent draft: Thank you for tracing your engine edits back to named recordings; that credit work helped us follow original sources instead of assuming the game license covered every asset. This is research for sedicivalvole; no candidate recording has been shipped. — enuzzo
+
+### CryHam / Stunt Rally contributors — Data development notes
+
+- Source: [Data development notes](https://github.com/stuntrally/stuntrally3/blob/main/docs/data.md); [public contact route](https://github.com/stuntrally/stuntrally3/issues).
+- Status: Study only. Engine-simulation and licensing history only.
+- Terms: Documentation study; unresolved setup-file rights noted by maintainer.
+
+Unsent draft: Thank you for documenting both the audio work and unresolved community-source questions; your notes help later researchers avoid repeating unsupported assumptions. This is research for sedicivalvole; no candidate recording has been shipped. — enuzzo
+
+### Jreo — Jreo SVA / g4-svd
+
+- Source: [Jreo SVA / g4-svd](https://jreo.itch.io/jreo-sva); [public contact route](https://github.com/jreo03/g4-svd).
+- Status: Study only. Synthesis description and repository tree; no code/audio imported.
+- Terms: Audio CC BY 4.0; code MIT.
+
+Unsent draft: Thank you for separating your audio and code licenses and explaining the synthesis approach; that distinction is valuable in our source comparison. This is research for sedicivalvole; no candidate recording has been shipped. — enuzzo
+
+### Luisa Fernanda Durango Bermúdez / Instituto Tecnológico Metropolitano — Awesome Car SFX Library
+
+- Source: [Awesome Car SFX Library](https://hdl.handle.net/20.500.12622/5641); [public contact route](https://repositorio.itm.edu.co/entities/publication/2f9dfac4-99e8-4a25-8beb-dc145a6e7b8e).
+- Status: Study only. Thesis and recording metadata study only.
+- Terms: Thesis publication does not establish audio redistribution rights.
+
+Unsent draft: Thank you for documenting the car-recording inventory in such detail; it offers a valuable research lead while we keep audio access and rights separate. This is research for sedicivalvole; no candidate recording has been shipped. — enuzzo
+
+### DerrickMckinnon — Starting of jet engine
+
+- Source: [Starting of jet engine](https://freesound.org/people/DerrickMckinnon/sounds/789950/); [public contact route](https://freesound.org/people/DerrickMckinnon/).
+- Status: Study only. Original-format metadata only.
+- Terms: CC BY 4.0.
+
+Unsent draft: Thank you for sharing the jet-start recording and its context; our comparison preserves the original-format limitations honestly. This is research for sedicivalvole; no candidate recording has been shipped. — enuzzo
+
+### craigsmith — S28-19 Engine room; high whine from turbines
+
+- Source: [S28-19 Engine room; high whine from turbines](https://freesound.org/people/craigsmith/sounds/675727/); [public contact route](https://freesound.org/people/craigsmith/).
+- Status: Study only. Public preview and transfer-history description.
+- Terms: CC0 upload declaration; archival rights chain unresolved.
+
+Unsent draft: Thank you for preserving the transfer history of this archival sound; those details matter as much as the audio when researching possible reuse. This is research for sedicivalvole; no candidate recording has been shipped. — enuzzo
+
+### Robin Doerfler — Procedural Engine Sounds
+
+- Source: [Procedural Engine Sounds](https://huggingface.co/datasets/rdoerfler/procedural-engine-sounds/blob/main/README.md); [public contact route](https://huggingface.co/datasets/rdoerfler/procedural-engine-sounds/discussions).
+- Status: Study only. Dataset card and related paper; generated-audio benchmark only.
+- Terms: CC BY-NC 4.0 dataset.
+
+Unsent draft: Thank you for documenting the generated sounds and their control annotations; they offer a useful benchmark without being mistaken for field recordings. This is research for sedicivalvole; no candidate recording has been shipped. — enuzzo
+
+### Sonniss — GameAudioGDC license
+
+- Source: [GameAudioGDC license](https://sonniss.com/gdc-bundle-license/); [public contact route](https://sonniss.com/).
+- Status: Study only. License study only; no bundle downloaded.
+- Terms: Custom EULA v2.0; raw redistribution restricted.
+
+Unsent draft: Thank you for making the production-use boundaries explicit; our research keeps finished-app use separate from publishing raw assets. This is research for sedicivalvole; no candidate recording has been shipped. — enuzzo
+
+### VDrift contributors — Separate software and car-data repositories
+
+- Source: [Separate software and car-data repositories](https://github.com/VDrift/vdrift); [public contact route](https://github.com/VDrift/vdrift/issues).
+- Status: Study only. Repository/data-location study only.
+- Terms: Software GPL; car audio not individually cleared.
+
+Unsent draft: Thank you for maintaining an inspectable driving project; our research keeps your software license separate from questions about individual car sounds. This is research for sedicivalvole; no candidate recording has been shipped. — enuzzo
+
+### Creative Commons — CC0, BY, BY-SA and BY-NC deeds
+
+- Source: [CC0, BY, BY-SA and BY-NC deeds](https://creativecommons.org/licenses/); [public contact route](https://creativecommons.org/).
+- Status: Study only. Exact audio-license versions linked in research report.
+- Terms: License documentation; no license substituted for project code.
+
+Unsent draft: Thank you for clearly documenting attribution and adaptation conditions; they help us preserve each recording creator’s terms. This is research for sedicivalvole; no candidate recording has been shipped. — enuzzo
+
+### rockittt / Cell31_Sound_Productions — Explicitly simulated jet effects
+
+- Source: [Explicitly simulated jet effects](https://freesound.org/people/rockittt/sounds/622406/); [public contact route](https://freesound.org/people/Cell31_Sound_Productions/sounds/661160/).
+- Status: Study only. Descriptions of whistle/rumble and gas-heater substitutes.
+- Terms: No reuse; excluded source-method references.
+
+Unsent draft: Thank you for explaining how these effects were made; that candor helps us distinguish designed effects from recordings of the requested machinery. This is research for sedicivalvole; no candidate recording has been shipped. — enuzzo
+
+### FFmpeg developers — FFmpeg / ffprobe
+
+- Source: [FFmpeg / ffprobe](https://ffmpeg.org/); [public contact route](https://ffmpeg.org/contact.html).
+- Status: Development only. Local decoding, metadata extraction and audition preparation.
+- Terms: Installed 9.0.1 build: GPL-3.0-or-later; binaries not redistributed.
+
+Unsent draft: Thank you for providing inspectable decoding and metadata tools; they let us prepare repeatable audio evidence without hiding conversions. This is research for sedicivalvole; no candidate recording has been shipped. — enuzzo

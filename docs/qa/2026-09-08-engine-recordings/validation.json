@@ -1,0 +1,17 @@
+{
+  "date": "2026-09-08",
+  "baseline_commit": "b2c8453",
+  "scope": "Research documentation, numerical screening and local audition preparation only",
+  "documentation_tests": {"passed": 8, "failed": 0},
+  "npm_credits_check": {"passed": true, "entries": 196, "footer_at_end": true},
+  "study_source_sync": {"passed": true, "records": 29, "documents": ["README.md", "THIRD_PARTY_NOTICES.md", "docs/COMMUNITY-THANKS.md"]},
+  "screened_audio": {"files": 100, "seconds": 1674.324, "files_with_decoder_warnings": 2},
+  "audition_reproduction": {"files": 8, "identical_output_sha256": 8, "original_playback_speed": true, "fixed_gain_db": -6},
+  "python_syntax": "Both research scripts parsed successfully; initial py_compile cache write was sandbox-blocked, then syntax verified without external cache writes",
+  "auditory_review": "not_performed",
+  "target_vehicle_acceptance": "not_performed",
+  "production_audio_imports": 0,
+  "runtime_changes": 0,
+  "deployment": "not_requested_for_research; no publication performed",
+  "source_limitations": ["Freesound originals require ordinary login/download access; later direct preview attempts returned 403", "Four Speed Dreams WAV requests returned HTTP 429", "Rights declarations are not independent ownership verification"]
+}

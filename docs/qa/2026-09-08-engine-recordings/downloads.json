@@ -1,0 +1,54 @@
+[
+  {
+    "url": "https://mutedio.s3.us-east-2.amazonaws.com/sounds/sample-packs/performance-cars-free-sample-pack-mutedio.zip",
+    "file": "performance-cars.zip",
+    "bytes": 266093279,
+    "sha256": "bde1241416274464c170d59dde84327d53868210a7af7d73e63fc35576593d10"
+  },
+  {
+    "url": "https://opengameart.org/sites/default/files/Startup%2C%20Idle%20%26%20Rev.zip",
+    "file": "oga-Startup, Idle & Rev.zip",
+    "bytes": 5354035,
+    "sha256": "93198fcdf5ca1d4d4bb6002f2dc2eb2a91dea840f9cc58e8d12ca2b828262b46"
+  },
+  {
+    "url": "https://opengameart.org/sites/default/files/engine-loop.7z",
+    "file": "oga-engine-loop.7z",
+    "bytes": 2679125,
+    "sha256": "06b14b760fde613b357d043517f604dfde024318e764dff209a179ea39c566d6"
+  },
+  {
+    "url": "https://opengameart.org/sites/default/files/engine_sound.mp3",
+    "file": "oga-engine_sound.mp3",
+    "bytes": 828585,
+    "sha256": "6ac9e73a6e4d0ec2a7d70f1f2c833622f60c60f517488600b070708b2b4c2396"
+  },
+  {
+    "url": "https://opengameart.org/sites/default/files/engine_sound_1.mp3",
+    "file": "oga-engine_sound_1.mp3",
+    "bytes": 828587,
+    "sha256": "44d3023e98918de97436712c42383a7c8430fd49b54c50eb80a53a05ad054044"
+  },
+  {
+    "url": "https://opengameart.org/sites/default/files/genericv8sound.zip",
+    "file": "oga-genericv8sound.zip",
+    "bytes": 300220,
+    "sha256": "bb2ef94fd7899c9642342497ae9625736b2039b23700685c4fe67f36f2b77d47"
+  },
+  {
+    "url": "https://forge.a-lec.org/speed-dreams/speed-dreams-data/raw/commit/5ee49962064902d70cb702952d567ffccebf752c/data/data/sound/v8-cr4sht3st.wav",
+    "error": "HTTP Error 429: Too Many Requests"
+  },
+  {
+    "url": "https://forge.a-lec.org/speed-dreams/speed-dreams-data/raw/commit/5ee49962064902d70cb702952d567ffccebf752c/data/data/sound/v8-ears68.wav",
+    "error": "HTTP Error 429: Too Many Requests"
+  },
+  {
+    "url": "https://forge.a-lec.org/speed-dreams/speed-dreams-data/raw/commit/5ee49962064902d70cb702952d567ffccebf752c/data/data/sound/v8_formula.wav",
+    "error": "HTTP Error 429: Too Many Requests"
+  },
+  {
+    "url": "https://forge.a-lec.org/speed-dreams/speed-dreams-data/raw/commit/5ee49962064902d70cb702952d567ffccebf752c/data/data/sound/v8_formula2.wav",
+    "error": "HTTP Error 429: Too Many Requests"
+  }
+]

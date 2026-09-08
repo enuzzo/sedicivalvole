@@ -391,3 +391,42 @@ manual (https://www.tesla.com/ownersmanual/model3/en_gb/GUID-7A85FB6B-9DF6-4C55-
 These are documentation references, not imported software/assets. W3C Media
 Working Group and Tesla retain their respective material; no rights to their
 code, brand or documentation are claimed.
+
+
+## Recorded Engine source research — 2026-09-08
+
+No candidate source audio, third-party code or binary enters the tracked repository or product. Local excerpts remain ignored under `_references/`; their license/source/change notices accompany them. The numerical analysis uses the existing NumPy development dependency and the installed FFmpeg CLI. Source-visible original project code remains PolyForm Noncommercial; audio candidates retain their own terms.
+
+| Creator / project | Exact study or tool source | License scope / unresolved boundary | Material used |
+|---|---|---|---|
+| snafic | [Ford Galaxy V8 takes](https://freesound.org/people/snafic/packs/28791/) | CC BY 4.0 | Study only: Two public previews and source metadata |
+| cr4sht3st | [Corvette med.wav](https://freesound.org/people/cr4sht3st/sounds/157144/) | CC0 1.0 | Study only: Asset metadata and nominal RPM |
+| Jonas Jocys | [Audi R8 recording](https://freesound.org/people/Jonas_Jocys/sounds/457733/) | CC BY 4.0 | Study only: Public preview and microphone-placement description |
+| lmartins | [Maserati GranTurismo S Exhaust](https://freesound.org/people/lmartins/sounds/465453/) | CC BY 4.0 | Study only: Public preview and original-format metadata |
+| GiocoSound | [BMW 120d state recordings](https://freesound.org/people/GiocoSound/packs/22622/) | Checked steady-state assets: CC0 1.0 | Study only: Five individual steady-state asset pages and pack organization |
+| Arto Koivisto / el-bee | [Volvo S60 Engine Ramp Test](https://freesound.org/people/el-bee/packs/35809/) | CC BY-NC 4.0 | Study only: Four asset pages; marker and recording-limit documentation |
+| C-V | [Jet Engine Start Cart](https://freesound.org/people/C-V/sounds/704945/) | CC0 1.0 | Study only: Field-recording metadata only |
+| imagefilm.berlin | [Cessna turbine start](https://freesound.org/people/imagefilm.berlin/sounds/761480/) | CC BY 4.0 | Study only: Airfield-recording metadata only |
+| qubodup | [Opel engine loop and Jet Turbine Noise](https://opengameart.org/content/car-engine-loop-96khz-4s) | Opel loop CC BY 3.0; source BY 4.0 option; jet CC0 declared, provenance unresolved | Study only: Opel original loop bytes; Opel and jet public previews; linked sources in research report |
+| kyles | [Industrial turbine spinning](https://freesound.org/people/kyles/sounds/453477/) | CC0 1.0 | Study only: Public preview and asset description |
+| US Department of Defense / Wikimedia Commons contributors | [T-9 Jet Engine Test Cell](https://commons.wikimedia.org/wiki/File:T-9_Jet_Engine_Test_Cell.webm) | US public-domain claim; international applicability not cleared | Study only: Source-chain documentation only; no video imported |
+| dklon | [Engines - Startup, Idle & Rev](https://opengameart.org/content/engines-startup-idle-rev) | CC BY-SA 3.0 | Study only: Downloaded motorcycle archive, numeric screening only |
+| muted.io / Seb; individual recordists unspecified | [Performance Cars](https://muted.io/performance-cars/) | Distributor declares CC0 1.0; per-recording provenance incomplete | Study only: 68 original WAVs inventoried and numerically screened |
+| domasx2 | [Racing car engine sound loops](https://opengameart.org/content/racing-car-engine-sound-loops) | CC0 declared; original chain follow-up remains | Study only: Description of six pitch variants and source replacement |
+| DerMeehdrescher / Meehdrescher Studios | [Generic V8 Engine Sound](https://opengameart.org/content/generic-v8-engine-sound) | CC BY-SA 4.0; recording mechanism unspecified | Study only: Two original WAVs inventoried |
+| pauliuw | [Engine sounds2](https://opengameart.org/content/engine-sounds2) | CC0 declared; origin unspecified | Study only: Two original MP3s inventoried |
+| NOX Sound Design | [Essentials Series SFX](https://nox-sound-design.itch.io/essentials-series-sfx-nox-sound) | Advertised CC0; individual files not audited | Study only: Vehicle-pack listing only |
+| Speed Dreams contributors / June Ravenmoon; credited recordists cr4sht3st, Ears68, Heigh-hoo, kevp888, cheesepuff, Buildinup6 and Vitmin | [Engine sound credit inventory](https://forge.a-lec.org/speed-dreams/speed-dreams-data/raw/commit/5ee49962064902d70cb702952d567ffccebf752c/data/data/sound/SoundCredits.txt) | Per-entry terms; no blanket asset clearance | Study only: Pinned credit mapping and sound-directory inventory; no audio obtained |
+| CryHam / Stunt Rally contributors | [Data development notes](https://github.com/stuntrally/stuntrally3/blob/main/docs/data.md) | Documentation study; unresolved setup-file rights noted by maintainer | Study only: Engine-simulation and licensing history only |
+| Jreo | [Jreo SVA / g4-svd](https://jreo.itch.io/jreo-sva) | Audio CC BY 4.0; code MIT | Study only: Synthesis description and repository tree; no code/audio imported |
+| Luisa Fernanda Durango Bermúdez / Instituto Tecnológico Metropolitano | [Awesome Car SFX Library](https://hdl.handle.net/20.500.12622/5641) | Thesis publication does not establish audio redistribution rights | Study only: Thesis and recording metadata study only |
+| DerrickMckinnon | [Starting of jet engine](https://freesound.org/people/DerrickMckinnon/sounds/789950/) | CC BY 4.0 | Study only: Original-format metadata only |
+| craigsmith | [S28-19 Engine room; high whine from turbines](https://freesound.org/people/craigsmith/sounds/675727/) | CC0 upload declaration; archival rights chain unresolved | Study only: Public preview and transfer-history description |
+| Robin Doerfler | [Procedural Engine Sounds](https://huggingface.co/datasets/rdoerfler/procedural-engine-sounds/blob/main/README.md) | CC BY-NC 4.0 dataset | Study only: Dataset card and related paper; generated-audio benchmark only |
+| Sonniss | [GameAudioGDC license](https://sonniss.com/gdc-bundle-license/) | Custom EULA v2.0; raw redistribution restricted | Study only: License study only; no bundle downloaded |
+| VDrift contributors | [Separate software and car-data repositories](https://github.com/VDrift/vdrift) | Software GPL; car audio not individually cleared | Study only: Repository/data-location study only |
+| Creative Commons | [CC0, BY, BY-SA and BY-NC deeds](https://creativecommons.org/licenses/) | License documentation; no license substituted for project code | Study only: Exact audio-license versions linked in research report |
+| rockittt / Cell31_Sound_Productions | [Explicitly simulated jet effects](https://freesound.org/people/rockittt/sounds/622406/) | No reuse; excluded source-method references | Study only: Descriptions of whistle/rumble and gas-heater substitutes |
+| FFmpeg developers | [FFmpeg / ffprobe](https://ffmpeg.org/) | Installed 9.0.1 build: GPL-3.0-or-later; binaries not redistributed | Development only: Local decoding, metadata extraction and audition preparation |
+
+See [the recording report](docs/ENGINE-RECORDING-RESEARCH-2026-09-08.md) for individual assets, alternate license versions and candidate limitations. This study notice is not approval to import or relicense any candidate.

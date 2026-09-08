@@ -461,6 +461,8 @@ dashed Estimated connections, improves chart axes and adds session continuity
 bars. Estimated lines do not alter observations or totals.
 [Implementation, source boundaries and validation](docs/ATLAS-STATS-REFINEMENT-2026-09-08.md).
 
+Recorded Engine source research is available in [the candidate report](docs/ENGINE-RECORDING-RESEARCH-2026-09-08.md): exact licenses, signal screening and local auditions. This is research only; no candidate replaces a public Engine voice.
+
 <!-- COMMUNITY-CREDITS:START -->
 ## Community thanks — 2026-09-05
 
@@ -771,5 +773,40 @@ These are exact lockfile entries, not a claim that every package ships in the br
 
 - 🎛️ **W3C Media Working Group** — [Media Session specification](https://www.w3.org/TR/mediasession/) and [public issue tracker](https://github.com/w3c/mediasession/issues): documentation study of native media action dispatch and metadata. No specification code imported.
 - 🚘 **Tesla, Inc.** — [Model 3 media documentation](https://www.tesla.com/ownersmanual/model3/en_gb/GUID-7A85FB6B-9DF6-4C55-A2F9-793207E48E9D.html) / [public support](https://www.tesla.com/support): documentation study of browser audio and Miniplayer play/pause; next/previous visibility remains vehicle acceptance. No Tesla code, audio or UI assets imported.
+
+
+### Recorded Engine research — September 8, 2026
+
+All sources below are studies or local development tools. No candidate audio is shipped. Exact asset links, versions and unresolved rights are in the [research report](docs/ENGINE-RECORDING-RESEARCH-2026-09-08.md) and [source inventory](docs/qa/2026-09-08-engine-recordings/study-sources.json).
+
+- 🎧 **snafic** — [Ford Galaxy V8 takes](https://freesound.org/people/snafic/packs/28791/); [public contact route](https://freesound.org/people/snafic/). **Study only.** Two public previews and source metadata.
+- 🎧 **cr4sht3st** — [Corvette med.wav](https://freesound.org/people/cr4sht3st/sounds/157144/); [public contact route](https://freesound.org/people/cr4sht3st/). **Study only.** Asset metadata and nominal RPM.
+- 🎧 **Jonas Jocys** — [Audi R8 recording](https://freesound.org/people/Jonas_Jocys/sounds/457733/); [public contact route](https://freesound.org/people/Jonas_Jocys/). **Study only.** Public preview and microphone-placement description.
+- 🎧 **lmartins** — [Maserati GranTurismo S Exhaust](https://freesound.org/people/lmartins/sounds/465453/); [public contact route](https://freesound.org/people/lmartins/). **Study only.** Public preview and original-format metadata.
+- 🎧 **GiocoSound** — [BMW 120d state recordings](https://freesound.org/people/GiocoSound/packs/22622/); [public contact route](https://freesound.org/people/GiocoSound/). **Study only.** Five individual steady-state asset pages and pack organization.
+- 🎧 **Arto Koivisto / el-bee** — [Volvo S60 Engine Ramp Test](https://freesound.org/people/el-bee/packs/35809/); [public contact route](https://freesound.org/people/el-bee/). **Study only.** Four asset pages; marker and recording-limit documentation.
+- 🎧 **C-V** — [Jet Engine Start Cart](https://freesound.org/people/C-V/sounds/704945/); [public contact route](https://freesound.org/people/C-V/). **Study only.** Field-recording metadata only.
+- 🎧 **imagefilm.berlin** — [Cessna turbine start](https://freesound.org/people/imagefilm.berlin/sounds/761480/); [public contact route](https://www.imagefilm.berlin/). **Study only.** Airfield-recording metadata only.
+- 🎧 **qubodup** — [Opel engine loop and Jet Turbine Noise](https://opengameart.org/content/car-engine-loop-96khz-4s); [public contact route](https://freesound.org/people/qubodup/). **Study only.** Opel original loop bytes; Opel and jet public previews; linked sources in research report.
+- 🎧 **kyles** — [Industrial turbine spinning](https://freesound.org/people/kyles/sounds/453477/); [public contact route](https://freesound.org/people/kyles/). **Study only.** Public preview and asset description.
+- 🎧 **US Department of Defense / Wikimedia Commons contributors** — [T-9 Jet Engine Test Cell](https://commons.wikimedia.org/wiki/File:T-9_Jet_Engine_Test_Cell.webm); [public contact route](https://commons.wikimedia.org/wiki/File_talk:T-9_Jet_Engine_Test_Cell.webm). **Study only.** Source-chain documentation only; no video imported.
+- 🎧 **dklon** — [Engines - Startup, Idle & Rev](https://opengameart.org/content/engines-startup-idle-rev); [public contact route](https://opengameart.org/content/engines-startup-idle-rev). **Study only.** Downloaded motorcycle archive, numeric screening only.
+- 🎧 **muted.io / Seb; individual recordists unspecified** — [Performance Cars](https://muted.io/performance-cars/); [public contact route](https://muted.io/about/). **Study only.** 68 original WAVs inventoried and numerically screened.
+- 🎧 **domasx2** — [Racing car engine sound loops](https://opengameart.org/content/racing-car-engine-sound-loops); [public contact route](https://opengameart.org/content/racing-car-engine-sound-loops). **Study only.** Description of six pitch variants and source replacement.
+- 🎧 **DerMeehdrescher / Meehdrescher Studios** — [Generic V8 Engine Sound](https://opengameart.org/content/generic-v8-engine-sound); [public contact route](https://opengameart.org/content/generic-v8-engine-sound). **Study only.** Two original WAVs inventoried.
+- 🎧 **pauliuw** — [Engine sounds2](https://opengameart.org/content/engine-sounds2); [public contact route](https://opengameart.org/content/engine-sounds2). **Study only.** Two original MP3s inventoried.
+- 🎧 **NOX Sound Design** — [Essentials Series SFX](https://nox-sound-design.itch.io/essentials-series-sfx-nox-sound); [public contact route](https://linktr.ee/Nox_Sound). **Study only.** Vehicle-pack listing only.
+- 🎧 **Speed Dreams contributors / June Ravenmoon; credited recordists cr4sht3st, Ears68, Heigh-hoo, kevp888, cheesepuff, Buildinup6 and Vitmin** — [Engine sound credit inventory](https://forge.a-lec.org/speed-dreams/speed-dreams-data/raw/commit/5ee49962064902d70cb702952d567ffccebf752c/data/data/sound/SoundCredits.txt); [public contact route](https://forge.a-lec.org/speed-dreams/speed-dreams-data). **Study only.** Pinned credit mapping and sound-directory inventory; no audio obtained.
+- 🎧 **CryHam / Stunt Rally contributors** — [Data development notes](https://github.com/stuntrally/stuntrally3/blob/main/docs/data.md); [public contact route](https://github.com/stuntrally/stuntrally3/issues). **Study only.** Engine-simulation and licensing history only.
+- 🎧 **Jreo** — [Jreo SVA / g4-svd](https://jreo.itch.io/jreo-sva); [public contact route](https://github.com/jreo03/g4-svd). **Study only.** Synthesis description and repository tree; no code/audio imported.
+- 🎧 **Luisa Fernanda Durango Bermúdez / Instituto Tecnológico Metropolitano** — [Awesome Car SFX Library](https://hdl.handle.net/20.500.12622/5641); [public contact route](https://repositorio.itm.edu.co/entities/publication/2f9dfac4-99e8-4a25-8beb-dc145a6e7b8e). **Study only.** Thesis and recording metadata study only.
+- 🎧 **DerrickMckinnon** — [Starting of jet engine](https://freesound.org/people/DerrickMckinnon/sounds/789950/); [public contact route](https://freesound.org/people/DerrickMckinnon/). **Study only.** Original-format metadata only.
+- 🎧 **craigsmith** — [S28-19 Engine room; high whine from turbines](https://freesound.org/people/craigsmith/sounds/675727/); [public contact route](https://freesound.org/people/craigsmith/). **Study only.** Public preview and transfer-history description.
+- 🎧 **Robin Doerfler** — [Procedural Engine Sounds](https://huggingface.co/datasets/rdoerfler/procedural-engine-sounds/blob/main/README.md); [public contact route](https://huggingface.co/datasets/rdoerfler/procedural-engine-sounds/discussions). **Study only.** Dataset card and related paper; generated-audio benchmark only.
+- 🎧 **Sonniss** — [GameAudioGDC license](https://sonniss.com/gdc-bundle-license/); [public contact route](https://sonniss.com/). **Study only.** License study only; no bundle downloaded.
+- 🎧 **VDrift contributors** — [Separate software and car-data repositories](https://github.com/VDrift/vdrift); [public contact route](https://github.com/VDrift/vdrift/issues). **Study only.** Repository/data-location study only.
+- 🎧 **Creative Commons** — [CC0, BY, BY-SA and BY-NC deeds](https://creativecommons.org/licenses/); [public contact route](https://creativecommons.org/). **Study only.** Exact audio-license versions linked in research report.
+- 🎧 **rockittt / Cell31_Sound_Productions** — [Explicitly simulated jet effects](https://freesound.org/people/rockittt/sounds/622406/); [public contact route](https://freesound.org/people/Cell31_Sound_Productions/sounds/661160/). **Study only.** Descriptions of whistle/rumble and gas-heater substitutes.
+- 🛠️ **FFmpeg developers** — [FFmpeg / ffprobe](https://ffmpeg.org/); [public contact route](https://ffmpeg.org/contact.html). **Development only.** Local decoding, metadata extraction and audition preparation.
 
 <!-- COMMUNITY-CREDITS:END -->
