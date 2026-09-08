@@ -1,5 +1,10 @@
 # Session Handoff
 
+Atlas/Stats road-note refinement is implemented and under final validation;
+publication is pending. [Scope, research and evidence](ATLAS-STATS-REFINEMENT-2026-09-08.md).
+First real automatic diagnostic receipt remains unverified after September 8
+mailbox inspection. The build identity below is the preceding live release.
+
 The owner-selected [Engine A/B listening LAB](ENGINE-LISTENING-LAB-2026-09-08.md)
 compares the 0834 reference and 1102 refinement on one 68-second route, with
 local preference/notes and JSON export. The public default retains the 1102

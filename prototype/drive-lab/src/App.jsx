@@ -1312,7 +1312,7 @@ function DiagnosticReadme() {
         <p>
           ATLAS may keep the latest reliable position in session memory while the map is
           selected. OpenFreeMap receives the tile area needed for the map and Wikimedia may
-          receive a coarse nearby-search cell. The point is never copied into the session report or local storage.
+          receive a coarse nearby-search cell. OpenStreetMap Overpass receives a rounded area for nearby places. Opening Google Maps or Wikipedia shares the selected place with that service. These lookups never enter automatic technical reports.
         </p>
       </section>
 
@@ -1522,13 +1522,12 @@ function VisualPicker({ environmentId, onChange, onOpenDiscover, onOpenStats, on
                   onClose();
                 }}
               >
-                <span className="score-entry-number">{entry.number}</span>
                 <span className="score-entry-body">
                   <strong>{displayLabel(entry)}</strong>
                   <span>{entry.launchDescription}</span>
                 </span>
                 <span className="score-entry-state">
-                  {destination ? "OPEN" : family ? (active ? "ACTIVE" : "SELECT") : active ? "ACTIVE" : "SELECT"}
+                  {active ? "ACTIVE" : <span aria-hidden="true">↗</span>}
                 </span>
               </button>
             </li>
@@ -4989,7 +4988,7 @@ export function App() {
   }, [environment.id, environment.label, logDiagnosticEvent]);
 
   useEffect(() => {
-    if (phase !== "running" || experienceMode !== "flux") return undefined;
+    if (phase !== "running" || (experienceMode !== "flux" && !passengerAtlasOpen)) return undefined;
     const recovery = createLoadRecovery({
       now: () => performance.now(),
       schedule: (callback, delay) => window.setTimeout(callback, delay),
@@ -5013,7 +5012,12 @@ export function App() {
       window.removeEventListener("online", wake);
       document.removeEventListener("visibilitychange", wake);
     };
-  }, [experienceMode, environmentId, phase, logDiagnosticEvent]);
+  }, [experienceMode, environmentId, phase, passengerAtlasOpen, logDiagnosticEvent]);
+
+  const hasAtlasPosition = Boolean(mapPosition);
+  useEffect(() => {
+    if (hasAtlasPosition) environmentRecoveryRef.current?.wake();
+  }, [hasAtlasPosition]);
 
   useEffect(() => {
     if (environmentRuntimeError) environmentRecoveryRef.current?.fail();
@@ -5629,7 +5633,7 @@ export function App() {
 
       {passengerAtlasOpen && !statsOpen ? <DialogSurface className="passenger-atlas-dialog" inert={Boolean(atlasPlace)} labelledBy="passenger-atlas-title" onClose={() => setPassengerAtlasOpen(false)}>
         <h2 id="passenger-atlas-title" className="visually-hidden">Atlas passenger map</h2><button className="passenger-atlas-close" data-dialog-initial-focus onClick={() => setPassengerAtlasOpen(false)}>Back to Engine</button>
-        <Suspense fallback={<p>Loading Atlas…</p>}><AtlasField speed={speed} theme={theme} position={mapPosition} positionSamplesRef={atlasPositionSamplesRef} sessionJourneyRef={atlasSessionJourneyRef} reducedMotion={reducedMotion} effect={null} demoRequestToken={atlasDemoRequest} mapAppearance={atlasMapAppearance} appearance={appearanceResolution.appearance} onMapAppearanceChange={setAtlasMapAppearance} onReadPlace={setAtlasPlace} onRenderer={setRenderer} onFrame={recordRenderedFrame} onRuntimeError={handleEnvironmentError} /></Suspense>
+        <Suspense fallback={<p>Loading Atlas…</p>}><AtlasField key={environmentAttempt} speed={speed} theme={theme} position={mapPosition} positionSamplesRef={atlasPositionSamplesRef} sessionJourneyRef={atlasSessionJourneyRef} reducedMotion={reducedMotion} effect={null} demoRequestToken={atlasDemoRequest} mapAppearance={atlasMapAppearance} appearance={appearanceResolution.appearance} onMapAppearanceChange={setAtlasMapAppearance} onReadPlace={setAtlasPlace} onRenderer={setRenderer} onFrame={recordRenderedFrame} onRuntimeError={handleEnvironmentError} /></Suspense>
       </DialogSurface> : null}
       {discoverOpen ? (
         <DiscoverPanel

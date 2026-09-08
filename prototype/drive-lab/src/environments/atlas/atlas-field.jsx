@@ -120,6 +120,7 @@ export default function AtlasField({
     let disposed = false;
     let failed = false;
     let frame = 0;
+    let loadTimeout = null;
     let interactionCleanup = () => {};
     setRoadName(null);
     if (!hostRef.current || !effectivePosition) {
@@ -166,6 +167,7 @@ export default function AtlasField({
         onRuntimeError?.(error instanceof Error ? error : new Error(String(error)));
       };
       let mapReady = false;
+      loadTimeout = setTimeout(() => fail(new Error("Atlas map loading timed out")), 45000);
       map.addControl(new maplibregl.AttributionControl({ compact: false }), "bottom-left");
       map.on("load", () => {
         try {
@@ -179,6 +181,7 @@ export default function AtlasField({
             valuesRef.current.mapAppearance,
           );
           mapReady = true;
+          clearTimeout(loadTimeout);
           map.dragPan.disable();
           map.dragRotate.disable();
           map.touchZoomRotate.disable();
@@ -280,10 +283,10 @@ export default function AtlasField({
       };
       map.on("error", (event) => {
         const error = event?.error instanceof Error ? event.error : new Error("Atlas map runtime error");
-        if (!mapReady || /webgl|context\s*lost|initiali[sz]/i.test(error.message)) fail(error);
+        fail(error);
       });
       map.on("render", () => {
-        if (failed) return;
+        if (failed || !mapReady) return;
         try {
           const canvas = map.getCanvas();
           const framebuffer = canvasFramebufferSize(canvas);
@@ -293,8 +296,7 @@ export default function AtlasField({
           if (!framebuffer) return;
           onFrame(
             capturedAt,
-            canvasFramebufferSize,
-  THIRTY_FPS_FRAME_INTERVAL_MS,
+            THIRTY_FPS_FRAME_INTERVAL_MS,
             "WebGL2 · MapLibre",
             framebuffer.width,
             framebuffer.height,
@@ -394,6 +396,7 @@ export default function AtlasField({
 
     return () => {
       disposed = true;
+      clearTimeout(loadTimeout);
       cancelAnimationFrame(frame);
       interactionCleanup();
       mapRef.current?.remove();

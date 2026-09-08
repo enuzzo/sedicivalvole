@@ -365,3 +365,14 @@ These are credited factual/conceptual studies, not shipped third-party implement
 - **Toyota GAZOO Racing — GR Yaris / Rally2** — [source](https://toyotagazooracing.com/gr/yaris/). Official road GR-DAT ratios, tyre dimensions and pedal-aware automatic explanation; official Rally2 sequential-transmission distinction. Calculated examples only; no presets, code or media imported.
 - **iZotope — modulation education** — [source](https://www.izotope.com/community/blog/understanding-chorus-flangers-and-phasers-in-audio-production). Phase/comb-filter and modulation concepts informed a hypothesis about perceived layered-loop smear. Study only; no algorithm, code or media copied.
 - **Matthew P. Allen, Stephen A. Rizzi, Ricardo Burdisso and Selen Okcu — NASA/NTRS 20120010346** — [source](https://ntrs.nasa.gov/citations/20120010346). Study of time-varying tonal/broadband turbofan synthesis, informing subdued irregular shaft detail. No measured data, model constants, code or media imported.
+
+## Atlas nearby POI lookup — 2026-09-08
+
+OpenStreetMap contributors provide ODbL 1.0 point data through the public
+[Overpass API](https://overpass-api.de/), created by Roland Olbricht and contributors
+and operated by FOSSGIS. Service use only; no Overpass server code is copied.
+The browser queries named nodes within 2 km of a rounded location, at most once
+every five minutes after success, with bounded output and backoff. Loaded
+OpenFreeMap POIs remain a fallback. Google Maps URLs are outbound links only
+([Google documentation](https://developers.google.com/maps/documentation/urls/get-started));
+no Google imagery, runtime or place data is imported.

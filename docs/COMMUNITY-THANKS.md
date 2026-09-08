@@ -1027,3 +1027,17 @@ Research only. No new source or recordings from these projects are shipped.
 - Status: study only. **Unsent draft**:
 
 > Hello — I am enuzzo, creating sedicivalvole, an experimental source-visible project under PolyForm Noncommercial. Thank you for documenting how short-term tonal fluctuations affect perceived realism. The distinction between a steady tone and a changing source helped guide our original fictional turbine refinement. Your work is credited as research; this acknowledgement has not been sent. — enuzzo
+
+## Overpass nearby places — 2026-09-08
+
+Service integration: Roland Olbricht, Overpass contributors and FOSSGIS;
+OpenStreetMap contributors own the map data (ODbL).
+Public routes: https://github.com/drolbr/Overpass-API and https://www.fossgis.de/.
+Unsent draft: Thank you for making focused, read-only access to community map
+data possible. Atlas uses a small, throttled node query to reveal nearby places
+without forcing the driver to zoom into the map. Attribution stays visible.
+
+Google Maps: outbound user-initiated search URLs only; public documentation
+https://developers.google.com/maps/documentation/urls/get-started.
+Unsent draft: Thank you for the documented Maps URL interface, which lets our
+place cards hand a selected location to Maps without embedding another runtime.

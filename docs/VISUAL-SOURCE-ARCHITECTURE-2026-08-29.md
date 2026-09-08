@@ -163,3 +163,12 @@ gaps and bounds retry. The existing PHP endpoint validates delivery metadata,
 coordinate exclusion and successful automatic rate limits. Dev/AUTO ON is the
 owner-approved development default; Standard and saved OFF remain manual-only.
 See [delivery contract](AUTOMATIC-DIAGNOSTICS-2026-09-07.md).
+
+## Atlas / Stats recovery and presentation — 2026-09-08
+
+`place-loader.js` owns per-provider request cancellation, deadlines, backoff and
+foreground/online recovery. Nearby rounded-area Overpass node queries supplement
+loaded OpenFreeMap tiles independently of zoom. No provider changes diagnostic
+privacy. `chartTraceSegments` separates observed runs from display-only estimated
+connections without mutating retained samples or accumulated statistics.
+[Implementation and boundaries](ATLAS-STATS-REFINEMENT-2026-09-08.md).

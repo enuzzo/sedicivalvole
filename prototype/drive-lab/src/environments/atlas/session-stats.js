@@ -117,3 +117,27 @@ export function sessionRuntimeSnapshot(source = {}) {
     },
   };
 }
+
+// Presentation only: bridge missing observations without manufacturing samples.
+export function chartTraceSegments(samples, field) {
+  const read = sample => field === 'altitudeM' ? chartAltitudeValue(sample) : sample[field];
+  const runs = [], bridges = [];
+  let run = [], previous = null, interrupted = false;
+  for (const sample of samples) {
+    if (!Number.isFinite(read(sample)) || sample.containsGap) {
+      if (run.length) runs.push(run);
+      run = []; interrupted = true; continue;
+    }
+    const gap = previous && (interrupted ||
+      (sample.firstCapturedAtMs ?? sample.capturedAtMs) - (previous.lastCapturedAtMs ?? previous.capturedAtMs) > SESSION_GAP_MS);
+    const sourceChange = field === 'altitudeM' && previous && chartAltitudeSource(previous) !== chartAltitudeSource(sample);
+    if (gap || sourceChange) {
+      if (run.length) runs.push(run);
+      run = [];
+      bridges.push([previous, sample]);
+    }
+    run.push(sample); previous = sample; interrupted = false;
+  }
+  if (run.length) runs.push(run);
+  return { runs, bridges };
+}

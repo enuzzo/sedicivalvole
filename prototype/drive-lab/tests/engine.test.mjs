@@ -67,7 +67,7 @@ function fixture({ fail = false, manual = false, worklet = false, workletFailure
   return { runtime, context, evidence, events, profiles: sandbox.module.exports.ENGINE_PROFILES, timers, document, window,
     releaseWorklet() { releaseModule?.(); },
     setFailure(value) { failures=value; }, get requests() { return requests; },
-    async retry() { const entry = [...timers].find(([,t])=>!t.interval && [5000,10000,20000,30000].includes(t.delay)); assert.ok(entry); timers.delete(entry[0]); entry[1].fn(); await new Promise(resolve=>setTimeout(resolve,80)); },
+    async retry() { const entry = [...timers].find(([,t])=>!t.interval && [5000,10000,20000,30000].includes(t.delay)); assert.ok(entry); timers.delete(entry[0]); entry[1].fn(); for (let i=0;i<200 && !["ready","failed"].includes(runtime.getState().status);i++) await new Promise(resolve=>setTimeout(resolve,10)); },
     tick(seconds=.025) { time+=seconds*1000; context.currentTime+=seconds; for(const t of [...timers.values()]) if(t.interval)t.fn(); },
   };
 }

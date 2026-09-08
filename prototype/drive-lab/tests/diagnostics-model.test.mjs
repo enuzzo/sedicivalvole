@@ -106,7 +106,7 @@ test("recovery waits offline, wakes on connectivity, cancels on success and boun
   time += 300000; timer.callback();
   assert.equal(states.at(-1), "exhausted");
   recovery.wake();
-  assert.equal(attempts.length, 1);
+  assert.equal(attempts.length, 2);
   recovery.dispose(); recovery.fail();
   assert.equal(timer, null);
 });

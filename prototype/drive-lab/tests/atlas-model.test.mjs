@@ -785,3 +785,34 @@ test('OSM POIs retain exact point geometry and deduplicate nearby Wikipedia iden
   assert.equal(combineAtlasPlaces([{id:1,title:'Museum',...origin}],places).length,1);
   assert.equal(combineAtlasPlaces([],places).length,1);
 });
+
+test('nearby OSM queries are bounded rounded nodes and safe links preserve exact place coordinates', async () => {
+  const {nearbyOsmUrl,normalizeNearbyOsm,combineAtlasPlaces}=await import('../src/environments/atlas/osm-places.js');
+  const origin={latitude:45.461234,longitude:9.191234};
+  const query=new URL(nearbyOsmUrl(origin)).searchParams.get('data');
+  assert.match(query,/around:2000,45.46,9.19/); assert.match(query,/out body 100/);
+  assert.equal(nearbyOsmUrl({latitude:NaN,longitude:9}),null);
+  const places=normalizeNearbyOsm({elements:[{type:'node',lat:45.462,lon:9.192,tags:{name:'Museum',wikipedia:'it:Test & place',tourism:'museum'}},
+    {type:'way',center:origin,tags:{name:'Not a point'}}]},origin,'en');
+  assert.equal(places.length,1); assert.equal(places[0].latitude,45.462);
+  assert.equal(new URL(places[0].wikipediaUrl).hostname,'it.wikipedia.org');
+  assert.match(new URL(places[0].googleMapsUrl).searchParams.get('query'),/45.462,9.192/);
+  const mixed=combineAtlasPlaces([{title:'Wiki 1'},{title:'Wiki 2'}],places);
+  assert.equal(mixed[0].source,'OpenStreetMap');assert.equal(mixed[1].source,'Wikipedia');
+  assert.throws(()=>normalizeNearbyOsm({elements:[],remark:'timeout'},origin,'en'));
+});
+
+test('place loader pauses offline, retries failures, prevents overlap and discards disposed results', async () => {
+  const {createPlaceLoader}=await import('../src/environments/atlas/place-loader.js');
+  let online=false,time=0,attempts=0,finish; const timers=new Set(),results=[];
+  const loader=createPlaceLoader({readPosition:()=>({latitude:45,longitude:9}),canLoad:()=>online,
+    now:()=>time,schedule:(fn)=>{timers.add(fn);return fn;},cancel:fn=>timers.delete(fn),
+    load:()=>{attempts++;return new Promise(resolve=>{finish=resolve;});},onResult:r=>results.push(r),onState:()=>{}});
+  await loader.start();assert.equal(attempts,0);
+  online=true;loader.wake();loader.wake();assert.equal(attempts,1);
+  finish([{id:'one'}]);await new Promise(resolve=>setImmediate(resolve));assert.equal(results.length,1);
+  loader.wake();assert.equal(attempts,1);
+  time=300001;loader.wake();assert.equal(attempts,2);
+  loader.dispose();finish([{id:'stale'}]);await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(results.length,1);assert.equal(timers.size,0);
+});

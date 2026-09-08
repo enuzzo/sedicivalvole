@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { altitudeTraceRange, chartAltitudeSource, chartAltitudeValue, observeSessionStats, sessionRuntimeSnapshot, sessionStatsSnapshot } from '../src/environments/atlas/session-stats.js';
+import { chartTraceSegments, altitudeTraceRange, chartAltitudeSource, chartAltitudeValue, observeSessionStats, sessionRuntimeSnapshot, sessionStatsSnapshot } from '../src/environments/atlas/session-stats.js';
 import { appendAtlasJourneySample, appendAtlasSessionJourneySample } from '../src/environments/atlas/atlas-model.js';
 const point = (t,speed=36,extra={}) => ({ capturedAtMs:t,speedKmh:speed,accuracyM:5,heading:90,altitudeM:100,altitudeAccuracyM:3,...extra });
 
@@ -137,4 +137,25 @@ test('map fallback never replaces available GPS or turns a mixed compacted bin i
    altitudeM:i===0?150:null,groundElevationM:i===0?null:123,terrainCell:i===0?null:'45.46,9.19'},4);
  assert.equal(session[0].heightContainsGap,true);assert.equal(chartAltitudeValue(session[0]),null);
  assert.equal(session[0].speedKmh,36);assert.equal(chartAltitudeSource(session[1]),'map');
+});
+
+test('presentation bridges short and long missing spans without altering observations or totals', () => {
+  const samples = [{capturedAtMs:0,speedKmh:10,altitudeM:100},
+    {capturedAtMs:1000,speedKmh:null,altitudeM:null},
+    {capturedAtMs:2000,speedKmh:20,altitudeM:110},
+    {capturedAtMs:900000,speedKmh:40,altitudeM:120}];
+  const original = structuredClone(samples);
+  for (const field of ['speedKmh','altitudeM']) {
+    const {runs,bridges} = chartTraceSegments(samples,field);
+    assert.equal(runs.length,3); assert.equal(bridges.length,2);
+    assert.deepEqual(bridges[1],[samples[2],samples[3]]);
+  }
+  assert.deepEqual(samples,original);
+});
+test('compaction gaps and height-source changes remain estimated and leading/trailing gaps are not extrapolated', () => {
+  const samples = [{capturedAtMs:0}, {capturedAtMs:1000,speedKmh:10,altitudeM:0},
+    {capturedAtMs:2000,speedKmh:15,altitudeM:2,containsGap:true},
+    {capturedAtMs:3000,speedKmh:20,groundElevationM:4}, {capturedAtMs:4000}];
+  assert.equal(chartTraceSegments(samples,'altitudeM').bridges.length,1);
+  assert.equal(chartTraceSegments(samples,'speedKmh').bridges.length,1);
 });

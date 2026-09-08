@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { ATLAS_SPEED_BANDS } from './atlas-model.js';
-import { altitudeTraceRange, chartAltitudeSource, chartAltitudeValue, sessionStatsSnapshot, sessionRuntimeSnapshot, SESSION_GAP_MS } from './session-stats.js';
+import { altitudeTraceRange, chartAltitudeSource, chartAltitudeValue, sessionStatsSnapshot, sessionRuntimeSnapshot, chartTraceSegments } from './session-stats.js';
 
 const duration = ms => `${Math.floor(ms / 60000)}:${String(Math.floor(ms / 1000) % 60).padStart(2, '0')}`;
 const value = (n, suffix = '') => Number.isFinite(n) ? `${Math.round(n)}${suffix}` : '—';
@@ -35,14 +35,7 @@ function Trace({ samples, kind = 'journey' }) {
           for (let i = 0; i < 4; i++) { const yy = top + (bottom - top) * i / 3; ctx.beginPath();ctx.moveTo(left, yy);ctx.lineTo(right, yy);ctx.stroke(); }
           ctx.globalAlpha = 1;
         }
-        const runs = []; let run = [];
-        for (const sample of samples) {
-          const previous = run.at(-1);
-          const changedSource = field === 'altitudeM' && previous && chartAltitudeSource(previous) !== chartAltitudeSource(sample);
-          if (!Number.isFinite(readValue(sample)) || sample.containsGap || changedSource || (previous && (sample.firstCapturedAtMs ?? sample.capturedAtMs) - (previous.lastCapturedAtMs ?? previous.capturedAtMs) > SESSION_GAP_MS)) { if (run.length) runs.push(run); run = []; }
-          if (Number.isFinite(readValue(sample)) && !sample.containsGap) run.push(sample);
-        }
-        if (run.length) runs.push(run);
+        const { runs, bridges } = chartTraceSegments(samples, field);
         ctx.fillStyle = color; ctx.globalAlpha = index ? .14 : .06;
         runs.forEach(points => { if (points.length < 2) return; ctx.beginPath(); ctx.moveTo(x(points[0].capturedAtMs), bottom); points.forEach(p => ctx.lineTo(x(p.capturedAtMs), y(readValue(p)))); ctx.lineTo(x(points.at(-1).capturedAtMs), bottom); ctx.closePath(); ctx.fill(); });
         ctx.globalAlpha = 1; ctx.strokeStyle = color; ctx.lineWidth = 2;
@@ -51,24 +44,40 @@ function Trace({ samples, kind = 'journey' }) {
           ctx.beginPath(); points.forEach((point, i) => i ? ctx.lineTo(x(point.capturedAtMs), y(readValue(point))) : ctx.moveTo(x(point.capturedAtMs), y(readValue(point)))); ctx.stroke();
           if (points.length === 1) { ctx.beginPath(); ctx.arc(x(points[0].capturedAtMs), y(readValue(points[0])), 2.5, 0, Math.PI * 2); ctx.fill(); }
         }
+        if (kind === 'journey') {
+          ctx.strokeStyle = getComputedStyle(canvas).getPropertyValue(index ? '--stats-blue-estimated' : '--stats-red-estimated').trim();
+          ctx.setLineDash([6, 4]); ctx.lineWidth = 2;
+          for (const [from, to] of bridges) {
+            ctx.beginPath(); ctx.moveTo(x(from.capturedAtMs), y(readValue(from)));
+            ctx.lineTo(x(to.capturedAtMs), y(readValue(to))); ctx.stroke();
+          }
+        }
         ctx.setLineDash([]); ctx.fillStyle = color;
         ctx.textAlign = index ? 'left' : 'right';
-        ctx.fillText(numbers.length ? String(Math.round(maximum)) : "—", index ? right + 6 : left - 7, top + 5);
-        ctx.fillText(numbers.length ? String(minimum) : "—", index ? right + 6 : left - 7, bottom);
+        for (let i = 0; i <= 3; i++) {
+          const tick = maximum - (maximum - minimum) * i / 3;
+          ctx.fillText(numbers.length ? String(Math.round(tick)) : '—', index ? right + 6 : left - 7, y(tick) + (i === 3 ? 0 : 5));
+        }
       });
-      ctx.fillStyle = ink;ctx.textAlign = 'left';ctx.fillText(duration(first - (samples[0]?.capturedAtMs ?? first)), left, height - 6);
-      ctx.textAlign = 'right';ctx.fillText(duration(last - first), right, height - 6);
+      ctx.fillStyle = ink;
+      const ticks = width < 400 ? 2 : 4;
+      for (let i = 0; i <= ticks; i++) {
+        ctx.textAlign = i === 0 ? 'left' : i === ticks ? 'right' : 'center';
+        ctx.fillText(duration((last - first) * i / ticks), left + (right - left) * i / ticks, height - 6);
+      }
       if (cursor != null && samples.length) { ctx.strokeStyle = ink;ctx.globalAlpha = .5;ctx.beginPath();ctx.moveTo(left + cursor * (right - left), top);ctx.lineTo(left + cursor * (right - left), bottom);ctx.stroke(); }
     };
     draw(); const observer = new ResizeObserver(draw);observer.observe(canvas);
     return () => observer.disconnect();
   }, [samples, kind, cursor]);
   const targetTime = (samples[0]?.capturedAtMs ?? 0) + (cursor ?? 0) * ((samples.at(-1)?.capturedAtMs ?? 0) - (samples[0]?.capturedAtMs ?? 0));
+  const overGap = cursor != null && kind === 'journey' && ['speedKmh', 'altitudeM'].some(field =>
+    chartTraceSegments(samples, field).bridges.some(([a,b]) => targetTime > a.capturedAtMs && targetTime < b.capturedAtMs));
   const selected = cursor == null ? null : samples.reduce((best, s) => !best || Math.abs(s.capturedAtMs - targetTime) < Math.abs(best.capturedAtMs - targetTime) ? s : best, null);
   return <div className="stats-trace" onPointerLeave={() => setCursor(null)}>
-    <canvas ref={ref} role="img" aria-label={kind === 'journey' ? 'Observed speed and altitude timeline. Solid GPS altitude, dashed map estimate. Gaps are unknown.' : 'Observed download and upload rate timeline.'}
+    <canvas ref={ref} role="img" aria-label={kind === 'journey' ? 'Observed speed and altitude timeline. Solid GPS altitude, dashed map estimate. Differently shaded dotted connections are estimated gaps, excluded from statistics.' : 'Observed download and upload rate timeline.'}
       onPointerMove={e => { const r = e.currentTarget.getBoundingClientRect(); setCursor(Math.max(0, Math.min(1, (e.clientX - r.left - 36) / (r.width - 80)))); }} />
-    {selected ? <output className="stats-chart-cursor">{kind === 'journey' ? `${value(selected.speedKmh, ' km/h')} · ${value(chartAltitudeValue(selected), chartAltitudeSource(selected) === 'map' ? ' m MAP' : ' m GPS')}` : `${value(selected.downloadRate, ' KB/s ↓')} · ${value(selected.uploadRate, ' KB/s ↑')}`}</output> : null}
+    {selected ? <output className="stats-chart-cursor">{overGap ? 'Estimated connection · no observation here' : kind === 'journey' ? `${value(selected.speedKmh, ' km/h')} · ${value(chartAltitudeValue(selected), chartAltitudeSource(selected) === 'map' ? ' m MAP' : ' m GPS')}` : `${value(selected.downloadRate, ' KB/s ↓')} · ${value(selected.uploadRate, ' KB/s ↑')}`}</output> : null}
   </div>;
 }
 
@@ -117,13 +126,13 @@ export default function StatsPanel({ journeyRef, networkHistoryRef, readSystem, 
         {[[s.observedMs ? (s.distanceM / 1000).toFixed(1) : '—','km','GPS distance'],[duration(s.elapsedMs),'','Duration'],[value(s.averageKmh),'km/h','Avg speed'],[s.observedMs ? Math.round(s.movingMs/s.observedMs*100) : '—','%','Moving']].map(([n,u,label]) => <div key={label}><strong>{n}<small>{u}</small></strong><span>{label}</span></div>)}
       </div>
       {!samples.length ? <p className="stats-empty">Waiting for GPS observations. Demo driving is not recorded as a real journey.</p> : null}
-      <section className="stats-main-chart"><header><strong>Speed <small>km/h</small></strong><button className="stats-range" onClick={() => setRange(r => r === "recent" ? "session" : "recent")}>{range === "recent" ? "Recent hour" : "Whole session · averaged"}</button><strong className="stats-blue">Altitude <small>m · GPS / map</small></strong></header><Trace samples={samples} /><p className="stats-trace-note">{samples.some(sample => chartAltitudeSource(sample) === 'map') ? 'GPS altitude: solid · Map elevation: dashed area estimate.' : samples.some(sample => Number.isFinite(sample.altitudeM)) ? 'Reported GPS altitude · precision varies. Ascent/descent require accurate fixes.' : 'Altitude unavailable · waiting for GPS or map elevation.'}</p></section>
+      <section className="stats-main-chart"><header><strong>Speed <small>km/h</small></strong><button className="stats-range" onClick={() => setRange(r => r === "recent" ? "session" : "recent")}>{range === "recent" ? "Recent hour" : "Whole session · averaged"}</button><strong className="stats-blue">Altitude <small>m · GPS / map</small></strong></header><Trace samples={samples} /><div className="stats-estimate-legend"><span className="is-speed">Estimated speed</span><span className="is-altitude">Estimated altitude</span><small>Gap connections · excluded from statistics</small></div><p className="stats-trace-note">{samples.some(sample => chartAltitudeSource(sample) === 'map') ? 'GPS altitude: solid · Map elevation: dashed area estimate.' : samples.some(sample => Number.isFinite(sample.altitudeM)) ? 'Reported GPS altitude · precision varies. Ascent/descent require accurate fixes.' : 'Altitude unavailable · waiting for GPS or map elevation.'}</p></section>
       <div className="stats-lower">
         <section><h3>Speed bands</h3>{ATLAS_SPEED_BANDS.map((b,i) => <div className="stats-band" key={b.label}><span>{b.label}</span><meter min="0" max={Math.max(1,s.observedMs)} value={s.speedBandsMs[i]} /><strong>{duration(s.speedBandsMs[i])}</strong></div>)}</section>
         <section className="stats-terrain"><h3>Journey / GPS estimates</h3><dl>{[['Elevation gain',s.elevationObservedMs ? value(s.elevationGainM,' m') : '—'],['Elevation loss',s.elevationObservedMs ? value(s.elevationLossM,' m') : '—'],['Stopped',`${duration(s.stoppedMs)} · ${s.stops} stops`],['Peak speed',value(s.peakKmh,' km/h')],['Moving average',value(s.movingAverageKmh,' km/h')],['Acceleration share',s.accelerationShare == null ? '—' : value(s.accelerationShare * 100,'%')],['Braking share',s.brakingShare == null ? '—' : value(s.brakingShare * 100,'%')]].map(([k,v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}</dl></section>
         <section className="stats-direction"><h3>Heading</h3><HeadingRose headings={s.headingMs}/></section>
       </div>
-      <div className="stats-system"><section><header><h3>Network <small>KB/s ↓ / ↑</small></h3><span>{((system.network.observedDownloadBytes ?? 0)/1048576).toFixed(1)} MB observed ↓</span></header><Trace samples={network} kind="network" /></section><section className="stats-health"><h3>System</h3><dl><div><dt>Frame rate</dt><dd>{value(system.frame.averageFps,' FPS')}</dd></div><div><dt>Frame p95</dt><dd>{value(system.frame.p95FrameMs,' ms')}</dd></div><div><dt>Audio</dt><dd>{system.audio}</dd></div><div><dt>GPS coverage</dt><dd>{Math.round(s.coverage*100)}%</dd></div><div><dt>Long tasks</dt><dd>{value(runtime.longTasks.count)}</dd></div><div><dt>Longest task</dt><dd>{value(runtime.longTasks.maximumDurationMs,' ms')}</dd></div><div><dt>Retries · {runtime.events.scope}</dt><dd>{value(runtime.events.retryCount)}</dd></div><div><dt>Mode changes · {runtime.events.scope}</dt><dd>{value(runtime.events.audioModeChanges)}</dd></div></dl></section></div>
+      <div className="stats-system"><section><header><h3>Network <small>KB/s ↓ / ↑</small></h3><span>{((system.network.observedDownloadBytes ?? 0)/1048576).toFixed(1)} MB observed ↓</span></header><Trace samples={network} kind="network" /><div className="stats-continuity"><h3>Session continuity</h3>{[[s.movingMs,'Moving','moving'],[s.stoppedMs,'Stopped','stopped'],[s.unknownMs,'Unobserved','unknown']].map(([ms,label,style]) => <div className={`stats-continuity-row is-${style}`} key={label}><span>{label}</span><meter min="0" max={Math.max(1,s.elapsedMs)} value={ms} aria-label={`${label} session time`} /><strong>{duration(ms)}</strong></div>)}<p className="stats-trace-note">{Math.round(s.coverage*100)}% observed GPS coverage · gaps include hidden time.</p></div></section><section className="stats-health"><h3>System</h3><dl><div><dt>Frame rate</dt><dd>{value(system.frame.averageFps,' FPS')}</dd></div><div><dt>Frame p95</dt><dd>{value(system.frame.p95FrameMs,' ms')}</dd></div><div><dt>Audio</dt><dd>{system.audio}</dd></div><div><dt>GPS coverage</dt><dd>{Math.round(s.coverage*100)}%</dd></div><div><dt>Long tasks</dt><dd>{value(runtime.longTasks.count)}</dd></div><div><dt>Longest task</dt><dd>{value(runtime.longTasks.maximumDurationMs,' ms')}</dd></div><div><dt>Retries · {runtime.events.scope}</dt><dd>{value(runtime.events.retryCount)}</dd></div><div><dt>Mode changes · {runtime.events.scope}</dt><dd>{value(runtime.events.audioModeChanges)}</dd></div></dl></section></div>
       {runtime.engine.active ? <section className="stats-terrain"><h3>Engine · simulated</h3><dl>{[['RPM',value(runtime.engine.rpm)],['Gear',runtime.engine.gear === 0 ? 'N' : value(runtime.engine.gear)],['Load',runtime.engine.load == null ? '—' : value(runtime.engine.load * 100,'%')]].map(([k,v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}</dl></section> : null}
       <footer className="stats-footnote">{duration(s.unknownMs)} unobserved · Acceleration/braking shares compare cumulative GPS speed gained/lost, with jitter and gap rejection; they are not measured pedal use. Elevation filtered by accuracy and hysteresis. Network excludes opaque/cache traffic. Retained events cover the bounded diagnostic log. Session statistics stay on this device until you explicitly prepare an export. Terrain: {value(terrain?.elevationM, " m")} ({terrain?.status ?? "unavailable"}), area estimate from <a href="https://open-meteo.com/en/docs/elevation-api" target="_blank" rel="noopener noreferrer">Open-Meteo / Copernicus</a> (CC BY 4.0). When GPS height is missing, an approximately 1 km rounded area is queried while running. Map elevation is a terrain estimate, not a GPS fix.</footer>
     </div>

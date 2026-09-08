@@ -10,6 +10,7 @@ export function createLoadRecovery({
   let timer = null;
   let pending = false;
   let disposed = false;
+  let exhausted = false;
   const clear = () => {
     if (timer != null) cancel(timer);
     timer = null;
@@ -20,6 +21,7 @@ export function createLoadRecovery({
     const remaining = windowMs - (now() - startedAt);
     if (remaining <= 0) {
       pending = false;
+      exhausted = true;
       onState("exhausted");
     } else if (!canRetry()) {
       onState("waiting");
@@ -41,11 +43,18 @@ export function createLoadRecovery({
       onState(canRetry() ? "retrying" : "waiting");
       timer = schedule(tick, Math.min(5000 * 2 ** Math.min(attempts, 3), 30000, remaining));
     },
-    wake() { if (pending) tick(); },
+    wake() {
+      if (disposed || !canRetry()) return;
+      if (exhausted) {
+        exhausted = false; startedAt = now(); attempts = 0; pending = true;
+      }
+      if (pending) tick();
+    },
     succeed() {
       if (disposed || startedAt == null) return;
       clear();
       pending = false;
+      exhausted = false;
       startedAt = null;
       attempts = 0;
       onState("idle");

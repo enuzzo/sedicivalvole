@@ -360,3 +360,13 @@ Use fixed virtual mechanical ratios, load-sensitive automatic shifts and a
 130 km/h acoustic road ceiling. Preserve the dry level, no-GPS stationary
 TAMARRO and trusted idle/lifecycle contracts. Virtual gears/RPM are authored
 acoustic state, never measured Tesla telemetry. See ../../AGENTS.md.
+
+## Owner Atlas / Stats refinement — 2026-09-08
+
+Remove catalogue numbers and repeated SELECT from the running Visual drawer;
+retain ACTIVE and a compact icon on inactive entries. Join short and long chart
+gaps aesthetically, with dashed palette-derived alternate shades for each
+series and a visible Estimated legend below. Connections never change totals
+or exported observations. Add useful observed session continuity below Network.
+Atlas must recover after network/location restoration and expose nearby OSM
+places independently of map zoom, with Maps/Wikipedia links where supported.

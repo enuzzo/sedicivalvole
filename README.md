@@ -451,6 +451,15 @@ follows RPM ratios with explicit source-calibration limits. No-GPS TAMARRO and
 dry master behavior remain unchanged. See the [parameter table, source study
 and verification](docs/ENGINE-ROAD-PROGRESSION-2026-09-08.md).
 
+## Atlas and Stats refinements — September 8
+
+Atlas retries after network/location recovery and supplements loaded map POIs
+with bounded nearby OSM node searches. Visual cards omit decorative numbers and
+repeated Select labels. Stats joins missing observations with palette-derived
+dashed Estimated connections, improves chart axes and adds session continuity
+bars. Estimated lines do not alter observations or totals.
+[Implementation, source boundaries and validation](docs/ATLAS-STATS-REFINEMENT-2026-09-08.md).
+
 <!-- COMMUNITY-CREDITS:START -->
 ## Community thanks — 2026-09-05
 
@@ -749,5 +758,13 @@ These are exact lockfile entries, not a claim that every package ships in the br
 - 🚗 **Toyota GAZOO Racing — GR Yaris / Rally2** — [source](https://toyotagazooracing.com/gr/yaris/); [public discovery/contact route](https://toyotagazooracing.com/jp/rally2/cars/). Study only. Official road GR-DAT ratios, tyre dimensions and pedal-aware automatic explanation; official Rally2 sequential-transmission distinction. Calculated examples only; no presets, code or media imported.
 - 🎚️ **iZotope — modulation education** — [source](https://www.izotope.com/community/blog/understanding-chorus-flangers-and-phasers-in-audio-production); [public discovery/contact route](https://www.izotope.com/). Study only. Phase/comb-filter and modulation concepts informed a hypothesis about perceived layered-loop smear. Study only; no algorithm, code or media copied.
 - ✈️ **Matthew P. Allen, Stephen A. Rizzi, Ricardo Burdisso and Selen Okcu — NASA/NTRS 20120010346** — [source](https://ntrs.nasa.gov/citations/20120010346); [public discovery/contact route](https://ntrs.nasa.gov/citations/20120010346). Study only. Study of time-varying tonal/broadband turbofan synthesis, informing subdued irregular shaft detail. No measured data, model constants, code or media imported.
+
+
+- 🗺️ **Roland Olbricht, Overpass contributors, FOSSGIS and OpenStreetMap contributors** —
+  [Overpass API](https://overpass-api.de/) / [source](https://github.com/drolbr/Overpass-API):
+  shipped service-only nearby named-node queries, independent of Atlas zoom;
+  OSM data under ODbL, no server code imported.
+- 📍 **Google Maps** — [documented Maps URLs](https://developers.google.com/maps/documentation/urls/get-started):
+  shipped outbound place-search links only, no embedded runtime or imported data.
 
 <!-- COMMUNITY-CREDITS:END -->

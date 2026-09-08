@@ -4658,9 +4658,9 @@ html { font-size: var(--font-size-floor); }
 .stats-dialog h3 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; margin: 0 0 10px; color: var(--ui-muted); }
 .stats-band { display: grid; grid-template-columns: 55px 1fr 42px; gap: 8px; align-items: center; font-size: 13px; margin: 8px 0; }
 .stats-band strong { font-weight: 500; text-align: right; }
-.stats-band meter { width: 100%; height: 10px; accent-color: #d52120; }
+.stats-band meter { width: 100%; height: 10px; accent-color: var(--stats-red); }
 .stats-band meter::-webkit-meter-bar { border: 0; background: color-mix(in srgb,var(--ui-text) 10%,transparent); }
-.stats-band meter::-webkit-meter-optimum-value { background: #d52120; }
+.stats-band meter::-webkit-meter-optimum-value { background: var(--stats-red); }
 .stats-dialog dl { margin: 0; }
 .stats-dialog dl > div { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; padding: 6px 0; border-bottom: 1px solid var(--ui-line); }
 .stats-dialog dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
@@ -4689,8 +4689,11 @@ html { font-size: var(--font-size-floor); }
 .stats-range { min-height: 48px; padding: 5px 10px; font-size: 13px; }
 .stats-main-chart { padding-top: 4px; }
 
-.stats-dialog { --stats-red: #b92422; --stats-blue: #28678b; }
-.app[data-appearance="dark"] .stats-dialog { --stats-red: #ff8072; --stats-blue: #79bee7; }
+.stats-dialog {
+  --stats-red: var(--ui-chart-primary); --stats-blue: var(--ui-chart-secondary);
+  --stats-red-estimated: color-mix(in srgb, var(--stats-red) 65%, var(--ui-text));
+  --stats-blue-estimated: color-mix(in srgb, var(--stats-blue) 65%, var(--ui-text));
+}
 .stats-heading button, .stats-range, .atlas-place-card button { color: var(--ui-text); background: var(--ui-control); border: 1px solid var(--ui-line); border-radius: 6px; }
 .stats-dialog .stats-heading button[aria-current] { color: var(--stats-red); border-bottom: 3px solid var(--stats-red); background: var(--ui-surface); }
 .stats-main-chart header strong { color: var(--stats-red); }
@@ -4707,3 +4710,19 @@ html { font-size: var(--font-size-floor); }
 .diagnostic-auto-controls small { font-size: 13px; }
 .intro-diagnostics { position: absolute; top: 0; right: 16px; z-index: 3; min-height: 48px; padding: 5px 10px; display: grid; gap: 2px; text-align: right; border: 0; color: #f4f4f2; background: #111316; border-radius: 0 0 6px 6px; }
 .intro-diagnostics strong, .intro-diagnostics small { font-size: 13px; }
+
+.environment-drawer .score-entry { grid-template-columns: minmax(0, 1fr) auto; }
+.stats-estimate-legend { display: flex; flex-wrap: wrap; gap: 5px 16px; font-size: 13px; padding: 4px 0 8px; }
+.stats-estimate-legend span::before { content: ''; display: inline-block; width: 24px; margin-right: 6px; border-top: 2px dashed currentColor; vertical-align: middle; }
+.stats-estimate-legend .is-speed { color: var(--stats-red-estimated); }
+.stats-estimate-legend .is-altitude { color: var(--stats-blue-estimated); }
+.stats-estimate-legend small { font-size: 13px; color: var(--ui-muted); }
+.stats-continuity { margin-top: 12px; }
+.stats-continuity-row { display: grid; grid-template-columns: 90px 1fr 46px; gap: 8px; align-items: center; font-size: 13px; padding: 5px 0; }
+.stats-continuity-row meter { width: 100%; height: 12px; }
+.stats-continuity-row meter::-webkit-meter-bar { border: 0; background: var(--ui-control); }
+.stats-continuity-row meter::-webkit-meter-optimum-value { background: var(--stats-red); }
+.stats-continuity-row.is-stopped meter::-webkit-meter-optimum-value { background: var(--stats-blue); }
+.stats-continuity-row.is-unknown meter::-webkit-meter-optimum-value { background: var(--ui-muted); }
+.stats-continuity-row strong { font-weight: 500; text-align: right; }
+.atlas-place-links { display: flex; gap: 6px; flex-wrap: wrap; }
