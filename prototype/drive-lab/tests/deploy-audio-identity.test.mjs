@@ -884,3 +884,19 @@ with tempfile.TemporaryDirectory() as temporary:
     env: { ...process.env, PYTHONDONTWRITEBYTECODE: "1" },
   });
 });
+
+test("deployment rejects an old Python before loading any configuration", () => {
+  const program = String.raw`
+import importlib.util, sys, io, contextlib
+spec = importlib.util.spec_from_file_location("deploy", sys.argv[1])
+m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
+sys.argv = ['deploy', '--verify-only']; sys.version_info = (3, 9, 6)
+def forbidden(*args): raise AssertionError('configuration must not be read')
+m.parse_env = forbidden
+output = io.StringIO()
+with contextlib.redirect_stderr(output): result = m.main()
+assert result == 1
+assert output.getvalue().strip() == 'configuration=FAIL reason=python_3_11_or_newer_is_required'
+`;
+  execFileSync('python3', ['-c', program, deployScript.pathname]);
+});

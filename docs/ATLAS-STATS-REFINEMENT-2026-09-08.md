@@ -74,3 +74,10 @@ the documented project identity returned HTTP 200, 80 normalized Milan nodes,
 80 Maps links and 23 explicit Wikipedia tags. A first unidentified Node request
 was rejected with 406, confirming the provider's identification requirement.
 The product browser supplies its origin Referer; no provider bypass is used.
+
+Host validation setup: the deployment script needs Python 3.11+ for
+`hashlib.file_digest`; the system `python3` was 3.9. The guarded entry now rejects
+unsupported Python before reading configuration and reports only the class of
+unexpected exceptions. Use the existing `python3.11` executable on this Mac.
+All 23 deployment-script tests pass under that runtime. PHP was absent and is
+being installed for the real report/email fixtures; no mail service is started.

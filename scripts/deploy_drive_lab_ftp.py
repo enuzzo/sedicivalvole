@@ -1369,6 +1369,8 @@ def main() -> int:
     stage = "configuration"
     ftp: ftplib.FTP | None = None
     try:
+        if sys.version_info < (3, 11):
+            raise ValueError("Python 3.11 or newer is required")
         config = parse_env(ROOT / ".env")
         jamendo_local = parse_env(ROOT / ".env.jamendo.local")
         if any(not config.get(key) for key in REQUIRED):
@@ -1570,13 +1572,13 @@ def main() -> int:
         reason = re.sub(r"[^a-z0-9_-]+", "_", str(error).lower()).strip("_") or "validation_failed"
         print(f"{stage}=FAIL reason={reason}", file=sys.stderr)
         return 1
-    except Exception:
+    except Exception as error:
         if ftp is not None:
             try:
                 ftp.close()
             except Exception:
                 pass
-        print(f"{stage}=FAIL sanitized_error=true", file=sys.stderr)
+        print(f"{stage}=FAIL sanitized_error=true error_type={type(error).__name__}", file=sys.stderr)
         return 1
 
 
