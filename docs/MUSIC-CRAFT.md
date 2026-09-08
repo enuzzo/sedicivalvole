@@ -1984,3 +1984,7 @@ reported as having passed those gates.
 ## Engine source organization — September 8, 2026
 
 The owner found the recording-only search too narrow. A game-ready bank may still originate in recordings: its useful distinction is coherent steady RPM regions, separate load states, transitions and reliable seams. WAV/OGG/MP3 describe encoding, not these behaviors. Procedural patches and RPM-by-throttle wavetables are additional approaches; a free effect generator is not automatically a continuous combustion model. Do not infer audible quality or a clean loop from origin, filename or license. The local listening catalogue makes source identity and preparation explicit before any integration choice. See ENGINE-GAME-AUDIO-RESEARCH-2026-09-08.md.
+
+## Owner selection after source auditions — September 8, 2026
+
+Keep Mono, Rosso and Touring unchanged: the owner explicitly praises these voices. Retire Otto, Cinque and Turbine from selectable experiences because their digital/artificial character is rejected. Future source acquisition must provide coherent files separated by RPM and load/release state. Many short isolated effects and neutral rev recordings did not supply the desired driving dynamics. Do not infer that the accepted Mono hybrid layer is also rejected.

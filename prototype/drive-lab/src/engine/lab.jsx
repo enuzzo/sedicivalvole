@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { createEngineMotion } from "./motion.js";
 import { useEngine } from "./use-engine.js";
 import { EngineTelemetry } from "./telemetry-field.jsx";
-import { ENGINE_PROFILES } from "./profiles.js";
+import { ENGINE_CATALOGUE, isEngineProfile } from "./catalogue.js";
 import { comparisonProfile, comparisonSpeed, COMPARISON_SECONDS, COMPARISON_CALIBRATIONS,
   COMPARISON_STORAGE_KEY, readComparisonNotes, makeComparisonNote } from "./lab-comparison.js";
 
@@ -88,6 +88,7 @@ export function EngineLab({ audioRef, prepareAudio }) {
   useEffect(() => { mounted.current = true; return () => { mounted.current = false; audioRef.current?.setMuted(true); audioRef.current?.setSourceMode("flux"); }; }, [audioRef]);
   const onProgress = useCallback((key, seconds) => setListened(current => current[key] === seconds ? current : { ...current, [key]: seconds }), []);
   const chooseProfile = id => {
+    if (!isEngineProfile(id)) return;
     if (pending.current) return;
     drafts.current[profile] = { note, preference, listened };
     const draft = drafts.current[id];
@@ -123,7 +124,7 @@ export function EngineLab({ audioRef, prepareAudio }) {
     <h2>Engine A/B Listening</h2>
     <p className="engine-comparison-build">Build {typeof __APP_BUILD__ === "undefined" ? "local" : __APP_BUILD__}</p>
     <p>Same 68-second route: city, 80–130 km/h, return. One take at a time, at its original level. No loudness matching.</p>
-    <label>Engine <select aria-label="Comparison engine" value={profile} disabled={busy} onChange={event => chooseProfile(event.target.value)}>{ENGINE_PROFILES.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</select></label>
+    <label>Engine <select aria-label="Comparison engine" value={profile} disabled={busy} onChange={event => chooseProfile(event.target.value)}>{ENGINE_CATALOGUE.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</select></label>
     <div className="engine-comparison-buttons">{["A", "B"].map(key => <button key={key} type="button" disabled={busy} aria-pressed={replay && calibration === key} onClick={() => void play(key)}>PLAY {key}<small>{COMPARISON_CALIBRATIONS[key]}</small></button>)}</div>
     <p>Listened: A {listened.A}s · B {listened.B}s / {COMPARISON_SECONDS}s each. Replaying starts that take again.</p>
     <details className="engine-listening-notes"><summary>Preference & notes · {notes.length} saved</summary>

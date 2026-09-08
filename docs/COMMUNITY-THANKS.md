@@ -1380,3 +1380,9 @@ Unsent draft: Thank you, Andy, for making the engine-model explanations accessib
 - Terms: Site grants commercial use of outputs; no runtime imported
 
 Unsent draft: Thank you for providing a no-sign-up sound workspace. Its direct export workflow is a useful reference for reducing friction when auditioning ideas.
+
+## Firelight Technologies / FMOD — study only
+
+Material: public engine-event and granular truck demos and example-media license explanation. Sources: https://www.fmod.com/assets/html5/core_api/demo.html and https://www.fmod.com/legal. Public contact: https://qa.fmod.com/. No runtime or example audio imported.
+
+Unsent draft: Thank you for making interactive engine examples available in the browser. The RPM/load workflow is useful to our vehicle-audio study, and we are keeping your example-media restrictions explicit rather than treating those samples as a redistributable library.

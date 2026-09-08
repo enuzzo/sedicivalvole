@@ -1,5 +1,7 @@
 # Current Project State
 
+September 8 late-evening owner decision: retain Mono, Rosso and Touring; retire Otto, Cinque and Turbine from Intro, running selectors and LAB. Existing accepted voice calibrations remain unchanged. Archived procedural definitions/tests remain for traceability and Mono still uses its existing hybrid layer. Publication evidence follows in DEPLOY.md.
+
 Weak-network music refinement is published and canonically verified in build
 **20260908-2040**, source **e9dd39c**: immediate inline glyphs, retained loading transport, recoverable
 artwork/native metadata and verified native action routing. The proposed
@@ -30,7 +32,7 @@ historical paragraphs below.
 | Area | Implemented, tested and live | Remaining evidence |
 |---|---|---|
 | Diagnostics | Dev/AUTO ON by default, saved OFF/Standard respected; fifteen active session minutes, including offline/no-GPS/stopped time; coordinate-free; sampled simulated Engine RPM/reasons | First real automatic inbox receipt |
-| Engine | Six voices: Mono hybrid, Rosso/Touring sampled, original Otto V8, Cinque turbo five and continuous Turbine; second at 30, later urban third, focused layers and shorter resonance, power by 80, 130 km/h acoustic cap, phased load-sensitive shifts, proportional sample pitch, wheel-owned whine, original sample-clock DSP, no-GPS TAMARRO, exact-zero idle, dry output and cancellable recovery | Owner praises 0807 road behavior and first three voices; new refinement preference, native media and long drive |
+| Engine | Three selectable voices: Mono hybrid and Rosso/Touring sampled; second at 30, later urban third, focused layers and shorter resonance, power by 80, 130 km/h acoustic cap, phased load-sensitive shifts, proportional sample pitch, wheel-owned whine, original sample-clock DSP, no-GPS TAMARRO, exact-zero idle, dry output and cancellable recovery | Owner praises 0807 road behavior and first three voices; new refinement preference, native media and long drive |
 | Atlas / Stats | Separate Visual destinations; Natural/Palette map, independent nearby OSM nodes plus loaded tiles/Wikipedia, recoverable loading, Maps/article links; palette-derived estimated gap connections, richer axes and session continuity | Physical moving-data legibility and GPS coverage |
 | Flux / Soundtrack / FX / Discover | Broad owner acceptance, later small refinements allowed | Preserve the remaining specific device/endurance cases |
 | iPhone | Selected Compact Cockpit for iPhone 17 Pro/Pro Max; safe areas, inert portrait notice, state-preserving rotation; 667×375 through 956×440 browser matrix | Actual Safari/device software and native audio |

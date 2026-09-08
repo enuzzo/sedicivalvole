@@ -446,3 +446,7 @@ No new shipped integration. Original listening-tool code remains under the repos
 | Aleksandr Khilko / AK Audio | [Source](https://akaudio.com/en/portfolio/akenginesynth.html) | Proprietary in-house R&D; no free download established | RPM by throttle wavetable architecture study only; no binary, preset or runtime imported. |
 | Andy Farnell / Applied Scientific Press | [Source](https://aspress.co.uk/sd/practical22.html) | Exact patch reuse license unresolved on inspected pages | Pure Data combustion, jitter and exhaust model explanations studied; no patches/audio imported. |
 | Flowlab / Nightloop | [Source](https://flowlab.io/nightloop/) | Site grants commercial use of outputs; no runtime imported | Browser sound/music generator and WAV/MP3/MIDI export study only. |
+
+## FMOD evaluation — September 8, 2026
+
+Firelight Technologies: official browser examples and EULA studied at https://www.fmod.com/legal and https://www.fmod.com/assets/html5/core_api/demo.html. No code, library or media copied into the product. FMOD EULA section 1.4 prohibits redistribution of example media, including WAV, OGG, MP3, FSB and bank files. Software eligibility does not override this media restriction. No entitlement acquired or EULA accepted.
