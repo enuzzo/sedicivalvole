@@ -2928,6 +2928,11 @@ export function App() {
           && Number.isFinite(position.coords.latitude)
           && Number.isFinite(position.coords.longitude)) {
           const previousPosition = atlasPositionSamplesRef.current.at(-1) ?? mapPositionRef.current;
+          // A retained map point is not evidence of uninterrupted reception.
+          // Re-arm exhausted recovery when a real watch resumes after a long gap.
+          if (previousPosition && capturedAtMs - previousPosition.capturedAtMs > 15000) {
+            environmentRecoveryRef.current?.wake();
+          }
           const nextMapPosition = {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
@@ -5016,8 +5021,8 @@ export function App() {
 
   const hasAtlasPosition = Boolean(mapPosition);
   useEffect(() => {
-    if (hasAtlasPosition) environmentRecoveryRef.current?.wake();
-  }, [hasAtlasPosition]);
+    if (hasAtlasPosition && gpsState === "live") environmentRecoveryRef.current?.wake();
+  }, [hasAtlasPosition, gpsState]);
 
   useEffect(() => {
     if (environmentRuntimeError) environmentRecoveryRef.current?.fail();
