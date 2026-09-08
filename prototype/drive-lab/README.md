@@ -12,7 +12,7 @@ three voices at high volume, while requesting drier definition and less syntheti
 Otto/Cinque/Turbine. [Current research, acoustic changes and acceptance](../../docs/ENGINE-LISTENING-REFINEMENT-2026-09-08.md)
 record later second-to-third shifts, focused sample mixing, shorter pressure
 resonance and subdued blade tones. No added reverb or upstream media edits.
-A new A/B annotation LAB remains proposed, pending the three-direction selection.
+The owner-selected A/B annotation LAB now implements repeated listening and saved feedback.
 This note supersedes older claims that all physical Engine listening is untested.
 
 

@@ -121,6 +121,7 @@ export function EngineLab({ audioRef, prepareAudio }) {
   };
   return <EngineBench key={`${profile}-${serial}`} {...{ audioRef, prepareAudio, profile, calibration, onProgress }} onProfile={chooseProfile} autoReplay={replay}>
     <h2>Engine A/B Listening</h2>
+    <p className="engine-comparison-build">Build {typeof __APP_BUILD__ === "undefined" ? "local" : __APP_BUILD__}</p>
     <p>Same 68-second route: city, 80–130 km/h, return. One take at a time, at its original level. No loudness matching.</p>
     <label>Engine <select aria-label="Comparison engine" value={profile} disabled={busy} onChange={event => chooseProfile(event.target.value)}>{ENGINE_PROFILES.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</select></label>
     <div className="engine-comparison-buttons">{["A", "B"].map(key => <button key={key} type="button" disabled={busy} aria-pressed={replay && calibration === key} onClick={() => void play(key)}>PLAY {key}<small>{COMPARISON_CALIBRATIONS[key]}</small></button>)}</div>

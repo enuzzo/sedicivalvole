@@ -29,7 +29,7 @@ checks pass with one AudioContext and no page/processor errors or synthetic mail
 [Current refinement, real-car feedback, source findings and audio evidence](ENGINE-LISTENING-REFINEMENT-2026-09-08.md).
 The owner physically tested 0807 and praised the improved progression and first
 three voices at high volume. This new tuning still needs cabin listening.
-A proposed A/B annotation LAB awaits direction selection.
+The selected A/B annotation LAB provides local preferences and JSON export.
 
 Historical September 7 evidence at 20:04 local concerned build 1936, before
 automatic build 2004. Thirty Engine shifts and GPS up to 115 km/h were recorded

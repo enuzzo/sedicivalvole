@@ -7,7 +7,7 @@ audio calibration. This supersedes the earlier pending-direction proposal.
 
 Latest verified live build: **20260908-1102 / b524cd4**. All executable listening
 refinements are implemented, tested and published. Remaining: owner listening
-and optional LAB direction selection; dated entries below are historical.
+and device listening/download acceptance; dated entries below are historical.
 
 ## September 8 Tesla listening refinement
 
@@ -16,7 +16,7 @@ three voices at high volume, while requesting drier definition and less syntheti
 Otto/Cinque/Turbine. [Current research, acoustic changes and acceptance](ENGINE-LISTENING-REFINEMENT-2026-09-08.md)
 record later second-to-third shifts, focused sample mixing, shorter pressure
 resonance and subdued blade tones. No added reverb or upstream media edits.
-A new A/B annotation LAB remains proposed, pending the three-direction selection.
+The owner-selected A/B annotation LAB now implements repeated listening and saved feedback.
 This note supersedes older claims that all physical Engine listening is untested.
 
 

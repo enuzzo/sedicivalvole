@@ -1,0 +1,226 @@
+{
+  "pass": true,
+  "reference": "b524cd4 / build 20260908-1102",
+  "comparison": "b6760f8",
+  "methodology": "Same 132-second Chromium route and 16-bit WAV export. Procedural voices are byte-identical. Sampled/hybrid exports differ only by one 16-bit PCM step in fewer than 0.01% of samples; no claim of whole-file identity for those voices. Direct procedural A/B identity is tested separately.",
+  "renders": [
+    {
+      "profile": "mono",
+      "sampleRate": 44100,
+      "maximumPcmDifference": 1.0,
+      "changedSamples": 695,
+      "samples": 11642400,
+      "rmsDifference": 0.007726292475041385
+    },
+    {
+      "profile": "mono",
+      "sampleRate": 48000,
+      "maximumPcmDifference": 1.0,
+      "changedSamples": 703,
+      "samples": 12672000,
+      "rmsDifference": 0.007448264322252629
+    },
+    {
+      "profile": "rosso",
+      "sampleRate": 44100,
+      "maximumPcmDifference": 1.0,
+      "changedSamples": 675,
+      "samples": 11642400,
+      "rmsDifference": 0.007614311298414659
+    },
+    {
+      "profile": "rosso",
+      "sampleRate": 48000,
+      "maximumPcmDifference": 1.0,
+      "changedSamples": 709,
+      "samples": 12672000,
+      "rmsDifference": 0.007479981702024829
+    },
+    {
+      "profile": "touring",
+      "sampleRate": 44100,
+      "maximumPcmDifference": 1.0,
+      "changedSamples": 202,
+      "samples": 11642400,
+      "rmsDifference": 0.0041653780732643746
+    },
+    {
+      "profile": "touring",
+      "sampleRate": 48000,
+      "maximumPcmDifference": 1.0,
+      "changedSamples": 255,
+      "samples": 12672000,
+      "rmsDifference": 0.004485878516032959
+    },
+    {
+      "profile": "otto",
+      "sampleRate": 44100,
+      "maximumPcmDifference": 0.0,
+      "changedSamples": 0,
+      "samples": 11642400,
+      "rmsDifference": 0.0
+    },
+    {
+      "profile": "otto",
+      "sampleRate": 48000,
+      "maximumPcmDifference": 0.0,
+      "changedSamples": 0,
+      "samples": 12672000,
+      "rmsDifference": 0.0
+    },
+    {
+      "profile": "cinque",
+      "sampleRate": 44100,
+      "maximumPcmDifference": 0.0,
+      "changedSamples": 0,
+      "samples": 11642400,
+      "rmsDifference": 0.0
+    },
+    {
+      "profile": "cinque",
+      "sampleRate": 48000,
+      "maximumPcmDifference": 0.0,
+      "changedSamples": 0,
+      "samples": 12672000,
+      "rmsDifference": 0.0
+    },
+    {
+      "profile": "turbine",
+      "sampleRate": 44100,
+      "maximumPcmDifference": 0.0,
+      "changedSamples": 0,
+      "samples": 11642400,
+      "rmsDifference": 0.0
+    },
+    {
+      "profile": "turbine",
+      "sampleRate": 48000,
+      "maximumPcmDifference": 0.0,
+      "changedSamples": 0,
+      "samples": 12672000,
+      "rmsDifference": 0.0
+    }
+  ],
+  "sources": [
+    {
+      "path": "catalogue.js",
+      "sha256": "50e79efad38826bf51fa4834f859e299850aaf1381af2a1a2acbbd6f9f9d5625"
+    },
+    {
+      "path": "driveline-audio.js",
+      "sha256": "f9ffacd207bdbe78a0ca5ad070774b506c150c4f0ef08dfe9fac90e47c05d7db"
+    },
+    {
+      "path": "gearbox.js",
+      "sha256": "7506bf949d61502f115517fbad776e9ea551123633dbe2d5b86a262a39a4e39d"
+    },
+    {
+      "path": "idle-blip.js",
+      "sha256": "e7f16e431075bb57a278c7f75b8183be64d2cb120d1d524e77ad79e81448bf70"
+    },
+    {
+      "path": "lab-comparison.js",
+      "sha256": "4f13d77f33f15569e72df1c6b96add791b8b1d867ef1ce3327cbf272b1ed2433"
+    },
+    {
+      "path": "lab.jsx",
+      "sha256": "8d191979c3530059667f0a1b85905afbfefd888a5f545df6716750e2a83877b2"
+    },
+    {
+      "path": "loop-seam.js",
+      "sha256": "02a326b2e600013fae9fbb8c4ae517730a9bfad503a4da5c44bba2fa0a4a134e"
+    },
+    {
+      "path": "motion.js",
+      "sha256": "e3bb4e8aad1e5538666c8c3d0c775f8af02f31299769e9ee428bde5c6f4cdb3e"
+    },
+    {
+      "path": "powertrain.js",
+      "sha256": "c0c48d43d66bf95b11ea77a0cadb8d1c3f87de2d4efa6f4d0c2609043d804aa3"
+    },
+    {
+      "path": "procedural-dsp.js",
+      "sha256": "b048bd3f3130381d206a7f090a82367ce990bea5dc5ffbbcef9c0900fd317293"
+    },
+    {
+      "path": "procedural-processor.js",
+      "sha256": "f07f7f17618dbe168026234ecd08ac608614537e98bf13d9497934593e0697be"
+    },
+    {
+      "path": "procedural-voice.js",
+      "sha256": "ba8c4e4535bddb1e1e264ce572738e8dd4c47503b40f30cb4da9943afcfc7fb8"
+    },
+    {
+      "path": "profiles.js",
+      "sha256": "0dc518a77f153ae0fe727b80892328c77b9ba422ec851e75caa8d266b6f5f57e"
+    },
+    {
+      "path": "runtime.js",
+      "sha256": "c94e25d93ada085fea1d2d6527102a27c166173d63edd0c0986adee279401e42"
+    },
+    {
+      "path": "sample-levels.js",
+      "sha256": "4575026269b89f70a08581803bcc5176e643115aa36ec9075270e033b96a921b"
+    },
+    {
+      "path": "sample-mix.js",
+      "sha256": "4f3db3cd4a483a8191c9a3289051636492c930c81f24751347f07b4e5978401b"
+    },
+    {
+      "path": "sample-pitch.js",
+      "sha256": "87d4f678dd115d09ae0aa855d663f2d05dab705f232a69e2f479f97e53dbf8d8"
+    },
+    {
+      "path": "show-off.js",
+      "sha256": "5833b1113c8c68fe9799c9cf5d014f6b8f8b5c6688385af58d16ed6d431554b5"
+    },
+    {
+      "path": "source-inventory.json",
+      "sha256": "c54b6717a1b3a6413b739bd6d9e71de27dd7bedfc9c561297ae2b43446c30f08"
+    },
+    {
+      "path": "stationary-refresh.js",
+      "sha256": "c370737cb86d2fd932437a097e893427fcbb84954af98488af8473413b78adc7"
+    },
+    {
+      "path": "telemetry-field.css",
+      "sha256": "1ac22ccd34564bdb05d24c06bc58730f309a5250750d83f2d9dafb16b7d3d996"
+    },
+    {
+      "path": "telemetry-field.jsx",
+      "sha256": "1a7d2665d589d2ba38fcda87a2a924879ccc8d832c056f70222448647a1e6ce6"
+    },
+    {
+      "path": "upstream/AudioManager.ts",
+      "sha256": "f24318e025fe05f4eaed2e788588de1d91dec92c5d2c70eb6770fcc3e5e87981"
+    },
+    {
+      "path": "upstream/configurations.ts",
+      "sha256": "65179084f655e5dcb8a7495391a3dd128ab320747e7ca4f5404ffb4ad7b69ded"
+    },
+    {
+      "path": "upstream/Drivetrain.ts",
+      "sha256": "c990d6371e48a7a60f31e4fc196e6cfbab52185afd1ab7c73d95c73e9f151063"
+    },
+    {
+      "path": "upstream/Engine.ts",
+      "sha256": "803a585087745e80c5b597b5bc6cce43976d08ae9f19222780974c23004e4f40"
+    },
+    {
+      "path": "upstream/LICENSE",
+      "sha256": "c9f66fcef33030cf13186dffa4e0484f12fce2d61af34f7cb1c66224f088be99"
+    },
+    {
+      "path": "upstream/util/clamp.ts",
+      "sha256": "5191d2d5c16fcafc2e2b33efb06610ddc772d7fe25f7579c2efeef8644c860b1"
+    },
+    {
+      "path": "upstream/util/ratio.ts",
+      "sha256": "e2e2556922214cd65d147715041afc477a0e6f0f5e1cc06b0dd1333c7abed7bc"
+    },
+    {
+      "path": "use-engine.js",
+      "sha256": "a96bb0d327a7df82f956e23bde7fceb183b9d15efea23a9aae8e038aa88220c1"
+    }
+  ]
+}

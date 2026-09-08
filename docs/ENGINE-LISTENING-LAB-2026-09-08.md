@@ -63,3 +63,13 @@ The exported feedback supports the next real Tesla listening decision. Browser
 playback and signal parity do not establish cabin preference or native Tesla
 file-download behavior. Protected server authentication is preserved; local
 compiled-LAB QA is distinguished from unauthenticated canonical protection checks.
+
+
+## Public audio regression evidence
+
+Twelve final 132-second real Chromium renders compare the current public default
+to the 1102 source. Otto/Cinque/Turbine WAVs are byte-identical. Mono/Rosso/Touring
+16-bit exports differ by at most one PCM step in fewer than 0.01% of samples;
+whole-file identity is not claimed for these resampled recordings. All cap,
+finite-output and clipping checks pass. [Public audio comparison](qa/2026-09-08-engine-ab/public-audio-identity.json)
+and [direct A/B calibration identity](qa/2026-09-08-engine-ab/calibration-identity.json).
