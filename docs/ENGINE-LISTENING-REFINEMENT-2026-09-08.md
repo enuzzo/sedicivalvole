@@ -150,3 +150,14 @@ positive first-three-voice high-volume listening. Cabin preference for **this**
 refinement, the remaining synthetic voices and device endurance need a new
 physical listening pass. The optional A/B annotation LAB is still a proposal
 selected by the owner; implementation follows this audio checkpoint.
+
+
+## Subsequent owner timbre rejection — September 8 evening
+
+Otto/Cinque remain artificial to the owner; Turbine is described as an unpleasant
+microphone-blowing sound. The feedback does not identify its listening build.
+The source mechanism and proposed recorded-foundation approach are recorded in
+[MUSIC-CRAFT](MUSIC-CRAFT.md#owner-rejection-of-procedural-engine-timbre--september-8-2026).
+No replacement samples, synthesis changes or deployment were made in this
+investigation. Recorded multi-RPM/load candidates and any revised Turbine must
+pass an audible comparison before being described as improved.

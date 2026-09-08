@@ -1919,3 +1919,26 @@ fixed LAB URL. This can make two named calibrations use the wrong synthesis
 coefficients. Build worklet URLs from bundled-byte identity, including imported
 DSP dependencies, and verify the query-bearing asset on the canonical host.
 This fixes delivery identity; it does not change the acoustic calibration.
+
+
+## Owner rejection of procedural Engine timbre — September 8, 2026
+
+The owner reports Otto and Cinque as artificial/digital and Turbine as an
+unpleasant person blowing into a microphone. The exact listening build was not
+specified in this feedback; do not silently attribute it to a verified build.
+Source inspection confirms all three profiles have empty recording inventories.
+Otto/Cinque reuse a finite pressure pulse at cylinder firing intervals, short
+feedback pipes and filters; Cinque adds synthetic compressor/release components.
+Turbine uses low-pass random noise as its body, with a much quieter sine-based
+blade tone. Its airflow coefficient increases with spool. This is a plausible
+mechanism for the reported breath-like character, not a new measured cabin test.
+
+The previous whistle reduction does not establish successful turbine realism:
+reducing a tonal defect can expose an unconvincing noise bed. Functional firing,
+continuity and peak tests cannot establish acoustic acceptance. Prefer auditioning
+recorded foundations at several known RPM/load states for Otto/Cinque, reserving
+synthesis for restrained supporting details. A single heavily transposed loop
+is not sufficient evidence of improvement. Turbine needs a convincing reference
+and a rebuilt source balance or replacement; a gain reduction alone is not a
+realism fix. These are recommendations, not implemented changes. Preserve the
+current testing build until an audible candidate is ready for comparison.
