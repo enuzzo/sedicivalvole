@@ -140,7 +140,7 @@ test("Discover creates an exploratory Maps place handoff without starting naviga
 test("Discover renders a self-contained split index with language and search controls", () => {
   assert.match(appSource, /function DiscoverPanel/);
   assert.match(appSource, /navigator\.languages \?\? \[navigator\.language\]/);
-  assert.match(appSource, /type="search" placeholder="Search Wikipedia worldwide"/);
+  assert.match(appSource, /type="search" placeholder="Search places"/);
   assert.match(appSource, /discoverWikipediaSearchUrl\(debouncedQuery/);
   assert.match(appSource, /Searching Wikipedia globally in/);
   assert.match(appSource, /You can still search Wikipedia globally above\./);
@@ -151,7 +151,7 @@ test("Discover renders a self-contained split index with language and search con
   assert.match(appSource, /sandbox="allow-same-origin allow-scripts allow-popups allow-popups-to-escape-sandbox"/);
   assert.match(appSource, /src=\{articleUrl\}/);
   assert.doesNotMatch(appSource, /srcDoc=/);
-  assert.match(appSource, /const articleUrl = useMemo\(\(\) => discoverWikipediaArticleUrl/);
+  assert.match(appSource, /selected\?\.source === "Wikipedia" \? discoverWikipediaArticleUrl/);
   assert.match(appSource, /SEND TO NAVIGATION/);
   assert.match(appSource, /className="discover-navigation-handoff"/);
   assert.match(appSource, /QRCode\.toDataURL\(mapsUrl/);
@@ -178,4 +178,22 @@ test("Discover is reachable from both Visual catalogue entry points", () => {
   assert.match(appSource, /setDiscoverOpen\(true\);[\s\S]*?source: "launch-selector"/);
   assert.match(appSource, /onOpenDiscover=\{\(\) => \{[\s\S]*?setDiscoverOpen\(true\);[\s\S]*?source: "visual-library"/);
   assert.match(appSource, /active \? "ACTIVE" : <span aria-hidden="true">↗<\/span>/);
+});
+
+
+test("Discover blends providers, deduplicates linked articles and searches nearby categories", async () => {
+  const { combineDiscoverPlaces } = await import('../src/discover/discover-places.js');
+  const origin = { latitude: 45, longitude: 9 };
+  const wiki = [{ id: '1', title: 'Museum', url: 'https://en.wikipedia.org/wiki/The_Museum', ...origin }];
+  const osm = [{ id: 'osm:1', title: 'Local museum name', wikipediaUrl: 'https://en.wikipedia.org/wiki/The%20Museum', ...origin },
+    { id: 'osm:2', title: 'Coffee', summary: 'cafe', mapUrl: 'https://www.openstreetmap.org/', source: 'OpenStreetMap', ...origin }];
+  const combined = combineDiscoverPlaces(wiki, osm, origin);
+  assert.equal(combined.length, 2);
+  assert.equal(combined[0].source, 'Wikipedia');
+  assert.equal(combined[1].source, 'OpenStreetMap');
+  assert.equal(combined[1].distanceMetres, 0);
+  assert.equal(combineDiscoverPlaces([], osm.slice(1), origin, 'cafe').length, 1);
+  assert.equal(combineDiscoverPlaces([], osm.slice(1), origin, 'unmatched').length, 0);
+  assert.equal(combineDiscoverPlaces(wiki, [], origin).length, 1);
+  assert.equal(combineDiscoverPlaces([], osm.slice(1), origin).length, 1);
 });

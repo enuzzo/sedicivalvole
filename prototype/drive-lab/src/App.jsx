@@ -1,3 +1,6 @@
+import { combineDiscoverPlaces } from "./discover/discover-places.js";
+import { nearbyOsmUrl, normalizeNearbyOsm } from "./environments/atlas/osm-places.js";
+import { createPlaceLoader } from "./environments/atlas/place-loader.js";
 import { canAutoReload } from "./session/update-controller.js";
 import { useSessionMaintenance } from "./session/use-session-maintenance.js";
 import { useLaunchPreload } from "./use-launch-preload.js";
@@ -974,6 +977,40 @@ function DiscoverPanel({ position, onClose, onRetryLocation, onDemoLocation }) {
   const [mapsQrUrl, setMapsQrUrl] = useState("");
   const resultsRef = useRef(null);
 
+  const [osmPages, setOsmPages] = useState([]);
+  const [osmStatus, setOsmStatus] = useState("loading");
+  const positionRef = useRef(position);
+  positionRef.current = position;
+  useEffect(() => {
+    setOsmPages([]);
+    setOsmStatus("loading");
+    const loader = createPlaceLoader({
+      readPosition: () => positionRef.current,
+      canLoad: () => !document.hidden && navigator.onLine !== false,
+      intervalMs: 300000,
+      load: async (origin, signal) => {
+        const url = nearbyOsmUrl(origin);
+        if (!url) return [];
+        const response = await fetch(url, { signal });
+        if (!response.ok) throw new Error(`OpenStreetMap returned ${response.status}`);
+        return normalizeNearbyOsm(await response.json(), origin, language);
+      },
+      onResult: setOsmPages,
+      onState: setOsmStatus,
+    });
+    const recover = () => document.hidden || navigator.onLine === false ? loader.pause() : loader.wake();
+    document.addEventListener("visibilitychange", recover);
+    window.addEventListener("online", recover);
+    window.addEventListener("offline", recover);
+    void loader.start();
+    return () => {
+      loader.dispose();
+      document.removeEventListener("visibilitychange", recover);
+      window.removeEventListener("online", recover);
+      window.removeEventListener("offline", recover);
+    };
+  }, [language]);
+
   const globalSearchActive = Boolean(debouncedQuery);
   const queryPending = query.trim() !== debouncedQuery;
   const requestUrl = useMemo(() => (
@@ -1036,7 +1073,7 @@ function DiscoverPanel({ position, onClose, onRetryLocation, onDemoLocation }) {
       .then((nextPages) => {
         setPages(nextPages);
         setSelectedId((current) => (
-          nextPages.some((page) => page.id === current) ? current : nextPages[0]?.id ?? null
+          current ?? nextPages[0]?.id ?? null
         ));
         setStatus(nextPages.length ? "ready" : "empty");
       })
@@ -1052,16 +1089,17 @@ function DiscoverPanel({ position, onClose, onRetryLocation, onDemoLocation }) {
 
   const filteredPages = useMemo(() => {
     if (queryPending) return [];
-    if (globalSearchActive) return pages;
-    return discoverViewPages(pages, { view, heading: position?.heading });
-  }, [globalSearchActive, pages, position?.heading, queryPending, view]);
+    const combined = combineDiscoverPlaces(pages, osmPages, position, debouncedQuery);
+    if (globalSearchActive) return combined;
+    return discoverViewPages(combined, { view, heading: position?.heading });
+  }, [debouncedQuery, globalSearchActive, pages, osmPages, position, queryPending, view]);
   const selected = filteredPages.find((page) => page.id === selectedId) ?? filteredPages[0] ?? null;
   const visiblePages = filteredPages.slice(0, visibleResultCapacity);
   const remainingPages = filteredPages.slice(visibleResultCapacity);
   const hiddenCount = remainingPages.length;
   const mapsUrl = discoverGoogleMapsUrl(selected);
   const languageLabel = DISCOVER_LANGUAGE_OPTIONS.find((item) => item.id === language)?.label ?? language;
-  const articleUrl = useMemo(() => discoverWikipediaArticleUrl(selected?.title, { language }), [language, selected?.title]);
+  const articleUrl = useMemo(() => selected?.source === "Wikipedia" ? discoverWikipediaArticleUrl(selected.title, { language }) : null, [language, selected]);
 
   useEffect(() => {
     let active = true;
@@ -1111,12 +1149,12 @@ function DiscoverPanel({ position, onClose, onRetryLocation, onDemoLocation }) {
       aria-pressed={selected?.id === page.id}
       onClick={() => setSelectedId(page.id)}
     >
-      {page.thumbnail ? <img src={page.thumbnail} alt="" /> : <img className="is-placeholder" src="/third-party/tabler-icons/brand-wikipedia.svg" alt="" aria-hidden="true" />}
+      {page.thumbnail ? <img src={page.thumbnail} alt="" /> : <img className="is-placeholder" src={`/third-party/tabler-icons/${page.source === "OpenStreetMap" ? "map-search" : "brand-wikipedia"}.svg`} alt="" aria-hidden="true" />}
       <span>
         <strong>{page.title}</strong>
         <em>{globalSearchActive
           ? (Number.isFinite(page.distanceMetres) ? page.distanceLabel : "GLOBAL RESULT")
-          : `${page.distanceLabel} · ≈ ${page.estimatedMinutes} min`} · Wikipedia</em>
+          : `${page.distanceLabel} · ≈ ${page.estimatedMinutes} min`} · {page.source}</em>
       </span>
     </button>
   );
@@ -1157,7 +1195,7 @@ function DiscoverPanel({ position, onClose, onRetryLocation, onDemoLocation }) {
             <label className="discover-search">
               <span className="visually-hidden">Search places</span>
               <img src="/third-party/tabler-icons/search.svg" alt="" aria-hidden="true" />
-              <input value={query} onChange={(event) => setQuery(event.target.value)} type="search" placeholder="Search Wikipedia worldwide" />
+              <input value={query} onChange={(event) => setQuery(event.target.value)} type="search" placeholder="Search places" />
             </label>
           </div>
 
@@ -1186,13 +1224,16 @@ function DiscoverPanel({ position, onClose, onRetryLocation, onDemoLocation }) {
               </div>
             ) : null}
             {status === "error" ? (
-              <div className="discover-empty-state"><strong>Source unavailable</strong><p>{error}</p><button type="button" onClick={() => setReloadToken((current) => current + 1)}>TRY AGAIN</button></div>
+              <div className="discover-empty-state"><strong>Wikipedia unavailable</strong><p>{error}</p><button type="button" onClick={() => setReloadToken((current) => current + 1)}>TRY AGAIN</button></div>
             ) : null}
-            {status === "empty" || (status === "ready" && !filteredPages.length) ? (
+            {!filteredPages.length && (status === "empty" || status === "ready") && (!position || osmStatus === "empty" || osmStatus === "ready") ? (
               <div className="discover-empty-state"><strong>No matching places</strong><p>{globalSearchActive ? "Try another global Wikipedia search or language." : "Try another scope, language, or global search."}</p></div>
             ) : null}
           </div>
-          <p className="discover-privacy">Wikipedia · {languageLabel} · {globalSearchActive ? "global search" : "session-only location"}</p>
+          <p className="discover-privacy">Wikipedia · {languageLabel} · {globalSearchActive ? "global" : "nearby"}<br />
+            <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">© OpenStreetMap contributors</a> · nearby points
+            {position && osmStatus === "loading" ? " · loading…" : osmStatus === "retrying" ? " · retrying…" : ""}
+          </p>
         </aside>
 
         <article className="discover-reader" aria-live="polite">
@@ -1231,10 +1272,14 @@ function DiscoverPanel({ position, onClose, onRetryLocation, onDemoLocation }) {
                   />
                 ) : (
                   <div className="discover-article-fallback" aria-live="polite">
-                    {selected.thumbnail ? <img src={selected.thumbnail} alt="" /> : <img className="is-placeholder" src="/third-party/tabler-icons/brand-wikipedia.svg" alt="" aria-hidden="true" />}
+                    {selected.thumbnail ? <img src={selected.thumbnail} alt="" /> : <img className="is-placeholder" src={`/third-party/tabler-icons/${selected.source === "OpenStreetMap" ? "map-search" : "brand-wikipedia"}.svg`} alt="" aria-hidden="true" />}
                     <div>
-                      <strong>Complete article unavailable</strong>
+                      <strong>{selected.source === "OpenStreetMap" ? "Mapped place" : "Complete article unavailable"}</strong>
                       <p>{selected.summary || "Wikipedia has no short introduction for this place."}</p>
+                      {selected.source === "OpenStreetMap" ? <>
+                        <p>A named OpenStreetMap point near your location. Map categories are community supplied; an article may not be available.</p>
+                        {selected.wikipediaUrl ? <a href={selected.wikipediaUrl} target="_blank" rel="noreferrer">READ LINKED WIKIPEDIA ARTICLE</a> : null}
+                      </> : null}
                     </div>
                   </div>
                 )}
@@ -1260,8 +1305,8 @@ function DiscoverPanel({ position, onClose, onRetryLocation, onDemoLocation }) {
                 ) : null}
               </div>
               <footer className="discover-reader-source">
-                <span><img src="/third-party/tabler-icons/brand-wikipedia.svg" alt="" aria-hidden="true" />WIKIPEDIA · {language.toUpperCase()}</span>
-                <a href={selected.url} target="_blank" rel="noreferrer">OPEN ON WIKIPEDIA <img src="/third-party/tabler-icons/external-link.svg" alt="" aria-hidden="true" /></a>
+                <span>{selected.source.toUpperCase()}{selected.source === "Wikipedia" ? ` · ${language.toUpperCase()}` : ""}</span>
+                <a href={selected.url} target="_blank" rel="noreferrer">OPEN ON {selected.source.toUpperCase()} <img src="/third-party/tabler-icons/external-link.svg" alt="" aria-hidden="true" /></a>
               </footer>
             </>
           ) : (

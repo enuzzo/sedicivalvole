@@ -1386,3 +1386,8 @@ Publication identity will be appended after verification.
 826 native tests pass. Resume with physical iPhone/Tesla acceptance and radar
 A/B/C selection; the radar adapter is tested but deliberately unregistered.
 Read ROAD-UI-REFINEMENT-2026-09-09.md for measured FPS and remaining limits.
+
+
+## Discover source expansion — 2026-09-09
+
+Discover now combines Wikipedia with bounded nearby OpenStreetMap points. See [implementation and validation](DISCOVER-OSM-2026-09-09.md). Global search applies to Wikipedia; OSM text search is local to fetched nearby points. No additional renderer or dependency.

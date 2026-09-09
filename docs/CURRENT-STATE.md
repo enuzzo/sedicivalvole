@@ -1526,3 +1526,8 @@ Discover with Wikipedia labels, Atlas smaller discs and north/zoom/reset control
 Chrome/WebKit UI verification pass. Measured local Atlas motion/turning is 59.72
 actual render FPS; vehicle confirmation remains open. Radar adapter is inactive,
 awaiting the three-direction selection. See ROAD-UI-REFINEMENT-2026-09-09.md.
+
+
+## Discover source expansion — 2026-09-09
+
+Discover now combines Wikipedia with bounded nearby OpenStreetMap points. See [implementation and validation](DISCOVER-OSM-2026-09-09.md). Global search applies to Wikipedia; OSM text search is local to fetched nearby points. No additional renderer or dependency.

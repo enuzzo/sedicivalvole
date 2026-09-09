@@ -495,6 +495,8 @@ and per-frame React publication. Target-device smoothness and installed Safari
 acceptance remain open. The Meguru radar adapter is prepared but inactive pending
 visual selection. [Behavior, architecture and limits](docs/ROAD-UI-REFINEMENT-2026-09-09.md).
 
+Discover combines Wikipedia articles with nearby OpenStreetMap points, with source labels, duplicate removal and independent provider recovery. Search combines worldwide Wikipedia results with matching nearby OSM points; OSM coverage is limited to selected named point categories.
+
 <!-- COMMUNITY-CREDITS:START -->
 ## Community thanks — 2026-09-05
 
@@ -799,7 +801,7 @@ These are exact lockfile entries, not a claim that every package ships in the br
 
 - 🗺️ **Roland Olbricht, Overpass contributors, FOSSGIS and OpenStreetMap contributors** —
   [Overpass API](https://overpass-api.de/) / [source](https://github.com/drolbr/Overpass-API):
-  shipped service-only nearby named-node queries, independent of Atlas zoom;
+  shipped service-only nearby named-node queries in Atlas and Discover, independent of map zoom;
   OSM data under ODbL, no server code imported.
 - 📍 **Google Maps** — [documented Maps URLs](https://developers.google.com/maps/documentation/urls/get-started):
   shipped outbound place-search links only, no embedded runtime or imported data.

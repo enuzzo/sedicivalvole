@@ -3617,6 +3617,7 @@ html { font-size: var(--font-size-floor); }
 .discover-results > button em { font-size: var(--type-meta); line-height: 1; }
 .discover-results > .discover-more { min-height: var(--touch-target); font-size: var(--type-action); }
 .discover-privacy { font-size: var(--type-meta); }
+.discover-privacy a { color: inherit; text-underline-offset: 2px; }
 .discover-status,
 .discover-empty-state p { font-size: var(--type-body); }
 .discover-empty-state strong { font-size: var(--type-active); }

@@ -1034,8 +1034,8 @@ Service integration: Roland Olbricht, Overpass contributors and FOSSGIS;
 OpenStreetMap contributors own the map data (ODbL).
 Public routes: https://github.com/drolbr/Overpass-API and https://www.fossgis.de/.
 Unsent draft: Thank you for making focused, read-only access to community map
-data possible. Atlas uses a small, throttled node query to reveal nearby places
-without forcing the driver to zoom into the map. Attribution stays visible.
+data possible. Atlas and Discover use a small, throttled node query to reveal nearby places
+without forcing the driver to zoom into the map. Your named points now also give our passenger index useful places beyond encyclopedia articles. Attribution stays visible.
 
 Google Maps: outbound user-initiated search URLs only; public documentation
 https://developers.google.com/maps/documentation/urls/get-started.
