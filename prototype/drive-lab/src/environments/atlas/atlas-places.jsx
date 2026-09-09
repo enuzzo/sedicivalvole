@@ -1,6 +1,6 @@
 import { normalizeOsmPlaces, combineAtlasPlaces, nearbyOsmUrl, normalizeNearbyOsm } from './osm-places.js';
 import { createPlaceLoader } from './place-loader.js';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { discoverDistanceMetres, formatDiscoverDistance, discoverPreferredLanguage, discoverWikipediaUrl, normalizeDiscoverPages } from '../../discover/discover-model.js';
 
 // Shared provider/normalizer with Discover; requests are bounded by time and travel.
@@ -13,7 +13,8 @@ export default function AtlasPlaces({ map, position, onReadMore, demo = false })
   const [nearbyPlaces, setNearbyPlaces] = useState([]);
   const [osmStatus, setOsmStatus] = useState('loading');
   const [selected, setSelected] = useState(null);
-  const [projected, setProjected] = useState([]);
+  const markerNodes = useRef(new Map());
+  const mapPlaces = useMemo(() => combineAtlasPlaces(places, [...nearbyPlaces, ...osmPlaces]).slice(0, 32), [places, nearbyPlaces, osmPlaces]);
   useEffect(() => {
     const canLoad = () => document.visibilityState !== 'hidden' && navigator.onLine !== false;
     const common = { readPosition: () => latest.current, canLoad };
@@ -49,25 +50,28 @@ export default function AtlasPlaces({ map, position, onReadMore, demo = false })
   }, [map, language]);
   useEffect(() => {
     if (!map) return;
-    let projectedAt = -Infinity;
     const project = () => {
-      if (performance.now() - projectedAt < 125) return;
-      projectedAt = performance.now();
-      const bounds = map.getContainer().getBoundingClientRect();
+      if (document.visibilityState === 'hidden') return;
+      const container = map.getContainer();
+      const width = container.clientWidth, height = container.clientHeight;
       const visible = [];
-      for (const [i, place] of combineAtlasPlaces(places, [...nearbyPlaces, ...osmPlaces]).entries()) {
+      for (const place of mapPlaces) {
+        const node = markerNodes.current.get(place.id);
+        if (!node) continue;
         const p = map.project([place.longitude, place.latitude]);
-        if (p.x < 26 || p.y < 26 || p.x > bounds.width - 26 || p.y > bounds.height - 26) continue;
-        if (visible.some(v => Math.hypot(v.x - p.x, v.y - p.y) < 52)) continue;
-        visible.push({ ...place, x: p.x, y: p.y, number: i + 1 });
+        const shown = visible.length < 14 && p.x >= 24 && p.y >= 24 && p.x <= width - 24 && p.y <= height - 24
+          && !visible.some(v => Math.hypot(v.x - p.x, v.y - p.y) < 48);
+        node.hidden = !shown;
+        if (!shown) continue;
+        visible.push(p);
+        node.style.transform = `translate3d(${p.x - 24}px, ${p.y - 24}px, 0)`;
       }
-      setProjected(visible.slice(0, 14));
     };
-    project();map.on('move', project);map.on('resize', project);
-    return () => { map.off('move', project);map.off('resize', project); };
-  }, [map, places, osmPlaces, nearbyPlaces]);
+    project(); map.on('render', project); map.on('resize', project);
+    return () => { map.off('render', project); map.off('resize', project); };
+  }, [map, mapPlaces]);
   return <>
-    <div onPointerDown={event => event.stopPropagation()} className="atlas-pois" aria-label="Discover places on the map">{projected.map(p => <button key={p.id} className="atlas-poi" style={{ left:p.x,top:p.y }} aria-label={`Discover ${p.title}`} aria-pressed={selected?.id === p.id} onClick={() => setSelected(p)}>{p.number}</button>)}</div>
+    <div onPointerDown={event => event.stopPropagation()} className="atlas-pois" aria-label="Discover places on the map">{mapPlaces.map((p, index) => <button key={p.id} ref={node => { if (node) markerNodes.current.set(p.id, node); else markerNodes.current.delete(p.id); }} className="atlas-poi" style={{ left:0,top:0 }} aria-label={`Discover ${p.title}`} aria-pressed={selected?.id === p.id} onClick={() => setSelected(p)}>{index + 1}</button>)}</div>
     {selected ? <article onPointerDown={event => event.stopPropagation()} className={`atlas-place-card${selected.thumbnail ? "" : " is-text-only"}`}>
       {selected.thumbnail ? <img src={selected.thumbnail} alt="" onError={event => { event.currentTarget.style.visibility = "hidden"; }} /> : null}
       <div><small>{demo ? "DEMO · " : ""}{selected.source.toUpperCase()} · {formatDiscoverDistance(discoverDistanceMetres(position, selected))}</small><h3>{selected.title}</h3><p>{selected.summary || 'Read the complete Wikipedia article for this place.'}</p>{selected.source === 'OpenStreetMap' ? <div className="atlas-place-links"><a href={selected.googleMapsUrl} target="_blank" rel="noopener noreferrer">Google Maps ↗</a>{selected.wikipediaUrl ? <a href={selected.wikipediaUrl} target="_blank" rel="noopener noreferrer">Wikipedia ↗</a> : null}<a href={selected.mapUrl} target="_blank" rel="noopener noreferrer">OSM ↗</a></div> : <button onClick={() => onReadMore({ ...selected, language })}>Read more</button>}</div>

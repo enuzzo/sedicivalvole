@@ -1116,7 +1116,7 @@ function DiscoverPanel({ position, onClose, onRetryLocation, onDemoLocation }) {
         <strong>{page.title}</strong>
         <em>{globalSearchActive
           ? (Number.isFinite(page.distanceMetres) ? page.distanceLabel : "GLOBAL RESULT")
-          : `${page.distanceLabel} · ≈ ${page.estimatedMinutes} min`}</em>
+          : `${page.distanceLabel} · ≈ ${page.estimatedMinutes} min`} · Wikipedia</em>
       </span>
     </button>
   );
@@ -2014,7 +2014,9 @@ function PaletteControl({ themeId, onChange, open, onOpenChange }) {
     : theme.swatch });
   return (
     <div className="palette-control" ref={containerRef} onBlurCapture={(event) => {
-      if (open && !event.currentTarget.contains(event.relatedTarget)) onOpenChange(false);
+      // Safari touch buttons can blur the focused swatch without focusing the tapped button.
+      // Outside pointer dismissal already owns that case; only dismiss a known focus departure.
+      if (open && event.relatedTarget && !event.currentTarget.contains(event.relatedTarget)) onOpenChange(false);
     }}>
       <button className="palette-trigger" type="button" aria-label={`Palette ${selected.label}. Choose palette`}
         aria-expanded={open} aria-controls="palette-menu" onClick={() => onOpenChange(!open)}>

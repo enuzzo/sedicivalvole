@@ -486,6 +486,15 @@ Recorded Engine source research is available in [the candidate report](docs/ENGI
 
 The local [Engine Listening Room](tools/engine-listening-room/README.md) provides 111 hash-identified auditions, filters, one-at-a-time playback and locally saved/exportable notes. [Game-oriented source research](docs/ENGINE-GAME-AUDIO-RESEARCH-2026-09-08.md) expands the earlier recording study. This development tool is not deployed.
 
+## September 9 road UI refinement
+
+Landscape phone palette dismissal and edge-to-edge footer, denser Discover with
+Wikipedia source labels, smaller Atlas markers, north lock and zoom/reset controls
+are implemented. Atlas camera/marker updates now avoid repeated easing restarts
+and per-frame React publication. Target-device smoothness and installed Safari
+acceptance remain open. The Meguru radar adapter is prepared but inactive pending
+visual selection. [Behavior, architecture and limits](docs/ROAD-UI-REFINEMENT-2026-09-09.md).
+
 <!-- COMMUNITY-CREDITS:START -->
 ## Community thanks — 2026-09-05
 
@@ -514,7 +523,8 @@ A heartfelt thank-you to the people who share the code, type, music, data and ex
 | 🧊 Ricardo Cabello (mrdoob) and contributors — Three.js | [Project](https://github.com/mrdoob/three.js) | **Production and upstream-bundled dependency.** 0.169.0 for ShaderGradient, r109 inside Infinite Lights and r115 inside Drivey; upstream copies remain separate. |
 | 🧊 Paul Henschel and Poimandres contributors — React Three Fiber / three-stdlib | [Project](https://github.com/pmndrs/react-three-fiber) | **Production dependencies.** Unmodified R3F 9.7.0 and three-stdlib 2.36.1 support the lazy ShaderGradient renderer; [three-stdlib repository](https://github.com/pmndrs/three-stdlib). |
 | 🎥 Yomotsu and contributors — camera-controls | [Project](https://github.com/yomotsu/camera-controls) | **Production dependency.** Unmodified 2.9.0 peer of ShaderGradient; no independent camera-controls fork. |
-| 🗺️ MapLibre contributors — MapLibre GL JS | [Project](https://github.com/maplibre/maplibre-gl-js) | **Production dependency.** Lazy ATLAS map rendering and the project-owned palette style in src/environments/atlas/. |
+| ✈️ ADSB.lol contributors | [API documentation](https://www.adsb.lol/docs/open-data/api/) · [Public project](https://github.com/adsblol) | **Study/inactive preparation only.** Original bounded aircraft adapter; no live feed or imported code. Data declared ODbL 1.0; no aircraft data redistributed. |
+| 🗺️ MapLibre contributors — MapLibre GL JS | [Project](https://github.com/maplibre/maplibre-gl-js) | **Production dependency.** Lazy ATLAS map rendering and the project-owned palette style in src/environments/atlas/. Its [camera animation example](https://maplibre.org/maplibre-gl-js/docs/examples/animate-map-camera-around-a-point/) informed the follow-camera study. |
 | 🔳 Ryan Day (soldair) and contributors; QR algorithm lineage includes Kazuhiko Arase — node-qrcode | [Project](https://github.com/soldair/node-qrcode) | **Production dependency.** qrcode 1.5.4 generates local passenger handoff links. Public email is from the installed package author metadata. |
 | ✒️ Simple Icons contributors — Simple Icons | [Project](https://github.com/simple-icons/simple-icons) | **Integrated icon.** GitHub source-link mark in App.jsx. |
 | 🔤 Florian Karsten and project authors — Space Grotesk | [Project](https://github.com/floriankarsten/space-grotesk) | **Bundled font.** Unmodified variable font in public/fonts/, used for reading text, values and controls. Public email is published in the upstream README. |
@@ -535,7 +545,7 @@ A heartfelt thank-you to the people who share the code, type, music, data and ex
 | 🧪 Liam Egan; embedded noise credited upstream to Inigo Quilez — GLSL: Primordial Soup | [Project](https://codepen.io/shubniggurath/pen/NXGbBo) | **Retired study — no copied code.** Fluid mechanics were studied; the independent experiment was retired. No Pen or attributed noise source is shipped. |
 | 🎹 Spotify and Basic Pitch contributors — Spotify Basic Pitch | [Project](https://github.com/spotify/basic-pitch) | **Development only.** Machine-local harmony-analysis note proposals; no package, model or generated report enters the product bundle. |
 | 🧭 Jakob Nielsen / Nielsen Norman Group — Progressive Disclosure | [Article](https://www.nngroup.com/articles/progressive-disclosure/) | **Study only.** Informed contextual launch choices; no article text, code or artwork copied. |
-| 🌐 MDN contributors / Mozilla — Web Audio and Autoplay guides | [Web Audio](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Best_practices) · [Autoplay](https://developer.mozilla.org/en-US/docs/Web/Media/Guides/Autoplay) | **Study only.** Also informed [CacheStorage retention and eviction](https://developer.mozilla.org/en-US/docs/Web/API/Cache). Informed silent preparation, explicit START and [proportional sample detune](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/detune); no documentation or code redistributed. |
+| 🌐 MDN contributors / Mozilla — Web Audio and Autoplay guides | [Web Audio](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Best_practices) · [Autoplay](https://developer.mozilla.org/en-US/docs/Web/Media/Guides/Autoplay) | **Study only.** Also informed [Safari button focus behavior](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button) and [CacheStorage retention and eviction](https://developer.mozilla.org/en-US/docs/Web/API/Cache). Informed silent preparation, explicit START and [proportional sample detune](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/detune); no documentation or code redistributed. |
 | 🔄 Chrome for Developers contributors / Google — service-worker lifecycle | [Lifecycle](https://developer.chrome.com/docs/workbox/service-worker-lifecycle) · [Update handling](https://developer.chrome.com/docs/workbox/handling-service-worker-updates) | **Development study only.** Informed build isolation and avoiding forced worker replacement across open tabs; no Workbox dependency, copied code or documentation shipped. |
 
 ### 🛠️ Offline analysis and verification tools

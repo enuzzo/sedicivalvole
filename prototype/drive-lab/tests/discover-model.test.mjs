@@ -75,8 +75,8 @@ test("Discover opens the complete localized article in native Minerva dark mode"
 });
 
 test("Discover derives the first-screen result count from real available height", () => {
-  assert.equal(discoverVisibleResultCapacity(699, 15), 7);
-  assert.equal(discoverVisibleResultCapacity(395, 15), 3);
+  assert.equal(discoverVisibleResultCapacity(699, 15), 9);
+  assert.equal(discoverVisibleResultCapacity(395, 15), 4);
   assert.equal(discoverVisibleResultCapacity(1100, 12), 12);
   assert.equal(discoverVisibleResultCapacity(0, 15), 5);
 });

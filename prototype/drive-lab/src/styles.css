@@ -4731,3 +4731,22 @@ html { font-size: var(--font-size-floor); }
 .session-update-notice span{display:flex;flex-direction:column;gap:4px}.session-update-notice strong{font-size:14px}.session-update-notice small{font-size:13px}.session-update-notice button{min-width:80px;min-height:48px;padding:0 12px;border:0;border-radius:6px;background:var(--ui-selected-surface,#151515);color:var(--ui-selected-text,#fff);font:inherit;font-size:15px}
 
 .app:has([role="dialog"]) .session-update-notice{display:none}
+
+/* September road feedback: denser reading without shrinking touch targets. */
+.discover-results > button:not(.discover-more) { grid-template-columns: 36px minmax(0,1fr); height: 72px; min-height: 72px; padding: 5px 7px; gap: 7px; }
+.discover-results > button > img { width: 36px; height: 44px; }
+.discover-results > button strong { font-size: 15px; line-height: 1.15; }
+.discover-results > button > span { gap: 2px; }
+.discover-results > button em { margin-top: 0; font-size: 13px; line-height: 1.15; }
+.discover-reader > header { min-height: 64px; padding: 8px 10px; }
+.discover-reader > header h3 { font-size: 19px; }
+.discover-tools { padding: 6px; gap: 5px; }
+.atlas-field .atlas-poi { border: 0; background: transparent; box-shadow: none; font-size: 14px; isolation: isolate; }
+.atlas-poi::before { content: ""; position: absolute; inset: 8px; border: 2px solid white; border-radius: 50%; background: #ce2422; box-shadow: 0 1px 3px #0003; z-index: -1; }
+.atlas-poi[aria-pressed="true"] { outline: none; background: transparent; }
+.atlas-poi[aria-pressed="true"]::before { background: #202629; outline: 2px solid #ce2422; }
+.atlas-camera-controls { position: absolute; right: 12px; top: 204px; z-index: 5; display: flex; gap: 2px; padding: 3px; border: 1px solid var(--ui-line); border-radius: 6px; background: var(--ui-surface); }
+.atlas-camera-controls button { min-width: 48px; min-height: 48px; padding: 6px 10px; border: 0; border-radius: 4px; background: var(--ui-control); color: var(--ui-text); font-size: 14px; }
+.atlas-camera-controls button[aria-pressed="true"] { background: var(--ui-selected-surface); color: var(--ui-selected-text); }
+
+.app[data-environment="atlas"].controls-resting .atlas-camera-controls { top: 134px; }

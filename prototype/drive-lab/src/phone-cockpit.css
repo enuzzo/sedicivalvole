@@ -33,7 +33,7 @@
 .app[data-phone-layout="landscape"] .source-readout strong { font-size: 28px; }
 .app[data-phone-layout="landscape"] .effect-badge.is-active { transform: translateY(56px); }
 .app[data-phone-layout="landscape"].controls-resting .topbar { transform: translateY(-100%); visibility: hidden; }
-.app[data-phone-layout="landscape"] .footer-stack { padding: 0 var(--phone-right) var(--phone-bottom) var(--phone-left); background: var(--ui-surface-strong); }
+.app[data-phone-layout="landscape"] .footer-stack { padding: 0 var(--phone-right) 0 var(--phone-left); background: var(--ui-surface-strong); }
 .app[data-phone-layout="landscape"] :is(.control-slab,.control-slab.is-soundtrack) { grid-template-columns: 56px 56px minmax(104px,1fr) minmax(112px,1fr) 56px 72px; min-height: 56px; }
 .app[data-phone-layout="landscape"][data-environment="engine"] .control-slab { grid-template-columns: 56px minmax(104px,1fr) minmax(112px,1fr) 72px; }
 .app[data-phone-layout="landscape"] .control-slab > * { grid-column: auto; grid-row: auto; }
@@ -83,3 +83,10 @@
 .phone-rotation-notice p { max-width: 320px; margin: 0; font-size: 15px; line-height: 1.6; }
 .phone-rotation-symbol { width: 78px; height: 48px; border: 2px solid #f4f4f4; border-radius: 6px; display: grid; place-items: end center; padding: 4px; }
 .phone-rotation-symbol span { width: 22px; height: 3px; background: #f4f4f4; }
+
+/* Fill the installed landscape viewport while keeping the home indicator below controls. */
+.app[data-phone-layout="landscape"] .control-slab { padding-bottom: 0; min-height: calc(56px + var(--phone-bottom)); }
+.app[data-phone-layout="landscape"] .control-slab > :is(button,.environment-control,.score-control,.palette-control),
+.app[data-phone-layout="landscape"] .palette-trigger { height: calc(56px + var(--phone-bottom)); min-height: calc(56px + var(--phone-bottom)); }
+.app[data-phone-layout="landscape"] .control-slab > :is(button,.environment-control,.score-control),
+.app[data-phone-layout="landscape"] .palette-trigger { padding-bottom: var(--phone-bottom); }

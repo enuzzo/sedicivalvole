@@ -1509,3 +1509,11 @@ to the existing mailbox. OFF/Standard preferences persist. Official publication,
 independent read-only postflight, 25 canonical checks, 669 native tests, 18 package
 checks and intercepted live timer/retry/OFF QA pass. Real driving-mail receipt
 remains separate. [Full delivery evidence](AUTOMATIC-DIAGNOSTICS-2026-09-07.md).
+
+
+## 2026-09-09 — Road UI refinement
+
+Phone palette/footer, compact Discover and Atlas camera/marker/navigation changes
+are implemented. Radar has an inactive original adapter; A/B/C visual selection
+is pending. See [current behavior and validation limits](ROAD-UI-REFINEMENT-2026-09-09.md).
+Publication identity will be appended after verification.

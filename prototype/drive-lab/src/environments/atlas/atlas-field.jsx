@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import "maplibre-gl/dist/maplibre-gl.css";
 import {
   advanceAtlasDemoPosition,
+  advanceAtlasFollowCamera,
   ATLAS_DEMO_POSITION,
   appendAtlasTravelPoint,
   ATLAS_MARKER_UPDATE_INTERVAL_MS,
@@ -28,7 +29,7 @@ import {
 } from "./atlas-model.js";
 import {
   canvasFramebufferSize,
-  THIRTY_FPS_FRAME_INTERVAL_MS,
+  SIXTY_FPS_FRAME_INTERVAL_MS,
 } from "../../render-telemetry.js";
 
 function recolourStyle(map, palette, effect = null, mapAppearance = "palette") {
@@ -87,12 +88,15 @@ export default function AtlasField({
 }) {
   const hostRef = useRef(null);
   const mapRef = useRef(null);
+  const manualRef = useRef(null);
   const valuesRef = useRef({ speed, theme, position, positionSamplesRef, sessionJourneyRef, reducedMotion, effect, mapAppearance });
   const [demoPosition, setDemoPosition] = useState(null);
   const panelCollapsed = true;
   const [mapObject, setMapObject] = useState(null);
   const [framing, setFraming] = useState("follow");
   const framingRef = useRef("follow");
+  const [northUp, setNorthUp] = useState(false);
+  const cameraPreferences = useRef({ northUp: false, zoomOffset: 0 });
   const [displayCamera, setDisplayCamera] = useState(null);
   const [roadName, setRoadName] = useState(null);
   const travelPointsRef = useRef([]);
@@ -154,8 +158,8 @@ export default function AtlasField({
         pointers: new Map(),
         previousPinchDistance: null,
         lastInteractionAt: null,
-        returningUntil: 0,
       };
+      manualRef.current = manual;
       let continuousHeading = Number.isFinite(effectivePosition.heading)
         ? effectivePosition.heading
         : 22;
@@ -192,7 +196,11 @@ export default function AtlasField({
           fail(error);
         }
       });
+      let lastDisplayAt = -Infinity;
       map.on("move", () => {
+        const now = performance.now();
+        if (now - lastDisplayAt < 200) return;
+        lastDisplayAt = now;
         const heading = Math.round(((map.getBearing() % 360) + 360) % 360);
         continuousHeading = atlasContinuousHeading(continuousHeading, heading);
         setDisplayCamera({
@@ -223,7 +231,6 @@ export default function AtlasField({
         manual.previousPinchDistance = manual.pointers.size >= 2 ? pointerDistance() : null;
         manual.lastInteractionAt = performance.now();
         framingRef.current = "manual"; setFraming("manual");
-        manual.returningUntil = 0;
         map.stop();
         if (event.pointerType === "mouse") canvas.style.cursor = "grabbing";
       };
@@ -263,7 +270,6 @@ export default function AtlasField({
         event.preventDefault();
         manual.lastInteractionAt = performance.now();
         framingRef.current = "manual"; setFraming("manual");
-        manual.returningUntil = 0;
         map.stop();
         map.jumpTo({ zoom: wheelAtlasZoom(map.getZoom(), event.deltaY, event.deltaMode) });
       };
@@ -296,7 +302,7 @@ export default function AtlasField({
           if (!framebuffer) return;
           onFrame(
             capturedAt,
-            THIRTY_FPS_FRAME_INTERVAL_MS,
+            SIXTY_FPS_FRAME_INTERVAL_MS,
             "WebGL2 · MapLibre",
             framebuffer.width,
             framebuffer.height,
@@ -307,6 +313,7 @@ export default function AtlasField({
       });
 
       let lastMoveAt = 0;
+      let previousFrameAt = 0;
       let lastMarkerAt = 0;
       let lastBuildingScale = camera.buildingScale;
       const animate = (now) => {
@@ -314,6 +321,9 @@ export default function AtlasField({
         frame = requestAnimationFrame(animate);
         try {
           const current = valuesRef.current;
+          const dt = Math.min(64, Math.max(0, now - (previousFrameAt || now)));
+          previousFrameAt = now;
+          if (!mapReady || document.visibilityState === "hidden") return;
           const interpolatedPosition = validAtlasPosition(current.position)
             ? interpolateAtlasPosition(current.positionSamplesRef?.current, now)
             : null;
@@ -329,60 +339,62 @@ export default function AtlasField({
               current.reducedMotion ? 0.24 : (1 - phase) * 0.36,
             ));
           }
-          if (now - lastMoveAt < 1100) return;
-          lastMoveAt = now;
-          if (mapReady) {
-            const projected = map.project([point.longitude, point.latitude]);
-            const exactFeatures = map.queryRenderedFeatures(projected, {
-              layers: ATLAS_ROAD_LAYER_IDS,
-            });
-            const nearbyRoadFeatures = map.queryRenderedFeatures([
-              [projected.x - 28, projected.y - 28],
-              [projected.x + 28, projected.y + 28],
-            ], { layers: ATLAS_ROAD_LAYER_IDS });
-            const roadFeatures = [...exactFeatures, ...nearbyRoadFeatures];
-            const preferredLanguages = navigator.languages?.length
-              ? navigator.languages
-              : [navigator.language];
-            const nextRoadName = atlasRoadNameFromFeatures(roadFeatures, preferredLanguages);
-            setRoadName((currentRoadName) => currentRoadName === nextRoadName
-              ? currentRoadName
-              : nextRoadName);
-          }
           const nextCamera = speedToAtlasEffectCamera(
-            current.reducedMotion ? Math.min(current.speed, 20) : current.speed,
-            current.effect,
+            current.reducedMotion ? Math.min(current.speed, 20) : current.speed, current.effect,
           );
-          if (Math.abs(nextCamera.buildingScale - lastBuildingScale) >= 0.035) {
-            lastBuildingScale = nextCamera.buildingScale;
-            map.setPaintProperty("sedicivalvole-buildings", "fill-extrusion-height", [
-              "*", ["coalesce", ["get", "render_height"], 5], nextCamera.buildingScale,
-            ]);
+          if (now - lastMoveAt >= 1100) {
+            lastMoveAt = now;
+            if (mapReady) {
+              const projected = map.project([point.longitude, point.latitude]);
+              const exactFeatures = map.queryRenderedFeatures(projected, {
+                layers: ATLAS_ROAD_LAYER_IDS,
+              });
+              const nearbyRoadFeatures = map.queryRenderedFeatures([
+                [projected.x - 28, projected.y - 28],
+                [projected.x + 28, projected.y + 28],
+              ], { layers: ATLAS_ROAD_LAYER_IDS });
+              const roadFeatures = [...exactFeatures, ...nearbyRoadFeatures];
+              const preferredLanguages = navigator.languages?.length
+                ? navigator.languages
+                : [navigator.language];
+              const nextRoadName = atlasRoadNameFromFeatures(roadFeatures, preferredLanguages);
+              setRoadName((currentRoadName) => currentRoadName === nextRoadName
+                ? currentRoadName
+                : nextRoadName);
+            }
+            if (Math.abs(nextCamera.buildingScale - lastBuildingScale) >= 0.035) {
+              lastBuildingScale = nextCamera.buildingScale;
+              map.setPaintProperty("sedicivalvole-buildings", "fill-extrusion-height", [
+                "*", ["coalesce", ["get", "render_height"], 5], nextCamera.buildingScale,
+              ]);
+            }
+            travelPointsRef.current = current.sessionJourneyRef?.current?.travelPoints?.length
+              ? current.sessionJourneyRef.current.travelPoints
+              : appendAtlasTravelPoint(travelPointsRef.current, point);
+            map.getSource("atlasTravel")?.setData(atlasTravelFeature(travelPointsRef.current));
           }
-          travelPointsRef.current = current.sessionJourneyRef?.current?.travelPoints?.length
-            ? current.sessionJourneyRef.current.travelPoints
-            : appendAtlasTravelPoint(travelPointsRef.current, point);
-          map.getSource("atlasTravel")?.setData(atlasTravelFeature(travelPointsRef.current));
           if (framingRef.current !== "follow") return;
           if (manual.pointers.size > 0
             || (manual.lastInteractionAt != null && !atlasManualCameraShouldReturn(manual.lastInteractionAt, now))) {
             return;
           }
-          if (manual.returningUntil > now) return;
-          const returningFromManual = manual.lastInteractionAt != null;
-          const duration = returningFromManual ? Math.max(1600, nextCamera.durationMs) : nextCamera.durationMs;
-          if (returningFromManual) {
-            manual.lastInteractionAt = null;
-            manual.returningUntil = now + duration;
+          manual.lastInteractionAt = null;
+          // One time-based camera owner: no repeatedly restarted easing curves.
+          const center = map.getCenter();
+          const cameraStep = advanceAtlasFollowCamera({
+            longitude: center.lng, latitude: center.lat, bearing: map.getBearing(),
+            pitch: map.getPitch(), zoom: map.getZoom(),
+          }, {
+            longitude: point.longitude, latitude: point.latitude,
+            bearing: cameraPreferences.current.northUp ? 0
+              : Number.isFinite(point.heading) ? point.heading : map.getBearing(),
+            pitch: nextCamera.pitch, zoom: nextCamera.zoom + cameraPreferences.current.zoomOffset,
+          }, dt, current.reducedMotion);
+          if (cameraStep) {
+            map.jumpTo(cameraStep);
+            // Draw this camera frame now instead of queuing a second RAF owner.
+            map.redraw();
           }
-          map.easeTo({
-            center: [point.longitude, point.latitude],
-            bearing: Number.isFinite(point.heading) ? point.heading : map.getBearing(),
-            pitch: nextCamera.pitch,
-            zoom: nextCamera.zoom,
-            duration,
-            essential: false,
-          });
         } catch (error) {
           fail(error);
         }
@@ -468,6 +480,14 @@ export default function AtlasField({
     );
   }
 
+  const adjustZoom = (delta) => {
+    const map = mapRef.current;
+    if (!map) return;
+    if (framingRef.current === "follow") {
+      cameraPreferences.current.zoomOffset = Math.max(-4, Math.min(4, cameraPreferences.current.zoomOffset + delta));
+    } else map.easeTo({ zoom: Math.max(ATLAS_MANUAL_CAMERA_LIMITS.minimumZoom,
+      Math.min(ATLAS_MANUAL_CAMERA_LIMITS.maximumZoom, map.getZoom() + delta)), duration: reducedMotion ? 0 : 250 });
+  };
   const heading = displayCamera?.heading ?? Math.round(effectivePosition.heading ?? 0);
   const pointerHeading = displayCamera?.pointerHeading ?? heading;
   const cardinalDirection = atlasCardinalDirection(heading) ?? "—";
@@ -487,8 +507,10 @@ export default function AtlasField({
 
       <nav onPointerDown={event => event.stopPropagation()} className="atlas-framing" aria-label="Map framing">{["follow", "area", "trip"].map(mode => <button key={mode} aria-pressed={framing === mode} onClick={() => {
         framingRef.current = mode; setFraming(mode);
+        if (manualRef.current) manualRef.current.lastInteractionAt = null;
         const map = mapRef.current; if (!map) return;
         map.stop();
+        if (mode === "follow") return;
         if (mode === "trip") {
           const points = sessionJourneyRef?.current?.travelPoints ?? travelPointsRef.current;
           if (points.length > 1) {
@@ -500,6 +522,21 @@ export default function AtlasField({
         }
         map.easeTo({center:[effectivePosition.longitude,effectivePosition.latitude],zoom:mode === "follow" ? 13.4 : 11.8,pitch:0,bearing:0,duration:reducedMotion ? 0 : 700});
       }}>{mode === "follow" && framing === "manual" ? "Follow" : mode[0].toUpperCase()+mode.slice(1)}</button>)}</nav>
+      <nav className="atlas-camera-controls" aria-label="Map camera" onPointerDown={event => event.stopPropagation()}>
+        <button type="button" aria-label="Zoom in" onClick={() => adjustZoom(1)}>+</button>
+        <button type="button" aria-label="Reset map view" onClick={() => {
+          cameraPreferences.current.zoomOffset = 0;
+          if (manualRef.current) manualRef.current.lastInteractionAt = null;
+          framingRef.current = "follow"; setFraming("follow");
+          mapRef.current?.stop();
+        }}>Reset</button>
+        <button type="button" aria-label="Zoom out" onClick={() => adjustZoom(-1)}>−</button>
+        <button type="button" aria-label="Lock map north up" aria-pressed={northUp} onClick={() => {
+          const next = !cameraPreferences.current.northUp;
+          cameraPreferences.current.northUp = next; setNorthUp(next);
+          if (framingRef.current !== "follow") mapRef.current?.easeTo({ bearing: next ? 0 : effectivePosition.heading ?? 0, duration: reducedMotion ? 0 : 300 });
+        }}>{northUp ? "North up" : "Heading up"}</button>
+      </nav>
       <AtlasPlaces demo={demo} map={mapObject} position={effectivePosition} onReadMore={onReadPlace} />
       <div
         className={`atlas-navigation-plaque${roadName ? "" : " is-roadless"}`}

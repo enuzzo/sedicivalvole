@@ -1191,3 +1191,20 @@ export function createAtlasStyle(palette, appearance = "palette") {
     ],
   };
 }
+
+/** Frame-rate-independent follow camera, taking the short route across north/the dateline. */
+export function advanceAtlasFollowCamera(current, target, deltaMs, reducedMotion = false) {
+  const alpha = 1 - Math.exp(-Math.min(64, Math.max(0, deltaMs)) / (reducedMotion ? 500 : 180));
+  const longitudeDelta = ((target.longitude - current.longitude + 540) % 360) - 180;
+  const headingDelta = ((target.bearing - current.bearing + 540) % 360) - 180;
+  const zoom = clamp(target.zoom, ATLAS_MANUAL_CAMERA_LIMITS.minimumZoom, ATLAS_MANUAL_CAMERA_LIMITS.maximumZoom);
+  if (Math.abs(longitudeDelta) < 1e-8 && Math.abs(target.latitude - current.latitude) < 1e-8
+    && Math.abs(headingDelta) < 0.01 && Math.abs(target.pitch - current.pitch) < 0.01
+    && Math.abs(zoom - current.zoom) < 0.001) return null;
+  return {
+    center: [current.longitude + longitudeDelta * alpha, current.latitude + (target.latitude - current.latitude) * alpha],
+    bearing: current.bearing + headingDelta * alpha,
+    pitch: current.pitch + (target.pitch - current.pitch) * alpha,
+    zoom: current.zoom + (zoom - current.zoom) * alpha,
+  };
+}

@@ -1414,3 +1414,12 @@ Unsent draft: Thank you for making interactive engine examples available in the 
 > Thank you for explaining the awkward parts of service-worker updates across
 > open tabs. It helped me keep old and new sedicivalvole sessions separate and
 > avoid interrupting an active listening session just because a release arrived. — enuzzo
+
+
+## 2026-09-09 — Focus, camera and radar preparation studies
+
+- **MapLibre contributors:** existing shipped map engine; its [camera example](https://maplibre.org/maplibre-gl-js/docs/examples/animate-map-camera-around-a-point/) informed frame-based camera ownership. Contact: [public repository](https://github.com/maplibre/maplibre-gl-js). Unsent: Thank you for making camera animation understandable and extensible; it helped us separate smooth road motion from slower interface updates. — enuzzo
+- **MDN contributors / Mozilla:** [button documentation](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button), study only. Contact: [MDN content](https://github.com/mdn/content). Unsent: Thank you for documenting Safari button focus differences; the detail helped us preserve deliberate palette taps on a phone. — enuzzo
+- **ADSB.lol contributors:** [public API documentation](https://www.adsb.lol/docs/open-data/api/), study/inactive adapter only; no feed enabled or code/data imported. Data is declared ODbL 1.0. Contact: [public project](https://github.com/adsblol). Unsent: Thank you for making community aircraft data and its licensing accessible. We are preparing an original bounded radar experiment with explicit observation age and source attribution; it is not yet integrated or released. — enuzzo
+
+All drafts remain unsent. The original project remains PolyForm Noncommercial.

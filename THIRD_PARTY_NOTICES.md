@@ -461,3 +461,14 @@ and [update handling](https://developer.chrome.com/docs/workbox/handling-service
 Development documentation studies for seven-day static retention, browser limits,
 build isolation and non-disruptive reloads. No text/code redistributed and no
 Workbox package admitted; the implementation is original project code.
+
+
+## 2026-09-09 — UI documentation studies and radar preparation
+
+MapLibre camera-animation documentation and MDN button focus documentation
+informed original camera and Safari interaction fixes; no example code copied.
+ADSB.lol API documentation (https://www.adsb.lol/docs/open-data/api/) informed an
+original inactive bounded radar adapter. ADSB.lol declares its API data ODbL 1.0.
+No live request, aircraft data redistribution, runtime integration or imported
+Meguru/provider code occurs in this checkpoint. Original code retains the project
+license. See docs/ROAD-UI-REFINEMENT-2026-09-09.md.

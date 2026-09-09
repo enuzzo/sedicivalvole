@@ -173,7 +173,7 @@ test("Atlas follows reported heading or infers it from successive trusted positi
   assert.equal(resolveAtlasHeading(milan, { ...milan, longitude: milan.longitude + 0.000001 }, null), 18);
   assert.match(appSource, /heading: resolveAtlasHeading\(previousPosition, position\.coords, position\.coords\.heading\)/);
   assert.match(appSource, /const nextMapPosition = \{[\s\S]*?capturedAtMs,[\s\S]*?\};/);
-  assert.match(atlasSource, /bearing: Number\.isFinite\(point\.heading\) \? point\.heading : map\.getBearing\(\)/);
+  assert.match(atlasSource, /Number\.isFinite\(point\.heading\) \? point\.heading : map\.getBearing\(\)/);
 });
 
 test("Atlas converts heading into deterministic English cardinal sectors", () => {
@@ -580,7 +580,7 @@ test("Atlas grants touch and desktop exploration for six seconds, then returns t
   );
   assert.match(styles, /\.app\[data-environment="atlas"\]\.controls-awake \.experience \.control-layer,[\s\S]*?pointer-events: auto;/);
   assert.match(atlasSource, /atlasManualCameraShouldReturn\(manual\.lastInteractionAt, now\)/);
-  assert.match(atlasSource, /center: \[point\.longitude, point\.latitude\][\s\S]*?pitch: nextCamera\.pitch[\s\S]*?zoom: nextCamera\.zoom/);
+  assert.match(atlasSource, /if \(cameraStep\) \{[\s\S]*?map\.jumpTo\(cameraStep\);[\s\S]*?map\.redraw\(\)/);
 });
 
 test("Atlas keeps a bounded complete-session route with one pulsing vehicle point", () => {
@@ -815,4 +815,28 @@ test('place loader pauses offline, retries failures, prevents overlap and discar
   time=300001;loader.wake();assert.equal(attempts,2);
   loader.dispose();finish([{id:'stale'}]);await new Promise(resolve=>setImmediate(resolve));
   assert.equal(results.length,1);assert.equal(timers.size,0);
+});
+
+
+test("follow camera crosses north and the dateline by the shortest arc and settles at rest", async () => {
+  const { advanceAtlasFollowCamera: advance } = await import('../src/environments/atlas/atlas-model.js');
+  const current = {longitude:179.99,latitude:45,bearing:359,pitch:30,zoom:14};
+  const target = {...current,longitude:-179.99,bearing:1,zoom:15};
+  const step = advance(current,target,16);
+  assert.ok(step.center[0] > 179.99 && step.center[0] < 180.01);
+  assert.ok(step.bearing > 359 && step.bearing < 361);
+  assert.equal(advance(current,current,16),null);
+  const run = fps => {
+    let state = {...current};
+    for(let i=0;i<fps;i++) {
+      const next=advance(state,target,1000/fps);
+      if(next) state={longitude:next.center[0],latitude:next.center[1],bearing:next.bearing,pitch:next.pitch,zoom:next.zoom};
+    }
+    return state;
+  };
+  const at30=run(30),at60=run(60);
+  assert.ok(Math.abs(at30.longitude-at60.longitude)<1e-9);
+  assert.ok(Math.abs(at30.bearing-at60.bearing)<1e-9);
+  const north=advance(current,{...current,bearing:0},16);
+  assert.ok(north.bearing>359 && north.bearing<360);
 });

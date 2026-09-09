@@ -287,3 +287,13 @@ observed quiet seconds in Intro, or muted audio plus fresh exact GPS standstill;
 otherwise offer UPDATE. Interaction, movement, visibility loss and execution gaps
 reset the quiet window. Keep saved preferences, never clear site storage globally,
 and state that session counters restart. Never promise background execution.
+
+
+## Owner road UI feedback — 2026-09-09 evening
+
+Fix landscape iPhone palette taps and extend the installed webapp footer to the
+bottom edge with safe-area-aware contents. Compact Discover names/row padding
+and label actual providers. Reduce Atlas numbered discs while retaining touch
+areas; prioritize smooth travel/rotation, north lock and zoom/reset controls.
+Prepare Meguru radar integration; its new visual still requires A/B/C selection.
+Do not claim desktop frame timing proves sustained Tesla 60 FPS.
