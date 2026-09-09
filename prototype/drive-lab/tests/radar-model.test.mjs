@@ -6,7 +6,7 @@ const epochNowMs=1800000000000, receivedAtMs=200000;
 const normalize=ac=>normalizeRadarSnapshot({now:epochNowMs,ac},{center,epochNowMs,receivedAtMs});
 const aircraft={hex:'abc123',lat:46,lon:8.74,seen_pos:2};
 test('radar query is bounded and rounds the requested centre',()=>{
- assert.equal(radarPointUrl(center),'https://api.adsb.lol/v2/point/46.00/8.75/27');
+ assert.equal(radarPointUrl(center),'/api/radar-data.php?kind=nearby&lat=46.00&lon=8.75');
  assert.equal(radarPointUrl({...center,latitude:NaN}),null);
  assert.equal(radarPointUrl(center,1000),null);
 });
@@ -84,4 +84,19 @@ test('schedule adapter rejects mismatched aircraft and preserves airport-local t
   const code=`define('RADAR_FLIGHT_LIBRARY_ONLY',true);require ${JSON.stringify(file)};$d=json_decode(stream_get_contents(STDIN),true);echo json_encode([radar_flight_schedule($d,'3006b5'),radar_flight_schedule($d,'abcdef')]);`;
   const [value,mismatch]=JSON.parse(execFileSync('php',['-r',code],{input:JSON.stringify(payload),encoding:'utf8'}));
   assert.equal(value.departure.kind,'scheduled');assert.equal(value.arrival.kind,'estimated');assert.equal(value.arrival.zone,'airport local');assert.equal(mismatch,null);
+});
+
+test('traffic adapter fixes destination, rounds location and rejects arbitrary parameters',()=>{
+  const file=new URL('../public/api/radar-data.php',import.meta.url).pathname;
+  const code=`define('RADAR_DATA_LIBRARY_ONLY',true);require ${JSON.stringify(file)};echo json_encode([radar_data_query(['kind'=>'nearby','lat'=>'46.001','lon'=>'8.745']),radar_data_query(['kind'=>'route','lat'=>'46.001','lon'=>'8.745','callsign'=>'DLA6CM']),radar_data_query(['kind'=>'nearby','lat'=>['46'],'lon'=>'8']),radar_data_query(['kind'=>'nearby','lat'=>'91','lon'=>'8']),radar_data_query(['kind'=>'nearby','lat'=>'46','lon'=>'8','url'=>'https://example.test'])]);`;
+  const [nearby,route,...invalid]=JSON.parse(execFileSync('php',['-r',code],{encoding:'utf8'}));
+  assert.equal(nearby.path,'/v2/point/46.00/8.75/27');assert.equal(route.path,'/api/0/route/DLA6CM/46.001/8.745');
+  assert.deepEqual(invalid,[null,null,null]);assert.match(nearby.key,/^[a-f0-9]{64}$/);
+});
+test('traffic adapter strips unrelated fields and bounds aircraft and airport rows',()=>{
+  const file=new URL('../public/api/radar-data.php',import.meta.url).pathname;
+  const payload={now:Date.now(),ac:Array.from({length:600},()=>({hex:'3006b5',lat:46,lon:8,seen_pos:0,private:'omit',flight:{invalid:true}}))};
+  const code=`define('RADAR_DATA_LIBRARY_ONLY',true);require ${JSON.stringify(file)};$d=json_decode(stream_get_contents(STDIN),true);echo json_encode(radar_data_filter($d,'nearby'));`;
+  const result=JSON.parse(execFileSync('php',['-r',code],{input:JSON.stringify(payload),encoding:'utf8'}));
+  assert.equal(result.ac.length,512);assert.equal(result.ac[0].private,undefined);assert.equal(result.ac[0].flight,undefined);
 });

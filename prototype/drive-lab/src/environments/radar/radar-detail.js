@@ -14,7 +14,7 @@ export function normalizeRadarPhoto(payload){
 }
 export function radarRouteUrl(aircraft){
   if(!/^[A-Z0-9]{2,12}$/.test(aircraft?.callsign)||!Number.isFinite(aircraft.latitude)||!Number.isFinite(aircraft.longitude))return null;
-  return `https://api.adsb.lol/api/0/route/${aircraft.callsign}/${aircraft.latitude.toFixed(3)}/${aircraft.longitude.toFixed(3)}`;
+  return `/api/radar-data.php?kind=route&callsign=${aircraft.callsign}&lat=${aircraft.latitude.toFixed(3)}&lon=${aircraft.longitude.toFixed(3)}`;
 }
 export function normalizeRadarRoute(payload,callsign){
   if(payload?.callsign!==callsign||payload.plausible!==true||!Array.isArray(payload._airports))return null;

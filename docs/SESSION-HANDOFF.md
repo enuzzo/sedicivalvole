@@ -1402,3 +1402,7 @@ Owner selected Air Atlas (direction A). Implemented the nearby aircraft map and 
 ### Owner refinement — 2026-09-09 23:26
 
 The bottom aircraft bar now expands to show full airport names, aircraft model, distance, ground track and vertical rate. North/driving orientation and zoom/reset remain available. GPS driving direction requires a recent moving observation; unknown/stopped direction falls back visibly to north. Aircraft markers rotate with the map and a home marker identifies the viewer. Schedules are deferred and the interface no longer requests AirLabs. Live traffic forwarding approval remains pending; no Air Atlas publication has occurred.
+
+### Air Atlas connection authorized — 2026-09-09 23:36
+
+The owner explicitly accepted the rounded-location forwarding request. The fixed same-origin ADSB.lol adapter is implemented and live nearby aircraft rendered successfully in Chrome. Traffic/route caching, validation, cancellation and bounded retry are active; no AirLabs request is made. Earlier pending-forwarding notes are superseded. Canonical publication evidence follows after final checks.

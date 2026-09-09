@@ -799,3 +799,5 @@ No dated releases exist yet.
 - 2026-09-09 23:12 [75420d3] Unreleased: implement owner-selected Air Atlas Visual 10, bounded nearby aircraft feed, full 182-SVG aircraft catalogue, bottom credited photo/route/telemetry detail, and optional server-only AirLabs schedule adapter. Unavailable schedules remain explicit; no account or paid service is assumed.
 
 - 2026-09-09 23:26 [75420d3] Unreleased: expand Air Atlas aircraft detail with full airport names and telemetry; add north/driving orientation, home marker and map-aligned aircraft shapes. Defer schedules and remove AirLabs requests/time placeholders from the current experience. Live traffic integration remains pending explicit forwarding approval.
+
+- 2026-09-09 23:36 [444ea5c] Unreleased: connect Air Atlas to the owner-authorized same-origin ADSB.lol traffic/route adapter with rounded location, bounded shared cache, strict query validation and failure cooldown. Keep diagnostic packets coordinate-free and remove deprecated PHP curl cleanup calls that polluted local JSON responses.

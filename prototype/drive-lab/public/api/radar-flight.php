@@ -64,7 +64,7 @@ function radar_airlabs(string $path, array $query, string $key): array {
             if (strlen($body) + strlen($chunk) > 65536) return 0;
             $body .= $chunk; return strlen($chunk);
         }]);
-    $ok = curl_exec($curl); $status = curl_getinfo($curl, CURLINFO_HTTP_CODE); curl_close($curl);
+    $ok = curl_exec($curl); $status = curl_getinfo($curl, CURLINFO_HTTP_CODE); unset($curl);
     if (!$ok || $status !== 200) throw new RuntimeException('Source unavailable');
     $payload = json_decode($body, true, 32, JSON_THROW_ON_ERROR);
     if (isset($payload['error']) || !is_array($payload['response'] ?? null)) throw new RuntimeException('Source unavailable');

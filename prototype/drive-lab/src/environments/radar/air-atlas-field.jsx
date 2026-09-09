@@ -25,7 +25,7 @@ function useAircraftDetail(aircraft){
       setDetail(prev=>({...prev,[`${kind}Status`]:'loading'}));
       const loader=createRadarPoller({intervalMs:600000,canLoad:()=>!document.hidden&&navigator.onLine!==false&&performance.now()-ref.current?.observedAtMs<RADAR_EXPIRE_MS,
         load:async signal=>{const current=ref.current,url=kind==='photo'?radarPhotoUrl(current):radarRouteUrl(current);if(!url)return null;
-          const payload=await radarJson(url,{signal,maximumBytes:32768,...(kind!=='route'?{headers:{'X-Air-Atlas':'1'}}:{})});return kind==='photo'?normalizeRadarPhoto(payload):normalizeRadarRoute(payload,current.callsign);},
+          const payload=await radarJson(url,{signal,maximumBytes:32768,headers:{'X-Air-Atlas':'1'}});return kind==='photo'?normalizeRadarPhoto(payload):normalizeRadarRoute(payload,current.callsign);},
         onResult:value=>{remember(key,value);setDetail(prev=>({...prev,[kind]:value}));},
         onStatus:status=>setDetail(prev=>({...prev,[`${kind}Status`]:status})),
       });return subscribeLifecycle(loader);
@@ -65,7 +65,7 @@ export default function AirAtlasField({position,theme,reducedMotion,onRenderer,o
   useEffect(()=>{
     if(!canStart)return;
     const loader=createRadarPoller({canLoad:()=>!document.hidden&&navigator.onLine!==false&&validAtlasPosition(latest.current.position),
-      load:async signal=>{const center=latest.current.position;const payload=await radarJson(radarPointUrl(center),{signal});
+      load:async signal=>{const center=latest.current.position;const payload=await radarJson(radarPointUrl(center),{signal,headers:{'X-Air-Atlas':'1'}});
         if(!Array.isArray(payload?.ac)||!Number.isFinite(payload.now)||Math.abs(Date.now()-payload.now)>120000)throw Error('Stale radar response');
         return normalizeRadarSnapshot(payload,{center,epochNowMs:Date.now(),receivedAtMs:performance.now()});},
       onResult:next=>setPlanes(previous=>{

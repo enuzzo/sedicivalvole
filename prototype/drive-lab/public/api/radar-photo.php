@@ -30,7 +30,7 @@ curl_setopt_array($curl, [CURLOPT_FOLLOWLOCATION => false, CURLOPT_CONNECTTIMEOU
         return strlen($header);
     },
     CURLOPT_WRITEFUNCTION => static function ($curl, string $chunk) use (&$body): int { if (strlen($body) + strlen($chunk) > 32768) return 0; $body .= $chunk; return strlen($chunk); }]);
-$ok = curl_exec($curl); $status = curl_getinfo($curl, CURLINFO_HTTP_CODE); curl_close($curl);
+$ok = curl_exec($curl); $status = curl_getinfo($curl, CURLINFO_HTTP_CODE); unset($curl);
 $result = ['photos' => []];
 if ($ok && $status === 200) {
     $payload = json_decode($body, true, 16);

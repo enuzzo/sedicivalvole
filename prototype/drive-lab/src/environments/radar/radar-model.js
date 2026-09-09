@@ -11,8 +11,8 @@ const coordinate = point => finite(point?.latitude) && Math.abs(point.latitude) 
 
 /** Public point query in nautical miles; coarse request centre, exact measured aircraft. */
 export function radarPointUrl(center, radiusNm = 27) {
-  if (!coordinate(center) || !finite(radiusNm) || radiusNm < 1 || radiusNm > 50) return null;
-  return `https://api.adsb.lol/v2/point/${center.latitude.toFixed(2)}/${center.longitude.toFixed(2)}/${Math.round(radiusNm)}`;
+  if (!coordinate(center) || !finite(radiusNm) || radiusNm !== 27) return null;
+  return `/api/radar-data.php?kind=nearby&lat=${center.latitude.toFixed(2)}&lon=${center.longitude.toFixed(2)}`;
 }
 
 /** ADSB.lol's envelope clock is milliseconds, unlike readsb aircraft.json seconds. */
