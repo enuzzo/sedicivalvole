@@ -1,5 +1,17 @@
 # Session Handoff
 
+## September 9 open-session cache/update release
+
+Latest verified publication: **20260909-1001 / 00e8e18**. Seven-day used static
+asset retention, active-client protection and guarded build/session renewal are
+published. 821 tests, 182 static hashes, twelve canonical byte comparisons and
+local/canonical Chrome QA pass. One first reload activates the feature in a
+previously open page; saved preferences stay. See
+[scope, boundaries and evidence](SESSION-CACHE-UPDATES-2026-09-09.md).
+Next: physical Tesla weak-network, service-worker support and long-session check;
+Safari/device endurance remains unverified, then resume the existing Engine
+source research handoff. Dated identities below are historical.
+
 ## September 9 launch preparation release
 
 Latest verified publication: **20260909-0911 / d30769d**. Intro prepares visual,

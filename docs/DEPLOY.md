@@ -1,5 +1,39 @@
 # Deployment
 
+## Verified session cache and update release — 2026-09-09 10:12 Europe/Rome
+
+Canonical build **20260909-1001**, source **00e8e18**, VERSION **0.0.0**.
+Build-isolated verified static caches protect used assets for at least seven days
+and never retire a generation still used by an open client. Five-minute build
+checks and week-old session renewal preserve saved preferences; automatic reload
+requires thirty quiet seconds in Intro or muted fresh exact-zero GPS. UPDATE
+allows explicit renewal. Existing pages need one initial reload to install this
+release. Remote music/private/dynamic caching boundaries remain unchanged.
+
+- 821 native tests, App/LAB build, all 182 final static hashes and 196 credits pass.
+- Official read-only preflight and publication verification pass: **235 files /
+  254,940,357 bytes**, 29 Illobo tracks fully hashed, two prior overlap assets
+  retained, thirteen root entries, **ROOT_UPLOAD_ONLY**, no legacy deletion.
+- Twelve canonical HTTPS byte checks pass: bare/cache-busted HTML, JS/CSS,
+  Engine/visual/worklet files, WAV, worker and versioned manifest. Root HTML is
+  no-store/no-cache; managed static retention is independent of HTTP expiry.
+- Local compiled Chrome at 773x601 and phone emulation at 667x375 verifies control
+  reachability, update safety, real reload/preference preservation, simultaneous
+  release isolation and accelerated inactive-only expiry.
+- Canonical Chrome verifies initial JS plus Mono in CacheStorage, used WAV
+  recovery offline after HTTP cache clear and worker restart, no false notice
+  for the current release and no forced interruption of active Engine for a
+  simulated future release. Zero page exceptions or diagnostic sends. Two
+  pre-existing pre-gesture AudioContext warnings precede successful activation.
+
+Root SHA-256: `8cba3135cac0d3e634532043c9b2133c62518e75e635564834bf6d1e538a1380`.
+Worker SHA-256: `1025ae5fc1728d84c89ba96287e5e76d74b186412672cc506a536cc19346894c`.
+Manifest SHA-256: `8b12553e725f173069f9a9041be71cfdd08d10cb9b9d68f036381c7dbcb69881`.
+
+Browser quota/eviction/privacy restrictions, physical Tesla/Safari compatibility
+and week-long endurance remain explicit device limits/acceptance.
+[Architecture and verification](SESSION-CACHE-UPDATES-2026-09-09.md).
+
 ## Verified launch preparation — 2026-09-09 09:24 Europe/Rome
 
 Canonical build **20260909-0911**, source **d30769d**, version from VERSION

@@ -110,3 +110,15 @@ and [update handling](https://developer.chrome.com/docs/workbox/handling-service
 informed the design. These are documentation studies, not imported runtime code.
 README, THIRD_PARTY_NOTICES and COMMUNITY-THANKS contain synchronized credits and
 unsent acknowledgements.
+
+## Canonical publication — 2026-09-09 10:12 Europe/Rome
+
+Published **20260909-1001**, source **00e8e18**. Official preflight/publication
+verification, 235 files / 254,940,357 bytes and all 29 Illobo hashes pass; prior
+assets remain. Twelve canonical HTTP byte comparisons include root HTML, worker
+and the release manifest. Canonical Chrome stores 24 used static assets in this
+fixture and retrieves a 401,388-byte WAV offline after HTTP cache clear and
+worker restart. Matching build checks are quiet; a simulated future build shows
+UPDATE without interrupting active Engine. Zero page exceptions/diagnostic sends;
+two existing pre-gesture AudioContext warnings remain. One first reload is needed
+for pages opened before this feature. [Full publication evidence](DEPLOY.md).

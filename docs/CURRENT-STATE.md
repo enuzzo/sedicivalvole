@@ -2,6 +2,8 @@
 
 ## September 9 open-session cache and update refinement
 
+Canonical **20260909-1001 / 00e8e18** is published and verified: 821 tests,
+182 static hashes, twelve canonical byte checks and live browser cache/update QA.
 Build-isolated static CacheStorage retains used assets for seven days and protects
 active clients. Build checks and a guarded renewal preserve saved preferences.
 [Architecture, limits and validation](SESSION-CACHE-UPDATES-2026-09-09.md).
@@ -39,7 +41,7 @@ compares the 0834 reference and 1102 refinement on one 68-second route, with
 local preference/notes and JSON export. The public default retains the 1102
 audio calibration. This supersedes the earlier pending-direction proposal.
 
-Latest verified canonical publication: **20260908-2356**, source **de16389**,
+Latest verified canonical publication: **20260909-1001**, source **00e8e18**,
 version from VERSION (**0.0.0**). This summary takes precedence over dated
 historical paragraphs below.
 
