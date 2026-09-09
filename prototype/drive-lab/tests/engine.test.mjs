@@ -703,3 +703,27 @@ test("public Engine ignores a bench-only profile resolver", async () => {
   assert.equal(f.runtime.getState().profileId, "mono");
   f.runtime.destroy();
 });
+
+test("a rapid cached return waits for retiring PCM without network or a larger memory budget", async () => {
+  const f = fixture();
+  // Large accounted PCM with cheap fixture samples isolates transition ownership.
+  f.context.decodeAudioData = async () => ({ length: 1000000, numberOfChannels: 2,
+    getChannelData: () => new Float32Array(48000).fill(0.1) });
+  f.runtime.setEnabled(true);
+  assert.equal(await f.runtime.load("mono"), true);
+  assert.equal(await f.runtime.load("rosso"), true);
+  const requests = f.requests;
+  f.setFailure(true);
+  const returning = f.runtime.load("mono");
+  let wait;
+  for (let i = 0; i < 200 && !wait; i++) {
+    await new Promise(resolve => setTimeout(resolve, 2));
+    wait = [...f.timers].find(([, timer]) => timer.delay === 160);
+  }
+  assert.ok(wait, "wait for the short outgoing fade before reserving PCM");
+  f.tick(.2); f.timers.delete(wait[0]); wait[1].fn();
+  assert.equal(await returning, true);
+  assert.equal(f.requests, requests);
+  assert.ok(f.runtime.getState().peakUnionBytes <= 128 * 1024 * 1024);
+  f.runtime.destroy();
+});

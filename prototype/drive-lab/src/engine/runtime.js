@@ -273,7 +273,23 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
         // Exact admitted WAV frame/channel metadata bounds the browser-rate PCM.
         // Account for old/new buffers and transfer; native decoder overhead is separate.
         const reserve = reserveDecodedWav(bytes, context.sampleRate ?? 48000);
-        const retainedBytes = [...retiringNodes].reduce((sum, node) => sum + (node.decodedBytes ?? 0), 0);
+        let retainedBytes = [...retiringNodes].reduce((sum, node) => sum + (node.decodedBytes ?? 0), 0);
+        if (retainedBytes && state.decodedBytes + retainedBytes + decodedBytes + bytes.byteLength + reserve > MAX_TRANSITION_BYTES) {
+          // Cache hits can outrun the preceding 105 ms fade. Let that bank retire
+          // before reserving more PCM; this wait needs no network, even offline.
+          await new Promise((resolve, reject) => {
+            const cancel = () => { clearTimeout(wait); reject(new Error("Engine bank load cancelled")); };
+            const wait = setTimeout(() => { controller.signal.removeEventListener("abort", cancel); resolve(); }, 160);
+            controller.signal.addEventListener("abort", cancel, { once: true });
+            if (controller.signal.aborted) cancel();
+          });
+          for (const old of retiringNodes) {
+            if (context.currentTime >= old.retireAt) {
+              old.source.disconnect(); old.gain.disconnect(); retiringNodes.delete(old);
+            }
+          }
+          retainedBytes = [...retiringNodes].reduce((sum, node) => sum + (node.decodedBytes ?? 0), 0);
+        }
         if (decodedBytes + reserve > MAX_DECODED_BYTES || state.decodedBytes + retainedBytes + decodedBytes + bytes.byteLength + reserve > MAX_TRANSITION_BYTES) throw new Error("Engine bank exceeds accounted memory budget");
         const decodeStart = now();
         const buffer = await context.decodeAudioData(bytes);
@@ -310,6 +326,7 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
         freshNodes.push({ source, gain, asset, decodedBytes: buffer.length * buffer.numberOfChannels * 4, levelGain: levelGains.get(asset.role) });
       }
       for (const old of nodes) {
+        old.retireAt = at + 0.08;
         retiringNodes.add(old);
         hold(old.gain.gain, context.currentTime);
         old.gain.gain.linearRampToValueAtTime(0, at + 0.06);

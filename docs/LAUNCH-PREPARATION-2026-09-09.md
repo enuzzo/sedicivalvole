@@ -15,7 +15,9 @@ This is a reliability refinement of the selected cockpit and Telemetry design.
 - `engine/asset-cache.js` retains at most 40 MiB of SHA-256-checked WAV bytes with
   LRU eviction. Every decode receives a copy; shared transfers are cancelled only
   after their final consumer leaves. Rejected or corrupt responses never enter
-  the cache. This encoded budget is additional to existing 64 MiB decoded-bank
+  the cache. When a cache hit outruns the preceding fade, a bounded 160 ms wait
+  lets retiring PCM leave before reserving the next bank; the memory limits stay
+  unchanged and this preparation does not require a network retry. This encoded budget is additional to existing 64 MiB decoded-bank
   and 128 MiB transition accounting; total browser memory includes other owners.
 - Selected ShaderGradient/Atlas/Stats modules can import early, without mounting
   a renderer. Other native fields already ship in the application payload.
@@ -54,5 +56,8 @@ Local Chromium at 773x601 verifies pre-gesture Mono/Jamendo/cover requests,
 Vertigo dependencies without an iframe, START reuse, a deliberately delayed
 Rosso loading notice above TAMARRO and return to Mono without another WAV request.
 QA substitutes local audio/catalogue fixtures and blocks diagnostic mail.
+Local phone emulation at 667x375 also verifies loading/control separation.
+A rapid Rosso-to-Mono return succeeds offline without WAV requests; a regression
+test checks the same retirement boundary and unchanged 128 MiB transition cap.
 Target-Tesla weak-network, memory endurance and phone-device acceptance remain
 physical checks; browser evidence is not a claim of completed offline playback.
