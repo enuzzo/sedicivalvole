@@ -419,6 +419,13 @@ def verify_remote_static_tree(
             raise ValueError(
                 f"{tree_name} content mismatch at {relative_path.as_posix()}"
             )
+        try:
+            public_path = local_path.relative_to(BUILD).as_posix()
+        except ValueError:
+            continue
+        verified = getattr(ftp, "_sedicivalvole_verified_static", {})
+        verified[public_path] = sha256_bytes(local_payload)
+        ftp._sedicivalvole_verified_static = verified
 
 
 def sha256_bytes(payload: bytes) -> str:
@@ -1524,9 +1531,13 @@ def main() -> int:
 
         files = static_upload_files()
         uploaded_bytes = 0
+        skipped_static_files = 0
         for file_index, local_file in enumerate(files, 1):
             relative = local_file.relative_to(BUILD)
             public_upload_path = relative.as_posix()
+            if getattr(ftp, "_sedicivalvole_verified_static", {}).get(public_upload_path) == sha256_bytes(static_build_bytes(local_file)):
+                skipped_static_files += 1
+                continue
             for part in relative.parts[:-1]:
                 enter_or_create(ftp, part)
             with open_static_build_file(local_file) as handle:
@@ -1539,6 +1550,7 @@ def main() -> int:
                 print(f"upload_progress=PASS files={file_index}/{len(files)}")
 
         public_upload_path = None
+        print(f"static_unchanged=PASS skipped={skipped_static_files}")
         enter_or_create(ftp, "api")
         try:
             ftp.storbinary(
@@ -1631,7 +1643,7 @@ def main() -> int:
         remote_count = len(safe_names(ftp))
         ftp.quit()
         ftp = None
-        print(f"upload=PASS files={len(files) + 5 + uploaded_illobo_files} bytes={uploaded_bytes}")
+        print(f"upload=PASS files={len(files) - skipped_static_files + 5 + uploaded_illobo_files} bytes={uploaded_bytes}")
         print(f"illobo_playlist=PASS tracks={len(illobo_tracks)} full_hash_verification=true")
         print(f"illobo_artwork_migration=PASS retired_png_files={retired_illobo_artwork}")
         print(f"lab_runtime_migration=PASS retired_worklets={retired_lab_assets}")

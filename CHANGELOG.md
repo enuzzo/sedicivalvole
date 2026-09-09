@@ -805,3 +805,7 @@ No dated releases exist yet.
 - 2026-09-09 23:50 [228803b] Unreleased: keep Air Atlas controls and the bottom detail stable through pointer activation while global chrome rests. Verified actual eastbound driving-up/north-up rotations; add sanitized public-file and FTP-status upload diagnostics after an incomplete upload attempt.
 
 - 2026-09-10 00:03 [4380499] Unreleased: add a bounded, verified temporary-file repair for recognized Illobo masters and reuse tracks already hash-verified in the same publication session. Restore the single truncated Sliced Zucchini Edit master without activating an incomplete release.
+
+- 2026-09-10 00:21 [4380499] build 20260909-2352: published Air Atlas after one verified Illobo master repair. Official postflight, 20 canonical HTTPS identity/asset/cache checks, live aircraft/photo/route selection and controlled north/driving rotation passed.
+
+- 2026-09-10 00:21 [59f2224] Unreleased: keep the aircraft-list touch target clear of persistent compact driving chrome; reuse static files only after their exact bytes were verified in the current FTP session. Final postflight still verifies the complete candidate.

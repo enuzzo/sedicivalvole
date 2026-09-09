@@ -934,3 +934,24 @@ assert m.parse_arguments(['--repair-illobo']).repair_illobo
 `;
   execFileSync('python3', ['-c', program, deployScript.pathname], {encoding:'utf8'});
 });
+
+test('static reuse admits only complete byte-identical files verified in the current FTP session', () => {
+  const program = String.raw`
+import importlib.util,sys,tempfile,hashlib
+from pathlib import Path
+spec=importlib.util.spec_from_file_location('deploy',sys.argv[1]);m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
+class FTP:
+    def __init__(self,data): self.data=data
+    def nlst(self): return ['shape.svg']
+    def retrbinary(self,cmd,callback): callback(self.data)
+with tempfile.TemporaryDirectory() as folder:
+    m.BUILD=Path(folder);root=m.BUILD/'third-party';root.mkdir();(root/'shape.svg').write_bytes(b'verified artwork')
+    ftp=FTP(b'verified artwork');m.verify_remote_static_tree(ftp,root,tree_name='third-party')
+    assert ftp._sedicivalvole_verified_static=={'third-party/shape.svg':hashlib.sha256(b'verified artwork').hexdigest()}
+    bad=FTP(b'truncated')
+    try: m.verify_remote_static_tree(bad,root,tree_name='third-party');raise AssertionError('bad bytes admitted')
+    except ValueError: pass
+    assert not getattr(bad,'_sedicivalvole_verified_static',{})
+`;
+  execFileSync('python3',['-c',program,deployScript.pathname],{encoding:'utf8'});
+});

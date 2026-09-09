@@ -4812,3 +4812,6 @@ html { font-size: var(--font-size-floor); }
 .air-atlas-detail {padding-bottom:0;}
 .air-atlas-expand {position:sticky;grid-column:1/-1;grid-row:3;bottom:0;left:auto;right:auto;background:#070909;z-index:1;}
 .air-atlas-extra {grid-row:2;}
+/* Keep the aircraft list reachable beside the compact persistent driving chrome. */
+.app.controls-resting .air-atlas-summary {left:calc(var(--chrome-size) + 12px);right:auto;}
+.app.controls-resting .air-atlas-summary span {display:none;}
