@@ -4757,8 +4757,8 @@ html { font-size: var(--font-size-floor); }
 /* Air Atlas: selected map direction, with a compact bottom flight detail. */
 .app[data-environment="air-atlas"] { min-height:0; }
 /* Air Atlas keeps controls below the persistent speed/report strip. */
-.air-atlas-field { position:absolute; inset:0; background:#070909; color:#f4f2ec; --radar-top:var(--chrome-size); --radar-bottom:var(--chrome-size); --radar-panel:color-mix(in srgb,var(--radar-base) 18%,#101414); --radar-line:color-mix(in srgb,var(--radar-secondary) 35%,#ffffff28); --radar-left:max(12px,env(safe-area-inset-left)); --radar-right:max(12px,env(safe-area-inset-right)); }
-.app.controls-resting .air-atlas-field { --radar-bottom:env(safe-area-inset-bottom,0px); }
+.air-atlas-field { position:absolute; inset:0; background:#070909; color:#f4f2ec; --radar-top:calc(var(--chrome-size) + var(--phone-top,0px)); --radar-bottom:calc(var(--chrome-size) + var(--phone-bottom,0px)); --radar-panel:color-mix(in srgb,var(--radar-base) 18%,#101414); --radar-line:color-mix(in srgb,var(--radar-secondary) 35%,#ffffff28); --radar-left:max(12px,var(--phone-left,0px),env(safe-area-inset-left)); --radar-right:max(12px,var(--phone-right,0px),env(safe-area-inset-right)); }
+.app.controls-resting .air-atlas-field { --radar-bottom:max(var(--phone-bottom,0px),env(safe-area-inset-bottom,0px)); }
 .air-atlas-map { position:absolute; inset:0; width:100%; height:100%; }
 .air-atlas-toolbar { position:absolute; z-index:3; top:calc(var(--radar-top) + 8px); left:var(--radar-left); right:var(--radar-right); display:flex; gap:6px; pointer-events:none; }
 .air-atlas-toolbar button,.air-atlas-map-retry { background:var(--radar-panel); color:#f4f2ec; border:1px solid var(--radar-line); border-radius:6px; height:48px; min-width:48px; padding:0 10px; font:600 13px var(--font-ui); pointer-events:auto; cursor:pointer; }
