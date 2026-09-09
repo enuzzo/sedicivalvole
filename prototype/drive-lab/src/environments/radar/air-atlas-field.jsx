@@ -135,7 +135,7 @@ export default function AirAtlasField({position,theme,reducedMotion,onRenderer,o
   useEffect(()=>{if(homeMarker.current&&validAtlasPosition(position)){homeMarker.current.setLngLat([position.longitude,position.latitude]).setRotation(headingFresh?position.heading:0);homeMarker.current.getElement().classList.toggle('is-direction-unknown',!headingFresh);}},[map,position,headingFresh]);
   const reset=()=>{followHome.current=true;const point=latest.current.position;if(map&&validAtlasPosition(point))map.easeTo({center:[point.longitude,point.latitude],zoom:9,bearing,duration:reducedMotion?0:500});};
   const age=selected?Math.max(0,Math.round((clock-selected.observedAtMs)/1000)):0;
-  return <section className={`air-atlas-field${selected?' has-detail':''}`} aria-label="Air Atlas radar" style={{"--radar-accent":paletteToAtlasCss(theme.palette).accent}}>
+  return <section className={`air-atlas-field${selected?' has-detail':''}`} aria-label="Air Atlas radar" onPointerDown={event=>{if(event.target.closest('button,a,.air-atlas-detail'))event.stopPropagation();}} style={{"--radar-accent":paletteToAtlasCss(theme.palette).accent}}>
     <div ref={host} className="air-atlas-map" />
     {!canStart?<div className="atlas-waiting"><strong>AIR ATLAS</strong><span>Location required to find nearby aircraft</span><button onClick={onRetryLocation}>ENABLE GPS</button></div>:<>
       <div className="air-atlas-summary"><button onClick={()=>setShowList(v=>!v)} aria-expanded={showList}>{activePlanes.length} AIRCRAFT</button>

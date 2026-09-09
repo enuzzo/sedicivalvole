@@ -801,3 +801,5 @@ No dated releases exist yet.
 - 2026-09-09 23:26 [75420d3] Unreleased: expand Air Atlas aircraft detail with full airport names and telemetry; add north/driving orientation, home marker and map-aligned aircraft shapes. Defer schedules and remove AirLabs requests/time placeholders from the current experience. Live traffic integration remains pending explicit forwarding approval.
 
 - 2026-09-09 23:36 [444ea5c] Unreleased: connect Air Atlas to the owner-authorized same-origin ADSB.lol traffic/route adapter with rounded location, bounded shared cache, strict query validation and failure cooldown. Keep diagnostic packets coordinate-free and remove deprecated PHP curl cleanup calls that polluted local JSON responses.
+
+- 2026-09-09 23:50 [228803b] Unreleased: keep Air Atlas controls and the bottom detail stable through pointer activation while global chrome rests. Verified actual eastbound driving-up/north-up rotations; add sanitized public-file and FTP-status upload diagnostics after an incomplete upload attempt.

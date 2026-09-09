@@ -1387,6 +1387,7 @@ def main() -> int:
     arguments = parse_arguments(sys.argv[1:])
     stage = "configuration"
     ftp: ftplib.FTP | None = None
+    public_upload_path = None
     try:
         if sys.version_info < (3, 11):
             raise ValueError("Python 3.11 or newer is required")
@@ -1471,8 +1472,9 @@ def main() -> int:
 
         files = static_upload_files()
         uploaded_bytes = 0
-        for local_file in files:
+        for file_index, local_file in enumerate(files, 1):
             relative = local_file.relative_to(BUILD)
+            public_upload_path = relative.as_posix()
             for part in relative.parts[:-1]:
                 enter_or_create(ftp, part)
             with open_static_build_file(local_file) as handle:
@@ -1481,7 +1483,10 @@ def main() -> int:
             for _ in relative.parts[:-1]:
                 ftp.cwd("..")
             uploaded_bytes += local_size
+            if file_index % 100 == 0:
+                print(f"upload_progress=PASS files={file_index}/{len(files)}")
 
+        public_upload_path = None
         enter_or_create(ftp, "api")
         try:
             ftp.storbinary(
@@ -1597,7 +1602,10 @@ def main() -> int:
                 ftp.close()
             except Exception:
                 pass
-        print(f"{stage}=FAIL sanitized_error=true error_type={type(error).__name__}", file=sys.stderr)
+        ftp_status = str(error)[:3] if re.match(r"^\d{3}", str(error)) else "unknown"
+        print(f"{stage}=FAIL sanitized_error=true error_type={type(error).__name__} ftp_status={ftp_status}", file=sys.stderr)
+        if public_upload_path is not None:
+            print(f"public_upload_file={public_upload_path}", file=sys.stderr)
         return 1
 
 
