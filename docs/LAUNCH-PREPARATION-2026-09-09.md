@@ -61,3 +61,14 @@ A rapid Rosso-to-Mono return succeeds offline without WAV requests; a regression
 test checks the same retirement boundary and unchanged 128 MiB transition cap.
 Target-Tesla weak-network, memory endurance and phone-device acceptance remain
 physical checks; browser evidence is not a claim of completed offline playback.
+
+
+## Release validation — build 20260909-0911, source d30769d
+
+813 native tests, production App/LAB packaging and 196 dependency credits pass.
+Compiled Chromium repeats the complete Tesla flow with pre-gesture preparation
+and offline cached return; page errors and console errors are absent. Two
+pre-gesture AudioContext warnings belong to the existing launch unlock flow;
+START activates the context successfully. Browser plugin is not available in
+this session, so the repository-compatible installed Playwright/Chrome runtime
+provides the browser evidence. Phone 667x375 is Chromium emulation, not Safari.
