@@ -25,7 +25,7 @@ function radar_data_query(array $query): ?array {
 function radar_data_filter(array $payload, string $kind): ?array {
     if ($kind === 'nearby') {
         if (!is_numeric($payload['now'] ?? null) || !is_array($payload['ac'] ?? null)) return null;
-        $fields = array_flip(['hex', 'flight', 'r', 't', 'category', 'lat', 'lon', 'seen_pos', 'track', 'alt_baro', 'gs', 'baro_rate']);
+        $fields = array_flip(['hex', 'flight', 'r', 't', 'category', 'lat', 'lon', 'seen_pos', 'track', 'alt_baro', 'gs', 'baro_rate', 'alt_geom', 'geom_rate', 'ias', 'tas', 'mach', 'mag_heading', 'true_heading', 'roll', 'nav_altitude_mcp', 'nav_qnh', 'wd', 'ws', 'oat', 'squawk', 'type']);
         $rows = [];
         foreach (array_slice($payload['ac'], 0, 512) as $row) {
             if (!is_array($row)) continue;

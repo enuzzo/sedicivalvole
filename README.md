@@ -498,6 +498,8 @@ Discover combines Wikipedia articles with nearby OpenStreetMap points, with sour
 
 AIR ATLAS is Visual 10: the selected map direction, nearby measured aircraft, 182 type-specific SVG assets and a bottom detail with credited photo, registration, type, telemetry and plausible origin/destination. Traffic and photos need no account. Tap the bottom bar for full airport names and more aircraft data. Zoom/reset and north/driving orientation are available. Schedules are deferred: no AirLabs configuration or requests are part of the current experience. The owner-authorized same-origin adapter forwards a two-decimal location only while the view is active, with bounded shared caching. See [implementation, sources and limits](docs/AIR-ATLAS-2026-09-09.md).
 
+Air Atlas now offers place labels OFF by default, Natural/Palette maps, larger colored aircraft and a scrollable telemetry panel with precise measurement labels. [Current architecture and acceptance limits](docs/AIR-ATLAS-2026-09-09.md).
+
 <!-- COMMUNITY-CREDITS:START -->
 ## Community thanks — 2026-09-05
 
@@ -868,5 +870,7 @@ Study only; no new audio or runtime shipped. See the [research report](docs/ENGI
 - 📷 **Planespotters.net and the credited photographers** — [service and terms](https://www.planespotters.net/legal/termsofuse): shipped remote, selected-aircraft thumbnails with author and original-photo links. Metadata passes through a bounded same-origin endpoint; photos are neither bundled nor retained in the static session cache.
 - 🛫 **ADSB.lol contributors and Virtual Radar Server standing-data contributors** — [public API](https://www.adsb.lol/docs/open-data/api/) / [route data](https://github.com/vradarserver/standing-data): shipped live position and plausible-route service, source-labelled ODbL data; no server code copied. Contacts through their public GitHub projects.
 - 🕒 **AirLabs / Data Products Ltd** — [Flight API documentation](https://airlabs.co/docs/flight): optional original server adapter for scheduled/estimated airport-local times, inactive without an owner-configured account key. No proprietary code or data bundled; [public contact](https://airlabs.co/).
+
+- 📡 **wiedehopf / readsb contributors** — [JSON field documentation](https://github.com/wiedehopf/readsb/blob/dev/README-json.md): study-only semantic reference for Air Atlas telemetry units and derived measurements. No code imported. Public contact: [project discussions/issues](https://github.com/wiedehopf/readsb).
 
 <!-- COMMUNITY-CREDITS:END -->

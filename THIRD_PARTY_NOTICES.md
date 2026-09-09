@@ -481,3 +481,7 @@ license. See docs/ROAD-UI-REFINEMENT-2026-09-09.md.
 - RexKramer1 / AircraftShapesSVG: pinned revision `0743718760c42a5e91801adc053b5b828a434a5e`, GPL-3.0 aircraft artwork. All 182 original SVG files and their licence are distributed separately under `public/third-party/aircraft-shapes/`, with normalized monochrome SVG derivatives and source/hash inventory. These independent artwork files retain GPL rights, including commercial redistribution, without the original app's PolyForm restriction. No upstream program is linked or copied. https://github.com/RexKramer1/AircraftShapesSVG
 
 - AirLabs / Data Products Ltd: optional server-only flight/schedule service, no active requests without configured account key; original adapter, no upstream code/data bundled. Official Free-plan field documentation: https://airlabs.co/docs/flight . The key is read only from the server process environment, never shipped to the browser or read from `.env`.
+
+## Air Atlas telemetry semantic reference — 2026-09-10
+
+The readsb contributors, maintained by wiedehopf, document the JSON field semantics used to interpret ADSB.lol optional telemetry: https://github.com/wiedehopf/readsb/blob/dev/README-json.md . Study/documentation reference only; no readsb source code or assets are imported. ADSB.lol remains the shipped data service under its declared ODbL 1.0 terms.

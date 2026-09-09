@@ -100,3 +100,31 @@ test('traffic adapter strips unrelated fields and bounds aircraft and airport ro
   const result=JSON.parse(execFileSync('php',['-r',code],{input:JSON.stringify(payload),encoding:'utf8'}));
   assert.equal(result.ac.length,512);assert.equal(result.ac[0].private,undefined);assert.equal(result.ac[0].flight,undefined);
 });
+
+import {createAirAtlasStyle,radarTelemetryRows} from '../src/environments/radar/radar-presentation.js';
+test('extended telemetry preserves measurement references, zero values and rejects malformed values',()=>{
+ const [plane]=normalize([{...aircraft,alt_baro:18000,alt_geom:18700,baro_rate:0,geom_rate:-640,ias:240,tas:370,gs:344,mach:.62,mag_heading:153,true_heading:155,roll:0,nav_altitude_mcp:10000,nav_qnh:1013.2,wd:270,ws:25,oat:-20,squawk:'1000',type:'mlat'}]);
+ assert.equal(plane.altitudeFeet,18000);assert.equal(plane.geometricAltitudeFeet,18700);
+ assert.equal(plane.verticalRate,0);assert.equal(plane.geometricRate,-640);assert.equal(plane.rollDegrees,0);
+ assert.equal(plane.indicatedSpeedKnots,240);assert.equal(plane.trueSpeedKnots,370);assert.equal(plane.groundSpeedKnots,344);
+ assert.equal(plane.magneticHeadingDegrees,153);assert.equal(plane.trueHeadingDegrees,155);
+ assert.equal(radarTelemetryRows(plane).find(([key])=>key==='Position source')[1],'MLAT · multilateration');
+ const [bad]=normalize([{...aircraft,alt_geom:'18000',ias:-1,tas:Infinity,mach:10,mag_heading:360,roll:200,nav_qnh:0,squawk:'8888',type:'<script>'}]);
+ for(const key of ['geometricAltitudeFeet','indicatedSpeedKnots','trueSpeedKnots','mach','magneticHeadingDegrees','rollDegrees','altimeterHpa','squawk','positionSource'])assert.equal(bad[key],null,key);
+ assert.ok(radarTelemetryRows(bad).every(([,v])=>v==='Not available'));
+});
+test('Air Atlas labels default off and stay bounded when enabled without changing Atlas style',()=>{
+ const palette={base:[0,0,0],mid:[.1,.1,.1],light:[1,1,1],accent:[1,.2,.1],secondary:[.1,.5,1]};
+ const hidden=createAirAtlasStyle(palette).layers.find(l=>l.id==='atlas-place-labels');
+ const visible=createAirAtlasStyle(palette,'natural',true).layers.find(l=>l.id==='atlas-place-labels');
+ assert.notEqual(createAirAtlasStyle(palette).layers[0].paint['background-color'],createAirAtlasStyle(palette,'natural').layers[0].paint['background-color']);
+ assert.equal(hidden.layout.visibility,'none');assert.equal(visible.layout.visibility,'visible');
+ assert.ok(visible.layout['text-padding']>=18);assert.match(JSON.stringify(visible.filter),/city.*town.*village/);
+});
+test('PHP adapter forwards the bounded extended telemetry through JS normalization',()=>{
+ const file=new URL('../public/api/radar-data.php',import.meta.url).pathname;
+ const payload={now:epochNowMs,ac:[{...aircraft,alt_geom:19000,ias:250,mag_heading:20,squawk:'1000',type:'adsb_icao',private:'omit',oat:{bad:true}}]};
+ const code=`define('RADAR_DATA_LIBRARY_ONLY',true);require ${JSON.stringify(file)};$d=json_decode(stream_get_contents(STDIN),true);echo json_encode(radar_data_filter($d,'nearby'));`;
+ const result=JSON.parse(execFileSync('php',['-r',code],{input:JSON.stringify(payload),encoding:'utf8'}));
+ const [plane]=normalize(result.ac);assert.equal(plane.geometricAltitudeFeet,19000);assert.equal(plane.indicatedSpeedKnots,250);assert.equal(plane.magneticHeadingDegrees,20);assert.equal(plane.positionSource,'adsb_icao');assert.equal(plane.outsideTemperatureC,null);assert.equal(result.ac[0].private,undefined);
+});

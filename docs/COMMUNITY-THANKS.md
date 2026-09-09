@@ -1433,3 +1433,7 @@ All drafts remain unsent. The original project remains PolyForm Noncommercial.
 - **AirLabs / Data Products Ltd**: optional server schedule adapter, inactive until configured, https://airlabs.co/ . Unsent: Thank you for documenting the difference between scheduled and estimated times and the airport-local values. It helped us preserve those meanings rather than inventing precision from a position feed. — enuzzo
 
 These are unsent acknowledgements; no message has been sent.
+
+## Air Atlas telemetry reference — 2026-09-10
+
+- **wiedehopf / readsb contributors** — [JSON documentation](https://github.com/wiedehopf/readsb/blob/dev/README-json.md), study-only field semantics, no code imported. Public contact: https://github.com/wiedehopf/readsb . Unsent: Thank you for documenting the distinctions between pressure and geometric altitude, airspeed and ground speed, and received versus calculated fields. That precision lets Air Atlas tell a more useful story without inventing missing measurements. — enuzzo

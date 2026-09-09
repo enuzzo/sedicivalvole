@@ -1,9 +1,11 @@
 import {useEffect,useMemo,useRef,useState} from 'react';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import {createAtlasStyle,atlasMapPixelRatio,validAtlasPosition,paletteToAtlasCss} from '../atlas/atlas-model.js';
+import {atlasMapPixelRatio,validAtlasPosition,paletteToAtlasCss} from '../atlas/atlas-model.js';
 import {normalizeRadarSnapshot,radarPointUrl,RADAR_EXPIRE_MS,RADAR_FRESH_MS} from './radar-model.js';
 import {radarJson,createRadarPoller} from './radar-client.js';
 import {radarPhotoUrl,radarRouteUrl,normalizeRadarPhoto,normalizeRadarRoute,radarShapeCode} from './radar-detail.js';
+
+import {createAirAtlasStyle,radarTelemetryRows} from './radar-presentation.js';
 
 function clockSafe(position){return Number.isFinite(position?.capturedAtMs)&&performance.now()-position.capturedAtMs<15000;}
 const detailCache=new Map();
@@ -35,6 +37,8 @@ function useAircraftDetail(aircraft){
 }
 
 export default function AirAtlasField({position,theme,reducedMotion,onRenderer,onFrame,onRuntimeError,onRetryLocation}){
+  const [labels,setLabels]=useState(false),[appearance,setAppearance]=useState('palette');
+  const colors=paletteToAtlasCss(theme.palette);
   const followHome=useRef(true),homeMarker=useRef(null);
   const [northUp,setNorthUp]=useState(true),[expanded,setExpanded]=useState(false);
   const headingFresh=Number.isFinite(position?.heading)&&position?.speedKmh>3&&clockSafe(position);
@@ -82,7 +86,7 @@ export default function AirAtlasField({position,theme,reducedMotion,onRenderer,o
     import('maplibre-gl').then(({default:gl})=>{
       if(disposed)return;library.current=gl;
       const point=latest.current.position;
-      const instance=new gl.Map({container:host.current,style:createAtlasStyle(latest.current.theme.palette,'palette'),
+      const instance=new gl.Map({container:host.current,style:createAirAtlasStyle(latest.current.theme.palette,appearance,labels),
         center:[point.longitude,point.latitude],zoom:9,bearing:0,pitch:0,maxPitch:0,minZoom:5,maxZoom:14,
         attributionControl:false,antialias:false,fadeDuration:0,pixelRatio:atlasMapPixelRatio(window.devicePixelRatio),renderWorldCopies:false});
       mapRef.current=instance;setMap(instance);
@@ -101,7 +105,7 @@ export default function AirAtlasField({position,theme,reducedMotion,onRenderer,o
     return()=>{disposed=true;resize?.disconnect();if(visibility)document.removeEventListener('visibilitychange',visibility);
       markers.current.forEach(({marker})=>marker.remove());markers.current.clear();mapRef.current?.remove();mapRef.current=null;setMap(null);};
   },[canStart,mapRetry,onRenderer,onFrame,onRuntimeError]);
-  useEffect(()=>{if(map)map.setStyle(createAtlasStyle(theme.palette,'palette'));},[map,theme.palette]);
+  useEffect(()=>{if(map)map.setStyle(createAirAtlasStyle(theme.palette,appearance,labels));},[map,theme.palette,appearance,labels]);
   useEffect(()=>{
     if(!map||!library.current)return;
     const visible=new Set(activePlanes.map(p=>p.id));
@@ -135,17 +139,20 @@ export default function AirAtlasField({position,theme,reducedMotion,onRenderer,o
   useEffect(()=>{if(homeMarker.current&&validAtlasPosition(position)){homeMarker.current.setLngLat([position.longitude,position.latitude]).setRotation(headingFresh?position.heading:0);homeMarker.current.getElement().classList.toggle('is-direction-unknown',!headingFresh);}},[map,position,headingFresh]);
   const reset=()=>{followHome.current=true;const point=latest.current.position;if(map&&validAtlasPosition(point))map.easeTo({center:[point.longitude,point.latitude],zoom:9,bearing,duration:reducedMotion?0:500});};
   const age=selected?Math.max(0,Math.round((clock-selected.observedAtMs)/1000)):0;
-  return <section className={`air-atlas-field${selected?' has-detail':''}`} aria-label="Air Atlas radar" onPointerDown={event=>{if(event.target.closest('button,a,.air-atlas-detail'))event.stopPropagation();}} style={{"--radar-accent":paletteToAtlasCss(theme.palette).accent}}>
+  return <section className={`air-atlas-field${selected?' has-detail':''}`} aria-label="Air Atlas radar" onPointerDown={event=>{if(event.target.closest('button,a,.air-atlas-detail'))event.stopPropagation();}} style={{"--radar-accent":colors.accent,"--radar-secondary":colors.secondary,"--radar-base":colors.background}}>
     <div ref={host} className="air-atlas-map" />
     {!canStart?<div className="atlas-waiting"><strong>AIR ATLAS</strong><span>Location required to find nearby aircraft</span><button onClick={onRetryLocation}>ENABLE GPS</button></div>:<>
-      <div className="air-atlas-summary"><button onClick={()=>setShowList(v=>!v)} aria-expanded={showList}>{activePlanes.length} AIRCRAFT</button>
-        <span role="status">{navigator.onLine===false?'Offline · positions held':status==='loading'?'Finding aircraft…':status==='retrying'?'Feed unavailable · retrying':'ADSB.lol · 50 km nearby'}</span></div>
-      <div className="air-atlas-controls"><button aria-label="Follow driving direction" aria-pressed={!northUp} onClick={()=>setNorthUp(v=>!v)}>{northUp?'N':'↑'}</button><button aria-label="Zoom in" onClick={()=>map?.zoomIn()}>+</button><button aria-label="Reset radar view" onClick={reset}>RESET</button><button aria-label="Zoom out" onClick={()=>map?.zoomOut()}>−</button></div>
-      {!northUp&&!headingFresh?<span className="air-atlas-heading-note" role="status">Waiting for driving direction · north up</span>:null}
-      {showList?<div className="air-atlas-list" aria-label="Nearby aircraft">{activePlanes.length?activePlanes.map(p=><button key={p.id} onClick={()=>{setSelectedId(p.id);setShowList(false);}}>{p.callsign||p.registration||p.id}<span>{p.typeCode||'Unknown'} · {(p.distanceMetres/1000).toFixed(0)} km</span></button>):<p>No recent aircraft in range.</p>}</div>:null}
-      {mapError?<button className="air-atlas-map-retry" onClick={()=>setMapRetry(v=>v+1)}>MAP UNAVAILABLE · RETRY</button>:null}
+      <div className="air-atlas-toolbar" aria-label="Air Atlas map controls">
+        <button onClick={()=>{setShowList(v=>!v);setSelectedId(null);}} aria-expanded={showList} aria-controls="air-atlas-list">{activePlanes.length} AIRCRAFT</button>
+        <button aria-label="Show place labels" aria-pressed={labels} onClick={()=>setLabels(v=>!v)}>LABELS {labels?'ON':'OFF'}</button>
+        {mapError?<button className="air-atlas-map-retry" onClick={()=>setMapRetry(v=>v+1)}>RETRY MAP</button>:<button aria-label="Use natural map colors" aria-pressed={appearance==='natural'} onClick={()=>setAppearance(v=>v==='palette'?'natural':'palette')}>{appearance==='natural'?'NATURAL':'PALETTE'}</button>}
+        <div className="air-atlas-controls"><button aria-label="Follow driving direction" aria-pressed={!northUp} onClick={()=>setNorthUp(v=>!v)}>{northUp?'N':'↑'}</button><button aria-label="Zoom in" onClick={()=>map?.zoomIn()}>+</button><button aria-label="Reset radar view" onClick={reset}>RESET</button><button aria-label="Zoom out" onClick={()=>map?.zoomOut()}>−</button></div>
+      </div>
+      <div className="air-atlas-status" role="status">{!northUp&&!headingFresh?'Waiting for driving direction · north up':navigator.onLine===false?'Offline · positions held':status==='loading'?'Finding aircraft…':status==='retrying'?'Feed unavailable · retrying':'ADSB.lol · 50 km nearby'}</div>
+      {showList?<div id="air-atlas-list" className="air-atlas-list" aria-label="Nearby aircraft">{activePlanes.length?activePlanes.map(p=><button key={p.id} onClick={()=>{setSelectedId(p.id);setShowList(false);}}>{p.callsign||p.registration||p.id}<span>{p.typeCode||'Unknown'} · {(p.distanceMetres/1000).toFixed(0)} km</span></button>):<p>No recent aircraft in range.</p>}</div>:null}
     </>}
-    {selected?<div className={`air-atlas-detail${expanded?' is-expanded':''}`} aria-label="Selected aircraft detail" onClick={event=>{if(!event.target.closest('button,a'))setExpanded(v=>!v);}}>
+    {selected?<div className={`air-atlas-detail${expanded?' is-expanded':''}`} aria-label="Selected aircraft detail">
+      <div className="air-atlas-detail-scroll" tabIndex={0} role="region" aria-label="Aircraft information and live telemetry" onClick={event=>{if(!event.target.closest('button,a')&&!expanded)setExpanded(true);}}>
       <div className="air-atlas-photo">{detail.photo&&!photoFailed?<><a href={detail.photo.link} target="_blank" rel="noreferrer"><img src={detail.photo.src} alt={`${selected.registration||selected.typeCode||'Selected aircraft'} photograph`} referrerPolicy="no-referrer" onError={()=>setPhotoFailed(true)} /></a><a href={detail.photo.link} target="_blank" rel="noreferrer">© {detail.photo.photographer}</a></>:<span>{detail.photoStatus==='loading'?'Loading photo…':detail.photoStatus==='retrying'?'Photo retrying…':'Photo unavailable'}</span>}</div>
       <div className="air-atlas-flight"><strong>{selected.callsign||selected.registration||selected.id.toUpperCase()}</strong><span>{selected.registration||'Registration unknown'} · {selected.typeCode||'Type unknown'}</span>
         <span>{selected.altitudeFeet===null?'Altitude unknown':`${Math.round(selected.altitudeFeet*0.3048).toLocaleString('en')} m baro`} · {selected.groundSpeedKnots===null?'Speed unknown':`${Math.round(selected.groundSpeedKnots*1.852)} km/h`}</span>
@@ -155,19 +162,22 @@ export default function AirAtlasField({position,theme,reducedMotion,onRenderer,o
         <div><span>ARRIVAL</span><strong>{detail.route?.destination.code||'—'}</strong><small>{detail.route?.destination.city||'Not available'}</small></div>
         <small className="air-atlas-route-source">{detail.route?'ADSB.lol · plausible route':detail.routeStatus==='retrying'?'Route unavailable · retrying':'No verified route supplied'}</small>
       </div>
-      <button className="air-atlas-expand" aria-expanded={expanded} aria-controls="air-atlas-extra" onClick={()=>setExpanded(v=>!v)}>{expanded?'LESS ↑':'MORE ↓'}</button>
+
       {expanded?<div id="air-atlas-extra" className="air-atlas-extra">
         <div><span>DEPARTURE AIRPORT</span><strong>{detail.route?.origin.name||'Not available'}</strong></div>
         <div><span>ARRIVAL AIRPORT</span><strong>{detail.route?.destination.name||'Not available'}</strong></div>
         <div><span>AIRCRAFT</span><strong>{catalogue.find(p=>p.code===selected.typeCode)?.name||selected.typeCode||'Unknown type'}</strong></div>
         <div><span>DISTANCE</span><strong>{(selected.distanceMetres/1000).toFixed(1)} km</strong></div>
-        <div><span>GROUND TRACK</span><strong>{selected.trackDegrees===null?'Unknown':`${Math.round(selected.trackDegrees)}° true`}</strong></div>
-        <div><span>VERTICAL RATE</span><strong>{selected.verticalRate===null?'Unknown':`${selected.verticalRate} ft/min`}</strong></div>
+        <h3>Live telemetry</h3>
+        <p>Latest supplied values. Fields may update at different times; missing values stay unavailable.</p>
+        {radarTelemetryRows(selected).map(([label,value])=><div key={label}><span>{label}</span><strong>{value}</strong></div>)}
         <div><span>ICAO ADDRESS</span><strong>{selected.id.toUpperCase()}</strong></div>
         <div><span>FLIGHT STATE</span><strong>{selected.onGround?'On ground':selected.altitudeFeet===null?'Unknown':'Airborne observation'}</strong></div>
         {detail.route?.via.length?<div><span>VIA</span><strong>{detail.route.via.map(p=>p.name||p.code).join(' · ')}</strong></div>:null}
       </div>:null}
-      <button className="air-atlas-close" aria-label="Close aircraft detail" onClick={()=>setSelectedId(null)}>×</button>
+      </div>
+      <div className="air-atlas-detail-actions"><button className="air-atlas-expand" aria-label={expanded?'Collapse aircraft detail':'Expand aircraft detail'} aria-expanded={expanded} aria-controls="air-atlas-extra" onClick={()=>setExpanded(v=>!v)}>{expanded?<><span>Scroll for live telemetry</span><strong>LESS ↑</strong></>:'FLIGHT DETAILS ↑'}</button>
+      <button className="air-atlas-close" aria-label="Close aircraft detail" onClick={()=>setSelectedId(null)}>×</button></div>
     </div>:null}
     <div className="air-atlas-attribution"><a href="https://www.adsb.lol/docs/open-data/api/" target="_blank" rel="noreferrer">ADSB.lol</a> · <a href="https://openfreemap.org" target="_blank" rel="noreferrer">OpenFreeMap</a> · <a href="https://openmaptiles.org" target="_blank" rel="noreferrer">OpenMapTiles</a> · <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">© OpenStreetMap</a> · <a href="/third-party/aircraft-shapes/LICENSE" target="_blank" rel="noreferrer">Shapes © RexKramer1</a><span>Rounded location shared for nearby traffic · photos on selection</span></div>
   </section>;

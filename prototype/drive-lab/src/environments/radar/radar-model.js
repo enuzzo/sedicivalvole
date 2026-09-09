@@ -5,6 +5,7 @@ export const RADAR_SOURCE = 'ADSB.lol';
 export const RADAR_LIMIT = 32;
 export const RADAR_FRESH_MS = 30000;
 export const RADAR_EXPIRE_MS = 120000;
+const bounded = (value, min, max) => typeof value === 'number' && Number.isFinite(value) && value >= min && value <= max ? value : null;
 const finite = value => typeof value === 'number' && Number.isFinite(value);
 const coordinate = point => finite(point?.latitude) && Math.abs(point.latitude) <= 90
   && finite(point?.longitude) && Math.abs(point.longitude) <= 180;
@@ -35,12 +36,27 @@ export function normalizeRadarSnapshot(payload, { center, epochNowMs, receivedAt
       registration: typeof item.r === 'string' ? item.r.trim().slice(0,16) : '',
       typeCode: typeof item.t === 'string' ? item.t.trim().toUpperCase().slice(0,8) : '',
       category: typeof item.category === 'string' ? item.category.slice(0,3) : '',
-      verticalRate: finite(item.baro_rate) ? item.baro_rate : null,
+      verticalRate: bounded(item.baro_rate, -30000, 30000),
+      geometricAltitudeFeet: bounded(item.alt_geom, -2000, 100000),
+      geometricRate: bounded(item.geom_rate, -30000, 30000),
+      indicatedSpeedKnots: bounded(item.ias, 0, 2000),
+      trueSpeedKnots: bounded(item.tas, 0, 2000),
+      mach: bounded(item.mach, 0, 5),
+      magneticHeadingDegrees: bounded(item.mag_heading, 0, 359.999),
+      trueHeadingDegrees: bounded(item.true_heading, 0, 359.999),
+      rollDegrees: bounded(item.roll, -180, 180),
+      selectedAltitudeFeet: bounded(item.nav_altitude_mcp, -2000, 100000),
+      altimeterHpa: bounded(item.nav_qnh, 800, 1100),
+      windDirectionDegrees: bounded(item.wd, 0, 359.999),
+      windSpeedKnots: bounded(item.ws, 0, 300),
+      outsideTemperatureC: bounded(item.oat, -100, 70),
+      squawk: typeof item.squawk === 'string' && /^[0-7]{4}$/.test(item.squawk) ? item.squawk : null,
+      positionSource: ['adsb_icao','adsb_icao_nt','adsr_icao','tisb_icao','adsc','mlat','other','mode_s'].includes(item.type) ? item.type : null,
       callsign: typeof item.flight === 'string' ? item.flight.trim().slice(0, 12) : '',
       trackDegrees: finite(item.track) && item.track >= 0 && item.track < 360 ? item.track : null,
-      altitudeFeet: finite(item.alt_baro) ? item.alt_baro : null,
+      altitudeFeet: bounded(item.alt_baro, -2000, 100000),
       onGround: item.alt_baro === 'ground',
-      groundSpeedKnots: finite(item.gs) && item.gs >= 0 ? item.gs : null,
+      groundSpeedKnots: bounded(item.gs, 0, 2000),
       distanceMetres: discoverDistanceMetres(center, point),
     });
   }

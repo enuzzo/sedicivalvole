@@ -4755,63 +4755,61 @@ html { font-size: var(--font-size-floor); }
 .app[data-environment="atlas"].controls-resting .atlas-camera-controls { top: 134px; }
 
 /* Air Atlas: selected map direction, with a compact bottom flight detail. */
-.air-atlas-field { position:absolute; inset:0; background:#070909; color:#eeeae0; --radar-top:var(--chrome-size); --radar-bottom:var(--chrome-size); }
-.app.controls-resting .air-atlas-field { --radar-top:0px; --radar-bottom:0px; }
-.air-atlas-field .air-atlas-map { position:absolute; inset:0; width:100%; height:100%; }
-.air-atlas-summary { position:absolute; top:calc(var(--radar-top) + 10px); left:12px; right:80px; display:flex; align-items:center; gap:12px; pointer-events:none; }
-.air-atlas-summary button,.air-atlas-controls button,.air-atlas-map-retry { background:rgba(7,9,9,.88); color:#eeeae0; border:1px solid #ffffff38; border-radius:6px; min-height:48px; min-width:48px; padding:8px; font:600 13px var(--font-ui); pointer-events:auto; }
-.air-atlas-summary span { background:rgba(7,9,9,.8); padding:8px; border-radius:6px; font:13px var(--font-data); }
-.air-atlas-controls { position:absolute; top:calc(var(--radar-top) + 10px); right:12px; display:grid; gap:6px; }
-.air-atlas-controls button { font-size:19px; }
+.app[data-environment="air-atlas"] { min-height:0; }
+/* Air Atlas keeps controls below the persistent speed/report strip. */
+.air-atlas-field { position:absolute; inset:0; background:#070909; color:#f4f2ec; --radar-top:var(--chrome-size); --radar-bottom:var(--chrome-size); --radar-panel:color-mix(in srgb,var(--radar-base) 18%,#101414); --radar-line:color-mix(in srgb,var(--radar-secondary) 35%,#ffffff28); --radar-left:max(12px,env(safe-area-inset-left)); --radar-right:max(12px,env(safe-area-inset-right)); }
+.app.controls-resting .air-atlas-field { --radar-bottom:env(safe-area-inset-bottom,0px); }
+.air-atlas-map { position:absolute; inset:0; width:100%; height:100%; }
+.air-atlas-toolbar { position:absolute; z-index:3; top:calc(var(--radar-top) + 8px); left:var(--radar-left); right:var(--radar-right); display:flex; gap:6px; pointer-events:none; }
+.air-atlas-toolbar button,.air-atlas-map-retry { background:var(--radar-panel); color:#f4f2ec; border:1px solid var(--radar-line); border-radius:6px; height:48px; min-width:48px; padding:0 10px; font:600 13px var(--font-ui); pointer-events:auto; cursor:pointer; }
+.air-atlas-toolbar button[aria-pressed="true"],.air-atlas-toolbar button[aria-expanded="true"] { border-color:var(--radar-accent); box-shadow:inset 0 -3px var(--radar-accent); }
+.air-atlas-controls { display:flex; gap:6px; margin-left:auto; }
+.air-atlas-controls button {font-size:20px;}
 .air-atlas-controls button[aria-label="Reset radar view"] {font-size:13px;}
-.aircraft-marker { width:48px;height:48px;display:grid;place-items:center;border:0;background:transparent;padding:0;cursor:pointer; }
-.aircraft-marker span { display:block;width:34px;height:34px;background:#eeeae0;mask-size:contain;mask-repeat:no-repeat;mask-position:center;-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;filter:drop-shadow(0 1px 2px #000); }
-.aircraft-marker span.is-unknown {width:13px;height:13px;border-radius:50%;border:2px solid #eeeae0;background:#151919;}
-.aircraft-marker[aria-pressed="true"] span {background:var(--radar-accent);}
-.aircraft-marker.is-stale {opacity:.45;}
-.aircraft-marker:focus-visible {outline:2px solid #eeeae0;border-radius:6px;}
-.air-atlas-list {position:absolute;z-index:3;top:calc(var(--radar-top) + 68px);left:12px;width:230px;max-height:calc(100% - var(--radar-top) - var(--radar-bottom) - 115px);overflow:auto;background:#0c1010f5;border:1px solid #ffffff38;border-radius:6px;}
-.air-atlas-list button {width:100%;display:grid;gap:4px;text-align:left;min-height:56px;padding:8px 12px;border:0;border-bottom:1px solid #ffffff26;background:transparent;color:#eeeae0;font:15px var(--font-ui);}
-.air-atlas-list button span {font-size:13px;opacity:.8;}
+.air-atlas-status {position:absolute;top:calc(var(--radar-top) + 60px);left:var(--radar-left);max-width:calc(100% - 24px);padding:3px 7px;background:var(--radar-panel);border-radius:3px;font:13px/1.3 var(--font-data);}
+.aircraft-marker {width:48px;height:48px;display:grid;place-items:center;border:0;background:transparent;padding:0;cursor:pointer;}
+.aircraft-marker span {display:block;width:42px;height:42px;background:var(--radar-accent);mask-size:contain;mask-repeat:no-repeat;mask-position:center;-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;filter:drop-shadow(0 1px 2px #000);}
+.aircraft-marker::before {content:"";position:absolute;inset:2px;border-radius:50%;border:1px solid #0008;box-shadow:0 0 0 1px #fff5;background:#080c0c99;z-index:-1;}
+.aircraft-marker span.is-unknown {width:17px;height:17px;border-radius:50%;border:2px solid #fff;}
+.aircraft-marker[aria-pressed="true"]::before {border:2px solid #fff;box-shadow:0 0 0 3px var(--radar-accent);background:#080c0ce8;}
+.aircraft-marker[aria-pressed="true"] {z-index:1;}
+.aircraft-marker.is-stale {opacity:.6;}
+.air-atlas-field button:focus-visible,.air-atlas-field a:focus-visible {outline:3px solid #fff;outline-offset:2px;}
+.air-atlas-list {position:absolute;z-index:4;top:calc(var(--radar-top) + 86px);left:var(--radar-left);width:280px;max-height:calc(100% - var(--radar-top) - var(--radar-bottom) - 122px);overflow:auto;background:var(--radar-panel);border:1px solid var(--radar-line);border-radius:6px;}
+.air-atlas-list button {width:100%;display:flex;justify-content:space-between;align-items:center;gap:8px;text-align:left;min-height:56px;padding:8px 12px;border:0;border-bottom:1px solid var(--radar-line);background:transparent;color:#f4f2ec;font:15px var(--font-ui);}
+.air-atlas-list button span {font-size:13px;color:#d4d8d6;}
 .air-atlas-list p {padding:12px;font-size:14px;}
-.air-atlas-detail {position:absolute;left:12px;right:12px;bottom:calc(var(--radar-bottom) + 38px);min-height:142px;display:grid;grid-template-columns:120px 170px minmax(0,1fr) 48px;gap:12px;align-items:center;padding:10px;border:1px solid #ffffff38;border-radius:6px;background:rgba(7,9,9,.95);}
+.air-atlas-detail {position:absolute;z-index:2;left:var(--radar-left);right:var(--radar-right);bottom:calc(var(--radar-bottom) + 32px);max-height:calc(100% - var(--radar-top) - var(--radar-bottom) - 120px);display:flex;flex-direction:column;border:1px solid var(--radar-line);border-top:2px solid var(--radar-accent);border-radius:6px;background:var(--radar-panel);overflow:hidden;}
+.air-atlas-detail.is-expanded {top:calc(var(--radar-top) + 86px);max-height:none;}
+.air-atlas-detail-scroll {display:grid;grid-template-columns:152px minmax(155px,.9fr) minmax(0,1.2fr);gap:12px;align-items:center;padding:10px 12px;overflow:auto;min-height:0;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--radar-secondary) var(--radar-panel);}
 .air-atlas-photo {display:grid;gap:4px;text-align:center;font:13px var(--font-data);min-width:0;}
-.air-atlas-photo img {width:120px;height:78px;object-fit:contain;display:block;}
-.air-atlas-photo a {color:#eeeae0;text-decoration:none;font-size:13px;overflow-wrap:anywhere;}
-.air-atlas-flight {display:grid;gap:7px;min-width:0;}
-.air-atlas-flight strong {font:600 20px var(--font-ui);}
+.air-atlas-photo img {width:152px;height:96px;object-fit:contain;display:block;}
+.air-atlas-photo a {color:#f4f2ec;text-decoration:none;font-size:13px;overflow-wrap:anywhere;}
+.air-atlas-flight {display:grid;gap:6px;min-width:0;}
+.air-atlas-flight strong {font:600 22px var(--font-ui);}
 .air-atlas-flight span,.air-atlas-flight small {font:13px var(--font-data);}
-.air-atlas-flight small {color:#d0cdc5;}
-.air-atlas-route {display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;min-width:0;}
+.air-atlas-flight small {color:#d4d8d6;}
+.air-atlas-route {display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;min-width:0;border-left:1px solid var(--radar-line);padding-left:12px;}
 .air-atlas-route > div {display:grid;gap:3px;min-width:0;}
 .air-atlas-route strong {font:600 22px var(--font-ui);}
-.air-atlas-route span,.air-atlas-route small {font:13px var(--font-data);color:#d0cdc5;}
+.air-atlas-route span,.air-atlas-route small {font:13px var(--font-data);color:#d4d8d6;}
 .air-atlas-route > div > small {overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .air-atlas-route-source {grid-column:1/-1;}
-.air-atlas-close {align-self:start;border:0;background:transparent;color:#eeeae0;min-width:48px;min-height:48px;font-size:28px;}
-.air-atlas-attribution {position:absolute;bottom:var(--radar-bottom);left:0;right:0;background:#070909b8;padding:3px 8px;font:10px/1.3 var(--font-data);text-align:center;}
-.air-atlas-attribution a {color:#eeeae0;}.air-atlas-attribution > span {display:block;color:#d0cdc5;}
-.air-atlas-map-retry {position:absolute;top:calc(var(--radar-top) + 70px);left:12px;}
-@media(max-width:740px){.air-atlas-detail{left:6px;right:6px;gap:8px;grid-template-columns:90px 136px minmax(0,1fr) 48px;padding:8px;min-height:136px;}.air-atlas-photo img{width:90px;height:65px;}.air-atlas-flight strong{font-size:17px;}.air-atlas-route{column-gap:6px;}.air-atlas-close{min-width:48px;}}
-
-@media(max-height:450px){.air-atlas-controls{display:flex;gap:4px;}.air-atlas-summary span{display:none;}}
-
-.air-atlas-home {width:22px;height:28px;background:var(--radar-accent,#ed6347);clip-path:polygon(50% 0,100% 100%,50% 76%,0 100%);filter:drop-shadow(0 1px 3px #000);pointer-events:none;}
-.air-atlas-home.is-direction-unknown {width:16px;height:16px;clip-path:none;border-radius:50%;border:2px solid white;}
-.air-atlas-controls button[aria-pressed="true"] {border-color:var(--radar-accent);color:var(--radar-accent);}
-.air-atlas-heading-note {position:absolute;top:calc(var(--radar-top) + 66px);left:12px;background:#070909e8;padding:8px;border-radius:6px;font:13px var(--font-data);}
-.air-atlas-detail {padding-bottom:48px;cursor:pointer;max-height:calc(100% - var(--radar-top) - var(--radar-bottom) - 100px);overflow:auto;}
-.air-atlas-expand {position:absolute;bottom:0;left:0;right:58px;min-height:48px;border:0;background:transparent;color:#eeeae0;font:600 13px var(--font-ui);cursor:pointer;}
-.air-atlas-close {grid-column:4;grid-row:1;}
-.air-atlas-extra {grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:12px 0 4px;border-top:1px solid #ffffff38;}
-.air-atlas-extra > div {display:grid;gap:5px;min-width:0;}
-.air-atlas-extra span {font:13px var(--font-data);color:#d0cdc5;}
+.air-atlas-detail-actions {display:flex;flex-shrink:0;border-top:1px solid var(--radar-line);background:var(--radar-panel);}
+.air-atlas-expand,.air-atlas-close {border:0;background:transparent;color:#f4f2ec;min-height:48px;cursor:pointer;}
+.air-atlas-expand span {font-weight:400;margin-right:24px;color:#d4d8d6;}.air-atlas-detail-scroll:focus-visible {outline:2px solid #fff;outline-offset:-3px;}
+.air-atlas-expand {flex:1;font:600 13px var(--font-ui);}
+.air-atlas-close {width:56px;border-left:1px solid var(--radar-line);font-size:28px;}
+.air-atlas-extra {grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;column-gap:20px;}
+.air-atlas-extra > div {display:grid;gap:5px;min-width:0;padding:9px 0;border-bottom:1px solid var(--radar-line);}
+.air-atlas-extra span {font:13px var(--font-data);color:#d4d8d6;}
 .air-atlas-extra strong {font:15px var(--font-ui);overflow-wrap:anywhere;}
-.air-atlas-detail.is-expanded {max-height:calc(100% - var(--radar-top) - var(--radar-bottom) - 50px);}
-@media(max-height:450px){.air-atlas-heading-note{top:calc(var(--radar-top) + 62px);}.air-atlas-detail{bottom:calc(var(--radar-bottom) + 28px);}.air-atlas-detail.is-expanded{top:calc(var(--radar-top) + 8px);max-height:none;z-index:4;}}
-.air-atlas-detail {padding-bottom:0;}
-.air-atlas-expand {position:sticky;grid-column:1/-1;grid-row:3;bottom:0;left:auto;right:auto;background:#070909;z-index:1;}
-.air-atlas-extra {grid-row:2;}
-/* Keep the aircraft list reachable beside the compact persistent driving chrome. */
-.app.controls-resting .air-atlas-summary {left:calc(var(--chrome-size) + 12px);right:auto;}
-.app.controls-resting .air-atlas-summary span {display:none;}
+.air-atlas-extra h3,.air-atlas-extra p {grid-column:1/-1;margin:10px 0 0;font:15px var(--font-ui);}
+.air-atlas-extra p {font:13px/1.4 var(--font-data);color:#d4d8d6;margin:6px 0;}
+.air-atlas-attribution {position:absolute;bottom:var(--radar-bottom);left:0;right:0;background:#070909e8;padding:3px 8px;font:10px/1.3 var(--font-data);text-align:center;}
+.air-atlas-attribution a {color:#eeeae0;}.air-atlas-attribution > span {display:block;color:#d0cdc5;}
+.air-atlas-toolbar .air-atlas-map-retry {position:static;}
+.air-atlas-home {width:22px;height:28px;background:var(--radar-secondary);clip-path:polygon(50% 0,100% 100%,50% 76%,0 100%);filter:drop-shadow(0 1px 3px #000);pointer-events:none;}
+.air-atlas-home.is-direction-unknown {width:16px;height:16px;clip-path:none;border-radius:50%;border:2px solid white;}
+@media(max-width:740px){.air-atlas-toolbar{gap:4px;}.air-atlas-toolbar button{padding:0 7px;}.air-atlas-controls{gap:4px;}.air-atlas-detail-scroll{grid-template-columns:132px 150px minmax(0,1fr);gap:8px;padding:8px;}.air-atlas-photo img{width:132px;height:80px;}.air-atlas-route{gap:6px;padding-left:8px;}}
+@media(max-height:450px){.air-atlas-photo img{height:76px;}.air-atlas-detail-scroll{padding:7px 10px;gap:8px;}.air-atlas-flight{gap:4px;}.air-atlas-flight strong{font-size:20px;}}
