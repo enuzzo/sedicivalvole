@@ -1,5 +1,18 @@
 # Session Handoff
 
+## September 9 office restart — Engine source banks
+
+Read [the complete office handoff](ENGINE-SOURCE-OFFICE-HANDOFF-2026-09-09.md)
+and use [the restart prompt](ENGINE-SOURCE-OFFICE-START-2026-09-09.txt).
+Latest verified publication is **20260908-2356 / de16389**; evidence checkpoint
+**895eb0c**. Mono/Rosso/Touring remain selectable; Otto/Cinque/Turbine are retired.
+The owner rejected the FMOD demo and the short-recording catalogue direction.
+Next: deep targeted research into coherent licensed RPM/load/coast banks.
+Portable ignored auditions and feedback are copied into the saved Dropbox folder;
+office/cloud sync must still be checked. No new task is launched by this handoff.
+Dated material below is historical and does not supersede this restart.
+
+
 Weak-network music refinement is published and canonically verified in build
 **20260908-2040**, source **e9dd39c**: immediate inline glyphs, retained loading transport, recoverable
 artwork/native metadata and verified native action routing. The proposed
