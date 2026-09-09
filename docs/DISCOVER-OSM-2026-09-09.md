@@ -9,3 +9,5 @@ Duplicates are removed by linked Wikipedia article identity or matching names wi
 Sources: https://wiki.openstreetmap.org/wiki/Overpass_API and https://wiki.openstreetmap.org/wiki/Key:wikipedia. ODbL data attribution remains visible. No server code or additional data service is imported.
 
 Validation: 827 native tests pass. Chrome at 773 x 601 verified both sources, 72 px rows, source-aware card/link, local category search and OSM survival after a simulated Wikipedia 503, with no page exceptions. Fixtures are deterministic test data, not evidence of public POI completeness. Physical Tesla acceptance remains outstanding.
+
+Production candidate: build `20260909-2221`, source `609f8b8`; 182 exact release asset hashes verified. The same provider/failure checks pass in WebKit at 874 x 402 and compiled Chrome at 773 x 601. This is browser viewport evidence, not installed-iPhone or vehicle acceptance.
