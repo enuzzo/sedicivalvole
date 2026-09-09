@@ -1391,3 +1391,5 @@ Read ROAD-UI-REFINEMENT-2026-09-09.md for measured FPS and remaining limits.
 ## Discover source expansion — 2026-09-09
 
 Discover now combines Wikipedia with bounded nearby OpenStreetMap points. See [implementation and validation](DISCOVER-OSM-2026-09-09.md). Global search applies to Wikipedia; OSM text search is local to fetched nearby points. No additional renderer or dependency.
+
+Discover OSM is now published at the canonical root as build `20260909-2221` (source `609f8b8`). Canonical asset/cache checks and live Chrome verification passed; target-vehicle acceptance remains outstanding.

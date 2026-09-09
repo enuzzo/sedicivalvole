@@ -793,3 +793,5 @@ No dated releases exist yet.
 - 2026-09-09 22:19 [811f532] Unreleased: extend Discover with nearby OpenStreetMap points, visible source attribution, article/name deduplication, source-aware place cards and independent bounded OSM loading. Wikipedia global search also filters nearby OSM names/categories.
 
 - 2026-09-09 22:22 [609f8b8] build 20260909-2221: verified Discover OSM candidate with 827 native tests, 182 release hashes and Chrome/WebKit provider, search and independent-failure checks.
+
+- 2026-09-09 22:33 [609f8b8] build 20260909-2221: published Discover OSM to the canonical root; official postflight, 19 HTTPS identity/asset/cache checks, live Chrome provider-failure checks and real browser Overpass HTTP 200 passed. Physical vehicle acceptance remains pending.
