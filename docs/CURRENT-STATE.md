@@ -2,7 +2,8 @@
 
 ## September 9 launch preparation refinement
 
-Intro now prepares the selected visual, Jamendo audio/cover and selected Engine
+Canonical **20260909-0911 / d30769d** is published and verified; 813 tests and
+canonical byte/browser checks pass. Intro prepares the selected visual, Jamendo audio/cover and selected Engine
 bank before START. Engine loading has a centered accessible notice, and verified
 encoded WAVs are retained in a bounded page-lifetime cache. See
 [scope, architecture and validation](LAUNCH-PREPARATION-2026-09-09.md).

@@ -1,5 +1,14 @@
 # Session Handoff
 
+## September 9 launch preparation release
+
+Latest verified publication: **20260909-0911 / d30769d**. Intro prepares visual,
+Jamendo track/cover and selected Engine WAVs; centered loading and cached offline
+Engine return are verified. 813 tests and canonical byte/browser checks pass.
+[Scope and acceptance](LAUNCH-PREPARATION-2026-09-09.md). Next: physical Tesla
+weak-network/rapid-switch check, then the existing Engine source research handoff.
+Dated publication identities below are historical.
+
 ## September 9 office restart — Engine source banks
 
 Read [the complete office handoff](ENGINE-SOURCE-OFFICE-HANDOFF-2026-09-09.md)

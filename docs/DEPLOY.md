@@ -1,5 +1,33 @@
 # Deployment
 
+## Verified launch preparation — 2026-09-09 09:24 Europe/Rome
+
+Canonical build **20260909-0911**, source **d30769d**, version from VERSION
+(**0.0.0**). Intro prepares the selected visual, Jamendo track/cover and Mono or
+selected Engine profile. Centered loading identifies the pending engine; the
+bounded encoded cache serves rapid repeated selections, including offline reuse.
+
+813 native tests, App/LAB production packaging and 196 dependency credits pass.
+Local Tesla 773x601 and phone 667x375 Chrome checks pass. The compiled and
+canonical Tesla flows verify pre-gesture downloads, Vertigo dependencies without
+an iframe, START cache reuse, delayed Rosso loading and rapid offline Mono return.
+Music catalogue/audio/artwork are isolated QA fixtures; real canonical Engine
+WAVs and visual files are exercised. No diagnostic QA mail is sent. No page or
+console errors; two existing pre-gesture AudioContext warnings precede successful
+START activation. Target-vehicle weak-network/endurance and Safari acceptance
+remain physical checks.
+
+Official read-only preflight passed with remote_writes=NONE. Publication verified
+**233 files / 254,902,094 bytes**, all 29 Illobo tracks and two retained cache-overlap
+assets, with **remote_writes=ROOT_UPLOAD_ONLY** and no legacy deletion.
+All **10 canonical HTTP byte comparisons** pass, including bare/cache-busted HTML,
+main JavaScript/CSS, Engine/profiles/worklet/ShaderGradient assets and a WAV.
+Requests with page Referer pass; an initial standalone WAV probe without those
+browser headers returned 403. Entry HTML retains no-store/no-cache; static WAVs
+expose ETag/Last-Modified rather than a guaranteed explicit cache lifetime.
+[Complete behavior and architecture](LAUNCH-PREPARATION-2026-09-09.md).
+
+
 ## Verified Engine catalogue retirement — 2026-09-09 00:08 Europe/Rome
 
 Canonical build **20260908-2356**, source **de16389**, version read from VERSION (**0.0.0**). Intro, running Telemetry and protected LAB now admit only Mono, Rosso and Touring. Their audio source/configuration/runtime files are unchanged. Rejected Otto/Cinque/Turbine definitions remain internal historical material, unavailable through the selectors. No FMOD runtime or example media is shipped.
