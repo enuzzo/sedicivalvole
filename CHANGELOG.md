@@ -817,3 +817,5 @@ No dated releases exist yet.
 - 2026-09-10 01:02 `[b709465]` `build 20260910-0052`: Published and verified the Air Atlas refinement with 20 canonical HTTPS checks, official independent read-only postflight, live RYR2FF / EI-IKV telemetry and controlled 0/90-degree map orientation.
 
 - 2026-09-10 01:02 `[9d35237]`: Aligned Air Atlas toolbar, detail and attribution with phone safe-area variables after the touch-device audit exposed footer clipping. WebKit touch checks with emulated 59 px side / 21 px bottom insets pass at 874 x 402, 667 x 375 and 956 x 440; physical iPhone acceptance remains unverified.
+
+- 2026-09-10 01:10 `[9dd7cd5]` `build 20260910-0102`: Published the final Air Atlas phone-safe-area refinement with official full verification, 20 independent canonical HTTPS identity/hash/cache checks and three-size WebKit touch/inset checks. Live RYR86JJ / 9H-VVH rendered a credited Wolfgang Kaiser photo, plausible MAN–BGY route and expanded supplied telemetry. No legacy deletion or synthetic diagnostic mail; physical acceptance remains open.
