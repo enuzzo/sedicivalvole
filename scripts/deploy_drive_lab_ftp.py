@@ -523,6 +523,36 @@ def verify_remote_illobo(ftp: ftplib.FTP, *, full_hash: bool) -> None:
             raise ValueError("Illobo remote track size mismatch")
         if full_hash and sha256_bytes(remote_bytes(ftp, filename)) != track["sha256"]:
             raise ValueError("Illobo remote track identity mismatch")
+    if full_hash:
+        ftp._sedicivalvole_verified_illobo = {str(track["filename"]): track["sha256"] for track in tracks}
+
+
+def restore_remote_illobo(ftp: ftplib.FTP) -> int:
+    """Restore only recognized published masters, staging before atomic replacement."""
+    tracks, catalog = illobo_archive()
+    expected = {ILLOBO_PUBLIC_CATALOG, *(str(track["filename"]) for track in tracks)}
+    if safe_names(ftp) != expected or sha256_bytes(remote_bytes(ftp, ILLOBO_PUBLIC_CATALOG)) != sha256_bytes(catalog):
+        raise ValueError("Illobo repair identity mismatch")
+    repaired = 0
+    for track in tracks:
+        filename = str(track["filename"])
+        if ftp.size(filename) == track["bytes"] and sha256_bytes(remote_bytes(ftp, filename)) == track["sha256"]:
+            continue
+        temporary = filename + ".verified-repair"
+        print(f"repair_public_file=audio/{ILLOBO_REMOTE_DIRECTORY}/{filename}")
+        try:
+            with Path(track["path"]).open("rb") as handle:
+                ftp.storbinary(f"STOR {temporary}", handle, blocksize=65536)
+            if sha256_bytes(remote_bytes(ftp, temporary)) != track["sha256"]:
+                raise ValueError("Illobo staged repair identity mismatch")
+            ftp.rename(temporary, filename)
+        finally:
+            if temporary in safe_names(ftp):
+                ftp.delete(temporary)
+        if sha256_bytes(remote_bytes(ftp, filename)) != track["sha256"]:
+            raise ValueError("Illobo repaired master identity mismatch")
+        repaired += 1
+    return repaired
 
 
 def is_forbidden_static_name(name: str) -> bool:
@@ -1347,6 +1377,7 @@ def argument_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="verify configuration and remote identity without remote writes",
     )
+    mode.add_argument("--repair-illobo", action="store_true", help="restore only recognized corrupted Illobo masters without activating a release")
     parser.add_argument(
         "--preserve-existing",
         action="store_true",
@@ -1368,6 +1399,7 @@ def parse_arguments(argv: list[str]) -> argparse.Namespace:
         "--help",
         "--publish",
         "--verify-only",
+        "--repair-illobo",
         "--preserve-existing",
         "--stage-php-entry",
     }
@@ -1442,6 +1474,26 @@ def main() -> int:
         stage = "directory"
         ftp.cwd(config["DEPLOY_REMOTE_PATH"])
         print("directory=PASS target=canonical_root")
+
+        if arguments.repair_illobo:
+            stage = "repair_identity"
+            try:
+                verify_remote_root(ftp)
+            except ValueError as error:
+                if str(error) not in {"Illobo remote track size mismatch", "Illobo remote track identity mismatch"}:
+                    raise
+                stage = "repair_illobo"
+                ftp.cwd("audio")
+                ftp.cwd(ILLOBO_REMOTE_DIRECTORY)
+                repaired = restore_remote_illobo(ftp)
+                ftp.cwd("..")
+                ftp.cwd("..")
+                print(f"illobo_repair=PASS files={repaired}")
+                verify_remote_root(ftp)
+            ftp.quit()
+            ftp = None
+            print("repair_verification=PASS root_activation=NONE")
+            return 0
 
         stage = "read_only_identity"
         obsolete_root_assets = verify_remote_root(ftp)
@@ -1522,6 +1574,8 @@ def main() -> int:
             ftp.cwd("..")
         uploaded_bytes += len(lab_auth_config)
 
+        uploaded_illobo_bytes = 0
+        uploaded_illobo_files = 0
         enter_or_create(ftp, "audio")
         try:
             enter_or_create(ftp, ILLOBO_REMOTE_DIRECTORY)
@@ -1532,17 +1586,25 @@ def main() -> int:
                     blocksize=65536,
                 )
                 for track in illobo_tracks:
+                    if (getattr(ftp, "_sedicivalvole_verified_illobo", {}).get(str(track["filename"])) == track["sha256"]
+                            and ftp.size(str(track["filename"])) == track["bytes"]):
+                        continue
+                    public_upload_path = f"audio/{ILLOBO_REMOTE_DIRECTORY}/{track['filename']}"
                     with Path(track["path"]).open("rb") as handle:
                         ftp.storbinary(
                             f"STOR {track['filename']}",
                             handle,
                             blocksize=65536,
                         )
+                    uploaded_illobo_bytes += int(track["bytes"])
+                    uploaded_illobo_files += 1
             finally:
                 ftp.cwd("..")
         finally:
             ftp.cwd("..")
-        uploaded_bytes += len(illobo_catalog) + sum(int(track["bytes"]) for track in illobo_tracks)
+        public_upload_path = None
+        uploaded_bytes += len(illobo_catalog) + uploaded_illobo_bytes
+        print(f"illobo_unchanged=PASS skipped={len(illobo_tracks) - uploaded_illobo_files}")
 
         retired_illobo_artwork = remove_retired_illobo_artwork(ftp)
         retired_lab_assets = remove_retired_lab_assets(ftp)
@@ -1569,7 +1631,7 @@ def main() -> int:
         remote_count = len(safe_names(ftp))
         ftp.quit()
         ftp = None
-        print(f"upload=PASS files={len(files) + 5 + len(illobo_tracks)} bytes={uploaded_bytes}")
+        print(f"upload=PASS files={len(files) + 5 + uploaded_illobo_files} bytes={uploaded_bytes}")
         print(f"illobo_playlist=PASS tracks={len(illobo_tracks)} full_hash_verification=true")
         print(f"illobo_artwork_migration=PASS retired_png_files={retired_illobo_artwork}")
         print(f"lab_runtime_migration=PASS retired_worklets={retired_lab_assets}")

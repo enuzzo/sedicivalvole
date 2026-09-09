@@ -900,3 +900,37 @@ assert output.getvalue().strip() == 'configuration=FAIL reason=python_3_11_or_ne
 `;
   execFileSync('python3', ['-c', program, deployScript.pathname]);
 });
+
+test('Illobo repair stages verified bytes, preserves good masters and rejects foreign files', () => {
+  const program = String.raw`
+import importlib.util,sys,tempfile,hashlib
+from pathlib import Path
+spec=importlib.util.spec_from_file_location('deploy',sys.argv[1]);m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
+class FTP:
+    def __init__(self,broken=False): self.files={m.ILLOBO_PUBLIC_CATALOG:b'catalog','one.mp3':b'bad','two.mp3':b'two'};self.stores=[];self.broken=broken
+    def nlst(self): return list(self.files)
+    def size(self,name): return len(self.files[name])
+    def retrbinary(self,cmd,callback): callback(self.files[cmd[5:]])
+    def storbinary(self,cmd,handle,**kwargs):
+        name=cmd[5:];self.stores.append(name);self.files[name]=b'corrupt' if self.broken else handle.read()
+    def rename(self,a,b): self.files[b]=self.files.pop(a)
+    def delete(self,name): del self.files[name]
+with tempfile.TemporaryDirectory() as folder:
+    tracks=[]
+    for name,data in [('one.mp3',b'one'),('two.mp3',b'two')]:
+        path=Path(folder)/name;path.write_bytes(data);tracks.append({'filename':name,'path':path,'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest()})
+    m.illobo_archive=lambda:(tracks,b'catalog')
+    ftp=FTP();assert m.restore_remote_illobo(ftp)==1;assert ftp.files['one.mp3']==b'one';assert ftp.stores==['one.mp3.verified-repair']
+    m.verify_remote_illobo(ftp,full_hash=True);assert ftp._sedicivalvole_verified_illobo['two.mp3']==tracks[1]['sha256']
+    ftp=FTP(True)
+    try: m.restore_remote_illobo(ftp);raise AssertionError('bad staged bytes admitted')
+    except ValueError: pass
+    assert ftp.files['one.mp3']==b'bad';assert 'one.mp3.verified-repair' not in ftp.files
+    ftp=FTP();ftp.files['foreign.mp3']=b'unknown'
+    try: m.restore_remote_illobo(ftp);raise AssertionError('foreign file admitted')
+    except ValueError: pass
+    assert ftp.stores==[]
+assert m.parse_arguments(['--repair-illobo']).repair_illobo
+`;
+  execFileSync('python3', ['-c', program, deployScript.pathname], {encoding:'utf8'});
+});

@@ -803,3 +803,5 @@ No dated releases exist yet.
 - 2026-09-09 23:36 [444ea5c] Unreleased: connect Air Atlas to the owner-authorized same-origin ADSB.lol traffic/route adapter with rounded location, bounded shared cache, strict query validation and failure cooldown. Keep diagnostic packets coordinate-free and remove deprecated PHP curl cleanup calls that polluted local JSON responses.
 
 - 2026-09-09 23:50 [228803b] Unreleased: keep Air Atlas controls and the bottom detail stable through pointer activation while global chrome rests. Verified actual eastbound driving-up/north-up rotations; add sanitized public-file and FTP-status upload diagnostics after an incomplete upload attempt.
+
+- 2026-09-10 00:03 [4380499] Unreleased: add a bounded, verified temporary-file repair for recognized Illobo masters and reuse tracks already hash-verified in the same publication session. Restore the single truncated Sliced Zucchini Edit master without activating an incomplete release.
