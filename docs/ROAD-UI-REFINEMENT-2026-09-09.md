@@ -67,3 +67,12 @@ detail/enrichment and worldwide following are separate scope.
 - [MDN button focus behavior](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/button).
 - [MapLibre camera animation](https://maplibre.org/maplibre-gl-js/docs/examples/animate-map-camera-around-a-point/).
 - [ADSB.lol API](https://www.adsb.lol/docs/open-data/api/): public API, data ODbL 1.0. Software licensing and data attribution are distinct. Provider documentation was verified in this session; no live aircraft query was made.
+
+## Verified source and build
+
+Source `71ad14e`, build `20260909-2155`, VERSION `0.0.0`. All 826 native tests
+(including real PHP), 182 static release SHA-256 identities and 196 exact
+community dependency credits pass. Build uses lockfile Vite 6.4.3, PostCSS
+8.5.26, Rollup 4.62.2 and esbuild 0.25.12 through the existing native wrapper;
+the two stale Dropbox development packages were not rewritten. The existing
+large-chunk advisory remains. Publication follows compiled-browser validation.
