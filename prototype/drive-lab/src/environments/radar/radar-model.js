@@ -1,4 +1,4 @@
-/** Original, inactive radar preparation. No provider request or renderer is registered. */
+/** Original ADSB.lol snapshot model. Unknown measurements remain unknown. */
 import { discoverDistanceMetres } from '../../discover/discover-model.js';
 
 export const RADAR_SOURCE = 'ADSB.lol';
@@ -32,6 +32,10 @@ export function normalizeRadarSnapshot(payload, { center, epochNowMs, receivedAt
     rows.set(id, {
       id, ...point, source: RADAR_SOURCE, ageMs, observedAtMs: receivedAtMs - ageMs,
       stale: ageMs > RADAR_FRESH_MS,
+      registration: typeof item.r === 'string' ? item.r.trim().slice(0,16) : '',
+      typeCode: typeof item.t === 'string' ? item.t.trim().toUpperCase().slice(0,8) : '',
+      category: typeof item.category === 'string' ? item.category.slice(0,3) : '',
+      verticalRate: finite(item.baro_rate) ? item.baro_rate : null,
       callsign: typeof item.flight === 'string' ? item.flight.trim().slice(0, 12) : '',
       trackDegrees: finite(item.track) && item.track >= 0 && item.track < 360 ? item.track : null,
       altitudeFeet: finite(item.alt_baro) ? item.alt_baro : null,

@@ -472,3 +472,12 @@ original inactive bounded radar adapter. ADSB.lol declares its API data ODbL 1.0
 No live request, aircraft data redistribution, runtime integration or imported
 Meguru/provider code occurs in this checkpoint. Original code retains the project
 license. See docs/ROAD-UI-REFINEMENT-2026-09-09.md.
+
+
+## Air Atlas sources — 2026-09-09
+
+- ADSB.lol contributors: public position API and detail-only plausible-route service, ODbL 1.0. Route lineage: Virtual Radar Server standing-data contributors. No provider server implementation copied. https://www.adsb.lol/docs/open-data/api/ and https://github.com/vradarserver/standing-data
+- Planespotters.net and each named photographer: remote detail-only aircraft thumbnails, author credit and original-photo link required. Photos remain remote copyrighted media, never bundled or admitted to the static session cache. https://www.planespotters.net/legal/termsofuse
+- RexKramer1 / AircraftShapesSVG: pinned revision `0743718760c42a5e91801adc053b5b828a434a5e`, GPL-3.0 aircraft artwork. All 182 original SVG files and their licence are distributed separately under `public/third-party/aircraft-shapes/`, with normalized monochrome SVG derivatives and source/hash inventory. These independent artwork files retain GPL rights, including commercial redistribution, without the original app's PolyForm restriction. No upstream program is linked or copied. https://github.com/RexKramer1/AircraftShapesSVG
+
+- AirLabs / Data Products Ltd: optional server-only flight/schedule service, no active requests without configured account key; original adapter, no upstream code/data bundled. Official Free-plan field documentation: https://airlabs.co/docs/flight . The key is read only from the server process environment, never shipped to the browser or read from `.env`.

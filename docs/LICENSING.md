@@ -271,3 +271,10 @@ and change hashes. The separate recording-provenance follow-up is not described
 as independently cleared ownership or transferred responsibility. Original
 sedicivalvole code remains PolyForm Noncommercial. See THIRD_PARTY_NOTICES and
 [Engine integration](ENGINE-INTEGRATION-2026-09-07.md).
+
+
+## 2026-09-09 — Air Atlas artwork and services
+
+Owner explicitly selected Air Atlas and requested the full Meguru-studied SVG collection. Import the same pinned official source, not ignored study files. Distribute original/normalized GPL-3.0 artwork separately with editable source, notices and unrestricted upstream rights; do not bundle GPL program code or relabel artwork as PolyForm. The original host remains PolyForm. Independent-artwork packaging is the implementation boundary, not a blanket claim that arbitrary GPL software linking is compatible. Reference: https://www.gnu.org/licenses/gpl-faq.html.html#MereAggregation .
+
+ADSB.lol traffic/routes and Planespotters photo metadata are service integrations. Photographs remain remotely hosted with author and source links, not acquired for redistribution. Optional AirLabs schedule access needs a server-side account key; the Free documentation lists departure/arrival times but no plan, account or live schedule result has been asserted.

@@ -16,7 +16,7 @@ export function initialLaunchSoundtrack(selection, random = Math.random) {
 /** Roll real visual families equally. Passenger tools remain deliberate choices. */
 export function luckyLaunchVisual(previousId = null, random = Math.random) {
   const previousFamily = isShaderGradientEnvironmentId(previousId) ? 'shadergradient' : previousId;
-  const choices = FLUX_VISUAL_CHOICES.filter(item => !['atlas', 'discover', 'stats', previousFamily].includes(item.id));
+  const choices = FLUX_VISUAL_CHOICES.filter(item => !['atlas', 'air-atlas', 'discover', 'stats', previousFamily].includes(item.id));
   const pick = items => {
     let unit = 0;
     try { const value = Number(random()); unit = Number.isFinite(value) ? Math.max(0, Math.min(.999999, value)) : 0; } catch {}

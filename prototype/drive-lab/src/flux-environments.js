@@ -112,6 +112,8 @@ export const FLUX_ENVIRONMENTS = [
     studyId: "chromatic-silk",
     themed: true,
   },
+  { id: "air-atlas", label: "AIR ATLAS", displayLabel: "Air Atlas", number: "10", rendererLabel: "Air Atlas", launchDescription: "Nearby aircraft, photos and routes", renderer: "air-atlas", themed: true },
+
 ];
 
 // DISCOVER belongs in the driver-facing Visual catalogue, but it is a
@@ -163,7 +165,7 @@ export const FLUX_VISUAL_CHOICES = [
   DISCOVER_VISUAL_CHOICE,
   SHADERGRADIENT_VISUAL_CHOICE,
   { id: "stats", label: "STATS FOR NERDS", displayLabel: "Stats for Nerds", number: "09", rendererLabel: "Session observatory", launchDescription: "Journey, direction and system statistics", kind: "destination" },
-];
+].sort((a,b) => Number(a.number)-Number(b.number));
 
 export function getFluxEnvironment(environmentId) {
   return FLUX_ENVIRONMENTS.find((environment) => environment.id === environmentId)

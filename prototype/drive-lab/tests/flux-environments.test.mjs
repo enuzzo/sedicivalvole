@@ -28,7 +28,7 @@ const stylesSource = readFileSync(new URL("../src/styles.css", import.meta.url),
 test("exposes the authored environments in a stable order", () => {
   assert.deepEqual(
     FLUX_ENVIRONMENTS.map(({ id }) => id),
-    ["aperture", "vertigo", "meridian", "atlas", "drivey", "prtcl", "japanese-mist", "acid-orchard", "chromatic-silk"],
+    ["aperture", "vertigo", "meridian", "atlas", "drivey", "prtcl", "japanese-mist", "acid-orchard", "chromatic-silk", "air-atlas"],
   );
   assert.equal(getFluxEnvironment("vertigo").label, "VERTIGO");
   assert.equal(getFluxEnvironment("meridian").label, "MERIDIAN");
@@ -52,7 +52,7 @@ test("exposes the authored environments in a stable order", () => {
 test("keeps Discover seventh and exposes one Gradient 08 family", () => {
   assert.deepEqual(
     FLUX_VISUAL_CHOICES.map(({ id }) => id),
-    ["aperture", "vertigo", "meridian", "atlas", "drivey", "prtcl", "discover", "shadergradient", "stats"],
+    ["aperture", "vertigo", "meridian", "atlas", "drivey", "prtcl", "discover", "shadergradient", "stats", "air-atlas"],
   );
   assert.equal(DISCOVER_VISUAL_CHOICE.number, "07");
   assert.equal(DISCOVER_VISUAL_CHOICE.kind, "destination");
@@ -64,7 +64,7 @@ test("keeps Discover seventh and exposes one Gradient 08 family", () => {
   assert.equal(FLUX_VISUAL_CHOICES.some(({ choiceBadge }) => choiceBadge), false);
   assert.equal(FLUX_ENVIRONMENTS.filter(({ renderer }) => renderer === "shadergradient").every(({ themed }) => themed), true);
   assert.doesNotMatch(appSource, /choiceBadge|launch-choice-badge|launch-choice-number/);
-  assert.equal(FLUX_VISUAL_CHOICES.at(-2), SHADERGRADIENT_VISUAL_CHOICE);
+  assert.equal(FLUX_VISUAL_CHOICES.at(-3), SHADERGRADIENT_VISUAL_CHOICE);
   assert.deepEqual(SHADERGRADIENT_ENVIRONMENTS.map(({ id }) => id), [
     "japanese-mist",
     "acid-orchard",

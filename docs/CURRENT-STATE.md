@@ -1533,3 +1533,12 @@ awaiting the three-direction selection. See ROAD-UI-REFINEMENT-2026-09-09.md.
 Discover now combines Wikipedia with bounded nearby OpenStreetMap points. See [implementation and validation](DISCOVER-OSM-2026-09-09.md). Global search applies to Wikipedia; OSM text search is local to fetched nearby points. No additional renderer or dependency.
 
 Discover OSM is now published at the canonical root as build `20260909-2221` (source `609f8b8`). Canonical asset/cache checks and live Chrome verification passed; target-vehicle acceptance remains outstanding.
+
+
+## AIR ATLAS 10 — 2026-09-09 implementation
+
+Owner selected Air Atlas (direction A). Implemented the nearby aircraft map and bottom photo/route/telemetry detail using the full 182-SVG catalogue studied in Meguru. Traffic and photo providers are usable without an account. Optional scheduled/estimated times need an AirLabs account key configured server-side; no key is currently assumed. See [architecture and verification](AIR-ATLAS-2026-09-09.md). Publication evidence follows after final gates; physical acceptance remains pending.
+
+### Owner refinement — 2026-09-09 23:26
+
+The bottom aircraft bar now expands to show full airport names, aircraft model, distance, ground track and vertical rate. North/driving orientation and zoom/reset remain available. GPS driving direction requires a recent moving observation; unknown/stopped direction falls back visibly to north. Aircraft markers rotate with the map and a home marker identifies the viewer. Schedules are deferred and the interface no longer requests AirLabs. Live traffic forwarding approval remains pending; no Air Atlas publication has occurred.

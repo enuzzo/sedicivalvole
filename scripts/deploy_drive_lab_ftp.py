@@ -72,6 +72,9 @@ RETIRED_BRAND_HASHES = {
 }
 DIAGNOSTIC_ENDPOINT = "send-diagnostic.php"
 SESSION_REPORT_ENDPOINT = "session-report.php"
+RADAR_PHOTO_ENDPOINT = "radar-photo.php"
+RADAR_FLIGHT_ENDPOINT = "radar-flight.php"
+RADAR_FLIGHT_MARKERS = (b"sedicivalvole.radar-flight.v1", b"RADAR_EXPECTED_ORIGIN")
 SESSION_REPORT_MARKERS = (b"sedicivalvole.session-report-api.v1", b"REPORT_EXPECTED_ORIGIN")
 PROJECT_OWNED_REPORT_HASHES = {
     "report.php": {
@@ -986,8 +989,18 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
                 SOUNDTRACK_CATALOG_ENDPOINT,
                 SOUNDTRACK_AUDIO_ENDPOINT,
                 SESSION_REPORT_ENDPOINT,
+                RADAR_FLIGHT_ENDPOINT,
+                RADAR_PHOTO_ENDPOINT,
             }):
                 raise ValueError("unexpected API entry")
+            if RADAR_PHOTO_ENDPOINT in api_names and not all(
+                marker in remote_bytes(ftp, RADAR_PHOTO_ENDPOINT) for marker in (b"sedicivalvole.radar-photo.v1", b"RADAR_PHOTO_ORIGIN")
+            ):
+                raise ValueError("radar photo endpoint identity mismatch")
+            if RADAR_FLIGHT_ENDPOINT in api_names and not all(
+                marker in remote_bytes(ftp, RADAR_FLIGHT_ENDPOINT) for marker in RADAR_FLIGHT_MARKERS
+            ):
+                raise ValueError("radar flight endpoint identity mismatch")
             if DIAGNOSTIC_ENDPOINT in api_names:
                 endpoint = remote_bytes(ftp, DIAGNOSTIC_ENDPOINT)
                 if not any(

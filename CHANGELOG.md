@@ -795,3 +795,7 @@ No dated releases exist yet.
 - 2026-09-09 22:22 [609f8b8] build 20260909-2221: verified Discover OSM candidate with 827 native tests, 182 release hashes and Chrome/WebKit provider, search and independent-failure checks.
 
 - 2026-09-09 22:33 [609f8b8] build 20260909-2221: published Discover OSM to the canonical root; official postflight, 19 HTTPS identity/asset/cache checks, live Chrome provider-failure checks and real browser Overpass HTTP 200 passed. Physical vehicle acceptance remains pending.
+
+- 2026-09-09 23:12 [75420d3] Unreleased: implement owner-selected Air Atlas Visual 10, bounded nearby aircraft feed, full 182-SVG aircraft catalogue, bottom credited photo/route/telemetry detail, and optional server-only AirLabs schedule adapter. Unavailable schedules remain explicit; no account or paid service is assumed.
+
+- 2026-09-09 23:26 [75420d3] Unreleased: expand Air Atlas aircraft detail with full airport names and telemetry; add north/driving orientation, home marker and map-aligned aircraft shapes. Defer schedules and remove AirLabs requests/time placeholders from the current experience. Live traffic integration remains pending explicit forwarding approval.

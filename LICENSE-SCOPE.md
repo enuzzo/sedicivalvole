@@ -107,3 +107,8 @@ formula, asset, and media item must be admitted case by case in
 `THIRD_PARTY_NOTICES.md`; no repository-level label overrides a third party's
 terms. Legal review remains advisable before enforcement, external
 contributions, commercial licensing, or trademark registration.
+
+
+## Air Atlas aircraft artwork
+
+`prototype/drive-lab/public/third-party/aircraft-shapes/` is an independently licensed artwork collection by RexKramer1, GPL-3.0. The directory includes all 182 editable original SVGs, normalized standalone SVG derivatives, exact inventory and GPL text. Those files retain GPL redistribution/modification rights, including commercial use; the app's PolyForm Noncommercial restriction does not apply to them. The original JavaScript/CSS host references external artwork URLs and does not embed an upstream GPL program. Remote aircraft photos retain the photographer/service rights and are excluded from the software grant.

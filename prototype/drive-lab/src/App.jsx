@@ -2268,6 +2268,7 @@ export function App() {
   const [environmentAttempt, setEnvironmentAttempt] = useState(0);
   const [environmentRecovery, setEnvironmentRecovery] = useState("idle");
   // React.lazy caches rejected promises: a new attempt needs a fresh lazy owner.
+  const AirAtlasField = useMemo(() => lazy(() => import("./environments/radar/air-atlas-field.jsx")), [environmentAttempt]);
   const AtlasField = useMemo(() => lazy(() => import("./environments/atlas/atlas-field.jsx")), [environmentAttempt]);
   const ShaderGradientField = useMemo(() => lazy(() => import("./environments/shadergradient/shadergradient-field.jsx")), [environmentAttempt]);
   const environmentRecoveryRef = useRef(null);
@@ -4141,7 +4142,7 @@ export function App() {
   useEffect(() => {
     if (phase === "running" && currentTrack?.artwork) logDiagnosticEvent("media-session.artwork.state", { key: currentTrack.key, status: currentArtwork.status });
   }, [currentTrack?.key, currentTrack?.artwork, currentArtwork.status, phase, logDiagnosticEvent]);
-  const immersiveEnvironment = environment.renderer === "atlas";
+  const immersiveEnvironment = ["atlas", "air-atlas"].includes(environment.renderer);
   const showNowPlaying = experienceMode === "flux" && phase === "running" && !modalOpen && !immersiveEnvironment && !controlsPinned;
 
   const transportPlaying = !muted && (experienceMode === "engine" ? geaps.snapshot.playing === true : musicMode === "soundtrack"
@@ -5144,6 +5145,10 @@ export function App() {
               onFrame={recordRenderedFrame}
               onRuntimeError={handleEnvironmentError}
             />
+          ) : environment.renderer === "air-atlas" ? (
+            <Suspense fallback={<div className="atlas-waiting"><strong>AIR ATLAS</strong><span>Loading nearby sky</span></div>}>
+              <AirAtlasField position={mapPosition} theme={theme} reducedMotion={reducedMotion} onRenderer={setRenderer} onFrame={recordRenderedFrame} onRuntimeError={handleEnvironmentError} onRetryLocation={startGps} />
+            </Suspense>
           ) : environment.renderer === "atlas" ? (
             <Suspense fallback={<div className="atlas-waiting"><strong>ATLAS</strong><span>Loading city field</span></div>}>
               <AtlasField

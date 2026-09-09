@@ -25,6 +25,8 @@ export async function preloadVisualDocument(entry, signal, fetcher = fetch) {
 export async function preloadLaunchVisual(id, signal) {
   if (isShaderGradientEnvironmentId(id)) {
     await import('./environments/shadergradient/shadergradient-field.jsx');
+  } else if (id === 'air-atlas') {
+    await Promise.all([import('./environments/radar/air-atlas-field.jsx'), import('maplibre-gl')]);
   } else if (id === 'atlas') {
     await Promise.all([import('./environments/atlas/atlas-field.jsx'), import('maplibre-gl')]);
   } else if (id === 'stats') {

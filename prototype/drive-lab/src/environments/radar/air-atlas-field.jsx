@@ -1,0 +1,174 @@
+import {useEffect,useMemo,useRef,useState} from 'react';
+import 'maplibre-gl/dist/maplibre-gl.css';
+import {createAtlasStyle,atlasMapPixelRatio,validAtlasPosition,paletteToAtlasCss} from '../atlas/atlas-model.js';
+import {normalizeRadarSnapshot,radarPointUrl,RADAR_EXPIRE_MS,RADAR_FRESH_MS} from './radar-model.js';
+import {radarJson,createRadarPoller} from './radar-client.js';
+import {radarPhotoUrl,radarRouteUrl,normalizeRadarPhoto,normalizeRadarRoute,radarShapeCode} from './radar-detail.js';
+
+function clockSafe(position){return Number.isFinite(position?.capturedAtMs)&&performance.now()-position.capturedAtMs<15000;}
+const detailCache=new Map();
+function remember(key,value){if(detailCache.size>=64)detailCache.delete(detailCache.keys().next().value);detailCache.set(key,{value,expires:Date.now()+600000});}
+function subscribeLifecycle(loader){
+  const wake=()=>document.hidden||navigator.onLine===false?loader.pause():loader.wake();
+  document.addEventListener('visibilitychange',wake);window.addEventListener('online',wake);window.addEventListener('offline',wake);
+  void loader.start();
+  return()=>{loader.dispose();document.removeEventListener('visibilitychange',wake);window.removeEventListener('online',wake);window.removeEventListener('offline',wake);};
+}
+function useAircraftDetail(aircraft){
+  const [detail,setDetail]=useState({});const ref=useRef(aircraft);ref.current=aircraft;
+  const identity=aircraft?`${aircraft.id}:${aircraft.callsign}:${aircraft.registration}:${aircraft.typeCode}`:'';
+  useEffect(()=>{
+    setDetail({});if(!identity)return;
+    const cleanups=['photo','route'].map(kind=>{
+      const key=`${kind}:${identity}`,cached=detailCache.get(key);
+      if(cached&&cached.expires>Date.now()){setDetail(prev=>({...prev,[kind]:cached.value,[`${kind}Status`]:'ready'}));return()=>{};}
+      setDetail(prev=>({...prev,[`${kind}Status`]:'loading'}));
+      const loader=createRadarPoller({intervalMs:600000,canLoad:()=>!document.hidden&&navigator.onLine!==false&&performance.now()-ref.current?.observedAtMs<RADAR_EXPIRE_MS,
+        load:async signal=>{const current=ref.current,url=kind==='photo'?radarPhotoUrl(current):radarRouteUrl(current);if(!url)return null;
+          const payload=await radarJson(url,{signal,maximumBytes:32768,...(kind!=='route'?{headers:{'X-Air-Atlas':'1'}}:{})});return kind==='photo'?normalizeRadarPhoto(payload):normalizeRadarRoute(payload,current.callsign);},
+        onResult:value=>{remember(key,value);setDetail(prev=>({...prev,[kind]:value}));},
+        onStatus:status=>setDetail(prev=>({...prev,[`${kind}Status`]:status})),
+      });return subscribeLifecycle(loader);
+    });return()=>cleanups.forEach(cleanup=>cleanup());
+  },[identity]);
+  return detail;
+}
+
+export default function AirAtlasField({position,theme,reducedMotion,onRenderer,onFrame,onRuntimeError,onRetryLocation}){
+  const followHome=useRef(true),homeMarker=useRef(null);
+  const [northUp,setNorthUp]=useState(true),[expanded,setExpanded]=useState(false);
+  const headingFresh=Number.isFinite(position?.heading)&&position?.speedKmh>3&&clockSafe(position);
+  const bearing=northUp||!headingFresh?0:position.heading;
+  const host=useRef(null),mapRef=useRef(null),library=useRef(null),markers=useRef(new Map());
+  const latest=useRef({position,theme});latest.current={position,theme};
+  const [map,setMap]=useState(null),[planes,setPlanes]=useState([]),[selectedId,setSelectedId]=useState(null);
+  const [status,setStatus]=useState('loading'),[clock,setClock]=useState(()=>performance.now());
+  const [catalogue,setCatalogue]=useState([]),[showList,setShowList]=useState(false),[mapRetry,setMapRetry]=useState(0);
+  const [mapError,setMapError]=useState(false),[photoFailed,setPhotoFailed]=useState(false);
+  const lastSelected=useRef(null),selectedIdRef=useRef(selectedId);selectedIdRef.current=selectedId;
+  const canStart=validAtlasPosition(position);
+  const codes=useMemo(()=>new Set(catalogue.map(p=>p.code)),[catalogue]);
+  const activePlanes=planes.filter(p=>clock-p.observedAtMs<=RADAR_EXPIRE_MS);
+  const selected=planes.find(p=>p.id===selectedId)??(lastSelected.current?.id===selectedId?lastSelected.current:null);
+  if(selected)lastSelected.current=selected;
+  const detail=useAircraftDetail(selected);
+  useEffect(()=>setPhotoFailed(false),[selectedId,detail.photo?.src]);
+  useEffect(()=>setExpanded(false),[selectedId]);
+  useEffect(()=>{
+    if(!photoFailed)return;
+    const retry=()=>{if(!document.hidden&&navigator.onLine!==false)setPhotoFailed(false);};
+    const timer=setTimeout(retry,60000);window.addEventListener('online',retry);document.addEventListener('visibilitychange',retry);
+    return()=>{clearTimeout(timer);window.removeEventListener('online',retry);document.removeEventListener('visibilitychange',retry);};
+  },[photoFailed]);
+  useEffect(()=>{const controller=new AbortController();radarJson('/third-party/aircraft-shapes/catalogue.json',{signal:controller.signal,maximumBytes:65536}).then(setCatalogue).catch(()=>{});return()=>controller.abort();},[]);
+  useEffect(()=>{const timer=setInterval(()=>{if(!document.hidden)setClock(performance.now());},1000);return()=>clearInterval(timer);},[]);
+  useEffect(()=>{
+    if(!canStart)return;
+    const loader=createRadarPoller({canLoad:()=>!document.hidden&&navigator.onLine!==false&&validAtlasPosition(latest.current.position),
+      load:async signal=>{const center=latest.current.position;const payload=await radarJson(radarPointUrl(center),{signal});
+        if(!Array.isArray(payload?.ac)||!Number.isFinite(payload.now)||Math.abs(Date.now()-payload.now)>120000)throw Error('Stale radar response');
+        return normalizeRadarSnapshot(payload,{center,epochNowMs:Date.now(),receivedAtMs:performance.now()});},
+      onResult:next=>setPlanes(previous=>{
+        const seen=new Set(next.map(p=>p.id));
+        const held=previous.filter(p=>!seen.has(p.id)&&(p.id===selectedIdRef.current||performance.now()-p.observedAtMs<RADAR_EXPIRE_MS));
+        return [...next,...held].slice(0,64);
+      }),onStatus:setStatus,
+    });return subscribeLifecycle(loader);
+  },[canStart]);
+  useEffect(()=>{
+    if(!canStart||!host.current){onRenderer('Air Atlas · waiting for GPS');return;}
+    let disposed=false,resize,visibility;
+    setMapError(false);
+    import('maplibre-gl').then(({default:gl})=>{
+      if(disposed)return;library.current=gl;
+      const point=latest.current.position;
+      const instance=new gl.Map({container:host.current,style:createAtlasStyle(latest.current.theme.palette,'palette'),
+        center:[point.longitude,point.latitude],zoom:9,bearing:0,pitch:0,maxPitch:0,minZoom:5,maxZoom:14,
+        attributionControl:false,antialias:false,fadeDuration:0,pixelRatio:atlasMapPixelRatio(window.devicePixelRatio),renderWorldCopies:false});
+      mapRef.current=instance;setMap(instance);
+      instance.dragRotate.disable();instance.touchZoomRotate.disableRotation();
+      const home=document.createElement('div');home.className='air-atlas-home';home.setAttribute('aria-label','Your location');
+      homeMarker.current=new gl.Marker({element:home,rotationAlignment:'map'}).setLngLat([point.longitude,point.latitude]).addTo(instance);
+      instance.on('dragstart',()=>{followHome.current=false;});
+      instance.on('load',()=>{if(!disposed)onRenderer('Air Atlas · MapLibre');});
+      instance.on('render',()=>{if(!document.hidden){const canvas=instance.getCanvas();onFrame(performance.now(),1000/60,'WebGL2 · MapLibre',canvas.width,canvas.height);}});
+      instance.on('error',()=>{if(!disposed)setMapError(true);});
+      instance.on('idle',()=>{if(!disposed&&instance.isStyleLoaded())setMapError(false);});
+      resize=new ResizeObserver(()=>instance.resize());resize.observe(host.current);
+      visibility=()=>{if(!document.hidden){instance.resize();instance.triggerRepaint();}};
+      document.addEventListener('visibilitychange',visibility);
+    }).catch(error=>{if(!disposed){setMapError(true);onRuntimeError?.(error);}});
+    return()=>{disposed=true;resize?.disconnect();if(visibility)document.removeEventListener('visibilitychange',visibility);
+      markers.current.forEach(({marker})=>marker.remove());markers.current.clear();mapRef.current?.remove();mapRef.current=null;setMap(null);};
+  },[canStart,mapRetry,onRenderer,onFrame,onRuntimeError]);
+  useEffect(()=>{if(map)map.setStyle(createAtlasStyle(theme.palette,'palette'));},[map,theme.palette]);
+  useEffect(()=>{
+    if(!map||!library.current)return;
+    const visible=new Set(activePlanes.map(p=>p.id));
+    for(const [id,entry] of markers.current){if(!visible.has(id)){entry.marker.remove();markers.current.delete(id);}}
+    for(const plane of activePlanes){
+      let entry=markers.current.get(plane.id);
+      if(!entry){const button=document.createElement('button');button.type='button';button.className='aircraft-marker';button.dataset.aircraftId=plane.id;
+        const shape=document.createElement('span');button.append(shape);button.addEventListener('click',event=>{event.stopPropagation();setSelectedId(plane.id);setShowList(false);});
+        const marker=new library.current.Marker({element:button,anchor:'center'}).setLngLat([plane.longitude,plane.latitude]).addTo(map);
+        entry={marker,button,shape,from:[plane.longitude,plane.latitude],to:[plane.longitude,plane.latitude],started:performance.now()};markers.current.set(plane.id,entry);}
+      const code=radarShapeCode(plane,codes);
+      entry.shape.style.maskImage=code&&plane.trackDegrees!==null?`url('/third-party/aircraft-shapes/normalized/${encodeURIComponent(code)}.svg')`:'';
+      entry.shape.style.webkitMaskImage=entry.shape.style.maskImage;
+      entry.shape.className=code&&plane.trackDegrees!==null?'':'is-unknown';
+      entry.marker.setRotation(plane.trackDegrees??0).setRotationAlignment('map');
+      entry.button.setAttribute('aria-label',`${plane.callsign||plane.registration||plane.id} · ${plane.typeCode||'Unknown type'}`);
+      entry.button.setAttribute('aria-pressed',String(plane.id===selectedId));
+      entry.button.classList.toggle('is-stale',clock-plane.observedAtMs>RADAR_FRESH_MS);
+      if(entry.to[0]!==plane.longitude||entry.to[1]!==plane.latitude){const current=entry.marker.getLngLat();entry.from=[current.lng,current.lat];entry.to=[plane.longitude,plane.latitude];entry.started=performance.now();}
+    }
+    let frame;
+    const animate=()=>{if(document.hidden)return;const time=performance.now();let moving=false;
+      for(const entry of markers.current.values()){
+        const progress=reducedMotion?1:Math.min(1,(time-entry.started)/1600),t=progress*(2-progress);
+        const dlng=((entry.to[0]-entry.from[0]+540)%360)-180;
+        entry.marker.setLngLat([entry.from[0]+dlng*t,entry.from[1]+(entry.to[1]-entry.from[1])*t]);moving ||= progress<1;
+      }if(moving)frame=requestAnimationFrame(animate);
+    };animate();return()=>cancelAnimationFrame(frame);
+  },[map,planes,selectedId,codes,clock,reducedMotion]);
+  useEffect(()=>{if(!map)return;map.easeTo({...(followHome.current&&validAtlasPosition(position)?{center:[position.longitude,position.latitude]}:{}),bearing,duration:reducedMotion?0:700});},[map,position?.latitude,position?.longitude,bearing,reducedMotion]);
+  useEffect(()=>{if(homeMarker.current&&validAtlasPosition(position)){homeMarker.current.setLngLat([position.longitude,position.latitude]).setRotation(headingFresh?position.heading:0);homeMarker.current.getElement().classList.toggle('is-direction-unknown',!headingFresh);}},[map,position,headingFresh]);
+  const reset=()=>{followHome.current=true;const point=latest.current.position;if(map&&validAtlasPosition(point))map.easeTo({center:[point.longitude,point.latitude],zoom:9,bearing,duration:reducedMotion?0:500});};
+  const age=selected?Math.max(0,Math.round((clock-selected.observedAtMs)/1000)):0;
+  return <section className={`air-atlas-field${selected?' has-detail':''}`} aria-label="Air Atlas radar" style={{"--radar-accent":paletteToAtlasCss(theme.palette).accent}}>
+    <div ref={host} className="air-atlas-map" />
+    {!canStart?<div className="atlas-waiting"><strong>AIR ATLAS</strong><span>Location required to find nearby aircraft</span><button onClick={onRetryLocation}>ENABLE GPS</button></div>:<>
+      <div className="air-atlas-summary"><button onClick={()=>setShowList(v=>!v)} aria-expanded={showList}>{activePlanes.length} AIRCRAFT</button>
+        <span role="status">{navigator.onLine===false?'Offline · positions held':status==='loading'?'Finding aircraft…':status==='retrying'?'Feed unavailable · retrying':'ADSB.lol · 50 km nearby'}</span></div>
+      <div className="air-atlas-controls"><button aria-label="Follow driving direction" aria-pressed={!northUp} onClick={()=>setNorthUp(v=>!v)}>{northUp?'N':'↑'}</button><button aria-label="Zoom in" onClick={()=>map?.zoomIn()}>+</button><button aria-label="Reset radar view" onClick={reset}>RESET</button><button aria-label="Zoom out" onClick={()=>map?.zoomOut()}>−</button></div>
+      {!northUp&&!headingFresh?<span className="air-atlas-heading-note" role="status">Waiting for driving direction · north up</span>:null}
+      {showList?<div className="air-atlas-list" aria-label="Nearby aircraft">{activePlanes.length?activePlanes.map(p=><button key={p.id} onClick={()=>{setSelectedId(p.id);setShowList(false);}}>{p.callsign||p.registration||p.id}<span>{p.typeCode||'Unknown'} · {(p.distanceMetres/1000).toFixed(0)} km</span></button>):<p>No recent aircraft in range.</p>}</div>:null}
+      {mapError?<button className="air-atlas-map-retry" onClick={()=>setMapRetry(v=>v+1)}>MAP UNAVAILABLE · RETRY</button>:null}
+    </>}
+    {selected?<div className={`air-atlas-detail${expanded?' is-expanded':''}`} aria-label="Selected aircraft detail" onClick={event=>{if(!event.target.closest('button,a'))setExpanded(v=>!v);}}>
+      <div className="air-atlas-photo">{detail.photo&&!photoFailed?<><a href={detail.photo.link} target="_blank" rel="noreferrer"><img src={detail.photo.src} alt={`${selected.registration||selected.typeCode||'Selected aircraft'} photograph`} referrerPolicy="no-referrer" onError={()=>setPhotoFailed(true)} /></a><a href={detail.photo.link} target="_blank" rel="noreferrer">© {detail.photo.photographer}</a></>:<span>{detail.photoStatus==='loading'?'Loading photo…':detail.photoStatus==='retrying'?'Photo retrying…':'Photo unavailable'}</span>}</div>
+      <div className="air-atlas-flight"><strong>{selected.callsign||selected.registration||selected.id.toUpperCase()}</strong><span>{selected.registration||'Registration unknown'} · {selected.typeCode||'Type unknown'}</span>
+        <span>{selected.altitudeFeet===null?'Altitude unknown':`${Math.round(selected.altitudeFeet*0.3048).toLocaleString('en')} m baro`} · {selected.groundSpeedKnots===null?'Speed unknown':`${Math.round(selected.groundSpeedKnots*1.852)} km/h`}</span>
+        <small>{age>120?'SIGNAL LOST':age>30?'STALE POSITION':'POSITION'} · {age}s ago</small></div>
+      <div className="air-atlas-route">
+        <div><span>DEPARTURE</span><strong>{detail.route?.origin.code||'—'}</strong><small>{detail.route?.origin.city||(detail.routeStatus==='loading'?'Finding route…':'Not available')}</small></div>
+        <div><span>ARRIVAL</span><strong>{detail.route?.destination.code||'—'}</strong><small>{detail.route?.destination.city||'Not available'}</small></div>
+        <small className="air-atlas-route-source">{detail.route?'ADSB.lol · plausible route':detail.routeStatus==='retrying'?'Route unavailable · retrying':'No verified route supplied'}</small>
+      </div>
+      <button className="air-atlas-expand" aria-expanded={expanded} aria-controls="air-atlas-extra" onClick={()=>setExpanded(v=>!v)}>{expanded?'LESS ↑':'MORE ↓'}</button>
+      {expanded?<div id="air-atlas-extra" className="air-atlas-extra">
+        <div><span>DEPARTURE AIRPORT</span><strong>{detail.route?.origin.name||'Not available'}</strong></div>
+        <div><span>ARRIVAL AIRPORT</span><strong>{detail.route?.destination.name||'Not available'}</strong></div>
+        <div><span>AIRCRAFT</span><strong>{catalogue.find(p=>p.code===selected.typeCode)?.name||selected.typeCode||'Unknown type'}</strong></div>
+        <div><span>DISTANCE</span><strong>{(selected.distanceMetres/1000).toFixed(1)} km</strong></div>
+        <div><span>GROUND TRACK</span><strong>{selected.trackDegrees===null?'Unknown':`${Math.round(selected.trackDegrees)}° true`}</strong></div>
+        <div><span>VERTICAL RATE</span><strong>{selected.verticalRate===null?'Unknown':`${selected.verticalRate} ft/min`}</strong></div>
+        <div><span>ICAO ADDRESS</span><strong>{selected.id.toUpperCase()}</strong></div>
+        <div><span>FLIGHT STATE</span><strong>{selected.onGround?'On ground':selected.altitudeFeet===null?'Unknown':'Airborne observation'}</strong></div>
+        {detail.route?.via.length?<div><span>VIA</span><strong>{detail.route.via.map(p=>p.name||p.code).join(' · ')}</strong></div>:null}
+      </div>:null}
+      <button className="air-atlas-close" aria-label="Close aircraft detail" onClick={()=>setSelectedId(null)}>×</button>
+    </div>:null}
+    <div className="air-atlas-attribution"><a href="https://www.adsb.lol/docs/open-data/api/" target="_blank" rel="noreferrer">ADSB.lol</a> · <a href="https://openfreemap.org" target="_blank" rel="noreferrer">OpenFreeMap</a> · <a href="https://openmaptiles.org" target="_blank" rel="noreferrer">OpenMapTiles</a> · <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">© OpenStreetMap</a> · <a href="/third-party/aircraft-shapes/LICENSE" target="_blank" rel="noreferrer">Shapes © RexKramer1</a><span>Rounded location shared for nearby traffic · photos on selection</span></div>
+  </section>;
+}

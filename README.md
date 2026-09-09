@@ -492,10 +492,11 @@ Landscape phone palette dismissal and edge-to-edge footer, denser Discover with
 Wikipedia source labels, smaller Atlas markers, north lock and zoom/reset controls
 are implemented. Atlas camera/marker updates now avoid repeated easing restarts
 and per-frame React publication. Target-device smoothness and installed Safari
-acceptance remain open. The Meguru radar adapter is prepared but inactive pending
-visual selection. [Behavior, architecture and limits](docs/ROAD-UI-REFINEMENT-2026-09-09.md).
+acceptance remain open. The owner selected Air Atlas for the Meguru radar integration; its candidate is under verification. [Behavior, architecture and limits](docs/ROAD-UI-REFINEMENT-2026-09-09.md).
 
 Discover combines Wikipedia articles with nearby OpenStreetMap points, with source labels, duplicate removal and independent provider recovery. Search combines worldwide Wikipedia results with matching nearby OSM points; OSM coverage is limited to selected named point categories.
+
+AIR ATLAS is Visual 10: the selected map direction, nearby measured aircraft, 182 type-specific SVG assets and a bottom detail with credited photo, registration, type, telemetry and plausible origin/destination. Traffic and photos need no account. Tap the bottom bar for full airport names and more aircraft data. Zoom/reset and north/driving orientation are available. Schedules are deferred: no AirLabs configuration or requests are part of the current experience. The live traffic adapter is awaiting explicit location-forwarding approval; this candidate is not published. See [implementation, sources and limits](docs/AIR-ATLAS-2026-09-09.md).
 
 <!-- COMMUNITY-CREDITS:START -->
 ## Community thanks — 2026-09-05
@@ -525,7 +526,7 @@ A heartfelt thank-you to the people who share the code, type, music, data and ex
 | 🧊 Ricardo Cabello (mrdoob) and contributors — Three.js | [Project](https://github.com/mrdoob/three.js) | **Production and upstream-bundled dependency.** 0.169.0 for ShaderGradient, r109 inside Infinite Lights and r115 inside Drivey; upstream copies remain separate. |
 | 🧊 Paul Henschel and Poimandres contributors — React Three Fiber / three-stdlib | [Project](https://github.com/pmndrs/react-three-fiber) | **Production dependencies.** Unmodified R3F 9.7.0 and three-stdlib 2.36.1 support the lazy ShaderGradient renderer; [three-stdlib repository](https://github.com/pmndrs/three-stdlib). |
 | 🎥 Yomotsu and contributors — camera-controls | [Project](https://github.com/yomotsu/camera-controls) | **Production dependency.** Unmodified 2.9.0 peer of ShaderGradient; no independent camera-controls fork. |
-| ✈️ ADSB.lol contributors | [API documentation](https://www.adsb.lol/docs/open-data/api/) · [Public project](https://github.com/adsblol) | **Study/inactive preparation only.** Original bounded aircraft adapter; no live feed or imported code. Data declared ODbL 1.0; no aircraft data redistributed. |
+| ✈️ ADSB.lol contributors | [API documentation](https://www.adsb.lol/docs/open-data/api/) · [Public project](https://github.com/adsblol) | **Air Atlas candidate integration.** Original bounded aircraft adapter; live browser connection awaiting location-forwarding approval. No provider code imported. Data declared ODbL 1.0; no aircraft data redistributed. |
 | 🗺️ MapLibre contributors — MapLibre GL JS | [Project](https://github.com/maplibre/maplibre-gl-js) | **Production dependency.** Lazy ATLAS map rendering and the project-owned palette style in src/environments/atlas/. Its [camera animation example](https://maplibre.org/maplibre-gl-js/docs/examples/animate-map-camera-around-a-point/) informed the follow-camera study. |
 | 🔳 Ryan Day (soldair) and contributors; QR algorithm lineage includes Kazuhiko Arase — node-qrcode | [Project](https://github.com/soldair/node-qrcode) | **Production dependency.** qrcode 1.5.4 generates local passenger handoff links. Public email is from the installed package author metadata. |
 | ✒️ Simple Icons contributors — Simple Icons | [Project](https://github.com/simple-icons/simple-icons) | **Integrated icon.** GitHub source-link mark in App.jsx. |
@@ -861,5 +862,11 @@ Study only; no new audio or runtime shipped. See the [research report](docs/ENGI
 - 🎛️ **Flowlab / Nightloop** — [Source](https://flowlab.io/nightloop/); [public contact route](https://flowlab.io/nightloop/). **Study only.** Browser sound/music generator and WAV/MP3/MIDI export study only. Site grants commercial use of outputs; no runtime imported.
 
 - 🎚️ **Firelight Technologies / FMOD** — [official examples](https://www.fmod.com/assets/html5/studio_api/demo.html), [licensing](https://www.fmod.com/legal), [public support](https://qa.fmod.com/). **Study only:** engine-event and granular truck browser demonstrations, API concepts and example-media distribution restrictions; no runtime or audio imported.
+
+
+- ✈️ **RexKramer1 — AircraftShapesSVG** — [original repository](https://github.com/RexKramer1/AircraftShapesSVG), revision `0743718760c42a5e91801adc053b5b828a434a5e`: shipped 182 independently licensed GPL-3.0 SVG artworks, unchanged originals plus normalized monochrome derivatives. The app selects masks by reported ICAO type; the artwork is not relicensed under PolyForm.
+- 📷 **Planespotters.net and the credited photographers** — [service and terms](https://www.planespotters.net/legal/termsofuse): shipped remote, selected-aircraft thumbnails with author and original-photo links. Metadata passes through a bounded same-origin endpoint; photos are neither bundled nor retained in the static session cache.
+- 🛫 **ADSB.lol contributors and Virtual Radar Server standing-data contributors** — [public API](https://www.adsb.lol/docs/open-data/api/) / [route data](https://github.com/vradarserver/standing-data): shipped live position and plausible-route service, source-labelled ODbL data; no server code copied. Contacts through their public GitHub projects.
+- 🕒 **AirLabs / Data Products Ltd** — [Flight API documentation](https://airlabs.co/docs/flight): optional original server adapter for scheduled/estimated airport-local times, inactive without an owner-configured account key. No proprietary code or data bundled; [public contact](https://airlabs.co/).
 
 <!-- COMMUNITY-CREDITS:END -->
