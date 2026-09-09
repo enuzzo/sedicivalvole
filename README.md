@@ -492,7 +492,7 @@ Landscape phone palette dismissal and edge-to-edge footer, denser Discover with
 Wikipedia source labels, smaller Atlas markers, north lock and zoom/reset controls
 are implemented. Atlas camera/marker updates now avoid repeated easing restarts
 and per-frame React publication. Target-device smoothness and installed Safari
-acceptance remain open. The owner selected Air Atlas for the Meguru radar integration; its candidate is under verification. [Behavior, architecture and limits](docs/ROAD-UI-REFINEMENT-2026-09-09.md).
+acceptance remain open. The owner-selected Air Atlas integration is published as Visual 10. [Behavior, architecture and limits](docs/ROAD-UI-REFINEMENT-2026-09-09.md).
 
 Discover combines Wikipedia articles with nearby OpenStreetMap points, with source labels, duplicate removal and independent provider recovery. Search combines worldwide Wikipedia results with matching nearby OSM points; OSM coverage is limited to selected named point categories.
 

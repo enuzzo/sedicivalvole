@@ -809,3 +809,5 @@ No dated releases exist yet.
 - 2026-09-10 00:21 [4380499] build 20260909-2352: published Air Atlas after one verified Illobo master repair. Official postflight, 20 canonical HTTPS identity/asset/cache checks, live aircraft/photo/route selection and controlled north/driving rotation passed.
 
 - 2026-09-10 00:21 [59f2224] Unreleased: keep the aircraft-list touch target clear of persistent compact driving chrome; reuse static files only after their exact bytes were verified in the current FTP session. Final postflight still verifies the complete candidate.
+
+- 2026-09-10 00:34 [5301ec2] build 20260910-0022: published the final Air Atlas compact-control refinement. All 838 native tests, 20 canonical identity/asset/cache checks, real aircraft/photo/route selection, controlled driving/north rotation and WebKit landscape checks pass. Official postflight reused 539 verified static files and 29 Illobo masters; target-vehicle acceptance remains open.
