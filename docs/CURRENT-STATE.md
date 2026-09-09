@@ -1517,3 +1517,12 @@ Phone palette/footer, compact Discover and Atlas camera/marker/navigation change
 are implemented. Radar has an inactive original adapter; A/B/C visual selection
 is pending. See [current behavior and validation limits](ROAD-UI-REFINEMENT-2026-09-09.md).
 Publication identity will be appended after verification.
+
+### 2026-09-09 evening — Road UI publication verified
+
+Canonical **20260909-2155**, source **71ad14e**: iPhone palette/footer, denser
+Discover with Wikipedia labels, Atlas smaller discs and north/zoom/reset controls.
+826 native tests, 182 release hashes, 196 credits, 19 canonical HTTPS checks and
+Chrome/WebKit UI verification pass. Measured local Atlas motion/turning is 59.72
+actual render FPS; vehicle confirmation remains open. Radar adapter is inactive,
+awaiting the three-direction selection. See ROAD-UI-REFINEMENT-2026-09-09.md.

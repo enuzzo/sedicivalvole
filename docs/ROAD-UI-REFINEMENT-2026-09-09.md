@@ -21,11 +21,15 @@ returns to the speed-derived zoom. Discover retrieves 15 real Wikipedia results
 for a public Milan test coordinate, with verified 72/15/13 px row/title/meta
 geometry and working selection. Screenshots remain temporary QA artifacts.
 
-The available WebKit 2272 binary is incompatible with the installed Playwright
-protocol (`Page.overrideSetting: Unknown setting: PushAPIEnabled`). This is not a
-Safari pass. Installed iPhone webapp safe areas/touch and Tesla sustained 60 FPS
-remain physical acceptance; desktop rendering measurements are not vehicle GPU
-evidence. Automatic diagnostic mail is disabled/intercepted in QA.
+The initially installed Playwright client rejected WebKit 2272 with
+`Page.overrideSetting: Unknown setting: PushAPIEnabled`. A temporary, matching
+Playwright 1.59.0 client resolved the harness mismatch without changing project
+dependencies or downloading a browser. WebKit 2272 then passed all three phone
+formats, three palette taps per format, null-destination blur and exact footer
+bottom geometry with 21 px simulated safe area, with no page exceptions.
+Installed iPhone webapp safe areas/touch and Tesla sustained 60 FPS remain
+physical acceptance; desktop rendering measurements are not vehicle GPU evidence.
+Automatic diagnostic mail is disabled/intercepted in QA.
 
 ### Measured camera/render scheduling correction
 
@@ -35,7 +39,8 @@ measured 59.76 browser RAF Hz but only 31.62 actual MapLibre render FPS with the
 separate queued draw (129 frames, median 33.2 ms). Drawing in the camera frame
 through public `redraw()` measured 59.72 MapLibre FPS (245 frames, median 16.7 ms,
 95th-percentile 23 ms). These are actual `render` events instrumented only by the
-temporary QA harness, not a target-FPS constant. This isolates the scheduling
+temporary QA harness, not a target-FPS constant. The 31.62 FPS baseline is the first in-session continuous-camera candidate,
+not a measurement of the earlier production release. This isolates the scheduling
 bottleneck on this host; it does not guarantee vehicle GPU/endurance performance.
 
 ## Radar preparation, inactive
@@ -76,3 +81,34 @@ community dependency credits pass. Build uses lockfile Vite 6.4.3, PostCSS
 8.5.26, Rollup 4.62.2 and esbuild 0.25.12 through the existing native wrapper;
 the two stale Dropbox development packages were not rewritten. The existing
 large-chunk advisory remains. Publication follows compiled-browser validation.
+
+## Canonical publication — 2026-09-09 evening
+
+Build **20260909-2155**, source **71ad14e**, is verified at
+https://sedicivalvole.app/. Official publication verified **235 files /
+254,944,380 bytes**, all **29 Illobo recordings** by full hash, and retained two
+preceding assets with `ROOT_UPLOAD_ONLY`. Independent read-only postflight passes.
+
+All **19 canonical HTTPS checks** pass: bare and cache-busted HTML identify the
+same release with no-store, and every current root JS/CSS chunk, worker and
+release manifest matches local bytes. Python's default request received 403 for
+the JSON manifest; normal browser User-Agent/Referer receives 200 with identical
+bytes for both current and prior manifests. No server configuration was changed.
+
+Compiled and canonical Chrome verify Atlas north-up, zoom in/out and reset, and
+phone palette selection plus footer geometry. Canonical WebKit 2272 / Playwright
+1.59.0 also verifies phone palette taps and safe-area footer geometry. Final
+WebKit console is empty. One earlier WebKit attempt reported an unidentified
+transient resource 503; it did not recur in the instrumented repeat. Chrome logs
+existing autoplay warnings in Visuals-only launch and an existing MapLibre
+missing numeric-property warning; there are no page exceptions, blank screens or
+framework overlays. This checkpoint does not claim those existing warnings fixed.
+
+Temporary screenshots: `/tmp/sedicivalvole-live-atlas.png`,
+`/tmp/sedicivalvole-live-phone.png`, and
+`/tmp/sedicivalvole-live-webkit-phone.png`. No diagnostic QA email was sent.
+The inactive radar endpoint is absent from all compiled JS chunks.
+
+Next: owner checks installed iPhone landscape palette/footer and Tesla map
+smoothness while turning; select Air Atlas / Radar Scope / Sky Split before
+constructing the new radar visual. No fresh deployment approval is needed.

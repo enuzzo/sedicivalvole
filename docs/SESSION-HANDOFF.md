@@ -1378,3 +1378,11 @@ Phone palette/footer, compact Discover and Atlas camera/marker/navigation change
 are implemented. Radar has an inactive original adapter; A/B/C visual selection
 is pending. See [current behavior and validation limits](ROAD-UI-REFINEMENT-2026-09-09.md).
 Publication identity will be appended after verification.
+
+### 2026-09-09 evening — Road UI live checkpoint
+
+**20260909-2155 / 71ad14e** is live and verified: 235 files, 29 Illobo hashes,
+19 canonical HTTP checks; Chrome and compatible WebKit cover the fixes.
+826 native tests pass. Resume with physical iPhone/Tesla acceptance and radar
+A/B/C selection; the radar adapter is tested but deliberately unregistered.
+Read ROAD-UI-REFINEMENT-2026-09-09.md for measured FPS and remaining limits.
