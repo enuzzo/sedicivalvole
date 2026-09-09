@@ -1,3 +1,4 @@
+import countryNames from './radar-country-names.js';
 const text=(value,max=120)=>typeof value==='string'?value.replace(/[\x00-\x1f]/g,'').trim().slice(0,max):'';
 function allowedUrl(value,host,path){try{const u=new URL(value);return u.protocol==='https:'&&u.hostname===host&&!u.username&&!u.password&&u.pathname.startsWith(path)?u.href:null;}catch{return null;}}
 export function radarPhotoUrl(aircraft){
@@ -16,9 +17,13 @@ export function radarRouteUrl(aircraft){
   if(!/^[A-Z0-9]{2,12}$/.test(aircraft?.callsign)||!Number.isFinite(aircraft.latitude)||!Number.isFinite(aircraft.longitude))return null;
   return `/api/radar-data.php?kind=route&callsign=${aircraft.callsign}&lat=${aircraft.latitude.toFixed(3)}&lon=${aircraft.longitude.toFixed(3)}`;
 }
+export function radarAirportCountry(code){
+  if(typeof code!=='string'||!Object.hasOwn(countryNames,code))return null;
+  return {code,name:countryNames[code],flag:`/third-party/country-flags/${code.toLowerCase()}.svg`};
+}
 export function normalizeRadarRoute(payload,callsign){
   if(payload?.callsign!==callsign||payload.plausible!==true||!Array.isArray(payload._airports))return null;
-  const airports=payload._airports.slice(0,8).map(p=>({code:text(p.iata||p.icao,4),name:text(p.name),city:text(p.location),latitude:p.lat,longitude:p.lon}))
+  const airports=payload._airports.slice(0,8).map(p=>({code:text(p.iata||p.icao,4),name:text(p.name),city:text(p.location),country:radarAirportCountry(p.countryiso2),latitude:p.lat,longitude:p.lon}))
     .filter(p=>/^[A-Z0-9]{3,4}$/.test(p.code)&&Number.isFinite(p.latitude)&&Math.abs(p.latitude)<=90&&Number.isFinite(p.longitude)&&Math.abs(p.longitude)<=180);
   if(airports.length<2)return null;
   return {origin:airports[0],destination:airports.at(-1),via:airports.slice(1,-1),source:'ADSB.lol',confidence:'Plausible route',departure:null,arrival:null};

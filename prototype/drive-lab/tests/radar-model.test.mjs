@@ -128,3 +128,28 @@ test('PHP adapter forwards the bounded extended telemetry through JS normalizati
  const result=JSON.parse(execFileSync('php',['-r',code],{input:JSON.stringify(payload),encoding:'utf8'}));
  const [plane]=normalize(result.ac);assert.equal(plane.geometricAltitudeFeet,19000);assert.equal(plane.indicatedSpeedKnots,250);assert.equal(plane.magneticHeadingDegrees,20);assert.equal(plane.positionSource,'adsb_icao');assert.equal(plane.outsideTemperatureC,null);assert.equal(result.ac[0].private,undefined);
 });
+
+import {radarAirportCountry} from '../src/environments/radar/radar-detail.js';
+test('airport flags use only an explicitly supplied supported country, never inferred airport or aircraft codes',()=>{
+ const airport={iata:'MAN',icao:'EGCC',name:'Manchester',location:'Manchester',lat:53.35,lon:-2.27};
+ const route=country=>normalizeRadarRoute({callsign:'RYR1',plausible:true,_airports:[{...airport,countryiso2:country},{...airport,iata:'BGY',countryiso2:'IT'}]},'RYR1');
+ assert.equal(route('GB').origin.country.name,'United Kingdom');assert.equal(route('GB').destination.country.flag,'/third-party/country-flags/it.svg');
+ for(const bad of [undefined,null,'ZZ','EU','gb','GB/../it','',{},'GB<script>'])assert.equal(route(bad).origin.country,null);
+ assert.equal(radarAirportCountry('XK').code,'XK');
+});
+test('every locally bundled country flag retains its pinned upstream bytes and MIT notice',()=>{
+ const root=new URL('../public/third-party/country-flags/',import.meta.url);
+ const inventory=JSON.parse(readFileSync(new URL('inventory.json',root)));
+ assert.equal(inventory.files.length,250);assert.match(readFileSync(new URL('LICENSE',root),'utf8'),/Copyright \(c\) 2013 Panayiotis Lipiridis/);
+ for(const item of inventory.files){
+  const bytes=readFileSync(new URL(item.file,root));assert.equal(createHash('sha256').update(bytes).digest('hex'),item.sha256);
+  assert.ok(radarAirportCountry(item.code));assert.doesNotMatch(bytes.toString(),/<script|<foreignObject|<image|\bonload=/i);
+ }
+});
+test('route PHP adapter forwards valid country codes and rejects malformed country metadata',()=>{
+ const file=new URL('../public/api/radar-data.php',import.meta.url).pathname;
+ const payload={callsign:'RYR1',plausible:true,_airports:[{iata:'MAN',countryiso2:'GB'},{iata:'BGY',countryiso2:'../IT'},{countryiso2:['IT']}]};
+ const code=`define('RADAR_DATA_LIBRARY_ONLY',true);require ${JSON.stringify(file)};$d=json_decode(stream_get_contents(STDIN),true);echo json_encode(radar_data_filter($d,'route'));`;
+ const result=JSON.parse(execFileSync('php',['-r',code],{input:JSON.stringify(payload),encoding:'utf8'}));
+ assert.equal(result._airports[0].countryiso2,'GB');assert.equal(result._airports[1].countryiso2,undefined);assert.equal(result._airports[2].countryiso2,undefined);
+});

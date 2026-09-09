@@ -485,3 +485,7 @@ license. See docs/ROAD-UI-REFINEMENT-2026-09-09.md.
 ## Air Atlas telemetry semantic reference — 2026-09-10
 
 The readsb contributors, maintained by wiedehopf, document the JSON field semantics used to interpret ADSB.lol optional telemetry: https://github.com/wiedehopf/readsb/blob/dev/README-json.md . Study/documentation reference only; no readsb source code or assets are imported. ADSB.lol remains the shipped data service under its declared ODbL 1.0 terms.
+
+## Airport country flags — 2026-09-10
+
+Panayiotis Lipiridis and flag-icons contributors, https://github.com/lipis/flag-icons at `086f7e97d657358203916dbe84f61c2bccaa81eb`. MIT-licensed unmodified 4:3 SVG flags and country names are bundled for Air Atlas airport country indicators. Copyright and complete MIT licence are retained in `public/third-party/country-flags/LICENSE`; the per-file hash inventory records the exact subset. Country association comes only from ADSB.lol route `countryiso2`, not aircraft registration or airport-code inference. No paid API, account, remote flag CDN or new runtime dependency.

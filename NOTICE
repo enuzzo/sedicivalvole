@@ -50,3 +50,6 @@ rights. The current policy does not revoke or rewrite historical grants.
 Source: https://github.com/enuzzo/sedicivalvole
 
 Air Atlas includes 182 separately licensed aircraft SVG artworks by RexKramer1 / AircraftShapesSVG (GPL-3.0), with originals, normalized derivatives and licence in public/third-party/aircraft-shapes. The original project's noncommercial restriction does not narrow those artwork rights. ADSB.lol/standing-data and map providers retain their data terms; remotely displayed Planespotters photographs remain credited to their photographers.
+
+Air Atlas airport flag SVGs and country names in `prototype/drive-lab/public/third-party/country-flags/` are separate MIT-licensed material by Panayiotis Lipiridis / flag-icons contributors, with unchanged SVGs, source inventory and complete MIT notice. The project noncommercial restriction does not narrow their MIT rights.
+The derived lookup `prototype/drive-lab/src/environments/radar/radar-country-names.js` also retains the flag-icons MIT terms.

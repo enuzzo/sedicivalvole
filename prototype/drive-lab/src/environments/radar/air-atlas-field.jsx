@@ -7,6 +7,10 @@ import {radarPhotoUrl,radarRouteUrl,normalizeRadarPhoto,normalizeRadarRoute,rada
 
 import {createAirAtlasStyle,radarTelemetryRows} from './radar-presentation.js';
 
+function AirportCode({airport}){
+  return <strong className="air-atlas-airport-code">{airport?.country?<img className="air-atlas-country-flag" src={airport.country.flag} width="24" height="18" alt={`${airport.country.name} flag`} title={airport.country.name}/>:null}{airport?.code||'—'}</strong>;
+}
+
 function clockSafe(position){return Number.isFinite(position?.capturedAtMs)&&performance.now()-position.capturedAtMs<15000;}
 const detailCache=new Map();
 function remember(key,value){if(detailCache.size>=64)detailCache.delete(detailCache.keys().next().value);detailCache.set(key,{value,expires:Date.now()+600000});}
@@ -158,8 +162,8 @@ export default function AirAtlasField({position,theme,reducedMotion,onRenderer,o
         <span>{selected.altitudeFeet===null?'Altitude unknown':`${Math.round(selected.altitudeFeet*0.3048).toLocaleString('en')} m baro`} · {selected.groundSpeedKnots===null?'Speed unknown':`${Math.round(selected.groundSpeedKnots*1.852)} km/h`}</span>
         <small>{age>120?'SIGNAL LOST':age>30?'STALE POSITION':'POSITION'} · {age}s ago</small></div>
       <div className="air-atlas-route">
-        <div><span>DEPARTURE</span><strong>{detail.route?.origin.code||'—'}</strong><small>{detail.route?.origin.city||(detail.routeStatus==='loading'?'Finding route…':'Not available')}</small></div>
-        <div><span>ARRIVAL</span><strong>{detail.route?.destination.code||'—'}</strong><small>{detail.route?.destination.city||'Not available'}</small></div>
+        <div><span>DEPARTURE</span><AirportCode airport={detail.route?.origin}/><small>{detail.route?.origin.city||(detail.routeStatus==='loading'?'Finding route…':'Not available')}</small></div>
+        <div><span>ARRIVAL</span><AirportCode airport={detail.route?.destination}/><small>{detail.route?.destination.city||'Not available'}</small></div>
         <small className="air-atlas-route-source">{detail.route?'ADSB.lol · plausible route':detail.routeStatus==='retrying'?'Route unavailable · retrying':'No verified route supplied'}</small>
       </div>
 

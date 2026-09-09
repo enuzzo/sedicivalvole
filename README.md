@@ -873,4 +873,6 @@ Study only; no new audio or runtime shipped. See the [research report](docs/ENGI
 
 - 📡 **wiedehopf / readsb contributors** — [JSON field documentation](https://github.com/wiedehopf/readsb/blob/dev/README-json.md): study-only semantic reference for Air Atlas telemetry units and derived measurements. No code imported. Public contact: [project discussions/issues](https://github.com/wiedehopf/readsb).
 
+- 🏳️ **Panayiotis Lipiridis and flag-icons contributors** — [flag-icons](https://github.com/lipis/flag-icons/tree/086f7e97d657358203916dbe84f61c2bccaa81eb): shipped unmodified 4:3 country SVG flags and country-name metadata for Air Atlas departure/arrival airports, MIT. Full licence retained locally; country mapping uses the existing ADSB.lol route response. Public contact: [project issues](https://github.com/lipis/flag-icons/issues).
+
 <!-- COMMUNITY-CREDITS:END -->

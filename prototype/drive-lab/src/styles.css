@@ -4813,3 +4813,6 @@ html { font-size: var(--font-size-floor); }
 .air-atlas-home.is-direction-unknown {width:16px;height:16px;clip-path:none;border-radius:50%;border:2px solid white;}
 @media(max-width:740px){.air-atlas-toolbar{gap:4px;}.air-atlas-toolbar button{padding:0 7px;}.air-atlas-controls{gap:4px;}.air-atlas-detail-scroll{grid-template-columns:132px 150px minmax(0,1fr);gap:8px;padding:8px;}.air-atlas-photo img{width:132px;height:80px;}.air-atlas-route{gap:6px;padding-left:8px;}}
 @media(max-height:450px){.air-atlas-photo img{height:76px;}.air-atlas-detail-scroll{padding:7px 10px;gap:8px;}.air-atlas-flight{gap:4px;}.air-atlas-flight strong{font-size:20px;}}
+
+.air-atlas-airport-code {display:flex;align-items:center;gap:8px;}
+.air-atlas-country-flag {display:block;flex:0 0 24px;width:24px;height:18px;object-fit:contain;box-shadow:0 0 0 1px #ffffff50;border-radius:2px;}

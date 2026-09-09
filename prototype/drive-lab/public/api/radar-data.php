@@ -39,8 +39,9 @@ function radar_data_filter(array $payload, string $kind): ?array {
     $airports = [];
     foreach (array_slice(is_array($payload['_airports'] ?? null) ? $payload['_airports'] : [], 0, 8) as $airport) {
         if (!is_array($airport)) continue;
-        $clean = array_intersect_key($airport, array_flip(['iata', 'icao', 'name', 'location', 'lat', 'lon']));
+        $clean = array_intersect_key($airport, array_flip(['iata', 'icao', 'name', 'location', 'lat', 'lon', 'countryiso2']));
         foreach ($clean as $key => $value) if (!is_scalar($value) || (is_string($value) && strlen($value) > 240)) unset($clean[$key]);
+        if (isset($clean['countryiso2']) && (!is_string($clean['countryiso2']) || !preg_match('/^[A-Z]{2}$/D', $clean['countryiso2']))) unset($clean['countryiso2']);
         $airports[] = $clean;
     }
     return ['callsign' => substr($payload['callsign'], 0, 12), 'plausible' => ($payload['plausible'] ?? false) === true, '_airports' => $airports];

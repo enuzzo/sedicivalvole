@@ -1437,3 +1437,7 @@ These are unsent acknowledgements; no message has been sent.
 ## Air Atlas telemetry reference — 2026-09-10
 
 - **wiedehopf / readsb contributors** — [JSON documentation](https://github.com/wiedehopf/readsb/blob/dev/README-json.md), study-only field semantics, no code imported. Public contact: https://github.com/wiedehopf/readsb . Unsent: Thank you for documenting the distinctions between pressure and geometric altitude, airspeed and ground speed, and received versus calculated fields. That precision lets Air Atlas tell a more useful story without inventing missing measurements. — enuzzo
+
+## Airport country flags — 2026-09-10
+
+- **Panayiotis Lipiridis and flag-icons contributors** — [flag-icons](https://github.com/lipis/flag-icons), shipped MIT SVG flags and country names, no runtime package. Public contact: https://github.com/lipis/flag-icons/issues . Unsent: Thank you for the clear licence and consistent SVG country flags. They help Air Atlas make departure and arrival airports easier to recognize, without another remote dependency or asking users to sign up. — enuzzo

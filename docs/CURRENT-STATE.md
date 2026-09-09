@@ -1568,3 +1568,11 @@ Verification: 841 native tests, then focused radar/phone/documentation checks af
 Final live Chromium observation: **RYR86JJ / 9H-VVH / B38M**, credited thumbnail by **Wolfgang Kaiser**, plausible **MAN–BGY** with full Manchester and Bergamo / Orio Al Serio airport names and supplied richer telemetry. This is live provider/browser evidence, not a confirmed flight plan. Physical Tesla/iPhone touch/legibility, real notch/home-indicator behavior and sustained vehicle 60 FPS remain unverified.
 
 All implementation checkpoints are pushed. Local preview server is stopped. Next start: physical road acceptance of controls with chrome resting, phone safe areas, palette contrast, and the expanded telemetry panel; no further Air Atlas implementation remains from this request.
+
+## Airport country flags — 2026-09-10
+
+Air Atlas departure and arrival codes now include 24 x 18 px original-color country flags, with accessible country names and hover titles. Both compact and expanded cards use the same component. The PHP route allowlist preserves only syntactically valid `countryiso2`; the client further requires membership in the bundled country catalogue. Missing, unsupported or malformed codes omit the flag, without guessing from IATA/ICAO, registration or coordinates.
+
+Source: [flag-icons](https://github.com/lipis/flag-icons/tree/086f7e97d657358203916dbe84f61c2bccaa81eb), Panayiotis Lipiridis and contributors, MIT. 250 unmodified SVGs total 1,645,573 bytes, served locally with no flag CDN or account. Country names derive from the same pinned source. The licence and per-file hashes are retained under `public/third-party/country-flags`; the existing build-specific static cache admits them under its usual quota/eviction limits. The existing ADSB.lol country data remains under that service's declared ODbL terms.
+
+38 focused model/PHP, phone, documentation and static-package tests pass, including all 250 SVG hashes, missing-country behavior and response validation. Chromium desktop/landscape and WebKit touch with simulated safe areas verify loaded flags, accessible country names, unchanged control targets and readable route rows. The 196 dependency credits pass; no npm dependency change. Publication evidence follows. Physical Tesla/iPhone acceptance remains unverified.

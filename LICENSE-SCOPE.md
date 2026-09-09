@@ -112,3 +112,6 @@ contributions, commercial licensing, or trademark registration.
 ## Air Atlas aircraft artwork
 
 `prototype/drive-lab/public/third-party/aircraft-shapes/` is an independently licensed artwork collection by RexKramer1, GPL-3.0. The directory includes all 182 editable original SVGs, normalized standalone SVG derivatives, exact inventory and GPL text. Those files retain GPL redistribution/modification rights, including commercial use; the app's PolyForm Noncommercial restriction does not apply to them. The original JavaScript/CSS host references external artwork URLs and does not embed an upstream GPL program. Remote aircraft photos retain the photographer/service rights and are excluded from the software grant.
+
+Air Atlas airport flag SVGs and country names in `prototype/drive-lab/public/third-party/country-flags/` are separate MIT-licensed material by Panayiotis Lipiridis / flag-icons contributors, with unchanged SVGs, source inventory and complete MIT notice. The project noncommercial restriction does not narrow their MIT rights.
+The derived lookup `prototype/drive-lab/src/environments/radar/radar-country-names.js` also retains the flag-icons MIT terms.
