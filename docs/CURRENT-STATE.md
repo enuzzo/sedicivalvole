@@ -1,5 +1,12 @@
 # Current Project State
 
+## September 9 launch preparation refinement
+
+Intro now prepares the selected visual, Jamendo audio/cover and selected Engine
+bank before START. Engine loading has a centered accessible notice, and verified
+encoded WAVs are retained in a bounded page-lifetime cache. See
+[scope, architecture and validation](LAUNCH-PREPARATION-2026-09-09.md).
+
 September 8 late-evening owner decision: retain Mono, Rosso and Touring; retire Otto, Cinque and Turbine from Intro, running selectors and LAB. Existing accepted voice calibrations remain unchanged. Archived procedural definitions/tests remain for traceability and Mono still uses its existing hybrid layer. Canonical build **20260908-2356**, source **de16389**, is verified; publication evidence is in DEPLOY.md.
 
 Weak-network music refinement is published and canonically verified in build

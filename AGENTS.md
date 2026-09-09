@@ -263,3 +263,13 @@ waiting for the catalogue. Recover artwork on network/foreground return and
 republish native metadata. Verify native play/pause/previous/next through the
 actual app handlers; do not equate API registration with Tesla button visibility.
 Preserve the native invocation/outcome log and fixed recordings at 1x.
+
+
+## Owner launch preparation — 2026-09-09
+
+Make Engine loading prominent, centered and separate from TAMARRO controls.
+Begin silent preparation in Intro: selected Lucky visual dependencies, selected
+Jamendo recording/cover and at least Mono (follow explicit Engine selection).
+Do not mount hidden renderers or start audio before a gesture. Retain bounded
+verified encoded Engine assets across mode/profile changes within the page;
+keep transient Jamendo media policy and explain browser-cache limits honestly.

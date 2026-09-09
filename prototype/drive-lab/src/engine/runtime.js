@@ -1,3 +1,4 @@
+import { createEngineAssetCache, engineAssetCache } from "./asset-cache.js";
 import { focusedCrossfade, referenceCrossfade } from "./sample-mix.js";
 import { Engine } from "./upstream/Engine.ts";
 import { Drivetrain } from "./upstream/Drivetrain.ts";
@@ -36,6 +37,7 @@ const hold = (param, when) => {
 
 /** Original host orchestration around declared MIT engine-audio primitives. */
 export function createGeapsRuntime({ context, destination, motion, now = () => performance.now(), onEvent = () => {}, fetcher = fetch, allowManual = false, resolveProfile = engineProfile }) {
+  const assetCache = fetcher === globalThis.fetch ? engineAssetCache : createEngineAssetCache({ fetcher });
   const master = context.createGain();
   const limiter = context.createDynamicsCompressor();
   limiter.threshold.value = -8; limiter.knee.value = 4; limiter.ratio.value = 20;
@@ -265,9 +267,7 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
       for (const asset of next.assets) {
         if (disposed || revision !== generation || controller.signal.aborted) throw new Error("Engine bank load cancelled");
         const transferStart = now();
-        const response = await fetcher(asset.url, { signal: controller.signal });
-        if (!response.ok) throw new Error(`Engine audio HTTP ${response.status}`);
-        const bytes = await response.arrayBuffer();
+        const bytes = await assetCache.read(asset, { signal: controller.signal });
         if (await sha256(bytes) !== asset.sha256) throw new Error("Engine audio integrity mismatch");
         transferMs += now() - transferStart;
         // Exact admitted WAV frame/channel metadata bounds the browser-rate PCM.

@@ -14,7 +14,9 @@
 .engine-bottom{font-size:13px;letter-spacing:0}.engine-profiles{display:flex;gap:6px}.engine-profiles button,.engine-rev{min-height:48px;border:1px solid color-mix(in srgb,currentColor 30%,transparent);border-radius:6px;background:transparent;color:inherit;padding:0 14px;font:inherit;touch-action:manipulation}
 .engine-profiles button[aria-pressed=true]{background:var(--ui-text,#f4f1e8);color:var(--ui-surface,#101314)}
 .engine-rev{position:absolute;right:32px;bottom:78px;font-size:13px;font-weight:700;background:var(--ui-accent-text,#ff7770);color:#fff}
-.engine-load-state{position:absolute;bottom:68px;left:32px;margin:0;font-size:13px}
+.engine-load-state{position:absolute;z-index:2;left:50%;top:50%;transform:translate(-50%,-50%);width:min(440px,calc(100% - 64px));box-sizing:border-box;display:flex;flex-direction:column;gap:8px;padding:18px 22px;border:2px solid var(--ui-accent-text,#ff7770);border-radius:6px;background:var(--ui-surface,#101314);color:var(--ui-text,#f4f1e8);text-align:center;pointer-events:none}
+.engine-load-state strong{font-size:22px;line-height:1.2;letter-spacing:.04em;color:var(--ui-accent-text,#ff7770)}
+.engine-load-state span{font-size:15px;line-height:1.4}
 @media(max-width:620px){.engine-telemetry{padding:82px 18px 110px;gap:16px}.engine-primary{gap:18px}.engine-primary>div+div{padding-left:18px}.engine-primary strong{font-size:64px}.engine-graphs{gap:18px}.engine-bottom{flex-wrap:wrap}.engine-profiles button{padding:0 12px}.engine-rev{right:18px;bottom:72px}}
 @media(prefers-reduced-motion:reduce){.engine-tach i{transition:none}}
 

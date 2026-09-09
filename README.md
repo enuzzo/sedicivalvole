@@ -425,6 +425,16 @@ Feeling lucky and Change reroll without immediate repeats. Choose preserves
 precise selection. Static effect captures and ready-queue cover art keep previews
 lightweight, with no extra live renderer. See [launch behavior and architecture](docs/LAUNCH-COCKPIT-2026-09-07.md).
 
+### Intro preparation — 2026-09-09
+
+Intro silently prepares the selected visual dependencies, Jamendo recording and
+cover, and Mono or the explicitly selected Engine profile. No hidden renderer or
+audio playback starts. Engine retains up to 40 MiB of integrity-checked encoded
+WAVs for the page lifetime, separately from its decoded-audio budgets; a centered
+loading notice identifies the requested engine while the previous one continues.
+Jamendo keeps its existing transient media buffer, not a persistent offline copy.
+See [preparation and cache behavior](docs/LAUNCH-PREPARATION-2026-09-09.md).
+
 ### Engine acoustic campaign — 2026-09-08
 
 The implementation adds a cycle-timed four-cylinder voice to Mono and three

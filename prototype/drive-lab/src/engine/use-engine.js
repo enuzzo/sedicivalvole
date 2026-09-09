@@ -39,6 +39,7 @@ export function useEngine({ active, muted, profileId, audioRef, motion, onEvent,
       else void setup();
     };
     window.addEventListener("online", wake); document.addEventListener("visibilitychange", wake);
+    setSnapshot(current => ({ ...current, status: "loading", error: null }));
     void setup();
     const timer = setInterval(() => {
       if (runtimeRef.current) setSnapshot(runtimeRef.current.getState());

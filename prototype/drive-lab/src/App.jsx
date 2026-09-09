@@ -1,3 +1,5 @@
+import { useLaunchPreload } from "./use-launch-preload.js";
+import { preloadLaunchEngine, preloadLaunchVisual } from "./launch-preload.js";
 import { MediaGlyph } from "./media-glyph.jsx";
 import { RecoveringArtwork, useRecoveringArtwork } from "./recovering-artwork.jsx";
 import { createAutomaticDiagnosticClock, readDiagnosticPreferences, DIAGNOSTIC_PREFERENCES_KEY } from "./automatic-diagnostics.js";
@@ -2553,6 +2555,8 @@ export function App() {
   }, []);
   const geaps = useEngine({ active: phase === "running" && experienceMode === "engine", muted, profileId: engineProfileId,
     audioRef, motion: engineMotionRef.current, onEvent: logDiagnosticEvent });
+  useLaunchPreload(phase !== "running", engineProfileId, preloadLaunchEngine);
+  useLaunchPreload(phase !== "running", launchEnvironmentId, preloadLaunchVisual);
   const releaseEngineRev = useCallback(() => geaps.runtimeRef.current?.releaseRev(), [geaps.runtimeRef]);
   const holdEngineRev = useCallback(() => geaps.runtimeRef.current?.setRevHeld(true), [geaps.runtimeRef]);
   const chooseEngineProfile = useCallback((id) => {
@@ -2618,7 +2622,7 @@ export function App() {
     });
   }, [soundtrackController]);
   useEffect(() => {
-    if (phase !== "idle" || experienceMode !== "flux" || networkNotice.status === "offline" || !navigator.onLine) return;
+    if (phase !== "idle" || networkNotice.status === "offline" || !navigator.onLine) return;
     prepareLaunchSoundtrack(launchSoundtrackSelection);
   }, [networkNotice.status, phase, experienceMode, launchMusicId, launchSoundtrackSelection, prepareLaunchSoundtrack]);
 
@@ -4075,6 +4079,7 @@ export function App() {
     soundtrackSnapshot?.library?.selection?.kind,
   ]);
   const currentArtwork = useRecoveringArtwork(currentTrack?.artwork);
+  useRecoveringArtwork(phase !== "running" ? soundtrackSnapshot?.current?.imageUrl : null);
   useRecoveringArtwork(soundtrackSnapshot?.previous?.imageUrl);
   useRecoveringArtwork(soundtrackSnapshot?.next?.imageUrl);
   const transportTrack = currentTrack ?? { title: "Preparing Soundtrack", artist: "Loading library", album: "Soundtrack" };

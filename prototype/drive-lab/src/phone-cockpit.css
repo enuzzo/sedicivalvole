@@ -76,7 +76,7 @@
 .app[data-phone-layout="landscape"] .engine-rev small { font-size: 13px; letter-spacing: 0; }
 .app[data-phone-layout="landscape"] .engine-rev.is-left { left: calc(var(--phone-left) + 8px); }
 .app[data-phone-layout="landscape"] .engine-rev.is-right { right: calc(var(--phone-right) + 8px); }
-.app[data-phone-layout="landscape"] .engine-load-state { left: var(--phone-left); bottom: calc(121px + var(--phone-bottom)); font-size: 13px; }
+.app[data-phone-layout="landscape"] .engine-load-state { top: 44%; padding: 12px 18px; }
 .phone-rotation-notice { position: fixed; inset: 0; z-index: 10000; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 16px; padding: max(24px,env(safe-area-inset-top)) max(24px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(24px,env(safe-area-inset-left)); background: #0f0f0f; color: #f4f4f4; text-align: center; outline: none; }
 .phone-rotation-notice small { font-size: 13px; letter-spacing: .06em; }
 .phone-rotation-notice h1 { max-width: 320px; margin: 0; font-size: 32px; line-height: 1.15; font-weight: 500; }

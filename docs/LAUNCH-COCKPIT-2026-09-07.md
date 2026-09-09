@@ -194,3 +194,9 @@ marks. Live screenshots and JSON: `/tmp/sv-support-live/`; byte evidence:
 Canonical 20260907-1557 live validation passes: four viewport cases and diagnostic
 support/focus, 24 byte/cache checks, independent postflight `remote_writes=NONE`.
 Fresh evidence: `/tmp/sv-support-live/`. Result: passed; physical Tesla remains separate.
+
+
+## September 9 preparation architecture
+
+Intro now owns cancellable visual and Engine preparation effects alongside the
+existing Soundtrack controller. See [the complete preparation/cache contract](LAUNCH-PREPARATION-2026-09-09.md).
