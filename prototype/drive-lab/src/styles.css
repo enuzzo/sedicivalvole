@@ -4725,3 +4725,9 @@ html { font-size: var(--font-size-floor); }
 
 .media-glyph svg { display: block; width: 100%; height: 100%; }
 .recovering-artwork { display: inline-flex; flex: 0 0 auto; align-items: center; justify-content: center; background: var(--ui-surface, #222); color: var(--ui-text, currentColor); font-weight: 600; }
+
+/* Release notice uses the existing functional typography and touch targets. */
+.session-update-notice{position:fixed;z-index:80;top:72px;right:16px;max-width:calc(100vw - 32px);display:flex;align-items:center;gap:12px;padding:8px 10px 8px 14px;border:1px solid var(--ui-line,#777);border-radius:6px;background:var(--ui-surface,#eee9de);color:var(--ui-text,#151515)}
+.session-update-notice span{display:flex;flex-direction:column;gap:4px}.session-update-notice strong{font-size:14px}.session-update-notice small{font-size:13px}.session-update-notice button{min-width:80px;min-height:48px;padding:0 12px;border:0;border-radius:6px;background:var(--ui-selected-surface,#151515);color:var(--ui-selected-text,#fff);font:inherit;font-size:15px}
+
+.app:has([role="dialog"]) .session-update-notice{display:none}

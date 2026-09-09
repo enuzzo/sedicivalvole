@@ -1,3 +1,5 @@
+import { canAutoReload } from "./session/update-controller.js";
+import { useSessionMaintenance } from "./session/use-session-maintenance.js";
 import { useLaunchPreload } from "./use-launch-preload.js";
 import { preloadLaunchEngine, preloadLaunchVisual } from "./launch-preload.js";
 import { MediaGlyph } from "./media-glyph.jsx";
@@ -2557,6 +2559,7 @@ export function App() {
     audioRef, motion: engineMotionRef.current, onEvent: logDiagnosticEvent });
   useLaunchPreload(phase !== "running", engineProfileId, preloadLaunchEngine);
   useLaunchPreload(phase !== "running", launchEnvironmentId, preloadLaunchVisual);
+  const sessionUpdate = useSessionMaintenance(() => canAutoReload({ phase, muted, source, motion: engineMotionRef.current.snapshot(performance.now()), modalOpen: modalOpen || Boolean(document.querySelector('[role="dialog"]')) }));
   const releaseEngineRev = useCallback(() => geaps.runtimeRef.current?.releaseRev(), [geaps.runtimeRef]);
   const holdEngineRev = useCallback(() => geaps.runtimeRef.current?.setRevHeld(true), [geaps.runtimeRef]);
   const chooseEngineProfile = useCallback((id) => {
@@ -5197,6 +5200,10 @@ export function App() {
           }}
         />
       ) : null}
+      {sessionUpdate.due && !modalOpen ? <aside className="session-update-notice" role="status">
+        <span><strong>{sessionUpdate.latest !== sessionUpdate.current ? "UPDATE AVAILABLE" : "SESSION REFRESH DUE"}</strong><small>Saved choices stay. Session restarts.</small></span>
+        <button type="button" disabled={sessionUpdate.reloading} onClick={() => void sessionUpdate.apply()}>{sessionUpdate.reloading ? "UPDATING…" : "UPDATE"}</button>
+      </aside> : null}
       {keyboardHint ? <div className="keyboard-hint" role="status">{keyboardHint}</div> : null}
 
       {phase !== "running" ? (

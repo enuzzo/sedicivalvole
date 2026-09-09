@@ -221,7 +221,7 @@ export function DriveyField({
     onRenderer,
   };
   const source = useMemo(
-    () => driveyRuntimeUrl(window.location.origin, __APP_BUILD__),
+    () => `${driveyRuntimeUrl(window.location.origin, __APP_BUILD__)}&cache-build=${__APP_BUILD__}.${__APP_COMMIT__}`,
     [],
   );
 

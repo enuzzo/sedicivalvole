@@ -450,3 +450,14 @@ No new shipped integration. Original listening-tool code remains under the repos
 ## FMOD evaluation — September 8, 2026
 
 Firelight Technologies: official browser examples and EULA studied at https://www.fmod.com/legal and https://www.fmod.com/assets/html5/core_api/demo.html. No code, library or media copied into the product. FMOD EULA section 1.4 prohibits redistribution of example media, including WAV, OGG, MP3, FSB and bank files. Software eligibility does not override this media restriction. No entitlement acquired or EULA accepted.
+
+
+## Browser cache/update documentation studies — 2026-09-09
+
+MDN contributors / Mozilla: [Cache API](https://developer.mozilla.org/en-US/docs/Web/API/Cache)
+and [caching/eviction](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/Caching).
+Chrome for Developers contributors / Google: [service-worker lifecycle](https://developer.chrome.com/docs/workbox/service-worker-lifecycle)
+and [update handling](https://developer.chrome.com/docs/workbox/handling-service-worker-updates).
+Development documentation studies for seven-day static retention, browser limits,
+build isolation and non-disruptive reloads. No text/code redistributed and no
+Workbox package admitted; the implementation is original project code.

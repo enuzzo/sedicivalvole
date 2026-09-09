@@ -11,7 +11,7 @@
   "scripts": {
     "dev": "vite",
     "dev:shadergradient": "vite --host 127.0.0.1 --port 5180",
-    "build": "vite build && vite build --config vite.lab.config.mjs && node scripts/package-lab.mjs && node scripts/prepare-sites-build.mjs",
+    "build": "vite build && vite build --config vite.lab.config.mjs && node scripts/package-lab.mjs && node scripts/prepare-sites-build.mjs && node scripts/verify-session-release.mjs",
     "build:junction": "node scripts/build-junction-bank.mjs",
     "build:nightshift": "node scripts/build-nightshift-bank.mjs",
     "render:nightshift": "node scripts/render-nightshift-sketch.mjs",
@@ -25,7 +25,7 @@
     "test:native": "node scripts/native-toolchain.mjs -- npm test",
     "build:native": "node scripts/native-toolchain.mjs -- npm run build",
     "test": "npm run test:discover && npm run test:drivey && npm run test:prtcl && npm run test:gradient && npm run test:nightshift && npm run test:soundtrack-fx && npm run test:appearance-presentation && npm run test:media-session && npm run test:engine-road && npm run test:unit && npm run test:sites",
-    "test:engine-road": "node --test tests/engine-asset-cache.test.mjs tests/launch-preload.test.mjs tests/engine-catalogue.test.mjs tests/engine-road-gearing.test.mjs tests/engine-comparison.test.mjs",
+    "test:engine-road": "node --test tests/session-maintenance.test.mjs tests/engine-asset-cache.test.mjs tests/launch-preload.test.mjs tests/engine-catalogue.test.mjs tests/engine-road-gearing.test.mjs tests/engine-comparison.test.mjs",
     "test:discover": "node --test tests/discover-model.test.mjs",
     "test:soundtrack-fx": "node --test tests/soundtrack-effects-controller.test.mjs",
     "test:appearance-presentation": "node --test tests/appearance-presentation.test.mjs",

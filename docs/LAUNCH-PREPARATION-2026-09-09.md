@@ -90,3 +90,11 @@ No synthetic diagnostic packet reached the mailbox. [Deployment evidence](DEPLOY
 | `assets/procedural-processor-DhZI11xm.js` | `51039c683c12d94dc0aad8d260d5686dd173ea7cf2c70f15267cc1da873eae38` |
 | `assets/shadergradient-field-CkbyVaeQ.js` | `1a3f0e3d500cac6837380930fa3291dac2a5f473f21d45a4fe2ea7c0e5ab7831` |
 | `engine-audio/f4e5a7f8e96fa64a.wav` | `f4e5a7f8e96fa64a715ba8ac1c9c9378f0f431cf2775a53c51e9afd652905835` |
+
+
+## Later September 9 cache/update extension
+
+[Open-session cache and updates](SESSION-CACHE-UPDATES-2026-09-09.md) adds a separate
+seven-day, build-isolated CacheStorage tier for used static files and guarded
+release checks. The encoded Engine memory budget and remote music boundaries
+above still apply; the earlier no-service-worker statement describes build 0911.

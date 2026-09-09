@@ -1386,3 +1386,31 @@ Unsent draft: Thank you for providing a no-sign-up sound workspace. Its direct e
 Material: public engine-event and granular truck demos and example-media license explanation. Sources: https://www.fmod.com/assets/html5/core_api/demo.html and https://www.fmod.com/legal. Public contact: https://qa.fmod.com/. No runtime or example audio imported.
 
 Unsent draft: Thank you for making interactive engine examples available in the browser. The RPM/load workflow is useful to our vehicle-audio study, and we are keeping your example-media restrictions explicit rather than treating those samples as a redistributable library.
+
+
+## Browser session reliability studies — 2026-09-09
+
+### MDN contributors / Mozilla — Cache API
+
+- Source: [Cache API](https://developer.mozilla.org/en-US/docs/Web/API/Cache) and
+  [cache limits](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/Caching).
+- Public contribution/contact route: [MDN content repository](https://github.com/mdn/content).
+- Development study only; expiry headers, CacheStorage lifetime and browser eviction.
+  No copied text/code or new runtime dependency.
+- Unsent thank-you draft:
+
+> Thank you for making the limits of browser storage explicit. Your Cache API
+> documentation helped me distinguish what sedicivalvole can retain itself from
+> what a browser can still evict, so drivers get an honest reliability promise. — enuzzo
+
+### Chrome for Developers contributors / Google
+
+- Sources and public documentation route: [service-worker lifecycle](https://developer.chrome.com/docs/workbox/service-worker-lifecycle)
+  and [update handling](https://developer.chrome.com/docs/workbox/handling-service-worker-updates).
+- Development study only; open-client lifecycle and controlled reloads.
+  No copied text/code and no Workbox library shipped.
+- Unsent thank-you draft:
+
+> Thank you for explaining the awkward parts of service-worker updates across
+> open tabs. It helped me keep old and new sedicivalvole sessions separate and
+> avoid interrupting an active listening session just because a release arrived. — enuzzo

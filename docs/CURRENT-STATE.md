@@ -1,5 +1,11 @@
 # Current Project State
 
+## September 9 open-session cache and update refinement
+
+Build-isolated static CacheStorage retains used assets for seven days and protects
+active clients. Build checks and a guarded renewal preserve saved preferences.
+[Architecture, limits and validation](SESSION-CACHE-UPDATES-2026-09-09.md).
+
 ## September 9 launch preparation refinement
 
 Canonical **20260909-0911 / d30769d** is published and verified; 813 tests and

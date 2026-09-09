@@ -425,6 +425,16 @@ Feeling lucky and Change reroll without immediate repeats. Choose preserves
 precise selection. Static effect captures and ready-queue cover art keep previews
 lightweight, with no extra live renderer. See [launch behavior and architecture](docs/LAUNCH-COCKPIT-2026-09-07.md).
 
+### Open-session cache and updates — 2026-09-09
+
+Build-specific CacheStorage keeps verified, used static assets for at least seven
+days and protects generations still used by an open page. Storage availability
+and browser eviction remain limits; remote music and dynamic/private data retain
+their existing policy. The app checks build identity every five minutes and on
+recovery, then reloads only after a quiet Intro or muted, freshly confirmed GPS
+standstill. UPDATE remains available during use. Saved preferences survive;
+session counters restart. [Lifecycle and validation](docs/SESSION-CACHE-UPDATES-2026-09-09.md).
+
 ### Intro preparation — 2026-09-09
 
 Intro silently prepares the selected visual dependencies, Jamendo recording and
@@ -525,7 +535,8 @@ A heartfelt thank-you to the people who share the code, type, music, data and ex
 | 🧪 Liam Egan; embedded noise credited upstream to Inigo Quilez — GLSL: Primordial Soup | [Project](https://codepen.io/shubniggurath/pen/NXGbBo) | **Retired study — no copied code.** Fluid mechanics were studied; the independent experiment was retired. No Pen or attributed noise source is shipped. |
 | 🎹 Spotify and Basic Pitch contributors — Spotify Basic Pitch | [Project](https://github.com/spotify/basic-pitch) | **Development only.** Machine-local harmony-analysis note proposals; no package, model or generated report enters the product bundle. |
 | 🧭 Jakob Nielsen / Nielsen Norman Group — Progressive Disclosure | [Article](https://www.nngroup.com/articles/progressive-disclosure/) | **Study only.** Informed contextual launch choices; no article text, code or artwork copied. |
-| 🌐 MDN contributors / Mozilla — Web Audio and Autoplay guides | [Web Audio](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Best_practices) · [Autoplay](https://developer.mozilla.org/en-US/docs/Web/Media/Guides/Autoplay) | **Study only.** Informed silent preparation, explicit START and [proportional sample detune](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/detune); no documentation or code redistributed. |
+| 🌐 MDN contributors / Mozilla — Web Audio and Autoplay guides | [Web Audio](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Best_practices) · [Autoplay](https://developer.mozilla.org/en-US/docs/Web/Media/Guides/Autoplay) | **Study only.** Also informed [CacheStorage retention and eviction](https://developer.mozilla.org/en-US/docs/Web/API/Cache). Informed silent preparation, explicit START and [proportional sample detune](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/detune); no documentation or code redistributed. |
+| 🔄 Chrome for Developers contributors / Google — service-worker lifecycle | [Lifecycle](https://developer.chrome.com/docs/workbox/service-worker-lifecycle) · [Update handling](https://developer.chrome.com/docs/workbox/handling-service-worker-updates) | **Development study only.** Informed build isolation and avoiding forced worker replacement across open tabs; no Workbox dependency, copied code or documentation shipped. |
 
 ### 🛠️ Offline analysis and verification tools
 

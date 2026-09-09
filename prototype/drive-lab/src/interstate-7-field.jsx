@@ -65,7 +65,7 @@ export function Interstate7Field({
   const valuesRef = useRef({ speed, theme, reducedMotion, effect, onRenderer, onFrame, onRuntimeError });
   valuesRef.current = { speed, theme, reducedMotion, effect, onRenderer, onFrame, onRuntimeError };
   const source = useMemo(
-    () => new URL(`/${ORIGINAL_INTERSTATE_7_PATH}`, window.location.origin).href,
+    () => new URL(`/${ORIGINAL_INTERSTATE_7_PATH}?cache-build=${__APP_BUILD__}.${__APP_COMMIT__}`, window.location.origin).href,
     [],
   );
 
