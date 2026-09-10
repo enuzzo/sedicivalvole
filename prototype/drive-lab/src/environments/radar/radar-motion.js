@@ -20,7 +20,9 @@ export function sampleRadarTrack(history, now, reducedMotion=false) {
   const time=now-(reducedMotion?0:RADAR_PLAYBACK_DELAY_MS),last=history.at(-1);
   if(time>=last.observedAtMs)return {...last,motion:'held'};
   if(time<=history[0].observedAtMs)return {...history[0],motion:'buffering'};
-  const right=history.findIndex(point=>point.observedAtMs>=time),a=history[right-1],b=history[right];
+  let low=1,high=history.length-1;
+  while(low<high){const middle=(low+high)>>1;if(history[middle].observedAtMs<time)low=middle+1;else high=middle;}
+  const right=low,a=history[right-1],b=history[right];
   const t=(time-a.observedAtMs)/(b.observedAtMs-a.observedAtMs);
   const bearing=wrap(Math.atan2(delta(a.longitude,b.longitude)*Math.cos(a.latitude*Math.PI/180),b.latitude-a.latitude)*180/Math.PI);
   const start=Number.isFinite(a.trackDegrees)?a.trackDegrees:bearing;

@@ -2,7 +2,7 @@
 import { discoverDistanceMetres } from '../../discover/discover-model.js';
 
 export const RADAR_SOURCE = 'ADSB.lol';
-export const RADAR_LIMIT = 32;
+export const RADAR_LIMIT = 4096;
 export const RADAR_FRESH_MS = 30000;
 export const RADAR_EXPIRE_MS = 120000;
 const bounded = (value, min, max) => typeof value === 'number' && Number.isFinite(value) && value >= min && value <= max ? value : null;
@@ -12,8 +12,8 @@ const coordinate = point => finite(point?.latitude) && Math.abs(point.latitude) 
 
 /** Public point query in nautical miles; coarse request centre, exact measured aircraft. */
 export function radarPointUrl(center, radiusNm = 27) {
-  if (!coordinate(center) || !finite(radiusNm) || radiusNm !== 27) return null;
-  return `/api/radar-data.php?kind=nearby&lat=${center.latitude.toFixed(2)}&lon=${center.longitude.toFixed(2)}`;
+  if (!coordinate(center) || !finite(radiusNm) || !Number.isInteger(radiusNm) || radiusNm < 1 || radiusNm > 250) return null;
+  return `/api/radar-data.php?kind=nearby&lat=${center.latitude.toFixed(2)}&lon=${center.longitude.toFixed(2)}${radiusNm===27?'':`&radius=${radiusNm}`}`;
 }
 
 /** ADSB.lol's envelope clock is milliseconds, unlike readsb aircraft.json seconds. */
@@ -22,7 +22,7 @@ export function normalizeRadarSnapshot(payload, { center, epochNowMs, receivedAt
     || !finite(payload?.now) || payload.now > epochNowMs + 5000
     || epochNowMs - payload.now > RADAR_EXPIRE_MS || !Array.isArray(payload.ac)) return [];
   const rows = new Map();
-  for (const item of payload.ac.slice(0, 512)) {
+  for (const item of payload.ac.slice(0, RADAR_LIMIT)) {
     const id = typeof item?.hex === 'string' ? item.hex.toLowerCase() : '';
     const point = { latitude: item?.lat, longitude: item?.lon };
     if (!/^[0-9a-f]{6}$/.test(id) || !coordinate(point) || !finite(item.seen_pos) || item.seen_pos < 0) continue;
@@ -33,6 +33,7 @@ export function normalizeRadarSnapshot(payload, { center, epochNowMs, receivedAt
     rows.set(id, {
       id, ...point, source: RADAR_SOURCE, ageMs, observedAtMs: receivedAtMs - ageMs,
       stale: ageMs > RADAR_FRESH_MS,
+      signalAtMs: finite(item.seen)&&item.seen>=0?receivedAtMs-(Math.max(0,epochNowMs-payload.now)+item.seen*1000):null,
       registration: typeof item.r === 'string' ? item.r.trim().slice(0,16) : '',
       typeCode: typeof item.t === 'string' ? item.t.trim().toUpperCase().slice(0,8) : '',
       category: typeof item.category === 'string' ? item.category.slice(0,3) : '',
@@ -61,4 +62,8 @@ export function normalizeRadarSnapshot(payload, { center, epochNowMs, receivedAt
     });
   }
   return [...rows.values()].sort((a, b) => a.distanceMetres - b.distanceMetres || a.id.localeCompare(b.id)).slice(0, RADAR_LIMIT);
+}
+
+export function radarAircraftUrl(id){
+  return /^[0-9a-f]{6}$/.test(id??'')?`/api/radar-data.php?kind=aircraft&hex=${id}`:null;
 }

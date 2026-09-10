@@ -3,10 +3,16 @@
 declare(strict_types=1);
 const RADAR_DATA_ORIGIN = 'https://sedicivalvole.app';
 function radar_data_query(array $query): ?array {
-    if (array_diff(array_keys($query), ['kind', 'lat', 'lon', 'callsign'])) return null;
+    if (array_diff(array_keys($query), ['kind', 'lat', 'lon', 'callsign', 'radius', 'hex'])) return null;
     foreach ($query as $value) if (!is_string($value)) return null;
     $kind = $query['kind'] ?? '';
-    if (!in_array($kind, ['nearby', 'route'], true)) return null;
+    if (!in_array($kind, ['nearby', 'route', 'aircraft'], true)) return null;
+    if ($kind === 'aircraft') {
+        if (array_diff(array_keys($query), ['kind', 'hex']) || !preg_match('/^[0-9a-f]{6}$/D', $query['hex'] ?? '')) return null;
+        $path = '/v2/hex/' . $query['hex'];
+        return ['kind' => $kind, 'path' => $path, 'key' => hash('sha256', $path)];
+    }
+    if (isset($query['hex']) || ($kind === 'route' && isset($query['radius']))) return null;
     foreach (['lat' => 90, 'lon' => 180] as $key => $limit) {
         if (!preg_match('/^-?\d{1,3}(?:\.\d{1,3})?$/D', $query[$key] ?? '') || abs((float)$query[$key]) > $limit) return null;
     }
@@ -15,7 +21,9 @@ function radar_data_query(array $query): ?array {
     $lon = number_format((float)$query['lon'], $precision, '.', '');
     if ($kind === 'nearby') {
         if (isset($query['callsign'])) return null;
-        $path = '/v2/point/' . $lat . '/' . $lon . '/27';
+        $radius = $query['radius'] ?? '27';
+        if (!preg_match('/^[0-9]{1,3}$/D', $radius) || (int)$radius < 1 || (int)$radius > 250) return null;
+        $path = '/v2/point/' . $lat . '/' . $lon . '/' . (int)$radius;
     } else {
         if (!preg_match('/^[A-Z0-9]{2,12}$/D', $query['callsign'] ?? '')) return null;
         $path = '/api/0/route/' . $query['callsign'] . '/' . $lat . '/' . $lon;
@@ -23,17 +31,17 @@ function radar_data_query(array $query): ?array {
     return ['kind' => $kind, 'path' => $path, 'key' => hash('sha256', $path)];
 }
 function radar_data_filter(array $payload, string $kind): ?array {
-    if ($kind === 'nearby') {
+    if (in_array($kind, ['nearby', 'aircraft'], true)) {
         if (!is_numeric($payload['now'] ?? null) || !is_array($payload['ac'] ?? null)) return null;
-        $fields = array_flip(['hex', 'flight', 'r', 't', 'category', 'lat', 'lon', 'seen_pos', 'track', 'alt_baro', 'gs', 'baro_rate', 'alt_geom', 'geom_rate', 'ias', 'tas', 'mach', 'mag_heading', 'true_heading', 'roll', 'nav_altitude_mcp', 'nav_qnh', 'wd', 'ws', 'oat', 'squawk', 'type']);
+        $fields = array_flip(['hex', 'flight', 'r', 't', 'category', 'lat', 'lon', 'seen_pos', 'seen', 'track', 'alt_baro', 'gs', 'baro_rate', 'alt_geom', 'geom_rate', 'ias', 'tas', 'mach', 'mag_heading', 'true_heading', 'roll', 'nav_altitude_mcp', 'nav_qnh', 'wd', 'ws', 'oat', 'squawk', 'type']);
         $rows = [];
-        foreach (array_slice($payload['ac'], 0, 512) as $row) {
+        foreach (array_slice($payload['ac'], 0, 4096) as $row) {
             if (!is_array($row)) continue;
             $clean = array_intersect_key($row, $fields);
             foreach ($clean as $key => $value) if (!is_scalar($value) || (is_string($value) && strlen($value) > 40)) unset($clean[$key]);
             $rows[] = $clean;
         }
-        return ['now' => (float)$payload['now'], 'ac' => $rows];
+        return ['now' => (float)$payload['now'], 'ac' => $rows, 'truncated' => count($payload['ac']) > 4096];
     }
     if (!is_string($payload['callsign'] ?? null)) return null;
     $airports = [];
@@ -73,15 +81,15 @@ curl_setopt_array($curl, [CURLOPT_FOLLOWLOCATION => false, CURLOPT_CONNECTTIMEOU
         if (stripos($header, 'Retry-After:') === 0) { $value = trim(substr($header, 12)); $retryAfter = ctype_digit($value) ? min(86400, (int)$value) : max(0, min(86400, (strtotime($value) ?: 0) - time())); }
         return strlen($header);
     },
-    CURLOPT_WRITEFUNCTION => static function ($curl, string $chunk) use (&$body): int { if (strlen($body) + strlen($chunk) > 131072) return 0; $body .= $chunk; return strlen($chunk); }]);
+    CURLOPT_WRITEFUNCTION => static function ($curl, string $chunk) use (&$body): int { if (strlen($body) + strlen($chunk) > 4194304) return 0; $body .= $chunk; return strlen($chunk); }]);
 $ok = curl_exec($curl); $status = curl_getinfo($curl, CURLINFO_HTTP_CODE); unset($curl);
 $payload = $ok && $status === 200 ? json_decode($body, true, 20) : null;
 $result = is_array($payload) ? radar_data_filter($payload, $query['kind']) : null;
 if ($result !== null) {
-    $state['cache'][$query['key']] = ['expires' => $now + ($query['kind'] === 'nearby' ? 2 : 300), 'data' => $result];
+    $state['cache'][$query['key']] = ['expires' => $now + ($query['kind'] === 'route' ? 300 : 2), 'data' => $result];
 } else { $state['retryAt'] = $now + max(15, $retryAfter); }
 foreach ($state['cache'] ?? [] as $key => $entry) if ($entry['expires'] <= $now) unset($state['cache'][$key]);
-while (count($state['cache'] ?? []) > 32) array_shift($state['cache']);
+while (count($state['cache'] ?? []) > 32 || strlen(json_encode($state)) > 7340032) array_shift($state['cache']);
 rewind($handle); ftruncate($handle, 0); fwrite($handle, json_encode($state)); fflush($handle); flock($handle, LOCK_UN); fclose($handle);
 if ($result === null) { header('Retry-After: ' . max(15, $retryAfter)); radar_data_reply(['error' => 'unavailable'], 503); }
 radar_data_reply($result);

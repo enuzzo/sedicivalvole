@@ -244,3 +244,12 @@ Implemented the separately labelled coarse initial location, truthful permission
 ## Fly With refinement — 2026-09-10
 
 Continuous camera playback no longer waits for all map tiles. Optical zoom/reset preserves the aircraft position and works on a held pose; pending DEM tiles retain the last terrain height. The palette-accented Fly With action has an original view/flight icon, and the single selection ring has extra clearance. See the Air Atlas record for verification and publication.
+
+
+## Air Atlas visible-area traffic — 2026-09-10
+
+Traffic queries follow radar zoom, pan and resize, using a rounded map centre and a circle enclosing the viewport. The provider radius is bounded at 250 NM; minimum zoom keeps the visible field within that supported coverage. Remove the nearest-32 cutoff, retain at most 4,096 validated records and disclose server truncation. Render visible markers, use binary history lookup, and suppress subpixel updates in dense fields. Fly With retains its area feed and refreshes the selected aircraft by hexadecimal address when absent or stale.
+
+Refresh is available in the radar toolbar, coalesces in-flight requests and respects retry backoff. Obsolete viewport responses cannot overwrite the latest area. Position age uses seen_pos; message age uses seen. Neither a successful refresh nor a recent signal fabricates a fresh position. Selected newer observations cannot be rewound by older area data. Disappeared tracks outside the current query are discarded except the selected aircraft.
+
+Validation: 861 native tests, PHP syntax and 196 dependency credits pass. Controlled Chrome checks cover 100 simultaneous aircraft, zoom expansion/contraction, pan, manual refresh, targeted recovery without rewind and 773 x 601 / 874 x 402 / 956 x 440 layouts without page errors. Physical Tesla reception and sustained dense-traffic performance remain unverified.

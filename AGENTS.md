@@ -327,3 +327,8 @@ Show understated dashed received-flight trails, bounded to 5 km / five minutes /
 ## Owner Fly With continuity and controls — 2026-09-10
 
 Fly With updates the camera every animation frame from the measured five-second delayed track, without waiting for every new map tile. Preserve the last terrain height during missing DEM samples instead of dropping to zero. Do not invent motion after signal loss. Keep optical zoom in/out/reset reachable in the flight view, preserving the aircraft camera position; a held pose can still be zoomed. Give Fly With a prominent palette-colored action and original outline view/flight icon. The selected aircraft has one 54 px ring around its 42 px silhouette, with approximately 4 px inner clearance and the distance below it.
+
+
+## Owner radar coverage refinement — 2026-09-10
+
+Air Atlas traffic must follow the visible radar area on zoom and pan. Preserve bounded provider coverage, remove the nearest-32 display cutoff, and distinguish actual position age from message age. Manual and selected-aircraft refresh must respect backoff and never make old observations appear fresh.

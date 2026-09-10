@@ -497,3 +497,8 @@ Michael Wolf / Mictronics and readsb-protobuf contributors: unmodified `webapp/s
 ## Air Atlas terrain service — 2026-09-10
 
 Mapterhorn contributors (https://mapterhorn.com) provide Terrarium-encoded 512 px global elevation tiles at https://tiles.mapterhorn.com/{z}/{x}/{y}.webp for the owner-selected A+C nose-camera view. Service/data integration only; no provider runtime copied. Retain the TileJSON attribution link https://mapterhorn.com/attribution/ and its full source/licence list https://download.mapterhorn.com/attribution.json, including the applicable regional survey and Copernicus terms. Elevation exaggeration is a project display setting of 1.25. Provider tiles are remote transient map resources, not relicensed as project code or included in the static build cache.
+
+
+### ADSB.lol service scope update — 2026-09-10
+
+The existing fixed-host adapter now uses viewport-centred `/v2/point/{lat}/{lon}/{radius}` (maximum 250 NM) and selected-aircraft `/v2/hex/{icao_hex}` queries. This adds no imported runtime or dataset. Source: https://api.adsb.lol/api/openapi.json . Existing attribution and unsent acknowledgement remain applicable.

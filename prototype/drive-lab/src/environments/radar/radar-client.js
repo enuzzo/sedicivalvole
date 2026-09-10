@@ -20,17 +20,17 @@ export async function radarJson(url, {signal, maximumBytes = 131072, ...options}
 /** One active request, no hidden/offline activity, bounded retry respecting Retry-After. */
 export function createRadarPoller({load,onResult,onStatus,canLoad=()=>true,intervalMs=8000,
   now=Date.now,schedule=setTimeout,cancel=clearTimeout}) {
-  let stopped=false,pending=false,timer,controller,failures=0,notBefore=0;
+  let stopped=false,pending=false,timer,controller,failures=0,notBefore=0,refreshQueued=false,lastStarted=Number.NEGATIVE_INFINITY;
   const tick=async()=>{
     cancel(timer);
     if(stopped||pending)return;
     if(!canLoad()){return;}
     if(now()<notBefore){timer=schedule(tick,Math.min(86400000,notBefore-now()));return;}
-    pending=true;controller=new AbortController();const timeout=schedule(()=>controller.abort(),15000);
+    pending=true;lastStarted=now();controller=new AbortController();const timeout=schedule(()=>controller.abort(),15000);
     let delay=intervalMs;
     try{const result=await load(controller.signal);if(!stopped&&!controller.signal.aborted){failures=0;onResult(result);onStatus('ready');}}
     catch(error){if(!stopped&&canLoad()){delay=Math.max(Math.min(300000,15000*2**Math.min(failures++,5)),error.retryAfterMs||0);onStatus('retrying');}}
-    finally{cancel(timeout);pending=false;notBefore=now()+delay;if(!stopped&&canLoad())timer=schedule(tick,Math.min(86400000,delay));}
+    finally{cancel(timeout);pending=false;if(refreshQueued&&failures===0)delay=Math.max(0,lastStarted+1000-now());refreshQueued=false;notBefore=now()+delay;if(!stopped&&canLoad())timer=schedule(tick,Math.min(86400000,delay));}
   };
-  return {start:tick,wake(){if(canLoad())void tick();},pause(){cancel(timer);controller?.abort();},dispose(){stopped=true;cancel(timer);controller?.abort();}};
+  return {start:tick,refresh(){if(failures){void tick();return;}if(pending){refreshQueued=true;return;}notBefore=Math.max(now(),lastStarted+1000);void tick();},wake(){if(canLoad())void tick();},pause(){cancel(timer);controller?.abort();},dispose(){stopped=true;cancel(timer);controller?.abort();}};
 }

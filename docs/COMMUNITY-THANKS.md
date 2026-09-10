@@ -1451,3 +1451,8 @@ Research only: wiedehopf / tar1090-db (https://github.com/wiedehopf/tar1090-db),
 ## 2026-09-10 — Mapterhorn terrain
 
 Mapterhorn contributors, https://mapterhorn.com, service integration for the A+C aircraft nose camera. Exact use: public Terrarium elevation tiles; no source code imported. Public contact: https://github.com/mapterhorn/mapterhorn . Full elevation provenance: https://mapterhorn.com/attribution/ . Unsent: Thank you for joining public elevation surveys into a practical global terrain service. Your terrain gives our aircraft view recognizable hills and mountains; we retain your source attribution and distinguish our modest display exaggeration from the measured height data. — enuzzo
+
+
+### ADSB.lol service scope update — 2026-09-10
+
+The existing fixed-host adapter now uses viewport-centred `/v2/point/{lat}/{lon}/{radius}` (maximum 250 NM) and selected-aircraft `/v2/hex/{icao_hex}` queries. This adds no imported runtime or dataset. Source: https://api.adsb.lol/api/openapi.json . Existing attribution and unsent acknowledgement remain applicable.

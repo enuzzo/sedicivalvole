@@ -54,3 +54,32 @@ test('flight optical zoom is bounded and reset preserves the original field of v
  assert.equal(radarFlightFov(-999),radarFlightFov(-1));
  assert.equal(radarFlightFov(NaN),radarFlightFov(0));
 });
+
+import {radarViewportQuery,radarMinimumZoom} from '../src/environments/radar/radar-viewport.js';
+import {radarPointUrl,radarAircraftUrl,normalizeRadarSnapshot} from '../src/environments/radar/radar-model.js';
+import {createRadarPoller} from '../src/environments/radar/radar-client.js';
+test('viewport query covers its corners and radius grows with zoom-out',()=>{
+ const center={lat:46,lng:9};
+ const narrow=radarViewportQuery(center,[{lat:46.05,lng:8.9},{lat:45.95,lng:9.1}]);
+ const wide=radarViewportQuery(center,[{lat:46.5,lng:8},{lat:45.5,lng:10}]);
+ assert.ok(wide.radiusNm>narrow.radiusNm);assert.ok(wide.radiusNm>=wide.requiredNm);
+ assert.match(wide.key,/radius=/);assert.ok(radarMinimumZoom(46,1920,1080)>radarMinimumZoom(46,773,601));
+ assert.ok(radarViewportQuery({lat:0,lng:179.9},[{lat:.1,lng:-179.9},{lat:-.1,lng:179.7}]).radiusNm<30);
+ assert.equal(radarPointUrl({latitude:0,longitude:0},251),null);
+ assert.equal(radarAircraftUrl('abcdef'),'/api/radar-data.php?kind=aircraft&hex=abcdef');assert.equal(radarAircraftUrl('../secret'),null);
+});
+test('a fresh signal never resets an old position timestamp',()=>{
+ const [plane]=normalizeRadarSnapshot({now:100000,ac:[{hex:'abcdef',lat:46,lon:9,seen_pos:60,seen:1}]},
+  {center:{latitude:46,longitude:9},epochNowMs:102000,receivedAtMs:80000});
+ assert.equal(plane.observedAtMs,18000);assert.equal(plane.signalAtMs,77000);assert.equal(plane.stale,true);
+});
+test('manual refresh queues behind an in-flight query and respects server backoff',async()=>{
+ let now=0,resolve,calls=0;const timers=new Map();let id=0;
+ const poller=createRadarPoller({now:()=>now,schedule:(fn,delay)=>{timers.set(++id,{fn,delay});return id;},cancel:id=>timers.delete(id),
+  load:()=>{calls++;return new Promise(r=>resolve=r);},onResult(){},onStatus(){}});
+ const pending=poller.start();poller.refresh();poller.refresh();assert.equal(calls,1);now=1500;resolve([]);await pending;
+ assert.ok([...timers.values()].some(t=>t.delay===0));poller.dispose();
+ let retryCalls=0;const retry=createRadarPoller({now:()=>now,schedule:(fn,delay)=>{timers.set(++id,{fn,delay});return id;},cancel:id=>timers.delete(id),
+  load:async()=>{retryCalls++;throw Object.assign(Error('busy'),{retryAfterMs:60000});},onResult(){},onStatus(){}});
+ await retry.start();retry.refresh();assert.equal(retryCalls,1);retry.dispose();
+});

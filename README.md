@@ -512,6 +512,8 @@ Air Atlas starts from a labelled approximate first location while trusted fixes 
 
 Fly With follows measured flight continuously while terrain tiles load, with optical zoom/reset, a prominent launch action and clearer aircraft selection spacing. The displayed flight retains its five-second observation buffer.
 
+Air Atlas now refreshes traffic for the visible map area on zoom and pan, with manual refresh and selected-aircraft recovery. Position and signal ages remain distinct; provider coverage and physical Tesla acceptance limits are documented in `docs/AIR-ATLAS-2026-09-09.md`.
+
 <!-- COMMUNITY-CREDITS:START -->
 ## Community thanks — 2026-09-05
 
