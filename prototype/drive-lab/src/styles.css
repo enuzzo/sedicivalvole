@@ -4852,3 +4852,15 @@ html { font-size: var(--font-size-floor); }
 @media(prefers-reduced-motion:reduce){.flight-terrain{transition:none;}}
 
 .air-atlas-field .atlas-waiting>span {max-width:480px;padding:0 16px;color:#ddd;font-size:15px;line-height:1.5;letter-spacing:.01em;text-transform:none;}
+
+/* Keep a clear air gap around the selected aircraft, without a second ring. */
+.aircraft-marker::before {inset:-3px;}
+.aircraft-distance {top:55px;}
+.air-atlas-camera {display:flex;align-items:center;justify-content:center;gap:9px;min-width:156px;padding:0 18px;background:var(--radar-accent);color:var(--radar-button-ink);font-size:15px;font-weight:700;}
+.air-atlas-camera svg {width:24px;height:24px;flex:none;}
+.air-atlas-camera:disabled {background:var(--radar-panel);color:#d4d8d6;opacity:.6;}
+.flight-view-toolbar {right:var(--radar-right);align-items:flex-start;}
+.flight-zoom-controls {display:flex;gap:6px;margin-left:auto;}
+.flight-zoom-controls button:first-child,.flight-zoom-controls button:last-child {font-size:20px;}
+.flight-view-toolbar button:disabled {opacity:.4;cursor:default;}
+@media(max-width:450px){.flight-view-toolbar{flex-wrap:wrap;}.flight-view-toolbar button{padding:0 9px;}.flight-view-state{top:calc(var(--radar-top) + 118px);}.air-atlas-camera{min-width:132px;padding:0 10px;}}

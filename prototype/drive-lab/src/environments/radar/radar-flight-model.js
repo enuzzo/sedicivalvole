@@ -34,3 +34,9 @@ export function createFlightTerrainStyle(palette,natural=true){
   return style;
 }
 
+
+/** Optical zoom preserves the observed camera position and terrain clearance. */
+export function radarFlightFov(zoom=0){
+  const bounded=Math.max(-1,Math.min(1,Number.isFinite(zoom)?zoom:0));
+  return 2*Math.atan(Math.tan(36.87*Math.PI/360)/2**bounded)*180/Math.PI;
+}

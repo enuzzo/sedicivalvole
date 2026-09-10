@@ -44,3 +44,13 @@ test('lens preserves centre/corners and shares its shader mapping with marker of
   assert.ok(Math.abs(r-Math.hypot(x-width/2,y-height/2)/scale)<1e-6);
  }
 });
+
+import {radarFlightFov} from '../src/environments/radar/radar-flight-model.js';
+test('flight optical zoom is bounded and reset preserves the original field of view',()=>{
+ assert.ok(Math.abs(radarFlightFov(0)-36.87)<1e-9);
+ assert.ok(radarFlightFov(1)<radarFlightFov(.5));
+ assert.ok(radarFlightFov(-1)>radarFlightFov(-.5));
+ assert.equal(radarFlightFov(999),radarFlightFov(1));
+ assert.equal(radarFlightFov(-999),radarFlightFov(-1));
+ assert.equal(radarFlightFov(NaN),radarFlightFov(0));
+});

@@ -53,6 +53,7 @@ export default function AirAtlasField({position,gpsState,theme,reducedMotion,onR
   const [labels,setLabels]=useState(false),[appearance,setAppearance]=useState('palette');
   const colors=paletteToAtlasCss(theme.palette);
   const selectionColor=theme.palette.accent.reduce((sum,c,i)=>sum+c*[0.2126,0.7152,0.0722][i],0)>0.6?'#151515':'#fff';
+  const actionLuminance=theme.palette.accent.reduce((sum,c,i)=>sum+(c<=0.04045?c/12.92:((c+0.055)/1.055)**2.4)*[0.2126,0.7152,0.0722][i],0);
   const followHome=useRef(true),homeMarker=useRef(null);
   const [flightView,setFlightView]=useState(false);
   const flightViewRef=useRef(false);flightViewRef.current=flightView;
@@ -211,7 +212,7 @@ export default function AirAtlasField({position,gpsState,theme,reducedMotion,onR
   const flightAltitude=flightSample?(flightSample.geometricAltitudeFeet??flightSample.altitudeFeet):(selected?.geometricAltitudeFeet??selected?.altitudeFeet);
   const flightDistance=flightSample&&validAtlasPosition(position)?discoverDistanceMetres(position,flightSample):selected?.distanceMetres;
   const age=selected?Math.max(0,Math.round((clock-selected.observedAtMs)/1000)):0;
-  return <section className={`air-atlas-field${selected&&!flightView?' has-detail':''}${flightView?' is-flight-view':''}`} aria-label="Air Atlas radar" onPointerDown={event=>{if(event.target.closest('button,a,.air-atlas-detail'))event.stopPropagation();}} style={{"--radar-ring":selectionColor,"--radar-accent":colors.accent,"--radar-secondary":colors.secondary,"--radar-base":colors.background}}>
+  return <section className={`air-atlas-field${selected&&!flightView?' has-detail':''}${flightView?' is-flight-view':''}`} aria-label="Air Atlas radar" onPointerDown={event=>{if(event.target.closest('button,a,.air-atlas-detail'))event.stopPropagation();}} style={{"--radar-ring":selectionColor,"--radar-button-ink":actionLuminance>0.179?'#000':'#fff',"--radar-accent":colors.accent,"--radar-secondary":colors.secondary,"--radar-base":colors.background}}>
     {flightView&&selected?<RadarFlightView gl={library.current} plane={selected} readSample={readFlightSample} palette={theme.palette} reducedMotion={reducedMotion} onClose={()=>setFlightView(false)} onFrame={onFrame}/>:null}
     <div className="radar-map-shell">
       {flightView&&selected?<div className="flight-inset-heading"><strong>{selected.callsign||selected.registration||selected.id}</strong><span>{selected.typeCode||'Aircraft'} · N ↑</span></div>:null}
@@ -258,7 +259,7 @@ export default function AirAtlasField({position,gpsState,theme,reducedMotion,onR
         {detail.route?.via.length?<div><span>VIA</span><strong>{detail.route.via.map(p=>p.name||p.code).join(' · ')}</strong></div>:null}
       </div>:null}
       </div>
-      <div className="air-atlas-detail-actions"><button className="air-atlas-camera" disabled={!!cameraUnavailable} title={cameraUnavailable||'Reconstructed terrain view'} aria-label="View from aircraft" onClick={()=>{setExpanded(false);setFlightView(true);}}>FLY WITH</button><button className="air-atlas-expand" aria-label={expanded?'Collapse aircraft detail':'Expand aircraft detail'} aria-expanded={expanded} aria-controls="air-atlas-extra" onClick={()=>setExpanded(v=>!v)}>{expanded?<><span>Scroll for live telemetry</span><strong>LESS ↑</strong></>:'FLIGHT DETAILS ↑'}</button>
+      <div className="air-atlas-detail-actions"><button className="air-atlas-camera" disabled={!!cameraUnavailable} title={cameraUnavailable||'Reconstructed terrain view'} aria-label="View from aircraft" onClick={()=>{setExpanded(false);setFlightView(true);}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3 9V4h5M16 4h5v5M21 16v4h-5M8 20H3v-4M7 13l5-6 5 6M12 7v10M8 17h8"/></svg><span>FLY WITH</span></button><button className="air-atlas-expand" aria-label={expanded?'Collapse aircraft detail':'Expand aircraft detail'} aria-expanded={expanded} aria-controls="air-atlas-extra" onClick={()=>setExpanded(v=>!v)}>{expanded?<><span>Scroll for live telemetry</span><strong>LESS ↑</strong></>:'FLIGHT DETAILS ↑'}</button>
       <button className="air-atlas-close" aria-label="Close aircraft detail" onClick={()=>setSelectedId(null)}>×</button></div>
     </div>:null}
     <div className="air-atlas-attribution"><a href="https://www.adsb.lol/docs/open-data/api/" target="_blank" rel="noreferrer">ADSB.lol</a> · <a href="https://openfreemap.org" target="_blank" rel="noreferrer">OpenFreeMap</a> · <a href="https://openmaptiles.org" target="_blank" rel="noreferrer">OpenMapTiles</a> · <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">© OpenStreetMap</a> · <a href="/third-party/aircraft-shapes/LICENSE" target="_blank" rel="noreferrer">Shapes © RexKramer1</a>{flightView?<><span className="flight-terrain-credit"> · <a href="https://mapterhorn.com/attribution/" target="_blank" rel="noreferrer">Terrain © Mapterhorn</a></span></>:null}<span>Rounded location shared for nearby traffic · photos on selection</span></div>

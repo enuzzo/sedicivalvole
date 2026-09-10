@@ -240,3 +240,7 @@ The September 10 follow-up makes Intro source initialization explicitly Soundtra
 ## Air Atlas first-fix and lens checkpoint — 2026-09-10
 
 Implemented the separately labelled coarse initial location, truthful permission/waiting states, bounded measured dashed trails and owner-selected subtle spherical display lens. Trusted motion/history filters are unchanged. See `docs/AIR-ATLAS-2026-09-09.md` for behavior, limitations and publication evidence.
+
+## Fly With refinement — 2026-09-10
+
+Continuous camera playback no longer waits for all map tiles. Optical zoom/reset preserves the aircraft position and works on a held pose; pending DEM tiles retain the last terrain height. The palette-accented Fly With action has an original view/flight icon, and the single selection ring has extra clearance. See the Air Atlas record for verification and publication.
