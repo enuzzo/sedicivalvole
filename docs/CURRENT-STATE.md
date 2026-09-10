@@ -1652,3 +1652,11 @@ The accepted result is an incremental correction of the existing Intro; oversize
 ## Intro follow-up — 2026-09-10
 
 The owner clarified Soundtrack on every Intro, superseding preservation of the old source at startup. Compact 80 px media rows, artist aligned right beside genre, outlined 32 px Choose/Random controls with 48 px hit regions, restored round preset images and a divided, aligned preset/palette bar are implemented. See INTRO-REFINEMENT-2026-09-10.md for the request reconciliation. Publication evidence follows.
+
+## Intro follow-up published — 2026-09-10 11:57
+
+Canonical build **20260910-1149.1818bef**, source **1818bef**, passed official preserve-existing complete verification: 38 files / 17,055,699 bytes uploaded, 796 verified unchanged files and 29 audio masters reused, two previous assets retained. No legacy deletion. 807 exact static hashes and 24 independent canonical HTTPS identity/hash/cache checks pass.
+
+All 852 native tests and nine canonical controlled browser checks pass, including Soundtrack after a stored Play the Road source, 82 px outer media row, 32 px outlines with actual pointer hits in their 48 px regions, right-aligned artist, round preset previews and palette separator. Live unmocked evidence at 773 x 601: Soundtrack genre, glow feeling by Lyon54, matching artwork and original Aperture preview; no page errors. Existing theme colors are unchanged. Synthetic diagnostic routes were blocked. Physical Tesla/iPhone acceptance remains separate.
+
+All current Intro requests are implemented and no owner answer is pending. Previous Air Atlas true airways remain a separate verified-source requirement, not a forgotten UI item. Source, changelog and publication evidence are committed and pushed.

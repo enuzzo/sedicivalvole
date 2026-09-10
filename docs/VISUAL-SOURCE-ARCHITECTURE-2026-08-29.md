@@ -234,3 +234,5 @@ The selected A+C view reuses the radar MapLibre instance as a north-up corner in
 ## Compact Intro refinement — 2026-09-10
 
 LaunchCockpit retains its intrinsic centered sheet and semantic appearance variables. Prepared soundtrack metadata crosses the same selection-signature readiness gate as artwork. Curated recommendations are sampled once per mount from eight existing-owner compositions; palette cycling changes only the existing theme owner. Original inline outline glyphs introduce no external package or asset source. Small 80 px square previews preserve the original light backing for black transparent SVGs. See INTRO-REFINEMENT-2026-09-10.md for owner scope, fidelity and canonical evidence.
+
+The September 10 follow-up makes Intro source initialization explicitly Soundtrack regardless of stored source, while retaining current-visit choices and saved mute. Media rows match 80 px artwork; compact outlines expose 48 px hit regions. Artist shares the genre row, and preset/palette groups share a divided bar with round previews. Canonical evidence: 20260910-1149.1818bef.
