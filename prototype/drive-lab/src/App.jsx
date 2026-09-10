@@ -306,7 +306,7 @@ function readPreferences() {
       driveySettings: normalizeDriveySettings(value?.driveySettings),
       prtclSettings: normalizePrtclSettings(value?.prtclSettings),
       atlasMapAppearance: normalizeAtlasMapAppearance(value?.atlasMapAppearance ?? "standard"),
-      musicMode: value?.musicMode === "soundtrack" ? "soundtrack" : "play-road",
+      musicMode: value?.musicMode === "play-road" ? "play-road" : "soundtrack",
       soundtrackSelection: normalizeSoundtrackSelection(value?.soundtrackSelection),
       lastLaunchVisualId: value?.lastLaunchVisualId,
       launchSoundtrackMode: ["lucky", "precise"].includes(value?.launchSoundtrackMode) ? value.launchSoundtrackMode
@@ -323,7 +323,7 @@ function readPreferences() {
       driveySettings: DEFAULT_DRIVEY_SETTINGS,
       prtclSettings: DEFAULT_PRTCL_SETTINGS,
       atlasMapAppearance: "standard",
-      musicMode: "play-road",
+      musicMode: "soundtrack",
       soundtrackSelection: normalizeSoundtrackSelection(),
       launchSoundtrackMode: "lucky",
       manualEffects: EMPTY_SOUNDTRACK_MANUAL_EFFECTS,
@@ -3759,7 +3759,7 @@ export function App() {
     preferredSoundtrackSelectionRef.current = resetSelection;
     setLaunchSoundtrackSelection(resetSelection);
     setLaunchLucky(true);
-    setLaunchMusicId("play-road");
+    setLaunchMusicId("soundtrack");
     setLaunchEnvironmentId(DEFAULT_FLUX_ENVIRONMENT_ID);
     setThemeId("red");
     setEnvironmentId(DEFAULT_FLUX_ENVIRONMENT_ID);
@@ -5274,6 +5274,8 @@ export function App() {
           musicId={launchMusicId} onMusic={(id) => { setLaunchExperienceId(null); selectLaunchMusic(id); }}
           selection={launchSoundtrackSelection} lucky={launchLucky}
           soundtrackArtworkUrl={soundtrackLaunchReady(soundtrackSnapshot, launchSoundtrackSelection) ? soundtrackSnapshot.current?.imageUrl : null}
+          soundtrackTrack={soundtrackLaunchReady(soundtrackSnapshot, launchSoundtrackSelection) ? soundtrackSnapshot.current : null}
+          theme={getFluxTheme(themeId)} onPalette={() => { setLaunchExperienceId(null); setThemeId(FLUX_THEMES[(FLUX_THEMES.findIndex(item => item.id === themeId) + 1) % FLUX_THEMES.length].id); }}
           onSelection={chooseLaunchSoundtrack}
           onLucky={() => chooseLaunchSoundtrack(luckySoundtrackGenre(launchSoundtrackSelection.id), true)}
           onRandomVisual={() => { setLaunchExperienceId(null); setLaunchEnvironmentId(luckyLaunchVisual(launchEnvironmentId)); }}

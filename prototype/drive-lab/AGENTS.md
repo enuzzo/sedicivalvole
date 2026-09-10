@@ -397,3 +397,7 @@ waiting for the catalogue. Recover artwork on network/foreground return and
 republish native metadata. Verify native play/pause/previous/next through the
 actual app handlers; do not equate API registration with Tesla button visibility.
 Preserve the native invocation/outcome log and fixed recordings at 1x.
+
+## Owner compact Intro refinement — 2026-09-10
+
+The owner selects direction A only as a small refinement of the current Intro and rejects the oversized generated cover concepts. Preserve current semantic UI colors, centered intrinsic sheet and existing START hierarchy. Use 80 px square covers with 6 px corners (previously 64 px circles), not the large concept images. Keep metadata and compact outline-icon Choose/Random controls to their right, without increasing the selection-row footprint. Soundtrack becomes the fresh/reset default while explicit stored sources remain respected; Visuals only is renamed Mute. Show actual prepared track title/artist beside its matching artwork. Two stable, randomly selected genre-labelled preset recommendations and a direct palette-cycle control share one row; broaden the underlying preset catalogue without adding visual clutter. This supersedes earlier circular-thumbnail rules for this surface. No generated concept artwork enters the product.

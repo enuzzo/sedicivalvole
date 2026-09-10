@@ -1636,3 +1636,7 @@ Controlled traffic on the canonical build passes Chrome 773 x 601 and landscape 
 Earlier refinement checkpoints published in this session were 20260910-0931.52874cd (42 files / 17,183,153 bytes, 792 unchanged files reused) and 20260910-0937.4062ea2 (38 files / 17,034,741 bytes, 796 unchanged files reused). Both passed official complete verification and 24 independent HTTPS checks, and are superseded by the A+C build above.
 
 All requested executable refinements are shipped. Real aeronautical airways still require a separate current licensed source; current airport/runway and major-road context is implemented. No claim of exact-model artwork for every possible aircraft: 182 exact shapes take precedence, and the 2,788-type catalogue selects original category geometry for other recognized types. Unknown types retain a generic aircraft silhouette.
+
+## Compact Intro checkpoint — 2026-09-10
+
+The owner-approved incremental A refinement is implemented: small 80 px square covers, original UI colors/footprint, prepared track metadata, compact Choose/Random outline icons, Soundtrack fresh/reset default, Mute, eight genre presets with two stable random suggestions and immediate palette cycle. No generated mock artwork is shipped. See [the decision and verification](INTRO-REFINEMENT-2026-09-10.md); publication evidence follows.

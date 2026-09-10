@@ -91,3 +91,30 @@
 .cockpit-engine-profiles button{min-height:80px;padding:8px 12px;gap:4px}
 .cockpit-engine-profiles strong{font-size:22px;line-height:1.15}
 .cockpit-engine-profiles small{line-height:1.2}
+
+/* Owner-selected A refinement: existing colors and compact footprint, small square covers. */
+.cockpit-choices .cockpit-selection{display:grid;grid-template-columns:80px minmax(0,1fr);grid-template-rows:minmax(54px,auto) 48px;column-gap:12px;row-gap:4px;padding:8px 12px;align-items:center}
+.cockpit-selection-heading{display:contents}
+.cockpit-thumb{grid-column:1;grid-row:1 / 3;width:80px;height:80px;border-radius:6px;background:var(--ui-surface);align-self:center}
+.cockpit-value{grid-column:2;grid-row:1;gap:3px;max-width:none!important;width:auto!important}
+.cockpit-value strong{font-size:22px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.15}
+.cockpit-value small,.cockpit-value span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cockpit-value small{text-transform:uppercase;font-size:13px;letter-spacing:.04em}
+.cockpit-choice-actions{grid-column:2;grid-row:2;padding:0;justify-content:flex-start;gap:4px;min-width:0}
+.launch-cockpit .cockpit-choice-actions button{display:inline-flex;align-items:center;justify-content:center;gap:6px;font-size:15px;padding:6px 8px;min-width:0;min-height:48px}
+.launch-cockpit .cockpit-choice-actions .cockpit-random{border-color:transparent;font-weight:400}
+.cockpit-action-icon{width:18px;height:18px;flex:none}
+.cockpit-presets{grid-template-columns:auto minmax(0,1fr) auto;gap:8px;padding:0 12px}
+.cockpit-presets>div{gap:4px;min-width:0}
+.cockpit-presets>div button{padding:4px 8px;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:2px}
+.cockpit-presets>div strong{font-size:15px;display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.cockpit-presets>div small{font-size:13px;font-weight:400;line-height:1.15}
+.launch-cockpit .cockpit-palette{display:flex;align-items:center;gap:6px;font-size:15px;padding:4px 8px;min-height:48px}
+.cockpit-palette i{width:12px;height:12px;border-radius:3px;border:1px solid var(--ui-line);flex:none}
+@media(max-width:650px){
+ .cockpit-choices .cockpit-selection{grid-template-columns:80px minmax(0,1fr);padding:8px 12px}
+ .cockpit-presets{grid-template-columns:minmax(0,1fr) auto;padding:0 6px;gap:4px}
+ .cockpit-presets>small{display:none}
+ .cockpit-presets>div button{padding:4px}
+ .cockpit-palette span{display:none}
+}
