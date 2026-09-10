@@ -1539,3 +1539,9 @@ All 856 regression tests and 196 dependency credits pass. Controlled canonical C
 ## Fly With refinement — 2026-09-10
 
 Continuous camera playback no longer waits for all map tiles. Optical zoom/reset preserves the aircraft position and works on a held pose; pending DEM tiles retain the last terrain height. The palette-accented Fly With action has an original view/flight icon, and the single selection ring has extra clearance. See the Air Atlas record for verification and publication.
+
+## Fly With refinement published — 2026-09-10 13:32
+
+Canonical build **20260910-1322.cc64e68** is verified, including the tile-event follow-up **049a783** to camera/control checkpoint **8e79de9**. Official preserve-existing publication uploaded 38 files / 17,065,189 bytes, reused 796 unchanged static files and 29 verified audio masters, and retained one previous asset. All 807 manifest hashes and 24 independent canonical HTTPS identity/hash/cache checks pass.
+
+The 857-test regression suite, 196 dependency credits and actual-component camera regression pass. The component test includes permanently pending tiles, loaded events without tileID, missing DEM samples, continuous movement during optical zoom/reset and zoom while holding a stale pose. Final canonical Chrome/Playwright checks with real terrain and controlled GPS/aircraft pass at 773 x 601, 874 x 402 and 956 x 440: visible terrain, zoom in/out/reset, inset, radar return, prominent icon action and larger single selection ring; no page errors. The initial publication's intermittent tile-event error was corrected before this final acceptance. Diagnostic-mail routes were blocked and screenshots remain private outside the repo. Browser-plugin absence used the installed Chrome/Playwright fallback. Physical Tesla frame rate remains unverified; ADS-B playback keeps its five-second observation buffer.
