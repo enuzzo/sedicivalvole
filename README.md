@@ -506,7 +506,7 @@ Air Atlas now uses five-second measured track playback, immediate aircraft/type 
 
 Air Atlas now uses immediate aircraft type/category silhouettes, a single selected ring with ground distance and five-second measured interpolation. Major-road and airport cartography replaces minor transport clutter. FLY WITH opens the selected A+C reconstructed nose camera over real terrain at 1.25 exaggeration, with a corner radar/telemetry card and direct return. Missing or stale observations hold the camera; approximate height references remain explicit. True airways require a separate aeronautical source. Physical Tesla/iPhone dual-map acceptance remains open.
 
-The compact Intro keeps the existing interface colors, now with small square previews, actual prepared track metadata and distinct Choose/Random actions. Soundtrack is the fresh-state default; Mute retains visual-only startup. Two genre-labelled suggestions from eight presets share a row with immediate palette cycling. See [Intro refinement](docs/INTRO-REFINEMENT-2026-09-10.md).
+The compact Intro keeps the existing interface colors, now with small square previews, actual prepared track metadata and distinct Choose/Random actions. Every Intro starts with Soundtrack, including after a saved Play the Road choice; Mute retains visual-only startup. Two genre-labelled suggestions from eight presets share a row with immediate palette cycling. See [Intro refinement](docs/INTRO-REFINEMENT-2026-09-10.md).
 
 <!-- COMMUNITY-CREDITS:START -->
 ## Community thanks — 2026-09-05

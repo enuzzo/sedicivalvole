@@ -28,3 +28,13 @@ Canonical build **20260910-1118.653acea**, source **653acea**, passed official p
 Eight controlled Chrome user-flow checks pass on the canonical build, including matching track metadata, 80 px square artwork, exact original UI colors, two stable preset recommendations, immediate palette, independent random actions, Mute, saved-source persistence, dark SVG contrast and compact responsive geometry. Live unmocked catalogue evidence at 773 x 601: World / CD1 07 About the Skies / PeerGynt Lobogris, matching cover and original Aperture preview, with no page errors. All 852 native tests and 196 dependency credits pass. No synthetic diagnostic mail. Physical Tesla/iPhone acceptance remains separate.
 
 The accepted result is an incremental correction of the existing Intro; oversized generated concepts are rejected and no generated artwork is shipped. Implementation, changelog and publication evidence are committed and pushed.
+
+## Owner follow-up — 2026-09-10
+
+The owner clarified that Soundtrack must be the initial Intro choice even for an existing saved Play the Road preference. `launchMusicId` now starts explicitly with Soundtrack; saved mute is unchanged and current-visit source choices still work. The preceding saved-source exception is superseded.
+
+Media rows now match the 80 px image height (82 px including outer borders). Genre and right-aligned artist share one 16 px metadata row above the title. Both Choose and Random have visible outlines, 2 px vertical padding and 32 px visible height, with explicit 48 px vertical hit regions. Artwork remains 80 px, square, and unchanged in color; transparent SVG backing remains intact. The preset/palette bar uses aligned labelled groups with a vertical separator, restored circular preset artwork and a circular palette swatch/name. Two stable recommendations remain visible from eight genre-linked presets.
+
+Request reconciliation: Soundtrack default, Mute, compact square covers, actual song/artist metadata, distinct outline icons, two Random controls, expanded genre presets, stable random suggestions and immediate palette cycling are all implemented. No Intro selection question remains unanswered. Earlier Air Atlas true airways still need a current licensed source; physical Tesla/iPhone and sustained dual-map performance remain separate acceptance items.
+
+Controlled browser checks verify the saved-Play-the-Road-to-Soundtrack startup regression, geometry, border/padding/hit sizes, artist alignment, circular presets and divider alongside the existing functional flow. Current semantic colors are unchanged. Publication evidence follows.

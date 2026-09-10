@@ -68,7 +68,7 @@ export function LaunchCockpit({ mode, onMode, musicId, onMusic, selection, lucky
           <div className="cockpit-selection">
             <div className="cockpit-selection-heading">
               <Thumbnail src={musicId === 'play-road' ? score.coverUrl : musicId === 'soundtrack' ? soundtrackArtworkUrl || (selection.kind === 'featured' ? '/brand/illobo-featured-solid.svg' : MUSIC_ARTWORK) : '/third-party/tabler-icons/palette.svg'} />
-              <div className="cockpit-value"><small>{musicId === 'soundtrack' ? selectionLabel : musicId === 'mute' ? 'JUST THE VIEW' : 'ADAPTIVE SCORE'}</small><strong title={soundtrackTrack?.title}>{musicId === 'soundtrack' ? soundtrackTrack?.title || 'Finding a track…' : mixLabel}</strong>{musicId === 'soundtrack' && soundtrackTrack?.artistName ? <span title={soundtrackTrack.artistName}>{soundtrackTrack.artistName}</span> : null}</div>
+              <div className="cockpit-value"><div className="cockpit-metadata-row"><small>{musicId === 'soundtrack' ? selectionLabel : musicId === 'mute' ? 'JUST THE VIEW' : 'ADAPTIVE SCORE'}</small>{musicId === 'soundtrack' && soundtrackTrack?.artistName ? <span title={soundtrackTrack.artistName}>{soundtrackTrack.artistName}</span> : null}</div><strong title={musicId === 'soundtrack' ? soundtrackTrack?.title : mixLabel}>{musicId === 'soundtrack' ? soundtrackTrack?.title || 'Finding a track…' : mixLabel}</strong></div>
             </div>
             <div className="cockpit-choice-actions">
               {musicId !== 'mute' ? <button type="button" className="cockpit-text-action" aria-label={musicId === 'soundtrack' ? 'Choose soundtrack' : 'Choose adaptive score'} aria-haspopup="dialog" onClick={() => { setMixTab(selection.kind === 'pace' ? 'pace' : 'genre'); setPicker(musicId === 'soundtrack' ? 'mix' : 'score'); }}><ActionIcon name="music"/>Choose</button> : null}
@@ -87,7 +87,10 @@ export function LaunchCockpit({ mode, onMode, musicId, onMusic, selection, lucky
             </div>
           </div>
         </div>
-        <div className="cockpit-presets"><small>PRESETS</small><div>{presets.map(item => <button type="button" key={item.id} aria-pressed={experienceId === item.id} onClick={() => onExperience(item.id)}><strong>{item.title}</strong><small>{SOUNDTRACK_GENRE_OPTIONS.find(genre => genre.id === item.settings.soundtrackSelection.id)?.label}</small></button>)}</div><button type="button" className="cockpit-palette" aria-label="Next palette" title={`Palette: ${theme.label}`} onClick={onPalette}><ActionIcon name="palette"/><span>Palette</span><i style={{background:theme.swatch}} aria-hidden="true"/></button></div>
+        <div className="cockpit-presets">
+          <div className="cockpit-presets-group"><small>PRESETS</small><div className="cockpit-preset-options">{presets.map(item => <button type="button" key={item.id} title={item.title} aria-pressed={experienceId === item.id} onClick={() => onExperience(item.id)}><img className="cockpit-preset-thumb" src={item.image} alt=""/><span><strong>{item.title}</strong><small>{SOUNDTRACK_GENRE_OPTIONS.find(genre => genre.id === item.settings.soundtrackSelection.id)?.label}</small></span></button>)}</div></div>
+          <div className="cockpit-palette-group"><small>PALETTE</small><button type="button" className="cockpit-palette" aria-label="Next palette" title={`Palette: ${theme.label}`} onClick={onPalette}><i className="cockpit-palette-thumb" style={{background:theme.swatch}} aria-hidden="true"/><strong>{theme.label}</strong></button></div>
+        </div>
       </div>}
       <div className="cockpit-start-row">
         {muted && (engine || musicId !== 'mute') ? <button className="cockpit-unmute" type="button" onClick={onUnmute}>UNMUTE</button> : null}

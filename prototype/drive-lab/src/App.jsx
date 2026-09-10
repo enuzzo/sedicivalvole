@@ -2208,7 +2208,7 @@ export function App() {
   const [launchSoundtrackSelection, setLaunchSoundtrackSelection] = useState(() => initialLaunchSoundtrack(initialPreferences.soundtrackSelection));
   const [launchLucky, setLaunchLucky] = useState(true);
   const [launchExperienceId, setLaunchExperienceId] = useState(null);
-  const [launchMusicId, setLaunchMusicId] = useState(initialPreferences.musicMode);
+  const [launchMusicId, setLaunchMusicId] = useState("soundtrack");
   const [launchEnvironmentId, setLaunchEnvironmentId] = useState(() => luckyLaunchVisual(initialPreferences.lastLaunchVisualId ?? initialPreferences.environmentId));
   const [speed, setSpeed] = useState(QA_SPEED);
   const [source, setSource] = useState(QA_SPEED > 0 ? "QA" : "GPS");

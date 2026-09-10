@@ -1648,3 +1648,7 @@ Canonical build **20260910-1118.653acea**, source **653acea**, passed official p
 Eight controlled Chrome user-flow checks pass on the canonical build, including matching track metadata, 80 px square artwork, exact original UI colors, two stable preset recommendations, immediate palette, independent random actions, Mute, saved-source persistence, dark SVG contrast and compact responsive geometry. Live unmocked catalogue evidence at 773 x 601: World / CD1 07 About the Skies / PeerGynt Lobogris, matching cover and original Aperture preview, with no page errors. All 852 native tests and 196 dependency credits pass. No synthetic diagnostic mail. Physical Tesla/iPhone acceptance remains separate.
 
 The accepted result is an incremental correction of the existing Intro; oversized generated concepts are rejected and no generated artwork is shipped. Implementation, changelog and publication evidence are committed and pushed.
+
+## Intro follow-up — 2026-09-10
+
+The owner clarified Soundtrack on every Intro, superseding preservation of the old source at startup. Compact 80 px media rows, artist aligned right beside genre, outlined 32 px Choose/Random controls with 48 px hit regions, restored round preset images and a divided, aligned preset/palette bar are implemented. See INTRO-REFINEMENT-2026-09-10.md for the request reconciliation. Publication evidence follows.

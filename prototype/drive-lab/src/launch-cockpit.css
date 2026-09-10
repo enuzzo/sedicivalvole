@@ -121,3 +121,33 @@
 
 /* Preserve the existing light backing for transparent, black source artwork. */
 .cockpit-thumb[src$=".svg"]{background-color:#f1e9db;object-fit:contain}
+
+/* Owner correction: artwork-height rows and equally structured preset/palette groups. */
+.cockpit-choices .cockpit-selection{height:80px;grid-template-rows:40px 40px;padding:0 12px;row-gap:0}
+.cockpit-value{gap:0}
+.cockpit-value strong{font-size:22px;line-height:24px}
+.cockpit-value small,.cockpit-value span{line-height:16px}
+.cockpit-value .cockpit-metadata-row{display:flex;align-items:baseline;justify-content:space-between;gap:8px;min-width:0;width:100%}
+.cockpit-metadata-row small{flex:0 1 auto}
+.cockpit-metadata-row span{flex:1 1 0;text-align:right;font-size:13px}
+.cockpit-choice-actions{min-height:0;height:40px}
+.launch-cockpit .cockpit-choice-actions button{position:relative;min-height:32px;height:32px;padding:2px 8px;line-height:20px}
+/* The visible outline is compact; its vertical touch target remains 48 px. */
+.launch-cockpit .cockpit-choice-actions button::after{content:"";position:absolute;left:0;right:0;top:50%;height:48px;transform:translateY(-50%)}
+.launch-cockpit .cockpit-choice-actions .cockpit-random{border-color:var(--ui-line)}
+.cockpit-presets{display:grid;grid-template-columns:minmax(0,1fr) auto;padding:0;gap:0}
+.cockpit-presets .cockpit-presets-group,.cockpit-presets .cockpit-palette-group{display:flex;align-items:center;gap:8px;padding:0 12px;min-width:0;height:100%}
+.cockpit-presets .cockpit-palette-group{border-left:1px solid var(--ui-line)}
+.cockpit-presets-group>small,.cockpit-palette-group>small{font-size:13px;font-weight:600;letter-spacing:.04em;flex:none}
+.cockpit-preset-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;flex:1;min-width:0}
+.cockpit-presets .cockpit-preset-options button{display:flex;flex-direction:row;align-items:center;justify-content:flex-start;gap:8px;padding:2px 4px;min-width:0;min-height:48px;text-align:left}
+.cockpit-presets .cockpit-preset-thumb,.cockpit-palette .cockpit-palette-thumb{width:28px;height:28px;border-radius:50%;flex:none;object-fit:cover}
+.cockpit-preset-options button>span{display:flex;flex-direction:column;gap:2px;min-width:0}
+.cockpit-presets .cockpit-preset-options strong{font-size:15px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.cockpit-presets .cockpit-preset-options small{font-size:13px;line-height:16px;font-weight:400}
+.launch-cockpit .cockpit-palette{padding:2px 4px;gap:8px;border:0}
+.cockpit-palette strong{font-size:15px;font-weight:600;white-space:nowrap}
+@media(max-width:750px){.cockpit-presets .cockpit-presets-group,.cockpit-presets .cockpit-palette-group{padding:0 8px;gap:6px}.cockpit-presets-group>small{display:none}}
+@media(max-width:450px){.cockpit-palette-group>small{display:none}.cockpit-presets .cockpit-palette-group{padding:0 6px}.cockpit-palette strong{font-size:13px}.cockpit-presets .cockpit-preset-thumb,.cockpit-palette .cockpit-palette-thumb{width:24px;height:24px}.cockpit-presets .cockpit-preset-options button{gap:4px}}
+
+.launch-cockpit .cockpit-palette{flex-direction:row}

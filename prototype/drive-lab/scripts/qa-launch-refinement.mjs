@@ -43,12 +43,14 @@ try {
  if(process.env.QA_BASELINE){await page.getByRole('button',{name:'Soundtrack',exact:true}).click();await page.waitForTimeout(900);await page.screenshot({path:`${out}/baseline.png`});console.log(await page.locator('.launch-cockpit').evaluate(el=>({height:el.getBoundingClientRect().height,colors:['--ui-surface','--ui-text','--ui-line','--ui-accent-text'].map(k=>getComputedStyle(el).getPropertyValue(k))})));await context.close();}
  else {
  assert.equal(await page.getByRole('button',{name:'Soundtrack',exact:true}).getAttribute('aria-pressed'),'true');
- assert.equal(await page.locator('.cockpit-presets>div>button').count(),2);
- const presetNames=await page.locator('.cockpit-presets>div').innerText();
+ assert.equal(await page.locator('.cockpit-preset-options>button').count(),2);
+ const presetNames=await page.locator('.cockpit-preset-options').innerText();
  const colors=await page.locator('.launch-cockpit').evaluate(el=>['--ui-surface','--ui-text','--ui-line','--ui-accent-text'].map(k=>getComputedStyle(el).getPropertyValue(k)));
  console.log('COLORS',colors);
  const images=await page.locator('.cockpit-thumb').evaluateAll(es=>es.map(e=>({width:e.width,render:e.getBoundingClientRect().width,radius:getComputedStyle(e).borderRadius})));
  assert.ok(images.every(e=>e.render===80&&e.radius==='6px'));check('80px square covers; inherited UI colors');
+ const controls=await page.locator('.cockpit-choice-actions button').evaluateAll(es=>es.map(e=>({height:e.getBoundingClientRect().height,padding:parseFloat(getComputedStyle(e).paddingTop),border:getComputedStyle(e).borderColor,hit:parseFloat(getComputedStyle(e,'::after').height)})));assert.ok(controls.every(e=>e.height===32&&e.padding===2&&e.hit===48&&e.border!=='transparent'));const extendedHits=await page.locator('.cockpit-choice-actions button').evaluateAll(es=>es.every(e=>{const r=e.getBoundingClientRect();return e.contains(document.elementFromPoint(r.x+r.width/2,r.bottom+6));}));assert.equal(extendedHits,true);
+ assert.equal(await page.locator('.cockpit-palette-group').evaluate(e=>getComputedStyle(e).borderLeftWidth),'1px');assert.equal(await page.locator('.cockpit-preset-thumb').count(),2);const author=await page.locator('.cockpit-metadata-row span').evaluate(e=>getComputedStyle(e).textAlign);assert.equal(author,'right');check('outlined compact actions, author alignment, round presets and palette divider');
  assert.match(await page.locator('.cockpit-value').first().innerText(),/fixture/);assert.match(await page.locator('.cockpit-value').first().innerText(),/Synthetic QA/);check('prepared track metadata matches current genre');
  await page.screenshot({path:`${out}/compact-773.png`});
  await page.getByRole('button',{name:'Choose soundtrack',exact:true}).click();await page.getByRole('button',{name:'Jazz',exact:true}).click();await page.waitForTimeout(400);
@@ -56,20 +58,20 @@ try {
  const genre=await page.locator('.cockpit-value small').first().innerText();await page.getByRole('button',{name:'Random soundtrack',exact:true}).click();assert.notEqual(await page.locator('.cockpit-value small').first().innerText(),genre);
  const visual=await page.locator('.cockpit-visual .cockpit-value strong').innerText();await page.getByRole('button',{name:'Random visual',exact:true}).click();assert.notEqual(await page.locator('.cockpit-visual .cockpit-value strong').innerText(),visual);
  const palette=await page.getByRole('button',{name:'Next palette'}).getAttribute('title');await page.getByRole('button',{name:'Next palette'}).click();assert.notEqual(await page.getByRole('button',{name:'Next palette'}).getAttribute('title'),palette);assert.equal(await page.locator('.cockpit-dialog').count(),0);
- assert.equal(await page.locator('.cockpit-presets>div').innerText(),presetNames);check('independent random choices and direct palette cycle keep recommendations stable');
- await page.locator('.cockpit-presets>div>button').first().click();assert.equal(await page.locator('.cockpit-presets>div>button[aria-pressed=true]').count(),1);await page.waitForTimeout(500);await page.screenshot({path:`${out}/preset-dark.png`});check('genre-labelled preset applies coherent selection');
+ assert.equal(await page.locator('.cockpit-preset-options').innerText(),presetNames);check('independent random choices and direct palette cycle keep recommendations stable');
+ await page.locator('.cockpit-preset-options>button').first().click();assert.equal(await page.locator('.cockpit-preset-options>button[aria-pressed=true]').count(),1);await page.waitForTimeout(500);await page.screenshot({path:`${out}/preset-dark.png`});check('genre-labelled preset applies coherent selection');
  await page.getByRole('button',{name:'Choose visual',exact:true}).click();await page.getByRole('button').filter({hasText:/^Air Atlas/}).click();await page.locator('.cockpit-visual .cockpit-thumb').evaluate(e=>e.decode());assert.equal(await page.locator('.cockpit-visual .cockpit-thumb').evaluate(e=>getComputedStyle(e).backgroundColor),'rgb(241, 233, 219)');await page.screenshot({path:`${out}/dark-aircraft-preview.png`});check('black SVG preview keeps its original light backing in dark mode');
  await page.getByRole('button',{name:'Mute',exact:true}).click();await page.getByRole('button',{name:'START VISUALS',exact:true}).waitFor();assert.equal(await page.getByRole('button',{name:'Random soundtrack',exact:true}).count(),0);assert.equal(await page.evaluate(()=>window.__qaPlayed.length),0);check('Mute retains visual and all Intro choices stay silent');
  await page.getByRole('button',{name:'Soundtrack',exact:true}).click();await page.waitForTimeout(600);
  for(const [width,height] of [[1280,800],[1280,1200],[874,402],[956,440],[390,844]]){
   await page.setViewportSize({width,height});await page.waitForTimeout(150);
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
-  const rowHeight=await page.locator('.cockpit-choices').evaluate(e=>e.getBoundingClientRect().height);if(width>650)assert.ok(rowHeight<=140,`compact row ${rowHeight}`);
-  const sizes=await page.locator('.launch-cockpit button').evaluateAll(es=>es.map(e=>e.getBoundingClientRect().height));assert.ok(sizes.every(h=>h>=48));
+  const rowHeight=await page.locator('.cockpit-choices').evaluate(e=>e.getBoundingClientRect().height);if(width>650)assert.equal(rowHeight,82);
+  const sizes=await page.locator('.launch-cockpit button').evaluateAll(es=>es.map(e=>Math.max(e.getBoundingClientRect().height,parseFloat(getComputedStyle(e,'::after').height)||0)));assert.ok(sizes.every(h=>h>=48));
   await page.screenshot({path:`${out}/compact-${width}-${height}.png`});
  }
  check('compact row does not expand on tall desktop; Tesla and phone controls retain 48px targets');
- await page.evaluate(()=>{const key='sedicivalvole.preferences.v2';const p=JSON.parse(localStorage.getItem(key)||'{}');localStorage.setItem(key,JSON.stringify({...p,musicMode:'play-road'}));});await page.reload();await page.getByRole('button',{name:'Play the Road',exact:true}).waitFor();assert.equal(await page.getByRole('button',{name:'Play the Road',exact:true}).getAttribute('aria-pressed'),'true');check('explicit saved Play the Road remains respected');
+ await page.evaluate(()=>{const key='sedicivalvole.preferences.v2';const p=JSON.parse(localStorage.getItem(key)||'{}');localStorage.setItem(key,JSON.stringify({...p,musicMode:'play-road'}));});await page.reload();await page.getByRole('button',{name:'Play the Road',exact:true}).waitFor();assert.equal(await page.getByRole('button',{name:'Soundtrack',exact:true}).getAttribute('aria-pressed'),'true');check('every Intro starts with Soundtrack even after saved Play the Road');
  assert.deepEqual(evidence.errors,[]);assert.deepEqual(evidence.failedResponses,[]);
  await fs.writeFile(`${out}/evidence.json`,JSON.stringify(evidence,null,2));console.log('PASS',evidence.checks,evidence.errors);await context.close();
  }
