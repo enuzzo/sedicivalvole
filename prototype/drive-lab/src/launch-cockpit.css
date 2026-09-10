@@ -165,3 +165,9 @@
  .cockpit-presets .cockpit-palette-group{border-left:0;border-top:1px solid var(--ui-line)}
  .cockpit-presets .cockpit-palette-group>small{display:block}
 }
+
+/* Keep suggestions together; the dice refreshes suggestions without starting one. */
+.cockpit-choice-actions{margin-top:5px}
+.cockpit-preset-options{flex:0 1 auto;grid-template-columns:repeat(2,minmax(0,160px));gap:8px}
+.cockpit-presets .cockpit-preset-random{flex:none;width:48px;height:48px;padding:0;align-items:center;justify-content:center}
+@media(max-width:750px){.cockpit-preset-options{gap:4px}.cockpit-presets .cockpit-presets-group{gap:4px}}

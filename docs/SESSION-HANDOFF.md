@@ -1559,3 +1559,12 @@ Validation: 861 native tests, PHP syntax and 196 dependency credits pass. Contro
 ## Visible-area publication — 2026-09-10 13:55
 
 Canonical build **20260910-1348.9f498a6**, source checkpoint **f40e23c**, is published and verified. Official preserve-existing deployment uploaded 38 files / 17,069,614 bytes, reused 796 static assets and 29 audio masters, and retained one prior asset. All 807 manifest hashes and 24 independent canonical identity/hash/cache checks pass. Canonical controlled Chrome tests pass for 100 aircraft, zoom/pan area changes, manual refresh, selected recovery without rewind and three Tesla viewports, without page errors or synthetic mail. Real canonical API checks returned 51 records for a 60 NM query without truncation and one record for a selected hex query; invalid radius/address return 400. The initial Python default user agent received HTTP 403; the browser-compatible user agent passed. Full regression: 861 tests; credits: 196. Physical Tesla performance/reception remain open.
+
+
+## Intro preview and preset refinement — 2026-09-10
+
+Four missing previews now use actual 773 x 601 Chrome captures: Atlas, Air Atlas, Discover and Stats for Nerds. Existing eight renderer previews remain unchanged. Capture location was explicitly set to central Milan for reproducibility, not acquired from the owner. Map/POI and aircraft content came from the real services; Stats shows a newly opened stationary session, not invented journey data. Air Atlas was captured from canonical build 20260910-1348.9f498a6; other surfaces from the same current renderer source locally. No generated artwork was used. Screenshots are unchanged PNG captures; thumbnail presentation uses CSS cover cropping.
+
+Ten coherent presets include Sky Radio (Air Atlas / Blue / Ambient) and City Jazz (Atlas / Graphite / Jazz). The icon-only Random presets control refreshes suggestions without applying them, avoids the previous suggestions and preserves a selected preset. Presets sit together in bounded columns; the separate palette group retains its vertical divider. Both media action rows gain 5 px top margin with existing 48 px touch regions.
+
+Verification: 862 native tests, preview decoding and preset shuffle at 773 x 601, 874 x 402 and 956 x 440 pass without page errors. Browser plugin unavailable; installed Chrome and Playwright used. Physical touch acceptance remains separate.

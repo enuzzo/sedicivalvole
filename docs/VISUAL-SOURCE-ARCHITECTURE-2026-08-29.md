@@ -253,3 +253,12 @@ Traffic queries follow radar zoom, pan and resize, using a rounded map centre an
 Refresh is available in the radar toolbar, coalesces in-flight requests and respects retry backoff. Obsolete viewport responses cannot overwrite the latest area. Position age uses seen_pos; message age uses seen. Neither a successful refresh nor a recent signal fabricates a fresh position. Selected newer observations cannot be rewound by older area data. Disappeared tracks outside the current query are discarded except the selected aircraft.
 
 Validation: 861 native tests, PHP syntax and 196 dependency credits pass. Controlled Chrome checks cover 100 simultaneous aircraft, zoom expansion/contraction, pan, manual refresh, targeted recovery without rewind and 773 x 601 / 874 x 402 / 956 x 440 layouts without page errors. Physical Tesla reception and sustained dense-traffic performance remain unverified.
+
+
+## Intro preview and preset refinement — 2026-09-10
+
+Four missing previews now use actual 773 x 601 Chrome captures: Atlas, Air Atlas, Discover and Stats for Nerds. Existing eight renderer previews remain unchanged. Capture location was explicitly set to central Milan for reproducibility, not acquired from the owner. Map/POI and aircraft content came from the real services; Stats shows a newly opened stationary session, not invented journey data. Air Atlas was captured from canonical build 20260910-1348.9f498a6; other surfaces from the same current renderer source locally. No generated artwork was used. Screenshots are unchanged PNG captures; thumbnail presentation uses CSS cover cropping.
+
+Ten coherent presets include Sky Radio (Air Atlas / Blue / Ambient) and City Jazz (Atlas / Graphite / Jazz). The icon-only Random presets control refreshes suggestions without applying them, avoids the previous suggestions and preserves a selected preset. Presets sit together in bounded columns; the separate palette group retains its vertical divider. Both media action rows gain 5 px top margin with existing 48 px touch regions.
+
+Verification: 862 native tests, preview decoding and preset shuffle at 773 x 601, 874 x 402 and 956 x 440 pass without page errors. Browser plugin unavailable; installed Chrome and Playwright used. Physical touch acceptance remains separate.

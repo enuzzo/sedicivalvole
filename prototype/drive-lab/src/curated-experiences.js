@@ -112,6 +112,8 @@ export const CURATED_EXPERIENCES = Object.freeze([
       soundtrackSelection: Object.freeze({ kind: "genre", id: "pop" }),
     }),
   }),
+  Object.freeze({id: "sky-radio", title: "Sky Radio", description: "Sky Radio: ambient recordings and air-atlas.", detail: "air-atlas · ambient", image: "/artwork/visuals/air-atlas.png", settings: Object.freeze({environmentId: "air-atlas", themeId: "blue", appearanceMode: "dark", musicMode: "soundtrack", soundtrackSelection: Object.freeze({kind: "genre", id: "ambient"})})}),
+  Object.freeze({id: "city-jazz", title: "City Jazz", description: "City Jazz: jazz recordings and atlas.", detail: "atlas · jazz", image: "/artwork/visuals/atlas.png", settings: Object.freeze({environmentId: "atlas", themeId: "graphite", appearanceMode: "dark", musicMode: "soundtrack", soundtrackSelection: Object.freeze({kind: "genre", id: "jazz"})})}),
 ]);
 
 export function curatedExperience(id) {
@@ -136,9 +138,9 @@ export function matchingExperience(settings) {
 
 // Call once when Intro mounts, then retain the result in component state.
 // Keep an existing selected experience visible alongside one new suggestion.
-export function chooseCuratedRecommendations({ selectedId = null, random = Math.random } = {}) {
+export function chooseCuratedRecommendations({ selectedId = null, excludeIds = [], random = Math.random } = {}) {
   const selected = curatedExperience(selectedId);
-  const candidates = CURATED_EXPERIENCES.filter(item => item !== selected);
+  const candidates = CURATED_EXPERIENCES.filter(item => item !== selected && !excludeIds.includes(item.id));
   const result = selected ? [selected] : [];
   while (result.length < 2 && candidates.length) {
     let sample = 0;

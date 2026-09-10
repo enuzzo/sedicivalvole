@@ -30,7 +30,7 @@ export function LaunchCockpit({ mode, onMode, musicId, onMusic, selection, lucky
   environmentId, onVisual, onRandomVisual, soundtrackArtworkUrl, soundtrackTrack, theme, onPalette, scoreId, onScore, engineProfileId, onEngineProfile, experienceId, onExperience,
   markUrl, build, onStart, ready, pending, muted, onUnmute, onSupport, onReset, Dialog }) {
   const [picker, setPicker] = useState(null);
-  const [recommendations] = useState(() => chooseCuratedRecommendations({selectedId:experienceId}));
+  const [recommendations, setRecommendations] = useState(() => chooseCuratedRecommendations({selectedId:experienceId}));
   const presets = experienceId && !recommendations.some(item => item.id === experienceId) ? [CURATED_EXPERIENCES.find(item => item.id === experienceId), recommendations[1]].filter(Boolean) : recommendations;
   const [mixTab, setMixTab] = useState(selection.kind === 'pace' ? 'pace' : 'genre');
   const engine = mode === 'engine';
@@ -78,7 +78,7 @@ export function LaunchCockpit({ mode, onMode, musicId, onMusic, selection, lucky
           </div>
           <div className="cockpit-selection cockpit-visual">
             <div className="cockpit-selection-heading">
-              <Thumbnail src={environmentId === 'air-atlas' ? '/third-party/aircraft-shapes/normalized/A320.svg' : environmentId === 'stats' ? '/third-party/tabler-icons/chart-bar.svg' : ['atlas', 'discover'].includes(environmentId) ? '/third-party/tabler-icons/map-search.svg' : `/artwork/visuals/${visual.id}.png`} fallback="/third-party/tabler-icons/palette.svg" />
+              <Thumbnail src={`/artwork/visuals/${environmentId}.png`} fallback="/third-party/tabler-icons/palette.svg" />
               <div className="cockpit-value"><small>VISUAL</small><strong>{visualLabel}</strong></div>
             </div>
             <div className="cockpit-choice-actions">
@@ -88,7 +88,7 @@ export function LaunchCockpit({ mode, onMode, musicId, onMusic, selection, lucky
           </div>
         </div>
         <div className="cockpit-presets">
-          <div className="cockpit-presets-group"><small>PRESETS</small><div className="cockpit-preset-options">{presets.map(item => <button type="button" key={item.id} title={item.title} aria-pressed={experienceId === item.id} onClick={() => onExperience(item.id)}><img className="cockpit-preset-thumb" src={item.image} alt=""/><span><strong>{item.title}</strong><small>{SOUNDTRACK_GENRE_OPTIONS.find(genre => genre.id === item.settings.soundtrackSelection.id)?.label}</small></span></button>)}</div></div>
+          <div className="cockpit-presets-group"><small>PRESETS</small><div className="cockpit-preset-options">{presets.map(item => <button type="button" key={item.id} title={item.title} aria-pressed={experienceId === item.id} onClick={() => onExperience(item.id)}><img className="cockpit-preset-thumb" src={item.image} alt=""/><span><strong>{item.title}</strong><small>{SOUNDTRACK_GENRE_OPTIONS.find(genre => genre.id === item.settings.soundtrackSelection.id)?.label}</small></span></button>)}</div><button type="button" className="cockpit-preset-random" aria-label="Random presets" title="Random presets" onClick={() => setRecommendations(chooseCuratedRecommendations({selectedId:experienceId, excludeIds:presets.map(item=>item.id)}))}><ActionIcon name="dice"/></button></div>
           <div className="cockpit-palette-group"><small>PALETTE</small><button type="button" className="cockpit-palette" aria-label="Next palette" title={`Palette: ${theme.label}`} onClick={onPalette}><i className="cockpit-palette-thumb" style={{background:theme.swatch}} aria-hidden="true"/><strong>{theme.label}</strong></button></div>
         </div>
       </div>}

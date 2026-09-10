@@ -1456,3 +1456,8 @@ Mapterhorn contributors, https://mapterhorn.com, service integration for the A+C
 ### ADSB.lol service scope update — 2026-09-10
 
 The existing fixed-host adapter now uses viewport-centred `/v2/point/{lat}/{lon}/{radius}` (maximum 250 NM) and selected-aircraft `/v2/hex/{icao_hex}` queries. This adds no imported runtime or dataset. Source: https://api.adsb.lol/api/openapi.json . Existing attribution and unsent acknowledgement remain applicable.
+
+
+### Intro actual-preview captures — 2026-09-10
+
+Four current-product screenshots include the existing OpenFreeMap/OpenMapTiles/OpenStreetMap maps, ADSB.lol traffic with RexKramer1 shapes, and Wikipedia contributors’ Policlinico of Milan page (CC BY-SA). No new renderer or service is integrated. Exact capture/source/hash inventory: `docs/INTRO-PREVIEW-CAPTURES-2026-09-10.md`. Existing public contacts and unsent acknowledgement drafts remain applicable; no messages sent.

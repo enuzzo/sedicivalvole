@@ -514,6 +514,8 @@ Fly With follows measured flight continuously while terrain tiles load, with opt
 
 Air Atlas now refreshes traffic for the visible map area on zoom and pan, with manual refresh and selected-aircraft recovery. Position and signal ages remain distinct; provider coverage and physical Tesla acceptance limits are documented in `docs/AIR-ATLAS-2026-09-09.md`.
 
+Intro now includes actual previews for all Visual choices, ten genre-labelled presets, a compact preset shuffle button and 5 px breathing room above media actions. Capture provenance: `docs/INTRO-PREVIEW-CAPTURES-2026-09-10.md`.
+
 <!-- COMMUNITY-CREDITS:START -->
 ## Community thanks — 2026-09-05
 
@@ -895,3 +897,5 @@ Study only; no new audio or runtime shipped. See the [research report](docs/ENGI
 - 🏔️ **Mapterhorn contributors and credited elevation-data producers** — [service](https://mapterhorn.com), [source/terms inventory](https://mapterhorn.com/attribution/), [project](https://github.com/mapterhorn/mapterhorn): public 512 px Terrarium elevation tiles for the aircraft nose camera, rendered at 1.25 exaggeration. Shipped service integration; no provider runtime, tile redistribution or licence substitution.
 
 <!-- COMMUNITY-CREDITS:END -->
+
+- 🖼️ **Existing map, aviation and Wikipedia contributors** — Current-product Intro screenshots include their previously integrated surfaces; exact material, source links and capture hashes are recorded in [the preview inventory](docs/INTRO-PREVIEW-CAPTURES-2026-09-10.md). Underlying attribution/licences remain applicable.

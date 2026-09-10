@@ -35,7 +35,7 @@ test("an independently changed choice or a failed music request cannot claim a c
 });
 
  test("curated music responds to the owner's song-oriented brief and each experience remains distinguishable", () => {
-  assert.equal(CURATED_EXPERIENCES.length, 8);
+  assert.equal(CURATED_EXPERIENCES.length, 10);
   assert.equal(applyExperienceSettings({}, "night-glass").soundtrackSelection.id, "lounge");
   const lively = applyExperienceSettings({}, "neon-groove");
   assert.equal(lively.soundtrackSelection.id, "funk");
@@ -74,4 +74,12 @@ test("invalid selection or randomness cannot leave recommendations empty or dupl
     assert.equal(choices.length, 2);
     assert.notEqual(choices[0], choices[1]);
   }
+});
+
+test("refreshing recommendations avoids previous suggestions and preserves the selected preset", () => {
+ const before=chooseCuratedRecommendations({random:()=>0});
+ const next=chooseCuratedRecommendations({excludeIds:before.map(item=>item.id),random:()=>0});
+ assert.ok(next.every(item=>!before.includes(item)));
+ const selected=chooseCuratedRecommendations({selectedId:before[0].id,excludeIds:before.map(item=>item.id),random:()=>0});
+ assert.equal(selected[0],before[0]);assert.ok(!before.includes(selected[1]));
 });
