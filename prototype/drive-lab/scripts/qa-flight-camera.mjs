@@ -11,7 +11,7 @@ import Flight from '/src/environments/radar/radar-flight-view.jsx';
 window.calls=[];window.stale=false;window.groundMissing=false;
 class Map {
  constructor(){this.events={};this.fov=36.87;this.canvas=document.createElement('canvas');window.camera=this;setTimeout(()=>this.ready(),50);}
- ready(){this.events['style.load']?.();this.events.sourcedata?.({sourceId:'flight-terrain',tile:{dem:{},state:'loaded',tileID:{key:1}}});}
+ ready(){this.events['style.load']?.();this.events.sourcedata?.({sourceId:'openfreemap',tile:{state:'loaded'}});this.events.sourcedata?.({sourceId:'flight-terrain',tile:{dem:{},state:'loaded',tileID:{key:1}}});}
  on(name,fn){this.events[name]=fn;}isStyleLoaded(){return false;}
  getCanvas(){return this.canvas;}queryTerrainElevation(){return window.groundMissing?null:500;}
  getVerticalFieldOfView(){return this.fov;}setVerticalFieldOfView(v){this.fov=v;}

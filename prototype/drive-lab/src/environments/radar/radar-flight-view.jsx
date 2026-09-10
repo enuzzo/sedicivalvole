@@ -16,7 +16,7 @@ export default function RadarFlightView({gl,plane,readSample,palette,reducedMoti
     if(!gl||!host.current)return;
     let disposed=false,frame,timer,failures=0,terrainReady=false,styleReady=false,lastUi=0,lastFrame=0,rendered=false,failed=false;
     const failedTiles=new Set();
-    let cameraHeight=null,lastGroundCheck=0,ground=0,lastCamera=null,lastRender=0;
+    let cameraHeight=null,lastGroundCheck=Number.NEGATIVE_INFINITY,ground=0,lastCamera=null,lastRender=0;
     let cameraFov=radarFlightFov(zoomRef.current),lastSample=null;
     const p=latest.current.plane;
     const map=new gl.Map({container:host.current,style:styleRef.current,center:[p.longitude,p.latitude],zoom:11,
@@ -40,7 +40,8 @@ export default function RadarFlightView({gl,plane,readSample,palette,reducedMoti
     map.on('error',error);
     map.on('sourcedata',event=>{
       if(event.sourceId==='flight-terrain'&&event.tile?.dem)terrainReady=true;
-      if(event.tile?.state==='loaded')failedTiles.delete(`${event.sourceId}:${event.tile.tileID.key}`);
+      const tileKey=event.tile?.tileID?.key;
+      if(event.tile?.state==='loaded'&&tileKey!=null)failedTiles.delete(`${event.sourceId}:${tileKey}`);
       if(event.sourceDataType==='metadata')failedTiles.delete(`${event.sourceId}:metadata`);
     });
     map.on('idle',()=>{if(terrainReady&&!failedTiles.size){failed=false;failures=0;clearTimeout(timer);timer=null;}});
