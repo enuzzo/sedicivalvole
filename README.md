@@ -508,6 +508,8 @@ Air Atlas now uses immediate aircraft type/category silhouettes, a single select
 
 The compact Intro keeps the existing interface colors, now with small square previews, the prepared track title under an explicit Soundtrack/genre label and distinct Choose/Random actions. Every Intro starts with Soundtrack, including after a saved Play the Road choice; Mute retains visual-only startup. Two genre-labelled suggestions from eight presets share a row with immediate palette cycling. See [Intro refinement](docs/INTRO-REFINEMENT-2026-09-10.md).
 
+Air Atlas starts from a labelled approximate first location while trusted fixes improve it, retains subtle dashed recent-flight trails, and uses a restrained spherical display lens. Location permission and signal acquisition are reported separately; physical Tesla acceptance remains distinct from browser checks.
+
 <!-- COMMUNITY-CREDITS:START -->
 ## Community thanks — 2026-09-05
 

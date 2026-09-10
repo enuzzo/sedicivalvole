@@ -1670,3 +1670,7 @@ The owner requests 8 px vertical cover padding, open borderless media groups, ex
 Canonical build **20260910-1214.3ea3718** is published and verified. Covers remain 80 px square with 8 px vertical padding; both media groups are borderless. SOUNDTRACK and genre identify the music panel, artist attribution remains in the running miniplayer, and PRESETS is always visible at the left. No reset command was added.
 
 The 45 focused tests, nine canonical controlled browser checks, 196 dependency credits and 24 independent HTTPS identity/hash/cache checks pass. The build records 807 exact static hashes. Official preserve-existing publication uploaded 38 files / 17,056,235 bytes, reused 796 unchanged files and 29 verified audio masters, and retained two previous assets. Unmocked public Chrome at 773 x 601 shows Relaxation / Laurie with Aperture and no page errors. Synthetic diagnostic routes were blocked during QA. Physical Tesla/iPhone acceptance remains separate.
+
+## Air Atlas first-fix and lens checkpoint — 2026-09-10
+
+Implemented the separately labelled coarse initial location, truthful permission/waiting states, bounded measured dashed trails and owner-selected subtle spherical display lens. Trusted motion/history filters are unchanged. See `docs/AIR-ATLAS-2026-09-09.md` for behavior, limitations and publication evidence.

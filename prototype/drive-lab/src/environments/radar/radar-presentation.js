@@ -1,4 +1,4 @@
-import {createAtlasStyle} from '../atlas/atlas-model.js';
+import {paletteToAtlasCss,createAtlasStyle} from '../atlas/atlas-model.js';
 
 /** Preserve Atlas cartography while reducing labels for aircraft identification. */
 export function createAirAtlasStyle(palette, appearance = 'palette', labels = false) {
@@ -28,6 +28,10 @@ export function createAirAtlasStyle(palette, appearance = 'palette', labels = fa
         'text-font':['Noto Sans Regular'],'text-size':13,'text-padding':8},
       paint:{'text-color':ink['text-color'],'text-halo-color':ink['text-halo-color'],'text-halo-width':1.5}}
   );
+  style.sources['radar-trails']={type:'geojson',data:{type:'FeatureCollection',features:[]}};
+  style.layers.push({id:'radar-trails',type:'line',source:'radar-trails',
+    paint:{'line-color':paletteToAtlasCss(palette).accent,'line-width':1.5,
+      'line-opacity':0.32,'line-dasharray':[2,3]}});
   return style;
 }
 

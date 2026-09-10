@@ -13,7 +13,7 @@ export function appendRadarObservation(history, plane) {
   const gap=last?next.observedAtMs-last.observedAtMs:0;
   // Never draw a long lost-signal bridge or an implausible receiver jump.
   if(last && (gap>15000 || discoverDistanceMetres(last,next)/(gap/1000)>650)) return [next];
-  return [...history,next].slice(-16);
+  return [...history,next].filter(point=>next.observedAtMs-point.observedAtMs<=300000).slice(-256);
 }
 export function sampleRadarTrack(history, now, reducedMotion=false) {
   if(!history.length)return null;
@@ -30,4 +30,26 @@ export function sampleRadarTrack(history, now, reducedMotion=false) {
     latitude:a.latitude+(b.latitude-a.latitude)*t,trackDegrees:wrap(start+delta(start,end)*t),
     altitudeFeet:altitude('altitudeFeet'),geometricAltitudeFeet:altitude('geometricAltitudeFeet'),
     observedAtMs:time,motion:'interpolated'};
+}
+
+/** Up to 5 km of received flight, ending at the delayed display position. */
+export function radarTrailCoordinates(history, now, reducedMotion=false) {
+  const sample=sampleRadarTrack(history,now,reducedMotion);
+  if(!sample)return [];
+  const points=history.filter(p=>p.observedAtMs<sample.observedAtMs&&now-p.observedAtMs<=300000);
+  points.push(sample);
+  const result=[points.at(-1)];let distance=0;
+  for(let index=points.length-2;index>=0;index--){
+    const point=points[index],last=result[0];
+    // Avoid a world-spanning line at the date line.
+    if(Math.abs(point.longitude-last.longitude)>180)break;
+    const segment=discoverDistanceMetres(point,last);
+    if(distance+segment>5000){
+      const fraction=(5000-distance)/segment;
+      result.unshift({latitude:last.latitude+(point.latitude-last.latitude)*fraction,
+        longitude:last.longitude+(point.longitude-last.longitude)*fraction});break;
+    }
+    distance+=segment;result.unshift(point);
+  }
+  return result.length>1?result.map(p=>[p.longitude,p.latitude]):[];
 }

@@ -1,3 +1,4 @@
+import {radarDisplayFix} from './environments/radar/radar-location.js';
 import { combineDiscoverPlaces } from "./discover/discover-places.js";
 import { nearbyOsmUrl, normalizeNearbyOsm } from "./environments/atlas/osm-places.js";
 import { createPlaceLoader } from "./environments/atlas/place-loader.js";
@@ -2294,6 +2295,7 @@ export function App() {
   const [rawReportOpen, setRawReportOpen] = useState(false);
   const [diagnosticReadmeOpen, setDiagnosticReadmeOpen] = useState(false);
   const [mapPosition, setMapPosition] = useState(null);
+  const [radarInitialPosition, setRadarInitialPosition] = useState(null);
   const [gpsHelpOpen, setGpsHelpOpen] = useState(false);
   const [appearanceMode, setAppearanceMode] = useState(initialAppearanceMode);
   const [appearanceResolution, setAppearanceResolution] = useState(() => ({
@@ -2947,6 +2949,11 @@ export function App() {
     logDiagnosticEvent("gps.requested", { highAccuracy: true });
     gpsPositionRef.current = (position, liveWatch = true) => {
         const capturedAtMs = performance.now();
+        // A coarse first fix can locate nearby aircraft without entering trusted motion history.
+        if (!mapPositionRef.current) {
+          const displayFix = radarDisplayFix(position.coords, capturedAtMs);
+          if (displayFix) setRadarInitialPosition(displayFix);
+        }
         const accuracyM = Number.isFinite(position.coords.accuracy) ? position.coords.accuracy : null;
         const altitudeM = Number.isFinite(position.coords.altitude) && position.coords.altitude >= -500
           && position.coords.altitude <= 10000 ? position.coords.altitude : null;
@@ -5147,7 +5154,7 @@ export function App() {
             />
           ) : environment.renderer === "air-atlas" ? (
             <Suspense fallback={<div className="atlas-waiting"><strong>AIR ATLAS</strong><span>Loading nearby sky</span></div>}>
-              <AirAtlasField position={mapPosition} theme={theme} reducedMotion={reducedMotion} onRenderer={setRenderer} onFrame={recordRenderedFrame} onRuntimeError={handleEnvironmentError} onRetryLocation={startGps} />
+              <AirAtlasField position={mapPosition ?? radarInitialPosition} gpsState={gpsState} theme={theme} reducedMotion={reducedMotion} onRenderer={setRenderer} onFrame={recordRenderedFrame} onRuntimeError={handleEnvironmentError} onRetryLocation={startGps} />
             </Suspense>
           ) : environment.renderer === "atlas" ? (
             <Suspense fallback={<div className="atlas-waiting"><strong>ATLAS</strong><span>Loading city field</span></div>}>

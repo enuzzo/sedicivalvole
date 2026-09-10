@@ -1,3 +1,5 @@
+import {createRadarLens,radarLensOffset} from './radar-lens.js';
+import {radarLocationPresentation} from './radar-location.js';
 import {useEffect,useMemo,useRef,useState} from 'react';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import {atlasMapPixelRatio,validAtlasPosition,paletteToAtlasCss} from '../atlas/atlas-model.js';
@@ -10,7 +12,7 @@ import RadarFlightView from './radar-flight-view.jsx';
 import {radarFlightAvailability} from './radar-flight-model.js';
 import types from '../../../public/third-party/aircraft-types/types.json';
 import shapeCatalogue from '../../../public/third-party/aircraft-shapes/catalogue.json';
-import {appendRadarObservation, sampleRadarTrack} from './radar-motion.js';
+import {appendRadarObservation, sampleRadarTrack, radarTrailCoordinates} from './radar-motion.js';
 import {discoverDistanceMetres} from '../../discover/discover-model.js';
 import {createAirAtlasStyle,radarTelemetryRows} from './radar-presentation.js';
 
@@ -47,14 +49,14 @@ function useAircraftDetail(aircraft){
   return detail;
 }
 
-export default function AirAtlasField({position,theme,reducedMotion,onRenderer,onFrame,onRuntimeError,onRetryLocation}){
+export default function AirAtlasField({position,gpsState,theme,reducedMotion,onRenderer,onFrame,onRuntimeError,onRetryLocation}){
   const [labels,setLabels]=useState(false),[appearance,setAppearance]=useState('palette');
   const colors=paletteToAtlasCss(theme.palette);
   const selectionColor=theme.palette.accent.reduce((sum,c,i)=>sum+c*[0.2126,0.7152,0.0722][i],0)>0.6?'#151515':'#fff';
   const followHome=useRef(true),homeMarker=useRef(null);
   const [flightView,setFlightView]=useState(false);
   const flightViewRef=useRef(false);flightViewRef.current=flightView;
-  const radarCamera=useRef(null);
+  const radarCamera=useRef(null),lens=useRef(null);
   const [northUp,setNorthUp]=useState(true),[expanded,setExpanded]=useState(false);
   const headingFresh=Number.isFinite(position?.heading)&&position?.speedKmh>3&&clockSafe(position);
   const bearing=northUp||!headingFresh?0:position.heading;
@@ -67,6 +69,17 @@ export default function AirAtlasField({position,theme,reducedMotion,onRenderer,o
   const [mapError,setMapError]=useState(false),[photoFailed,setPhotoFailed]=useState(false);
   const lastSelected=useRef(null),selectedIdRef=useRef(selectedId);selectedIdRef.current=selectedId;
   const canStart=validAtlasPosition(position);
+  const [permission,setPermission]=useState('unknown');
+  useEffect(()=>{
+    let disposed=false,permissionStatus;
+    const update=()=>{if(!disposed)setPermission(permissionStatus.state);};
+    // Some embedded browsers do not expose Permissions API. Actual fixes still work.
+    Promise.resolve().then(()=>navigator.permissions?.query({name:'geolocation'})).then(result=>{
+      if(disposed||!result)return;permissionStatus=result;update();result.addEventListener('change',update);
+    }).catch(()=>{});
+    return()=>{disposed=true;permissionStatus?.removeEventListener('change',update);};
+  },[]);
+  const locationPresentation=radarLocationPresentation(position,gpsState,permission,clock);
   const codes=useMemo(()=>new Set(catalogue.map(p=>p.code)),[catalogue]);
   const activePlanes=planes.filter(p=>clock-p.observedAtMs<=RADAR_EXPIRE_MS);
   const selected=planes.find(p=>p.id===selectedId)??(lastSelected.current?.id===selectedId?lastSelected.current:null);
@@ -108,6 +121,7 @@ export default function AirAtlasField({position,theme,reducedMotion,onRenderer,o
       instance.dragRotate.disable();instance.touchZoomRotate.disableRotation();
       const home=document.createElement('div');home.className='air-atlas-home';home.setAttribute('aria-label','Your location');
       homeMarker.current=new gl.Marker({element:home,rotationAlignment:'map'}).setLngLat([point.longitude,point.latitude]).addTo(instance);
+      lens.current=createRadarLens(instance);
       instance.on('dragstart',()=>{followHome.current=false;});
       instance.on('load',()=>{if(!disposed)onRenderer('Air Atlas · MapLibre');});
       instance.on('render',()=>{if(!document.hidden&&!flightViewRef.current){const canvas=instance.getCanvas();onFrame(performance.now(),1000/60,'WebGL2 · MapLibre',canvas.width,canvas.height);}});
@@ -118,6 +132,7 @@ export default function AirAtlasField({position,theme,reducedMotion,onRenderer,o
       document.addEventListener('visibilitychange',visibility);
     }).catch(error=>{if(!disposed){setMapError(true);onRuntimeError?.(error);}});
     return()=>{disposed=true;resize?.disconnect();if(visibility)document.removeEventListener('visibilitychange',visibility);
+      lens.current?.dispose();lens.current=null;
       markers.current.forEach(({marker})=>marker.remove());markers.current.clear();mapRef.current?.remove();mapRef.current=null;setMap(null);};
   },[canStart,mapRetry,onRenderer,onFrame,onRuntimeError]);
   useEffect(()=>{if(map)map.setStyle(createAirAtlasStyle(theme.palette,appearance,labels));},[map,theme.palette,appearance,labels]);
@@ -146,21 +161,34 @@ export default function AirAtlasField({position,theme,reducedMotion,onRenderer,o
   },[map,planes,selectedId,codes,clock,types]);
   useEffect(()=>{
     if(!map)return;
-    let frame,lastMini=0;
+    let frame,lastMini=0,lastTrails=0;
     const animate=()=>{
       if(document.hidden)return;
       const time=performance.now();
       for(const entry of markers.current.values()){
-        if(flightViewRef.current&&entry.button.dataset.aircraftId!==selectedIdRef.current)continue;
         const sample=sampleRadarTrack(entry.history,time,reducedMotion);
         if(!sample)continue;
         entry.marker.setLngLat([sample.longitude,sample.latitude]);
-        if(flightViewRef.current&&time-lastMini>250){map.easeTo({center:[sample.longitude,sample.latitude],zoom:9,bearing:0,duration:300});lastMini=time;}
+        const screen=map.project([sample.longitude,sample.latitude]),container=map.getContainer();
+        entry.marker.setOffset(lens.current?.active?radarLensOffset(screen,container.clientWidth,container.clientHeight):[0,0]);
+        if(flightViewRef.current&&entry.button.dataset.aircraftId===selectedIdRef.current&&time-lastMini>250){map.easeTo({center:[sample.longitude,sample.latitude],zoom:9,bearing:0,duration:300});lastMini=time;}
         const heading=sample.trackDegrees;
         entry.shape.style.transform=Number.isFinite(heading)?`rotate(${heading-map.getBearing()}deg)`:'none';
         entry.button.dataset.motion=sample.motion;
         const home=latest.current.position;
-        entry.distance.textContent=validAtlasPosition(home)?`${(discoverDistanceMetres(home,sample)/1000).toFixed(1)} km`:'';
+        entry.distance.textContent=validAtlasPosition(home)?`${!Number.isFinite(home.accuracyM)||home.accuracyM>250?'≈ ':''}${(discoverDistanceMetres(home,sample)/1000).toFixed(1)} km`:'';
+      }
+      if(homeMarker.current&&validAtlasPosition(latest.current.position)){
+        const home=latest.current.position,screen=map.project([home.longitude,home.latitude]),container=map.getContainer();
+        homeMarker.current.setOffset(lens.current?.active?radarLensOffset(screen,container.clientWidth,container.clientHeight):[0,0]);
+      }
+      if(time-lastTrails>=250&&map.isStyleLoaded()){
+        const features=[];
+        for(const [id,entry] of markers.current){
+          const coordinates=radarTrailCoordinates(entry.history,time,reducedMotion);
+          if(coordinates.length>1)features.push({type:'Feature',properties:{id},geometry:{type:'LineString',coordinates}});
+        }
+        map.getSource('radar-trails')?.setData({type:'FeatureCollection',features});lastTrails=time;
       }
       frame=requestAnimationFrame(animate);
     };
@@ -195,14 +223,14 @@ export default function AirAtlasField({position,theme,reducedMotion,onRenderer,o
         <span><small>OBSERVATION</small><strong>{age}s ago</strong></span>
       </div>:null}
     </div>
-    {!canStart?<div className="atlas-waiting"><strong>AIR ATLAS</strong><span>Location required to find nearby aircraft</span><button onClick={onRetryLocation}>ENABLE GPS</button></div>:!flightView?<>
+    {!canStart?<div className="atlas-waiting"><strong>AIR ATLAS</strong><span>{locationPresentation.message}</span>{locationPresentation.action?<button onClick={onRetryLocation}>{locationPresentation.action}</button>:null}</div>:!flightView?<>
       <div className="air-atlas-toolbar" aria-label="Air Atlas map controls">
         <button onClick={()=>{setShowList(v=>!v);setSelectedId(null);}} aria-expanded={showList} aria-controls="air-atlas-list">{activePlanes.length} AIRCRAFT</button>
         <button aria-label="Show place labels" aria-pressed={labels} onClick={()=>setLabels(v=>!v)}>LABELS {labels?'ON':'OFF'}</button>
         {mapError?<button className="air-atlas-map-retry" onClick={()=>setMapRetry(v=>v+1)}>RETRY MAP</button>:<button aria-label="Use natural map colors" aria-pressed={appearance==='natural'} onClick={()=>setAppearance(v=>v==='palette'?'natural':'palette')}>{appearance==='natural'?'NATURAL':'PALETTE'}</button>}
         <div className="air-atlas-controls"><button aria-label="Follow driving direction" aria-pressed={!northUp} onClick={()=>setNorthUp(v=>!v)}>{northUp?'N':'↑'}</button><button aria-label="Zoom in" onClick={()=>map?.zoomIn()}>+</button><button aria-label="Reset radar view" onClick={reset}>RESET</button><button aria-label="Zoom out" onClick={()=>map?.zoomOut()}>−</button></div>
       </div>
-      <div className="air-atlas-status" role="status">{!northUp&&!headingFresh?'Waiting for driving direction · north up':navigator.onLine===false?'Offline · positions held':status==='loading'?'Finding aircraft…':status==='retrying'?'Feed unavailable · retrying':'ADSB.lol · 50 km nearby · 5s buffer'}</div>
+      <div className="air-atlas-status" role="status">{locationPresentation.message||(!northUp&&!headingFresh?'Waiting for driving direction · north up':navigator.onLine===false?'Offline · positions held':status==='loading'?'Finding aircraft…':status==='retrying'?'Feed unavailable · retrying':'ADSB.lol · 50 km nearby · 5s buffer')}</div>
       {showList?<div id="air-atlas-list" className="air-atlas-list" aria-label="Nearby aircraft">{activePlanes.length?activePlanes.map(p=><button key={p.id} onClick={()=>{setSelectedId(p.id);setShowList(false);}}>{p.callsign||p.registration||p.id}<span>{p.typeCode||'Unknown'} · {(p.distanceMetres/1000).toFixed(0)} km</span></button>):<p>No recent aircraft in range.</p>}</div>:null}
     </>:null}
     {selected&&!flightView?<div className={`air-atlas-detail${expanded?' is-expanded':''}`} aria-label="Selected aircraft detail">

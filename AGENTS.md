@@ -317,3 +317,9 @@ Start every new Intro with Soundtrack, including when the saved source is Play t
 ## Owner Intro breathing room — 2026-09-10
 
 Keep 80 px covers and add 8 px top/bottom padding; remove the media group's outer border and internal divider. Explicitly label the music panel SOUNDTRACK, retaining genre alongside it without repeating an identical Soundtrack genre label. Remove the artist from Intro only; running credits/miniplayer remain unchanged. The owner clarified that the requested left-hand text is PRESETS, not a RESET command. Keep that label visible at all widths; on very narrow layouts the preset and palette groups stack to retain legibility.
+
+## Owner Air Atlas location and lens refinement — 2026-09-10
+
+Use the first valid geographic fix for Air Atlas even when stationary or coarser than 250 m; label approximate accuracy and refine as trusted fixes arrive. Keep the existing trusted motion, terrain and journey gates unchanged. Distinguish granted location awaiting a fix, denied permission, unavailable API and last known position. Permissions API absence must not prevent actual geolocation callbacks from working. Do not equate permission with confirmed satellite reception or require movement for an initial position.
+
+Show understated dashed received-flight trails, bounded to 5 km / five minutes / 256 samples per aircraft; stop at the delayed display sample and break on missing or implausible observations. The owner selected A, a subtle spherical display lens, over a real globe or inclined terrain. Keep geographic coordinates unchanged, align aircraft/home hit regions with the warped map and trails, retain flat controls, and fall back to the ordinary map if the lens GPU context is unavailable. Physical Tesla acceptance remains separate from browser simulation.

@@ -4850,3 +4850,5 @@ html { font-size: var(--font-size-floor); }
  .flight-view-state {max-width:calc(100% - 270px - var(--radar-left));}
 }
 @media(prefers-reduced-motion:reduce){.flight-terrain{transition:none;}}
+
+.air-atlas-field .atlas-waiting>span {max-width:480px;padding:0 16px;color:#ddd;font-size:15px;line-height:1.5;letter-spacing:.01em;text-transform:none;}
