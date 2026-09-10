@@ -1640,3 +1640,11 @@ All requested executable refinements are shipped. Real aeronautical airways stil
 ## Compact Intro checkpoint — 2026-09-10
 
 The owner-approved incremental A refinement is implemented: small 80 px square covers, original UI colors/footprint, prepared track metadata, compact Choose/Random outline icons, Soundtrack fresh/reset default, Mute, eight genre presets with two stable random suggestions and immediate palette cycle. No generated mock artwork is shipped. See [the decision and verification](INTRO-REFINEMENT-2026-09-10.md); publication evidence follows.
+
+## Compact Intro published — 2026-09-10 11:26
+
+Canonical build **20260910-1118.653acea**, source **653acea**, passed official preserve-existing complete-upload verification: 38 files / 17,052,516 bytes uploaded, 796 verified unchanged files and all 29 audio masters reused, two previous assets retained. No legacy deletion. The release manifest verifies 807 exact static hashes; 24 independent canonical HTTPS identity/hash/cache checks pass.
+
+Eight controlled Chrome user-flow checks pass on the canonical build, including matching track metadata, 80 px square artwork, exact original UI colors, two stable preset recommendations, immediate palette, independent random actions, Mute, saved-source persistence, dark SVG contrast and compact responsive geometry. Live unmocked catalogue evidence at 773 x 601: World / CD1 07 About the Skies / PeerGynt Lobogris, matching cover and original Aperture preview, with no page errors. All 852 native tests and 196 dependency credits pass. No synthetic diagnostic mail. Physical Tesla/iPhone acceptance remains separate.
+
+The accepted result is an incremental correction of the existing Intro; oversized generated concepts are rejected and no generated artwork is shipped. Implementation, changelog and publication evidence are committed and pushed.

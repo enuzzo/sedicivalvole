@@ -230,3 +230,7 @@ The lazy radar chunk includes the exact artwork index and separately licensed Mi
 ## Air Atlas nose camera — 2026-09-10
 
 The selected A+C view reuses the radar MapLibre instance as a north-up corner inset and mounts one additional noninteractive terrain map only while open. Both consume the bounded delayed measured track. `radar-flight-model.js` owns availability, approximate camera-height conversion and the original terrain style; `radar-flight-view.jsx` owns rendering, terrain recovery and lifecycle cleanup. Global audio and mode state remain outside both maps. Mapterhorn remote Terrarium tiles supply geometry at 1.25 exaggeration; existing OpenFreeMap cartography supplies surface context. No satellite imagery or onboard video is claimed. Real airways are still a separate data-source requirement.
+
+## Compact Intro refinement — 2026-09-10
+
+LaunchCockpit retains its intrinsic centered sheet and semantic appearance variables. Prepared soundtrack metadata crosses the same selection-signature readiness gate as artwork. Curated recommendations are sampled once per mount from eight existing-owner compositions; palette cycling changes only the existing theme owner. Original inline outline glyphs introduce no external package or asset source. Small 80 px square previews preserve the original light backing for black transparent SVGs. See INTRO-REFINEMENT-2026-09-10.md for owner scope, fidelity and canonical evidence.

@@ -20,3 +20,11 @@ Compared the current canonical baseline and revised browser capture at 773 x 601
 Publication evidence follows after the verified build is deployed.
 
 Transparent black SVG previews retain the previous light backing in dark mode; the original artwork remains unchanged. The 20260910-1113 candidate was not activated: publication was cancelled to include this contrast correction, and the prior canonical identity was verified afterward. Eight browser user-flow checks now pass, including dark Air Atlas preview and saved-source persistence.
+
+## Compact Intro published — 2026-09-10 11:26
+
+Canonical build **20260910-1118.653acea**, source **653acea**, passed official preserve-existing complete-upload verification: 38 files / 17,052,516 bytes uploaded, 796 verified unchanged files and all 29 audio masters reused, two previous assets retained. No legacy deletion. The release manifest verifies 807 exact static hashes; 24 independent canonical HTTPS identity/hash/cache checks pass.
+
+Eight controlled Chrome user-flow checks pass on the canonical build, including matching track metadata, 80 px square artwork, exact original UI colors, two stable preset recommendations, immediate palette, independent random actions, Mute, saved-source persistence, dark SVG contrast and compact responsive geometry. Live unmocked catalogue evidence at 773 x 601: World / CD1 07 About the Skies / PeerGynt Lobogris, matching cover and original Aperture preview, with no page errors. All 852 native tests and 196 dependency credits pass. No synthetic diagnostic mail. Physical Tesla/iPhone acceptance remains separate.
+
+The accepted result is an incremental correction of the existing Intro; oversized generated concepts are rejected and no generated artwork is shipped. Implementation, changelog and publication evidence are committed and pushed.
