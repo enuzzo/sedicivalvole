@@ -177,6 +177,10 @@ test('complete pinned type database classifies rotorcraft before any heading exi
  assert.equal(radarCategory({typeCode:'AS50',trackDegrees:null},types),'helicopter');
  assert.equal(radarCategory({typeCode:'A139'},types),'helicopter');
  assert.equal(radarCategory({typeCode:'C172'},types),'light');
+ assert.equal(radarCategory({typeCode:'PARA'},types),'parachute');
+ assert.equal(radarCategory({typeCode:'SHIP'},types),'airship');
+ assert.equal(radarCategory({typeCode:'DRON'},types),'drone');
+ assert.equal(radarCategory({typeCode:'GLID'},types),'glider');
  for(const category of ['A7','B1','B2','B6','C1','C3','A0'])assert.match(radarFallbackMask({category},types),/^url\("data:image\/svg\+xml,/);
 });
 test('radar-only transport excludes rail and ferry while airport layers ignore place toggle',()=>{
