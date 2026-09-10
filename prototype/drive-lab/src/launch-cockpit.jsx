@@ -14,7 +14,7 @@ const ENGINES = ENGINE_CATALOGUE.map(({ id, label, description }) => [id, label,
 const label = value => value.displayLabel || value.label;
 const MUSIC_ARTWORK = '/assets/launch/soundtrack.png';
 function Thumbnail({ src, fallback = MUSIC_ARTWORK }) {
-  return <img key={src} className="cockpit-thumb" src={src || fallback} alt="" width="64" height="64" decoding="async" style={{ backgroundImage: `url("${fallback}")`, backgroundSize: 'cover' }} onError={event => { if (event.currentTarget.getAttribute('src') !== fallback) event.currentTarget.src = fallback; }} />;
+  return <img key={src} className="cockpit-thumb" src={src || fallback} alt="" width="64" height="64" decoding="async" style={{ backgroundImage: `url("${fallback}")`, backgroundSize: 'cover' }} onLoad={event => { event.currentTarget.style.backgroundImage = 'none'; }} onError={event => { if (event.currentTarget.getAttribute('src') !== fallback) event.currentTarget.src = fallback; }} />;
 }
 const ModeIcon = ({ name }) => <span className={`cockpit-mode-icon is-${name}`} aria-hidden="true" />;
 
