@@ -1529,3 +1529,9 @@ The 45 focused tests, nine canonical controlled browser checks, 196 dependency c
 ## Air Atlas first-fix and lens checkpoint — 2026-09-10
 
 Implemented the separately labelled coarse initial location, truthful permission/waiting states, bounded measured dashed trails and owner-selected subtle spherical display lens. Trusted motion/history filters are unchanged. See `docs/AIR-ATLAS-2026-09-09.md` for behavior, limitations and publication evidence.
+
+## Air Atlas refinement published — 2026-09-10 13:00
+
+Canonical build **20260910-1252.55af39b**, source checkpoint **314147c**, is verified live. Official preserve-existing publication uploaded 38 files / 17,062,816 bytes, reused 796 unchanged static files and 29 verified audio masters, and retained two previous assets. The 807 static manifest hashes and 24 independent canonical HTTPS identity/hash/cache checks pass.
+
+All 856 regression tests and 196 dependency credits pass. Controlled canonical Chrome/Playwright checks at 773 x 601, 874 x 402 and 956 x 440 confirm a stationary 10 km-accuracy first fix opens the radar, a precise stationary fix clears the approximate label, and granted/denied/unsupported-permission states render distinctly. Aircraft selection, measured motion (20 distinct transforms over 20 sampled animation frames), lens rendering, resize and GPU-context-loss fallback pass with no page errors. Local Fly With/inset/return smoke checks also pass. Browser plugin was unavailable; the existing Playwright runtime and installed Chrome were used. GPS and aircraft data were controlled fixtures, diagnostic mail routes were blocked, and screenshots remain private outside the repository. These checks do not establish physical Tesla reception or sustained vehicle frame rate.
