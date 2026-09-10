@@ -118,3 +118,6 @@
  .cockpit-presets>div button{padding:4px}
  .cockpit-palette span{display:none}
 }
+
+/* Preserve the existing light backing for transparent, black source artwork. */
+.cockpit-thumb[src$=".svg"]{background-color:#f1e9db;object-fit:contain}
