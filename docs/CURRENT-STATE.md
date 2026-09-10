@@ -1713,3 +1713,8 @@ Four missing previews now use actual 773 x 601 Chrome captures: Atlas, Air Atlas
 Ten coherent presets include Sky Radio (Air Atlas / Blue / Ambient) and City Jazz (Atlas / Graphite / Jazz). The icon-only Random presets control refreshes suggestions without applying them, avoids the previous suggestions and preserves a selected preset. Presets sit together in bounded columns; the separate palette group retains its vertical divider. Both media action rows gain 5 px top margin with existing 48 px touch regions.
 
 Verification: 862 native tests, preview decoding and preset shuffle at 773 x 601, 874 x 402 and 956 x 440 pass without page errors. Browser plugin unavailable; installed Chrome and Playwright used. Physical touch acceptance remains separate.
+
+
+## Intro preview publication — 2026-09-10 14:08
+
+Canonical build **20260910-1402.243cc86** verified. Official preserve-existing upload: 42 files / 18,012,891 bytes; 811 static manifest hashes, 796 reused assets, 29 verified audio masters and two previous assets retained. All 24 canonical identity/cache checks and four additional screenshot SHA-256 comparisons pass. Canonical browser checks confirm four PNG previews, suggestion shuffle, 5 px spacing and 773 x 601 / 874 x 402 / 956 x 440 layouts without page errors. All 862 native tests, 196 credits and the complete local Intro interaction regression pass. Physical Tesla acceptance remains separate.

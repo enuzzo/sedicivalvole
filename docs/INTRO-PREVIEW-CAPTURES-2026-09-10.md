@@ -15,3 +15,8 @@ Verification: 862 native tests, preview decoding and preset shuffle at 773 x 601
 - `air-atlas.png` SHA-256 `a3ceb02db3f7fcc7b33ad84c7035670c83b816eae26accc4a95d3d718c5a7abd`
 
 Source credits: OpenFreeMap / OpenMapTiles / OpenStreetMap contributors (map data ODbL), ADSB.lol and RexKramer1 aircraft shapes, Wikipedia contributors (rendered Policlinico of Milan article, https://en.wikipedia.org/wiki/Policlinico_of_Milan, CC BY-SA). Source notices remain in the full captures. Product screenshot assets remain excluded from the original software licence; underlying third-party rights remain applicable.
+
+
+## Intro preview publication — 2026-09-10 14:08
+
+Canonical build **20260910-1402.243cc86** verified. Official preserve-existing upload: 42 files / 18,012,891 bytes; 811 static manifest hashes, 796 reused assets, 29 verified audio masters and two previous assets retained. All 24 canonical identity/cache checks and four additional screenshot SHA-256 comparisons pass. Canonical browser checks confirm four PNG previews, suggestion shuffle, 5 px spacing and 773 x 601 / 874 x 402 / 956 x 440 layouts without page errors. All 862 native tests, 196 credits and the complete local Intro interaction regression pass. Physical Tesla acceptance remains separate.
