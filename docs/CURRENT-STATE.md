@@ -1,5 +1,29 @@
 # Current Project State
 
+## Current closeout — 2026-09-10
+
+Latest verified canonical build: **20260910-0117.3a1a0e2**, publication evidence
+**a905ed8**. This section and the [current milestone queue](MILESTONE-CHECKLIST-2026-08-31.md#current-precedence--2026-09-10)
+supersede older “latest” labels and dated snapshots below.
+
+Road UI fixes, OSM Discover and Air Atlas direction A/refinements are live.
+Visual 10 includes aircraft, credited photos, plausible airport routes, expanded
+telemetry, larger palette aircraft, stable controls, Natural/Palette, labels OFF
+and safe-area-aware detail. Departure/arrival flags use validated airport country
+fields and local MIT flag-icons SVGs; missing data produces no invented flag.
+See [behavior, architecture, source inventory and limits](AIR-ATLAS-2026-09-09.md).
+
+Latest publication: 38 focused checks, 196 dependency credits, 803 static hashes,
+official complete-upload verification and 25 canonical HTTPS checks. The preceding
+refinement passed 841 native tests; that is not a new full-suite run for flags.
+Chromium/WebKit touch and inset checks cover Tesla/phone layouts. Physical device
+acceptance and sustained vehicle performance remain open. No synthetic mail sent.
+
+Engine choices remain Mono/Rosso/Touring; six-voice descriptions below are
+historical. Remaining device/inbox evidence and existing Engine office research
+are listed in the milestone queue. This closeout changes documentation only;
+no new deployment is needed.
+
 ## September 9 open-session cache and update refinement
 
 Canonical **20260909-1001 / 00e8e18** is published and verified: 821 tests,

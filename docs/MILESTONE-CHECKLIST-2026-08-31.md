@@ -1,5 +1,29 @@
 # Milestone Checklist — 2026-08-31
 
+## Current precedence — 2026-09-10
+
+This checkpoint supersedes the dated operational queues below. Preserve their
+stable row IDs and evidence; unchecked historical rows do not reopen shipped
+implementation. Canonical build: **20260910-0117.3a1a0e2**, publication evidence
+**a905ed8**. See [current state](CURRENT-STATE.md) and [deployment](DEPLOY.md).
+
+| Scope / milestone | Reconciled status | Remaining work |
+|---|---|---|
+| Reliability / 3, 5, 16 | Published: bounded recovery, immediate music controls, silent Intro preparation, centered Engine loading, seven-day build caches and guarded updates | Device weak-network, update and long-session acceptance; eviction remains possible |
+| Diagnostics / 3, 5, 16 | Published: fifteen observable active session minutes including stops, absent GPS and offline time; hidden time/gaps excluded; one in-memory due report | First verified real automatic inbox receipt; no synthetic QA mail |
+| Atlas / Stats / Discover | Published: separate Stats 09, terrain fallback/report, compact OSM/Wikipedia Discover, smaller Atlas markers and north/zoom/reset | Moving-data legibility, real GPS/endurance; chosen-recipient report inbox receipt |
+| iPhone / 14, 16 | Implementation complete: Compact Cockpit, preserved rotation state, palette taps and safe-area footer; Air Atlas touch/inset browser matrix passes | Physical iPhone 17 Pro/Pro Max Safari, native audio, rotation, notch and touch acceptance |
+| Engine / 15 | Published choices are Mono/Rosso/Touring; selected A/B LAB implemented; Otto/Cinque/Turbine retired | Cabin preference/endurance and targeted recorded-source bank research in existing office handoff |
+| Air Atlas / new Visual 10 | [x] Direction A selected, traffic forwarding authorized, live aircraft, 182 SVG types, credited photos, plausible routes, expanded telemetry, stable toolbar, Natural/Palette, labels OFF and airport flags published | Physical Tesla/iPhone legibility, orientation and sustained performance; schedules deferred, no AirLabs setup required |
+| Vehicle QA / 16 and earlier visual rows | Browser/live evidence recorded; broad earlier owner acceptance preserved | Specific Gradient/GPU, native media, network, touch and long-drive checks; no vehicle 60 FPS claim |
+| Production release / 17 | Experimental canonical publication complete | Separate owner release decision after acceptance matrix; no SemVer release inferred |
+
+No unfinished implementation or publication remains from the latest Air Atlas and
+flag requests. Preserve the [Engine office handoff](ENGINE-SOURCE-OFFICE-HANDOFF-2026-09-09.md)
+without launching it automatically. Catalogue authorship (row 12), the optional
+queue below and the persistent diagnostic-outbox proposal remain deferred, not
+newly authorized work.
+
 Canonical closeout — 2026-09-07 22:58 Europe/Rome: **build 20260907-2243**, source
 **0ab8ebe**, is verified live. All implementation/publication rows in the
 22:40 checkpoint below are now complete. Physical-device and actual inbox gates

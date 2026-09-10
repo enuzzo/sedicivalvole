@@ -1,5 +1,14 @@
 # Night work — September 7, 2026
 
+## Operational precedence — 2026-09-10
+
+Use the [current milestone reconciliation](MILESTONE-CHECKLIST-2026-08-31.md#current-precedence--2026-09-10)
+for implementation, publication and remaining evidence. Dated plans below retain
+provenance, not a separate active queue. Road UI, OSM Discover, Air Atlas direction A
+and airport flags are published in **20260910-0117.3a1a0e2**. Physical acceptance,
+real inbox receipt and existing Engine source-bank research remain separate.
+This documentation reconciliation opens no new product work.
+
 Implementation reconciled on **2026-09-07, Europe/Rome**. This is the current execution
 queue for the owner's request to work through the open tasks. Historical unchecked
 milestone rows are evidence gates, not a second implementation backlog.

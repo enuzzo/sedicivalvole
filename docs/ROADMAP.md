@@ -1,5 +1,14 @@
 # Roadmap
 
+## Operational precedence — 2026-09-10
+
+Use the [current milestone reconciliation](MILESTONE-CHECKLIST-2026-08-31.md#current-precedence--2026-09-10)
+for implementation, publication and remaining evidence. Dated plans below retain
+provenance, not a separate active queue. Road UI, OSM Discover, Air Atlas direction A
+and airport flags are published in **20260910-0117.3a1a0e2**. Physical acceptance,
+real inbox receipt and existing Engine source-bank research remain separate.
+This documentation reconciliation opens no new product work.
+
 The owner-selected [Engine A/B listening LAB](ENGINE-LISTENING-LAB-2026-09-08.md)
 compares the 0834 reference and 1102 refinement on one 68-second route, with
 local preference/notes and JSON export. The public default retains the 1102

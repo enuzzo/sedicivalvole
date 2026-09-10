@@ -1,5 +1,24 @@
 # Session Handoff
 
+## Current restart point — 2026-09-10
+
+Air Atlas and airport country flags are complete and published in
+**20260910-0117.3a1a0e2**, evidence **a905ed8**. No implementation/upload remains
+for this scope. Older “latest publication” labels below are historical.
+Start with [current state](CURRENT-STATE.md) and the
+[reconciled milestones](MILESTONE-CHECKLIST-2026-08-31.md#current-precedence--2026-09-10).
+
+Remaining: physical Tesla/iPhone acceptance, real automatic/report inbox receipt,
+and the existing [Engine source office handoff](ENGINE-SOURCE-OFFICE-HANDOFF-2026-09-09.md).
+Its search exclusions and owner-controlled restart still apply; its September 8
+build is historical. Re-audit Git/Dropbox and canonical identity before office
+work. Do not launch a new task automatically. No duplicate handoff is needed.
+
+Recommended next acceptance: test Air Atlas toolbar/detail touch reach, safe areas,
+airport flags and north/driving orientation during a sustained actual-device
+session. Record device/software/build and observed results; desktop QA cannot
+close these gates. Flight schedules remain deferred.
+
 ## September 9 open-session cache/update release
 
 Latest verified publication: **20260909-1001 / 00e8e18**. Seven-day used static

@@ -1,5 +1,14 @@
 # Sedicivalvole Work Plan
 
+## Operational precedence — 2026-09-10
+
+Use the [current milestone reconciliation](docs/MILESTONE-CHECKLIST-2026-08-31.md#current-precedence--2026-09-10)
+for implementation, publication and remaining evidence. Dated plans below retain
+provenance, not a separate active queue. Road UI, OSM Discover, Air Atlas direction A
+and airport flags are published in **20260910-0117.3a1a0e2**. Physical acceptance,
+real inbox receipt and existing Engine source-bank research remain separate.
+This documentation reconciliation opens no new product work.
+
 Status: initial repository-backed map created on 2026-08-30. This is a plan,
 not an implementation record. The external request document
 `sedicivalvole-richieste-riordinate.md` was treated as proposed product intent;
