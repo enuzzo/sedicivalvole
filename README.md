@@ -896,6 +896,6 @@ Study only; no new audio or runtime shipped. See the [research report](docs/ENGI
 
 - 🏔️ **Mapterhorn contributors and credited elevation-data producers** — [service](https://mapterhorn.com), [source/terms inventory](https://mapterhorn.com/attribution/), [project](https://github.com/mapterhorn/mapterhorn): public 512 px Terrarium elevation tiles for the aircraft nose camera, rendered at 1.25 exaggeration. Shipped service integration; no provider runtime, tile redistribution or licence substitution.
 
-<!-- COMMUNITY-CREDITS:END -->
-
 - 🖼️ **Existing map, aviation and Wikipedia contributors** — Current-product Intro screenshots include their previously integrated surfaces; exact material, source links and capture hashes are recorded in [the preview inventory](docs/INTRO-PREVIEW-CAPTURES-2026-09-10.md). Underlying attribution/licences remain applicable.
+
+<!-- COMMUNITY-CREDITS:END -->
