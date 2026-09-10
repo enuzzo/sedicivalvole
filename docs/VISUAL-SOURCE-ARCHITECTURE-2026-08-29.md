@@ -226,3 +226,7 @@ Independent official postflight passes with 12 root entries and
 ## Air Atlas measured playback — 2026-09-10
 
 The lazy radar chunk includes the exact artwork index and separately licensed Mictronics type data. radar-symbols.js owns original category geometry; radar-motion.js owns a 16-fix history with five-second linear playback, shortest heading/longitude interpolation and gap/jump rejection. DOM markers use subpixel positioning and rotate only their glyph, keeping the selected distance upright. The radar-specific cartography adapter filters transportation and adds airport geometry without modifying Atlas. The lifecycle HTTP owner polls at 2.5 seconds with a two-second shared server cache and existing retry/cancellation. Nose-camera terrain and true-airway geometry remain pending.
+
+## Air Atlas nose camera — 2026-09-10
+
+The selected A+C view reuses the radar MapLibre instance as a north-up corner inset and mounts one additional noninteractive terrain map only while open. Both consume the bounded delayed measured track. `radar-flight-model.js` owns availability, approximate camera-height conversion and the original terrain style; `radar-flight-view.jsx` owns rendering, terrain recovery and lifecycle cleanup. Global audio and mode state remain outside both maps. Mapterhorn remote Terrarium tiles supply geometry at 1.25 exaggeration; existing OpenFreeMap cartography supplies surface context. No satellite imagery or onboard video is claimed. Real airways are still a separate data-source requirement.

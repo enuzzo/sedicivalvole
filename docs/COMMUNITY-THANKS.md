@@ -1447,3 +1447,7 @@ These are unsent acknowledgements; no message has been sent.
 Michael Wolf / Mictronics and readsb-protobuf contributors: shipped unmodified types.json at 845b65eb87e3164ddecd2a2d64ac49b6555550a1 (2,788 entries), GPL-3.0-or-later. Public contact: https://github.com/Mictronics/readsb-protobuf . Unsent: Thank you for maintaining the aircraft type descriptions. They help our radar recognize a helicopter even when its track is missing, and keep category-level geometry distinct from exact model identification. Your original data, licence and attribution remain available with the integration. — enuzzo
 
 Research only: wiedehopf / tar1090-db (https://github.com/wiedehopf/tar1090-db), MapLibre terrain/camera documentation (https://maplibre.org), Mapterhorn data access and attribution (https://mapterhorn.com). No terrain service is shipped by this checkpoint. No messages sent.
+
+## 2026-09-10 — Mapterhorn terrain
+
+Mapterhorn contributors, https://mapterhorn.com, service integration for the A+C aircraft nose camera. Exact use: public Terrarium elevation tiles; no source code imported. Public contact: https://github.com/mapterhorn/mapterhorn . Full elevation provenance: https://mapterhorn.com/attribution/ . Unsent: Thank you for joining public elevation surveys into a practical global terrain service. Your terrain gives our aircraft view recognizable hills and mountains; we retain your source attribution and distinguish our modest display exaggeration from the measured height data. — enuzzo

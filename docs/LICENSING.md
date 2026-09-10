@@ -286,3 +286,7 @@ The owner requests freely usable, entirely free flag sources. Choose Panayiotis 
 ## 2026-09-10 — Independent aircraft type catalogue
 
 Retain Mictronics/readsb-protobuf types.json verbatim at 845b65eb87e3164ddecd2a2d64ac49b6555550a1, plus LICENSE/COPYING and hashes, under public/third-party/aircraft-types. The project uses only this 2,788-entry data document, not GPL application/decoder source. Its GPL-3.0-or-later rights remain intact; it is also embedded as data in the lazy radar bundle to avoid initial misclassification. The original host adapter and original category SVG geometry remain separately authored under the host licence. No claim that PolyForm applies to the catalogue.
+
+## Air Atlas terrain service — 2026-09-10
+
+Mapterhorn contributors (https://mapterhorn.com) provide Terrarium-encoded 512 px global elevation tiles at https://tiles.mapterhorn.com/{z}/{x}/{y}.webp for the owner-selected A+C nose-camera view. Service/data integration only; no provider runtime copied. Retain the TileJSON attribution link https://mapterhorn.com/attribution/ and its full source/licence list https://download.mapterhorn.com/attribution.json, including the applicable regional survey and Copernicus terms. Elevation exaggeration is a project display setting of 1.25. Provider tiles are remote transient map resources, not relicensed as project code or included in the static build cache.

@@ -502,6 +502,10 @@ Air Atlas now offers place labels OFF by default, Natural/Palette maps, larger c
 
 Air Atlas now uses five-second measured track playback, immediate aircraft/type catalogues, category fallbacks, one selected ring with ground distance, and radar-only major-road/airport cartography. Missing observations hold rather than inventing flight. Terrain nose camera and true aeronautical airways remain pending; see [Air Atlas](docs/AIR-ATLAS-2026-09-09.md).
 
+### Air Atlas measured flight and terrain view
+
+Air Atlas now uses immediate aircraft type/category silhouettes, a single selected ring with ground distance and five-second measured interpolation. Major-road and airport cartography replaces minor transport clutter. FLY WITH opens the selected A+C reconstructed nose camera over real terrain at 1.25 exaggeration, with a corner radar/telemetry card and direct return. Missing or stale observations hold the camera; approximate height references remain explicit. True airways require a separate aeronautical source. Physical Tesla/iPhone dual-map acceptance remains open.
+
 <!-- COMMUNITY-CREDITS:START -->
 ## Community thanks — 2026-09-05
 
@@ -879,5 +883,7 @@ Study only; no new audio or runtime shipped. See the [research report](docs/ENGI
 
 
 - ✈️ **Michael Wolf / Mictronics and readsb-protobuf contributors** — [original aircraft type data](https://github.com/Mictronics/readsb-protobuf/tree/845b65eb87e3164ddecd2a2d64ac49b6555550a1/webapp/src/db): shipped unmodified 2,788-type JSON catalogue, GPL-3.0-or-later, with original licence and hashes. Air Atlas uses its descriptions to select an original category silhouette when an exact RexKramer1 shape is unavailable. No decoder code imported. [tar1090-db](https://github.com/wiedehopf/tar1090-db) was a discovery reference only.
+
+- 🏔️ **Mapterhorn contributors and credited elevation-data producers** — [service](https://mapterhorn.com), [source/terms inventory](https://mapterhorn.com/attribution/), [project](https://github.com/mapterhorn/mapterhorn): public 512 px Terrarium elevation tiles for the aircraft nose camera, rendered at 1.25 exaggeration. Shipped service integration; no provider runtime, tile redistribution or licence substitution.
 
 <!-- COMMUNITY-CREDITS:END -->

@@ -831,3 +831,5 @@ No dated releases exist yet.
 - 2026-09-10 09:36 `[4d5ed7a]`: Completed Air Atlas fallback classification for reported parachutists, airships, gliders and drones, and prevented single-engine jets from receiving the light propeller silhouette. The pinned data document and 182 upstream artworks remain unchanged. All 22 focused radar tests pass, including these category regressions.
 
 - 2026-09-10 09:40 `[09f6add]`: Fixed the Air Atlas Intro thumbnail's pre-existing 404 by using the already bundled, attributed A320 SVG instead of a nonexistent air-atlas.png. No new external artwork or runtime dependency. All 30 focused launch/presentation checks pass.
+
+- 2026-09-10 10:02 `[75d5428]`: Clear the Intro thumbnail placeholder after successful image load so it cannot remain behind transparent aircraft SVG artwork.

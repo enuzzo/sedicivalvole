@@ -301,3 +301,7 @@ Do not claim desktop frame timing proves sustained Tesla 60 FPS.
 ## Owner Air Atlas refinement — 2026-09-10
 
 Only selected aircraft have one contrasting ring, with ground distance below it. Shape availability must not depend on ground track. Retain exact model artwork where available and use clearly identified category silhouettes otherwise, with no neutral dots for known rotorcraft or civil aircraft. Buffer measured positions by five seconds for continuous interpolation; never claim an unobserved path or move stale targets indefinitely. Filter map transport to major roads; preserve lakes and airport/runway context while reducing minor water detail. True airways need a verified aeronautical source, not guessed routes. A separate nose-mounted oblique terrain view with elevation exaggeration 1.25 is requested; A Nose Camera / B Flight Instruments / C Dual View were presented and selection remains pending.
+
+## Owner Air Atlas nose-camera selection — 2026-09-10
+
+The owner selects A+C: an oblique nose-mounted view over real 3D terrain, exaggeration 1.25, with one corner card combining a minimap and compact telemetry. This resolves the earlier A/B/C gate. Keep direct return to the radar, shared five-second measured playback, honest stale/missing-data states and explicit approximate altitude reference. Do not imply onboard video or exact terrain clearance.

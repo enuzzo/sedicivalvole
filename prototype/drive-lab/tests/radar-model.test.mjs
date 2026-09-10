@@ -192,3 +192,24 @@ test('radar-only transport excludes rail and ferry while airport layers ignore p
  const types=JSON.parse(readFileSync(new URL('../public/third-party/aircraft-types/types.json',import.meta.url)));
  for(const typeCode of Object.keys(types))assert.ok(radarFallbackMask({typeCode},types).includes('svg'));
 });
+
+import {radarFlightAvailability,radarCameraHeight,createFlightTerrainStyle} from '../src/environments/radar/radar-flight-model.js';
+test('nose camera requires fresh airborne position, track and altitude',()=>{
+ const p={observedAtMs:10000,trackDegrees:0,altitudeFeet:5000};
+ assert.equal(radarFlightAvailability(p,10000),null);
+ assert.match(radarFlightAvailability(p,41000),/fresh/);
+ assert.match(radarFlightAvailability({...p,onGround:true},10000),/ground/);
+ assert.match(radarFlightAvailability({...p,trackDegrees:null},10000),/track/);
+ assert.match(radarFlightAvailability({...p,altitudeFeet:null},10000),/altitude/);
+});
+test('terrain exaggeration preserves approximate clearance and labels adjusted camera heights',()=>{
+ const normal=radarCameraHeight({altitudeFeet:5000},1250);
+ assert.equal(normal.cameraM,1774);assert.equal(normal.adjusted,false);assert.equal(normal.reference,'Pressure altitude');
+ const low=radarCameraHeight({geometricAltitudeFeet:1000},1250);
+ assert.equal(low.cameraM,1340);assert.equal(low.adjusted,true);assert.equal(low.reference,'GPS ellipsoid');
+ assert.equal(radarCameraHeight({},1000),null);
+ const palette={base:[0,0,0],mid:[.1,.1,.1],light:[1,1,1],accent:[1,.2,.1],secondary:[.1,.5,1]};
+ const style=createFlightTerrainStyle(palette);
+ assert.equal(style.terrain.exaggeration,1.25);assert.equal(style.sources['flight-terrain'].encoding,'terrarium');
+ assert.equal(style.sources['flight-terrain'].tileSize,512);
+});
