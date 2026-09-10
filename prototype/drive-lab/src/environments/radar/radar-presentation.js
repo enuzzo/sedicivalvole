@@ -9,6 +9,25 @@ export function createAirAtlasStyle(palette, appearance = 'palette', labels = fa
   layer.filter = ['step', ['zoom'], ['in', ['get', 'class'], ['literal', ['city']]], 10,
     ['in', ['get', 'class'], ['literal', ['city', 'town']]], 12,
     ['in', ['get', 'class'], ['literal', ['city', 'town', 'village']]]];
+  for(const road of style.layers.filter(layer=>layer['source-layer']==='transportation')) {
+    road.filter=['in',['get','class'],['literal',['motorway','trunk','primary']]];
+  }
+  // River polygons do not expose reliable width. Retain them only at close zoom;
+  // lakes and oceans remain visible throughout the radar overview.
+  style.layers.find(layer=>layer.id==='atlas-water').filter=['any',
+    ['!=',['get','class'],'river'],['>=',['zoom'],12]];
+  const water=style.layers.find(layer=>layer.id==='atlas-water').paint['fill-color'];
+  const ink=style.layers.find(layer=>layer.id==='atlas-place-labels').paint;
+  style.layers.push(
+    {id:'radar-airport-ground',type:'fill',source:'openfreemap','source-layer':'aeroway',
+      filter:['==',['geometry-type'],'Polygon'],paint:{'fill-color':water,'fill-opacity':0.65}},
+    {id:'radar-runways',type:'line',source:'openfreemap','source-layer':'aeroway',
+      filter:['==',['get','class'],'runway'],paint:{'line-color':ink['text-color'],'line-width':2,'line-opacity':0.75}},
+    {id:'radar-airports',type:'symbol',source:'openfreemap','source-layer':'aerodrome_label',
+      layout:{'text-field':['coalesce',['get','iata'],['get','icao'],['get','name:latin'],['get','name']],
+        'text-font':['Noto Sans Regular'],'text-size':13,'text-padding':8},
+      paint:{'text-color':ink['text-color'],'text-halo-color':ink['text-halo-color'],'text-halo-width':1.5}}
+  );
   return style;
 }
 

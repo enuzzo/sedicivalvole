@@ -153,3 +153,38 @@ test('route PHP adapter forwards valid country codes and rejects malformed count
  const result=JSON.parse(execFileSync('php',['-r',code],{input:JSON.stringify(payload),encoding:'utf8'}));
  assert.equal(result._airports[0].countryiso2,'GB');assert.equal(result._airports[1].countryiso2,undefined);assert.equal(result._airports[2].countryiso2,undefined);
 });
+
+import {appendRadarObservation,sampleRadarTrack} from '../src/environments/radar/radar-motion.js';
+import {radarCategory,radarFallbackMask} from '../src/environments/radar/radar-symbols.js';
+test('five-second playback uses measured history and interpolates headings across north',()=>{
+ const a={latitude:46,longitude:8,observedAtMs:1000,trackDegrees:350,altitudeFeet:1000};
+ const b={...a,longitude:8.01,observedAtMs:5000,trackDegrees:10,altitudeFeet:1200};
+ const history=appendRadarObservation(appendRadarObservation([],a),b);
+ const sample=sampleRadarTrack(history,8000);
+ assert.ok(Math.abs(sample.longitude-8.005)<1e-9);assert.equal(sample.trackDegrees,0);assert.equal(sample.altitudeFeet,1100);
+ assert.equal(sample.motion,'interpolated');assert.equal(sampleRadarTrack(history,11000).longitude,8.01);
+ assert.equal(sampleRadarTrack(history,8000,true).motion,'held');
+ assert.equal(appendRadarObservation(history,{...b,observedAtMs:8000}),history);
+ assert.equal(appendRadarObservation(history,{...a,observedAtMs:3000}),history);
+ assert.equal(appendRadarObservation(history,{...b,longitude:9,observedAtMs:25000}).length,1);
+});
+test('complete pinned type database classifies rotorcraft before any heading exists',()=>{
+ const root=new URL('../public/third-party/aircraft-types/',import.meta.url);
+ const types=JSON.parse(readFileSync(new URL('types.json',root)));
+ const inventory=JSON.parse(readFileSync(new URL('inventory.json',root)));
+ for(const f of inventory.files)assert.equal(createHash('sha256').update(readFileSync(new URL(f.file,root))).digest('hex'),f.sha256);
+ assert.equal(Object.keys(types).length,2788);
+ assert.equal(radarCategory({typeCode:'AS50',trackDegrees:null},types),'helicopter');
+ assert.equal(radarCategory({typeCode:'A139'},types),'helicopter');
+ assert.equal(radarCategory({typeCode:'C172'},types),'light');
+ for(const category of ['A7','B1','B2','B6','C1','C3','A0'])assert.match(radarFallbackMask({category},types),/^url\("data:image\/svg\+xml,/);
+});
+test('radar-only transport excludes rail and ferry while airport layers ignore place toggle',()=>{
+ const palette={base:[0,0,0],mid:[.1,.1,.1],light:[1,1,1],accent:[1,.2,.1],secondary:[.1,.5,1]};
+ const style=createAirAtlasStyle(palette);
+ for(const road of style.layers.filter(l=>l['source-layer']==='transportation'))assert.deepEqual(road.filter,['in',['get','class'],['literal',['motorway','trunk','primary']]]);
+ assert.ok(style.layers.some(l=>l.id==='radar-runways'));
+ assert.equal(style.layers.find(l=>l.id==='radar-airports').layout.visibility,undefined);
+ const types=JSON.parse(readFileSync(new URL('../public/third-party/aircraft-types/types.json',import.meta.url)));
+ for(const typeCode of Object.keys(types))assert.ok(radarFallbackMask({typeCode},types).includes('svg'));
+});

@@ -489,3 +489,7 @@ The readsb contributors, maintained by wiedehopf, document the JSON field semant
 ## Airport country flags — 2026-09-10
 
 Panayiotis Lipiridis and flag-icons contributors, https://github.com/lipis/flag-icons at `086f7e97d657358203916dbe84f61c2bccaa81eb`. MIT-licensed unmodified 4:3 SVG flags and country names are bundled for Air Atlas airport country indicators. Copyright and complete MIT licence are retained in `public/third-party/country-flags/LICENSE`; the per-file hash inventory records the exact subset. Country association comes only from ADSB.lol route `countryiso2`, not aircraft registration or airport-code inference. No paid API, account, remote flag CDN or new runtime dependency.
+
+## Air Atlas aircraft classification data — 2026-09-10
+
+Michael Wolf / Mictronics and readsb-protobuf contributors: unmodified `webapp/src/db/types.json` at revision `845b65eb87e3164ddecd2a2d64ac49b6555550a1`, distributed as a separate data document under `public/third-party/aircraft-types/`. Declared GPL-3.0-or-later; original LICENSE, COPYING and exact hashes retained. No decoder or application source imported, no relabelling under PolyForm. The original adapter reads ICAO type descriptions for category-level silhouettes; it does not claim exact geometry or registration coverage. Source: https://github.com/Mictronics/readsb-protobuf/tree/845b65eb87e3164ddecd2a2d64ac49b6555550a1 .

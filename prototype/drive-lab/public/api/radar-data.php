@@ -78,7 +78,7 @@ $ok = curl_exec($curl); $status = curl_getinfo($curl, CURLINFO_HTTP_CODE); unset
 $payload = $ok && $status === 200 ? json_decode($body, true, 20) : null;
 $result = is_array($payload) ? radar_data_filter($payload, $query['kind']) : null;
 if ($result !== null) {
-    $state['cache'][$query['key']] = ['expires' => $now + ($query['kind'] === 'nearby' ? 8 : 300), 'data' => $result];
+    $state['cache'][$query['key']] = ['expires' => $now + ($query['kind'] === 'nearby' ? 2 : 300), 'data' => $result];
 } else { $state['retryAt'] = $now + max(15, $retryAfter); }
 foreach ($state['cache'] ?? [] as $key => $entry) if ($entry['expires'] <= $now) unset($state['cache'][$key]);
 while (count($state['cache'] ?? []) > 32) array_shift($state['cache']);

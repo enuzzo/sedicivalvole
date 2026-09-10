@@ -282,3 +282,7 @@ ADSB.lol traffic/routes and Planespotters photo metadata are service integration
 ## 2026-09-10 — Freely reusable airport country flags
 
 The owner requests freely usable, entirely free flag sources. Choose Panayiotis Lipiridis / flag-icons at `086f7e97d657358203916dbe84f61c2bccaa81eb`, declared MIT. Bundle 250 unmodified 4:3 SVGs (249 ISO country/territory entries plus XK), full MIT notice, original country metadata and exact per-file inventory. The filtered code/name lookup retains MIT as well. MIT permits commercial reuse and redistribution subject to preserving its notice; the original host remains PolyForm Noncommercial and does not restrict these separately licensed assets. Country association is explicitly supplied by the already integrated ADSB.lol route service; unsupported/missing values produce no flag. No new paid service, account or remote image CDN.
+
+## 2026-09-10 — Independent aircraft type catalogue
+
+Retain Mictronics/readsb-protobuf types.json verbatim at 845b65eb87e3164ddecd2a2d64ac49b6555550a1, plus LICENSE/COPYING and hashes, under public/third-party/aircraft-types. The project uses only this 2,788-entry data document, not GPL application/decoder source. Its GPL-3.0-or-later rights remain intact; it is also embedded as data in the lazy radar bundle to avoid initial misclassification. The original host adapter and original category SVG geometry remain separately authored under the host licence. No claim that PolyForm applies to the catalogue.

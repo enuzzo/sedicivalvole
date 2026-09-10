@@ -4768,12 +4768,15 @@ html { font-size: var(--font-size-floor); }
 .air-atlas-controls button[aria-label="Reset radar view"] {font-size:13px;}
 .air-atlas-status {position:absolute;top:calc(var(--radar-top) + 60px);left:var(--radar-left);max-width:calc(100% - 24px);padding:3px 7px;background:var(--radar-panel);border-radius:3px;font:13px/1.3 var(--font-data);}
 .aircraft-marker {width:48px;height:48px;display:grid;place-items:center;border:0;background:transparent;padding:0;cursor:pointer;}
-.aircraft-marker span {display:block;width:42px;height:42px;background:var(--radar-accent);mask-size:contain;mask-repeat:no-repeat;mask-position:center;-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;filter:drop-shadow(0 1px 2px #000);}
-.aircraft-marker::before {content:"";position:absolute;inset:2px;border-radius:50%;border:1px solid #0008;box-shadow:0 0 0 1px #fff5;background:#080c0c99;z-index:-1;}
+.aircraft-marker > span {display:block;width:42px;height:42px;background:var(--radar-accent);mask-size:contain;mask-repeat:no-repeat;mask-position:center;-webkit-mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;filter:drop-shadow(0 1px 2px #000);}
+.aircraft-marker::before {content:"";position:absolute;inset:2px;border-radius:50%;border:0;box-shadow:none;background:transparent;z-index:-1;}
 .aircraft-marker span.is-unknown {width:17px;height:17px;border-radius:50%;border:2px solid #fff;}
-.aircraft-marker[aria-pressed="true"]::before {border:2px solid #fff;box-shadow:0 0 0 3px var(--radar-accent);background:#080c0ce8;}
+.aircraft-marker[aria-pressed="true"]::before {border:2px solid var(--radar-ring,#fff);box-shadow:none;background:transparent;}
 .aircraft-marker[aria-pressed="true"] {z-index:1;}
-.aircraft-marker.is-stale {opacity:.6;}
+.aircraft-marker.is-stale > span {opacity:.6;}
+.aircraft-distance {display:none;position:absolute;top:49px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:13px;font-weight:600;color:#fff;background:#080c0ce8;padding:2px 4px;border-radius:3px;pointer-events:none;}
+.aircraft-marker[aria-pressed="true"] .aircraft-distance {display:block;}
+.aircraft-marker > span.is-unknown {width:24px;height:24px;border-radius:0;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);}
 .air-atlas-field button:focus-visible,.air-atlas-field a:focus-visible {outline:3px solid #fff;outline-offset:2px;}
 .air-atlas-list {position:absolute;z-index:4;top:calc(var(--radar-top) + 86px);left:var(--radar-left);width:280px;max-height:calc(100% - var(--radar-top) - var(--radar-bottom) - 122px);overflow:auto;background:var(--radar-panel);border:1px solid var(--radar-line);border-radius:6px;}
 .air-atlas-list button {width:100%;display:flex;justify-content:space-between;align-items:center;gap:8px;text-align:left;min-height:56px;padding:8px 12px;border:0;border-bottom:1px solid var(--radar-line);background:transparent;color:#f4f2ec;font:15px var(--font-ui);}

@@ -500,6 +500,8 @@ AIR ATLAS is Visual 10: the selected map direction, nearby measured aircraft, 18
 
 Air Atlas now offers place labels OFF by default, Natural/Palette maps, larger colored aircraft and a scrollable telemetry panel with precise measurement labels. [Current architecture and acceptance limits](docs/AIR-ATLAS-2026-09-09.md).
 
+Air Atlas now uses five-second measured track playback, immediate aircraft/type catalogues, category fallbacks, one selected ring with ground distance, and radar-only major-road/airport cartography. Missing observations hold rather than inventing flight. Terrain nose camera and true aeronautical airways remain pending; see [Air Atlas](docs/AIR-ATLAS-2026-09-09.md).
+
 <!-- COMMUNITY-CREDITS:START -->
 ## Community thanks — 2026-09-05
 
@@ -874,5 +876,8 @@ Study only; no new audio or runtime shipped. See the [research report](docs/ENGI
 - 📡 **wiedehopf / readsb contributors** — [JSON field documentation](https://github.com/wiedehopf/readsb/blob/dev/README-json.md): study-only semantic reference for Air Atlas telemetry units and derived measurements. No code imported. Public contact: [project discussions/issues](https://github.com/wiedehopf/readsb).
 
 - 🏳️ **Panayiotis Lipiridis and flag-icons contributors** — [flag-icons](https://github.com/lipis/flag-icons/tree/086f7e97d657358203916dbe84f61c2bccaa81eb): shipped unmodified 4:3 country SVG flags and country-name metadata for Air Atlas departure/arrival airports, MIT. Full licence retained locally; country mapping uses the existing ADSB.lol route response. Public contact: [project issues](https://github.com/lipis/flag-icons/issues).
+
+
+- ✈️ **Michael Wolf / Mictronics and readsb-protobuf contributors** — [original aircraft type data](https://github.com/Mictronics/readsb-protobuf/tree/845b65eb87e3164ddecd2a2d64ac49b6555550a1/webapp/src/db): shipped unmodified 2,788-type JSON catalogue, GPL-3.0-or-later, with original licence and hashes. Air Atlas uses its descriptions to select an original category silhouette when an exact RexKramer1 shape is unavailable. No decoder code imported. [tar1090-db](https://github.com/wiedehopf/tar1090-db) was a discovery reference only.
 
 <!-- COMMUNITY-CREDITS:END -->

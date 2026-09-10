@@ -1441,3 +1441,9 @@ These are unsent acknowledgements; no message has been sent.
 ## Airport country flags — 2026-09-10
 
 - **Panayiotis Lipiridis and flag-icons contributors** — [flag-icons](https://github.com/lipis/flag-icons), shipped MIT SVG flags and country names, no runtime package. Public contact: https://github.com/lipis/flag-icons/issues . Unsent: Thank you for the clear licence and consistent SVG country flags. They help Air Atlas make departure and arrival airports easier to recognize, without another remote dependency or asking users to sign up. — enuzzo
+
+## 2026-09-10 — Aircraft type classification
+
+Michael Wolf / Mictronics and readsb-protobuf contributors: shipped unmodified types.json at 845b65eb87e3164ddecd2a2d64ac49b6555550a1 (2,788 entries), GPL-3.0-or-later. Public contact: https://github.com/Mictronics/readsb-protobuf . Unsent: Thank you for maintaining the aircraft type descriptions. They help our radar recognize a helicopter even when its track is missing, and keep category-level geometry distinct from exact model identification. Your original data, licence and attribution remain available with the integration. — enuzzo
+
+Research only: wiedehopf / tar1090-db (https://github.com/wiedehopf/tar1090-db), MapLibre terrain/camera documentation (https://maplibre.org), Mapterhorn data access and attribution (https://mapterhorn.com). No terrain service is shipped by this checkpoint. No messages sent.

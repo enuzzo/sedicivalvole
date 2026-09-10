@@ -53,3 +53,7 @@ Air Atlas includes 182 separately licensed aircraft SVG artworks by RexKramer1 /
 
 Air Atlas airport flag SVGs and country names in `prototype/drive-lab/public/third-party/country-flags/` are separate MIT-licensed material by Panayiotis Lipiridis / flag-icons contributors, with unchanged SVGs, source inventory and complete MIT notice. The project noncommercial restriction does not narrow their MIT rights.
 The derived lookup `prototype/drive-lab/src/environments/radar/radar-country-names.js` also retains the flag-icons MIT terms.
+
+## Air Atlas aircraft classification data — 2026-09-10
+
+Michael Wolf / Mictronics and readsb-protobuf contributors: unmodified `webapp/src/db/types.json` at revision `845b65eb87e3164ddecd2a2d64ac49b6555550a1`, distributed as a separate data document under `public/third-party/aircraft-types/`. Declared GPL-3.0-or-later; original LICENSE, COPYING and exact hashes retained. No decoder or application source imported, no relabelling under PolyForm. The original adapter reads ICAO type descriptions for category-level silhouettes; it does not claim exact geometry or registration coverage. Source: https://github.com/Mictronics/readsb-protobuf/tree/845b65eb87e3164ddecd2a2d64ac49b6555550a1 .

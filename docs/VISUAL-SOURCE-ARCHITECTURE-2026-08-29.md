@@ -222,3 +222,7 @@ subjective listening remain separate acceptance, not implied by browser QA.
 
 Independent official postflight passes with 12 root entries and
 `remote_writes=NONE`; final documentation consistency passes 8/8.
+
+## Air Atlas measured playback — 2026-09-10
+
+The lazy radar chunk includes the exact artwork index and separately licensed Mictronics type data. radar-symbols.js owns original category geometry; radar-motion.js owns a 16-fix history with five-second linear playback, shortest heading/longitude interpolation and gap/jump rejection. DOM markers use subpixel positioning and rotate only their glyph, keeping the selected distance upright. The radar-specific cartography adapter filters transportation and adds airport geometry without modifying Atlas. The lifecycle HTTP owner polls at 2.5 seconds with a two-second shared server cache and existing retry/cancellation. Nose-camera terrain and true-airway geometry remain pending.

@@ -1,0 +1,20 @@
+{
+  "source": "https://github.com/Mictronics/readsb-protobuf",
+  "revision": "845b65eb87e3164ddecd2a2d64ac49b6555550a1",
+  "license": "GPL-3.0-or-later",
+  "changes": "None; types.json is unmodified webapp/src/db/types.json.",
+  "files": [
+    {
+      "file": "types.json",
+      "sha256": "cdfd0205f9925302b1a6cd6c266f5409cfd387a2eda2a3a9e51fb86bc2801514"
+    },
+    {
+      "file": "LICENSE",
+      "sha256": "64c1adae76787ea17e9f24aafaa62e5fe008c3411655fd8ab677097e3762d0d9"
+    },
+    {
+      "file": "COPYING",
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+    }
+  ]
+}

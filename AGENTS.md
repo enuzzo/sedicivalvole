@@ -297,3 +297,7 @@ and label actual providers. Reduce Atlas numbered discs while retaining touch
 areas; prioritize smooth travel/rotation, north lock and zoom/reset controls.
 Prepare Meguru radar integration; its new visual still requires A/B/C selection.
 Do not claim desktop frame timing proves sustained Tesla 60 FPS.
+
+## Owner Air Atlas refinement — 2026-09-10
+
+Only selected aircraft have one contrasting ring, with ground distance below it. Shape availability must not depend on ground track. Retain exact model artwork where available and use clearly identified category silhouettes otherwise, with no neutral dots for known rotorcraft or civil aircraft. Buffer measured positions by five seconds for continuous interpolation; never claim an unobserved path or move stale targets indefinitely. Filter map transport to major roads; preserve lakes and airport/runway context while reducing minor water detail. True airways need a verified aeronautical source, not guessed routes. A separate nose-mounted oblique terrain view with elevation exaggeration 1.25 is requested; A Nose Camera / B Flight Instruments / C Dual View were presented and selection remains pending.
