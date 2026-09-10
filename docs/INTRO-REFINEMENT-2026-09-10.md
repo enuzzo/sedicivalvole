@@ -18,3 +18,5 @@ Compared the current canonical baseline and revised browser capture at 773 x 601
 852 native tests pass. `scripts/qa-launch-refinement.mjs` verifies real handlers using controlled catalogue/audio fixtures: fresh Soundtrack, prepared title/artist, genre choice, non-repeating music/visual randomization, palette without dialogs, stable recommendations, coherent presets, Mute, no pre-START playback and no browser errors. Chromium screenshots cover 773 x 601, 874 x 402, 956 x 440, 390 x 844 and 1280 x 800/1200; tall windows do not expand the selection row and all controls retain 48 px minimum heights. Browser fixture mail requests are blocked. Physical Tesla/iPhone acceptance remains separate.
 
 Publication evidence follows after the verified build is deployed.
+
+Transparent black SVG previews retain the previous light backing in dark mode; the original artwork remains unchanged. The 20260910-1113 candidate was not activated: publication was cancelled to include this contrast correction, and the prior canonical identity was verified afterward. Eight browser user-flow checks now pass, including dark Air Atlas preview and saved-source persistence.
