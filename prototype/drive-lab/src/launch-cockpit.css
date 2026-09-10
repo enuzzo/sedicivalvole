@@ -151,3 +151,17 @@
 @media(max-width:450px){.cockpit-palette-group>small{display:none}.cockpit-presets .cockpit-palette-group{padding:0 6px}.cockpit-palette strong{font-size:13px}.cockpit-presets .cockpit-preset-thumb,.cockpit-palette .cockpit-palette-thumb{width:24px;height:24px}.cockpit-presets .cockpit-preset-options button{gap:4px}}
 
 .launch-cockpit .cockpit-palette{flex-direction:row}
+
+/* Owner polish: open media groups with a little breathing room around artwork. */
+.cockpit-choices{border:0}
+.cockpit-choices .cockpit-selection{height:96px;padding:8px 12px}
+.cockpit-choices .cockpit-selection+.cockpit-selection{border:0}
+
+.cockpit-presets .cockpit-presets-group>small{display:block}
+@media(max-width:450px){
+ .cockpit-music-body{grid-template-rows:56px auto auto}
+ .cockpit-presets{grid-template-columns:1fr}
+ .cockpit-presets .cockpit-presets-group,.cockpit-presets .cockpit-palette-group{height:54px}
+ .cockpit-presets .cockpit-palette-group{border-left:0;border-top:1px solid var(--ui-line)}
+ .cockpit-presets .cockpit-palette-group>small{display:block}
+}

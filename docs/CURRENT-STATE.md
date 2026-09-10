@@ -1660,3 +1660,7 @@ Canonical build **20260910-1149.1818bef**, source **1818bef**, passed official p
 All 852 native tests and nine canonical controlled browser checks pass, including Soundtrack after a stored Play the Road source, 82 px outer media row, 32 px outlines with actual pointer hits in their 48 px regions, right-aligned artist, round preset previews and palette separator. Live unmocked evidence at 773 x 601: Soundtrack genre, glow feeling by Lyon54, matching artwork and original Aperture preview; no page errors. Existing theme colors are unchanged. Synthetic diagnostic routes were blocked. Physical Tesla/iPhone acceptance remains separate.
 
 All current Intro requests are implemented and no owner answer is pending. Previous Air Atlas true airways remain a separate verified-source requirement, not a forgotten UI item. Source, changelog and publication evidence are committed and pushed.
+
+## Intro breathing-room polish — 2026-09-10
+
+The owner requests 8 px vertical cover padding, open borderless media groups, explicit SOUNDTRACK/genre label, no artist in Intro, and PRESETS always visible at the left. The reset/presets ambiguity was resolved by the owner: label only, no reset action. Implementation and focused browser checks pass; publication evidence follows.

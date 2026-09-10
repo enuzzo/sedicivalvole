@@ -313,3 +313,7 @@ The owner selects direction A only as a small refinement of the current Intro an
 ## Owner Intro compression and default correction — 2026-09-10
 
 Start every new Intro with Soundtrack, including when the saved source is Play the Road. This supersedes the immediately preceding saved-source exception; keep saved mute and explicit choices within the current Intro. Put Random inside an outlined button like Choose, reduce their visible vertical padding, and retain 48 px touch regions around the compact 32 px outlines. Align the track artist right on the genre/metadata row. Keep media boxes at the 80 px artwork height with no vertical image padding. Restore circular preset previews and use aligned labelled preset/palette groups separated by a vertical rule. The palette remains a direct cycle. No further visual direction selection is pending.
+
+## Owner Intro breathing room — 2026-09-10
+
+Keep 80 px covers and add 8 px top/bottom padding; remove the media group's outer border and internal divider. Explicitly label the music panel SOUNDTRACK, retaining genre alongside it without repeating an identical Soundtrack genre label. Remove the artist from Intro only; running credits/miniplayer remain unchanged. The owner clarified that the requested left-hand text is PRESETS, not a RESET command. Keep that label visible at all widths; on very narrow layouts the preset and palette groups stack to retain legibility.

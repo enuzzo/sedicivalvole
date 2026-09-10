@@ -46,3 +46,7 @@ Canonical build **20260910-1149.1818bef**, source **1818bef**, passed official p
 All 852 native tests and nine canonical controlled browser checks pass, including Soundtrack after a stored Play the Road source, 82 px outer media row, 32 px outlines with actual pointer hits in their 48 px regions, right-aligned artist, round preset previews and palette separator. Live unmocked evidence at 773 x 601: Soundtrack genre, glow feeling by Lyon54, matching artwork and original Aperture preview; no page errors. Existing theme colors are unchanged. Synthetic diagnostic routes were blocked. Physical Tesla/iPhone acceptance remains separate.
 
 All current Intro requests are implemented and no owner answer is pending. Previous Air Atlas true airways remain a separate verified-source requirement, not a forgotten UI item. Source, changelog and publication evidence are committed and pushed.
+
+## Owner Intro breathing room — 2026-09-10
+
+Keep 80 px covers and add 8 px top/bottom padding; remove the media group's outer border and internal divider. Explicitly label the music panel SOUNDTRACK, retaining genre alongside it without repeating an identical Soundtrack genre label. Remove the artist from Intro only; running credits/miniplayer remain unchanged. The owner clarified that the requested left-hand text is PRESETS, not a RESET command. Keep that label visible at all widths; on very narrow layouts the preset and palette groups stack to retain legibility.
