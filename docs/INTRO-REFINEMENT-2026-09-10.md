@@ -50,3 +50,9 @@ All current Intro requests are implemented and no owner answer is pending. Previ
 ## Owner Intro breathing room — 2026-09-10
 
 Keep 80 px covers and add 8 px top/bottom padding; remove the media group's outer border and internal divider. Explicitly label the music panel SOUNDTRACK, retaining genre alongside it without repeating an identical Soundtrack genre label. Remove the artist from Intro only; running credits/miniplayer remain unchanged. The owner clarified that the requested left-hand text is PRESETS, not a RESET command. Keep that label visible at all widths; on very narrow layouts the preset and palette groups stack to retain legibility.
+
+## Intro breathing-room publication — 2026-09-10 12:23
+
+Canonical build **20260910-1214.3ea3718** is published and verified. Covers remain 80 px square with 8 px vertical padding; both media groups are borderless. SOUNDTRACK and genre identify the music panel, artist attribution remains in the running miniplayer, and PRESETS is always visible at the left. No reset command was added.
+
+The 45 focused tests, nine canonical controlled browser checks, 196 dependency credits and 24 independent HTTPS identity/hash/cache checks pass. The build records 807 exact static hashes. Official preserve-existing publication uploaded 38 files / 17,056,235 bytes, reused 796 unchanged files and 29 verified audio masters, and retained two previous assets. Unmocked public Chrome at 773 x 601 shows Relaxation / Laurie with Aperture and no page errors. Synthetic diagnostic routes were blocked during QA. Physical Tesla/iPhone acceptance remains separate.

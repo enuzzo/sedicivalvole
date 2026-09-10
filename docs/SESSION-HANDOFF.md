@@ -1519,3 +1519,9 @@ All current Intro requests are implemented and no owner answer is pending. Previ
 ## Intro breathing-room polish — 2026-09-10
 
 The owner requests 8 px vertical cover padding, open borderless media groups, explicit SOUNDTRACK/genre label, no artist in Intro, and PRESETS always visible at the left. The reset/presets ambiguity was resolved by the owner: label only, no reset action. Implementation and focused browser checks pass; publication evidence follows.
+
+## Intro breathing-room publication — 2026-09-10 12:23
+
+Canonical build **20260910-1214.3ea3718** is published and verified. Covers remain 80 px square with 8 px vertical padding; both media groups are borderless. SOUNDTRACK and genre identify the music panel, artist attribution remains in the running miniplayer, and PRESETS is always visible at the left. No reset command was added.
+
+The 45 focused tests, nine canonical controlled browser checks, 196 dependency credits and 24 independent HTTPS identity/hash/cache checks pass. The build records 807 exact static hashes. Official preserve-existing publication uploaded 38 files / 17,056,235 bytes, reused 796 unchanged files and 29 verified audio masters, and retained two previous assets. Unmocked public Chrome at 773 x 601 shows Relaxation / Laurie with Aperture and no page errors. Synthetic diagnostic routes were blocked during QA. Physical Tesla/iPhone acceptance remains separate.
