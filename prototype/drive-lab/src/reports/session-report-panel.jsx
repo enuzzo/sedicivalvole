@@ -93,7 +93,7 @@ export default function SessionReportPanel({ source, onClose }) {
     } catch (error) {
       if (mountedRef.current && operationRef.current === controller) setNotice(action === 'verification-status'
         ? 'Email verification could not be restored. Verify the address again before sending.'
-        : error.name === 'AbortError' ? 'The request timed out. A send may already have been accepted; Retry uses the same delivery key.' : error.message || 'Connection unavailable. Please retry.');
+        : error.name === 'AbortError' ? action === 'send' ? 'The send timed out. It may already have been accepted; Retry uses the same delivery key.' : 'The connection timed out. Please retry; any prepared download is still available.' : error.message || 'Connection unavailable. Please retry.');
     } finally { clearTimeout(timeout); if (operationRef.current === controller) { operationRef.current = null; if (mountedRef.current) setBusy(''); } }
   };
   useEffect(() => {

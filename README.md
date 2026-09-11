@@ -502,6 +502,15 @@ Air Atlas now offers place labels OFF by default, Natural/Palette maps, larger c
 
 Air Atlas now uses five-second measured track playback, immediate aircraft/type catalogues, category fallbacks, one selected ring with ground distance, and radar-only major-road/airport cartography. Missing observations hold rather than inventing flight. Terrain nose camera and true aeronautical airways remain pending; see [Air Atlas](docs/AIR-ATLAS-2026-09-09.md).
 
+### September 11 road instruments and Travel Report
+
+Engine has a measured RPM crest; Visual choices lead the compact library above
+Presets. Air Atlas adds a contrasting home dot and short measured dashed trail,
+brighter cartography, real administrative boundaries, clear SVG map controls and
+bounded map recovery. Travel Report now separates journey, rhythm and technical
+chapters, with an optional attributed map captured into the same reviewed PDF
+snapshot. [Behavior, privacy and verification](docs/ROAD-REFINEMENT-2026-09-11.md).
+
 ### Air Atlas measured flight and terrain view
 
 Air Atlas now uses immediate aircraft type/category silhouettes, a single selected ring with ground distance and five-second measured interpolation. Major-road and airport cartography replaces minor transport clutter. FLY WITH opens the selected A+C reconstructed nose camera over real terrain at 1.25 exaggeration, with a corner radar/telemetry card and direct return. Missing or stale observations hold the camera; approximate height references remain explicit. True airways require a separate aeronautical source. Physical Tesla/iPhone dual-map acceptance remains open.

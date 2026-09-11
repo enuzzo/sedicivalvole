@@ -255,3 +255,14 @@ test('corrupt or oversized delivery state fails closed before any fake mail call
     echo json_encode(['out'=>$out,'mails'=>count($messages)]);${cleanup}`));
   assert.deepEqual(result.out,Array(3).fill('delivery_storage_unavailable'));assert.equal(result.mails,0);
 });
+
+
+test('route map admission rejects absent consent, arbitrary URLs, bad MIME and oversized data',()=>{
+  const cases=[];
+  for(const image of ['https://example.test/map.jpg','data:image/svg+xml;base64,PHN2Zz4=','data:image/jpeg;base64,YmFk', 'data:image/jpeg;base64,'+'A'.repeat(800001)]){
+    const snapshot=fixture(true);snapshot.routeMap=image;cases.push(snapshot);
+  }
+  const snapshot=fixture(false);snapshot.routeMap='data:image/jpeg;base64,YmFk';cases.push(snapshot);
+  const results=JSON.parse(php(`$out=[];foreach($input as $s){try{reportNormalize($s);$out[]='accepted';}catch(SessionReportProblem $e){$out[]=$e->getMessage();}}echo json_encode($out);`,cases));
+  assert.deepEqual(results,Array(cases.length).fill('map_rejected'));
+});

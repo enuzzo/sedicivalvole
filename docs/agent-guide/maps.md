@@ -44,6 +44,14 @@ Interpolate measured positions through a shared **five-second delayed playback**
 
 Radar transport shows major roads, preserving lakes and airport/runway context while reducing minor water detail. True airways require a current verified licensed aeronautical source; never draw guessed routes. This source remains open only for an airway task. Poll/detail requests stay bounded, cancellable, non-overlapping and subject to lifecycle/backoff; only selected-aircraft enrichment is requested. For the exact affected limits use [symbols and measured playback](../AIR-ATLAS-2026-09-09.md#air-atlas-owner-refinement--2026-09-10), [first fix/trails/lens](../AIR-ATLAS-2026-09-09.md#first-location-observed-trails-and-subtle-lens--2026-09-10) or [visible-area traffic](../AIR-ATLAS-2026-09-09.md#air-atlas-visible-area-traffic--2026-09-10), alongside `src/environments/radar/`. The latter sets the 250 NM provider bound and at most 4,096 validated records; its coverage/age/refresh changes supersede older fixed-radius/nearest-32 descriptions in the document's Runtime section. Read source attribution separately when artwork/providers change.
 
+The September 11 owner refinement adds a contrasting current-location dot and a
+separate session-only measured home trail bounded to `1 km / two minutes / 128
+samples`. Keep last-known styling honest and reject coarse/stale/missing-speed
+connections. Lift palette cartography, retain natural colors, and draw only real
+source administrative boundaries. UPDATE refreshes traffic; the target control
+recenters and resumes Follow. Map retries preserve framing/selection and use the
+existing bounded recovery owner. See [road refinement](../ROAD-REFINEMENT-2026-09-11.md).
+
 ## Fly With
 
 The owner selected **A+C**: a nose-mounted oblique view over real 3D terrain at exaggeration **1.25**, with one corner card combining minimap and compact telemetry. Keep direct return to radar and shared five-second measured playback. Camera updates every animation frame without waiting for each new tile. Preserve last terrain height when a DEM sample is missing instead of dropping to zero. Never invent motion after signal loss; stale/missing-data holds are honest.

@@ -64,7 +64,7 @@
 .engine-telemetry:has(.engine-rev) {gap:10px;padding-top:76px;}
 .engine-telemetry:has(.engine-rev) .engine-primary strong {font-size:72px;}
 .engine-telemetry:has(.engine-rev) .engine-primary {padding:4px 0 8px;}
-@media(max-height:500px){.engine-telemetry{justify-content:flex-start;gap:8px;padding-top:72px;}.engine-telemetry:has(.engine-rev){padding-top:72px;}.engine-tach{height:48px;}.engine-rpm-wave{height:44px;}.engine-primary strong,.engine-telemetry:has(.engine-rev) .engine-primary strong{font-size:52px;}.engine-graphs svg{height:24px;}.engine-bottom{flex-wrap:wrap;}.engine-rev{position:static;min-width:0;}.engine-rev.is-right{display:none;}}
+@media(max-height:500px){.engine-telemetry{justify-content:flex-start;gap:8px;padding-top:72px;}.engine-telemetry:has(.engine-rev){padding-top:72px;}.engine-tach{height:48px;}.engine-rpm-wave{height:44px;}.engine-primary strong,.engine-telemetry:has(.engine-rev) .engine-primary strong{font-size:52px;}.engine-graphs svg{height:24px;}.engine-bottom{flex-wrap:wrap;}}
 @media(prefers-reduced-motion:reduce){.engine-tach i{transition:none;}}
 
 .engine-telemetry {padding-top:76px;padding-bottom:72px;gap:10px;}

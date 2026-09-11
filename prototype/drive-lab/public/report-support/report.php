@@ -97,7 +97,7 @@ final class TravelReportPdf extends FPDF
     public function __construct(int $createdAt) { parent::__construct('P', 'mm', 'A4'); $this->reportDate = $createdAt; }
     protected function _putinfo() { $zone = date_default_timezone_get(); date_default_timezone_set('UTC'); $this->CreationDate = $this->reportDate; parent::_putinfo(); date_default_timezone_set($zone); }
     public function Footer() {
-        $this->SetY(-14); $this->SetDrawColor(206, 207, 200); $this->Line(16, $this->GetY(), 194, $this->GetY());
+        $this->SetY(-14); $this->SetLineWidth(0.2); $this->SetDrawColor(206, 207, 200); $this->Line(16, $this->GetY(), 194, $this->GetY());
         $this->SetFont('Helvetica', '', 8); $this->SetTextColor(90, 96, 92);
         $this->Cell(145, 9, 'sedicivalvole / Travel Report / Experimental'); $this->Cell(33, 9, $this->PageNo() . ' / {nb}', 0, 0, 'R');
     }
@@ -225,7 +225,7 @@ function reportBuildPdf(array $s): string
     reportTrace($pdf,$s['samples'],'altitudeM',16,143,178,44,$blue,true);
     if(!$s['samples'])$pdf->note('No GPS observations were available. No journey has been inferred.',195);
     else $pdf->note($hasMapElevation?'Blue: GPS altitude (solid), map elevation estimate (dashed). Breaks mark missing observations or source changes.':'Breaks mark missing observations. Altitude alone cannot establish reliable ascent or descent.',195);
-    if($hasMapElevation){reportText($pdf,'Map elevation estimate: Open-Meteo / Copernicus GLO-90 (CC BY 4.0)',16,208,8,false,$blue);$pdf->Link(16,208,178,7,'https://open-meteo.com/en/docs/elevation-api');}
+    if($hasMapElevation){reportText($pdf,'Map elevation estimate: Open-Meteo / EU Copernicus GLO-90 (CC BY 4.0), 90 m DEM',16,208,8,false,$blue);$pdf->Link(16,208,178,7,'https://open-meteo.com/en/docs/elevation-api');}
     $pdf->section('Time at each speed',218);
     foreach(['0-30','30-60','60-90','90-130','130+'] as $i=>$label){$y=230+$i*8;$ratio=$summary['observedMs']?$s['speedBandsMs'][$i]/$summary['observedMs']:0;
         reportText($pdf,$label.' km/h',16,$y,9);$pdf->SetFillColor(222,231,227);$pdf->Rect(47,$y+2,96,3.5,'F');$pdf->SetFillColor(...$red);$pdf->Rect(47,$y+2,96*$ratio,3.5,'F');
@@ -244,7 +244,6 @@ function reportBuildPdf(array $s): string
     $technical=[['Audio context',$system['audio']],['Frame average / p95',reportValue($system['averageFps'],' FPS').' / '.reportValue($system['p95FrameMs'],' ms')],['Observed long tasks',reportValue($system['longTaskCount'])],['Observed download / upload',reportValue($system['downloadBytes']===null?null:$system['downloadBytes']/1048576,' MB',1).' / '.reportValue($system['uploadBytes']===null?null:$system['uploadBytes']/1048576,' MB',1)],['Engine simulated RPM / gear',reportValue($system['engineRpm']).' / '.reportValue($system['engineGear'])],['Engine simulated load',reportValue($system['engineLoad']===null?null:$system['engineLoad']*100,'%')]];
     foreach($technical as $i=>$row){$y=211+$i*7;reportText($pdf,$row[0],16,$y,9);$pdf->SetXY(112,$y);$pdf->SetFont('Helvetica','B',9);$pdf->Cell(82,7,$row[1],0,0,'R');}
     $pdf->SetXY(16,259);$pdf->SetFont('Helvetica','',8);$pdf->SetTextColor(83,101,104);$pdf->MultiCell(178,4,'Technical appendix. GPS distance uses observed speed; gaps remain unknown. Elevation gain/loss requires accuracy evidence. Network totals exclude opaque/cache traffic. Engine figures are simulation, not vehicle telemetry.');
-    if($hasMapElevation){$pdf->SetXY(16,251);$pdf->SetFont('Helvetica','',8);$pdf->MultiCell(178,4,'Open-Meteo / EU Copernicus GLO-90: 90 m DEM near a rounded lookup cell. Map estimates do not enter GPS gain/loss.');}
     reportText($pdf,'v'.$s['app']['version'].' / BUILD '.$s['app']['build'].' / '.$s['app']['commit'],16,272,8,true);
     return $pdf->Output('S');
 }

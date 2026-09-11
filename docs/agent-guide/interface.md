@@ -32,6 +32,11 @@ UNDERWATER occupies the complete speed-badge footprint with a contrast-safe pale
 
 The network cell is a browser connection estimate, not cellular reception or an active ping service. Healthy is a readable outlined dot with an accessible name, without redundant NET ONLINE text. Constrained/offline states use actionable `16 px` text and browser-estimated downlink when available.
 
+The September 11 owner refinement puts compact Visual choices first, then a
+separator and Presets. Engine's selected minimal Telemetry direction includes an
+explicitly delegated RPM-stem crest, voice heading and accent gear; it does not
+change acoustic/motion ownership. See [road refinement](../ROAD-REFINEMENT-2026-09-11.md).
+
 ## Running media and effects
 
 Now Playing is persistent whenever eligible chrome is awake, not a transient toast. It belongs to the footer's **single animated/inert container** immediately above the footer; suppress it in ATLAS and while any real menu, popup or passenger panel is open. It shows committed artwork, title, artist/source and previous/play-pause/next, following manual and natural track changes. Align artwork, copy and transport on a common center; size credit-role columns from content so labels cannot overlap titles. The older independent overlay is superseded.

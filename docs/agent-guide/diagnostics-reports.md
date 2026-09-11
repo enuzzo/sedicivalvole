@@ -29,3 +29,12 @@ Email body stays a concise human summary; attach the **complete accepted report*
 The owner selected **Travel Report direction 1**: compact cover, journey summary, graphs and technical appendix. Preserve immutable preview/download identity and verified chosen-recipient handling. Precise route inclusion is an explicit export option; it does not alter coordinate-free technical diagnostics. Optional email is user-requested, to a remembered recipient cleared by Reset Saved State; technical auto-mail is not authorization to send travel reports to arbitrary people.
 
 For implementation work read [Night implementation / Report data and delivery contract](../NIGHT-IMPLEMENTATION-2026-09-07.md#report-data-and-delivery-contract), [PDF/email design](../ATLAS-STATS-REPORT-PLAN-2026-09-07.md#pdf-and-email-design) and `src/reports/session-report-model.js` as relevant. Earlier plan-only/pending-selection labels are superseded by the later owner selection and implementation record. Altitude labeling follows [Altitude](maps.md#altitude); drawn estimated chart connections must not alter exported observations. Browser PDF/email tests remain separate from physical device download and actual chosen-recipient inbox acceptance.
+
+The September 11 Travel Report refinement uses three chapters plus an optional
+fourth route/map page. Capture attributed cartography only for an explicitly
+included immutable route; retain the exact bounded JPEG in the reviewed snapshot
+so preview and email hashes agree. A twelve-second capture failure falls back to
+an honest outline. Do not add coordinates to technical packets or refetch a map
+while sending. The owner confirmed the supplied report's recipient verification
+and PDF delivery flow; new renderer/physical acceptance remains separate. See
+[road refinement](../ROAD-REFINEMENT-2026-09-11.md).

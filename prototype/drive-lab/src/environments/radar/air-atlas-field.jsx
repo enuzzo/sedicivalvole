@@ -180,7 +180,7 @@ export default function AirAtlasField({position,gpsState,theme,reducedMotion,onR
   },[canStart]);
   useEffect(()=>{
     if(!canStart||!host.current){onRenderer('Air Atlas · waiting for GPS');return;}
-    let disposed=false,resize,visibility,loadDeadline;
+    let disposed=false,mapFailed=false,resize,visibility,loadDeadline;
     const recovery=mapRecovery.current;
     setMapError(false);
     import('maplibre-gl').then(({default:gl})=>{
@@ -197,8 +197,8 @@ export default function AirAtlasField({position,gpsState,theme,reducedMotion,onR
       instance.on('dragstart',()=>{followHome.current=false;});
       instance.on('load',()=>{if(!disposed)onRenderer('Air Atlas · MapLibre');});
       instance.on('render',()=>{if(!document.hidden&&!flightViewRef.current){const canvas=instance.getCanvas();onFrame(performance.now(),1000/60,'WebGL2 · MapLibre',canvas.width,canvas.height);}});
-      instance.on('error',()=>{if(!disposed){setMapError(true);recovery.fail();}});
-      instance.on('idle',()=>{if(!disposed&&instance.isStyleLoaded()){setMapError(false);clearTimeout(loadDeadline);recovery.succeed();}});
+      instance.on('error',()=>{if(!disposed){mapFailed=true;setMapError(true);recovery.fail();}});
+      instance.on('idle',()=>{if(!disposed&&!mapFailed&&instance.isStyleLoaded()){setMapError(false);clearTimeout(loadDeadline);recovery.succeed();}});
       loadDeadline=setTimeout(()=>{if(!disposed&&!instance.isStyleLoaded()){setMapError(true);recovery.fail();}},20000);
       resize=new ResizeObserver(()=>instance.resize());resize.observe(host.current);
       visibility=()=>{if(!document.hidden){instance.resize();instance.triggerRepaint();}};
@@ -234,7 +234,7 @@ export default function AirAtlasField({position,gpsState,theme,reducedMotion,onR
   },[map,planes,selectedId,codes,clock,types,coverage]);
   useEffect(()=>{
     if(!map)return;
-    let frame,lastMini=0,lastTrails=0,lastTrailData='',lastHomeData='';
+    let frame,lastMini=0,lastTrails=0,lastTrailData='',lastHomeData='',lastHomeOffset=null;
     const animate=()=>{
       if(document.hidden)return;
       const time=performance.now();
@@ -243,8 +243,8 @@ export default function AirAtlasField({position,gpsState,theme,reducedMotion,onR
         if(!sample)continue;
         const screen=map.project([sample.longitude,sample.latitude]),container=map.getContainer();
         const selected=entry.button.dataset.aircraftId===selectedIdRef.current;
-        const draw=!entry.lastScreen||Math.hypot(screen.x-entry.lastScreen.x,screen.y-entry.lastScreen.y)>=0.05||entry.lastBearing!==map.getBearing()||entry.lastHeading!==sample.trackDegrees;
-        if(draw){entry.marker.setLngLat([sample.longitude,sample.latitude]);entry.lastScreen=screen;entry.lastDraw=time;entry.lastBearing=map.getBearing();entry.lastHeading=sample.trackDegrees;
+        const draw=!entry.lastScreen||Math.hypot(screen.x-entry.lastScreen.x,screen.y-entry.lastScreen.y)>=0.05||entry.lastBearing!==map.getBearing()||entry.lastHeading!==sample.trackDegrees||entry.lastLens!==lens.current?.active;
+        if(draw){entry.marker.setLngLat([sample.longitude,sample.latitude]);entry.lastScreen=screen;entry.lastDraw=time;entry.lastBearing=map.getBearing();entry.lastHeading=sample.trackDegrees;entry.lastLens=lens.current?.active;
         entry.marker.setOffset(lens.current?.active?radarLensOffset(screen,container.clientWidth,container.clientHeight):[0,0]);
         if(flightViewRef.current&&entry.button.dataset.aircraftId===selectedIdRef.current&&time-lastMini>250){map.easeTo({center:[sample.longitude,sample.latitude],zoom:9,bearing:0,duration:300});lastMini=time;}
         const heading=sample.trackDegrees;
@@ -255,7 +255,8 @@ export default function AirAtlasField({position,gpsState,theme,reducedMotion,onR
       }
       if(homeMarker.current&&validAtlasPosition(latest.current.position)){
         const home=latest.current.position,screen=map.project([home.longitude,home.latitude]),container=map.getContainer();
-        homeMarker.current.setOffset(lens.current?.active?radarLensOffset(screen,container.clientWidth,container.clientHeight):[0,0]);
+        const offset=lens.current?.active?radarLensOffset(screen,container.clientWidth,container.clientHeight):[0,0];
+        if(!lastHomeOffset||offset.some((v,i)=>Math.abs(v-lastHomeOffset[i])>.05)){homeMarker.current.setOffset(offset);lastHomeOffset=offset;}
       }
       if(time-lastTrails>=1000&&map.isStyleLoaded()){
         const features=[];
