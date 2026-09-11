@@ -183,7 +183,7 @@
  to{visibility:visible;opacity:1;transform:scale(1)}
 }
 @media(prefers-reduced-motion:reduce){
- .launch-cockpit{animation-name:cockpit-reveal-reduced;animation-duration:160ms}
+ .launch-cockpit{animation-name:cockpit-reveal-reduced}
 }
 @keyframes cockpit-reveal-reduced{
  from{visibility:hidden;opacity:0}
