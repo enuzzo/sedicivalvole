@@ -1552,7 +1552,6 @@ function VisualPicker({ environmentId, onChange, onOpenDiscover, onOpenStats, on
         <div><small>MUSIC VISUAL LIBRARY</small><h2 id="visual-picker-title">Visual</h2></div>
         <button data-dialog-initial-focus type="button" onClick={onClose} aria-label="Close visual library">CLOSE</button>
       </div>
-      <div className="experience-list">{CURATED_EXPERIENCES.map(({ id }) => <ExperienceCard key={id} id={id} selected={experienceId === id} onSelect={onExperience} />)}</div>
       <ul className="score-list">
         {FLUX_VISUAL_CHOICES.map((entry) => {
           const destination = entry.kind === "destination";
@@ -1586,6 +1585,8 @@ function VisualPicker({ environmentId, onChange, onOpenDiscover, onOpenStats, on
           );
         })}
       </ul>
+      <h3 className="visual-presets-heading">Presets</h3>
+      <div className="experience-list">{CURATED_EXPERIENCES.map(({ id }) => <ExperienceCard key={id} id={id} selected={experienceId === id} onSelect={onExperience} />)}</div>
     </DialogSurface>
   );
 }

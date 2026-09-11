@@ -19,11 +19,22 @@ export function EngineTelemetry({ state, profileId, onProfile, onRev, onRelease,
   }, [onRelease]);
   const trace = key => historyRef.current.map((value, index) => `${index * 3},${48 - value[key] * 44}`).join(" ");
   const rpm = state.rpm ?? 1000;
-  return <section ref={fieldRef} className="engine-telemetry" aria-label="Engine Telemetry">
-    <header><span>ENGINE / TELEMETRY</span><span>{state.status === "ready" ? `${(state.source || "sample").toUpperCase()} ENGINE` : state.status?.toUpperCase()}</span></header>
+  const rpmPosition = Math.max(0, Math.min(1, rpm / 9000));
+  const voice = ENGINE_CATALOGUE.find(item => item.id === profileId)?.label ?? profileId;
+  return <section ref={fieldRef} className="engine-telemetry" data-revving={Boolean(state.revving)} aria-label="Engine Telemetry">
+    <header><span className="engine-voice-title">{voice} <small>ENGINE / TELEMETRY</small></span><span>{state.status === "ready" ? `${(state.source || "sample").toUpperCase()} ENGINE` : state.status?.toUpperCase()}</span></header>
     <div className="engine-tach-labels" aria-hidden="true">{Array.from({ length: 10 }, (_, i) => <span key={i}>{i}</span>)}</div>
     <div className="engine-tach" role="meter" aria-label="Virtual engine RPM" aria-valuenow={rpm} aria-valuemin={0} aria-valuemax={9000}>
-      <i style={{ width: `${Math.min(100, rpm / 90)}%` }} />
+      <svg className="engine-rpm-wave" viewBox="0 0 720 66" preserveAspectRatio="none" aria-hidden="true">
+        {Array.from({length:73},(_,i)=>{
+          const proximity=Math.exp(-0.5*((i/72-rpmPosition)/0.064)**2);
+          const height=8+(i%8===0?6:0)+proximity*42;
+          return <line key={i} x1={4+i*712/72} x2={4+i*712/72} y1={62-height} y2="62"
+            className={i/72>=.88?'is-redline':undefined} style={{opacity:.25+proximity*.75}}/>;
+        })}
+        <path className="engine-rpm-cursor" d={`M${4+rpmPosition*712-4} 2h8l-4 6z`}/>
+      </svg>
+      <i style={{ width: `${rpmPosition*100}%` }} />
     </div>
     <div className="engine-primary">
       <div><small>VIRTUAL RPM</small><strong>{Math.round(rpm).toLocaleString("en-US")}</strong><span>{state.revving ? "REVVING" : state.idleBlip ? "IDLE BLIP" : state.shift ? state.shift.toUpperCase() : Math.round(speed) === 0 ? state.enabled === false ? "AUDIO PAUSED" : state.trustedStationary ? "IDLE · AUTO BLIPS ON" : state.motion === "lost" ? "IDLE · NO SPEED SIGNAL" : "IDLE · CONFIRMING STOP" : "ENGINE SPEED"}</span></div>

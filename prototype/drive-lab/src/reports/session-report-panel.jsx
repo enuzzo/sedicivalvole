@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { createSessionReportSnapshot, normalizeReportRecipient, readReportRecipient, REPORT_RECIPIENT_KEY, sessionReportFilename } from './session-report-model.js';
 import './session-report.css';
+import {captureReportMap} from './report-map.js';
 
 const ENDPOINT = '/api/session-report.php';
 const errors = {
@@ -47,8 +48,14 @@ export default function SessionReportPanel({ source, onClose }) {
     const controller = new AbortController(); operationRef.current = controller;
     const current = () => mountedRef.current && operationRef.current === controller && !controller.signal.aborted;
     setBusy(action); setNotice(action === 'verification-status' ? 'Checking email verification…' : '');
-    const timeout = setTimeout(() => controller.abort(), 25000);
+    const timeout = setTimeout(() => controller.abort(), action === 'preview' ? 40000 : 25000);
     try {
+      if(action === 'preview' && data.snapshot.includeRoute) {
+        setNotice('Preparing your route map…');
+        const routeMap=await captureReportMap(data.snapshot.route,controller.signal).catch(()=>null);
+        if(!current()) return;
+        data={...data,snapshot:{...data.snapshot,...(routeMap?{routeMap}:{})}};
+      }
       const response = await fetch(ENDPOINT, { method: 'POST', credentials: 'same-origin', signal: controller.signal,
         headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action, ...data }) });
       if (!response.ok || (action !== 'preview' && !response.headers.get('Content-Type')?.includes('application/json'))) {
@@ -109,9 +116,9 @@ export default function SessionReportPanel({ source, onClose }) {
   return <>
     <header className="stats-heading"><div><small>SESSION EXPORT</small><h2 id="stats-title">Travel Report</h2></div><button ref={backRef} onClick={onClose}>Back to Stats</button></header>
     <div className="report-scroll">
-      <p>A frozen snapshot of this session: journey totals, graphs and a technical appendix. Preparing the first preview needs a connection; the prepared download stays available if email or connectivity fails.</p>
-      <label className="report-route"><input type="checkbox" checked={includeRoute} disabled={Boolean(busy)} onChange={e => { setIncludeRoute(e.target.checked); clearPreview(); setNotice(''); }} />Include precise route</label>
-      <p className="report-disclosure">{includeRoute ? 'The preview request and optional email will include the route coordinates. Technical diagnostics remain coordinate-free.' : 'Precise route coordinates are excluded from the preview and email.'} The report is generated on the server without a trip archive.</p>
+      <p>Your journey in chapters: a travel cover, optional route map, speed and elevation, and session details. Preparing the first preview needs a connection; the prepared download stays available if email or connectivity fails.</p>
+      <label className="report-route"><input type="checkbox" checked={includeRoute} disabled={Boolean(busy)} onChange={e => { setIncludeRoute(e.target.checked); clearPreview(); setNotice(''); }} />Include precise route and map</label>
+      <p className="report-disclosure">{includeRoute ? 'The preview request and optional email will include the route coordinates and map. Cartography uses the same OpenFreeMap service as Atlas. Technical diagnostics remain coordinate-free.' : 'Precise route coordinates are excluded from the preview and email.'} The report is generated on the server without a trip archive.</p>
       {selection.error ? <p role="alert">{selection.error}</p> : <button disabled={Boolean(busy)} onClick={() => void perform('preview', { snapshot })}>{busy === 'preview' ? 'Preparing PDF…' : prepared ? 'Prepare again' : 'Prepare PDF preview'}</button>}
       {prepared ? <>
         <div className="report-downloads"><a href={prepared.url} download={sessionReportFilename(prepared.snapshot)}>Download PDF</a><a href={prepared.url} target="_blank" rel="noopener">Open PDF</a><span>{Math.round(prepared.blob.size / 1024)} KB · {prepared.snapshot.includeRoute ? 'Route included' : 'No precise route'}</span></div>

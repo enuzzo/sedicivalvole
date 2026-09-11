@@ -4,7 +4,7 @@ declare(strict_types=1);
 // sedicivalvole.session-report-api.v1: fixed snapshots, verified recipient, no PDF upload.
 require_once dirname(__DIR__) . '/report-support/delivery.php';
 const REPORT_EXPECTED_ORIGIN = 'https://sedicivalvole.app';
-const REPORT_MAX_BODY_BYTES = 262144;
+const REPORT_MAX_BODY_BYTES = 1250000;
 
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');

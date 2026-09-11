@@ -1,5 +1,7 @@
 import {radarViewportQuery,radarMinimumZoom} from './radar-viewport.js';
 import {createRadarLens,radarLensOffset} from './radar-lens.js';
+import {createLoadRecovery} from '../../load-recovery.js';
+import {appendHomeObservation,homeTrailFeature} from './radar-home-trail.js';
 import {radarLocationPresentation} from './radar-location.js';
 import {useEffect,useMemo,useRef,useState} from 'react';
 import 'maplibre-gl/dist/maplibre-gl.css';
@@ -16,6 +18,11 @@ import shapeCatalogue from '../../../public/third-party/aircraft-shapes/catalogu
 import {appendRadarObservation, sampleRadarTrack, radarTrailCoordinates} from './radar-motion.js';
 import {discoverDistanceMetres} from '../../discover/discover-model.js';
 import {createAirAtlasStyle,radarTelemetryRows} from './radar-presentation.js';
+
+function RadarIcon({kind}) {
+  const paths = {refresh:'M20 7v5h-5 M20 12a8 8 0 1 0-2.4 5.7',map:'M3 5l6-2 6 2 6-2v16l-6 2-6-2-6 2V5 M9 3v16 M15 5v16',home:'M12 3v3 M12 18v3 M3 12h3 M18 12h3 M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0',plus:'M5 12h14 M12 5v14',minus:'M5 12h14'};
+  return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={paths[kind]}/></svg>;
+}
 
 function AirportCode({airport}){
   return <strong className="air-atlas-airport-code">{airport?.country?<img className="air-atlas-country-flag" src={airport.country.flag} width="24" height="18" alt={`${airport.country.name} flag`} title={airport.country.name}/>:null}{airport?.code||'—'}</strong>;
@@ -55,7 +62,9 @@ export default function AirAtlasField({position,gpsState,theme,reducedMotion,onR
   const colors=paletteToAtlasCss(theme.palette);
   const selectionColor=theme.palette.accent.reduce((sum,c,i)=>sum+c*[0.2126,0.7152,0.0722][i],0)>0.6?'#151515':'#fff';
   const actionLuminance=theme.palette.accent.reduce((sum,c,i)=>sum+(c<=0.04045?c/12.92:((c+0.055)/1.055)**2.4)*[0.2126,0.7152,0.0722][i],0);
-  const followHome=useRef(true),homeMarker=useRef(null);
+  const followHome=useRef(true),homeMarker=useRef(null),homeHistory=useRef([]),mapRecovery=useRef(null);
+  const mapCamera=useRef(null);
+  useEffect(()=>{homeHistory.current=appendHomeObservation(homeHistory.current,position,performance.now());},[position]);
   const [flightView,setFlightView]=useState(false);
   const flightViewRef=useRef(false);flightViewRef.current=flightView;
   const radarCamera=useRef(null),lens=useRef(null);
@@ -63,7 +72,7 @@ export default function AirAtlasField({position,gpsState,theme,reducedMotion,onR
   const headingFresh=Number.isFinite(position?.heading)&&position?.speedKmh>3&&clockSafe(position);
   const bearing=northUp||!headingFresh?0:position.heading;
   const host=useRef(null),mapRef=useRef(null),library=useRef(null),markers=useRef(new Map());
-  const latest=useRef({position,theme});latest.current={position,theme};
+  const latest=useRef({position,theme});latest.current={position,theme,appearance,labels};
   const [map,setMap]=useState(null),[planes,setPlanes]=useState([]),[selectedId,setSelectedId]=useState(null);
   const [status,setStatus]=useState('loading'),[clock,setClock]=useState(()=>performance.now());
   const catalogue=shapeCatalogue;
@@ -160,30 +169,42 @@ export default function AirAtlasField({position,gpsState,theme,reducedMotion,onR
     return()=>{map.off('moveend',update);map.off('resize',update);};
   },[map,flightView]);
   useEffect(()=>{
+    if(!canStart)return;
+    const recovery=createLoadRecovery({now:performance.now.bind(performance),schedule:setTimeout,cancel:clearTimeout,
+      canRetry:()=>!document.hidden&&navigator.onLine!==false,
+      retry:()=>setMapRetry(v=>v+1)});
+    mapRecovery.current=recovery;
+    const wake=()=>{if(!document.hidden&&navigator.onLine!==false)recovery.wake();};
+    window.addEventListener('online',wake);document.addEventListener('visibilitychange',wake);
+    return()=>{recovery.dispose();mapRecovery.current=null;window.removeEventListener('online',wake);document.removeEventListener('visibilitychange',wake);};
+  },[canStart]);
+  useEffect(()=>{
     if(!canStart||!host.current){onRenderer('Air Atlas · waiting for GPS');return;}
-    let disposed=false,resize,visibility;
+    let disposed=false,resize,visibility,loadDeadline;
+    const recovery=mapRecovery.current;
     setMapError(false);
     import('maplibre-gl').then(({default:gl})=>{
       if(disposed)return;library.current=gl;
       const point=latest.current.position;
       const instance=new gl.Map({container:host.current,style:createAirAtlasStyle(latest.current.theme.palette,appearance,labels),
-        center:[point.longitude,point.latitude],zoom:9,bearing:0,pitch:0,maxPitch:0,minZoom:5,maxZoom:14,
+        center:mapCamera.current?.center??[point.longitude,point.latitude],zoom:mapCamera.current?.zoom??9,bearing:mapCamera.current?.bearing??0,pitch:0,maxPitch:0,minZoom:5,maxZoom:14,
         attributionControl:false,antialias:false,fadeDuration:0,pixelRatio:atlasMapPixelRatio(window.devicePixelRatio),renderWorldCopies:false});
       mapRef.current=instance;setMap(instance);
       instance.dragRotate.disable();instance.touchZoomRotate.disableRotation();
-      const home=document.createElement('div');home.className='air-atlas-home';home.setAttribute('aria-label','Your location');
+      const home=document.createElement('div');home.className='air-atlas-home';home.setAttribute('aria-label','Your location');home.title='You · current GPS location';
       homeMarker.current=new gl.Marker({element:home,rotationAlignment:'map'}).setLngLat([point.longitude,point.latitude]).addTo(instance);
       lens.current=createRadarLens(instance);
       instance.on('dragstart',()=>{followHome.current=false;});
       instance.on('load',()=>{if(!disposed)onRenderer('Air Atlas · MapLibre');});
       instance.on('render',()=>{if(!document.hidden&&!flightViewRef.current){const canvas=instance.getCanvas();onFrame(performance.now(),1000/60,'WebGL2 · MapLibre',canvas.width,canvas.height);}});
-      instance.on('error',()=>{if(!disposed)setMapError(true);});
-      instance.on('idle',()=>{if(!disposed&&instance.isStyleLoaded())setMapError(false);});
+      instance.on('error',()=>{if(!disposed){setMapError(true);recovery.fail();}});
+      instance.on('idle',()=>{if(!disposed&&instance.isStyleLoaded()){setMapError(false);clearTimeout(loadDeadline);recovery.succeed();}});
+      loadDeadline=setTimeout(()=>{if(!disposed&&!instance.isStyleLoaded()){setMapError(true);recovery.fail();}},20000);
       resize=new ResizeObserver(()=>instance.resize());resize.observe(host.current);
       visibility=()=>{if(!document.hidden){instance.resize();instance.triggerRepaint();}};
       document.addEventListener('visibilitychange',visibility);
-    }).catch(error=>{if(!disposed){setMapError(true);onRuntimeError?.(error);}});
-    return()=>{disposed=true;resize?.disconnect();if(visibility)document.removeEventListener('visibilitychange',visibility);
+    }).catch(error=>{if(!disposed){setMapError(true);recovery.fail();onRuntimeError?.(error);}});
+    return()=>{disposed=true;clearTimeout(loadDeadline);if(mapRef.current)mapCamera.current={center:mapRef.current.getCenter(),zoom:mapRef.current.getZoom(),bearing:mapRef.current.getBearing()};resize?.disconnect();if(visibility)document.removeEventListener('visibilitychange',visibility);
       lens.current?.dispose();lens.current=null;
       markers.current.forEach(({marker})=>marker.remove());markers.current.clear();mapRef.current?.remove();mapRef.current=null;setMap(null);};
   },[canStart,mapRetry,onRenderer,onFrame,onRuntimeError]);
@@ -213,7 +234,7 @@ export default function AirAtlasField({position,gpsState,theme,reducedMotion,onR
   },[map,planes,selectedId,codes,clock,types,coverage]);
   useEffect(()=>{
     if(!map)return;
-    let frame,lastMini=0,lastTrails=0;
+    let frame,lastMini=0,lastTrails=0,lastTrailData='',lastHomeData='';
     const animate=()=>{
       if(document.hidden)return;
       const time=performance.now();
@@ -222,8 +243,8 @@ export default function AirAtlasField({position,gpsState,theme,reducedMotion,onR
         if(!sample)continue;
         const screen=map.project([sample.longitude,sample.latitude]),container=map.getContainer();
         const selected=entry.button.dataset.aircraftId===selectedIdRef.current;
-        const draw=markers.current.size<=128||selected||!entry.lastScreen||Math.hypot(screen.x-entry.lastScreen.x,screen.y-entry.lastScreen.y)>=0.05||time-entry.lastDraw>=250;
-        if(draw){entry.marker.setLngLat([sample.longitude,sample.latitude]);entry.lastScreen=screen;entry.lastDraw=time;
+        const draw=!entry.lastScreen||Math.hypot(screen.x-entry.lastScreen.x,screen.y-entry.lastScreen.y)>=0.05||entry.lastBearing!==map.getBearing()||entry.lastHeading!==sample.trackDegrees;
+        if(draw){entry.marker.setLngLat([sample.longitude,sample.latitude]);entry.lastScreen=screen;entry.lastDraw=time;entry.lastBearing=map.getBearing();entry.lastHeading=sample.trackDegrees;
         entry.marker.setOffset(lens.current?.active?radarLensOffset(screen,container.clientWidth,container.clientHeight):[0,0]);
         if(flightViewRef.current&&entry.button.dataset.aircraftId===selectedIdRef.current&&time-lastMini>250){map.easeTo({center:[sample.longitude,sample.latitude],zoom:9,bearing:0,duration:300});lastMini=time;}
         const heading=sample.trackDegrees;
@@ -236,22 +257,27 @@ export default function AirAtlasField({position,gpsState,theme,reducedMotion,onR
         const home=latest.current.position,screen=map.project([home.longitude,home.latitude]),container=map.getContainer();
         homeMarker.current.setOffset(lens.current?.active?radarLensOffset(screen,container.clientWidth,container.clientHeight):[0,0]);
       }
-      if(time-lastTrails>=250&&map.isStyleLoaded()){
+      if(time-lastTrails>=1000&&map.isStyleLoaded()){
         const features=[];
         for(const [id,entry] of markers.current){
           const coordinates=radarTrailCoordinates(entry.history,time,reducedMotion);
           if(coordinates.length>1)features.push({type:'Feature',properties:{id},geometry:{type:'LineString',coordinates}});
         }
-        map.getSource('radar-trails')?.setData({type:'FeatureCollection',features});lastTrails=time;
+        const trailData=JSON.stringify({type:'FeatureCollection',features});
+        if(trailData!==lastTrailData){map.getSource('radar-trails')?.setData(JSON.parse(trailData));lastTrailData=trailData;}
+        const homeData=JSON.stringify(homeTrailFeature(homeHistory.current,time));
+        if(homeData!==lastHomeData){map.getSource('radar-home-trail')?.setData(JSON.parse(homeData));lastHomeData=homeData;}lastTrails=time;
       }
       frame=requestAnimationFrame(animate);
     };
     const wake=()=>{cancelAnimationFrame(frame);if(!document.hidden)animate();};
+    const resetTrails=()=>{lastTrailData='';lastHomeData='';};map.on('styledata',resetTrails);
     document.addEventListener('visibilitychange',wake);animate();
-    return()=>{cancelAnimationFrame(frame);document.removeEventListener('visibilitychange',wake);};
+    return()=>{cancelAnimationFrame(frame);map.off('styledata',resetTrails);document.removeEventListener('visibilitychange',wake);};
   },[map,reducedMotion]);
   useEffect(()=>{if(!map||flightView)return;map.easeTo({...(followHome.current&&validAtlasPosition(position)?{center:[position.longitude,position.latitude]}:{}),bearing,duration:reducedMotion?0:700});},[map,position?.latitude,position?.longitude,bearing,reducedMotion,flightView]);
   useEffect(()=>{if(homeMarker.current&&validAtlasPosition(position)){homeMarker.current.setLngLat([position.longitude,position.latitude]).setRotation(headingFresh?position.heading:0);homeMarker.current.getElement().classList.toggle('is-direction-unknown',!headingFresh);}},[map,position,headingFresh]);
+  useEffect(()=>{homeMarker.current?.getElement().classList.toggle('is-stale',!clockSafe(position));},[clock,position]);
   useEffect(()=>{
     if(!map)return;
     if(flightView){radarCamera.current={center:map.getCenter(),zoom:map.getZoom(),bearing:map.getBearing()};map.stop();}
@@ -281,10 +307,16 @@ export default function AirAtlasField({position,gpsState,theme,reducedMotion,onR
       <div className="air-atlas-toolbar" aria-label="Air Atlas map controls">
         <button onClick={()=>{setShowList(v=>!v);setSelectedId(null);}} aria-expanded={showList} aria-controls="air-atlas-list">{activePlanes.length} AIRCRAFT</button>
         <button aria-label="Show place labels" aria-pressed={labels} onClick={()=>setLabels(v=>!v)}>LABELS {labels?'ON':'OFF'}</button>
-        {mapError?<button className="air-atlas-map-retry" onClick={()=>setMapRetry(v=>v+1)}>RETRY MAP</button>:<button aria-label="Use natural map colors" aria-pressed={appearance==='natural'} onClick={()=>setAppearance(v=>v==='palette'?'natural':'palette')}>{appearance==='natural'?'NATURAL':'PALETTE'}</button>}
-        <div className="air-atlas-controls"><button aria-label="Refresh aircraft" onClick={()=>{lastTargetCheck.current={id:null,time:0};setAreaPending(true);pollerRef.current?.refresh();}}>↻</button><button aria-label="Follow driving direction" aria-pressed={!northUp} onClick={()=>setNorthUp(v=>!v)}>{northUp?'N':'↑'}</button><button aria-label="Zoom in" onClick={()=>map?.zoomIn()}>+</button><button aria-label="Reset radar view" onClick={reset}>RESET</button><button aria-label="Zoom out" onClick={()=>map?.zoomOut()}>−</button></div>
+        <div className="air-atlas-controls">
+          <button className="air-atlas-refresh" aria-label="Refresh aircraft" title="Refresh aircraft positions" onClick={()=>{lastTargetCheck.current={id:null,time:0};setAreaPending(true);pollerRef.current?.refresh();}}><RadarIcon kind="refresh"/><span>UPDATE</span></button>
+          <button aria-label="Use natural map colors" title={appearance==='natural'?'Natural map · switch to palette':'Show natural map colors'} aria-pressed={appearance==='natural'} onClick={()=>setAppearance(v=>v==='palette'?'natural':'palette')}><RadarIcon kind="map"/></button>
+          <button aria-label="Follow driving direction" title={northUp?'North up · follow driving direction':'Driving direction · switch to north up'} aria-pressed={!northUp} onClick={()=>setNorthUp(v=>!v)}>{northUp?'N':'↑'}</button>
+          <button aria-label="Zoom in" onClick={()=>map?.zoomIn()}><RadarIcon kind="plus"/></button>
+          <button aria-label="Reset radar view" title="Recenter on you and resume following" onClick={reset}><RadarIcon kind="home"/></button>
+          <button aria-label="Zoom out" onClick={()=>map?.zoomOut()}><RadarIcon kind="minus"/></button>
+        </div>
       </div>
-      <div className="air-atlas-status" role="status">{locationPresentation.message||(!northUp&&!headingFresh?'Waiting for driving direction · north up':navigator.onLine===false?'Offline · positions held':status==='loading'?'Finding aircraft…':status==='retrying'?'Feed unavailable · retrying':areaPending?'Updating visible area…':`ADSB.lol · visible area${coverage?' · '+Math.round(coverage.radiusNm*1.852)+' km radius':''} · feed ${feedAt===null?'pending':Math.max(0,Math.floor((clock-feedAt)/1000))+'s ago'}${truncated?' · result limit reached':''}`)}</div>
+      <div className="air-atlas-status" role="status">{mapError?<button className="air-atlas-map-retry" onClick={()=>setMapRetry(v=>v+1)}>RETRY MAP</button>:null}{locationPresentation.message||(!northUp&&!headingFresh?'Waiting for driving direction · north up':navigator.onLine===false?'Offline · positions held':status==='loading'?'Finding aircraft…':status==='retrying'?'Feed unavailable · retrying':areaPending?'Updating visible area…':`ADSB.lol · visible area${coverage?' · '+Math.round(coverage.radiusNm*1.852)+' km radius':''} · feed ${feedAt===null?'pending':Math.max(0,Math.floor((clock-feedAt)/1000))+'s ago'}${truncated?' · result limit reached':''}`)}</div>
       {showList?<div id="air-atlas-list" className="air-atlas-list" aria-label="Nearby aircraft">{activePlanes.length?activePlanes.map(p=><button key={p.id} onClick={()=>{setSelectedId(p.id);setShowList(false);}}>{p.callsign||p.registration||p.id}<span>{p.typeCode||'Unknown'} · {(p.distanceMetres/1000).toFixed(0)} km</span></button>):<p>No recent aircraft in range.</p>}</div>:null}
     </>:null}
     {selected&&!flightView?<div className={`air-atlas-detail${expanded?' is-expanded':''}`} aria-label="Selected aircraft detail">

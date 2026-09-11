@@ -48,3 +48,24 @@
 .engine-comparison-build{margin:0;color:#c5c5bf}.lab-shell:has(>.engine-lab)>.lab-header{grid-template-columns:minmax(240px,1.3fr) minmax(170px,1fr) auto auto auto}.lab-shell:has(>.engine-lab) .lab-wordmark{font-size:17px}
 @media(max-width:900px){.lab-shell:has(>.engine-lab)>.lab-header{grid-template-columns:minmax(240px,1.2fr) minmax(165px,1fr) auto auto}}
 @media(max-width:700px){.lab-shell:has(>.engine-lab)>.lab-header{grid-template-columns:minmax(195px,1.2fr) minmax(145px,1fr) auto auto}.lab-shell:has(>.engine-lab) .lab-connected-copy{display:none}}
+
+/* Original RPM comb: a measured travelling crest beneath the tachometer cursor. */
+.engine-voice-title {display:flex;align-items:baseline;gap:12px;font-size:22px;letter-spacing:-.03em;}
+.engine-voice-title small {font-size:13px;letter-spacing:.08em;}
+.engine-tach {height:70px;position:relative;border:0;border-bottom:1px solid color-mix(in srgb,currentColor 22%,transparent);padding:0;background:transparent;}
+.engine-rpm-wave {display:block;width:100%;height:66px;overflow:visible;}
+.engine-rpm-wave line {stroke:var(--ui-accent-text);stroke-width:3;vector-effect:non-scaling-stroke;}
+.engine-rpm-wave .is-redline {stroke:var(--ui-text);}
+.engine-rpm-cursor {fill:var(--ui-text);}
+.engine-tach i {position:absolute;bottom:-1px;left:0;height:2px;}
+.engine-primary strong {color:var(--ui-text);}
+.engine-primary>div+div strong {color:var(--ui-accent-text);}
+.engine-telemetry[data-revving=true] .engine-voice-title {color:var(--ui-accent-text);}
+.engine-telemetry:has(.engine-rev) {gap:10px;padding-top:76px;}
+.engine-telemetry:has(.engine-rev) .engine-primary strong {font-size:72px;}
+.engine-telemetry:has(.engine-rev) .engine-primary {padding:4px 0 8px;}
+@media(max-height:500px){.engine-telemetry{justify-content:flex-start;gap:8px;padding-top:72px;}.engine-telemetry:has(.engine-rev){padding-top:72px;}.engine-tach{height:48px;}.engine-rpm-wave{height:44px;}.engine-primary strong,.engine-telemetry:has(.engine-rev) .engine-primary strong{font-size:52px;}.engine-graphs svg{height:24px;}.engine-bottom{flex-wrap:wrap;}.engine-rev{position:static;min-width:0;}.engine-rev.is-right{display:none;}}
+@media(prefers-reduced-motion:reduce){.engine-tach i{transition:none;}}
+
+.engine-telemetry {padding-top:76px;padding-bottom:72px;gap:10px;}
+.engine-telemetry:has(.engine-rev) {padding-bottom:136px;}

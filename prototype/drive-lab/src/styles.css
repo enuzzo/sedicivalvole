@@ -4864,3 +4864,18 @@ html { font-size: var(--font-size-floor); }
 .flight-zoom-controls button:first-child,.flight-zoom-controls button:last-child {font-size:20px;}
 .flight-view-toolbar button:disabled {opacity:.4;cursor:default;}
 @media(max-width:450px){.flight-view-toolbar{flex-wrap:wrap;}.flight-view-toolbar button{padding:0 9px;}.flight-view-state{top:calc(var(--radar-top) + 118px);}.air-atlas-camera{min-width:132px;padding:0 10px;}}
+
+/* Compact visual choices lead the library; curated combinations follow. */
+.environment-drawer .score-list {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;flex-shrink:0;}
+.environment-drawer .score-entry {min-height:66px;height:100%;padding:10px 12px;gap:8px;}
+.environment-drawer .score-entry-body strong {font-size:17px;line-height:1.2;}
+.environment-drawer .score-entry-body>span {font-size:13px;line-height:1.3;}
+.visual-presets-heading {border-top:1px solid var(--ui-line);margin:18px 0 0;padding-top:18px;font-size:22px;font-weight:500;}
+.air-atlas-controls button {display:flex;align-items:center;justify-content:center;gap:5px;}
+.air-atlas-controls svg {width:22px;height:22px;flex-shrink:0;}
+.air-atlas-refresh span {font-size:13px;}
+.air-atlas-home,.air-atlas-home.is-direction-unknown {width:18px;height:18px;box-sizing:border-box;clip-path:none;border-radius:50%;background:#fff;border:4px solid #176087;box-shadow:0 0 0 2px #fff,0 0 0 4px #132c40a0;filter:none;z-index:2;}
+.air-atlas-home:not(.is-direction-unknown)::before {content:"";position:absolute;left:1px;top:-15px;border-left:4px solid transparent;border-right:4px solid transparent;border-bottom:7px solid #fff;}
+.air-atlas-home.is-stale {background:#92a4ae;border-color:#415c6d;}
+.air-atlas-status .air-atlas-map-retry {height:32px;min-width:0;margin-right:8px;font-size:13px;}
+@media(max-width:620px){.environment-drawer .score-list{grid-template-columns:1fr;}.air-atlas-refresh span{display:none;}.air-atlas-toolbar{flex-wrap:wrap;}.air-atlas-status{top:calc(var(--radar-top) + 114px);}}

@@ -44,7 +44,7 @@ test('real PHP builds deterministic PDFs and matches the exact email attachment'
   const pdf=Buffer.from(result.pdf,'base64');
   assert.match(pdf.toString('latin1'),/^%PDF-1\./);assert.ok(pdf.length<200000);
   assert.doesNotMatch(pdf.toString('latin1'),/\/(?:JavaScript|OpenAction|EmbeddedFile|URI)\b/);
-  assert.equal((pdf.toString('latin1').match(/\/Type \/Page\b/g)||[]).length,2);
+  assert.equal((pdf.toString('latin1').match(/\/Type \/Page\b/g)||[]).length,3);
   const again=Buffer.from(php(`date_default_timezone_set('America/Los_Angeles'); echo base64_encode(reportBuildPdf(reportNormalize($input)));`,fixture()),'base64');
   assert.equal(digest(again),digest(pdf));
   const attachment=result.mail.message.split('Content-Disposition: attachment;')[1].split('\r\n\r\n')[1].split('\r\n--')[0];
@@ -57,7 +57,7 @@ test('real PHP builds deterministic PDFs and matches the exact email attachment'
 
 test('an explicit route adds one bounded plate; an empty session remains exportable',async()=>{
   const route=Buffer.from(php(`echo base64_encode(reportBuildPdf(reportNormalize($input)));`,fixture(true)),'base64');
-  assert.equal((route.toString('latin1').match(/\/Type \/Page\b/g)||[]).length,3);
+  assert.equal((route.toString('latin1').match(/\/Type \/Page\b/g)||[]).length,4);
   const streams=[...route.toString('latin1').matchAll(/stream\r?\n([\s\S]*?)\r?\nendstream/g)].flatMap(([,bytes])=>{
     try{return [inflateSync(Buffer.from(bytes,'latin1')).toString('latin1')];}catch{return [];}
   });
@@ -109,7 +109,7 @@ test('map fallback PDFs retain A4 page counts, distinct source labels and only t
     snapshot.samples=snapshot.samples.map((sample,i)=>i>=18&&i<38||i>=50?{...sample,altitudeM:null,groundElevationM:150+18*Math.sin(i/11)}:sample);
     const pdf=Buffer.from(php(`echo base64_encode(reportBuildPdf(reportNormalize($input)));`,snapshot),'base64');
     const raw=pdf.toString('latin1'),text=pdfStreams(pdf).join('\n');
-    assert.equal((raw.match(/\/Type \/Page\b/g)||[]).length,includeRoute?3:2);
+    assert.equal((raw.match(/\/Type \/Page\b/g)||[]).length,includeRoute?4:3);
     assert.match(raw,/\/MediaBox \[0 0 595\.28 841\.89\]/);
     assert.deepEqual([...raw.matchAll(/\/URI \(([^)]*)\)/g)].map(([,uri])=>uri),['https://open-meteo.com/en/docs/elevation-api']);
     for(const label of ['GPS altitude','map elevation estimate','GPS elevation gain / loss','Open-Meteo / EU Copernicus GLO-90','CC BY 4.0','90 m DEM']) assert.ok(text.includes(label),label);
@@ -146,7 +146,7 @@ test('the actual JavaScript immutable snapshot passes PHP validation and renders
     const output=JSON.parse(php(`$normalized=reportNormalize($input);$pdf=reportBuildPdf($normalized);echo json_encode(['snapshot'=>$normalized,'pdf'=>base64_encode($pdf)]);`,snapshot));
     assert.deepEqual(output.snapshot,snapshot);
     const text=Buffer.from(output.pdf,'base64').toString('latin1');
-    assert.equal((text.match(/\/Type \/Page\b/g)||[]).length,includeRoute?3:2);
+    assert.equal((text.match(/\/Type \/Page\b/g)||[]).length,includeRoute?4:3);
     assert.match(text,/\/MediaBox \[0 0 595\.28 841\.89\]/);
   }
   const polar=createSessionReportSnapshot({...input,includeRoute:true,journey:{...input.journey,travelPoints:[{latitude:90,longitude:179},{latitude:89.9,longitude:-179}]}});

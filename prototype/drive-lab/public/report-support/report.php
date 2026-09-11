@@ -26,7 +26,7 @@ function reportNumber($value, float $minimum, float $maximum, bool $nullable = f
 
 function reportNormalize($input): array
 {
-    $s = reportKeys($input, ['schema', 'createdAt', 'app', 'source', 'includeRoute', 'summary', 'speedBandsMs', 'headingMs', 'samples', 'system'], ['route']);
+    $s = reportKeys($input, ['schema', 'createdAt', 'app', 'source', 'includeRoute', 'summary', 'speedBandsMs', 'headingMs', 'samples', 'system'], ['route', 'routeMap']);
     if ($s['schema'] !== 'sedicivalvole.session-report.v1' || $s['source'] !== 'GPS' || !is_bool($s['includeRoute'])
         || !is_string($s['createdAt']) || !preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?Z$/D', $s['createdAt'])
         || strtotime($s['createdAt']) === false) throw new SessionReportProblem('schema_rejected');
@@ -70,6 +70,16 @@ function reportNormalize($input): array
         $point = reportKeys($point, ['latitude', 'longitude']);
         $points[] = ['latitude' => reportNumber($point['latitude'], -90, 90), 'longitude' => reportNumber($point['longitude'], -180, 180)];
     }
+    $routeMap = null;
+    if (isset($s['routeMap'])) {
+        $image = $s['routeMap'];
+        if (!$s['includeRoute'] || count($points) < 2 || !is_string($image) || strlen($image) > 800000
+            || !preg_match('#^data:image/jpeg;base64,([A-Za-z0-9+/]+={0,2})$#D', $image, $matches)) throw new SessionReportProblem('map_rejected');
+        $bytes = base64_decode($matches[1], true);
+        $size = $bytes === false ? false : @getimagesizefromstring($bytes);
+        if (!$size || $size[0] !== 1000 || $size[1] !== 900 || $size[2] !== IMAGETYPE_JPEG || strlen($bytes) > 600000) throw new SessionReportProblem('map_rejected');
+        $routeMap = 'data:image/jpeg;base64,' . base64_encode($bytes);
+    }
     $systemKeys = ['audio', 'averageFps', 'p95FrameMs', 'longTaskCount', 'downloadBytes', 'uploadBytes', 'engineRpm', 'engineGear', 'engineLoad'];
     $system = reportKeys($s['system'], $systemKeys);
     if (!in_array($system['audio'], ['running', 'suspended', 'interrupted', 'closed', 'unavailable'], true)) throw new SessionReportProblem('system_rejected');
@@ -78,7 +88,7 @@ function reportNormalize($input): array
         $health[$key] = reportNumber($system[$key], 0, $maximum, true);
     }
     foreach (['longTaskCount', 'engineGear'] as $key) if ($health[$key] !== null && !is_int($health[$key])) throw new SessionReportProblem('system_rejected');
-    return ['schema' => $s['schema'], 'createdAt' => $s['createdAt'], 'app' => $app, 'source' => 'GPS', 'includeRoute' => $s['includeRoute'], 'summary' => $out, 'speedBandsMs' => $vectors['speedBandsMs'], 'headingMs' => $vectors['headingMs'], 'samples' => $samples, 'route' => $points, 'system' => $health];
+    return ['schema' => $s['schema'], 'createdAt' => $s['createdAt'], 'app' => $app, 'source' => 'GPS', 'includeRoute' => $s['includeRoute'], 'summary' => $out, 'speedBandsMs' => $vectors['speedBandsMs'], 'headingMs' => $vectors['headingMs'], 'samples' => $samples, 'route' => $points, 'system' => $health] + ($routeMap === null ? [] : ['routeMap' => $routeMap]);
 }
 
 final class TravelReportPdf extends FPDF
@@ -89,7 +99,7 @@ final class TravelReportPdf extends FPDF
     public function Footer() {
         $this->SetY(-14); $this->SetDrawColor(206, 207, 200); $this->Line(16, $this->GetY(), 194, $this->GetY());
         $this->SetFont('Helvetica', '', 8); $this->SetTextColor(90, 96, 92);
-        $this->Cell(145, 9, 'sedicivalvole / Travel Report / Experimental'); $this->Cell(33, 9, (string) $this->PageNo(), 0, 0, 'R');
+        $this->Cell(145, 9, 'sedicivalvole / Travel Report / Experimental'); $this->Cell(33, 9, $this->PageNo() . ' / {nb}', 0, 0, 'R');
     }
     public function section(string $title, float $y): void {
         $this->SetXY(16, $y); $this->SetTextColor(40, 48, 43); $this->SetFont('Helvetica', 'B', 11); $this->Cell(178, 8, $title);
@@ -153,69 +163,89 @@ function reportTrace(TravelReportPdf $pdf, array $samples, string $field, float 
     }
 }
 
+function reportText(TravelReportPdf $pdf, string $text, float $x, float $y, float $size = 10, bool $bold = false, array $color = [27,43,47]): void {
+    $pdf->SetTextColor(...$color); $pdf->SetFont('Helvetica', $bold ? 'B' : '', $size); $pdf->SetXY($x,$y); $pdf->Cell(178,7,$text);
+}
+function reportChapter(TravelReportPdf $pdf, string $number, string $title, string $subtitle): void {
+    $pdf->AddPage(); $pdf->SetFillColor(247,247,242); $pdf->Rect(0,0,210,297,'F');
+    reportText($pdf,'SEDICIVALVOLE / TRAVEL REPORT',16,12,9,true); reportText($pdf,$number,179,12,13,true,[214,55,41]);
+    $pdf->SetDrawColor(27,43,47); $pdf->SetLineWidth(.4); $pdf->Line(16,26,194,26);
+    reportText($pdf,$title,16,33,30,true); reportText($pdf,$subtitle,16,48,10);
+}
+function reportMetric(TravelReportPdf $pdf, string $label, string $value, float $x, float $y, float $width = 85): void {
+    $pdf->SetDrawColor(198,209,207); $pdf->SetLineWidth(.25); $pdf->Line($x,$y,$x+$width,$y);
+    reportText($pdf,strtoupper($label),$x,$y+4,8,true,[83,101,104]);
+    reportText($pdf,$value,$x,$y+14,23,true);
+}
+function reportOutline(TravelReportPdf $pdf, array $route, float $x, float $y, float $w, float $h): void {
+    if(count($route)<2)return;
+    $lat=array_sum(array_column($route,'latitude'))/count($route);$points=[];$last=null;
+    foreach($route as $p){$lon=$p['longitude'];if($last!==null){while($lon-$last>180)$lon-=360;while($lon-$last< -180)$lon+=360;}$last=$lon;$points[]=[$lon*max(.087,cos(deg2rad($lat))),$p['latitude']];}
+    $xs=array_column($points,0);$ys=array_column($points,1);$dx=max($xs)-min($xs);$dy=max($ys)-min($ys);
+    $scale=min(($w-20)/max(.00001,$dx),($h-20)/max(.00001,$dy));$left=$x+($w-$dx*$scale)/2;$top=$y+($h-$dy*$scale)/2;
+    $draw=array_map(function($p)use($left,$top,$xs,$ys,$scale){return [$left+($p[0]-min($xs))*$scale,$top+(max($ys)-$p[1])*$scale];},$points);
+    $pdf->SetDrawColor(214,55,41);$pdf->SetLineWidth(.9);$pdf->traceSegment($draw,false);
+    foreach([$draw[0],$draw[count($draw)-1]] as $i=>$p){$pdf->SetFillColor(27,43,47);$pdf->Rect($p[0]-1.2,$p[1]-1.2,2.4,2.4,'F');reportText($pdf,$i?'FINISH':'START',$p[0]+2,$p[1]-7,8,true);}
+}
 function reportBuildPdf(array $s): string
 {
-    $pdf = new TravelReportPdf(strtotime($s['createdAt']));
-    $pdf->SetMargins(16, 16, 16); $pdf->SetAutoPageBreak(true, 22); $pdf->SetCompression(true);
-    $pdf->SetTitle('sedicivalvole Travel Report'); $pdf->SetAuthor('enuzzo'); $pdf->SetCreator('sedicivalvole report v1 / FPDF 1.9');
-    $pdf->AddPage(); $pdf->SetFillColor(28, 34, 30); $pdf->Rect(0, 0, 210, 52, 'F');
-    $pdf->Image(__DIR__ . '/report-mark.png', 15, 10, 31);
-    $pdf->SetTextColor(249, 248, 240); $pdf->SetXY(52, 14); $pdf->SetFont('Helvetica', 'B', 23); $pdf->Cell(140, 10, 'Travel Report');
-    $pdf->SetXY(53, 27); $pdf->SetFont('Helvetica', '', 10); $pdf->Cell(140, 6, 'sedicivalvole / ' . substr($s['createdAt'], 0, 10) . ' / GPS session');
-    $pdf->SetXY(53, 35); $pdf->SetFont('Helvetica', '', 8); $pdf->Cell(140, 5, 'Build ' . $s['app']['build'] . ' / ' . $s['app']['commit'] . ' / v' . $s['app']['version']);
-    $summary = $s['summary']; $coverage = $summary['elapsedMs'] ? $summary['observedMs'] / $summary['elapsedMs'] * 100 : 0;
-    $headlines = [['GPS distance', $summary['observedMs'] ? reportValue($summary['distanceM'] / 1000, ' km', 1) : 'Unavailable'], ['Session duration', reportDuration($summary['elapsedMs'])], ['Moving average', reportValue($summary['movingAverageKmh'], ' km/h')], ['GPS coverage', reportValue($coverage, '%')]];
-    foreach ($headlines as $i => $row) {
-        $x = 16 + ($i % 2) * 91; $y = 61 + floor($i / 2) * 27;
-        $pdf->SetFillColor(241, 242, 235); $pdf->Rect($x, $y, 87, 23, 'F');
-        $pdf->SetTextColor(72, 81, 73); $pdf->SetFont('Helvetica', '', 9); $pdf->SetXY($x + 4, $y + 3); $pdf->Cell(79, 5, $row[0]);
-        $pdf->SetTextColor(26, 36, 29); $pdf->SetFont('Helvetica', 'B', 18); $pdf->SetXY($x + 4, $y + 10); $pdf->Cell(79, 10, $row[1]);
+    $pdf=new TravelReportPdf(strtotime($s['createdAt']));$pdf->SetMargins(16,16,16);$pdf->SetAutoPageBreak(false);$pdf->SetCompression(true);$pdf->AliasNbPages();
+    $pdf->SetTitle('sedicivalvole Travel Report');$pdf->SetAuthor('enuzzo');$pdf->SetCreator('sedicivalvole report / FPDF 1.9');
+    $summary=$s['summary'];$coverage=$summary['elapsedMs']?$summary['observedMs']/$summary['elapsedMs']*100:0;
+    $hasMapElevation=(bool)array_filter($s['samples'],function($p){return $p['altitudeM']===null&&($p['groundElevationM']??null)!==null;});
+    $ink=[27,43,47];$red=[214,55,41];$blue=[35,115,151];
+    $pdf->AddPage();$pdf->SetFillColor(247,247,242);$pdf->Rect(0,0,210,297,'F');
+    $pdf->SetFillColor(...$ink);$pdf->Rect(0,0,210,65,'F');$pdf->Image(__DIR__.'/report-mark.png',16,13,24);
+    reportText($pdf,'TRAVEL REPORT',50,15,11,true,[238,241,229]);reportText($pdf,'Every journey has a rhythm.',50,29,21,true,[255,255,250]);
+    reportText($pdf,substr($s['createdAt'],0,10).' / GPS SESSION',50,46,10,false,[186,204,207]);
+    reportText($pdf,'THE OBSERVED JOURNEY',16,77,9,true);
+    $distance=$summary['observedMs']?reportValue($summary['distanceM']/1000,'',1):'--';
+    reportText($pdf,$distance,13,102,76,true,$red);reportText($pdf,'KILOMETRES',16,125,10,true,$red);
+    reportMetric($pdf,'Session duration',reportDuration($summary['elapsedMs']),112,81,82);
+    reportMetric($pdf,'Moving average',reportValue($summary['movingAverageKmh'],' km/h'),112,118,82);
+    reportText($pdf,'A journey at a glance',16,155,18,true);
+    reportMetric($pdf,'Peak speed',reportValue($summary['peakKmh'],' km/h'),16,171,54);
+    reportMetric($pdf,'Stops',(string)$summary['stops'],78,171,54);
+    reportMetric($pdf,'GPS coverage',reportValue($coverage,'%'),140,171,54);
+    $pdf->section('Where the time went',214);$x=16;$width=178;
+    $parts=[['MOVING',$summary['movingMs'],[35,115,151]],['STOPPED',$summary['stoppedMs'],[214,55,41]],['UNOBSERVED',$summary['unknownMs'],[198,209,207]]];
+    foreach($parts as $i=>$part){$w=$summary['elapsedMs']?$width*$part[1]/$summary['elapsedMs']:0;$pdf->SetFillColor(...$part[2]);$pdf->Rect($x,227,$w,5,'F');$x+=$w;reportText($pdf,$part[0],16+$i*61,238,8,true);reportText($pdf,reportDuration($part[1]),16+$i*61,246,15,true);}
+    reportText($pdf,'01 / JOURNEY   '.($s['includeRoute']?'02 / MAP   03 / RHYTHM   04 / SESSION':'02 / RHYTHM   03 / SESSION'),16,263,8,true);
+    if($s['includeRoute']){
+        reportChapter($pdf,'02','Your route','Route included by request');
+        $pdf->SetFillColor(229,236,230);$pdf->Rect(16,64,178,160.2,'F');
+        if(!empty($s['routeMap'])){$pdf->Image($s['routeMap'],16,64,178,160.2,'JPG');reportText($pdf,'OpenFreeMap / OpenMapTiles / (c) OpenStreetMap contributors',16,227,8);}
+        else{reportOutline($pdf,$s['route'],16,64,178,160.2);reportText($pdf,count($s['route'])>=2?'Map unavailable - observed route outline retained.':'Not enough location observations to draw a route.',16,229,10,true);}
+        reportMetric($pdf,'Retained observations',(string)count($s['route']).' points',16,242,85);
+        reportMetric($pdf,'Orientation','North up',109,242,85);
+        $pdf->note('Observed positions, without road matching. Missing observations may leave incomplete coverage.',271);
     }
-    $pdf->section('The observed journey', 120);
-    reportTrace($pdf, $s['samples'], 'speedKmh', 16, 139, 178, 48, [198, 47, 38], true);
-    reportTrace($pdf, $s['samples'], 'altitudeM', 16, 139, 178, 48, [46, 102, 139], false);
-    $hasMapElevation = (bool) array_filter($s['samples'], function ($sample) { return $sample['altitudeM'] === null && ($sample['groundElevationM'] ?? null) !== null; });
-    $pdf->note($s['samples'] ? ($hasMapElevation ? 'Separate speed and elevation scales. Blue: GPS altitude (solid), map elevation estimate (dashed). Breaks mark missing observations or source changes.' : 'Speed and GPS altitude use separate scales. Empty breaks are unobserved intervals.') : 'No GPS observations were available. No journey has been inferred.', 192);
-    if ($hasMapElevation) {
-        $pdf->SetXY(16, 203); $pdf->SetFont('Helvetica', '', 8); $pdf->SetTextColor(46, 102, 139);
-        $pdf->Cell(178, 4.5, 'Map elevation estimate: Open-Meteo / EU Copernicus GLO-90 (CC BY 4.0)', 0, 0, 'L', false, 'https://open-meteo.com/en/docs/elevation-api');
-    }
-    $bandsY = $hasMapElevation ? 224 : 217;
-    $pdf->section('Time at each speed', $bandsY - 12);
-    foreach (['0-30', '30-60', '60-90', '90-130', '130+'] as $i => $label) {
-        $y = $bandsY + $i * 9; $pdf->SetXY(16, $y); $pdf->SetFont('Helvetica', '', 9); $pdf->SetTextColor(44, 53, 45); $pdf->Cell(30, 7, $label . ' km/h');
-        $pdf->SetFillColor(231, 234, 225); $pdf->Rect(49, $y + 2, 105, 3.5, 'F');
-        $pdf->SetFillColor(106, 140, 105); $pdf->Rect(49, $y + 2, $summary['observedMs'] ? 105 * $s['speedBandsMs'][$i] / $summary['observedMs'] : 0, 3.5, 'F');
-        $pdf->SetXY(160, $y); $pdf->Cell(34, 7, reportDuration($s['speedBandsMs'][$i]), 0, 0, 'R');
-    }
-    if ($s['includeRoute']) {
-        $pdf->AddPage(); $pdf->section('Route included by request', 16);
-        $pdf->note('Observed route outline only. No map tiles, inferred road matching or turn-by-turn guidance. This PDF includes the selected route.', 29);
-        $route = $s['route'];
-        if (count($route) >= 2) {
-            $latitudes = array_column($route, 'latitude'); $latitude = array_sum($latitudes) / count($latitudes); $points = []; $last = null;
-            foreach ($route as $point) {
-                $lon = $point['longitude'];
-                if ($last !== null) { while ($lon - $last > 180) $lon -= 360; while ($lon - $last < -180) $lon += 360; }
-                $points[] = [$lon * max(0.087, cos(deg2rad($latitude))), $point['latitude']]; $last = $lon;
-            }
-            $xs = array_column($points, 0); $ys = array_column($points, 1); $xmin = min($xs); $xmax = max($xs); $ymin = min($ys); $ymax = max($ys);
-            $scale = min(164 / max(0.00001, $xmax - $xmin), 165 / max(0.00001, $ymax - $ymin));
-            $left = 105 - ($xmax - $xmin) * $scale / 2; $top = 139 - ($ymax - $ymin) * $scale / 2;
-            $pdf->SetDrawColor(194, 53, 38); $pdf->SetLineWidth(0.8); $previous = null;
-            foreach ($points as $point) { $next = [$left + ($point[0] - $xmin) * $scale, $top + ($ymax - $point[1]) * $scale]; if ($previous !== null) $pdf->Line($previous[0], $previous[1], $next[0], $next[1]); $previous = $next; }
-            $pdf->note(count($route) . ' retained route points. The outline is reduced for export; missing observations are not a complete route record.', 234);
-        } else $pdf->note('Not enough location observations to draw a route.', 65);
-    }
-    $pdf->AddPage(); $pdf->section('Session details', 16);
-    $rows = [['Moving / stopped', reportDuration($summary['movingMs']) . ' / ' . reportDuration($summary['stoppedMs'])], ['Unobserved time', reportDuration($summary['unknownMs'])], ['Stops', (string) $summary['stops']], ['Average / peak speed', reportValue($summary['averageKmh'], ' km/h') . ' / ' . reportValue($summary['peakKmh'], ' km/h')], ['GPS elevation gain / loss', $summary['elevationObservedMs'] ? reportValue($summary['elevationGainM'], ' m') . ' / ' . reportValue($summary['elevationLossM'], ' m') : 'Unavailable']];
-    $system = $s['system'];
-    $rows = array_merge($rows, [['Audio context', $system['audio']], ['Frame average / p95', reportValue($system['averageFps'], ' FPS') . ' / ' . reportValue($system['p95FrameMs'], ' ms')], ['Observed long tasks', reportValue($system['longTaskCount'])], ['Observed download / upload', reportValue($system['downloadBytes'] === null ? null : $system['downloadBytes'] / 1048576, ' MB', 1) . ' / ' . reportValue($system['uploadBytes'] === null ? null : $system['uploadBytes'] / 1048576, ' MB', 1)], ['Engine simulated RPM / gear', reportValue($system['engineRpm']) . ' / ' . reportValue($system['engineGear'])], ['Engine simulated load', reportValue($system['engineLoad'] === null ? null : $system['engineLoad'] * 100, '%')]]);
-    foreach ($rows as $i => $row) { $y = 30 + $i * 10; $pdf->SetDrawColor(222, 225, 217); $pdf->Line(16, $y + 9, 194, $y + 9); $pdf->SetXY(16, $y); $pdf->SetFont('Helvetica', '', 10); $pdf->SetTextColor(56, 65, 57); $pdf->Cell(95, 9, $row[0]); $pdf->SetFont('Helvetica', 'B', 10); $pdf->Cell(83, 9, $row[1], 0, 0, 'R'); }
-    $pdf->section('Heading / time moving', 151);
-    $maximum = max(1, max($s['headingMs']));
-    foreach (['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'] as $i => $label) { $y = 164 + $i * 8; $pdf->SetXY(16, $y); $pdf->SetFont('Helvetica', '', 9); $pdf->Cell(17, 6, $label); $pdf->SetFillColor(111, 142, 110); $pdf->Rect(35, $y + 1.5, 114 * $s['headingMs'][$i] / $maximum, 3, 'F'); $pdf->SetXY(157, $y); $pdf->Cell(37, 6, reportDuration($s['headingMs'][$i]), 0, 0, 'R'); }
-    $pdf->note('Technical appendix. GPS distance is integrated from observed speed; gaps remain unknown. GPS elevation gain/loss uses accuracy and hysteresis. Network totals exclude opaque/cache traffic. Engine figures are simulation, not vehicle telemetry. ' . ($s['includeRoute'] ? 'A route is included by request.' : 'No route or precise location is included.') . ($hasMapElevation ? ' Map elevation estimates terrain from a 90 m DEM near a rounded (~1 km) lookup cell; it does not enter GPS gain/loss.' : ''), 235);
+    reportChapter($pdf,$s['includeRoute']?'03':'02','The rhythm','Speed, elevation and time - each on its own scale.');
+    reportTrace($pdf,$s['samples'],'speedKmh',16,76,178,44,$red,true);
+    reportTrace($pdf,$s['samples'],'altitudeM',16,143,178,44,$blue,true);
+    if(!$s['samples'])$pdf->note('No GPS observations were available. No journey has been inferred.',195);
+    else $pdf->note($hasMapElevation?'Blue: GPS altitude (solid), map elevation estimate (dashed). Breaks mark missing observations or source changes.':'Breaks mark missing observations. Altitude alone cannot establish reliable ascent or descent.',195);
+    if($hasMapElevation){reportText($pdf,'Map elevation estimate: Open-Meteo / Copernicus GLO-90 (CC BY 4.0)',16,208,8,false,$blue);$pdf->Link(16,208,178,7,'https://open-meteo.com/en/docs/elevation-api');}
+    $pdf->section('Time at each speed',218);
+    foreach(['0-30','30-60','60-90','90-130','130+'] as $i=>$label){$y=230+$i*8;$ratio=$summary['observedMs']?$s['speedBandsMs'][$i]/$summary['observedMs']:0;
+        reportText($pdf,$label.' km/h',16,$y,9);$pdf->SetFillColor(222,231,227);$pdf->Rect(47,$y+2,96,3.5,'F');$pdf->SetFillColor(...$red);$pdf->Rect(47,$y+2,96*$ratio,3.5,'F');
+        reportText($pdf,reportDuration($s['speedBandsMs'][$i]),150,$y,9,true);}
+    reportChapter($pdf,$s['includeRoute']?'04':'03','Session details','Direction, observation quality and the system behind the journey.');
+    $rows=[['Moving / stopped',reportDuration($summary['movingMs']).' / '.reportDuration($summary['stoppedMs'])],['Unobserved time',reportDuration($summary['unknownMs'])],['Stops',(string)$summary['stops']],['Average / peak speed',reportValue($summary['averageKmh'],' km/h').' / '.reportValue($summary['peakKmh'],' km/h')],['GPS elevation gain / loss',$summary['elevationObservedMs']?reportValue($summary['elevationGainM'],' m').' / '.reportValue($summary['elevationLossM'],' m'):'Unavailable']];
+    foreach($rows as $i=>$row){$y=64+$i*9;reportText($pdf,$row[0],16,$y,10);$pdf->SetXY(112,$y);$pdf->SetFont('Helvetica','B',10);$pdf->Cell(82,7,$row[1],0,0,'R');}
+    $pdf->section('Heading / time moving',117);
+    $cx=58;$cy=158;$maximum=max(1,max($s['headingMs']));
+    foreach(['N','NE','E','SE','S','SW','W','NW'] as $i=>$label){$angle=deg2rad($i*45-90);$end=25;$length=25*$s['headingMs'][$i]/$maximum;
+        $pdf->SetDrawColor(214,224,220);$pdf->SetLineWidth(.5);$pdf->Line($cx,$cy,$cx+cos($angle)*$end,$cy+sin($angle)*$end);
+        $pdf->SetDrawColor(...$blue);$pdf->SetLineWidth(2);$pdf->Line($cx,$cy,$cx+cos($angle)*$length,$cy+sin($angle)*$length);
+        reportText($pdf,$label,$cx+cos($angle)*31-3,$cy+sin($angle)*31-3,8,true);
+        reportText($pdf,$label.'   '.reportDuration($s['headingMs'][$i]),117,130+$i*7,9);}
+    $pdf->section('System snapshot',199);$system=$s['system'];
+    $technical=[['Audio context',$system['audio']],['Frame average / p95',reportValue($system['averageFps'],' FPS').' / '.reportValue($system['p95FrameMs'],' ms')],['Observed long tasks',reportValue($system['longTaskCount'])],['Observed download / upload',reportValue($system['downloadBytes']===null?null:$system['downloadBytes']/1048576,' MB',1).' / '.reportValue($system['uploadBytes']===null?null:$system['uploadBytes']/1048576,' MB',1)],['Engine simulated RPM / gear',reportValue($system['engineRpm']).' / '.reportValue($system['engineGear'])],['Engine simulated load',reportValue($system['engineLoad']===null?null:$system['engineLoad']*100,'%')]];
+    foreach($technical as $i=>$row){$y=211+$i*7;reportText($pdf,$row[0],16,$y,9);$pdf->SetXY(112,$y);$pdf->SetFont('Helvetica','B',9);$pdf->Cell(82,7,$row[1],0,0,'R');}
+    $pdf->SetXY(16,259);$pdf->SetFont('Helvetica','',8);$pdf->SetTextColor(83,101,104);$pdf->MultiCell(178,4,'Technical appendix. GPS distance uses observed speed; gaps remain unknown. Elevation gain/loss requires accuracy evidence. Network totals exclude opaque/cache traffic. Engine figures are simulation, not vehicle telemetry.');
+    if($hasMapElevation){$pdf->SetXY(16,251);$pdf->SetFont('Helvetica','',8);$pdf->MultiCell(178,4,'Open-Meteo / EU Copernicus GLO-90: 90 m DEM near a rounded lookup cell. Map estimates do not enter GPS gain/loss.');}
+    reportText($pdf,'v'.$s['app']['version'].' / BUILD '.$s['app']['build'].' / '.$s['app']['commit'],16,272,8,true);
     return $pdf->Output('S');
 }
 

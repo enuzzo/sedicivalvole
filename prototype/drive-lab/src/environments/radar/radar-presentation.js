@@ -3,6 +3,23 @@ import {paletteToAtlasCss,createAtlasStyle} from '../atlas/atlas-model.js';
 /** Preserve Atlas cartography while reducing labels for aircraft identification. */
 export function createAirAtlasStyle(palette, appearance = 'palette', labels = false) {
   const style = createAtlasStyle(palette, appearance === 'natural' ? 'standard' : 'palette');
+  const get = id => style.layers.find(layer => layer.id === id);
+  // Lift the actual cartography independently of the dark instrument panels.
+  const mix = (a,b,t) => `rgb(${a.map((v,i)=>Math.round((v*(1-t)+b[i]*t)*255)).join(',')})`;
+  if (appearance !== 'natural') {
+    get('atlas-background').paint['background-color'] = mix(palette.base,[0.75,0.79,0.8],0.28);
+    get('atlas-landcover').paint = {'fill-color':mix(palette.secondary,[0.65,0.76,0.65],0.5),'fill-opacity':0.34};
+    get('atlas-landuse').paint = {'fill-color':mix(palette.secondary,[0.8,0.8,0.71],0.5),'fill-opacity':0.3};
+    get('atlas-water').paint = {'fill-color':mix(palette.secondary,[0.55,0.77,0.91],0.68),'fill-opacity':0.85};
+  }
+  const boundaryInk = appearance === 'natural' ? '#65756e' : '#e2e8dc';
+  style.layers.splice(style.layers.findIndex(layer=>layer.id==='atlas-roads-underlay'),0,
+    {id:'radar-country-borders',type:'line',source:'openfreemap','source-layer':'boundary',
+      filter:['all',['==',['get','admin_level'],2],['!=',['get','maritime'],1],['!=',['get','disputed'],1]],
+      paint:{'line-color':boundaryInk,'line-width':1.5,'line-opacity':0.7}},
+    {id:'radar-regional-borders',type:'line',source:'openfreemap','source-layer':'boundary',minzoom:5,
+      filter:['all',['<=',['get','admin_level'],6],['any',['>',['get','admin_level'],2],['==',['get','disputed'],1]],['!=',['get','maritime'],1]],
+      paint:{'line-color':boundaryInk,'line-width':1,'line-opacity':0.55,'line-dasharray':[4,3]}});
   const layer = style.layers.find(layer => layer.id === 'atlas-place-labels');
   layer.layout.visibility = labels ? 'visible' : 'none';
   layer.layout['text-padding'] = 18;
@@ -32,6 +49,11 @@ export function createAirAtlasStyle(palette, appearance = 'palette', labels = fa
   style.layers.push({id:'radar-trails',type:'line',source:'radar-trails',
     paint:{'line-color':paletteToAtlasCss(palette).accent,'line-width':1.5,
       'line-opacity':0.32,'line-dasharray':[2,3]}});
+  style.sources['radar-home-trail']={type:'geojson',data:{type:'FeatureCollection',features:[]}};
+  for (const [id,color,width] of [['casing','#142f41',4],['line','#ffffff',2]]) {
+    style.layers.push({id:`radar-home-trail-${id}`,type:'line',source:'radar-home-trail',
+      paint:{'line-color':color,'line-width':width,'line-opacity':0.85,'line-dasharray':[2,3]}});
+  }
   return style;
 }
 
