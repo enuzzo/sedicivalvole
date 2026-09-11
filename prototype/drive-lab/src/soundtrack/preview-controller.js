@@ -163,7 +163,8 @@ export function createSoundtrackPreviewController({
       }) : null,
       attribution: attribution(),
       transition: transitionState ? sampleSoundtrackTransition(transitionState, clockTime()) : null,
-      media: mediaSnapshot,
+      // Poll live media clocks without emitting state updates or relying on buffer events.
+      media: mediaSnapshot ? deck.getSnapshot() : null,
       effects: effects.getSnapshot(),
       playbackRate: 1,
       drivingCanChangeTrack: false,

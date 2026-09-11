@@ -63,5 +63,19 @@ code remain project code. FPDF 1.9 and its original core metrics are unchanged.
   owner's supplied journey.
 - Existing dependency credits remain complete: 196 exact lockfile credits.
 
-Browser integration, production build and publication evidence are appended after
-those gates complete. Physical Tesla export/readability remains separate.
+The real app at 773 × 601 generated three report snapshots during Play the Road:
+listening advanced to about 7.75 seconds, then remained identical across two
+later paused exports while observed session time continued. The prepared blob
+stayed downloadable after offline emulation. No page errors occurred; email
+requests were blocked and preview used the actual local PHP renderer.
+
+A Soundtrack check exposed a cached media snapshot: the displayed state could
+retain a clock value from a buffer/lifecycle event after the recording was fully
+loaded. Passive `getSnapshot()` now reads the deck's current media properties
+without emitting updates, creating a timer or altering playback. Its 28 focused
+controller tests pass, including a new event-free clock/pause case; the four
+session observation checks also pass. There are 84 unique relevant checks across
+the report, observation, controller and deployment groups.
+
+Publication evidence is appended after the canonical gates complete.
+Physical Tesla export/readability remains separate.

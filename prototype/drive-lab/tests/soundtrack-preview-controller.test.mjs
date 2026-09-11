@@ -100,6 +100,25 @@ test("the preview loads and prepares three media roles before explicit playback"
   assert.equal(controller.getSnapshot().media.currentAudibleKey, loaded.current.key);
 });
 
+test("passive snapshots observe cached playback and pauses without generating lifecycle events", async () => {
+  const mediaByKey = new Map(), states = [];
+  const controller = createSoundtrackPreviewController({
+    fetchImpl: catalogFetch,
+    mediaFactory: (entry) => { const media = new FakeMedia(); mediaByKey.set(entry.key, media); return media; },
+    onState: state => states.push(state),
+  });
+  const started = await controller.load({ autoplay: true, nowMs: 0 });
+  const media = mediaByKey.get(started.current.key), count = states.length;
+  media.currentTime = 12.5;
+  assert.equal(controller.getSnapshot().media.roles.current.currentTimeSeconds, 12.5);
+  assert.equal(started.media.roles.current.currentTimeSeconds, 0);
+  media.pause();
+  assert.equal(controller.getSnapshot().media.roles.current.paused, true);
+  assert.equal(controller.getSnapshot().media.currentAudibleKey, null);
+  assert.equal(states.length, count, "polling must not create React/lifecycle updates");
+  controller.destroy();
+});
+
 test("pause and native play resume from the observed position without restarting", async () => {
   const mediaByKey = new Map();
   const controller = createSoundtrackPreviewController({
