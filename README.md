@@ -506,7 +506,8 @@ Air Atlas now uses five-second measured track playback, immediate aircraft/type 
 
 The owner-supplied piston/16 artwork is now the shared product icon across Intro,
 Splash, running chrome, About/diagnostics and Travel Report. Versioned PNG/ICO
-assets include an opaque 180px Apple Home icon. The unchanged source and derivative
+assets preserve transparency in the interface, favicon and PDF, with a separate
+opaque 180px Apple Home icon. The unchanged source and derivative
 hashes live in `logo/pistons-v1/`; regenerate with `scripts/render-piston-icon.py`.
 
 ### September 11 road instruments and Travel Report

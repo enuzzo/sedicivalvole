@@ -1,8 +1,33 @@
 {
   "source": "logo/pistons-v1/source.png",
   "sourceSha256": "46f24ff8bff0d7da66962eb93dcaaf263c16bac11541e0d97c9171cc968734fe",
-  "operation": "Owner-supplied artwork, unchanged geometry; black compositing and Lanczos size conversion only.",
+  "operation": "Owner-supplied artwork, unchanged geometry and alpha; Lanczos resizing. Opaque black composites are separate Home icons.",
   "files": [
+    {
+      "path": "prototype/drive-lab/public/brand/pistons-v1/mark-16.png",
+      "bytes": 951,
+      "sha256": "242c2fd4de58b91da0d9c9d7d8900fa1e073c5d57bd26fa30de9668c6fe474e4"
+    },
+    {
+      "path": "prototype/drive-lab/public/brand/pistons-v1/mark-32.png",
+      "bytes": 2782,
+      "sha256": "a4a6bf54f05d916c43d713a822d34393975f1eb7e0e359541aaafb5b5b72c6b8"
+    },
+    {
+      "path": "prototype/drive-lab/public/brand/pistons-v1/mark-48.png",
+      "bytes": 5072,
+      "sha256": "a9b0ee5a10148b277b2b9f0e1aa7a9e574ba3a937b3f1032c51b874e4b23d4e0"
+    },
+    {
+      "path": "prototype/drive-lab/public/brand/pistons-v1/mark-256.png",
+      "bytes": 57882,
+      "sha256": "eb75820d588ceaba995e346d888ac6fd0b03a84767d271b98e3df25a8c1a7b3e"
+    },
+    {
+      "path": "prototype/drive-lab/public/brand/pistons-v1/mark-512.png",
+      "bytes": 187585,
+      "sha256": "cd97af2f0cc3b638a85dae498262a3ca693f0a1df8fc2ed7eeb443bb22288f86"
+    },
     {
       "path": "prototype/drive-lab/public/brand/pistons-v1/icon-16.png",
       "bytes": 703,
@@ -39,14 +64,14 @@
       "sha256": "4fa98cafdd03b11a02ca53d0029647bab60dd3428cc076dcbcc7e9313a3d8a00"
     },
     {
-      "path": "prototype/drive-lab/public/brand/pistons-v1/favicon.ico",
-      "bytes": 6309,
-      "sha256": "9bca1b301d9b5d5da3d73d9d5c35e5256733f09b978c9ba80e028e30422fdf99"
+      "path": "prototype/drive-lab/public/brand/pistons-v1/favicon-transparent.ico",
+      "bytes": 8621,
+      "sha256": "401878610d0aa19fd88556b8e1402f68e5f2c8ca28ef2e9f2530030c6feb353a"
     },
     {
-      "path": "prototype/drive-lab/public/report-support/report-mark-pistons.png",
-      "bytes": 42672,
-      "sha256": "0a1f65814650eedc37f08edf60cbba79881ae3bebe951cab072965c80d673093"
+      "path": "prototype/drive-lab/public/report-support/report-mark-pistons-transparent.png",
+      "bytes": 57882,
+      "sha256": "eb75820d588ceaba995e346d888ac6fd0b03a84767d271b98e3df25a8c1a7b3e"
     }
   ]
 }

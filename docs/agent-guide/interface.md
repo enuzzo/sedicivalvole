@@ -71,8 +71,8 @@ Landscape palette taps must survive Safari blur with no known next focus target;
 
 The owner replaced the Road mark with `logo/pistons-v1/source.png`. Use the
 versioned `brand/pistons-v1/` icon family for Intro, Splash, chrome, About and
-diagnostics in both appearances, and `report-mark-pistons.png` in Travel Report.
-The original artwork is retained byte-identically; derivatives only composite
-black and resize without cropping/redrawing. iOS Home uses the opaque 180px PNG;
-favicon has 16/32/48px sizes. The prior transparent-mark direction is superseded
-within these brand surfaces. Historical vectors remain archived, not selected.
+diagnostics in both appearances. Use transparent `mark-*` PNGs, the transparent
+ICO favicon, and `report-mark-pistons-transparent.png` in Travel Report, without
+a background card. Preserve source alpha and geometry when resizing. Only the
+dedicated iOS Home icon uses an opaque 180px PNG. The original artwork remains
+byte-identical. Historical vectors remain archived, not selected.

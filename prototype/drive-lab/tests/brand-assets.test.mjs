@@ -9,7 +9,7 @@ const TEST_DIR = dirname(fileURLToPath(import.meta.url));
 const DRIVE_LAB_ROOT = resolve(TEST_DIR, "..");
 const REPOSITORY_ROOT = resolve(DRIVE_LAB_ROOT, "../..");
 
-test("the owner-supplied piston artwork produces exact-sized opaque icons and a multi-size favicon", () => {
+test("the owner-supplied piston artwork produces transparent UI marks and opaque Home icons and a multi-size favicon", () => {
   const inventory = JSON.parse(readFileSync(resolve(REPOSITORY_ROOT, "logo/pistons-v1/inventory.json"), "utf8"));
   const digest = bytes => createHash("sha256").update(bytes).digest("hex");
   assert.equal(digest(readFileSync(resolve(REPOSITORY_ROOT, inventory.source))), inventory.sourceSha256);
@@ -22,7 +22,12 @@ test("the owner-supplied piston artwork produces exact-sized opaque icons and a 
     assert.equal(png.readUInt32BE(16), size); assert.equal(png.readUInt32BE(20), size);
     assert.equal(png[25], 2, "Home icon must be opaque RGB");
   }
-  const ico = readFileSync(resolve(DRIVE_LAB_ROOT, "public/brand/pistons-v1/favicon.ico"));
+  for (const size of [16,32,48,256,512]) {
+    const png = readFileSync(resolve(DRIVE_LAB_ROOT, `public/brand/pistons-v1/mark-${size}.png`));
+    assert.equal(png.readUInt32BE(16), size); assert.equal(png.readUInt32BE(20), size);
+    assert.equal(png[25], 6, "UI mark must preserve alpha");
+  }
+  const ico = readFileSync(resolve(DRIVE_LAB_ROOT, "public/brand/pistons-v1/favicon-transparent.ico"));
   assert.equal(ico.readUInt16LE(2), 1); assert.equal(ico.readUInt16LE(4), 3);
   assert.deepEqual([0,1,2].map(i=>ico[6+i*16]), [16,32,48]);
 });
@@ -30,14 +35,14 @@ test("the owner-supplied piston artwork produces exact-sized opaque icons and a 
 test("browser icon metadata and every app mark point to the new packaged icon family", () => {
   const html = readFileSync(resolve(DRIVE_LAB_ROOT, "index.html"), "utf8");
   const app = readFileSync(resolve(DRIVE_LAB_ROOT, "src/App.jsx"), "utf8");
-  for (const file of ["icon-32.png", "icon-48.png", "favicon.ico", "icon-180.png"])
+  for (const file of ["mark-32.png", "mark-48.png", "favicon-transparent.ico", "icon-180.png"])
     assert.ok(html.includes(`/brand/pistons-v1/${file}`));
   assert.match(html, /rel="apple-touch-icon"[^>]+sizes="180x180"/);
-  assert.ok(app.includes('/brand/pistons-v1/icon-512.png?build='));
+  assert.ok(app.includes('/brand/pistons-v1/mark-512.png?build='));
   assert.ok(app.includes('markUrl={BRAND_MARK_URL}'));
   assert.doesNotMatch(app + html, /sedicivalvole-mark|product-icon-512/);
   const report = readFileSync(resolve(DRIVE_LAB_ROOT, "public/report-support/report.php"), "utf8");
-  assert.ok(report.includes("'/report-mark-pistons.png'"));
+  assert.ok(report.includes("'/report-mark-pistons-transparent.png'"));
 });
 
 test("both owner-supplied Illobo marks remain byte-identical in a slow continuous dark-field crossfade", () => {

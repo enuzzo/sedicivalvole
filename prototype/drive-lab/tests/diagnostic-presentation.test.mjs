@@ -28,7 +28,7 @@ test("the top bar exposes the selected REPORT control with the pinned Tabler ico
   const license = readFileSync(resolve(PUBLIC_ROOT, "third-party/tabler-icons/LICENSE"), "utf8");
 
   assert.ok(markStart >= 0);
-  assert.match(app, /const TOPBAR_MARK_URL = `\/brand\/pistons-v1\/icon-512\.png\?build=\$\{encodeURIComponent\(APP_BUILD\)\}`/);
+  assert.match(app, /const TOPBAR_MARK_URL = `\/brand\/pistons-v1\/mark-512\.png\?build=\$\{encodeURIComponent\(APP_BUILD\)\}`/);
   assert.match(markMarkup, /aria-label="Open session report"/);
   assert.match(markMarkup, /src=\{appearanceResolution\.appearance === "light" \? BRAND_MARK_URL : TOPBAR_MARK_URL\}/);
   assert.match(markMarkup, /alt=""/);
