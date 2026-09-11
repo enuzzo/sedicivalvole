@@ -81,6 +81,8 @@ PROJECT_OWNED_REPORT_HASHES = {
     "report.php": {
         "5e302d127453a1ea6edaef88ce5403a9afc79f48356d35351904ef96cdffd31c",
         "40e42d550e3405d76381b3c5401e8a4aea1fe5a7b4374b39b14d3b3a7dec5862",
+        # September 11 reviewed chapter/map renderer; postflight still requires exact candidate bytes.
+        "1a76e889994af852d98f2e3625e75ff753ced04e49c2e13db93e5f560787e8d0",
     },
 }
 DIAGNOSTIC_RECIPIENT_CONFIG = "recipient.local.php"

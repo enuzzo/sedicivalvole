@@ -69,3 +69,5 @@
 
 .engine-telemetry {padding-top:76px;padding-bottom:72px;gap:10px;}
 .engine-telemetry:has(.engine-rev) {padding-bottom:136px;}
+
+@media(max-height:500px){.engine-rev{position:fixed;bottom:72px;}}
