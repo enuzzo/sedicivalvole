@@ -29,7 +29,7 @@ function php(source, input = {}) {
 }
 function pdfStreams(pdf) {
   return [...pdf.toString('latin1').matchAll(/stream\r?\n([\s\S]*?)\r?\nendstream/g)].flatMap(([,bytes])=>{
-    try{return [inflateSync(Buffer.from(bytes,'latin1')).toString('latin1')];}catch{return [];}
+    try{const text=inflateSync(Buffer.from(bytes,'latin1')).toString('latin1');return /BT \/F\d/.test(text)?[text]:[];}catch{return [];}
   });
 }
 
@@ -39,12 +39,37 @@ test('FPDF source and font metrics retain their exact admitted bytes', async()=>
   assert.equal(inventory.version,'1.9');
 });
 
+test('embedded Space Grotesk fonts match the admitted source and reproducible derived inventory',async()=>{
+  const inventory=JSON.parse(await readFile(new URL('fonts/source-inventory.json',root),'utf8'));
+  assert.equal(digest(await readFile(new URL(inventory.source,new URL('fonts/',root)))),inventory.sourceSha256);
+  for(const file of inventory.files){const bytes=await readFile(new URL(`fonts/${file.path}`,root));assert.equal(bytes.length,file.bytes);assert.equal(digest(bytes),file.sha256);}
+  const pdf=Buffer.from(php(`echo base64_encode(reportBuildPdf(reportNormalize($input)));`,fixture()),'base64').toString('latin1');
+  assert.match(pdf,/SpaceGroteskReport-Regular/);assert.match(pdf,/SpaceGroteskReport-Semibold/);
+  assert.equal((pdf.match(/\/FontFile2 /g)||[]).length,2);assert.doesNotMatch(pdf,/\/BaseFont \/Helvetica/);
+});
+
+test('observed listening and preference summaries round-trip and reject arbitrary metadata or impossible totals',()=>{
+  const snapshot=fixture();snapshot.experience={observedMs:5000,listeningMs:3000,unlistedTrackMs:0,
+    tracks:[{id:'jamendo:123',label:'Café électrique',detail:'Demonstration artist',ms:3000}],
+    genres:[{id:'jazz',label:'Jazz',ms:3000}],visuals:[{id:'atlas',label:'Atlas',ms:5000}],
+    palettes:[{id:'red',label:'RED',ms:5000,colors:['#ff0000']}]};
+  assert.deepEqual(JSON.parse(php(`echo json_encode(reportNormalize($input));`,snapshot)).experience,snapshot.experience);
+  const pdf=Buffer.from(php(`echo base64_encode(reportBuildPdf(reportNormalize($input)));`,snapshot),'base64');
+  assert.ok(pdfStreams(pdf).some(stream=>stream.includes('Caf\xe9 \xe9lectrique')));
+  const cases=[];
+  for(const change of [e=>e.listeningMs=6000,e=>e.tracks[0].ms=4000,e=>e.tracks[0].url='https://example.test',e=>e.tracks[0].label='<b>bad</b>',e=>e.tracks.push({...e.tracks[0]}),e=>e.palettes[0].colors=['url(x)'],e=>e.observedMs=-1,e=>e.tracks[0].label='bad\nvalue']){
+    const row=structuredClone(snapshot);change(row.experience);cases.push(row);
+  }
+  const results=JSON.parse(php(`$out=[];foreach($input as $row){try{reportNormalize($row);$out[]='accepted';}catch(SessionReportProblem $e){$out[]=$e->getMessage();}}echo json_encode($out);`,cases));
+  assert.ok(results.every(value=>value!=='accepted'));
+});
+
 test('real PHP builds deterministic PDFs and matches the exact email attachment',async()=>{
   const result=JSON.parse(php(`$snapshot=reportNormalize($input); $pdf=reportBuildPdf($snapshot); $mail=reportBuildMail($pdf,$snapshot,'reports@example.test'); echo json_encode(['pdf'=>base64_encode($pdf),'mail'=>$mail]);`,fixture()));
   const pdf=Buffer.from(result.pdf,'base64');
   assert.match(pdf.toString('latin1'),/^%PDF-1\./);assert.ok(pdf.length<200000);
   assert.doesNotMatch(pdf.toString('latin1'),/\/(?:JavaScript|OpenAction|EmbeddedFile|URI)\b/);
-  assert.equal((pdf.toString('latin1').match(/\/Type \/Page\b/g)||[]).length,3);
+  assert.equal((pdf.toString('latin1').match(/\/Type \/Page\b/g)||[]).length,4);
   const again=Buffer.from(php(`date_default_timezone_set('America/Los_Angeles'); echo base64_encode(reportBuildPdf(reportNormalize($input)));`,fixture()),'base64');
   assert.equal(digest(again),digest(pdf));
   const attachment=result.mail.message.split('Content-Disposition: attachment;')[1].split('\r\n\r\n')[1].split('\r\n--')[0];
@@ -57,13 +82,13 @@ test('real PHP builds deterministic PDFs and matches the exact email attachment'
 
 test('an explicit route adds one bounded plate; an empty session remains exportable',async()=>{
   const route=Buffer.from(php(`echo base64_encode(reportBuildPdf(reportNormalize($input)));`,fixture(true)),'base64');
-  assert.equal((route.toString('latin1').match(/\/Type \/Page\b/g)||[]).length,4);
+  assert.equal((route.toString('latin1').match(/\/Type \/Page\b/g)||[]).length,5);
   const streams=[...route.toString('latin1').matchAll(/stream\r?\n([\s\S]*?)\r?\nendstream/g)].flatMap(([,bytes])=>{
     try{return [inflateSync(Buffer.from(bytes,'latin1')).toString('latin1')];}catch{return [];}
   });
   const appendix=streams.filter(text=>text.includes('(Session details)'));
   assert.equal(appendix.length,1);
-  for(const label of ['Moving / stopped','Unobserved time','Stops','Engine simulated load','Technical appendix.']) assert.ok(appendix[0].includes(label),label);
+  for(const label of ['MOVING / STOPPED','UNOBSERVED TIME','Engine simulated load','Technical appendix.']) assert.ok(appendix[0].includes(label),label);
   const routePlate=streams.find(text=>text.includes('(Route included by request)'));
   assert.ok(routePlate);assert.ok(!routePlate.includes('Session details'));assert.ok(!routePlate.includes('Moving / stopped'));
   await writeFile('/tmp/sv-travel-report-route.pdf',route);
@@ -109,10 +134,10 @@ test('map fallback PDFs retain A4 page counts, distinct source labels and only t
     snapshot.samples=snapshot.samples.map((sample,i)=>i>=18&&i<38||i>=50?{...sample,altitudeM:null,groundElevationM:150+18*Math.sin(i/11)}:sample);
     const pdf=Buffer.from(php(`echo base64_encode(reportBuildPdf(reportNormalize($input)));`,snapshot),'base64');
     const raw=pdf.toString('latin1'),text=pdfStreams(pdf).join('\n');
-    assert.equal((raw.match(/\/Type \/Page\b/g)||[]).length,includeRoute?4:3);
+    assert.equal((raw.match(/\/Type \/Page\b/g)||[]).length,includeRoute?5:4);
     assert.match(raw,/\/MediaBox \[0 0 595\.28 841\.89\]/);
     assert.deepEqual([...raw.matchAll(/\/URI \(([^)]*)\)/g)].map(([,uri])=>uri),['https://open-meteo.com/en/docs/elevation-api']);
-    for(const label of ['GPS altitude','map elevation estimate','GPS elevation gain / loss','Open-Meteo / EU Copernicus GLO-90','CC BY 4.0','90 m DEM']) assert.ok(text.includes(label),label);
+    for(const label of ['GPS altitude','map elevation estimate','GPS ELEVATION GAIN / LOSS','Open-Meteo / EU Copernicus GLO-90','CC BY 4.0','90 m DEM']) assert.ok(text.includes(label),label);
     assert.match(text,/GPS altitude \\\(solid\\\)/);
     assert.match(text,/map elevation estimate \\\(dashed\\\)/);
     assert.doesNotMatch(raw,/\/(?:JavaScript|OpenAction|EmbeddedFile)\b/);
@@ -132,7 +157,7 @@ test('JavaScript terrain-only snapshots remain coordinate-free and never fabrica
   const pdf=Buffer.from(output.pdf,'base64'),text=pdfStreams(pdf).join('\n');
   assert.match(text,/Map elevation estimate/);
   assert.doesNotMatch(text,/\(GPS altitude \d/);
-  assert.match(text,/GPS elevation gain \/ loss[\s\S]*?Unavailable/);
+  assert.match(text,/GPS ELEVATION GAIN \/ LOSS[\s\S]*?Unavailable/);
   await writeFile('/tmp/sv-travel-report-map-only.pdf',pdf);
 });
 
@@ -146,7 +171,7 @@ test('the actual JavaScript immutable snapshot passes PHP validation and renders
     const output=JSON.parse(php(`$normalized=reportNormalize($input);$pdf=reportBuildPdf($normalized);echo json_encode(['snapshot'=>$normalized,'pdf'=>base64_encode($pdf)]);`,snapshot));
     assert.deepEqual(output.snapshot,snapshot);
     const text=Buffer.from(output.pdf,'base64').toString('latin1');
-    assert.equal((text.match(/\/Type \/Page\b/g)||[]).length,includeRoute?4:3);
+    assert.equal((text.match(/\/Type \/Page\b/g)||[]).length,includeRoute?5:4);
     assert.match(text,/\/MediaBox \[0 0 595\.28 841\.89\]/);
   }
   const polar=createSessionReportSnapshot({...input,includeRoute:true,journey:{...input.journey,travelPoints:[{latitude:90,longitude:179},{latitude:89.9,longitude:-179}]}});

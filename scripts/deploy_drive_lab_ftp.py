@@ -83,6 +83,8 @@ PROJECT_OWNED_REPORT_HASHES = {
         "40e42d550e3405d76381b3c5401e8a4aea1fe5a7b4374b39b14d3b3a7dec5862",
         # September 11 reviewed chapter/map renderer; postflight still requires exact candidate bytes.
         "1a76e889994af852d98f2e3625e75ff753ced04e49c2e13db93e5f560787e8d0",
+        # Reviewed infographic renderer and embedded Space Grotesk; exact candidate required after upload.
+        "ffd66c01269a90b3228873fc71db994228fd9b64d88f7e6b20ee5259ff2f395b",
     },
 }
 DIAGNOSTIC_RECIPIENT_CONFIG = "recipient.local.php"

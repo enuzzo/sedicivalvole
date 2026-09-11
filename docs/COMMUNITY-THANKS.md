@@ -311,7 +311,7 @@ enuzzo
 - **Credit:** Florian Karsten and project authors.
 - **Source:** [Space Grotesk](https://github.com/floriankarsten/space-grotesk).
 - **Public contact route:** [Contact / profile](mailto:fonts@floriankarsten.com).
-- **Use:** Bundled font. Unmodified variable font in public/fonts/, used for reading text, values and controls. Public email is published in the upstream README.
+- **Use:** Bundled font. Unmodified variable font in public/fonts/ for app reading text, values and controls; documented 400/600 OFL subsets in public/report-support/fonts/ are now embedded in Travel Report. Public email is published in the upstream README.
 - **License / permission boundary:** SIL OFL 1.1.
 - **Source evidence:** linked upstream project plus the current local [notices](../THIRD_PARTY_NOTICES.md), package metadata or vendored notices; public routes checked 2026-09-05 where recorded in the verification evidence.
 - **Status:** DRAFT — not sent. Sent on: —; Channel: —; Reply: —; Follow-up: —.
@@ -947,7 +947,7 @@ Research only. No new source or recordings from these projects are shipped.
 
 - Original project and public contact route: [FPDF official site](https://www.fpdf.org/en/home.php), which links the project's support forum.
 - Exact source: [FPDF 1.9, released 2026-05-31](https://www.fpdf.org/en/download.php). The original PHP writer, `license.txt` and Helvetica/Helvetica Bold JSON metrics are shipped byte-identically under `public/report-support/fpdf/`; the source inventory pins every hash.
-- Use: server-side generation of the owner-selected Travel Report from a fixed, validated session snapshot. The original app owns the report layout, verification and mail flow. No tutorial, tFPDF extension, external PDF or arbitrary upload support is included.
+- Use: server-side generation of the owner-selected Travel Report from a fixed, validated session snapshot. The original app owns the report layout, verification and mail flow, with separately derived Space Grotesk faces embedded in the infographic report. No tutorial, tFPDF extension, external PDF or arbitrary upload support is included.
 - License: FPDF's retained permissive license; this is not described as MIT. Original sedicivalvole code and documents remain PolyForm Noncommercial.
 - Status: integrated source; release acknowledgement draft below remains **unsent**.
 

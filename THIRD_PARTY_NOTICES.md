@@ -22,7 +22,7 @@ are not relicensed under the project's PolyForm grant.
 | [Tabler Icons — report, navigation, media, appearance, search, chart, map, chevron, external-link, music, engine, and Wikipedia-brand icons](https://github.com/tabler/tabler-icons/tree/v3.46.0/icons) | 3.46.0 (icon metadata 1.0 / 1.39 / 1.46 / 1.96 / 2.0) | Copyright (c) 2020-2026 Paweł Kuna | MIT | official SVGs retained byte-identically; monochrome presentation, live ATLAS rotation, and the Now Playing pulse are applied by product CSS | `prototype/drive-lab/public/third-party/tabler-icons/` |
 | Buy Me a Coffee QR and cup identity | user-supplied 2026-08-28 | Buy Me a Coffee / Coffee Inc. | service-generated brand material; trademark rights retained by the owner | supplied QR embedded unchanged; small interface cup redrawn for the shared yellow launch/diagnostic trigger | `prototype/drive-lab/src/assets/bmc_qr.png`, `prototype/drive-lab/src/support-button.jsx`, `prototype/drive-lab/src/App.jsx` |
 | Illobo LOBO identity marks | user-supplied 2026-08-31 | Lobo (`illobo`) | direct owner permission to use both supplied variants; all brand and trademark rights remain with Lobo | both SVGs retained byte-identically and presented as the Illobo Featured cover through a project-authored continuous four-second dissolve in each direction; no path or colour data is modified | `prototype/drive-lab/public/brand/illobo-featured-solid.svg`, `prototype/drive-lab/public/brand/illobo-featured-outline.svg` |
-| Space Grotesk variable font | Google Fonts snapshot `2026-08-30`, upstream version 2.000 | Florian Karsten and the Space Grotesk Project Authors | SIL Open Font License 1.1 | locally hosted unmodified variable TrueType file for all reading text, values, controls, operational labels, LAB controls, and session-report typography | `prototype/drive-lab/public/fonts/` |
+| Space Grotesk variable font | Google Fonts snapshot `2026-08-30`, upstream version 2.000 | Florian Karsten and the Space Grotesk Project Authors | SIL Open Font License 1.1 | locally hosted unmodified variable TrueType file for app typography; derived 400/600 CP1252 subsets embedded in Travel Report, with renamed subset families and unchanged outlines | `prototype/drive-lab/public/fonts/`, `prototype/drive-lab/public/report-support/fonts/` |
 | Orbitron variable font | Google Fonts v35 | Matt McInerney and the Orbitron Project Authors | SIL Open Font License 1.1 | locally hosted unmodified variable WOFF2 used only for exact textual `sedicivalvole` wordmarks; the selected 16 Road mark retains its `16` converted at weight 750 into stable vector outlines | `prototype/drive-lab/public/fonts/`, `logo/` |
 | OpenFreeMap public instance | continuously updated | OpenFreeMap contributors; OpenMapTiles and OpenStreetMap data contributors | service and data terms; attribution retained in-map | Natural pastel and palette-owned vector styles, buildings and named POIs from the existing OpenMapTiles poi layer (OpenStreetMap ODbL data) | `prototype/drive-lab/src/environments/atlas/` |
 | [Open-Meteo Elevation API / Copernicus DEM GLO-90](https://open-meteo.com/en/docs/elevation-api) | Copernicus DEM 2021 GLO-90 | Open-Meteo; European Union, Copernicus programme | API data offered under CC BY 4.0; Copernicus acknowledgement retained | runtime-only fallback terrain elevation for an approximately 1 km rounded location cell when GPS height is absent; one App-owned cache serves all visuals and the explicitly exported PDF, with no persistent response storage | `prototype/drive-lab/src/environments/atlas/` |
@@ -507,3 +507,19 @@ The existing fixed-host adapter now uses viewport-centred `/v2/point/{lat}/{lon}
 ### Intro actual-preview captures — 2026-09-10
 
 Four current-product screenshots include the existing OpenFreeMap/OpenMapTiles/OpenStreetMap maps, ADSB.lol traffic with RexKramer1 shapes, and Wikipedia contributors’ Policlinico of Milan page (CC BY-SA). No new renderer or service is integrated. Exact capture/source/hash inventory: `docs/INTRO-PREVIEW-CAPTURES-2026-09-10.md`. Existing public contacts and unsent acknowledgement drafts remain applicable; no messages sent.
+
+## Space Grotesk report subsets — 2026-09-11
+
+The admitted variable font remains byte-identical at SHA-256
+`acad6de1fc93436f5c0f1f4137751ef04f1aea3063e7036535970ffcfbd79f72`.
+Original `scripts/build_report_fonts.py` uses FontTools 4.60.1 to instantiate
+weights 400 and 600, subset Western CP1252 characters, rename the derived families
+`SpaceGroteskReport-Regular` and `SpaceGroteskReport-Semibold`, and generate FPDF
+JSON metrics and compressed TrueType data. Glyph outlines are not redrawn.
+`prototype/drive-lab/public/report-support/fonts/source-inventory.json` records
+the input and every derived byte count/SHA-256; the exact original SIL OFL 1.1
+notice accompanies these derivatives. Credit remains Florian Karsten and the
+Space Grotesk Project Authors. These fonts remain OFL, outside the original
+project's PolyForm licence. FontTools is a temporary build tool, not a bundled
+runtime dependency. FPDF upstream files and original core metrics remain unchanged;
+Travel Report now selects the embedded Space Grotesk faces.

@@ -511,6 +511,13 @@ bounded map recovery. Travel Report now separates journey, rhythm and technical
 chapters, with an optional attributed map captured into the same reviewed PDF
 snapshot. [Behavior, privacy and verification](docs/ROAD-REFINEMENT-2026-09-11.md).
 
+Travel Report now uses Space Grotesk, bento-style metric cards, a combined
+speed/elevation timeline, six concentric direction waves and an atmosphere page
+with observed listening time, most-heard tracks/scores, genre, visual and palette.
+Four pages become five when the route is explicitly included. Older snapshots
+remain valid and do not acquire invented listening history.
+[Infographic data and validation](docs/TRAVEL-REPORT-INFOGRAPHIC-2026-09-11.md).
+
 ### Air Atlas measured flight and terrain view
 
 Air Atlas now uses immediate aircraft type/category silhouettes, a single selected ring with ground distance and five-second measured interpolation. Major-road and airport cartography replaces minor transport clutter. FLY WITH opens the selected A+C reconstructed nose camera over real terrain at 1.25 exaggeration, with a corner radar/telemetry card and direct return. Missing or stale observations hold the camera; approximate height references remain explicit. True airways require a separate aeronautical source. Physical Tesla/iPhone dual-map acceptance remains open.
@@ -557,8 +564,8 @@ A heartfelt thank-you to the people who share the code, type, music, data and ex
 | 🗺️ MapLibre contributors — MapLibre GL JS | [Project](https://github.com/maplibre/maplibre-gl-js) | **Production dependency.** Lazy ATLAS map rendering and the project-owned palette style in src/environments/atlas/. Its [camera animation example](https://maplibre.org/maplibre-gl-js/docs/examples/animate-map-camera-around-a-point/) informed the follow-camera study. |
 | 🔳 Ryan Day (soldair) and contributors; QR algorithm lineage includes Kazuhiko Arase — node-qrcode | [Project](https://github.com/soldair/node-qrcode) | **Production dependency.** qrcode 1.5.4 generates local passenger handoff links. Public email is from the installed package author metadata. |
 | ✒️ Simple Icons contributors — Simple Icons | [Project](https://github.com/simple-icons/simple-icons) | **Integrated icon.** GitHub source-link mark in App.jsx. |
-| 🔤 Florian Karsten and project authors — Space Grotesk | [Project](https://github.com/floriankarsten/space-grotesk) | **Bundled font.** Unmodified variable font in public/fonts/, used for reading text, values and controls. Public email is published in the upstream README. |
-| 📄 Olivier Plathey — FPDF | [Official project](https://www.fpdf.org/en/home.php) · [Pinned 1.9 release](https://www.fpdf.org/en/download.php) | **Integrated PHP renderer.** Unmodified FPDF 1.9 and Helvetica/Helvetica Bold metrics generate the fixed Travel Report snapshot. The exact file/hash inventory and original permissive license are retained in public/report-support/fpdf/; no tFPDF or arbitrary PDF/HTML uploads. |
+| 🔤 Florian Karsten and project authors — Space Grotesk | [Project](https://github.com/floriankarsten/space-grotesk) | **Bundled font.** Unmodified variable font in public/fonts/ for the app; documented 400/600 OFL subsets in public/report-support/fonts/ are embedded in Travel Report. Public email is published in the upstream README. |
+| 📄 Olivier Plathey — FPDF | [Official project](https://www.fpdf.org/en/home.php) · [Pinned 1.9 release](https://www.fpdf.org/en/download.php) | **Integrated PHP renderer.** Unmodified FPDF 1.9 generates the fixed Travel Report snapshot with separately derived Space Grotesk fonts; original core metrics remain unchanged. The exact file/hash inventory and original permissive license are retained in public/report-support/fpdf/; no tFPDF or arbitrary PDF/HTML uploads. |
 | 🔤 Matt McInerney and project authors — Orbitron | [Project](https://github.com/theleagueof/orbitron) | **Bundled font.** Unmodified font for the exact sedicivalvole wordmark; selected 16 mark includes outlined glyphs. |
 | ✨ Raoul van Rüschen and contributors — postprocessing | [Project](https://github.com/pmndrs/postprocessing) | **Upstream-bundled dependency.** Unmodified 6.8.5 inside the Infinite Lights snapshot; not a newly installed current release. |
 | 🧮 Matthew Crumley — expr-eval | [Project](https://github.com/silentmatt/expr-eval) | **Upstream-bundled dependency.** Unchanged 2.0.2 expression evaluator included with the Drivey snapshot. |

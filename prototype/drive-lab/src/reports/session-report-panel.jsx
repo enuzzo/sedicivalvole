@@ -116,7 +116,7 @@ export default function SessionReportPanel({ source, onClose }) {
   return <>
     <header className="stats-heading"><div><small>SESSION EXPORT</small><h2 id="stats-title">Travel Report</h2></div><button ref={backRef} onClick={onClose}>Back to Stats</button></header>
     <div className="report-scroll">
-      <p>Your journey in chapters: a travel cover, optional route map, speed and elevation, and session details. Preparing the first preview needs a connection; the prepared download stays available if email or connectivity fails.</p>
+      <p>Your journey as an infographic: an optional route map, a shared speed/elevation timeline, listening highlights, favourite visual and palette, and direction waves. Favourites reflect observed session time. Preparing the first preview needs a connection; the prepared download stays available if email or connectivity fails.</p>
       <label className="report-route"><input type="checkbox" checked={includeRoute} disabled={Boolean(busy)} onChange={e => { setIncludeRoute(e.target.checked); clearPreview(); setNotice(''); }} />Include precise route and map</label>
       <p className="report-disclosure">{includeRoute ? 'The preview request and optional email will include the route coordinates and map. Cartography uses the same OpenFreeMap service as Atlas. Technical diagnostics remain coordinate-free.' : 'Precise route coordinates are excluded from the preview and email.'} The report is generated on the server without a trip archive.</p>
       {selection.error ? <p role="alert">{selection.error}</p> : <button disabled={Boolean(busy)} onClick={() => void perform('preview', { snapshot })}>{busy === 'preview' ? 'Preparing PDF…' : prepared ? 'Prepare again' : 'Prepare PDF preview'}</button>}

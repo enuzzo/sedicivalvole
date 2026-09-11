@@ -1,4 +1,5 @@
 import { sessionStatsSnapshot, sessionRuntimeSnapshot, SESSION_GAP_MS } from '../environments/atlas/session-stats.js';
+import { sessionExperienceSnapshot } from './session-experience.js';
 
 export const REPORT_RECIPIENT_KEY = 'sedicivalvole.session-report-recipient.v1';
 const finite = (n, min = 0, max = Number.MAX_SAFE_INTEGER) => Number.isFinite(n) && n >= min && n <= max ? n : null;
@@ -43,6 +44,7 @@ export function createSessionReportSnapshot({ journey, system, app, nowMs, creat
   return freeze({ schema: 'sedicivalvole.session-report.v1', createdAt,
     app: { version: app.version, build: app.build, commit: app.commit }, source: 'GPS', includeRoute,
     summary, speedBandsMs: [...stats.speedBandsMs], headingMs: [...stats.headingMs], samples, route,
+    ...(system.experience ? { experience: sessionExperienceSnapshot(system.experience) } : {}),
     system: { audio: system.audio ?? 'unavailable', averageFps: finite(system.frame?.averageFps),
       p95FrameMs: finite(system.frame?.p95FrameMs), longTaskCount: runtime.longTasks.count,
       downloadBytes: finite(system.network?.observedDownloadBytes), uploadBytes: finite(system.network?.observedUploadBytes),

@@ -11,6 +11,7 @@ import { RecoveringArtwork, useRecoveringArtwork } from "./recovering-artwork.js
 import { createAutomaticDiagnosticClock, readDiagnosticPreferences, DIAGNOSTIC_PREFERENCES_KEY } from "./automatic-diagnostics.js";
 import { PhoneRotationNotice, usePhoneLayout } from "./phone-cockpit.jsx";
 import { observeSessionStats } from "./environments/atlas/session-stats.js";
+import { createSessionExperience, observeSessionExperience, sessionExperienceSnapshot } from "./reports/session-experience.js";
 import { createTerrainElevation, terrainElevationCell } from "./environments/atlas/terrain-elevation.js";
 import { SupportButton } from "./support-button.jsx";
 import { LaunchCockpit } from "./launch-cockpit.jsx";
@@ -2389,12 +2390,14 @@ export function App() {
     startedAtMs: null,
     updatedAtMs: null,
   });
+  const sessionExperienceRef = useRef(createSessionExperience());
   const readStatsSystem = useCallback(() => {
     const performanceSnapshot = readPerformanceSnapshot(frameTelemetryRef.current, phasePerformanceTelemetryRef.current, longTaskTelemetryRef.current, sessionStartedAtRef.current);
     const engine = geaps.runtimeRef.current?.getState();
     const events = diagnosticEventsRef.current.significant;
     return {
       network: summarizeNetworkTelemetry(networkTelemetryRef.current, performance.now()),
+      experience: sessionExperienceSnapshot(sessionExperienceRef.current),
       frame: performanceSnapshot.frame,
       longTasks: performanceSnapshot.longTasks,
       audio: audioRef.current?.context?.state ?? "unavailable",
@@ -4504,6 +4507,38 @@ export function App() {
     if (phase !== "running") return undefined;
     const captureDriveSample = () => {
       const capturedAtMs = performance.now();
+      const isMusic = experienceModeRef.current === "flux";
+      const visual = isMusic ? getFluxEnvironment(environmentIdRef.current) : null;
+      const palette = getFluxTheme(themeIdRef.current);
+      const color = channels => `#${channels.map(n => Math.round(Math.max(0, Math.min(1, n)) * 255).toString(16).padStart(2, '0')).join('')}`;
+      let track = null, genre = null, clockMs = null;
+      if (isMusic && !mutedRef.current && sessionMusicModeRef.current === "soundtrack") {
+        const music = soundtrackRef.current?.getSnapshot();
+        const playing = music?.media?.roles?.current;
+        if (playing?.state === "playable" && playing.paused === false && !playing.ended
+          && playing.key === music.current?.key) {
+          track = { id: music.current.key, label: music.current.title, detail: music.current.artistName };
+          const tag = music.current.genres?.find(id => SOUNDTRACK_GENRE_OPTIONS.some(option => option.id === id));
+          const option = SOUNDTRACK_GENRE_OPTIONS.find(option => option.id === tag);
+          if (option) genre = { id: option.id, label: option.label };
+          clockMs = playing.currentTimeSeconds * 1000;
+        }
+      } else if (isMusic && !mutedRef.current && !playRoadPausedRef.current && sessionMusicModeRef.current === "play-road") {
+        const audio = audioRef.current;
+        const state = audio?.getState();
+        if (audio?.context?.state === "running" && ["ready", "transitioning"].includes(state?.scoreStatus)) {
+          const score = getScoreGenre(state.score ?? genreIdRef.current);
+          track = { id: `score:${score.id}`, label: score.displayLabel, detail: "Play the Road" };
+          genre = { id: `score:${score.id}`, label: score.family };
+          clockMs = audio.context.currentTime * 1000;
+        }
+      }
+      observeSessionExperience(sessionExperienceRef.current, {
+        visible: document.visibilityState !== "hidden", track, genre, clockMs,
+        visual: visual ? { id: visual.id, label: visual.displayLabel } : null,
+        palette: { id: palette.id, label: palette.label,
+          colors: [palette.swatch, palette.swatchSecondary ?? color(palette.palette.accent), color(palette.palette.secondary)] },
+      }, capturedAtMs);
       const latestGps = latestGpsObservationRef.current;
       const frame = summarizeFrameTelemetry(frameTelemetryRef.current);
       const connection = readConnectionSnapshot("flight-recorder");
@@ -4552,7 +4587,9 @@ export function App() {
     };
     captureDriveSample();
     flightRecorderTimerRef.current = window.setInterval(captureDriveSample, DRIVE_TRACE_INTERVAL_MS);
+    document.addEventListener("visibilitychange", captureDriveSample);
     return () => {
+      document.removeEventListener("visibilitychange", captureDriveSample);
       window.clearInterval(flightRecorderTimerRef.current);
       flightRecorderTimerRef.current = null;
     };

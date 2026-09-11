@@ -1,0 +1,33 @@
+{
+  "source": "../../fonts/space-grotesk-variable.ttf",
+  "sourceSha256": "acad6de1fc93436f5c0f1f4137751ef04f1aea3063e7036535970ffcfbd79f72",
+  "generator": "scripts/build_report_fonts.py; FontTools 4.60.1",
+  "license": "SIL Open Font License 1.1",
+  "files": [
+    {
+      "path": "OFL-Space-Grotesk.txt",
+      "bytes": 4495,
+      "sha256": "564ce565c371c5e5bbf286006565a7c9aa55a9f56e7ca58d56e05d649dd61a72"
+    },
+    {
+      "path": "space-grotesk-regular.json",
+      "bytes": 3649,
+      "sha256": "3fa1ac37c321b2f78fe21a4bd99e7be587884446c828f1eaed88a998fd080c17"
+    },
+    {
+      "path": "space-grotesk-regular.z",
+      "bytes": 14962,
+      "sha256": "6dc18e662298cbbdaa437c72c8e4a384389d492bfe5ba439f10782febba211a7"
+    },
+    {
+      "path": "space-grotesk-semibold.json",
+      "bytes": 3651,
+      "sha256": "d34ef1269f1e31f55a2bdb5399d1155763a65d9b914d17dff1e3d08e46e4674a"
+    },
+    {
+      "path": "space-grotesk-semibold.z",
+      "bytes": 14858,
+      "sha256": "31ebffd8f78a14e5f9fa7e7004a4ea7bd0a0c8c1506b19df8e2d1cc0a4ee72f1"
+    }
+  ]
+}

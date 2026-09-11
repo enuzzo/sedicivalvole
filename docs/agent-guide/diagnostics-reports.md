@@ -30,11 +30,13 @@ The owner selected **Travel Report direction 1**: compact cover, journey summary
 
 For implementation work read [Night implementation / Report data and delivery contract](../NIGHT-IMPLEMENTATION-2026-09-07.md#report-data-and-delivery-contract), [PDF/email design](../ATLAS-STATS-REPORT-PLAN-2026-09-07.md#pdf-and-email-design) and `src/reports/session-report-model.js` as relevant. Earlier plan-only/pending-selection labels are superseded by the later owner selection and implementation record. Altitude labeling follows [Altitude](maps.md#altitude); drawn estimated chart connections must not alter exported observations. Browser PDF/email tests remain separate from physical device download and actual chosen-recipient inbox acceptance.
 
-The September 11 Travel Report refinement uses three chapters plus an optional
-fourth route/map page. Capture attributed cartography only for an explicitly
+The September 11 Travel Report refinement uses four chapters plus an optional
+fifth route/map page: journey, route, combined rhythm, atmosphere and details. Capture attributed cartography only for an explicitly
 included immutable route; retain the exact bounded JPEG in the reviewed snapshot
 so preview and email hashes agree. A twelve-second capture failure falls back to
 an honest outline. Do not add coordinates to technical packets or refetch a map
 while sending. The owner confirmed the supplied report's recipient verification
 and PDF delivery flow; new renderer/physical acceptance remains separate. See
 [road refinement](../ROAD-REFINEMENT-2026-09-11.md).
+
+The atmosphere summary observes visible session time and confirmed advancing audio clocks. Muted, paused, stalled and hidden time is excluded from listening; preference rankings use observed time, with a separate listening-time denominator for genre. Only bounded whitelisted titles, artists, genre/visual/palette labels, palette hex colours and durations join the immutable optional `experience` field. No listening history is inferred for older snapshots. The PDF embeds derived Space Grotesk weights and uses the same six heading waves as Stats. [Infographic contract and evidence](../TRAVEL-REPORT-INFOGRAPHIC-2026-09-11.md).

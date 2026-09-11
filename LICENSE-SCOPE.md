@@ -54,6 +54,10 @@ are never relicensed by this project. See
 
 The following boundaries are load-bearing:
 
+- Space Grotesk, including the derived report subsets in
+  `prototype/drive-lab/public/report-support/fonts/`, retains SIL OFL 1.1.
+  The original font-generation helper and report layout are project code.
+
 - `prototype/drive-lab/src/engine/upstream/` and the unchanged WAVs in
   `prototype/drive-lab/public/engine-audio/` retain Mark Oosting engine-audio
   repository-declared MIT terms. The original host adapter remains PolyForm
