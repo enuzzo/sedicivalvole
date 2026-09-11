@@ -36,7 +36,8 @@
 
 /* Stationary controls remain outside the retracting global chrome. */
 .engine-rev{min-height:60px;min-width:172px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:2px solid var(--ui-accent-text,#ff7770);box-shadow:0 0 0 3px color-mix(in srgb,var(--ui-accent-text,#ff7770) 16%,transparent)}
-.engine-rev strong{font-size:22px;letter-spacing:.04em}.engine-rev small{font-size:13px;font-weight:600;letter-spacing:.04em}
+.engine-rev strong{display:flex;align-items:center;gap:8px;font-size:22px;letter-spacing:.04em}.engine-rev small{font-size:13px;font-weight:600;letter-spacing:.04em}
+.engine-rev-emoji{font:22px/1 "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif;letter-spacing:0}
 .engine-rev.is-left{left:32px;right:auto}.engine-rev.is-right{right:32px;left:auto}
 .engine-rev:disabled{background:var(--ui-surface,#101314);color:var(--ui-text,#f4f1e8);opacity:1;box-shadow:none}
 .app[data-environment="engine"] .control-slab{grid-template-columns:88px minmax(0,1fr) minmax(0,1fr) 88px}

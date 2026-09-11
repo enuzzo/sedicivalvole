@@ -30,7 +30,8 @@ outside the source repository.
 ## Product changes
 
 - Engine: original 73-stem RPM comb with a crest centered on virtual RPM, a clear
-  cursor, selected voice heading, and accent gear. Existing audio, gesture,
+  cursor, selected voice heading, accent gear, and the owner-requested rock-hand
+  emoji on both TAMARRO controls. Existing audio, gesture,
   standstill and ownership rules remain unchanged.
 - Visual drawer: a compact two-column library leads, followed by a separator,
   Presets heading, and the existing curated combinations. Narrow layouts stack.
