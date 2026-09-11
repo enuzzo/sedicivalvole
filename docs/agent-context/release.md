@@ -1,0 +1,38 @@
+# Release, licensing and provenance
+
+Read only for the named subsystem. These are active owner constraints, not proof of implementation or live acceptance. Paths below are repository-relative unless linked. Later explicit owner decisions supersede older studies.
+
+## Git and publishing
+
+Create small verified commits and push checkpoints to the configured remote; never invent a remote. Product changes within agreed scope have standing canonical deployment authorization (September 5): deploy promptly without asking again. Instruction/documentation-only tasks do not require an application build or deployment.
+
+`VERSION` is the only SemVer source; builds read/receive it through the pipeline. Generate YYYYMMDD-HHMM build stamps and record the stamp, commit and version in deployment evidence. `CHANGELOG.md` is append-only: never rewrite prior entries. Add chronological Unreleased entries with local YYYY-MM-DD HH:MM and corresponding short commit hash; deploying entries also include build stamp. Create ISO-dated version sections only on release and synchronize VERSION. Update README, feature status and architecture only when affected facts change.
+
+Use `scripts/deploy_drive_lab_ftp.py`; its internal .env loading is expressly authorized solely for preflight/publication/postflight. Never inspect/expose/copy those secrets. Keep Git/backups and relevant local functional/visual checks. Verify canonical https://sedicivalvole.app/ and cache-busted HTML, assets/hashes, version/source/build and cache behavior, plus rendered product behavior. Upload alone is not success. Report local, live and physical Tesla acceptance separately. Do not assume server technology.
+
+For actual publication, read only [Gate for every development deployment](../DEPLOY.md#gate-for-every-development-deployment) and the matching recent evidence, not the entire deployment log. Preserve old assets needed by open clients and mutable API/bank backward compatibility; entry rename is not whole-release atomicity. Do not silently change transport protocol or delete legacy remote trees. Run `python3 scripts/readme_dependency_credits.py --check` before publishing.
+
+## Licensing and community credits
+
+- Keep `LICENSE`, `LICENSE-SCOPE.md`, `NOTICE`, README licensing copy, package metadata, and the licensing decision log synchronized.
+- Original sedicivalvole code and documentation default to
+  `PolyForm-Noncommercial-1.0.0`; this is source-visible noncommercial software,
+  not open source. Original brand, screenshots, audio, and standalone
+  visual/media assets remain excluded unless specifically licensed. Public
+  versions already distributed under AGPL retain their earlier rights.
+- The sole original creator and public licensor identity is `enuzzo`; do not
+  imply a studio, company, or other legal entity. Third-party ownership and
+  credits remain exactly as recorded in `THIRD_PARTY_NOTICES.md`.
+- Record every third-party dependency or asset in `THIRD_PARTY_NOTICES.md` before it enters the product or repository.
+- Do not use Creative Commons licenses for software.
+
+Maintain the README community credits and `docs/COMMUNITY-THANKS.md` when sources are added, replaced or retired. Record the real author/project, exact code or material used, public contact routes and a warm, personalized unsent release thank-you draft. Separate shipped integrations from services, development tools and studies. Never describe the current PolyForm Noncommercial project as MIT/open source, infer private contact details, or send a message without explicit sending authorization.
+
+### Complete README footer — owner's standing instruction, 2026-09-05
+
+Keep every community credit in the final README section, including minor/transitive dependencies and sources without Git repositories: named authors, original repositories, articles/demos, exact code/material/service use and shipped/development/study status. Precede each entry with a restrained relevant emoji. Insert later product updates above `COMMUNITY-CREDITS:START`, never below the credits. Update README, THIRD_PARTY_NOTICES and COMMUNITY-THANKS together whenever provenance changes. Refresh the complete npm inventory with `python3 scripts/readme_dependency_credits.py --refresh` when the lockfile changes; run `--check` before publishing. The automated check does not replace review of authorship or non-npm sources. This is a persistent owner preference, not a one-time cleanup.
+For changes to licence/provenance use [licensing](../LICENSING.md), [licensing decision log](../LICENSE-MIGRATION-2026-08-30.md) and [third-party notices](../../THIRD_PARTY_NOTICES.md). Keep LICENSE, LICENSE-SCOPE.md, NOTICE, README and package licensing synchronized. Ordinary instruction edits do not imply a licence migration.
+
+## Sites handoff only
+
+Keep `prototype/drive-lab/.openai/hosting.json`, `worker/index.js`, `scripts/prepare-sites-build.mjs` and `tests/sites-worker.test.mjs` (the last three relative to prototype/drive-lab) intact. For a requested Sites handoff run `npm run build` and `npm run test:sites` there; require `dist/client/index.html`, `dist/server/index.js` and `dist/.openai/hosting.json`. This optional packaging route does not replace canonical FTP publication.
