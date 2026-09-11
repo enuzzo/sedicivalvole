@@ -5021,3 +5021,26 @@ recognizable truncated prefix of those exact remote bytes. Other corruption is
 rejected without writes. Recovery uses the verified stage/rename and repeats the
 complete remote identity gate; it never activates an HTML entry. All 26 deployment
 checks pass, including interruption, corrupted-stage and prefix-admission cases.
+
+## Infographic publication and completed bank recovery — 2026-09-11 16:26 Europe/Rome
+
+Canonical build `20260911-1606.10f8511` is verified live from application source
+`10f8511` using deployment protection checkpoint `a4609df`. Before publication,
+`--repair-nightshift` verified the recognized truncated prefix, restored the
+unchanged 5,504,595-byte bank by checked stage/rename, repeated complete remote
+identity verification and returned `root_activation=NONE`. Public same-origin
+HTTPS returns the exact pinned source SHA-256. Recovery is complete.
+
+Final `--publish --preserve-existing`: `upload=PASS files=43 bytes=5844997`,
+`static_unchanged=PASS skipped=801`, `illobo_unchanged=PASS skipped=29`, complete
+29-recording hash verification, one previous asset retained, no static-entry or
+legacy deletion, `dynamic_root=PASS`, 13 root entries. The production package
+passes 811 exact static hashes and 196 dependency credits.
+
+Fifteen canonical bare/cache-busted HTML and asset/hash/cache checks pass,
+including repaired Nightshift. The canonical real app prepares and actually
+downloads the new PDF offline at 773 × 601 without page errors. Two illustrative
+preview requests produce identical bytes; all 26 decoded objects match local
+rendering (fonts, graphics, JPEG map and metadata), with a hosting/local zlib
+compression difference only. PDF SHA-256: `7fb5ae4cd294dcb602466659a1d72f6e518ba28ba9a230b293f69112c27834f3`.
+No synthetic email was sent. Physical Tesla PDF readability/handling remains open.

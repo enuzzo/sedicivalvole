@@ -1,6 +1,36 @@
 # Current Project State
 
-## Current closeout — 2026-09-11
+## Current infographic closeout — 2026-09-11 16:26 Europe/Rome
+
+Latest verified canonical build: **20260911-1606.10f8511**, application source
+**10f8511**, deployment protection checkpoint **a4609df**. This section supersedes
+the dated latest-build and report-page labels below.
+
+Travel Report now has four A4 chapters plus an optional route/map page, embedded
+Space Grotesk, bento metric cards, shared speed/elevation timing with separate
+scales, six-wave heading graphics and an atmosphere page for observed listening,
+tracks/artists, genre, visual and palette. Older snapshots remain valid without
+inferred listening history. The precise route remains opt-in. See
+[the report contract and evidence](TRAVEL-REPORT-INFOGRAPHIC-2026-09-11.md).
+
+Verification: 85 unique focused report/observation/Soundtrack/deployment checks;
+real Play the Road and Soundtrack app paths at 773 × 601; advancing clocks,
+paused exports and an actual offline PDF download on the canonical site. All five
+example pages and no-GPS states were rendered and inspected. Production packaging
+passes 811 exact static hashes and 196 dependency credits. Official publication
+uploaded 43 files / 5,844,997 bytes, reused 801 verified files and all 29 Illobo
+recordings, and preserved prior assets. Fifteen canonical HTML/asset/cache checks
+pass. Two public previews are byte-identical; all 26 decoded PDF objects match
+local output, including fonts and cartography. No synthetic email was sent.
+
+An interrupted earlier candidate upload truncated Nightshift before the entry
+switch. The exact original bank has been restored and fully verified over FTP
+and public HTTPS. Banks now use verified temporary upload/rename and unchanged
+bank reuse; [scoped recovery and release evidence](DEPLOY.md) preserve the incident
+and prevention details. The current build is live; physical Tesla readability,
+new session statistics and device PDF handling remain separate acceptance.
+
+## Earlier road refinement closeout — 2026-09-11
 
 Latest verified canonical build: **20260911-1407.44f6a29**, source **44f6a29**.
 This section supersedes the dated latest-build and pending-acceptance labels below.
