@@ -5044,3 +5044,12 @@ preview requests produce identical bytes; all 26 decoded objects match local
 rendering (fonts, graphics, JPEG map and metadata), with a hosting/local zlib
 compression difference only. PDF SHA-256: `7fb5ae4cd294dcb602466659a1d72f6e518ba28ba9a230b293f69112c27834f3`.
 No synthetic email was sent. Physical Tesla PDF readability/handling remains open.
+
+
+## Transparent piston identity publication — 2026-09-11 16:49
+
+Canonical build **20260911-1641.6d3009a** is published and verified. The owner-supplied PNG retains alpha in Intro/Splash, running chrome, About/diagnostics, favicon and Travel Report. The dedicated Apple Home 180px icon remains opaque. Source bytes and derivative hashes are retained in `logo/pistons-v1/`.
+
+Verification: 60 focused brand, diagnostic, report and deployment tests; 825 production static hashes; 196 exact dependency credits; 24 canonical bare/cache-busted HTML and asset checks. Canonical Chrome at 773 × 601 confirms transparent Intro and running marks, light/dark rendering, Apple Home metadata and no page errors. Two real PDF preview requests return identical bytes and match local decoded PDF objects, including the transparent logo. No synthetic email was sent. Physical iOS Home installation and Tesla acceptance remain separate.
+
+Official preserve-existing deployment uploaded 44 files / 6,124,956 bytes, reused 816 static files and 29 verified audio masters, retained the previous content-addressed asset, and passed dynamic-root verification without legacy deletion.

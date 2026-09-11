@@ -899,3 +899,5 @@ No dated releases exist yet.
 - 2026-09-11 16:30 `[6cb0222]` (base): Replace all active app/PDF marks with the owner-supplied piston/16 icon. Retain the original PNG bytes and deterministic derivative inventory; package opaque 16/32/48/180/192/256/512px PNGs and a three-size ICO. New asset URLs avoid reuse of the retired icon; Apple Home metadata selects the 180px PNG. Preserve text branding and interface geometry.
 
 - 2026-09-11 16:40 `[852a9b3]` (base): Follow the owner correction by retaining source transparency for all active UI marks, favicon and PDF; remove the PDF background card. Keep the dedicated opaque Apple Home icon separate. Sixty focused brand, diagnostic, report and deployment tests pass.
+
+- 2026-09-11 16:49 `[6d3009a]` `build 20260911-1641`: Publish and verify transparent piston marks on canonical Splash/Intro, running header, favicon and PDF. All 60 focused tests, 825 package hashes, 24 canonical identity/asset checks and live Chrome visual checks pass; repeated PDF previews are byte-identical. Dedicated Apple Home icon metadata verified; physical installation remains untested.

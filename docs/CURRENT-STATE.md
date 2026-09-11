@@ -1777,3 +1777,12 @@ Verification: 862 native tests, preview decoding and preset shuffle at 773 x 601
 ## Intro preview publication — 2026-09-10 14:08
 
 Canonical build **20260910-1402.243cc86** verified. Official preserve-existing upload: 42 files / 18,012,891 bytes; 811 static manifest hashes, 796 reused assets, 29 verified audio masters and two previous assets retained. All 24 canonical identity/cache checks and four additional screenshot SHA-256 comparisons pass. Canonical browser checks confirm four PNG previews, suggestion shuffle, 5 px spacing and 773 x 601 / 874 x 402 / 956 x 440 layouts without page errors. All 862 native tests, 196 credits and the complete local Intro interaction regression pass. Physical Tesla acceptance remains separate.
+
+
+## Transparent piston identity publication — 2026-09-11 16:49
+
+Canonical build **20260911-1641.6d3009a** is published and verified. The owner-supplied PNG retains alpha in Intro/Splash, running chrome, About/diagnostics, favicon and Travel Report. The dedicated Apple Home 180px icon remains opaque. Source bytes and derivative hashes are retained in `logo/pistons-v1/`.
+
+Verification: 60 focused brand, diagnostic, report and deployment tests; 825 production static hashes; 196 exact dependency credits; 24 canonical bare/cache-busted HTML and asset checks. Canonical Chrome at 773 × 601 confirms transparent Intro and running marks, light/dark rendering, Apple Home metadata and no page errors. Two real PDF preview requests return identical bytes and match local decoded PDF objects, including the transparent logo. No synthetic email was sent. Physical iOS Home installation and Tesla acceptance remain separate.
+
+Official preserve-existing deployment uploaded 44 files / 6,124,956 bytes, reused 816 static files and 29 verified audio masters, retained the previous content-addressed asset, and passed dynamic-root verification without legacy deletion.
