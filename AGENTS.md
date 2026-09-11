@@ -1,36 +1,43 @@
-# Agent instructions
+# Sedicivalvole agent instructions
 
-## Scope and invariants
+These instructions apply across this repository. Product code lives in `prototype/drive-lab`; when a task touches that subtree, explicitly read its [local AGENTS](prototype/drive-lab/AGENTS.md) if not already loaded. Starting Codex at the root does not guarantee discovery of nested instructions. References below are read on demand; a Markdown link does not load a document.
 
-- Write code, comments, documentation, logs, UI and commit text in English; speak with the owner in Italian.
-- Work in the saved Dropbox checkout; preserve unrelated work. Complete the requested scope without starting roadmap work. Use targeted search and relevant checks; do not load whole documentation sets or run every suite for a small fix.
-- Never inspect, print, diff, copy or version `.env` or its local variants, or expose credentials. The sole exception is internal loading by `scripts/deploy_drive_lab_ftp.py` for authorized preflight/publication/postflight. `.env.example` contains placeholders only. Never version `_references/` or copy its external material into the repository.
-- Preserve Engine/Flux separation, shared speed/audio-unlock/mute/lifecycle boundaries, reachable mode switching and in-product diagnostics. Virtual RPM/gears are not Tesla telemetry. Technical diagnostics remain coordinate-free; maps and explicit route exports have separate contracts.
-- Original code/docs are PolyForm-Noncommercial-1.0.0, source-visible rather than open source. Original brand/media are excluded unless explicitly licensed; earlier AGPL releases retain their rights. `enuzzo` is the sole original creator/licensor. Preserve third-party ownership and notices; do not use Creative Commons for software.
-- New visual directions require exactly three alternatives and owner selection before construction. Existing selections and explicit delegations remain valid; do not reopen this gate for ordinary fixes or already-selected refinements.
-- Distinguish implemented, tested, live and physically accepted. Only current real renders count as screenshots. Validate affected UI at agreed Tesla viewports (including 773 × 601); browser evidence cannot prove vehicle listening, native controls or sustained Tesla GPU performance.
-- `VERSION` is the sole SemVer source. Keep `CHANGELOG.md` append-only with local date/time, corresponding commit hash and deployment stamp when applicable. Update factual docs only when their facts change.
-- Create/push verified checkpoints to the existing remote. Agreed product changes have standing canonical deployment authorization; no renewed confirmation. Read release guidance for publishing. Documentation/instruction-only work needs no product deployment.
+## Working agreement
 
-## Context routing
+- Write code, comments, documentation, logs, product copy and commit-ready text in English; speak with the owner in Italian. Explain consequential choices precisely and concisely.
+- Carry the authorized task through implementation, relevant verification and required delivery. A first draft or plan is not completion when execution was requested. Report what changed, the evidence, and any remaining acceptance or decision. Do not start unrelated backlog work from an old handoff.
+- Reversible inspection, implementation, focused fixes and relevant local checks within the task are authorized; do not ask again for routine technical choices. A new visual direction needs the selection gate below. Ask only for a consequential missing requirement or action beyond authority, after preparing the safe reviewable work. An explicit current task restriction overrides ordinary commit/build/deploy routines.
+- Preserve pre-existing/unrelated edits. Keep one writer in this shared saved Dropbox checkout. Implementation stays here unless the owner explicitly directs another location. Independently authorized work in separate checkouts is a different boundary, not permission for competing writers here. Do not create a task/worktree merely because a historical prompt proposed one; delegation is not mandatory.
+- Keep implemented features, roadmap, assumptions and verified facts distinct. Record tests, builds, live publication, owner feedback and physical Tesla/iPhone acceptance as separate evidence. The product is experimental despite its public source repository. Archived mocks or dated deployment reports are not current product proof.
+- Choose checks for the behavior and risk, retaining required source/behavior/release gates. Broaden or repeat after a pass only for new changes, failures or unresolved concerns. No fixed reading/test quotas or full architecture audit before every edit. For delivery use the specific gate below; browser QA does not close physical acceptance.
+- When a task changes a documented contract, update its relevant reference and factual product docs. Keep durable specialist decisions in their thematic document, not a growing diary here. Explicit owner supersessions prevail within their scope; a newer date or current implementation alone is not a revocation. Unresolved conflicts belong beside the affected contract and do not block unrelated tasks.
 
-Read only the matching topic below when changing that behavior, including fixes. These are active constraints, not a startup reading list. Follow deeper links only for the specific detail needed; search headings/sections in long documents instead of reading them in full.
+## Non-negotiable boundaries
 
-| Task touches | Read |
-| --- | --- |
-| Engine audio, gears, TAMARRO, new banks or listening LAB | [Engine](docs/agent-context/engine.md) |
-| Flux composition, Soundtrack transport or FX | [Music](docs/agent-context/music.md) |
-| Visual renderer, shader, source bridge or catalogue variants | [Visuals](docs/agent-context/visuals.md) |
-| Intro, chrome, drawers, palette UI or phone layout | [UI](docs/agent-context/ui.md) |
-| Atlas, Stats, Discover, radar or Fly With | [Maps](docs/agent-context/maps.md) |
-| GPS semantics, altitude, diagnostics or PDF/email reports | [Diagnostics](docs/agent-context/diagnostics.md) |
-| Preloading, retries, browser cache or update/reload lifecycle | [Runtime](docs/agent-context/runtime.md) |
-| Commit/release details, deployment, licensing, new sources or Sites handoff | [Release](docs/agent-context/release.md) |
-| Architecture or service boundaries | Relevant section of [Technical direction](docs/TECHNICAL-DIRECTION.md) |
-| Resuming interrupted work or checking delivery status | Relevant section of [Current state](docs/CURRENT-STATE.md) / [Session handoff](docs/SESSION-HANDOFF.md), checked against current Git/evidence |
+- Never read, print, diff, copy, log or version `.env` or local secret variants; never put credentials in commands, logs, screenshots or docs. `.env.example` contains only keys and harmless placeholders. The sole exception is internal loading by the official deploy script, detailed in [Canonical publication](docs/agent-guide/delivery.md#canonical-publication).
+- Never version `_references/` or copy its external material into the repository. Before admitting third-party code/assets/dependencies, use [Provenance](docs/agent-guide/provenance.md#third-party-admission). Preserve pinned upstream bytes, attribution and integrity checks; never weaken checks to bypass a source restriction.
+- Original code/docs use PolyForm Noncommercial and the sole licensor is `enuzzo`; exact exclusions, prior rights and synchronized files are in [Original material](docs/agent-guide/provenance.md#original-material). Technical diagnostic packets remain coordinate-free; geographic services and optional route exports have only the scoped permissions in [Geographic privacy](docs/agent-guide/maps.md#geographic-privacy).
+- Before constructing a new visual direction, present exactly three directions and wait for selection. Selected designs and explicitly delegated changes are listed in [Design decisions](docs/agent-guide/interface.md#design-decisions); their scoped approval is not a new pending question or blanket redesign authority.
+- Standing September 5 authorization covers prompt verified deployment of agreed product work to `https://sedicivalvole.app/`. Use [Delivery](docs/agent-guide/delivery.md#canonical-publication), including build identity, secrets exception and canonical verification; no repeated deployment approval is needed. Do not send messages to people without explicit sending authority. The existing automatic diagnostic destination has its own narrow owner-authorized [delivery contract](docs/agent-guide/diagnostics-reports.md#automatic-delivery).
 
-Use skills only when their stated task applies; incidental UI/code edits do not themselves call for design research, audits or broad skill loading. No repository-local skills are currently defined.
+## Read for the task
 
-Record durable new decisions in the matching contextual file; keep this root for broad rules. Current explicit owner decisions take precedence over older dated studies/handoffs. Historical instructions under `docs/agent-history/pre-gpt6-astra/` are not normal reading and cannot reinstate superseded gates.
+Read the matching **section**, then only the supporting evidence needed for the change. Cross-subsystem work follows each affected owner; no task must read this whole table's destinations. Paths in the local AGENTS are relative to Drive Lab; paths below are relative to the repository root.
 
-If context becomes unreliable, inventory pending requirements/local edits and prepare a concrete handoff in the saved checkout. For missing desktop/mobile requirements, inspect available queue/history evidence before claiming absence; mark truncation rather than reconstructing text.
+| Task touches | Read first | Add only when needed |
+| --- | --- | --- |
+| Running UI, typography, palette, chrome, drawers, Now Playing, FX Deck | [Interface / Shared geometry](docs/agent-guide/interface.md#shared-geometry-and-palette), [Chrome and drawers](docs/agent-guide/interface.md#chrome-and-drawers) or [Running media](docs/agent-guide/interface.md#running-media-and-effects) | Music for transport/effects; Maps for passenger geometry |
+| Intro, presets, branding, support, phone layout | [Intro and branding](docs/agent-guide/interface.md#intro-and-branding) or [Phone behavior](docs/agent-guide/interface.md#phone-behavior) | [Curated bindings](docs/agent-guide/music.md#curated-experiences); [silent preparation](docs/agent-guide/motion-runtime.md#preparation-and-recovery) |
+| Score composition, Soundtrack, media controls or audio effects | Matching section in [Music](docs/agent-guide/music.md) | [Shared 130 km/h energy/input boundary](docs/agent-guide/motion-runtime.md#energy-and-mode-boundary) for road mapping; relevant MUSIC-CRAFT heading for musical faults; source policy for rights |
+| Engine sound, gears, idle/TAMARRO, sample integration or A/B LAB | Matching section in [Engine](docs/agent-guide/engine.md) | [GPS/simulator](docs/agent-guide/motion-runtime.md#gps-and-simulator) for freshness; preload/lifecycle below; specialist source-research handoff only for that research |
+| GPS, shared mode/audio ownership, retries, lifecycle, static cache, updates | Matching section in [Motion and runtime](docs/agent-guide/motion-runtime.md) | Engine/Music/Maps consumer; diagnostics if time/reporting changes; architecture section only for changed boundaries |
+| Atlas, Stats, Discover, altitude, Air Atlas or Fly With | Matching surface in [Maps](docs/agent-guide/maps.md) | Geographic privacy for data requests/exports; UI for chrome/targets; lifecycle for retry/selection |
+| Diagnostic capture, automatic mail, PDF or recipient verification | Matching section in [Diagnostics and reports](docs/agent-guide/diagnostics-reports.md) | Motion for timing, Maps for altitude/route; source-specific endpoint and existing tests |
+| Renderer/bridge, upstream fidelity, Gradient variants or retired study | Matching renderer in [Visual integrations](docs/agent-guide/visuals.md) | Shared speed/music inputs, interface controls and source inventory only as affected |
+| License, asset/dependency admission, credits or source publication | [Provenance](docs/agent-guide/provenance.md) | Exact THIRD_PARTY_NOTICES entry; source-specific rights/integrity reference |
+| Build, changelog, Git checkpoint, release or publication | Matching section in [Delivery](docs/agent-guide/delivery.md) | Exact DEPLOY gate for canonical publication; Sites package only for a requested Sites handoff |
+| Interrupted context, missing queued requirements, concurrent-edit recovery | Matching section in [Recovery](docs/agent-guide/recovery.md) | Relevant CURRENT-STATE/handoff headings; historical incident material only when investigating that incident |
+
+For a requested backlog continuation, consult the relevant current-state/owner-decision section and verify its evidence before acting. Existing broad acceptance is recorded in `docs/OWNER-DECISIONS-2026-09-07.md`: reliability, then Engine, then iPhone was the ordered direction; it is not authorization to interrupt a scoped task. `docs/TECHNICAL-DIRECTION.md` is for architectural boundaries, `docs/MUSIC-CRAFT.md` for relevant musical knowledge, and `docs/DEPLOY.md` for release operations, not mandatory whole-document reading.
+
+Skills and plugins follow their actual task triggers and installed availability. Repository references do not activate API features or change model/tool configuration. If a skill causes a concrete stop or diversion, identify and link its exact instruction and explain the effect; do not modify or bypass global skills to resolve it. User instructions take precedence over skill guidelines within the applicable instruction hierarchy.

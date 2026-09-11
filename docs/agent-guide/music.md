@@ -1,0 +1,43 @@
+# Music contracts
+
+Read the affected section for score, Soundtrack, effects or preset work. For road/audio interaction also read [shared energy and inputs](motion-runtime.md#energy-and-mode-boundary); for buffering/reconnect/lifecycle work read [preparation and recovery](motion-runtime.md#preparation-and-recovery). Engine has its separate [dry output contract](engine.md#output-and-road-response).
+
+## Authored score
+
+Flux (publicly Music) is an authored adaptive score, with arrangement, low end, rhythm, harmony, timbre and spatial progression. Exposed oscillator pings, a noise bed or linear BPM escalation are not substitutes. Keep `Atmos`, `Harmonics` and `Pulse` out of the primary driving surface: use purposeful Visual/Music selectors and curated environments. Normalize visual **and music** energy to the fixed `130 km/h` ceiling defined in [the shared contract](motion-runtime.md#energy-and-mode-boundary); no user-adjustable energy threshold.
+
+Separate smoothed continuous speed/energy from bar-quantized structural events. Use smoothing, hysteresis, dwell, crossfades, a tempo knee and controlled deceleration; beyond the knee, deepen arrangement rather than make a frantic march. Never label a roadmap-only score active. The running drawer lists the three playable scores only (FRACTURE, JUNCTION and NIGHTSHIFT), with concise listener-facing copy and coherent covers.
+
+Keep [MUSIC-CRAFT](../MUSIC-CRAFT.md) current in the same session when diagnosing a musical fault, researching a technique or finding an improvement; record why the listener noticed it. Search its relevant heading/technique, not the entire manual on every edit. It advises quality and must not become an unjustified constraint; remove an entry that constrains without cause. Assert checkable musical rules in meaningful tests, including voiced-chord consonance, effects levels and claimed form variety.
+
+## JUNCTION
+
+Rest has no beat or bassline. Introduce a quiet native-tempo break near `13 km/h`; cap the authored ladder at `168 BPM`. Increase intensity mainly through orchestration, dynamics, punctuation and effects, not a permanently loud break.
+
+Randomness mixes only complete tempo-, harmony- and rhythm-compatible authored takes at eight-bar boundaries. Paired decks share one **identical rhythmic spine** and finish the current eight-bar phrase before the next pair. Reset DSP/voice state for every rendered selectable clip; each encoded clip is self-contained with short click-safe edges and sample-accurate starts. Do not immediately repeat the primary take. Bounded recent-family/take memory favors material not just heard. Check every bass, melody note and tonal accent against the voiced chord. Keep at most **six decoded clips** and never publish isolated source loops/stems.
+
+For JUNCTION bank generation or phrase-boundary defects read [MUSIC-CRAFT 5.9](../MUSIC-CRAFT.md#59-two-correct-breaks-can-still-make-one-wrong-groove): its independent reset and **eight-millisecond** click-safe edges retain the recorded defect-specific knowledge. For detailed score architecture use [Technical Direction / Current Flux score engine](../TECHNICAL-DIRECTION.md#current-flux-score-engine) and the relevant MUSIC-CRAFT section; retain stronger source-specific invariant tests when touching this pipeline.
+
+## Soundtrack and selection
+
+The running drawer has a persistent Play the Road / Soundtrack switch and equal compact hierarchy for Illobo Featured / Jamendo Library. Displayed playlist/cover rotates in a stable `30-minute` window and states that cadence. Pace, genre and exact-track controls start playback immediately; pace is catalogue discovery, never road automation or recording-rate control. Fixed recordings stay at authored `1x`. Illobo tracks have title-specific coherent covers; its two supplied marks remain playlist identity.
+
+START enters the visual immediately even if a remote catalogue is pending or constrained. Start prepared audio when the **selected** queue becomes ready; a retained old queue must never play while a newly selected catalogue is loading. Preserve saved mute and the ordinary Mute launch path. Do not report a failed request as playing. This catalogue-replacement rule differs from committed-track continuity during a buffered transport transition below.
+
+Exactly three transient media roles are retained. Current owns `preload=auto`; adjacent roles start metadata-only and may promote only once current has `6 seconds` forward buffer or reports enough data. PREVIOUS rewinds/reuses a healthy retained media element instead of destroying its buffer. Each initial/manual/automatic track transition starts its target silently, waits for that same buffer floor within a bounded transport deadline, rewinds, then makes it audible; outgoing **committed** track/metadata stay intact during that wait. Rapid transport commands execute in exact order.
+
+Media Session has stable session-lifetime play/pause/previous/next handlers. Verify actual application handler invocation and outcome, not registration alone or inferred Tesla button visibility. Ship control glyphs in the initial payload; show loading/retrying rather than blank controls, retain transport while waiting, recover artwork on online/foreground return and republish native metadata. Keep invocation/outcome logs. The black Soundtrack source module shows speed only, without FLUX, BPM or energy. Presentation and attribution geometry are in [running media](interface.md#running-media-and-effects).
+
+For source admission or caching changes read [SOUNDTRACK Source Policy / Capability contract](../SOUNDTRACK-SOURCE-POLICY.md#capability-contract), [Jamendo boundary](../SOUNDTRACK-SOURCE-POLICY.md#jamendo-boundary) and, only for Illobo, [Direct grants](../SOUNDTRACK-SOURCE-POLICY.md#direct-grants). Streaming/effects/hosted-copy permissions are separate; remote Jamendo music remains transient, outside static/offline caches. Public/private grants and notices follow [provenance](provenance.md#third-party-admission).
+
+## Effects boundary
+
+Audible vehicle-macro consumers read `snapshot.values`, never undeclared top-level aliases. Soundtrack and NIGHTSHIFT share the two-stage perceptual UNDERWATER model. Keep road speed and musical features separate, with native UNDERWATER response in each active Flux visual. **OPEN and BLOOM are retired**, including their detection/timers, audio, visual mapping, LAB and packaged worklets; the old three-macro instructions are superseded by the owner listening evidence in [MUSIC-CRAFT 6.16](../MUSIC-CRAFT.md#616-a-reactive-effect-must-earn-its-runtime-cost-in-the-cabin). Engine bypasses this graph entirely.
+
+Exactly eight manual effects share one level-bounded post-source graph across Play the Road and Soundtrack. Retain Flanger/Reverb/Echo; Chorus is removed. Five differentiated additions include progressive manual Underwater and deliberate low/high-frequency transformations. Do not restore Beat Repeat's retired worklet. Every `100%` state is unmistakably distorted without clicks, silence, clipping, runaway feedback or destructive level jumps. Footer MUTE and FX apply across both sources; FX OFF disables vehicle-macro **audio** processing while preserving the active visual response. References to OPEN/BLOOM in that older FX rule do not restore those retired macros. Preserve independent depth, reset and source-switch persistence in the [non-modal FX Deck](interface.md#running-media-and-effects).
+
+## Curated experiences
+
+Night Glass is **Vertigo / Graphite / DARK / Lounge**. Ambient was explicitly replaced by owner feedback in [the September 5 refinement](../NIGHT-GLASS-2026-09-05.md#2026-09-05-0147--publication-and-owner-directed-refinement); old Ambient captions are historical. Neon Groove is **Aperture / Neon / DARK / Funk**. Sky Radio is **Air Atlas / Blue / Ambient** and City Jazz is **Atlas / Graphite / Jazz**, as recorded in [the September 10 preset refinement](../INTRO-PREVIEW-CAPTURES-2026-09-10.md#intro-preview-and-preset-refinement--2026-09-10). Do not confuse Night Glass's replacement with a global Ambient ban.
+
+Use one shared registry/card definition in launch and Visual, retaining existing music/visual owners, controls, diagnostics and chrome wake/retraction. Recognize a preset from actual settings, not a stale saved label. Preparation is silent; START or explicit running Play owns playback. Genre catalogues vary: do not claim individually auditioned tracks. The first curated surprise's delegated design decision does not authorize unrelated future redesigns. Intro recommendations and shuffle behavior follow [Intro](interface.md#intro-and-branding).

@@ -1,0 +1,47 @@
+# Shared UI, Intro and phone constraints
+
+Read only for the named subsystem. These are active owner constraints, not proof of implementation or live acceptance. Paths below are repository-relative unless linked. Later explicit owner decisions supersede older studies.
+
+Keep Engine and Flux equally reachable and identifiable; Music is the public label where selected while flux remains internal. The selected running direction is refined Balanced Rail / Tesla Compact: speed alone has exceptional numeric hierarchy, 16 first at rest, and four right icons share optical frames and equal touch cells. Preserve semantic 13 / 14 / 15 / 15 / 17 / 22 / 32 px roles, high-contrast metadata, tabular numerals, 48 px actions and 56 px primary targets. Do not replace this with a blanket minimum font size. At 773 × 601 top/bottom chrome and Now Playing bands are 64 px. Use Title Case editorial labels and uppercase functional labels; carets open real menus.
+
+A deliberate touch/pointer/keyboard wake works at every speed. Motion, GPS, demo/braking and passive pointer movement never wake chrome. Departure can retract once; later speed samples cannot cancel deliberate wake. Retain six-second inactivity, immediate completed-action/close retraction and open-surface pinning; stale focus cannot pin chrome. At rest only speed/unit remain, and the first wake touch does not change values. Modal passenger surfaces suppress global chrome/Now Playing. Now Playing belongs to the footer's single animated/inert container and is suppressed for Atlas and menus/popups/passenger panels.
+
+- Every shared drawer closes through CLOSE, Escape, a tap on the exposed
+  backdrop, or one dominant directional swipe matching its exit. Capture the
+  pointer after a non-control drag begins, suppress browser overscroll within
+  the app, and reserve the first `28 px` of the left edge for Chromium's native
+  history gesture so one physical swipe cannot commit both actions. Never claim
+  the embedded Tesla Chromium gesture can be disabled; the app owns interior
+  swipes and deliberately yields the native edge.
+
+- The navbar network state is an honest browser connection estimate, never a
+  claimed cellular signal meter or an active ping service. A healthy state is
+  a readable outlined dot with an accessible name and no meaningless `NET
+  ONLINE` copy. Constrained and offline states show actionable `16 px` text,
+  including the browser-estimated downlink when available.
+
+Resolve palette LIGHT/DARK contrast centrally with minimal lightness/chroma changes at fixed hue; preserve passing colours and record/test original/resolved values against rendered backgrounds. UNDERWATER fills the speed badge footprint and returns from it, respects reduced motion and never reads as an alarm-red warning. PALETTE controls the whole field and interface accent, not vehicle paint. Running Palette has a library icon, Title Case label and swatches inside its popup. Avoid decorative chrome, knobs and glassmorphism; retain selected outline controls and specific later round-preview exceptions.
+
+## Shared layout details
+
+Align Now Playing artwork, track copy and transport on a common center. Size credit-role columns from their contents so labels do not overlap titles; retain the pinned contrast-safe icon treatment and the one-line NOW PLAYING label from [Music](music.md). Apply the same baseline, spacing, state and optical-icon rules to footer cells and navbar. These constraints concern running media UI, not the artist row explicitly removed from Intro.
+
+Semantic roles remain 13 px metadata, 14 px labels, 15 px body/action, 17 px active names, 22 px titles and 32 px primary values; 48/56 px touch targets are independent of visible outlines. For Atlas expansion, distinct sidebars and Discover navigation consult [Maps: surfaces and navigation](maps.md#atlas-surfaces-and-discover-navigation). For marker targets and current Discover row geometry use only [Road UI refinement: Implemented](../ROAD-UI-REFINEMENT-2026-09-09.md#implemented), not the retired chart/sidebar or old 52/64 px Discover composition.
+
+## Intro: consolidated September 10 decisions
+
+Intro is the initial chooser; Splash is its loading transition. Both display existing build identity; Intro bottom right. Keep the centered intrinsic sheet, current semantic light/dark shell and START hierarchy. Short windows scroll inside the sheet with reserved footer space; tall windows do not stretch it.
+
+Each new Intro starts Soundtrack even if Play the Road was saved; preserve saved mute and choices made within this Intro. Mute replaces Visuals only. Use 80 px square covers with 6 px corners and 8 px top/bottom padding; no media outer border/divider. Show actual prepared title with matching artwork; no artist in Intro (running credits remain). Label SOUNDTRACK and genre without duplicating Soundtrack. Choose and Random are compact 32 px outlines with 48 px hit regions beside the cover.
+
+Use two stable randomly selected genre-labelled preset recommendations and direct palette cycling. Keep circular preset previews, visible PRESETS label (not RESET), aligned preset/palette groups with a vertical rule; stack groups at narrow widths. Broaden the registry without clutter. No generated concept imagery enters the product. Maintain fresh lucky choices without immediate repeats and precise selection reachability; Gradient has one roulette weight, Atlas/Discover remain deliberate passenger choices.
+
+Keep the transparent 16 Road mark beside the isolated lowercase Orbitron wordmark (750, restrained -0.02em tracking); other UI/report text uses Space Grotesk. Drive responsibly sits below the wordmark. The yellow Buy Me a Coffee cup follows About at 48 px height and is shared with diagnostics. Its dialog is centered, internally scrollable, and restores focus. Credits bottom left. Use the verified `https://buymeacoffee.com/enuzzo` destination and supplied QR; never fabricate donation/customer totals. Safety copy contains only DRIVE RESPONSIBLY. Old Signal Gate/Road Sheet CTA geometry and 64 px circular media are superseded.
+
+## Phone
+
+Compact Cockpit is selected: thin retracting bars, full touch targets and safe areas, installed footer extending to the bottom edge, working landscape palette taps. Preserve audio, selection and renderer across rotation. Use an accessible inert portrait notice only on phones, not desktop portrait/Tesla. Named devices: iPhone 17 Pro and Pro Max; iOS versions unspecified.
+
+For Intro changes consult [the September 10 refinement](../INTRO-REFINEMENT-2026-09-10.md); for phone/road controls use [road UI refinement](../ROAD-UI-REFINEMENT-2026-09-09.md). Run/open the local preview yourself when rendered validation is needed. A selected mock is a fidelity contract. Use design skills for requested design/audit work; do not require the retired `get-context` skill or trigger a full design workflow for incidental styling fixes.
+
+For preparation, source changes or loading-state fixes, consult [Runtime: selection and lifecycle](runtime.md#selection-and-lifecycle) and the [Music catalogue-replacement contract](music.md#catalogue-replacement-and-deeper-checks). Do not open these for unrelated spacing fixes.

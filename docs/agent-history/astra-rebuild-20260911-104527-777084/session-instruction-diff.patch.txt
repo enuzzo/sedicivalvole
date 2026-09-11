@@ -1,0 +1,980 @@
+--- initial-working-tree/AGENTS.md
++++ final-working-tree/AGENTS.md
+@@ -1,334 +1,43 @@
+-# Project Instructions for Agents
++# Sedicivalvole agent instructions
+ 
+-These rules apply to every change in the `sedicivalvole` project.
++These instructions apply across this repository. Product code lives in `prototype/drive-lab`; when a task touches that subtree, explicitly read its [local AGENTS](prototype/drive-lab/AGENTS.md) if not already loaded. Starting Codex at the root does not guarantee discovery of nested instructions. References below are read on demand; a Markdown link does not load a document.
+ 
+-## Language
++## Working agreement
+ 
+-- Write all source code, code comments, documentation, commit-ready text, logs, and product interface copy in English.
+-- Italian is reserved for direct conversation between the user and the assistant.
++- Write code, comments, documentation, logs, product copy and commit-ready text in English; speak with the owner in Italian. Explain consequential choices precisely and concisely.
++- Carry the authorized task through implementation, relevant verification and required delivery. A first draft or plan is not completion when execution was requested. Report what changed, the evidence, and any remaining acceptance or decision. Do not start unrelated backlog work from an old handoff.
++- Reversible inspection, implementation, focused fixes and relevant local checks within the task are authorized; do not ask again for routine technical choices. A new visual direction needs the selection gate below. Ask only for a consequential missing requirement or action beyond authority, after preparing the safe reviewable work. An explicit current task restriction overrides ordinary commit/build/deploy routines.
++- Preserve pre-existing/unrelated edits. Keep one writer in this shared saved Dropbox checkout. Implementation stays here unless the owner explicitly directs another location. Independently authorized work in separate checkouts is a different boundary, not permission for competing writers here. Do not create a task/worktree merely because a historical prompt proposed one; delegation is not mandatory.
++- Keep implemented features, roadmap, assumptions and verified facts distinct. Record tests, builds, live publication, owner feedback and physical Tesla/iPhone acceptance as separate evidence. The product is experimental despite its public source repository. Archived mocks or dated deployment reports are not current product proof.
++- Choose checks for the behavior and risk, retaining required source/behavior/release gates. Broaden or repeat after a pass only for new changes, failures or unresolved concerns. No fixed reading/test quotas or full architecture audit before every edit. For delivery use the specific gate below; browser QA does not close physical acceptance.
++- When a task changes a documented contract, update its relevant reference and factual product docs. Keep durable specialist decisions in their thematic document, not a growing diary here. Explicit owner supersessions prevail within their scope; a newer date or current implementation alone is not a revocation. Unresolved conflicts belong beside the affected contract and do not block unrelated tasks.
+ 
+-## Versioning and traceability
++## Non-negotiable boundaries
+ 
+-- `VERSION` is the only SemVer source of truth. Do not duplicate the number manually; builds must read or receive it through a verified pipeline.
+-- Every build carries a build stamp in the form `20260826-1543` (`YYYYMMDD-HHMM`), generated at build time. Always write the build stamp when publishing or deploying, and record it in the deployment evidence. The stamp identifies the build; it does not replace `VERSION`.
+-- Update `CHANGELOG.md` for every user-visible change or relevant technical change. The changelog must be strictly progressive and append-only: never rewrite, alter, or remove past entries under any circumstances. Every changelog entry must explicitly record the date, local time (e.g. `2026-08-27 15:10`), the corresponding short commit hash (e.g. `[c85b70c]`), and the build stamp when deploying (e.g. `build 20260827-1510`).
+-- Keep unreleased changes under `Unreleased` in chronological progressive order; create a versioned ISO-dated section only when releasing, and synchronize `VERSION`.
+-- Update the README, feature status, and architecture when facts change.
+-- Use only real, verified screenshots from the current build at agreed Tesla viewports. Remove obsolete captures.
+-- Create small, verified commits frequently during active development. Push each verified checkpoint when a configured remote exists; never invent or configure a remote without the user's destination.
+-- After each user-approved product change, deploy the verified build to the canonical live root and validate the product-visible result.
+-- If the active context becomes unreliable or overloaded, first inventory every pending requirement and local change, write a concrete task list, and hand the work to a fresh session at an appropriate reasoning effort without leaving the Dropbox project directory.
+-- When work continues across desktop and mobile clients, do not assume locally queued desktop messages reached the synchronized thread. Before declaring requirements missing, inspect available local queue/history evidence, record recoverable requirements, and clearly mark any truncated content instead of reconstructing it.
++- Never read, print, diff, copy, log or version `.env` or local secret variants; never put credentials in commands, logs, screenshots or docs. `.env.example` contains only keys and harmless placeholders. The sole exception is internal loading by the official deploy script, detailed in [Canonical publication](docs/agent-guide/delivery.md#canonical-publication).
++- Never version `_references/` or copy its external material into the repository. Before admitting third-party code/assets/dependencies, use [Provenance](docs/agent-guide/provenance.md#third-party-admission). Preserve pinned upstream bytes, attribution and integrity checks; never weaken checks to bypass a source restriction.
++- Original code/docs use PolyForm Noncommercial and the sole licensor is `enuzzo`; exact exclusions, prior rights and synchronized files are in [Original material](docs/agent-guide/provenance.md#original-material). Technical diagnostic packets remain coordinate-free; geographic services and optional route exports have only the scoped permissions in [Geographic privacy](docs/agent-guide/maps.md#geographic-privacy).
++- Before constructing a new visual direction, present exactly three directions and wait for selection. Selected designs and explicitly delegated changes are listed in [Design decisions](docs/agent-guide/interface.md#design-decisions); their scoped approval is not a new pending question or blanket redesign authority.
++- Standing September 5 authorization covers prompt verified deployment of agreed product work to `https://sedicivalvole.app/`. Use [Delivery](docs/agent-guide/delivery.md#canonical-publication), including build identity, secrets exception and canonical verification; no repeated deployment approval is needed. Do not send messages to people without explicit sending authority. The existing automatic diagnostic destination has its own narrow owner-authorized [delivery contract](docs/agent-guide/diagnostics-reports.md#automatic-delivery).
+ 
+-## Secrets and local material
++## Read for the task
+ 
+-- Never read, print, diff, log, or version `.env` or local variants.
+-- Never place credentials in command lines, logs, screenshots, or documentation.
+-- Never version `_references/` or copy its external material into the repository.
+-- `.env.example` may contain only keys and harmless placeholders.
++Read the matching **section**, then only the supporting evidence needed for the change. Cross-subsystem work follows each affected owner; no task must read this whole table's destinations. Paths in the local AGENTS are relative to Drive Lab; paths below are relative to the repository root.
+ 
+-## Product and validation
++| Task touches | Read first | Add only when needed |
++| --- | --- | --- |
++| Running UI, typography, palette, chrome, drawers, Now Playing, FX Deck | [Interface / Shared geometry](docs/agent-guide/interface.md#shared-geometry-and-palette), [Chrome and drawers](docs/agent-guide/interface.md#chrome-and-drawers) or [Running media](docs/agent-guide/interface.md#running-media-and-effects) | Music for transport/effects; Maps for passenger geometry |
++| Intro, presets, branding, support, phone layout | [Intro and branding](docs/agent-guide/interface.md#intro-and-branding) or [Phone behavior](docs/agent-guide/interface.md#phone-behavior) | [Curated bindings](docs/agent-guide/music.md#curated-experiences); [silent preparation](docs/agent-guide/motion-runtime.md#preparation-and-recovery) |
++| Score composition, Soundtrack, media controls or audio effects | Matching section in [Music](docs/agent-guide/music.md) | [Shared 130 km/h energy/input boundary](docs/agent-guide/motion-runtime.md#energy-and-mode-boundary) for road mapping; relevant MUSIC-CRAFT heading for musical faults; source policy for rights |
++| Engine sound, gears, idle/TAMARRO, sample integration or A/B LAB | Matching section in [Engine](docs/agent-guide/engine.md) | [GPS/simulator](docs/agent-guide/motion-runtime.md#gps-and-simulator) for freshness; preload/lifecycle below; specialist source-research handoff only for that research |
++| GPS, shared mode/audio ownership, retries, lifecycle, static cache, updates | Matching section in [Motion and runtime](docs/agent-guide/motion-runtime.md) | Engine/Music/Maps consumer; diagnostics if time/reporting changes; architecture section only for changed boundaries |
++| Atlas, Stats, Discover, altitude, Air Atlas or Fly With | Matching surface in [Maps](docs/agent-guide/maps.md) | Geographic privacy for data requests/exports; UI for chrome/targets; lifecycle for retry/selection |
++| Diagnostic capture, automatic mail, PDF or recipient verification | Matching section in [Diagnostics and reports](docs/agent-guide/diagnostics-reports.md) | Motion for timing, Maps for altitude/route; source-specific endpoint and existing tests |
++| Renderer/bridge, upstream fidelity, Gradient variants or retired study | Matching renderer in [Visual integrations](docs/agent-guide/visuals.md) | Shared speed/music inputs, interface controls and source inventory only as affected |
++| License, asset/dependency admission, credits or source publication | [Provenance](docs/agent-guide/provenance.md) | Exact THIRD_PARTY_NOTICES entry; source-specific rights/integrity reference |
++| Build, changelog, Git checkpoint, release or publication | Matching section in [Delivery](docs/agent-guide/delivery.md) | Exact DEPLOY gate for canonical publication; Sites package only for a requested Sites handoff |
++| Interrupted context, missing queued requirements, concurrent-edit recovery | Matching section in [Recovery](docs/agent-guide/recovery.md) | Relevant CURRENT-STATE/handoff headings; historical incident material only when investigating that incident |
+ 
+-- Separate implemented features, roadmap items, assumptions, and verified facts.
+-- Never present archived mocks or prototypes as the current product.
+-- Before a visual build, show exactly three directions and wait for a selection.
+-- Verify the experience at agreed Tesla viewports and on the target vehicle.
+-- During active development, deploy each user-approved product change to the canonical root at `https://sedicivalvole.app/`; the product remains experimental even though the source repository is public.
+-- An upload is not a successful deployment: verify the canonical URL, HTML, assets, version, and cache behavior after every publication.
+-- Keep the technical diagnostics accessible from within the main product experience.
+-- Treat `Engine` and `Flux` as equal primary product modes. The active mode must remain clearly identifiable and the mode switch must remain reachable from either experience.
+-- `Flux` is the current adaptive music and generative-field work. `Engine` is a separate engine-sound experience with its own audio model and instrument-inspired visual language.
+-- The current starburst/lens-flare Flux visual is rejected. Retain only central convergence, depth, speed response, and the low control plane; present exactly three revised minimal, Swiss-influenced directions before replacing it.
+-- `VERTIGO 02` embeds the byte-identical Codrops/Tympanus Infinite Lights Interstate 7 runtime from commit `e58d58520bc0dfde21f9e14e6a1b8c7f0a2a2a9e` as separately licensed third-party material. Do not alter, trim, or relicense its road, light sticks, car trails, bloom, camera, distortion, dependencies, or source files. Keep the iframe hidden until the external bridge removes the editorial shell; the bridge may drive the original time/FOV controls and map sedicivalvole themes onto existing runtime colour buffers and uniforms. Keep upstream-integrity tests and attribution green.
+-- `@shadergradient/react@2.4.20` and its pinned Three/R3F peers power one public **GRADIENT 08** family with the owner-selected **Japanese Mist**, **Acid Orchard**, and **Chromatic Silk** variants, plus the standalone and protected LAB workbenches. Expose the family as one Visual catalogue entry and keep a persistent in-visual `VARIANT` control that cycles the three exact variants. Keep the public renderer lazy-loaded as one separate chunk, retain the MIT notice, keep an exact source/change inventory, preserve the project-owned Canvas2D fallback, and require target-Tesla GPU acceptance. Do not modify or relicense upstream source without a new explicit owner decision.
+-- Keep `docs/MUSIC-CRAFT.md` current. It is the project's accumulated musical knowledge: theory, production technique, and the specific defects this codebase has made and fixed. Whenever a musical fault is diagnosed, a technique is researched, or a way to improve the score is found, record it there in the same session, with the reason a listener noticed it. It advises on quality and must never become a rulebook that prevents good music; delete an entry that constrains without cause.
+-- Prefer a check over a memory. A musical rule that can be asserted — consonance against the voiced chord, an effect's level, the variety a form claims — belongs in a test, because the alternative is hearing the fault, describing it, and hunting it again.
+-- Flux must feel like an authored adaptive score. Do not substitute exposed oscillator pings, a noise bed, or linear BPM escalation for arrangement, low end, rhythm, harmony, timbre, and spatial progression.
+-- JUNCTION must not equate road energy with a permanently loud break. Keep rest free of beat and bassline, introduce a quiet native-tempo break near `13 km/h`, cap the authored tempo ladder at `168 BPM`, and grow intensity primarily through orchestration, dynamics, punctuation and effects. Randomness may mix only complete, tempo-, harmony- and rhythm-compatible authored takes at eight-bar boundaries; paired decks must share one exact rhythmic spine, every encoded clip must be self-contained, and recent-family memory must prefer material the listener has not just heard. Use sample-accurate starts, never repeat the same primary take immediately, and never choose a bass, melody note or tonal accent without checking it against the voiced chord. Keep the six-clip decoded-memory bound and never publish an isolated source loop or stem.
+-- Prefer curated audiovisual environments and purposeful Visual/Music selectors over low-level `Atmos`, `Harmonics`, and `Pulse` controls in the primary driving surface. The owner-selected **Tesla Compact** refinement uses a semantic `13 / 14 / 15 / 15 / 17 / 22 / 32 px` type ladder, `48 px` action targets, `56 px` primary targets, and retracting `64 px` top and bottom chrome at `773 x 601`; do not restore a blanket type floor that consumes the visual field or reduce touch targets with the type. Keep `13 px` metadata high contrast, preserve the editorial Title Case/functional uppercase distinction, avoid redundant text rows, and use disclosure carets only for controls that open real menus. Modal passenger surfaces suppress global chrome and Now Playing; ATLAS suppresses Now Playing and expands its panel to the full field when chrome rests. Contextual visual-cycle controls follow chrome visibility and use the shared `6 px` radius. The user-adjustable energy-threshold slider is retired: normalize visual and music energy against the fixed `130 km/h` legal-road ceiling, while ensuring the tunnel is already visible by approximately `40 km/h`.
+-- Keep ATLAS map attribution mandatory but visually subordinate: a tiny, low, translucent text strip immediately above the footer, never a large white pill. Its passenger-location sidebar must collapse behind a persistent midpoint handle on the right edge; collapsing expands the map to the full field and the same handle must reopen it.
+-- Do not assume Apache, Nginx, or any other server technology without evidence.
++For a requested backlog continuation, consult the relevant current-state/owner-decision section and verify its evidence before acting. Existing broad acceptance is recorded in `docs/OWNER-DECISIONS-2026-09-07.md`: reliability, then Engine, then iPhone was the ordered direction; it is not authorization to interrupt a scoped task. `docs/TECHNICAL-DIRECTION.md` is for architectural boundaries, `docs/MUSIC-CRAFT.md` for relevant musical knowledge, and `docs/DEPLOY.md` for release operations, not mandatory whole-document reading.
+ 
+-## Licensing
+-
+-- Keep `LICENSE`, `LICENSE-SCOPE.md`, `NOTICE`, README licensing copy, package metadata, and the licensing decision log synchronized.
+-- Original sedicivalvole code and documentation default to
+-  `PolyForm-Noncommercial-1.0.0`; this is source-visible noncommercial software,
+-  not open source. Original brand, screenshots, audio, and standalone
+-  visual/media assets remain excluded unless specifically licensed. Public
+-  versions already distributed under AGPL retain their earlier rights.
+-- The sole original creator and public licensor identity is `enuzzo`; do not
+-  imply a studio, company, or other legal entity. Third-party ownership and
+-  credits remain exactly as recorded in `THIRD_PARTY_NOTICES.md`.
+-- Record every third-party dependency or asset in `THIRD_PARTY_NOTICES.md` before it enters the product or repository.
+-- Do not use Creative Commons licenses for software.
+-
+-## Standing deployment authorization — 2026-09-05
+-
+-The owner explicitly authorizes deployment to `https://sedicivalvole.app/` now and in future sessions: deploy promptly within the agreed project work, without asking for another deployment confirmation. The owner accepts iterative fixes backed by Git, backups and session history. This supersedes earlier requirements to obtain fresh deployment approval for each change. Keep the existing relevant checks, traceable commits/build stamps and canonical post-deployment verification; use rollback or a focused fix when needed.
+-
+-The owner's explicit configuration exception also permits the official `scripts/deploy_drive_lab_ftp.py` script to load `.env` internally for preflight, publication and postflight. This is the sole exception to the blanket `.env` reading prohibition above: agents must not inspect, print, diff, log, copy or version secret contents or place credentials in command lines. Do not ask again for that same internal-loading permission during ordinary authorized deployment.
+-
+-## Community acknowledgements — 2026-09-05
+-
+-Maintain the README community credits and `docs/COMMUNITY-THANKS.md` when sources are added, replaced or retired. Record the real author/project, exact code or material used, public contact routes and a warm, personalized unsent release thank-you draft. Separate shipped integrations from services, development tools and studies. Never describe the current PolyForm Noncommercial project as MIT/open source, infer private contact details, or send a message without explicit sending authorization.
+-
+-### Complete README footer — owner's standing instruction, 2026-09-05
+-
+-Keep every community credit in the final README section, including minor/transitive dependencies and sources without Git repositories: named authors, original repositories, articles/demos, exact code/material/service use and shipped/development/study status. Precede each entry with a restrained relevant emoji. Insert later product updates above `COMMUNITY-CREDITS:START`, never below the credits. Update README, THIRD_PARTY_NOTICES and COMMUNITY-THANKS together whenever provenance changes. Refresh the complete npm inventory with `python3 scripts/readme_dependency_credits.py --refresh` when the lockfile changes; run `--check` before publishing. The automated check does not replace review of authorship or non-npm sources. This is a persistent owner preference, not a one-time cleanup.
+-
+-
+-## Owner acceptance and reliability direction — 2026-09-07
+-
+-Flux, Soundtrack, FX, interface and Discover are owner-accepted, subject to later
+-small refinements. Prioritize reliability fixes, then Engine, then iPhone.
+-Travel ATLAS becomes an informative map; move and expand the existing statistics
+-into a separate full-screen visual only after replacement parity is verified.
+-The owner delegates information design; exact-coordinate Discover POIs are a
+-candidate to research. Keep the three-direction visual gate before construction.
+-Transient failed loads must retry automatically with bounded backoff for several
+-minutes, online/foreground recovery, no overlapping attempts and cancellation on
+-selection change. Do not repeatedly reload hidden/offline renderers.
+-Future diagnostics have Standard and Dev levels. The owner explicitly authorizes
+-coordinate-free packets to the existing diagnostic destination every ten minutes
+-only in Dev, with automatic send default ON within Dev and a visible OFF switch.
+-This supersedes manual-only transmission for that future feature only; implement
+-matching disclosure, scheduling, server validation and tests before enabling it.
+-Do not promise background timer execution or infer default Dev mode. Record
+-minimized-browser gaps honestly. See docs/OWNER-DECISIONS-2026-09-07.md.
+-
+-## Engine source decision — 2026-09-07
+-
+-The owner explicitly directs implementation using pinned MIT
+-`markeasting/engine-audio`, including its bundled active WAVs, relying on the
+-repository's declared MIT licence. This supersedes older project/study holds and
+-additional owner-approval gates for that exact integration. Record the declared
+-licence, exact source/hash/change inventory and outstanding recording-provenance
+-follow-up truthfully; do not claim ownership independently verified or liability
+-transferred. Preserve upstream attribution and the existing deployment authority.
+-The prior sealed candidate may be inspected and adapted progressively for this
+-integration; no independent blind-review claim is made.
+-
+-
+-## Engine listening refinement — 2026-09-07
+-
+-The owner requires Engine to bypass UNDERWATER and all Flux creative effects.
+-Deceleration changes RPM without artificial gain ducking. Keep prominent left
+-and right TAMARRO controls visible at displayed zero independently of chrome
+-retraction; stale evidence disables rather than removes them. Small periodic idle
+-blips require fresh exact standstill and stop on movement, mute or lifecycle loss.
+-This is a direct refinement of the selected Telemetry direction.
+-
+-## Owner road feedback — 2026-09-07 evening
+-
+-Manual TAMARRO must work as soon as Engine audio is ready, including before the
+-first GPS fix. This supersedes the earlier fresh-standstill gate for manual revs.
+-Movement still cancels manual revs. Automatic idle gestures require an actual
+-exact-zero watch observation; a bounded 12-second stationary watch hold bridges
+-the approximately 10-second stationary cadence observed in the owner's report.
+-Hidden state, missing/invalid live speed and renewed movement cancel that hold.
+-Live watch events use the shared receiver's monotonic time; one-shot renewals
+-retain acquisition/replay checks. Do not claim the old report proves a specific
+-provider-clock defect: it did not record acquisition timestamps or Engine reasons.
+-Stats for Nerds is Visual 09 in both launch and running catalogues, separate from
+-Atlas; remove their shared Map/Stats tabs. Retain the approved remix, with outward
+-curved heading bands. Intro means the initial chooser; Splash means its loading
+-transition. Both show the existing build identity, with Intro bottom right.
+-
+-## Owner automatic diagnostics activation — 2026-09-07 evening
+-
+-The owner explicitly requests implementing and publishing automatic diagnostic
+-mail now, enabled by default because the product is in active development.
+-This supersedes the future-only hold and proposed Standard default. Use Dev and
+-AUTO ON for fresh preferences, preserving an explicit saved OFF/Standard choice.
+-The current interval is 15 minutes of observed GPS driving (superseding ten
+-minutes); stops, simulated speed and hidden/unobserved time do not count.
+-Keep visible OFF in Intro and Session report, bounded coordinate-free packets to
+-the existing destination, one in-flight send, bounded retry, server validation,
+-and at most one pending packet on online/foreground recovery. Do not send
+-synthetic QA packets to the real mailbox. Do not promise timers while minimized.
+-
+-
+-## Owner night-work direction — 2026-09-07
+-
+-The owner requests progressing all executable open work and welcomes deeper
+-Engine source/acoustic research. Current-state reconciliation distinguishes
+-shipped work, implementation, optional studies and physical acceptance gates.
+-For iPhone, the owner selects direction 1, Compact Cockpit: the existing Tesla
+-organization with thin retracting top/bottom bars, full touch targets and safe
+-areas. Named test devices are iPhone 17 Pro and iPhone 17 Pro Max; iOS versions
+-remain unspecified. Preserve audio, selection and renderer across rotation.
+-Use an accessible inert portrait notice only on phones, without treating desktop
+-portrait windows or the Tesla viewport as a phone.
+-
+-The owner also selects report direction 1, Travel Report: compact cover, journey
+-summary, graphs and a technical appendix. Precise route inclusion remains an
+-explicit export option. Preserve immutable preview/download identity and
+-chosen-recipient verification; technical diagnostics remain coordinate-free.
+-
+-## Owner altitude fallback — September 7 late evening
+-
+-The owner explicitly requests a practical map/terrain height fallback when GPS
+-does not provide altitude. Keep reported GPS altitude visible independently of
+-the strict ascent/descent accuracy filter. Prefer GPS when present; label the
+-terrain estimate separately in Stats and PDF. Reuse the existing Open-Meteo /
+-Copernicus service with rounded request cells, bounded session cache, request
+-spacing and lifecycle recovery. Do not substitute terrain for a GPS reading or
+-add height/position values to automatic technical diagnostics.
+-
+-## Owner Engine quality campaign — September 7 late evening
+-
+-After the altitude release, Engine is the owner's primary development priority:
+-maximum audible quality and versatility, new engine types, coherent automatic
+-shifting, load response, turbo/turbine sounds and event timing. Study the local
+-analysis/reference folders and the fuller simulator sources before choosing
+-reuse, procedural synthesis or refactoring. The owner authorizes substantive
+-implementation and refactoring within this scope, followed by verified deployment.
+-A fresh task at Ultra reasoning is explicitly allowed, but work must run directly
+-in this saved Dropbox project on this Mac. Close commit/documentation/push/deploy
+-for prior changes first. Preserve the current reliable GPS/lifecycle and dry-audio
+-contracts, and do not treat a historical study's blind-review or AWAITING_APPROVAL
+-workflow as the active task. Current work is an informed implementation campaign.
+-Maintain source/asset provenance, existing licensing and the selected visual; a
+-new visual design still requires its separate three-direction selection.
+-
+-## Owner road progression clarification — 2026-09-08
+-
+-Engine must be restrained at urban 20–40 km/h and already feel powerful at
+-80 km/h, then progress through 100–130. Use coherent virtual wheel/gear/final
+-drive ratios and load-sensitive automatic shifts, with a 130 km/h acoustic
+-road ceiling. This supersedes the earlier redline-derived 35/65 km/h ladder.
+-Preserve genuine acceleration character, dry output and stationary TAMARRO;
+-the ceiling limits road response, not the explicit neutral rev gesture.
+-Study Ange Yaghi's public code and licensed material, distinguishing its
+-impulse responses, authored example ratios and manual controls from engine
+-recordings or an automatic gearbox. Do not present virtual state as Tesla data.
+-
+-
+-## Owner simulator clarification — 2026-09-08
+-
+-The owner confirms Ange Yaghi's engine-sim and Real Engine Simulator
+-(https://realenginesimulator.com/) as central Engine research references. The
+-latter is the fuller simulator previously recalled. Explore its publicly
+-accessible engines, interface and explanations; no purchase or access bypass is
+-requested. Its public presets are free; Pro concerns the custom engine builder.
+-Study behavior and concepts without importing its proprietary runtime, audio,
+-parameters or presets. Continue the authorized original Engine implementation
+-inside the saved local project; preserve the selected Telemetry visual.
+-
+-## Owner Tesla refinement — September 8, 2026
+-
+-The owner physically tested build 0807: motion/progression/braking improved and
+-high-volume Mono/Rosso/Touring were good, with refinement requested. Research
+-real sports/rally gearing; favor second at 30 without restoring excessive city
+-RPM. Reduce perceived echo/phase smear and artificial Otto/Cinque/Turbine tones
+-while retaining full, deep body. Preserve dry output, GPS/lifecycle and TAMARRO.
+-A protected LAB comparison/annotation surface is proposed; present three
+-directions and retain the visual selection gate before constructing it. See
+-docs/ENGINE-LISTENING-REFINEMENT-2026-09-08.md.
+-
+-## Owner listening LAB selection — 2026-09-08
+-
+-The owner selects A/B listening: the same route, two calibrations, locally saved
+-preference and notes. Implement in the existing protected LAB, one take at a
+-time, explicit original levels, bounded local history and export. Preserve the
+-public refined default and existing dry/GPS/lifecycle contracts.
+-
+-Keep A/B calibration labels and source identifiers synchronized whenever their
+-parameters change; an earlier calibration must not silently become a new sound.
+-
+-## Active-session clock — owner correction, 2026-09-08
+-
+-This supersedes the September 7 driving-only trigger: count fifteen minutes of
+-observable active session time, including stops, absent GPS, simulated input and
+-offline operation. Keep Dev/AUTO ON defaults and saved OFF/Standard. Hidden time
+-and execution gaps over five seconds remain unobserved; reload starts a fresh
+-session clock. At most one due report waits in memory for online/foreground
+-recovery; construct a fresh bounded coordinate-free snapshot when sending.
+-There is no persistent outbox or background execution promise.
+-
+-Use `timeBasis: active-visible-session`, `intervalActiveMs`, `activeMs` and
+-`totalActiveMs` in new diagnostic delivery metadata. The server validates the new
+-clock explicitly and still accepts the older driving clock for already-open
+-clients. Preserve the fifteen-minute server floor and bounded transport retries.
+-Log `diagnostic-send.due` at the threshold, including offline state, then
+-`requested`, `accepted` or `failed` with automatic/manual attribution. Acceptance
+-means server mail-transport acceptance, not verified inbox delivery.
+-
+-## Owner weak-network music feedback — 2026-09-08
+-
+-Ship music control glyphs in the initial application payload, with visible
+-loading/retrying feedback instead of blank controls. Retain transport while
+-waiting for the catalogue. Recover artwork on network/foreground return and
+-republish native metadata. Verify native play/pause/previous/next through the
+-actual app handlers; do not equate API registration with Tesla button visibility.
+-Preserve the native invocation/outcome log and fixed recordings at 1x.
+-
+-
+-## Owner launch preparation — 2026-09-09
+-
+-Make Engine loading prominent, centered and separate from TAMARRO controls.
+-Begin silent preparation in Intro: selected Lucky visual dependencies, selected
+-Jamendo recording/cover and at least Mono (follow explicit Engine selection).
+-Do not mount hidden renderers or start audio before a gesture. Retain bounded
+-verified encoded Engine assets across mode/profile changes within the page;
+-keep transient Jamendo media policy and explain browser-cache limits honestly.
+-
+-
+-## Owner open-session cache and updates — 2026-09-09
+-
+-Retain verified static assets for at least seven days in build-specific browser
+-caches, without deleting a generation still used by an open client. Browser
+-eviction/quota/privacy restrictions remain explicit capability limits. Preserve
+-transient remote music and dynamic/private API boundaries. Check published build
+-identity every five minutes and on online/foreground return; renew a week-old
+-session only after a successful fresh check. Automatic reload requires thirty
+-observed quiet seconds in Intro, or muted audio plus fresh exact GPS standstill;
+-otherwise offer UPDATE. Interaction, movement, visibility loss and execution gaps
+-reset the quiet window. Keep saved preferences, never clear site storage globally,
+-and state that session counters restart. Never promise background execution.
+-
+-
+-## Owner road UI feedback — 2026-09-09 evening
+-
+-Fix landscape iPhone palette taps and extend the installed webapp footer to the
+-bottom edge with safe-area-aware contents. Compact Discover names/row padding
+-and label actual providers. Reduce Atlas numbered discs while retaining touch
+-areas; prioritize smooth travel/rotation, north lock and zoom/reset controls.
+-Prepare Meguru radar integration; its new visual still requires A/B/C selection.
+-Do not claim desktop frame timing proves sustained Tesla 60 FPS.
+-
+-## Owner Air Atlas refinement — 2026-09-10
+-
+-Only selected aircraft have one contrasting ring, with ground distance below it. Shape availability must not depend on ground track. Retain exact model artwork where available and use clearly identified category silhouettes otherwise, with no neutral dots for known rotorcraft or civil aircraft. Buffer measured positions by five seconds for continuous interpolation; never claim an unobserved path or move stale targets indefinitely. Filter map transport to major roads; preserve lakes and airport/runway context while reducing minor water detail. True airways need a verified aeronautical source, not guessed routes. A separate nose-mounted oblique terrain view with elevation exaggeration 1.25 is requested; A Nose Camera / B Flight Instruments / C Dual View were presented and selection remains pending.
+-
+-## Owner Air Atlas nose-camera selection — 2026-09-10
+-
+-The owner selects A+C: an oblique nose-mounted view over real 3D terrain, exaggeration 1.25, with one corner card combining a minimap and compact telemetry. This resolves the earlier A/B/C gate. Keep direct return to the radar, shared five-second measured playback, honest stale/missing-data states and explicit approximate altitude reference. Do not imply onboard video or exact terrain clearance.
+-
+-## Owner compact Intro refinement — 2026-09-10
+-
+-The owner selects direction A only as a small refinement of the current Intro and rejects the oversized generated cover concepts. Preserve current semantic UI colors, centered intrinsic sheet and existing START hierarchy. Use 80 px square covers with 6 px corners (previously 64 px circles), not the large concept images. Keep metadata and compact outline-icon Choose/Random controls to their right, without increasing the selection-row footprint. Soundtrack becomes the fresh/reset default while explicit stored sources remain respected; Visuals only is renamed Mute. Show actual prepared track title/artist beside its matching artwork. Two stable, randomly selected genre-labelled preset recommendations and a direct palette-cycle control share one row; broaden the underlying preset catalogue without adding visual clutter. This supersedes earlier circular-thumbnail rules for this surface. No generated concept artwork enters the product.
+-
+-## Owner Intro compression and default correction — 2026-09-10
+-
+-Start every new Intro with Soundtrack, including when the saved source is Play the Road. This supersedes the immediately preceding saved-source exception; keep saved mute and explicit choices within the current Intro. Put Random inside an outlined button like Choose, reduce their visible vertical padding, and retain 48 px touch regions around the compact 32 px outlines. Align the track artist right on the genre/metadata row. Keep media boxes at the 80 px artwork height with no vertical image padding. Restore circular preset previews and use aligned labelled preset/palette groups separated by a vertical rule. The palette remains a direct cycle. No further visual direction selection is pending.
+-
+-## Owner Intro breathing room — 2026-09-10
+-
+-Keep 80 px covers and add 8 px top/bottom padding; remove the media group's outer border and internal divider. Explicitly label the music panel SOUNDTRACK, retaining genre alongside it without repeating an identical Soundtrack genre label. Remove the artist from Intro only; running credits/miniplayer remain unchanged. The owner clarified that the requested left-hand text is PRESETS, not a RESET command. Keep that label visible at all widths; on very narrow layouts the preset and palette groups stack to retain legibility.
+-
+-## Owner Air Atlas location and lens refinement — 2026-09-10
+-
+-Use the first valid geographic fix for Air Atlas even when stationary or coarser than 250 m; label approximate accuracy and refine as trusted fixes arrive. Keep the existing trusted motion, terrain and journey gates unchanged. Distinguish granted location awaiting a fix, denied permission, unavailable API and last known position. Permissions API absence must not prevent actual geolocation callbacks from working. Do not equate permission with confirmed satellite reception or require movement for an initial position.
+-
+-Show understated dashed received-flight trails, bounded to 5 km / five minutes / 256 samples per aircraft; stop at the delayed display sample and break on missing or implausible observations. The owner selected A, a subtle spherical display lens, over a real globe or inclined terrain. Keep geographic coordinates unchanged, align aircraft/home hit regions with the warped map and trails, retain flat controls, and fall back to the ordinary map if the lens GPU context is unavailable. Physical Tesla acceptance remains separate from browser simulation.
+-
+-## Owner Fly With continuity and controls — 2026-09-10
+-
+-Fly With updates the camera every animation frame from the measured five-second delayed track, without waiting for every new map tile. Preserve the last terrain height during missing DEM samples instead of dropping to zero. Do not invent motion after signal loss. Keep optical zoom in/out/reset reachable in the flight view, preserving the aircraft camera position; a held pose can still be zoomed. Give Fly With a prominent palette-colored action and original outline view/flight icon. The selected aircraft has one 54 px ring around its 42 px silhouette, with approximately 4 px inner clearance and the distance below it.
+-
+-
+-## Owner radar coverage refinement — 2026-09-10
+-
+-Air Atlas traffic must follow the visible radar area on zoom and pan. Preserve bounded provider coverage, remove the nearest-32 display cutoff, and distinguish actual position age from message age. Manual and selected-aircraft refresh must respect backoff and never make old observations appear fresh.
++Skills and plugins follow their actual task triggers and installed availability. Repository references do not activate API features or change model/tool configuration. If a skill causes a concrete stop or diversion, identify and link its exact instruction and explain the effect; do not modify or bypass global skills to resolve it. User instructions take precedence over skill guidelines within the applicable instruction hierarchy.
+--- initial-working-tree/prototype/drive-lab/AGENTS.md
++++ final-working-tree/prototype/drive-lab/AGENTS.md
+@@ -1,426 +1,17 @@
+-# Prototype Instructions
++# Drive Lab instructions
+ 
+-Run the local server yourself and open the preview in the browser available to this environment. Do not give the user server-start instructions when you can run it.
++Applies to `prototype/drive-lab/`. Read the [root working agreement](../../AGENTS.md) if the host did not load it. The root's task table routes cross-directory product contracts; read only affected sections. This file adds subtree ownership, not a second set of product decisions.
+ 
+-Before making substantial visual changes, use the Product Design plugin's `get-context` skill when the visual source is unclear or no longer matches the current goal. When the user gives durable prototype-specific design feedback, preferences, or decisions, record them in `AGENTS.md`.
++## Local work
+ 
+-When implementing from a selected generated mock, treat that image as the source of truth for layout, component anatomy, density, spacing, color, typography, visible content, and hierarchy.
++- Build app UI in `src/`. `App.jsx` owns shared session/audio/selection orchestration; use the existing focused model/renderer/service boundaries rather than inventing another lifecycle owner. `src/engine/`, `src/soundtrack/`, `src/score/`, `src/environments/`, `src/session/` and `src/reports/` identify affected owners, not mandatory reading lists.
++- For a requested runnable preview, run the local server and open the browser available in this environment yourself. A documentation or read-only task does not require a server.
++- Run package commands from this directory. `package.json` lists focused scripts; use behavior-relevant tests during implementation and the [delivery gates](../../docs/agent-guide/delivery.md#verification-proportional-to-the-change) for publication. Do not repeat passing suites without a new reason.
++- Native packages copied through Dropbox can mismatch the host. Use `npm run native:check` when diagnosing that issue, and the existing `npm run test:native` / `npm run build:native` wrappers for native execution as needed. Establish the lockfile/host before preparing packages; [environment portability](../../docs/agent-guide/motion-runtime.md#environment-portability) preserves the cross-machine caution.
++- Preserve `.openai/hosting.json`, `worker/index.js`, `scripts/prepare-sites-build.mjs` and `tests/sites-worker.test.mjs`. A requested Sites handoff follows [Sites package](../../docs/agent-guide/delivery.md#sites-package), including its build/test outputs; canonical deployment has a separate official gate.
+ 
+-## Durable product direction
++## Read across boundaries
+ 
+-- The approved Flux direction is **Modular Aperture**: a sparse rectangular field that is flat and calm at rest, forms a centered tunnel with normalized energy, and releases coherently during deceleration.
+-- The tunnel terminus is a dark void, never a bright portal. At rest, header and footer must retreat completely off-canvas, secondary readouts disappear, and only speed plus its unit remain visible; the first deliberate pointer press/touch wakes chrome without changing a value. GPS updates, demo acceleration/braking, regeneration and passive pointer movement must never wake it; keyboard focus may keep an intentionally focused control accessible.
+-- The Flux interface is Braun-influenced, Swiss, minimal, and slightly brutalist: flat black/off-white surfaces, a strict typographic grid with tabular numerals, square buttons, and sliders inside restrained rounded housings. Do not add circular buttons, knob controls, glassmorphism, or decorative chrome.
+-- `PALETTE` is the purposeful colour control for the complete Flux surface. Its curated themes change both the generative field and the interface accent without exposing low-level shader parameters; do not return to the vehicle-paint metaphor.
+-- Every DRIVEY theme renders its native `accent` and `secondary` colours as two simultaneous material channels in both Normal and Wire modes; never collapse the pair into one interpolated tint.
+-- DRIVEY defaults to the original automatic road follower. Preserve its upstream `Input` class and road/curve steering, suppress manual steering in the product surface, and remove only the player car's random lane weaving.
+-- WAKE is rejected with no salvage path. Its ribbons, renderer, fallback, tests, QA captures, and active documentation stay outside the product until a new direction is explicitly selected through a future three-direction gate.
+-- Preserve the approved Modular Aperture and Laminar Product Design images only in the ignored local reference library. Laminar is visibly close to the Infinite Lights mechanics study and must be independently reinterpreted before any implementation.
+-- `VERTIGO 02` is the selected second Flux environment and uses the byte-identical upstream Interstate 7 runtime from commit `e58d58520bc0dfde21f9e14e6a1b8c7f0a2a2a9e`. Preserve the complete third-party scene and files unchanged, including the road, repeated side light sticks, car trails, bloom, camera, distortion, and bundled dependencies. Keep its iframe black until the external bridge hides the upstream editorial shell. The bridge maps sedicivalvole speed to the original time/FOV controls and may update existing runtime colour buffers/uniforms from the selected theme without editing vendor files.
+-- The user-adjustable full-energy threshold is retired. Use `130 km/h` as the fixed legal-road visual/score ceiling, make the Aperture tunnel clearly visible by approximately `40 km/h`, and reserve the former threshold slot for truthful visual/score selection. Do not label an unimplemented musical genre as active.
+-- Keep the unselected Laminar Switchback and Rolling Register directions in the ignored local visual backlog; do not discard or present them as implemented environments.
+-- The product has two equal, always-selectable primary modes: `Engine` and `Flux`.
+-- The current Drive Lab implementation is the `Flux` mode: an authored adaptive arrangement with the procedural Modular Aperture WebGL field.
+-- `Engine` is a separate engine-emulation mode with selectable engine sound models and an instrument-inspired generative visual system. Do not implement its final visual direction before presenting exactly three Engine-specific directions.
+-- Mode switching shares the normalized speed source, diagnostics, audio-unlock lifecycle, master Stop/Mute, safety limits, and accessibility behavior. Never imply access to real RPM, throttle, gear, or CAN data without evidence.
+-- Keep the scene abstract, minimal and atmospheric; no scenery, characters or illustrative decoration.
+-- The retired project-owned `GRADIENT 08` renderer must not return. Its saved
+-  preference migrates to the **Japanese Mist** variant of the new family.
+-- The exact MIT ShaderGradient / Three / R3F stack powers one owner-selected
+-  public **GRADIENT 08** family with three internal variants: **Japanese Mist**,
+-  **Acid Orchard**, and **Chromatic Silk**. The launch and running catalogues
+-  expose one family entry; a persistent in-visual `VARIANT` control cycles the
+-  three variants without reopening a catalogue. They retain the exact
+-  registered LAB geometry and motion settings while the selected product
+-  palette supplies both primary colours plus one light-tinted derivative.
+-  Project-owned road/audio response must make braking visibly fold and densify
+-  the field, then restore the exact road state. Keep Soundtrack speed-only;
+-  Play the Road may add bounded audio
+-  response. Load the upstream stack only when one of these variants is selected,
+-  keep it in a separate product chunk, retain the MIT
+-  notice, preserve the Canvas2D fallback and reduced-motion path, and hold all
+-  response at the `130 km/h` ceiling. Target-Tesla GPU acceptance remains a gate.
+-  FeralUI and ColorFlow remain mechanics references only.
+-- PRTCL exposes Fractal and Axiom; Murmuration is parked outside the active
+-  product until a new owner decision. UNDERWATER must collapse both complete
+-  forms dramatically, with Fractal holding at `22.5%` of its natural form scale
+-  and `27.5%` of its natural point scale, then surface quickly back to the exact
+-  speed-owned scale as braking releases. Do not reduce this to a subtle glow or
+-  point-size-only treatment.
+-- Every shared drawer closes through CLOSE, Escape, a tap on the exposed
+-  backdrop, or one dominant directional swipe matching its exit. Capture the
+-  pointer after a non-control drag begins, suppress browser overscroll within
+-  the app, and reserve the first `28 px` of the left edge for Chromium's native
+-  history gesture so one physical swipe cannot commit both actions. Never claim
+-  the embedded Tesla Chromium gesture can be disabled; the app owns interior
+-  swipes and deliberately yields the native edge.
+-- The initial flow is one deliberate `PLAY THE ROAD` gesture, then a continuous fade into Drive Lab.
+-- The approved splash is the **Signal Gate** direction: paired vermilion and ice-blue light lanes bend from the lower edges into a narrow central vertical gate on black. Implement it as a restrained generative WebGL2 field with a Canvas2D fallback, not a static raster. The single large CTA reads `PLAY THE ROAD`; the `A project by enuzzo` / Illobo credit, public source and local-capability note sit below it at a clearly readable scale, never ultra-small. The restrained top-left Buy Me a Coffee control uses the verified `buymeacoffee.com/enuzzo` destination, the supplied QR and a payment-independent suggestion invitation. A playful project-energy signal may grow slowly from 15 only when it is explicitly labelled as not representing purchases; never fabricate a donation or customer total.
+-- The approved Signal Gate CTA is one flat, non-skeuomorphic `360 × 160 px` launch surface at the Tesla split viewport: warm ivory frame, the selected `42 px` 16 Road mark beside a lowercase Orbitron `750` `sedicivalvole` wordmark with restrained `-0.02em` tracking, and a full-width black Space Grotesk activation field containing only `PLAY THE ROAD`. Exact textual `sedicivalvole` project wordmarks in the Signal Gate, Instrument Deck and owner LAB use the same isolated Orbitron treatment; the running top bar uses only the 16 Road mark when space permits, and all other interface/report typography remains Space Grotesk. Keep the welcome as one semantic launch button; do not add simulated buttons, knobs, vents, latches, safety inserts or other nonfunctional appliance controls.
+-- The selected Instrument Deck restyle is **Road Sheet**: one warm-light open sheet over the Signal Gate, a large light 16 Road mark and Orbitron wordmark, black/ink typography, light-grey direct-choice controls, restrained vermilion selection rails, and one black `START` field. At `773 × 601`, the MUSIC button stack and VISUAL button grid must align to exactly the same top and bottom edges. Keep the visual grid's overall height fixed and derive its row count from the registry so a third row compacts inside the existing block rather than enlarging the deck or moving `START`.
+-- Controls are touch-first, flat, and fully legible; the GL field provides the visual contrast. The owner-selected **Tesla Compact** refinement replaces the retired blanket Automotive Glance floor with semantic roles shared by the public product, owner LAB, ShaderGradient workbench, diagnostics, attribution, and responsive states: `13 px` metadata, `14 px` labels, `15 px` body/action copy, `17 px` active names, `22 px` titles, and `32 px` primary values. Keep metadata high contrast, use tabular numerals for changing data, keep important action targets at least `48 px` and primary actions `56 px`, and preserve the full ladder rather than collapsing every role to one size. At the verified `773 x 601` viewport, the retracting top bar, lower Now Playing band and footer are each `64 px`; modal passenger surfaces suppress all global chrome and Now Playing, while ATLAS suppresses Now Playing and expands its panel to full height when chrome rests. Contextual visual-cycle controls retract with chrome and use the shared `6 px` radius. Visual/Music open explicit caret-marked libraries rather than cycling blindly.
+-- The running Music drawer has one persistent `Play the Road` / `Soundtrack` switch. Soundtrack gives compact equal hierarchy to `Illobo Featured` and `Jamendo Library`, rotates its displayed playlist and cover preview on a stable 30-minute window, and states that cadence. Jamendo pace, genre, and exact-track controls start playback immediately; pace is catalogue discovery only and never road-speed automation or playback-rate control. All fixed recordings stay at authored `1×`. Footer MUTE and FX are universal across both music sources; FX off silences OPEN/UNDERWATER/BLOOM audio processing without suppressing the same macros in visuals.
+-- Soundtrack selection must never block `START`. Enter the visual immediately,
+-  state truthfully when remote music data is pending or the browser reports a
+-  constrained connection, and start prepared audio automatically when it
+-  arrives. Mute follows the same launch path; it is not a hidden bypass.
+-- Keep exactly three transient Soundtrack media roles. The current role owns `preload=auto`; adjacent roles begin at metadata-only and may promote to audio only after the current recording has `6 s` of forward buffer or reports enough data. PREVIOUS must rewind and reuse a healthy retained media element instead of destroying its browser buffer. Every initial, manual, or automatic change starts the target silently, waits for the same buffer floor inside the bounded transport deadline, rewinds it, and only then makes it audible; the committed outgoing track and metadata remain intact during that wait. Browser Media Session owns stable session-lifetime play, pause, previous, and next handlers, and rapid transport commands execute in exact order. In Soundtrack, the black source module shows speed only—no `FLUX`, BPM or energy.
+-- Whenever the driving chrome is awake, one persistent lower Now Playing overlay sits immediately above the footer and contains artwork, title, artist/source, and previous/play-pause/next. It follows every committed Illobo or Jamendo identity, including natural automatic changes and changes initiated inside a drawer; it retracts with the chrome but must not become a transient toast.
+-- At the `773 × 601` Tesla viewport, Music preserves the Swiss Compact role hierarchy and uses deliberate vertical scrolling whenever the available content no longer fits: Pace and Genre are whole-surface one-tap chips with standard media icons, and track rows are whole-surface controls. Never recover a no-scroll composition by taking typography below its semantic role or primary controls below their touch geometry. Play the Road lists only the three scores that can actually play, each with concise listener-facing copy and its own coherent cover; roadmap-only scores stay out of the running drawer. Illobo tracks use a coherent title-specific cover collection while the two supplied Illobo marks remain the playlist identity.
+-- In the current dark Music drawer, the Now Playing chart icon must be visibly white and `NOW PLAYING` must remain on one line. Preserve the pinned black `chart-bar.svg` source unchanged: DARK applies its white presentation non-destructively, and future `LIGHT / DARK / AUTO` tokens must select the appropriate contrast without duplicating or recolouring the vendor asset.
+-- DRIVEY road travel must remain calibrated to the smoothed GPS speed. Reuse VERTIGO's quadratic low-speed response to compensate the original Drivey car model's square-root cruise physics, synchronize the player and opposing traffic before revealing the iframe, and retain exact `5 / 40 / 90 / 130 km/h` equilibrium tests. Never alter the pinned upstream runtime to achieve this.
+-- Treat the vehicle-macro snapshot as a typed boundary: audible consumers read `snapshot.values`, never undeclared top-level aliases. Soundtrack and NIGHTSHIFT share the two-stage perceptual UNDERWATER model. The current four-effect graph is only a published baseline: the mandatory revision has exactly eight manual effects, retains Flanger/Reverb/Echo, removes Chorus, and adds five differentiated processors including progressive manual Underwater plus deliberate low/high-frequency transformations. All eight share one level-bounded post-source graph across Play the Road and Soundtrack; do not restore the retired Beat Repeat worklet.
+-- The selected manual-effects surface is **FX Deck**: a persistent footer `MIX` control opens a compact non-modal overlay above the footer while the visual keeps running. Expand it to a readable `2 × 4` touch layout; make every `100%` state highly distorted and unmistakable without click, silence, clipping, runaway feedback, or destructive level jumps. Retain independent depth sliders and one reset, persist values when switching between Play the Road and Soundtrack, and never return these controls to the bottom of the Music drawer. The deck may pin the controls open but must never enter the application's inert modal boundary.
+-- ATLAS keeps its mandatory attribution low, translucent, and visually subordinate immediately above the footer, never as a large white pill. It uses the `14 px` metadata role at strong enough contrast to remain readable. The passenger-location sidebar collapses behind a persistent midpoint handle on the right edge; the collapsed state gives the full field back to the map and the same handle reopens it.
+-- The owner-selected ATLAS direction is the composite **Drive Lab**: its Swiss Compact panel is `320 px` wide with a `340 px` Canvas2D instrument; the first line is Speed, Distance, Moving time, and Average speed; the two-by-two chart field is Accel/Braking balance, Speed-band distribution, Heading history, and Moving/Stopped; Elevation spans the complete bottom width. All charts follow the shared `15 MIN / 1 H / SESSION` range. ATLAS is not a place index: never add a DISCOVER action, Wikipedia reading, QR, or duplicated place cards. The persistent midpoint handle presents an icon-only `36 × 30 px` rectangular tab inside a `48 × 48 px` interactive target with an accessible action name and no visible text; never make it a full-height rail.
+-- DISCOVER is a separate passenger index and complete localized Wikipedia
+-  reader. At `773 × 601`, keep its compact `52 px` heading band with a `24 px`
+-  title, `48 px` tools, `64 px` result rhythm, and `246 px` searchable
+-  language-aware rail readable at a glance; fill the available
+-  height before inserting an exact `+N MORE` marker, retain every loaded result
+-  in the same scroll, and render the complete selected article in a sandbox
+-  with readable chapters, images and infoboxes. Its QR opens the selected place
+-  in exploratory Google Maps search without starting navigation; the passenger
+-  may refine, explore, share, or explicitly request Directions. It must not
+-  open, switch to, or link back to ATLAS.
+-- DISCOVER free-text search is global across the selected Wikipedia language,
+-  independent of the current position and available without GPS. Preserve
+-  Wikipedia relevance order for global results; use location and heading only
+-  for the empty-search `NEARBY / AHEAD / REGION` scopes.
+-- APERTURE uses one exact longitudinal grid origin across ceiling, floor and
+-  side walls so perspective cuts meet cleanly at every corner. Splash and
+-  running Visual catalogue cards never advertise internal view, render, type,
+-  or variant counts. Keep the stable `01–08` catalogue numbering in the running
+-  drawer and let each visual reveal its own persistent internal controls.
+-- The navbar network state is an honest browser connection estimate, never a
+-  claimed cellular signal meter or an active ping service. A healthy state is
+-  a readable outlined dot with an accessible name and no meaningless `NET
+-  ONLINE` copy. Constrained and offline states show actionable `16 px` text,
+-  including the browser-estimated downlink when available.
+-- In the DISCOVER reader, a Wikipedia infobox or lead image must never compress the article lead into a word-column at the Tesla viewport. Keep the desktop two-column reading relationship, but cap floated infoboxes responsively, bound lead-image height without cropping, and stack them only when the reader itself becomes narrow.
+-- Keep DISCOVER's language selector self-explanatory without a visible `LANGUAGE` label, keep the `NEARBY / AHEAD / REGION` scope row vertically compact, and render each result's distance/ETA metadata large enough for a passenger to read at a glance.
+-- GPS and demo feed the same normalized speed signal; never display, persist or transmit coordinates.
+-- In the desktop simulator, holding `Space` continuously brakes from the exact displayed speed and releasing it resumes the Demo after a short settle. Use the documented time-based Model 3 AWD reference curve for Demo acceleration/braking and only as a soft plausibility envelope for real GPS; never synthesize GPS motion.
+-- Treat `ArrowUp` as a held accelerator. Its release and `ArrowDown` enter the documented nominal regenerative lift-off curve from the exact current speed; never return to GPS on an arbitrary timer or introduce a speed discontinuity. Automatic Demo deceleration uses the same lift-off model, while `Space` remains the stronger service-brake input.
+-- Extended diagnostics may aggregate frame pacing, connection changes, GPS accuracy/cadence, audio/runtime state, memory, storage, navigation/resource timing, and bounded events. Keep the fixed recipient in ignored local configuration, transmit only after the explicit SEND DIAGNOSTIC gesture, and never collect coordinates or enable automatic remote telemetry.
+-- The product-facing diagnostic entry point is `REPORT`: keep the pinned Tabler report-analytics outline icon above an explicit visible label in the compact top-bar cell. Do not replace it with a gear, an icon-only affordance, or a hover-dependent tooltip; internal diagnostic identifiers may remain technical.
+-- Performance diagnostics must retain bounded phase-specific summaries for splash, active Visual/Music combinations and the session-report-open state. Record FPS/frame-time distributions, browser-exposed JavaScript heap, decoded PCM and bank sizes without per-frame React state; report unsupported memory APIs truthfully as unavailable.
+-- Keep the driving flight recorder coordinate-free, bounded, and in session memory: sample speed/GPS age and accuracy, input state, score state, frame pacing, network state, and visibility outside React state; retain full-session aggregates when old trace samples rotate; send the trace only through the explicit diagnostic gesture.
+-- In debug builds, retain a dedicated long-lived interaction ledger for every semantic control activation and media command. Record exact sequence, timestamp, activation source, safe control identity, before/after transport snapshots, latency, browser media lifecycle, Media Session registration/invocation, playback confirmation, and bounded failure detail. Never record pointer coordinates, typed search text, GPS coordinates, media URLs, or automatic remote telemetry; SEND DIAGNOSTIC remains the only transmission gesture.
+-- Diagnostic email keeps only a concise human-readable summary in its body and attaches the complete accepted report as gzip-compressed JSON. Name the attachment with its build and accepted timestamp, publish uncompressed and compressed SHA-256 evidence in the summary, and keep a deterministic round-trip test that decompresses the attachment and compares the complete report.
+-- Speed raises energy through a smoothed saturating curve. Past the tempo knee, deepen arrangement instead of creating a frantic march.
+-- The visual must move as a rich field with WebGL2, plus reduced-motion and lightweight fallbacks.
+-- All interface copy, source code, comments, documentation, and logs must be in English. Italian is used only in direct conversation with the user.
+-- During this experimental development phase, verified builds are deployed to the canonical root at `https://sedicivalvole.app/` after user approval; diagnostics remain part of the main experience.
+-- Keep continuous speed/energy parameters separate from bar-quantized structural events. Use smoothing, hysteresis, dwell, crossfades, a tempo knee, and musically controlled deceleration.
+-- JUNCTION live pairs must share an identical authored rhythmic spine and complete the current eight-bar phrase before the next pair starts. Render every selectable clip with reset DSP/voice state and short click-safe edges; prefer unexposed families and takes from a bounded recent-history window, and keep the six-decoded-clip memory ceiling.
+-- Make frequent verified commits and push when a repository remote exists. Never leave the real Dropbox project directory for implementation work.
+-- Keep `CHANGELOG.md` strictly progressive and append-only: never rewrite, alter, or remove past entries under any circumstances. Every changelog entry must state the date, local time (`YYYY-MM-DD HH:MM`), commit hash (`[commit]`), and build stamp when deploying (`build YYYYMMDD-HHMM`).
++Use [Interface](../../docs/agent-guide/interface.md) for affected launch/chrome/media/phone geometry; [Music](../../docs/agent-guide/music.md) or [Engine](../../docs/agent-guide/engine.md) for the corresponding audio owner; [Motion/runtime](../../docs/agent-guide/motion-runtime.md) when changing shared speed, freshness, buffering, lifecycle or caches. That shared document owns the fixed visual/music energy ceiling; never create an independent music threshold.
+ 
+-Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts/prepare-sites-build.mjs`, and `tests/sites-worker.test.mjs` intact so the same local prototype can be handed to Sites. Before a Sites handoff, run `npm run build` and `npm run test:sites`; the build must leave `dist/client/index.html`, `dist/server/index.js`, and `dist/.openai/hosting.json`.
+-
+-## Owner update — 2026-09-04 refined Balanced Rail
+-
+-These newer owner decisions supersede the earlier presentation and focus-retention
+-rules above where they differ:
+-
+-- Use the refined Balanced Rail direction. Keep 16 first while stationary; speed
+-  alone has exceptional numerical hierarchy. Four right-side icons share optical
+-  frames, stroke and central alignment within equal finger-sized cells.
+-- Now Playing belongs to the footer's single animated/inert container. Suppress it
+-  in ATLAS and while any real menu, popup or passenger panel is open. Never leave
+-  an independent miniplayer overlay over a visual or Discover.
+-- Completed unpinned actions and closed drawers retract chrome immediately. The
+-  inactivity deadline is six seconds. Stale keyboard focus must never extend it,
+-  but an actually open surface must retain its controls and focus. At movement of
+-  at least 0.8 km/h, unpinned chrome stays closed even after ambient taps; only the
+-  speed/effect module remains. Motion itself never wakes controls.
+-- Preserve 48/56 px action targets and the semantic type ladder. Treat footer
+-  cells, baselines, state styling, spacing and icons with the same rules as navbar.
+-- Resolve every palette's critical LIGHT/DARK UI roles centrally. Preserve passing
+-  colours; adjust lightness/chroma minimally at fixed hue when necessary. Record
+-  original/resolved values and measured ratios, and test both the palette matrix
+-  and actual rendered backgrounds. Renderer artwork remains palette-owned.
+-- ATLAS uses readable case and deliberate vertical spacing. DISCOVER real names
+-  get at least two lines; remove decorative result numbers. Native article and
+-  third-party renderer boundaries remain unchanged.
+-- UNDERWATER extends the complete speed badge footprint, descends/returns from
+-  that badge, uses a contrast-safe palette-derived background and respects reduced
+-  motion. It must not read as an alarm-red warning.
+-- Keep the splash preparation request reusable across launch choices and Music
+-  selection, including React Strict Mode's development lifecycle.
+-- Use Product Design audit and real-render frontend testing, not the frontend
+-  application builder. The owner authorized Playwright/Chrome for this work.
+-- Keep one writer in the saved Dropbox checkout; no new task/worktree/checkout.
+-  Verified Git checkpoints may be pushed. Canonical deployment still requires an
+-  explicit owner request and the applicable gates; browser proof is not Tesla
+-  cabin, native-media, network or sustained-GPU acceptance.
+-
+-
+-## Owner correction — 2026-09-05 moving controls must remain reachable
+-
+-Supersedes the earlier instruction to ignore ambient taps while moving. A deliberate
+-pointer/touch or keyboard wake must reveal usable navbar/footer at any speed.
+-Departure may retract once; subsequent speed samples must not cancel that wake.
+-Keep the six-second inactivity deadline, immediate completed-action/close retraction,
+-open-surface pinning and speed-only resting state. Never make motion a control lock.
+-
+-
+-## Owner refinement — 2026-09-05 Palette disclosure and Music density
+-
+-Use a recognizable palette-library icon with the visible label `Palette` in the
+-footer. Keep the colour swatches inside its popup, without repeating the full
+-collection in the footer. Palette names use Title Case and high-contrast 13 px
+-metadata. Preserve 48/56 px targets as Music headings and supporting copy become
+-more compact. Align Now Playing artwork, track copy and transport on a common
+-centre; size credit role columns from their content so labels never overlap titles.
+-
+-## Owner delegation — 2026-09-05 curated surprise
+-
+-The owner explicitly delegated selection, creative direction and implementation
+-of the first curated experience, superseding the three-direction approval gate
+-for this work. Night Glass pairs the unchanged Vertigo integration, Graphite,
+-DARK and the existing Jamendo Ambient selection. Keep one shared registry/card
+-in launch and Visual. Preparation is silent; START or an explicit running Play
+-owns playback. Individual controls, diagnostics, motion wake and automatic chrome
+-retraction remain available. Recognize an experience from actual settings, never
+-from a stale saved label, and never claim a failed music request is playing.
+-
+-## Owner copy decision — 2026-09-05
+-
+-The splash safety aside contains only `DRIVE RESPONSIBLY`. Do not restore the subordinate driving instructions or the speed-ceiling explanatory text there. This copy simplification does not change the fixed energy ceiling or control behavior.
+-
+-## Owner refinement — 2026-09-05 contextual visual controls
+-
+-Align both the functional label and current value to the same left edge in the shared Prtcl, Drivey and Gradient cycle buttons. Keep their existing dimensions, touch targets, colour roles and chrome-owned visibility; do not mix a left label with a centered value.
+-
+-
+-## Owner acceptance and reliability direction — 2026-09-07
+-
+-Flux, Soundtrack, FX, interface and Discover are owner-accepted, subject to later
+-small refinements. Prioritize reliability fixes, then Engine, then iPhone.
+-Travel ATLAS becomes an informative map; move and expand the existing statistics
+-into a separate full-screen visual only after replacement parity is verified.
+-The owner delegates information design; exact-coordinate Discover POIs are a
+-candidate to research. Keep the three-direction visual gate before construction.
+-Transient failed loads must retry automatically with bounded backoff for several
+-minutes, online/foreground recovery, no overlapping attempts and cancellation on
+-selection change. Do not repeatedly reload hidden/offline renderers.
+-Future diagnostics have Standard and Dev levels. The owner explicitly authorizes
+-coordinate-free packets to the existing diagnostic destination every ten minutes
+-only in Dev, with automatic send default ON within Dev and a visible OFF switch.
+-This supersedes manual-only transmission for that future feature only; implement
+-matching disclosure, scheduling, server validation and tests before enabling it.
+-Do not promise background timer execution or infer default Dev mode. Record
+-minimized-browser gaps honestly. See ../../docs/OWNER-DECISIONS-2026-09-07.md.
+-
+-## Engine source decision — 2026-09-07
+-
+-The owner explicitly directs implementation using pinned MIT
+-`markeasting/engine-audio`, including its bundled active WAVs, relying on the
+-repository's declared MIT licence. This supersedes older project/study holds and
+-additional owner-approval gates for that exact integration. Record the declared
+-licence, exact source/hash/change inventory and outstanding recording-provenance
+-follow-up truthfully; do not claim ownership independently verified or liability
+-transferred. Preserve upstream attribution and the existing deployment authority.
+-The prior sealed candidate may be inspected and adapted progressively for this
+-integration; no independent blind-review claim is made.
+-
+-
+-## Engine listening refinement — 2026-09-07
+-
+-The owner requires Engine to bypass UNDERWATER and all Flux creative effects.
+-Deceleration changes RPM without artificial gain ducking. Keep prominent left
+-and right TAMARRO controls visible at displayed zero independently of chrome
+-retraction; stale evidence disables rather than removes them. Small periodic idle
+-blips require fresh exact standstill and stop on movement, mute or lifecycle loss.
+-This is a direct refinement of the selected Telemetry direction.
+-
+-
+-## Owner delegation — 2026-09-07 Launch Cockpit
+-
+-The owner requested immediate Engine/Music selection and delegated the splash
+-redesign decision and frontend design/debug work. Three directions were presented;
+-Cockpit was selected under that delegation, superseding the selection gate for
+-this specific change. Use Music publicly and retain flux internally. Keep one
+-START, precise genre/pace/Lobo choices, non-repeating lucky genre selection and
+-existing curated presets. No sound before START; no old queue while a newly chosen
+-catalogue is loading. Preserve mute, keyboard dialogs and Tesla 48/56 px targets.
+-This supersedes the older brand-first splash and frontend-builder prohibition for
+-this owner-requested redesign. See ../../docs/LAUNCH-COCKPIT-2026-09-07.md.
+-
+-
+-## Owner clarification — 2026-09-07 TAMARRO / Show-off
+-
+-TAMARRO means varied powerful neutral throttle blips at a stop: up, release, up,
+-brief limiter flutter and down. It is not a maximum-throttle hold. Keep TAMARRO
+-with the English SHOW-OFF subtitle. One tap plays a bounded phrase; another stops.
+-Keep the unchanged dry audio/gain path, trusted standstill and lifecycle gates.
+-
+-
+-## Owner tuning — 2026-09-07 everyday-road gears
+-
+-Engine serves entertainment: second should enter around 30–40 km/h and third by
+-70. Host acoustic ratios target nominal 35/65 km/h upshifts, with separated lower
+-boundaries and dwell preventing gear hunting. Preserve upstream files and the dry
+-audio path. A static browser with missing GPS speed does not prove standstill;
+-explain idle-blip eligibility in the RPM label rather than bypassing evidence.
+-
+-
+-## Owner selection — 2026-09-07 compact Round Instruments
+-
+-The owner selected the second splash study with circular thumbnails at half their
+-original diameter: 64 px. Keep two equal music/visual columns at Tesla size, the
+-existing light/dark shell, small amber Music and accent Engine icons, and all
+-48/56 px targets. Each visit starts with a fresh soundtrack genre and visual
+-effect; Feeling lucky and Change reroll without immediate repeats. Choose keeps
+-precise genre/pace/Lobo/score and all visual choices reachable. Atlas and Discover
+-remain deliberate passenger choices. Gradient has one equal roulette weight.
+-
+-## Owner correction — 2026-09-07 intrinsic launch height
+-
+-Launch rows and sheet height must follow content, never expand to consume a tall
+-Mac window. Keep compact selection groups, 64 px circles, 36 px preset artwork,
+-48/56 px actions and a footer directly after the sheet. Short windows scroll the
+-complete launch flow. Verify tall desktop geometry as well as Tesla and phone.
+-
+-## Owner positioning correction — 2026-09-07
+-
+-Keep the compact launch sheet centered on the viewport on both axes. Credits
+-remain at the viewport's bottom left, Support bottom right and safety copy bottom
+-center, independently of the sheet. In short windows, scroll inside the centered
+-sheet and reserve space for the fixed footer instead of clipping controls.
+-
+-
+-## Owner support placement — 2026-09-07
+-
+-Supersedes the earlier viewport-footer placement for Support and safety copy.
+-Keep the transparent 16 Road mark beside the wordmark, with Drive responsibly
+-immediately below the wordmark. Put the yellow Buy Me a Coffee cup button directly
+-after About at the same 48 px height. Keep credits at bottom left. Share that
+-support button with the diagnostic panel. Its dialog is centered on the viewport,
+-with bounded internal scrolling and focus restored to the originating control.
+-
+-## Owner next priority — 2026-09-07 ATLAS and Stats for Nerds
+-
+-After support, prioritize an informative wider ATLAS map and a separate full-screen
+-Stats for Nerds surface. Include natural pastel cartography alongside product
+-palettes. Preserve metrics while separating surfaces. Plan a branded session PDF
+-with optional user-requested email delivery to a remembered recipient cleared by
+-Reset Saved State. The three-direction selection is pending; see
+-../../docs/ATLAS-STATS-REPORT-PLAN-2026-09-07.md.
+-
+-
+-## Owner idle tuning — 2026-09-07
+-
+-Confirmed standstill now uses 600 RPM and 70% of the normal Engine master level.
+-TAMARRO overrides the quiet level for its entire phrase and releases to 600 RPM.
+-Fresh accepted speed of at least 1 km/h restores full level; sub-threshold jitter,
+-invalid/stale evidence and GPS loss cannot falsely restore it after a stop.
+-Moving lift/downshifts retain full level. Automatic standstill blips reach about
+-1800 RPM (1200 above idle) over 1.2 seconds, with five seconds between gestures.
+-Their level remains 70%; manual rev, motion and lifecycle cancellation still apply.
+-The initial no-speed fallback remains 1000 RPM and never fabricates standstill.
+-Only host orchestration changed; upstream code/WAV files and dry audio stay intact.
+-
+-Validation: 657 native tests, real browser master-gain targets at 0.112/0.16,
+-GPS jitter/movement transitions, automatic blip trace and three-profile TAMARRO
+-rise/fall/limiter/return checks pass. Browser audio is measured under headless mute;
+-perceived loudness and target-Tesla listening remain owner acceptance.
+-
+-## ATLAS / Stats approved remix — 2026-09-07
+-
+-ATLAS and Stats for Nerds are separate passenger views, not a map plus statistics
+-sidebar. The owner selected Travel Observatory's pastel map/POIs and summary
+-bands, Mission Control's heading/network instruments, and Journey Magazine's
+-photo place card plus speed/altitude timeline. POIs use actual Discover source
+-coordinates; Read more opens the full Wikipedia article over Atlas and returns
+-to the selected place. Natural and Palette remain distinct. Manual/Area/Trip
+-framing persists until Follow. Preserve audio mode while changing passenger
+-views. The former midpoint chart handle/320 px sidebar is superseded by this
+-explicit selection. PDF/email remains the separate documented design scope.
+-
+-
+-## Owner simulator clarification — 2026-09-08
+-
+-The owner confirms Ange Yaghi's engine-sim and Real Engine Simulator
+-(https://realenginesimulator.com/) as central Engine research references. The
+-latter is the fuller simulator previously recalled. Explore its publicly
+-accessible engines, interface and explanations; no purchase or access bypass is
+-requested. Its public presets are free; Pro concerns the custom engine builder.
+-Study behavior and concepts without importing its proprietary runtime, audio,
+-parameters or presets. Continue the authorized original Engine implementation
+-inside the saved local project; preserve the selected Telemetry visual.
+-
+-## Owner road progression clarification — 2026-09-08
+-
+-Supersedes the earlier 35/65 km/h entertainment ladder: keep urban 20–40 km/h
+-restrained, with strong character already at 80 and progression through 100–130.
+-Use fixed virtual mechanical ratios, load-sensitive automatic shifts and a
+-130 km/h acoustic road ceiling. Preserve the dry level, no-GPS stationary
+-TAMARRO and trusted idle/lifecycle contracts. Virtual gears/RPM are authored
+-acoustic state, never measured Tesla telemetry. See ../../AGENTS.md.
+-
+-## Owner Atlas / Stats refinement — 2026-09-08
+-
+-Remove catalogue numbers and repeated SELECT from the running Visual drawer;
+-retain ACTIVE and a compact icon on inactive entries. Join short and long chart
+-gaps aesthetically, with dashed palette-derived alternate shades for each
+-series and a visible Estimated legend below. Connections never change totals
+-or exported observations. Add useful observed session continuity below Network.
+-Atlas must recover after network/location restoration and expose nearby OSM
+-places independently of map zoom, with Maps/Wikipedia links where supported.
+-
+-## Active-session clock — owner correction, 2026-09-08
+-
+-This supersedes the September 7 driving-only trigger: count fifteen minutes of
+-observable active session time, including stops, absent GPS, simulated input and
+-offline operation. Keep Dev/AUTO ON defaults and saved OFF/Standard. Hidden time
+-and execution gaps over five seconds remain unobserved; reload starts a fresh
+-session clock. At most one due report waits in memory for online/foreground
+-recovery; construct a fresh bounded coordinate-free snapshot when sending.
+-There is no persistent outbox or background execution promise.
+-
+-Use `timeBasis: active-visible-session`, `intervalActiveMs`, `activeMs` and
+-`totalActiveMs` in new diagnostic delivery metadata. The server validates the new
+-clock explicitly and still accepts the older driving clock for already-open
+-clients. Preserve the fifteen-minute server floor and bounded transport retries.
+-Log `diagnostic-send.due` at the threshold, including offline state, then
+-`requested`, `accepted` or `failed` with automatic/manual attribution. Acceptance
+-means server mail-transport acceptance, not verified inbox delivery.
+-
+-## Owner weak-network music feedback — 2026-09-08
+-
+-Ship music control glyphs in the initial application payload, with visible
+-loading/retrying feedback instead of blank controls. Retain transport while
+-waiting for the catalogue. Recover artwork on network/foreground return and
+-republish native metadata. Verify native play/pause/previous/next through the
+-actual app handlers; do not equate API registration with Tesla button visibility.
+-Preserve the native invocation/outcome log and fixed recordings at 1x.
+-
+-## Owner compact Intro refinement — 2026-09-10
+-
+-The owner selects direction A only as a small refinement of the current Intro and rejects the oversized generated cover concepts. Preserve current semantic UI colors, centered intrinsic sheet and existing START hierarchy. Use 80 px square covers with 6 px corners (previously 64 px circles), not the large concept images. Keep metadata and compact outline-icon Choose/Random controls to their right, without increasing the selection-row footprint. Soundtrack becomes the fresh/reset default while explicit stored sources remain respected; Visuals only is renamed Mute. Show actual prepared track title/artist beside its matching artwork. Two stable, randomly selected genre-labelled preset recommendations and a direct palette-cycle control share one row; broaden the underlying preset catalogue without adding visual clutter. This supersedes earlier circular-thumbnail rules for this surface. No generated concept artwork enters the product.
+-
+-## Owner Intro compression and default correction — 2026-09-10
+-
+-Start every new Intro with Soundtrack, including when the saved source is Play the Road. This supersedes the immediately preceding saved-source exception; keep saved mute and explicit choices within the current Intro. Put Random inside an outlined button like Choose, reduce their visible vertical padding, and retain 48 px touch regions around the compact 32 px outlines. Align the track artist right on the genre/metadata row. Keep media boxes at the 80 px artwork height with no vertical image padding. Restore circular preset previews and use aligned labelled preset/palette groups separated by a vertical rule. The palette remains a direct cycle. No further visual direction selection is pending.
+-
+-## Owner Intro breathing room — 2026-09-10
+-
+-Keep 80 px covers and add 8 px top/bottom padding; remove the media group's outer border and internal divider. Explicitly label the music panel SOUNDTRACK, retaining genre alongside it without repeating an identical Soundtrack genre label. Remove the artist from Intro only; running credits/miniplayer remain unchanged. The owner clarified that the requested left-hand text is PRESETS, not a RESET command. Keep that label visible at all widths; on very narrow layouts the preset and palette groups stack to retain legibility.
+-
+-## Owner Air Atlas location and lens refinement — 2026-09-10
+-
+-Use the first valid geographic fix for Air Atlas even when stationary or coarser than 250 m; label approximate accuracy and refine as trusted fixes arrive. Keep the existing trusted motion, terrain and journey gates unchanged. Distinguish granted location awaiting a fix, denied permission, unavailable API and last known position. Permissions API absence must not prevent actual geolocation callbacks from working. Do not equate permission with confirmed satellite reception or require movement for an initial position.
+-
+-Show understated dashed received-flight trails, bounded to 5 km / five minutes / 256 samples per aircraft; stop at the delayed display sample and break on missing or implausible observations. The owner selected A, a subtle spherical display lens, over a real globe or inclined terrain. Keep geographic coordinates unchanged, align aircraft/home hit regions with the warped map and trails, retain flat controls, and fall back to the ordinary map if the lens GPU context is unavailable. Physical Tesla acceptance remains separate from browser simulation.
+-
+-## Owner Fly With continuity and controls — 2026-09-10
+-
+-Fly With updates the camera every animation frame from the measured five-second delayed track, without waiting for every new map tile. Preserve the last terrain height during missing DEM samples instead of dropping to zero. Do not invent motion after signal loss. Keep optical zoom in/out/reset reachable in the flight view, preserving the aircraft camera position; a held pose can still be zoomed. Give Fly With a prominent palette-colored action and original outline view/flight icon. The selected aircraft has one 54 px ring around its 42 px silhouette, with approximately 4 px inner clearance and the distance below it.
+-
+-
+-## Owner radar coverage refinement — 2026-09-10
+-
+-Air Atlas traffic must follow the visible radar area on zoom and pan. Preserve bounded provider coverage, remove the nearest-32 display cutoff, and distinguish actual position age from message age. Manual and selected-aircraft refresh must respect backoff and never make old observations appear fresh.
++Map/aircraft/altitude and Stats changes read the matching [Maps](../../docs/agent-guide/maps.md) section. Diagnostic/PDF changes read [Diagnostics and reports](../../docs/agent-guide/diagnostics-reports.md). Renderer integration reads the exact [Visuals](../../docs/agent-guide/visuals.md) section and its pinned-source boundary. Do not load all references merely because their code shares this subtree.
+--- initial-working-tree/docs/reconciliation/MANUAL-RECOVERY-PROMPT.md
++++ final-working-tree/docs/reconciliation/MANUAL-RECOVERY-PROMPT.md
+@@ -1,163 +1,7 @@
+-# Manual recovery prompt
++# Historical recovery prompt pointer
+ 
+-Use this prompt when manually opening the third Sedici Valvole recovery
+-session. Do not delegate it to another automatically created task.
++The original prompt concerns the manually opened third recovery session of August 29, 2026, including the stopped `518d673` replay in worktree `7c8d`. It is historical evidence, **not a current task or an instruction to execute**.
+ 
+----
++For a present-day interrupted session or conflict, consult the affected section in [Continuity and recovery](../agent-guide/recovery.md). For investigation of that exact historical incident, the complete original wording is preserved byte for byte in [the September 11 migration archive](../agent-history/astra-rebuild-20260911-104527-777084/docs__reconciliation__MANUAL-RECOVERY-PROMPT.md.txt), with paths, expected states, source decisions, procedures and completion conditions intact.
+ 
+-You are the sole recovery owner for Sedici Valvole. Work in English for code,
+-documentation, commit text, logs and product copy; speak to me in Italian.
+-
+-Repository and evidence paths:
+-
+-- primary checkout:
+-  `/Users/enuzzo/Library/CloudStorage/Dropbox/Mitnick/sedicivalvole`
+-- conflicted worktree:
+-  `/Users/enuzzo/.codex/worktrees/7c8d/sedicivalvole`
+-- complete chronological user-requirements ledger:
+-  `/Users/enuzzo/Library/CloudStorage/Dropbox/Mitnick/sedicivalvole/docs/reconciliation/COMPLETE-USER-REQUIREMENTS-2026-08-29.md`
+-- execution-session inventory:
+-  `/Users/enuzzo/Library/CloudStorage/Dropbox/Mitnick/sedicivalvole/docs/reconciliation/SESSION-01a04dcc-INVENTORY.md`
+-- worktree-session inventory:
+-  `/Users/enuzzo/.codex/worktrees/7c8d/sedicivalvole/docs/reconciliation/SESSION-01a04e30-INVENTORY.md`
+-- rejected DRIVEY screenshot:
+-  `/Users/enuzzo/.codex/visualizations/2026/08/29/01a04e30-fd21-7b62-89ba-1a1a14bda5ed/drivey-rejected-2026-08-29.png`
+-
+-This is an emergency reconciliation after two sessions worked concurrently on
+-the same product. Do not create, fork, delegate or hand off another task. Do not
+-start by coding. Establish one writer and one checkout first.
+-
+-## Mandatory first phase: preserve and verify
+-
+-1. Read the complete primary-checkout `AGENTS.md`, the complete chronological
+-   user-requirements ledger and both session inventory documents above in full,
+-   and then the authoritative project documents listed by `AGENTS.md`,
+-   including `docs/CURRENT-STATE.md`, `docs/MUSIC-CRAFT.md`,
+-   `docs/FLUX-VISUAL-DIRECTIONS-2026-08-29.md`, `docs/DEPLOY.md`,
+-   `docs/SOURCE-ADMISSION-2026-08-29.md`,
+-   `docs/VISUAL-SOURCE-ARCHITECTURE-2026-08-29.md`, `CHANGELOG.md`, `VERSION`,
+-   licensing/notices and `design-qa.md`.
+-2. Never read, print, diff, log, copy or expose `.env` or local secret files.
+-   The user explicitly permits inspection of `_references/` for source/audio
+-   analysis, but raw reference material must remain unversioned and its rights
+-   must be verified before publishing derived material.
+-3. Before changing either checkout, independently capture:
+-   - `git worktree list --porcelain`;
+-   - full status and HEAD/origin identity for both checkouts;
+-   - `git status --porcelain=v2`, `git ls-files -u`, rebase metadata and reflog
+-     for the conflicted worktree;
+-   - the complete contents and patch identity of local commit `518d673`;
+-   - stage-1/2/3 blobs and all staged, unstaged, added and untracked files;
+-   - current listeners/processes associated with the worktree, including the
+-     recorded Vite chain around PID `29822` / `29847` / `29848` on
+-     `127.0.0.1:5173`, without assuming those PIDs are still current.
+-4. Expected but not trusted state:
+-   - primary `main == origin/main == ef8c767` before the inventory files;
+-   - primary checkout has the untracked reconciliation directory only;
+-   - worktree is detached at `ef8c767` with an interactive rebase stopped while
+-     replaying `518d673` (`onto=ef8c767`, `orig-head=518d673`,
+-     `stopped-sha=518d673`), six unmerged paths, staged additions and three
+-     additional unstaged edits;
+-   - the worktree inventory is the only reconciliation-era new file there.
+-   Report every discrepancy before proceeding.
+-5. Preserve recoverability before any destructive Git operation. Create a
+-   read-only evidence snapshot or durable temporary ref/patch for `518d673`,
+-   the index stages and unstaged resolution attempts. Do not run `rebase
+-   --continue`, `--abort`, `--skip`, reset, restore, clean, checkout or delete
+-   the worktree until this evidence is complete and you have explained the
+-   recovery choice to me.
+-6. Reverify the canonical deployment independently. The last recorded live
+-   identity is version `0.0.0`, source `ab7a00e`, build `20260829-1826`, while
+-   repository HEAD is the later documentation commit `ef8c767`. Verify bare and
+-   cache-busted HTML, headers/cache behavior, referenced assets and exact hashes.
+-   Do not treat recorded evidence as current proof.
+-
+-Before mutation, give me a concise Italian reconciliation report containing:
+-the two checkout states, conflict map, commit ownership, live identity, what is
+-safe to preserve, what is rejected, what is unverified, and your recommended
+-recovery operation. Wait only if a genuinely destructive choice requires my
+-decision; otherwise proceed with the safest reversible preservation-first path.
+-
+-## Truth boundaries and latest user decisions
+-
+-- Session `01a04dcc` authored/pushed the range `48d4228..ef8c767` on main,
+-  including acceleration/effects, WAKE, FRACTURE, DIAG, JUNCTION PARK, ATLAS,
+-  NIGHTSHIFT and the currently deployed clean-room DRIVEY.
+-- Session `01a04e30` authored original `94bcd74`, mapped/pushed `45f7f33`, then
+-  pushed `371633e`, `77c0914`, `a797345`, and created local-only `518d673`.
+-  Its PRTCL/INFINITE/PRIMORDIAL code and contextual tuner exist only in the
+-  stopped worktree replay and are neither pushed nor live.
+-- Do not cherry-pick commits already present on main. Do not stage the current
+-  marker-free conflict working copies as a bulk resolution. Do not accept
+-  green pre-rebase tests as evidence that the current conflicted state works.
+-- The user totally rejected the rendered/deployed clean-room DRIVEY and the
+-  alternate clean-room Drivey inside `518d673`. DRIVEY is not accepted merely
+-  because it is tested or live. The required result is a faithful integration
+-  of the actual upstream Drivey repository/runtime and its camera/geometry
+-  character, with a narrow Sedici bridge for palette, speed, music and effects.
+-  Re-audit GPL, dependencies and asset provenance before integrating it.
+-- The four approved visual environments remain:
+-  1. DRIVEY 06 — faithful upstream integration, not either rejected
+-     approximation;
+-  2. PRTCL 07 — Fractal Frequency as primary plus Murmuration and Axiom, using
+-     the user's explicit ownership/reuse authorization honestly;
+-  3. INFINITE 08 — Particles, Star Wars and Triangle with verified Codrops,
+-     dependency and asset boundaries;
+-  4. PRIMORDIAL 09 — the approved fluid-field direction with verified CodePen
+-     and attributed-noise boundaries.
+-- OPEN, UNDERWATER and BLOOM require native responses in every active visual.
+-  Road speed and musical features remain separate inputs.
+-- NIGHTSHIFT, FRACTURE, JUNCTION PARK, DIAG, ATLAS, WAKE and the acceleration
+-  detector are implemented/pushed/live according to repository evidence, but
+-  their remaining human listening, visual and real-Tesla gates in the
+-  inventories are still open. Independently test them after reconciliation;
+-  do not silently regress them while rebuilding visuals.
+-- Preserve VERTIGO 02 byte-identical upstream files, Engine/Flux separation,
+-  coordinate-free diagnostics, mandatory ATLAS attribution and the six-clip
+-  decoded-audio bound.
+-- `CHANGELOG.md` is strictly append-only. Never edit or remove earlier entries,
+-  even when correcting a false claim; append a correction later.
+-
+-## Recovery and implementation
+-
+-1. Compare `518d673` against current main file by file. Classify every hunk as:
+-   rejected Drivey, potentially reusable PRTCL, potentially reusable INFINITE,
+-   potentially reusable PRIMORDIAL, shared tuner/lifecycle, obsolete integration
+-   assumption, or conflict with newer main behavior.
+-2. Prefer reconstructing approved pieces deliberately on current main after
+-   preservation over continuing the conflicted rebase blindly. Do not discard
+-   the old state until every useful hunk and artifact has been accounted for.
+-3. Remove or replace the rejected deployed Drivey only through a reviewed,
+-   reversible checkpoint. First inspect the real upstream runtime and show a
+-   same-viewport reference/candidate comparison. Do not invent another road.
+-4. Reassess PRTCL, INFINITE and PRIMORDIAL against their actual rendered
+-   sources. Existing worktree prototypes are candidates, not accepted designs.
+-   Salvage one environment at a time, excluding rejected Drivey and generic
+-   conflict resolutions until explicitly reviewed.
+-5. Establish dependencies from the lockfile and rebuild native packages for
+-   this Mac; never trust copied native `node_modules`.
+-6. For each small recovered or rebuilt unit, run focused tests, the full suite,
+-   production build, muted browser console/performance/memory QA, reduced-motion
+-   and lifecycle checks, responsive checks, and exact `773 x 601` source-versus-
+-   implementation comparison. Screenshots alone and green tests are not human
+-   acceptance.
+-7. Show me the visuals before publishing them. Do not deploy a rejected or
+-   merely machine-tested direction. After user approval, update factual docs,
+-   append the changelog, create a small verified commit, push it, deploy the
+-   exact committed source with a fresh build stamp, and verify canonical/cache-
+-   busted HTML, assets, version, source commit and cache behavior. Never expose
+-   secrets.
+-8. Keep frequent concise Italian updates. Clearly separate implemented,
+-   tested, pushed, live, human-accepted and real-Tesla-accepted states.
+-
+-Do not declare the recovery complete until:
+-
+-- one checkout and one session are the sole writer;
+-- the conflicted worktree has been preserved and intentionally resolved or
+-  retired without losing `518d673` or its unstaged edits;
+-- every requirement in the chronological ledger and every commit or task in
+-  both inventories is accounted for;
+-- the full current-main regression gate passes;
+-- the four visual directions have truthful status;
+-- rejected Drivey is not presented as accepted;
+-- Git state, remote state and live identity are explicitly reported.
++The [migration map](../agent-history/astra-rebuild-20260911-104527-777084/MIGRATION-MAP.md) records which durable rules remain active and which mandates were scoped to the old incident. It is migration evidence, not required reading for normal tasks. Do not trust the prompt's old PIDs, commits, live identities, design statuses or broad work mandate as current facts. Existing older archives remain unchanged.

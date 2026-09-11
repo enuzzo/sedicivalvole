@@ -1,0 +1,27 @@
+{
+  "source_units": 223,
+  "substantive_source_lines": 675,
+  "dispositions": {
+    "retained": 5,
+    "moved": 62,
+    "merged": 63,
+    "updated": 70,
+    "unresolved": 2,
+    "historical": 21
+  },
+  "local_links_checked": 747,
+  "link_errors": [],
+  "original_copies_sha256_verified": true,
+  "outside_scope_paths_preserved": 1801,
+  "outside_scope_changes": [],
+  "head_unchanged": true,
+  "branch_unchanged": true,
+  "index_byte_identical": true,
+  "head": "9e3abe06687482e4163a8552f57973c7414a8be4",
+  "index_sha256": "c919d63591802001ea32ca6d8f5b0e9d4119d3eab1ca12ad4801b38a5375077a",
+  "entrypoint_bytes_before": 76105,
+  "entrypoint_bytes_after": 11917,
+  "on_demand_guide_bytes": 78684,
+  "guide_files": 10,
+  "historical_original_bytes": 85885
+}

@@ -1,0 +1,39 @@
+# Loading, session cache and lifecycle
+
+Read only for the named subsystem. These are active owner constraints, not proof of implementation or live acceptance. Paths below are repository-relative unless linked. Later explicit owner decisions supersede older studies.
+
+Transient failed loads retry with bounded backoff for several minutes, online/foreground recovery, no overlapping attempts and cancellation on selection change. Do not repeatedly reload hidden/offline renderers.
+
+## Owner launch preparation — 2026-09-09
+
+Make Engine loading prominent, centered and separate from TAMARRO controls.
+Begin silent preparation in Intro: selected Lucky visual dependencies, selected
+Jamendo recording/cover and at least Mono (follow explicit Engine selection).
+Do not mount hidden renderers or start audio before a gesture. Retain bounded
+verified encoded Engine assets across mode/profile changes within the page;
+keep transient Jamendo media policy and explain browser-cache limits honestly.
+
+## Owner open-session cache and updates — 2026-09-09
+
+Retain verified static assets for at least seven days in build-specific browser
+caches, without deleting a generation still used by an open client. Browser
+eviction/quota/privacy restrictions remain explicit capability limits. Preserve
+transient remote music and dynamic/private API boundaries. Check published build
+identity every five minutes and on online/foreground return; renew a week-old
+session only after a successful fresh check. Automatic reload requires thirty
+observed quiet seconds in Intro, or muted audio plus fresh exact GPS standstill;
+otherwise offer UPDATE. Interaction, movement, visibility loss and execution gaps
+reset the quiet window. Keep saved preferences, never clear site storage globally,
+and state that session counters restart. Never promise background execution.
+
+Keep launch preparation reusable across choices and React Strict Mode lifecycle. Read [cache/update design](../SESSION-CACHE-UPDATES-2026-09-09.md) when changing retention or renewal, and [launch preparation](../LAUNCH-PREPARATION-2026-09-09.md) for preload work.
+
+## Selection and lifecycle
+
+For loading or source-change work, preserve cancellation on selection change and the silent preparation/gesture boundary above. Launch may wait for the exact newly selected queue without blocking its visual; do not fall back to playing a previous queue. See [Music's catalogue-replacement contract](music.md#catalogue-replacement-and-deeper-checks), which distinguishes catalogue startup from an ordinary buffered track transition.
+
+For mute/visibility/mode changes, retain the shared audio-unlock/master-mute owner and mode-specific cancellation. Hidden time is not observed execution; do not start hidden renderers or promise background timers. In Engine, mute or lifecycle loss cancels automatic idle gestures and manual gestures require unmuted foreground readiness; see [Engine eligibility](engine.md#gesture-eligibility-and-gps-evidence) for the exact manual/automatic GPS distinction. These references apply only when those boundaries change.
+
+## Environment recovery only
+
+When restoring the checkout on another machine, recovering an environment or diagnosing native-module/architecture failures, do not trust copied native `node_modules` or binaries from a different environment. Re-establish dependencies from the existing lockfile and rebuild the affected native packages for this Mac/runtime/architecture without opportunistic dependency upgrades. Preserve unrelated work and existing configuration/secret restrictions. This is not an instruction to reinstall dependencies during ordinary bugs or documentation tasks.

@@ -1,0 +1,216 @@
+diff --git a/AGENTS.md b/AGENTS.md
+index d5dbe1c..d365f7e 100644
+--- a/AGENTS.md
++++ b/AGENTS.md
+@@ -3,7 +3,7 @@
+ ## Scope and invariants
+ 
+ - Write code, comments, documentation, logs, UI and commit text in English; speak with the owner in Italian.
+-- Work in the saved Dropbox checkout; preserve unrelated work. Complete the requested scope without starting roadmap work. Use targeted search and relevant checks; do not load whole documentation sets or run every suite for a small fix.
++- Work in the saved Dropbox checkout; preserve unrelated work. Keep one active writer in this shared checkout; coordinate ownership before overlapping edits. This does not prohibit independent work in genuinely separate checkouts. Complete the requested scope without starting roadmap work.
+ - Never inspect, print, diff, copy or version `.env` or its local variants, or expose credentials. The sole exception is internal loading by `scripts/deploy_drive_lab_ftp.py` for authorized preflight/publication/postflight. `.env.example` contains placeholders only. Never version `_references/` or copy its external material into the repository.
+ - Preserve Engine/Flux separation, shared speed/audio-unlock/mute/lifecycle boundaries, reachable mode switching and in-product diagnostics. Virtual RPM/gears are not Tesla telemetry. Technical diagnostics remain coordinate-free; maps and explicit route exports have separate contracts.
+ - Original code/docs are PolyForm-Noncommercial-1.0.0, source-visible rather than open source. Original brand/media are excluded unless explicitly licensed; earlier AGPL releases retain their rights. `enuzzo` is the sole original creator/licensor. Preserve third-party ownership and notices; do not use Creative Commons for software.
+@@ -12,6 +12,13 @@
+ - `VERSION` is the sole SemVer source. Keep `CHANGELOG.md` append-only with local date/time, corresponding commit hash and deployment stamp when applicable. Update factual docs only when their facts change.
+ - Create/push verified checkpoints to the existing remote. Agreed product changes have standing canonical deployment authorization; no renewed confirmation. Read release guidance for publishing. Documentation/instruction-only work needs no product deployment.
+ 
++## Completion, autonomy and verification
++
++- Complete the requested outcome, not just a plan or an intermediate implementation. Include the applicable verification and delivery evidence; identify any remaining acceptance gate or external blocker precisely, without claiming it passed. Continue independent authorized work when one part needs owner input, and stop when the requested scope is complete.
++- Within that scope, proceed with necessary reversible investigation, edits, fixes and verification without renewed permission. Resolve routine implementation choices using existing decisions and evidence. Reversibility does not authorize unrelated work or override the product, source, privacy and publication constraints above and in the relevant topic.
++- Ask only for a material decision that existing authorization does not resolve, or an action reserved for owner approval. Prepare the concrete proposal and its relevant tradeoffs first, without crossing the approval boundary. Preserve explicit read-only, no-commit, no-push and no-deploy restrictions; standing permissions do not override them.
++- Choose reads and checks from the affected behavior, its dependencies and the applicable acceptance criteria. Expand coverage when risk or evidence warrants it; repeat checks after relevant changes, failures, inconclusive results or a required release gate, not automatically after an unchanged successful result. Do not substitute a smaller check for a required gate, or impose arbitrary file/test quotas.
++
+ ## Context routing
+ 
+ Read only the matching topic below when changing that behavior, including fixes. These are active constraints, not a startup reading list. Follow deeper links only for the specific detail needed; search headings/sections in long documents instead of reading them in full.
+@@ -24,13 +31,13 @@ Read only the matching topic below when changing that behavior, including fixes.
+ | Intro, chrome, drawers, palette UI or phone layout | [UI](docs/agent-context/ui.md) |
+ | Atlas, Stats, Discover, radar or Fly With | [Maps](docs/agent-context/maps.md) |
+ | GPS semantics, altitude, diagnostics or PDF/email reports | [Diagnostics](docs/agent-context/diagnostics.md) |
+-| Preloading, retries, browser cache or update/reload lifecycle | [Runtime](docs/agent-context/runtime.md) |
++| Preloading, retries, browser cache, update/reload, mute/visibility or environment recovery | [Runtime](docs/agent-context/runtime.md) |
+ | Commit/release details, deployment, licensing, new sources or Sites handoff | [Release](docs/agent-context/release.md) |
+ | Architecture or service boundaries | Relevant section of [Technical direction](docs/TECHNICAL-DIRECTION.md) |
+ | Resuming interrupted work or checking delivery status | Relevant section of [Current state](docs/CURRENT-STATE.md) / [Session handoff](docs/SESSION-HANDOFF.md), checked against current Git/evidence |
+ 
+ Use skills only when their stated task applies; incidental UI/code edits do not themselves call for design research, audits or broad skill loading. No repository-local skills are currently defined.
+ 
+-Record durable new decisions in the matching contextual file; keep this root for broad rules. Current explicit owner decisions take precedence over older dated studies/handoffs. Historical instructions under `docs/agent-history/pre-gpt6-astra/` are not normal reading and cannot reinstate superseded gates.
++Record durable new decisions in the matching contextual file; keep this root for broad rules. Current explicit owner decisions take precedence over older dated studies/handoffs. Historical instructions under `docs/agent-history/` are not normal reading and cannot reinstate superseded gates.
+ 
+ If context becomes unreliable, inventory pending requirements/local edits and prepare a concrete handoff in the saved checkout. For missing desktop/mobile requirements, inspect available queue/history evidence before claiming absence; mark truncation rather than reconstructing text.
+diff --git a/docs/agent-context/diagnostics.md b/docs/agent-context/diagnostics.md
+index 8e818e0..0e0058c 100644
+--- a/docs/agent-context/diagnostics.md
++++ b/docs/agent-context/diagnostics.md
+@@ -30,6 +30,8 @@ Keep technical packets coordinate-free, including height/position exclusions. Th
+ 
+ - Diagnostic email keeps only a concise human-readable summary in its body and attaches the complete accepted report as gzip-compressed JSON. Name the attachment with its build and accepted timestamp, publish uncompressed and compressed SHA-256 evidence in the summary, and keep a deterministic round-trip test that decompresses the attachment and compares the complete report.
+ 
++## GPS semantics
++
+ GPS and demo share normalized speed; never synthesize GPS motion. Coordinate-free restrictions apply to technical diagnostics, not authorized map positioning or the explicit precise-route report export option.
+ 
+ - In the desktop simulator, holding `Space` continuously brakes from the exact displayed speed and releasing it resumes the Demo after a short settle. Use the documented time-based Model 3 AWD reference curve for Demo acceleration/braking and only as a soft plausibility envelope for real GPS; never synthesize GPS motion.
+@@ -47,4 +49,8 @@ add height/position values to automatic technical diagnostics.
+ 
+ Travel Report is selected: compact cover, journey summary, graphs and technical appendix. Precise route inclusion is an explicit export option. Preserve immutable preview/download identity, chosen-recipient verification and optional user-requested delivery; remembered recipients clear with Reset Saved State. Do not infer authorization to send other messages.
+ 
+-Consult [diagnostics](../DIAGNOSTICS.md) only for the relevant schema/transport, and [altitude fallback](../ALTITUDE-FALLBACK-2026-09-07.md) for height work.
++## Targeted recorder and GPS references
++
++For recorder fields, sample/event bounds and collection outside React state, use [In-app report v3](../DIAGNOSTICS.md#in-app-report-v3). For native invocation/outcome evidence use [Exhaustive interaction/media flight recorder](../DIAGNOSTICS.md#exhaustive-interactionmedia-flight-recorder--2026-09-03); for recipient/server/transport rules use [Send Diagnostic architecture](../DIAGNOSTICS.md#send-diagnostic-architecture). Older manual-only prose in those sections does not supersede the active-visible automatic-send contract above. Read only the section affected by the task.
++
++For live-watch monotonic receiver timing, one-shot acquisition/replay checks and the 12-second exact-zero hold, use [the road-feedback corrections](../ROAD-FEEDBACK-2026-09-07.md#implemented-corrections). Stale or absent evidence cannot establish automatic idle eligibility; do not apply that gate to the explicitly authorized no-GPS manual TAMARRO path. For Engine gestures use [Engine eligibility](engine.md#gesture-eligibility-and-gps-evidence); for height work use [altitude fallback](../ALTITUDE-FALLBACK-2026-09-07.md).
+diff --git a/docs/agent-context/engine.md b/docs/agent-context/engine.md
+index a867345..d97b93b 100644
+--- a/docs/agent-context/engine.md
++++ b/docs/agent-context/engine.md
+@@ -6,9 +6,15 @@ Keep the selected Telemetry visual and the reliable GPS/lifecycle/dry-audio cont
+ 
+ Keep Mono, Rosso and Touring. Otto/Cinque/Turbine are retired from selection; do not revive them because older tuning notes mention them. For new recording-bank research only, use [the office handoff](../ENGINE-SOURCE-OFFICE-HANDOFF-2026-09-09.md) and its focused [restart prompt](../ENGINE-SOURCE-OFFICE-START-2026-09-09.txt). Those are task-specific research instructions, not startup reading. Preserve accepted voices and the exact visited/rejected/unresolved ledger.
+ 
++## Gesture eligibility and GPS evidence
++
+ Engine bypasses UNDERWATER and every Flux creative effect. Deceleration changes RPM without artificial gain ducking. TAMARRO remains prominent on both sides at displayed zero regardless of chrome; manual revs work as soon as audio is ready, even before GPS. Movement cancels them. Automatic idle gestures require an actual exact-zero watch observation, with a bounded 12-second stationary watch hold. Hidden state, missing/invalid live speed and movement cancel the hold. Use shared monotonic receiver time for live watch events; preserve acquisition/replay checks for one-shot renewals. The old road report did not establish a provider-clock defect.
+ 
+-TAMARRO / SHOW-OFF is a varied bounded neutral-blip phrase, not a throttle hold; another tap stops it.
++TAMARRO / SHOW-OFF is a varied bounded neutral-blip phrase, not a throttle hold; another tap stops it. Manual gestures require ready, unmuted foreground audio; no GPS fix is required. Automatic idle gestures stop on mute as well as movement or lifecycle loss. Stale/missing zero evidence beyond the bounded watch hold disables automatic idle eligibility, not the visible control and not manual revs merely because GPS is absent or stale. Keep the zero-speed TAMARRO controls visible when temporarily ineligible under the remaining audio/movement/lifecycle conditions; disable rather than remove them.
++
++The earlier general stale-disabled manual-control rule in [Owner refinement](../ENGINE-INTEGRATION-2026-09-07.md#owner-refinement--september-7-2026) predates the explicit [manual no-GPS correction](../ROAD-FEEDBACK-2026-09-07.md#implemented-corrections). Do not reinstate that GPS gate. In the RPM label distinguish automatic idle eligibility from an actual gesture: missing signal, confirming stop, auto blips enabled, or active idle blip. The feedback requirement from [Everyday-road gearing and idle evidence](../ENGINE-INTEGRATION-2026-09-07.md#everyday-road-gearing-and-idle-evidence--2026-09-07) remains useful; its old ratios, blip calibration and Demo/standstill eligibility do not override the newer contracts here.
++
++Consult [Diagnostics: GPS semantics](diagnostics.md#gps-semantics) for receiver/stale evidence changes and [Runtime: selection and lifecycle](runtime.md#selection-and-lifecycle) for mute, visibility and lifecycle work. Neither route requires the recording-bank research handoff.
+ 
+ ## Engine source decision — 2026-09-07
+ 
+diff --git a/docs/agent-context/maps.md b/docs/agent-context/maps.md
+index 26eef9d..fb8a6f0 100644
+--- a/docs/agent-context/maps.md
++++ b/docs/agent-context/maps.md
+@@ -14,10 +14,20 @@ framing persists until Follow. Preserve audio mode while changing passenger
+ views. The former midpoint chart handle/320 px sidebar is superseded by this
+ explicit selection. PDF/email remains the separate documented design scope.
+ 
+-Stats for Nerds is Visual 09 in launch and running catalogues, separate from Atlas; no shared Map/Stats tabs. Keep outward curved heading bands. Preserve metric replacement parity, common time ranges and totals. Dashed palette-derived chart-gap connectors have a visible Estimated legend and never alter observations/exports. Add observed session continuity below Network. Natural/palette cartography, north lock, zoom/reset and smooth travel/rotation remain available. Map attribution is mandatory, tiny, low and translucent above the footer, never a large white pill. Location sidebars collapse/reopen with a persistent midpoint handle and return the field to the map; do not restore the retired combined map/statistics sidebar.
++Stats for Nerds is Visual 09 in launch and running catalogues, separate from Atlas; no shared Map/Stats tabs. Keep outward curved heading bands. Preserve metric replacement parity, common time ranges and totals. Dashed palette-derived chart-gap connectors have a visible Estimated legend and never alter observations/exports. Add observed session continuity below Network. Natural/palette cartography, north lock, zoom/reset and smooth travel/rotation remain available. Map attribution is mandatory, tiny, low and translucent above the footer, never a large white pill. When chrome retracts, Atlas expands to the available full field and keeps Now Playing suppressed; do not restore the retired combined map/statistics sidebar.
+ 
+ Atlas recovers on network/location return and offers nearby OSM places independently of zoom, with supported Maps/Wikipedia links. Discover is a separate complete localized Wikipedia reader with global language-specific free-text search independent of GPS, preserving Wikipedia relevance; location/heading apply only to empty-query NEARBY/AHEAD/REGION. Compact real names and row padding, permit at least two name lines, omit decorative numbering and label actual providers. Keep a 246 px searchable rail, complete scrollable results and exact +N MORE when needed. QR opens exploratory Google Maps search, not automatic navigation. Preserve full sandboxed articles with responsive bounded infoboxes/uncropped lead images, readable distance/ETA, compact scopes and a self-explanatory language selector.
+ 
++## Atlas surfaces and Discover navigation
++
++The chart sidebar/Canvas instrument was explicitly removed by the [selected remix](../ATLAS-STATS-REPORT-PLAN-2026-09-07.md#implemented-architecture--selected-remix); Stats is separate. Atlas expansion when chrome rests is retained from the owner Tesla Compact constraint, independently of sidebar collapse.
++
++Discover remains an independent passenger destination and must not open, switch to or link back to Atlas. The earlier no-handoff contract in [Product spec, feature decision matrix](../PRODUCT-SPEC.md#8-feature-decision-matrix) is not revoked by the selected Atlas → Wikipedia article → selected-place return flow. That return belongs to an article opened from Atlas, not a new Discover → Atlas handoff. Do not import the same old section's superseded row geometry or prohibition on Atlas place cards.
++
++**Open owner question — location sidebar handle:** the root owner constraint (Product and validation, preserved in the [original root instruction](../agent-history/pre-gpt6-astra/root-AGENTS.md.txt)) asks for a collapsible passenger-location sidebar with a persistent midpoint handle on the right edge. The selected remix above explicitly removes the old 320 px chart sidebar and its handle, but does not explicitly decide whether a distinct location sidebar must retain that affordance. Do not treat these as the same panel or invent a new one. Resolve this distinction before adding/removing/reworking a location sidebar or its handle; unrelated map fixes can proceed. Do not reinstate the old 36 × 30 px chart tab or 340 px instrument from that historical layout.
++
++For road-map marker/target and Discover row geometry, consult only [Road UI refinement: Implemented](../ROAD-UI-REFINEMENT-2026-09-09.md#implemented): 32 px Atlas discs retain 48 px targets; Discover rows are 72 px with 15 px two-line names and 13 px metadata. These are road-map markers, not Air Atlas's selected-aircraft ring. Preserve the existing camera orientation/reset semantics described there.
++
+ ## Owner Air Atlas refinement — 2026-09-10
+ 
+ Only selected aircraft have one contrasting ring, with ground distance below it. Shape availability must not depend on ground track. Retain exact model artwork where available and use clearly identified category silhouettes otherwise, with no neutral dots for known rotorcraft or civil aircraft. Buffer measured positions by five seconds for continuous interpolation; never claim an unobserved path or move stale targets indefinitely. Filter map transport to major roads; preserve lakes and airport/runway context while reducing minor water detail. True airways need a verified aeronautical source, not guessed routes. The later A+C selection below resolves the nose-view gate.
+diff --git a/docs/agent-context/music.md b/docs/agent-context/music.md
+index 6b8e8fd..dadeff9 100644
+--- a/docs/agent-context/music.md
++++ b/docs/agent-context/music.md
+@@ -23,6 +23,10 @@ Flux is an authored adaptive score: retain arrangement, low end, rhythm, harmony
+ 
+ - The selected manual-effects surface is **FX Deck**: a persistent footer `MIX` control opens a compact non-modal overlay above the footer while the visual keeps running. Expand it to a readable `2 × 4` touch layout; make every `100%` state highly distorted and unmistakable without click, silence, clipping, runaway feedback, or destructive level jumps. Retain independent depth sliders and one reset, persist values when switching between Play the Road and Soundtrack, and never return these controls to the bottom of the Music drawer. The deck may pin the controls open but must never enter the application's inert modal boundary.
+ 
++## Main driving surface and shared road normalization
++
++Keep low-level `Atmos`, `Harmonics` and `Pulse` controls out of the primary driving surface; this is not a ban on internal functions/components or on separately authorized workbenches. Normalize road-driven visual pressure and score arrangement energy against the shared fixed `130 km/h` ceiling. This does not retime fixed recordings, change JUNCTION's authored BPM ladder, or cap Engine's explicit neutral rev. See only [Flux music and speed mapping](../PRODUCT-SPEC.md#7-flux-music-and-speed-mapping) for this contract.
++
+ - Speed raises energy through a smoothed saturating curve. Past the tempo knee, deepen arrangement instead of creating a frantic march.
+ 
+ - Keep continuous speed/energy parameters separate from bar-quantized structural events. Use smoothing, hysteresis, dwell, crossfades, a tempo knee, and musically controlled deceleration.
+@@ -38,3 +42,9 @@ Preserve the native invocation/outcome log and fixed recordings at 1x.
+ Now Playing uses the single footer animated/inert container and retracts with chrome; suppress it for Atlas and open menus/popups/passenger panels. Do not restore an independent overlay.
+ 
+ Consult [music craft](../MUSIC-CRAFT.md) for composition/acoustics and [Soundtrack source policy](../SOUNDTRACK-SOURCE-POLICY.md) for media acquisition/retention.
++
++## Catalogue replacement and deeper checks
++
++During launch preparation for a newly selected catalogue, only that selected queue may start when ready; a retained old queue must not play while the replacement loads. Keep saved mute and non-blocking visual START. This [Launch Cockpit behavior](../LAUNCH-COCKPIT-2026-09-07.md#behavior) is distinct from retaining the committed outgoing track/metadata during an ordinary buffered transport transition described above; do not discard healthy retained media indiscriminately.
++
++For loading, source-change races and cancellation, consult [Runtime: selection and lifecycle](runtime.md#selection-and-lifecycle). For JUNCTION bank generation or boundary defects, read [MUSIC-CRAFT 5.9](../MUSIC-CRAFT.md#59-two-correct-breaks-can-still-make-one-wrong-groove): reset voices and stateful DSP per selectable block and retain the eight-millisecond click-safe edges, in addition to the shared rhythmic spine. These are targeted reads, not a requirement to load all craft notes.
+diff --git a/docs/agent-context/release.md b/docs/agent-context/release.md
+index 66b5d57..0469edf 100644
+--- a/docs/agent-context/release.md
++++ b/docs/agent-context/release.md
+@@ -2,6 +2,10 @@
+ 
+ Read only for the named subsystem. These are active owner constraints, not proof of implementation or live acceptance. Paths below are repository-relative unless linked. Later explicit owner decisions supersede older studies.
+ 
++## Product maturity
++
++The product remains experimental even though the source repository is public. Publication and release copy must distinguish verified implementation/live evidence from physical Tesla acceptance; a deployed build is not a claim of production maturity. Preserve this qualification when describing readiness.
++
+ ## Git and publishing
+ 
+ Create small verified commits and push checkpoints to the configured remote; never invent a remote. Product changes within agreed scope have standing canonical deployment authorization (September 5): deploy promptly without asking again. Instruction/documentation-only tasks do not require an application build or deployment.
+diff --git a/docs/agent-context/runtime.md b/docs/agent-context/runtime.md
+index 9383cbe..9d32144 100644
+--- a/docs/agent-context/runtime.md
++++ b/docs/agent-context/runtime.md
+@@ -27,3 +27,13 @@ reset the quiet window. Keep saved preferences, never clear site storage globall
+ and state that session counters restart. Never promise background execution.
+ 
+ Keep launch preparation reusable across choices and React Strict Mode lifecycle. Read [cache/update design](../SESSION-CACHE-UPDATES-2026-09-09.md) when changing retention or renewal, and [launch preparation](../LAUNCH-PREPARATION-2026-09-09.md) for preload work.
++
++## Selection and lifecycle
++
++For loading or source-change work, preserve cancellation on selection change and the silent preparation/gesture boundary above. Launch may wait for the exact newly selected queue without blocking its visual; do not fall back to playing a previous queue. See [Music's catalogue-replacement contract](music.md#catalogue-replacement-and-deeper-checks), which distinguishes catalogue startup from an ordinary buffered track transition.
++
++For mute/visibility/mode changes, retain the shared audio-unlock/master-mute owner and mode-specific cancellation. Hidden time is not observed execution; do not start hidden renderers or promise background timers. In Engine, mute or lifecycle loss cancels automatic idle gestures and manual gestures require unmuted foreground readiness; see [Engine eligibility](engine.md#gesture-eligibility-and-gps-evidence) for the exact manual/automatic GPS distinction. These references apply only when those boundaries change.
++
++## Environment recovery only
++
++When restoring the checkout on another machine, recovering an environment or diagnosing native-module/architecture failures, do not trust copied native `node_modules` or binaries from a different environment. Re-establish dependencies from the existing lockfile and rebuild the affected native packages for this Mac/runtime/architecture without opportunistic dependency upgrades. Preserve unrelated work and existing configuration/secret restrictions. This is not an instruction to reinstall dependencies during ordinary bugs or documentation tasks.
+diff --git a/docs/agent-context/ui.md b/docs/agent-context/ui.md
+index 133e23e..4b05ca7 100644
+--- a/docs/agent-context/ui.md
++++ b/docs/agent-context/ui.md
+@@ -22,6 +22,12 @@ A deliberate touch/pointer/keyboard wake works at every speed. Motion, GPS, demo
+ 
+ Resolve palette LIGHT/DARK contrast centrally with minimal lightness/chroma changes at fixed hue; preserve passing colours and record/test original/resolved values against rendered backgrounds. UNDERWATER fills the speed badge footprint and returns from it, respects reduced motion and never reads as an alarm-red warning. PALETTE controls the whole field and interface accent, not vehicle paint. Running Palette has a library icon, Title Case label and swatches inside its popup. Avoid decorative chrome, knobs and glassmorphism; retain selected outline controls and specific later round-preview exceptions.
+ 
++## Shared layout details
++
++Align Now Playing artwork, track copy and transport on a common center. Size credit-role columns from their contents so labels do not overlap titles; retain the pinned contrast-safe icon treatment and the one-line NOW PLAYING label from [Music](music.md). Apply the same baseline, spacing, state and optical-icon rules to footer cells and navbar. These constraints concern running media UI, not the artist row explicitly removed from Intro.
++
++Semantic roles remain 13 px metadata, 14 px labels, 15 px body/action, 17 px active names, 22 px titles and 32 px primary values; 48/56 px touch targets are independent of visible outlines. For Atlas expansion, distinct sidebars and Discover navigation consult [Maps: surfaces and navigation](maps.md#atlas-surfaces-and-discover-navigation). For marker targets and current Discover row geometry use only [Road UI refinement: Implemented](../ROAD-UI-REFINEMENT-2026-09-09.md#implemented), not the retired chart/sidebar or old 52/64 px Discover composition.
++
+ ## Intro: consolidated September 10 decisions
+ 
+ Intro is the initial chooser; Splash is its loading transition. Both display existing build identity; Intro bottom right. Keep the centered intrinsic sheet, current semantic light/dark shell and START hierarchy. Short windows scroll inside the sheet with reserved footer space; tall windows do not stretch it.
+@@ -37,3 +43,5 @@ Keep the transparent 16 Road mark beside the isolated lowercase Orbitron wordmar
+ Compact Cockpit is selected: thin retracting bars, full touch targets and safe areas, installed footer extending to the bottom edge, working landscape palette taps. Preserve audio, selection and renderer across rotation. Use an accessible inert portrait notice only on phones, not desktop portrait/Tesla. Named devices: iPhone 17 Pro and Pro Max; iOS versions unspecified.
+ 
+ For Intro changes consult [the September 10 refinement](../INTRO-REFINEMENT-2026-09-10.md); for phone/road controls use [road UI refinement](../ROAD-UI-REFINEMENT-2026-09-09.md). Run/open the local preview yourself when rendered validation is needed. A selected mock is a fidelity contract. Use design skills for requested design/audit work; do not require the retired `get-context` skill or trigger a full design workflow for incidental styling fixes.
++
++For preparation, source changes or loading-state fixes, consult [Runtime: selection and lifecycle](runtime.md#selection-and-lifecycle) and the [Music catalogue-replacement contract](music.md#catalogue-replacement-and-deeper-checks). Do not open these for unrelated spacing fixes.
+diff --git a/docs/agent-context/visuals.md b/docs/agent-context/visuals.md
+index fe6ae04..084d357 100644
+--- a/docs/agent-context/visuals.md
++++ b/docs/agent-context/visuals.md
+@@ -52,8 +52,16 @@ ShaderGradient is pinned to `@shadergradient/react@2.4.20` with its pinned Three
+ 
+ APERTURE has a dark terminus and one longitudinal grid origin across all four planes; no bright portal or rejected starburst/lens flare. The initial Flux direction was sparse, Swiss/Braun and abstract; this is not a ban on the later selected map/terrain experiences.
+ 
+-Night Glass is already selected: unchanged Vertigo, Graphite, DARK and Jamendo Ambient. One shared launch/Visual registry; infer the experience from actual settings, not a stale saved label. Preparation is silent; START or explicit running Play owns playback.
++## Night Glass curation
++
++Night Glass is already selected: unchanged Vertigo, Graphite, DARK and Jamendo Lounge. One shared launch/Visual registry; infer the experience from actual settings, not a stale saved label. Preparation is silent; START or explicit running Play owns playback.
+ 
+ Contextual Prtcl/Drivey/Gradient cycle labels and values share a left edge, existing touch geometry, chrome visibility and 6 px radius. Do not advertise internal variant counts in catalogue cards. The running drawer no longer has catalogue numbers or repeated SELECT; use ACTIVE and a compact inactive icon.
+ 
+ Read only the matching sections of [visual source architecture](../VISUAL-SOURCE-ARCHITECTURE-2026-08-29.md), [Infinite Lights study](../REFERENCE-STUDY-INFINITE-LIGHTS.md) or [ShaderGradient study](../REFERENCE-STUDY-SHADERGRADIENT.md) for source/bridge changes. Engine Telemetry, Intro A, Fly With A+C and the spherical radar lens A already have selections; do not reopen their design gates for an ordinary fix.
++
++The explicit owner replacement of Ambient with Lounge is recorded in [Current state: Round Lobo marks and two curated grooves](../CURRENT-STATE.md#2026-09-05--round-lobo-marks-and-two-curated-grooves) and [the owner-directed refinement](../NIGHT-GLASS-2026-09-05.md#2026-09-05-0147--publication-and-owner-directed-refinement). This is genre curation, not a claim that every catalogue recording was individually auditioned.
++
++## Upstream verification
++
++Keep required upstream-integrity tests, attribution and source/hash inventories valid. Do not bypass an integrity failure by weakening tests, excluding changed vendor files or replacing expected hashes to bless an unauthorized change. Use the existing source-specific authorization boundary before changing protected material; a test change is not that authorization.

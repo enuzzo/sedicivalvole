@@ -1,0 +1,6 @@
+9e3abe06687482e4163a8552f57973c7414a8be4 | author 2026-09-11T09:08:06+02:00 | commit 2026-09-11T09:08:06+02:00 | Record agent instruction optimization verification
+06625488db719a0d9bf57b296f1466ab86adfe80 | author 2026-09-11T09:07:44+02:00 | commit 2026-09-11T09:07:44+02:00 | Streamline agent instructions with contextual owner constraints
+2c73cc5b1a0dfe9aa8e14205050d7fc060f59427 | author 2026-09-10T14:08:44+02:00 | commit 2026-09-10T14:08:44+02:00 | Record verified Intro preview publication
+243cc8637e150de437767105dc0f651c2826f396 | author 2026-09-10T14:01:19+02:00 | commit 2026-09-10T14:01:19+02:00 | Record Intro verification and preserve credits footer
+cabb6ba53121a602e2110d45c208fdae57faccd0 | author 2026-09-10T14:00:51+02:00 | commit 2026-09-10T14:00:51+02:00 | Complete Intro previews and compact randomized presets
+fc98442a0567ee5f0181b10ffd935183fe8d6402 | author 2026-09-10T13:56:01+02:00 | commit 2026-09-10T13:56:01+02:00 | Record canonical radar coverage deployment evidence

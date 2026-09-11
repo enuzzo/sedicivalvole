@@ -1,0 +1,1920 @@
+{
+  "R001": {
+    "outcome": "retained",
+    "destinations": [
+      "AGENTS.md#working-agreement"
+    ],
+    "consult_when": "All repository tasks",
+    "resolution": "Project scope and all English code/comments/docs/logs/product/commit copy; Italian direct conversation."
+  },
+  "R002": {
+    "outcome": "retained",
+    "destinations": [
+      "AGENTS.md#working-agreement"
+    ],
+    "consult_when": "All repository tasks",
+    "resolution": "Project scope and all English code/comments/docs/logs/product/commit copy; Italian direct conversation."
+  },
+  "R003": {
+    "outcome": "retained",
+    "destinations": [
+      "AGENTS.md#working-agreement"
+    ],
+    "consult_when": "All repository tasks",
+    "resolution": "Project scope and all English code/comments/docs/logs/product/commit copy; Italian direct conversation."
+  },
+  "R004": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/delivery.md#identity-and-records"
+    ],
+    "consult_when": "Build identity, changelog or release work",
+    "resolution": "VERSION-only SemVer, generated stamp, progressive append-only entries, local date/time/hash and release stamp, Unreleased/versioned section conditions retained."
+  },
+  "R005": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/delivery.md#identity-and-records"
+    ],
+    "consult_when": "Build identity, changelog or release work",
+    "resolution": "VERSION-only SemVer, generated stamp, progressive append-only entries, local date/time/hash and release stamp, Unreleased/versioned section conditions retained."
+  },
+  "R006": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/delivery.md#identity-and-records"
+    ],
+    "consult_when": "Build identity, changelog or release work",
+    "resolution": "VERSION-only SemVer, generated stamp, progressive append-only entries, local date/time/hash and release stamp, Unreleased/versioned section conditions retained."
+  },
+  "R007": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/delivery.md#identity-and-records"
+    ],
+    "consult_when": "Build identity, changelog or release work",
+    "resolution": "VERSION-only SemVer, generated stamp, progressive append-only entries, local date/time/hash and release stamp, Unreleased/versioned section conditions retained."
+  },
+  "R008": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/delivery.md#identity-and-records",
+      "AGENTS.md#working-agreement"
+    ],
+    "consult_when": "A task changes documented facts or contracts",
+    "resolution": "Maintain README, feature status and architecture only when facts change; update the relevant agent contract rather than appending every decision to root."
+  },
+  "R009": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/interface.md#design-decisions",
+      "docs/agent-guide/delivery.md#verification-proportional-to-the-change"
+    ],
+    "consult_when": "Visual evidence or product screenshot changes",
+    "resolution": "Current real captures, agreed Tesla viewport, obsolete current captures removed; reference and historical evidence are not current product."
+  },
+  "R010": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/delivery.md#identity-and-records"
+    ],
+    "consult_when": "Active development checkpoint",
+    "resolution": "Small verified commits/push to existing remote; no invented destination; current task restrictions still control."
+  },
+  "R011": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/delivery.md#canonical-publication",
+      "AGENTS.md#non-negotiable-boundaries"
+    ],
+    "consult_when": "Approved product delivery",
+    "resolution": "Standing September 5 authority removes repeated deployment confirmation, preserves experimental maturity, checks, history, recovery and canonical verification."
+  },
+  "R022": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/delivery.md#canonical-publication",
+      "AGENTS.md#non-negotiable-boundaries"
+    ],
+    "consult_when": "Approved product delivery",
+    "resolution": "Standing September 5 authority removes repeated deployment confirmation, preserves experimental maturity, checks, history, recovery and canonical verification."
+  },
+  "R042": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/delivery.md#canonical-publication",
+      "AGENTS.md#non-negotiable-boundaries"
+    ],
+    "consult_when": "Approved product delivery",
+    "resolution": "Standing September 5 authority removes repeated deployment confirmation, preserves experimental maturity, checks, history, recovery and canonical verification."
+  },
+  "R012": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/recovery.md#current-continuation"
+    ],
+    "consult_when": "Unreliable context or desktop/mobile requirement recovery",
+    "resolution": "Inventory every pending requirement/local edit; concrete handoff in saved Dropbox; inspect available queued history before declaring missing instructions, label truncated content."
+  },
+  "R013": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/recovery.md#current-continuation"
+    ],
+    "consult_when": "Unreliable context or desktop/mobile requirement recovery",
+    "resolution": "Inventory every pending requirement/local edit; concrete handoff in saved Dropbox; inspect available queued history before declaring missing instructions, label truncated content."
+  },
+  "R014": {
+    "outcome": "merged",
+    "destinations": [
+      "AGENTS.md#non-negotiable-boundaries"
+    ],
+    "consult_when": "All tasks; exact internal-loading exception only for official deployment",
+    "resolution": "No .env reading/printing/diff/log/version or credential exposure; no _references version/copy; harmless .env.example only. R043 is explicitly routed exception."
+  },
+  "R015": {
+    "outcome": "merged",
+    "destinations": [
+      "AGENTS.md#non-negotiable-boundaries"
+    ],
+    "consult_when": "All tasks; exact internal-loading exception only for official deployment",
+    "resolution": "No .env reading/printing/diff/log/version or credential exposure; no _references version/copy; harmless .env.example only. R043 is explicitly routed exception."
+  },
+  "R016": {
+    "outcome": "merged",
+    "destinations": [
+      "AGENTS.md#non-negotiable-boundaries"
+    ],
+    "consult_when": "All tasks; exact internal-loading exception only for official deployment",
+    "resolution": "No .env reading/printing/diff/log/version or credential exposure; no _references version/copy; harmless .env.example only. R043 is explicitly routed exception."
+  },
+  "R017": {
+    "outcome": "merged",
+    "destinations": [
+      "AGENTS.md#non-negotiable-boundaries"
+    ],
+    "consult_when": "All tasks; exact internal-loading exception only for official deployment",
+    "resolution": "No .env reading/printing/diff/log/version or credential exposure; no _references version/copy; harmless .env.example only. R043 is explicitly routed exception."
+  },
+  "R018": {
+    "outcome": "retained",
+    "destinations": [
+      "AGENTS.md#working-agreement"
+    ],
+    "consult_when": "Status claims in every task",
+    "resolution": "Separate implemented, roadmap, assumed, verified and historical; no archived mock as current product."
+  },
+  "R019": {
+    "outcome": "retained",
+    "destinations": [
+      "AGENTS.md#working-agreement"
+    ],
+    "consult_when": "Status claims in every task",
+    "resolution": "Separate implemented, roadmap, assumed, verified and historical; no archived mock as current product."
+  },
+  "R020": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/interface.md#design-decisions"
+    ],
+    "consult_when": "New visual direction",
+    "resolution": "Exactly three before construction and owner selection, with only explicitly scoped selected/delegated exceptions."
+  },
+  "R021": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/delivery.md#verification-proportional-to-the-change"
+    ],
+    "consult_when": "Experience verification",
+    "resolution": "Agreed Tesla viewports plus target vehicle; browser tests and physical acceptance remain distinct."
+  },
+  "R023": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/delivery.md#canonical-publication"
+    ],
+    "consult_when": "Publication or server assumption",
+    "resolution": "Bare/canonical and assets/version/cache checks remain; upload is insufficient; no unverified Apache/Nginx assumption."
+  },
+  "R036": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/delivery.md#canonical-publication"
+    ],
+    "consult_when": "Publication or server assumption",
+    "resolution": "Bare/canonical and assets/version/cache checks remain; upload is insufficient; no unverified Apache/Nginx assumption."
+  },
+  "R024": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/diagnostics-reports.md#capture-and-presentation"
+    ],
+    "consult_when": "Diagnostics entry and main shell",
+    "resolution": "Keep accessible REPORT in main product."
+  },
+  "R025": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/motion-runtime.md#energy-and-mode-boundary"
+    ],
+    "consult_when": "Mode selection, shared ownership or cross-mode features",
+    "resolution": "Engine/Flux remain equal and distinct; public Flux label becomes Music by P083 and LAUNCH-COCKPIT / Decision and scope; active identity/reachable switch preserved."
+  },
+  "R026": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/motion-runtime.md#energy-and-mode-boundary"
+    ],
+    "consult_when": "Mode selection, shared ownership or cross-mode features",
+    "resolution": "Engine/Flux remain equal and distinct; public Flux label becomes Music by P083 and LAUNCH-COCKPIT / Decision and scope; active identity/reachable switch preserved."
+  },
+  "R027": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/visuals.md#aperture-and-rejected-studies",
+      "docs/agent-guide/interface.md#design-decisions"
+    ],
+    "consult_when": "Aperture or new Flux direction",
+    "resolution": "Starburst/lens flare rejection and convergence/depth/speed/low-plane intent retained; P004 explicitly selects Modular Aperture, resolving initial replacement selection only."
+  },
+  "R028": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/visuals.md#vertigo-02"
+    ],
+    "consult_when": "Vertigo integration or bridge change",
+    "resolution": "Exact commit and entire scene/dependencies/byte identity, hidden editorial shell and permitted original time/FOV/color channels; integrity gates not bypassable."
+  },
+  "R029": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/visuals.md#gradient-08"
+    ],
+    "consult_when": "Gradient family, palette/response, bundling or LAB work",
+    "resolution": "Pinned 2.4.20 stack, one family/three exact variants, persistent cycle, separate lazy chunk, MIT/inventory/fallback and physical GPU gate retained."
+  },
+  "R030": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/music.md#authored-score"
+    ],
+    "consult_when": "Music diagnosis, research or quality fix",
+    "resolution": "Same-session MUSIC-CRAFT reason/listener record; delete causeless constraint; meaningful tests for assertable consonance/levels/variety."
+  },
+  "R031": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/music.md#authored-score"
+    ],
+    "consult_when": "Music diagnosis, research or quality fix",
+    "resolution": "Same-session MUSIC-CRAFT reason/listener record; delete causeless constraint; meaningful tests for assertable consonance/levels/variety."
+  },
+  "R032": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/music.md#authored-score"
+    ],
+    "consult_when": "Score architecture or musical content",
+    "resolution": "Authored arrangement/low-end/rhythm/harmony/timbre/space retained; no oscillator-ping/noise/linear-BPM substitute."
+  },
+  "R033": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/music.md#junction"
+    ],
+    "consult_when": "JUNCTION playback, generation, harmony, mixing or memory",
+    "resolution": "Preserves rest/no beat+bass; 13 km/h, 168 BPM; eight bars; compatible complete takes; exact spine; reset/self-contained clips; sample accurate; no repeat; voiced chord; six clips; no isolated stem."
+  },
+  "R034": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/music.md#authored-score",
+      "docs/agent-guide/interface.md#shared-geometry-and-palette",
+      "docs/agent-guide/interface.md#chrome-and-drawers",
+      "docs/agent-guide/motion-runtime.md#energy-and-mode-boundary"
+    ],
+    "consult_when": "Primary controls, type/targets/chrome or visual/music energy",
+    "resolution": "Separate reachable routes retain Atmos/Harmonics/Pulse exclusion, full 13/14/15/15/17/22/32 ladder, 48/56 targets, 64 chrome at 773x601, metadata contrast/case/carets, modal/ATLAS suppression/full field, cycle 6 px, fixed 130 and tunnel 40. This complex unit is not reduced to a generic UI pointer."
+  },
+  "R035": {
+    "outcome": "unresolved",
+    "destinations": [
+      "docs/agent-guide/maps.md#atlas-and-stats"
+    ],
+    "consult_when": "ATLAS attribution or location-sidebar redesign",
+    "resolution": "Attribution low/translucent above footer retained. Explicit P094 retires chart handle/panel, not unambiguously a distinct location handle; retain condition-specific conflict, exact geometry via P039, no blocking unrelated tasks."
+  },
+  "R037": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/provenance.md#original-material",
+      "docs/agent-guide/provenance.md#third-party-admission"
+    ],
+    "consult_when": "License, dependency, source, asset or distribution changes",
+    "resolution": "Exact PolyForm name/creator, excluded assets, earlier AGPL rights, synchronized files, third-party admission before entry and no CC software retained."
+  },
+  "R038": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/provenance.md#original-material",
+      "docs/agent-guide/provenance.md#third-party-admission"
+    ],
+    "consult_when": "License, dependency, source, asset or distribution changes",
+    "resolution": "Exact PolyForm name/creator, excluded assets, earlier AGPL rights, synchronized files, third-party admission before entry and no CC software retained."
+  },
+  "R039": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/provenance.md#original-material",
+      "docs/agent-guide/provenance.md#third-party-admission"
+    ],
+    "consult_when": "License, dependency, source, asset or distribution changes",
+    "resolution": "Exact PolyForm name/creator, excluded assets, earlier AGPL rights, synchronized files, third-party admission before entry and no CC software retained."
+  },
+  "R040": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/provenance.md#original-material",
+      "docs/agent-guide/provenance.md#third-party-admission"
+    ],
+    "consult_when": "License, dependency, source, asset or distribution changes",
+    "resolution": "Exact PolyForm name/creator, excluded assets, earlier AGPL rights, synchronized files, third-party admission before entry and no CC software retained."
+  },
+  "R041": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/provenance.md#original-material",
+      "docs/agent-guide/provenance.md#third-party-admission"
+    ],
+    "consult_when": "License, dependency, source, asset or distribution changes",
+    "resolution": "Exact PolyForm name/creator, excluded assets, earlier AGPL rights, synchronized files, third-party admission before entry and no CC software retained."
+  },
+  "R043": {
+    "outcome": "merged",
+    "destinations": [
+      "AGENTS.md#non-negotiable-boundaries",
+      "docs/agent-guide/delivery.md#canonical-publication"
+    ],
+    "consult_when": "Official authorized deployment only",
+    "resolution": "Official script may internally load .env for preflight/publication/postflight; no inspection/exposure, no redundant approval; exception is narrow."
+  },
+  "R044": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/provenance.md#community-credits"
+    ],
+    "consult_when": "Source/dependency/credit changes and before publication",
+    "resolution": "Full final README credits incl transitive/non-Git, emoji, authors/material/use/status, public contacts and unsent warm drafts; update three docs together; refresh on lockfile and check before publishing."
+  },
+  "R045": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/provenance.md#community-credits"
+    ],
+    "consult_when": "Source/dependency/credit changes and before publication",
+    "resolution": "Full final README credits incl transitive/non-Git, emoji, authors/material/use/status, public contacts and unsent warm drafts; update three docs together; refresh on lockfile and check before publishing."
+  },
+  "R046": {
+    "outcome": "updated",
+    "destinations": [
+      "AGENTS.md#working-agreement",
+      "docs/agent-guide/motion-runtime.md#preparation-and-recovery",
+      "docs/agent-guide/maps.md#atlas-and-stats",
+      "docs/agent-guide/diagnostics-reports.md#automatic-delivery"
+    ],
+    "consult_when": "Reliability, ATLAS/Stats redesign, diagnostic scheduling or backlog prioritization",
+    "resolution": "Broad acceptance and reliability > Engine > iPhone retained without inventing tests. Map parity/POI direction retained and selected by P094. Backoff/recovery/cancel/no hidden-offline retry retained. Future-only ten-minute/default uncertainty superseded by R050 then R060/R061; current AUTO contract preserves privacy/disclosure/server checks/gaps."
+  },
+  "P080": {
+    "outcome": "updated",
+    "destinations": [
+      "AGENTS.md#working-agreement",
+      "docs/agent-guide/motion-runtime.md#preparation-and-recovery",
+      "docs/agent-guide/maps.md#atlas-and-stats",
+      "docs/agent-guide/diagnostics-reports.md#automatic-delivery"
+    ],
+    "consult_when": "Reliability, ATLAS/Stats redesign, diagnostic scheduling or backlog prioritization",
+    "resolution": "Broad acceptance and reliability > Engine > iPhone retained without inventing tests. Map parity/POI direction retained and selected by P094. Backoff/recovery/cancel/no hidden-offline retry retained. Future-only ten-minute/default uncertainty superseded by R050 then R060/R061; current AUTO contract preserves privacy/disclosure/server checks/gaps."
+  },
+  "R047": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/engine.md#accepted-source-and-voices"
+    ],
+    "consult_when": "Engine donor integration/provenance",
+    "resolution": "Exact authorized declared-MIT WAV integration supersedes study holds; candidate adaptation allowed; no blind-review/independent rights/liability claim."
+  },
+  "P081": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/engine.md#accepted-source-and-voices"
+    ],
+    "consult_when": "Engine donor integration/provenance",
+    "resolution": "Exact authorized declared-MIT WAV integration supersedes study holds; candidate adaptation allowed; no blind-review/independent rights/liability claim."
+  },
+  "R048": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/engine.md#output-and-road-response",
+      "docs/agent-guide/engine.md#tamarro-and-idle"
+    ],
+    "consult_when": "Engine output, deceleration, controls or idle",
+    "resolution": "Dry bypass/no moving ducking retained; displayed-zero left/right visible across chrome and disabled under remaining audio/movement/lifecycle conditions. R049 and ROAD-FEEDBACK / Implemented corrections explicitly remove the GPS requirement for manual revs, including stale/absent GPS; stale-zero disables automatic idle. Automatic fresh-zero and movement/mute/lifecycle stop retained."
+  },
+  "P082": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/engine.md#output-and-road-response",
+      "docs/agent-guide/engine.md#tamarro-and-idle"
+    ],
+    "consult_when": "Engine output, deceleration, controls or idle",
+    "resolution": "Dry bypass/no moving ducking retained; displayed-zero left/right visible across chrome and disabled under remaining audio/movement/lifecycle conditions. R049 and ROAD-FEEDBACK / Implemented corrections explicitly remove the GPS requirement for manual revs, including stale/absent GPS; stale-zero disables automatic idle. Automatic fresh-zero and movement/mute/lifecycle stop retained."
+  },
+  "R049": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/engine.md#tamarro-and-idle",
+      "docs/agent-guide/motion-runtime.md#gps-and-simulator",
+      "docs/agent-guide/maps.md#atlas-and-stats",
+      "docs/agent-guide/interface.md#intro-and-branding"
+    ],
+    "consult_when": "Manual/automatic Engine freshness, Stats catalogue or Intro/Splash identity",
+    "resolution": "Manual ready-before-GPS, movement cancel; automatic watch exact zero/12 s hold/~10 s cadence, missing/hidden cancel, monotonic watch vs acquired one-shot and historical clock uncertainty; Visual09 separate/outward heading bands; Intro/Splash build with Intro bottom-right preserved."
+  },
+  "R050": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/diagnostics-reports.md#automatic-delivery"
+    ],
+    "consult_when": "Automatic diagnostic defaults/delivery",
+    "resolution": "Dev/AUTO ON, saved OFF/Standard, visible OFF, bounded coordinate-free fixed destination, single in-flight/pending/retry/server tests/no synthetic mail retained. Driving-only fifteen minutes is superseded by R060/R061 active session; not a new manual-only gate."
+  },
+  "R051": {
+    "outcome": "updated",
+    "destinations": [
+      "AGENTS.md#working-agreement",
+      "docs/agent-guide/interface.md#phone-behavior",
+      "docs/agent-guide/recovery.md#current-continuation",
+      "docs/agent-guide/engine.md#research-and-campaign-scope"
+    ],
+    "consult_when": "iPhone work or requested night-campaign continuation",
+    "resolution": "One-night all-open-work mandate is historical, not universal backlog authority. Compact Cockpit direction 1, named iPhones/no known iOS, rotation ownership and phone-only inert notice retained; evidence layers kept."
+  },
+  "R052": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/diagnostics-reports.md#travel-report"
+    ],
+    "consult_when": "Travel Report/PDF/recipient/route changes",
+    "resolution": "Direction 1 cover/journey/graphs/appendix, explicit route inclusion, immutable preview/download and recipient verification, technical coordinate exclusion retained."
+  },
+  "R053": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/maps.md#altitude"
+    ],
+    "consult_when": "Altitude display, totals or PDF",
+    "resolution": "GPS display independent of strict totals filter, GPS priority, labeled Open-Meteo/Copernicus fallback, rounded cache/spacing/recovery; no auto diagnostic geography."
+  },
+  "R054": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/engine.md#research-and-campaign-scope",
+      "docs/agent-guide/engine.md#accepted-source-and-voices",
+      "docs/agent-guide/engine.md#output-and-road-response",
+      "docs/agent-guide/interface.md#design-decisions"
+    ],
+    "consult_when": "Explicit Engine quality campaign",
+    "resolution": "Campaign implementation/refactor authority retained in its scope, local Dropbox, study sources and close prior delivery; historical fresh-Ultra invitation does not auto-launch tasks or all backlog. Current source handoff/retained voices supersede old research candidates; provenance/dry/GPS/Telemetry and separate visual selection preserved."
+  },
+  "R055": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/engine.md#output-and-road-response"
+    ],
+    "consult_when": "Engine road calibration",
+    "resolution": "35/65 ladder superseded explicitly: 20\u201340 restraint, strong 80, 100\u2013130 progression, virtual ratios/load/dwell, road ceiling not neutral rev, dry output and virtual-not-Tesla truth. Later second-at30 is calibration preference, not speed-only override."
+  },
+  "P096": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/engine.md#output-and-road-response"
+    ],
+    "consult_when": "Engine road calibration",
+    "resolution": "35/65 ladder superseded explicitly: 20\u201340 restraint, strong 80, 100\u2013130 progression, virtual ratios/load/dwell, road ceiling not neutral rev, dry output and virtual-not-Tesla truth. Later second-at30 is calibration preference, not speed-only override."
+  },
+  "R056": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/engine.md#research-and-campaign-scope"
+    ],
+    "consult_when": "Engine simulator/source research",
+    "resolution": "Both named references, public access only, no purchase/bypass/proprietary import; Yaghi IR/ratios/manual controls distinguished from recordings/automatic gearbox."
+  },
+  "P095": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/engine.md#research-and-campaign-scope"
+    ],
+    "consult_when": "Engine simulator/source research",
+    "resolution": "Both named references, public access only, no purchase/bypass/proprietary import; Yaghi IR/ratios/manual controls distinguished from recordings/automatic gearbox."
+  },
+  "R057": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/engine.md#output-and-road-response",
+      "docs/agent-guide/engine.md#research-and-campaign-scope",
+      "docs/agent-guide/engine.md#protected-listening-lab",
+      "docs/agent-guide/engine.md#accepted-source-and-voices"
+    ],
+    "consult_when": "Engine acoustic refinement or listening evaluation",
+    "resolution": "0807 road evidence remains historical; second near30, full body/no phase smear retained. R058 selected A/B resolves proposed LAB gate. Later retained-voices owner decision retires Otto/Cinque/Turbine without reverting Mono hybrid; no invented listening-build identity."
+  },
+  "R058": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/engine.md#protected-listening-lab"
+    ],
+    "consult_when": "Protected A/B LAB calibration/replay/notes",
+    "resolution": "Same route/two calibrations/one take/original levels/local bounded history+export; public default/dry/GPS retained, synchronize labels and source IDs for any parameter change."
+  },
+  "R059": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/engine.md#protected-listening-lab"
+    ],
+    "consult_when": "Protected A/B LAB calibration/replay/notes",
+    "resolution": "Same route/two calibrations/one take/original levels/local bounded history+export; public default/dry/GPS retained, synchronize labels and source IDs for any parameter change."
+  },
+  "R060": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/diagnostics-reports.md#automatic-delivery"
+    ],
+    "consult_when": "Session clock, automatic diagnostic client/server/transport",
+    "resolution": "Exact fifteen-minute active-visible clock includes stops/noGPS/simulation/offline; hidden or >5 s gap excluded; reload reset; one due memory snapshot/no outbox; exact metadata and event names, server old-client compatibility/floor, mail acceptance meaning retained."
+  },
+  "R061": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/diagnostics-reports.md#automatic-delivery"
+    ],
+    "consult_when": "Session clock, automatic diagnostic client/server/transport",
+    "resolution": "Exact fifteen-minute active-visible clock includes stops/noGPS/simulation/offline; hidden or >5 s gap excluded; reload reset; one due memory snapshot/no outbox; exact metadata and event names, server old-client compatibility/floor, mail acceptance meaning retained."
+  },
+  "P098": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/diagnostics-reports.md#automatic-delivery"
+    ],
+    "consult_when": "Session clock, automatic diagnostic client/server/transport",
+    "resolution": "Exact fifteen-minute active-visible clock includes stops/noGPS/simulation/offline; hidden or >5 s gap excluded; reload reset; one due memory snapshot/no outbox; exact metadata and event names, server old-client compatibility/floor, mail acceptance meaning retained."
+  },
+  "P099": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/diagnostics-reports.md#automatic-delivery"
+    ],
+    "consult_when": "Session clock, automatic diagnostic client/server/transport",
+    "resolution": "Exact fifteen-minute active-visible clock includes stops/noGPS/simulation/offline; hidden or >5 s gap excluded; reload reset; one due memory snapshot/no outbox; exact metadata and event names, server old-client compatibility/floor, mail acceptance meaning retained."
+  },
+  "R062": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/music.md#soundtrack-and-selection",
+      "docs/agent-guide/diagnostics-reports.md#capture-and-presentation"
+    ],
+    "consult_when": "Weak-network music, artwork, native media handlers or logs",
+    "resolution": "Initial glyph payload, loading/retry and retained transport, artwork recovery/native metadata, actual handlers not registration, invocation/outcome evidence, 1x fixed recordings."
+  },
+  "P100": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/music.md#soundtrack-and-selection",
+      "docs/agent-guide/diagnostics-reports.md#capture-and-presentation"
+    ],
+    "consult_when": "Weak-network music, artwork, native media handlers or logs",
+    "resolution": "Initial glyph payload, loading/retry and retained transport, artwork recovery/native metadata, actual handlers not registration, invocation/outcome evidence, 1x fixed recordings."
+  },
+  "R063": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/motion-runtime.md#preparation-and-recovery",
+      "docs/agent-guide/engine.md#tamarro-and-idle",
+      "docs/agent-guide/music.md#soundtrack-and-selection"
+    ],
+    "consult_when": "Intro preparation, Engine loading/cache or soundtrack readiness",
+    "resolution": "Silent selected Lucky/Jamendo/cover and at least Mono/follow Engine choice; no hidden mounting/audio before gesture; encoded bounded verified retention, transient Jamendo; centered loading separate controls."
+  },
+  "R064": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/motion-runtime.md#cache-and-updates"
+    ],
+    "consult_when": "Service worker/static caching/build checks/session renewal",
+    "resolution": "Seven-day build caches/active-client protection, capability limits, remote/private exclusions; five-minute+recovery checks, successful fresh week renewal, thirty observed quiet seconds Intro or mute+fresh zero, resets/preferences/update/no background promises."
+  },
+  "R065": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/interface.md#phone-behavior",
+      "docs/agent-guide/maps.md#discover",
+      "docs/agent-guide/maps.md#atlas-and-stats",
+      "docs/agent-guide/maps.md#air-atlas",
+      "docs/agent-guide/delivery.md#verification-proportional-to-the-change"
+    ],
+    "consult_when": "Phone palette/footer, Discover rows, Atlas camera or radar",
+    "resolution": "Safe-area-aware edge and tap fix retained; actual row/provider/camera corrections from ROAD-UI / Implemented. Radar A selected and rounded requests authorized in AIR-ATLAS opening decision; A+C/lens later selections retained. No desktop60FPS claim."
+  },
+  "R066": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/maps.md#air-atlas",
+      "docs/agent-guide/maps.md#fly-with"
+    ],
+    "consult_when": "Radar symbols, motion, base map or flight view",
+    "resolution": "Selected-only ring/distance/exact or category shapes without track requirement, five-second measured interpolation, major roads/lakes/runway/limited water and source-required airways. Pending nose-camera gate resolved by R067 A+C; numeric 1.25 retained."
+  },
+  "R067": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/maps.md#fly-with"
+    ],
+    "consult_when": "Flight camera or radar return",
+    "resolution": "A+C oblique real terrain 1.25 plus corner minimap/telemetry, shared delayed track, direct return, honest stale/altitude approximation, no video/clearance claim."
+  },
+  "R068": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/interface.md#intro-and-branding",
+      "docs/agent-guide/music.md#curated-experiences",
+      "docs/agent-guide/music.md#soundtrack-and-selection"
+    ],
+    "consult_when": "Compact Intro/defaults/artwork/presets",
+    "resolution": "A only within original compact colors/center/START, 80 square/6 radius/compact controls, Mute and stable two genre presets/direct palette/no generated art. R069 supersedes saved-source exception; R070 removes Intro artist and adds 8 padding; actual prepared identity retained."
+  },
+  "P101": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/interface.md#intro-and-branding",
+      "docs/agent-guide/music.md#curated-experiences",
+      "docs/agent-guide/music.md#soundtrack-and-selection"
+    ],
+    "consult_when": "Compact Intro/defaults/artwork/presets",
+    "resolution": "A only within original compact colors/center/START, 80 square/6 radius/compact controls, Mute and stable two genre presets/direct palette/no generated art. R069 supersedes saved-source exception; R070 removes Intro artist and adds 8 padding; actual prepared identity retained."
+  },
+  "R069": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/interface.md#intro-and-branding"
+    ],
+    "consult_when": "Intro initial preference, outlines, media/preset geometry",
+    "resolution": "Soundtrack on every Intro, saved mute/current visit intact; Random outlined32/touch48; 80 art; circular36 presets/divided groups/direct palette. R070 supersedes artist/right-align and zero padding only; no new design gate."
+  },
+  "P102": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/interface.md#intro-and-branding"
+    ],
+    "consult_when": "Intro initial preference, outlines, media/preset geometry",
+    "resolution": "Soundtrack on every Intro, saved mute/current visit intact; Random outlined32/touch48; 80 art; circular36 presets/divided groups/direct palette. R070 supersedes artist/right-align and zero padding only; no new design gate."
+  },
+  "R070": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/interface.md#intro-and-branding"
+    ],
+    "consult_when": "Intro spacing, labels, artist or narrow layout",
+    "resolution": "80 cover+8 top/bottom, no media outer border/divider, SOUNDTRACK+nonduplicate genre, artist removed only Intro, PRESETS not RESET, label always visible with narrow stacking."
+  },
+  "P103": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/interface.md#intro-and-branding"
+    ],
+    "consult_when": "Intro spacing, labels, artist or narrow layout",
+    "resolution": "80 cover+8 top/bottom, no media outer border/divider, SOUNDTRACK+nonduplicate genre, artist removed only Intro, PRESETS not RESET, label always visible with narrow stacking."
+  },
+  "R071": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/maps.md#air-atlas",
+      "docs/agent-guide/maps.md#geographic-privacy",
+      "docs/agent-guide/motion-runtime.md#gps-and-simulator"
+    ],
+    "consult_when": "Air Atlas location/freshness",
+    "resolution": "First geographic fix at rest or >250 m permitted with approximation/refinement; does not relax motion/terrain/journey, distinguish permission/noAPI/last known; callbacks independent of Permissions API."
+  },
+  "P104": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/maps.md#air-atlas",
+      "docs/agent-guide/maps.md#geographic-privacy",
+      "docs/agent-guide/motion-runtime.md#gps-and-simulator"
+    ],
+    "consult_when": "Air Atlas location/freshness",
+    "resolution": "First geographic fix at rest or >250 m permitted with approximation/refinement; does not relax motion/terrain/journey, distinguish permission/noAPI/last known; callbacks independent of Permissions API."
+  },
+  "R072": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/maps.md#air-atlas"
+    ],
+    "consult_when": "Flight trails, lens or hit regions",
+    "resolution": "Five-second delayed trail end; 5 km/5 min/256 points, missing/implausible breaks; selected spherical display lens A, coordinates unchanged, warped hits, flat controls and ordinary map fallback; physical gate remains."
+  },
+  "P105": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/maps.md#air-atlas"
+    ],
+    "consult_when": "Flight trails, lens or hit regions",
+    "resolution": "Five-second delayed trail end; 5 km/5 min/256 points, missing/implausible breaks; selected spherical display lens A, coordinates unchanged, warped hits, flat controls and ordinary map fallback; physical gate remains."
+  },
+  "R073": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/maps.md#fly-with",
+      "docs/agent-guide/maps.md#air-atlas"
+    ],
+    "consult_when": "Flight camera continuity/zoom/action or selected marker geometry",
+    "resolution": "Every-frame delayed camera/no tile wait, retain last DEM, no lost-signal motion; zoom held pose without camera-position change; prominent palette original icon; 54 ring/42 silhouette/about4 clearance/distance."
+  },
+  "P106": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/maps.md#fly-with",
+      "docs/agent-guide/maps.md#air-atlas"
+    ],
+    "consult_when": "Flight camera continuity/zoom/action or selected marker geometry",
+    "resolution": "Every-frame delayed camera/no tile wait, retain last DEM, no lost-signal motion; zoom held pose without camera-position change; prominent palette original icon; 54 ring/42 silhouette/about4 clearance/distance."
+  },
+  "R074": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/maps.md#air-atlas"
+    ],
+    "consult_when": "Radar viewport, provider coverage or refresh",
+    "resolution": "Visible area follows zoom/pan, bounded coverage, no nearest32, position vs message age, manual/selected refresh respects backoff and no false freshness. Specific verified current bounds are linked, not guessed."
+  },
+  "P107": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/maps.md#air-atlas"
+    ],
+    "consult_when": "Radar viewport, provider coverage or refresh",
+    "resolution": "Visible area follows zoom/pan, bounded coverage, no nearest32, position vs message age, manual/selected refresh respects backoff and no false freshness. Specific verified current bounds are linked, not guessed."
+  },
+  "P001": {
+    "outcome": "moved",
+    "destinations": [
+      "prototype/drive-lab/AGENTS.md#local-work"
+    ],
+    "consult_when": "Requested runnable preview",
+    "resolution": "Agent starts and opens available preview itself within task scope; not a server mandate for documentation-only work."
+  },
+  "P002": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/interface.md#design-decisions",
+      "AGENTS.md#working-agreement"
+    ],
+    "consult_when": "Substantial visual change with unclear source, or durable contract amendment",
+    "resolution": "Preserve context/fidelity intent; unavailable get-context replaced by installed Product Design entry routing, no global skill change. User explicitly requests relevant contract maintenance instead of root diary."
+  },
+  "P003": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/interface.md#design-decisions"
+    ],
+    "consult_when": "Selected-image implementation",
+    "resolution": "Exact visual fidelity contract and explicit owner amendments preserved."
+  },
+  "P004": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/visuals.md#aperture-and-rejected-studies"
+    ],
+    "consult_when": "Aperture rendering",
+    "resolution": "Selected Modular Aperture rest/tunnel/deceleration behavior."
+  },
+  "P005": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/visuals.md#aperture-and-rejected-studies",
+      "docs/agent-guide/interface.md#chrome-and-drawers"
+    ],
+    "consult_when": "Tunnel or resting/wake behavior",
+    "resolution": "Dark void retained; fully retracted rest/speed-only/deliberate wake/no passive wake retained; stale-focus retention superseded by P067; moving wake corrected by P075."
+  },
+  "P006": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/interface.md#shared-geometry-and-palette"
+    ],
+    "consult_when": "Shared styling or palette",
+    "resolution": "Swiss/Braun flat typography/grid, no knobs/glassmorphism/decorative chrome; curated palette field+accent and no paint/shader controls. Explicit circular artwork exceptions maintained."
+  },
+  "P007": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/interface.md#shared-geometry-and-palette"
+    ],
+    "consult_when": "Shared styling or palette",
+    "resolution": "Swiss/Braun flat typography/grid, no knobs/glassmorphism/decorative chrome; curated palette field+accent and no paint/shader controls. Explicit circular artwork exceptions maintained."
+  },
+  "P008": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/visuals.md#drivey"
+    ],
+    "consult_when": "Drivey themes, steering, bridge or speed response",
+    "resolution": "Two simultaneous accent+secondary channels Normal/Wire, automatic upstream Input/road following/no manual steering/only lane weave removed; quadratic compensation, synchronized traffic/reveal, exact 5/40/90/130 tests, no vendor edits."
+  },
+  "P009": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/visuals.md#drivey"
+    ],
+    "consult_when": "Drivey themes, steering, bridge or speed response",
+    "resolution": "Two simultaneous accent+secondary channels Normal/Wire, automatic upstream Input/road following/no manual steering/only lane weave removed; quadratic compensation, synchronized traffic/reveal, exact 5/40/90/130 tests, no vendor edits."
+  },
+  "P035": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/visuals.md#drivey"
+    ],
+    "consult_when": "Drivey themes, steering, bridge or speed response",
+    "resolution": "Two simultaneous accent+secondary channels Normal/Wire, automatic upstream Input/road following/no manual steering/only lane weave removed; quadratic compensation, synchronized traffic/reveal, exact 5/40/90/130 tests, no vendor edits."
+  },
+  "P010": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/visuals.md#aperture-and-rejected-studies"
+    ],
+    "consult_when": "Rejected studies, reference handling or visual backlog",
+    "resolution": "WAKE no salvage until new selection; private approved images retained; Laminar independent reinterpretation; unselected Switchback/Rolling Register backlog preserved."
+  },
+  "P011": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/visuals.md#aperture-and-rejected-studies"
+    ],
+    "consult_when": "Rejected studies, reference handling or visual backlog",
+    "resolution": "WAKE no salvage until new selection; private approved images retained; Laminar independent reinterpretation; unselected Switchback/Rolling Register backlog preserved."
+  },
+  "P014": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/visuals.md#aperture-and-rejected-studies"
+    ],
+    "consult_when": "Rejected studies, reference handling or visual backlog",
+    "resolution": "WAKE no salvage until new selection; private approved images retained; Laminar independent reinterpretation; unselected Switchback/Rolling Register backlog preserved."
+  },
+  "P012": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/visuals.md#vertigo-02"
+    ],
+    "consult_when": "Vertigo work",
+    "resolution": "Complete exact upstream pin/scene/dependencies, hidden editorial shell and narrowly permitted external controls merged with R028 without loss."
+  },
+  "P013": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/motion-runtime.md#energy-and-mode-boundary",
+      "docs/agent-guide/music.md#authored-score"
+    ],
+    "consult_when": "Music/visual energy mapping or selectors",
+    "resolution": "Fixed130, tunnel40, retired slider and truthful genre readiness reachable from both music and visual routing."
+  },
+  "P015": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/motion-runtime.md#energy-and-mode-boundary"
+    ],
+    "consult_when": "Shared mode ownership",
+    "resolution": "Equal Engine/Flux retained; public Music and implemented Engine supersede Flux-only current-state wording. Shared speed/diagnostics/unlock/Stop/Mute/safety/accessibility, no actual car telemetry claims."
+  },
+  "P016": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/motion-runtime.md#energy-and-mode-boundary"
+    ],
+    "consult_when": "Shared mode ownership",
+    "resolution": "Equal Engine/Flux retained; public Music and implemented Engine supersede Flux-only current-state wording. Shared speed/diagnostics/unlock/Stop/Mute/safety/accessibility, no actual car telemetry claims."
+  },
+  "P018": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/motion-runtime.md#energy-and-mode-boundary"
+    ],
+    "consult_when": "Shared mode ownership",
+    "resolution": "Equal Engine/Flux retained; public Music and implemented Engine supersede Flux-only current-state wording. Shared speed/diagnostics/unlock/Stop/Mute/safety/accessibility, no actual car telemetry claims."
+  },
+  "P017": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/engine.md#output-and-road-response",
+      "docs/agent-guide/interface.md#design-decisions"
+    ],
+    "consult_when": "Engine visual changes",
+    "resolution": "Engine has separate selectable models/instrument visual; explicit Telemetry selection in ENGINE-INTEGRATION / Accepted scope resolves initial visual gate, future redesign still requires selection."
+  },
+  "P019": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/visuals.md#shared-boundaries"
+    ],
+    "consult_when": "New original field or selected geographic/source integration",
+    "resolution": "Abstract/minimal/no characters default retained; explicit selected Drivey/maps are scoped exceptions, not retroactive bans on accepted product."
+  },
+  "P020": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/visuals.md#gradient-08"
+    ],
+    "consult_when": "Gradient renderer, old preference, LAB or road response",
+    "resolution": "Retired custom renderer/no return, legacy Japanese Mist; exact 3 variants/family, original LAB geometry/motion and palette colors, braking fold/release, Soundtrack speed-only vs bounded scored audio, lazy chunk/MIT/fallback/reduced motion/130/Tesla, mechanics-only FeralUI/ColorFlow."
+  },
+  "P021": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/visuals.md#gradient-08"
+    ],
+    "consult_when": "Gradient renderer, old preference, LAB or road response",
+    "resolution": "Retired custom renderer/no return, legacy Japanese Mist; exact 3 variants/family, original LAB geometry/motion and palette colors, braking fold/release, Soundtrack speed-only vs bounded scored audio, lazy chunk/MIT/fallback/reduced motion/130/Tesla, mechanics-only FeralUI/ColorFlow."
+  },
+  "P022": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/visuals.md#prtcl"
+    ],
+    "consult_when": "PRTCL forms, braking or selection",
+    "resolution": "Fractal/Axiom active and Murmuration parked; complete-form collapse22.5%, point27.5%, quick exact speed-scale restore, no subtle-glow substitute."
+  },
+  "P023": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/interface.md#chrome-and-drawers"
+    ],
+    "consult_when": "Shared drawer gestures",
+    "resolution": "CLOSE/Escape/backdrop/dominant exit swipe, non-control capture, app overscroll, 28px native edge yielding and no disable claim."
+  },
+  "P024": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/interface.md#intro-and-branding"
+    ],
+    "consult_when": "Launch flow",
+    "resolution": "PLAY THE ROAD brand-first step replaced explicitly by P083/Launch Cockpit single START; fade into running and silent preparation intent retained."
+  },
+  "P025": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/interface.md#intro-and-branding",
+      "docs/agent-guide/interface.md#design-decisions"
+    ],
+    "consult_when": "Launch background/support/identity",
+    "resolution": "Signal Gate generative WebGL2+Canvas2D lanes/colors/gate retained. Old CTA and top-left support placement replaced by P083/P090; real credit/source/local note, QR/destination and no fabricated donation count retained, conditional playful15 disclosure preserved."
+  },
+  "P026": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/interface.md#intro-and-branding"
+    ],
+    "consult_when": "Brand wordmarks or launch layout",
+    "resolution": "360x160 launch surface/42mark retired with explicit brand-click removal; Orbitron750/-0.02em, 16 mark, Space Grotesk elsewhere, semantic functional controls and no fake appliance parts retained."
+  },
+  "P027": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/interface.md#intro-and-branding"
+    ],
+    "consult_when": "Intro composition",
+    "resolution": "Road Sheet fixed grid/equal block edges superseded by P083/P087/R068 compact media/action row selection; semantic shell/START/intrinsic height remain. Does not reintroduce auto-growing deck."
+  },
+  "P028": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/interface.md#shared-geometry-and-palette",
+      "docs/agent-guide/interface.md#chrome-and-drawers",
+      "docs/agent-guide/maps.md#atlas-and-stats"
+    ],
+    "consult_when": "Type, targets, bars, modal or catalogue behavior",
+    "resolution": "Exact role ladder,48/56 targets,64 navbar/Now Playing/footer, ATLAS/modal suppression, full field,6px contextual cycles, real caret libraries. Surface-specific map geometry is not silently discarded."
+  },
+  "P029": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/music.md#soundtrack-and-selection",
+      "docs/agent-guide/music.md#effects-boundary"
+    ],
+    "consult_when": "Music source switch/catalogue/FX",
+    "resolution": "Persistent sources, Illobo/Jamendo equal,30min cadence, immediate choices/pace discovery/1x, universal MUTE/FX preserved. OPEN/BLOOM part of old macro set replaced explicitly by MUSIC-CRAFT6.16; Underwater remains."
+  },
+  "P030": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/music.md#soundtrack-and-selection"
+    ],
+    "consult_when": "Soundtrack startup or transport buffering",
+    "resolution": "Immediate START/mute/truthful pending, exact three roles/preload metadata/6s floor/healthy previous/target silent wait+rewind/outgoing committed continuity/stable media handlers/ordered rapid commands/speed-only black module preserved."
+  },
+  "P031": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/music.md#soundtrack-and-selection"
+    ],
+    "consult_when": "Soundtrack startup or transport buffering",
+    "resolution": "Immediate START/mute/truthful pending, exact three roles/preload metadata/6s floor/healthy previous/target silent wait+rewind/outgoing committed continuity/stable media handlers/ordered rapid commands/speed-only black module preserved."
+  },
+  "P032": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/interface.md#running-media-and-effects"
+    ],
+    "consult_when": "Running Now Playing",
+    "resolution": "Artwork/title/artist-source/transport/committed identity persistence retained; independent overlay superseded by P066 footer animated/inert ownership and menu suppression."
+  },
+  "P033": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/interface.md#running-media-and-effects",
+      "docs/agent-guide/music.md#soundtrack-and-selection"
+    ],
+    "consult_when": "Music drawer typography/controls/covers",
+    "resolution": "773x601 scroll rather than sub-role/sub-target sizing, whole-surface chips/rows/icons, three real scores only, title-specific Illobo covers vs playlist marks."
+  },
+  "P034": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/interface.md#running-media-and-effects"
+    ],
+    "consult_when": "Chart icon or appearance tokens",
+    "resolution": "White visible dark icon/NOW PLAYING one line; original black vendor SVG unchanged/non-destructive future appearance roles."
+  },
+  "P036": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/music.md#effects-boundary"
+    ],
+    "consult_when": "Macro schema or manual effects graph",
+    "resolution": "snapshot.values typed boundary, two-stage Underwater; eight not four/manual processors including retained3/removeChorus/add5, bounded shared graph/no Beat Repeat retained. OPEN/BLOOM retired by explicit MUSIC-CRAFT6.16, not conflated with manual FX."
+  },
+  "P037": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/interface.md#running-media-and-effects",
+      "docs/agent-guide/music.md#effects-boundary"
+    ],
+    "consult_when": "FX Deck UI or processing",
+    "resolution": "MIX nonmodal 2x4 above footer, strong100% bounded/no artifacts, independent depth/reset/persistence/pin/no inert/no Music-drawer relocation."
+  },
+  "P038": {
+    "outcome": "unresolved",
+    "destinations": [
+      "docs/agent-guide/maps.md#atlas-and-stats"
+    ],
+    "consult_when": "ATLAS attribution or location-sidebar work",
+    "resolution": "Explicit14px attribution retained alongside generic13 metadata. Location handle ambiguity remains isolated; chart handle retirement is not assumed to revoke different location sidebar."
+  },
+  "P039": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/maps.md#atlas-and-stats"
+    ],
+    "consult_when": "Stats parity or historical ATLAS/sidebar geometry",
+    "resolution": "320 sidebar/340Canvas and old chart handle retired by P094. Metric list, elevation and15MIN/1H/SESSION information retained for parity. 36x30 icon tab/48x48 target/no full rail accessible reopen remains conditional on unresolved location-handle applicability; no generic moved-to-UI assertion."
+  },
+  "P040": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/maps.md#discover"
+    ],
+    "consult_when": "Discover geometry/reader/QR/navigation",
+    "resolution": "52heading/24title/48tools/246rail preserved;64 row rhythm superseded by explicit Sept9 compact72px/15names/13meta (not code alone); +N MORE/full same scroll/complete sandbox article/Google Maps exploration no auto directions/no Atlas links preserved."
+  },
+  "P041": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/maps.md#discover"
+    ],
+    "consult_when": "Discover search/language/reader layout",
+    "resolution": "Global noGPS language search/relevance, location only empty nearby/ahead/region; infobox/lead responsive limits/no crop or word-column, stack narrow only; no LANGUAGE label/compact scope/readable metadata retained."
+  },
+  "P044": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/maps.md#discover"
+    ],
+    "consult_when": "Discover search/language/reader layout",
+    "resolution": "Global noGPS language search/relevance, location only empty nearby/ahead/region; infobox/lead responsive limits/no crop or word-column, stack narrow only; no LANGUAGE label/compact scope/readable metadata retained."
+  },
+  "P045": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/maps.md#discover"
+    ],
+    "consult_when": "Discover search/language/reader layout",
+    "resolution": "Global noGPS language search/relevance, location only empty nearby/ahead/region; infobox/lead responsive limits/no crop or word-column, stack narrow only; no LANGUAGE label/compact scope/readable metadata retained."
+  },
+  "P042": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/visuals.md#aperture-and-rejected-studies",
+      "docs/agent-guide/interface.md#chrome-and-drawers"
+    ],
+    "consult_when": "Aperture grid or catalogue labels",
+    "resolution": "One exact origin retained; no internal count advertisements; visible01\u201308 numbering superseded by P097 owner removal, stable internal IDs remain."
+  },
+  "P043": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/interface.md#chrome-and-drawers"
+    ],
+    "consult_when": "Network status indicator",
+    "resolution": "Browser estimate/no cellular or active ping, readable named outlined dot, no NET ONLINE, actionable16px constrained/offline/downlink."
+  },
+  "P046": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/motion-runtime.md#energy-and-mode-boundary",
+      "docs/agent-guide/maps.md#geographic-privacy",
+      "docs/agent-guide/diagnostics-reports.md#travel-report"
+    ],
+    "consult_when": "GPS handling, geographic service or route export",
+    "resolution": "Shared normalized speed retained. Universal coordinates ban explicitly narrowed by selected source-coordinate POIs, optional route export R052 and Air Atlas forwarding approval; no diagnostic geography remains invariant. No unrelated location authority."
+  },
+  "P047": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/motion-runtime.md#gps-and-simulator"
+    ],
+    "consult_when": "Desktop simulator/GPS continuity",
+    "resolution": "Held Space exact-speed stronger brake/settle, Model3 time curve soft GPS envelope only; ArrowUp hold/release and ArrowDown nominal lift/auto Demo same; no arbitrary timed GPS switch or jump. Precise source/curve references routed."
+  },
+  "P048": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/motion-runtime.md#gps-and-simulator"
+    ],
+    "consult_when": "Desktop simulator/GPS continuity",
+    "resolution": "Held Space exact-speed stronger brake/settle, Model3 time curve soft GPS envelope only; ArrowUp hold/release and ArrowDown nominal lift/auto Demo same; no arbitrary timed GPS switch or jump. Precise source/curve references routed."
+  },
+  "P049": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/diagnostics-reports.md#capture-and-presentation",
+      "docs/agent-guide/diagnostics-reports.md#automatic-delivery"
+    ],
+    "consult_when": "Diagnostic capture or delivery",
+    "resolution": "Original safe aggregate/trace/interaction fields and exclusions, bounded session-only sampling outside React and full-session aggregates preserved. Explicit gestures still work; manual-only/no automatic text superseded solely by R050/R060 authorized coordinate-free active-session delivery, not arbitrary telemetry."
+  },
+  "P052": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/diagnostics-reports.md#capture-and-presentation",
+      "docs/agent-guide/diagnostics-reports.md#automatic-delivery"
+    ],
+    "consult_when": "Diagnostic capture or delivery",
+    "resolution": "Original safe aggregate/trace/interaction fields and exclusions, bounded session-only sampling outside React and full-session aggregates preserved. Explicit gestures still work; manual-only/no automatic text superseded solely by R050/R060 authorized coordinate-free active-session delivery, not arbitrary telemetry."
+  },
+  "P053": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/diagnostics-reports.md#capture-and-presentation",
+      "docs/agent-guide/diagnostics-reports.md#automatic-delivery"
+    ],
+    "consult_when": "Diagnostic capture or delivery",
+    "resolution": "Original safe aggregate/trace/interaction fields and exclusions, bounded session-only sampling outside React and full-session aggregates preserved. Explicit gestures still work; manual-only/no automatic text superseded solely by R050/R060 authorized coordinate-free active-session delivery, not arbitrary telemetry."
+  },
+  "P050": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/diagnostics-reports.md#capture-and-presentation"
+    ],
+    "consult_when": "REPORT entry or runtime measurements",
+    "resolution": "Pinned labeled report icon not gear/tooltip, main-product access; bounded per-phase FPS/timing/heap/PCM/bank sizes outside per-frame React; unavailable APIs truthful."
+  },
+  "P051": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/diagnostics-reports.md#capture-and-presentation"
+    ],
+    "consult_when": "REPORT entry or runtime measurements",
+    "resolution": "Pinned labeled report icon not gear/tooltip, main-product access; bounded per-phase FPS/timing/heap/PCM/bank sizes outside per-frame React; unavailable APIs truthful."
+  },
+  "P054": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/diagnostics-reports.md#email-attachment"
+    ],
+    "consult_when": "Diagnostic email attachment",
+    "resolution": "Concise body/full accepted gzip JSON/build+accepted timestamp/compressed+raw hashes/deterministic full roundtrip retained."
+  },
+  "P055": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/music.md#authored-score"
+    ],
+    "consult_when": "Score energy/structure/deceleration",
+    "resolution": "Smoothed saturating speed, tempo knee/orchestration, continuous vs bar events, hysteresis/dwell/crossfades/musical braking retained."
+  },
+  "P059": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/music.md#authored-score"
+    ],
+    "consult_when": "Score energy/structure/deceleration",
+    "resolution": "Smoothed saturating speed, tempo knee/orchestration, continuous vs bar events, hysteresis/dwell/crossfades/musical braking retained."
+  },
+  "P056": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/visuals.md#shared-boundaries"
+    ],
+    "consult_when": "Visual renderer/fallback",
+    "resolution": "Rich WebGL2 with reduced-motion and lightweight fallback kept, subject to renderer-specific source fidelity."
+  },
+  "P057": {
+    "outcome": "merged",
+    "destinations": [
+      "AGENTS.md#working-agreement"
+    ],
+    "consult_when": "All tasks",
+    "resolution": "Language duplicate unified without changing English/Italian scope."
+  },
+  "P058": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/delivery.md#canonical-publication",
+      "docs/agent-guide/diagnostics-reports.md#capture-and-presentation"
+    ],
+    "consult_when": "Product deployment or diagnostics access",
+    "resolution": "Experimental canonical root and main diagnostics retained; repeated owner approval superseded by R042 September5 standing authority."
+  },
+  "P060": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/music.md#junction"
+    ],
+    "consult_when": "JUNCTION paired takes/rendering/history",
+    "resolution": "Exact shared spine/eight-bar completion, reset voices/DSP/click-safe edges, recent history and six clips merged with R033."
+  },
+  "P061": {
+    "outcome": "merged",
+    "destinations": [
+      "AGENTS.md#working-agreement",
+      "docs/agent-guide/delivery.md#identity-and-records"
+    ],
+    "consult_when": "Implementation or checkpoint",
+    "resolution": "Saved Dropbox implementation and verified commits/push preserved; single-writer context distinguished from independently authorized separate-checkout work."
+  },
+  "P062": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/delivery.md#identity-and-records"
+    ],
+    "consult_when": "Changelog maintenance",
+    "resolution": "Append-only/local date+time/hash/build retained; task-specific migration prohibition is not permanent."
+  },
+  "P063": {
+    "outcome": "moved",
+    "destinations": [
+      "prototype/drive-lab/AGENTS.md#local-work",
+      "docs/agent-guide/delivery.md#sites-package"
+    ],
+    "consult_when": "Drive Lab code or requested Sites handoff",
+    "resolution": "src ownership and exact four package/worker/config/test paths intact; build+test:sites and exact three outputs only for Sites handoff."
+  },
+  "P064": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/interface.md#shared-geometry-and-palette",
+      "docs/agent-guide/interface.md#chrome-and-drawers",
+      "docs/agent-guide/interface.md#design-decisions"
+    ],
+    "consult_when": "Reading superseding interface presentation",
+    "resolution": "Precedence marker applied to its explicit decisions; later owner corrections applied per affected rule rather than dates alone."
+  },
+  "P065": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/interface.md#shared-geometry-and-palette"
+    ],
+    "consult_when": "Balanced Rail, typography/targets or palette contrast",
+    "resolution": "16 first/speed hierarchy/four optical cells,48/56 and shared footer rules; central contrast preserving passing colors/fixed hue/minimal changes/evidence matrix+actual backgrounds."
+  },
+  "P068": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/interface.md#shared-geometry-and-palette"
+    ],
+    "consult_when": "Balanced Rail, typography/targets or palette contrast",
+    "resolution": "16 first/speed hierarchy/four optical cells,48/56 and shared footer rules; central contrast preserving passing colors/fixed hue/minimal changes/evidence matrix+actual backgrounds."
+  },
+  "P069": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/interface.md#shared-geometry-and-palette"
+    ],
+    "consult_when": "Balanced Rail, typography/targets or palette contrast",
+    "resolution": "16 first/speed hierarchy/four optical cells,48/56 and shared footer rules; central contrast preserving passing colors/fixed hue/minimal changes/evidence matrix+actual backgrounds."
+  },
+  "P066": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/interface.md#running-media-and-effects"
+    ],
+    "consult_when": "Now Playing/footer/modal ownership",
+    "resolution": "Single animated/inert footer, suppression in Atlas/menu/popup/passenger; no independent overlay."
+  },
+  "P067": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/interface.md#chrome-and-drawers"
+    ],
+    "consult_when": "Chrome rest/inactivity/motion",
+    "resolution": "Immediate close,6s deadline, stale focus no extension/open surface usable retained;0.8kmh ambient lock superseded explicitly by P075."
+  },
+  "P070": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/maps.md#atlas-and-stats",
+      "docs/agent-guide/maps.md#discover"
+    ],
+    "consult_when": "Map labels, Discover names or article/vendor boundaries",
+    "resolution": "Readable Atlas case/spacing; two-line real Discover names and no decorative numbers; native article/upstream boundaries intact."
+  },
+  "P071": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/interface.md#chrome-and-drawers"
+    ],
+    "consult_when": "Underwater badge presentation",
+    "resolution": "Full speed footprint/descend-return/palette contrast/reduced motion/no warning red retained; later owner Night Glass refinement specifies32px strip below64 badge."
+  },
+  "P072": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/motion-runtime.md#preparation-and-recovery"
+    ],
+    "consult_when": "Launch/preload sharing",
+    "resolution": "Request reuse across choices/Music and StrictMode lifecycle retained."
+  },
+  "P073": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/interface.md#design-decisions"
+    ],
+    "consult_when": "Actual design audit or historical Sept4 refinement",
+    "resolution": "Real-render audit intent retained; no new mandatory audit for unrelated UI bug. Frontend-builder ban was session-specific and P083 explicitly replaces for Launch Cockpit; Playwright/Chrome authorization is evidence for that work, not required tooling now."
+  },
+  "P074": {
+    "outcome": "updated",
+    "destinations": [
+      "AGENTS.md#working-agreement",
+      "docs/agent-guide/recovery.md#conflicted-shared-work",
+      "docs/agent-guide/delivery.md#canonical-publication",
+      "docs/agent-guide/delivery.md#verification-proportional-to-the-change"
+    ],
+    "consult_when": "Concurrent work, publication or evidence claims",
+    "resolution": "Single writer saved checkout retained; that session no-new-task/worktree mandate not generalized to independent authorized work. Deployment confirmation explicitly superseded R042; browser != cabin/native/network/GPU retained."
+  },
+  "P075": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/interface.md#chrome-and-drawers"
+    ],
+    "consult_when": "Moving-control interaction",
+    "resolution": "Deliberate touch/keyboard at any speed, one departure retract not each sample,6s/immediate-close/pinning/speed-only, no moving lock."
+  },
+  "P076": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/interface.md#shared-geometry-and-palette",
+      "docs/agent-guide/interface.md#running-media-and-effects"
+    ],
+    "consult_when": "Palette popup or media geometry",
+    "resolution": "Named icon/label, swatches popup only,TitleCase/high-contrast13 metadata,48/56 targets; common-center artwork/text/transport and content-sized credit columns."
+  },
+  "P077": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/music.md#curated-experiences",
+      "docs/agent-guide/interface.md#intro-and-branding"
+    ],
+    "consult_when": "Curated composition or preset application",
+    "resolution": "One-time delegated first experience retained as scoped selection only. Night Glass Ambient explicitly replaced by Lounge in NIGHT-GLASS Sept5 owner-directed refinement. Shared registry/silent preparation/explicit playback/settings-derived identity/controls/recovery truthful."
+  },
+  "P078": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/interface.md#intro-and-branding"
+    ],
+    "consult_when": "Launch safety copy",
+    "resolution": "Only DRIVE RESPONSIBLY, no subordinate instructions/ceiling text; energy130/control behavior unchanged."
+  },
+  "P079": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/interface.md#chrome-and-drawers"
+    ],
+    "consult_when": "Prtcl/Drivey/Gradient cycle controls",
+    "resolution": "Label and value share left edge, dimensions/targets/colors/chrome retained."
+  },
+  "P083": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/interface.md#intro-and-branding",
+      "docs/agent-guide/music.md#soundtrack-and-selection",
+      "docs/agent-guide/interface.md#design-decisions"
+    ],
+    "consult_when": "Launch composition or queue start",
+    "resolution": "Scoped delegated Cockpit selection, publicMusic/internalFlux,oneSTART/precise choices/nonrepeat/lucky/presets/no sound beforeSTART/no old loading queue/mute/dialogs/targets; older brand-first and specific builder ban superseded."
+  },
+  "P084": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/engine.md#tamarro-and-idle"
+    ],
+    "consult_when": "TAMARRO gesture",
+    "resolution": "Bounded varied up-release-up-limiter-down, SHOW-OFF subtitle,tap stop,dry path; trusted automatic standstill vs manual-before-fix later exception kept distinct."
+  },
+  "P085": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/engine.md#output-and-road-response",
+      "docs/agent-guide/engine.md#tamarro-and-idle"
+    ],
+    "consult_when": "Engine gears or idle eligibility",
+    "resolution": "The parser splits line264 starting70.; both spans form the original35/65 ladder. Ladder explicitly superseded R055/P096, lower boundaries/dwell/dry/upstream retained; missing speed not standstill and RPM eligibility feedback retained."
+  },
+  "P086": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/engine.md#output-and-road-response",
+      "docs/agent-guide/engine.md#tamarro-and-idle"
+    ],
+    "consult_when": "Engine gears or idle eligibility",
+    "resolution": "The parser splits line264 starting70.; both spans form the original35/65 ladder. Ladder explicitly superseded R055/P096, lower boundaries/dwell/dry/upstream retained; missing speed not standstill and RPM eligibility feedback retained."
+  },
+  "P087": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/interface.md#intro-and-branding"
+    ],
+    "consult_when": "Intro random choices or thumbnail layout",
+    "resolution": "Two equal columns/light-dark/small amberMusic+accentEngine icons/48\u201356/genre+visual rerolls/precise choices/deliberate AtlasDiscover/Gradient equal weight retained.64px circular main thumbs superseded R06880px square6 corners."
+  },
+  "P088": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/interface.md#intro-and-branding"
+    ],
+    "consult_when": "Intrinsic launch/preset/short window geometry",
+    "resolution": "Content-height not tall-window fill,36px circular presets/48\u201356 retained;64px circles replaced80px. Flow footer placement superseded P089/P090 centered sheet/fixed credits/support-header, short flow remains reachable by scroll."
+  },
+  "P089": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/interface.md#intro-and-branding"
+    ],
+    "consult_when": "Centered sheet/footer positions",
+    "resolution": "Centered both axes/bounded short-window scrolling/fixed credits preserved; support bottom-right and safety bottom-center explicitly replaced by P090 header support and below-wordmark safety."
+  },
+  "P090": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/interface.md#intro-and-branding"
+    ],
+    "consult_when": "Brand/support dialog",
+    "resolution": "Transparent16mark,wordmark+Drive responsibly,yellow cup afterAbout48px/sharedREPORT,credits bottom-left,centered bounded dialog/return focus retained."
+  },
+  "P091": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/maps.md#atlas-and-stats",
+      "docs/agent-guide/diagnostics-reports.md#travel-report",
+      "AGENTS.md#working-agreement"
+    ],
+    "consult_when": "ATLAS/Stats/report scope or priority",
+    "resolution": "Support-first sequence was dated work ordering, not universal interruption. Informative wider map/natural pastels/metric parity retained; pending design resolved P094 and R052; optional user-requested remembered+reset recipient retained."
+  },
+  "P092": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/engine.md#tamarro-and-idle"
+    ],
+    "consult_when": "Engine idle level/RPM/blips",
+    "resolution": "Exact600RPM/70%,manual override entire phrase,>=1fresh restore/no jitter/stale restore,moving full,1800(+1200)/1.2sec/five-sec interval/70%,1000unknown,upstream/dry retained."
+  },
+  "P093": {
+    "outcome": "historical",
+    "destinations": [
+      "docs/agent-guide/engine.md#protected-listening-lab",
+      "docs/agent-guide/delivery.md#verification-proportional-to-the-change"
+    ],
+    "consult_when": "Interpreting old Engine gain or browser validation",
+    "resolution": "657tests and0.112/0.16 targets are dated evidence, not current acceptance or tests to rerun by rote. Active docs retain numeric historical evidence and physical-listening caveat; complete trace remains in original snapshot."
+  },
+  "P094": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/maps.md#atlas-and-stats",
+      "docs/agent-guide/diagnostics-reports.md#travel-report"
+    ],
+    "consult_when": "ATLAS/Stats separation or place reader",
+    "resolution": "Explicit remix selected, chart320/340/old handle retired, true POI/read-return/NaturalPalette/framing/audio preserved. Does not revoke separate Discover index no-Atlas-link. Later report selection replaces PDF-only plan status."
+  },
+  "P097": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/interface.md#chrome-and-drawers",
+      "docs/agent-guide/maps.md#atlas-and-stats"
+    ],
+    "consult_when": "Visual catalogue, Stats gap display or Atlas recovery/POIs",
+    "resolution": "Visible numbering/repeatedSELECT removed,ACTIVE+inactive icon retained; dashed both gaps with per-series shades/Estimated legend/no total or export changes; observed continuity; OSM independent of zoom/links/recovery retained."
+  },
+  "H001": {
+    "outcome": "historical",
+    "destinations": [
+      "docs/agent-guide/recovery.md#historical-august-29-incident"
+    ],
+    "consult_when": "Investigating the specific August29 incident only",
+    "resolution": "Manual third-session orchestration and exact historical checkout/inventory/screenshot paths remain in the byte copy through compatibility pointer; no automatic new task, checkout or old recovery execution."
+  },
+  "H003": {
+    "outcome": "historical",
+    "destinations": [
+      "docs/agent-guide/recovery.md#historical-august-29-incident"
+    ],
+    "consult_when": "Investigating the specific August29 incident only",
+    "resolution": "Manual third-session orchestration and exact historical checkout/inventory/screenshot paths remain in the byte copy through compatibility pointer; no automatic new task, checkout or old recovery execution."
+  },
+  "H004": {
+    "outcome": "historical",
+    "destinations": [
+      "docs/agent-guide/recovery.md#historical-august-29-incident"
+    ],
+    "consult_when": "Investigating the specific August29 incident only",
+    "resolution": "Manual third-session orchestration and exact historical checkout/inventory/screenshot paths remain in the byte copy through compatibility pointer; no automatic new task, checkout or old recovery execution."
+  },
+  "H005": {
+    "outcome": "historical",
+    "destinations": [
+      "docs/agent-guide/recovery.md#historical-august-29-incident"
+    ],
+    "consult_when": "Investigating the specific August29 incident only",
+    "resolution": "Manual third-session orchestration and exact historical checkout/inventory/screenshot paths remain in the byte copy through compatibility pointer; no automatic new task, checkout or old recovery execution."
+  },
+  "H006": {
+    "outcome": "historical",
+    "destinations": [
+      "docs/agent-guide/recovery.md#historical-august-29-incident"
+    ],
+    "consult_when": "Investigating the specific August29 incident only",
+    "resolution": "Manual third-session orchestration and exact historical checkout/inventory/screenshot paths remain in the byte copy through compatibility pointer; no automatic new task, checkout or old recovery execution."
+  },
+  "H007": {
+    "outcome": "historical",
+    "destinations": [
+      "docs/agent-guide/recovery.md#historical-august-29-incident"
+    ],
+    "consult_when": "Investigating the specific August29 incident only",
+    "resolution": "Manual third-session orchestration and exact historical checkout/inventory/screenshot paths remain in the byte copy through compatibility pointer; no automatic new task, checkout or old recovery execution."
+  },
+  "H008": {
+    "outcome": "historical",
+    "destinations": [
+      "docs/agent-guide/recovery.md#historical-august-29-incident"
+    ],
+    "consult_when": "Investigating the specific August29 incident only",
+    "resolution": "Manual third-session orchestration and exact historical checkout/inventory/screenshot paths remain in the byte copy through compatibility pointer; no automatic new task, checkout or old recovery execution."
+  },
+  "H009": {
+    "outcome": "historical",
+    "destinations": [
+      "docs/agent-guide/recovery.md#historical-august-29-incident"
+    ],
+    "consult_when": "Investigating the specific August29 incident only",
+    "resolution": "Manual third-session orchestration and exact historical checkout/inventory/screenshot paths remain in the byte copy through compatibility pointer; no automatic new task, checkout or old recovery execution."
+  },
+  "H010": {
+    "outcome": "historical",
+    "destinations": [
+      "docs/agent-guide/recovery.md#historical-august-29-incident"
+    ],
+    "consult_when": "Investigating the specific August29 incident only",
+    "resolution": "Manual third-session orchestration and exact historical checkout/inventory/screenshot paths remain in the byte copy through compatibility pointer; no automatic new task, checkout or old recovery execution."
+  },
+  "H002": {
+    "outcome": "merged",
+    "destinations": [
+      "AGENTS.md#working-agreement",
+      "docs/agent-guide/recovery.md#conflicted-shared-work"
+    ],
+    "consult_when": "Language or shared-checkout recovery",
+    "resolution": "Italian conversation/English artifacts and one recovery writer retained; sole recovery owner was incident scope."
+  },
+  "H011": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/recovery.md#current-continuation"
+    ],
+    "consult_when": "Actual incident recovery or missing-context continuation",
+    "resolution": "Mandatory full reading of ledger/inventories/all manuals was incident-specific. Historical exact list preserved; current tasks route relevant sections only per explicit migration request, with full incident sources available if investigating it."
+  },
+  "H012": {
+    "outcome": "merged",
+    "destinations": [
+      "AGENTS.md#non-negotiable-boundaries",
+      "docs/agent-guide/provenance.md#third-party-admission"
+    ],
+    "consult_when": "Secret/reference handling or source analysis",
+    "resolution": "No secret inspection; authorized private source/audio analysis and rights verification retained. Raw reference material stays unversioned; official narrow .env loader exception is R043."
+  },
+  "H013": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/recovery.md#conflicted-shared-work"
+    ],
+    "consult_when": "Real concurrent-edit/rebase conflict",
+    "resolution": "Relevant identities/status/index stages/rebase metadata/local hunk ownership and live process checks retained.518d673/exact PIDs/old worktree are historical incident identifiers, not current facts."
+  },
+  "H014": {
+    "outcome": "historical",
+    "destinations": [
+      "docs/agent-guide/recovery.md#historical-august-29-incident"
+    ],
+    "consult_when": "Reconstructing the historical conflict",
+    "resolution": "Expectedef8c767/replay518d673/six paths/untracked inventories are not trusted current state; exact values preserved in historical prompt, recheck if relevant."
+  },
+  "H015": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/recovery.md#conflicted-shared-work"
+    ],
+    "consult_when": "Destructive conflict recovery decision",
+    "resolution": "Preserve refs/patches/index+unstaged recoverability first and explain choice; no destructive operation beyond authority; safe reversible preservation proceeds without invented confirmation."
+  },
+  "H017": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/recovery.md#conflicted-shared-work"
+    ],
+    "consult_when": "Destructive conflict recovery decision",
+    "resolution": "Preserve refs/patches/index+unstaged recoverability first and explain choice; no destructive operation beyond authority; safe reversible preservation proceeds without invented confirmation."
+  },
+  "H016": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/delivery.md#canonical-publication",
+      "docs/agent-guide/recovery.md#historical-august-29-incident"
+    ],
+    "consult_when": "Live identity verification or historical August29 incident",
+    "resolution": "Old0.0.0/ab7a00e/20260829-1826/ef8c767 are archived dated evidence; canonical+cache-busted/hash checks remain active only when delivery/live claim matters."
+  },
+  "H018": {
+    "outcome": "historical",
+    "destinations": [
+      "docs/agent-guide/recovery.md#historical-august-29-incident"
+    ],
+    "consult_when": "Historical authorship/commit reconciliation",
+    "resolution": "Exact author ranges and local/pushed state retained as dated evidence, not current ownership or deployment. No current recovery task is launched."
+  },
+  "H019": {
+    "outcome": "historical",
+    "destinations": [
+      "docs/agent-guide/recovery.md#historical-august-29-incident"
+    ],
+    "consult_when": "Historical authorship/commit reconciliation",
+    "resolution": "Exact author ranges and local/pushed state retained as dated evidence, not current ownership or deployment. No current recovery task is launched."
+  },
+  "H020": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/recovery.md#conflicted-shared-work"
+    ],
+    "consult_when": "Conflict or cherry-pick recovery",
+    "resolution": "No duplicate cherry-picks, bulk marker-free resolution or pre-rebase green-proof shortcuts."
+  },
+  "H021": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/visuals.md#drivey",
+      "docs/agent-guide/interface.md#design-decisions",
+      "docs/agent-guide/delivery.md#canonical-publication"
+    ],
+    "consult_when": "Drivey source fidelity/replacement",
+    "resolution": "Both clean-room candidates rejected; actual source integration selected, narrow bridge, GPL/dependency/asset checks and same-viewport fidelity preserved. Historical deployed candidate need not be removed again; no present app change authorized here."
+  },
+  "H029": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/visuals.md#drivey",
+      "docs/agent-guide/interface.md#design-decisions",
+      "docs/agent-guide/delivery.md#canonical-publication"
+    ],
+    "consult_when": "Drivey source fidelity/replacement",
+    "resolution": "Both clean-room candidates rejected; actual source integration selected, narrow bridge, GPL/dependency/asset checks and same-viewport fidelity preserved. Historical deployed candidate need not be removed again; no present app change authorized here."
+  },
+  "H022": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/visuals.md#drivey",
+      "docs/agent-guide/visuals.md#prtcl",
+      "docs/agent-guide/visuals.md#aperture-and-rejected-studies",
+      "docs/agent-guide/provenance.md#third-party-admission"
+    ],
+    "consult_when": "Historical visual salvage or future source integration",
+    "resolution": "Four distinct outcomes: Drivey faithful upstream active; PRTCL direct formula grant retained but Murmuration parked byP022; INFINITE study remains conditional/inactive, no current implementation inferred; PRIMORDIAL explicitly retired byPIANO PP1/PP2. Original source restrictions/credits survive; historical catalogue numbers are not live selection."
+  },
+  "H023": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/visuals.md#shared-boundaries",
+      "docs/agent-guide/music.md#effects-boundary",
+      "docs/agent-guide/motion-runtime.md#energy-and-mode-boundary"
+    ],
+    "consult_when": "Vehicle macros or renderer response",
+    "resolution": "Separate road/music inputs retained. OPEN/BLOOM native-response mandate explicitly superseded byMUSIC-CRAFT6.16 owner listening retirement; Underwater native response preserved."
+  },
+  "H024": {
+    "outcome": "updated",
+    "destinations": [
+      "AGENTS.md#working-agreement",
+      "docs/agent-guide/visuals.md#aperture-and-rejected-studies",
+      "docs/agent-guide/delivery.md#verification-proportional-to-the-change"
+    ],
+    "consult_when": "Interpreting historical feature/live/acceptance claims",
+    "resolution": "All dated implemented/pushed/live claims preserved only as evidence; WAKE subsequently explicitly rejected P010; no regression or acceptance inferred from old tests. Current task reads only relevant contracts/physical gates."
+  },
+  "H025": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/visuals.md#vertigo-02",
+      "docs/agent-guide/motion-runtime.md#energy-and-mode-boundary",
+      "docs/agent-guide/diagnostics-reports.md#capture-and-presentation",
+      "docs/agent-guide/maps.md#atlas-and-stats",
+      "docs/agent-guide/music.md#junction"
+    ],
+    "consult_when": "Cross-mode/source/privacy/map/audio-memory work",
+    "resolution": "Distinct durable contracts explicitly routed: byte-identicalVertigo,equal separate modes,coordinate-free diagnostics,mandatory map attribution,six decoded clips."
+  },
+  "H026": {
+    "outcome": "merged",
+    "destinations": [
+      "docs/agent-guide/delivery.md#identity-and-records"
+    ],
+    "consult_when": "Changelog changes",
+    "resolution": "Never rewrite historical entry including false claim; append correction."
+  },
+  "H027": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/recovery.md#conflicted-shared-work",
+      "docs/agent-guide/visuals.md#shared-boundaries",
+      "docs/agent-guide/recovery.md#historical-august-29-incident"
+    ],
+    "consult_when": "Actual recovery/salvage request",
+    "resolution": "Account for useful hunks/artifacts deliberately, do not blindly continue rebase or generic conflict results.518d673/four-environment reconstruction itinerary stays historical; inspect current selected source before salvage."
+  },
+  "H028": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/recovery.md#conflicted-shared-work",
+      "docs/agent-guide/visuals.md#shared-boundaries",
+      "docs/agent-guide/recovery.md#historical-august-29-incident"
+    ],
+    "consult_when": "Actual recovery/salvage request",
+    "resolution": "Account for useful hunks/artifacts deliberately, do not blindly continue rebase or generic conflict results.518d673/four-environment reconstruction itinerary stays historical; inspect current selected source before salvage."
+  },
+  "H030": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/recovery.md#conflicted-shared-work",
+      "docs/agent-guide/visuals.md#shared-boundaries",
+      "docs/agent-guide/recovery.md#historical-august-29-incident"
+    ],
+    "consult_when": "Actual recovery/salvage request",
+    "resolution": "Account for useful hunks/artifacts deliberately, do not blindly continue rebase or generic conflict results.518d673/four-environment reconstruction itinerary stays historical; inspect current selected source before salvage."
+  },
+  "H031": {
+    "outcome": "moved",
+    "destinations": [
+      "docs/agent-guide/motion-runtime.md#environment-portability",
+      "prototype/drive-lab/AGENTS.md#local-work"
+    ],
+    "consult_when": "Cross-machine native environment failure",
+    "resolution": "Lockfile/native rebuild for this Mac, never trust copied node_modules; use existing wrappers, no install mandate for unrelated docs."
+  },
+  "H032": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/delivery.md#verification-proportional-to-the-change"
+    ],
+    "consult_when": "Recovered app behavior or release verification",
+    "resolution": "Full-suite-per-small-unit itinerary was emergency-specific. Retain targeted behavior checks, release regression/package gate, console/performance/memory/reduced-motion/lifecycle/responsive/source773x601 where relevant, and physical acceptance distinction. Current migration prohibits app execution."
+  },
+  "H033": {
+    "outcome": "updated",
+    "destinations": [
+      "docs/agent-guide/interface.md#design-decisions",
+      "docs/agent-guide/delivery.md#identity-and-records",
+      "docs/agent-guide/delivery.md#canonical-publication"
+    ],
+    "consult_when": "Selected visual publication",
+    "resolution": "No rejected/unselected direction publication; build/docs/append changelog/smallcommit/push/exactsource stamp/canonical checks retained. Fresh deployment confirmation superseded R042, not visual selection/source gates."
+  },
+  "H034": {
+    "outcome": "merged",
+    "destinations": [
+      "AGENTS.md#working-agreement",
+      "docs/agent-guide/delivery.md#verification-proportional-to-the-change"
+    ],
+    "consult_when": "Progress/status communication",
+    "resolution": "Concise Italian updates and all implementation/test/push/live/human/Tesla states distinct."
+  },
+  "H035": {
+    "outcome": "historical",
+    "destinations": [
+      "docs/agent-guide/recovery.md#historical-august-29-incident",
+      "docs/agent-guide/recovery.md#conflicted-shared-work",
+      "docs/agent-guide/delivery.md#verification-proportional-to-the-change"
+    ],
+    "consult_when": "Closing that exact emergency recovery only",
+    "resolution": "Original incident completion list remains intact: sole writer,preserved+resolved worktree/518d673+edits,ledger+inventories,full current regression,four truthful states,rejectedDrivey,Git/remote/live. Durable preservation/truth/check distinctions active; no claim this migration re-executes or closes that incident."
+  },
+  "H036": {
+    "outcome": "historical",
+    "destinations": [
+      "docs/agent-guide/recovery.md#historical-august-29-incident",
+      "docs/agent-guide/recovery.md#conflicted-shared-work",
+      "docs/agent-guide/delivery.md#verification-proportional-to-the-change"
+    ],
+    "consult_when": "Closing that exact emergency recovery only",
+    "resolution": "Original incident completion list remains intact: sole writer,preserved+resolved worktree/518d673+edits,ledger+inventories,full current regression,four truthful states,rejectedDrivey,Git/remote/live. Durable preservation/truth/check distinctions active; no claim this migration re-executes or closes that incident."
+  },
+  "H037": {
+    "outcome": "historical",
+    "destinations": [
+      "docs/agent-guide/recovery.md#historical-august-29-incident",
+      "docs/agent-guide/recovery.md#conflicted-shared-work",
+      "docs/agent-guide/delivery.md#verification-proportional-to-the-change"
+    ],
+    "consult_when": "Closing that exact emergency recovery only",
+    "resolution": "Original incident completion list remains intact: sole writer,preserved+resolved worktree/518d673+edits,ledger+inventories,full current regression,four truthful states,rejectedDrivey,Git/remote/live. Durable preservation/truth/check distinctions active; no claim this migration re-executes or closes that incident."
+  },
+  "H038": {
+    "outcome": "historical",
+    "destinations": [
+      "docs/agent-guide/recovery.md#historical-august-29-incident",
+      "docs/agent-guide/recovery.md#conflicted-shared-work",
+      "docs/agent-guide/delivery.md#verification-proportional-to-the-change"
+    ],
+    "consult_when": "Closing that exact emergency recovery only",
+    "resolution": "Original incident completion list remains intact: sole writer,preserved+resolved worktree/518d673+edits,ledger+inventories,full current regression,four truthful states,rejectedDrivey,Git/remote/live. Durable preservation/truth/check distinctions active; no claim this migration re-executes or closes that incident."
+  },
+  "H039": {
+    "outcome": "historical",
+    "destinations": [
+      "docs/agent-guide/recovery.md#historical-august-29-incident",
+      "docs/agent-guide/recovery.md#conflicted-shared-work",
+      "docs/agent-guide/delivery.md#verification-proportional-to-the-change"
+    ],
+    "consult_when": "Closing that exact emergency recovery only",
+    "resolution": "Original incident completion list remains intact: sole writer,preserved+resolved worktree/518d673+edits,ledger+inventories,full current regression,four truthful states,rejectedDrivey,Git/remote/live. Durable preservation/truth/check distinctions active; no claim this migration re-executes or closes that incident."
+  },
+  "H040": {
+    "outcome": "historical",
+    "destinations": [
+      "docs/agent-guide/recovery.md#historical-august-29-incident",
+      "docs/agent-guide/recovery.md#conflicted-shared-work",
+      "docs/agent-guide/delivery.md#verification-proportional-to-the-change"
+    ],
+    "consult_when": "Closing that exact emergency recovery only",
+    "resolution": "Original incident completion list remains intact: sole writer,preserved+resolved worktree/518d673+edits,ledger+inventories,full current regression,four truthful states,rejectedDrivey,Git/remote/live. Durable preservation/truth/check distinctions active; no claim this migration re-executes or closes that incident."
+  },
+  "H041": {
+    "outcome": "historical",
+    "destinations": [
+      "docs/agent-guide/recovery.md#historical-august-29-incident",
+      "docs/agent-guide/recovery.md#conflicted-shared-work",
+      "docs/agent-guide/delivery.md#verification-proportional-to-the-change"
+    ],
+    "consult_when": "Closing that exact emergency recovery only",
+    "resolution": "Original incident completion list remains intact: sole writer,preserved+resolved worktree/518d673+edits,ledger+inventories,full current regression,four truthful states,rejectedDrivey,Git/remote/live. Durable preservation/truth/check distinctions active; no claim this migration re-executes or closes that incident."
+  },
+  "H042": {
+    "outcome": "historical",
+    "destinations": [
+      "docs/agent-guide/recovery.md#historical-august-29-incident",
+      "docs/agent-guide/recovery.md#conflicted-shared-work",
+      "docs/agent-guide/delivery.md#verification-proportional-to-the-change"
+    ],
+    "consult_when": "Closing that exact emergency recovery only",
+    "resolution": "Original incident completion list remains intact: sole writer,preserved+resolved worktree/518d673+edits,ledger+inventories,full current regression,four truthful states,rejectedDrivey,Git/remote/live. Durable preservation/truth/check distinctions active; no claim this migration re-executes or closes that incident."
+  }
+}

@@ -1,0 +1,43 @@
+# Agent instructions
+
+## Scope and invariants
+
+- Write code, comments, documentation, logs, UI and commit text in English; speak with the owner in Italian.
+- Work in the saved Dropbox checkout; preserve unrelated work. Keep one active writer in this shared checkout; coordinate ownership before overlapping edits. This does not prohibit independent work in genuinely separate checkouts. Complete the requested scope without starting roadmap work.
+- Never inspect, print, diff, copy or version `.env` or its local variants, or expose credentials. The sole exception is internal loading by `scripts/deploy_drive_lab_ftp.py` for authorized preflight/publication/postflight. `.env.example` contains placeholders only. Never version `_references/` or copy its external material into the repository.
+- Preserve Engine/Flux separation, shared speed/audio-unlock/mute/lifecycle boundaries, reachable mode switching and in-product diagnostics. Virtual RPM/gears are not Tesla telemetry. Technical diagnostics remain coordinate-free; maps and explicit route exports have separate contracts.
+- Original code/docs are PolyForm-Noncommercial-1.0.0, source-visible rather than open source. Original brand/media are excluded unless explicitly licensed; earlier AGPL releases retain their rights. `enuzzo` is the sole original creator/licensor. Preserve third-party ownership and notices; do not use Creative Commons for software.
+- New visual directions require exactly three alternatives and owner selection before construction. Existing selections and explicit delegations remain valid; do not reopen this gate for ordinary fixes or already-selected refinements.
+- Distinguish implemented, tested, live and physically accepted. Only current real renders count as screenshots. Validate affected UI at agreed Tesla viewports (including 773 × 601); browser evidence cannot prove vehicle listening, native controls or sustained Tesla GPU performance.
+- `VERSION` is the sole SemVer source. Keep `CHANGELOG.md` append-only with local date/time, corresponding commit hash and deployment stamp when applicable. Update factual docs only when their facts change.
+- Create/push verified checkpoints to the existing remote. Agreed product changes have standing canonical deployment authorization; no renewed confirmation. Read release guidance for publishing. Documentation/instruction-only work needs no product deployment.
+
+## Completion, autonomy and verification
+
+- Complete the requested outcome, not just a plan or an intermediate implementation. Include the applicable verification and delivery evidence; identify any remaining acceptance gate or external blocker precisely, without claiming it passed. Continue independent authorized work when one part needs owner input, and stop when the requested scope is complete.
+- Within that scope, proceed with necessary reversible investigation, edits, fixes and verification without renewed permission. Resolve routine implementation choices using existing decisions and evidence. Reversibility does not authorize unrelated work or override the product, source, privacy and publication constraints above and in the relevant topic.
+- Ask only for a material decision that existing authorization does not resolve, or an action reserved for owner approval. Prepare the concrete proposal and its relevant tradeoffs first, without crossing the approval boundary. Preserve explicit read-only, no-commit, no-push and no-deploy restrictions; standing permissions do not override them.
+- Choose reads and checks from the affected behavior, its dependencies and the applicable acceptance criteria. Expand coverage when risk or evidence warrants it; repeat checks after relevant changes, failures, inconclusive results or a required release gate, not automatically after an unchanged successful result. Do not substitute a smaller check for a required gate, or impose arbitrary file/test quotas.
+
+## Context routing
+
+Read only the matching topic below when changing that behavior, including fixes. These are active constraints, not a startup reading list. Follow deeper links only for the specific detail needed; search headings/sections in long documents instead of reading them in full.
+
+| Task touches | Read |
+| --- | --- |
+| Engine audio, gears, TAMARRO, new banks or listening LAB | [Engine](docs/agent-context/engine.md) |
+| Flux composition, Soundtrack transport or FX | [Music](docs/agent-context/music.md) |
+| Visual renderer, shader, source bridge or catalogue variants | [Visuals](docs/agent-context/visuals.md) |
+| Intro, chrome, drawers, palette UI or phone layout | [UI](docs/agent-context/ui.md) |
+| Atlas, Stats, Discover, radar or Fly With | [Maps](docs/agent-context/maps.md) |
+| GPS semantics, altitude, diagnostics or PDF/email reports | [Diagnostics](docs/agent-context/diagnostics.md) |
+| Preloading, retries, browser cache, update/reload, mute/visibility or environment recovery | [Runtime](docs/agent-context/runtime.md) |
+| Commit/release details, deployment, licensing, new sources or Sites handoff | [Release](docs/agent-context/release.md) |
+| Architecture or service boundaries | Relevant section of [Technical direction](docs/TECHNICAL-DIRECTION.md) |
+| Resuming interrupted work or checking delivery status | Relevant section of [Current state](docs/CURRENT-STATE.md) / [Session handoff](docs/SESSION-HANDOFF.md), checked against current Git/evidence |
+
+Use skills only when their stated task applies; incidental UI/code edits do not themselves call for design research, audits or broad skill loading. No repository-local skills are currently defined.
+
+Record durable new decisions in the matching contextual file; keep this root for broad rules. Current explicit owner decisions take precedence over older dated studies/handoffs. Historical instructions under `docs/agent-history/` are not normal reading and cannot reinstate superseded gates.
+
+If context becomes unreliable, inventory pending requirements/local edits and prepare a concrete handoff in the saved checkout. For missing desktop/mobile requirements, inspect available queue/history evidence before claiming absence; mark truncation rather than reconstructing text.
