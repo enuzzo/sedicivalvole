@@ -173,10 +173,10 @@
 @media(max-width:750px){.cockpit-preset-options{gap:4px}.cockpit-presets .cockpit-presets-group{gap:4px}}
 
 /* Let the Signal Gate play before revealing the centered chooser. Hidden controls
-   stay outside pointer and keyboard navigation during the three-second lead-in. */
+   stay outside pointer and keyboard navigation during the two-second lead-in. */
 .launch-cockpit{
  transform-origin:center center;
- animation:cockpit-reveal 620ms cubic-bezier(.16,1,.3,1) 3s backwards;
+ animation:cockpit-reveal 1200ms cubic-bezier(.16,1,.3,1) 2s backwards;
 }
 @keyframes cockpit-reveal{
  from{visibility:hidden;opacity:0;transform:scale(.12,.08)}

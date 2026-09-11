@@ -905,3 +905,5 @@ No dated releases exist yet.
 - 2026-09-11 16:51 `[f7e3b7f]` (base): Let the opening Signal Gate play for three seconds before the launch chooser expands from its center. Preserve background preparation, prevent focus on hidden controls and reveal without animation with reduced motion.
 
 - 2026-09-11 17:00 `[acfdc11]` `build 20260911-1653`: Publish the centered Intro entrance. Thirty-two focused tests, complete production hashes and canonical browser/identity checks pass, including hidden focus, reduced motion, no replay on selection and actual START.
+
+- 2026-09-11 17:11 `[e7ffdb5]` (base): Retune the owner-selected Intro entrance to a two-second lead-in and 1.2-second centered expansion; preserve easing and reduced-motion behavior.
