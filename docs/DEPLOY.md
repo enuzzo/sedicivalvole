@@ -5053,3 +5053,10 @@ Canonical build **20260911-1641.6d3009a** is published and verified. The owner-s
 Verification: 60 focused brand, diagnostic, report and deployment tests; 825 production static hashes; 196 exact dependency credits; 24 canonical bare/cache-busted HTML and asset checks. Canonical Chrome at 773 × 601 confirms transparent Intro and running marks, light/dark rendering, Apple Home metadata and no page errors. Two real PDF preview requests return identical bytes and match local decoded PDF objects, including the transparent logo. No synthetic email was sent. Physical iOS Home installation and Tesla acceptance remain separate.
 
 Official preserve-existing deployment uploaded 44 files / 6,124,956 bytes, reused 816 static files and 29 verified audio masters, retained the previous content-addressed asset, and passed dynamic-root verification without legacy deletion.
+
+
+## Centered Intro entrance publication — 2026-09-11 17:00
+
+Canonical **20260911-1653.acfdc11** adds the owner-requested three-second Signal Gate lead-in and 620 ms centered expansion of the launch chooser. Hidden controls cannot receive focus; selection updates do not replay the entrance. Reduced motion retains the delay and reveals without scaling or visible fade, following the global motion policy. Background preparation is unchanged.
+
+Verification: 32 focused splash/launch/preload tests, 825 production hashes, 196 credits and 24 canonical HTML/asset checks pass. Local and canonical Chrome at 773 × 601 verify the animation timeline, hidden focus behavior, both motion preferences, selection without replay and actual START with no page errors. Official preserve-existing upload: 36 files / 5,774,787 bytes; 824 static files and 29 audio masters reused; two prior assets retained; dynamic root verified. No synthetic mail was sent. Physical Tesla acceptance remains separate.

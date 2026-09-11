@@ -903,3 +903,5 @@ No dated releases exist yet.
 - 2026-09-11 16:49 `[6d3009a]` `build 20260911-1641`: Publish and verify transparent piston marks on canonical Splash/Intro, running header, favicon and PDF. All 60 focused tests, 825 package hashes, 24 canonical identity/asset checks and live Chrome visual checks pass; repeated PDF previews are byte-identical. Dedicated Apple Home icon metadata verified; physical installation remains untested.
 
 - 2026-09-11 16:51 `[f7e3b7f]` (base): Let the opening Signal Gate play for three seconds before the launch chooser expands from its center. Preserve background preparation, prevent focus on hidden controls and reveal without animation with reduced motion.
+
+- 2026-09-11 17:00 `[acfdc11]` `build 20260911-1653`: Publish the centered Intro entrance. Thirty-two focused tests, complete production hashes and canonical browser/identity checks pass, including hidden focus, reduced motion, no replay on selection and actual START.
