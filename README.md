@@ -502,6 +502,13 @@ Air Atlas now offers place labels OFF by default, Natural/Palette maps, larger c
 
 Air Atlas now uses five-second measured track playback, immediate aircraft/type catalogues, category fallbacks, one selected ring with ground distance, and radar-only major-road/airport cartography. Missing observations hold rather than inventing flight. Terrain nose camera and true aeronautical airways remain pending; see [Air Atlas](docs/AIR-ATLAS-2026-09-09.md).
 
+### September 11 piston icon
+
+The owner-supplied piston/16 artwork is now the shared product icon across Intro,
+Splash, running chrome, About/diagnostics and Travel Report. Versioned PNG/ICO
+assets include an opaque 180px Apple Home icon. The unchanged source and derivative
+hashes live in `logo/pistons-v1/`; regenerate with `scripts/render-piston-icon.py`.
+
 ### September 11 road instruments and Travel Report
 
 Engine has a measured RPM crest; Visual choices lead the compact library above

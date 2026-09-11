@@ -1,0 +1,52 @@
+{
+  "source": "logo/pistons-v1/source.png",
+  "sourceSha256": "46f24ff8bff0d7da66962eb93dcaaf263c16bac11541e0d97c9171cc968734fe",
+  "operation": "Owner-supplied artwork, unchanged geometry; black compositing and Lanczos size conversion only.",
+  "files": [
+    {
+      "path": "prototype/drive-lab/public/brand/pistons-v1/icon-16.png",
+      "bytes": 703,
+      "sha256": "a5476c41bbaae51067586e52d572d61a473d9eda9b0730cbb4fa38a853d2a776"
+    },
+    {
+      "path": "prototype/drive-lab/public/brand/pistons-v1/icon-32.png",
+      "bytes": 2026,
+      "sha256": "ab3070f12840bd08df8646074fcafb25b57b3f7db457cfed8b04c231a1f38feb"
+    },
+    {
+      "path": "prototype/drive-lab/public/brand/pistons-v1/icon-48.png",
+      "bytes": 3625,
+      "sha256": "bf7601a147905bf5203220063b851b865cb4b033c900283bec035ca3fcb765f8"
+    },
+    {
+      "path": "prototype/drive-lab/public/brand/pistons-v1/icon-180.png",
+      "bytes": 23958,
+      "sha256": "5859eb463db99f6ee28e8023571413ed7032ffcb1895867f4da0df1332bdee8b"
+    },
+    {
+      "path": "prototype/drive-lab/public/brand/pistons-v1/icon-192.png",
+      "bytes": 26442,
+      "sha256": "491cbf9bce349fb2888f47af2508b47eae54ff89819d7d2a6cd53c7824536a41"
+    },
+    {
+      "path": "prototype/drive-lab/public/brand/pistons-v1/icon-256.png",
+      "bytes": 42672,
+      "sha256": "0a1f65814650eedc37f08edf60cbba79881ae3bebe951cab072965c80d673093"
+    },
+    {
+      "path": "prototype/drive-lab/public/brand/pistons-v1/icon-512.png",
+      "bytes": 146457,
+      "sha256": "4fa98cafdd03b11a02ca53d0029647bab60dd3428cc076dcbcc7e9313a3d8a00"
+    },
+    {
+      "path": "prototype/drive-lab/public/brand/pistons-v1/favicon.ico",
+      "bytes": 6309,
+      "sha256": "9bca1b301d9b5d5da3d73d9d5c35e5256733f09b978c9ba80e028e30422fdf99"
+    },
+    {
+      "path": "prototype/drive-lab/public/report-support/report-mark-pistons.png",
+      "bytes": 42672,
+      "sha256": "0a1f65814650eedc37f08edf60cbba79881ae3bebe951cab072965c80d673093"
+    }
+  ]
+}

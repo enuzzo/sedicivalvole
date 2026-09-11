@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Render deterministic PNG and favicon derivatives from the selected SVG logo."""
+"""Historical Road mark generator. Current assets: render-piston-icon.py."""
 
 from pathlib import Path
 from shutil import copyfile
@@ -61,4 +61,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit("Historical artwork only. Run scripts/render-piston-icon.py for the current icon.")

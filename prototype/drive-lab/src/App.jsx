@@ -215,8 +215,8 @@ const SCORE_VOICES = [
 const APP_VERSION = __APP_VERSION__;
 const APP_BUILD = __APP_BUILD__;
 const APP_COMMIT = __APP_COMMIT__;
-const BRAND_MARK_URL = `/brand/sedicivalvole-mark.svg?build=${encodeURIComponent(APP_BUILD)}`;
-const TOPBAR_MARK_URL = `/brand/product-icon-512.png?build=${encodeURIComponent(APP_BUILD)}`;
+const BRAND_MARK_URL = `/brand/pistons-v1/icon-512.png?build=${encodeURIComponent(APP_BUILD)}`;
+const TOPBAR_MARK_URL = `/brand/pistons-v1/icon-512.png?build=${encodeURIComponent(APP_BUILD)}`;
 const ILLOBO_FEATURED_MARK_URLS = Object.freeze([
   `/brand/illobo-featured-solid.svg?build=${encodeURIComponent(APP_BUILD)}`,
   `/brand/illobo-featured-outline.svg?build=${encodeURIComponent(APP_BUILD)}`,
@@ -5328,7 +5328,7 @@ export function App() {
           scoreId={genreId} onScore={(id) => { setLaunchExperienceId(null); setGenreId(id); }}
           engineProfileId={engineProfileId} onEngineProfile={chooseEngineProfile}
           experienceId={launchExperienceId} onExperience={(id) => chooseExperience(id, { launch: true })}
-          markUrl={`/brand/sedicivalvole-mark-transparent${appearanceResolution.appearance === "dark" ? "-dark" : ""}.svg?build=${APP_BUILD}`}
+          markUrl={BRAND_MARK_URL}
           build={APP_BUILD} onSupport={() => setSupportOpen(true)} onReset={resetSavedState}
           muted={muted} onUnmute={() => setMuted(false)} Dialog={DialogSurface}
           ready={Boolean(launchMusicId && launchEnvironmentId)}

@@ -79,6 +79,8 @@ RADAR_FLIGHT_MARKERS = (b"sedicivalvole.radar-flight.v1", b"RADAR_EXPECTED_ORIGI
 SESSION_REPORT_MARKERS = (b"sedicivalvole.session-report-api.v1", b"REPORT_EXPECTED_ORIGIN")
 PROJECT_OWNED_REPORT_HASHES = {
     "report.php": {
+        # Owner-supplied piston mark; exact renderer migration only.
+        "996bd0096565260ce819b08f3b41b7927d96f29f238aa88f6c00c2ea0a7a58d9",
         "5e302d127453a1ea6edaef88ce5403a9afc79f48356d35351904ef96cdffd31c",
         "40e42d550e3405d76381b3c5401e8a4aea1fe5a7b4374b39b14d3b3a7dec5862",
         # September 11 reviewed chapter/map renderer; postflight still requires exact candidate bytes.

@@ -277,7 +277,7 @@ function reportBuildPdf(array $s): string
     $chapter=$s['includeRoute']?3:2;
 
     $pdf->AddPage();$pdf->SetFillColor(...$paper);$pdf->Rect(0,0,210,297,'F');
-    $pdf->card(16,12,27,31,$ink);$pdf->Image(__DIR__.'/report-mark.png',19,16,21);reportText($pdf,'TRAVEL REPORT',50,17,10,true);
+    $pdf->card(16,12,27,31,[0,0,0]);$pdf->Image(__DIR__.'/report-mark-pistons.png',19,16,21);reportText($pdf,'TRAVEL REPORT',50,17,10,true);
     reportText($pdf,substr($s['createdAt'],0,10).' / GPS SESSION',50,28,9,false,[83,101,104]);
     reportText($pdf,'Every journey',16,50,32,true);reportText($pdf,'has a rhythm.',16,64,32,true);
     $pdf->card(16,90,112,91,$ink);reportText($pdf,'THE OBSERVED JOURNEY',22,97,9,true,[196,217,211]);

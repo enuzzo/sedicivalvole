@@ -66,3 +66,13 @@ Credits stay bottom left. Put the yellow Buy Me a Coffee cup immediately after A
 The selected Compact Cockpit keeps the Tesla organization, thin retracting bars, full touch targets and safe areas. Named physical targets are iPhone 17 Pro and Pro Max; iOS versions are unspecified. Rotation preserves audio, selection and renderer. An accessible inert portrait notice applies only to phones, never a portrait desktop or Tesla viewport.
 
 Landscape palette taps must survive Safari blur with no known next focus target; retain actual outside-pointer, known focus-departure and Escape dismissal. Installed webapp footer backgrounds extend to the bottom edge while contents respect the safe area. Use [road UI evidence](../ROAD-UI-REFINEMENT-2026-09-09.md#implemented) for this specific behavior. Browser emulation does not close physical touch, safe-area, cabin, native-media, network or sustained-GPU acceptance.
+
+## Owner-supplied piston identity — September 11
+
+The owner replaced the Road mark with `logo/pistons-v1/source.png`. Use the
+versioned `brand/pistons-v1/` icon family for Intro, Splash, chrome, About and
+diagnostics in both appearances, and `report-mark-pistons.png` in Travel Report.
+The original artwork is retained byte-identically; derivatives only composite
+black and resize without cropping/redrawing. iOS Home uses the opaque 180px PNG;
+favicon has 16/32/48px sizes. The prior transparent-mark direction is superseded
+within these brand surfaces. Historical vectors remain archived, not selected.

@@ -9,43 +9,35 @@ const TEST_DIR = dirname(fileURLToPath(import.meta.url));
 const DRIVE_LAB_ROOT = resolve(TEST_DIR, "..");
 const REPOSITORY_ROOT = resolve(DRIVE_LAB_ROOT, "../..");
 
-test("the selected 16 Road mark is vector-first and fills a 512 square", () => {
-  const svg = readFileSync(resolve(REPOSITORY_ROOT, "logo/sedicivalvole-mark-dark.svg"), "utf8");
-  const transparentSvg = readFileSync(
-    resolve(REPOSITORY_ROOT, "logo/sedicivalvole-mark-transparent.svg"),
-    "utf8",
-  );
-  const transparentPng = readFileSync(
-    resolve(REPOSITORY_ROOT, "logo/sedicivalvole-mark-transparent-512.png"),
-  );
-
-  assert.match(svg, /width="512" height="512" viewBox="0 0 512 512"/);
-  assert.doesNotMatch(svg, /<text\b/);
-  assert.match(svg, /M136 18V92/);
-  assert.match(svg, /M208 18V92/);
-  assert.match(svg, /translate\(512 0\) scale\(-1 1\)/);
-  assert.match(svg, /translate\(150\.04 318\) scale\(\.175 -\.175\)/);
-  assert.doesNotMatch(transparentSvg, /<rect\b|<filter\b/);
-  assert.equal(transparentPng[25], 6, "transparent PNG must use RGBA colour type");
+test("the owner-supplied piston artwork produces exact-sized opaque icons and a multi-size favicon", () => {
+  const inventory = JSON.parse(readFileSync(resolve(REPOSITORY_ROOT, "logo/pistons-v1/inventory.json"), "utf8"));
+  const digest = bytes => createHash("sha256").update(bytes).digest("hex");
+  assert.equal(digest(readFileSync(resolve(REPOSITORY_ROOT, inventory.source))), inventory.sourceSha256);
+  for (const item of inventory.files) {
+    const bytes = readFileSync(resolve(REPOSITORY_ROOT, item.path));
+    assert.equal(bytes.length, item.bytes); assert.equal(digest(bytes), item.sha256);
+  }
+  for (const size of [16,32,48,180,192,256,512]) {
+    const png = readFileSync(resolve(DRIVE_LAB_ROOT, `public/brand/pistons-v1/icon-${size}.png`));
+    assert.equal(png.readUInt32BE(16), size); assert.equal(png.readUInt32BE(20), size);
+    assert.equal(png[25], 2, "Home icon must be opaque RGB");
+  }
+  const ico = readFileSync(resolve(DRIVE_LAB_ROOT, "public/brand/pistons-v1/favicon.ico"));
+  assert.equal(ico.readUInt16LE(2), 1); assert.equal(ico.readUInt16LE(4), 3);
+  assert.deepEqual([0,1,2].map(i=>ico[6+i*16]), [16,32,48]);
 });
 
-test("browser icon metadata points only to packaged selected-mark assets", () => {
+test("browser icon metadata and every app mark point to the new packaged icon family", () => {
   const html = readFileSync(resolve(DRIVE_LAB_ROOT, "index.html"), "utf8");
-  const expected = [
-    ["brand/sedicivalvole-mark.svg", 1000],
-    ["brand/favicon-32.png", 500],
-    ["brand/favicon.ico", 500],
-    ["brand/apple-touch-icon.png", 5000],
-    ["brand/product-icon-192.png", 5000],
-    ["brand/product-icon-512.png", 15000],
-  ];
-
-  for (const [relativePath, minimumBytes] of expected) {
-    assert.ok(statSync(resolve(DRIVE_LAB_ROOT, `public/${relativePath}`)).size > minimumBytes);
-  }
-  assert.match(html, /href="\/brand\/sedicivalvole-mark\.svg" type="image\/svg\+xml"/);
-  assert.match(html, /href="\/brand\/favicon-32\.png" type="image\/png" sizes="32x32"/);
-  assert.match(html, /href="\/brand\/apple-touch-icon\.png" sizes="180x180"/);
+  const app = readFileSync(resolve(DRIVE_LAB_ROOT, "src/App.jsx"), "utf8");
+  for (const file of ["icon-32.png", "icon-48.png", "favicon.ico", "icon-180.png"])
+    assert.ok(html.includes(`/brand/pistons-v1/${file}`));
+  assert.match(html, /rel="apple-touch-icon"[^>]+sizes="180x180"/);
+  assert.ok(app.includes('/brand/pistons-v1/icon-512.png?build='));
+  assert.ok(app.includes('markUrl={BRAND_MARK_URL}'));
+  assert.doesNotMatch(app + html, /sedicivalvole-mark|product-icon-512/);
+  const report = readFileSync(resolve(DRIVE_LAB_ROOT, "public/report-support/report.php"), "utf8");
+  assert.ok(report.includes("'/report-mark-pistons.png'"));
 });
 
 test("both owner-supplied Illobo marks remain byte-identical in a slow continuous dark-field crossfade", () => {
