@@ -1793,3 +1793,8 @@ Official preserve-existing deployment uploaded 44 files / 6,124,956 bytes, reuse
 Canonical **20260911-1653.acfdc11** adds the owner-requested three-second Signal Gate lead-in and 620 ms centered expansion of the launch chooser. Hidden controls cannot receive focus; selection updates do not replay the entrance. Reduced motion retains the delay and reveals without scaling or visible fade, following the global motion policy. Background preparation is unchanged.
 
 Verification: 32 focused splash/launch/preload tests, 825 production hashes, 196 credits and 24 canonical HTML/asset checks pass. Local and canonical Chrome at 773 × 601 verify the animation timeline, hidden focus behavior, both motion preferences, selection without replay and actual START with no page errors. Official preserve-existing upload: 36 files / 5,774,787 bytes; 824 static files and 29 audio masters reused; two prior assets retained; dynamic root verified. No synthetic mail was sent. Physical Tesla acceptance remains separate.
+
+
+## Intro timing refinement — 2026-09-11 17:18
+
+Canonical **20260911-1711.cfe49a3** uses the owner-requested 2-second lead-in and 1.2-second expansion. Local and canonical Chrome verify exact CSS timing, hidden focus behavior, reduced motion, no replay on selection and actual START without page errors. Production: 825 static hashes and 196 credits pass; 24 canonical HTML/asset checks pass. Official preserve-existing deployment uploaded 36 files / 5,774,787 bytes, reused 824 static assets and 29 audio masters, and retained two previous assets. Physical Tesla acceptance remains separate.

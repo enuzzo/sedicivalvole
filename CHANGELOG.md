@@ -907,3 +907,5 @@ No dated releases exist yet.
 - 2026-09-11 17:00 `[acfdc11]` `build 20260911-1653`: Publish the centered Intro entrance. Thirty-two focused tests, complete production hashes and canonical browser/identity checks pass, including hidden focus, reduced motion, no replay on selection and actual START.
 
 - 2026-09-11 17:11 `[e7ffdb5]` (base): Retune the owner-selected Intro entrance to a two-second lead-in and 1.2-second centered expansion; preserve easing and reduced-motion behavior.
+
+- 2026-09-11 17:18 `[cfe49a3]` `build 20260911-1711`: Publish and verify the 2-second Intro delay and 1.2-second centered expansion. Focused local/live browser timing and interaction checks, production integrity and canonical identity checks pass.
