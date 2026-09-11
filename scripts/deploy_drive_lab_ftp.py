@@ -566,6 +566,32 @@ def restore_remote_illobo(ftp: ftplib.FTP) -> int:
     return repaired
 
 
+def upload_verified_replacement(ftp: ftplib.FTP, filename: str, payload: bytes) -> None:
+    """Stage a mutable bank, verify it, then replace the active file by rename."""
+    temporary = filename + ".verified-upload"
+    try:
+        ftp.storbinary(f"STOR {temporary}", io.BytesIO(payload), blocksize=65536)
+        if sha256_bytes(remote_bytes(ftp, temporary)) != sha256_bytes(payload):
+            raise ValueError("staged bank identity mismatch")
+        ftp.rename(temporary, filename)
+    finally:
+        if temporary in safe_names(ftp):
+            ftp.delete(temporary)
+    if sha256_bytes(remote_bytes(ftp, filename)) != sha256_bytes(payload):
+        raise ValueError("installed bank identity mismatch")
+
+
+def restore_remote_nightshift(ftp: ftplib.FTP) -> None:
+    """Recover only a truncated prefix of the exact September 11 published bank."""
+    payload = (BUILD / "audio/nightshift.svb").read_bytes()
+    if len(payload) != 5504595 or sha256_bytes(payload) != "429004d664110d33e9af334f4679811a317dc4a1300c760378b7ec877c617190":
+        raise ValueError("NIGHTSHIFT repair source identity mismatch")
+    damaged = remote_bytes(ftp, "nightshift.svb")
+    if not (8 <= len(damaged) < len(payload) and payload.startswith(damaged)):
+        raise ValueError("NIGHTSHIFT repair is not a recognized truncated prefix")
+    upload_verified_replacement(ftp, "nightshift.svb", payload)
+
+
 def is_forbidden_static_name(name: str) -> bool:
     """Classify private-looking package names without opening their contents."""
     basename = Path(name).name.lower()
@@ -1185,14 +1211,18 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
             audio_names = safe_names(ftp)
             if not audio_names.issubset({"junction.svb", "nightshift.svb", ILLOBO_REMOTE_DIRECTORY}):
                 raise ValueError("unexpected audio entry")
-            if "junction.svb" in audio_names and not is_recognized_junction_bank(
-                remote_bytes(ftp, "junction.svb")
-            ):
-                raise ValueError("audio identity mismatch")
-            if "nightshift.svb" in audio_names and not is_recognized_nightshift_bank(
-                remote_bytes(ftp, "nightshift.svb")
-            ):
-                raise ValueError("NIGHTSHIFT audio identity mismatch")
+            for bank_name, recognize, error in [
+                ("junction.svb", is_recognized_junction_bank, "audio identity mismatch"),
+                ("nightshift.svb", is_recognized_nightshift_bank, "NIGHTSHIFT audio identity mismatch"),
+            ]:
+                if bank_name not in audio_names:
+                    continue
+                payload = remote_bytes(ftp, bank_name)
+                if not recognize(payload):
+                    raise ValueError(error)
+                verified = getattr(ftp, "_sedicivalvole_verified_static", {})
+                verified[f"audio/{bank_name}"] = sha256_bytes(payload)
+                ftp._sedicivalvole_verified_static = verified
             if ILLOBO_REMOTE_DIRECTORY in audio_names:
                 ftp.cwd(ILLOBO_REMOTE_DIRECTORY)
                 try:
@@ -1389,6 +1419,7 @@ def argument_parser() -> argparse.ArgumentParser:
         help="verify configuration and remote identity without remote writes",
     )
     mode.add_argument("--repair-illobo", action="store_true", help="restore only recognized corrupted Illobo masters without activating a release")
+    mode.add_argument("--repair-nightshift", action="store_true", help="restore only the recognized interrupted Nightshift prefix without activating a release")
     parser.add_argument(
         "--preserve-existing",
         action="store_true",
@@ -1411,6 +1442,7 @@ def parse_arguments(argv: list[str]) -> argparse.Namespace:
         "--publish",
         "--verify-only",
         "--repair-illobo",
+        "--repair-nightshift",
         "--preserve-existing",
         "--stage-php-entry",
     }
@@ -1486,6 +1518,26 @@ def main() -> int:
         ftp.cwd(config["DEPLOY_REMOTE_PATH"])
         print("directory=PASS target=canonical_root")
 
+        if arguments.repair_nightshift:
+            stage = "repair_identity"
+            try:
+                verify_remote_root(ftp)
+            except ValueError as error:
+                if str(error) != "NIGHTSHIFT audio identity mismatch":
+                    raise
+                stage = "repair_nightshift"
+                ftp.cwd("audio")
+                try:
+                    restore_remote_nightshift(ftp)
+                finally:
+                    ftp.cwd("..")
+                print("nightshift_repair=PASS files=1")
+                verify_remote_root(ftp)
+            ftp.quit()
+            ftp = None
+            print("repair_verification=PASS root_activation=NONE")
+            return 0
+
         if arguments.repair_illobo:
             stage = "repair_identity"
             try:
@@ -1546,7 +1598,10 @@ def main() -> int:
                 enter_or_create(ftp, part)
             with open_static_build_file(local_file) as handle:
                 local_size = os.fstat(handle.fileno()).st_size
-                ftp.storbinary(f"STOR {relative.name}", handle, blocksize=65536)
+                if relative.as_posix() in {"audio/junction.svb", "audio/nightshift.svb"}:
+                    upload_verified_replacement(ftp, relative.name, handle.read())
+                else:
+                    ftp.storbinary(f"STOR {relative.name}", handle, blocksize=65536)
             for _ in relative.parts[:-1]:
                 ftp.cwd("..")
             uploaded_bytes += local_size

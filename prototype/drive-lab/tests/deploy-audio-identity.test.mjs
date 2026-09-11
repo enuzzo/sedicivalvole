@@ -955,3 +955,44 @@ with tempfile.TemporaryDirectory() as folder:
 `;
   execFileSync('python3',['-c',program,deployScript.pathname],{encoding:'utf8'});
 });
+
+test("mutable bank staging preserves active bytes on interruption and admits only exact truncated recovery", () => {
+  const program = String.raw`
+import importlib.util
+from pathlib import Path
+import sys
+spec = importlib.util.spec_from_file_location("sedicivalvole_deploy", sys.argv[1])
+module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
+bank = Path(sys.argv[2]).read_bytes()
+module.BUILD = Path(sys.argv[2]).parent.parent
+class BankFTP:
+    def __init__(self, payload, fail=None): self.files = {'nightshift.svb': payload}; self.fail = fail; self.writes = []
+    def nlst(self): return list(self.files)
+    def retrbinary(self, command, callback): callback(self.files[command.removeprefix('RETR ')])
+    def storbinary(self, command, stream, blocksize):
+        name = command.removeprefix('STOR '); self.writes.append(name); data = stream.read()
+        self.files[name] = data[:100] if self.fail else data
+        if self.fail == 'interrupt': raise KeyboardInterrupt()
+    def rename(self, source, target): self.files[target] = self.files.pop(source)
+    def delete(self, name): del self.files[name]
+for failure in ['interrupt', 'corrupt']:
+    ftp = BankFTP(b'active original', failure)
+    try: module.upload_verified_replacement(ftp, 'nightshift.svb', bank)
+    except (KeyboardInterrupt, ValueError): pass
+    else: raise AssertionError('Partial stage accepted')
+    assert ftp.files == {'nightshift.svb': b'active original'}
+ftp = BankFTP(bank[:65536]); module.restore_remote_nightshift(ftp)
+assert ftp.files == {'nightshift.svb': bank}
+assert ftp.writes == ['nightshift.svb.verified-upload']
+for bad in [b'', b'unknown prefix', bank[:-1] + b'x', bank + b'extra']:
+    ftp = BankFTP(bad)
+    try: module.restore_remote_nightshift(ftp)
+    except ValueError: pass
+    else: raise AssertionError('Unrecognized damage admitted')
+    assert ftp.writes == []
+assert module.parse_arguments(['--repair-nightshift']).repair_nightshift
+`;
+  execFileSync("python3", ["-c", program, deployScript.pathname, nightshiftBank.pathname], {
+    env: { ...process.env, PYTHONDONTWRITEBYTECODE: "1" },
+  });
+});

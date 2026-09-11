@@ -74,8 +74,14 @@ retain a clock value from a buffer/lifecycle event after the recording was fully
 loaded. Passive `getSnapshot()` now reads the deck's current media properties
 without emitting updates, creating a timer or altering playback. Its 28 focused
 controller tests pass, including a new event-free clock/pause case; the four
-session observation checks also pass. There are 84 unique relevant checks across
+session observation checks also pass. There are 85 unique relevant checks across
 the report, observation, controller and deployment groups.
 
 Publication evidence is appended after the canonical gates complete.
 Physical Tesla export/readability remains separate.
+
+The Soundtrack app check also passes: a real Jamendo track, artist and Jazz genre
+are retained with about 5.99 seconds of advancing playback; two subsequent paused
+exports preserve that exact listening total while visible observation continues.
+The bank replacement/recovery correction and its separate operational evidence
+are recorded in `DEPLOY.md`; no audio bank content changed.

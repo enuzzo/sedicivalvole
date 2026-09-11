@@ -5002,3 +5002,22 @@ update adds only the owner-requested TAMARRO emoji and supporting styles/docs.
 [Scope](ROAD-REFINEMENT-2026-09-11.md) ·
 [Canonical evidence](qa/2026-09-11-road-report/canonical-identity.json) ·
 [Report evidence](qa/2026-09-11-road-report/report-preview.json).
+
+## Verified bank replacement and scoped recovery — 2026-09-11
+
+An interrupted infographic candidate upload exposed a direct-overwrite boundary
+in mutable audio banks: the active Nightshift file was truncated while the HTML
+entry remained unchanged. Publication correctly rejected its identity on retry.
+The official deploy tool now reuses a bank only after comparing its complete
+remote SHA-256, and stages changed JUNCTION/NIGHTSHIFT bytes under a temporary
+name, verifies the full hash, then renames and verifies the installed bytes.
+Caught interruptions and corrupt staged bytes preserve the active file and clean
+up the temporary copy. This is per-bank replacement, not whole-release atomicity.
+
+`--repair-nightshift` is a separate, mutually exclusive recovery mode. It requires
+canonical configuration/root gates, the exact 5,504,595-byte source at SHA-256
+`429004d664110d33e9af334f4679811a317dc4a1300c760378b7ec877c617190`, and a nonempty
+recognizable truncated prefix of those exact remote bytes. Other corruption is
+rejected without writes. Recovery uses the verified stage/rename and repeats the
+complete remote identity gate; it never activates an HTML entry. All 26 deployment
+checks pass, including interruption, corrupted-stage and prefix-admission cases.
