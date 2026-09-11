@@ -4964,3 +4964,41 @@ Canonical build **20260908-1934**, source **4f049ed**, VERSION **0.0.0**.
 | /assets/stats-panel-CW9X_yMd.js | `8036be28e13cf27e6a728b10ff27ccd807c0420dc72523f8a66582cd64bfee7b` |
 
 [Scope, mailbox outcome and remaining physical acceptance](ATLAS-STATS-REFINEMENT-2026-09-08.md).
+
+## 2026-09-11 14:57 — Road instruments, Travel Report and TAMARRO gesture
+
+Canonical **https://sedicivalvole.app/** serves build **20260911-1407.44f6a29**,
+source **44f6a29**, VERSION **0.0.0**.
+Implementation checkpoints: `6f987af`, `8aa0987`, `e36c6f8`, `44f6a29`.
+The preceding `20260911-1314.e36c6f8` publication was also verified; the final
+update adds only the owner-requested TAMARRO emoji and supporting styles/docs.
+
+- Focused verification: 120 component tests and 27 deployment/phone checks;
+  actual Engine, Visual drawer, Radar map-error/offline/online and synthetic-GPS
+  browser paths. Final emoji fit inspected in 773 x 601 and 844 x 393 layouts.
+- Build: app, protected LAB, supported Sites package and 811 exact static hashes;
+  196 exact dependency credits. No dependency or pinned-source bytes changed.
+- Official `--publish --preserve-existing`: network/login/exact directory and
+  remote identity pass; 38 files / 17,085,917 bytes uploaded and verified,
+  with complete audio/upstream checks before the dynamic entry activation.
+  Legacy content and overlapping addressed assets remain available.
+- Canonical bare and cache-busted HTML equal the local build; fourteen HTTPS
+  identity/cache/asset checks pass. Live browser confirms final Engine/TAMARRO,
+  RPM comb and Visual-before-Presets content with automatic diagnostic mail off.
+- Real canonical PDF preview: 160,478 bytes, SHA-256
+  `d707248aac8d1d569f428b21604f3a159cf63896a45aac6c42923b955fe338c5`. Repeated server output is identical. All 18 decoded PDF
+  objects, including page graphics, text, metadata and map image, match local
+  output. Raw Mac/server PDF bytes differ only in compression/derived offsets.
+  Fake-mail unit checks retain exact preview/send attachment identity; no real
+  verification code or synthetic email was requested during release QA.
+- Local four-page PDF render was inspected. The example uses synthetic route
+  data with real cartography. Historical coordinate-free diagnostics/PDF cannot
+  reconstruct the owner's geographic route. New opted-in exports include maps.
+- Physical Tesla/iPhone readability, emoji font availability, sustained Radar
+  performance, intermittent reception and the new real-journey report remain
+  separate acceptance layers. Existing owner confirmation covers the prior
+  report and recipient verification, not these new visual refinements.
+
+[Scope](ROAD-REFINEMENT-2026-09-11.md) ·
+[Canonical evidence](qa/2026-09-11-road-report/canonical-identity.json) ·
+[Report evidence](qa/2026-09-11-road-report/report-preview.json).

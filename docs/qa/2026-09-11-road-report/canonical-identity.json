@@ -1,0 +1,79 @@
+{
+  "release": "20260911-1407.44f6a29",
+  "checks": [
+    {
+      "path": "/",
+      "bytes": 1330,
+      "sha256": "73e580fb63704ef1c8672a3dc00c548aa0c9660f335531637b83a08014ee6728",
+      "cache": "no-store, no-cache, must-revalidate, max-age=0",
+      "proxy": "MISS"
+    },
+    {
+      "path": "/?verify=20260911-1407.44f6a29",
+      "bytes": 1330,
+      "sha256": "73e580fb63704ef1c8672a3dc00c548aa0c9660f335531637b83a08014ee6728",
+      "cache": "no-store, no-cache, must-revalidate, max-age=0",
+      "proxy": "MISS"
+    },
+    {
+      "path": "/assets/air-atlas-field-BgpHfcwF.js",
+      "bytes": 183764,
+      "sha256": "a4106c6c82170bd80385efa299a4e7aaeb173221893a18963ebbacf1d3c07e8d"
+    },
+    {
+      "path": "/assets/index-CbwC6Dkl.js",
+      "bytes": 825004,
+      "sha256": "ed90251bbb81e322c5c1d9b7d0d79ff2db568eab8b10ffaeeca0fb92faa27a90"
+    },
+    {
+      "path": "/assets/index-RnepDQ8N.css",
+      "bytes": 250782,
+      "sha256": "1b8598c56fce66e6bd3d61fd807805d2a0a3364755b8721f5c87493cca68786c"
+    },
+    {
+      "path": "/assets/release-20260911-1407.44f6a29.json",
+      "bytes": 114198,
+      "sha256": "613e3722fd41138010ce865bc4610da1c22aa37ece1876cebf378d6f1267dd7c"
+    },
+    {
+      "path": "/assets/session-report-panel-BNJuwITd.css",
+      "bytes": 1387,
+      "sha256": "da06f554c070f0231e2be1cb3db6eaa0db57c4976586bde7083213f7c5f5c50f"
+    },
+    {
+      "path": "/assets/session-report-panel-DDvOwD9x.js",
+      "bytes": 13697,
+      "sha256": "8e42a22d0a31f298704ce66d49754f5387163c9d0f4ac2035e0dfc5792879371"
+    },
+    {
+      "path": "/brand/apple-touch-icon.png",
+      "bytes": 12937,
+      "sha256": "bc7d754e0009308fc9a8ad079d7dc9b461fa45f072292d3f2f21f83c7dfa9913"
+    },
+    {
+      "path": "/brand/favicon-32.png",
+      "bytes": 1882,
+      "sha256": "7bb0bb0dc97d145b4bd30ebbae7e7db4ab40e31dce64e0afdc7095abe5235c2d"
+    },
+    {
+      "path": "/brand/favicon.ico",
+      "bytes": 677,
+      "sha256": "870770f0a9f1c57756771bcff7f30a71e721831f0d3bcae339c6b7bf0fbc5d9e"
+    },
+    {
+      "path": "/brand/sedicivalvole-mark.svg",
+      "bytes": 2311,
+      "sha256": "210b319522825982589907c213661720abbf7ea94d29b3a53a7fb4a7cec275e5"
+    },
+    {
+      "path": "/fonts/orbitron-latin-variable.woff2",
+      "bytes": 11800,
+      "sha256": "c25a9f9da5d9f3db1bf2a01474722dc9b377675b7bbab6d0dfda6902794fd1ed"
+    },
+    {
+      "path": "/fonts/space-grotesk-variable.ttf",
+      "bytes": 136676,
+      "sha256": "acad6de1fc93436f5c0f1f4137751ef04f1aea3063e7036535970ffcfbd79f72"
+    }
+  ]
+}

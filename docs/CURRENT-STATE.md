@@ -1,5 +1,34 @@
 # Current Project State
 
+## Current closeout — 2026-09-11
+
+Latest verified canonical build: **20260911-1407.44f6a29**, source **44f6a29**.
+This section supersedes the dated latest-build and pending-acceptance labels below.
+[Scope and diagnostic findings](ROAD-REFINEMENT-2026-09-11.md).
+
+Air Atlas now has a contrasting own-location dot and bounded dashed measured
+trail, brighter palette cartography, administrative boundaries, SVG map controls
+and bounded map-error recovery. Engine retains its acoustics and adds an RPM crest,
+accent gear/voice, and rock-hand TAMARRO controls. The Visual library precedes
+a separated Presets section. Travel Report has three chapters plus an optional
+fourth map page, on-demand cartography and a timed outline fallback.
+
+The owner supplied two real technical packets and confirmed the historical PDF
+and recipient-verification workflow. That receipt/verification acceptance is closed;
+the new report/map appearance and physical Tesla/iPhone refinement remain open.
+Technical packets remain coordinate-free and raw owner files are not versioned.
+
+Verification: 120 focused component tests, 27 deployment/phone checks, local
+actual-component GPS/error/offline/browser QA, four inspected PDF pages and the
+final TAMARRO emoji in 773 x 601 / 844 x 393 layouts. Production packaging verifies
+811 static hashes and 196 dependency credits. Official preserve-existing
+publication uploaded 38 files / 17,085,917 bytes. Fourteen canonical HTTPS
+identity/cache/asset checks and visible live Engine/Visual checks pass.
+Canonical PDF previews repeat byte-for-byte; all 18 decoded objects match local
+output, while Mac/server compression differs. No synthetic email was sent.
+See [canonical identity](qa/2026-09-11-road-report/canonical-identity.json),
+[PDF evidence](qa/2026-09-11-road-report/report-preview.json) and DEPLOY.
+
 ## Current closeout — 2026-09-10
 
 Latest verified canonical build: **20260910-0117.3a1a0e2**, publication evidence

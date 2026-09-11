@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "bytes": 160478,
+  "sha256": "d707248aac8d1d569f428b21604f3a159cf63896a45aac6c42923b955fe338c5",
+  "fixture": "Synthetic route with real cartography",
+  "mailSent": false,
+  "checks": [
+    "canonical preview",
+    "18 identical local/live PDF objects after stream decompression",
+    "response SHA-256",
+    "byte-identical repeated canonical previews"
+  ],
+  "compressionNote": "Mac and hosting zlib output differs; all decompressed objects, graphics and image bytes match."
+}
