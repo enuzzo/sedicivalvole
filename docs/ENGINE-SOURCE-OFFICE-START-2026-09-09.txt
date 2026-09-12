@@ -1,4 +1,4 @@
-Continue directly in /Users/enuzzo/Library/CloudStorage/Dropbox/Mitnick/sedicivalvole on this Mac. Read AGENTS.md and docs/ENGINE-SOURCE-OFFICE-HANDOFF-2026-09-09.md first. Confirm Dropbox sync, Git state and no concurrent writer; preserve any newer work.
+Continue directly in <repository-root> on this Mac. Read AGENTS.md and docs/ENGINE-SOURCE-OFFICE-HANDOFF-2026-09-09.md first. Confirm Dropbox sync, Git state and no concurrent writer; preserve any newer work.
 
 Carry out deep, targeted Engine source research using the handoff's exact source ledger and exclusions. Find coherent recorded engine banks with actual RPM/load/coast files and usable asset rights, comparable to our accepted Mono/Rosso/Touring. Keep those three unchanged; Otto/Cinque/Turbine are already retired. The FMOD demo was rejected: no FMOD acquisition or account question. Do not repeat the short-clip catalogue or blanket-exclude GitHub: investigate new repositories and the specific unresolved bank inventories identified in the handoff.
 

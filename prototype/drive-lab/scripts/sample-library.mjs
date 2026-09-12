@@ -23,12 +23,12 @@
 import { execFile } from "node:child_process";
 import { readdir, stat } from "node:fs/promises";
 import { basename, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 
 const run = promisify(execFile);
 
-export const LIBRARY_ROOT = "/Users/enuzzo/Library/CloudStorage/Dropbox/Mitnick"
-  + "/sedicivalvole/_references/audio/samples";
+export const LIBRARY_ROOT = fileURLToPath(new URL("../../../_references/audio/samples/", import.meta.url));
 
 export const JUNGLE_ROOT = join(LIBRARY_ROOT, "Jungle Samples");
 export const RAVE_ROOT = join(JUNGLE_ROOT, "Rave Synths");

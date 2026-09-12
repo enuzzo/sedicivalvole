@@ -13,7 +13,7 @@ inventories:
 - primary-checkout execution inventory:
   docs/reconciliation/SESSION-01a04dcc-INVENTORY.md
 - conflicted-worktree inventory:
-  /Users/enuzzo/.codex/worktrees/7c8d/sedicivalvole/docs/reconciliation/SESSION-01a04e30-INVENTORY.md
+  <historical-worktree-7c8d>/docs/reconciliation/SESSION-01a04e30-INVENTORY.md
 
 The recovery session must read this file and both inventories in full. This
 ledger records user intent and precedence; the inventories record what each
@@ -30,11 +30,11 @@ The ledger was reconstructed from the complete local rollout histories, not
 from conversational memory:
 
 - parent/coordinator rollout:
-  /Users/enuzzo/.codex/sessions/2026/08/29/rollout-2026-08-29T10-16-12-01a04c97-3426-7903-8336-af01ab3c6a15.jsonl
+  <local-home>/.codex/sessions/2026/08/29/rollout-2026-08-29T10-16-12-01a04c97-3426-7903-8336-af01ab3c6a15.jsonl
 - execution-session rollout:
-  /Users/enuzzo/.codex/sessions/2026/08/29/rollout-2026-08-29T15-53-40-01a04dcc-293b-7d32-87b8-b8aa744650ff.jsonl
+  <local-home>/.codex/sessions/2026/08/29/rollout-2026-08-29T15-53-40-01a04dcc-293b-7d32-87b8-b8aa744650ff.jsonl
 - worktree-session rollout:
-  /Users/enuzzo/.codex/sessions/2026/08/29/rollout-2026-08-29T17-43-48-01a04e30-fd21-7b62-89ba-1a1a14bda5ed.jsonl
+  <local-home>/.codex/sessions/2026/08/29/rollout-2026-08-29T17-43-48-01a04e30-fd21-7b62-89ba-1a1a14bda5ed.jsonl
 - the two session-authored inventories named above;
 - read-only Git status, commit and deployment evidence available at the time of
   reconciliation.
@@ -49,7 +49,7 @@ UTC+02:00 on 2026-08-29.
 |---|---|---|---|
 | Parent and current coordinator | 01a04c97-3426-7903-8336-af01ab3c6a15, “Audit sedicivalvole Flux and Engine” | Primary Dropbox checkout | Active during reconciliation |
 | First delegated execution session, described by the user as the ghost session | 01a04dcc-293b-7d32-87b8-b8aa744650ff, “Sedici Valvole — WAKE, 80s score, effects and ATLAS” | Primary Dropbox checkout | Latest inventory turn completed; task status idle; currently visible and pinned |
-| Second delegated execution session | 01a04e30-fd21-7b62-89ba-1a1a14bda5ed, “Integrare quattro ambienti Flux” | /Users/enuzzo/.codex/worktrees/7c8d/sedicivalvole | Latest inventory turn completed; task status idle; not present in the current sidebar listing but still readable through its task ID |
+| Second delegated execution session | 01a04e30-fd21-7b62-89ba-1a1a14bda5ed, “Integrare quattro ambienti Flux” | <historical-worktree-7c8d> | Latest inventory turn completed; task status idle; not present in the current sidebar listing but still readable through its task ID |
 
 The parent created session 01a04dcc as a delegated task instead of establishing
 a clearly visible, user-owned continuation. Session 01a04dcc then created

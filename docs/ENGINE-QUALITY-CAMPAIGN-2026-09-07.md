@@ -21,7 +21,7 @@ shift behavior, turbine/turbo sound and timing, and permits substantial rethinki
 and refactoring. This is implementation authority, not a request to stop at a
 research report. A fresh task at Ultra reasoning is explicitly authorized.
 
-Work directly in `/Users/enuzzo/Library/CloudStorage/Dropbox/Mitnick/sedicivalvole`
+Work directly in `<repository-root>`
 on this Mac. Use the saved project's local environment, not a new worktree or
 cloud checkout. Keep one product writer; parallel agents can own bounded files
 or perform independent research/review. Root hands off only after recording and

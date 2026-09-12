@@ -1,5 +1,29 @@
 # sedicivalvole
 
+> **Made with care, for the joy of sharing.** sedicivalvole is a personal,
+> community-minded project by [enuzzo](https://github.com/enuzzo), offered
+> **free of charge and developed pro bono, without a profit-making purpose**.
+> The aim is to make something beautiful, playful and useful, and to celebrate
+> the people whose work makes it possible.
+>
+> **Respect for creators comes first.** If you are a rights holder or notice a
+> concern about a source, attribution or permitted use, please
+> [open an issue](https://github.com/enuzzo/sedicivalvole/issues) identifying the
+> affected material and original source. Please keep private permissions and
+> personal information out of public issues; request a private follow-up when
+> needed. We will respond promptly, investigate in good faith, and correct
+> attribution or suspend/remove affected material when necessary.
+>
+> These intentions do not replace anyone's licence or permission. Third-party
+> work keeps its own rights; credit does not imply endorsement. Read
+> [LICENSE-SCOPE.md](LICENSE-SCOPE.md), [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)
+> and the [licensing decisions and open legal work](docs/LICENSING.md).
+
+This is an **experimental development project**, not a released or
+device-certified product. See the [release-readiness checklist](docs/RELEASE-READINESS-2026-09-12.md)
+for the current audit and remaining acceptance work. Dated build notes below
+are historical verification records, not a promise about the current live build.
+
 Engine now offers only **Mono, Rosso and Touring**, with their accepted audio calibration unchanged. Otto, Cinque and Turbine are retired from Intro, running selectors and LAB. Canonically verified build `20260908-2356`; [decision and validation](docs/ENGINE-RETAINED-VOICES-2026-09-08.md).
 
 The owner-selected [Engine A/B listening LAB](docs/ENGINE-LISTENING-LAB-2026-09-08.md)
@@ -40,7 +64,7 @@ Public development repository: [github.com/enuzzo/sedicivalvole](https://github.
 `sedicivalvole` turns speed, sound, and light into an atmospheric, useful, and memorable in-car experience. It is not a generic dashboard. Two equal primary modes share one motion signal and safety model while offering deliberately different audio and visual identities.
 
 The canonical development build is available at [sedicivalvole.app](https://sedicivalvole.app/).
-The current canonical identity is version `0.0.0`, source commit `c6c16c4`, build
+The September 7 canonical verification recorded version `0.0.0`, source commit `c6c16c4`, build
 `20260907-2328`. See [current state](docs/CURRENT-STATE.md) and the
 [reconciled work queue](docs/NIGHT-WORK-2026-09-07.md) for current verification
 and pending physical-device gates. Earlier launch evidence: compact previews and fresh choices pass

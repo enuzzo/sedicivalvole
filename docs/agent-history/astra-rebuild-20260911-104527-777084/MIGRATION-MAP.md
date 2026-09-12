@@ -3318,7 +3318,7 @@ Rule coverage / supersession: Manual third-session orchestration and exact histo
 <details><summary>Original wording for comparison</summary>
 
 > - primary checkout:
->   `/Users/enuzzo/Library/CloudStorage/Dropbox/Mitnick/sedicivalvole`
+>   `<repository-root>`
 
 </details>
 
@@ -3335,7 +3335,7 @@ Rule coverage / supersession: Manual third-session orchestration and exact histo
 <details><summary>Original wording for comparison</summary>
 
 > - conflicted worktree:
->   `/Users/enuzzo/.codex/worktrees/7c8d/sedicivalvole`
+>   `<historical-worktree-7c8d>`
 
 </details>
 
@@ -3352,7 +3352,7 @@ Rule coverage / supersession: Manual third-session orchestration and exact histo
 <details><summary>Original wording for comparison</summary>
 
 > - complete chronological user-requirements ledger:
->   `/Users/enuzzo/Library/CloudStorage/Dropbox/Mitnick/sedicivalvole/docs/reconciliation/COMPLETE-USER-REQUIREMENTS-2026-08-29.md`
+>   `<repository-root>/docs/reconciliation/COMPLETE-USER-REQUIREMENTS-2026-08-29.md`
 
 </details>
 
@@ -3369,7 +3369,7 @@ Rule coverage / supersession: Manual third-session orchestration and exact histo
 <details><summary>Original wording for comparison</summary>
 
 > - execution-session inventory:
->   `/Users/enuzzo/Library/CloudStorage/Dropbox/Mitnick/sedicivalvole/docs/reconciliation/SESSION-01a04dcc-INVENTORY.md`
+>   `<repository-root>/docs/reconciliation/SESSION-01a04dcc-INVENTORY.md`
 
 </details>
 
@@ -3386,7 +3386,7 @@ Rule coverage / supersession: Manual third-session orchestration and exact histo
 <details><summary>Original wording for comparison</summary>
 
 > - worktree-session inventory:
->   `/Users/enuzzo/.codex/worktrees/7c8d/sedicivalvole/docs/reconciliation/SESSION-01a04e30-INVENTORY.md`
+>   `<historical-worktree-7c8d>/docs/reconciliation/SESSION-01a04e30-INVENTORY.md`
 
 </details>
 
@@ -3403,7 +3403,7 @@ Rule coverage / supersession: Manual third-session orchestration and exact histo
 <details><summary>Original wording for comparison</summary>
 
 > - rejected DRIVEY screenshot:
->   `/Users/enuzzo/.codex/visualizations/2026/08/29/01a04e30-fd21-7b62-89ba-1a1a14bda5ed/drivey-rejected-2026-08-29.png`
+>   `<local-home>/.codex/visualizations/2026/08/29/01a04e30-fd21-7b62-89ba-1a1a14bda5ed/drivey-rejected-2026-08-29.png`
 
 </details>
 

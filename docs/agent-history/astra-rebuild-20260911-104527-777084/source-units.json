@@ -1477,7 +1477,7 @@
     "section": "Manual recovery prompt",
     "start": 13,
     "end": 14,
-    "text": "- primary checkout:\n  `/Users/enuzzo/Library/CloudStorage/Dropbox/Mitnick/sedicivalvole`"
+    "text": "- primary checkout:\n  `<repository-root>`"
   },
   {
     "id": "H005",
@@ -1485,7 +1485,7 @@
     "section": "Manual recovery prompt",
     "start": 15,
     "end": 16,
-    "text": "- conflicted worktree:\n  `/Users/enuzzo/.codex/worktrees/7c8d/sedicivalvole`"
+    "text": "- conflicted worktree:\n  `<historical-worktree-7c8d>`"
   },
   {
     "id": "H006",
@@ -1493,7 +1493,7 @@
     "section": "Manual recovery prompt",
     "start": 17,
     "end": 18,
-    "text": "- complete chronological user-requirements ledger:\n  `/Users/enuzzo/Library/CloudStorage/Dropbox/Mitnick/sedicivalvole/docs/reconciliation/COMPLETE-USER-REQUIREMENTS-2026-08-29.md`"
+    "text": "- complete chronological user-requirements ledger:\n  `<repository-root>/docs/reconciliation/COMPLETE-USER-REQUIREMENTS-2026-08-29.md`"
   },
   {
     "id": "H007",
@@ -1501,7 +1501,7 @@
     "section": "Manual recovery prompt",
     "start": 19,
     "end": 20,
-    "text": "- execution-session inventory:\n  `/Users/enuzzo/Library/CloudStorage/Dropbox/Mitnick/sedicivalvole/docs/reconciliation/SESSION-01a04dcc-INVENTORY.md`"
+    "text": "- execution-session inventory:\n  `<repository-root>/docs/reconciliation/SESSION-01a04dcc-INVENTORY.md`"
   },
   {
     "id": "H008",
@@ -1509,7 +1509,7 @@
     "section": "Manual recovery prompt",
     "start": 21,
     "end": 22,
-    "text": "- worktree-session inventory:\n  `/Users/enuzzo/.codex/worktrees/7c8d/sedicivalvole/docs/reconciliation/SESSION-01a04e30-INVENTORY.md`"
+    "text": "- worktree-session inventory:\n  `<historical-worktree-7c8d>/docs/reconciliation/SESSION-01a04e30-INVENTORY.md`"
   },
   {
     "id": "H009",
@@ -1517,7 +1517,7 @@
     "section": "Manual recovery prompt",
     "start": 23,
     "end": 24,
-    "text": "- rejected DRIVEY screenshot:\n  `/Users/enuzzo/.codex/visualizations/2026/08/29/01a04e30-fd21-7b62-89ba-1a1a14bda5ed/drivey-rejected-2026-08-29.png`"
+    "text": "- rejected DRIVEY screenshot:\n  `<local-home>/.codex/visualizations/2026/08/29/01a04e30-fd21-7b62-89ba-1a1a14bda5ed/drivey-rejected-2026-08-29.png`"
   },
   {
     "id": "H010",

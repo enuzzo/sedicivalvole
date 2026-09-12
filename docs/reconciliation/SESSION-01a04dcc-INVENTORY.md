@@ -5,7 +5,7 @@
 - Session ID: `01a04dcc-293b-7d32-87b8-b8aa744650ff`.
 - Session title: **Sedici Valvole — WAKE, 80s score, effects and ATLAS**.
 - Source task: `01a04c97-3426-7903-8336-af01ab3c6a15`.
-- Checkout: `/Users/enuzzo/Library/CloudStorage/Dropbox/Mitnick/sedicivalvole`.
+- Checkout: `<repository-root>`.
 - Branch: `main` tracking `origin/main`.
 - Recorded and re-verified starting Git checkpoint: clean `main`/`origin/main` at
   `a068a06`.
@@ -60,7 +60,7 @@ earlier conflicting boundary only where stated.
    release behavior; test ordinary, full-throttle, gap, brake and reversal
    scenarios.
 8. Treat WAKE as a strict fidelity contract against
-   `/Users/enuzzo/.codex/generated_images/01a04c97-3426-7903-8336-af01ab3c6a15/exec-428d4bbf-ef29-46c1-9aee-2d8a2c1c6ca8.png`.
+   `<local-home>/.codex/generated_images/01a04c97-3426-7903-8336-af01ab3c6a15/exec-428d4bbf-ef29-46c1-9aee-2d8a2c1c6ca8.png`.
    Use the Product Design image-to-code workflow, compare at `773 × 601`, fix
    P0/P1/P2 differences and require a passing `design-qa.md`. Preserve the
    control plane and responsiveness; research and attribute any imported
@@ -310,14 +310,14 @@ not be described as the live source identity.
 
 ### Generated images outside the repository
 
-- `/Users/enuzzo/.codex/generated_images/01a04dcc-293b-7d32-87b8-b8aa744650ff/exec-833d4088-526e-4dd2-aa46-f39659ac4a33.png`
+- `<local-home>/.codex/generated_images/01a04dcc-293b-7d32-87b8-b8aa744650ff/exec-833d4088-526e-4dd2-aa46-f39659ac4a33.png`
   — DRIVEY concept, 1,510,416 bytes; used as design-QA context, not shipped as a
   product asset.
-- `/Users/enuzzo/.codex/generated_images/01a04dcc-293b-7d32-87b8-b8aa744650ff/exec-d2e96d30-ccfe-4613-b227-7b1ff331d041.png`
+- `<local-home>/.codex/generated_images/01a04dcc-293b-7d32-87b8-b8aa744650ff/exec-d2e96d30-ccfe-4613-b227-7b1ff331d041.png`
   — PRTCL concept, 1,738,999 bytes; unaccepted, unreferenced by runtime,
   uncommitted and undeployed.
 - Selected WAKE source reference, owned by the parent task context:
-  `/Users/enuzzo/.codex/generated_images/01a04c97-3426-7903-8336-af01ab3c6a15/exec-428d4bbf-ef29-46c1-9aee-2d8a2c1c6ca8.png`.
+  `<local-home>/.codex/generated_images/01a04c97-3426-7903-8336-af01ab3c6a15/exec-428d4bbf-ef29-46c1-9aee-2d8a2c1c6ca8.png`.
 
 ### Committed QA screenshots
 
@@ -357,13 +357,13 @@ not be described as the live source identity.
 
 - This session left no analyzer, deploy process or development server running.
 - A separate worktree currently exists at
-  `/Users/enuzzo/.codex/worktrees/7c8d/sedicivalvole`, detached at `ef8c767`.
+  `<historical-worktree-7c8d>`, detached at `ef8c767`.
 - Read-only process verification during reconciliation found these still-running
   processes, owned by the separate worktree/session rather than this Dropbox
   execution:
   - PID `29822`: `npm run dev --host 127.0.0.1`
   - PID `29847`: Vite from
-    `/Users/enuzzo/.codex/worktrees/7c8d/sedicivalvole/prototype/drive-lab/node_modules/.bin/vite --host 127.0.0.1`
+    `<historical-worktree-7c8d>/prototype/drive-lab/node_modules/.bin/vite --host 127.0.0.1`
   - PID `29848`: that Vite process's esbuild `0.25.12` service
 - This session did not terminate or alter those processes.
 
@@ -372,7 +372,7 @@ not be described as the live source identity.
 Read-only verification immediately before writing this inventory returned:
 
 ```text
-checkout: /Users/enuzzo/Library/CloudStorage/Dropbox/Mitnick/sedicivalvole
+checkout: <repository-root>
 branch: main
 HEAD: ef8c767688c2ab8ac9cf5d6d10f733a7dceacde5
 upstream: origin/main
@@ -467,7 +467,7 @@ other untracked file was changed by this documentation-only command.
   introduced duplicate ownership of the same product and should have been
   prevented by establishing a single-writer boundary before delegation.
 - Its worktree is
-  `/Users/enuzzo/.codex/worktrees/7c8d/sedicivalvole`; at reconciliation time it
+  `<historical-worktree-7c8d>`; at reconciliation time it
   is detached at the same `ef8c767` commit and has the running Vite/esbuild
   process tree recorded above.
 - The instruction stream contained legitimate overrides but also coordination

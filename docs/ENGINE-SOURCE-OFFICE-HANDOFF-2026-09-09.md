@@ -5,8 +5,8 @@ This handoff does not launch another agent, buy software, or publish a build.
 
 ## Start here
 
-Work directly in `/Users/enuzzo/Library/CloudStorage/Dropbox/Mitnick/sedicivalvole`
-on the office Mac, not the home-only `/Users/enuzzo/.codex/worktrees/a9fc/sedicivalvole`.
+Work directly in `<repository-root>`
+on the office Mac, not the home-only `<historical-worktree-a9fc>`.
 Read AGENTS.md, this document, and the linked research before searching. Confirm
 Dropbox has finished syncing, Git is clean, branch/HEAD and remotes are expected,
 and no other session is writing. Do not reset a newer checkout to this checkpoint.

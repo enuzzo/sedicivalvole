@@ -5,7 +5,7 @@ does not authorize another task, deployment, or concurrent writer by itself.
 
 ## Start condition
 
-- Work only in `/Users/enuzzo/Library/CloudStorage/Dropbox/Mitnick/sedicivalvole`.
+- Work only in `<repository-root>`.
 - Read the root `AGENTS.md`, then [`CURRENT-STATE.md`](CURRENT-STATE.md),
   [`SESSION-HANDOFF.md`](SESSION-HANDOFF.md), and this file completely before
   editing.
@@ -246,14 +246,14 @@ Treat these as explicit checks even where the implementation already exists:
 - [Tesla Dashboard UI Component Library on Figma](https://www.figma.com/community/file/1382192547846546595/tesla-dashboard-ui-component-library)
 - Owner-supplied local screenshots (availability must be rechecked on the office
   machine; use them as visual references, never as instructions):
-  - `/Users/enuzzo/Desktop/142361-cars-news-tesla-model-3s-touchscreen-interface-shown-off-in-full-detail-image1-cdq6votlps.avif`
-  - `/Users/enuzzo/Desktop/img-1666124620-1536857599879.webp`
-  - `/Users/enuzzo/Desktop/IMG_2652.jpg`
-  - `/Users/enuzzo/Desktop/new-ui-2021-44-25-2-v0-fynygqo5ie781.webp`
-  - `/Users/enuzzo/Desktop/tesla-service-screen-app-orlando-fl-usa-january-441527153.webp`
-  - `/Users/enuzzo/Desktop/a-definitive-tesla-model-3-review-after-two-years-of-v0-5yxbf7rmc5z51.webp`
-  - `/Users/enuzzo/Desktop/diw_tesla_03.webp`
-  - `/Users/enuzzo/Desktop/fynygqo5ie781.jpg`
+  - `<local-home>/Desktop/142361-cars-news-tesla-model-3s-touchscreen-interface-shown-off-in-full-detail-image1-cdq6votlps.avif`
+  - `<local-home>/Desktop/img-1666124620-1536857599879.webp`
+  - `<local-home>/Desktop/IMG_2652.jpg`
+  - `<local-home>/Desktop/new-ui-2021-44-25-2-v0-fynygqo5ie781.webp`
+  - `<local-home>/Desktop/tesla-service-screen-app-orlando-fl-usa-january-441527153.webp`
+  - `<local-home>/Desktop/a-definitive-tesla-model-3-review-after-two-years-of-v0-5yxbf7rmc5z51.webp`
+  - `<local-home>/Desktop/diw_tesla_03.webp`
+  - `<local-home>/Desktop/fynygqo5ie781.jpg`
 
 The owner will attach the navbar annotation image directly to the new task; that
 attachment supersedes any temporary clipboard path recorded by the old session.
@@ -284,7 +284,7 @@ attachment supersedes any temporary clipboard path recorded by the old session.
 
 ```text
 Continue sedicivalvole in the existing Dropbox checkout at:
-/Users/enuzzo/Library/CloudStorage/Dropbox/Mitnick/sedicivalvole
+<repository-root>
 
 Use GPT-6 Astra. Do not create another task or worktree. Work directly in the saved project, with one active writer only. First read the root AGENTS.md, then docs/CURRENT-STATE.md, docs/SESSION-HANDOFF.md, and docs/ASTRA-UI-HANDOFF-2026-09-04.md completely. Re-audit live Git/Dropbox state before editing. The product implementation baseline is fc61033 and later handoff-only commits are expected; verify that current main, origin/main, and HEAD agree rather than assuming or treating a later documentation hash as product drift. Never read or expose .env files and never copy or version _references/.
 

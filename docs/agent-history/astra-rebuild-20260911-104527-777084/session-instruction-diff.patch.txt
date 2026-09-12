@@ -827,17 +827,17 @@
 -Repository and evidence paths:
 -
 -- primary checkout:
--  `/Users/enuzzo/Library/CloudStorage/Dropbox/Mitnick/sedicivalvole`
+-  `<repository-root>`
 -- conflicted worktree:
--  `/Users/enuzzo/.codex/worktrees/7c8d/sedicivalvole`
+-  `<historical-worktree-7c8d>`
 -- complete chronological user-requirements ledger:
--  `/Users/enuzzo/Library/CloudStorage/Dropbox/Mitnick/sedicivalvole/docs/reconciliation/COMPLETE-USER-REQUIREMENTS-2026-08-29.md`
+-  `<repository-root>/docs/reconciliation/COMPLETE-USER-REQUIREMENTS-2026-08-29.md`
 -- execution-session inventory:
--  `/Users/enuzzo/Library/CloudStorage/Dropbox/Mitnick/sedicivalvole/docs/reconciliation/SESSION-01a04dcc-INVENTORY.md`
+-  `<repository-root>/docs/reconciliation/SESSION-01a04dcc-INVENTORY.md`
 -- worktree-session inventory:
--  `/Users/enuzzo/.codex/worktrees/7c8d/sedicivalvole/docs/reconciliation/SESSION-01a04e30-INVENTORY.md`
+-  `<historical-worktree-7c8d>/docs/reconciliation/SESSION-01a04e30-INVENTORY.md`
 -- rejected DRIVEY screenshot:
--  `/Users/enuzzo/.codex/visualizations/2026/08/29/01a04e30-fd21-7b62-89ba-1a1a14bda5ed/drivey-rejected-2026-08-29.png`
+-  `<local-home>/.codex/visualizations/2026/08/29/01a04e30-fd21-7b62-89ba-1a1a14bda5ed/drivey-rejected-2026-08-29.png`
 -
 -This is an emergency reconciliation after two sessions worked concurrently on
 -the same product. Do not create, fork, delegate or hand off another task. Do not
