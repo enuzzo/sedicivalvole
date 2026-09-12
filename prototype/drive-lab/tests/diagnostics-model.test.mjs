@@ -22,6 +22,8 @@ import {
   recordDriveTelemetrySample,
   recordAudioLatencySample,
   recordDiagnosticEvent,
+  diagnosticPagePath,
+  sanitizeDiagnosticDetail,
   recordFrameSample,
   recordLongTask,
   recordNetworkOnlineState,
@@ -42,6 +44,29 @@ import {
 import { nextStorageCanary, summarizeStorageCanary } from "../src/storage-diagnostics.js";
 import { diagnosticMusicIdentity } from "../src/diagnostics-model.js";
 import { createLoadRecovery } from "../src/load-recovery.js";
+
+test("diagnostics omit URL authority, parameters and unrecognized routes", () => {
+  assert.equal(diagnosticPagePath("https://example.invalid/?private=fixture#fixture"), "/");
+  assert.equal(diagnosticPagePath("https://fixture:fixture@example.invalid/lab/?q=fixture"), "/lab/");
+  assert.equal(diagnosticPagePath("https://example.invalid/private-fixture"), "[other-route]");
+  assert.equal(diagnosticPagePath("file:///fixture"), null);
+  assert.equal(diagnosticPagePath("invalid"), null);
+});
+
+test("runtime and duplicated event details redact URLs and local paths without mutation", () => {
+  const home = ["", "Users", "fixture-user", "private fixture", "source.js"].join("/");
+  const windows = ["C:", "Users", "fixture-user", "private fixture.js"].join("\\");
+  const detail = { message: "TypeError at https://example.invalid/?private=fixture#fixture",
+    nested: { stack: `Error\n at ${home}\n at ${windows}`, file: "http://localhost:5173/private?fixture" }, line: 42 };
+  const sanitized = sanitizeDiagnosticDetail(detail);
+  const ledger = createDiagnosticEventLedger();
+  recordDiagnosticEvent(ledger, { type: "runtime.error", detail });
+  assert.deepEqual(createDiagnosticEventReport(ledger).events[0].detail, sanitized);
+  assert.equal(sanitized.line, 42);
+  assert.match(sanitized.message, /^TypeError at \[url\]$/);
+  assert.doesNotMatch(JSON.stringify(sanitized), /fixture|localhost|example\.invalid/);
+  assert.match(detail.message, /fixture/);
+});
 
 test("render counts preserve 30 FPS threshold jitter and expose suspension separately", () => {
   for (const interval of [1000 / 60, 33.3, 33.4, 50]) {

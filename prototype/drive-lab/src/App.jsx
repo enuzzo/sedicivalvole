@@ -54,6 +54,8 @@ import {
   readAudioLatencySnapshot,
   recordAudioLatencySample,
   recordDiagnosticEvent,
+  diagnosticPagePath,
+  sanitizeDiagnosticDetail,
   recordDriveTelemetrySample,
   recordFrameSample,
   recordLongTask,
@@ -4242,8 +4244,6 @@ export function App() {
     const artwork = artworkDescriptor ? [artworkDescriptor] : [];
     let metadataPublished = false;
     let playbackStatePublished = false;
-    let positionStatePublished = false;
-    let positionStateCleared = false;
     try {
       navigator.mediaSession.metadata = new MediaMetadata({
         title: currentTrack.title,
@@ -4267,26 +4267,6 @@ export function App() {
         reason: boundedDiagnosticText(String(error?.name || error?.message || error || "unknown"), 120),
       });
     }
-    if (typeof navigator.mediaSession.setPositionState === "function") {
-      const positionState = experienceMode === "flux" && musicMode === "soundtrack"
-        ? soundtrackMediaPositionState(soundtrackSnapshot)
-        : null;
-      try {
-        if (positionState) {
-          navigator.mediaSession.setPositionState(positionState);
-          positionStatePublished = true;
-        } else {
-          navigator.mediaSession.setPositionState();
-          positionStateCleared = true;
-        }
-      } catch (error) {
-        logDiagnosticEvent("media-session.position-state.failed", {
-          key: currentTrack.key,
-          musicMode,
-          reason: boundedDiagnosticText(String(error?.name || error?.message || error || "unknown"), 120),
-        });
-      }
-    }
     logDiagnosticEvent("media-session.published", {
       key: currentTrack.key,
       title: boundedDiagnosticText(currentTrack.title, 120),
@@ -4298,8 +4278,6 @@ export function App() {
       requestedPlaybackState: transportPlaying ? "playing" : "paused",
       metadataPublished,
       playbackStatePublished,
-      positionStatePublished,
-      positionStateCleared,
       actionRegistration: "stable-session-handlers",
     });
   }, [
@@ -4310,6 +4288,33 @@ export function App() {
     logDiagnosticEvent,
     musicMode,
     phase,
+    transportPlaying,
+  ]);
+
+  // The media clock changes independently of track identity and artwork.
+  // Keep native progress current without republishing unchanged metadata/events.
+  useEffect(() => {
+    if (!("mediaSession" in navigator) || phase !== "running" || !currentTrack) return;
+    if (typeof navigator.mediaSession.setPositionState === "function") {
+      const positionState = experienceMode === "flux" && musicMode === "soundtrack"
+        ? soundtrackMediaPositionState(soundtrackSnapshot)
+        : null;
+      try {
+        if (positionState) {
+          navigator.mediaSession.setPositionState(positionState);
+        } else {
+          navigator.mediaSession.setPositionState();
+        }
+      } catch (error) {
+        logDiagnosticEvent("media-session.position-state.failed", {
+          key: currentTrack.key,
+          musicMode,
+          reason: boundedDiagnosticText(String(error?.name || error?.message || error || "unknown"), 120),
+        });
+      }
+    }
+  }, [
+    currentTrack, experienceMode, musicMode, phase, logDiagnosticEvent,
     soundtrackSnapshot?.media?.roles?.current?.currentTimeSeconds,
     soundtrackSnapshot?.media?.roles?.current?.durationSeconds,
     soundtrackSnapshot?.playbackRate,
@@ -4449,6 +4454,7 @@ export function App() {
   useEffect(() => {
     const retainIssue = (type, detail) => {
       if (!diagnosticsActiveRef.current) return;
+      detail = sanitizeDiagnosticDetail(detail);
       const issue = {
         at: new Date().toISOString(),
         elapsedMs: roundMetric(performance.now() - sessionStartedAtRef.current),
@@ -4847,7 +4853,7 @@ export function App() {
       musicMode: experienceModeRef.current === "engine" ? "engine" : sessionMusicModeRef.current,
       rememberedScoreId: genreIdRef.current,
       environment: experienceModeRef.current === "engine" ? "engine-telemetry" : environmentIdRef.current,
-      pageUrl: window.location.href,
+        pageUrl: diagnosticPagePath(window.location.href),
       source: sourceRef.current,
       displayedSpeedKmh: Math.round(speedRef.current * 10) / 10,
       bpm: experienceModeRef.current === "engine" || bpmRef.current == null ? null : Math.round(bpmRef.current * 10) / 10,
@@ -4929,7 +4935,7 @@ export function App() {
       sessionStartedAtRef.current,
     ),
     flightRecorder: createDriveTelemetryReport(driveTelemetryRef.current, performance.now()),
-    runtimeIssues: runtimeIssuesRef.current,
+    runtimeIssues: sanitizeDiagnosticDetail(runtimeIssuesRef.current),
     events: createDiagnosticEventReport(diagnosticEventsRef.current).events,
     eventRetention: createDiagnosticEventReport(diagnosticEventsRef.current).retention,
     diagnosticDelivery: { mode: diagnosticPreferencesRef.current.mode, automaticEnabled: diagnosticPreferencesRef.current.mode === "dev" && diagnosticPreferencesRef.current.automatic, ...automaticClockRef.current.snapshot() },
@@ -5087,7 +5093,7 @@ export function App() {
         at: new Date().toISOString(),
         elapsedMs: roundMetric(performance.now() - sessionStartedAtRef.current),
         type: "visual.runtime.error",
-        detail: { environment: environment.id, message },
+        detail: sanitizeDiagnosticDetail({ environment: environment.id, message }),
       }].slice(-24);
     }
     logDiagnosticEvent("visual.runtime.error", { environment: environment.id, message });

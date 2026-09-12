@@ -93,7 +93,7 @@ button { -webkit-tap-highlight-color: transparent; }
   position: relative;
   width: 100vw;
   height: 100dvh;
-  min-height: 480px;
+  min-height: min(480px, 100dvh);
   overflow: hidden;
   isolation: isolate;
   background: var(--ink);

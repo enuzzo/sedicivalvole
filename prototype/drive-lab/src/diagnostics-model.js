@@ -1,3 +1,30 @@
+/** Keep useful error identity without retaining URLs or recognizable home paths. */
+export function sanitizeDiagnosticText(value, maximumLength = Infinity) {
+  return String(value ?? "")
+    .replace(/\b(?:https?|file|blob):[^\s<>"']+/gi, "[url]")
+    .replace(/\/(?:Users|home)\/[^\r\n<>"']+|[A-Za-z]:\\Users\\[^\r\n<>"']+/g, "[local-path]")
+    .slice(0, maximumLength);
+}
+
+/** The application route is sufficient; URL credentials and parameters are not. */
+export function diagnosticPagePath(value) {
+  try {
+    const url = new URL(value);
+    if (!["http:", "https:"].includes(url.protocol)) return null;
+    return ["/", "/index.php", "/lab", "/lab/"].includes(url.pathname) ? url.pathname : "[other-route]";
+  } catch {
+    return null;
+  }
+}
+
+export function sanitizeDiagnosticDetail(value, depth = 0) {
+  if (typeof value === "string") return sanitizeDiagnosticText(value);
+  if (value == null || typeof value !== "object") return value;
+  if (depth >= 12) return "[depth-limit]";
+  if (Array.isArray(value)) return value.map(item => sanitizeDiagnosticDetail(item, depth + 1));
+  return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, sanitizeDiagnosticDetail(item, depth + 1)]));
+}
+
 export function inferViewportMode({ innerWidth, innerHeight, screenWidth, screenHeight }) {
   if (![innerWidth, innerHeight, screenWidth, screenHeight].every(Number.isFinite)) return "unknown";
   const widthRatio = innerWidth / screenWidth;
@@ -354,7 +381,7 @@ export function recordDiagnosticEvent(ledger, event, { sample = false, interacti
     ? DIAGNOSTIC_INTERACTION_EVENT_LIMIT
     : sample ? DIAGNOSTIC_SAMPLE_EVENT_LIMIT : DIAGNOSTIC_SIGNIFICANT_EVENT_LIMIT;
   ledger[totalKey] += 1;
-  ledger[channel].push({ ...event, priority: interaction ? "interaction" : sample ? "sample" : "significant" });
+  ledger[channel].push({ ...event, detail: sanitizeDiagnosticDetail(event.detail), priority: interaction ? "interaction" : sample ? "sample" : "significant" });
   if (ledger[channel].length > limit) {
     const overflow = ledger[channel].length - limit;
     ledger[channel].splice(0, overflow);
@@ -1075,8 +1102,8 @@ export function fitDiagnosticReportForTransport(report, maximumBytes = DIAGNOSTI
       summary: { ...report.flightRecorder.summary },
       samples: [...report.flightRecorder.samples],
     } : null,
-    events: [...(report.events ?? [])],
-    runtimeIssues: [...(report.runtimeIssues ?? [])],
+    events: sanitizeDiagnosticDetail(report.events ?? []),
+    runtimeIssues: sanitizeDiagnosticDetail(report.runtimeIssues ?? []),
     transport: {
       maximumRequestBodyBytes: maximumBytes,
       trimmingTargetBytes,
