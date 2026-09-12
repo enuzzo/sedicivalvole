@@ -33,6 +33,16 @@ explicit record so no item disappears.
 - [ ] F06 — Run relevant regression/source/browser and release gates, commit/push, publish via unchanged preserve-existing FTP, verify canonical identity/assets and update this handoff.
 - [x] F07 — Owner refined the audit finding: replace the separate Atlas MAP COLOR plaque with a palette icon inside the zoom/reset/orientation row. Align framing and camera groups where space permits, retain 48 px targets and accessible current/next state, extend the shared specimen and verify pointer/keyboard behavior in both appearances. Shared toolbar implementation, real-map pointer/keyboard changes, LIGHT/DARK states and narrow reference checks pass. Full native suite 876/876 and focused Atlas/appearance checks 49/49 pass; final publication is part of F06.
 
+### Final Atlas candidate — publication in progress
+
+Product checkpoint **81747b5**, build-source/changelog **5ffacb1**, final build
+**20260912-1007.5ffacb1**. Full tests pass **876/876**, focused checks **49/49**,
+production integrity **827** exact hashes and public hygiene **1,463** files.
+The packaged application passes explicit Milan demo, icon activation, aligned
+controls and zero console errors in the internal browser. The owner requested
+urgent publication; the official preserve-existing FTP operation is in progress.
+F06 remains open until completion, canonical HTTPS hashes and browser verification.
+
 ### Intermediate follow-up publication
 
 Build **20260912-0954.bb64c37** completed official preserve-existing FTP publication:
