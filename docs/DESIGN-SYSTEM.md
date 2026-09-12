@@ -108,6 +108,17 @@ not a complete accessibility certification or a review of every passenger flow.
    The disclosure opens above it without moving the map. Narrow screens and
    additional Fly With attribution use horizontal source scrolling.
 
+5. **Passenger/readout roles:** Stats' no-GPS screen keeps 13 px metadata,
+   22 px title and 32 px primary values separate from its range action. Discover's
+   current no-location screen uses uppercase actions and a contiguous scope rail;
+   its shared edges remain square to express one navigation group. It does not
+   duplicate the floating visual-cycle geometry. Atlas' initial permission state
+   was inspected without granting location; data-dependent Atlas labels require
+   a fixture or physical follow-up before claiming complete passenger coverage.
+6. **Production integration:** the packaged app launches Orchard at 773 × 601,
+   wakes its contextual controls and changes to Silk through the real VARIANT
+   action. REPORT shows the intended build/source and zero runtime issues.
+
 The confirmed strengths are shared geometry and state semantics. The maintenance
 risk was that the controls lived inside the large App module, without a runnable
 reference; the shared module and live showcase address that risk. Remaining
