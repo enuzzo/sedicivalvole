@@ -5065,3 +5065,55 @@ Verification: 32 focused splash/launch/preload tests, 825 production hashes, 196
 ## Intro timing refinement — 2026-09-11 17:18
 
 Canonical **20260911-1711.cfe49a3** uses the owner-requested 2-second lead-in and 1.2-second expansion. Local and canonical Chrome verify exact CSS timing, hidden focus behavior, reduced motion, no replay on selection and actual START without page errors. Production: 825 static hashes and 196 credits pass; 24 canonical HTML/asset checks pass. Official preserve-existing deployment uploaded 36 files / 5,774,787 bytes, reused 824 static assets and 29 audio masters, and retained two previous assets. Physical Tesla acceptance remains separate.
+
+
+## Release readiness and MapLibre 6.7.0 publication — 2026-09-12 09:24
+
+Canonical build **20260912-0909.e0ac1cb**, VERSION **0.0.0**, is published and
+verified. Product checkpoint **82e7f30** and build-source checkpoint **e0ac1cb**
+are pushed; **1301abb** records the final local/browser gates. Subsequent
+closeout changes are documentation only and do not change the built artifact.
+
+Official read-only preflight passed exact root/legacy identity with no writes.
+The official `--publish --preserve-existing` run uploaded **38 files /
+6,355,741 bytes**, reused **824** unchanged static files and **29** fully hashed
+Illobo recordings, and retained **2** previous fingerprinted assets. Complete
+asset verification and final dynamic-root verification passed. No legacy files
+were deleted; `remote_writes=ROOT_UPLOAD_ONLY`. FTP transport remains unchanged
+under the owner's explicit instruction and existing credential-loading boundary.
+
+Local gates: **874/874** native tests with Python 3.11; **72/72** focused
+map/appearance checks; **18/18** repeatable map browser regressions; application,
+protected LAB and Sites packaging; **827** exact release hashes; **189** credits;
+zero dependency advisories and zero hygiene findings in **1,453** tracked text
+files. QA/builds used `SEDICIVALVOLE_NO_LOCAL_ENV=1`. The initial Python 3.9
+fixture failure and initial 6.4.1 GPU-failure candidate are superseded by the
+passing final tests, not counted as successful evidence.
+
+Bare and cache-busted canonical HTML return HTTP **200**, matching local bytes,
+build/version identity, `no-store, no-cache, must-revalidate, max-age=0` and
+proxy cache **MISS**. Nine local/live size/hash comparisons pass twice, before
+and after controlled internal-browser reload. Static responses have no explicit
+Cache-Control header; no stronger caching guarantee is claimed.
+
+| Public path | Bytes | Verified local/live SHA-256 |
+| --- | ---: | --- |
+| `/` | 1445 | `d3e6d8bef95f6fdbeef11f2ad36c2c7bb001f9e790595e3fcb46cdcec2dddb9a` |
+| `/assets/index-_YvAPeQI.js` | 828873 | `0a031f29b791302adad8fd8366f98d73d691f13760262902114513f2e9a3374c` |
+| `/assets/index-VfD7zi8c.css` | 251234 | `9371812a8d7a4ad91359cc3c324e6be9b63b8fd0466f6d56c0499154d0d43a6a` |
+| `/assets/maplibre-runtime-B5xYBViM.js` | 1014114 | `a1e8f7fedec26b41e556a35537555744b294fb500cd78ca4f4a26407746abb49` |
+| `/assets/maplibre-gl-worker-CIjIPF-m.js` | 487122 | `d6d1ce18b89584826383ac10d2a05605fde2651120cfb1d5edf8691ce139339d` |
+| `/assets/maplibre-gl-DvulA2N7.css` | 83039 | `52fb4f6236da5760c884d97067f93419efd4c3ddd3d2ff11f10662791d1aa49f` |
+| `/assets/release-20260912-0909.e0ac1cb.json` | 116323 | `ed09be4782c25b43915e4af9a43700377cd09a3c10bc5e83f0a4a22327050f68` |
+| `/third-party/maplibre/LICENSE.txt` | 5984 | `ee5fc05a0677eaf69601d2c7db0d9ecd6cc27c3abc1d0733bc9ed34707cf8ef2` |
+
+Canonical Codex internal-browser QA verifies Intro, muted launch, real Vertigo
+rendering, REPORT at **773 × 601**, correct build/source identity, zero runtime
+issues/console errors, and the same identity after reload. GPS permission was
+denied, automatic diagnostic delivery was already OFF, and no synthetic mail
+was sent. Local synthetic fixtures separately verify all map surfaces, report
+JPEG, attribution sanitization, GPU failure cleanup, advancing-media metadata
+behavior and phone rotation. They do not close physical Tesla/iPhone, WebGL2,
+native-media, sustained-performance or endurance acceptance. The original
+account-bound formal Security scan remains inaccessible and unchecked as R06;
+see [the active checklist](RELEASE-READINESS-2026-09-12.md).

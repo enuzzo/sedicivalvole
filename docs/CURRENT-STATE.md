@@ -1,5 +1,35 @@
 # Current Project State
 
+## Current release-readiness closeout — 2026-09-12 09:24 Europe/Rome
+
+Latest verified canonical build: **20260912-0909.e0ac1cb**, VERSION **0.0.0**;
+product checkpoint **82e7f30**, build-source checkpoint **e0ac1cb**. This section
+supersedes older latest-build labels below. The full resumable checklist and
+scope are in [September 12 release readiness](RELEASE-READINESS-2026-09-12.md).
+
+MapLibre is pinned to **6.7.0** with a bundled same-origin module worker,
+updated context options, complete upstream license, repaired attribution
+sanitization and safe Fly With GPU-initialization fallback. ATLAS attribution
+uses the contracted 14 px. WebGL2 is required; physical compatibility remains
+open. This release also delivers the checkpointed LAB login-window fix,
+diagnostic URL/path redaction, stable Media Session presentation updates,
+short-window layout correction, and public-source/community documentation.
+
+Verification: **874/874** native tests, **72/72** focused map/appearance checks,
+**18/18** repeatable internal-browser map checks, **827** production static
+hashes, **189** exact dependency credits, zero npm advisories and zero tracked
+hygiene findings. Advancing-audio fixtures verify position updates without
+unchanged metadata republication. Local desktop/compact/phone UI checks and
+canonical internal-browser launch/REPORT/reload pass; no synthetic mail was sent.
+
+Official preserve-existing FTP publication uploaded **38 files / 6,355,741
+bytes**, reused **824** static files and all **29** full-hash-verified recordings,
+and retained **2** previous assets. Bare/cache-busted HTML and seven release
+assets match local bytes, including after controlled reload. Formal Codex
+Security scan **R06** remains inaccessible from the current account; physical
+Tesla/iPhone, WebGL2, native media and sustained/endurance acceptance are open.
+FTP remains unchanged by explicit owner instruction. See [delivery evidence](DEPLOY.md).
+
 ## Current infographic closeout — 2026-09-11 16:26 Europe/Rome
 
 Latest verified canonical build: **20260911-1606.10f8511**, application source

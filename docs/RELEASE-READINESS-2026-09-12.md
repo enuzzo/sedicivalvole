@@ -16,10 +16,10 @@ This is the active handoff for the owner's September 12 request. It is deliberat
 - [x] R10 — Fix verified small visual/interaction defects within approved designs; no new visual direction without the existing three-option selection gate.
 - [x] R11 — Inspect startup/bundle, rendering/lifecycle and network/audio costs; measure representative behavior and implement justified performance fixes.
 - [x] R12 — Run focused tests and the required application/release gates for actual changes; record exact results and limitations.
-- [ ] R13 — Commit/push verified checkpoints; publish product changes only after canonical delivery gates. Verify bare-root identity and assets after any publication.
-- [ ] R14 — Record final evidence, outstanding device acceptance and next start; leave a clean, comprehensible handoff.
+- [x] R13 — Commit/push verified checkpoints; publish product changes only after canonical delivery gates. Verify bare-root identity and assets after any publication.
+- [x] R14 — Record final evidence, outstanding device acceptance and next start; leave a clean, comprehensible handoff.
 
-## September 12 continuation — verified release candidate
+## September 12 continuation — published and verified
 
 - Resumed from clean `d3d92b1`. Initial MapLibre candidate 6.4.1 was tested, then superseded by 6.7.0: forced GPU failure exposed partially constructed maps and cleanup errors in 6.4.1. Upstream 6.7.0 is the first release containing the constructor/cleanup correction; exact source, unchanged license and SHA-512 were verified before admission. All three lazy import sites and shared Fly With consumer use a single bundled module-worker adapter. Context attributes migrated; Fly With handles second-context initialization failure. WebGL2 device acceptance remains open.
 - Narrow browserslist/baseline update resolved their dependency subtrees; `npm audit` reports zero advisories. This is dependency-database evidence, not a completed security scan. The original Codex Security tool/scan is inaccessible from the new account; R06 remains open and no duplicate scan was started.
@@ -35,7 +35,15 @@ This is the active handoff for the owner's September 12 request. It is deliberat
 - Final production browser QA: build identity matches `20260912-0909.e0ac1cb`; compact Tesla layout measures 773 × 601 without overflow; isolated internal-browser Intro rechecks also confirm 1440 × 900 and short 844 × 390 document geometry without overflow. Intro, launch, running controls, Music drawer/Escape and REPORT work; REPORT records zero runtime issues. ATLAS renders tiles/POIs with 14 px attribution and the hashed same-origin module worker; Air Atlas aircraft selection, Fly With terrain, zoom and return to radar work.
 - Advancing-media recheck on the final package: 25.222981 → 31.237961 seconds, 34 position updates and zero metadata republications over approximately six seconds. Simulated coarse-pointer phone QA at 393 × 852 presents the rotation notice; 852 × 393 restores controls and preserves uninterrupted media (7.469767 → 15.472 seconds). Original silent fixtures and synthetic location/aircraft stayed local; diagnostic POSTs were blocked. These checks do not establish acoustic quality, physical iPhone/Safari or Tesla acceptance.
 - R11 evidence: lazy MapLibre runtime is 1,014.11 kB / 267.91 kB gzip; separate worker 487.12 kB; main entry 828.87 kB / 302.07 kB gzip. Large-chunk warnings remain visible. Air Atlas REPORT sample: 31.1 render events/s, p95 134.51 ms, three long tasks (137 ms maximum) in approximately 140 seconds including transitions/loading. This is not independent screen FPS or a controlled before/after benchmark; sustained vehicle GPU performance remains open. The advancing-media check verifies reduced presentation churn without inferring a frame-rate gain.
-- Final source gates: full native suite 874/874; focused map/appearance suite 72/72; browser map harness 18/18; npm audit zero advisories; community credits 189/189; public hygiene zero findings across 1,453 tracked text files; whitespace check clean. Read-only official FTP preflight passes network, login, exact canonical directory and root/legacy identity, with `remote_writes=NONE`. Preserve-existing publication is in progress; R13 remains open until canonical verification.
+- Final source gates: full native suite 874/874; focused map/appearance suite 72/72; browser map harness 18/18; npm audit zero advisories; community credits 189/189; public hygiene zero findings across 1,453 tracked text files; whitespace check clean. Read-only official FTP preflight passes network, login, exact canonical directory and root/legacy identity, with `remote_writes=NONE`. Official preserve-existing publication and canonical verification are complete; see the final delivery evidence below.
+
+## Final delivery evidence
+
+- Canonical release **20260912-0909.e0ac1cb**, VERSION **0.0.0**, is live at `https://sedicivalvole.app/`. Product checkpoint **82e7f30**, build-source/changelog checkpoint **e0ac1cb**, and final local-gate checkpoint **1301abb** were committed and pushed before closeout.
+- Official FTP publication passed all gates: **38 files / 6,355,741 bytes** uploaded, **824** unchanged static files and **29** full-hash-verified Illobo tracks reused, **2** previous fingerprinted assets retained. Dynamic-root verification passed; `preserve_existing=true`, no legacy cleanup, `remote_writes=ROOT_UPLOAD_ONLY`. FTP transport is unchanged. No local secrets were inspected; only the official script used its permitted internal loading.
+- Bare-root and cache-busted HTTPS both return **200**, exact local HTML bytes, build/version identity, `no-store, no-cache, must-revalidate, max-age=0` and proxy cache **MISS**. Main JS/CSS, MapLibre runtime/worker/CSS, release manifest and complete license all match local sizes and SHA-256. The same nine comparisons pass again after a controlled browser reload. Individual static responses have no explicit Cache-Control header; no stronger static-cache policy is inferred.
+- Canonical internal-browser QA verifies branded Intro, muted launch, real Vertigo rendering, REPORT at **773 × 601**, build/source identity and **zero runtime issues / console errors**. Reload returns the same release. GPS permission was denied, automatic diagnostic sending was already OFF, and no diagnostic was sent. Local synthetic-map/phone tests remain separate from this live smoke check and from physical acceptance.
+- R06 is the sole unchecked checklist item: the original account-bound Security scan is still unavailable. Dependency advisories and confirmed source findings were addressed, but the formal scan is not complete. This limitation and the standing physical Tesla/iPhone/WebGL2, sustained performance, native-media and endurance acceptance remain explicit. Further profiling needs a controlled measurement or real-device evidence; current render-event samples do not prove a frame-rate improvement.
 
 ## Original account checkpoint (historical)
 
@@ -81,7 +89,7 @@ Optional local evidence (may disappear; never commit or transfer private mail): 
 
 ## Current next start
 
-R06 remains account-bound: recover the existing Security scan only through authorized access; do not start a duplicate or call dependency/hygiene tests a completed scan. Complete R13 canonical publication evidence and R14 handoff. Physical WebGL2, Tesla performance/endurance, native media and iPhone/Safari acceptance remain separate. Preserve FTP and use only the Codex internal browser for UI QA.
+R06 remains account-bound: recover the existing Security scan only through authorized access; do not start a duplicate or call dependency/hygiene tests a completed scan. R13 publication and R14 handoff are complete for the release above. Physical WebGL2, Tesla performance/endurance, native media and iPhone/Safari acceptance remain separate. Preserve FTP and use only the Codex internal browser for UI QA.
 
 ## Restart prompt
 
