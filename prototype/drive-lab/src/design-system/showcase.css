@@ -1,0 +1,26 @@
+/* Documentation layout only. Control geometry, color and type come from styles.css. */
+html:has(.design-system), body:has(.design-system) {overflow:auto;height:auto;min-height:100%;}
+.design-system.app {position:relative;min-height:100vh;height:auto;overflow:visible;background:var(--ui-surface);color:var(--ui-text);padding:32px clamp(16px,4vw,64px);max-width:1400px;margin:auto;}
+.design-system header {max-width:780px;}
+.ds-eyebrow {font-size:var(--type-meta);letter-spacing:.12em;}
+.design-system h1 {font-size:32px;line-height:1.12;margin:12px 0;}
+.design-system h2 {font-size:22px;margin:0 0 12px;}
+.design-system h3 {font-size:17px;margin:0;}
+.design-system p {line-height:1.5;}
+.design-system section {padding:28px 0;border-top:1px solid var(--ui-line-soft);}
+.ds-settings {display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:24px 0;}
+.ds-settings label {display:flex;gap:8px;align-items:center;}
+.ds-settings :is(button,select) {min-height:48px;font:inherit;color:var(--ui-text);background:var(--ui-control);border:1px solid var(--ui-line-soft);border-radius:6px;padding:8px 12px;}
+.ds-settings :is(button,select):focus-visible {outline:2px solid var(--ui-text);outline-offset:2px;}
+.ds-specimens {display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:16px;}
+.ds-specimens article {padding:16px;border:1px solid var(--ui-line-soft);}
+.ds-specimens article > p {font-size:13px;color:var(--ui-subtle);margin-bottom:0;}
+.ds-stage {position:relative;min-height:76px;margin-top:16px;}
+.design-system .ds-stage .visual-cycle-control {top:0;left:0;}
+.ds-type-ladder {max-width:720px;}
+.ds-type-ladder p {display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:0;padding:8px 0;border-bottom:1px solid var(--ui-line-soft);}
+.ds-type-ladder code {font-size:13px;color:var(--ui-subtle);}
+.ds-table {overflow:auto;}
+.design-system table {width:100%;border-collapse:collapse;text-align:left;font-size:15px;}
+.design-system th,.design-system td {padding:12px 8px;border-bottom:1px solid var(--ui-line-soft);}
+.design-system footer {font-size:13px;color:var(--ui-subtle);padding:24px 0;}

@@ -12,6 +12,10 @@ When implementing a selected generated mock, preserve its layout, anatomy, densi
 
 ## Shared geometry and palette
 
+The maintained [interface system](../DESIGN-SYSTEM.md) links the exact shared
+control module, production styles and runnable HTML/CSS reference. Use it for
+label/control consistency; specimen layout does not own production geometry.
+
 Flux/Music uses a Braun-influenced, Swiss, minimal, slightly brutalist language: flat black/off-white surfaces, tabular numerals and a strict grid. Keep flat square/rectangular controls and restrained rounded slider housings; no decorative knobs, glassmorphism or appliance chrome. Explicit circular artwork and palette swatches below are intentional exceptions, not a direction for circular action buttons.
 
 Tesla Compact's semantic ladder is `13 / 14 / 15 / 15 / 17 / 22 / 32 px`: metadata, labels, body, actions, active names, titles and primary values. Keep high-contrast 13 px metadata, `48 px` action targets and `56 px` primary targets. Apply the roles to public UI, owner LAB, ShaderGradient workbench, diagnostics, attribution and responsive layouts, retaining explicit surface-specific geometry in [maps.md](maps.md). Do not restore the retired blanket Automotive Glance floor or shrink touch regions with text. Preserve editorial Title Case versus functional uppercase, avoid redundant rows, and use disclosure carets only for real menus.

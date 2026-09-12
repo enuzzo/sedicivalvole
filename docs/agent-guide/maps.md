@@ -56,6 +56,11 @@ source administrative boundaries. UPDATE refreshes traffic; the target control
 recenters and resumes Follow. Map retries preserve framing/selection and use the
 existing bounded recovery owner. See [road refinement](../ROAD-REFINEMENT-2026-09-11.md).
 
+The September 12 credit refinement uses a single translucent row with 14 px
+source links. Keep every attribution, allow keyboard/touch horizontal scrolling
+when needed, and retain the visible rounded-area disclosure with expandable
+photo-request details. Disclosure interaction must not trigger the field.
+
 ## Fly With
 
 The owner selected **A+C**: a nose-mounted oblique view over real 3D terrain at exaggeration **1.25**, with one corner card combining minimap and compact telemetry. Keep direct return to radar and shared five-second measured playback. Camera updates every animation frame without waiting for each new tile. Preserve last terrain height when a DEM sample is missing instead of dropping to zero. Never invent motion after signal loss; stale/missing-data holds are honest.

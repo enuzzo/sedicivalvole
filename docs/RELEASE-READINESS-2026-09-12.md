@@ -19,6 +19,26 @@ This is the active handoff for the owner's September 12 request. It is deliberat
 - [x] R13 — Commit/push verified checkpoints; publish product changes only after canonical delivery gates. Verify bare-root identity and assets after any publication.
 - [x] R14 — Record final evidence, outstanding device acceptance and next start; leave a clean, comprehensible handoff.
 
+## Owner follow-ups — September 12, after release
+
+These additions are active work, in priority order. They do not replace R06 or
+physical device acceptance. The owner delegated the order and requested an
+explicit record so no item disappears.
+
+- [x] F01 — Owner confirmed the observation was in the local preview. The temporary QA server returned one aircraft `QA123` at the same synthetic coordinates as its GPS fixture; that explains both count and overlap. Production contains no such fixture. No feed defect is established by that observation. New development-only probes visibly identify synthetic inputs.
+- [x] F02 — Refine Air Atlas credits into one readable line on a translucent background, preserving all attribution, privacy disclosure and narrow-screen access.
+- [x] F03 — Improve Chromatic Silk with Pearl: retain the selected neutral palette while making folds and color separation visible; verify against the washed-out baseline.
+- [x] F04 — Fix Acid Orchard's exposed black viewport corners throughout movement, road speed and braking, retaining upstream bytes and the registered study.
+- [x] F05 — Audit visual-specific labels/controls across all visuals with current browser captures; reconcile typography, stroke, padding, corner radius and touch targets against existing approved rules. Create a dedicated Markdown design-system reference with dependent HTML/CSS specimens using shared production styles.
+- [ ] F06 — Run relevant regression/source/browser and release gates, commit/push, publish via unchanged preserve-existing FTP, verify canonical identity/assets and update this handoff.
+
+### Follow-up implementation and local evidence
+
+- Air Atlas preserves all source links in a translucent one-line bar. At compact 773 × 601 the five regular credits fit, using readable 14 px text; narrow screens retain keyboard-scrollable overflow. The rounded-area notice expands above the row. The extra Fly With terrain source remains present.
+- Silk/Pearl retains exact palette inputs with a scoped 0.42 lighting gain, exposing folds previously clipped white. Orchard frames its finite plane against the longer viewport edge with folding margin; registered study values and pinned upstream bytes are unchanged. Internal-browser captures cover wide 1440 × 600, 0/40/90/130 synthetic speed, braking and reduced motion; geometric coverage tests protect aspect changes.
+- [Design system](DESIGN-SYSTEM.md) records all ten visual roles and the actual shared VIEW/RENDER/TYPE/VARIANT components, with runnable development HTML/JSX/CSS and LIGHT/DARK figures. Measured cells are 112 × 53 px, 6/10 px padding, 1 px stroke, 6 px corners and aligned label/value baselines. Catalogue, keyboard focus, pressed and resting states were checked. Full passenger flows, assistive-technology and physical-device acceptance remain separate.
+- Full native tests pass **876/876**; focused changed-surface tests pass **77/77**; exact community credits pass **189/189**. Source integrity is included in the full suite. Build, final production-browser gate and canonical publication are still pending F06. New QA entries identify synthetic inputs and are excluded from production.
+
 ## September 12 continuation — published and verified
 
 - Resumed from clean `d3d92b1`. Initial MapLibre candidate 6.4.1 was tested, then superseded by 6.7.0: forced GPU failure exposed partially constructed maps and cleanup errors in 6.4.1. Upstream 6.7.0 is the first release containing the constructor/cleanup correction; exact source, unchanged license and SHA-512 were verified before admission. All three lazy import sites and shared Fly With consumer use a single bundled module-worker adapter. Context attributes migrated; Fly With handles second-context initialization failure. WebGL2 device acceptance remains open.
@@ -89,7 +109,7 @@ Optional local evidence (may disappear; never commit or transfer private mail): 
 
 ## Current next start
 
-R06 remains account-bound: recover the existing Security scan only through authorized access; do not start a duplicate or call dependency/hygiene tests a completed scan. R13 publication and R14 handoff are complete for the release above. Physical WebGL2, Tesla performance/endurance, native media and iPhone/Safari acceptance remain separate. Preserve FTP and use only the Codex internal browser for UI QA.
+Complete the unchecked F01–F06 owner follow-ups above first. R06 remains account-bound: recover the existing Security scan only through authorized access; do not start a duplicate or call dependency/hygiene tests a completed scan. R13 publication and R14 handoff are complete for the release above. Physical WebGL2, Tesla performance/endurance, native media and iPhone/Safari acceptance remain separate. Preserve FTP and use only the Codex internal browser for UI QA.
 
 ## Restart prompt
 

@@ -1,3 +1,4 @@
+import {DriveyCycleControl, PrtclCycleControl, ShaderGradientCycleControl} from "./ui/visual-cycle-controls.jsx";
 import {radarDisplayFix} from './environments/radar/radar-location.js';
 import { combineDiscoverPlaces } from "./discover/discover-places.js";
 import { nearbyOsmUrl, normalizeNearbyOsm } from "./environments/atlas/osm-places.js";
@@ -117,7 +118,6 @@ import {
   getFluxEnvironment,
   isShaderGradientEnvironmentId,
   migrateLegacyEnvironmentPreference,
-  nextShaderGradientEnvironmentId,
   SHADERGRADIENT_ENVIRONMENTS,
 } from "./flux-environments.js";
 import { FLUX_THEMES, getFluxTheme } from "./flux-themes.js";
@@ -137,16 +137,10 @@ import { DriveyField } from "./environments/drivey/drivey-field.jsx";
 import { PrtclField } from "./environments/prtcl/prtcl-field.jsx";
 import {
   DEFAULT_DRIVEY_SETTINGS,
-  DRIVEY_CAMERAS,
-  DRIVEY_RENDER_MODES,
-  nextDriveyCameraId,
-  nextDriveyRenderModeId,
   normalizeDriveySettings,
 } from "./environments/drivey/drivey-model.js";
 import {
   DEFAULT_PRTCL_SETTINGS,
-  PRTCL_TYPES,
-  nextPrtclTypeId,
   normalizePrtclSettings,
 } from "./environments/prtcl/prtcl-model.js";
 import {
@@ -1591,89 +1585,6 @@ function VisualPicker({ environmentId, onChange, onOpenDiscover, onOpenStats, on
       <h3 className="visual-presets-heading">Presets</h3>
       <div className="experience-list">{CURATED_EXPERIENCES.map(({ id }) => <ExperienceCard key={id} id={id} selected={experienceId === id} onSelect={onExperience} />)}</div>
     </DialogSurface>
-  );
-}
-
-function DriveyCycleControl({ settings, onChange }) {
-  const camera = DRIVEY_CAMERAS[settings.camera] ?? DRIVEY_CAMERAS.hood;
-  const wireframe = settings.renderMode === DRIVEY_RENDER_MODES.wireframe.id;
-  const renderMode = wireframe
-    ? DRIVEY_RENDER_MODES.wireframe
-    : DRIVEY_RENDER_MODES.normal;
-  const nextCamera = DRIVEY_CAMERAS[nextDriveyCameraId(camera.id)];
-  const nextRenderMode = DRIVEY_RENDER_MODES[nextDriveyRenderModeId(renderMode.id)];
-  return (
-    <div
-      className="visual-cycle-control drivey-cycle-control"
-      onPointerDown={(event) => event.stopPropagation()}
-    >
-      <div className="visual-cycle-rail drivey-cycle-rail">
-        <button
-          className="visual-cycle-button visual-view-cycle"
-          type="button"
-          aria-label={`DRIVEY view ${camera.label}. Next ${nextCamera.label}`}
-          onClick={() => onChange({ ...settings, camera: nextCamera.id })}
-        >
-          <span>VIEW</span>
-          <small>{camera.label}</small>
-        </button>
-        <button
-          className="visual-cycle-button visual-render-toggle"
-          type="button"
-          aria-label={`DRIVEY render ${renderMode.label}. Next ${nextRenderMode.label}`}
-          aria-pressed={wireframe}
-          onClick={() => onChange({ ...settings, renderMode: nextRenderMode.id })}
-        >
-          <span>RENDER</span>
-          <small>{renderMode.label}</small>
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function PrtclCycleControl({ settings, onChange }) {
-  const current = PRTCL_TYPES[settings.type] ?? PRTCL_TYPES.frequency;
-  const next = PRTCL_TYPES[nextPrtclTypeId(current.id)];
-  return (
-    <div
-      className="visual-cycle-control prtcl-cycle-control"
-      onPointerDown={(event) => event.stopPropagation()}
-    >
-      <div className="visual-cycle-rail prtcl-cycle-rail">
-        <button
-          className="visual-cycle-button visual-particle-cycle"
-          type="button"
-          aria-label={`PRTCL type ${current.fullLabel}. Next ${next.fullLabel}`}
-          onClick={() => onChange({ type: next.id })}
-        >
-          <span>TYPE</span>
-          <small>{current.label}</small>
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function ShaderGradientCycleControl({ environment, onChange }) {
-  const nextEnvironment = getFluxEnvironment(nextShaderGradientEnvironmentId(environment.id));
-  return (
-    <div
-      className="visual-cycle-control gradient-cycle-control"
-      onPointerDown={(event) => event.stopPropagation()}
-    >
-      <div className="visual-cycle-rail gradient-cycle-rail">
-        <button
-          className="visual-cycle-button visual-gradient-cycle"
-          type="button"
-          aria-label={`Gradient variant ${displayLabel(environment)}. Next ${displayLabel(nextEnvironment)}`}
-          onClick={() => onChange(nextEnvironment.id)}
-        >
-          <span>VARIANT</span>
-          <small>{environment.variantLabel}</small>
-        </button>
-      </div>
-    </div>
   );
 }
 

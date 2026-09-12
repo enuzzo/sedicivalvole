@@ -19,6 +19,7 @@ const read = (path) => readFile(new URL(path, import.meta.url), "utf8");
 const rendererSource = await read("../src/environments/prtcl/prtcl-renderer.js");
 const fieldSource = await read("../src/environments/prtcl/prtcl-field.jsx");
 const appSource = await read("../src/App.jsx");
+const cycleSource = await read("../src/ui/visual-cycle-controls.jsx");
 const stylesSource = await read("../src/styles.css");
 const harnessSource = await read("../qa/field-harness.jsx");
 const packageSource = await read("../package.json");
@@ -204,9 +205,9 @@ test("the product feeds authored audio macros into the shared PRTCL field", () =
 });
 
 test("PRTCL uses the shared text-only TYPE cycle separate from the palette", () => {
-  const start = appSource.indexOf("function PrtclCycleControl");
-  const end = appSource.indexOf("function ScoreLibraryContent", start);
-  const controlSource = appSource.slice(start, end);
+  const start = cycleSource.indexOf("function PrtclCycleControl");
+  const end = cycleSource.indexOf("function ShaderGradientCycleControl", start);
+  const controlSource = cycleSource.slice(start, end);
   assert.ok(start >= 0 && end > start);
   assert.match(controlSource, /<span>TYPE<\/span>/);
   assert.match(controlSource, /nextPrtclTypeId\(current\.id\)/);

@@ -1,10 +1,12 @@
-import { Component, useEffect, useMemo, useRef } from "react";
+import { Component, useEffect, useMemo, useRef, useState } from "react";
 import { ShaderGradient, ShaderGradientCanvas } from "@shadergradient/react";
 import {
   getShaderGradientStudy,
   shaderGradientPalette,
   shaderGradientPixelDensity,
   shaderGradientResponse,
+  shaderGradientBrightness,
+  shaderGradientFieldOfView,
 } from "./studies.js";
 import { audioMacroAmount } from "../../response-mapping.js";
 
@@ -101,6 +103,7 @@ export default function ShaderGradientField({
   onRuntimeError,
 }) {
   const rootRef = useRef(null);
+  const [aspect, setAspect] = useState(1);
   const callbacksRef = useRef({ onRenderer, onFrame, onRuntimeError });
   callbacksRef.current = { onRenderer, onFrame, onRuntimeError };
   const study = getShaderGradientStudy(studyId);
@@ -122,6 +125,16 @@ export default function ShaderGradientField({
     reducedMotion,
   }), [effect, reducedMotion, responseMode, responsiveAudioLevel, speed, study, underwaterAmount]);
   const pixelDensity = shaderGradientPixelDensity(effective.underwater, reducedMotion);
+
+  useEffect(() => {
+    const host = rootRef.current;
+    if (!host) return undefined;
+    const measure = () => setAspect(host.clientWidth / Math.max(1, host.clientHeight));
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(host);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     callbacksRef.current.onRenderer?.(`ShaderGradient · ${study.label}`);
@@ -167,7 +180,7 @@ export default function ShaderGradientField({
           className="shadergradient-canvas"
           style={{ position: "absolute", inset: 0 }}
           pixelDensity={pixelDensity}
-          fov={study.fov}
+          fov={shaderGradientFieldOfView(study, aspect)}
           pointerEvents="none"
           lazyLoad={false}
           preserveDrawingBuffer={false}
@@ -196,7 +209,7 @@ export default function ShaderGradientField({
             loop={study.loop}
             loopDuration={study.loopDuration}
             lightType="3d"
-            brightness={effective.brightness}
+            brightness={shaderGradientBrightness(study.id, theme, effective.brightness)}
             reflection={study.reflection}
             positionX={study.positionX}
             positionY={study.positionY}

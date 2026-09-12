@@ -83,8 +83,8 @@ test("the running Visual library uses a complete two-column Tesla catalogue", ()
   const app = read("App.jsx");
   const styles = read("styles.css");
   assert.match(app, /<span>\{entry\.launchDescription\}<\/span>/);
-  assert.match(app, /function ShaderGradientCycleControl/);
-  assert.match(app, /nextShaderGradientEnvironmentId\(environment\.id\)/);
+  assert.match(read("ui/visual-cycle-controls.jsx"), /function ShaderGradientCycleControl/);
+  assert.match(read("ui/visual-cycle-controls.jsx"), /nextShaderGradientEnvironmentId\(environment\.id\)/);
   assert.match(app, /environment\.renderer === "shadergradient"[\s\S]*?<ShaderGradientCycleControl/);
   assert.match(read("launch-cockpit.jsx"), /SHADERGRADIENT_ENVIRONMENTS\.map/);
   assert.match(styles, /\.environment-drawer \.score-list \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\); gap: 8px; margin-top: 12px; \}/);

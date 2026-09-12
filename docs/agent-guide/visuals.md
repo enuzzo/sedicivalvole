@@ -44,6 +44,11 @@ One public family uses `@shadergradient/react@2.4.20` and its exact pinned Three
 
 Project-owned road/audio response makes braking visibly fold/densify, then restore exact road state. Soundtrack is speed-only; Play the Road may add bounded audio response. Hold response at 130 km/h. Lazy-load only on selected family use, in one separate public chunk, preserving MIT notice, exact source/change inventory, project-owned Canvas2D fallback and reduced motion. Never modify or relicense upstream without a new explicit owner decision. Target-Tesla GPU acceptance is still separate. FeralUI/ColorFlow are mechanics references only.
 
+September 12 owner refinements preserve the registered LAB studies: public
+Orchard framing bounds the long viewport edge with folding margin, and only
+Silk/Pearl reduces 3D lighting gain to avoid full-field white clipping. Palette
+channels, upstream shaders, geometry and road/braking response remain unchanged.
+
 For stack/response/LAB work read [ShaderGradient / License and dependency boundary](../REFERENCE-STUDY-SHADERGRADIENT.md#licence-and-dependency-boundary), [Driving response](../REFERENCE-STUDY-SHADERGRADIENT.md#driving-response-contract) and [Local ShaderGradient LAB](../LOCAL-SHADERGRADIENT-LAB.md), selecting only affected sections. The retired project-owned Gradient must not return.
 
 ## Geographic renderers

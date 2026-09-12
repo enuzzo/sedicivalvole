@@ -43,6 +43,7 @@ const upstreamLicence = await read("../public/third-party/drivey/LICENSE");
 const dependencyLicences = await read("../public/third-party/drivey/THIRD_PARTY_LICENSES.md");
 const viteConfigSource = await read("../vite.config.mjs");
 const appSource = await read("../src/App.jsx");
+const cycleSource = await read("../src/ui/visual-cycle-controls.jsx");
 const stylesSource = await read("../src/styles.css");
 const harnessSource = await read("../qa/field-harness.jsx");
 
@@ -459,11 +460,11 @@ test("the bridge embeds the original runtime and excludes unneeded image and leg
   assert.match(shellSource, /shade < 0\.68/);
   assert.match(fieldSource, /createDriveyAutomaticInput\(Input\)/);
   assert.match(fieldSource, /stabilizeDriveyRoadFollower\(drivey\.myCar\)/);
-  assert.match(appSource, /className="visual-cycle-button visual-view-cycle"/);
-  assert.match(appSource, /className="visual-cycle-button visual-render-toggle"/);
-  assert.match(appSource, /aria-pressed=\{wireframe\}/);
-  assert.match(appSource, /nextDriveyCameraId\(camera\.id\)/);
-  assert.match(appSource, /nextDriveyRenderModeId\(renderMode\.id\)/);
+  assert.match(cycleSource, /className="visual-cycle-button visual-view-cycle"/);
+  assert.match(cycleSource, /className="visual-cycle-button visual-render-toggle"/);
+  assert.match(cycleSource, /aria-pressed=\{wireframe\}/);
+  assert.match(cycleSource, /nextDriveyCameraId\(camera\.id\)/);
+  assert.match(cycleSource, /nextDriveyRenderModeId\(renderMode\.id\)/);
   assert.match(stylesSource, /\.visual-cycle-rail \{[\s\S]*?grid-auto-columns: 112px/);
   assert.match(stylesSource, /\.visual-cycle-button \{[\s\S]*?min-height: var\(--touch-target\)/);
   assert.doesNotMatch(appSource, /id="drivey-tune-panel"/);

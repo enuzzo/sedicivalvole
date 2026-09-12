@@ -322,6 +322,7 @@ there are not implementation promises; promoted work links back to the roadmap.
 
 ## Documentation
 
+- [`docs/DESIGN-SYSTEM.md`](docs/DESIGN-SYSTEM.md) — shared interface rules, live HTML/CSS specimens and label/control audit;
 - [`docs/CURRENT-STATE.md`](docs/CURRENT-STATE.md) — authoritative working overview and documentation map;
 - [`docs/DIAGNOSTIC-REVIEW-2026-09-07.md`](docs/DIAGNOSTIC-REVIEW-2026-09-07.md) — received-report findings and prioritized reliability work;
 - [`docs/OWNER-ANSWERS-2026-09-07.md`](docs/OWNER-ANSWERS-2026-09-07.md) — current milestone acceptance questions with answer lines;

@@ -6,6 +6,8 @@ import {
   shaderGradientPalette,
   shaderGradientPixelDensity,
   shaderGradientResponse,
+  shaderGradientBrightness,
+  shaderGradientFieldOfView,
   SHADERGRADIENT_STUDY_IDS,
 } from "../src/environments/shadergradient/studies.js";
 import { getFluxTheme } from "../src/flux-themes.js";
@@ -135,4 +137,34 @@ test("the public visual lazily loads the exact renderer and owns a Canvas2D fall
   assert.match(appSource, /<ShaderGradientField[\s\S]*?macroSnapshot=\{audioMacros\}[\s\S]*?theme=\{theme\}/);
   assert.match(fieldSource, /color1=\{colors\.color1\}/);
   assert.equal(packageSource.dependencies["@shadergradient/react"], "2.4.20");
+});
+
+test("Pearl Silk lighting retains colors and road response without clipping the whole field", () => {
+  const pearl = getFluxTheme('pearl');
+  const colors = shaderGradientPalette('chromatic-silk', pearl);
+  const study = getShaderGradientStudy('chromatic-silk');
+  const rest = shaderGradientResponse(study, {speedKmh:0, responseMode:'road'});
+  const road = shaderGradientResponse(study, {speedKmh:130, responseMode:'road-audio',audioLevel:1});
+  const restLight = shaderGradientBrightness(study.id, pearl, rest.brightness);
+  const roadLight = shaderGradientBrightness(study.id, pearl, road.brightness);
+  assert.ok(restLight > 0 && restLight < 0.7);
+  assert.ok(roadLight > restLight && roadLight < 0.9);
+  assert.deepEqual(shaderGradientPalette('chromatic-silk', pearl), colors);
+  assert.equal(shaderGradientBrightness(study.id, getFluxTheme('red'), road.brightness), road.brightness);
+  assert.equal(shaderGradientBrightness('japanese-mist', pearl, rest.brightness), rest.brightness);
+});
+
+test("Orchard framing bounds the long frustum edge across rotation and viewport shapes", () => {
+  const study = getShaderGradientStudy('acid-orchard');
+  const edges = [393/852, 773/601, 1440/900, 852/393, 3440/1440, 4].map(aspect => {
+    const fov = shaderGradientFieldOfView(study, aspect);
+    const height = 2 * study.cDistance * Math.tan(fov * Math.PI / 360);
+    assert.ok(fov > 0 && fov < study.fov);
+    return Math.max(height, height * aspect);
+  });
+  assert.ok(edges.every(edge => Math.abs(edge - edges[0]) < 1e-10));
+  assert.ok(edges[0] < 4.2, 'leave a folding margin inside the ten-unit plane');
+  assert.equal(shaderGradientFieldOfView(getShaderGradientStudy('chromatic-silk'), 3), 44);
+  assert.equal(shaderGradientFieldOfView(getShaderGradientStudy('japanese-mist'), 3), 48);
+  assert.equal(shaderGradientFieldOfView(study, NaN), shaderGradientFieldOfView(study, 1));
 });

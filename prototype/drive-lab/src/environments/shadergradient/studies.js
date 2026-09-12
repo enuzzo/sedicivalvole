@@ -211,3 +211,17 @@ export function shaderGradientPixelDensity(underwaterAmount = 0, reducedMotion =
   if (reducedMotion) return 1;
   return clamp(underwaterAmount) >= 0.08 ? 0.8 : 1;
 }
+
+/** Keep Pearl's exact colors below the cosmic shader's clipped lighting range. */
+export function shaderGradientBrightness(studyId, theme, brightness) {
+  return studyId === 'chromatic-silk' && theme?.id === 'pearl'
+    ? brightness * 0.42
+    : brightness;
+}
+
+/** Frame the finite Orchard plane by the long viewport edge, including folding margin. */
+export function shaderGradientFieldOfView(study, aspect = 1) {
+  if (study.id !== 'acid-orchard') return study.fov;
+  const viewportAspect = Number.isFinite(aspect) && aspect > 0 ? aspect : 1;
+  return 2 * Math.atan(Math.tan(study.fov * Math.PI / 360) * 0.78 / Math.max(1, viewportAspect)) * 180 / Math.PI;
+}
