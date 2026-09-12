@@ -29,12 +29,23 @@ explicit record so no item disappears.
 - [x] F02 — Refine Air Atlas credits into one readable line on a translucent background, preserving all attribution, privacy disclosure and narrow-screen access.
 - [x] F03 — Improve Chromatic Silk with Pearl: retain the selected neutral palette while making folds and color separation visible; verify against the washed-out baseline.
 - [x] F04 — Fix Acid Orchard's exposed black viewport corners throughout movement, road speed and braking, retaining upstream bytes and the registered study.
-- [x] F05 — Audit visual-specific labels/controls across all visuals with current browser captures; reconcile typography, stroke, padding, corner radius and touch targets against existing approved rules. Create a dedicated Markdown design-system reference with dependent HTML/CSS specimens using shared production styles.
+- [x] F05 — Complete the initial consistency audit and dedicated Markdown/HTML/CSS design-system reference, including all ten visual roles, shared production components and current screenshots/measurements. The remaining Atlas MAP COLOR inconsistency discovered in the final pass is explicitly tracked in F07; this check does not claim every discrepancy is fixed.
 - [ ] F06 — Run relevant regression/source/browser and release gates, commit/push, publish via unchanged preserve-existing FTP, verify canonical identity/assets and update this handoff.
+- [x] F07 — Owner refined the audit finding: replace the separate Atlas MAP COLOR plaque with a palette icon inside the zoom/reset/orientation row. Align framing and camera groups where space permits, retain 48 px targets and accessible current/next state, extend the shared specimen and verify pointer/keyboard behavior in both appearances. Shared toolbar implementation, real-map pointer/keyboard changes, LIGHT/DARK states and narrow reference checks pass. Full native suite 876/876 and focused Atlas/appearance checks 49/49 pass; final publication is part of F06.
+
+### Intermediate follow-up publication
+
+Build **20260912-0954.bb64c37** completed official preserve-existing FTP publication:
+**37 files / 6,309,431 bytes**, **825** static files and **29** full-hash-verified
+recordings reused, **2** prior assets retained, `remote_writes=ROOT_UPLOAD_ONLY`.
+Ten bare/cache-busted HTTPS comparisons pass, including current Gradient and
+MapLibre assets; canonical internal-browser Intro/reload confirms the build.
+The owner's Atlas icon correction arrived during this publication and follows
+as a separately verified source checkpoint; do not claim it is in this build.
 
 ### Follow-up implementation and local evidence
 
-- Air Atlas preserves all source links in a translucent one-line bar. At compact 773 × 601 the five regular credits fit, using readable 14 px text; narrow screens retain keyboard-scrollable overflow. The rounded-area notice expands above the row. The extra Fly With terrain source remains present.
+- Air Atlas preserves all source links in a translucent one-line bar. At compact 773 × 601 the five regular credits fit, using readable 14 px text; narrow screens retain keyboard-scrollable overflow. The rounded-area notice expands above the row. The extra Fly With terrain source remains present. Explicit Milan demo additionally verifies Atlas map framing/camera controls and reveals the legacy MAP COLOR geometry recorded in F07.
 - Silk/Pearl retains exact palette inputs with a scoped 0.42 lighting gain, exposing folds previously clipped white. Orchard frames its finite plane against the longer viewport edge with folding margin; registered study values and pinned upstream bytes are unchanged. Internal-browser captures cover wide 1440 × 600, 0/40/90/130 synthetic speed, braking and reduced motion; geometric coverage tests protect aspect changes.
 - [Design system](DESIGN-SYSTEM.md) records all ten visual roles and the actual shared VIEW/RENDER/TYPE/VARIANT components, with runnable development HTML/JSX/CSS and LIGHT/DARK figures. Measured cells are 112 × 53 px, 6/10 px padding, 1 px stroke, 6 px corners and aligned label/value baselines. Catalogue, keyboard focus, pressed and resting states were checked. Full passenger flows, assistive-technology and physical-device acceptance remain separate.
 - Full native tests pass **876/876**; focused changed-surface tests pass **77/77**; exact community credits pass **189/189**. Source integrity is included in the full suite; public hygiene passes **1,462** tracked text files with zero findings. Production build **20260912-0954.bb64c37** passes all **827** static hashes; final local browser verifies muted Orchard launch, real VARIANT-to-Silk transition, Discover and REPORT at **773 × 601**, source identity and zero runtime issues/console errors. Canonical publication remains pending F06. New QA entries identify synthetic inputs and are excluded from production.

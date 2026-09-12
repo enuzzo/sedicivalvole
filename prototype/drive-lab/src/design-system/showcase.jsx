@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import {AtlasCameraControls} from '../environments/atlas/atlas-camera-controls.jsx';
 import {createRoot} from 'react-dom/client';
 import {DriveyCycleControl, PrtclCycleControl, ShaderGradientCycleControl} from '../ui/visual-cycle-controls.jsx';
 import {DEFAULT_DRIVEY_SETTINGS} from '../environments/drivey/drivey-model.js';
@@ -16,6 +17,9 @@ function Showcase() {
   const [drivey,setDrivey] = useState(DEFAULT_DRIVEY_SETTINGS);
   const [prtcl,setPrtcl] = useState(DEFAULT_PRTCL_SETTINGS);
   const [gradient,setGradient] = useState('japanese-mist');
+  const [mapAppearance,setMapAppearance] = useState('palette');
+  const [northUp,setNorthUp] = useState(false);
+  const [zoom,setZoom] = useState(0);
   const theme = resolveSemanticTheme(getFluxTheme(themeId), appearance);
   return <main className="app design-system" data-appearance={appearance} style={theme.css}>
     <header><p className="ds-eyebrow">SEDICIVALVOLE / INTERFACE REFERENCE</p><h1>One language, shared controls.</h1><p>Live production components, semantic colors and type. This development reference has no media, location or diagnostic delivery.</p></header>
@@ -31,6 +35,7 @@ function Showcase() {
         <article><h3>Gradient</h3><div className="ds-stage"><ShaderGradientCycleControl environment={getFluxEnvironment(gradient)} onChange={setGradient}/></div><p>VARIANT cycles Mist, Orchard and Silk.</p></article>
       </div>
     </section>
+    <section><h2>Map camera controls</h2><p>Atlas keeps zoom, reset, orientation and map colors in one row. The palette icon changes cartography only.</p><div className="ds-map-stage"><AtlasCameraControls northUp={northUp} mapAppearance={mapAppearance} onZoom={delta=>setZoom(v=>v+delta)} onReset={()=>setZoom(0)} onNorthUpChange={setNorthUp} onMapAppearanceChange={setMapAppearance}/></div><output>Map colors: {mapAppearance === 'standard' ? 'Natural' : 'Palette'} · Zoom offset: {zoom} · {northUp ? 'North up' : 'Heading up'}</output></section>
     <section><h2>Semantic type</h2><div className="ds-type-ladder">{[['Metadata','--type-meta'],['Label','--type-label'],['Body','--type-body'],['Action','--type-action'],['Active name','--type-active'],['Title','--type-title'],['Primary value','--type-value']].map(([label,token])=><p key={token}><span style={{fontSize:`var(${token})`}}>{label}</span><code>{token}</code></p>)}</div></section>
     <section><h2>Visual inventory</h2><p>A field without a local setting does not acquire a decorative button. Map navigation, live measurements and drawers keep their own semantic roles.</p><div className="ds-table"><table><thead><tr><th>Public visual</th><th>Contextual control</th></tr></thead><tbody>{FLUX_VISUAL_CHOICES.map(v=><tr key={v.id}><td>{v.displayLabel||v.label}</td><td>{v.id==='drivey'?'VIEW / RENDER':v.id==='prtcl'?'TYPE':v.kind==='family'?'VARIANT':v.id==='atlas'?'Map navigation / places':v.id==='air-atlas'?'Traffic / map / orientation / flight':v.id==='stats'?'Time ranges / observations':v.id==='discover'?'Search / language / articles':'None — shared Visual library'}</td></tr>)}</tbody></table></div></section>
     <footer>Source rules and audit evidence: docs/DESIGN-SYSTEM.md · Specimen layout is separate from production control styling.</footer>

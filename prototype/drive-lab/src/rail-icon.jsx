@@ -4,7 +4,9 @@ import icon2 from "../public/third-party/tabler-icons/sun-moon.svg?raw";
 import icon3 from "../public/third-party/tabler-icons/navigation.svg?raw";
 import icon4 from "../public/third-party/tabler-icons/map-search.svg?raw";
 import icon5 from "../public/third-party/tabler-icons/report-analytics.svg?raw";
+import paletteIcon from "../public/third-party/tabler-icons/palette.svg?raw";
 const icons = {
+  "palette": paletteIcon,
   "sun": icon0,
   "moon": icon1,
   "sun-moon": icon2,

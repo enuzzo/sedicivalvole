@@ -1,3 +1,4 @@
+import { AtlasCameraControls } from "./atlas-camera-controls.jsx";
 import AtlasPlaces from "./atlas-places.jsx";
 import { useEffect, useMemo, useRef, useState } from "react";
 import "maplibre-gl/dist/maplibre-gl.css";
@@ -491,9 +492,6 @@ export default function AtlasField({
   const heading = displayCamera?.heading ?? Math.round(effectivePosition.heading ?? 0);
   const pointerHeading = displayCamera?.pointerHeading ?? heading;
   const cardinalDirection = atlasCardinalDirection(heading) ?? "—";
-  const toggleMapAppearance = () => onMapAppearanceChange?.(
-    mapAppearance === "standard" ? "palette" : "standard",
-  );
 
   return (
     <section
@@ -522,21 +520,20 @@ export default function AtlasField({
         }
         map.easeTo({center:[effectivePosition.longitude,effectivePosition.latitude],zoom:mode === "follow" ? 13.4 : 11.8,pitch:0,bearing:0,duration:reducedMotion ? 0 : 700});
       }}>{mode === "follow" && framing === "manual" ? "Follow" : mode[0].toUpperCase()+mode.slice(1)}</button>)}</nav>
-      <nav className="atlas-camera-controls" aria-label="Map camera" onPointerDown={event => event.stopPropagation()}>
-        <button type="button" aria-label="Zoom in" onClick={() => adjustZoom(1)}>+</button>
-        <button type="button" aria-label="Reset map view" onClick={() => {
+      <AtlasCameraControls
+        northUp={northUp} mapAppearance={mapAppearance} onZoom={adjustZoom}
+        onMapAppearanceChange={value => onMapAppearanceChange?.(value)}
+        onReset={() => {
           cameraPreferences.current.zoomOffset = 0;
           if (manualRef.current) manualRef.current.lastInteractionAt = null;
           framingRef.current = "follow"; setFraming("follow");
           mapRef.current?.stop();
-        }}>Reset</button>
-        <button type="button" aria-label="Zoom out" onClick={() => adjustZoom(-1)}>−</button>
-        <button type="button" aria-label="Lock map north up" aria-pressed={northUp} onClick={() => {
-          const next = !cameraPreferences.current.northUp;
+        }}
+        onNorthUpChange={next => {
           cameraPreferences.current.northUp = next; setNorthUp(next);
           if (framingRef.current !== "follow") mapRef.current?.easeTo({ bearing: next ? 0 : effectivePosition.heading ?? 0, duration: reducedMotion ? 0 : 300 });
-        }}>{northUp ? "North up" : "Heading up"}</button>
-      </nav>
+        }}
+      />
       <AtlasPlaces demo={demo} map={mapObject} position={effectivePosition} onReadMore={onReadPlace} />
       <div
         className={`atlas-navigation-plaque${roadName ? "" : " is-roadless"}`}
@@ -554,25 +551,7 @@ export default function AtlasField({
         {roadName ? <span className="atlas-road-name">{roadName}</span> : null}
       </div>
       {demo ? <div className="atlas-demo-hint">DEMO LOCATION · NOT A RECORDED JOURNEY</div> : null}
-      <button
-        className="atlas-map-appearance"
-        type="button"
-        aria-pressed={mapAppearance === "standard"}
-        aria-label={mapAppearance === "standard"
-          ? "Map colors: standard cartographic. Switch to product palette."
-          : "Map colors: product palette. Switch to standard cartographic colors."}
-        onPointerDown={(event) => event.stopPropagation()}
-        onPointerUp={(event) => {
-          event.stopPropagation();
-          toggleMapAppearance();
-        }}
-        onClick={(event) => {
-          if (event.detail === 0) toggleMapAppearance();
-        }}
-      >
-        <small>MAP COLOR</small>
-        <strong>{mapAppearance === "standard" ? "NATURAL" : "PALETTE"}</strong>
-      </button>
+
 
     </section>
   );

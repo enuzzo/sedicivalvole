@@ -24,6 +24,13 @@ Keep mandatory map attribution immediately above the footer: tiny, low, transluc
 
 For metric parity work, the former instrument's required information remains: Speed, Distance, Moving time, Average speed; Accel/Braking balance, Speed-band distribution, Heading history, Moving/Stopped; full-width Elevation; shared `15 MIN / 1 H / SESSION` ranges. Preserve information through the new Stats surface without restoring the superseded panel geometry. Gaps can have dashed palette-derived alternate-shade connections for **short and long** missing intervals, with a visible Estimated legend; connections never change observations, totals or exported data. Below Network show useful observed session continuity. For the exact accepted metric pipeline consult [Stats for Nerds data and visual contract](../ATLAS-STATS-REPORT-PLAN-2026-09-07.md#stats-for-nerds-data-and-visual-contract) and [September 8 refinement](../ATLAS-STATS-REFINEMENT-2026-09-08.md#owner-decisions-and-implementation).
 
+The September 12 owner correction puts map appearance in the same camera row as
+zoom/reset/orientation, using the existing palette icon inside a 48 px target.
+Retain an accessible current/next name, selected state and keyboard/pointer parity.
+Remove the separate MAP COLOR plaque. Align camera and framing rows when width
+permits; below 620 px stack the groups without shrinking controls. The actual
+camera component is shared with the [interface reference](../DESIGN-SYSTEM.md).
+
 Recover Atlas after network/location restoration; nearby OSM places are independent of map zoom, with Maps/Wikipedia links where supported and truthful Wikipedia/OpenStreetMap provider labels. Keep camera travel/rotation smooth, shortest heading/dateline path, north lock, zoom in/out/reset and bounded frame-time work. Numbered POI discs are `32 px` inside unchanged `48 px` targets. Reset restores speed-follow zoom without silently changing orientation preference. Use [road UI implementation](../ROAD-UI-REFINEMENT-2026-09-09.md#implemented) for camera/marker ownership and [source-specific recovery](../ATLAS-STATS-REFINEMENT-2026-09-08.md#recovery-and-nearby-sources) for request limits. Desktop render timing cannot prove sustained Tesla 60 FPS.
 
 ## Discover

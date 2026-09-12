@@ -17,6 +17,7 @@ internal browser. The reference is development-only and is not a production entr
 | [Showcase](../prototype/drive-lab/src/design-system/showcase.jsx) | Interactive specimens and inventory from the live registries |
 | [Reference CSS](../prototype/drive-lab/src/design-system/showcase.css) | Documentation layout only |
 | [Shared visual controls](../prototype/drive-lab/src/ui/visual-cycle-controls.jsx) | The exact Drivey, Prtcl and Gradient controls imported by both App and showcase |
+| [Atlas camera controls](../prototype/drive-lab/src/environments/atlas/atlas-camera-controls.jsx) | Shared zoom/reset/orientation and icon-only map appearance row |
 | [Production CSS](../prototype/drive-lab/src/styles.css) | Type, target, border, radius, state and responsive rules |
 | [Semantic colors](../prototype/drive-lab/src/semantic-theme.js) | LIGHT/DARK contrast-safe roles derived from the palette |
 | [Phone layout](../prototype/drive-lab/src/phone-cockpit.css) | Safe areas and phone placement |
@@ -112,22 +113,38 @@ not a complete accessibility certification or a review of every passenger flow.
    22 px title and 32 px primary values separate from its range action. Discover's
    current no-location screen uses uppercase actions and a contiguous scope rail;
    its shared edges remain square to express one navigation group. It does not
-   duplicate the floating visual-cycle geometry. Atlas' initial permission state
-   was inspected without granting location; data-dependent Atlas labels require
-   a fixture or physical follow-up before claiming complete passenger coverage.
+   duplicate the floating visual-cycle geometry. Atlas' permission state and explicit Milan demo were inspected without
+   granting device location. Its framing and camera groups meet the 48 px target
+   with 4 px inner corners inside 6 px containers; map-source labels remain separate.
 6. **Production integration:** the packaged app launches Orchard at 773 × 601,
    wakes its contextual controls and changes to Silk through the real VARIANT
    action. REPORT shows the intended build/source and zero runtime issues.
 
-The confirmed strengths are shared geometry and state semantics. The maintenance
+**Owner-selected correction — Atlas MAP COLOR (F07):** the audit found a separate
+legacy two-line plaque with 2 px corners and asymmetric padding. The owner
+explicitly replaced that direction with an icon in the zoom row. The shared
+`AtlasCameraControls` now contains zoom, reset, orientation and the existing
+pinned palette icon. Each action retains a 48 px minimum target; the icon is
+24 px within a 48 × 48 px button. Both control groups align at the same height
+where width permits; below 620 px they stack without shrinking targets. The
+accessible name describes current and next colors, `aria-pressed` identifies
+Natural, and native pointer/keyboard activation uses the existing map-paint path.
+The live reference uses this exact production component, with a synthetic zoom
+readout and no map or geographic requests. Real-map pointer and keyboard changes,
+LIGHT/DARK selected states, aligned group coordinates and a 357 px-wide specimen
+without horizontal overflow were verified in the internal browser.
+
+The confirmed strengths are shared contextual geometry and state semantics. The maintenance
 risk was that the controls lived inside the large App module, without a runnable
 reference; the shared module and live showcase address that risk. Remaining
 scope includes screen-reader and physical touch checks, real-device readability,
-and full passenger-flow acceptance. No new visual treatment was introduced.
+and full passenger-flow acceptance. The shared visual cells are unchanged; the Atlas icon placement follows the explicit owner correction.
 
 ![Shared production controls in LIGHT](design-system/controls-light.png)
 
 ![Shared production controls in DARK with RENDER selected](design-system/controls-dark.png)
+
+![Shared Atlas camera row with selected map appearance](design-system/atlas-camera.png)
 
 Temporary source captures and Gradient before/after evidence are retained under
 `prototype/drive-lab/output/playwright/followups-20260912/` when available. They

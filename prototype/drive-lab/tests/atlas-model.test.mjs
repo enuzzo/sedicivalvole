@@ -686,13 +686,15 @@ test("Atlas exposes a persistent map-only color control without rebuilding MapLi
   assert.match(appSource, /atlasMapAppearance: normalizeAtlasMapAppearance\(value\?\.atlasMapAppearance \?\? "standard"\)/);
   assert.match(appSource, /setAtlasMapAppearance\("standard"\)/);
   assert.match(appSource, /mapAppearance=\{atlasMapAppearance\}/);
-  assert.match(atlasSource, /className="atlas-map-appearance"/);
-  assert.match(atlasSource, /aria-pressed=\{mapAppearance === "standard"\}/);
-  assert.match(atlasSource, /MAP COLOR/);
-  assert.match(atlasSource, /NATURAL/);
+  const cameraSource = readFileSync(new URL("../src/environments/atlas/atlas-camera-controls.jsx", import.meta.url), "utf8");
+  assert.match(atlasSource, /<AtlasCameraControls/);
+  assert.match(cameraSource, /aria-pressed=\{natural\}/);
+  assert.match(cameraSource, /Map colors: standard cartographic/);
+  assert.match(cameraSource, /Map colors: product palette/);
+  assert.match(cameraSource, /<RailIcon name="palette"/);
+  assert.match(cameraSource, /aria-label="Map camera"/);
   assert.doesNotMatch(atlasSource, /setStyle\(/);
-  assert.match(styles, /\.atlas-map-appearance \{[\s\S]*?top: 82px;[\s\S]*?right: calc\(var\(--atlas-panel-width\) \+ 12px\);/);
-  assert.match(styles, /\.atlas-field\.is-panel-collapsed \.atlas-map-appearance \{ right: 12px; \}/);
+  assert.doesNotMatch(atlasSource, /className="atlas-map-appearance"/);
 });
 
 test("Atlas and Stats have independent catalogue entry points", () => {
