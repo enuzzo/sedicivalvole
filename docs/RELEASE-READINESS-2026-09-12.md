@@ -21,7 +21,7 @@ This is the active handoff for the owner's September 12 request. It is deliberat
 
 ## Current checkpoint
 
-- Checkpoints `3d23211`, `2c0956c` and `9ab65b4` are committed and pushed. LAB security fix and public-source cleanup are saved. Runtime/privacy/short-window changes are in progress; no deployment by this task yet.
+- Checkpoints `3d23211`, `2c0956c`, `9ab65b4` and `c0f2015` are committed and pushed. LAB security fix and public-source cleanup are saved. Runtime/privacy/short-window changes are in progress; no deployment by this task yet.
 - Security tool: Standard scan `a6a7a08a-20e8-4a5d-a16e-e8157108e3aa`, target revision `31b9333`, has reached discovery after independent baseline and architecture reviews. LAB login-window vulnerability is fixed and tested in `9ab65b4`. The formal scan remains unfinished; do not report it complete. Resolve the existing scan before starting another; do not duplicate it. Daybreak advisory: access not granted, programs none; this does not block scanning.
 - Mail: complete latest diagnostic attachments reviewed through the original account's authorized connector. A new account must have its own authorized access; never transfer credentials. Their sanitized observations below are sufficient to continue code investigation without raw mail.
 - README and optional-donation decision are resolved in `2c0956c`. Do not re-ask that decision.
@@ -48,7 +48,7 @@ This is the active handoff for the owner's September 12 request. It is deliberat
 
 ## Immediate account-switch handoff
 
-The owner requested an immediate checkpoint at 1% credits. Stop here after commit/push; do not continue deployment or dependency changes in the old account. No application build or canonical publication has occurred in this task.
+The owner requested an immediate checkpoint at 1% credits. Stop here after commit/push; do not continue deployment or dependency changes in the old account. The local development server was stopped for the account switch. Its terminal also reported Vite warnings about existing public SVG raw imports; review these during the remaining build gate, without modifying pinned upstream SVG bytes. No application build or canonical publication has occurred in this task.
 
 Next small tasks, in order:
 1. Confirm a clean working tree and the newest checkpoint/changelog commits. Read this file and the root/local AGENTS.
