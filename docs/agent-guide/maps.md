@@ -8,6 +8,10 @@ Actual map, Wikipedia/OSM and Air Atlas features use disclosed geographic reques
 
 Air Atlas rounded-location forwarding to the fixed same-origin ADSB.lol adapter was explicitly authorized in [Air Atlas's decision and source record](../AIR-ATLAS-2026-09-09.md). Do not infer permission for another destination or an arbitrary proxy. Use rounded request cells and existing provider bounds/cancellation. Aircraft feeds, geographic tiles, remote imagery and private/dynamic APIs stay outside the static app cache. Exact Discover POIs use actual source coordinates, never invented centroids or clustered positions. Permissions API absence must not prevent real geolocation callbacks from working.
 
+## Map renderer compatibility
+
+MapLibre GL JS is pinned to 6.7.0 after the September 12 attribution sanitizer advisory. All map imports go through the lazy `src/maplibre-runtime.js` adapter, which configures the same-origin bundled worker. WebGL2 is required; ATLAS/Air Atlas fallback and report-map omission must remain truthful when GPU initialization fails. Fly With shares this runtime. Keep context attributes nested under `canvasContextAttributes`, including the report capture buffer. Browser checks do not establish physical Tesla/iPhone compatibility.
+
 ## ATLAS and Stats
 
 ATLAS is an informative wider map; Stats for Nerds is a separate full-screen visual, Visual 09 in launch/running catalogues. Remove shared Map/Stats tabs. Preserve metrics and verify replacement parity before retiring an old view. The owner-selected remix combines Travel Observatory's pastel map/POIs and summary bands, Mission Control heading/network instruments, and Journey Magazine photo place card plus speed/altitude timeline. Heading bands curve outward. Natural and Palette remain distinct; manual/Area/Trip framing persists until Follow. Switching passenger views preserves audio mode.

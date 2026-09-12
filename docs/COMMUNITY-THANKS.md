@@ -242,6 +242,8 @@ enuzzo
 
 ## MapLibre GL JS
 
+Shipped dependency updated to 6.7.0 on September 12: unchanged BSD-3-Clause ESM library and bundled worker support ATLAS, Air Atlas/Fly With and optional report maps. Exact tarball integrity and inherited notices are recorded in THIRD_PARTY_NOTICES.md. Thank you for the attribution sanitizer fix and clear migration guidance. No message sent.
+
 - **Credit:** MapLibre contributors.
 - **Source:** [MapLibre GL JS](https://github.com/maplibre/maplibre-gl-js).
 - **Public contact route:** [Contact / profile](https://github.com/maplibre).

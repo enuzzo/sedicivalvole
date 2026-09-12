@@ -19,10 +19,15 @@ export default function RadarFlightView({gl,plane,readSample,palette,reducedMoti
     let cameraHeight=null,lastGroundCheck=Number.NEGATIVE_INFINITY,ground=0,lastCamera=null,lastRender=0;
     let cameraFov=radarFlightFov(zoomRef.current),lastSample=null;
     const p=latest.current.plane;
-    const map=new gl.Map({container:host.current,style:styleRef.current,center:[p.longitude,p.latitude],zoom:11,
+    let map;
+    try {map=new gl.Map({container:host.current,style:styleRef.current,center:[p.longitude,p.latitude],zoom:11,
       pitch:0,maxPitch:75,minZoom:2,maxZoom:18,centerClampedToGround:false,interactive:false,
-      attributionControl:false,antialias:false,fadeDuration:0,renderWorldCopies:false,
+      attributionControl:false,canvasContextAttributes:{antialias:false},fadeDuration:0,renderWorldCopies:false,
       pixelRatio:atlasMapPixelRatio(window.devicePixelRatio)});
+    } catch {
+      setState({ready:false,message:'WebGL2 unavailable · return to radar'});
+      return;
+    }
     mapRef.current=map;
     const recover=()=>{
       timer=null;if(disposed||document.hidden||navigator.onLine===false)return;

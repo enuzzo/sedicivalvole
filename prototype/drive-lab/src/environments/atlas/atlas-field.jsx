@@ -133,7 +133,7 @@ export default function AtlasField({
     }
 
     (async () => {
-      const { default: maplibregl } = await import("maplibre-gl");
+      const maplibregl = await import("../../maplibre-runtime.js");
       if (disposed || !hostRef.current) return;
       const camera = speedToAtlasEffectCamera(valuesRef.current.speed, valuesRef.current.effect);
       const map = new maplibregl.Map({
@@ -146,7 +146,7 @@ export default function AtlasField({
         maxPitch: ATLAS_MANUAL_CAMERA_LIMITS.maximumPitch,
         bearing: Number.isFinite(effectivePosition.heading) ? effectivePosition.heading : 22,
         attributionControl: false,
-        antialias: false,
+        canvasContextAttributes: { antialias: false },
         fadeDuration: 0,
         pixelRatio: atlasMapPixelRatio(window.devicePixelRatio),
         renderWorldCopies: false,

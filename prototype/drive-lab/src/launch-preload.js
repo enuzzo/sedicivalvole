@@ -26,9 +26,9 @@ export async function preloadLaunchVisual(id, signal) {
   if (isShaderGradientEnvironmentId(id)) {
     await import('./environments/shadergradient/shadergradient-field.jsx');
   } else if (id === 'air-atlas') {
-    await Promise.all([import('./environments/radar/air-atlas-field.jsx'), import('maplibre-gl')]);
+    await Promise.all([import('./environments/radar/air-atlas-field.jsx'), import('./maplibre-runtime.js')]);
   } else if (id === 'atlas') {
-    await Promise.all([import('./environments/atlas/atlas-field.jsx'), import('maplibre-gl')]);
+    await Promise.all([import('./environments/atlas/atlas-field.jsx'), import('./maplibre-runtime.js')]);
   } else if (id === 'stats') {
     await import('./environments/atlas/stats-panel.jsx');
   } else if (id === 'vertigo' || id === 'drivey') {

@@ -612,18 +612,6 @@
     "optional": false
   },
   {
-    "path": "node_modules/@mapbox/geojson-rewind",
-    "name": "@mapbox/geojson-rewind",
-    "version": "0.5.2",
-    "author": "Tom MacWright",
-    "repository": "https://github.com/mapbox/geojson-rewind",
-    "homepage": "https://github.com/mapbox/geojson-rewind",
-    "metadata": "https://registry.npmjs.org/%40mapbox%2Fgeojson-rewind/0.5.2",
-    "description": "enforce winding order for geojson",
-    "development": false,
-    "optional": false
-  },
-  {
     "path": "node_modules/@mapbox/jsonlint-lines-primitives",
     "name": "@mapbox/jsonlint-lines-primitives",
     "version": "2.0.3",
@@ -662,11 +650,11 @@
   {
     "path": "node_modules/@mapbox/unitbezier",
     "name": "@mapbox/unitbezier",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "author": "Project contributors (no author field published)",
     "repository": "https://github.com/mapbox/unitbezier",
     "homepage": "https://github.com/mapbox/unitbezier",
-    "metadata": "https://registry.npmjs.org/%40mapbox%2Funitbezier/0.0.1",
+    "metadata": "https://registry.npmjs.org/%40mapbox%2Funitbezier/1.0.0",
     "description": "unit bezier curve interpolation",
     "development": false,
     "optional": false
@@ -674,36 +662,48 @@
   {
     "path": "node_modules/@mapbox/vector-tile",
     "name": "@mapbox/vector-tile",
-    "version": "2.0.5",
+    "version": "3.0.0",
     "author": "Project contributors (no author field published)",
     "repository": "https://github.com/mapbox/vector-tile-js",
     "homepage": "https://github.com/mapbox/vector-tile-js#readme",
-    "metadata": "https://registry.npmjs.org/%40mapbox%2Fvector-tile/2.0.5",
+    "metadata": "https://registry.npmjs.org/%40mapbox%2Fvector-tile/3.0.0",
     "description": "Parses vector tiles",
     "development": false,
     "optional": false
   },
   {
-    "path": "node_modules/@mapbox/whoots-js",
-    "name": "@mapbox/whoots-js",
-    "version": "3.1.0",
-    "author": "Bryan Housel",
-    "repository": "https://github.com/mapbox/whoots-js",
-    "homepage": "https://github.com/mapbox/whoots-js#readme",
-    "metadata": "https://registry.npmjs.org/%40mapbox%2Fwhoots-js/3.1.0",
-    "description": "Request tiles from WMS servers that support EPSG:3857",
+    "path": "node_modules/@maplibre/geojson-vt",
+    "name": "@maplibre/geojson-vt",
+    "version": "6.1.1",
+    "author": "Vladimir Agafonkin",
+    "repository": "https://github.com/maplibre/geojson-vt",
+    "homepage": "https://github.com/maplibre/geojson-vt#readme",
+    "metadata": "https://registry.npmjs.org/%40maplibre%2Fgeojson-vt/6.1.1",
+    "description": "Slice GeoJSON data into vector tiles efficiently",
     "development": false,
     "optional": false
   },
   {
     "path": "node_modules/@maplibre/maplibre-gl-style-spec",
     "name": "@maplibre/maplibre-gl-style-spec",
-    "version": "23.3.0",
+    "version": "26.4.2",
     "author": "MapLibre",
-    "repository": "https://github.com/maplibre/maplibre-gl-style-spec",
+    "repository": "https://github.com/maplibre/maplibre-style-spec",
     "homepage": "https://maplibre.org/maplibre-style-spec/",
-    "metadata": "https://registry.npmjs.org/%40maplibre%2Fmaplibre-gl-style-spec/23.3.0",
+    "metadata": "https://registry.npmjs.org/%40maplibre%2Fmaplibre-gl-style-spec/26.4.2",
     "description": "a specification for maplibre styles",
+    "development": false,
+    "optional": false
+  },
+  {
+    "path": "node_modules/@maplibre/mlt",
+    "name": "@maplibre/mlt",
+    "version": "1.2.1",
+    "author": "Project contributors (no author field published)",
+    "repository": "https://github.com/maplibre/maplibre-tile-spec",
+    "homepage": "https://github.com/maplibre/maplibre-tile-spec/#readme",
+    "metadata": "https://registry.npmjs.org/%40maplibre%2Fmlt/1.2.1",
+    "description": "This package contains a JavaScript decoder for the experimental MapLibre Tile (MLT) vector tile format.",
     "development": false,
     "optional": false
   },
@@ -716,18 +716,6 @@
     "homepage": "https://github.com/maplibre/vt-pbf#readme",
     "metadata": "https://registry.npmjs.org/%40maplibre%2Fvt-pbf/4.3.2",
     "description": "Serialize mapbox vector tiles to binary protobufs in javascript.",
-    "development": false,
-    "optional": false
-  },
-  {
-    "path": "node_modules/@maplibre/vt-pbf/node_modules/pbf",
-    "name": "pbf",
-    "version": "5.1.2",
-    "author": "Konstantin Kaefer",
-    "repository": "https://github.com/mapbox/pbf",
-    "homepage": "https://github.com/mapbox/pbf",
-    "metadata": "https://registry.npmjs.org/pbf/5.1.2",
-    "description": "a low-level, lightweight protocol buffers implementation in JavaScript",
     "development": false,
     "optional": false
   },
@@ -1152,18 +1140,6 @@
     "optional": false
   },
   {
-    "path": "node_modules/@types/geojson-vt",
-    "name": "@types/geojson-vt",
-    "version": "3.2.5",
-    "author": "Project contributors (no author field published)",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/geojson-vt",
-    "metadata": "https://registry.npmjs.org/%40types%2Fgeojson-vt/3.2.5",
-    "description": "TypeScript definitions for geojson-vt",
-    "development": false,
-    "optional": false
-  },
-  {
     "path": "node_modules/@types/offscreencanvas",
     "name": "@types/offscreencanvas",
     "version": "2019.7.3",
@@ -1196,18 +1172,6 @@
     "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/react-reconciler",
     "metadata": "https://registry.npmjs.org/%40types%2Freact-reconciler/0.28.9",
     "description": "TypeScript definitions for react-reconciler",
-    "development": false,
-    "optional": false
-  },
-  {
-    "path": "node_modules/@types/supercluster",
-    "name": "@types/supercluster",
-    "version": "7.1.3",
-    "author": "Project contributors (no author field published)",
-    "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
-    "homepage": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/supercluster",
-    "metadata": "https://registry.npmjs.org/%40types%2Fsupercluster/7.1.3",
-    "description": "TypeScript definitions for supercluster",
     "development": false,
     "optional": false
   },
@@ -1274,11 +1238,11 @@
   {
     "path": "node_modules/baseline-browser-mapping",
     "name": "baseline-browser-mapping",
-    "version": "2.10.42",
+    "version": "2.11.22",
     "author": "Project contributors (no author field published)",
     "repository": "https://github.com/web-platform-dx/baseline-browser-mapping",
     "homepage": "https://github.com/web-platform-dx/baseline-browser-mapping#readme",
-    "metadata": "https://registry.npmjs.org/baseline-browser-mapping/2.10.42",
+    "metadata": "https://registry.npmjs.org/baseline-browser-mapping/2.11.22",
     "description": "A library for obtaining browser versions with their maximum supported Baseline feature set and Widely Available status.",
     "development": true,
     "optional": false
@@ -1286,11 +1250,11 @@
   {
     "path": "node_modules/browserslist",
     "name": "browserslist",
-    "version": "4.28.5",
+    "version": "4.28.9",
     "author": "Andrey Sitnik",
     "repository": "https://github.com/browserslist/browserslist",
     "homepage": "https://github.com/browserslist/browserslist#readme",
-    "metadata": "https://registry.npmjs.org/browserslist/4.28.5",
+    "metadata": "https://registry.npmjs.org/browserslist/4.28.9",
     "description": "Share target browsers between different front-end tools, like Autoprefixer, Stylelint and babel-env-preset",
     "development": true,
     "optional": false
@@ -1334,11 +1298,11 @@
   {
     "path": "node_modules/caniuse-lite",
     "name": "caniuse-lite",
-    "version": "1.0.30001803",
+    "version": "1.0.30001810",
     "author": "Ben Briggs",
     "repository": "https://github.com/browserslist/caniuse-lite",
     "homepage": "https://github.com/browserslist/caniuse-lite#readme",
-    "metadata": "https://registry.npmjs.org/caniuse-lite/1.0.30001803",
+    "metadata": "https://registry.npmjs.org/caniuse-lite/1.0.30001810",
     "description": "A smaller version of caniuse-db, with only the essentials!",
     "development": true,
     "optional": false
@@ -1466,11 +1430,11 @@
   {
     "path": "node_modules/electron-to-chromium",
     "name": "electron-to-chromium",
-    "version": "1.5.389",
+    "version": "1.5.427",
     "author": "Kilian Valkhof",
     "repository": "https://github.com/Kilian/electron-to-chromium",
     "homepage": "https://github.com/Kilian/electron-to-chromium#readme",
-    "metadata": "https://registry.npmjs.org/electron-to-chromium/1.5.389",
+    "metadata": "https://registry.npmjs.org/electron-to-chromium/1.5.427",
     "description": "Provides a list of electron-to-chromium version mappings",
     "development": true,
     "optional": false
@@ -1572,18 +1536,6 @@
     "optional": false
   },
   {
-    "path": "node_modules/geojson-vt",
-    "name": "geojson-vt",
-    "version": "4.0.3",
-    "author": "Vladimir Agafonkin",
-    "repository": "https://github.com/mapbox/geojson-vt",
-    "homepage": "https://github.com/mapbox/geojson-vt",
-    "metadata": "https://registry.npmjs.org/geojson-vt/4.0.3",
-    "description": "Slice GeoJSON data into vector tiles efficiently",
-    "development": false,
-    "optional": false
-  },
-  {
     "path": "node_modules/get-caller-file",
     "name": "get-caller-file",
     "version": "2.0.5",
@@ -1592,18 +1544,6 @@
     "homepage": "https://github.com/stefanpenner/get-caller-file#readme",
     "metadata": "https://registry.npmjs.org/get-caller-file/2.0.5",
     "description": "[![Build Status](https://travis-ci.org/stefanpenner/get-caller-file.svg?branch=master)](https://travis-ci.org/stefanpenner/get-caller-file) [![Build status](https://ci.appveyor.com/api/projects/status/ol2q94g1932cy14a/branch/master?svg=true)](https://ci.a",
-    "development": false,
-    "optional": false
-  },
-  {
-    "path": "node_modules/get-stream",
-    "name": "get-stream",
-    "version": "6.0.1",
-    "author": "Sindre Sorhus",
-    "repository": "https://github.com/sindresorhus/get-stream",
-    "homepage": "https://github.com/sindresorhus/get-stream#readme",
-    "metadata": "https://registry.npmjs.org/get-stream/6.0.1",
-    "description": "Get a stream as a string, buffer, or array",
     "development": false,
     "optional": false
   },
@@ -1742,11 +1682,11 @@
   {
     "path": "node_modules/maplibre-gl",
     "name": "maplibre-gl",
-    "version": "5.7.1",
+    "version": "6.7.0",
     "author": "Project contributors (no author field published)",
     "repository": "https://github.com/maplibre/maplibre-gl-js",
     "homepage": "https://maplibre.org/",
-    "metadata": "https://registry.npmjs.org/maplibre-gl/5.7.1",
+    "metadata": "https://registry.npmjs.org/maplibre-gl/6.7.0",
     "description": "BSD licensed community fork of mapbox-gl, a WebGL interactive maps library",
     "development": false,
     "optional": false
@@ -1802,11 +1742,11 @@
   {
     "path": "node_modules/node-releases",
     "name": "node-releases",
-    "version": "2.0.50",
+    "version": "2.0.55",
     "author": "Sergey Rubanov",
     "repository": "https://github.com/chicoxyzzy/node-releases",
     "homepage": "https://github.com/chicoxyzzy/node-releases#readme",
-    "metadata": "https://registry.npmjs.org/node-releases/2.0.50",
+    "metadata": "https://registry.npmjs.org/node-releases/2.0.55",
     "description": "Node.js releases data",
     "development": true,
     "optional": false
@@ -1862,11 +1802,11 @@
   {
     "path": "node_modules/pbf",
     "name": "pbf",
-    "version": "4.0.2",
+    "version": "5.1.2",
     "author": "Konstantin Kaefer",
     "repository": "https://github.com/mapbox/pbf",
     "homepage": "https://github.com/mapbox/pbf",
-    "metadata": "https://registry.npmjs.org/pbf/4.0.2",
+    "metadata": "https://registry.npmjs.org/pbf/5.1.2",
     "description": "a low-level, lightweight protocol buffers implementation in JavaScript",
     "development": false,
     "optional": false
@@ -2064,18 +2004,6 @@
     "optional": false
   },
   {
-    "path": "node_modules/rw",
-    "name": "rw",
-    "version": "1.3.3",
-    "author": "Mike Bostock",
-    "repository": "https://github.com/mbostock/rw",
-    "homepage": "https://github.com/mbostock/rw",
-    "metadata": "https://registry.npmjs.org/rw/1.3.3",
-    "description": "Now stdin and stdout are files.",
-    "development": false,
-    "optional": false
-  },
-  {
     "path": "node_modules/scheduler",
     "name": "scheduler",
     "version": "0.27.0",
@@ -2144,18 +2072,6 @@
     "homepage": "https://github.com/chalk/strip-ansi#readme",
     "metadata": "https://registry.npmjs.org/strip-ansi/6.0.1",
     "description": "Strip ANSI escape codes from a string",
-    "development": false,
-    "optional": false
-  },
-  {
-    "path": "node_modules/supercluster",
-    "name": "supercluster",
-    "version": "8.0.1",
-    "author": "Vladimir Agafonkin",
-    "repository": "https://github.com/mapbox/supercluster",
-    "homepage": "https://github.com/mapbox/supercluster#readme",
-    "metadata": "https://registry.npmjs.org/supercluster/8.0.1",
-    "description": "A very fast geospatial point clustering library.",
     "development": false,
     "optional": false
   },
@@ -2234,11 +2150,11 @@
   {
     "path": "node_modules/update-browserslist-db",
     "name": "update-browserslist-db",
-    "version": "1.2.3",
+    "version": "1.3.3",
     "author": "Andrey Sitnik",
     "repository": "https://github.com/browserslist/update-db",
     "homepage": "https://github.com/browserslist/update-db#readme",
-    "metadata": "https://registry.npmjs.org/update-browserslist-db/1.2.3",
+    "metadata": "https://registry.npmjs.org/update-browserslist-db/1.3.3",
     "description": "CLI tool to update caniuse-lite to refresh target browsers from Browserslist config",
     "development": true,
     "optional": false

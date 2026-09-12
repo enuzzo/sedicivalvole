@@ -17,11 +17,11 @@ export async function captureReportMap(route, signal) {
   const started=performance.now();
   let gl;
   try {
-    ({default:gl}=await Promise.race([import('maplibre-gl'),new Promise((_,reject)=>{
+    gl=await Promise.race([import('../maplibre-runtime.js'),new Promise((_,reject)=>{
       abortImport=()=>reject(new Error('Map capture cancelled'));
       signal.addEventListener('abort',abortImport,{once:true});
       importTimer=setTimeout(abortImport,12000);
-    })]));
+    })]);
   } catch {return null;} finally {clearTimeout(importTimer);signal.removeEventListener('abort',abortImport);}
   if(signal.aborted) return null;
   const coordinates=reportRouteCoordinates(route);
@@ -44,7 +44,7 @@ export async function captureReportMap(route, signal) {
         style.sources.printEnds={type:'geojson',data:{type:'FeatureCollection',features:[coordinates[0],coordinates.at(-1)].map((p,i)=>({type:'Feature',properties:{label:i?'FINISH':'START'},geometry:{type:'Point',coordinates:p}}))}};
         style.layers.push({id:'print-ends',type:'circle',source:'printEnds',paint:{'circle-radius':7,'circle-color':'#172c33','circle-stroke-color':'#fff','circle-stroke-width':3}},
           {id:'print-end-labels',type:'symbol',source:'printEnds',layout:{'text-field':['get','label'],'text-font':['Noto Sans Regular'],'text-size':15,'text-offset':[0,1.4]},paint:{'text-color':'#172c33','text-halo-color':'#fff','text-halo-width':2}});
-        map=new gl.Map({container:host,style,interactive:false,attributionControl:false,preserveDrawingBuffer:true,pixelRatio:1,fadeDuration:0,renderWorldCopies:false});
+        map=new gl.Map({container:host,style,interactive:false,attributionControl:false,canvasContextAttributes:{preserveDrawingBuffer:true},pixelRatio:1,fadeDuration:0,renderWorldCopies:false});
         const bounds=coordinates.reduce((b,p)=>b.extend(p),new gl.LngLatBounds(coordinates[0],coordinates[0]));
         map.fitBounds(bounds,{padding:85,maxZoom:15,duration:0});
         map.on('idle',()=>{if(map.isStyleLoaded()&&map.areTilesLoaded()){

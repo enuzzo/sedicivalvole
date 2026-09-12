@@ -43,7 +43,7 @@
     "@react-three/fiber": "9.7.0",
     "@shadergradient/react": "2.4.20",
     "camera-controls": "2.9.0",
-    "maplibre-gl": "^5.7.1",
+    "maplibre-gl": "6.7.0",
     "qrcode": "^1.5.4",
     "react": "19.2.0",
     "react-dom": "19.2.0",

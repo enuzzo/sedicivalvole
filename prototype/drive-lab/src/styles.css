@@ -4682,7 +4682,7 @@ html { font-size: var(--font-size-floor); }
 
 .app.controls-resting .atlas-field .atlas-map-appearance { visibility: visible; pointer-events: auto; }
 .atlas-field .atlas-poi { width: 48px; height: 48px; }
-.app[data-appearance] .atlas-field .maplibregl-ctrl.maplibregl-ctrl-attrib { width: auto; max-width: calc(100vw - 24px); font-size: 11px; line-height: 1.2; padding: 2px 4px; color: #283334; background: #f3f1ebd9; }
+.app[data-appearance] .atlas-field .maplibregl-ctrl.maplibregl-ctrl-attrib { width: auto; max-width: calc(100vw - 24px); font-size: 14px; line-height: 1.2; padding: 2px 4px; color: #283334; background: #f3f1ebd9; }
 .stats-main-chart .stats-trace { height: 155px; }
 .stats-headlines { padding: 12px 0; }
 .stats-range { min-height: 48px; padding: 5px 10px; font-size: 13px; }

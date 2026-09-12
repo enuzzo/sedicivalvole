@@ -21,6 +21,7 @@ function commitRef() {
 
 export default defineConfig({
   publicDir: false,
+  envDir: process.env.SEDICIVALVOLE_NO_LOCAL_ENV === "1" ? false : undefined,
   define: {
     __APP_VERSION__: JSON.stringify(productVersion),
     __APP_BUILD__: JSON.stringify(buildStamp()),

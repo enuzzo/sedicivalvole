@@ -94,9 +94,10 @@ const productCommit = commitRef();
 
 export default defineConfig(({ mode }) => {
   const repositoryDirectory = fileURLToPath(new URL("../../", import.meta.url));
-  const repositoryEnv = loadEnv(mode, repositoryDirectory, "");
-  const jamendoEnv = loadEnv("jamendo", repositoryDirectory, "");
-  const prototypeEnv = loadEnv(mode, projectDirectory, "");
+  const readLocalEnv = process.env.SEDICIVALVOLE_NO_LOCAL_ENV !== "1";
+  const repositoryEnv = readLocalEnv ? loadEnv(mode, repositoryDirectory, "") : {};
+  const jamendoEnv = readLocalEnv ? loadEnv("jamendo", repositoryDirectory, "") : {};
+  const prototypeEnv = readLocalEnv ? loadEnv(mode, projectDirectory, "") : {};
   const jamendoClientId = process.env.JAMENDO_CLIENT_ID
     || prototypeEnv.JAMENDO_CLIENT_ID
     || repositoryEnv.JAMENDO_CLIENT_ID
@@ -106,6 +107,8 @@ export default defineConfig(({ mode }) => {
 
   return ({
   base: "/",
+  envDir: readLocalEnv ? undefined : false,
+  worker: { format: "es" },
   build: {
     outDir: "dist/client",
     emptyOutDir: true,
