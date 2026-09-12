@@ -1,5 +1,7 @@
 import assert from "node:assert/strict";
-import { execFileSync } from "node:child_process";
+import { execFile, execFileSync } from "node:child_process";
+import { promisify } from "node:util";
+import { fileURLToPath } from "node:url";
 import { readFile, mkdtemp, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -16,6 +18,33 @@ const viteSource = await read("../vite.lab.config.mjs");
 const deploySource = await read("../../../scripts/deploy_drive_lab_ftp.py");
 const appSource = await read("../src/lab/main.jsx");
 const stylesSource = await read("../src/lab/styles.css");
+
+test("LAB attempt windows renew, serialize concurrent clients and fail closed", async () => {
+  const directory = await mkdtemp(join(tmpdir(), "sv-lab-attempt-test-"));
+  const bootstrap = fileURLToPath(new URL("../server/lab-bootstrap.php", import.meta.url));
+  const invoke = promisify(execFile);
+  const attempt = async (path, now) => {
+    const { stdout } = await invoke("php", ["-r",
+      "require $argv[1]; echo labReserveLoginAttempt($argv[2], (int)$argv[3]) ? 'yes' : 'no';",
+      bootstrap, path, String(now)]);
+    return stdout;
+  };
+  try {
+    const path = join(directory, "counter.json");
+    const first = await Promise.all(Array.from({ length: 16 }, () => attempt(path, 1000)));
+    assert.equal(first.filter(value => value === "yes").length, 8);
+    assert.equal(await attempt(path, 1299), "no");
+    const second = await Promise.all(Array.from({ length: 16 }, () => attempt(path, 1300)));
+    assert.equal(second.filter(value => value === "yes").length, 8);
+    assert.deepEqual(JSON.parse(await readFile(path, "utf8")), { window: 1300, count: 8 });
+    assert.equal(await attempt(path, 1301), "no");
+    await writeFile(path, "broken state");
+    assert.equal(await attempt(path, 2000), "no");
+    assert.equal(await attempt(join(directory, "missing", "counter.json"), 2000), "no");
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
 
 test("the canonical LAB gate keeps authentication and secrets on the PHP boundary", () => {
   assert.match(indexSource, /hash_pbkdf2\('sha256'/);

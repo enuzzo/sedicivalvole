@@ -10,7 +10,7 @@ This is the active handoff for the owner's September 12 request. It is deliberat
 - [ ] R04 — Audit public tracked files for machine paths, private operational details and sensitive material without opening `.env` or local secret variants.
 - [ ] R05 — Assess historical Git exposure separately; report findings without rewriting history or printing sensitive values.
 - [ ] R06 — Complete the Codex Security scan and validate source-backed findings; fix relevant confirmed issues.
-- [ ] R07 — Put community/pro bono/no economic gain intentions and a practical rights-concern response route prominently at the top of README. Reconcile this statement with any existing support/donation UI and the current license.
+- [x] R07 — README now opens with community/pro bono/non-profit intent, a rights-concern route and preserved third-party rights. Owner explicitly selected retaining optional donations: free access and no donor privileges are stated plainly.
 - [ ] R08 — Verify README, LICENSE, LICENSE-SCOPE, NOTICE, third-party notices and generated community credits for consistent rights, exclusions, attribution and actual shipped content.
 - [ ] R09 — Inspect current frontend at compact Tesla `773 × 601`, desktop and phone sizes: Intro, launch, running controls, drawers and REPORT. Capture temporary visual evidence and console/interaction results.
 - [ ] R10 — Fix verified small visual/interaction defects within approved designs; no new visual direction without the existing three-option selection gate.
@@ -35,7 +35,13 @@ This is the active handoff for the owner's September 12 request. It is deliberat
 - Japanese Mist: `59.25 FPS`, p95 `16.8 ms`; Vertigo: `59.98 FPS`, p95 `22.51 ms`. Engine: `10.02 FPS` against its intentional `10 FPS` telemetry target. Do not interpret Engine's raw over-50-ms counter as a failed 60-FPS renderer.
 - Media Session repeatedly republishes unchanged track metadata/playback state on media-clock updates. Inspect `App.jsx`'s presentation effect and separate stable presentation from position updates while retaining action handlers, artwork recovery and truthful playback.
 - Public tracked-file path scan found no tracked `.env`/private reference path, but found 71 personal-home-path occurrences in 14 text files, including historical handoffs and `scripts/sample-library.mjs` under Drive Lab. Sanitize original project material and replace the executable hardcoded sample root with repository-relative resolution. Preserve third-party bytes and explicitly record archival redaction.
-- Owner question pending: remove Buy Me a Coffee, or retain optional donations with an honest free-service statement. Other work can continue independently.
+- Owner decision: retain Buy Me a Coffee as optional support. The free service does not sell access, features or donor privileges; non-profit intent does not mean no contributions can be received.
+- Current-tree cleanup completed: 71 personal filesystem references in 14 files removed; archive redaction disclosed in `docs/agent-history/PRIVACY-REDACTION.md`; sample root now resolves relative to the authoring module. `python3 scripts/check_public_hygiene.py` passes on 1,447 tracked text files; focused documentation/sample-tool tests pass 15/15; generated dependency credits pass 196/196. This guard covers named signatures, not all possible secrets or Git history.
+- Hygiene/README checkpoint `2c0956c` committed and pushed. Optional-support clarification follows the owner's explicit answer.
+- LAB fix: the expired authentication window now resets both timestamp and count; an exclusive lock reserves attempts before PBKDF2, storage errors fail closed, and successful login keeps the shared counter inode. PHP syntax passes; native-wrapper LAB tests pass 10/10 including two exhausted windows, 16 concurrent attempts, corrupted storage and missing storage.
+- Runtime work in progress: Media Session presentation separated from position updates; diagnostic page location reduced to approved paths, URL/local-path text removed before issue/event retention and transport fitting. First focused runtime test pass: 49/49; later serialization changes still need a rerun. Not built or deployed yet.
+- Owner instruction: preserve the current SiteGround transport for now. Plain FTP remains an explicitly known residual risk, with no claim of observed interception or secure transport. Never expose or version `.env`; no protocol migration is authorized by this task.
+- History credential scan is running with full redaction and explicit Git path exclusions for `.env` variants, local-secret filenames and private references. Do not mark it passed before its process exits and results are reviewed.
 
 ## Restart prompt
 

@@ -6,6 +6,10 @@
 > The aim is to make something beautiful, playful and useful, and to celebrate
 > the people whose work makes it possible.
 >
+> **Optional support, never a condition of access.** Buy Me a Coffee is an
+> entirely voluntary contribution. No payment is required to use the service,
+> and donating unlocks no features, priority or other privileges.
+>
 > **Respect for creators comes first.** If you are a rights holder or notice a
 > concern about a source, attribution or permitted use, please
 > [open an issue](https://github.com/enuzzo/sedicivalvole/issues) identifying the

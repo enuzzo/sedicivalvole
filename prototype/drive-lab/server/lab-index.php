@@ -41,13 +41,10 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && $labConfig !== null && !lab
 
     $clientKey = hash('sha256', ($_SERVER['REMOTE_ADDR'] ?? 'unknown') . '|sedicivalvole-lab-login');
     $ratePath = rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'sv-lab-login-' . $clientKey;
-    $attempts = is_file($ratePath) ? json_decode((string) @file_get_contents($ratePath), true) : null;
     $now = time();
-    $windowStart = is_array($attempts) ? (int) ($attempts['window'] ?? 0) : 0;
-    $count = is_array($attempts) && ($now - $windowStart) < 300 ? (int) ($attempts['count'] ?? 0) : 0;
     if ($loginError !== null) {
         // Reject cross-site submissions without consuming the password-attempt budget.
-    } elseif ($count >= 8) {
+    } elseif (!labReserveLoginAttempt($ratePath, $now)) {
         $loginError = 'Too many attempts. Wait a few minutes.';
     } else {
         $password = (string) ($_POST['password'] ?? '');
@@ -56,7 +53,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && $labConfig !== null && !lab
             ? hash_pbkdf2('sha256', $password, $salt, (int) $labConfig['iterations'], 64, false)
             : '';
         if ($candidate !== '' && hash_equals((string) $labConfig['password_hash_hex'], $candidate)) {
-            @unlink($ratePath);
+            // Retain the shared counter inode so concurrent sessions cannot fork it.
             session_regenerate_id(true);
             $_SESSION['lab_authenticated'] = true;
             $_SESSION['lab_last_seen'] = $now;
@@ -64,7 +61,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && $labConfig !== null && !lab
             header('Location: /lab/');
             exit;
         }
-        @file_put_contents($ratePath, json_encode(['window' => $windowStart > 0 ? $windowStart : $now, 'count' => $count + 1]), LOCK_EX);
         usleep(250000);
         $loginError = 'Access code not accepted.';
     }

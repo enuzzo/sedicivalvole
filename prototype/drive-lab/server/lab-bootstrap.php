@@ -56,6 +56,33 @@ function labAuthenticated(): bool
     return !empty($_SESSION['lab_authenticated']);
 }
 
+/** Reserve before password work; concurrent sessions share one bounded window. */
+function labReserveLoginAttempt(string $path, int $now): bool
+{
+    $handle = @fopen($path, 'c+');
+    if ($handle === false) return false;
+    try {
+        if (!@flock($handle, LOCK_EX)) return false;
+        if (!@chmod($path, 0600)) return false;
+        $raw = stream_get_contents($handle, 4097);
+        if ($raw === false || strlen($raw) > 4096) return false;
+        $state = $raw === '' ? ['window' => $now, 'count' => 0] : json_decode($raw, true);
+        if (!is_array($state) || !is_int($state['window'] ?? null)
+            || !is_int($state['count'] ?? null) || $state['count'] < 0) return false;
+        if ($now < $state['window'] || $now - $state['window'] >= 300) {
+            $state = ['window' => $now, 'count' => 0];
+        }
+        if ($state['count'] >= 8) return false;
+        $state['count']++;
+        $encoded = json_encode($state);
+        if ($encoded === false || !rewind($handle) || !ftruncate($handle, 0)) return false;
+        return fwrite($handle, $encoded) === strlen($encoded) && fflush($handle);
+    } finally {
+        @flock($handle, LOCK_UN);
+        fclose($handle);
+    }
+}
+
 function labRequireAuthenticatedJson(array $config): void
 {
     labStartSession($config);
