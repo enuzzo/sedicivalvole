@@ -29,19 +29,34 @@ explicit record so no item disappears.
 - [x] F02 — Refine Air Atlas credits into one readable line on a translucent background, preserving all attribution, privacy disclosure and narrow-screen access.
 - [x] F03 — Improve Chromatic Silk with Pearl: retain the selected neutral palette while making folds and color separation visible; verify against the washed-out baseline.
 - [x] F04 — Fix Acid Orchard's exposed black viewport corners throughout movement, road speed and braking, retaining upstream bytes and the registered study.
-- [x] F05 — Complete the initial consistency audit and dedicated Markdown/HTML/CSS design-system reference, including all ten visual roles, shared production components and current screenshots/measurements. The remaining Atlas MAP COLOR inconsistency discovered in the final pass is explicitly tracked in F07; this check does not claim every discrepancy is fixed.
-- [ ] F06 — Run relevant regression/source/browser and release gates, commit/push, publish via unchanged preserve-existing FTP, verify canonical identity/assets and update this handoff.
+- [x] F05 — Complete the initial consistency audit and dedicated Markdown/HTML/CSS design-system reference, including all ten visual roles, shared production components and current screenshots/measurements. The Atlas MAP COLOR discrepancy discovered in the final pass is resolved by the owner-selected icon correction in F07.
+- [x] F06 — Run relevant regression/source/browser and release gates, commit/push, publish via unchanged preserve-existing FTP, verify canonical identity/assets and update this handoff.
 - [x] F07 — Owner refined the audit finding: replace the separate Atlas MAP COLOR plaque with a palette icon inside the zoom/reset/orientation row. Align framing and camera groups where space permits, retain 48 px targets and accessible current/next state, extend the shared specimen and verify pointer/keyboard behavior in both appearances. Shared toolbar implementation, real-map pointer/keyboard changes, LIGHT/DARK states and narrow reference checks pass. Full native suite 876/876 and focused Atlas/appearance checks 49/49 pass; final publication is part of F06.
 
-### Final Atlas candidate — publication in progress
+### Final follow-up delivery — 2026-09-12 10:16
 
-Product checkpoint **81747b5**, build-source/changelog **5ffacb1**, final build
-**20260912-1007.5ffacb1**. Full tests pass **876/876**, focused checks **49/49**,
-production integrity **827** exact hashes and public hygiene **1,463** files.
-The packaged application passes explicit Milan demo, icon activation, aligned
-controls and zero console errors in the internal browser. The owner requested
-urgent publication; the official preserve-existing FTP operation is in progress.
-F06 remains open until completion, canonical HTTPS hashes and browser verification.
+Final build **20260912-1007.5ffacb1**, product **81747b5**, build source
+**5ffacb1**, VERSION **0.0.0**, is published and verified at
+`https://sedicivalvole.app/`. It includes the preceding Gradient/credits changes
+and the owner-requested Atlas palette icon inside the camera row.
+
+- Full native tests **876/876**, focused Atlas/appearance checks **49/49**,
+  production integrity **827** hashes, community credits **189/189**, public
+  hygiene **1,463** text files with zero findings. Earlier Gradient-focused
+  checks pass **77/77**. Development references/fixtures are excluded from release.
+- Official preserve-existing FTP: **37 files / 6,308,372 bytes** uploaded;
+  **825** static files and **29** full-hash-verified recordings reused;
+  **2** previous assets retained; `remote_writes=ROOT_UPLOAD_ONLY`.
+- **12** bare/cache-busted HTTPS comparisons pass before and after controlled
+  reload, including HTML, main JS/CSS, Atlas/Gradient, MapLibre runtime/worker/CSS,
+  release manifest, license and palette icon. Root identity/cache remain current.
+- Canonical internal-browser QA verifies muted launch, explicit Milan demo,
+  aligned Atlas rows, actual icon recoloring, zero console errors and stable
+  build after reload. No device GPS or diagnostic sending was used.
+- [Design system](DESIGN-SYSTEM.md) includes the shared production visual cells
+  and Atlas camera component, HTML/JSX/CSS reference and current figures.
+  Formal account-bound Security scan **R06**, physical Tesla/iPhone/WebGL2,
+  native media and sustained/endurance acceptance remain open. FTP is unchanged.
 
 ### Intermediate follow-up publication
 
@@ -58,7 +73,7 @@ as a separately verified source checkpoint; do not claim it is in this build.
 - Air Atlas preserves all source links in a translucent one-line bar. At compact 773 × 601 the five regular credits fit, using readable 14 px text; narrow screens retain keyboard-scrollable overflow. The rounded-area notice expands above the row. The extra Fly With terrain source remains present. Explicit Milan demo additionally verifies Atlas map framing/camera controls and reveals the legacy MAP COLOR geometry recorded in F07.
 - Silk/Pearl retains exact palette inputs with a scoped 0.42 lighting gain, exposing folds previously clipped white. Orchard frames its finite plane against the longer viewport edge with folding margin; registered study values and pinned upstream bytes are unchanged. Internal-browser captures cover wide 1440 × 600, 0/40/90/130 synthetic speed, braking and reduced motion; geometric coverage tests protect aspect changes.
 - [Design system](DESIGN-SYSTEM.md) records all ten visual roles and the actual shared VIEW/RENDER/TYPE/VARIANT components, with runnable development HTML/JSX/CSS and LIGHT/DARK figures. Measured cells are 112 × 53 px, 6/10 px padding, 1 px stroke, 6 px corners and aligned label/value baselines. Catalogue, keyboard focus, pressed and resting states were checked. Full passenger flows, assistive-technology and physical-device acceptance remain separate.
-- Full native tests pass **876/876**; focused changed-surface tests pass **77/77**; exact community credits pass **189/189**. Source integrity is included in the full suite; public hygiene passes **1,462** tracked text files with zero findings. Production build **20260912-0954.bb64c37** passes all **827** static hashes; final local browser verifies muted Orchard launch, real VARIANT-to-Silk transition, Discover and REPORT at **773 × 601**, source identity and zero runtime issues/console errors. Canonical publication remains pending F06. New QA entries identify synthetic inputs and are excluded from production.
+- Full native tests pass **876/876**; focused changed-surface tests pass **77/77**; exact community credits pass **189/189**. Source integrity is included in the full suite; public hygiene passes **1,462** tracked text files with zero findings. Production build **20260912-0954.bb64c37** passes all **827** static hashes; final local browser verifies muted Orchard launch, real VARIANT-to-Silk transition, Discover and REPORT at **773 × 601**, source identity and zero runtime issues/console errors. This intermediate build was published and is superseded by the final follow-up delivery above. New QA entries identify synthetic inputs and are excluded from production.
 
 ## September 12 continuation — published and verified
 
@@ -130,7 +145,11 @@ Optional local evidence (may disappear; never commit or transfer private mail): 
 
 ## Current next start
 
-Complete the unchecked F01–F06 owner follow-ups above first. R06 remains account-bound: recover the existing Security scan only through authorized access; do not start a duplicate or call dependency/hygiene tests a completed scan. R13 publication and R14 handoff are complete for the release above. Physical WebGL2, Tesla performance/endurance, native media and iPhone/Safari acceptance remain separate. Preserve FTP and use only the Codex internal browser for UI QA.
+F01–F07 are complete with the evidence above. R06 remains account-bound: recover
+the existing Security scan through authorized access, without duplicating it.
+Next acceptance work is physical Tesla/iPhone/WebGL2, native media, sustained
+performance and endurance. The design-system reference is the starting point
+for future interface changes. Preserve FTP and use the Codex internal browser.
 
 ## Restart prompt
 

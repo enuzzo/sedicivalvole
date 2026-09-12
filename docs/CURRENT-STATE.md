@@ -1,5 +1,32 @@
 # Current Project State
 
+## Latest visual follow-up release — 2026-09-12 10:16 Europe/Rome
+
+Final build **20260912-1007.5ffacb1**, product **81747b5**, build source
+**5ffacb1**, VERSION **0.0.0**, is published and verified at
+`https://sedicivalvole.app/`. It includes the preceding Gradient/credits changes
+and the owner-requested Atlas palette icon inside the camera row.
+
+- Full native tests **876/876**, focused Atlas/appearance checks **49/49**,
+  production integrity **827** hashes, community credits **189/189**, public
+  hygiene **1,463** text files with zero findings. Earlier Gradient-focused
+  checks pass **77/77**. Development references/fixtures are excluded from release.
+- Official preserve-existing FTP: **37 files / 6,308,372 bytes** uploaded;
+  **825** static files and **29** full-hash-verified recordings reused;
+  **2** previous assets retained; `remote_writes=ROOT_UPLOAD_ONLY`.
+- **12** bare/cache-busted HTTPS comparisons pass before and after controlled
+  reload, including HTML, main JS/CSS, Atlas/Gradient, MapLibre runtime/worker/CSS,
+  release manifest, license and palette icon. Root identity/cache remain current.
+- Canonical internal-browser QA verifies muted launch, explicit Milan demo,
+  aligned Atlas rows, actual icon recoloring, zero console errors and stable
+  build after reload. No device GPS or diagnostic sending was used.
+- [Design system](DESIGN-SYSTEM.md) includes the shared production visual cells
+  and Atlas camera component, HTML/JSX/CSS reference and current figures.
+  Formal account-bound Security scan **R06**, physical Tesla/iPhone/WebGL2,
+  native media and sustained/endurance acceptance remain open. FTP is unchanged.
+
+This section supersedes older latest-build labels below.
+
 ## Current release-readiness closeout — 2026-09-12 09:24 Europe/Rome
 
 Latest verified canonical build: **20260912-0909.e0ac1cb**, VERSION **0.0.0**;
