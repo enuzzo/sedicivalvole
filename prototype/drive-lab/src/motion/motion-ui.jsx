@@ -11,13 +11,14 @@ function Guide({ step }) {
   </svg>;
 }
 
-export const motionStateText = (state) => ({ idle: "Ready to pair", preparing: "Preparing connection…", pairing: "Scan with iPhone", connecting: "Opening direct connection…", connected: "Phone connected", stale: "Waiting for fresh phone data", closed: "Disconnected · pair again", expired: "Pairing expired · try again", error: "Direct connection unavailable · retry on the same Wi-Fi", suspended: "Paused while hidden · pair again", unavailable: "WebRTC unavailable in this browser" }[state] ?? "Not connected");
+export const motionStateText = (state) => ({ idle: "Ready to pair", preparing: "Preparing connection…", pairing: "Scan with iPhone", connecting: "Opening direct connection…", connected: "Phone connected", stale: "Waiting for fresh phone data", closed: "Disconnected · create a new QR", expired: "Pairing expired · create a new QR", error: "Connection unavailable · create a new QR", suspended: "Page was hidden · create a new QR", unavailable: "WebRTC unavailable in this browser" }[state] ?? "Not connected");
 
 export function MotionPanel({ snapshot, onStart, onStop, onClose }) {
   const [qr, setQr] = useState(null);
+  const [qrError, setQrError] = useState(false);
   useEffect(() => {
-    let active = true; setQr(null);
-    if (snapshot.qrUrl) void QRCode.toDataURL(snapshot.qrUrl, { width: 280, margin: 4, errorCorrectionLevel: "M", color: { dark: "#000000", light: "#ffffff" } }).then((value) => { if (active) setQr(value); }).catch(() => {});
+    let active = true; setQr(null); setQrError(false);
+    if (snapshot.qrUrl) void QRCode.toDataURL(snapshot.qrUrl, { width: 280, margin: 4, errorCorrectionLevel: "M", color: { dark: "#000000", light: "#ffffff" } }).then((value) => { if (active) setQr(value); }).catch(() => { if (active) setQrError(true); });
     return () => { active = false; };
   }, [snapshot.qrUrl]);
   return <div className="motion-panel-content">
@@ -26,8 +27,10 @@ export function MotionPanel({ snapshot, onStart, onStop, onClose }) {
     <ol className="motion-guide">{[["Scan", "Open the QR in iPhone Safari."], ["Place", "Flat or upright. Keep it steady; hand movement also counts."], ["Zero", "Allow sensors, then tap ZERO to set your reference."]].map(([title, copy], i) => <li key={title}><Guide step={i + 1}/><strong>{i + 1} · {title}</strong><p>{copy}</p></li>)}</ol>
     <div className="motion-pairing"><div>
       <strong role="status">{motionStateText(snapshot.state)}</strong>
-      <p>Keep Safari visible. Start on the same Wi-Fi; direct connectivity depends on both browsers and the network. No relay is configured.</p>
-      <div className="motion-actions"><button onClick={onStart} disabled={["preparing", "pairing", "connecting"].includes(snapshot.state)}>CREATE QR</button><button onClick={onStop}>DISCONNECT</button></div>
+      <p>{snapshot.state === "connected" ? "Link open. Check sensor readings and Zero SET below; on iPhone allow sensors and tap ZERO. CLOSE keeps the connection running." : snapshot.state === "stale" ? "Phone data is late. Keep Safari visible and check its sensor message. To reconnect, tap DISCONNECT, then CREATE QR." : snapshot.state === "pairing" ? "Scan once, then tap ENABLE & CONNECT in iPhone Safari. To replace this QR, tap DISCONNECT first." : ["preparing", "connecting"].includes(snapshot.state) ? "Keep both pages visible. Setup stops after 30 seconds if unreachable. DISCONNECT cancels now." : "Tap CREATE QR, then scan the new code. Old phone links cannot reconnect."}</p>
+      <p>Start on the same Wi-Fi with access between devices. Both pages need to stay visible. A shared network can still block the direct connection; there is no relay fallback.</p>
+      <div className="motion-actions"><button onClick={onStart} disabled={["preparing", "pairing", "connecting", "connected", "stale"].includes(snapshot.state)}>CREATE QR</button><button onClick={onStop}>DISCONNECT</button></div>
+      {qrError && <p role="alert">QR could not be displayed. Tap DISCONNECT, then CREATE QR to retry.</p>}
       <p className="motion-meta">QR expires in 3 minutes and joins one phone. Session ends on hiding, disconnect or after one hour. Connection and sensor-quality summaries appear in REPORT; sensor streams and pairing keys do not.</p>
     </div>{qr ? <img className="motion-qr" src={qr} alt="Scan to pair this session with your iPhone"/> : <div className="motion-qr-placeholder"><MotionIcon/><span>{snapshot.state === "connected" ? "PAIRED" : "PHONE MOTION"}</span></div>}</div>
     <MotionQuality summary={snapshot}/>

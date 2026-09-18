@@ -5,6 +5,7 @@ import { createPhoneSensors } from '../src/motion/sensors.js';
 import { createMotionProtocol } from '../src/motion/channel.js';
 import { createMotionTelemetry, safeMotionSummary } from '../src/motion/telemetry.js';
 import { createMotionSession } from '../src/motion/session.js';
+import { phoneStatus } from '../src/motion/phone-status.js';
 const identity = () => orientationMatrix({alpha:0,beta:0,gamma:0});
 const near = (a,b) => a.forEach((v,i) => assert.ok(Math.abs(v-b[i])<1e-6, `${a} != ${b}`));
 const sample = (extra={}) => ({at:0,orientationAt:0,orientation:identity(),acceleration:[0,0,0],rotation:[0,0,0],gravity:[0,0,9.81],...extra});
@@ -127,4 +128,105 @@ test('signaling failure records its stage and HTTP status without payload or exc
 test('missing WebRTC is reported separately from a failed network connection',async()=>{
  const host=surface(),doc=surface();const session=createMotionSession({role:'receiver',host,doc});
  await session.start();assert.equal(session.report().latest.state,'unavailable');session.dispose();
+});
+
+test('incomplete fresh events invalidate zero and never claim live sensing',async()=>{
+ const f=sensorFixture();await f.sensor.start();f.orient();f.motion();assert.equal(f.sensor.tare(),'tared');
+ f.time(20);f.motion({rotationRate:{alpha:null,beta:0,gamma:0}});
+ assert.equal(f.sensor.summary().sensorState,'incomplete');assert.equal(f.sensor.summary().tared,false);assert.equal(f.sensor.latest(),null);
+ f.time(40);f.orient();f.motion();assert.equal(f.sensor.summary().sensorState,'live');assert.equal(f.sensor.latest(),null);
+ assert.equal(f.sensor.tare(),'tared');f.sensor.dispose();
+});
+test('receiver clears stale remote zero while phone summary preserves local ownership',()=>{
+ const f=protocols();f.receiver.receive(f.phone.receive(f.receiver.poll()));assert.equal(f.receiver.summary().tared,true);
+ f.time(251);assert.equal(f.receiver.summary().tared,false);assert.equal(f.receiver.summary().sensorState,'stale');
+ assert.equal(f.phone.summary().tared,undefined);assert.equal(f.phone.summary().sensorState,undefined);
+});
+test('first use and recovery never present a local instrument as a Tesla connection',()=>{
+ assert.match(phoneStatus().connection,/Local only/);assert.equal(phoneStatus().action,'ENABLE LOCAL SENSORS');
+ assert.equal(phoneStatus({hasPair:true}).canJoin,true);
+ const denied=phoneStatus({hasPair:true,attempted:true,link:{state:'connected'},sensor:{sensorState:'denied'}});
+ assert.equal(denied.action,'RETRY SENSORS');assert.equal(denied.canJoin,false);assert.match(denied.instruction,/denied/);
+ for(const state of ['closed','expired','error','suspended','unavailable']){
+  const result=phoneStatus({hasPair:true,attempted:true,link:{state}});
+  assert.equal(result.canJoin,false);assert.equal(result.connected,false);assert.match(result.recovery,/CREATE QR/);
+ }
+ assert.match(phoneStatus({sensor:{sensorState:'waiting',waitingMs:6000}}).instruction,/No sensor readings/);
+ assert.doesNotMatch(phoneStatus({sensor:{sensorState:'stale',tared:false}}).instruction,/Zero set/);
+ assert.match(phoneStatus({sensor:{sensorState:'incomplete'}}).instruction,/incomplete/);
+});
+
+function sessionFixture(options={}) {
+ const host=surface(),doc=surface();host.RTCPeerConnection=function(){};
+ let time=0,peerState='connecting',hooks,closes=0;
+ const snapshots=[],calls=[];
+ const pair={id:'a'.repeat(32),token:'b'.repeat(64)};
+ const response=value=>({ok:true,status:200,text:async()=>JSON.stringify(value)});
+ const session=createMotionSession({role:'phone',host,doc,now:()=>time,onChange:s=>snapshots.push(s),
+  peerFactory:params=>{hooks=params;return {offer:async()=> 'fixture',answer:async()=> 'fixture',accept:async()=>{},close(){closes++;},summary:()=>({state:peerState}),sample:()=>null};},
+  fetcher:async(_url,request)=>{const body=JSON.parse(request.body);calls.push(body.action);return response(body.action==='create'?{...pair,join:'c'.repeat(64)}:{token:'c'.repeat(64),sdp:'fixture'});},...options});
+ return {session,host,doc,snapshots,calls,pair,response,time:n=>{time=n;},closes:()=>closes,
+  emit:(type,state='connected')=>{peerState=state;hooks.onEvent(type,{state});}};
+}
+const settle=()=>new Promise(resolve=>setImmediate(resolve));
+test('double taps, permission retry and consumed QR cannot replace a pairing',async()=>{
+ const f=sessionFixture();try {
+  const first=f.session.start(f.pair);await f.session.start(f.pair);await first;
+  assert.equal(f.calls.filter(a=>a==='join').length,1);
+  f.emit('channel-open');await f.session.start(f.pair);assert.equal(f.calls.filter(a=>a==='join').length,1);
+  f.session.stop();await f.session.start(f.pair);assert.equal(f.calls.filter(a=>a==='join').length,1);
+  assert.equal(f.snapshots.at(-1).state,'closed');
+ }finally{f.session.dispose();}
+});
+test('an unreachable direct connection expires in 30 seconds without automatic retries',async t=>{
+ t.mock.timers.enable({apis:['setTimeout','setInterval']});const f=sessionFixture();
+ try{await f.session.start(f.pair);f.time(30001);t.mock.timers.tick(30001);
+  assert.equal(f.snapshots.at(-1).state,'expired');assert.equal(f.calls.filter(a=>a==='join').length,1);
+  assert.ok(f.closes()>0);
+ }finally{f.session.dispose();}
+});
+test('a stopped late join is deleted and cannot publish a connection',async()=>{
+ let resolve;const actions=[];const f=sessionFixture({fetcher:(_url,request)=>{
+  const body=JSON.parse(request.body);actions.push(body.action);
+  return body.action==='join'?new Promise(r=>resolve=r):Promise.resolve({ok:true,status:200,text:async()=> '{}' });
+ }});
+ try{const start=f.session.start(f.pair);f.session.stop();resolve(f.response({token:'c'.repeat(64),sdp:'fixture'}));await start;await settle();
+  assert.deepEqual(actions,['join','delete']);assert.equal(f.snapshots.at(-1).state,'closed');
+  assert.doesNotMatch(JSON.stringify(f.session.report()),/fixture|"token"|"sdp"/);
+ }finally{f.session.dispose();}
+});
+test('offline and peer closure release setup state and erase QR capability',async()=>{
+ const f=sessionFixture({role:'receiver'});try{
+  await f.session.start();assert.ok(f.snapshots.at(-1).qrUrl);f.host.emit('offline');
+  assert.equal(f.snapshots.at(-1).state,'error');assert.equal(f.snapshots.at(-1).qrUrl,null);
+  await f.session.start();f.emit('stop','closed');assert.equal(f.snapshots.at(-1).qrUrl,null);
+  assert.equal(f.snapshots.at(-1).state,'closed');
+ }finally{f.session.dispose();}
+});
+test('used/expired admission and malformed server responses have bounded recovery',async()=>{
+ for(const status of [404,409,410,500,200]){
+  const f=sessionFixture({fetcher:async()=>({ok:status===200,status,text:async()=>'<html>unavailable</html>'})});
+  try{await f.session.start(f.pair);assert.equal(f.snapshots.at(-1).state,[404,409,410].includes(status)?'expired':'error');
+   assert.equal(f.snapshots.at(-1).qrUrl,null);
+  }finally{f.session.dispose();}
+ }
+});
+test('an HTTP timeout exits pending setup and permits explicit receiver recovery',async t=>{
+ t.mock.timers.enable({apis:['setTimeout','setInterval']});let attempts=0;
+ const f=sessionFixture({role:'receiver',fetcher:(_url,request)=>{attempts++;return new Promise((_resolve,reject)=>request.signal.addEventListener('abort',()=>reject(new Error('aborted'))));}});
+ try{const run=f.session.start();await Promise.resolve();t.mock.timers.tick(10001);await run;
+  assert.equal(f.snapshots.at(-1).state,'error');assert.equal(attempts,1);assert.equal(f.session.report().latest.signalingErrors,1);
+ }finally{f.session.dispose();}
+});
+test('a joined receiver QR disappears and its remaining setup is bounded',async t=>{
+ t.mock.timers.enable({apis:['setTimeout','setInterval']});
+ const f=sessionFixture({role:'receiver',fetcher:async(_url,request)=>{
+  const action=JSON.parse(request.body).action;
+  return {ok:true,status:200,text:async()=>JSON.stringify(action==='create'?{id:'a'.repeat(32),token:'b'.repeat(64),join:'c'.repeat(64)}:{status:'joined'})};
+ }});
+ try{await f.session.start();assert.ok(f.snapshots.at(-1).qrUrl);
+  f.time(1100);t.mock.timers.tick(1100);await settle();f.session.refresh();
+  assert.equal(f.snapshots.at(-1).qrUrl,null);assert.equal(f.snapshots.at(-1).state,'connecting');
+  f.time(31101);t.mock.timers.tick(30001);assert.equal(f.snapshots.at(-1).state,'expired');
+ }finally{f.session.dispose();}
 });

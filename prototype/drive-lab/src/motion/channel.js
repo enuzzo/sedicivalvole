@@ -62,8 +62,10 @@ export function createMotionProtocol({ role, now = () => performance.now(), getP
     },
     summary() {
       const age = last ? now() - last.at + last.age : null;
+      const fresh = last && age >= 0 && age <= 250;
       return { ...remoteSummary, ...counters, ageUpperMs: age !== null && age >= 0 ? age : null,
-        state: last && age >= 0 && age <= 250 ? "connected" : "stale" };
+        ...(role === "receiver" && !fresh ? { tared: false, sensorState: "stale" } : {}),
+        state: fresh ? "connected" : "stale" };
     },
   };
 }

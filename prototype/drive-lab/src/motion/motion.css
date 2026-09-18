@@ -52,6 +52,7 @@
 .motion-phone .motion-zero { background: var(--ui-selected-surface); color: var(--ui-selected-text); width: 132px; min-height: 80px; font-size: 22px; font-weight: 700; border: 0; border-top: 3px solid var(--ui-selected-accent); }
 .motion-zero small { display: block; font-weight: 400; font-size: 13px; letter-spacing: .08em; }
 .motion-phone-message { text-align: center; color: var(--ui-muted); }
+.motion-connection-help { font-size: 13px; color: var(--ui-muted); margin: 4px 0 8px; }
 .motion-readings { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); margin-block: 8px 14px; }
 .motion-readings > div { display: grid; text-align: center; border-left: 1px solid var(--ui-line); padding-inline: 4px; min-width: 0; }
 .motion-readings > div:first-child { border-left: 0; }

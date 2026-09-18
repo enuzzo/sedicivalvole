@@ -75,9 +75,10 @@ export function createPhoneSensors({ host = window, doc = document, now = () => 
     const fresh = age !== null && age >= 0 && age <= MOTION_FRESH_MS;
     const orientationFresh = orientationAge !== null && orientationAge >= 0 && orientationAge <= MOTION_FRESH_MS;
     // An expired pose never silently revives when new sensor events arrive.
-    if (pose.tared && (!fresh || !orientationFresh)) { pose.clear(); tareState = "required"; }
+    const complete = Boolean(sample?.acceleration && sample?.rotation && orientation && orientationFresh);
+    if (pose.tared && (!fresh || !complete)) { pose.clear(); tareState = "required"; }
     const mean = intervals.length ? intervals.reduce((sum, n) => sum + n, 0) / intervals.length : null;
-    return { sensorState: state === "live" && !fresh ? "stale" : state,
+    return { sensorState: state === "live" ? !fresh ? "stale" : !complete ? "incomplete" : "live" : state,
       accelerometer: Boolean(sample?.acceleration), gyroscope: Boolean(sample?.rotation), orientation: Boolean(orientation && orientationFresh),
       tared: pose.tared, tareState, orientationEstimated, cadenceHz: mean ? 1000 / mean : 0,
       jitterMs: mean ? Math.sqrt(intervals.reduce((sum, n) => sum + (n - mean) ** 2, 0) / intervals.length) : 0,

@@ -53,6 +53,32 @@ Renderer, trace model and screen-wake ownership remain in `src/motion/`; sensor
 projection and peer freshness retain their existing owners. Bounded trace
 history and local receipt timestamps never enter transport or reports.
 
+## Reliability corrections — September 19
+
+The visible phone state distinguishes local-only sensing, unused QR admission,
+connecting, connected and ended sessions. Local entry/reload says **ENABLE LOCAL
+SENSORS**. Permission retries while paired use **RETRY SENSORS** and do not restart
+signaling. An attempted QR is never silently retried; both phone UI and session
+owner suppress duplicate starts. Receiver CREATE QR is disabled until an active
+attempt is explicitly disconnected. A joined QR disappears immediately.
+
+Setup has a 30-second deadline, distinct from the three-minute unused QR window;
+each signaling HTTP request remains bounded to ten seconds. Used/expired
+admission has an explicit new-QR recovery message. Offline and peer closure
+clear pending requests, peers and QR state. A late successful join after STOP
+is deleted without reviving the session. No new relay or automatic retry is added.
+
+Fresh events with missing acceleration, gyro or orientation report **incomplete**
+and invalidate the pose. Expired receiver summaries clear Zero SET; guidance is
+derived from current sensor evidence, so old calibration-success copy cannot
+survive a gap. A terminal paired link stops sensors and wake ownership once;
+explicit local testing remains possible afterward. Sensor and transport success
+remain separate. The aggregate allowlist adds only the `incomplete` sensor state.
+The existing protocol shape and backend are unchanged.
+
+Local verification and canonical publication evidence follow in the release
+record below. These corrections do not establish physical device compatibility.
+
 ## User path
 
 See the [plain first-run and recovery guide](PHONE-MOTION-USER-GUIDE.md) for
@@ -366,3 +392,38 @@ main-app checks have no console warnings/errors. AUTO remained OFF and audio
 muted for QA; no synthetic mail was sent. Temporary browser tabs and local
 servers were closed. Real iPhone/Safari/Tesla sensing, reachability, touch,
 wake retention, thermal/endurance and Aperture steering remain open.
+
+## Reliability verification — September 19, 2026
+
+Observed baseline defects: a direct phone URL advertised ENABLE & CONNECT;
+null desktop sensor events were labeled live; permission retry restarted the
+same QR admission; stale receiver metadata could retain Zero SET. The targeted
+corrections above retain the approved TRACE direction and existing direct network.
+
+Software evidence: full native regression **955/955**, followed by expanded
+motion/PHP tests **65/65** and documentation **8/8**. Deterministic cases cover
+permission denial/late grants, missing axes, fresh ZERO, stale/reference loss,
+duplicate starts, consumed/expired admission, non-JSON responses, HTTP/setup
+timeouts, late join deletion, offline teardown, used QR removal, replay rejection,
+wake denial/release/late acquisition and bounded aggregate privacy.
+
+Rendered checks use the Codex in-app Chromium browser and local development
+server with environment loading disabled. The Browser skill package was absent;
+the available Computer Use Playwright bridge supplied actual UI checks. Initial
+live inspection preceded code review. Local phone UI at 320×568, 375×667,
+390×844, 430×932 and 844×390 has no horizontal overflow and keeps the 132 px ZERO
+target; lower content scrolls. Direct/local labels, ZERO refusal, missing-axis
+guidance, STOP and deliberate local restart pass without console warnings/errors.
+Real local WebRTC/PHP receives synthetic processed samples; pausing removes
+sample availability and Zero SET while retaining the transport distinction.
+STOP disposes both peers. The TRACE fixture renders at about 30 FPS in this short
+run, clears history on forced WebGL context loss, reports recovery, and resumes.
+These are synthetic/browser observations, not cabin performance or sensor proof.
+AUTO remained OFF, audio muted, and no synthetic mail was sent.
+
+Physical iPhone/Safari permission prompts, camera QR scanning, Tesla/browser
+interoperability, client isolation/hotspots, screen-lock retention, safe areas,
+real sensor accuracy and endurance remain open. Next: the parked first-run and
+STOP/background/new-QR exercise in the updated user guide. No Aperture steering
+or unrelated backlog work was started. Publication identity follows after the
+canonical gates; historical release sections above remain dated evidence.

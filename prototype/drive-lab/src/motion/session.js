@@ -9,21 +9,23 @@ export function createMotionSession({ role, host = window, doc = document, fetch
   let deadline = 0, previousState = null, previousPhone = null;
   const requests = new Set();
   let stage = "idle", startedAt = 0;
+  let attemptedPair = null;
   const signaling = { signalingStatus: 0, signalingRequests: 0, signalingErrors: 0 };
   function event(type, detail = {}) { const safe = safeMotionSummary(detail); telemetry.event(type, safe); onEvent(type, safe); }
   async function api(payload, keepalive = false) {
     const abort = new AbortController(); requests.add(abort);
-    const timeout = setTimeout(() => abort.abort(), 10000);
+    let timedOut = false;
+    const timeout = setTimeout(() => { timedOut = true; abort.abort(); }, 10000);
     signaling.signalingRequests += 1; signaling.signalingStatus = 0;
     try {
       const response = await fetcher("/api/motion-pair.php", { method: "POST", cache: "no-store", credentials: "omit", referrerPolicy: "no-referrer", keepalive,
         headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload), signal: abort.signal });
-      signaling.signalingStatus = response.status;
-      if (!response.ok) throw new Error("signaling_unavailable");
+      if (!abort.signal.aborted) signaling.signalingStatus = response.status;
+      if (!response.ok) throw Object.assign(new Error("signaling_unavailable"), { status: response.status });
       const text = await response.text();
       if (text.length > 32768) throw new Error("signaling_unavailable");
       return JSON.parse(text);
-    } catch (error) { signaling.signalingErrors += 1; throw error; }
+    } catch (error) { if (!abort.signal.aborted || timedOut) signaling.signalingErrors += 1; throw error; }
     finally { clearTimeout(timeout); requests.delete(abort); }
   }
   function notify() {
@@ -66,20 +68,23 @@ export function createMotionSession({ role, host = window, doc = document, fetch
             void api({ action: "finish", ...finished }).catch(() => {});
           }
         } else if (type === "stop" || type === "expired") {
-          clearInterval(refresh); clearTimeout(polling);
-          state = type === "expired" ? "expired" : "closed";
+          cleanup(type === "expired" ? "expired" : "closed");
         }
         notify();
       } });
   }
   async function start(pair = null) {
+    // A second gesture cannot cancel setup, replace a live peer or reuse admission.
+    if (["preparing", "pairing", "connecting", "connected"].includes(state)) return;
+    if (role === "phone" && attemptedPair && attemptedPair.id === pair?.id && attemptedPair.token === pair?.token) return;
+    if (role === "phone") attemptedPair = pair;
     cleanup("preparing");
     const token = generation; startedAt = now(); stage = "idle";
     previousPhone = null; event("start", { role, secureContext: Boolean(host.isSecureContext), rtc: Boolean(host.RTCPeerConnection) }); notify();
     try {
       if (!host.isSecureContext || !host.RTCPeerConnection) { state = "unavailable"; event("error", { state, stage, secureContext: Boolean(host.isSecureContext), rtc: Boolean(host.RTCPeerConnection) }); notify(); return; }
       peer = createPeer(token);
-      deadline = now() + 180000;
+      deadline = now() + 30000;
       refresh = setInterval(() => {
         if (["preparing", "pairing", "connecting"].includes(state) && now() >= deadline) { stop("expired"); return; }
         notify();
@@ -92,6 +97,7 @@ export function createMotionSession({ role, host = window, doc = document, fetch
         if (!/^[a-f0-9]{32}$/.test(result.id) || !/^[a-f0-9]{64}$/.test(result.token) || !/^[a-f0-9]{64}$/.test(result.join)) throw new Error("invalid_pairing");
         if (token !== generation) { void api({ action: "delete", id: result.id, token: result.token }, true).catch(() => {}); return; }
         credentials = { id: result.id, token: result.token };
+        deadline = now() + 180000;
         qrUrl = `${host.location.origin}/?motion=phone#pair=${result.id}.${result.join}`;
         state = "pairing"; event("offer-ready", { state }); notify();
         let joined = false;
@@ -99,9 +105,9 @@ export function createMotionSession({ role, host = window, doc = document, fetch
           try {
             stage = "poll";
             const result = await api({ action: "poll", ...credentials }); if (token !== generation) return;
-            if (result.status === "joined" && !joined) { joined = true; event("phone-joined", { state: "pairing" }); }
+            if (result.status === "joined" && !joined) { joined = true; state = "connecting"; qrUrl = null; deadline = now() + 30000; event("phone-joined", { state }); }
             if (result.status === "answered" && typeof result.sdp === "string") {
-              state = "connecting"; stage = "accept"; qrUrl = null; await peer.accept(result.sdp); notify(); return;
+              state = "connecting"; stage = "accept"; qrUrl = null; if (!joined) deadline = now() + 30000; await peer.accept(result.sdp); if (token !== generation) return; notify(); return;
             }
             polling = setTimeout(poll, 1100);
           } catch { if (token === generation) fail(); }
@@ -110,7 +116,11 @@ export function createMotionSession({ role, host = window, doc = document, fetch
       } else {
         if (!pair || !/^[a-f0-9]{32}$/.test(pair.id) || !/^[a-f0-9]{64}$/.test(pair.token)) throw new Error("invalid_pairing");
         stage = "join";
-        const result = await api({ action: "join", ...pair }); if (token !== generation) return;
+        const result = await api({ action: "join", ...pair });
+        if (token !== generation) {
+          if (/^[a-f0-9]{64}$/.test(result.token)) void api({ action: "delete", id: pair.id, token: result.token }, true).catch(() => {});
+          return;
+        }
         if (!/^[a-f0-9]{64}$/.test(result.token) || typeof result.sdp !== "string") throw new Error("invalid_pairing");
         credentials = { id: pair.id, token: result.token };
         stage = "answer";
@@ -118,12 +128,14 @@ export function createMotionSession({ role, host = window, doc = document, fetch
         await api({ action: "answer", ...credentials, sdp }); if (token !== generation) return;
         state = peer.summary().state === "connected" ? "connected" : "connecting"; event("phone-joined", { state }); notify();
       }
-    } catch { if (token === generation) fail(); }
+    } catch (error) { if (token === generation) fail([404, 409, 410].includes(error?.status) ? "expired" : "error"); }
   }
-  function fail() { const failure = { state: "error", stage, ...signaling }; cleanup("error"); event("error", failure); notify(); }
+  function fail(next = "error") { const failure = { state: next, stage, ...signaling }; cleanup(next); event("error", failure); notify(); }
   const hidden = () => { if (doc.visibilityState !== "visible") stop("suspended"); };
   const pagehide = () => stop("suspended");
+  const offline = () => { if (["preparing", "pairing", "connecting", "connected"].includes(state)) fail(); };
   doc.addEventListener("visibilitychange", hidden); host.addEventListener("pagehide", pagehide);
+  host.addEventListener("offline", offline);
   return { start, stop: () => stop(), event, refresh: notify, report: () => telemetry.snapshot(),
-    dispose() { cleanup(); doc.removeEventListener("visibilitychange", hidden); host.removeEventListener("pagehide", pagehide); } };
+    dispose() { cleanup(); doc.removeEventListener("visibilitychange", hidden); host.removeEventListener("pagehide", pagehide); host.removeEventListener("offline", offline); } };
 }

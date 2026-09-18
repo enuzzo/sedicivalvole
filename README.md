@@ -74,7 +74,9 @@ graph and supports arbitrary stable mounting. Its portrait-first instrument uses
 shared dark styling and an illustrated 45° holder guide, with a responsive
 landscape layout. Bounded connection/sensor summaries join REPORT; the phone can
 download its own diagnostics, including wake-lock and renderer availability.
-Screen-awake status reflects the actual optional lock. GPS remains road-speed authority. Direct network
+Screen-awake status reflects the actual optional lock. Local-only mode, incomplete
+sensors and ended links have explicit recovery guidance; permission retry does
+not reuse a QR, and direct setup times out after 30 seconds. GPS remains road-speed authority. Direct network
 reachability and real iPhone/Tesla sensing remain physical acceptance gates;
 Aperture motion steering is a follow-up. [Setup and technical boundaries](docs/PHONE-MOTION-COMPANION-2026-09-18.md).
 

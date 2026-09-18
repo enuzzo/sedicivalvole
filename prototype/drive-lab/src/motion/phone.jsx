@@ -4,7 +4,8 @@ import { createMotionSession } from "./session.js";
 import { getFluxTheme } from "../flux-themes.js";
 import { resolveSemanticTheme } from "../semantic-theme.js";
 
-import { MotionQuality, motionStateText } from "./motion-ui.jsx";
+import { MotionQuality } from "./motion-ui.jsx";
+import { phoneStatus } from "./phone-status.js";
 import { MotionTrace } from "./trace-view.jsx";
 const phoneTheme = resolveSemanticTheme(getFluxTheme("red"), "dark");
 
@@ -18,6 +19,7 @@ const number = value => !Number.isFinite(value) ? "—" : Math.abs(value) >= 100
 export function MotionPhone() {
   const sensorsRef = useRef(null), sessionRef = useRef(null);
   const traceRef = useRef({});
+  const attemptedRef = useRef(false);
   const [viewReset, setViewReset] = useState(0);
   const getSample = useCallback(() => sensorsRef.current?.latest() ?? null, []);
   const traceTelemetry = useCallback(detail => {
@@ -27,11 +29,17 @@ export function MotionPhone() {
   const [snapshot, setSnapshot] = useState({ state: "idle" });
   const [sensor, setSensor] = useState({ sensorState: "idle" });
   const [values, setValues] = useState(null);
-  const [message, setMessage] = useState("Place your phone, enable sensors, then tap ZERO.");
   useEffect(() => {
     const previousTitle = document.title;
     document.title = "Phone companion — sedicivalvole";
-    const session = createMotionSession({ role: "phone", onChange: setSnapshot,
+    let previousLink = "idle";
+    const session = createMotionSession({ role: "phone", onChange: next => {
+      // A lost/ended pairing also invalidates the phone reference and wake owner.
+      const changed = previousLink !== next.state; previousLink = next.state;
+      if (changed && ["closed", "expired", "error", "suspended", "unavailable"].includes(next.state)
+        && !["stopped", "suspended", "idle"].includes(sensorsRef.current?.summary().sensorState)) sensorsRef.current?.stop();
+      setSnapshot(next);
+    },
       getPhone: () => ({ summary: { ...sensorsRef.current?.summary(), ...traceRef.current }, values: sensorsRef.current?.latest() ?? null }) });
     const sensors = createPhoneSensors({ onEvent: (type, detail) => session.event(type, detail) });
     sensorsRef.current = sensors; sessionRef.current = session;
@@ -40,14 +48,18 @@ export function MotionPhone() {
   }, []);
   const start = () => {
     void sensorsRef.current?.start();
-    if (initialPair) void sessionRef.current?.start(initialPair);
-    setMessage(initialPair ? "Allow motion and orientation. Then tap ZERO while steady." : "Local sensor test. Scan a new Tesla QR to connect.");
+    if (status.canJoin && !attemptedRef.current) {
+      attemptedRef.current = true;
+      void sessionRef.current?.start(initialPair);
+    }
+    setSensor(sensorsRef.current?.summary() ?? {});
   };
   const tare = () => {
-    const result = sensorsRef.current?.tare();
-    setMessage(result === "tared" ? "Zero set. X/Y/Z now refer to this pose." : result === "hold-still" ? "Hold still briefly, then tap ZERO again." : "Waiting for complete, fresh motion and orientation data.");
+    sensorsRef.current?.tare();
+    setSensor(sensorsRef.current?.summary() ?? {});
   };
-  const stop = () => { sensorsRef.current?.stop(); sessionRef.current?.stop(); setMessage("Stopped. Scan a new QR to reconnect."); };
+  const stop = () => { sensorsRef.current?.stop(); sessionRef.current?.stop(); setSensor(sensorsRef.current?.summary() ?? {}); setValues(null); };
+  const status = phoneStatus({ link: snapshot, sensor, hasPair: Boolean(initialPair), attempted: attemptedRef.current });
   const download = () => {
     const report = { schema: "sedicivalvole.motion-phone-report.v1", generatedAt: new Date().toISOString(),
       build: __APP_BUILD__, commit: __APP_COMMIT__, platform: navigator.userAgent,
@@ -65,17 +77,18 @@ export function MotionPhone() {
     <div className="motion-phone-heading"><h1>Motion instrument</h1><span>TRACE</span></div>
     <section className="motion-phone-controls" aria-label="Connection and sensor controls">
       <div className="motion-phone-status" role="status">
-        <span className="motion-link-status" data-connected={snapshot.state === "connected"}>{motionStateText(snapshot.state)}</span>
+        <span className="motion-link-status" data-connected={status.connected}>{status.connection}</span>
         <span className="motion-wake-status" data-awake={Boolean(sensor.wakeLock)}>{sensor.wakeLock ? "SCREEN AWAKE" : sensor.wakeState === "requesting" ? "WAKE REQUESTED" : !sensor.wakeState || sensor.wakeState === "idle" ? "WAKE ON START" : "SCREEN MAY SLEEP"}</span>
       </div>
-      {!["waiting", "live", "stale"].includes(sensor.sensorState) && <div className="motion-actions"><button onClick={start} disabled={sensor.sensorState === "requesting"}>ENABLE & CONNECT</button></div>}
+      <p className="motion-connection-help">{status.recovery}</p>
+      {(!status.running || sensor.sensorState === "requesting") && <div className="motion-actions"><button onClick={start} disabled={sensor.sensorState === "requesting"}>{sensor.sensorState === "requesting" ? "AWAITING PERMISSION…" : status.action}</button></div>}
       {["released", "denied", "error"].includes(sensor.wakeState) && <button className="motion-wake-retry" onClick={() => void sensorsRef.current?.retryWake()}>KEEP SCREEN AWAKE</button>}
     </section>
     </div>
     <section className="motion-instrument" aria-label="Live motion readings">
       <MotionTrace getSample={getSample} onTelemetry={traceTelemetry} resetKey={viewReset}/>
       <div className="motion-zero-row"><button className="motion-zero" onClick={tare}>ZERO<small>recalibrate</small></button></div>
-      <p className="motion-phone-message" role="status">{message}</p>
+      <p className="motion-phone-message" role="status">{status.instruction}</p>
       <div className="motion-section-label"><span>ACCELERATION</span><span>m/s²</span></div>
       <div className="motion-readings">{["X", "Y", "Z"].map((axis,i) => <div key={axis}><small>{axis}</small><strong>{number(values?.acceleration[i])}</strong></div>)}</div>
       <div className="motion-section-label"><span>ROTATION</span><span>°/s</span></div>

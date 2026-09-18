@@ -1,16 +1,15 @@
 # Session Handoff
 
-## Owner-requested reliability review — September 19
+## TRACE reliability review — September 19
 
-The owner requests a new task to review TRACE errors, adverse scenarios and
-first-use/reconnection clarity before the physical car test. The parent will
-stop writing before launching it directly in this saved checkout. Follow the
-[bounded reliability handoff](PHONE-MOTION-RELIABILITY-HANDOFF-2026-09-19.md) and
-maintain the [first-run/recovery guide](PHONE-MOTION-USER-GUIDE.md). Correct,
-verify, document, commit/push and publish relevant product improvements under
-the existing release contract; report plainly by topic in Italian.
-Canonical baseline remains **20260919-0049.e8beb93**. This handoff adds documents,
-not an unverified product release or physical acceptance claim.
+The requested review has implemented explicit local/paired guidance, permission
+retry without QR reuse, 30-second setup deadlines, immediate used-QR removal,
+late-request cleanup, offline teardown and honest incomplete/stale sensor states.
+The [user guide](PHONE-MOTION-USER-GUIDE.md) describes first use and recovery.
+Native regression 955/955, expanded motion/PHP 65/65, documentation 8/8 and
+local browser checks pass. Publication is pending; canonical remains
+**20260919-0049.e8beb93** until the release evidence below is updated. No physical
+iPhone/Tesla acceptance or Aperture response is implied. No new task is needed.
 
 ## TRACE companion published — September 19
 

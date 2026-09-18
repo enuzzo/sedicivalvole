@@ -54,3 +54,11 @@ The phone-only TRACE renderer owns bounded acceleration-space history; it never
 integrates speed or overrides reference/sensor freshness. Screen wake has one
 explicit owner with observable release/denial; hidden pages stop the connection
 and cannot silently regain a valid reference.
+
+Companion recovery must distinguish local sensing from an open Tesla transport.
+Permission retry cannot restart pairing or reuse consumed QR admission. Setup
+is bounded to 30 seconds (unused QR admission remains three minutes); hide,
+offline and terminal peer states clear the pairing and require a new QR.
+Incomplete axes invalidate ZERO just like stale observations; remote stale
+summaries cannot retain Zero SET. Explicit local sensing after a terminal link
+is allowed, visibly labeled local-only, without reviving pairing or calibration.
