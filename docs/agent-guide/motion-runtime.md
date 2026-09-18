@@ -44,7 +44,7 @@ N03/N04 have development-only QA modules under `prototype/drive-lab/qa/` and
 ## Phone motion companion
 
 The selected [TRACE companion](../PHONE-MOTION-COMPANION-2026-09-18.md) adds
-explicit-permission iPhone sensing, one-tap pose tare and an expiring direct
+explicit-permission iPhone sensing, user-triggered pose tare and an expiring direct
 WebRTC connection via bounded same-host PHP signaling. It carries quantized
 relative motion only; GPS/Demo remains the sole speed source and audio/renderers
 do not consume it yet. Keep 250 ms freshness, no clock subtraction across peers,
@@ -62,3 +62,12 @@ offline and terminal peer states clear the pairing and require a new QR.
 Incomplete axes invalidate ZERO just like stale observations; remote stale
 summaries cannot retain Zero SET. Explicit local sensing after a terminal link
 is allowed, visibly labeled local-only, without reviving pairing or calibration.
+
+Opening the receiver phone panel starts QR preparation when no active attempt or
+connection exists; it preserves active pairing/transport. It does not pre-create
+sessions before the user opens the panel. ZERO waits for 500 ms of continuously
+eligible, fresh samples after the tap, bounded to eight seconds. Movement,
+incomplete readings and gaps reset the settling window; STOP/hide cancels it.
+The existing eligibility thresholds remain unchanged. Before ZERO, local scalar
+sensor activity is visible separately from the reference-relative trace; it is
+never sent as calibrated motion. Diagnostic `tareReason` is a strict enum only.

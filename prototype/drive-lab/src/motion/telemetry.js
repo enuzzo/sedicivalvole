@@ -14,7 +14,8 @@ export function safeMotionSummary(value = {}) {
   if (["webgl2", "unavailable", "context-lost", "error"].includes(value.traceRenderer)) safe.traceRenderer = value.traceRenderer;
   if (MOTION_STATES.includes(value.state)) safe.state = value.state;
   if (SENSOR_STATES.includes(value.sensorState)) safe.sensorState = value.sensorState;
-  if (["tared", "hold-still", "unavailable", "required"].includes(value.tareState)) safe.tareState = value.tareState;
+  if (["tared", "hold-still", "unavailable", "required", "settling"].includes(value.tareState)) safe.tareState = value.tareState;
+  if (["ready", "unavailable", "gravity", "acceleration", "rotation", "settling"].includes(value.tareReason)) safe.tareReason = value.tareReason;
   if (["receiver", "phone"].includes(value.role)) safe.role = value.role;
   return safe;
 }

@@ -131,3 +131,9 @@
   .motion-phone-quality { grid-column: 1; grid-row: 2; align-self: start; }
   .motion-phone > details, .motion-phone-footer { grid-column: 1 / -1; }
 }
+
+.motion-input-proof { border-block: 1px solid var(--ui-line); padding: 10px 0; margin-bottom: 6px; font-size: 13px; font-variant-numeric: tabular-nums; }
+.motion-input-proof > strong { display: block; font-weight: 500; color: var(--ui-accent-text); margin-bottom: 4px; }
+.motion-input-proof > div { display: flex; justify-content: space-between; gap: 12px; color: var(--ui-muted); }
+.motion-input-value { color: var(--ui-text); }
+.motion-phone .motion-zero:disabled { opacity: 1; font-size: 17px; }

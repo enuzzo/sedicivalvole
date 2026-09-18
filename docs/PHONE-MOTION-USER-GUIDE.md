@@ -1,23 +1,24 @@
 # TRACE phone companion: first run and recovery
 
-This guide describes canonical **20260919-0131.c75c921**, including the September 19
-reliability corrections. Release evidence is in [Current state](CURRENT-STATE.md). Real
+This guide describes the September 19 automatic-QR and settling-ZERO update. Release evidence is in [Current state](CURRENT-STATE.md). Real
 Safari/iPhone/Tesla connectivity, sensors and screen-wake retention remain open.
 
 ## First run, while parked
 
 1. Open `https://sedicivalvole.app/` in the Tesla browser and start the experience.
    Tap the field to reveal the navigation, then tap the phone/waves icon.
-2. Choose **CREATE QR**. Scan it with iPhone Camera and open the result in Safari.
+2. The QR prepares automatically. Scan it with iPhone Camera and open the result in Safari.
    Use the same Wi-Fi for the first attempt where possible. Both devices need
    access to the site and a network path to each other; the same Wi-Fi is not
    a guarantee if the router isolates clients. Separate cellular connections
    and Tesla/iPhone hotspot combinations have not been physically verified.
 3. Place the iPhone securely in its holder, including portrait at about 45°.
    Tap **ENABLE & CONNECT** and allow the requested motion/orientation access.
-4. Keep the phone still and tap **ZERO**, below the graph. It should confirm
-   the reference. A rejected ZERO means data is incomplete, old or the phone
-   is moving; wait until steady and try again. If a previous reference is still
+4. Rest the phone, tap **ZERO** below the graph and lift your finger. **HOLD STILL**
+   waits for half a second of steady readings, for at most eight seconds.
+   **REFERENCE SET** confirms capture; now move the phone to see the trace.
+   A rejection explains missing data, movement or an out-of-range gravity reading.
+   If a previous reference is still
    valid, a rejected recalibration explicitly says that readings keep using it.
 5. Check both parts of success: **Connected to Tesla** on iPhone and
    **Phone connected** on Tesla for the link, and usable
@@ -36,6 +37,8 @@ expecting the local instrument to reconnect.
 
 ## What the instrument means
 
+- Before ZERO, the two input magnitudes show live acceleration/rotation without
+  requiring a saved pose; the cube still waits for a valid reference.
 - ZERO saves the current pose as the reference. No leveling is required, but
   ZERO does not discover the vehicle's forward direction or remove hand motion.
 - The cube contains the last three seconds of acceleration history in m/s².

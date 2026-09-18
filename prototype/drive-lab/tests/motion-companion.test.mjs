@@ -244,3 +244,62 @@ test('a joined receiver QR disappears and its remaining setup is bounded',async 
   f.time(31101);t.mock.timers.tick(30001);assert.equal(f.snapshots.at(-1).state,'expired');
  }finally{f.session.dispose();}
 });
+
+test('ZERO waits past the tap movement, then captures a continuous half second of stillness',async()=>{
+ const f=sensorFixture();try {
+  await f.sensor.start();f.orient();f.motion({rotationRate:{alpha:20,beta:0,gamma:0}});
+  assert.equal(f.sensor.requestTare(),'settling');assert.equal(f.sensor.summary().tareReason,'rotation');
+  assert.equal(f.sensor.latest(),null);assert.equal(f.sensor.activity().rotation,20);
+  for(let t=20;t<=500;t+=20){f.time(t);f.motion();assert.equal(f.sensor.summary().tared,false);}
+  f.time(520);f.motion();assert.equal(f.sensor.summary().tared,true);assert.equal(f.sensor.summary().tareCount,1);
+  f.time(540);f.motion({acceleration:{x:2,y:0,z:0}});assert.ok(f.sensor.latest().acceleration[0]>0);
+ }finally{f.sensor.dispose();}
+});
+test('ZERO settling restarts after movement or a sampling gap and duplicate taps do not extend it',async()=>{
+ const f=sensorFixture();try {
+  await f.sensor.start();f.orient();f.motion();f.sensor.requestTare();
+  for(let t=20;t<=400;t+=20){f.time(t);f.motion();}
+  f.time(420);f.motion({acceleration:{x:2,y:0,z:0}});
+  for(let t=440;t<=900;t+=20){f.time(t);f.motion();}
+  assert.equal(f.sensor.summary().tared,false);
+  f.time(1200);f.orient();f.motion();assert.equal(f.sensor.summary().tared,false);
+  for(let t=1220;t<=1680;t+=20){f.time(t);f.motion();}
+  assert.equal(f.sensor.summary().tared,false);f.time(1700);f.motion();assert.equal(f.sensor.summary().tared,true);
+ }finally{f.sensor.dispose();}
+});
+for(const [reason,extra] of [['rotation',{rotationRate:{alpha:20,beta:0,gamma:0}}],['acceleration',{acceleration:{x:1,y:0,z:0}}],['gravity',{accelerationIncludingGravity:{x:0,y:0,z:1}}]]) {
+ test(`ZERO ends after eight seconds and records ${reason} without raw samples`,async()=>{
+  const f=sensorFixture();try {
+   await f.sensor.start();f.orient();f.motion(extra);f.sensor.requestTare();
+   for(let t=20;t<=8000;t+=20){f.time(t);if(t===6000)f.sensor.requestTare();f.motion(extra);}
+   assert.equal(f.sensor.summary().tared,false);assert.equal(f.sensor.summary().tareState,'hold-still');
+   assert.equal(f.sensor.summary().tareReason,reason);assert.equal(f.sensor.latest(),null);
+   const safe=safeMotionSummary(f.sensor.summary());assert.equal(safe.tareReason,reason);assert.equal(safe.activity,undefined);
+   f.time(8020);f.motion();assert.equal(f.sensor.summary().tared,false);
+  }finally{f.sensor.dispose();}
+ });
+}
+test('pending ZERO expires when events stop and never resumes itself',async()=>{
+ const f=sensorFixture();try {
+  await f.sensor.start();f.orient();f.motion();f.sensor.requestTare();
+  f.time(8001);assert.equal(f.sensor.summary().tareState,'unavailable');assert.equal(f.sensor.activity(),null);
+  f.orient();f.motion();assert.equal(f.sensor.summary().tared,false);
+ }finally{f.sensor.dispose();}
+});
+for(const stop of ['stop','hide'])test(`pending ZERO is cancelled by ${stop}`,async()=>{
+ const f=sensorFixture();try {
+  await f.sensor.start();f.orient();f.motion();f.sensor.requestTare();
+  if(stop==='stop')f.sensor.stop();else{f.doc.visibilityState='hidden';f.doc.emit('visibilitychange');}
+  f.time(600);f.motion();assert.equal(f.sensor.summary().tared,false);assert.equal(f.sensor.summary().tareState,'required');
+  assert.equal(f.sensor.activity(),null);
+ }finally{f.sensor.dispose();}
+});
+test('recalibration continues to identify its old reference until the stable window succeeds',async()=>{
+ const f=sensorFixture();try {
+  await f.sensor.start();f.orient();f.motion();f.sensor.tare();f.sensor.requestTare();
+  assert.match(phoneStatus({sensor:f.sensor.summary()}).instruction,/previous reference/);
+  assert.ok(f.sensor.latest());
+  for(let t=20;t<=520;t+=20){f.time(t);f.motion();}
+  assert.equal(f.sensor.summary().tareCount,2);assert.equal(f.sensor.summary().tareState,'tared');
+ }finally{f.sensor.dispose();}
+});

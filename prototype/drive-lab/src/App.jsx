@@ -5326,7 +5326,10 @@ export function App() {
             <small className="visually-hidden">{gpsPresentation.accuracy}</small>
           </button>
           <button className="motion-button" type="button" aria-label="Connect iPhone motion sensors" aria-haspopup="dialog"
-            data-connected={motionSnapshot.state === "connected"} onClick={() => setMotionOpen(true)}><MotionIcon/></button>
+            data-connected={motionSnapshot.state === "connected"} onClick={() => {
+              setMotionOpen(true);
+              if (!["preparing", "pairing", "connecting", "connected", "stale"].includes(motionSnapshot.state)) void motionSessionRef.current?.start();
+            }}><MotionIcon/></button>
           <button
             className="discover-button"
             type="button"

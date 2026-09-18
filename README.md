@@ -67,10 +67,11 @@ Public development repository: [github.com/enuzzo/sedicivalvole](https://github.
 
 ## Experimental phone motion
 
-The top-bar phone icon opens QR pairing and a three-step SVG guide. iPhone Safari
+The top-bar phone icon automatically prepares QR pairing and opens a three-step SVG guide. iPhone Safari
 provides live XYZ acceleration/gyro and an opaque TRACE cube with a three-second
 trail and phone orientation indicator. One-tap ZERO / recalibrate sits below the
-graph and supports arbitrary stable mounting. Its portrait-first instrument uses the piston/Orbitron identity,
+graph and captures after half a second of steady readings, within eight seconds.
+Before ZERO, local activity magnitudes show that sensors are responding. It supports arbitrary stable mounting. Its portrait-first instrument uses the piston/Orbitron identity,
 shared dark styling and an illustrated 45° holder guide, with a responsive
 landscape layout. Bounded connection/sensor summaries join REPORT; the phone can
 download its own diagnostics, including wake-lock and renderer availability.

@@ -29,6 +29,7 @@ export function MotionPhone() {
   const [snapshot, setSnapshot] = useState({ state: "idle" });
   const [sensor, setSensor] = useState({ sensorState: "idle" });
   const [values, setValues] = useState(null);
+  const [activity, setActivity] = useState(null);
   useEffect(() => {
     const previousTitle = document.title;
     document.title = "Phone companion — sedicivalvole";
@@ -43,7 +44,7 @@ export function MotionPhone() {
       getPhone: () => ({ summary: { ...sensorsRef.current?.summary(), ...traceRef.current }, values: sensorsRef.current?.latest() ?? null }) });
     const sensors = createPhoneSensors({ onEvent: (type, detail) => session.event(type, detail) });
     sensorsRef.current = sensors; sessionRef.current = session;
-    const timer = setInterval(() => { setSensor(sensors.summary()); setValues(sensors.latest()); session.refresh(); }, 100);
+    const timer = setInterval(() => { setSensor(sensors.summary()); setValues(sensors.latest()); setActivity(sensors.activity()); session.refresh(); }, 100);
     return () => { document.title = previousTitle; clearInterval(timer); sensors.dispose(); session.dispose(); sensorsRef.current = null; sessionRef.current = null; };
   }, []);
   const start = () => {
@@ -55,10 +56,10 @@ export function MotionPhone() {
     setSensor(sensorsRef.current?.summary() ?? {});
   };
   const tare = () => {
-    sensorsRef.current?.tare();
+    sensorsRef.current?.requestTare();
     setSensor(sensorsRef.current?.summary() ?? {});
   };
-  const stop = () => { sensorsRef.current?.stop(); sessionRef.current?.stop(); setSensor(sensorsRef.current?.summary() ?? {}); setValues(null); };
+  const stop = () => { sensorsRef.current?.stop(); sessionRef.current?.stop(); setSensor(sensorsRef.current?.summary() ?? {}); setValues(null); setActivity(null); };
   const status = phoneStatus({ link: snapshot, sensor, hasPair: Boolean(initialPair), attempted: attemptedRef.current });
   const download = () => {
     const report = { schema: "sedicivalvole.motion-phone-report.v1", generatedAt: new Date().toISOString(),
@@ -86,8 +87,13 @@ export function MotionPhone() {
     </section>
     </div>
     <section className="motion-instrument" aria-label="Live motion readings">
+      {!sensor.tared && <div className="motion-input-proof" aria-label="Sensor activity before zero">
+        <strong>{activity ? "SENSORS LIVE · SET ZERO TO DRAW" : "WAITING FOR SENSORS"}</strong>
+        <div><span>Acceleration</span><span className="motion-input-value">{number(activity?.acceleration)} m/s²</span></div>
+        <div><span>Rotation</span><span className="motion-input-value">{number(activity?.rotation)} °/s</span></div>
+      </div>}
       <MotionTrace getSample={getSample} onTelemetry={traceTelemetry} resetKey={viewReset}/>
-      <div className="motion-zero-row"><button className="motion-zero" onClick={tare}>ZERO<small>recalibrate</small></button></div>
+      <div className="motion-zero-row"><button className="motion-zero" onClick={tare} disabled={sensor.tareState === "settling"}>{sensor.tareState === "settling" ? "HOLD STILL" : "ZERO"}<small>recalibrate</small></button></div>
       <p className="motion-phone-message" role="status">{status.instruction}</p>
       <div className="motion-section-label"><span>ACCELERATION</span><span>m/s²</span></div>
       <div className="motion-readings">{["X", "Y", "Z"].map((axis,i) => <div key={axis}><small>{axis}</small><strong>{number(values?.acceleration[i])}</strong></div>)}</div>

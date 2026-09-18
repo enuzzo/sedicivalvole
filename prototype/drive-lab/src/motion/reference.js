@@ -48,6 +48,18 @@ export function rotationVector(m) {
   return [m[7] - m[5], m[2] - m[6], m[3] - m[1]].map((n) => n * angle * deg / (2 * Math.sin(angle)));
 }
 
+// Shared by immediate reference capture and the user-triggered settling window.
+export function zeroReadiness(sample, now) {
+  const fresh = sample && [sample.at, sample.orientationAt, now].every(finite)
+    && now - sample.at >= 0 && now - sample.at <= MOTION_FRESH_MS
+    && now - sample.orientationAt >= 0 && now - sample.orientationAt <= MOTION_FRESH_MS;
+  if (!fresh || !sample.orientation || !vectorValid(sample.acceleration) || !vectorValid(sample.rotation) || !vectorValid(sample.gravity)) return "unavailable";
+  if (norm(sample.gravity) < 7 || norm(sample.gravity) > 12) return "gravity";
+  if (norm(sample.acceleration) > 0.7) return "acceleration";
+  if (norm(sample.rotation) > 5) return "rotation";
+  return "ready";
+}
+
 export function createPoseReference() {
   let reference = null;
   let up = null;
@@ -55,11 +67,9 @@ export function createPoseReference() {
   return {
     clear() { reference = null; up = null; generation += 1; },
     tare(sample, now) {
-      const fresh = sample && [sample.at, sample.orientationAt, now].every(finite)
-        && now - sample.at >= 0 && now - sample.at <= MOTION_FRESH_MS
-        && now - sample.orientationAt >= 0 && now - sample.orientationAt <= MOTION_FRESH_MS;
-      if (!fresh || !sample.orientation || !vectorValid(sample.acceleration) || !vectorValid(sample.rotation) || !vectorValid(sample.gravity)) return "unavailable";
-      if (norm(sample.acceleration) > 0.7 || norm(sample.rotation) > 5 || norm(sample.gravity) < 7 || norm(sample.gravity) > 12) return "hold-still";
+      const readiness = zeroReadiness(sample, now);
+      if (readiness === "unavailable") return "unavailable";
+      if (readiness !== "ready") return "hold-still";
       reference = [...sample.orientation];
       up = sample.gravity.map((n) => n / norm(sample.gravity));
       generation += 1;

@@ -1,5 +1,5 @@
 import { createScreenWake } from "./screen-wake.js";
-import { advanceOrientation, createPoseReference, orientationMatrix, MOTION_FRESH_MS } from "./reference.js";
+import { advanceOrientation, createPoseReference, orientationMatrix, zeroReadiness, MOTION_FRESH_MS } from "./reference.js";
 const finite = (n) => typeof n === "number" && Number.isFinite(n);
 const vector = (value, keys) => keys.every((key) => finite(value?.[key])) ? keys.map((key) => value[key]) : null;
 
@@ -14,6 +14,9 @@ export function createPhoneSensors({ host = window, doc = document, now = () => 
   let disposed = false;
   let lastAt = null;
   let tareState = "required";
+  let tareReason = "unavailable";
+  let zeroDeadline = null;
+  let stableSince = null;
   let startedAt = null;
   const wake = createScreenWake({ host, doc, onChange: detail => onEvent("wake", detail) });
   const counts = { motionEvents: 0, orientationEvents: 0, missingAxes: 0, tareCount: 0, visibilityStops: 0, accelerationPeak: 0, angularRatePeak: 0 };
@@ -25,11 +28,29 @@ export function createPhoneSensors({ host = window, doc = document, now = () => 
     wake.stop();
     pose.clear(); sample = null; orientation = null; orientationAt = null; lastAt = null;
     orientationEstimated = false;
-    intervals.length = 0; tareState = "required";
+    intervals.length = 0; tareState = "required"; tareReason = "unavailable";
+    zeroDeadline = null; stableSince = null;
     state = reason;
     onEvent(reason === "suspended" ? "hidden" : "stop", summary());
   }
   function invalidate() { pose.clear(); tareState = "required"; onEvent("retare-required", summary()); }
+  const poseSample = () => sample ? { ...sample, orientation, orientationAt } : null;
+  function captureZero() {
+    zeroDeadline = null; stableSince = null;
+    tareReason = zeroReadiness(poseSample(), now());
+    tareState = pose.tare(poseSample(), now());
+    if (tareState === "tared") counts.tareCount += 1;
+    onEvent("tare", summary());
+    return tareState;
+  }
+  function expireZero(at) {
+    if (zeroDeadline === null || at < zeroDeadline) return;
+    zeroDeadline = null; stableSince = null;
+    tareReason = zeroReadiness(poseSample(), at);
+    tareState = tareReason === "unavailable" ? "unavailable" : "hold-still";
+    if (tareReason === "ready") tareReason = "settling";
+    onEvent("tare", summary());
+  }
   function orient(event) {
     if (state !== "live" && state !== "waiting") return;
     if (event.isTrusted !== true || doc.visibilityState !== "visible") return;
@@ -44,6 +65,7 @@ export function createPhoneSensors({ host = window, doc = document, now = () => 
     const at = now();
     if (lastAt !== null && at <= lastAt) return;
     if (lastAt !== null && at - lastAt > MOTION_FRESH_MS) {
+      stableSince = null;
       if (pose.tared) invalidate();
       if (orientationAt === null || at - orientationAt > MOTION_FRESH_MS) { orientation = null; orientationAt = null; }
       intervals.length = 0;
@@ -67,9 +89,19 @@ export function createPhoneSensors({ host = window, doc = document, now = () => 
     if (rotation) counts.angularRatePeak = Math.max(counts.angularRatePeak, Math.hypot(...rotation));
     if (!acceleration || !rotation) counts.missingAxes += 1;
     state = "live";
+    expireZero(at);
+    if (zeroDeadline !== null) {
+      tareReason = zeroReadiness(poseSample(), at);
+      if (tareReason !== "ready") stableSince = null;
+      else {
+        stableSince ??= at;
+        if (at - stableSince >= 500) captureZero();
+      }
+    }
   }
   function summary() {
     const at = now();
+    expireZero(at);
     const age = sample ? at - sample.at : null;
     const orientationAge = orientationAt === null ? null : at - orientationAt;
     const fresh = age !== null && age >= 0 && age <= MOTION_FRESH_MS;
@@ -80,7 +112,7 @@ export function createPhoneSensors({ host = window, doc = document, now = () => 
     const mean = intervals.length ? intervals.reduce((sum, n) => sum + n, 0) / intervals.length : null;
     return { sensorState: state === "live" ? !fresh ? "stale" : !complete ? "incomplete" : "live" : state,
       accelerometer: Boolean(sample?.acceleration), gyroscope: Boolean(sample?.rotation), orientation: Boolean(orientation && orientationFresh),
-      tared: pose.tared, tareState, orientationEstimated, cadenceHz: mean ? 1000 / mean : 0,
+      tared: pose.tared, tareState: zeroDeadline === null ? tareState : "settling", tareReason, orientationEstimated, cadenceHz: mean ? 1000 / mean : 0,
       jitterMs: mean ? Math.sqrt(intervals.reduce((sum, n) => sum + (n - mean) ** 2, 0) / intervals.length) : 0,
       ageUpperMs: fresh ? age : null, waitingMs: startedAt === null ? 0 : at - startedAt,
       secureContext: Boolean(host.isSecureContext), ...wake.summary(), ...counts };
@@ -112,11 +144,18 @@ export function createPhoneSensors({ host = window, doc = document, now = () => 
         wake.start();
       } catch { if (token === generation) { state = "error"; onEvent("permission", summary()); } }
     },
-    tare() {
-      tareState = pose.tare(sample ? { ...sample, orientation, orientationAt } : null, now());
-      if (tareState === "tared") counts.tareCount += 1;
+    tare: captureZero,
+    requestTare() {
+      if (zeroDeadline !== null) return "settling";
+      if (summary().sensorState !== "live") return captureZero();
+      zeroDeadline = now() + 8000; stableSince = null;
+      tareReason = zeroReadiness(poseSample(), now());
       onEvent("tare", summary());
-      return tareState;
+      return "settling";
+    },
+    activity() {
+      if (summary().sensorState !== "live") return null;
+      return { acceleration: Math.hypot(...sample.acceleration), rotation: Math.hypot(...sample.rotation) };
     },
     latest() { summary(); const value = sample ? pose.project({ ...sample, orientation, orientationAt }, now()) : null; return value ? { ...value, sampleAt: sample.at } : null; },
     retryWake: () => wake.retry(),

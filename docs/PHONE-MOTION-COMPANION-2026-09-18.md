@@ -464,3 +464,35 @@ warning/error occurred in these paths. AUTO remained OFF and audio muted.
 The physical acceptance list above remains open. The next step is the owner's
 parked first-use and reconnect trial; software checks do not establish physical
 iPhone/Tesla compatibility, camera scanning, network reachability or wake retention.
+
+
+## Desk-test diagnosis and ZERO capture — September 19, 2026
+
+The owner supplied an older-build phone report (`20260919-0049.e8beb93`) from
+Chrome on iPhone while at a desk, not in the car. It records a connected channel,
+2,240 motion and orientation events, no missing axes and approximately 61 Hz.
+Its single ZERO attempt was rejected (`hold-still`), with zero accepted captures
+and zero trace points. This explains the empty trace despite live sensor input;
+aggregate peaks do not establish which eligibility threshold failed at that tap.
+WebGL2 availability is recorded; zero rendering cadence alone is not a renderer
+failure when there are no referenced samples. The private raw attachment is not
+versioned. This is desk-phone evidence, not Tesla acceptance.
+
+The revised button arms a bounded capture: 500 ms of continuously eligible
+samples within eight seconds, allowing a tap disturbance to settle. Existing
+0.7 m/s², 5°/s, 7–12 m/s² gravity and 250 ms freshness gates stay intact. Gaps or
+incomplete observations restart settling, duplicate taps do not extend the
+attempt, and STOP/hide cancels it. A failed recalibration preserves an otherwise
+valid previous reference and says so. The strict diagnostic enum `tareReason`
+separates acceleration, rotation, gravity, missing data and unfinished settling;
+no vectors are added to reports. The units remain aligned with the
+[W3C motion specification](https://www.w3.org/TR/orientation-event/).
+
+Before ZERO, two local scalar input magnitudes show sensor activity independently
+of the reference-relative cube. These are not vehicle axes or calibrated peer
+samples. The receiver begins preparing QR on panel open and preserves existing
+pairing/transport; it does not start a session merely by loading the main app.
+
+The owner has been offered three guidance directions (three gestures, two
+screens, one step at a time). Selection is pending; this functional correction
+retains the previously selected three-SVG layout.
