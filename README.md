@@ -69,7 +69,9 @@ Public development repository: [github.com/enuzzo/sedicivalvole](https://github.
 
 The top-bar phone icon opens QR pairing and a three-step SVG guide. iPhone Safari
 provides live XYZ acceleration/gyro with a central one-tap TARE for arbitrary
-stable mounting. Bounded connection/sensor summaries join REPORT; the phone can
+stable mounting. Its portrait-first instrument uses the piston/Orbitron identity,
+shared dark styling and an illustrated 45° holder guide, with a responsive
+landscape layout. Bounded connection/sensor summaries join REPORT; the phone can
 download its own diagnostics. GPS remains road-speed authority. Direct network
 reachability and real iPhone/Tesla sensing remain physical acceptance gates;
 Aperture motion steering is a follow-up. [Setup and technical boundaries](docs/PHONE-MOTION-COMPANION-2026-09-18.md).

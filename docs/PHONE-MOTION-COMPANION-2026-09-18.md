@@ -211,3 +211,38 @@ Next acceptance is the real iPhone/Tesla protocol above. No physical sensing,
 cross-device timing, relay reachability, sustained performance or Aperture
 steering acceptance is claimed. Conditions, R06 and the formal release decision
 retain their existing statuses.
+
+## Branded instrument publication — September 19, 2026
+
+Published and verified **20260919-0002.d51b4b7**, VERSION **0.0.0**, from
+committed/pushed source `d51b4b7`. The official preserve-existing FTP path
+uploaded **38 files / 6,357,543 bytes**, reused **825 static files** and **29
+full-hash-verified recordings**, and retained **two prior assets**. Complete
+verification preceded the dynamic entry switch; no legacy files were deleted
+and `remote_writes=ROOT_UPLOAD_ONLY`. No upload remains.
+
+Gates: full native **937/937**, focused documentation/typography/brand **19/19**,
+production **827 exact static hashes**, credits **189**, public hygiene **1,488
+files with zero findings**. Thirteen HTTPS checks verify bare/cache-busted and
+phone entry HTML, emitted JS/CSS/phone chunk/manifest, piston mark, both fonts
+and API method/origin guards. The HTML is byte-identical after controlled
+browser reload and retains no-store/no-cache headers.
+
+Canonical internal-browser QA passes at **390 × 844** and **844 × 390**: correct
+page title/build, loaded brand/fonts, visible TARE, portrait/landscape readings,
+no blank page/error overlay or horizontal overflow, and truthful refusal to
+tare without fresh values. At **773 × 601**, muted main-app launch and the
+phone navigation entry/guide remain available. Console warning/error logs are
+empty. AUTO stays OFF and no diagnostic email is sent. QA tabs and server are
+closed and the viewport override is reset. Local six-viewport/interaction
+evidence is recorded above; physical iPhone/Tesla acceptance remains open.
+
+Selected verified public byte identities:
+
+| Resource | Bytes | SHA-256 |
+| --- | ---: | --- |
+| `/` | 1445 | `225808f89010627d9a766ee1aabc489b0ae59efb0bcfc1d81cfa5eebc1183d51` |
+| `/assets/index-BJoruCSt.css` | 259089 | `269adaa57536cb937f1432963172ece969759345161f024f901a6f41738f8542` |
+| `/assets/index-BTW_xq9x.js` | 876971 | `50c8abe88ce6d1fbc40a35da71d15f2dda5d2d005a5946a38a26e389b11ae59a` |
+| `/assets/phone-DB30ok8d.js` | 11098 | `7fb23b85436137b9aa8bf1f13df59c9cdfd8c75578a2ed5833b14ad7c46c8284` |
+| `/assets/release-20260919-0002.d51b4b7.json` | 116320 | `5196e0dd67787d074be0e6ac681b0fa3cd2d7da2058dc5bff11cffdca5dde3d6` |

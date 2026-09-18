@@ -5166,3 +5166,13 @@ preparation silent, and preserves timeout/cancellation/rollback. Detailed
   diagnostics OFF; no location recorded or synthetic diagnostic sent.
 - Physical Tesla listening/native transport, visible GPU/endurance and iPhone
   acceptance remain open. The background smoke is not a performance pass.
+
+## Branded portrait phone companion — September 19, 2026
+
+Canonical **20260919-0002.d51b4b7**, VERSION **0.0.0**, is verified live. Official
+preserve-existing publication uploads 38 files / 6,357,543 bytes, reuses 825
+static files and 29 full-hash recordings, retains two prior assets and reports
+ROOT_UPLOAD_ONLY. Full tests 937/937, production 827 hashes, credits 189, thirteen
+HTTPS checks and post-reload root identity pass. Internal-browser portrait,
+landscape and Tesla navigation have no console warnings/errors. Physical
+iPhone/Tesla acceptance remains open. [Detailed evidence](PHONE-MOTION-COMPANION-2026-09-18.md#branded-instrument-publication--september-19-2026).

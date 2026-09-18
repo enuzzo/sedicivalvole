@@ -1,5 +1,16 @@
 # Current Project State
 
+## Branded portrait phone companion — September 19
+
+Canonical **20260919-0002.d51b4b7** is published and verified. The selected XYZ
+Cross now uses the piston mark, Orbitron wordmark and shared RED/DARK styling,
+with portrait-first controls and an expandable 45° holder guide. Local six-
+viewport checks, full native **937/937**, production integrity and canonical
+HTTPS/browser verification pass. [Contract and evidence](PHONE-MOTION-COMPANION-2026-09-18.md#branded-instrument-publication--september-19-2026).
+No upload or code change remains. Next: real iPhone/Tesla QR, permissions and
+tare in the portrait holder, followed by both diagnostic reports. Physical
+acceptance and Aperture steering remain open; Conditions/R06 are unchanged.
+
 ## Selected XYZ phone companion — September 18
 
 The owner subsequently authorized QR integration, immediate relative-pose TARE,
