@@ -36,6 +36,37 @@ QR admission expires after three minutes, accepts one phone, and uses a random
 capability in the URL fragment. The phone removes that fragment from the current
 history entry immediately. An open data channel has a one-hour maximum lifetime.
 
+## Branded portrait instrument — September 19 refinement
+
+The owner explicitly requested the existing Sedicivalvole identity, a restrained
+technical feel and portrait-first use in a Tesla phone holder tilted about 45°.
+This refines the selected XYZ Cross rather than introducing a new direction.
+The companion reuses the transparent piston mark, lowercase Orbitron wordmark,
+Space Grotesk numerals and the shared RED/DARK semantic colour resolver. It has
+an 80 px central TARE, 56 px connection actions, fine axis/radial guides and
+separate connection/sensor states. The sample dot stays hidden without data.
+The phone page has its own browser title and a footer with build provenance.
+
+The main instrument and rotation values come before quality details. Placement
+and diagnostics are expandable; the original mount illustration explains that
+an approximately 45° portrait holder can itself be the zero pose. There is no
+requirement to level the phone, and no automatic inference of vehicle forward.
+Safe-area padding, short-portrait spacing, narrow-screen text sizing and a
+landscape two-column arrangement preserve the same controls and sensor session.
+No permission, transport, coordinate, telemetry or renderer contract changed.
+
+Local internal-browser evidence: 390 × 844, 375 × 667, 320 × 568, 430 × 932,
+390 × 650 and 844 × 390 have no horizontal overflow. At 375 × 667 the 112 × 80
+TARE and all rotation readouts fit the initial viewport (last row ends at 661 px).
+At 320 × 568 TARE is visible and lower readings/details scroll; the short 390 ×
+650 viewport also scrolls slightly for the last rotation line. Landscape keeps
+TARE and all rotations visible. Brand image/font loading, guide expansion,
+TARE refusal without fresh values, enable/STOP, diagnostic disclosure and the
+phone-report download action pass without console warnings/errors. Desktop
+sensor events contain missing axes, not evidence of working iPhone sensors.
+Full native regression suite: **937/937**. Physical Safari safe areas, touch,
+cabin glare, holder stability and actual sensor readings remain unverified.
+
 ## Coordinate and freshness contract
 
 `src/motion/reference.js` uses the W3C Z-X-Y orientation matrix and transforms
@@ -122,7 +153,7 @@ These checks do not establish iOS permission UX, actual motion fidelity, QR came
 scanning, cross-device reachability, Tesla support or physical/endurance quality.
 
 For the first physical run record phone/iOS and Tesla software versions plus build.
-Try still/flat tare, upright tare, a small deliberate rotation, retare, background
+Try still/flat tare, portrait holder tare at about 45°, upright tare, a small deliberate rotation, retare, background
 and reconnect. Keep/export both reports; note the approximate time of each step.
 Then evaluate stable cabin mounting, stationary noise and actual turn response.
 Do not infer latency to a renderer yet: this release only acquires/transports data.
