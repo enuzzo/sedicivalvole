@@ -147,6 +147,10 @@ hardware evidence makes that design useful. No such direction is selected here.
 
 ## Verification and delivery evidence
 
+Implementation checkpoint **467c105**, committed and pushed to `origin/main`.
+Credits **189/189**, tracked-text hygiene **1,473 files / zero findings**, and
+`git diff --check` pass. Agent-created QA server and browser tab were closed.
+
 - Initial checkout `d5634b2`, clean main; origin fetched and synchronized before
   implementation. Native toolchain check passed on this Mac.
 - **49/49** focused checks pass: **22** motion behavior tests, **8** documentation

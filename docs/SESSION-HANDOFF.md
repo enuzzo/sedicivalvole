@@ -2,6 +2,8 @@
 
 ## N03 / N04 local feasibility checkpoint — September 18
 
+Checkpoint **467c105** is committed/pushed. Focused tests **49/49**, production
+exclusion build **827 hashes**, credits **189** and hygiene **1,473 files** pass.
 The isolated [motion sensor and synthetic WebRTC probes](MOTION-FEASIBILITY-2026-09-18.md) are
 implemented under development-only QA. They are excluded from the production
 package and have no product GPS/speed/audio or diagnostic delivery connection.
