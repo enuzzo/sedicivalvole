@@ -1,6 +1,7 @@
 # TRACE phone companion: first run and recovery
 
-This guide describes the September 19 automatic-QR and settling-ZERO update. Release evidence is in [Current state](CURRENT-STATE.md). Real
+This guide describes canonical **20260919-0148.74f79b7**, the September 19
+automatic-QR and settling-ZERO update. Release evidence is in [Current state](CURRENT-STATE.md). Real
 Safari/iPhone/Tesla connectivity, sensors and screen-wake retention remain open.
 
 ## First run, while parked

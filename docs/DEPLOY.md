@@ -5209,3 +5209,23 @@ portrait/landscape companion and compact Tesla QR/disconnect pass without consol
 warnings/errors. No-cache headers and previous JS/CSS HTTP 200 are confirmed.
 No synthetic diagnostic mail; physical iPhone/Tesla acceptance remains open.
 [Detailed evidence](PHONE-MOTION-COMPANION-2026-09-18.md#reliability-publication--september-19-2026).
+
+
+## Automatic QR and settling ZERO publication — 2026-09-19 01:57
+
+Source `74f79b7`, build **20260919-0148**, VERSION **0.0.0**. Official
+`--publish --preserve-existing` completed with exit 0 and ROOT_UPLOAD_ONLY.
+Network, account, canonical directory, read-only identity and complete upload
+verification passed. Uploaded 39 files / 6,376,687 bytes; reused 825 static files
+and all 29 full-hash recordings; retained two entry assets for cache overlap.
+The generated dynamic root was activated only after asset verification.
+
+Native regression 966/966, motion/PHP 75/75, documentation 8/8, release integrity
+828 hashes, credits 189 and public hygiene 1,498 files pass. Canonical bare and
+cache-busted roots pass four identity checks; 11 referenced/phone/manifest/cache
+assets match local SHA-256 and size. HTTPS returns 200 with no-store/no-cache.
+Live 390×844 phone and 773×601 main-app checks confirm the new input-activity
+section, ZERO refusal without sensors, new build identity, automatic QR creation
+and DISCONNECT; no console warnings/errors. AUTO remained OFF and audio muted.
+Physical iPhone settling-ZERO and Tesla acceptance remain open. The requested
+new SVG guide awaits owner selection; it is not part of this publication.
