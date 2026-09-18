@@ -23,7 +23,7 @@ export function MotionPanel({ snapshot, onStart, onStop, onClose }) {
   return <div className="motion-panel-content">
     <header><div><small>IPHONE COMPANION · EXPERIMENTAL</small><h2 id="motion-title">A new sense of motion</h2></div><button data-dialog-initial-focus onClick={onClose}>CLOSE</button></header>
     <p>Let your phone reveal acceleration and rotation. Pair it, place it, then set your zero. GPS still owns road speed; visual steering is a future experiment.</p>
-    <ol className="motion-guide">{[["Scan", "Open the QR in iPhone Safari."], ["Place", "Flat or upright. Keep it steady; hand movement also counts."], ["Tare", "Allow sensors, then tap TARE to set your reference."]].map(([title, copy], i) => <li key={title}><Guide step={i + 1}/><strong>{i + 1} · {title}</strong><p>{copy}</p></li>)}</ol>
+    <ol className="motion-guide">{[["Scan", "Open the QR in iPhone Safari."], ["Place", "Flat or upright. Keep it steady; hand movement also counts."], ["Zero", "Allow sensors, then tap ZERO to set your reference."]].map(([title, copy], i) => <li key={title}><Guide step={i + 1}/><strong>{i + 1} · {title}</strong><p>{copy}</p></li>)}</ol>
     <div className="motion-pairing"><div>
       <strong role="status">{motionStateText(snapshot.state)}</strong>
       <p>Keep Safari visible. Start on the same Wi-Fi; direct connectivity depends on both browsers and the network. No relay is configured.</p>
@@ -37,7 +37,7 @@ export function MotionPanel({ snapshot, onStart, onStop, onClose }) {
 export function MotionQuality({ summary = {} }) {
   return <dl className="motion-quality">
     <div><dt>Acceleration / Gyro</dt><dd>{summary.accelerometer ? "YES" : "—"} / {summary.gyroscope ? "YES" : "—"}<small>{summary.sensorState ?? "not connected"}</small></dd></div>
-    <div><dt>Tare</dt><dd>{summary.tared ? "SET" : "REQUIRED"}</dd></div>
+    <div><dt>Zero</dt><dd>{summary.tared ? "SET" : "REQUIRED"}</dd></div>
     <div><dt>Cadence</dt><dd>{summary.cadenceHz > 0 ? `${summary.cadenceHz.toFixed(1)} Hz` : "—"}</dd></div>
     <div><dt>Round trip</dt><dd>{summary.received > 0 ? `${summary.rttMs?.toFixed(1)} ms` : "—"}</dd></div>
   </dl>;

@@ -21,9 +21,9 @@ portrait-first behavior. Responsive implementation must retain legible values
 and touch targets and may scroll; it must not reproduce placeholder data as real
 measurements. The source logo remains authoritative over generated approximations.
 
-The selected feature is not yet implemented or deployed. Canonical product build
-remains 20260919-0002.d51b4b7. WebGPU/renderer choice, truthful screen-wake status
-and diagnostics are implementation work, not claims established by these images.
+The selected feature is implemented in `src/motion/` with the existing Three.js
+WebGL2 renderer, truthful wake-lock states and aggregate diagnostics. These
+images remain concepts; see the [implementation and release evidence](../../PHONE-MOTION-COMPANION-2026-09-18.md#trace-instrument--september-19) for current product facts.
 
 ## Deliverables
 

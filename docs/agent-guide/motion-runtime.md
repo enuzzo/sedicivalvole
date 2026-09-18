@@ -43,9 +43,14 @@ N03/N04 have development-only QA modules under `prototype/drive-lab/qa/` and
 
 ## Phone motion companion
 
-The selected [XYZ companion](../PHONE-MOTION-COMPANION-2026-09-18.md) adds
+The selected [TRACE companion](../PHONE-MOTION-COMPANION-2026-09-18.md) adds
 explicit-permission iPhone sensing, one-tap pose tare and an expiring direct
 WebRTC connection via bounded same-host PHP signaling. It carries quantized
 relative motion only; GPS/Demo remains the sole speed source and audio/renderers
 do not consume it yet. Keep 250 ms freshness, no clock subtraction across peers,
 no raw histories, one-use QR admission and teardown on hide/disconnect.
+
+The phone-only TRACE renderer owns bounded acceleration-space history; it never
+integrates speed or overrides reference/sensor freshness. Screen wake has one
+explicit owner with observable release/denial; hidden pages stop the connection
+and cannot silently regain a valid reference.

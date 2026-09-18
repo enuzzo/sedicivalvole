@@ -19,7 +19,10 @@ approval for that feature. See
 [implementation contract](../PHONE-MOTION-COMPANION-2026-09-18.md). The subsequent owner selection is
 [TRACE with the phone indicator and ZERO below the cube](../design/phone-motion-2026-09-19/README.md).
 Its **recalibrate** subtitle and unobstructed graph supersede the older central
-TARE placement for the next implementation; the new design is not yet deployed.
+TARE placement. The implemented TRACE instrument uses the existing WebGL2
+renderer, a bounded three-second acceleration trail, a relative-orientation phone
+indicator and separate camera recentering. Missing values remain dashes; the
+empty graph has no demonstration trace.
 
 ## Shared geometry and palette
 

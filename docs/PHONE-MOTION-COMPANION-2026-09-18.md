@@ -13,13 +13,45 @@ the road-speed source; no inertial speed, vehicle API access or audio mapping is
 introduced. The suggested Aperture inclination/curvature is the next experiment
 after real-device evidence, not an implemented renderer effect.
 
-## Selected next visual — September 19
+## TRACE instrument — September 19
 
 The owner selected the opaque TRACE cube mockup, adding VECTOR's phone
 orientation indicator and moving **ZERO** below the graph with the exact
 subtitle **recalibrate**. [Selected image, alternatives and prompt brief](design/phone-motion-2026-09-19/README.md).
-This is a design selection, not an implemented 3D renderer or release. The user
-path below still describes the deployed TARE interface until implementation.
+The selected instrument is implemented with the existing pinned Three.js 0.169.0
+WebGL2 dependency. Publication evidence is appended below after release. No new
+GPU dependency, native Metal API or WebGPU requirement is introduced.
+
+The opaque cube shows at most three seconds / 180 observed acceleration samples,
+with a fading red ribbon and a phone orientation indicator reconstructed from
+the relative axis-angle vector. It is acceleration space, not displacement or a
+road trajectory. The equal axis range starts at ±1 m/s², expands in powers of two
+and stays stable until ZERO or an invalidated reference. Samples beyond ±128
+are explicitly OUT OF RANGE, not clipped into a plausible curve. Missing/stale
+samples, reference changes and lifecycle gaps clear the trace.
+
+ZERO / recalibrate sits below the graph. Horizontal drag or left/right arrows
+rotate only the camera; Home / RECENTER VIEW restores it without changing the
+sensor reference. Numbers show acceleration and angular velocity; the small
+phone conveys relative orientation. Portrait is primary; narrow and landscape
+layouts retain touch targets and scroll vertically for lower readings.
+
+The renderer targets 30 FPS, caps pixel ratio at 1.75 and does not redraw an
+unchanged empty instrument. Reduced motion suppresses the ribbon and updates
+only the current tip at 5 Hz. Hidden pages stop rendering and sensing; context
+loss clears history and exposes a recovery state. Missing WebGL2 leaves the
+static cube and numeric sensor readouts available with an explicit explanation.
+Each effect owns/disposes its canvas, including React development remounts.
+
+`screen-wake.js` owns one optional screen wake lock. SCREEN AWAKE means an actual
+unreleased lock; denial, unsupported API or system release displays SCREEN MAY
+SLEEP. Explicit KEEP SCREEN AWAKE retries are available after rejection/release,
+without an automatic retry loop. Stop/hide releases ownership and late requests
+cannot revive it. Safari must remain visible; this is not background execution.
+
+Renderer, trace model and screen-wake ownership remain in `src/motion/`; sensor
+projection and peer freshness retain their existing owners. Bounded trace
+history and local receipt timestamps never enter transport or reports.
 
 ## User path
 
@@ -28,10 +60,10 @@ path below still describes the deployed TARE interface until implementation.
    first direct-link implementation; hotspot and Tesla/browser compatibility
    still need physical testing. Both devices need the HTTPS site available.
 3. Put the phone in a stable position, flat or upright, then press **ENABLE &
-   CONNECT** and allow motion/orientation. Press the central **TARE** while still.
-4. The cross displays acceleration in m/s². Below it are relative rotation-vector
-   components in degrees and angular velocity in degrees/s. Missing readings are
-   dashes. TARE rejects incomplete/stale data or appreciable movement and can be
+   CONNECT** and allow motion/orientation. Press **ZERO** below the graph while still.
+4. The cube displays acceleration history in m/s²; the phone indicates relative
+   orientation. Acceleration and angular velocity in degrees/s appear below.
+   Missing readings are dashes. ZERO rejects incomplete/stale data or movement and can be
    repeated immediately; it does not require a long calibration routine.
 5. Keep Safari visible. A supported optional screen wake lock helps; unsupported
    wake lock is explicitly reported. Hiding either page or disconnecting closes
@@ -44,7 +76,7 @@ QR admission expires after three minutes, accepts one phone, and uses a random
 capability in the URL fragment. The phone removes that fragment from the current
 history entry immediately. An open data channel has a one-hour maximum lifetime.
 
-## Branded portrait instrument — September 19 refinement
+## Historical branded cross — September 19 refinement
 
 The owner explicitly requested the existing Sedicivalvole identity, a restrained
 technical feel and portrait-first use in a Tesla phone holder tilted about 45°.
@@ -128,7 +160,11 @@ latest state, up to 300 two-second aggregate entries, up to 120 events and total
 event count. Fields include capability/permission availability, sensor cadence,
 jitter, peak acceleration/angular-rate magnitudes, missing axes, tare count,
 RTT, conservative age, rejected/expired requests, backpressure, errors and
-visibility transitions, signaling stage/HTTP outcome and connection setup time. The existing interaction log records safe `motion.*`
+visibility transitions, signaling stage/HTTP outcome and connection setup time.
+TRACE adds allowlisted wake states and request/release/failure counters, renderer
+availability/context loss, observed render FPS, current point count and axis
+range. These aggregate changes also create safe wake/trace events. No ribbon
+points or unfiltered platform errors are admitted. The existing interaction log records safe `motion.*`
 events. Raw vectors, pose, location, SDP and pairing tokens are excluded from
 reports, email attachments and persistent storage. Existing automatic diagnostic
 preferences/destination/schedule remain unchanged. Phone events before a working
@@ -254,3 +290,35 @@ Selected verified public byte identities:
 | `/assets/index-BTW_xq9x.js` | 876971 | `50c8abe88ce6d1fbc40a35da71d15f2dda5d2d005a5946a38a26e389b11ae59a` |
 | `/assets/phone-DB30ok8d.js` | 11098 | `7fb23b85436137b9aa8bf1f13df59c9cdfd8c75578a2ed5833b14ad7c46c8284` |
 | `/assets/release-20260919-0002.d51b4b7.json` | 116320 | `5196e0dd67787d074be0e6ac681b0fa3cd2d7da2058dc5bff11cffdca5dde3d6` |
+
+
+## TRACE local verification — September 19, 2026
+
+The full native regression suite passes **946/946**, including nine new bounded
+trace/wake tests. A subsequent focused motion/PHP run passes **15/15**, including
+the expanded aggregate packet through the existing server coordinate validator.
+No diagnostic API or pairing endpoint changes are required.
+
+The development-only `qa-motion-trace.html` exercises the actual renderer with
+explicit synthetic processed values and no pairing, permissions, GPS, audio or
+mail. Internal-browser evidence shows a three-second ribbon at approximately
+30 FPS, bounded points, no redraw for an unchanged empty instrument, missing-
+sample clearing, camera rotation/recenter, new reference clearing, and context
+loss/recovery with an incremented counter. A fresh final fixture records no
+console warnings/errors. This is not physical-device performance evidence.
+
+Phone UI checks cover 390 × 844, 375 × 667, 320 × 568, 430 × 932, 390 × 650 and
+844 × 390. There is no horizontal overflow; ZERO is 132 × 80 px and remains
+below the graph. Short screens scroll for lower controls/readings. On the local
+browser, an actual wake lock is acquired after enable and released on STOP;
+missing sensor axes stay absent and ZERO refuses incomplete data. The landscape
+lead retains compact branding and connection controls beside the instrument.
+Reduced-motion behavior is source-reviewed, not physically accepted on iPhone.
+
+Next physical run: scan the Tesla QR, allow both sensor permissions, secure the
+phone in its approximately 45° portrait holder, set ZERO, observe stillness and
+small deliberate rotations, then test STOP/background/foreground/re-pair.
+Collect both reports, including wake state, GPU availability, cadence, freshness
+and connection events. Do not infer vehicle axes or Aperture support from this
+instrument. Actual Safari wake retention and thermal/endurance behavior remain
+open.

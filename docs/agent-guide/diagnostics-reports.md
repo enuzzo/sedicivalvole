@@ -12,7 +12,10 @@ The driving flight recorder is bounded and in session memory: speed, GPS age/acc
 
 Phone motion adds the bounded aggregate `phoneMotion` report and safe `motion.*`
 events. Never include raw vectors, pose, signaling or QR capabilities. A separate
-phone download records failures before pairing; see the
+phone download records failures before pairing. TRACE adds wake-lock state and
+request/release/failure counts, renderer state/context losses, observed rendering
+FPS, trace point count and axis range; never include the points themselves or
+raw platform error text. See the
 [exact contract](../PHONE-MOTION-COMPANION-2026-09-18.md#signaling-privacy-and-diagnostics).
 
 ## Automatic delivery

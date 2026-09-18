@@ -38,7 +38,8 @@ test('storage is private, bearer capabilities are hashed and sessions are bounde
 test('motion aggregate report is accepted by the existing coordinate privacy validator',()=>{
  const diagnostic=fileURLToPath(new URL('../public/api/send-diagnostic.php',import.meta.url));
  const script=`define('SEDICIVALVOLE_DIAGNOSTIC_LIBRARY_ONLY',true); require $argv[1]; echo json_encode(containsForbiddenCoordinateKey(json_decode(stream_get_contents(STDIN),true)));`;
- const telemetry=createMotionTelemetry(()=>0);telemetry.update({state:'connected',tared:true});
+ const telemetry=createMotionTelemetry(()=>0);telemetry.update({state:'connected',tared:true,wakeState:'released',wakeReleases:1,traceRenderer:'webgl2',traceFps:30,tracePoints:90,traceRange:4,traceContextLosses:1});
+ telemetry.event('wake',{wakeState:'released'});telemetry.event('trace',{traceRenderer:'context-lost',traceContextLosses:1});
  const result=spawnSync('php',['-r',script,diagnostic],{input:JSON.stringify({phoneMotion:telemetry.snapshot()}),encoding:'utf8'});assert.equal(result.status,0,result.stderr);assert.equal(JSON.parse(result.stdout),false);
 });
 test('public HTTP handler rejects other origins, methods, media types and oversized bodies',()=>{

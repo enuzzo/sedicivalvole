@@ -2,8 +2,9 @@
 
 ## Experimental phone motion companion
 
-Owner-selected XYZ Cross provides public QR pairing, immediate relative-pose TARE,
-live acceleration/gyro and bounded diagnostics. The branded portrait-first
+Owner-selected TRACE provides public QR pairing, immediate relative-pose ZERO /
+recalibrate below a cubic three-second acceleration trail, a phone orientation
+indicator, live acceleration/gyro, explicit screen-wake states and bounded diagnostics. The branded portrait-first
 instrument supports arbitrary stable poses, including a roughly 45° holder,
 and adapts to landscape without changing the sensor session. It does not replace GPS speed
 or drive visuals/audio yet. [Implementation and physical acceptance contract](PHONE-MOTION-COMPANION-2026-09-18.md).

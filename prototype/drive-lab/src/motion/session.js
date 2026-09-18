@@ -52,6 +52,8 @@ export function createMotionSession({ role, host = window, doc = document, fetch
         if (token !== generation) return;
         if (summary.sensorState !== previousPhone?.sensorState) event("permission", summary);
         if (summary.tareCount !== previousPhone?.tareCount && summary.tareCount) event("tare", summary);
+        if (summary.wakeState !== previousPhone?.wakeState && summary.wakeState) event("wake", summary);
+        if (summary.traceRenderer !== previousPhone?.traceRenderer && summary.traceRenderer) event("trace", summary);
         previousPhone = summary;
       },
       onEvent: (type, detail) => {

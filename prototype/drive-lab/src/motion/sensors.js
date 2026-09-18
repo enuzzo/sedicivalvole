@@ -1,3 +1,4 @@
+import { createScreenWake } from "./screen-wake.js";
 import { advanceOrientation, createPoseReference, orientationMatrix, MOTION_FRESH_MS } from "./reference.js";
 const finite = (n) => typeof n === "number" && Number.isFinite(n);
 const vector = (value, keys) => keys.every((key) => finite(value?.[key])) ? keys.map((key) => value[key]) : null;
@@ -14,15 +15,14 @@ export function createPhoneSensors({ host = window, doc = document, now = () => 
   let lastAt = null;
   let tareState = "required";
   let startedAt = null;
-  let wakeLock = null;
+  const wake = createScreenWake({ host, doc, onChange: detail => onEvent("wake", detail) });
   const counts = { motionEvents: 0, orientationEvents: 0, missingAxes: 0, tareCount: 0, visibilityStops: 0, accelerationPeak: 0, angularRatePeak: 0 };
   const intervals = [];
   function stop(reason = "stopped") {
     generation += 1;
     host.removeEventListener("devicemotion", motion);
     host.removeEventListener("deviceorientation", orient);
-    if (wakeLock) void wakeLock.release().catch(() => {});
-    wakeLock = null;
+    wake.stop();
     pose.clear(); sample = null; orientation = null; orientationAt = null; lastAt = null;
     orientationEstimated = false;
     intervals.length = 0; tareState = "required";
@@ -82,7 +82,7 @@ export function createPhoneSensors({ host = window, doc = document, now = () => 
       tared: pose.tared, tareState, orientationEstimated, cadenceHz: mean ? 1000 / mean : 0,
       jitterMs: mean ? Math.sqrt(intervals.reduce((sum, n) => sum + (n - mean) ** 2, 0) / intervals.length) : 0,
       ageUpperMs: fresh ? age : null, waitingMs: startedAt === null ? 0 : at - startedAt,
-      secureContext: Boolean(host.isSecureContext), wakeLock: Boolean(wakeLock && !wakeLock.released), ...counts };
+      secureContext: Boolean(host.isSecureContext), ...wake.summary(), ...counts };
   }
   const visibility = () => { if (doc.visibilityState !== "visible") { counts.visibilityStops += 1; stop("suspended"); } };
   const pagehide = () => stop("suspended");
@@ -108,12 +108,7 @@ export function createPhoneSensors({ host = window, doc = document, now = () => 
         host.addEventListener("devicemotion", motion);
         host.addEventListener("deviceorientation", orient);
         onEvent("permission", { ...summary(), sensorState: "granted" });
-        if (host.navigator?.wakeLock?.request) {
-          void host.navigator.wakeLock.request("screen").then((lock) => {
-            if (disposed || token !== generation || doc.visibilityState !== "visible") void lock.release().catch(() => {});
-            else wakeLock = lock;
-          }).catch(() => {});
-        }
+        wake.start();
       } catch { if (token === generation) { state = "error"; onEvent("permission", summary()); } }
     },
     tare() {
@@ -122,7 +117,8 @@ export function createPhoneSensors({ host = window, doc = document, now = () => 
       onEvent("tare", summary());
       return tareState;
     },
-    latest() { summary(); return sample ? pose.project({ ...sample, orientation, orientationAt }, now()) : null; },
+    latest() { summary(); const value = sample ? pose.project({ ...sample, orientation, orientationAt }, now()) : null; return value ? { ...value, sampleAt: sample.at } : null; },
+    retryWake: () => wake.retry(),
     summary,
     stop: () => stop(),
     dispose() { stop(); disposed = true; doc.removeEventListener("visibilitychange", visibility); host.removeEventListener("pagehide", pagehide); },
