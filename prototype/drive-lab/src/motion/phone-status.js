@@ -4,9 +4,10 @@ export function phoneStatus({ link = {}, sensor = {}, hasPair = false, attempted
   const connected = link.state === "connected";
   const canJoin = hasPair && !attempted && !terminal;
   const running = ["waiting", "live", "incomplete", "stale", "requesting"].includes(sensor.sensorState);
+  const action = canJoin ? "ENABLE & CONNECT" : terminal || !hasPair ? "ENABLE LOCAL SENSORS" : "RETRY SENSORS";
   let instruction = "Place the phone securely. Enable sensors, allow access, then tap ZERO while still.";
   if (sensor.sensorState === "requesting") instruction = "Allow both motion and orientation prompts. Use STOP to cancel this attempt.";
-  else if (sensor.sensorState === "denied") instruction = "Sensor access was denied or only partly granted. Tap RETRY SENSORS; if denied again, review Safari site permissions.";
+  else if (sensor.sensorState === "denied") instruction = `Sensor access was denied or only partly granted. Tap ${action}; if denied again, review Safari site permissions.`;
   else if (sensor.sensorState === "unavailable") instruction = "Motion or orientation is unavailable here. Open this page in iPhone Safari over HTTPS.";
   else if (sensor.sensorState === "error") instruction = "Sensors could not start. Retry sensors explicitly or use STOP.";
   else if (sensor.sensorState === "incomplete") instruction = "Sensor values are incomplete. ZERO is unavailable until motion and orientation arrive. Check Safari permissions; use STOP to retry.";
@@ -28,13 +29,14 @@ export function phoneStatus({ link = {}, sensor = {}, hasPair = false, attempted
     : canJoin ? "QR ready · not connected yet"
     : hasPair && attempted ? "Connecting to Tesla…"
     : "Local only · not connected to Tesla";
-  const recovery = terminal && hasPair
+  const recovery = link.state === "unavailable" && hasPair
+    ? "Direct connections are unavailable in this browser. Open a new QR in a browser with WebRTC support. Local sensing alone cannot connect to Tesla."
+    : terminal && hasPair
     ? link.state === "expired" ? "QR expired, already used, or connection timed out. On Tesla tap CREATE QR and scan the new code."
       : "On Tesla tap CREATE QR and scan the new code. Keep both pages visible and use a network that allows a direct connection."
     : !hasPair ? "For Tesla: open its phone icon, tap CREATE QR and scan with iPhone Camera."
     : connected ? "Check Tesla also shows fresh sensors and Zero SET. GPS/Demo still supplies speed."
     : canJoin ? "Tap ENABLE & CONNECT and allow motion and orientation. Keep both pages visible."
     : "Keep both pages visible. Connection setup lasts at most 30 seconds. STOP cancels this attempt.";
-  return { connection, recovery, instruction, connected, canJoin, running,
-    action: canJoin ? "ENABLE & CONNECT" : terminal || !hasPair ? "ENABLE LOCAL SENSORS" : "RETRY SENSORS" };
+  return { connection, recovery, instruction, connected, canJoin, running, action };
 }

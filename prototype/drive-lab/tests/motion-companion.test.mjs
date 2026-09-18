@@ -160,8 +160,11 @@ test('first use and recovery never present a local instrument as a Tesla connect
  assert.equal(denied.action,'RETRY SENSORS');assert.equal(denied.canJoin,false);assert.match(denied.instruction,/denied/);
  for(const state of ['closed','expired','error','suspended','unavailable']){
   const result=phoneStatus({hasPair:true,attempted:true,link:{state}});
-  assert.equal(result.canJoin,false);assert.equal(result.connected,false);assert.match(result.recovery,/CREATE QR/);
+  assert.equal(result.canJoin,false);assert.equal(result.connected,false);assert.match(result.recovery,/CREATE QR|WebRTC support/);
  }
+ assert.match(phoneStatus({hasPair:true,link:{state:'unavailable'}}).recovery,/unavailable in this browser/);
+ const localDenied=phoneStatus({sensor:{sensorState:'denied'}});
+ assert.ok(localDenied.instruction.includes(localDenied.action));
  assert.match(phoneStatus({sensor:{sensorState:'waiting',waitingMs:6000}}).instruction,/No sensor readings/);
  assert.doesNotMatch(phoneStatus({sensor:{sensorState:'stale',tared:false}}).instruction,/Zero set/);
  assert.match(phoneStatus({sensor:{sensorState:'incomplete'}}).instruction,/incomplete/);
