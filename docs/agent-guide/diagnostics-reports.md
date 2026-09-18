@@ -10,6 +10,11 @@ Extended diagnostics may aggregate frame pacing, connection changes, GPS accurac
 
 The driving flight recorder is bounded and in session memory: speed, GPS age/accuracy, input, score, frame pacing, network and visibility outside React state. Preserve whole-session aggregates as old samples rotate. Debug interaction ledger records every semantic activation/media command with sequence, timestamp, source, safe identity, before/after transport snapshots, latency, browser lifecycle, Media Session registration/invocation, playback confirmation and bounded failure. Never record pointer coordinates, typed searches, GPS coordinates or media URLs. The old manual-only delivery restriction is superseded only by the explicitly bounded automatic contract below; this is not unrestricted telemetry permission. Read [Interaction/media recorder](../DIAGNOSTICS.md#exhaustive-interactionmedia-flight-recorder--2026-09-03) for capture details when changing it.
 
+Phone motion adds the bounded aggregate `phoneMotion` report and safe `motion.*`
+events. Never include raw vectors, pose, signaling or QR capabilities. A separate
+phone download records failures before pairing; see the
+[exact contract](../PHONE-MOTION-COMPANION-2026-09-18.md#signaling-privacy-and-diagnostics).
+
 ## Automatic delivery
 
 The owner explicitly enabled automatic diagnostic mail during experimental development. Fresh preferences use **Dev / AUTO ON**, preserving saved OFF or Standard. Keep visible OFF in Intro and Session report, matching disclosure, server validation and tests. The existing fixed destination stays in ignored local configuration, never command lines or public docs. Do not send synthetic QA packets to the real mailbox; intercept delivery or use local fixtures when exercising sending.

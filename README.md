@@ -65,6 +65,15 @@ third-party work retains the credits and licences recorded below.
 
 Public development repository: [github.com/enuzzo/sedicivalvole](https://github.com/enuzzo/sedicivalvole).
 
+## Experimental phone motion
+
+The top-bar phone icon opens QR pairing and a three-step SVG guide. iPhone Safari
+provides live XYZ acceleration/gyro with a central one-tap TARE for arbitrary
+stable mounting. Bounded connection/sensor summaries join REPORT; the phone can
+download its own diagnostics. GPS remains road-speed authority. Direct network
+reachability and real iPhone/Tesla sensing remain physical acceptance gates;
+Aperture motion steering is a follow-up. [Setup and technical boundaries](docs/PHONE-MOTION-COMPANION-2026-09-18.md).
+
 ## Vision
 
 `sedicivalvole` turns speed, sound, and light into an atmospheric, useful, and memorable in-car experience. It is not a generic dashboard. Two equal primary modes share one motion signal and safety model while offering deliberately different audio and visual identities.

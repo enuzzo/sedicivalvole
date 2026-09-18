@@ -1,3 +1,4 @@
+import { motionQaServer } from "./scripts/vite-motion-qa.mjs";
 import { sessionRelease } from "./scripts/vite-session-release.mjs";
 import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
@@ -135,6 +136,7 @@ export default defineConfig(({ mode }) => {
   },
   plugins: [
     canonicalLabDevRoute(),
+    motionQaServer(),
     staticPackageSafety(),
     react(),
     audioWorklet(),

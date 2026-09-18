@@ -40,3 +40,12 @@ Do not trust native `node_modules` copied between machines/architectures through
 
 N03/N04 have development-only QA modules under `prototype/drive-lab/qa/` and
 `qa-motion.html`; see [sensor/link contracts and physical protocol](../MOTION-FEASIBILITY-2026-09-18.md). No product motion source is selected. Preserve explicit gesture/permission, nullable device-frame axes, monotonic receipt timing, bounded in-memory observations, foreground restart, baseline invalidation and exclusion from diagnostic delivery. The data-channel probe sends synthetic timing metadata only, uses no external ICE/signaling service, expires/revokes sessions and rejects stale/replayed input. A local loopback pass is not iPhone/Tesla support, synchronized one-way latency or physical acceptance. GPS stays the real speed reference. Real-device access and a new public UI retain their separate authorization/selection gates.
+
+## Phone motion companion
+
+The selected [XYZ companion](../PHONE-MOTION-COMPANION-2026-09-18.md) adds
+explicit-permission iPhone sensing, one-tap pose tare and an expiring direct
+WebRTC connection via bounded same-host PHP signaling. It carries quantized
+relative motion only; GPS/Demo remains the sole speed source and audio/renderers
+do not consume it yet. Keep 250 ms freshness, no clock subtraction across peers,
+no raw histories, one-use QR admission and teardown on hide/disconnect.

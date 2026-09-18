@@ -1,0 +1,130 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { orientationMatrix, applyRotation, advanceOrientation, createPoseReference, rotationVector } from '../src/motion/reference.js';
+import { createPhoneSensors } from '../src/motion/sensors.js';
+import { createMotionProtocol } from '../src/motion/channel.js';
+import { createMotionTelemetry, safeMotionSummary } from '../src/motion/telemetry.js';
+import { createMotionSession } from '../src/motion/session.js';
+const identity = () => orientationMatrix({alpha:0,beta:0,gamma:0});
+const near = (a,b) => a.forEach((v,i) => assert.ok(Math.abs(v-b[i])<1e-6, `${a} != ${b}`));
+const sample = (extra={}) => ({at:0,orientationAt:0,orientation:identity(),acceleration:[0,0,0],rotation:[0,0,0],gravity:[0,0,9.81],...extra});
+for (const pose of [{alpha:0,beta:0,gamma:0},{alpha:40,beta:90,gamma:0},{alpha:123,beta:-62,gamma:38}]) {
+  test(`one tap sets zero in stable pose ${JSON.stringify(pose)}`, () => {
+    const ref=createPoseReference(), s=sample({orientation:orientationMatrix(pose)});
+    assert.equal(ref.tare(s,0),'tared');
+    near(ref.project(s,0).tilt,[0,0,0]);
+    near(ref.project({...s,acceleration:[1,2,3]},0).acceleration,[1,2,3]);
+  });
+}
+test('relative acceleration rotates into initial frame without inventing road speed',()=>{
+  const ref=createPoseReference(); ref.tare(sample(),0);
+  const result=ref.project(sample({orientation:orientationMatrix({alpha:90,beta:0,gamma:0}),acceleration:[1,0,0]}),0);
+  near(result.acceleration,[0,1,0]); near(result.tilt,[0,0,90]); assert.equal('speed' in result,false);
+});
+test('heading wraps locally and half-turn stays finite',()=>{
+  const ref=createPoseReference(); ref.tare(sample({orientation:orientationMatrix({alpha:359,beta:0,gamma:0})}),0);
+  near(ref.project(sample({orientation:orientationMatrix({alpha:1,beta:0,gamma:0})}),0).tilt,[0,0,2]);
+  near(rotationVector(orientationMatrix({alpha:180,beta:0,gamma:0})),[0,0,180]);
+});
+test('upright phone extracts turn about gravity independently of mounting',()=>{
+  const ref=createPoseReference(), upright=sample({orientation:orientationMatrix({alpha:0,beta:90,gamma:0}),gravity:[0,9.81,0]});
+  ref.tare(upright,0); assert.equal(ref.project({...upright,rotation:[0,12,0]},0).turnRate,12);
+});
+test('tare rejects movement, incomplete and stale readings; never subtracts actual acceleration',()=>{
+  const ref=createPoseReference();
+  assert.equal(ref.tare(sample({acceleration:[1,0,0]}),0),'hold-still');
+  assert.equal(ref.tare(sample({rotation:[0,6,0]}),0),'hold-still');
+  assert.equal(ref.tare(sample({gravity:[0,0,0]}),0),'hold-still');
+  assert.equal(ref.tare(sample({acceleration:null}),0),'unavailable');
+  assert.equal(ref.tare(sample(),251),'unavailable');
+  assert.equal(ref.tare(sample(),-1),'unavailable');
+  ref.tare(sample({acceleration:[0.1,0,0]}),0);
+  near(ref.project(sample({acceleration:[0.1,0,0]}),0).acceleration,[0.1,0,0]);
+  assert.equal(ref.project(sample(),251),null); ref.clear(); assert.equal(ref.project(sample(),0),null);
+});
+test('gyro propagation handles sparse orientation but refuses execution gaps',()=>{
+  near(rotationVector(advanceOrientation(identity(),[0,0,90],0.1)),[0,0,9]);
+  assert.equal(advanceOrientation(identity(),[0,0,90],0.251),null);
+  assert.equal(advanceOrientation(identity(),null,0.1),null);
+});
+function surface() {
+  const listeners=new Map(); return {visibilityState:'visible',isSecureContext:true,navigator:{userActivation:{isActive:true}},location:{origin:'https://example.test'},
+    addEventListener(type,fn){if(!listeners.has(type))listeners.set(type,new Set());listeners.get(type).add(fn);},
+    removeEventListener(type,fn){listeners.get(type)?.delete(fn);},
+    emit(type,event={}){for(const fn of [...(listeners.get(type)??[])])fn({isTrusted:true,...event});},
+  };
+}
+function sensorFixture() {
+  let time=0;const host=surface(),doc=surface();host.DeviceMotionEvent={};host.DeviceOrientationEvent={};
+  const events=[]; const sensor=createPhoneSensors({host,doc,now:()=>time,onEvent:(...e)=>events.push(e)});
+  return {host,doc,sensor,events,time:(n)=>{time=n;},orient:()=>host.emit('deviceorientation',{alpha:0,beta:0,gamma:0}),
+    motion:(extra={})=>host.emit('devicemotion',{acceleration:{x:0,y:0,z:0},accelerationIncludingGravity:{x:0,y:0,z:9.81},rotationRate:{alpha:0,beta:0,gamma:0},...extra})};
+}
+test('both permission requests originate synchronously in the enabling gesture',async()=>{
+  const f=sensorFixture(); const requests=[];let complete;
+  f.host.DeviceMotionEvent.requestPermission=()=>{requests.push('motion');return new Promise(r=>{complete=r;});};
+  f.host.DeviceOrientationEvent.requestPermission=()=>{requests.push('orientation');return Promise.resolve('granted');};
+  const start=f.sensor.start();assert.deepEqual(requests,['motion','orientation']);complete('granted');await start;
+  assert.equal(f.sensor.summary().sensorState,'waiting'); f.sensor.dispose();
+});
+test('denial and a late permission response cannot start hidden sensors',async()=>{
+  const f=sensorFixture();f.host.DeviceMotionEvent.requestPermission=()=>Promise.resolve('denied');
+  await f.sensor.start();assert.equal(f.sensor.summary().sensorState,'denied');
+  let resolve;f.host.DeviceMotionEvent.requestPermission=()=>new Promise(r=>{resolve=r;});
+  const start=f.sensor.start();f.doc.visibilityState='hidden';f.doc.emit('visibilitychange');resolve('granted');await start;
+  f.motion();assert.equal(f.sensor.summary().motionEvents,0);assert.equal(f.sensor.summary().sensorState,'suspended');f.sensor.dispose();
+});
+test('stationary sparse orientation stays usable, a gap requires retare, and hidden clears it',async()=>{
+  const f=sensorFixture();await f.sensor.start();f.orient();f.motion();assert.equal(f.sensor.tare(),'tared');
+  for(let t=20;t<=1000;t+=20){f.time(t);f.motion();}
+  assert.equal(f.sensor.summary().orientationEvents,1);assert.equal(f.sensor.summary().orientationEstimated,true);assert.ok(f.sensor.latest());
+  f.time(1300);assert.equal(f.sensor.latest(),null);assert.equal(f.sensor.summary().tared,false);
+  f.orient();f.motion();assert.equal(f.sensor.tare(),'tared');
+  f.doc.visibilityState='hidden';f.doc.emit('visibilitychange');assert.equal(f.sensor.latest(),null);assert.equal(f.sensor.summary().visibilityStops,1);f.sensor.dispose();
+});
+test('synthetic DOM events and null sensor axes never masquerade as real sensor data',async()=>{
+  const f=sensorFixture();await f.sensor.start();f.orient();f.motion({isTrusted:false});assert.equal(f.sensor.summary().motionEvents,0);
+  f.motion({acceleration:{x:null,y:0,z:0}});assert.equal(f.sensor.summary().accelerometer,false);assert.equal(f.sensor.tare(),'unavailable');f.sensor.dispose();
+});
+const values={frame:'tare-relative',generation:1,acceleration:[1,2,3],rotation:[0,0,2],tilt:[0,0,1],turnRate:2,ageMs:10};
+function protocols(){let time=0;const receiver=createMotionProtocol({role:'receiver',now:()=>time}),phone=createMotionProtocol({role:'phone',now:()=>time,getPhone:()=>({values,summary:{sensorState:'live',tared:true,token:'secret',sdp:'private'}})});return {receiver,phone,time:(t)=>{time=t;}};}
+test('processed sample roundtrip is fresh only within sender age plus measured roundtrip',()=>{
+  const f=protocols(),poll=f.receiver.poll();f.time(20);const answer=f.phone.receive(poll);f.time(40);f.receiver.receive(answer);
+  assert.deepEqual(f.receiver.sample().acceleration,[1,2,3]);assert.equal(f.receiver.summary().ageUpperMs,50);
+  assert.equal(f.receiver.summary().token,undefined);f.time(241);assert.equal(f.receiver.sample(),null);
+  f.receiver.receive(answer);assert.equal(f.receiver.summary().rejected,1);
+});
+test('expired, replayed, unmatched and malformed channel messages are rejected',()=>{
+  const f=protocols(); const answer=f.phone.receive(f.receiver.poll());f.time(251);f.receiver.receive(answer);assert.equal(f.receiver.sample(),null);
+  f.receiver.poll();assert.equal(f.receiver.summary().expiredRequests,1);f.receiver.receive(answer);
+  for(const text of ['null','{',JSON.stringify({v:'sv-motion-1',kind:'sample',request:1,sequence:2,ageMs:0,values:{...values,tilt:[Infinity,0,0]},summary:null})]) f.receiver.receive(text);
+  assert.equal(f.receiver.sample(),null);assert.equal(f.phone.receive(JSON.stringify({v:'sv-motion-1',kind:'poll',request:0})),null);
+});
+test('diagnostics are bounded aggregates and reject arbitrary nesting or secrets',()=>{
+  let t=0;const tel=createMotionTelemetry(()=>t);const hostile={state:'connected',sensorState:'live',cadenceHz:60,token:'secret',sdp:'private',values,coordinates:[1,2],nested:{token:'secret'}};
+  for(let i=0;i<500;i++){t+=2000;tel.update(hostile);tel.event('tare',hostile);}tel.event('secret',hostile);
+  const report=tel.snapshot();assert.equal(report.history.length,300);assert.equal(report.events.length,120);assert.equal(report.totalEvents,500);
+  assert.doesNotMatch(JSON.stringify(report),/secret|private|acceleration|"coordinates"|"sdp"/);
+  assert.deepEqual(safeMotionSummary(null),{});report.latest.state='evil';assert.equal(tel.snapshot().latest.state,'connected');
+});
+test('stopping during signaling never revives a session or exposes the capability',async()=>{
+  const host=surface(),doc=surface();host.RTCPeerConnection=function(){};let resolve;
+  const snapshots=[]; const session=createMotionSession({role:'receiver',host,doc,onChange:s=>snapshots.push(s),
+    peerFactory:()=>({offer:()=>new Promise(r=>{resolve=r;}),close(){},summary:()=>({state:'connecting'}),sample:()=>null}),
+    fetcher:()=>{throw Error('must not fetch after stop');}});
+  const start=session.start();session.stop();resolve('v=0 fixture');await start;
+  assert.equal(snapshots.at(-1).state,'closed');assert.equal(snapshots.at(-1).qrUrl,null);assert.doesNotMatch(JSON.stringify(session.report()),/fixture|token|sdp/);session.dispose();
+});
+test('signaling failure records its stage and HTTP status without payload or exception strings',async()=>{
+ const host=surface(),doc=surface();host.RTCPeerConnection=function(){};
+ const session=createMotionSession({role:'receiver',host,doc,
+  peerFactory:()=>({offer:async()=> 'v=0 private-description',close(){},summary:()=>({state:'connecting'}),sample:()=>null}),
+  fetcher:async()=>({ok:false,status:403})});
+ await session.start();const report=session.report(),error=report.events.find(e=>e.type==='error');
+ assert.equal(error.stage,'create');assert.equal(error.signalingStatus,403);assert.equal(error.signalingErrors,1);
+ assert.doesNotMatch(JSON.stringify(report),/private-description|sdp|token/);session.dispose();
+});
+test('missing WebRTC is reported separately from a failed network connection',async()=>{
+ const host=surface(),doc=surface();const session=createMotionSession({role:'receiver',host,doc});
+ await session.start();assert.equal(session.report().latest.state,'unavailable');session.dispose();
+});

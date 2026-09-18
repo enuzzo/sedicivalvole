@@ -1,5 +1,16 @@
 # Future Ideas Register
 
+## Selected XYZ phone companion — September 18
+
+The owner subsequently authorized QR integration, immediate relative-pose TARE,
+live XYZ/gyro readings, diagnostic integration and selected **direction 1, XYZ
+Cross**. The [companion implementation and physical test guide](PHONE-MOTION-COMPANION-2026-09-18.md)
+supersedes the local-only/pending-UI statements below for this scope. Production
+implementation and local verification are complete; publication evidence follows
+in that document. Actual iPhone/Tesla acceptance remains open. GPS/audio are
+unchanged. Aperture tilt/curvature is queued after physical evidence. R06 remains
+incomplete; Conditions stays deferred and dynamic Aerial retired.
+
 ## Latest owner direction — September 18
 
 [Consolidated decisions and remaining work](OWNER-DIRECTION-2026-09-18.md)
@@ -64,7 +75,7 @@ presented as an owner decision or enter the product without explicit approval.
 
 | ID | Idea | Origin | Captured | Status | Authoritative detail |
 |---|---|---|---|---|---|
-| `FI-001` | Optional iPhone motion/accelerometer input for use in any car, including Bluetooth-speaker sessions | OWNER | 2026-08-30 | RESEARCH · owner interest renewed September 18 | This document and [current direction](OWNER-DIRECTION-2026-09-18.md) |
+| `FI-001` | Optional iPhone motion/accelerometer input for use in any car, including Bluetooth-speaker sessions | OWNER | 2026-08-30 | RESEARCH · product input mapping pending; XYZ sensor companion implemented | This document and [current direction](OWNER-DIRECTION-2026-09-18.md) |
 | `FI-002` | Smoothly raise DRIVEY's Aerial camera as speed increases | OWNER | 2026-08-30 | RETIRED · owner prefers forward-only driving | [September 18 supersession](OWNER-DIRECTION-2026-09-18.md); historical `PIANO.md` D4 |
 | `FI-003` | DISCOVER image-led nearby-place companion | OWNER | 2026-08-30 | PROMOTED | [`PIANO.md`](../PIANO.md) `A5` |
 | `FI-004` | Grouped, direct-selection Visual Library | OWNER | 2026-08-30 | PROMOTED | [`PIANO.md`](../PIANO.md) `X9` |
@@ -76,7 +87,7 @@ presented as an owner decision or enter the product without explicit approval.
 | `FI-010` | Travel-oriented ATLAS and a separate Stats for Nerds visual | OWNER | 2026-09-05 | IMPLEMENTED · separate Visual 09 live; added Stats parity locally verified, publication pending | [`ATLAS-STATS-REPORT-PLAN-2026-09-07.md`](ATLAS-STATS-REPORT-PLAN-2026-09-07.md), superseded where stated by [`NIGHT-IMPLEMENTATION-2026-09-07.md`](NIGHT-IMPLEMENTATION-2026-09-07.md) |
 | `FI-011` | Multi-hour Milan drive evidence | OWNER | 2026-09-05 | OWNER TEST PLAN · interrupted reports do not close endurance | [`OWNER-DECISIONS-2026-09-07.md`](OWNER-DECISIONS-2026-09-07.md); milestone row 16 / A01 |
 | `FI-012` | Branded session PDF with chosen-recipient email and resettable remembered address | OWNER | 2026-09-07 | IMPLEMENTED · locally verified; publication and actual inbox receipt pending | Travel Report direction 1; [`NIGHT-IMPLEMENTATION-2026-09-07.md`](NIGHT-IMPLEMENTATION-2026-09-07.md) |
-| `FI-013` | Pair iPhone motion sensors with the Tesla browser | OWNER | 2026-09-18 | RESEARCH · compatibility, latency and privacy unverified | [Motion companion feasibility](OWNER-DIRECTION-2026-09-18.md#motion-companion-feasibility-not-a-delivery-promise) |
+| `FI-013` | Pair iPhone motion sensors with the Tesla browser | OWNER | 2026-09-18 | IMPLEMENTED experimental QR/direct link; physical reachability/latency open | [Motion companion feasibility](OWNER-DIRECTION-2026-09-18.md#motion-companion-feasibility-not-a-delivery-promise) |
 | `DI-001` | A GPS-free `MOTION` interpretation driven by the character of movement rather than a fabricated speedometer | AGENT PROPOSAL | 2026-08-30 | CAPTURED · not approved | This document |
 
 ### Current implementation boundaries for FI-008, FI-010 and FI-012
@@ -213,3 +224,11 @@ When capturing another idea:
 See [the experience drafts](WEEKEND-EXPERIENCE-DRAFTS-2026-09-05.md) and
 [weekend handoff](WEEKEND-HANDOFF-2026-09-05.md). Agent candidate names and preset
 combinations remain proposals and are not represented as owner selections.
+
+## FI-013 follow-up — relative motion in visuals
+
+The owner proposed using connected acceleration and gyro to incline and curve
+Aperture as well as respond to road speed. Queue this after physical companion
+evidence: use only fresh tared input, bounded smoothing and neutral recovery on
+loss; retain GPS speed and reduced-motion ownership. No renderer coupling is
+implemented in the initial XYZ companion.

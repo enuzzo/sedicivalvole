@@ -27,6 +27,8 @@ import { ExperienceCard } from "./experience-card.jsx";
 import { CURATED_EXPERIENCES, applyExperienceSettings, matchingExperience } from "./curated-experiences.js";
 import { resolveSemanticTheme } from "./semantic-theme.js";
 import { RailIcon } from "./rail-icon.jsx";
+import { MotionIcon, MotionPanel } from "./motion/motion-ui.jsx";
+import { createMotionSession } from "./motion/session.js";
 import { Component, lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 // Keep the support QR inside the already-loaded application bundle so opening
 // the panel does not depend on a later image request over a weak connection.
@@ -2133,6 +2135,9 @@ export function App() {
   const [renderer, setRenderer] = useState("checking…");
   const [muted, setMuted] = useState(QA_MUTED || initialPreferences.muted);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [motionOpen, setMotionOpen] = useState(false);
+  const [motionSnapshot, setMotionSnapshot] = useState({ state: "idle" });
+  const motionSessionRef = useRef(null);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [controlsAwake, setControlsAwake] = useState(true);
   const [paletteMenuOpen, setPaletteMenuOpen] = useState(false);
@@ -2351,7 +2356,7 @@ export function App() {
   const environment = getFluxEnvironment(environmentId);
   const aperturePressure = speedToAperturePressure(speed);
   const gpsPresentation = atlasGpsPresentation(gpsState, accuracy, source);
-  const modalOpen = phonePortrait || drawerOpen
+  const modalOpen = phonePortrait || drawerOpen || motionOpen
     || previewOpen
     || environmentPickerOpen
     || soundtrackPanelOpen
@@ -2382,6 +2387,19 @@ export function App() {
       detail,
     }, { sample: type === "gps.sample", interaction });
   }, []);
+
+  useEffect(() => {
+    let lastUiAt = -Infinity;
+    const session = createMotionSession({ role: "receiver", onChange: (next) => setMotionSnapshot((current) => {
+      const at = performance.now();
+      if (current.state === next.state && current.qrUrl === next.qrUrl && at - lastUiAt < 1000) return current;
+      lastUiAt = at;
+      return { ...next, values: undefined };
+    }),
+      onEvent: (type, detail) => logDiagnosticEvent(`motion.${type}`, detail) });
+    motionSessionRef.current = session;
+    return () => { session.dispose(); motionSessionRef.current = null; };
+  }, [logDiagnosticEvent]);
 
   useEffect(() => {
     const subscription = subscribeSystemAppearance(setSystemAppearance);
@@ -4833,6 +4851,7 @@ export function App() {
       telemetry: summarizeGpsTelemetry(gpsTelemetryRef.current),
     },
     capabilities: diagnostics.capabilities,
+    phoneMotion: motionSessionRef.current?.report() ?? null,
     environment: {
       ...diagnostics.environment,
       currentVisibility: document.visibilityState,
@@ -5306,6 +5325,8 @@ export function App() {
             <span className="visually-hidden">GPS</span>
             <small className="visually-hidden">{gpsPresentation.accuracy}</small>
           </button>
+          <button className="motion-button" type="button" aria-label="Connect iPhone motion sensors" aria-haspopup="dialog"
+            data-connected={motionSnapshot.state === "connected"} onClick={() => setMotionOpen(true)}><MotionIcon/></button>
           <button
             className="discover-button"
             type="button"
@@ -5426,6 +5447,9 @@ export function App() {
         </div>
       </section>
 
+      {motionOpen ? <DialogSurface className="diagnostic-drawer motion-dialog" labelledBy="motion-title" onClose={() => setMotionOpen(false)}>
+        <MotionPanel snapshot={motionSnapshot} onStart={() => void motionSessionRef.current?.start()} onStop={() => motionSessionRef.current?.stop()} onClose={() => setMotionOpen(false)}/>
+      </DialogSurface> : null}
       {supportOpen ? (
         <SupportPanel
           reducedMotion={reducedMotion}
@@ -5512,6 +5536,7 @@ export function App() {
                       <InstrumentMetric label="SPEED SOURCE" value={source} detail={`${Math.round(speed)} km/h current`} />
                       <InstrumentMetric label="GPS STATUS" value={gpsState} detail={accuracy == null ? "accuracy unavailable" : `accuracy ±${accuracy} m`} tone={gpsState === "live" ? "good" : "caution"} />
                       <InstrumentMetric label="MOTION STATE" value={scoreStateRef.current?.decelerationState ?? "cruise"} detail={`${Math.round(speed)} km/h · ${demoDriveInputRef.current}`} />
+                      <InstrumentMetric label="PHONE MOTION" value={motionSnapshot.state} detail={`${motionSnapshot.accelerometer ? "ACC" : "no ACC"} / ${motionSnapshot.gyroscope ? "GYRO" : "no GYRO"} · ${motionSnapshot.tared ? "tared" : "tare required"} · ${motionSnapshot.cadenceHz?.toFixed(1) ?? "—"} Hz`} tone={motionSnapshot.state === "connected" ? "good" : "caution"} />
                       <InstrumentMetric label="RECORDED POSITION" value="NONE" detail="coordinates excluded" tone="good" />
                     </dl>
                   </section>

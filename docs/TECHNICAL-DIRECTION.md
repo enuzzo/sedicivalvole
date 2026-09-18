@@ -150,7 +150,16 @@ Switching should use a bounded equal-power crossfade or an equivalent click-free
 
 The mode selector must remain reachable and clearly show the active mode at the verified `773 × 601` split viewport. Its exact component anatomy and Engine visual language require Product Design exploration before implementation.
 
-## Isolated phone motion feasibility
+## Phone motion companion
+
+The owner-selected [XYZ companion](PHONE-MOTION-COMPANION-2026-09-18.md) now
+provides production sensing, relative-pose tare, QR/PHP signaling and direct
+WebRTC transport. The App owns the receiver session; the separate phone entry
+owns sensor permission/lifecycle. No motion samples enter GPS, audio or renderer
+inputs yet. Physical acceptance is still open. This supersedes the local-only
+scope below without promoting probe evidence into hardware proof.
+
+### Earlier isolated feasibility
 
 The [N03/N04 development probes](MOTION-FEASIBILITY-2026-09-18.md) keep nullable
 device-frame motion, monotonic event receipt and stationary baseline quality

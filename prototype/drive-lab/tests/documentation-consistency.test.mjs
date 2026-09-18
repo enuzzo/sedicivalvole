@@ -122,7 +122,7 @@ test("future ideas preserve owner provenance and the motion-input truth boundary
   assert.match(futureIdeas, /`FI-001` \| Optional iPhone motion\/accelerometer input/);
   assert.match(futureIdeas, /`FI-001`[^\n]+OWNER \| 2026-08-30 \| RESEARCH/);
   assert.match(futureIdeas, /`FI-002`[^\n]+RETIRED/);
-  assert.match(futureIdeas, /`FI-013`[^\n]+OWNER \| 2026-09-18 \| RESEARCH/);
+  assert.match(futureIdeas, /`FI-013`[^\n]+OWNER \| 2026-09-18 \| IMPLEMENTED experimental QR\/direct link; physical reachability\/latency open/);
   assert.match(futureIdeas, /not automatically a more accurate absolute speed source/i);
   assert.match(futureIdeas, /no fabricated speed, no coordinate persistence, no automatic fallback/i);
   assert.match(futureIdeas, /AGENT PROPOSAL \| 2026-08-30 \| CAPTURED · not approved/);

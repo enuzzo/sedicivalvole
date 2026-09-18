@@ -10,6 +10,11 @@ For substantial visual work whose reference is unclear or no longer fits the goa
 
 When implementing a selected generated mock, preserve its layout, anatomy, density, spacing, colors, typography, visible content and hierarchy, subject to explicit owner amendments. Use actual current browser captures for product evidence, at the agreed viewport; remove obsolete current-product captures. Keep private reference images outside Git. Oversized generated Intro concepts are rejected and must not become product artwork.
 
+The September 18 owner selected **XYZ Cross** for the phone motion companion:
+central TARE with live XYZ/gyro, a top-bar phone icon and compact QR/three-SVG
+guide. This is scoped approval for that feature. See
+[implementation contract](../PHONE-MOTION-COMPANION-2026-09-18.md).
+
 ## Shared geometry and palette
 
 The maintained [interface system](../DESIGN-SYSTEM.md) links the exact shared

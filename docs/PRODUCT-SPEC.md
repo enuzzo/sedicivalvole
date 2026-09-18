@@ -1,5 +1,11 @@
 # Product Specification
 
+## Experimental phone motion companion
+
+Owner-selected XYZ Cross provides public QR pairing, immediate relative-pose TARE,
+live acceleration/gyro and bounded diagnostics. It does not replace GPS speed
+or drive visuals/audio yet. [Implementation and physical acceptance contract](PHONE-MOTION-COMPANION-2026-09-18.md).
+
 Status: **decision baseline, not an implementation contract**. “Confirmed” items below are explicit user requirements. Recommendations, assumptions, and unknowns are labeled separately.
 
 ## 1. Confirmed identity

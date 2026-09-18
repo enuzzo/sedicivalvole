@@ -1,5 +1,16 @@
 # Motion input continuation — September 18, 2026
 
+## Selected XYZ phone companion — September 18
+
+The owner subsequently authorized QR integration, immediate relative-pose TARE,
+live XYZ/gyro readings, diagnostic integration and selected **direction 1, XYZ
+Cross**. The [companion implementation and physical test guide](PHONE-MOTION-COMPANION-2026-09-18.md)
+supersedes the local-only/pending-UI statements below for this scope. Production
+implementation and local verification are complete; publication evidence follows
+in that document. Actual iPhone/Tesla acceptance remains open. GPS/audio are
+unchanged. Aperture tilt/curvature is queued after physical evidence. R06 remains
+incomplete; Conditions stays deferred and dynamic Aerial retired.
+
 ## September 18 continuation result — read before the original brief
 
 The requested isolated N03 sensor layer and N04 synthetic direct-link probe are
