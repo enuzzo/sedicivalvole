@@ -1,5 +1,13 @@
 # Milestone Checklist — 2026-08-31
 
+## Product polish continuation — 2026-09-18
+
+Current canonical **20260918-2110.dbf5108** adds bounded/cancellable catalogue
+loading, preserved selection on natural completion and explicit recovery states.
+**891** full tests and local/live browser checks pass; see the scoped **P01–P05**
+checklist in [release readiness](RELEASE-READINESS-2026-09-12.md). Physical
+**R7-14 / R10C-03**, iPhone and sustained/endurance acceptance remain open.
+
 ## Soundtrack continuation — 2026-09-18
 
 Milestones **7 / 10C** now have a reproduced and corrected seek-readiness defect:

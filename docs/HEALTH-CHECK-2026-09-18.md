@@ -196,3 +196,28 @@ physical Tesla/endurance acceptance. App-level Meridian separately measured
 59.81 FPS / 18.5 ms p95. Captured browser warnings/errors remained zero.
 Physical audio/native transport, iPhone, thermal/endurance and formal R06 remain
 open. Existing bundle-size warnings remain; no unmeasured size improvement is claimed.
+
+Production candidate **20260918-2110.dbf5108** (product `b0bfa46`, VERSION
+`0.0.0`) passes **827** static integrity hashes, **189/189** credits and the
+**1,465** tracked-text hygiene guard with zero findings. QA harness pages and
+synthetic catalogue/media middleware are excluded from the package. Local
+production Intro → Mute → START → REPORT at 773 × 601 confirms the build identity,
+muted output and zero runtime issues. Read-only official FTP preflight passes
+exact-root/legacy identity with `remote_writes=NONE`. Completed publication verification is recorded below.
+
+### Verified polish publication
+
+Canonical **20260918-2110.dbf5108** is published and verified. Official
+preserve-existing FTP uploads **37 files / 6,312,168 bytes**, reuses **825** static
+files and **29** full-hash-verified recordings, retains one previous asset and
+reports `remote_writes=ROOT_UPLOAD_ONLY`. The dynamic root passes verification;
+legacy cleanup is skipped as requested.
+
+Bare and cache-busted HTTPS roots return 200 and identical local HTML, with
+`no-store, no-cache, must-revalidate, max-age=0`. The 827-entry release manifest
+and nine representative assets match local bytes and SHA-256. These checks also
+pass after a controlled browser reload. Canonical internal-browser QA at
+773 × 601 confirms actual catalogue preparation, READY while muted, START,
+Meridian, REPORT, current source/build identity and zero console/runtime issues.
+Automatic sending remains OFF, GPS is unavailable and no diagnostic was sent.
+Live audio was muted; no new listening or physical acceptance is claimed.

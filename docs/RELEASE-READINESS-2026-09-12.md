@@ -1,5 +1,16 @@
 # Release readiness — resumable checklist
 
+## September 18 product polish continuation
+
+- [x] P01 — Reproduce catalogue stalls/cancellation and natural-end replacement races; correct request ownership.
+- [x] P02 — Verify honest Intro/offline/Retry/READY states, responsive controls, FX/mode switching and eight visual lifecycle switches in the internal browser.
+- [x] P03 — Pass **891/891** full tests, **51/51** focused checks, **827** package hashes, **189** credits and **1,465** hygiene checks; repair and measure the local visual harness.
+- [x] P04 — Publish **20260918-2110.dbf5108**, verify preserve-existing FTP, bare/cache-busted HTTPS bytes and canonical browser/reload.
+- [ ] P05 — Physical Tesla/iPhone/native-media and sustained/thermal acceptance. Short local frame windows do not close these gates.
+
+[Polish evidence](HEALTH-CHECK-2026-09-18.md#product-polish-follow-up--september-18).
+R06 remains a separate incomplete scan; no duplicate scan was launched.
+
 ## September 18 Soundtrack continuation
 
 - [x] S01 — Reproduce and correct seek-readiness / initial-selection silence defects.

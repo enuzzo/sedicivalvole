@@ -1,5 +1,17 @@
 # Current Project State
 
+## Latest product quality checkpoint — 2026-09-18
+
+Canonical **20260918-2110.dbf5108** is published and verified, superseding the
+release identities below. Catalogue loading now has a cancellable 30-second
+deadline, replacement survives outgoing natural completion, and Intro/running
+states distinguish unavailable, offline and READY with same-selection Retry.
+**891/891** tests, **51/51** focused checks, **827** package hashes, **189** credits
+and **1,465** hygiene checks pass. Responsive/error/retry/FX/mode-switch flows and
+eight visual switches pass in the internal browser. Short local renderer windows
+measure 59.9–60 FPS; physical/endurance and formal R06 gates remain open.
+[Detailed findings and delivery evidence](HEALTH-CHECK-2026-09-18.md#product-polish-follow-up--september-18).
+
 ## Soundtrack readiness milestone — 2026-09-18
 
 Three reproduced transport defects are corrected: redundant zero seeks, playback

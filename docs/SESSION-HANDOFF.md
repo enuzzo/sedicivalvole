@@ -1,5 +1,17 @@
 # Session Handoff
 
+## Latest quality continuation — 2026-09-18
+
+The owner-requested polish pass is complete and canonical
+**20260918-2110.dbf5108** is published/verified; no upload remains. Full tests
+**891/891**, focused catalogue/launch **51/51**, package hashes **827**, credits
+**189**, hygiene **1,465** and local/live browser checks pass. Catalogue deadline,
+cancellation/natural-end ownership, honest recovery states and the local field
+harness were corrected. [Evidence](HEALTH-CHECK-2026-09-18.md#product-polish-follow-up--september-18).
+Next: target-Tesla continuity/native transport (**R7-14 / R10C-03**), sustained
+Air Atlas/Fly With, physical iPhone and remaining accepted Engine cases. Keep
+R06 separate and incomplete. Earlier release labels below are historical.
+
 ## Latest continuation — 2026-09-18
 
 The automatic-track waiting investigation produced a verified Soundtrack
