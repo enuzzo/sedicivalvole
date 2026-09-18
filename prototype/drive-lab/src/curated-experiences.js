@@ -112,8 +112,8 @@ export const CURATED_EXPERIENCES = Object.freeze([
       soundtrackSelection: Object.freeze({ kind: "genre", id: "pop" }),
     }),
   }),
-  Object.freeze({id: "sky-radio", title: "Sky Radio", description: "Sky Radio: ambient recordings and air-atlas.", detail: "air-atlas · ambient", image: "/artwork/visuals/air-atlas.png", settings: Object.freeze({environmentId: "air-atlas", themeId: "blue", appearanceMode: "dark", musicMode: "soundtrack", soundtrackSelection: Object.freeze({kind: "genre", id: "ambient"})})}),
-  Object.freeze({id: "city-jazz", title: "City Jazz", description: "City Jazz: jazz recordings and atlas.", detail: "atlas · jazz", image: "/artwork/visuals/atlas.png", settings: Object.freeze({environmentId: "atlas", themeId: "graphite", appearanceMode: "dark", musicMode: "soundtrack", soundtrackSelection: Object.freeze({kind: "genre", id: "jazz"})})}),
+  Object.freeze({id: "sky-radio", title: "Sky Radio", description: "Ambient recordings. A window onto the nearby sky.", detail: "Air Atlas · Blue · Ambient", image: "/artwork/visuals/air-atlas.png", settings: Object.freeze({environmentId: "air-atlas", themeId: "blue", appearanceMode: "dark", musicMode: "soundtrack", soundtrackSelection: Object.freeze({kind: "genre", id: "ambient"})})}),
+  Object.freeze({id: "city-jazz", title: "City Jazz", description: "Jazz recordings. Places along your journey.", detail: "Atlas · Graphite · Jazz", image: "/artwork/visuals/atlas.png", settings: Object.freeze({environmentId: "atlas", themeId: "graphite", appearanceMode: "dark", musicMode: "soundtrack", soundtrackSelection: Object.freeze({kind: "genre", id: "jazz"})})}),
 ]);
 
 export function curatedExperience(id) {

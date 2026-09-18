@@ -1676,6 +1676,16 @@ cover these boundaries. See [evidence and remaining listening acceptance](SOUNDT
 This repairs confirmed software defects, not a proven complete explanation or
 resolution of every wait in the historical vehicle packet.
 
+#### September 18 polish: bound catalogue ownership as well as media readiness
+
+A catalogue can stall before headers or during JSON decoding, so media-start
+timeouts alone cannot bound preparation. The controller now aborts after a
+single 30-second catalogue deadline and settles obsolete requests on replacement,
+pause or teardown. Natural completion of the outgoing recording cannot cancel
+the newer selection. Failure checks actual remaining audibility and retains the
+requested selection for retry if the outgoing recording has ended. These are
+network/transport correctness checks, not proof of audible cabin continuity.
+
 ### 6.16 A reactive effect must earn its runtime cost in the cabin
 
 The target-vehicle owner could not meaningfully perceive OPEN or BLOOM during

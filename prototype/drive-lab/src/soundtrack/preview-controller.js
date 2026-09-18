@@ -17,6 +17,7 @@ import { withReadinessTimeout } from "../promise-timeout.js";
 
 export const SOUNDTRACK_PREVIEW_SCHEMA = "sedicivalvole.soundtrack-preview.v1";
 export const SOUNDTRACK_TRANSPORT_START_TIMEOUT_MS = 10000;
+export const SOUNDTRACK_CATALOG_LOAD_TIMEOUT_MS = 30000;
 
 const safeCredit = (entry) => entry ? Object.freeze({
   key: entry.key,
@@ -72,10 +73,12 @@ export function createSoundtrackPreviewController({
   let preparedCurrentPromise = null;
   const transitionTimers = new Set();
   const pendingStarts = new Set();
+  let cancelCatalogRequest = null;
   const effects = effectsFactory();
 
   const nextTransportRevision = () => {
     requestRevision += 1;
+    cancelCatalogRequest?.();
     for (const cancel of pendingStarts) cancel();
     return requestRevision;
   };
@@ -91,6 +94,31 @@ export function createSoundtrackPreviewController({
     cancel: clearTimer,
     onTimeout,
   });
+
+  const requestCatalog = async (options) => {
+    const controller = new AbortController();
+    let rejectCancellation;
+    const cancellation = new Promise((_, reject) => { rejectCancellation = reject; });
+    const cancel = () => {
+      rejectCancellation(new Error("stale-catalog-request"));
+      controller.abort();
+    };
+    cancelCatalogRequest = cancel;
+    try {
+      return await withReadinessTimeout(Promise.race([
+        fetchSoundtrackCatalog({ ...options, signal: controller.signal }),
+        cancellation,
+      ]), {
+        label: "Soundtrack catalogue load",
+        timeoutMs: SOUNDTRACK_CATALOG_LOAD_TIMEOUT_MS,
+        schedule: setTimer,
+        cancel: clearTimer,
+        onTimeout: () => controller.abort(),
+      });
+    } finally {
+      if (cancelCatalogRequest === cancel) cancelCatalogRequest = null;
+    }
+  };
 
   const catalogCanServeSelection = (selection, nowMs) => {
     const currentSelection = catalogResult?.selection;
@@ -293,6 +321,9 @@ export function createSoundtrackPreviewController({
   async function advanceAfterEnded(endedEntry) {
     if (destroyed || !catalogResult || !queueState) return snapshot();
     if (endedEntry?.key !== queueState.slots.current?.key) return snapshot();
+    // The requested catalogue owns this transition, even if the outgoing
+    // recording finishes before its replacement arrives.
+    if (cancelCatalogRequest) return snapshot();
     const revision = nextTransportRevision();
     clearTransitionTimers();
     const movement = moveSoundtrackQueue(queueState, catalogResult.catalog, "next");
@@ -543,8 +574,6 @@ export function createSoundtrackPreviewController({
   } = {}) => {
     if (destroyed) return snapshot();
     preparedCurrentPromise = null;
-    const audibleBeforeLoad = queueState?.slots?.current?.key
-      && mediaSnapshot?.audibleKeys?.includes(queueState.slots.current.key);
     const revision = nextTransportRevision();
     const normalizedSelection = normalizeSoundtrackSelection(selection);
     pendingLibraryRotation = rotateSoundtrackEntries([], { selection: normalizedSelection, nowMs });
@@ -570,7 +599,7 @@ export function createSoundtrackPreviewController({
         status = "prepared";
         return emit();
       }
-      const nextCatalogResult = await fetchSoundtrackCatalog({
+      const nextCatalogResult = await requestCatalog({
         fetchImpl,
         limit: 50,
         speed: normalizedSelection.speed,
@@ -600,9 +629,13 @@ export function createSoundtrackPreviewController({
       return playPreparedCurrent(revision);
     } catch (caught) {
       if (destroyed || revision !== requestRevision) return staleTransportSnapshot(revision);
-      pendingLibraryRotation = null;
-      status = audibleBeforeLoad ? "playing" : "error";
-      error = String(caught?.message || caught || "catalog-unavailable").slice(0, 80);
+      const stillAudible = queueState?.slots?.current?.key
+        && deck.getSnapshot().audibleKeys.includes(queueState.slots.current.key);
+      if (stillAudible) pendingLibraryRotation = null;
+      status = stillAudible ? "playing" : "error";
+      error = caught?.code === "READINESS_TIMEOUT"
+        ? "catalog-load-timeout"
+        : String(caught?.message || caught || "catalog-unavailable").slice(0, 80);
       return emit();
     }
   };

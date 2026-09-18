@@ -17,7 +17,7 @@
 //   render    normal | wireframe                (DRIVEY only)
 //   type      frequency | axiom                  (PRTCL only)
 //   audio     held 0..1 score level              (DRIVEY / PRTCL)
-//   effect    OPEN | UNDERWATER | BLOOM          (DRIVEY / PRTCL)
+//   effect    UNDERWATER                        (native visual response)
 //
 // Example: /qa-field.html?env=meridian&speed=115&theme=red
 
@@ -25,7 +25,7 @@ import { lazy, StrictMode, Suspense, useCallback, useEffect, useRef, useState } 
 import { createRoot } from "react-dom/client";
 import "../src/styles.css";
 import { getFluxTheme } from "../src/flux-themes.js";
-import { ROAD_SPEED_CEILING_KMH, speedToEnergy } from "../src/signal-model.js";
+import { ROAD_SPEED_CEILING_KMH, speedToAperturePressure } from "../src/signal-model.js";
 import { createAudioMacroSnapshot } from "../src/response-mapping.js";
 
 // Loaded on demand so the harness can run an environment that another branch
@@ -60,12 +60,10 @@ const DRIVEY_SETTINGS = {
   renderMode: parameters.get("render") ?? "normal",
 };
 const PRTCL_SETTINGS = { type: parameters.get("type") ?? "frequency" };
-const QA_EFFECT = parameters.get("effect");
+const QA_EFFECT = parameters.get("effect") === "UNDERWATER" ? "UNDERWATER" : null;
 const QA_MACROS = createAudioMacroSnapshot({
   capturedAtMs: 0,
-  open: QA_EFFECT === "OPEN" ? 1 : 0,
   underwater: QA_EFFECT === "UNDERWATER" ? 1 : 0,
-  bloom: QA_EFFECT === "BLOOM" ? 1 : 0,
 });
 
 function useHeldSpeed() {
@@ -133,6 +131,7 @@ function Harness() {
   const speed = useHeldSpeed();
   const { onFrame, summary } = useFramePacing();
   const [renderer, setRenderer] = useState("starting");
+  const handleRuntimeError = useCallback((error) => setRenderer(`Unavailable · ${error.message}`), []);
 
   // Expose the live measurement to automated capture and profiling runs.
   useEffect(() => {
@@ -145,17 +144,17 @@ function Harness() {
     reducedMotion: REDUCED_MOTION,
     onRenderer: setRenderer,
     onFrame,
-    onRuntimeError: (error) => setRenderer(`Unavailable · ${error.message}`),
+    onRuntimeError: handleRuntimeError,
   };
 
   const Field = FIELDS[ENVIRONMENT] ?? FIELDS.meridian;
   const extra = ENVIRONMENT === "aperture"
-    ? { energy: speedToEnergy(speed), pulse: 0, brake: 0 }
+    ? { pressure: speedToAperturePressure(speed), brake: QA_EFFECT ? 1 : 0, effect: QA_EFFECT }
     : ENVIRONMENT === "drivey"
       ? { audioLevel: readNumber("audio", 0), effect: QA_EFFECT, macroSnapshot: QA_MACROS, settings: DRIVEY_SETTINGS }
       : ENVIRONMENT === "prtcl"
         ? { audioLevel: readNumber("audio", 0), effect: QA_EFFECT, settings: PRTCL_SETTINGS }
-      : {};
+      : { effect: QA_EFFECT };
 
   const APP_COMMIT = typeof __APP_COMMIT__ !== "undefined" ? __APP_COMMIT__ : "dev";
 
@@ -166,6 +165,7 @@ function Harness() {
       </Suspense>
       <div className="qa-readout" hidden={!SHOW_READOUT}>
         {[
+          "LOCAL QA · synthetic inputs",
           `${ENVIRONMENT.toUpperCase()}  ${speed.toFixed(1)} km/h  [${APP_COMMIT}]`,
           renderer,
           summary

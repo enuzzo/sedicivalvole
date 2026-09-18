@@ -96,6 +96,106 @@ class SeekingMedia extends FakeMedia {
 
 const flushMediaTasks = () => new Promise((resolve) => setImmediate(resolve));
 
+for (const stalledStage of ["headers", "body"]) {
+  test(`a stalled catalogue ${stalledStage} has one deadline, aborts and can be retried`, async () => {
+    const timers = [];
+    let signal;
+    let resolveStalled;
+    let calls = 0;
+    const stalled = new Promise(resolve => { resolveStalled = resolve; });
+    const controller = createSoundtrackPreviewController({
+      mediaFactory: () => new FakeMedia(),
+      setTimer: (callback, delay) => { const timer = { callback, delay, cleared: false }; timers.push(timer); return timer; },
+      clearTimer: timer => { timer.cleared = true; },
+      fetchImpl: async (_url, options) => {
+        if (calls++ > 0) return catalogFetch();
+        signal = options.signal;
+        return stalledStage === "headers" ? stalled : { ok: true, json: () => stalled };
+      },
+    });
+    try {
+      const loading = controller.load();
+      await flushMediaTasks();
+      const deadline = timers.find(timer => !timer.cleared && timer.delay === 30000);
+      assert.ok(deadline, "catalogue loading must not remain pending indefinitely");
+      assert.equal(signal.aborted, false);
+      deadline.callback();
+      const failed = await loading;
+      assert.equal(failed.status, "error");
+      assert.equal(failed.error, "catalog-load-timeout");
+      assert.equal(signal.aborted, true);
+      const retry = await controller.load();
+      assert.equal(retry.status, "prepared");
+      const response = await catalogFetch();
+      resolveStalled(stalledStage === "headers" ? response : await response.json());
+      await flushMediaTasks();
+      assert.equal(controller.getSnapshot().current.key, retry.current.key);
+      assert.equal(controller.getSnapshot().error, null);
+    } finally { controller.destroy(); }
+  });
+}
+
+for (const action of ["replacement", "pause", "destroy"]) {
+  test(`${action} aborts obsolete catalogue work without waiting for the provider`, async () => {
+    const requests = [];
+    let calls = 0;
+    const controller = createSoundtrackPreviewController({
+      mediaFactory: () => new FakeMedia(),
+      fetchImpl: async (_url, options) => {
+        requests.push(options);
+        return calls++ === 0 ? new Promise(() => {}) : catalogFetch();
+      },
+    });
+    try {
+      let settled = false;
+      const loading = controller.load().then(state => { settled = true; return state; });
+      await flushMediaTasks();
+      if (action === "replacement") await controller.load({ selection: { kind: "genre", id: "jazz" } });
+      else controller[action]();
+      await flushMediaTasks();
+      assert.equal(settled, true, "an obsolete native fetch may never settle");
+      assert.equal(requests[0].signal.aborted, true);
+      const state = await loading;
+      if (action === "replacement") {
+        assert.ok(["loading", "prepared"].includes(state.status));
+        assert.equal(state.library.selection.id, "jazz");
+        assert.equal(controller.getSnapshot().status, "prepared");
+        assert.equal(controller.getSnapshot().library.selection.id, "jazz");
+      } else assert.equal(state.status, action === "pause" ? "paused" : "destroyed");
+    } finally { controller.destroy(); }
+  });
+}
+
+for (const outcome of ["success", "failure"]) {
+  test(`natural completion during a catalogue replacement preserves the requested selection on ${outcome}`, async () => {
+    let complete;
+    let signal;
+    let calls = 0;
+    const media = new Map();
+    const controller = createSoundtrackPreviewController({
+      mediaFactory: entry => { const value = new FakeMedia(); media.set(entry.key, value); return value; },
+      fetchImpl: async (_url, options) => {
+        if (calls++ === 0) return catalogFetch();
+        signal = options.signal;
+        return new Promise(resolve => { complete = resolve; });
+      },
+    });
+    try {
+      const before = await controller.load({autoplay:true});
+      const loading = controller.load({selection:{kind:'genre',id:'jazz'},autoplay:true});
+      const outgoing = media.get(before.current.key);
+      outgoing.paused = true; outgoing.ended = true; outgoing.emit('ended');
+      await flushMediaTasks();
+      assert.equal(signal.aborted, false, 'an ended outgoing track must not cancel a new catalogue');
+      assert.equal(controller.getSnapshot().status, 'loading');
+      complete(outcome === 'success' ? await catalogFetch() : {ok:false,json:async()=>({status:'upstream_unavailable'})});
+      const result = await loading;
+      assert.equal(result.status, outcome === 'success' ? 'playing' : 'error');
+      assert.equal(result.library.selection.id, 'jazz');
+    } finally { controller.destroy(); }
+  });
+}
+
 test("natural advancement does not seek a prepared track already at its authored beginning", async () => {
   const media = new Map();
   const controller = createSoundtrackPreviewController({

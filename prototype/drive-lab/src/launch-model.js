@@ -32,6 +32,14 @@ export function soundtrackLaunchReady(snapshot, selection) {
     && soundtrackSelectionSignature(snapshot.library?.selection) === soundtrackSelectionSignature(selection));
 }
 
+/** Only an exact prepared selection can outrank connection or load failure. */
+export function soundtrackLaunchState(snapshot, selection, { offline = false } = {}) {
+  if (soundtrackLaunchReady(snapshot, selection)) return 'ready';
+  if (offline) return 'offline';
+  if (snapshot?.status === 'error') return 'error';
+  return 'loading';
+}
+
 export function prepareExactSoundtrackStart(controller, selection) {
   const snapshot = controller.getSnapshot();
   if (soundtrackLaunchReady(snapshot, selection)) return controller.resume();

@@ -27,6 +27,7 @@ export async function fetchSoundtrackCatalog({
   speed = [],
   genre = null,
   selection = null,
+  signal,
   nowMs = Date.now(),
 } = {}) {
   if (typeof fetchImpl !== "function") throw new Error("catalog-fetch-unavailable");
@@ -47,6 +48,7 @@ export async function fetchSoundtrackCatalog({
     cache: "no-store",
     credentials: "same-origin",
     headers: { Accept: "application/json" },
+    signal,
   });
   const payload = await response.json().catch(() => null);
   const expectedSchema = featured ? ILLOBO_CATALOG_SCHEMA : SOUNDTRACK_CATALOG_API_SCHEMA;

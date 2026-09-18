@@ -5,6 +5,9 @@ canonical application remains **20260912-1007.5ffacb1**, VERSION **0.0.0**.
 This checkpoint changes evidence and acceptance records only; it does not
 publish a new application or change dependencies, source assets or transport.
 
+The audit above is the initial historical checkpoint. The subsequent product
+polish and its delivery evidence are recorded at the end of this document.
+
 ## Current findings
 
 1. No regression failed the correctly configured 876-test suite; current npm
@@ -144,3 +147,52 @@ replacement decision. Dependency and hygiene checks do not close R06.
 
 No production SemVer release is inferred. Historical test IDs remain stable;
 old UI layouts and published-build labels are not new implementation work.
+
+## Product polish follow-up — September 18
+
+Starting point: clean synchronized `612f96a`, following the seek-readiness release.
+The broader owner-requested quality pass reproduced and corrected:
+
+- Unbounded catalogue loading, including a stalled JSON body. One 30-second
+  deadline now aborts the request; replacement, pause and destroy promptly settle
+  obsolete callers. Late responses cannot overwrite the requested selection.
+- An outgoing recording's natural end could cancel a newly requested catalogue.
+  The requested catalogue now retains ownership. Failure checks current audibility
+  instead of falsely reporting an already ended recording as playing.
+- Intro remained on Finding a track after failure. It now shows Music unavailable
+  with same-selection Retry, or Music offline; START remains available. Prepared
+  running tracks show READY and empty error states give an actionable explanation.
+- Sky Radio / City Jazz cards exposed internal identifiers; copy now uses public
+  visual, palette and genre names without changing bindings.
+- The development field harness imported a removed function and supplied an
+  obsolete Aperture parameter. It now uses the current pressure/effect contract,
+  labels synthetic inputs and keeps its error callback stable across readout
+  updates instead of restarting renderers. It is excluded from publication.
+
+Verification: **891/891** full native tests and **51/51** focused catalogue/launch
+checks pass. Eight new regression cases cover actual lifecycle/race boundaries;
+the seven controller cases were reproduced as failures before correction.
+No dependency or pinned upstream asset was changed.
+
+Only the Codex internal browser was used. Actual app checks covered failed/stalled
+HTTP catalogue requests, the 30-second abort, same-selection Retry without reload,
+START while unavailable, offline Intro, chooser Escape/focus restoration, FX
+HIT/reset, palette changes, Music → Engine → Music, and eight Aperture/Meridian
+switches with one canvas and zero leftover dialogs. Local catalogue/media fixtures
+were clearly synthetic; automatic diagnostic sending stayed OFF. No mail was sent.
+Desktop 1280 × 720, compact 773 × 601, landscape 844 × 390 and narrow 393 × 852
+were inspected; no horizontal overflow, blank app or runtime overlay was observed.
+The short landscape Intro scrolls internally and START remains reachable.
+
+| Local renderer | FPS | Frame p95 | Maximum | Frames over 34 ms |
+| --- | ---: | ---: | ---: | ---: |
+| Aperture | 60.0 | 18.70 ms | 18.90 ms | 0 |
+| Drivey Normal | 60.0 | 18.60 ms | 26.20 ms | 0 |
+| Prtcl Frequency | 59.9 | 18.50 ms | 31.50 ms | 0 |
+
+These are rolling 600-frame windows in the repaired local harness at 773 × 601,
+synthetic 40 km/h, Graphite. They are observations, not a before/after speedup or
+physical Tesla/endurance acceptance. App-level Meridian separately measured
+59.81 FPS / 18.5 ms p95. Captured browser warnings/errors remained zero.
+Physical audio/native transport, iPhone, thermal/endurance and formal R06 remain
+open. Existing bundle-size warnings remain; no unmeasured size improvement is claimed.

@@ -21,6 +21,7 @@ function ActionIcon({name}) {
   const paths={music:<><path d="M9 18V5l11-2v13M9 9l11-2"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></>,
     visual:<><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></>,
     dice:<><rect x="3" y="3" width="18" height="18" rx="3"/>{[[7,7],[17,7],[12,12],[7,17],[17,17]].map(([cx,cy])=><circle key={`${cx}-${cy}`} cx={cx} cy={cy} r=".8" fill="currentColor" stroke="none"/>)}</>,
+    retry:<><path d="M20 7v5h-5M20 12a8 8 0 1 0-2.5 5.8"/></>,
     palette:<><path d="M12 3a9 9 0 1 0 0 18h1a2 2 0 0 0 1.4-3.4 1.8 1.8 0 0 1 1.3-3.1H18a3 3 0 0 0 3-3C21 6.8 17 3 12 3Z"/>{[[7,10],[10,7],[15,7]].map(([cx,cy])=><circle key={cx} cx={cx} cy={cy} r="1"/>)}</>};
   return <svg className="cockpit-action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name]}</svg>;
 }
@@ -28,7 +29,7 @@ const ModeIcon = ({ name }) => <span className={`cockpit-mode-icon is-${name}`} 
 
 export function LaunchCockpit({ mode, onMode, musicId, onMusic, selection, lucky, onSelection, onLucky,
   environmentId, onVisual, onRandomVisual, soundtrackArtworkUrl, soundtrackTrack, theme, onPalette, scoreId, onScore, engineProfileId, onEngineProfile, experienceId, onExperience,
-  markUrl, build, onStart, ready, pending, muted, onUnmute, onSupport, onReset, Dialog }) {
+  markUrl, build, onStart, ready, pending, soundtrackStatus = 'loading', onRetrySoundtrack, muted, onUnmute, onSupport, onReset, Dialog }) {
   const [picker, setPicker] = useState(null);
   const [recommendations, setRecommendations] = useState(() => chooseCuratedRecommendations({selectedId:experienceId}));
   const presets = experienceId && !recommendations.some(item => item.id === experienceId) ? [CURATED_EXPERIENCES.find(item => item.id === experienceId), recommendations[1]].filter(Boolean) : recommendations;
@@ -44,6 +45,7 @@ export function LaunchCockpit({ mode, onMode, musicId, onMusic, selection, lucky
   const choose = action => { action(); close(); };
   const button = (id, name, active, action, detail = null) => <button type="button" key={id} aria-pressed={active} onClick={action}><strong>{name}</strong>{detail ? <small>{detail}</small> : null}</button>;
   const startLabel = engine ? 'START ENGINE' : musicId === 'mute' ? 'START VISUALS' : 'START MUSIC';
+  const soundtrackPlaceholder = soundtrackStatus === 'offline' ? 'Music offline' : soundtrackStatus === 'error' ? 'Music unavailable' : 'Finding a track…';
   return <>
     <section className="launch-cockpit" aria-label="Choose your drive" inert={picker ? true : undefined}>
       <header className="cockpit-heading">
@@ -68,11 +70,11 @@ export function LaunchCockpit({ mode, onMode, musicId, onMusic, selection, lucky
           <div className="cockpit-selection">
             <div className="cockpit-selection-heading">
               <Thumbnail src={musicId === 'play-road' ? score.coverUrl : musicId === 'soundtrack' ? soundtrackArtworkUrl || (selection.kind === 'featured' ? '/brand/illobo-featured-solid.svg' : MUSIC_ARTWORK) : '/third-party/tabler-icons/palette.svg'} />
-              <div className="cockpit-value"><div className="cockpit-metadata-row"><small>{musicId === 'soundtrack' ? (selectionLabel.toLowerCase() === 'soundtrack' ? 'SOUNDTRACK' : `SOUNDTRACK · ${selectionLabel}`) : musicId === 'mute' ? 'JUST THE VIEW' : 'ADAPTIVE SCORE'}</small></div><strong title={musicId === 'soundtrack' ? soundtrackTrack?.title : mixLabel}>{musicId === 'soundtrack' ? soundtrackTrack?.title || 'Finding a track…' : mixLabel}</strong></div>
+              <div className="cockpit-value"><div className="cockpit-metadata-row"><small>{musicId === 'soundtrack' ? (selectionLabel.toLowerCase() === 'soundtrack' ? 'SOUNDTRACK' : `SOUNDTRACK · ${selectionLabel}`) : musicId === 'mute' ? 'JUST THE VIEW' : 'ADAPTIVE SCORE'}</small></div><strong role={musicId === 'soundtrack' ? 'status' : undefined} title={musicId === 'soundtrack' ? soundtrackTrack?.title || soundtrackPlaceholder : mixLabel}>{musicId === 'soundtrack' ? soundtrackTrack?.title || soundtrackPlaceholder : mixLabel}</strong></div>
             </div>
             <div className="cockpit-choice-actions">
               {musicId !== 'mute' ? <button type="button" className="cockpit-text-action" aria-label={musicId === 'soundtrack' ? 'Choose soundtrack' : 'Choose adaptive score'} aria-haspopup="dialog" onClick={() => { setMixTab(selection.kind === 'pace' ? 'pace' : 'genre'); setPicker(musicId === 'soundtrack' ? 'mix' : 'score'); }}><ActionIcon name="music"/>Choose</button> : null}
-              {musicId === 'soundtrack' ? <button type="button" className="cockpit-random" aria-label="Random soundtrack" onClick={onLucky}><ActionIcon name="dice"/>Random</button> : null}
+              {musicId === 'soundtrack' ? <button type="button" className="cockpit-random" aria-label={soundtrackStatus === 'error' ? 'Retry soundtrack' : 'Random soundtrack'} onClick={soundtrackStatus === 'error' ? onRetrySoundtrack : onLucky}><ActionIcon name={soundtrackStatus === 'error' ? 'retry' : 'dice'}/>{soundtrackStatus === 'error' ? 'Retry' : 'Random'}</button> : null}
               {musicId === 'mute' ? <span className="cockpit-explanation">Visuals follow your drive.</span> : null}
             </div>
           </div>

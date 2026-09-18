@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { luckySoundtrackGenre, luckyLaunchVisual, initialLaunchSoundtrack, soundtrackLaunchReady, prepareExactSoundtrackStart } from '../src/launch-model.js';
+import { luckySoundtrackGenre, luckyLaunchVisual, initialLaunchSoundtrack, soundtrackLaunchReady, soundtrackLaunchState, prepareExactSoundtrackStart } from '../src/launch-model.js';
 import { SOUNDTRACK_GENRE_OPTIONS } from '../src/soundtrack/library-model.js';
 
 test('Feeling lucky reaches every supported genre and never immediately repeats', () => {
@@ -39,4 +39,16 @@ test('START recovers a cancelled or failed selection without substituting a reme
   const controller={getSnapshot:()=>snapshot,resume:async()=>{resumes++;},load:async args=>{requested=args;}};
   await prepareExactSoundtrackStart(controller,selection);assert.equal(resumes,0);assert.deepEqual(requested,{selection});
   assert.equal(soundtrackLaunchReady({...snapshot,status:'prepared',current:null},snapshot.library.selection),false);
+});
+
+test('Intro distinguishes unavailable and offline music from loading without exposing an old selection', () => {
+  const selection = {kind:'genre',id:'jazz'};
+  const snapshot = {status:'prepared',current:{key:'jazz'},library:{selection}};
+  assert.equal(soundtrackLaunchState(snapshot,selection), 'ready');
+  assert.equal(soundtrackLaunchState(snapshot,selection,{offline:true}), 'ready');
+  assert.equal(soundtrackLaunchState({...snapshot,status:'loading'},selection), 'loading');
+  assert.equal(soundtrackLaunchState({...snapshot,status:'error'},selection), 'error');
+  assert.equal(soundtrackLaunchState({...snapshot,status:'error'},selection,{offline:true}), 'offline');
+  assert.equal(soundtrackLaunchState(snapshot,{kind:'genre',id:'rock'}), 'loading');
+  assert.equal(soundtrackLaunchState(null,selection,{offline:true}), 'offline');
 });

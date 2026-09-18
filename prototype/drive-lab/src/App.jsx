@@ -16,7 +16,7 @@ import { createSessionExperience, observeSessionExperience, sessionExperienceSna
 import { createTerrainElevation, terrainElevationCell } from "./environments/atlas/terrain-elevation.js";
 import { SupportButton } from "./support-button.jsx";
 import { LaunchCockpit } from "./launch-cockpit.jsx";
-import { initialLaunchSoundtrack, luckySoundtrackGenre, luckyLaunchVisual, soundtrackLaunchReady, prepareExactSoundtrackStart } from "./launch-model.js";
+import { initialLaunchSoundtrack, luckySoundtrackGenre, luckyLaunchVisual, soundtrackLaunchReady, soundtrackLaunchState, prepareExactSoundtrackStart } from "./launch-model.js";
 import { startStationaryRefresh } from "./engine/stationary-refresh.js";
 import { createEngineMotion } from "./engine/motion.js";
 import { useEngine } from "./engine/use-engine.js";
@@ -1779,7 +1779,7 @@ function SoundtrackLibraryContent({
               </em>
             </button>
           ))}
-          {!entries.length ? <p>{loading ? `Loading ${featuredSelected ? "Illobo" : "a fresh Jamendo mix"}…` : "No eligible tracks in this selection."}</p> : null}
+          {!entries.length ? <p>{loading ? `Loading ${featuredSelected ? "Illobo" : "a fresh Jamendo mix"}…` : snapshot?.status === "error" ? "Music unavailable. Choose a playlist or genre to retry." : "No eligible tracks in this selection."}</p> : null}
         </div>
       </section>
 
@@ -1787,9 +1787,9 @@ function SoundtrackLibraryContent({
         <section className={`soundtrack-now-playing${snapshot?.attribution?.transitioning ? " is-transitioning" : ""}`} aria-live="polite">
           <RecoveringArtwork src={current?.imageUrl} width={80} height={80} fallback={featuredSelected ? "LO" : "JM"} />
           <div>
-            <small className={`soundtrack-now-label${playing ? " is-playing" : ""}`}><MediaGlyph name="levels" />{snapshot?.status === "error" ? (retrying ? "RETRYING" : "LOAD FAILED") : ["loading", "buffering", "prepared"].includes(snapshot?.status) ? "LOADING" : playing ? "NOW PLAYING" : "PAUSED"}</small>
-            <strong>{current?.title ?? `Preparing ${featuredSelected ? "Illobo playlist" : "Jamendo catalog"}`}</strong>
-            <span>{current?.artistName ?? snapshot?.status ?? "idle"}</span>
+            <small className={`soundtrack-now-label${playing ? " is-playing" : ""}`}><MediaGlyph name="levels" />{snapshot?.status === "error" ? (retrying ? "RETRYING" : "LOAD FAILED") : snapshot?.status === "prepared" ? "READY" : ["loading", "buffering"].includes(snapshot?.status) ? "LOADING" : playing ? "NOW PLAYING" : "PAUSED"}</small>
+            <strong>{current?.title ?? (snapshot?.status === "error" ? "Music unavailable" : `Preparing ${featuredSelected ? "Illobo playlist" : "Jamendo catalog"}`)}</strong>
+            <span>{current?.artistName ?? (snapshot?.status === "error" ? "Choose a playlist or genre to retry" : "Loading library")}</span>
             {snapshot?.attribution?.transitioning ? <span className="soundtrack-transition-status">Crossfading</span> : null}
           </div>
           <div className="soundtrack-transport" aria-label="Soundtrack transport">
@@ -4057,10 +4057,13 @@ export function App() {
   useRecoveringArtwork(phase !== "running" ? soundtrackSnapshot?.current?.imageUrl : null);
   useRecoveringArtwork(soundtrackSnapshot?.previous?.imageUrl);
   useRecoveringArtwork(soundtrackSnapshot?.next?.imageUrl);
-  const transportTrack = currentTrack ?? { title: "Preparing Soundtrack", artist: "Loading library", album: "Soundtrack" };
+  const transportTrack = currentTrack ?? (soundtrackSnapshot?.status === "error"
+    ? { title: "Music unavailable", artist: "Choose music to retry", album: "Soundtrack" }
+    : { title: "Preparing Soundtrack", artist: "Loading library", album: "Soundtrack" });
   const transportLabel = musicMode === "soundtrack"
-    ? soundtrackSnapshot?.status === "error" ? (muted ? "LOAD FAILED" : "RETRYING")
-      : ["idle", "loading", "buffering", "prepared"].includes(soundtrackSnapshot?.status) || !currentTrack ? "LOADING"
+    ? soundtrackSnapshot?.status === "error" ? (networkNotice.status === "offline" ? "OFFLINE" : muted ? "LOAD FAILED" : "RETRYING")
+      : soundtrackSnapshot?.status === "prepared" && currentTrack ? "READY"
+      : ["idle", "loading", "buffering"].includes(soundtrackSnapshot?.status) || !currentTrack ? "LOADING"
         : soundtrackMediaIsPlaying(soundtrackSnapshot) ? "NOW PLAYING" : "PAUSED"
     : playRoadPaused ? "PAUSED" : "NOW PLAYING";
   useEffect(() => {
@@ -5237,6 +5240,8 @@ export function App() {
           selection={launchSoundtrackSelection} lucky={launchLucky}
           soundtrackArtworkUrl={soundtrackLaunchReady(soundtrackSnapshot, launchSoundtrackSelection) ? soundtrackSnapshot.current?.imageUrl : null}
           soundtrackTrack={soundtrackLaunchReady(soundtrackSnapshot, launchSoundtrackSelection) ? soundtrackSnapshot.current : null}
+          soundtrackStatus={soundtrackLaunchState(soundtrackSnapshot, launchSoundtrackSelection, { offline: networkNotice.status === "offline" })}
+          onRetrySoundtrack={() => prepareLaunchSoundtrack(launchSoundtrackSelection)}
           theme={getFluxTheme(themeId)} onPalette={() => { setLaunchExperienceId(null); setThemeId(FLUX_THEMES[(FLUX_THEMES.findIndex(item => item.id === themeId) + 1) % FLUX_THEMES.length].id); }}
           onSelection={chooseLaunchSoundtrack}
           onLucky={() => chooseLaunchSoundtrack(luckySoundtrackGenre(launchSoundtrackSelection.id), true)}
@@ -5683,7 +5688,7 @@ export function App() {
           loadingMode={musicModeLoading}
           genreId={genreId}
           snapshot={soundtrackSnapshot}
-          retrying={!muted && soundtrackSnapshot?.status === "error"}
+          retrying={!muted && networkNotice.status !== "offline" && soundtrackSnapshot?.status === "error"}
           jamendoPreviewEntries={jamendoPreviewEntries}
           onModeChange={switchMusicMode}
           onScoreChange={selectScore}
