@@ -124,6 +124,7 @@ export function createSoundtrackMediaDeckController({
       bufferedAheadSeconds: bufferedAheadSeconds(media),
       paused: media.paused !== false,
       ended: media.ended === true,
+      seeking: media.seeking === true,
       currentTimeSeconds: rounded(asFinite(media.currentTime), 2),
       durationSeconds: rounded(asFinite(media.duration), 2),
       errorCode: safeErrorCode(media),
@@ -396,7 +397,10 @@ export function createSoundtrackMediaDeckController({
     return emit("queue:synced");
   };
 
-  const waitForStableBuffer = (key, { minimumSeconds = SOUNDTRACK_STABLE_BUFFER_SECONDS } = {}) => {
+  const waitForStableBuffer = (key, {
+    minimumSeconds = SOUNDTRACK_STABLE_BUFFER_SECONDS,
+    requirePlayable = false,
+  } = {}) => {
     const record = records.get(key);
     if (!record) {
       return Object.freeze({
@@ -405,7 +409,7 @@ export function createSoundtrackMediaDeckController({
       });
     }
     let settled = false;
-    const observedEvents = ["progress", "canplay", "canplaythrough", "playing", "timeupdate", "error"];
+    const observedEvents = ["progress", "canplay", "canplaythrough", "playing", "timeupdate", "seeked", "error"];
     let resolvePromise;
     let rejectPromise;
     const cleanup = () => {
@@ -426,7 +430,9 @@ export function createSoundtrackMediaDeckController({
         finish(rejectPromise, new Error("media-error"));
         return;
       }
-      if (hasStableBuffer(record.media, minimumSeconds)) {
+      const playable = record.media.seeking !== true
+        && Number(record.media.readyState) >= HAVE_FUTURE_DATA;
+      if (hasStableBuffer(record.media, minimumSeconds) && (!requirePlayable || playable)) {
         record.lastEvent = "stable-buffer-ready";
         applyPreloadPolicy();
         finish(resolvePromise, getSnapshot());
@@ -445,17 +451,22 @@ export function createSoundtrackMediaDeckController({
   };
 
   const rewindKeys = (keys = []) => {
+    let rewound = false;
     for (const key of new Set(keys)) {
       const record = records.get(key);
       if (!record || safeErrorCode(record.media) != null) continue;
+      // Even assigning the current position can restart browser decoding.
+      // Skip only exact zero: silent preparation must not cut the opening.
+      if (record.media.currentTime === 0 && record.media.ended !== true) continue;
       try {
         record.media.currentTime = 0;
+        rewound = true;
         record.lastEvent = "rewound-before-audible-start";
       } catch {
         controllerError = "media-rewind-failed";
       }
     }
-    return emit("media:rewound");
+    return emit(rewound ? "media:rewound" : "media:already-at-start");
   };
 
   const playCurrent = async () => {

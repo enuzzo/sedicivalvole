@@ -71,7 +71,14 @@ export function createSoundtrackPreviewController({
   let pendingTrack = null;
   let preparedCurrentPromise = null;
   const transitionTimers = new Set();
+  const pendingStarts = new Set();
   const effects = effectsFactory();
+
+  const nextTransportRevision = () => {
+    requestRevision += 1;
+    for (const cancel of pendingStarts) cancel();
+    return requestRevision;
+  };
 
   const transportError = (caught) => caught?.code === "READINESS_TIMEOUT"
     ? "transport-start-timeout"
@@ -246,10 +253,47 @@ export function createSoundtrackPreviewController({
     return snapshot();
   };
 
+  const startBufferedMedia = async ({ revision, key, playRequest, resumeRequest, rewind, onTimeout }) => {
+    let bufferWait = deck.waitForStableBuffer(key);
+    let cancelled = false;
+    let rejectCancellation;
+    const cancellation = new Promise((_, reject) => { rejectCancellation = reject; });
+    const cancel = () => {
+      cancelled = true;
+      bufferWait.cancel();
+      rejectCancellation(new Error("stale-transport-start"));
+    };
+    pendingStarts.add(cancel);
+    const prepared = Promise.all([playRequest, resumeRequest, bufferWait.promise]).then(async ([result]) => {
+      if (!result.ok || cancelled || destroyed || revision !== requestRevision) return result;
+      if (rewind) {
+        mediaSnapshot = deck.rewindKeys([key]);
+        if (mediaSnapshot.controllerError === "media-rewind-failed") throw new Error("media-rewind-failed");
+        // Buffered encoded bytes and a resolved play() do not establish that
+        // the decoder is ready after seeking. Keep the same overall deadline.
+        bufferWait = deck.waitForStableBuffer(key, { requirePlayable: true });
+        await bufferWait.promise;
+      }
+      return result;
+    });
+    try {
+      return await awaitTransportStart(Promise.race([prepared, cancellation]), {
+        onTimeout: () => {
+          cancelled = true;
+          bufferWait.cancel();
+          if (!destroyed && revision === requestRevision) onTimeout();
+        },
+      });
+    } finally {
+      pendingStarts.delete(cancel);
+      bufferWait.cancel();
+    }
+  };
+
   async function advanceAfterEnded(endedEntry) {
     if (destroyed || !catalogResult || !queueState) return snapshot();
     if (endedEntry?.key !== queueState.slots.current?.key) return snapshot();
-    const revision = ++requestRevision;
+    const revision = nextTransportRevision();
     clearTransitionTimers();
     const movement = moveSoundtrackQueue(queueState, catalogResult.catalog, "next");
     if (!movement.activated) {
@@ -269,19 +313,16 @@ export function createSoundtrackPreviewController({
     emit();
 
     let started;
-    const bufferWait = deck.waitForStableBuffer(targetKey);
     try {
-      [started] = await awaitTransportStart(
-        Promise.all([deck.playCurrent(), effects.resume(), bufferWait.promise]),
-        {
-          onTimeout: () => {
-            bufferWait.cancel();
-            deck.pauseExcept([]);
-            deck.discardKeys([targetKey]);
-            mediaSnapshot = deck.syncQueue(queueState);
-          },
+      started = await startBufferedMedia({
+        revision, key: targetKey, rewind: true,
+        playRequest: deck.playCurrent(), resumeRequest: effects.resume(),
+        onTimeout: () => {
+          deck.pauseExcept([]);
+          deck.discardKeys([targetKey]);
+          mediaSnapshot = deck.syncQueue(queueState);
         },
-      );
+      });
     } catch (caught) {
       if (destroyed || revision !== requestRevision) return staleTransportSnapshot(revision);
       mediaSnapshot = deck.pauseExcept([]);
@@ -297,7 +338,6 @@ export function createSoundtrackPreviewController({
       pendingTrack = null;
       return emit();
     }
-    mediaSnapshot = deck.rewindKeys([targetKey]);
     effects.setImmediateTrackGains?.({ [targetKey]: 1 });
     status = "playing";
     error = null;
@@ -313,22 +353,19 @@ export function createSoundtrackPreviewController({
       pendingTrack = Object.freeze({ direction: "start", track: safeCredit(queueState.slots.current) });
     }
     let result;
-    const bufferWait = currentKey ? deck.waitForStableBuffer(currentKey) : null;
     status = "buffering";
     error = null;
     emit();
     try {
-      [result] = await awaitTransportStart(
-        Promise.all([deck.playCurrent(), effects.resume(), bufferWait?.promise ?? Promise.resolve()]),
-        {
-          onTimeout: () => {
-            bufferWait?.cancel();
-            deck.pauseExcept([]);
-            deck.discardKeys(currentKey ? [currentKey] : []);
-            if (queueState) mediaSnapshot = deck.syncQueue(queueState);
-          },
+      result = await startBufferedMedia({
+        revision, key: currentKey, rewind: restartCurrent,
+        playRequest: deck.playCurrent(), resumeRequest: effects.resume(),
+        onTimeout: () => {
+          deck.pauseExcept([]);
+          deck.discardKeys(currentKey ? [currentKey] : []);
+          if (queueState) mediaSnapshot = deck.syncQueue(queueState);
         },
-      );
+      });
     } catch (caught) {
       if (destroyed || revision !== requestRevision) return staleTransportSnapshot(revision);
       mediaSnapshot = deck.pauseExcept([]);
@@ -342,9 +379,7 @@ export function createSoundtrackPreviewController({
       status = "error";
       error = error || result.reason;
     } else {
-      mediaSnapshot = restartCurrent
-        ? deck.rewindKeys(currentKey ? [currentKey] : [])
-        : result.snapshot;
+      mediaSnapshot = deck.getSnapshot();
       effects.setImmediateTrackGains?.(currentKey ? { [currentKey]: 1 } : {});
       status = "playing";
       error = null;
@@ -415,28 +450,26 @@ export function createSoundtrackPreviewController({
       audibleKeys: retainedKeys,
       restartKeys: restartTarget ? [targetKey] : [],
     });
-    effects.setImmediateTrackGains?.(prepared.state.fromGains);
+    effects.setImmediateTrackGains?.(Object.fromEntries(
+      Object.entries(prepared.state.fromGains).filter(([key]) => audibleKeys.has(key)),
+    ));
     // Start every newly audible media element while the transport click still
     // owns transient user activation. Awaiting AudioContext/worklet readiness
     // first can make Chromium reject the incoming deck as autoplay.
     const playRequest = deck.playKeys(retainedKeys);
     const resumeRequest = effects.resume();
     const targetWasAudible = audibleKeys.has(targetKey);
-    const bufferWait = deck.waitForStableBuffer(targetKey);
     status = "buffering";
     error = null;
     emit();
     let started;
     try {
-      [started] = await awaitTransportStart(
-        Promise.all([playRequest, resumeRequest, bufferWait.promise]),
-        {
-          onTimeout: () => {
-            bufferWait.cancel();
-            restorePreviousQueue({ discardTarget: true });
-          },
+      started = await startBufferedMedia({
+        revision, key: targetKey, playRequest, resumeRequest, rewind: !targetWasAudible,
+        onTimeout: () => {
+          restorePreviousQueue({ discardTarget: true });
         },
-      );
+      });
     } catch (caught) {
       if (destroyed || revision !== requestRevision) return staleTransportSnapshot(revision);
       restorePreviousQueue();
@@ -453,8 +486,6 @@ export function createSoundtrackPreviewController({
       pendingTrack = null;
       return emit();
     }
-
-    if (!targetWasAudible) mediaSnapshot = deck.rewindKeys([targetKey]);
 
     const scheduled = scheduleWithTrackLimit(targetKey, clockTime());
     if (scheduled.blockedReason) {
@@ -514,7 +545,7 @@ export function createSoundtrackPreviewController({
     preparedCurrentPromise = null;
     const audibleBeforeLoad = queueState?.slots?.current?.key
       && mediaSnapshot?.audibleKeys?.includes(queueState.slots.current.key);
-    const revision = ++requestRevision;
+    const revision = nextTransportRevision();
     const normalizedSelection = normalizeSoundtrackSelection(selection);
     pendingLibraryRotation = rotateSoundtrackEntries([], { selection: normalizedSelection, nowMs });
     status = "loading";
@@ -579,7 +610,7 @@ export function createSoundtrackPreviewController({
   const select = async (key) => {
     if (destroyed || !catalogResult || !queueState) return snapshot();
     preparedCurrentPromise = null;
-    const revision = ++requestRevision;
+    const revision = nextTransportRevision();
     const queue = createSoundtrackQueue(catalogResult.catalog, {
       preferredKey: key,
       selectionCursor: queueState.selectionCursor,
@@ -601,7 +632,7 @@ export function createSoundtrackPreviewController({
   const move = async (direction) => {
     if (destroyed || !catalogResult || !queueState) return snapshot();
     preparedCurrentPromise = null;
-    const revision = ++requestRevision;
+    const revision = nextTransportRevision();
     const movement = moveSoundtrackQueue(queueState, catalogResult.catalog, direction);
     if (!movement.activated) {
       error = movement.blockedReason;
@@ -618,7 +649,7 @@ export function createSoundtrackPreviewController({
   const pause = () => {
     if (destroyed) return snapshot();
     preparedCurrentPromise = null;
-    requestRevision += 1;
+    nextTransportRevision();
     clearTransitionTimers();
     const currentKey = queueState?.slots?.current?.key;
     effects.setImmediateTrackGains?.(currentKey ? { [currentKey]: 1 } : {});
@@ -637,7 +668,7 @@ export function createSoundtrackPreviewController({
     if (preparedCurrentPromise) return preparedCurrentPromise;
     const currentKey = queueState.slots.current.key;
     if (mediaSnapshot?.audibleKeys?.includes(currentKey)) return Promise.resolve(snapshot());
-    const revision = ++requestRevision;
+    const revision = nextTransportRevision();
     return playPreparedCurrent(revision, { restartCurrent: false });
   };
 
@@ -645,7 +676,7 @@ export function createSoundtrackPreviewController({
     if (destroyed) return snapshot();
     preparedCurrentPromise = null;
     destroyed = true;
-    requestRevision += 1;
+    nextTransportRevision();
     clearTransitionTimers();
     mediaSnapshot = deck.destroy();
     effects.destroy();

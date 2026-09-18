@@ -34,9 +34,13 @@ class FakeMedia {
     this.duration = 180;
     this.buffered = { length: 1, start: () => 0, end: () => 30 };
   }
-  addEventListener(name, listener) { this.listeners.set(name, listener); }
-  removeEventListener(name) { this.listeners.delete(name); }
-  emit(name) { this.listeners.get(name)?.(); }
+  addEventListener(name, listener) {
+    const listeners = this.listeners.get(name) ?? new Set();
+    listeners.add(listener);
+    this.listeners.set(name, listeners);
+  }
+  removeEventListener(name, listener) { this.listeners.get(name)?.delete(listener); }
+  emit(name) { for (const listener of [...(this.listeners.get(name) ?? [])]) listener(); }
   removeAttribute(name) { if (name === "src") this.src = ""; }
   load() {}
   pause() { this.paused = true; }
@@ -55,6 +59,227 @@ const catalogFetch = async () => ({
     fetchedAt: "2026-08-31T00:00:00.000Z",
     tracks: [track(1), track(2), track(3), track(4)],
   }),
+});
+
+class SeekingMedia extends FakeMedia {
+  constructor() {
+    super();
+    this.position = 0;
+    this.seekWrites = [];
+    this.seeking = false;
+    this.deferSeek = false;
+    this.warmupSeconds = 0;
+    Object.defineProperty(this, "currentTime", {
+      get: () => this.position,
+      set: (value) => {
+        this.position = value;
+        this.seekWrites.push(value);
+        if (!this.deferSeek) return;
+        this.seeking = true;
+        this.readyState = 1;
+        this.emit("seeking");
+        this.emit("waiting");
+      },
+    });
+  }
+  async play() {
+    await super.play();
+    this.position += this.warmupSeconds;
+  }
+  finishSeek() {
+    this.seeking = false;
+    this.readyState = 4;
+    this.emit("seeked");
+    this.emit("playing");
+  }
+}
+
+const flushMediaTasks = () => new Promise((resolve) => setImmediate(resolve));
+
+test("natural advancement does not seek a prepared track already at its authored beginning", async () => {
+  const media = new Map();
+  const controller = createSoundtrackPreviewController({
+    fetchImpl: catalogFetch,
+    mediaFactory: entry => { const value = new SeekingMedia(); media.set(entry.key, value); return value; },
+  });
+  try {
+    const before = await controller.load({ autoplay: true, nowMs: 0 });
+    const incoming = media.get(before.next.key);
+    incoming.deferSeek = true;
+    const outgoing = media.get(before.current.key);
+    outgoing.position = outgoing.duration;
+    outgoing.ended = true;
+    outgoing.paused = true;
+    outgoing.emit("ended");
+    await flushMediaTasks();
+    assert.equal(controller.getSnapshot().status, "playing");
+    assert.equal(controller.getSnapshot().current.key, before.next.key);
+    assert.equal(incoming.currentTime, 0);
+    assert.equal(incoming.seekWrites.length, 0, "a redundant seek can invalidate an already prepared decoder");
+  } finally { controller.destroy(); }
+});
+
+test("manual skip preserves outgoing playback and metadata until the target seek becomes playable", async () => {
+  const media = new Map();
+  const controller = createSoundtrackPreviewController({
+    fetchImpl: catalogFetch,
+    mediaFactory: entry => { const value = new SeekingMedia(); media.set(entry.key, value); return value; },
+  });
+  try {
+    const before = await controller.load({ autoplay: true, nowMs: 0 });
+    const incoming = media.get(before.next.key);
+    incoming.deferSeek = true;
+    incoming.warmupSeconds = 0.25;
+    const moving = controller.move("next");
+    await flushMediaTasks();
+    assert.equal(incoming.seeking, true);
+    assert.equal(controller.getSnapshot().status, "buffering");
+    assert.equal(controller.getSnapshot().current.key, before.current.key);
+    assert.equal(media.get(before.current.key).paused, false);
+    assert.equal(incoming.currentTime, 0, "silent warmup must not skip the recording's opening");
+    incoming.seeking = false;
+    incoming.emit("seeked");
+    await flushMediaTasks();
+    assert.equal(controller.getSnapshot().status, "buffering", "seeked without playable data is insufficient");
+    incoming.readyState = 3;
+    incoming.emit("canplay");
+    const after = await moving;
+    assert.equal(after.status, "playing");
+    assert.equal(after.current.key, before.next.key);
+  } finally { controller.destroy(); }
+});
+
+for (const mode of ["initial selection", "automatic"]) {
+  test(`${mode} start remains silent and buffering until rewind decoding is ready`, async () => {
+    const media = new Map();
+    let gains = {};
+    const controller = createSoundtrackPreviewController({
+      fetchImpl: catalogFetch,
+      mediaFactory: entry => { const value = new SeekingMedia(); media.set(entry.key, value); return value; },
+      effectsFactory: () => ({
+        attachMedia() {}, detachMedia() {}, destroy() {},
+        getSnapshot: () => ({}), resume: async () => {},
+        setImmediateTrackGains: value => { gains = value; },
+      }),
+    });
+    try {
+      const before = await controller.load({ autoplay: mode === "automatic", nowMs: 0 });
+      const key = mode === "initial selection" ? before.current.key : before.next.key;
+      const incoming = media.get(key);
+      incoming.deferSeek = true;
+      incoming.warmupSeconds = 0.25;
+      let starting;
+      if (mode === "initial selection") starting = controller.select(key);
+      else {
+        const outgoing = media.get(before.current.key);
+        outgoing.ended = true;
+        outgoing.paused = true;
+        outgoing.emit("ended");
+      }
+      await flushMediaTasks();
+      assert.equal(controller.getSnapshot().status, "buffering");
+      assert.equal(gains[key] ?? 0, 0);
+      assert.equal(incoming.currentTime, 0);
+      incoming.finishSeek();
+      if (starting) await starting;
+      await flushMediaTasks();
+      assert.equal(controller.getSnapshot().status, "playing");
+      assert.equal(controller.getSnapshot().current.key, key);
+    } finally { controller.destroy(); }
+  });
+}
+
+test("autoplay load waits for an advanced silent warmup to seek back before committing playback", async () => {
+  let current;
+  let gains = {};
+  const controller = createSoundtrackPreviewController({
+    fetchImpl: catalogFetch,
+    mediaFactory: () => {
+      const value = new SeekingMedia();
+      value.warmupSeconds = 0.25;
+      value.deferSeek = true;
+      current ??= value;
+      return value;
+    },
+    effectsFactory: () => ({
+      attachMedia() {}, detachMedia() {}, destroy() {},
+      getSnapshot: () => ({}), resume: async () => {},
+      setImmediateTrackGains: value => { gains = value; },
+    }),
+  });
+  try {
+    const starting = controller.load({ autoplay: true, nowMs: 0 });
+    await flushMediaTasks();
+    const pending = controller.getSnapshot();
+    assert.equal(pending.status, "buffering");
+    assert.equal(gains[pending.current.key], 0);
+    assert.equal(current.seeking, true);
+    current.readyState = 4;
+    current.emit("canplay");
+    await flushMediaTasks();
+    assert.equal(controller.getSnapshot().status, "buffering", "ready data cannot bypass an unfinished seek");
+    current.finishSeek();
+    assert.equal((await starting).status, "playing");
+    assert.equal(gains[pending.current.key], 1);
+  } finally { controller.destroy(); }
+});
+
+test("post-rewind timeout shares the original deadline and restores the outgoing track", async () => {
+  const media = new Map(), timers = [];
+  const controller = createSoundtrackPreviewController({
+    fetchImpl: catalogFetch,
+    mediaFactory: entry => { const value = new SeekingMedia(); media.set(entry.key, value); return value; },
+    setTimer: (callback, delay) => { const timer = { callback, delay, cleared: false }; timers.push(timer); return timer; },
+    clearTimer: timer => { timer.cleared = true; },
+  });
+  try {
+    const before = await controller.load({ autoplay: true, nowMs: 0 });
+    const incoming = media.get(before.next.key);
+    incoming.deferSeek = true;
+    incoming.warmupSeconds = 0.25;
+    const moving = controller.move("next");
+    const deadline = timers.at(-1);
+    await flushMediaTasks();
+    assert.equal(incoming.seeking, true);
+    assert.equal(timers.at(-1), deadline, "seek readiness must not restart the ten-second clock");
+    assert.equal(deadline.delay, SOUNDTRACK_TRANSPORT_START_TIMEOUT_MS);
+    deadline.callback();
+    const failed = await moving;
+    assert.equal(failed.status, "error");
+    assert.equal(failed.error, "transport-start-timeout");
+    assert.equal(failed.current.key, before.current.key);
+    assert.equal(media.get(before.current.key).paused, false);
+    assert.equal(incoming.paused, true);
+    incoming.finishSeek();
+    await flushMediaTasks();
+    assert.equal(controller.getSnapshot().current.key, before.current.key);
+    assert.equal((await controller.move("next")).status, "playing");
+  } finally { controller.destroy(); }
+});
+
+test("pause cancels a pending seek immediately and its late completion cannot replace resumed playback", async () => {
+  const media = new Map();
+  const controller = createSoundtrackPreviewController({
+    fetchImpl: catalogFetch,
+    mediaFactory: entry => { const value = new SeekingMedia(); media.set(entry.key, value); return value; },
+  });
+  try {
+    const before = await controller.load({ autoplay: true, nowMs: 0 });
+    const incoming = media.get(before.next.key);
+    incoming.deferSeek = true;
+    incoming.warmupSeconds = 0.25;
+    const moving = controller.move("next");
+    await flushMediaTasks();
+    controller.pause();
+    assert.equal((await moving).status, "paused");
+    assert.equal(incoming.listeners.get("seeked")?.size ?? 0, 0);
+    assert.equal((await controller.resume()).status, "playing");
+    incoming.finishSeek();
+    await flushMediaTasks();
+    const after = controller.getSnapshot();
+    assert.equal(after.current.key, before.current.key);
+    assert.deepEqual(after.media.audibleKeys, [before.current.key]);
+  } finally { controller.destroy(); }
 });
 
 const sourceAwareCatalogFetch = async (url) => {
@@ -505,8 +730,9 @@ test("a newer play intent owns the current deck while a cancelled next resolves"
   assert.equal(resumed.status, "playing");
   assert.deepEqual(resumed.media.audibleKeys, [originalKey]);
 
-  releaseIncoming();
   await moving;
+  releaseIncoming();
+  await flushMediaTasks();
   const settled = controller.getSnapshot();
   assert.equal(settled.status, "playing");
   assert.equal(settled.current.key, originalKey);

@@ -1,5 +1,15 @@
 # Current Project State
 
+## Soundtrack readiness milestone — 2026-09-18
+
+Three reproduced transport defects are corrected: redundant zero seeks, playback
+commitment before seek readiness, and initial-selection gain during preparation.
+Local evidence: **883/883** native tests, **68/68** focused checks and **12/12**
+real-media internal-browser assertions. Publication is pending the production
+gates. See [scope and acceptance](SOUNDTRACK-SEEK-READINESS-2026-09-18.md).
+The health audit below remains historical evidence; cabin continuity and native
+Tesla transport are still open.
+
 ## Health and acceptance refresh — 2026-09-18
 
 Canonical **20260912-1007.5ffacb1** remains verified online. Current audit of

@@ -25,7 +25,7 @@
 
 This is an **experimental development project**, not a released or
 device-certified product. See the [release-readiness checklist](docs/RELEASE-READINESS-2026-09-12.md)
-for the current audit and remaining acceptance work. Dated build notes below
+for the current audit and remaining acceptance work. The [Soundtrack readiness follow-up](docs/SOUNDTRACK-SEEK-READINESS-2026-09-18.md) records the current targeted transport correction and its separate listening gate. Dated build notes below
 are historical verification records, not a promise about the current live build.
 
 Engine now offers only **Mono, Rosso and Touring**, with their accepted audio calibration unchanged. Otto, Cinque and Turbine are retired from Intro, running selectors and LAB. Canonically verified build `20260908-2356`; [decision and validation](docs/ENGINE-RETAINED-VOICES-2026-09-08.md).

@@ -1653,6 +1653,29 @@ natural-end advancement, and stable committed metadata. Final proof remains a
 low-bandwidth target-Tesla listening run; desktop buffer state alone cannot
 close a stutter report.
 
+#### September 18 correction: buffered bytes do not prove post-seek readiness
+
+The September 12 road packet recorded automatic-track `waiting` to `playing`
+intervals of 1.69 s and 0.98 s immediately after rewind. These intervals do not
+measure cabin silence, but motivated a controlled reproduction. The controller
+always assigned `currentTime=0`, even at exactly zero, then committed audible
+gain without waiting for the seek. A real browser reproduced `readyState=1`
+and `seeking=true` despite forty seconds of buffered audio. This agrees with
+the [HTML media seeking algorithm](https://html.spec.whatwg.org/multipage/media.html#seeking):
+encoded ranges and an earlier resolved `play()` are insufficient after a seek.
+
+Skip only a redundant exact-zero seek on a non-ended element. Otherwise preserve
+the authored beginning and wait for `seeking=false`, `readyState>=3`, and the
+existing buffer floor before committing. Do not reset the ten-second deadline.
+Only previously playing tracks retain gain while a manual target prepares;
+initial selection must remain silent. Cancel obsolete waits on pause, replacement
+or destruction, including when an old native play promise never settles.
+Lifecycle telemetry now includes `seeking` and distinguishes a real rewind from
+`media:already-at-start`. Seven regressions and a native-media browser sequence
+cover these boundaries. See [evidence and remaining listening acceptance](SOUNDTRACK-SEEK-READINESS-2026-09-18.md).
+This repairs confirmed software defects, not a proven complete explanation or
+resolution of every wait in the historical vehicle packet.
+
 ### 6.16 A reactive effect must earn its runtime cost in the cabin
 
 The target-vehicle owner could not meaningfully perceive OPEN or BLOOM during

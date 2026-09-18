@@ -1,5 +1,15 @@
 # Release readiness — resumable checklist
 
+## September 18 Soundtrack continuation
+
+- [x] S01 — Reproduce and correct seek-readiness / initial-selection silence defects.
+- [x] S02 — Verify seven new regressions, **883/883** complete tests, **68/68** focused checks and **12/12** native-media browser assertions.
+- [ ] S03 — Complete production package, canonical publication and live verification.
+- [ ] S04 — Physical Tesla continuity and native transport acceptance (**R10C-03 / R7-14**).
+
+[Scoped evidence](SOUNDTRACK-SEEK-READINESS-2026-09-18.md). R06 and the other
+physical/endurance gates remain separate.
+
 This is the active handoff for the owner's September 12 request. It is deliberately independent of a Codex account or conversation history. Update this file after each verified small task and commit useful checkpoints. A checked item means only the evidence stated beside it.
 
 ## Checklist

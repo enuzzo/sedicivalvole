@@ -1,5 +1,14 @@
 # Session Handoff
 
+## Latest continuation — 2026-09-18
+
+The automatic-track waiting investigation produced a verified Soundtrack
+seek-readiness fix. **883/883** native tests, **68/68** focused checks and
+**12/12** native-media internal-browser checks pass. Production delivery remains
+pending; [the scoped record](SOUNDTRACK-SEEK-READINESS-2026-09-18.md) owns final
+delivery and target-Tesla continuity/native transport acceptance. The earlier
+health-only closeout below precedes this product change.
+
 ## Current restart point — 2026-09-18
 
 Use [the September 18 health checkpoint](HEALTH-CHECK-2026-09-18.md) and the
