@@ -16,7 +16,10 @@ guide. The September 19 owner refinement reuses piston/Orbitron branding and
 shared RED/DARK roles, prioritizes portrait use in an approximately 45° holder,
 and keeps placement/debug disclosures below the instrument. This is scoped
 approval for that feature. See
-[implementation contract](../PHONE-MOTION-COMPANION-2026-09-18.md).
+[implementation contract](../PHONE-MOTION-COMPANION-2026-09-18.md). The subsequent owner selection is
+[TRACE with the phone indicator and ZERO below the cube](../design/phone-motion-2026-09-19/README.md).
+Its **recalibrate** subtitle and unobstructed graph supersede the older central
+TARE placement for the next implementation; the new design is not yet deployed.
 
 ## Shared geometry and palette
 

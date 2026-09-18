@@ -13,6 +13,14 @@ the road-speed source; no inertial speed, vehicle API access or audio mapping is
 introduced. The suggested Aperture inclination/curvature is the next experiment
 after real-device evidence, not an implemented renderer effect.
 
+## Selected next visual — September 19
+
+The owner selected the opaque TRACE cube mockup, adding VECTOR's phone
+orientation indicator and moving **ZERO** below the graph with the exact
+subtitle **recalibrate**. [Selected image, alternatives and prompt brief](design/phone-motion-2026-09-19/README.md).
+This is a design selection, not an implemented 3D renderer or release. The user
+path below still describes the deployed TARE interface until implementation.
+
 ## User path
 
 1. Open the phone/waves icon in the running Tesla top bar. Choose **CREATE QR**.
