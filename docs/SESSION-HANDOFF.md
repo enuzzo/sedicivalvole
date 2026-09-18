@@ -6,7 +6,7 @@ The requested review has implemented explicit local/paired guidance, permission
 retry without QR reuse, 30-second setup deadlines, immediate used-QR removal,
 late-request cleanup, offline teardown and honest incomplete/stale sensor states.
 The [user guide](PHONE-MOTION-USER-GUIDE.md) describes first use and recovery.
-Native regression 955/955, expanded motion/PHP 65/65, documentation 8/8 and
+Native regression 955/955, expanded motion/PHP 66/66, documentation 8/8 and
 local browser checks pass. Publication is pending; canonical remains
 **20260919-0049.e8beb93** until the release evidence below is updated. No physical
 iPhone/Tesla acceptance or Aperture response is implied. No new task is needed.

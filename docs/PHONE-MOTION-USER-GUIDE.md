@@ -17,7 +17,8 @@ Safari/iPhone/Tesla connectivity, sensors and screen-wake retention remain open.
    Tap **ENABLE & CONNECT** and allow the requested motion/orientation access.
 4. Keep the phone still and tap **ZERO**, below the graph. It should confirm
    the reference. A rejected ZERO means data is incomplete, old or the phone
-   is moving; wait until steady and try again.
+   is moving; wait until steady and try again. If a previous reference is still
+   valid, a rejected recalibration explicitly says that readings keep using it.
 5. Check both parts of success: **Connected to Tesla** on iPhone and
    **Phone connected** on Tesla for the link, and usable
    acceleration/gyro with **Zero SET / REFERENCE SET** for sensing. A moving

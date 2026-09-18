@@ -71,7 +71,8 @@ is deleted without reviving the session. No new relay or automatic retry is adde
 Fresh events with missing acceleration, gyro or orientation report **incomplete**
 and invalidate the pose. Expired receiver summaries clear Zero SET; guidance is
 derived from current sensor evidence, so old calibration-success copy cannot
-survive a gap. A terminal paired link stops sensors and wake ownership once;
+survive a gap. A rejected recalibration explicitly preserves and identifies the
+previous reference; it cannot announce a successful new ZERO. A terminal paired link stops sensors and wake ownership once;
 explicit local testing remains possible afterward. Sensor and transport success
 remain separate. The aggregate allowlist adds only the `incomplete` sensor state.
 The existing protocol shape and backend are unchanged.
@@ -401,7 +402,7 @@ same QR admission; stale receiver metadata could retain Zero SET. The targeted
 corrections above retain the approved TRACE direction and existing direct network.
 
 Software evidence: full native regression **955/955**, followed by expanded
-motion/PHP tests **65/65** and documentation **8/8**. Deterministic cases cover
+motion/PHP tests **66/66** and documentation **8/8**. Deterministic cases cover
 permission denial/late grants, missing axes, fresh ZERO, stale/reference loss,
 duplicate starts, consumed/expired admission, non-JSON responses, HTTP/setup
 timeouts, late join deletion, offline teardown, used QR removal, replay rejection,

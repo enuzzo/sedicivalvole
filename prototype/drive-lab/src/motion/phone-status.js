@@ -14,11 +14,14 @@ export function phoneStatus({ link = {}, sensor = {}, hasPair = false, attempted
   else if (sensor.sensorState === "waiting") instruction = sensor.waitingMs > 5000
     ? "No sensor readings yet. Check Safari motion permissions. Use STOP, then retry sensors; this browser may not supply them."
     : "Waiting for motion and orientation readings. Keep Safari visible.";
+  else if (sensor.tareState === "hold-still") instruction = sensor.tared
+    ? "New ZERO rejected: keep still and try again. Readings still use your previous reference."
+    : "Hold still briefly, then tap ZERO again.";
+  else if (sensor.tareState === "unavailable") instruction = sensor.tared
+    ? "New ZERO needs complete, fresh data. Your previous reference has not changed."
+    : "ZERO needs complete, fresh sensor readings. Enable sensors and allow motion and orientation first.";
   else if (sensor.tared) instruction = "Zero set. X/Y/Z refer to this pose. Recalibrate after moving the phone in its holder.";
-  else if (sensor.sensorState === "live") instruction = sensor.tareState === "hold-still"
-    ? "Hold still briefly, then tap ZERO again."
-    : "Fresh sensor readings available. Keep the phone still and tap ZERO.";
-  else if (sensor.tareState === "unavailable") instruction = "ZERO needs complete, fresh sensor readings. Enable sensors and allow motion and orientation first.";
+  else if (sensor.sensorState === "live") instruction = "Fresh sensor readings available. Keep the phone still and tap ZERO.";
   const connection = !hasPair ? "Local only · not connected to Tesla"
     : terminal ? "Connection ended · new QR required"
     : connected ? "Connected to Tesla"

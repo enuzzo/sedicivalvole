@@ -142,6 +142,17 @@ test('receiver clears stale remote zero while phone summary preserves local owne
  f.time(251);assert.equal(f.receiver.summary().tared,false);assert.equal(f.receiver.summary().sensorState,'stale');
  assert.equal(f.phone.summary().tared,undefined);assert.equal(f.phone.summary().sensorState,undefined);
 });
+test('failed recalibration preserves the old frame and explicitly reports rejection',async()=>{
+ const f=sensorFixture();try {
+  await f.sensor.start();f.orient();f.motion();assert.equal(f.sensor.tare(),'tared');
+  f.time(20);f.motion({acceleration:{x:1,y:0,z:0}});assert.equal(f.sensor.tare(),'hold-still');
+  assert.equal(f.sensor.summary().tared,true);assert.ok(f.sensor.latest());
+  assert.match(phoneStatus({sensor:f.sensor.summary()}).instruction,/New ZERO rejected/);
+  assert.match(phoneStatus({sensor:f.sensor.summary()}).instruction,/previous reference/);
+  f.time(40);f.motion();assert.equal(f.sensor.tare(),'tared');
+  assert.match(phoneStatus({sensor:f.sensor.summary()}).instruction,/Zero set/);
+ }finally{f.sensor.dispose();}
+});
 test('first use and recovery never present a local instrument as a Tesla connection',()=>{
  assert.match(phoneStatus().connection,/Local only/);assert.equal(phoneStatus().action,'ENABLE LOCAL SENSORS');
  assert.equal(phoneStatus({hasPair:true}).canJoin,true);
