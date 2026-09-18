@@ -4,6 +4,14 @@ This is the active handoff for the owner's September 12 request. It is deliberat
 
 ## Checklist
 
+September 18 refresh: [health/acceptance evidence](HEALTH-CHECK-2026-09-18.md).
+R06's scan state is accessible again, but its registered historical artifacts
+are absent and it remains in discovery. Preflight succeeds locally; the
+workbench refuses preflight updates outside that phase. No duplicate scan or
+completion is claimed. All later statements about account inaccessibility are
+historical. Current host/build/browser checks pass; automatic/Travel Report
+receipt is verified, while post-rewind media waits need targeted acceptance.
+
 - [x] R01 — Read root/local agent instructions and relevant delivery, provenance, diagnostics and recovery contracts. Initial working tree clean; starting commit `31b9333`.
 - [x] R02 — Establish this portable checklist and restart prompt before implementation.
 - [x] R03 — Read the two latest diagnostic emails (September 11, 18:58 and 19:01 UTC, build `20260911-1711`). Extracted complete MIME gzip attachments through the raw-message API; decompressed JSON and gzip SHA-256 match each mail body. Sanitized findings below; raw material stays outside Git.
@@ -145,11 +153,14 @@ Optional local evidence (may disappear; never commit or transfer private mail): 
 
 ## Current next start
 
-F01–F07 are complete with the evidence above. R06 remains account-bound: recover
-the existing Security scan through authorized access, without duplicating it.
-Next acceptance work is physical Tesla/iPhone/WebGL2, native media, sustained
-performance and endurance. The design-system reference is the starting point
-for future interface changes. Preserve FTP and use the Codex internal browser.
+F01–F07 are complete with the evidence above. The September 18 recovery can read
+R06's historical scan state, but its artifacts are missing and it remains
+incomplete. Recover that evidence without duplicating or falsely finalizing the
+scan. Follow the [current acceptance priorities](HEALTH-CHECK-2026-09-18.md#next-acceptance-units):
+post-rewind automatic-track waits and target-Tesla native transport first,
+then sustained visible maps, physical iPhone and remaining Engine cases.
+The design-system reference remains the starting point for interface changes.
+Preserve FTP and use the Codex internal browser.
 
 ## Restart prompt
 

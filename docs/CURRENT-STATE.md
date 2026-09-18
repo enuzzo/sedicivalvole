@@ -1,5 +1,24 @@
 # Current Project State
 
+## Health and acceptance refresh — 2026-09-18
+
+Canonical **20260912-1007.5ffacb1** remains verified online. Current audit of
+`3c552d4`: **876/876** tests, **827** local build hashes, **189/189** credits,
+zero npm advisories and zero bounded hygiene findings. No product change or
+deployment. The September 18 build is local verification only.
+
+An additional September 12 automatic diagnostic from the live build was found
+and its complete attachment hashes verified. Fifteen-minute receipt is proven;
+the large frame gap aligns with an open Stats overlay, not continuous renderer
+exposure. Two automatic music transitions include approximately 1.69 s and
+0.98 s waiting-to-playing intervals: audible continuity remains a priority test.
+Actual Travel Report receipt is also confirmed. R06 scan state is accessible
+again, but historical artifacts are missing and the scan remains incomplete.
+See [health evidence and next acceptance units](HEALTH-CHECK-2026-09-18.md).
+
+This refresh supersedes historical unverified-inbox and inaccessible-scan
+statements; it does not close physical device, native-media or endurance gates.
+
 ## Latest visual follow-up release — 2026-09-12 10:16 Europe/Rome
 
 Final build **20260912-1007.5ffacb1**, product **81747b5**, build source

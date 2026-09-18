@@ -1,5 +1,23 @@
 # Milestone Checklist — 2026-08-31
 
+## Current precedence — 2026-09-18
+
+Canonical **20260912-1007.5ffacb1** remains live. The
+[health checkpoint](HEALTH-CHECK-2026-09-18.md) supersedes older inbox and build
+labels while preserving stable IDs and physical acceptance boundaries.
+
+| Scope | New evidence | Still open |
+| --- | --- | --- |
+| Diagnostics / 3, 5, 16 | Real automatic receipt, complete gzip/JSON hash verification, fifteen observable minutes from the current live build | Longer endurance and offline/foreground recovery on target devices |
+| Travel Report / FI-012 | Actual received PDF; current no-GPS browser preview works without an invented route | Physical readability/download and device-specific export acceptance |
+| Soundtrack / 7, 10C | Three automatic track advances; bounded metadata publication; no runtime exceptions | Waiting intervals up to 1.69 s after rewind require reproduction/listening; actual native transport combinations remain open |
+| Visual / 5, 16 | Sampled Drivey frames near 60 FPS; dominant observation gap matches open Stats | Continuous visible Air Atlas/Fly With, GPU/thermal and endurance evidence |
+| Host health | 876 tests, 827 production-package hashes, 189 credits, zero npm advisories and bounded hygiene findings | Formal R06 remains incomplete; iPhone and remaining Engine acceptance stay separate |
+
+No application change, deployment or production release was made by this audit.
+The September 12 readiness record governs completed implementation; dated rows
+below must not reopen it or imply that real inbox receipt is still missing.
+
 ## Current precedence — 2026-09-10
 
 This checkpoint supersedes the dated operational queues below. Preserve their

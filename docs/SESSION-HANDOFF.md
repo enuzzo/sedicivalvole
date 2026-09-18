@@ -1,5 +1,21 @@
 # Session Handoff
 
+## Current restart point — 2026-09-18
+
+Use [the September 18 health checkpoint](HEALTH-CHECK-2026-09-18.md) and the
+[current release-readiness record](RELEASE-READINESS-2026-09-12.md), before the
+historical queue below. Canonical build remains **20260912-1007.5ffacb1**.
+Health checks pass; no product change or deployment was required.
+
+Automatic diagnostic and Travel Report receipt are verified. The latest packet
+adds fifteen minutes of GPS/recorder evidence, but Stats occupied most of the
+session, so it is not continuous visual endurance evidence. Prioritize the
+recorded automatic-track waiting intervals and target-Tesla native transport,
+then sustained Air Atlas/Fly With, physical iPhone and remaining Engine cases.
+R06 is readable again but incomplete with missing historical artifacts; do not
+duplicate or falsely finalize it. Preserve the owner-controlled Engine research
+handoff and prior positive listening acceptance. No new task is launched here.
+
 ## Current restart point — 2026-09-10
 
 Air Atlas and airport country flags are complete and published in

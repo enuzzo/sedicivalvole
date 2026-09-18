@@ -1,5 +1,19 @@
 # Tesla test queue — 2026-08-31
 
+## Current acceptance entry — 2026-09-18
+
+Use canonical **20260912-1007.5ffacb1**, verified again on September 18, and
+[the current acceptance priorities](HEALTH-CHECK-2026-09-18.md#next-acceptance-units).
+The September 3 build and retired layouts below are historical, not the current
+test target. Retain test IDs, applying current approved controls/contracts.
+
+Automatic diagnostic and Travel Report receipt are confirmed. The latest packet
+does not exercise native transport and records two automatic-track waits of
+approximately 1.69 s and 0.98 s. First investigate automatic track completion,
+then run **R10C-03** and **R7-14** on the target device. Keep continuous visual
+exposure separate from Stats/REPORT time when testing endurance. Owner/device
+confirmation, physical iPhone and remaining Engine checks stay open.
+
 This is the stable owner-facing test register for the evening drive. Each ID is
 permanent and maps to one row of `MILESTONE-CHECKLIST-2026-08-31.md`. Report a
 result as `R7-01 PASS` or `R7-01 FAIL — short observation`; add a photo, video,
