@@ -204,9 +204,9 @@ test('offline and peer closure release setup state and erase QR capability',asyn
  }finally{f.session.dispose();}
 });
 test('used/expired admission and malformed server responses have bounded recovery',async()=>{
- for(const status of [404,409,410,500,200]){
+ for(const status of [403,404,409,410,500,200]){
   const f=sessionFixture({fetcher:async()=>({ok:status===200,status,text:async()=>'<html>unavailable</html>'})});
-  try{await f.session.start(f.pair);assert.equal(f.snapshots.at(-1).state,[404,409,410].includes(status)?'expired':'error');
+  try{await f.session.start(f.pair);assert.equal(f.snapshots.at(-1).state,[403,410].includes(status)?'expired':'error');
    assert.equal(f.snapshots.at(-1).qrUrl,null);
   }finally{f.session.dispose();}
  }

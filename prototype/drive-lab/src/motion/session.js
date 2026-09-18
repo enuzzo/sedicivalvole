@@ -110,7 +110,7 @@ export function createMotionSession({ role, host = window, doc = document, fetch
               state = "connecting"; stage = "accept"; qrUrl = null; if (!joined) deadline = now() + 30000; await peer.accept(result.sdp); if (token !== generation) return; notify(); return;
             }
             polling = setTimeout(poll, 1100);
-          } catch { if (token === generation) fail(); }
+          } catch (error) { if (token === generation) fail(error?.status === 410 ? "expired" : "error"); }
         };
         polling = setTimeout(poll, 1100);
       } else {
@@ -128,7 +128,9 @@ export function createMotionSession({ role, host = window, doc = document, fetch
         await api({ action: "answer", ...credentials, sdp }); if (token !== generation) return;
         state = peer.summary().state === "connected" ? "connected" : "connecting"; event("phone-joined", { state }); notify();
       }
-    } catch (error) { if (token === generation) fail([404, 409, 410].includes(error?.status) ? "expired" : "error"); }
+    } catch (error) {
+      if (token === generation) fail(stage === "join" && [403, 410].includes(error?.status) ? "expired" : "error");
+    }
   }
   function fail(next = "error") { const failure = { state: next, stage, ...signaling }; cleanup(next); event("error", failure); notify(); }
   const hidden = () => { if (doc.visibilityState !== "visible") stop("suspended"); };
