@@ -4,19 +4,28 @@ This records the owner's follow-up after quality release `20260918-2110.dbf5108`
 It changes the next-work direction, not the currently published implementation.
 Source: direct owner message; technical proposals below are labelled separately.
 
+## Later owner supersession — Conditions deferred
+
+The owner subsequently asked to skip Conditions for now because it overlaps
+with weather already used in the Tesla. **N02 / FI-006 is deferred**: do not
+start weather research, provider setup or UI design. N01 Drivey simplification
+is the active implementation; iPhone motion and the companion remain research
+candidates. This supersedes the earlier Conditions enthusiasm below.
+
 ## Consolidated decisions
 
 - **Drivey:** retire the proposed speed-dependent Aerial camera (`FI-002` / D4).
   The owner prefers natural forward road following and finds the alternative
-  rear/aerial views little used. Queue removal of alternative camera selection
+  rear/aerial views little used. Remove alternative camera selection
   from the product, retaining forward driving, Normal/Wireframe and both palette
   channels. Preserve the currently familiar forward view (internal default
   `hood`); do not substitute upstream's dashboard `driver` view by assumption.
-  Migrate saved rear/aerial choices to that forward view when implementing.
+  Saved rear/aerial choices migrate to that forward view while render mode is retained.
   Remove obsolete project-owned selectors/state/tests where appropriate, but
   preserve all 51 pinned upstream files and their integrity tests. The expected
   benefit is simpler interaction and adapter maintenance; download savings have
-  not been measured. No camera removal is claimed in the current live build.
+  not been measured. The implementation is verified locally; publication evidence
+  is recorded in the health checkpoint when complete.
 - **Conditions (`FI-006`):** the owner supports this next feature direction.
   Prepare the exception-led Atlas/Discover experience, provider/source review,
   coarse-location privacy and three concrete UI compositions before selecting
@@ -71,8 +80,8 @@ background tracking or changes to the current automatic diagnostic boundary.
 
 | Unit | Status and next evidence |
 | --- | --- |
-| N01 — Drivey simplification | Owner-directed implementation pending; preserve forward Normal/Wireframe/palettes, migrate saved alternatives, verify source integrity and browser behavior. |
-| N02 — Conditions | Selected feature direction; provider/privacy review and three-composition choice precede implementation. |
+| N01 — Drivey simplification | Implemented and locally verified: fixed forward view, one Normal/Wire control, palettes and saved render mode retained; all 51 upstream hashes pass. Publication evidence belongs to the health checkpoint. |
+| N02 — Conditions | DEFERRED by subsequent owner instruction: avoid overlap with Tesla weather. No work scheduled. |
 | N03 — iPhone motion | Feasibility/calibration research; local browser simulation cannot close real sensor acceptance. |
 | N04 — Phone-to-Tesla companion | New owner research idea; depends on N03 and target-browser/network measurements. |
 | R06 — Formal security scan | Still incomplete. Recover the historical missing evidence or obtain a deliberate replacement decision; no duplicate scan is implicitly authorized. |
@@ -86,6 +95,6 @@ curated presets are implemented; broader authorship is not a missing basic
 preset system. Atlas, Stats, Travel Report, automatic diagnostics and the iPhone
 layout are implemented; do not restart them from historical unchecked rows.
 
-Recommended order: N01 as a small cleanup, then N02 as the next substantial
-feature. N03/N04 begin with a bounded feasibility study. This order is advice,
+Current order: complete N01 cleanup; N02 is deferred. N03/N04 are the next
+research candidates, beginning with a bounded feasibility study. This order is advice,
 not a claim that the owner selected infrastructure or approved a new UI design.

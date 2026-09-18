@@ -4,8 +4,8 @@
 
 [Consolidated decisions and remaining work](OWNER-DIRECTION-2026-09-18.md)
 supersede the older optional queue where stated: retire speed-dependent Aerial,
-queue forward-only Drivey controls, advance Conditions and iPhone motion
-feasibility, and capture the new iPhone-to-Tesla sensor companion as `FI-013`.
+queue forward-only Drivey controls, defer Conditions following the later owner
+instruction, advance iPhone motion feasibility, and capture the new iPhone-to-Tesla sensor companion as `FI-013`.
 No implementation or provider setup is claimed by this record.
 
 Canonical closeout — 2026-09-07 22:58 Europe/Rome: **build 20260907-2243**, source
@@ -50,6 +50,8 @@ route data to enter diagnostics.
 - `PROMOTED`: accepted into the active plan under the linked stable ID;
 - `IMPLEMENTED`: present in source; linked publication or physical acceptance
   gates may still remain open;
+- `DEFERRED`: preserved but explicitly outside the current work queue;
+- `RETIRED`: previously considered direction superseded by an owner decision;
 - `REJECTED`: deliberately closed, with the reason retained;
 - `OWNER`: explicitly requested or approved by the product owner;
 - `AGENT PROPOSAL`: a separate suggestion that is not owner-approved.
@@ -66,7 +68,7 @@ presented as an owner decision or enter the product without explicit approval.
 | `FI-003` | DISCOVER image-led nearby-place companion | OWNER | 2026-08-30 | PROMOTED | [`PIANO.md`](../PIANO.md) `A5` |
 | `FI-004` | Grouped, direct-selection Visual Library | OWNER | 2026-08-30 | PROMOTED | [`PIANO.md`](../PIANO.md) `X9` |
 | `FI-005` | Shared LIGHT/DARK/AUTO interface appearance | OWNER | 2026-08-30 | IMPLEMENTED · canonical build `20260903-1752`; Tesla pending | [`MILESTONE-CHECKLIST-2026-08-31.md`](MILESTONE-CHECKLIST-2026-08-31.md) row 13; [`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md) `R13-01`–`R13-03` |
-| `FI-006` | Exception-led local CONDITIONS and weather context | OWNER | 2026-08-30 | PROMOTED · next feature direction; provider/design pending | [September 18 direction](OWNER-DIRECTION-2026-09-18.md); `PIANO.md` X11 |
+| `FI-006` | Exception-led local CONDITIONS and weather context | OWNER | 2026-08-30 | DEFERRED · owner sees unnecessary Tesla-weather overlap | [September 18 direction](OWNER-DIRECTION-2026-09-18.md); `PIANO.md` X11 |
 | `FI-007` | Original speed-responsive Gradient Field | OWNER | 2026-08-30 | RETIRED · renderer replaced by one ShaderGradient family with three variants | [`MILESTONE-CHECKLIST-2026-08-31.md`](MILESTONE-CHECKLIST-2026-08-31.md) row 11 |
 | `FI-008` | Landscape-first iPhone presentation with an inert portrait rotation notice | OWNER | 2026-08-30 | IMPLEMENTED · locally verified; publication and physical Safari pending | Compact Cockpit direction 1 selected for iPhone 17 Pro/Pro Max; [`NIGHT-IMPLEMENTATION-2026-09-07.md`](NIGHT-IMPLEMENTATION-2026-09-07.md); milestone row 14 / A08 |
 | `FI-009` | Curated audiovisual experiences | OWNER | 2026-09-05 | IMPLEMENTED · Night Glass and Neon Groove live; broader authorship remains open | [`NIGHT-WORK-2026-09-07.md`](NIGHT-WORK-2026-09-07.md); milestone row 12 / A09 |

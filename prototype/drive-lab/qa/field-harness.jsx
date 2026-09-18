@@ -13,7 +13,6 @@
 //   sweep  seconds for one 0 -> ceiling -> 0 pass; overrides `speed`
 //   reduced   "1" to force reduced motion
 //   readout   "0" to hide the measurement overlay for clean captures
-//   camera    hood | rear | aerial              (DRIVEY only)
 //   render    normal | wireframe                (DRIVEY only)
 //   type      frequency | axiom                  (PRTCL only)
 //   audio     held 0..1 score level              (DRIVEY / PRTCL)
@@ -56,7 +55,6 @@ const THEME = getFluxTheme(parameters.get("theme") ?? "red");
 const REDUCED_MOTION = parameters.get("reduced") === "1";
 const SHOW_READOUT = parameters.get("readout") !== "0";
 const DRIVEY_SETTINGS = {
-  camera: parameters.get("camera") ?? "hood",
   renderMode: parameters.get("render") ?? "normal",
 };
 const PRTCL_SETTINGS = { type: parameters.get("type") ?? "frequency" };

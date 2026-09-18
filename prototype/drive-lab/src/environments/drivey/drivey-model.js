@@ -23,11 +23,7 @@ export function driveyRuntimeUrl(origin, buildStamp) {
 }
 export const DRIVEY_LOAD_TIMEOUT_MS = 15000;
 
-export const DRIVEY_CAMERAS = Object.freeze({
-  hood: Object.freeze({ id: "hood", label: "HOOD" }),
-  rear: Object.freeze({ id: "rear", label: "REAR" }),
-  aerial: Object.freeze({ id: "aerial", label: "AERIAL" }),
-});
+export const DRIVEY_FORWARD_CAMERA = "hood";
 
 export const DRIVEY_RENDER_MODES = Object.freeze({
   normal: Object.freeze({ id: "normal", label: "NORMAL" }),
@@ -35,7 +31,6 @@ export const DRIVEY_RENDER_MODES = Object.freeze({
 });
 
 export const DEFAULT_DRIVEY_SETTINGS = Object.freeze({
-  camera: "hood",
   renderMode: "normal",
 });
 export const DRIVEY_OPPOSING_TRAFFIC_COUNT = 16;
@@ -59,7 +54,6 @@ export const DRIVEY_ROAD_RESPONSE = createResponseDefinition({
   fallPerSecond: 3.5,
 });
 
-const DRIVEY_CAMERA_SEQUENCE = Object.freeze(Object.keys(DRIVEY_CAMERAS));
 const DRIVEY_RENDER_MODE_SEQUENCE = Object.freeze(Object.keys(DRIVEY_RENDER_MODES));
 
 const clamp = (value, minimum, maximum) => Math.min(maximum, Math.max(minimum, value));
@@ -100,27 +94,17 @@ export function synchronizeDriveyRoadSpeed(drivey, targetSpeedMps, settlePreviou
 }
 
 export function normalizeDriveySettings(value) {
-  const camera = Object.hasOwn(DRIVEY_CAMERAS, value?.camera)
-    ? value.camera
-    : DEFAULT_DRIVEY_SETTINGS.camera;
   const renderMode = Object.hasOwn(DRIVEY_RENDER_MODES, value?.renderMode)
     ? value.renderMode
     : DEFAULT_DRIVEY_SETTINGS.renderMode;
-  return { camera, renderMode };
+  // Discard retired camera and traffic preferences from older saved sessions.
+  return { renderMode };
 }
 
 function nextSequenceValue(sequence, current, fallback) {
   const index = sequence.indexOf(current);
   if (index < 0) return fallback;
   return sequence[(index + 1) % sequence.length];
-}
-
-export function nextDriveyCameraId(camera) {
-  return nextSequenceValue(
-    DRIVEY_CAMERA_SEQUENCE,
-    camera,
-    DEFAULT_DRIVEY_SETTINGS.camera,
-  );
 }
 
 export function nextDriveyRenderModeId(renderMode) {

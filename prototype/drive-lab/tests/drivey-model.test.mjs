@@ -7,7 +7,7 @@ import {
   createDriveyAutomaticInput,
   createDriveyLoadDeadline,
   DEFAULT_DRIVEY_SETTINGS,
-  DRIVEY_CAMERAS,
+  DRIVEY_FORWARD_CAMERA,
   DRIVEY_LOAD_TIMEOUT_MS,
   DRIVEY_NOMINAL_LEVEL_SPEED_MPS,
   DRIVEY_OPPOSING_TRAFFIC_COUNT,
@@ -20,7 +20,6 @@ import {
   driveyRuntimeUrl,
   driveyMotionProfile,
   holdDriveyPlayerAtRest,
-  nextDriveyCameraId,
   nextDriveyRenderModeId,
   normalizeDriveySettings,
   stabilizeDriveyRoadFollower,
@@ -47,37 +46,23 @@ const cycleSource = await read("../src/ui/visual-cycle-controls.jsx");
 const stylesSource = await read("../src/styles.css");
 const harnessSource = await read("../qa/field-harness.jsx");
 
-test("DRIVEY exposes only the selected cameras and render modes while retiring traffic preferences", () => {
-  assert.deepEqual(Object.keys(DRIVEY_CAMERAS), ["hood", "rear", "aerial"]);
+test("DRIVEY keeps forward driving and migrates retired camera preferences without losing render mode", () => {
+  assert.equal(DRIVEY_FORWARD_CAMERA, "hood");
   assert.deepEqual(Object.keys(DRIVEY_RENDER_MODES), ["normal", "wireframe"]);
   assert.deepEqual(normalizeDriveySettings(null), DEFAULT_DRIVEY_SETTINGS);
-  assert.deepEqual(normalizeDriveySettings({ camera: "rear", traffic: 999 }), {
-    camera: "rear",
-    renderMode: "normal",
-  });
-  assert.deepEqual(normalizeDriveySettings({ camera: "unknown", traffic: -1 }), {
-    camera: "hood",
-    renderMode: "normal",
-  });
-  assert.deepEqual(normalizeDriveySettings({
-    camera: "aerial",
-    structure: 100,
-    renderMode: "wireframe",
-  }), {
-    camera: "aerial",
-    renderMode: "wireframe",
-  });
-  assert.deepEqual(normalizeDriveySettings({ camera: "driver", renderMode: "technicolor" }), {
-    camera: "hood",
+  for (const camera of ["hood", "rear", "aerial", "driver", "unknown", null]) {
+    for (const renderMode of ["normal", "wireframe"]) {
+      const migrated = normalizeDriveySettings({ camera, renderMode, traffic: 999 });
+      assert.deepEqual(migrated, { renderMode });
+      assert.deepEqual(normalizeDriveySettings(migrated), migrated);
+    }
+  }
+  assert.deepEqual(normalizeDriveySettings({ camera: "rear", renderMode: "technicolor" }), {
     renderMode: "normal",
   });
 });
 
-test("DRIVEY camera and render text controls cycle through every admitted state", () => {
-  assert.equal(nextDriveyCameraId("hood"), "rear");
-  assert.equal(nextDriveyCameraId("rear"), "aerial");
-  assert.equal(nextDriveyCameraId("aerial"), "hood");
-  assert.equal(nextDriveyCameraId("driver"), "hood");
+test("DRIVEY render control cycles through both admitted states", () => {
   assert.equal(nextDriveyRenderModeId("normal"), "wireframe");
   assert.equal(nextDriveyRenderModeId("wireframe"), "normal");
   assert.equal(nextDriveyRenderModeId("technicolor"), "normal");
@@ -442,7 +427,6 @@ test("the bridge embeds the original runtime and excludes unneeded image and leg
   assert.match(fieldSource, /<iframe/);
   assert.match(fieldSource, /WebGL · Original Drivey/);
   assert.match(fieldSource, /canvasFramebufferSize\(screen\.renderer\?\.domElement\)/);
-  assert.match(fieldSource, /drivey\.setCameraMount\(settings\.camera\)/);
   assert.match(fieldSource, /configureDriveyOpposingTraffic\(drivey\)/);
   assert.match(fieldSource, /holdDriveyPlayerAtRest\(drivey\)/);
   assert.doesNotMatch(fieldSource, /settings\.traffic/);
@@ -460,10 +444,11 @@ test("the bridge embeds the original runtime and excludes unneeded image and leg
   assert.match(shellSource, /shade < 0\.68/);
   assert.match(fieldSource, /createDriveyAutomaticInput\(Input\)/);
   assert.match(fieldSource, /stabilizeDriveyRoadFollower\(drivey\.myCar\)/);
-  assert.match(cycleSource, /className="visual-cycle-button visual-view-cycle"/);
+  assert.doesNotMatch(cycleSource, /visual-view-cycle|DRIVEY view|nextDriveyCamera/);
+  assert.match(fieldSource, /drivey\.setCameraMount\(DRIVEY_FORWARD_CAMERA\)/);
+  assert.doesNotMatch(fieldSource, /settings\.camera|state\.camera/);
   assert.match(cycleSource, /className="visual-cycle-button visual-render-toggle"/);
   assert.match(cycleSource, /aria-pressed=\{wireframe\}/);
-  assert.match(cycleSource, /nextDriveyCameraId\(camera\.id\)/);
   assert.match(cycleSource, /nextDriveyRenderModeId\(renderMode\.id\)/);
   assert.match(stylesSource, /\.visual-cycle-rail \{[\s\S]*?grid-auto-columns: 112px/);
   assert.match(stylesSource, /\.visual-cycle-button \{[\s\S]*?min-height: var\(--touch-target\)/);

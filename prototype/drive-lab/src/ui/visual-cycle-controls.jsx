@@ -1,16 +1,14 @@
-import {DRIVEY_CAMERAS, DRIVEY_RENDER_MODES, nextDriveyCameraId, nextDriveyRenderModeId} from '../environments/drivey/drivey-model.js';
+import {DRIVEY_RENDER_MODES, nextDriveyRenderModeId} from '../environments/drivey/drivey-model.js';
 import {PRTCL_TYPES, nextPrtclTypeId} from '../environments/prtcl/prtcl-model.js';
 import {getFluxEnvironment, nextShaderGradientEnvironmentId} from '../flux-environments.js';
 
 const displayLabel = entry => entry?.displayLabel ?? entry?.label ?? '';
 
 export function DriveyCycleControl({ settings, onChange }) {
-  const camera = DRIVEY_CAMERAS[settings.camera] ?? DRIVEY_CAMERAS.hood;
   const wireframe = settings.renderMode === DRIVEY_RENDER_MODES.wireframe.id;
   const renderMode = wireframe
     ? DRIVEY_RENDER_MODES.wireframe
     : DRIVEY_RENDER_MODES.normal;
-  const nextCamera = DRIVEY_CAMERAS[nextDriveyCameraId(camera.id)];
   const nextRenderMode = DRIVEY_RENDER_MODES[nextDriveyRenderModeId(renderMode.id)];
   return (
     <div
@@ -19,20 +17,11 @@ export function DriveyCycleControl({ settings, onChange }) {
     >
       <div className="visual-cycle-rail drivey-cycle-rail">
         <button
-          className="visual-cycle-button visual-view-cycle"
-          type="button"
-          aria-label={`DRIVEY view ${camera.label}. Next ${nextCamera.label}`}
-          onClick={() => onChange({ ...settings, camera: nextCamera.id })}
-        >
-          <span>VIEW</span>
-          <small>{camera.label}</small>
-        </button>
-        <button
           className="visual-cycle-button visual-render-toggle"
           type="button"
           aria-label={`DRIVEY render ${renderMode.label}. Next ${nextRenderMode.label}`}
           aria-pressed={wireframe}
-          onClick={() => onChange({ ...settings, renderMode: nextRenderMode.id })}
+          onClick={() => onChange({ renderMode: nextRenderMode.id })}
         >
           <span>RENDER</span>
           <small>{renderMode.label}</small>

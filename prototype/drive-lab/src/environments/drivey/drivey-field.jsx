@@ -4,6 +4,7 @@ import {
   createDriveyAutomaticInput,
   createDriveyLoadDeadline,
   DEFAULT_DRIVEY_SETTINGS,
+  DRIVEY_FORWARD_CAMERA,
   DRIVEY_ROAD_RESPONSE,
   driveyCruiseMultiplierForSpeed,
   driveyMotionProfile,
@@ -143,10 +144,6 @@ function applyBridgeState(bridge, values, state) {
   drivey.npcControlScheme.laneShift = 0;
   if (values.speed <= 0) holdDriveyPlayerAtRest(drivey);
 
-  if (state.camera !== settings.camera) {
-    drivey.setCameraMount(settings.camera);
-    state.camera = settings.camera;
-  }
   if (state.trafficMode == null) {
     state.trafficMode = configureDriveyOpposingTraffic(drivey).mode;
   }
@@ -236,7 +233,6 @@ export function DriveyField({
     let bridgeState = "waiting";
     let stopped = false;
     const appliedState = {
-      camera: null,
       trafficMode: null,
       roadResponse: null,
       renderMode: null,
@@ -269,6 +265,7 @@ export function DriveyField({
     const finishBridge = (candidate) => {
       bridge = candidate;
       const { drivey } = bridge;
+      drivey.setCameraMount(DRIVEY_FORWARD_CAMERA);
       const pixelRatio = Math.min(window.devicePixelRatio || 1, MAX_DRIVEY_PIXEL_RATIO);
       drivey.screen.renderer.setPixelRatio(pixelRatio);
       drivey.screen.setResolution(1);

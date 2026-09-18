@@ -4,7 +4,7 @@
 
 [The consolidated owner direction](OWNER-DIRECTION-2026-09-18.md) is the current
 next-work ledger: **N01** forward-only Drivey cleanup; **N02** Conditions
-provider/design; **N03** iPhone sensor feasibility; **N04 / FI-013** paired
+deferred by the owner due to Tesla-weather overlap; **N03** iPhone sensor feasibility; **N04 / FI-013** paired
 phone-to-Tesla sensor research. Dynamic Aerial **FI-002 / D4 is retired**.
 These changes are queued, not shipped. R06, physical S04/P05 and production row
 17 remain separate. Other historical optional work is not reopened.
@@ -372,7 +372,7 @@ one explicitly:
 
 - [ ] `FI-001` optional iPhone motion/fusion input for other cars;
 - Retired `FI-002` speed-dependent Aerial; September 18 replaces it with N01 forward-only Drivey simplification.
-- [ ] `FI-006` exception-led local Conditions context;
+- Deferred `FI-006` Conditions: explicitly skipped for now to avoid Tesla-weather overlap.
 - [ ] future authorized-passenger remote controls beyond the current main UI;
 - [ ] `DI-001` GPS-free `MOTION` interpretation remains an unapproved agent
   proposal, not owner scope.
