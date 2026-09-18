@@ -1,5 +1,15 @@
 # Session Handoff
 
+## Fresh-context continuation authorized — September 18
+
+The owner explicitly authorized autonomous remaining-work execution and sequential
+fresh tasks in the saved local project after each documented/committed/pushed
+and appropriately published closeout. Start with
+[the concrete N03/N04 motion handoff](MOTION-INPUT-HANDOFF-2026-09-18.md).
+N01 and its canonical release below are closed; Conditions stays deferred.
+No unfinished upload or local product patch transfers from this context.
+The parent stops writing before the new task starts.
+
 ## Next-work direction — September 18
 
 Current canonical **20260918-2212.721274c** completes **N01**: Drivey uses the

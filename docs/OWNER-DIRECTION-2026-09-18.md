@@ -12,6 +12,15 @@ start weather research, provider setup or UI design. N01 Drivey simplification
 is now implemented and published as **20260918-2212.721274c**; iPhone motion and the companion remain research
 candidates. This supersedes the earlier Conditions enthusiasm below.
 
+## Continuation authorization
+
+The owner subsequently requested autonomous progress through the remaining work
+and sequential fresh local tasks once a context is crowded, always closing and
+documenting the current unit before transfer. N03/N04 feasibility is now the
+next authorized execution unit; Conditions remains deferred. Follow the
+[concrete motion handoff](MOTION-INPUT-HANDOFF-2026-09-18.md), including delivery,
+single-writer transfer and explicit boundaries for physical/design decisions.
+
 ## Consolidated decisions
 
 - **Drivey:** retire the proposed speed-dependent Aerial camera (`FI-002` / D4).
