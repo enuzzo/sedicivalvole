@@ -23,8 +23,8 @@ identity, a clean saved checkout and HEAD/upstream parity before this handoff.
 Read current Git/live state again: these facts are a baseline, not a permanent
 assertion. The parent stops all writes before launching the successor task.
 
-Continue directly in the saved project:
-`/Users/enuzzo/Library/CloudStorage/Dropbox/Mitnick/sedicivalvole`.
+Continue directly in the saved Sedicivalvole checkout identified by the task
+project context; its local path must not be copied into public documentation.
 Keep one writer; do not create another checkout/worktree or run parallel writers.
 Read root and `prototype/drive-lab/AGENTS.md`, then the applicable contract sections.
 The previous full native suite passed 946/946; focused motion/PHP 15/15,
