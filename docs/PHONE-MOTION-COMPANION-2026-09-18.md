@@ -322,3 +322,44 @@ Collect both reports, including wake state, GPU availability, cadence, freshness
 and connection events. Do not infer vehicle axes or Aperture support from this
 instrument. Actual Safari wake retention and thermal/endurance behavior remain
 open.
+
+
+## TRACE publication — September 19, 2026
+
+Source **e8beb93** is committed and pushed. Canonical build
+**20260919-0049.e8beb93**, VERSION **0.0.0**, is published. The final App/LAB/Sites
+package passes **828 exact static hashes**, Sites **9/9**, credits **189** and
+public hygiene over **1,495** tracked text files. The development fixture has
+no production HTML/module/marker hits. Native **946/946**, follow-up **15/15**
+and documentation **8/8** evidence is separate from physical acceptance.
+
+Official `--publish --preserve-existing` passes identity/directory and full
+remote hash gates: **39 files / 6,369,011 bytes** uploaded, **825** unchanged
+static files and **29** full-hash audio recordings reused, **two** previous
+assets retained, **13** root entries, `remote_writes=ROOT_UPLOAD_ONLY`. No
+legacy deletion, backend change or new third-party dependency is introduced.
+
+Fourteen HTTPS checks pass: bare root, cache-busted root and phone route match
+local HTML; main JS/CSS, phone chunk, shared Three.js chunk, release manifest,
+piston mark and both fonts match local bytes. Motion endpoint guards remain
+GET 405, invalid same-origin action 400 and hostile origin 403. After controlled
+browser reload, both bare/cache-busted roots still match with
+`no-store, no-cache, must-revalidate, max-age=0`.
+
+| Resource | Bytes | SHA-256 |
+| --- | ---: | --- |
+| `/` | 1,445 | `0995d436eee09dc7d93ed8259d542d348482da92d65c53090b66e3c4f754a87b` |
+| `/assets/index-DUwNadXQ.js` | 877,644 | `92bb21a7f4103629796dfb730ad411b2401fe5416000aaa0e3d886b10de95432` |
+| `/assets/index-k8b4gtAl.css` | 260,500 | `0e9324b4f848e0c58d3a82365509ca8602dcdafbeaa56a8d270a6df731569df3` |
+| `/assets/phone-D_qhZo2s.js` | 21,689 | `669b863c78991703d58182e3abc8e126a65aee91bac4ad567f4341703a14c6c0` |
+| `/assets/release-20260919-0049.e8beb93.json` | 116,454 | `bc2d93f2b0742c44c0fa7fb77a8be907d9b5154f176c37aa57a54f9290f905e3` |
+| `/assets/three.module-l_yh09D8.js` | 683,397 | `71b6c16e5f36118ca1818b2109cb9bd681383e7db46cf9e1872596f7b5c1fe20` |
+
+The canonical internal browser confirms TRACE/WebGL2, ZERO below the graph,
+no horizontal overflow at 390 × 844, refusal without complete fresh values,
+and safe diagnostics showing zero points/FPS when idle. The compact 773 × 601
+main app opens the phone panel and updated ZERO guide. Published phone and
+main-app checks have no console warnings/errors. AUTO remained OFF and audio
+muted for QA; no synthetic mail was sent. Temporary browser tabs and local
+servers were closed. Real iPhone/Safari/Tesla sensing, reachability, touch,
+wake retention, thermal/endurance and Aperture steering remain open.

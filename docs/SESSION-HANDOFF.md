@@ -1,5 +1,27 @@
 # Session Handoff
 
+## TRACE companion published — September 19
+
+Canonical **20260919-0049.e8beb93** is published and verified. The selected opaque
+TRACE cube has a bounded three-second acceleration ribbon, relative phone
+orientation indicator and **ZERO / recalibrate below the graph**. Camera
+recentering is separate from calibration; screen-wake and GPU states/counters
+join the bounded diagnostics. Existing branding, QR, 45° holder guidance and
+GPS ownership remain.
+
+Native tests **946/946**, follow-up motion/PHP **15/15**, final Sites **9/9**,
+production **828 hashes**, credits **189** and hygiene **1,495 files** pass.
+Six local phone viewports, the compact Tesla guide, canonical phone/guide checks,
+**14 HTTPS checks** and post-reload root identity pass. Official preserve-existing
+FTP uploaded **39 files / 6,369,011 bytes**, reused 825 static files and all 29
+full-hash recordings, retained two previous assets and reported ROOT_UPLOAD_ONLY.
+No synthetic mail or unfinished upload remains. [Detailed evidence](PHONE-MOTION-COMPANION-2026-09-18.md#trace-publication--september-19-2026).
+
+Next: physical iPhone/Safari + Tesla QR, motion permissions, ZERO in the portrait
+holder, stillness/rotation, wake retention, background/re-pair and both reports.
+Aperture steering, physical connectivity/sensor accuracy and thermal/endurance
+acceptance remain open. Conditions/R06 are unchanged.
+
 ## Branded portrait phone companion — September 19
 
 Canonical **20260919-0002.d51b4b7** is published and verified. The selected XYZ

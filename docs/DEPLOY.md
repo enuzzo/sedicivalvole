@@ -5176,3 +5176,19 @@ ROOT_UPLOAD_ONLY. Full tests 937/937, production 827 hashes, credits 189, thirte
 HTTPS checks and post-reload root identity pass. Internal-browser portrait,
 landscape and Tesla navigation have no console warnings/errors. Physical
 iPhone/Tesla acceptance remains open. [Detailed evidence](PHONE-MOTION-COMPANION-2026-09-18.md#branded-instrument-publication--september-19-2026).
+
+
+## TRACE phone instrument publication — September 19, 2026
+
+Canonical **20260919-0049.e8beb93** (VERSION **0.0.0**) is published from committed
+source **e8beb93**. Native **946/946**, motion/PHP follow-up **15/15**, production
+**828 exact hashes**, final Sites **9/9**, credits **189** and hygiene **1,495**
+pass. The development-only trace fixture is excluded from the public package.
+
+Official preserve-existing publication passes identity and full remote hashes,
+uploads **39 files / 6,369,011 bytes**, reuses **825** unchanged static files and
+all **29** full-hash recordings, retains **two** previous assets and reports
+**13** root entries / `ROOT_UPLOAD_ONLY`. Fourteen HTTPS checks and controlled
+reload root checks match local bytes; canonical phone and 773 × 601 main-panel
+behavior pass without console warnings/errors. No synthetic mail or physical
+acceptance claim. [Exact hash evidence and remaining device checks](PHONE-MOTION-COMPANION-2026-09-18.md#trace-publication--september-19-2026).
