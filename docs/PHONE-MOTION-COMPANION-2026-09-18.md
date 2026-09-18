@@ -55,6 +55,9 @@ history and local receipt timestamps never enter transport or reports.
 
 ## User path
 
+See the [plain first-run and recovery guide](PHONE-MOTION-USER-GUIDE.md) for
+operator steps, failure states and collecting evidence before reloading.
+
 1. Open the phone/waves icon in the running Tesla top bar. Choose **CREATE QR**.
 2. Scan with iPhone Camera and open in Safari. Prefer the same Wi-Fi for this
    first direct-link implementation; hotspot and Tesla/browser compatibility

@@ -1,5 +1,17 @@
 # Current Project State
 
+## Owner-requested reliability review — September 19
+
+The owner requests a new task to review TRACE errors, adverse scenarios and
+first-use/reconnection clarity before the physical car test. The parent will
+stop writing before launching it directly in this saved checkout. Follow the
+[bounded reliability handoff](PHONE-MOTION-RELIABILITY-HANDOFF-2026-09-19.md) and
+maintain the [first-run/recovery guide](PHONE-MOTION-USER-GUIDE.md). Correct,
+verify, document, commit/push and publish relevant product improvements under
+the existing release contract; report plainly by topic in Italian.
+Canonical baseline remains **20260919-0049.e8beb93**. This handoff adds documents,
+not an unverified product release or physical acceptance claim.
+
 ## TRACE companion published — September 19
 
 Canonical **20260919-0049.e8beb93** is published and verified. The selected opaque
