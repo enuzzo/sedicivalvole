@@ -11,8 +11,10 @@ Automatic diagnostic and Travel Report receipt are confirmed. The latest packet
 does not exercise native transport and records two automatic-track waits of
 approximately 1.69 s and 0.98 s. First investigate automatic track completion,
 then run **R10C-03** and **R7-14** on the target device. Keep continuous visual
-exposure separate from Stats/REPORT time when testing endurance. Owner/device
-confirmation, physical iPhone and remaining Engine checks stay open.
+exposure separate from Stats/REPORT time when testing endurance. The owner's
+September 18 follow-up and coherent GPS progression support attribution to a
+real Tesla journey; its geographic route and software version are not verified.
+Physical iPhone and remaining Engine checks stay open.
 
 This is the stable owner-facing test register for the evening drive. Each ID is
 permanent and maps to one row of `MILESTONE-CHECKLIST-2026-08-31.md`. Report a

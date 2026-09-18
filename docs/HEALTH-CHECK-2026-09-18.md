@@ -43,8 +43,14 @@ integrity fields. Raw mail and attachments remain outside Git. Sanitized finding
   is approximately 100 ms. This is one bounded session, not an endurance pass.
 - Browser-reported WebGL2, Media Session, CacheStorage and service-worker control
   are available. The effective viewport is **773 × 575**. User-agent/GPU/capability
-  evidence alone does not identify the physical vehicle or software version;
-  owner confirmation remains requested.
+  evidence alone does not identify the physical vehicle or software version.
+  In the September 18 follow-up, the owner associated coherent road telemetry
+  on this date with their own Tesla journey. Review confirms plausible
+  stop/start and cruising speed progression, approximately 100 ms GPS cadence,
+  and continuous recorder coverage. This supplies owner context for a real
+  vehicle session; no geographic route or destination is verified, and the
+  vehicle software version remains unspecified. The owner's destination is
+  intentionally excluded from this public record.
 - Drivey frame telemetry contains **58.61 seconds** of sampled duration and
   **842.05 seconds** of observation gaps; sampled average **59.73 FPS**, retained
   p95 **21.01 ms**. Stats was opened at approximately 21.13 s and closed at
