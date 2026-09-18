@@ -6,8 +6,8 @@ A reproduced software defect now waits for decoded readiness after rewind and
 keeps initial preparation silent. Local native-media verification passes;
 [delivery status and the next physical sequence](SOUNDTRACK-SEEK-READINESS-2026-09-18.md#delivery-and-next-acceptance)
 supersede the investigation-only priority below. **R10C-03 / R7-14** and cabin
-continuity remain open. Use the recorded published candidate once available,
-not the historical September 12 build for accepting this correction.
+continuity remain open. The retest candidate is now published and verified as
+**20260918-2043.b2177ed**; the September 12 build predates this correction.
 
 ## Current acceptance entry — 2026-09-18
 

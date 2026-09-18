@@ -56,8 +56,37 @@ or iPhone acceptance.
 
 ## Delivery and next acceptance
 
-Implementation and local checks pass. Production-package and canonical delivery
-evidence will be recorded after the official publication gates complete.
+Product **19e3651** and build-source **b2177ed** are committed and pushed.
+Production candidate **20260918-2043.b2177ed**, VERSION **0.0.0**, passes
+**827** exact static hashes, **189/189** credits and **1,465** public text files
+with zero hygiene findings. Local production-browser QA at **1280 × 720**
+passes Intro, muted launch, REPORT, zero runtime issues and controlled reload
+with automatic diagnostics OFF and zero console warnings/errors. No position
+was recorded.
+
+Canonical **20260918-2043.b2177ed** is published and verified at
+`https://sedicivalvole.app/` on September 18 at 20:54 Europe/Rome. Official
+read-only preflight passes with `remote_writes=NONE`; preserve-existing
+publication uploads **37 files / 6,310,075 bytes**, reuses **825** exact static
+files and **29** full-hash-verified recordings, retains **one** previous entry
+asset, and returns `remote_writes=ROOT_UPLOAD_ONLY`. No legacy cleanup occurred.
+
+HTTPS verification passes for bare and cache-busted HTML, the release manifest
+and **nine** assets against local bytes/SHA-256. Both root variants still match
+after controlled browser reload, with HTTP 200, `no-store, no-cache` and
+`x-proxy-cache: MISS`. HTML SHA-256:
+`979541034ee84e5a30065491204df2d935efd96511e4652b715d630b671fd843`.
+The live main bundle is `index-xkQL7-vO.js`, SHA-256
+`21fc6e49f4994d3a78f0acccd7ddaaaa88bafd74016167f88bcef35eeb70b28b`.
+
+Canonical internal-browser **773 × 601** smoke passes Intro/catalogue display,
+muted launch, REPORT, source/build identity and controlled reload with automatic
+reports OFF, zero recorded positions, zero runtime issues and zero console
+warnings/errors. This live smoke keeps output muted; the actual advancing-media
+proof is the local native fixture above. The short background Meridian sample
+reported 20.42 FPS / 100 ms p95 and a 3,406 ms maximum long task; it is not a
+performance or endurance pass and must not replace a sustained visible-device
+measurement. No visual-performance change is included in this correction.
 
 On the published candidate, record device/software/build and listen through at
 least three natural completions, then run **R10C-03 / R7-14** for native

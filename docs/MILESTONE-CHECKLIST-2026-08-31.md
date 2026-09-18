@@ -4,8 +4,8 @@
 
 Milestones **7 / 10C** now have a reproduced and corrected seek-readiness defect:
 **883** full tests, **68** focused checks and **12** native-media browser checks
-pass. [Evidence](SOUNDTRACK-SEEK-READINESS-2026-09-18.md). Production delivery is
-pending. This closes the controlled software reproduction, not physical
+pass. Canonical **20260918-2043.b2177ed** is published and verified.
+[Evidence](SOUNDTRACK-SEEK-READINESS-2026-09-18.md). This closes the controlled software reproduction, not physical
 **R10C-03 / R7-14**, weak-network listening or continuous audible acceptance.
 
 ## Current precedence — 2026-09-18

@@ -5142,3 +5142,27 @@ and the owner-requested Atlas palette icon inside the camera row.
   and Atlas camera component, HTML/JSX/CSS reference and current figures.
   Formal account-bound Security scan **R06**, physical Tesla/iPhone/WebGL2,
   native media and sustained/endurance acceptance remain open. FTP is unchanged.
+
+
+## Soundtrack seek-readiness publication — 2026-09-18 20:54 Europe/Rome
+
+Canonical **20260918-2043.b2177ed**, VERSION **0.0.0**, product **19e3651**,
+build source **b2177ed**, is published and verified. The release prevents
+redundant zero seeks and premature post-rewind audible commitment, keeps initial
+preparation silent, and preserves timeout/cancellation/rollback. Detailed
+[evidence and listening limits](SOUNDTRACK-SEEK-READINESS-2026-09-18.md).
+
+- Full native suite **883/883**, focused media checks **68/68**, real native-media
+  internal-browser fixture **12/12**, production integrity **827** hashes,
+  exact credits **189/189**, bounded public hygiene **1,465** files / zero findings.
+- Official read-only preflight `remote_writes=NONE`; preserve-existing FTP
+  publication **37 files / 6,310,075 bytes**, **825** static and **29** fully
+  hash-verified recordings reused, **one** previous asset retained,
+  `remote_writes=ROOT_UPLOAD_ONLY`. No legacy cleanup or protocol change.
+- Bare/cache-busted HTML, release manifest and **nine** assets match local
+  bytes/hashes; both root variants remain current after controlled reload.
+  HTTP 200, no-store/no-cache, proxy MISS. Canonical **773 × 601** Intro,
+  muted launch, REPORT and reload have zero console/runtime errors. Automatic
+  diagnostics OFF; no location recorded or synthetic diagnostic sent.
+- Physical Tesla listening/native transport, visible GPU/endurance and iPhone
+  acceptance remain open. The background smoke is not a performance pass.

@@ -4,9 +4,10 @@
 
 The automatic-track waiting investigation produced a verified Soundtrack
 seek-readiness fix. **883/883** native tests, **68/68** focused checks and
-**12/12** native-media internal-browser checks pass. Production delivery remains
-pending; [the scoped record](SOUNDTRACK-SEEK-READINESS-2026-09-18.md) owns final
-delivery and target-Tesla continuity/native transport acceptance. The earlier
+**12/12** native-media internal-browser checks pass. Canonical
+**20260918-2043.b2177ed** is published and verified; no upload remains.
+[The scoped record](SOUNDTRACK-SEEK-READINESS-2026-09-18.md) owns delivery evidence
+and the next target-Tesla continuity/native transport sequence. The earlier
 health-only closeout below precedes this product change.
 
 ## Current restart point — 2026-09-18

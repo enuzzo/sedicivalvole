@@ -4,7 +4,7 @@
 
 - [x] S01 — Reproduce and correct seek-readiness / initial-selection silence defects.
 - [x] S02 — Verify seven new regressions, **883/883** complete tests, **68/68** focused checks and **12/12** native-media browser assertions.
-- [ ] S03 — Complete production package, canonical publication and live verification.
+- [x] S03 — Publish and verify **20260918-2043.b2177ed**: 827 package hashes, 189 credits, 1,465-file hygiene guard, official preserve-existing FTP, bare/cache-busted HTTPS byte identity and canonical browser/reload at 773 × 601.
 - [ ] S04 — Physical Tesla continuity and native transport acceptance (**R10C-03 / R7-14**).
 
 [Scoped evidence](SOUNDTRACK-SEEK-READINESS-2026-09-18.md). R06 and the other

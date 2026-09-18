@@ -5,8 +5,9 @@
 Three reproduced transport defects are corrected: redundant zero seeks, playback
 commitment before seek readiness, and initial-selection gain during preparation.
 Local evidence: **883/883** native tests, **68/68** focused checks and **12/12**
-real-media internal-browser assertions. Publication is pending the production
-gates. See [scope and acceptance](SOUNDTRACK-SEEK-READINESS-2026-09-18.md).
+real-media internal-browser assertions. Canonical **20260918-2043.b2177ed** is
+published and verified, including all **827** package hashes, **189** credits,
+official preserve-existing FTP and bare/cache-busted HTTPS/browser checks. See [scope and acceptance](SOUNDTRACK-SEEK-READINESS-2026-09-18.md).
 The health audit below remains historical evidence; cabin continuity and native
 Tesla transport are still open.
 
