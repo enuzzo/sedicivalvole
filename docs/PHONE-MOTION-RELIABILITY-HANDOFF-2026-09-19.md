@@ -1,5 +1,10 @@
 # TRACE reliability and first-use review handoff — September 19, 2026
 
+**Completed:** the bounded review is delivered as canonical **20260919-0131.c75c921**.
+Use [Current state](CURRENT-STATE.md) and the [updated user guide](PHONE-MOTION-USER-GUIDE.md).
+The instructions below are the historical task brief, not a new queued session.
+Physical iPhone/Tesla acceptance remains the owner's next step.
+
 ## Current owner authorization
 
 The owner explicitly requests a **new task**, after closing the parent work, to

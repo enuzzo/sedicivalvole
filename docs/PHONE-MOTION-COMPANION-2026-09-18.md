@@ -428,3 +428,39 @@ real sensor accuracy and endurance remain open. Next: the parked first-run and
 STOP/background/new-QR exercise in the updated user guide. No Aperture steering
 or unrelated backlog work was started. Publication identity follows after the
 canonical gates; historical release sections above remain dated evidence.
+
+## Reliability publication — September 19, 2026
+
+Verified at **2026-09-19 01:40 Europe/Rome**: canonical **20260919-0131.c75c921**, VERSION
+**0.0.0**, source **c75c921**. Implementation checkpoints f919af6, 45a5b88,
+197317f and c75c921 are committed and pushed. The intermediate 0120 and 0129
+candidates were stopped before activation while final recovery copy was corrected;
+0120 completed asset transfer but did not activate the root, and 0129 stopped
+during read-only identity verification. Bare canonical remained 0049 until the
+successful complete publication below. No claim of whole-release atomicity is
+made for mutable assets; the existing compatibility contract was preserved.
+
+Final immutable package: **828 exact hashes**, **9 Sites checks**, **8 documentation
+checks**, **189 dependency credits**, hygiene **1,498 text files**. The full native
+suite passed **955/955** at the main implementation checkpoint; final focused
+motion/PHP regressions pass **66/66**, including rejected recalibration and
+local/paired permission guidance. No dependency or backend change was required.
+
+Official `--publish --preserve-existing` completes all gates: **39 files /
+6,374,035 bytes**, **825 unchanged static files**, all **29 full-hash audio
+recordings** reused, two previous assets retained, canonical dynamic entry
+verified, legacy deletion skipped, **ROOT_UPLOAD_ONLY**. No rebuild occurred
+during an upload. The local QA server was stopped after browser checks.
+
+HTTPS: **11 local/live asset size/SHA-256 matches** (main JS/CSS, phone chunk,
+release manifest, cache runtime, fonts and brand files), **four bare/cache-busted
+root identity checks**, HTTP 200 and no-store/no-cache headers. Prior main JS/CSS
+remain HTTP 200. Live browser checks confirm 390×844 portrait, 844×390 landscape,
+773×601 Tesla panel, honest local entry, ZERO refusal, incomplete readings,
+STOP, reload, QR creation, disabled duplicate start and DISCONNECT/recovery.
+Canonical reloading retains the new build. No framework error overlay or console
+warning/error occurred in these paths. AUTO remained OFF and audio muted.
+
+The physical acceptance list above remains open. The next step is the owner's
+parked first-use and reconnect trial; software checks do not establish physical
+iPhone/Tesla compatibility, camera scanning, network reachability or wake retention.

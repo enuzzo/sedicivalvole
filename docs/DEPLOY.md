@@ -5192,3 +5192,20 @@ all **29** full-hash recordings, retains **two** previous assets and reports
 reload root checks match local bytes; canonical phone and 773 × 601 main-panel
 behavior pass without console warnings/errors. No synthetic mail or physical
 acceptance claim. [Exact hash evidence and remaining device checks](PHONE-MOTION-COMPANION-2026-09-18.md#trace-publication--september-19-2026).
+
+## TRACE reliability publication — 2026-09-19 01:40 Europe/Rome
+
+Canonical **20260919-0131.c75c921**, VERSION **0.0.0**, source **c75c921** is verified.
+The official preserve-existing workflow uploads **39 files / 6,374,035 bytes**,
+reuses 825 static files and all 29 full-hash recordings, retains two prior assets
+and reports **ROOT_UPLOAD_ONLY**. Intermediate candidates were stopped before
+activation and are not release identities. The complete final upload succeeds;
+no unfinished transfer remains and dist was not rebuilt during upload.
+
+Final gates: production 828 hashes, Sites 9/9, documentation 8/8, credits 189,
+hygiene 1,498; native regression 955/955 plus final motion/PHP 66/66. HTTPS verifies
+11 asset hashes and four bare/cache-busted roots; controlled browser reload,
+portrait/landscape companion and compact Tesla QR/disconnect pass without console
+warnings/errors. No-cache headers and previous JS/CSS HTTP 200 are confirmed.
+No synthetic diagnostic mail; physical iPhone/Tesla acceptance remains open.
+[Detailed evidence](PHONE-MOTION-COMPANION-2026-09-18.md#reliability-publication--september-19-2026).

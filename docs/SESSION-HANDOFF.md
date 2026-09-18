@@ -1,15 +1,33 @@
 # Session Handoff
 
-## TRACE reliability review — September 19
+## TRACE reliability published — September 19
 
-The requested review has implemented explicit local/paired guidance, permission
-retry without QR reuse, 30-second setup deadlines, immediate used-QR removal,
-late-request cleanup, offline teardown and honest incomplete/stale sensor states.
-The [user guide](PHONE-MOTION-USER-GUIDE.md) describes first use and recovery.
-Native regression 955/955, expanded motion/PHP 66/66, documentation 8/8 and
-local browser checks pass. Publication is pending; canonical remains
-**20260919-0049.e8beb93** until the release evidence below is updated. No physical
-iPhone/Tesla acceptance or Aperture response is implied. No new task is needed.
+Canonical **20260919-0131.c75c921**, VERSION **0.0.0**, is published and verified.
+The review corrects local-versus-paired guidance, permission retry without QR
+reuse, incomplete/stale sensor and ZERO states, rejected recalibration feedback,
+duplicate starts, late joins, offline teardown and bounded 30-second setup.
+Read the updated [first-run/recovery guide](PHONE-MOTION-USER-GUIDE.md).
+
+Native regression passed **955/955** at the main implementation checkpoint;
+subsequent final motion/PHP checks pass **66/66**, documentation **8/8**, Sites
+**9/9**, production integrity **828 hashes**, credits **189**, and hygiene
+**1,498 files**. Five phone viewports and compact Tesla 773×601 pass local UI
+checks. Local real WebRTC/PHP uses synthetic samples; forced WebGL loss/recovery
+is verified. Live portrait/landscape, ZERO refusal, missing sensors, STOP, QR
+creation/disconnect and controlled reload pass without console warnings/errors.
+
+Official preserve-existing publication uploaded **39 files / 6,374,035 bytes**,
+reused 825 static files and 29 full-hash recordings, retained two prior assets,
+and completed ROOT_UPLOAD_ONLY. HTTPS checks confirm 11 asset hashes, four bare/
+cache-busted root identities, no-cache headers and prior JS/CSS HTTP 200. No
+unfinished upload or local QA server remains. Intermediate candidates were
+stopped before activation; they were not public releases. No synthetic mail.
+
+Next: the owner performs the parked iPhone/Safari + Tesla trial, including QR,
+both permissions, ZERO in the holder, screen lock/background and new-QR recovery.
+Physical network reachability, sensor accuracy, wake retention and endurance
+remain unverified. GPS/Demo still owns speed; Aperture steering is not implemented.
+No further task has been launched. [Contract and release evidence](PHONE-MOTION-COMPANION-2026-09-18.md#reliability-publication--september-19-2026).
 
 ## TRACE companion published — September 19
 

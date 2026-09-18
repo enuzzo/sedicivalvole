@@ -1,7 +1,7 @@
 # TRACE phone companion: first run and recovery
 
-This guide includes the September 19 reliability corrections. The current
-publication identity is recorded in [Current state](CURRENT-STATE.md). Real
+This guide describes canonical **20260919-0131.c75c921**, including the September 19
+reliability corrections. Release evidence is in [Current state](CURRENT-STATE.md). Real
 Safari/iPhone/Tesla connectivity, sensors and screen-wake retention remain open.
 
 ## First run, while parked
