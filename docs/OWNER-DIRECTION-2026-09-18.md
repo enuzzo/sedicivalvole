@@ -9,7 +9,7 @@ Source: direct owner message; technical proposals below are labelled separately.
 The owner subsequently asked to skip Conditions for now because it overlaps
 with weather already used in the Tesla. **N02 / FI-006 is deferred**: do not
 start weather research, provider setup or UI design. N01 Drivey simplification
-is the active implementation; iPhone motion and the companion remain research
+is now implemented and published as **20260918-2212.721274c**; iPhone motion and the companion remain research
 candidates. This supersedes the earlier Conditions enthusiasm below.
 
 ## Consolidated decisions
@@ -24,8 +24,8 @@ candidates. This supersedes the earlier Conditions enthusiasm below.
   Remove obsolete project-owned selectors/state/tests where appropriate, but
   preserve all 51 pinned upstream files and their integrity tests. The expected
   benefit is simpler interaction and adapter maintenance; download savings have
-  not been measured. The implementation is verified locally; publication evidence
-  is recorded in the health checkpoint when complete.
+  not been measured. Publication **20260918-2212.721274c** is verified; see the
+  [health checkpoint](HEALTH-CHECK-2026-09-18.md#drivey-forward-only-continuation--september-18).
 - **Conditions (`FI-006`):** the owner supports this next feature direction.
   Prepare the exception-led Atlas/Discover experience, provider/source review,
   coarse-location privacy and three concrete UI compositions before selecting
@@ -80,7 +80,7 @@ background tracking or changes to the current automatic diagnostic boundary.
 
 | Unit | Status and next evidence |
 | --- | --- |
-| N01 — Drivey simplification | Implemented and locally verified: fixed forward view, one Normal/Wire control, palettes and saved render mode retained; all 51 upstream hashes pass. Publication evidence belongs to the health checkpoint. |
+| N01 — Drivey simplification | COMPLETE, published/verified **20260918-2212.721274c**: fixed forward view, one Normal/Wire control, palettes and saved render mode retained; all 51 upstream hashes pass. Physical acceptance remains separate. |
 | N02 — Conditions | DEFERRED by subsequent owner instruction: avoid overlap with Tesla weather. No work scheduled. |
 | N03 — iPhone motion | Feasibility/calibration research; local browser simulation cannot close real sensor acceptance. |
 | N04 — Phone-to-Tesla companion | New owner research idea; depends on N03 and target-browser/network measurements. |
@@ -95,6 +95,6 @@ curated presets are implemented; broader authorship is not a missing basic
 preset system. Atlas, Stats, Travel Report, automatic diagnostics and the iPhone
 layout are implemented; do not restart them from historical unchecked rows.
 
-Current order: complete N01 cleanup; N02 is deferred. N03/N04 are the next
+Current order: N01 cleanup is complete; N02 is deferred. N03/N04 are the next
 research candidates, beginning with a bounded feasibility study. This order is advice,
 not a claim that the owner selected infrastructure or approved a new UI design.

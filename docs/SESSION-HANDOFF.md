@@ -2,13 +2,17 @@
 
 ## Next-work direction — September 18
 
-Owner decisions are consolidated in [the current N01–N04 ledger](OWNER-DIRECTION-2026-09-18.md):
-retire dynamic Aerial, simplify Drivey to forward Normal/Wireframe with palettes,
-defer Conditions to avoid Tesla-weather overlap, and investigate iPhone motion
-and a paired Tesla sensor channel.
-These are pending work, not features in the current **20260918-2110.dbf5108**
-release. Physical acceptance, R06 and the eventual production-release decision
-remain open; older optional queues cannot restore retired Aerial work.
+Current canonical **20260918-2212.721274c** completes **N01**: Drivey uses the
+familiar forward view and one Normal/Wire control with shared palettes. Old
+camera choices migrate without losing render mode. Tests **891/891**, focused
+Drivey/session **20/20**, all **51** upstream hashes, production **827** hashes
+and local/live browser checks pass. [Delivery evidence](HEALTH-CHECK-2026-09-18.md#drivey-forward-only-continuation--september-18).
+
+[The current N01–N04 ledger](OWNER-DIRECTION-2026-09-18.md) keeps dynamic Aerial
+retired and **N02 Conditions deferred** at the owner's request to avoid Tesla
+weather overlap. **N03/N04** iPhone motion and paired Tesla sensor input remain
+feasibility work, not implemented features. Physical acceptance, R06 and the
+production-release decision remain open. No upload remains from N01.
 
 ## Latest quality continuation — 2026-09-18
 

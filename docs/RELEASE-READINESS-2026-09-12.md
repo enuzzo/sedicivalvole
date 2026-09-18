@@ -1,5 +1,13 @@
 # Release readiness — resumable checklist
 
+## September 18 Drivey simplification
+
+- [x] N01 — Fixed forward view, one Normal/Wire control and shared palettes; migrate legacy camera preferences without losing render mode. **891/891** tests, **20/20** focused checks and **51** vendor hashes pass.
+- [x] Publish/verify **20260918-2212.721274c**: **827** package hashes, preserve-existing FTP, canonical HTML/manifest/assets and internal-browser render toggle/reload.
+- N02 / Conditions is explicitly deferred by the owner due to overlap with Tesla weather. N03/N04 motion research remains unimplemented; physical P05/S04 and R06 stay open.
+
+[Evidence](HEALTH-CHECK-2026-09-18.md#drivey-forward-only-continuation--september-18).
+
 ## September 18 product polish continuation
 
 - [x] P01 — Reproduce catalogue stalls/cancellation and natural-end replacement races; correct request ownership.

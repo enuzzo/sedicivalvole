@@ -3,10 +3,11 @@
 ## Next-work decisions — September 18
 
 [The consolidated owner direction](OWNER-DIRECTION-2026-09-18.md) is the current
-next-work ledger: **N01** forward-only Drivey cleanup; **N02** Conditions
+next-work ledger: **N01 complete**, forward-only Drivey published and verified
+as **20260918-2212.721274c**; **N02** Conditions
 deferred by the owner due to Tesla-weather overlap; **N03** iPhone sensor feasibility; **N04 / FI-013** paired
 phone-to-Tesla sensor research. Dynamic Aerial **FI-002 / D4 is retired**.
-These changes are queued, not shipped. R06, physical S04/P05 and production row
+N03/N04 are research, not shipped features. R06, physical S04/P05 and production row
 17 remain separate. Other historical optional work is not reopened.
 
 ## Product polish continuation — 2026-09-18

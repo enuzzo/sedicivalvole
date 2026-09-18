@@ -221,3 +221,44 @@ pass after a controlled browser reload. Canonical internal-browser QA at
 Meridian, REPORT, current source/build identity and zero console/runtime issues.
 Automatic sending remains OFF, GPS is unavailable and no diagnostic was sent.
 Live audio was muted; no new listening or physical acceptance is claimed.
+
+## Drivey forward-only continuation — September 18
+
+Product checkpoint `12f338d`, candidate **20260918-2212.721274c**, implements
+owner-directed N01: retain the familiar forward road camera and a single
+Normal/Wire control with shared palettes. Camera cycling and mutable camera
+preferences are removed; the bridge sets its fixed mount once during startup.
+Old rear/aerial settings normalize to the current render-only settings, retaining
+Normal/Wire. No pinned vendor file is changed or removed. Conditions N02/FI-006
+is explicitly deferred by the owner due to overlap with Tesla weather.
+
+- **891/891** full native tests, **20/20** focused Drivey/session checks and
+  **8/8** documentation checks pass. Existing 51-file vendor integrity checks,
+  calibrated motion, stop/resume, opposing traffic and palette tests pass.
+- The migration checks cover each legacy camera with both render modes and
+  repeated normalization. Render-state cycling remains reversible.
+- Internal-browser local checks at **773 × 601** and **844 × 390** exercise
+  Intro → Drivey → muted START → Normal/Wire → palette Red/Blue → reload →
+  Drivey. The wire mode and Blue palette survive reload. The only contextual
+  control measures **112 × 52.5 px**, with no document horizontal overflow.
+- Screenshots show forward Normal and Wire scenes, both palette channels and
+  one Render control; there is no View selector. Captured warnings/errors are
+  empty. Production-package muted launch also passes with diagnostics OFF.
+- Production packaging passes **827** exact hashes; credits **189/189** and
+  the **1,466** tracked-text hygiene guard pass. No performance speedup,
+  substantial download saving or physical-device acceptance is claimed.
+
+### Verified Drivey publication
+
+Canonical **20260918-2212.721274c** is published and verified. Official
+preserve-existing FTP passes identity before upload, uploads **37 files /
+6,311,497 bytes**, reuses **825** static files and **29** full-hash-verified
+recordings, retains one previous asset and reports `remote_writes=ROOT_UPLOAD_ONLY`.
+Bare and cache-busted HTTPS HTML match the local build with no-store/no-cache
+headers. The manifest and ten representative assets, including the main bundle
+and Drivey iframe shell, match local bytes after controlled reload.
+Canonical internal-browser **773 × 601** QA confirms one Render control,
+Normal → Wire, palette-rendered forward geometry, muted output, automatic sending
+OFF and zero captured console errors/warnings. Intro renders after reload with
+the current build. No real GPS trace or diagnostic mail was generated.
+N01 is complete as implemented/published; physical acceptance remains separate.

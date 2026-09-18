@@ -4,9 +4,10 @@
 
 [Consolidated decisions and remaining work](OWNER-DIRECTION-2026-09-18.md)
 supersede the older optional queue where stated: retire speed-dependent Aerial,
-queue forward-only Drivey controls, defer Conditions following the later owner
+complete forward-only Drivey controls in **20260918-2212.721274c**, defer Conditions following the later owner
 instruction, advance iPhone motion feasibility, and capture the new iPhone-to-Tesla sensor companion as `FI-013`.
-No implementation or provider setup is claimed by this record.
+N01 delivery is verified in the health checkpoint. No motion implementation or
+weather provider setup is claimed.
 
 Canonical closeout — 2026-09-07 22:58 Europe/Rome: **build 20260907-2243**, source
 **0ab8ebe**, is verified live. All implementation/publication rows in the
