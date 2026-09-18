@@ -1,5 +1,7 @@
 # Drive Lab
 
+Development-only motion QA: [`qa-motion.html`](qa-motion.html), `npm run test:motion`; [execution, privacy and physical protocol](../../docs/MOTION-FEASIBILITY-2026-09-18.md). Excluded from App/LAB production packaging. No speed/audio integration or sensor transmission.
+
 The owner-selected [Engine A/B listening LAB](../../docs/ENGINE-LISTENING-LAB-2026-09-08.md)
 compares the 0834 reference and 1102 refinement on one 68-second route, with
 local preference/notes and JSON export. The public default retains the 1102

@@ -35,3 +35,8 @@ Check published build identity every **five minutes** and on online/foreground r
 ## Environment portability
 
 Do not trust native `node_modules` copied between machines/architectures through Dropbox. Establish the lockfile/environment and use the existing `native:check`, `test:native` and `build:native` wrappers from `prototype/drive-lab`; prepare missing native packages only when actually required and within the task's permissions. Do not rewrite dependency versions merely to work around a host mismatch. `scripts/native-toolchain.mjs` and [Drive Lab instructions](../../prototype/drive-lab/AGENTS.md#local-work) provide the local entry points. This is environment repair guidance, not a requirement to install or test on every documentation edit.
+
+## Isolated motion feasibility
+
+N03/N04 have development-only QA modules under `prototype/drive-lab/qa/` and
+`qa-motion.html`; see [sensor/link contracts and physical protocol](../MOTION-FEASIBILITY-2026-09-18.md). No product motion source is selected. Preserve explicit gesture/permission, nullable device-frame axes, monotonic receipt timing, bounded in-memory observations, foreground restart, baseline invalidation and exclusion from diagnostic delivery. The data-channel probe sends synthetic timing metadata only, uses no external ICE/signaling service, expires/revokes sessions and rejects stale/replayed input. A local loopback pass is not iPhone/Tesla support, synchronized one-way latency or physical acceptance. GPS stays the real speed reference. Real-device access and a new public UI retain their separate authorization/selection gates.

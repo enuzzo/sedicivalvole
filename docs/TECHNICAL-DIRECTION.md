@@ -150,6 +150,16 @@ Switching should use a bounded equal-power crossfade or an equivalent click-free
 
 The mode selector must remain reachable and clearly show the active mode at the verified `773 × 601` split viewport. Its exact component anatomy and Engine visual language require Product Design exploration before implementation.
 
+## Isolated phone motion feasibility
+
+The [N03/N04 development probes](MOTION-FEASIBILITY-2026-09-18.md) keep nullable
+device-frame motion, monotonic event receipt and stationary baseline quality
+outside the product input graph. A separate direct WebRTC probe carries only
+synthetic timing metadata with challenge-bound freshness and expiring sessions.
+Neither probe changes the GPS/Demo boundary, the 130 km/h energy ceiling or
+audio ownership. Product integration depends on physical device/network evidence
+and the public interface selection gate.
+
 ## Speed-source contract
 
 Each source emits normalized samples and events rather than exposing browser APIs downstream.

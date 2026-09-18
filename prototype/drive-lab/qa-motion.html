@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>sedicivalvole · motion feasibility QA</title>
+    <style>
+      @font-face { font-family: Space; src: url('/fonts/space-grotesk-variable.ttf'); }
+      * { box-sizing: border-box; }
+      body { margin: 0; padding: 20px; color: #f2efe6; background: #141414; font: 15px/1.5 Space, sans-serif; }
+      main { max-width: 920px; margin: auto; }
+      h1 { font-size: 22px; } h2 { font-size: 17px; }
+      section { border-top: 1px solid #777; padding: 16px 0; }
+      .controls { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+      button { min-height: 48px; padding: 10px 16px; font: inherit; color: inherit; background: #272727; border: 1px solid #999; border-radius: 6px; }
+      button:disabled { opacity: .5; } button:focus-visible, textarea:focus-visible { outline: 2px solid #ffe09b; }
+      pre { white-space: pre-wrap; overflow-wrap: anywhere; font: 13px/1.5 ui-monospace, monospace; }
+      textarea { display: block; width: 100%; min-height: 96px; background: #222; color: inherit; font: 13px/1.4 monospace; }
+      summary { min-height: 48px; cursor: pointer; padding-top: 12px; }
+      #notice { min-height: 24px; }
+    </style>
+  </head>
+  <body><main>
+    <h1>Motion feasibility · Local QA</h1>
+    <p>Excluded from production. No GPS, speed, audio, storage or diagnostic delivery. Stop clears sensor observations. WebRTC exchanges synthetic timing metadata only.</p>
+    <p id="notice" role="status">Ready. Physical iPhone and Tesla acceptance is untested.</p>
+    <section><h2>iPhone sensor availability</h2>
+      <p>Start requests motion access from this button. Keep the phone stationary for baseline capture. A baseline does not establish the vehicle's forward axis.</p>
+      <div class="controls">
+        <button id="start">START SENSORS</button><button id="stop">STOP SENSORS</button>
+        <button id="calibrate">CAPTURE STATIONARY BASELINE</button><button id="remount">REMOUNT / RESET</button>
+      </div>
+      <pre id="sensor" aria-label="Sensor summary"></pre>
+    </section>
+    <section><h2>WebRTC · Synthetic metadata</h2>
+      <p>Five-minute sessions. No relay or discovery server. A loopback pass tests this browser only. Disconnect, page hiding and expiry require a new deliberate connection.</p>
+      <div class="controls"><button id="loopback">START LOCAL LOOPBACK</button><button id="disconnect">DISCONNECT / CLEAR</button></div>
+      <pre id="link" aria-label="Connection summary">Not connected.</pre>
+      <details><summary>Manual two-device connection</summary>
+        <p>Use only on a trusted private network. Offer/answer text contains ephemeral network information: transfer it directly between your devices; do not save it in reports or logs. Trusted HTTPS on both devices is required. Failed direct ICE does not establish that a relay will solve target-browser limitations.</p>
+        <div class="controls"><button id="offer">CREATE RECEIVER OFFER</button><button id="answer">ANSWER AS SYNTHETIC SENDER</button><button id="accept">APPLY ANSWER ON RECEIVER</button></div>
+        <label for="remote">Paste the other device's offer or answer</label><textarea id="remote" autocomplete="off" spellcheck="false"></textarea>
+        <label for="local">Local offer or answer · temporary</label><textarea id="local" readonly spellcheck="false"></textarea>
+      </details>
+    </section>
+  </main><script type="module" src="/qa/motion-harness.mjs"></script></body>
+</html>

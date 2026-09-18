@@ -1,5 +1,15 @@
 # Motion input continuation — September 18, 2026
 
+## September 18 continuation result — read before the original brief
+
+The requested isolated N03 sensor layer and N04 synthetic direct-link probe are
+implemented and locally verified. [Current evidence, execution and physical
+protocol](MOTION-FEASIBILITY-2026-09-18.md) supersede the original implementation
+starting point below. Neither probe enters the production bundle or controls
+product speed/audio. No deploy is required. Next work needs trusted HTTPS on the
+real devices and measured iPhone/Tesla evidence; do not recreate this foundation
+or launch idle follow-up tasks. R06 still has missing original artifacts.
+
 ## Owner authority and execution boundary
 
 The owner explicitly requested autonomous continuation of the remaining work,

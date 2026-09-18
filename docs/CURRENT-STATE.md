@@ -1,5 +1,18 @@
 # Current Project State
 
+## N03 / N04 local feasibility checkpoint — September 18
+
+The isolated [motion sensor and synthetic WebRTC probes](MOTION-FEASIBILITY-2026-09-18.md) are
+implemented under development-only QA. They are excluded from the production
+package and have no product GPS/speed/audio or diagnostic delivery connection.
+Local software/browser evidence is recorded in that document; physical iPhone
+sensing and target-Tesla transport remain open. Next: select a trusted HTTPS
+execution path for the real devices, then collect the listed aggregate readings.
+No infrastructure change or new public motion UI is selected. No production
+upload is required; canonical **20260918-2212.721274c** remains unchanged.
+R06 still lacks its original artifacts and is incomplete. No automatic task is
+launched merely to wait for hardware, access or the owner's replacement decision.
+
 ## Next-work direction — September 18
 
 Current canonical **20260918-2212.721274c** completes **N01**: Drivey uses the

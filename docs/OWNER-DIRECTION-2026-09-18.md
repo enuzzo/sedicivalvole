@@ -91,8 +91,8 @@ background tracking or changes to the current automatic diagnostic boundary.
 | --- | --- |
 | N01 — Drivey simplification | COMPLETE, published/verified **20260918-2212.721274c**: fixed forward view, one Normal/Wire control, palettes and saved render mode retained; all 51 upstream hashes pass. Physical acceptance remains separate. |
 | N02 — Conditions | DEFERRED by subsequent owner instruction: avoid overlap with Tesla weather. No work scheduled. |
-| N03 — iPhone motion | Feasibility/calibration research; local browser simulation cannot close real sensor acceptance. |
-| N04 — Phone-to-Tesla companion | New owner research idea; depends on N03 and target-browser/network measurements. |
+| N03 — iPhone motion | Isolated sensor controller, bounded baseline/quality measurement and local QA implemented; [evidence/protocol](MOTION-FEASIBILITY-2026-09-18.md). Trusted device HTTPS and physical iPhone readings remain open. |
+| N04 — Phone-to-Tesla companion | Synthetic direct WebRTC probe/protocol implemented; Mac internal-browser loopback passes. Exact Tesla capability, cross-device signaling/network timing and recovery remain unverified; no relay/infrastructure provisioned. |
 | R06 — Formal security scan | Still incomplete. Recover the historical missing evidence or obtain a deliberate replacement decision; no duplicate scan is implicitly authorized. |
 | S04 / P05 / rows 5, 7, 10C, 14–16 | Physical Soundtrack continuity/native transport/weak network; sustained visible Air Atlas/Fly With and GPU/thermal behavior; iPhone Safari rotation/safe areas/audio/PDF; remaining Mono/Rosso/Touring acceptance. Preserve earlier positive owner listening. |
 | Row 17 — Production release | Remains a separate explicit release decision after the acceptance matrix; VERSION stays 0.0.0. |
@@ -104,6 +104,6 @@ curated presets are implemented; broader authorship is not a missing basic
 preset system. Atlas, Stats, Travel Report, automatic diagnostics and the iPhone
 layout are implemented; do not restart them from historical unchecked rows.
 
-Current order: N01 cleanup is complete; N02 is deferred. N03/N04 are the next
-research candidates, beginning with a bounded feasibility study. This order is advice,
+Current order: N01 cleanup is complete; N02 is deferred. N03/N04 now have a bounded local feasibility foundation; the next
+step is trusted device execution and physical measurements. This order is advice,
 not a claim that the owner selected infrastructure or approved a new UI design.

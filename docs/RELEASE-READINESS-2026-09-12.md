@@ -1,10 +1,23 @@
 # Release readiness — resumable checklist
 
+## N03 / N04 local feasibility checkpoint — September 18
+
+The isolated [motion sensor and synthetic WebRTC probes](MOTION-FEASIBILITY-2026-09-18.md) are
+implemented under development-only QA. They are excluded from the production
+package and have no product GPS/speed/audio or diagnostic delivery connection.
+Local software/browser evidence is recorded in that document; physical iPhone
+sensing and target-Tesla transport remain open. Next: select a trusted HTTPS
+execution path for the real devices, then collect the listed aggregate readings.
+No infrastructure change or new public motion UI is selected. No production
+upload is required; canonical **20260918-2212.721274c** remains unchanged.
+R06 still lacks its original artifacts and is incomplete. No automatic task is
+launched merely to wait for hardware, access or the owner's replacement decision.
+
 ## September 18 Drivey simplification
 
 - [x] N01 — Fixed forward view, one Normal/Wire control and shared palettes; migrate legacy camera preferences without losing render mode. **891/891** tests, **20/20** focused checks and **51** vendor hashes pass.
 - [x] Publish/verify **20260918-2212.721274c**: **827** package hashes, preserve-existing FTP, canonical HTML/manifest/assets and internal-browser render toggle/reload.
-- N02 / Conditions is explicitly deferred by the owner due to overlap with Tesla weather. N03/N04 motion research remains unimplemented; physical P05/S04 and R06 stay open.
+- N02 / Conditions is explicitly deferred by the owner due to overlap with Tesla weather. N03/N04 product integration remains unimplemented; local QA feasibility is recorded above; physical P05/S04 and R06 stay open.
 
 [Evidence](HEALTH-CHECK-2026-09-18.md#drivey-forward-only-continuation--september-18).
 
