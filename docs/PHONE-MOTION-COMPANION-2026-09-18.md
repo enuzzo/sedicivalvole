@@ -104,8 +104,12 @@ an isolated temporary directory. Start Vite with
 `SEDICIVALVOLE_NO_LOCAL_ENV=1 SEDICIVALVOLE_MOTION_QA=1`; its optional PHP adapter
 accepts only loopback connections. QA HTML/modules are not production entries.
 
-Local evidence: 23 new coordinate, sensor lifecycle, permissions, channel,
-privacy and PHP tests; complete native regression suite **936/936**; real internal-browser
+The official publication gate admits the new endpoint by an exact reviewed
+SHA-256 and rejects altered remote bytes. No wildcard API admission is added.
+
+Local evidence: 24 new coordinate, sensor lifecycle, permissions, channel,
+privacy and PHP tests; complete native regression suite **936/936**, followed by **50/50** focused
+motion/PHP/publication checks including the added endpoint-identity case; real internal-browser
 pairing and loss-of-sample/stop paths. At 773 × 601 the six navigation actions
 retain 79.5 × 64 px cells. SVG guide/QR, modal Escape and disconnect work. Phone
 390 × 844 has central TARE, readable readings and no horizontal overflow.

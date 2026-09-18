@@ -70,6 +70,16 @@ RETIRED_FONT_HASHES = {
 RETIRED_BRAND_HASHES = {
     "illobo-featured-provisional.png": "da6d5086f06dc8a38ea580f3a5c4289363c214cb8736c9e84ffa39a462946e2b",
 }
+MOTION_PAIR_ENDPOINT = "motion-pair.php"
+MOTION_PAIR_ENDPOINT_HASHES = {
+    "19754f1ac14dc6ab82e87ef5ecd79546b3389924ca8287c4c69e1c3b157ff9df",
+}
+
+def verify_motion_pair_identity(payload: bytes) -> None:
+    if hashlib.sha256(payload).hexdigest() not in MOTION_PAIR_ENDPOINT_HASHES:
+        raise ValueError("motion pairing endpoint identity mismatch")
+
+
 DIAGNOSTIC_ENDPOINT = "send-diagnostic.php"
 SESSION_REPORT_ENDPOINT = "session-report.php"
 RADAR_DATA_ENDPOINT = "radar-data.php"
@@ -1056,6 +1066,7 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
             api_names = safe_names(ftp)
             if not api_names.issubset({
                 DIAGNOSTIC_ENDPOINT,
+                MOTION_PAIR_ENDPOINT,
                 DIAGNOSTIC_RECIPIENT_CONFIG,
                 JAMENDO_CONFIG,
                 SOUNDTRACK_CATALOG_ENDPOINT,
@@ -1066,6 +1077,8 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
                 RADAR_DATA_ENDPOINT,
             }):
                 raise ValueError("unexpected API entry")
+            if MOTION_PAIR_ENDPOINT in api_names:
+                verify_motion_pair_identity(remote_bytes(ftp, MOTION_PAIR_ENDPOINT))
             if RADAR_DATA_ENDPOINT in api_names and not all(
                 marker in remote_bytes(ftp, RADAR_DATA_ENDPOINT) for marker in (b"sedicivalvole.radar-data.v1", b"RADAR_DATA_ORIGIN")
             ):

@@ -54,3 +54,8 @@ test('public HTTP handler rejects other origins, methods, media types and oversi
   assert.equal(result.status,0,result.stderr);assert.equal(Number(result.stdout),expected);
  }
 });
+test('canonical publication admits only the reviewed motion endpoint bytes',()=>{
+ const deploy=fileURLToPath(new URL('../../../scripts/deploy_drive_lab_ftp.py',import.meta.url));
+ const script="import runpy,sys; m=runpy.run_path(sys.argv[1]); payload=open(sys.argv[2],'rb').read(); m['verify_motion_pair_identity'](payload)\ntry:\n m['verify_motion_pair_identity'](payload+b'changed')\nexcept ValueError:\n print('PASS')\nelse:\n raise AssertionError('changed endpoint accepted')";
+ const result=spawnSync('python3',['-c',script,deploy,endpoint],{encoding:'utf8'});assert.equal(result.status,0,result.stderr);assert.equal(result.stdout.trim(),'PASS');
+});
