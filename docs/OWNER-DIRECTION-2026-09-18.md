@@ -5,9 +5,9 @@
 The owner subsequently authorized QR integration, immediate relative-pose TARE,
 live XYZ/gyro readings, diagnostic integration and selected **direction 1, XYZ
 Cross**. The [companion implementation and physical test guide](PHONE-MOTION-COMPANION-2026-09-18.md)
-supersedes the local-only/pending-UI statements below for this scope. Production
-implementation and local verification are complete; publication evidence follows
-in that document. Actual iPhone/Tesla acceptance remains open. GPS/audio are
+supersedes the local-only/pending-UI statements below for this scope. Canonical
+**20260918-2335.9b18086** is published and verified; implementation, local tests
+and delivery evidence are recorded in that document. No upload remains. Actual iPhone/Tesla acceptance remains open. GPS/audio are
 unchanged. Aperture tilt/curvature is queued after physical evidence. R06 remains
 incomplete; Conditions stays deferred and dynamic Aerial retired.
 

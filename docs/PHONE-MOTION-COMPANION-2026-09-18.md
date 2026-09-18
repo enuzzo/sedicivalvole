@@ -131,3 +131,52 @@ Primary references checked for this implementation:
 [W3C Device Orientation and Motion](https://www.w3.org/TR/orientation-event/),
 [WebRTC peer connections](https://webrtc.org/getting-started/peer-connections),
 [WebRTC data channels](https://webrtc.org/getting-started/data-channels).
+
+
+## Canonical publication and closeout
+
+Published and verified **20260918-2335.9b18086**, VERSION **0.0.0**.
+Implementation is `da12ac7`; `9b18086` adds exact endpoint admission and records
+the verified checkpoint. Official preserve-existing FTP completed: **38 files /
+6,351,664 bytes** uploaded; **825 static files** and **29 full-hash-verified audio
+recordings** reused; **two previous assets** retained. No legacy deletion,
+`remote_writes=ROOT_UPLOAD_ONLY`. The complete upload was verified before the
+dynamic entry switch. No upload remains in progress.
+
+Final package: **827 exact static hashes**, **859 regular build files** passing
+the fail-closed safety reader, **189 dependency credits**, and **9/9** Sites
+checks on the final package. Full native **936/936** and subsequent focused
+**50/50** motion/PHP/publication checks are recorded above. No new dependency
+or third-party source was admitted.
+
+Canonical bare and cache-busted HTML return HTTP 200, match local bytes, and
+retain `no-store, no-cache, must-revalidate, max-age=0`; both still match after a
+controlled browser reload. Nine HTTP checks cover those roots, manifest/main
+JS/CSS/phone chunk and API method/origin validation. Live internal-browser QA
+at 773 × 601 verifies the build, muted launch, phone icon, SVG guide, real server
+QR creation, successful polling, disconnect, and safe `phoneMotion` events in
+REPORT. At 390 × 844 the public companion loads the correct build with no
+horizontal overflow. The browser warning/error log is empty. No diagnostic email
+was sent; AUTO was OFF. All agent-created browser tabs and the local server are
+closed after verification; temporary viewport override is reset.
+
+A first read-only preflight overlapped a local rebuild and stopped at the static
+safety gate without remote writes. All 859 stable files were then verified and
+the official publication reran the full guard successfully. A plain urllib HTTP
+probe received 403; browser-user-agent HTTP requests and the actual browser pass.
+No provider/security setting was changed.
+
+Selected local/live SHA-256 evidence:
+
+| Resource | SHA-256 |
+| --- | --- |
+| `/` | `e4a0ea882d70b39982243fefa171b3b63d19c5f39a358e159418b6b858238d7b` |
+| `/assets/index-C0lKHxBj.js` | `ac16b34d47bbda69880a5f104f9518e6eab9a358a25210cf57e5fd705d0948ed` |
+| `/assets/index-CK0GbmI0.css` | `b01bc372342478172a68dd115cfc1515109b6dbb8290b6cf17125bf54a8421d1` |
+| `/assets/phone-CH9GNVtg.js` | `0d397f2853016ceb14a12b437420daf551d6a2cb87fa91535d979ab6c86bb3fd` |
+| `/assets/release-20260918-2335.9b18086.json` | `c91b7b1a2ecce10453c1de79d2360b6ab385d0c5c86537c32a666a0aeb615cf2` |
+
+Next acceptance is the real iPhone/Tesla protocol above. No physical sensing,
+cross-device timing, relay reachability, sustained performance or Aperture
+steering acceptance is claimed. Conditions, R06 and the formal release decision
+retain their existing statuses.
