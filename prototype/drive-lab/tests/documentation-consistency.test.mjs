@@ -120,7 +120,9 @@ test("future ideas preserve owner provenance and the motion-input truth boundary
 
   assert.match(readme, /canonical \[`docs\/FUTURE-IDEAS\.md`\]/);
   assert.match(futureIdeas, /`FI-001` \| Optional iPhone motion\/accelerometer input/);
-  assert.match(futureIdeas, /OWNER \| 2026-08-30 \| CAPTURED/);
+  assert.match(futureIdeas, /`FI-001`[^\n]+OWNER \| 2026-08-30 \| RESEARCH/);
+  assert.match(futureIdeas, /`FI-002`[^\n]+RETIRED/);
+  assert.match(futureIdeas, /`FI-013`[^\n]+OWNER \| 2026-09-18 \| RESEARCH/);
   assert.match(futureIdeas, /not automatically a more accurate absolute speed source/i);
   assert.match(futureIdeas, /no fabricated speed, no coordinate persistence, no automatic fallback/i);
   assert.match(futureIdeas, /AGENT PROPOSAL \| 2026-08-30 \| CAPTURED · not approved/);
@@ -150,6 +152,7 @@ test("relative Markdown document links resolve", () => {
     "README.md",
     "docs/CURRENT-STATE.md",
     "docs/FUTURE-IDEAS.md",
+    "docs/OWNER-DIRECTION-2026-09-18.md",
     "docs/MODES.md",
     "docs/PRODUCT-SPEC.md",
     "docs/ROADMAP.md",

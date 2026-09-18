@@ -1,5 +1,14 @@
 # Milestone Checklist — 2026-08-31
 
+## Next-work decisions — September 18
+
+[The consolidated owner direction](OWNER-DIRECTION-2026-09-18.md) is the current
+next-work ledger: **N01** forward-only Drivey cleanup; **N02** Conditions
+provider/design; **N03** iPhone sensor feasibility; **N04 / FI-013** paired
+phone-to-Tesla sensor research. Dynamic Aerial **FI-002 / D4 is retired**.
+These changes are queued, not shipped. R06, physical S04/P05 and production row
+17 remain separate. Other historical optional work is not reopened.
+
 ## Product polish continuation — 2026-09-18
 
 Current canonical **20260918-2110.dbf5108** adds bounded/cancellable catalogue
@@ -362,7 +371,7 @@ These are not allowed to interrupt the ordered core unless the owner promotes
 one explicitly:
 
 - [ ] `FI-001` optional iPhone motion/fusion input for other cars;
-- [ ] `FI-002` Drivey Aerial camera rising smoothly with speed;
+- Retired `FI-002` speed-dependent Aerial; September 18 replaces it with N01 forward-only Drivey simplification.
 - [ ] `FI-006` exception-led local Conditions context;
 - [ ] future authorized-passenger remote controls beyond the current main UI;
 - [ ] `DI-001` GPS-free `MOTION` interpretation remains an unapproved agent

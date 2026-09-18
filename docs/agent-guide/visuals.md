@@ -26,6 +26,12 @@ Embed byte-identical Codrops/Tympanus Infinite Lights **Interstate 7**, commit `
 
 ## DRIVEY
 
+September 18 owner direction retires speed-dependent Aerial (FI-002/D4) and
+queues forward-only product controls with Normal/Wireframe and palettes.
+[Implementation scope and saved-state migration](../OWNER-DIRECTION-2026-09-18.md)
+are pending; keep pinned upstream bytes intact. Historical camera-variant checks
+are not authority to restore those product choices after their removal.
+
 Use the source-faithful modern Rezmason runtime, commit `5104cdade2a3158786b05b9b0680a50e942830cf`, with its 51 unchanged files and integrity manifest. Both rejected clean-room Drivey approximations remain rejected; tested or deployed does not mean owner-accepted. Preserve original road/camera/geometry character with the narrow host bridge. Read [source admission](../SOURCE-ADMISSION-2026-08-29.md#admission-matrix) for GPL/dependency/asset boundaries and the unresolved historical non-profit-header versus root-GPL notice if commercial status becomes material.
 
 Every theme uses native `accent` and `secondary` simultaneously in Normal and Wire modes, never one interpolated tint. Default is the original automatic road follower. Preserve upstream Input and road/curve steering, suppress manual steering at the product surface, and remove only player random lane weaving through the host boundary. Do not patch upstream files.

@@ -1,5 +1,14 @@
 # Session Handoff
 
+## Next-work direction — September 18
+
+Owner decisions are consolidated in [the current N01–N04 ledger](OWNER-DIRECTION-2026-09-18.md):
+retire dynamic Aerial, simplify Drivey to forward Normal/Wireframe with palettes,
+advance Conditions, investigate iPhone motion and a paired Tesla sensor channel.
+These are pending work, not features in the current **20260918-2110.dbf5108**
+release. Physical acceptance, R06 and the eventual production-release decision
+remain open; older optional queues cannot restore retired Aerial work.
+
 ## Latest quality continuation — 2026-09-18
 
 The owner-requested polish pass is complete and canonical

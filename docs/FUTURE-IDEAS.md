@@ -1,5 +1,13 @@
 # Future Ideas Register
 
+## Latest owner direction — September 18
+
+[Consolidated decisions and remaining work](OWNER-DIRECTION-2026-09-18.md)
+supersede the older optional queue where stated: retire speed-dependent Aerial,
+queue forward-only Drivey controls, advance Conditions and iPhone motion
+feasibility, and capture the new iPhone-to-Tesla sensor companion as `FI-013`.
+No implementation or provider setup is claimed by this record.
+
 Canonical closeout — 2026-09-07 22:58 Europe/Rome: **build 20260907-2243**, source
 **0ab8ebe**, is verified live. All implementation/publication rows in the
 22:40 checkpoint below are now complete. Physical-device and actual inbox gates
@@ -53,18 +61,19 @@ presented as an owner decision or enter the product without explicit approval.
 
 | ID | Idea | Origin | Captured | Status | Authoritative detail |
 |---|---|---|---|---|---|
-| `FI-001` | Optional iPhone motion/accelerometer input for use in any car, including Bluetooth-speaker sessions | OWNER | 2026-08-30 | CAPTURED · high-value nice to have | This document |
-| `FI-002` | Smoothly raise DRIVEY's Aerial camera as speed increases | OWNER | 2026-08-30 | CAPTURED | [`PIANO.md`](../PIANO.md) `D4` |
+| `FI-001` | Optional iPhone motion/accelerometer input for use in any car, including Bluetooth-speaker sessions | OWNER | 2026-08-30 | RESEARCH · owner interest renewed September 18 | This document and [current direction](OWNER-DIRECTION-2026-09-18.md) |
+| `FI-002` | Smoothly raise DRIVEY's Aerial camera as speed increases | OWNER | 2026-08-30 | RETIRED · owner prefers forward-only driving | [September 18 supersession](OWNER-DIRECTION-2026-09-18.md); historical `PIANO.md` D4 |
 | `FI-003` | DISCOVER image-led nearby-place companion | OWNER | 2026-08-30 | PROMOTED | [`PIANO.md`](../PIANO.md) `A5` |
 | `FI-004` | Grouped, direct-selection Visual Library | OWNER | 2026-08-30 | PROMOTED | [`PIANO.md`](../PIANO.md) `X9` |
 | `FI-005` | Shared LIGHT/DARK/AUTO interface appearance | OWNER | 2026-08-30 | IMPLEMENTED · canonical build `20260903-1752`; Tesla pending | [`MILESTONE-CHECKLIST-2026-08-31.md`](MILESTONE-CHECKLIST-2026-08-31.md) row 13; [`TESLA-TEST-QUEUE-2026-08-31.md`](TESLA-TEST-QUEUE-2026-08-31.md) `R13-01`–`R13-03` |
-| `FI-006` | Exception-led local CONDITIONS and weather context | OWNER | 2026-08-30 | PROMOTED | [`PIANO.md`](../PIANO.md) `X11` |
+| `FI-006` | Exception-led local CONDITIONS and weather context | OWNER | 2026-08-30 | PROMOTED · next feature direction; provider/design pending | [September 18 direction](OWNER-DIRECTION-2026-09-18.md); `PIANO.md` X11 |
 | `FI-007` | Original speed-responsive Gradient Field | OWNER | 2026-08-30 | RETIRED · renderer replaced by one ShaderGradient family with three variants | [`MILESTONE-CHECKLIST-2026-08-31.md`](MILESTONE-CHECKLIST-2026-08-31.md) row 11 |
 | `FI-008` | Landscape-first iPhone presentation with an inert portrait rotation notice | OWNER | 2026-08-30 | IMPLEMENTED · locally verified; publication and physical Safari pending | Compact Cockpit direction 1 selected for iPhone 17 Pro/Pro Max; [`NIGHT-IMPLEMENTATION-2026-09-07.md`](NIGHT-IMPLEMENTATION-2026-09-07.md); milestone row 14 / A08 |
 | `FI-009` | Curated audiovisual experiences | OWNER | 2026-09-05 | IMPLEMENTED · Night Glass and Neon Groove live; broader authorship remains open | [`NIGHT-WORK-2026-09-07.md`](NIGHT-WORK-2026-09-07.md); milestone row 12 / A09 |
 | `FI-010` | Travel-oriented ATLAS and a separate Stats for Nerds visual | OWNER | 2026-09-05 | IMPLEMENTED · separate Visual 09 live; added Stats parity locally verified, publication pending | [`ATLAS-STATS-REPORT-PLAN-2026-09-07.md`](ATLAS-STATS-REPORT-PLAN-2026-09-07.md), superseded where stated by [`NIGHT-IMPLEMENTATION-2026-09-07.md`](NIGHT-IMPLEMENTATION-2026-09-07.md) |
 | `FI-011` | Multi-hour Milan drive evidence | OWNER | 2026-09-05 | OWNER TEST PLAN · interrupted reports do not close endurance | [`OWNER-DECISIONS-2026-09-07.md`](OWNER-DECISIONS-2026-09-07.md); milestone row 16 / A01 |
 | `FI-012` | Branded session PDF with chosen-recipient email and resettable remembered address | OWNER | 2026-09-07 | IMPLEMENTED · locally verified; publication and actual inbox receipt pending | Travel Report direction 1; [`NIGHT-IMPLEMENTATION-2026-09-07.md`](NIGHT-IMPLEMENTATION-2026-09-07.md) |
+| `FI-013` | Pair iPhone motion sensors with the Tesla browser | OWNER | 2026-09-18 | RESEARCH · compatibility, latency and privacy unverified | [Motion companion feasibility](OWNER-DIRECTION-2026-09-18.md#motion-companion-feasibility-not-a-delivery-promise) |
 | `DI-001` | A GPS-free `MOTION` interpretation driven by the character of movement rather than a fabricated speedometer | AGENT PROPOSAL | 2026-08-30 | CAPTURED · not approved | This document |
 
 ### Current implementation boundaries for FI-008, FI-010 and FI-012
