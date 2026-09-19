@@ -373,3 +373,13 @@ test('a delayed higher-numbered receipt cannot revive readiness on the phone',()
  assert.equal(answer.summary.receiverConfirmed,false);assert.equal(phone.summary().receiverConfirmed,false);
  receiver.receive(JSON.stringify(answer));assert.equal(receiver.summary().receiverConfirmed,false);
 });
+
+
+test('live phone sensors cannot complete Connect before the transport opens',async()=>{
+ const {phoneOnboarding}=await import('../src/motion/onboarding.js');
+ for(const tared of [false,true]){
+  const result=phoneOnboarding({hasPair:true,attempted:true,link:{state:'connecting'},sensor:{sensorState:'live',tared}});
+  assert.equal(result.active,1);assert.equal(result.ready,false);assert.match(result.title,/Connecting/);
+ }
+ assert.equal(phoneOnboarding({hasPair:true,attempted:true,link:{state:'connected'},sensor:{sensorState:'live',tared:false}}).active,2);
+});

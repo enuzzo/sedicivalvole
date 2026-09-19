@@ -15,7 +15,7 @@ export function receiverOnboarding(s = {}) {
   return step(3, "Ready on both screens", "Move your phone. Watch TRACE.", { ready: true });
 }
 
-export function phoneOnboarding({ link = {}, sensor = {}, hasPair = false, attempted = false } = {}) {
+export function phoneOnboarding({ link = {}, sensor = {}, hasPair = false } = {}) {
   if (hasPair && terminal(link.state)) return step(0, "Scan a new QR", "On the display: open the phone menu → CREATE QR.");
   if (sensor.sensorState === "requesting") return step(1, "Tap Allow", "Allow motion and orientation.");
   if (sensor.sensorState === "denied") return step(1, "Sensor access needed", "Retry and tap Allow. Check site permissions if blocked.");
@@ -24,11 +24,11 @@ export function phoneOnboarding({ link = {}, sensor = {}, hasPair = false, attem
   if (sensor.sensorState === "stale") return step(1, "Sensor data paused", "Keep this page open. Set ZERO when readings return.");
   if (sensor.sensorState === "waiting") return step(1, "Waiting for sensors…", sensor.waitingMs > 5000 ? "No readings yet. Tap RETRY SENSORS." : "Keep this page open.");
   if (sensor.sensorState !== "live") return step(hasPair ? 1 : 0, hasPair ? "Connect & allow sensors" : "Your phone, a motion sensor", hasPair ? "One tap below. Then tap Allow." : "Scan the display’s QR to connect, or try sensors here.");
+  if (hasPair && link.state !== "connected") return step(1, "Connecting to the display…", "Keep both pages open. Sensors are ready.");
   if (sensor.tareState === "settling") return step(2, "Keep still…", "Lift your finger. ZERO sets after ½ second of stillness.");
   if (["hold-still", "unavailable"].includes(sensor.tareState)) return step(2, "Try ZERO again", sensor.tared ? "Previous ZERO kept. Rest the phone and retry." : sensor.tareReason === "gravity" ? "Gravity reading unavailable. Stop, then retry sensors." : "Rest the phone. Tap ZERO, then lift your finger.");
   if (!sensor.tared) return step(2, "Set your starting position", "Rest the phone. Tap ZERO below the graph.");
   if (!hasPair) return step(3, "ZERO set · local only", "Move your phone. Watch TRACE.", { ready: true });
-  if (link.state !== "connected") return step(1, attempted ? "Connecting to the display…" : "Connect to the display", "Keep both pages open. Your ZERO is set.");
   if (!link.receiverConfirmed) return step(2, "ZERO set · checking display…", "Keep both pages open.");
   return step(3, "Ready on both screens", "Move your phone. Watch TRACE.", { ready: true });
 }

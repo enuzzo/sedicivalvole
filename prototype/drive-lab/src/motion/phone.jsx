@@ -54,11 +54,11 @@ export function MotionPhone() {
     return () => { document.title = previousTitle; clearInterval(timer); sensors.dispose(); session.dispose(); sensorsRef.current = null; sessionRef.current = null; };
   }, []);
   useEffect(() => {
-    if (revealZeroRef.current && sensor.sensorState === "live" && !sensor.tared) {
+    if (revealZeroRef.current && sensor.sensorState === "live" && !sensor.tared && (!initialPair || snapshot.state === "connected")) {
       revealZeroRef.current = false;
       zeroStepRef.current?.scrollIntoView({ block: "end", behavior: "auto" });
     }
-  }, [sensor.sensorState, sensor.tared]);
+  }, [sensor.sensorState, sensor.tared, snapshot.state]);
   const start = () => {
     revealZeroRef.current = true;
     void sensorsRef.current?.start();
