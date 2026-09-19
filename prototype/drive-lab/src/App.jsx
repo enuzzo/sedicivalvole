@@ -14,7 +14,7 @@ import { useLaunchPreload } from "./use-launch-preload.js";
 import { preloadLaunchEngine, preloadLaunchVisual } from "./launch-preload.js";
 import { MediaGlyph } from "./media-glyph.jsx";
 import { RecoveringArtwork, useRecoveringArtwork } from "./recovering-artwork.jsx";
-import { createAutomaticDiagnosticClock, readDiagnosticPreferences, DIAGNOSTIC_PREFERENCES_KEY } from "./automatic-diagnostics.js";
+import { createAutomaticDiagnosticClock, readDiagnosticPreferences, diagnosticDeliveryControl, selectDiagnosticMode, DIAGNOSTIC_PREFERENCES_KEY } from "./automatic-diagnostics.js";
 import { PhoneRotationNotice, usePhoneLayout } from "./phone-cockpit.jsx";
 import { observeSessionStats } from "./environments/atlas/session-stats.js";
 import { createSessionExperience, observeSessionExperience, sessionExperienceSnapshot } from "./reports/session-experience.js";
@@ -2165,6 +2165,7 @@ export function App() {
   const [diagnosticPreferences, setDiagnosticPreferences] = useState(() => {
     try { return readDiagnosticPreferences(localStorage); } catch { return { mode: "dev", automatic: true }; }
   });
+  const diagnosticControl = diagnosticDeliveryControl(diagnosticPreferences);
   const diagnosticPreferencesRef = useRef(diagnosticPreferences);
   diagnosticPreferencesRef.current = diagnosticPreferences;
   const automaticClockRef = useRef(null);
@@ -5278,8 +5279,9 @@ export function App() {
 
       {phase !== "running" ? (
       <section className="splash" aria-hidden="false" inert={supportOpen ? true : undefined}>
-        <button className="intro-diagnostics" type="button" aria-label={`Automatic diagnostics ${diagnosticPreferences.mode === "dev" && diagnosticPreferences.automatic ? "ON. Turn off" : "OFF. Turn on"}`} onClick={() => setDiagnosticPreferences(p => ({ mode: "dev", automatic: !(p.mode === "dev" && p.automatic) }))}>
-          <strong>{diagnosticPreferences.mode.toUpperCase()} · AUTO REPORT {diagnosticPreferences.mode === "dev" && diagnosticPreferences.automatic ? "ON" : "OFF"}</strong><small>Coordinate-free · every 15 active min</small>
+        <button className="intro-diagnostics" type="button" aria-label={`${diagnosticControl.action}. ${diagnosticControl.state}. Every 15 active minutes.`} title="Coordinate-free reports every 15 minutes of active session time" onClick={() => setDiagnosticPreferences(diagnosticControl.next)}>
+          <strong>{diagnosticPreferences.mode.toUpperCase()} · REPORTS {diagnosticControl.enabled ? "ON" : "OFF"}</strong>
+          <small>{diagnosticControl.action}</small>
         </button>
         <CacheResetControl className="intro-cache-reset"/>
         <small className="intro-build">BUILD {APP_BUILD}</small>
@@ -5533,11 +5535,16 @@ export function App() {
             </div>
 
             <section className="diagnostic-auto-controls" aria-label="Diagnostic delivery settings">
-              <div><button type="button" aria-pressed={diagnosticPreferences.mode === "standard"} onClick={() => setDiagnosticPreferences(p => ({ ...p, mode: "standard" }))}>Standard</button>
-              <button type="button" aria-pressed={diagnosticPreferences.mode === "dev"} onClick={() => setDiagnosticPreferences(p => ({ ...p, mode: "dev" }))}>Dev</button>
-              <button type="button" disabled={diagnosticPreferences.mode !== "dev"} aria-pressed={diagnosticPreferences.automatic && diagnosticPreferences.mode === "dev"} onClick={() => setDiagnosticPreferences(p => ({ ...p, automatic: !p.automatic }))}>AUTO SEND {diagnosticPreferences.automatic && diagnosticPreferences.mode === "dev" ? "ON" : "OFF"}</button></div>
-              <p>Dev sends coordinate-free reports to the project mailbox every 15 minutes of active session time. Stops, GPS loss and offline time count while the app stays active. Offline reports wait for reconnection. OFF stops future automatic sends. Standard keeps manual reports.</p>
-              <small>{Math.floor(automaticSnapshot.activeMs / 60000)} / 15 active min · {automaticSnapshot.accepted} accepted · {automaticSnapshot.status.toUpperCase()} · hidden gaps excluded</small>
+              <div className="diagnostic-mode-choice" role="group" aria-label="Report mode">
+                <button type="button" aria-pressed={diagnosticPreferences.mode === "standard"} onClick={() => setDiagnosticPreferences(selectDiagnosticMode("standard"))}>Standard</button>
+                <button type="button" aria-pressed={diagnosticPreferences.mode === "dev"} onClick={() => setDiagnosticPreferences(selectDiagnosticMode("dev"))}>Dev</button>
+              </div>
+              <div className="diagnostic-auto-setting">
+                <div className="diagnostic-auto-state" role="status" data-enabled={diagnosticControl.enabled}><strong>{diagnosticControl.state}</strong><small>{diagnosticControl.detail}</small></div>
+                <button type="button" onClick={() => setDiagnosticPreferences(diagnosticControl.next)}>{diagnosticControl.action}</button>
+              </div>
+              <p>Dev automatically sends coordinate-free reports to the project mailbox every 15 minutes of active session time. Stops and GPS loss count. Offline reports wait for reconnection; hidden time is excluded. PAUSE SENDING stops automatic delivery. Choosing Dev enables it again.</p>
+              <small>{diagnosticControl.enabled ? `${Math.floor(automaticSnapshot.activeMs / 60000)} / 15 active min · ${automaticSnapshot.accepted} accepted · ${automaticSnapshot.status === "off" ? "WAITING" : automaticSnapshot.status.toUpperCase()}` : "Automatic delivery paused · manual reports remain available"}</small>
             </section>
             <button className="stats-report-entry" onClick={() => { setDrawerOpen(false); setStatsOpen(true); }}>Open Stats for Nerds · journey, motion and network</button>
             {diagnosticReadmeOpen ? <DiagnosticReadme /> : (

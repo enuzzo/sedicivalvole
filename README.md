@@ -65,6 +65,10 @@ third-party work retains the credits and licences recorded below.
 
 Public development repository: [github.com/enuzzo/sedicivalvole](https://github.com/enuzzo/sedicivalvole).
 
+## Development reports
+
+Dev is the default, with coordinate-free automatic reports every **15 minutes of observable active session time**. Selecting Dev enables sending; explicit pauses persist. Session report separates the current ON/OFF state from **PAUSE SENDING / ENABLE SENDING** actions. Stops, GPS loss and offline time count; hidden time does not. At most one due report waits for reconnection, with no persistent outbox. Standard keeps manual reports.
+
 ## Experimental phone motion
 
 The top-bar phone icon automatically prepares QR pairing and opens a guided three-step connection with palette-colored SVGs and reciprocal readiness checks. iPhone Safari

@@ -37,3 +37,18 @@ export function createAutomaticDiagnosticClock() {
     snapshot() { return { timeBasis: 'active-visible-session', intervalActiveMs: AUTOMATIC_DIAGNOSTIC_INTERVAL_MS, activeMs, totalActiveMs, unobservedMs, attempts, accepted, status }; },
   };
 }
+
+/** Choosing Dev is an explicit request to resume the development report cadence. */
+export function selectDiagnosticMode(mode) {
+  return mode === 'standard' ? { mode: 'standard', automatic: false } : { mode: 'dev', automatic: true };
+}
+export function diagnosticDeliveryControl(preferences) {
+  const enabled = preferences.mode === 'dev' && preferences.automatic;
+  return {
+    enabled,
+    state: enabled ? 'AUTO REPORTS · ON' : 'AUTO REPORTS · OFF',
+    detail: enabled ? 'Every 15 active min' : preferences.mode === 'standard' ? 'Standard · manual reports only' : 'Paused by you',
+    action: enabled ? 'PAUSE SENDING' : preferences.mode === 'standard' ? 'ENABLE DEV REPORTS' : 'ENABLE SENDING',
+    next: { mode: 'dev', automatic: !enabled },
+  };
+}

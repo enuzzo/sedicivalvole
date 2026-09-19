@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createAutomaticDiagnosticClock, readDiagnosticPreferences } from '../src/automatic-diagnostics.js';
+import { createAutomaticDiagnosticClock, readDiagnosticPreferences, selectDiagnosticMode, diagnosticDeliveryControl } from '../src/automatic-diagnostics.js';
 const live={running:true,enabled:true,online:true,visible:true,moving:true};
 function dueClock(){const c=createAutomaticDiagnosticClock();for(let t=0;t<=900000;t+=1000)c.update(live,t);return c;}
 test('development defaults are explicit and a saved OFF or Standard survives reload',()=>{
@@ -47,4 +47,18 @@ test('visible sessions without movement become due exactly at fifteen minutes',(
  for(let t=0;t<900000;t+=1000) assert.equal(c.update(stopped,t),false);
  assert.equal(c.update(stopped,900000),true);
  assert.equal(c.snapshot().activeMs,900000);
+});
+
+test('selecting Dev enables automatic reports; a deliberate pause remains explicit and survives reload',()=>{
+ const dev=selectDiagnosticMode('dev'); assert.deepEqual(dev,{mode:'dev',automatic:true});
+ assert.equal(diagnosticDeliveryControl(dev).action,'PAUSE SENDING');
+ const paused=diagnosticDeliveryControl(dev).next;
+ assert.equal(diagnosticDeliveryControl(paused).state,'AUTO REPORTS · OFF');
+ assert.equal(diagnosticDeliveryControl(paused).action,'ENABLE SENDING');
+ assert.deepEqual(readDiagnosticPreferences({getItem:()=>JSON.stringify(paused)}),paused);
+ assert.deepEqual(diagnosticDeliveryControl(paused).next,dev);
+ assert.deepEqual(selectDiagnosticMode('dev'),dev);
+ const standard=selectDiagnosticMode('standard'); assert.equal(diagnosticDeliveryControl(standard).enabled,false);
+ assert.equal(diagnosticDeliveryControl(standard).action,'ENABLE DEV REPORTS');
+ assert.deepEqual(diagnosticDeliveryControl(standard).next,dev);
 });

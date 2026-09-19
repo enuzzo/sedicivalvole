@@ -2,8 +2,9 @@
    Loaded by the separate QA entry, never imported by the application or public package. */
 (() => {
   if (!['localhost', '127.0.0.1'].includes(location.hostname)) throw new Error('Local QA only');
+  // Mirror the product default; the fetch boundary below still blocks synthetic mail.
   const params = new URLSearchParams(location.search);
-  localStorage.setItem('sedicivalvole.diagnostics.v1', JSON.stringify({ mode: 'dev', automatic: false }));
+  localStorage.setItem('sedicivalvole.diagnostics.v1', JSON.stringify({ mode: 'dev', automatic: true }));
   const preferences = JSON.parse(localStorage.getItem('sedicivalvole.preferences.v2') || '{}');
   localStorage.setItem('sedicivalvole.preferences.v2', JSON.stringify({ ...preferences, muted: true, engineMuted: true }));
   const match = window.matchMedia.bind(window);
