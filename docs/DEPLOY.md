@@ -5303,3 +5303,11 @@ was started. Local QA servers and browser tabs have been closed.
 - 21 HTTPS checks and canonical Engine geometry/running/mute paths pass.
   No diagnostic mail; local annotation previews remain available.
 - [Evidence and boundaries](qa/2026-09-19-engine-cells/README.md#canonical-closeout).
+
+
+## 2026-09-19 16:20 — encrypted phone HTTPS and Aperture gyro
+
+- Source `11ecca8`; build `20260919-1612.11ecca8`; VERSION remains pipeline-owned.
+- Official `--publish --preserve-existing`: all identity gates PASS, 38 files / 6,482,240 bytes, 825 static files and 29 recordings fully hash-verified/reused, one prior asset retained, ROOT_UPLOAD_ONLY. Backward-compatible motion endpoint adds reviewed AES-GCM ciphertext mailboxes; its exact hash is admitted beside the legacy endpoint for overlap.
+- 21 canonical HTTP identity/hash/cache checks and public browser UI pass; no synthetic mail. Public endpoint synthetic receiver/phone reaches reciprocal readiness, 48 received samples, no HTTP errors, 205.7 ms maximum accepted round trip from the test Mac. This does not establish mobile or physical acceptance.
+- [Full evidence](qa/2026-09-19-phone-relay/README.md).

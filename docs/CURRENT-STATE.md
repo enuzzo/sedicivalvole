@@ -1,5 +1,11 @@
 # Current Project State
 
+## Phone HTTPS and Aperture gyro published — September 19
+
+Canonical **20260919-1612.11ecca8** is published and verified. The owner road log shows two post-signaling failures with no direct data channel. Default pairing now uses end-to-end encrypted same-origin HTTPS; local WebRTC remains an explicit comparison option. Fresh zeroed gyro turn rate bends Aperture; GPS continues to own speed. No external ICE provider or audio coupling is added.
+
+[Evidence and next physical check](qa/2026-09-19-phone-relay/README.md): 996 native cases, 88 final motion checks, 827 package hashes and 21 canonical HTTPS checks pass. The real-site synthetic exchange receives 48 samples, observes reciprocal readiness and no HTTP errors, with a maximum accepted round trip of 205.7 ms from this Mac. Conservative freshness still produces gaps; real mobile-network latency, mounting/direction and sustained Tesla/iPhone acceptance remain open. Prior owner QR/permission success is recorded separately.
+
 ## Equal Engine telemetry published — September 19
 
 Canonical **20260919-1545.b7d1a98** is published and verified. The annotated

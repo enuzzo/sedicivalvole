@@ -2,7 +2,7 @@
 
 ## Owner evidence and decision
 
-The September 19 road report from build 20260919-1425 shows two successful QR admissions and accepted phone answers, followed by 30-second connection expiry. Both attempts gathered one candidate without reporting completed ICE gathering. No channel-open event or received/sent sample appears. This establishes failure after signaling, not the exact network/browser cause. The owner reports successful QR opening and apparent iPhone permission/sensor operation; the receiver log cannot independently verify phone sensors.
+The September 19 road report from build 20260919-1425 shows two successful QR admissions and retrieved phone answers, followed by 30-second connection expiry. Both attempts gathered one candidate without reporting completed ICE gathering. No channel-open event or received/sent sample appears. This establishes failure after signaling, not the exact network/browser cause. The owner reports successful QR opening and apparent iPhone permission/sensor operation; the receiver log cannot independently verify phone sensors.
 
 The owner requests a same-site transport solution, considers the iPhone hotspot, and explicitly asks for gyro-driven Aperture curvature. This supersedes the earlier direct-only/no-renderer scope, without authorizing external ICE services or replacing GPS speed.
 
