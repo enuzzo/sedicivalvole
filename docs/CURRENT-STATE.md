@@ -1,5 +1,21 @@
 # Current Project State
 
+## UI harmony published — September 19
+
+Canonical **20260919-1515.d0ff6a9** is published and verified. Logo and speed
+remain adjacent at the left; a shared contextual lane reserves the right for
+visual/map/Engine controls, wrapping whole groups on narrow screens. The earlier
+map/moving logo-retraction workaround is superseded. First pointer contact wakes
+the bar without activating an identity-cell action. Short-phone Engine and Fly
+With geometry is corrected; audio, sensors, QR and cache owners are preserved.
+
+Evidence: **984/984** native tests, **51/51** final affected/documentation checks,
+**827** package hashes, **189** credits, **30** measured local screenshots and
+**21** canonical HTTPS checks. Official preserve-existing publication and live
+Drivey/Atlas/report/reload paths pass. See the [QA record](qa/2026-09-19-ui-harmony/README.md).
+Physical Tesla/iPhone/iPad acceptance remains separate. Older headings below
+record historical releases.
+
 ## Road refinement — September 19
 
 Canonical **20260919-1425.2487f2f** is published and verified. The [road-refinement record](ROAD-REFINEMENT-2026-09-19.md) tracks independent audio, complementary controls, the Engine instrument, local sensors, QR and cache reset. Automated/browser and HTTPS gates pass; physical Tesla/Tidal and iPhone/iPad acceptance remain separate. Older build headings below are historical checkpoints.

@@ -5276,3 +5276,18 @@ on this host. See [quality evidence](qa/2026-09-19-companion-polish.md) for cach
 backup, measurements and limitations. Next start: physical iPhone Safari toolbar,
 permission, holder ZERO and display-confirmation check. No unrelated backlog work
 was started. Local QA servers and browser tabs have been closed.
+
+## UI harmony publication — 2026-09-19 15:26
+
+- Source `d0ff6a9`, build `20260919-1515.d0ff6a9`, VERSION `0.0.0`.
+- Native baseline 984/984, final affected/documentation 51/51, production 827
+  hashes / 859 admitted files, credits 189, staged-source hygiene 1,523.
+- Read-only preflight PASS (`remote_writes=NONE`); official preserve-existing
+  publication PASS: 38 files / 6,461,650 bytes, 825 static files and 29 recordings
+  reused after verification, two old entry assets retained, ROOT_UPLOAD_ONLY.
+- Twenty-one HTTPS checks match local bytes for bare/busted/reloaded HTML and
+  top-level generated assets. No-store/no-cache roots report cache MISS.
+- Canonical Drivey/Atlas official demo, both chrome states and themes, first-tap
+  wake, report opening/closing and controlled reload pass; no diagnostic mail.
+- [Full evidence and precise limitations](qa/2026-09-19-ui-harmony/README.md#canonical-publication).
+  Physical Tesla/iPhone/iPad acceptance remains separate.

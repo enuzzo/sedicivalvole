@@ -93,3 +93,44 @@ This is browser/compiled-product evidence, not physical Tesla/iPhone/iPad touch,
 GPS reception, cabin listening, sensor pairing, Tidal coexistence, or sustained
 GPU/endurance acceptance. Audio, sensor, QR, cache and diagnostic owners were
 preserved. The pre-existing recovery-prompt edit remains outside this task.
+
+## Canonical publication
+
+Source **d0ff6a9**, build **20260919-1515.d0ff6a9**, VERSION **0.0.0** is
+published at https://sedicivalvole.app/. The source checkpoint is pushed to main.
+The official read-only preflight passed with `remote_writes=NONE`, followed by
+`--publish --preserve-existing`: **38 files / 6,461,650 bytes**, 825 unchanged
+static files and all 29 recordings verified, two previous assets retained,
+`ROOT_UPLOAD_ONLY`. No legacy deletion was requested or performed.
+
+[Twenty-one HTTPS checks](live-identity.json) pass for bare canonical HTML, a
+cache-busted root, all top-level JS/CSS/manifest assets and another bare-root
+read. Every body matches the local size/SHA-256; roots return HTTP 200 with
+no-store/no-cache and cache MISS. Canonical browser reload shows the same build.
+
+[Live geometry](live-browser.json) and [live inertness/source check](live-interaction.json)
+verify actual Drivey and Atlas controls at 773 × 601. Drivey switches NORMAL to
+WIRE. Atlas uses its official EXPLORE MILAN DEMO because browser location is
+denied; no fixture is injected on the canonical site. LIGHT/DARK, awake/resting,
+first speed/logo tap, deliberate second logo tap opening the report, closing
+without sending, and controlled reload pass. No canonical-origin warning/error
+was observed. Automatic diagnostics remained OFF.
+
+- [Drivey resting](live-drivey-resting.png) / [awake](live-drivey-awake.png).
+- [Atlas resting](live-atlas-resting.png) / [awake](live-atlas-awake.png) / [dark](live-atlas-dark.png).
+- [Reloaded Intro identity](live-intro-reloaded.png).
+
+Final affected/documentation run: **51/51**; [verification summary](verification.json).
+The staged public source passes hygiene across 1,523 text files. The unrelated
+unstaged recovery-prompt edit contains existing personal-path findings and is
+excluded from both commits; it was not altered to make a whole-working-tree
+scan pass. An initial read-only remote preflight stopped at the static metadata
+gate while the local output was being rebuilt; after the completed build the
+same gate and full read-only preflight pass. No gate was bypassed.
+
+During local iteration, an already-open tab briefly requested a lazy chunk from
+a previous build after rebuilding its directory. Reloading against the complete
+candidate restored it; final variant checks and all live asset hashes pass.
+MapLibre's existing terrain/style warnings were seen locally; no live-origin
+warning or error occurred in the canonical checks. These are recorded separately
+from the final UI geometry acceptance.

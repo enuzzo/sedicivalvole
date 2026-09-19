@@ -1,0 +1,197 @@
+{
+  "release": "20260919-1515.d0ff6a9",
+  "version": "0.0.0",
+  "checkedAtUTC": "2026-09-19T13:23:18Z",
+  "checks": [
+    {
+      "path": "/",
+      "status": 200,
+      "bytes": 1445,
+      "sha256": "be383e7ac0f6db3b7f5ba24d445b2810da29ecf989977ebf12513ca3471b7b3b",
+      "matchesLocal": true,
+      "cacheControl": "no-store, no-cache, must-revalidate, max-age=0",
+      "proxyCache": "MISS"
+    },
+    {
+      "path": "/?ui-harmony=20260919-1515.d0ff6a9",
+      "status": 200,
+      "bytes": 1445,
+      "sha256": "be383e7ac0f6db3b7f5ba24d445b2810da29ecf989977ebf12513ca3471b7b3b",
+      "matchesLocal": true,
+      "cacheControl": "no-store, no-cache, must-revalidate, max-age=0",
+      "proxyCache": "MISS"
+    },
+    {
+      "path": "/assets/shadergradient-field-Di7FgO3a.js",
+      "status": 200,
+      "bytes": 401582,
+      "sha256": "fb820fc92b190f57c6f70ee1c594da4976527e2eb8d61bd44fd81d1c04ec7c3f",
+      "matchesLocal": true,
+      "cacheControl": null,
+      "proxyCache": "MISS"
+    },
+    {
+      "path": "/assets/session-report-panel-Dw8swoNQ.js",
+      "status": 200,
+      "bytes": 13674,
+      "sha256": "da8bdef1da78cfc648629e840ef1c0622667c38e64cdf9483fd7a36de3301fbd",
+      "matchesLocal": true,
+      "cacheControl": null,
+      "proxyCache": "MISS"
+    },
+    {
+      "path": "/assets/index-CszOggkJ.css",
+      "status": 200,
+      "bytes": 278739,
+      "sha256": "59e1cf4e2c24ec2fa70938738d1161c5bcbd1793475bddae000e2f0639a59f4c",
+      "matchesLocal": true,
+      "cacheControl": null,
+      "proxyCache": "MISS"
+    },
+    {
+      "path": "/assets/index-CkCqjH0y.js",
+      "status": 200,
+      "bytes": 1598096,
+      "sha256": "099e715c612fc3aaeba911d7b0c51e0dcb37d6d5469f3f604bb4ebb0f415d8ba",
+      "matchesLocal": true,
+      "cacheControl": null,
+      "proxyCache": "MISS"
+    },
+    {
+      "path": "/assets/session-report-panel-BNJuwITd.css",
+      "status": 200,
+      "bytes": 1387,
+      "sha256": "da06f554c070f0231e2be1cb3db6eaa0db57c4976586bde7083213f7c5f5c50f",
+      "matchesLocal": true,
+      "cacheControl": null,
+      "proxyCache": "MISS"
+    },
+    {
+      "path": "/assets/procedural-processor-DhZI11xm.js",
+      "status": 200,
+      "bytes": 9520,
+      "sha256": "51039c683c12d94dc0aad8d260d5686dd173ea7cf2c70f15267cc1da873eae38",
+      "matchesLocal": true,
+      "cacheControl": null,
+      "proxyCache": "MISS"
+    },
+    {
+      "path": "/assets/atlas-field-C3-fPGPB.js",
+      "status": 200,
+      "bytes": 18187,
+      "sha256": "82844271a4a918299b2bac1991e4183fcdfde91eb6b164682306fbc5530a8248",
+      "matchesLocal": true,
+      "cacheControl": null,
+      "proxyCache": "MISS"
+    },
+    {
+      "path": "/assets/score-processor-Dly9Ky60.js",
+      "status": 200,
+      "bytes": 117006,
+      "sha256": "1e4928616b90722e2be5b1ab777d01866084ed54690283ce0c82ebe00d1a8ebf",
+      "matchesLocal": true,
+      "cacheControl": null,
+      "proxyCache": "MISS"
+    },
+    {
+      "path": "/assets/stats-panel-wSi0F7gX.js",
+      "status": 200,
+      "bytes": 12522,
+      "sha256": "431a107dd92d6b2bbf949c6d17d158bfd0c0ed980adec21b6c5d53061e544aeb",
+      "matchesLocal": true,
+      "cacheControl": null,
+      "proxyCache": "MISS"
+    },
+    {
+      "path": "/assets/air-atlas-field-CCc3YnMy.js",
+      "status": 200,
+      "bytes": 184343,
+      "sha256": "fef25efde26d40d38c2aa7432ec4114743ce05594a01fd4571888eaa7af1f6d2",
+      "matchesLocal": true,
+      "cacheControl": null,
+      "proxyCache": "MISS"
+    },
+    {
+      "path": "/assets/maplibre-gl-DvulA2N7.css",
+      "status": 200,
+      "bytes": 83039,
+      "sha256": "52fb4f6236da5760c884d97067f93419efd4c3ddd3d2ff11f10662791d1aa49f",
+      "matchesLocal": true,
+      "cacheControl": null,
+      "proxyCache": "HIT"
+    },
+    {
+      "path": "/assets/maplibre-gl-worker-CIjIPF-m.js",
+      "status": 200,
+      "bytes": 487122,
+      "sha256": "d6d1ce18b89584826383ac10d2a05605fde2651120cfb1d5edf8691ce139339d",
+      "matchesLocal": true,
+      "cacheControl": null,
+      "proxyCache": "HIT"
+    },
+    {
+      "path": "/assets/runtime-B539xhI4.js",
+      "status": 200,
+      "bytes": 26652,
+      "sha256": "f5eac219547d82e15d67f7b0e6dee98f993855c1c2f61a1c63b57a27e325df75",
+      "matchesLocal": true,
+      "cacheControl": null,
+      "proxyCache": "MISS"
+    },
+    {
+      "path": "/assets/procedural-voice-o77N7yh1.js",
+      "status": 200,
+      "bytes": 1005,
+      "sha256": "f6b55a930881e0e0fb771fed33a38ec29a414b77b98280484eff667bdc1dec7e",
+      "matchesLocal": true,
+      "cacheControl": null,
+      "proxyCache": "HIT"
+    },
+    {
+      "path": "/assets/release-20260919-1515.d0ff6a9.json",
+      "status": 200,
+      "bytes": 116321,
+      "sha256": "a031f09cf205f351ecc374ddfa7f936cb34888000a571621eb8b898b668a12da",
+      "matchesLocal": true,
+      "cacheControl": null,
+      "proxyCache": "MISS"
+    },
+    {
+      "path": "/assets/maplibre-runtime-B5xYBViM.js",
+      "status": 200,
+      "bytes": 1014114,
+      "sha256": "a1e8f7fedec26b41e556a35537555744b294fb500cd78ca4f4a26407746abb49",
+      "matchesLocal": true,
+      "cacheControl": null,
+      "proxyCache": "HIT"
+    },
+    {
+      "path": "/assets/profiles-dP29TflP.js",
+      "status": 200,
+      "bytes": 8857,
+      "sha256": "8201fb9752d9a13dda1ab88ebbac669c7899cf749745f830646ba2ccbdedc05b",
+      "matchesLocal": true,
+      "cacheControl": null,
+      "proxyCache": "HIT"
+    },
+    {
+      "path": "/assets/phone-C1gd6lq6.js",
+      "status": 200,
+      "bytes": 13566,
+      "sha256": "3b65d2237da59b56b76951e1edda104fd57aad7de8c8ff256d50172c325eb756",
+      "matchesLocal": true,
+      "cacheControl": null,
+      "proxyCache": "MISS"
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "bytes": 1445,
+      "sha256": "be383e7ac0f6db3b7f5ba24d445b2810da29ecf989977ebf12513ca3471b7b3b",
+      "matchesLocal": true,
+      "cacheControl": "no-store, no-cache, must-revalidate, max-age=0",
+      "proxyCache": "MISS"
+    }
+  ],
+  "allPass": true
+}

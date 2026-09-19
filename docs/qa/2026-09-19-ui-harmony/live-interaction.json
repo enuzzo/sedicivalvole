@@ -1,0 +1,14 @@
+{
+  "context": [
+    {
+      "hidden": "true",
+      "inert": true
+    },
+    {
+      "hidden": "true",
+      "inert": true
+    }
+  ],
+  "source": "Speed source GPS. Tap to switch",
+  "state": "app phase-running controls-awake"
+}

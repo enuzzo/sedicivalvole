@@ -1,0 +1,33 @@
+{
+  "source": "d0ff6a9",
+  "build": "20260919-1515.d0ff6a9",
+  "nativeRegression": {
+    "passed": 984,
+    "failed": 0
+  },
+  "finalAffectedAndDocumentation": {
+    "passed": 51,
+    "failed": 0
+  },
+  "staticHashes": 827,
+  "staticFilesAdmitted": 859,
+  "credits": 189,
+  "indexHygiene": {
+    "scope": "Git index, excluding unrelated unstaged recovery-prompt changes",
+    "checkedTextFiles": 1523,
+    "findings": []
+  },
+  "geometryCheckpoints": 30,
+  "physicalDeviceAcceptance": false,
+  "syntheticDiagnosticMailSent": false,
+  "publication": {
+    "uploadedFiles": 38,
+    "uploadedBytes": 6461650,
+    "unchangedStaticFiles": 825,
+    "verifiedRecordings": 29,
+    "previousAssetsRetained": 2,
+    "remoteWrites": "ROOT_UPLOAD_ONLY",
+    "httpsChecks": 21,
+    "canonicalBrowserPass": true
+  }
+}
