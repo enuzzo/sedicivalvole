@@ -71,9 +71,10 @@ export function MotionPanel({ snapshot, onStart, onStop, onClose }) {
     <div className="motion-connection-details"><button className="motion-connection-toggle" aria-expanded={detailsOpen} aria-controls="motion-connection-details-content" onClick={() => setDetailsOpen(open => !open)}>Connection details</button>
       <div id="motion-connection-details-content" hidden={!detailsOpen}>
       <MotionQuality summary={snapshot}/>
-      <p>Both devices need a direct network path; Wi-Fi can block traffic between devices. There is no relay fallback. Setup ends after 30 seconds if unreachable.</p>
+      <button onClick={() => { onStop(); onStart("direct"); }}>CREATE LOCAL WEBRTC QR</button>
+      <p>HTTPS connects through sedicivalvole.app, even on different networks. Encrypted motion envelopes are held briefly; only your two screens have the key. A local connection is also available when the network allows it.</p>
       <p>To replace a pending QR, tap CANCEL, then CREATE QR. Hiding either page, disconnecting or reaching one hour ends the session; scan a new QR to reconnect. CLOSE only closes this panel.</p>
-      <p>GPS/Demo still supplies speed. Phone motion does not steer visuals yet. REPORT includes connection and sensor-quality summaries, never sensor streams or pairing keys.</p>
+      <p>GPS/Demo still supplies speed. Fresh, zeroed phone rotation bends Aperture. Keep the phone fixed in its holder. REPORT includes connection and sensor-quality summaries, never sensor streams or pairing keys.</p>
       </div>
     </div>
   </div>;
@@ -84,6 +85,7 @@ export function MotionQuality({ summary = {} }) {
     <div><dt>Acceleration / Gyro</dt><dd>{summary.accelerometer ? "YES" : "—"} / {summary.gyroscope ? "YES" : "—"}<small>{summary.sensorState ?? "not connected"}</small></dd></div>
     <div><dt>Zero</dt><dd>{summary.tared ? "SET" : "REQUIRED"}</dd></div>
     <div><dt>Cadence</dt><dd>{summary.cadenceHz > 0 ? `${summary.cadenceHz.toFixed(1)} Hz` : "—"}</dd></div>
+    <div><dt>Transport</dt><dd>{summary.transport === "https" ? "HTTPS · ENCRYPTED" : summary.transport === "direct" ? "LOCAL · WEBRTC" : "THIS DEVICE"}</dd></div>
     <div><dt>Round trip</dt><dd>{summary.received > 0 ? `${summary.rttMs?.toFixed(1)} ms` : "—"}</dd></div>
   </dl>;
 }

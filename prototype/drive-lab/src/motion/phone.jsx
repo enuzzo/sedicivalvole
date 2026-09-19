@@ -12,8 +12,8 @@ import { phoneOnboarding } from "./onboarding.js";
 const initialPresentation = motionPresentationFromSearch(window.location.search);
 
 // The bearer capability stays in memory; remove it from history before UI/logging.
-const match = /^#pair=([a-f0-9]{32})\.([a-f0-9]{64})$/.exec(window.location.hash);
-const initialPair = match ? { id: match[1], token: match[2] } : null;
+const match = /^#pair=([a-f0-9]{32})\.([a-f0-9]{64})(?:\.([a-f0-9]{64}))?$/.exec(window.location.hash);
+const initialPair = match ? { id: match[1], token: match[2], ...(match[3] ? { key: match[3] } : {}) } : null;
 if (window.location.hash) history.replaceState(null, "", `${location.pathname}?motion=phone`);
 const number = value => !Number.isFinite(value) ? "—" : Math.abs(value) >= 10000 ? value.toExponential(0)
   : value.toFixed(Math.abs(value) < 10 ? 2 : Math.abs(value) < 100 ? 1 : 0);
@@ -92,7 +92,7 @@ export function MotionPhone() {
     <div className="motion-phone-lead">
     <header className="motion-phone-brand">
       <img src={`/brand/pistons-v1/mark-512.png?build=${encodeURIComponent(__APP_BUILD__)}`} width="48" height="48" alt=""/>
-      <div><span className="motion-wordmark">sedicivalvole</span><span className="motion-phone-kicker">PHONE COMPANION</span></div>
+      <div><span className="motion-wordmark">sedicivalvole</span><span className="motion-phone-kicker">{initialPair?.key ? "ENCRYPTED VIA SEDICIVALVOLE.APP" : "PHONE COMPANION"}</span></div>
     </header>
     <div className="motion-phone-heading"><h1>Motion instrument</h1><span>TRACE</span></div>
     <section className="motion-phone-controls" aria-label="Connection and sensor controls">

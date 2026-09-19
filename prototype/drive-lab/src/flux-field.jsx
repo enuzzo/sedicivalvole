@@ -1,3 +1,4 @@
+import { apertureCurveTarget, advanceApertureCurve } from "./motion/aperture-curve.js";
 import { useEffect, useRef } from "react";
 import { aperturePressureToFlowRate, speedToVisualVelocity } from "./signal-model.js";
 import {
@@ -38,6 +39,7 @@ const FRAGMENT_SHADER = `#version 300 es
   uniform float u_voidActive;
   uniform float u_flow;
   uniform float u_brake;
+  uniform float u_curve;
   uniform float u_restRecolour;
   uniform vec3 u_base;
   uniform vec3 u_mid;
@@ -107,6 +109,10 @@ const FRAGMENT_SHADER = `#version 300 es
 
   void main() {
     vec2 uv_norm = v_uv * 2.0 - 1.0;
+    // A shared depth warp bends all four walls together, preserving their seams.
+    // The near rim remains fixed; the dark terminus carries the greatest bend.
+    float bendDepth = 1.0 - clamp(max(abs(uv_norm.x), abs(uv_norm.y)), 0.0, 1.0);
+    uv_norm.x -= u_curve * bendDepth * bendDepth;
     // UNDERWATER presses the corridor inward instead of adding an overlay.
     uv_norm *= 1.0 + u_brake * 0.035;
 
@@ -158,7 +164,7 @@ function mixColor(from, to, amount) {
   return from.map((value, index) => value + (to[index] - value) * amount);
 }
 
-function drawCanvasFallback(context, canvas, pressure, visualVelocity, speedKmh, palette, flow, effect) {
+function drawCanvasFallback(context, canvas, pressure, visualVelocity, speedKmh, palette, flow, effect, curve = 0) {
   const ratio = aperturePixelRatio(window.devicePixelRatio, speedKmh);
   const width = Math.max(1, Math.floor(canvas.clientWidth * ratio));
   const height = Math.max(1, Math.floor(canvas.clientHeight * ratio));
@@ -213,7 +219,7 @@ function drawCanvasFallback(context, canvas, pressure, visualVelocity, speedKmh,
 
       context.strokeStyle = cssColor(ringColor, 0.7);
       context.lineWidth = terminalVelocity > 0.5 ? 2 : 4;
-      context.strokeRect(centerX - ringW / 2, centerY - ringH / 2, ringW, ringH);
+      context.strokeRect(centerX + curve * width * 0.5 * (1 - s) ** 2 - ringW / 2, centerY - ringH / 2, ringW, ringH);
     }
   }
 
@@ -240,6 +246,7 @@ function startCanvasFallback(
   let animationFrame = 0;
   let stopped = false;
   let flow = 0;
+  let curve = 0;
   let visualPressure = reducedMotion ? Math.min(valuesRef.current.pressure, 0.28) : valuesRef.current.pressure;
   let visualVelocity = speedToVisualVelocity(
     reducedMotion ? Math.min(valuesRef.current.speed, 20) : valuesRef.current.speed,
@@ -280,6 +287,7 @@ function startCanvasFallback(
           deltaSeconds,
         );
         if (!reducedMotion) flow += deltaSeconds * aperturePressureToFlowRate(visualPressure, valuesRef.current.speed);
+        curve = advanceApertureCurve(curve, apertureCurveTarget(valuesRef.current.getMotionSample?.(), valuesRef.current.speed, reducedMotion), deltaSeconds);
         drawCanvasFallback(
           context,
           canvas,
@@ -289,6 +297,7 @@ function startCanvasFallback(
           valuesRef.current.theme.palette,
           flow,
           valuesRef.current.effect,
+          curve,
         );
         onFrame(now, 1000 / 30, "Canvas2D", canvas.width, canvas.height);
       }
@@ -305,6 +314,7 @@ function startCanvasFallback(
 }
 
 export function FluxField({
+  getMotionSample,
   pressure,
   speed,
   theme,
@@ -316,8 +326,8 @@ export function FluxField({
   onRuntimeError,
 }) {
   const canvasRef = useRef(null);
-  const valuesRef = useRef({ pressure, speed, theme, brake, effect });
-  valuesRef.current = { pressure, speed, theme, brake, effect };
+  const valuesRef = useRef({ pressure, speed, theme, brake, effect, getMotionSample });
+  valuesRef.current = { pressure, speed, theme, brake, effect, getMotionSample };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -381,6 +391,7 @@ export function FluxField({
       speedPulseMask: gl.getUniformLocation(program, "u_speedPulseMask"),
       voidActive: gl.getUniformLocation(program, "u_voidActive"),
       flow: gl.getUniformLocation(program, "u_flow"),
+      curve: gl.getUniformLocation(program, "u_curve"),
       brake: gl.getUniformLocation(program, "u_brake"),
       restRecolour: gl.getUniformLocation(program, "u_restRecolour"),
       base: gl.getUniformLocation(program, "u_base"),
@@ -392,6 +403,7 @@ export function FluxField({
     let animationFrame = 0;
     let stopped = false;
     let flow = 0;
+    let curve = 0;
     // The resting mosaic re-deals its colours on a slow discrete step. It only
     // advances while the vehicle is effectively stopped, so as soon as it moves
     // every tile's colour is fixed for as long as it stays in the scene.
@@ -473,6 +485,8 @@ export function FluxField({
         gl.uniform1f(uniforms.speedPulseMask, shaderControls.speedPulseMask);
         gl.uniform1f(uniforms.voidActive, shaderControls.voidActive);
         gl.uniform1f(uniforms.flow, flow);
+        curve = advanceApertureCurve(curve, apertureCurveTarget(valuesRef.current.getMotionSample?.(), currentSpeed, reducedMotion), deltaSeconds);
+        gl.uniform1f(uniforms.curve, curve);
         gl.uniform1f(uniforms.brake, valuesRef.current.brake);
         gl.uniform1f(uniforms.restRecolour, restSeconds);
         gl.uniform3fv(uniforms.base, palette.base);

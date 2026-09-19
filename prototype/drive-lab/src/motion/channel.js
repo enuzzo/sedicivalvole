@@ -82,7 +82,7 @@ export function createMotionProtocol({ role, now = () => performance.now(), getP
       return null;
     },
     sample() {
-      return freshSample() ? last.values : null;
+      return referenceReceived() ? { ...last.values, ageMs: now() - last.at + last.age } : null;
     },
     presentation: () => safeMotionPresentation(receiverContext),
     summary() {
@@ -124,7 +124,9 @@ export function createMotionPeer({ role, host = window, now = () => performance.
     channel.addEventListener("error", () => close("error"));
   }
   pc.addEventListener("datachannel", ({ channel: candidate }) => bind(candidate));
+  pc.addEventListener("iceconnectionstatechange", () => onEvent("connection", { iceState: pc.iceConnectionState, peerState: pc.connectionState }));
   pc.addEventListener("connectionstatechange", () => {
+    onEvent("connection", { iceState: pc.iceConnectionState, peerState: pc.connectionState });
     if (["failed", "closed", "disconnected"].includes(pc.connectionState)) close();
   });
   if (role === "receiver") {

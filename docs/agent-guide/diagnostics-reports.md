@@ -11,7 +11,7 @@ Extended diagnostics may aggregate frame pacing, connection changes, GPS accurac
 The driving flight recorder is bounded and in session memory: speed, GPS age/accuracy, input, score, frame pacing, network and visibility outside React state. Preserve whole-session aggregates as old samples rotate. Debug interaction ledger records every semantic activation/media command with sequence, timestamp, source, safe identity, before/after transport snapshots, latency, browser lifecycle, Media Session registration/invocation, playback confirmation and bounded failure. Never record pointer coordinates, typed searches, GPS coordinates or media URLs. The old manual-only delivery restriction is superseded only by the explicitly bounded automatic contract below; this is not unrestricted telemetry permission. Read [Interaction/media recorder](../DIAGNOSTICS.md#exhaustive-interactionmedia-flight-recorder--2026-09-03) for capture details when changing it.
 
 Phone motion adds the bounded aggregate `phoneMotion` report and safe `motion.*`
-events. Never include raw vectors, pose, signaling or QR capabilities. A separate
+events. The HTTPS refinement adds an allowlisted transport name; direct diagnostics add ICE/peer state enums. Never include raw vectors, pose, signaling, encrypted envelopes, QR capabilities or encryption keys. A separate
 phone download records failures before pairing. TRACE adds wake-lock state and
 request/release/failure counts, renderer state/context losses, observed rendering
 FPS, trace point count and axis range; never include the points themselves or

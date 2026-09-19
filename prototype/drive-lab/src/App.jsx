@@ -2412,6 +2412,8 @@ export function App() {
   const [motionSourceChoice, setMotionSourceChoice] = useState(null);
   const showLocalSensors = motionSourceChoice === "local" || motionSourceChoice !== "remote" && localSensors.preferred;
 
+  const getApertureMotion = useCallback(() => showLocalSensors ? localSensors.sample() : motionSessionRef.current?.sample() ?? null, [showLocalSensors, localSensors.sample]);
+
   useEffect(() => {
     let lastUiAt = -Infinity;
     const session = createMotionSession({ role: "receiver", getPresentation: () => motionPresentationRef.current, onChange: (next) => setMotionSnapshot((current) => {
@@ -5229,6 +5231,7 @@ export function App() {
             </Suspense>
           ) : (
             <FluxField
+              getMotionSample={getApertureMotion}
               pressure={aperturePressure}
               speed={speed}
               theme={theme}
@@ -5366,7 +5369,7 @@ export function App() {
           <button className="motion-button" type="button" aria-label={showLocalSensors ? "Use this device’s motion sensors" : "Connect phone motion sensors"} aria-haspopup="dialog"
             data-connected={showLocalSensors ? localSensors.summary.sensorState === "live" : motionSnapshot.state === "connected"} onClick={() => {
               setMotionOpen(true);
-              if (!showLocalSensors && !["preparing", "pairing", "connecting", "connected", "stale"].includes(motionSnapshot.state)) void motionSessionRef.current?.start();
+              if (!showLocalSensors && !["preparing", "pairing", "connecting", "connected", "stale"].includes(motionSnapshot.state)) void motionSessionRef.current?.start(null, "https");
             }}><MotionIcon/></button>
           <button
             className="discover-button"
@@ -5481,7 +5484,7 @@ export function App() {
       </section>
 
       {motionOpen ? <DialogSurface className="diagnostic-drawer motion-dialog" labelledBy="motion-title" onClose={() => setMotionOpen(false)}>
-        {showLocalSensors ? <LocalSensorsPanel sensors={localSensors} gpsState={gpsState} source={source} themeKey={`${themeId}:${appearanceResolution.appearance}`} onClose={() => setMotionOpen(false)} onRemote={() => { localSensors.stop(); setMotionSourceChoice("remote"); void motionSessionRef.current?.start(); }}/> : <><MotionPanel snapshot={motionSnapshot} onStart={() => void motionSessionRef.current?.start()} onStop={() => motionSessionRef.current?.stop()} onClose={() => setMotionOpen(false)}/>{localSensors.capability.potential && <button className="motion-local-choice" onClick={() => { motionSessionRef.current?.stop(); setMotionSourceChoice("local"); }}>USE THIS DEVICE’S SENSORS</button>}</>}
+        {showLocalSensors ? <LocalSensorsPanel sensors={localSensors} gpsState={gpsState} source={source} themeKey={`${themeId}:${appearanceResolution.appearance}`} onClose={() => setMotionOpen(false)} onRemote={() => { localSensors.stop(); setMotionSourceChoice("remote"); void motionSessionRef.current?.start(null, "https"); }}/> : <><MotionPanel snapshot={motionSnapshot} onStart={(transport = "https") => void motionSessionRef.current?.start(null, transport)} onStop={() => motionSessionRef.current?.stop()} onClose={() => setMotionOpen(false)}/>{localSensors.capability.potential && <button className="motion-local-choice" onClick={() => { motionSessionRef.current?.stop(); setMotionSourceChoice("local"); }}>USE THIS DEVICE’S SENSORS</button>}</>}
       </DialogSurface> : null}
       {supportOpen ? (
         <SupportPanel

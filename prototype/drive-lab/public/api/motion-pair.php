@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-// Short-lived signaling only. Sensor samples never pass through this endpoint.
+// Short-lived signaling and encrypted latest-only HTTPS mailboxes. No plaintext sensor samples.
 function motionPairRequest(array $input, string $directory, int $now): array
 {
     $action = $input['action'] ?? '';
-    if (!in_array($action, ['create', 'join', 'poll', 'answer', 'finish', 'delete'], true)) return [400, ['status' => 'invalid_action']];
+    if (!in_array($action, ['create', 'join', 'poll', 'answer', 'finish', 'delete', 'exchange'], true)) return [400, ['status' => 'invalid_action']];
     if (is_link($directory) || (!is_dir($directory) && !@mkdir($directory, 0700, true))) return [503, ['status' => 'storage_unavailable']];
     @chmod($directory, 0700);
     $lockPath = $directory . '/lock';
@@ -18,14 +18,15 @@ function motionPairRequest(array $input, string $directory, int $now): array
             if (!is_link($file) && is_file($file) && filemtime($file) < $now - 180) @unlink($file);
         }
         if ($action === 'create') {
+            $relay = ($input['transport'] ?? '') === 'https';
             $offer = $input['sdp'] ?? null;
-            if (!is_string($offer) || strlen($offer) < 20 || strlen($offer) > 24576 || substr($offer, 0, 3) !== 'v=0') return [400, ['status' => 'invalid_description']];
+            if (!$relay && (!is_string($offer) || strlen($offer) < 20 || strlen($offer) > 24576 || substr($offer, 0, 3) !== 'v=0')) return [400, ['status' => 'invalid_description']];
             if (count(glob($directory . '/session-*.json') ?: []) >= 64) return [429, ['status' => 'busy']];
             $id = bin2hex(random_bytes(16));
             $receiver = bin2hex(random_bytes(32));
             $join = bin2hex(random_bytes(32));
             $record = ['expires' => $now + 180, 'receiver' => hash('sha256', $receiver), 'join' => hash('sha256', $join), 'phone' => null,
-                'offer' => $offer, 'answer' => null, 'joined' => false];
+                'transport' => $relay ? 'https' : 'direct', 'until' => $now + 3600, 'slots' => [], 'offer' => $relay ? null : $offer, 'answer' => null, 'joined' => false];
             $path = $directory . '/session-' . $id . '.json';
             if (@file_put_contents($path, json_encode($record), LOCK_EX) === false) return [503, ['status' => 'storage_unavailable']];
             @chmod($path, 0600);
@@ -48,13 +49,33 @@ function motionPairRequest(array $input, string $directory, int $now): array
             $record['phone'] = hash('sha256', $phone);
             $record['joined'] = true;
             $record['join'] = '';
+            if (($record['transport'] ?? '') === 'https') $record['expires'] = min($record['until'], $now + 15);
             if (@file_put_contents($path, json_encode($record), LOCK_EX) === false) return [503, ['status' => 'storage_unavailable']];
-            return [200, ['status' => 'joined', 'token' => $phone, 'sdp' => $record['offer']]];
+            return [200, ['status' => 'joined', 'token' => $phone, 'transport' => $record['transport'] ?? 'direct', 'sdp' => $record['offer']]];
         }
         if (!$isReceiver && !$isPhone) return [403, ['status' => 'pairing_unavailable']];
         if ($action === 'delete' || ($action === 'finish' && $isReceiver)) {
             if (!@unlink($path)) return [503, ['status' => 'storage_unavailable']];
             return [200, ['status' => 'deleted']];
+        }
+        if ($action === 'exchange' && ($record['transport'] ?? '') === 'https' && $record['joined']) {
+            $packet = $input['packet'] ?? null;
+            if ($packet !== null && (!is_string($packet) || strlen($packet) < 40 || strlen($packet) > 6144
+                || !preg_match('/\A[A-Za-z0-9+\/]*={0,2}\z/', $packet) || base64_decode($packet, true) === false)) return [400, ['status' => 'invalid_packet']];
+            $sender = $isReceiver ? 'receiver' : 'phone';
+            $other = $isReceiver ? 'phone' : 'receiver';
+            // Bound request cadence per capability, with no sleeping PHP workers.
+            $stamp = microtime(true);
+            if ($stamp - ($record['lastRequest'][$sender] ?? 0) < 0.02) return [429, ['status' => 'slow_down']];
+            $record['lastRequest'][$sender] = $stamp;
+            foreach ($record['slots'] as $side => $slot) {
+                if ($now - $slot['at'] >= 2) $record['slots'][$side]['packet'] = null;
+            }
+            if ($packet !== null) $record['slots'][$sender] = ['sequence' => ($record['slots'][$sender]['sequence'] ?? 0) + 1, 'at' => $now, 'packet' => $packet];
+            $record['expires'] = min($record['until'], $now + 15);
+            if (@file_put_contents($path, json_encode($record), LOCK_EX) === false) return [503, ['status' => 'storage_unavailable']];
+            $slot = $record['slots'][$other] ?? [];
+            return [200, ['status' => 'relay', 'sequence' => $slot['sequence'] ?? 0, 'packet' => $slot['packet'] ?? null]];
         }
         if ($action === 'answer' && $isPhone && $record['answer'] === null) {
             $answer = $input['sdp'] ?? null;
@@ -64,7 +85,7 @@ function motionPairRequest(array $input, string $directory, int $now): array
             if (@file_put_contents($path, json_encode($record), LOCK_EX) === false) return [503, ['status' => 'storage_unavailable']];
             return [200, ['status' => 'answered']];
         }
-        if ($action === 'poll' && $isReceiver) return [200, ['status' => $record['answer'] !== null ? 'answered' : ($record['joined'] ? 'joined' : 'pairing'), 'sdp' => $record['answer']]];
+        if ($action === 'poll' && $isReceiver) return [200, ['status' => $record['answer'] !== null ? 'answered' : ($record['joined'] ? 'joined' : 'pairing'), 'transport' => $record['transport'] ?? 'direct', 'sdp' => $record['answer']]];
         return [403, ['status' => 'action_rejected']];
     } finally { flock($lock, LOCK_UN); fclose($lock); }
 }

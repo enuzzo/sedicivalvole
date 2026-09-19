@@ -1,3 +1,4 @@
+import { createRelayKey, createMotionCipher, createMotionRelay } from './relay.js';
 import { createMotionPeer } from "./channel.js";
 import { createMotionTelemetry, safeMotionSummary } from "./telemetry.js";
 import { safeMotionPresentation, DEFAULT_MOTION_PRESENTATION } from "./presentation.js";
@@ -11,12 +12,13 @@ export function createMotionSession({ role, host = window, doc = document, fetch
   const requests = new Set();
   let stage = "idle", startedAt = 0, failureReason = null;
   let attemptedPair = null;
+  let transport = "direct";
   const signaling = { signalingStatus: 0, signalingRequests: 0, signalingErrors: 0 };
   function event(type, detail = {}) { const safe = safeMotionSummary(detail); telemetry.event(type, safe); onEvent(type, safe); }
   async function api(payload, keepalive = false) {
     const abort = new AbortController(); requests.add(abort);
     let timedOut = false;
-    const timeout = setTimeout(() => { timedOut = true; abort.abort(); }, 10000);
+    const timeout = setTimeout(() => { timedOut = true; abort.abort(); }, payload.action === "exchange" ? 1500 : 10000);
     signaling.signalingRequests += 1; signaling.signalingStatus = 0;
     try {
       const response = await fetcher("/api/motion-pair.php", { method: "POST", cache: "no-store", credentials: "omit", referrerPolicy: "no-referrer", keepalive,
@@ -30,7 +32,7 @@ export function createMotionSession({ role, host = window, doc = document, fetch
     finally { clearTimeout(timeout); requests.delete(abort); }
   }
   function notify() {
-    const summary = { ...getPhone().summary, ...peer?.summary(), ...signaling, stage, failureReason, role, state: ["pairing", "preparing", "error", "suspended", "expired", "closed", "unavailable"].includes(state) ? state : peer?.summary().state ?? state };
+    const summary = { ...getPhone().summary, ...peer?.summary(), ...signaling, stage, failureReason, role, transport, state: ["pairing", "preparing", "error", "suspended", "expired", "closed", "unavailable"].includes(state) ? state : peer?.summary().state ?? state };
     telemetry.update(summary);
     if (previousState !== summary.state) {
       if (summary.state === "stale") event("stale", summary);
@@ -49,8 +51,8 @@ export function createMotionSession({ role, host = window, doc = document, fetch
     if (previous) void api({ action: "delete", ...previous }, true).catch(() => {});
   }
   function stop(next = "closed") { cleanup(next); event(next === "suspended" ? "hidden" : next === "expired" ? "expired" : "stop", { state: next, stage, ...signaling }); notify(); }
-  function createPeer(token) {
-    return peerFactory({ role, host, now, getPhone, getPresentation,
+  function peerOptions(token) {
+    return { role, host, now, getPhone, getPresentation,
       onSummary: (summary) => {
         if (token !== generation) return;
         if (summary.sensorState !== previousPhone?.sensorState) event("permission", summary);
@@ -64,7 +66,7 @@ export function createMotionSession({ role, host = window, doc = document, fetch
         event(type, { ...detail, stage, ...signaling, ...(type === "channel-open" ? { connectMs: now() - startedAt } : {}) });
         if (type === "channel-open") {
           state = "connected"; stage = "connected"; qrUrl = null;
-          if (role === "receiver" && credentials) {
+          if (transport === "direct" && role === "receiver" && credentials) {
             const finished = credentials; credentials = null;
             void api({ action: "finish", ...finished }).catch(() => {});
           }
@@ -72,24 +74,63 @@ export function createMotionSession({ role, host = window, doc = document, fetch
           cleanup(type === "expired" ? "expired" : "closed");
         }
         notify();
-      } });
+      } };
   }
-  async function start(pair = null) {
+  async function start(pair = null, requestedTransport = "direct") {
     // A second gesture cannot cancel setup, replace a live peer or reuse admission.
     if (["preparing", "pairing", "connecting", "connected"].includes(state)) return;
     if (role === "phone" && attemptedPair && attemptedPair.id === pair?.id && attemptedPair.token === pair?.token) return;
     if (role === "phone") attemptedPair = pair;
     cleanup("preparing");
+    transport = role === "phone" ? pair?.key ? "https" : "direct" : requestedTransport === "https" ? "https" : "direct";
     const token = generation; startedAt = now(); stage = "idle"; failureReason = null;
     previousPhone = null; event("start", { role, secureContext: Boolean(host.isSecureContext), rtc: Boolean(host.RTCPeerConnection) }); notify();
     try {
-      if (!host.isSecureContext || !host.RTCPeerConnection) { state = "unavailable"; event("error", { state, stage, secureContext: Boolean(host.isSecureContext), rtc: Boolean(host.RTCPeerConnection) }); notify(); return; }
-      peer = createPeer(token);
+      if (!host.isSecureContext || transport === "direct" && !host.RTCPeerConnection || transport === "https" && !host.crypto?.subtle) { state = "unavailable"; event("error", { state, stage, secureContext: Boolean(host.isSecureContext), rtc: Boolean(host.RTCPeerConnection) }); notify(); return; }
+      if (transport === "direct") peer = peerFactory(peerOptions(token));
       deadline = now() + 30000;
       refresh = setInterval(() => {
         if (["preparing", "pairing", "connecting"].includes(state) && now() >= deadline) { stop("expired"); return; }
         notify();
       }, 200);
+      if (transport === "https") {
+        const secret = role === "receiver" ? createRelayKey(host.crypto) : pair?.key;
+        const cipher = await createMotionCipher(secret, host.crypto);
+        if (token !== generation) return;
+        const activate = () => {
+          stage = "connected"; state = "connecting"; qrUrl = null; deadline = now() + 30000;
+          peer = createMotionRelay({ ...peerOptions(token), cipher, exchange: packet => api({ action: "exchange", ...credentials, packet }) });
+          notify();
+        };
+        if (role === "receiver") {
+          stage = "create";
+          const result = await api({ action: "create", transport: "https" });
+          if (!/^[a-f0-9]{32}$/.test(result.id) || !/^[a-f0-9]{64}$/.test(result.token) || !/^[a-f0-9]{64}$/.test(result.join)) throw new Error("invalid_pairing");
+          if (token !== generation) { void api({ action: "delete", id: result.id, token: result.token }, true).catch(() => {}); return; }
+          credentials = { id: result.id, token: result.token };
+          const presentation = safeMotionPresentation(getPresentation()) ?? DEFAULT_MOTION_PRESENTATION;
+          qrUrl = `${host.location.origin}/?motion=phone&palette=${presentation.palette}&appearance=${presentation.appearance}#pair=${result.id}.${result.join}.${secret}`;
+          state = "pairing"; deadline = now() + 180000; event("offer-ready", { state, transport }); notify();
+          const poll = async () => {
+            try {
+              stage = "poll";
+              const result = await api({ action: "poll", ...credentials });
+              if (token !== generation) return;
+              if (result.status === "joined") { event("phone-joined", { state: "connecting", transport }); activate(); return; }
+              polling = setTimeout(poll, 500);
+            } catch (error) { if (token === generation) fail(error?.status === 410 ? "expired" : "error"); }
+          };
+          polling = setTimeout(poll, 500);
+        } else {
+          if (!pair || !/^[a-f0-9]{32}$/.test(pair.id) || !/^[a-f0-9]{64}$/.test(pair.token)) throw new Error("invalid_pairing");
+          stage = "join";
+          const result = await api({ action: "join", id: pair.id, token: pair.token });
+          if (token !== generation) { if (/^[a-f0-9]{64}$/.test(result.token)) void api({ action: "delete", id: pair.id, token: result.token }, true).catch(() => {}); return; }
+          if (!/^[a-f0-9]{64}$/.test(result.token) || result.transport !== "https") throw new Error("invalid_pairing");
+          credentials = { id: pair.id, token: result.token }; activate();
+        }
+        return;
+      }
       if (role === "receiver") {
         stage = "offer";
         const sdp = await peer.offer(); if (token !== generation) return;
@@ -143,6 +184,6 @@ export function createMotionSession({ role, host = window, doc = document, fetch
   const offline = () => { if (["preparing", "pairing", "connecting", "connected"].includes(state)) fail(); };
   doc.addEventListener("visibilitychange", hidden); host.addEventListener("pagehide", pagehide);
   host.addEventListener("offline", offline);
-  return { start, stop: () => stop(), event, refresh: notify, report: () => telemetry.snapshot(),
+  return { sample: () => peer?.sample() ?? null, start, stop: () => stop(), event, refresh: notify, report: () => telemetry.snapshot(),
     dispose() { cleanup(); doc.removeEventListener("visibilitychange", hidden); host.removeEventListener("pagehide", pagehide); host.removeEventListener("offline", offline); } };
 }

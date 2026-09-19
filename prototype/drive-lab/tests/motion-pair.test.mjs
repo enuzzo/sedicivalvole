@@ -60,3 +60,18 @@ test('canonical publication admits only the reviewed motion endpoint bytes',()=>
  const script="import runpy,sys; m=runpy.run_path(sys.argv[1]); payload=open(sys.argv[2],'rb').read(); m['verify_motion_pair_identity'](payload)\ntry:\n m['verify_motion_pair_identity'](payload+b'changed')\nexcept ValueError:\n print('PASS')\nelse:\n raise AssertionError('changed endpoint accepted')";
  const result=spawnSync('python3',['-c',script,deploy,endpoint],{encoding:'utf8'});assert.equal(result.status,0,result.stderr);assert.equal(result.stdout.trim(),'PASS');
 });
+
+test('encrypted relay has single-use admission, capability isolation, latest-only slots and finite lifetime',()=>{
+ const result=run(`
+ [$s,$r]=req(['action'=>'create','transport'=>'https']);$receiver=['id'=>$r['id'],'token'=>$r['token']];$join=['id'=>$r['id'],'token'=>$r['join']];
+ [$js,$j]=req(['action'=>'join']+$join);$phone=['id'=>$r['id'],'token'=>$j['token']];
+ $again=req(['action'=>'join']+$join)[0];$unauth=req(['action'=>'exchange','packet'=>null]+$join)[0];
+ $packet=base64_encode(str_repeat('encrypted-fixture',4));
+ $write=req(['action'=>'exchange','packet'=>$packet]+$phone)[0];
+ $read=req(['action'=>'exchange','packet'=>null]+$receiver);
+ usleep(25000);$invalid=req(['action'=>'exchange','packet'=>'raw sensor plaintext']+$phone)[0];
+ $now+=2;usleep(25000);$stale=req(['action'=>'exchange','packet'=>null]+$receiver)[1]['packet'];
+ $now+=15;$expired=req(['action'=>'exchange','packet'=>null]+$receiver)[0];
+ echo json_encode([$s,$js,$j['transport'],$again,$unauth,$write,$read[1]['packet']===$packet,$invalid,$stale,$expired]);`);
+ assert.deepEqual(result,[200,200,'https',403,403,200,true,400,null,410]);
+});

@@ -79,9 +79,7 @@ landscape layout. Bounded connection/sensor summaries join REPORT; the phone can
 download its own diagnostics, including wake-lock and renderer availability.
 Screen-awake status reflects the actual optional lock. Local-only mode, incomplete
 sensors and ended links have explicit recovery guidance; permission retry does
-not reuse a QR, and direct setup times out after 30 seconds. GPS remains road-speed authority. Direct network
-reachability and real iPhone/Tesla sensing remain physical acceptance gates;
-Aperture motion steering is a follow-up. [Setup and technical boundaries](docs/PHONE-MOTION-COMPANION-2026-09-18.md).
+not reuse a QR. The default QR uses end-to-end encrypted HTTPS through the same site; local WebRTC remains optional. Both screens distinguish transport from fresh mutual sensor readiness. GPS remains road-speed authority; fresh zeroed gyro turn rate now bends Aperture, easing to straight on loss. Real Tesla/iPhone relay latency and curve direction still require a physical recheck. See the [road connection refinement](docs/PHONE-MOTION-HTTPS-2026-09-19.md). [Setup and technical boundaries](docs/PHONE-MOTION-COMPANION-2026-09-18.md).
 
 ## Vision
 

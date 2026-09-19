@@ -48,7 +48,7 @@ export function LocalSensorsPanel({ sensors, gpsState, source, themeKey, onRemot
     <div className="local-motion-trace"><MotionTrace getSample={sensors.sample} resetKey={reset} themeKey={themeKey}/></div>
     <button onClick={() => setReset(value => value + 1)}>RECENTER VIEW</button>
     <MotionQuality summary={sensors.summary}/>
-    <p>Motion feeds this local instrument. GPS remains the speed reference; motion is never integrated into an invented speed. No phone pairing is needed.</p>
+    <p>Fresh, zeroed rotation feeds TRACE and bends Aperture. Keep the phone fixed in its holder. GPS remains the speed reference; motion is never integrated into an invented speed. No phone pairing is needed.</p>
     <button onClick={onRemote}>USE ANOTHER PHONE INSTEAD</button>
   </div>;
 }

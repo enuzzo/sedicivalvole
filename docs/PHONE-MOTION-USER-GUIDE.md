@@ -2,22 +2,19 @@
 
 This guide covers guided pairing, shared palette/appearance and settling ZERO.
 The current published build is recorded in [Current state](CURRENT-STATE.md).
-Real iPhone/Tesla connectivity, sensors and screen-wake retention remain open.
+The owner road test confirms QR opening and apparent iPhone sensor operation; the former direct link failed twice. The new HTTPS link and Aperture curve need a new physical check.
 
 ## First run, while parked
 
 1. Open `https://sedicivalvole.app/` in the Tesla browser and start the experience.
    Tap the field to reveal the navigation, then tap the phone/waves icon.
 2. The QR prepares automatically. Scan it with iPhone Camera and open the result on your iPhone.
-   Use the same Wi-Fi for the first attempt where possible. Both devices need
-   access to the site and a network path to each other; the same Wi-Fi is not
-   a guarantee if the router isolates clients. Separate cellular connections
-   and Tesla/iPhone hotspot combinations have not been physically verified.
+   The default QR uses encrypted HTTPS through sedicivalvole.app. Both devices need Internet access; the same Wi-Fi is optional. Connection details offers **CREATE LOCAL WEBRTC QR** for a direct-network comparison. Creating it replaces the current link.
 3. Place the iPhone securely in its holder, including portrait at about 45°.
    Tap **ENABLE & CONNECT** and allow the requested motion/orientation access.
 4. Rest the phone, tap **ZERO** below the graph and lift your finger. **HOLD STILL**
    waits for half a second of steady readings, for at most eight seconds.
-   **REFERENCE SET** confirms capture; now move the phone to see the trace.
+   **REFERENCE SET** confirms capture. When both screens confirm readiness, TRACE shows movement and Aperture bends with fresh rotation. Keep the phone fixed in the holder while driving; test hand movements only while parked.
    A rejection explains missing data, movement or an out-of-range gravity reading.
    If a previous reference is still
    valid, a rejected recalibration explicitly says that readings keep using it.
@@ -60,7 +57,8 @@ display’s palette and LIGHT/DARK appearance, including changes while connected
 | QR expires or has already been used | The QR admits one phone and expires after three minutes. It disappears from Tesla as soon as a phone has joined. On Tesla, choose CANCEL if the old attempt is still pending, then CREATE QR and scan the new code. |
 | Connection fails or remains pending | Setup times out after 30 seconds; each HTTP request has a 10-second limit. Keep both pages visible and verify their network access. Try a shared network that allows device-to-device traffic. There is no Internet relay fallback. Reset the attempt with CANCEL / CREATE QR rather than repeatedly reloading an old phone link. |
 | STOP, DISCONNECT, reload, hidden page or screen lock | Treat the connection as ended. Return to the Tesla phone panel, generate a new QR, scan it, enable sensors and set ZERO again. There is no promised automatic reconnection in this baseline. An open link also expires after one hour. |
-| Direct connections unavailable in this browser | WebRTC is unavailable. A fresh QR alone cannot fix browser support; use a compatible browser, then generate and scan a new QR. Local sensing remains a separate test. |
+| Local WebRTC cannot connect | Cancel and create the default HTTPS QR. A shared hotspot does not guarantee direct browser reachability. |
+| HTTPS connects but data pauses | Check Round trip in Connection details. Samples older than 250 ms are ignored; the tunnel returns straight. Try the local QR on a shared network for comparison. A connection is not proof of usable latency. |
 | Connected but values are dashes, Sensors: incomplete or Zero REQUIRED | Transport and sensing are separate. Check permissions, keep the page visible, wait for fresh complete sensor values and set ZERO while still. If access was denied, use **RETRY SENSORS** while the connection is still open. This retries permissions without reusing the QR. Review Safari/site permissions if it remains denied; do not assume reloading overrides a stored denial. |
 | Values become old or sensors pause | Samples expire after 250 ms. Old values are not replayed as live data; the trace clears and the reference may need ZERO again. Re-pair if the transport also ended. |
 | SCREEN MAY SLEEP | Wake lock was denied, released or is unsupported. Use KEEP SCREEN AWAKE if offered; success must change the status to SCREEN AWAKE. If unavailable, keeping the page visible does not itself prevent screen lock. A manually chosen Auto-Lock setting is outside the app's control. |

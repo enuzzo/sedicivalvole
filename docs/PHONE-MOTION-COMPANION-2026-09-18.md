@@ -558,3 +558,8 @@ Live browser verification confirms automatic QR, guide/recovery/details and the
 phone's BLUE/LIGHT presentation with current build identity and no console errors.
 No synthetic diagnostic mail was sent. Real iPhone ZERO, Tesla reachability and
 wake/endurance acceptance remain separate owner checks.
+
+
+## September 19 road connection supersession
+
+The [encrypted HTTPS and Aperture refinement](PHONE-MOTION-HTTPS-2026-09-19.md) supersedes the direct-only transport and no-renderer-consumption statements above. It retains GPS speed ownership, explicit sensor permission, ZERO, bounded age, lifecycle teardown and coordinate-free aggregate diagnostics. Earlier test and publication entries remain historical evidence.

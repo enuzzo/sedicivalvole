@@ -34,10 +34,10 @@ export function phoneStatus({ link = {}, sensor = {}, hasPair = false, attempted
     : hasPair && attempted ? "Connecting to Tesla…"
     : "Local only · not connected to Tesla";
   const recovery = link.state === "unavailable" && hasPair
-    ? "Direct connections are unavailable in this browser. Open a new QR in a browser with WebRTC support. Local sensing alone cannot connect to Tesla."
+    ? "This connection is unavailable in this browser. On the display, tap CREATE QR for HTTPS and open it in iPhone Safari. Local sensing alone cannot connect to Tesla."
     : terminal && hasPair
     ? link.state === "expired" ? "QR expired, already used, or connection timed out. On Tesla tap CREATE QR and scan the new code."
-      : "On Tesla tap CREATE QR and scan the new code. Keep both pages visible and use a network that allows a direct connection."
+      : "On Tesla tap CREATE QR and scan the new code. Keep both pages visible with Internet access; the default QR uses encrypted HTTPS."
     : !hasPair ? "For Tesla: open its phone icon and scan the QR with iPhone Camera."
     : connected ? "Check Tesla also shows fresh sensors and Zero SET. GPS/Demo still supplies speed."
     : canJoin ? "Tap ENABLE & CONNECT and allow motion and orientation. Keep both pages visible."
