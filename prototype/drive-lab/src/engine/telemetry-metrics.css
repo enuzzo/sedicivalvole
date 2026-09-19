@@ -1,0 +1,53 @@
+/* Equal evidence cells: one typography, baseline and signal window for all three. */
+:is(.app,.lab-shell) .engine-primary { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 0; padding: 8px 0; }
+:is(.app,.lab-shell) .engine-primary > .engine-metric {
+  display: grid; grid-template-columns: minmax(0,1fr); justify-content: stretch; grid-template-rows: 18px auto 32px 28px; align-content: start;
+  align-items: start; justify-items: start; gap: 4px; min-width: 0;
+  padding: 0 24px; border: 0; border-radius: 0; text-align: left;
+  font: inherit; color: var(--ui-text); background: transparent;
+}
+:is(.app,.lab-shell) .engine-primary > .engine-metric + .engine-metric { border-left: 1px solid var(--ui-line-soft); }
+:is(.app,.lab-shell) .engine-primary .engine-metric strong,
+:is(.app,.lab-shell) .engine-telemetry:has(.engine-rev) .engine-primary .engine-metric strong {
+  font-size: clamp(48px,7.5vw,78px); line-height: 1; font-weight: 500;
+  letter-spacing: -.065em; font-variant-numeric: tabular-nums; color: var(--ui-text);
+}
+:is(.app,.lab-shell) .engine-primary .engine-metric :is(small,span) {
+  font-size: 13px; line-height: 16px; font-weight: 600; letter-spacing: .035em;
+}
+:is(.app,.lab-shell) .engine-primary .engine-micro-signal {
+  display: block; width: 100%; height: 28px; padding: 0; margin: 0; overflow: hidden;
+  color: var(--ui-accent-text); opacity: .38;
+}
+.engine-micro-signal path { fill: none; stroke: currentColor; stroke-width: 1.4; vector-effect: non-scaling-stroke; }
+.engine-micro-signal .signal-baseline { opacity: .2; }
+.engine-micro-signal .signal-index { fill: var(--ui-text); stroke: none; }
+:is(.app,.lab-shell) .engine-micro-signal[data-running=true], :is(.app,.lab-shell) .signal-gear[data-engaged=true] { opacity: 1; }
+.signal-pulse-envelope { transform: scaleY(var(--pulse-height)); transform-origin: 0 23px; transition: transform 120ms linear; }
+.signal-travel { animation: engine-signal-travel var(--signal-period) linear infinite; animation-play-state: paused; }
+[data-running=true] > .signal-travel, [data-running=true] .signal-pulse-envelope > .signal-travel { animation-play-state: running; }
+.signal-ratio { opacity: .3; }
+.signal-gear-selector { transition: transform 180ms cubic-bezier(.2,.7,.2,1); }
+.signal-gear-selector path { transition: transform 80ms linear; stroke-width: 2; }
+[data-phase=release] .signal-clutch-top, [data-phase=synchronize] .signal-clutch-top { transform: translateY(-3px); }
+[data-phase=release] .signal-clutch-bottom, [data-phase=synchronize] .signal-clutch-bottom { transform: translateY(3px); }
+@keyframes engine-signal-travel { to { transform: translateX(-48px); } }
+:is(.app,.lab-shell).modal-open .signal-travel { animation-play-state: paused; }
+@media(max-width:700px) { :is(.app,.lab-shell) .engine-primary > .engine-metric { padding-inline: 16px; } }
+@media(max-height:500px) {
+  :is(.app,.lab-shell) .engine-primary > .engine-metric { grid-template-rows: 16px auto 30px 18px; gap: 2px; }
+  :is(.app,.lab-shell) .engine-primary .engine-metric strong,
+  :is(.app,.lab-shell) .engine-telemetry:has(.engine-rev) .engine-primary .engine-metric strong { font-size: 48px; }
+  :is(.app,.lab-shell) .engine-primary .engine-micro-signal { height: 18px; }
+}
+:is(.app,.lab-shell)[data-phone-layout=landscape] .engine-primary { gap: 0; padding: 0 0 3px; }
+:is(.app,.lab-shell)[data-phone-layout=landscape] .engine-primary > .engine-metric { gap: 2px; grid-template-rows: 15px 48px 14px 16px; padding-inline: 12px; }
+:is(.app,.lab-shell)[data-phone-layout=landscape] .engine-primary .engine-metric strong { font-size: 48px; line-height: 1; }
+:is(.app,.lab-shell)[data-phone-layout=landscape] .engine-primary .engine-metric :is(small,span) { font-size: 13px; line-height: 14px; }
+:is(.app,.lab-shell)[data-phone-layout=landscape] .engine-primary .engine-micro-signal { height: 16px; padding: 0; }
+@media(prefers-reduced-motion:reduce) {
+  .engine-micro-signal .signal-travel { animation: none; }
+  .engine-micro-signal :is(.signal-pulse-envelope,.signal-gear-selector,.signal-gear-selector path) { transition: none; }
+}
+
+.lab-shell .engine-telemetry { --ui-text: var(--lab-paper); --ui-accent-text: var(--lab-accent); --ui-line-soft: var(--lab-line); }

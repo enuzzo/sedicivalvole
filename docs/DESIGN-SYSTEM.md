@@ -197,3 +197,21 @@ These references inform the checks; this is not a WCAG conformance claim.
 Current screenshots and geometric evidence belong to
 [the September 19 harmony audit](qa/2026-09-19-ui-harmony/README.md).
 Historical September 12 screenshots above describe that earlier revision.
+
+## Equal Engine evidence cells — September 19
+
+The annotated RPM/speed/gear band uses three equal columns and identical four-row
+geometry: 13 px label, one shared responsive numeric size, 13 px status and one
+micro-signal window. All content aligns left. The speed cell remains a real
+button with visible keyboard focus; its display semantics match the passive
+cells. At short phone height every numeric value is 48 px and compact truthful
+status labels fit above a 16 px signal.
+
+Micro-signals communicate virtual RPM/load, observed speed and virtual shift
+phases through different encodings, without random activity. See the
+[Engine contract](agent-guide/engine.md#equal-telemetry-cells-and-live-micro-signals)
+and [rendered evidence](qa/2026-09-19-engine-cells/README.md). Continuous travel
+respects [W3C reduced-motion guidance](https://www.w3.org/WAI/WCAG21/Techniques/css/C39.html);
+the silent development bench uses [requestAnimationFrame](https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame)
+with a hidden-page time hold. The production plots use CSS transforms with no
+additional animation scheduler.

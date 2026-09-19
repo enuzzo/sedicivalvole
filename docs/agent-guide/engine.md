@@ -42,4 +42,24 @@ For replay/storage/export changes, read [Listening flow](../ENGINE-LISTENING-LAB
 
 ## Selected instrument refinement B
 
-The owner delegated [September 19 refinement B](../ROAD-REFINEMENT-2026-09-19.md): RPM / instantaneous speed / gear in one band, preserving the upper RPM crest and adding measurement-driven accents. Hide the duplicate global speed readout in Engine. Voice choices follow complementary chrome visibility; essential TAMARRO remains separate. Engine retains its own mute preference, independent of Music.
+The owner delegated [September 19 refinement B](../ROAD-REFINEMENT-2026-09-19.md): RPM / instantaneous speed / gear in one band, preserving the upper RPM crest and adding measurement-driven accents. The later [shared identity correction](interface.md#shared-geometry-and-palette) keeps the global speed cell adjacent to the logo in Engine too. Voice choices follow complementary chrome visibility; essential TAMARRO remains separate. Engine retains its own mute preference, independent of Music.
+
+## Equal telemetry cells and live micro-signals
+
+The September 19 browser annotation explicitly refines the selected instrument:
+RPM, speed and gear have equal-width cells, identical label/value/status/signal
+rows and left alignment. All values share one responsive font size. Preserve the
+upper RPM crest, lower response graphs, profile lane and TAMARRO geometry.
+
+Each original SVG micro-signal encodes existing state only. The slowed virtual
+cycle train uses authored RPM for cadence and drive for amplitude; it is not an
+audio waveform or measured combustion. The road ruler uses valid fresh speed,
+independently of audio; aging readings remain numeric but stop scrolling. Lost
+GPS shows no motion. The ratio selector follows the committed virtual gear, with
+separation/re-engagement driven by the existing shift phases. Stable gear has no
+invented loop; neutral and continuous shaft select no ratio. Paused/unprepared
+engine does not imply active cycles or shifting. Hidden documents and reduced
+motion stop decorative travel; values remain available. No audio/control model
+or physical vehicle telemetry is added.
+
+[Implementation, silent preview and verification](../qa/2026-09-19-engine-cells/README.md).

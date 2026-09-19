@@ -607,6 +607,12 @@ Waking global controls hides and disables contextual actions; the first touch
 on the persistent identity cells only wakes the bar. The logo is larger while
 the bar retains its existing height. [Visual QA and acceptance boundaries](docs/qa/2026-09-19-ui-harmony/README.md).
 
+Engine's RPM, speed and virtual gear now use equal cells with the same typography
+and alignment. Three restrained signal plots show virtual engine cadence/load,
+fresh road speed and actual phases of the acoustic gear model. Missing/aging
+GPS and paused audio retain truthful static states. A [silent development preview
+and evidence record](docs/qa/2026-09-19-engine-cells/README.md) explains the boundary.
+
 <!-- COMMUNITY-CREDITS:START -->
 ## Community thanks — 2026-09-05
 

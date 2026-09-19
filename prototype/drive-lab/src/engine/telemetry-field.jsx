@@ -1,10 +1,19 @@
 import { ContextualRail, useContextualControls } from "../contextual-controls.jsx";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ENGINE_CATALOGUE } from "./catalogue.js";
 import "./telemetry-field.css";
+import { telemetrySignals } from "./telemetry-signals.js";
+import { EngineSignals } from "./telemetry-signals.jsx";
 
 export function EngineTelemetry({ state, profileId, onProfile, onRev, onRelease, speed = 0, speedSource = "GPS", onSpeedSource, onFrame }) {
   const contextual = useContextualControls();
+  const [visible, setVisible] = useState(() => document.visibilityState !== "hidden");
+  useEffect(() => {
+    const update = () => setVisible(document.visibilityState !== "hidden");
+    document.addEventListener("visibilitychange", update);
+    return () => document.removeEventListener("visibilitychange", update);
+  }, []);
+  const signal = telemetrySignals(state, speed, speedSource);
   const historyRef = useRef([]);
   const fieldRef = useRef(null);
   useEffect(() => {
@@ -20,7 +29,7 @@ export function EngineTelemetry({ state, profileId, onProfile, onRev, onRelease,
     return () => { release(); window.removeEventListener("blur", release); };
   }, [onRelease]);
   const trace = key => historyRef.current.map((value, index) => `${index * 3},${48 - value[key] * 44}`).join(" ");
-  const speedKnown = speedSource !== "GPS" || ["fresh", "degraded"].includes(state.motion);
+  const speedKnown = signal.speedKnown;
   const rpm = state.rpm ?? 1000;
   const rpmPosition = Math.max(0, Math.min(1, rpm / 9000));
   const voice = ENGINE_CATALOGUE.find(item => item.id === profileId)?.label ?? profileId;
@@ -43,12 +52,24 @@ export function EngineTelemetry({ state, profileId, onProfile, onRev, onRelease,
       <i style={{ width: `${rpmPosition*100}%` }} />
     </div>
     <div className="engine-primary">
-      <div><small>VIRTUAL RPM</small><strong>{Math.round(rpm).toLocaleString("en-US")}</strong><span>{state.revving ? "REVVING" : state.idleBlip ? "IDLE BLIP" : state.shift ? state.shift.toUpperCase() : Math.round(speed) === 0 ? state.enabled === false ? "AUDIO PAUSED" : state.trustedStationary ? "IDLE · AUTO BLIPS ON" : state.motion === "lost" ? "IDLE · NO SPEED SIGNAL" : "IDLE · CONFIRMING STOP" : "ENGINE SPEED"}</span></div>
-      <button className="engine-speed-metric" type="button" onClick={onSpeedSource} aria-label={`Speed source ${speedSource}. Tap to switch`}>
-        <small>SPEED · KM/H</small><strong>{speedKnown ? Math.round(speed) : "—"}</strong><span>{speedSource === "GPS" ? speedKnown ? "GPS SPEED" : "AWAITING GPS" : `${speedSource} SPEED`}</span>
-        <svg viewBox="0 0 180 12" preserveAspectRatio="none" aria-hidden="true">{Array.from({ length: 27 }, (_, i) => <line key={i} x1={3 + i * 6.7} x2={3 + i * 6.7} y1={i % 5 ? 5 : 1} y2="11" opacity={speedKnown && i / 26 <= Math.min(1, speed / 130) ? 1 : .2}/>)}</svg>
+      <div className="engine-metric">
+        <small>VIRTUAL RPM</small>
+        <strong>{Math.round(rpm).toLocaleString("en-US")}</strong>
+        <span>{state.enabled === false ? "AUDIO PAUSED" : state.revving ? "REVVING" : state.idleBlip ? "IDLE BLIP" : state.shift ? state.shift.toUpperCase() : Math.round(speed) === 0 ? state.trustedStationary ? "AUTO BLIPS ON" : state.motion === "lost" ? "NO SPEED SIGNAL" : "CONFIRMING STOP" : "ENGINE SPEED"}</span>
+        <EngineSignals kind="rpm" signal={signal} visible={visible} />
+      </div>
+      <button className="engine-metric engine-speed-metric" type="button" onClick={onSpeedSource} aria-label={`Speed source ${speedSource}. Tap to switch`}>
+        <small>SPEED · KM/H</small>
+        <strong>{speedKnown ? Math.round(speed) : "—"}</strong>
+        <span>{speedSource === "GPS" ? speedKnown ? state.motion === "degraded" ? "GPS · SIGNAL AGING" : "GPS SPEED" : "AWAITING GPS" : `${speedSource} SPEED`}</span>
+        <EngineSignals kind="speed" signal={signal} visible={visible} />
       </button>
-      <div><small>{state.singleSpeed ? "SHAFT / CONTINUOUS" : `GEAR / ${state.transmissionMode || "AUTO"}`}</small><strong>{state.singleSpeed ? "—" : state.revving ? "N" : state.gear ?? 1}</strong><span>{state.singleSpeed ? "VIRTUAL TURBINE" : state.shiftPhase ? state.shiftPhase.toUpperCase() : "ACOUSTIC GEARBOX"}</span></div>
+      <div className="engine-metric">
+        <small>{state.singleSpeed ? "VIRTUAL SHAFT" : "VIRTUAL GEAR"}</small>
+        <strong>{state.singleSpeed ? "—" : state.revving ? "N" : state.gear ?? 1}</strong>
+        <span>{state.singleSpeed ? "CONTINUOUS" : state.shiftPhase ? state.shiftPhase.toUpperCase() : `${state.transmissionMode || "AUTO"} · ACOUSTIC`}</span>
+        <EngineSignals kind="gear" signal={signal} visible={visible} />
+      </div>
     </div>
     <div className="engine-graphs">
       <div><small>DRIVE RESPONSE <b>{Math.round((state.drive ?? 0) * 100)}%</b></small><svg viewBox="0 0 300 52" aria-label="Drive response history"><polyline points={trace("drive")} /></svg></div>

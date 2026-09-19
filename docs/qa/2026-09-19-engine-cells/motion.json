@@ -1,0 +1,48 @@
+{
+  "before": [
+    {
+      "kind": "engine-micro-signal signal-rpm",
+      "period": "0.6999337195840751s",
+      "phase": "steady",
+      "running": "true",
+      "transform": "matrix(1, 0, 0, 1, -1.22954, 0)"
+    },
+    {
+      "kind": "engine-micro-signal signal-speed",
+      "period": "1.2607690691321618s",
+      "phase": "steady",
+      "running": "true",
+      "transform": "matrix(1, 0, 0, 1, -35.5856, 0)"
+    },
+    {
+      "kind": "engine-micro-signal signal-gear",
+      "period": "1.2607690691321618s",
+      "phase": "steady",
+      "running": "false",
+      "transform": "none"
+    }
+  ],
+  "after": [
+    {
+      "kind": "engine-micro-signal signal-rpm",
+      "period": "0.557266989550296s",
+      "phase": "steady",
+      "running": "true",
+      "transform": "matrix(1, 0, 0, 1, -44.6657, 0)"
+    },
+    {
+      "kind": "engine-micro-signal signal-speed",
+      "period": "0.5s",
+      "phase": "steady",
+      "running": "true",
+      "transform": "matrix(1, 0, 0, 1, -33.6864, 0)"
+    },
+    {
+      "kind": "engine-micro-signal signal-gear",
+      "period": "0.5s",
+      "phase": "steady",
+      "running": "false",
+      "transform": "none"
+    }
+  ]
+}

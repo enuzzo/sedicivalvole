@@ -1,0 +1,4 @@
+.instrument-preview-controls{position:absolute;z-index:10;left:12px;bottom:12px;display:flex;align-items:center;gap:16px;color:var(--ui-text);font-size:13px;background:var(--ui-surface-strong);padding:6px 10px;border:1px solid var(--ui-line);border-radius:6px}
+.instrument-preview-controls>div{display:flex;gap:6px}.instrument-preview-controls button{min-height:48px;border:1px solid var(--ui-line);border-radius:4px;padding:0 12px;background:var(--ui-surface);color:inherit;font:inherit}
+.engine-instrument-preview .engine-rev{visibility:hidden}.engine-instrument-preview{--phone-top:0px;--phone-bottom:0px;--phone-left:0px;--phone-right:0px}
+@media(max-height:450px){.instrument-preview-controls{left:8px;right:8px;bottom:4px;gap:8px;padding:4px;font-size:11px}.instrument-preview-controls strong{max-width:110px}.instrument-preview-controls button{padding:0 8px}.engine-instrument-preview .engine-bottom{display:none}}

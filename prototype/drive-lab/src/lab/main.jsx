@@ -19,6 +19,7 @@ import {
   importLabPreset,
 } from "./lab-model.js";
 import "./styles.css";
+import "../engine/telemetry-metrics.css";
 
 const APP = Object.freeze({
   version: typeof __APP_VERSION__ !== "undefined" ? __APP_VERSION__ : "dev",
