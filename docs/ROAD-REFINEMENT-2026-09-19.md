@@ -112,3 +112,26 @@ acceptance. A fixture or changed user agent cannot close those checks.
   `PLAYWRIGHT_MODULE` and `QA_URL`. Integration also works against production;
   audio/capability QA uses the development-only fixed-speed input. No diagnostic
   delivery is sent during these checks.
+
+The final stationary-map check found the retained brand cell covering Follow and
+part of the radar return button. Source `2487f2f` retracts that mark with resting
+chrome only on those map surfaces, preserving the visible speed readout. Final
+production browser paths pass again; focused rail/phone checks pass **6/6**.
+
+## Canonical publication — 14:33 Europe/Rome
+
+Final source **2487f2f**, build **20260919-1425.2487f2f**, VERSION **0.0.0**
+is published at `https://sedicivalvole.app/`. Source commits are pushed to main.
+The official preserve-existing publisher passes all gates: **38 files /
+6,453,110 bytes**, 825 unchanged static files and 29 unchanged Illobo recordings
+fully verified; two previous entry assets retained; no legacy deletion;
+`ROOT_UPLOAD_ONLY`. The preceding read-only preflight reports `remote_writes=NONE`.
+
+Bare canonical and cache-busted HTML both return HTTP 200, no-store/no-cache,
+`X-Proxy-Cache: MISS` and the final identity. HTML, main JS and CSS match local
+bytes and SHA-256 exactly; see [HTTPS evidence](qa/2026-09-19-road-refinement/live-identity.json).
+Canonical-browser fixture paths pass with no page exceptions; see
+[browser evidence](qa/2026-09-19-road-refinement/live-browser.json). Real pairing,
+mail and sensor readings are not simulated into a device acceptance claim.
+A controlled canonical reload also retains the final release identity and renders
+the Intro cache-reset action successfully.

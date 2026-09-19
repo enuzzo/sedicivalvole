@@ -2,7 +2,7 @@
 
 ## Road refinement — September 19
 
-The [road-refinement record](ROAD-REFINEMENT-2026-09-19.md) tracks the current independent audio, complementary controls, Engine instrument, local sensors, QR and cache-reset changes. Publication and physical acceptance are recorded separately there; older build headings below are historical checkpoints.
+Canonical **20260919-1425.2487f2f** is published and verified. The [road-refinement record](ROAD-REFINEMENT-2026-09-19.md) tracks independent audio, complementary controls, the Engine instrument, local sensors, QR and cache reset. Automated/browser and HTTPS gates pass; physical Tesla/Tidal and iPhone/iPad acceptance remain separate. Older build headings below are historical checkpoints.
 
 ## Guided companion and shared appearance published — September 19
 

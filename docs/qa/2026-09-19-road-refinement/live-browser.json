@@ -1,0 +1,13 @@
+{
+  "checks": [
+    "Music mute does not mute Engine; speed is integrated once",
+    "Repeated switches preserve independent explicit mute states",
+    "Atlas controls use the free top bar and do not wake chrome",
+    "Map drag does not wake chrome; central tap hides and inerts contextual buttons",
+    "Radar detail closes on the radar backdrop without waking global chrome",
+    "Outside popover tap is consumed and does not toggle underlying mute",
+    "Prepared session renders QR as inline SVG without canvas/image decoding",
+    "No page exceptions in exercised paths"
+  ],
+  "errors": []
+}

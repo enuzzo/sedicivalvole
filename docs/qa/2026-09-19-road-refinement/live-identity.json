@@ -1,0 +1,49 @@
+{
+  "release": "20260919-1425.2487f2f",
+  "checks": [
+    {
+      "path": "/",
+      "status": 200,
+      "bytes": 1445,
+      "sha256": "4266c47fef0d0e31d1504befe207cc30c0bf0c3a7248b8ad4a329d14327d9f86",
+      "headers": {
+        "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+        "X-Proxy-Cache": "MISS",
+        "X-Content-Type-Options": "nosniff"
+      }
+    },
+    {
+      "path": "/?verify=1789821195",
+      "status": 200,
+      "bytes": 1445,
+      "sha256": "4266c47fef0d0e31d1504befe207cc30c0bf0c3a7248b8ad4a329d14327d9f86",
+      "headers": {
+        "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+        "X-Proxy-Cache": "MISS",
+        "X-Content-Type-Options": "nosniff"
+      }
+    },
+    {
+      "path": "/assets/index-Bxqh4S59.js",
+      "status": 200,
+      "bytes": 1597657,
+      "sha256": "d9fa6b097583f61847ca3c27293f8663efde422c62869c2f65c5dc7469d38c9a",
+      "headers": {
+        "Cache-Control": null,
+        "X-Proxy-Cache": "MISS",
+        "X-Content-Type-Options": null
+      }
+    },
+    {
+      "path": "/assets/index-CoNWX9V0.css",
+      "status": 200,
+      "bytes": 271046,
+      "sha256": "c785edad9f03183ec8e8889f536cbe8e4ffad0db8a7813eb5080e4494a1143c3",
+      "headers": {
+        "Cache-Control": null,
+        "X-Proxy-Cache": "MISS",
+        "X-Content-Type-Options": null
+      }
+    }
+  ]
+}
