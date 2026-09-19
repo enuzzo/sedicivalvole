@@ -4875,3 +4875,6 @@ html { font-size: var(--font-size-floor); }
 .app.controls-resting .flight-view-toolbar > button:nth-child(2) { margin-right:112px; }
 
 .intro-cache-reset[data-state="error"] small, .intro-cache-reset[data-state="unavailable"] small { display:block; padding:6px; background:var(--ui-surface); color:var(--ui-text); }
+
+/* Map controls reuse the first rail cell even at standstill; speed stays visible. */
+.app.controls-resting:has(.atlas-framing, .air-atlas-toolbar, .flight-view-toolbar) .topbar-mark { visibility:hidden; pointer-events:none; }

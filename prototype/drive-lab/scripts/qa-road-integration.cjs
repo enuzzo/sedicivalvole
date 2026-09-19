@@ -32,6 +32,7 @@ async function visual(name){await wake();await page.locator('.environment-contro
 await visual('Atlas');await page.waitForTimeout(2500);
 assert.equal(await page.locator('.atlas-camera-controls').getAttribute('inert'),null);
 let rect=await page.locator('.atlas-camera-controls').boundingBox();assert.ok(rect.y<20,JSON.stringify(rect));
+assert.equal(await page.locator('.topbar-mark').evaluate(n=>getComputedStyle(n).visibility),'hidden');
 await page.screenshot({path:out+'/atlas-resting.png'});
 await page.getByRole('button',{name:'Zoom in',exact:true}).click();assert.ok((await page.locator('main.app').getAttribute('class')).includes('controls-resting'));ok('Atlas controls use the free top bar and do not wake chrome');
 await wake();assert.equal(await page.locator('.atlas-camera-controls').getAttribute('inert'),'');await page.screenshot({path:out+'/atlas-awake.png'});
