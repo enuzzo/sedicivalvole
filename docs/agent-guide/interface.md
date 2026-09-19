@@ -22,7 +22,11 @@ Its **recalibrate** subtitle and unobstructed graph supersede the older central
 TARE placement. The implemented TRACE instrument uses the existing WebGL2
 renderer, a bounded three-second acceleration trail, a relative-orientation phone
 indicator and separate camera recentering. Missing values remain dashes; the
-empty graph has no demonstration trace.
+empty graph has no demonstration trace. The September 19 owner-requested
+companion-guide refinement retains its existing three-step layout, uses original
+two-color SVGs for Scan / Connect / Zero, shortens the primary copy, and places
+network/privacy explanations behind an accessible details button. This is a
+refinement within the selected companion design, not a pending new direction.
 
 ## Shared geometry and palette
 

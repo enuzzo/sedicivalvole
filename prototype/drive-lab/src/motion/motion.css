@@ -137,3 +137,10 @@
 .motion-input-proof > div { display: flex; justify-content: space-between; gap: 12px; color: var(--ui-muted); }
 .motion-input-value { color: var(--ui-text); }
 .motion-phone .motion-zero:disabled { opacity: 1; font-size: 17px; }
+
+.motion-guide-intro { margin: 0 0 12px; }
+.motion-connection-details { border-top: 1px solid var(--ui-line, #777); }
+.motion-panel-content .motion-connection-toggle { min-height: 48px; width: 100%; padding: 0; border: 0; display: flex; align-items: center; cursor: pointer; font-size: 13px; text-align: left; }
+.motion-connection-toggle::before { content: "+"; margin-right: 10px; color: var(--ui-accent-text); }
+.motion-connection-toggle[aria-expanded="true"]::before { content: "−"; }
+.motion-connection-details p { font-size: 13px; }

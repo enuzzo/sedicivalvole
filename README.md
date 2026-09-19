@@ -67,7 +67,7 @@ Public development repository: [github.com/enuzzo/sedicivalvole](https://github.
 
 ## Experimental phone motion
 
-The top-bar phone icon automatically prepares QR pairing and opens a three-step SVG guide. iPhone Safari
+The top-bar phone icon automatically prepares QR pairing and opens a concise three-step guide with two-color SVGs. iPhone Safari
 provides live XYZ acceleration/gyro and an opaque TRACE cube with a three-second
 trail and phone orientation indicator. One-tap ZERO / recalibrate sits below the
 graph and captures after half a second of steady readings, within eight seconds.

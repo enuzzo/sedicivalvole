@@ -6,8 +6,17 @@ export function MotionIcon() {
 }
 
 function Guide({ step }) {
-  return <svg viewBox="0 0 140 76" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-    {step === 1 ? <><rect x="18" y="17" width="67" height="42" rx="4"/><path d="M28 27h14v14H28zM50 27h14v14H50zM28 46h8m8 0h20"/><rect x="97" y="7" width="25" height="60" rx="5"/><path d="M88 36h7m-5-4 5 4-5 4"/></> : step === 2 ? <><path d="M18 56h100M28 46l44-25 44 25-44 25z"/><rect x="52" y="22" width="32" height="27" rx="3" transform="rotate(-30 68 35)"/><path d="M68 8v8m-5-4 5 4 5-4M120 26v20m-5-5 5 5 5-5"/></> : <><path d="M70 9v58M24 38h92M40 61l60-45"/><circle cx="70" cy="38" r="15"/><path d="m64 38 4 4 9-10"/></>}
+  return <svg viewBox="0 0 140 76" fill="none" stroke="var(--ui-text)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    {step === 1 ? <>
+      <rect x="12" y="16" width="62" height="44" rx="3"/><path d="M22 26h12v12H22zM45 26h12v12H45zM22 47h12m11 0h12"/>
+      <g stroke="var(--ui-accent-text)"><rect x="99" y="7" width="27" height="62" rx="4"/><path d="M109 61h7M89 24l-9 14 9 14M108 25h9v19h-9z"/></g>
+    </> : step === 2 ? <>
+      <rect x="38" y="5" width="48" height="66" rx="5"/><path d="M57 63h10"/>
+      <g stroke="var(--ui-accent-text)"><rect x="47" y="17" width="30" height="32" rx="2"/><path d="m53 28 6 6 12-12M47 42h30M104 39l-7 10-7-10m7-16v26"/></g>
+    </> : <>
+      <path d="M19 65h101M60 57l-7 8h36l-7-8"/><rect x="56" y="6" width="30" height="48" rx="4"/>
+      <g stroke="var(--ui-accent-text)"><circle cx="71" cy="30" r="8"/><path d="M71 16v6m0 16v6M57 30h6m16 0h6M109 16v28m-5-5 5 5 5-5"/></g>
+    </>}
   </svg>;
 }
 
@@ -16,24 +25,32 @@ export const motionStateText = (state) => ({ idle: "Ready to pair", preparing: "
 export function MotionPanel({ snapshot, onStart, onStop, onClose }) {
   const [qr, setQr] = useState(null);
   const [qrError, setQrError] = useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(false);
   useEffect(() => {
     let active = true; setQr(null); setQrError(false);
     if (snapshot.qrUrl) void QRCode.toDataURL(snapshot.qrUrl, { width: 280, margin: 4, errorCorrectionLevel: "M", color: { dark: "#000000", light: "#ffffff" } }).then((value) => { if (active) setQr(value); }).catch(() => { if (active) setQrError(true); });
     return () => { active = false; };
   }, [snapshot.qrUrl]);
   return <div className="motion-panel-content">
-    <header><div><small>IPHONE COMPANION · EXPERIMENTAL</small><h2 id="motion-title">A new sense of motion</h2></div><button data-dialog-initial-focus onClick={onClose}>CLOSE</button></header>
-    <p>Let your phone reveal acceleration and rotation. Pair it, place it, then set your zero. GPS still owns road speed; visual steering is a future experiment.</p>
-    <ol className="motion-guide">{[["Scan", "Open the QR in iPhone Safari."], ["Place", "Flat or upright. Keep it steady; hand movement also counts."], ["Zero", "Allow sensors, then tap ZERO to set your reference."]].map(([title, copy], i) => <li key={title}><Guide step={i + 1}/><strong>{i + 1} · {title}</strong><p>{copy}</p></li>)}</ol>
+    <header><div><small>PHONE COMPANION · EXPERIMENTAL</small><h2 id="motion-title">Connect your phone</h2></div><button data-dialog-initial-focus onClick={onClose}>CLOSE</button></header>
+    <p className="motion-guide-intro">Scan here. Enable sensors on your phone. Set ZERO.</p>
+    <ol className="motion-guide">{[["Scan", "Use iPhone Camera."], ["Connect", "ENABLE & CONNECT → Allow."], ["Zero", "Rest the phone. Tap ZERO. Keep still."]].map(([title, copy], i) => <li key={title}><Guide step={i + 1}/><strong>{i + 1} · {title}</strong><p>{copy}</p></li>)}</ol>
     <div className="motion-pairing"><div>
       <strong role="status">{motionStateText(snapshot.state)}</strong>
-      <p>{snapshot.state === "connected" ? "Link open. Check sensor readings and Zero SET below; on iPhone allow sensors and tap ZERO. CLOSE keeps the connection running." : snapshot.state === "stale" ? "Phone data is late. Keep Safari visible and check its sensor message. To reconnect, tap DISCONNECT, then CREATE QR." : snapshot.state === "pairing" ? "Scan once, then tap ENABLE & CONNECT in iPhone Safari. To replace this QR, tap DISCONNECT first." : ["preparing", "connecting"].includes(snapshot.state) ? "Keep both pages visible. Setup stops after 30 seconds if unreachable. DISCONNECT cancels now." : "Tap CREATE QR, then scan the new code. Old phone links cannot reconnect."}</p>
-      <p>Start on the same Wi-Fi with access between devices. Both pages need to stay visible. A shared network can still block the direct connection; there is no relay fallback.</p>
+      <p>{snapshot.state === "connected" ? (snapshot.tared ? "Ready. CLOSE keeps the phone connected." : "Link open. On your phone, enable sensors and set ZERO.") : snapshot.state === "stale" ? "Phone data paused. Keep its page visible and check the sensor message." : snapshot.state === "pairing" ? "Scan the QR with your phone camera." : ["preparing", "connecting"].includes(snapshot.state) ? "Keep both pages visible. DISCONNECT cancels this attempt." : "Tap CREATE QR for a fresh connection."}</p>
+      <p>Same Wi-Fi to start · keep both pages visible.</p>
       <div className="motion-actions"><button onClick={onStart} disabled={["preparing", "pairing", "connecting", "connected", "stale"].includes(snapshot.state)}>CREATE QR</button><button onClick={onStop}>DISCONNECT</button></div>
       {qrError && <p role="alert">QR could not be displayed. Tap DISCONNECT, then CREATE QR to retry.</p>}
-      <p className="motion-meta">QR expires in 3 minutes and joins one phone. Session ends on hiding, disconnect or after one hour. Connection and sensor-quality summaries appear in REPORT; sensor streams and pairing keys do not.</p>
+      <p className="motion-meta">One phone · QR expires in 3 minutes</p>
     </div>{qr ? <img className="motion-qr" src={qr} alt="Scan to pair this session with your iPhone"/> : <div className="motion-qr-placeholder"><MotionIcon/><span>{snapshot.state === "connected" ? "PAIRED" : "PHONE MOTION"}</span></div>}</div>
     <MotionQuality summary={snapshot}/>
+    <div className="motion-connection-details"><button className="motion-connection-toggle" aria-expanded={detailsOpen} aria-controls="motion-connection-details-content" onClick={() => setDetailsOpen(open => !open)}>Connection details</button>
+      <div id="motion-connection-details-content" hidden={!detailsOpen}>
+      <p>Both devices need a direct network path; Wi-Fi can block traffic between devices. There is no relay fallback. Setup ends after 30 seconds if unreachable.</p>
+      <p>To replace a pending QR, tap DISCONNECT, then CREATE QR. Hiding either page, disconnecting or reaching one hour ends the session; scan a new QR to reconnect. CLOSE only closes this panel.</p>
+      <p>GPS/Demo still supplies speed. Phone motion does not steer visuals yet. REPORT includes connection and sensor-quality summaries, never sensor streams or pairing keys.</p>
+      </div>
+    </div>
   </div>;
 }
 

@@ -496,3 +496,16 @@ pairing/transport; it does not start a session merely by loading the main app.
 The owner has been offered three guidance directions (three gestures, two
 screens, one step at a time). Selection is pending; this functional correction
 retains the previously selected three-SVG layout.
+
+
+## Scoped SVG/copy refinement — September 19, 2026
+
+The earlier three-direction question was broader than required for the owner's
+explicit request. The selected companion already has a three-SVG guide; its
+refinement is authorized by the existing design contract and needs no further
+selection. Retain that structure with Scan / Connect / Zero, original SVG paths
+in semantic text/accent colors, and shorter actionable copy. Network limitations,
+privacy, expiration/recovery and GPS ownership remain available behind the
+keyboard-accessible Connection details button. No new visual direction or TRACE
+redesign is introduced. The three alternative arrangements are optional ideas,
+not a blocking owner decision or required next task.
