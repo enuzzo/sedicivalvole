@@ -1,3 +1,4 @@
+import { waitForMotionIce } from "./ice-gathering.js";
 import { safeMotionSummary } from "./telemetry.js";
 import { vectorValid } from "./reference.js";
 import { safeMotionPresentation, safeReceiverContext, DEFAULT_MOTION_PRESENTATION } from "./presentation.js";
@@ -138,13 +139,7 @@ export function createMotionPeer({ role, host = window, now = () => performance.
     if (closed) throw new Error("closed");
     await pc.setLocalDescription(type === "offer" ? await pc.createOffer() : await pc.createAnswer());
     if (closed) throw new Error("closed");
-    if (pc.iceGatheringState !== "complete") await new Promise((resolve, reject) => {
-      const cancel = () => finish(new Error("closed"));
-      const changed = () => { if (pc.iceGatheringState === "complete") finish(); };
-      const finish = (error) => { clearTimeout(timer); pc.removeEventListener("icegatheringstatechange", changed); cleanups.delete(cancel); if (error) reject(error); else resolve(); };
-      const timer = setTimeout(() => finish(new Error("ice_timeout")), 10000);
-      cleanups.add(cancel); pc.addEventListener("icegatheringstatechange", changed);
-    });
+    await waitForMotionIce(pc, { cleanups, onEvidence: detail => onEvent("ice", detail) });
     if (closed) throw new Error("closed");
     return pc.localDescription.sdp;
   }

@@ -1335,3 +1335,34 @@ test("catalog failures remain visible without a partial playable state", async (
   assert.equal(result.current, null);
   assert.equal(result.media, null);
 });
+
+test('deferred START preserves playback intent through catalogue failure and retry', async () => {
+  let calls = 0;
+  const controller = createSoundtrackPreviewController({
+    mediaFactory: () => new FakeMedia(),
+    fetchImpl: async () => { if (calls++ === 0) throw Error('temporary offline'); return catalogFetch(); },
+  });
+  try {
+    const pending = controller.load();
+    controller.requestPlayback();
+    assert.equal((await pending).status, 'error');
+    assert.equal(controller.getSnapshot().playbackWanted, true);
+    assert.equal((await controller.retry()).status, 'playing');
+    controller.pause();
+    assert.equal((await controller.retry()).status, 'paused');
+  } finally { controller.destroy(); }
+});
+
+test('deferred START resumes a prepared queue without fetching a replacement', async () => {
+  let calls = 0;
+  const controller = createSoundtrackPreviewController({
+    mediaFactory: () => new FakeMedia(), fetchImpl: async () => { calls++; return catalogFetch(); },
+  });
+  try {
+    await controller.load(); controller.requestPlayback();
+    const key = controller.getSnapshot().current.key;
+    assert.equal((await controller.retry()).status, 'playing');
+    assert.equal(controller.getSnapshot().current.key, key);
+    assert.equal(calls, 1);
+  } finally { controller.destroy(); }
+});

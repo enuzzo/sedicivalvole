@@ -589,6 +589,15 @@ Air Atlas now refreshes traffic for the visible map area on zoom and pan, with m
 
 Intro now includes actual previews for all Visual choices, ten genre-labelled presets, a compact preset shuffle button and 5 px breathing room above media actions. Capture provenance: `docs/INTRO-PREVIEW-CAPTURES-2026-09-10.md`.
 
+### September 19 road refinement
+
+Music and Engine now keep independent mute preferences. The Engine instrument groups
+RPM, instantaneous speed and gear; contextual map/visual controls occupy resting
+chrome space, and outside taps dismiss detail drawers. Motion offers local TRACE
+on capable devices plus explicit phone pairing, with clearer ICE/QR failures.
+Intro and diagnostics expose a scoped app-cache reset. See the
+[implementation and acceptance record](docs/ROAD-REFINEMENT-2026-09-19.md).
+
 <!-- COMMUNITY-CREDITS:START -->
 ## Community thanks — 2026-09-05
 

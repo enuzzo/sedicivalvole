@@ -1,3 +1,4 @@
+import { useOutsideDismiss } from "./ui/use-outside-dismiss.js";
 import { RailIcon } from "./rail-icon.jsx";
 import { useEffect, useRef } from "react";
 
@@ -19,29 +20,27 @@ export function AppearanceControl({
   onChange,
 }) {
   const containerRef = useRef(null);
+  useOutsideDismiss(containerRef, open, () => onOpenChange(false));
   const triggerRef = useRef(null);
   const optionRefs = useRef([]);
   const activeOption = appearanceOption(mode);
 
   useEffect(() => {
     if (!open) return undefined;
-    const closeOnOutsidePointer = (event) => {
-      if (!containerRef.current?.contains(event.target)) onOpenChange(false);
-    };
     const closeOnEscape = (event) => {
       if (event.key !== "Escape") return;
       event.preventDefault();
       onOpenChange(false);
       triggerRef.current?.focus({ preventScroll: true });
     };
-    document.addEventListener("pointerdown", closeOnOutsidePointer, true);
+
     window.addEventListener("keydown", closeOnEscape);
     const focusFrame = window.requestAnimationFrame(() => {
       optionRefs.current[APPEARANCE_OPTIONS.indexOf(activeOption)]?.focus({ preventScroll: true });
     });
     return () => {
       window.cancelAnimationFrame(focusFrame);
-      document.removeEventListener("pointerdown", closeOnOutsidePointer, true);
+
       window.removeEventListener("keydown", closeOnEscape);
     };
   }, [activeOption, onOpenChange, open]);

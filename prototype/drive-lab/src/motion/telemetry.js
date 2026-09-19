@@ -1,14 +1,15 @@
 // Strict aggregate allowlist: never admit sensor vectors, signaling or bearer tokens.
 export const MOTION_STATES = ["idle", "preparing", "pairing", "connecting", "connected", "stale", "closed", "expired", "unavailable", "error", "suspended"];
 export const SENSOR_STATES = ["idle", "requesting", "granted", "denied", "unavailable", "waiting", "live", "incomplete", "stale", "suspended", "error", "stopped"];
-const numericKeys = ["received", "sent", "rejected", "expiredRequests", "backpressureDrops", "sendErrors", "rttMs", "rttMaxMs", "ageUpperMs", "cadenceHz", "jitterMs", "tareCount", "reconnects", "motionEvents", "orientationEvents", "missingAxes", "visibilityStops", "accelerationPeak", "angularRatePeak", "signalingStatus", "signalingRequests", "signalingErrors", "connectMs", "wakeRequests", "wakeReleases", "wakeFailures", "traceFps", "tracePoints", "traceRange", "traceContextLosses"];
-const booleanKeys = ["accelerometer", "gyroscope", "orientation", "orientationEstimated", "tared", "secureContext", "rtc", "wakeLock", "supportsUiContext", "receiverConfirmed", "referenceReceived"];
-const eventTypes = new Set(["start", "offer-ready", "phone-joined", "channel-open", "permission", "tare", "retare-required", "stale", "recovered", "stop", "hidden", "expired", "error", "wake", "trace"]);
+const numericKeys = ["iceCandidates", "received", "sent", "rejected", "expiredRequests", "backpressureDrops", "sendErrors", "rttMs", "rttMaxMs", "ageUpperMs", "cadenceHz", "jitterMs", "tareCount", "reconnects", "motionEvents", "orientationEvents", "missingAxes", "visibilityStops", "accelerationPeak", "angularRatePeak", "signalingStatus", "signalingRequests", "signalingErrors", "connectMs", "wakeRequests", "wakeReleases", "wakeFailures", "traceFps", "tracePoints", "traceRange", "traceContextLosses"];
+const booleanKeys = ["iceComplete", "accelerometer", "gyroscope", "orientation", "orientationEstimated", "tared", "secureContext", "rtc", "wakeLock", "supportsUiContext", "receiverConfirmed", "referenceReceived"];
+const eventTypes = new Set(["ice", "start", "offer-ready", "phone-joined", "channel-open", "permission", "tare", "retare-required", "stale", "recovered", "stop", "hidden", "expired", "error", "wake", "trace"]);
 export function safeMotionSummary(value = {}) {
   const safe = {};
   if (!value || typeof value !== "object" || Array.isArray(value)) return safe;
   for (const key of numericKeys) if (typeof value[key] === "number" && Number.isFinite(value[key]) && value[key] >= 0) safe[key] = Math.round(Math.min(1e9, value[key]) * 10) / 10;
   for (const key of booleanKeys) if (typeof value[key] === "boolean") safe[key] = value[key];
+  if (["ice_no_candidates", "rtc_unavailable", "rtc_setup_failed", "invalid_pairing", "signaling_unavailable"].includes(value.failureReason)) safe.failureReason = value.failureReason;
   if (["idle", "offer", "create", "poll", "join", "answer", "accept", "connected"].includes(value.stage)) safe.stage = value.stage;
   if (["idle", "requesting", "active", "released", "denied", "unsupported", "error"].includes(value.wakeState)) safe.wakeState = value.wakeState;
   if (["webgl2", "unavailable", "context-lost", "error"].includes(value.traceRenderer)) safe.traceRenderer = value.traceRenderer;

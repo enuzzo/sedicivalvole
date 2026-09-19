@@ -137,7 +137,7 @@ test("launch surface stays above every preloaded experience overlay", () => {
 test("local exact-viewport QA can keep the Web Audio graph inaudible", () => {
   const app = read("App.jsx");
   assert.match(app, /const QA_MUTED = import\.meta\.env\.DEV && QA_PARAMS\.get\("qaMute"\) === "1"/);
-  assert.match(app, /const \[muted, setMuted\] = useState\(QA_MUTED \|\| initialPreferences\.muted\)/);
+  assert.match(app, /flux: QA_MUTED \|\| initialPreferences\.muted, engine: QA_MUTED \|\| initialPreferences\.engineMuted === true/);
   assert.match(app, /const launchMuted = QA_MUTED \|\| mutedRef\.current \|\| \(!launchEngine && musicId === "mute"\)/);
   assert.match(app, /audioRef\.current\.setMuted\(launchMuted \|\| musicId === "soundtrack"\)/);
 });

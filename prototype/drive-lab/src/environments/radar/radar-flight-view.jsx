@@ -1,9 +1,11 @@
+import { useContextualControls } from "../../contextual-controls.jsx";
 import {useEffect,useMemo,useRef,useState} from 'react';
 import {atlasMapPixelRatio} from '../atlas/atlas-model.js';
 import {radarFlightAvailability,radarCameraHeight,FLIGHT_CAMERA_PITCH,radarFlightFov,createFlightTerrainStyle} from './radar-flight-model.js';
 
 /** A reconstructed nose camera; the existing radar remains visible as its inset. */
 export default function RadarFlightView({gl,plane,readSample,palette,reducedMotion,onClose,onFrame}){
+  const contextual = useContextualControls();
   const host=useRef(null),mapRef=useRef(null),latest=useRef({plane,readSample,onFrame});
   latest.current={plane,readSample,onFrame};
   const [natural,setNatural]=useState(true),[state,setState]=useState({message:'Loading 3D terrain…',ready:false});
@@ -103,8 +105,8 @@ export default function RadarFlightView({gl,plane,readSample,palette,reducedMoti
     <div className={`flight-terrain${state.ready?' is-ready':''}`} ref={host} aria-label="Reconstructed aircraft terrain view" />
     <div className="flight-view-toolbar">
       <button onClick={onClose}>← RADAR</button>
-      <button aria-label="Use natural terrain colors" aria-pressed={natural} onClick={()=>setNatural(v=>!v)}>{natural?'NATURAL':'PALETTE'}</button>
-      <div className="flight-zoom-controls" aria-label="Flight camera zoom">
+      <button {...contextual} aria-label="Use natural terrain colors" aria-pressed={natural} onClick={()=>setNatural(v=>!v)}>{natural?'NATURAL':'PALETTE'}</button>
+      <div {...contextual} className="flight-zoom-controls" aria-label="Flight camera zoom">
         <button aria-label="Zoom in flight view" disabled={zoom>=1} onClick={()=>setZoom(value=>Math.min(1,value+0.5))}>+</button>
         <button aria-label="Reset flight view" onClick={()=>setZoom(0)}>RESET</button>
         <button aria-label="Zoom out flight view" disabled={zoom<=-1} onClick={()=>setZoom(value=>Math.max(-1,value-0.5))}>−</button>

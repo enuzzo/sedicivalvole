@@ -1,0 +1,54 @@
+// Local development browser QA with synthetic catalogue, radar and pairing fixtures.
+// Set PLAYWRIGHT_MODULE to an installed Playwright module; QA_URL selects the dev server.
+const {chromium}=require(process.env.PLAYWRIGHT_MODULE || 'playwright');
+const assert=require('assert/strict'),fs=require('fs');
+const out='/tmp/sv-road-qa';fs.mkdirSync(out,{recursive:true});
+const checks=[],errors=[];const ok=x=>{checks.push(x);console.log('PASS',x)};
+const wav=(()=>{const n=48000*35,b=Buffer.alloc(44+n*2);b.write('RIFF');b.writeUInt32LE(b.length-8,4);b.write('WAVEfmt ',8);b.writeUInt32LE(16,16);b.writeUInt16LE(1,20);b.writeUInt16LE(1,22);b.writeUInt32LE(48000,24);b.writeUInt32LE(96000,28);b.writeUInt16LE(2,32);b.writeUInt16LE(16,34);b.write('data',36);b.writeUInt32LE(n*2,40);for(let i=0;i<n;i++)b.writeInt16LE(Math.round(Math.sin(i/48000*Math.PI*440)*1800),44+i*2);return b;})();
+(async()=>{
+const browser=await chromium.launch({channel:'chrome',headless:true});
+const context=await browser.newContext({viewport:{width:773,height:601},geolocation:{latitude:45.4642,longitude:9.19,accuracy:10},permissions:['geolocation']});
+await context.addInitScript(()=>localStorage.setItem('sedicivalvole.diagnostics.v1',JSON.stringify({mode:'dev',automatic:false})));
+await context.route('**/api/*diagnostic*',r=>r.fulfill({status:200,body:'{"ok":true}'}));
+await context.route('**/api/soundtrack-catalog.php*',r=>r.fulfill({json:{schema:'sedicivalvole.soundtrack-catalog-api.v1',fetchedAt:new Date().toISOString(),tracks:[1,2,3,4].map(id=>({id:String(id),name:`Fixture ${id}`,artist_id:`artist-${id}`,artist_name:'QA artist',album_name:'QA album',license_ccurl:'https://creativecommons.org/licenses/by-nc-sa/4.0/',audio:`https://prod-1.storage.jamendo.com/?trackid=${id}&format=mp32`,shareurl:`https://www.jamendo.com/track/${id}`,musicinfo:{tags:{genres:['electronic']}}}))}}));
+await context.route('**/api/soundtrack-audio.php*',r=>r.fulfill({contentType:'audio/wav',body:wav}));
+await context.route('**/api/radar-data.php*',r=>r.fulfill({json:{now:Date.now(),ac:[{hex:'abc123',lat:45.48,lon:9.21,seen_pos:0,seen:0,flight:'QA123',t:'A320',category:'A3',alt_baro:12000,gs:240,track:90}]}}));
+await context.route('**/api/motion-pair.php',r=>{const data=r.request().postDataJSON();return r.fulfill({json:data.action==='create'?{id:'1'.repeat(32),token:'2'.repeat(64),join:'3'.repeat(64)}:{status:'waiting'}})});
+const page=await context.newPage();page.setDefaultTimeout(15000);console.log('browser ready');page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.text().startsWith('QA OUTSIDE'))console.log(m.text())});
+await page.goto(`${process.env.QA_URL || 'http://127.0.0.1:5175'}/?qaSpeed=42&qaAtlasDemo=1`);await page.waitForTimeout(3900);
+await page.screenshot({path:out+'/intro.png'});
+console.log('starting music');await page.getByRole('button',{name:/START MUSIC/}).click();console.log('started');await page.waitForTimeout(2300);
+const wake=async()=>{await page.mouse.click(650,250);await page.waitForTimeout(220)};
+await wake();console.log('mute',await page.locator('.stop-button').getAttribute('aria-label'));await page.getByRole('button',{name:'Mute music',exact:true}).click();console.log('muted');
+assert.equal(await page.getByRole('button',{name:'Unmute music',exact:true}).count(),1);
+await wake();await page.locator('.mode-selector').getByRole('button',{name:/Engine/i}).click();await page.waitForTimeout(1600);
+assert.equal(await page.getByRole('button',{name:'Mute Engine',exact:true}).count(),1);assert.equal(await page.locator('.source-readout').count(),0);
+await page.screenshot({path:out+'/engine.png'});ok('Music mute does not mute Engine; speed is integrated once');
+await wake();await page.getByRole('button',{name:'Mute Engine',exact:true}).click();await wake();
+await page.locator('.mode-selector').getByRole('button',{name:/Music/i}).click();assert.equal(await page.getByRole('button',{name:'Unmute music',exact:true}).count(),1);
+await page.locator('.mode-selector').getByRole('button',{name:/Engine/i}).click();assert.equal(await page.getByRole('button',{name:'Unmute Engine',exact:true}).count(),1);ok('Repeated switches preserve independent explicit mute states');
+await page.locator('.mode-selector').getByRole('button',{name:/Music/i}).click();
+async function visual(name){await wake();await page.locator('.environment-control').click();await page.locator('.environment-drawer .score-entry').filter({has:page.locator('strong',{hasText:new RegExp(`^${name}$`,'i')})}).click();await page.waitForTimeout(1300);}
+await visual('Atlas');await page.waitForTimeout(2500);
+assert.equal(await page.locator('.atlas-camera-controls').getAttribute('inert'),null);
+let rect=await page.locator('.atlas-camera-controls').boundingBox();assert.ok(rect.y<20,JSON.stringify(rect));
+await page.screenshot({path:out+'/atlas-resting.png'});
+await page.getByRole('button',{name:'Zoom in',exact:true}).click();assert.ok((await page.locator('main.app').getAttribute('class')).includes('controls-resting'));ok('Atlas controls use the free top bar and do not wake chrome');
+await wake();assert.equal(await page.locator('.atlas-camera-controls').getAttribute('inert'),'');await page.screenshot({path:out+'/atlas-awake.png'});
+await page.keyboard.press('Escape');await page.waitForTimeout(350);
+await page.mouse.move(400,350);await page.mouse.down();await page.mouse.move(480,380,{steps:8});await page.mouse.up();
+assert.ok((await page.locator('main.app').getAttribute('class')).includes('controls-resting'));ok('Map drag does not wake chrome; central tap hides and inerts contextual buttons');
+await visual('Air Atlas');await page.waitForTimeout(3000);
+await page.screenshot({path:out+'/radar-resting.png'});
+assert.equal(await page.locator('.air-atlas-toolbar').getAttribute('inert'),null);
+await page.getByRole('button',{name:/1 AIRCRAFT/}).click();await page.locator('#air-atlas-list button').first().click();
+assert.equal(await page.locator('.air-atlas-detail').count(),1);await page.screenshot({path:out+'/radar-detail.png'});
+await page.mouse.click(600,180);assert.equal(await page.locator('.air-atlas-detail').count(),0);ok('Radar detail closes on the radar backdrop without waking global chrome');
+await wake();await page.locator('.appearance-trigger').click();await page.waitForTimeout(200);console.log('menu open',await page.locator('.appearance-menu').count(),await page.locator('main.app').getAttribute('class'));await page.screenshot({path:out+'/appearance-before-outside.png'});const before=await page.locator('.stop-button').getAttribute('aria-pressed');await page.locator('.stop-button').click();
+assert.equal(await page.locator('.appearance-menu').count(),0);assert.equal(await page.locator('.stop-button').getAttribute('aria-pressed'),before);ok('Outside popover tap is consumed and does not toggle underlying mute');
+await wake();await page.locator('.motion-button').click();await page.locator('svg.motion-qr').waitFor({timeout:16000});await page.screenshot({path:out+'/qr.png'});
+assert.equal(await page.locator('svg.motion-qr path').count(),1);ok('Prepared session renders QR as inline SVG without canvas/image decoding');
+await page.getByRole('button',{name:'CLOSE',exact:true}).click();
+assert.deepEqual(errors,[]);ok('No page exceptions in exercised paths');
+fs.writeFileSync(out+'/evidence.json',JSON.stringify({checks,errors},null,2));await browser.close();
+})().catch(e=>{console.error(e);process.exit(1)});

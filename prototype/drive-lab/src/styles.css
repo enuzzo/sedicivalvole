@@ -4830,3 +4830,48 @@ html { font-size: var(--font-size-floor); }
 .air-atlas-home.is-stale {background:#92a4ae;border-color:#415c6d;}
 .air-atlas-status .air-atlas-map-retry {height:32px;min-width:0;margin-right:8px;font-size:13px;}
 @media(max-width:620px){.environment-drawer .score-list{grid-template-columns:1fr;}.air-atlas-refresh span{display:none;}.air-atlas-toolbar{flex-wrap:wrap;}.air-atlas-status{top:calc(var(--radar-top) + 114px);}}
+
+/* Shared field controls occupy the retracted chrome footprint. */
+[data-contextual-controls] { transition: opacity 160ms ease, transform 180ms ease; }
+[data-contextual-controls][inert] { opacity:0; visibility:hidden; pointer-events:none !important; transform:translateY(-10px); }
+[data-contextual-controls][inert] * { pointer-events:none !important; }
+.app[data-environment="atlas"].controls-resting .atlas-framing { top:8px; max-width:218px; }
+.app[data-environment="atlas"].controls-resting .atlas-camera-controls { top:8px; }
+.app.controls-resting .air-atlas-toolbar { top:8px; }
+.app.controls-resting .air-atlas-controls { margin-left:auto; }
+.app.controls-resting .air-atlas-toolbar > button { max-width:104px; }
+.air-atlas-dismiss { position:absolute; inset:0; width:100%; height:100%; padding:0; border:0; background:transparent; z-index:4; cursor:pointer; }
+.air-atlas-detail { z-index:5; }
+.air-atlas-list { z-index:5; }
+.cache-reset-control { display:flex; flex-wrap:wrap; align-items:center; gap:8px; }
+.cache-reset-control button { min-height:48px; padding:8px 12px; border:1px solid var(--ui-line); border-radius:6px; background:var(--ui-surface); color:var(--ui-text); font:600 13px var(--font-ui); }
+.cache-reset-control small { font-size:13px; color:var(--ui-muted); max-width:250px; }
+.intro-cache-reset { position:absolute; z-index:6; right:16px; top:12px; justify-content:flex-end; max-width:300px; }
+.intro-cache-reset small { text-align:right; }
+.local-motion-trace { height:260px; position:relative; }
+.local-sensors-panel { max-width:760px; }
+.local-sensors-panel p { font-size:15px; line-height:1.5; }
+.motion-local-choice { margin:0 24px 24px; min-height:48px; }
+@media(max-width:620px) {
+  .app[data-environment="atlas"].controls-resting .atlas-camera-controls { top:72px; }
+  .app.controls-resting .air-atlas-controls { width:100%; justify-content:flex-end; }
+  .intro-cache-reset { top:64px; right:12px; max-width:210px; }
+  .intro-cache-reset small { display:none; }
+}
+@media(prefers-reduced-motion:reduce) { [data-contextual-controls] { transition:none; } }
+
+.app.controls-resting:not(.modal-open) .visual-cycle-control { opacity:1; visibility:visible; pointer-events:auto; transform:none; top:8px; bottom:auto; }
+.app.controls-awake .visual-cycle-control { opacity:0; visibility:hidden; pointer-events:none; }
+
+.intro-cache-reset { left:18px; right:auto; top:10px; justify-content:flex-start; }
+.intro-cache-reset small { display:none; }
+.intro-cache-reset:has(button:nth-of-type(2)) { max-width:480px; background:var(--ui-surface); padding:6px; border-radius:6px; }
+.intro-cache-reset:has(button:nth-of-type(2)) small { display:block; text-align:left; }
+
+.app[data-environment="atlas"].controls-resting .atlas-framing button { min-width:56px; padding:8px; }
+.local-motion-trace .trace-plot { height:100%; aspect-ratio:auto; }
+
+.app.controls-resting .flight-view-toolbar { top:8px; }
+.app.controls-resting .flight-view-toolbar > button:nth-child(2) { margin-right:112px; }
+
+.intro-cache-reset[data-state="error"] small, .intro-cache-reset[data-state="unavailable"] small { display:block; padding:6px; background:var(--ui-surface); color:var(--ui-text); }

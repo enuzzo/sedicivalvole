@@ -1,8 +1,10 @@
+import { useContextualControls } from "../contextual-controls.jsx";
 import { useEffect, useRef } from "react";
 import { ENGINE_CATALOGUE } from "./catalogue.js";
 import "./telemetry-field.css";
 
-export function EngineTelemetry({ state, profileId, onProfile, onRev, onRelease, speed = 0, onFrame }) {
+export function EngineTelemetry({ state, profileId, onProfile, onRev, onRelease, speed = 0, speedSource = "GPS", onSpeedSource, onFrame }) {
+  const contextual = useContextualControls();
   const historyRef = useRef([]);
   const fieldRef = useRef(null);
   useEffect(() => {
@@ -18,6 +20,7 @@ export function EngineTelemetry({ state, profileId, onProfile, onRev, onRelease,
     return () => { release(); window.removeEventListener("blur", release); };
   }, [onRelease]);
   const trace = key => historyRef.current.map((value, index) => `${index * 3},${48 - value[key] * 44}`).join(" ");
+  const speedKnown = speedSource !== "GPS" || ["fresh", "degraded"].includes(state.motion);
   const rpm = state.rpm ?? 1000;
   const rpmPosition = Math.max(0, Math.min(1, rpm / 9000));
   const voice = ENGINE_CATALOGUE.find(item => item.id === profileId)?.label ?? profileId;
@@ -38,17 +41,21 @@ export function EngineTelemetry({ state, profileId, onProfile, onRev, onRelease,
     </div>
     <div className="engine-primary">
       <div><small>VIRTUAL RPM</small><strong>{Math.round(rpm).toLocaleString("en-US")}</strong><span>{state.revving ? "REVVING" : state.idleBlip ? "IDLE BLIP" : state.shift ? state.shift.toUpperCase() : Math.round(speed) === 0 ? state.enabled === false ? "AUDIO PAUSED" : state.trustedStationary ? "IDLE · AUTO BLIPS ON" : state.motion === "lost" ? "IDLE · NO SPEED SIGNAL" : "IDLE · CONFIRMING STOP" : "ENGINE SPEED"}</span></div>
+      <button className="engine-speed-metric" type="button" onClick={onSpeedSource} aria-label={`Speed source ${speedSource}. Tap to switch`}>
+        <small>SPEED · KM/H</small><strong>{speedKnown ? Math.round(speed) : "—"}</strong><span>{speedSource === "GPS" ? speedKnown ? "GPS SPEED" : "AWAITING GPS" : `${speedSource} SPEED`}</span>
+        <svg viewBox="0 0 180 12" preserveAspectRatio="none" aria-hidden="true">{Array.from({ length: 27 }, (_, i) => <line key={i} x1={3 + i * 6.7} x2={3 + i * 6.7} y1={i % 5 ? 5 : 1} y2="11" opacity={speedKnown && i / 26 <= Math.min(1, speed / 130) ? 1 : .2}/>)}</svg>
+      </button>
       <div><small>{state.singleSpeed ? "SHAFT / CONTINUOUS" : `GEAR / ${state.transmissionMode || "AUTO"}`}</small><strong>{state.singleSpeed ? "—" : state.revving ? "N" : state.gear ?? 1}</strong><span>{state.singleSpeed ? "VIRTUAL TURBINE" : state.shiftPhase ? state.shiftPhase.toUpperCase() : "ACOUSTIC GEARBOX"}</span></div>
     </div>
     <div className="engine-graphs">
       <div><small>DRIVE RESPONSE <b>{Math.round((state.drive ?? 0) * 100)}%</b></small><svg viewBox="0 0 300 52" aria-label="Drive response history"><polyline points={trace("drive")} /></svg></div>
       <div><small>DECELERATION <b>{Math.round((state.deceleration ?? 0) * 100)}%</b></small><svg viewBox="0 0 300 52" aria-label="Deceleration history"><polyline points={trace("decel")} /></svg></div>
     </div>
-    <div className="engine-bottom"><div className="engine-profiles" aria-label="Engine profile">
+    <div className="engine-bottom"><div {...contextual} onPointerDown={event => event.stopPropagation()} className="engine-profiles" aria-label="Engine profile">
       {ENGINE_CATALOGUE.map(({ id, label, description }) => <button key={id} type="button" title={description} aria-pressed={profileId === id} onClick={() => onProfile(id)}>{label}</button>)}
-    </div><span>{Math.round(speed)} KM/H · {state.motion === "fresh" ? "LIVE MOTION" : state.motion === "degraded" ? "SIGNAL AGING" : "AWAITING MOTION"}</span></div>
+    </div><span>{state.motion === "fresh" ? "LIVE MOTION" : state.motion === "degraded" ? "SIGNAL AGING" : "AWAITING MOTION"}</span></div>
     {Math.round(speed) === 0 ? ["left", "right"].map(side => <button key={side} className={`engine-rev is-${side}`} type="button" aria-label={`TAMARRO ${side}`} disabled={!state.canRev}
-      aria-pressed={Boolean(state.revving)}
+      onPointerDown={event => event.stopPropagation()} aria-pressed={Boolean(state.revving)}
       onClick={() => state.revving ? onRelease?.() : onRev?.()}><strong><span className="engine-rev-emoji" aria-hidden="true">🤘</span>TAMARRO</strong><small>{state.canRev ? state.revving ? "SHOW-OFF · STOP" : "SHOW-OFF" : state.enabled === false ? "AUDIO PAUSED" : "PREPARING AUDIO"}</small></button>) : null}
     {state.status === "loading" || state.status === "retrying" || state.status === "error" ? <div className="engine-load-state" role="status" aria-live="polite" aria-atomic="true">
       <strong>{state.status === "error" ? "ENGINE UNAVAILABLE" : `LOADING ${(ENGINE_CATALOGUE.find(item => item.id === profileId)?.label ?? profileId).toUpperCase()}…`}</strong>

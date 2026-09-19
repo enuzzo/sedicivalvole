@@ -4,7 +4,7 @@ Consult the section whose ownership the task changes. UI-only geometry does not 
 
 ## Energy and mode boundary
 
-Engine and Flux are equal, always-selectable primary modes. Music is Flux's public name; keep the active mode identifiable and switching reachable from both. Flux is authored adaptive music with generative fields; Engine has its own engine models and instrument visual. They share normalized speed, diagnostics, audio unlock, master Stop/Mute, safety and accessibility ownership. Never imply real RPM, throttle, gear or CAN access without evidence.
+Engine and Flux are equal, always-selectable primary modes. Music is Flux's public name; keep the active mode identifiable and switching reachable from both. Flux is authored adaptive music with generative fields; Engine has its own engine models and instrument visual. They share normalized speed, diagnostics, audio unlock, active-mode Stop/Mute, safety and accessibility ownership. Music and Engine retain independent explicit mute preferences; switching modes applies the destination preference. Never imply real RPM, throttle, gear or CAN access without evidence.
 
 GPS and Demo feed the same normalized speed signal. Normalize **visual and musical** energy against the fixed `130 km/h` legal-road ceiling, with the Aperture tunnel already clearly visible near `40 km/h`. The user-adjustable threshold is retired; its former slot serves truthful visual/score selection. Do not label unimplemented genres active. Engine's acoustic road response uses the same 130 ceiling, but explicit neutral TAMARRO is exempt from the road cap. Soundtrack recordings remain fixed at 1x; this energy mapping does not automate their pace.
 
@@ -87,3 +87,7 @@ are excluded from diagnostics; only allowlisted boolean readiness summaries ente
 reports. A phone with an older receiver can sense locally but cannot claim mutual
 confirmation. Sensor retries preserve the current pairing; CREATE QR explicitly
 replaces a stale session instead of silently reusing admission.
+
+## September 19 road recovery
+
+[Road refinement](../ROAD-REFINEMENT-2026-09-19.md) adds explicit static-cache reset in Intro and diagnostics, preserving preferences and pairing. This owner action may purge app generations; automatic cache eviction retains the ordinary open-client rules. Local TRACE reuses the phone sensor owner, preferring permission-capable touch input or trusted complete motion evidence without UA/screen-size identification. Capability or permission is never live evidence; remote QR remains explicitly available. ICE gathering can accept candidate-bearing SDP at its bounded deadline; empty offers fail visibly before QR. No new sensor/audio coupling or external ICE service is authorized.

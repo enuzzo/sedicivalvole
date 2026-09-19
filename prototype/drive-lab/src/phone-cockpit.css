@@ -90,3 +90,16 @@
 .app[data-phone-layout="landscape"] .palette-trigger { height: calc(56px + var(--phone-bottom)); min-height: calc(56px + var(--phone-bottom)); }
 .app[data-phone-layout="landscape"] .control-slab > :is(button,.environment-control,.score-control),
 .app[data-phone-layout="landscape"] .palette-trigger { padding-bottom: var(--phone-bottom); }
+
+/* Keep the RPM crest inside its actual box on short landscape screens. */
+.app[data-phone-layout="landscape"] .engine-telemetry { justify-content:flex-start; padding-top:calc(64px + var(--phone-top)); padding-bottom:calc(76px + var(--phone-bottom)); }
+.app[data-phone-layout="landscape"] .engine-tach { height:38px; padding:0; }
+.app[data-phone-layout="landscape"] .engine-rpm-wave { height:36px; }
+.app[data-phone-layout="landscape"] .engine-primary strong { font-size:48px; }
+.app[data-phone-layout="landscape"] .engine-primary .engine-speed-metric strong { font-size:58px; }
+.app[data-phone-layout="landscape"] .engine-primary { gap:16px; }
+.app[data-phone-layout="landscape"] .engine-graphs svg { height:24px; }
+.app[data-phone-layout="landscape"] .engine-bottom { min-height:20px; justify-content:flex-end; }
+.app[data-phone-layout="landscape"] .engine-bottom .engine-profiles { position:absolute; bottom:12px; left:50%; transform:translateX(-50%); }
+.app[data-phone-layout="landscape"].controls-resting .engine-telemetry { padding-top:calc(12px + var(--phone-top)); }
+.app[data-phone-layout="landscape"] .engine-telemetry:has(.engine-rev) { padding-bottom:calc(148px + var(--phone-bottom)); }

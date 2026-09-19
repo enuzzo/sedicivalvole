@@ -1,3 +1,4 @@
+import { useOutsideDismiss } from "../../ui/use-outside-dismiss.js";
 import { normalizeOsmPlaces, combineAtlasPlaces, nearbyOsmUrl, normalizeNearbyOsm } from './osm-places.js';
 import { createPlaceLoader } from './place-loader.js';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -13,6 +14,8 @@ export default function AtlasPlaces({ map, position, onReadMore, demo = false })
   const [nearbyPlaces, setNearbyPlaces] = useState([]);
   const [osmStatus, setOsmStatus] = useState('loading');
   const [selected, setSelected] = useState(null);
+  const cardRef = useRef(null);
+  useOutsideDismiss(cardRef, Boolean(selected), () => setSelected(null));
   const markerNodes = useRef(new Map());
   const mapPlaces = useMemo(() => combineAtlasPlaces(places, [...nearbyPlaces, ...osmPlaces]).slice(0, 32), [places, nearbyPlaces, osmPlaces]);
   useEffect(() => {
@@ -72,7 +75,7 @@ export default function AtlasPlaces({ map, position, onReadMore, demo = false })
   }, [map, mapPlaces]);
   return <>
     <div onPointerDown={event => event.stopPropagation()} className="atlas-pois" aria-label="Discover places on the map">{mapPlaces.map((p, index) => <button key={p.id} ref={node => { if (node) markerNodes.current.set(p.id, node); else markerNodes.current.delete(p.id); }} className="atlas-poi" style={{ left:0,top:0 }} aria-label={`Discover ${p.title}`} aria-pressed={selected?.id === p.id} onClick={() => setSelected(p)}>{index + 1}</button>)}</div>
-    {selected ? <article onPointerDown={event => event.stopPropagation()} className={`atlas-place-card${selected.thumbnail ? "" : " is-text-only"}`}>
+    {selected ? <article ref={cardRef} onPointerDown={event => event.stopPropagation()} className={`atlas-place-card${selected.thumbnail ? "" : " is-text-only"}`}>
       {selected.thumbnail ? <img src={selected.thumbnail} alt="" onError={event => { event.currentTarget.style.visibility = "hidden"; }} /> : null}
       <div><small>{demo ? "DEMO · " : ""}{selected.source.toUpperCase()} · {formatDiscoverDistance(discoverDistanceMetres(position, selected))}</small><h3>{selected.title}</h3><p>{selected.summary || 'Read the complete Wikipedia article for this place.'}</p>{selected.source === 'OpenStreetMap' ? <div className="atlas-place-links"><a href={selected.googleMapsUrl} target="_blank" rel="noopener noreferrer">Google Maps ↗</a>{selected.wikipediaUrl ? <a href={selected.wikipediaUrl} target="_blank" rel="noopener noreferrer">Wikipedia ↗</a> : null}<a href={selected.mapUrl} target="_blank" rel="noopener noreferrer">OSM ↗</a></div> : <button onClick={() => onReadMore({ ...selected, language })}>Read more</button>}</div>
       <button className="atlas-place-close" onClick={() => setSelected(null)} aria-label="Close place card">Close</button>

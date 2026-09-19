@@ -39,3 +39,7 @@ The September 8 build-0807 listening report supported motion/progression/braking
 The owner selected A/B listening: identical route, two calibrations, locally saved preference and notes. Use the existing protected LAB, one take at a time, original levels, bounded local history/export and the public refined default. Keep dry output and motion/lifecycle contracts. A/B labels and source identifiers must change whenever their parameters change; an old identifier cannot silently describe a new sound. This is not a blind or loudness-matched comparison.
 
 For replay/storage/export changes, read [Listening flow](../ENGINE-LISTENING-LAB-2026-09-08.md#listening-flow); for reproducing its QA, read [Repeating the browser check](../ENGINE-LISTENING-LAB-2026-09-08.md#repeating-the-browser-check). Retained-voice selection above supersedes historical six-voice examples in that report. No auto-mail is authorized for LAB notes; exported notes are owner-shared. Browser signal parity, headless mute and historical counts such as 657 tests or 0.112/0.16 gain checks are not new listening/vehicle acceptance.
+
+## Selected instrument refinement B
+
+The owner delegated [September 19 refinement B](../ROAD-REFINEMENT-2026-09-19.md): RPM / instantaneous speed / gear in one band, preserving the upper RPM crest and adding measurement-driven accents. Hide the duplicate global speed readout in Engine. Voice choices follow complementary chrome visibility; essential TAMARRO remains separate. Engine retains its own mute preference, independent of Music.

@@ -67,6 +67,8 @@ export function createSoundtrackPreviewController({
   let pendingLibraryRotation = null;
   let status = "idle";
   let error = null;
+  let playbackWanted = false;
+  let retryRequest = null;
   let mediaSnapshot = null;
   let transitionState = null;
   let pendingTrack = null;
@@ -178,6 +180,7 @@ export function createSoundtrackPreviewController({
       schema: SOUNDTRACK_PREVIEW_SCHEMA,
       status: destroyed ? "destroyed" : status,
       error,
+      playbackWanted,
       previous: safeCredit(queueState?.slots?.previous),
       current: safeCredit(queueState?.slots?.current),
       next: safeCredit(queueState?.slots?.next),
@@ -459,6 +462,7 @@ export function createSoundtrackPreviewController({
       pendingTrack = null;
     };
     const targetKey = nextQueueState?.slots?.current?.key;
+    retryRequest = () => select(targetKey);
     pendingTrack = Object.freeze({
       direction: typeof restartTarget === "string" ? restartTarget : "change",
       track: safeCredit(nextQueueState?.slots?.current),
@@ -575,6 +579,8 @@ export function createSoundtrackPreviewController({
     if (destroyed) return snapshot();
     preparedCurrentPromise = null;
     const revision = nextTransportRevision();
+    playbackWanted = autoplay;
+    retryRequest = () => load({ selection, autoplay: playbackWanted, nowMs: Date.now() });
     const normalizedSelection = normalizeSoundtrackSelection(selection);
     pendingLibraryRotation = rotateSoundtrackEntries([], { selection: normalizedSelection, nowMs });
     status = "loading";
@@ -641,6 +647,7 @@ export function createSoundtrackPreviewController({
   };
 
   const select = async (key) => {
+    playbackWanted = true; retryRequest = () => select(key);
     if (destroyed || !catalogResult || !queueState) return snapshot();
     preparedCurrentPromise = null;
     const revision = nextTransportRevision();
@@ -663,6 +670,7 @@ export function createSoundtrackPreviewController({
   };
 
   const move = async (direction) => {
+    playbackWanted = true;
     if (destroyed || !catalogResult || !queueState) return snapshot();
     preparedCurrentPromise = null;
     const revision = nextTransportRevision();
@@ -680,6 +688,7 @@ export function createSoundtrackPreviewController({
   };
 
   const pause = () => {
+    playbackWanted = false; retryRequest = null;
     if (destroyed) return snapshot();
     preparedCurrentPromise = null;
     nextTransportRevision();
@@ -697,6 +706,7 @@ export function createSoundtrackPreviewController({
   };
 
   const resume = () => {
+    playbackWanted = true; retryRequest = () => resume();
     if (destroyed || !queueState?.slots?.current) return Promise.resolve(snapshot());
     if (preparedCurrentPromise) return preparedCurrentPromise;
     const currentKey = queueState.slots.current.key;
@@ -729,9 +739,22 @@ export function createSoundtrackPreviewController({
     setVehicleMaster(value) { effects.setVehicleMaster(value); return emit(); },
     setVehicleEffects(values) { effects.setVehicleMacros(values); return emit(); },
     setManualEffects(values) { effects.setManualEffects(values); return emit(); },
+    requestPlayback() { playbackWanted = true; },
     getAudioContext: () => effects.getAudioContext?.() ?? null,
     getLevel: () => effects.getLevel?.() ?? 0,
     destroy,
+    retry: ({ stalled = false } = {}) => {
+      if (!playbackWanted) return Promise.resolve(snapshot());
+      if (status === "prepared") return resume();
+      if (stalled && queueState) {
+        mediaSnapshot = deck.pauseExcept([]);
+        const key = queueState.slots.current?.key;
+        if (key) deck.discardKeys([key]);
+        mediaSnapshot = deck.syncQueue(queueState);
+        return resume();
+      }
+      return retryRequest ? retryRequest() : resume();
+    },
     getSnapshot: snapshot,
   });
 }

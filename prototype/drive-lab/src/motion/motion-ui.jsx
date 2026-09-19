@@ -41,10 +41,21 @@ export function MotionPanel({ snapshot, onStart, onStop, onClose }) {
   const [detailsOpen, setDetailsOpen] = useState(false);
   useEffect(() => {
     let active = true; setQr(null); setQrError(false);
-    if (snapshot.qrUrl) void QRCode.toDataURL(snapshot.qrUrl, { width: 280, margin: 4, errorCorrectionLevel: "M", color: { dark: "#000000", light: "#ffffff" } }).then((value) => { if (active) setQr(value); }).catch(() => { if (active) setQrError(true); });
+    if (snapshot.qrUrl) {
+      try {
+        const { modules } = QRCode.create(snapshot.qrUrl, { errorCorrectionLevel: "M" });
+        const cells = [];
+        for (let y = 0; y < modules.size; y++) for (let x = 0; x < modules.size; x++) {
+          if (modules.data[y * modules.size + x]) cells.push(`M${x + 4} ${y + 4}h1v1h-1z`);
+        }
+        if (active) setQr({ size: modules.size + 8, path: cells.join("") });
+      } catch { if (active) setQrError(true); }
+    }
     return () => { active = false; };
   }, [snapshot.qrUrl]);
-  const guide = receiverOnboarding(snapshot);
+  const guide = snapshot.state === "pairing" && !qr
+    ? { active: 0, ready: false, restart: qrError, title: qrError ? "QR could not be drawn" : "Drawing QR…", hint: qrError ? "Retry to create a new QR." : "The connection is prepared. Please wait." }
+    : receiverOnboarding(snapshot);
   return <div className="motion-panel-content">
     <header><div><small>PHONE COMPANION · EXPERIMENTAL</small><h2 id="motion-title">Connect your phone</h2></div><button data-dialog-initial-focus onClick={onClose}>CLOSE</button></header>
     <div className="motion-benefits"><p>Your phone, a motion sensor.</p><p>Acceleration. Rotation. Live.</p><p>See every move in TRACE.</p></div>
@@ -56,7 +67,7 @@ export function MotionPanel({ snapshot, onStart, onStop, onClose }) {
         {["preparing", "pairing", "connecting", "connected", "stale"].includes(snapshot.state) && <button onClick={onStop}>{guide.ready ? "DISCONNECT" : "CANCEL"}</button>}
       </div>
       {qrError && <p role="alert">QR unavailable. Cancel, then create a new QR.</p>}
-    </div>{qr ? <img className="motion-qr motion-nudge" src={qr} alt="Scan to pair this session with your iPhone"/> : <div className="motion-qr-placeholder" data-ready={guide.ready}><MotionIcon/><span>{guide.ready ? "✓ CONNECTED" : snapshot.state === "preparing" ? "PREPARING QR…" : "PHONE COMPANION"}</span></div>}</div>
+    </div>{qr ? <svg className="motion-qr motion-nudge" viewBox={`0 0 ${qr.size} ${qr.size}`} role="img" aria-label="Scan to pair this session with your phone" shapeRendering="crispEdges"><rect width={qr.size} height={qr.size} fill="#fff"/><path d={qr.path} fill="#000"/></svg> : <div className="motion-qr-placeholder" data-ready={guide.ready}><MotionIcon/><span>{guide.ready ? "✓ CONNECTED" : snapshot.state === "preparing" ? "PREPARING QR…" : "PHONE COMPANION"}</span></div>}</div>
     <div className="motion-connection-details"><button className="motion-connection-toggle" aria-expanded={detailsOpen} aria-controls="motion-connection-details-content" onClick={() => setDetailsOpen(open => !open)}>Connection details</button>
       <div id="motion-connection-details-content" hidden={!detailsOpen}>
       <MotionQuality summary={snapshot}/>

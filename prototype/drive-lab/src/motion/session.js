@@ -9,7 +9,7 @@ export function createMotionSession({ role, host = window, doc = document, fetch
   let state = "idle", generation = 0, polling = null, refresh = null;
   let deadline = 0, previousState = null, previousPhone = null;
   const requests = new Set();
-  let stage = "idle", startedAt = 0;
+  let stage = "idle", startedAt = 0, failureReason = null;
   let attemptedPair = null;
   const signaling = { signalingStatus: 0, signalingRequests: 0, signalingErrors: 0 };
   function event(type, detail = {}) { const safe = safeMotionSummary(detail); telemetry.event(type, safe); onEvent(type, safe); }
@@ -30,7 +30,7 @@ export function createMotionSession({ role, host = window, doc = document, fetch
     finally { clearTimeout(timeout); requests.delete(abort); }
   }
   function notify() {
-    const summary = { ...getPhone().summary, ...peer?.summary(), ...signaling, stage, role, state: ["pairing", "preparing", "error", "suspended", "expired", "closed", "unavailable"].includes(state) ? state : peer?.summary().state ?? state };
+    const summary = { ...getPhone().summary, ...peer?.summary(), ...signaling, stage, failureReason, role, state: ["pairing", "preparing", "error", "suspended", "expired", "closed", "unavailable"].includes(state) ? state : peer?.summary().state ?? state };
     telemetry.update(summary);
     if (previousState !== summary.state) {
       if (summary.state === "stale") event("stale", summary);
@@ -80,7 +80,7 @@ export function createMotionSession({ role, host = window, doc = document, fetch
     if (role === "phone" && attemptedPair && attemptedPair.id === pair?.id && attemptedPair.token === pair?.token) return;
     if (role === "phone") attemptedPair = pair;
     cleanup("preparing");
-    const token = generation; startedAt = now(); stage = "idle";
+    const token = generation; startedAt = now(); stage = "idle"; failureReason = null;
     previousPhone = null; event("start", { role, secureContext: Boolean(host.isSecureContext), rtc: Boolean(host.RTCPeerConnection) }); notify();
     try {
       if (!host.isSecureContext || !host.RTCPeerConnection) { state = "unavailable"; event("error", { state, stage, secureContext: Boolean(host.isSecureContext), rtc: Boolean(host.RTCPeerConnection) }); notify(); return; }
@@ -131,10 +131,13 @@ export function createMotionSession({ role, host = window, doc = document, fetch
         state = peer.summary().state === "connected" ? "connected" : "connecting"; event("phone-joined", { state }); notify();
       }
     } catch (error) {
-      if (token === generation) fail(stage === "join" && [403, 410].includes(error?.status) ? "expired" : "error");
+      if (token === generation) {
+        failureReason = ["ice_no_candidates", "rtc_unavailable", "invalid_pairing"].includes(error?.message) ? error.message : stage === "offer" || stage === "answer" ? "rtc_setup_failed" : "signaling_unavailable";
+        fail(stage === "join" && [403, 410].includes(error?.status) ? "expired" : "error");
+      }
     }
   }
-  function fail(next = "error") { const failure = { state: next, stage, ...signaling }; cleanup(next); event("error", failure); notify(); }
+  function fail(next = "error") { const failure = { state: next, stage, failureReason, ...signaling }; cleanup(next); event("error", failure); notify(); }
   const hidden = () => { if (doc.visibilityState !== "visible") stop("suspended"); };
   const pagehide = () => stop("suspended");
   const offline = () => { if (["preparing", "pairing", "connecting", "connected"].includes(state)) fail(); };

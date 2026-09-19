@@ -48,7 +48,7 @@ test("the top rail exposes the selected icon-and-label appearance menu", () => {
   assert.match(control, /aria-haspopup="menu"/);
   assert.match(control, /role="menuitemradio"/);
   assert.match(control, /aria-checked=\{mode === option\.id\}/);
-  assert.match(control, /document\.addEventListener\("pointerdown", closeOnOutsidePointer, true\)/);
+  assert.match(control, /useOutsideDismiss\(containerRef, open, \(\) => onOpenChange\(false\)\)/);
   assert.match(control, /event\.key !== "Escape"/);
   assert.match(control, /ArrowDown: 1/);
   assert.match(control, /ArrowUp: -1/);

@@ -1,3 +1,8 @@
+import { useOutsideDismiss } from "./ui/use-outside-dismiss.js";
+import { createSoundtrackRecovery } from "./soundtrack/recovery.js";
+import { ContextualControlsContext } from "./contextual-controls.jsx";
+import { useLocalSensors, LocalSensorsPanel } from "./motion/local-sensors.jsx";
+import { CacheResetControl } from "./session/cache-reset-control.jsx";
 import {DriveyCycleControl, PrtclCycleControl, ShaderGradientCycleControl} from "./ui/visual-cycle-controls.jsx";
 import {radarDisplayFix} from './environments/radar/radar-location.js';
 import { combineDiscoverPlaces } from "./discover/discover-places.js";
@@ -314,6 +319,7 @@ function readPreferences() {
       manualEffects: normalizeManualEffectPreferences(value?.manualEffects),
       vehicleEffectsEnabled: value?.vehicleEffectsEnabled !== false,
       muted: value?.muted === true,
+      engineMuted: value?.engineMuted === true,
     };
   } catch {
     return {
@@ -509,6 +515,7 @@ function appendNetworkQualitySample(samples, notice, capturedAtMs = performance.
 
 function NetworkControl({ notice, history, open, onOpenChange }) {
   const containerRef = useRef(null);
+  useOutsideDismiss(containerRef, open, () => onOpenChange(false));
   const triggerRef = useRef(null);
   const width = 248;
   const height = 48;
@@ -522,18 +529,15 @@ function NetworkControl({ notice, history, open, onOpenChange }) {
 
   useEffect(() => {
     if (!open) return undefined;
-    const closeOnOutsidePointer = (event) => {
-      if (!containerRef.current?.contains(event.target)) onOpenChange(false);
-    };
     const closeOnEscape = (event) => {
       if (event.key !== "Escape") return;
       onOpenChange(false);
       triggerRef.current?.focus({ preventScroll: true });
     };
-    document.addEventListener("pointerdown", closeOnOutsidePointer, true);
+
     window.addEventListener("keydown", closeOnEscape);
     return () => {
-      document.removeEventListener("pointerdown", closeOnOutsidePointer, true);
+
       window.removeEventListener("keydown", closeOnEscape);
     };
   }, [onOpenChange, open]);
@@ -937,7 +941,7 @@ function DialogSurface({
       data-dismiss-direction={dismissDirection}
       onKeyDown={handleKeyDown}
     >
-      <button className={backdropClass} type="button" tabIndex={-1} onClick={onClose} aria-label="Close" />
+      <button className={backdropClass} type="button" tabIndex={-1} onPointerDown={event => event.stopPropagation()} onClick={event => { event.stopPropagation(); onClose(); }} aria-label="Close" />
       <div
         ref={panelRef}
         className={panelClass}
@@ -1898,7 +1902,7 @@ function ManualEffectsDeck({ values, onChange, onClose }) {
   const activeCount = SOUNDTRACK_MANUAL_CONTROLS.filter(({ id }) => values[id] > 0.01).length;
   return (
     <div className="manual-effects-overlay">
-      <button className="manual-effects-backdrop" type="button" tabIndex={-1} onClick={onClose} aria-label="Close Performance FX" />
+      <button className="manual-effects-backdrop" type="button" tabIndex={-1} onPointerDown={event => event.stopPropagation()} onClick={event => { event.stopPropagation(); onClose(); }} aria-label="Close Performance FX" />
       <section
         id="manual-effects-deck"
         className="manual-effects-deck control-layer"
@@ -1958,17 +1962,18 @@ function ManualEffectsDeck({ values, onChange, onClose }) {
 /** A full-cell palette preview opens ten independently reachable touch targets. */
 function PaletteControl({ themeId, onChange, open, onOpenChange }) {
   const containerRef = useRef(null);
+  useOutsideDismiss(containerRef, open, () => onOpenChange(false));
   const selected = getFluxTheme(themeId);
   useEffect(() => {
     if (!open) return undefined;
     const dismiss = (event) => {
       if (event.type === "keydown" ? event.key === "Escape" : !containerRef.current?.contains(event.target)) onOpenChange(false);
     };
-    document.addEventListener("pointerdown", dismiss, true);
+
     document.addEventListener("keydown", dismiss);
     containerRef.current?.querySelector('[aria-pressed="true"]')?.focus({ preventScroll: true });
     return () => {
-      document.removeEventListener("pointerdown", dismiss, true);
+
       document.removeEventListener("keydown", dismiss);
     };
   }, [open, onOpenChange]);
@@ -2079,9 +2084,12 @@ function SupportPanel({ onClose, reducedMotion }) {
 }
 
 function GpsHelpPopover({ open, status, accuracy, onClose, onRetry, onDemo }) {
+  const ref = useRef(null);
+  useOutsideDismiss(ref, open, onClose);
   if (!open) return null;
   return (
     <aside
+      ref={ref}
       id="gps-help-popover"
       className="gps-help-popover"
       role="dialog"
@@ -2133,7 +2141,16 @@ export function App() {
   const [gpsState, setGpsState] = useState("not tested");
   const [accuracy, setAccuracy] = useState(null);
   const [renderer, setRenderer] = useState("checking…");
-  const [muted, setMuted] = useState(QA_MUTED || initialPreferences.muted);
+  const [modeMutes, setModeMutes] = useState(() => ({ flux: QA_MUTED || initialPreferences.muted, engine: QA_MUTED || initialPreferences.engineMuted === true }));
+  const modeMutesRef = useRef(modeMutes);
+  modeMutesRef.current = modeMutes;
+  const muted = modeMutes[experienceMode];
+  const setMuted = useCallback((value) => {
+    const mode = experienceModeRef.current;
+    const next = typeof value === "function" ? value(modeMutesRef.current[mode]) : value;
+    modeMutesRef.current = { ...modeMutesRef.current, [mode]: Boolean(next) };
+    setModeMutes(modeMutesRef.current);
+  }, []);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [motionOpen, setMotionOpen] = useState(false);
   const [motionSnapshot, setMotionSnapshot] = useState({ state: "idle" });
@@ -2389,6 +2406,11 @@ export function App() {
       detail,
     }, { sample: type === "gps.sample", interaction });
   }, []);
+
+  const logLocalMotion = useCallback((type, detail) => logDiagnosticEvent(`motion.local.${type}`, detail), [logDiagnosticEvent]);
+  const localSensors = useLocalSensors(logLocalMotion);
+  const [motionSourceChoice, setMotionSourceChoice] = useState(null);
+  const showLocalSensors = motionSourceChoice === "local" || motionSourceChoice !== "remote" && localSensors.preferred;
 
   useEffect(() => {
     let lastUiAt = -Infinity;
@@ -2675,16 +2697,17 @@ export function App() {
   }, []);
 
   const toggleMuted = useCallback(async () => {
-    const nextMuted = !muted;
+    const mode = experienceModeRef.current;
+    const nextMuted = !modeMutesRef.current[mode];
+    setMuted(nextMuted);
     if (experienceModeRef.current === "flux" && sessionMusicModeRef.current === "soundtrack") {
       if (nextMuted) soundtrackRef.current?.pause();
       else await soundtrackRef.current?.resume();
     } else if (!nextMuted) {
       await audioRef.current?.resume();
     }
-    setMuted(nextMuted);
     showControlNotice("VOLUME", !nextMuted);
-    logDiagnosticEvent("audio.mute.changed", { muted: nextMuted });
+    logDiagnosticEvent("audio.mute.changed", { mode, muted: nextMuted });
   }, [logDiagnosticEvent, muted, showControlNotice]);
 
   const recordRenderedFrame = useCallback((capturedAtMs, targetFrameMs, frameRenderer, canvasWidth, canvasHeight) => {
@@ -2754,16 +2777,26 @@ export function App() {
     if (vehicleMoving) restControls();
   }, [vehicleMoving, restControls]);
 
+  const surfaceGestureRef = useRef(null);
   const handleSurfacePointerDown = useCallback((event) => {
     controlsHiddenAtPointerDownRef.current = !(controlsAwake || modalOpen);
-    if (!modalOpen && (
-      !(event.target instanceof Element)
-      || !event.target.closest("button, input, textarea, select, [contenteditable='true'], [role='slider']")
-    )) {
-      appRef.current?.focus({ preventScroll: true });
-    }
-    wakeControls();
+    if (event.target.closest?.("[data-contextual-controls], .air-atlas-detail, .air-atlas-list, .air-atlas-dismiss, .atlas-place-card")) return;
+    if (event.target.closest?.("button, a, input, textarea, select, summary, [role='slider']")) { wakeControls(); return; }
+    if (surfaceGestureRef.current) { surfaceGestureRef.current.cancelled = true; return; }
+    surfaceGestureRef.current = { id: event.pointerId, x: event.clientX, y: event.clientY, cancelled: false };
   }, [controlsAwake, modalOpen, wakeControls]);
+  const handleSurfacePointerMove = useCallback(event => {
+    const gesture = surfaceGestureRef.current;
+    if (gesture && (event.pointerId !== gesture.id || Math.hypot(event.clientX - gesture.x, event.clientY - gesture.y) > 8)) gesture.cancelled = true;
+  }, []);
+  const handleSurfacePointerUp = useCallback(event => {
+    const gesture = surfaceGestureRef.current;
+    if (!gesture || gesture.id !== event.pointerId) return;
+    surfaceGestureRef.current = null;
+    if (!gesture.cancelled && Math.hypot(event.clientX - gesture.x, event.clientY - gesture.y) <= 8 && !modalOpen) {
+      appRef.current?.focus({ preventScroll: true }); wakeControls();
+    }
+  }, [modalOpen, wakeControls]);
 
   // The score reports its own arrangement about ten times a second. The full
   // snapshot lives in a ref so the flight recorder can read it without forcing a
@@ -3550,6 +3583,7 @@ export function App() {
     musicModeRevisionRef.current++;
     scoreSelectionRevisionRef.current++;
     experienceModeRef.current = nextMode;
+    mutedRef.current = modeMutesRef.current[nextMode];
     engineMotionRef.current.reset("experience-changed");
     geaps.runtimeRef.current?.setEnabled(false);
     setExperienceMode(nextMode);
@@ -3639,45 +3673,21 @@ export function App() {
     logDiagnosticEvent("music.mode.ready", { musicMode: nextMode });
   }, [logDiagnosticEvent, prepareSoundtrack, soundtrackController]);
 
+  const [soundtrackRecovery, setSoundtrackRecovery] = useState("idle");
   useEffect(() => {
-    const soundtrackStatus = soundtrackSnapshot?.status;
-    if (phase !== "running"
-      || experienceMode !== "flux"
-      || musicMode !== "soundtrack"
-      || muted
-      || !["idle", "error", "prepared"].includes(soundtrackStatus)) return undefined;
-    let cancelled = false;
-    let retrying = false;
-    const retry = async () => {
-      if (cancelled || retrying || document.visibilityState === "hidden") return;
-      if (soundtrackStatus !== "prepared"
-        && (networkNotice.status === "offline" || !navigator.onLine)) return;
-      retrying = true;
-      const controller = soundtrackController();
-      const result = soundtrackStatus === "prepared"
-        ? await controller.resume()
-        : await controller.load({
-          selection: preferredSoundtrackSelectionRef.current,
-          autoplay: true,
-        });
-      retrying = false;
-      if (!cancelled && result?.status === "playing") {
-        setScoreSelection({ status: "ready", requestedScoreId: null, message: null });
-        logDiagnosticEvent("audio.start-recovered", { source: "automatic-network-retry" });
-      }
-    };
-    const timer = soundtrackStatus === "prepared"
-      ? window.setTimeout(() => void retry(), 0)
-      : window.setTimeout(() => void retry(), 8000);
-    window.addEventListener("online", retry);
-    document.addEventListener("visibilitychange", retry);
-    return () => {
-      cancelled = true;
-      window.clearTimeout(timer);
-      window.removeEventListener("online", retry);
-      document.removeEventListener("visibilitychange", retry);
-    };
-  }, [experienceMode, logDiagnosticEvent, musicMode, muted, networkNotice.status, phase, soundtrackController, soundtrackSnapshot?.status]);
+    if (phase !== "running" || experienceMode !== "flux" || musicMode !== "soundtrack" || muted) return;
+    const controller = soundtrackController();
+    const recovery = createSoundtrackRecovery({ onState: setSoundtrackRecovery, retry: async snapshot => {
+      const result = snapshot.status === "idle"
+        ? await controller.load({ selection: preferredSoundtrackSelectionRef.current, autoplay: true })
+        : await controller.retry({ stalled: snapshot.status === "playing" });
+      if (result?.status === "playing") logDiagnosticEvent("audio.start-recovered", { source: "automatic-network-retry" });
+    } });
+    const tick = () => void recovery.tick(controller.getSnapshot(), navigator.onLine !== false && document.visibilityState === "visible");
+    const timer = window.setInterval(tick, 1000);
+    window.addEventListener("online", tick); document.addEventListener("visibilitychange", tick);
+    return () => { recovery.dispose(); window.clearInterval(timer); window.removeEventListener("online", tick); document.removeEventListener("visibilitychange", tick); };
+  }, [experienceMode, logDiagnosticEvent, musicMode, muted, phase, soundtrackController]);
 
   const resetSavedState = useCallback(() => {
     setDiagnosticPreferences({ mode: "dev", automatic: true });
@@ -3715,7 +3725,8 @@ export function App() {
     setAtlasMapAppearance("standard");
     setSoundtrackManualEffects(EMPTY_SOUNDTRACK_MANUAL_EFFECTS);
     setVehicleEffectsEnabled(true);
-    setMuted(QA_MUTED);
+    modeMutesRef.current = { flux: QA_MUTED, engine: QA_MUTED };
+    setModeMutes(modeMutesRef.current);
     if (phase === "running") {
       void switchMusicMode("play-road");
       showControlNotice("SAVED STATE RESET", true);
@@ -4083,7 +4094,7 @@ export function App() {
     ? { title: "Music unavailable", artist: "Choose music to retry", album: "Soundtrack" }
     : { title: "Preparing Soundtrack", artist: "Loading library", album: "Soundtrack" });
   const transportLabel = musicMode === "soundtrack"
-    ? soundtrackSnapshot?.status === "error" ? (networkNotice.status === "offline" ? "OFFLINE" : muted ? "LOAD FAILED" : "RETRYING")
+    ? soundtrackRecovery === "retrying" && soundtrackSnapshot?.status !== "playing" ? "RETRYING" : soundtrackRecovery === "unavailable" ? "TAP PLAY TO RETRY" : soundtrackSnapshot?.status === "error" ? (networkNotice.status === "offline" ? "OFFLINE" : muted ? "LOAD FAILED" : "RETRYING")
       : soundtrackSnapshot?.status === "prepared" && currentTrack ? "READY"
       : ["idle", "loading", "buffering"].includes(soundtrackSnapshot?.status) || !currentTrack ? "LOADING"
         : soundtrackMediaIsPlaying(soundtrackSnapshot) ? "NOW PLAYING" : "PAUSED"
@@ -4620,7 +4631,8 @@ export function App() {
         },
         manualEffects: normalizeManualEffectPreferences(soundtrackManualEffects),
         vehicleEffectsEnabled,
-        muted,
+        muted: modeMutes.flux,
+        engineMuted: modeMutes.engine,
       }));
     } catch {
       // Preference persistence is optional.
@@ -4631,7 +4643,7 @@ export function App() {
     environmentId,
     genreId,
     musicMode,
-    muted,
+    modeMutes,
     prtclSettings,
     soundtrackManualEffects,
     soundtrackSnapshot?.library?.selection?.id,
@@ -5080,7 +5092,7 @@ export function App() {
   }, [environmentId]);
 
   return (
-    <><main
+    <ContextualControlsContext.Provider value={Boolean((controlsAwake || controlsPinned) && !passengerAtlasOpen)}><main
       ref={appRef}
       tabIndex={-1}
       inert={phonePortrait ? true : undefined}
@@ -5095,6 +5107,9 @@ export function App() {
       data-environment={experienceMode === "engine" ? "engine" : environmentId}
       onPointerDownCapture={holdAppearanceDuringPointer}
       onPointerDown={handleSurfacePointerDown}
+      onPointerMove={handleSurfacePointerMove}
+      onPointerUp={handleSurfacePointerUp}
+      onPointerCancel={() => { surfaceGestureRef.current = null; }}
       onClickCapture={handleControlActivation}
       onChangeCapture={handleControlChange}
       onKeyDownCapture={(event) => {
@@ -5110,7 +5125,7 @@ export function App() {
           onError={handleEnvironmentError}
         >
           {statsOpen || passengerAtlasOpen ? null : experienceMode === "engine" ? (
-            <EngineTelemetry state={geaps.snapshot} profileId={engineProfileId} onProfile={chooseEngineProfile} onRev={holdEngineRev} onRelease={releaseEngineRev} speed={speed} onFrame={recordRenderedFrame} />
+            <EngineTelemetry state={geaps.snapshot} profileId={engineProfileId} onProfile={chooseEngineProfile} onRev={holdEngineRev} onRelease={releaseEngineRev} speed={speed} speedSource={source} onSpeedSource={toggleSource} onFrame={recordRenderedFrame} />
           ) : environmentRuntimeError ? (
             <FieldFailure label={environment.label} recovery={environmentRecovery} />
           ) : environment.renderer === "vertigo" ? (
@@ -5251,6 +5266,7 @@ export function App() {
         <button className="intro-diagnostics" type="button" aria-label={`Automatic diagnostics ${diagnosticPreferences.mode === "dev" && diagnosticPreferences.automatic ? "ON. Turn off" : "OFF. Turn on"}`} onClick={() => setDiagnosticPreferences(p => ({ mode: "dev", automatic: !(p.mode === "dev" && p.automatic) }))}>
           <strong>{diagnosticPreferences.mode.toUpperCase()} · AUTO REPORT {diagnosticPreferences.mode === "dev" && diagnosticPreferences.automatic ? "ON" : "OFF"}</strong><small>Coordinate-free · every 15 active min</small>
         </button>
+        <CacheResetControl className="intro-cache-reset"/>
         <small className="intro-build">BUILD {APP_BUILD}</small>
         <SplashSignalGate
           active={phase !== "running"}
@@ -5329,10 +5345,10 @@ export function App() {
             <span className="visually-hidden">GPS</span>
             <small className="visually-hidden">{gpsPresentation.accuracy}</small>
           </button>
-          <button className="motion-button" type="button" aria-label="Connect iPhone motion sensors" aria-haspopup="dialog"
-            data-connected={motionSnapshot.state === "connected"} onClick={() => {
+          <button className="motion-button" type="button" aria-label={showLocalSensors ? "Use this device’s motion sensors" : "Connect phone motion sensors"} aria-haspopup="dialog"
+            data-connected={showLocalSensors ? localSensors.summary.sensorState === "live" : motionSnapshot.state === "connected"} onClick={() => {
               setMotionOpen(true);
-              if (!["preparing", "pairing", "connecting", "connected", "stale"].includes(motionSnapshot.state)) void motionSessionRef.current?.start();
+              if (!showLocalSensors && !["preparing", "pairing", "connecting", "connected", "stale"].includes(motionSnapshot.state)) void motionSessionRef.current?.start();
             }}><MotionIcon/></button>
           <button
             className="discover-button"
@@ -5363,7 +5379,7 @@ export function App() {
           onDemo={runAtlasDemo}
         />
 
-        <button className={`source-readout${musicMode === "soundtrack" ? " is-soundtrack" : ""}`} type="button" onClick={toggleSource} aria-label={`Speed source ${source}. Tap to switch`}>
+        {experienceMode !== "engine" && <button className={`source-readout${musicMode === "soundtrack" ? " is-soundtrack" : ""}`} type="button" onClick={toggleSource} aria-label={`Speed source ${source}. Tap to switch`}>
           <div className="readout-group">
             <strong>{Math.round(speed)}</strong>
             <span className="readout-unit">km/h</span>
@@ -5371,6 +5387,7 @@ export function App() {
           <div className={`effect-badge${experienceMode === "flux" && activeEffect ? " is-active" : ""}`} aria-hidden={experienceMode !== "flux" || !activeEffect}>{experienceMode === "flux" ? activeEffect || "UNDERWATER" : ""}</div>
         </button>
 
+        }
         {controlNotice ? (
           <div className="control-status-notice" role="status" aria-live="polite" aria-atomic="true">
             {controlNotice}
@@ -5410,7 +5427,7 @@ export function App() {
             type="button"
             onClick={toggleMuted}
             aria-pressed={muted}
-            aria-label={muted ? "Unmute audio" : "Mute audio"}
+            aria-label={`${muted ? "Unmute" : "Mute"} ${experienceMode === "engine" ? "Engine" : "music"}`}
           >
             <span>MUTE</span>
             <strong>{muted ? "ON" : "OFF"}</strong>
@@ -5455,7 +5472,7 @@ export function App() {
       </section>
 
       {motionOpen ? <DialogSurface className="diagnostic-drawer motion-dialog" labelledBy="motion-title" onClose={() => setMotionOpen(false)}>
-        <MotionPanel snapshot={motionSnapshot} onStart={() => void motionSessionRef.current?.start()} onStop={() => motionSessionRef.current?.stop()} onClose={() => setMotionOpen(false)}/>
+        {showLocalSensors ? <LocalSensorsPanel sensors={localSensors} gpsState={gpsState} source={source} themeKey={`${themeId}:${appearanceResolution.appearance}`} onClose={() => setMotionOpen(false)} onRemote={() => { localSensors.stop(); setMotionSourceChoice("remote"); void motionSessionRef.current?.start(); }}/> : <><MotionPanel snapshot={motionSnapshot} onStart={() => void motionSessionRef.current?.start()} onStop={() => motionSessionRef.current?.stop()} onClose={() => setMotionOpen(false)}/>{localSensors.capability.potential && <button className="motion-local-choice" onClick={() => { motionSessionRef.current?.stop(); setMotionSourceChoice("local"); }}>USE THIS DEVICE’S SENSORS</button>}</>}
       </DialogSurface> : null}
       {supportOpen ? (
         <SupportPanel
@@ -5647,6 +5664,7 @@ export function App() {
                     <button type="button" onClick={() => setRawReportOpen((open) => !open)} aria-expanded={rawReportOpen} aria-controls="diagnostic-raw-report">
                       {rawReportOpen ? "HIDE RAW" : "SHOW RAW"}
                     </button>
+                    <CacheResetControl/>
                     <button type="button" onClick={resetSavedState}>RESET SAVED STATE</button>
                   </div>
                 </section>
@@ -5770,6 +5788,6 @@ export function App() {
         </DialogSurface>
       ) : null}
 
-    </main><PhoneRotationNotice active={phonePortrait} /></>
+    </main><PhoneRotationNotice active={phonePortrait} /></ContextualControlsContext.Provider>
   );
 }

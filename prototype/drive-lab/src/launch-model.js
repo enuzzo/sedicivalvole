@@ -46,6 +46,8 @@ export function prepareExactSoundtrackStart(controller, selection) {
   const pendingMatch = snapshot.status === 'loading'
     && soundtrackSelectionSignature(snapshot.library?.selection) === soundtrackSelectionSignature(selection);
   if (!pendingMatch) void controller.load({ selection });
+  // START records intent even while silent preparation is pending or fails.
+  controller.requestPlayback?.();
   // The existing foreground recovery owner resumes the selected queue when ready.
   return Promise.resolve(controller.getSnapshot());
 }

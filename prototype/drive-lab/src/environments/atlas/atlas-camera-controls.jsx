@@ -1,12 +1,14 @@
+import { useContextualControls } from "../../contextual-controls.jsx";
 import { RailIcon } from '../../rail-icon.jsx';
 
 export function AtlasCameraControls({ northUp, mapAppearance, onZoom, onReset, onNorthUpChange, onMapAppearanceChange }) {
+  const contextual = useContextualControls();
   const natural = mapAppearance === 'standard';
   const toggleAppearance = () => onMapAppearanceChange(natural ? 'palette' : 'standard');
   const appearanceLabel = natural
     ? 'Map colors: standard cartographic. Switch to product palette.'
     : 'Map colors: product palette. Switch to standard cartographic colors.';
-  return <nav className="atlas-camera-controls" aria-label="Map camera" onPointerDown={event => event.stopPropagation()}>
+  return <nav {...contextual} className="atlas-camera-controls" aria-label="Map camera" onPointerDown={event => event.stopPropagation()}>
     <button type="button" aria-label="Zoom in" onClick={() => onZoom(1)}>+</button>
     <button type="button" aria-label="Reset map view" onClick={onReset}>Reset</button>
     <button type="button" aria-label="Zoom out" onClick={() => onZoom(-1)}>−</button>

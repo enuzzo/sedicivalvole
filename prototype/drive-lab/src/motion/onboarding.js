@@ -2,6 +2,7 @@ const terminal = state => ["closed", "expired", "error", "suspended", "unavailab
 const step = (active, title, hint, extra = {}) => ({ active, title, hint, ready: false, ...extra });
 
 export function receiverOnboarding(s = {}) {
+  if (s.state === "error" && s.stage === "offer") return step(0, "Connection could not be prepared", s.failureReason === "ice_no_candidates" ? "This browser supplied no direct network route. Try connecting both devices to the same Wi-Fi, then retry." : "The browser could not prepare the phone connection. Retry to create a QR.", { restart: true });
   if (s.state === "unavailable") return step(0, "This browser cannot connect", "Open the display in a browser with WebRTC support.");
   if (terminal(s.state) || s.state === "idle") return step(0, s.state === "idle" ? "Connect your phone" : "Reconnect your phone", "Create a new QR, then scan it.", { restart: s.state !== "unavailable" });
   if (s.state === "preparing") return step(0, "Getting QR ready…", "Keep both pages open.");

@@ -1,3 +1,4 @@
+import { useContextualControls } from "../contextual-controls.jsx";
 import {DRIVEY_RENDER_MODES, nextDriveyRenderModeId} from '../environments/drivey/drivey-model.js';
 import {PRTCL_TYPES, nextPrtclTypeId} from '../environments/prtcl/prtcl-model.js';
 import {getFluxEnvironment, nextShaderGradientEnvironmentId} from '../flux-environments.js';
@@ -5,13 +6,14 @@ import {getFluxEnvironment, nextShaderGradientEnvironmentId} from '../flux-envir
 const displayLabel = entry => entry?.displayLabel ?? entry?.label ?? '';
 
 export function DriveyCycleControl({ settings, onChange }) {
+  const contextual = useContextualControls();
   const wireframe = settings.renderMode === DRIVEY_RENDER_MODES.wireframe.id;
   const renderMode = wireframe
     ? DRIVEY_RENDER_MODES.wireframe
     : DRIVEY_RENDER_MODES.normal;
   const nextRenderMode = DRIVEY_RENDER_MODES[nextDriveyRenderModeId(renderMode.id)];
   return (
-    <div
+    <div {...contextual}
       className="visual-cycle-control drivey-cycle-control"
       onPointerDown={(event) => event.stopPropagation()}
     >
@@ -32,10 +34,11 @@ export function DriveyCycleControl({ settings, onChange }) {
 }
 
 export function PrtclCycleControl({ settings, onChange }) {
+  const contextual = useContextualControls();
   const current = PRTCL_TYPES[settings.type] ?? PRTCL_TYPES.frequency;
   const next = PRTCL_TYPES[nextPrtclTypeId(current.id)];
   return (
-    <div
+    <div {...contextual}
       className="visual-cycle-control prtcl-cycle-control"
       onPointerDown={(event) => event.stopPropagation()}
     >
@@ -55,9 +58,10 @@ export function PrtclCycleControl({ settings, onChange }) {
 }
 
 export function ShaderGradientCycleControl({ environment, onChange }) {
+  const contextual = useContextualControls();
   const nextEnvironment = getFluxEnvironment(nextShaderGradientEnvironmentId(environment.id));
   return (
-    <div
+    <div {...contextual}
       className="visual-cycle-control gradient-cycle-control"
       onPointerDown={(event) => event.stopPropagation()}
     >
