@@ -5316,3 +5316,15 @@ was started. Local QA servers and browser tabs have been closed.
 ## 2026-09-19 16:38 — explicit automatic-report controls
 
 Source `1085bbf`, build `20260919-1630.1085bbf`. Official preserve-existing publication: all identity gates PASS, 38 files / 6,483,420 bytes, 825 static files and 29 recordings fully verified/reused, two prior assets retained, ROOT_UPLOAD_ONLY. Production 827 exact hashes and all 21 canonical HTTPS checks pass. Browser confirms the new state/action labels and persisted Dev/ON on reload, without warning/error or synthetic mail. Clock, endpoint and recipient unchanged. [Evidence](qa/2026-09-19-auto-reports/README.md).
+
+## Piston size and report navigation — 2026-09-19 16:57
+
+Source `a1db5bd`, build `20260919-1649.a1db5bd`. Official preserve-existing
+publication passed: 38 files / 6,483,271 bytes, 825 static files and 29 recordings
+fully verified/reused, two prior assets retained, ROOT_UPLOAD_ONLY. Native
+997/997, documentation 8/8, credits 189, public-index hygiene 1,554 text files
+and production 827 hashes passed. All 21 bare/cache-busted HTTPS checks passed;
+canonical Intro shows the larger 64 px mark and correct identity without console
+warnings/errors. Local QA verifies unchanged 64/56 px navbar heights, compact
+marks, report cleanup and retained Stats Visual. No synthetic mail was sent.
+Evidence: [logo/report QA](qa/2026-09-19-logo-report/README.md).

@@ -2134,3 +2134,17 @@ Owner clarification: acceleration-driven Engine/Flux effects are expected to
 prefer fresh iPhone acceleration while GPS retains speed. This is not yet
 implemented: current ZERO is phone-relative and the sole renderer consumer is
 Aperture rotation. A vehicle-axis/freshness bridge remains required.
+
+Owner mounting clarification (September 19): about 90% of Tesla use places the
+iPhone in portrait on the inclined phone tray below the central display, screen
+facing the driver/cabin. A future vehicle-axis bridge should compensate tilt
+from measured gravity during ZERO rather than hard-code an unverified tray angle.
+This mounting assumption is not yet a calibrated or physically accepted feature.
+
+Owner corrected the mount wording: portrait describes screen orientation, not
+a physically vertical phone. The phone rests on the tray at an estimated
+30–40 degree inclination (reference plane unspecified); do not hard-code that
+estimate. Gravity at ZERO should measure the actual inclination.
+
+Piston/report refinement is live as **20260919-1649.a1db5bd**: 21 HTTPS
+identity/cache/hash checks and canonical Intro browser verification pass.
