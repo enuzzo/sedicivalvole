@@ -1,38 +1,46 @@
 # Current Project State
 
-## Automatic QR and settling ZERO published — September 19
+## Companion QR, SVG guide and ZERO published — September 19
 
-Canonical **20260919-0148.74f79b7**, VERSION **0.0.0**, is published and verified.
-Opening the companion panel prepares its QR automatically and preserves any
-active pairing/connection. ZERO waits for 500 ms of eligible readings within
-eight seconds; movement or data gaps reset settling, and STOP/hide cancels it.
-Local input magnitudes are visible before calibration. Existing thresholds and
-reference-relative transport remain unchanged; reports add only a reason enum.
+Canonical **20260919-0202.0f31a79**, VERSION **0.0.0**, is published and verified.
+Opening the companion panel prepares its QR automatically, preserving active
+pairing/transport. The existing three-step guide now uses concise Scan / Connect /
+Zero copy and original two-color SVGs; network/privacy/recovery details expand
+with an accessible button. This is the requested refinement of an approved
+layout. **No visual-selection question remains**; the earlier alternatives are
+optional ideas, not a blocker or a required next task.
 
-The owner's older-build Chrome/iPhone desk report confirms live sensors and
-transport, but its sole ZERO attempt was rejected, so there were no trace
-points. It does not identify the precise failing threshold or prove Tesla use.
-The raw attachment remains private. See the [companion contract](PHONE-MOTION-COMPANION-2026-09-18.md#desk-test-diagnosis-and-zero-capture--september-19-2026)
+ZERO waits for 500 ms of eligible readings within eight seconds. Movement and
+data gaps reset settling, STOP/hide cancels it, and explicit diagnostic reasons
+explain refusal. Local input magnitudes show sensor activity before calibration.
+Existing thresholds, relative-only transport and GPS ownership are unchanged.
+The owner's older-build Chrome/iPhone desk report records live sensors and a
+connected transport but only a rejected ZERO, explaining the empty trace. It
+does not reveal the precise failed threshold or prove physical Tesla behavior.
+The raw attachment remains private; see the [contract](PHONE-MOTION-COMPANION-2026-09-18.md)
 and [updated first-run guide](PHONE-MOTION-USER-GUIDE.md).
 
-Checks: native regression **966/966**, motion/PHP **75/75**, documentation **8/8**,
-production **828 hashes**, credits **189**, hygiene **1,498**. Local phone layouts
-320×568, 390×844, 430×932 and 844×390 have no horizontal overflow; ZERO remains
-80 px high. Local and canonical 773×601 browser checks prove automatic QR,
-disconnect, honest missing-data/local labels and no console warnings/errors.
-No synthetic mail was sent. Device permission/input behavior uses unit fixtures;
-it is not a physical verification of the new ZERO implementation.
+Checks: full native functional baseline **966/966**, motion/PHP **75/75**, final
+guide/motion/interface/documentation checks **55/55**, production **828 hashes**,
+credits **189**, hygiene **1,498**. Phone layouts 320×568, 390×844, 430×932 and
+844×390 have no horizontal overflow; ZERO remains 80 px high. The guide passes
+773×601 LIGHT/DARK and 390×844 checks, with two distinct rendered stroke colors.
+The QR is wholly visible in the compact initial viewport; details work with
+click and Space. Canonical 773×601 confirms QR, new SVG/copy, details and
+DISCONNECT without console errors. AUTO remained OFF and audio muted.
 
 Official preserve-existing publication completed ROOT_UPLOAD_ONLY: **39 files /
-6,376,687 bytes**, 825 static files reused, all 29 recordings full-hash verified,
-two previous entry assets retained. HTTPS verifies **11 asset hashes**, **four
-bare/cache-busted root checks**, HTTP 200 and no-store/no-cache headers.
+6,377,819 bytes**, 825 static files reused, all 29 recordings full-hash verified,
+two previous entry assets retained. HTTPS confirms **11 asset hashes**, **four
+bare/cache-busted root identities**, HTTP 200 and no-store/no-cache headers.
+The preceding functional release 20260919-0148 was also fully published; neither
+publication was interrupted. No upload or local QA server remains running.
 
-Next: choose the requested two-color SVG guidance direction (1. three gestures,
-2. two screens, 3. one step at a time). The existing guide is retained pending
-selection. Independently, retest ZERO on the desk: rest phone, tap ZERO, lift
-finger, wait for REFERENCE SET, then move. New physical iPhone calibration and
-Tesla/network/wake/endurance acceptance remain open. No upload remains running.
+Next: reload the main page, scan a fresh QR and retest on the desk. Rest phone,
+tap ZERO, lift finger, wait for REFERENCE SET, then move. New physical iPhone
+calibration and Tesla/network/wake/endurance acceptance remain open; unit inputs
+and desktop browser checks do not close them. No additional design approval is
+needed for the completed request.
 
 ## TRACE reliability published — September 19
 

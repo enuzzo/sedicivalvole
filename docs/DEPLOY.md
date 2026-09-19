@@ -5229,3 +5229,26 @@ section, ZERO refusal without sensors, new build identity, automatic QR creation
 and DISCONNECT; no console warnings/errors. AUTO remained OFF and audio muted.
 Physical iPhone settling-ZERO and Tesla acceptance remain open. The requested
 new SVG guide awaits owner selection; it is not part of this publication.
+
+
+## Companion SVG guide final publication — 2026-09-19 02:10
+
+Source `0f31a79`, build **20260919-0202**, VERSION **0.0.0**. This completes the
+owner-requested guide refinement within the approved layout; no new design
+selection is pending. Official `--publish --preserve-existing` completed with
+exit 0 and ROOT_UPLOAD_ONLY. Uploaded **39 files / 6,377,819 bytes**, reused 825
+static files and all 29 full-hash recordings, retained two previous entry assets,
+and activated the generated dynamic root after complete asset verification.
+
+The functional baseline passed 966 native tests and 75 motion/PHP checks; the
+final guide passed 55 focused motion/interface/documentation tests, 828 exact
+production hashes, 189 credits and hygiene of 1,498 text files. Local 773×601
+LIGHT/DARK and 390×844 checks show two distinct SVG stroke colors, no horizontal
+overflow, QR wholly within the compact initial viewport, and details usable by
+click/Space. Live 773×601 confirms the new guide, automatic QR, details expansion
+and DISCONNECT with no console warnings/errors. AUTO stayed OFF; audio muted.
+
+Four bare/cache-busted root identities and 11 HTTPS asset size/SHA-256 checks
+pass for the final release, with HTTP 200 and no-store/no-cache. The preceding
+0148 functional release was also fully completed. Physical iPhone settling-ZERO,
+Tesla transport, wake retention and endurance remain separate acceptance items.

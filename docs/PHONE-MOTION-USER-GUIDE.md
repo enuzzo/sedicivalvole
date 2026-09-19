@@ -1,14 +1,14 @@
 # TRACE phone companion: first run and recovery
 
-This guide describes canonical **20260919-0148.74f79b7**, the September 19
-automatic-QR and settling-ZERO update. Release evidence is in [Current state](CURRENT-STATE.md). Real
+This guide describes canonical **20260919-0202.0f31a79**, the September 19
+automatic-QR, concise SVG guide and settling-ZERO update. Release evidence is in [Current state](CURRENT-STATE.md). Real
 Safari/iPhone/Tesla connectivity, sensors and screen-wake retention remain open.
 
 ## First run, while parked
 
 1. Open `https://sedicivalvole.app/` in the Tesla browser and start the experience.
    Tap the field to reveal the navigation, then tap the phone/waves icon.
-2. The QR prepares automatically. Scan it with iPhone Camera and open the result in Safari.
+2. The QR prepares automatically. Scan it with iPhone Camera and open the result on your iPhone.
    Use the same Wi-Fi for the first attempt where possible. Both devices need
    access to the site and a network path to each other; the same Wi-Fi is not
    a guarantee if the router isolates clients. Separate cellular connections
@@ -35,6 +35,9 @@ it explicitly shows **Local only · not connected to Tesla** and
 **ENABLE LOCAL SENSORS**. It cannot connect without scanning a new Tesla QR.
 Reloading a phone page also removes pairing context: scan a new QR instead of
 expecting the local instrument to reconnect.
+
+The receiver guide uses three two-color SVGs: **Scan → Connect → Zero**.
+**Connection details** expands network, recovery and privacy information.
 
 ## What the instrument means
 
@@ -81,7 +84,7 @@ no automatic reconnection attempts or silent retries of consumed QR codes.
 While parked, try connection and ZERO in the holder; look for a nearly still
 trace, then deliberately rotate the phone slightly and return it to the holder.
 Recalibrate after remounting. Try STOP and the full new-QR recovery path. Also try
-backgrounding Safari and returning, confirming that the UI explains the restart.
+backgrounding the phone browser and returning, confirming that the UI explains the restart.
 Keep road observations separate from interaction tests while parked.
 
 To judge onboarding, first try the visible interface without this guide. Note
