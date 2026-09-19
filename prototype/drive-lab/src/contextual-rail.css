@@ -25,10 +25,10 @@
   display: grid;
   grid-column: 1;
   grid-row: 1;
-  padding: 4px;
+  padding: 1px;
   border-radius: 0;
 }
-.app.phase-running .topbar-mark img { width: 52px; height: 52px; }
+.app.phase-running .topbar-mark img { width: 60px; height: 60px; }
 .app.phase-running .topbar .source-readout {
   position: relative;
   inset: auto;
@@ -153,7 +153,7 @@
 .app.phase-running .engine-telemetry { padding-top: calc(var(--rail-top) + var(--chrome-size) + 20px); }
 @media (max-width: 700px) {
   .app { --rail-brand: 56px; --rail-speed: 88px; --rail-mode: 112px; }
-  .app.phase-running .topbar-mark img { width: 48px; height: 48px; }
+  .app.phase-running .topbar-mark img { width: 52px; height: 52px; }
   .app.phase-running .atlas-contextual-rail { row-gap: 6px; }
   .app.phase-running .engine-telemetry { padding-top: calc(var(--rail-top) + 120px); }
 }
@@ -175,7 +175,7 @@
    Drawers and telemetry keep their own explicit scrolling containers. */
 .app.phase-running { overflow: clip; }
 
-.app.phase-running[data-phone-layout="landscape"] .topbar-mark img { width: 48px; height: 48px; }
+.app.phase-running[data-phone-layout="landscape"] .topbar-mark img { width: 52px; height: 52px; }
 .app.phase-running .is-flight-view .radar-map-shell { bottom: calc(var(--radar-bottom) + 44px); }
 .app.phase-running.controls-awake .flight-contextual-rail { right: calc(var(--rail-right) + 246px); }
 @media (max-height: 450px) {

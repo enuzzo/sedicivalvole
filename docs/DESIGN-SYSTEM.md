@@ -167,7 +167,7 @@ collision. This also supersedes the old moving speed-only rail.
 
 - `App.jsx` places the logo, speed and mode selector in actual adjacent grid cells.
   The bar remains 64 px high, or 56 px for the phone shell. The larger transparent
-  piston mark uses 52 px artwork (48 px compact); it is never stretched.
+  piston mark uses 60 px artwork (52 px compact); it is never stretched.
 - `contextual-rail.css` owns shared identity widths, safe-area insets and the gap
   to the right-hand action lane. `ContextualRail` is the common container for
   visual cycles, Atlas, radar, Fly With and Engine profiles. No renderer guesses

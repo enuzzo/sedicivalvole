@@ -48,3 +48,8 @@ and PDF delivery flow; new renderer/physical acceptance remains separate. See
 [road refinement](../ROAD-REFINEMENT-2026-09-11.md).
 
 The atmosphere summary observes visible session time and confirmed advancing audio clocks. Muted, paused, stalled and hidden time is excluded from listening; preference rankings use observed time, with a separate listening-time denominator for genre. Only bounded whitelisted titles, artists, genre/visual/palette labels, palette hex colours and durations join the immutable optional `experience` field. No listening history is inferred for older snapshots. The PDF embeds derived Space Grotesk weights and uses the same six heading waves as Stats. [Infographic contract and evidence](../TRAVEL-REPORT-INFOGRAPHIC-2026-09-11.md).
+
+## Session report navigation
+
+The September 19 owner refinement removes the redundant Open Stats for Nerds
+button from Session report. The existing Visuals entry owns navigation to Stats.

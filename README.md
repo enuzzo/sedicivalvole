@@ -560,6 +560,9 @@ Splash, running chrome, About/diagnostics and Travel Report. Versioned PNG/ICO
 assets preserve transparency in the interface, favicon and PDF, with a separate
 opaque 180px Apple Home icon. The unchanged source and derivative
 hashes live in `logo/pistons-v1/`; regenerate with `scripts/render-piston-icon.py`.
+The September 19 refinement enlarges the Intro mark to 64 px (48 px on phones)
+and the running mark to 60 px (52 px compact), preserving navbar height.
+Session report omits the redundant Stats for Nerds shortcut; Stats remains in Visuals.
 
 ### September 11 road instruments and Travel Report
 

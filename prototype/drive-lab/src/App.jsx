@@ -5546,7 +5546,6 @@ export function App() {
               <p>Dev automatically sends coordinate-free reports to the project mailbox every 15 minutes of active session time. Stops and GPS loss count. Offline reports wait for reconnection; hidden time is excluded. PAUSE SENDING stops automatic delivery. Choosing Dev enables it again.</p>
               <small>{diagnosticControl.enabled ? `${Math.floor(automaticSnapshot.activeMs / 60000)} / 15 active min · ${automaticSnapshot.accepted} accepted · ${automaticSnapshot.status === "off" ? "WAITING" : automaticSnapshot.status.toUpperCase()}` : "Automatic delivery paused · manual reports remain available"}</small>
             </section>
-            <button className="stats-report-entry" onClick={() => { setDrawerOpen(false); setStatsOpen(true); }}>Open Stats for Nerds · journey, motion and network</button>
             {diagnosticReadmeOpen ? <DiagnosticReadme /> : (
               <div className="diagnostic-instrument">
                 <section className="diagnostic-health" aria-label="Current system health">

@@ -2123,3 +2123,14 @@ Verification: 32 focused splash/launch/preload tests, 825 production hashes, 196
 ## Intro timing refinement — 2026-09-11 17:18
 
 Canonical **20260911-1711.cfe49a3** uses the owner-requested 2-second lead-in and 1.2-second expansion. Local and canonical Chrome verify exact CSS timing, hidden focus behavior, reduced motion, no replay on selection and actual START without page errors. Production: 825 static hashes and 196 credits pass; 24 canonical HTML/asset checks pass. Official preserve-existing deployment uploaded 36 files / 5,774,787 bytes, reused 824 static assets and 29 audio masters, and retained two previous assets. Physical Tesla acceptance remains separate.
+
+## Piston size and report navigation — 2026-09-19
+
+Intro now uses a 64 px piston mark (48 px narrow); running chrome uses 60 px
+(52 px compact) within its unchanged bar. Session report drops the duplicate
+Stats entry; Visuals retains it. See [verification](qa/2026-09-19-logo-report/README.md).
+
+Owner clarification: acceleration-driven Engine/Flux effects are expected to
+prefer fresh iPhone acceleration while GPS retains speed. This is not yet
+implemented: current ZERO is phone-relative and the sole renderer consumer is
+Aperture rotation. A vehicle-axis/freshness bridge remains required.
