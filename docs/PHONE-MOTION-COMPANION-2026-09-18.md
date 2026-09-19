@@ -23,7 +23,7 @@ WebGL2 dependency. Publication evidence is appended below after release. No new
 GPU dependency, native Metal API or WebGPU requirement is introduced.
 
 The opaque cube shows at most three seconds / 180 observed acceleration samples,
-with a fading red ribbon and a phone orientation indicator reconstructed from
+with a fading palette-colored ribbon and a phone orientation indicator reconstructed from
 the relative axis-angle vector. It is acceleration space, not displacement or a
 road trajectory. The equal axis range starts at ±1 m/s², expands in powers of two
 and stays stable until ZERO or an invalidated reference. Samples beyond ±128
@@ -80,12 +80,45 @@ The existing protocol shape and backend are unchanged.
 Local verification and canonical publication evidence follow in the release
 record below. These corrections do not establish physical device compatibility.
 
+## Guided pairing and shared appearance — September 19
+
+The owner explicitly requested a further refinement of the approved companion:
+three stacked benefit lines, large Scan / Connect / Zero labels with original
+three-color SVGs, one highlighted next action and short confirmation/reconnect
+messages. This supersedes the historical fixed RED/DARK phone presentation.
+The QR carries allowlisted palette/effective-appearance query fields; its one-use
+pairing capability remains in the fragment, removed from history before rendering.
+Once paired, the phone follows display palette/appearance changes without
+resetting sensors, ZERO, camera or TRACE history. It retains the last appearance
+if disconnected. Direct entry without a QR defaults to RED/DARK.
+
+The receiver checks a fresh referenced sample, sends its accepted ZERO generation and sample sequence,
+and receives a phone acknowledgement. Only then do both screens say **Ready on
+both screens**. Sensor permission or an open data channel alone is insufficient.
+Phone receipt age includes the return journey using its own monotonic send clock.
+250 ms expiry, stale sensors and a new reference remove confirmation. Legacy
+peers retain the exact original envelopes until `supportsUiContext` is advertised;
+older clients cannot claim the new reciprocal check. The extension accepts only
+palette IDs, `light`/`dark` and a nonnegative generation or null, never remote CSS.
+Three boolean quality fields are reportable; context, samples and generations are
+not diagnostic fields. No signaling/backend or network scope change is introduced.
+
+The phone requests permissions through ENABLE & CONNECT, then brings ZERO below
+the graph into view once fresh sensors arrive. No animated scroll is used. A
+short two-cycle 3.6-second outline pulse highlights actions; reduced motion keeps
+a static outline. Denied/incomplete/stale/waiting states have concise guidance
+and an adjacent sensor retry where applicable. Details retain quality, network
+limits and privacy explanations. DONE closes the receiver guide while preserving
+the link; CANCEL stops an incomplete attempt, and CREATE QR explicitly reconnects.
+The feature still measures motion and draws TRACE on the phone; it does not yet
+steer the display's visuals or audio.
+
 ## User path
 
 See the [plain first-run and recovery guide](PHONE-MOTION-USER-GUIDE.md) for
 operator steps, failure states and collecting evidence before reloading.
 
-1. Open the phone/waves icon in the running Tesla top bar. Choose **CREATE QR**.
+1. Open the phone/waves icon in the running display top bar. Its QR prepares automatically.
 2. Scan with iPhone Camera and open in Safari. Prefer the same Wi-Fi for this
    first direct-link implementation; hotspot and Tesla/browser compatibility
    still need physical testing. Both devices need the HTTPS site available.

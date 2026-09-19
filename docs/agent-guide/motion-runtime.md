@@ -46,7 +46,7 @@ N03/N04 have development-only QA modules under `prototype/drive-lab/qa/` and
 The selected [TRACE companion](../PHONE-MOTION-COMPANION-2026-09-18.md) adds
 explicit-permission iPhone sensing, user-triggered pose tare and an expiring direct
 WebRTC connection via bounded same-host PHP signaling. It carries quantized
-relative motion only; GPS/Demo remains the sole speed source and audio/renderers
+relative motion plus allowlisted presentation/receipt context; GPS/Demo remains the sole speed source and audio/renderers
 do not consume it yet. Keep 250 ms freshness, no clock subtraction across peers,
 no raw histories, one-use QR admission and teardown on hide/disconnect.
 
@@ -71,3 +71,16 @@ incomplete readings and gaps reset the settling window; STOP/hide cancels it.
 The existing eligibility thresholds remain unchanged. Before ZERO, local scalar
 sensor activity is visible separately from the reference-relative trace; it is
 never sent as calibrated motion. Diagnostic `tareReason` is a strict enum only.
+
+Mutual readiness requires a fresh tare-relative sample at the receiver, its
+accepted generation/sequence in the next poll, and the phone acknowledgement in a fresh
+reply. Phone receipt age includes the return journey measured on its own send clock.
+Both sides clear confirmation after 250 ms, a sensor gap or a changed
+reference. An open channel alone is insufficient. Only peers advertising
+`supportsUiContext` receive the optional poll context; legacy three-key polls and
+seven-key samples remain compatible. Presentation admits only existing palette
+IDs and effective `light`/`dark`, never remote CSS. Context and generation receipts
+are excluded from diagnostics; only allowlisted boolean readiness summaries enter
+reports. A phone with an older receiver can sense locally but cannot claim mutual
+confirmation. Sensor retries preserve the current pairing; CREATE QR explicitly
+replaces a stale session instead of silently reusing admission.

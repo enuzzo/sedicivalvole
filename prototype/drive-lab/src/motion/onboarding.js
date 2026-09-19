@@ -1,0 +1,34 @@
+const terminal = state => ["closed", "expired", "error", "suspended", "unavailable"].includes(state);
+const step = (active, title, hint, extra = {}) => ({ active, title, hint, ready: false, ...extra });
+
+export function receiverOnboarding(s = {}) {
+  if (s.state === "unavailable") return step(0, "This browser cannot connect", "Open the display in a browser with WebRTC support.");
+  if (terminal(s.state) || s.state === "idle") return step(0, s.state === "idle" ? "Connect your phone" : "Reconnect your phone", "Create a new QR, then scan it.", { restart: s.state !== "unavailable" });
+  if (s.state === "preparing") return step(0, "Getting QR ready…", "Keep both pages open.");
+  if (s.state === "pairing") return step(0, "Scan with iPhone Camera", "Same Wi-Fi · keep both pages open.");
+  if (s.state === "connecting") return step(1, "Connecting…", "On your phone, allow sensor access.");
+  if (s.state === "stale" || s.sensorState === "stale") return step(1, "Phone data paused", "Check the phone. Keep its page open.", { restart: true });
+  if (s.sensorState !== "live") return step(1, "Allow sensors on your phone", "Tap Allow when your phone asks.");
+  if (s.tareState === "settling") return step(2, "Keep the phone still", "ZERO is being set…");
+  if (!s.tared || !s.referenceReceived) return step(2, "On your phone: tap ZERO", "Rest it on a surface. Tap, then lift your finger.");
+  if (!s.receiverConfirmed) return step(2, s.supportsUiContext ? "Checking both screens…" : "Receiving phone motion", s.supportsUiContext ? "Your ZERO has arrived." : "Reconnect with a new QR for the two-screen check.");
+  return step(3, "Ready on both screens", "Move your phone. Watch TRACE.", { ready: true });
+}
+
+export function phoneOnboarding({ link = {}, sensor = {}, hasPair = false, attempted = false } = {}) {
+  if (hasPair && terminal(link.state)) return step(0, "Scan a new QR", "On the display: open the phone menu → CREATE QR.");
+  if (sensor.sensorState === "requesting") return step(1, "Tap Allow", "Allow motion and orientation.");
+  if (sensor.sensorState === "denied") return step(1, "Sensor access needed", "Retry and tap Allow. Check site permissions if blocked.");
+  if (["error", "unavailable"].includes(sensor.sensorState)) return step(1, "Sensors unavailable", "Retry in iPhone Safari over HTTPS.");
+  if (sensor.sensorState === "incomplete") return step(1, "Some sensors are missing", "Tap RETRY SENSORS, then allow access.");
+  if (sensor.sensorState === "stale") return step(1, "Sensor data paused", "Keep this page open. Set ZERO when readings return.");
+  if (sensor.sensorState === "waiting") return step(1, "Waiting for sensors…", sensor.waitingMs > 5000 ? "No readings yet. Tap RETRY SENSORS." : "Keep this page open.");
+  if (sensor.sensorState !== "live") return step(hasPair ? 1 : 0, hasPair ? "Connect & allow sensors" : "Your phone, a motion sensor", hasPair ? "One tap below. Then tap Allow." : "Scan the display’s QR to connect, or try sensors here.");
+  if (sensor.tareState === "settling") return step(2, "Keep still…", "Lift your finger. ZERO sets after ½ second of stillness.");
+  if (["hold-still", "unavailable"].includes(sensor.tareState)) return step(2, "Try ZERO again", sensor.tared ? "Previous ZERO kept. Rest the phone and retry." : sensor.tareReason === "gravity" ? "Gravity reading unavailable. Stop, then retry sensors." : "Rest the phone. Tap ZERO, then lift your finger.");
+  if (!sensor.tared) return step(2, "Set your starting position", "Rest the phone. Tap ZERO below the graph.");
+  if (!hasPair) return step(3, "ZERO set · local only", "Move your phone. Watch TRACE.", { ready: true });
+  if (link.state !== "connected") return step(1, attempted ? "Connecting to the display…" : "Connect to the display", "Keep both pages open. Your ZERO is set.");
+  if (!link.receiverConfirmed) return step(2, "ZERO set · checking display…", "Keep both pages open.");
+  return step(3, "Ready on both screens", "Move your phone. Watch TRACE.", { ready: true });
+}

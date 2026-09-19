@@ -23,8 +23,9 @@ const labels = [
 ];
 const phoneCorners = [[-.28,-.53,0],[.28,-.53,0],[.28,.53,0],[-.28,.53,0],[-.28,-.53,0]];
 
-export function MotionTrace({ getSample, onTelemetry, resetKey = 0 }) {
+export function MotionTrace({ getSample, onTelemetry, resetKey = 0, themeKey = "" }) {
   const root = useRef(null), canvas = useRef(null), overlay = useRef(null), phone = useRef(null), reset = useRef(() => {});
+  const recolor = useRef(() => {});
   const callbacks = useRef({ getSample, onTelemetry }); callbacks.current = { getSample, onTelemetry };
   const [status, setStatus] = useState('webgl2');
   useEffect(() => {
@@ -46,6 +47,10 @@ export function MotionTrace({ getSample, onTelemetry, resetKey = 0 }) {
     const stripVertices = [[trailA,1],[trailA,-1],[trailB,1],[trailB,1],[trailA,-1],[trailB,-1]];
     const line = new THREE.Mesh(geometry, material); line.frustumCulled = false; scene.add(line);
     const tipGeometry = new THREE.SphereGeometry(.027, 10, 8), tipMaterial = new THREE.MeshBasicMaterial({ color: ink });
+    recolor.current = () => {
+      ink.set(getComputedStyle(element).getPropertyValue('--ui-chart-primary').trim() || '#ed2d24');
+      tipMaterial.color.copy(ink); drawDirty = true;
+    };
     const tip = new THREE.Mesh(tipGeometry, tipMaterial); tip.visible = false; scene.add(tip);
     const phoneCamera = new THREE.PerspectiveCamera(35, 1, .1, 20); phoneCamera.position.set(1.1, .7, 3.8); phoneCamera.lookAt(0, 0, 0); phoneCamera.updateMatrixWorld();
     const quaternion = new THREE.Quaternion();
@@ -164,6 +169,7 @@ export function MotionTrace({ getSample, onTelemetry, resetKey = 0 }) {
     } catch { publish('unavailable', null); }
     document.addEventListener('visibilitychange', visibility);
     return () => {
+      recolor.current = () => {};
       disposed = true; cancelAnimationFrame(raf); observer.disconnect(); model.clear();
       document.removeEventListener('visibilitychange', visibility);
       element.removeEventListener('pointerdown',pointerDown);element.removeEventListener('pointermove',pointerMove);element.removeEventListener('pointerup',pointerUp);element.removeEventListener('pointercancel',pointerUp);element.removeEventListener('pointerleave',pointerUp);element.removeEventListener('keydown',keyDown);
@@ -173,6 +179,7 @@ export function MotionTrace({ getSample, onTelemetry, resetKey = 0 }) {
     };
   }, []);
   useEffect(() => { reset.current(); }, [resetKey]);
+  useEffect(() => { recolor.current(); }, [themeKey]);
   return <div className="trace-plot" data-renderer={status} ref={root} tabIndex={0} role="img" aria-label="Three-dimensional acceleration history. Drag sideways or use left and right arrows to turn the view; Home recenters it.">
     <div className="trace-canvas" ref={canvas} aria-hidden="true"/>
     <svg ref={overlay} className="trace-grid" aria-hidden="true"><path data-grid/><path data-edges/>{labels.map((_,i)=><text key={i} data-axis-label={i} className={i<3?'trace-axis':'trace-tick'}/>)}</svg>

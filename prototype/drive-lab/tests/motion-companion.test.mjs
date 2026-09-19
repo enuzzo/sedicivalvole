@@ -303,3 +303,73 @@ test('recalibration continues to identify its old reference until the stable win
   assert.equal(f.sensor.summary().tareCount,2);assert.equal(f.sensor.summary().tareState,'tared');
  }finally{f.sensor.dispose();}
 });
+
+test('mutual readiness requires a fresh generation receipt and acknowledgement; theme changes preserve it',()=>{
+ let time=0,generation=1,presentation={palette:'blue',appearance:'light'},live=true;
+ const getPhone=()=>({summary:{sensorState:live?'live':'stale',tared:live},values:live?{...values,generation,ageMs:0}:null});
+ const receiver=createMotionProtocol({role:'receiver',now:()=>time,getPresentation:()=>presentation});
+ const phone=createMotionProtocol({role:'phone',now:()=>time,getPhone});
+ const exchange=()=>receiver.receive(phone.receive(receiver.poll()));
+ assert.equal(phone.summary().receiverConfirmed,false);
+ exchange();assert.equal(receiver.summary().referenceReceived,true);assert.equal(receiver.summary().receiverConfirmed,false);
+ time+=50;exchange();assert.equal(phone.summary().receiverConfirmed,true);assert.equal(receiver.summary().receiverConfirmed,true);
+ assert.deepEqual(phone.presentation(),presentation);
+ presentation={palette:'mint',appearance:'dark'};time+=50;exchange();assert.deepEqual(phone.presentation(),presentation);assert.equal(receiver.summary().receiverConfirmed,true);
+ generation++;assert.equal(phone.summary().receiverConfirmed,false);
+ time+=50;exchange();assert.equal(receiver.summary().receiverConfirmed,false);
+ time+=50;exchange();assert.equal(receiver.summary().receiverConfirmed,true);
+ time+=251;assert.equal(phone.summary().receiverConfirmed,false);assert.equal(receiver.summary().receiverConfirmed,false);
+ live=false;exchange();assert.equal(receiver.summary().referenceReceived,false);assert.equal(phone.summary().receiverConfirmed,false);
+});
+
+test('UI context preserves old peers and rejects malformed, replayed or arbitrary presentation',()=>{
+ const receiver=createMotionProtocol({role:'receiver'});
+ const poll=JSON.parse(receiver.poll());assert.deepEqual(Object.keys(poll),['v','kind','request']);
+ receiver.receive(JSON.stringify({v:'sv-motion-1',kind:'sample',request:poll.request,sequence:0,ageMs:0,values,summary:{sensorState:'live',tared:true}}));
+ assert.deepEqual(Object.keys(JSON.parse(receiver.poll())),['v','kind','request']);
+ const phone=createMotionProtocol({role:'phone',getPhone:()=>({values,summary:{sensorState:'live',tared:true}})});
+ for(const context of [{palette:'evil',appearance:'light',acceptedGeneration:1,acceptedSequence:0},{palette:'red',appearance:'auto',acceptedGeneration:1,acceptedSequence:0},{palette:'red',appearance:'dark',acceptedGeneration:-1,acceptedSequence:0},{palette:'red',appearance:'dark',acceptedGeneration:1,acceptedSequence:0,css:'url(secret)'},null]){
+   assert.equal(phone.receive(JSON.stringify({...poll,context})),null);
+   assert.equal(phone.summary().receiverConfirmed,false);
+ }
+ const legacy=JSON.parse(phone.receive(JSON.stringify(poll)));
+ assert.equal(legacy.summary.supportsUiContext,true);assert.equal(legacy.summary.receiverConfirmed,false);assert.equal(Object.keys(legacy).length,7);
+ assert.equal(phone.receive(JSON.stringify({...poll,context:{palette:'red',appearance:'dark',acceptedGeneration:1,acceptedSequence:0}})),null);
+ assert.equal(phone.presentation(),null);
+});
+
+test('presentation query is allowlisted and excluded from diagnostic payloads',async()=>{
+ const {motionPresentationFromSearch,safeMotionPresentation}=await import('../src/motion/presentation.js');
+ assert.deepEqual(motionPresentationFromSearch('?motion=phone&palette=blue&appearance=light'),{palette:'blue',appearance:'light'});
+ assert.deepEqual(motionPresentationFromSearch('?palette=evil&appearance=light'),{palette:'red',appearance:'dark'});
+ assert.equal(safeMotionPresentation({palette:'red',appearance:'auto'}),null);
+ assert.deepEqual(safeMotionSummary({presentation:{palette:'blue',appearance:'light'},palette:'blue',acceptedGeneration:6,receiverConfirmed:true}),{receiverConfirmed:true});
+});
+
+test('onboarding never promotes an open channel, old ZERO or stale receipt into mutual readiness',async()=>{
+ const {receiverOnboarding,phoneOnboarding}=await import('../src/motion/onboarding.js');
+ const live={state:'connected',sensorState:'live',tared:true,referenceReceived:true,receiverConfirmed:true,supportsUiContext:true};
+ assert.equal(receiverOnboarding(live).ready,true);
+ for(const change of [{tared:false},{referenceReceived:false},{receiverConfirmed:false},{state:'stale'},{sensorState:'stale'},{state:'closed'}])assert.equal(receiverOnboarding({...live,...change}).ready,false);
+ assert.equal(receiverOnboarding({state:'pairing'}).active,0);
+ assert.equal(receiverOnboarding({state:'connected',sensorState:'live'}).active,2);
+ assert.equal(receiverOnboarding({state:'expired'}).restart,true);
+ const phone={hasPair:true,attempted:true,link:live,sensor:{sensorState:'live',tared:true}};
+ assert.equal(phoneOnboarding(phone).ready,true);
+ for(const change of [{link:{state:'closed'}},{link:{state:'connected',receiverConfirmed:false}},{sensor:{sensorState:'stale',tared:false}},{sensor:{sensorState:'live',tareState:'settling',tared:true}}])assert.equal(phoneOnboarding({...phone,...change}).ready,false);
+ assert.match(phoneOnboarding({...phone,hasPair:false}).title,/local only/);
+ assert.match(phoneOnboarding({hasPair:true,sensor:{sensorState:'denied'}}).title,/access needed/);
+ assert.match(phoneOnboarding({...phone,link:{state:'closed'}}).title,/new QR/);
+});
+
+
+test('a delayed higher-numbered receipt cannot revive readiness on the phone',()=>{
+ let time=0;
+ const receiver=createMotionProtocol({role:'receiver',now:()=>time});
+ const phone=createMotionProtocol({role:'phone',now:()=>time,getPhone:()=>({values:{...values,ageMs:0},summary:{sensorState:'live',tared:true}})});
+ receiver.receive(phone.receive(receiver.poll()));
+ time=50;const delayed=receiver.poll();time=301;
+ const answer=JSON.parse(phone.receive(delayed));
+ assert.equal(answer.summary.receiverConfirmed,false);assert.equal(phone.summary().receiverConfirmed,false);
+ receiver.receive(JSON.stringify(answer));assert.equal(receiver.summary().receiverConfirmed,false);
+});

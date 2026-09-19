@@ -1,8 +1,9 @@
 import { createMotionPeer } from "./channel.js";
 import { createMotionTelemetry, safeMotionSummary } from "./telemetry.js";
+import { safeMotionPresentation, DEFAULT_MOTION_PRESENTATION } from "./presentation.js";
 
 export function createMotionSession({ role, host = window, doc = document, fetcher = fetch, now = () => performance.now(),
-  getPhone = () => ({}), peerFactory = createMotionPeer, onChange = () => {}, onEvent = () => {} } = {}) {
+  getPhone = () => ({}), getPresentation = () => DEFAULT_MOTION_PRESENTATION, peerFactory = createMotionPeer, onChange = () => {}, onEvent = () => {} } = {}) {
   const telemetry = createMotionTelemetry(now);
   let peer = null, credentials = null, qrUrl = null;
   let state = "idle", generation = 0, polling = null, refresh = null;
@@ -36,7 +37,7 @@ export function createMotionSession({ role, host = window, doc = document, fetch
       if (previousState === "stale" && summary.state === "connected") event("recovered", summary);
       previousState = summary.state;
     }
-    onChange({ ...safeMotionSummary(summary), qrUrl, values: role === "phone" ? getPhone().values : peer?.sample() ?? null });
+    onChange({ ...safeMotionSummary(summary), qrUrl, presentation: peer?.presentation?.() ?? null, values: role === "phone" ? getPhone().values : peer?.sample() ?? null });
   }
   function cleanup(next = "closed") {
     generation += 1;
@@ -49,7 +50,7 @@ export function createMotionSession({ role, host = window, doc = document, fetch
   }
   function stop(next = "closed") { cleanup(next); event(next === "suspended" ? "hidden" : next === "expired" ? "expired" : "stop", { state: next, stage, ...signaling }); notify(); }
   function createPeer(token) {
-    return peerFactory({ role, host, now, getPhone,
+    return peerFactory({ role, host, now, getPhone, getPresentation,
       onSummary: (summary) => {
         if (token !== generation) return;
         if (summary.sensorState !== previousPhone?.sensorState) event("permission", summary);
@@ -98,7 +99,8 @@ export function createMotionSession({ role, host = window, doc = document, fetch
         if (token !== generation) { void api({ action: "delete", id: result.id, token: result.token }, true).catch(() => {}); return; }
         credentials = { id: result.id, token: result.token };
         deadline = now() + 180000;
-        qrUrl = `${host.location.origin}/?motion=phone#pair=${result.id}.${result.join}`;
+        const presentation = safeMotionPresentation(getPresentation()) ?? DEFAULT_MOTION_PRESENTATION;
+        qrUrl = `${host.location.origin}/?motion=phone&palette=${presentation.palette}&appearance=${presentation.appearance}#pair=${result.id}.${result.join}`;
         state = "pairing"; event("offer-ready", { state }); notify();
         let joined = false;
         const poll = async () => {

@@ -1,8 +1,8 @@
 # TRACE phone companion: first run and recovery
 
-This guide describes canonical **20260919-0202.0f31a79**, the September 19
-automatic-QR, concise SVG guide and settling-ZERO update. Release evidence is in [Current state](CURRENT-STATE.md). Real
-Safari/iPhone/Tesla connectivity, sensors and screen-wake retention remain open.
+This guide covers guided pairing, shared palette/appearance and settling ZERO.
+The current published build is recorded in [Current state](CURRENT-STATE.md).
+Real iPhone/Tesla connectivity, sensors and screen-wake retention remain open.
 
 ## First run, while parked
 
@@ -21,22 +21,21 @@ Safari/iPhone/Tesla connectivity, sensors and screen-wake retention remain open.
    A rejection explains missing data, movement or an out-of-range gravity reading.
    If a previous reference is still
    valid, a rejected recalibration explicitly says that readings keep using it.
-5. Check both parts of success: **Connected to Tesla** on iPhone and
-   **Phone connected** on Tesla for the link, and usable
-   acceleration/gyro with **Zero SET / REFERENCE SET** for sensing. A moving
-   trace on the iPhone alone does not prove the Tesla receives it.
-6. Once paired, CLOSE the Tesla pairing panel to return to the experience;
-   this does not disconnect the session. Keep both browser pages visible.
-   **SCREEN AWAKE** means the phone has an actual
-   screen-wake lock. It is not a guarantee of background execution.
+5. Wait for **Ready on both screens**. This means the display received your
+   ZERO and the phone received its confirmation. A local moving trace alone is
+   not a connection check.
+6. Tap **DONE** on the display to return to the experience; the link stays open.
+   Keep both pages visible. **SCREEN AWAKE** reports an actual optional wake lock,
+   not background execution.
 
 Opening `https://sedicivalvole.app/?motion=phone` directly is a local sensor test;
-it explicitly shows **Local only · not connected to Tesla** and
-**ENABLE LOCAL SENSORS**. It cannot connect without scanning a new Tesla QR.
+it offers **ENABLE LOCAL SENSORS** and labels a completed ZERO **local only**. It cannot connect without scanning a new Tesla QR.
 Reloading a phone page also removes pairing context: scan a new QR instead of
 expecting the local instrument to reconnect.
 
-The receiver guide uses three two-color SVGs: **Scan → Connect → Zero**.
+The three palette-colored steps show **Scan → Connect → Zero**. The current
+step is highlighted; completed steps receive check marks. The phone follows the
+display’s palette and LIGHT/DARK appearance, including changes while connected.
 **Connection details** expands network, recovery and privacy information.
 
 ## What the instrument means
@@ -58,8 +57,8 @@ The receiver guide uses three two-color SVGs: **Scan → Connect → Zero**.
 
 | What happens | Meaning and action |
 | --- | --- |
-| QR expires or has already been used | The QR admits one phone and expires after three minutes. It disappears from Tesla as soon as a phone has joined. On Tesla, choose DISCONNECT if the old attempt is still pending, then CREATE QR and scan the new code. |
-| Connection fails or remains pending | Setup times out after 30 seconds; each HTTP request has a 10-second limit. Keep both pages visible and verify their network access. Try a shared network that allows device-to-device traffic. There is no Internet relay fallback. Reset the attempt with DISCONNECT / CREATE QR rather than repeatedly reloading an old phone link. |
+| QR expires or has already been used | The QR admits one phone and expires after three minutes. It disappears from Tesla as soon as a phone has joined. On Tesla, choose CANCEL if the old attempt is still pending, then CREATE QR and scan the new code. |
+| Connection fails or remains pending | Setup times out after 30 seconds; each HTTP request has a 10-second limit. Keep both pages visible and verify their network access. Try a shared network that allows device-to-device traffic. There is no Internet relay fallback. Reset the attempt with CANCEL / CREATE QR rather than repeatedly reloading an old phone link. |
 | STOP, DISCONNECT, reload, hidden page or screen lock | Treat the connection as ended. Return to the Tesla phone panel, generate a new QR, scan it, enable sensors and set ZERO again. There is no promised automatic reconnection in this baseline. An open link also expires after one hour. |
 | Direct connections unavailable in this browser | WebRTC is unavailable. A fresh QR alone cannot fix browser support; use a compatible browser, then generate and scan a new QR. Local sensing remains a separate test. |
 | Connected but values are dashes, Sensors: incomplete or Zero REQUIRED | Transport and sensing are separate. Check permissions, keep the page visible, wait for fresh complete sensor values and set ZERO while still. If access was denied, use **RETRY SENSORS** while the connection is still open. This retries permissions without reusing the QR. Review Safari/site permissions if it remains denied; do not assume reloading overrides a stored denial. |
@@ -92,7 +91,7 @@ where the next action is unclear, where waiting has no explanation, or where a
 local trace looks connected to the Tesla when it is not.
 
 Before reloading after a failure, preserve the phone evidence if possible:
-**Connection & sensor diagnostics → DOWNLOAD PHONE REPORT**. On Tesla use
+**Connection & sensor details → DOWNLOAD PHONE REPORT**. On Tesla use
 **REPORT → SEND DIAGNOSTIC** (wait for its server response) or **COPY REPORT**.
 Do not use RESET SAVED STATE as a normal reconnection step. Automatic reporting
 can be OFF or may not be due yet; do not rely on it for a short test. Server mail

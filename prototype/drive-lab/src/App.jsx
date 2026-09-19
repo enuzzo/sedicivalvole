@@ -2138,6 +2138,7 @@ export function App() {
   const [motionOpen, setMotionOpen] = useState(false);
   const [motionSnapshot, setMotionSnapshot] = useState({ state: "idle" });
   const motionSessionRef = useRef(null);
+  const motionPresentationRef = useRef(null);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [controlsAwake, setControlsAwake] = useState(true);
   const [paletteMenuOpen, setPaletteMenuOpen] = useState(false);
@@ -2353,6 +2354,7 @@ export function App() {
 
   const theme = getFluxTheme(themeId);
   const semanticTheme = resolveSemanticTheme(theme, appearanceResolution.appearance);
+  motionPresentationRef.current = { palette: theme.id, appearance: semanticTheme.appearance };
   const environment = getFluxEnvironment(environmentId);
   const aperturePressure = speedToAperturePressure(speed);
   const gpsPresentation = atlasGpsPresentation(gpsState, accuracy, source);
@@ -2390,9 +2392,11 @@ export function App() {
 
   useEffect(() => {
     let lastUiAt = -Infinity;
-    const session = createMotionSession({ role: "receiver", onChange: (next) => setMotionSnapshot((current) => {
+    const session = createMotionSession({ role: "receiver", getPresentation: () => motionPresentationRef.current, onChange: (next) => setMotionSnapshot((current) => {
       const at = performance.now();
-      if (current.state === next.state && current.qrUrl === next.qrUrl && at - lastUiAt < 1000) return current;
+      if (current.state === next.state && current.qrUrl === next.qrUrl && current.sensorState === next.sensorState
+        && current.tared === next.tared && current.receiverConfirmed === next.receiverConfirmed
+        && current.tareState === next.tareState && at - lastUiAt < 1000) return current;
       lastUiAt = at;
       return { ...next, values: undefined };
     }),

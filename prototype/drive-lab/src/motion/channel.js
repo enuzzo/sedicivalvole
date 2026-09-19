@@ -1,5 +1,6 @@
 import { safeMotionSummary } from "./telemetry.js";
 import { vectorValid } from "./reference.js";
+import { safeMotionPresentation, safeReceiverContext, DEFAULT_MOTION_PRESENTATION } from "./presentation.js";
 const VERSION = "sv-motion-1";
 const LABEL = "sedicivalvole-motion";
 const finite = (n) => typeof n === "number" && Number.isFinite(n);
@@ -19,30 +20,52 @@ export function safeMotionValues(value) {
     tilt: value.tilt.map((n) => Math.round(n * 10) / 10), turnRate: Math.round(value.turnRate * 10) / 10 };
 }
 
-export function createMotionProtocol({ role, now = () => performance.now(), getPhone = () => ({}), onSummary = () => {} }) {
+export function createMotionProtocol({ role, now = () => performance.now(), getPhone = () => ({}), getPresentation = () => DEFAULT_MOTION_PRESENTATION, onSummary = () => {} }) {
   let request = 0, sequence = 0, lastSequence = -1;
   let pending = null, last = null;
   let remoteSummary = {};
+  let receiverContext = null, contextAt = null;
+  const sentSamples = new Map();
+  const freshSample = () => last && now() >= last.at && now() - last.at + last.age <= 250;
+  const referenceReceived = () => Boolean(freshSample() && last.values && remoteSummary.tared && remoteSummary.sensorState === "live");
+  const receiverConfirmed = (phone = getPhone()) => {
+    const sent = sentSamples.get(receiverContext?.acceptedSequence);
+    // Receipt age uses the phone's own send clock, including the return journey.
+    return Boolean(sent && contextAt !== null && now() >= contextAt && now() - contextAt <= 250
+      && now() >= sent.at && now() - sent.at + sent.age <= 250
+      && phone.summary?.tared && phone.summary?.sensorState === "live" && phone.values
+      && sent.generation === phone.values.generation && receiverContext?.acceptedGeneration === phone.values.generation);
+  };
   const counters = { received: 0, sent: 0, rejected: 0, expiredRequests: 0, rttMs: 0, rttMaxMs: 0 };
   return {
     poll() {
       if (pending && now() - pending.at > 250) { counters.expiredRequests += 1; pending = null; }
       if (pending) return null;
       pending = { id: request++, at: now() };
-      return JSON.stringify({ v: VERSION, kind: "poll", request: pending.id });
+      // Older phones keep receiving the exact legacy envelope until they advertise support.
+      const presentation = safeMotionPresentation(getPresentation()) ?? DEFAULT_MOTION_PRESENTATION;
+      return JSON.stringify({ v: VERSION, kind: "poll", request: pending.id,
+        ...(remoteSummary.supportsUiContext ? { context: { ...presentation, acceptedGeneration: referenceReceived() ? last.values.generation : null, acceptedSequence: referenceReceived() ? lastSequence : null } } : {}) });
     },
     receive(text) {
       const packet = decode(text);
       if (packet?.v !== VERSION || !integer(packet.request)) { counters.rejected += 1; return null; }
       if (role === "phone") {
-        if (packet.kind !== "poll" || Object.keys(packet).length !== 3 || packet.request <= lastSequence) { counters.rejected += 1; return null; }
+        const context = packet.context === undefined ? null : safeReceiverContext(packet.context);
+        if (packet.kind !== "poll" || Object.keys(packet).length !== (context ? 4 : 3)
+          || packet.context !== undefined && !context || packet.request <= lastSequence) { counters.rejected += 1; return null; }
         lastSequence = packet.request;
+        receiverContext = context; contextAt = context ? now() : null;
         const phone = getPhone();
         const values = safeMotionValues(phone.values);
+        const ageMs = values && finite(phone.values.ageMs) && phone.values.ageMs >= 0 ? phone.values.ageMs : 0;
+        const confirmed = receiverConfirmed(phone);
+        if (values) sentSamples.set(sequence, { at: now(), age: ageMs, generation: values.generation });
+        while (sentSamples.size > 8) sentSamples.delete(sentSamples.keys().next().value);
         counters.sent += 1;
         return JSON.stringify({ v: VERSION, kind: "sample", request: packet.request, sequence: sequence++,
-          ageMs: values && finite(phone.values.ageMs) && phone.values.ageMs >= 0 ? phone.values.ageMs : 0,
-          values, summary: safeMotionSummary(phone.summary) });
+          ageMs,
+          values, summary: safeMotionSummary({ ...phone.summary, supportsUiContext: true, receiverConfirmed: confirmed }) });
       }
       const rtt = pending ? now() - pending.at : null;
       if (packet.kind !== "sample" || Object.keys(packet).length !== 7 || !pending || packet.request !== pending.id
@@ -58,22 +81,24 @@ export function createMotionProtocol({ role, now = () => performance.now(), getP
       return null;
     },
     sample() {
-      return last && now() >= last.at && now() - last.at + last.age <= 250 ? last.values : null;
+      return freshSample() ? last.values : null;
     },
+    presentation: () => safeMotionPresentation(receiverContext),
     summary() {
       const age = last ? now() - last.at + last.age : null;
       const fresh = last && age >= 0 && age <= 250;
       return { ...remoteSummary, ...counters, ageUpperMs: age !== null && age >= 0 ? age : null,
-        ...(role === "receiver" && !fresh ? { tared: false, sensorState: "stale" } : {}),
+        ...(role === "receiver" ? { referenceReceived: referenceReceived(), receiverConfirmed: referenceReceived() && remoteSummary.receiverConfirmed === true,
+          ...(!fresh ? { tared: false, sensorState: "stale" } : {}) } : { supportsUiContext: true, receiverConfirmed: receiverConfirmed() }),
         state: fresh ? "connected" : "stale" };
     },
   };
 }
 
-export function createMotionPeer({ role, host = window, now = () => performance.now(), getPhone, onEvent = () => {}, onSummary }) {
+export function createMotionPeer({ role, host = window, now = () => performance.now(), getPhone, getPresentation, onEvent = () => {}, onSummary }) {
   if (!host.isSecureContext || !host.RTCPeerConnection) throw new Error("rtc_unavailable");
   const pc = new host.RTCPeerConnection({ iceServers: [] });
-  const protocol = createMotionProtocol({ role, now, getPhone, onSummary });
+  const protocol = createMotionProtocol({ role, now, getPhone, getPresentation, onSummary });
   let channel = null, closed = false, tick = null;
   let backpressureDrops = 0, sendErrors = 0;
   const started = now();
@@ -128,6 +153,7 @@ export function createMotionPeer({ role, host = window, now = () => performance.
     async answer(sdp) { await pc.setRemoteDescription({ type: "offer", sdp }); return local("answer"); },
     async accept(sdp) { if (closed) throw new Error("closed"); await pc.setRemoteDescription({ type: "answer", sdp }); },
     close,
+    presentation: () => closed ? null : protocol.presentation(),
     sample: () => closed ? null : protocol.sample(),
     summary: () => ({ ...protocol.summary(), role, backpressureDrops, sendErrors, rtc: true,
       state: closed ? "closed" : channel?.readyState === "open" ? role === "phone" ? "connected" : protocol.summary().state : "connecting" }),

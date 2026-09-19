@@ -24,9 +24,16 @@ renderer, a bounded three-second acceleration trail, a relative-orientation phon
 indicator and separate camera recentering. Missing values remain dashes; the
 empty graph has no demonstration trace. The September 19 owner-requested
 companion-guide refinement retains its existing three-step layout, uses original
-two-color SVGs for Scan / Connect / Zero, shortens the primary copy, and places
+palette-based three-color SVGs for Scan / Connect / Zero, shortens the primary copy, and places
 network/privacy explanations behind an accessible details button. This is a
 refinement within the selected companion design, not a pending new direction.
+The subsequent owner request adds three stacked benefit lines, large step labels,
+a highlighted next action, evidence-based completion marks and brief reconnect
+messages. The phone inherits the display palette and effective LIGHT/DARK appearance
+from its QR, then follows changes over the paired channel. TRACE recolors without
+resetting its history, camera or ZERO. Action emphasis pulses only twice (3.6 s)
+and stays static with reduced motion. Technical quality is disclosed on demand;
+ZERO stays below the graph and is brought into view once sensors start successfully.
 
 ## Shared geometry and palette
 

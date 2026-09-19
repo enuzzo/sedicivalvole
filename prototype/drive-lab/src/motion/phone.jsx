@@ -4,10 +4,12 @@ import { createMotionSession } from "./session.js";
 import { getFluxTheme } from "../flux-themes.js";
 import { resolveSemanticTheme } from "../semantic-theme.js";
 
-import { MotionQuality } from "./motion-ui.jsx";
+import { MotionQuality, MotionSteps, MotionNext } from "./motion-ui.jsx";
 import { phoneStatus } from "./phone-status.js";
 import { MotionTrace } from "./trace-view.jsx";
-const phoneTheme = resolveSemanticTheme(getFluxTheme("red"), "dark");
+import { motionPresentationFromSearch } from "./presentation.js";
+import { phoneOnboarding } from "./onboarding.js";
+const initialPresentation = motionPresentationFromSearch(window.location.search);
 
 // The bearer capability stays in memory; remove it from history before UI/logging.
 const match = /^#pair=([a-f0-9]{32})\.([a-f0-9]{64})$/.exec(window.location.hash);
@@ -20,6 +22,9 @@ export function MotionPhone() {
   const sensorsRef = useRef(null), sessionRef = useRef(null);
   const traceRef = useRef({});
   const attemptedRef = useRef(false);
+  const zeroStepRef = useRef(null), revealZeroRef = useRef(false);
+  const [presentation, setPresentation] = useState(initialPresentation);
+  const phoneTheme = resolveSemanticTheme(getFluxTheme(presentation.palette), presentation.appearance);
   const [viewReset, setViewReset] = useState(0);
   const getSample = useCallback(() => sensorsRef.current?.latest() ?? null, []);
   const traceTelemetry = useCallback(detail => {
@@ -39,6 +44,7 @@ export function MotionPhone() {
       const changed = previousLink !== next.state; previousLink = next.state;
       if (changed && ["closed", "expired", "error", "suspended", "unavailable"].includes(next.state)
         && !["stopped", "suspended", "idle"].includes(sensorsRef.current?.summary().sensorState)) sensorsRef.current?.stop();
+      if (next.presentation) setPresentation(previous => previous.palette === next.presentation.palette && previous.appearance === next.presentation.appearance ? previous : next.presentation);
       setSnapshot(next);
     },
       getPhone: () => ({ summary: { ...sensorsRef.current?.summary(), ...traceRef.current }, values: sensorsRef.current?.latest() ?? null }) });
@@ -47,7 +53,14 @@ export function MotionPhone() {
     const timer = setInterval(() => { setSensor(sensors.summary()); setValues(sensors.latest()); setActivity(sensors.activity()); session.refresh(); }, 100);
     return () => { document.title = previousTitle; clearInterval(timer); sensors.dispose(); session.dispose(); sensorsRef.current = null; sessionRef.current = null; };
   }, []);
+  useEffect(() => {
+    if (revealZeroRef.current && sensor.sensorState === "live" && !sensor.tared) {
+      revealZeroRef.current = false;
+      zeroStepRef.current?.scrollIntoView({ block: "end", behavior: "auto" });
+    }
+  }, [sensor.sensorState, sensor.tared]);
   const start = () => {
+    revealZeroRef.current = true;
     void sensorsRef.current?.start();
     if (status.canJoin && !attemptedRef.current) {
       attemptedRef.current = true;
@@ -61,6 +74,7 @@ export function MotionPhone() {
   };
   const stop = () => { sensorsRef.current?.stop(); sessionRef.current?.stop(); setSensor(sensorsRef.current?.summary() ?? {}); setValues(null); setActivity(null); };
   const status = phoneStatus({ link: snapshot, sensor, hasPair: Boolean(initialPair), attempted: attemptedRef.current });
+  const guide = phoneOnboarding({ link: snapshot, sensor, hasPair: Boolean(initialPair), attempted: attemptedRef.current });
   const download = () => {
     const report = { schema: "sedicivalvole.motion-phone-report.v1", generatedAt: new Date().toISOString(),
       build: __APP_BUILD__, commit: __APP_COMMIT__, platform: navigator.userAgent,
@@ -69,7 +83,7 @@ export function MotionPhone() {
     const a = document.createElement("a"); a.href = url; a.download = "sedicivalvole-phone-motion.json"; a.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
-  return <main className="motion-phone" style={phoneTheme.css}>
+  return <main className="motion-phone" data-palette={presentation.palette} data-appearance={presentation.appearance} style={{ ...phoneTheme.css, colorScheme: presentation.appearance }}>
     <div className="motion-phone-lead">
     <header className="motion-phone-brand">
       <img src={`/brand/pistons-v1/mark-512.png?build=${encodeURIComponent(__APP_BUILD__)}`} width="48" height="48" alt=""/>
@@ -77,12 +91,10 @@ export function MotionPhone() {
     </header>
     <div className="motion-phone-heading"><h1>Motion instrument</h1><span>TRACE</span></div>
     <section className="motion-phone-controls" aria-label="Connection and sensor controls">
-      <div className="motion-phone-status" role="status">
-        <span className="motion-link-status" data-connected={status.connected}>{status.connection}</span>
-        <span className="motion-wake-status" data-awake={Boolean(sensor.wakeLock)}>{sensor.wakeLock ? "SCREEN AWAKE" : sensor.wakeState === "requesting" ? "WAKE REQUESTED" : !sensor.wakeState || sensor.wakeState === "idle" ? "WAKE ON START" : "SCREEN MAY SLEEP"}</span>
-      </div>
-      <p className="motion-connection-help">{status.recovery}</p>
-      {(!status.running || sensor.sensorState === "requesting") && <div className="motion-actions"><button onClick={start} disabled={sensor.sensorState === "requesting"}>{sensor.sensorState === "requesting" ? "AWAITING PERMISSION…" : status.action}</button></div>}
+      {initialPair && <MotionSteps active={guide.active} compact/>}
+      <MotionNext guide={guide}/>
+      {(!status.running || sensor.sensorState === "requesting") && <div className="motion-actions"><button key={status.action} className="motion-primary motion-nudge" onClick={start} disabled={sensor.sensorState === "requesting"}>{sensor.sensorState === "requesting" ? "AWAITING PERMISSION…" : status.action}</button></div>}
+      {(["incomplete", "stale"].includes(sensor.sensorState) || sensor.sensorState === "waiting" && sensor.waitingMs > 5000) && <div className="motion-actions"><button className="motion-primary motion-nudge" onClick={() => { sensorsRef.current?.stop(); start(); }}>RETRY SENSORS</button></div>}
       {["released", "denied", "error"].includes(sensor.wakeState) && <button className="motion-wake-retry" onClick={() => void sensorsRef.current?.retryWake()}>KEEP SCREEN AWAKE</button>}
     </section>
     </div>
@@ -92,17 +104,16 @@ export function MotionPhone() {
         <div><span>Acceleration</span><span className="motion-input-value">{number(activity?.acceleration)} m/s²</span></div>
         <div><span>Rotation</span><span className="motion-input-value">{number(activity?.rotation)} °/s</span></div>
       </div>}
-      <MotionTrace getSample={getSample} onTelemetry={traceTelemetry} resetKey={viewReset}/>
-      <div className="motion-zero-row"><button className="motion-zero" onClick={tare} disabled={sensor.tareState === "settling"}>{sensor.tareState === "settling" ? "HOLD STILL" : "ZERO"}<small>recalibrate</small></button></div>
-      <p className="motion-phone-message" role="status">{status.instruction}</p>
+      <MotionTrace getSample={getSample} onTelemetry={traceTelemetry} resetKey={viewReset} themeKey={`${presentation.palette}:${presentation.appearance}`}/>
+      <div className="motion-zero-row"><button className={`motion-zero${guide.active === 2 && !sensor.tared && sensor.tareState !== "settling" ? " motion-nudge" : ""}`} onClick={tare} disabled={sensor.tareState === "settling" || sensor.sensorState !== "live"}>{sensor.tareState === "settling" ? "HOLD STILL" : "ZERO"}<small>recalibrate</small></button></div>
+      <p ref={zeroStepRef} className="motion-phone-message">{sensor.tareState === "settling" ? "Keep still…" : ["hold-still", "unavailable"].includes(sensor.tareState) ? (sensor.tared ? "Previous ZERO kept · try again" : "Not set · rest the phone and retry") : sensor.tared ? "✓ ZERO SET" : sensor.sensorState === "live" ? "Tap ZERO · lift your finger · keep still" : "Enable sensors to set ZERO"}</p>
       <div className="motion-section-label"><span>ACCELERATION</span><span>m/s²</span></div>
       <div className="motion-readings">{["X", "Y", "Z"].map((axis,i) => <div key={axis}><small>{axis}</small><strong>{number(values?.acceleration[i])}</strong></div>)}</div>
       <div className="motion-section-label"><span>ROTATION</span><span>°/s</span></div>
       <div className="motion-readings motion-gyro-readings">{["X", "Y", "Z"].map((axis,i) => <div key={axis}><small>{axis}</small><strong>{number(values?.rotation[i])}</strong></div>)}</div>
-      <div className="motion-reference"><span data-tared={Boolean(sensor.tared)}>{sensor.tared ? "REFERENCE SET" : "ZERO REQUIRED"}</span><span>Sensors: {sensor.sensorState}</span></div>
+      <div className="motion-reference"><span data-tared={Boolean(sensor.tared)}>{sensor.tared ? "REFERENCE SET" : "ZERO REQUIRED"}</span><span>{sensor.wakeLock ? "SCREEN AWAKE" : sensor.wakeState === "requesting" ? "WAKE REQUESTED" : !sensor.wakeState || sensor.wakeState === "idle" ? "WAKE ON START" : "SCREEN MAY SLEEP"}</span></div>
       <div className="motion-view-actions"><button onClick={() => setViewReset(n => n + 1)}>RECENTER VIEW</button><button onClick={stop}>STOP</button></div>
     </section>
-    <section className="motion-phone-quality" aria-label="Sensor and connection quality"><MotionQuality summary={{ ...snapshot, ...sensor }}/></section>
     <details className="motion-phone-guide"><summary>Placement & your zero</summary>
       <div className="motion-mount-guide">
         <svg viewBox="0 0 140 110" fill="none" stroke="currentColor" strokeWidth="2" role="img" aria-label="Phone upright in a holder tilted about 45 degrees">
@@ -114,9 +125,9 @@ export function MotionPhone() {
       </div>
       <p>ZERO sets this pose as zero, not the car's forward direction. Movement in your hand also counts. Recalibrate after remounting.</p>
       <p>The cube shows acceleration in m/s² over the last three seconds, not a position or road path. Axis scales expand together when needed and reset with ZERO. Drag sideways to turn the view; RECENTER VIEW restores the camera without changing your zero. The phone icon shows orientation relative to your reference.</p>
-      <p>Keep Safari visible. Screen wake is {sensor.wakeLock ? "active" : sensor.wakeState ?? "not requested"}. Hiding the page ends the connection.</p>
+      <p>Keep this page visible. Screen wake is {sensor.wakeLock ? "active" : sensor.wakeState ?? "not requested"}. Hiding the page ends the connection.</p>
     </details>
-    <details className="motion-phone-diagnostics"><summary>Connection & sensor diagnostics</summary><p>Quality, permission, tare and connection events only. No raw sensor history, location or pairing keys. Download this report if the phone cannot connect; the Tesla report cannot contain events it never received.</p><button onClick={download}>DOWNLOAD PHONE REPORT</button><pre>{JSON.stringify({ ...snapshot, qrUrl: undefined, values: undefined, ...sensor }, null, 2)}</pre></details>
+    <details className="motion-phone-diagnostics"><summary>Connection & sensor details</summary><MotionQuality summary={{ ...snapshot, ...sensor }}/><p>{status.connection}. {status.recovery}</p><p>{status.instruction}</p><p>Quality, permission, tare and connection events only. No raw sensor history, location or pairing keys. Download this report if the phone cannot connect; the Tesla report cannot contain events it never received.</p><button onClick={download}>DOWNLOAD PHONE REPORT</button><pre>{JSON.stringify({ ...snapshot, qrUrl: undefined, values: undefined, ...sensor }, null, 2)}</pre></details>
     <footer className="motion-phone-footer"><span>A project by enuzzo</span><span>{__APP_BUILD__}</span></footer>
   </main>;
 }
