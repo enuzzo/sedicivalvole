@@ -11,7 +11,7 @@ __pycache__/
 !.env.example
 
 # Local prototype dependencies and generated output.
-/prototype/drive-lab/node_modules/
+/prototype/drive-lab/node_modules
 /prototype/drive-lab/dist/
 /prototype/drive-lab/.sample-analysis-venv/
 /prototype/drive-lab/.playwright-cli/
