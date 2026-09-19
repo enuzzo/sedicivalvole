@@ -1,3 +1,4 @@
+import { roadSourceLabel, usableRoadSample } from "./motion/road-input.js";
 import { useOutsideDismiss } from "./ui/use-outside-dismiss.js";
 import { createSoundtrackRecovery } from "./soundtrack/recovery.js";
 import { ContextualControlsContext } from "./contextual-controls.jsx";
@@ -2413,7 +2414,40 @@ export function App() {
   const [motionSourceChoice, setMotionSourceChoice] = useState(null);
   const showLocalSensors = motionSourceChoice === "local" || motionSourceChoice !== "remote" && localSensors.preferred;
 
-  const getApertureMotion = useCallback(() => showLocalSensors ? localSensors.sample() : motionSessionRef.current?.sample() ?? null, [showLocalSensors, localSensors.sample]);
+  const motionInputRef = useRef(null);
+  motionInputRef.current = { phase, showLocalSensors, sample: localSensors.sample };
+  const readPhoneMotion = useCallback(() => {
+    const current = motionInputRef.current;
+    if (current.phase !== "running" || sourceRef.current !== "GPS" || document.visibilityState !== "visible" || navigator.onLine === false) return null;
+    return current.showLocalSensors ? current.sample() : motionSessionRef.current?.sample() ?? null;
+  }, []);
+  const getRoadMotion = useCallback(() => {
+    const sample = readPhoneMotion();
+    return usableRoadSample(sample) ? sample : null;
+  }, [readPhoneMotion]);
+  useEffect(() => { engineMotionRef.current.setPhoneMotionProvider(getRoadMotion); }, [getRoadMotion]);
+  const getAudioRoadMotion = useCallback(() => {
+    const evidence = engineMotionRef.current.snapshot(performance.now());
+    return evidence.source === "GPS" && evidence.freshness === "fresh" ? getRoadMotion() : null;
+  }, [getRoadMotion]);
+  const getApertureMotion = useCallback(() => {
+    const sample = getAudioRoadMotion();
+    return sample ? { ...sample, turnRate: sample.road.yawRate } : null;
+  }, [getAudioRoadMotion]);
+  const [roadInputStatus, setRoadInputStatus] = useState({ label: "GPS motion · phone unavailable", source: "gps-motion" });
+  const roadInputStatusRef = useRef(roadInputStatus);
+  roadInputStatusRef.current = roadInputStatus;
+  useEffect(() => {
+    const refresh = () => {
+      const sample = getAudioRoadMotion();
+      const label = roadSourceLabel({ source: sourceRef.current, active: phase === "running", sample, gpsFresh: engineMotionRef.current.snapshot(performance.now()).freshness === "fresh",
+        sensor: showLocalSensors ? localSensors.summary : motionSnapshot, link: showLocalSensors ? {} : motionSnapshot });
+      const next = { label, source: sourceRef.current !== "GPS" ? "demo-motion" : usableRoadSample(sample) ? "phone-motion" : "gps-motion" };
+      setRoadInputStatus(previous => previous.label === next.label ? previous : next);
+    };
+    refresh(); const timer = window.setInterval(refresh, 100);
+    return () => window.clearInterval(timer);
+  }, [phase, source, showLocalSensors, localSensors.summary, motionSnapshot, getAudioRoadMotion]);
 
   useEffect(() => {
     let lastUiAt = -Infinity;
@@ -3414,6 +3448,7 @@ export function App() {
         },
       );
       if (!audioRef.current) throw new Error("Web Audio is unavailable");
+      audioRef.current.setPhoneMotionProvider(getAudioRoadMotion);
       audioRef.current.setSourceMode(launchEngine ? "engine" : "flux");
       await audioRef.current.resume();
       audioRef.current.setMuted(launchMuted || musicId === "soundtrack");
@@ -4563,7 +4598,15 @@ export function App() {
     };
   }, [phase]);
 
-  useEffect(() => { engineMotionRef.current.reset("speed-source-changed"); }, [source]);
+  useEffect(() => {
+    engineMotionRef.current.reset("speed-source-changed");
+    audioRef.current?.resetMotionInput();
+  }, [source]);
+  useEffect(() => {
+    const reset = () => { if (document.visibilityState !== "visible" || navigator.onLine === false) audioRef.current?.resetMotionInput(); };
+    document.addEventListener("visibilitychange", reset); window.addEventListener("offline", reset);
+    return () => { document.removeEventListener("visibilitychange", reset); window.removeEventListener("offline", reset); };
+  }, []);
   useEffect(() => { audioRef.current?.setSpeed(speed); }, [speed]);
   useEffect(() => {
     if (phase !== "running") return;
@@ -4883,6 +4926,7 @@ export function App() {
     },
     capabilities: diagnostics.capabilities,
     phoneMotion: motionSessionRef.current?.report() ?? null,
+    roadMotion: { source: roadInputStatusRef.current.source, status: roadInputStatusRef.current.label, speedSource: sourceRef.current === "GPS" ? "GPS" : "Demo", gyroConsumer: "aperture-curve", accelerationConsumers: "engine-demand,flux-braking" },
     environment: {
       ...diagnostics.environment,
       currentVisibility: document.visibilityState,
@@ -5368,11 +5412,11 @@ export function App() {
             <span className="visually-hidden">GPS</span>
             <small className="visually-hidden">{gpsPresentation.accuracy}</small>
           </button>
-          <button className="motion-button" type="button" aria-label={showLocalSensors ? "Use this device’s motion sensors" : "Connect phone motion sensors"} aria-haspopup="dialog"
-            data-connected={showLocalSensors ? localSensors.summary.sensorState === "live" : motionSnapshot.state === "connected"} onClick={() => {
+          <button className="motion-button" type="button" aria-label={`Motion source: ${roadInputStatus.label}`} title={roadInputStatus.label} aria-haspopup="dialog"
+            data-connected={roadInputStatus.source === "phone-motion"} onClick={() => {
               setMotionOpen(true);
               if (!showLocalSensors && !["preparing", "pairing", "connecting", "connected", "stale"].includes(motionSnapshot.state)) void motionSessionRef.current?.start(null, "https");
-            }}><MotionIcon/></button>
+            }}><MotionIcon/><small className="motion-source-mini">{roadInputStatus.source === "phone-motion" ? "LIVE" : source === "GPS" ? "GPS" : "DEMO"}</small></button>
           <button
             className="discover-button"
             type="button"
@@ -5486,7 +5530,7 @@ export function App() {
       </section>
 
       {motionOpen ? <DialogSurface className="diagnostic-drawer motion-dialog" labelledBy="motion-title" onClose={() => setMotionOpen(false)}>
-        {showLocalSensors ? <LocalSensorsPanel sensors={localSensors} gpsState={gpsState} source={source} themeKey={`${themeId}:${appearanceResolution.appearance}`} onClose={() => setMotionOpen(false)} onRemote={() => { localSensors.stop(); setMotionSourceChoice("remote"); void motionSessionRef.current?.start(null, "https"); }}/> : <><MotionPanel snapshot={motionSnapshot} onStart={(transport = "https") => void motionSessionRef.current?.start(null, transport)} onStop={() => motionSessionRef.current?.stop()} onClose={() => setMotionOpen(false)}/>{localSensors.capability.potential && <button className="motion-local-choice" onClick={() => { motionSessionRef.current?.stop(); setMotionSourceChoice("local"); }}>USE THIS DEVICE’S SENSORS</button>}</>}
+        {showLocalSensors ? <LocalSensorsPanel responseLabel={roadInputStatus.label} sensors={localSensors} gpsState={gpsState} source={source} themeKey={`${themeId}:${appearanceResolution.appearance}`} onClose={() => setMotionOpen(false)} onRemote={() => { localSensors.stop(); setMotionSourceChoice("remote"); void motionSessionRef.current?.start(null, "https"); }}/> : <><MotionPanel responseLabel={roadInputStatus.label} snapshot={motionSnapshot} onStart={(transport = "https") => void motionSessionRef.current?.start(null, transport)} onStop={() => motionSessionRef.current?.stop()} onClose={() => setMotionOpen(false)}/>{localSensors.capability.potential && <button className="motion-local-choice" onClick={() => { motionSessionRef.current?.stop(); setMotionSourceChoice("local"); }}>USE THIS DEVICE’S SENSORS</button>}</>}
       </DialogSurface> : null}
       {supportOpen ? (
         <SupportPanel

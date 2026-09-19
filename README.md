@@ -77,13 +77,13 @@ trail and phone orientation indicator. One-tap ZERO / recalibrate sits below the
 graph and captures after half a second of steady readings, within eight seconds.
 Sensor enablement, ZERO, RECENTER VIEW and STOP fit the initial compact phone
 viewport; detailed axis readings and disclosures continue below the instrument.
-Before ZERO, local activity magnitudes show that sensors are responding. It supports arbitrary stable mounting. Its portrait-first instrument uses the piston/Orbitron identity,
-the paired display’s palette and LIGHT/DARK appearance, plus an illustrated 45° holder guide, with a responsive
+Before ZERO, local activity magnitudes show that sensors are responding. TRACE supports arbitrary stable mounting; road response requires the explicitly selected portrait car holder and gravity-based ZERO. Its portrait-first instrument uses the piston/Orbitron identity,
+the paired display’s palette and LIGHT/DARK appearance, plus an illustrated holder guide, with a responsive
 landscape layout. Bounded connection/sensor summaries join REPORT; the phone can
 download its own diagnostics, including wake-lock and renderer availability.
 Screen-awake status reflects the actual optional lock. Local-only mode, incomplete
 sensors and ended links have explicit recovery guidance; permission retry does
-not reuse a QR. The default QR uses end-to-end encrypted HTTPS through the same site; local WebRTC remains optional. Both screens distinguish transport from fresh mutual sensor readiness. GPS remains road-speed authority; fresh zeroed gyro turn rate now bends Aperture, easing to straight on loss. Real Tesla/iPhone relay latency and curve direction still require a physical recheck. See the [road connection refinement](docs/PHONE-MOTION-HTTPS-2026-09-19.md). [Setup and technical boundaries](docs/PHONE-MOTION-COMPANION-2026-09-18.md).
+not reuse a QR. The default QR uses end-to-end encrypted HTTPS through the same site; local WebRTC remains optional. Both screens distinguish transport from fresh mutual sensor readiness. GPS remains road-speed authority. Fresh calibrated holder acceleration now drives Engine demand and Flux braking/Underwater; mounted gyro bends Aperture. The phone cell shows LIVE only while those inputs are usable, with explicit GPS fallback and Demo exclusion. See [mounted road response and limitations](docs/PHONE-ROAD-INPUT-2026-09-19.md). Real Tesla/iPhone relay latency and curve direction still require a physical recheck. See the [road connection refinement](docs/PHONE-MOTION-HTTPS-2026-09-19.md). [Setup and technical boundaries](docs/PHONE-MOTION-COMPANION-2026-09-18.md).
 
 ## Vision
 

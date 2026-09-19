@@ -121,3 +121,7 @@ byte-identical. Historical vectors remain archived, not selected.
 The September 19 size refinement gives the Intro piston mark a 64 px frame
 (48 px visually on phones, within its existing 36 px layout slot). Only the
 desktop Intro heading grows to 64 px; running chrome retains its fixed height.
+
+## Mounted phone response — September 19
+
+The existing phone cell shows LIVE only for effective mounted road input, otherwise GPS/DEMO, at unchanged navbar dimensions. The existing panels explain connection/calibration/fallback. Phone adds explicit portrait-holder selection beside ZERO; TRACE stays available for other poses. See [the implementation contract](../PHONE-ROAD-INPUT-2026-09-19.md).

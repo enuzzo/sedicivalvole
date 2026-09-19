@@ -1,10 +1,12 @@
 import { createScreenWake } from "./screen-wake.js";
 import { advanceOrientation, createPoseReference, orientationMatrix, zeroReadiness, MOTION_FRESH_MS } from "./reference.js";
+import { mountedBasis, mountedReading } from "./road-input.js";
 const finite = (n) => typeof n === "number" && Number.isFinite(n);
 const vector = (value, keys) => keys.every((key) => finite(value?.[key])) ? keys.map((key) => value[key]) : null;
 
 export function createPhoneSensors({ host = window, doc = document, now = () => performance.now(), onEvent = () => {} } = {}) {
   const pose = createPoseReference();
+  let mountSelected = false, roadBasis = null, roadState = "not-selected";
   let state = "idle";
   let sample = null;
   let orientation = null;
@@ -26,6 +28,7 @@ export function createPhoneSensors({ host = window, doc = document, now = () => 
     host.removeEventListener("devicemotion", motion);
     host.removeEventListener("deviceorientation", orient);
     wake.stop();
+    roadBasis = null; roadState = mountSelected ? "needs-zero" : "not-selected";
     pose.clear(); sample = null; orientation = null; orientationAt = null; lastAt = null;
     orientationEstimated = false;
     intervals.length = 0; tareState = "required"; tareReason = "unavailable";
@@ -33,13 +36,17 @@ export function createPhoneSensors({ host = window, doc = document, now = () => 
     state = reason;
     onEvent(reason === "suspended" ? "hidden" : "stop", summary());
   }
-  function invalidate() { pose.clear(); tareState = "required"; onEvent("retare-required", summary()); }
+  function invalidate() { roadBasis = null; roadState = mountSelected ? "needs-zero" : "not-selected"; pose.clear(); tareState = "required"; onEvent("retare-required", summary()); }
   const poseSample = () => sample ? { ...sample, orientation, orientationAt } : null;
   function captureZero() {
     zeroDeadline = null; stableSince = null;
     tareReason = zeroReadiness(poseSample(), now());
     tareState = pose.tare(poseSample(), now());
-    if (tareState === "tared") counts.tareCount += 1;
+    if (tareState === "tared") {
+      counts.tareCount += 1;
+      roadBasis = mountSelected ? mountedBasis(sample.gravity) : null;
+      roadState = !mountSelected ? "not-selected" : roadBasis ? "calibrated" : "unsupported-pose";
+    }
     onEvent("tare", summary());
     return tareState;
   }
@@ -84,6 +91,7 @@ export function createPhoneSensors({ host = window, doc = document, now = () => 
       orientationEstimated = Boolean(orientation);
     }
     sample = { at, acceleration, rotation, gravity: acceleration && includingGravity ? includingGravity.map((n, i) => n - acceleration[i]) : null };
+    if (roadBasis && !mountedReading(roadBasis, sample)) { roadBasis = null; roadState = "moved"; }
     counts.motionEvents += 1;
     if (acceleration) counts.accelerationPeak = Math.max(counts.accelerationPeak, Math.hypot(...acceleration));
     if (rotation) counts.angularRatePeak = Math.max(counts.angularRatePeak, Math.hypot(...rotation));
@@ -108,9 +116,9 @@ export function createPhoneSensors({ host = window, doc = document, now = () => 
     const orientationFresh = orientationAge !== null && orientationAge >= 0 && orientationAge <= MOTION_FRESH_MS;
     // An expired pose never silently revives when new sensor events arrive.
     const complete = Boolean(sample?.acceleration && sample?.rotation && orientation && orientationFresh);
-    if (pose.tared && (!fresh || !complete)) { pose.clear(); tareState = "required"; }
+    if (pose.tared && (!fresh || !complete)) { roadBasis = null; roadState = mountSelected ? "needs-zero" : "not-selected"; pose.clear(); tareState = "required"; }
     const mean = intervals.length ? intervals.reduce((sum, n) => sum + n, 0) / intervals.length : null;
-    return { sensorState: state === "live" ? !fresh ? "stale" : !complete ? "incomplete" : "live" : state,
+    return { mountSelected, roadState, sensorState: state === "live" ? !fresh ? "stale" : !complete ? "incomplete" : "live" : state,
       accelerometer: Boolean(sample?.acceleration), gyroscope: Boolean(sample?.rotation), orientation: Boolean(orientation && orientationFresh),
       tared: pose.tared, tareState: zeroDeadline === null ? tareState : "settling", tareReason, orientationEstimated, cadenceHz: mean ? 1000 / mean : 0,
       jitterMs: mean ? Math.sqrt(intervals.reduce((sum, n) => sum + (n - mean) ** 2, 0) / intervals.length) : 0,
@@ -121,6 +129,7 @@ export function createPhoneSensors({ host = window, doc = document, now = () => 
   const pagehide = () => stop("suspended");
   doc.addEventListener("visibilitychange", visibility);
   host.addEventListener("pagehide", pagehide);
+  host.addEventListener("offline", pagehide);
   return {
     async start() {
       if (disposed || ["requesting", "live", "waiting"].includes(summary().sensorState)) return;
@@ -144,9 +153,11 @@ export function createPhoneSensors({ host = window, doc = document, now = () => 
         wake.start();
       } catch { if (token === generation) { state = "error"; onEvent("permission", summary()); } }
     },
+    setMount(selected) { mountSelected = selected === true; invalidate(); zeroDeadline = null; stableSince = null; },
     tare: captureZero,
     requestTare() {
       if (zeroDeadline !== null) return "settling";
+      roadBasis = null; roadState = mountSelected ? "needs-zero" : "not-selected";
       if (summary().sensorState !== "live") return captureZero();
       zeroDeadline = now() + 8000; stableSince = null;
       tareReason = zeroReadiness(poseSample(), now());
@@ -157,10 +168,10 @@ export function createPhoneSensors({ host = window, doc = document, now = () => 
       if (summary().sensorState !== "live") return null;
       return { acceleration: Math.hypot(...sample.acceleration), rotation: Math.hypot(...sample.rotation) };
     },
-    latest() { summary(); const value = sample ? pose.project({ ...sample, orientation, orientationAt }, now()) : null; return value ? { ...value, sampleAt: sample.at } : null; },
+    latest() { summary(); const value = sample ? pose.project({ ...sample, orientation, orientationAt }, now()) : null; return value ? { ...value, sampleAt: sample.at, ...(roadBasis ? { road: mountedReading(roadBasis, sample) } : {}) } : null; },
     retryWake: () => wake.retry(),
     summary,
     stop: () => stop(),
-    dispose() { stop(); disposed = true; doc.removeEventListener("visibilitychange", visibility); host.removeEventListener("pagehide", pagehide); },
+    dispose() { stop(); disposed = true; doc.removeEventListener("visibilitychange", visibility); host.removeEventListener("pagehide", pagehide); host.removeEventListener("offline", pagehide); },
   };
 }

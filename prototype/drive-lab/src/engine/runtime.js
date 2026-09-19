@@ -152,6 +152,7 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
     if (disposed) return;
     const evidence = motion.snapshot(now());
     state.canRev = Boolean(manualAvailable(evidence));
+    state.responseSource = evidence.responseSource;
     state.motionReason = evidence.reason; state.motionSpeedKmh = evidence.speedKmh; state.motionAgeMs = evidence.ageMs;
     const motionKey = `${evidence.freshness}/${evidence.reason}`;
     if (motionKey !== lastMotionKey) {

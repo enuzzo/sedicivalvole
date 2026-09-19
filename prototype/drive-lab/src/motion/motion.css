@@ -211,3 +211,13 @@
   .motion-phone-message { flex: none; margin: 6px 0; }
   .motion-instrument .motion-view-actions { flex: none; padding: 0 0 8px; }
 }
+
+.motion-mount-choice { display: flex; align-items: center; gap: 10px; min-height: 48px; font-size: 14px; text-align: left; }
+.motion-mount-choice input { width: 22px; height: 22px; flex: 0 0 22px; accent-color: var(--ui-accent-text); }
+.motion-mount-choice small { display: block; font-size: 13px; opacity: .8; }
+.motion-road-state, .motion-effective-source { font-size: 13px; margin: 6px 0; }
+.motion-button { position: relative; }
+.motion-button .motion-source-mini { position: absolute; bottom: 2px; font-size: 13px; line-height: 14px; }
+
+.motion-button svg { transform: translateY(-7px); }
+.motion-button[data-connected="true"]::after { display: none; }

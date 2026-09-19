@@ -1,3 +1,4 @@
+import { createRoadResponse, usableRoadSample } from "./motion/road-input.js";
 // The Flux audio facade.
 //
 // Everything musical lives behind the AudioWorklet in `src/score/`. This module
@@ -115,7 +116,10 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
   let brakeAmount = 0;
   let brakeReported = false;
   let manualBrakeHeld = false;
-  let smoothedRateMps2 = 0;
+  let smoothedRateMps2 = 0, gpsRateMps2 = 0;
+  let getPhoneMotion = () => null;
+  const roadResponse = createRoadResponse();
+  let phoneResponseActive = false;
   let lastSpeedAt = 0;
   let brakeTimer = null;
   let reportedEffect = null;
@@ -378,7 +382,7 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
     if (speed <= MINIMUM_BRAKING_SPEED_KMH) return false;
     // A deceleration reading older than the stale window describes a moment that
     // has passed, and must not hold the effect open.
-    if (performance.now() - lastSpeedAt > RATE_STALE_MS) return false;
+    if (!phoneResponseActive && performance.now() - lastSpeedAt > RATE_STALE_MS) return false;
     // The regenerative curve is the baseline an ordinary lift-off produces. Only
     // deceleration clearly steeper than that counts as braking.
     const regenMps2 = -model3AwdLiftOffDecelerationMps2(speed, 1);
@@ -387,8 +391,12 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
   }
 
   function tickBrake() {
-    if (performance.now() - lastSpeedAt > RATE_STALE_MS && smoothedRateMps2 !== 0) {
-      smoothedRateMps2 = 0;
+    const at = performance.now();
+    const phone = getPhoneMotion();
+    phoneResponseActive = Boolean(usableRoadSample(phone));
+    const next = roadResponse.resolve(phone, at - lastSpeedAt > RATE_STALE_MS ? 0 : gpsRateMps2, at);
+    if (smoothedRateMps2 !== next.accelerationMps2) {
+      smoothedRateMps2 = next.accelerationMps2;
       publishArrangement(arrangement);
     }
     const seconds = BRAKE_TICK_MS / 1000;
@@ -582,16 +590,26 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
       });
     },
 
+    resetMotionInput() {
+      roadResponse.reset(); gpsRateMps2 = 0; smoothedRateMps2 = 0; lastSpeedAt = 0;
+      phoneResponseActive = false; brakeAmount = 0; reviewEffectBadges();
+    },
+
+    setPhoneMotionProvider(provider) { getPhoneMotion = provider ?? (() => null); roadResponse.reset(); },
+
     setSpeed(nextSpeed) {
       const now = performance.now();
       const elapsedMs = lastSpeedAt > 0 ? now - lastSpeedAt : 0;
       const rate = nextVehicleRate({
-        previousRateMps2: smoothedRateMps2,
+        previousRateMps2: gpsRateMps2,
         previousSpeedKmh: speed,
         nextSpeedKmh: nextSpeed,
         elapsedMs,
       });
-      smoothedRateMps2 = rate.rateMps2;
+      gpsRateMps2 = rate.rateMps2;
+      const phone = getPhoneMotion();
+      phoneResponseActive = Boolean(usableRoadSample(phone));
+      smoothedRateMps2 = roadResponse.resolve(phone, gpsRateMps2, now).accelerationMps2;
       lastSpeedAt = now;
       speed = nextSpeed;
       arrangementDrive = speedToArrangementDrive(speed);

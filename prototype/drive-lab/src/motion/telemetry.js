@@ -2,7 +2,7 @@
 export const MOTION_STATES = ["idle", "preparing", "pairing", "connecting", "connected", "stale", "closed", "expired", "unavailable", "error", "suspended"];
 export const SENSOR_STATES = ["idle", "requesting", "granted", "denied", "unavailable", "waiting", "live", "incomplete", "stale", "suspended", "error", "stopped"];
 const numericKeys = ["iceCandidates", "received", "sent", "rejected", "expiredRequests", "backpressureDrops", "sendErrors", "rttMs", "rttMaxMs", "ageUpperMs", "cadenceHz", "jitterMs", "tareCount", "reconnects", "motionEvents", "orientationEvents", "missingAxes", "visibilityStops", "accelerationPeak", "angularRatePeak", "signalingStatus", "signalingRequests", "signalingErrors", "connectMs", "wakeRequests", "wakeReleases", "wakeFailures", "traceFps", "tracePoints", "traceRange", "traceContextLosses"];
-const booleanKeys = ["iceComplete", "accelerometer", "gyroscope", "orientation", "orientationEstimated", "tared", "secureContext", "rtc", "wakeLock", "supportsUiContext", "receiverConfirmed", "referenceReceived"];
+const booleanKeys = ["mountSelected", "iceComplete", "accelerometer", "gyroscope", "orientation", "orientationEstimated", "tared", "secureContext", "rtc", "wakeLock", "supportsUiContext", "receiverConfirmed", "referenceReceived"];
 const eventTypes = new Set(["connection", "ice", "start", "offer-ready", "phone-joined", "channel-open", "permission", "tare", "retare-required", "stale", "recovered", "stop", "hidden", "expired", "error", "wake", "trace"]);
 export function safeMotionSummary(value = {}) {
   const safe = {};
@@ -20,6 +20,7 @@ export function safeMotionSummary(value = {}) {
   if (SENSOR_STATES.includes(value.sensorState)) safe.sensorState = value.sensorState;
   if (["tared", "hold-still", "unavailable", "required", "settling"].includes(value.tareState)) safe.tareState = value.tareState;
   if (["ready", "unavailable", "gravity", "acceleration", "rotation", "settling"].includes(value.tareReason)) safe.tareReason = value.tareReason;
+  if (["not-selected", "needs-zero", "calibrated", "unsupported-pose", "moved"].includes(value.roadState)) safe.roadState = value.roadState;
   if (["receiver", "phone"].includes(value.role)) safe.role = value.role;
   return safe;
 }

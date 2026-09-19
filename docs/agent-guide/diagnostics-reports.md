@@ -53,3 +53,7 @@ The atmosphere summary observes visible session time and confirmed advancing aud
 
 The September 19 owner refinement removes the redundant Open Stats for Nerds
 button from Session report. The existing Visuals entry owns navigation to Stats.
+
+## Mounted phone response — September 19
+
+Coordinate-free roadMotion records effective source/status and named consumers. Engine records responseSource. The motion summary allowlist admits only mountSelected and roadState (strict enum), never the road vector payload or raw histories. Synthetic QA still blocks automatic mail. See [the implementation contract](../PHONE-ROAD-INPUT-2026-09-19.md).

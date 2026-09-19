@@ -11,9 +11,9 @@ export function receiverOnboarding(s = {}) {
   if (s.state === "stale" || s.sensorState === "stale") return step(1, "Phone data paused", s.transport === "https" ? "Keep the phone open. Delayed data is ignored; try LOCAL on a shared Wi-Fi if needed." : "Check the phone. Keep its page open.", { restart: true });
   if (s.sensorState !== "live") return step(1, "Allow sensors on your phone", "Tap Allow when your phone asks.");
   if (s.tareState === "settling") return step(2, "Keep the phone still", "ZERO is being set…");
-  if (!s.tared || !s.referenceReceived) return step(2, "On your phone: tap ZERO", "Rest it on a surface. Tap, then lift your finger.");
+  if (!s.tared || !s.referenceReceived) return step(2, "On your phone: tap ZERO", "Select the portrait holder for road response. Park, then ZERO.");
   if (!s.receiverConfirmed) return step(2, s.supportsUiContext ? "Checking both screens…" : "Receiving phone motion", s.supportsUiContext ? "Your ZERO has arrived." : "Reconnect with a new QR for the two-screen check.");
-  return step(3, "Ready on both screens", "Motion is live. TRACE and Aperture can respond.", { ready: true });
+  return step(3, "Ready on both screens", "TRACE is live. Check the display for road response.", { ready: true });
 }
 
 export function phoneOnboarding({ link = {}, sensor = {}, hasPair = false, localOnly = false } = {}) {
@@ -29,7 +29,7 @@ export function phoneOnboarding({ link = {}, sensor = {}, hasPair = false, local
   if (sensor.tareState === "settling") return step(2, "Keep still…", "Lift your finger. ZERO sets after ½ second of stillness.");
   if (["hold-still", "unavailable"].includes(sensor.tareState)) return step(2, "Try ZERO again", sensor.tared ? "Previous ZERO kept. Rest the phone and retry." : sensor.tareReason === "gravity" ? "Gravity reading unavailable. Stop, then retry sensors." : "Rest the phone. Tap ZERO, then lift your finger.");
   if (!sensor.tared) return step(2, localOnly ? "Local sensors · set ZERO" : "Set your starting position", "Rest the phone. Tap ZERO below the graph.");
-  if (!hasPair || localOnly) return step(3, "ZERO set · local only", hasPair ? "Scan a new QR to reconnect to the display." : "Motion is live. TRACE and Aperture can respond.", { ready: true });
+  if (!hasPair || localOnly) return step(3, "ZERO set · local only", hasPair ? "Scan a new QR to reconnect to the display." : "TRACE is live. Check the display for road response.", { ready: true });
   if (!link.receiverConfirmed) return step(2, "ZERO set · checking display…", "Keep both pages open.");
-  return step(3, "Ready on both screens", "Motion is live. TRACE and Aperture can respond.", { ready: true });
+  return step(3, "Ready on both screens", "TRACE is live. Check the display for road response.", { ready: true });
 }

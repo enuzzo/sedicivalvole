@@ -1,5 +1,7 @@
 # Phone motion: road connection and Aperture refinement
 
+The later [mounted road-input implementation](PHONE-ROAD-INPUT-2026-09-19.md) supersedes this document's Aperture-only/no-audio and arbitrary-pose road-response scope. Transport and freshness below remain current.
+
 ## Owner evidence and decision
 
 The September 19 road report from build 20260919-1425 shows two successful QR admissions and retrieved phone answers, followed by 30-second connection expiry. Both attempts gathered one candidate without reporting completed ICE gathering. No channel-open event or received/sent sample appears. This establishes failure after signaling, not the exact network/browser cause. The owner reports successful QR opening and apparent iPhone permission/sensor operation; the receiver log cannot independently verify phone sensors.

@@ -1,0 +1,13 @@
+{
+  "synthetic": true,
+  "checks": [
+    "actual App selects fresh mounted input",
+    "real Engine runtime increases drive demand at fixed 40 km/h",
+    "real Engine runtime coasts and decelerates from phone at fixed GPS speed",
+    "receiver panel exposes actual source",
+    "251ms sample never claims LIVE",
+    "moved mount explains retare",
+    "Demo excludes otherwise fresh phone"
+  ],
+  "errors": []
+}

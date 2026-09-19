@@ -1,5 +1,9 @@
 # Current Project State
 
+## Mounted phone road input — September 19
+
+Implementation and synthetic verification are in progress; canonical publication is not yet claimed. The explicitly selected portrait holder uses gravity-based ZERO for longitudinal Engine/Flux response, preserving GPS speed and the existing Aperture curve. The source indicator distinguishes effective input from connection status. [Contract and physical acceptance](PHONE-ROAD-INPUT-2026-09-19.md). Earlier no-audio-coupling notes describe the previous release.
+
 ## Explicit automatic-report controls published — September 19
 
 Canonical **20260919-1630.1085bbf** is published and verified. Dev remains the default with automatic coordinate-free reports every 15 minutes of observable active session time. Session report separates ON/OFF status from PAUSE SENDING / ENABLE SENDING actions; choosing Dev enables delivery. Explicit pauses and Standard survive normal reload. The old annotated OFF was imposed by the synthetic QA fixture; that fixture now mirrors Dev/ON while blocking diagnostic requests. The supplied Tesla report already recorded Dev/ON at a 900000 ms interval.

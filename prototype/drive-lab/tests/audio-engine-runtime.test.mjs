@@ -629,3 +629,31 @@ test("Engine clears active UNDERWATER and cannot retrigger it while braking", as
     engine.destroy();
   });
 });
+
+test("mounted braking drives the actual Flux macro and releases on sensor loss at constant GPS speed", async () => {
+  await withFakeAudioEnvironment({}, async ({ createAudioEngine, timers, setClock }) => {
+    const engine = createAudioEngine();
+    let sample = {frame:'tare-relative',generation:1,ageMs:0,road:{longitudinalMps2:-5,yawRate:0}};
+    engine.setPhoneMotionProvider(()=>sample);
+    setClock(1);engine.setSpeed(50);
+    for(let t=41;t<=1201;t+=40){setClock(t);timers.runIntervals(40);}
+    assert.ok(engine.getMacroSnapshot().values.underwater > .5, 'mounted deceleration must reach the real macro');
+    sample=null;
+    for(let t=1241;t<=5001;t+=40){setClock(t);timers.runIntervals(40);}
+    assert.ok(engine.getMacroSnapshot().values.underwater < .01, 'lost sensor cannot hold underwater');
+    engine.destroy();
+  });
+});
+
+test('speed-source reset removes phone response before Demo takes ownership',async()=>{
+ await withFakeAudioEnvironment({},async({createAudioEngine,timers,setClock})=>{
+  const engine=createAudioEngine();let active=true;
+  engine.setPhoneMotionProvider(()=>active?{frame:'tare-relative',generation:1,ageMs:0,road:{longitudinalMps2:-5,yawRate:0}}:null);
+  setClock(1);engine.setSpeed(50);
+  for(let t=41;t<=1201;t+=40){setClock(t);timers.runIntervals(40);}
+  assert.ok(engine.getMacroSnapshot().values.underwater>.5);
+  active=false;engine.resetMotionInput();assert.equal(engine.getMacroSnapshot().values.underwater,0);
+  setClock(1241);engine.setSpeed(50);timers.runIntervals(40);
+  assert.equal(engine.getMacroSnapshot().values.underwater,0);engine.destroy();
+ });
+});

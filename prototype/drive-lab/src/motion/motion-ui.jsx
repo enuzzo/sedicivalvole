@@ -35,7 +35,7 @@ export function MotionNext({ guide }) {
   </div>;
 }
 
-export function MotionPanel({ snapshot, onStart, onStop, onClose }) {
+export function MotionPanel({ snapshot, onStart, onStop, onClose, responseLabel }) {
   const [qr, setQr] = useState(null);
   const [qrError, setQrError] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
@@ -58,7 +58,8 @@ export function MotionPanel({ snapshot, onStart, onStop, onClose }) {
     : receiverOnboarding(snapshot);
   return <div className="motion-panel-content">
     <header><div><small>PHONE COMPANION · EXPERIMENTAL</small><h2 id="motion-title">Connect your phone</h2></div><button data-dialog-initial-focus onClick={onClose}>CLOSE</button></header>
-    <div className="motion-benefits"><p>Your phone, a motion sensor.</p><p>Acceleration. Rotation. Live.</p><p>See every move in TRACE.</p></div>
+    <MotionSourceStatus label={responseLabel}/>
+    <div className="motion-benefits"><p>Your phone, a motion sensor.</p><p>Acceleration. Rotation. Live.</p><p>Feel the road in Engine and Music.</p></div>
     <MotionSteps active={guide.active}/>
     <div className="motion-pairing"><div>
       <MotionNext guide={guide}/>
@@ -74,7 +75,7 @@ export function MotionPanel({ snapshot, onStart, onStop, onClose }) {
       <button onClick={() => { onStop(); onStart("direct"); }}>CREATE LOCAL WEBRTC QR</button>
       <p>HTTPS connects through sedicivalvole.app, even on different networks. Encrypted motion envelopes are held briefly; only your two screens have the key. A local connection is also available when the network allows it.</p>
       <p>To replace a pending QR, tap CANCEL, then CREATE QR. Hiding either page, disconnecting or reaching one hour ends the session; scan a new QR to reconnect. CLOSE only closes this panel.</p>
-      <p>GPS/Demo still supplies speed. Fresh, zeroed phone rotation bends Aperture. Keep the phone fixed in its holder. REPORT includes connection and sensor-quality summaries, never sensor streams or pairing keys.</p>
+      <p>GPS supplies speed. Calibrated mounted acceleration drives Engine and Music response; gyro bends Aperture. Demo excludes the phone. Keep the phone fixed in its holder. REPORT includes connection and sensor-quality summaries, never sensor streams or pairing keys.</p>
       </div>
     </div>
   </div>;
@@ -88,4 +89,11 @@ export function MotionQuality({ summary = {} }) {
     <div><dt>Transport</dt><dd>{summary.transport === "https" ? "HTTPS · ENCRYPTED" : summary.transport === "direct" ? "LOCAL · WEBRTC" : "THIS DEVICE"}</dd></div>
     <div><dt>Round trip</dt><dd>{summary.received > 0 ? `${summary.rttMs?.toFixed(1)} ms` : "—"}</dd></div>
   </dl>;
+}
+
+export function MountChoice({ selected, onChange }) {
+  return <label className="motion-mount-choice"><input type="checkbox" checked={selected === true} onChange={event => onChange(event.target.checked)}/><span>Portrait in car holder<small>Top up · screen toward cabin · aligned straight ahead. Park, then ZERO. Uncheck when handheld.</small></span></label>;
+}
+export function MotionSourceStatus({ label }) {
+  return <p className="local-source-status motion-effective-source" role="status">{label}</p>;
 }

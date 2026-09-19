@@ -1,8 +1,11 @@
+import { createRoadResponse } from "../motion/road-input.js";
 const clamp = (value, low, high) => Math.max(low, Math.min(high, value));
 export const ENGINE_MOTION_POLICY = Object.freeze({ freshMs: 1800, lostMs: 5000, positionAccuracyM: 250, smoothingSeconds: 0.22, stationaryDwellMs: 350, stationaryWatchHoldMs: 12000 });
 
 /** Live watch receipt and checked one-shot acquisition use one monotonic control clock. */
 export function createEngineMotion() {
+  let getPhoneMotion = () => null;
+  const response = createRoadResponse();
   let generation = 0;
   let last = null;
   let raw = null;
@@ -13,12 +16,13 @@ export function createEngineMotion() {
   let reason = "awaiting-motion";
   let invalidated = true;
   const reset = (nextReason = "lifecycle") => {
-    generation++;
+    generation++; response.reset();
     last = null; raw = null; filtered = null; acceleration = 0;
     zeroSince = null; zeros = 0; reason = nextReason; invalidated = true;
   };
   return {
     reset,
+    setPhoneMotionProvider(provider) { getPhoneMotion = provider ?? (() => null); response.reset(); },
     observe({ source, rawSpeedKmh, sourceTimestampMs, receivedMs, epochNowMs, accuracyM, driveInput = "auto", brakeHeld = false, liveWatch = false }) {
       if (!Number.isFinite(receivedMs)) return false;
       if (last && source !== last.source) reset("source-changed");
@@ -78,13 +82,15 @@ export function createEngineMotion() {
         : invalidated || ageMs > Math.max(freshMs, ENGINE_MOTION_POLICY.lostMs) ? "lost"
         : ageMs > freshMs ? "degraded" : "fresh";
       const trusted = freshness === "fresh";
+      const selected = response.resolve(trusted && last?.source === "GPS" ? getPhoneMotion() : null, trusted ? acceleration : 0, nowMs);
+      const effectiveAcceleration = selected.accelerationMps2;
       const brake = last?.brakeHeld === true;
       const drive = !trusted ? 0 : brake || last?.driveInput === "regen" ? 0
-        : last?.driveInput === "accelerator" ? 1 : clamp(0.15 + acceleration / 2.5, 0, 1);
+        : last?.driveInput === "accelerator" ? 1 : clamp(0.15 + effectiveAcceleration / 2.5, 0, 1);
       return {
         generation, timestampPolicy: last?.liveWatch ? "live-watch-receipt" : "acquisition", source: last?.source ?? "unavailable", freshness, reason, ageMs: Number.isFinite(ageMs) ? ageMs : null,
-        rawSpeedKmh: Number.isFinite(raw) ? raw : null, speedKmh: filtered, accelerationMps2: acceleration,
-        drive, deceleration: clamp(-acceleration / 4, 0, 1),
+        rawSpeedKmh: Number.isFinite(raw) ? raw : null, speedKmh: filtered, accelerationMps2: effectiveAcceleration, responseSource: last?.source === "GPS" ? selected.responseSource : last?.source === "Demo" ? "demo-motion" : "unavailable",
+        drive, deceleration: clamp(-effectiveAcceleration / 4, 0, 1),
         trustedStationary: trusted && raw === 0 && zeros >= (stationaryWatch ? 1 : 2) && zeroSince != null && nowMs - zeroSince >= ENGINE_MOTION_POLICY.stationaryDwellMs,
         canShift: trusted && !last?.reacquired,
       };

@@ -2,6 +2,7 @@ import { waitForMotionIce } from "./ice-gathering.js";
 import { safeMotionSummary } from "./telemetry.js";
 import { vectorValid } from "./reference.js";
 import { safeMotionPresentation, safeReceiverContext, DEFAULT_MOTION_PRESENTATION } from "./presentation.js";
+import { safeRoadValues } from "./road-input.js";
 const VERSION = "sv-motion-1";
 const LABEL = "sedicivalvole-motion";
 const finite = (n) => typeof n === "number" && Number.isFinite(n);
@@ -18,7 +19,8 @@ export function safeMotionValues(value) {
   return { frame: "tare-relative", generation: value.generation,
     acceleration: value.acceleration.map((n) => Math.round(n * 100) / 100),
     rotation: value.rotation.map((n) => Math.round(n * 10) / 10),
-    tilt: value.tilt.map((n) => Math.round(n * 10) / 10), turnRate: Math.round(value.turnRate * 10) / 10 };
+    tilt: value.tilt.map((n) => Math.round(n * 10) / 10), turnRate: Math.round(value.turnRate * 10) / 10,
+    ...(safeRoadValues(value.road) ? { road: safeRoadValues(value.road) } : {}) };
 }
 
 export function createMotionProtocol({ role, now = () => performance.now(), getPhone = () => ({}), getPresentation = () => DEFAULT_MOTION_PRESENTATION, onSummary = () => {} }) {

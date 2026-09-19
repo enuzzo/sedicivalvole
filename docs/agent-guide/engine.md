@@ -63,3 +63,7 @@ motion stop decorative travel; values remain available. No audio/control model
 or physical vehicle telemetry is added.
 
 [Implementation, silent preview and verification](../qa/2026-09-19-engine-cells/README.md).
+
+## Mounted phone response — September 19
+
+Mounted longitudinal acceleration feeds the existing demand/load/coast estimator and load-sensitive shifts; GPS still owns speed, standstill and shift freshness. Preserve the dry Engine path and manual rev exception. See [the implementation contract](../PHONE-ROAD-INPUT-2026-09-19.md).

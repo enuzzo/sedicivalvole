@@ -398,3 +398,15 @@ test('explicit local recovery guides ZERO without claiming a restored display co
   assert.match(phoneOnboarding({...input,localOnly:true,sensor:{sensorState:'live',tareState:'settling'}}).title,/Keep still/);
  }
 });
+
+test('mounted sensor ZERO latches invalidation and needs explicit recalibration after handling',async()=>{
+ const f=sensorFixture();await f.sensor.start();f.sensor.setMount(true);
+ const mounted={accelerationIncludingGravity:{x:0,y:6.9367,z:6.9367}};
+ f.orient();f.motion(mounted);assert.equal(f.sensor.tare(),'tared');
+ assert.equal(f.sensor.summary().roadState,'calibrated');assert.ok(f.sensor.latest().road);
+ f.time(20);f.motion();assert.equal(f.sensor.summary().roadState,'moved');assert.equal(f.sensor.latest().road,undefined);
+ f.time(40);f.motion(mounted);assert.equal(f.sensor.latest().road,undefined);
+ f.sensor.tare();assert.ok(f.sensor.latest().road);
+ f.sensor.requestTare();assert.equal(f.sensor.latest().road,undefined);
+ f.host.emit('offline');assert.equal(f.sensor.latest(),null);f.sensor.dispose();
+});

@@ -45,7 +45,7 @@ N03/N04 have development-only QA modules under `prototype/drive-lab/qa/` and
 
 The selected [TRACE companion](../PHONE-MOTION-COMPANION-2026-09-18.md) adds
 explicit-permission iPhone sensing, user-triggered pose tare and an expiring encrypted HTTPS companion, with optional local WebRTC via the same-host PHP endpoint. It carries quantized
-relative motion plus allowlisted presentation/receipt context; GPS/Demo remains the sole speed source. Fresh zeroed rotation bends Aperture; audio does not consume it. The September 19 [road connection refinement](../PHONE-MOTION-HTTPS-2026-09-19.md) supersedes the prior direct-only and no-renderer-consumption scope. Keep 250 ms freshness, no clock subtraction across peers,
+relative motion plus allowlisted presentation/receipt context; GPS/Demo remains the sole speed source. The later [mounted road-input authorization](../PHONE-ROAD-INPUT-2026-09-19.md) adds calibrated portrait-holder acceleration to Engine/Flux response and mounted gyro to Aperture. GPS retains speed authority; Demo excludes sensors. The September 19 [road connection refinement](../PHONE-MOTION-HTTPS-2026-09-19.md) supersedes the prior direct-only and no-renderer-consumption scope. Keep 250 ms freshness, no clock subtraction across peers,
 no raw histories, one-use QR admission and teardown on hide/disconnect.
 
 The phone-only TRACE renderer owns bounded acceleration-space history; it never
@@ -89,3 +89,7 @@ replaces a stale session instead of silently reusing admission.
 ## September 19 road recovery
 
 [Road refinement](../ROAD-REFINEMENT-2026-09-19.md) adds explicit static-cache reset in Intro and diagnostics, preserving preferences and pairing. This owner action may purge app generations; automatic cache eviction retains the ordinary open-client rules. Local TRACE reuses the phone sensor owner, preferring permission-capable touch input or trusted complete motion evidence without UA/screen-size identification. Capability or permission is never live evidence; remote QR remains explicitly available. ICE gathering can accept candidate-bearing SDP at its bounded deadline; empty offers fail visibly before QR. No new sensor/audio coupling or external ICE service is authorized. The later September 19 owner request authorizes the encrypted same-origin HTTPS transport and Aperture rotation response described above.
+
+## Mounted road response — September 19
+
+The explicit owner request supersedes earlier no-sensor/audio-coupling restrictions. Follow [mount, axes, fallback and physical limits](../PHONE-ROAD-INPUT-2026-09-19.md). Preserve explicit mount selection, gravity-based ZERO, latched handling rejection, 250 ms freshness and distinct GPS speed authority. Other poses retain TRACE with GPS road response. Never claim automatic vehicle identification or complete handheld-motion rejection.

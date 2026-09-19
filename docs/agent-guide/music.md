@@ -47,3 +47,7 @@ Use one shared registry/card definition in launch and Visual, retaining existing
 ## Foreground transport recovery
 
 The [September 19 correction](../ROAD-REFINEMENT-2026-09-19.md) keeps music mute independent of Engine and records playback intent through deferred START. Retry failed selection or a ten-second frozen media clock with bounded backoff for five minutes, never overriding explicit native pause, mute, hidden or offline state. Loading, retrying and terminal manual retry remain distinct.
+
+## Mounted phone response — September 19
+
+Mounted longitudinal deceleration feeds the existing regen-relative braking and Underwater semantics in Play the Road and Soundtrack. Preserve the typed macro boundary, 1x recordings, manual FX and Engine bypass; no gyro-to-pitch mapping. See [the implementation contract](../PHONE-ROAD-INPUT-2026-09-19.md).

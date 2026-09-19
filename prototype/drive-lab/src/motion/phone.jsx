@@ -4,7 +4,7 @@ import { createMotionSession } from "./session.js";
 import { getFluxTheme } from "../flux-themes.js";
 import { resolveSemanticTheme } from "../semantic-theme.js";
 
-import { MotionQuality, MotionSteps, MotionNext } from "./motion-ui.jsx";
+import { MotionQuality, MotionSteps, MotionNext, MountChoice } from "./motion-ui.jsx";
 import { phoneStatus } from "./phone-status.js";
 import { MotionTrace } from "./trace-view.jsx";
 import { motionPresentationFromSearch } from "./presentation.js";
@@ -110,7 +110,9 @@ export function MotionPhone() {
         <div><span>Rotation</span><span className="motion-input-value">{number(activity.rotation)} °/s</span></div>
       </div>}
       <MotionTrace getSample={getSample} onTelemetry={traceTelemetry} resetKey={viewReset} themeKey={`${presentation.palette}:${presentation.appearance}`}/>
+      <MountChoice selected={sensor.mountSelected} onChange={selected => { sensorsRef.current?.setMount(selected); setSensor(sensorsRef.current?.summary() ?? {}); }}/>
       <div className="motion-zero-row"><button className={`motion-zero${guide.active === 2 && !sensor.tared && sensor.tareState !== "settling" ? " motion-nudge" : ""}`} onClick={tare} disabled={sensor.tareState === "settling" || sensor.sensorState !== "live"}>{sensor.tareState === "settling" ? "HOLD STILL" : "ZERO"}<small>recalibrate</small></button></div>
+      <p className="motion-road-state">Road response: {sensor.roadState === "calibrated" ? "mount calibrated · display decides active source" : sensor.roadState === "moved" ? "mount moved · ZERO again" : sensor.roadState === "unsupported-pose" ? "check portrait holder pose · ZERO again" : sensor.mountSelected ? "ZERO required" : "GPS fallback · holder not selected"}</p>
       <p ref={zeroStepRef} className="motion-phone-message">{sensor.tareState === "settling" ? "Keep still…" : ["hold-still", "unavailable"].includes(sensor.tareState) ? (sensor.tared ? "Previous ZERO kept · try again" : "Not set · rest the phone and retry") : sensor.tared ? "✓ ZERO SET" : sensor.sensorState === "live" ? "Tap ZERO · lift your finger · keep still" : "Enable sensors to set ZERO"}</p>
       <div className="motion-view-actions"><button onClick={() => setViewReset(n => n + 1)}>RECENTER VIEW</button><button onClick={stop}>STOP</button></div>
     </section>
@@ -129,9 +131,9 @@ export function MotionPhone() {
           <rect x="37" y="15" width="38" height="72" rx="5" transform="rotate(45 56 51)"/>
           <path d="m41 69 7 7"/><text x="81" y="83" fill="currentColor" stroke="none" fontSize="14">45°</text>
         </svg>
-        <p><strong>Your holder is your zero.</strong> Portrait at about 45°, flat or upright: place the phone, keep it steady, then tap ZERO. No need to level it.</p>
+        <p><strong>Your holder is your zero.</strong> For road response, select the portrait car holder: top up, screen facing the cabin, aligned with the car. Park, then ZERO. Gravity measures the actual incline; no fixed angle is assumed.</p>
       </div>
-      <p>ZERO sets this pose as zero, not the car's forward direction. Movement in your hand also counts. Recalibrate after remounting.</p>
+      <p>Handheld or other mounts keep TRACE and GPS road response. Mount movement can invalidate road calibration: remount and ZERO. Slow yaw or translation in your hand cannot reliably be distinguished from car motion; uncheck the holder before lifting the phone.</p>
       <p>The cube shows acceleration in m/s² over the last three seconds, not a position or road path. Axis scales expand together when needed and reset with ZERO. Drag sideways to turn the view; RECENTER VIEW restores the camera without changing your zero. The phone icon shows orientation relative to your reference.</p>
       <p>Keep this page visible. Screen wake is {sensor.wakeLock ? "active" : sensor.wakeState ?? "not requested"}. Hiding the page ends the connection.</p>
     </details>
