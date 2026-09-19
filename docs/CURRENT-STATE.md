@@ -1,5 +1,47 @@
 # Current Project State
 
+## Guided companion and shared appearance published — September 19
+
+Canonical **20260919-0225.eabf6d7**, VERSION **0.0.0**, is published. Source
+checkpoints `531a142` and `eabf6d7` are pushed. The guide now opens with three
+stacked benefit lines and palette-colored Scan / Connect / Zero illustrations.
+Current steps and actions are highlighted, completed steps have checks, and
+technical quality/network/privacy copy is disclosed on demand. A bounded pulse
+respects reduced motion. The phone follows the display palette and effective
+LIGHT/DARK appearance from QR entry and during the connection, including TRACE
+recoloring without resetting ZERO, history or camera.
+
+**Ready on both screens** requires fresh referenced data and a reciprocal
+receipt, including return-trip age measured on the phone's own clock. Delayed
+receipts, new ZERO generations and stale sensors cannot retain readiness. An
+open sensor stream cannot complete Connect before transport opens. Retry actions
+stay next to the problem; explicit new QR recovery preserves one-use admission.
+GPS/audio/visual steering and physical device acceptance are unchanged.
+
+Evidence: full native functional baseline **970/970**, followed by final affected
+motion/TRACE/typography/documentation checks **66/66**; production **828 hashes**,
+credits **189**, hygiene **1,500**. Local real-WebRTC/PHP fixtures verify mutual
+confirmation, live BLUE/LIGHT to MINT/DARK propagation and clearing confirmations
+when samples pause. Synthetic samples are not physical iPhone evidence. Local
+phone 320×568, 390×844 and 844×390 plus display 773×601 layout checks pass; the
+compact QR fits in the initial viewport. TRACE recolors live without resetting
+its bounded history. No console warnings/errors were observed in these checks.
+
+Official preserve-existing publication passes all gates: **39 files / 6,386,687
+bytes**, 825 static files and 29 recordings reused by verified identity, two
+previous entry assets retained, ROOT_UPLOAD_ONLY. The earlier candidate was
+stopped during read-only preflight before uploads; the corrected publication
+completed. Post-publication HTTPS checks verify **11 asset hashes and four root
+identities**, with HTTP 200 and no-store/no-cache headers. Live browser checks
+confirm automatic QR creation, the three-line guide, CANCEL/new-QR recovery,
+accessible details, phone BLUE/LIGHT appearance and build identity, without
+console warnings/errors. No active publication or local QA server remains.
+
+Next acceptance is an owner desk-iPhone scan → allow → ZERO → movement test,
+then separate Tesla/network/wake checks. No new design selection is pending and
+no unrelated task has been started. [User guide](PHONE-MOTION-USER-GUIDE.md) and
+[protocol/UI contract](PHONE-MOTION-COMPANION-2026-09-18.md).
+
 ## Companion QR, SVG guide and ZERO published — September 19
 
 Canonical **20260919-0202.0f31a79**, VERSION **0.0.0**, is published and verified.

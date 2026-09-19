@@ -542,3 +542,19 @@ privacy, expiration/recovery and GPS ownership remain available behind the
 keyboard-accessible Connection details button. No new visual direction or TRACE
 redesign is introduced. The three alternative arrangements are optional ideas,
 not a blocking owner decision or required next task.
+
+## Guided onboarding publication — September 19, 2026
+
+Build **20260919-0225.eabf6d7** publishes the owner-directed three-line introduction,
+three-color step illustrations, progressive actions, shared appearance and fresh
+reciprocal readiness. Functional source is `531a142` with Connect-order correction
+`eabf6d7`. Full regression baseline 970/970, final focused checks 66/66, production
+828 hashes, credits 189 and hygiene 1,500 pass. Local responsive and real-channel
+synthetic evidence is recorded in CURRENT-STATE; it does not close physical gates.
+Official publication completed all identity/integrity gates, uploading 39 files /
+6,386,687 bytes while preserving existing files. Postflight verifies 11 HTTPS asset
+hashes, four canonical identities and HTTP 200/no-store/no-cache headers.
+Live browser verification confirms automatic QR, guide/recovery/details and the
+phone's BLUE/LIGHT presentation with current build identity and no console errors.
+No synthetic diagnostic mail was sent. Real iPhone ZERO, Tesla reachability and
+wake/endurance acceptance remain separate owner checks.
