@@ -1,5 +1,11 @@
 # Current Project State
 
+## Explicit automatic-report controls published — September 19
+
+Canonical **20260919-1630.1085bbf** is published and verified. Dev remains the default with automatic coordinate-free reports every 15 minutes of observable active session time. Session report separates ON/OFF status from PAUSE SENDING / ENABLE SENDING actions; choosing Dev enables delivery. Explicit pauses and Standard survive normal reload. The old annotated OFF was imposed by the synthetic QA fixture; that fixture now mirrors Dev/ON while blocking diagnostic requests. The supplied Tesla report already recorded Dev/ON at a 900000 ms interval.
+
+[Evidence](qa/2026-09-19-auto-reports/README.md): native 997 cases, final affected/documentation 52 checks, production 827 hashes and canonical HTTPS 21 checks pass. Browser verifies state transitions, compact layouts and live ON persistence after reload, without synthetic mail. All earlier UI, Engine, phone HTTPS and Aperture work remains included; new transport/curve acceptance on physical Tesla/iPhone remains open.
+
 ## Phone HTTPS and Aperture gyro published — September 19
 
 Canonical **20260919-1612.11ecca8** is published and verified. The owner road log shows two post-signaling failures with no direct data channel. Default pairing now uses end-to-end encrypted same-origin HTTPS; local WebRTC remains an explicit comparison option. Fresh zeroed gyro turn rate bends Aperture; GPS continues to own speed. No external ICE provider or audio coupling is added.

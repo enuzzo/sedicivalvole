@@ -5311,3 +5311,8 @@ was started. Local QA servers and browser tabs have been closed.
 - Official `--publish --preserve-existing`: all identity gates PASS, 38 files / 6,482,240 bytes, 825 static files and 29 recordings fully hash-verified/reused, one prior asset retained, ROOT_UPLOAD_ONLY. Backward-compatible motion endpoint adds reviewed AES-GCM ciphertext mailboxes; its exact hash is admitted beside the legacy endpoint for overlap.
 - 21 canonical HTTP identity/hash/cache checks and public browser UI pass; no synthetic mail. Public endpoint synthetic receiver/phone reaches reciprocal readiness, 48 received samples, no HTTP errors, 205.7 ms maximum accepted round trip from the test Mac. This does not establish mobile or physical acceptance.
 - [Full evidence](qa/2026-09-19-phone-relay/README.md).
+
+
+## 2026-09-19 16:38 — explicit automatic-report controls
+
+Source `1085bbf`, build `20260919-1630.1085bbf`. Official preserve-existing publication: all identity gates PASS, 38 files / 6,483,420 bytes, 825 static files and 29 recordings fully verified/reused, two prior assets retained, ROOT_UPLOAD_ONLY. Production 827 exact hashes and all 21 canonical HTTPS checks pass. Browser confirms the new state/action labels and persisted Dev/ON on reload, without warning/error or synthetic mail. Clock, endpoint and recipient unchanged. [Evidence](qa/2026-09-19-auto-reports/README.md).
