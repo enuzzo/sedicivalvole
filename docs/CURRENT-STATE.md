@@ -2,7 +2,7 @@
 
 ## Mounted phone road input — September 19
 
-Implementation and synthetic verification are in progress; canonical publication is not yet claimed. The explicitly selected portrait holder uses gravity-based ZERO for longitudinal Engine/Flux response, preserving GPS speed and the existing Aperture curve. The source indicator distinguishes effective input from connection status. [Contract and physical acceptance](PHONE-ROAD-INPUT-2026-09-19.md). Earlier no-audio-coupling notes describe the previous release.
+Canonical **20260919-1722.ea8712b** is published and verified. Native **1006/1006**, relevant final checks, **827** production hashes and **21** canonical HTTPS checks pass. Browser proves actual Engine demand/deceleration at fixed synthetic GPS speed, truthful source/fallback/Demo states and final phone/rail geometry; no synthetic mail is sent. The explicitly selected portrait holder uses gravity-based ZERO for longitudinal Engine/Flux response, preserving GPS speed and the existing Aperture curve. The source indicator distinguishes effective input from connection status. [Contract and physical acceptance](PHONE-ROAD-INPUT-2026-09-19.md). Earlier no-audio-coupling notes describe the previous release. [Delivery and QA evidence](qa/2026-09-19-road-motion/README.md).
 
 ## Explicit automatic-report controls published — September 19
 

@@ -5328,3 +5328,8 @@ canonical Intro shows the larger 64 px mark and correct identity without console
 warnings/errors. Local QA verifies unchanged 64/56 px navbar heights, compact
 marks, report cleanup and retained Stats Visual. No synthetic mail was sent.
 Evidence: [logo/report QA](qa/2026-09-19-logo-report/README.md).
+
+
+## 2026-09-19 17:29 — mounted iPhone road response
+
+Source `ea8712b`, build `20260919-1722.ea8712b`, VERSION from the official pipeline. Native 1006 cases and affected follow-ups pass; package validates 827 static hashes. Official `--publish --preserve-existing` gates pass: 38 files / 6,492,554 bytes, 825 static files and 29 recordings hash-verified/reused, two prior assets retained, ROOT_UPLOAD_ONLY, no legacy deletion. All 21 canonical HTTPS checks and live UI/reload checks pass without synthetic mail. Physical acceptance remains separate. [Complete evidence](qa/2026-09-19-road-motion/README.md).
