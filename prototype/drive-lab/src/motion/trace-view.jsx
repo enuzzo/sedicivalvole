@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { createMotionTrace, TRACE_CAPACITY, TRACE_WINDOW_MS } from './trace-model.js';
 
@@ -23,7 +23,7 @@ const labels = [
 ];
 const phoneCorners = [[-.28,-.53,0],[.28,-.53,0],[.28,.53,0],[-.28,.53,0],[-.28,-.53,0]];
 
-export function MotionTrace({ getSample, onTelemetry, resetKey = 0, themeKey = "" }) {
+export const MotionTrace = memo(function MotionTrace({ getSample, onTelemetry, resetKey = 0, themeKey = "" }) {
   const root = useRef(null), canvas = useRef(null), overlay = useRef(null), phone = useRef(null), reset = useRef(() => {});
   const recolor = useRef(() => {});
   const callbacks = useRef({ getSample, onTelemetry }); callbacks.current = { getSample, onTelemetry };
@@ -187,4 +187,4 @@ export function MotionTrace({ getSample, onTelemetry, resetKey = 0, themeKey = "
     <span className="trace-state" data-trace-state>AWAITING ZERO & FRESH DATA</span>
     {status !== 'webgl2' && <span className="trace-unavailable" role="status">{status === 'context-lost' ? '3D paused · waiting for graphics recovery' : '3D unavailable · sensor values remain below'}</span>}
   </div>;
-}
+});

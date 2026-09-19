@@ -35,6 +35,7 @@ export function MotionPhone() {
   const [sensor, setSensor] = useState({ sensorState: "idle" });
   const [values, setValues] = useState(null);
   const [activity, setActivity] = useState(null);
+  const [localOnly, setLocalOnly] = useState(false);
   useEffect(() => {
     const previousTitle = document.title;
     document.title = "Phone companion — sedicivalvole";
@@ -42,6 +43,7 @@ export function MotionPhone() {
     const session = createMotionSession({ role: "phone", onChange: next => {
       // A lost/ended pairing also invalidates the phone reference and wake owner.
       const changed = previousLink !== next.state; previousLink = next.state;
+      if (changed && ["closed", "expired", "error", "suspended", "unavailable"].includes(next.state)) setLocalOnly(false);
       if (changed && ["closed", "expired", "error", "suspended", "unavailable"].includes(next.state)
         && !["stopped", "suspended", "idle"].includes(sensorsRef.current?.summary().sensorState)) sensorsRef.current?.stop();
       if (next.presentation) setPresentation(previous => previous.palette === next.presentation.palette && previous.appearance === next.presentation.appearance ? previous : next.presentation);
@@ -54,13 +56,15 @@ export function MotionPhone() {
     return () => { document.title = previousTitle; clearInterval(timer); sensors.dispose(); session.dispose(); sensorsRef.current = null; sessionRef.current = null; };
   }, []);
   useEffect(() => {
-    if (revealZeroRef.current && sensor.sensorState === "live" && !sensor.tared && (!initialPair || snapshot.state === "connected")) {
+    if (revealZeroRef.current && sensor.sensorState === "live" && !sensor.tared && (!initialPair || localOnly || snapshot.state === "connected")) {
       revealZeroRef.current = false;
-      zeroStepRef.current?.scrollIntoView({ block: "end", behavior: "auto" });
+      const bounds = zeroStepRef.current?.getBoundingClientRect();
+      if (bounds && (bounds.top < 0 || bounds.bottom > window.innerHeight)) zeroStepRef.current.scrollIntoView({ block: "end", behavior: "auto" });
     }
-  }, [sensor.sensorState, sensor.tared, snapshot.state]);
+  }, [sensor.sensorState, sensor.tared, snapshot.state, localOnly]);
   const start = () => {
     revealZeroRef.current = true;
+    setLocalOnly(!initialPair || ["closed", "expired", "error", "suspended", "unavailable"].includes(snapshot.state));
     void sensorsRef.current?.start();
     if (status.canJoin && !attemptedRef.current) {
       attemptedRef.current = true;
@@ -72,9 +76,9 @@ export function MotionPhone() {
     sensorsRef.current?.requestTare();
     setSensor(sensorsRef.current?.summary() ?? {});
   };
-  const stop = () => { sensorsRef.current?.stop(); sessionRef.current?.stop(); setSensor(sensorsRef.current?.summary() ?? {}); setValues(null); setActivity(null); };
+  const stop = () => { sensorsRef.current?.stop(); sessionRef.current?.stop(); setLocalOnly(false); setSensor(sensorsRef.current?.summary() ?? {}); setValues(null); setActivity(null); };
   const status = phoneStatus({ link: snapshot, sensor, hasPair: Boolean(initialPair), attempted: attemptedRef.current });
-  const guide = phoneOnboarding({ link: snapshot, sensor, hasPair: Boolean(initialPair), attempted: attemptedRef.current });
+  const guide = phoneOnboarding({ link: snapshot, sensor, hasPair: Boolean(initialPair), localOnly, attempted: attemptedRef.current });
   const download = () => {
     const report = { schema: "sedicivalvole.motion-phone-report.v1", generatedAt: new Date().toISOString(),
       build: __APP_BUILD__, commit: __APP_COMMIT__, platform: navigator.userAgent,
@@ -84,6 +88,7 @@ export function MotionPhone() {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
   return <main className="motion-phone" data-palette={presentation.palette} data-appearance={presentation.appearance} style={{ ...phoneTheme.css, colorScheme: presentation.appearance }}>
+    <div className="motion-phone-stage">
     <div className="motion-phone-lead">
     <header className="motion-phone-brand">
       <img src={`/brand/pistons-v1/mark-512.png?build=${encodeURIComponent(__APP_BUILD__)}`} width="48" height="48" alt=""/>
@@ -91,7 +96,7 @@ export function MotionPhone() {
     </header>
     <div className="motion-phone-heading"><h1>Motion instrument</h1><span>TRACE</span></div>
     <section className="motion-phone-controls" aria-label="Connection and sensor controls">
-      {initialPair && <MotionSteps active={guide.active} compact/>}
+      {initialPair && !localOnly && <MotionSteps active={guide.active} compact/>}
       <MotionNext guide={guide}/>
       {(!status.running || sensor.sensorState === "requesting") && <div className="motion-actions"><button key={status.action} className="motion-primary motion-nudge" onClick={start} disabled={sensor.sensorState === "requesting"}>{sensor.sensorState === "requesting" ? "AWAITING PERMISSION…" : status.action}</button></div>}
       {(["incomplete", "stale"].includes(sensor.sensorState) || sensor.sensorState === "waiting" && sensor.waitingMs > 5000) && <div className="motion-actions"><button className="motion-primary motion-nudge" onClick={() => { sensorsRef.current?.stop(); start(); }}>RETRY SENSORS</button></div>}
@@ -99,20 +104,23 @@ export function MotionPhone() {
     </section>
     </div>
     <section className="motion-instrument" aria-label="Live motion readings">
-      {!sensor.tared && <div className="motion-input-proof" aria-label="Sensor activity before zero">
-        <strong>{activity ? "SENSORS LIVE · SET ZERO TO DRAW" : "WAITING FOR SENSORS"}</strong>
-        <div><span>Acceleration</span><span className="motion-input-value">{number(activity?.acceleration)} m/s²</span></div>
-        <div><span>Rotation</span><span className="motion-input-value">{number(activity?.rotation)} °/s</span></div>
+      {activity && !sensor.tared && <div className="motion-input-proof" aria-label="Sensor activity before zero">
+        <strong>SENSORS LIVE · SET ZERO TO DRAW</strong>
+        <div><span>Acceleration</span><span className="motion-input-value">{number(activity.acceleration)} m/s²</span></div>
+        <div><span>Rotation</span><span className="motion-input-value">{number(activity.rotation)} °/s</span></div>
       </div>}
       <MotionTrace getSample={getSample} onTelemetry={traceTelemetry} resetKey={viewReset} themeKey={`${presentation.palette}:${presentation.appearance}`}/>
       <div className="motion-zero-row"><button className={`motion-zero${guide.active === 2 && !sensor.tared && sensor.tareState !== "settling" ? " motion-nudge" : ""}`} onClick={tare} disabled={sensor.tareState === "settling" || sensor.sensorState !== "live"}>{sensor.tareState === "settling" ? "HOLD STILL" : "ZERO"}<small>recalibrate</small></button></div>
       <p ref={zeroStepRef} className="motion-phone-message">{sensor.tareState === "settling" ? "Keep still…" : ["hold-still", "unavailable"].includes(sensor.tareState) ? (sensor.tared ? "Previous ZERO kept · try again" : "Not set · rest the phone and retry") : sensor.tared ? "✓ ZERO SET" : sensor.sensorState === "live" ? "Tap ZERO · lift your finger · keep still" : "Enable sensors to set ZERO"}</p>
+      <div className="motion-view-actions"><button onClick={() => setViewReset(n => n + 1)}>RECENTER VIEW</button><button onClick={stop}>STOP</button></div>
+    </section>
+    </div>
+    <section className="motion-instrument-readings" aria-label="Detailed motion readings">
       <div className="motion-section-label"><span>ACCELERATION</span><span>m/s²</span></div>
       <div className="motion-readings">{["X", "Y", "Z"].map((axis,i) => <div key={axis}><small>{axis}</small><strong>{number(values?.acceleration[i])}</strong></div>)}</div>
       <div className="motion-section-label"><span>ROTATION</span><span>°/s</span></div>
       <div className="motion-readings motion-gyro-readings">{["X", "Y", "Z"].map((axis,i) => <div key={axis}><small>{axis}</small><strong>{number(values?.rotation[i])}</strong></div>)}</div>
       <div className="motion-reference"><span data-tared={Boolean(sensor.tared)}>{sensor.tared ? "REFERENCE SET" : "ZERO REQUIRED"}</span><span>{sensor.wakeLock ? "SCREEN AWAKE" : sensor.wakeState === "requesting" ? "WAKE REQUESTED" : !sensor.wakeState || sensor.wakeState === "idle" ? "WAKE ON START" : "SCREEN MAY SLEEP"}</span></div>
-      <div className="motion-view-actions"><button onClick={() => setViewReset(n => n + 1)}>RECENTER VIEW</button><button onClick={stop}>STOP</button></div>
     </section>
     <details className="motion-phone-guide"><summary>Placement & your zero</summary>
       <div className="motion-mount-guide">

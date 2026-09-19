@@ -62,6 +62,9 @@ offline and terminal peer states clear the pairing and require a new QR.
 Incomplete axes invalidate ZERO just like stale observations; remote stale
 summaries cannot retain Zero SET. Explicit local sensing after a terminal link
 is allowed, visibly labeled local-only, without reviving pairing or calibration.
+An explicit local restart also restores local ZERO guidance and visibility;
+terminal refreshes must not erase that choice. STOP or a new terminal transition
+clears it. Local readiness never claims a restored display connection.
 
 Opening the receiver phone panel starts QR preparation when no active attempt or
 connection exists; it preserves active pairing/transport. It does not pre-create

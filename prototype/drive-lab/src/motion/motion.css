@@ -36,12 +36,6 @@
 .motion-phone h1 { font-size: 22px; font-weight: 500; margin: 0; }
 .motion-phone-heading > span { font-size: 13px; color: var(--ui-accent-text); }
 .motion-phone small { font-size: 13px; }
-.motion-phone-status { display: grid; gap: 2px; padding-top: 10px; font-size: 14px; }
-.motion-link-status { display: flex; align-items: baseline; gap: 8px; }
-.motion-link-status::before { content: ""; flex: 0 0 7px; height: 7px; border: 1px solid currentColor; border-radius: 50%; }
-.motion-link-status[data-connected="true"]::before { background: var(--ui-success); border-color: var(--ui-success); }
-.motion-sensor-status { color: var(--ui-muted); font-size: 13px; }
-.motion-sensor-status b { color: var(--ui-text); font-weight: 500; }
 .motion-phone-message { margin: 8px 0; font-size: 14px; min-height: 42px; }
 .motion-phone .motion-actions { flex-wrap: nowrap; margin: 10px 0 16px; }
 .motion-phone .motion-actions button:first-child { flex: 1; }
@@ -52,7 +46,6 @@
 .motion-phone .motion-zero { background: var(--ui-selected-surface); color: var(--ui-selected-text); width: 132px; min-height: 80px; font-size: 22px; font-weight: 700; border: 0; border-top: 3px solid var(--ui-selected-accent); }
 .motion-zero small { display: block; font-weight: 400; font-size: 13px; letter-spacing: .08em; }
 .motion-phone-message { text-align: center; color: var(--ui-muted); }
-.motion-connection-help { font-size: 13px; color: var(--ui-muted); margin: 4px 0 8px; }
 .motion-readings { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); margin-block: 8px 14px; }
 .motion-readings > div { display: grid; text-align: center; border-left: 1px solid var(--ui-line); padding-inline: 4px; min-width: 0; }
 .motion-readings > div:first-child { border-left: 0; }
@@ -62,9 +55,6 @@
 .motion-view-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 12px 0; }
 .motion-phone .motion-view-actions button { min-height: 56px; padding-inline: 6px; font-size: 14px; }
 .motion-view-actions button:last-child { color: var(--ui-accent-text); }
-.motion-phone-status { grid-template-columns: minmax(0,1fr) auto; gap: 10px; align-items: baseline; padding-bottom: 6px; }
-.motion-wake-status { font-size: 13px; color: var(--ui-muted); }
-.motion-wake-status[data-awake="true"] { color: var(--ui-success); }
 .motion-phone .motion-wake-retry { min-height: 48px; width: 100%; font-size: 13px; margin-top: 8px; }
 .trace-plot { position: relative; width: 100%; aspect-ratio: 1; touch-action: pan-y; outline-offset: -3px; }
 .trace-plot:focus-visible { outline: 2px solid var(--ui-focus); }
@@ -100,12 +90,10 @@
   .motion-wordmark { font-size: 20px; }
   .motion-phone-brand { gap: 8px; }
   .motion-readings strong { font-size: 22px; }
-  .motion-phone-status { grid-template-columns: 1fr; gap: 2px; }
   .motion-mount-guide { gap: 10px; }.motion-mount-guide svg { width: 88px; }
 }
 @media (max-height: 740px) and (max-width: 649px) {
   .motion-phone-brand { padding-bottom: 8px; }.motion-phone-heading { padding-top: 8px; }
-  .motion-phone-status { padding-top: 6px; }
   .motion-phone .motion-actions { margin-bottom: 10px; }
   .trace-plot { max-width: 300px; margin-inline: auto; }
 }
@@ -128,7 +116,6 @@
   .motion-phone-heading { flex-wrap: wrap; gap: 0 12px; }
   .motion-instrument { grid-column: 2; grid-row: 1 / 3; }
   .trace-plot { max-width: 260px; margin-inline: auto; }
-  .motion-phone-quality { grid-column: 1; grid-row: 2; align-self: start; }
   .motion-phone > details, .motion-phone-footer { grid-column: 1 / -1; }
 }
 
@@ -138,7 +125,6 @@
 .motion-input-value { color: var(--ui-text); }
 .motion-phone .motion-zero:disabled { opacity: 1; font-size: 17px; }
 
-.motion-guide-intro { margin: 0 0 12px; }
 .motion-connection-details { border-top: 1px solid var(--ui-line, #777); }
 .motion-panel-content .motion-connection-toggle { min-height: 48px; width: 100%; padding: 0; border: 0; display: flex; align-items: center; cursor: pointer; font-size: 13px; text-align: left; }
 .motion-connection-toggle::before { content: "+"; margin-right: 10px; color: var(--ui-accent-text); }
@@ -183,3 +169,45 @@
 @media (prefers-reduced-motion: reduce) { .motion-nudge { animation: none; } }
 
 @media (max-width: 360px) { .motion-guide-compact strong { font-size: 16px; white-space: nowrap; } }
+
+/* Keep permission and ZERO in the first phone viewport; details follow below. */
+.motion-phone-stage > *, .motion-phone-lead > * { box-sizing: border-box; }
+@media (max-width: 649px) {
+  .motion-phone-stage { height: min(700px, calc(100svh - max(16px, env(safe-area-inset-top)) - max(24px, env(safe-area-inset-bottom)))); min-height: 500px; display: flex; flex-direction: column; }
+  .motion-phone-lead { display: block; flex: none; }
+  .motion-phone-brand { padding-bottom: 8px; }
+  .motion-phone-brand img { width: 40px; height: 40px; }
+  .motion-phone-heading { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .motion-phone .motion-next { margin: 10px 0; }
+  .motion-phone .motion-next strong { font-size: 18px; }
+  .motion-phone .motion-next p { margin-top: 4px; }
+  .motion-guide-compact { margin: 8px 0; }
+  .motion-guide-compact svg { display: none; }
+  .motion-guide-compact li { padding-block: 4px; }
+  .motion-phone .motion-actions { margin: 8px 0 12px; }
+  .motion-instrument { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  .motion-input-proof { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 12px; padding-block: 6px; margin-bottom: 0; flex: none; }
+  .motion-input-proof > strong { grid-column: 1 / -1; margin-bottom: 0; }
+  .motion-input-proof > div { display: grid; gap: 0; }
+  .motion-instrument .trace-plot { flex: 1; min-height: 100px; max-height: min(440px, calc(100vw - 40px)); width: 100%; max-width: none; aspect-ratio: auto; container-type: size; }
+  .motion-zero-row { flex: none; padding-top: 8px; }
+  .motion-phone .motion-zero { min-height: 64px; }
+  .motion-phone-message { flex: none; margin: 6px 0 10px; }
+  .motion-instrument .motion-view-actions { flex: none; padding: 0 0 8px; }
+  .motion-instrument-readings { padding-top: 12px; }
+}
+@container (max-height: 200px) {
+  .trace-tick { display: none; }
+  .trace-phone { width: 56px; height: 56px; }
+}
+@media (min-width: 650px) and (max-height: 540px) {
+  .motion-phone { display: block; }
+  .motion-phone-stage { display: grid; grid-template-columns: minmax(250px, .9fr) minmax(300px, 1.1fr); gap: 24px; }
+  .motion-phone-stage .motion-instrument { grid-column: 2; grid-row: 1; }
+  .motion-instrument { display: flex; flex-direction: column; height: calc(100svh - 40px); min-height: 330px; }
+  .motion-instrument .trace-plot { flex: 1; min-height: 100px; max-height: 260px; max-width: none; aspect-ratio: auto; container-type: size; }
+  .motion-zero-row { flex: none; padding-top: 8px; }
+  .motion-phone .motion-zero { min-height: 64px; }
+  .motion-phone-message { flex: none; margin: 6px 0; }
+  .motion-instrument .motion-view-actions { flex: none; padding: 0 0 8px; }
+}

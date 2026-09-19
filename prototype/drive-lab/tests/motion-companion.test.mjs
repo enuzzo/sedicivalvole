@@ -383,3 +383,18 @@ test('live phone sensors cannot complete Connect before the transport opens',asy
  }
  assert.equal(phoneOnboarding({hasPair:true,attempted:true,link:{state:'connected'},sensor:{sensorState:'live',tared:false}}).active,2);
 });
+
+test('explicit local recovery guides ZERO without claiming a restored display connection', async()=>{
+ const {phoneOnboarding}=await import('../src/motion/onboarding.js');
+ for(const state of ['closed','expired','error','suspended','unavailable']) {
+  const input={hasPair:true,link:{state},sensor:{sensorState:'live',tared:false}};
+  assert.match(phoneOnboarding(input).title,/new QR/);
+  assert.match(phoneOnboarding({...input,localOnly:true}).title,/Local sensors/);
+  const calibrated=phoneOnboarding({...input,localOnly:true,sensor:{sensorState:'live',tared:true}});
+  assert.match(calibrated.title,/local only/);
+  assert.match(calibrated.hint,/new QR/);
+  assert.doesNotMatch(calibrated.title,/both screens/);
+  assert.match(phoneOnboarding({...input,localOnly:true,sensor:{sensorState:'denied'}}).title,/access needed/);
+  assert.match(phoneOnboarding({...input,localOnly:true,sensor:{sensorState:'live',tareState:'settling'}}).title,/Keep still/);
+ }
+});

@@ -35,6 +35,14 @@ resetting its history, camera or ZERO. Action emphasis pulses only twice (3.6 s)
 and stays static with reduced motion. Technical quality is disclosed on demand;
 ZERO stays below the graph and is brought into view once sensors start successfully.
 
+The September 19 morning owner refinement keeps sensor enablement, ZERO,
+RECENTER VIEW and STOP in the initial phone viewport. The portrait instrument
+uses the available viewport height; detailed XYZ readings and disclosures follow
+below. Compact phone steps retain their labels and completion states; their SVG
+illustrations remain on the display guide. Short plots omit crowded numerical
+ticks, retaining axis labels, and never invent a trace. Avoid scrolling an
+already-visible ZERO when sensors become live.
+
 ## Shared geometry and palette
 
 The maintained [interface system](../DESIGN-SYSTEM.md) links the exact shared
