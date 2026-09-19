@@ -1,0 +1,197 @@
+{
+  "release": "20260919-1545.b7d1a98",
+  "version": "0.0.0",
+  "checkedAtUTC": "2026-09-19T13:50:09Z",
+  "checks": [
+    {
+      "path": "/",
+      "status": 200,
+      "bytes": 1445,
+      "sha256": "44a5185255c33be58c205cb003e0c00b84d5a2429e107823e7a924e6b63707a2",
+      "matchesLocal": true,
+      "cacheControl": "no-store, no-cache, must-revalidate, max-age=0",
+      "proxyCache": "MISS"
+    },
+    {
+      "path": "/?engine-cells=20260919-1545.b7d1a98",
+      "status": 200,
+      "bytes": 1445,
+      "sha256": "44a5185255c33be58c205cb003e0c00b84d5a2429e107823e7a924e6b63707a2",
+      "matchesLocal": true,
+      "cacheControl": "no-store, no-cache, must-revalidate, max-age=0",
+      "proxyCache": "MISS"
+    },
+    {
+      "path": "/assets/runtime-BAF8n46D.js",
+      "status": 200,
+      "bytes": 26652,
+      "sha256": "378d2eb862ae14edb0c7a1d9b4d0d260aff21642c77d5aed35c2217f566b2f43",
+      "matchesLocal": true,
+      "cacheControl": null,
+      "proxyCache": "MISS"
+    },
+    {
+      "path": "/assets/atlas-field-BGJ5cfoa.js",
+      "status": 200,
+      "bytes": 18187,
+      "sha256": "818d4bf6873d566acf96f6de4788237fd50499e0756bf42c925026e52a650978",
+      "matchesLocal": true,
+      "cacheControl": null,
+      "proxyCache": "MISS"
+    },
+    {
+      "path": "/assets/session-report-panel-BNJuwITd.css",
+      "status": 200,
+      "bytes": 1387,
+      "sha256": "da06f554c070f0231e2be1cb3db6eaa0db57c4976586bde7083213f7c5f5c50f",
+      "matchesLocal": true,
+      "cacheControl": null,
+      "proxyCache": "HIT"
+    },
+    {
+      "path": "/assets/phone-BGCUsS78.js",
+      "status": 200,
+      "bytes": 13566,
+      "sha256": "d2bc060e57c58426a6bf4230d119c884229a0e4e04601bc5afc73c2fe86a1660",
+      "matchesLocal": true,
+      "cacheControl": null,
+      "proxyCache": "MISS"
+    },
+    {
+      "path": "/assets/procedural-processor-DhZI11xm.js",
+      "status": 200,
+      "bytes": 9520,
+      "sha256": "51039c683c12d94dc0aad8d260d5686dd173ea7cf2c70f15267cc1da873eae38",
+      "matchesLocal": true,
+      "cacheControl": null,
+      "proxyCache": "HIT"
+    },
+    {
+      "path": "/assets/score-processor-Dly9Ky60.js",
+      "status": 200,
+      "bytes": 117006,
+      "sha256": "1e4928616b90722e2be5b1ab777d01866084ed54690283ce0c82ebe00d1a8ebf",
+      "matchesLocal": true,
+      "cacheControl": null,
+      "proxyCache": "HIT"
+    },
+    {
+      "path": "/assets/session-report-panel-DujFXZa4.js",
+      "status": 200,
+      "bytes": 13674,
+      "sha256": "bd08dfe4aa198d5c3a7895ab40815b6961f4e501907c2d860e360670475527a0",
+      "matchesLocal": true,
+      "cacheControl": null,
+      "proxyCache": "MISS"
+    },
+    {
+      "path": "/assets/stats-panel-CUiNgSey.js",
+      "status": 200,
+      "bytes": 12522,
+      "sha256": "87f6cb86d48a7d8d05c9b3a71574669618bbfbf066da7fe2bc18bd49ca94522d",
+      "matchesLocal": true,
+      "cacheControl": null,
+      "proxyCache": "MISS"
+    },
+    {
+      "path": "/assets/release-20260919-1545.b7d1a98.json",
+      "status": 200,
+      "bytes": 116321,
+      "sha256": "24677365d26a629edcf43952ca38e859b1faacce13e43927467f5a42232b6d66",
+      "matchesLocal": true,
+      "cacheControl": null,
+      "proxyCache": "MISS"
+    },
+    {
+      "path": "/assets/index-B87ItHAe.js",
+      "status": 200,
+      "bytes": 1600326,
+      "sha256": "5ca06889dad36ab6e8e58d56b29d9a1f648f919e9233592b0c10b878b881aae8",
+      "matchesLocal": true,
+      "cacheControl": null,
+      "proxyCache": "MISS"
+    },
+    {
+      "path": "/assets/maplibre-gl-DvulA2N7.css",
+      "status": 200,
+      "bytes": 83039,
+      "sha256": "52fb4f6236da5760c884d97067f93419efd4c3ddd3d2ff11f10662791d1aa49f",
+      "matchesLocal": true,
+      "cacheControl": null,
+      "proxyCache": "HIT"
+    },
+    {
+      "path": "/assets/maplibre-gl-worker-CIjIPF-m.js",
+      "status": 200,
+      "bytes": 487122,
+      "sha256": "d6d1ce18b89584826383ac10d2a05605fde2651120cfb1d5edf8691ce139339d",
+      "matchesLocal": true,
+      "cacheControl": null,
+      "proxyCache": "HIT"
+    },
+    {
+      "path": "/assets/procedural-voice-o77N7yh1.js",
+      "status": 200,
+      "bytes": 1005,
+      "sha256": "f6b55a930881e0e0fb771fed33a38ec29a414b77b98280484eff667bdc1dec7e",
+      "matchesLocal": true,
+      "cacheControl": null,
+      "proxyCache": "HIT"
+    },
+    {
+      "path": "/assets/air-atlas-field-nAaCNzoF.js",
+      "status": 200,
+      "bytes": 184343,
+      "sha256": "1c0c3a9e01ed52ce77770781b7404a787153aa62085af10a9a446bdd00d3b4a7",
+      "matchesLocal": true,
+      "cacheControl": null,
+      "proxyCache": "MISS"
+    },
+    {
+      "path": "/assets/maplibre-runtime-B5xYBViM.js",
+      "status": 200,
+      "bytes": 1014114,
+      "sha256": "a1e8f7fedec26b41e556a35537555744b294fb500cd78ca4f4a26407746abb49",
+      "matchesLocal": true,
+      "cacheControl": null,
+      "proxyCache": "HIT"
+    },
+    {
+      "path": "/assets/profiles-dP29TflP.js",
+      "status": 200,
+      "bytes": 8857,
+      "sha256": "8201fb9752d9a13dda1ab88ebbac669c7899cf749745f830646ba2ccbdedc05b",
+      "matchesLocal": true,
+      "cacheControl": null,
+      "proxyCache": "HIT"
+    },
+    {
+      "path": "/assets/index-Da1hnS18.css",
+      "status": 200,
+      "bytes": 282523,
+      "sha256": "cf9d18d34c9ebc3d87a7a45107dd43e0307a1ca6b3d011e058d17ae0a8b74573",
+      "matchesLocal": true,
+      "cacheControl": null,
+      "proxyCache": "MISS"
+    },
+    {
+      "path": "/assets/shadergradient-field-DZp6AItH.js",
+      "status": 200,
+      "bytes": 401582,
+      "sha256": "300431c0dc5d8af277a4714d1bf6baed0dfd14b67c79b554f76f5f923e8a60b1",
+      "matchesLocal": true,
+      "cacheControl": null,
+      "proxyCache": "MISS"
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "bytes": 1445,
+      "sha256": "44a5185255c33be58c205cb003e0c00b84d5a2429e107823e7a924e6b63707a2",
+      "matchesLocal": true,
+      "cacheControl": "no-store, no-cache, must-revalidate, max-age=0",
+      "proxyCache": "MISS"
+    }
+  ],
+  "allPass": true
+}

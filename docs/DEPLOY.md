@@ -5291,3 +5291,15 @@ was started. Local QA servers and browser tabs have been closed.
   wake, report opening/closing and controlled reload pass; no diagnostic mail.
 - [Full evidence and precise limitations](qa/2026-09-19-ui-harmony/README.md#canonical-publication).
   Physical Tesla/iPhone/iPad acceptance remains separate.
+
+## Equal Engine telemetry publication — 2026-09-19 15:53
+
+- Source `b7d1a98`, build `20260919-1545.b7d1a98`, VERSION `0.0.0`.
+- Validated native cases 990 with targeted environment recheck, final affected
+  checks 25/25, signal/LAB 16/16, package 827 hashes, credits 189, staged hygiene 1,538.
+- Official publisher read-only identity then preserve-existing upload PASS:
+  38 files / 6,473,674 bytes, 825 static files and 29 recordings verified/reused,
+  two previous assets retained, ROOT_UPLOAD_ONLY.
+- 21 HTTPS checks and canonical Engine geometry/running/mute paths pass.
+  No diagnostic mail; local annotation previews remain available.
+- [Evidence and boundaries](qa/2026-09-19-engine-cells/README.md#canonical-closeout).

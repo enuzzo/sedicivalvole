@@ -1,0 +1,53 @@
+{
+  "live": {
+    "cells": [
+      {
+        "font": "57.975px",
+        "titleY": 225,
+        "valueY": 247,
+        "width": 236.328125
+      },
+      {
+        "font": "57.975px",
+        "titleY": 225,
+        "valueY": 247,
+        "width": 236.3359375
+      },
+      {
+        "font": "57.975px",
+        "titleY": 225,
+        "valueY": 247,
+        "width": 236.328125
+      }
+    ],
+    "release": "20260919-1545.b7d1a98",
+    "signals": [
+      {
+        "running": "true",
+        "kind": "engine-micro-signal signal-rpm"
+      },
+      {
+        "running": "false",
+        "kind": "engine-micro-signal signal-speed"
+      },
+      {
+        "running": "false",
+        "kind": "engine-micro-signal signal-gear"
+      }
+    ]
+  },
+  "paused": [
+    {
+      "running": "false",
+      "kind": "engine-micro-signal signal-rpm"
+    },
+    {
+      "running": "false",
+      "kind": "engine-micro-signal signal-speed"
+    },
+    {
+      "running": "false",
+      "kind": "engine-micro-signal signal-gear"
+    }
+  ]
+}

@@ -33,8 +33,7 @@ actual production component. It feeds synthetic speed through the existing gear
 selection and shift-plan functions; no audio, geolocation or report is started.
 Use Drive sequence, Stationary, Signal lost, Pause/Resume and Light/Dark. The
 SIMULATED INPUT label distinguishes it from live telemetry. This file is outside
-`public/` and excluded from the release. The preview server and owner-facing tab
-are deliberately left open for further annotations.
+`public/` and excluded from the release. The preview server is deliberately left running for further annotations.
 
 The full app remains available at `/qa/ui-harmony.html?qaMute=1&speed=42`.
 Its fixture mutes both modes and blocks diagnostic delivery. Actual Engine
@@ -71,3 +70,30 @@ The main candidate build verifies 827 exact static hashes. Final committed-sourc
 build and canonical publication are recorded at closeout. Browser UI and synthetic
 model samples do not establish physical Tesla touch, GPS, cabin audio or iPhone
 acceptance. No diagnostic mail was sent. Unrelated recovery-prompt work is retained.
+
+## Canonical closeout
+
+Source **b7d1a98**, build **20260919-1545.b7d1a98**, VERSION **0.0.0** is
+published. The official publisher passes its read-only identity gates before
+writing, then uploads/verifies **38 files / 6,473,674 bytes**, reuses 825 static
+files and 29 verified recordings, retains two prior assets and reports
+`ROOT_UPLOAD_ONLY` with preserve-existing enabled.
+
+[Twenty-one HTTPS checks](live-identity.json) verify the bare and cache-busted
+roots, all top-level generated JS/CSS/manifest assets and another root read.
+Bodies match local bytes and SHA-256; roots are HTTP 200, no-store/no-cache and
+cache MISS. Canonical reload shows the same build.
+
+[Live Engine](live-engine.png) and [live measurements](live-browser.json) confirm
+identical 57.975 px values, equal column widths and matching label/value baselines
+at 773 × 601. With GPS denied and Engine running, the virtual RPM signal is active
+while the speed ruler is stopped. Mute stops RPM travel too. No canonical-origin
+warning/error was observed. Automatic diagnostics stayed OFF; no mail was sent.
+The local server remains running for both routes, and the full-app tab is left
+open for annotations.
+
+Staged-source hygiene passes 1,538 text files, excluding the unrelated unstaged
+recovery-prompt edits. Native Xcode Git currently requests a license confirmation;
+the existing Command Line Tools Git was used directly without accepting a license
+or changing global tool selection. Normal Homebrew Python was preserved for
+deployment and its test recheck.

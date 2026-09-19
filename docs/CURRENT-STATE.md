@@ -1,5 +1,15 @@
 # Current Project State
 
+## Equal Engine telemetry published — September 19
+
+Canonical **20260919-1545.b7d1a98** is published and verified. The annotated
+RPM/speed/gear band now uses equal cells, one typography/alignment contract and
+three minimal evidence-driven micro-signals. Existing audio, motion, chrome and
+recovery behavior is preserved. [QA, silent preview and publication evidence](qa/2026-09-19-engine-cells/README.md)
+records 990 validated native cases including the focused environment recheck,
+827 package hashes and 21 canonical HTTPS checks. The local preview is deliberately
+left running for owner annotations. Physical acceptance remains separate.
+
 ## UI harmony published — September 19
 
 Canonical **20260919-1515.d0ff6a9** is published and verified. Logo and speed
